@@ -2496,11 +2496,18 @@
             };
             obj._metadata = obj._metadata || {};
             var order = obj._metadata.order;
+            var keys;
             if (!order) {
-                var keys = Object.keys(obj.en);
-                order = this.state.lua ? keys.sort() : keys;
-                obj._metadata.order = order;
+                keys = Object.keys(obj.en);
+            } else {
+                keys = new Set(order);
+                for (var key in obj.en) {
+                    keys.add(key);
+                }
+                keys = Array.from(keys.values());
             }
+            order = this.state.lua ? keys.sort() : keys;
+            obj._metadata.order = order;
             Object.keys(obj).sort(function(a, b) {
                 if (specials[a] && specials[b]) {
                     return specials[a] - specials[b];

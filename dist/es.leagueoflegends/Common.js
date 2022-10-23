@@ -1,13 +1,3 @@
-/* Scripts which are imported via [[MediaWiki:ImportJS]]
-dev:InactiveUsers/code.js
-dev:InputUsername/code.js
-dev:OggPlayer.js
-dev:Tooltips.js
-//dev:DiscordModule/code.js //not working yet
-dev:EditorColorPicker.js
-Common.js/OggPlayerDownload.js
-*/
-
 /* Custom Tooltips for use with the Tooltips/code.js */
  
 window.tooltips_config = {
@@ -17,36 +7,46 @@ window.tooltips_config = {
     noCSS: true
 };
 
-/* Gráficas */
+/********************************* Esports *********************************/
 
-const texto =  document.querySelector('prueba');
-prueba.innerHTML = "<canvas id='myChart' width='400' height='400'></canvas>";
+/*********************** Zeri ***********************/
 
-const Chart = require('chart.js');
+/*** En las 4 mayores regiones y torneos internacionales ***/
 
-const labels = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-  ];
+/* 2022 */
+mw.hook('dev.chart').add(function() {
+	const zeriEn2022_1 =  document.getElementById('Zeri_en_2022');
+	zeriEn2022_1.innerHTML = '<canvas id="myChart"></canvas>';
 
-  const data = {
-    labels: labels,
-    datasets: [{
-      label: 'My First dataset',
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      data: [0, 10, 5, 2, 20, 30, 45],
-    }]
-  };
+	const data = {
+		labels: [
+    		'Victorias',
+    		'Derrotas'
+			],
+			
+		datasets: [{
+    		label: 'Zeri obtuvo una tasa de victorias del 56.1% en un total de 462 juegos.',
+    		data: [259, 203],
+    		backgroundColor: [
+    			'#63FF74',
+    			'#63BAFF'
+    			],
+    		hoverOffset: 4
+		}]
+	};
 
-  const config = {
-    type: 'line',
-    data: data,
-    options: {}
-  };
+	const config = {
+		type: 'doughnut',
+		data: data,
+		options: {}
+	};
+  
+	new Chart(
+		document.getElementById('myChart'),
+		config
+	);
+})
+
+/*** En regiones hispanohablantes ***/
 
 /* DO NOT ADD CODE BELOW THIS LINE */

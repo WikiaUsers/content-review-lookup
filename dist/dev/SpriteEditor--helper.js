@@ -4,15 +4,11 @@
 	if (window.SpriteEditorModules.helper && window.SpriteEditorModules.helper.loaded) return;
 	var shared;
 	var defaultSpriteSize = 16;
-	var loadedData;
 	var root = document.getElementById('mw-content-text');
 	window.SpriteEditorModules.helper = {
 		loaded: true,
 		setSharedData: function(data) {
 			shared = data;
-		},
-		setData: function(data) {
-			loadedData = data;
 		},
 		newSection: function(s) {
 			// section header
@@ -106,13 +102,12 @@
 			root.removeChild(a);
 		},
 		addSprite: function(positionID, img) {
-			var imgSize = Number(loadedData.settings.size || defaultSpriteSize);
 			var nc = this.newCanvas();
 			shared.canvasCollection[positionID] = nc;
 			var ctx = nc.getContext('2d');
 			ctx.drawImage(img,
 				0, 0, img.naturalWidth || img.width, img.naturalHeight || img.height, // Source coords.
-				0, 0, imgSize, imgSize // Canvas coords.
+				0, 0, shared.imgWidth, shared.imgHeight // Canvas coords.
 			);
 		},
 		removeSprite: function(id, skipHistory) {
@@ -133,14 +128,11 @@
 			clBoxes.removeChild(cl.closest('.spritedoc-box'));
 		},
 		newCanvas: function() {
-			var imgSize = String(loadedData.settings.size || defaultSpriteSize);
 			var c = document.createElement('canvas');
-			c.width = imgSize;
-			c.height = imgSize;
+			c.width = shared.imgWidth;
+			c.height = shared.imgHeight;
 			var ctx = c.getContext('2d');
 			ctx.imageSmoothingEnabled = false;
-			//ctx.imageSmoothingQuality = "high";
-			// ctx.globalCompositeOperation = "copy";
 			return c;
 		}
 	};

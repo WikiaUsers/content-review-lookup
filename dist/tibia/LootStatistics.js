@@ -215,7 +215,7 @@
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
   	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
   	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs',
-  	'Half-Digested Stones'
+  	'Half-Digested Stones', 'Terramite Eggs'
   ],
 
   //skip/rename creatures if they drop any of the loot in the list

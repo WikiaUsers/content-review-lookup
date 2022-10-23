@@ -1,12 +1,12 @@
 // ВНИМАНИЕ! Внося изменения в код, не забывайте обновлять справку на странице [[Вукипедия:Викификатор]] 
-var 
-    txt = ''        // временное хранилище вукифицируемого текста
-
+var txt = ''        // временное хранилище вукифицируемого текста
 // сообщения!
-var 
-    wmDontWikify = 'Пожалуйста, не обрабатывайте Викификатором реплики других участников. Вы уверены, что хотите продолжить?';
+var wmDontWikify = 'Пожалуйста, не обрабатывайте Викификатором реплики других участников. Вы уверены, что хотите продолжить?';
+// страница-хранилище, с разметкой окна в HTML-виде
+var sTemplateSource = 'Шаблон:GIF';
 
 // ---------------------------------------------------------------------------------
+
 /* доп. запрос на вывод панели с категориями при щелчке на предосмотр статьи */
 $('#wpPreview').click(function() 
 {
@@ -82,12 +82,7 @@ function CopyEngImgInfo()
 
 function ShowEditTools()
 {
-  $('div.mw-editTools, #BlockScreenBG').fadeIn(150);
-}
-
-function ShowInfoboxInsertWindow()
-{
-  $('#pnl_InfoboxInsertWindow, #BlockScreenBG').fadeIn(150);
+  $('div.mw-editTools, #BlockScreenBG').fadeIn();
 }
 
 function InsertText( sPre, sPost){
@@ -431,4 +426,426 @@ function CorrectRanges()
     // корректировка столетий
     txt = txt.replace(/(\(|\s)(\[\[[IVX]{1,5}\]\])[\u00A0 ]?(-|--|–|—) ?(\[\[[IVX]{1,5}\]\])(\W)/g, "$1$2—$4$5");
     txt = txt.replace(/(\[\[[IVX]{1,5}\]\]) ?(в\.|вв\.)/g, "$1\u00A0$2");
+}
+
+
+// кнопка для вызова окна ответа на сообщение. Добавляет на страницу новый подраздел с заголовком к конкретному разделу. Т.о. выстраивается дерево вложенных ответов
+$('.btn_ForumReply').unbind('click').click(function()
+{
+	// поиск заголовка сообщения, на которое нужно ответить
+	sHeader = $(this).parents('.BlockForumMessage, .BlockForumReply').prev('h6');
+	// поиск ссылки "Править" в заголовке
+	sLink= sHeader.find('.mw-editsection a').attr('href');
+	// поиск атрибута id в ссылке
+	sID  = sHeader.find('.mw-headline').attr('id');
+	// поиск номера раздела (сообщения, на которое нужно ответить) в атрибуте id после ключевого слова "section" и до границы слова
+	sSection = sLink.replace(/.*section=(\d*)\b.*/, '$1');
+	// непосредственно вызов окна сообщения
+	ShowGlassWindow(sID, 2);
+});
+
+// кнопка для вызова окна для создания новой темы на форуме
+$('.btn_ForumTopic').unbind('click').click(function()
+{
+	// значение для создания нового раздела
+	sSection = 'new_topic';
+	// непосредственно вызов окна сообщения
+	ShowGlassWindow('0', 3);
+});
+
+// кнопка для вызова окна нового сообщения. Добавляет на страницу новый раздел с заголовком (невидимым) в котором хранится дата и время сообшения + и id автора сообщения
+$('.btn_ForumMessage').unbind('click').click(function()
+{
+	// специальное значение для создания нового раздела. Должно быть только "new"
+	sSection = 'new';
+	// непосредственно вызов окна сообщения
+	ShowGlassWindow('0', 1);
+});
+
+// отображение списка инфобоксов, доступных для вставки в исходный код статьи
+function ShowInfoboxInsertWindow() 
+{
+	ShowGlassWindow(0,4) ;
+}
+
+function ShowGlassWindow(SenderID, CaptionID) 
+{
+
+	// массив заголовков окна
+	sCaption = new Array();
+	sCaption[0] = '';
+	sCaption[1] = 'Новое сообщение';
+	sCaption[2] = 'Ответ на сообщение';
+	sCaption[3] = 'Новая тема';
+	sCaption[4] = 'Загрузка кода инфобокса';
+
+	sElements = '';
+
+	// если окна сообщения еще нет на странице (при первичной загрузке)
+	if ($('#win_GlassWindow').length === 0)
+	{
+		// запрос на чтение HTML-разметки окна со страницы-хранилища
+		$.get(mw.config.values.wgScript, {title: sTemplateSource, action: 'raw', ctype: 'text/plain'})
+			.then(function(data) // данные, полученные при чтении
+			{
+
+				// подстановка заголовка окна в HTML-разметку
+				sMessageWindow = $(data).find('#temple_GlassWindow').html();
+
+				// если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
+				if (CheckLoadedElements(sMessageWindow, '#temple_GlassWindow', sTemplateSource) == 0) { return; }
+
+				// подстановка заголовка окна в HTML-разметку
+				sMessageWindow = sMessageWindow.replace(/\{Caption}/g, sCaption[CaptionID]);
+
+				// проверка номера заголовка
+				switch (CaptionID) 
+				{
+					// загрузка начинки окна для форума
+					case 1: case 2: case 3: 
+					LoadForumMessageElements(data, SenderID); 
+					break;
+					
+					// загрузка начинки окна для вставки инфобокса
+					case 4:	
+					LoadInsertInfoboxElements(data);
+					break;
+				}
+
+			},
+			// если страница-хранилище не найдена -- сообщение об ошибке
+			function() 
+			{
+				mw.notify('Страница "' + sTemplateSource + '" не найдена.', {title: 'Ошибка!',type: 'error'});
+			}
+		);
+
+	}
+	// если окна сообщения уже есть на странице, оно просто становистя видимым 
+	else 
+	{
+		$('#BlockScreenBG, #win_GlassWindow').fadeIn(0);
+		$('#win_GlassWindow').attr('data-SenderID', SenderID);
+		$('#win_GlassWindow th').text(sCaption[CaptionID]);
+	}
+}
+
+// сокрытие окна сообщения без удаления его со страницы
+function CloseHideable() 
+{
+	$('.BlockHideable').fadeOut(0);
+}
+
+function LoadForumMessageElements(data, SenderID) 
+{
+	let sElements = $(data).find('#temple_ForumMessageElements').html();
+
+	// если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
+	if (CheckLoadedElements(sElements, '#temple_ForumMessageElements', sTemplateSource) == 0) { return; }
+
+	sMessageWindow = sMessageWindow.replace(/\{Content}/g, sElements);
+
+	ApplyLoadedElements(sMessageWindow);
+	
+	// при создании новой темы в окне сообщения показывать поле для ввода заголовка
+	if (sSection === 'new_topic')
+	{
+		$('#block_NewTopic').css('display', 'block');
+	}
+
+	// назначение текстового поля с id #wpTextbox1 объектом, куда вставляется текст при щелчке по кнопке
+	context= {"$textarea" : $('#wpTextbox1')};
+	// привязка	текстового поля к кнопкам (их данным под именем "context")
+	$('span.tool').data('context', context);
+	// внесение id раздела, на который нужно ответить, в окно сообщения
+	$('#win_GlassWindow').attr('data-SenderID', SenderID);
+
+	// добавление кнопок в окно сообщения 
+	$('#bnt_SaveMessage').click(function (){SaveForumMessage('', '');} );
+	$('#bnt_ShowPreview').click(ShowPreview);
+	$('#bnt_ClosePreview').click(ClosePreview);
+	$('#btn_CancelMessage').click(CloseHideable);
+	$('#btn_angle_qoutation_marks').click(function (){InsertText('«','»');});
+	$('#btn_bold').click(function (){InsertText('\'\'\'','\'\'\'');});
+	$('#btn_italic').click(function (){InsertText('\'\'','\'\'');});
+	$('#btn_dash').click(function (){InsertText('—','');});
+	$('#btn_postscript_canon').click(function (){InsertText('[[/Канон|',']]');});
+	$('#btn_square_brackets').click(function (){InsertText('[[\|',']]');});
+	$('#btn_square_brackets_only').click(function (){InsertText('[[',']]');});
+	$('#btn_ref').click(function (){InsertText('<ref>','</ref>');});
+	$('#btn_quote').click(function (){InsertText('{{Цитата|','||}}');});
+}
+
+function LoadInsertInfoboxElements(data) 
+{
+	let sElements = $(data).find('#temple_InfoboxList').html();
+	let api = new mw.Api();
+
+	api.get({action: 'query', format: 'json', list: 'categorymembers', cmtitle: 'Категория:Инфобоксы_с_описанием', cmlimit: '200', cmnamespace: '10' })
+	.done(function(data) 
+	{
+		let pages = data.query.categorymembers;
+		let p, s = '';
+		for (p in pages) 
+		{
+			s = s + '<p class="BlockRounded btn_Charinsert" onclick="InsertInfobox(\'' + pages[p].title + '\')">' + (pages[p].title).replace(/Шаблон:/, '') + '</p>';
+		}
+
+		sElements = sElements.replace(/\{Content}/g, s);
+		sMessageWindow = sMessageWindow.replace(/\{Content}/g, sElements);
+
+		ApplyLoadedElements(sMessageWindow);
+
+    // добавление событий кнопкам
+		$('#btn_CancelMessage').click(CloseHideable);
+	});
+}
+
+function ApplyLoadedElements(MessageWindow) 
+{
+  $('body').append(MessageWindow);
+  $('#BlockScreenBG').fadeIn();
+}
+
+// отображение блока с предосмотром
+function ShowPreview()
+{
+	// если тест сообщения не введен
+	if ( $('#wpTextbox1').val() === '' )
+	{ 
+		mw.notify( 'Введите текст сообщения!', { title: 'Внимание!', type: 'warn' } ); 
+		return;
+	}
+	
+	let api = new mw.Api();
+	// запрос на страницу api.php для конвертации вики-разметки в HTML. 
+	//Документация по запросу хранися на странице
+	api.post({action: "parse", format: "json", formatversion: "2", prop: "text|indicators|displaytitle|modules|jsconfigvars|categorieshtml|templates|langlinks|limitreporthtml", text: $('#wpTextbox1').val(), pst: "true", preview: "true", sectionpreview: "true", disableeditsection: "true", useskin: "fandomdesktop", uselang: "ru"})
+	.done(function(data) // при успешном запросе
+	{
+		// на окна сообщения скрываются/отображаются кнопки 
+		$( "#wpTextbox1, #wikiPreview, #bnt_ShowPreview, #bnt_ClosePreview" ).toggle();
+		// в блоке предосмотра отображается сгенерированный HTML
+		$('#wikiPreview').html(data.parse.text);
+	});
+}
+
+// сокрытие блока с предосмотром
+function ClosePreview()
+{
+  $( "#wpTextbox1, #wikiPreview, #bnt_ShowPreview, #bnt_ClosePreview" ).toggle();
+}
+
+/*
+чтение HTML-разметки для ячейки с текстом новой темы или сообшения/ответа
+- i -- id ячейки
+- sPage -- название страницы-хранилища
+- data -- скоп данных, заранее полученных со страницы-хранилища
+*/
+function LoadCell(i, sPage, data)
+{
+	// массив с id ячеек
+	sCell = new Array();
+	sCell[0] = '';
+	sCell[1] = '#temple_ForumMainCell';	// id ячейки с текстом новой темы
+	sCell[2] = '#temple_ForumMessageCell';// id ячейки с текстом сообшения/ответа
+	
+	// поиск ячейки в скопе данных "data"
+	sMessage= $(data).find( sCell[i] ).html();
+
+  // если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
+  if (CheckLoadedElements(sMessage, sCell[i], sTemplateSource) == 0) { return; }
+	
+	return sMessage;
+}
+
+/*
+запись темы/сообщения/ответа
+- sMessageText -- текст сообщения. Если не задан, берётся из текстового поля 
+- sPageName -- страница, куда нужно внести текст. Если не задана, берётся текущая
+*/
+function SaveForumMessage(sMessageText, sPage)
+{
+ 
+	//текст темы/сообщения/ответа
+	if (sMessageText.length == 0)
+	{
+    s = $('#wpTextbox1').val();
+    // если тест сообщения не введен -- сообщение об ошибке, выход
+    if ( s === '' )
+    { 
+      mw.notify( 'Введите текст сообщения!', { title: 'Внимание!', type: 'warn' } ); 
+      return;
+    }
+    
+    // если не указан, берется из поля wpTextbox1 ИЛИ присваивается пустой текст
+		sMessageText = s;
+	}
+	
+	//страница для записи
+	if (sPage.length == 0)
+	{
+		// если не указана, берется текущая
+		sPage = mw.config.values.wgPageName;
+	}
+  
+  
+	// запрос на чтение HTML-разметки окна со страницы-хранилища
+	$.get( mw.config.values.wgScript, { title: sTemplateSource, action: 'raw', ctype: 'text/plain' } )
+	.then( function( data ) // данные, полученные при чтении
+	{
+		// текущие дата и время
+	    dNow = new Date();
+	    // текущие дата и время одной строкой
+		sMessageDateTime= dNow.toLocaleString();
+		// добавление в строку id автора темы/сообщения/ответа
+		sMessageID= 'mes_'+ mw.config.values.wgUserId +'-'+ dNow.valueOf();
+		// токен автора темы/сообщения/ответа
+		sToken= mw.user.tokens.get('csrfToken');
+		
+		// если в sSection хранится "new" -- новое сообшение
+		if (sSection === 'new')
+		{
+			//загрузка HTML-разметки для ячейки сообшения
+			sMessage= LoadCell(2, sTemplateSource, data);
+
+			// подстановка id. имения автора сообщения, текста сообщения и пр. в HTML-разметку ячейки
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
+     
+      // вывод сообщения о записи
+			mw.notify( 'Обновите страницу.', { title: 'Сообщение успешно добавлено!', type: 'info' } ); 
+			
+			let api = new mw.Api();
+			// запрос на запись сообщения в БД вики
+			api.post({action: "edit", title: sPage, section: sSection, appendtext: sMessage, token: sToken}); 	
+		}
+		
+		// если в sSection хранится число -- ответ на сообшение
+		if (Number.isInteger( Number(sSection) ) )
+		{
+			//загрузка HTML-разметки для ячейки ответа
+			sMessage= LoadCell(2, sTemplateSource, data);
+			// внесение id раздела, на который нужно ответить, в окно сообщения
+			SenderID = $('#win_GlassWindow').attr('data-SenderID');
+			// поиск заголовка раздела, на который отвечают
+			oCurr   = $('#'+SenderID).parents('h6').next('.BlockForumReply, .BlockForumMessage');
+			// макс. вложенность ответов
+			iLevelMax = 5;
+			// поиск уровня вложенности раздела, на который нужно ответить
+			iLevel = Number( oCurr.attr('data-level') );
+			// у ответа уровень вложенности больше на 1, но не больше 5
+			iLevel = Math.min(iLevel+1, iLevelMax);
+			
+			// подстановка id., имени автора ответа и пр. в HTML-разметку ячейки ответа
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
+			// подстановка номер вложенности в HTML-разметку ячейки
+			sMessage= '\n'+ sMessage.replace(/BlockForumMessage/g, 'BlockForumReply').replace(/Level\d/, 'Level'+iLevel ).replace(/data-level="\d"/, 'data-level="'+iLevel+ '"' );
+			
+			// если уровень вложенности = 2, ответ записывается после последнего сообщения на странице
+			if ( iLevel === 2)
+			{
+				oLast= oCurr.nextUntil('.BlockForumMessage').filter('.BlockForumReply').last();	
+			}
+			// иначе вклинивается между сообщениями или между ответами с предыдущиим уровнем вложенности
+			else
+			{
+				oLast= oCurr.nextUntil('.BlockForumMessage').filter('[data-level='+ iLevel +'], [data-level='+ Math.min(iLevel+iLevelMax, iLevelMax) +']').last();
+			}
+			// если последнего сообщения еще нет, ответ пишется после 1-го сообщения
+			if (oLast.length ===0)
+			{
+				oLast = oCurr;
+			}
+			
+			// поиск номера раздела (сообщения, на которое нужно ответить) в атрибуте id после ключевого слова "section" и до границы слова
+			sSection= oLast.prev('h6').find('.mw-editsection a').attr('href').replace(/.*section=(\d*)\b.*/, '$1');
+      
+  console.log( sSection, sMessage);
+  //return;
+			// вывод сообщения о записи
+			mw.notify( 'Обновите страницу.', { title: 'Ответ успешно добавлен!', type: 'info' } );
+			
+			let api = new mw.Api();
+			// запрос на запись ответа в БД вики
+			api.post({action: "edit", title: mw.config.values.wgPageName, section: sSection, appendtext: sMessage, token: sToken}); 	
+		}
+		
+		// если в sSection хранится "new_topic" -- создание новой темы
+		if (sSection === 'new_topic')
+		{
+			//загрузка HTML-разметки для ячейки темы
+			sMessage= LoadCell(1, sTemplateSource, data);
+		
+			if ( sMessage=== 0 )
+			{
+				return;
+			}
+		
+			// чтение названия новой темы
+			sTopic = $('#input_NewTopic').val();
+			
+			// если название не заполнено - ошибка и выход
+			if ( sTopic === '' )
+			{ 
+				mw.notify( 'Введите название темы!', { title: 'Внимание!', type: 'warn' } ); 
+				return;
+			}
+			
+			// подстановка id., имени автора ответа и пр. в HTML-разметку ячейки темы
+			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'').replace(/\{Topic}/g, sTopic).replace(/\{TopicCategory}/g, mw.config.values.wgTitle).replace(/\{TopicLevelName}/g, mw.config.values.wgTitle);
+			
+			// вывод сообщения о записи
+			mw.notify( 'Обновите страницу.', { title: 'Тема успешно создана!', type: 'info' } );
+			
+			let api = new mw.Api();
+			// запрос на запись ответа в БД вики
+			api.post({action: "edit", title: 'Forum:'+sTopic, text: sMessage, token: sToken}); 
+		}
+		// очистка полей ввода
+		$('#input_NewTopic').val('');
+	    $('#wpTextbox1').val('');
+	    
+	    // сокрытие окна 
+	    CloseHideable();
+  });
+}
+
+/*
+проверка результата jQ-выборки со страницы sSource
+- sElement -- результат jQ-выборка
+- sID -- ID тега, который должен попасть в результат jQ-выборки
+- sSource -- страница, с которой выполняется jQ-выборка
+*/
+function CheckLoadedElements(sElement, sID, sSource)
+{
+  if (sElement === undefined)
+	{ 
+		mw.notify( 'Объект "'+sID+'" на странице "'+ sSource +'" не найден.', { title: 'Ошибка!', type: 'error' } ); 
+		return 0;
+	}
+  
+  return 1;
+}
+
+function InsertInfobox(sSource) 
+{
+	let api = new mw.Api();
+	//let sSource = 'Шаблон:'+ $(this).text();
+	
+	api.get({action: "parse", format: "json", formatversion: "2", prop: "text", page: sSource, preview: "true", disableeditsection: "true" })
+	.done(function(data) // при успешном запросе
+	{
+		$('body').append('<div id="div_PureCode"></div>');
+
+		let s = $('#div_PureCode').html(data.parse.text).find('.BlockPseudoPre:first').text();
+		s = s.replace(/\|/g, '\n|').replace(/\}\}/g, '\n}}');
+		
+		console.log(s);
+
+		InsertText(s, '');
+
+		$('.BlockHideable').fadeOut(0);
+    $('#div_PureCode').detach();
+	});
+
 }

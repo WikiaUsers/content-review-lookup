@@ -43,7 +43,7 @@ $(document).scroll(function() {
 // ============================================================
 
 if (wgAction == 'edit' || wgAction == 'submit') {
-        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
+        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
         addOnloadHook(addWikifButton);
 }
 

@@ -15,3 +15,7 @@ window.MessageBlock = {
 	message : 'You have been blocked for the reason of \'$1\', your ban duration is $2.',
 	autocheck : true
 };
+
+window.mbPartialStyle = 'opacity: 0.5; color: #cc4949;';
+window.mbTempStyle = 'opacity: 0.7; text-decoration: line-through; color: #b03030;';
+window.mbIndefStyle = 'opacity: 0.4; font-style: italic; text-decoration: line-through; color: #782626;';

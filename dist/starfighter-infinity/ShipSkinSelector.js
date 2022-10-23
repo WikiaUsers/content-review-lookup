@@ -1,6 +1,9 @@
 (function(){
+	var skinPreviewDialog = false;
 	var bodyLoadComplete = false;
 	var skinAutoPlayInterval = false;
+	var skinPreviewDialogResetPreviewToActive = false;
+	var firstShipImageFound = false;
 	
 	var missingImageOverlayUrl = 'https://static.wikia.nocookie.net/starfighter-infinity/images/e/ef/Ship_MissingSkinOverlay.png/revision/latest';
 	var missingImageOverlayHtml = '<img class="shipSkinMissingImageOverlay" src="' + missingImageOverlayUrl + '">';
@@ -96,7 +99,8 @@
 
 			selectHtml += '<span class="shipPageSelectorMenu"><span class="menuTitle">Standard</span> <span class="fas fa-caret-down" aria-hidden="true"></span></span>';
 			selectHtml += '<ul class="shipPageShipSelectorDropdown">';
-			var firstShipImageFound = false;
+			selectHtml += '<li id="showSkinPreviewDialog"><span>Show All</span></li>';
+			firstShipImageFound = false;
 			for (var skinName in skinList) {
 				if (skinList[skinName] === false) {
 					return false;
@@ -107,11 +111,11 @@
 					}
 					if (skinName != "Standard") {
 						skinImagesFound = true;
+					}
 
-						//*** Pre-load images
-						if (!$("#skinPreload_" + skinName).length) {
-							$(skinList[skinName]).attr('id', "skinPreload_" + skinName).show().appendTo('#mw-content-text').hide();
-						}
+					//*** Pre-load images
+					if (!$("#skinPreload_" + skinName).length) {
+						$(skinList[skinName]).attr('id', "skinPreload_" + skinName).show().appendTo('#mw-content-text').hide();
 					}
 				}
 				
@@ -136,6 +140,7 @@
 			selectHtml += '</div>';
 
 			if (skinImagesFound) {
+
 				if (!$("figure[data-source=skinSelector]").length && $("figure[data-source=image1]").length) {
 					$(selectHtml).insertAfter("figure[data-source=image1]");
 				} else {
@@ -143,7 +148,8 @@
 				}
 
 				$(".shipPageSelectorMenuItem").click(function(){
-					if (!$(this).data('automatedClick') && $('#skinSelectorAutoPlay').hasClass('fa-pause')) {
+					var isAutoplayClick = $(this).data('automatedClick');
+					if (!isAutoplayClick && $('#skinSelectorAutoPlay').hasClass('fa-pause')) {
 						$(".autoPlaySkinPlay").click();
 					}
 					$(this).data('automatedClick', false);
@@ -158,18 +164,25 @@
 						skinHtml = missingImageOverlayHtml + '<span class="shipSkinMissingImageShipImage">' + firstShipImageFound + '</span>';
 					}
 					$("figure[data-source=image1]").html(skinHtml);
+
+					if (!isAutoplayClick && skinPreviewDialog != false) {
+						$('#' + skinName.replaceAll(' ', '') + 'SkinDialogItem').click();
+					}
 				});
 				$(".autoPlaySkinPlay").click(function(){
 					if ($('#skinSelectorAutoPlay').hasClass('fa-play')) {
+						$('#skinSelectorAutoPlay').removeClass('fa-play').addClass('fa-pause');
 						selectNextSkin();
 						skinAutoPlayInterval = setInterval(function(){
 							selectNextSkin();
 						}, 3000);
-						$('#skinSelectorAutoPlay').removeClass('fa-play').addClass('fa-pause');
 					} else {
 						clearInterval(skinAutoPlayInterval);
 						$('#skinSelectorAutoPlay').removeClass('fa-pause').addClass('fa-play');
 					}
+				});
+				$("#showSkinPreviewDialog").click(function(){
+					showSkinPreviewDialog();
 				});
 			} else {
 				console.log("Hiding Ship Selector - No skin images found.");
@@ -189,24 +202,144 @@
 		$('#' + newSkinName.replaceAll(' ', '') + 'SkinMenuItem span').click();
 	};
 
-	$( document ).ready(function() {
-		bodyLoadComplete = true;
-
-		skinList['Standard'] = $("figure[data-source=image1]").html();
-		if (typeof skinList['Standard'] == 'undefined') {
-			skinList['Standard'] = '';
+	var showSkinPreviewDialog = function(){
+		if (skinPreviewDialog != false) {
+			skinPreviewDialog.show();
+			return;
 		}
+		
+		var dialogHtml = '<div class="modal skinPreviewDialog">\n';
+		dialogHtml += '<table cellspacing="0" cellpadding="0" border="0" class="shipSkinDialog">\n';
+		var x = 0;
+		var isFirstRow = true;
+		var numPerRowDuringPreview = 4;
+		var numPerRowAfterPreview = 7;
+		var numOfPreviewRows = 3;
+		var firstSkin = false;
+		if ($('.shipPageSelectorMenuItem[data-selected="selected"]').length) {
+			firstSkin = $('.shipPageSelectorMenuItem[data-selected="selected"]').text();
+		}
+		for (var skinName in skinList) {
+			var imageHtml = skinList[skinName].replace(' class="shipPageSkinImage"', '');
+			dialogHtml += '<td>\n';
+			dialogHtml += '<div id="' + skinName.replaceAll(' ', '') + 'SkinDialogItem" class="skinDialogItem' + (firstSkin == false || firstSkin == skinName ? ' activeSkin' : '') + '" data-skinname="' + skinName + '">' + imageHtml + '</div>\n';
+			dialogHtml += '</td>\n';
+			if (!firstSkin)  firstSkin = skinName;
+			if (++x == 2) {
+				imageHtml = skinList[firstSkin].replace(' class="shipPageSkinImage"', '');
+				dialogHtml += '<td colspan="3" rowspan="'+numOfPreviewRows+'">\n';
+				dialogHtml += '<div class="shipSkinDialogPreviewImage">' + imageHtml + '</div>\n';
+				dialogHtml += '</td>\n';
+			}
+			if (x <= numPerRowDuringPreview * numOfPreviewRows) {
+				if (x % numPerRowDuringPreview == 0) {
+					dialogHtml += '</tr><tr>';
+				}
+				if (x == numPerRowDuringPreview * numOfPreviewRows)
+					x += 2;
+			} else {
+				if (x % numPerRowAfterPreview == 0) {
+					dialogHtml += '</tr><tr>';
+				}
+			}
+		}
+		if (x % numPerRowAfterPreview > 0) {
+			dialogHtml += '<td colspan="' + (x % numPerRowAfterPreview) + '">&nbsp;</td>';
+		} else {
+			dialogHtml = dialogHtml.substr(0, dialogHtml.length - 4);
+		}
+		dialogHtml += "</table>\n";
+		dialogHtml += "</div>\n";
 
-		mw.loader.using(['mediawiki.util'], function(){
-			for (var skinName in skinList) {
-				if (skinList[skinName] === false) {
-					if (skinName != 'Standard') {
+		skinPreviewDialog = new window.dev.modal.Modal({
+			content: dialogHtml,
+			id: 'skinPreviewDialog',
+			size: 'large',
+			isHTML: true,
+			title: 'Standard'
+		});
+		skinPreviewDialog.create();
+		skinPreviewDialog.show();
+
+
+		$(".skinDialogItem").click(function(){
+			if (skinPreviewDialogResetPreviewToActive != false) {
+				clearTimeout(skinPreviewDialogResetPreviewToActive);
+				skinPreviewDialogResetPreviewToActive = false;
+			}
+			
+			var skinName = $(this).data("skinname");
+			var skinNameDisplay = skinName;
+			if (skinNameDisplay != 'Standard') {
+				skinNameDisplay += ' Skin';
+			}
+			$('#skinPreviewDialog .oo-ui-processDialog-title').text(skinNameDisplay);
+			$(".skinDialogItem.activeSkin").removeClass('activeSkin');
+			$(this).addClass('activeSkin');
+
+			var skinHtml = skinList[skinName];
+			if (skinHtml == "") {
+				skinHtml = missingImageOverlayHtml + '<span class="shipSkinMissingImageShipImage">' + firstShipImageFound + '</span>';
+			}
+			skinHtml = skinHtml.replace(' class="shipPageSkinImage"', '');
+			$(".shipSkinDialogPreviewImage").html(skinHtml);
+
+			if (!$('#skinSelectorAutoPlay').hasClass('fa-pause')) {
+				$("#" + skinName.replaceAll(" ", "") + "SkinMenuItem span").click();
+			}
+		});
+		
+		$(".skinDialogItem").mouseover(function(){
+			if (skinPreviewDialogResetPreviewToActive != false) {
+				clearTimeout(skinPreviewDialogResetPreviewToActive);
+				skinPreviewDialogResetPreviewToActive = false;
+			}
+			
+			var skinName = $(this).data("skinname");
+			var skinNameDisplay = skinName;
+			if (skinNameDisplay != 'Standard') {
+				skinNameDisplay += ' Skin';
+			}
+			$('#skinPreviewDialog .oo-ui-processDialog-title').text(skinNameDisplay);
+			$(this).addClass('highlightedSkin');
+
+			var skinHtml = skinList[skinName];
+			if (skinHtml == "") {
+				skinHtml = missingImageOverlayHtml + '<span class="shipSkinMissingImageShipImage">' + firstShipImageFound + '</span>';
+			}
+			skinHtml = skinHtml.replace(' class="shipPageSkinImage"', '');
+			$(".shipSkinDialogPreviewImage").html(skinHtml);
+		});
+
+		$(".skinDialogItem").mouseout(function(){
+			if (skinPreviewDialogResetPreviewToActive != false) {
+				clearTimeout(skinPreviewDialogResetPreviewToActive);
+				skinPreviewDialogResetPreviewToActive = false;
+			}
+			$(this).removeClass('highlightedSkin');
+			skinPreviewDialogResetPreviewToActive = setTimeout(function(){
+				$(".skinDialogItem.activeSkin").click();
+			}, 200);
+		});
+	};
+
+	$( document ).ready(function() {
+		if (isShipPage()) {
+			bodyLoadComplete = true;
+
+			mw.loader.using(['mediawiki.util'], function(){
+				for (var skinName in skinList) {
+					if (skinList[skinName] === false) {
 						setImageHtmlForShipSkin(skinName);
 					}
 				}
-			}
-		});
+			});
+			importArticle({
+				type: 'script',
+				article: 'u:dev:MediaWiki:Modal.js'
+			});
 
-		showShipPageSkinDropdownWhenReady();
+			showShipPageSkinDropdownWhenReady();
+		}
 	});
 }());

@@ -18,6 +18,7 @@
 		'FANDOM',
 		'FandomBot',
 		'FANDOMbot',
+		'IWR News Bot',
 		'Wikia',
 		'WikiaBot',
 		'Wikia Video Library'

@@ -422,8 +422,8 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "environments": [
                     "dragon_islands"
                 ],
-                "incubation": "999_hours_999",
-                "rarity": 4,
+                "incubation": "18_hours_18",
+                "rarity": 3,
                 "offspringeligibility": "wheel",
                 "notes": [
                     "feature"
@@ -14657,6 +14657,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "herbalist": {
+                "name": "Herbalist",
+                "types": [
+                    "spooky",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "herculean": {
                 "name": "Herculean",
                 "types": [
@@ -16628,6 +16645,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
+            "jinx": {
+                "name": "Jinx",
+                "types": [
+                    "spooky",
+                    "purple",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "joy": {
                 "name": "Joy",
                 "types": [
@@ -18260,6 +18294,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "7_hours_7",
                 "rarity": 2,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "lostspirit": {
+                "name": "Lost Spirit",
+                "types": [
+                    "spooky",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
                 "notes": [
                     "feature"
                 ]
@@ -26660,6 +26710,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "reanimated": {
+                "name": "Reanimated",
+                "types": [
+                    "spooky",
+                    "black",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
                 ]
             },
             "reclamation": {
@@ -36468,6 +36535,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
+                ]
+            },
+            "wight": {
+                "name": "Wight",
+                "types": [
+                    "spooky",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "wightlord": {

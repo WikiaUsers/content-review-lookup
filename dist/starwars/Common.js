@@ -777,7 +777,7 @@ $( function () {
 		if( !$hideContent.length ) {
 			return;
 		}
-		$hideContent.toggle();
+		$hideContent.toggle($(this).text().includes('show'));
 		if ( $( this ).text().indexOf( 'hide' ) >= 1 ) {
 			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
 		} else {

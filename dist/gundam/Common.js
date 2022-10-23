@@ -14,8 +14,6 @@ importArticles({
     articles: [
     	'u:dev:MediaWiki:WDSIcons/code.js',
         'u:anime:MediaWiki:Anime-Common.js',
-        'MediaWiki:Common.js/FairUseUpload.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
 

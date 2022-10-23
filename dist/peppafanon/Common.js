@@ -4,6 +4,9 @@ importArticles({
 	articles: [
 		// ...
 		'w:c:dev:UserTags/code.js',
+		'u:dev:MediaWiki:RelatedDiscussionsPosts.js',
+        'u:dev:MediaWiki:LinkPreview/code.js',
+        'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js'
 		// ...
 	]
 });

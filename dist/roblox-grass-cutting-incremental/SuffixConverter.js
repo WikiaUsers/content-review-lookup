@@ -1,4 +1,4 @@
-// Created by User:TheSeal27.
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:SuffixConverter.js
 
 
 

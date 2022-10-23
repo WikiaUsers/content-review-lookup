@@ -7356,6 +7356,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"herbalist": {
+				"name": "Herbalist",
+				"colors": [
+					"spooky",
+					"white",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"herculean": {
 				"name": "Herculean",
 				"colors": [
@@ -8369,6 +8378,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"jinx": {
+				"name": "Jinx",
+				"colors": [
+					"spooky",
+					"purple",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"joy": {
 				"name": "Joy",
 				"colors": [
@@ -9175,6 +9193,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Lost Love",
 				"colors": [
 					"valentine",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"lostspirit": {
+				"name": "Lost Spirit",
+				"colors": [
+					"spooky",
 					"blue"
 				],
 				"rarity": "unbreedable"
@@ -13206,6 +13232,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "common"
+			},
+			"reanimated": {
+				"name": "Reanimated",
+				"colors": [
+					"spooky",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"reclamation": {
 				"name": "Reclamation",
@@ -17960,6 +17995,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black"
 				],
 				"rarity": "unbreedable"
+			},
+			"wight": {
+				"name": "Wight",
+				"colors": [
+					"spooky",
+					"white",
+					"blue"
+				],
+				"rarity": "common"
 			},
 			"wightlord": {
 				"name": "Wightlord",

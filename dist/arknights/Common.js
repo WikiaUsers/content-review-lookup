@@ -31,7 +31,7 @@ window.tooltips_list = [
         classname: 'sticker-tooltip',
         parse: '{' + '{Template:Sticker tip|1=<#name#>|2=<#text1#>|3=<#text2#>|u=<#use#>|r=<#rarity#>|o=<#obtain#>}}',
     },	{
-        classname: 'profile-picture',
+        classname: 'profile-picture-tooltip',
         parse: '{' + '{Template:Profile picture tip|1=<#name#>|2=<#text#>|d=<#default#>|o=<#obtain#>}}',
     }
 ];

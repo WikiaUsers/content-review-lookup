@@ -1,6 +1,6 @@
 ;(function($, mw) {
 	'use strict';
-	
+
 	if (window.SpriteEditorModules.sorting && window.SpriteEditorModules.sorting.loaded) return;
 	window.SpriteEditorModules.sorting = {loaded: true};
 	var api = new mw.Api();
@@ -11,6 +11,7 @@
 	var Demo = {};
 	var root = document.getElementById('mw-content-text');
 	var oldOrder = [];
+	var msg;
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
@@ -38,10 +39,10 @@
 		return '<div class="spriteedit-sorting">' + 
 			'</div>';
 	}
-	
+
 	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
 		var OO = require('oojs');
-		
+
 		// Setting up Draggable objects (Copied from gerrit)
 		Demo.SimpleWidget = function DemoSimpleWidget( config ) {
 			// Configuration initialization
@@ -87,21 +88,22 @@
 		OO.inheritClass( Demo.DraggableItemWidget, Demo.SimpleWidget );
 		OO.mixinClass( Demo.DraggableItemWidget, OO.ui.mixin.DraggableElement );
 		// Copy end
-		
+
 		// create window
 		myData.createWindow = function() {
+			msg = window.SpriteEditorModules.main.msg;
 			function SpriteEditorDialog(config) {
 				SpriteEditorDialog.super.call(this, config);
 			}
 			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
-			
+
 			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = 'Sort sections';
+			SpriteEditorDialog.static.title = msg("sort-section-label").plain();
 			SpriteEditorDialog.static.actions = [
-				{ label: 'Close', modes: 'edit', flags: ['safe', 'close'] },
-				{ label: 'Save', action: 'saveSorting', flags: ['primary'] }
+				{ label: msg("dialog-button-close").plain(), modes: 'edit', flags: ['safe', 'close'] },
+				{ label: msg("save-label").plain(), action: 'saveSorting', flags: ['primary'] }
 			];
-			
+
 			// initialise dialog, append content
 			SpriteEditorDialog.prototype.initialize = function () {
 				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
@@ -117,7 +119,7 @@
 				ele.children[2].style.minHeight = 0;
 				ele.children[2].style.display = "none";
 			};
-	
+
 			// Handle actions
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
 				if (action === 'saveSorting') {
@@ -142,17 +144,16 @@
 				}
 				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
 			};
-			
+
 			// Create the Dialog and add the window manager.
 			modal.windowManager = new OO.ui.WindowManager();
 			$('body').append(modal.windowManager.$element);
-			//document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', modal.windowManager.$element);
-			
+
 			// Create a new dialog window.
 			modal.seDialog = new SpriteEditorDialog({
 				size: 'medium'
 			});
-			
+
 			// Add window and open
 			modal.windowManager.addWindows([modal.seDialog]);
 			modal.windowManager.openWindow(modal.seDialog);

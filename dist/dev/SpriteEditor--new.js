@@ -9,12 +9,15 @@
 	var shared = {};
 	var root;
 	var nameField;
-	var sizeField;
+	var sizeFieldW;
+	var sizeFieldH;
+	var spacingField;
 	var lastInput;
 	var oldTimeout;
 	var okButton;
 	var OO;
 	var requestState = false;
+	var msg;
 
 	myData.modal = modal;
 
@@ -22,7 +25,7 @@
 		return (a.length && a.substring(a.length - 6) !== "Sprite") && a + "Sprite" || a;
 	}
 	function toggleOkayBtn(state) {
-		if (!requestState || !nameField.getValue().length || !sizeField.getValue().length) {
+		if (!requestState || !nameField.getValue().length || !sizeFieldW.getValue().length || !sizeFieldH.getValue().length || !spacingField.getValue().length) {
 			okButton.setDisabled(true);
 		} else {
 			okButton.setDisabled(state);
@@ -32,11 +35,22 @@
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
+	function newNumEle() {
+		var e = new OO.ui.NumberInputWidget( {
+			min: 1,
+			step: 1,
+			value: shared.options.defaultSpriteSize
+		} );
+		e.on("change", function(e) {
+			toggleOkayBtn(e.length === 0);
+		});
+		return e;
+	}
 	myData.requestChanges = function() {
 		root.innerHTML = "";
 		// Label
 		var labelNameField = document.createElement("p");
-		labelNameField.innerText = 'Enter a name (Automatic adds missing "Sprite"-Suffix.)';
+		labelNameField.innerText = msg("new-spritesheet").plain();
 		root.appendChild(labelNameField);
 
 		// Input field
@@ -69,20 +83,32 @@
 		root.appendChild(nameField.$element.get(0));
 
 		// Label
-		var labelSizeField = document.createElement("p");
-		labelSizeField.innerText = 'Sprite size in px';
+		var labelSizeFieldW = document.createElement("p");
+		labelSizeFieldW.innerText = msg("sprite-width").plain();
 		root.appendChild(document.createElement("br"));
-		root.appendChild(labelSizeField);
+		root.appendChild(labelSizeFieldW);
+		sizeFieldW = newNumEle();
+		root.appendChild(sizeFieldW.$element.get(0));
 
-		sizeField = new OO.ui.NumberInputWidget( {
-			min: 1,
-			step: 1,
-			value: shared.options.defaultSpriteSize
-		} );
-		sizeField.on("change", function(e) {
-			toggleOkayBtn(e.length === 0);
-		});
-		root.appendChild(sizeField.$element.get(0));
+		root.appendChild(document.createElement("br"));
+
+		var labelSizeFieldH = document.createElement("p");
+		labelSizeFieldH.innerText = msg("sprite-height").plain();
+		root.appendChild(document.createElement("br"));
+		root.appendChild(labelSizeFieldH);
+		sizeFieldH = newNumEle();
+		root.appendChild(sizeFieldH.$element.get(0));
+		
+		root.appendChild(document.createElement("br"));
+		
+		var labelSizeSpacing = document.createElement("p");
+		labelSizeSpacing.innerText = msg("sprite-spacing").plain();
+		root.appendChild(document.createElement("br"));
+		root.appendChild(labelSizeSpacing);
+		spacingField = newNumEle();
+		spacingField.setRange(0, Infinity);
+		spacingField.setValue(0);
+		root.appendChild(spacingField.$element.get(0));
 	};
 	myData.openWindow = function() {
 		modal.windowManager.openWindow(modal.seDialog).opened.then(function() {
@@ -102,21 +128,21 @@
 
 		// create window
 		myData.createWindow = function() {
+			msg = window.SpriteEditorModules.main.msg;
 			function SpriteEditorDialog(config) {
 				SpriteEditorDialog.super.call(this, config);
 			}
 			OO.inheritClass(SpriteEditorDialog, OO.ui.MessageDialog);
 			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = 'New';
+			SpriteEditorDialog.static.title = msg("dialog-button-new").plain();
 			SpriteEditorDialog.static.actions = [
-				{action: 'reject', label: 'Cancel', flags: [ 'safe', 'close' ]},
-				{action: 'accept', label: 'Create', flags: [ 'primary', 'progressive' ]}
+				{action: 'reject', label: msg("dialog-button-cancel").plain(), flags: [ 'safe', 'close' ]},
+				{action: 'accept', label: msg("dialog-button-create").plain, flags: [ 'primary', 'progressive' ]}
 			];
 
 			// initialise dialog, append content
 			SpriteEditorDialog.prototype.initialize = function () {
 				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				// this.$body.append(this.content.$element);
 				var b = this.$body.get(0);
 				// Adjusting styling
 				var mdText = b.querySelector(".oo-ui-messageDialog-text");
@@ -132,7 +158,9 @@
 				if (action === 'accept') {
 					var mD = window.SpriteEditorModules.open;
 					mD.isNew = true;
-					mD.spriteSize = sizeField.getValue();
+					mD.spriteSizeW = sizeFieldW.getValue();
+					mD.spriteSizeH = sizeFieldH.getValue();
+					mD.spacing = spacingField.getValue();
 					mD.loadSprite2(completeName(nameField.getValue()));
 					modal.seDialog.close();
 				}

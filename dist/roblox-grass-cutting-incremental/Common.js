@@ -7,4 +7,8 @@
 // Script that converts its invoked function's value from scientific notation to suffix notation, and vice-versa. Requires Suffix Button to be fully operational, otherwise defaults to scientific notation. Also includes support for an interactive calculator to convert between the two notation types.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixConverter.js&action=raw&ctype=text/javascript');
 
+// [[ Default Upload Summary ]
+// Set a default value for file upload summaries on Special:Upload. Also allows the user to define a custom summary that applies to all uploads on the page.
+mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:DefaultUploadSummary.js&action=raw&ctype=text/javascript');
+
 // -- [ Other scripts ] --

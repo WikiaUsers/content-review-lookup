@@ -5,36 +5,38 @@
  */
 
 /* global mw, $ */
+/*jshint esversion: 5, esnext: false */
+
 (function () {
   if (window.RSMLoaded || mw.config.get("skin") !== "fandomdesktop") {
     return;
   }
 
   window.RSMLoaded = true;
-  const conf = mw.config.get([
+  var conf = mw.config.get([
     "wgServer",
     "isDarkTheme",
     "wgUserGroups",
-    "wgEnableDiscussions"
+    "wgEnableDiscussions",
   ]);
 
   /* Generetes the wiki name */
   function createWikiName(ui) {
-    const wikiInfo = {
+    var wikiInfo = {
       logo: "",
       display: $(".fandom-sticky-header__sitename").text(),
-      link: $(".fandom-sticky-header__sitename").attr("href")
+      link: $(".fandom-sticky-header__sitename").attr("href"),
     };
-    const wikiSitename = ui.a({
+    var wikiSitename = ui.a({
       class: "global-navigation__wiki-name",
       href: wikiInfo.link,
       children: [
         ui.span({
-          text: wikiInfo.display
-        })
-      ]
+          text: wikiInfo.display,
+        }),
+      ],
     });
-    const fandomLogo = $("a.global-navigation__logo");
+    var fandomLogo = $("a.global-navigation__logo");
     fandomLogo.after(wikiSitename);
   }
 
@@ -69,82 +71,77 @@
         iconItem = ui.svg({
           class: "wds-icon wds-icon-tiny",
           child: ui.use({
-            "xlink:href": "#wds-icons-" + icon + "-tiny"
-          })
+            "xlink:href": "#wds-icons-" + icon + "-tiny",
+          }),
         });
       }
 
-      const listItem = ui.li({
+      var listItem = ui.li({
         child: ui.a({
           href: link,
           class: class_ ? "wiki-menu__" + class_ : "",
           children: [iconItem, text],
-          "data-tracking-label": dataLabel
-        })
+          "data-tracking-label": dataLabel,
+        }),
       });
       return listItem;
     }
 
     function themePill(ui) {
-      const darkTheme = conf.isDarkTheme;
-      const lightToggle = ui.button({
+      var darkTheme = conf.isDarkTheme;
+      var lightToggle = ui.button({
         classes: {
           "wds-switch__item": true,
-          "is-active": !darkTheme // lightTheme
+          "is-active": !darkTheme, // lightTheme
         },
         type: "button",
         children: [
           ui.svg({
             class: "wds-icon wds-icon-tiny",
             child: ui.use({
-              "xlink:href": "#wds-icons-sun-tiny"
-            })
+              "xlink:href": "#wds-icons-sun-tiny",
+            }),
           }),
           ui.span({
-            text: "Light mode"
-          })
-        ]
+            text: "Light mode",
+          }),
+        ],
       });
-      const darkToggle = ui.button({
+      var darkToggle = ui.button({
         classes: {
           "wds-switch__item": true,
-          "is-active": darkTheme
+          "is-active": darkTheme,
         },
         type: "button",
         children: [
           ui.svg({
             class: "wds-icon wds-icon-tiny",
             child: ui.use({
-              "xlink:href": "#wds-icons-moon-tiny"
-            })
+              "xlink:href": "#wds-icons-moon-tiny",
+            }),
           }),
           ui.span({
-            text: "Dark mode"
-          })
-        ]
+            text: "Dark mode",
+          }),
+        ],
       });
-      const mainList = ui.li({
+      var mainList = ui.li({
         child: ui.a({
           class: "wiki-tools__theme-switch",
           href: "#",
           "data-tracking": themeTracking(),
           child: ui.div({
             class: "wds-switch__wrapper",
-            children: [lightToggle, darkToggle]
-          })
-        })
+            children: [lightToggle, darkToggle],
+          }),
+        }),
       });
       return mainList;
     }
 
     function createListItems(ui) {
-      const ulList = [];
-      const wikiMenuTitle = ui.li({
-        text: "Wiki tools",
-        class: "wiki-menu__header"
-      });
+      var ulList = [];
       ulList.push(
-        wikiMenuTitle,
         themePill(ui),
         createListItem(ui, "home", "home", "/", "Home", "home")
       );
@@ -169,7 +166,7 @@
           "rc"
         ),
         ui.li({
-          class: "wiki-menu__seperator"
+          class: "wiki-menu__seperator",
         }),
         createListItem(
           ui,
@@ -201,7 +198,6 @@
           )
         );
       }
-
       if (isSysopOrAbove()) {
         ulList.push(
           createListItem(
@@ -236,8 +232,44 @@
       return ulList;
     }
 
+    function createExpandableWikiTools(ui) {
+      var wikiToolsLabel = ui.summary({
+        class: "wds-tabs__tab-label",
+        children: [
+          ui.a({
+            href: "#",
+            text: "Wiki tools",
+          }),
+          ui.svg({
+            class: "wds-icon wds-icon-tiny wds-dropdown__toggle-chevron",
+            child: ui.use({
+              "xlink:href": "#wds-icons-dropdown-tiny",
+            }),
+          }),
+        ],
+      });
+
+      var wikiMenuContent = ui.div({
+        class: "wds-dropdown__content",
+
+        child: ui.details({
+          class: "menu wiki",
+          open: "open",
+          children: [
+            wikiToolsLabel,
+            ui.ul({
+              class: "wds-list wds-is-linked",
+              children: createListItems(ui),
+            }),
+          ],
+        }),
+      });
+
+      return wikiMenuContent;
+    }
+
     function createDropdown(ui) {
-      const toggle = ui.div({
+      var toggle = ui.div({
         class: "wds-dropdown__toggle",
         child: ui.div({
           class: "global-navigation__icon",
@@ -245,35 +277,29 @@
             ui.svg({
               class: "wds-icon wds-icon-small",
               child: ui.use({
-                "xlink:href": "#wds-icons-left-align-small"
-              })
+                "xlink:href": "#wds-icons-left-align-small",
+              }),
             }),
             ui.svg({
               class: "wds-icon wds-icon-tiny wds-dropdown__toggle-chevron",
               child: ui.use({
-                "xlink:href": "#wds-icons-dropdown-tiny"
-              })
-            })
-          ]
-        })
+                "xlink:href": "#wds-icons-dropdown-tiny",
+              }),
+            }),
+          ],
+        }),
       });
-      const content = ui.div({
-        class: "wds-dropdown__content",
-        child: ui.ul({
-          class: "wds-list wds-is-linked",
-          children: createListItems(ui)
-        })
-      });
-      const dropdown = ui.div({
+      var content = createExpandableWikiTools(ui);
+      var dropdown = ui.div({
         id: "wikiMenu",
         class: "wiki-menu wds-dropdown is-attached-to-bottom wds-open-to-right",
-        children: [toggle, content]
+        children: [toggle, content],
       });
       return dropdown;
     }
 
     function initMenu(ui) {
-      const wikiMenu = createDropdown(ui);
+      var wikiMenu = createDropdown(ui);
       $(".global-navigation__bottom > .notifications").after(wikiMenu);
     }
 
@@ -282,8 +308,8 @@
 
   /* Mutation Observer - re-adds the "fandom-sticky-header-visible" class */
   function returnStickyHeaderClass() {
-    const stickyHeader = $(".fandom-sticky-header");
-    const observer = new MutationObserver(function (mutations) {
+    var stickyHeader = $(".fandom-sticky-header");
+    var observer = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
         if (stickyHeader.hasClass("is-visible")) {
           $("body").addClass("fandom-sticky-header-visible");
@@ -294,7 +320,7 @@
     });
     observer.observe(stickyHeader[0], {
       attributes: true,
-      attributeFilter: ["class"]
+      attributeFilter: ["class"],
     });
   }
 
@@ -311,11 +337,11 @@
       };
     })(jQuery);
 
-    const clonedWikiNav = $(
+    var clonedWikiNav = $(
       ".fandom-community-header .fandom-community-header__local-navigation .wds-tabs"
     )
       .clone()
-      .insertBefore("#wikiMenu > .wds-dropdown__content > .wds-list");
+      .insertBefore("#wikiMenu > .wds-dropdown__content > details.menu.wiki");
 
     clonedWikiNav
       .addClass("wiki-menu__contents")
@@ -323,7 +349,7 @@
       .removeClass("wds-tabs");
 
     clonedWikiNav.each(function (index, element) {
-      const $element = $(element);
+      var $element = $(element);
 
       // 1st level
       $element.find("> li	").changeElementType("details");
@@ -350,17 +376,30 @@
         .attr("class", "summary_content");
 
       $element.find(".wds-dropdown").removeClass("wds-dropdown");
+
+      var detailsElements = document.querySelectorAll("#wikiMenu details");
+      detailsElements.forEach(function (deet) {
+        deet.addEventListener("toggle", toggleOpenOneOnly);
+      });
+      function toggleOpenOneOnly(e) {
+        var _this = this;
+        if (this.open) {
+          detailsElements.forEach(function (deet) {
+            if (deet != _this && deet.open) deet.open = false;
+          });
+        }
+      }
     });
   }
-  
+
   /* Initialzes the script */
   function init(lib) {
-    const ui = lib;
-    
+    var ui = lib;
+
     /* Adds helper classes */
     $("body").addClass("responsivemobile-loaded");
     $("body").addClass("responsivemobile-js");
-    
+
     // Init stuff
     createWikiMenu(ui);
     createWikiName(ui);
@@ -371,8 +410,8 @@
   importArticles({
     articles: [
       "u:dev:MediaWiki:Dorui.js",
-      "u:dev:MediaWiki:ResponsiveMobile.js/deps.css"
-    ]
+      "u:dev:MediaWiki:ResponsiveMobile.js/deps.css",
+    ],
   });
   mw.hook("doru.ui").add(init);
 })();

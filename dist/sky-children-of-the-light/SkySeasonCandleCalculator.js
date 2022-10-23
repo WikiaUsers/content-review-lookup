@@ -200,6 +200,9 @@ Date.prototype.toDateInputValue = (function() {
         diff: function (start, end, buffer) {
             const ONE_DAY_IN_MS = 86400000;
             // Takes into consideration that the End times are 1 minute off
+            if (buffer > 0) {
+                return Math.round((Math.abs(end - start) + buffer)/ONE_DAY_IN_MS);
+            }
             return Math.ceil((Math.abs(end - start) + buffer)/ONE_DAY_IN_MS);
         },
 

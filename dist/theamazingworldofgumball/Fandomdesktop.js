@@ -348,27 +348,6 @@ setInterval(function () {
     });
 }, 1000);
  
-// MessageWallUserTags config
-// Use underscores to substitute for spaces in long usernames
-window.MessageWallUserTags = {
-    tagColor: '#47fcf0',  //Tag color – The color of the tag's text
-    glow: true,           //Glow effect toggle – Value of 'true' turns on the glow effect, 'false' turns it off
-    glowSize: '15px',     //Glow size – The default radius of the text-shadow glow effect
-    glowColor: '#47fcf0', //Glow color
-    users: {
-        'InvaderrrZIM': 'Bureaucrat',
-        'Klonoamiyumi': 'Bureaucrat',
-        'PhoenixKenny': 'Bureaucrat',
-        '202nd_Skywalker': 'Administrator',
-        'Gameuser10': 'Administrator',
-        'Blue_Pant.': 'Patroller',
-        'SomnoticAgama': 'Patroller',
-        'Villicus': 'Bot',
-        'MarvinDarwin': 'Chat Moderator',
-        'Fenton127': 'Chat Moderator'
-    }
-};
- 
 window.AjaxRCRefreshText = 'Auto-Refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = [

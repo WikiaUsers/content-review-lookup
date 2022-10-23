@@ -27,6 +27,7 @@ UserTagsJS.modules.custom = {
 //For usage with Template:USERNAME.
 $(function () {
     var name;
+    var wgUserName = mw.config.get("wgUserName");
     if (!wgUserName) {
         name = "Anon";
     } else {

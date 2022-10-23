@@ -329,17 +329,17 @@ setInterval(function () {
     "use strict";
     $('.comments li.message blockquote .MiniEditorWrapper .edited-by a:not(.subtle)').each(function () {
         var $user = $(this).text();
-        if ($user.match(/InvaderrrZIM|PhoenixKenny|Klonoamiyumi/g)) {
+        if ($user.match(/InvaderrrZIM|PhoenixKenny|Klonoamiyumi|202ndSkywalker/g)) {
             $(this).addClass('bureaucrat');
         }
-        if ($user.match(/MarvinDarwin|Fenton127|Mario&LuigiBowser'sInsideStory/g)) {
+        if ($user.match(/MarvinDarwin|Fenton127/g)) {
             $(this).addClass('chat-mod');
         }
         
-        if ($user.match(/|Blue Pant.|SomnoticAgama/g)) {
+        if ($user.match(/Blue Pant.|Mario&LuigiBowser'sInsideStory/g)) {
             $(this).addClass('patroller');
         }
-        if ($user.match(/202nd Skywalker|Gameuser10/g)) {
+        if ($user.match(/Gameuser10|SomnoticAgama/g)) {
             $(this).addClass('admin');
         }
         if ($user.match(/Villicus/g)) {
@@ -359,14 +359,14 @@ window.MessageWallUserTags = {
         'InvaderrrZIM': 'Bureaucrat',
         'Klonoamiyumi': 'Bureaucrat',
         'PhoenixKenny': 'Bureaucrat',
-        '202nd_Skywalker': 'Administrator',
+        '202nd_Skywalker': 'Bureaucrat',
         'Gameuser10': 'Administrator',
+        'SomnoticAgama': 'Administrator',
         'Blue_Pant.': 'Patroller',
-        'SomnoticAgama': 'Patroller',
+        'Mario&LuigiBowser\'sInsideStory': 'Patroller',
         'Villicus': 'Bot',
         'MarvinDarwin': 'Chat Moderator',
         'Fenton127': 'Chat Moderator',
-        'Mario&LuigiBowser\'sInsideStory': 'Chat Moderator'
     }
 };
  

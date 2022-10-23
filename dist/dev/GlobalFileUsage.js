@@ -1,5 +1,7 @@
-;(function($, document, mw) {
+;(function($, mw) {
     'use strict';
+
+	var preloads = 2;
 
     function globalFileUsage(i18n) {
 
@@ -30,13 +32,14 @@
         });
 
         var langs    = config.lang;
+        var format   = '&format=json';
         var siteUrl  = mw.config.values.wgServer + '/';
         var fileName = mw.config.values.wgTitle;
 
         if (action == 'move')
             fileName = fileName.replace('MovePage/File:', '');
 
-        var params   = '/api.php?action=query&titles=File:' + fileName + '&prop=fileusage&format=json';
+        var baseParams = '/api.php?action=query&titles=File:' + fileName;
 
         function showGUContainer(place, title, i18n) {
 
@@ -57,7 +60,7 @@
             langs.forEach(function(lang) {
                 if (lang == mw.config.values.wgContentLanguage) return;
                 $('#global-usage-list').append('<tbody data-lang="' + lang + '"></tbody>');
-                usageQuery(siteUrl, params, lang, i18n);
+                checkFile(siteUrl, baseParams, lang, i18n);
             });
 
             $('#show-global-usage-btn').text(i18n.msg('button-update').plain()).prop('disabled', true);
@@ -105,6 +108,36 @@
                 break;
         }
 
+        function checkFile(siteUrl, baseParams, lang, i18n) {
+
+			var infoParams = baseParams + '&prop=imageinfo' + format;
+			var langUrl = siteUrl + lang;
+			var infoUrl = langUrl + infoParams;
+	
+			fetch(infoUrl)
+				.then(function(response){
+					return response.json();
+				})
+				.then(function(response) {
+
+					var pages = response.query.pages;
+					var repo = pages[Object.keys(pages)[0]].imagerepository;
+					
+					if (repo == 'shared') {
+
+                        var usageParams = baseParams + '&prop=fileusage' + format;
+                        usageQuery(siteUrl, usageParams, lang, i18n);
+
+					} else if (repo != 'local') {
+
+                        globalFileUsageError('<a href="' + langUrl + '" target="_blank">' + langUrl + '</a><br>' + i18n.msg('no-shared').plain());
+
+					}
+ 
+				 });
+
+        }
+
         function usageQuery(siteUrl, params, lang, i18n) {
 
             var usageUrl = siteUrl + lang + params;
@@ -146,16 +179,23 @@
 
         }
 
+        function globalFileUsageError(text) {
+            $('#global-usage-container').append('<div class="warningbox">' + text + '</div>');
+        }
+
     }
 
-    mw.hook('wikipage.content').add(function() {
-        mw.hook('dev.i18n').add(function(i) {
-            i.loadMessages('GlobalFileUsage').done(function(i) {
-                i.useUserLang(); globalFileUsage(i)
-            })
-        })
-    })
+	function preload() {
+		if (--preloads>0) return;
+        window.dev.i18n.loadMessages('GlobalFileUsage').done(function(i18no) {
+            i18no.useUserLang();
+            globalFileUsage(i18no);
+        });
+	}
+
+    mw.hook('wikipage.content').add(preload);
+    mw.hook('dev.i18n').add(preload);
     
-    importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' })
+    importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
  
-})(window.jQuery, document, window.mediaWiki);
+})(window.jQuery, window.mediaWiki);

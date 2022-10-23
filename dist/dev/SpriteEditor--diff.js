@@ -8,6 +8,7 @@
 	var modal = {};
 	myData.modal = modal;
 	var shared;
+	var msg;
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
@@ -57,7 +58,7 @@
 	};
 	// window content
 	function formHtml() {
-		return '<div class="spriteedit-sheet-diff">' +
+		return '<div class="spriteedit-sheet-diff">' + 
 				'<span class="spriteedit-old-sheet">' +
 				'</span>' +
 				'<span class="spriteedit-new-sheet">' +
@@ -80,15 +81,16 @@
 
 		// create window
 		myData.createWindow = function() {
+			msg = window.SpriteEditorModules.main.msg;
 			function SpriteEditorDialog(config) {
 				SpriteEditorDialog.super.call(this, config);
 			}
 			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
 
 			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = 'Changes';
+			SpriteEditorDialog.static.title = msg("changes-title").plain();
 			SpriteEditorDialog.static.actions = [
-				{ label: 'Close', modes: 'edit', flags: ['safe', 'close'] }
+				{ label: msg("dialog-button-close").plain(), modes: 'edit', flags: ['safe', 'close'] }
 			];
 
 			// initialise dialog, append content
@@ -115,7 +117,6 @@
 			// Create the Dialog and add the window manager.
 			modal.windowManager = new OO.ui.WindowManager();
 			$('body').append(modal.windowManager.$element);
-			//document.getElementsByTagName('body')[0].insertAdjacentHTML('beforeend', modal.windowManager.$element);
 
 			// Create a new dialog window.
 			modal.seDialog = new SpriteEditorDialog({

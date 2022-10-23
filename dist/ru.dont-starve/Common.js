@@ -166,6 +166,13 @@ var modal = new window.dev.modal.Modal({
             id: 'cookbook_sup',
             primary: true,
             text: 'Сообщить об ошибке'
+        },
+        {
+            classes: ['cookbook_cookpot'],
+            event: 'cbcookpot',
+            id: 'cookbook_cookpot',
+            primary: true,
+            text: 'Протестировать рецепты'
         }
     ],
 	title: 'Поваренная книга',
@@ -177,6 +184,10 @@ var modal = new window.dev.modal.Modal({
         },
         cbsup: function() {
             var href = 'https://dont-starve.fandom.com/ru/wiki/Стена_обсуждения:Arhhhat';
+            window.open(href, '_blank');
+        },
+        cbcookpot: function() {
+            var href = 'https://dont-starve.fandom.com/ru/wiki/Интерактивный_казан';
             window.open(href, '_blank');
         }
     },

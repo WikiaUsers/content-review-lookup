@@ -1,10 +1,11 @@
-;(function(window, $, mw) {
+;(function($, mw) {
     'use strict';
 
     if (mw.config.values.wgAction != 'view' || window.checkImgSizeInit) return;
 
     window.checkImgSizeInit = true;
     var msg;
+    var preloads = 2;
 
     function checkImgSize() {
         $('.mw-parser-output img').each(function() {
@@ -51,12 +52,17 @@
         });
     }
 
-    mw.hook('dev.i18n').add(function (i18n) {
-        i18n.loadMessages('CheckImgSize').done(function (i18no) {
+	function preload() {
+		if (--preloads > 0) return;
+        window.dev.i18n.loadMessages('CheckImgSize').done(function (i18no) {
             msg = i18no.msg;
-            mw.hook('wikipage.content').add(checkImgSize);
+            checkImgSize();
         });
-    });
+	}
+
+    mw.hook('dev.i18n').add(preload);
+    mw.hook('wikipage.content').add(preload);
+
     importArticles({
         type: 'script',
         articles: 'u:dev:MediaWiki:I18n-js/code.js'
@@ -66,4 +72,4 @@
         article: 'u:dev:MediaWiki:CheckImgSize.css'
     });
  
-})(window, window.jQuery, window.mediaWiki);
+})(window.jQuery, window.mediaWiki);

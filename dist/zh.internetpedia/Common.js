@@ -81,3 +81,12 @@
 	$showFullDate.on('mouseenter', function() {
 		window.customUserAccountAge(showFullDate)
     });
+    
+    /* MediaWiki:Gadget-site-lib.js */
+window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    var ret = {
+        'zh-hans': hans || cn || sg || my,
+        'zh-hant': hant || tw || hk || mo,
+    }
+    return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; //保證每一語言有值
+}

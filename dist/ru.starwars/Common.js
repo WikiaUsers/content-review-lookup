@@ -256,13 +256,8 @@ $(document).ready(function()
 	// если на странице открыта интерактивная карта галактики (шаблон {{GM}} )
 	if ( $("#GalaxyMapDatabase").length > 0) {importScript('MediaWiki:GalMap.js');}
 	
-	if (RLCONF.wgCanonicalNamespace === 'Forum')
-	{
-		importScript('MediaWiki:OldForum.js');
-	}
-	
-	// если страница редактируется
-	if (RLCONF.wgAction == 'edit' || RLCONF.wgAction == 'submit') 
+	// если страница редактируется или если открыта страница форума
+	if (RLCONF.wgAction === 'edit' || RLCONF.wgAction === 'submit' || RLCONF.wgCanonicalNamespace === 'Forum') 
 	{
 		$.when( mw.loader.using( 'ext.wikiEditor' ), $.ready).then( SetToolbar );
 		
@@ -486,8 +481,10 @@ function SetToolbar()
 		$('#wikiEditor-section-main div.group-insert').append(
 			'<span onclick="ShowEditTools();" class="tool oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement" id="btn_EditTools"><a class="oo-ui-buttonElement-button" role="button" title="Вставка вики-текста" tabindex="0" rel="nofollow"><span class="oo-ui-iconElement-icon"></span></a></span>'
 		); 
-		// добавление чёрной подложки для панели [Больше+]
-		$('div.mw-editTools').after('<div id="BlockScreenBG" class="BlockHideable"></div>').addClass('Restandart').addClass('BlockHideable');
+		// добавление чёрной подложки
+		$('body').append('<div id="BlockScreenBG" class="BlockHideable"></div>');
+		// бодавление под. классов к панели Больше [+]
+		$('div.mw-editTools').addClass('Restandart').addClass('BlockHideable');
 		// добавление заголовка на панель [Больше+]
 		$('div.mw-editTools a, #BlockScreenBG, #pnl_InfoboxInsertWindow .btn_Charinsert').click(function()
 		{

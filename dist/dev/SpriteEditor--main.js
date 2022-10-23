@@ -41,7 +41,8 @@
 		removeUnusedSprites: false,
 		removeDeprecatedNames: false,
 		spritesPerRow: 10,
-		isNew: false
+		isNew: false,
+		spacing: 0
 	};
 	var blankJSON = {
 		settings: {},
@@ -52,6 +53,10 @@
 		highestPos: 0
 	};
 	var oldImageAsCanvas;
+	var msg;
+	var imgHeight;
+	var imgWidth;
+	var imgSpacingOrg;
 
 	window.addEventListener('beforeunload', function (e) {
 		if (lastSaved !== history[historyPos - 1]) {
@@ -65,7 +70,7 @@
 			isPopstate = false;
 			return;
 		}
-		if (lastSaved !== history[historyPos - 1] && !window.confirm('Changes you made may not be saved.')) {
+		if (lastSaved !== history[historyPos - 1] && !window.confirm(msg("unsaved-changes").plain())) {
 			e.preventDefault();
 			isPopstate = true;
 			window.history.forward();
@@ -105,34 +110,39 @@
 		}).forEach(function(node) {
 			node.parentNode.appendChild(node);
 		});
-		var codes =  root.querySelectorAll('li[data-pos="' + id + '"] .spritedoc-name code');
+		var codes = root.querySelectorAll('li[data-pos="' + id + '"] .spritedoc-name code');
 		if (codes.length)
 			root.querySelector('li[data-pos="' + id + '"]').setAttribute('data-sort-key', codes[0].textContent);
 	}
 	function rotateSprite(sprite) {
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
-		var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-		for (var i = 0; i < imgSize; i++) {
-			for (var j = 0; j < imgSize; j++) {
+		for (var i = 0; i < imgHeight; i++) {
+			for (var j = 0; j < imgHeight; j++) {
 				ctx.drawImage(sprite,
-					j, imgSize - i - 1, 1, 1, // Source coords.
+					j, imgHeight - i - 1, 1, 1, // Source coords.
 					i, j, 1, 1 // Canvas coords.
 				);
 			}
 		}
 		return c;
 	}
-	function mirrorSprite(sprite) {
+	function mirrorSprite(vertical, sprite) {
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
-		var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-		for (var i = 0; i < imgSize; i++) {
-			for (var j = 0; j < imgSize; j++) {
-				ctx.drawImage(sprite,
-					j, imgSize - i - 1, 1, 1, // Source coords.
-					j, i, 1, 1 // Canvas coords.
-				);
+		for (var i = 0; i < imgHeight; i++) {
+			for (var j = 0; j < imgWidth; j++) {
+				if (vertical) {
+					ctx.drawImage(sprite,
+						imgWidth - j - 1, i, 1, 1, // Source coords.
+						j, i, 1, 1 // Canvas coords.
+					);
+				} else {
+					ctx.drawImage(sprite,
+						j, imgHeight - i - 1, 1, 1, // Source coords.
+						j, i, 1, 1 // Canvas coords.
+					);
+				}
 			}
 		}
 		return c;
@@ -159,16 +169,21 @@
 		buttons.changes.setDisabled(false);
 		buttons.save.setDisabled(false);
 	}
-	function generateJSON(keepOldUrl) {
+	function generateJSON() {
 		var a = Object.assign(blankJSON);
 		a.settings = Object.assign({}, output.settings);
 		a.sections = [];
 		a.ids = {};
 		delete a.settings.pos;
-		if (!keepOldUrl || !a.settings.url)
-			a.settings.url = "require( [[Module:Sprite]] ).getUrl( '" + loadedSpriteName + ".png', 'version=" + Date.now() + "', '" + loadedSpriteName.toLowerCase() + "-sprite' ),";
-		var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-		a.settings.sheetsize = options.spritesPerRow * imgSize;
+		delete a.settings.spacing;
+		if (a.settings.version) {
+			a.settings.version = "version=" + Date.now();
+		} else {
+			a.settings.url = "require( [[Module:Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName + ".png") + "', 'version=" + Date.now() + "', '" + loadedSpriteName.toLowerCase().substring(0, loadedSpriteName.length - 6) + "-sprite' ),";
+		}
+		a.settings.sheetsize = options.spritesPerRow * (imgWidth + options.spacing) - options.spacing;
+		if (options.spacing > 0)
+			a.settings.spacing = options.spacing;
 		var sections = root.querySelectorAll('div.spritedoc-section');
 		for (var i = 0; i < sections.length; i++) {
 			var secId = options.cleanupSectionIDs ? String(i) : sections[i].dataset.sectionId;
@@ -260,20 +275,29 @@
 			return to_return.join("\n");
 		}
 	}
+	function getPosCoords(pos, useOrg) {
+		var sPR = useOrg && options.spritesPerRowOrg || options.spritesPerRow;
+		var s = useOrg && imgSpacingOrg || options.spacing;
+		var cordY = Math.ceil(pos / sPR);
+		var cordX = pos - (cordY - 1) * sPR;
+		cordY = (cordY - 1) * (imgHeight + s);
+		cordX = (cordX - 1) * (imgWidth + s);
+		return {x: cordX, y: cordY};
+	}
 	function generateImage() {
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
-		var imgSize = Number(output.settings.size || options.defaultSpriteSize);
 		var keepOldSprites = !options.removeUnusedSprites && !options.isNew;
 		var spritesPerRow = options.spritesPerRow;
-		c.width = imgSize * spritesPerRow;
+		c.width = (imgWidth + options.spacing) * spritesPerRow - options.spacing;
 		c.height = 0;
 		if (keepOldSprites)
-			c.height = Math.ceil(Math.ceil(imgEle.naturalHeight / imgSize) * options.spritesPerRowOrg / spritesPerRow) * imgSize;
-		c.height = Math.max(c.height, Math.ceil(toShare.highestPos / spritesPerRow) * imgSize);
+			c.height = Math.ceil(Math.ceil((imgEle.naturalHeight + imgSpacingOrg) / (imgHeight + imgSpacingOrg)) * options.spritesPerRowOrg / spritesPerRow) * (imgHeight + options.spacing) - options.spacing;
+		c.height = Math.max(c.height, Math.ceil(toShare.highestPos / spritesPerRow) * (imgHeight + options.spacing) - options.spacing);
 		var i;
 		var sID;
 		var drawn = [];
+		var coords;
 		var allSprites = root.querySelectorAll('li[class="spritedoc-box"]');
 		for (i = 0; i < allSprites.length; i++) {
 			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll("code").length) {
@@ -281,33 +305,24 @@
 			}
 			sID = allSprites[i].dataset.pos;
 			if (sID === "null") continue;
-			var cordY = Math.ceil(sID / spritesPerRow);
-			var cordX = sID - (cordY - 1) * spritesPerRow;
-			cordY = (cordY - 1) * imgSize;
-			cordX = (cordX - 1) * imgSize;
+			coords = getPosCoords(sID, false);
 			drawn[sID] = true;
 			ctx.drawImage(allSprites[i].querySelector("canvas"),
-				0, 0, imgSize, imgSize, // Source coords.
-				cordX, cordY, imgSize, imgSize // Canvas coords.
+				0, 0, imgWidth, imgHeight, // Source coords.
+				coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
 			);
 		}
 		if (keepOldSprites) { // Copy old sprites to new canvas
-			var rowsOrg = Math.ceil(imgEle.naturalHeight / imgSize);
+			var rowsOrg = Math.ceil(imgEle.naturalHeight / imgHeight);
 			for (i = 0; i < rowsOrg; i++) { // Rows
 				for (var j = 0; j < options.spritesPerRowOrg; j++) { // Columns
 					sID = i * options.spritesPerRowOrg + j + 1;
 					if (drawn[sID] || sID > toShare.heighestPos) continue;
-					var cordYOld = Math.ceil(sID / options.spritesPerRowOrg);
-					var cordXOld = sID - (cordYOld - 1) * options.spritesPerRowOrg;
-					var cordYNew = Math.ceil(sID / spritesPerRow);
-					var cordXNew = sID - (cordYNew - 1) * spritesPerRow;
-					cordYOld = (cordYOld - 1) * imgSize;
-					cordXOld = (cordXOld - 1) * imgSize;
-					cordYNew = (cordYNew - 1) * imgSize;
-					cordXNew = (cordXNew - 1) * imgSize;
+					var coordsOld = getPosCoords(sID, true);
+					coords = getPosCoords(sID, false);
 					ctx.drawImage(imgEle,
-						cordXOld, cordYOld, imgSize, imgSize, // Source coords.
-						cordXNew, cordYNew, imgSize, imgSize // Canvas coords.
+						coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
+						coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
 					);
 				}
 			}
@@ -340,10 +355,10 @@
 			buttons.undo.setDisabled(historyPos === 0);
 			buttons.redo.setDisabled(historyPos === history.length);
 			if (d.edit.result !== "Success") {
-				alert("Error while saving JSON.");
+				alert(msg("json-error").plain());
 				return;
 			}
-			alert("Changes saved");
+			alert(msg("json-success").plain());
 			if (options.isNew) {
 				options.isNew = false;
 				output = generatedJSON;
@@ -358,19 +373,19 @@
 		buttons.undo.setDisabled(true);
 		buttons.redo.setDisabled(true);
 		var gIVars = generateImage();
-		var generatedJSON = generateJSON(!gIVars[2]);
+		var generatedJSON = generateJSON();
 		var data = processData(generatedJSON);
 		if (gIVars[2]) { // Has changes
 			gIVars[0].toBlob(function(blob) {
 				api.upload(blob, {
-					filename: loadedSpriteName + '.png',
+					filename: output.settings.image || loadedSpriteName + '.png',
 					comment: s,
 					formatversion: 2,
 					ignorewarnings: true
 				}).always(function(d) {
 					if (!d) {
 						toggleTBButtons(has_edit_permission);
-						alert("Error while saving image.");
+						alert(msg("image-error").plain());
 						return;
 					}
 					setupOldCanvas(gIVars[0]);
@@ -382,8 +397,8 @@
 		}
 	}
 	function updateTitle(changesMade) {
-		document.title = (loadedSpriteName.length && (loadedSpriteName + (changesMade && "*" || "") + " – ") || "") + 'Sprite Editor – ' + config.wgSiteName;
-		document.getElementById('firstHeading').textContent = 'Sprite Editor' + (loadedSpriteName.length && (" – " + loadedSpriteName + (options.isNew && " (New)" || "") + (changesMade && "*" || "")) || "");
+		document.title = (loadedSpriteName.length && (loadedSpriteName + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
+		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.length && (" – " + loadedSpriteName + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
 	}
 	function addHistory(data) {
 		if (history.length > historyPos) {
@@ -527,9 +542,9 @@
 
 		box_code.onpaste = function(e) {
 			e.preventDefault();
-		    var paste = (e.clipboardData || window.clipboardData).getData('text');
-		    paste = paste.replace( /\n/g, ' ' ).trim();
-		    window.document.execCommand( 'insertText', false, paste );
+			var paste = (e.clipboardData || window.clipboardData).getData('text');
+			paste = paste.replace( /\n/g, ' ' ).trim();
+			window.document.execCommand( 'insertText', false, paste );
 		};
 		box_code.onkeypress = function(e) {
 			if ( e.keyCode === 13 ) {
@@ -628,7 +643,8 @@
 		});
 		if (!(name || '').length) {
 			box_code.className = "spriteedit-new";
-			box_code.setAttribute( 'data-placeholder', "Type a name" );
+			box_code.setAttribute("isSprite", "");
+			box_code.setAttribute( 'data-placeholder', msg("new-placeholder").plain() );
 		}
 		return box_code;
 	}
@@ -709,15 +725,51 @@
 		ele.appendChild(ele3);
 
 		var buttons = {
-			changeSprite: createContextButton("imageGallery", "Replace", "Replace Sprite"),
-			deleteSprite: createContextButton("trash", "Delete", "Remove Sprite"),
-			defaultSprite: createContextButton(selectedEle.dataset.default && "unStar" || "star", (selectedEle.dataset.default && "Unmark" || "Mark") + " as default", "Toggle default state"),
-			downloadSprite: createContextButton("download", "Download", "Download Sprite"),
-			moveSprite: createContextButton("move", "Move", "Move Sprite"),
-			rotateSpriteLeft: createContextButton("undo", "Rotate Left", "Rotate sprite left"),
-			rotateSpriteRight: createContextButton("redo", "Rotate Right", "Rotate sprite right"),
-			mirrorSpriteHorizontal: createContextButton("subtract", "Flip horizontal", "Flip sprite horizontal"),
-			mirrorSpriteVertical: createContextButton("subtract", "Flip vertical", "Flip sprite vertical"),
+			changeSprite: createContextButton(
+				"imageGallery",
+				msg("replace-sprite-label").plain(),
+				msg("replace-sprite-hover").plain()
+			),
+			deleteSprite: createContextButton(
+				"trash",
+				msg("delete-sprite-label").plain(),
+				msg("delete-sprite-hover").plain()
+			),
+			defaultSprite: createContextButton(
+				selectedEle.dataset.default && "unStar" || "star",
+				msg((selectedEle.dataset.default && "unmark" || "mark") + "-default-sprite-label").plain(),
+				msg("default-sprite-label").plain()
+			),
+			downloadSprite: createContextButton(
+				"download",
+				msg("download-sprite-label").plain(),
+				msg("download-sprite-hover").plain()
+			),
+			moveSprite: createContextButton(
+				"move",
+				msg("move-sprite-label").plain(),
+				msg("move-sprite-hover").plain()
+			),
+			rotateSpriteLeft: createContextButton(
+				"undo",
+				msg("rotate-left-label").plain(),
+				msg("rotate-left-hover").plain()
+			),
+			rotateSpriteRight: createContextButton(
+				"redo",
+				msg("rotate-right-label").plain(),
+				msg("rotate-right-hover").plain()
+			),
+			mirrorSpriteHorizontal: createContextButton(
+				"subtract",
+				msg("flip-h-label").plain(),
+				msg("flip-h-hover").plain()
+			),
+			mirrorSpriteVertical: createContextButton(
+				"subtract",
+				msg("flip-v-label").plain(),
+				msg("flip-v-hover").plain()
+			),
 		};
 
 		buttons.changeSprite.setFlags(['primary', 'progressive']);
@@ -737,8 +789,10 @@
 		}
 		$(ele2).append(buttons.downloadSprite.$element);
 		if (has_edit_permission) {
-			$(ele2).append(buttons.rotateSpriteLeft.$element);
-			$(ele2).append(buttons.rotateSpriteRight.$element);
+			if (imgWidth == imgHeight) {
+				$(ele2).append(buttons.rotateSpriteLeft.$element);
+				$(ele2).append(buttons.rotateSpriteRight.$element);
+			}
 			$(ele2).append(buttons.mirrorSpriteHorizontal.$element);
 			$(ele2).append(buttons.mirrorSpriteVertical.$element);
 			$(ele2).append(buttons.moveSprite.$element);
@@ -760,7 +814,7 @@
 		});
 		function rotate(additionalRotation, skipHistory, altCanvas) {
 			var orgCanvas = canvasCollection[selectedPos];
-			var newImg = rotateSprite(altCanvas || orgCanvas);
+			var newImg = additionalRotation > 0 && rotateSprite(altCanvas || orgCanvas) || altCanvas || orgCanvas;
 			for (var i = 0; i < additionalRotation; i++) {
 				newImg = rotateSprite(newImg);
 			}
@@ -795,20 +849,18 @@
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
 			document.body.removeChild(menu);
 			// Rotate
-			var spr = rotate(1, true);
-			// Mirror
-			spr = mirrorSprite(spr);
-			// Rotate back
-			rotate(1, false, spr);
+			var spr = mirrorSprite(false, canvasCollection[selectedPos]);
+			// Rotate back (To apply the new image)
+			rotate(0, false, spr);
 		});
 		buttons.mirrorSpriteVertical.on("click", function() {
 			// Close menu
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
 			document.body.removeChild(menu);
 			// Mirror
-			var spr = mirrorSprite(canvasCollection[selectedPos]);
+			var spr = mirrorSprite(true, canvasCollection[selectedPos]);
 			// Rotate back (To apply the new image)
-			rotate(1, false, spr);
+			rotate(0, false, spr);
 		});
 
 		function moveSpriteClick(event) {
@@ -915,7 +967,10 @@
 			spriteName.classList = 'spritedoc-name';
 			spriteName.append(box_code);
 			a.append(spriteName);
+			var orgVar = buttons.deprecated.getValue();
+			buttons.deprecated.setValue(false);
 			box_code.focus();
+			buttons.deprecated.setValue(orgVar);
 		};
 	}
 	function getSpriteBox(pos, data) {
@@ -925,7 +980,7 @@
 		if (pos) {
 			spriteBox.setAttribute("draggable","true");
 			spriteBox.ondragstart = function(event) {
-			  event.dataTransfer.setData("Text", event.target.dataset.pos);
+				event.dataTransfer.setData("Text", event.target.dataset.pos);
 			};
 		}
 		// sprite image
@@ -936,22 +991,18 @@
 		if (!pos) {
 			image = new OO.ui.IconWidget( {
 				icon: 'imageAdd',
-				label: 'New Images',
-				title: 'New Images',
+				label: msg("new-images-hover").plain(),
+				title: msg("new-images-label").plain(),
 				classes: [ "spriteeditor-newImagesBtn" ]
 			} ).$element.get(0);
 		} else if (canvasCollection[pos]) {
 			image.appendChild(canvasCollection[pos]);
 		} else {
-			var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-			var posy = Math.ceil(pos / options.spritesPerRowOrg);
-			var posx = pos - (posy - 1) * options.spritesPerRowOrg;
-			posx = posx * imgSize - imgSize;
-			posy = posy * imgSize - imgSize;
+			var posCoords = getPosCoords(pos, true);
 			var canvas = helper.newCanvas();
 			canvas.getContext('2d').drawImage(imgEle,
-				posx, posy, imgSize, imgSize, // Source coords.
-				0, 0, imgSize, imgSize // Canvas coords.
+				posCoords.x, posCoords.y, imgWidth, imgHeight, // Source coords.
+				0, 0, imgWidth, imgHeight // Canvas coords.
 			);
 			canvasCollection[pos] = canvas;
 			image.appendChild(canvas);
@@ -984,7 +1035,7 @@
 				classes: [ 'spriteedit-add-name' ],
 				framed: false,
 				icon: 'add',
-				title: 'Add name',
+				title: msg("add-name-label").plain(),
 			} );
 			addNameBtn.on("click", getNewBoxFunction(spriteNames));
 			spriteBox.append(addNameBtn.$element.get(0));
@@ -1018,7 +1069,7 @@
 		if (has_edit_permission) {
 			var permOrg = has_edit_permission;
 			has_edit_permission = false;
-			spriteBoxes.append( getSpriteBox(null, [["Add Images"]]) );
+			spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
 			has_edit_permission = permOrg;
 		}
 	}
@@ -1029,6 +1080,9 @@
 		e.dataTransfer.dropEffect = 'copy';
 		var sec = e.srcElement.closest(".spritedoc-section");
 		if ((sec === null && !lastDragoverSection) || (lastDragoverSection && lastDragoverSection === sec)) return;
+		console.log(lastDragoverSection);
+		console.log(sec);
+		console.log(e);
 		if (lastDragoverSection && (!sec || lastDragoverSection !== sec)) {
 			var oldEle = document.getElementsByClassName("section-drag-overlay");
 			if (oldEle.length)
@@ -1102,7 +1156,8 @@
 		});
 		if (root.querySelectorAll('.section-move-overlay').length) {
 			frame.$element.append(
-				toolbarSections.moveItems.$element
+				toolbarSections.moveItems.$element,
+				toolbarSections.arrowItem.$element
 			);
 		} else {
 			frame.$element.append(
@@ -1155,24 +1210,68 @@
 		function createToolbar() {
 			// Toolbar buttons
 			buttons = {
-				about: createButton('info', "About", "About the Sprite-Editor"),
-				open: createButton('folderPlaceholder', "Open", "Open Sprite"),
-				undo: createButton('undo', "Undo", "Undo one edit"),
-				redo: createButton('redo', "Redo", "Redo one edit"),
-				newSection: createButton('tableAddRowAfter', "New Section", "Insert one section"),
-				settings: createButton('settings', "Settings", "Open settings"),
-				sortSections: createButton('listBullet', "Sort Sections", "Sort sections"),
-				changes: createButton('checkAll', "Show changes", "Show a list of changes"),
-				save: createButton('download', "Save", "Save changes"),
+				about: createButton(
+					'info',
+					msg("about-label").plain(),
+					msg("about-hover").plain()
+				),
+				open: createButton(
+					'folderPlaceholder',
+					msg("open-label").plain(),
+					msg("open-hover").plain()
+				),
+				undo: createButton(
+					'undo',
+					msg("undo-label").plain(),
+					msg("undo-hover").plain()
+				),
+				redo: createButton(
+					'redo',
+					msg("redo-label").plain(),
+					msg("redo-hover").plain()
+				),
+				newSection: createButton(
+					'tableAddRowAfter',
+					msg("new-section-label").plain(),
+					msg("new-section-hover").plain()
+				),
+				settings: createButton(
+					'settings',
+					msg("settings-label").plain(),
+					msg("settings-hover").plain()
+				),
+				sortSections: createButton(
+					'listBullet',
+					msg("sort-section-label").plain(),
+					msg("sort-section-hover").plain()
+				),
+				changes: createButton(
+					'checkAll',
+					msg("show-changes-label").plain(),
+					msg("show-changes-hover").plain()
+					),
+				save: createButton(
+					'download',
+					msg("save-label").plain(),
+					msg("save-hover").plain()
+				),
 				deprecated: new OO.ui.ToggleButtonWidget({
 					framed: false,
 					icon: "flag",
-					label: 'Mark as deprecated',
+					label: msg("mark-deprecated-label").plain(),
 					invisibleLabel: !tbExpanded,
-					title: "Mark a name as deprecated"
+					title: msg("mark-deprecated-hover").plain()
 				}),
-				cancelMove: createButton('previous', "Cancel", "Cancel move"),
-				descriptionToggle: createButton(tbExpanded && "previous" || "next", "", "Toggles the visibility of toolbar-button labels")
+				cancelMove: createButton(
+					'previous',
+					msg("cancel-move-label").plain(),
+					msg("cancel-move-hover").plain()
+				),
+				descriptionToggle: createButton(
+					tbExpanded && "previous" || "next",
+					"",
+					msg("description-toggle-hover").plain()
+				)
 			};
 			toggleTBButtons(false);
 			buttons.undo.setDisabled(true);
@@ -1211,12 +1310,12 @@
 			winMgr.addWindows({aboutWin: dia});
 			buttons.about.on("click", function() {
 				winMgr.openWindow("aboutWin", {
-					title: 'About',
+					title: msg("about-title").plain(),
 					message: '',
 					actions: [
 						{
 							action: 'reject',
-							label: 'Close',
+							label: msg("dialog-button-close").plain(),
 							flags: [ 'safe', 'close' ]
 						}
 					]
@@ -1236,47 +1335,72 @@
 				toolbarSections.arrowItem.$element
 			);
 			root.append( frame.$element.get(0) );
+			// Setup click-functions
+			buttons.cancelMove.on('click', function() {
+				removeOverlays();
+				updateToolbar();
+			});
+			buttons.descriptionToggle.on('click', function() {
+				tbExpanded = !tbExpanded;
+				buttons.descriptionToggle.setIcon(tbExpanded && "previous" || "next");
+				var buttonNames = Object.keys(buttons);
+				for (var i = 0; i < buttonNames.length; i++) {
+					buttons[buttonNames[i]].setInvisibleLabel(!tbExpanded);
+				}
+			});
+			buttons.undo.on('click', function() {
+				moveHistory(-1);
+			});
+			buttons.redo.on('click', function() {
+				moveHistory(1);
+			});
+			buttons.newSection.on('click', function() {
+				highestID = highestID + 1;
+				var tmp = {
+					name: '',
+					id: highestID
+				};
+				var ns = newSection(tmp);
+				ns.scrollIntoView({behavior: "smooth"});
+				var textField = ns.children[0].children[0];
+				textField.setAttribute( 'data-placeholder', msg("section-placeholder").plain() );
+				textField.focus();
+			});
+			buttons.changes.on('click', function() {
+				if (openWindow("diff", msg("diff-module-missing").plain())) {
+					window.SpriteEditorModules.diff.requestChanges();
+				}
+			});
+			buttons.settings.on('click', function() {
+				if (openWindow("settings", msg("settings-module-missing").plain())) {
+					window.SpriteEditorModules.settings.requestChanges();
+				}
+			});
+			buttons.sortSections.on('click', function(){
+				if (openWindow("sorting", msg("sorting-module-missing").plain())) {
+					window.SpriteEditorModules.sorting.setSections(root.querySelectorAll('div.spritedoc-section'));
+				}
+			});
+			buttons.save.on('click', function() {
+				OO.ui.prompt( msg("edit-summary-title").plain(), { textInput: { placeholder: msg("edit-summary-placeholder").plain() } } ).done( function ( result ) {
+					if ( result !== null ) {
+						saveToFile(result);
+					}
+				});
+			});
+			oclick = function(ignoreWarning) {
+				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm('Changes you made may not be saved.')) return;
+				if (openWindow("open", msg("open-module-missing").plain())) {
+					window.SpriteEditorModules.open.requestChanges();
+				}
+			};
+			buttons.open.on('click', oclick);
 		}
 
 		// init
-		document.getElementById('firstHeading').textContent = 'Sprite Editor';
-		updateTitle(false);
 		root.innerHTML = '';
 		window.SpriteEditorModules.new.setSharedData({
 			options: options
-		});
-
-		createToolbar();
-		buttons.cancelMove.on('click', function() {
-			removeOverlays();
-			updateToolbar();
-		});
-		buttons.descriptionToggle.on('click', function() {
-			tbExpanded = !tbExpanded;
-			buttons.descriptionToggle.setIcon(tbExpanded && "previous" || "next");
-			var buttonNames = Object.keys(buttons);
-			for (var i = 0; i < buttonNames.length; i++) {
-				buttons[buttonNames[i]].setInvisibleLabel(!tbExpanded);
-			}
-		});
-		buttons.undo.on('click', function() {
-			moveHistory(-1);
-		});
-		buttons.redo.on('click', function() {
-			moveHistory(1);
-		});
-
-		buttons.newSection.on('click', function() {
-			highestID = highestID + 1;
-			var tmp = {
-				name: '',
-				id: highestID
-			};
-			var ns = newSection(tmp);
-			ns.scrollIntoView({behavior: "smooth"});
-			var textField = ns.children[0].children[0];
-			textField.setAttribute( 'data-placeholder', "Type a section name" );
-			textField.focus();
 		});
 		function openWindow(win, err) {
 			if (!window.SpriteEditorModules[win]) {
@@ -1293,35 +1417,6 @@
 				return true;
 			}
 		}
-		buttons.changes.on('click', function() {
-			if (openWindow("diff", "Diff-Module not loaded!")) {
-				window.SpriteEditorModules.diff.requestChanges();
-			}
-		});
-		buttons.settings.on('click', function() {
-			if (openWindow("settings", "Settings-Module not loaded!")) {
-				window.SpriteEditorModules.settings.requestChanges();
-			}
-		});
-		buttons.sortSections.on('click', function(){
-			if (openWindow("sorting", "Sorting-Module not loaded!")) {
-				window.SpriteEditorModules.sorting.setSections(root.querySelectorAll('div.spritedoc-section'));
-			}
-		});
-		buttons.save.on('click', function() {
-			OO.ui.prompt( 'Please give an edit summary', { textInput: { placeholder: 'Reason' } } ).done( function ( result ) {
-				if ( result !== null ) {
-					saveToFile(result);
-				}
-			});
-		});
-		oclick = function(ignoreWarning) {
-			if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm('Changes you made may not be saved.')) return;
-			if (openWindow("open", "Open-Module not loaded!")) {
-				window.SpriteEditorModules.open.requestChanges();
-			}
-		};
-		buttons.open.on('click', oclick);
 		function resetEditor() {
 			var orgTB = root.children[0];
 			root.innerHTML = "";
@@ -1365,14 +1460,14 @@
 			setupOldCanvas(imgEle);
 
 			if (!options.isNew)
-				requestData.titles = "Module:" + loadedSpriteName + "|File:" + loadedSpriteName + ".png";
-			api.get(requestData).then(function(data) {
+				requestData.titles = "Module:" + loadedSpriteName + "|File:" + (output.settings.image || loadedSpriteName + ".png");
+			api.get(requestData).done(function(data) {
 				var i;
 				if (data.query.userinfo.blockid)
 					has_edit_permission = false;
 				if (has_edit_permission && data.query.pages && data.query.pages.length) {
 					for (i = 0; i < data.query.pages[0].protection.length; i++) {
-						if (!checkProtection(data.query.userinfo.rights,  data.query.pages[0].protection[i])) {
+						if (!checkProtection(data.query.userinfo.rights || [], data.query.pages[0].protection[i])) {
 							has_edit_permission = false;
 							break;
 						}
@@ -1380,21 +1475,27 @@
 				}
 				if (has_edit_permission && data.query.pages && data.query.pages.length) {
 					for (i = 0; i < data.query.pages[1].protection.length; i++) {
-						if (!checkProtection(data.query.userinfo.rights,  data.query.pages[1].protection[i])) {
+						if (!checkProtection(data.query.userinfo.rights || [], data.query.pages[1].protection[i])) {
 							has_edit_permission = false;
 							break;
 						}
 					}
 				}
+				var imgSize = Number(output.settings.size || options.defaultSpriteSize);
+				imgWidth = Number(output.settings.width) || imgSize;
+				imgHeight = Number(output.settings.height) || imgSize;
+				options.spacing = output.settings.spacing || 0;
+				imgSpacingOrg = options.spacing;
 				helper = window.SpriteEditorModules.helper;
 				helper.setSharedData({
+					imgWidth: imgWidth,
+					imgHeight: imgHeight,
 					toShare: toShare,
 					markDuplicateNames: markDuplicateNames,
 					namesList: namesList,
 					canvasCollection: canvasCollection,
 					addHistory: addHistory
 				});
-				helper.setData(output);
 				window.SpriteEditorModules.diff.setSharedData({
 					options: options,
 					processData: processData,
@@ -1406,13 +1507,15 @@
 					addHistory: addHistory
 				});
 				window.SpriteEditorModules.settings.setSharedData({
+					imgWidth: imgWidth,
+					imgHeight: imgHeight,
+					imgSpacingOrg: imgSpacingOrg,
 					options: options,
 					spriteData: output,
 					title: loadedSpriteName,
 					image: imgEle
 				});
-				var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-				options.spritesPerRow = options.isNew && 10 || Math.floor((output.settings.sheetsize || imgEle.naturalWidth) / imgSize);
+				options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
 				options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
 				for (var name in output.ids) {
 					const secID = output.ids[name].section;
@@ -1428,7 +1531,7 @@
 				if (options.isNew && options.createSampleSection) {
 					newSection({
 						id: 1,
-						name: "First section"
+						name: msg("first-section").plain()
 					});
 				}
 				var d = document.querySelector('li[data-pos="' + output.settings.pos + '"]');
@@ -1438,19 +1541,26 @@
 				toggleTBButtons(has_edit_permission);
 			});
 		}
-		function loadNew(size) {
+		function loadNew(sizeW, sizeH, spacing) {
 			output = Object.assign(blankJSON);
 			output.settings = {};
 			output.sections = [];
 			output.ids = {};
 			delete output.settings.pos;
-			output.settings.size = size;
+			if (spacing > 0)
+				output.settings.spacing = spacing;
+			if (sizeW !== sizeH) {
+				output.settings.width = sizeW;
+				output.settings.height = sizeH;
+			} else {
+				output.settings.size = size;
+			}
 			output.settings.sheetsize = size;
 			options.isNew = true;
 			updateTitle(false);
 			loadSprite2();
 		}
-		function loadSprite(name, isNew, spriteSize) {
+		function loadSprite(name, isNew, spriteSizeW, spriteSizeH, spacing) {
 			if (!name.length) return;
 			var nameNew = (name.substring(name.length - 6) !== "Sprite") && name + "Sprite" || name;
 			if (name !== nameNew) {
@@ -1475,17 +1585,21 @@
 					'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 					'question': '=p',
 					'clear': true,
-					'content': 'return mw.text.jsonEncode(require("Module:' + loadedSpriteName + '"))'
+					'content': 'local a = require("Module:' + loadedSpriteName + '")\n'
+					+ 'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 				}).always(function(a) {
 					if (!a.return) {
-						loadNew(options.defaultSpriteSize);
+						loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
 					} else {
 						output = JSON.parse(a.return);
-						imgEle.src = output.settings.url || config.wgArticlePath.replace("$1", "Special:Redirect/file/" + name + ".png");
+						output.settings = output.settings || {};
+						output.ids = output.ids || {};
+						output.sections = output.sections || [];
+						imgEle.src = config.wgArticlePath.replace("$1", "Special:Redirect/file/" + (output.settings.image || name + ".png"));
 						imgEle.src = imgEle.src + ( imgEle.src.includes('?') ? '&' : '?' ) + "version=" + Date.now();
 						document.body.append(imgEle);
 						imgEle.addEventListener("error", function() {
-							loadNew(options.defaultSpriteSize);
+							loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
 						});
 						imgEle.addEventListener("load", function() {
 							loadSprite2();
@@ -1493,21 +1607,33 @@
 					}
 				});
 			} else {
-				loadNew(spriteSize);
+				loadNew(spriteSizeW, spriteSizeH, spacing);
 			}
 		}
 		myData.run = function() {
-			var openDialog = window.SpriteEditorModules.open;
-			openDialog.setSharedData({
-				loadSprite: loadSprite,
-				openWindow: openWindow,
-				options: options
+			mw.hook('dev.i18n').add(function (i18n) {
+				i18n.loadMessages('SpriteEditor').done(function (i18no) {
+					myData.msg = i18no.msg;
+					msg = myData.msg;
+					document.getElementById('firstHeading').textContent = msg("title").plain();
+					updateTitle(false);
+					createToolbar();
+					var openDialog = window.SpriteEditorModules.open;
+					openDialog.setSharedData({
+						loadSprite: loadSprite,
+						openWindow: openWindow,
+						options: options
+					});
+					var toOpen = new URL(document.location.href).searchParams.get("sprite");
+					if (toOpen) {
+						loadSprite(toOpen, false);
+					} else {
+						oclick(true);
+					}
+				});
 			});
-			var toOpen = new URL(document.location.href).searchParams.get("sprite");
-			if (toOpen) {
-				loadSprite(toOpen, false);
-			} else {
-				oclick(true);
+			if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
+				mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
 			}
 		};
 		$( document ).on( 'click.spriteEdit', function( e ) {

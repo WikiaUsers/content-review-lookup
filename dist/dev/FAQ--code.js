@@ -231,7 +231,7 @@
 			});
 			
 			mw.hook('dev.showCustomModal').add(function(showCustomModal) {
-				var title = isNew ? faqI18n.msg('add-new').plain() : faqI18n.msg('edit', question.question).plain();
+				var title = isNew ? faqI18n.msg('add-new').escape() : faqI18n.msg('edit', question.question).escape();
 			    var $modal = showCustomModal(title, {
 			    	id: 'faqModal',
 			    	content: form,

@@ -140,13 +140,25 @@
 		}
 	});
 	
-	//Random Event
-	$(document).ready(function() {
-	var randomnumber = Math.floor(Math.random() * (100) + 1);
-		if (randomnumber == 1) {
-			$('.fandom-community-header__top-container').addClass('has-event');
+	//Upscale res and icon description images
+	$(function () {
+		if ($('.res').length || $('.icon-descriptions-template').length) {
+			upscaleimages();
+			if ($('.lazyload').length) {
+				var interval = setInterval(function () {
+					upscaleimages();
+					if (!$('.icon-descriptions-template img, img.res').hasClass('lazyload')) {
+			        	clearInterval(interval);
+					}
+				}, 100 );
+			}
 		}
 	});
+	function upscaleimages() {
+		$('.icon-descriptions-template img, img.res').each(function () {
+			$(this).attr('src', $(this).attr('src').split('/revision/')[0]);
+		});
+	}
 
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));

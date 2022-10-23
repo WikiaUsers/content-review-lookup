@@ -26,7 +26,8 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'game': ['- Игра -',
             ['LOL','League of Legends'],
             ['TFT','Teamfight Tactics'],
-            ['LOR','Legends of Runeterra']
+            ['LOR','Legends of Runeterra'],
+            ['WR','Wild Rift'],
         ],
         'role': ['- Роль -',
             ['Манипулятор','Манипулятор'],
@@ -74,6 +75,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['Account Creation','• Создание учетной записи'],
         ],
         'release': ['- Год -',
+            ['2022release', '• 2022'],
             ['2021release', '• 2021'],
             ['2020release', '• 2020'],
             ['2019release', '• 2019'],
@@ -89,11 +91,26 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['2009release', '• 2009']
         ]
     };
+ 
+	/* 
+		Блок кода для слайдера образов (Шаблон:Образы)
+		Автор: Benutzerin:TheTimebreaker (League of Legends DE)
+	*/
+    $(document).on("click", "span.show", function () {
+	    if(!$('#item-' + this.id).is($('.skinviewer-active-tab'))) {
+	        $(".skinviewer-active-tab").removeClass('skinviewer-active-tab');
+	        $(".skinviewer-tab-container > div").hide();
+	        $('#item-' + this.id).addClass('skinviewer-active-tab');
+	        $('#item-' + this.id).fadeIn();
+	        $('.lazyimg-wrapper img').trigger("onload");
+	        $(window).scroll(); //backup lazyimg fix
+	    }
+	});
 /* End of mw.loader.using callback */
 });
 
 /**
- * Добавляет сообщение о закрытии Вики на Рельс 
+ * Добавляет сообщение на Рельс 
 */
 window.AddRailModule = [{prepend: true}];
  
@@ -158,13 +175,13 @@ mw.hook('wikipage.content').add(function(elem) {
     $(".flipText1, .flipText2").click(function() {
         $(".flipText1, .flipText2").toggle();
     });
-});
- 
-$(document).ready(function() {
-    $(".flipText2").hide();
-    $(".flipText1, .flipText2").click(function() {
-        $(".flipText1, .flipText2").toggle();
-    });
+    
+    $(document).ready(function() {
+	    $(".flipText2").hide();
+	    $(".flipText1, .flipText2").click(function() {
+	        $(".flipText1, .flipText2").toggle();
+    	});
+	});
 });
 
 /* Toggleable skill tabs */
@@ -195,22 +212,4 @@ mw.hook('wikipage.content').add(function(elem) {
         });
     });
 });
-
-/* Skinviewer: loading fix */
-$(window).load(function() {
-    $('.lazyimg-wrapper img').trigger("onload");
-});
- 
-/* Skinviewer: Skinselektor onclick ([[Модуль:SkinData:skinslider]]) */
-$(document).on("click", "span.show", function () {
-    if (!$('#item-' + this.id).is($('.skinviewer-active-tab'))) {
-        $(".skinviewer-active-tab").removeClass('skinviewer-active-tab');
-        $(".skinviewer-tab-container > div").hide();
-        $('#item-' + this.id).addClass('skinviewer-active-tab');
-        $('#item-' + this.id).fadeIn();
-        $('.lazyimg-wrapper img').trigger("onload");
-        $(window).scroll(); //backup lazyimg fix
-    }
-});
- 
 /* DO NOT ADD CODE BELOW THIS LINE */

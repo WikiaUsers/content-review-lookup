@@ -12,7 +12,6 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
-    'SpongyFanatic2021': ['assistant'],
     'TheJasbre202': ['discord'],
     'The_Krusty_Krab': ['discord']
 };
@@ -355,9 +354,9 @@ window.MessageWallUserTags = {
         'FireMatch': 'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
-        'SpongyFanatic2021': 'Assistant',
 
         'ItzSpongeBob_1999': 'Discussion Moderator',
+        'Thegameingcash': 'Discussion Moderator',
         'Arthur_Read_fan': 'Discussion Moderator • Rollback',
 
         'TheJasbre202': 'Rollback',

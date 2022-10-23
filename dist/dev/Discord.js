@@ -448,7 +448,7 @@
         },
         showMemberModal: function(data, member) {
             var game = member.game || {};
-            dev.showCustomModal(member.nick || member.username,
+            dev.showCustomModal(mw.html.escape(member.nick || member.username),
                 ui.div({
                     classes: ['discord-member-modal-content'],
                     children: [

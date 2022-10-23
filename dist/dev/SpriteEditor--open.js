@@ -11,87 +11,114 @@
 	var modal = {};
 	myData.modal = modal;
 	var shared;
-	function createList(i, c) { // Compares images with lists; creates html
+	var msg;
+	var imagesLoaded = false;
+	var modulesLoaded = false;
+	var allImages = [];
+	var allPages = [];
+	var windowClosed = false;
+	function createList() { // Compares images with lists; creates html
 		var list = {};
 		var a = 0;
 		var name = "";
 		var root = document.getElementsByClassName("spriteeditor-items")[0];
 		root.innerHTML = "";
-		for (a = 0; a < i.length; a++) {
-			if (i[a].title.substring(i[a].title.length - 10) === "Sprite.png") {
-				name = i[a].title.substring(0, i[a].title.length - 4);
-				name = name.substring(name.indexOf(":") + 1);
-				list[name] = [1, 0];
-			}
-		}
-		for (a = 0; a < c.length; a++) {
-			if (c[a].title.substring(c[a].title.length - 6) === "Sprite") {
-				name = c[a].title.substring(c[a].title.indexOf(":") + 1);
-				list[name] = list[name] || [0, 0];
-				list[name][1] = 1;
-			}
-		}
+		modal.windowManager.updateWindowSize(modal.seDialog);
 		var names = Object.keys(list);
 		function loadSprite2(toOpen) {
 			var historyUrl = new URL(window.location);
 			historyUrl.searchParams.set('sprite', toOpen);
 			window.history.pushState({}, '', historyUrl);
-			shared.loadSprite(toOpen, myData.isNew, myData.spriteSize);
+			shared.loadSprite(toOpen, myData.isNew, myData.spriteSizeW, myData.spriteSizeH, myData.spacing);
+			windowClosed = true;
 			modal.seDialog.close();
 		}
 		myData.loadSprite2 = loadSprite2;
 		function loadSprite(event) {
 			loadSprite2(event.target.closest(".previewBox").dataset.sprite);
 		}
-		for (var n = 0; n < names.length; n++) {
-			if (!list[names[n]][0] || !list[names[n]][1]) continue; // Skip sprites with missing image / module
-			var ele = document.createElement('div');
-			ele.dataset.sprite = names[n];
-			ele.className = 'previewBox';
-			var ele2 = document.createElement('a');
-			var u = config.wgArticlePath.replace("$1", "Special:Redirect/file/" + names[n] + ".png");
-			ele2.style.backgroundImage = "url(" + u + ( u.includes('?') ? '&' : '?' ) + "version=" + Date.now() + ")";
-			ele2.onclick = loadSprite;
-			var ele3 = document.createElement('a');
-			ele3.textContent = names[n];
-			ele3.onclick = loadSprite;
-			ele.append(ele2, ele3);
-			root.appendChild(ele);
+		function addSprite(i) {
+			var n = allPages[i];
+			api.get({
+				'action': 'scribunto-console',
+				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
+				'question': '=p',
+				'clear': true,
+				'content': 'local a = require("Module:' + n + '")\n'
+				+ 'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
+			}).always(function(a) {
+				var output;
+				if (!a.return || windowClosed) return;
+					output = JSON.parse(a.return);
+				output.settings = output.settings || {};
+				output.ids = output.ids || {};
+				output.sections = output.sections || [];
+				var ele = document.createElement('div');
+				ele.dataset.sprite = n;
+				ele.className = 'previewBox';
+				var ele2 = document.createElement('a');
+				var u = config.wgArticlePath.replace("$1", "Special:Redirect/file/" + (output.settings.image || n + ".png"));
+				ele2.style.backgroundImage = "url(" + u + ( u.includes('?') ? '&' : '?' ) + "version=" + Date.now() + ")";
+				ele2.onclick = loadSprite;
+				var ele3 = document.createElement('a');
+				ele3.textContent = n;
+				ele3.onclick = loadSprite;
+				ele.append(ele2, ele3);
+				root.appendChild(ele);
+				if (allPages[i + 1]) {
+					addSprite(i + 1);
+				}
+				modal.windowManager.updateWindowSize(modal.seDialog);
+			});
 		}
-		modal.windowManager.updateWindowSize(modal.seDialog);
+		addSprite(0);
 	}
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
+	function loadModules(c) {
+		var base = {
+			action: "query",
+			apfilterredir: "nonredirects",
+			apfrom: "",
+			aplimit: "500",
+			apnamespace: "828",
+			format: "json",
+			formatversion: "2",
+			list: "allpages"
+		};
+		api.get(Object.assign(base, c || {})).done(function(data) {
+			var pages = data.query.allpages;
+			for (var i = 0; i < pages.length; i++) {
+				var p = pages[i];
+				if (p.title.substring(p.title.length - 6) === "Sprite") {
+					allPages.push(p.title.substring(p.title.indexOf(":") + 1));
+				}
+			}
+			if (windowClosed)
+				return;
+			if (data.continue) {
+				loadModules(data.continue);
+				return;
+			}
+			createList();
+		});
+	}
 	myData.requestChanges = function() {
 		// Blank
 		var root = document.getElementsByClassName("spriteeditor-items")[0];
 		root.innerHTML = "";
 		modal.windowManager.updateWindowSize(modal.seDialog);
 		myData.isNew = false;
-		myData.spriteSize = 0;
+		myData.spriteSizeW = 0;
+		myData.spriteSizeH = 0;
+		imagesLoaded = false;
+		modulesLoaded = false;
+		allImages = [];
+		allPages = [];
+		windowClosed = false;
 		// Load lists
-		api.get({
-			"action": "query",
-			"format": "json",
-			"list": "allpages",
-			"apfrom": "",
-			"apnamespace": "6",
-			"apfilterredir": "nonredirects"
-		}).done(function(data) {
-			var images = data.query.allpages;
-			api.get({
-				"action": "query",
-				"format": "json",
-				"list": "allpages",
-				"apfrom": "",
-				"apnamespace": "828",
-				"apfilterredir": "nonredirects"
-			}).done(function(data) {
-				createList(images, data.query.allpages);
-			});
-		});
-
+		loadModules();
 	};
 	// window content
 	function formHtml() {
@@ -103,16 +130,17 @@
 
 		// create window
 		myData.createWindow = function() {
+			msg = window.SpriteEditorModules.main.msg;
 			function SpriteEditorDialog(config) {
 				SpriteEditorDialog.super.call(this, config);
 			}
 			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
 
 			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = 'Open Sprite';
+			SpriteEditorDialog.static.title = msg("open-label").plain();
 			SpriteEditorDialog.static.actions = [
-				{ label: 'New', action: 'new', flags: ['primary'] },
-				{ label: 'Close', modes: 'edit', flags: ['safe', 'close'] }
+				{ label: msg("dialog-button-new").plain(), action: 'new', flags: ['primary'] },
+				{ label: msg("dialog-button-close").plain(), action: 'close', modes: 'edit', flags: ['safe', 'close'] }
 			];
 
 			// initialise dialog, append content
@@ -134,9 +162,12 @@
 			// Handle actions
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
 				if (action === "new") {
-					if (shared.openWindow("new", "New-Module not loaded!")) {
+					if (shared.openWindow("new", msg("new-module-missing").plain())) {
 						window.SpriteEditorModules.new.requestChanges();
 					}
+				} else if (action === "close") {
+					windowClosed = true;
+					modal.seDialog.close();
 				}
 				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
 			};
@@ -156,6 +187,7 @@
 			// Close dialog when clicked outside the dialog
 			modal.seDialog.$frame.parent().on('click', function (e) {
 				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
+					windowClosed = true;
 					modal.seDialog.close();
 				}
 			});

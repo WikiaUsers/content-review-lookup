@@ -4,7 +4,12 @@
  * @author: Pcj (based on work by Unai01, Lil' Miss Rarity, Jr Mime and bola) - original
  * @author: Rail, bitomic, MtaÄ - fork
  */
-mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki.template.mustache'] ).then( function() {
+mw.loader.using( [
+	'jquery.client',
+	'mediawiki.base',
+	'mediawiki.api',
+	'mediawiki.template.mustache'
+] ).then( function() {
 	// Export global configuration
 	window.adoptInternational = ( window.adoptInternational || {} );
 
@@ -131,7 +136,8 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 		// Other
 		'dev.fandom.com',
 		'connect.fandom.com',
-		'soap.fandom.com'
+		'soap.fandom.com',
+		'fandom-stars.fandom.com'
 	];
 
 	const conf = window.adoptInternational;
@@ -497,7 +503,6 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											id: 'comment',
 											name: 'comment',
-											name: '',
 											placeholder: i18n.msg( 'placeholderComments' ).plain()
 										}
 									}

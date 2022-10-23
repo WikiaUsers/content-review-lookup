@@ -7,6 +7,11 @@ function change() {
 /*Back-to-Top*/
 window.BackToTopModern = true;
 
+/*LockOldComments*/
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 40;
+window.lockOldComments.addNoteAbove = true;
+
 /*Portal*/
 mw.loader.using( ['jquery.ui.tabs'], function() {
     $(function() {

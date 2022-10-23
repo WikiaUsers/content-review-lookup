@@ -58,7 +58,7 @@ $(document).ready(function() {
 		
 		$("span#TrailRingBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="TrailRing oo-ui-inputWidget-input"></input>');
 		
-		$("span#EventXpBox-"+i).html('<select class="EventXp oo-ui-dropdownWidget-handle"><option value="1">No Event</option><option value="2">2x</option></select>');
+		$("span#EventXpBox-"+i).html('<select class="EventXp oo-ui-dropdownWidget-handle"><option value="1">No Event</option><option value="2">2x</option><option value="3">3x</option></select>');
 		
 		$("span#EventRingBox-"+i).html('<select class="EventRing oo-ui-dropdownWidget-handle"><option value="1">No Event</option></select>');
 		

@@ -27,12 +27,12 @@ if (!nkch.css.isActive) {
         });
     };
 
-    setVersion("nkchCSS", "3.0.2");
-    setVersion("codeMirror", "5.65.4");
-    setVersion("jQueryUI", "1.13.1");
+    setVersion("nkchCSS", "3.0.3");
+    setVersion("codeMirror", "5.65.9");
+    setVersion("jQueryUI", "1.13.2");
     setVersion("colorPicker", "1.9.72");
     setVersion("emmet", "1.2.5");
-    setVersion("jsBeautify", "1.14.3");
+    setVersion("jsBeautify", "1.14.6");
     setVersion("less", "4.1.2");
     setVersion("sass", "0.11.1");
 
@@ -61,7 +61,7 @@ if (!nkch.css.isActive) {
         light: "default",
         dark: "default"
     });
-    setOption("title", "nkchCSS");
+    setOption("title", "nkchCSS<sup style='font-size: 10px; vertical-align: super;'>Legacy</sup>");
     setOption("saveWithCookies", false);
     setOption("useAnimations", true);
     setOption("useLess", false);
@@ -82,72 +82,72 @@ if (!nkch.css.isActive) {
         styles: {
             css: {
                 $e: document.createElement("style"),
-                $classes: ["nkch-css__style", "nkch-css__style--css"]
+                $classes: ["nkch-css-legacy__style", "nkch-css-legacy__style--css"]
             },
             less: {
                 $e: document.createElement("style"),
-                $classes: ["nkch-css__style", "nkch-css__style--less"]
+                $classes: ["nkch-css-legacy__style", "nkch-css-legacy__style--less"]
             },
             sass: {
                 $e: document.createElement("style"),
-                $classes: ["nkch-css__style", "nkch-css__style--sass"]
+                $classes: ["nkch-css-legacy__style", "nkch-css-legacy__style--sass"]
             },
         },
         theme: {
             $e: document.createElement("link"),
-            $classes: ["nkch-css__theme"]
+            $classes: ["nkch-css-legacy__theme"]
         },
         main: {
             $e: document.createElement("div"),
-            $classes: ["nkch-css"],
+            $classes: ["nkch-css-legacy"],
             menu: {
                 $e: document.createElement("div"),
-                $classes: ["nkch-css__menu"],
+                $classes: ["nkch-css-legacy__menu"],
                 title: {
                     $e: document.createElement("div"),
-                    $classes: ["nkch-css__title"],
+                    $classes: ["nkch-css-legacy__title"],
                     text: {
                         $e: document.createElement("div"),
-                        $classes: ["nkch-css__title-text"]
+                        $classes: ["nkch-css-legacy__title-text"]
                     },
                     info: {
                         $e: "...",
-                        $classes: ["nkch-css__title-info"]
+                        $classes: ["nkch-css-legacy__title-info"]
                     }
                 },
                 tools: {
                     $e: document.createElement("div"),
-                    $classes: ["nkch-css__tools", "wds-button-group"],
+                    $classes: ["nkch-css-legacy__tools", "wds-button-group"],
                     beautify: {
                         $e: document.createElement("button"),
-                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--beautify", "wds-button", "wds-is-secondary"]
+                        $classes: ["nkch-css-legacy__button", "nkch-css-legacy__tools-button", "nkch-css-legacy__tools-button--beautify", "wds-button", "wds-is-secondary"]
                     },
                     toggle: {
                         $e: document.createElement("button"),
-                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--toggle", "wds-button", "wds-is-secondary"]
+                        $classes: ["nkch-css-legacy__button", "nkch-css-legacy__tools-button", "nkch-css-legacy__tools-button--toggle", "wds-button", "wds-is-secondary"]
                     },
                     close: {
                         $e: document.createElement("button"),
-                        $classes: ["nkch-css__button", "nkch-css__tools-button", "nkch-css__tools-button--close", "wds-button", "wds-is-secondary"]
+                        $classes: ["nkch-css-legacy__button", "nkch-css-legacy__tools-button", "nkch-css-legacy__tools-button--close", "wds-button", "wds-is-secondary"]
                     }
                 }
             },
             content: {
                 $e: document.createElement("div"),
-                $classes: ["nkch-css__content"]
+                $classes: ["nkch-css-legacy__content"]
             }
         },
         toolbarButton: {
             $e: document.createElement("li"),
-            $classes: ["nkch-css__toolbar-button"],
+            $classes: ["nkch-css-legacy__toolbar-button"],
             link: {
                 $e: document.createElement("a"),
-                $classes: ["nkch-css__toolbar-button-link"]
+                $classes: ["nkch-css-legacy__toolbar-button-link"]
             }
         },
         communityBarButton: {
             $e: document.createElement("a"),
-            $classes: ["nkch-css__community-bar-button", "wds-community-bar__nkchCSS"]
+            $classes: ["nkch-css-legacy__community-bar-button", "wds-community-bar__nkchCSS"]
         }
     };
 
@@ -386,10 +386,10 @@ if (!nkch.css.isActive) {
                         nkch.css.el.main.$e.classList.add("is-disabled");
 
                         document.body.after(nkch.css.el.main.$e);
-                        document.body.classList.add("nkch-css__is-added");
+                        document.body.classList.add("nkch-css-legacy__is-added");
 
                         $(nkch.css.el.main.$e).draggable({
-                            cancel: ".nkch-css__content, .nkch-css__popup, .nkch-css__button",
+                            cancel: ".nkch-css-legacy__content, .nkch-css-legacy__popup, .nkch-css-legacy__button",
                             opacity: 0.8
                         }).resizable({
                             ghost: true,
@@ -424,11 +424,11 @@ if (!nkch.css.isActive) {
                         /* ~ --- ~ main : menu : title : info ~ --- ~ */
                         if (!options.hideInfo) {
                             nkch.css.el.main.menu.title.info.$e = new OO.ui.PopupButtonWidget({
-                                classes: ["nkch-css__title-info"],
+                                classes: ["nkch-css-legacy__title-info"],
                                 framed: false,
                                 icon: "info",
                                 popup: {
-                                    $content: $("<div class='nkch-css__dependencies'>" +
+                                    $content: $("<div class='nkch-css-legacy__dependencies'>" +
                                         "<a target='_blank' rel='noopener noreferrer' href='https://codemirror.net'>CodeMirror</a> v. " + versions.codeMirror + "<br>" +
                                         "<a target='_blank' rel='noopener noreferrer' href='https://jqueryui.com'>jQuery UI</a> v. " + versions.jQueryUI + "<br>" +
                                         "<a target='_blank' rel='noopener noreferrer' href='https://colorpicker.easylogic.studio'>ColorPicker</a> v. " + versions.colorPicker + "<br>" +
@@ -436,10 +436,10 @@ if (!nkch.css.isActive) {
                                         "<a target='_blank' rel='noopener noreferrer' href='https://beautifier.io'>js-beautify</a> v. " + versions.jsBeautify +
                                         "</div>"),
                                     align: "center",
-                                    classes: ["nkch-css__popup"],
+                                    classes: ["nkch-css-legacy__popup"],
                                     head: true,
                                     hideCloseButton: true,
-                                    label: "nkchCSS v. " + versions.nkchCSS,
+                                    label: "nkchCSS Legacy v. " + versions.nkchCSS,
                                     padded: true
                                 }
                             });
@@ -509,7 +509,7 @@ if (!nkch.css.isActive) {
 
                         var inputCSS = new OO.ui.MultilineTextInputWidget({
                             autosize: true,
-                            classes: ["nkch-css__textarea"]
+                            classes: ["nkch-css-legacy__textarea"]
                         });
 
                         var tabCSS = new OO.ui.TabPanelLayout("css", {
@@ -521,11 +521,11 @@ if (!nkch.css.isActive) {
                         if (options.useLess) {
                             var inputLess = new OO.ui.MultilineTextInputWidget({
                                 autosize: true,
-                                classes: ["nkch-css__textarea"]
+                                classes: ["nkch-css-legacy__textarea"]
                             });
 
                             var compileLess = new OO.ui.ButtonInputWidget({
-                                classes: ["nkch-css__compile-button"],
+                                classes: ["nkch-css-legacy__compile-button"],
                                 label: "Less → CSS"
                             });
 
@@ -539,11 +539,11 @@ if (!nkch.css.isActive) {
                         if (options.useSass) {
                             var inputSass = new OO.ui.MultilineTextInputWidget({
                                 autosize: true,
-                                classes: ["nkch-css__textarea"]
+                                classes: ["nkch-css-legacy__textarea"]
                             });
 
                             var compileSass = new OO.ui.ButtonInputWidget({
-                                classes: ["nkch-css__compile-button"],
+                                classes: ["nkch-css-legacy__compile-button"],
                                 label: "SCSS → CSS"
                             });
 
@@ -578,7 +578,7 @@ if (!nkch.css.isActive) {
                                 /* ~ toolbarButton : link ~ */
                                 addClasses(nkch.css.el.toolbarButton.link);
 
-                                nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS";
+                                nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS Legacy;
 
                                 nkch.css.el.toolbarButton.link.$e.setAttribute("type", "button");
                                 nkch.css.el.toolbarButton.link.$e.setAttribute("disabled", true);
