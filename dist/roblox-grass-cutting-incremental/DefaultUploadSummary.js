@@ -13,7 +13,7 @@ uploadText.appendChild(defaultSummaryBaseNode);
 defaultSummaryInputNode.setAttribute("style", "width:50%");
 defaultSummaryInputNode.setAttribute("rows", "8");
 defaultSummaryInputNode.setAttribute("cols", "40");
-defaultSummaryBaseNode.insertAdjacentHTML("beforebegin", "Input custom summary, applying to all files below:");
+defaultSummaryBaseNode.insertAdjacentHTML("beforebegin", "Input custom summary, applying to all files being uploaded:");
 defaultSummaryBaseNode.appendChild(defaultSummaryInputNode);
 
 // Variables.

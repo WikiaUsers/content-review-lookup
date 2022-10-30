@@ -10,22 +10,23 @@
  
 ;(function($, mw) {
 	'use strict';
-	
+
 	const config = mw.config.get([
 		'wgPageName',
 		'wgCanonicalNamespace'
 	]);
-	
+
 	if (config.wgCanonicalNamespace !== 'File' || window.FileToolsLoaded) return;
 	window.FileToolsLoaded = true;
-	
+
 	var last_summary = "";
 	var msg, rights, api;
-	
+	var preloads = 2;
+
 	function btn(txt) {
 		return '<button class="wds-button">' + msg(txt).escape() + '</button>';
 	}
-	
+
 	function addHeaderButtons() {
 
 		// delete all button
@@ -54,12 +55,12 @@
 					});
 				}
 			}) : '';
-		
+
 		// refresh button
 		var refresh_button = $(btn('button_refresh')).on('click',function() {
 				refresh();
 			});
-		
+
 		// protect button
 		var protect_button = rights.includes('protect') ?
 			$(btn('button_protect')).on('click',function(){
@@ -80,7 +81,7 @@
 					$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').escape() + '</div>');
 				});
 			}) : '';
-		
+
 		// add buttons to "File history" section
 		$('#filehistory')
 			.after(protect_button)
@@ -89,7 +90,7 @@
 			.after(' ')
 			.after(delete_all_button);
 	}
-	
+
 	function addImageButtons() {
 
 		// delete button
@@ -119,7 +120,7 @@
 				$(this).parent().find('br').remove();
 			});
 		}
-		
+
 		// revert button
 		if (rights.includes('reupload')) {
 			$('.filehistory tr:nth-of-type(n + 3) td:nth-child(2) > a:first-child').each(function() {
@@ -147,15 +148,16 @@
 			});
 		}
 	}
-	
+
 	function refresh() {
 		$('#mw-imagepage-section-filehistory').load(window.location.pathname + ' #mw-imagepage-section-filehistory', function() {
 			addImageButtons();
 		});
 	}
-	
+
 	// Init: Query image rights and add buttons
-	mw.loader.using('mediawiki.api').then(function() {
+	function preload() {
+		if (--preloads > 0) return;
 		api = new mw.Api();
 		api.get({
 			action: 'query',
@@ -169,17 +171,20 @@
 		}).done(function (data) {
 			if (data.query.pages[0].imagerepository === 'local') {
 				rights = data.query.userinfo.rights;
-				mw.hook('dev.i18n').add(function (i18n) {
-					i18n.loadMessages('FileTools').done(function (i18no) {
-						msg = i18no.msg;
-						addHeaderButtons();
-						addImageButtons();
-					});
+				window.dev.i18n.loadMessages('FileTools').done(function (i18no) {
+					msg = i18no.msg;
+					addHeaderButtons();
+					addImageButtons();
 				});
-				if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-					mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
-				}
 			}
 		});
+	}
+
+	mw.hook('dev.i18n').add(preload);
+	mw.loader.using('mediawiki.api').then(preload);
+
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
 })(window.jQuery, window.mediaWiki);

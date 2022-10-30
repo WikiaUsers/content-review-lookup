@@ -59,7 +59,7 @@ $(function () {
         var currentHash = hash;
 
         // Update adress bar with the current section's ID and query parameters.
-        history.replaceState('', document.title, window.location.pathname + '#' + hash + params);
+        history.replaceState('', document.title, window.location.pathname + params + '#' + hash);
       }
     });
   });

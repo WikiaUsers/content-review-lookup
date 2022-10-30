@@ -1,4 +1,13 @@
-;(function (window, $, mw) {
+/**
+ * HideEmptyTrackingCategories.js
+ * Adds a toggle to hide tracking categories if they are empty.
+ * @summary Hide empty categories.
+ * @see https://dev.fandom.com/wiki/HideEmptyTrackingCategories
+ * @author BryghtShadow
+ * @author Magiczocker
+ */
+
+;(function ($, mw) {
 	'use strict';
 
 	if (window.HideEmptyTrackingCategoriesLoaded ||
@@ -11,6 +20,9 @@
 	var displayEmptyRows = true;
 	var msg, emptyText, disabledText, OO;
 
+	/**
+	 * Initializes the script.
+	 */
 	function init() {
 		// add button
 		var button = new OO.ui.ButtonWidget( { 
@@ -64,4 +76,4 @@
 			mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
 		}
 	});
-})(window, window.jQuery, window.mediaWiki);
+})(window.jQuery, window.mediaWiki);

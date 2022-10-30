@@ -43,7 +43,7 @@ mw.loader.using(['site']).then(function() {
 			alert(i18n.nolicense);
 			return false;
 		}
-		summary = $("#wpUploadDescription").val();
+		summary = comment = $("#wpUploadDescription").val();
 		if (summary !== "") summary = "== "+i18n.summary+" ==\n"+summary;
 		license = "== "+i18n.license+" ==\n"+$("#wpLicense option:selected").prop("title");
 		text = summary + "\n" + license;
@@ -69,7 +69,9 @@ mw.loader.using(['site']).then(function() {
 				fd.append("token",data.query.tokens.csrftoken);
 				fd.append("filename",files[curFile].name);
 				fd.append("file",files[curFile]);
+				fd.append("comment",comment);
 				fd.append("text",text);
+				fd.append("tags","multiupload");
 				fd.append("watchlist",watch);
 				fd.append("ignorewarnings",1);
 				fd.append("format","json");

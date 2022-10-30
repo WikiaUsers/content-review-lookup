@@ -153,3 +153,20 @@ window.SpoilerAlertJS = {
             no : 'Get me the hell out of here',
      fadeDelay : 1000
 };
+
+/* ================
+   AutoCreateUserPages
+   customisation 
+   ================ */
+/** 
+ * documentation at: https://dev.fandom.com/wiki/AutoCreateUserPages
+*/
+
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{Remove this message to start building your user page}}',
+        3: '{{sub'+'st:Welcome}}'
+    },
+    summary: 'Automatic creation of user pages via script',
+    notify: '<a href="/wiki/User talk:$2">Welcome to Tardis!, $1!</a>'
+};

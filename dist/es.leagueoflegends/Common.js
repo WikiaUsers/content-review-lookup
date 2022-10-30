@@ -7,7 +7,14 @@ window.tooltips_config = {
     noCSS: true
 };
 
-/********************************* Esports *********************************/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});
+
+/********************************* Prueba *********************************/
 
 /*********************** Zeri ***********************/
 
@@ -46,7 +53,5 @@ mw.hook('dev.chart').add(function() {
 		config
 	);
 })
-
-/*** En regiones hispanohablantes ***/
 
 /* DO NOT ADD CODE BELOW THIS LINE */

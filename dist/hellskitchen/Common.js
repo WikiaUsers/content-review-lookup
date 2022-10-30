@@ -35,7 +35,7 @@ window.UserTagsJS = {
 		soap: { u: 'SOAP', link: 'w:Help:SOAP', order: 3 },
 		vanguard: {u: 'Vanguard', link: 'w:Help:Vanguard', order: 4},
 		'global-discussions-moderator': {w: 'Global Discussions Moderator', link:'w:Help:Global Discussions moderators', order: 5},
-		council: {u: 'Council', link: 'w:Help:Community Council', order: 12},
+		'fandom-star': {u: 'Fandom Star', link: 'w:Help:Fandom Stars', order: 12},		
 		redditmod: {u: 'Reddit Moderator', link: 'Project:Wiki_Staff', order: 10 },
 		discordmod: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },
 		discordmod1: {u: 'Discord Moderator', link: 'Project:Wiki_Staff', order: 11 },

@@ -37,4 +37,12 @@ $(function() {
 	        }
 	    }
 	});
+	
+	// Spoiler Images
+    $(".spoiler").addClass("spoilerImageText");
+    $(".spoiler img").on("mouseup", function() {
+    	$(this).parent().removeClass("spoiler").removeClass("spoilerImageText");
+    	$(this).off("mouseup");
+    	$(this).wrap('<a href="' + $(this).attr('src') + '" class="image"></a>');
+    });
 });

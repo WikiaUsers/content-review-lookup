@@ -72,7 +72,7 @@
 				try {
 					for (var idx in d.query.pages) {
 						imageUrl = d.query.pages[idx].imageinfo[0].url;
-						imageHtml = '<img class="shipPageSkinImage" src="' + imageUrl + '">';
+						imageHtml = '<img class="shipPageSkinImage" src="' + imageUrl + '" crossOrigin="anonymous">';
 
 						skinList[skinName] = imageHtml;
 						showShipPageSkinDropdownWhenReady();
@@ -148,8 +148,8 @@
 				}
 
 				$(".shipPageSelectorMenuItem").click(function(){
-					var isAutoplayClick = $(this).data('automatedClick');
-					if (!isAutoplayClick && $('#skinSelectorAutoPlay').hasClass('fa-pause')) {
+					var isAutomatedClick = $(this).data('automatedClick');
+					if (!isAutomatedClick && $('#skinSelectorAutoPlay').hasClass('fa-pause')) {
 						$(".autoPlaySkinPlay").click();
 					}
 					$(this).data('automatedClick', false);
@@ -165,7 +165,7 @@
 					}
 					$("figure[data-source=image1]").html(skinHtml);
 
-					if (!isAutoplayClick && skinPreviewDialog != false) {
+					if (!isAutomatedClick && skinPreviewDialog != false) {
 						$('#' + skinName.replaceAll(' ', '') + 'SkinDialogItem').click();
 					}
 				});
@@ -184,6 +184,12 @@
 				$("#showSkinPreviewDialog").click(function(){
 					showSkinPreviewDialog();
 				});
+				$("figure[data-source=image1]").click(function(){
+					showSkinPreviewDialog();
+				});
+
+				$("#StandardSkinMenuItem span").click();
+
 			} else {
 				console.log("Hiding Ship Selector - No skin images found.");
 			}
@@ -267,7 +273,7 @@
 				clearTimeout(skinPreviewDialogResetPreviewToActive);
 				skinPreviewDialogResetPreviewToActive = false;
 			}
-			
+
 			var skinName = $(this).data("skinname");
 			var skinNameDisplay = skinName;
 			if (skinNameDisplay != 'Standard') {
@@ -285,16 +291,17 @@
 			$(".shipSkinDialogPreviewImage").html(skinHtml);
 
 			if (!$('#skinSelectorAutoPlay').hasClass('fa-pause')) {
+				$('#' + skinName.replaceAll(' ', '') + 'SkinMenuItem span').data('automatedClick', true);
 				$("#" + skinName.replaceAll(" ", "") + "SkinMenuItem span").click();
 			}
 		});
-		
+
 		$(".skinDialogItem").mouseover(function(){
 			if (skinPreviewDialogResetPreviewToActive != false) {
 				clearTimeout(skinPreviewDialogResetPreviewToActive);
 				skinPreviewDialogResetPreviewToActive = false;
 			}
-			
+
 			var skinName = $(this).data("skinname");
 			var skinNameDisplay = skinName;
 			if (skinNameDisplay != 'Standard') {
@@ -316,10 +323,10 @@
 				clearTimeout(skinPreviewDialogResetPreviewToActive);
 				skinPreviewDialogResetPreviewToActive = false;
 			}
-			$(this).removeClass('highlightedSkin');
 			skinPreviewDialogResetPreviewToActive = setTimeout(function(){
 				$(".skinDialogItem.activeSkin").click();
 			}, 200);
+			$(this).removeClass('highlightedSkin');
 		});
 	};
 

@@ -6,7 +6,7 @@
  * @author magiczocker
  */
 
-;(function (window, mw) {
+;(function (mw) {
 	'use strict';
 
 	if (window.HideFandomBotLogsLoaded ||
@@ -26,6 +26,9 @@
 	var msg;
 	var visible = true;
 
+	/**
+	 * Initializes the script.
+	 */
 	function init() {
 		// add button
 		var button = document.createElement('a');
@@ -54,15 +57,16 @@
 		});
 	}
 
-	// load i18n
+	// Load translations.
 	mw.hook('dev.i18n').add(function(i18n) {
 		i18n.loadMessages('HideFandomBotLogs').done(function(i18no) {
 			msg = i18no.msg;
 			init();
 		});
 	});
+
 	importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
-})(window, window.mediaWiki);
+})(window.mediaWiki);

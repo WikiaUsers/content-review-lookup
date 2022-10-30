@@ -1,6 +1,106 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 
+/*QUiz*/
+window.quizName = "Quiz";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Thanks for completing our quiz!","Did you study?","你在做什么？重做!","LowestScoreDetectedOhNoFrickWhyUghDidYouTryGuessingIt",
+    "Nice take on that quiz!","Thanks for particpating!","How did you find that? Hard? pffft.","Not the best - but not the worst","Hopefully you didn't wase StreetCred trying this out.","Did I make it hard enough?","Knowledge might just make the heart grow fonder. Good Job."
+    "Woah! Nice one - thats the highest score yet!","Amazing.","Swag!",
+];
+window.questions = [
+    ["Which person has the highest levels in game? ",
+    "SkyDynamicGamerTv",
+    "SkyDynamicOfficial",
+    "SkyDynamicGamer01",
+    "Sky"], 
+
+    ["Hydra Arena was made by...",
+    "EsCuba",
+    "Billie",
+    "Khomphell",
+    "Deadox"],
+    
+    ["Click the true statement.",
+    "Reactor houses the shooting range.",
+    "Reactor houses 2 libraries.",
+    "There are 2 libraries in game. ",
+    "The shooting range has a KFP."],
+    
+	["How many types of clouds are there in the background? ",
+    "2",
+    "1",
+    "5",
+    "3"], 
+    
+    ["The Wiki Staff Roblox Account is...",
+    "ATDWiki",
+    "ATDWikiStaff",
+    "WikiStaff",
+    "WikiStaffATD"],
+    
+    ["What was the bot previously used for moderation called?",
+    "SleepyDoggo",
+    "SleepyCatto",
+    "CarlBot",
+    "N/A"],
+ 
+    ["How many offical game artists are there? .",
+    "2",
+    "1",
+    "3 ",
+    "5"],
+
+    ["What were the names of the soundtracks used in Black Blizzard? ",
+    "Cold Cabin & Black Blizzard.",
+    "Cold Cabin & Frosty War",
+    "Black Blizzard & Hijacked ",
+    "Winter Roads & Eternal Blizzard"],
+
+    ["What company outsources the music used in lobby?",
+    "APM Music",
+    "Roblox",
+    "Spotify ",
+    "Epidemic Sound",],
+        
+   ["What is the time on the Ruby Dream non-analog clock set to? ",
+    "11:11",
+    "22:22",
+    "XXI ",
+    "IIV",], 
+    
+   ["What is the FANDOM username of the wiki founder?",
+    "DonutBoi12",
+    "SlasherZA",
+    "Slasher10",
+    "DonutBoi09",],  
+    
+   ["On what flight was the Currencies page written on?",
+    "(Lufthansa) LH1115 Madrid - Frankfurt ",
+    "(Lufthansa) LH1113 Madrid - Frankfurt ",
+    "(Iberia) IB 8710 Madrid - Frankfurt ",
+    "(Air Europa) UX 1509 Madrid - Frankfurt",],  
+    
+   ["Select one artist who drew for the Home Page Banner.",
+    "jella",
+    "Euvulla",
+    "Casey",
+    "Paro",],
+    
+   ["The longest serving Wiki Staff after enews is ______.",
+    "Justin",
+    "Bonnie",
+    "Uchu",
+    "enews",],
+
+   ["What is the probability for getting the Did You Know box statement twice?",
+    "2.85714286%",
+    "2.941172637",
+    "9.019%",
+    "2.85714286",]
+]
+
 ;( function( $, window, undefined ) {
 
 	'use strict';
@@ -148,28 +248,6 @@
 	};
 
 } )( jQuery, window );
-
-(function() {
-    var visited = localStorage.getItem('visited');
-    if (!visited) {
-        document.getElementById("halloweenpopup").style.visibility = "visible";
-        localStorage.setItem('visited', true);
-    }
-})();
-
-mw.hook('wikipage.content').add(function($content) {
-    $content.find('.EmulatorFrame:not(.loaded)').each(function() {
-        var $this = $(this);
-        $this.html(
-            $('<iframe>', {
-                border: 0,
-                frameborder: 0,
-                height: 540,
-                scrolling: 'no',
-                src: '/*INSERT LINK HERE*/',
-                width: 720
-            })
-        ).addClass('loaded');
 
 window.SpoilerAlertJS = {
     question: 'This area contains spoilers for secret mail. Are you sure you want to read it?',

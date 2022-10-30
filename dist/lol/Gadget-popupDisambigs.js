@@ -4,8 +4,7 @@ $(function() {
 		var el = this;
 		if (e.pageX <= $(el).offset().left + $(el).innerWidth()) return;
 		e.preventDefault();
-		var disambigTitle = $(this).attr('title').replace(' (Disambiguation)', '');
-		console.log(disambigTitle);
+		var disambigTitle = $(this).attr('title');
 		return new mw.Api().get({
 			action: 'parse',
 			prop: 'text',

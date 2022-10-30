@@ -1,5 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /*All credit for codes goes to Fandom developers wiki*/
+//code below sets user tags
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -24,3 +25,23 @@ UserTagsJS.modules.custom = {
 	'ALostWonderer': ['stalker'],
 	'Featherfrost2907':['kitsune']
 };
+//trying to activate the "inactive" user tag
+UserTagsJS.modules.inactive = {
+	days: 30,
+	namespaces: [0],
+	zeroIsInactive: true
+};
+//adding edit leaderboard to wiki
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:EditLeaderboard.js',
+    ]
+});
+//adding article preview
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ArticlePreview/code.js',
+    ]
+});

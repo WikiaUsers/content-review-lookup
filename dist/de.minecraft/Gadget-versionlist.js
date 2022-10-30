@@ -41,12 +41,8 @@
 	
 	$( '.list_versions_form' ).show();
 	$( '.list_versions_disabled' ).hide();
-	$.ajax({
-		url: 'https://launchermeta.mojang.com/mc/game/version_manifest.json',
-		crossDomain: true,
-		method: 'GET',
-		dataType: 'json',
-		success: function( data ) {
+	$.getJSON( 'https://launchermeta.mojang.com/mc/game/version_manifest.json' ).done(
+		function( data ) {
 			$( '.list_versions_loading' ).hide();
 			$( '.list_versions_list' ).append(
 				'<div class="list_versions_header">' +
@@ -87,9 +83,6 @@
 					url: info_button.attr( 'data-versionurl' ),
 					crossDomain: true,
 					method: 'GET',
-					data: {
-						origin: '*'	
-					},
 					dataType: 'json',
 					success: function (data) {
 						var assetIndex = data.assetIndex === undefined ? undefined : data.assetIndex.url,
@@ -118,12 +111,10 @@
 						info_button.html( '[' + i18n.load + ']' );
 					}
 				});
-				info_button.html( i18n.loading );
-			});
-		},
-		error: function() {
-			$( '.list_versions_loading' ).hide();
-			$( '.list_versions_list' ).html( i18n.loadingError );
-		}
+			info_button.html( i18n.loading );
+		});
+	}).fail( function() {
+		$( '.list_versions_loading' ).hide();
+		$( '.list_versions_list' ).html( i18n.loadingError );
 	});
 })(window.jQuery, window.mediaWiki);

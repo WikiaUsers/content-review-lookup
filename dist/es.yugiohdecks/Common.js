@@ -38,13 +38,14 @@ al servidor, ya que se crea en el momento.
 */
 
 function buttonYDK() {
+	var pageTitle = mw.config.get('wgPageName');
     var d = document.getElementById("download-ydk");
     var p = document.getElementById("data-ydk");
     if(d !== null && p !== null) {
         var a = document.createElement('a');
         a.setAttribute('id', 'download-ydk-button');
         a.setAttribute('class', 'wikia-button');
-        a.setAttribute('download', normalizeTitle(wgTitle) + '.ydk');
+        a.setAttribute('download', normalizeTitle(pageTitle) + '.ydk');
         a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(p.innerHTML.replace(/\r?\n|\n/g, "\r\n")));
         a.innerText = "Descargar el deck";
         d.appendChild(a);

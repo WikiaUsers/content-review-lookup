@@ -133,6 +133,7 @@
     'Ravenous Hunger': {'Blood of the Mountain': 'Blood of the Mountain (Item)'},
     'Renegade Quara Hydromancer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Retros Treasure': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Slice)'},
     'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Rotspit': {'Dung Ball': 'Dung Ball (Quest)'},
     'Seacrest Serpent': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
@@ -149,7 +150,7 @@
     'Tarnished Spirit': {'Book': 'Book (Orange)'},
     'Thaian': {'Amber': 'Amber (Item)'},
     'Thawing Dragon Lord': {'Ice Cream Cone': 'Ice Cream Cone (Blue-Barian)'},
-    'The Baron from Below': {'Chitinous Mouth': 'Chitinous Mouth (Baron from Below)', 'Plan For A Makeshift Armour': 'Plan for a Makeshift Armour'},
+    'The Baron from Below': {'Chitinous Mouth': 'Chitinous Mouth (Baron from Below)'},
     'The Blazing Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},
     'The Dread Maiden': {'Amber': 'Amber (Item)', 'Dark Bell': 'Dark Bell (Silver)'},
     'The Count of the Core': {'Chitinous Mouth': 'Chitinous Mouth (Count of the Core)'},
@@ -174,7 +175,7 @@
     'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Unwanted': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
     'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
-    'Retros Treasure': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Slice)'}
+    'White Pale': {'Horn': 'Horn (Ring)'}
   },
 
   //singular exceptions
@@ -270,7 +271,7 @@
     str = String(str).replace(/\((.)/g, function ($1) { return $1.toUpperCase(); }).replace(/^(.)|\s(.)|-(.)/g, function ($1) { return $1.toUpperCase(); });
     //str = String(str).replace(/\b(.)/g, function ($1) { return $1.toUpperCase(); });
     /*jslint regexp: false */
-    return str.replace(/( To The | In The | In A | Of The | Of A | Of An | On A | Of | The | From The | From | And | With A | With )/, function ($1) { return $1.toLowerCase(); });
+    return str.replace(/( To The | In The | In A | Of The | Of A | Of An | On A | Of | The | For A | From The | From | And | With A | With )/, function ($1) { return $1.toLowerCase(); });
   },
   lootparser_numcs = function (n) { n = String(n); while ((/\d{4}/).test(n)) { n = n.replace(/(\d{3},|\d{3}$)/, ',$1'); } return n; },
   stripslashes = function (str) {

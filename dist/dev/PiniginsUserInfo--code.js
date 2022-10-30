@@ -16,6 +16,7 @@
 		(config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') ||
 		(config.wgNamespaceNumber === 2 && config.wgRelevantUserName))) return;
 	var input, info, msg;
+	var preloads = 2;
 
 	function addEntry(data, label, value, join) {
 		var text = '';
@@ -83,17 +84,20 @@
 		.prependTo('.toolbar .tools');
 	}
 
-	mw.loader.using(['mediawiki.api']).then(function() {
-		mw.hook('dev.i18n').add(function(i18n) {
-			i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
-				msg = i18no.msg;
-				if (config.wgNamespaceNumber === -1) init();
-				if (config.wgNamespaceNumber === 2) addTool();
-			});
+	function preload() {
+		if (--preloads > 0) return;
+		window.dev.i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
+			msg = i18no.msg;
+			if (config.wgNamespaceNumber === -1) init();
+			if (config.wgNamespaceNumber === 2) addTool();
 		});
-		importArticle({
-			type: 'script',
-			article: 'u:dev:MediaWiki:I18n-js/code.js'
-		});
+	}
+
+	mw.hook('dev.i18n').add(preload);
+	mw.loader.using(['mediawiki.api']).then(preload);
+
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
 })(window.jQuery, window.mediaWiki);

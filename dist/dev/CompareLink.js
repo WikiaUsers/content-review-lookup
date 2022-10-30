@@ -2,7 +2,7 @@
  * Convert the "Compare selected versions" button to a link
  * (Based on [[wikipedia:User:Mattflaschen/Compare_link.js]])
  * @source: https://www.mediawiki.org/wiki/Snippets/Compare_link
- * @rev: 2-wikia3
+ * @rev: 2-wikia4
  * @see: [[mw:bugzilla:16165]]
  *
  * Copyright 2006-2013 Matthew Flaschen ([[mw:User:Mattflaschen]]), [[mw:User:He7d3r]]
@@ -29,9 +29,6 @@
  *
  */
 
-/*jslint browser, single */
-/*global jQuery, mediaWiki */
-
 (function ($, mw) {
     'use strict';
 
@@ -46,14 +43,10 @@
 
         var $compareLink = $('<a></a>', {
             'accesskey': $buttons.attr('accesskey'),
-            'class': 'compare-link mw-ui-button wds-button',
+            'class': 'compare-link mw-ui-button',
             'text': $buttons.val(),
             'title': $buttons.attr('title')
         });
-
-        if (mw.config.get('wgVersion') === '1.19.24') {
-            $compareLink.removeClass('wds-button').addClass('button');
-        }
 
         $buttons
             .after($compareLink)

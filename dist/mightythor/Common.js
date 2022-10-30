@@ -466,7 +466,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Vehicle Template\r| Image                   = ",
-post: "\r| OfficialName            = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| PreviousOwners          = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Capabilities            = \r| Weapons                 = \r| Equipment               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Aliases                 = \r\r| CurrentOwner            = \r| PreviousOwners          = \r| AlternateOwners         = \r\r| TransportMethod         = \r| CurrentModel            = \r| PreviousModels          = \r| Dimensions              = \r\r| Origin                  = \r| Reality                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r| Last                    = \r\r| History                 = \r\r| Capabilities            = \r| Weapons                 = \r| Equipment               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}"
 }
 }
 }

@@ -69,8 +69,8 @@ autocutValueNode.setAttribute('id', 'autocutValueInput');
 nodeStyleWidth(autocutValueNode);
 
 // Variables for both base (unchanged) and for manipulation.
-var currentAstral = 0;
-var goalAstral = 1;
+var currentAstral = 1;
+var goalAstral = 2;
 var currentAstralPrestige = 0;
 var spacePower = 1;
 var nextAstralCompletion = 0;
@@ -81,8 +81,13 @@ var autocutRate = 0;
 var autocutAmount = 1;
 var autocutValue = 1;
 var num;
+var result;
 var totalSPReq;
 var timeReq;
+var cumsum;
+var b;
+var h;
+var iteration
 
 // Function for updating the requirements' HTML texts.
 function updateRequirements() {
@@ -93,59 +98,69 @@ const timeNamesPlural = ["Seconds", "Minutes", "Hours", "Days", "Weeks", "Months
 const astralDifference = goalAstral - currentAstral;
 var baseReq = 10 ** (10 * currentAstralPrestige + 2);
 var multi = 2 + (0.1 * currentAstralPrestige);
-var currentReq = baseReq * (multi ** (currentAstral - 1));
 
-// Function for calculating total SP requirement.
-function calcTotalSPReq() {
-var cumsum = [];
-var a;
-var j = [];
-var iteration = 0;
-var result;
-if (currentAstral == "0") {
+// Function for calculating total SP requirement for a certain Astral.
+function calcSPUntilAstral(e) {
+cumsum = [];
+b;
+h = [];
+iteration = 0;
 num = baseReq;
-} else {
-num = currentReq;
+result;
+if (e === 1) {
+result = 0;
+} else if (e > 1) {
+while (iteration < e) {
+function addSPCurrent() {
+h.push(num);
 }
-while (iteration < astralDifference) {
-result = num;
-function calcSP() {
-j.push(num);
-}
-calcSP();
-num = num * multi;
-iteration++
+num = baseReq * (multi ** iteration);
+addSPCurrent();
+iteration++;
 
-for(a=0;a<j.length;a++) {
-  if(a==0) { cumsum[a] = j[0];}
-  else { cumsum[a] = cumsum[a-1] + j[a];
-  result = cumsum[a];
+for(b=0;b<h.length;b++) {
+  if(b==0) { cumsum[b] = h[0];}
+  else { cumsum[b] = cumsum[b-1] + h[b];
+  result = cumsum[b-1];
 }
 }
+}
+} else {
+result = 0;
 }
 return result;
 }
 
-// If current Astral is 0, return the base requirement, otherwise return the requirement for current Astral plus one.
-function checkAstralForZero() {
-var result;
-if (currentAstral == "0") {
+// Function for calculating total SP requirement from current Astral to goal Astral.
+function getTotalSPReq() {
+result = calcSPUntilAstral(goalAstral) - calcSPUntilAstral(currentAstral);
+return result;
+}
+
+// If current Astral is 0, return the base requirement, otherwise return the requirement for current Astral to next Astral.
+function checkAstralForZero(e) {
+var currentReq;
+if (e == 0) {
 result = baseReq;
 } else {
+currentReq = baseReq * (multi ** (e - 1));
 result = currentReq;
 }
 return result;
 }
 
 // Check difference between current Astral and desired Astral.
-if (astralDifference > 1) {
-num = (calcTotalSPReq()) - (checkAstralForZero() * nextAstralCompletion);
+if (astralDifference == 1 && nextAstralCompletion == 1) {
+num = 0;
+document.getElementById("SPRequirement").innerHTML = num;
+} else if (astralDifference > 0) {
+num = (getTotalSPReq()) - (checkAstralForZero(currentAstral) * nextAstralCompletion);
 document.getElementById("SPRequirement").innerHTML = convertNumber(num);
-} else if (astralDifference === 0) {
+} else if (astralDifference == 0) {
 num = 0;
 document.getElementById("SPRequirement").innerHTML = num;
 } else {
-num = (calcTotalSPReq()) - (checkAstralForZero() * nextAstralCompletion);
+num = (getTotalSPReq()) - (checkAstralForZero(currentAstral) * nextAstralCompletion);
 document.getElementById("SPRequirement").innerHTML = convertNumber(num);
 }
 
@@ -194,7 +209,7 @@ return timeCalc;
 }
 
 function getSecondaryTime(primaryUnit, secondaryUnit) {
-var result = convertNumber((Number((timeUnits[timeNames.indexOf(primaryUnit)])) * ((baseTime / timeUnits[timeNames.indexOf(primaryUnit)]) - calcUnitAmount(baseTime, primaryUnit))) / timeUnits[timeNames.indexOf(secondaryUnit)]) // Calculate the secondary time.
+var result = convertNumber(Math.round((Number((timeUnits[timeNames.indexOf(primaryUnit)])) * ((baseTime / timeUnits[timeNames.indexOf(primaryUnit)]) - calcUnitAmount(baseTime, primaryUnit))) / timeUnits[timeNames.indexOf(secondaryUnit)])) // Calculate the secondary time.
 return result;
 }
 
@@ -282,13 +297,13 @@ timeTextOutput = baseTime + " seconds";
 // Output above time unit as HTML text.
 document.getElementById("TimeUntilGoal").innerHTML = timeTextOutput;
 
-// Infinity text.
-if (num === Infinity || isNaN(num)) {
+// Infinity texts.
+if (num === Infinity || num === -Infinity || isNaN(num)) {
 document.getElementById("SPRequirement").innerHTML = "To infinity and beyond!";
 } else {
 }
 
-if (baseTime === Infinity || isNaN(baseTime)) {
+if (baseTime === Infinity || baseTime === -Infinity || isNaN(baseTime)) {
 document.getElementById("TimeUntilGoal").innerHTML = "To infinity and beyond!";
 } else {
 }
@@ -300,7 +315,7 @@ var currentAstralOutput = document.getElementById("CurrentAstral");
 currentAstralOutput.innerHTML = currentAstral;
 currentAstralInput.oninput = function() {
 if (this.value === '') {
-currentAstral = 0;
+currentAstral = 1;
 currentAstralOutput.innerHTML = currentAstral.toString();
 updateRequirements();
 } else {
@@ -315,7 +330,7 @@ var goalAstralOutput = document.getElementById("GoalAstral");
 goalAstralOutput.innerHTML = goalAstral;
 goalAstralInput.oninput = function() {
 if (this.value === '') {
-goalAstral = 1;
+goalAstral = 2;
 goalAstralOutput.innerHTML = goalAstral.toString();
 updateRequirements();
 } else {

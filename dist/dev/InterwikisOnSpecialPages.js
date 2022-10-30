@@ -1,3 +1,12 @@
+/**
+ * InterwikisOnSpecialPages.js
+ * Adds interwiki links to special pages.
+ * @summary Interwikis on special pages.
+ * @see https://dev.fandom.com/wiki/InterwikisOnSpecialPages
+ * @author Magiczocker
+ * @author Magiczocker01
+ */
+
 ;(function($, mw) {
 	'use strict';
 	
@@ -22,10 +31,13 @@
 		if ( subpageIdx >= 0 )
 		pagename += config.wgTitle.substr( subpageIdx );
 	}
-	
+
 	if (pagename === 'Special:AllMaps') return;
-	
-	function addContent(query) {
+
+	/**
+	 * Add dropdown to page header and list to footer.
+	 */
+	function addContent() {
 		// Header
 		$( '.page-header__top' ).append(
 			'<div class="page-header__languages">' +

@@ -9,7 +9,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 
 	importArticles({
 		type: "script",
-		articles: ["u:dev:MediaWiki:Toasts.js", "u:dev:MediaWiki:Dorui.js"],
+		articles: ["u:dev:MediaWiki:Toasts.js", "u:dev:MediaWiki:CustomTools.js"],
 	});
 
 	const regularExpressions = [
@@ -45,32 +45,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 		},
 	];
 
-	/**
-	 * Add the button to the page side tool list
-	 */
-	const addButton = function (ui) {
-		const editSideTool = document.querySelector("#ca-edit-side-tool");
-		const sideToolBar = document.querySelector(".page-side-tools");
-
-		const button = ui.button({
-			classes: ["page-side-tool", "byte-checker-button"],
-			text: "BC",
-			events: {
-				click: main,
-			},
-			child: ui.div({
-				classes: ["wds-tooltip", "is-right", "byte-checker-tooltip"],
-				text: "Check page size",
-			}),
-		});
-
-		if (editSideTool) {
-			editSideTool.insertAdjacentElement("afterend", button);
-		} else {
-			sideToolBar.append(button);
-		}
-	};
-
 	const sendToast = function (type, message) {
 		switch (type) {
 			case "success":
@@ -101,10 +75,11 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 		// wrap in nowiki tags to prevent this page from being categorized
 		// <nowiki>
 		if (
+			pageContents.includes("[[Category:Galleries]]") ||
 			pageContents.includes("[[Category:Genre (Comic)]]") ||
 			pageContents.includes("[[Category:Wings of Fire Fanon Wiki]]")
-			) {
-			sendToast("success", "This page is a comic and should not be deleted.");
+		) {
+  			sendToast("success", "This page is a gallery, comic, or official page and should not be deleted.");
 		}
 		// </nowiki>
 
@@ -129,7 +104,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 			.then(checkPage)
 			.then(filterPage)
 			.then(function (pageContents) {
-				const normalizedPageContents = pageContents.normalize('NFKD');
+				const normalizedPageContents = pageContents.normalize("NFKD");
 				const size = new TextEncoder().encode(normalizedPageContents).length;
 
 				if (size < 2500) {
@@ -144,7 +119,13 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 			});
 	};
 
-	mw.hook("doru.ui").add(function (ui) {
-		addButton(ui);
+	mw.hook("dev.ct").add(function (addButtons) {
+		addButtons({
+			click: main,
+			icon: "magnifying-glass",
+			placement: "page-tools-left",
+			position: -1,
+			text: "Check page size",
+		});
 	});
 });

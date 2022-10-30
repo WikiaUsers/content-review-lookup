@@ -121,12 +121,22 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                     name: cand.name,
                     order: i + 1,
                     perks: existingData && existingData[cand.name] && existingData[cand.name].perks || getPerks(cand, localData),
-                    note: existingData && existingData[cand.name] && existingData[cand.name].note || undefined,
+                    params: existingData && existingData[cand.name] && existingData[cand.name].params || undefined,
                     votes: cand.votes,
                     last: existingData && existingData[cand.name] && existingData[cand.name].last || undefined,
                 });
             });
             return res;
+        }
+
+        function paramsToStr(params) {
+            // "params" expected to be an array (of unknown continuity) of numbers/strings
+            return Object.keys(params).map(function (k) {
+                if (typeof params[k] === 'number')
+                    return "[" + k + "] = " + params[k];
+                else
+                    return "[" + k + "] = '" + params[k].replaceAll("'", "\\'") + "'";
+            }).join(", ");
         }
 
         if ($(ELECTED_BUTTON).length > 0)
@@ -142,9 +152,9 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                         year = Number(pastElectionData.year),
                         existingData = localElections[year - 1] && localElections[year - 1].data || undefined;
                     var candidates = candidatesToArray(pastElectionData.candidates, localData, existingData).map(function (v) {
-                        return "\t\t" + v.name + " = { votes = " + v.votes + ", perks = '" + v.perks + "'" + (v.note && (", note = '" + v.note + "'") || "") + ", order = " + v.order + ", last = " + (v.last || "nil") + " },";
+                        return "\t\t" + v.name + " = { votes = " + v.votes + ", perks = '" + v.perks + "'" + ", order = " + v.order + ", last = " + (v.last || "nil") + (v.params && (", params = { " + paramsToStr(v.params) + " }") || "") + " },";
                     });
-                    copyToClipboard("\t[" + year + "] = { " + "date = nil, ui = true, data = {\n" + candidates.join("\n") + "\n\t}},");
+                    copyToClipboard("\t[" + year + "] = { " + "date = nil, data = {\n" + candidates.join("\n") + "\n\t}},");
                 });
             });
 

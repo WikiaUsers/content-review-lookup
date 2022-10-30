@@ -221,7 +221,7 @@ $(function() {
 /* ### Credit:      User:Alex6122                                                    ### */
 /* ##################################################################################### */
 window.globalFileUsageConfig = {
-    'lang': ['bg','cs','de','en','es','fa','fi','fr','hu','it','ja','ko','lt','nl','no','pl','ru','pt-br','sv','tr','uk','zh'],
+    'lang': ['bg','de','en','es','fi','fr','hu','it','ja','ko','lt','nl','pl','ru','pt-br','sv','tr','uk','zh'],
     'auto_show': false,
     'on_delete': true
 };

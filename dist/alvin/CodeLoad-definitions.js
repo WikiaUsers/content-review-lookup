@@ -47,6 +47,17 @@ codeLoad.definitions = {
             "enabled": false
         }
     },
+    "lighttheme": {
+        "title": "Restore Light Theme",
+        "description": "Reverts the white background back to the wiki's light brown themed background",
+        "group": "design",
+        "articles": [
+            "Fandomdesktop.css/light-theme-correction.css"
+        ],
+        "preferences": {
+            "enabled": false
+        }
+    },
     "ratings": {
         "title": "Star Ratings",
         "description": "Adds five star ratings to episode, special, and film pages",

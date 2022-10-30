@@ -12,3 +12,6 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
+
+//Embed News Discussions
+window.discussEmbedForum = "4400000000000000133";

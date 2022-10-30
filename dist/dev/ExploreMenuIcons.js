@@ -29,7 +29,7 @@
                         navDropdownLinks[i].querySelector("span").before(icon);
                         break
                     case "explore-random":
-                        var icon = wds.icon("sitemap-tiny");
+                        var icon = wds.icon("external-tiny");
                         icon.classList.add("navigation-item-icon");
                         navDropdownLinks[i].querySelector("span").before(icon);
                         break

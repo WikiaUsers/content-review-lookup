@@ -578,7 +578,7 @@ if (!nkch.css.isActive) {
                                 /* ~ toolbarButton : link ~ */
                                 addClasses(nkch.css.el.toolbarButton.link);
 
-                                nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS Legacy;
+                                nkch.css.el.toolbarButton.link.$e.innerHTML = "nkchCSS Legacy";
 
                                 nkch.css.el.toolbarButton.link.$e.setAttribute("type", "button");
                                 nkch.css.el.toolbarButton.link.$e.setAttribute("disabled", true);

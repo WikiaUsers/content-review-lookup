@@ -50,6 +50,28 @@ mw.loader.using('mediawiki.util').then(function () {
 
     $.when(js).then(function () {
         pre.each(function () {
+            //Only run once
+            if ($(this).hasClass('hljs')) {
+                return;
+            }
+
+            //Handle [[Template:Script Install]]'s `importArticles` having no linebreaks due to the PI removing them
+            if (mw.config.get('wgDBname') === 'dev' && $(this).parents('.pi-theme-install.type-javascript').length) {
+                //First <span> is empty for some reason
+                $(this).find('span:first-child:empty').remove();
+
+                $(this).find('span').each(function () {
+                    $(this).text(function (_, txt) {
+                        return txt + '\n';
+                    });
+                });
+            }
+            
+            //Don't run on [[Template:HTML Install]]
+            if (mw.config.get('wgDBname') === 'dev' && $(this).parents('.pi-theme-install.type-html').length) {
+                return;
+            }
+
         	//Set the text of the pre to the text content to remove pygment's HTML from the pre, so that highlight.js doesn't complain about XSS/security issues
             $(this).text(function (_, txt) {
                 return txt;

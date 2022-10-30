@@ -18,6 +18,10 @@
 	var imgEle;
 	var canvasCollection = [];
 	var has_edit_permission = true;
+	var has_tag_permission = false;
+	var has_new_tag_permission = false;
+	var tag_exists = false;
+	var tag_active = false;
 	var lastSaved;
 	var tbExpanded = false;
 	var history = [
@@ -346,6 +350,7 @@
 			notminor: true,
 			recreate: true,
 			summary: summary,
+			tags: tag_active && tag_exists && has_tag_permission && "spriteeditor" || undefined,
 			text: "return " + data,
 			title: 'Module:' + loadedSpriteName,
 			formatversion: 2
@@ -366,6 +371,25 @@
 			lastSaved = history[historyPos - 1];
 			updateTitle(false);
 		});
+	}
+	function addMissingTag(summary, data, generatedJSON) {
+		if (!tag_exists && has_new_tag_permission) {
+			api.postWithEditToken({
+				action: "managetags",
+				format: "json",
+				formatversion: "2",
+				operation: "create",
+				tag: "spriteeditor",
+				reason: "Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]"
+			}).always(function(e) {
+				if (!e.error) {
+					tag_exists = true;
+				}
+				saveJSON(summary, data, generatedJSON);
+			});
+		} else {
+			saveJSON(summary, data, generatedJSON);
+		}
 	}
 	function saveToFile(s) {
 		toggleTBButtons(false);
@@ -389,11 +413,11 @@
 						return;
 					}
 					setupOldCanvas(gIVars[0]);
-					saveJSON(s, data, generatedJSON);
+					addMissingTag(s, data, generatedJSON);
 				});
 			});
 		} else {
-			saveJSON(s, data, generatedJSON);
+			addMissingTag(s, data, generatedJSON);
 		}
 	}
 	function updateTitle(changesMade) {
@@ -1433,37 +1457,103 @@
 			buttons.undo.setDisabled(true);
 			buttons.redo.setDisabled(true);
 			buttons.deprecated.setValue(false);
+			has_edit_permission = true;
+			has_tag_permission = false;
+			has_new_tag_permission = false;
+			tag_exists = false;
+			tag_active = false;
 
 			// Disable toolbar buttons; reactive if data is loaded
 			toggleTBButtons(false);
 		}
 		function checkProtection(allperms, name) {
-			if (name === "autoconfirmed") {
-				return allperms.include("editsemiprotection");
-			} else if (name === "sysop") {
-				return allperms.include("editprotection");
+			var lvl = name && name.level || "";
+			if (lvl === "autoconfirmed") {
+				return allperms.includes("editsemiprotected");
+			} else if (lvl === "sysop") {
+				return allperms.includes("editprotected");
 			} else {
-				allperms.include(name);
+				return true;
 			}
 		}
-		function loadSprite2() {
+		function loadSprite3() {
+			setupOldCanvas(imgEle);
+			var imgSize = Number(output.settings.size || options.defaultSpriteSize);
+			imgWidth = Number(output.settings.width) || imgSize;
+			imgHeight = Number(output.settings.height) || imgSize;
+			options.spacing = output.settings.spacing || 0;
+			imgSpacingOrg = options.spacing;
+			helper = window.SpriteEditorModules.helper;
+			helper.setSharedData({
+				imgWidth: imgWidth,
+				imgHeight: imgHeight,
+				toShare: toShare,
+				markDuplicateNames: markDuplicateNames,
+				namesList: namesList,
+				canvasCollection: canvasCollection,
+				addHistory: addHistory
+			});
+			window.SpriteEditorModules.diff.setSharedData({
+				options: options,
+				processData: processData,
+				generateJSON: generateJSON,
+				generateImage: generateImage,
+				title: loadedSpriteName
+			});
+			window.SpriteEditorModules.sorting.setSharedData({
+				addHistory: addHistory
+			});
+			window.SpriteEditorModules.settings.setSharedData({
+				imgWidth: imgWidth,
+				imgHeight: imgHeight,
+				imgSpacingOrg: imgSpacingOrg,
+				options: options,
+				spriteData: output,
+				title: loadedSpriteName,
+				image: imgEle
+			});
+			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
+			options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
+			for (var name in output.ids) {
+				const secID = output.ids[name].section;
+				const posID = output.ids[name].pos;
+				toShare.highestPos = Math.max(toShare.highestPos, posID);
+				sprites[secID] = sprites[secID] || [];
+				sprites[secID][posID] = sprites[secID][posID] || [];
+				sprites[secID][posID].push( [name, output.ids[name].deprecated] );
+			}
+			for (var i = 0; i < output.sections.length; i++) {
+				newSection(output.sections[i]);
+			}
+			if (options.isNew && options.createSampleSection) {
+				newSection({
+					id: 1,
+					name: msg("first-section").plain()
+				});
+			}
+			var d = document.querySelector('li[data-pos="' + output.settings.pos + '"]');
+			if (d) {
+				d.dataset.default = ".";
+			}
+			toggleTBButtons(has_edit_permission);
+		}
+		function loadSprite2(c) {
 			var requestData = {
 				action: "query",
 				format: "json",
-				prop: "info",
-				meta: "userinfo",
 				formatversion: "2",
 				inprop: "protection",
+				list: "tags",
+				meta: "userinfo",
+				prop: "info",
+				tgprop: "active",
 				uiprop: "rights|blockinfo"
 			};
-
-			setupOldCanvas(imgEle);
-
 			if (!options.isNew)
 				requestData.titles = "Module:" + loadedSpriteName + "|File:" + (output.settings.image || loadedSpriteName + ".png");
-			api.get(requestData).done(function(data) {
+			api.get(Object.assign(requestData, c || {})).done(function(data) {
 				var i;
-				if (data.query.userinfo.blockid)
+				if (data.query.userinfo && data.query.userinfo.blockid)
 					has_edit_permission = false;
 				if (has_edit_permission && data.query.pages && data.query.pages.length) {
 					for (i = 0; i < data.query.pages[0].protection.length; i++) {
@@ -1481,64 +1571,27 @@
 						}
 					}
 				}
-				var imgSize = Number(output.settings.size || options.defaultSpriteSize);
-				imgWidth = Number(output.settings.width) || imgSize;
-				imgHeight = Number(output.settings.height) || imgSize;
-				options.spacing = output.settings.spacing || 0;
-				imgSpacingOrg = options.spacing;
-				helper = window.SpriteEditorModules.helper;
-				helper.setSharedData({
-					imgWidth: imgWidth,
-					imgHeight: imgHeight,
-					toShare: toShare,
-					markDuplicateNames: markDuplicateNames,
-					namesList: namesList,
-					canvasCollection: canvasCollection,
-					addHistory: addHistory
-				});
-				window.SpriteEditorModules.diff.setSharedData({
-					options: options,
-					processData: processData,
-					generateJSON: generateJSON,
-					generateImage: generateImage,
-					title: loadedSpriteName
-				});
-				window.SpriteEditorModules.sorting.setSharedData({
-					addHistory: addHistory
-				});
-				window.SpriteEditorModules.settings.setSharedData({
-					imgWidth: imgWidth,
-					imgHeight: imgHeight,
-					imgSpacingOrg: imgSpacingOrg,
-					options: options,
-					spriteData: output,
-					title: loadedSpriteName,
-					image: imgEle
-				});
-				options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
-				options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
-				for (var name in output.ids) {
-					const secID = output.ids[name].section;
-					const posID = output.ids[name].pos;
-					toShare.highestPos = Math.max(toShare.highestPos, posID);
-					sprites[secID] = sprites[secID] || [];
-					sprites[secID][posID] = sprites[secID][posID] || [];
-					sprites[secID][posID].push( [name, output.ids[name].deprecated] );
+				if (!tag_exists && data.query.tags && data.query.tags.length) {
+					for (i = 0; i < data.query.tags.length; i++) {
+						if (data.query.tags[i].name === "spriteeditor") {
+							tag_exists = true;
+							tag_active = data.query.tags[i].active;
+						}
+					}
 				}
-				for (i = 0; i < output.sections.length; i++) {
-					newSection(output.sections[i]);
+				if (data.query.userinfo && data.query.userinfo.rights) {
+					if (data.query.userinfo.rights.indexOf( 'managechangetags' ) > 0) {
+						has_new_tag_permission = true;
+					}
+					if (data.query.userinfo.rights.indexOf( 'applychangetags' ) > 0) {
+						has_tag_permission = true;
+					}
 				}
-				if (options.isNew && options.createSampleSection) {
-					newSection({
-						id: 1,
-						name: msg("first-section").plain()
-					});
+				if (data.continue) {
+					loadSprite2(data.continue);
+					return;
 				}
-				var d = document.querySelector('li[data-pos="' + output.settings.pos + '"]');
-				if (d) {
-					d.dataset.default = ".";
-				}
-				toggleTBButtons(has_edit_permission);
+				loadSprite3();
 			});
 		}
 		function loadNew(sizeW, sizeH, spacing) {
@@ -1553,9 +1606,9 @@
 				output.settings.width = sizeW;
 				output.settings.height = sizeH;
 			} else {
-				output.settings.size = size;
+				output.settings.size = sizeW;
 			}
-			output.settings.sheetsize = size;
+			output.settings.sheetsize = sizeW;
 			options.isNew = true;
 			updateTitle(false);
 			loadSprite2();

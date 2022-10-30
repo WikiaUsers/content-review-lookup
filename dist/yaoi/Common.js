@@ -1,3 +1,7 @@
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/yaoiboyslove/images/e/e6/Site-logo.png/revision/latest?cb=20210714142404e';
+
 (function () {
     
     "use strict";

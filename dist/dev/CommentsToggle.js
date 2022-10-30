@@ -1,3 +1,11 @@
+/**
+ * CommentsToggle.js
+ * Allows the user to toggle comments without opening the editor.
+ * @summary Quick comments toggle.
+ * @see https://dev.fandom.com/wiki/CommentsToggle
+ * @author Magiczocker
+ */
+
 ;(function(mw) {
 	'use strict';
 	const config = mw.config.get([
@@ -8,7 +16,7 @@
 
 	if (
 		window.commentsToggleLoaded ||
-		!/threadmoderator|sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(mw.config.values.wgUserGroups.join())
+		!/threadmoderator|sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
 	) return;
 	window.commentsToggleLoaded = true;
 
@@ -16,7 +24,11 @@
 	if (!commentArea) return;
 
 	var msg, buttonInput, buttonLabel;
+	var preloads = 2;
 
+	/**
+	 * Toggle comment protection.
+	 */
 	function protect() {
 		var api = new mw.Api();
 		buttonInput.disabled = true;
@@ -58,6 +70,9 @@
 		});
 	}
 
+	/**
+	 * Initializes the script.
+	 */
 	function init() {
 		buttonInput = document.createElement('input');
 		buttonInput.type = 'checkbox';
@@ -76,16 +91,22 @@
 		commentArea.before(buttonInput, buttonLabel);
 	}
 
-	mw.loader.using('mediawiki.api').then(function () {
-		mw.hook('dev.i18n').add(function (i18n) {
-			i18n.loadMessages('CommentsToggle').done(function (i18no) {
-				msg = i18no.msg;
-				init();
-			});
+	/**
+	 * Load translations.
+	 */
+	function preload() {
+		if (--preloads > 0) return;
+		window.dev.i18n.loadMessages('CommentsToggle').done(function (i18no) {
+			msg = i18no.msg;
+			init();
 		});
-		importArticle({
-			type: 'script',
-			article: 'u:dev:MediaWiki:I18n-js/code.js'
-		});
+	}
+
+	mw.hook('dev.i18n').add(preload);
+	mw.loader.using('mediawiki.api').then(preload);
+
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
 })(window.mediaWiki);

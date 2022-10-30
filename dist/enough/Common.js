@@ -3,3 +3,5 @@ window.imagemap = {
 	hightlightcolor: '#FFA500',
 	hightlightfill: '#FFA5003'
 }
+
+window.MobileWikiTheme = 'dark';

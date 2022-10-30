@@ -19,7 +19,7 @@
 		$modal,
 		showCustomModal,
 		msg,
-		preloads = 2;
+		preloads = 3;
 
 	if (config.wgPageName !== 'Correct:Requests') return;
 
@@ -158,30 +158,28 @@
 	}
 
 	function preload() {
-		if (--preloads === 0) {
-			window.dev.i18n.loadMessages('u:wlb:MediaWiki:Custom-form/i18n.json').done(function(i18no) {
-				msg = i18no.msg;
-				showCustomModal = window.dev.showCustomModal;
-				var buttonappend = document.createElement('a');
-					buttonappend.className = 'wds-button';
-					buttonappend.textContent = msg('button').plain();
-					buttonappend.addEventListener('click', openFormCorrect);
-				document.getElementById("lang-" + config.wgUserLanguage.toUpperCase()).append(buttonappend);
-			});
-		}
+		if (--preloads > 0) return;
+		window.dev.i18n.loadMessages('u:wlb:MediaWiki:Custom-form/i18n.json').done(function(i18no) {
+			msg = i18no.msg;
+			showCustomModal = window.dev.showCustomModal;
+			var buttonappend = document.createElement('a');
+			buttonappend.className = 'wds-button';
+			buttonappend.textContent = msg('button').plain();
+			buttonappend.addEventListener('click', openFormCorrect);
+			document.getElementById("lang-" + config.wgUserLanguage.toUpperCase()).append(buttonappend);
+		});
 	}
 
 	mw.hook('dev.showCustomModal').add(preload);
 	mw.hook('dev.i18n').add(preload);
+	mw.loader.using('mediawiki.api').then(preload);
 
-	mw.loader.using( ['mediawiki.api'] ).then(function() {
-		importArticles({
-			type: 'script',
-			articles: [
-				'u:dev:MediaWiki:I18n-js/code.js',
-				'u:dev:MediaWiki:ShowCustomModal.js'
-			]
-		});
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:I18n-js/code.js',
+			'u:dev:MediaWiki:ShowCustomModal.js'
+		]
 	});
 })(window.jQuery, window.mediaWiki);
 // </nowiki>
