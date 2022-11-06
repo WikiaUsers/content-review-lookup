@@ -54,7 +54,8 @@ $(function() {
 				icon: 'eye',
 				placement: 'page-tools-left',
 				position: -1,
-				text: 'tt-preferences-toggle'
+				text: 'tt-preferences-toggle',
+				classes: ['tt-preferences-toggle']
 			},
 			{
 				click: toggleWithoutReload,
@@ -62,7 +63,8 @@ $(function() {
 				icon: 'clock',
 				placement: 'page-tools-left',
 				position: -1,
-				text: 'tt-temporary-toggle'
+				text: 'tt-temporary-toggle',
+				classes: ['tt-temporary-toggle']
 			}
 		]);
 		

@@ -42,7 +42,7 @@ $(document).scroll(function() {
 // Начало: «Викификатор»
 // ============================================================
 
-if (wgAction == 'edit' || wgAction == 'submit') {
+if (mw.config.get('wgAction') == 'edit' || mw.config.get('wgAction') == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript');
         addOnloadHook(addWikifButton);
 }

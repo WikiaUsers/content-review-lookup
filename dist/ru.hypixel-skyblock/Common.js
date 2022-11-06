@@ -1,608 +1,717 @@
-/*
+/* 
 Any JavaScript here will be loaded for all users on every page load.
-See MediaWiki:Wikia.js for scripts that only affect the oasis skin.
 */
- 
+
 /* Table of Contents
 -----------------------
- * (B00) Element animator
+ Deferred [mw.loader.using]
+ * (Y00) importScripts (at top, so it doesn't get affected by other scripts)
  * (W00) Small scripts
- * (X00) importArticle pre-script actions
- * * (X01) Less
- * * (X02) UserTagsJS
- * * (X03) HighlightUsers
- * (Y00) importArticles
+ * (W01) Scripts that are attached to wikipage content load
+ * (C00) My Block ID
+ * (D00) Anchor Hash Links
+ * (Y01) Less
+ * (Y02) Less Source Updater
+
+ Immediately Executed
+ * (X00) importJS pre-script actions
 */
-// Small script to change wall text
-$('a[title="Message Wall"]').html('wall');
-$('a.external.text').removeAttr('target');
-// Small script to fix article comments links
-var inter = setInterval(function() {
-    var userGroups = mw.config.get('wgUserGroups');
-    var canBlock = /sysop|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(userGroups.join('\n'));
-    if ($('.article-comments-app').length) {
-        clearInterval(inter);
-        $('span[class^="EntityHeader_header-details"] > div[class^="wds-avatar EntityHeader_avatar"] > a').each(function() {
-            var user = $(this).attr('href').replace(/\/wiki\/(User:|Special:Contributions\/)/gi, ''),
-                isIP = /^(?:(?:\d{1,3}\.){3}\d{1,3}|([0-9A-F]{0,4}:){1,7}[0-9A-F]{0,4})(?:\/\d{2})?$/gi.test(user),
-                $link = $(this).parent().parent().children('a:last-of-type'),
-                $this = $(this);
-            if (isIP) {
-                $link
-                    .attr('href', '/wiki/Special:Contributions/' + user)
-                    .html(user);
-                $this.attr('href', '/wiki/Special:Contributions/' + user);
+
+/* jshint
+    esversion: 5, esnext: false, forin: true,
+    immed: true, indent: 4,
+    latedef: true, newcap: true,
+    noarg: true, undef: true,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    forin: false,
+    -W082, -W084
+*/
+
+/* global mw, importScripts, BannerNotification */
+
+// code snippet from https://stackoverflow.com/questions/46041831/copy-to-clipboard-with-break-line
+function copyToClipboard(text) {
+    var $temp = $("<textarea>");
+    var brRegex = /<br\s*[\/]?>/gi;
+    $("body").append($temp);
+    $temp.val(text.replace(brRegex, "\r\n")).select();
+    document.execCommand("copy");
+    $temp.remove();
+    if (BannerNotification)
+        new BannerNotification($("<div>", {
+            html: "<div>Copied to clipboard</div>",
+        }).prop("outerHTML"), "confirm", null, 2000).show();
+}
+
+mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+    var api = new mw.Api();
+    var conf = mw.config.get([
+        "wgUserGroups",
+        "wgEditCount",
+        "wgPageName",
+        "wgSiteName",
+        "wgFormattedNamespaces",
+        "wgServer",
+        "profileUserId",
+        "wgNamespaceNumber",
+        "wgAction",
+        "wgContentLanguage",
+    ]);
+
+    //##############################################################
+    /* ==importArticles== (Y00)*/
+    // Imports scripts from other pages/wikis.
+    window.importScripts = function (pages) {
+        if (!Array.isArray(pages)) {
+            pages = [pages];
+        }
+        pages.forEach(function (v) {
+            var match = v.match(/^(?:u|url):(.+?):(.+)$/);
+            var wiki = match && match[1] || (conf.wgServer.replace("https://", "").replace(".fandom.com", ""));
+            var match2 = (match && match[2] || v).match(/^(\w\w):(.+)$/);
+            var serverlang = conf.wgContentLanguage;
+            var langcode = match2 ? ("/" + match2[1]) : (match ? "" : serverlang === "en" ? "" : ("/" + serverlang));
+            var page = "/" + (match2 ? match2[2] : match ? match[2] : v);
+            var url = "https://" + wiki + ".fandom.com" + langcode + page + "?action=raw&ctype=text/javascript&redirect=no";
+            $.ajax({
+                url: url,
+                dataType: "script",
+                cache: true,
+            }).then(function () {
+                console.log(v + ": Imported Successfully!");
+            });
+        });
+    };
+    // Please note that ES5 script imports are moved to MediaWiki:ImportJS
+    // ES6 scripts needs to be imported here
+    // (for convenience to promptly disable any script at any time)
+    importScripts([
+        "MediaWiki:Common.js/skydate.js",
+        "MediaWiki:Common.js/search.js"
+    ]);
+
+    //##############################################################
+    /* ==Small scripts== (W00)*/
+
+    // Small script to change wall text
+    $("a[title=\"Message Wall\"]").html("wall");
+    $("a.external, a[rel^=\"noreferrer\"]").removeAttr("target");
+
+    // Add custom "focusable" class
+    $(".focusable").attr("tabindex", 0);
+
+    // Add comment guidelines notice (wiki/fandom staff/users with > 100 edits exempt)
+    if (!/bureaucrat|sysop|codeeditor|content-moderator|threadmoderator|rollback|util|staff|helper|global-discussions-moderator|wiki-manager|soap/.test(conf.wgUserGroups.join("\n")) && conf.wgEditCount < 100) {
+        api.get({
+                action: "parse",
+                text: "{{MediaWiki:Custom-comment-guidelines-notice}}",
+                contentmodel: "wikitext"
+            })
+            .done(function (data) {
+                if (!data.error)
+                    $("#articleComments").before($(data.parse.text["*"]));
+            });
+    }
+
+    // Script to make linking comments easier
+    if (conf.wgPageName.startsWith(new mw.Title("Comment", -1))) {
+        var split = conf.wgPageName.split("/").slice(1);
+        if (split.length) {
+            window.location.replace(new mw.Uri(mw.util.getUrl(split[0]) + "?" + $.param({
+                commentId: split[1],
+                replyId: split[2]
+            })));
+        }
+    }
+
+    $(document.body).on("click", "ul[class^=\"ActionDropdown_list__\"] > li:first-of-type, [class^=\"Comment_wrapper__\"]", function (e) {
+        if (e.ctrlKey) {
+            if ($("[class^=\"EditorForm_editor-form\"]").length) return;
+
+            var el = $(e.target).parents("[class^=\"Comment_wrapper__\"]");
+            var replyId = el.attr("data-reply-id");
+
+            window.navigator.clipboard.writeText("[[Special:Comment/" + conf.wgPageName + "/" + el.attr("data-thread-id") + (replyId ? "/" + replyId : "") + "|comment]]");
+        }
+    });
+
+    // Small script to change wiki activity/article comments links, and display comment/reply IDs
+    var canBlock = /bureaucrat|sysop|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n"));
+
+    function changeActivityLinks() {
+        $(".recent-wiki-activity__details a:contains('A Fandom user')").each(function () {
+            var user = decodeURIComponent($(this).attr("href")).replace(
+                new RegExp(mw.util.getUrl("") + conf.wgFormattedNamespaces[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
+            );
+
+            // Don't reveal IP's if the user is not an admin/bureaucrat/global groups
+            if (!canBlock && mw.util.isIPAddress(user, true)) return;
+
+            $(this).text(user);
+        });
+    }
+
+    if ($(".right-rail-wrapper").length) {
+        var activityInter = setInterval(function () {
+            if ($("#wikia-recent-activity").length) {
+                clearInterval(activityInter);
+                changeActivityLinks();
             }
+        }, 200);
+    }
+
+    function changeCommentLinks() {
+        $("span[class^=\"EntityHeader_header-details\"] > div[class^=\"wds-avatar EntityHeader_avatar\"] > a").each(function () {
+            var user = decodeURIComponent($(this).attr("href")).replace(
+                    new RegExp(mw.util.getUrl("") + conf.wgFormattedNamespaces[2] + ":|" + new mw.Title("Contributions", -1).getUrl() + "/"), ""
+                ),
+                $link = $(this).parent().parent().children("a:last-of-type:not(.mw-user-anon-link)"),
+                $this = $(this);
+
+            // Don't reveal IP's if the user is not an admin/bureaucrat/global groups
+            if (!canBlock && mw.util.isIPAddress(user, true)) return;
+
+            $link
+                .attr("href", new mw.Title("Contributions/" + user, -1).getUrl())
+                .html(user);
+
+            $this.attr("href", new mw.Title("Contributions/" + user, -1).getUrl());
+
             $link.after(
-                '&nbsp;(',
-                $('<a>', {
-                    href: "/wiki/Message_wall:" + user,
+                "&nbsp;(",
+                $("<a>", {
+                    href: new mw.Title(user, 1200).getUrl(),
                     html: "wall",
                     title: "Message_wall:" + user,
+                    class: "mw-user-anon-link",
                 }),
-                canBlock ? '&nbsp;<b>&bull;</b>&nbsp;' : "",
-                canBlock ? $('<a>', {
-                    href: "/wiki/Special:Block/" + user,
+                canBlock ? "&nbsp;<b>&bull;</b>&nbsp;" : "",
+                canBlock ? $("<a>", {
+                    href: new mw.Title("Block/" + user, -1).getUrl(),
                     html: "block",
                     title: "Special:Block/" + user,
+                    class: "mw-user-anon-link",
                 }) : "",
-                ')'
+                ")"
             );
         });
     }
-}, 25);
-//##############################################################
-/* ==Element animator== (B00)*/
-// Taken from https://minecraft.gamepedia.com/MediaWiki:Gadget-site.js
-/**
- * Element animator
- *
- * Cycles through a set of elements (or "frames") on a 2 second timer per frame
- * Add the "animated" class to the frame containing the elements to animate.
- * Optionally, add the "animated-active" class to the frame to display first.
- * Optionally, add the "animated-subframe" class to a frame, and the
- * "animated-active" class to a subframe within, in order to designate a set of
- * subframes which will only be cycled every time the parent frame is displayed.
- * Animations with the "animated-paused" class will be skipped each interval.
- *
- * Requires some styling in wiki's CSS.
- */
-$( function() {
-( function() {
-var $content = $( '#mw-content-text' );
-var advanceFrame = function( parentElem, parentSelector ) {
-var curFrame = parentElem.querySelector( parentSelector + ' > .animated-active' );
-$( curFrame ).removeClass( 'animated-active' );
-var $nextFrame = $( curFrame && curFrame.nextElementSibling || parentElem.firstElementChild );
-return $nextFrame.addClass( 'animated-active' );
-};
-// Set the name of the hidden property
-var hidden; 
-if ( typeof document.hidden !== 'undefined' ) {
-hidden = 'hidden';
-} else if ( typeof document.msHidden !== 'undefined' ) {
-hidden = 'msHidden';
-} else if ( typeof document.webkitHidden !== 'undefined' ) {
-hidden = 'webkitHidden';
-}
-setInterval( function() {
-if ( hidden && document[hidden] ) {
-return;
-}
-$content.find( '.animated' ).each( function() {
-if ( $( this ).hasClass( 'animated-paused' ) ) {
-return;
-}
-var $nextFrame = advanceFrame( this, '.animated' );
-if ( $nextFrame.hasClass( 'animated-subframe' ) ) {
-advanceFrame( $nextFrame[0], '.animated-subframe' );
-}
-} );
-}, 2000 );
-}() );
-/**
- * Pause animations on mouseover of a designated container (.animated-container and .mcui)
- *
- * This is so people have a chance to look at the image and click on pages they want to view.
- */
-$( '#mw-content-text' ).on( 'mouseenter mouseleave', '.animated-container, .mcui', function( e ) {
-$( this ).find( '.animated' ).toggleClass( 'animated-paused', e.type === 'mouseenter' );
-} );
-// A work around to force wikia's lazy loading to fire
-setTimeout(function(){
-    $(".animated .lzy[onload]").load();
-}, 1000);
-} );
-//##############################################################
-/* ==Small scripts== (W00)*/
-/* Used to move ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
-function _goToID(id) {
-    console.log(id)
-    $("html, body").animate({ scrollTop: $('#'+id).offset().top-65 }, 500);
-}
-$("tr .text-anchor").each(function(){
-	var id = decodeURI($(this).attr("id").replace(/\./g, '%').replace(/\_/g, '+'));
-	$(this).removeAttr("id");
-	$(this).closest("tr").attr("id", id);
-	
-	// Re-trigger hash tag
-	if(decodeURI(location.hash.replace("#", "")) === id) {
-    	// Show table if collapsed:
-    	var inCollapseTable = $(this).parents(".mw-collapsed");
-    	setTimeout(function(){
-        	if(inCollapseTable.length) {
-        	    var parentTable = $(inCollapseTable[0]);
-        	    parentTable.removeClass("mw-collapsed");
-        	    parentTable.find("tr").stop().show();
-        	    
-        	    /*if(parentTable.hasClass("mw-made-collapsible")) {
-        	        var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-        	        $(".mw-customtoggle-"+collapseID).click();
-        	    } else {
-        	        parentTable.removeClass("mw-collapsed");
-        	    }*/
-        	}
-        	_goToID(id);
-    	}, 1000);
-	}
-});
-$(window).on('hashchange', function(e) {
-    var hash = decodeURI(location.hash.replace("#", ""));
-    $("tr[id]").each(function(){
-	    var $row = $(this);
-	    var id = decodeURI($row.attr("id").replace(/\./g, '%').replace(/\_/g, '+'));
-	    if(id == hash) {
-    	    var inCollapseTable = $row.parents(".mw-collapsed");
-        	if(inCollapseTable.length) {
-        	    var $parentTable = $(inCollapseTable[0]);
-    	        var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
-    	        $(".mw-customtoggle-"+collapseID).click();
-        	}
-        	_goToID(id);
-	    }
-    });
-} );
 
+    function addCommentId() {
+        $("[class^=\"Comment_comment\"], [class^=\"Reply_reply\"]").each(function () {
+            var $this = $(this);
+            if ($this.append) { // if $this is a jquery element
+                var threadIsComment = $this.is("[class^=\"Comment_comment\"]");
+                var threadClassName = (threadIsComment ? "comment" : "reply") + "-id-display";
+                switch ($this.find("." + threadClassName).length) {
+                    case 0:
+                        var replyID = $this.attr("data-reply-id");
+                        var commentID = $this.parent().attr("data-thread-id") || $this.parent().parent().parent().attr("data-thread-id");
+                        var threadLink = "commentId=" + commentID + (replyID ? "&replyId=" + replyID : "");
+                        $this.append(
+                            $("<div>", {
+                                class: threadClassName,
+                                "data-link": threadLink,
+                                html: $("<abbr>", {
+                                    title: "click to copy",
+                                    class: "article-click-copy",
+                                    text: (threadIsComment ? "Comment" : "Reply") + " ID : " + (replyID || commentID),
+                                    "data-copy": conf.wgServer + mw.util.getUrl(conf.wgPageName) + "?" + (threadLink || ""),
+                                }),
+                            })
+                        );
+                        break;
+                    case 1:
+                        break; // do nothing
+                    default:
+                        $this.find("." + threadClassName).each(function (i, elem) {
+                            if (i) /* not zero (i.e. not first element) */ elem.remove();
+                        });
+                }
+            }
+        });
+    }
 
-$('a[href=\"#ajaxundo\"]').attr('title', 'Instantly undo this edit without leaving the page');
-function changeLinks() {
-    $('a[href^="/wiki/Module_talk:"], a[href^="/wiki/Module talk:"]').each(function() {
-        if ($(this).prop('href').match(/Module[_ ]talk:(.+?)\/doc/g)) {
-            $(this).html($(this).html().replace(/Module[ _]talk:(.+?)\/doc/g, 'Module documentation:$1'));
+    function mainCommentHandler() {
+        changeCommentLinks();
+        addCommentId();
+    }
+
+    if ($("#articleComments, #MessageWall").length) {
+        var WikiCommentObserver = new MutationObserver(function (mutationsList) {
+            var operate = false;
+            for (var i in mutationsList) {
+                var mutation = mutationsList[i];
+                if ($(mutation.target).is("[class^=\"CommentList_comment-list\"], [class^=\"ReplyList_container\"], [class^=\"ReplyList_list-wrapper\"]")) {
+                    operate = true;
+                    break;
+                }
+            }
+            if (operate) mainCommentHandler();
+
+            var inter = setInterval(function () {
+                if ($("[class*=\"Comment_wrapper\"], [class *=\"Message__wrapper\"]").length) {
+                    clearInterval(inter);
+                    mainCommentHandler();
+                }
+            }, 200);
+        });
+
+        WikiCommentObserver.observe($("#articleComments, #MessageWall").get(0), {
+            childList: true,
+            subtree: true,
+        });
+    }
+
+    var clickCopyCooldown = false;
+    // small script to allow copying of text inside class "article-click-copy"
+    $("body").on("click", ".article-click-copy", function () {
+        if (!clickCopyCooldown) {
+            copyToClipboard($(this).attr("data-copy") || $(this).text().trim());
+            clickCopyCooldown = true;
+            var clickCopyCooldownInterval = setInterval(function () {
+                clickCopyCooldown = false;
+                clearInterval(clickCopyCooldownInterval);
+            }, 30);
         }
     });
-    $('h3').each(function() {
-        if ($(this).html().match(/Module[_ ]talk:(.+?)\/doc/g)) {
-            $(this).html($(this).html().replace(/Module[ _]talk:(.+?)\/doc/g, 'Module documentation:$1'));
-            $(this).attr('title', $(this).attr('title').replace(/Module[ _]talk:(.+?)\/doc/g, 'Module documentation:$1'));
-        }
+
+    // QOL tooltip on ajax link
+    $("a[href=\"#ajaxundo\"]").attr("title", "Instantly undo this edit without leaving the page");
+
+    /* Temp fix to force scrollbars to appear on very wide tables when they are collapsed by default */
+    $("div[class^=\"mw-customtoggle-\"],div[class*=\" mw-customtoggle-\"]").on("click", function () {
+        $(".mw-collapsible").resize();
     });
-}
-window.ajaxCallAgain = window.ajaxCallAgain || [];
-window.ajaxCallAgain.push(changeLinks);
-$(document).ready(changeLinks);
-// Code to allow making {{Slot}} clickable to show different content
-$(function(){
-    if(!$(".sbw-ui-tabber").length) { return; }
-    // .hidden works on mobile, but not on desktop
-    $(".sbw-ui-tab-content.hidden").hide();
-    
-    $(".sbw-ui-tabber .invslot").each(function(){
-        var classes = Array.from(
-                $(this)[0].classList
-            ).filter(
-                function(c) {
-                    return(
-                        c.indexOf("goto-") === 0 
-                        || c.indexOf("ui-") === 0
-                    );
-                });
-    
-        if(classes.length) {
-            var className = classes[(classes.length)-1]
-                .replace("goto-", "")
-                .replace("ui-", "");
-                
-            $(this).click(function() {
-                clickTab(className);
+
+    // Change profile links
+    var count = 0;
+    var inter2 = setInterval(function () {
+        if (count > 12000) return;
+        if (conf.profileUserId && $("#userProfileApp").length) $("#userProfileApp .user-identity-stats a[href*=\"" + new mw.Title("UserProfileActivity", -1).getUrl() + "\"]").attr("href", "/f/u/" + conf.profileUserId), clearInterval(inter2);
+    }, 5);
+
+    // Script to respond to ANI reports
+    if (
+        conf.wgUserGroups.find(function (v) {
+            return ["bureaucrat", "sysop"].includes(v);
+        }) &&
+        conf.wgPageName.includes("Administrator's_Noticeboard") &&
+        conf.wgNamespaceNumber === 4
+    )
+        $(".mw-editsection").append(" | ", $("<a>", {
+            class: "mw-complete-report",
+            text: "mark as complete",
+            title: "Mark this report as compelete",
+            css: {
+                cursor: "pointer",
+            },
+            click: function () {
+                var user = $(this).parent().parent().next().find("li:first-of-type").children("a:first-of-type").text();
+                var message = prompt("Введите сообщение для ответа с:");
+
+                if (message === null) return;
+
+                api.postWithEditToken({
+                    action: "edit",
+                    appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
+                    title: conf.wgPageName,
+                    summary: "Marking report of [[Special:Contributions/" + user + "|" + user + "]] as completed",
+                    section: new mw.Uri($(this).parent().find("a[href*=\"&section=\"]").attr("href")).query.section,
+                }).then(console.log, console.warn);
+            },
+        }));
+
+    if (conf.wgPageName.match(/^S:(.+)$/i)) {
+        window.location.replace(mw.util.getUrl("Special:" + conf.wgPageName.match(/^S:(.+)$/i)[1]));
+    }
+
+    // if (conf.wgPageName.match(/^HSW:(.+)$/i) && conf.wgAction === "view") {
+    //     window.location.replace(mw.util.getUrl("Project:" + conf.wgPageName.match(/^HSW:(.+)$/i)[1]));
+    // }
+
+    // Code to compromise "srcset" in order to display images in infoboxes with maximum width
+    $(".pi-image-thumbnail").removeAttr("srcset");
+
+    // Script to change the displayed text for Lua Errors
+    $(".scribunto-error").text("There was a problem when loading this.");
+    $(".scribunto-error").eq(0).text("There was a problem when loading this. Refresh and contact the admins if the issue persists.");
+
+    //##############################################################
+    /* ==Scripts that are attached to wikipage content load== (W01)*/
+
+    // This hook forces it to apply script even in TabViews and page preview
+    mw.hook("wikipage.content").add(function (pSection) {
+
+        /* Script to make page-specific styling (see [[Project:Page Styles]]) */
+        pSection.find(".pageStyles").each(function () {
+            var $this = $(this);
+            var css = $this.text();
+            var id = $this.attr("id");
+
+            /* For security purposes, DO NOT REMOVE! */
+            function validateCSS(css) {
+                return css
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*url\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* url() is not allowed */") // url()
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:.*expression\(["']?(.*?)["']?\)[^;}]*;?[\t ]*/gi, "$1/* expression() is not allowed */") // expression()
+                    .replaceAll(/([\t ]*)@import.*/gi, "$1/* @import is not allowed */") // @import
+                    .replaceAll(/([\t ]*)[a-z0-9\-]+\s*:[ \t]*["']?javascript:([^;\n]*)?;?[\t ]*/gi, '$1/* javascript: is not allowed */') // javascript:
+                    .replaceAll(/^([\t ]*)@font-face\s*{[^\0]*?}/gi, "$1/* @font-face is not allowed */"); // @font-face
+            }
+
+            $("<style>", {
+                text: validateCSS(css),
+                type: "text/css",
+                class: $this.attr("class") && $this.attr("class").replaceAll(/^pageStyles\s*|pageStyles\s*$/g, ""),
+                id: id,
+            }).appendTo("head");
+        });
+    });
+
+    //##############################################################
+    /* ==My Block ID== (C00)*/
+    // Special:MyBlockID
+    if (conf.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
+        document.title = "My Block ID | " + conf.wgSiteName + " | Fandom";
+        $("#firstHeading").text("My Block ID");
+        var $content = mw.util.$content || $('#mw-content-text');
+        $content.empty().html(
+            $("<div>", {
+                html: [
+                    $("<h3>", {
+                        text: "Loading..."
+                    }),
+                ],
+            })
+        );
+
+        api.get({
+            action: "query",
+            meta: "userinfo",
+            uiprop: ["name", "blockinfo"],
+        }).then(function (r) {
+            r = r.query.userinfo;
+            var name = r.name;
+
+            mw.messages.set("", r.blockreason || "");
+            // var parsedReason = mw.message("").parse();
+
+            console.log(r);
+            mw.messages.set("");
+            $content.html([
+                $("<h3>", {
+                    html: [
+                        "Displaying block information for \"", $("<a>", {
+                            href: mw.util.getUrl("Special:Contribs/" + name),
+                            text: name
+                        }), "\".",
+                    ],
+                })
+            ].concat(r.blockreason ? [
+                "В данный момент вы заблокированы, ваш ID Block равен ",
+                $("<a>", {
+                    href: mw.util.getUrl("Special:BlockList", {
+                        wpTarget: name
+                    }),
+                    text: "#" + r.blockid
+                }),
+                $("<small>", {
+                    html: [" (", $("<a>", {
+                        href: "#",
+                        click: function () {
+                            copyToClipboard("#" + r.blockid);
+                        },
+                        text: "нажмите, чтобы скопировать"
+                    }), ")"]
+                }),
+                "."
+            ] : [
+                "В данный момент вы не заблокированы. Если вы все еще уверены, что вы заблокированы, пожалуйста, попробуйте еще раз с другой учетной записью или обратитесь за помощью к администратору через discord."
+            ]));
+        });
+    }
+
+    //##############################################################
+    /* ==Anchor Hash Links== (D00)*/
+    // 1) Moves ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector)
+    // 2) If links are hidden in a collapsed area / tab, automatically open it so element can be accessed
+    $((function () {
+        function _goToID(id) {
+            var $elem = $("#" + id);
+            // If this is called when an element is hidden prevent scrolling top top of page
+            if (!$elem.length || $elem.offset().top <= 0) {
+                return;
+            }
+
+            $("html, body").animate({
+                scrollTop: $elem.offset().top - 65
+            }, {
+                step: function (now, fx) {
+                    if ($elem.offset().top > 0) {
+                        // this updates the animation postion encase page shifts (due to page load) while we're animating
+                        fx.end = $elem.offset().top - 65;
+                    }
+                }
             });
         }
-    });
-    
-    $(".sbw-ui-tabber .sbw-ui-tab").click(function(){
-        var id = $(this).data("tab");
-        if(id) { clickTab(id); }
-    });
-    
-    function clickTab(id) {
-        id = "ui-"+id;
-        if(!$("#"+id).length) { console.warn("No such tab ID"); return; }
-        $(".sbw-ui-tab-content").addClass("hidden").hide();
-        $(".sbw-ui-tab-content#"+id).removeClass("hidden").show();
-        // Since images don't load on hidden tabs, force them to load
-        $(".sbw-ui-tab-content#"+id+" .lzy[onload]").load();
-    }
-});
-if (mw.config.get('wgPageName').match(/^S:(.+)$/i)) {
-    window.location.replace(mw.util.getUrl('Special:' + mw.config.get('wgPageName').match(/^S:(.+)$/i)[1]));
-}
-if (mw.config.get('wgPageName').match(/^HSW:(.+)$/i) && mw.config.get('wgAction') === 'view') {
-    window.location.replace(mw.util.getUrl('Project:' + mw.config.get('wgPageName').match(/^HSW:(.+)$/i)[1]));
-}
-if (mw.config.get('wgPageName').match(/^MD:(.+)$/i) && mw.config.get('wgAction') === 'view') {
-    window.location.replace(mw.util.getUrl('Module_talk:' + mw.config.get('wgPageName').match(/^MD:(.+)$/i)[1]) + '/doc');
-}
-// Lua Syntax highlighting function
-(function() {
-if (!$('.mw-highlight').length) return;
-    var libs = {
-        "package": true,
-        "table": true,
-        "string": true,
-        "io": true,
-        "file": true,
-        "math": true,
-        "utf8": true,
-        "coroutine": true,
-        "debug": true,
-        "os": true,
-        "util": true,
-        "number": true,
-        "mw": true,
-    };
-    
-    var keywords = {
-"time": true,
-        "cos": true,
-        "sin": true,
-        "huge": true,
-        "wrap": true,
-        "len": true,
-        "lower": true,
-        "config": true,
-        "open": true,
-        "close": true,
-        "input": true,
-        "require": true,
-        "format": true,
-        "min": true,
-        "max": true,
-        "cosh": true,
-        "sinh": true,
-        "tan": true,
-        "tanh": true,
-        "gsub": true,
-        "gmatch": true,
-        "upper": true,
-        "concat": true,
-        "unpack": true,
-        "tonumber": true,
-        "type": true,
-        "sub": true,
-        "create": true,
-        "date": true,
-        "error": true,
-        "output": true,
-        "rep": true,
-        "pairs": true,
-        "ipairs": true,
-        "pow": true,
-        "maxn": true,
-        "match": true,
-        "remove": true,
-        "sort": true,
-        "log": true,
-        "seeall": true,
-        "byte": true,
-        "char": true,
-        "find": true,
-        "reverse": true,
-        "preload": true,
-        "loaded": true,
-        "init": true,
-        "clock": true,
-        "rad": true,
-        "random": true,
-        "pi": true,
-        "mod": true,
-        "modf": true,
-        "log10": true,
-        "ldexp": true,
-        "exp": true,
-        "expr": true,
-        "dofile": true,
-        "print": true,
-        "running": true,
-        "status": true,
-        "yield": true,
-        "cpath": true,
-        "loadlib": true,
-        "path": true,
-        "searchers": true,
-        "searchpath": true,
-        "dump": true,
-        "packsize": true,
-        "codes": true,
-        "offset": true,
-        "charpattern": true,
-        "mininteger": true,
-        "ult": true,
-        "randomseed": true,
-        "flush": true,
-        "lines": true,
-        "popen": true,
-        "read": true,
-        "seek": true,
-        "write": true,
-        "setvbuf": true,
-        "difftime": true,
-        "execute": true,
-        "exit": true,
-        "getenv": true,
-        "rename": true,
-        "getinfo": true,
-        "getlocal": true,
-        "isyieldable": true,
-        "fmod": true,
-        "deg": true,
-        "ceil": true,
-        "floor": true,
-        "abs": true,
-        "acos": true,
-        "asin": true,
-        "atan": true,
-        "atan2": true,
-        "traceback": true,
-        "stack": true,
-        "pcall": true,
-        "xpcall": true,
-        "call": true,
-        "select": true,
-        "getmetatable": true,
-        "next": true,
-        "assert": true,
-        "join": true,
-        "name": true,
-        "__index": true,
-        "__newindex": true,
-        "__call": true,
-        "__mode": true,
-        "__add": true,
-        "__sub": true,
-        "__mul": true,
-        "__div": true,
-        "__mod": true,
-        "__pow": true,
-        "__unm": true,
-        "__concat": true,
-        "__eq": true,
-        "__lt": true,
-        "__le": true,
-        "__pairs": true,
-        "__ipairs": true,
-        "__metatable": true,
-        "__tostring": true,
-        "metatable": true,
-        "rawset": true,
-        "rawget": true,
-        "set": true,
-        "get": true,
-        "new": true,
-        "class": true,
-        "load": true,
-        "loaders": true,
-        "object": true,
-        "style": true,
-        "title": true,
-        "tag": true,
-    };
-    function copySet(o) {
-        var newArr = [];
-        Object.keys(o).forEach(function(key) {
-            newArr.push(key)
-        })
-        return newArr
-    }
-    var libsArr = copySet(libs)
-      keywordsArr = copySet(keywords);
-    
-    $('.p').each(function() {
-        var $this = $(this),
-            $text = $this.html();
-        if ($text.match(/([\(\)\{\}\[\]]+)/g)) {
-            $this.html($text.replace(/([\(\)\{\}\[\]]+)/, '<span class="l">$1</span>'));
-        }
-    });
-    $('.n').each(function() {
-        var $this = $(this),
-            $text = $this.html();
-        if ($text.match(new RegExp('^(' + keywordsArr.join('|') + ")$", 'gi'))) {
-            $this.removeClass('n').addClass('nf')
-        } else if ($text.match(new RegExp('^(' + libsArr.join('|') + ")$", 'gi'))) {
-            $this.removeClass('n').addClass('lb')
-        } else if (($this.next().html() || "").match(/(<span class="l">([\(\{]+)<\/span>|^\"$)/)) {
-            $this.removeClass('n').addClass('f')
-        } else if ($this.next().html() === ":") {
-            $this.addClass('nc').removeClass('n')
-        }
-    });
-})();
+        // If the element passed is inside of a tabber, the tabber will open to the tab it belongs in
+        function _openTabberTabBelongingToChild(element) {
+            if (!element) return;
 
-/* Used to move ID from {{Text anchor}} onto a parent tr tag (if it exists), allowing the whole row to be styliszed in CSS (using the :target seloector) */
-function _goToID(id) {
-    $("html, body").animate({ scrollTop: $('#'+id).offset().top-65 }, 500);
-}
-$("tr .text-anchor").each(function(){
-	var id = $(this).attr("id");
-	$(this).removeAttr("id");
-	$(this).closest("tr").attr("id", id);
-	
-	// Re-trigger hash tag
-	if(location.hash.replace("#", "") === id) {
-    	// Show table if collapsed:
-    	var inCollapseTable = $(this).parents(".mw-collapsed");
-    	setTimeout(function(){
-        	if(inCollapseTable.length) {
-        	    var parentTable = $(inCollapseTable[0]);
-        	    parentTable.removeClass("mw-collapsed");
-        	    parentTable.find("tr").stop().show();
-        	    
-        	    /*if(parentTable.hasClass("mw-made-collapsible")) {
-        	        var collapseID = parentTable.attr("id").replace("mw-customcollapsible-", "");
-        	        $(".mw-customtoggle-"+collapseID).click();
-        	    } else {
-        	        parentTable.removeClass("mw-collapsed");
-        	    }*/
-        	}
-        	_goToID(id);
-    	}, 1000);
-	}
+            var closestTabber = element.closest(".wds-tabber");
+            var closestTabberContent = element.closest(".wds-tab__content");
+
+            // If table row is in a tabber
+            if (closestTabber && closestTabberContent && closestTabberContent.parentNode) {
+                // Get a list of tab sections and find out the index of ours in that list
+                var indexOfTab = Array.from(closestTabberContent.parentNode.querySelectorAll(":scope > .wds-tab__content")).indexOf(closestTabberContent);
+
+                // Using the index from above, change all tab states to point to the tab containing the element passed in to this function
+                closestTabber.querySelectorAll(":scope > .wds-tab__content").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+                closestTabber.querySelectorAll(":scope > .wds-tabs__wrapper .wds-tabs__tab").forEach(function (elem, i) {
+                    elem.classList.toggle("wds-is-current", indexOfTab === i);
+                });
+            }
+        }
+
+        function _openCollapsedElementBelongingToChild($element) {
+            if (!$element) return;
+            var $collapsedParent = $element.closest(".mw-collapsed");
+            if ($collapsedParent) {
+                // if JS for collapsed sections already parsed them, auto click to open them
+                if ($collapsedParent.hasClass('mw-made-collapsible')) {
+                    var collapseID = $collapsedParent.attr("id").replace("mw-customcollapsible-", "");
+                    $(".mw-customtoggle-" + collapseID).click();
+                } else {
+                    // otherwise if not collapsible yet, just secretly change css to have it not be collapsed
+                    $collapsedParent.removeClass("mw-collapsed");
+                    $collapsedParent.find("tr").stop().show();
+                }
+            }
+        }
+
+        // Let's you re-add `:target` css without messing up browser history
+        // Needed when wanting to have a row highlighted after waiting for text anchors and such to be setup
+        // https://stackoverflow.com/a/59013961/1411473
+        function _pushHashAndFixTargetSelector(hash) {
+            history.pushState({}, document.title, hash); //called as you would normally
+            var onpopstate = window.onpopstate; //store the old event handler to restore it later
+            window.onpopstate = function () { //this will be called when we call history.back()
+                window.onpopstate = onpopstate; //restore the original handler
+                history.forward(); //go forward again to update the CSS
+            };
+            history.back(); //go back to trigger the above function
+        }
+
+        function _doHashIdCheck($content, doHashFix) {
+            var hash = location.hash.replace("#", "");
+            $content.find("tr[id]").each(function () {
+                var $row = $(this),
+                    id = $row.attr("id");
+                if (id === hash) {
+                    // hash fix should only be needed right after new content is added to the page
+                    if (doHashFix) _pushHashAndFixTargetSelector(location.hash);
+
+                    _openCollapsedElementBelongingToChild($row);
+                    _openTabberTabBelongingToChild($row[0]);
+                    _goToID(id);
+                }
+            });
+        }
+
+        // do hook here to also re-run code on tabviews/lazy loaded content
+        mw.hook("wikipage.content").add(function ($content) {
+            // Convert any text anchors to row IDs
+            $content.find("tr .text-anchor").each(function () {
+                var $textAnchor = $(this);
+                var id = $textAnchor.attr("id");
+                $textAnchor.removeAttr("id");
+                $textAnchor.closest("tr").attr("id", id);
+            });
+
+            // Now dectect if hash matches any row IDs
+
+            // Delay check so that scroll doesn't happen until page layout has settled
+            // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
+            setTimeout(function () {
+                _doHashIdCheck($content, true);
+            }, 250);
+        });
+
+        $(window).on("hashchange", function () {
+            _doHashIdCheck($("#mw-content-text"));
+        });
+    })());
+
+    //###########################################
+    /* ===Less=== (Y01) */
+    function getJsonOrEmpty(url, dontLoadForEnglishWiki) {
+        return $.Deferred(function (def) {
+            if (dontLoadForEnglishWiki && conf.wgContentLanguage === "en")
+                def.resolve([]);
+            $.getJSON(url + "?action=raw&ctype=text/json")
+                .done(function (dt) {
+                    def.resolve(dt);
+                })
+                .fail(function () {
+                    def.resolve([]);
+                });
+        });
+    }
+    $.when(
+        // get list of pages from the English Wiki
+        getJsonOrEmpty("https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Custom-Less.json", false),
+        // also enable for pages from local wiki [[MediaWiki:Custom-Less.json]]
+        getJsonOrEmpty(mw.util.getUrl("MediaWiki:Custom-Less.json"), true)
+    ).then(function (lessJson, lessJsonLocal) {
+        var lessPages = lessJson.concat(lessJsonLocal);
+        var mwns = conf.wgFormattedNamespaces[8] + ":"; // localized mw namespace
+        lessPages = ["Common.css", "Custom-common.less"].concat(lessPages).map(function (s) {
+            return mwns + s;
+        });
+        window.lessOpts = window.lessOpts || [];
+        window.lessOpts.push({
+            // this is the page that has the compiled CSS
+            target: mwns + "Common.css",
+            // this is the page that lists the LESS files to compile
+            source: mwns + "Custom-common.less",
+            // these are the pages that you want to be able to update the target page from
+            // note, you should not have more than one update button per page
+            load: lessPages,
+            // target page header
+            header: mwns + "Custom-css-header/common",
+        });
+        window.lessConfig = window.lessConfig || [];
+        window.lessConfig = {
+            // reloads the page after the target page has successfully been updated
+            reload: true,
+            // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
+            wrap: true,
+            // allowed groups
+            allowed: ["codeeditor"],
+        };
+        importScripts("u:dev:Less/code.2.js");
+    }).catch(console.warn);
+
+    //###########################################
+    /* ===Less Source Updater=== (Y02) */
+    function updateLessSource() {
+        return $.get("https://hypixel-skyblock.fandom.com/ru/api.php", {
+            action: "query",
+            format: "json",
+            prop: "revisions",
+            titles: "MediaWiki:Custom-common.less",
+            formatversion: 2,
+            rvprop: "content",
+            rvslots: "*",
+        }).then(function (d) {
+            if (d.query)
+                if (d.query.pages[0].missing !== true)
+                    // also replaces @lang with the local variable code
+                    return d.query.pages[0].revisions[0].slots.main.content
+                        .replace(/@lang: ".*?"/g, "@lang: \"/" + conf.wgContentLanguage + "\"");
+                else {
+                    new BannerNotification($("<div>", {
+                        html: "<div>Сбой обновления. Не удалось получить источник.</div>",
+                    }).prop("outerHTML"), "warn", null, 5000).show();
+                    return false;
+                }
+            else {
+                new BannerNotification($("<div>", {
+                    html: "<div>Сбой обновления. Смотрите консоль для получения информации об ошибке.</div>",
+                }).prop("outerHTML"), "warn", null, 5000).show();
+                console.warn(d);
+            }
+        }).then(function (content) {
+            if (content) {
+                api.postWithEditToken({
+                        action: "edit",
+                        format: "json",
+                        watchlist: "nochange",
+                        title: "MediaWiki:Custom-common.less",
+                        text: content,
+                        summary: "Обновлено меньше источника (источник: [[:en:MediaWiki:Custom-common.less]])",
+                    }).done(function () {
+                        new BannerNotification($("<div>", {
+                            html: "<div>Update successful!</div>",
+                        }).prop("outerHTML"), "confirm", null, 5000).show();
+                    })
+                    .fail(function (err) {
+                        new BannerNotification($("<div>", {
+                            html: "<div>Сбой обновления. Смотрите консоль для получения информации об ошибке.</div>",
+                        }).prop("outerHTML"), "warn", null, 5000).show();
+                        console.warn(err);
+                    });
+            }
+        });
+    }
+    var allowedPages = [conf.wgFormattedNamespaces[8] + ":" + "Custom-common.less", conf.wgFormattedNamespaces[8] + ":" + "Common.css"];
+    if (allowedPages.includes(conf.wgPageName) &&
+        conf.wgAction === "view" &&
+        conf.wgContentLanguage !== "en" &&
+        /bureaucrat|sysop|codeeditor|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n"))) {
+        $("#mw-content-text").prepend($("<a>", {
+            class: "wds-button",
+            html: $("<div>", {
+                click: function () {
+                    var $this = $(this);
+                    if (confirm("Update Less Source from English Wiki?")) {
+                        $this.text("Updating...");
+                        $this.attr({
+                            disabled: true
+                        });
+                        updateLessSource().then(function () {
+                            $this.text("Update Less Source");
+                            $this.removeAttr("disabled");
+                        });
+                    }
+                },
+                text: "Update Less Source",
+                title: "Update Less Source from English Wiki",
+            }),
+            title: "Update Less Source from English Wiki",
+            css: {
+                cursor: "pointer",
+                margin: "0 0 5px 5px",
+            }
+        }));
+    }
+
 });
-$(window).on( 'hashchange', function(e) {
-    var hash = location.hash.replace("#", "");
-    $("tr[id]").each(function(){
-	    var $row = $(this);
-	    var id = $row.attr("id");
-	    if(id == hash) {
-    	    var inCollapseTable = $row.parents(".mw-collapsed");
-        	if(inCollapseTable.length) {
-        	    var $parentTable = $(inCollapseTable[0]);
-    	        var collapseID = $parentTable.attr("id").replace("mw-customcollapsible-", "");
-    	        $(".mw-customtoggle-"+collapseID).click();
-        	}
-        	_goToID(id);
-	    }
-    });
-} );
 
 //##############################################################
 /* ==importArticle pre-script actions== (X00)*/
 // The code in this section is for a script imported below
+
+// preconnect: only do for external resources that are very frequently used
+$('head').append('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+$('head').append('<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>');
+
 // AjaxRC
 window.ajaxRefresh = 30000;
-window.ajaxPages = [
-    "Special:RecentChanges",
-    "Special:WikiActivity",
-    "Special:Watchlist",
-    "Special:Log",
-    "Special:Contributions",
-    "Special:AbuseLog",
+window.ajaxSpecialPages = [
+    "RecentChanges",
+    "WikiActivity",
+    "Watchlist",
+    "Log",
+    "Contributions",
+    "AbuseLog",
 ];
-$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-    'ajaxrc-refresh-text': 'Auto Refresh',
-    'ajaxrc-refresh-hover': 'Enable automatically refreshing of this page',
-}}}}});
-//###########################################
-/* ===Less=== (X01) */
-window.lessOpts = window.lessOpts || [];
-window.lessOpts.push( {
-    // this is the page that has the compiled CSS
-    target: 'MediaWiki:Common.css',
-    // this is the page that lists the LESS files to compile
-    source: 'MediaWiki:Custom-common.less',
-    // these are the pages that you want to be able to update the target page from
-    // note, you should not have more than one update button per page
-    load: [ 'MediaWiki:Common.css', 'MediaWiki:Custom-common.less' ],
-    // target page header
-    header: 'MediaWiki:Custom-css-header/common'
-} );
-/*window.lessOpts.push( {
-    target: 'MediaWiki:Handheld.css',
-    source: 'MediaWiki:Custom-handheld.less',
-    load: [ 'MediaWiki:Handheld.css', 'MediaWiki:Custom-handheld.less' ],
-    header: 'MediaWiki:Custom-css-header/handheld'
-} );*/
-//###########################################
-/* ===UserTagsJS=== (X02) */
-window.UserTagsJS = {
-modules: {},
-tags: {
-    rollback: {u: 'Rollback'},
-    mod: {u:'Mod'},
-    hypixelstaff: {u:'Hypixel Staff'},
-    juniorsysop: {u:'Junior Sysop'},
-    discord: {u:'Discord Server'},
-    templates: {u:'Templates'},
-    css: {u:'CSS'},
-    html: {u:'HTML'},
-    js: {u:'Java Script'},
-    lua: {u:'Lua'},
-    translator: {u: 'Translator'},
-    oldstaff: {u: 'Retired Staff'},
-},
-oasisPlaceBefore: ''
-};
-UserTagsJS.modules.custom = {
-    // Old Wiki Staff
-'IcyOfficial': ['oldstaff', 'mod', 'discord'],
-'4hrue2kd83f': ['oldstaff', 'discord'],
-'SirCowMC': ['oldstaff', 'hypixelstaff', 'discord'],
-// Admins
-'Thundercraft5': ['templates', 'html', 'css', 'lua'],
-'Joker876': ['templates', 'html', 'css', 'lua'],
-'Fewfre': ['templates', 'html', 'css', 'lua', 'js'],
-'Specter Elite': ['html', 'css', 'templates'],
-// Content Moderators
-'Snoo999':  ['templates', 'html', 'lua', 'css', 'translator'],
-'Southmelon': ['templates', 'lua'],
-'100KPureCool': ['html', 'translator'],
-// Discussions Moderators
-'Thecrazybone': ['rollback'],
-'Bewioeop': ['rollback'],
-'YakuzaMC': ['rollback'],
-// Ryanbansriyar: ['rollback'], <-- Disabled due to invite abuse
-// Rollbackers
-'BigBoiSchmeedas': ['rollback'],
-    'BrandonXLF': ['rollback', 'lua', 'js'],
-    'Doej134567': ['rollback'],
-    'Fealtous': ['rollback'],
-    'Flachdachs': ['rollback', 'js'],
-    'Hexafish': ['rollback'],
-    'Lunatic Lunala': ['rollback'],
-    'OfTheAsh': ['rollback'],
-    'PaperAeroplane555': ['rollback'],
-    'Powman898': ['rollback'],
-    'Pwign': ['rollback', 'js', 'lua', 'templates'],
-    'SamuraiMosey': ['rollback'],
-    'Spectrogram': ['rollback'],
-// Users
-'Eason329': ['translator'],
-'HibiscusLavaR': ['translator'],
-'DarkblueKR': ['translator'],
-'EinsMarcel': ['translator'],
-};
-//###########################################
-/* ===HighlightUsers=== (X03) */
-window.highlightUsersConfig = {
-    colors: {
-        'bureaucrat': '#ff4f52',
-        'bot': 'darkgray',
-        'sysop': '#7e2dbc',
-        'content-moderator': '#7FFFD4',
-        'threadmoderator': '#1f9921',
-        'rollback': '#ff992b',
-    },
-    styles: {
-        'bureaucrat': 'text-shadow: 0 0 4px #c77979 !important;',
-        'bot': 'text-shadow: 0 0 3px gray !important;',
-        'sysop': 'text-shadow: 0 0 4px #7550ac !important;',
-        'content-moderator': 'text-shadow: 0 0 3px #397561 !important;',
-        'threadmoderator': 'text-shadow: 0 0 3px #648264 !important;',
-        'rollback': 'text-shadow: 0 0 4px #a36726 !important;',
+// Custom text
+$.extend(true, window, {
+    dev: {
+        i18n: {
+            overrides: {
+                AjaxRC: {
+                    "ajaxrc-refresh-text": "Auto Refresh",
+                    "ajaxrc-refresh-hover": "Enable automatically refreshing of this page",
+                }
+            }
+        }
     }
-};
-//##############################################################
-/* ==importArticles== (Y00)*/
-// Imports scripts from other pages/wikis.
-importArticles({
-type: 'script',
-articles: [
-    "MediaWiki:Common.js/minetip.js",
-    "MediaWiki:Common.js/skydate.js",
-    "MediaWiki:Common.js/calc.js",
-    
-    // Both of these are deprecated (replaced by calc.js, and currently unused; leaving in to make sure no issue arise) - 1 Aug 2020 --Fewfre
-    "MediaWiki:Common.js/kat-cost-calculator.js",
-    "MediaWiki:Common.js/ehp-calculator.js",
-]
 });

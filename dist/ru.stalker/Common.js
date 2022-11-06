@@ -13,6 +13,20 @@ importArticles({
 window.InactiveUsers = {text: 'Неактивен'};
 
 /**
+ * jQuery Scroll Plugin
+ * Source: http://plugins.jquery.com/scrollTo/
+ */
+$.fn.scrollView = function () {
+	return this.each(function () {
+		var where = $(this).offset().top - 50;
+		if (Math.floor(where) == window.scrollY) return;
+		$('html, body').animate({
+			scrollTop: where
+		}, 1000);
+	});
+};
+
+/**
  * Локальная функция загрузки скриптов с поддержкой указания проекта
  */
 var importScript_ = importScript;

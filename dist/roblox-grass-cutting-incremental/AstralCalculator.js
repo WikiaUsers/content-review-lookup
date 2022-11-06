@@ -1,4 +1,4 @@
-// Created by User:TheSeal27.
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:AstralCalculator.js
 
 
 
@@ -96,8 +96,8 @@ const timeNames = ["Second", "Minute", "Hour", "Day", "Week", "Month", "Year", "
 const timeNamesPlural = ["Seconds", "Minutes", "Hours", "Days", "Weeks", "Months", "Years", "Decades", "Centuries", "Millennia", "Ages of the Universe", "Stelliferous Eras", "Degenerate Eras", "Black Hole Eras", "Dark Eras", "Valve Times"];
 
 const astralDifference = goalAstral - currentAstral;
-var baseReq = 10 ** (10 * currentAstralPrestige + 2);
-var multi = 2 + (0.1 * currentAstralPrestige);
+const baseReq = 10 ** (10 * currentAstralPrestige + 2);
+const multi = 2 + (0.1 * currentAstralPrestige);
 
 // Function for calculating total SP requirement for a certain Astral.
 function calcSPUntilAstral(e) {
@@ -209,7 +209,7 @@ return timeCalc;
 }
 
 function getSecondaryTime(primaryUnit, secondaryUnit) {
-var result = convertNumber(Math.round((Number((timeUnits[timeNames.indexOf(primaryUnit)])) * ((baseTime / timeUnits[timeNames.indexOf(primaryUnit)]) - calcUnitAmount(baseTime, primaryUnit))) / timeUnits[timeNames.indexOf(secondaryUnit)])) // Calculate the secondary time.
+var result = convertNumber(((Number((timeUnits[timeNames.indexOf(primaryUnit)])) * ((baseTime / timeUnits[timeNames.indexOf(primaryUnit)]) - calcUnitAmount(baseTime, primaryUnit))) / timeUnits[timeNames.indexOf(secondaryUnit)]).toFixed(3)) // Calculate the secondary time.
 return result;
 }
 
@@ -227,7 +227,7 @@ return result;
 // Check base time.
 // Seconds.
 if (baseTime >= timeUnits[0] && baseTime < timeUnits[1]) {
-timeTextOutput = baseTime + checkPlural(baseTime, "Second");
+timeTextOutput = baseTime.toFixed(3) + checkPlural(baseTime, "Second");
 
 // Minutes.
 } else if (baseTime >= timeUnits[1] && baseTime < timeUnits[2]) {

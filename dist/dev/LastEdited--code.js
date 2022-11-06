@@ -143,12 +143,37 @@
                 titles: this.config.wgPageName,
                 meta: 'tokens',
                 prop: 'revisions',
-                rvprop: 'timestamp|user|userid|size|parsedcomment|flags',
-                // TODO: This has been deprecated.
-                rvdiffto: 'prev',
+                rvprop: 'ids|timestamp|user|userid|size|parsedcomment|flags',
                 rvlimit: 2,
                 rvtoken: tokentype,
-                type: tokentype
+                type: tokentype,
+                formatversion: 2
+            }).then(this.fetchPreviousDiff.bind(this));
+        },
+        /**
+         * Fetches the previous diff for each revision.
+         * @returns {jQuery.Deferred} A Promise-like object
+         */
+        fetchPreviousDiff: function(data) {
+            var revisions = data.query.pages[0].revisions;
+            var promises = revisions.map(function(revision) {
+                return this.api.get({
+                    action: 'compare',
+                    fromrev: revision.revid,
+                    torelative: 'prev',
+                    prop: 'diff|ids',
+                    formatversion: 2
+                }).then(function(data1) {
+                    var compare = data1.compare;
+                    revision.diff = {
+                        from: compare.fromrevid,
+                        to: compare.torevid,
+                        body: compare.body
+                    };
+                });
+            }, this);
+            return $.when.apply($, promises).then(function() {
+                return data;
             });
         },
         /**
@@ -158,15 +183,15 @@
          * @param {Object} modal Modal generator obtained from UI factory
          */
         render: function(data, i18n) {
-            var diffData = data[0].query.pages[this.config.wgArticleId].revisions;
+            var diffData = data.query.pages[0].revisions;
             if (!diffData[1] && !this.options.newpage) {
                 this.$content.remove();
                 return;
             }
             var prev = diffData[1],
                 curr = diffData[0];
-            if (data[0].query.tokens) {
-                curr.rollbacktoken = data[0].query.tokens.rollbacktoken;
+            if (data.query.tokens) {
+                curr.rollbacktoken = data.query.tokens.rollbacktoken;
             }
             if (prev) {
                 this.createModal(i18n, curr);
@@ -392,7 +417,7 @@
                 buttons: buttons,
                 content: '<div id="lastEdited-diff-changes" class="WikiaArticle diff">' +
                              '<table class="diff">' +
-                                 data.diff['*'] +
+                                 data.diff.body +
                              '</table>' +
                          '</div>',
                 context: this,

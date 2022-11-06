@@ -40,14 +40,6 @@
 
 	/******* UTILS *******/
 	
-	$.fn.scrollView = function () {
-		return this.each( function () {
-			$( 'html, body' ).animate( {
-				scrollTop: $( this ).offset().top - 50
-			}, 1000 );
-		} );
-	};
-	
 	function isEmpty( str ) {
 		return typeof str === 'undefined' || str.length === 0;
 	}

@@ -708,12 +708,19 @@
 
 				return;
 			}
-			new mw.ForeignApi('https://' + url + '/api.php').get({
-				action: 'query',
-				meta: 'siteinfo',
-				siprop: 'general',
-				formatversion: 2,
-				format: 'json'
+			$.ajax({
+				url: 'https://' + url + '/api.php',
+				crossDomain: true,
+				method: 'GET',
+				data: {
+					action: 'query',
+					meta: 'siteinfo',
+					siprop: 'general',
+					formatversion: 2,
+					format: 'json',
+					origin: '*'
+				},
+				dataType: 'json'
 			}).done(function(data) {
 				if (data.query && data.query.general) {
 					document.getElementById('wikiname').value = data.query.general.sitename;
@@ -811,7 +818,7 @@
 	}
 
 	mw.hook('dev.i18n').add(preload);
-	mw.loader.using(['mediawiki.api', 'mediawiki.ForeignApi', 'mediawiki.util', 'mediawiki.notification', 'oojs-ui-windows']).then(preload);
+	mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.notification', 'oojs-ui-windows']).then(preload);
 
 	importArticle({
 		type: 'script',

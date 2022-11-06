@@ -10,7 +10,7 @@ window.UserTagsJS = {
 		reality: 'Realitywarper',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
-		colours: 'Queen of Colours',
+		colours: 'Godness of Colours',
 		dragon: 'Verified Dragon',
 		stalker: 'Stalker Flower',
 		kitsune: 'Kitsune Assassin'

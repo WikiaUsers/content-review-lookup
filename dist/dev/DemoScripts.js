@@ -30,6 +30,11 @@
 			styles: 'MediaWiki:AccentColorButtons.css'
 		},
 		
+		Accordion: {
+			page: 'Accordion',
+			styles: 'MediaWiki:Accordion.css'
+		},
+		
         ActivityFeedMimic: {
             page: 'ActivityFeedMimic',
             styles: 'MediaWiki:ActivityFeedMimic.css'
@@ -262,6 +267,11 @@
         GradientHeader: {
             page: 'GradientHeader',
             styles: 'MediaWiki:GradientHeader.css'
+        },
+        
+        Heimu: {
+            page: 'Heimu',
+            styles: 'MediaWiki:Heimu.css'
         },
         
         HorizontalMCF: {

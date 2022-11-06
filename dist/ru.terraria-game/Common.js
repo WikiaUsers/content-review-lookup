@@ -3808,3 +3808,18 @@ function setupModule(data) {
 }
  
 })();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$(function(){
+    /* mode tabs switch for [[Template:npcinfobox]] and [[Template:npcinfobtable]] and so on */
+    $('.modesbox .modetabs .tab').on('click', function(){
+        var $this = $(this);
+        if($this.hasClass('current')){
+            return;
+        }
+        $this.parent().children().removeClass('current');
+        $this.addClass('current');
+        $this.closest('.modesbox').removeClass('c-expert c-master c-normal').addClass($this.hasClass('normal')?'c-normal':($this.hasClass('expert')?'c-expert':'c-master'));
+    });
+});

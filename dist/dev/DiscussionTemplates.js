@@ -79,9 +79,9 @@
                 }
                 return content;
             });
-            var title = window.DiscussionTemplates.templates[selected.template].title;
-            if (title && !selected.text) {
-                var titleElement = $('.message-wall-app > div > .EditorForm .wds-input input')[0];
+            var title = window.DiscussionTemplates.templates[selected.template].title,
+                titleElement = $('.message-wall-app > div > .EditorForm .wds-input input')[0];
+            if (title && !titleElement.value && !selected.text) {
                 Object.getOwnPropertyDescriptor(Object.getPrototypeOf(titleElement), 'value').set.call(titleElement, title);
                 titleElement.dispatchEvent(new Event('input', { bubbles: true }));
                 if (titleElement.value !== title) { // failed to set title

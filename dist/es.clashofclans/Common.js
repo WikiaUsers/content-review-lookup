@@ -6,7 +6,9 @@ importArticles({
         'u:dev:UserTags/code.js',
 		'w:c:clashofclans:MediaWiki:ModeToggle.js',
 		'w:c:clashofclans:MediaWiki:GemCalculators.js',
-		'w:c:clashofclans:MediaWiki:Common.js/HeroSkins.js',
+		'w:c:clashofclans:MediaWiki:HeroSkins.js',
+		'w:c:clashofclans:MediaWiki:Toggle.js',
+		"u:dev:MediaWiki:BackToTopButton/code.js",
 		]
 });
 /* Eliminar el botón de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal 
@@ -37,7 +39,7 @@ window.UserTagsJS = {
     	'content-moderator': { u:'Mod. de contenido'},
     	rollback : { u:'Reversor'},
     	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal está inactivo.' },
-        inactive: { u: 'Clasher Inactivo', title: 'Este usuario es inactivo.' },
+        inactive: { u: 'Clasher Inactivo', title: 'Este usuario está inactivo.' },
         imageeditor: {u: 'Editor de Imágenes' }
     }
 };

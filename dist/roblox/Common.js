@@ -5,13 +5,16 @@ function darkModeCheck(element) {
 	element.setAttribute("alt", element.getAttribute("alt").replace(" light icon.png", " dark icon.png"));
 	element.setAttribute("data-image-name", element.getAttribute("data-image-name").replace(" light icon.png", " dark icon.png"));
 	element.setAttribute("data-image-key", element.getAttribute("data-image-key").replace("_light_icon.png", "_dark_icon.png"));
-	element.setAttribute("data-src", newsrc)
+	element.setAttribute("data-src", newsrc);
 	element.src = newsrc;
 }
 function swapIcons() {
 	document.querySelectorAll(".theme-fandomdesktop-dark img[data-image-name$=' light icon.png']").forEach(darkModeCheck);
 }
-setTimeout(swapIcons, 10000)
+
+window.addEventListener('load', function () {
+  swapIcons();
+})
 
 // Import user group scripts (Mark Otaris)
 var ug = mw.config.get("wgUserGroups").join(), group;

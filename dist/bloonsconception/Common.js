@@ -1,37 +1,24 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-//PinnedActivity
-window.pins = window.pins || {}
-window.pins.pages = "Project:Pins";
-importScriptPage('MediaWiki:PinnedActivity.js', 'bcow');
-
-// Auto refresh
-var ajaxPages         = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions","Special:WikiActivity"];
-var AjaxRCRefreshText = 'Auto-refresh';
-importScriptPage('AjaxRC/code.js', 'dev');
-
 // UserTags
 window.UserTagsJS = {
-        modules: {},
-        tags: {
-                founder:             {u:'The Creator'},
-                bot:                 {u:'Bot'},
-                bureaucrat:          {u:'Bureaucrat'},
-                sysop:               {u:'Administrator'},
-                rollback:            {u:'Rollback'},
-                chatmoderator:       {u:'Chat moderator'},
-                threadmoderator:     {u:'Forum moderator'},
-                critic:              {u:'Critic'},
-                support:             {u:'Supporter'},
-                systematicsafeguard: {u:'Systematic Safeguard'},
-                test:                {u:'Test'}
-        },
-        oasisPlaceBefore: ''
+	modules: {},
+	tags: {
+		founder:             {u:'The Creator'},
+		bot:                 {u:'Bot'},
+		bureaucrat:          {u:'Bureaucrat'},
+		sysop:               {u:'Administrator'},
+		rollback:            {u:'Rollback'},
+		chatmoderator:       {u:'Chat Moderator'},
+		threadmoderator:     {u:'Forum Foderator'},
+		critic:              {u:'Critic'},
+		support:             {u:'Supporter'},
+		systematicsafeguard: {u:'Systematic Safeguard'},
+	},
+	oasisPlaceBefore: ''
 };
-UserTagsJS.modules.newuser = {
-	days: 14,
-	edits: 30,
-};
-UserTagsJS.modules.inactive   = 10;
+
+UserTagsJS.modules.inactive = 60; // 60 days, or around 2 months
+
 UserTagsJS.modules.metafilter = {
         'bureaucrat':      ['founder', 'systematicsafeguard'],
         'sysop':           ['founder', 'rollback', 'chatmod', 'threadmod', 'systematicsafeguard'],
@@ -49,19 +36,28 @@ UserTagsJS.modules.custom = {
         'Thaswordster':          ['critic','sysop','support'],
         'Love Robin':            ['systematicsafeguard'],
         'LoverofAllThingsCute':  ['threadmoderator', 'critic'],
-        // 'Convicted Tomatophile': ['test']
 };
 // End of UserTags
+
+// PinnedActivity
+window.pins = window.pins || {}
+window.pins.pages = "Project:Pins";
+importScriptPage('MediaWiki:PinnedActivity.js', 'bcow');
+
+// Auto refresh
+var ajaxPages         = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions","Special:WikiActivity"];
+var AjaxRCRefreshText = 'Auto-refresh';
+importScriptPage('AjaxRC/code.js', 'dev');
+
 // Replaces {{USERNAME}} with the name of the user browsing the page
- 
 function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
  }
  addOnloadHook(UserNameReplace);
- 
 // End of the {{USERNAME}} replacement
-//Wall and forum tags
+
+// Wall and forum tags
 window.MessageWallUserTags = {
     tagColor:  '#FF0',
     glow:      true,
@@ -81,7 +77,7 @@ window.MessageWallUserTags = {
     }
 };
 
-//Redirect button
+// Redirect button
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
 
 /* Spoiler code - hides pages in Category:Spoiler */
@@ -95,31 +91,6 @@ window.SpoilerAlert = {
     back: true
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
-
-// IMPORT
-importArticles({
-    type: 'script',
-    articles: [
-          "w:c:dev:TimedSlider/code.js",
-          "w:c:dev:UserTags/code.js",
-          "w:c:dev:AjaxRC/code.js",
-          "w:c:dev:Verbatim/code.js",
-          "w:c:dev:Countdown/code.js",
-          "u:dev:DisplayClock/code.js",
-          "u:dev:MessageWallUserTags/code.js",
-          "u:dev:AjaxRedirect/code.js",
-          "u:dev:BackToThread/code.js",
-          "u:dev:DisableBotMessageWalls/code.js",
-          "u:dev:DynamicImages/code.js",
-          "u:dev:ExtendedNavigation/code.js",
-          "u:dev:FloatingToc/code.js",
-          "w:c:dev:FontAwesome/code.css",
-          "u:dev:LuaError/code.js",
-          "w:c:dev:PurgeBlogs/code.js",
-          "w:c:dev:SpoilerAlert/code.js"
-    ]
-});
-
 
 //poweruser checkbox at listusers, creds to 452
 if (wgPageName=="Special:ListUsers") $("fieldset.lu_fieldset tr:last-child").prepend('<td valign="middle" style="padding:0px 2px 0px 1px;"><label for="checkBoxForpoweruser"><span style="vertical-align:middle"><input type="checkbox" name="lu_target" class="lu_target" value="poweruser" checked="checked" id="checkBoxForpoweruser"></span><span style="padding-bottom:5px;">Power Users</span></label></td>');

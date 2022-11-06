@@ -9,3 +9,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'Matik7': ['veteran']
 };
+
+$('.ac-tile').click(function(e){
+    $('.ac-content').slideToggle();
+});

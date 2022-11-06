@@ -16,7 +16,6 @@ window.UserTagsJS = {
             'bot'
         ],
         custom: {
-            'Zsotroav': ['discordmod'],
             'Amir999990': ['discordmod']
         }
     }

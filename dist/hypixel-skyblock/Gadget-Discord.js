@@ -19,11 +19,11 @@
                     arg.loadMessages('Discord').then(this.onload.bind(this, 'lang'));
                     break;
                 case 'lang':
-                    this.i18n = arg;
+					console.log(arg);
+					this.i18n = arg;
                     break;
                 case 'api':
-                    this.api = new mw.Api();
-                    this.getMessages();
+                    this.handleMessages();
                     break;
                 case 'dorui':
                     ui = arg;
@@ -41,51 +41,10 @@
         },
         // Map to cache concurrent widget JSON requests
         requests: {},
-        // Get all necessary mw messages to make the script work, with some i18n.msg key defaults
-        defaults: {
-            // Not needed in case you don't want a rail module but do want element widgets?
-            // id: new Error('You have to supply a Discord widget ID! Please edit MediaWiki:Custom-Discord-id'),
-            theme: 'auto',
-            branding: 'old',
-            roles: {}
-        },
+        // Get all necessary mw messages to make the script work
         messages: {},
-        getMessages: function() {
-            this.api.get({
-                action: 'query',
-                list: 'allpages',
-                apnamespace: 8,
-                apprefix: 'Custom-Discord-',
-                aplimit: 'max',
-                uselang: 'content', // T97096
-                maxage: 300,
-                smaxage: 300
-            })
-            .then(this.onPagesLoaded.bind(this))
-            .then(this.handleMessages.bind(this));
-        },
-        onPagesLoaded: function(data) {
-            var first = data.query.allpages[0],
-            index = first ? first.title.indexOf(':') + 1 : null,
-            allpages = data.query.allpages.map(function(page) {
-                return page.title.slice(index);
-            });
-
-            return this.api.get({
-                action: 'query',
-                meta: 'allmessages',
-                amlang: mw.config.get('wgUserLanguage'),
-                ammessages: allpages.join('|'),
-                uselang: 'content', // T97096
-                maxage: 300,
-                smaxage: 300
-            });
-        },
-        handleMessages: function(data) {
+        handleMessages: function() {
             window.dev = window.dev || {};
-            dev.i18n = dev.i18n || {};
-            dev.i18n.overrides = dev.i18n.overrides || {};
-            dev.i18n.overrides.Discord = dev.i18n.overrides.Discord || {};
 
             this.messages.branding = "new";
             this.messages.footer = "Server meant for wiki talk, not game help";
@@ -93,16 +52,7 @@
             this.messages.id = "651912910972649492";
             this.messages.invite = "https://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki:Discord";
             this.messages.theme = "dark";
-            for (var key in this.defaults) {
-                var value = this.defaults[key];
-                if (!this.messages[key]) {
-                    if (value instanceof Error) {
-                        console.error(value);
-                        return;
-                    }
-                    this.messages[key] = value;
-                }
-            }
+            this.messages.roles = {};
             this.onload('messages');
         },
         fetchWidgetData: function(id) {
@@ -174,8 +124,7 @@
         },
         buildWidget: function(data) {
         	var classes = ['discord-widget'];
-        	var branding = data.branding || this.messages.branding;
-        	if (branding === 'new') {
+        	if (this.messages.branding === 'new') {
         		classes.push('new-branding');
         	}
 
@@ -233,13 +182,15 @@
                     children: [
                         this.logo(data),
                         ui.span({
-                            html: this.i18n.msg('header', data.name).parse()
+                            html: "Wiki Editor Chat"
                         })
                     ]
                 })
             });
         },
         buildHeader: function(data) {
+        	var usersOnline = data.presence_count || data.members && data.members.length;
+
             return ui.div({
                 classes: ['widget-header'],
                 children: [
@@ -250,9 +201,7 @@
                     }),
                     data.members && ui.span({
                         classes: ['widget-header-count'],
-                        html: this.i18n.msg('online',
-                            data.presence_count || data.members && data.members.length
-                        ).parse()
+                        html: "<strong>"+ usersOnline + "</strong> User" + (usersOnline != 1 ? "s" : "") + " Online"
                     })
                 ]
             });
@@ -349,21 +298,21 @@
             });
         },
         buildFooter: function(data) {
-            var invite = data.invite || this.messages.invite || data.instant_invite
-            var footer = this.messages.guidelines || this.messages.footer;
-
+            var invite = data.invite || this.messages.invite || data.instant_invite;
+            var footer = this.messages.footer;
+			
             return ui.div({
                 classes: ['widget-footer'],
                 children: [
                     footer && ui.span({
                         classes: ['widget-footer-info'],
-                        html: this.i18n.msg('footer', this.messages.guidelines).parse()
+                        html: this.messages.footer
                     }),
                     invite && ui.a({
                         classes: ['widget-btn-connect'],
                         href: invite,
                         target: '_blank',
-                        html: this.i18n.msg('join').parse()
+                        html: "Join Now!"
                     })
                 ]
             });

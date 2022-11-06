@@ -1,4 +1,4 @@
-// GamepediaTheme, by Aeywoo
+// GamepediaTheme.js, by Sophiedp and Arashiryuu, configured by Aeywoo
 // Inspired by Gamepedia's Second to last Footer Design
 mw.loader.using(['mediawiki.api']).then(function() {
 	// Checks is the Wiki has is-gamepedia in the websites document body class
@@ -6,10 +6,11 @@ mw.loader.using(['mediawiki.api']).then(function() {
 		return;
 	}
 	// Prevents double loading
-    if (window.GamepediaFooterLoaded) {
-        return;
-    }
-    window.GamepediaFooterLoaded = true;
+	if ($(document.body).hasClass("gamepedia-footer")) {
+		return;
+	}
+	var footerClass = $(document.body).addClass("gamepedia-footer");
+	
     // -- Miscellaneous -- //
     /// https://www.fandom.com links to https://gamepedia.io
     $(".is-gamepedia .global-footer__header a, .is-gamepedia .global-navigation__logo").attr("href", "https://web.archive.org/web/20220312015146/https://www.gamepedia.io");
@@ -24,10 +25,6 @@ mw.loader.using(['mediawiki.api']).then(function() {
     $(".is-gamepedia .global-footer__link[data-tracking-label='company-overview.careers']").attr("href", "https://web.archive.org/web/20190327202749/https://www.curse.com/careers/");
     /// https://www.fandom.com/about#contact to https://help.fandom.com/wiki/How_to_contact_Gamepedia
     $(".is-gamepedia .global-footer__link[data-tracking-label='company-overview.contact']").attr("href", "https://help.fandom.com/wiki/How_to_contact_Gamepedia");
-    /// https://www.fandom.com/terms-of-use to https://web.archive.org/web/20200130080315/https://www.fandom.com/curse-terms-of-service
-    $(".is-gamepedia .global-footer__link[data-tracking-label='site-overview.terms-of-use']").attr("href", "https://web.archive.org/web/20200130080315/https://www.fandom.com/curse-terms-of-service");
-    // https://www.fandom.com/privacy-policy to https://web.archive.org/web/20200129020944/https://www.fandom.com/curse-privacy-policy
-    $(".is-gamepedia .global-footer__link[data-tracking-label='site-overview.privacy-policy']").attr("href", "https://web.archive.org/web/20200129020944/https://www.fandom.com/curse-privacy-policy");
     /// Remove What is Fandom?
     $(".is-gamepedia .global-footer__link[data-tracking-label='company-overview.what-is-fandom']").remove();
     
@@ -54,7 +51,19 @@ mw.loader.using(['mediawiki.api']).then(function() {
     var h3 = document.querySelector(".is-gamepedia .global-footer__section-fandom-apps h3");
     if (h3) {
         h3.textContent = "Curse LLC Apps";
-        h3.nextSibling.nodeValue = "Take your favourite Gamepedia Wikis wherever you go.";
+        h3.nextSibling.nodeValue = "Take your favourite Curse applications wherever you go.";
+    }
+    /// Adding a custom app under the Fandom App, replaces where the D&D; Beyond app used to be.
+    var curseforge_app_section = $("<section>")
+    	.addClass("global-footer__section")
+    	.addClass("global-footer__section-curseforge-stores");
+	var curseforge_app_svg = $('<svg class="global-footer__icon"><use xlink:href="#wds-brand-fandom-logo-store"></use></svg>');
+	var curseforge_app_stores = $('<ul class="global-footer__links"><li><a href="https://download.curseforge.com/" class="global-footer__link" data-tracking-label="community-apps.macos-app" aria-label="CurseForge\'s MacOS App"><img class="global-footer__link-icon" src="https://static.wikia.nocookie.net/central/images/4/48/Aeywoo_-_Get_It_On_Badge_Windows.png" alt="Get It On Windows"></img></a></li><li><a href="https://download.curseforge.com/" class="global-footer__link" data-tracking="community-apps.google-play" label="community-apps.windows-app" aria-label="CurseForge\'s Windows App"><img class="global-footer__link-icon" src="https://static.wikia.nocookie.net/central/images/b/b3/Aeywoo_-_Get_It_On_Badge_MacOS.png" alt="Get It On MacOS"></img></a></li></ul>');
+	// Thanks for having unnamed divs in your footer Fandom.
+	var global_footer_content = document.querySelector(".is-gamepedia .global-footer .global-footer__content");
+    if (global_footer_content) {
+    	$(global_footer_content).children().last().append(curseforge_app_section);
+    	$(curseforge_app_section).append(curseforge_app_svg, curseforge_app_stores);
     }
     
     // -- Global Footer Bottom Bar -- //

@@ -23,6 +23,7 @@ if (
 			"u:dev:MediaWiki:MassEdit/code.js",
 			"u:dev:MediaWiki:MassCategorization/code.js",
 			"u:dev:MediaWiki:PowerDelete.js",
+			"u:dev:MediaWiki:Stella.js",
 		],
 	});
 }

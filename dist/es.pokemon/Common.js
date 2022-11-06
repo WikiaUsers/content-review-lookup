@@ -1,5 +1,8 @@
 /*Nota, el contenido del Common.js se encuentra en [[MediaWiki:Common.js/Code.js]], y se importa desde MediaWiki:(skinname).js/Code.js <pre>*/
 
+// [[w:c:dev:PreloadTemplates]]
+window.preloadTemplates_subpage = 'case-by-case'
+
 function loadTrueCommonJS() {
 	// Hash para evitar que puedan usar URLs que afecten a cómo se ve la página
 	var jsHashKey = window.wgStyleVersion;

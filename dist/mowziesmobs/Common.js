@@ -1,4 +1,9 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+console.log("common.js is running")
+
+/* Any JavaScript here will be loaded for all users on every page load.
+$( function() {
+console.log("common.js is running");
+( function() {
 $('body').append("<div class='minecraft-tip' id='minecraft-tip'></div>");
 
 var textOutputFormatted;
@@ -78,3 +83,6 @@ $('.slot-item').mouseover(function(event) {
 	$(".minecraft-item").mouseout(function(event) {
 		$(mcTip).css("display", "none");
 	});
+	});
+});
+*/

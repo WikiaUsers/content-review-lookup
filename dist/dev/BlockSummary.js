@@ -7,11 +7,22 @@ Version      :   1.3
 
 mw.loader.using('mediawiki.api', function() {
 	var config = mw.config.get([
+		'wgNamespaceNumber',
 		'wgRelevantUserName',
 		'wgServer', // Wiki URL
 		'wgSiteName', // Wiki Name
 		'wgContentLanguage' // Wiki Language Code
 	]);
+	
+	if (config.wgNamespaceNumber !== 2) {
+		console.error("The page is not a \"User\" namespace page. BlockSummary.js aborted!")
+		return; // Only run in "User" namespace.
+	}
+	
+	if (config.wgRelevantUserName === null) {
+		console.error("No relevant username attributed to the current viewed page. BlockSummary.js aborted!")
+		return; // Only run in "User" namespace.
+	}
 	
 	var wiki_name = config.wgSiteName;
 	var wiki_url = config.wgServer;

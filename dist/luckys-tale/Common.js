@@ -12,6 +12,3 @@ window.DynamicImages = {
     gifImages: false,
     svgGaleryImages: true,
 };
-
-// Appends Template:NewPagesModule
-window.AddRailModule = [{page: 'Template:NewPagesModule', prepend: true}];
