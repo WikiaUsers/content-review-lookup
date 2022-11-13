@@ -73,7 +73,9 @@ window.setCookie = function(c_name, value, expiredays) {
 					if ($desc.val()) return; // If not empty then don't do anything (i.e. error message confirm page)
 					$desc.val('{{Fichier\n' +
 							'| origine = \n' +
-							'| jeu = Gotham Knights\n' +
+							'| œuvre = \n' +
+							'| cible2 = \n' +
+							'| cible3 = \n' +
 							'| quoi = \n' +
 							'| type = \n' + 
 							'}}\n'
@@ -100,6 +102,7 @@ window.setCookie = function(c_name, value, expiredays) {
 								}
 
 								customRows += this.fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
+								customRows += this.fromListboxTemplate('Œuvre', 'oeuvreBox');
 								customRows += this.fromListboxTemplate('Quoi', 'quoiBox');
 								customRows += this.fromListboxTemplate('Type', 'typeBox');
 
@@ -119,7 +122,7 @@ window.setCookie = function(c_name, value, expiredays) {
 									);
 								});
 						} else { // Old style form just needs Information template in the summary box
-							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = Gotham Knights\n| quoi = \n| type = \n}}\n'); // Add link to guided form
+							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| œuvre = \n| cible2 = \n| cible3 = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
 							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://gotham-knights.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
@@ -147,7 +150,9 @@ window.setCookie = function(c_name, value, expiredays) {
 				var strBuilder = template;
 				strBuilder += '{{Fichier\n';
 				strBuilder += '| origine = ' + $.trim($('#origineBox').val()) + '\n';
-				strBuilder += '| jeu = Gotham Knights' + '\n';
+				strBuilder += '| œuvre = ' + $.trim($('#oeuvreBox').val()) + '\n';
+				strBuilder += '| cible2 = \n';
+				strBuilder += '| cible3 = \n';
 				strBuilder += '| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
 				strBuilder += '| type = ' + $.trim($('#typeBox').val()) + '\n';
 				strBuilder += '}}\n';

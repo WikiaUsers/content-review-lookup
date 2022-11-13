@@ -16,7 +16,6 @@ importArticles({
 		"u:dev:Countdown/code.js",
 	]
 });
-
 // Auto-refresh
 window.ajaxPages = ["Special:RecentChanges", "Special:Watchlist", "Special:Log", "Special:Contributions", "Special:WikiActivity"];
 window.AjaxRCRefreshText = 'Auto-refresh';

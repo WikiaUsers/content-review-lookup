@@ -17,7 +17,7 @@
     onevar: true, eqeqeq: true,
     multistr: true, maxerr: 999999,
     sub: true, forin: false,
-    -W082, -W084
+    -W082, -W084, -W097
 */
 
 /* global mw, BannerNotification */
@@ -63,7 +63,7 @@
         window.StaffTagger = window.StaffTagger || {};
 
         var StaffTagger, that, cachedStaffData;
-        StaffTagger = that = window.StaffTagger = Object.assign(this, {
+        StaffTagger = that = window.StaffTagger = {
             Loaded: true,
             api: new mw.Api(),
             staffDataPage: "Module:Staff/Members",
@@ -950,6 +950,7 @@
                 that.showModal();
             },
             init: function () {
+                that.modal.create();
                 $("span#tag-user > a[href*=\"prepend=\"].text").click(that.onclick);
                 if (mw.config.get("wgNamespaceNumber") === 2) {
                     $(".page-header__contribution-buttons .wds-list, .page-header__actions .wds-list").first().append(
@@ -975,9 +976,11 @@
                 $(".staff-components").hide();
                 $(".resign-components").show();
             },
-        });
+        };
 
-        Object.assign(this, {
+        // note: StaffTagger must be defined before its methods can be passed to another
+        // constructor, hence the need to assign the modal after StaffTagger's definition
+        Object.assign(StaffTagger, {
             modal: new window.dev.modal.Modal({
                 id: "StaffTagger-modal",
                 title: "Staff Tagger v2.1",
@@ -997,16 +1000,15 @@
                     text: "Switch to Resign Mode",
                 }],
                 events: {
-                    onSubmit: this.processInformation,
-                    onStaffMode: this.toStaffMode,
-                    onResignMode: this.toResignMode,
+                    onSubmit: that.processInformation,
+                    onStaffMode: that.toStaffMode,
+                    onResignMode: that.toResignMode,
                 },
                 size: "large",
             }),
         });
-        that.modal.create();
 
-        that.init();
+        StaffTagger.init();
     });
 })();
 //</pre>

@@ -357,6 +357,7 @@ window.MessageWallUserTags = {
 
         'ItzSpongeBob_1999': 'Discussion Moderator • Rollback',
         'Thegameingcash': 'Discussion Moderator',
+        'PinkPugPrincess': 'Discussion Moderator',
         'Arthur_Read_fan': 'Discussion Moderator • Rollback',
 
         'TheJasbre202': 'Rollback',

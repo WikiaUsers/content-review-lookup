@@ -7,213 +7,158 @@
  *                 <https://dev.fandom.com/wiki/PrettyUserTags>
  */
 
-/* Tag Definitions */
-window.UserTagsJS = {
-    modules: {},
-    tags: {
-        //Global Fandom Groups
-        'authenticated': {
-            link:  'Help:User rights#Authenticated',
-            title: 'Help:User rights'
-        },
-        'bot-global': {
-            link:  'Help:Bots',
-            title: 'Help:Bots'
-        },
-        'wiki-specialist': {
-            link:  'Help:Content Team Members',
-            title: 'Help:Content Team Members'
-        },
-        'content-volunteer': {
-            link:  'w:c:community:Thread:1401657',
-            title: 'February 26th 2018 Technical Update'
-        },
-        'council': {
-            link:  'Help:Community Council',
-            title: 'Help:Community Council'
-        },
-        'global-discussions-moderator': {
-            link:  'Help:Global Discussions moderators',
-            title: 'Help:Global Discussions moderators'
-        },
-        'helper': {
-            link:  'Help:Volunteers and Helpers#Helpers',
-            title: 'Help:Volunteers and Helpers'
-        },
-        'soap': {
-            link:  'Help:SpamTaskForce',
-            title: 'Help:SpamTaskForce'
-        },
-        'staff': {
-            link:  'Help:Community Team',
-            title: 'Help:Community Team'
-        },
-        'voldev': {
-            link:  'Help:Volunteer Developers',
-            title: 'Help:Volunteer Developers'
-        },
-        'wiki-representative': {
-            link:  'Help:Wiki Managers',
-            title: 'Help:Wiki Managers'
-        },
+;(function(mw) {
+	'use strict';
 
-        //Local Groups
-        'bannedfromchat': {
-            link:  'Help:Chat#Unbanning',
-            title: 'Help:Chat',
-            order: 1100
-        },
-        'blocked': {
-            link:  'Help:Blocking#Appealing a block',
-            title: 'Help:Blocking',
-            order: 500
-        },
-        'bot': {
-            link:  'Help:Bots',
-            title: 'Help:Bots',
-            order: 200
-        },
-        'bureaucrat': {
-            link:  'Help:Bureaucrats\' how-to guide',
-            title: 'Help:Bureaucrats\' how-to guide',
-            order: 300
-        },
-        'chatmoderator': {
-            link:  'Help:Chat#Chat moderators',
-            title: 'Help:Chat',
-            order: 900
-        },
-        'checkuser': {
-            link:  'Help:CheckUser',
-            title: 'Help:CheckUser',
-            order: 600
-        },
-        'content-moderator': {
-            link:  'Help:User rights#Content Moderators',
-            title: 'Help:User rights',
-            order: 700
-        },
-        'founder': {
-            link:  'Help:Founders',
-            title: 'Help:Founders',
-            order: 101
-        },
-        'rollback': {
-            link:  'Help:User rights#Rollbacks',
-            title: 'Help:User rights',
-            order: 1000
-        },
-        'sysop': {
-            link:  'Help:Administrators\' how-to guide',
-            title: 'Help:Administrators\' how-to guide',
-            order: 400
-        },
-        'threadmoderator': {
-            link:  'Help:User rights#Discussions Moderators',
-            title: 'Help:User rights',
-            order: 800
-        }
-    }
-};
+	if (!mw.config.values.profileUserName) return;
 
-/* Modules */
-UserTagsJS.modules.autoconfirmed = false;
-UserTagsJS.modules.stopblocked   = false;
-UserTagsJS.modules.inactive      = false;
-UserTagsJS.modules.newuser       = false;
-UserTagsJS.modules.mwGroups      = [
-    //Global Fandom Groups
-    'authenticated',
-    'bot-global',
-    
-    //Local Groups
-    'bannedfromchat',
-    'blocked',
-    'bot',
-    'bureaucrat',
-    'chatmoderator',
-    'checkuser',
-    'content-moderator',
-    'founder',
-    'rollback',
-    'sysop',
-    'threadmoderator'
-];
+	var preloads = 2;
+	var msg;
 
-/* MetaFilter */
-UserTagsJS.modules.metafilter = {
-    'bannedfromchat': [
-        'blocked',
-        'bot',
-        'chatmoderator',
-        'helper',
-        'soap',
-        'staff',
-        'sysop',
-        'threadmoderator',
-        'wiki-representative'
-    ],
-    'bot': 'bot-global',
-    'bureaucrat': [
-        'bot',
-        'founder'
-    ],
-    'chatmoderator': [
-        'blocked',
-        'bot',
-        'bureaucrat',
-        'founder',
-        'sysop',
-        'threadmoderator'
-    ],
-    'checkuser': [
-        'blocked',
-        'bot'
-    ],
-    'content-moderator': [
-        'blocked',
-        'bot',
-        'bureaucrat',
-        'founder',
-        'sysop'
-    ],
-    'founder': 'bot',
-    'rollback': [
-        'blocked',
-        'bot',
-        'bureaucrat',
-        'content-moderator',
-        'founder',
-        'sysop'
-    ],
-    'sysop': [
-        'bot',
-        'bureaucrat',
-        'founder'
-    ],
-    'threadmoderator': [
-        'blocked',
-        'bot',
-        'bureaucrat',
-        'founder',
-        'sysop'
-    ]
-};
+	/* Modules */
+	var modules = {
+		autoconfirmed: false,
+		stopblocked:   false,
+		inactive:      false,
+		newuser:       false,
+		mwGroups: [
+			//Local Groups
+			'blocked',
+			'bot',
+			'bureaucrat',
+			'content-moderator',
+			'sysop',
+			'threadmoderator'
+		],
 
-/* Custom */
-if (window.LinkedUserTagsFounder) {
-    UserTagsJS.modules.custom = UserTagsJS.modules.custom || {};
-    UserTagsJS.modules.custom[window.LinkedUserTagsFounder] = 'founder';
-}
+		/* MetaFilter */
+		metafilter: {
+			'bot': 'bot-global',
+			'bureaucrat': [
+				'bot',
+				'founder'
+			],
+			'content-moderator': [
+				'blocked',
+				'bot',
+				'bureaucrat',
+				'sysop'
+			],
+			'founder': 'bot',
+			'sysop': [
+				'bot',
+				'bureaucrat',
+			],
+			'threadmoderator': [
+				'blocked',
+				'bot',
+				'bureaucrat',
+				'sysop'
+			]
+		}
+	};
 
-/* UserTags Installation */
-mw.util.addCSS(
-    '.tag-container a.tag {' +
-        'color: inherit;' +
-    '}'
-);
+	function init() {
+		if (--preloads > 0) return;
 
-importArticle({
-    type: 'script',
-    article: 'u:dev:MediaWiki:UserTags/code.js'
-});
+		/* Tag Definitions */
+		window.UserTagsJS = {
+			modules: modules,
+			tags: {
+				//Global Fandom Groups
+				'council': {
+					link:  msg('user-tag-council-link').plain(),
+					title: msg('user-tag-council-tooltip').plain()
+				},
+				'global-discussions-moderator': {
+					link:  msg('user-tag-global-discussions-moderator-link').plain(),
+					title: msg('user-tag-global-discussions-moderator-tooltip').plain()
+				},
+				'soap': {
+					link:  msg('user-tag-soap-link').plain(),
+					title: msg('user-tag-soap-tooltip').plain()
+				},
+				'staff': {
+					link:  msg('user-tag-staff-link').plain(),
+					title: msg('user-tag-staff-tooltip').plain()
+				},
+				'voldev': {
+					link:  msg('user-tag-voldev-link').plain(),
+					title: msg('user-tag-voldev-tooltip').plain()
+				},
+				'wiki-representative': {
+					link:  msg('user-tag-wiki-representative-link').plain(),
+					title: msg('user-tag-wiki-representative-tooltip').plain()
+				},
+				'wiki-specialist': {
+					link:  msg('user-tag-wiki-specialist-link').plain(),
+					title: msg('user-tag-wiki-specialist-tooltip').plain()
+				},
+		
+				//Local Groups
+				'blocked': {
+					link:  msg('user-tag-blocked-link').plain(),
+					title: msg('user-tag-blocked-tooltip').plain(),
+					order: 500
+				},
+				'bot': {
+					link:  msg('user-tag-bot-link').plain(),
+					title: msg('user-tag-bot-tooltip').plain(),
+					order: 200
+				},
+				'bureaucrat': {
+					link:  msg('user-tag-bureaucrat-link').plain(),
+					title: msg('user-tag-bureaucrat-tooltip').plain(),
+					order: 300
+				},
+				'content-moderator': {
+					link:  msg('user-tag-content-moderator-link').plain(),
+					title: msg('user-tag-content-moderator-tooltip').plain(),
+					order: 700
+				},
+				'sysop': {
+					link:  msg('user-tag-sysop-link').plain(),
+					title: msg('user-tag-sysop-tooltip').plain(),
+					order: 400
+				},
+				'threadmoderator': {
+					link:  msg('user-tag-threadmoderator-link').plain(),
+					title: msg('user-tag-threadmoderator-tooltip').plain(),
+					order: 800
+				}
+			}
+		};
+
+		/* Custom */
+		if (window.LinkedUserTagsFounder) {
+			window.UserTagsJS.modules.custom = window.UserTagsJS.modules.custom || {};
+			window.UserTagsJS.modules.custom[window.LinkedUserTagsFounder] = 'founder';
+		}
+	
+		/* UserTags Installation */
+		mw.util.addCSS(
+			'.tag-container a.tag {' +
+				'color: inherit;' +
+			'}'
+		);
+		importArticle({
+			type: 'script',
+			article: 'u:dev:MediaWiki:UserTags/code.js'
+		});
+	}
+
+	function preload() {
+		window.dev.i18n.loadMessages('LinkedUserTags').done(function (i18no) {
+			msg = i18no.msg;
+			init();
+		});
+	}
+
+	mw.hook('dev.i18n').add(preload);
+	mw.loader.using('mediawiki.util').then(preload);
+
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+})(window.mediaWiki);

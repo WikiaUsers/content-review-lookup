@@ -7,10 +7,11 @@
 	browser: true, jquery: true,
 	onevar: true, eqeqeq: true,
 	multistr: true, maxerr: 999999,
-	-W082, -W084
+	-W082, -W084, -W097
 */
-/* global mw, ace */
+/* global mw, ace, console, confirm, alert, prompt */
 
+"use strict";
 $.when(
     $.Deferred(function (def) {
         $(function () {
@@ -45,15 +46,14 @@ $.when(
 
     console.log("Loading TooltipsEditor...");
 
-    var that;
-    var TooltipsEditor = window.TooltipsEditor = Object.assign(this, {
+    var TooltipsEditor, that;
+    TooltipsEditor = that = window.TooltipsEditor = {
 
         // variables; undefined variables are just for easier variable tracking
         modal: new mw.libs.QDmodal("TooltipsEditor"),
         loaded: true,
-        colorRules: undefined,
         deloadAll: function () {
-            this.actions = this.closing = this.isInMain = this.data = this.json = this.oldjson = this.oldjsonkeys = this.editor = this.lastFocusedEditor = this.lastFocusedElement = undefined;
+            that.actions = that.closing = that.isInMain = that.data = that.json = that.oldjson = that.oldjsonkeys = that.editor = that.lastFocusedEditor = that.lastFocusedElement = undefined;
         },
 
         otherInputBoxes: {
@@ -73,10 +73,10 @@ $.when(
         },
         forEachInputBox: function (callback) {
             var i = 0;
-            for (var intername in this.otherInputBoxes) {
+            for (var intername in that.otherInputBoxes) {
                 if (true) { // stops the editor from complaining
                     i++;
-                    callback(intername, i, this.otherInputBoxes);
+                    callback(intername, i, that.otherInputBoxes);
                 }
             }
         },
@@ -102,13 +102,6 @@ $.when(
             m: "strikethrough",
             o: "italic",
             r: "reset",
-        },
-        colorConvList: "0123456789abcdef",
-        conversions: {
-            "l": "bold",
-            "m": "strikethrough",
-            "n": "underline",
-            "o": "italic",
         },
         rarityConversions: {
             "Common": "f",
@@ -148,12 +141,8 @@ $.when(
                     return v;
                 }
             }),
-        escapes: {
-            regex: /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?:.+?)\}|\\(?:[rntvb&]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/,
-            token: "backescape.code",
-        },
 
-        // helper functions for this.updateActions
+        // helper JSON/param functions
         optionalParam: function (v) {
             if (typeof v !== "string")
                 return "";
@@ -161,83 +150,30 @@ $.when(
                 return v.trim();
         },
         inOldjson: function (k) {
-            return this.oldjsonkeys.indexOf(k) !== -1;
+            return that.oldjsonkeys.indexOf(k) !== -1;
         },
         throwOldjson: function (k) {
-            if (this.inOldjson(k) && !(k in this.oldjson)) {
-                this.oldjson[k] = {};
-                Object.assign(this.oldjson[k], this.json[k]);
+            if (that.inOldjson(k) && !(k in that.oldjson)) {
+                that.oldjson[k] = {};
+                Object.assign(that.oldjson[k], that.json[k]);
             }
-        },
-        allInputEquals: function (a, b) {
-            var alltrue = true;
-            this.forEachInputBox(function (inter, i, otherinputboxes) {
-                var val = otherinputboxes[inter];
-                if (val.optional ?
-                    (this.optionalParam(a[inter]) !== this.optionalParam(b[inter])) :
-                    (a[inter] !== b[inter])) {
-                    alltrue = false;
-                }
-            }.bind(this));
-            return alltrue;
-        },
-        updateOne: function (k) {
-            if (k) {
-                // if no old version, two cases:
-                if (!this.inOldjson(k) && (k in this.json)) // first case: has a new version => entry added
-                    this.actions[k] = "add";
-                else if (!this.inOldjson(k) && !(k in this.json)) { // second case: does not have a new version => entry does not exist
-                    if (k in this.actions) delete this.actions[k];
-                }
-                // at this point, it is guaranteed that an old version exists:
-                else if (!(k in this.json)) // no new version =?> entry removed
-                    this.actions[k] = "remove";
-                else if (!this.oldjson[k] // value of old version is not recorded => new version must be equal to old version
-                    ||
-                    (this.oldjson[k].title === this.json[k].title &&
-                        this.oldjson[k].text === this.json[k].text &&
-                        this.allInputEquals(this.oldjson[k], this.json[k])
-                    ) // compare each entries of the old version to new version; proceed if all equal
-                ) {
-                    if (k in this.actions) delete this.actions[k];
-                    if (k in this.oldjson) delete this.oldjson[k];
-                } else { // new version must be different from old version
-                    this.actions[k] = "modify";
-                }
-            }
-        },
-        revertAction: function () {
-            var key = $(this).attr("data-value");
-            if (key in that.oldjson) {
-                that.json[key] = {};
-                Object.assign(that.json[key], that.oldjson[key]);
-                delete that.oldjson[key];
-            } else if (key in that.json)
-                delete that.json[key];
-            if (key in that.actions) delete that.actions[key];
-            mw.notify("for " + key, {
-                title: "Undo Successful",
-                type: "info"
-            });
-            that.updateActions();
-            if ($("#TooltipsEditor-searchInput").val().trim() !== "") that.generateSearch();
-        },
-        getOtherParamAttr: function (obj, k) {
-            var ret = {};
-            this.forEachInputBox(function (inter) {
-                ret["data-tooltip-" + inter] =
-                    obj[k] && obj[k][inter] && obj[k][inter].replaceAll("&amp;", "&");
-            }.bind(this));
-            return ret;
         },
         getEditParamPackage: function (text, cls, obj, k) {
+            function getOtherParamAttr(obj, k) {
+                var ret = {};
+                that.forEachInputBox(function (inter) {
+                    ret["data-tooltip-" + inter] =
+                        obj[k] && obj[k][inter] && obj[k][inter].replaceAll("&amp;", "&");
+                });
+                return ret;
+            }
             return Object.assign({
                 "text": text,
                 "class": cls,
                 "data-tooltip-title": obj[k] && obj[k].title && obj[k].title.replaceAll("&amp;", "&"),
                 "data-tooltip-text": obj[k] && obj[k].text && obj[k].text.replaceAll("&amp;", "&"),
                 "data-tooltip-key": k.replaceAll("&amp;", "&")
-            }, this.getOtherParamAttr(obj, k));
+            }, getOtherParamAttr(obj, k));
         },
         getMinetipParamPackage: function (text, cls, obj, k) {
             return {
@@ -248,32 +184,228 @@ $.when(
             };
         },
 
-        // main function this.updateActions
+        // helper parsers
+        parsewithUIText: function () {
+            return api.post({
+                action: "parse",
+                contentmodel: "wikitext",
+                text: "{{UIText|" + ace.tooltipsTextEditor.getValue() + "|}}",
+            });
+        },
+        getParsedText: function (data) {
+            return $(data.parse.text["*"]).find("p").html().trim().replaceAll(/&amp;/g, "&").replaceAll(/&nbsp;/g, " ");
+        },
+        // helper parsers: helper conversion functions from different layers
+        processResult: function (d) {
+            // [1.entry] lua data => json/preview format
+            // inverse of applyReplacements
+            // note: double-backslash and escaped quotes are treated as one character
+            // in both lua and json. No replacement needed
+            return JSON.parse(d);
+        },
+        applyReplacements: function (s) {
+            // [1.exit] json/preview format => lua data
+            // inverse of processResult
+            // note: double-backslash and escaped quotes are treated as one character
+            // in json, they should be escaped again for lua to understand
+            return s.replaceAll(/\\/g, '\\\\').replaceAll(/(['"])/g, "\\$1");
+        },
+        convertSlashes: function (s) {
+            // [2.entry] json/preview format => editor view
+            // inverse of replaceLines
+            // with reference to MediaWiki:Common.js/minetip.js
+            s = s.replaceAll(/\\\\/g, "&#92;").replaceAll(/\\\//g, "&#47;");
+            return s.replaceAll(/\//g, "\n").replaceAll("&#92;", "\\").replaceAll("&#47;", "/");
+        },
+        replaceLines: function (s) {
+            // [2.exit] editor view => json/preview format
+            // inverse of convertSlashes
+            s = s.replaceAll(/\\/g, "&#92;").replaceAll(/\//g, "&#47;");
+            return s.replaceAll("&#92;", "\\\\").replaceAll("&#47;", "\\/").replaceAll(/\n/g, "/");
+        },
+
+        // helper DOM/editor functions
+        reset: function (confirm) {
+            if (confirm) {
+                $("#TooltipsEditor-search").show();
+                $("#TooltipsEditor-searchResults").empty();
+                $("#searchResultsMessage, #TooltipsEditor-editor").hide();
+                $("#TooltipsEditor > section").removeClass("mw-ajax-loader");
+                ace.tooltipsTextEditor.setValue("");
+                ace.tooltipsTitleEditor.setValue("");
+                $("#TooltipsEditor-key, #TooltipsEditor-name").val("");
+                $(".qdmodal-button").show();
+                if ($("#TooltipsEditor-searchInput").val().trim() !== "") that.generateSearch();
+                $("#TooltipsEditor header h3").text("Tooltips Editor");
+            }
+        },
+        processColors: function () {
+            return Object.keys(that.colorConversions).map(function (v, i, a) {
+                return $("<a>", {
+                    "class": "TooltipsEditor-insertFormat" + ((i === a.length - 1) && " TooltipsEditor-last" || ""),
+                    text: that.colorConversions[v].replaceAll("_", " ").replaceAll(/(\w)(\w*)/g, function (_, $1, $2) {
+                        return $1.toUpperCase() + $2;
+                    }),
+                    "data-insert": "&" + v,
+                });
+            });
+        },
+        processRarityTexts: function () {
+            return Object.keys(that.rarityConversions).map(function (v, i, a) {
+                return $("<span>", {
+                    html: [
+                        $("<a>", {
+                            "class": "TooltipsEditor-insertFormat",
+                            text: v,
+                            "data-insert": "&" + that.rarityConversions[v] + "&l" + v.toUpperCase().replaceAll(/[()]/g, ""),
+                            style: "font-style: italic;",
+                        }),
+                        $("<a>", {
+                            "class": "TooltipsEditor-insertFormat" + ((i === a.length - 1) && " TooltipsEditor-last" || ""),
+                            text: that.shortForm[v],
+                            "data-insert": "&" + that.rarityConversions[v],
+                            style: "font-style: italic;",
+                        }),
+                    ]
+                });
+            });
+        },
+        updatePreview: function () {
+            // no parser solution (quick)
+            $("#TooltipsEditor-preview").attr({
+                "data-minetip-text": that.replaceLines(ace.tooltipsTextEditor.getValue()),
+                "data-minetip-title": ace.tooltipsTitleEditor.getValue(),
+            });
+            // experimental solution (slow)
+            /*
+            that.parsewithUIText().then(function(data) {
+            	$("#TooltipsEditor-preview").attr({
+            		"data-minetip-text": that.getParsedText(data),
+            		"data-minetip-title": ace.tooltipsTitleEditor.getValue(),
+            	});
+            });
+            */
+        },
+        insertText: function (text) {
+            var editor = that.lastFocusedEditor;
+            if (!editor && that.lastFocusedElement) {
+                return that.lastFocusedElement.textSelection("encapsulateSelection", {
+                    pre: text,
+                    peri: "",
+                }), true;
+            }
+
+            editor.insert(text, 1);
+
+            return true;
+        },
+
+        // Lua Helpers
+        luaTableToJson: function (s) {
+            return api.post({
+                action: "scribunto-console",
+                title: mw.config.get("wgPageName"),
+                question: "=mw.text.jsonEncode(p)",
+                content: s,
+            });
+        },
+        refreshLuaCache: function () {
+            var api = new mw.Api();
+            api.get({
+                action: 'parse',
+                text: '{{#invoke:Cache|refreshSlotAliasesCache}}'
+            }).then(function (data) {
+                console.log('Cache Refreshed!', data);
+            })
+            // Fandom doesn't like catch as a method name
+            ["catch"](function (err) {
+                mw.notify("Error refreshing lua cache", {
+                    title: "Uncaught Error",
+                    type: "error"
+                });
+                console.error(err);
+            });
+        },
+
+        // main function updateActions
         updateActions: function (keys) {
+            function allInputEquals(a, b) {
+                var alltrue = true;
+                that.forEachInputBox(function (inter, i, otherinputboxes) {
+                    var val = otherinputboxes[inter];
+                    if (val.optional ?
+                        (that.optionalParam(a[inter]) !== that.optionalParam(b[inter])) :
+                        (a[inter] !== b[inter])) {
+                        alltrue = false;
+                    }
+                });
+                return alltrue;
+            }
+
+            function updateOne(k) {
+                if (k) {
+                    // if no old version, two cases:
+                    if (!that.inOldjson(k) && (k in that.json)) // first case: has a new version => entry added
+                        that.actions[k] = "add";
+                    else if (!that.inOldjson(k) && !(k in that.json)) { // second case: does not have a new version => entry does not exist
+                        if (k in that.actions) delete that.actions[k];
+                    }
+                    // at this point, it is guaranteed that an old version exists:
+                    else if (!(k in that.json)) // no new version =?> entry removed
+                        that.actions[k] = "remove";
+                    else if (!that.oldjson[k] || // value of old version is not recorded => new version must be equal to old version
+                        (that.oldjson[k].title === that.json[k].title &&
+                            that.oldjson[k].text === that.json[k].text &&
+                            allInputEquals(that.oldjson[k], that.json[k])
+                        ) // compare each entries of the old version to new version; proceed if all equal
+                    ) {
+                        if (k in that.actions) delete that.actions[k];
+                        if (k in that.oldjson) delete that.oldjson[k];
+                    } else { // new version must be different from old version
+                        that.actions[k] = "modify";
+                    }
+                }
+            }
+            var revertAction = function () {
+                var key = $(this).attr("data-value");
+                if (key in that.oldjson) {
+                    that.json[key] = {};
+                    Object.assign(that.json[key], that.oldjson[key]);
+                    delete that.oldjson[key];
+                } else if (key in that.json)
+                    delete that.json[key];
+                if (key in that.actions) delete that.actions[key];
+                mw.notify("for " + key, {
+                    title: "Undo Successful",
+                    type: "info"
+                });
+                that.updateActions();
+                if ($("#TooltipsEditor-searchInput").val().trim() !== "") that.generateSearch();
+            };
             // calling updateActions() without keys will refresh the table without additional change
             // keys can be an array of strings or one string
             if (keys) {
                 if (typeof (keys) === "string") {
-                    this.updateOne(keys);
+                    updateOne(keys);
                 } else {
                     for (var i = 0; i < keys.length; i++) {
                         var k = keys[i];
-                        this.updateOne(k);
+                        updateOne(k);
                     }
                 }
             }
 
             var $log = $("#TooltipsEditor-actionLog");
-            var len = Object.keys(this.actions).length;
+            var len = Object.keys(that.actions).length;
             var ls = [
                 [],
                 [],
                 [],
                 []
             ];
-            var getEditParams = this.getEditParamPackage.bind(this, "edit", "actions-edit-button");
-            var getUndoPreview = this.getMinetipParamPackage.bind(this, "preview (undo)", "minetip actions-preview-button", this.oldjson);
-            var getCurrentPreview = this.getMinetipParamPackage.bind(this, "preview (current)", "minetip actions-preview-button", this.json);
+            var getEditParams = that.getEditParamPackage.bind(null, "edit", "actions-edit-button");
+            var getUndoPreview = that.getMinetipParamPackage.bind(null, "preview (undo)", "minetip actions-preview-button", that.oldjson);
+            var getCurrentPreview = that.getMinetipParamPackage.bind(null, "preview (current)", "minetip actions-preview-button", that.json);
             var getUndoButtonParams = function (k) {
                 return {
                     text: "undo",
@@ -288,14 +420,14 @@ $.when(
             }));
 
             if (len) {
-                Object.keys(this.actions).sort().forEach(function (k) {
-                    switch (this.actions[k]) {
+                Object.keys(that.actions).sort().forEach(function (k) {
+                    switch (that.actions[k]) {
                         case ("add"): {
                             ls[0].push($("<li>", {
                                 html: [
                                     "Added " + k,
-                                    $("<a>", getUndoButtonParams(k)).on("click", this.revertAction /* don't bind */ ),
-                                    $("<a>", getEditParams(this.json, k)),
+                                    $("<a>", getUndoButtonParams(k)).on("click", revertAction /* don't bind */ ),
+                                    $("<a>", getEditParams(that.json, k)),
                                     $("<span>", getCurrentPreview(k))
                                 ],
                                 "class": "actions-add"
@@ -306,8 +438,8 @@ $.when(
                             ls[1].push($("<li>", {
                                 html: [
                                     "Modified " + k,
-                                    $("<a>", getUndoButtonParams(k)).on("click", this.revertAction /* don't bind */ ),
-                                    $("<a>", getEditParams(this.json, k)),
+                                    $("<a>", getUndoButtonParams(k)).on("click", revertAction /* don't bind */ ),
+                                    $("<a>", getEditParams(that.json, k)),
                                     $("<span>", getUndoPreview(k)),
                                     $("<span>", getCurrentPreview(k))
                                 ],
@@ -319,8 +451,8 @@ $.when(
                             ls[2].push($("<li>", {
                                 html: [
                                     "Removed&nbsp;" + k,
-                                    $("<a>", getUndoButtonParams(k)).on("click", this.revertAction /* don't bind */ ),
-                                    $("<a>", getEditParams(this.oldjson, k)),
+                                    $("<a>", getUndoButtonParams(k)).on("click", revertAction /* don't bind */ ),
+                                    $("<a>", getEditParams(that.oldjson, k)),
                                     $("<span>", getUndoPreview(k))
                                 ],
                                 "class": "actions-remove"
@@ -328,7 +460,7 @@ $.when(
                             break;
                         }
                     }
-                }.bind(this));
+                });
             }
 
             ls.forEach(function (v) {
@@ -342,9 +474,9 @@ $.when(
 
             $("#TooltipsEditor-totalTooltips").html($("<p>", {
                 html: [
-                    "Tooltips Count: " + Object.keys(this.json).length,
+                    "Tooltips Count: " + Object.keys(that.json).length,
                     $("<span>", (function () {
-                        var diff = Object.keys(this.json).length - this.oldjsonkeys.length;
+                        var diff = Object.keys(that.json).length - that.oldjsonkeys.length;
                         if (diff < 0) {
                             return {
                                 text: "(" + diff + ")",
@@ -361,30 +493,29 @@ $.when(
                                 "class": "diff-zero"
                             };
                         }
-                    }.bind(this)())),
+                    }())),
                 ],
             }));
         },
 
-        // helper functions for this.generateSearch
-        searchArray: function (arr, search) {
-            var splitSearch = function (str) {
-                var pattern = str.split("").map(function (v) {
-                    return "(?=.*" + mw.util.escapeRegExp(v) + ")";
-                }).join("");
-                var regex = new RegExp(pattern, "i");
-                var match = str.match(regex);
-
-                return match && match[0];
-            };
-
-            return arr.filter(function (v) {
-                return v.toLowerCase().includes(search.toLowerCase()) || splitSearch(v.toLowerCase(), search.toLowerCase());
-            });
-        },
-
-        // main function this.generateSearch
+        // main function generateSearch
         generateSearch: function () {
+            function searchArray(arr, search) {
+                var splitSearch = function (str) {
+                    var pattern = str.split("").map(function (v) {
+                        return "(?=.*" + mw.util.escapeRegExp(v) + ")";
+                    }).join("");
+                    var regex = new RegExp(pattern, "i");
+                    var match = str.match(regex);
+
+                    return match && match[0];
+                };
+
+                return arr.filter(function (v) {
+                    return v.toLowerCase().includes(search.toLowerCase()) || splitSearch(v.toLowerCase(), search.toLowerCase());
+                });
+            }
+
             $("#searchResultsMessage").show();
 
             var $this = $("#TooltipsEditor-searchInput");
@@ -394,8 +525,8 @@ $.when(
 
             if (val.trim() === "") return $results.html("<p>Enter a search term to start searching.</p>");
 
-            var names = Object.keys(this.json).sort();
-            var results = this.searchArray(names, val);
+            var names = Object.keys(that.json).sort();
+            var results = searchArray(names, val);
 
             if (results.length > 100) {
                 results.length = 100;
@@ -414,9 +545,9 @@ $.when(
                             target: "_blank",
                         }),
                         " (",
-                        $("<a>", this.getEditParamPackage("edit", "TooltipsEditor-editTooltip", this.json, v)),
+                        $("<a>", that.getEditParamPackage("edit", "TooltipsEditor-editTooltip", that.json, v)),
                         "<span class='noselect'> &bull; </span>",
-                        $("<span>", this.getMinetipParamPackage("preview", "minetip TooltipsEditor-previewTooltip", this.json, v)),
+                        $("<span>", that.getMinetipParamPackage("preview", "minetip TooltipsEditor-previewTooltip", that.json, v)),
                         "<span class='noselect'> &bull; </span>",
                         $("<a>", {
                             "class": "TooltipsEditor-removeTooltip",
@@ -426,25 +557,16 @@ $.when(
                         ")",
                     ],
                 })[0]);
-            }.bind(this));
+            });
 
             if (!results.length) return $results.html("<p>No tooltip matched your search.</p>");
             else if (abort) $results.append("<p>Showing the first 100 results.</p>");
             else $results.append("<p>Total: " + results.length + (results.length > 1 && " results" || " result") + ".</p>");
         },
 
-        // helper functions for this.openEditor
-        convertSlashes: function (s) {
-            // [2.entry] json/preview format => editor view
-            // inverse of this.replaceLines
-            // with reference to MediaWiki:Common.js/minetip.js
-            s = s.replaceAll(/\\\\/g, "&#92;").replaceAll(/\\\//g, "&#47;");
-            return s.replaceAll(/\//g, "\n").replaceAll("&#92;", "\\").replaceAll("&#47;", "/");
-        },
-
-        // main function this.openEditor
+        // main function openEditor
         openEditor: function (values) {
-            this.isInMain = false;
+            that.isInMain = false;
             values.oldKey = values.key;
 
             $("#TooltipsEditor-search").hide();
@@ -454,11 +576,11 @@ $.when(
             ace.tooltipsTextEditor.resize();
             ace.tooltipsTitleEditor.resize();
 
-            ace.tooltipsTextEditor.setValue(this.convertSlashes(values.text || ""));
+            ace.tooltipsTextEditor.setValue(that.convertSlashes(values.text || ""));
             ace.tooltipsTitleEditor.setValue(values.title || "");
             $("#TooltipsEditor-key").val(values.key || "");
 
-            this.forEachInputBox(function (inter) {
+            that.forEachInputBox(function (inter) {
                 $("#TooltipsEditor-" + inter).val(values[inter] || "");
             });
 
@@ -470,7 +592,7 @@ $.when(
                     id: "TooltipsEditor-save",
                     text: "Save",
                     "class": "oo-ui-buttonElement-button",
-                    click: this.onSave.bind(this, values.oldKey),
+                    click: that.onSave.bind(null, values.oldKey),
                 }),
             });
             var $button2 = $("<span>", {
@@ -480,8 +602,8 @@ $.when(
                     text: "Cancel",
                     "class": "oo-ui-buttonElement-button",
                     click: function () {
-                        this.reset(confirm("Go back to main page without saving?"));
-                    }.bind(this),
+                        that.reset(confirm("Go back to main page without saving?"));
+                    },
                 }),
             });
             var $button3 = $("<span>", {
@@ -498,9 +620,10 @@ $.when(
                 $button2,
                 $button3
             );
-            this.updatePreview();
+            that.updatePreview();
         },
 
+        // main function onSave
         onSave: function (oldKey) {
             var otherparams = {};
             var values = {
@@ -509,15 +632,15 @@ $.when(
                 title: ace.tooltipsTitleEditor.getValue(),
                 key: $("#TooltipsEditor-key").val(),
             };
-            this.forEachInputBox(function (inter) {
+            that.forEachInputBox(function (inter) {
                 values[inter] = $("#TooltipsEditor-" + inter).val();
                 otherparams[inter] = values[inter].trim();
-            }.bind(this));
+            });
 
-            if (!values.key) return alert("You need to enter a tooltip ID!");
+            if (!values.key) return alert("You need to enter a Tooltip Key!");
 
             var pass = true;
-            this.forEachInputBox(function (inter, i, otherinputboxes) {
+            that.forEachInputBox(function (inter, i, otherinputboxes) {
                 var val = otherinputboxes[inter];
                 if (!val.optional) {
                     if (!values[inter]) {
@@ -525,133 +648,38 @@ $.when(
                         return alert("You need to enter the tooltip's " + val.display + "!");
                     }
                 }
-            }.bind(this));
+            });
             if (!pass) return;
 
-            this.throwOldjson(values.oldKey);
-            this.throwOldjson(values.key);
+            that.throwOldjson(values.oldKey);
+            that.throwOldjson(values.key);
 
-            if (values.oldKey) delete this.json[values.oldKey];
-            this.editor.addClass("mw-ajax-loader");
+            if (values.oldKey) delete that.json[values.oldKey];
+            that.editor.addClass("mw-ajax-loader");
             $(".qdmodal-button").show();
             $("#TooltipsEditor-editor, #searchResultsMessage").hide();
 
-            this.parsewithUIText().then(function (data) {
-                this.json[values.key] = Object.assign({
-                    text: values.text ? this.getParsedText(data) : undefined,
+            that.parsewithUIText().then(function (data) {
+                that.json[values.key] = Object.assign({
+                    text: values.text ? that.getParsedText(data) : undefined,
                     title: values.title.trim(),
                 }, otherparams);
-                this.isInMain = true;
-                this.data = this.json;
+                that.isInMain = true;
+                that.data = that.json;
 
-                this.updateActions([values.oldKey, values.key]);
-                this.reset(true);
-            }.bind(this));
-        },
-
-        // helper functions for this.MainProcess
-        processResult: function (d) {
-            // [1.entry] lua data => json/preview format
-            // inverse of this.applyReplacements
-            // note: double-backslash and escaped quotes are treated as one character
-            // in both lua and json. No replacement needed
-            return JSON.parse(d);
-        },
-        reset: function (confirm) {
-            if (confirm) {
-                $("#TooltipsEditor-search").show();
-                $("#TooltipsEditor-searchResults").empty();
-                $("#searchResultsMessage, #TooltipsEditor-editor").hide();
-                $("#TooltipsEditor > section").removeClass("mw-ajax-loader");
-                ace.tooltipsTextEditor.setValue("");
-                ace.tooltipsTitleEditor.setValue("");
-                $("#TooltipsEditor-key, #TooltipsEditor-name").val("");
-                $(".qdmodal-button").show();
-                if ($("#TooltipsEditor-searchInput").val().trim() !== "") this.generateSearch();
-                $("#TooltipsEditor header h3").text("Tooltips Editor");
-            }
-        },
-        processColors: function () {
-            return Object.keys(this.colorConversions).map(function (v, i, a) {
-                return $("<a>", {
-                    "class": "TooltipsEditor-insertFormat" + ((i === a.length - 1) && " TooltipsEditor-last" || ""),
-                    text: this.colorConversions[v].replaceAll("_", " ").replaceAll(/(\w)(\w*)/g, function (_, $1, $2) {
-                        return $1.toUpperCase() + $2;
-                    }),
-                    "data-insert": "&" + v,
-                });
-            }.bind(this));
-        },
-        processRarityTexts: function () {
-            return Object.keys(this.rarityConversions).map(function (v, i, a) {
-                return $("<span>", {
-                    html: [
-                        $("<a>", {
-                            "class": "TooltipsEditor-insertFormat",
-                            text: v,
-                            "data-insert": "&" + this.rarityConversions[v] + "&l" + v.toUpperCase().replaceAll(/[()]/g, ""),
-                            style: "font-style: italic;",
-                        }),
-                        $("<a>", {
-                            "class": "TooltipsEditor-insertFormat" + ((i === a.length - 1) && " TooltipsEditor-last" || ""),
-                            text: this.shortForm[v],
-                            "data-insert": "&" + this.rarityConversions[v],
-                            style: "font-style: italic;",
-                        }),
-                    ]
-                });
-            }.bind(this));
-        },
-        replaceLines: function (s) {
-            // [2.exit] editor view => json/preview format
-            // inverse of this.convertSlashes
-            s = s.replaceAll(/\\/g, "&#92;").replaceAll(/\//g, "&#47;");
-            return s.replaceAll("&#92;", "\\\\").replaceAll("&#47;", "\\/").replaceAll(/\n/g, "/");
-        },
-        parsewithUIText: function () {
-            return api.post({
-                action: "parse",
-                contentmodel: "wikitext",
-                text: "{{UIText|" + ace.tooltipsTextEditor.getValue() + "|}}",
+                that.updateActions([values.oldKey, values.key]);
+                that.reset(true);
             });
         },
-        getParsedText: function (data) {
-            return $(data.parse.text["*"]).find("p").html().trim().replaceAll(/&amp;/g, "&").replaceAll(/&nbsp;/g, " ");
-        },
-        updatePreview: function () {
-            // no parser solution (quick)
-            $("#TooltipsEditor-preview").attr({
-                "data-minetip-text": this.replaceLines(ace.tooltipsTextEditor.getValue()),
-                "data-minetip-title": ace.tooltipsTitleEditor.getValue(),
-            });
-            // experimental solution (slow)
-            /*
-            this.parsewithUIText().then(function(data) {
-            	$("#TooltipsEditor-preview").attr({
-            		// "data-minetip-text": this.replaceLines(ace.tooltipsTextEditor.getValue()), // no parser solution
-            		"data-minetip-text": this.getParsedText(data),
-            		"data-minetip-title": ace.tooltipsTitleEditor.getValue(),
-            	});
-            }.bind(this));
-            */
-        },
-        insertText: function (text) {
-            var editor = this.lastFocusedEditor;
-            if (!editor && this.lastFocusedElement) {
-                return this.lastFocusedElement.textSelection("encapsulateSelection", {
-                    pre: text,
-                    peri: "",
-                }), true;
-            }
 
-            editor.insert(text, 1);
-
-            return true;
-        },
+        /* Editor-related Functions */
+        // main functions setupEditor, aceSyntaxDef, getAceMode
         setupEditor: function (id) {
+            // This defines the mode of editor. For how it works, see https://ace.c9.io/#nav=higlighter
             var aceEditor = ace.edit(id);
-            var mode = new(ace.require("ace/mode/javascript").Mode)();
-            mode.HighlightRules = ace.require("ace/mode/minecraft-tooltips").MinecraftHighlightRules;
+            var mode = that.getAceMode();
+            // if you wonder where the NetworkError about ./worker-javascript.js comes from, here it is.
+            // the error is left untouched intentionally
             aceEditor.session.setMode(mode);
 
             if (id === "TooltipsEditor-text-AceEditor") {
@@ -678,97 +706,170 @@ $.when(
                 });
             }
 
-            aceEditor.session.on("change", this.updatePreview.bind(this));
+            aceEditor.session.on("change", that.updatePreview);
             aceEditor.on("focus", function () {
-                this.lastFocusedEditor = aceEditor;
-            }.bind(this));
+                that.lastFocusedEditor = aceEditor;
+            });
 
             return aceEditor;
         },
+        aceSyntaxDef: function () {
+            /* The function aceDef is explicitly written with independent values
+             * so that it can be tested on https://ace.c9.io/tool/mode_creator.html
+             * When testing, JUST USE THE CONTENT INSIDE aceDef. No need to copy the ace.define(...)
+             * For how this works, see https://ace.c9.io/#nav=higlighter
+             * or https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode
 
-        onMatch: function (str) {
-            var match = this.splitRegex.exec(str);
-            var values = match.slice(1);
-            values.push(match[0]);
+             * Important notes on understanding $rule definition:
+             * "The highlighter functions as a state machine, with regex matches used to determine tokens and transitions between states."
+             * "The highlighter starts off in the "start" state."
+             * "If a rule is matched which has a next state set, then the tokeniser will move into that new state."
+             * "Rules are prioritised based on their position within the ruleset, and the usual matching rules for regex apply."
 
-            var types = this.token.apply(this, values);
+             * For require() / ace.require() pathnames, the "ace/" refers to the directory at https://github.com/ajaxorg/ace/src
+             * Tokenizer source code (I hope you won't ever need it): https://github.com/ajaxorg/ace/blob/master/src/tokenizer.js
+            */
+            ace.define("ace/mode/minetip", [], function aceDef(require, exports) {
+                var oop = require("ace/lib/oop");
+                var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-            if (typeof types === "string")
-                return [{
-                    type: types,
-                    value: str
-                }];
-            var tokens = [];
-            for (var i = 0, l = types.length; i < l; i++) {
-                if (values[i])
-                    tokens[tokens.length] = {
-                        type: types[i],
-                        value: values[i]
-                    };
-            }
-            return tokens;
-        },
-        MinecraftHighlightRules: function () {
-            var formats = [];
+                /* Constants */
+                var formattingConversions = {
+                    "l": "format_bold", // note: class is from ace editor; must be used for correct cursor letter widths
+                    "m": "format-m", // note: must be custom for compatibility with m && n
+                    "n": "format-n", // note: must be custom the .ace_format_underline is problematic
+                    "o": "format_italic",
+                };
+                var escapesExp = /\\(ench?a?n?t?m?e?n?t?|ra?r?i?t?y?|poti?o?n|sta?t?)\{(?:.+?)\}|\\(?:[rntvb&]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{1,4}|u\{[0-9a-fA-F]{1,6}\}|[0-2][0-7]{0,2}|3[0-7][0-7]?|[4-7][0-7].)/;
+                var colorConvList = "0123456789abcdef";
 
-            this.$rules = {
-                start: [{ // [0]
-                    regex: /&([0-9a-f])/,
-                    token: function (code) {
-                        this.nextCode = code;
-                        that.colorRules["color-" + code].formats = [];
-                        return "escape.format.code.color";
-                    },
-                    next: function () {
-                        return "color-" + this.nextCode;
-                    },
-                    onMatch: that.onMatch,
-                }, { // [1]
-                    regex: /&r/,
-                    token: function () {
-                        formats = [];
-                        return "escape.format.code.color";
-                    },
-                }, /* [2] */ that.escapes, { // [3]
-                    regex: /&([k-o])/,
-                    token: function (code) {
-                        if (code !== "k")
-                            formats.push(that.conversions[code]);
-                        return "escape.format.code.color";
-                    },
-                }, { // [4]
-                    regex: /[^\0]/,
-                    token: function () {
-                        var ret = "text.formatted";
-
-                        formats.forEach(function (code) {
-                            ret += ".format_" + code;
-                        });
-                        return ret;
-                    },
-                }],
-            };
-
-            for (var prefix in that.colorRules) {
-                if (that.colorRules.hasOwnProperty(prefix)) {
-                    var data = that.colorRules[prefix];
-
-                    this.$rules[prefix] = data.rules;
+                // A color rule object - since we want to store custom attributes in it
+                function OneColorRule(c) {
+                    this.color = c;
+                    this.formats = []; // format stack for this color rule
+                    var myFormats = this.formats;
+                    this.rules = [ /* [0: matches escapes] */ {
+                        regex: escapesExp,
+                        token: "backescape.code",
+                    }, /* [1: matches color code] */ {
+                        regex: /(&)([0-9a-f])/,
+                        token: function (_, code) {
+                            this.nextCode = code;
+                            return "escape.format.code.color";
+                        },
+                        next: function () {
+                            myFormats = []; // clear format stack before leaving state
+                            return "color-" + this.nextCode;
+                        },
+                    }, /* [2: matches formatting code] */ {
+                        regex: /(&)([k-o])/,
+                        token: function (_, code) {
+                            if (code !== "k")
+                                myFormats.push(formattingConversions[code]);
+                            return "escape.format.code.text";
+                        },
+                    }, /* [3: matches reset/end-of-line] */ {
+                        regex: /&r|$/,
+                        token: "language.escape.format.code",
+                        next: function () {
+                            myFormats = []; // clear format stack on reset
+                            return "start";
+                        },
+                    }, /* [4: matches any character] */ {
+                        regex: /[^\0]/,
+                        token: function () {
+                            myFormats = myFormats.filter(function (v, i) {
+                                return i === myFormats.indexOf(v);
+                            });
+                            return "format.color.format-" + c + ".code" + myFormats.map(function (code) {
+                                return "." + code;
+                            }).join("");
+                        },
+                    }];
                 }
-            }
 
-            this.normalizeRules();
+                // Defining the actual HighlightRules object
+                function MinecraftHighlightRules() {
+                    var formatStack = []; // a format stack for the "start" state
+                    this.$rules = {
+                        /* rules on "start" state */
+                        start: [ /* [0: matches escapes] */ {
+                            regex: escapesExp,
+                            token: "backescape.code",
+                        }, /* [1: matches color code] */ {
+                            regex: /(&)([0-9a-f])/,
+                            token: function (_, code) {
+                                this.nextCode = code;
+                                return "escape.format.code.color";
+                            },
+                            next: function () {
+                                formatStack = []; // clear format stack before leaving state
+                                return "color-" + this.nextCode;
+                            },
+                        }, /* [2: matches formatting code] */ {
+                            regex: /(&)([k-o])/,
+                            token: function (_, code) {
+                                if (code !== "k")
+                                    formatStack.push(formattingConversions[code]);
+                                return "escape.format.code.color";
+                            },
+                        }, /* [3: matches reset/end-of-line] */ {
+                            regex: /&r|$/,
+                            token: function () {
+                                formatStack = []; // clear format stack on reset
+                                return "language.escape.format.code";
+                            },
+                        }, /* [4: matches any character] */ {
+                            regex: /[^\0]/,
+                            token: function () {
+                                formatStack = formatStack.filter(function (v, i) {
+                                    return i === formatStack.indexOf(v);
+                                });
+                                return "text.formatted" + formatStack.map(function (code) {
+                                    return "." + code;
+                                }).join("");
+                            },
+                        }],
+                    };
+                    /* insert rules on all "color-{0-9a-f}" states */
+                    // note: must call a function to add each color rule (X vanilla for-loop)
+                    for (var i = 0; i < colorConvList.length; i++) {
+                        var c = colorConvList[i];
+                        var key = "color-" + c;
+                        // place a new rule object in $rules
+                        var colorRule = new OneColorRule(c);
+                        this.$rules[key] = colorRule.rules;
+                    }
+                    this.normalizeRules();
+                }
+
+                // Export Rules
+                oop.inherits(MinecraftHighlightRules, TextHighlightRules);
+                exports.MinecraftHighlightRules = MinecraftHighlightRules;
+            });
+        },
+        // Get an instance of the Minetip mode
+        // Note: The standard method shown on the website to create a new class
+        // with oop.inherit has so far not been successful.
+        getAceMode: function () {
+            var JsMode = ace.require("ace/mode/javascript").Mode;
+            var newMode = new JsMode();
+            var minetipRules = ace.require("ace/mode/minetip");
+            if (minetipRules) {
+                newMode.HighlightRules = minetipRules.MinecraftHighlightRules;
+                return newMode;
+            }
         },
 
-        // main function this.MainProcess
-        MainProcess: function () {
-            this.oldjson = {};
-            this.json = {};
-            this.actions = [];
+        // main function mainProcess
+        mainProcess: function () {
+            that.oldjson = {};
+            that.json = {};
+            that.actions = [];
+            that.aceSyntaxDef(); // note: intentionally placed way earlier than any setupEditor calls
 
             if (arguments.length > 1) {
                 var jsonStr = [];
-
                 // Merge result into a single string to limit JSON.parse() calls
                 if (Array.isArray(arguments[0])) {
                     Array.from(arguments).forEach(function (v) {
@@ -776,73 +877,17 @@ $.when(
                     });
                 } else jsonStr.push(arguments[0]["return"].replaceAll(/^\{|\}$/g, ""));
                 // Parse String
-                this.json = this.processResult("{" + jsonStr.join(",") + "}");
+                that.json = that.processResult("{" + jsonStr.join(",") + "}");
             } else {
-                this.json = this.processResult(arguments[0]);
+                that.json = that.processResult(arguments[0]);
             }
 
-            this.editor = $("#TooltipsEditor > section");
-            this.data = this.json;
-            this.oldjsonkeys = Object.keys(this.json);
-
-            ace.define("ace/mode/minecraft-tooltips", [], function (require, exports) {
-                var oop = require("../lib/oop");
-                var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
-
-                this.colorRules = {};
-                this.colorConvList.split("").forEach(function (code) {
-                    this["color-" + code] = {
-                        formats: [],
-                        rules: [{ // [0]
-                            token: function (code) {
-                                this.nextCode = code;
-                                return "escape.format.code.color";
-                            },
-                            regex: /&([0-9a-f])/,
-                            next: function () {
-                                return "color-" + this.nextCode;
-                            },
-                            onMatch: that.onMatch,
-                        }, { // [1]
-                            regex: /&([k-o])/,
-                            token: function (code) {
-                                if (code !== "k")
-                                    this.formats.push(that.conversions[code]);
-                                return "escape.format.code.text";
-                            },
-                        }, { // [2]
-                            token: "language.escape.format.code",
-                            regex: /&r/,
-                            next: "start",
-                        }, /* [3] */ that.escapes, { // [4]
-                            regex: /[^\0]/,
-                            token: function () {
-                                var ret = "format.color.format-" + code + ".code";
-
-                                this.formats.forEach(function (code) {
-                                    ret += ".format_" + code;
-                                });
-                                return ret;
-                            },
-                        }],
-                    };
-
-                    var data = this["color-" + code];
-                    data.rules[0].token = data.rules[0].token.bind(data);
-                    data.rules[0].next = data.rules[0].next.bind(data);
-                    data.rules[1].token = data.rules[1].token.bind(data);
-                    data.rules[4].token = data.rules[4].token.bind(data);
-                }, this.colorRules);
-
-                var MinecraftHighlightRules = this.MinecraftHighlightRules;
-
-                oop.inherits(MinecraftHighlightRules, TextHighlightRules);
-
-                exports.MinecraftHighlightRules = MinecraftHighlightRules;
-            }.bind(this));
+            that.editor = $("#TooltipsEditor > section");
+            that.data = that.json;
+            that.oldjsonkeys = Object.keys(that.json);
 
             var otherparams = [];
-            this.forEachInputBox(function (inter, i, otherinputboxes) {
+            that.forEachInputBox(function (inter, i, otherinputboxes) {
                 var val = otherinputboxes[inter];
                 otherparams.push(
                     $("<span>", {
@@ -862,10 +907,11 @@ $.when(
                     }));
 
                 otherparams.push("<br>");
-            }.bind(this));
+            });
 
-            this.editor.empty();
-            this.editor.append(
+            // create elements
+            that.editor.empty();
+            that.editor.append(
                 $("<div>", {
                     id: "TooltipsEditor-search",
                     html: [
@@ -887,7 +933,7 @@ $.when(
                                     html: [
                                         $("<input>", {
                                             id: "TooltipsEditor-searchInput",
-                                            keyup: this.generateSearch.bind(this),
+                                            keyup: that.generateSearch,
                                         }),
                                         "<span style='margin: 0 1em; font-weight: bold; text-transform: uppercase;'>or</span>",
                                         $("<span>", {
@@ -898,8 +944,8 @@ $.when(
                                                     "class": "oo-ui-buttonElement-button",
                                                     text: "Add New Tooltip",
                                                     click: function () {
-                                                        this.openEditor({});
-                                                    }.bind(this),
+                                                        that.openEditor({});
+                                                    },
                                                 }),
                                             ],
                                         }),
@@ -979,7 +1025,7 @@ $.when(
                                             }),
                                             $("<div>", {
                                                 id: "TooltipsEditor-insertFormat",
-                                                html: this.processColors(),
+                                                html: that.processColors(),
                                                 "class": "noselect"
                                             }),
                                             "<hr>",
@@ -988,7 +1034,7 @@ $.when(
                                             }),
                                             $("<div>", {
                                                 id: "TooltipsEditor-insertChar",
-                                                html: this.specialchars,
+                                                html: that.specialchars,
                                                 "class": "noselect"
                                             }),
                                             "<hr>",
@@ -997,7 +1043,7 @@ $.when(
                                             }),
                                             $("<div>", {
                                                 id: "TooltipsEditor-insertFormat",
-                                                html: this.processRarityTexts(),
+                                                html: that.processRarityTexts(),
                                                 "class": "noselect"
                                             }),
                                         ],
@@ -1005,7 +1051,7 @@ $.when(
                                 ],
                             }), "<br>",
                             $("<span>", {
-                                text: "Tooltip ID: ",
+                                text: "Tooltip Key: ",
                                 "class": "TooltipsEditor-inputbox-label TooltipsEditor-label"
                             }),
                             $("<input>", {
@@ -1037,15 +1083,15 @@ $.when(
             $(".TooltipsEditor-insertFormat:not('.TooltipsEditor-last')").after($("<span>", {
                 text: " • ",
             }));
-            this.editor.removeClass("mw-ajax-loader");
-            this.updateActions();
+            that.editor.removeClass("mw-ajax-loader");
+            that.updateActions();
 
+            // setup events
             $("#TooltipsEditor-key, #TooltipsEditor-name").focus(function () {
                 that.lastFocusedElement = $(this);
                 that.lastFocusedEditor = null;
             });
-
-            $(".TooltipsEditor-insertFormat").click(function () {
+            $(document.body).on("click", ".TooltipsEditor-insertFormat", function () {
                 var $this = $(this);
                 var insert = $this.attr("data-insert");
 
@@ -1064,12 +1110,10 @@ $.when(
                         });
                     }
                     that.lastFocusedEditor.focus();
-                } else if (that.lastFocusedElement) that.lastFocusedElement.focus();
+                } else if (that.lastFocusedElement) {
+                    that.lastFocusedElement.focus();
+                }
             });
-
-            window.ace.tooltipsTextEditor = this.setupEditor("TooltipsEditor-text-AceEditor");
-            window.ace.tooltipsTitleEditor = this.setupEditor("TooltipsEditor-title-AceEditor");
-
             $(document.body).on("click", ".TooltipsEditor-insertChar", function (e) {
                 e.preventDefault();
                 e.stopImmediatePropagation();
@@ -1079,7 +1123,6 @@ $.when(
                     that.lastFocusedEditor.focus();
                 } else if (that.lastFocusedElement) that.lastFocusedElement.focus();
             });
-
             $(document.body).on("click", ".TooltipsEditor-removeTooltip", function () {
                 var $this = $(this);
                 var key = $this.attr("data-key");
@@ -1089,7 +1132,6 @@ $.when(
                 that.updateActions(key);
                 that.generateSearch();
             });
-
             $(document.body).on("click", ".TooltipsEditor-editTooltip, .actions-edit-button", function () {
                 var $this = $(this);
 
@@ -1104,46 +1146,19 @@ $.when(
                     key: $this.attr("data-tooltip-key"),
                 }, otherparams));
             });
+
+            // set up editors
+            window.ace.tooltipsTextEditor = that.setupEditor("TooltipsEditor-text-AceEditor");
+            window.ace.tooltipsTitleEditor = that.setupEditor("TooltipsEditor-title-AceEditor");
         },
 
-        // helper functions for this.onClick
-        luaTableToJson: function (s) {
-            return api.post({
-                action: "scribunto-console",
-                title: mw.config.get("wgPageName"),
-                question: "=mw.text.jsonEncode(p)",
-                content: s,
-            });
-        },
-        applyReplacements: function (s) {
-            // [1.exit] json/preview format => lua data
-            // inverse of this.processResult
-            // note: double-backslash and escaped quotes are treated as one character
-            // in json, they should be escaped again for lua to understand
-            return s.replaceAll(/\\/g, '\\\\').replaceAll(/(['"])/g, "\\$1");
-        },
-        refreshLuaCache: function () {
-            var api = new mw.Api();
-            api.get({
-                action: 'parse',
-                text: '{{#invoke:Cache|refreshSlotAliasesCache}}'
-            }).then(function (data) {
-                console.log('Cache Refreshed!', data);
-            })
-            // Fandom doesn't like catch as a method name
-            ["catch"](function (err) {
-                mw.notify("Error refreshing lua cache", {
-                    title: "Uncaught Error",
-                    type: "error"
-                });
-                console.error(err);
-            });
-        },
+        /* Editor Handlers */
+        // main functions editorCloseHandler, onClick
         editorCloseHandler: function () {
-            this.closing = true;
+            that.closing = true;
 
             if (confirm("Are you sure you want to save and close the editor?")) {
-                this.modal.hide();
+                that.modal.hide();
                 mw.notify("Another popup should indicate a successful edit.", {
                     title: "Processing Your Edit",
                     type: "info",
@@ -1152,31 +1167,31 @@ $.when(
 
             var ret = [];
 
-            Object.keys(this.data).sort().forEach(function (k) {
-                var v = this.data[k];
+            Object.keys(that.data).sort().forEach(function (k) {
+                var v = that.data[k];
                 var otherparams = [];
 
-                this.forEachInputBox(function (inter, i, otherinputboxes) {
+                that.forEachInputBox(function (inter, i, otherinputboxes) {
                     var val = otherinputboxes[inter];
-                    if (val.optional && (this.optionalParam(v[inter]) !== "")) {
+                    if (val.optional && (that.optionalParam(v[inter]) !== "")) {
                         otherparams.push(
-                            inter + " = '" + (val.replace ? this.applyReplacements(v[inter]) : v[inter]) + "', "
+                            inter + " = '" + (val.replace ? that.applyReplacements(v[inter]) : v[inter]) + "', "
                         );
                     } else if (!val.optional) {
                         otherparams.push(
-                            v[inter] ? inter + " = '" + this.applyReplacements(v[inter]) + "', " : ""
+                            v[inter] ? inter + " = '" + that.applyReplacements(v[inter]) + "', " : ""
                         );
                     }
-                }.bind(this));
+                });
 
                 ret.push(Array.prototype.concat(
                     "\t['" + k.replaceAll(/(['"])/g, "\\$1") + "'] = {",
                     otherparams,
-                    v.title ? "title = '" + this.applyReplacements(v.title) + "', " : "",
-                    v.text ? "text = '" + this.applyReplacements(v.text) + "', " : "",
+                    v.title ? "title = '" + that.applyReplacements(v.title) + "', " : "",
+                    v.text ? "text = '" + that.applyReplacements(v.text) + "', " : "",
                     "},"
                 ).join(""));
-            }.bind(this));
+            });
 
             ret = "return {\n" + ret.join("\n") + "\n}\n".replaceAll(/&amp;/g, "&");
 
@@ -1210,28 +1225,26 @@ $.when(
                 }
             });
         },
-
-        // main function this.onClick
         onClick: function (tooltips) {
-            this.closing = false;
+            that.closing = false;
 
             $(window).on("beforeunload", function () {
-                if (!this.closing)
+                if (!that.closing)
                     return "Are you sure you want to exit the page and discard your changes?";
-            }.bind(this));
+            });
 
-            this.modal.show({
+            that.modal.show({
                 title: "Tooltips Editor",
                 onHide: function () {
-                    if (!this.closing && confirm("Are you sure you want to exit the editor and discard your changes?")) {
-                        this.closing = true;
+                    if (!that.closing && confirm("Are you sure you want to exit the editor and discard your changes?")) {
+                        that.closing = true;
                         return true;
-                    } else if (this.closing) return true;
+                    } else if (that.closing) return true;
                     else return false;
-                }.bind(this),
+                },
                 buttons: [{
                     text: "Save and Close",
-                    handler: this.editorCloseHandler.bind(this),
+                    handler: that.editorCloseHandler,
                 }],
             });
             $("#TooltipsEditor > section").attr("class", "mw-ajax-loader");
@@ -1247,13 +1260,13 @@ $.when(
 
                 for (var i = 0; i < lines.length; i += 900) {
                     var ret = "return {\n" + lines.slice(i, i + 900).join("\n") + "\n}";
-                    promises.push(this.luaTableToJson(ret));
+                    promises.push(that.luaTableToJson(ret));
                 }
             } else {
-                promises = [this.luaTableToJson(tooltips)];
+                promises = [that.luaTableToJson(tooltips)];
             }
 
-            $.when.apply($, promises).then(this.MainProcess.bind(this), function (code, e) {
+            $.when.apply($, promises).then(that.mainProcess, function (code, e) {
                 return alert("Failed to parse Tooltips: ", e), console.warn("Failed to parse Tooltips: ", e);
             }).catch(console.warn);
         },
@@ -1279,29 +1292,27 @@ $.when(
                     rvslots: "*",
                 }).then(function (d) {
                     var content = d.query.pages[0].revisions[0].slots.main.content;
-
-                    this.deloadAll();
-                    this.onClick(content);
-                }.bind(this));
-            }.bind(this));
+                    that.deloadAll();
+                    that.onClick(content);
+                });
+            });
         },
         secretDebugTool: function () {
             var it = prompt("Please enter an item to see its JSON");
             if (it !== null && it !== "") {
-                if (it in this.json) {
+                if (it in that.json) {
                     mw.notify("See results in console.", {
                         title: "Debug: Found",
                         type: "warn"
                     });
-                    console.log(this.json[it]);
+                    console.log(that.json[it]);
                 } else mw.notify("Item not found.", {
                     title: "Debug: Failed",
                     type: "warn"
                 });
             }
         },
-    });
+    };
 
-    that = TooltipsEditor; // using "TooltipsEditor" and defining "that" here so the editor won't complain about it
-    this.init();
-}.bind((window.TooltipsEditor = window.TooltipsEditor || Object.create(null)))).catch(console.warn);
+    TooltipsEditor.init();
+}).catch(console.warn);

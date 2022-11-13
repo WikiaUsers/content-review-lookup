@@ -23,13 +23,14 @@
 		'WikiaBot',
 		'Wikia Video Library'
 	];
-	var msg;
 	var visible = true;
 
 	/**
 	 * Initializes the script.
+	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
-	function init() {
+	function init(i18n) {
+		var msg = i18n.msg;
 		// add button
 		var button = document.createElement('a');
 		button.className = 'wds-button';
@@ -59,10 +60,7 @@
 
 	// Load translations.
 	mw.hook('dev.i18n').add(function(i18n) {
-		i18n.loadMessages('HideFandomBotLogs').done(function(i18no) {
-			msg = i18no.msg;
-			init();
-		});
+		i18n.loadMessages('HideFandomBotLogs').done(init);
 	});
 
 	importArticle({

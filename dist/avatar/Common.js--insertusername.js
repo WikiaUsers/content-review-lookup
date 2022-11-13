@@ -6,7 +6,7 @@
  */
 
 if (mw.config.get('wgUserName') != 'null') {
-  $('.insertusername').html(mw.config.get('wgUserName'));
+  $('.insertusername').text(mw.config.get('wgUserName'));
 }
 
 /* Modification of class="insertusername" mechanic; crucial for some templates
@@ -18,7 +18,7 @@ $(document).ready(function () {
   if ( $.inArray("user", mw.config.get('wgUserGroups')) == -1 ) {
     $('.insertusername').each(function () {
       var id = $(this).prop("id");
-      $(this).html(id);
+      $(this).text(id);
     });
   }
 });

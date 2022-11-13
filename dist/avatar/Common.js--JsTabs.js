@@ -11,11 +11,12 @@ $(function JsTabs() {
     if ( Sid.length < 1 ) {
       Sid = $('.JsTab.selected').prop("id");
     }
+    Sid = mw.html.escape(Sid);
     $('#JsTabsContainer').wrapInner('<ul class="Kcontainer tabs"></ul>');
     $('.Kcontainer').unwrap();
     $('.JsTab#' + Sid).replaceWith('<li id="' + Sid + '-JsTab" class="Ktab selected"><a href="javascript:void(0)">' + Sid + '</a></li>');
     $('.JsTab').each(function () {
-      var id = $(this).prop("id");
+      var id = mw.html.escape($(this).prop("id"));
       if ( id ) {
         $(this).replaceWith('<li id="' + id + '-JsTab" class="Ktab"><a href="javascript:void(0)">' + id + '</a></li>');
       }

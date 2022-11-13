@@ -463,10 +463,44 @@ window.ajaxRefresh = 30000;
 importArticles({
     type: 'script',
     articles: [
+        preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
         'u:dev:MediaWiki:AjaxRC.js'
     ]
 });
 
+/***********************/
+/**** BOTS *************/
+/***********************/
+
+/* MASS EDITS */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassEdit/code.js',
+    ]
+});
+window.MassEditConfig = {
+  interval: 750,
+  placement: {
+    element: "toolbar",
+    type: "append"
+  }
+
+/* MASSCATEGORIZZTION */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});
+};
+
+window.MassCatConfig = {
+  interval: 750,
+  placement: {
+    element: "toolbar",
+    type: "append"
+  }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // END OF CODE

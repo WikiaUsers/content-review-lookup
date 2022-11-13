@@ -6229,6 +6229,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 2
             },
+            "costume": {
+                "name": "Costume",
+                "types": [
+                    "spooky",
+                    "black",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "cottoncandy": {
                 "name": "Cotton Candy",
                 "types": [
@@ -7710,6 +7727,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "deal": {
+                "name": "Deal",
+                "types": [
+                    "spooky",
+                    "black",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -10307,6 +10341,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "fellspell": {
+                "name": "Fellspell",
+                "types": [
+                    "spooky",
+                    "arcane",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
                 "notes": [
                     "feature"
                 ]
@@ -15403,6 +15454,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "hybrid": {
+                "name": "Hybrid",
+                "types": [
+                    "spooky",
+                    "purple",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "hydra": {
                 "name": "Hydra",
                 "types": [
@@ -17754,6 +17822,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ],
                 "offspringeligibility": "expired"
+            },
+            "lich": {
+                "name": "Lich",
+                "types": [
+                    "spooky",
+                    "white",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
             },
             "life": {
                 "name": "Life",
@@ -35138,6 +35223,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "9_hours_9",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "vampiric": {
+                "name": "Vampiric",
+                "types": [
+                    "spooky",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "vela": {
                 "name": "Vela",

@@ -18,12 +18,14 @@
 	if (!table) return;
 
 	var displayEmptyRows = true;
-	var msg, emptyText, disabledText, OO;
+	var emptyText, disabledText, OO;
 
 	/**
 	 * Initializes the script.
+	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
-	function init() {
+	function init(i18n) {
+		var msg = i18n.msg;
 		// add button
 		var button = new OO.ui.ButtonWidget( { 
 			label: msg('labelHide').plain(),
@@ -67,10 +69,7 @@
 		emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')); // "(empty)"
 		disabledText = mw.msg('trackingcategories-disabled'); // "Category is disabled"
 		mw.hook('dev.i18n').add(function (i18n) {
-			i18n.loadMessages('HideEmptyTrackingCategories').done(function (i18no) {
-				msg = i18no.msg;
-				init();
-			});
+			i18n.loadMessages('HideEmptyTrackingCategories').done(init);
 		});
 		if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
 			mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');

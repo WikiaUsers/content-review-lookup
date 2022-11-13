@@ -1098,7 +1098,7 @@
 		}
 	}
 	var lastDragoverSection;
-	document.getElementsByClassName("main-container")[0].ondragover = function(e) {
+	document.body.ondragover = function(e) {
 		e.stopPropagation();
 		e.preventDefault();
 		e.dataTransfer.dropEffect = 'copy';

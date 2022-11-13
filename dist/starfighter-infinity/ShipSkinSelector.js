@@ -285,11 +285,23 @@
 		dialogHtml += "</div>\n";
 
 		skinPreviewDialog = new window.dev.modal.Modal({
+			buttons: [
+				{
+					classes: ['orgColorDialogButton'],
+					id: 'orgColorDialogButtonSkinPreview',
+					primary: true,
+					text: ' ',
+					event: 'custom'
+				}
+			],
 			content: dialogHtml,
 			id: 'skinPreviewDialog',
 			size: 'large',
 			isHTML: true,
-			title: 'Standard'
+			title: 'Standard',
+			events: {
+				custom: function(){ skinPreviewDialog.close(); showOrgColorDialog(); }
+			}
 		});
 		skinPreviewDialog.create().then(function(r){
 			console.log("skinPreviewDialog.create complete");
@@ -487,8 +499,10 @@
 	};
 
 	var getBaseOrgColor = function(){
-		var targetColor = [255, 0, 0];  //*** Aralien Red  #ff0000
-		if (isHumanShipPage())  targetColor = [81, 154, 255];  //*** Human Blue  #519AFF
+		//var targetColor = [255, 0, 0];  //*** Aralien Red  #ff0000
+		//if (isHumanShipPage())  targetColor = [81, 154, 255];  //*** Human Blue  #519AFF
+		var targetColor = hexToRGB('#f31d1c');  //*** Aralien Red
+		if (isHumanShipPage())  targetColor = hexToRGB('#126d9a');  //*** Human Blue  #519AFF
 		return targetColor;
 	};
 
@@ -526,6 +540,8 @@
 			} else {
 				console.log("Main ship image overlay not found.");
 			}
+			
+			applyOrgColorFromCookie();
 		} else {
 			console.log("Dialog preview image overlay not found.");
 		}
@@ -550,6 +566,8 @@
 				iterations: Infinity
 			});
 		}
+
+		$(".orgColorDialogButton img").css('background', 'linear-gradient( 90deg, rgb(255, 0, 0) 0%, rgb(255, 154, 0) 10%, rgb(208, 222, 33) 20%, rgb(79, 220, 74) 30%, rgb(63, 218, 216) 40%, rgb(47, 201, 226) 50%, rgb(28, 127, 238) 60%, rgb(95, 21, 242) 70%, rgb(186, 12, 248) 80%, rgb(251, 7, 217) 90%, rgb(255, 0, 0) 100% )');
 	};
 
 	var changeOrgColor = function(newOrgColor){
@@ -568,6 +586,8 @@
 		$("#orgColorCanvasMain")[0].style.filter = 'hue-rotate(' + hueShiftAmount + 'deg) ' + 'saturate(' + (hslEnd[1] / hslStart[1] * 100) + '%) ' +  'brightness(' + (hslEnd[2] / hslStart[2] * 100) + '%)';
 		$("#orgColorCanvasDialog")[0].style.filter = 'hue-rotate(' + hueShiftAmount + 'deg) ' + 'saturate(' + (hslEnd[1] / hslStart[1] * 100) + '%) ' +  'brightness(' + (hslEnd[2] / hslStart[2] * 100) + '%)';
 		console.log("changeOrgColor ", hslStart, hslEnd);
+
+		$(".orgColorDialogButton img").css('background', RGBToHex(newOrgColor));
 	};
 
 	//*** End Org Color Orverlay Section
@@ -596,7 +616,8 @@
 
 	var updateOrgColorSelect = function(){
 		var hexVal = $("#orgColorSelect").val();
-		if (hexVal == 'Random') {
+		console.log("updateOrgColorSelect called: ", hexVal);
+		if (hexVal == 'Rainbow') {
 			startAnimation();
 			setOrgColorCookie('Random');  //*** Set the cookie to random
 		} else if (hexVal == 'Custom') {
@@ -605,6 +626,7 @@
 			var g = $("#greenColorSlider").val();
 			var b = $("#blueColorSlider").val();
 			setOrgColorCookie(RGBToHex([+r, +g, +b]));
+			changeOrgColor([+r, +g, +b]);
 		} else if (hexVal == 'Default') {
 			changeOrgColor(getBaseOrgColor());
 			clearOrgColorCookie();  //*** Clear the cookie
@@ -692,7 +714,8 @@
 		dialogHtml += '      <option value="Default">Default</option>\n';
 		dialogHtml += '      <option value="#ff0000">Empire Red</option>\n';
 		dialogHtml += '      <option value="#519aff">Alliance Blue</option>\n';
-		dialogHtml += '      <option value="#d0e92c">Freedom Yellow</option>\n';
+		// dialogHtml += '      <option value="#d0e92c">Freedom Yellow</option>\n';
+		dialogHtml += '      <option value="#fffe12">Freedom Yellow</option>\n';
 		dialogHtml += '      <option value="Rainbow">Rotating Colors</option>\n';
 		dialogHtml += '    </select>\n';
 		dialogHtml += '  </td>\n';
@@ -719,6 +742,20 @@
 
 	//*** End Org Color Selection Dialog Section
 
+	
+	var applyOrgColorFromCookie = function(){
+		var orgColor = getOrgColorCookie();
+		if (orgColor === undefined)
+			return false;
+		orgColor = orgColor.replace("%23", "#");
+		
+		if (orgColor == "Random") {
+			startAnimation();
+		} else if (orgColor != "") {
+			console.log(orgColor);
+			changeOrgColor(hexToRGB(orgColor));
+		}
+	};
 
 
 	$( document ).ready(function() {

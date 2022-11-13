@@ -17,25 +17,25 @@ $( function () {
 	$(BUTTON_ID).show().click(function() {
 		var $bttn = $(this), cacheId = $bttn.data('cache-id');
 		if( !cacheId || !supportedCaches[cacheId] ) {
-			mw.notify("Refresh button is missing a valid cache id", { title: "Cache ID Missing or Invalid", type: "error" });
-			$bttn.attr("disabled", true).text('Please fix cache ID');
+			mw.notify("Refresh button is missing a valid cache id", { title: "Идентификатор кэша отсутствует или недействителен", type: "error" });
+			$bttn.attr("disabled", true).text('Пожалуйста, исправьте идентификатор кэша');
 		}
 		var cacheInfo = supportedCaches[ cacheId ];
 		
-		$bttn.attr("disabled", true).text("Refreshing cache for '" + cacheInfo.dataModule + "'...");
+		$bttn.attr("disabled", true).text("Обновление кэша для '" + cacheInfo.dataModule + "'...");
 	
 		function reEnableButton() {
-			$bttn.attr("disabled", false).text("Try Again");
+			$bttn.attr("disabled", false).text("Повторить");
 		}
 	
 		function errorHandler(err) {
-			mw.notify("See the web console for details", { title: "Uncaught Error", type: "error" });
+			mw.notify("See the web console for details", { title: "Неперехваченная ошибка", type: "error" });
 			console.error(err);
 			reEnableButton();
 		}
 		
 		var api = new mw.Api();
-		console.log('Starting...');
+		console.log('Начало...');
 		api.get({
 			action : 'query',
 			prop : 'revisions',
@@ -47,7 +47,7 @@ $( function () {
 			}
 			var prefix = content.match(new RegExp((cacheInfo.prefixVar || 'PREFIX')+" = '(.+?)'"));
 			if(!prefix) {
-				mw.notify("'Module:" + cacheInfo.mainModule + "' is missing variable "+(cacheInfo.prefixVar || 'PREFIX'), { title: "Prefix Missing", type: "error" });
+				mw.notify("'Module:" + cacheInfo.mainModule + "' is missing variable "+(cacheInfo.prefixVar || 'PREFIX'), { title: "Префикс отсутствует", type: "error" });
 				reEnableButton();
 				return;
 			}
@@ -61,7 +61,7 @@ $( function () {
 					: '{{#invoke:CacheUtil|resetAll|' + cacheInfo.dataModule + '|module=' + cacheInfo.mainModule + '|f=' + cacheInfo.f + '|prefix=' + prefix + '}}'
 			}).then(function(data) {
 				console.log('Done!', data);
-				mw.notify("Cache has been updated", { title: "Cache Refreshed Successfully!", type: "info" });
+				mw.notify("Cache has been updated", { title: "Кэш успешно обновлен!", type: "info" });
 				$bttn.attr("disabled", true).text("Success!");
 			})
 			// Fandom doesn't like catch as a method name

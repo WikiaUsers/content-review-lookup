@@ -3,32 +3,32 @@ var ajaxPages = ["Служебная:WikiActivity", "Служебная:RecentCh
 var AjaxRCRefreshText = 'Автообновление страницы';
 var PurgeButtonText = 'Обновить';
 importScriptPage('AjaxRC/code.js', 'dev');
-
-/****************************************/
-/* sliders using jquery by User:Tierrie */
-/****************************************/
-//wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
-//wsl.loadScript("http://ru.elderscrolls.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
- 
-mw.loader.using( ['jquery.ui.tabs'], function() {
-$(document).ready(function() {
-$('.factions img').hide(); 	$('.factions img').removeAttr('width').removeAttr('height'); 	var l=$('.factions tr').eq(1).find('td').height(); 	$('.factions tr').eq(1).find('img').css('max-height', l); 	$('.factions img').show(); 	if ($('.factions tr').eq(1).find('td').width()>=$('.factions img').width()) { 		$('.factions tr').eq(1).find('td').width($('.factions img').width()); 	}
-  $('.id_upper').each(function() { $(this).html($(this).html().toUpperCase()); });
-  var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-    $tabs.tabs('select', this.className.replace("portal_sliderlink_", ""));
-    return false;
-  });
-  $('#portal_next').click(function() {
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
-    return false;
-  });
-  $('#portal_prev').click(function() { // bind click event to link
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
-    return false;
-  });
+/*------------------------ Sliders на jqueryUI -------------------------------*/
+// by User:Tierrie
+var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
+mw.loader.using( ['oojs-ui-windows'], function() {
+	$(document).ready(function() {
+		$(".portal_slider").each(function(index, portal_slider) {
+			$(portal_slider).tabs({ fx: {opacity:'toggle', duration:100} } );
+			$("[class^=portal_sliderlink]").click(function() {
+				$(portal_slider).tabs('select', this.className.replace("portal_sliderlink_", ""));
+				return false;
+			});
+			$(portal_slider).find('#portal_next').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				return false;
+			});
+			$(portal_slider).find('#portal_prev').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') === 0) ? ($(portal_slider).tabs('length')-1) : $(portal_slider).tabs('option', 'selected') - 1 );
+				return false;
+			});
+			var timerId = setTimeout(function tick() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				timerId = setTimeout(tick, slideTime + Math.floor(Math.random() * 3000));
+			}, slideTime + Math.floor(Math.random() * 3000));
+		});
+	});
 });
-} );
 /* Special User Statuses */
 function addMastheadTags() {
     var rights = {};
@@ -55,4 +55,12 @@ $(function() {
     if ($('#UserProfileMasthead')) {
         addMastheadTags();
     }
+});
+/****************** Подключение функций после загрузки страницы ***************/
+$(document).ready(function() {
+	randomBackground();
+	fixTable();
+	//if ($("div.interactive-maps-container").length) {interactiveMapZoom();} // Запускаем при наличии интерактивной карты на странице
+	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
+	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
 });

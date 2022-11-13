@@ -10,10 +10,11 @@ window.UserTagsJS = {
 		reality: 'Realitywarper',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
-		colours: 'Godness of Colours',
+		colours: 'Empress of Colours',
 		dragon: 'Verified Dragon',
 		stalker: 'Stalker Flower',
-		kitsune: 'Kitsune Assassin'
+		kitsune: 'Kitsune Assassin',
+		feathery: 'Feathery Elf'
 	}
 };
 UserTagsJS.modules.custom = {
@@ -23,7 +24,8 @@ UserTagsJS.modules.custom = {
 	'Mintflower09': ['colours'],
 	'Moonshadow567': ['dragon'],
 	'ALostWonderer': ['stalker'],
-	'Featherfrost2907':['kitsune']
+	'Featherfrost2907':['kitsune'],
+	'BLuFeather':['feathery']
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

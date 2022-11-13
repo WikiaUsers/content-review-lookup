@@ -1,22 +1,42 @@
+//Custom lib
+(function($)
+{
+  var m = {};
+  $.first = function(sel)
+  {
+    return $(document.querySelector(sel));
+  };
+  $.awaitSelector = function(sel, func)
+  {
+    var timerId = setTimeout(function tick()
+    {
+      if ($(sel).length != 0)
+      {
+        clearTimeout(timerId);
+        func();
+      } else
+        {
+          timerId = setTimeout(tick, 200);
+        }
+    }, 200);
+  };
+  $.fn.nstrim = function()
+  {
+    var val = this.val() || this.text();
+    return val.trim() !== '' ? val.trim() : '';
+  };
+})(jQuery);
 //Custom Database
+//https://undecember.fandom.com/ru/wiki/Модуль:ItemDatabase?action=edit
 $(function()
 {
   if (mw.config.get('wgPageName') == 'Модуль:ItemDatabase' && mw.config.get('wgAction') == 'edit')
   {
-    if ($('.wikiEditor-ui').length == 0)
+  	const weui = '.wikiEditor-ui';
+    $.awaitSelector(weui, function()
     {
-      var timerId = setTimeout(function tick()
-      {
-        if ($('.wikiEditor-ui').length != 0)
-        {
-          clearTimeout(timerId);
-          $('.wikiEditor-ui').before($('<div>', {'class': 'wikiEditor-ItemDatabase'}));
-        } else
-          {
-            timerId = setTimeout(tick, 200);
-          }
-      }, 200);
-    }
+      $(weui).before($('<div>', {'class': 'wikiEditor-ItemDatabase'}));
+    });
   }
 });
 //AdminDashboard JS-Button

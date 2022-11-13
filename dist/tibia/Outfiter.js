@@ -91,9 +91,11 @@ $(function () {
       //195
       'Jungle_Saurian', 'Lagoon_Saurian', 'Shadow_Sphinx', 'Wolpertinger', 'Topaz_Shrine',
       //200
-      'Jade_Shrine', 'Obsidian_Shrine', 'Poppy_Ibex', 'Mint_Ibex', 'Cinnamon Ibex',
+      'Jade_Shrine', 'Obsidian_Shrine', 'Poppy_Ibex', 'Mint_Ibex', 'Cinnamon_Ibex',
       //205
-      'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse'
+      'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse',
+      //210
+      'Mutated_Abomination'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -178,7 +180,7 @@ $(function () {
       //200
       'Dragon_Knight', 'Arbalester', 'Royal_Costume', 'Formal_Dress', 'Ghost_Blade',
       //205
-      'Nordic_Chieftain', 'Fire-Fighter', 'Fencer', 'Shadowlotus_Disciple'
+      'Nordic_Chieftain', 'Fire-Fighter', 'Fencer', 'Shadowlotus_Disciple', 'Ancient_Aucar'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -301,7 +303,8 @@ $(function () {
     //mounts that are colourisable
     outfiter_mount_colourisable = {
       Krakoloss: true,
-      Shellodon: true
+      Shellodon: true,
+      Mutated_Abomination: true,
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

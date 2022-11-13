@@ -71,7 +71,8 @@
 				modal.windowManager.updateWindowSize(modal.seDialog);
 			});
 		}
-		addSprite(0);
+		if (allPages[0])
+			addSprite(0);
 	}
 	myData.setSharedData = function(d) {
 		shared = d;

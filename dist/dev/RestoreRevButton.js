@@ -34,13 +34,15 @@ $( function() {
     		format: 'json',
     		prop: 'revisions',
     		rvslots: '*',
-    		rvprop: 'content',
+    		rvprop: 'content|user',
     		rvstartid: revid,
     		rvendid: revid,
     		titles: pname,
     		formatversion: '2',
 		}).done( function(data) {
-			var summarytext = 'Restored revision ' + revid;
+			var revisionLink = '[[Special:PermanentLink/' + revid + '|' + revid + ']]';
+			var userLink = '[[User:' + data.query.pages[0].revisions[0].user + '|' + data.query.pages[0].revisions[0].user + ']]';
+			var summarytext = 'Restored revision ' + revisionLink + ' by ' + userLink;
 			$('body').css('cursor','wait');
 			$(revcontainer).html('loading');
     		api.post({

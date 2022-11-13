@@ -3,7 +3,6 @@
 /* ================
    TABLE stuff 
    ================ */
-
 //$("tr:odd").addClass("zebra-stripe"); (adversely affects TOCs for a reason I've not yet determined)
 
 $("table").delegate('td','mouseover mouseleave', function(e) {
@@ -119,15 +118,17 @@ $(function () {
     }
 });
 /* ================
-   AJAX 
+   AjaxRC
    customisation
-   ================ */
-window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:Watchlist","Special:Log","Special:Contributions"];
-window.ajaxRefresh = 30000
+   ================
+ * https://dev.fandom.com/wiki/AjaxRC */
+window.ajaxSpecialPages = ["Recentchanges", "Watchlist", "Log", "Contributions", "WikiActivity"];
+window.ajaxRefresh = 30000;
 /* ================
    ARCHIVE TOOL
    customisation 
-   ================ */
+   ================ 
+ * https://dev.fandom.com/wiki/ArchiveTool */
 var ArchiveToolConfig = { 
    archiveListTemplate: 'ArchCat',
    archivePageTemplate: 'ArchPage',
@@ -137,33 +138,28 @@ var ArchiveToolConfig = {
 /* ================
    SPOILER ALERT
    customisation 
-   ================ */
-
-/** 
- * SpoilerAlert
- * 说明文档位于：http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
- * 
- * __NOWYSIWYG__
- */
-
+   ================
+ * http://dev.wikia.com/wiki/SpoilerAlert */
 window.SpoilerAlertJS = {
-            question: '此部分可能含有关于未发表故事的剧透，你确定要阅读吗？',
-           yes : '快来剧透我',
-            no : '快带我离开这',
-     fadeDelay : 1000
+	question: '此部分可能含有关于未发表故事的剧透，你确定要阅读吗？',
+	yes: '快来剧透我',
+	no: '快带我离开这',
+	fadeDelay: 1000
 };
-
 /* ================
    AutoCreateUserPages
    customisation 
-   ================ */
-/** 
- * 说明文档位于：https://dev.fandom.com/wiki/AutoCreateUserPages
-*/
-
+   ================
+ * https://dev.fandom.com/wiki/AutoCreateUserPages */
 window.AutoCreateUserPagesConfig = {
     content: '{{你可以移除此留言}}',
     summary: '通过脚本自动创建用户页面',
     notify: '<a href="/zh/wiki/User:$2">欢迎登上Tardis，$1！</a>'
 };
+/* ================
+   BackToTopButton
+   customisation 
+   ================
+ * https://dev.fandom.com/wiki/BackToTopButton */
+window.BackToTopModern = true;
+window.BackToTopStart = 400;

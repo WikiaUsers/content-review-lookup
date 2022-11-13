@@ -326,6 +326,11 @@
         	styles: 'MediaWiki:LeafyStrap.css'
         },
         
+        LegacyGlobalNavigation: {
+        	page: 'LegacyGlobalNavigation',
+        	styles: 'MediaWiki:LegacyGlobalNavigation.css'
+        },
+        
 	    ListGroupMembers: {
 			page: 'Special:BlankPage',
 			scripts: 'MediaWiki:ListGroupMembers.js'
@@ -458,6 +463,11 @@
             selector: '.portable-infobox.pi-theme-navbox',
             styles: 'MediaWiki:PortableNavbox.css'
         },
+		
+		ProfileIconsTextless: {
+			page: 'ProfileIconsTextless',
+			styles: 'MediaWiki:ProfileIconsTextless.css'
+		},
 		
 	    ProfileTags: {
 			page: 'User:Rappy',

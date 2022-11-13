@@ -3203,6 +3203,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"costume": {
+				"name": "Costume",
+				"colors": [
+					"spooky",
+					"black",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"cottoncandy": {
 				"name": "Cotton Candy",
 				"colors": [
@@ -3919,6 +3928,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fey",
 					"black",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"deal": {
+				"name": "Deal",
+				"colors": [
+					"spooky",
+					"black",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5231,6 +5249,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"holiday",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"fellspell": {
+				"name": "Fellspell",
+				"colors": [
+					"spooky",
+					"arcane",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7762,6 +7789,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"hybrid": {
+				"name": "Hybrid",
+				"colors": [
+					"spooky",
+					"purple",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"hydra": {
 				"name": "Hydra",
 				"colors": [
@@ -8918,6 +8954,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"zodiac"
 				],
 				"rarity": "super"
+			},
+			"lich": {
+				"name": "Lich",
+				"colors": [
+					"spooky",
+					"white",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"life": {
 				"name": "Life",
@@ -17358,6 +17403,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "super"
+			},
+			"vampiric": {
+				"name": "Vampiric",
+				"colors": [
+					"spooky",
+					"white",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"vela": {
 				"name": "Vela",

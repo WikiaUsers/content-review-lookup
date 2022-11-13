@@ -11,7 +11,7 @@
 			if (isNaN(timeZone)) {
 				return;
 			}
-			if (dst && month >= 2 && month <= 10) {
+			if (dst && month >= 2 && month <= 9) {
 				timeZone = timeZone + 1;
 			}
 			var utc = new Date(date.getTime() + (new Date().getTimezoneOffset() * 60 * 1000)).getTime();

@@ -355,8 +355,10 @@ function searchJavaScript()
 		addCheckBox.bind(this, elem, cContainer, "givesAbilities")();
 		cContainer = document.getElementById("evolutionContainer");
 		addCheckBox.bind(this, elem, cContainer, "evolution")();
-        cContainer = document.getElementById("miscAbilitiesContainer");
+                cContainer = document.getElementById("miscAbilitiesContainer");
 		addCheckBox.bind(this, elem, cContainer, "miscAbilities")();
+                cContainer = document.getElementById("triggerContainer");
+		addCheckBox.bind(this, elem, cContainer, "triggerAbilities")();
 		
 		//Other
         cContainer = document.getElementById("matchNameContainer");

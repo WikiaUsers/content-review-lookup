@@ -23,7 +23,7 @@
 	var commentArea = document.getElementById('articleComments');
 	if (!commentArea) return;
 
-	var msg, buttonInput, buttonLabel;
+	var buttonInput;
 	var preloads = 2;
 
 	/**
@@ -72,8 +72,9 @@
 
 	/**
 	 * Initializes the script.
+	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
-	function init() {
+	function init(i18n) {
 		buttonInput = document.createElement('input');
 		buttonInput.type = 'checkbox';
 		buttonInput.id = 'commentToggle';
@@ -81,10 +82,10 @@
 		buttonInput.className = 'wds-toggle__input';
 		buttonInput.addEventListener('change', protect);
 
-		buttonLabel = document.createElement('label');
+		var buttonLabel = document.createElement('label');
 		buttonLabel.htmlFor = 'commentToggle';
 		buttonLabel.className = 'wds-toggle__label';
-		buttonLabel.textContent = msg('buttonText').plain();
+		buttonLabel.textContent = i18n.msg('buttonText').plain();
 
 		if (config.wgRestrictionComment.length) buttonInput.checked = false;
 
@@ -96,10 +97,7 @@
 	 */
 	function preload() {
 		if (--preloads > 0) return;
-		window.dev.i18n.loadMessages('CommentsToggle').done(function (i18no) {
-			msg = i18no.msg;
-			init();
-		});
+		window.dev.i18n.loadMessages('CommentsToggle').done(init);
 	}
 
 	mw.hook('dev.i18n').add(preload);

@@ -12,30 +12,17 @@
     window.Discord = $.extend({
         $rail: $('#WikiaRail'),
         // Resource managing
-        loaded: 9,
+        loaded: 6,
         onload: function(type, arg) {
             switch (type) {
-                case 'i18n':
-                    arg.loadMessages('Discord').then(this.onload.bind(this, 'lang'));
-                    break;
-                case 'lang':
-					console.log(arg);
-					this.i18n = arg;
-                    break;
                 case 'api':
                     this.handleMessages();
                     break;
                 case 'dorui':
                     ui = arg;
                     break;
-                // case 'messages':
-                //     if (this.messages.id) {
-                //         this.fetchWidgetData(this.messages.id).done(this.handleWidgetData.bind(this));
-                //     } else {
-                //         this.onload();
-                //     }
-                //     break;
             }
+            console.log(this.loaded);
             if (--this.loaded) return;
             this.init();
         },
@@ -53,7 +40,6 @@
             this.messages.invite = "https://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki:Discord";
             this.messages.theme = "dark";
             this.messages.roles = {};
-            this.onload('messages');
         },
         fetchWidgetData: function(id) {
             if (this.requests[id]) return this.requests[id];
@@ -144,7 +130,6 @@
                             ],
                             children: [
                                 this.buildHeader(data),
-                                this.buildBody(data),
                                 this.buildFooter(data)
                             ]
                         })
@@ -152,26 +137,6 @@
                 })
             ]);
 
-            if (shouldPolyfillLazyLoadImages) {
-                var avatarLazyLoadIntersectionObserver = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (entry) {
-                        if (entry.intersectionRatio === 1) {
-                            entry.target.src = entry.target.dataset.src; delete entry.target.dataset.src;
-                            if (entry.target.dataset.srcset) {
-                                entry.target.srcset = entry.target.dataset.srcset; delete entry.target.dataset.srcset;
-                            }
-                            avatarLazyLoadIntersectionObserver.unobserve(entry.target);
-                        }
-                    });
-                }, {
-                    root: widget.querySelector('.widget-body'),
-                    rootMargin: '46px 0px',  // TODO: Calculate this as root padding + chip height.
-                    threshold: 1
-                });
-                widget.querySelectorAll('.widget-member-avatar-img').forEach(function (img) {
-                    avatarLazyLoadIntersectionObserver.observe(img);
-                });
-            }
             return widget;
         },
         buildTitle: function(data) {
@@ -206,97 +171,6 @@
                 ]
             });
         },
-        buildBody: function(data) {
-            /* TODO: Channels? */
-            var roles = data.members
-                ? this.groupMemberRoles(data.members)
-                : null;
-
-            return ui.div({
-                classes: {
-                    'widget-body': true,
-                    'body-loading': !data.members
-                },
-                children: data.members
-                    ? roles.map(this.buildRoleContainer.bind(this, data))
-                    : []
-            });
-        },
-        buildRoleContainer: function(data, role) {
-            var name = role[0],
-            members = role[1],
-            defaultRole = role[2];
-
-            return members.length && ui.div({
-                classes: ['widget-role-container'],
-                'data-name': name,
-                children: [
-                    ui.div({
-                        classes: ['widget-role-name'],
-                        attrs: {
-                            'data-name': name,
-                            'data-default': defaultRole
-                                ? 'true'
-                                : false
-                        },
-                        html: name
-                    })
-                ].concat(members.map(this.buildUserChip.bind(this, data)))
-            });
-        },
-        buildUserChip: function(data, member) {
-            // TODO: GIF avatars
-            var avatarAttrs = {
-                // TODO: Caculate appropriate ceilings based on effective dimensions of loaded stylesheet(s); for now we're assuming the default of 28. The [docs](https://github.com/discordapp/discord-api-docs/blob/24f892b7de66c102c0c199e41a1bbe8577eddb9f/docs/Reference.md) say this "can be any power of two between 16 and 2048" though empirically other resolutions like 20 also work.
-                src: this.avatar(member, 'png', 32)
-            };
-            // This rephrases predicates from `Discord.avatar`.
-            if (member.alt_avatar_url || member.avatar) {
-                avatarAttrs.srcset = this.avatar(member, 'png', 64) + ' 2x';
-            }
-
-            if (canNativelyLazyLoadImages) {
-                avatarAttrs.loading = 'lazy';
-            } else if (shouldPolyfillLazyLoadImages) {
-                avatarAttrsSrcset = avatarAttrs.srcset;
-                avatarAttrs = {
-                    'src': blankImgUrl,
-                    'data-src': avatarAttrs.src
-                };
-
-                if (avatarAttrsSrcset) {
-                    avatarAttrs['data-srcset'] = avatarAttrsSrcset;
-                }
-            }
-
-            return ui.div({
-                classes: ['widget-member'],
-                children: [
-                    ui.div({
-                        classes: ['widget-member-avatar'],
-                        children: [
-                            ui.img({
-                                classes: ['widget-member-avatar-img'],
-                                attrs: avatarAttrs
-                            }),
-                            ui.span({
-                                classes: [
-                                    'widget-member-status',
-                                    'widget-member-status-' + member.status
-                                ]
-                            })
-                        ]
-                    }),
-                    ui.span({
-                        classes: ['widget-member-name'],
-                        text: member.nick || member.username
-                    })
-                ],
-                events: {
-                    click: this.showMemberModal.bind(this, data, member)
-                }
-            });
-        },
         buildFooter: function(data) {
             var invite = data.invite || this.messages.invite || data.instant_invite;
             var footer = this.messages.footer;
@@ -321,7 +195,7 @@
         groupMemberRoles: function(members) {
             var grouped = [],
             indices = {},
-            defaultRole = this.i18n.msg('users').plain(),
+            defaultRole = "Users",
             roles = Object.keys(this.messages.roles);
 
             members.sort(function(a, b) {
@@ -369,69 +243,6 @@
 
             return grouped;
         },
-        showMemberModal: function(data, member) {
-            var game = member.game || {};
-            dev.showCustomModal(mw.html.escape(member.nick || member.username),
-                ui.div({
-                    classes: ['discord-member-modal-content'],
-                    children: [
-                        ui.div({
-                            classes: ['avatar-container', 'loading'],
-                            child: ui.a({
-                                classes: ['avatar-link'],
-                                href: this.avatar(member, 'png', 2048),
-                                target: '_blank',
-                                child: ui.img({
-                                    classes: ['avatar'],
-                                    src: this.avatar(member, 'png', 256),
-                                    events: {
-                                        load: function() {
-                                            this.parentElement.parentElement.classList.remove('loading');
-                                        }
-                                    }
-                                })
-                            })
-                        }),
-                        ui.div({
-                            classes: ['details'],
-                            children: [
-                                // Why 17+ digits? Because that's how many digits there'd need to be for snowflakes created after 2015-01-28T14:16:25.791Z (which is about a month after its epoch and a few months before its public launch).
-                                // The remaining anonymized users will get faux IDs starting at zero.
-                                // Guilds have a default max presence count of 5000, so we usually won't be returning more than that many members.
-                                // Even _if_ we're serving for a guild with a bumped max presence count, it's unlikely we'll be returning 10,000,000,000,000,000 (ten quadrillion) members such that the faux IDs would collide with genuine snowflakes (that we support).
-                                member.id.length >= 17 && ui.div({
-                                    classes: ['username'],
-                                    children: [
-                                        ui.span({
-                                            classes: ['name'],
-                                            text: member.username
-                                        }),
-                                        ui.span({
-                                            classes: ['discriminator'],
-                                            text: '#' + member.discriminator
-                                        })
-                                    ]
-                                }),
-                                game.name && ui.div({
-                                    classes: ['playing'],
-                                    html: this.i18n.msg(
-                                        game.name == 'Spotify'
-                                            ? 'listening'
-                                            : 'playing',
-                                        game.name
-                                    ).parse()
-                                })
-                            ]
-                        })
-                    ]
-                }),
-                {
-                    id: 'discord-member-modal',
-                    width: 'invalid so that the CSS can take over lol',
-                    className: 'discord-member-modal-theme-' + (data.theme || this.messages.theme)
-                }
-            );
-        },
         addToRail: function() {
             if (this.$rail.length === 0) return;
 
@@ -458,7 +269,6 @@
                 this.$rail.prepend(railModule);
             }
 
-            this.onRenderedWidget(railModule);
             mw.hook('Discord.widget.rail').fire(railModule);
         },
         replaceWidget: function(_, elem) {
@@ -492,32 +302,7 @@
                 }
                 var widget = this.buildWidget(data);
                 $(elem).empty().append(widget);
-
-                this.onRenderedWidget(elem);
             }.bind(this));
-        },
-        onRenderedWidget: function(widget) {
-            var container = widget.querySelector('.discord-widget-container'),
-            discord = container.querySelector('.discord-widget'),
-            body = discord.querySelector('.widget-body'),
-            largest = Array.from(body.children).sort(this.sortRoleContainers.bind(this))[0];
-            if (!largest) return;
-
-            var members = largest.querySelectorAll('.widget-member'),
-            initial = members[0].offsetTop,
-            count = 0;
-
-            for (var i = 0; i < members.length; i++) {
-                if (members[i].offsetTop > initial) break;
-                count++;
-            }
-
-            discord.classList.add('resolved-columns');
-
-            this.addCSS(this.createNameDirectionStyles(count, container.id));
-
-            widget.dataset.widgetState = 'loaded';
-            mw.hook('Discord.widget').fire(widget);
         },
         sortRoleContainers: function(a, b) {
             return b.children.length - a.children.length;
@@ -635,7 +420,6 @@
         }
     }
 
-    mw.hook('dev.i18n').add(Discord.onload.bind(Discord, 'i18n'));
     mw.hook('dev.showCustomModal').add(Discord.onload.bind(Discord, 'showCustomModal'));
     mw.hook('doru.ui').add(Discord.onload.bind(Discord, 'dorui'));
     mw.loader.using('mediawiki.api').then(Discord.onload.bind(Discord, 'api'));
@@ -646,7 +430,6 @@
 		importArticles({
 			type: 'script',
 			articles: [
-				'u:dev:MediaWiki:I18n-js/code.js',
 				'u:dev:MediaWiki:Dorui.js',
 				'u:dev:MediaWiki:ShowCustomModal.js',
 			]
