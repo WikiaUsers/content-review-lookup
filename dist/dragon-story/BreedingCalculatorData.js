@@ -3253,6 +3253,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "bootes": {
+                "name": "Bootes",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
             "boreal": {
                 "name": "Boreal",
                 "types": [
@@ -4250,6 +4267,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "canis": {
+                "name": "Canis",
+                "types": [
+                    "cosmic",
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "canopic": {
                 "name": "Canopic",
                 "types": [
@@ -4504,6 +4538,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "20_hours_20",
                 "rarity": 4,
                 "offspringeligibility": "worldevent",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "cassiopeia": {
+                "name": "Cassiopeia",
+                "types": [
+                    "cosmic",
+                    "pink",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -5417,6 +5468,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "15_hours_15",
                 "rarity": 3,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "circinus": {
+                "name": "Circinus",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -9728,6 +9796,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "expired",
                 "notes": [
                     "breeding"
+                ]
+            },
+            "equuleus": {
+                "name": "Equuleus",
+                "types": [
+                    "cosmic",
+                    "red",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
                 ]
             },
             "eridanus": {
@@ -17733,6 +17818,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "level": 4,
                 "offspringeligibility": "expired"
+            },
+            "lepus": {
+                "name": "Lepus",
+                "types": [
+                    "cosmic",
+                    "purple",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "25_hours_25",
+                "rarity": 4,
+                "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
             },
             "lernean": {
                 "name": "Lernean",
@@ -35822,6 +35924,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
+                ]
+            },
+            "vulpecula": {
+                "name": "Vulpecula",
+                "types": [
+                    "cosmic",
+                    "yellow",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "red"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "warbler": {

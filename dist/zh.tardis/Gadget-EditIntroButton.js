@@ -1,0 +1,1 @@
+mw.loader.load('https://dev.fandom.com/wiki/MediaWiki:EditIntroButton/code.js?action=raw&ctype=text/javascript');

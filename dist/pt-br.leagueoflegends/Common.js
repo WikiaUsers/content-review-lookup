@@ -39,7 +39,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             ['LOR','Legends of Runeterra'],
             ['WR','Wild Rift']
         ],*/
-        'função': ['- Função -',
+        'função': ['- Classe -',
             ['Controlador','Controlador'],
             	['Disruptor','• Disruptor'],
             	['Encantador','• Encantador'],
@@ -59,8 +59,8 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
             	['Vanguarda','• Vanguarda'],
             	['Protetor','• Protetor']
         ],
-        'tipo': ['- Tipo de ataque -',
-            ['Corpo-a-corpo','Corpo-a-corpo'],
+        'tipo': ['- Tipo de alcance -',
+            ['Corpo a corpo','Corpo a corpo'],
             ['À distância','À distância']
         ]
     };
@@ -203,7 +203,7 @@ window.tooltips_list = [
         	if (window.tooltips_ability_icon_detail) {
         		return '{' + '{Tooltip/Habilidade|champion=' + $(elem).data('champion') + '|habilidade=' + $(elem).data('habilidade') + '|variante=' + $(elem).data('variante') + '|jogo=' + $(elem).data('jogo') + '|detail=true}}';
         	}
-    		return '{' + '{Tooltip/Habilidade|champion=' + $(elem).data('champion') + '|habilidade=' + $(elem).data('habilidade') + '|variante=' + $(elem).data('varianet') + '|jogo=' + $(elem).data('jogo') + '}}';
+    		return '{' + '{Tooltip/Habilidade|champion=' + $(elem).data('champion') + '|habilidade=' + $(elem).data('habilidade') + '|variante=' + $(elem).data('variante') + '|jogo=' + $(elem).data('jogo') + '}}';
         }
     },
     {   classname: 'buff-icon', 

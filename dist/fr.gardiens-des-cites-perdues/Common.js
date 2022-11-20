@@ -39,15 +39,6 @@ $(function() {
 	}
 });
 
-{
-    {
-        $(this);
-        {
-            'https://webchat.freenode.net/#wiki_gdcp',
-  450,
-            500
-        }));
- 
 /*** Forcer le favicon à s'afficher lors de bugs ***/
 
 (function () {
@@ -85,7 +76,7 @@ function substUsername() {
         for( var i = 0; i < elements.length; i++ )
                 elements[i].firstChild.nodeValue = elements  [i].firstChild.nodeValue.replace('<insert name here>', username);
 }
-$(function() { $('.insertusername').text(mw.config.get('wgUserName')); });
+$(function() { $('.insertusername').text(mw.config.get('wgUserName'))});
 
 /*** Slider ***/
 
@@ -118,7 +109,7 @@ mw.loader.using(["jquery.ui.tabs"], function() {
   });
 });
 
-// Retrait des [GDCP] dans les sommaires – par Ninofr
+// Retrait des [GDCP] dans les sommaires
 
 $(function () {
   /**

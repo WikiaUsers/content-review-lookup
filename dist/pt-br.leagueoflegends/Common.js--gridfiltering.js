@@ -30,7 +30,7 @@
 			flag = true
 			
 			if(gridFilters[x] == 'pesquisar') {
-				var field = $('<input type="text" placeholder="Search..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('tipo', 'pesquisar')
+				var field = $('<input type="text" placeholder="Pesquisar..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('tipo', 'pesquisar')
 				
 				field.keyup(function() {
 					gridFilteringApply()

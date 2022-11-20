@@ -6,29 +6,45 @@ window.UserTagsJS = {
                 u: 'Bot',
                 order: -1/0 
             },
+            owner: { 
+                u: 'Wiki Owner',
+                order: 1
+            },
+            maintainer: { 
+                u: 'Wiki Maintainer',
+                order: 2 
+            },
             bureaucrat: { 
                 u: 'Bureaucrat',
-                order: 1 
+                order: 5
             },
             sysop: {
                 u: 'Administrator',
-                order: 2
+                order: 6
             },
             moderator: {
                 u: 'Moderator',
-                order: 3
+                order: 7
             },
             'content-moderator': {
                 u: 'Content Moderator',
-                order: 4 
+                order: 8
             },
             threadmoderator: {
                 u: 'Discussion Moderator',
-                order: 5 
+                order: 9
+            },
+            facilitator: { 
+                u: 'PB Facilitator',
+                order: 3 
+            },
+            pia: { 
+                u: 'PIA Member',
+                order: 4
             },
             newuser: { 
                 u: 'New User',
-                order: 6
+                order: 10
             }
 	}
 };
@@ -40,6 +56,15 @@ UserTagsJS.modules.newuser = { // should be equal to auto-confirmed
 	days: 3,
 	edits: 0,
 	namespace: 0
+};
+UserTagsJS.modules.custom = {
+	'CombatSwift': ['owner'], // NOTE: order of list here does NOT matter
+    'Coasterteam': ['facilitator'], // NOTE: order of list here does NOT matter
+    'WickyTheUnicorn': ['pia'], // NOTE: order of list here does NOT matter
+    'Superstefano4': ['pia'], // NOTE: order of list here does NOT matter
+    'Ood23doc': ['pia'], // NOTE: order of list here does NOT matter
+    'CorruptBIOS': ['maintainer'], // NOTE: order of list here does NOT matter
+    'Powershell_exe': ['maintainer'] // NOTE: order of list here does NOT matter
 };
 var MessageBlock = {
   title : 'Blocked',

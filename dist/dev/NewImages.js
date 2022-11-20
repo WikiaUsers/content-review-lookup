@@ -41,7 +41,10 @@
                 leaction: 'upload/upload',
                 meta: 'siteinfo',
                 siprop: 'statistics',
-                format: 'json'
+                format: 'json',
+                // Cache image count for 5 minutes for anonymous users
+                smaxage: 300,
+                maxage: 300
             }, function( d ) {
                 if (!d || d.error) return;
                 var r = d.query.logevents,

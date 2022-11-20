@@ -98,7 +98,10 @@
 			format: 'json',
 			prop: 'text',
 			text: '<span class="contribs">[[Special:Contributions]]</span>',
-			disablepp: ''
+			disablepp: '',
+			// Cache this on the CDN for a month for anonymous users
+			maxage: 30 * 86400,
+			smaxage: 30 * 86400
 		} ).done( function ( data ) {
 			var $parsed = $( data.parse.text['*'] );
 			var specialContribs = $parsed.find( '.contribs > a' ).attr( 'title' );

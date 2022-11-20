@@ -10,7 +10,7 @@ console.log("[Daily Fact] [LOG]: 'DailyFact' ID has been located, but current pa
 } else {
 console.log("[Daily Fact] [LOG]: Current page is the main page and the 'DailyFact' ID has been located. Running script.");
 
-// Make the most superior div block visible.
+// Make the div with the 'DailyFact' ID visible.
 document.getElementById("DailyFact").setAttribute("style", "display:block;");
 
 // Variables and constants.
@@ -18,7 +18,7 @@ const d = new Date();
 const year = d.getUTCFullYear();
 const month = d.getUTCMonth() + 1;
 const day = d.getUTCDate();
-const monthNames = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var monthDay = month + '-' + day;
 var result;
 var outputText;

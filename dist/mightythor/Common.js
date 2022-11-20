@@ -522,8 +522,8 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{DisambiguationFull\r|type         = Character ",
-post: "\r\r|logo         = \r|main_image   = \r|noimage      = No Image Male.jpg\r|main         = \r|main_name    = \r|main_title   = \r|description  = \r\r|alternative1 = \r\r|include1     = \r\r|exclude1     = \r\r|includeComic1= \r|includeMovie1= \r|includeTV1   = \r|includeGame1 = \r|Teams1       = \r\r|Others1      = \r\r|Related1     = \r\r|New Header1  = \r|New Header1_1= \r}}"
+pre: "{{Disambiguation\r|type         = Character ",
+post: "\r|logo         = \r|invert_logo  = \r\r|main_image   = \r|noimage      = No Image Male.jpg\r|main         = \r|main_name    = \r|main_title   = \r|description  = \r\r|alternative1 = \r\r|include1     = \r|exclude1     = \r\r|includeComic1= \r|includeMovie1= \r|includeTV1   = \r|includeGame1 = \r\r|teams        = \r|others       = \r|related      = \r\r|group1_header= \r|group1       = \r}}"
 }
 }
 }

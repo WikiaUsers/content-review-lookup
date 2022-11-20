@@ -1648,6 +1648,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"bootes": {
+				"name": "Bootes",
+				"colors": [
+					"cosmic",
+					"black",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"boreal": {
 				"name": "Boreal",
 				"colors": [
@@ -2152,6 +2161,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"canis": {
+				"name": "Canis",
+				"colors": [
+					"cosmic",
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"canopic": {
 				"name": "Canopic",
 				"colors": [
@@ -2256,6 +2274,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"diamond",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"cassiopeia": {
+				"name": "Cassiopeia",
+				"colors": [
+					"cosmic",
+					"pink",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -2706,6 +2733,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"circinus": {
+				"name": "Circinus",
+				"colors": [
+					"cosmic",
+					"black",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4944,6 +4980,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "rare"
+			},
+			"equuleus": {
+				"name": "Equuleus",
+				"colors": [
+					"cosmic",
+					"red",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"eridanus": {
 				"name": "Eridanus",
@@ -8914,6 +8959,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"green"
 				],
 				"rarity": "rare"
+			},
+			"lepus": {
+				"name": "Lepus",
+				"colors": [
+					"cosmic",
+					"purple",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"lernean": {
 				"name": "Lernean",
@@ -17664,6 +17718,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "unbreedable"
+			},
+			"vulpecula": {
+				"name": "Vulpecula",
+				"colors": [
+					"cosmic",
+					"yellow",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"warbler": {
 				"name": "Warbler",

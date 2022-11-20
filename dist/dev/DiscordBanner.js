@@ -99,7 +99,13 @@ mw.loader.using('mediawiki.api').then(function () {
         action: 'parse',
         prop: 'wikitext',
         page: 'MediaWiki:Custom-DiscordBanner-id',
-        format: 'json'
+        format: 'json',
+        // Cache this for an hour for anonymous users.
+        // This TTL is slightly generous since the module is likely
+        // to be geared more towards users who actually have an account on the wiki,
+        // for whom any content changes will take effect immediately.
+        smaxage: 3600,
+        maxage: 3600
     }).done(function (d) {
         var id;
         if (JSON.stringify(d).indexOf('error') > -1) {

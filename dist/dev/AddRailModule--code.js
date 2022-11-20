@@ -61,6 +61,9 @@
             prop: 'text',
             uselang: context.mwConfig.wgUserLanguage,
             disablepp: '',
+            // Cache rail module contents on the CDN for 10 minutes for anonymous users
+            maxage: 600,
+            smaxage: 600
         }).done(function (response) {
             var tempContainer = document.createElement('div');
             tempContainer.innerHTML = response.parse.text['*'];

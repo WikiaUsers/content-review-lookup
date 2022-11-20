@@ -1,6 +1,14 @@
-// Adds an imitation rail to the right-hand side of the
-// page to let you see how your code will interact with 
-// the rail properly in place when previewing an edit.
+// Adds an imitation rail to the right-hand side of the page to let you see how
+// your code will interact with the rail properly in place when previewing an
+// edit.
+
+// NOTE: 
+// This script originally used a custom event listener to toggle the rail's
+// visibility.  This caused issues with Fandom's built in toggle & Firefox, so
+// it was removed.  This script now relies on running early enough that Fandom's
+// built-in toggle notices our button and attaches an event listener to it.
+// If this ever ends up causing an issue you might want to re-add the custom
+// event listener.  You can copy it from here: [[Special:Permalink/3035169]]
 
 mw.hook('wikipage.content').add(function () {
 	const currentAction = mw.config.get("wgAction");
@@ -22,17 +30,14 @@ mw.hook('wikipage.content').add(function () {
 
 	const rail = document.createElement("aside");
 	rail.classList.add("page__right-rail");
+	// Get user settings and hide the rail by default if that's their preference
+	if (mw.user.options.get("rightrailvisible") === "hidden") {
+		rail.classList.add("is-rail-hidden");
+	}
 
 	const railToggle = document.createElement("button");
 	railToggle.classList.add("right-rail-toggle");
 	railToggle.textContent = "toggle";
-	railToggle.addEventListener("click", function() {
-		if (rail.classList.contains("is-rail-hidden")) {
-			rail.classList.remove("is-rail-hidden");
-		} else {
-			rail.classList.add("is-rail-hidden");
-		}
-	});
 
 	rail.append(railToggle);
 	page.append(rail);

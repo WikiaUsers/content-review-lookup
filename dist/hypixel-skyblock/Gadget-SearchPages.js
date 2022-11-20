@@ -3,7 +3,7 @@
 	immed: true, indent: 4, 
 	latedef: true, newcap: true,
 	noarg: true, undef: true,
-	undef: true, unused: true,
+	undef: true, unused: truSearch For Pagese,
 	browser: true, jquery: true,
 	onevar: true, eqeqeq: true,
 	multistr: true, maxerr: 999999,
@@ -482,8 +482,8 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'ext.codeEditor.ace']).then(
 	}
 	
 	function initInterface() {
-		(document.getElementById('firstHeading') || document.getElementsByClassName('page-header__title')[0]).innerHTML = 'Search For Pages';
-		document.title = 'Search For Pages | ' + mw.config.get('wgSiteName') + ' | Fandom';
+		(document.getElementById('firstHeading') || document.getElementsByClassName('page-header__title')[0]).innerHTML = 'Search for pages';
+		document.title = 'Search for pages | ' + mw.config.get('wgSiteName') + ' | Fandom';
 
 		$(document.body).on('click', '.SP-deleteSelectionCheckbox', function() {
 			updateCount();
@@ -493,7 +493,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'ext.codeEditor.ace']).then(
 			html: [
 				'<b>Namespace to search: </b>',
 				generateNamespaces(),
-				createCheckbox("Show Redirects", "Show redirects in the results", "showredir"),
+				createCheckbox("Show redirects", "Show redirects in the results", "showredir"),
 				createCheckbox("Case insensitive", "Make the matchers case insensitive", "case-insensitive"),
 				createCheckbox("Regex", "Make the matchers use regular expressions", "regex", function() {
 					toggleEditors();
@@ -531,7 +531,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'ext.codeEditor.ace']).then(
 				'<br>',
 				'<b>Page content to match: </b>',
 				'<br>',
-				$('<textarea>', { cols: 100, rows: 6, id: "SP-content-search", resizable: true }),
+				$('<textarea>', { cols: 100, rows: 6, id: "SP-content-search", resizable: true, height: 'unset', width: 'unset' }),
 				$('<div>', { 
 					id: "SP-ContentRegex", 
 					css: {
@@ -695,7 +695,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'ext.codeEditor.ace']).then(
 	function initSpecialPages() {
 		var listItem = $('<li>', {
 			html: $('<a>', {
-				text: "Search For Pages",
+				text: "Search for pages",
 				href: mw.util.getUrl('Special:SearchPages'),
 			}),
 		});

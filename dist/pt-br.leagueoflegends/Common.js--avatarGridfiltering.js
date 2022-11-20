@@ -29,8 +29,8 @@
 			if(!container.length) continue
 			flag = true
  
-			if(avatarGridFilters[x] == 'pesquisa') {
-				var field = $('<input type="text" placeholder="Pesquisa..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('type', 'search')
+			if(avatarGridFilters[x] == 'pesquisar') {
+				var field = $('<input type="text" placeholder="Pesquisar..." />').appendTo(container).attr('id', container.attr('id')+'-field').data('tipo', 'pesquisar')
  
 				field.keyup(function() {
 					avatarGridFilteringApply()

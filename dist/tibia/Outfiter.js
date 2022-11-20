@@ -172,7 +172,7 @@ $(function () {
       //160
       'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
       //170
-      'Naga_(C)', 'Naga_(D)'
+      'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist'
     ],
     //outfits the array index is the id (starting at 200)
     //must also be added to Template:OutfiterLink
@@ -213,7 +213,7 @@ $(function () {
     outfiter_sprites_walking = {
       CM: 2,
       //None: 2,
-      Gnome: 2,
+      Gnome_Female: 2,
       'Corym_(C)': 2,
       Hireling_Banker: 13,
       Hireling_Trader: 11,
@@ -308,7 +308,6 @@ $(function () {
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {
-      Gnome: true,
       Dreamelf: true,
       Hireling_Trader: true,
       Hireling_Banker: true,
@@ -377,6 +376,8 @@ $(function () {
       'Naga_(B)': true,
       'Naga_(C)': true,
       'Naga_(D)': true,
+      Gnome: true,
+      Gnome_Female: true,
       None: true
     },
     //no mount
@@ -395,6 +396,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       Demon_Hellfire: true,
       'Demon_Ram_(A)': true,
       Destroyer_from_Beyond: true,
@@ -464,6 +466,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       Jersey: true,
       Newly_Wed: true,
       None: true,
@@ -491,7 +494,8 @@ $(function () {
       Energy_Wisp: true,
       Lost_Soul: true,
       Phantom: true,
-      Werehyaena: true
+      Werehyaena: true,
+      Scientist: true,
     },
     //no ride frame
     outfiter_no_ride_names = {
@@ -509,6 +513,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       None: true,
       Demon_Hellfire: true,
       'Demon_Ram_(A)': true,
@@ -561,6 +566,7 @@ $(function () {
       'Naga_(B)': true,
       'Naga_(C)': true,
       'Naga_(D)': true,
+      Scientist: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {
@@ -577,7 +583,7 @@ $(function () {
       Yalaharian: true
     },
     //outfits not on the main list
-    outfiter_names_extra = [105, 103, 106, 107, 108, 109, 160, 128, 161, 134, 162, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 159, 110, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 163, 164, 165, 166, 149, 121, 151, 156, 119, 157, 122, 132, 133, 144, 127, 123, 126, 158, 154, 155],
+    outfiter_names_extra = [105, 103, 106, 107, 108, 109, 160, 128, 161, 134, 162, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 159, 110, 167, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 163, 164, 165, 166, 149, 121, 151, 156, 119, 157, 122, 132, 133, 144, 127, 123, 126, 158, 154, 155],
     //outfits with separator on list
     outfiter_separator = {None: true},
     //mounts with separator on list

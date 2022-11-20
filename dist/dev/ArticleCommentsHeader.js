@@ -44,7 +44,10 @@ mw.loader.using('mediawiki.api').then(function() {
                 action: 'query',
                 meta: 'allmessages',
                 ammessages: 'Custom-comments-header',
-                amargs: wg.wgPageName
+                amargs: wg.wgPageName,
+                // Cache message contents on the CDN for 10 minutes for anonymous users
+                smaxage: 600,
+                maxage: 600
             }).then(function(res) {
                 var message = res.query.allmessages[0];
 
@@ -57,7 +60,10 @@ mw.loader.using('mediawiki.api').then(function() {
                 new mw.Api().get({
                     action: 'parse',
                     title: wg.wgPageName,
-                    text: message['*']
+                    text: message['*'],
+                    // Cache rendered message on the CDN for 10 minutes for anonymous users
+                    smaxage: 600,
+                    maxage: 600
                 }).then(function(res) {
                     var html = res.parse.text['*'];
 

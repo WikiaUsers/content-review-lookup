@@ -59,9 +59,16 @@ window.LockOldBlogs = {
  
 $('#mw-upload-form').submit(function(e) {return emptyLicenseAlert(this);});
 
-importArticles ({ 
+importArticles({ 
     type :  'script' , 
     article :  [ 
         'u:dev:MediaWiki:Quiz/code.js' , 
     ] 
+})
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
 });

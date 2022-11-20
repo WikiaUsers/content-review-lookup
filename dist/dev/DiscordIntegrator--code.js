@@ -89,7 +89,12 @@
                 ++this._loading;
                 this.api.get({
                     action: 'parse',
-                    text: this.config[msg]
+                    text: this.config[msg],
+                    // Also cache the individual parser outputs of messages for anonymous users.
+                    // This can be a bit more aggressive as the cache varies on the
+                    // actual message text, which often contains no wikitext at all.
+                    smaxage: 86400,
+                    maxage: 86400
                 }).done($.proxy(function(d) {
                     if (!d.error) {
                         this.config[msg] = d.parse.text['*'];

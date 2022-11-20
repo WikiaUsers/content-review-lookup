@@ -2,9 +2,6 @@
     if (window.Discord && Discord.init) return;
 
     var ucpOnRailReadyModuleName = mw.loader.getModuleNames().find(function (name) { return name.startsWith('onRailReady-'); });
-    var blankImgUrl = mw.config.get('wgBlankImgUrl');
-    var canNativelyLazyLoadImages = window.HTMLImageElement.prototype.hasOwnProperty('loading');
-    var shouldPolyfillLazyLoadImages = !canNativelyLazyLoadImages && window.hasOwnProperty('IntersectionObserver');
     var extendFrom = window.Discord instanceof Node ? {} : window.Discord;
 
     var ui;
@@ -23,6 +20,7 @@
                     break;
             }
             console.log(this.loaded);
+            console.log(type);
             if (--this.loaded) return;
             this.init();
         },
@@ -91,14 +89,6 @@
                     d: path
                 })
             });
-        },
-        avatar: function(member, ext, size) {
-            // For `widget.json`s returned by the API proxy, we have an obfuscated URL that returns a (limited) resizable image.
-            if (member.alt_avatar_url) return member.alt_avatar_url + '?size=' + size;
-            // For `widget.json`s returned by Discord proper, we have an obfuscated URL that returns a non-resizable image.
-            if (!member.avatar) return member.avatar_url;
-            // This is a fossil from a bygone era. We no longer expect to hit this case. Someday, these two lines will be lost to the sands of time.
-            return 'https://cdn.discordapp.com/avatars/' + member.id + '/' + member.avatar + '.' + ext + '?size=' + size;
         },
         getRandomId: function(prefix, i) {
             var charset = '1234567890abcdef',
@@ -191,58 +181,6 @@
                 ]
             });
         },
-        // Returns Array<[role, members[]]> because objects aren't required to keep assignment order, and maps are horrifying to use
-        groupMemberRoles: function(members) {
-            var grouped = [],
-            indices = {},
-            defaultRole = "Users",
-            roles = Object.keys(this.messages.roles);
-
-            members.sort(function(a, b) {
-                return (a.nick || a.username).localeCompare(b.nick || b.username);
-            });
-
-            if (this.messages.order) {
-                var order = this.messages.order.split(',').map(function(name) {
-                    return name.trim();
-                });
-
-                roles.sort(function(a, b) {
-                    var aIndex = order.indexOf(a);
-                    if (aIndex == -1) return 1;
-                    var bIndex = order.indexOf(b);
-                    if (bIndex == -1) return -1;
-                    return aIndex - bIndex;
-                });
-            }
-
-            for (var i in roles) {
-                var role = roles[i];
-                indices[role] = grouped.push([ role, [] ]) - 1;
-            }
-            indices[defaultRole] = grouped.push([ defaultRole, [], true ]) - 1;
-
-            for (var i in members) {
-                var member = members[i],
-                assigned = false;
-
-                for (var role in this.messages.roles) {
-                    var ids = this.messages.roles[role];
-                    if (ids.includes(member.id)) {
-                        grouped[indices[role]][1].push(member);
-                        // I could technically use named loops and break with that, but that's just ew
-                        assigned = true;
-                        break;
-                    }
-                }
-
-                if (!assigned) {
-                    grouped[indices[defaultRole]][1].push(member);
-                }
-            }
-
-            return grouped;
-        },
         addToRail: function() {
             if (this.$rail.length === 0) return;
 
@@ -309,25 +247,6 @@
         },
         addCSS: function(styles) {
             mw.util.addCSS(styles);
-        },
-        createNameDirectionStyles: function(count, id) {
-            var half = Math.floor(count / 2),
-            i = half,
-            selectors = [];
-
-            while (i--) {
-                selectors.push(this.createDirectionSelector(count, id, i - half + 2));
-            }
-
-            return selectors.join(',\n') + '{\n\tpadding: 0 32px 0 8px;\n\tright: 4px;\n}';
-        },
-        createDirectionSelector: function(count, id, half) {
-            var n = half == 0
-                ? ''
-                : half > 0
-                    ? '+' + half
-                    : '-' + Math.abs(half);
-            return '#' + id + ' .widget-member:nth-child(' + count + 'n' + n + ') .widget-member-name';
         },
         replaceWidgets: function($container) {
             $container.find('.DiscordWidget:not([data-widget-state])').each(this.replaceWidget.bind(this));

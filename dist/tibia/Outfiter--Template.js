@@ -171,7 +171,7 @@ $(function () {
       //160
       'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
       //170
-      'Naga_(C)', 'Naga_(D)'
+      'Naga_(C)', 'Naga_(D)', 'Gnome_Female'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -211,7 +211,7 @@ $(function () {
     outfiter_sprites_walking = {
       CM: 2,
       //None: 2,
-      Gnome: 2,
+      Gnome_Female: 2,
       'Corym_(C)': 2,
       Hireling_Banker: 13,
       Hireling_Trader: 11,
@@ -306,7 +306,6 @@ $(function () {
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {
-      Gnome: true,
       Dreamelf: true,
       Hireling_Trader: true,
       Hireling_Banker: true,
@@ -375,6 +374,8 @@ $(function () {
       'Naga_(B)': true,
       'Naga_(C)': true,
       'Naga_(D)': true,
+      Gnome: true,
+      Gnome_Female: true,
       None: true
     },
     //no mount
@@ -393,6 +394,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       Demon_Hellfire: true,
       'Demon_Ram_(A)': true,
       Destroyer_from_Beyond: true,
@@ -462,6 +464,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       Jersey: true,
       Newly_Wed: true,
       None: true,
@@ -507,6 +510,7 @@ $(function () {
       Elf: true,
       Frog: true,
       Gnome: true,
+      Gnome_Female: true,
       None: true,
       Demon_Hellfire: true,
       'Demon_Ram_(A)': true,

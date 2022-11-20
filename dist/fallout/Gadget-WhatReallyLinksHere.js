@@ -130,16 +130,20 @@
         }
         
 		function getLinksFromPage(pageName, lhContinue, isRedirectPage) {
-			if (lhContinue === undefined)
-				lhContinue = '';
-			api.get({
+			var apiParams = {
 				action: 'query',
 				prop: 'linkshere',
 				format: 'json',
 				lhlimit: 500,
-				titles: pageName,
-				lhcontinue: lhContinue
-			}).done(function(e) {
+				titles: pageName
+			}
+			if (lhContinue !== undefined && lhContinue !== '') {
+				apiParams['lhcontinue'] = lhContinue;
+			} else {
+				lhContinue = '';
+			}
+				
+			api.get(apiParams).done(function(e) {
 				linkData = { links: [], Redirects: [] };
 				$('#LinkCount').html('');
 				$('#RedirectCount').html('');
@@ -159,7 +163,7 @@
                                     hasRedirects = true;
                                 }
 			            		$(RedirectArea).append('<div style="padding-left:5px;"><a href="'+linkBase+encodeURIComponent(linkInfos[titleLink].linkshere[linkInf].title.replace(/[ _]/g,'_'))+'">'+linkInfos[titleLink].linkshere[linkInf].title+'</a><div id="'+stripRegExp(linkInfos[titleLink].linkshere[linkInf].title)+'" style="margin-left: 20px;border-left: 1px solid darkgray;border-bottom: 1px solid darkgray;padding-left: 20px;"></div></div>');
-			            		getLinksFromPage(linkInfos[titleLink].linkshere[linkInf].title, '', true);
+			            		getLinksFromPage(linkInfos[titleLink].linkshere[linkInf].title, ''undefined'', true);
 			            	} else 
 			                	checkIfLinksReal(linkInfos[titleLink].linkshere[linkInf], pageName, isRedirectPage);
 			            }

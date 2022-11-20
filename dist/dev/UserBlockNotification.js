@@ -4,7 +4,7 @@ Description  :		Whenever a user gets blocked, users will have notification on th
 Author       :   	Vastmine1029
 Version      :   	1.0
 *************/
-
+// <nowiki>
 mw.loader.using('mediawiki.api', function() {
 	var api = new mw.Api(), block_data;
 	var user = mw.config.get('wgUserName');
@@ -41,3 +41,4 @@ mw.loader.using('mediawiki.api', function() {
 		});
 	});
 });
+// </nowiki>

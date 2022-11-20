@@ -2,9 +2,8 @@
 Under CC-BY-SA licence */
 ;(function($, mw) {
 	'use strict';
-    var wgPageName = mw.config.get('wgPageName');
-    var msg;
-    
+    const wgPageName = mw.config.get('wgPageName');
+
     var similitude = similitude || 60;
 
     function sortbysimilitudeandcolor() {
@@ -30,7 +29,7 @@ Under CC-BY-SA licence */
         }
     }
 
-    function searchforpages() {
+    function searchforpages(i18n) {
         new mw.Api().get( {
             action: 'query',
             list: 'allpages',
@@ -51,9 +50,9 @@ Under CC-BY-SA licence */
                 if (similar_characters_count >= similitude) {
                     if (!$('.noarticletext ul').length) {
                         $('.noarticletext p:last').remove();
-                        $('.noarticletext').append('<p style="font-size:130%; text-align:center;">' + msg('otherpages').escape() + '</p><ul style="list-style-type:circle;"></ul><p></p>');
+                        $('.noarticletext').append('<p style="font-size:130%; text-align:center;">' + i18n.msg('otherpages').escape() + '</p><ul style="list-style-type:circle;"></ul><p></p>');
                     }
-                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + similar_characters_count + msg('similitude').escape() + ')</a></li>');
+                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + i18n.msg('similitude', similar_characters_count).escape() + ')</a></li>');
                 }
             }
             sortbysimilitudeandcolor();
@@ -63,10 +62,7 @@ Under CC-BY-SA licence */
         return; //No need to check for potential searched pages
     } else {
     	mw.hook('dev.i18n').add(function(i18n) {
-			i18n.loadMessages('MisspelledPage').done(function(i18no) {
-				msg = i18no.msg;
-		        searchforpages();
-			});
+			i18n.loadMessages('MisspelledPage').done(searchforpages);
 		});
 		importArticle({
 			type: 'script',

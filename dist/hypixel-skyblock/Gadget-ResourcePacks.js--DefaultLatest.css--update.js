@@ -397,7 +397,7 @@
 			{ name: 'Pink Tulip', mcName: 'Pink Tulip (texture)' },
 			{ name: 'Red Tulip', mcName: 'Red Tulip (texture)' },
 			{ name: 'Orange Tulip', mcName: 'Orange Tulip (texture)' },
-			{ name: 'Sunflower', mcName: 'Sunflower (front texture)' }
+			{ name: 'Sunflower', mcName: 'Sunflower (front texture)', enchName: 'Enchanted Sunflower' }
 		],
 		'Misc - Nether & End': [
 			{ name: 'Soul Sand' }, //

@@ -385,6 +385,11 @@
             }
         },
         
+        MinimalScrollbar: {
+			page: 'MinimalScrollbar',
+			styles: 'MediaWiki:MinimalScrollbar.css'
+		},
+        
         MinimalTestModeAlert: {
             page: 'MinimalTestModeAlert',
             scripts: 'MediaWiki:MinimalTestModeAlert.js',
@@ -414,6 +419,11 @@
 			page: 'User:KockaAdmiralac',
 			scripts: 'MediaWiki:MoreSocialLinks.js'
 		},
+		
+		MovingWordmark: {
+        	page: 'MovingWordmark',
+        	scripts: 'MediaWiki:MovingWordmark.css'
+        },
 		
 		MultipleActivity: {
 			page: 'Special:MultipleActivity',

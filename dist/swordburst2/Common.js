@@ -139,6 +139,9 @@ importArticles({
                 format: "json",
                 prop: "wikitext",
                 page: "Market",
+                // Cache this page for a short while for anonymous users
+                maxage: 300,
+                smaxage: 300
             });
         }
  
@@ -164,16 +167,16 @@ importArticles({
                         itemPrices.push([itemPriceMatch[1], itemPriceMatch[2]]);
                     }
  
-                    var marketLink = "<span id='market-link'>(See <a target='_blank' href='" + util.getUrl("Market#" + itemName) + "' title='Market'>Market</a>)</span>";
+                    var marketLink = "<span id='market-link'>(See <a target='_blank' href='" + mw.html.escape(util.getUrl("Market#" + itemName)) + "' title='Market'>Market</a>)</span>";
                     var priceText;
  
                     switch (itemPrices.length) {
                         case 1:
-                            priceText = "<span id='price'>" + itemPrices[0][1] + "</span>";
+                            priceText = "<span id='price'>" + mw.html.escape(itemPrices[0][1]) + "</span>";
                             break;
                         case 2:
                             // Clean & Max
-                            priceText = "<ul id='price'><li>Clean: " + itemPrices[0][1] + "</li><li>Max: " + itemPrices[1][1] + "</li></ul>";
+                            priceText = "<ul id='price'><li>Clean: " + mw.html.escape(itemPrices[0][1]) + "</li><li>Max: " + mw.html.escape(itemPrices[1][1]) + "</li></ul>";
                             break;
                         default:
                             marketPriceContainer.text("No price found");
@@ -231,11 +234,11 @@ importArticles({
  
         switch (itemPrices.length) {
             case 1:
-                priceText = "<span id='price'>" + itemPrices[0][1] + " </span>";
+                priceText = "<span id='price'>" + mw.html.escape(itemPrices[0][1]) + " </span>";
                 break;
             case 2:
                 // Clean & Max
-                priceText = "<ul id='price'><li>Clean: " + itemPrices[0][1] + "</li><li>Max: " + itemPrices[1][1] + "</li></ul>";
+                priceText = "<ul id='price'><li>Clean: " + mw.html.escape(itemPrices[0][1]) + "</li><li>Max: " + mw.html.escape(itemPrices[1][1]) + "</li></ul>";
                 break;
             default:
                 searchOutput.text("No price found");
@@ -254,6 +257,9 @@ importArticles({
             format: "json",
             prop: "wikitext",
             page: "Market",
+            // Cache this page for a short while for anonymous users
+            maxage: 300,
+            smaxage: 300
         }).done(function(response) {
             if (!response.error) {
                 wikitext = response.parse.wikitext["*"];

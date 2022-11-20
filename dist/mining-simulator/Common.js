@@ -1,5 +1,11 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/*-----------------------[ UserTags | Custom Role Tags ]---*/
+// Imports. KEEP AT TOP!
+// -----------------------[ Default Upload Summary ]---
+// Set a default value for file upload summaries on Special:Upload. Also allows the user to define a custom summary that applies to all uploads on the page.
+mw.loader.getScript('https://mining-simulator.fandom.com/index.php?title=MediaWiki:DefaultUploadSummary.js&action=raw&ctype=text/javascript');
+
+
+// Other scripts.
+// -----------------------[ UserTags | Custom Role Tags ]---
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -12,10 +18,10 @@ UserTagsJS.modules.custom = {
 UserTagsJS.modules.custom = {
 	'Arlemie': ['verified'] 
 };
-/*-----------------------[ BackToTopButton | Modernization option ]---*/
+// -----------------------[ BackToTopButton | Modernization option ]---
 window.BackToTopModern = true;
 
-/*-----------------------[ Page Theme Styling | Change BG image via category ]---*/
+// -----------------------[ Page Theme Styling | Change BG image via category ]---
 var categories = document.querySelector(".page-header__categories-links");
 var getcategories = categories.getElementsByTagName("a");
 var ahref;

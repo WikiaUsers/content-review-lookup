@@ -527,8 +527,17 @@
             return;
         }
         apipage = new mw.Uri({path: nuri.interwiki + '/api.php'});
-        apipage.extend({action: 'parse', page: nuri.truepath,
-                    prop: 'images|text', format: 'json', disablepp: '', redirects: ''});
+        apipage.extend({
+            action: 'parse',
+            page: nuri.truepath,
+            prop: 'images|text',
+            format: 'json',
+            disablepp: '',
+            redirects: '',
+            // Cache link previews on the CDN for 10 minutes for anonymous users
+            smaxage: 600,
+            maxage: 600
+        });
         if (!Settings.wholepage) apipage.extend({section: 0});
         log('gp apip: ', apipage.toString());
         $.getJSON(apipage).done(function(data) {

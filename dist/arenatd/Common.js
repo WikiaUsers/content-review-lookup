@@ -1,13 +1,12 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-
-/*QUiz*/
+/*
+/*Quiz*/
 window.quizName = "Quiz";
 window.quizLang = "en";
 window.resultsTextArray = [ 
     "Thanks for completing our quiz!","Did you study?","你在做什么？重做!","LowestScoreDetectedOhNoFrickWhyUghDidYouTryGuessingIt",
     "Nice take on that quiz!","Thanks for particpating!","How did you find that? Hard? pffft.","Not the best - but not the worst","Hopefully you didn't wase StreetCred trying this out.","Did I make it hard enough?","Knowledge might just make the heart grow fonder. Good Job."
-    "Woah! Nice one - thats the highest score yet!","Amazing.","Swag!",
+    ,"Woah! Nice one thats the highest score yet!","Amazing.","Swag!",
 ];
 window.questions = [
     ["Which person has the highest levels in game? ",

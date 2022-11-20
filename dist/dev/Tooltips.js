@@ -28,6 +28,8 @@ var tooltips = {
         href = href.split('/wiki/');
         tooltips.api = href[0]+'/api.php?format=json&action=parse&disablelimitreport=true&prop=text&title='+href[1];
         if(mw.util.getParamValue('uselang')) tooltips.api += '&uselang='+mw.util.getParamValue('uselang');
+		// Cache tooltip contents on the CDN for 10 minutes for anonymous users
+		tooltips.api += '&maxage=600&smaxage=600'
         tooltips.api += '&text=';
         
         tooltips.types['basic-tooltip'] = {};
