@@ -3,7 +3,7 @@
  * Includes functionality to delete forum/message wall threads and selective
  * deleting of pages, which the original lacks
  * Original "WHAM" - https://dev.fandom.com/wiki/MediaWiki:WHAM/code.js
- * @author Ozank Cx
+ * @author KnazO
  * @uses [[File:Circle_throbber.gif]]
  */
 
@@ -384,7 +384,7 @@
         }
 
         function canFlagBot() {
-            return /soap|staff|helper|wiki-representative/.test(config.wgUserGroups.join());
+            return /soap|staff|helper|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join());
         }
 
         function click() {

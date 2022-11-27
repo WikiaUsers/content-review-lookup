@@ -5,8 +5,7 @@ mw.loader.using('mediawiki.util').then(function() {
 	
 	function zselector( $content ) {
 		$(function () {
-			$('.ns, .ps').unbind();
-			$('[class*=wng-]').css('display','none');
+			$('[class*=wng-], [class*=w4]').unbind();
 			$('.ns[class*=w4c-], .ps[class*=w4c-]').on(
 				'click', function(){
 					$(this).toggleClass('ns').toggleClass('ps');
@@ -19,13 +18,38 @@ mw.loader.using('mediawiki.util').then(function() {
 					zbehave(zvalue($(this).attr('class'), 1));
 				}
 			);
+			$('[class*=wng-]:not([class*=w4])').on(
+				'click', function(){
+					var that = this;
+					if ( $('.showme').length > 0 ){
+						if ( $('.showme').is(':empty') || $('.showme').attr('data-skin') != $(that).attr('data-skin') ) {
+							var text = $(that).attr('data-skin').split('-');
+							var params = {
+								"action": "parse",
+								"format": "json",
+								"text": "{{禁闭者台词|禁闭者="+text[0]+"|皮肤="+text[1]+"}}",
+								"contentmodel": "wikitext",
+								"utf8": 1
+							};
+							api = new mw.Api();
+							api.get( params ).done( function ( data ) {
+								$('.showme').empty().append(data.parse.text['*']).attr('data-skin', $(that).attr('data-skin'));
+								$(document).trigger('readyAgain');
+							});
+						} else {
+							$('.showme').empty().attr('data-skin', '');
+						}
+					}
+				}
+			);
 			var zbehave= function (nmbr) {
-				// $('[class*=wng]').find('.now-playing').removeClass('.now-playing');
+				$('.now-playing').trigger('pause');
 				$('[class*=wng]').each(function(inde, elem){
 					var leng = zvalue($(elem).attr('class'), 0);
 					if (leng.length >= nmbr.length && $(elem).css('display') == 'block' && leng != nmbr){
 						$(elem).css('display', 'none');
 						$('.ps.w4c-'+leng+' ,.ps.w4h-'+leng).removeClass('ps').addClass('ns');
+						$('.showme').empty().attr('data-skin', '');
 					}
 				});
 				$('[class*=w4]').each(function(inde, elem){
@@ -52,6 +76,7 @@ mw.loader.using('mediawiki.util').then(function() {
 		});
 	}
 	
+	$('[class*=wng-]').css('display','none');
 	mw.hook( 'wikipage.content' ).add( zselector );
 	zselector( mw.util.$content );
 });

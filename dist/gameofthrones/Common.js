@@ -11,3 +11,10 @@ importScript('MediaWiki:Common.js/navigationbars2.js');
  
 /* Collapsible Tables */
 importScript('MediaWiki:Common.js/collapsibletables.js');
+
+/*Inactivity tag */
+InactiveUsers = {
+	months: 12,
+	text: 'inactive'
+	};
+	importScriptPage('InactiveUsers/code.js', 'dev');

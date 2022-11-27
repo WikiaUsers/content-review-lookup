@@ -2,7 +2,7 @@
  * Creates simple non-intrusive pop-up notifications.
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.4
+ * @version 1.0.5
  */
 
 // jshint browser: true, devel: true, jquery: true
@@ -43,7 +43,18 @@
         return object;
     }
     
+    function makeSanitizer () {
+		var text = document.createTextNode('');
+		var span = document.createElement('span');
+		span.appendChild(text);
+		return function sanitizeHTML (value) {
+			text.nodeValue = value;
+			return span.innerHTML;
+		};
+    }
+    
     var helpers = {
+		sanitizeHTML: makeSanitizer(),
         ensureContainer: function () {
             if (document.querySelector('.toasts')) return;
             var wrapper = document.createElement('div');
@@ -51,13 +62,6 @@
             wrapper.style.setProperty('width', document.documentElement.offsetWidth + 'px');
             wrapper.style.setProperty('bottom', '80px');
             document.body.appendChild(wrapper);
-        },
-        sanitizeHTML: function (html) {
-			var text = document.createTextNode('');
-			var span = document.createElement('span');
-			span.appendChild(text);
-			text.nodeValue = html;
-			return span.innerHTML;
         },
         parseHTML: function (html, fragment) {
             var template = document.createElement('template'),
@@ -73,8 +77,16 @@
         buildToast: function (message, type, icon) {
             var hasIcon = type || icon,
                 html = '',
-                name = 'toast' + (hasIcon ? ' toast-has-icon' : '');
-            name += (type && type !== 'default' ? ' toast-' + type : '');
+                name = 'toast' + (
+					hasIcon
+						? ' toast-has-icon'
+						: ''
+				);
+            name += (
+				type && type !== 'default'
+					? ' toast-' + type
+					: ''
+            );
             if (!icon && type) icon = type;
             html += '<div class="' + name + '">';
             if (this.icons[icon]) {
@@ -87,7 +99,7 @@
             return this.parseHTML(html);
         },
         parseType: function (type, types) {
-            return types.hasOwnProperty(type) ? types[type] : '';
+            return types[type] || '';
         },
         icons: {
             warning: function (size) {
@@ -154,9 +166,13 @@
     var Toasts = {
         show: function (content, options) {
             var toast;
-            content = typeof content === 'string' ? content : '';
+            content = typeof content === 'string'
+				? content
+				: '';
             content = helpers.sanitizeHTML(content);
-            options = isObject(options) ? options : {};
+            options = isObject(options)
+				? options
+				: {};
             helpers.ensureContainer();
             toast = helpers.buildToast(
                 content,
@@ -165,7 +181,10 @@
             );
             document.querySelector('.toasts').appendChild(toast);
             new Promise(function (resolve) {
-                setTimeout(resolve, options.timeout ? options.timeout : 3000);
+				var timeout = options.timeout
+					? options.timeout
+					: 3000;
+                setTimeout(resolve, timeout);
             })
             .then(function () {
                 toast.classList.add('closing');
@@ -181,28 +200,30 @@
             }, console.error);
         },
         info: function (content, options) {
-            content = typeof content === 'string' ? content : '';
-            options = isObject(options) ? options : {};
+            options = isObject(options)
+				? options
+				: {};
             return this.show(content, Object.assign(options, { type: 'info' }));
         },
         error: function (content, options) {
-            content = typeof content === 'string' ? content : '';
-            options = isObject(options) ? options : {};
+            options = isObject(options)
+				? options
+				: {};
             return this.show(content, Object.assign(options, { type: 'error' }));
         },
         success: function (content, options) {
-            content = typeof content === 'string' ? content : '';
-            options = isObject(options) ? options : {};
+            options = isObject(options)
+				? options
+				: {};
             return this.show(content, Object.assign(options, { type: 'success' }));
         },
         warning: function (content, options) {
-            content = typeof content === 'string' ? content : '';
-            options = isObject(options) ? options : {};
+            options = isObject(options)
+				? options
+				: {};
             return this.show(content, Object.assign(options, { type: 'warning' }));
         },
         'default': function (content, options) {
-            content = typeof content === 'string' ? content : '';
-            options = isObject(options) ? options : {};
             return this.show(content, options);
         },
         types: {

@@ -1,5 +1,5 @@
-/* == Кабинет администратора == */
-/* === Кнопка ImportJS. Сделано HIHRAIM'ом из AdminDashboard JS-Button */
+/* == Кабінет адміністратора == */
+/* === Кнопка ImportJS. Зроблено HIHRAIM'ом з AdminDashboard JS-Button */
 (function() {
     if (
         mw.config.get('wgCanonicalSpecialPageName') !== 'AdminDashboard' ||

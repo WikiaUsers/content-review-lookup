@@ -1,94 +1,95 @@
 // <nowiki>
-// jshint jquery:true, esversion:5
-/* globals require, module, mediaWiki, mw, OO */
-'use strict';
+;(function($, mw) {
+	'use strict';
 
-if (
-	mw.user.options.get( 'showtoolbar' ) &&
-	!mw.user.options.get( 'usebetatoolbar' ) &&
-	$.inArray( mw.config.get( 'wgAction' ), [ 'edit', 'submit' ] ) > -1
-) {
-	mw.loader.using( 'mediawiki.toolbar', function() {
-		$.each( [
-			[
-				'//upload.wikimedia.org/wikipedia/commons/c/c8/Button_redirect.png',
-				'Redirect',
-				'#REDIRECT [[',
-				']]',
-				'Target page name'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/c/c9/Button_strike.png',
-				'Strike',
-				'<s>',
-				'</s>',
-				'Strike-through text'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png',
-				'Line break',
-				'<br>'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/6/6a/Button_sup_letter.png',
-				'Superscript',
-				'<sup>',
-				'</sup>',
-				'Superscript text'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/a/aa/Button_sub_letter.png',
-				'Subscript',
-				'<sub>',
-				'</sub>',
-				'Subscript text'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/d/d5/Button_small_text.png',
-				'Small',
-				'<small>',
-				'</small>',
-				'Small text'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/3/34/Button_hide_comment.png',
-				'Insert hidden Comment',
-				'<!-- ',
-				' -->',
-				'Comment'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/1/12/Button_gallery.png',
-				'Insert a picture gallery',
-				'\n<gallery>\n',
-				'\n</gallery>',
-				'File:Example.jpg|Caption1\nFile:Example.jpg|Caption2'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/f/fd/Button_blockquote.png',
-				'Insert block of quoted text',
-				'<blockquote>\n',
-				'\n</blockquote>',
-				'Block quote'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/6/60/Button_insert_table.png',
-				'Insert a table',
-				'{| class="wikitable"\n|',
-				'\n|}',
-				'-\n! header 1\n! header 2\n! header 3\n|-\n| row 1, cell 1\n| row 1, cell 2\n| row 1, cell 3\n|-\n| row 2, cell 1\n| row 2, cell 2\n| row 2, cell 3'
-			],
-			[
-				'//upload.wikimedia.org/wikipedia/commons/7/79/Button_reflink.png',
-				'Insert a reference',
-				'<ref>',
-				'</ref>',
-				'Insert footnote text here'
-			]
-		], function() {
-			mw.toolbar.addButton.apply( null, this );
-		} );
-	} );
-}
+	if (!(
+		mw.user.options.get( 'showtoolbar' ) &&
+		//!mw.user.options.get( 'usebetatoolbar' ) &&
+		['edit', 'submit'].indexOf(mw.config.get('wgAction')) > -1
+	)) return;
 
+	const buttons = [
+		[
+			'strikethrough',
+			'Strike',
+			'<s>',
+			'</s>',
+			'Strike-through text',
+			'.section-main > .group-format'
+		],
+		[
+			'underline',
+			'Underline',
+			'<span style="text-decoration: underline">',
+			'</span>',
+			'Underlined text',
+			'.section-main > .group-format'
+		],
+		[
+			'code',
+			'Insert code',
+			'<code>',
+			'</code>',
+			'Code',
+			'.section-advanced > .group-insert'
+		],
+		[
+			'ongoingConversation',
+			'Insert hidden Comment',
+			'<!-- ',
+			' -->',
+			'Comment',
+			'.section-advanced > .group-insert'
+		],
+		[
+			'ocr',
+			'Insert block of quoted text',
+			'<blockquote>\n',
+			'\n</blockquote>',
+			'Block quote',
+			'.section-advanced > .group-insert'
+		]
+	];
+
+	function init(require) {
+		const OO = require('oojs');
+		const $toolbar = $( '.section-advanced > .group-insert' );
+		const $currentFocused = $('#wpTextbox1');
+
+		buttons.forEach(function(button) {
+			const $button = new OO.ui.ButtonWidget({
+				framed: false,
+				icon: button[0],
+				label: '',
+				invisibleLabel: true,
+				title: button[1]
+			});
+			const $element = $button.$element;
+			$element.addClass('tool');
+			// $element.find('.oo-ui-iconElement-icon').append(img);
+			$(button[5]).append($element);
+			$element.on('click', function() {
+				$currentFocused.textSelection(
+					'encapsulateSelection', {
+						pre: button[2],
+						peri: button[4],
+						post: button[3]
+					}
+				);
+			});
+			$toolbar.append($button);
+		});
+	}
+
+	mw.loader.using([
+		'ext.wikiEditor',
+		'oojs-ui',
+		'oojs-ui-core',
+		'oojs-ui-widgets',
+		// Icons
+		'oojs-ui.styles.icons-editing-styling', // strikethrough
+		'oojs-ui.styles.icons-editing-advanced', // ocr
+		'oojs-ui.styles.icons-moderation' // ongoingConversation
+	]).then(init);
+})(window.jQuery, window.mediaWiki);
 // </nowiki>

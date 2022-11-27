@@ -12,8 +12,7 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
-    'TheJasbre202': ['discord'],
-    'The_Krusty_Krab': ['discord']
+    'TheJasbre202': ['discord']
 };
 
 UserTagsJS.modules.inactive = 30;

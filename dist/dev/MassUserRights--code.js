@@ -1,7 +1,7 @@
 /**
  * @Name            MassUserRights
  * @Version         v2.4
- * @Author          Ozuzanna
+ * @Author          KnazO
  * @Author          TheGoldenPatrik1
  * @Description     Mass add/remove usergroups from listed users
  * @Protect         <nowiki>
@@ -228,7 +228,7 @@ mw.loader.using([
 		 */
 		function show () {
 		    // Removes options admins can't use
-			if (!/bureaucrat|staff|helper|wiki-representative|util/.test(config.wgUserGroups.join())) {
+			if (!/bureaucrat|staff|helper|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())) {
 				$('#user-rights-type option[value="rollback"],#user-rights-type option[value="sysop"],#user-rights-type option[value="content-moderator"],#user-rights-type option[value="bureaucrat"]').remove();
             }
             // Support for custom groups

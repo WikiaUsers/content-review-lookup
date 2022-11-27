@@ -11,4 +11,8 @@ mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:Defa
 // Outputs a string based on the current day and month.
 mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:DailyFact.js&action=raw&ctype=text/javascript');
 
+// [ Main Page Search ]
+// Adds a search box to the main page to aid unfamiliar users with the usage of the function.
+mw.loader.getScript('https://saktkia51.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
+
 // -- [ Other code ] --

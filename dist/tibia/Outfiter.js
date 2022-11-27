@@ -8,7 +8,7 @@ $(function () {
     loading_img = 'https://static.wikia.nocookie.net/tibia/en/images/8/81/Outfiter_Loading.gif',
     error_img = 'https://static.wikia.nocookie.net/tibia/en/images/f/f6/Outfiter_Error.png',
     //mounts, the array index is the idm
-    //must also be added to Template:Infobox_Mount
+    //must also be added to Template:MountLink
     outfiter_mount_names = [
       //0
       'None', 'Widow_Queen', 'Racing_Bird', 'War_Bear', 'Black_Sheep',
@@ -50,7 +50,7 @@ $(function () {
       'Frostflare', 'Cinderhoof', 'Bloodcurl', 'Leafscuttler', 'Mouldpincer',
       //95
       'Sparkion', 'Swamp_Snapper', 'Mould_Shell', 'Reed_Lurker', 'Neon_Sparkid',
-      //100
+      //100[]
       'Vortexion', 'Ivory_Fang', 'Shadow_Claw', 'Snow_Pelt', 'Stone_Rhino',
       //105
       'Arctic_Unicorn', 'Blazing_Unicorn', 'Prismatic_Unicorn', 'Cranium_Spider', 'Cave_Tarantula',
@@ -95,7 +95,7 @@ $(function () {
       //205
       'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse',
       //210
-      'Mutated_Abomination'
+      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -296,7 +296,10 @@ $(function () {
       Gloothomotive: 8,
       Floating_Augur: 8,
       Floating_Sage: 8,
-      Floating_Scholar: 8
+      Floating_Scholar: 8,
+      Brass_Speckled_Koi: 8,
+      Ink_Spotted_Koi: 8,
+      Tangerine_Flecked_Koi: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -583,7 +586,8 @@ $(function () {
       Yalaharian: true
     },
     //outfits not on the main list
-    outfiter_names_extra = [105, 103, 106, 107, 108, 109, 160, 128, 161, 134, 162, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 159, 110, 167, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 163, 164, 165, 166, 149, 121, 151, 156, 119, 157, 122, 132, 133, 144, 127, 123, 126, 158, 154, 155],
+    //automatically generated below
+    //outfiter_names_extra = [105, 103, 106, 107, 108, 109, 160, 128, 161, 134, 162, 104, 140, 111, 112, 113, 114, 115, 116, 130, 117, 131, 102, 142, 101, 124, 125, 120, 100, 118, 159, 110, 167, 129, 135, 137, 139, 138, 136, 141, 143, 146, 147, 148, 152, 153, 150, 145, 163, 164, 165, 166, 149, 121, 151, 156, 119, 157, 173, 122, 132, 133, 144, 127, 123, 126, 158, 154, 155],
     //outfits with separator on list
     outfiter_separator = {None: true},
     //mounts with separator on list
@@ -603,6 +607,13 @@ $(function () {
   if (outfiter_names200.length) {
     outfiter_names.length = 200;
     outfiter_names = outfiter_names.concat(outfiter_names200);
+  }
+  //automatically create list of 'Other' outfits
+  var ii, outfiter_names_extra = [105],
+  outfiter_names100_sorted = outfiter_names100.slice().sort();
+  for (ii = 0; ii < outfiter_names100.length; ii++) {
+  	if (outfiter_names100_sorted[ii] == 'None') { continue; }
+  	outfiter_names_extra.push(100 + outfiter_names100.indexOf(outfiter_names100_sorted[ii]));
   }
 
   $('#outfiter_container').html(

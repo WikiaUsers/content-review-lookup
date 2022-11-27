@@ -14,7 +14,8 @@ window.UserTagsJS = {
 		dragon: 'Verified Dragon',
 		stalker: 'Stalker Flower',
 		kitsune: 'Kitsune Assassin',
-		feathery: 'Feathery Elf'
+		feathery: 'Feathery Elf',
+		silver: 'Silver Lion'
 	}
 };
 UserTagsJS.modules.custom = {
@@ -25,7 +26,8 @@ UserTagsJS.modules.custom = {
 	'Moonshadow567': ['dragon'],
 	'ALostWonderer': ['stalker'],
 	'Featherfrost2907':['kitsune'],
-	'BLuFeather':['feathery']
+	'BLuFeather':['feathery'],
+	'SilvermoonTC1234':['silver']
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

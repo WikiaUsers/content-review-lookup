@@ -8,7 +8,7 @@ $(".mw-customtoggle-Spoiler").click(function() {
 // modified for guide by youngjustice.fandom.com/User:KeetleMeetPot
 // @author dragonage.fandom.com/wiki/User:Tierrie
 
-mw.loader.using(['jquery.ui.tabs'], function() {
+mw.loader.using(['jquery.ui'], function() {
 	$(function () {
 		var $tabs = $("#chapterslider").tabs({
 		fx: {
@@ -16,7 +16,7 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 			duration: 100
 		}
 	});
-	$("[class^=chapterslider_nav]").click(function () {
+	$("[class^=chapterslider_nav]").click(function() {
 		$tabs.tabs('select', this.className.replace("chapterslider_nav_", ""));
 	return false;
 	});

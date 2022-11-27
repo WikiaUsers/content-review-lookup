@@ -34,6 +34,10 @@ window.LockOldBlogs = {
     expiryMessage: "This blog hasn\'t been commented on for over 30 days. There is no need to comment."
 };
  
+/* LinkPreview */
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/countryclub9732/images/6/67/No_Screenshot.png/revision/latest?cb=20220630011000';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/countryclub9732/images/6/67/No_Screenshot.png/revision/latest?cb=20220630011000';
+
 //UserTags config
 window.UserTagsJS = {
     modules: {

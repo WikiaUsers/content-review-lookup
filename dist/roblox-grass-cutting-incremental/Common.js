@@ -15,6 +15,10 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 // Set a default value for file upload summaries on Special:Upload. Also allows the user to define a custom summary that applies to all uploads on the page.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:DefaultUploadSummary.js&action=raw&ctype=text/javascript');
 
+// [ Main Page Search ]
+// Adds a search box to the main page to aid unfamiliar users with the usage of the function.
+mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
+
 // -- [ Other scripts ] --
 // Disable UploadMultipleFiles' licence check.
 mw.config.set('UMFBypassLicenseCheck', true);

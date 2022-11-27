@@ -21,7 +21,7 @@ window.BackToTopModern = true;
 //Превью предметов через модуль Getdata
 window.tooltips_list = [{
     classname: 'tooltip-monster',
-    parse: '{{#invoke:getdata|infobox|<#article#>|Монстр Rebirth}}'
+    parse: '{{#invoke:getdata|infobox|<#article#>|Враг}}'
 },
 
 {

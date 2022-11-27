@@ -142,7 +142,7 @@ $(function(){
         //Clears all data to avoid flickering before loading new creature
         $('#bestiary_creature_name').html('<a href="#" style="color: inherit;" target="_blank">?</a>'); //Empty string removes the bar name height
         
-        $('#bestiary_creature_img, #bestiary_creature_hp, #bestiary_creature_exp, #bestiary_creature_speed, #bestiary_creature_armor, #bestiary_creature_bestiarylevel, #bestiary_creature_occurrence, #bestiary_creature_attack #bestiary_creature_charms, #bestiary_kills2, #bestiary_creature_locations').html('?');
+        $('#bestiary_creature_img, #bestiary_creature_hp, #bestiary_creature_exp, #bestiary_creature_speed, #bestiary_creature_armor, #bestiary_creature_mit, #bestiary_creature_bestiarylevel, #bestiary_creature_occurrence, #bestiary_creature_attack #bestiary_creature_charms, #bestiary_kills2, #bestiary_creature_locations').html('?');
         $.each(dmgMods, function (i, v) {
             var tmp = '#bestiary_creature_' + v;
             var val = 100;
@@ -175,6 +175,7 @@ $(function(){
         $('#bestiary_creature_exp').html(creaturedata.exp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#bestiary_creature_speed').html(creaturedata.speed);
         $('#bestiary_creature_armor').html(creaturedata.armor);
+        $('#bestiary_creature_mit').html(creaturedata.mitigation.toString() + "%");
         //
         if (creaturedata.bestiarylevel !== "") {
             $('#bestiary_creature_bestiarylevel').html('<img src="' + bestiary_level_imgs[creaturedata.bestiarylevel.toLowerCase()] + '">'); 

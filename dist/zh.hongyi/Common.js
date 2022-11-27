@@ -2,42 +2,46 @@
 var titles = document.getElementById('tab-header').getElementsByTagName('li');
 var divs = document.getElementById('tab-content').getElementsByClassName('dom');
 
-$('toc').each(function () {
-	dragElement($this);
-})
+(function(window, $) {
+    init = function() {
+        $("body").each(function() {
+			dragElement();
+        })
+    }
+    $(function() {
+        init()
+    })
+})(window, window.jQuery, undefined);
 
-function dragElement(elmnt) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (document.getElementById(elmnt.id + "header")) {
+function dragElement() {
+  var toc = document.getElementById("toc")
+  if (toc) {
     /* if present, the header is where you move the DIV from:*/
-    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-  } else {
-    /* otherwise, move the DIV from anywhere inside the DIV:*/
-    elmnt.onmousedown = dragMouseDown;
+    toc.onmousedown = dragMouseDown;
   }
-
   function dragMouseDown(e) {
-    e = e || window.event;
+    var event = e || window.event;
+    
     // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
+    var pagex = event.pageX||event.clientX+document.documentElement.scrollLeft;
+    var pageY = event.pageY||event.clientY+document.documentElement.scrollTop;
+    
+    var spaceX = pageX-box.offsetLeft;
+    var spaceY = pageY-box.offsetTop;
+    
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
+    document.onmousemove = function(e) {
+    var event = e || window.event;
     // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
+    var pageX=event.pageX||event.clientX+document.documentElement.scrollLeft;
+    var pageY=event.pageY||event.clientY+document.documentElement.scrollTop;
+    
     // set the element's new position:
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    toc.style.top = pageY - spaceY + "px";
+    toc.style.left = pageX - spaceX + "px";
   }
-
+}
   function closeDragElement() {
     /* stop moving when mouse button is released:*/
     document.onmouseup = null;

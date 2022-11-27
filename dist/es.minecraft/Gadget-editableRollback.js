@@ -3,7 +3,7 @@
 'use strict';
 
 $( function() {
-	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'Edit rollback summary' ) );
+	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'Editar resumen de reversión' ) );
 	$( '#mw-content-text' ).on( 'click', '.edit-rollback', function() {
 		var $rollback = $( '#rollback-summary' );
 		
@@ -17,11 +17,11 @@ $( function() {
 				$( '<input type="text">' ).addClass( 'mw-ui-input rollback-text' ).prop( { maxlength: 250, spellcheck: true } ).val(
 					'Revertidos los cambios de [[Special:Contribs/' + name + '|' + name + ']] ([[User talk:' + name + '|disc.]])'
 				),
-				$( '<input type="button">' ).addClass( 'mw-ui-button mw-ui-constructive rollback-submit-button' ).val( 'Rollback' )
+				$( '<input type="button">' ).addClass( 'mw-ui-button mw-ui-constructive rollback-submit-button' ).val( 'Revertir' )
 			).insertAfter( this );
 		}
 		
-		// This puts the cursor at the end of the text
+		// Esto coloca el cursor al final del texto
 		var $text = $rollback.find( '.rollback-text' );
 		var summary = $text.val();
 		$text.focus().val( '' ).val( summary );
@@ -32,7 +32,7 @@ $( function() {
 		window.location = $link.find( 'a' ).prop( 'href' ) + '&summary=' + encodeURIComponent( $link.find( '.rollback-text' ).val() );
 	} );
 	
-	// Allow rollback to be submitted by pressing enter while focused on the input field
+	// Permite que se envíe la reversión presionando Intro mientras se enfoca en el campo de entrada
 	$( '#mw-content-text' ).on( 'keypress', '.rollback-text', function( e ) {
 		if ( e.which !== 13 ) {
 			return;
@@ -41,7 +41,7 @@ $( function() {
 		$( '.rollback-submit-button' ).click();
 	} );
 	
-	// Close rollback if clicked anywhere else
+	// Cerrar reversión si se hace clic en cualquier otro lugar
 	$( window ).click( function( e ) {
 		if ( !$( e.target ).is( '#rollback-summary, .edit-rollback' ) && !$( '#rollback-summary' ).has( e.target ).length ) {
 			$( '#rollback-summary' ).hide();

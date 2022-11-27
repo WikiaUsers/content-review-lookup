@@ -1,6 +1,6 @@
 /***
 Name: AutoDesktop
-Allow to use automatically desktop without cookies and on every devices
+Allow to automatically use desktop version without cookies and on all devices
 Author: Gautier (Soronos)
 Usage: Personal
 ***/

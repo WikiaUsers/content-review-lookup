@@ -130,5 +130,5 @@ outputText = "<i>" + randomPlaceholderOutputText() + "</i>";
 document.getElementById("DailyFactCurrentDate").innerHTML = day + ' ' + monthNames[month-1] + ' ' + year + " UTC";
 
 // Apply the outputText variable's value to the HTML, as well as add a link to this page on a new line.
-document.getElementById("DailyFactOutput").innerHTML = outputText + "<br>(view full list <a href='https://saktkia51.fandom.com/wiki/MediaWiki:DailyFact.js'>here</a>)";
+document.getElementById("DailyFactOutput").innerHTML = outputText + "<br>(<a href='https://saktkia51.fandom.com/wiki/MediaWiki:DailyFact.js'>view facts list</a>)";
 }

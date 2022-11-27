@@ -1,55 +1,37 @@
 /*
- *
  * @module        JumpToContent.js
  * @description   Adds a navigational link as the first focusable element, which
-				  sends the user close to the left TOC button, skiping at least
-				  >25 nav links and improving the experience for disabled and
-				  keyboard users alike.
+				  quickly sends the user to the page's main content.
  * @author        Polymeric
  * @license       CC-BY-SA 3.0
  * @notes         Install JumpToContent.css stylesheet to use this script.
- *
  */
 
-$(function() {
+(function() {
   'use strict';
+
   importArticles({
-    type: 'script',
-    article: 'u:dev:MediaWiki:I18n-js/code.js'
-  }, {
-    type: 'style',
-    article: 'u:dev:MediaWiki:JumpToContent.css'
+    articles: [
+      'u:dev:MediaWiki:I18n-js/code.js',
+      'u:dev:MediaWiki:JumpToContent.css'
+    ]
   });
-  if (window.JumpToContentLoaded) {
-    return;
-  }
+
+  if (window.JumpToContentLoaded) return;
+
   window.JumpToContentLoaded = true;
+
   mw.hook('dev.i18n').add(function (i18n) {
     i18n.loadMessages('JumpToContent').done(function (i18n) {
-      $('body').prepend([
-        $('<div>', {
-          'class': 'jtc-btn',
-          'id': 'jumpToContent',
-          'css': {
-            'clip': 'rect(1px, 1px, 1px, 1px)',
-            'clip-path': 'inset(50%)', // Modern browsers.
-            'height': '1px',
-            'overflow': 'hidden',
-            'position': 'absolute',
-            'white-space': 'nowrap', // Prevents screen readers from skipping white spaces.
-            'width': '1px',
-          }
-        }).append([
-          $('<a>', {
-            'class': 'jtc-link',
-            'href': '#jump-content',
-            'role': 'link',
-            'tabindex': '0',
-            'text': i18n.msg('jtc-btn-text').plain()
-          })
-        ])
-      ]);
-      $('.page__main').attr('id', 'jump-content');
+      // Inline styles prevent the link from appearing if the CSS has not loaded
+      // yet. Those are overwriten in JumpToContent.css.
+      // Clip-path is a modern version of the "clip" property which is future-
+      // proof in terms of browser support.
+      // White-space prevents screen readers from skipping white spaces.
+      var jtcBtn = '<div class="jtc-btn" id="jumpToContent" style="clip: rect(1px, 1px, 1px, 1px); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;"><a class="jtc-link" href="#jump-content">' + i18n.msg('jtc-btn-text').plain() + '</a></div>';
+
+      document.body.insertAdjacentHTML('afterbegin', jtcBtn);
+      document.querySelector('.page__main').setAttribute('id', 'jump-content');
     });
   });
-});
+}());

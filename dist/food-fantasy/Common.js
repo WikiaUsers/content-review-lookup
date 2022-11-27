@@ -172,3 +172,8 @@ function owwsitesearch(f){
 addOnloadHook(toggleInit);
  
 // </syntax>
+
+window.tooltips_config = {
+    waitForImages: true,
+    noCSS: true,
+}

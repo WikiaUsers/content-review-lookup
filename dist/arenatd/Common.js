@@ -4,9 +4,9 @@
 window.quizName = "Quiz";
 window.quizLang = "en";
 window.resultsTextArray = [ 
-    "Thanks for completing our quiz!","Did you study?","你在做什么？重做!","LowestScoreDetectedOhNoFrickWhyUghDidYouTryGuessingIt",
-    "Nice take on that quiz!","Thanks for particpating!","How did you find that? Hard? pffft.","Not the best - but not the worst","Hopefully you didn't wase StreetCred trying this out.","Did I make it hard enough?","Knowledge might just make the heart grow fonder. Good Job."
-    ,"Woah! Nice one thats the highest score yet!","Amazing.","Swag!",
+    "Sorry, but your score was too low to obtain the code. Try again!",
+    "Good Job! ",
+    "Text displayed after the user completes the quiz with the HIGHEST score" 
 ];
 window.questions = [
     ["Which person has the highest levels in game? ",
@@ -86,12 +86,42 @@ window.questions = [
     "Euvulla",
     "Casey",
     "Paro",],
+
+   ["On the Canyon map, ake the number of red flowers, and divide it by the number of ducks and yellow flowers added together. What is the quotient?",
+    "2",
+    "1",
+    "3",
+    "4",],
+
+   ["How many studs long is the Desert map in width?",
+    "44",
+    "40",
+    "33",
+    "45",],
+    
+   ["How many cactus are there on the Desert map?",
+    "11",
+    "10",
+    "15",
+    "16",],
+
+   ["How many tables are there in the Hybrid Cafe?",
+    "21",
+    "20",
+    "13",
+    "16",],
     
    ["The longest serving Wiki Staff after enews is ______.",
     "Justin",
     "Bonnie",
     "Uchu",
     "enews",],
+    
+   ["what repostiory does not exist on this list for the Arena Defense Wiki Github? https://github.com/orgs/ArenaTD-Wiki/repositories",
+    "Common.css",
+    ".github",
+    "ArenaCleaner",
+    "Common.js",],
 
    ["What is the probability for getting the Did You Know box statement twice?",
     "2.85714286%",
