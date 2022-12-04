@@ -3,17 +3,17 @@
     if (!$(".fandom-community-header .explore-menu a[data-tracking='explore-discuss']").length) {
         return;
     }
-    if (typeof window.nkch === "undefined") {
-        const nkch = {};
-        window.nkch = nkch;
-    }
-    if (typeof nkch.drm === "undefined") {
-        nkch.drm = {};
-    }
+    
+    var nkch = "undefined" !== typeof window.nkch ? window.nkch : {};
+	window.nkch = nkch;
+	
+	nkch.drm = "undefined" !== typeof nkch.drm ? nkch.drm : {};
+    
     if (nkch.drm.isActive) {
         return;
     }
     nkch.drm.isActive = true;
+    
     function insertToSiderail() {
         if (!mw.user.isAnon())
             document.querySelector(".sticky-modules-wrapper .recent-wiki-activity").after(nkch.drm.el.section.$e);

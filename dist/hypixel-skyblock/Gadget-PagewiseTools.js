@@ -7,26 +7,24 @@ Table of Contents
 */
 
 /* jshint
-    esversion: 5, esnext: false, forin: true,
+    esversion: 5, esnext: false, forin: false,
     immed: true, indent: 4,
     latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
+    noarg: true, undef: true, unused: true,
     browser: true, jquery: true,
     onevar: true, eqeqeq: true,
     multistr: true, maxerr: 999999,
-    forin: false,
     -W082, -W084
 */
 
 /* global mw, BannerNotification */
 
 mw.loader.using(["mediawiki.api"]).then(function () {
-
+    "use strict";
     //##############################################################
     /** Common helper functions **/
 
-    // code snippet from https://stackoverflow.com/questions/46041831/copy-to-clipboard-with-break-line
+    // from //stackoverflow.com/questions/46041831
     function copyToClipboard(text, notice) {
         notice = notice ? (notice + "\n\n") : "";
         if (confirm(notice + "The following will be copied to your clipboard:\n\n" + text + "\n\nClick OK to confirm")) {
@@ -45,7 +43,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
     //##############################################################
     /** (Tool 1) Mayor Elections Data Fetcher **/
-    (function () {
+    $(document).ready(function () {
         var mdns = mw.config.get("wgFormattedNamespaces")[828],
             ALLOWED_PAGE = mdns + ":Mayor/Elections",
             MAYOR_DATA_PAGE = mdns + ":Mayor/Data",
@@ -171,14 +169,14 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                     var candidates = candidatesToArray(currentElectionData.candidates, localData).map(function (v) {
                         return "\t\t" + v.name + " = { votes = nil, perks = '" + v.perks + "', order = " + v.order + ", last = nil },";
                     });
-                    copyToClipboard("\t[" + year + "] = { control = 'in-progress', data = {\n" + candidates.join("\n") + "\n\t}},");
+                    copyToClipboard("\t[" + year + "] = { status = 'in-progress', data = {\n" + candidates.join("\n") + "\n\t}},");
                 });
             });
-    })();
+    });
 
     //##############################################################
     /** (Tool 2) Bingo Table Generator **/
-    (function () {
+    $(document).ready(function () {
         var ALLOWED_PAGE = "Bingo/Events",
             BUTTON = "#bingodata",
             MONTHS = [
@@ -214,7 +212,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
         function constructTable(goals) {
             function replfunc(match, pattern1, pattern2, pattern3) {
-                return "{{" + COLORS_TO_TEMPLATE[parseInt(pattern1, 16)] + "|" + pattern2 + "}}" + pattern3;
+                return "{{Color|" + COLORS_TO_TEMPLATE[parseInt(pattern1, 16)] + "|" + pattern2 + "}}" + pattern3;
             }
 
             function processStr(v) {
@@ -280,6 +278,6 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                 }
             });
         });
-    })();
+    });
 
 });

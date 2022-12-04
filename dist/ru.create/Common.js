@@ -1,4 +1,8 @@
-
+/* Any JavaScript here will be loaded for all users on every page load. */
+//##############################################################
+/* ==importArticles== (Y00)*/
+// Imports scripts from other pages/wikis.
+// NOTE: importAricles() is currently broken.
 window.importScripts = function(pages) {
     if (!Array.isArray(pages)) {
         pages = [pages];
@@ -211,3 +215,4 @@ $(function() {
 		}
 	}, '.minetip, .invslot-item');
 }());
+});

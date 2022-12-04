@@ -3,7 +3,7 @@ console.log(test);
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u:'SuperAdmin' },
+		bureaucrat: { u:'THE ELDER ONE' },
 		blocked: { u: 'Banned' }
 	}
 };

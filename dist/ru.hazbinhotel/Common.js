@@ -57,3 +57,27 @@ setInterval(function () {
     $('.wds-avatar a[href$="Lefsy"]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
     $('.wds-avatar a[href$="Lich%20night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');
 }, 500 );
+
+
+// == Настройка гаджетов == //
+nkch_gst_gadgets = [{
+    name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
+    title: "Недавняя вики-деятельность", // Название в меню
+    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
+},  {
+    name: "RemoveCatSpoiler",
+    title: "Прежние Категории",
+    description: "Прежние Категории"
+}, {
+    name: "UCXSearch",
+    title: "Быстрый поиск",
+    description: "Поисковая строка в локальном меню без модального окна"
+}, {
+    name: "ThemeToggler",
+    title: "Переключатель темы",
+    description: "Иконка в левой части страницы для переключения темы"
+}, {
+    name: "NkchToggler",
+    title: "Быстрая смена темы",
+    description: "Меню в правой верхней части страницы для быстрой смены темы"
+}];

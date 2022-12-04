@@ -29,7 +29,7 @@
  * Only pages under (Main), User, Project, Template, Help namespaces will have styles imported into them.
  * And only '/style.css' subpages under these namespaces can be imported.
  */
-mw.loader.using(["mediawiki.api", "mediawiki.util"], function () {
+mw.loader.using("mediawiki.util", function () {
     var config = mw.config.get([
         "wgArticleId",
         "wgNamespaceNumber",
@@ -97,4 +97,16 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"], function () {
     });
 
     mw.hook("pageStyles.getTemplates").fire();
+});
+
+/*
+ * A faster alternative to importing stylesheets where API requests are not needed
+ * HTML class "transcluded-css" comes from [[Template:CSS]]
+ * After this CSS importing method is approved, the previous one will be removed soon
+ */
+mw.loader.using("mediawiki.util", function() {
+	$("span.transcluded-css").each(function() {
+		mw.util.addCSS($(this).text());
+		$(this).remove();
+	});
 });

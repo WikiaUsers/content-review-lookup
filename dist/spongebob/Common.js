@@ -355,7 +355,6 @@ window.MessageWallUserTags = {
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
 
         'ItzSpongeBob_1999': 'Discussion Moderator • Rollback',
-        'Thegameingcash': 'Discussion Moderator',
         'PinkPugPrincess': 'Discussion Moderator',
         'Arthur_Read_fan': 'Discussion Moderator • Rollback',
 

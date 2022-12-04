@@ -5,16 +5,18 @@ Any JavaScript here will be loaded for all users on every page load.
 /* Table of Contents
 -----------------------
  Deferred [mw.loader.using]
- * (Y00) importScripts (at top, so it doesn't get affected by other scripts)
+ * (Y00) importScripts (on top, so it doesn't get affected by other scripts)
  * (W00) Small scripts
  * (W01) Scripts that are attached to wikipage content load
  * (C00) My Block ID
  * (D00) Anchor Hash Links
- * (Y01) Less
- * (Y02) Less Source Updater
 
  Immediately Executed
  * (X00) importJS pre-script actions
+
+ Note: These are moved to gadgets.
+ * (Y01) Less
+ * (Y02) Less Source Updater
 */
 
 /* jshint
@@ -30,9 +32,9 @@ Any JavaScript here will be loaded for all users on every page load.
     -W082, -W084
 */
 
-/* global mw, importScripts, BannerNotification */
+/* global mw, BannerNotification */
 
-// code snippet from https://stackoverflow.com/questions/46041831/copy-to-clipboard-with-break-line
+// //stackoverflow.com/questions/46041831
 function copyToClipboard(text) {
     var $temp = $("<textarea>");
     var brRegex = /<br\s*[\/]?>/gi;
@@ -42,7 +44,7 @@ function copyToClipboard(text) {
     $temp.remove();
     if (BannerNotification)
         new BannerNotification($("<div>", {
-            html: "<div>Copied to clipboard</div>",
+            html: "<div>Скопировано в буфер обмена</div>",
         }).prop("outerHTML"), "confirm", null, 2000).show();
 }
 
@@ -88,7 +90,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Please note that ES5 script imports are moved to MediaWiki:ImportJS
     // ES6 scripts needs to be imported here
     // (for convenience to promptly disable any script at any time)
-    importScripts([
+    window.importScripts([
         "MediaWiki:Common.js/skydate.js",
         "MediaWiki:Common.js/search.js"
     ]);
@@ -216,7 +218,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                                 class: threadClassName,
                                 "data-link": threadLink,
                                 html: $("<abbr>", {
-                                    title: "click to copy",
+                                    title: "нажмите, чтобы скопировать",
                                     class: "article-click-copy",
                                     text: (threadIsComment ? "Comment" : "Reply") + " ID : " + (replyID || commentID),
                                     "data-copy": conf.wgServer + mw.util.getUrl(conf.wgPageName) + "?" + (threadLink || ""),
@@ -280,7 +282,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     });
 
     // QOL tooltip on ajax link
-    $("a[href=\"#ajaxundo\"]").attr("title", "Instantly undo this edit without leaving the page");
+    $("a[href=\"#ajaxundo\"]").attr("title", "Мгновенно отмените это редактирование, не покидая страницу");
 
     /* Temp fix to force scrollbars to appear on very wide tables when they are collapsed by default */
     $("div[class^=\"mw-customtoggle-\"],div[class*=\" mw-customtoggle-\"]").on("click", function () {
@@ -305,7 +307,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         $(".mw-editsection").append(" | ", $("<a>", {
             class: "mw-complete-report",
             text: "mark as complete",
-            title: "Mark this report as compelete",
+            title: "Отметьте этот репорт как завершенный",
             css: {
                 cursor: "pointer",
             },
@@ -319,7 +321,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                     action: "edit",
                     appendtext: "\n:\{\{AIV|done\}\} " + message + " \{\{Subst:sig\}\}",
                     title: conf.wgPageName,
-                    summary: "Marking report of [[Special:Contributions/" + user + "|" + user + "]] as completed",
+                    summary: "Отчет о маркировке [[Special:Contributions/" + user + "|" + user + "]] как завершенный",
                     section: new mw.Uri($(this).parent().find("a[href*=\"&section=\"]").attr("href")).query.section,
                 }).then(console.log, console.warn);
             },
@@ -337,8 +339,8 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     $(".pi-image-thumbnail").removeAttr("srcset");
 
     // Script to change the displayed text for Lua Errors
-    $(".scribunto-error").text("There was a problem when loading this.");
-    $(".scribunto-error").eq(0).text("There was a problem when loading this. Refresh and contact the admins if the issue persists.");
+    $(".scribunto-error").text("Возникла проблема при загрузке этого.");
+    $(".scribunto-error").eq(0).text("При загрузке этого файла возникла проблема. Обновите и свяжитесь с администраторами, если проблема не устранена.");
 
     //##############################################################
     /* ==Scripts that are attached to wikipage content load== (W01)*/
@@ -375,14 +377,14 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     /* ==My Block ID== (C00)*/
     // Special:MyBlockID
     if (conf.wgPageName.toLowerCase() === conf.wgFormattedNamespaces[-1].toLowerCase() + ":myblockid") {
-        document.title = "My Block ID | " + conf.wgSiteName + " | Fandom";
-        $("#firstHeading").text("My Block ID");
+        document.title = "Мой ID блока | " + conf.wgSiteName + " | Fandom";
+        $("#firstHeading").text("Мой ID блока");
         var $content = mw.util.$content || $('#mw-content-text');
         $content.empty().html(
             $("<div>", {
                 html: [
                     $("<h3>", {
-                        text: "Loading..."
+                        text: "Загрузка..."
                     }),
                 ],
             })
@@ -404,14 +406,14 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             $content.html([
                 $("<h3>", {
                     html: [
-                        "Displaying block information for \"", $("<a>", {
+                        "Отображение информации о блоке для \"", $("<a>", {
                             href: mw.util.getUrl("Special:Contribs/" + name),
                             text: name
                         }), "\".",
                     ],
                 })
             ].concat(r.blockreason ? [
-                "В данный момент вы заблокированы, ваш ID Block равен ",
+                "В данный момент вы заблокированы, ваш ID блокировки равен ",
                 $("<a>", {
                     href: mw.util.getUrl("Special:BlockList", {
                         wpTarget: name
@@ -526,7 +528,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         // do hook here to also re-run code on tabviews/lazy loaded content
         mw.hook("wikipage.content").add(function ($content) {
-            // Convert any text anchors to row IDs
+            // Преобразуйте любые текстовые привязки в строку ID
             $content.find("tr .text-anchor").each(function () {
                 var $textAnchor = $(this);
                 var id = $textAnchor.attr("id");
@@ -534,10 +536,10 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $textAnchor.closest("tr").attr("id", id);
             });
 
-            // Now dectect if hash matches any row IDs
+            // Теперь определите, соответствует ли хэш какой-либо строке ID
 
-            // Delay check so that scroll doesn't happen until page layout has settled
-            // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
+            // Отложите проверку, чтобы прокрутка не происходила до тех пор, пока макет страницы не будет установлен
+            // В противном случае прокрутка до идентификатора будет неверной, так как другой загруженный контент переместил позицию до того, как мы доберемся до него
             setTimeout(function () {
                 _doHashIdCheck($content, true);
             }, 250);
@@ -547,140 +549,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             _doHashIdCheck($("#mw-content-text"));
         });
     })());
-
-    //###########################################
-    /* ===Less=== (Y01) */
-    function getJsonOrEmpty(url, dontLoadForEnglishWiki) {
-        return $.Deferred(function (def) {
-            if (dontLoadForEnglishWiki && conf.wgContentLanguage === "en")
-                def.resolve([]);
-            $.getJSON(url + "?action=raw&ctype=text/json")
-                .done(function (dt) {
-                    def.resolve(dt);
-                })
-                .fail(function () {
-                    def.resolve([]);
-                });
-        });
-    }
-    $.when(
-        // get list of pages from the English Wiki
-        getJsonOrEmpty("https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Custom-Less.json", false),
-        // also enable for pages from local wiki [[MediaWiki:Custom-Less.json]]
-        getJsonOrEmpty(mw.util.getUrl("MediaWiki:Custom-Less.json"), true)
-    ).then(function (lessJson, lessJsonLocal) {
-        var lessPages = lessJson.concat(lessJsonLocal);
-        var mwns = conf.wgFormattedNamespaces[8] + ":"; // localized mw namespace
-        lessPages = ["Common.css", "Custom-common.less"].concat(lessPages).map(function (s) {
-            return mwns + s;
-        });
-        window.lessOpts = window.lessOpts || [];
-        window.lessOpts.push({
-            // this is the page that has the compiled CSS
-            target: mwns + "Common.css",
-            // this is the page that lists the LESS files to compile
-            source: mwns + "Custom-common.less",
-            // these are the pages that you want to be able to update the target page from
-            // note, you should not have more than one update button per page
-            load: lessPages,
-            // target page header
-            header: mwns + "Custom-css-header/common",
-        });
-        window.lessConfig = window.lessConfig || [];
-        window.lessConfig = {
-            // reloads the page after the target page has successfully been updated
-            reload: true,
-            // wraps the parsed CSS in pre tags to prevent any unwanted links to templates, pages or files
-            wrap: true,
-            // allowed groups
-            allowed: ["codeeditor"],
-        };
-        importScripts("u:dev:Less/code.2.js");
-    }).catch(console.warn);
-
-    //###########################################
-    /* ===Less Source Updater=== (Y02) */
-    function updateLessSource() {
-        return $.get("https://hypixel-skyblock.fandom.com/ru/api.php", {
-            action: "query",
-            format: "json",
-            prop: "revisions",
-            titles: "MediaWiki:Custom-common.less",
-            formatversion: 2,
-            rvprop: "content",
-            rvslots: "*",
-        }).then(function (d) {
-            if (d.query)
-                if (d.query.pages[0].missing !== true)
-                    // also replaces @lang with the local variable code
-                    return d.query.pages[0].revisions[0].slots.main.content
-                        .replace(/@lang: ".*?"/g, "@lang: \"/" + conf.wgContentLanguage + "\"");
-                else {
-                    new BannerNotification($("<div>", {
-                        html: "<div>Сбой обновления. Не удалось получить источник.</div>",
-                    }).prop("outerHTML"), "warn", null, 5000).show();
-                    return false;
-                }
-            else {
-                new BannerNotification($("<div>", {
-                    html: "<div>Сбой обновления. Смотрите консоль для получения информации об ошибке.</div>",
-                }).prop("outerHTML"), "warn", null, 5000).show();
-                console.warn(d);
-            }
-        }).then(function (content) {
-            if (content) {
-                api.postWithEditToken({
-                        action: "edit",
-                        format: "json",
-                        watchlist: "nochange",
-                        title: "MediaWiki:Custom-common.less",
-                        text: content,
-                        summary: "Обновлено меньше источника (источник: [[:en:MediaWiki:Custom-common.less]])",
-                    }).done(function () {
-                        new BannerNotification($("<div>", {
-                            html: "<div>Update successful!</div>",
-                        }).prop("outerHTML"), "confirm", null, 5000).show();
-                    })
-                    .fail(function (err) {
-                        new BannerNotification($("<div>", {
-                            html: "<div>Сбой обновления. Смотрите консоль для получения информации об ошибке.</div>",
-                        }).prop("outerHTML"), "warn", null, 5000).show();
-                        console.warn(err);
-                    });
-            }
-        });
-    }
-    var allowedPages = [conf.wgFormattedNamespaces[8] + ":" + "Custom-common.less", conf.wgFormattedNamespaces[8] + ":" + "Common.css"];
-    if (allowedPages.includes(conf.wgPageName) &&
-        conf.wgAction === "view" &&
-        conf.wgContentLanguage !== "en" &&
-        /bureaucrat|sysop|codeeditor|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n"))) {
-        $("#mw-content-text").prepend($("<a>", {
-            class: "wds-button",
-            html: $("<div>", {
-                click: function () {
-                    var $this = $(this);
-                    if (confirm("Update Less Source from English Wiki?")) {
-                        $this.text("Updating...");
-                        $this.attr({
-                            disabled: true
-                        });
-                        updateLessSource().then(function () {
-                            $this.text("Update Less Source");
-                            $this.removeAttr("disabled");
-                        });
-                    }
-                },
-                text: "Update Less Source",
-                title: "Update Less Source from English Wiki",
-            }),
-            title: "Update Less Source from English Wiki",
-            css: {
-                cursor: "pointer",
-                margin: "0 0 5px 5px",
-            }
-        }));
-    }
 
 });
 
@@ -708,8 +576,8 @@ $.extend(true, window, {
         i18n: {
             overrides: {
                 AjaxRC: {
-                    "ajaxrc-refresh-text": "Auto Refresh",
-                    "ajaxrc-refresh-hover": "Enable automatically refreshing of this page",
+                    "ajaxrc-refresh-text": "Автоматическое обновление",
+                    "ajaxrc-refresh-hover": "Включить автоматическое обновление этой страницы",
                 }
             }
         }

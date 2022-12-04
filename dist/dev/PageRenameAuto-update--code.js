@@ -7,6 +7,7 @@
  * Authors:     Foodbandlt
  *              Jr Mime
  *              KockaAdmiralac
+ * Used files:  [[File:Circle throbber.gif]]
  */
 (function() {
     'use strict';
@@ -154,12 +155,14 @@
                 if (tempArray.length === 0) {
                     break;
                 }
-                promises.push(PRA.api.post({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    titles: tempArray.join('|')
-                }).then(PRA.processPageCallback));
+                while (tempArray.length > 0) {
+                    promises.push(PRA.api.post({
+                        action: 'query',
+                        prop: 'revisions',
+                        rvprop: 'content',
+                        titles: tempArray.splice(0, 50)
+                    }).then(PRA.processPageCallback));
+                }
             }
             $.when.apply(this, promises).then(function() {
                 console.log('Page contents retrieved and saved. Begin processing page content.');
@@ -433,7 +436,7 @@
                                                         child: ui.img({
                                                             attrs: {
                                                                 // eslint-disable-next-line max-len
-                                                                src: 'https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif'
+                                                                src: 'https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif'
                                                             }
                                                         }),
                                                         style: {

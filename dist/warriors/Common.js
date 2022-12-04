@@ -288,6 +288,7 @@ UserTagsJS.modules.custom = {
     'Patchfeather14': ['discordmod'],
     'Neon Skylite': ['discordmod'],
     'SnowedLightning': ['stoneteller'],
+    'Snowdapple': ['discordmod'],
     '.Trollsky': ['discordmod'],
     'Whorlpelt': ['discordmod'],
 };

@@ -9,6 +9,7 @@
  * Authors:     Foodbandlt
  *              Jr Mime
  *              KockaAdmiralac
+ * Used files:  [[File:Circle throbber.gif]]
  */
 (function() {
     'use strict';
@@ -971,7 +972,7 @@
                 },
                 child: ui.img({
                     attrs: {
-                        src: 'https://images.wikia.nocookie.net/common/skins/common/progress-wheel.gif'
+                        src: 'https://static.wikia.nocookie.net/dev/images/c/c5/Circle_throbber.gif'
                     }
                 }),
                 style: {

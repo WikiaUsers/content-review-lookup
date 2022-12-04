@@ -166,6 +166,7 @@ $(function() {
 				lockRow.bind(this)();
 			}
 		});
+		$('.ml-row-predictions-disabled').each(lockRow);
 		// $('.ml-row-unknown-team, .matchlist-flex').each(lockRow);
 		// as of july 2, we are creating & checking initialorder via MSHash so shouldn't need to lock that anymore
 		$('.ml-row-unknown-team').each(lockRow);

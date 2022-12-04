@@ -1,3 +1,4 @@
+//To do: Reintroduce the i18n module, and maybe also use of mediawiki pages to store the settings for the module.
 (function() {
     if (window.Discord && Discord.init) return;
 
@@ -34,48 +35,8 @@
             this.messages.branding = "new";
             this.messages.footer = "Server meant for wiki talk, not game help";
             this.messages.header = "Wiki Editor Chat";
-            this.messages.id = "651912910972649492";
             this.messages.invite = "https://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki:Discord";
             this.messages.theme = "dark";
-            this.messages.roles = {};
-        },
-        fetchWidgetData: function(id) {
-            if (this.requests[id]) return this.requests[id];
-            var widgetResource = '/api/guilds/' + id + '/widget.json';
-            // If configured, `Discord.apiProxyBaseUrl` would look something like "https://[FQDN]".
-            if (window.Discord && Discord.apiProxyBaseUrl && Discord.apiProxyBaseUrl.startsWith('https://')) {
-                this.requests[id] = $.ajax(Discord.apiProxyBaseUrl + widgetResource, {
-                    dataType: 'json',
-                    headers: {
-                        // To differentiate between language wikis from the same origin, we'll pass along the wiki's unique ID.
-                        // We will not use the referrer header, as it may not be reliably present.
-                        'X-City-Id': mw.config.get('wgCityId')
-                    }
-                }).then(null, function () {
-                    // If the configured API proxy endpoint errors out, then fall back to the official API endpoint.
-                    return $.getJSON('https://discord.com' + widgetResource);
-                });
-            } else {
-                this.requests[id] = $.getJSON('https://discord.com' + widgetResource);
-            }
-            return this.requests[id];
-        },
-        handleWidgetData: function(data) {
-            this.railWidgetData = data;
-            // this.onload();
-            this.addToRail();
-        },
-        // Called on init to turn the role ID lists into arrays
-        mapMessages: function() {
-            for (var key in this.messages.roles) {
-                var value = this.messages.roles[key];
-                // Regex notes:
-                //   - Why word boundaries? If editors choose to add usernames to help identify snowflakes, then the chances of a username being just 17+ digits should be pretty low.
-                //   - Why no leading zero(es)? Because that's silly.
-                //   - Why 17+ digits? Because that's how many digits there'd need to be for snowflakes created after 2015-01-28T14:16:25.791Z (which is about a month after Discord's epoch and a few months before Discord's public launch).
-                //   - Why 20- digits? Because that's how many digits it takes to represent the biggest uint64.
-                this.messages.roles[key] = value.match(/\b[1-9]\d{16,19}\b/g);
-            }
         },
         logo: function(data) {
         		// svg source from https://discord.com/branding
@@ -153,22 +114,17 @@
                         classes: ['widget-logo'],
                         href: 'https://discord.com/?utm_source=Discord%20Widget&utm_medium=Logo',
                         target: '_blank'
-                    }),
-                    data.members && ui.span({
-                        classes: ['widget-header-count'],
-                        html: "<strong>"+ usersOnline + "</strong> User" + (usersOnline != 1 ? "s" : "") + " Online"
                     })
                 ]
             });
         },
         buildFooter: function(data) {
             var invite = data.invite || this.messages.invite || data.instant_invite;
-            var footer = this.messages.footer;
 			
             return ui.div({
                 classes: ['widget-footer'],
                 children: [
-                    footer && ui.span({
+                    this.messages.footer && ui.span({
                         classes: ['widget-footer-info'],
                         html: this.messages.footer
                     }),
@@ -185,10 +141,6 @@
             if (this.$rail.length === 0) return;
 
             $('.discord-module').remove();
-
-            if (!this.railWidgetData) {
-                this.fetchWidgetData(this.messages.id).then(this.handleWidgetData.bind(this));
-            }
 
             var widget = this.buildWidget(this.railWidgetData || {}),
             railModule = ui.section({
@@ -211,7 +163,7 @@
         },
         replaceWidget: function(_, elem) {
             elem.dataset.widgetState = 'loading';
-            var id = elem.getAttribute('data-id') || this.messages.id,
+            var id = elem.getAttribute('data-id'),
             theme = elem.getAttribute('data-theme') || this.messages.theme,
             branding = elem.getAttribute('data-branding') || this.messages.branding,
             // TODO: Make adaptive chip orientation based on width and how many avatars can fit in a row
@@ -219,28 +171,6 @@
             height = elem.getAttribute('data-height'),
             invite = elem.getAttribute('data-invite'),
             header = elem.getAttribute('data-header');
-            if (!id) return;
-            this.fetchWidgetData(id).then(function(data) {
-            	data.branding = branding;
-                data.theme = theme;
-                data.size = {};
-                if (width) {
-                    data.size.width = width;
-                }
-                if (height) {
-                    data.size.height = height;
-                }
-                if (invite) {
-                    data.invite = invite;
-                } else {
-                    data.invite = data.instant_invite;
-                }
-                if (header) {
-                    data.header = header;
-                }
-                var widget = this.buildWidget(data);
-                $(elem).empty().append(widget);
-            }.bind(this));
         },
         sortRoleContainers: function(a, b) {
             return b.children.length - a.children.length;
@@ -310,11 +240,7 @@
                 });
         },
         init: function() {
-            this.mapMessages();
-
-            if (this.messages.id) {
-                this.addToRail();
-            }
+			this.addToRail();
 
             this.replaceWidgets(mw.util.$content);
             mw.hook('wikipage.content').add(this.replaceWidgets.bind(this));

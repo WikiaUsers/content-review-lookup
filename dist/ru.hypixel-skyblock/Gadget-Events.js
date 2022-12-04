@@ -193,7 +193,7 @@ $(function () {
     $.when.apply(
         null,
         [
-            getDefAndAjax("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com/ru/wiki/MediaWiki:SnowStorm.js")
+            getDefAndAjax("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com/wiki/MediaWiki:SnowStorm.js")
         ].concat(deffers)
     ).then(function () {
         if (!window.fireworkShow.autoStart && window.fireworkShow.startOnEvent) {

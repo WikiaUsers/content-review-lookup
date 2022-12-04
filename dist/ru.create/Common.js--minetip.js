@@ -1,3 +1,6 @@
+// Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
+// Creates minecraft style tooltips
+// Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
 $(function() {
 'use strict';
 (window.updateTooltips = function() {

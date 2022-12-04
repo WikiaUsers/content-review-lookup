@@ -54,6 +54,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     //Create da calculators
 	var dungeons = [
 		{ name: "None", difficulties: ["Pick Dungeon First"]},
+		{ name: "Glided Skies", difficulties: ["Insane", "Nightmare"]},
 		{ name: "Northern Lands", difficulties: ["Insane", "Nightmare", "Nightmare With Odin-R"]},
 		{ name: "Enchanted Forest", difficulties: ["Insane", "Nightmare"]},
 		{ name: "Aquatic Temple", difficulties: ["Insane", "Nightmare"]},
@@ -71,6 +72,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 		{ name: "Desert Temple", difficulties: ["Easy","Medium","Hard","Insane", "Nightmare"]},
     ];
     var dungeonsWithEXP = [
+    	{name: "Glided Skies Insane", baseEXP: 63500000000},
+    	{name: "Glided Skies Nightmare", baseEXP: 115500000000},
     	{name: "Northern Lands Insane", baseEXP: 21820000000},
     	{name: "Northern Lands Nightmare", baseEXP: 36600000000},
     	{name: "Northern Lands Nightmare With Odin-R", baseEXP: 58600000000},
@@ -183,6 +186,9 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     }
 
     var abilities = [
+        { name: "Blade Barrage / God Spear / Amethyst Beams / Jade Rain", multiplier: 133 },
+        { name: "Jade Roller", multiplier: 126 },
+        { name: "Solar Beam (2 ticks)", multiplier: 126 / 2 },
         { name: "Flame Shuriken / Geyser", multiplier: 119 },
         { name: "Gale Barrage (3 ticks)", multiplier: 119 / 3 },
         { name: "Soul Drain (6 ticks)", multiplier: 119 / 6 },

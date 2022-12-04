@@ -155,7 +155,7 @@ $(function() {
         if (needLink){
             headerLinks.html('[<a href="javascript:;" class="ajax-load-link">'+l10n('showData')+'</a>]');
         }
-        table.find(".ajax-load-link").parent().andSelf().filter('a').click(function(event) {
+        table.find(".ajax-load-link").parent().addBack().filter('a').click(function(event) {
             event.preventDefault();
             var sourceTitle = table.data('ajax-source-page'), baseLink = mw.config.get('wgScript') + '?';
             cell.text(l10n('wait'));
@@ -181,7 +181,7 @@ $(function() {
                     $(this).text(shown ? l10n('hide') : l10n('show'));
                 }).appendTo(headerLinks);
                 headerLinks.append(document.createTextNode(']'));
-            }).error(function() {
+            }).catch(function() {
                 cell.text(l10n('error'));
             });
         });

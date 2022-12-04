@@ -269,6 +269,11 @@
             styles: 'MediaWiki:GradientHeader.css'
         },
         
+        Grid: {
+            page: 'Grid',
+            styles: 'MediaWiki:Grid.css'
+        },
+        
         Heimu: {
             page: 'Heimu',
             styles: 'MediaWiki:Heimu.css'
@@ -572,6 +577,11 @@
             page: 'TableHash',
             scripts: 'MediaWiki:TableHash.js',
             styles: 'MediaWiki:TableHash.css'
+        },
+        
+        ThemeBasedStyling: {
+        	page: 'ThemeBasedStyling',
+        	styles: 'MediaWiki:ThemeBasedStyling.css'
         },
         
         ThemeColorClasses: {

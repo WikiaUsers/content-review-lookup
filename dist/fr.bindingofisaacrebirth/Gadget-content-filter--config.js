@@ -6,7 +6,7 @@ window.contentFilterConfig = {
 	/**
 	 * The title displayed on top of the buttons.
 	 */
-	title: 'Filter content',
+	title: 'Filtre de DLC',
 
 	/**
 	 * The number of filtering layers (bits) used on pages.
@@ -25,22 +25,22 @@ window.contentFilterConfig = {
 		{
 			filter: 1, // 0001
 			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
-			description: 'Hide content unavailable with Rebirth'
+			description: 'Cacher le contenu indisponible avec Rebirth'
 		},
 		{
 			filter: 2, // 0010
 			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/95/Dlc_a_indicator.png/revision/latest',
-			description: 'Hide content unavailable with Afterbirth'
+			description: 'Cacher le contenu indisponible avec Afterbirth'
 		},
 		{
 			filter: 4, // 0100
 			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/4c/Dlc_a†_indicator.png/revision/latest',
-			description: 'Hide content unavailable with Afterbirth+'
+			description: 'Cacher le contenu indisponible avec Afterbirth+'
 		},
 		{
 			filter: 8, // 1000
 			title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f2/Dlc_r_indicator.png/revision/latest',
-			description: 'Hide content unavailable with Repentance'
+			description: 'Cacher le contenu indisponible avec Repentance'
 		}
 	],
 

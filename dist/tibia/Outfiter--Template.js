@@ -95,7 +95,7 @@ $(function () {
       //205
       'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse',
       //210
-      'Mutated_Abomination'
+      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -171,7 +171,7 @@ $(function () {
       //160
       'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
       //170
-      'Naga_(C)', 'Naga_(D)', 'Gnome_Female'
+      'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -294,7 +294,10 @@ $(function () {
       Gloothomotive: 8,
       Floating_Augur: 8,
       Floating_Sage: 8,
-      Floating_Scholar: 8
+      Floating_Scholar: 8,
+      Brass_Speckled_Koi: 8,
+      Ink_Spotted_Koi: 8,
+      Tangerine_Flecked_Koi: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -376,6 +379,7 @@ $(function () {
       'Naga_(D)': true,
       Gnome: true,
       Gnome_Female: true,
+      Scientist: true,
       None: true
     },
     //no mount
@@ -446,7 +450,8 @@ $(function () {
       'Naga_(A)': true,
       'Naga_(B)': true,
       'Naga_(C)': true,
-      'Naga_(D)': true
+      'Naga_(D)': true,
+      Scientist: true
     },
     //no addon
     outfiter_a_names = {
@@ -492,7 +497,8 @@ $(function () {
       Energy_Wisp: true,
       Lost_Soul: true,
       Phantom: true,
-      Werehyaena: true
+      Werehyaena: true,
+      Scientist: true
     },
     //no ride frame
     outfiter_no_ride_names = {
@@ -562,7 +568,8 @@ $(function () {
       'Naga_(A)': true,
       'Naga_(B)': true,
       'Naga_(C)': true,
-      'Naga_(D)': true
+      'Naga_(D)': true,
+      Scientist: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

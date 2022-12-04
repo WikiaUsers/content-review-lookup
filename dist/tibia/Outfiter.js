@@ -381,6 +381,7 @@ $(function () {
       'Naga_(D)': true,
       Gnome: true,
       Gnome_Female: true,
+      Scientist: true,
       None: true
     },
     //no mount
@@ -451,7 +452,8 @@ $(function () {
       'Naga_(A)': true,
       'Naga_(B)': true,
       'Naga_(C)': true,
-      'Naga_(D)': true
+      'Naga_(D)': true,
+      Scientist: true
     },
     //no addon
     outfiter_a_names = {

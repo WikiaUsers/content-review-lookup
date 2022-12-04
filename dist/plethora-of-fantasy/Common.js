@@ -6,7 +6,7 @@ window.UserTagsJS = {
 	tags: {
 		montheditor: { u:'Editor of the Month' },
 		reaper: 'Reaper of Tides',
-		shadow: 'And from the Darkness I Hear the Sound of Her Wings...',
+		shadow: 'Scythe Bird',
 		reality: 'Realitywarper',
 		pringle: 'Single Pringle',
 		wolf: 'Official Wolf',
@@ -35,13 +35,6 @@ UserTagsJS.modules.inactive = {
 	namespaces: [0],
 	zeroIsInactive: true
 };
-//adding edit leaderboard to wiki
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:EditLeaderboard.js',
-    ]
-});
 //adding article preview
 importArticles({
     type: 'script',

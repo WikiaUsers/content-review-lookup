@@ -33,9 +33,9 @@
 
             this.messages.branding = "new";
             this.messages.footer = "Сервер предназначен для обсуждения вики, а не для помощи в игре";
-            this.messages.header = "Чат Вики";
+            this.messages.header = "Чат сообщества";
             this.messages.id = "1045442450455547924";
-            this.messages.invite = "https://hypixel-skyblock.fandom.com/ru/wiki/Hypixel_SkyBlock_Вики:Discord";
+            this.messages.invite = "https://discord.gg/raW3BxQ7";
             this.messages.theme = "dark";
             this.messages.roles = {};
         },
@@ -137,7 +137,7 @@
                     children: [
                         this.logo(data),
                         ui.span({
-                            html: "Wiki Editor Chat"
+                            html: "Чат сообщества"
                         })
                     ]
                 })

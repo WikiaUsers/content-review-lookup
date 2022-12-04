@@ -18,7 +18,9 @@ var result;
 
 // Function for obtaining the input and determining whether it is suffix or scientific, then converting to the inverse.
 function convertNumber(input) {
-if (Number(convertToScientific(input)) < 1e3) {
+if (Number(convertToScientific(input)) >= 1e303) {
+result = convertToScientific(input);
+} else if (Number(convertToScientific(input)) < 1e3) {
 checkForLowNumber = Number(convertToScientific(input));
 result = checkForLowNumber;
 } else {

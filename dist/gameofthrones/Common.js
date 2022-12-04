@@ -18,3 +18,15 @@ InactiveUsers = {
 	text: 'inactive'
 	};
 	importScriptPage('InactiveUsers/code.js', 'dev');
+
+/*Standard Edit Summaries*/
+window.dev = window.dev || {};
+
+window.dev.editSummaries = {
+	css: '#stdSummaries { ... }',
+	select: 'MediaWiki:Custom-StandardEditSummaries'
+};
+
+importArticles({ type: 'script', articles: [ 
+	'u:dev:MediaWiki:Standard Edit Summary/code.js'
+]});
