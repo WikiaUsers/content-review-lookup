@@ -2,12 +2,11 @@
  * Script to load any Festive Events scripts at specific times of the year.
  * All script options are still fully customizable by the user.
  */
-
 /* jshint
     esversion: 5, forin: true,
     immed: true, indent: 4,
     latedef: true, newcap: true,
-    noarg: true, undef: true,
+    noarg: true, esnext: false,
     undef: true, unused: true,
     browser: true, jquery: true,
     onevar: true, eqeqeq: true,
@@ -15,8 +14,9 @@
     forin: false,
     -W082, -W084
 */
-/* global window, mw */
-$(function () {
+/* global mediaWiki */
+(function ($, mw) {
+    "use strict";
     var thisdate = new Date(),
         thisyear = thisdate.getFullYear(),
         nextyear = thisyear + 1;
@@ -29,25 +29,19 @@ $(function () {
         window[obj] = Object.assign(defaults, window[obj] || {});
     }
 
-    function ajaxCall(name, url, def) {
-        $.ajax({
-            // cache: true,
-            dataType: "script",
-            url: url + "?action=raw&ctype=text/javascript&redirect=no"
-        }).done(function () {
-            if (def) {
+    function loadScript(name, host, page, def) {
+        mw.loader.getScript(host + "/load.php?mode=articles&only=scripts&articles=" + page).done(function () {
+            if (def)
                 def.resolve(window[name]);
-            }
         });
     }
 
-    function getDefAndAjax(name, straightToResolve, url) {
+    function deferredLoadScript(name, straightToResolve, host, page) {
         return $.Deferred(function (def) {
-            if (straightToResolve) {
+            if (straightToResolve)
                 def.resolve(window[name]);
-            } else {
-                ajaxCall(name, url, def);
-            }
+            else
+                loadScript(name, host, page, def);
         });
     }
 
@@ -76,13 +70,13 @@ $(function () {
 
         function getTill(thisyearlist, nextyearlist, mode) {
             if (mode === "month")
-                return Math.min.apply(this, thisyearlist.map(function (v, i) {
+                return Math.min.apply(null, thisyearlist.map(function (v, i) {
                     var firstdayofmonththisyear = new Date(thisyear, v - 1, 1, 0, 0, 0, 0),
                         firstdayofmonthnextyear = new Date(nextyear, nextyearlist[i] - 1, 1, 0, 0, 0, 0);
                     return ((thisdate < firstdayofmonththisyear) && firstdayofmonththisyear || firstdayofmonthnextyear) - thisdate;
                 }));
             else
-                return Math.min.apply(this, thisyearlist.map(function (v, i) {
+                return Math.min.apply(null, thisyearlist.map(function (v, i) {
                     return ((thisdate < v) && v || nextyearlist[i]) - thisdate;
                 }));
         }
@@ -130,11 +124,11 @@ $(function () {
             2029: "13 Feb 2029",
             2030: "3 Feb 2030",
             2031: "23 Jan 2031",
-            2032: "11 Feb 2032",
+            2032: "11 Feb 2032"
         };
         return [
             new Date("1 January " + year), // new year (Gregorian calendar)
-            new Date(cny_lookup[year]), // new year (Chinese calendar)
+            new Date(cny_lookup[year]) // new year (Chinese calendar)
         ];
     }
 
@@ -152,7 +146,7 @@ $(function () {
             2029: "1 Apr 2029",
             2030: "21 Apr 2030",
             2031: "13 Apr 2031",
-            2032: "28 Mar 2032",
+            2032: "28 Mar 2032"
         };
         var d = new Date(easter_lookup[year]);
         d.setDate(d.getDate() - 3); // should start on Good Fridays
@@ -161,28 +155,28 @@ $(function () {
         });
     }
 
-    var deffers = [$.Deferred(), $.Deferred(), $.Deferred()];
+    var defers = [$.Deferred(), $.Deferred(), $.Deferred()];
 
     assignDefault("fireworkShow", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[0]
+        optionalDeferredRegister: defers[0]
     });
-    ajaxCall("fireworkShow", "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-FireworkEffects.js");
+    loadScript("fireworkShow", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-FireworkEffects.js");
 
     assignDefault("EasterAddonsConfig", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[1]
+        optionalDeferredRegister: defers[1]
     });
-    ajaxCall("EasterAddons", "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-EasterAddons.js");
+    loadScript("EasterAddons", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-EasterAddons.js");
 
     assignDefault("HalloweenEffectsConfig", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[2]
+        optionalDeferredRegister: defers[2]
     });
-    ajaxCall("HalloweenEffects", "https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Gadget-HalloweenEffects.js");
+    loadScript("HalloweenEffects", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-HalloweenEffects.js");
 
     assignDefault("snowStorm", {
         autoStart: false,
@@ -193,8 +187,8 @@ $(function () {
     $.when.apply(
         null,
         [
-            getDefAndAjax("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com/wiki/MediaWiki:SnowStorm.js")
-        ].concat(deffers)
+            deferredLoadScript("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com", "MediaWiki:SnowStorm.js")
+        ].concat(defers)
     ).then(function () {
         if (!window.fireworkShow.autoStart && window.fireworkShow.startOnEvent) {
             waitTill(getFireworkDates, "date", "FireworkEffects").then(function (toStart) {
@@ -222,4 +216,4 @@ $(function () {
             });
         }
     });
-});
+})(jQuery, mediaWiki);

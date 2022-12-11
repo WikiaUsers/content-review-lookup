@@ -167,10 +167,10 @@ function loadCraftingRecipes( n ) {
 !function( $, mw ) {
 	var page  = mw.config.get( 'wgTitle' )
 	  , pages = [
-	  	    'Collection Page (Rebirth)',
-  'Collection Page (Afterbirth)',
-  'Collection Page (Afterbirth †)',
-  'Collection Page (Repentance)'
+	  	    'Page de Collection (Rebirth)',
+  'Page de Collection (Afterbirth)',
+  'Page de Collection (Afterbirth †)',
+  'Page de Collection (Repentance)'
 	  	]; 
 
 	if ( pages.indexOf( page ) == -1 ) return;
@@ -184,8 +184,24 @@ function loadCraftingRecipes( n ) {
 
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
-        case 'Collection_Page_(Repentance)':
-            $('body').addClass('is-content-expanded')
-        break;
+        case 'Page_de_Collection_(Repentance)':
+            $('body').addClass('is-content-expanded');
+            break;
+        case 'Abel':
+        	rng = Math.floor(Math.random() * 1000);
+        	if (rng == 1) {
+	            $('body').addClass('abel');
+	            $('.page-header__title').addClass('abelTitle');
+	            $('.page__main').addClass('abelPageMain');
+        	}
+        	break;
     }
+    //Diplopia
+    $("[data-image-name='Collectible Diplopia icon.png'").addClass("diplopie")
+    $(".diplopie").click(function(){
+	    $("a img[data-image-name~='Collectible'").each(function(i, a){
+	        $(a).parent().append($(a).clone())
+    	})
+    	this.remove()
+	})
 });

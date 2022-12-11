@@ -370,6 +370,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 					title: "Update Staff Colors",
 				}),
 				title: "Update Staff Colors",
+				href: "#",
 				css: {
 					cursor: "pointer",
 					"margin": "0 0 5px 5px",

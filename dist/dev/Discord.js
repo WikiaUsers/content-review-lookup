@@ -431,7 +431,7 @@
 
                 for (var role in this.messages.roles) {
                     var ids = this.messages.roles[role];
-                    if (ids.includes(member.id)) {
+                    if (ids && ids.includes(member.id)) {
                         grouped[indices[role]][1].push(member);
                         // I could technically use named loops and break with that, but that's just ew
                         assigned = true;

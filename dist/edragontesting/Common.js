@@ -16,6 +16,7 @@ importArticles({
 		"MediaWiki:WallGreetingTweak.js",
 		'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
 		"MediaWiki:Modifiers.js",
+		"MediaWiki:ClanHouseGenerator.js",
 		"MediaWiki:Sandbox.js", //JS testing area for small things
     ]
 });

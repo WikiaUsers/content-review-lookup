@@ -2088,6 +2088,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"camelopardalis": {
+				"name": "Camelopardalis",
+				"colors": [
+					"cosmic",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"camelot": {
 				"name": "Camelot",
 				"colors": [
@@ -2391,6 +2400,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"cetus": {
+				"name": "Cetus",
+				"colors": [
+					"cosmic",
+					"purple",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"chakra": {
 				"name": "Chakra",
 				"colors": [
@@ -2398,6 +2416,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"gemstone"
 				],
 				"rarity": "ultra"
+			},
+			"chamaeleon": {
+				"name": "Chamaeleon",
+				"colors": [
+					"cosmic",
+					"black",
+					"green"
+				],
+				"rarity": "unbreedable"
 			},
 			"chameleon": {
 				"name": "Chameleon",
@@ -10449,6 +10476,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"musca": {
+				"name": "Musca",
+				"colors": [
+					"cosmic",
+					"yellow",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"music": {
 				"name": "Music",
 				"colors": [
@@ -11176,6 +11212,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black"
 				],
 				"rarity": "super"
+			},
+			"nightflight": {
+				"name": "Night Flight",
+				"colors": [
+					"cosmic",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
 			},
 			"nightimp": {
 				"name": "Night Imp",
@@ -12052,6 +12097,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"blue",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"pavo": {
+				"name": "Pavo",
+				"colors": [
+					"cosmic",
+					"blue",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},

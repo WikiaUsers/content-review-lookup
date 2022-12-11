@@ -32,7 +32,7 @@
 		
 		Accordion: {
 			page: 'Accordion',
-			styles: 'MediaWiki:Accordion.css'
+			scripts: 'MediaWiki:Accordion.js'
 		},
 		
         ActivityFeedMimic: {

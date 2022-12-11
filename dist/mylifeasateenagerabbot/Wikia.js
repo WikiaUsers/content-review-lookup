@@ -8,7 +8,7 @@ window.ajaxPages = [
     "Special:Images",
     "Special:Contributions"
 ];
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/theloudhouse/images/5/53/Loading_bar.gif';
+window.ajaxIndicator = 'https://static.wikia.nocookie.net/mylifeasateenagerabbot/images/e/e3/Loading-gif.webp/revision/latest?cb=20221130222413&format=original';
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Update content';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
@@ -102,17 +102,3 @@ function loadHiddenImage(sender) {
     sender.style.opacity = 1;
   }
 }
-
-$(function NamespacesInHeader() {
-	if(wgCanonicalNamespace != '' && wgCanonicalNamespace != 'Talk') {
-		$('#WikiaPageHeader h1').html(wgFormattedNamespaces[wgNamespaceNumber] + ':' + wgTitle);
-	}
-});
-
-//When there's a takeover ad, hide the fixed mainpage boxes.
-$(window).load(function() {
-	var adSkinStyle = $('#ad-skin').attr('style');
-	if ( $('#ad-skin').children().length > 0 || typeof adSkinStyle != 'undefined') {
-		$('.mainpage-float').remove();
-	}
-});

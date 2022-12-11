@@ -1,15 +1,12 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
 function myFunction() {
-  var x, time, hours, minutes, seconds, track;
+  var x, time, minutes;
 
   x = document.getElementById("numb").value;
   time = (x/5)*2;
-  
-  seconds = (time*60)%60;
-  hours = (time*60)/60;
-  minutes = hours%60;
-  hours = hours/60;
-  
-  document.getElementById("demo").innerHTML = "To passively earn " + x + " Shooms, it will take about " + time + " minutes.";
+  minutes = time;
+ 
+  document.getElementById("demo").innerHTML = "To passively earn " + x + " Shooms, it will take about " + minutes + " minutes.";
 }
 
 $(function () {

@@ -105,7 +105,13 @@
 			{ name: 'Block of Diamond', enchName: 'Enchanted Diamond Block' },
 			{ name: 'Block of Redstone', enchName: 'Enchanted Redstone Block' },
 			{ name: 'Block of Emerald', enchName: 'Enchanted Emerald Block' },
-			{ name: 'Block of Quartz', enchName: 'Enchanted Quartz Block' }
+			{ name: 'Block of Quartz', enchName: 'Enchanted Quartz Block' },
+			{ name: 'Granite' },
+			{ name: 'Polished Granite' },
+			{ name: 'Diorite' },
+			{ name: 'Polished Diorite' },
+			{ name: 'Andesite' },
+			{ name: 'Polished Andesite' }
 		],
 		'Collection - Combat': [
 			{ name: 'Blaze Rod' }, //

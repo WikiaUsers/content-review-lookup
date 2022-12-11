@@ -1,17 +1,16 @@
 /* jshint
-	esversion: 5, esnext: false, forin: true,
-	immed: true, indent: 4,
-	latedef: true, newcap: true,
-	noarg: true, undef: true,
-	undef: true, unused: true,
-	browser: true, jquery: true,
-	onevar: true, eqeqeq: true,
-	multistr: true, maxerr: 999999,
-	-W082, -W084, -W097
+    esversion: 5, esnext: false, forin: true,
+    immed: true, indent: 4,
+    latedef: true, newcap: true,
+    noarg: true, undef: true,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    -W082, -W084, -W097
 */
 /* global mw, ace, console, confirm, alert, prompt */
 
-"use strict";
 $.when(
     $.Deferred(function (def) {
         $(function () {
@@ -33,6 +32,7 @@ $.when(
         }
     })
 ).then(function () {
+    "use strict";
     // Pages
     var allowedPages = [
         "Inventory_slot/Tooltips",
@@ -279,10 +279,10 @@ $.when(
             // experimental solution (slow)
             /*
             that.parsewithUIText().then(function(data) {
-            	$("#TooltipsEditor-preview").attr({
-            		"data-minetip-text": that.getParsedText(data),
-            		"data-minetip-title": ace.tooltipsTitleEditor.getValue(),
-            	});
+                $("#TooltipsEditor-preview").attr({
+                    "data-minetip-text": that.getParsedText(data),
+                    "data-minetip-title": ace.tooltipsTitleEditor.getValue(),
+                });
             });
             */
         },

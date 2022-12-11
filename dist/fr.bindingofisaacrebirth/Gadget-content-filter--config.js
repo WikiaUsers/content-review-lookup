@@ -68,7 +68,7 @@ window.contentFilterConfig = {
 	/**
 	 * The language codes used on the wiki.
 	 */
-	languageCodes: [ 'en', 'es', 'it', 'ja', 'ru', 'zh' ],
+	languageCodes: [ 'fr', 'en', 'es', 'it', 'ja', 'ru', 'zh' ],
 
 	/**
 	 * Some translatable messages are used with the content filter. These can be

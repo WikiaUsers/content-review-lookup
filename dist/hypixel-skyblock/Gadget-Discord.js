@@ -25,8 +25,6 @@
             if (--this.loaded) return;
             this.init();
         },
-        // Map to cache concurrent widget JSON requests
-        requests: {},
         // Get all necessary mw messages to make the script work
         messages: {},
         handleMessages: function() {

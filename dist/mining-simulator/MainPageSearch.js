@@ -1,4 +1,4 @@
-// Created by User:TheSeal27 for the Roblox Survive and Kill the Killers in Area 51 Wiki on Fandom. Original page: https://saktkia51.fandom.com/wiki/MediaWiki:MainPageSearch.js
+// Created by User:TheSeal27 for the Mining Simulator Wiki on Fandom. Original page: https://mining-simulator.fandom.com/wiki/MediaWiki:MainPageSearch.js
 
 
 
@@ -27,6 +27,6 @@ document.getElementById("SearchQueryButton").appendChild(searchQueryButton);
 
 // Function for opening the search window with the inputted query.
 function openSearch() {
-window.open("https://saktkia51.fandom.com/Special:Search?query=" + document.getElementById("SearchQueryInput").value);
+window.open("https://mining-simulator.fandom.com/Special:Search?query=" + document.getElementById("SearchQueryInput").value);
 }
 }

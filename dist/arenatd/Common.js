@@ -5,8 +5,8 @@ window.quizName = "Quiz";
 window.quizLang = "en";
 window.resultsTextArray = [ 
     "Sorry, but your score was too low to obtain the code. Try again!",
-    "Good Job! ",
-    "Text displayed after the user completes the quiz with the HIGHEST score" 
+    "You completed this quiz - and passed the requirements. Here is your code. 'marmots eat flowers' ",
+    "Well done! You scored the highest so far - though someone may beat you to it later! Your code is - 'marmots eat flowers' " 
 ];
 window.questions = [
     ["Which person has the highest levels in game? ",
@@ -81,11 +81,11 @@ window.questions = [
     "(Iberia) IB 8710 Madrid - Frankfurt ",
     "(Air Europa) UX 1509 Madrid - Frankfurt",],  
     
-   ["Select one artist who drew for the Home Page Banner.",
+   ["Which artist listed below has not had their art featured on the wiki art gallery/ banner?",
     "jella",
-    "Euvulla",
-    "Casey",
-    "Paro",],
+    "Euvalla",
+    "t3l",
+    "Erfan",],
 
    ["On the Canyon map, ake the number of red flowers, and divide it by the number of ducks and yellow flowers added together. What is the quotient?",
     "2",

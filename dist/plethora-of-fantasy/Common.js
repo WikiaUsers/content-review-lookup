@@ -42,3 +42,24 @@ importArticles({
         'u:dev:MediaWiki:ArticlePreview/code.js',
     ]
 });
+//modern-looking achievements leaderboard
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ModernLeaderboard.js',
+    ]
+});
+//creating the discussions activity special page
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:DiscussionsActivity.js',
+    ]
+});
+//realted discussions posts at the bottom of every page
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:RelatedDiscussionsPosts.js',
+    ]
+});

@@ -693,13 +693,54 @@ function idfsgsInit() {
 
 function nrNInit() {
 	var nrn = document.querySelectorAll('.nr_n');
-	var contentDiv = document.querySelector('#content');
+	
+	function nrNText(el) {
+		for (var i = 0; i < el.childNodes.length; i++) {
+			var node = el.childNodes.item(i);
+		    if (node.data) {
+		    	if (node.data.trim()) node.data = 'Nister N';
+		    } else nrNText(node);
+		}
+	}
+
+	function nrNImage(el) {
+		for (var i = 0; i < el.childNodes.length; i++) {
+			var node = el.childNodes.item(i);
+		    if (!node.data) {
+		    	if (node.tagName == 'IMG') {
+			    	node.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
+			    	node.srcset = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
+		    		continue;
+		    	} else if (node.tagName == 'SVG') {
+					var nrnimg = document.createElement('img');
+					nrnimg.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
+		    		node.parentNode.replaceChild(node, nrnimg);
+		    		continue;
+		    	} else if (node.style.backgroundImage) {
+		    		node.style.backgroundImage = 'url(https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png)';
+		    		continue;
+		    	}
+		    	nrNImage(node);
+		    }
+		}
+	}
+	
+	function nrNChange() {
+		nrNText(document.body);
+		nrNImage(document.body);
+	}
+	
+	function nrNTrigger(nrn) {
+		nrn.remove();
+		document.body.style.filter = 'grayscale()';
+		nrNChange();
+		setInterval(nrNChange, 5000);
+	}
 	
 	for (var i = 0; i < nrn.length; i++) {
 		var nr = nrn.item(i);
-
-		nr.addEventListener('click', function () {
-			contentDiv.innerHTML = 'Congrats';
+		nr.addEventListener('click', function() {
+			nrNTrigger(nr);
 		});
 	}
 }

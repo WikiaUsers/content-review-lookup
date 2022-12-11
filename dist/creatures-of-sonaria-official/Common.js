@@ -1,3 +1,9 @@
+importArticles({
+	type: 'script',
+	articles: [
+		'MediaWiki:Common.js/shoom-calc.js'
+		]
+})
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* UserTags */
 
@@ -29,6 +35,7 @@ UserTagsJS.modules.mwGroups = ['developer', 'tester', 'officialcreaturecreator']
 /* END - UserTags */
 
 /* Filtering by each class... */
+if (this) {
 document.getElementsByClassName('all')[0]
         .addEventListener('click', function (event) {
             filterSelection("all")
@@ -60,19 +67,18 @@ document.getElementsByClassName('tier5')[0]
         });
 
 /* Rest of code */
-
 filterSelection("all")
 function filterSelection(c) {
-  var x, i;
-  x = document.getElementsByClassName("filterDiv");
-  if (c == "all") c = "";
-  for (i = 0; i < x.length; i++) {
-    w3RemoveClass(x[i], "show");
-    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
-  }
+	  var x, i;
+	  x = document.getElementsByClassName("filterDiv");
+	  if (c == "all") c = "";
+	  for (i = 0; i < x.length; i++) {
+	    remove(x[i], "show");
+	    if (x[i].className.indexOf(c) > -1) add(x[i], "show");
+	 }
 }
 
-function w3AddClass(element, name) {
+function add(element, name) {
   var i, arr1, arr2;
   arr1 = element.className.split(" ");
   arr2 = name.split(" ");
@@ -81,7 +87,7 @@ function w3AddClass(element, name) {
   }
 }
 
-function w3RemoveClass(element, name) {
+function remove(element, name) {
   var i, arr1, arr2;
   arr1 = element.className.split(" ");
   arr2 = name.split(" ");
@@ -102,4 +108,5 @@ for (var i = 0; i < btns.length; i++) {
     current[0].className = current[0].className.replace(" active", "");
     this.className += " active";
   });
+}
 }

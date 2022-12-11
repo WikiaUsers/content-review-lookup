@@ -27,7 +27,6 @@ document.getElementById("SearchQueryButton").appendChild(searchQueryButton);
 
 // Function for opening the search window with the inputted query.
 function openSearch() {
-var searchQuery = document.getElementById("SearchQueryInput").value;
-window.open("https://roblox-grass-cutting-incremental.fandom.com/Special:Search?query=" + searchQuery);
+window.open("https://roblox-grass-cutting-incremental.fandom.com/Special:Search?query=" + document.getElementById("SearchQueryInput").value);
 }
 }

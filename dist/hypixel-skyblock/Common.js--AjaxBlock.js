@@ -3,30 +3,30 @@
  * Forked by Thundercraft5 (https://dev.fandom.com/wiki/User:Thundercraft5)
  * Allows for blocking of users without leaving the page.
  * 
- * @module			 AjaxBlock.js
- * @version 		 0.6
- * @description		 Allows for blocking of users without leaving the page
- * @author			 Thundercraft5
- * @author			 Dorumin
- * @external		 I18n.js (https://dev.fandom.com/wiki/MediaWiki:I18n-js/code.js)
- * @external		 QDModal (https://dev.fandom.com/wiki/MediaWiki:QDmodal.js)
+ * @module      AjaxBlock.js
+ * @version     0.6
+ * @description Allows for blocking of users without leaving the page
+ * @author      Thundercraft5
+ * @author      Dorumin
+ * @external    I18n.js (https://dev.fandom.com/wiki/MediaWiki:I18n-js/code.js)
+ * @external    QDModal (https://dev.fandom.com/wiki/MediaWiki:QDmodal.js)
  */
 
 /* jshint
-	esversion: 5, forin: false, esnext: false,
-	immed: true, indent: 4, 
-	latedef: true, newcap: true,
-	noarg: true, undef: true,
-	undef: true, unused: true,
-	browser: true, jquery: true,
-	onevar: true, eqeqeq: true,
-	multistr: true, maxerr: 999999,
-	-W082, -W084
+    esversion: 5, forin: false,
+    immed: true, indent: 4, 
+    latedef: true, newcap: true,
+    noarg: true, esnext: false,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    -W082, -W084
 */
 /* global mw, importArticle, BannerNotification */
 
 $.when(
-    mw.loader.using("mediawiki.api", "mediawiki.notify"),
+    mw.loader.using("mediawiki.api"),
     $.Deferred(function (def) {
         mw.hook("dev.i18n").add(function (i18n) {
             def.resolve(i18n);
@@ -40,16 +40,13 @@ $.when(
         if (mw.libs.QDmodal) {
             def.resolve();
         } else {
-            $.ajax({
-                cache: true,
-                dataType: "script",
-                url: "https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:QDmodal.js"
-            }).then(function () {
+            mw.loader.getScript("https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:QDmodal.js").then(function () {
                 def.resolve();
             });
         }
     })
 ).then(function (x, lib) {
+    "use strict";
     var ver = "0.6";
 
     function logWarn() {

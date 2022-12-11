@@ -13,3 +13,10 @@ var tooltips_config = {
     waitForImages: true,
     noCSS: true,
 }
+/* Тултип предметов */
+window.tooltips_list = [
+    {
+    	classname: 'data-tooltip',
+    	parse: '{{#invoke:getdata|infobox|<#article#>|Инфобокс/Предмет}}'
+	}
+];

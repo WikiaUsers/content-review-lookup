@@ -8,3 +8,8 @@ importArticle({
 
 /*BackToTopButton*/
 window.BackToTopModern = true;
+
+// Custom Tooltip CSS removal
+window.tooltips_config = {
+    noCSS: true,
+}

@@ -14,7 +14,8 @@ importArticles({
 	type: "script",
 	articles: [
 		"MediaWiki:Common.js/plok.js",
-		"MediaWiki:Common.js/homepageclock.js"
+		"MediaWiki:Common.js/homepageclock.js",
+		"MediaWiki:Common.js/musicplayer.js"
 	]
 });
 /* Visitor's name showing up on a user page */

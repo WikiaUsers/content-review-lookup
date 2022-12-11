@@ -2,10 +2,10 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		verified: { u:'Verified', order:-1/0 },
-		affiliated: 'Affiliated',
-		inactive: 'Inactive',
-		newuser: 'New user'
+		'verified': { u:'Verified', order:-1/0 },
+		'affiliated': 'Affiliated',
+		'inactive': 'Inactive',
+		'newuser': 'New user'
 	}
 };
 

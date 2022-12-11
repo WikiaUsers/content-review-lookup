@@ -193,7 +193,8 @@
     'Haunch of *': 'Haunches of ',
     'Flask of *': 'Flasks of ',
     'Vein of *': 'Veins of ',
-    'Bowl of *': 'Bowls of '
+    'Bowl of *': 'Bowls of ',
+    '*Hoof' : 'Hooves'
   },
   
   //plural exceptions
@@ -222,8 +223,13 @@
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
   	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
   	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs',
-  	'Half-Digested Stones', 'Terramite Eggs'
+  	'Half-Digested Stones', 'Terramite Eggs', 'Crab Man Claws'
   ],
+  
+  //exceptions for items that don't match the auto to_singular rules
+  lootparser_s_items = {
+  	'Boar Man Hooves': 'Boar Man Hoof' //doesn't match the ve / fe ending
+  },
 
   //skip/rename creatures if they drop any of the loot in the list
   lootparser_creature_by_loot = {
@@ -410,6 +416,9 @@
   		//Since SU 22 all items are appearing with amounts before their names
   		//Some of them have names in the plural even as single units and should not be changed to singular
   		return t;
+  	} else if (lootparser_s_items.hasOwnProperty(t)) {
+  		//to singular exceptions
+  		return lootparser_s_items[t];
   	}
     var x, lastletter;
     for (x in lootparser_p_words) { if (lootparser_p_words.hasOwnProperty(x)) {

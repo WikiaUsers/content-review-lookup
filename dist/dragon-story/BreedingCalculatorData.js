@@ -4118,6 +4118,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "camelopardalis": {
+                "name": "Camelopardalis",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "camelot": {
                 "name": "Camelot",
                 "types": [
@@ -4744,6 +4761,34 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "cetus": {
+                "name": "Cetus",
+                "types": [
+                    "cosmic",
+                    "purple",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "level": 15,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "chakra": {
                 "name": "Chakra",
                 "types": [
@@ -4755,6 +4800,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "34_hours_34",
                 "rarity": 4
+            },
+            "chamaeleon": {
+                "name": "Chamaeleon",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
             },
             "chameleon": {
                 "name": "Chameleon",
@@ -20825,6 +20887,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
+            "musca": {
+                "name": "Musca",
+                "types": [
+                    "cosmic",
+                    "yellow",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "music": {
                 "name": "Music",
                 "environments": [
@@ -22502,6 +22581,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "nightflight": {
+                "name": "Night Flight",
+                "types": [
+                    "cosmic",
+                    "black",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
                 ]
             },
             "nightimp": {
@@ -24263,6 +24359,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "30_hours_30",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "pavo": {
+                "name": "Pavo",
+                "types": [
+                    "cosmic",
+                    "blue",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

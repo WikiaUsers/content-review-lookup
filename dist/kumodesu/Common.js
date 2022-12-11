@@ -1,6 +1,22 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.BackToTopModern = true;
 
+// Discord Interactive Widget
+"use strict";
+
+var WidgetBot = document.createElement('script');
+WidgetBot.setAttribute('src', 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3');
+WidgetBot.setAttribute('async', true);
+WidgetBot.setAttribute('defer', true);
+WidgetBot.onload = function () {
+  return new Crate({
+    server: '459382827440537601',
+    channel: '459382827440537603'
+  });
+};
+document.body.appendChild(WidgetBot);
+
+
 // User tags
 window.UserTagsJS = {
     tags: {

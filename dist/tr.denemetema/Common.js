@@ -1,3 +1,34 @@
+/* ANY JAVASCRIPT HERE WILL BE LOADED FOR ALL USERS ON EVERY PAGE LOAD */
+      
+/* Inactive users list */
+InactiveUsers = { 
+   days: 30,
+   gone: ['Bigmanrob'],
+};
+
+/* Embed Twitter tweets */
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+ 
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+ 
+  return t;
+}(document, "script", "twitter-wjs"));
+
+/* DiscussionsEmbed variables */
+window.discussEmbedLimit = 4;
+window.discussEmbedForum = "4400000000000011071";
+window.discussEmbedSortTrending = 1;
+
 /* Imports */
 importArticles({
    type: 'script',
