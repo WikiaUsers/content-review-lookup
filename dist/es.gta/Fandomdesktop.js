@@ -21,8 +21,9 @@ window.UserTagsJS = {
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
             'Ale_-_Remastered': ['asistente'],
-            'Turnip0310': ['asistente'],
+            'Claudio3862': ['asistente'],
             'PNAS27': ['asistente'],
+            'UlyssesAlanis14': ['asistente'],
             
             'WKorps': ['veterano'],
             'ClaudeSpeed9425': ['veterano'],
@@ -39,6 +40,7 @@ window.UserTagsJS = {
             'GhostRiley2000': ['veterano'],
             'Antony97': ['veterano'],
             'WeisserHirsch': ['veterano'],
+            'Troll_GT': ['veterano'],
             
             'FabianVercetti': ['retirado'],
             'Leandritodepompeya': ['retirado'],

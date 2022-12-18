@@ -1,1 +1,0 @@
-/* Any JavaScript page with Vector for all users and {{USERNAME}} on every loaded pages */

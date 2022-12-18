@@ -65,7 +65,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
                 this.list[index].forEach(function($list) {
                     $list.html($('<a>', {
                         href: mw.util.getUrl(page.title),
-                        text: page.title.split(':').splice(1).join(':')
+                        text: page.title.split('/').splice(1).join('/')
                     }));
                 }, this);
             }
@@ -78,7 +78,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
             }
             if (this.time[index]) {
                 this.time[index].forEach(function($time) {
-                    $time.text(new Date(page.revisions[0].timestamp).toLocaleString());
+                    $time.text('LordTBT' + ' ' + new Date(page.revisions[0].timestamp).toLocaleString());
                 });
             }
         }

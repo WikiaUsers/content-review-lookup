@@ -103,8 +103,6 @@
             });
         },
         buildHeader: function(data) {
-        	var usersOnline = data.presence_count || data.members && data.members.length;
-
             return ui.div({
                 classes: ['widget-header'],
                 children: [
@@ -161,14 +159,6 @@
         },
         replaceWidget: function(_, elem) {
             elem.dataset.widgetState = 'loading';
-            var id = elem.getAttribute('data-id'),
-            theme = elem.getAttribute('data-theme') || this.messages.theme,
-            branding = elem.getAttribute('data-branding') || this.messages.branding,
-            // TODO: Make adaptive chip orientation based on width and how many avatars can fit in a row
-            width = elem.getAttribute('data-width'),
-            height = elem.getAttribute('data-height'),
-            invite = elem.getAttribute('data-invite'),
-            header = elem.getAttribute('data-header');
         },
         sortRoleContainers: function(a, b) {
             return b.children.length - a.children.length;
@@ -199,8 +189,6 @@
             i = children.length;
 
             elem.style.maxHeight = '';
-
-            if (innerWidth > 1023) return;
 
             while (i--) {
                 full += this.getHeight(children[i]);

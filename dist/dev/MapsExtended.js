@@ -10,10 +10,12 @@
 {
     // Do not run on pages without interactive maps
     var test = document.querySelector("[class^=\"interactive-map-\"]");
-    if (test == null || test.children.length == 0) return;
+    if (test == undefined) return;
 
     // Do not fire this script more than once
     if (window.dev && window.dev.mapsExtended && window.dev.mapsExtended.loaded == true) return;
+    
+	console.log("Loaded MapsExtended.js");
 
     /*
         EventHandler

@@ -825,3 +825,4 @@
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
 })(window.jQuery, window.mediaWiki);
+// </nowiki>

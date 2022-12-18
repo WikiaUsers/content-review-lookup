@@ -1,1 +1,0 @@
-mw.loader.load('https://wikiplus-app.com/Main.js');

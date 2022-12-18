@@ -31,7 +31,7 @@
 		},
 		
 		Accordion: {
-			page: 'Accordion',
+			page: 'Global Lua Modules/Accordion',
 			scripts: 'MediaWiki:Accordion.js'
 		},
 		
@@ -524,6 +524,12 @@
         ResponsiveMobile: {
             page: 'ResponsiveMobile',
             styles: 'MediaWiki:ResponsiveMobile.css'
+        },
+        
+        Ripples: {
+            page: 'Ripple',
+            styles: ['MediaWiki:Ripple.css', 'MediaWiki:Ripple.css/demo.css'],
+            scripts: 'MediaWiki:Ripple.js'
         },
         
         SpoilerBlur: {

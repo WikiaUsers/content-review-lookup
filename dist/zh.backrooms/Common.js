@@ -24,6 +24,8 @@
 })();
 
 /*
+ * THIS METHOD HAS BEEN DEPRECATED AND SHOULD NO LONGER BE ENCOURAGED IN THE FUTURE.
+ * 
  * The following code imports '/style.css' to the current page.
  * It also imports the '/style.css' subpage of all pages transcluded in the current page.
  * Only pages under (Main), User, Project, Template, Help namespaces will have styles imported into them.
@@ -104,9 +106,11 @@ mw.loader.using("mediawiki.util", function () {
  * HTML class "transcluded-css" comes from [[Template:CSS]]
  * After this CSS importing method is approved, the previous one will be removed soon
  */
-mw.loader.using("mediawiki.util", function() {
-	$("span.transcluded-css").each(function() {
-		mw.util.addCSS($(this).text());
-		$(this).remove();
+mw.hook("wikipage.content").add(function() {
+	mw.loader.using("mediawiki.util", function() {
+		$("span.transcluded-css").each(function() {
+			mw.util.addCSS($(this).text());
+			$(this).remove();
+		});
 	});
 });

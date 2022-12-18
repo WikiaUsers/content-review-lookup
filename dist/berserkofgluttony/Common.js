@@ -1,8 +1,4 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-window.railWAM = {
-    logPage: "Project:WAM Log"
-};
- 
 window.massEditConfig = {
     editInterval: 1500
 };
@@ -13,17 +9,8 @@ window.AjaxCommentDeleteConfig = {
     fastDelete: "The reason for deletion of the comment. You can modify this text!"
 };
  
- 
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.tlen = 1000;
- 
-/* RailWAM */
-window.railWAM = {
-    logPage:"Project:WAM Log/Auto-Statistics",
-    loadOnPage:'Special:WikiActivity',
-    autoLogForUsers:["User:LeXuS008"],
-    loadOnNamespace:[-1],
-};
  
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
  
@@ -36,13 +23,6 @@ window.LockOldBlogs = {
 /**** UploadInFile ****/
 window.needsLicense = true;
 window.allowMultiUpload = true;
- 
-/* Auto Refresh */
-window.ajaxPages = ["Some Frequently Updated Page"];
-window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
-window.ajaxRefresh = 30000;
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
 window.BackToTopModern = true;
  

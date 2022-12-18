@@ -30,7 +30,8 @@
         'MediaWiki:GoldPass.js',
         'MediaWiki:HeroSkins.js',
         'MediaWiki:Toggle.js',
-        'MediaWiki:WikiNotification.js'
+        'MediaWiki:WikiNotification.js',
+        'MediaWiki:ClanHouseGenerator.js'
     	]
     });
 	

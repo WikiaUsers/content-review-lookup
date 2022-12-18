@@ -160,10 +160,9 @@ var slideshows = {
 	 * @param {Element} slideshow The slideshow.
 	 */
 	makeAuto: function ( slideshow ) {
-		slideshow.classList.add( 'infobox2-slideshow-auto' );
+		  slideshow.classList.add( 'infobox2-slideshow-auto' );
 		if (
-			!slideshows.isEnabled( slideshow ) ||
-			slideshows.data.auto.indexOf( slideshow ) !== -1
+			!slideshows.isEnabled( slideshow )
 		) {
 			return;
 		}

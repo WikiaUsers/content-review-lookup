@@ -149,18 +149,15 @@ window.lockOldComments.limit = 180;
 
 /* ========== Выделение комментариев статусников ========== */
 setInterval(function () {
-    $('.wds-avatar a[href$="BroSafari"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur');
-    $('.wds-avatar a[href$="Cyberpunk%20Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Admin');
-    $('.wds-avatar a[href$="Cyberpunk_Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Admin');
+    $('.wds-avatar a[href$="BroSafari"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur1');
+    $('.wds-avatar a[href$="Cyberpunk%20Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur2');
+    $('.wds-avatar a[href$="Cyberpunk_Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur2');
     $('.wds-avatar a[href$="Luchezze"]').closest('.Reply, .Reply_body__PM9kM').addClass('Admin');
     $('.wds-avatar a[href$="Stal0ker"]').closest('.Reply, .Reply_body__PM9kM').addClass('Contmod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0%20%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
-    $('.wds-avatar a[href$="Professor_Fris"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
-    $('.wds-avatar a[href$="Professor%20Fris"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
-    $('.wds-avatar a[href$="Ffor4an"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
 }, 500 );
 
 /* ========== MessageBlock ========== */

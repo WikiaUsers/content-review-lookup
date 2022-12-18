@@ -123,3 +123,10 @@ $(function() {
     }
   });
 });
+
+window.pPreview = $.extend(true, window.pPreview, {
+	RegExp: {
+		ipages: [new RegExp("Category:Characters","Episode_Guide","Category:Locations")],
+		ilinks: [new RegExp("Category:Characters","Episode_Guide","Category:Locations")],
+	},
+});

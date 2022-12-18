@@ -80,4 +80,8 @@ nkch_gst_gadgets = [{
     name: "NkchToggler",
     title: "Быстрая смена темы",
     description: "Меню в правой верхней части страницы для быстрой смены темы"
+}, {
+	name: "Font",
+    title: "Системный шрифт",
+    description: "Заменяет шрифт на сайте"
 }];

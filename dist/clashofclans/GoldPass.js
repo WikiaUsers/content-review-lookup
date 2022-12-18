@@ -13,6 +13,7 @@ $(document).ready(function() {
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
+	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>')
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option></select></div>');
@@ -581,6 +582,7 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }  
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			// Try to prevent floating-point errors from making weird behaviour
 			var attackFreq = 1000 / (initialSpeed * 1000);
 			// Now it's the attack frequency we want to modify, so modify away!
@@ -590,9 +592,15 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			// Whichever poison is more severe will take precedence. Also only apply if unit is not a Building
+			var poisonTowerMultiplier = 1;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerMultiplier = 75/100;
+            	}
+			}
+			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier);
+				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			
 			var freezeMultiplier = 1;
@@ -637,6 +645,13 @@ $(document).ready(function() {
 			} else {
 				$(this).addClass("StatModified");
 				$(this).removeClass("StatPoisoned");
+			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
 			}
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
@@ -791,10 +806,18 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
+			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
 			}
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
@@ -826,11 +849,19 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
             var freezeCheckBox = document.getElementById("freezeBoost");
+            var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
             if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -869,6 +900,7 @@ $(document).ready(function() {
 			// Currently this class won't support abilities. It's because there's currently no instance where this is needed
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			// First calculate buffed DPS by rage
 			
 			var rageMultiplier = 1;
@@ -906,8 +938,14 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
+			var poisonTowerMultiplier = 1;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerMultiplier = 75/100;
+            	}
+			}
 			if ($(this).hasClass("Building") === false) {
-				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier);
+				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			var freezeMultiplier = 1;
 			if (freezeCheckBox != null) {
@@ -928,6 +966,13 @@ $(document).ready(function() {
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -992,6 +1037,7 @@ $(document).ready(function() {
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
 			var towerRageBoost = 0;
@@ -1060,8 +1106,13 @@ $(document).ready(function() {
 			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
-			
-			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel]);
+			var poisonTowerDebuff = 0;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerDebuff = 35;
+            	}
+			}
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff);
 			
 			minSpeed = minSpeed * (100 - poisonDebuff) /100;
 			maxSpeed = maxSpeed * (100 - poisonDebuff) /100;
@@ -1091,6 +1142,13 @@ $(document).ready(function() {
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -1191,6 +1249,9 @@ $(document).ready(function() {
         }
         if (document.getElementById("valkRageBoost") != null) {
             document.getElementById("valkRageBoost").checked = false;
+        }
+        if (document.getElementById("poisonTowerBoost") != null) {
+            document.getElementById("poisonTowerBoost").checked = false;
         }
 		$(".GoldPass").each(function() {
 			var returnInitial = $(this).attr("title");

@@ -35,7 +35,7 @@
             this.messages.footer = "Сервер предназначен для обсуждения вики, а не для помощи в игре";
             this.messages.header = "Чат сообщества";
             this.messages.id = "1045442450455547924";
-            this.messages.invite = "https://discord.gg/raW3BxQ7";
+            this.messages.invite = "https://discord.gg/jzdY75nn9p";
             this.messages.theme = "dark";
             this.messages.roles = {};
         },

@@ -351,21 +351,18 @@ mw.loader.using( ['oojs-ui-windows'], function() {
 		});
 		$content = $(arr);
 		$content.find('a').each(function() {
-				var $el = $(this);
-				// Запрет обработки ссылок с класом image для избежания ошибки
-				if (!$el.hasClass('image')) {
-					if ($el.attr('href')) {
-						// Запрет обработки ссылок правки статьи
-						if ($el.attr('href').indexOf('action=edit') == -1) {
-							// Запрет обработки ссылок на сноски
-							if ($el.attr('href').indexOf('#') != 0) { 
-								$el.off('mouseenter.pp mouseleave.pp');
-								$el.on('mouseenter.pp', aHover);
-								$el.on('mouseleave.pp', nhidePreview);
-							}
-						}
-					}					
+			var $el = $(this);
+			// Запрет обработки ссылок с класом image и кнопок ("отмена" в редакторе) для избежания ошибки
+			if ((!$el.hasClass('image'))&&(!$el.hasClass('oo-ui-buttonElement-button'))) {
+				if ($el.attr('href')) {
+					// Запрет обработки ссылок на правку статьи, кнопки "отпатрулировано", на просмотр изменений и истории, на откат, на сноски
+					if (($el.attr('href').indexOf('action=edit') == -1)&&($el.attr('href').indexOf('action=markpatrolled') == -1)&&($el.attr('href').indexOf('diff=') == -1)&&($el.attr('href').indexOf('action=history') == -1)&&($el.attr('href').indexOf('action=rollback') == -1)&&($el.attr('href').indexOf('#') != 0)) {
+						$el.off('mouseenter.pp mouseleave.pp');
+						$el.on('mouseenter.pp', aHover);
+						$el.on('mouseleave.pp', nhidePreview);
+					}
 				}
+			}
 		});
 	}
 	

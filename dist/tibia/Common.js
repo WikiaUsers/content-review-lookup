@@ -832,16 +832,20 @@ $(function(){
 		var baseurl = 'https://tibia.fandom.com/wiki/',
 		fileurl = 'https://tibia.fandom.com/wiki/Special:Filepath?file=',
 		looturl = 'https://tibia.fandom.com/wiki/Loot_Statistics:',
+		creaturenames = {'Sabretooth': 'Sabretooth (Creature)',
+						'Mooh\'tah Warrior': 'Mooh\'Tah Warrior'
+						}
 		lootValueData = [];
 		
 		$.each($('#lootValueData').text().split('|'), function() {
 			if (this.length > 0) {
 				var vals = this.split("/"),
 				creature = vals[0],
+				pagename = Object.keys(creaturenames).includes(creature) ? creaturenames[creature] : creature,
 				kills =  parseInt(vals[1], 10),
 				value = parseFloat(vals[2]);
 				if (kills > 100 && value > 0) {
-					lootValueData.push({n: creature, k: kills, v:value});	
+					lootValueData.push({n: creature, p: pagename, k: kills, v:value});	
 				}
 			}
 		});
@@ -855,7 +859,7 @@ $(function(){
 				.append($('<tr>')
         			.append($('<td>')
         				.append($('<a>')
-        					.attr('href', baseurl + this.n)
+        					.attr('href', baseurl + this.p)
         					.text(this.n))
     					.append('<br />')
     					.append($('<small>')
@@ -864,7 +868,7 @@ $(function(){
         						.text('Loot Statistics'))))
     				.append($('<td>')
         				.append($('<img>')
-        					.attr('src', fileurl + this.n + '.gif')
+        					.attr('src', fileurl + this.p + '.gif')
         					.attr('class', 'lazyloaded')))
         			.append($('<td>')
         				.text(this.k))

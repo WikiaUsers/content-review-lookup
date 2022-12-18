@@ -40,6 +40,7 @@
   creature_items_name_change = {
     'Acolyte of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (Second Verse)'},
     'Adept of the Cult': {'Book': 'Book (Orange)', 'Music Sheet': 'Music Sheet (Third Verse)'},
+    'Ahau': {'Amber': 'Amber (Item)', 'Ritual Teeth': 'Ritual Tooth'},
     'Barbarian Brutetamer': {'Book': 'Book (Grey)'},
     'Blemished Spawn': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Blightwalker': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
@@ -210,7 +211,8 @@
     'Huge Chunks *': 'Huge Chunk ',
     'Mushroom Pies' : 'Mushroom Pie',
     'Essences of *': 'Essence of ',
-    'Veins of *': 'Vein of '
+    'Veins of *': 'Vein of ',
+    'Bars of *': 'Bar of '
   },
 
   //exceptions for plural endings (after removing the last 's')

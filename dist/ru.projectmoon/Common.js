@@ -94,28 +94,40 @@ function setupModule(data) {
 })();
 
 
+/* Красивые табберы*/
+function getpar(object)
+{
+	var par = $(object)[0].parentNode;
+	var el = par;
+	while (el.parentNode) {
+    	if (el.classList.contains("tab") || el.classList.contains("mw-parser-output")) {
+    		return el;
+    	}
+    	el = el.parentNode;
+	}
+	return null;
+}
 mw.loader.using('mediawiki.util').then(function() {
-    var IndexClick = 0;
+var IndexClick = 0;
 function zselector( $content ) {
-    var ActiveID = '';
     $(function () {
         $('[class|="cc"]').click(function () {
             var cn = $(this).attr('class');
-			 IndexClick = IndexClick+1;
-            if (typeof cn !== 'undefined' && (+IndexClick)%2 === 0) {
-                ZContent(cn, '0');
+			IndexClick = IndexClick+1;
+            if (typeof cn !== 'undefined' && IndexClick%2 == 0) {
+                ZContent(cn, '0', $(this));
             }
         });
         $('[class|="hh"]').mouseenter(function () {
             var cn = $(this).attr('class');
             if (typeof cn !== 'undefined') {
-                ZContent(cn, '1');
+                ZContent(cn, '1', $(this));
             }
         });
         $('[class|="hh"]').mouseleave(function () {
             var cn = $(this).attr('class');
             if (typeof cn !== 'undefined') {
-                ZContent(cn, '2');
+                ZContent(cn, '2', $(this));
             }
         });
         $('[class|="zz"]').each(function (i, elem) {
@@ -124,46 +136,43 @@ function zselector( $content ) {
             }
         });
     });
-    function ZContent(classValue, effect) {
+    function ZContent(classValue, effect, object) {
         if (classValue.split) {
             var ID = '';
+            var par = getpar(object);
             var flagElem = false;
-            var flagElem1 = false;
             var elemClasses = classValue.split(' ');
             for (var j = 0; j < elemClasses.length; j++) {
             	flagElem = flagElem || elemClasses[j] == 'sy';
-            	flagElem1 = flagElem1 || elemClasses[j] == 'default';
             }
-            var oldID = ActiveID;
             for (var i = elemClasses.length-1; i >= 0; i--) {
                 var elemClass = elemClasses[i];
                 if (elemClass.substring(0, 3) == 'hh-' || elemClass.substring(0, 3) == 'cc-') {
                 	ID = elemClass.substring(3);
                     if (effect == '0') {
-                        ActiveID = ID;
-                        ZEffect(ID);
-                        SelectElem('cc', ID);
+                        ZEffect(ID,par);
+                        SelectElem('cc', ID, par);
                     } else if (effect == '1') {
-                        ActiveID = ID;
-                        ZEffect(ID);
-                        SelectElem('hh', ID);
+                        ZEffect(ID,par);
+                        SelectElem('hh', ID, par);
                     } else if (effect == '2') {
-                        ZEffect(ActiveID);
-                        SelectElem('hh', ID);
+                        ZEffect(ActiveID,par);
+                        SelectElem('hh', ID, par);
                     }
                 }
             }
             if(flagElem)
-            	if(flagElem1 && (ID == oldID && oldID != 'default'))
-            	{
-                    ActiveID = 'default';
-                    ZEffect('default');
-                    SelectElem('cc', 'default');
-            	}
+            {
+                ZEffect("Default",par);
+                SelectElem('cc', "Default", par);
+            }
         }
     }
-    function ZEffect(ID) {
+    function ZEffect(ID,par) {
         $('[class|="zz"]').each(function (i, elem) {
+        	var par1=  getpar(this);
+        	if(par1 == par)
+        	{
             if ($(this).hasClass('zz-' + ID)) {
                 $(this).css('display', 'block');
                 $(window).trigger('scroll');
@@ -180,17 +189,22 @@ function zselector( $content ) {
                     queue: false
                 }, 0);
             }
+        	}
         });
     }
-    function SelectElem(type, ID) {
+    function SelectElem(type, ID, par) {
         $('[class|="cc"],[class|="hh"]').each(function (i, elem) {
-            if ($(this).hasClass(type + '-' + ID)) {
-                $(this).removeClass('sn');
-                $(this).addClass('sy');
-            } else {
-                $(this).removeClass('sy');
-                $(this).addClass('sn');
-            }
+        	var par1= getpar(this);
+        	if(par1 == par)
+        	{
+            	if ($(this).hasClass(type + '-' + ID)) {
+            	    $(this).removeClass('sn');
+        	    	$(this).addClass('sy');
+        		} else {
+                	$(this).removeClass('sy');
+                	$(this).addClass('sn');
+            	}
+        	}
         });
     }
 }

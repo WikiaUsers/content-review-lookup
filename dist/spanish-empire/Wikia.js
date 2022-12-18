@@ -1,1 +1,0 @@
-<iframe data-wikia-widget="soundcloud" scrolling="no" frameborder="no" height="16" src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fjinnie_nidya%2Fgame-of-thrones-season-5&amp;auto_play=true&amp;show_artwork=false"></iframe>
