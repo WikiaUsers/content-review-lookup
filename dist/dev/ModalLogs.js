@@ -12,7 +12,12 @@
                         .find('fieldset, .mw-specialpage-summary, p:first-child, .mw-warning-with-logexcerpt, .mw-htmlform-ooui-wrapper, noscript, noscript + p')
                             .remove()
                             .end()
-                        .html()
+                        .html(),
+            onShow: function (modal) {
+                if (modal.$content.find('.listfiles tbody > tr > td[colspan="5"]').length) {
+                    modal.$content.text(modal.$content.find('.listfiles tbody > tr > td[colspan="5"]').text());
+                }
+            }
         });
     }
 

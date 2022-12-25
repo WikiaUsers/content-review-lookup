@@ -86,7 +86,7 @@ if (obtainedFrom) {
 /*Add custom roles to profiles*/
 const checkIDLucy = document.querySelector('#LucyKuranSKYDOME');
 const findContainer = document.querySelector('.headline');
-const newGroupLucy = '<ul class="grouptags"><li><a href="/wiki/wiki/Special:ListUsers?group=bureaucrat" title="Only appear when worshipped">Transparent Wiki Goddess</a></li></ul>';
+const newGroupLucy = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Only appear when worshipped">Transparent Wiki Goddess</a></li></ul>';
 const hideGroups = document.querySelector('.grouptags');
 const replaceGroupsLucy = function () {
 	hideGroups.classList.add('hide');
@@ -98,7 +98,7 @@ if (checkIDLucy) {
 }
 /*--------------*/
 const checkIDSpoletta = document.querySelector('#Spoletta');
-const newGroupSpoletta = '<ul class="grouptags"><li><a href="/wiki/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Don <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/e/e3/Don_Spoletta.png/revision/latest?cb=20220817072324&format=original" width="30" height="30"></a></li></ul>';
+const newGroupSpoletta = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Don <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/e/e3/Don_Spoletta.png/revision/latest?cb=20220817072324&format=original" width="30" height="30"></a></li></ul>';
 const replaceGroupsSpoletta = function () {
 	hideGroups.classList.add('hide');
     findContainer.insertAdjacentHTML('beforeend', newGroupSpoletta);
@@ -109,7 +109,7 @@ if (checkIDSpoletta) {
 }
 /*--------------*/
 const checkIDSkykal = document.querySelector('#Lord_Skykal');
-const newGroupSkykal = '<ul class="grouptags"><li><a href="/wiki/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Fürst Axolotl <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/a/a3/Axolotl_Skykal.png/revision/latest?cb=20220818173031&format=original" width="30" height="30"></a></li></ul>';
+const newGroupSkykal = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Fürst Axolotl <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/a/a3/Axolotl_Skykal.png/revision/latest?cb=20220818173031&format=original" width="30" height="30"></a></li></ul>';
 const replaceGroupsSkykal = function () {
 	hideGroups.classList.add('hide');
     findContainer.insertAdjacentHTML('beforeend', newGroupSkykal);

@@ -196,6 +196,7 @@ $(function(){
         	}
         	break;
     }
+    
     //Diplopia
     $("[data-image-name='Collectible Diplopia icon.png'").addClass("diplopie")
     $(".diplopie").click(function(){
@@ -204,4 +205,5 @@ $(function(){
     	})
     	this.remove()
 	})
+	
 });

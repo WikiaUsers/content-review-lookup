@@ -277,7 +277,8 @@
                 text: '',
                 title: page,
                 summary: this.i18n.inContentLang().msg('summary').plain(),
-                bot: true
+                bot: true,
+                minor: true
             });
         },
         blankPages: function(pages, progress) {

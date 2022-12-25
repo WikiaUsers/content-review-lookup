@@ -8,14 +8,25 @@
 */
 (function() // <- Immediately invoked function expression to scope variables and functions to this script
 {
+    var debug = new URLSearchParams(window.location.search).get("debugMapsExtended") == "1";
+    function log(str){ if (debug) console.log(str); }
+
+    console.log("Loaded MapsExtended.js");
+
     // Do not run on pages without interactive maps
     var test = document.querySelector("[class^=\"interactive-map-\"]");
-    if (test == undefined) return;
+    if (test == undefined)
+    {
+        log("No interactive maps found on page.");
+        return;
+    }
 
     // Do not fire this script more than once
-    if (window.dev && window.dev.mapsExtended && window.dev.mapsExtended.loaded == true) return;
-    
-	console.log("Loaded MapsExtended.js");
+    if (window.dev && window.dev.mapsExtended && window.dev.mapsExtended.loaded == true)
+    {
+        log("Not running script more than once on page.");
+        return;
+    };
 
     /*
         EventHandler
@@ -168,12 +179,6 @@
         };
     }
 
-    function log(str)
-    {
-        if (window.dev && window.dev.mapsExtended && window.dev.mapsExtended.debug)
-            console.log(str);
-    }
-
     /*
         ExtendedMap
 
@@ -199,6 +204,7 @@
         // It is created by Interactive Maps after the page is loaded, and will always be present when
         // this script is first fired (we don't need to check for its existence)
         this.elements = {};
+        this.elements.rootElement = root;
         this.elements.mapModuleContainer = root.querySelector(".Map-module_container__dn27-");
 
         // Copy each of the properties from the already-existing deserialization of the JSON into ExtendedMap
@@ -340,8 +346,8 @@
                 markerJson.id = markerJson.id.toString();
             }
         }
-        
-        // Sort marker definitions, but instead of rearranging the original array store the index of the sorted marker
+
+        // Sort marker definitions, but instead of rearranging the original array, store the index of the sorted marker
         var sortedMarkers = this.markers.slice().sort(this.markerCompareFunction(this.config.sortMarkers));
         for (var i = 0; i < sortedMarkers.length; i++) sortedMarkers[i].order = i;
 
@@ -368,6 +374,35 @@
             // Don't need to correct mapBounds since it will be the same anyway
         }
 
+        // Set up a MutationObserver which will observe all changes from the root interactive-map-xxxxxxx
+        // This is used in the rare occasion that this constructor is called before .Map-module_container__dn27- is created
+        this.rootObserved = function(mutationList, observer)
+        {
+            // Stop observing root if the map has already been initialized
+            if (this.initialized == true)
+            {
+                observer.disconnect();
+                return;
+            }
+            
+            // If there were any added or removed nodes, check whether the map is fully created now
+            if (mutationList.some(function(mr) { return mr.addedNodes.length > 0 || mr.removedNodes.length > 0; }) && this.isMapCreated())
+            {
+                // Resolve waitForPresence
+                if (this._waitForPresenceResolve)
+                {
+                    this._waitForPresenceResolve();
+                    this._waitForPresenceResolve = undefined;
+                }
+
+                // Stop observing
+                observer.disconnect();
+
+                // Init
+                this.init();
+            }
+        }.bind(this);
+
         // Set up a MutationObserver which will look at the parent of the leaflet-container Element for node removals
         // This is important because the leaflet map will be completely recreated if the map is ever hidden and shown again
         this.selfObserved = function(mutationList, observer)
@@ -384,7 +419,7 @@
                 }
 
                 // Map was added, connect to the elements
-                if (!this.initialized && /*this.isMapVisible() &&*/ mutationRecord.addedNodes.length > 0 &&
+                if (!this.initialized && mutationRecord.addedNodes.length > 0 &&
                     mutationRecord.addedNodes[0].classList.contains("leaflet-container"))
                 {
                     if (this._waitForPresenceResolve)
@@ -392,6 +427,7 @@
                         this._waitForPresenceResolve();
                         this._waitForPresenceResolve = undefined;
                     }
+                    
                     this.init();
                 }
             }
@@ -482,7 +518,7 @@
                         else
                         {
                             var unscaledPos = this.getUnscaledMarkerPosition(markerElement);
-                            console.log("Could not associate marker element at position " + unscaledPos + " with a definition in the JSON.");
+                            log("Could not associate marker element at position " + unscaledPos + " with a definition in the JSON.");
                         }
                     }
                 }
@@ -604,28 +640,22 @@
 
         }.bind(this);
 
+        this.rootObserver = new MutationObserver(this.rootObserved);
         this.selfObserver = new MutationObserver(this.selfObserved);
         this.leafletAttributeObserver = new MutationObserver(this.leafletAttributeObserved);
         this.popupObserver = new MutationObserver(this.popupObserved);
         this.markerObserver = new MutationObserver(this.markerObserved);
-
-        this.selfObserver.observe(this.elements.mapModuleContainer, { childList: true });
         
         // Finally, connect to the DOM
         
-        // At this point Interactive Maps will have created the container (underneath the interactive-map-xxxxxxx stub),
+        // At this point Interactive Maps may have created the container (underneath the interactive-map-xxxxxxx stub),
         // but Leaflet may not have actually created the map.
         // If we decide to initialize the map now without checking, it may not have any marker elements to connect to
-        // We can check whether it is still creating the map by:
-        // -> The existence of a "img.Map-module_imageSizeDetect__YkHxA" under ".Map-module_container__dn27-"
-        // -> The existence of a "div.LoadingOverlay-module_overlay__UXv3B" under ".leaflet-container"
-        // -> The lack of any elements under .leaflet-overlay-pane
-        if (this.elements.mapModuleContainer.querySelector("img.Map-module_imageSizeDetect__YkHxA") != null ||
-            this.elements.mapModuleContainer.querySelector(".leaflet-container > .LoadingOverlay-module_overlay__UXv3B") != null || 
-            this.elements.mapModuleContainer.querySelector(".leaflet-container > .leaflet-map-pane > .leaflet-overlay-pane > *") == null)
+        if (this.isMapCreated() == false)
         {
             // Leaflet not finished initializing
             console.log("Leaflet not yet initialized for \"" + this.id + "\". Init will be deferred");
+            this.rootObserver.observe(this.elements.rootElement, { subtree: true, childList: true });
         }
         else
         {
@@ -651,12 +681,14 @@
         onMapDragged: new EventHandler(),
         onMapZoomed: new EventHandler(),
 
-        // Init associates the map to the DOM. It should be passed the root element with the class "interactive-map-xxxxxxxx"
+        // Init associates the map to the DOM.
+        // It should be passed the root element with the class "interactive-map-xxxxxxxx",
+        // though it will use the rootElement in this.element.rootElement if not
         init: function(root)
         {
             if (this.initialized)
             {
-                console.logError("Tried to initialize " + this.id + " when it was already initialized");
+                log("Tried to initialize " + this.id + " when it was already initialized");
                 return;
             }
 
@@ -664,36 +696,43 @@
             this.initialized = true;
             this.initializedOnce = true;
 
-            if (!root) root = this.rootElement;
+            if (!root) root = this.elements != null ? this.elements.rootElement : null;
+            if (!root) console.logError("ExtendedMap.init did not find a reference to the root interactive-map-xxxxxxxx element!");
 
             // References to Leaflet elements in the DOM        
-            this.elements = {};
+            this.elements = this.elements || {};
             this.elements.rootElement = root;
             this.elements.mapModuleContainer = root.querySelector(".Map-module_container__dn27-");
-            this.elements.filtersDropdownList = root.querySelector(".interactive-maps__filters-dropdown-list");
-            this.elements.filtersDropdownButton = root.querySelector(".interactive-maps__filters-dropdown-button");
+
+            // Filters/category elements
+            this.elements.filtersList = root.querySelector(".interactive-maps__filters-list");
+            this.elements.filtersDropdown = this.elements.filtersList.querySelector(".interactive-maps__filters-dropdown");
+            this.elements.filtersDropdownButton = this.elements.filtersDropdown.querySelector(".interactive-maps__filters-dropdown-button");
+            this.elements.filtersDropdownList = this.elements.filtersDropdown.querySelector(".interactive-maps__filters-dropdown-list");
             this.elements.filterAllCheckboxInput = this.elements.filtersDropdownList.querySelector(".interactive-maps__filter-all input");
+            this.elements.filterElements = this.elements.filtersDropdownList.querySelectorAll(".interactive-maps__filter");
 
             // Leaflet-specific elements
             this.elements.leafletContainer = root.querySelector(".leaflet-container");
-            this.elements.leafletMapPane = root.querySelector(".leaflet-map-pane");
-            this.elements.leafletOverlayPane = root.querySelector(".leaflet-overlay-pane");
-            this.elements.leafletMarkerPane = root.querySelector(".leaflet-marker-pane");
-            this.elements.leafletPopupPane = root.querySelector(".leaflet-popup-pane");
+            this.elements.leafletMapPane = this.elements.leafletContainer.querySelector(".leaflet-map-pane");
+            this.elements.leafletControlContainer = this.elements.leafletContainer.querySelector(".leaflet-control-container");
+            this.elements.leafletMarkerPane = this.elements.leafletMapPane.querySelector(".leaflet-marker-pane");
+            this.elements.leafletPopupPane = this.elements.leafletMapPane.querySelector(".leaflet-popup-pane");
+            this.elements.leafletOverlayPane = this.elements.leafletMapPane.querySelector(".leaflet-overlay-pane");
             this.elements.leafletBaseImageLayer = this.elements.leafletOverlayPane.querySelector(".leaflet-image-layer");
             
-            // List of all markers and filter elements
+            // List of all marker elements
             var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
-            var filterElements = root.querySelector(".interactive-maps__filters-list")
-                                     .querySelectorAll(".interactive-maps__filter");
             
             // Associate category/filter elements with the categories in the JSON
             // We only need to do this once because it's not part of Leaflet and will never be destroyed   
             if (isNew)
             {
-                for (var i = 0; i < filterElements.length; i++)
+                this.selfObserver.observe(this.elements.mapModuleContainer, { childList: true });
+                
+                for (var i = 0; i < this.elements.filterElements.length; i++)
                 {
-                    var element = filterElements[i];
+                    var element = this.elements.filterElements[i];
                     var categoryId = element.querySelector("input").getAttribute("value");
                     var category = this.categories.find(function(x) { return x.id == categoryId; });
         
@@ -710,6 +749,9 @@
                         category.elements.checkboxLabelTextElement = category.elements.checkboxLabelElement.querySelector("span:last-child");
                     }
                 }
+
+                // Create fullscreen button
+                this.initFullscreen();
                 
                 // Create category groups
                 this.createCategoryGroups();
@@ -721,6 +763,13 @@
                 {
                     if (c.hidden == true) c.visible = false;
                 });
+            }
+            else
+            {
+                // Changing the size of the leafet container causes it to be remade (and the fullscreen button control destroyed)
+                // Re-add the fullscreen button to the DOM
+                var leafletControlZoom = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom");
+                if (leafletControlZoom) leafletControlZoom.before(this.elements.leafletControlFullscreen);
             }
     
             var skipIndexAssociation = false;
@@ -777,8 +826,8 @@
                     // If *any* of the elements tested negative, we can't take any chances on matching this way
                     else
                     {
-                        console.log("Could not confirm index association between the marker " + marker.id + " and the element at index " + i);
-                        console.log("All markers are present in the DOM, but they appear to be out of order. Falling back to position matching.");
+                        log("Could not confirm index association between the marker " + marker.id + " and the element at index " + i);
+                        log("All markers are present in the DOM, but they appear to be out of order. Falling back to position matching.");
     
                         // Abort and set a flag to always try to associate programmatically
                         skipIndexAssociation = true;
@@ -833,8 +882,6 @@
             
             this.initialized = false;
 
-            this.elements = {};
-
             for (var i = 0; i < this.markers.length; i++)
             {
                 this.markers[i].markerElement = undefined;
@@ -869,9 +916,55 @@
                     resolve(this.id + " (" + this.name + ") - Successfully deferred until Leaflet fully initialized.");
                 };
                 
-                // Alternatively timeout after 1000ms
-                setTimeout(function(){ reject(this.id + " (" + this.name + ") - Timed out after 1000ms while waiting for the map to appear."); }.bind(this), 1000);
+                // Alternatively timeout after 10000ms
+                setTimeout(function(){ reject(this.id + " (" + this.name + ") - Timed out after 10 sec while waiting for the map to appear."); }.bind(this), 10000);
             }.bind(this));
+        },
+
+        isMapCreated: function()
+        {
+            var mapModuleContainer = this.elements.rootElement.querySelector(".Map-module_container__dn27-");
+            var leafletContainer = this.elements.rootElement.querySelector(".leaflet-container");
+
+            // The process for creating the map is
+            // 0. interactive-maps-xxxxxx stub exists
+            // 1. interactive-maps created
+            // 2. interactive-maps__filters-list and all filters created 
+            // 3. Map-module_container__dn27- created
+            // 4. img Map-module_imageSizeDetect__YkHxA created (optionally)
+            // 5. leaflet-container created
+            // 6. leaflet-map-pane created (and all empty pane containers underneath it)
+            // 7. leaflet-control-container created (and all empty top/bottom/left/right underneath it)
+            // 8. leaflet-proxy created under leaflet-map-pane
+            // At this point the map may be destroyed and recreated from step 3.
+            // 8. leaflet-control-zoom added under leaflet-control-container
+            // 9. leaflet-image-layer added under leaflet-overlay-pane
+            // 10. leaflet-marker-icons added under leaflet-marker-pane
+            // 11. interactive-maps__edit-control added under leaflet-control-container
+
+            // We can check whether it is still creating the map by:
+            // -> The lack of a Map-module_container__dn27- element (this is created first)
+            // -> The lack of a leaflet-container element (this is created second)
+            // -> The lack of any children under Map-module_container__dn27-
+            // -> The lack of any children under leaflet-container
+
+            // Still loading
+            // -> The existence of an img "Map-module_imageSizeDetect__YkHxA" under "Map-module_container__dn27-" (this is removed first)
+            // -> The existence of a div "LoadingOverlay-module_overlay__UXv3B" under "leaflet-container"
+            // -> The lack of any elements under leaflet-overlay-pane
+            // -> The lack of the zoom controls
+            // -> The lack of the edit control
+            if (mapModuleContainer == null || leafletContainer == null ||
+                mapModuleContainer.childElementCount == 0 || leafletContainer.childElementCount == 0 ||
+                mapModuleContainer.querySelector("img.Map-module_imageSizeDetect__YkHxA") != null ||
+                leafletContainer.querySelector(".LoadingOverlay-module_overlay__UXv3B") != null || 
+                leafletContainer.querySelector(".leaflet-map-pane > .leaflet-overlay-pane > *") == null || 
+                leafletContainer.querySelector(".leaflet-control-container .leaflet-control-zoom") == null ||
+                leafletContainer.querySelector(".leaflet-control-container .interactive-maps__edit-control") == null)
+            {
+                return false;
+            }
+            return true;
         },
 
         isMapHidden: function()
@@ -1140,9 +1233,9 @@
             else if (sortType == "longitude-desc")
                 return function(a, b) { return b.position[0] - a.position[0]; };
             else if (sortType == "category"  || sortType == "category-asc")
-                return function(a, b){ return a.map.categories.indexOf(a.category) - b.map.categories.indexOf(a.category); };
+                return function(a, b){ return (b.map.categories.indexOf(b.category) - a.map.categories.indexOf(a.category)) || (a.position[1] - b.position[1]); };
             else if (sortType == "category-desc")
-                return function(a, b) { return b.map.categories.indexOf(a.category) - a.map.categories.indexOf(a.category); };
+                return function(a, b) { return (a.map.categories.indexOf(a.category) - b.map.categories.indexOf(b.category)) || (a.position[1] - b.position[1]); };
         },
 
         // Returns the ID of the marker element or JSON definition.
@@ -1393,6 +1486,193 @@
             */
         },
 
+        setFullscreen: function(value)
+        {
+            // Don't do anything if we're currently transitioning to or from fullscreen
+            if (this.isFullscreenTransitioning == true) return;
+
+            // Return if the map is already the requested state
+            if (this.isFullscreen == value) return;
+
+            this.isFullscreenTransitioning = true;
+
+            if (value == true)
+                return this.elements.rootElement.requestFullscreen();
+            else if (value == false)
+                return document.exitFullscreen();
+            else
+                return Promise.resolve();
+        },
+
+        toggleFullscreen: function(value)
+        {
+            this.setFullscreen(!this.isFullscreen);
+        },
+
+        // Creates a fullscreen button for the map, sets up various events to control fullscreen
+        initFullscreen: function(isNew)
+        {
+            // Modify some styles
+            once(function()
+            {
+                // This function finds a rule with a specific selector. We do this to modify some built-in rules so they don't have to be redefined
+                function findCSSRule(selectorString)
+                {
+                    // helper function searches through the document stylesheets looking for @selectorString
+                    // will also recurse through sub-rules (such as rules inside media queries)
+                    function recurse(node, selectorString)
+                    {
+                        if (node.cssRules)
+                        {
+                            for (var i = 0; i < node.cssRules.length; i++)
+                            {
+                                if (node.cssRules[i].selectorText == selectorString)
+                                    return node.cssRules[i];
+                                if (node.cssRules[i].cssRules)
+                                {
+                                    var rule = recurse(node.cssRules[i], selectorString);
+                                    if (rule) return rule;
+                                }
+                            }
+                        }
+                        
+                        return false;
+                    }
+                    
+                    for (var i = 0; i < document.styleSheets.length; i++)
+                    {
+                        var sheet = document.styleSheets[i];
+                        try
+                        {
+                            if (sheet.cssRules)
+                            {
+                                var rule = recurse(sheet, selectorString);
+                                if (rule) return rule;
+                            }
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+                        
+                    }
+                    
+                    return false;
+                }
+
+                function getIndexOfRule(cssRule, styleSheet)
+                {
+                    if (!styleSheet.cssRyles)
+                        return -1;
+                    
+                    for (var i = 0; i < styleSheet.cssRules.length; i++)
+                    {
+                        if (styleSheet.cssRyles[i].selectorText == cssRule.selectorText)
+                            return i;
+                    }
+
+                    return -1;
+                }
+
+                function changeRuleSelector(selector, newSelector)
+                {
+                    var rule = findCSSRule(selector);
+                    if (rule != null) rule.selectorText = newSelector;
+                    return rule;
+                }
+
+                function changeRuleCSS(selector, cssText)
+                {
+                    var rule = findCSSRule(selector);
+                    if (rule != null) rule.style.cssText = cssText;
+                    return rule;
+                }
+
+                // Change scope of rule covering .leaflet-control-zoom to cover all leaflet-control
+                changeRuleSelector(".Map-module_interactiveMap__135mg .leaflet-control-zoom",
+                                   ".Map-module_interactiveMap__135mg .leaflet-control");
+                changeRuleSelector(".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out",
+                                   ".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-fullscreen-button");
+                changeRuleSelector(".leaflet-control-zoom-in, .leaflet-control-zoom-out",
+                                   ".leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-fullscreen-button");
+                changeRuleSelector(".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in:hover, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out:hover",
+                                   ".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in:hover, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out:hover, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-fullscreen-button:hover");
+                changeRuleSelector(".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in:active, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out:active",
+                                   ".Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-in:active, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-zoom-out:active, .Map-module_interactiveMap__135mg .leaflet-bar .leaflet-control-fullscreen-button:active");
+
+                changeRuleCSS(".leaflet-touch .leaflet-bar a:first-child", "border-top-left-radius: 3px; border-top-right-radius: 3px;");
+                changeRuleCSS(".leaflet-touch .leaflet-bar a:last-child", "border-bottom-left-radius: 3px; border-bottom-right-radius: 3px;");
+
+                // Rule to match 3px border-radius of other buttons
+                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button { border-radius:3px; cursor:pointer; }");
+
+                // Rule to hide zoom-out SVG when zoom-in button should be shown and vice versa
+                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button-zoom-in > #wds-icons-zoom-out-small { display:none; }");
+                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button-zoom-out > #wds-icons-zoom-in-small { display:none; }");
+
+                // Rule to override the size of the map when in fullscreen so it fills the screen
+                mapsExtended.stylesheet.insertRule(".mapsExtended_fullscreen .leaflet-container { height:100vh !important; width:100vw !important; }");
+
+                // Rule to move the filters dropdown to within the map body when in fullscreen
+                mapsExtended.stylesheet.insertRule(".mapsExtended_fullscreen .interactive-maps .interactive-maps__filters-list { width:fit-content; margin:12px 0 0 12px; position:absolute; z-index:9999; }")
+            })();
+
+            // Create a new leaflet-control before the zoom control which when clicked will toggle fullscreen
+            mw.hook("dev.wds").add(function(wds)
+            {
+                var leafletControlZoom = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom");
+
+                var leafletControlFullscreen = document.createElement("div");
+                leafletControlFullscreen.className = "leaflet-control-fullscreen leaflet-bar leaflet-control";
+                leafletControlFullscreen.style.display = this.config.allowFullscreen == false ? "none" : "";
+
+                var a = document.createElement("a");
+                a.className = "leaflet-control-fullscreen-button leaflet-control-fullscreen-button-zoom-in";
+                a.setAttribute("title", "View Fullscreen");
+
+                var zoomInIcon = wds.icon("zoom-in-small");
+                var zoomOutIcon = wds.icon("zoom-out-small");
+                a.appendChild(zoomInIcon);
+    
+                leafletControlFullscreen.appendChild(a);
+                leafletControlZoom.before(leafletControlFullscreen);
+
+                this.elements.leafletControlFullscreen = leafletControlFullscreen;
+                this.elements.leafletControlFullscreenButton = a;
+                a.addEventListener("click", function(e)
+                {
+                    this.toggleFullscreen();
+                    e.stopPropagation();
+                    
+                }.bind(this));
+                a.addEventListener("dblclick", function(e){ e.stopPropagation(); });
+                a.addEventListener("mousedown", function(e){ e.stopPropagation(); });
+
+                this.elements.rootElement.addEventListener("fullscreenchange", function(e)
+                {
+                    this.isFullscreen = document.fullscreenElement == e.currentTarget;
+                    this.isFullscreenTransitioning = false;
+                    this.elements.rootElement.classList.toggle("mapsExtended_fullscreen", this.isFullscreen);
+                    this.elements.leafletControlFullscreenButton.setAttribute("title", this.isFullscreen ? "Exit fullscreen" : "View fullscreen");
+                    this.elements.leafletControlFullscreenButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isFullscreen);
+                    this.elements.leafletControlFullscreenButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isFullscreen);
+
+                    if (this.isFullscreen)
+                    {
+                        zoomInIcon.remove();
+                        this.elements.leafletControlFullscreenButton.appendChild(zoomOutIcon);
+                    }
+                    else
+                    {
+                        zoomOutIcon.remove();
+                        this.elements.leafletControlFullscreenButton.appendChild(zoomInIcon);
+                    }
+
+                }.bind(this));
+
+            }.bind(this));
+        },
+
         // This function creates all the categoryGroups from the definitions in the categoryGroups array
         // It's fairly complex since it supports nesting categories to any depth
         createCategoryGroups: function()
@@ -1525,7 +1805,7 @@
         // Don't create an invalid group
         if (!this.isValid)
         {
-            console.log("Category group " + this.id + " does not contain any valid categories and will not be created");
+            log("Category group " + this.id + " does not contain any valid categories and will not be created");
             return;
         }
         
@@ -1747,7 +2027,7 @@
                 
             if (!category)
             {
-                console.log("A category with the ID " + categoryId + " in the category group \"" + this.label + "\" does not exist!");
+                log("A category with the ID " + categoryId + " in the category group \"" + this.label + "\" does not exist!");
                 return;
             }
 
@@ -2081,7 +2361,7 @@
                 else if (this.elements.popupContentElement)
                     this.elements.popupContentElement.prepend(this.elements.popupScrollableContentElement);
                 else
-                    console.log("Couldn't find a suitable position to add scrollable content element");
+                    log("Couldn't find a suitable position to add scrollable content element");
             }
 
             return this.elements.popupScrollableContentElement;
@@ -2107,7 +2387,7 @@
                 else if (scrollableContentElement)
                     scrollableContentElement.prepend(this.elements.popupDescriptionElement);
                 else
-                    console.log("Couldn't find a suitable position to add popup description element");
+                    log("Couldn't find a suitable position to add popup description element");
             }
 
             return this.elements.popupDescriptionElement;
@@ -2186,7 +2466,7 @@
     window.dev = window.dev || {};
     window.dev.mapsExtended = mapsExtended;
     
-    mapsExtended.debug = new URLSearchParams(window.location.search).get("debugMapsExtended") == "true";
+    mapsExtended.debug = debug;
     mapsExtended.loaded = true;
     mapsExtended.config = mapsExtended.config || {};
 
@@ -2194,7 +2474,8 @@
     {
         hiddenCategories: [],
         sortMarkers: "latitude",
-        openPopupsOnHover: false
+        openPopupsOnHover: false,
+        allowFullscreen: true
     };
 
     // Load settings from an existing "global" configuration object (set in Common.js for example)
@@ -2206,6 +2487,7 @@
     mapsExtended.stylesheet = mw.util.addCSS("");
 
     // Reset the currently-active map when it throws a "Maximum call stack size exceeded"
+    /*
     window.addEventListener("error", function(e)
     {
        if (e.message == "Uncaught RangeError: Maximum call stack size exceeded")
@@ -2220,6 +2502,7 @@
        }
            
     });
+    */
 
     // These keys will not be copied to the target
     var ignoreSourceKeys = ["mapBounds", "useMarkerClustering"];
@@ -2457,7 +2740,11 @@
     importArticles(
     {
         type: "script",
-        articles: [ "u:dev:MediaWiki:I18n-js/code.js" ]
+        articles: [
+            "u:dev:MediaWiki:I18n-js/code.js",
+            "u:dev:MediaWiki:BannerNotification.js",
+            "u:dev:MediaWiki:WDSIcons/code.js"
+        ]
     });
     
 })();
@@ -2914,12 +3201,5 @@
     // Wait for the core module to finish before running this module
     // The recieving function is just passed a shortcut to Window.dev.mapsExtended
     mw.hook("dev.mapsExtended").add(mapsExtendedCollectibles);
-
-    // Load dependencies
-    importArticles(
-    {
-        type: "script",
-        articles: [ "u:dev:MediaWiki:BannerNotification.js" ]
-    });
 
 })();

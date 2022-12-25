@@ -1,17 +1,32 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
+ * Last modified: 1671737159092
  * @author Arashiryuu0
  * @module Toasts
  * @version 1.0.5
  */
 
-// jshint browser: true, devel: true, jquery: true
-// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
-// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
-// jshint latedef: true, undef: true, unused: true
+/*
+	jshint
+	undef: true,
+	noarg: true,
+	devel: true,
+	jquery: true,
+	strict: true,
+	eqeqeq: true,
+	freeze: true,
+	newcap: true,
+	esnext: true,
+	browser: true,
+	latedef: true,
+	shadow: outer,
+	varstmt: false,
+	quotmark: single,
+	singleGroups: true,
+	futurehostile: true
+*/
 
-/* globals mw */
-;(function () {
+;(function (mw) {
     'use strict';
     
     var toString = Object.prototype.toString;
@@ -82,11 +97,9 @@
 						? ' toast-has-icon'
 						: ''
 				);
-            name += (
-				type && type !== 'default'
+            name += type && type !== 'default'
 					? ' toast-' + type
-					: ''
-            );
+					: '';
             if (!icon && type) icon = type;
             html += '<div class="' + name + '">';
             if (this.icons[icon]) {
@@ -247,6 +260,6 @@
     window.dev.toasts = Toasts;
     
     mw.hook('dev.toasts').fire(window.dev.toasts);
-})();
+})(window.mediaWiki);
 
 /*@end@*/

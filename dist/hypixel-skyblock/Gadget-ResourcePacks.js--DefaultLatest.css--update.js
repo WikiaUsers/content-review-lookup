@@ -564,7 +564,7 @@
 			{ name: 'Red Sandstone' },
 			{ name: 'Red Sandstone Stairs' },
 			{ name: 'Red Sandstone Slab' },
-			{ name: 'Barrier' },
+			{ name: 'Barrier', mcName: 'Barrier (item)' },
 			{ name: 'Spawner' },
 			{ name: 'TNT' },
 			{ name: 'Jukebox' },

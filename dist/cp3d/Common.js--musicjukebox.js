@@ -1,16 +1,14 @@
 var yourmom = getElement("themusicthingy") ? true : false;
+/*	<div>\
+	<div id="hub" onclick="doTheThing()">\
+		<img src="https://static.wikia.nocookie.net/cp3d/images/d/df/Record-whenpaused.png" height="100px">\
+	</div>\*/
 if(yourmom) {
 	var musicPlayerElement = document.createElement("div");
 	musicPlayerElement.id = "music-player";
 	var bruhElement = getElement("themusicthingy");
-	var bruhData = bruhElement.dataset;
-	var bruhURL = bruhData.url;
 	var mainHTML = '<section>\
-	<audio loop id="player" src="https://static.wikia.nocookie.net/cp3d/images/4/45/Music_Coconut.mp3"></audio>\
-	<div>\
-	<div id="hub" onclick="doTheThing()">\
-		<img src="https://static.wikia.nocookie.net/cp3d/images/d/df/Record-whenpaused.png" height="100px">\
-	</div>\
+	<div><audio controls id="player" src="https://static.wikia.nocookie.net/cp3d/images/4/45/Music_Coconut.mp3"></audio>\
 	<label for="music-lisr" class="dropdownLabel">Select a music track from the dropdown list, then click \"Switch track\".</label><br>\
 	<select name="music-listy" id="music-list" class="musicSelect">\
 		<option disabled>Rooms</option>\
@@ -147,13 +145,13 @@ function getElement(id) {
 
 function playAudio() {
 	document.getElementById('player').play();
-	show('pause-audio');
-	isPlayerPaused = false;
+	/*show('pause-audio');
+	isPlayerPaused = false;*/
 }
 function pauseAudio() {
     document.getElementById('player').pause();
-    show('play-audio');
-    isPlayerPaused = true;
+    /*show('play-audio');
+    isPlayerPaused = true;*/
 }
 var isPlayerPaused = true;
 function doTheThing() {

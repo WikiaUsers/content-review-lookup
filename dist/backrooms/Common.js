@@ -13,3 +13,10 @@ document.getElementById("feature3").addEventListener("click",function() {
 document.getElementById("feature4").addEventListener("click",function() {
     location.href = 'https://backrooms.fandom.com/wiki/Feature_4';
 }, false);
+
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers. Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};

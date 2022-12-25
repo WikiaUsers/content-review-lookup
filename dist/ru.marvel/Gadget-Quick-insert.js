@@ -523,6 +523,44 @@ group: 'infoboxes',
     }
   } );
 
+/* Человек */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+section: 'advanced',
+group: 'infoboxes',
+  tools: {
+  "image": {
+    label: 'Реальный человек',
+    type: 'button',
+    icon: 'https://images.wikia.nocookie.net/marvel/ru/images/9/95/Кнопка_шаблона_Человек.png',
+      action: {
+        type: 'encapsulate',
+          options: {
+          pre: "",
+          post: "{{Реальный человек" +
+          "\r| Картинка       = " +
+          "\r| Имя            = " +
+          "\r| Прозвище       = " +
+          "\r| Прозвища       = " +
+          "\r" +
+          "\r| Занятие        = " +
+          "\r| Организации    = " +
+          "\r| Вселенная      = " +
+          "\r| Персонаж       = " +
+          "\r" +
+          "\r| Место рождения = " +
+          "\r| Гражданство    = " +
+          "\r| Появление      = " +
+          "\r| Появление2     = " +
+          "\r" +
+          "\r| Дата рождения  = " +
+          "\r| Дата смерти    = " +
+          "\r}}"
+          }
+        }
+      }
+    }
+  } );
+
 /* Изображение */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 section: 'advanced',

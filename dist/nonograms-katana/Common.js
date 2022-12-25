@@ -66,45 +66,57 @@ function calculate() {
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/92/Chemicals.png/revision/latest?cb=20210710194109"],
 		["0",""],
 		["0",""]];
-	var unlocks = [["Workshop lvl. 1","","","",""],
-		/*lvl. 3*/	["Shop lvl. 1","Class: Warrior","","",""],
-		/*lvl. 4*/	["Pagoda lvl. 1","","","",""],
-		/*lvl. 5*/	["Warehouse lvl. 1","","","",""],
-		/*lvl. 6*/	["Alchemist's Hut lvl. 1","Class: Wizard","","",""],
-		/*lvl. 7*/	["Pagoda lvl. 2","Skill: Logistician lvl. 1","Skill: Weapon Collector lvl. 1","Skill: Treasure Hunter lvl. 1",""],
-		/*lvl. 8*/	["Furnace lvl. 1","","","",""],
-		/*lvl. 9*/	["Smithy lvl. 1","Class: Rogue","","",""],
-		/*lvl. 10*/	["Gong lvl. 1","Pagoda lvl. 3","Skill: Logistician lvl. 2","Skill: Athlete lvl. 1","Skill: Antiquarian lvl. 1"],
-		/*lvl. 11*/	["Lumber Mill lvl. 1","Skill: Intellectual lvl. 1","","",""],
-		/*lvl. 12*/	["Garden lvl. 1","Class: Monk","","",""],
-		/*lvl. 13*/	["Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2",""],
-		/*lvl. 14*/	["Pagoda lvl. 4","","","",""],
-		/*lvl. 15*/	["Class: Geologist","Skill: Athlete lvl. 2","","",""],
-		/*lvl. 16*/	["Skill: Logistician lvl. 4","Skill: Antiquarian lvl. 2","","",""],
-		/*lvl. 17*/	["Skill: Intellectual lvl. 2","","","",""],
-		/*lvl. 18*/	["Pagoda lvl. 5","Class: Archeologist","","",""],
-		/*lvl. 19*/	["Skill: Logistician lvl. 5","Skill: Weapon Collector lvl. 3","Skill: Treasure Hunter lvl. 3","",""],
-		/*lvl. 20*/	["Onsen lvl. 1","Skill: Athlete lvl. 3","","",""],
-		/*lvl. 21*/	["Coffee Bonsai lvl. 1","Class: Samurai","Skill: Gardener lvl. 1","Skill: Rock Garden Contemplator lvl. 1",""],
-		/*lvl. 22*/	["Ship lvl. 1","Pier lvl. 1","Skill: Carpenter lvl. 1","Skill: Metallurgist lvl. 1",""],
-		/*lvl. 23*/	["Pagoda lvl. 6","Skill: Mechanic lvl. 1","Skill: Blacksmith lvl. 1","Ship: Exploring",""],
-		/*lvl. 24*/	["Food Stall lvl. 1","Class: Ninja","Skill: Alchemist lvl. 1","Ship: Fishing",""],
-		/*lvl. 25*/	["Skill: Athlete lvl. 4","Ship: Prospecting","","",""],
-		/*lvl. 26*/	["Skill: Gardener lvl. 2","Skill: Rock Garden Contemplator lvl. 2","Skill: Boatswain lvl. 1","Ship: Patrolling",""],
-		/*lvl. 27*/	["Class: Adventurer","Skill: Carpenter lvl. 2","Skill: Metallurgist lvl. 2","",""],
-		/*lvl. 28*/	["Pagoda lvl. 7","Skill: Mechanic lvl. 2","Skill: Blacksmith lvl. 2","",""],
-		/*lvl. 29*/	["Skill: Alchemist lvl. 2","","","",""],
-		/*lvl. 30*/	["Bridge lvl. 1","Caravan lvl. 1","Class: Scientist","Skill: Athlete lvl. 5",""],
-		/*lvl. 31*/	["Outpost lvl. 1","Skill: Boatswain lvl. 2","","",""],
-		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Skill: Carpenter lvl. 3","Skill: Metallurgist lvl. 3",""],
-		/*lvl. 33*/	["Skill: Mechanic lvl. 3","Skill: Blacksmith lvl. 3","","",""],
-		/*lvl. 34*/	["Skill: Alchemist lvl. 3","? Skill: Cameleer lvl. 1","","",""],
-		/*lvl. 35*/	["Skill: Athlete lvl. 6","Skill: Intellectual lvl. 3","","",""],
-		/*lvl. 36*/	["","","","",""],
-		/*lvl. 37*/	["","","","",""],
-		/*lvl. 38*/	["","","","",""],
-		/*lvl. 39*/	["Skill: Cameleer lvl. 2","","","",""]];
+	//Here are listed when buildings, classes (character), skills (character) and ship mission types unlock.
+	var unlocks = [["Workshop lvl. 1","","","","",""],
+		/*lvl. 3*/	["Shop lvl. 1","Class: Warrior","","","",""],
+		/*lvl. 4*/	["Pagoda lvl. 1","","","","",""],
+		/*lvl. 5*/	["Warehouse lvl. 1","","","","",""],
+		/*lvl. 6*/	["Alchemist's Hut lvl. 1","Class: Wizard","","","",""],
+		/*lvl. 7*/	["Pagoda lvl. 2","Field lvl. 1","Skill: Logistician lvl. 1","Skill: Weapon Collector lvl. 1","Skill: Treasure Hunter lvl. 1",""],
+		/*lvl. 8*/	["Furnace lvl. 1","Food Stall lvl. 1","","","",""],
+		/*lvl. 9*/	["Smithy lvl. 1","Windmill lvl. 1","Class: Rogue","","",""],
+		/*lvl. 10*/	["Gong lvl. 1","Pagoda lvl. 3","Dungeon lvl. 1","Skill: Logistician lvl. 2","Skill: Athlete lvl. 1","Skill: Antiquarian lvl. 1"],
+		/*lvl. 11*/	["Lumber Mill lvl. 1","Skill: Intellectual lvl. 1","","","",""],
+		/*lvl. 12*/	["Garden lvl. 1","Class: Monk","","","",""],
+		/*lvl. 13*/	["Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2","",""],
+		/*lvl. 14*/	["Pagoda lvl. 4","","","","",""],
+		/*lvl. 15*/	["Class: Geologist","Skill: Athlete lvl. 2","","","",""],
+		/*lvl. 16*/	["Skill: Logistician lvl. 4","Skill: Antiquarian lvl. 2","","","",""],
+		/*lvl. 17*/	["Skill: Intellectual lvl. 2","","","","",""],
+		/*lvl. 18*/	["Pagoda lvl. 5","Class: Archeologist","","","",""],
+		/*lvl. 19*/	["Skill: Logistician lvl. 5","Skill: Weapon Collector lvl. 3","Skill: Treasure Hunter lvl. 3","","",""],
+		/*lvl. 20*/	["Onsen lvl. 1","Skill: Athlete lvl. 3","","","",""],
+		/*lvl. 21*/	["Coffee Bonsai lvl. 1","Class: Samurai","Skill: Gardener lvl. 1","Skill: Rock Garden Contemplator lvl. 1","",""],
+		/*lvl. 22*/	["Ship lvl. 1","Pier lvl. 1","Skill: Carpenter lvl. 1","Skill: Metallurgist lvl. 1","",""],
+		/*lvl. 23*/	["Pagoda lvl. 6","Skill: Mechanic lvl. 1","Skill: Blacksmith lvl. 1","Ship: Exploring","",""],
+		/*lvl. 24*/	["Class: Ninja","Skill: Alchemist lvl. 1","Ship: Fishing","","",""],
+		/*lvl. 25*/	["Skill: Athlete lvl. 4","Ship: Prospecting","","","",""],
+		/*lvl. 26*/	["Skill: Gardener lvl. 2","Skill: Rock Garden Contemplator lvl. 2","Skill: Boatswain lvl. 1","Ship: Patrolling","",""],
+		/*lvl. 27*/	["Class: Adventurer","Skill: Carpenter lvl. 2","Skill: Metallurgist lvl. 2","","",""],
+		/*lvl. 28*/	["Pagoda lvl. 7","Skill: Mechanic lvl. 2","Skill: Blacksmith lvl. 2","","",""],
+		/*lvl. 29*/	["Skill: Alchemist lvl. 2","","","","",""],
+		/*lvl. 30*/	["Bridge lvl. 1","Caravan lvl. 1","Class: Scientist","Skill: Athlete lvl. 5","",""],
+		/*lvl. 31*/	["Outpost lvl. 1","Skill: Boatswain lvl. 2","","","",""],
+		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Skill: Carpenter lvl. 3","Skill: Metallurgist lvl. 3","",""],
+		/*lvl. 33*/	["Skill: Mechanic lvl. 3","Skill: Blacksmith lvl. 3","","","",""],
+		/*lvl. 34*/	["Skill: Alchemist lvl. 3","? Skill: Cameleer lvl. 1","","","",""],
+		/*lvl. 35*/	["Skill: Athlete lvl. 6","Skill: Intellectual lvl. 3","","","",""],
+		/*lvl. 36*/	["","","","","",""],
+		/*lvl. 37*/	["","","","","",""],
+		/*lvl. 38*/	["","","","","",""],
+		/*lvl. 39*/	["Skill: Cameleer lvl. 2","","","","",""],
+		/*lvl. 40*/	["Airship lvl. 1","","","","",""],
+		/*lvl. 41*/	["","","","","",""],
+		/*lvl. 42*/	["","","","","",""],
+		/*lvl. 43*/	["","","","","",""],
+		/*lvl. 44*/	["Skill: Aeronaut lvl. 1","","","","",""],
+		/*lvl. 45*/	["","","","","",""],
+		/*lvl. 46*/	["","","","","",""],
+		/*lvl. 47*/	["","","","","",""],
+		/*lvl. 48*/	["","","","","",""],
+		/*lvl. 49*/	["? Skill: Aeronaut lvl. 2","","","","",""]];
 	
+	//Images for additional rewards.
 	var firework = "https://static.wikia.nocookie.net/nonograms-katana/images/2/24/Firework.png/revision/latest?cb=20211025160230";
 	var ramen = "https://static.wikia.nocookie.net/nonograms-katana/images/f/f8/Ramen.png/revision/latest?cb=20210614184327";
 	var curry = "https://static.wikia.nocookie.net/nonograms-katana/images/d/dd/Curry.png/revision/latest?cb=20210716171827";
@@ -210,23 +222,26 @@ function calculate() {
 		document.getElementById("tr_map").innerHTML = "0";
 	}
 	
-	if (level < 40){
+	if (level < 50){
 		document.getElementById("unlocks1").innerHTML = unlocks[level-2][0];
 		document.getElementById("unlocks2").innerHTML = unlocks[level-2][1];
 		document.getElementById("unlocks3").innerHTML = unlocks[level-2][2];
 		document.getElementById("unlocks4").innerHTML = unlocks[level-2][3];
 		document.getElementById("unlocks5").innerHTML = unlocks[level-2][4];
+		document.getElementById("unlocks6").innerHTML = unlocks[level-2][5];
 	} else {
 		document.getElementById("unlocks1").innerHTML = "";
 		document.getElementById("unlocks2").innerHTML = "";
 		document.getElementById("unlocks3").innerHTML = "";
 		document.getElementById("unlocks4").innerHTML = "";
 		document.getElementById("unlocks5").innerHTML = "";
+		document.getElementById("unlocks6").innerHTML = "";
 	}
 	if (level == 80){
 		document.getElementById("unlocks1").innerHTML = "Class: Zen Master";
 	}
 	
+	//This helps with calculating additional rewards.
 	var ar = -1;
 	for (i = 0; i < add_level.length; i++){
 		if (level == add_level[i]){

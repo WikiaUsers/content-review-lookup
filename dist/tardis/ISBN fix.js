@@ -7,26 +7,16 @@
       page.
 
   2.) Copy the entire contents of this page that appears
-      beneath the remark, "CODE BEGINS", to your user javascript page. 
-      You can choose to make it affect the way ISBN works 
-      in the WIKIA or MONOBOOK skins, or both.  
+      beneath the comment, "CODE BEGINS", to your user javascript page. 
 
-      Since WIKIA is the main skin supported by this 
-      site's administrators, we suggest that you alter it by changing 
-      User:<your username>/wikia.js , where <your username> is replaced by 
-      your user name. For example, if your user name is DWfan, your javascript 
-      page is User:DWfan/wikia.js .  
- 
-      Likewise, DWfan can choose to alter the behavior of ISBN in MONOBOOK by
-      changing/creating User:DWfan/monobook.js, or doing the whole lot by 
-      changing User:DWfan/common.js.  Due to occasional Wikia issues with 
-      common.js, however, we recommend that you change your personal
-      wikia.js and monobook.js files individually, rather than relying on 
-      common.js to filter through the changes to the individual skins. 
+      This page can be found at User:<your username>/common.js ,
+      where <your username> is replaced by your user name. For example, 
+      if your user name is DWfan, your javascript page is 
+      User:DWfan/common.js .  
  
   3.) If you want to change the destination URL from amazon.com to another book
-      source, change the value of the book_source_URL.  Go to 
-      [[Help:ISBN]] and copy the URL of the book source you want to
+      source, change the value of the book_source_URL. Go to 
+      [[Tardis:Book sources]] and copy the URL of the book source you want to
       use (right-click or ctrl-click the link, then click "Copy Link Location", 
       "Copy Target", or similar).  Put the new URL BETWEEN THE QUOTES next 
       to book_source_URL, in place of the URL now there.
@@ -59,13 +49,13 @@ importScript('MediaWiki:externISBN.js');
    =-=-=-=-=-
    
    If you want to turn this fix off, and return to seeing all the links
-   at the Special:BookSources page, simply remark out the above lines
+   at the Special:BookSources page, simply comment out the above lines
    on your wikia.js or common.js files. You can achieve this one of two ways: */
 
-//  This line is remarked out.
+//  This line is commented out.
 //  But I have to add the slashes before each line.
 //  Seriously, every time.
 
-/*  This line is remarked out
+/*  This line is commented out
     But every other line is, too.
     Until I add this closing syntax --> */

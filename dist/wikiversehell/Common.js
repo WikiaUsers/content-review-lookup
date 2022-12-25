@@ -34,7 +34,6 @@ UserTagsJS.modules.custom = {
 	'GhostTheWick': ['codinghelp'],
 	'LeahForsea': ['lebesrole'],
 	'Rosellia Teh Hybrid': ['maptest'],
-	'FrostdropdALT': ['ventmod', 'adminapprentice'],
 };
 window.MessageBlock = {
 	title: 'Blocked',

@@ -4,15 +4,31 @@
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
  * @version 1.2.3
+ * Last modified: 1671664860680
  */
 	
-// jshint browser: true, devel: true, jquery: true
-// jshint strict: true, freeze: true, eqeqeq: true, futurehostile: true
-// jshint newcap: true, noarg: true, quotmark: single, shadow: outer
-// jshint latedef: true, undef: true, unused: true
-/* globals mw, Symbol */
-	
-;(function () {
+/*
+	jshint
+	undef: true,
+	noarg: true,
+	devel: true,
+	jquery: true,
+	strict: true,
+	eqeqeq: true,
+	freeze: true,
+	newcap: true,
+	esnext: true,
+	browser: true,
+	latedef: true,
+	shadow: outer,
+	varstmt: false,
+	quotmark: single,
+	singleGroups: true,
+	futurehostile: true
+*/
+
+/* globals Symbol */
+;(function (mw) {
     'use strict';
 	
     if (window.dev && window.dev.CodeblockLineNumbers) return;
@@ -106,7 +122,7 @@
             },
             starts = child.textContent.trim().startsWith('/*'),
             ends = child.textContent.trim().endsWith('*/');
-        return (hasClass() && starts && ends) || starts && ends;
+        return (hasClass() && starts && ends) || starts && ends; // jshint ignore: line
     }
 	
     function getEndIndex (i) {
@@ -268,6 +284,6 @@
     }
     
     ready();
-})();
+})(window.mediaWiki);
 	
 /*@end@*/

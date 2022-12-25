@@ -1,6 +1,6 @@
 // discussEmbed
 window.discussEmbedForum = "3692388249763968964";
-window.discussEmbedLimit = 5;
+window.discussEmbedLimit = 3;
 window.discussEmbedSortTrending = 0;
 
 importArticles({
@@ -37,7 +37,7 @@ window.SpoilerAlertJS = {
 
 
 
-window.BackToTopArrow = true;
+window.BackToTopArrow = false;
 
 
 window.HeaderLinksCopyOnClick = true;

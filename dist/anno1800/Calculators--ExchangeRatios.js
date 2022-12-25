@@ -19,6 +19,7 @@ var goods = [
 {name:"brass", exchangevalue:"201.736355", import_multiplier:"1.4"},
 {name:"bread", exchangevalue:"269.56109", import_multiplier:"1.2"},
 {name:"bricks", exchangevalue:"163.236355", import_multiplier:"0"},
+{name:"calamari", exchangevalue:"157.5599935", import_multiplier:"0"},
 {name:"camphor wax", exchangevalue:"241.079993", import_multiplier:"0"},
 {name:"canned food", exchangevalue:"987.36387", import_multiplier:"1.4"},
 {name:"caoutchouc", exchangevalue:"231.879998", import_multiplier:"1.4"},
@@ -45,17 +46,22 @@ var goods = [
 {name:"cognac", exchangevalue:"1700.486258", import_multiplier:"0"},
 {name:"copper", exchangevalue:"72.481815", import_multiplier:"1.2"},
 {name:"corn", exchangevalue:"265.479998", import_multiplier:"1"},
+{name:"costumes", exchangevalue:"2404.1678025", import_multiplier:"0"},
 {name:"cotton", exchangevalue:"241.679998", import_multiplier:"0"},
 {name:"cotton fabric", exchangevalue:"270.559996", import_multiplier:"1.4"},
 {name:"dried meat", exchangevalue:"286.67659514", import_multiplier:"0"},
 {name:"dung", exchangevalue:"160", import_multiplier:"0"},
 {name:"dynamite", exchangevalue:"1412.0550425", import_multiplier:"1"},
+{name:"electric cables", exchangevalue:"993.418013", import_multiplier:"0"},
 {name:"elevators", exchangevalue:"5029.918415", import_multiplier:"0"},
 {name:"ethanol", exchangevalue:"893.629438", import_multiplier:"0"},
+{name:"fans", exchangevalue:"7297.735776", import_multiplier:"0"},
 {name:"felt", exchangevalue:"78.059996", import_multiplier:"1.2"},
 {name:"fertiliser", exchangevalue:"221.439994", import_multiplier:"0"},
 {name:"filaments", exchangevalue:"775.50273", import_multiplier:"1.2"},
+{name:"film reel", exchangevalue:"2792.1209715", import_multiplier:"0"},
 {name:"finery", exchangevalue:"259.9409124", import_multiplier:"0"},
+{name:"fire extinguishers", exchangevalue:"1860.410558", import_multiplier:"0"},
 {name:"fish", exchangevalue:"70.43361", import_multiplier:"1"},
 {name:"fish oil", exchangevalue:"84.5259961", import_multiplier:"0"},
 {name:"flour", exchangevalue:"194.01564", import_multiplier:"0"},
@@ -74,16 +80,19 @@ var goods = [
 {name:"gramophones", exchangevalue:"2310.835685", import_multiplier:"1.4"},
 {name:"grapes", exchangevalue:"290.67188", import_multiplier:"0"},
 {name:"helium", exchangevalue:"1478.1111", import_multiplier:"0"},
+{name:"herbs", exchangevalue:"118.479998", import_multiplier:"0"},
 {name:"hibiscus petals", exchangevalue:"218.6659098", import_multiplier:"0"},
 {name:"hibiscus tea", exchangevalue:"279.086366", import_multiplier:"1.2"},
 {name:"hops", exchangevalue:"183.34376", import_multiplier:"1.2"},
 {name:"hot sauce", exchangevalue:"312.105904", import_multiplier:"0"},
 {name:"huskies", exchangevalue:"901.029888", import_multiplier:"0"},
 {name:"husky sleds", exchangevalue:"2703.8893576", import_multiplier:"0"},
+{name:"ice cream", exchangevalue:"1869.699349", import_multiplier:"0"},
 {name:"illuminated script", exchangevalue:"1547.1570055", import_multiplier:"0"},
 {name:"indigo dye", exchangevalue:"229.1545464", import_multiplier:"0"},
 {name:"industrial lubricant", exchangevalue:"661.350526", import_multiplier:"0"},
 {name:"iron", exchangevalue:"102.96363", import_multiplier:"1"},
+{name:"jalea", exchangevalue:"705.4457795", import_multiplier:"0"},
 {name:"jam", exchangevalue:"165.35158", import_multiplier:"0"},
 {name:"jewellery", exchangevalue:"2158.776587", import_multiplier:"1.6"},
 {name:"lacquer", exchangevalue:"1591.6449605", import_multiplier:"0"},
@@ -95,8 +104,16 @@ var goods = [
 {name:"linseed", exchangevalue:"141.7886366", import_multiplier:"0"},
 {name:"lobster", exchangevalue:"183.32659306", import_multiplier:"0"},
 {name:"malt", exchangevalue:"219.116485", import_multiplier:"1.4"},
+{name:"medicine", exchangevalue:"2914.298914", import_multiplier:"0"},
+{name:"mezcal", exchangevalue:"866.051179", import_multiplier:"0"},
+{name:"milk", exchangevalue:"22", import_multiplier:"0"},
+{name:"minerals", exchangevalue:"710.296944", import_multiplier:"0"},
+{name:"motor", exchangevalue:"4632.725882", import_multiplier:"0"},
 {name:"mud bricks", exchangevalue:"942.3220664", import_multiplier:"0"},
+{name:"nandu feathers", exchangevalue:"18", import_multiplier:"0"},
+{name:"nandu leather", exchangevalue:"72.979998", import_multiplier:"0"},
 {name:"oil lamps", exchangevalue:"624.8226894", import_multiplier:"0"},
+{name:"orchid", exchangevalue:"115.679998", import_multiplier:"0"},
 {name:"ornate candles", exchangevalue:"581.5229846", import_multiplier:"0"},
 {name:"pamphlets", exchangevalue:"925.415878", import_multiplier:"0"},
 {name:"paper", exchangevalue:"730.7985691", import_multiplier:"0"},
@@ -104,9 +121,12 @@ var goods = [
 {name:"pearls", exchangevalue:"344.239987", import_multiplier:"1.4"},
 {name:"pemmican", exchangevalue:"1007.1827104", import_multiplier:"0"},
 {name:"penny farthings", exchangevalue:"1811.122448", import_multiplier:"1"},
+{name:"perfumes", exchangevalue:"2161.144169", import_multiplier:"0"},
+{name:"pigments", exchangevalue:"1804.3562265", import_multiplier:"0"},
 {name:"pigs", exchangevalue:"74.01564", import_multiplier:"1"},
 {name:"plantains", exchangevalue:"113.579998", import_multiplier:"1"},
 {name:"pocket watches", exchangevalue:"3068.960233", import_multiplier:"1.4"},
+{name:"police equipment", exchangevalue:"1301.314036", import_multiplier:"0"},
 {name:"ponchos", exchangevalue:"116.219992", import_multiplier:"0"},
 {name:"potatoes", exchangevalue:"61.84376", import_multiplier:"1"},
 {name:"quartz sand", exchangevalue:"80.3045425", import_multiplier:"1"},
@@ -120,6 +140,7 @@ var goods = [
 {name:"sanga cow", exchangevalue:"136.8545464", import_multiplier:"1"},
 {name:"sausages", exchangevalue:"149.56109", import_multiplier:"1"},
 {name:"schnapps", exchangevalue:"121.20316", import_multiplier:"1"},
+{name:"scooter", exchangevalue:"9128.7141145", import_multiplier:"0"},
 {name:"seafood stew", exchangevalue:"1353.99171726", import_multiplier:"1.4"},
 {name:"seal skin", exchangevalue:"80.6062816", import_multiplier:"0"},
 {name:"sea mines", exchangevalue:"2445.95496", import_multiplier:"0"},
@@ -128,6 +149,7 @@ var goods = [
 {name:"sleds", exchangevalue:"878.1721096", import_multiplier:"0"},
 {name:"sleeping bags", exchangevalue:"375.5268176", import_multiplier:"0"},
 {name:"soap", exchangevalue:"205.39745", import_multiplier:"1"},
+{name:"soccer balls", exchangevalue:"366.29999", import_multiplier:"0"},
 {name:"souvenirs", exchangevalue:"1273.6803335", import_multiplier:"0"},
 {name:"spiced flour", exchangevalue:"740.1224012", import_multiplier:"0"},
 {name:"spices", exchangevalue:"203.0659098", import_multiplier:"1.4"},
@@ -187,10 +209,10 @@ container.append(import_goods_datalist);
 
 //Defining elements of the calculator: labels and input boxes
 var Label_export_good=$("<label class='calculator_input_label'></label>").text("Exported Good: ").css({"width":"150px","float":"left"});
-var Input_export_good=$("<input type=text class='calculator_input_text' id='calculator_exchangeratios_export' list='calculator_exchangeratios_exportgoods_list'>")//.css({"background-color":"white","border":"1px solid black"});
+var Input_export_good=$("<input type=text class='calculator_input_text' id='calculator_exchangeratios_export' list='calculator_exchangeratios_exportgoods_list'>"); //.css({"background-color":"white","border":"1px solid black"});
 
 var Label_export_good_tons=$("<label class='calculator_input_label'></label>").text("Tons: ").css({"margin-left":"2.5em"});
-var Input_export_good_tons=$("<input type=number class='calculator_input_amount' id='calculator_exchangeratios_export_tons'>")//.css({"background-color":"white","border":"1px solid black"});
+var Input_export_good_tons=$("<input type=number class='calculator_input_amount' id='calculator_exchangeratios_export_tons'>");  //.css({"background-color":"white","border":"1px solid black"});
 
 var Label_export_multiplier=$("<label class='calculator_input_label'></label>").text("Exporter Level: ").css({"width":"150px","float":"left"});
 var Input_export_multiplier=$("<select class='calculator_input_dropdown' id='calculator_exchangeratios_export_multiplier'></select>").html("\
@@ -201,10 +223,10 @@ var Input_export_multiplier=$("<select class='calculator_input_dropdown' id='cal
 	<option>Legendary x2</option>\
 	");
 var Label_import_good=$("<label class='calculator_input_label'></label>").text("Imported Good: ").css({"width":"150px","float":"left"});
-var Input_import_good=$("<input type=text class='calculator_input_text' id='calculator_exchangeratios_import' list='calculator_exchangeratios_importgoods_list'>")//.css({"background-color":"white","border":"1px solid black"});
+var Input_import_good=$("<input type=text class='calculator_input_text' id='calculator_exchangeratios_import' list='calculator_exchangeratios_importgoods_list'>"); //.css({"background-color":"white","border":"1px solid black"});
 
 var Label_import_good_tons=$("<label></label>").text("Tons: ").css({"margin-left":"2.5em"});
-var Input_import_good_tons=$("<input type=number class='calculator_input_amount' id='calculator_exchangeratios_import_tons'>")//.css({"background-color":"white","border":"1px solid black"});
+var Input_import_good_tons=$("<input type=number class='calculator_input_amount' id='calculator_exchangeratios_import_tons'>"); //.css({"background-color":"white","border":"1px solid black"});
 
 //Defining buttons and the placeholder of the calculator's result
 var button_calc = $("<button class='calculator_button'></button>").text("Calculate");

@@ -3,11 +3,15 @@
 /* Auto updating recent changes opt-in
   * See w:c:dev:AjaxRC for info & attribution 
   */
- 
+  /*AjaxRCRefresh*/
  AjaxRCRefreshText = 'Auto-Refresh';
  AjaxRCRefreshHoverText = 'Automatically refresh the page';
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
+ /*End of that*/
+ 
+ window.AddRailModule = ['Template:RailModule'];
+ 
 
 /* Custom edit buttons */
  if (mwCustomEditButtons) {
@@ -333,3 +337,18 @@ $(document).ready( function () {
 
 
 UserTagsJS.modules.inactive = 60; // 60 days
+UserTagsJS.modules.autoconfirmed = true; // Switch on
+UserTagsJS.modules.newuser = {
+	days: 5, // Must have been on the Wiki for 5 days
+	edits: 10, // And have at least 10 edits to remove the tag
+	namespace: 0 // Edits must be made to articles to count
+};
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		montheditor: { u:'Editor of the Month', order:-1/0 },
+		featured: 'Featured',
+		templates: 'Templates Guru'
+	}
+};

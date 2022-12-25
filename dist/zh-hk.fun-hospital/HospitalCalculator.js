@@ -75,7 +75,7 @@ function getHospitalCalcFormText(heliLength, roomData) {
         '</form>' +
         '<form name="formTextForm">' +
           '<p>' + textMap.formTextDescription + '</p>' +
-          '<textarea id="hospitalCalculatorFormText" name="formText" />' +
+          '<textarea id="hospitalCalculatorFormText" name="formText"></textarea>' +
           '<p><button id="saveFormActionButton" type="button">' + textMap.saveForm + '</button>' +
           '<button id="loadFormActionButton" type="button">' + textMap.loadForm + '</button></p>' +
         '</form>' +

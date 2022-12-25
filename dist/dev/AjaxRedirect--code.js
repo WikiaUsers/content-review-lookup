@@ -5,16 +5,24 @@
  * <nowiki>
  */
 
-(function() {
+(function () {
     var config = mw.config.get([
-        'wgCanonicalNamespace',
-        'wgCanonicalSpecialPageName',
-        'wgPageName'
-    ]),
-    i18n;
+            'wgCanonicalNamespace',
+            'wgCanonicalSpecialPageName',
+            'wgPageName',
+            'wgUserGroups',
+            'wgRevisionId',
+            'wgIsRedirect'
+        ]),
+        groupsWithDeletePerm = [
+            'bureaucrat',
+            'sysop',
+            'content-moderator'
+        ],
+        i18n;
 
     if (
-        config.wgCanonicalNamespace === "Thread" ||
+        config.wgCanonicalNamespace === 'Thread' ||
         config.wgCanonicalSpecialPageName ||
         window.AjaxRedirectLoaded
     ) {
@@ -23,19 +31,58 @@
 
     window.AjaxRedirectLoaded = true;
 
-    function respHandler(res) {
-        if (res === true) {
-            console.log(i18n.msg('success').plain());
-            mw.notify(i18n.msg('success').plain());
-            setTimeout(function() {
-                window.location.reload();
-            }, 3000);
-        } else {
-            console.log(i18n.msg('fail').plain());
-            mw.notify(i18n.msg('fail').plain(), {
-                type: 'error'
-            });
+    function makeRedirect(fromPage, toPage) {
+        function respHandler1(res) {
+            if (res === true) {
+                console.log(i18n.msg('success').plain());
+                mw.notify(i18n.msg('success').plain());
+                setTimeout(function () {
+                    window.location.reload();
+                }, 3000);
+            } else {
+                console.log(i18n.msg('fail').plain());
+                mw.notify(i18n.msg('fail').plain(), {
+                    type: 'error'
+                });
+            }
         }
+        new mw.Api().postWithEditToken({
+            action: 'edit',
+            watchlist: 'nochange',
+            title: fromPage,
+            minor: true,
+            bot: true,
+            text: '#REDIRECT [[' + toPage.charAt(0).toUpperCase() + toPage.slice(1) + ']]'
+        }).done(function (d) {
+            respHandler1(!d.error);
+        }).fail(function () {
+            respHandler1(false);
+        });
+    }
+
+    function deleteAndRedirect(fromPage, toPage) {
+        function respHandler2(res) {
+            if (res === true) {
+                console.log(i18n.msg('deleteSuccess').plain());
+                mw.notify(i18n.msg('deleteSuccess').plain());
+                makeRedirect(fromPage, toPage); // here, make a redirect
+            } else {
+                console.log(i18n.msg('deleteFail').plain());
+                mw.notify(i18n.msg('deleteFail').plain(), {
+                    type: 'error'
+                });
+            }
+        }
+        new mw.Api().postWithEditToken({
+            action: 'delete',
+            watchlist: 'nochange',
+            title: fromPage,
+            reason: i18n.msg('deleteReason').plain()
+        }).done(function (d) {
+            respHandler2(!d.error);
+        }).fail(function () {
+            respHandler2(false);
+        });
     }
 
     function click() {
@@ -46,18 +93,24 @@
             return;
         }
 
-        new mw.Api().postWithEditToken({
-            action: 'edit',
-            watchlist: 'nochange',
-            title: config.wgPageName,
-            minor: true,
-            bot: true,
-            text: '#REDIRECT [[' + redir.charAt(0).toUpperCase() + redir.slice(1) + ']]'
-        }).done(function(d) {
-            respHandler(!d.error);
-        }).fail(function() {
-            respHandler(false);
-        });
+        if (
+            config.wgCanonicalNamespace === 'File' &&
+            config.wgRevisionId !== 0 && // page is created
+            !config.wgIsRedirect // page is not a redirect
+        ) {
+            // requires deletion first
+            if (!config.wgUserGroups.some(function (g) {
+                    return groupsWithDeletePerm.includes(g);
+                })) {
+                alert(i18n.msg('noDeletePerm').plain());
+                return;
+            }
+            if (confirm(i18n.msg('deleteConfirm').plain()))
+                deleteAndRedirect(config.wgPageName, redir);
+        } else {
+            // doesn't require deletion
+            makeRedirect(config.wgPageName, redir);
+        }
     }
 
     function init(lang) {
@@ -77,7 +130,7 @@
         );
     }
 
-    mw.hook('dev.i18n').add(function(lib) {
+    mw.hook('dev.i18n').add(function (lib) {
         $.when(
             lib.loadMessages('AjaxRedirect'),
             mw.loader.using([

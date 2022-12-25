@@ -9,6 +9,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/2/22/Wiki-wordmark-cangqiong-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/24/Wiki-wordmark-chiyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/05/Wiki-wordmark-chiyu-svs.png',
+	    'https://images.wikia.nocookie.net/synthv/images/5/5c/Wiki-wordmark-Cong-Zheng.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/2a/Wiki-wordmark-eleanor-forte-sv1.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/f1/Wiki-wordmark-Eleanor-Forte-AI.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/94/Wiki-wordmark-feng-yi.png',
@@ -44,6 +45,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-xingchen-minus.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png',
+	    'https://images.wikia.nocookie.net/synthv/images/7/7c/Wiki-wordmark-Xuan-Yu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/fc/Wiki-wordmark-yuma.png',
 	];
 

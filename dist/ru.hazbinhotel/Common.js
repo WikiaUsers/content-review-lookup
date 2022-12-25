@@ -84,4 +84,8 @@ nkch_gst_gadgets = [{
 	name: "Font",
     title: "Системный шрифт",
     description: "Заменяет шрифт на сайте"
+}, {
+    name: "Cursor",
+    title: "Тематический курсор",
+    description: "Добавляет тематический курсор"
 }];
