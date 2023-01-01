@@ -3,7 +3,6 @@ importArticles({
     articles: [
         "w:c:dev:Countdown/code.js",
         "MediaWiki:Island_Editor.js",
-        "User:Jens_Ingels/common.js/flash.js",
         "w:c:dev:FixWantedFiles/code.js",
         "w:c:dev:UserTags/code.js",
         "w:c:dev:SearchSuggest/code.js",

@@ -1,7 +1,7 @@
 (function($) {
 	if (window.PreviewRail) return;
 	window.PreviewRail = true;
-	$( '#wikiPreview' ).prepend('<div class="wikiPreview__wrapper__right with-rail"><div class="wikiPreview__toggle-button"><button class="right-rail-toggle"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></button></div></div>');
+	$( '#wikiPreview, .oo-ui-window-frame, .ve-init-mw-desktopArticleTarget-originalContent' ).prepend('<div class="wikiPreview__wrapper__right with-rail"><div class="wikiPreview__toggle-button"><button class="right-rail-toggle"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></button></div></div>');
 	
 	$(function() {
 		$(".wikiPreview__toggle-button").click(function() {

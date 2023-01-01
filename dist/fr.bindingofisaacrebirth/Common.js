@@ -39,7 +39,7 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	).each( function () { useCustomFont( this, 'TeamMeat-Bold' ) } );
 	$(
 		'.pi-group > .pi-data > .pi-data-label,' +
-		'.pi-item[data-source="quote"] > .pi-data-value,' +
+		'.pi-item[data-source^="citation"] > .pi-data-value,' +
 		'.pi-item[data-source="type"] > .pi-data-value'
 	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
 	
@@ -206,4 +206,12 @@ $(function(){
     	this.remove()
 	})
 	
+	// Dataminer
+	$("[data-image-name='Collectible Dataminer icon.png'").addClass("dataminer")
+    $(".dataminer").click(function(){
+	    $("img").each(function(i, a){
+        	rngRotate = Math.floor(Math.random() * 360);
+            $(a).css("transform", "rotate(" + rngRotate + "deg)")
+    	})
+	})
 });

@@ -46,7 +46,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 	function finalAlert($this) {
 		$this.text("Обновление цвета персонала");
 		$this.removeAttr("disabled");
-		alert("Staff Color Updater: Successful updated LESS for staff colors.\n\n" +
+		alert("Программа обновления цвета персонала: Успешно обновлено LESS для цветов персонала.\n\n" +
 			Object.keys(mw.util.StaffUtil.membersList).map(function (i) {
 				return mw.util.StaffUtil.membersList[i].rank + ": " + mw.util.StaffUtil.membersList[i].users.length;
 			}).join("\n") + "\n\n" +

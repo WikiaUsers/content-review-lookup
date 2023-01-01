@@ -34,21 +34,20 @@
          strict:true, trailing:true
 */
 
-// Load Styles 
-$('<link>', { 
-	rel: 'stylesheet', 
-	href: 'https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Common.js/calc.css?action=raw&ctype=text/css'
-}).appendTo('head');
-
-/*global mediaWiki, hsbwiki */
+/*global mediaWiki, hsbwiki, importArticle */
 window.hsbwiki = window.hsbwiki || {}
 
-;(function ($, mw, hsb, undefined) {
+;
+(function ($, mw, hsb, undefined) {
     'use strict';
+    if (hsb.calculatorLoaded) {
+        return;
+    }
+    hsb.calculatorLoaded = true;
 
-        /**
-         * Caching for search suggestions
-         */
+    /**
+     * Caching for search suggestions
+     */
     var cache = {},
 
         /**
@@ -80,8 +79,8 @@ window.hsbwiki = window.hsbwiki || {}
                     },
                     // used for debugging incorrect config names
                     validParams = [
-                    	'calcname',
-                    	'calcpage',
+                        'calcname',
+                        'calcpage',
                         'form',
                         'param',
                         'result',
@@ -119,7 +118,7 @@ window.hsbwiki = window.hsbwiki || {}
                     // so join them back together to preserve it
                     // this also allows support of HTML attributes in labels
                     if (temp.length > 2) {
-                        temp[1] = temp.slice(1,temp.length).join('=');
+                        temp[1] = temp.slice(1, temp.length).join('=');
                     }
 
                     param = temp[0].trim().toLowerCase();
@@ -164,7 +163,7 @@ window.hsbwiki = window.hsbwiki || {}
                         rawtogs: mw.html.escape(args[5] || '')
                     });
                 });
-                
+
                 if (configError) {
                     config.configError = 'This calculator\'s config contains errors. Please report it to an admin or check the javascript console for details.';
                 }
@@ -189,12 +188,12 @@ window.hsbwiki = window.hsbwiki || {}
              * @param error {String} A string representing the error message to be output
              */
             showError: function (error) {
-                $(this.result !== 'inner'? ('#' + this.result): ('#' + this.form + ' .jcResult'))
+                $(this.result !== 'inner' ? ('#' + this.result) : ('#' + this.form + ' .jcResult'))
                     .empty()
                     .append(
                         $('<span>')
-                            .addClass('jcError')
-                            .text(error)
+                        .addClass('jcError')
+                        .text(error)
                     )
                     .show();
             },
@@ -208,7 +207,7 @@ window.hsbwiki = window.hsbwiki || {}
             toggle: function (item, toggles) {
                 var self = this;
                 var togitem = function (widget, show) {
-                    var param = self.tParams[ self.indexkeys[widget] ];
+                    var param = self.tParams[self.indexkeys[widget]];
                     // if (param.type === 'group') {
                     //     param.ooui.toggle(show);
                     //     param.ooui.getItems().forEach(function (child) {
@@ -219,7 +218,7 @@ window.hsbwiki = window.hsbwiki || {}
                     //         }
                     //     });
                     // } else
-                    if ( param.type === 'semihidden' ) {
+                    if (param.type === 'semihidden') {
                         // if (!!param.ooui.setDisabled) {
                         //     param.ooui.setDisabled(!show);
                         // }
@@ -233,26 +232,26 @@ window.hsbwiki = window.hsbwiki || {}
                         // [skywiki] Yet another hacky way to get around not having ooui
                         param.$ui.closest('tr').toggle(show);
                         param.$ui.prop('disabled', !show);
-                        
+
                     }
                 };
-    
+
                 if (toggles[item]) {
-                    toggles[item].on.forEach( function (widget) {
+                    toggles[item].on.forEach(function (widget) {
                         togitem(widget, true);
                     });
-                    toggles[item].off.forEach( function (widget) {
+                    toggles[item].off.forEach(function (widget) {
                         togitem(widget, false);
                     });
-                } else if ( toggles.not0 && !isNaN(parseFloat(item)) && parseFloat(item) !== 0 ) {
-                    toggles.not0.on.forEach( function (widget) {
+                } else if (toggles.not0 && !isNaN(parseFloat(item)) && parseFloat(item) !== 0) {
+                    toggles.not0.on.forEach(function (widget) {
                         togitem(widget, true);
                     });
-                    toggles.not0.off.forEach( function (widget) {
+                    toggles.not0.off.forEach(function (widget) {
                         togitem(widget, false);
                     });
                 } else if (toggles.alltogs) {
-                    toggles.alltogs.off.forEach( function (widget) {
+                    toggles.alltogs.off.forEach(function (widget) {
                         togitem(widget, false);
                     });
                 }
@@ -302,11 +301,12 @@ window.hsbwiki = window.hsbwiki || {}
              * @param defkey {string} The default key for toggles
              * @returns {object} An object representing the toggles in the format { ['widget value']:[ widget-to-toggle, group-to-toggle, widget-to-toggle2 ] }
              */
-            parseToggles: function (rawdata,defkey) {
+            parseToggles: function (rawdata, defkey) {
                 var tmptogs = rawdata.split(/\s*;\s*/),
-                    allkeys = [], allvals = [],
+                    allkeys = [],
+                    allvals = [],
                     toggles = {};
-    
+
                 if (tmptogs.length > 0 && tmptogs[0].length > 0) {
                     tmptogs.forEach(function (tog) {
                         var tmp = tog.split(/\s*=\s*/),
@@ -325,7 +325,7 @@ window.hsbwiki = window.hsbwiki || {}
                             toggles[key].on = val;
                             allkeys.push(key);
                         } else {
-                            keys.forEach( function (key) {
+                            keys.forEach(function (key) {
                                 toggles[key] = {};
                                 toggles[key].on = val;
                                 allkeys.push(key);
@@ -333,26 +333,26 @@ window.hsbwiki = window.hsbwiki || {}
                         }
                         allvals = allvals.concat(val);
                     });
-    
+
                     allkeys = allkeys.filter(function (item, pos, arr) {
                         return arr.indexOf(item) === pos;
                     });
-    
+
                     allkeys.forEach(function (key) {
                         toggles[key].off = allvals.filter(function (val) {
-                            if ( toggles[key].on.includes(val) ) {
+                            if (toggles[key].on.includes(val)) {
                                 return false;
                             } else {
                                 return true;
                             }
                         });
                     });
-    
+
                     // Add all items to default
                     toggles.alltogs = {};
                     toggles.alltogs.off = allvals;
                 }
-    
+
                 return toggles;
             },
 
@@ -417,7 +417,7 @@ window.hsbwiki = window.hsbwiki || {}
                             $input.removeClass('jcInvalid');
                         }
                     }
-                    
+
                     code += '|' + param.name + '=' + val;
                 });
 
@@ -445,7 +445,7 @@ window.hsbwiki = window.hsbwiki || {}
                         title: mw.config.get('wgPageName'),
                         disablepp: 'true'
                     };
-                
+
                 // experimental support for using VE to parse calc templates
                 if (!!mw.util.getParamValue('vecalc')) {
                     params = {
@@ -458,26 +458,26 @@ window.hsbwiki = window.hsbwiki || {}
                 }
 
                 $('#' + self.form + ' .jcSubmit div')
-                	.text('..').css('color','gray');
+                    .text('..').css('color', 'gray');
 
                 // @todo time how long these calls take
                 (new mw.Api())
-                    .post(params)
+                .post(params)
                     .done(function (response) {
                         var html;
-                        
+
                         if (!!mw.util.getParamValue('vecalc')) {
                             // strip body tag
                             html = $(response.visualeditor.content).contents();
                         } else {
                             html = response.parse.text['*'];
                         }
-                        
+
                         helper.dispResult.call(self, html);
                     })
                     .fail(function (_, error) {
                         $('#' + self.form + ' .jcSubmit div')
-                        	.text('↵').css('color','white');
+                            .text('↵').css('color', 'white');
                         helper.showError.call(self, error);
                     });
             },
@@ -489,15 +489,15 @@ window.hsbwiki = window.hsbwiki || {}
              */
             dispResult: function (html) {
                 $('#' + this.form + ' .jcSubmit div')
-                	.text('↵').css('color','white');
+                    .text('↵').css('color', 'white');
 
                 $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
-                    .find(this.result !== 'inner'? ('#' + this.result): ('#' + this.form + ' .jcResult'))
-                        .empty()
-                        .removeClass('jcError')
-                        .html(html)
-                        .show();
-                
+                    .find(this.result !== 'inner' ? ('#' + this.result) : ('#' + this.form + ' .jcResult'))
+                    .empty()
+                    .removeClass('jcError')
+                    .html(html)
+                    .show();
+
                 // allow scripts to hook into form submission
                 mw.hook('rscalc.submit').fire();
 
@@ -623,10 +623,10 @@ window.hsbwiki = window.hsbwiki || {}
                 select: function ($td, param, id) {
                     var self = this,
                         $select = $('<select>')
-                            .attr({
-                                name: id,
-                                id: id
-                            }),
+                        .attr({
+                            name: id,
+                            id: id
+                        }),
                         opts = param.range.split(/\s*,\s*/),
                         def = opts[0];
 
@@ -634,14 +634,14 @@ window.hsbwiki = window.hsbwiki || {}
                         // undo the mw.html.escape call used when creating the params object
                         // and defer the escaping to $.fn.val and $.fn.text instead
                         opt = opt.replace(/&gt;/g, '>')
-                                 .replace(/&lt;/g, '<')
-                                 .replace(/&amp;/g, '&')
-                                 .replace(/&quot;/g, '"')
-                                 .replace(/&#039;/g, '\'');
+                            .replace(/&lt;/g, '<')
+                            .replace(/&amp;/g, '&')
+                            .replace(/&quot;/g, '"')
+                            .replace(/&#039;/g, '\'');
 
                         var $option = $('<option>')
-                                .val(opt)
-                                .text(opt);
+                            .val(opt)
+                            .text(opt);
 
                         if (opt === param.def) {
                             $option.prop('selected', true);
@@ -651,9 +651,9 @@ window.hsbwiki = window.hsbwiki || {}
                     });
 
                     param.toggles = helper.parseToggles(param.rawtogs, def);
-    
-                    if ( Object.keys(param.toggles).length > 0 ) {
-                        $select.on('change', function(){
+
+                    if (Object.keys(param.toggles).length > 0) {
+                        $select.on('change', function () {
                             helper.toggle.call(self, $(this).val(), param.toggles);
                         });
                     }
@@ -674,12 +674,12 @@ window.hsbwiki = window.hsbwiki || {}
                  */
                 check: function ($td, param, id) {
                     var self = this,
-                    	$input = $('<input>')
-                            .attr({
-                                type: 'checkbox',
-                                name: id,
-                                id: id
-                            });
+                        $input = $('<input>')
+                        .attr({
+                            type: 'checkbox',
+                            name: id,
+                            id: id
+                        });
                     param.toggles = helper.parseToggles(param.rawtogs, 'true');
 
                     if (
@@ -688,10 +688,10 @@ window.hsbwiki = window.hsbwiki || {}
                     ) {
                         $input.prop('checked', true);
                     }
-                    
-                    
-                    if ( Object.keys(param.toggles).length > 0 ) {
-                        $input.on('change', function(){
+
+
+                    if (Object.keys(param.toggles).length > 0) {
+                        $input.on('change', function () {
                             helper.toggle.call(self, this.checked ? 'true' : 'false', param.toggles);
                         });
                     }
@@ -712,12 +712,12 @@ window.hsbwiki = window.hsbwiki || {}
                  */
                 def: function ($td, param, id) {
                     var $input = $('<input>')
-                            .attr({
-                                type: 'text',
-                                name: id,
-                                id: id
-                            })
-                            .val(param.def);
+                        .attr({
+                            type: 'text',
+                            name: id,
+                            id: id
+                        })
+                        .val(param.def);
 
                     param.$ui = $input; // [skywiki] custom way of doing much less involved "param.ooui"
                     $td.append($input);
@@ -743,7 +743,7 @@ window.hsbwiki = window.hsbwiki || {}
             $elem = $(elem),
             lines,
             config;
-            
+
         // support div tags for config as well as pre
         // be aware using div tags relies on wikitext for parsing
         // so you can't use anchor or img tags
@@ -756,9 +756,9 @@ window.hsbwiki = window.hsbwiki || {}
             // so use .text() instead for <pre> tags
             lines = $elem.text();
         }
-        
+
         lines = lines.split('\n');
-        
+
         config = helper.parseConfig.call(this, lines);
 
         // merge config in
@@ -773,11 +773,11 @@ window.hsbwiki = window.hsbwiki || {}
                 id = helper.getId.call(self, id);
                 return $('#' + id);
             }
-            
+
             return $('#jsForm-' + self.form).find('select, input');
         };
     }
-    
+
     /**
      * Helper function for getting the id of an input
      *
@@ -795,56 +795,56 @@ window.hsbwiki = window.hsbwiki || {}
      * Build the calculator form
      */
     Calc.prototype.setupCalc = function () {
-    	console.log(this);
+        console.log(this);
         var self = this,
             $form = $('<form>')
-                .attr({
-                    action: '#',
-                    id: 'jsForm-' + self.form
-                })
-                .submit(function (e) {
-                    e.preventDefault();
-                    helper.submitForm.call(self);
-                }),
+            .attr({
+                action: '#',
+                id: 'jsForm-' + self.form
+            })
+            .submit(function (e) {
+                e.preventDefault();
+                helper.submitForm.call(self);
+            }),
             $table = $('<table>')
-                .addClass('wikitable')
-                .addClass('jcTable');
-        
+            .addClass('wikitable')
+            .addClass('jcTable');
+
         self.indexkeys = {};
-        
+
         var $submitButton = $('<td>')
             .addClass('jcSubmit').addClass('noselect')
             .attr('rowspan', Object.keys(self.tParams).length)
             .append(
-            	$('<div>').text('↵').css({
-            		'font-size': '2em',
-            		'padding': '0 0.3em',
-            		'text-align': 'center',
-            	})
+                $('<div>').text('↵').css({
+                    'font-size': '2em',
+                    'padding': '0 0.3em',
+                    'text-align': 'center',
+                })
             )
-            .click(function(){
-            	$form.submit();
+            .click(function () {
+                $form.submit();
             });
 
 
-		$table.append($('<tr>').addClass('jcTable-toprow').append(
-			$('<td>').attr('colspan', 3)
-			.append(
-				$('<span>').text(self.calcname || 'Calculator'),
-				$('<a>').text('view template').addClass('noselect')
-					.attr('href', self.template && '/wiki/'+self.template || '#')
-					.attr('target', '_blank'),
-				$('<a>').text('view calculator').addClass('noselect')
-					.attr('href', self.calcpage && '/wiki/'+self.calcpage || '#')
-					.attr('target', '_blank')
-			)
-		));
-		
-		if (self.result === 'inner') {
-			$table.append($('<tr>').append(
-				$('<td>').attr('colspan','3').addClass('jcResult').hide()
-			));
-		}
+        $table.append($('<tr>').addClass('jcTable-toprow').append(
+            $('<td>').attr('colspan', 3)
+            .append(
+                $('<span>').text(self.calcname || 'Calculator'),
+                $('<a>').text('view template').addClass('noselect')
+                .attr('href', self.template && '/wiki/' + self.template || '#')
+                .attr('target', '_blank'),
+                $('<a>').text('view calculator').addClass('noselect')
+                .attr('href', self.calcpage && '/wiki/' + self.calcpage || '#')
+                .attr('target', '_blank')
+            )
+        ));
+
+        if (self.result === 'inner') {
+            $table.append($('<tr>').append(
+                $('<td>').attr('colspan', '3').addClass('jcResult').hide()
+            ));
+        }
 
         self.tParams.forEach(function (param, index) {
             // can skip any output here as the result is pulled from the
@@ -857,31 +857,31 @@ window.hsbwiki = window.hsbwiki || {}
                 $tr = $('<tr>'),
                 $td = $('<td>').addClass('jcTable-cell-normal').addClass('jcInput'),
                 method = helper.tParams[param.type] ?
-                    param.type :
-                    'def',
+                param.type :
+                'def',
                 // sanitise any HTML before inserting it
                 // need this check otherwise jQuery cries
                 // might need slightly better check in edge cases, but this should do for now
                 label = param.label.indexOf('<') > -1 ?
-                    helper.sanitiseLabels(param.label) :
-                    param.label;
+                helper.sanitiseLabels(param.label) :
+                param.label;
 
             // add label
             $tr.append(
                 $('<th>').addClass('jcTable-cell-normal').addClass('jcLabel')
-                    .append(
-                        $('<label>')
-                            .attr('for', id)
-                            .html(label)
-                    )
+                .append(
+                    $('<label>')
+                    .attr('for', id)
+                    .html(label)
+                )
             );
 
             $td = helper.tParams[method].call(self, $td, param, id);
             $tr.append($td);
 
             if ($submitButton) {
-            	$tr.append($submitButton);
-            	$submitButton = null;
+                $tr.append($submitButton);
+                $submitButton = null;
             }
 
             if (param.type === 'semihidden') {
@@ -895,7 +895,7 @@ window.hsbwiki = window.hsbwiki || {}
         });
 
         // Run toggle for each field, check validity
-        self.tParams.forEach( function (param) {
+        self.tParams.forEach(function (param) {
             if (param.toggles && Object.keys(param.toggles).length > 0) {
                 var val;
                 // if (param.type === 'buttonselect') {
@@ -921,23 +921,23 @@ window.hsbwiki = window.hsbwiki || {}
         });
 
         $form.append($table);
-        
+
         if (self.configError) {
             $form.append(self.configError);
         }
 
         $('#bodyContent, #WikiaArticle, .WikiaArticle, #content, .page-content')
             .find('#' + self.form)
-                .empty()
-                .append($form);
+            .empty()
+            .append($form);
 
         // Enable suggest on article fields
-        mw.loader.using(['mediawiki.api','jquery.ui.autocomplete'], function () {
+        mw.loader.using(['mediawiki.api', 'jquery.ui.autocomplete'], function () {
             self.acInputs.forEach(function (input) {
                 $('#' + input).autocomplete({
                     // matching wikia's search min length
                     minLength: 3,
-                    source: function(request, response) {
+                    source: function (request, response) {
                         var term = request.term;
 
                         if (term in cache) {
@@ -946,7 +946,7 @@ window.hsbwiki = window.hsbwiki || {}
                         }
 
                         (new mw.Api())
-                            .get({
+                        .get({
                                 action: 'opensearch',
                                 search: term,
                                 // default to main namespace
@@ -962,7 +962,7 @@ window.hsbwiki = window.hsbwiki || {}
             });
         });
     };
-    
+
     /**
      * @todo
      */
@@ -977,16 +977,20 @@ window.hsbwiki = window.hsbwiki || {}
         $('.jcConfig').each(function () {
             var c = new Calc(this);
             c.setupCalc();
-            
+
             calcStore[c.form] = c;
         });
-        
+
         // allow scripts to hook into calc setup completion
         mw.hook('rscalc.setupComplete').fire();
     }
 
     $(init);
-    
+    importArticle({
+        type: 'style',
+        article: 'MediaWiki:Common.js/calc.css'
+    });
+
     hsb.calc = {};
     hsb.calc.lookup = lookupCalc;
 

@@ -1550,7 +1550,7 @@
                                 if (rule) return rule;
                             }
                         }
-                        catch
+                        catch(e)
                         {
                             continue;
                         }

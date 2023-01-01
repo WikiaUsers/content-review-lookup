@@ -14,14 +14,6 @@ importArticles({
     ]
 });
 
-/* Searchbar */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:UCXSearchBar.js',
-    ]
-});
-
 /* Search Suggestions */
 importArticles({
     type: 'script',

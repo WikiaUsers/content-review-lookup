@@ -23,15 +23,15 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	} );
 
 	// Custom fonts
-	$( '.custom-font' ).each( function () {
-		for ( var i = 0; i < this.classList.length; ++i ) {
-			if ( this.classList[ i ].substring( 0, 12 ) === 'custom-font-' ) {
-				useCustomFont( this, this.classList[ i ].substr( 12 ) );
-				return;
-			}
-		}
-		useCustomFont( this, 'TeamMeat' );
-	} );
+	// $( '.custom-font' ).each( function () {
+	// 	for ( var i = 0; i < this.classList.length; ++i ) {
+	// 		if ( this.classList[ i ].substring( 0, 12 ) === 'custom-font-' ) {
+	// 			useCustomFont( this, this.classList[ i ].substr( 12 ) );
+	// 			return;
+	// 		}
+	// 	}
+	// 	useCustomFont( this, 'TeamMeat' );
+	// } );
 	$(
 		'.pi-header,' +
 		':not( .pi-group ) > .pi-data > .pi-data-label,' +
@@ -91,36 +91,36 @@ var specialCharacters = {
 	/* € */ '\u20AC': "euro"
 };
 
-function useCustomFont( element, name ) {
-	var childNodes = element.childNodes;
-	for ( var i = 0; i < childNodes.length; ++i ) {
-		var childNode = childNodes[ i ];
-		if ( childNode.nodeType !== Node.TEXT_NODE ) {
-			continue;
-		}
+// function useCustomFont( element, name ) {
+// 	var childNodes = element.childNodes;
+// 	for ( var i = 0; i < childNodes.length; ++i ) {
+// 		var childNode = childNodes[ i ];
+// 		if ( childNode.nodeType !== Node.TEXT_NODE ) {
+// 			continue;
+// 		}
 
-		var char     = '',
-			str      = childNode.textContent,
-			str2     = '<span style="white-space:nowrap">',
-			font     = 'font-' + name,
-			intro    = '<div class="' + font + ' ' + font + '-',
-			j        = 0,
-			len      = 0,
-			charCode = 0;
-		while ( j < str.length ) {
-			charCode = str.charCodeAt( j );
-			len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
-			char     = str.substr( j, len );
-			str2    += ( char === ' ' ? '</span> <span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
-			j       += len;
-		}
-		str2 += '</span>';
+// 		var char     = '',
+// 			str      = childNode.textContent,
+// 			str2     = '<span style="white-space:nowrap">',
+// 			font     = 'font-' + name,
+// 			intro    = '<div class="' + font + ' ' + font + '-',
+// 			j        = 0,
+// 			len      = 0,
+// 			charCode = 0;
+// 		while ( j < str.length ) {
+// 			charCode = str.charCodeAt( j );
+// 			len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
+// 			char     = str.substr( j, len );
+// 			str2    += ( char === ' ' ? '</span> <span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
+// 			j       += len;
+// 		}
+// 		str2 += '</span>';
 
-		var template = document.createElement( 'template' );
-		template.innerHTML = '<span class="custom-font custom-font-enabled">' + str2 + '</span>';
-		childNode.replaceWith( template.content.firstChild );
-	}
-}
+// 		var template = document.createElement( 'template' );
+// 		template.innerHTML = '<span class="custom-font custom-font-enabled">' + str2 + '</span>';
+// 		childNode.replaceWith( template.content.firstChild );
+// 	}
+// }
 
 function loadCraftingRecipes( n ) {
 	var i, j, max, str, parserOutput, element, parent, clonedParent,

@@ -1,1 +1,0 @@
-Moved to [[w:c:admintools:MediaWiki:Common.js/powerUser.js]]

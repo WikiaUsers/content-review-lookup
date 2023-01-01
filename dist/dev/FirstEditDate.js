@@ -29,11 +29,11 @@ $(function() {
 				}))
 			);
 		}).fail(function(e) {
-			console.error('FED says an exception:', e)
-		})
+			console.error('FED says an exception:', e);
+		});
 	}
 	
-	importArticle({ type: 'script', article: 'u:dev:MediaWiki:i18n-js/code.js' })
+	importArticle({ type: 'script', article: 'u:dev:MediaWiki:i18n-js/code.js' });
 	
 	mw.hook('dev.i18n').add(function(i18np) {
 		i18np.loadMessages('FirstEditDate').done(function(i18np) {
@@ -42,9 +42,9 @@ $(function() {
 			var timer = setInterval(function() {
 				if ($('#userProfileApp').length) {
 					clearInterval(timer);
-					init()
+					init();
 				}
 			}, 1000);
-		})
-	})
+		});
+	});
 });

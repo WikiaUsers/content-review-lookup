@@ -20,7 +20,7 @@ mw.hook('wikipage.content').add(function() {
   var icons = {
     'arrow':  '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#000" class="accordion__icon accordion__icon--arrow" aria-hidden="true"><path d="M14.83 16.42L24 25.59l9.17-9.17L36 19.25l-12 12-12-12z"/></svg>',
     'plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="#000" class="accordion__icon accordion__icon--plus" aria-hidden="true"><path d="M 19 12.994 L 5 12.994 L 5 10.994 L 19 10.994 L 19 12.994 Z" class="accordion__icon--plus-h"></path><path d="M 5 -13 L 19 -13 L 19 -11 L 5 -11 L 5 -13 Z" class="accordion__icon--plus-v" style="transform: rotate(90deg);"></path></svg>'
-  }
+  };
 
   // Upgrade each first-level accordion.
   accordionWrapper.forEach(function(elem) {

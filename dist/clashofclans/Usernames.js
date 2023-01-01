@@ -23,6 +23,8 @@ var config = mw.config.get([
     'wgUserName',
     'wgServer'
 ]);
+var month = new Date().getMonth();
+var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 function customizeComments() {
 	var interval = setInterval(function () {
@@ -81,7 +83,10 @@ function customizeUserProfileApp() {
 						alt: username,
 						title: username
 					});
-	        $('#userProfileApp').attr('data-user', username);
+			$('#userProfileApp').attr({
+				'data-user': username,
+				'data-month': months[month]
+			});
         }
     }, 100);
 }

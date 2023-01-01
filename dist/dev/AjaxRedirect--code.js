@@ -1,7 +1,7 @@
 /**
  * AjaxRedirect
  * @description Redirects the current page quickly.
- * @author Ozuzanna
+ * @author KnazO, TheGoldenPatrik1, KockaAdmiralac
  * <nowiki>
  */
 
@@ -73,16 +73,24 @@
                 });
             }
         }
-        new mw.Api().postWithEditToken({
-            action: 'delete',
-            watchlist: 'nochange',
-            title: fromPage,
-            reason: i18n.msg('deleteReason').plain()
-        }).done(function (d) {
-            respHandler2(!d.error);
-        }).fail(function () {
-            respHandler2(false);
-        });
+        if (!config.wgUserGroups.some(function (g) {
+                return groupsWithDeletePerm.includes(g);
+            })) {
+            alert(i18n.msg('noDeletePerm').plain());
+            return;
+        }
+        if (confirm(i18n.msg('deleteConfirm').plain())) {
+            new mw.Api().postWithEditToken({
+                action: 'delete',
+                watchlist: 'nochange',
+                title: fromPage,
+                reason: i18n.msg('deleteReason').plain()
+            }).done(function (d) {
+                respHandler2(!d.error);
+            }).fail(function () {
+                respHandler2(false);
+            });
+        }
     }
 
     function click() {
@@ -98,15 +106,7 @@
             config.wgRevisionId !== 0 && // page is created
             !config.wgIsRedirect // page is not a redirect
         ) {
-            // requires deletion first
-            if (!config.wgUserGroups.some(function (g) {
-                    return groupsWithDeletePerm.includes(g);
-                })) {
-                alert(i18n.msg('noDeletePerm').plain());
-                return;
-            }
-            if (confirm(i18n.msg('deleteConfirm').plain()))
-                deleteAndRedirect(config.wgPageName, redir);
+            deleteAndRedirect(config.wgPageName, redir);
         } else {
             // doesn't require deletion
             makeRedirect(config.wgPageName, redir);

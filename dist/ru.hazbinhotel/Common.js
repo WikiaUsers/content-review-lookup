@@ -1,4 +1,19 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+
+/* HazbinHotel exts */
+window.hzbn = $.extend(true, window.hzbn, {});
+window.hzbn.mwHtmlLinkFabric = function (classNames) {
+  return function (pageName, text) {
+    return $('<a>', {
+      class: classNames,
+      href: mw.util.getUrl(pageName),
+      text: text
+    }).prop('outerHTML');
+  };
+};
+
+/* User Tags */
+
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -38,7 +53,7 @@ UserTagsJS.modules.custom = {
 	'Fleshka5856': ['intern']
 }
 
-/* ========== Выделение комментариев статусников ========== */
+/* Выделение комментариев */
 setInterval(function () {
     $('.wds-avatar a[href$="Voidan%20Dether"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
     $('.wds-avatar a[href$="Swit4er"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
@@ -88,4 +103,66 @@ nkch_gst_gadgets = [{
     name: "Cursor",
     title: "Тематический курсор",
     description: "Добавляет тематический курсор"
+}, {
+    name: "NeonRain",
+    title: "Неоновый дождь",
+    description: "Капающие с неба разноцветные капли"
 }];
+
+/* Анимация в рейле */
+$().ready(function () {
+  var currentPageNamespace = mw.config.get('wgCanonicalNamespace');
+  var hasPhotoModule = currentPageNamespace !== 'Special' && currentPageNamespace !== 'MediaWiki';
+  var waitForEl = function waitForEl(selector, blockElement) {
+    return new Promise(function (resolve, reject) {
+      var targetNode = document.querySelector(selector);
+      var timeoutId;
+      new MutationObserver(function (_, observer) {
+        clearInterval(timeoutId);
+        timeoutId = setTimeout(function () {
+          if (blockElement && !targetNode.querySelectorAll(blockElement).length) {
+            clearInterval(timeoutId);
+            return;
+          }
+
+          observer.disconnect();
+          return resolve();
+        }, 500);
+      }).observe(targetNode, {
+        childList: true,
+        subtree: true
+      });  
+
+    });
+  };
+  waitForEl('.right-rail-wrapper', hasPhotoModule ? '.photo-module' : null).then(function () {
+    var railHeadings = document.querySelectorAll('.UserProfileAchievementsModule h2, .rail-module h2');
+    railHeadings.forEach(function (rail) {
+      return rail.insertAdjacentHTML('afterend', '<div class="rail-module__lines"></div>');
+    });
+  });
+  
+  /* Фиксы достижений */
+	  document.querySelectorAll('.badge-icon').forEach(function (badgeIcon) {
+	    $(badgeIcon).data('bs.popover').config.content = $(badgeIcon).prev('.profile-hover').prop("outerHTML")
+	        .replace('categoryselect-addcategory-button', 'Добавить категорию')
+	        .replace('rte-ck-image-add', 'Добавить изображение')
+	        .replace('статей', 'статьи')
+	        .replaceAll(/⧼|⧽/g, '');
+	})
+});
+
+/* Конфигурация для dev:LinkPreview */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+
+window.pPreview.wholepage = true;
+
+/* Конфигурация для dev:LockOldComments */
+window.lockOldComments = window.lockOldComments || {};
+window.lockOldComments.limit = 90;
+
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides['LockOldComments'] = window.dev.i18n.overrides['LockOldComments'] || {};
+window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Этой ветке комментариев более " + window.lockOldComments.limit + " " + (window.lockOldComments.limit > 1 ? 'дней.' : 'дня.') + " Нет необходимости отвечать.";

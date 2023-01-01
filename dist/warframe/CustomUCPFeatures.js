@@ -48,28 +48,32 @@ function highlightUser(block, name, highlightBool) {
 		highlightBool = false;
 	}
 	
+	// TODO: Store cases into a map for performance
 	if (highlightBool) {
 		switch(name) {
-			// FANDOM Staff
+			// FANDOM Staff (current and former)
 			case "Atvelonis":
+			case "Brandon Rhea":
 			case "CzechOut":
 			case "Dioniso7":
 			case "JAlbor":
 			case "Kirkburn":
+			case "Kuzura":
 			case "Magiczocker01":
 			case "MarkvA":
 			case "Mr Pie 5":
 			case "NinjaFatGuy":
 			case "QATestsStaff":
 			case "Raylan13":
+			case "ReverieCode":
 			case "Shareif":
+			case "TK-999":
 			case "Yatalu":
-			case "Kuzura":
 				block.style.backgroundColor = "rgba(0,220,250,0.25)";
 				break;
 			
 			// DE Staff
-			case "DE Glen":			
+			case "DE Glen":
 			case "DEDrew":
 			case "DEHelen":
 			case "Rebulast":
@@ -77,7 +81,7 @@ function highlightUser(block, name, highlightBool) {
 				break;
 			
 			// Admins
-			case "6079Smith":			
+			case "6079Smith":
 			case "ArcticEngie":
 			case "Brizingr5":
 			case "Cephalon Scientia":
@@ -101,7 +105,7 @@ function highlightUser(block, name, highlightBool) {
 				break;
 			
 			// Mods
-			case "94Connor949":			
+			case "94Connor949":
 			case "Blizt1998":
 			case "DaExile":
 			case "Doudich":
@@ -120,7 +124,7 @@ function highlightUser(block, name, highlightBool) {
 				break;
 				
 			// Bots
-			case "AkulakhanBot":			
+			case "AkulakhanBot":
 			case "Arctic's Ludicrous Anti-Spam Bot":
 			case "Catbot":
 			case "CrabBot":

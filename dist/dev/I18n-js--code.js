@@ -1347,6 +1347,7 @@
             format: 'json',
             prop: 'revisions',
             rvprop: 'content',
+            rvslots: 'main',
             titles: page,
             indexpageids: 1,
             origin: '*',
@@ -1368,7 +1369,7 @@
                     revisionData = data.query && data.query.pages[data.query.pageids[0]].revisions;
 
                 if (revisionData) {
-                    res = revisionData[0]['*'];
+                    res = revisionData[0].slots.main['*'];
                 }
 
                 deferred.resolve(parseMessagesToObject(name, res, options));

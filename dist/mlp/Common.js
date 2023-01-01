@@ -102,8 +102,9 @@ $(function() {
         // Allow italics
         newTitle = newTitle.replace(/&lt;(\/?i)&gt;/g, '<$1>');
         var edits = $("#user_masthead_since").text();
+        var $since = $('<small />').attr({ id: 'user_masthead_since' }).text(edits);
         $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
-        $("#user_masthead_head h2").html(newTitle + "<small id='user_masthead_since'>" + edits + "</small>");
+        $("#user_masthead_head h2").html(newTitle + "<small id='user_masthead_since'>" + $since.prop('outerHTML') + "</small>");
     }
 });
 

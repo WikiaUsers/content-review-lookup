@@ -22,7 +22,17 @@ mw.hook('wikipage.content').add(function() {
 
   window.ripplesLoaded = true;
 
-  if (typeof ripplesConfig.noCSS === 'boolean' && ripplesConfig.noCSS !== true) importArticle({ article: 'u:dev:MediaWiki:Ripple.css' });
+  (function checkIfCSSIsEnabled() {
+    if (typeof window.ripplesConfig !== 'undefined') {
+      if (typeof window.ripplesConfig.noCSS !== 'undefined' && window.ripplesConfig.noCSS == true) {
+        return;
+      } else {
+        importArticle({ article: 'u:dev:MediaWiki:Ripple.css' });
+      }
+    } else {
+      importArticle({ article: 'u:dev:MediaWiki:Ripple.css' });
+    }
+  }());
 
   // Defining CSSConfig here so all functions have access to it.
   var isKeyPressed = false;
@@ -36,10 +46,10 @@ mw.hook('wikipage.content').add(function() {
 
   // Default elements that will get ripples.
   var rippleTypes = {
-    'normal': Array.from(document.querySelectorAll('button:not([disabled], :disabled), .wds-button:not(.wds-is-active, .wds-is-disabled, [disabled], :disabled), #toc a, #sticky-toc a, .wds-tabs__tab, .ui-button, .oo-ui-buttonElement:not(.oo-ui-widget-disabled) .oo-ui-buttonElement-button, .oo-ui-menuOptionWidget.oo-ui-optionWidget, .mw-ui-button:not([disabled], :disabled), .wds-dropdown__content .wds-list.wds-is-linked > li > a:not(.wds-button), .global-navigation__signout-button, .user-profile-navigation__link, .unified-search__profiles__profile, .sub-head--done, .infobox-builder-button, .wikiEditor-ui .wikiEditor-ui-toolbar .group .tool-select .menu .options .option, .wikiEditor-ui .wikiEditor-ui-toolbar, ul.categories a .booklet .index div, #my-tools-menu a, [data-ripple]')),
-    'unbounded': Array.from(document.querySelectorAll('.page-side-tool, .page-header__actions .wds-dropdown > .wds-dropdown__toggle, .page-header__actions > .page-header__action-button:first-child, .wikia-bar-collapse, .wds-floating-button:not(.wds-is-disabled, [disabled], :disabled), [data-unbounded]')),
-    'recentered': Array.from(document.querySelectorAll('.wiki-tools.wds-button-group > .wds-button, .unified-search-pagination a, .wds-button.wds-is-square, .sub-head--cancel, .tool.oo-ui-buttonElement-frameless.oo-ui-iconElement, #msupload-container, .wikiEditor-ui .wikiEditor-ui-toolbar .page-characters div span, .category-layout-selector > li, [data-recentered]')),
-    'noInk': Array.from(document.querySelectorAll('[data-no-ink]'))
+    'normal': Array.from(document.querySelectorAll('.has-ripple, button:not([disabled], :disabled), .wds-button:not(.wds-is-active, .wds-is-disabled, [disabled], :disabled), #toc a, #sticky-toc a, .wds-tabs__tab, .ui-button, .oo-ui-buttonElement:not(.oo-ui-widget-disabled) .oo-ui-buttonElement-button, .oo-ui-menuOptionWidget.oo-ui-optionWidget, .mw-ui-button:not([disabled], :disabled), .wds-dropdown__content .wds-list.wds-is-linked > li > a:not(.wds-button), .global-navigation__signout-button, .user-profile-navigation__link, .unified-search__profiles__profile, .sub-head--done, .infobox-builder-button, .wikiEditor-ui .wikiEditor-ui-toolbar .group .tool-select .menu .options .option, .wikiEditor-ui .wikiEditor-ui-toolbar, ul.categories a .booklet .index div, #my-tools-menu a')),
+    'unbounded': Array.from(document.querySelectorAll('.has-ripple.unbounded, .page-side-tool, .page-header__actions .wds-dropdown > .wds-dropdown__toggle, .page-header__actions > .page-header__action-button:first-child, .wikia-bar-collapse, .wds-floating-button:not(.wds-is-disabled, [disabled], :disabled)')),
+    'recentered': Array.from(document.querySelectorAll('.has-ripple.recentered, .wiki-tools.wds-button-group > .wds-button, .unified-search-pagination a, .wds-button.wds-is-square, .sub-head--cancel, .tool.oo-ui-buttonElement-frameless.oo-ui-iconElement, #msupload-container, .wikiEditor-ui .wikiEditor-ui-toolbar .page-characters div span, .category-layout-selector > li')),
+    'noInk': Array.from(document.querySelectorAll('.no-ink'))
   }
 
   // If the user has specified custom elements to have/not have ripples,
@@ -63,27 +73,22 @@ mw.hook('wikipage.content').add(function() {
     var allRipples = new Set(rippleTypes.normal.concat(rippleTypes.unbounded, rippleTypes.recentered));
   }
 
-  // Looks for elements with data-attributes so those are replaced with the
-  // actual attributes that makes ripples work for them. It also
-  // initializes all ripple functions.
+  // Looks for elements with specific classes to apply the corresponding type
+  // of ripple (or to prevent adding it).
   rippleTypes.noInk.forEach(function(elem) {
-    if (elem.hasAttribute('data-no-ink')) elem.removeAttribute('data-no-ink');
-    elem.setAttribute('no-ink', '');
+    elem.classList.add('no-ink');
   });
 
   allRipples.forEach(function(elem) {
-    if (elem.hasAttribute('data-ripple')) elem.removeAttribute('data-ripple');
-    if (!elem.hasAttribute('no-ink')) ripplesInit(elem);
+    if (!elem.classList.contains('no-ink')) ripplesInit(elem);
   });
 
   rippleTypes.unbounded.forEach(function(elem) {
-    if (elem.hasAttribute('data-unbounded')) elem.removeAttribute('data-unbounded');
-    elem.setAttribute('unbounded', '');
+    elem.classList.add('unbounded-ripple');
   });
 
   rippleTypes.recentered.forEach(function(elem) {
-    if (elem.hasAttribute('data-recentered')) elem.removeAttribute('data-recentered');
-    elem.setAttribute('recentered', '');
+    elem.classList.add('recentered-ripple');
   });
 
   // Set up elements so they can have ripples.
@@ -94,7 +99,7 @@ mw.hook('wikipage.content').add(function() {
     var rippleContainer = document.createElement('div');
     rippleContainer.classList.add('ripple-surface');
     elem.appendChild(rippleContainer);
-    elem.setAttribute('ripple', '');
+    elem.classList.add('has-ripple');
 
     // Make it also respond to "Enter"/"Space" key presses (maybe we could
     // add a small countdown here to prevent users from spamming it?).
@@ -150,8 +155,8 @@ mw.hook('wikipage.content').add(function() {
       'timingFunction': getComputedStyle(elem).getPropertyValue('--ripple-config__timing-function')
     };
 
-    var centered = elem.hasAttribute('unbounded');
-    var recentered = elem.hasAttribute('recentered');
+    var unbounded = elem.classList.contains('unbounded-ripple');
+    var recentered = elem.classList.contains('recentered-ripple');
 
     var MAX_RADIUS_PX = numVal(CSSConfig.maxRadius) || 300;
     var MIN_DURATION_MS = numVal(CSSConfig.minDuration) || 800;
@@ -165,7 +170,7 @@ mw.hook('wikipage.content').add(function() {
       return Math.round(rect.height / 2);
     };
 
-    if (centered || isKeyPressed) {
+    if (unbounded || isKeyPressed) {
       var x = roundedCenterX();
       var y = roundedCenterY();
     } else {
@@ -290,7 +295,7 @@ mw.hook('wikipage.content').add(function() {
   var observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
       mutation.addedNodes.forEach(function(elem) {
-        var lazyElements = new Set(Array.from(elem.querySelectorAll(':is(.wds-button, .user-profile-navigation__link, .wds-floating-button, .wds-dropdown__toggle, .ViewMoreReplies, .content-size-toggle, [class^="ActionItem_action-item"], li, [class*="EntityTopBar_icon-trash-open"], .rich-text-editor__toolbar__icon-controls, .rich-text-editor__toolbar__icon-wrapper, button, .wikiEditor-ui-toolbar .oo-ui-buttonElement-button, .editOptions .oo-ui-buttonElement-button, .oo-ui-tool-link, .oo-ui-popupToolGroup-handle, .ui-button, .wikiEditor-ui-toolbar .page-characters div span, .wikiEditor-ui-toolbar .booklet > .index > div, .ve-fd-header__actions a, .ve-ui-summaryPanel-checkboxActionRow .oo-ui-buttonElement-button, .ve-ui-summaryPanel-checkboxActionRow .oo-ui-buttonElement):not([ripple], [no-ink])')));
+        var lazyElements = new Set(Array.from(elem.querySelectorAll(':is(.wds-button, .user-profile-navigation__link, .wds-floating-button, .wds-dropdown__toggle, .ViewMoreReplies, .content-size-toggle, [class^="ActionItem_action-item"], li, [class*="EntityTopBar_icon-trash-open"], .rich-text-editor__toolbar__icon-controls, .rich-text-editor__toolbar__icon-wrapper, button, .wikiEditor-ui-toolbar .oo-ui-buttonElement-button, .editOptions .oo-ui-buttonElement-button, .oo-ui-tool-link, .oo-ui-popupToolGroup-handle, .ui-button, .wikiEditor-ui-toolbar .page-characters div span, .wikiEditor-ui-toolbar .booklet > .index > div, .ve-fd-header__actions a, .ve-ui-summaryPanel-checkboxActionRow .oo-ui-buttonElement-button, .ve-ui-summaryPanel-checkboxActionRow .oo-ui-buttonElement):not(.has-ripple, .has-ripple.no-ink)')));
         lazyElements.forEach(function(elem) {
           ripplesInit(elem);
         });

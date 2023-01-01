@@ -11,6 +11,7 @@
         return;
     }
 	
+	//Back to top JS import style setting
 	window.BackToTopModern = true;
 	
 	/* Articles are interwiki links so that other wikis can use them. */
@@ -127,7 +128,6 @@
         '2442cc': ['retiredstaff'],
     };
     
-    
 	$(function() {
 	   // Change Random Page button to only go to pages in the mainspace
 	   $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
@@ -160,6 +160,17 @@
 			$(this).attr('src', $(this).attr('src').split('/revision/')[0]);
 		});
 	}
+	
+	/*Random selection function- randomly selects child of class. Use:
+	<div class="random-selection">
+	<div>Random option 1</div><div>Random option 2</div><div>Random option 3</div>
+	</div>
+	*/
+	$('.random-selection').each(function () {
+		var number = $(this).children().length;
+		var random = Math.floor(Math.random() * (number) + 1);
+		$(this).children('*:nth-child(' + random + ')').addClass('active');
+	});
 
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));

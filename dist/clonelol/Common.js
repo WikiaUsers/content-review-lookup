@@ -105,22 +105,23 @@ $(function() {
 	});
 });
 
-$(function() {
-	if (!$('.mw-special-Movepage').length) return;
-	var title = mw.config.get('wgTitle').replace('MovePage/', '');
-	return new mw.Api().get({
-		action : 'query',
-		prop:'info',
-		titles:'Data:' + title
-	}).then(function(data) {
-		if (data.query.pages["-1"] !== undefined) return;
-		var el = document.createElement('div');
-		var url = mw.config.get('wgServer') + '/Data:' + title;
-		$(el).html('Warning! A <a href="' + url + '">Data page</a> exists for this page!');
-		$(el).addClass('important-notice');
-		$(el).insertAfter(document.getElementById('wpReason'));
-	});
-});
+// MAIN-28223
+// $(function() {
+//	if (!$('.mw-special-Movepage').length) return;
+//	var title = mw.config.get('wgTitle').replace('MovePage/', '');
+//	return new mw.Api().get({
+//		action : 'query',
+//		prop:'info',
+//		titles:'Data:' + title
+//	}).then(function(data) {
+//		if (data.query.pages["-1"] !== undefined) return;
+//		var el = document.createElement('div');
+//		var url = mw.config.get('wgServer') + '/Data:' + title;
+//		$(el).html('Warning! A <a href="' + url + '">Data page</a> exists for this page!');
+//		$(el).addClass('important-notice');
+//		$(el).insertAfter(document.getElementById('wpReason'));
+//	});
+//});
 
 $(function() {
     $('.mw-special-CargoTables .cargoTable th.field_Page').html('_pageName');

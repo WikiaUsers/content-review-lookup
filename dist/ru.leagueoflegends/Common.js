@@ -211,5 +211,21 @@ mw.hook('wikipage.content').add(function(elem) {
             }
         });
     });
+}).add(function() {
+	$("body.ns-14").find(".wikia-gallery-item").each(function() {
+		var $oggImg = $(this).find("img[data-image-name$='.ogg']");
+		if(!$.isEmptyObject($oggImg)) {
+			$(this).addClass("wikia-custom-ogg-gallery-item");
+			$(this).removeClass("wikia-gallery-item");
+			$(this).css("width", "");
+			$(this).find(".thumb").css("height", "");
+			$(this).find(".gallery-image-wrapper").css({
+				width: "",
+				height: ""
+			});
+			var $oggName = $(this).find("img").first().attr("data-image-name");
+			$(this).find("a img").replaceWith($oggName);
+		}
+	});
 });
 /* DO NOT ADD CODE BELOW THIS LINE */

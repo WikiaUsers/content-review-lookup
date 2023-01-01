@@ -32,26 +32,22 @@
     var articleWrapper = document.getElementById('content');
     var progressBarWrapper = document.createElement('div');
     var progressBar = document.createElement('div');
+    var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight;
     progressBarWrapper.classList.add('article-progress-bar');
     progressBar.classList.add('article-progress-bar__indicator');
-    progressBarWrapper.setAttribute('id', 'read-progress-bar-wrapper');
-    progressBar.setAttribute('id', 'read-progress-bar');
     navBar.appendChild(progressBarWrapper);
     progressBarWrapper.appendChild(progressBar);
 
     // Defining progress bar functionality.
-    function articleHeight() {
-      return articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight;
-    }
-  
     function scrolledProgressBar() {
-      var percentage = window.pageYOffset / articleHeight() * 100;
-      progressBar.style.width = percentage + '%',
+      var percentage = window.pageYOffset / articleHeight * 100;
+      progressBar.style.transform = 'translateX(' + (percentage - 100) + '%)',
       percentage >= 100 ? hideProgressBar() : showProgressBar();
     }
   
     function hideProgressBar() {
       progressBarWrapper.classList.add('hide');
+      progressBar.style.transform = 'translateX(' + 100 + '%)';
     }
   
     function showProgressBar() {
@@ -61,7 +57,7 @@
     ['scroll', 'resize'].forEach(function(event) {
       window.addEventListener(event, function() {
         scrolledProgressBar();
-      }, false);
+      }, { passive: true }, false);
     });
   }
 }(window.mediaWiki));

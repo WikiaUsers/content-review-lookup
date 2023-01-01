@@ -1,1 +1,0 @@
-$('.page-header__contribution>div:first-child').append($('.title-eraicons').first());
