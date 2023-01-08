@@ -9,7 +9,7 @@
     multistr: true, maxerr: 999999,
     -W082, -W084, -W097
 */
-/* global mw, ace, console, confirm, alert, prompt */
+/* global mw, ace, importArticles */
 
 $.when(
     $.Deferred(function (def) {
@@ -1273,13 +1273,12 @@ $.when(
 
         // entry point
         init: function () {
-            $("<link>", {
-                rel: "stylesheet",
-                href: new mw.Title("Gadget-TooltipsEditor.css", 8).getUrl({
-                    action: "raw",
-                    ctype: "text/css"
-                })
-            }).appendTo("head");
+            importArticles({
+                type: "style",
+                articles: [
+                    "MediaWiki:Gadget-TooltipsEditor.css",
+                ],
+            });
 
             $(".editTooltips").click(function () {
                 api.get({

@@ -12,6 +12,10 @@
     if (window.dev.modal) {
         return;
     }
+    
+    importArticle({
+    	article: 'u:dev:MediaWiki:Modal.css'
+    });
 
     /**
      * Module exports.
@@ -543,8 +547,8 @@
          * Close modal when clicked outside of the modal
          * (by [[User:Noreplyz]] for [[WHAM]]).
          */
-        this._modal.$frame.parent().click($.proxy(function(event) {
-            if ($(event.target).attr('id') === this.id) {
+        this._modal.$frame.next().click($.proxy(function(event) {
+            if ($(event.target).parent().attr('id') === this.id) {
                 this._modal.close();
             }
         }, this));

@@ -5,7 +5,19 @@
  * @author MonkeysHK <https://dev.fandom.com/wiki/User:MonkeysHK>
  * @license BSD-3 clause <https://opensource.org/licenses/BSD-3-Clause>
  */
-
+/* jshint
+    esversion: 5, esnext: false, forin: true,
+    immed: true, indent: 4,
+    latedef: true, newcap: true,
+    noarg: true, undef: true,
+    undef: true, unused: true,
+    browser: true, jquery: true,
+    onevar: true, eqeqeq: true,
+    multistr: true, maxerr: 999999,
+    forin: false,
+    -W082, -W084
+*/
+/* global mw, importArticles */
 (function () {
     if (window.partialLoadTool && window.partialLoadTool.Loaded)
         return;
@@ -106,8 +118,13 @@
                     requested_page = that.getFullPageName($tab.find(".partialLoad-tabs__label a").attr("data-page"));
                 that.loadPage($frame, requested_page, $parent, $tab);
             },
-            tabclick: function (event) {
+            tabclick: function () {
+                var $tab = $(this);
+                $tab.find(".partialLoad-tabs__label a").eq(0).trigger("click");
+            },
+            tabanchorclick: function (event) {
                 event.preventDefault();
+                event.stopPropagation();
                 var $this = $(this),
                     $parent = $this.parents(".partialLoad-tabber").eq(0),
                     $tab = $this.parents(".partialLoad-tabs__tab").eq(0),
@@ -216,10 +233,11 @@
                                                 text: tab.caption,
                                                 "data-page": tab.pagename,
                                                 "data-cache": tab.cache,
-                                                click: that.tabclick,
+                                                click: that.tabanchorclick,
                                             }),
                                             class: "partialLoad-tabs__label",
                                         }),
+                                        click: that.tabclick,
                                     });
                                 }),
                             }),
@@ -259,13 +277,12 @@
                     // prevents adding more TOC icons
                     $("#toc .toctitle .wds-icon:not(\":first-child\")").remove();
                 });
-                $("<link>", {
-                    rel: "stylesheet",
-                    href: new mw.Title("Gadget-PartialLoadTool.css", 8).getUrl({
-                        action: "raw",
-                        ctype: "text/css"
-                    })
-                }).appendTo("head");
+                importArticles({
+                    type: "style",
+                    articles: [
+                        "MediaWiki:Gadget-PartialLoadTool.css",
+                    ],
+                });
                 that.main();
             },
         });

@@ -61,7 +61,6 @@ UserTagsJS.modules.custom = {
 	'CombatSwift': ['owner'], // NOTE: order of list here does NOT matter
     'Coasterteam': ['facilitator'], // NOTE: order of list here does NOT matter
     'WickyTheUnicorn': ['pia'], // NOTE: order of list here does NOT matter
-    'Superstefano4': ['pia'], // NOTE: order of list here does NOT matter
     'Ood23doc': ['pia'], // NOTE: order of list here does NOT matter
     'CorruptBIOS': ['maintainer'], // NOTE: order of list here does NOT matter
     'Powershell_exe': ['maintainer'] // NOTE: order of list here does NOT matter

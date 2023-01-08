@@ -1,5 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/*
+/*Message Block*/
+window.MessageBlock = {
+	title : 'Blocked',
+	message : 'You have received a $2 block because you have $1. This is an automated message. If you need anymore help, please check our Discord Server at https://discord.gg/arenawiki .',
+	autocheck : true
+};
+
 /*Quiz*/
 window.quizName = "Quiz";
 window.quizLang = "en";

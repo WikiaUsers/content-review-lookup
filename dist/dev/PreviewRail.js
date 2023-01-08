@@ -1,13 +1,26 @@
 (function($) {
-	if (window.PreviewRail) return;
-	window.PreviewRail = true;
-	$( '#wikiPreview, .oo-ui-window-frame, .ve-init-mw-desktopArticleTarget-originalContent' ).prepend('<div class="wikiPreview__wrapper__right with-rail"><div class="wikiPreview__toggle-button"><button class="right-rail-toggle"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></button></div></div>');
+	var togglebutton = "<div class='wikiPreview__wrapper__right with-rail'><button class='wikiPreview__toggle-button'><svg class='wds-icon wds-icon-tiny'><use xlink:href='#wds-icons-menu-control-tiny'></use></svg></button></div>";
 	
-	$(function() {
+	function togglerail () {
 		$(".wikiPreview__toggle-button").click(function() {
-			$("#wikiPreview .wikiPreview__wrapper__right").toggleClass("with-rail");
+			$(".wikiPreview__wrapper__right").toggleClass("with-rail");
 		});
-	});
+	}
+	mw.hook( 've.activationComplete' ).add( function () {
+		var surface = ve.init.target.getSurface();
+		if ( surface.getMode() === 'visual' ) {
+			$( '.ve-active .page__main' ).prepend(togglebutton);
+			togglerail();
+		} else if ( surface.getMode() === 'source' ) {
+			$(".ve-ui-summaryPanel-previewButton .oo-ui-buttonElement-button").click(function() {
+				$( '.oo-ui-window-frame' ).prepend(togglebutton);
+				togglerail();
+			});
+		}
+	} );
+	
+	$( '#wikiPreview' ).prepend(togglebutton);
+	togglerail();
 	
 	importArticle({
         type: 'style',

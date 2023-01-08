@@ -59,9 +59,10 @@ JWB.messages.en = {
 	'tip-update-setup':		'Refresh the settings stored on your /$1-settings.js page',
 	
 	// Tab 2
+	'label-edit-settings':	'Edit settings',
 	'edit-summary':			'Summary:',
 	'minor-edit':			'Minor edit',
-	'tip-via-JWB':			'Add (via JWB script) to the end of your summary',
+	'tip-via-JWB':			'Add “via JWB script” to the end of your summary',
 	'watch-add':			'add now',
 	'watch-remove':			'remove now',
 	'watch-nochange':		'Don\'t modify watchlist',
@@ -71,12 +72,14 @@ JWB.messages.en = {
 	'auto-save':			'Save automatically',
 	'save-interval':		'every $1 sec', //$1 represents the throttle/interval input element
 	'tip-save-interval':	'Amount of seconds to pause between each edit',
+	'label-edit-actions':	'Edit actions',
 	'editbutton-stop':		'Stop',
 	'editbutton-start':		'Start',
 	'editbutton-save':		'Save',
 	'editbutton-preview':	'Preview',
 	'editbutton-skip':		'Skip', // This message is also used in tab 4
 	'editbutton-diff':		'Diff',
+	'label-find-replace':	'Find and replace settings',
 	'button-open-popup':	'More replace fields',
 	'button-more-fields':	'Add more fields',
 	'label-replace':		'Replace:',
@@ -89,6 +92,7 @@ JWB.messages.en = {
 	'tip-ignore-comment':	'Ignore comments and text within nowiki, source, math, or pre tags.',
 	'label-enable-RETF':	'Enable $1',
 	'label-RETF':			'RegEx Typo Fixing',
+	'label-refresh-RETF':	'Refresh typos list',
 	'tip-refresh-RETF':		'Refresh the typos list for new modifications.',
 	
 	// Tab 3
@@ -125,8 +129,10 @@ JWB.messages.en = {
 	'protect-autoconf':		'Autoconfirmed',
 	'protect-sysop':		'Sysop only',
 	'protect-expiry':		'Expiry:',
+	'page-actions-header':	'Page actions',
 
 	//Dialog boxes
+	'cnpnr-title':			'Namespace prefix not required.',
 	'confirm-leave':		'Closing this tab will cause you to lose all progress.',
 	'alert-no-move':		'Please enter the new pagename before clicking move.',
 	'not-on-list':			'Your username was not found on the JWB checklist. Please request access by contacting an administrator.',
@@ -319,6 +325,11 @@ JWB.messages.be = {
 	'protect-autoconf':		'Новыя і незарэгістраваныя ўдзельнікі',
 	'protect-sysop':		'Толькі адміністратары',
 	'protect-expiry':		'Сканчаецца:',
+	
+	// Tab 5
+	'log-time-header':		'Timestamp',
+	'log-action-header':	'Action',
+	'log-page-header':		'Page',
 
 	//Dialog boxes
 	'confirm-leave':		'Зачыненне гэтай укладкі прывядзе да страты ўсіх вынікаў.',

@@ -26,29 +26,19 @@
 window.JWB = {}; //The main global object for the script.
 /***** User verification *****/
 (function() {
-	if (wgCanonicalNamespace+':'+wgTitle !== 'Project:AutoWikiBrowser/Script' || JWB.allowed === false || mw.config.get('wgUserName') === null) {
+	if (
+	    mw.config.get('wgNamespaceNumber') !== 4 ||
+	    mw.config.get('wgTitle') !== 'AutoWikiBrowser/Script' ||
+	    JWB.allowed === false ||
+	    mw.config.get('wgUserName') === null
+	) {
 		JWB.allowed = false;
 		return;
 	}
-	mw.loader.load('https://en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.css&action=raw&ctype=text/css', 'text/css');
+
+	importArticle({ article: 'u:dev:MediaWiki:JWB.css' });
 	mw.loader.load('mediawiki.diff.styles');
-	
-	//temp? diff color fix
-	mw.loader.using('mediawiki.util').then(function () {
-		mw.util.addCSS('\
-			.diff td.diff-context {\
-			    color: unset;\
-			    border-color: #eaecf0;\
-			}\
-			.diff td.diff-deletedline {\
-			    background-color: unset;\
-			}\
-			.diff td.diff-addedline {\
-			    background-color: unset;\
-			}\
-		');
-	});
-	
+
 	mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:JWB/i18n.js?action=raw&ctype=text/javascript').then(function() {
 		if (JWB.allowed === true) {
 			JWB.init(); //init if verification has already returned true
@@ -80,7 +70,7 @@ window.JWB = {}; //The main global object for the script.
 			return;
 		}
 		JWB.ns = response.query.namespaces; //saving for later
-		
+
 		JWB.username = response.query.userinfo.name; //preventing any "hacks" that change wgUserName or mw.config.wgUserName
 		var groups = response.query.userinfo.groups;
 		var page = response.query.pages[response.query.pageids[0]];
@@ -200,7 +190,7 @@ JWB.api.diff = function(callback) {
 			var diffpage = response.query.pages[response.query.pageids[0]];
 			diff = diffpage.revisions[0].diff['*'];
 			if (diff === '') {
-				diff = '<h2>'+JWB.msg('no-changes-made')+'</h2>';
+				diff = '<div class="log-row log-skipped">' + JWB.msg('no-changes-made') + '</div>';
 			} else {
 				diff = '<table class="diff">'+
 					'<colgroup>'+
@@ -209,10 +199,10 @@ JWB.api.diff = function(callback) {
 						'<col class="diff-marker">'+
 						'<col class="diff-content">'+
 					'</colgroup>'+
-					'<tbody>'+diff+'</tbody></table>';
+					'<tbody>' + diff + '</tbody></table>';
 			}
 		} else {
-			diff = '<span style="font-weight:bold;color:red;">'+JWB.msg('page-not-exists')+'</span>';
+			diff = '<div class="log-row log-error">' + JWB.msg('page-not-exists') + '</div>';
 		}
 		$('#resultWindow').html(diff);
 		$('.diff-lineno').each(function() {
@@ -327,7 +317,7 @@ JWB.api.get = function(pagename) {
 JWB.api.submit = function(page) {
 	JWB.status('submit');
 	var summary = $('#summary').val();
-	if ($('#summary').parent('label').hasClass('viaJWB')) summary += ' (via JWB)';
+	if ($('#summary').parent('label').hasClass('viaJWB')) summary += ' (via JWB)'; // @todo: i18n this string.
 	if ((typeof page === 'text' && page !== JWB.page.name) || $('#currentpage a').html().replace(/&amp;/g, '&') !== JWB.page.name) {
 		console.log(page, JWB.page.name, $('#currentpage a').html());
 		JWB.stop();
@@ -535,7 +525,7 @@ JWB.pl.getList = function(abbrs, lists, data) {
 //JWB.pl.getList(['wr'], ['watchlistraw'], {}) for watchlists
 JWB.pl.generate = function() {
 	var $fields = $('#pagelistPopup fieldset').not('[disabled]');
-	var spinner = '<img src="//upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif" width="15" height="15" alt="'+JWB.msg('status-alt')+'"/>';
+	var spinner = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
 	$('#pagelistPopup').find('button[type="submit"]').append(spinner);
 	var abbrs = [], lists = [], data = {'continue': ''};
 	$fields.each(function() {
@@ -798,7 +788,7 @@ JWB.status = function(action, done) {
 	$('#summary, .editbutton').prop('disabled', !done); //Disable box when not done (so busy loading). re-enable when done loading.
 	var status = JWB.msg('status-'+action);
 	if (status === false) return;
-	var spinImg = '<img src="//upload.wikimedia.org/wikipedia/commons/d/de/Ajax-loader.gif" width="15" height="15" alt="'+JWB.msg('status-alt')+'"/>';
+	var spinImg = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
 	if (status) {
 		if (!done) { //spinner if not done
 			status += ' ' + spinImg;
@@ -873,11 +863,14 @@ JWB.replaceParsed = function(str, replace, flags, rwith) {
 		}
 	});
 };
-//Adds a line to the logs tab.
+
+// Adds a line to the logs tab.
 JWB.log = function(action, page, info) {
 	var d = new Date();
 	var pagee = encodeURIComponent(page);
-	var extraInfo = '', actionStat = '';
+	var extraInfo = '',
+		actionStat = '';
+
 	switch (action) {
 		case 'edit':
 			if (typeof info === 'undefined') {
@@ -885,31 +878,34 @@ JWB.log = function(action, page, info) {
 				actionStat = 'nullEdits';
 				extraInfo = '';
 			} else {
-				extraInfo = ' (<a target="_blank" href="'+JWB.index_php+'?title='+pagee+'&diff='+info+'">diff</a>)';
+				extraInfo = ' (<a target="_blank" href="' + JWB.index_php + '?title=' + pagee + '&diff=' + info + '">diff</a>)';
 				actionStat = 'pagesSaved';
 			}
-			break;
+		break;
 		case 'skip':
 			actionStat = 'pagesSkipped';
-			break;
+		break;
 		case 'move':
-			extraInfo = ' to <a target="_blank" href="/wiki/'+encodeURIComponent(info)+'" title="'+info+'">'+info+'</a>';
-			break;
+			extraInfo = ' to <a target="_blank" href="/wiki/'+encodeURIComponent(info)+'" title="' + info + '">' + info + '</a>';
+		break;
 		case 'protect':
 			extraInfo = info;
-			break;
+		break;
 	}
+
 	actionStat = '#' + (actionStat || 'otherActions');
 	$(actionStat).html(+$(actionStat).html() + 1);
 	$('#actionlog tbody')
-		.append('<tr>'+
-			'<td>'+(JWB.fn.pad0(d.getHours())+':'+JWB.fn.pad0(d.getMinutes())+':'+JWB.fn.pad0(d.getSeconds()))+'</td>'+
-			'<th>'+action+'</th>'+
-			'<td><a target="_blank" href="/wiki/'+pagee+'" title="'+page+'">'+page+'</a>'+ extraInfo +'</td>'+
-		'</tr>')
-		.parents('.JWBtabc').scrollTop($('#actionlog tbody').parents('.JWBtabc')[0].scrollHeight);
+		.append('<tr class="actionlog-row">'+
+			'<td class="actionlog-timestamp">' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') + ':' + String(d.getSeconds()).padStart(2, '0') + '</td>'+
+			'<td class="actionlog-action actionlog-action-' + action + '">' + action + '</td>'+
+			'<td class="actionlog-page"><a target="_blank" href="/wiki/' + pagee + '" title="' + page + '">' + page + '</a>' + extraInfo + '</td>'+
+		'</tr>');
+	// @todo: Fix automatic scroll-to-bottom in log table not working.
+	// .parents('.JWBtabc').scrollTop($('#actionlog-container').parents('.JWBtabc')[0].scrollHeight);
 };
-//Move to the next page in the list
+
+// Move to the next page in the list.
 JWB.next = function(nextPage) {
 	if ($.trim(nextPage) && !$('#skipAfterAction').prop('checked')) {
 		nextPage = $.trim(nextPage) + '\n';
@@ -921,7 +917,8 @@ JWB.next = function(nextPage) {
 	JWB.pageCount();
 	JWB.api.get(JWB.list[0].split('|')[0]);
 };
-//Stop everything, reset inputs and editor
+
+// Stop everything, reset inputs and editor.
 JWB.stop = function() {
 	$('#stopbutton,'+
         '.editbutton,'+
@@ -941,7 +938,8 @@ JWB.stop = function() {
 	JWB.status('done', true);
 	JWB.isStopped = true;
 };
-//Start AutoWikiBrowsing
+
+// Start AutoWikiBrowsing.
 JWB.start = function() {
 	JWB.pageCount();
 	if (JWB.list.length === 0 || (JWB.list.length === 1 && !JWB.list[0])) {
@@ -960,6 +958,7 @@ JWB.start = function() {
 		JWB.api.get(JWB.list[0].split('|')[0]);
 	}
 };
+
 JWB.updateButtons = function() {
 	if (!JWB.page.exists && $('#deletePage').is('.delete')) {
 		$('#deletePage').removeClass('delete').addClass('undelete').html('Undelete');
@@ -975,8 +974,9 @@ JWB.updateButtons = function() {
 	}
 	$('#watchNow').html( JWB.msg('watch-' + (JWB.page.watched ? 'remove' : 'add')) );
 };
+
 /***** General functions *****/
-//Clear all existing timers to prevent them from getting errors
+// Clear all existing timers to prevent them from getting errors.
 JWB.fn.clearAllTimeouts = function() {
 	var i = setTimeout(function() {
 		return void(0);
@@ -987,7 +987,8 @@ JWB.fn.clearAllTimeouts = function() {
 	}
 	console.log('Cleared all running intervals up to index',i);
 };
-//Filter an array to only contain unique values.
+
+// Filter an array to only contain unique values.
 JWB.fn.uniques = function(arr) {
 	var a = [];
 	for (var i=0, l=arr.length; i<l; i++) {
@@ -997,12 +998,7 @@ JWB.fn.uniques = function(arr) {
 	}
 	return a;
 };
-//Prepends zeroes until the number has the desired length of len (default 2)
-JWB.fn.pad0 = function(n, len) {
-	n = n.toString();
-	len = len||2;
-	return n.length < len ? Array(len-n.length).join('0')+n : n;
-};
+
 JWB.fn.blink = function(el,t) {
 	t=t?t:500;
 	$(el).prop('disabled', true)
@@ -1012,9 +1008,10 @@ JWB.fn.blink = function(el,t) {
 	.animate({opacity:'1'},t);
 	setTimeout("$('"+el+"').prop('disabled', false)",t*4-400);
 };
+
 JWB.fn.setSelection = function(el, start, end, dir) {
-    dir = dir||'none'; //Default value
-    end = end||start; //If no end is specified, assume the caret is placed without creating text selection.
+    dir = dir||'none'; // Default value.
+    end = end||start; // If no end is specified, assume the caret is placed without creating text selection.
     if (el.setSelectionRange) {
         el.focus();
         el.setSelectionRange(start, end, dir);
@@ -1026,6 +1023,7 @@ JWB.fn.setSelection = function(el, start, end, dir) {
         rng.select();
     }
 };
+
 JWB.fn.scrollSelection = function(el, index) { //function to fix scrolling to selection - doesn't do that automatically.
 	var newEl = document.createElement('textarea'); //create a new textarea to simulate the same conditions
 	var elStyle = getComputedStyle(el);
@@ -1042,7 +1040,8 @@ JWB.fn.scrollSelection = function(el, index) { //function to fix scrolling to se
 	}
 	newEl.remove(); //clean up the mess I've made
 };
-//i18n function
+
+// i18n function.
 JWB.msg = function(message) {
 	var args = arguments;
 	var lang = JWB.lang;
@@ -1063,123 +1062,164 @@ JWB.msg = function(message) {
 	});
 	return msg;
 };
+
 /***** Init *****/
 JWB.init = function() {
 	console.log(JWB.messages.en, !!JWB.messages.en);
 	JWB.setup.load();
 	JWB.fn.clearAllTimeouts();
 	if (!JWB.messages[JWB.lang] && JWB.lang != 'qqx') JWB.lang = 'en';
-	
+
+	var icons = {
+		'bookmark': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M0,0h24v24H0V0z" fill="none"></path><path d="M17,5v12.97l-4.21-1.81L12,15.82l-0.79,0.34L7,17.97V5H17 M17,3H7C5.9,3,5,3.9,5,5v16l7-3l7,3V5C19,3.9,18.1,3,17,3L17,3z"></path></svg>',
+		'delete': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24" class="material-icons"><path d="M0,0h24v24H0V0z" fill="none"></path><path d="M15,4V3H9v1H4v2h1v13c0,1.1,0.9,2,2,2h10c1.1,0,2-0.9,2-2V6h1V4H15z M17,19H7V6h10V19z M9,8h2v9H9V8z M13,8h2v9h-2V8z"></path></svg>',
+		'save': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19z"></path><circle cx="12" cy="15" r="3"></circle><path d="M6 6h9v4H6z"></path></svg>',
+		'download': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><rect fill="none" height="24" width="24" x="0"/><path d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z"/></svg>',
+		'upload': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><rect fill="none" height="24" width="24" x="0"/><path d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M7,9l1.41,1.41L11,7.83V16h2V7.83l2.59,2.58L17,9l-5-5L7,9z"/></svg>',
+		'refresh': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M13 9v2h7V4h-2v2.74C16.53 5.07 14.4 4 12 4c-2.21 0-4.21.9-5.66 2.34S4 9.79 4 12c0 4.42 3.58 8 8 8 2.21 0 4.21-.9 5.66-2.34l-1.42-1.42C15.15 17.33 13.65 18 12 18c-3.31 0-6-2.69-6-6 0-1.65.67-3.15 1.76-4.24C8.85 6.67 10.35 6 12 6c2.21 0 4.15 1.21 5.19 3H13z"/></svg>',
+		'add': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><rect fill="none" height="24" width="24"/><path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"/></svg>',
+		'play': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"/></svg>',
+		'stop': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 19h-6V5h6v14zm-4-2h2V7h-2v10zm-4 2H5V5h6v14zm-4-2h2V7H7v10z"/></svg>',
+		'skip': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>',
+		'preview': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"><rect fill="none" height="24" width="24"/><path d="M19,3H5C3.89,3,3,3.9,3,5v14c0,1.1,0.89,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.11,3,19,3z M19,19H5V7h14V19z M13.5,13 c0,0.83-0.67,1.5-1.5,1.5s-1.5-0.67-1.5-1.5c0-0.83,0.67-1.5,1.5-1.5S13.5,12.17,13.5,13z M12,9c-2.73,0-5.06,1.66-6,4 c0.94,2.34,3.27,4,6,4s5.06-1.66,6-4C17.06,10.66,14.73,9,12,9z M12,15.5c-1.38,0-2.5-1.12-2.5-2.5c0-1.38,1.12-2.5,2.5-2.5 c1.38,0,2.5,1.12,2.5,2.5C14.5,14.38,13.38,15.5,12,15.5z"/></svg>',
+		'diff': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"><rect fill="none" height="24" width="24"/><path d="M18,23H4c-1.1,0-2-0.9-2-2V7h2v14h14V23z M15,1H8C6.9,1,6.01,1.9,6.01,3L6,17c0,1.1,0.89,2,1.99,2H19c1.1,0,2-0.9,2-2V7 L15,1z M16.5,15h-6v-2h6V15z M16.5,9h-2v2h-2V9h-2V7h2V5h2v2h2V9z"/></svg>',
+		'move': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><rect fill="none" height="24" width="24"/><path d="M22,8l-4-4v3H3v2h15v3L22,8z"/><path d="M2,16l4,4v-3h15v-2H6v-3L2,16z"/></svg>',
+		'protect': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M0,0h24v24H0V0z" fill="none"/><path d="M18,8h-1V6c0-2.76-2.24-5-5-5S7,3.24,7,6v2H6c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V10 C20,8.9,19.1,8,18,8z M9,6c0-1.66,1.34-3,3-3s3,1.34,3,3v2H9V6z M18,20H6V10h12V20z M12,17c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2 S10.9,17,12,17z"/></svg>',
+		'done': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M0,0h24v24H0V0z" fill="none"/><polygon points="18.7,6 9.53,15.17 5.28,10.93 3.87,12.35 9.53,18 20.13,7.4"/></svg>',
+		'page': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>',
+		'block': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"/></svg>',
+		'info': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M0,0h24v24H0V0z" fill="none"/><path d="M12,7c-0.55,0-1,0.45-1,1s0.45,1,1,1s1-0.45,1-1S12.55,7,12,7z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10 S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8c0-4.41,3.59-8,8-8s8,3.59,8,8C20,16.41,16.41,20,12,20z M11,17h2v-6h-2V17z"/></svg>'
+	};
+
 	var findreplace = '<div class="replaces">'+
-		'<label style="display:block;">'+JWB.msg('label-replace')+' <input type="text" class="replaceText"/></label>'+
-		'<label style="display:block;">'+JWB.msg('label-rwith')+' <input type="text" class="replaceWith"/></label>'+
+		'<div class="wds-input">'+
+		'<label for="replace" id="label-replace">' + JWB.msg('label-replace') + '</label>'+
+			'<input type="text" class="wds-input__field replaceText" id="replace"/>'+
+		'</div>'+
+		'<div class="wds-input">'+
+			'<label for="replace-with" id="label-replace-with">' + JWB.msg('label-rwith') + '</label>'+
+			'<input type="text" class="wds-input__field replaceWith" id="replace-with"/>'+
+		'</div>'+
 		'<div class="regexswitch">'+
-			'<label><input type="checkbox" class="useRegex"> '+JWB.msg('label-useregex')+'</label>'+
-			'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" class="useRegex" id="useRegex">'+
+				'<label for="useRegex">'+JWB.msg('label-useregex')+'</label>'+
+				'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
+			'</div>'+
 			'<label class="divisor" title="'+JWB.msg('tip-regex-flags')+'" style="display:none;">'+
 				JWB.msg('label-regex-flags')+' <input type="text" class="regexFlags" value="g"/>'+ //default: global replacement
 			'</label>'+
 			'<br/>'+
 		'</div>'+
-		'<label title="'+JWB.msg('tip-ignore-comment')+'">'+
-			'<input type="checkbox" class="ignoreNowiki"> '+JWB.msg('label-ignore-comment')+
-		'</label>'+
+		'<div class="wds-checkbox">'+
+			'<input type="checkbox" class="ignoreNowiki" id="ignoreNowiki">'+
+			'<label for="ignoreNowiki" title="'+JWB.msg('tip-ignore-comment')+'">'+JWB.msg('label-ignore-comment')+'</label>'+
+		'</div>'+
+		'<div class="wds-checkbox">'+
+			'<input type="checkbox" id="enableRETF">'+
+			'<label for="enableRETF">'+JWB.msg('label-enable-RETF', '<a href="https://en.wikipedia.org/wiki/Project:AutoWikiBrowser/Typos" id="regex-link" target="_blank">'+JWB.msg('label-RETF')+'</a>')+'</label>'+
+		'</div>'+
 	'</div>';
-	
+
 	var NSList = '<select multiple name="namespace" id="namespacelist">';
 	for (var i in JWB.ns) {
 		if (parseInt(i) < 0) continue; //No Special: or Media: in the list
 		NSList += '<option value="'+JWB.ns[i].id+'" selected>'+(JWB.ns[i]['*'] || '('+JWB.msg('namespace-main')+')')+'</option>';
 	}
 	NSList += '</select>';
-	
+
 	/***** Interface *****/
-	
+
 	document.title = 'AutoWikiBrowser Script'+(document.title.split('-')[1] ? ' -'+document.title.split('-')[1] : '');
 	$('body').html(
-		'<article id="resultWindow"></article>'+
-		'<main id="inputsWindow">'+
-			'<div id="inputsBox">'+
-				'<aside id="articleBox">'+
-					'<b>'+JWB.msg('pagelist-caption')+'</b>'+
-					'<textarea id="articleList"></textarea>'+
-				'</aside>'+
-				'<section id="tabs">'+
-					'<nav class="tabholder">'+
-						'<span class="JWBtab" data-tab="1">'+JWB.msg('tab-setup')+'</span> '+
-						'<span class="JWBtab active" data-tab="2">'+JWB.msg('tab-editing')+'</span> '+
-						'<span class="JWBtab" data-tab="3">'+JWB.msg('tab-skip')+'</span> '+
-						(JWB.sysop?'<span class="JWBtab" data-tab="4">'+JWB.msg('tab-other')+'</span> ':'')+
-						' <span class="JWBtab log" data-tab="5">'+JWB.msg('tab-log')+'</span> '+
-					'</nav>'+
-					'<section class="JWBtabc" data-tab="1"></section>'+
-					'<section class="JWBtabc active" data-tab="2"></section>'+
-					'<section class="JWBtabc" data-tab="3"></section>'+
-					(JWB.sysop?'<section class="JWBtabc" data-tab="4"></section>':'')+
-					'<section class="JWBtabc log" data-tab="5"></section>'+
-					'<footer id="status">done</footer>'+
-				'</section>'+
-				'<aside id="editBox">'+
-					'<b>'+JWB.msg('editbox-caption')+' - <span id="currentpage">'+JWB.msg('editbox-currentpage', ' ', ' ')+'</span></b>'+
-					'<textarea id="editBoxArea"></textarea>'+
-				'</aside>'+
-			'</div>'+
-		'</main>'+
-		'<footer id="stats">'+
-			JWB.msg('stat-pages')+' <span id="totPages">0</span>;&emsp;'+
-			JWB.msg('stat-save')+' <span id="pagesSaved">0</span>;&emsp;'+
-			JWB.msg('stat-null')+' <span id="nullEdits">0</span>;&emsp;'+
-			JWB.msg('stat-skip')+' <span id="pagesSkipped">0</span>;&emsp;'+
-			JWB.msg('stat-other')+' <span id="otherActions">0</span>;&emsp;'+
-		'</footer>'+
-		'<div id="overlay" style="display:none;"></div>'+
-		'<section class="JWBpopup" id="replacesPopup" style="display:none;">'+
-			'<button id="moreReplaces">'+JWB.msg('button-more-fields')+'</button>'+
-			'<br>'+findreplace+
-		'</section>'+
-		'<section class="JWBpopup" id="pagelistPopup" style="display:none;">'+
-			'<form action="javascript:JWB.pl.generate();"></form>'+
-		'</section>'
+		'<div class="AWB-container">'+
+			'<main id="inputsWindow">'+
+				'<div id="inputsBox">'+
+					'<section id="tabs">'+
+						'<nav class="tabholder">'+
+							'<button class="JWBtab" data-tab="1">'+JWB.msg('tab-setup')+'</button> '+
+							'<button class="JWBtab active" data-tab="2">'+JWB.msg('tab-editing')+'</button> '+
+							'<button class="JWBtab" data-tab="3">'+JWB.msg('tab-skip')+'</button> '+
+							(JWB.sysop?'<button class="JWBtab" data-tab="4">'+JWB.msg('tab-other')+'</button> ':'')+
+							' <button class="JWBtab log" data-tab="5">'+JWB.msg('tab-log')+'</button> '+
+						'</nav>'+
+						'<section class="JWBtabc" data-tab="1"></section>'+
+						'<section class="JWBtabc active" data-tab="2"></section>'+
+						'<section class="JWBtabc" data-tab="3"></section>'+
+						(JWB.sysop?'<section class="JWBtabc" data-tab="4"></section>':'')+
+						'<section class="JWBtabc log" data-tab="5"></section>'+
+						'<footer id="status">Done</footer>'+
+					'</section>'+
+					'<aside id="articleBox">'+
+						'<b>'+JWB.msg('pagelist-caption')+'</b>'+
+						'<textarea id="articleList"></textarea>'+
+					'</aside>'+
+					'<aside id="editBox">'+
+						'<b>'+JWB.msg('editbox-caption')+' - <span id="currentpage">'+JWB.msg('editbox-currentpage', ' ', ' ')+'</span></b>'+
+						'<textarea id="editBoxArea"></textarea>'+
+					'</aside>'+
+				'</div>'+
+			'</main>'+
+			'<article id="resultWindow"></article>'+
+			'<footer id="stats">'+
+				'<div class="footer-stat">' + icons.page + JWB.msg('stat-pages') + '&nbsp;<span id="totPages">0</span></div>'+
+				'<div class="footer-stat">' + icons.done + JWB.msg('stat-save') + '&nbsp;<span id="pagesSaved">0</span></div>'+
+				'<div class="footer-stat">' + icons.block + JWB.msg('stat-null') + '&nbsp;<span id="nullEdits">0</span></div>'+
+				'<div class="footer-stat">' + icons.skip + JWB.msg('stat-skip') + '&nbsp;<span id="pagesSkipped">0</span></div>'+
+				'<div class="footer-stat">' + icons.info + JWB.msg('stat-other') + '&nbsp;<span id="otherActions">0</span></div>'+
+			'</footer>'+
+			'<div id="overlay" style="display:none;"></div>'+
+			'<section class="JWBpopup" id="replacesPopup" style="display:none;">'+
+			// @todo: add sticky header, place this button and add a close button too.
+				'<button class="wds-button" id="moreReplaces">' + JWB.msg('button-more-fields') + '</button>'+
+				findreplace+
+			'</section>'+
+			'<section class="JWBpopup" id="pagelistPopup" style="display:none;">'+
+				'<form action="javascript:JWB.pl.generate();"></form>'+
+			'</section>'+
+		'</div>'
 	);
-	
+
 	$('.JWBtabc[data-tab="1"]').html(
 		'<fieldset id="pagelist">'+
 			'<legend>'+JWB.msg('label-pagelist')+'</legend>'+
-			'<button id="removeDupes">'+JWB.msg('button-remove-dupes')+'</button> '+
-			'<button id="sortArticles">'+JWB.msg('button-sort')+'</button>'+
-			'<br>'+
-			'<label title="'+JWB.msg('tip-preparse')+'">'+
-				'<input type="checkbox" id="preparse"> '+JWB.msg('preparse')+
-			'</label>'+
-			'<span class="divisor"></span>'+
-			'<button id="preparse-reset" title="'+JWB.msg('tip-preparse-reset')+'">'+JWB.msg('preparse-reset')+'</button>'+
-			'<br>'+
-			'<button id="pagelistButton">'+JWB.msg('pagelist-generate')+'</button>'+
+			'<button class="wds-button" id="removeDupes">'+JWB.msg('button-remove-dupes')+'</button> '+
+			'<button class="wds-button" id="sortArticles">'+JWB.msg('button-sort')+'</button>'+
+			'<button class="wds-button" id="preparse-reset" title="'+JWB.msg('tip-preparse-reset')+'">'+JWB.msg('preparse-reset')+'</button>'+
+			'<button class="wds-button" id="pagelistButton">'+JWB.msg('pagelist-generate')+'</button>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="preparse">'+
+				'<label for="preparse" title="'+JWB.msg('tip-preparse')+'">'+JWB.msg('preparse')+'</label>'+
+			'</div>'+
 		'</fieldset>'+
 		'<fieldset id="settings">'+
 			'<legend>'+JWB.msg('label-settings')+'</legend>'+
-			'<button id="saveAs" title="'+JWB.msg('tip-store-setup')+'">'+JWB.msg('store-setup')+'</button>'+
-			'<br>'+
-			'<label>'+
+			'<label id="loadSettingsLabel">'+
 				JWB.msg('load-settings') + ' '+
 				'<select id="loadSettings">'+
 					'<option value="default" selected>default</option>'+
 					'<option value="_blank">'+JWB.msg('blank-setup')+'</option>'+
 				'</select>'+
 			'</label>'+
-			'<span class="divisor"></span>'+
-			'<button id="deleteSetup" title="'+JWB.msg('tip-delete-setup')+'">'+JWB.msg('delete-setup')+'</button>'+
-			'<hr>'+
-			'<button id="saveToWiki">'+JWB.msg('save-setup')+'</button>'+
-			'<span class="divisor"></span>'+
-			'<button id="download">'+JWB.msg('download-setup')+'</button>'+
-			'<hr>'+
-			'<label class="button" id="importLabel" title="'+JWB.msg('tip-import-setup')+'">'+
+			'<button class="wds-button" id="saveAs" title="' + JWB.msg('tip-store-setup') + '">'+
+				icons.bookmark + '<span class="wds-button__label" id="saveAs-label">' + JWB.msg('store-setup') + '</span>'+
+			'</button>'+
+			'<button class="wds-button" id="deleteSetup" title="' + JWB.msg('tip-delete-setup') + '">'+
+				icons.delete + '<span class="wds-button__label" id="deleteSetup-label">' + JWB.msg('delete-setup') + '</span>'+
+			'</button>'+
+			'<button class="wds-button" id="saveToWiki">'+
+				icons.save + '<span class="wds-button__label" id="saveToWiki-label">' + JWB.msg('save-setup') + '</span>'+
+			'</button>'+
+			'<button class="wds-button" id="download">'+
+				icons.download + '<span class="wds-button__label" id="download-label">' + JWB.msg('download-setup') + '</span>'+
+			'</button>'+
+			'<label class="wds-button" id="importLabel" title="' + JWB.msg('tip-import-setup') + '">'+
 				'<input type="file" id="import" accept=".json">'+
-				JWB.msg('import-setup')+
+				icons.upload + '<span class="wds-button__label" id="import-label">' + JWB.msg('import-setup') + '</span>'+
 			'</label>'+
-			'<span class="divisor"></span>'+
-			'<button id="updateSetups" title="'+JWB.msg('tip-update-setup', JWB.settingspage)+'">'+JWB.msg('update-setup')+'</button>'+
+			'<button class="wds-button" id="updateSetups" title="' + JWB.msg('tip-update-setup', JWB.settingspage) + '">'+
+				icons.refresh + '<span class="wds-button__label" id="updateSetups-label">' + JWB.msg('update-setup') + '</span>'+
+			'</button>'+
 			'<div id="downloads">'+
 				'<a download="JWB-settings.json" target="_blank" id="download-anchor"></a>'+
 				'<iframe id="download-iframe"></iframe>'+
@@ -1187,161 +1227,327 @@ JWB.init = function() {
 		'</fieldset>'
 	);
 	$('.JWBtabc[data-tab="2"]').html(
-		'<label style="float:right;"><input type="checkbox" id="minorEdit" checked> '+JWB.msg('minor-edit')+'</label>'+
-		'<label class="viaJWB">'+JWB.msg('edit-summary')+' <input class="fullwidth" type="text" id="summary" maxlength="250"></label>'+
-		' <input type="checkbox" id="viaJWB" checked title="'+JWB.msg('tip-via-JWB')+'">'+
-		'<select id="watchPage">'+
-			'<option value="watch">'+JWB.msg('watch-watch')+'</option>'+
-			'<option value="unwatch">'+JWB.msg('watch-unwatch')+'</option>'+
-			'<option value="nochange" selected>'+JWB.msg('watch-nochange')+'</option>'+
-			'<option value="preferences">'+JWB.msg('watch-preferences')+'</option>'+
-		'</select>'+
-		'<span class="divisor"></span>'+
-		'<button id="watchNow" disabled accesskey="w" title="['+JWB.tooltip+'w]">'+
-			JWB.msg('watch-add')+
-		'</button>'+
-		'<br>'+
-		(JWB.bot?
-			'<label><input type="checkbox" id="autosave"> '+JWB.msg('auto-save')+'</label>'+
-			'<label title="'+JWB.msg('tip-save-interval')+'" class="divisor">'+
-				JWB.msg('save-interval', '<input type="number" min="0" value="0" style="width:50px" id="throttle" disabled>')+
-			'</label>'+
-			'<br>'
-		:'')+
-		'<span id="startstop">'+
-			'<button id="startbutton" accesskey="a" title="['+JWB.tooltip+'a]">'+JWB.msg('editbutton-start')+'</button>'+
-			'<br>'+
-			'<button id="stopbutton" disabled accesskey="q" title="['+JWB.tooltip+'q]">'+JWB.msg('editbutton-stop')+'</button> '+
-		'</span>'+
-		'<button class="editbutton" id="skipButton" disabled accesskey="n" title="['+JWB.tooltip+'n]">'+JWB.msg('editbutton-skip')+'</button>'+
-		'<button class="editbutton" id="submitButton" disabled accesskey="s" title="['+JWB.tooltip+'s]">'+JWB.msg('editbutton-save')+'</button>'+
-		'<br>'+
-		'<button class="editbutton" id="previewButton" disabled accesskey="p" title="['+JWB.tooltip+'p]">'+JWB.msg('editbutton-preview')+'</button>'+
-		'<button class="editbutton" id="diffButton" disabled accesskey="d" title="['+JWB.tooltip+'d]">'+JWB.msg('editbutton-diff')+'</button>'+
-		'<button id="replacesButton">'+JWB.msg('button-open-popup')+'</button>'+
-		findreplace+
-		'<hr>'+
-		'<label><input type="checkbox" id="enableRETF">'+
-			JWB.msg('label-enable-RETF', 
-				'<a href="https://en.wikipedia.org/wiki/Project:AutoWikiBrowser/Typos" target="_blank">'+
-					JWB.msg('label-RETF')+
-				'</a>')+
-		'</label>'+
-		' <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Gnome-view-refresh.svg/20px-Gnome-view-refresh.svg.png"'+
-		'id="refreshRETF" title="'+JWB.msg('tip-refresh-RETF')+'">'
+		'<fieldset id="edit-settings-container">'+
+			'<legend>'+JWB.msg('label-edit-settings')+'</legend>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="minorEdit" checked>'+
+				'<label for="minorEdit" id="minor-edit">'+JWB.msg('minor-edit')+'</label>'+
+			'</div>'+
+			'<div id="via-JWB-container">'+
+				'<div class="wds-input">'+
+					'<label for="summary">' + JWB.msg('edit-summary') + '</label>'+
+					'<input class="wds-input__field fullwidth" type="text" id="summary" maxlength="250">'+
+				'</div>'+
+				'<div class="wds-checkbox">'+
+					'<input type="checkbox" id="viaJWB" checked">'+
+					'<label for="viaJWB" id="viaJWB-label">'+JWB.msg('tip-via-JWB')+'</label>'+
+				'</div>'+
+			'</div>'+
+			'<select id="watchPage">'+
+				'<option value="watch">'+JWB.msg('watch-watch')+'</option>'+
+				'<option value="unwatch">'+JWB.msg('watch-unwatch')+'</option>'+
+				'<option value="nochange" selected>'+JWB.msg('watch-nochange')+'</option>'+
+				'<option value="preferences">'+JWB.msg('watch-preferences')+'</option>'+
+			'</select>'+
+			'<button class="wds-button" id="watchNow" disabled accesskey="w" title="['+JWB.tooltip+'w]">'+
+				icons.add + '<span class="wds-button__label">' + JWB.msg('watch-add') + '</span>'+
+			'</button>'+
+			(JWB.bot?
+				'<div class="wds-checkbox">'+
+					'<input type="checkbox" id="autosave">'+
+					'<label for="autosave">' + JWB.msg('auto-save')+
+						'<span title="' + JWB.msg('tip-save-interval') + '" class="divisor">'+
+							JWB.msg('save-interval', '<input type="number" min="0" value="0" id="throttle" disabled>')+
+						'</span>'+
+					'</label>'+
+				'</div>'+
+			'</fieldset>'
+		:'</fieldset>')+
+		'<fieldset id="find-replace-container">'+
+			'<legend>' + JWB.msg('label-find-replace') + '</legend>'+
+			'<button class="wds-button" id="replacesButton">'+
+				icons.add + '<span class="wds-button__label">' + JWB.msg('button-open-popup') + '</span>'+
+			'</button>'+
+			findreplace+
+			'<button class="wds-button" id="refreshRETF" title="' + JWB.msg('tip-refresh-RETF') + '">'+
+				icons.refresh + '<span class="wds-button__label">' + JWB.msg('label-refresh-RETF') + '</span>'+
+			'</button>'+
+		'</fieldset>'+
+		'<fieldset id="edit-actions-container">'+
+			'<legend>'+JWB.msg('label-edit-actions')+'</legend>'+
+			'<button class="wds-button" id="startbutton" accesskey="a" title="['+JWB.tooltip+'a]">'+
+				icons.play + '<span class="wds-button__label">' + JWB.msg('editbutton-start') + '</span>'+
+			'</button>'+
+			'<button class="wds-button" id="stopbutton" disabled accesskey="q" title="['+JWB.tooltip+'q]">'+
+				icons.stop + '<span class="wds-button__label">' + JWB.msg('editbutton-stop') + '</span>'+
+			'</button>'+
+			'<button class="wds-button editbutton" id="skipButton" disabled accesskey="n" title="['+JWB.tooltip+'n]">'+
+				icons.skip + '<span class="wds-button__label">' + JWB.msg('editbutton-skip') + '</span>'+
+			'</button>'+
+			'<button class="wds-button editbutton" id="submitButton" disabled accesskey="s" title="['+JWB.tooltip+'s]">'+
+				icons.save + '<span class="wds-button__label">' + JWB.msg('editbutton-save') + '</span>'+
+			'</button>'+
+			'<button class="wds-button editbutton" id="previewButton" disabled accesskey="p" title="['+JWB.tooltip+'p]">'+
+				icons.preview + '<span class="wds-button__label">' + JWB.msg('editbutton-preview') + '</span>'+
+			'</button>'+
+			'<button class="wds-button editbutton" id="diffButton" disabled accesskey="d" title="['+JWB.tooltip+'d]">'+
+				icons.diff + '<span class="wds-button__label">' + JWB.msg('editbutton-diff') + '</span>'+
+			'</button>'+
+		'</fieldset>'
 	);
 	$('.JWBtabc[data-tab="3"]').html(
-		'<fieldset>'+
-			'<legend>'+JWB.msg('label-redirects')+'</legend>'+
-			'<label title="'+JWB.msg('tip-redirects-follow')+'">'+
-				'<input type="radio" class="redirects" value="follow" name="redir" id="redir-follow"> '+JWB.msg('redirects-follow')+' '+
-			'</label>'+
-			'<label title="'+JWB.msg('tip-redirects-skip')+'">'+
-                '<input type="radio" class="redirects" value="skip" name="redir" id="redir-skip"> '+JWB.msg('redirects-skip')+' '+
-			'</label>'+
-			'<label title="'+JWB.msg('tip-redirects-edit')+'">'+
-				'<input type="radio" class="redirects" value="edit" name="redir" id="redir-edit" checked> '+JWB.msg('redirects-edit')+''+
-			'</label>'+
+		'<fieldset id="redirects-container">'+
+			'<legend>' + JWB.msg('label-redirects') + '</legend>'+
+			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+				'<input type="radio" class="redirects" value="follow" name="redir" id="redir-follow"><span></span>'+
+				'<label for="redir-follow" title="' + JWB.msg('tip-redirects-follow') + '">' + JWB.msg('redirects-follow') + '</label>'+
+			'</div>'+
+			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+				'<input type="radio" class="redirects" value="skip" name="redir" id="redir-skip"><span></span>'+
+                '<label for="redir-skip" title="' + JWB.msg('tip-redirects-skip') + '">' + JWB.msg('redirects-skip') + '</label>'+
+			'</div>'+
+			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+				'<input type="radio" class="redirects" value="edit" name="redir" id="redir-edit" checked><span></span>'+
+				'<label for="redir-edit" title="' + JWB.msg('tip-redirects-edit') + '">' + JWB.msg('redirects-edit') + '</label>'+
+			'</div>'+
 		'</fieldset>'+
-		'<fieldset>'+
-			'<legend>'+JWB.msg('label-skip-when')+'</legend>'+
-			'<label><input type="checkbox" id="skipNoChange"> '+JWB.msg('skip-no-change')+'</label>'+
-			'<br>'+
-			'<label><input type="radio" id="exists-yes" name="exists" value="yes"> '+JWB.msg('skip-exists-yes')+'</label>'+
-			'<label><input type="radio" id="exists-no" name="exists" value="no" checked> '+JWB.msg('skip-exists-no')+'</label>'+
-			'<label><input type="radio" id="exists-neither" name="exists" value="neither">'+JWB.msg('skip-exists-neither')+'</label>'+
-			'<br>'+
-			(JWB.sysop?'<label><input type="checkbox" id="skipAfterAction" checked> '+JWB.msg('skip-after-action')+'</label>':'')+
-		'</fieldset>'+
-		'<label>'+JWB.msg('skip-contains')+' <input class="fullwidth" type="text" id="skipContains"></label>'+
-		'<label>'+JWB.msg('skip-not-contains')+' <input class="fullwidth" type="text" id="skipNotContains"></label>'+
+		'<fieldset id="skip-container">'+
+			'<legend>' + JWB.msg('label-skip-when') + '</legend>'+
+			'<div class="radio-group">'+
+			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+					'<input type="radio" id="exists-yes" name="exists" value="yes"><span></span>'+
+					'<label>' + JWB.msg('skip-exists-yes') + '</label>'+
+				'</div>'+
+				'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+					'<input type="radio" id="exists-no" name="exists" value="no" checked><span></span>'+
+					'<label>' + JWB.msg('skip-exists-no') + '</label>'+
+				'</div>'+
+				'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+					'<input type="radio" id="exists-neither" name="exists" value="neither"><span></span>'+
+					'<label>' + JWB.msg('skip-exists-neither') + '</label>'+
+				'</div>'+
+			'</div>'+
+			'<div class="checkbox-group">'+
+				'<div class="wds-checkbox">'+
+					'<input type="checkbox" id="skipNoChange">'+
+					'<label for="skipNoChange">' + JWB.msg('skip-no-change') + '</label>'+
+				'</div>'+
+				(JWB.sysop?
+					'<div class="wds-checkbox">'+
+						'<input type="checkbox" id="skipAfterAction" checked>'+
+						'<label for="skipAfterAction">' + JWB.msg('skip-after-action') + '</label>'+
+					'</div>':'')+
+			'</div>'+
+			'<div class="textfield-group">'+
+				'<div class="wds-input">'+
+					'<label for="skipContains">' + JWB.msg('skip-contains') + '</label>'+
+					'<input class="wds-input__field fullwidth" type="text" id="skipContains">'+
+				'</div>'+
+				'<div class="wds-input">'+
+					'<label for="skipNotContains">' + JWB.msg('skip-not-contains') + '</label>'+
+					'<input class="wds-input__field fullwidth" type="text" id="skipNotContains">'+
+				'</div>'+
+			'</div>'+
 		'<div class="regexswitch">'+
-			'<label><input type="checkbox" id="containRegex"> '+JWB.msg('label-useregex')+'</label>'+
-			'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
-			'<label class="divisor" title="'+JWB.msg('tip-regex-flags')+'" style="display:none;">'+
-				JWB.msg('label-regex-flags')+' <input type="text" id="containFlags"/>'+
-			'</label>'+
-		'</div>'
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="containRegex">'+
+				'<label for="containRegex">' + JWB.msg('label-useregex') + '</label>'+
+				'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
+				'<label class="divisor" title="'+JWB.msg('tip-regex-flags')+'" style="display:none;">'+
+					JWB.msg('label-regex-flags')+' <input type="text" id="containFlags"/>'+
+				'</label>'+
+			'</div>'+
+		'</div>'+
+		'</fieldset>'
 	);
 	if (JWB.sysop) $('.JWBtabc[data-tab="4"]').html(
-		'<fieldset>'+
-			'<legend>'+JWB.msg('move-header')+'</legend>'+
-			'<label><input type="checkbox" id="suppressRedir"> '+JWB.msg('move-redir-suppress')+'</label>'+
-			'<br>'+
-			JWB.msg('move-also')+' '+
-			'<label><input type="checkbox" id="movetalk"> '+JWB.msg('move-talk-page')+'</label> '+
-			'<label><input type="checkbox" id="movesubpage"> '+JWB.msg('move-subpage')+'</label>'+
-			'<br>'+
-			'<label>'+JWB.msg('move-new-name')+' <input type="text" id="moveTo"></label>'+
+		'<fieldset id="move-options-container">'+
+			'<legend>' + JWB.msg('move-header') + '</legend>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="suppressRedir">'+
+				'<label for="suppressRedir">' + JWB.msg('move-redir-suppress') + '</label>'+
+				'</div>'+
+			'<span class="also-move headline">' + JWB.msg('move-also') + '</span>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="movetalk">'+
+				'<label for="movetalk">' + JWB.msg('move-talk-page') + '</label> '+
+			'</div>'+
+			'<div class="wds-checkbox">'+
+				'<input type="checkbox" id="movesubpage">'+
+				'<label for="movesubpage">' + JWB.msg('move-subpage') + '</label>'+
+			'</div>'+
+			'<div class="wds-input">'+
+				'<label for="moveTo">' + JWB.msg('move-new-name') + '</label>'+
+				'<input type="text" class="wds-input__field" id="moveTo">'+
+			'</div>'+
 		'</fieldset>'+
-		'<fieldset>'+
-		'<legend>'+JWB.msg('protect-header')+'</legend>'+
-			JWB.msg('protect-edit')+
+		'<fieldset id="protect-options-container">'+
+		'<legend>' + JWB.msg('protect-header') + '</legend>'+
+			'<span class="edit headline">' + JWB.msg('protect-edit') + '</span>'+
 			'<select id="editProt">'+
-				'<option value="all" selected>'+JWB.msg('protect-none')+'</option>'+
-				'<option value="autoconfirmed">'+JWB.msg('protect-autoconf')+'</option>'+
-				'<option value="sysop">'+JWB.msg('protect-sysop')+'</option>'+
+				'<option value="all" selected>' + JWB.msg('protect-none') + '</option>'+
+				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf') + '</option>'+
+				'<option value="sysop">' + JWB.msg('protect-sysop') + '</option>'+
 			'</select> '+
-			'<br>'+
-			JWB.msg('protect-move')+
+			'<span class="protect headline">' + JWB.msg('protect-move') + '</span>'+
 			'<select id="moveProt">'+
-				'<option value="all" selected>'+JWB.msg('protect-none')+'</option>'+
-				'<option value="autoconfirmed">'+JWB.msg('protect-autoconf')+'</option>'+
-				'<option value="sysop">'+JWB.msg('protect-sysop')+'</option>'+
+				'<option value="all" selected>' + JWB.msg('protect-none') + '</option>'+
+				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf') + '</option>'+
+				'<option value="sysop">' + JWB.msg('protect-sysop') + '</option>'+
 			'</select> '+
-			'<br>'+
-			'<label>'+JWB.msg('protect-expiry')+' <input type="text" id="protectExpiry"/></label>'+
+			'<div class="wds-input">'+
+				'<label for="protectExpiry">' + JWB.msg('protect-expiry') + '</label>'+
+				'<input type="text" class="wds-input__field" id="protectExpiry"/>'+
+			'</div>'+
 		'</fieldset>'+
-		'<button id="movePage" disabled accesskey="m" title="['+JWB.tooltip+'m]">'+JWB.msg('editbutton-move')+'</button> '+
-		'<button id="deletePage" disabled accesskey="x" title="['+JWB.tooltip+'x]">'+JWB.msg('editbutton-delete')+'</button> '+
-		'<button id="protectPage" disabled accesskey="z" title="['+JWB.tooltip+'z]">'+JWB.msg('editbutton-protect')+'</button> '+
-		'<button id="skipPage" disabled title="['+JWB.tooltip+'n]">'+JWB.msg('editbutton-skip')+'</button>'
+		'<fieldset id="page-actions-container">'+
+			'<legend>' + JWB.msg('page-actions-header') + '</legend>'+
+			'<button class="wds-button" id="movePage" disabled accesskey="m" title="['+JWB.tooltip+'m]">'+
+				icons.move + JWB.msg('editbutton-move')+
+			'</button> '+
+			'<button class="wds-button" id="deletePage" disabled accesskey="x" title="['+JWB.tooltip+'x]">'+
+				icons.delete + JWB.msg('editbutton-delete')+
+			'</button> '+
+			'<button class="wds-button" id="protectPage" disabled accesskey="z" title="['+JWB.tooltip+'z]">'+
+				icons.protect + JWB.msg('editbutton-protect')+
+			'</button> '+
+			'<button class="wds-button" id="skipPage" disabled title="['+JWB.tooltip+'n]">'+
+				icons.skip + JWB.msg('editbutton-skip')+
+			'</button>'+
+		'</fieldset>'
 	);
-	$('.JWBtabc[data-tab="5"]').html('<table id="actionlog"><tbody></tbody></table>');
+	$('.JWBtabc[data-tab="5"]').html(
+		'<div id="actionlog-container">'+
+			'<table id="actionlog">'+
+				'<thead>'+
+					'<tr>'+
+						'<th>' + JWB.msg('log-time-header') + '</th>'+
+						'<th>' + JWB.msg('log-action-header') + '</th>'+
+						'<th>' + JWB.msg('log-page-header') + '</th>'+
+					'</tr>'+
+				'</thead>'+
+				'<tbody>'+
+				'</tbody>'+
+			'</table>'+
+		'</div>'
+	);
 	$('#pagelistPopup form').html(
-		'<div id="ns-filter" title="'+JWB.msg('tip-ns-select')+'">' + JWB.msg('label-ns-select') + NSList + '</div>'+
-		'<fieldset>'+
-			'<legend><label><input type="checkbox" id="categorymembers" name="categorymembers" value="cm"> '+JWB.msg('legend-cm')+'</label></legend>'+
-			'<label title="Namespace prefix not required.">'+JWB.msg('label-cm')+' <input type="text" name="cmtitle" id="cmtitle"></label>'+
-			'<div>'+JWB.msg('cm-include')+' '+
-				'<label><input type="checkbox" id="cmtype-page" name="cmtype" value="page" checked> '+JWB.msg('cm-include-pages')+'</label>'+
-				'<label><input type="checkbox" id="cmtype-subcg" name="cmtype" value="subcat" checked> '+JWB.msg('cm-include-subcgs')+'</label>'+
-				'<label><input type="checkbox" id="cmtype-file" name="cmtype" value="file" checked> '+JWB.msg('cm-include-files')+'</label>'+
+		'<div id="pageListPopup-container">'+
+			'<div id="ns-filter" title="' + JWB.msg('tip-ns-select') + '">' + JWB.msg('label-ns-select') + NSList + '</div>'+
+			'<div id="pageList-fieldsets">'+
+				'<fieldset>'+
+					'<legend>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="categorymembers" name="categorymembers" value="cm">'+
+							'<label for="categorymembers">' + JWB.msg('legend-cm') + '</label>'+
+						'</div>'+
+					'</legend>'+
+					'<div class="wds-input">'+
+						'<label for="cmtitle" title="' + JWB.msg('cnpnr-title') + '">' + JWB.msg('label-cm') + '</label>'+
+						'<input type="text" name="cmtitle" class="wds-input__field" id="cmtitle">'+
+					'</div>'+
+					'<span class="group-label" id="include-checkboxes-label">' + JWB.msg('cm-include') + '</span>'+
+					'<div class="checkbox-group is-vertical">'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="cmtype-page" name="cmtype" value="page" checked>'+
+							'<label for="cmtype-page">' + JWB.msg('cm-include-pages') + '</label>'+
+						'</div>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="cmtype-subcg" name="cmtype" value="subcat" checked>'+
+							'<label for="cmtype-subcg">' + JWB.msg('cm-include-subcgs') + '</label>'+
+						'</div>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="cmtype-file" name="cmtype" value="file" checked>'+
+							'<label for="cmtype-file">' + JWB.msg('cm-include-files') + '</label>'+
+						'</div>'+
+					'</div>'+
+				'</fieldset>'+
+				'<fieldset>'+
+					'<legend>'+
+					'<div class="wds-checkbox">'+
+							'<input type="checkbox" name="linksto" id="linksto">'+
+							'<label for="linksto">' + JWB.msg('legend-linksto') + '</label>'+
+						'</div>'+
+					'</legend>'+
+					'<div class="wds-input">'+
+						'<label for="linksto-title">' + JWB.msg('label-linksto') + '</label>'+
+						'<input type="text" name="title" class="wds-input__field" id="linksto-title">'+
+					'</div>'+
+					'<span class="headline" id="include-headline">' + JWB.msg('links-include') + '</span>'+
+					'<div class="checkbox-group is-vertical">'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="backlinks" name="backlinks" value="bl" checked>'+
+							'<label for="backlinks">' + JWB.msg('links-include-links') + '</label>'+
+						'</div>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="embeddedin" name="embeddedin" value="ei">'+
+							'<label for="embeddedin">' + JWB.msg('links-include-templ') + '</label>'+
+						'</div>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="imageusage" name="imageusage" value="iu">'+
+							'<label for="imageusage">' + JWB.msg('links-include-files') + '</label>'+
+						'</div>'+
+					'</div>'+
+					'<span class="headline" id="redirects-headline">' + JWB.msg('links-redir') + '</span>'+
+					'<div class="radio-group is-vertical">'+
+						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+							'<input type="radio" id="rfilter-redir" name="filterredir" value="redirects"><span></span>'+
+							'<label for="rfilter-redir">' + JWB.msg('links-redir-redirs') + '</label>'+
+						'</div>'+
+						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+							'<input type="radio" id="rfilter-nonredir" name="filterredir" value="nonredirects"><span></span>'+
+							'<label for="rfilter-nonredir">' + JWB.msg('links-redir-noredirs') + '</label>'+
+						'</div>'+
+						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
+							'<input type="radio" id="rfilter-all" name="filterredir" value="all" checked><span></span>'+
+							'<label for="rfilter-all">' + JWB.msg('links-redir-all') + '</label>'+
+						'</div>'+
+					'</div>'+
+					'<div class="wds-checkbox">'+
+						'<input type="checkbox" name="redirect" value="true" checked id="linksto-redir">'+
+						'<label for="linksto-redir" title="'+JWB.msg('tip-link-redir')+'">' + JWB.msg('label-link-redir') + '</label>'+
+					'</div>'+
+				'</fieldset>'+
+				'<fieldset>'+
+					'<legend>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="prefixsearch" name="prefixsearch" value="ps">'+
+							'<label for="prefixsearch">' + JWB.msg('legend-ps') + '</label>'+
+						'</div>'+
+					'</legend>'+
+					'<div class="wds-input">'+
+						'<label for="pssearch">' + JWB.msg('label-ps') + '</label>'+
+						'<input type="text" name="pssearch" class="wds-input__field" id="pssearch">'+
+					'</div>'+
+				'</fieldset>'+
+				'<fieldset>'+
+					'<legend>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="watchlistraw" name="watchlistraw" value="wr">'+
+							'<label for="watchlistraw">' + JWB.msg('legend-wr') + '</label>'+
+						'</div>'+
+					'</legend>'+
+					'<span id="watchlist-desc">' + JWB.msg('label-wr') + '</span>'+
+				'</fieldset>'+
+				'<fieldset>'+
+					'<legend>'+
+						'<div class="wds-checkbox">'+
+							'<input type="checkbox" id="proplinks" name="links" value="pl">'+
+							'<label for="proplinks">' + JWB.msg('legend-pl') + '</label>'+
+						'</div>'+
+					'</legend>'+
+					'<div class="wds-input">'+
+						'<label for="pltitles" title="' + JWB.msg('tip-pl') + '">' + JWB.msg('label-pl')+'</label>'+
+						'<input type="text" name="titles" class="wds-input__field" id="pltitles">'+
+					'</div>'+
+				'</fieldset>'+
+				'<button type="submit" class="wds-button">' + JWB.msg('pagelist-generate') + '</button>'+
 			'</div>'+
-		'</fieldset>'+
-		'<fieldset>'+
-			'<legend><label><input type="checkbox" name="linksto" id="linksto"> '+JWB.msg('legend-linksto')+'</label></legend>'+
-			'<label>'+JWB.msg('label-linksto')+' <input type="text" name="title" id="linksto-title"></label>'+
-			'<div>'+JWB.msg('links-include')+' '+
-				'<label><input type="checkbox" id="backlinks" name="backlinks" value="bl" checked> '+JWB.msg('links-include-links')+'</label>'+
-				'<label><input type="checkbox" id="embeddedin" name="embeddedin" value="ei"> '+JWB.msg('links-include-templ')+'</label>'+
-				'<label><input type="checkbox" id="imageusage" name="imageusage" value="iu"> '+JWB.msg('links-include-files')+'</label>'+
-			'</div>'+
-			'<div>'+JWB.msg('links-redir')+' '+
-				'<label><input type="radio" id="rfilter-redir" name="filterredir" value="redirects"> '+JWB.msg('links-redir-redirs')+'</label>'+
-				'<label><input type="radio" id="rfilter-nonredir" name="filterredir" value="nonredirects"> '+JWB.msg('links-redir-noredirs')+'</label>'+
-				'<label><input type="radio" id="rfilter-all" name="filterredir" value="all" checked> '+JWB.msg('links-redir-all')+'</label>'+
-			'</div>'+
-			'<label title="'+JWB.msg('tip-link-redir')+'">'+
-				'<input type="checkbox" name="redirect" value="true" checked id="linksto-redir"> '+JWB.msg('label-link-redir')+
-			'</label>'+
-		'</fieldset>'+
-		'<fieldset>'+
-			'<legend><label><input type="checkbox" id="prefixsearch" name="prefixsearch" value="ps"> '+JWB.msg('legend-ps')+'</label></legend>'+
-			'<label>'+JWB.msg('label-ps')+' <input type="text" name="pssearch" id="pssearch"></label>'+
-		'</fieldset>'+
-		'<fieldset>'+
-			'<legend><label><input type="checkbox" id="watchlistraw" name="watchlistraw" value="wr"> '+JWB.msg('legend-wr')+'</label></legend>'+
-			JWB.msg('label-wr')+
-		'</fieldset>'+
-		'<fieldset>'+
-			'<legend><label><input type="checkbox" id="proplinks" name="links" value="pl"> '+JWB.msg('legend-pl')+'</label></legend>'+
-			'<label title="'+JWB.msg('tip-pl')+'">'+JWB.msg('label-pl')+' <input type="text" id="pltitles" name="titles"></label>'+
-		'</fieldset>'+
-		'<button type="submit">'+JWB.msg('pagelist-generate')+'</button>'
+		'</div>'
 	);
+
 	$('body').addClass('AutoWikiBrowser'); //allow easier custom styling of JWB.
-	
+
 	/***** Setup *****/
 	JWB.setup.save('_blank'); //default setup
 	if (JWB.settings.hasOwnProperty('default')) {
@@ -1352,65 +1558,72 @@ JWB.init = function() {
 	JWB.setup.extend({});
 
 	/***** Event handlers *****/
-	
-	//Alert user when leaving the tab, to prevent accidental closing.
+	// Alert user when leaving the tab, to prevent accidental closing.
 	onbeforeunload = function() {
 		return "Closing this tab will cause you to lose all progress.";
 	};
+
 	ondragover = function(e) {
 		e.preventDefault();
 	};
-	
+
 	$('.JWBtab').click(function() {
 		$('.active').removeClass('active');
 		$(this).addClass('active');
 		$('.JWBtabc[data-tab="'+$(this).attr('data-tab')+'"]').addClass('active');
 	});
-	
+
 	function showRegexFlags() {
 		// >>this<< is the element that's triggered
 		$(this).parent().nextAll('label').toggle(this.checked);
 	}
+
 	$('body').on('change', '#useRegex, #containRegex, .useRegex', showRegexFlags);
-	
+
 	$('#preparse-reset').click(function() {
 		$('#articleList').val($('#articleList').val().replace(/#PRE-PARSE-STOP/g,'').replace(/\n\n/g, '\n'));
 	});
+
 	$('#saveAs').click(function() {
 		JWB.setup.save();
 	});
+
 	$('#loadSettings').change(function() {
 		JWB.setup.apply(this.value);
 	});
+
 	$('#download').click(JWB.setup.download);
 	$('#saveToWiki').click(JWB.setup.submit);
 	$('#import').change(JWB.setup.import);
 	ondrop = JWB.setup.import;
 	$('#updateSetups').click(JWB.setup.load);
 	$('#deleteSetup').click(JWB.setup['delete']);
-	
+
 	if (window.RETF) $('#refreshRETF').click(RETF.load);
 
 	$('#replacesButton, #pagelistButton').click(function() {
 		var popup = this.id.slice(0, -6); //omits the 'Button' in the id by cutting off the last 6 characters
 		$('#'+popup+'Popup, #overlay').show();
 	});
+
 	$('#overlay').click(function() {
 		$('#replacesPopup, #pagelistPopup, #overlay').hide();
 	});
+
 	$('#moreReplaces').click(function() {
 		$('#replacesPopup').append(findreplace);
 	});
+
 	$('#replacesPopup').on('keydown', '.replaces:last', function(e) {
 		if (e.which === 9) $('#moreReplaces')[0].click();
 	});
-	
+
 	$('#pagelistPopup legend input').change(function() {
 		//remove disabled attr when checked, add when not.
 		$(this).parents('fieldset').find('input').not('legend input').prop('disabled', !this.checked);
 		$(this).parents('fieldset').prop('disabled', !this.checked);
 	}).trigger('change');
-	
+
 	$('#resultWindow').on('click', 'tr[data-line]:not(.lineheader) *', function(e) {
 		var line = +$(e.target).closest('tr[data-line]').data('line');
 		var index = $('#editBoxArea').val().split('\n').slice(0, line-1).join('\n').length;
@@ -1418,37 +1631,41 @@ JWB.init = function() {
 		JWB.fn.setSelection($('#editBoxArea')[0], index+1);
 		JWB.fn.scrollSelection($('#editBoxArea')[0], index);
 	});
-	
+
 	$('#removeDupes').click(function() {
 		$('#articleList').val(JWB.fn.uniques($('#articleList').val().split('\n')).join('\n'));
 		JWB.pageCount();
 	});
+
 	$('#sortArticles').click(function() {
 		$('#articleList').val($('#articleList').val().split('\n').sort().join('\n'));
 		JWB.pageCount();
 	});
-	
+
 	$('#watchNow').click(JWB.api.watch);
 	$('#autosave').change(function() {
 		$('#throttle').prop('disabled', !this.checked);
 	});
-	
+
 	$('#viaJWB').change(function() {
-		$('#summary').parent('label')
+		$('#summary').parent('.wds-input')
 			.toggleClass('viaJWB', this.checked)
-			.attr('maxlength', 250 - this.checked*10); //233 for true, 250 for false. ` (via JWB)` is 10 chars long
+			.attr('maxlength', 250 - this.checked * 10); // 233 for true, 250 for false. ` (via JWB)` is 10 chars long.
+			// @todo: rather than toggling a class, toggle a new element with
+			// the text so it's accesible and easier to customize.
 	});
+
 	$('#startbutton').click(JWB.start);
 	$('#stopbutton').click(JWB.stop);
 	$('#submitButton').click(JWB.api.submit);
 	$('#previewButton').click(JWB.api.preview);
 	$('#diffButton').click(JWB.api.diff);
-	
+
 	$('#skipButton, #skipPage').click(function() {
 		JWB.log('skip', JWB.list[0].split('|')[0]);
 		JWB.next();
 	});
-	
+
 	if (JWB.sysop) {
 		$('#movePage').click(function() {
 			if ($('#moveTo').val().length === 0) {
@@ -1460,6 +1677,9 @@ JWB.init = function() {
 		$('#deletePage').click(JWB.api['delete']);
 	}
 };
-//Disable JWB altogether when it's loaded on a page other than Project:AutoWikiBrowser/Script. This script shouldn't be loaded on any other page in the first place.
+
+// Disable JWB altogether when it's loaded on a page other than
+// Project:AutoWikiBrowser/Script. This script shouldn't be loaded on any other
+// page in the first place.
 if (JWB.allowed === false) JWB = false;
 // </nowiki>

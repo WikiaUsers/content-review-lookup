@@ -1,10 +1,23 @@
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Auto Refresh】＝＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-window.ajaxPages = ["Special:WikiActivity", "Special:RecentChanges", "Special:Watchlist", "Special:Log", "Special:Contributions"];
+// Ajax Pages
+window.ajaxPages = [];
+
+// Ajax Special Pages
+window.ajaxSpecialPages = ["RecentChanges", "Watchlist", "Log", "Contributions"];
+
+// Indicator Icon
+window.ajaxIndicator 
+
+// Refresh Time
 window.ajaxRefresh = 30000;
-window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'Automatically refreshes the page by placing a check on the checkbox.'; //Allows Yaya to automatically refresh the page by placing a check on the checkbox.
+
+// Display and Hover Text
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+    'ajaxrc-refresh-text': 'Auto-refresh',
+    'ajaxrc-refresh-hover': 'Automatically refreshes the page by placing a check on the checkbox.',
+}}}}}); // Allows Yaya to automatically refresh the page by placing a check on the checkbox.
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
@@ -15,7 +28,7 @@ window.AjaxRCRefreshHoverText = 'Automatically refreshes the page by placing a c
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Ajax Redirect】＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
+if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev'); 
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
@@ -23,39 +36,57 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
 
 
 
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-//＝＝＝＝＝＝＝＝＝＝＝＝＝【Christmas Snow】＝＝＝＝＝＝＝＝＝＝＝＝//
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-// A falling snow effect for the Christmas skin courtesy of          //
-// Community Central.                                                 //
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-window.snowStorm = {
-    autoStart:true,
-    excludeMobile:true,
-    flakesMax:128,
-    flakesMaxActive:64,
-    animationInterval:34,
-    useGPU:true,
-    className:null,
-    followMouse:true,
-    snowColor:'#000',
-    snowCharacter:'&bull;',
-    snowStick:true,
-    targetElement:null,
-    useMeltEffect:false,
-    useTwinkleEffect:false,
-    usePositionFixed:false,
-    flakeWidth:8,
-    flakeHeight:8,
-    vMaxX:5,
-    vMaxY:4,
-    zIndex:20000,
-    windOffset:1,
-    windMultiplier:2,
-    flakeTypes:6
-};
+
+
+
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+//＝＝＝＝＝＝＝＝＝＝＝＝＝【Back to Top】＝＝＝＝＝＝＝＝＝＝＝＝//
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+// Modernization
+window.BackToTopModern = false;
+
+// Arrow Icon
+window.BackToTopArrow = true;
+
+// Button Text 
+window.BackToTopText = "Back to Top";
+
+// Scroll Speed
+window.BackToTopSpeed = 600;
+
+// Button Appearance
+window.BackToTopStart = 800;
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
 
 
 
@@ -85,7 +116,14 @@ if (mwCustomEditButtons) {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
+//＝＝＝＝＝＝＝＝＝＝＝＝＝【Discuss Embed】＝＝＝＝＝＝＝＝＝＝＝＝//
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+window.discussEmbedLimit = 7;
+//window.discussEmbedForum = "";
+window.discussEmbedSortTrending = 0;
 
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
@@ -93,25 +131,28 @@ if (mwCustomEditButtons) {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 window.DisplayClockJS = {
     format: '%B %d %Y, %I:%2M:%2S %p (UTC)',
-    hoverText: 'Purges the cache by clicking the time.', //Allows Yaya to purge the cache by clicking the time.
+    location: 'header',
+    hoverText: 'Purges the cache by clicking the time.',
+    interval: 500,
+    offset: 0,
     monofonts: 'Junicode'
-};
+};// Allows Yaya to purge the cache by clicking the time.
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
 
-
+ 
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝【File Usage Auto Update】＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-LIRoptions = {
-//  bottomMessage:'',
-//  editSummary:'',
-    singleButtonText:'Rename and update',
-    queueButtonText:'Add to queue',
-    delay:1000
+window.LIRoptions = {
+//  bottomMessage: '',
+//  editSummary: '',
+    singleButtonText: 'Rename and update',
+    queueButtonText: 'Add to queue',
+    delay: 1000
 };
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
@@ -123,19 +164,21 @@ LIRoptions = {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Freenode IRC】＝＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-function onloadhookcustomirc() {
-	var replace = document.getElementById("JRChatReplace");
-	if (null != replace) {
-		replace.innerHTML='<iframe src="http://webchat.freenode.net/?channels=wikia-unbreakable-machine-doll" width="450" height="400"></iframe>';
-		if (window.attachEvent) window.attachEvent("onbeforeunload",confirmexitjrchat);
-		else window.onbeforeunload = confirmexitjrchat;
+
+
  
-	}
-	//alert(document.getElementById("JRChatReplace").innerHTML);
-}
+
+
+
  
-if (window.addEventListener) window.addEventListener("load",onloadhookcustomirc,false);
-else if (window.attachEvent) window.attachEvent("onload",onloadhookcustomirc);
+
+
+
+
+
+
+
+
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
@@ -146,10 +189,10 @@ else if (window.attachEvent) window.attachEvent("onload",onloadhookcustomirc);
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Message Block】＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-var MessageBlock = {
-    title:'Block',
-    message:'You have been blocked for $2 because you have $1.',
-    autocheck:true
+window.MessageBlock = {
+    title: 'Blocked',
+    message: 'You have been blocked for $2 because you have $1.',
+    autocheck: true
 };
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
@@ -182,7 +225,7 @@ window.MessageWallUserTags = {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Purge Button】＝＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-PurgeButtonText = 'Purge';
+
  
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
@@ -319,7 +362,7 @@ var namespaces = [
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 // Author: Slyst                                                      //
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-$(function() {
+/*$(function() {
     $.fn.extend({
         randomize: function(parent, child) {
             var $this = $(this);
@@ -379,7 +422,7 @@ $(function() {
             $(this).randomize();
         });
     }
-});
+});*/
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
@@ -591,53 +634,53 @@ UserTagsJS.modules.explode = {
 
 
 
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-//＝＝＝＝＝＝＝＝＝＝＝＝【Import Articles】＝＝＝＝＝＝＝＝＝＝＝＝//
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-importArticles({
-    type: 'script',
-    articles: [
-//      'u:dev:AddRailModule/code.js',
-        'u:dev:AjaxRC/code.js',
-        'u:dev:AjaxRedirect/code.js',
-        'u:dev:MediaWiki:AntiUnicruft/code.js',
-        'u:dev:AutoStamp/code.js',
-//      'u:dev:BackToTopButton/code.js',
-        'u:dev:CategoryRenameAuto-update/code.js',
-//      'u:dev:CollapsibleInfobox/code.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:DisableBotMessageWalls/code.js',
-        'u:dev:DiscordIntegrator/code.js',
-        'u:dev:DisplayClock/code.js',
-        'u:dev:DupImageList/code.js',
-        'u:dev:ExternalImageLoader/code.js',
-        'u:dev:FileUsageAuto-update/code.js',
-        'u:dev:GlobalEditcount/code.js',
-        'u:dev:ListFiles/code.js',
-        'u:dev:MassProtect/code.js',
-        'u:dev:Medals/code.js',
-        'u:dev:MessageBlock/code.js',
-        'u:dev:MessageWallUserTags/code.js',
-        'u:dev:PageRenameAuto-update/code.js',
-//      'MediaWiki:Page_Specific_Background.js',
-        'u:dev:PurgeBlogs/code.js',
-        'u:dev:PurgeButton/code.js',
-        'u:dev:Quiz/code.js',
-//      'MediaWiki:Common.js/Random.js',
-        'u:dev:ReferencePopups/code.js',
-        'u:dev:ReferencePopups/custom.js',
-        'u:dev:RevealAnonIP/code.js',
-//      'u:dev:SaveKey/code.js',
-        'u:dev:SignatureCheck/code.js',
-        'MediaWiki:Common.js/Toggle.js',
-        'u:dev:SnowStorm.js',
-        'u:dev:UserTags/code.js',
-        'u:dev:WikiaNotification/code.js',
-        'u:dev:YoutubePlayer/code.js'
-    ]
-});
 
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
+
+ 
+ 
+
+ 
+ 
+ 
+
+
+ 
+ 
+
+
+
+
 
 
 

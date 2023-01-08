@@ -47,7 +47,7 @@
   
     function hideProgressBar() {
       progressBarWrapper.classList.add('hide');
-      progressBar.style.transform = 'translateX(' + 100 + '%)';
+      progressBar.style.transform = 'translateX(0)';
     }
   
     function showProgressBar() {

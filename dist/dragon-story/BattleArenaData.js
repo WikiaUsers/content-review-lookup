@@ -1728,6 +1728,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bough": {
+				"name": "Bough",
+				"colors": [
+					"holiday",
+					"green",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"bound": {
 				"name": "Bound",
 				"colors": [
@@ -6106,6 +6115,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"frosthearth": {
+				"name": "Frost Hearth",
+				"colors": [
+					"holiday",
+					"white",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"frostsapphire": {
 				"name": "Frost Sapphire",
 				"colors": [
@@ -6667,6 +6685,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "super"
+			},
+			"glitterday": {
+				"name": "Glitterday",
+				"colors": [
+					"holiday",
+					"white",
+					"yellow"
+				],
+				"rarity": "common"
 			},
 			"glitterscale": {
 				"name": "Glitterscale",
@@ -10323,6 +10350,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"mirth": {
+				"name": "Mirth",
+				"colors": [
+					"holiday",
+					"pink",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"mischief": {
 				"name": "Mischief",
 				"colors": [
@@ -13916,6 +13952,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink"
 				],
 				"rarity": "common"
+			},
+			"roaringcold": {
+				"name": "Roaring Cold",
+				"colors": [
+					"elemental",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
 			},
 			"robust": {
 				"name": "Robust",

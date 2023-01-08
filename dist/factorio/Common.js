@@ -43,9 +43,9 @@
 /* Custom Tooltips for use with dev:Tooltips.js */
 window.tooltips_list = [
     {   classname: 'item-infobox',
-        parse: '{'+'{Item|Name=<#item#>|Short=1}}'},
+        parse: '{'+'{Infobox/Item|Name=<#item#>|Short=1}}'},
     {   classname: 'tech-infobox',
-        parse: '{'+'{Technology|Name=<#tech#>|Short=1}}'},
+        parse: '{'+'{Infobox/Technology|Name=<#tech#>|Short=1}}'},
         ]
  
 window.tooltips_config = {

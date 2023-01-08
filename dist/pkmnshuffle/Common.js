@@ -1,26 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* ############################################# */
-/* ##          CUSTOM EDIT BUTTONS            ## */
-/* ############################################# */
-/* All credit for this code goes to Pokémon Wiki */
- 
-if((wgAction == "edit" || wgAction == "submit") && mwCustomEditButtons)
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://images.wikia.nocookie.net/pokemon/images/4/42/Accent_Button.png",
-		"speedTip": "Insert Pokémon",
-		"tagOpen": "Pokémon",
-		"tagClose": "",
-		"sampleText": ""
-	};
- 
-if(mwCustomEditButtons)
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		 "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
-		 "speedTip": "Redirect",
-		 "tagOpen": "#REDIRECT [[",
-		 "tagClose": "]]",
-		 "sampleText": "Insert text"
-	};
+
 /* User Tags script */
 window.UserTagsJS = {
 	modules: {},
@@ -89,17 +68,18 @@ window.tooltips_config = {
 /* ##                CALCULATOR               ## */
 /* ############################################# */
 //This function clicks the Submit Pokemon button when enter is pressed
-function clicksubmitpokemon(e) {
+function clickSubmitPokemon(e) {
     if (e.keyCode == 13) {
         document.getElementById("submitpokemon").click();
         return false;
     }
     return true;
 }
+window.clickSubmitPokemon = clickSubmitPokemon;
 
 //This function grabs a list of pokemon and creates a list of autofill options for the pokemon input field
 function getpokemonlist() {
-    $.get(wgScript,
+    $.get(mw.config.get('wgScript'),
         {title: 'Template:PokemonList',
          action: 'raw',
          ctype: 'text/plain'},
@@ -115,7 +95,7 @@ function getpokemonlist() {
 }
 
 function getskilllist() {
-    $.get(wgScript,
+    $.get(mw.config.get('wgScript'),
         {title: 'Template:SkillList',
          action: 'raw',
          ctype: 'text/plain'},
@@ -131,11 +111,11 @@ function getskilllist() {
 }
 
 //This function updates the list of autofill options with possible modifiers for the inputted pokemon
-function updatemodifierlist() {
+function updateModifierList() {
     var inputpokemon = document.getElementById('inputpokemon').value;
     //gonna try to parse some wikitext using javascript
     var example = "{{ModifierList|name=" + inputpokemon + "}}";
-    $.getJSON('http://pkmnshuffle.wikia.com/api.php?format=json&action=parse&disablepp=true&text=' + example,
+    $.getJSON('http://pkmnshuffle.fandom.com/api.php?format=json&action=parse&disablelimitreport=true&wrapoutputclass=&text=' + example,
         function(data) {
             var modifierstring = data.parse.text["*"];
             modifierstring = modifierstring.replace("<p>", "");
@@ -149,6 +129,7 @@ function updatemodifierlist() {
         }
     );
 }
+window.updateModifierList = updateModifierList;
 
 //Given an index of "{{" in a string, finds the matching "}}". Returns -1 if the index doesn't point to a "{{", and returns the length of the substring if a matching "}}" wasn't found.
 function findmatchingbrackets(string, startindex) {
@@ -179,13 +160,13 @@ function findmatchingbrackets(string, startindex) {
 switch (mw.config.get('wgPageName')) {
     case 'Template:Test2':
         //HTML code for the Pokemon forms
-        var PDRinnerhtml = ['Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clicksubmitpokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updatemodifierlist();" onkeypress="return clicksubmitpokemon(event);"><br><button id="submitpokemon" type="button" onclick="submitpokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist>'].join('');
+        var PDRinnerhtml = ['Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br><button id="submitpokemon" type="button" onclick="t2SubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist>'].join('');
         
         //HTML code for the Pokemon data output
         var PDRoutputinnerhtml = ['<div id="pokemonoutput"></div>'].join('');
         
         //HTML code for the Skill forms
-        var SDRinnerhtml = ['Skill: <input id="inputskill" list="skilllist" onkeypress="return clicksubmitskill(event);"><br><select id="dropdownskill" onchange="autofillinput();"></select><br><button id="submitskill" type="button" onclick="submitskill()">Submit</button><datalist id="skilllist"></datalist>'].join('');
+        var SDRinnerhtml = ['Skill: <input id="inputskill" list="skilllist" onkeypress="return clickSubmitSkill(event);"><br><select id="dropdownskill" onchange="autofillInput();"></select><br><button id="submitskill" type="button" onclick="t2SubmitSkill()">Submit</button><datalist id="skilllist"></datalist>'].join('');
         
         //HTML code for the Skill data output
         var SDRoutputinnerhtml = ['<div id="skilloutput"></div>'].join('');
@@ -223,23 +204,25 @@ switch (mw.config.get('wgPageName')) {
         document.getElementById('form').appendChild(SDRoutput);
         
         //This function clicks the Submit Skill button when enter is pressed
-        function clicksubmitskill(e) {
+        function clickSubmitSkill(e) {
             if (e.keyCode == 13) {
                 document.getElementById("submitskill").click();
                 return false;
             }
             return true;
         }
+        window.clickSubmitSkill = clickSubmitSkill;
         
         //This function autofills the skill form if an option is selected from the skill dropdown menu
-        function autofillinput() {
+        function autofillInput() {
 	        var dropdownskill = document.getElementById("dropdownskill");
             var value = dropdownskill.options[dropdownskill.selectedIndex].value;
             document.getElementById("inputskill").value = value;
         }
+        window.autofillInput = autofillInput;
         
         //This function attempts to retrieve and output data using the input Pokemon
-        function submitpokemon() {
+        function t2SubmitPokemon() {
             //Retrieve the input
             var inputpokemon = document.getElementById('inputpokemon').value;
             var inputmodifier = document.getElementById('inputmodifier').value;
@@ -250,7 +233,7 @@ switch (mw.config.get('wgPageName')) {
             document.getElementById('pokemonoutput').innerHTML = 'Looking up '.concat(name).concat('... (this text will stay if lookup failed)');
             
             //Get request to a page on the Wikia
-            $.get(wgScript,
+            $.get(mw.config.get('wgScript'),
                 {title: name,
                  action: 'raw',
                  ctype: 'text/plain'},
@@ -325,16 +308,17 @@ switch (mw.config.get('wgPageName')) {
             
             //gonna try to parse some wikitext using javascript
             var example = "{{Pokémon_Tooltip_v2|pokemon=" + inputpokemon + "|modifier=" + inputmodifier + "}}";
-            $.getJSON('http://pkmnshuffle.wikia.com/api.php?format=json&action=parse&text=' + example,
+            $.getJSON('http://pkmnshuffle.fandom.com/api.php?format=json&action=parse&text=' + example,
                 function(data) {
                     var innerhtml4 = data.parse.text["*"];
                     document.getElementById('infobox').innerHTML = innerhtml4;
                 }
             );
         }
+        window.t2SubmitPokemon = t2SubmitPokemon;
         
         //This function attempts to retrieve and output data using the input Skill
-        function submitskill() {
+        function t2SubmitSkill() {
             //Retrieve the input
             var inputskill = document.getElementById('inputskill').value;
             
@@ -342,7 +326,7 @@ switch (mw.config.get('wgPageName')) {
             document.getElementById('skilloutput').innerHTML = 'Looking up '.concat(inputskill).concat('... (this text will stay if lookup failed)');
             
             //Get request to a page on the Wikia
-            $.get(wgScript,
+            $.get(mw.config.get('wgScript'),
                 {title: inputskill,
                  action: 'raw',
                  ctype: 'text/plain'},
@@ -473,15 +457,16 @@ switch (mw.config.get('wgPageName')) {
                 }
             );
         }
+        window.t2SubmitSkill = t2SubmitSkill;
         
         getpokemonlist();
         getskilllist();
     break;
     case 'Template:ProfileCardCustomizer':
         //HTML code for the input forms
-        var inputinnerhtml = '<div id="input">Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clicksubmitpokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updatemodifierlist();" onkeypress="return clicksubmitpokemon(event);"><br>Mega?: <input id="inputmega" type="checkbox"><br>Mega Modifier: <select id="inputmegamodifier"><option></option><option value="X">X</option><option value="Y">Y</option></select><br>Border: <select id="inputborder"><option value="1">Level 1</option><option value="2">Level 5</option><option value="3">Level 10</option><option value="4">Level 15</option><option value="5">Level 20</option><option value="6">Level 30</option></select><br>Profile Card?: <input id="inputprofilecard" type="checkbox" onchange="togglesupports();"><br>Profile Card Color: <select id="inputprofilecardcolor"><option value="White">White</option><option value="Orange">Orange</option><option value="Pink">Pink</option><option value="Red">Red</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Rainbow">Rainbow</option><option value="Black">Black</option></select><br><button id="submitpokemon" type="button" onclick="submitpokemon2()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist></div>';
+        var inputinnerhtml = '<div id="input">Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br>Mega?: <input id="inputmega" type="checkbox"><br>Mega Modifier: <select id="inputmegamodifier"><option></option><option value="X">X</option><option value="Y">Y</option></select><br>Border: <select id="inputborder"><option value="1">Level 1</option><option value="2">Level 5</option><option value="3">Level 10</option><option value="4">Level 15</option><option value="5">Level 20</option><option value="6">Level 30</option></select><br>Profile Card?: <input id="inputprofilecard" type="checkbox" onchange="pccToggleSupports();"><br>Profile Card Color: <select id="inputprofilecardcolor"><option value="White">White</option><option value="Orange">Orange</option><option value="Pink">Pink</option><option value="Red">Red</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Rainbow">Rainbow</option><option value="Black">Black</option></select><br><button id="submitpokemon" type="button" onclick="pccSubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist></div>';
         
-        var input2innerhtml = '<div id="input2" style="display:none;">Support 1: <input id="inputsupport1" onkeypress="return clicksubmitpokemon(event);"><br>Support 2: <input id="inputsupport2" onkeypress="return clicksubmitpokemon(event);"><br>Support 3: <input id="inputsupport3" onkeypress="return clicksubmitpokemon(event);"><br>Support 4: <input id="inputsupport4" onkeypress="return clicksubmitpokemon(event);"></div>';
+        var input2innerhtml = '<div id="input2" style="display:none;">Support 1: <input id="inputsupport1" onkeypress="return clickSubmitPokemon(event);"><br>Support 2: <input id="inputsupport2" onkeypress="return clickSubmitPokemon(event);"><br>Support 3: <input id="inputsupport3" onkeypress="return clickSubmitPokemon(event);"><br>Support 4: <input id="inputsupport4" onkeypress="return clickSubmitPokemon(event);"></div>';
         
         //HTML code for the output
         var outputinnerhtml = '<div id="output"></div>';
@@ -527,7 +512,7 @@ switch (mw.config.get('wgPageName')) {
         var smrecord = 99;
         
         //shows/hides the second set of input forms
-        function togglesupports() {
+        function pccToggleSupports() {
             if (document.getElementById("inputprofilecard").checked) {
                 document.getElementById("input2").style.display = "inline";
             }
@@ -537,7 +522,7 @@ switch (mw.config.get('wgPageName')) {
         }
         
         //This function attempts to retrieve an image of the inputted pokemon and also places a specified border on it
-        function submitpokemon2() {
+        function pccSubmitPokemon() {
             //Retrieve the input
             var inputpokemon = document.getElementById('inputpokemon').value;
             var inputmodifier = document.getElementById('inputmodifier').value;
@@ -552,8 +537,10 @@ switch (mw.config.get('wgPageName')) {
                 if (inputsupport != "") {
                     inputsupports[i] = inputsupport;
                 }
-                else {
-                    inputsupports[i] = "EmptySupport";
+                else if (inputprofilecardcolor == "Black") {
+                    inputsupports[i] = "EmptySupportWhite";
+                } else {
+                	inputsupports[i] = "EmptySupport";
                 }
             }
             
@@ -585,10 +572,10 @@ switch (mw.config.get('wgPageName')) {
                 if (inputprofilecardcolor == "Black") {
                     black = "black";
                 }
-                example = '<div class="profilecard' + black + '" style="display:inline-block; position:relative; height:640px; width:400px;"><div style="position:absolute;">[[File:ProfileCard' + inputprofilecardcolor + '.png|640px|link=]]</div><div style="position:absolute; top:64px; left:64px;">[[File:IconBorder' + inputborder + '.png|100px|link=]]</div><div style="position:absolute; top:81px; left:80px;">[[File:' + name + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:210px;">[[File:' + inputsupports[0] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:290px;">[[File:' + inputsupports[1] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:370px;">[[File:' + inputsupports[2] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:450px;">[[File:' + inputsupports[3] + '.png|67px|link=]]</div><div class="profilecardnickname' + black + '" id="nickname" style="position:absolute; top:60px; left:205px; width:320px; text-align:center;"></div><div style="position:absolute; top:178px; left:66px;">Plays:</div><div style="position:absolute; top:209px; left:66px;">Pokémon caught:</div><div style="position:absolute; top:240px; left:66px;">Main stage reached:</div><div style="position:absolute; top:271px; left:66px;">Max. combo:</div><div style="position:absolute; top:302px; left:66px;">High score:</div><div style="position:absolute; top:333px; left:66px;">Best Survival Mode record:</div><div id="plays" style="position:absolute; top:178px; left:408px; width:160px; text-align:right;"></div><div id="pokemoncaught" style="position:absolute; top:209px; left:408px; width:160px; text-align:right;"></div><div id="mainscleared" style="position:absolute; top:240px; left:408px; width:160px; text-align:right;"></div><div id="maxcombo" style="position:absolute; top:271px; left:408px; width:160px; text-align:right;"></div><div id="highscore" style="position:absolute; top:302px; left:408px; width:160px; text-align:right;"></div><div id="smrecord" style="position:absolute; top:333px; left:408px; width:160px; text-align:right;"></div></div>';
+                example = '<div class="profilecard' + black + '" style="display:inline-block; position:relative; height:640px; width:400px;"><div style="position:absolute;">[[File:ProfileCard' + inputprofilecardcolor + '.png|640px|link=]]</div><div style="position:absolute; top:63px; left:72px;">[[File:IconBorder' + inputborder + '.png|100px|link=]]</div><div style="position:absolute; top:80px; left:88px;">[[File:' + name + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:210px;">[[File:' + inputsupports[0] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:290px;">[[File:' + inputsupports[1] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:370px;">[[File:' + inputsupports[2] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:450px;">[[File:' + inputsupports[3] + '.png|67px|link=]]</div><div class="profilecardnickname' + black + '" id="nickname" style="position:absolute; top:44px; left:205px; width:320px; text-align:center;"></div><div style="position:absolute; top:169px; left:66px;">Plays:</div><div style="position:absolute; top:200px; left:66px;">Pokémon caught:</div><div style="position:absolute; top:231px; left:66px;">Main stage reached:</div><div style="position:absolute; top:263px; left:66px;">Max. combo:</div><div style="position:absolute; top:294px; left:66px;">High score:</div><div style="position:absolute; top:324px; left:66px;">Best Survival Mode record:</div><div id="plays" style="position:absolute; top:169px; left:388px; width:180px; text-align:right;"></div><div id="pokemoncaught" style="position:absolute; top:200px; left:388px; width:180px; text-align:right;"></div><div id="mainscleared" style="position:absolute; top:231px; left:388px; width:180px; text-align:right;"></div><div id="maxcombo" style="position:absolute; top:263px; left:388px; width:180px; text-align:right;"></div><div id="highscore" style="position:absolute; top:294px; left:388px; width:180px; text-align:right;"></div><div id="smrecord" style="position:absolute; top:324px; left:388px; width:180px; text-align:right;"></div></div>';
             }
             
-            $.getJSON('http://pkmnshuffle.wikia.com/api.php?format=json&action=parse&disablepp=true&text=' + example,
+            $.getJSON('http://pkmnshuffle.fandom.com/api.php?format=json&action=parse&disablelimitreport=true&wrapoutputclass=&text=' + example,
                 function(data) {
                     var innerhtml = data.parse.text["*"];
                     innerhtml = innerhtml.replace("<p>", "");
@@ -614,11 +601,13 @@ switch (mw.config.get('wgPageName')) {
             );
         }
         
+        window.pccToggleSupports = pccToggleSupports;
+        window.pccSubmitPokemon = pccSubmitPokemon;
         getpokemonlist();
     break;
     case 'Template:Test4':
         //HTML code for the output
-        var inputinnerhtml = '<div id="input">Stage: <input id="inputpage"><br><button id="submitpage" type="button" onclick="submitpage();">Submit</button></div>';
+        var inputinnerhtml = '<div id="input">Stage: <input id="inputpage"><br><button id="submitpage" type="button" onclick="t4SubmitPage();">Submit</button></div>';
         
         var outputinnerhtml = '<div id="output"></div>';
         
@@ -638,11 +627,11 @@ switch (mw.config.get('wgPageName')) {
         output.innerHTML = outputinnerhtml;
         document.getElementById('form').appendChild(output);
         
-        function submitpage() {
+        function t4SubmitPage() {
             var page = document.getElementById("inputpage").value;
             
             //Get request to a page on the Wikia
-            $.get(wgScript,
+            $.get(mw.config.get('wgScript'),
                 {title: page,
                  action: 'raw',
                  ctype: 'text/plain'},
@@ -730,5 +719,6 @@ switch (mw.config.get('wgPageName')) {
                 }
             );
         }
+        window.t4SubmitPage = t4SubmitPage;
     break;
 }

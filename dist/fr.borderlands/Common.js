@@ -1,1 +1,0 @@
-/* Le Javascript ici s'applique à tout le wiki. */

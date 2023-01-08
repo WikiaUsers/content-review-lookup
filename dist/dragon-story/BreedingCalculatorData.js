@@ -3416,6 +3416,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "bough": {
+                "name": "Bough",
+                "types": [
+                    "holiday",
+                    "green",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "bound": {
                 "name": "Bound",
                 "types": [
@@ -12063,6 +12080,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "frosthearth": {
+                "name": "Frost Hearth",
+                "types": [
+                    "holiday",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "frostsapphire": {
                 "name": "Frost Sapphire",
                 "types": [
@@ -13228,6 +13262,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "10_hours_10",
                 "rarity": 3,
                 "offspringeligibility": "expired"
+            },
+            "glitterday": {
+                "name": "Glitterday",
+                "types": [
+                    "holiday",
+                    "white",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "glitterscale": {
                 "name": "Glitterscale",
@@ -20609,6 +20670,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "17_hours_17",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "mirth": {
+                "name": "Mirth",
+                "types": [
+                    "holiday",
+                    "pink",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]
@@ -28150,6 +28228,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "roaringcold": {
+                "name": "Roaring Cold",
+                "types": [
+                    "elemental",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
                 ]
             },
             "robust": {

@@ -320,6 +320,7 @@ if(wgUserGroups.includes('sysop') ||
     });
 }((window.fng = window.fng || {}).catsorter = window.fng.catsorter || {});
 
+window.AddRailModule = ['Template:RailModule', 'Template:NewPagesModule'];
 
 // Template:Tabs
 $(function() {

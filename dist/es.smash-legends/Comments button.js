@@ -1,5 +1,5 @@
 (function () {
-  if (mw.config.get('wgCanonicalNamespace') !== '' || [ 0, 3 ].includes( mw.config.get('wgArticleId') )) return
+  if (mw.config.get('wgCanonicalNamespace') !== '' || [ 0, 1 ].includes( mw.config.get('wgArticleId') )) return
     
   mw.loader.using(['jquery', 'mediawiki.api']).then(function() {
 	  var api = new mw.Api();

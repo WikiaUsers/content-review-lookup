@@ -953,14 +953,12 @@
             // -> The existence of a div "LoadingOverlay-module_overlay__UXv3B" under "leaflet-container"
             // -> The lack of any elements under leaflet-overlay-pane
             // -> The lack of the zoom controls
-            // -> The lack of the edit control
             if (mapModuleContainer == null || leafletContainer == null ||
                 mapModuleContainer.childElementCount == 0 || leafletContainer.childElementCount == 0 ||
                 mapModuleContainer.querySelector("img.Map-module_imageSizeDetect__YkHxA") != null ||
                 leafletContainer.querySelector(".LoadingOverlay-module_overlay__UXv3B") != null || 
                 leafletContainer.querySelector(".leaflet-map-pane > .leaflet-overlay-pane > *") == null || 
-                leafletContainer.querySelector(".leaflet-control-container .leaflet-control-zoom") == null ||
-                leafletContainer.querySelector(".leaflet-control-container .interactive-maps__edit-control") == null)
+                leafletContainer.querySelector(".leaflet-control-container .leaflet-control-zoom") == null)
             {
                 return false;
             }

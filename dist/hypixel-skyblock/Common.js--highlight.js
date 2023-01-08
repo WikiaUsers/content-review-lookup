@@ -12,7 +12,7 @@
  * Version 2.1: Made compatible with jquery.tablesorter - Cqm
  */
 
-;(function ($, mw) {
+(function ($, mw) {
 
     "use strict";
 
@@ -248,11 +248,11 @@
                                 $("<th/>")
                                 .attr("colspan", columns)
                                 .append(
-                                    $("<input>")
+                                    $("<div>")
                                     .attr({
-                                        "type": "button",
-                                        "value": "Reset"
+                                        "class": "button"
                                     })
+                                    .text("Reset")
                                     .click(function () {
                                         rows[iTable].each(function (iRow) {
                                             cookie[iTable][iRow] = 0;

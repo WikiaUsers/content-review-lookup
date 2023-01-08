@@ -1,1 +1,0 @@
-importScript('Upload.js');
