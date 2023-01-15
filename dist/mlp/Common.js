@@ -613,7 +613,7 @@ $(function() {
         if (data.error) {
             $('#mw-content-text').append($('<span />', {
                 'class': 'error',
-                'html': data.error.info
+                'html': mw.html.escape(data.error.info)
             }));
             $('#lop-thislink').remove();
             return;

@@ -7,14 +7,6 @@ window.DiscordBannerSettings = {
     noRail: false
 };
 
-/*Multi-upload*/
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:UploadMultipleFiles.js',
-    ]
-});
-
 /*Images*/
 $('#content img').bind('contextmenu', function(e) {
     return false;

@@ -1,10 +1,22 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-// настройки для BackToTopButton
+// Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице
+
+/* Убрать title в автотаблицах */
+$(function() {
+	var intervalNoTitle = setInterval(notitle, 500)
+	function notitle() {
+    	if ($('.autotable .tooltip-theme-main').parent('th.headerSort').attr('title', '')) {
+    	    clearInterval(intervalNoTitle)
+			$('.autotable .tooltip-theme-main').parent('th.headerSort').attr('title', '')
+		}
+	}
+});
+
+/* Настройки для BackToTopButton */
 window.BackToTopModern = true;
 
 /* Прогресс-бар */
 window.AddRailModule = [
-    { page: 'Template:RailModule1', maxAge: 60 },
+    // { page: 'Template:RailModule1', maxAge: 60 },
     { page: 'Template:RailModule2', maxAge: 60 },
 ];
 

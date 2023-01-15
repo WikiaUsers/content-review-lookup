@@ -1,1 +1,0 @@
-$('.portable-infobox .pi-data-value pre > *').unwrap();

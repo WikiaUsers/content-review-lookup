@@ -53,7 +53,7 @@ mw.loader.using(["mediawiki.api"], function(require) {
                     while(m = subdomain.exec(wikitext))
                         $("<li>")
                         .appendTo($wikis)
-                        .text(m[1] + ".wikia.com"); // .text() sanitization
+                        .text(m[1] + ".fandom.com"); // .text() sanitization
 
                     /* Use Fewfre's RecentChangesMultiple */
                     importArticles({

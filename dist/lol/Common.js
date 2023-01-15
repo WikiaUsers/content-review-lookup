@@ -71,7 +71,7 @@ $(function() {
 
 $(function() {
 	$('.mw-charinsert-item').each(function() {
-		$(this).html($(this).closest('div').attr('data-ci-label'));
+		$(this).text($(this).closest('div').attr('data-ci-label'));
 		$(this).css('display', 'inline-block');
 	});
 	$('.ci-loading-text').css('display','none');
@@ -116,7 +116,9 @@ $(function() {
 		if (data.query.pages["-1"] !== undefined) return;
 		var el = document.createElement('div');
 		var url = mw.config.get('wgServer') + '/Data:' + title;
-		$(el).html('Warning! A <a href="' + url + '">Data page</a> exists for this page!');
+		$('<span />').text('Warning! A ').appendTo(el);
+		$('<a/>', { href: url, text: 'Data Page' }).appendTo(el);
+		$('<span />').text(' exists for this page!').appendTo(el);
 		$(el).addClass('important-notice');
 		$(el).insertAfter(document.getElementById('wpReason'));
 	});

@@ -22,10 +22,12 @@ mw.loader.using('mediawiki.api').then(function () {
 	do {
 		dateContribs.push({ date: structuredClone(testDate), contribs: 0 });
 	} while (testDate.setTime(testDate.getTime() + 86400000) <= today.getTime());
+
 	function isoDate(date) {
 		var parts = formatter.formatToParts(date).reduce(function (carry, p) { carry[p.type] = p.value; return carry; }, {});
 		return [parts.year, parts.month, parts.day].join('-');
 	}
+
 	function processData() {
 		var container = document.getElementById('gridOutput');
 		container.textContent = "Found " + contribs.length + " contributions. Render &hellip;";
@@ -56,20 +58,21 @@ mw.loader.using('mediawiki.api').then(function () {
 			if (da.contribs > 10) bgColor = "#F3B679";
 			if (da.contribs > 20) bgColor = "#F39A48";
 			if (da.contribs > 30) bgColor = "#F37F20";
-			urlParams.set('start', da.date);
-			urlParams.set('end', da.date);
+			urlParams.set('start', isoDate(da.date));
+			urlParams.set('end', isoDate(da.date));
 			var el = Object.assign(document.createElement('a'), {
 				title: isoDate(da.date) + ': ' + da.contribs,
-				href: urlBase + urlParams
+				href: [ urlBase, urlParams ].join('?'),
 			});
 			el.style.backgroundColor = bgColor;
 			el.style.gridArea = dayNum + ' / ' + weekNum + ' / ' + (dayNum + 1) + ' / ' + (weekNum + 1);
-			fragment.append(el)
+			fragment.append(el);
 		}
 		container.textContent = '';
 		container.style.setProperty("--week-rows", Math.ceil(numWeeks));
 		container.appendChild(fragment);
 	}
+
 	function getData(uccontinue) {
 		var params = {
 			action: "query",

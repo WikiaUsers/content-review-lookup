@@ -18,6 +18,12 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+'Iks Chuka' : '13.11.12918',
+'Iks Pututu' : '13.11.12918',
+'Iks Aucar' : '13.11.12918',
+'Iks Churrascan' : '13.11.12918',
+'Iks Ahpuputu' : '13.11.12918',
+'Cursed Ape' : '13.11.12918',
 //Creatures that drop items with plural names such as Moonlight Crystals which now appear with their respective amounts in loot messages
 'Black Vixen' :'12.90.12182',
 'Bloodback' :'12.90.12182',

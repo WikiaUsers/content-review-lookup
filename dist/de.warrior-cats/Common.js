@@ -1,5 +1,23 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
+/* Automatische Begrüßung */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2:false,
+        3:'{{sub'+'st:MediaWiki:Welcome-message-user}}'
+    },
+    summary:'Automatische Begrüßungsnachricht',
+    notify: '<a href="/de/wiki/Benutzer_Diskussion:$2">Herzlich willkommen im Wiki, $1! Du hast eine neue Nachricht.</a>'
+};
+
+importArticles({ 
+    type: 'script', 
+    articles: [ 
+        'u:dev:MediaWiki:AutoCreateUserPages.js', 
+    ]
+});
+
+/* AjaxRC */
 window.ajaxPages = [
     "Spezial:Letzte_Änderungen",
     "Spezial:WikiActivity",
@@ -228,20 +246,3 @@ function createCollapseButtons() {
 }
  
 addOnloadHook( createCollapseButtons );
-
-/* Automated Profile Template */
-window.AutoCreateUserPagesConfig = {
-    content: {
-        2:false,
-        3:'{{sub'+'st:MediaWiki:Welcome-message-user}}'
-    },
-    summary:'Automatische Begrüßungsnachricht'
-    notify: '<a href="/wiki/Benutzer_Diskussion:$2">Herzlich willkommen im Wiki, $1! Du hast eine neue Nachricht.</a>'
-};
-
-importArticles({ 
-    type: 'script', 
-    articles: [ 
-        'u:dev:MediaWiki:AutoCreateUserPages.js', 
-    ]
-});

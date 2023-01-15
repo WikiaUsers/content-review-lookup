@@ -172,6 +172,15 @@ $(function(){
     }
 });
 
+//comp. marks
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+        case 'Лист_достижений_персонажа':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});
+
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
         case 'Шаблон:Полотно_сервера':

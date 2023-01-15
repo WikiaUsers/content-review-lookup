@@ -1,4 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+// <nowiki>
+
 //style backbutton dev wiki
 window.BackToTopModern = true;
 
@@ -189,3 +192,5 @@ $(function(){
         break;
     }
 });
+
+// </nowiki>

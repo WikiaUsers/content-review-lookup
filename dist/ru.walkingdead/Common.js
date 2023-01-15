@@ -1,5 +1,3 @@
-/* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-
 var a=new Date;if(18==a.getDate()&&0==a.getMonth()&&2012==a.getFullYear())window.location="http://en.wikipedia.org/wiki/Main_Page"; 
 
 /** Import module **************************************************************

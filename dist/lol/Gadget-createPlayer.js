@@ -106,7 +106,7 @@ $( function () {
 				'Tooltip:' + thistitle
 			];
 			texts = [
-				"{{TeamTabsHeader}}\n{{TeamResults|%s|show=everything}}",
+				"{{TeamTabsHeader}}\n{{TeamResults|show=everything}}",
 				"{{TeamTabsHeader}}\n{{PBHistoryTeam}}",
 				"{{TeamTabsHeader}}\n{{TeamScheduleHistory}}",
 				"{{RosterTooltip}}"

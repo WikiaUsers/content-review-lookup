@@ -71,7 +71,7 @@ $(function() {
 
 $(function() {
 	$('.mw-charinsert-item').each(function() {
-		$(this).html($(this).closest('div').attr('data-ci-label'));
+		$(this).text($(this).closest('div').attr('data-ci-label'));
 		$(this).css('display', 'inline-block');
 	});
 	$('.ci-loading-text').css('display','none');

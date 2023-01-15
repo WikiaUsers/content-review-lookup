@@ -63,7 +63,7 @@ var container = document.querySelector('.faction-chart');
 container.appendChild(canvas);
 
 // Retrieve the data from the Google Spreadsheet
-fetch('https://sheets.googleapis.com/v4/spreadsheets/1F4h4EnpV4WpDkj77PwzhncysI3NoPiqRMe82qUILXdA/values/Sheet1?alt=json&key=AIzaSyDu3G5s4cEt-JD15h3UIExH2PQnz42CYc4')
+fetch('https://sheets.googleapis.com/v4/spreadsheets/1GRzBLaEcupb7zteSdO2GBtoxsPx13ertgCfrqpMfzRQ/values/Sheet1?alt=json&key=AIzaSyBU6S8iQzQRzSq7gtKuqgjZDBiQItod_9A')
   .then(function(response) {
     return response.json();
   })

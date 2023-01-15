@@ -12,6 +12,9 @@ window.mapper = (function mapper(ns) {
 
     minimap_max_x = 133,
     minimap_max_y = 129,
+    
+    minimap_view_w = 650,
+    minimap_view_h = 500,
 
     minimap_images = [],
 
@@ -437,8 +440,8 @@ window.mapper = (function mapper(ns) {
     minimap_map_data[3] = minimap_map_data[3] - (Math.floor(minimap_map_data[3] / 256) * 256);
 
     var hres, d, ch, parss, pars = minimap_map_data;
-    var tleft = Math.floor((((pars[0] - 124 - (1 * (1 / pars[5]))) * 256) + pars[1]) * pars[5], 10) + Math.floor(pars[5] / 2);
-    var ttop = Math.floor((((pars[2] - 121 - (0.75 * (1 / pars[5]))) * 256) + pars[3] - 1) * pars[5], 10) + Math.floor(pars[5] / 2);
+    var tleft = Math.floor((((pars[0] - 124 - (1 * (1 / pars[5]))) * 256) + pars[1]) * pars[5], 10) + Math.floor(pars[5] / 2) - (minimap_view_w - 512) / 2;
+    var ttop = Math.floor((((pars[2] - 121 - (0.75 * (1 / pars[5]))) * 256) + pars[3] - 1) * pars[5], 10) + Math.floor(pars[5] / 2) - (minimap_view_h - 384) / 2;
     var twidth = Math.floor(minimap_images_width * pars[5]);
     var theight = Math.floor(minimap_images_height * pars[5]);
 
@@ -472,30 +475,30 @@ window.mapper = (function mapper(ns) {
       });
       if (!$('#minimap_editor_mode').is(':checked')) {
         parss = minimap_map_sdata;
-        tleft = Math.floor((((parss[0] - 124 - (1 * (1 / pars[5]))) * 256) + parss[1]) * pars[5], 10) + Math.floor(pars[5] / 2);
-        ttop = Math.floor((((parss[2] - 121 - (0.75 * (1 / pars[5]))) * 256) + parss[3] - 1) * pars[5], 10) + Math.floor(pars[5] / 2);
+        tleft = Math.floor((((parss[0] - 124 - (1 * (1 / pars[5]))) * 256) + parss[1]) * pars[5], 10) + Math.floor(pars[5] / 2) - (minimap_view_w - 512) / 2;
+        ttop = Math.floor((((parss[2] - 121 - (0.75 * (1 / pars[5]))) * 256) + parss[3] - 1) * pars[5], 10) + Math.floor(pars[5] / 2) - (minimap_view_h - 384) / 2;
 
         $('#minimap_vl').appendTo($('#minimap_imgdiv')).css({
-          'left': (tleft + 256) + 'px',
-          'top': (ttop + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((384 - parseInt(384 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
-          'height': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(384 * (pars[5] / parss[5]), 10) : 384) + 'px'
+          'left': (tleft + minimap_view_w/2) + 'px',
+          'top': (ttop + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((minimap_view_w - parseInt(minimap_view_w * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
+          'height': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(minimap_view_h * (pars[5] / parss[5]), 10) : minimap_view_h) + 'px'
         });
 
         $('#minimap_hl').appendTo($('#minimap_imgdiv')).css({
-          'left': (tleft + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((512 - parseInt(512 * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
-          'top': (ttop + 192) + 'px',
-          'width': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(512 * (pars[5] / parss[5]), 10) : 512) + 'px'
+          'left': (tleft + (mw.config.get('wgPageName') != 'Mapper' ? parseInt((minimap_view_h - parseInt(minimap_view_h * (pars[5] / parss[5]), 10)) / 2, 10) : 0)) + 'px',
+          'top': (ttop + minimap_view_h/2) + 'px',
+          'width': (mw.config.get('wgPageName') != 'Mapper' ? parseInt(minimap_view_w * (pars[5] / parss[5]), 10) : minimap_view_w) + 'px'
         });
       } else {
         $('#minimap_vl').appendTo($('#minimap_imgdiv').parent()).css({
-          'left': '256px',
+          'left': minimap_view_w/2 + 'px',
           'top': '0px',
-          'height': '384px'
+          'height': minimap_view_h + 'px'
         });
         $('#minimap_hl').appendTo($('#minimap_imgdiv').parent()).css({
           'left': '0px',
-          'top': '192px',
-          'width': '512px'
+          'top': minimap_view_h/2 +'px',
+          'width': minimap_view_w + 'px'
         });
       }
     } else {
@@ -659,12 +662,12 @@ window.mapper = (function mapper(ns) {
         '<div class="minimap_wx" onclick="$(\'.minimap_wp, #minimap_blackout\').css(\'display\', \'none\').html(\'&nbsp;\'); return false;">X</div>' :
         '<div style="border-bottom-color:#aaaaaa;border-bottom-style:solid;border-bottom-width:1px;"><font size="+1">Mapper</font></div><br />') +
       '<div style="display:block;border:1px #3366CC solid;background-color:grey;">' +
-      '<div id="minimap_loading" ><img src="' + minimap_images[0][1] + '" alt="Loading" width="512" height="384" /></div>' +
-      '<div id="minimap_maindiv" style="overflow:hidden;"><div style="overflow:hidden;display:block;position:absolute;width:512px;height:384px;">' +
+      '<div id="minimap_loading" ><img src="' + minimap_images[0][1] + '" alt="Loading" width="' + minimap_view_w + 'px" height="' + minimap_view_h + 'px" /></div>' +
+      '<div id="minimap_maindiv" style="overflow:hidden;"><div style="overflow:hidden;display:block;position:absolute;width:' + minimap_view_w + 'px;height:' + minimap_view_h + 'px;">' +
       '<div id="minimap_imgdiv" style="display:block;position:absolute;">' +
       '<img id="minimap_img" src="" alt="" width="" height="" />' +
-      '<div id="minimap_vl" style="position:absolute;left:256px;top:0px;display:block;width:1px;height:384px;border-left:1px dashed #FFFFFF;"></div>' +
-      '<div id="minimap_hl" style="position:absolute;left:0px;top:192px;display:block;width:512px;height:1px;border-top:1px dashed #FFFFFF;"></div>';
+      '<div id="minimap_vl" style="position:absolute;left:' + minimap_view_w/2 + 'px;top:0px;display:block;width:1px;height:' + minimap_view_h +  'px;border-left:1px dashed #FFFFFF;"></div>' +
+      '<div id="minimap_hl" style="position:absolute;left:0px;top:' + minimap_view_h/2 + 'px;display:block;width:' + minimap_view_w + 'px;height:1px;border-top:1px dashed #FFFFFF;"></div>';
     var tmpm, i = 1;
     while (url.indexOf('mark' + i) != -1) {
       tmpm = minimap_get_coords(url, 'mark' + i);

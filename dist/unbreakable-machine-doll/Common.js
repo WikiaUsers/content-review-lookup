@@ -46,7 +46,7 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) importScriptPage('Media
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 // Modernization
-window.BackToTopModern = false;
+window.BackToTopModern = true;
 
 // Arrow Icon
 window.BackToTopArrow = true;
@@ -116,14 +116,73 @@ if (mwCustomEditButtons) {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
-//＝＝＝＝＝＝＝＝＝＝＝＝＝【Discuss Embed】＝＝＝＝＝＝＝＝＝＝＝＝//
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+//＝＝＝＝＝＝＝＝＝【Disable Bot Message Wall】＝＝＝＝＝＝＝＝＝//
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+window.DisableBotMessageWalls = {
+    exceptions: ['']
+};
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+
+
+
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+//＝＝＝＝＝＝＝＝＝＝＝＝＝【Discussion Embed】＝＝＝＝＝＝＝＝＝＝＝＝//
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+// Discussion Limit
 window.discussEmbedLimit = 7;
+
+// Discussion ID
 //window.discussEmbedForum = "";
+
+// Discussion Sort
 window.discussEmbedSortTrending = 0;
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+
+
+
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+//＝＝＝＝＝＝＝＝＝＝＝【Discussion Rail Module】＝＝＝＝＝＝＝＝＝＝//
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+// Embedding-only Use
+window.discussionsModuleEmbed = true;
+
+// Positioning
+mw.hook('discussionsModule.added').add(function($module) {
+    // Module addition 
+    if ($('.insights-module').exists()) {
+        $module.insertBefore('.insights-module');
+    } else {
+        $module.appendTo('#WikiaRail');
+    }
+});
+
+// Content Filtering
+window.discussionsModuleConfig = { 
+    'size' : '4', 
+    'mostrecent' : 'false',
+    //'catid' : [
+    //]
+}
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+
+
+
 
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//

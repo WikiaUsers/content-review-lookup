@@ -77,9 +77,9 @@ $(".type-enemyBox").each(
 			}
 
 			if (navigator.userAgent.indexOf("Firefox") != -1) {
-				slider.innerHTML = "<div>" + scaler.base_lvl_v + "</div><div><input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='width:" + slider_width + "%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/></div><div>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
+				slider.innerHTML = "<div>" + scaler.base_lvl_v + "</div><div style='padding: 0 5px;width:" + slider_width + "%;'><input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='width:100%;' oninput='ehp_input.value = ehp_slider.value; slider_div.enemyVarInfoboxScaler.update();'/></div><div>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
 			} else {
-				slider.innerHTML = "<div>" + scaler.base_lvl_v + "</div><div><input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='width:" + slider_width + "%;' /></div><div>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
+				slider.innerHTML = "<div>" + scaler.base_lvl_v + "</div><div style='padding: 0 5px;width:" + slider_width + "%;'><input type='range' min='" + scaler.base_lvl_v + "' max='" + $(enemyVar).find("#slider_max")[0].innerHTML + "' value='" + scaler.spawn_lvl_v + "' id='" + ehp_slider_id + "' style='width:100%;' /></div><div>" + $(enemyVar).find("#slider_max")[0].innerHTML + "</div>";
 			}
 
 			$(slider).find("#" + ehp_slider_id)[0].oninput = function () {

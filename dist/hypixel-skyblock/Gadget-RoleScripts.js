@@ -206,6 +206,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
                 'u:dev:MediaWiki:MassEdit/code.js',
                 'u:dev:MediaWiki:MassRename/code.js',
                 'u:dev:MediaWiki:MassCategorization/code.js',
+                'u:dev:MediaWiki:AjaxBatchRedirect.js',
                 'u:dev:MediaWiki:AnchoredRollback/code.js',
                 'u:dev:MediaWiki:UserAndIPTools.js',
             ]

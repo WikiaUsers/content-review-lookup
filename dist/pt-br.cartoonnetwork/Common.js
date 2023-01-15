@@ -12,7 +12,7 @@ fdButtons[fdButtons.length] = {
   'label': 'Vandalismo'};
 
 function emptyLicenseAlert(form) {
-	var msg = "O arquivo de licença não for selecionado."
+	var msg = "O arquivo de licença não foi selecionado."
 	if(window.emptyLicenseWarningDelivered) return true;
 	if($('#wpLicense').val() == '') {
 		alert(msg);

@@ -133,3 +133,27 @@ window.questions = [
     "Terror",
     "Tyrant"]
 ];
+
+
+/**
+ * Copied from [[w:c:starwars]]
+ * Show/hide for media timeline -- Grunny
+ **/
+$( function () {
+	if( !$( '.timeline-toggles' ).length ) {
+		return;
+	}
+	$( '.timeline-toggles' ).find( 'td > a' ).click( function () {
+		var	hideBtnClass = $( this ).parent().attr( 'class' ),
+			$hideContent = $( 'tr.' + hideBtnClass );
+		if( !$hideContent.length ) {
+			return;
+		}
+		$hideContent.toggle($(this).text().includes('show'));
+		if ( $( this ).text().indexOf( 'hide' ) >= 0 ) {
+			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
+		} else {
+			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
+		}
+	} );
+} );

@@ -218,18 +218,6 @@ $(function() {
 });
 
 /* ##################################################################################### */
-/* ### Global File Usage                                                             ### */
-/* ### ----------------------------------------------------------------              ### */
-/* ### Description: lists all pages in all language sections where the file is used  ### */
-/* ### Credit:      User:Alex6122                                                    ### */
-/* ##################################################################################### */
-window.globalFileUsageConfig = {
-    'lang': ['bg','de','en','es','fi','fr','hu','it','ja','ko','lt','nl','pl','ru','pt-br','sv','tr','uk','zh'],
-    'auto_show': false,
-    'on_delete': true
-};
-
-/* ##################################################################################### */
 /* ### Multiple File Delete                                                          ### */
 /* ### ----------------------------------------------------------------              ### */
 /* ### Description: Es un script que agrega un botón de "Eliminación selectiva" a    ### */

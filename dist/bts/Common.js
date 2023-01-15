@@ -1,17 +1,36 @@
-/* All code JS - By TRJ-VoRoN from The Binding of Isaac Ru Wiki */
-
-
-//рецепты мешка
-$(function(){
-    $('.tt3').each(function(){
-        $(this).click(function() {
-            $('.tt4').removeClass('defaultCraft');
-            $('.tt3').removeClass('defaultButton');
-            $(this).find('.tt4').addClass('defaultCraft');
-            $(this).addClass('defaultButton');
-        });
-    });
+/* All code JS - By TRJ-VoRoN from The Binding of Isaac Ru Wiki and Overlook RP Wiki */
+/*** JavaScript Imports ***/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UserAccountAge/code2.js',
+    ]
 });
+
+/*** Discussion Templates Config ***/
+window.DiscussionTemplates = {
+    templates: {
+        'block-message': {
+            name: 'Template:Moderation/Block Message',
+            title: 'Block Notice'
+          }
+        },
+    allowedGroups: ['sysop']
+};
+
+/*** Back To Top Button Config ***/
+window.BackToTopModern = true;
+window.BackToTopStart = 200;
+
+/*** Tooltips Customization ***/
+window.tooltips_config = {
+    noCSS: true,
+}
+
+/*** User Account Age tag ***/
+window.customUserAccountAge = {
+  showFullDate: true
+};
 
 //Шаблон:RailModule dev wiki - Credit to Викии Вики
 window.AddRailModule = [

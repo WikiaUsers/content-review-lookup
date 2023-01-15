@@ -276,3 +276,8 @@ window.LockForums = {
 /*Copy template button*/
 window.copyButtonPosition = "div.CopyButton";
 window.syntaxHighLightArea = "div.SectionCopy";
+
+/*Account age*/
+window.customUserAccountAge = {
+  showFullDate: true
+};
