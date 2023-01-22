@@ -58,7 +58,7 @@ UserTagsJS.modules.inactive = {
 	days: 30,
 	namespaces: [0],
 	zeroIsInactive: true // 0 article edits = inactive
-}
+};
 
 /* Auto-Refresh in Recent Changes */
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
@@ -66,3 +66,12 @@ window.ajaxIndicator = 'https://images.wikia.nocookie.net/__cb1468579810/common/
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-Refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
+
+/* Tooltips Configuration */
+window.tooltips_config = {
+    offsetX: 5,
+    offsetY: 10,
+    waitForImages: true,
+    events: ['CustomEvent'],
+    noCSS: true,
+};

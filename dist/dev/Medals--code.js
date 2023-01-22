@@ -254,7 +254,7 @@
             setOffY = parseFloat(offSet.top) + $(that).height() + 5;
             
             $('body').append(
-                '<div class="badgetooltip" style="position:absolute; z-index:5000;">' +
+                '<div class="badgetooltip" style="position:absolute; z-index:6000000;">' +
                     '<div class="badgetooltiparrow" style="width:0; height:0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid black; margin: 0 auto;"></div>' +
                     '<div class="badgetooltipwindow" style="width: 160px; background-color:white; border:2px solid black; border-radius:5px; text-align:center; padding:5px;">' +
                         $('<span style="font-weight:bold;">').text(badgename).prop('outerHTML') +

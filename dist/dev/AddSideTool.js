@@ -9,7 +9,8 @@
  * @param {any} dev
  * @param {any} hook
  */
-;(function($, dev, hook) {
+;(function($, hook) {
+  'use strict';
   /**
    * @param {string | HTMLElement} icon
    * @param {string | HTMLElement} tooltip
@@ -21,7 +22,7 @@
       .append(icon)
       .css({
         position: 'relative',
-      })
+      });
 
     // Make tooltip
     var $tooltip = $('<div>', {
@@ -33,30 +34,31 @@
         display: 'none',
         top: '50%',
         left: 'calc(100% + 1em)',
-      })
+        'white-space': 'nowrap'
+      });
 
     // Insert tooltip
     $button
       .append($tooltip)
       .on('mouseenter', function() {
-        if ($tooltip.html()) $tooltip.show()
+        if ($tooltip.html()) $tooltip.show();
       })
-      .on('mouseout', function() {
-        $tooltip.hide()
-      })
+      .on('mouseleave', function() {
+        $tooltip.hide();
+      });
 
     // Append button into side container
-    $('.page-side-tools').append($button)
+    $('.page-side-tools').append($button);
 
     // Returns ctx
     return {
       $button: $button,
       $tooltip: $tooltip,
-    }
+    };
   }
 
-  dev = dev || {}
-  dev.addSideTool = addSideTool
-  hook('dev.addSideTool').fire(addSideTool)
-})(jQuery, window.dev, mediaWiki.hook)
+  window.dev = window.dev || {};
+  window.dev.addSideTool = addSideTool;
+  hook('dev.addSideTool').fire(addSideTool);
+})(window.jQuery, mediaWiki.hook);
 // </nowiki>

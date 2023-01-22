@@ -6,8 +6,8 @@ window.UserTagsJS = {
 	tags: {
 		montheditor: { u:'Editor of the Month' },
 		reaper: 'Reaper of Tides',
-		shadow: 'Scythe Bird',
-		reality: 'Realitywarper',
+		children: 'Hoarder of Children',
+		lore: 'Lore Simp',
 		braincell: 'The Only Braincell',
 		wolf: 'Official Wolf',
 		colours: 'Empress of Colours',
@@ -20,8 +20,8 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'TilanissaWildhawk': ['reaper', 'shadow'],
-	'GingerAle0': ['reality', 'braincell'],
+	'TilanissaWildhawk': ['reaper', 'children'],
+	'GingerAle0': ['lore', 'braincell'],
 	'Firewind0111': ['wolf'],
 	'Mintflower09': ['colours'],
 	'Moonshadow567': ['dragon'],
@@ -57,7 +57,7 @@ importArticles({
         'u:dev:MediaWiki:DiscussionsActivity.js',
     ]
 });
-//realted discussions posts at the bottom of every page
+//related discussions posts at the bottom of every page
 importArticles({
     type: 'script',
     articles: [

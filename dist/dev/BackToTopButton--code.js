@@ -127,7 +127,7 @@
     function modernReposition() {
         this.css({
             'right':$(window).width()/100*5,
-            'bottom':$('#WikiaBar #WikiaBarWrapper').height()+8
+            'bottom':$('#WikiaBar #WikiaBarWrapper').height() + 9 + 8
         });
     }
  

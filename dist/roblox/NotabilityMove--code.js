@@ -1,12 +1,12 @@
 /*
-* NotabilityMove v2 (rev 3/17/2022)
+* NotabilityMove v2.1 (rev 1/19/2023)
 * @description Allows for quick moving of pages deemed non-notable.
 * @authors "Joritochip", "The JoTS", "Ozuzanna"
 *
 * Based off of [[w:c:dev:AjaxRedirect]] by Ozuzanna
 */
 
-mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
+mw.loader.using(['mediawiki.api']).then(function() {
     var config = mw.config.get([
         'skin',
         'wgUserGroups',
@@ -14,7 +14,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
         'wgCanonicalSpecialPageName',
         'wgPageName',
     ]);
-    var token = mw.user.tokens.get('editToken');
     var api = new mw.Api();
 
     if (
@@ -64,26 +63,24 @@ mw.loader.using(['mediawiki.api', 'mediawiki.notify']).then(function() {
             + oldPageName.replace(/_/g, ' ') + '" will be moved to\n"'
             + newPageName.replace(/_/g, ' ') + '".')) return;
 
-        api.post({
+        api.postWithEditToken({
             action: 'move',
             from: oldPageName,
             to: newPageName,
             noredirect: '',
-            reason: '[[RW:NOTABLE|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])',
-            token: token
+            reason: '[[RW:NOTABLE|Does not meet notability policies]]. ([[Help:Why was the page I created deleted?|why?]])'
         }).then(function(d) {
             respHandler(!d.error, "Move");
             
             // Temporarily protect page
-            api.post({
+            api.postWithEditToken({
                 format: 'json',
                 action: 'protect',
-                expiry: '1 hour',
+                expiry: '1 day',
                 protections: 'create=sysop',
                 watchlist: 'nochange',
                 title: oldPageName,
-                reason: 'Automatically protected page when moving to user space.',
-                token: token
+                reason: 'Automatically protected page when moving to user space.'
             }).then(function(d) {
                 respHandler(!d.error, "Protect");
             }).catch(function(err) {

@@ -26,37 +26,3 @@ importArticles({
         "w:c:re-monster:MediaWiki:Common.js/Usernames.js",
     ]
 });
-var tooltips_list = [
-    {
-        classname: 'unit-tooltip',
-        parse: '{'+'{Unit-Tooltip|<#param#>}}',
-    }, {
-        classname: 'skill-tooltip',
-        parse: '{'+'{Skill-Tooltip|<#param#>}}',
-    }, {
-        classname: 'equipment-tooltip',
-        parse: '{'+'{Equipment-Tooltip|<#param#>}}',
-    }, {
-        classname: 'common-tooltip',
-        parse: '{'+'{Common-Tooltip|<#param#>}}',
-    }
-];
-var tooltips_config = {
-    offsetX: 20,
-    offsetY: 20,
-    waitForImages: true
-};
-/* set last tab as active tab at portable-infobox */
-mw.hook('wikipage.content').add(function(elem) {
-    var $tabbernav = $(elem).find('.portable-infobox .tabbernav li');
-    if ($tabbernav.length) {
-        $tabbernav.first().removeClass('tabberactive');
-        $tabbernav.last().addClass('tabberactive');
-    }
- 
-    var $tabbertab = $(elem).find('.portable-infobox .tabbertab');
-    if ($tabbertab.length) {
-        $tabbertab.first().css('display', 'none');
-        $tabbertab.last().css('display', 'block');
-    }
-});

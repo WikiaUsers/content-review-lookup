@@ -7,6 +7,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/d/da/Wiki-wordmark-ASTERIAN.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/87/Wiki-wordmark-cangqiong.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/22/Wiki-wordmark-cangqiong-svs.png',
+	    'https://images.wikia.nocookie.net/synthv/images/8/83/Wiki-wordmark-Cheng-Xiao.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/24/Wiki-wordmark-chiyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/05/Wiki-wordmark-chiyu-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/5c/Wiki-wordmark-Cong-Zheng.png',

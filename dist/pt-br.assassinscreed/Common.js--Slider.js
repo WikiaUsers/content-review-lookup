@@ -8,7 +8,7 @@ mw.loader.using( ['jquery.cookie']);
 /****************************************/
 //wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
 //wsl.loadScript("http://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
-mw.loader.using( ['jquery.ui.tabs'], function() {
+mw.loader.using( ['jquery.ui'], function() {
   $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
   $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
  

@@ -7,7 +7,7 @@
  
 mw.loader.using(["jquery.cookie"]);
  
-mw.loader.using(["jquery.ui.tabs"], function() {
+mw.loader.using(["jquery.ui"], function() {
   $(".portal_vtab").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
   $(".portal_vtab > ul > li").removeClass("ui-corner-top").addClass("ui-corner-left");
  

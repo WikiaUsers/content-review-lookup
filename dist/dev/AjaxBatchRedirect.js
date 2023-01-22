@@ -30,11 +30,7 @@
         colorInfo = "black",
         api, i18n, placement, myModal, processFlag;
 
-    if (
-        config.wgCanonicalNamespace === "Thread" ||
-        config.wgCanonicalSpecialPageName ||
-        window.AjaxBatchRedirectLoaded
-    ) {
+    if (window.AjaxBatchRedirectLoaded) {
         return;
     }
 

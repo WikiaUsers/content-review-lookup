@@ -79,3 +79,13 @@ if(mw.config.get('wgUserName')) {
         }
     };
 }
+// 1. AjaxRC configuration option
+window.ajaxRefresh = 30000;
+
+// 2. AjaxRC import statement
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxRC.js'
+    ]
+});

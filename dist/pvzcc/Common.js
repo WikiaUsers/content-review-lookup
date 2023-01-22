@@ -10,9 +10,12 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
+window.BackToTopModern = true;
+
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 1095;
-/* This locks comments after they are three years old - helps combat necroposting */
+window.lockOldComments.limit = 1825;
+window.lockOldComments.addNoteAbove = true;
+/* This locks comments after they are five years old - helps combat necroposting */
 
 /* UserTags Shenanigans */
 window.UserTagsJS = {

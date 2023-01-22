@@ -183,7 +183,7 @@ preloadTemplates_subpage =  "case-by-case" ;
 	// });
 
 // Замена изображения для всплывающего окна ссылки
-window.pPreview = $.extend(true, window.pPreview, {
-    defimage: 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru',
-    noimage: 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ruru'
-});
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
+window.pPreview.RegExp.onlyinclude = ['.mw-parser-output p a'];

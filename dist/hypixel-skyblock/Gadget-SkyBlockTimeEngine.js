@@ -452,6 +452,7 @@
         var i;
         this.anchor = new SkyDate(data.anchor); // a SkyDate used as number
         this.totalduration = this.totalbreak = this.cycleExecutions = this.routineExecutions = 0;
+        this.currentEventTime = this.nextEventTime = undefined;
         this.routinePtr = -1;
         // Handle Cycle
         this.cycle = (data.cycle || "0|0").split("/");
@@ -514,10 +515,12 @@
                     this.currentState = h.STATES.STOPPED;
                 } else {
                     this.currentState = h.STATES.ONGOING;
+                    this.currentEventTime = lastRoutineStart;
                     this.nextEventTime = lastRoutineStart + this.getPeriod();
                 }
             } else { // cond. 5: no limits reached
                 this.currentState = this.routinePtr % 2 === 0 ? h.STATES.ONGOING : h.STATES.WAITING;
+                this.currentEventTime = lastRoutineStart;
                 this.nextEventTime = lastRoutineStart + this.getPeriod();
             }
         }
@@ -566,6 +569,7 @@
         // State Changes
         if (!noStateChanges) {
             this.advancePeriod(1);
+            this.currentEventTime = this.nextEventTime;
             this.nextEventTime += this.getPeriod(0); // Note: Calculation dependent on last state
             this.currentState = h.STATES.ONGOING;
             this.routineExecutions++;
@@ -585,6 +589,7 @@
         if (!this.nextEventTime) {
             // State Changes
             this.currentState = h.STATES.STOPPED;
+            this.currentEventTime = undefined;
             // Call Tasks
             this.callEventSet(h.STATES.STOPPED);
             return;
@@ -592,6 +597,7 @@
         // State Changes
         if (!noStateChanges) {
             this.advancePeriod(1);
+            this.currentEventTime = this.nextEventTime;
             this.nextEventTime += this.getPeriod(0);
             this.currentState = h.STATES.WAITING;
         }
@@ -622,7 +628,8 @@
         var _this = this;
         // align to system clock
         var countTo = this.nextEventTime / h.RATIOS.magic,
-            countToDate = new SkyDate(new SkyDuration(h.LOCALES.utc, countTo));
+            countToDate = new SkyDate(new SkyDuration(h.LOCALES.sbst, this.nextEventTime)),
+            countFromDate = new SkyDate(new SkyDuration(h.LOCALES.sbst, this.currentEventTime));
         var alignTout = setTimeout(function () {
             clearTimeout(alignTout);
             // now start actual countdown
@@ -631,12 +638,12 @@
                 var utcSecondsRemain = Math.floor(countTo - now);
                 if (utcSecondsRemain <= 0)
                     clearTimeout(countdownIntr);
-                callback(utcSecondsRemain, countdownIntr, countToDate, _this.currentState);
+                callback(countdownIntr, utcSecondsRemain, countToDate, countFromDate, _this.currentState);
             }, 1000);
             // call it the first time
             var now = Date.now() / 1000 - h.SKYBLOCK_EPOCH.UNIX_TS_UTC;
             var utcSecondsRemain = Math.floor(countTo - now);
-            callback(utcSecondsRemain, countdownIntr, countToDate, _this.currentState);
+            callback(countdownIntr, utcSecondsRemain, countToDate, countFromDate, _this.currentState);
         }, (new Date()).valueOf() % 1000);
     };
     /*** STATIC FUNCTIONS ***/

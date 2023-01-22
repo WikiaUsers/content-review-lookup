@@ -42,7 +42,7 @@
             });
         }
 
-        var $combo = $('<select id="stdSummaries" tabindex="2"></select>')
+        var $combo = $('<select id="stdSummaries" class="oo-ui-widget" tabindex="2"></select>')
         .insertAfter($textarea.closest('div')) // Some Fandom script removed <select> at $textarea. Use closest parent.
         .change(function() {
             var val = $summary.val();

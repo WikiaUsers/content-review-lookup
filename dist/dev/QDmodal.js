@@ -6,7 +6,7 @@
 (function ($, mw) {
     "use strict";
 
-    var version = 20210606.1;
+    var version = 20230117;
 
     if (mw.libs.QDmodal && mw.libs.QDmodal.version >= version) {
         return;
@@ -59,6 +59,16 @@
 
     function addButton(button) {
         var $button = $("<span>");
+
+        if (!button) {
+            // invalid
+            return;
+        }
+
+        if (typeof button.condition === "function" && !button.condition(this)) {
+            // condition function present and didn't return truthy
+            return;
+        }
 
         if (button.href) {
             $button = $("<a>").attr({

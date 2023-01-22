@@ -88,7 +88,7 @@ mw.loader.using(['site']).then(function() {
 		      			$("#mw-content-text > ul").append('<li><a href="'+d.upload.imageinfo.descriptionurl+'" target="_blank">'+d.upload.filename+'</a></li>');
 		      		}
 		      		else {
-		      			$("#multiUploadFailed ul").append('<li>'+files[curFile].name+'</li>');
+		      			$("#multiUploadFailed ul").append('<li>'+files[curFile].name+'&nbsp;<span title="'+d.error.info+'" style="cursor:help">🛈</span></li>');
 		        		$("#multiUploadFailed").show();
 		      		}
 					curFile++;

@@ -554,7 +554,7 @@
 			{ name: 'Moss Stone', mcName: 'Mossy Cobblestone' },
 			{ name: 'Bedrock' },
 			{ name: 'Sandstone' },
-			{ name: 'Noteblock', mcName: 'Note Block' },
+			{ name: 'Noteblock', mcName: 'Note Block', enchName: 'Enchanted Noteblock' },
 			{ name: 'Brick' },
 			{ name: 'Bricks' },
 			{ name: 'Brick Slab' },

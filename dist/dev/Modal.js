@@ -547,7 +547,8 @@
          * Close modal when clicked outside of the modal
          * (by [[User:Noreplyz]] for [[WHAM]]).
          */
-        this._modal.$frame.next().click($.proxy(function(event) {
+        this._modal.$frame.parent().prepend('<div class="oo-ui-window-backdrop"></div>');
+        this._modal.$frame.prev().click($.proxy(function(event) {
             if ($(event.target).parent().attr('id') === this.id) {
                 this._modal.close();
             }

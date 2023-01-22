@@ -60,7 +60,7 @@
         var $select = $('<select>', {
             change: $this.hasClass('cardviewer-controls-upgrade') ? updateUpgrade : updateCharge,
         }).append(
-            '<option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>'
+            '<option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option>'
         );
 
         $this.append($select);

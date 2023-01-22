@@ -1,12 +1,15 @@
 (function () {
-    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions' || window.ModalLogsLoaded) {
+    if (
+        mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions' ||
+        window.ModalLogsLoaded
+    ) {
         return;
     }
     window.ModalLogsLoaded = true;
     var preloads = 3;
 
-    function modal (data) {
-        new mw.libs.QDmodal('ModalLogs').show({
+    function modal (data, qdmodal) {
+        qdmodal.show({
             title: $(data).find('.page-header__title').text(),
             content: $(data).find('#mw-content-text')
                         .find('fieldset, .mw-specialpage-summary, p:first-child, .mw-warning-with-logexcerpt, .mw-htmlform-ooui-wrapper, noscript, noscript + p')
@@ -22,6 +25,7 @@
     }
 
     function init (selector) {
+        var qdmodal = new mw.libs.QDmodal('ModalLogs');
     	mw.util.addCSS('\
             #ModalLogs li {\
                 padding: 0.5em;\
@@ -36,7 +40,17 @@
         $('.mw-contributions-user-tools').find(selector).click(function (e) {
             e.preventDefault();
             var url = $(e.target).attr('href');
-            $.get(url).done(modal);
+            $.get(url).done(function (data) {
+                qdmodal.show({
+                    loading: true,
+                    title: 'Loading...',
+                    onShow: function (modal) {
+                        //https://dev.fandom.com/wiki/Talk:QDmodal#Spinner_too_high
+                        modal.$content.find('.qdmodal-spinner').css('top', 'calc(50% - 3px)');
+                    }
+                });
+                modal(data, qdmodal);
+            });
         });
     }
     

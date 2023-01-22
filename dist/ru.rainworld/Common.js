@@ -32,6 +32,19 @@ $(function () {
 	}
 });
 
+//Добавление стилей для категории "Downpour"
+!function( $, mw ) {
+    var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
+ 
+    if ( a.indexOf( 'Rain World: Downpour' ) !== -1 || p.indexOf('Klen\'s flame') != -1) {
+        importArticle({
+            type: 'style',
+            article: 'MediaWiki:Downpour.css'
+        });
+    }
+}( jQuery, mediaWiki );
+
+
 //Добавление стилей для категории "Модификации"
 !function( $, mw ) {
     var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );

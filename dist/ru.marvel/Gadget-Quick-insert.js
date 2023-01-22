@@ -692,7 +692,7 @@ section: 'advanced',
 group: 'templates',
   tools: {
   "file": {
-    label: 'Персонаж',
+    label: 'Картинка',
     type: 'button',
     icon: 'https://images.wikia.nocookie.net/marvel/ru/images/7/7c/Кнопка_шаблона_Файл.png',
       action: {

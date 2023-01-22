@@ -10,4 +10,5 @@ importArticles({
         'u:dev:MediaWiki:AjaxRC.js'
     ]
 });
+window.discussionsModuleEmbed = true;
 window.MassRenameRevertGroups = ['sysop', 'content-moderator'];

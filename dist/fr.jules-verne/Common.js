@@ -2,7 +2,6 @@
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
-
  
  // END import Onlyifediting-functions
  // ============================================================

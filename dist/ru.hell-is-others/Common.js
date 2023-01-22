@@ -1,14 +1,44 @@
 // Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице
 
-/* Убрать title в автотаблицах */
+// Сделать видимым только для администрации
+mw.hook("wikipage.content").add(function($content) {
+    if (
+        /sysop|vstf|staff|helper|content-volunteer|content-moderator/.test(mw.config.get('wgUserGroups').join())
+    ) {
+        $content.find(".admins-only.hide").removeClass("hide");
+        $content.find(".admins-only.default").addClass("hide");
+    }
+});
+
 $(function() {
-	var intervalNoTitle = setInterval(notitle, 500)
+	/* Шаблон:Автотаблица */
+	// Убрать title в автотаблицах
+	var intervalNoTitle = setInterval(notitle, 1000);
 	function notitle() {
     	if ($('.autotable .tooltip-theme-main').parent('th.headerSort').attr('title', '')) {
-    	    clearInterval(intervalNoTitle)
-			$('.autotable .tooltip-theme-main').parent('th.headerSort').attr('title', '')
+		    clearInterval(intervalNoTitle);
+			$('.autotable .tooltip-theme-main').parent('th.headerSort').attr('title', '');
 		}
 	}
+	
+	/* Шаблон:Подсказка/Предмет */
+	// Заменить несущ. картинки на картинку вопроса
+	$('.item-tooltip .new').html('<img alt="Иконка неизвестно.png" src="https://static.wikia.nocookie.net/hell-is-others/images/3/39/Иконка_неизвестно.png/revision/latest?cb=20230116113815&format=original&path-prefix=ru" decoding="async" loading="lazy" width="64" height="64" data-image-name="Иконка неизвестно.png" data-image-key="Иконка неизвестно.png">');
+	
+	/* Шаблон:Навбокс */
+	// Открытие таблицы кликом по заголовку
+	 $('.navbox-table .header').click(function() {
+	 	var navboxTable = $(this).parent('.navbox-table');
+	 	navboxTable.find('.mw-collapsible-content').removeAttr('style')
+		if (navboxTable.hasClass('mw-collapsed')) {
+			navboxTable.removeClass('mw-collapsed');
+			navboxTable.find('.mw-collapsible-content').show();
+		}
+		else {
+			navboxTable.addClass('mw-collapsed');
+			navboxTable.find('.mw-collapsible-content').hide();
+		}
+	});
 });
 
 /* Настройки для BackToTopButton */
@@ -24,7 +54,7 @@ window.AddRailModule = [
 window.tooltips_config = {
     waitForImages: true,
     noCSS: true,
-}
+};
 /* Тултип предметов */
 window.tooltips_list = [
     {

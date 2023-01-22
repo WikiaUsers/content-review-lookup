@@ -2,6 +2,7 @@
  * Apply custom user settings to Ace editor embeds
  *
  * @author Rail
+ * @todo Fix AbuseFilter implementation
  */
 ;( function( mw, window ) {
     'use strict';
@@ -31,32 +32,29 @@
 
         return inputSettings;
     }
-    
-    function aceHook() {
-    	const aceEditArea = document.getElementsByClassName( 'ace_editor' )[0];
+
+    /**
+     * Extended `codeEditor.configure` hook
+     * Use this because Fandom loading default themes conflicts with this script
+     *
+     * @param {Function} callback
+     */
+    function aceHook( callback ) {
+        mw.hook( 'codeEditor.configure' ).add( function() {
+            const fandomAddTheme = setInterval( function() {
+                if ( !!document.querySelector( '.ace_editor.ace-tm,.ace_editor.ace-twilight,.ace_editor.ace-dawn' ) ) {
+                    clearInterval( fandomAddTheme );
+                    callback();
+                }
+            }, 150 );
+        } );
+    }
+
+    aceHook( function() {
+        const aceEditArea = document.getElementsByClassName( 'ace_editor' )[0];
         const aceInstance = ace.edit( aceEditArea );
 
         aceInstance.setOptions( aceSettings() );
         window.aceCustomSettingsLoaded = true;
-    }
-
-    //Fandom breaks loading the theme, but apparently only sometimes?
-    const interval = setInterval(function() {
-        if (!document.querySelector('.ace_editor.ace-tm, .ace_editor.ace-twilight, .ace_editor.ace-dawn')) {
-            return;
-        }
-        clearInterval(interval);
-        mw.hook( 'codeEditor.configure' ).add(aceHook);
-    }, 100);
-    
-    // AbuseFilter doesn't have a hook (yet - https://phabricator.wikimedia.org/T273270)
-    if ( mw.config.get('wgCanonicalSpecialPageName') === 'AbuseFilter' && document.getElementById('wpAceFilterEditor') ) {
-    	const AFinterval = setInterval(function() {
-    		if ( !document.getElementById('wpAceFilterEditor').classList.contains('ace-tm') ) {
-    			return;
-    		}
-    		clearInterval(AFinterval);
-    		aceHook();
-    	}, 100);
-    }
+    } );
 } )( mediaWiki, this );

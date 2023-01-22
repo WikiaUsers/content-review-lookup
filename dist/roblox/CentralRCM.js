@@ -31,7 +31,7 @@ mw.loader.using(["mediawiki.api"], function(require) {
             });
 
             document.title = "Interwiki Recent Changes | " + config.wgSiteName;
-            $("#PageHeader h1").text("Recent changes – Roblox wikis");
+            $(".page-header h1").text("Recent changes – Roblox wikis");
             history.replaceState({}, '', "/wiki/Special:CentralRecentChanges");
 
             var $content = $("#mw-content-text").empty();

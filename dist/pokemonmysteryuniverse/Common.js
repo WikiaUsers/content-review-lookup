@@ -5,23 +5,11 @@ window.NoLicenseWarning = {
     ]
 };
 
-
-/**
-    🙝 Super epic boss dialogue js that took 2 novice coders to even figure out
-                                                                                
-$('.BossDialogueBefore').click(function() {
-  $(this).closest(".BossDialogueBefore").toggleClass('uncollapse');
-  $(this).next("#BeforeCollapse").toggleClass('uncollapse');
-});
-
-$('.BossDialogueAfter').click(function() {
-  $(this).closest(".BossDialogueAfter").toggleClass('uncollapse');
-  $(this).next("#AfterCollapse").toggleClass('uncollapse');
-});
-**/
-
-/* WdsTooltips fix ( probably) 
-
-$(".custom-tooltip").next("p").css("display","inline");
-$(".custom-tooltip").prev("p").css("display","inline");
+/* Collapsible toggle
+* Credits to MarkusRost (MarkusRost#8278)
+* https://discord.com/channels/563020189604773888/601962978023047210/988801272599703562
 */
+
+$('.collapsible-toggleAll').click(function(){
+    $("th").find('.mw-collapsible-toggle').click();
+});

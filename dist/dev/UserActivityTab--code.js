@@ -280,11 +280,11 @@
     // Cache globals
     this.globals = Object.freeze(mw.config.get(this.Dependencies.GLOBALS));
 
-    // Either username if user page (UCP et al.) or empty string if no masthead
+    // Either username if user page (UCP et al.) or null if no masthead
     this.info.userName = this.globals.profileUserName;
 
     // Determine if masthead exists (indicates presence of userpage)
-    this.info.hasMasthead = !!this.info.userName.length;
+    this.info.hasMasthead = !!this.info.userName;
 
     // Expose public methods for external debugging
     Object.defineProperty(module, "exports", {

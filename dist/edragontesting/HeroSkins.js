@@ -35,10 +35,16 @@ $(document).ready(function() {
 		if ($(this).hasClass('Toggle')) {
 			$(Wardrobe).find('.Models > div').removeClass('active');
 			if (Mode == 'Preview') {
-				Mode = 'Idle';
-			}else if (Mode == 'Idle') {
 				Mode = 'Pose';
 			}else if (Mode == 'Pose') {
+				Mode = 'Idle';
+			}else if (Mode == 'Idle') {
+				if ( $(Wardrobe).find('.Models .Abilitys').length ) {
+					Mode = 'Ability';
+				}else {
+					Mode = 'KO';
+				}
+			}else if (Mode == 'Ability') {
 				Mode = 'KO';
 			}else if (Mode == 'KO') {
 				Mode = 'Downed';
@@ -104,13 +110,14 @@ $(document).ready(function() {
 			}
 			
 			//Hide the last active skin for the hero
-			$(Wardrobe).find('.SkinIcon, .Load, .Theme, .Preview, .Idle, .Pose, .KO, .Downed').removeClass("active");
+			$(Wardrobe).find('.SkinIcon, .Load, .Theme, .Preview, .Idle, .Ability, .Pose, .KO, .Downed').removeClass("active");
 			$(Wardrobe).find('.SkinIcon').removeClass('played');
 	
 			//Make all things associated with the skin active (so they are visible)
 			$(Wardrobe).find('.Preview[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Idle[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Pose[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Ability[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.KO[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Downed[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Theme[data-name="' + Skin + '"]').addClass("active");
@@ -176,6 +183,8 @@ $(document).ready(function() {
 					sfx = new Audio(location + 'b/b0/Barbarian_King_Death.ogg');
 				}else if (Mode == 'Idle') {
 					sfx = new Audio(location + 'f/fd/Barbarian_King_Deploy.ogg');
+				}else if (Mode == 'Ability') {
+					sfx = new Audio('https://static.wikia.nocookie.net/e12dragon_testing/images/3/3e/Barbarian_King_Ability.ogg');
 				}else if (randomnumber == 1) {
 					sfx = new Audio(location + '7/72/Barbarian_King_Pose.ogg');
 				}else {
@@ -184,6 +193,8 @@ $(document).ready(function() {
 			}else if (Hero == 'AQ') {
 				if (Mode == 'Idle') {
 					sfx = new Audio(location + '1/11/Archer_Queen_Deploy.ogg'); 
+				}else if (Mode == 'Ability') {
+					sfx = new Audio('https://static.wikia.nocookie.net/e12dragon_testing/images/b/bc/Archer_Queen_Ability.ogg'); 
 				}else if (Mode == 'KO') {
 						sfx = new Audio(location + '0/09/Archer_Queen_Death.ogg'); 
 				}else if (randomnumber == 1) {
@@ -216,6 +227,8 @@ $(document).ready(function() {
 					}else {
 						sfx = new Audio(location + '2/2b/Grand_Warden_Deploy.ogg');
 					}
+				}else if (Mode =='Ability') {
+					sfx = new Audio('https://static.wikia.nocookie.net/e12dragon_testing/images/f/fc/Grand_Warden_Ability.ogg');
 				}else {
 					sfx = new Audio(location + 'a/a1/Grand_Warden_Pose.ogg');
 				}
@@ -224,6 +237,8 @@ $(document).ready(function() {
 					sfx = new Audio(location + 'e/e9/Royal_Champion_Deploy.ogg');
 				}else if (Mode == 'KO') {
 					sfx = new Audio(location + '8/85/Royal_Champion_Death.ogg');
+				}else if (Mode == 'Ability') {
+					sfx = new Audio('https://static.wikia.nocookie.net/e12dragon_testing/images/2/2e/Royal_Champion_Ability.ogg');
 				}else {
 					sfx = new Audio(location + 'e/e1/Royal_Champion_Pose.ogg');
 				}
