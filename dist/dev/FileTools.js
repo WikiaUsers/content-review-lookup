@@ -7,176 +7,175 @@
  * @author Noreplyz
  * @author magiczocker
  */
- 
+
 ;(function($, mw) {
 	'use strict';
 
 	const config = mw.config.get([
+		'wgCanonicalNamespace',
+		'wgUserGroups',
 		'wgPageName',
-		'wgCanonicalNamespace'
+		'wgTitle'
 	]);
 
-	if (config.wgCanonicalNamespace !== 'File' || window.FileToolsLoaded) return;
+	if (
+		config.wgCanonicalNamespace !== 'File' ||
+		window.FileToolsLoaded ||
+		!/sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
+	) return;
 	window.FileToolsLoaded = true;
 
-	var last_summary = "";
-	var msg, rights, api;
 	var preloads = 2;
+	var msg, api;
+	var events = {};
+	var summaries = {};
 
-	function btn(txt) {
-		return '<button class="wds-button">' + msg(txt).escape() + '</button>';
+	/**
+	 * Summary promt.
+	 * @param {string} type - Button type for default summary.
+	 */
+	function summary(type) {
+		const summary = prompt(msg('summary_title', msg('summary_' + type).plain() ).plain(), summaries[type] || '');
+		summaries[type] = summary;
+		if (summary === null) return false;
+		return !summary.length ? msg('summary_' + type).plain() : summary;
 	}
 
-	function addHeaderButtons() {
+	/**
+	 * Protect button.
+	 * @param {object} element - Button data.
+	 */
+	events.protect = function(element) {
+		const sum = summary('protect');
+		if (!sum) return;
+		api.postWithEditToken({
+			action: 'protect',
+			title: config.wgPageName,
+			protections: 'upload=sysop', 
+			reason: sum,
+			expiry: '2 weeks'
+		}).done(function() {
+			element.srcElement.textContent = msg('protected').plain();
+		});
+	};
 
-		// delete all button
-		var delete_all_button = rights.includes('protect') ?
-			$(btn('button_delete_all')).on('click',function() {
-				const leng = $('#mw-imagepage-section-filehistory tr').length;
-				var summary = prompt(msg('summary_title', msg('summary_default_clean').plain() ).parse(), last_summary);
-				if (summary === null) return null;
-				last_summary = summary;
-				if (summary.length === 0) {
-					summary = msg('summary_default_clean').plain();
-				}
-				for (var i=3;i<=leng;i++) {
-					var rev = $('#mw-imagepage-section-filehistory tr:nth-child(' + i + ') > td:first-child > a:first-child').attr('href').replace(/.*oldimage=(.+)(&.*)?/,'$1'),
-					num = i;
-					api.postWithEditToken({
-						action: 'delete', 
-						title: config.wgPageName, 
-						oldimage: decodeURIComponent(rev), 
-						reason: summary,
-						formatversion: 2
-					}).done(function() {
-						if (num==leng) { 
-							refresh();
-						}
-					});
-				}
-			}) : '';
-
-		// refresh button
-		var refresh_button = $(btn('button_refresh')).on('click',function() {
-				refresh();
-			});
-
-		// protect button
-		var protect_button = rights.includes('protect') ?
-			$(btn('button_protect')).on('click',function(){
-				var summary = prompt(msg('summary_title', msg('summary_default_protect').plain() ).parse(), last_summary);
-				if (summary === null) return null;
-				last_summary = summary;
-				if (summary.length === 0) {
-					summary = msg('summary_default_protect').plain();
-				}
-				api.postWithEditToken({
-					action: 'protect',
-					title: config.wgPageName,
-					protections: 'upload=sysop', 
-					reason: summary,
-					expiry: '2 weeks',
-					formatversion: 2
-				}).done(function() {
-					$('#filehistory').after('<div class="mw-warning-with-logexcerpt" style="margin:5px 0; text-align:center;">' + msg('status_protected').escape() + '</div>');
-				});
-			}) : '';
-
-		// add buttons to "File history" section
-		$('#filehistory')
-			.after(protect_button)
-			.after(' ')
-			.after(refresh_button)
-			.after(' ')
-			.after(delete_all_button);
-	}
-
-	function addImageButtons() {
-
-		// delete button
-		if (rights.includes('delete')) {
-			$('.filehistory tr:nth-of-type(n + 3) td:nth-child(1) > a:first-child').each(function() {
-				var button = $(btn('button_delete')).click(function() {
-					var $this = this;
-					var delname = $(this).parents('td').find('a:first-child').attr('href').replace(/.*oldimage=(.+)(&.*)?/,'$1');
-					var summary = prompt(msg('summary_title', msg('summary_default_deletea').plain() ).parse(), last_summary);
-					if (summary === null) return null;
-					last_summary = summary;
-					if (summary.length === 0) {
-						summary = msg('summary_default_deletea').plain();
-					}
-					api.postWithEditToken({
-						action: 'delete', 
-						title: config.wgPageName,
-						oldimage: decodeURIComponent(delname), 
-						reason: summary,
-						formatversion: 2
-					}).done(function() {
-						$($this).parents('tr').css('opacity','0.2');
-					});
-				});
-				var button_out = $('<center>').append(button);
-				$(this).after(button_out);
-				$(this).parent().find('br').remove();
-			});
-		}
-
-		// revert button
-		if (rights.includes('reupload')) {
-			$('.filehistory tr:nth-of-type(n + 3) td:nth-child(2) > a:first-child').each(function() {
-				var button = $(btn('button_revert')).click(function() {
-					var archname = $(this).parents('td').find('a:first-child').attr('href').replace(/.*oldimage=(.+)&?.*/,'$1');
-					console.log(archname);
-					var summary = prompt(msg('summary_title', msg('summary_default_revert').plain() ).parse(), last_summary);
-					if (summary === null) return null;
-					last_summary = summary;
-					if (summary.length === 0) {
-						summary = msg('summary_default_revert').plain();
-					}
-					api.postWithEditToken({
-						action: 'filerevert',
-						filename: config.wgPageName.replace(/^[^:]+:(.+)/,'$1'), 
-						archivename: decodeURIComponent(archname), 
-						comment: summary,
-						formatversion: 2
-					}).done(function() {
-						refresh();
-					});
-				});
-				var button_out = $('<center>').append(button);
-				$(this).after(button_out);
-			});
-		}
-	}
-
-	function refresh() {
+	/**
+	 * Refresh button.
+	 */
+	events.refresh = function() {
 		$('#mw-imagepage-section-filehistory').load(window.location.pathname + ' #mw-imagepage-section-filehistory', function() {
-			addImageButtons();
+			addButtons();
+		});
+	};
+
+	/**
+	 * Delete all button.
+	 */
+	events.deleteAll = function() {
+		const sum = summary('deleteAll');
+		if (!sum) return;
+		const images = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
+		images.forEach(function(ele) {
+			api.postWithEditToken({
+				action: 'delete',
+				title: config.wgPageName,
+				oldimage: new URL(ele.href).searchParams.get('oldimage'), 
+				reason: sum
+			}).done(function() {
+				ele.parentElement.parentElement.style.opacity = 0.2;
+			});
+		});
+	};
+
+	/**
+	 * Delete button.
+	 * @param {object} element - Button data.
+	 */
+	events.delete = function(element) {
+		const sum = summary('delete');
+		if (!sum) return;
+		const ele = element.srcElement;
+		api.postWithEditToken({
+			action: 'delete',
+			title: config.wgPageName,
+			oldimage: ele.dataset.filepath, 
+			reason: sum
+		}).done(function() {
+			ele.parentElement.parentElement.style.opacity = 0.2;
+		});
+	};
+
+	/**
+	 * Revert button.
+	 * @param {object} element - Button data.
+	 */
+	events.revert = function(element) {
+		const sum = summary('revert');
+		if (!sum) return;
+		api.postWithEditToken({
+			action: 'filerevert',
+			filename: config.wgTitle, 
+			archivename: element.srcElement.dataset.filepath, 
+			comment: sum
+		}).done(function() {
+			events.refresh();
+		});
+	};
+
+	/**
+	 * Create button.
+	 * @param {string} label - Button label.
+	 * @param {string} data - Image value for revert/delete.
+	 */
+	function createButton(label, data) {
+		const btn = document.createElement('button');
+		btn.classList = 'wds-button';
+		btn.textContent = msg(label).plain();
+		if (data) {
+			btn.style.display = 'block';
+			btn.dataset.filepath = data;
+		}
+		btn.addEventListener('click', events[label]);
+		return btn;
+	}
+
+	/**
+	 * Add buttons.
+	 */
+	function addButtons() {
+		// Above table
+		document.getElementById('mw-imagepage-section-filehistory').prepend(
+			createButton('protect'),
+			document.createTextNode(' '),
+			createButton('refresh'),
+			document.createTextNode(' '),
+			createButton('deleteAll')
+		);
+
+		// Inside table
+		const firstColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
+		const secondColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(2) > a');
+
+		firstColumn.forEach(function(ele) {
+			const btn = createButton('delete', new URL(ele.href).searchParams.get('oldimage'));
+			ele.before(btn);
+		});
+
+		secondColumn.forEach(function(ele) {
+			const btn = createButton('revert', new URL(ele.href).searchParams.get('oldimage'));
+			ele.before(btn);
 		});
 	}
 
-	// Init: Query image rights and add buttons
+	/**
+	 * Load translations.
+	 */
 	function preload() {
 		if (--preloads > 0) return;
 		api = new mw.Api();
-		api.get({
-			action: 'query',
-			format: 'json',
-			prop: 'imageinfo',
-			meta: 'userinfo',
-			titles: config.wgPageName,
-			formatversion: 2,
-			iilocalonly: 1,
-			uiprop: 'rights'
-		}).done(function (data) {
-			if (data.query.pages[0].imagerepository === 'local') {
-				rights = data.query.userinfo.rights;
-				window.dev.i18n.loadMessages('FileTools').done(function (i18no) {
-					msg = i18no.msg;
-					addHeaderButtons();
-					addImageButtons();
-				});
-			}
+		window.dev.i18n.loadMessages('FileTools').done(function(i18n) {
+			msg = i18n.msg;
+			addButtons();
 		});
 	}
 

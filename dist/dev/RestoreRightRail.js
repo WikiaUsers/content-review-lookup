@@ -46,6 +46,7 @@ $(function () {
 				])
 			])
 		).parent().addClass('has-right-rail');
+		cmRefresh();
 	}
 
 	// Re-implemented for the following reason(s):
@@ -150,7 +151,9 @@ $(function () {
 			pageRightRail.attr('data-wds-tooltip', mw.msg(isVisible ? 'show' : 'hide'));
 			setRightRailPreference(isVisible);
 			// trackClick(isVisible);
+
 			setTimeout(function () {
+				cmRefresh();
 				var ev = new Event('FandomDesktopContentSize');
 				window.dispatchEvent(ev);
 			}, 300);
@@ -173,6 +176,13 @@ $(function () {
 			}
 			return modules;
 		});
+	}
+
+	// Helper function to refresh CodeMirror after adding rail.
+	// See: https://codemirror.net/5/doc/manual.html#refresh
+	function cmRefresh() {
+		var cm = $('.CodeMirror');
+		cm.length && cm[0].CodeMirror.refresh();
 	}
 
 	loadModules([

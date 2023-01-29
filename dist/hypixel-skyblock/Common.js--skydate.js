@@ -1,18 +1,17 @@
 /* <pre> */
-// This script allows for showing the the next appearance of an in-game date in the real world on the wiki
-
+/**
+ * @name 2020 SkyDate
+ * @author Fewfre
+ * @description A script that allows for showing the next appearance of an in-game date in the real world on the wiki
+ * 
+ * This script is no longer used on this wiki, and is kept for historical purposes.
+ */
 /* jshint
-    esversion: 6, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    -W082, -W084
+    esversion: 6, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-
 /* global mw */
 
 (function () {

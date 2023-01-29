@@ -1279,7 +1279,7 @@ try {
 window.WikiaDisableDynamicLinkCreatePagePopup = true;
 /*SkinNotification: Agrega una notificación para los que usen oasis. */
 window.SkinNotification = {
-	article: 'WikiDex:Acerca del cambio de apariencia de WikiDex',
+	article: 'Pokémon Wiki:Acerca del cambio de apariencia de Pokémon Wiki',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -1296,7 +1296,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a WikiDex. Descubre <a href="'+mw.config.get('wgArticlePath').replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">cómo volver a verla como antes</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a Pokémon Wiki. Descubre <a href="'+mw.config.get('wgArticlePath').replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">cómo volver a verla como antes</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(SkinNotification.dismiss);
 	},
@@ -1311,7 +1311,7 @@ function agregarEnlaceSkinMenu() {
 	var url = SkinPropagation.parseURL(window.location.href);
 	url.query.useskin = 'monobook';
 	var surl = SkinPropagation.getURL(url);
-	var a = $('<a></a>').text('Usar Monobook').attr({'class':'subnav-2a', title:'Ver WikiDex con la piel Monobook', href:surl, id:'mn-changeskin'}).wrap('<li></li>');
+	var a = $('<a></a>').text('Usar Monobook').attr({'class':'subnav-2a', title:'Ver Pokémon Wiki con la piel Monobook', href:surl, id:'mn-changeskin'}).wrap('<li></li>');
 	$('#WikiHeader').children('nav').children('ul').children('li').eq(0).children('ul').append(a.parent());
 	a.bind('click', function() {
 		return confirm('La apariencia cambiará temporalmente a Monobook, el estilo anterior, pero con muchas más funcionalidades y más accesible. Si quieres volverlo a ver como ahora tendrás que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
@@ -1345,7 +1345,7 @@ function extrasPaginasUsuario() {
 	}
 }
 
-function WikiDex_WikiaSkinLoad() {
+function Pokémon Wiki_WikiaSkinLoad() {
 	var ug = '', loadsafe = (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$);
 	if (mw.config.get('wgUserGroups')) {
 		ug = mw.config.get('wgUserGroups').join(',').toLowerCase();
@@ -1422,7 +1422,7 @@ try {
 }
 
 try {
-	WikiDex_WikiaSkinLoad();
+	Pokémon Wiki_WikiaSkinLoad();
 } catch(e) {
 	typeof(window.trataError)=='function'&&trataError(e);
 }

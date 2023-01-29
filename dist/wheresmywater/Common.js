@@ -18,6 +18,7 @@ importArticles({
 		'MediaWiki:Common.js/Walkthrough.js',
 		'MediaWiki:Common.js/Usernames.js',
 		'MediaWiki:Common.js/WikiNotification.js',
+		'MediaWiki:Toggle.js',
 		'u:dev:MediaWiki:AutoCreateUserPages.js',
 		'u:dev:UserTags/code.js',
     ]

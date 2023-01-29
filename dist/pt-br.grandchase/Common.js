@@ -1,10 +1,3 @@
-/*RailWAM for sitewide use*/
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-/*RailWAM for sitewide use*/
-
-
 // ============================================================
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
@@ -227,7 +220,3 @@ function createNavigationBarToggleButton() {
 }
  
 $( createNavigationBarToggleButton );
-
-/*enabling the modern button*/
-window.BackToTopArrow = true;
-/*enabling the modern button*/

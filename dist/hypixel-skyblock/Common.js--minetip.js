@@ -1,8 +1,12 @@
-/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true, esnext: false */
-
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
 
+/* jshint
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
+*/
 /* global mw */
 
 $(function () {
@@ -11,6 +15,9 @@ $(function () {
     var useSlashEscape = true;
 
     window.minetipConfig = window.minetipConfig || {};
+    if (window.minetipLoaded)
+        return;
+    window.minetipLoaded = true;
     (window.updateTooltips = (function () {
         var escapeChars = {
             "\\&": "&#38;",
@@ -23,7 +30,10 @@ $(function () {
                 return escapeChars[char];
             });
         };
-        var $tooltip = $();
+        var $tooltip = $(),
+            overflowTop = false,
+            overflowBottom = false,
+            topPos, leftPos;
         var $win = $(window),
             winWidth, winHeight, width, height;
         var savedX, savedY;
@@ -31,68 +41,79 @@ $(function () {
             savedX = e.clientX;
             savedY = e.clientY;
         };
+        var handleLineBreak = function (line, maxchar, opt) {
+            // opt in kw (keep-word, default), bw (break-word)
+            var t = [line];
+            while (true) {
+                var lastline = t[t.length - 1];
+                if (lastline.length <= maxchar)
+                    break;
+                // choose break point
+                var pos;
+                if (opt === "bw") {
+                    pos = lastline.substring(0, maxchar);
+                } else {
+                    var selectedLen = maxchar + 1;
+                    while (selectedLen - (lastline.substring(0, selectedLen).match(/\\./g) || []).length !== maxchar + 1)
+                        selectedLen++;
+                    pos = lastline.substring(0, selectedLen).search(/ \S*$/); // last space in target range
+                    if (pos === -1)
+                        pos = lastline.search(/ /); // if no space in target range, use the first space following it
+                    if (pos === -1)
+                        break;
+                }
+                // find preceding color codes
+                var colcode = "";
+                var matchCodes = lastline.substring(0, pos).replaceAll("\\\\", "").replaceAll("\\&", "").match(/&[0-9a-fk-o]/g);
+                if (matchCodes)
+                    colcode = matchCodes.join("").replaceAll(/^.*?(&[0-9a-f][^0-9a-f]*)$/g, "$1");
+                // split line at pos
+                t[t.length - 1] = lastline.substring(0, pos);
+                t.push(colcode + lastline.substring(pos).trimStart());
+            }
+            return t;
+        };
 
         $(document.body).on({
             "mouseenter": function (e, trigger, x, y) {
                 $tooltip.remove();
 
-                var $elem = $(this),
-                    title = $elem.attr("data-minetip-title");
-                if (title === undefined) {
-                    title = $elem.attr("title");
-                    if (title !== undefined) {
-                        title = $.trim(title.replace(/&/g, "\\&"));
-                        $elem.attr("data-minetip-title", escape(title));
-                    }
-                }
+                var $elem = $(this);
 
+                // Pickup effect handling
                 var $follow = $elem.find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $elem.trigger("mouseleave");
                     return;
                 }
 
-                // No title or title only contains formatting codes
-                if (title === undefined || title !== "" && title.replace(/&([0-9a-fk-or])/g, "") === "") {
-                    // Find deepest child title
-                    var childElem = $($elem[0]),
-                        childTitle;
-                    do {
-                        if (typeof childElem.attr("title") !== "undefined" && childElem.attr("title") !== false) {
-                            childTitle = childElem.title;
-                        }
-                        childElem = childElem.children(":first");
-                    } while (childElem.length !== 0);
-                    if (childTitle === undefined) {
-                        return;
-                    }
-
-                    // Append child title as title may contain formatting codes
-                    if (!title) {
-                        title = "";
-                    }
-                    title += $.trim(childTitle.replace(/&/g, "\\&"));
-
-                    // Set the retrieved title as data for future use
-                    $elem.attr("data-minetip-title", title);
-                }
-
-                if (!$elem.data("minetip-ready")) {
-                    // Remove title attributes so the native tooltip doesn't get in the way
-                    $elem.find("[title]").addBack().removeAttr("title");
-                    $elem.data("minetip-ready", true);
-                }
-
-                if (title === "") {
+                var title = $elem.attr("data-minetip-title"),
+                    description = $.trim($elem.attr("data-minetip-text"));
+                if ((!title || title === "") && (!description || description === ""))
                     return;
-                }
+                if (!title || title === "")
+                    title = " ";
 
                 var content = "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
 
-                var description = $.trim($elem.attr("data-minetip-text"));
                 // Apply normal escaping plus new line
                 if (description) {
-                    description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
+                    description = escape(description).replace(/\\\//g, "&#47;");
+                    var desclines = [];
+                    description.split(useSlashEscape ? "/" : "\\n").forEach(function (v) {
+                        var match1 = v.match(/^\$\[(.*?)\]/), // line options: $[]
+                            match2;
+                        if (!match1)
+                            desclines.push(v);
+                        else {
+                            // identify line options
+                            v = v.replace(/^\$\[.*?\]/g, "").replace(/&#47;/g, "\\/"); // this is to maintain genuine line length
+                            if (match2 = match1[1].match(/(?:^| )([kb]w):(\d+)(?:$| )/))
+                                desclines = desclines.concat(handleLineBreak(v, Number(match2[2]), match2[1]));
+                        }
+                    });
+
+                    description = desclines.join("&r<br>").replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
                     content += "<span class=\"minetip-description\">&f" + description.replace(useSlashEscape ? /\//g : /\\n/g, "&r<br>") + "&r</span>";
                 }
 
@@ -121,35 +142,30 @@ $(function () {
                     return;
                 }
 
+                // Pickup effect handling
                 var $follow = $(this).find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $(this).trigger("mouseleave");
                     return;
                 }
 
-                if (!$(e.target).is(":hover"))
-                    return;
-
                 // Get event data from remote trigger
                 x = e.clientX || trigger.clientX || x;
                 y = e.clientY || trigger.clientY || y;
-
-                if (typeof y !== "number") return;
+                if (!$(e.target).is(":hover") || typeof x !== "number" || typeof y !== "number")
+                    return;
 
                 // Get mouse position and add default offsets
                 var top = y - 34;
                 var left = x + 14;
-
                 // If going off the right of the screen, go to the left of the cursor
                 if (left + width > winWidth) {
                     left -= width + 36;
                 }
-
                 // If now going off to the left of the screen, resort to going above the cursor
                 if (left < 0) {
                     left = 0;
                     top -= height - 22;
-
                     // Go below the cursor if too high
                     if (top < 0) {
                         top += height + 47;
@@ -161,6 +177,11 @@ $(function () {
                 } else if (top + height > winHeight) {
                     top = winHeight - height;
                 }
+                // Recording
+                overflowTop = top < 0;
+                overflowBottom = top + height > winHeight;
+                topPos = top;
+                leftPos = left;
 
                 // Apply the positions
                 $tooltip.css({
@@ -175,9 +196,36 @@ $(function () {
 
                 $tooltip.remove();
                 $tooltip = $();
-            },
+            }
         }, ".invslot .invslot-item, .minetip");
 
+        /*** Scrollable Tooltip (Experimental) ***/
+        $(document.body).on("keydown", function (e) {
+            if (!$tooltip.length)
+                return;
+            if (e.which === 27) { // esc
+                $tooltip.remove();
+                $tooltip = $();
+            } else if (overflowBottom || overflowTop) {
+                var top;
+                if (e.which === 40) { // down
+                    top = Math.max(winHeight - height, topPos - 14);
+                } else if (e.which === 38) { // up
+                    top = Math.min(0, topPos + 14);
+                }
+                if (!isNaN(top)) {
+                    e.preventDefault();
+                    // Recording
+                    overflowTop = top < 0;
+                    overflowBottom = top + height > winHeight;
+                    topPos = top;
+                    // Apply the positions
+                    $tooltip.css("top", top);
+                }
+            }
+        });
+
+        /*** Item Pickup Effect ***/
         $(document.body).on({
             // pick up slot item for 300ms
             // allowed: left/right click
@@ -209,7 +257,6 @@ $(function () {
                 }
             },
         }, ".invslot .invslot-item");
-
         $(document.body).on("mousemove", function (e) {
             $(".invslot-pickup").each(function () {
                 if ($(this).is(":visible")) {
@@ -237,7 +284,7 @@ $(function () {
             $(element || ".format-k").contents().each(function () {
                 if (this.nodeType === 3) {
                     var text = "";
-                    this.wholeText.split("").forEach(function (ch, i) {
+                    this.wholeText.split("").forEach(function (ch) {
                         if (/\S/.test(ch))
                             text += genObfuscatedText();
                         else

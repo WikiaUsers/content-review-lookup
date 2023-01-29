@@ -1,7 +1,7 @@
 function getTextManual(thisObj) {
 	var td = thisObj.closest("td");
 	if ($(td).find("a").text()) {
-		var text = $(td).find("a").attr("href").replace("/wiki/", "").replaceAll("_", " ");
+		var text = decodeURI($(td).find("a").attr("href").replace("/wiki/", "").replaceAll("_", " "));
 	} else {
 		var text = $(td).text().replace("\n", "");
 	}

@@ -410,7 +410,7 @@
         return num + (num >= 11 && num <= 13 ? "th" : num % 10 === 1 ? "st" : num % 10 === 2 ? "nd" : num % 10 === 3 ? "rd" : "th");
     };
     SkyDate.to12HourTime = function (hour, min) {
-        var ampm = hour < 12 ? "AM" : "PM";
+        var ampm = hour < 12 ? " AM" : " PM";
         hour = (hour % 12) === 0 ? 12 : hour % 12;
         return (hour.toString().padStart(2, "0")) + ":" + (min.toString().padStart(2, "0")) + ampm;
     };

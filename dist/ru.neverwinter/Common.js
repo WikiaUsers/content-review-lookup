@@ -269,7 +269,7 @@ $(function() {
         $("#settings .category").append(item);
     });
 
-    item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><optionvalue="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
+    item = '<option value="Обычный">Обычный</option><option value="Необычный">Необычный</option><option value="Редкий">Редкий</option><option value="Эпический">Эпический</option><option value="Легендарный">Легендарный</option><option value="Мифический">Мифический</option>';
     $("#settings .quality").append(item);
 
     //Limit on the number of selected parameters

@@ -60,5 +60,20 @@ window.tooltips_list = [
     {
     	classname: 'item-tooltip',
     	parse: '{{#invoke:getdata|infobox|<#article#>|Автоинфобокс/Предмет}}',
+	},
+    {
+    	classname: 'furniture-tooltip',
+    	parse: '{{#invoke:getdata|infobox|<#article#>|Автоинфобокс/Мебель}}',
 	}
 ];
+
+// Шаблоны обсуждений
+window.DiscussionTemplates = {
+    templates: {
+        'Стандартное приветствие': {
+            name: 'Шаблон:DiscussionTemplates/Приветствие',
+            title: 'Приветствие нового участника'
+        },
+    },
+    allowedGroups: ['sysop', 'content-moderator', 'threadmoderator']
+};

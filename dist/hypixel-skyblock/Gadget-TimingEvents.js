@@ -66,6 +66,10 @@
             }
             var cdNameEl = elem.find(".sbte-cd-name");
             var cdToEl = elem.find(".sbte-cd-to");
+            var cdToElHov = $("<span class=\"hov\">");
+            var cdToElNohov = $("<span class=\"nohov\">");
+            cdToEl.addClass("hover-switch");
+            cdToEl.append(cdToElHov, cdToElNohov);
             var cdTimerEl = elem.find(".sbte-cd-timer");
             var myRoutine = new sbte.SkyRoutine(routineInput);
             var countDownFn = function (tout, seconds, countToDate, countFromDate, state) {
@@ -76,7 +80,8 @@
                 var h = Math.floor(seconds % helpers.RATIOS[helpers.UNITS.day] / helpers.RATIOS[helpers.UNITS.hour]);
                 var d = Math.floor(seconds / helpers.RATIOS[helpers.UNITS.day]);
                 var timestring = msg.countdownMakeString(s, m, h, d);
-                cdToEl.text(countToDate.toString());
+                cdToElNohov.text(countToDate.toString());
+                cdToElHov.text(countToDate.date.toLocaleString(msg.locale, msg.localeOpts));
                 if (state === helpers.STATES.WAITING) {
                     cdNameEl.text(msg.eventStart);
                     cdTimerEl.removeClass("sbte-routine-ongoing sbte-routine-stopped").addClass("sbte-routine-waiting");

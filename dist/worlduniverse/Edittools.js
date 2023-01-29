@@ -1,0 +1,1 @@
+mw.loader.load('//en.wikipedia.org/w/index.php?title=MediaWiki:Gadget-charinsert.js&action=raw&ctype=text/javascript');

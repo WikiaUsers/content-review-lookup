@@ -12,6 +12,6 @@ $(function() {
 	if ($('.Walkthrough').length) {
 		$('.Walkthrough img.lazyload').attr('src', function(){
 			return $(this).attr('data-src');
-		}).removeClass('lazyload');
+		}).attr('loading', 'lazyloaded').removeClass('lazyload');
 	}
 });

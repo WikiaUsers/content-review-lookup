@@ -5,7 +5,6 @@
 |*|         all complaints should be addressed to that parroteer, or to one of the wiki's admins
 \*/
 
-
 /* =================================== *\
 	# global object
 \* =================================== */
@@ -33,15 +32,13 @@ $cl.data.users = {
     data: {} // users whose information has already been loaded: key = user, value = object
 };
 
-
 /* =================================== *\
 	# functions
 \* =================================== */
 
 /* 0-pad a single-digit number */
 $cl.fn.padNum = function(n) {
-    var a = String(n);
-    return a.length === 1 ? '0' + a : a;
+    return n.toString().padStart(2, '0');
 };
 
 /* get subpage by date */

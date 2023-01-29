@@ -57,6 +57,15 @@ $(function () {
     }
 }( jQuery, mediaWiki );
 
+//Починка ссылок
+$(function () {
+	var elems = document.querySelectorAll("a[href^='http://rainworld.fandom.com/wiki/']");
+	
+	for (var i = 0, l = elements.length; i < l; i++) {
+	  var elem = elems[i];
+	  eleminnerHTML = elem.innerHTML.replace(/fandom.com/g, 'miraheze.org');
+	}
+});
 
 //Отображение/скрытие элементов
 $(".button-toggle").click(function () {

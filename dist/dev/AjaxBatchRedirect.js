@@ -25,6 +25,7 @@
             "sysop",
             "content-moderator"
         ],
+        colorProgress = "rgb(20, 220, 23)",
         colorError = "rgb(220, 20, 60)",
         colorWarning = "rgb(100, 149, 237)",
         colorInfo = "black",
@@ -43,8 +44,8 @@
         });
     }
 
-    function modalConsoleLog(messagekey, color, pagename) {
-        $("#text-error-output").append("<div color=\"" + color + "\">" + i18n.msg(messagekey, pagename).escape() + "</div>");
+    function modalConsoleLog(messagekey, color, pagename, pagename2) {
+        $("#text-error-output").append("<div style=\"color:" + color + ";\">" + i18n.msg(messagekey, pagename, pagename2).escape() + "</div>");
     }
 
     function makeSimpleRedirect(fromPage, toPage) {
@@ -114,41 +115,61 @@
         });
     }
 
+    function burstBuffer5x(pageList, actionFn, i, promisesHead, delay) {
+        var updateEl = $("#batchredirect-form #form-progress");
+        return new Promise(function (resolve) {
+            var segment = pageList.slice(i, i + 5);
+            promisesHead = promisesHead.concat(segment.map(function (v) {
+                return actionFn(v[0], v[1]);
+            }));
+            if (i + 5 >= pageList.length)
+                resolve(promisesHead);
+            else {
+                updateEl.empty().append("<div style=\"color:" + colorProgress + ";\">" + i18n.msg("inCooldown", promisesHead.length, pageList.length).escape() + "</div>");
+                setTimeout(function () {
+                    burstBuffer5x(pageList, actionFn, i + 5, promisesHead, delay).then(function (promisesHead) {
+                        resolve(promisesHead);
+                    });
+                }, delay);
+            }
+        });
+    }
+
     function runDeleteRedirectList(deleteRedirectList, failureList) {
         return new Promise(function (resolve) {
-            Promise.allSettled(deleteRedirectList.map(function (v) {
-                return makeDeleteRedirect(v[0], v[1]);
-            })).then(function (values) {
-                for (var i in values) {
-                    if (values[i].reason || values[i].value.error === "redirectfail") {
-                        modalConsoleLog("consoleRedirectFail", colorError, deleteRedirectList[i][0], deleteRedirectList[i][1]);
-                        failureList.push(deleteRedirectList[i]);
-                        if (values[i].reason)
-                            console.warn(values[i].reason);
-                    } else if (values[i].value.error === "deleteFail") {
-                        modalConsoleLog("consoleDeleteFail", colorError, deleteRedirectList[i][0], deleteRedirectList[i][1]);
-                        failureList.push(deleteRedirectList[i]);
+            burstBuffer5x(deleteRedirectList, makeDeleteRedirect, 0, [], 10000).then(function (promisesHead) {
+                Promise.allSettled(promisesHead).then(function (values) {
+                    for (var i in values) {
+                        if (values[i].reason || values[i].value.error === "redirectfail") {
+                            modalConsoleLog("consoleRedirectFail", colorError, deleteRedirectList[i][0], deleteRedirectList[i][1]);
+                            failureList.push(deleteRedirectList[i]);
+                            if (values[i].reason)
+                                console.warn(values[i].reason);
+                        } else if (values[i].value.error === "deleteFail") {
+                            modalConsoleLog("consoleDeleteFail", colorError, deleteRedirectList[i][0], deleteRedirectList[i][1]);
+                            failureList.push(deleteRedirectList[i]);
+                        }
                     }
-                }
-                resolve(true);
+                    resolve(true);
+                });
             });
         });
     }
 
     function runSimpleRedirectList(simpleRedirectList, failureList) {
         return new Promise(function (resolve) {
-            Promise.allSettled(simpleRedirectList.map(function (v) {
-                return makeSimpleRedirect(v[0], v[1]);
-            })).then(function (values) {
-                for (var i in values) {
-                    if (values[i].reason || values[i].error === "redirectfail") {
-                        modalConsoleLog("consoleRedirectFail", colorError, simpleRedirectList[i][0], simpleRedirectList[i][1]);
-                        failureList.push(simpleRedirectList[i]);
-                        if (values[i].reason)
-                            console.warn(values[i].reason);
+            burstBuffer5x(simpleRedirectList, makeSimpleRedirect, 0, [], 5000).then(function (promisesHead) {
+                Promise.allSettled(promisesHead).then(function (values) {
+                    for (var i in values) {
+                        if (values[i].reason || values[i].value.error === "redirectfail") {
+                            modalConsoleLog("consoleRedirectFail", colorError, simpleRedirectList[i][0], simpleRedirectList[i][1]);
+                            failureList.push(simpleRedirectList[i]);
+                            if (values[i].reason)
+                                console.warn(values[i].reason);
+                        }
                     }
-                }
-                resolve(true);
+                    resolve(true);
+                });
             });
         });
     }
@@ -169,13 +190,16 @@
             var finished = function () {
                 if (--tasksawait === 0) {
                     var successCount = simpleRedirectList.length + deleteRedirectList.length - failureList.length;
-                    $("#batchredirect-form #text-error-output").append("<div color=\"" + colorInfo + "\">" + i18n.msg("finished", successCount).escape() + "</div>");
+                    $("#batchredirect-form #text-error-output").append("<div style=\"color:" + colorInfo + ";\">" + i18n.msg("finished", successCount).escape() + "</div>");
                     $("#batchredirect-form #text-pages-from").val(failureList.map(function (v) {
                         return v[0];
                     }).join("\n"));
                     $("#batchredirect-form #text-pages-to").val(failureList.map(function (v) {
                         return v[1];
                     }).join("\n"));
+                    $("#batchredirect-form #form-progress").empty();
+                    $("#text-pages-from").removeAttr("disabled");
+                    $("#text-pages-to").removeAttr("disabled");
                     processFlag = false;
                 }
             };
@@ -241,6 +265,8 @@
             }
         }
         if (pageList.length > 0) {
+            $("#text-pages-from").attr("disabled", "");
+            $("#text-pages-to").attr("disabled", "");
             $("#text-error-output").empty();
             redirectPages(pageList);
         } else
@@ -254,6 +280,9 @@
             $("<fieldset>").append(
                 $("<p>", {
                     text: i18n.msg("inputInstructions").plain()
+                }),
+                $("<p>", {
+                    id: "form-progress"
                 }),
                 $("<div>", {
                     id: "form-main-wrapper"

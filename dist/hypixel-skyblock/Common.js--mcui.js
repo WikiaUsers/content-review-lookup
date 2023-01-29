@@ -9,26 +9,23 @@
 */
 
 /* jshint
-    esversion: 5, esnext: false, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    forin: false,
-    -W082, -W084
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-
 /* global mw */
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
+    "use strict";
+    if (window.mcuiLoaded)
+        return;
+    window.mcuiLoaded = true;
     //##############################################################
     /* ==UI Tabber== (A00)*/
     // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
-    function clickTab(id) {
-        var $parent = $(this).parents(".sbw-ui-tabber").eq(0);
+    function clickTab(elem, id) {
+        var $parent = elem.parents(".sbw-ui-tabber").eq(0);
         id = "ui-" + id;
         if (!$("#" + id).length) {
             console.warn("No such tab ID \"" + id + "\"");
@@ -47,7 +44,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
         var id = $(this).data("tab");
         if (id)
-            clickTab.call(this, id);
+            clickTab($(this), id);
     });
     $(document.body).on("click", ".sbw-ui-tabber .invslot[class*='goto-'] a", function (e) {
         e.preventDefault();
@@ -75,7 +72,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                     var className = classes[(classes.length) - 1]
                         .replace("goto-", "")
                         .replace("ui-", "");
-                    $(this).click(clickTab.bind(this, className));
+                    $(this).click(function() {
+                        clickTab($(this), className);
+                    });
                 }
             });
 
@@ -87,7 +86,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $(this).find(".mcui").append(
                     $("<div>").addClass("mcui-returnbutton noselect").text("↻")
                     .click(function () {
-                        clickTab.call(this, className);
+                        clickTab($(this), className);
                     })
                 );
             });

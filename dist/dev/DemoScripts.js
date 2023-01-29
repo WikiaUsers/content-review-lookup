@@ -31,7 +31,7 @@
 		},
 		
 		Accordion: {
-			page: 'Global Lua Modules/Accordion',
+			page: 'Global_Lua_Modules/Accordion',
 			scripts: 'MediaWiki:Accordion.js'
 		},
 		
@@ -485,7 +485,7 @@
 		},
 		
 	    ProfileTags: {
-			page: 'User:Rappy',
+			selector: 'body.page-User_Rappy, body.page-MediaWiki_ProfileTags',
 			scripts: 'MediaWiki:ProfileTags.js'
 		},
 		

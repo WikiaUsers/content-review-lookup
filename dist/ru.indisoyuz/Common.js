@@ -1,4 +1,6 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+// Part from https://dev.fandom.com/wiki/MediaWiki:WikiStatistics/code.js
+//rework by Arhhhat
 (function() {
 	if (window.getWikiStatistics) return;
 	var cache = {},
@@ -133,4 +135,21 @@ $('.wikicard').css({
 		"--wiki-bg": "url(" + $('.wiki-bg img').attr('src') + ")"
 	});	
 	}
+});
+
+/*Слайдер*/
+$('.sldr-btn-left').click(function(){
+    $('.arh-slide').each(function(){
+        rotation = $(this).attr('style').replace("transform: rotate(","").replace("deg);","");
+        newrotate = (Number(rotation) - Number(90));
+        $(this).attr('style', 'transform: rotate(' + newrotate +'deg);');
+    });
+});
+
+$('.sldr-btn-right').click(function(){
+    $('.arh-slide').each(function(){
+        rotation = $(this).attr('style').replace("transform: rotate(","").replace("deg);","");
+        newrotate = (Number(rotation) + Number(90));
+        $(this).attr('style', 'transform: rotate(' + newrotate +'deg);');
+    });
 });

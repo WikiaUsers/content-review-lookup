@@ -6,7 +6,7 @@ mw.loader.using(['mediawiki.util','mediawiki.api'], function() {
 	const infoboxes = document.querySelectorAll('.type-level');
 	
 	function getWorldRecord(levelUid) {
-		const URL = 'https://zeep.tnrd.net/records?LevelUid=' + levelUid + '&BestOnly=true&Limit=1';
+		const URL = 'https://api.zeepkist-gtr.com/records?LevelUid=' + levelUid + '&BestOnly=true&Limit=1';
 		try {
 			const xhr = new XMLHttpRequest();
 			xhr.open('GET', URL, false);

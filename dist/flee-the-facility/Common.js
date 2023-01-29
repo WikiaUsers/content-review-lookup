@@ -70,3 +70,9 @@
 		}
 	});
 })();
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UserBadge/code.js',
+    ]
+});

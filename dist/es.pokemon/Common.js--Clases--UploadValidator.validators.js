@@ -65,7 +65,7 @@ if (!mw.config.get('wgValidators', null)) {
 	};
 	
 	wgValidators.push({
-		name: 'BlackListWikiDex',
+		name: 'BlackListPokémon Wiki',
 		priority: 1,
 		validate: function(ui) {
 			var name = _extractName(ui.title);
@@ -120,7 +120,7 @@ mw.config.get('wgValidators').push({
 	_re_ns = /^(Archivo|File|Image|Imagen)[.\-:]+/i; // Espacio de nombres
 	
 	wgValidators.push({
-		name: 'CorrNombreWikiDex',
+		name: 'CorrNombrePokémon Wiki',
 		priority: -900,
 		validate: function(ui) {
 			var dot = ui.title.lastIndexOf('.'), ext, name;
