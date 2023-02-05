@@ -1,19 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-if (wgUserName != 'null') {
-  $('.insertusername').html(wgUserName);
-}
-
-/* Modification of class="insertusername" mechanic; crucial for some templates
- * Anonymous users will see any content appended after the pipe of {{USERNAME|<content>}}
- * By [[User:KettleMeetPot]]
- */
-
-$(document).ready(function () {
-  if ( $.inArray("user", wgUserGroups) == -1 ) {
-    $('.insertusername').each(function () {
-      var id = $(this).prop("id");
-      $(this).html(id);
-    });
-  }
-});
+/* Site-logo pop-up */
+$('.fandom-community-header__image').append(
+    $('<a/>').addClass('hover-community-header-wrapper')
+        .append($('<div/>')
+            .addClass('message')
+            .text('Click here to learn more about Black Heritage Month.')
+        )
+        .attr('href', 'https://community.fandom.com/wiki/User_blog:CuBaN_VeRcEttI/Celebrate_Black_History_Month_with_Fandom')
+);

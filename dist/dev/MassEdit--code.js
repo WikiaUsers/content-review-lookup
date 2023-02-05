@@ -2,7 +2,7 @@
  * <nowiki>
  * MassEdit
  * @file Essentially "bot software lite"; task automation and bulk editing tool
- * @author Eizen <dev.wikia.com/wiki/User_talk:Eizen>
+ * @author Eizen <dev.fandom.com/wiki/User_talk:Eizen>
  * @license CC-BY-SA 3.0
  * @external "mediawiki.user"
  * @external "mediawiki.util"
@@ -210,7 +210,6 @@
           "staff",
           "soap",
           "helper",
-          "vanguard",
           "wiki-representative",
           "wiki-specialist",
           "content-volunteer",

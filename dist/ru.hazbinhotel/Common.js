@@ -229,4 +229,7 @@ window.dev.i18n.overrides['LockOldComments'] = window.dev.i18n.overrides['LockOl
 window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Этой ветке комментариев более " + window.lockOldComments.limit + " " + (window.lockOldComments.limit > 1 ? 'дней.' : 'дня.') + " Нет необходимости отвечать.";
 
 /* Конфигурация для dev:AddRailModule */
-window.AddRailModule = ['Template:NewPagesModule'];
+window.AddRailModule = [
+	{page: 'Template:DiscordRail', prepend: true, maxAge: 0},
+	{page: 'Template:NewPagesModule', maxAge: 0}
+	];

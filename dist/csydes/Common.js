@@ -1,4 +1,4 @@
-// 06:53, 27 June 2022 (UTC) <nowiki>
+// 03:59, 1 February 2023 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -137,4 +137,18 @@ $(function () {
         });
     });
 });
-// END REPLACE ASTERISKS WITH ARABIC STARS </nowiki>
+// END REPLACE ASTERISKS WITH ARABIC STARS
+
+// REPLACE NUMBER SIGNS WITH MUSIC SHARP SIGNS FOR USER RIGHTS PAGE
+$(function () {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Userrights') {
+        return;
+    }
+
+    $('label.mw-userrights-groupcheckbox:contains(#)').each(function () {
+        $(this).text(function (_, txt) {
+            return txt.replace('#', '♯');
+        });
+    });
+});
+// END REPLACE NUMBER SIGNS WITH MUSIC SHARP SIGNS </nowiki>

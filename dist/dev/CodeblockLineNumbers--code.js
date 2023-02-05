@@ -3,8 +3,8 @@
  * // current update is for mw version `1.37.6`
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
- * @version 1.2.3
- * Last modified: 1671664860680
+ * @version 1.2.4
+ * Last modified: 1675408137640
  */
 	
 /*
@@ -27,14 +27,22 @@
 	futurehostile: true
 */
 
-/* globals Symbol */
+/*
+	globals
+	Symbol
+*/
+
 ;(function (mw) {
     'use strict';
 	
     if (window.dev && window.dev.CodeblockLineNumbers) return;
     
-    var min = parseInt(mw.config.get('wgVersion').split('.')[1]),
-	    classes = ['lineNumbers', min < 37 ? null : 'obs'].filter(Boolean);
+    var classes = [
+		'lineNumbers',
+		parseInt(mw.config.get('wgVersion').split('.')[1]) < 37
+			? null
+			: 'obs'
+	].filter(Boolean);
 	
     var codeblocks = [
         ['de1', 'hljs'],
@@ -228,7 +236,15 @@
 			
         ol.classList.add.apply(ol.classList, classes);
         if (!block.parentElement.classList.contains('mw-highlight-lines')) ol.classList.remove('obs');
+        /**
+         * weird edge-case, <syntaxhighlight line> element but doesn't render any linenos?
+         * see Luxon for reference {@link https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Luxon.js}
+         */
+        if (block.matches('.mw-highlight-lines pre') && !block.querySelector('.linenos')) ol.classList.remove('obs');
         wrapInner(addLines(block), ol);
+        
+        /** remove empty trailing <li>s */
+        if (!ol.lastElementChild.childNodes.length) ol.removeChild(ol.lastElementChild);
 		
         if (matched || !mw.user.getRights) parseComments(ol);
     }

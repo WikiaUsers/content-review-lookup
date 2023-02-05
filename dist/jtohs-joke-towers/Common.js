@@ -3,14 +3,15 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-		montheditor: { u:'Editor of the Month', order: -1/0},
+		owner: {u:'Real JJT Owner!1!', order: -1/0},
+		montheditor: { u:'Editor of the Month', order: -1e500},
 		cool: { u:'Coolest Cools', order: -1e101},
 		former: {u:'Former Staff', order: -1e50},
 		formerowner: {u:'Former Owner', order: -1e100}
 	}
 };
 UserTagsJS.modules.custom = {
-	'Sanjay2133': ['cool', 'montheditor'],
+	'Sanjay2133': ['owner', 'cool'],
 	'AlsoOmori': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],

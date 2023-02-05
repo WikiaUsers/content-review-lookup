@@ -88,12 +88,12 @@ mw.loader.using('mediawiki.util').then(function() {
                 'threadmoderator',
                 'rollback',
                 'bot',
-                'global-discussions-moderator',
                 'wiki-representative',
-                'vanguard',
+                'util',
                 'helper',
                 'staff',
-                'soap'
+                'soap',
+                'wiki-specialist'
             ]);
         },
         /// Returns an anchor element with the supplied href and text, optionally striked-through

@@ -85,10 +85,4 @@ window.tooltips_list = [
 /*********************/
 /* BackToTopButton     */
 /*********************/
-
-importArticle({
-    type: 'script',
-    article: 'u:dev:MediaWiki:BackToTopButton/code.js'
-});
-
 window.BackToTopModern = true;

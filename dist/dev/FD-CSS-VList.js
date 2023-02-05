@@ -1,7 +1,4 @@
 $(function(){
- const RestrictedCSSVariables = [
-  '' ];
- function isCPR(checkString) { return ( ( checkString.startsWith('--fandom-global-nav-') ) || ( RestrictedCSSVariables.indexOf(checkString) >= 0 ) ); }
  const PageSelector = ' #content .mw-parser-output ';
  const ColorList = PageSelector + ' #ColorList ';
  const CSSTokenSeparators = /[\{\}\:\;\0\s\,]/;
@@ -59,8 +56,8 @@ mw.util.getUrl('Special:ThemeDesigner') +
          width: '10em' ,
          maxWidth: '10em' ,
          minWidth: '10em' ,
-         color: 'var(--theme-'+(isCPR(s)?'alert':'page')+'-color)' ,
-         textShadow: '1px 1px 2px var(--theme-'+(isCPR(s)?'alert':'link')+'-color)' } } );
+         color: 'var(--theme-page-color)' ,
+         textShadow: '1px 1px 2px var(--theme-link-color)' } } );
        if ( s.includes('-image') || s.includes('-logo') ) {
         entry.css( {
          backgroundColor: 'transparent' ,

@@ -77,10 +77,21 @@
     // Get preload text and add it to the text area
     function getPreloadPage(title) {
         // check if subpage is standard or is case by case
-        var namespace = mwc.wgFormattedNamespaces['10'],
-            page = config.subpage === 'case-by-case' ?
-                namespace + ':' + title :
-                namespace + ':' + title + '/' + config.subpage;
+        var namespace = (function() {
+        	if (typeof window.preloadTemplates_namespace == 'undefined') return mwc.wgFormattedNamespaces['10'];
+        	if (typeof mwc.wgFormattedNamespaces[window.preloadTemplates_namespace] != 'undefined') return mwc.wgFormattedNamespaces[window.preloadTemplates_namespace];
+        	for (var key in mwc.wgFormattedNamespaces) {
+        		if (mwc.wgFormattedNamespaces[key] == window.preloadTemplates_namespace) return mwc.wgFormattedNamespaces[key];
+        	}
+        	return mwc.wgFormattedNamespaces['10'];
+        })();
+        var namespacePagename = (function() {
+        	if (namespace) return namespace + ':';
+        	return '';
+        })();
+        var page = config.subpage === 'case-by-case' ?
+            namespacePagename + title :
+            namespacePagename + title + '/' + config.subpage;
 
         $.get(mw.util.wikiScript(), {
                 title: page,

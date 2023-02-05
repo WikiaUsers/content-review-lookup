@@ -77,7 +77,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 		if (
 			pageContents.includes("[[Category:Galleries]]") ||
 			pageContents.includes("[[Category:Genre (Comic)]]") ||
-			pageContents.includes("[[Category:Genre (Poem)]]") ||
+			pageContents.includes("[[Category:Genre (Poetry)]]") ||
+			pageContents.includes("[[Category:Maps (Official)]]") ||
+			pageContents.includes("[[Category:Maps (Unofficial)]]") ||
 			pageContents.includes("[[Category:Wings of Fire Fanon Wiki]]")
 		) {
   			sendToast("success", "This page is a gallery, comic, or official page and should not be deleted.");

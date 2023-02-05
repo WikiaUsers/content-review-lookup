@@ -76,3 +76,17 @@ if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/5/59/FNAWTFFREDDYBack.png/revision/latest?cb=20221218133057&path-prefix=ru)"});
         var name = "Five Nights at WTFreddy Wiki"
 }
+var cat = mw.config.get('wgCategories')
+var name = "Steam World Dig 2 Вики"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/2/25/SteamWorldDig2Back.png/revision/latest?cb=20230131184702&path-prefix=ru)"});
+        var name = "Steam World Dig 2 Вики"
+}
+var cat = mw.config.get('wgCategories')
+var name = "Pepsi Вики"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/0/08/PepsiBack.png/revision/latest?cb=20230131191653&path-prefix=ru)"});
+        var name = "Пэпси Вики"
+}

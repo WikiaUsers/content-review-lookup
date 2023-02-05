@@ -2063,8 +2063,8 @@ $(function() {
     ]);
     formula_loader(['gara', 'gara4'], [
       ['str1', (STR * 50).toFixed(2) + "%"],
-      ['str2', (STR * 2225).toFixed(0)],
-      ['str3', (STR * 350).toFixed(0)],
+      ['str2', (STR * 2350).toFixed(0)],
+      ['str3', (STR * 800).toFixed(0)],
       ['str4', (STR * 800).toFixed(0)],
       ['dur1', (DUR * 3).toFixed(2) + "s"],
       ['dur2', (DUR * 16).toFixed(2) + "s"],

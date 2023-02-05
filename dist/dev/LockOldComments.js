@@ -1,5 +1,5 @@
 (function lockOldComments(window, $, mw) {
-	
+
 	"use strict";
 
 	window.lockOldComments = window.lockOldComments || {};
@@ -10,11 +10,11 @@
 		'wgTitle',
 		'wgNamespaceNumber'
 		]);
-		
+
 	if ( [0, 500].indexOf(config.wgNamespaceNumber) < 0 ) return;
 
 	// A careful selector instead of document.getElementById which can be
-	// fooled with an id in the page content. 
+	// fooled with an id in the page content.
 	// The element matching this selector is part of the original HTML,
 	// so it should be safe to check for it just once.
 	var commentSection = document.querySelector(
@@ -45,24 +45,24 @@
 		getComments,
 		i18n,
 		waitingMessages = [];
-		
+
 	function addMsg(e, msg, arg) {
 		var $e = $(e);
-		
+
 		if (i18n) {
 			$e.text(i18n.msg(msg, arg).parse());
 		} else {
 			waitingMessages.push( {e: e, msg: msg, arg: arg} );
 		}
-		
+
 		return e; // returning the element to allow easier further actions
 	}
-	
+
 	function init_i18n(ref) {
 		var i, m;
-		
+
 		i18n = ref;
-		
+
 		for (i = 0; i < waitingMessages.length; i++) {
 			m = waitingMessages[i];
 			addMsg(m.e, m.msg, m.arg);
@@ -83,8 +83,8 @@
 					'locked-reply-box',
 					[daysLimit])
 				)
-			.remove();
-			
+			.css("display", "none");
+
 		if (addNoteAbove) {
 			$(target).before(
 				($('<div>')
@@ -104,7 +104,7 @@
 			addNoteAbove = false;
 		}
 	}
-	
+
 	// Gets a collection of comment wrappers
 	// Checks the comments' age and locks the old ones
 	function lock(target) {
@@ -114,7 +114,7 @@
 			var $this = $(this), // Also used to preserve "this"
 			    id = $this.attr('data-thread-id'),
 			    time;
-			
+
 			if (!id) return;
 			time = threads[id];
 			if (time) {
@@ -133,7 +133,7 @@
 					}
 				});
 			}
-		});		
+		});
 	}
 
 	// A callback function for the mutations observer
@@ -142,9 +142,9 @@
 		var i,
 		    addedComments = [],
 		    a, b, c, d;
-		    
+
 		function findComments()  {
-			
+
 			// (No strict mode violation here, 'this' is passed by .each() )
 			var $this = $(this);
 
@@ -160,20 +160,20 @@
         for (i = 0; i < mutations.length; i++) {
             $(mutations[i].addedNodes).each(findComments);
         }
-        
+
         a = addedComments.length;
-        
+
         if (a === 1) { // Probably a one-thread view
         	lock(addedComments);
         } else if (a) { // Retrive more comment threads if needed
         	b = Object.keys(threads).length;
         	c = b + a; // max amount of comment threads we need for now
-        	
+
         	getComments().done(function more() {
         		d = b;
         		b = Object.keys(threads).length;
-        		
-        		// If new information has been successfully loaded, and it is 
+
+        		// If new information has been successfully loaded, and it is
         		// still less than the number needed, get more.
         		if (b > d && b < c) {
         			getComments().done(more).fail(function() { lock(addedComments); });
@@ -183,18 +183,18 @@
         	}).fail(function() { lock(addedComments); });
         }
 	}
-	
+
 	function init() {
-		
+
 		apiURL = mw.util.wikiScript('wikia');
-		
+
 		// (No strict mode violation here because 'this' is only needed to make
 		// the .bind() method happy)
 		getComments = $.getJSON.bind(this, apiURL, apiParams, function(data) {
 		    var i;
-		    
+
 		    apiParams.page = apiParams.page + 1;
-		
+
 		    if (!data.threads) return NaN;
 		    for (i = 0; i < data.threads.length; i++) {
 		        try {
@@ -204,20 +204,20 @@
 		        }
 		    }
 		});
-		
+
 		// Get one bunch of comments information - same as is supposed to load
 		// on the page.
-		// Then start observing for new comments and call lock() for any 
+		// Then start observing for new comments and call lock() for any
 		// comments that are already laoded.
 		getComments().done(function() {
 			observer = new MutationObserver(checkAddedNodes);
 			observer.observe(commentSection, { childList: true, subtree: true });
-		
+
 			lock($(commentSection).find('[class*="Comment_wrapper__"]'));
 		});
-			
+
 	}
-	
+
 	importArticle({type: 'script', article: 'u:dev:MediaWiki:i18n-js/code.js'});
 	mw.hook('dev.i18n').add(function(ref) {
 		ref.loadMessages('LockOldComments').done(init_i18n);

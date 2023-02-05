@@ -23,7 +23,7 @@
 							characters: [ '\x7E\x7E\x7E\x7E', _combinado( '\x7B{', '}}' ), _combinado('[[', ']]'), _combinado( '[[Categoría:', ']]' ), _combinado( '#REDIRECCIÓN [[', ']]' ),
 								_combinado( '{{Ref|manga=', '|pág=}}' ), '{{Referencias}}', _combinado( '<includeonly>', '</includeonly>' ), _combinado( '<noinclude>', '</noinclude>' ), _combinado( '<nowiki>', '</nowiki>' ),
 							    _combinado( '{{Galería|filename1', '|caption1}}' ), _combinado( '<code>', '</code>' ), '\x7B{PAGENAME}}',
-								_combinado( '<!--', '-->' ), _combinado( '{Ref|manga=', '|pág=|boruto=sí}}' ), _combinado( '\x7B{S|', '}}') ]
+								_combinado( '<!--', '-->' ), _combinado( '{Ref|manga=', '|pág=|boruto=sí}}' ), _combinado( '\x7B{Tl|', '}}') ]
 						},
 						Japo1: {
 							label: 'Japonés - Katakana',

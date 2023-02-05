@@ -1,4 +1,7 @@
-// TopicBlockLog (v1.(2).1 - UCP support)
+// testing, not for js review
+TBL_GROUP="roblox-en";
+
+// TopicBlockLog (v1.2.1)
 // @author: The JoTS
 //    Creates an interwiki block report from wikis of similar topic.
 //    This allows an administrator to more easily identify editors who may be
@@ -12,10 +15,9 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 
 	
 // Script body		
-mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
+(function($, mw, window) {
 	"use strict";
 	if (window.TBL_DEBOUNCE || !(window.TBL_DEBOUNCE=true)) return;
-	var $ = jQuery;
 	
 	
 	///************/
@@ -47,6 +49,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 	//* Data *//
 	/********///
 	var
+	api,
 	config = mw.config.get([
 		"wgPageName",
 		"wgUserLanguage",
@@ -57,7 +60,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		"pipe-separator",
 		"word-separator",
 		// user
-		"wall-message-wall-shorten",
+		"messagewall-contributiontools-label",
 		"contribslink",
 		// block
 		"blocklog-showlog",
@@ -75,30 +78,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 	// No target (no /Username nor wpTarget=Username)
 	if (!(config.targetUser = config.targetUser
 		|| mw.util.getParamValue("wpTarget"))) return;
-		
-	/* Load system messages */
-	mw.loader.using('mediawiki.api').done(function() {
-		function loadMessages( messages ) {
-			return (new mw.Api()).get( {
-				action:     'query',
-				meta:       'allmessages',
-				ammessages:  messages.join('|'),
-				amlang:      config.usingLang
-			} ).then( function (data) {
-				$.each( data.query.allmessages, function ( i, message ) {
-					if ( message.missing !== '' ) {
-						mw.messages.set( message.name, message['*'] );
-					}
-				} );
-			} );
-		}
-		loadMessages(requestMessages).then(function() {
-			$(blockedNotice).text(mw.message("blocklog-showlog").text());
-		});
-	});
 
-	
-	
 	///*******************/
 	//* Element Factory *//
 	/*******************///
@@ -127,7 +107,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		else a.e.innerHTML = page;
 		
 		return a;
-	}
+	};
 		
 	Make.prototype.toolLinks = function(mlinks) {
 		if (this.__proto__.isObject) throw STATIC_USED_IN_INSTANCE;
@@ -140,7 +120,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 				(++i !== mlinks.length ? (' '+mw.message("pipe-separator")+' ') : ')'));
 				
 		return tools;
-	}
+	};
 		
 	Make.prototype.comment = function(wiki, _comment) {
 		if (this.__proto__.isObject) throw STATIC_USED_IN_INSTANCE;
@@ -150,27 +130,27 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 				+ _comment.replace(/\[\[(.+?)(\|(.+?))?\]\]/g, function(full, wlink, _, wtext) {
 					return Make.prototype.link(wiki, wlink, wtext)})
 				+ ')');
-	}
+	};
 	
 	// Object methods
 	// Should only be used with sanitized html content
 	Make.prototype.setClass = function(classes) {
 		this.e.setAttribute("class", classes);
 		return this;
-	}
+	};
 	
 	Make.prototype.contains = function(content) {
 		this.e.innerHTML = content;
 		return this;
-	}
+	};
 	
 	Make.prototype.append = function(content) {
 		this.e.innerHTML += content;
 		return this;
-	}
+	};
 	
 	// @override
-	Make.prototype.toString = function() { return this.e.outerHTML; }
+	Make.prototype.toString = function() { return this.e.outerHTML; };
 	
 	
 	
@@ -194,7 +174,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		mw.log(DEBUG_MSGS.NO_LOCAL_BLOCK);
 		$("#mw-content-text").append(
 			$blockLog = $(document.createElement("div"))
-				.addClass("mw-warning-with-logexcerpt")
+				.addClass("mw-warning-with-logexcerpt warningbox mw-content-ltr")
 				.append(blockedNotice = document.createElement("p"))
 		);
 			hadAnyBlock = false;
@@ -225,7 +205,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		
 		mw.log("Checking user's block log at wiki " + wiki);
 		
-		$.get("https://" + wiki + ".fandom.com/api.php", {
+		$.get("https://" + wiki + ".fandom.com/api.php", { // does not support wikia.org at this time, todo
 			action: "query",
 			format: "json",
 			// Block logs
@@ -244,10 +224,13 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 			if (result === null)
 				// I'm not sure if this result is a possible case?
 				mw.log("Null result returned from query. Sending in queries too quickly?");
-		}, "jsonp");
+		}, "jsonp")
+		.fail(function() {
+			mw.log("Failed to retrieve block logs at wiki " + wiki);
+			recordRenderedWiki();
+		});
 	}
-	
-	
+
 	
 	///********************/
 	//* Make log entries *//
@@ -278,7 +261,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 				hour:   String(blockedOn.getHours()).padStart(2,'0'),
 				minute: String(blockedOn.getMinutes()).padStart(2,'0'),
 				date:   blockedOn.getDate(),
-				month:  mw.config.get("wgMonthNames")[blockedOn.getMonth() + 1], // the lazy way, result can differ from uselang url param
+				month:  mw.config.get("wgMonthNames")[blockedOn.getMonth() + 1], // todo: respect uselang url param
 				year:   blockedOn.getFullYear()
 			});
 			
@@ -286,7 +269,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 			var target = entry.title.replace(/^.+?:/,''),
 			targetUserLinks = Make.prototype.link(indexURL, entry.title, target) + ' '
 				+ Make.prototype.toolLinks([
-					Make.prototype.link(indexURL, "Message Wall:"+target, mw.message("wall-message-wall-shorten")),
+					Make.prototype.link(indexURL, "User talk:"+target, mw.message("messagewall-contributiontools-label")),
 					Make.prototype.link(indexURL, "Special:Contributions/"+target, mw.message("contribslink"))
 				]);
 			liEntry.contains(
@@ -296,10 +279,10 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 				+ blockedOn.month + ' ' + blockedOn.date + ", " + blockedOn.year + ' '
 				+ Make.prototype.link(indexURL, "User:"+entry.user, entry.user) + ' '
 				+ Make.prototype.toolLinks([
-					Make.prototype.link(indexURL, "Message Wall:"+entry.user, mw.message("wall-message-wall-shorten")),
+					Make.prototype.link(indexURL, "User talk:"+entry.user, mw.message("messagewall-contributiontools-label")),
 					Make.prototype.link(indexURL, "Special:Contributions/"+entry.user, mw.message("contribslink"))
 				]) + ' ' + (blocked
-					? mw.message("blocklogentry", targetUserLinks, entry.block.duration, '')
+					? mw.message("blocklogentry", targetUserLinks, entry.params.duration, '')
 						.plain().replace(/\[|\]/g,'')
 					: mw.message("unblocklogentry", targetUserLinks)
 				) + ' ' + Make.prototype.comment(indexURL, entry.comment)
@@ -326,7 +309,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 			// Finished rendering!
 			mw.log("A parse task (Last/" + nFinalParsed + ") finished.");
 			
-			// Link to script, so I don't have to delete the awkward <hr> if there's no interwiki log.
+			// Plug script on Dev Wiki
 			$("<div style='text-align:right; font-size:80%;'>"
 				+ Make.prototype.link("http://dev.fandom.com/wiki/TopicBlockLog", '',
 					"Interwiki block report by TopicBlockLog")
@@ -375,42 +358,76 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		};
 	}
 	
-	
+	function init() {
+		api.get({
+			action: 'parse',
+			prop: 'wikitext',
+			formatversion: '2',
+			page: 'MediaWiki:Custom-TopicBlockLog-topics.json'
+		}).then(function(data) {
+			if (data.parse) {
+				var TOPICS = JSON.parse(data.parse.wikitext.replace(/\/\*(.|\s)*?\*\//g, '')),
+					userDefWikiList  =  window.TBL_WIKIS,
+					userSelWikiTopic =  window.TBL_GROUP;
+					
+				if (typeof userDefWikiList !== "undefined"
+						&& Array.isArray(userDefWikiList))
+					// Get logs from user defined list of wikis
+					getAndRenderLogs(
+						userDefWikiList[Symbol.iterator](),
+						userDefWikiList.length );
+				else if (typeof userSelWikiTopic === "string"
+						&& typeof TOPICS !== "undefined"
+						&& TOPICS[userSelWikiTopic.toLowerCase()])
+					// Get logs from wikis of a predefined topic group
+					getAndRenderLogs(
+						TOPICS[userSelWikiTopic][Symbol.iterator](),
+						TOPICS[userSelWikiTopic].length );
+				// todo: else automatically search for wiki w/in "TOPICS", maybe?
+				else {
+					// Something's gone wrong. Likely no setup vars were provided by user.
+					// ... or invalid topic group.
+					$loading.remove();
+					$blockLog.show();
+					console.warn(DEBUG_MSGS.EXEC_ERR);
+				}
+			}
+		});
+	}
 	
 	///*********/
 	//* Start *//
 	/*********///
-	$.get(mw.util.wikiScript('load'), {
-		mode: 'articles',
-		articles: 'u:dev:MediaWiki:Custom-TopicBlockLog-topics',
-		only: 'styles'
-	}, function(data) {
-		var TOPICS = JSON.parse(data.replace(/\/\*.*?\*\//g, '')),
-			userDefWikiList  =  window.TBL_WIKIS,
-			userSelWikiTopic =  window.TBL_GROUP;
-			
-		if (typeof userDefWikiList !== "undefined"
-				&& Array.isArray(userDefWikiList))
-			// Get logs from user defined list of wikis
-			getAndRenderLogs(
-				userDefWikiList[Symbol.iterator](),
-				userDefWikiList.length );
-		else if (typeof userSelWikiTopic === "string"
-				&& typeof TOPICS !== "undefined"
-				&& TOPICS[userSelWikiTopic.toLowerCase()])
-			// Get logs from wikis of a predefined topic group
-			getAndRenderLogs(
-				TOPICS[userSelWikiTopic][Symbol.iterator](),
-				TOPICS[userSelWikiTopic].length );
-		// todo: else automatically search for wiki w/in "TOPICS", maybe?
-		else {
-			// Something's gone wrong. Likely no setup vars were provided by user.
-			// ... or invalid topic group.
-			$loading.remove();
-			$blockLog.show();
-			console.warn(DEBUG_MSGS.EXEC_ERR);
+	mw.loader.using('mediawiki.api').then(function() {
+		api = new mw.Api({
+			ajax: {
+				url: 'https://dev.fandom.com/api.php',
+				xhrFields: {
+					withCredentials: true
+				},
+				dataType: 'JSONP',
+				crossDomain: true
+			}
+		});
+		
+		function loadMessages( messages ) {
+			return (new mw.Api()).get( {
+				action:     'query',
+				meta:       'allmessages',
+				ammessages:  messages.join('|'),
+				amlang:      config.usingLang
+			} ).then( function (data) {
+				$.each( data.query.allmessages, function ( i, message ) {
+					if ( message.missing !== '' ) {
+						mw.messages.set( message.name, message['*'] );
+					}
+				} );
+			} );
 		}
+		loadMessages(requestMessages).then(function() {
+			$(blockedNotice).text(mw.message("blocklog-showlog").text());
+		});
+		
+		init();
 	});
-	
-	
-});
+})(jQuery, mediaWiki, this);

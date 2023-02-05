@@ -10,20 +10,37 @@
     ];
 
     function getWikiStatistics(targetClass, prop, $content) {
+
         $content = $content || $(document);
         if (!$content.find(targetClass).length) return;
+
         mw.log('gws t&p', targetClass, prop, $content.find(targetClass).length);
+
         $content.find(targetClass).each(function () {
-            var proto, wiki,
+
+            var proto, url, clearUrl, wikiBase, wikiLang, wiki, queryUrl,
                 $this = $(this);
+
+            url = $this.text();
+
             $this.children().hide();
-            $this.append('<img src="https://images.wikia.nocookie.net/common/skins/common/images/ajax.gif" />');
-            wiki = $this.text();
-            //Maybe add support for https? -Sophie
-            proto = (/^https?:\/\/|^\/\//i).exec(wiki);
+            $this.text('…');
+
+            proto = (/^https?:\/\/|^\/\//i).exec(url);
             proto = proto ? proto[0] : '//';
-            wiki = wiki.replace(/^https?:\/+|^\/+/i, '').replace(/\.fandom\.com.*/i, '');
-            wiki = proto + encodeURIComponent(wiki) + '.fandom.com';
+
+            clearUrl = url.replace(/^https?:\/+|^\/+/i, '');
+            wikiBase = clearUrl.replace(/\.fandom\.com.*/i, '');
+            wikiLang = clearUrl.split('/')[1] || false;
+
+            wiki = encodeURIComponent(wikiBase) + '.fandom.com';
+
+            if (wikiLang) {
+                wiki += '/' + encodeURIComponent(wikiLang);
+            }
+
+            queryUrl = proto + wiki;
+
             // if data request in process
             if (cache[wiki]) {
                 // if data in cache
@@ -49,9 +66,9 @@
             }
             */
             ///* disabled due to XSS issue
-            mw.log('gws req', wiki, prop);
+            mw.log('gws req', queryUrl, prop);
             $.ajax({
-                url: wiki + '/api.php',
+                url: queryUrl + '/api.php',
                 data: {
                     action: 'query',
                     meta: 'siteinfo',
@@ -63,7 +80,7 @@
                 crossDomain: true,
                 type: 'GET',
                 success: function (data) {
-                    mw.log('gws data', this, wiki, prop, data, data.query.statistics);
+                    mw.log('gws data', this, queryUrl, prop, data, data.query.statistics);
                     data = data.query.statistics;
                     cache[wiki].data = data;
                     cache[wiki].targets.forEach(function(v) {

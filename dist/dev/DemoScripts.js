@@ -336,6 +336,11 @@
         	styles: 'MediaWiki:LegacyGlobalNavigation.css'
         },
         
+        'Lightbox2.0': {
+			page: 'Lightbox2.0',
+			styles: 'MediaWiki:Lightbox2.0.css'
+		},
+
 	    ListGroupMembers: {
 			page: 'Special:BlankPage',
 			scripts: 'MediaWiki:ListGroupMembers.js'

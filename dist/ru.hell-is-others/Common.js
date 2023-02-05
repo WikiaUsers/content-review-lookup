@@ -45,10 +45,10 @@ $(function() {
 window.BackToTopModern = true;
 
 /* Прогресс-бар */
-window.AddRailModule = [
+// window.AddRailModule = [
     // { page: 'Template:RailModule1', maxAge: 60 },
-    { page: 'Template:RailModule2', maxAge: 60 },
-];
+    // { page: 'Template:RailModule2', maxAge: 60 },
+// ];
 
 /* Настройка тултипов */
 window.tooltips_config = {

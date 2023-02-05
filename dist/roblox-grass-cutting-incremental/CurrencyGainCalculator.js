@@ -6,10 +6,10 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
     if (document.getElementById("CurrencyGainCalculator") !== null && document.getElementById("CurrencyGainCalculatorContainer") === null) {
         console.log("[Currency Gain Calculator] [LOG]: ID located. Running script.");
         mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:Break_eternity.js&action=raw&ctype=text/javascript'); // Import Break Eternity.
-        mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:CurrencyGainCalculator.js/Suffixes.js&action=raw&ctype=text/javascript'); // Import suffixes and suffixesLC arrays.
+        mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixesLong.js&action=raw&ctype=text/javascript'); // Import suffixes and suffixesLC arrays.
 
         // Create the calculator's user interface.
-        const calculatorHTMLCurrencySelectionContainer = "<tr><td><div class='templatedesktop' style='background:initial;border-radius:initial;border-left:0;border-right:0;padding:0.25em;font-size:20px;text-align:center'>Currency Selection</div><p style='text-align:center'>Selected: <b><span id='CGCSelectedCurrency'>?</span></b></p><p style='text-align:center'><img id='CGCPPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/b/b1/PrestigePointsIcon.png/revision/latest?cb=20220520143125' width='50'/><img id='CGCCrystalSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/7/7a/CrystalIcon.png/revision/latest?cb=20220520140356' width='50'/><img id='CGCAPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/9/9b/AnonymityIcon.png/revision/latest?cb=20220520140320' width='50'/><img id='CGCOilSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/b/b0/OilIcon.png/revision/latest?cb=20220520140507' width='50'/><img id='CGCMomentumSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/f/fb/MomentumIcon.png/revision/latest?cb=20220521171842' width='50'/><img id='CGCDMSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/f/f6/DarkMatter.png/revision/latest?cb=20220606224909' width='50'/><img id='CGCNPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/7/7d/Normality_Points.png/revision/latest?cb=20220704040749' width='50'/><img id='CGCRingSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1f/Rings.png/revision/latest?cb=20220704040952' width='50'/><img id='CGCAstroSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/5e/Astro_new.png/revision/latest?cb=20220903082844' width='50'/><img id='CGCMeasureSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/4/47/Measure_Icon.png/revision/latest?cb=20220712020331' width='50'/><img id='CGCLunarPowerSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/e/ea/Lunar.png/revision/latest?cb=20220903123204' width='50'/><img id='CGCPlanetSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/59/Planet.png/revision/latest?cb=20220903123203' width='50'/><img id='CGCStardustSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/6/65/Stardust.png/revision/latest?cb=20221123095941' width='50'/><img id='CGCSolarShardSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/5b/Solar_Shard.png/revision/latest?cb=20221219132135' width='50'/><img id='CGCSolarRaySelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/52/XP3.png/revision/latest?cb=20221219213530' width='50'/><img id='CGCSunstoneSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/57/Sunstone.png/revision/latest?cb=20221202050619' width='50'/></p></td></tr>";
+        const calculatorHTMLCurrencySelectionContainer = "<tr><td><div class='templatedesktop' style='background:initial;border-radius:initial;border-left:0;border-right:0;padding:0.25em;font-size:20px;text-align:center'>Currency Selection</div><p style='text-align:center'>Selected: <b><span id='CGCSelectedCurrency'>?</span></b></p><p style='text-align:center'><img id='CGCPPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/b/b1/PrestigePointsIcon.png/revision/latest?cb=20220520143125' width='50'/><img id='CGCCrystalSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/7/7a/CrystalIcon.png/revision/latest?cb=20220520140356' width='50'/><img id='CGCAPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/9/9b/AnonymityIcon.png/revision/latest?cb=20220520140320' width='50'/><img id='CGCOilSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/b/b0/OilIcon.png/revision/latest?cb=20220520140507' width='50'/><img id='CGCMomentumSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/f/fb/MomentumIcon.png/revision/latest?cb=20220521171842' width='50'/><img id='CGCDMSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/f/f6/DarkMatter.png/revision/latest?cb=20220606224909' width='50'/><img id='CGCNPSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/7/7d/Normality_Points.png/revision/latest?cb=20220704040749' width='50'/><img id='CGCRingSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1f/Rings.png/revision/latest?cb=20220704040952' width='50'/><img id='CGCAstroSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/5e/Astro_new.png/revision/latest?cb=20220903082844' width='50'/><img id='CGCMeasureSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/4/47/Measure_Icon.png/revision/latest?cb=20220712020331' width='50'/><img id='CGCLunarPowerSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/e/ea/Lunar.png/revision/latest?cb=20220903123204' width='50'/><img id='CGCPlanetSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/59/Planet.png/revision/latest?cb=20220903123203' width='50'/><img id='CGCStardustSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/6/65/Stardust.png/revision/latest?cb=20221123095941' width='50'/><img id='CGCSolarShardSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/5b/Solar_Shard.png/revision/latest?cb=20221219132135' width='50'/><img id='CGCSolarRaySelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/52/XP3.png/revision/latest?cb=20221219213530' width='50'/><img id='CGCSunstoneSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/5/57/Sunstone.png/revision/latest?cb=20221202050619' width='50'/><img id='CGCSoulSelection' src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/d/d5/Soul.png/revision/latest?cb=20221225230349' width='50'/></p></td></tr>";
         const calculatorHTMLInputsContainer = "<tr><td id='CGCInputsOuterContainer' style='display:none'><div class='templatedesktop' style='background:initial;border-radius:initial;border-left:0;border-right:0;padding:0.25em;font-size:20px;text-align:center'>Inputs</div><p id='CGCInputsInnerContainer'></p></td></tr>";
         const calculatorHTMLResultsContainer = "<tr><td id='CGCResultsOuterContainer' style='display:none'><div class='templatedesktop' style='background:initial;border-radius:initial;border-left:0;border-right:0;padding:0.25em;font-size:20px;text-align:center'>Result</div><center><br><button id='CGCCalculateButton'>Calculate</button><br>Formula: <span id='CGCFormulaUsed'>?</span><br><br><div id='CGCResultsInnerContainer'></div></center></td></tr>";
         document.getElementById("CurrencyGainCalculator").innerHTML = "<div id='CurrencyGainCalculatorContainer' class='templatedesktop' style='padding:1em;background:#4D4D4D;text-align:center;width:80%;margin:auto'><div style='text-align:initial;width:20%;padding:1em;background:initial;overflow:auto' class='templatedesktop'>Toggle Suffixes<br><button style='background:#FF0000' id='CGCSuffixButton'>Disabled</button></div><div style='text-align:center;font-weight:bold;font-size:20px'><img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/b/b1/PrestigePointsIcon.png/revision/latest?cb=20220520143125' width='75'/> Currency Gain Calculator <img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/f/f6/DarkMatter.png/revision/latest?cb=20220606224909' width='75'/></div><table class='templatedesktop' style='margin:auto;width:100%;border:0;border-radius:initial;background:#3D3D3D;padding:0.5em'>" + calculatorHTMLCurrencySelectionContainer + calculatorHTMLInputsContainer + calculatorHTMLResultsContainer + "</table></div>";
@@ -19,7 +19,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
         var decimals = 3; // Determines the maximum and fixed number of decimal digits for number output strings.
         var result; // Used for functions to avoid multiple return statements.
         var extraZeroes; // Used to determine the powers of 10 for scientific to suffix notation conversion, particularly for the functions 'toScientific' and 'notateInt'.
-        var selectedCurr; // Determines the selected currency from the updateInputs() function, used for the updateResult() function.
+        var selectedCurr; // Determines the selected currency from the 'updateInputs' function, used for the 'updateResult' function.
         const errorText = "<span class='rainbow' style='font-weight:bold;font-size:20px'>Error!</span>"; // Text string used for HTML outputs in the event of an error.
 
         function toScientific(e) { // Ensure a user-inputted value is a scientific notation Decimal number.
@@ -93,7 +93,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCPPSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#00FFFF'>Prestige Point</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Normal Level: <input id='CGCNormalLevelInput' style='width:10%'/></p><p>Grass gained this Prestige: <input id='CGCGrassGainedInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>9 × (1.4 ^ floor(max(0, Normal Level - 30) ÷ 10)) × (1.15 ^ OoMs of Grass gained since last Prestige)</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(9 × (1.4 ^ max(0, (Normal Level - 30) ÷ 10)) × 1.15 ^ floor(log10(Grass gained since last Prestige or higher reset)))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Normal Level <span id='CGCNormalLevelOutput'>?</span>, having gained <span id='CGCGrassGainedOutput'>?</span> Grass since the last Prestige or above reset, the base <span style='color:#00FFFF;font-weight:bold'>Prestige Point</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "crystal":
@@ -102,15 +102,17 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCCrystalSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#FF00FF'>Crystal</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Tier: <input id='CGCTierInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>4 × Tier × (1.1 ^ Tier)</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(4 × Tier × (1.1 ^ Tier))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Tier <span id='CGCTierOutput'>?</span>, the base <span style='color:#FF00FF;font-weight:bold'>Crystal</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "ap":
-                    selectedCurr = "";
+                    selectedCurr = "ap";
                     console.log("Selected currency: Anonymity Point");
                     document.getElementById("CGCAPSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#DC143C'>Anonymity Point</span>";
-                    unknownFormula(true);
+                    document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Anti Level: <input id='CGCAntiLevelInput' style='width:10%'/></p><p>Anti-Grass gained this Anonymity: <input id='CGCAntiGrassGainedInput' style='width:10%'/></p>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(3 × (1.4 ^ max(0, (Anti Level - 30) ÷ 10)) × 1.15 ^ floor(log10(Anti-Grass gained since last Anonymity or higher reset)))</code> (unconfirmed formula)";
+                    document.getElementById("CGCResultsInnerContainer").innerHTML = "At Anti Level <span id='CGCAntiLevelOutput'>?</span>, having gained <span id='CGCAntiGrassGainedOutput'>?</span> Anti-Grass since the last Anonymity or above reset, the base <span style='color:#DC143C;font-weight:bold'>Anonymity Point</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "oil":
                     selectedCurr = "";
@@ -125,7 +127,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCMomentumSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#FFA500'>Momentum</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Rocket Parts created: <input id='CGCRocketPartInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>1 × 10 ^ (min(99, max(0, floor(Rocket Part - 1))))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>10 ^ min(100, Rocket Parts created)</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "With <span id='CGCRocketPartOutput'>?</span> <span id='CGCRocketPartPluralCheckOutput'>Rocket Parts</span> created, assuming AGH Milestone 0GH + 24GS has been reached, the base <span style='color:#FFA500;font-weight:bold'>Momentum</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "dm":
@@ -134,7 +136,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCDMSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#DD00FF'>Dark Matter</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Current Stars: <input id='CGCCurrentStarsInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>(log1.05(Stars) - 420) × 1.5 ^ log10(Stars ÷ 1e9)</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor((log1.05(Stars) - 420) × 1.5 ^ log10(Stars ÷ 1e9))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "With currently <span id='CGCCurrentStarsOutput'>?</span> Stars, the base <span style='color:#DD00FF;font-weight:bold'>Dark Matter</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "np":
@@ -143,7 +145,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCNPSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#FFFF00'>Normality Point</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Unnatural Level: <input id='CGCUnnaturalLevelInput' style='width:10%'/></p><p>Astral: <input id='CGCAstralInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>1 × (5 ^ floor(max(0, (Unnatural Level - 50)) ÷ 10)) × (1.25 ^ floor(Astral ÷ 10))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(1 × (5 ^ floor(max(0, (Unnatural Level - 50)) ÷ 10)) × (1.25 ^ floor(Astral ÷ 10)))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Unnatural Level <span id='CGCUnnaturalLevelOutput'>?</span> and Astral <span id='CGCAstralOutput'>?</span>, the base <span style='color:#FFFF00;font-weight:bold'>Normality Point</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "ring":
@@ -152,7 +154,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCRingSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#00FFFF'>Ring</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Planetoid Level: <input id='CGCPlanetoidLevelInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>1 × (1.03 ^ max(0, (Planetoid Level - 5)))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(1 × (1.03 ^ max(0, (Planetoid Level - 5))))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Planetoid Level <span id='CGCPlanetoidLevelOutput'>?</span>, the base Ring gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "astro":
@@ -161,7 +163,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCAstroSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#00FFFF'>Astro</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Planetoid Level: <input id='CGCPlanetoidLevelInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>3 × (1.03 ^ max(0, (Planetoid Level - 31)))</code> (unconfirmed formula)";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(3 × (1.03 ^ max(0, (Planetoid Level - 31))))</code> (unconfirmed formula)";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Planetoid Level <span id='CGCPlanetoidLevelOutput'>?</span>, the base Astro gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "measure":
@@ -170,7 +172,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCMeasureSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#F5F2F7'>Measure</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Planetoid Level: <input id='CGCPlanetoidLevelInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>3 × (1.03 ^ max(0, (Planetoid Level - 101)))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(3 × (1.03 ^ max(0, (Planetoid Level - 101))))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Planetoid Level <span id='CGCPlanetoidLevelOutput'>?</span>, the base <span style='color:#F5F2F7;font-weight:bold'>Measure</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "planet":
@@ -179,7 +181,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCPlanetSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#008000'>Planet</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Planetoid Level: <input id='CGCPlanetoidLevelInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>3 × (1.03 ^ max(0, (Planetoid Level - 191)))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(3 × (1.03 ^ max(0, (Planetoid Level - 191))))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Planetoid Level <span id='CGCPlanetoidLevelOutput'>?</span>, the base <span style='color:#008000;font-weight:bold'>Planet</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "lunarpower":
@@ -197,7 +199,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCStardustSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#DD00FF'>Stardust</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Planetoid Level: <input id='CGCPlanetoidLevelInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>1.01 ^ max(0, (Planetoid Level - 450))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>1.01 ^ max(0, (Planetoid Level - 449))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Planetoid Level <span id='CGCPlanetoidLevelOutput'>?</span>, the Planetoid Level-based bonus to <span style='color:#DD00FF;font-weight:bold'>Stardust</span> gain is: <span id='CGCResultOutput'>?</span>x";
                     break;
                 case "solarshard":
@@ -215,7 +217,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCSolarRaySelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#FFFF00'>Solar Ray</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Star Growth: <input id='CGCStarGrowthInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>10 × 1.15 ^ floor(log10(Star Growth))</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(10 × 1.15 ^ floor(log10(Star Growth)))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "With a Star Growth of <span id='CGCStarGrowthOutput'>?</span>, the base <span style='color:#FFFF00;font-weight:bold'>Solar Ray</span> gain is: <span id='CGCResultOutput'>?</span>";
                     break;
                 case "sunstone":
@@ -224,8 +226,26 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     document.getElementById("CGCSunstoneSelection").setAttribute("class", "SelectedCurr");
                     document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#FFFF00'>Sunstone</span>";
                     document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Eclipse: <input id='CGCEclipseInput' style='width:10%'/></p>";
-                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>8 × 1.02 ^ (min(300, Eclipse) - 1)</code>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>floor(8 × 1.02 ^ (min(300, Eclipse) - 1))</code>";
                     document.getElementById("CGCResultsInnerContainer").innerHTML = "At Eclipse <span id='CGCEclipseOutput'>?</span>, the base <span style='color:#FFFF00;font-weight:bold'>Sunstone</span> gain is: <span id='CGCResultOutput'>?</span>";
+                    break;
+                case "soul":
+                    selectedCurr = "soul";
+                    console.log("Selected currency: Soul");
+                    document.getElementById("CGCSoulSelection").setAttribute("class", "SelectedCurr");
+                    document.getElementById("CGCSelectedCurrency").innerHTML = "<span style='color:#00FFFF'>Soul</span>";
+                    document.getElementById("CGCInputsInnerContainer").innerHTML = "<p>Current Stage: <input id='CGCStageInput' style='width:10%'/></p><p>Total Souls (includes spent): <input id='CGCTotalSoulsInput' style='width:10%'/></p><p><span style='color:#FF00FF'>Soul Stealer</span> bought? <b><span id='CGCSoulStealerStatusButton' class='templatedesktop' style='color:#FF0000;padding:0.5em'>No</span></b> (click to toggle)</p>";
+                    document.getElementById("CGCFormulaUsed").innerHTML = "<code>(Stage + (min(Soul Stealer level, max(0, Stage - 2)) × 2) - (floor(sqrt(max(1, log1.05(Total Souls ÷ 100)))) - 2))</code>";
+                    document.getElementById("CGCResultsInnerContainer").innerHTML = "At Stage <span id='CGCStageOutput'>?</span><span id='CGCSoulStealerTextOutput' style='display:none'> with the <span style='color:#FF00FF'>Soul Stealer</span> Singularity Upgrade</span>, having amassed a total of <span id='CGCTotalSoulsOutput'>?</span> <span id='CGCSoulPluralCheckOutput'>Souls</span>, the base <span style='color:#00FFFF;font-weight:bold'>Soul</span> gain is: <span id='CGCResultOutput'>?</span>";
+                    document.getElementById("CGCSoulStealerStatusButton").addEventListener("click", function() {
+                        if (document.getElementById("CGCSoulStealerStatusButton").innerHTML === "No") {
+                            document.getElementById("CGCSoulStealerStatusButton").setAttribute("style", "color:#00FF00;padding:0.5em");
+                            document.getElementById("CGCSoulStealerStatusButton").innerHTML = "Yes";
+                        } else {
+                            document.getElementById("CGCSoulStealerStatusButton").setAttribute("style", "color:#FF0000;padding:0.5em");
+                            document.getElementById("CGCSoulStealerStatusButton").innerHTML = "No";
+                        }
+                    });
             }
         }
 
@@ -274,7 +294,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (normalLevel.lessThan(31)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(9).times(new Decimal(1.4).pow((normalLevel.sub(30)).dividedBy(10).floor())).times(new Decimal(1.15).pow(grassGained.log10().floor())));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(9).times(new Decimal(1.4).pow((normalLevel.sub(30)).dividedBy(10))).times(new Decimal(1.15).pow(grassGained.log10().floor())).floor());
                     }
                     break;
                 case "crystal":
@@ -285,8 +305,28 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                         tier = toScientific(document.getElementById("CGCTierInput").value);
                     }
                     document.getElementById("CGCTierOutput").innerHTML = notateInt(tier);
-                    document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(4).times(tier).times(new Decimal(1.1).pow(tier)));
+                    document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(4).times(tier).times(new Decimal(1.1).pow(tier)).floor());
                     break;
+                case "ap":
+                    var antiLevel;
+                    var antiGrassGained;
+                    if (document.getElementById("CGCAntiLevelInput").value === '' || new Decimal(document.getElementById("CGCAntiLevelInput").value).lessThan(1)) {
+                        antiLevel = new Decimal(1);
+                    } else {
+                        antiLevel = toScientific(document.getElementById("CGCAntiLevelInput").value);
+                    }
+                    if (document.getElementById("CGCAntiGrassGainedInput").value === '' || new Decimal(document.getElementById("CGCAntiGrassGainedInput").value).lessThan(1)) {
+                        antiGrassGained = new Decimal(1);
+                    } else {
+                        antiGrassGained = toScientific(document.getElementById("CGCAntiGrassGainedInput").value);
+                    }
+                    document.getElementById("CGCAntiLevelOutput").innerHTML = notateInt(antiLevel);
+                    document.getElementById("CGCAntiGrassGainedOutput").innerHTML = notateInt(antiGrassGained);
+                    if (antiLevel.lessThan(31)) {
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
+                    } else {
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.4).pow((antiLevel.sub(30)).dividedBy(10))).times(new Decimal(1.15).pow(antiGrassGained.log10().floor())).floor());
+                    }
                 case "momentum":
                     var rocketPart;
                     if (document.getElementById("CGCRocketPartInput").value === '' || new Decimal(document.getElementById("CGCRocketPartInput").value).lessThan(0)) {
@@ -294,13 +334,13 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     } else if (new Decimal(document.getElementById("CGCRocketPartInput").value).greaterThanOrEqualTo(100)) {
                         rocketPart = new Decimal(100);
                     } else {
-                        rocketPart = toScientific(document.getElementById("CGCRocketPartInput").value);
+                        rocketPart = toScientific(document.getElementById("CGCRocketPartInput").value).floor();
                     }
                     document.getElementById("CGCRocketPartOutput").innerHTML = notateInt(rocketPart);
                     if (rocketPart.lessThan(1)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(1);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1).times(new Decimal(10).pow(rocketPart.sub(1).floor())));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(10 ** rocketPart);
                     }
                     if (rocketPart.equals(1)) {
                         document.getElementById("CGCRocketPartPluralCheckOutput").innerHTML = "Rocket Part";
@@ -319,7 +359,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (stars.lessThan(1e9)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt((stars.log10().dividedBy(Math.log10(1.05)).sub(420)).times(new Decimal(1.5).pow(stars.dividedBy(1e9).log10())));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt((stars.log10().dividedBy(Math.log10(1.05)).sub(420)).times(new Decimal(1.5).pow(stars.dividedBy(1e9).log10())).floor());
                     }
                     break;
                 case "np":
@@ -340,7 +380,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (unnaturalLevel.lessThan(51)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1).times(new Decimal(5).pow((unnaturalLevel.sub(50)).dividedBy(10).floor())).times(new Decimal(1.25).pow(astral.dividedBy(10).floor())));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1).times(new Decimal(5).pow((unnaturalLevel.sub(50)).dividedBy(10).floor())).times(new Decimal(1.25).pow(astral.dividedBy(10).floor())).floor());
                     }
                     break;
                 case "ring":
@@ -354,7 +394,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (planetoidLevel.lessThan(5)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1).times(new Decimal(1.03).pow(planetoidLevel.sub(5))));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1).times(new Decimal(1.03).pow(planetoidLevel.sub(5))).floor());
                     }
                     break;
                 case "astro":
@@ -368,7 +408,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (planetoidLevel.lessThan(31)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(31))));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(31))).floor());
                     }
                     break;
                 case "measure":
@@ -382,7 +422,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (planetoidLevel.lessThan(101)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(101))));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(101))).floor());
                     }
                     break;
                 case "planet":
@@ -396,7 +436,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (planetoidLevel.lessThan(201)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(0);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(201))));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(3).times(new Decimal(1.03).pow(planetoidLevel.sub(201))).floor());
                     }
                     break;
                 case "lunarpower":
@@ -424,7 +464,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (planetoidLevel.lessThan(450)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(1);
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1.01).pow(planetoidLevel.sub(450)));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(1.01).pow(planetoidLevel.sub(449)));
                     }
                     break;
                 case "solarshard":
@@ -489,7 +529,7 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     if (starGrowth.lessThan(10)) {
                         document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(10)); // Star Growth OoM multiplier is 1x if Star Growth is less than 10.
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(10).times(new Decimal(1.15).pow(starGrowth.log10().floor()))); // Normal Solar Ray gain for when Star Growth is at least 10.
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(10).times(new Decimal(1.15).pow(starGrowth.log10().floor())).floor()); // Normal Solar Ray gain for when Star Growth is at least 10.
                     }
                     break;
                 case "sunstone":
@@ -503,16 +543,47 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
                     }
                     document.getElementById("CGCEclipseOutput").innerHTML = notateInt(eclipse);
                     if (eclipse.greaterThanOrEqualTo(300)) {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(8).times(new Decimal(1.02).pow(299))) + " <sup>(softcapped)</sup>";
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(8).times(new Decimal(1.02).pow(299)).floor()) + " <sup>(softcapped)</sup>";
                     } else {
-                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(8).times(new Decimal(1.02).pow(eclipse.sub(1))));
+                        document.getElementById("CGCResultOutput").innerHTML = notateInt(new Decimal(8).times(new Decimal(1.02).pow(eclipse.sub(1))).floor());
+                    }
+                    break;
+                case "soul":
+                    var currentStage;
+                    var totalSouls;
+                    var soulStealerBought;
+                    if (document.getElementById("CGCStageInput").value === '' || new Decimal(document.getElementById("CGCStageInput").value).lessThan(1)) {
+                        currentStage = new Decimal(1);
+                    } else {
+                        currentStage = toScientific(document.getElementById("CGCStageInput").value);
+                    }
+                    if (document.getElementById("CGCTotalSoulsInput").value === '' || new Decimal(document.getElementById("CGCTotalSoulsInput").value).lessThan(0)) {
+                        totalSouls = new Decimal(0);
+                    } else {
+                        totalSouls = toScientific(document.getElementById("CGCTotalSoulsInput").value);
+                    }
+                    if (document.getElementById("CGCSoulStealerStatusButton").innerHTML === "Yes") {
+                        document.getElementById("CGCSoulStealerTextOutput").setAttribute("style", "display:inline");
+                        soulStealerBought = 1;
+                    } else {
+                        document.getElementById("CGCSoulStealerTextOutput").setAttribute("style", "display:none");
+                        soulStealerBought = 0;
+                    }
+                    var soulPenalty = (((decimalMax(1, totalSouls.dividedBy(100))).log10().dividedBy(Math.log10(1.05))).pow(0.5).floor()).sub(2);
+                    document.getElementById("CGCStageOutput").innerHTML = notateInt(currentStage);
+                    document.getElementById("CGCTotalSoulsOutput").innerHTML = notateInt(totalSouls);
+                    document.getElementById("CGCResultOutput").innerHTML = notateInt(decimalMax(0, currentStage.add(decimalMin(soulStealerBought, decimalMin(1, decimalMax(0, currentStage.sub(2)))).times(2)).sub(soulPenalty)));
+                    if (totalSouls.equals(1)) {
+                        document.getElementById("CGCSoulPluralCheckOutput").innerHTML = "Soul";
+                    } else {
+                        document.getElementById("CGCSoulPluralCheckOutput").innerHTML = "Souls";
                     }
                     break;
                 default:
-                    document.getElementById("CGCResultsInnerContainer").innerHTML = "";
+                    document.getElementById("CGCResultsInnerContainer").innerHTML = "?";
             }
         }
-        // Currencies that still need their formulae implemented: AP, Oil.
+        // Currencies that still need their formulae implemented: Oil.
 
         // Add click event listeners to the currency selection options.
         document.getElementById("CGCPPSelection").addEventListener("click", function() {
@@ -577,6 +648,10 @@ function addCurrencyGainCalculator() { // Function for ensuring all the calculat
         });
         document.getElementById("CGCSunstoneSelection").addEventListener("click", function() {
             updateInputs("sunstone");
+            updateResults();
+        });
+        document.getElementById("CGCSoulSelection").addEventListener("click", function() {
+            updateInputs("soul");
             updateResults();
         });
 

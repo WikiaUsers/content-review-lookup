@@ -1,4 +1,4 @@
-// TopicBlockLog (v1.1.2)
+// TopicBlockLog (v1.2.1)
 // @author: The JoTS
 //    Creates an interwiki block report from wikis of similar topic.
 //    This allows an administrator to more easily identify editors who may be
@@ -171,7 +171,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 		mw.log(DEBUG_MSGS.NO_LOCAL_BLOCK);
 		$("#mw-content-text").append(
 			$blockLog = $(document.createElement("div"))
-				.addClass("mw-warning-with-logexcerpt")
+				.addClass("mw-warning-with-logexcerpt warningbox mw-content-ltr")
 				.append(blockedNotice = document.createElement("p"))
 		);
 			hadAnyBlock = false;
@@ -202,7 +202,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 		
 		mw.log("Checking user's block log at wiki " + wiki);
 		
-		$.get("https://" + wiki + ".wikia.com/api.php", { // using wikia.com for redirect to wikia.org
+		$.get("https://" + wiki + ".fandom.com/api.php", { // does not support wikia.org at this time, todo
 			action: "query",
 			format: "json",
 			// Block logs
@@ -221,7 +221,11 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 			if (result === null)
 				// I'm not sure if this result is a possible case?
 				mw.log("Null result returned from query. Sending in queries too quickly?");
-		}, "jsonp");
+		}, "jsonp")
+		.fail(function() {
+			mw.log("Failed to retrieve block logs at wiki " + wiki);
+			recordRenderedWiki();
+		});
 	}
 
 	
@@ -254,7 +258,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 				hour:   String(blockedOn.getHours()).padStart(2,'0'),
 				minute: String(blockedOn.getMinutes()).padStart(2,'0'),
 				date:   blockedOn.getDate(),
-				month:  mw.config.get("wgMonthNames")[blockedOn.getMonth() + 1], // the lazy way, result can differ from uselang url param
+				month:  mw.config.get("wgMonthNames")[blockedOn.getMonth() + 1], // todo: respect uselang url param
 				year:   blockedOn.getFullYear()
 			});
 			
@@ -302,7 +306,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 			// Finished rendering!
 			mw.log("A parse task (Last/" + nFinalParsed + ") finished.");
 			
-			// Link to script, so I don't have to delete the awkward <hr> if there's no interwiki log.
+			// Plug script on Dev Wiki
 			$("<div style='text-align:right; font-size:80%;'>"
 				+ Make.prototype.link("http://dev.fandom.com/wiki/TopicBlockLog", '',
 					"Interwiki block report by TopicBlockLog")

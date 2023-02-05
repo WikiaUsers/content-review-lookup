@@ -20,3 +20,11 @@ window.AddRailModule = [
     {page: 'Template:BottomAddRail', maxAge: 60},
 ];
 /* End of sidebar rail module */
+
+/* LockOldComments */
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;
+
+/* End of LockOldComments */

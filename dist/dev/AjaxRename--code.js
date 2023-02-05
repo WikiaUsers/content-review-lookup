@@ -266,6 +266,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'helper',
 				'global-discussions-moderator',
 				'wiki-representative',
+				'wiki-specialist',				
 				'soap',	
 			]),
 
@@ -273,6 +274,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'soap',
 				'helper',
 				'staff',
+				'global-discussions-moderator',				
 				'wiki-representative',
 				'wiki-specialist',
 				'checkuser',
@@ -283,9 +285,10 @@ mw.loader.using('mediawiki.api').then(function() {
 				'sysop',
 				'staff',
 				'helper',
-				'bureacrat',
+				'bureaucrat',
 				'global-discussions-moderator',
 				'wiki-representative',
+				'wiki-specialist',				
 				'soap',
 			]),
 

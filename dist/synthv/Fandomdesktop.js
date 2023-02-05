@@ -42,11 +42,12 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-tsurumaki-maki-eng.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/52/Wiki-wordmark-tsurumaki-maki-jpn.png',
 	    'https://images.wikia.nocookie.net/synthv/images/6/66/Wiki-wordmark-weina.png',
+	    'https://images.wikia.nocookie.net/synthv/images/4/44/Wiki-wordmark-XIA-YU-YAO.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1e/Wiki-wordmark-Xingchen-Infinity.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/70/Wiki-wordmark-xingchen-minus.png',
+	    'https://images.wikia.nocookie.net/synthv/images/7/7c/Wiki-wordmark-Xuan-Yu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png',
-	    'https://images.wikia.nocookie.net/synthv/images/7/7c/Wiki-wordmark-Xuan-Yu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/fc/Wiki-wordmark-yuma.png',
 	];
 

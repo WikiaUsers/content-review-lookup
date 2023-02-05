@@ -23,9 +23,10 @@
 //TODO: Re-enable summary box (possibly more) when not busy submitting.
 //TODO: more advanced pagelist-generating options
 //TODO: generate page list based on images on a page
-window.JWB = {}; //The main global object for the script.
+var JWB = {}; //The main global object for the script.
+window.JWB = JWB;
 /***** User verification *****/
-(function() {
+(function($, mw) {
 	if (
 	    mw.config.get('wgNamespaceNumber') !== 4 ||
 	    mw.config.get('wgTitle') !== 'AutoWikiBrowser/Script' ||
@@ -36,15 +37,25 @@ window.JWB = {}; //The main global object for the script.
 		return;
 	}
 
-	importArticle({ article: 'u:dev:MediaWiki:JWB.css' });
+	importArticle({
+		type: 'style',
+		article: 'u:dev:MediaWiki:JWB.css'
+	});
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
 	mw.loader.load('mediawiki.diff.styles');
 
-	mw.loader.getScript('https://dev.fandom.com/wiki/MediaWiki:JWB/i18n.js?action=raw&ctype=text/javascript').then(function() {
-		if (JWB.allowed === true) {
-			JWB.init(); //init if verification has already returned true
-		} else if (JWB.allowed === false) {
-			alert(JWB.msg('not-on-list'));
-		}
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('JWB').done(function(i18no) {
+			JWB.msg = i18no.msg;
+			if (JWB.allowed === true) {
+				JWB.init(); //init if verification has already returned true
+			} else if (JWB.allowed === false) {
+				alert(JWB.msg('not-on-list').plain());
+			}
+		});
 	});
 
 	//RegEx Typo Fixing
@@ -52,83 +63,85 @@ window.JWB = {}; //The main global object for the script.
     	$('#refreshRETF').click(RETF.load);
 	});
 
-	(new mw.Api()).get({
-		action: 'query',
-		titles: 'Project:AutoWikiBrowser/CheckPage',
-		prop: 'revisions',
-		meta: 'userinfo|siteinfo',
-		rvprop: 'content',
-		rvlimit: 1,
-		uiprop: 'groups',
-		siprop: 'namespaces',
-		indexpageids: true,
-		format: 'json',
-	}).done(function(response) {
-		if (response.error) {
-			alert('API error: ' + response.error.info);
-			JWB = false; //preventing further access. No verification => no access.
-			return;
-		}
-		JWB.ns = response.query.namespaces; //saving for later
-
-		JWB.username = response.query.userinfo.name; //preventing any "hacks" that change wgUserName or mw.config.wgUserName
-		var groups = response.query.userinfo.groups;
-		var page = response.query.pages[response.query.pageids[0]];
-		var users, bots;
-		if (response.query.pageids[0] !== '-1' && /<!--\s*enabledusersbegins\s*-->/.test(page.revisions[0]['*'])) {
-			var cont = page.revisions[0]['*'];
-			users = cont.substring(
-				cont.search(/<!--\s*enabledusersbegins\s*-->/),
-				cont.search(/<!--\s*enabledusersends\s*-->/)
-			).split('\n');
-			if (/<!--\s*enabledbots\s*-->/.test(cont)) {
-				bots = cont.substring(
-					cont.search(/<!--\s*enabledbots\s*-->/),
-					cont.search(/<!--\s*enabledbotsends\s*-->/)
+	mw.loader.using('mediawiki.api').then(function() {
+		new mw.Api().get({
+			action: 'query',
+			titles: 'Project:AutoWikiBrowser/CheckPage',
+			prop: 'revisions',
+			meta: 'userinfo|siteinfo',
+			rvprop: 'content',
+			rvlimit: 1,
+			uiprop: 'groups',
+			siprop: 'namespaces',
+			indexpageids: true,
+			format: 'json',
+		}).done(function(response) {
+			if (response.error) {
+				alert('API error: ' + response.error.info);
+				JWB = false; //preventing further access. No verification => no access.
+				return;
+			}
+			JWB.ns = response.query.namespaces; //saving for later
+	
+			JWB.username = response.query.userinfo.name; //preventing any "hacks" that change wgUserName or mw.config.wgUserName
+			var groups = response.query.userinfo.groups;
+			var page = response.query.pages[response.query.pageids[0]];
+			var users, bots;
+			if (response.query.pageids[0] !== '-1' && /<!--\s*enabledusersbegins\s*-->/.test(page.revisions[0]['*'])) {
+				var cont = page.revisions[0]['*'];
+				users = cont.substring(
+					cont.search(/<!--\s*enabledusersbegins\s*-->/),
+					cont.search(/<!--\s*enabledusersends\s*-->/)
 				).split('\n');
-			} else bots = [];
-			var i=0;
-			while (i<users.length) {
-                if (users[i].charAt(0) !== '*') {
-                    users.splice(i,1);
-                } else {
-                    users[i] = $.trim(users[i].substr(1));
-                    i++;
-                }
+				if (/<!--\s*enabledbots\s*-->/.test(cont)) {
+					bots = cont.substring(
+						cont.search(/<!--\s*enabledbots\s*-->/),
+						cont.search(/<!--\s*enabledbotsends\s*-->/)
+					).split('\n');
+				} else bots = [];
+				var i=0;
+				while (i<users.length) {
+	                if (users[i].charAt(0) !== '*') {
+	                    users.splice(i,1);
+	                } else {
+	                    users[i] = $.trim(users[i].substr(1));
+	                    i++;
+	                }
+				}
+				i=0;
+				while (i<bots.length) {
+	                if (bots[i].charAt(0) !== '*') {
+	                    bots.splice(i,1);
+	                } else {
+	                    bots[i] = $.trim(bots[i].substr(1));
+	                    i++;
+	                }
+				}
+			} else {
+				users = false; //fallback when page doesn't exist
 			}
-			i=0;
-			while (i<bots.length) {
-                if (bots[i].charAt(0) !== '*') {
-                    bots.splice(i,1);
-                } else {
-                    bots[i] = $.trim(bots[i].substr(1));
-                    i++;
-                }
+			JWB.bot = groups.indexOf('bot') !== -1 && (users === false || bots.indexOf(JWB.username) !== -1);
+			JWB.sysop = groups.indexOf('sysop') !== -1;
+			if (JWB.username === "Joeytje50" && response.query.userinfo.id === 13299994) {//TEMP: Dev full access to entire interface.
+				JWB.bot = true;
+				users.push("Joeytje50");
 			}
-		} else {
-			users = false; //fallback when page doesn't exist
-		}
-		JWB.bot = groups.indexOf('bot') !== -1 && (users === false || bots.indexOf(JWB.username) !== -1);
-		JWB.sysop = groups.indexOf('sysop') !== -1;
-		if (JWB.username === "Joeytje50" && response.query.userinfo.id === 13299994) {//TEMP: Dev full access to entire interface.
-			JWB.bot = true;
-			users.push("Joeytje50");
-		}
-		if (JWB.sysop || response.query.pageids[0] === '-1' || users.indexOf(JWB.username) !== -1 || users === false) {
-			JWB.allowed = true;
-			if (JWB.messages.en) JWB.init(); //init if messages have already loaded
-		} else {
-			if (JWB.messages.en) {
-				//run this after messages have loaded, so the message that shows is in the user's language
-				alert(JWB.msg('not-on-list'));
+			if (JWB.sysop || response.query.pageids[0] === '-1' || users.indexOf(JWB.username) !== -1 || users === false) {
+				JWB.allowed = true;
+				if (JWB.msg) JWB.init(); //init if messages have already loaded
+			} else {
+				if (JWB.msg) {
+					//run this after messages have loaded, so the message that shows is in the user's language
+					alert(JWB.msg('not-on-list').plain());
+				}
+				JWB = false; //prevent further access
 			}
-			JWB = false; //prevent further access
-		}
-	}).fail(function(xhr, error) {
-		alert(JWB.msg('verify-error') + '\n' + error);
-		JWB = false; //preventing further access. No verification => no access.
+		}).fail(function(xhr, error) {
+			alert(JWB.msg('verify-error').plain() + '\n' + error);
+			JWB = false; //preventing further access. No verification => no access.
+		});
 	});
-})();
+})(window.jQuery, window.mediaWiki);
 /***** Global object/variables *****/
 var objs = ['page', 'api', 'fn', 'pl', 'messages', 'setup', 'settings', 'ns'];
 for (var i=0;i<objs.length;i++) {
@@ -190,7 +203,7 @@ JWB.api.diff = function(callback) {
 			var diffpage = response.query.pages[response.query.pageids[0]];
 			diff = diffpage.revisions[0].diff['*'];
 			if (diff === '') {
-				diff = '<div class="log-row log-skipped">' + JWB.msg('no-changes-made') + '</div>';
+				diff = '<div class="log-row log-skipped">' + JWB.msg('no-changes-made').escape() + '</div>';
 			} else {
 				diff = '<table class="diff">'+
 					'<colgroup>'+
@@ -202,7 +215,7 @@ JWB.api.diff = function(callback) {
 					'<tbody>' + diff + '</tbody></table>';
 			}
 		} else {
-			diff = '<div class="log-row log-error">' + JWB.msg('page-not-exists') + '</div>';
+			diff = '<div class="log-row log-error">' + JWB.msg('page-not-exists').escape() + '</div>';
 		}
 		$('#resultWindow').html(diff);
 		$('.diff-lineno').each(function() {
@@ -261,9 +274,9 @@ JWB.api.get = function(pagename) {
 				'<span style="color:red;font-weight:bold;">'+
 					JWB.msg('status-newmsg', 
 						'<a href="'+view+'" target="_blank">'+JWB.msg('status-talklink')+'</a>',
-						'<a href="'+viewNew+'" target="_blank">'+JWB.msg('status-difflink')+'</a>')+
+						'<a href="'+viewNew+'" target="_blank">'+JWB.msg('status-difflink')+'</a>').escape()+
 				'</span>', true);
-			alert(JWB.msg('new-message'));
+			alert(JWB.msg('new-message').plain());
 			JWB.stop();
 			return;
 		}
@@ -296,7 +309,7 @@ JWB.api.get = function(pagename) {
 			return JWB.next();
 		} else {
 			$('#editBoxArea').val(newContent);
-			$('#currentpage').html(JWB.msg('editbox-currentpage', JWB.page.name, encodeURIComponent(JWB.page.name)));
+			$('#currentpage').html(JWB.msg('editbox-currentpage', JWB.page.name ? '[[' + JWB.page.name + ']]' : ' ').parse());
 			if ($('#preparse').prop('checked')) {
 				$('#articleList').val($.trim($('#articleList').val()) + '\n' + JWB.list[0]); //move current page to the bottom
 				JWB.next();
@@ -321,8 +334,8 @@ JWB.api.submit = function(page) {
 	if ((typeof page === 'text' && page !== JWB.page.name) || $('#currentpage a').html().replace(/&amp;/g, '&') !== JWB.page.name) {
 		console.log(page, JWB.page.name, $('#currentpage a').html());
 		JWB.stop();
-		alert(JWB.msg('autosave-error', JWB.msg('tab-log')));
-		$('#currentpage').html(JWB.msg('editbox-currentpage', ' ', ' '));
+		alert(JWB.msg('autosave-error', JWB.msg('tab-log')).plain());
+		$('#currentpage').html(JWB.msg('editbox-currentpage', ' ').escape());
 		return;
 	}
 	var data = {
@@ -433,10 +446,10 @@ JWB.api.watch = function() {
 	if (JWB.page.watched) data.unwatch = true;
 	JWB.api.call(data, function(response) {
 		JWB.status('<span style="color:green;">'+
-			JWB.msg('status-watch-'+(JWB.page.watched ? 'removed' : 'added'), "'"+JWB.page.name+"'")+
+			JWB.msg('status-watch-'+(JWB.page.watched ? 'removed' : 'added'), "'"+JWB.page.name+"'").escape()+
 		'</span>', true);
 		JWB.page.watched = !JWB.page.watched;
-		$('#watchNow').html( JWB.msg('watch-' + (JWB.page.watched ? 'remove' : 'add')) );
+		$('#watchNow').html( JWB.msg('watch-' + (JWB.page.watched ? 'remove' : 'add')).escape() );
 	});
 };
 /***** Pagelist functions *****/
@@ -567,7 +580,7 @@ JWB.pl.generate = function() {
 };
 /***** Setup functions *****/
 JWB.setup.save = function(name) {
-	name = name || prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-store')), $('#loadSettings').val());
+	name = name || prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-store').plain()).plain(), $('#loadSettings').val());
 	if (name === null) return;
 	var self = JWB.settings[name] = {
 		string: {},
@@ -643,14 +656,14 @@ JWB.setup.getObj = function() {
 	return '{\n\t' + settings.join(',\n\t') + '\n}';
 };
 JWB.setup.submit = function() {
-	var name = prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-save')), $('#loadSettings').val());
+	var name = prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-save').plain()).plain(), $('#loadSettings').val());
 	if (name === null) return;
 	if ($.trim(name) === '') name = 'default';
 	JWB.setup.save(name);
 	JWB.status('setup-submit');
 	JWB.api.call({
 		'title': 'User:'+JWB.username+'/'+JWB.settingspage+'-settings.'+JWB.configext,
-		'summary': JWB.msg(['setup-summary', mw.config.get('wgContentLanguage')]),
+		'summary': JWB.msg(['setup-summary', mw.config.get('wgContentLanguage')]).plain(),
 		'action': 'edit',
 		'token': JWB.setup.edittoken || mw.user.tokens.get("csrfToken"),
 		'text': JWB.setup.getObj(),
@@ -661,7 +674,7 @@ JWB.setup.submit = function() {
 };
 //TODO: use blob uri
 JWB.setup.download = function() {
-	var name = prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-save')), $('#loadSettings').val());
+	var name = prompt(JWB.msg('setup-prompt', JWB.msg('setup-prompt-save').plain()).plain(), $('#loadSettings').val());
 	if (name === null) return;
 	if ($.trim(name) === '') name = 'default';
 	JWB.setup.save(name);
@@ -687,12 +700,12 @@ JWB.setup.import = function(e) {
 		$('#import').change(JWB.setup.import);
 	}
 	if (!window.hasOwnProperty('FileReader')) {
-		alert(JWB.msg('old-browser'));
+		alert(JWB.msg('old-browser').plain());
 		JWB.status('old-browser', '<a target="_blank" href="'+JWB.index_php+'?title=Special:MyPage/'+JWB.settingspage+'-settings.'+JWB.configext+'">/'+JWB.settingspage+'-settings.'+JWB.configext+'</a>');
 		return;
 	}
 	if (file.name.split('.').pop().toLowerCase() !== 'json') {
-		alert(JWB.msg('not-json'));
+		alert(JWB.msg('not-json').plain());
 		return;
 	}
 	JWB.status('Processing file');
@@ -707,7 +720,7 @@ JWB.setup.import = function(e) {
 				if (g1) return g1;
 			}));
 		} catch(e) {
-			alert(JWB.msg('json-err', e.message, JWB.msg('json-err-upload')));
+			alert(JWB.msg('json-err', e.message, JWB.msg('json-err-upload').plain()).plain());
 			console.log(e); //also log the error for further info
 			return;
 		}
@@ -742,7 +755,7 @@ JWB.setup.load = function() {
 		try {
 			data = JSON.parse(data);
 		} catch(e) {
-			alert(JWB.msg('json-err', e.message, JWB.msg('json-err-page', JWB.settingspage)) || 'JSON error:\n'+e.message);
+			alert(JWB.msg('json-err', e.message, JWB.msg('json-err-page', JWB.settingspage).plain()).plain() || 'JSON error:\n'+e.message);
 			JWB.setup.save('default');
 			return;
 		}
@@ -762,7 +775,7 @@ JWB.setup.extend = function(obj) {
 };
 JWB.setup['delete'] = function() {
 	var name = $('#loadSettings').val();
-	if (name === '_blank') return alert(JWB.msg('setup-delete-blank'));
+	if (name === '_blank') return alert(JWB.msg('setup-delete-blank').plain());
 	var temp = {};
 	temp[name] = JWB.settings[name];
 	JWB.setup.temp = $.extend({}, temp);
@@ -771,11 +784,11 @@ JWB.setup['delete'] = function() {
 	if (name === 'default') {
 		JWB.setup.apply('_blank');
 		JWB.setup.save('default');
-		JWB.status(JWB.msg('status-del-default', '<a href="javascript:JWB.setup.undelete();">'+JWB.msg('status-del-undo')+'</a>'), true);
+		JWB.status(JWB.msg('status-del-default', '<a href="javascript:JWB.setup.undelete();">'+JWB.msg('status-del-undo').plain()+'</a>').escape(), true);
 	} else {
 		$('#loadSettings').find('[value="'+name+'"]').remove();
 		JWB.setup.apply();
-		JWB.status(JWB.msg('status-del-setup', name, '<a href="javascript:JWB.setup.undelete();">'+JWB.msg('status-del-undo')+'</a>'), true);
+		JWB.status(JWB.msg('status-del-setup', name, '<a href="javascript:JWB.setup.undelete();">'+JWB.msg('status-del-undo').plain()+'</a>').escape(), true);
 	}
 };
 JWB.setup.undelete = function() {
@@ -786,7 +799,7 @@ JWB.setup.undelete = function() {
 //Show status message
 JWB.status = function(action, done) {
 	$('#summary, .editbutton').prop('disabled', !done); //Disable box when not done (so busy loading). re-enable when done loading.
-	var status = JWB.msg('status-'+action);
+	var status = JWB.msg('status-'+action).plain();
 	if (status === false) return;
 	var spinImg = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
 	if (status) {
@@ -933,7 +946,7 @@ JWB.stop = function() {
         '.JWBtabc input, select').prop('disabled', false);
 	$('#resultWindow').html('');
 	$('#editBoxArea').val('');
-	$('#currentpage').html(JWB.msg('editbox-currentpage', ' ', ' '));
+	$('#currentpage').html(JWB.msg('editbox-currentpage', ' ').escape());
 	JWB.pl.stop();
 	JWB.status('done', true);
 	JWB.isStopped = true;
@@ -943,9 +956,9 @@ JWB.stop = function() {
 JWB.start = function() {
 	JWB.pageCount();
 	if (JWB.list.length === 0 || (JWB.list.length === 1 && !JWB.list[0])) {
-		alert(JWB.msg('no-pages-listed'));
+		alert(JWB.msg('no-pages-listed').plain());
 	} else if ($('#skipNoChange').prop('checked') && !$('.replaceText').val() && !$('.replaceWith').val() && !$('#enableRETF').prop('checked')) {
-		alert(JWB.msg('infinite-skip-notice'));
+		alert(JWB.msg('infinite-skip-notice').plain());
 	} else {
 		JWB.isStopped = false;
 		if ($('#preparse').prop('checked') && !$('#articleList').val().match('#PRE-PARSE-STOP')) {
@@ -972,7 +985,7 @@ JWB.updateButtons = function() {
 	} else {
 		$('#movePage').prop('disabled', false);
 	}
-	$('#watchNow').html( JWB.msg('watch-' + (JWB.page.watched ? 'remove' : 'add')) );
+	$('#watchNow').html( JWB.msg('watch-' + (JWB.page.watched ? 'remove' : 'add')).escape() );
 };
 
 /***** General functions *****/
@@ -1041,34 +1054,11 @@ JWB.fn.scrollSelection = function(el, index) { //function to fix scrolling to se
 	newEl.remove(); //clean up the mess I've made
 };
 
-// i18n function.
-JWB.msg = function(message) {
-	var args = arguments;
-	var lang = JWB.lang;
-	if (typeof message === 'object') {
-		lang = message[1];
-		message = message[0];
-	}
-	if (lang == 'qqx') return message;
-	if (!JWB.messages || !JWB.messages.en) return message;
-	var msg;
-	if (JWB.messages.hasOwnProperty(lang) && JWB.messages[lang].hasOwnProperty(message)) {
-		msg = JWB.messages[lang][message];
-	} else {
-		msg = (JWB.messages.en.hasOwnProperty(message)) ? JWB.messages.en[message] : '';
-	}
-	msg = msg.replace(/\$(\d+)/g, function(match, num) {
-		return args[+num] || match;
-	});
-	return msg;
-};
-
 /***** Init *****/
 JWB.init = function() {
-	console.log(JWB.messages.en, !!JWB.messages.en);
 	JWB.setup.load();
 	JWB.fn.clearAllTimeouts();
-	if (!JWB.messages[JWB.lang] && JWB.lang != 'qqx') JWB.lang = 'en';
+	if (!JWB.msg && JWB.lang != 'qqx') JWB.lang = 'en';
 
 	var icons = {
 		'bookmark': '<svg xmlns="http://www.w3.org/2000/svg" class="material-icons" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M0,0h24v24H0V0z" fill="none"></path><path d="M17,5v12.97l-4.21-1.81L12,15.82l-0.79,0.34L7,17.97V5H17 M17,3H7C5.9,3,5,3.9,5,5v16l7-3l7,3V5C19,3.9,18.1,3,17,3L17,3z"></path></svg>',
@@ -1093,55 +1083,63 @@ JWB.init = function() {
 
 	var findreplace = '<div class="replaces">'+
 		'<div class="wds-input">'+
-		'<label for="replace" id="label-replace">' + JWB.msg('label-replace') + '</label>'+
+		'<label for="replace" id="label-replace">' + JWB.msg('label-replace').escape() + '</label>'+
 			'<input type="text" class="wds-input__field replaceText" id="replace"/>'+
 		'</div>'+
 		'<div class="wds-input">'+
-			'<label for="replace-with" id="label-replace-with">' + JWB.msg('label-rwith') + '</label>'+
+			'<label for="replace-with" id="label-replace-with">' + JWB.msg('label-rwith').escape() + '</label>'+
 			'<input type="text" class="wds-input__field replaceWith" id="replace-with"/>'+
 		'</div>'+
 		'<div class="regexswitch">'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" class="useRegex" id="useRegex">'+
-				'<label for="useRegex">'+JWB.msg('label-useregex')+'</label>'+
+				'<label for="useRegex">'+JWB.msg('label-useregex').escape()+'</label>'+
 				'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
 			'</div>'+
-			'<label class="divisor" title="'+JWB.msg('tip-regex-flags')+'" style="display:none;">'+
+			'<label class="divisor" title="'+JWB.msg('tip-regex-flags').escape()+'" style="display:none;">'+
 				JWB.msg('label-regex-flags')+' <input type="text" class="regexFlags" value="g"/>'+ //default: global replacement
 			'</label>'+
 			'<br/>'+
 		'</div>'+
 		'<div class="wds-checkbox">'+
 			'<input type="checkbox" class="ignoreNowiki" id="ignoreNowiki">'+
-			'<label for="ignoreNowiki" title="'+JWB.msg('tip-ignore-comment')+'">'+JWB.msg('label-ignore-comment')+'</label>'+
+			'<label for="ignoreNowiki" title="'+JWB.msg('tip-ignore-comment').escape()+'">'+JWB.msg('label-ignore-comment').escape()+'</label>'+
 		'</div>'+
 		'<div class="wds-checkbox">'+
 			'<input type="checkbox" id="enableRETF">'+
-			'<label for="enableRETF">'+JWB.msg('label-enable-RETF', '<a href="https://en.wikipedia.org/wiki/Project:AutoWikiBrowser/Typos" id="regex-link" target="_blank">'+JWB.msg('label-RETF')+'</a>')+'</label>'+
+			'<label for="enableRETF">'+JWB.msg('label-enable-RETF', '<a href="https://en.wikipedia.org/wiki/Project:AutoWikiBrowser/Typos" id="regex-link" target="_blank">'+JWB.msg('label-RETF').escape()+'</a>').plain()+'</label>'+
 		'</div>'+
 	'</div>';
 
 	var NSList = '<select multiple name="namespace" id="namespacelist">';
 	for (var i in JWB.ns) {
 		if (parseInt(i) < 0) continue; //No Special: or Media: in the list
-		NSList += '<option value="'+JWB.ns[i].id+'" selected>'+(JWB.ns[i]['*'] || '('+JWB.msg('namespace-main')+')')+'</option>';
+		NSList += '<option value="'+JWB.ns[i].id+'" selected>'+(JWB.ns[i]['*'] || '('+JWB.msg('namespace-main').escape()+')')+'</option>';
 	}
 	NSList += '</select>';
 
 	/***** Interface *****/
 
 	document.title = 'AutoWikiBrowser Script'+(document.title.split('-')[1] ? ' -'+document.title.split('-')[1] : '');
-	$('body').html(
-		'<div class="AWB-container">'+
+	$('.fandom-sticky-header').addClass('is-visible');
+	$('.main-container, .wds-global-footer, .wds-community-header').remove();
+	
+	// Mobile friendly
+	$('head meta[name=viewport]').remove();
+	$('head').append('<meta name="viewport" content="width=device-width, initial-scale=1">');
+	
+	// Show the app
+	$('body').append(
+		'<div class="AWB-container" style="margin:46px 0 0 66px">'+
 			'<main id="inputsWindow">'+
 				'<div id="inputsBox">'+
 					'<section id="tabs">'+
 						'<nav class="tabholder">'+
-							'<button class="JWBtab" data-tab="1">'+JWB.msg('tab-setup')+'</button> '+
-							'<button class="JWBtab active" data-tab="2">'+JWB.msg('tab-editing')+'</button> '+
-							'<button class="JWBtab" data-tab="3">'+JWB.msg('tab-skip')+'</button> '+
-							(JWB.sysop?'<button class="JWBtab" data-tab="4">'+JWB.msg('tab-other')+'</button> ':'')+
-							' <button class="JWBtab log" data-tab="5">'+JWB.msg('tab-log')+'</button> '+
+							'<button class="JWBtab" data-tab="1">'+JWB.msg('tab-setup').escape()+'</button> '+
+							'<button class="JWBtab active" data-tab="2">'+JWB.msg('tab-editing').escape()+'</button> '+
+							'<button class="JWBtab" data-tab="3">'+JWB.msg('tab-skip').escape()+'</button> '+
+							(JWB.sysop?'<button class="JWBtab" data-tab="4">'+JWB.msg('tab-other').escape()+'</button> ':'')+
+							' <button class="JWBtab log" data-tab="5">'+JWB.msg('tab-log').escape()+'</button> '+
 						'</nav>'+
 						'<section class="JWBtabc" data-tab="1"></section>'+
 						'<section class="JWBtabc active" data-tab="2"></section>'+
@@ -1151,27 +1149,27 @@ JWB.init = function() {
 						'<footer id="status">Done</footer>'+
 					'</section>'+
 					'<aside id="articleBox">'+
-						'<b>'+JWB.msg('pagelist-caption')+'</b>'+
+						'<b>'+JWB.msg('pagelist-caption').escape()+'</b>'+
 						'<textarea id="articleList"></textarea>'+
 					'</aside>'+
 					'<aside id="editBox">'+
-						'<b>'+JWB.msg('editbox-caption')+' - <span id="currentpage">'+JWB.msg('editbox-currentpage', ' ', ' ')+'</span></b>'+
+						'<b>'+JWB.msg('editbox-caption').escape()+' - <span id="currentpage">'+JWB.msg('editbox-currentpage', ' ').escape()+'</span></b>'+
 						'<textarea id="editBoxArea"></textarea>'+
 					'</aside>'+
 				'</div>'+
 			'</main>'+
 			'<article id="resultWindow"></article>'+
 			'<footer id="stats">'+
-				'<div class="footer-stat">' + icons.page + JWB.msg('stat-pages') + '&nbsp;<span id="totPages">0</span></div>'+
-				'<div class="footer-stat">' + icons.done + JWB.msg('stat-save') + '&nbsp;<span id="pagesSaved">0</span></div>'+
-				'<div class="footer-stat">' + icons.block + JWB.msg('stat-null') + '&nbsp;<span id="nullEdits">0</span></div>'+
-				'<div class="footer-stat">' + icons.skip + JWB.msg('stat-skip') + '&nbsp;<span id="pagesSkipped">0</span></div>'+
-				'<div class="footer-stat">' + icons.info + JWB.msg('stat-other') + '&nbsp;<span id="otherActions">0</span></div>'+
+				'<div class="footer-stat">' + icons.page + JWB.msg('stat-pages').escape() + '&nbsp;<span id="totPages">0</span></div>'+
+				'<div class="footer-stat">' + icons.done + JWB.msg('stat-save').escape() + '&nbsp;<span id="pagesSaved">0</span></div>'+
+				'<div class="footer-stat">' + icons.block + JWB.msg('stat-null').escape() + '&nbsp;<span id="nullEdits">0</span></div>'+
+				'<div class="footer-stat">' + icons.skip + JWB.msg('stat-skip').escape() + '&nbsp;<span id="pagesSkipped">0</span></div>'+
+				'<div class="footer-stat">' + icons.info + JWB.msg('stat-other').escape() + '&nbsp;<span id="otherActions">0</span></div>'+
 			'</footer>'+
 			'<div id="overlay" style="display:none;"></div>'+
 			'<section class="JWBpopup" id="replacesPopup" style="display:none;">'+
 			// @todo: add sticky header, place this button and add a close button too.
-				'<button class="wds-button" id="moreReplaces">' + JWB.msg('button-more-fields') + '</button>'+
+				'<button class="wds-button" id="moreReplaces">' + JWB.msg('button-more-fields').escape() + '</button>'+
 				findreplace+
 			'</section>'+
 			'<section class="JWBpopup" id="pagelistPopup" style="display:none;">'+
@@ -1182,43 +1180,43 @@ JWB.init = function() {
 
 	$('.JWBtabc[data-tab="1"]').html(
 		'<fieldset id="pagelist">'+
-			'<legend>'+JWB.msg('label-pagelist')+'</legend>'+
-			'<button class="wds-button" id="removeDupes">'+JWB.msg('button-remove-dupes')+'</button> '+
-			'<button class="wds-button" id="sortArticles">'+JWB.msg('button-sort')+'</button>'+
-			'<button class="wds-button" id="preparse-reset" title="'+JWB.msg('tip-preparse-reset')+'">'+JWB.msg('preparse-reset')+'</button>'+
-			'<button class="wds-button" id="pagelistButton">'+JWB.msg('pagelist-generate')+'</button>'+
+			'<legend>'+JWB.msg('label-pagelist').escape()+'</legend>'+
+			'<button class="wds-button" id="removeDupes">'+JWB.msg('button-remove-dupes').escape()+'</button> '+
+			'<button class="wds-button" id="sortArticles">'+JWB.msg('button-sort').escape()+'</button>'+
+			'<button class="wds-button" id="preparse-reset" title="'+JWB.msg('tip-preparse-reset')+'">'+JWB.msg('preparse-reset').escape()+'</button>'+
+			'<button class="wds-button" id="pagelistButton">'+JWB.msg('pagelist-generate').escape()+'</button>'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="preparse">'+
-				'<label for="preparse" title="'+JWB.msg('tip-preparse')+'">'+JWB.msg('preparse')+'</label>'+
+				'<label for="preparse" title="'+JWB.msg('tip-preparse').escape()+'">'+JWB.msg('preparse').escape()+'</label>'+
 			'</div>'+
 		'</fieldset>'+
 		'<fieldset id="settings">'+
-			'<legend>'+JWB.msg('label-settings')+'</legend>'+
+			'<legend>'+JWB.msg('label-settings').escape()+'</legend>'+
 			'<label id="loadSettingsLabel">'+
-				JWB.msg('load-settings') + ' '+
+				JWB.msg('load-settings').escape() + ' '+
 				'<select id="loadSettings">'+
 					'<option value="default" selected>default</option>'+
-					'<option value="_blank">'+JWB.msg('blank-setup')+'</option>'+
+					'<option value="_blank">'+JWB.msg('blank-setup').escape()+'</option>'+
 				'</select>'+
 			'</label>'+
-			'<button class="wds-button" id="saveAs" title="' + JWB.msg('tip-store-setup') + '">'+
-				icons.bookmark + '<span class="wds-button__label" id="saveAs-label">' + JWB.msg('store-setup') + '</span>'+
+			'<button class="wds-button" id="saveAs" title="' + JWB.msg('tip-store-setup').escape() + '">'+
+				icons.bookmark + '<span class="wds-button__label" id="saveAs-label">' + JWB.msg('store-setup').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button" id="deleteSetup" title="' + JWB.msg('tip-delete-setup') + '">'+
-				icons.delete + '<span class="wds-button__label" id="deleteSetup-label">' + JWB.msg('delete-setup') + '</span>'+
+				icons.delete + '<span class="wds-button__label" id="deleteSetup-label">' + JWB.msg('delete-setup').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button" id="saveToWiki">'+
-				icons.save + '<span class="wds-button__label" id="saveToWiki-label">' + JWB.msg('save-setup') + '</span>'+
+				icons.save + '<span class="wds-button__label" id="saveToWiki-label">' + JWB.msg('save-setup').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button" id="download">'+
-				icons.download + '<span class="wds-button__label" id="download-label">' + JWB.msg('download-setup') + '</span>'+
+				icons.download + '<span class="wds-button__label" id="download-label">' + JWB.msg('download-setup').escape() + '</span>'+
 			'</button>'+
-			'<label class="wds-button" id="importLabel" title="' + JWB.msg('tip-import-setup') + '">'+
+			'<label class="wds-button" id="importLabel" title="' + JWB.msg('tip-import-setup').escape() + '">'+
 				'<input type="file" id="import" accept=".json">'+
-				icons.upload + '<span class="wds-button__label" id="import-label">' + JWB.msg('import-setup') + '</span>'+
+				icons.upload + '<span class="wds-button__label" id="import-label">' + JWB.msg('import-setup').escape() + '</span>'+
 			'</label>'+
-			'<button class="wds-button" id="updateSetups" title="' + JWB.msg('tip-update-setup', JWB.settingspage) + '">'+
-				icons.refresh + '<span class="wds-button__label" id="updateSetups-label">' + JWB.msg('update-setup') + '</span>'+
+			'<button class="wds-button" id="updateSetups" title="' + JWB.msg('tip-update-setup', JWB.settingspage).escape() + '">'+
+				icons.refresh + '<span class="wds-button__label" id="updateSetups-label">' + JWB.msg('update-setup').escape() + '</span>'+
 			'</button>'+
 			'<div id="downloads">'+
 				'<a download="JWB-settings.json" target="_blank" id="download-anchor"></a>'+
@@ -1228,133 +1226,133 @@ JWB.init = function() {
 	);
 	$('.JWBtabc[data-tab="2"]').html(
 		'<fieldset id="edit-settings-container">'+
-			'<legend>'+JWB.msg('label-edit-settings')+'</legend>'+
+			'<legend>'+JWB.msg('label-edit-settings').escape()+'</legend>'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="minorEdit" checked>'+
-				'<label for="minorEdit" id="minor-edit">'+JWB.msg('minor-edit')+'</label>'+
+				'<label for="minorEdit" id="minor-edit">'+JWB.msg('minor-edit').escape()+'</label>'+
 			'</div>'+
 			'<div id="via-JWB-container">'+
 				'<div class="wds-input">'+
-					'<label for="summary">' + JWB.msg('edit-summary') + '</label>'+
+					'<label for="summary">' + JWB.msg('edit-summary').escape() + '</label>'+
 					'<input class="wds-input__field fullwidth" type="text" id="summary" maxlength="250">'+
 				'</div>'+
 				'<div class="wds-checkbox">'+
 					'<input type="checkbox" id="viaJWB" checked">'+
-					'<label for="viaJWB" id="viaJWB-label">'+JWB.msg('tip-via-JWB')+'</label>'+
+					'<label for="viaJWB" id="viaJWB-label">'+JWB.msg('tip-via-JWB').escape()+'</label>'+
 				'</div>'+
 			'</div>'+
 			'<select id="watchPage">'+
-				'<option value="watch">'+JWB.msg('watch-watch')+'</option>'+
-				'<option value="unwatch">'+JWB.msg('watch-unwatch')+'</option>'+
-				'<option value="nochange" selected>'+JWB.msg('watch-nochange')+'</option>'+
-				'<option value="preferences">'+JWB.msg('watch-preferences')+'</option>'+
+				'<option value="watch">'+JWB.msg('watch-watch').escape()+'</option>'+
+				'<option value="unwatch">'+JWB.msg('watch-unwatch').escape()+'</option>'+
+				'<option value="nochange" selected>'+JWB.msg('watch-nochange').escape()+'</option>'+
+				'<option value="preferences">'+JWB.msg('watch-preferences').escape()+'</option>'+
 			'</select>'+
 			'<button class="wds-button" id="watchNow" disabled accesskey="w" title="['+JWB.tooltip+'w]">'+
-				icons.add + '<span class="wds-button__label">' + JWB.msg('watch-add') + '</span>'+
+				icons.add + '<span class="wds-button__label">' + JWB.msg('watch-add').escape() + '</span>'+
 			'</button>'+
 			(JWB.bot?
 				'<div class="wds-checkbox">'+
 					'<input type="checkbox" id="autosave">'+
-					'<label for="autosave">' + JWB.msg('auto-save')+
-						'<span title="' + JWB.msg('tip-save-interval') + '" class="divisor">'+
-							JWB.msg('save-interval', '<input type="number" min="0" value="0" id="throttle" disabled>')+
+					'<label for="autosave">' + JWB.msg('auto-save').escape()+
+						'<span title="' + JWB.msg('tip-save-interval').escape() + '" class="divisor">'+
+							JWB.msg('save-interval', '<input type="number" min="0" value="0" id="throttle" disabled>').escape()+
 						'</span>'+
 					'</label>'+
 				'</div>'+
 			'</fieldset>'
 		:'</fieldset>')+
 		'<fieldset id="find-replace-container">'+
-			'<legend>' + JWB.msg('label-find-replace') + '</legend>'+
+			'<legend>' + JWB.msg('label-find-replace').escape() + '</legend>'+
 			'<button class="wds-button" id="replacesButton">'+
-				icons.add + '<span class="wds-button__label">' + JWB.msg('button-open-popup') + '</span>'+
+				icons.add + '<span class="wds-button__label">' + JWB.msg('button-open-popup').escape() + '</span>'+
 			'</button>'+
 			findreplace+
-			'<button class="wds-button" id="refreshRETF" title="' + JWB.msg('tip-refresh-RETF') + '">'+
-				icons.refresh + '<span class="wds-button__label">' + JWB.msg('label-refresh-RETF') + '</span>'+
+			'<button class="wds-button" id="refreshRETF" title="' + JWB.msg('tip-refresh-RETF').escape() + '">'+
+				icons.refresh + '<span class="wds-button__label">' + JWB.msg('label-refresh-RETF').escape() + '</span>'+
 			'</button>'+
 		'</fieldset>'+
 		'<fieldset id="edit-actions-container">'+
-			'<legend>'+JWB.msg('label-edit-actions')+'</legend>'+
+			'<legend>'+JWB.msg('label-edit-actions').escape()+'</legend>'+
 			'<button class="wds-button" id="startbutton" accesskey="a" title="['+JWB.tooltip+'a]">'+
-				icons.play + '<span class="wds-button__label">' + JWB.msg('editbutton-start') + '</span>'+
+				icons.play + '<span class="wds-button__label">' + JWB.msg('editbutton-start').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button" id="stopbutton" disabled accesskey="q" title="['+JWB.tooltip+'q]">'+
-				icons.stop + '<span class="wds-button__label">' + JWB.msg('editbutton-stop') + '</span>'+
+				icons.stop + '<span class="wds-button__label">' + JWB.msg('editbutton-stop').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button editbutton" id="skipButton" disabled accesskey="n" title="['+JWB.tooltip+'n]">'+
-				icons.skip + '<span class="wds-button__label">' + JWB.msg('editbutton-skip') + '</span>'+
+				icons.skip + '<span class="wds-button__label">' + JWB.msg('editbutton-skip').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button editbutton" id="submitButton" disabled accesskey="s" title="['+JWB.tooltip+'s]">'+
-				icons.save + '<span class="wds-button__label">' + JWB.msg('editbutton-save') + '</span>'+
+				icons.save + '<span class="wds-button__label">' + JWB.msg('editbutton-save').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button editbutton" id="previewButton" disabled accesskey="p" title="['+JWB.tooltip+'p]">'+
-				icons.preview + '<span class="wds-button__label">' + JWB.msg('editbutton-preview') + '</span>'+
+				icons.preview + '<span class="wds-button__label">' + JWB.msg('editbutton-preview').escape() + '</span>'+
 			'</button>'+
 			'<button class="wds-button editbutton" id="diffButton" disabled accesskey="d" title="['+JWB.tooltip+'d]">'+
-				icons.diff + '<span class="wds-button__label">' + JWB.msg('editbutton-diff') + '</span>'+
+				icons.diff + '<span class="wds-button__label">' + JWB.msg('editbutton-diff').escape() + '</span>'+
 			'</button>'+
 		'</fieldset>'
 	);
 	$('.JWBtabc[data-tab="3"]').html(
 		'<fieldset id="redirects-container">'+
-			'<legend>' + JWB.msg('label-redirects') + '</legend>'+
+			'<legend>' + JWB.msg('label-redirects').escape() + '</legend>'+
 			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 				'<input type="radio" class="redirects" value="follow" name="redir" id="redir-follow"><span></span>'+
-				'<label for="redir-follow" title="' + JWB.msg('tip-redirects-follow') + '">' + JWB.msg('redirects-follow') + '</label>'+
+				'<label for="redir-follow" title="' + JWB.msg('tip-redirects-follow').escape() + '">' + JWB.msg('redirects-follow').escape() + '</label>'+
 			'</div>'+
 			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 				'<input type="radio" class="redirects" value="skip" name="redir" id="redir-skip"><span></span>'+
-                '<label for="redir-skip" title="' + JWB.msg('tip-redirects-skip') + '">' + JWB.msg('redirects-skip') + '</label>'+
+                '<label for="redir-skip" title="' + JWB.msg('tip-redirects-skip').escape() + '">' + JWB.msg('redirects-skip').escape() + '</label>'+
 			'</div>'+
 			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 				'<input type="radio" class="redirects" value="edit" name="redir" id="redir-edit" checked><span></span>'+
-				'<label for="redir-edit" title="' + JWB.msg('tip-redirects-edit') + '">' + JWB.msg('redirects-edit') + '</label>'+
+				'<label for="redir-edit" title="' + JWB.msg('tip-redirects-edit').escape() + '">' + JWB.msg('redirects-edit').escape() + '</label>'+
 			'</div>'+
 		'</fieldset>'+
 		'<fieldset id="skip-container">'+
-			'<legend>' + JWB.msg('label-skip-when') + '</legend>'+
+			'<legend>' + JWB.msg('label-skip-when').escape() + '</legend>'+
 			'<div class="radio-group">'+
 			'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 					'<input type="radio" id="exists-yes" name="exists" value="yes"><span></span>'+
-					'<label>' + JWB.msg('skip-exists-yes') + '</label>'+
+					'<label>' + JWB.msg('skip-exists-yes').escape() + '</label>'+
 				'</div>'+
 				'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 					'<input type="radio" id="exists-no" name="exists" value="no" checked><span></span>'+
-					'<label>' + JWB.msg('skip-exists-no') + '</label>'+
+					'<label>' + JWB.msg('skip-exists-no').escape() + '</label>'+
 				'</div>'+
 				'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 					'<input type="radio" id="exists-neither" name="exists" value="neither"><span></span>'+
-					'<label>' + JWB.msg('skip-exists-neither') + '</label>'+
+					'<label>' + JWB.msg('skip-exists-neither').escape() + '</label>'+
 				'</div>'+
 			'</div>'+
 			'<div class="checkbox-group">'+
 				'<div class="wds-checkbox">'+
 					'<input type="checkbox" id="skipNoChange">'+
-					'<label for="skipNoChange">' + JWB.msg('skip-no-change') + '</label>'+
+					'<label for="skipNoChange">' + JWB.msg('skip-no-change').escape() + '</label>'+
 				'</div>'+
 				(JWB.sysop?
 					'<div class="wds-checkbox">'+
 						'<input type="checkbox" id="skipAfterAction" checked>'+
-						'<label for="skipAfterAction">' + JWB.msg('skip-after-action') + '</label>'+
+						'<label for="skipAfterAction">' + JWB.msg('skip-after-action').escape() + '</label>'+
 					'</div>':'')+
 			'</div>'+
 			'<div class="textfield-group">'+
 				'<div class="wds-input">'+
-					'<label for="skipContains">' + JWB.msg('skip-contains') + '</label>'+
+					'<label for="skipContains">' + JWB.msg('skip-contains').escape() + '</label>'+
 					'<input class="wds-input__field fullwidth" type="text" id="skipContains">'+
 				'</div>'+
 				'<div class="wds-input">'+
-					'<label for="skipNotContains">' + JWB.msg('skip-not-contains') + '</label>'+
+					'<label for="skipNotContains">' + JWB.msg('skip-not-contains').escape() + '</label>'+
 					'<input class="wds-input__field fullwidth" type="text" id="skipNotContains">'+
 				'</div>'+
 			'</div>'+
 		'<div class="regexswitch">'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="containRegex">'+
-				'<label for="containRegex">' + JWB.msg('label-useregex') + '</label>'+
+				'<label for="containRegex">' + JWB.msg('label-useregex').escape() + '</label>'+
 				'<a class="re101" href="https://regex101.com/#javascript" target="_blank">?</a>'+
-				'<label class="divisor" title="'+JWB.msg('tip-regex-flags')+'" style="display:none;">'+
-					JWB.msg('label-regex-flags')+' <input type="text" id="containFlags"/>'+
+				'<label class="divisor" title="'+JWB.msg('tip-regex-flags').escape()+'" style="display:none;">'+
+					JWB.msg('label-regex-flags').escape()+' <input type="text" id="containFlags"/>'+
 				'</label>'+
 			'</div>'+
 		'</div>'+
@@ -1362,57 +1360,57 @@ JWB.init = function() {
 	);
 	if (JWB.sysop) $('.JWBtabc[data-tab="4"]').html(
 		'<fieldset id="move-options-container">'+
-			'<legend>' + JWB.msg('move-header') + '</legend>'+
+			'<legend>' + JWB.msg('move-header').escape()+ '</legend>'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="suppressRedir">'+
-				'<label for="suppressRedir">' + JWB.msg('move-redir-suppress') + '</label>'+
+				'<label for="suppressRedir">' + JWB.msg('move-redir-suppress').escape() + '</label>'+
 				'</div>'+
-			'<span class="also-move headline">' + JWB.msg('move-also') + '</span>'+
+			'<span class="also-move headline">' + JWB.msg('move-also').escape() + '</span>'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="movetalk">'+
-				'<label for="movetalk">' + JWB.msg('move-talk-page') + '</label> '+
+				'<label for="movetalk">' + JWB.msg('move-talk-page').escape() + '</label> '+
 			'</div>'+
 			'<div class="wds-checkbox">'+
 				'<input type="checkbox" id="movesubpage">'+
-				'<label for="movesubpage">' + JWB.msg('move-subpage') + '</label>'+
+				'<label for="movesubpage">' + JWB.msg('move-subpage').escape() + '</label>'+
 			'</div>'+
 			'<div class="wds-input">'+
-				'<label for="moveTo">' + JWB.msg('move-new-name') + '</label>'+
+				'<label for="moveTo">' + JWB.msg('move-new-name').escape() + '</label>'+
 				'<input type="text" class="wds-input__field" id="moveTo">'+
 			'</div>'+
 		'</fieldset>'+
 		'<fieldset id="protect-options-container">'+
-		'<legend>' + JWB.msg('protect-header') + '</legend>'+
-			'<span class="edit headline">' + JWB.msg('protect-edit') + '</span>'+
+		'<legend>' + JWB.msg('protect-header').escape() + '</legend>'+
+			'<span class="edit headline">' + JWB.msg('protect-edit').escape() + '</span>'+
 			'<select id="editProt">'+
-				'<option value="all" selected>' + JWB.msg('protect-none') + '</option>'+
-				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf') + '</option>'+
-				'<option value="sysop">' + JWB.msg('protect-sysop') + '</option>'+
+				'<option value="all" selected>' + JWB.msg('protect-none').escape() + '</option>'+
+				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf').escape() + '</option>'+
+				'<option value="sysop">' + JWB.msg('protect-sysop').escape() + '</option>'+
 			'</select> '+
-			'<span class="protect headline">' + JWB.msg('protect-move') + '</span>'+
+			'<span class="protect headline">' + JWB.msg('protect-move').escape() + '</span>'+
 			'<select id="moveProt">'+
-				'<option value="all" selected>' + JWB.msg('protect-none') + '</option>'+
-				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf') + '</option>'+
-				'<option value="sysop">' + JWB.msg('protect-sysop') + '</option>'+
+				'<option value="all" selected>' + JWB.msg('protect-none').escape() + '</option>'+
+				'<option value="autoconfirmed">' + JWB.msg('protect-autoconf').escape() + '</option>'+
+				'<option value="sysop">' + JWB.msg('protect-sysop').escape() + '</option>'+
 			'</select> '+
 			'<div class="wds-input">'+
-				'<label for="protectExpiry">' + JWB.msg('protect-expiry') + '</label>'+
+				'<label for="protectExpiry">' + JWB.msg('protect-expiry').escape() + '</label>'+
 				'<input type="text" class="wds-input__field" id="protectExpiry"/>'+
 			'</div>'+
 		'</fieldset>'+
 		'<fieldset id="page-actions-container">'+
-			'<legend>' + JWB.msg('page-actions-header') + '</legend>'+
+			'<legend>' + JWB.msg('page-actions-header').escape() + '</legend>'+
 			'<button class="wds-button" id="movePage" disabled accesskey="m" title="['+JWB.tooltip+'m]">'+
-				icons.move + JWB.msg('editbutton-move')+
+				icons.move + JWB.msg('editbutton-move').escape()+
 			'</button> '+
 			'<button class="wds-button" id="deletePage" disabled accesskey="x" title="['+JWB.tooltip+'x]">'+
-				icons.delete + JWB.msg('editbutton-delete')+
+				icons.delete + JWB.msg('editbutton-delete').escape()+
 			'</button> '+
 			'<button class="wds-button" id="protectPage" disabled accesskey="z" title="['+JWB.tooltip+'z]">'+
-				icons.protect + JWB.msg('editbutton-protect')+
+				icons.protect + JWB.msg('editbutton-protect').escape()+
 			'</button> '+
 			'<button class="wds-button" id="skipPage" disabled title="['+JWB.tooltip+'n]">'+
-				icons.skip + JWB.msg('editbutton-skip')+
+				icons.skip + JWB.msg('editbutton-skip').escape()+
 			'</button>'+
 		'</fieldset>'
 	);
@@ -1421,9 +1419,9 @@ JWB.init = function() {
 			'<table id="actionlog">'+
 				'<thead>'+
 					'<tr>'+
-						'<th>' + JWB.msg('log-time-header') + '</th>'+
-						'<th>' + JWB.msg('log-action-header') + '</th>'+
-						'<th>' + JWB.msg('log-page-header') + '</th>'+
+						'<th>' + JWB.msg('log-time-header').escape() + '</th>'+
+						'<th>' + JWB.msg('log-action-header').escape() + '</th>'+
+						'<th>' + JWB.msg('log-page-header').escape() + '</th>'+
 					'</tr>'+
 				'</thead>'+
 				'<tbody>'+
@@ -1433,32 +1431,32 @@ JWB.init = function() {
 	);
 	$('#pagelistPopup form').html(
 		'<div id="pageListPopup-container">'+
-			'<div id="ns-filter" title="' + JWB.msg('tip-ns-select') + '">' + JWB.msg('label-ns-select') + NSList + '</div>'+
+			'<div id="ns-filter" title="' + JWB.msg('tip-ns-select').escape() + '">' + JWB.msg('label-ns-select').escape() + NSList + '</div>'+
 			'<div id="pageList-fieldsets">'+
 				'<fieldset>'+
 					'<legend>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="categorymembers" name="categorymembers" value="cm">'+
-							'<label for="categorymembers">' + JWB.msg('legend-cm') + '</label>'+
+							'<label for="categorymembers">' + JWB.msg('legend-cm').escape() + '</label>'+
 						'</div>'+
 					'</legend>'+
 					'<div class="wds-input">'+
-						'<label for="cmtitle" title="' + JWB.msg('cnpnr-title') + '">' + JWB.msg('label-cm') + '</label>'+
+						'<label for="cmtitle" title="' + JWB.msg('cnpnr-title').escape() + '">' + JWB.msg('label-cm').escape() + '</label>'+
 						'<input type="text" name="cmtitle" class="wds-input__field" id="cmtitle">'+
 					'</div>'+
-					'<span class="group-label" id="include-checkboxes-label">' + JWB.msg('cm-include') + '</span>'+
+					'<span class="group-label" id="include-checkboxes-label">' + JWB.msg('cm-include').escape() + '</span>'+
 					'<div class="checkbox-group is-vertical">'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="cmtype-page" name="cmtype" value="page" checked>'+
-							'<label for="cmtype-page">' + JWB.msg('cm-include-pages') + '</label>'+
+							'<label for="cmtype-page">' + JWB.msg('cm-include-pages').escape() + '</label>'+
 						'</div>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="cmtype-subcg" name="cmtype" value="subcat" checked>'+
-							'<label for="cmtype-subcg">' + JWB.msg('cm-include-subcgs') + '</label>'+
+							'<label for="cmtype-subcg">' + JWB.msg('cm-include-subcgs').escape() + '</label>'+
 						'</div>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="cmtype-file" name="cmtype" value="file" checked>'+
-							'<label for="cmtype-file">' + JWB.msg('cm-include-files') + '</label>'+
+							'<label for="cmtype-file">' + JWB.msg('cm-include-files').escape() + '</label>'+
 						'</div>'+
 					'</div>'+
 				'</fieldset>'+
@@ -1466,57 +1464,57 @@ JWB.init = function() {
 					'<legend>'+
 					'<div class="wds-checkbox">'+
 							'<input type="checkbox" name="linksto" id="linksto">'+
-							'<label for="linksto">' + JWB.msg('legend-linksto') + '</label>'+
+							'<label for="linksto">' + JWB.msg('legend-linksto').escape() + '</label>'+
 						'</div>'+
 					'</legend>'+
 					'<div class="wds-input">'+
-						'<label for="linksto-title">' + JWB.msg('label-linksto') + '</label>'+
+						'<label for="linksto-title">' + JWB.msg('label-linksto').escape() + '</label>'+
 						'<input type="text" name="title" class="wds-input__field" id="linksto-title">'+
 					'</div>'+
-					'<span class="headline" id="include-headline">' + JWB.msg('links-include') + '</span>'+
+					'<span class="headline" id="include-headline">' + JWB.msg('links-include').escape() + '</span>'+
 					'<div class="checkbox-group is-vertical">'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="backlinks" name="backlinks" value="bl" checked>'+
-							'<label for="backlinks">' + JWB.msg('links-include-links') + '</label>'+
+							'<label for="backlinks">' + JWB.msg('links-include-links').escape() + '</label>'+
 						'</div>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="embeddedin" name="embeddedin" value="ei">'+
-							'<label for="embeddedin">' + JWB.msg('links-include-templ') + '</label>'+
+							'<label for="embeddedin">' + JWB.msg('links-include-templ').escape() + '</label>'+
 						'</div>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="imageusage" name="imageusage" value="iu">'+
-							'<label for="imageusage">' + JWB.msg('links-include-files') + '</label>'+
+							'<label for="imageusage">' + JWB.msg('links-include-files').escape() + '</label>'+
 						'</div>'+
 					'</div>'+
-					'<span class="headline" id="redirects-headline">' + JWB.msg('links-redir') + '</span>'+
+					'<span class="headline" id="redirects-headline">' + JWB.msg('links-redir').escape() + '</span>'+
 					'<div class="radio-group is-vertical">'+
 						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 							'<input type="radio" id="rfilter-redir" name="filterredir" value="redirects"><span></span>'+
-							'<label for="rfilter-redir">' + JWB.msg('links-redir-redirs') + '</label>'+
+							'<label for="rfilter-redir">' + JWB.msg('links-redir-redirs').escape() + '</label>'+
 						'</div>'+
 						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 							'<input type="radio" id="rfilter-nonredir" name="filterredir" value="nonredirects"><span></span>'+
-							'<label for="rfilter-nonredir">' + JWB.msg('links-redir-noredirs') + '</label>'+
+							'<label for="rfilter-nonredir">' + JWB.msg('links-redir-noredirs').escape() + '</label>'+
 						'</div>'+
 						'<div class="oo-ui-radioInputWidget oo-ui-widget-enabled">'+
 							'<input type="radio" id="rfilter-all" name="filterredir" value="all" checked><span></span>'+
-							'<label for="rfilter-all">' + JWB.msg('links-redir-all') + '</label>'+
+							'<label for="rfilter-all">' + JWB.msg('links-redir-all').escape() + '</label>'+
 						'</div>'+
 					'</div>'+
 					'<div class="wds-checkbox">'+
 						'<input type="checkbox" name="redirect" value="true" checked id="linksto-redir">'+
-						'<label for="linksto-redir" title="'+JWB.msg('tip-link-redir')+'">' + JWB.msg('label-link-redir') + '</label>'+
+						'<label for="linksto-redir" title="'+JWB.msg('tip-link-redir').escape()+'">' + JWB.msg('label-link-redir').escape() + '</label>'+
 					'</div>'+
 				'</fieldset>'+
 				'<fieldset>'+
 					'<legend>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="prefixsearch" name="prefixsearch" value="ps">'+
-							'<label for="prefixsearch">' + JWB.msg('legend-ps') + '</label>'+
+							'<label for="prefixsearch">' + JWB.msg('legend-ps').escape() + '</label>'+
 						'</div>'+
 					'</legend>'+
 					'<div class="wds-input">'+
-						'<label for="pssearch">' + JWB.msg('label-ps') + '</label>'+
+						'<label for="pssearch">' + JWB.msg('label-ps').escape() + '</label>'+
 						'<input type="text" name="pssearch" class="wds-input__field" id="pssearch">'+
 					'</div>'+
 				'</fieldset>'+
@@ -1524,24 +1522,24 @@ JWB.init = function() {
 					'<legend>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="watchlistraw" name="watchlistraw" value="wr">'+
-							'<label for="watchlistraw">' + JWB.msg('legend-wr') + '</label>'+
+							'<label for="watchlistraw">' + JWB.msg('legend-wr').escape() + '</label>'+
 						'</div>'+
 					'</legend>'+
-					'<span id="watchlist-desc">' + JWB.msg('label-wr') + '</span>'+
+					'<span id="watchlist-desc">' + JWB.msg('label-wr').escape() + '</span>'+
 				'</fieldset>'+
 				'<fieldset>'+
 					'<legend>'+
 						'<div class="wds-checkbox">'+
 							'<input type="checkbox" id="proplinks" name="links" value="pl">'+
-							'<label for="proplinks">' + JWB.msg('legend-pl') + '</label>'+
+							'<label for="proplinks">' + JWB.msg('legend-pl').escape() + '</label>'+
 						'</div>'+
 					'</legend>'+
 					'<div class="wds-input">'+
-						'<label for="pltitles" title="' + JWB.msg('tip-pl') + '">' + JWB.msg('label-pl')+'</label>'+
+						'<label for="pltitles" title="' + JWB.msg('tip-pl').escape() + '">' + JWB.msg('label-pl').escape()+'</label>'+
 						'<input type="text" name="titles" class="wds-input__field" id="pltitles">'+
 					'</div>'+
 				'</fieldset>'+
-				'<button type="submit" class="wds-button">' + JWB.msg('pagelist-generate') + '</button>'+
+				'<button type="submit" class="wds-button">' + JWB.msg('pagelist-generate').escape() + '</button>'+
 			'</div>'+
 		'</div>'
 	);
@@ -1669,7 +1667,7 @@ JWB.init = function() {
 	if (JWB.sysop) {
 		$('#movePage').click(function() {
 			if ($('#moveTo').val().length === 0) {
-				return alert(JWB.msg('alert-no-move'));
+				return alert(JWB.msg('alert-no-move').escape());
 			}
 			JWB.api.move();
 		});

@@ -85,7 +85,7 @@ function ttMouseOver() {
   if (tooltipsOn) {
     $("#content").append('<div id="tfb" class="htt"></div>');
     $tfb = $("#tfb");
-    $("#content span.ajaxttlink").each(bindTT);
+    $("#content .ajaxttlink").each(bindTT);
   }
 }
 

@@ -8,6 +8,7 @@
 		'wgArticlePath',
 		'wgSiteName'
 	]);
+	var preloads = 2;
 	var oclick;
 	var root = document.getElementById('mw-content-text');
 	var sections = [];
@@ -183,7 +184,7 @@
 		if (a.settings.version) {
 			a.settings.version = "version=" + Date.now();
 		} else {
-			a.settings.url = "require( [[Module:Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName + ".png") + "', 'version=" + Date.now() + "', '" + loadedSpriteName.toLowerCase().substring(0, loadedSpriteName.length - 6) + "-sprite' ),";
+			a.settings.url = "require( [[Module:Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName + ".png") + "', 'format=original&version=" + Date.now() + "', '" + loadedSpriteName.toLowerCase().substring(0, loadedSpriteName.length - 6) + "-sprite' ),";
 		}
 		a.settings.sheetsize = options.spritesPerRow * (imgWidth + options.spacing) - options.spacing;
 		if (options.spacing > 0)
@@ -1663,31 +1664,33 @@
 				loadNew(spriteSizeW, spriteSizeH, spacing);
 			}
 		}
-		myData.run = function() {
-			mw.hook('dev.i18n').add(function (i18n) {
-				i18n.loadMessages('SpriteEditor').done(function (i18no) {
-					myData.msg = i18no.msg;
-					msg = myData.msg;
-					document.getElementById('firstHeading').textContent = msg("title").plain();
-					updateTitle(false);
-					createToolbar();
-					var openDialog = window.SpriteEditorModules.open;
-					openDialog.setSharedData({
-						loadSprite: loadSprite,
-						openWindow: openWindow,
-						options: options
-					});
-					var toOpen = new URL(document.location.href).searchParams.get("sprite");
-					if (toOpen) {
-						loadSprite(toOpen, false);
-					} else {
-						oclick(true);
-					}
+		mwData.preload = function() {
+			if (--preloads > 0) return;
+			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
+				myData.msg = i18no.msg;
+				msg = myData.msg;
+				document.getElementById('firstHeading').textContent = msg("title").plain();
+				updateTitle(false);
+				createToolbar();
+				var openDialog = window.SpriteEditorModules.open;
+				openDialog.setSharedData({
+					loadSprite: loadSprite,
+					openWindow: openWindow,
+					options: options
 				});
+				var toOpen = new URL(document.location.href).searchParams.get("sprite");
+				if (toOpen) {
+					loadSprite(toOpen, false);
+				} else {
+					oclick(true);
+				}
 			});
-			if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-				mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
-			}
+		},
+		myData.run = function() {
+			mw.hook('dev.i18n').add(myData.preload);
+			var md5JS = mw.loader.load('https://commons.wikimedia.org/w/index.php?title=MediaWiki:MD5.js&action=raw&ctype=text/javascript');
+			var i18nJS = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
+			Promise.allSettled([md5JS, i18nJS]).then(myData.preload);
 		};
 		$( document ).on( 'click.spriteEdit', function( e ) {
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];

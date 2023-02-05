@@ -193,7 +193,7 @@
 			container.href = videoData.url;
 			const icon = focus.querySelector('figure figcaption a.info-icon');
 			if (icon)
-				icon.href = '/wiki/' + videoData.filename;
+				icon.href = '/ru/wiki/' + videoData.filename;
 			
 			const image = container.getElementsByTagName('img')[0];
 			

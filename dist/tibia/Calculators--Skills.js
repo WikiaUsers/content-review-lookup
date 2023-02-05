@@ -61,7 +61,7 @@ $(function () {
       A = 100;
       y = shield_vocs[voc];
     } else if (type == 'dist') {
-      A = 30;
+      A = 25;
       y = dist_vocs[voc];
     } else if (type == 'fish') {
       A = 20;

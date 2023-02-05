@@ -1,5 +1,12 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/*** CSS enhancements ***/
+/***Fandom Developers Wiki's UserTag configuration ***/
+window.UserTagsJS = {
+	modules: {},
+	tags: {},
+	oasisPlaceBefore: ''
+};
+
+/*** JS enhancements ***/
 importArticles({
     type: 'script',
     articles: [
