@@ -3,7 +3,7 @@
  * @author MonkeysHK <https://github.com/MonkeysHK>
  * @description A web time engine for the time system in Hypixel SkyBlock.
  * @license GPL-3.0-or-later GNU General Public License v3.0 or later <https://www.gnu.org/licenses/gpl-3.0-standalone.html>
- * @version 2.0
+ * @version 2.1
  */
 /* jshint
     esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
@@ -14,12 +14,13 @@
 /* global mediaWiki */
 (function (window, $, mw) {
     "use strict";
-    window.hsbwiki = window.hsbwiki || {};
-    window.hsbwiki.sbte = window.hsbwiki.sbte || {};
-    if (window.hsbwiki.sbte.loaded) {
+    var wikiname = "hsbwiki";
+    window[wikiname] = window[wikiname] || {};
+    window[wikiname].sbte = window[wikiname].sbte || {};
+    if (window[wikiname].sbte.loaded) {
         return;
     }
-    window.hsbwiki.sbte.loaded = true;
+    window[wikiname].sbte.loaded = true;
 
     /**
      * **Helpers**
@@ -499,9 +500,36 @@
     function SkyRoutine(str) {
         this.tasksId = -1;
         this.tasks = []; // array of { event: <any STATES>, cb: function }
-        this.timeoutStack = [];
+        this.taskStack = [];
         this.definition = str;
     }
+    /* Maintain a Countdown Stack Privately */
+    /* All derived classes share this stack */
+    var countdownStackId = -1;
+    var countdownStack = [];
+    var countdownStackAdd = function (callback) {
+        countdownStackId++;
+        countdownStack[countdownStackId] = callback;
+        return countdownStackId;
+    };
+    var countdownStackRemove = function (id) {
+        if (id in countdownStack) {
+            delete countdownStack[id];
+            return true;
+        }
+        return false;
+    };
+    var alignTout = setTimeout(function () {
+        clearTimeout(alignTout);
+        // now start actual countdown
+        setInterval(function () {
+            for (var i in countdownStack)
+                countdownStack[i]();
+        }, 1000);
+        // call it the first time
+        for (var i in countdownStack)
+            countdownStack[i]();
+    }, (new Date()).valueOf() % 1000);
     /*** MEMBER FUNCTIONS ***/
     SkyRoutine.prototype.trigger = function (str) {
         this.definition = str || this.definition;
@@ -590,12 +618,12 @@
             this.onEventEnd(true);
     };
     SkyRoutine.prototype.pause = function () {
-        for (var i in this.timeoutStack)
-            clearTimeout(this.timeoutStack[i]);
-        this.timeoutStack = [];
+        for (var i in this.taskStack)
+            clearTimeout(this.taskStack[i]);
+        this.taskStack = [];
     };
     SkyRoutine.prototype.removeTimeout = function (id) {
-        this.timeoutStack.splice(this.timeoutStack.indexOf(id), 1);
+        this.taskStack.splice(this.taskStack.indexOf(id), 1);
     };
     SkyRoutine.prototype.addEvent = function (eventState, callback) {
         if (Object.values(h.STATES).includes(eventState)) {
@@ -675,7 +703,7 @@
                 callback();
                 _this.removeTimeout(tout);
             }, till);
-            _this.timeoutStack.push(tout);
+            _this.taskStack.push(tout);
         }
     };
     SkyRoutine.prototype.callEventSet = function (eventset) {
@@ -689,21 +717,16 @@
         var countTo = this.nextEventTime / h.MAGIC_RATIO,
             countToDate = new this.SkyDateConstructor(new SkyDuration(h.LOCALES.sbst, this.nextEventTime)),
             countFromDate = new this.SkyDateConstructor(new SkyDuration(h.LOCALES.sbst, this.currentEventTime));
-        var alignTout = setTimeout(function () {
-            clearTimeout(alignTout);
-            // now start actual countdown
-            var countdownIntr = setInterval(function () {
-                var now = Date.now() / 1000 - _this.EPOCH.UNIX_TS_UTC;
-                var utcSecondsRemain = Math.floor(countTo - now);
-                if (utcSecondsRemain <= 0)
-                    clearTimeout(countdownIntr);
-                callback(countdownIntr, utcSecondsRemain, countToDate, countFromDate, _this.currentState);
-            }, 1000);
-            // call it the first time
+        var stopCountdown = function (id) {
+            countdownStackRemove(id);
+        };
+        var countdownId = countdownStackAdd(function () {
             var now = Date.now() / 1000 - _this.EPOCH.UNIX_TS_UTC;
             var utcSecondsRemain = Math.floor(countTo - now);
-            callback(countdownIntr, utcSecondsRemain, countToDate, countFromDate, _this.currentState);
-        }, (new Date()).valueOf() % 1000);
+            if (utcSecondsRemain <= 0)
+                countdownStackRemove(countdownId);
+            callback(stopCountdown.bind(null, countdownId), utcSecondsRemain, countToDate, countFromDate, _this.currentState);
+        });
     };
     /* Items pushed to prototype for inheritance purposes */
     SkyRoutine.prototype.SkyDateConstructor = SkyDate;
@@ -757,8 +780,8 @@
     SkyRoutineAlpha.prototype.EPOCH = h.ALPHA_SKYBLOCK_EPOCH;
 
 
-    // Attach to hsbwiki global
-    window.hsbwiki.sbte = $.extend(window.hsbwiki.sbte, {
+    // Attach to wikiname global
+    window[wikiname].sbte = $.extend(window[wikiname].sbte, {
         SkyDuration: SkyDuration,
         SkyDate: SkyDate,
         SkyRoutine: SkyRoutine,
@@ -768,7 +791,7 @@
     });
 
     // Attach mw.hook: fire event on load
-    mw.hook("hsbwiki.sbte").fire(window.hsbwiki.sbte);
+    mw.hook(wikiname + ".sbte").fire(window[wikiname].sbte);
 
 
 })(window, jQuery, mediaWiki);

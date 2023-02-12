@@ -91,6 +91,13 @@ $(function () {
 					defaultWidth = 640;
 					defaultHeight = 480;
 					break;
+					
+				// p3d.in
+				case 'p3din':
+					iframe.src = 'https://p3d.in/e/' + element.data('id');
+					defaultWidth = 640;
+					defaultHeight = 480;
+					break;
 
 				// Steam
 				case 'steam':

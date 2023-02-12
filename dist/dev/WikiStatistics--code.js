@@ -30,7 +30,7 @@
             proto = proto ? proto[0] : '//';
 
             clearUrl = url.replace(/^https?:\/+|^\/+/i, '');
-            wikiBase = clearUrl.replace(/\.fandom\.com.*/i, '');
+            wikiBase = clearUrl.replace(/\.fandom\.com.*/i, '').split('/')[0];
             wikiLang = clearUrl.split('/')[1] || false;
 
             wiki = encodeURIComponent(wikiBase) + '.fandom.com';

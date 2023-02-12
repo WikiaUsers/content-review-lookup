@@ -85,7 +85,8 @@ window.hsbwiki = window.hsbwiki || {}
                         'param',
                         'result',
                         'suggestns',
-                        'template'
+                        'template',
+                        'argslist'
                     ],
                     // used for debugging incorrect param types
                     validParamTypes = [
@@ -361,7 +362,7 @@ window.hsbwiki = window.hsbwiki || {}
              */
             submitForm: function () {
                 var self = this,
-                    code = '{{' + self.template,
+                    code = '{{' + self.template + (self.argslist ? '|' + self.argslist : ''),
                     formError = false;
 
                 // setup template for submission

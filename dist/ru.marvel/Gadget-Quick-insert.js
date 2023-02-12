@@ -765,6 +765,26 @@ group: 'templates',
       }
     }
   } );
+
+/* Категория */
+$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
+section: 'advanced',
+group: 'templates',
+  tools: {
+  "cat": {
+    label: 'Категория для категорий',
+    type: 'button',
+    icon: '{cat}',
+      action: {
+        type: 'encapsulate',
+          options: {
+          pre: "{{Category}}",
+          post: ""
+          }
+        }
+      }
+    }
+  } );
 /* Конец секции шаблонов */
 };
 /* Конец функуции var customizeToolbar */

@@ -75,7 +75,10 @@ window.setCookie = function(c_name, value, expiredays) {
 							'| origine = \n' +
 							'| année = \n' +
 							'| jeu = \n' +
-							'| quoi = \n' +
+							'| cible2 = 
+| cible3 = 
+| cible4 = 
+| quoi = \n' +
 							'| type = \n' + 
 							'}}\n'
 					);
@@ -122,7 +125,10 @@ window.setCookie = function(c_name, value, expiredays) {
 									);
 								});
 						} else { // Old style form just needs Information template in the summary box
-							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| année = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
+							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| année = \n| cible2 = 
+| cible3 = 
+| cible4 = 
+| quoi = \n| type = \n}}\n'); // Add link to guided form
 							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
@@ -152,7 +158,10 @@ window.setCookie = function(c_name, value, expiredays) {
 				strBuilder += '| origine = ' + $.trim($('#origineBox').val()) + '\n';
 				strBuilder += '| jeu = ' + $.trim($('#jeuBox').val()) + '\n';
 				strBuilder += '| année = ' + $.trim($('#anneeBox').val()) + '\n';
-				strBuilder += '| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
+				strBuilder += '| cible2 = 
+| cible3 = 
+| cible4 = 
+| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
 				strBuilder += '| type = ' + $.trim($('#typeBox').val()) + '\n';
 				strBuilder += '}}\n';
 				$description.val(strBuilder);

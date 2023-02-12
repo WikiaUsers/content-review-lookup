@@ -1,4 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+window.DiscussionTemplates = {
+    templates: {
+        'item-1': {
+            name: 'Template:Staff',
+            title: 'Staff'
+        }
+    },
+    allowedGroups: ['bureaucrat','sysop', 'content-moderator', 'threadmoderator', 'rollback']
+};
 window.UserTagsJS = {
 	modules: {},
 	tags: {

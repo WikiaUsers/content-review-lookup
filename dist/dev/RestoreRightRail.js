@@ -181,8 +181,14 @@ $(function () {
 	// Helper function to refresh CodeMirror after adding rail.
 	// See: https://codemirror.net/5/doc/manual.html#refresh
 	function cmRefresh() {
-		var cm = $('.CodeMirror');
-		cm.length && cm[0].CodeMirror.refresh();
+		if (window.CodeMirror) {
+			var cm = $('.CodeMirror');
+			if (cm.length && cm[0].CodeMirror)
+				cm[0].CodeMirror.refresh();
+		} else if (window.ace) {
+			// handle resizing in Ace editor
+			ace.edit($('.ace_editor')[0]).resize();
+		}
 	}
 
 	loadModules([

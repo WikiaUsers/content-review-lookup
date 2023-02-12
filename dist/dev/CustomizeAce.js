@@ -12,11 +12,15 @@
         return;
     }
 
+    /**
+     * Returns config based on input variable.
+     * Defaults to a pre-configured value if any problems arise.
+     */
     function aceSettings() {
         var inputSettings = window.aceCustomSettings;
         const defaultSettings = { wrap: true };
 
-        // No input
+        // No input - return defaults
         if ( !inputSettings ) {
             return defaultSettings;
         } else if ( typeof inputSettings !== 'object' ) {
@@ -25,9 +29,19 @@
             return defaultSettings;
         }
 
-        // Normalize theme syntax
-        if ( inputSettings.theme && !/\.\/theme\/.*/.test( inputSettings.theme ) ) {
-            inputSettings.theme = './theme/' + inputSettings.theme;
+        // Ensure that theme key is a string, delete it otherwise
+        if ( inputSettings.theme && typeof inputSettings.theme !== 'string' ) {
+            console.error( 'aceCustomSettings.theme has to be a string!' );
+            delete inputSettings.theme;
+        }
+
+        // Normalize theme syntax and sanitize theme input
+        if ( inputSettings.theme ) {
+            inputSettings.theme = inputSettings.theme.replace( /[^a-z0-9\-_\.\/]/gi, '' );
+
+            if ( !/\.\/theme\/.*/.test( inputSettings.theme ) ) {
+                inputSettings.theme = './theme/' + inputSettings.theme;
+            }
         }
 
         return inputSettings;
@@ -35,14 +49,17 @@
 
     /**
      * Extended `codeEditor.configure` hook
+     *
      * Use this because Fandom loading default themes conflicts with this script
+     * Adds 150ms interval waiting for Fandom's changes to be applied
      *
      * @param {Function} callback
      */
     function aceHook( callback ) {
         mw.hook( 'codeEditor.configure' ).add( function() {
+            const fandomAceClasses = '.ace_editor.ace-tm,.ace_editor.ace-twilight,.ace_editor.ace-dawn';
             const fandomAddTheme = setInterval( function() {
-                if ( !!document.querySelector( '.ace_editor.ace-tm,.ace_editor.ace-twilight,.ace_editor.ace-dawn' ) ) {
+                if ( !!document.querySelector( fandomAceClasses ) ) {
                     clearInterval( fandomAddTheme );
                     callback();
                 }

@@ -1,1 +1,0 @@
-var a=document.createElement("embed");a.id="wavingflag";a.setAttribute("wmode","transparent");a.width=100;a.height=100;a.src="https://dl.dropboxusercontent.com/s/dv4qlbccoqvmmmh/waving_flag.swf";a.style.left=document.getElementById("WikiaPage").clientWidth-10+"px";document.getElementById("WikiaPage").appendChild(a);

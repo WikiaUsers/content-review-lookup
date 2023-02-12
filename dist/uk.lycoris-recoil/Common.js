@@ -13,14 +13,14 @@
             console.log(i18n);
             this.$control = $('<li>', {
                 'class': 'control',
-                'data-tooltip': i18n.msg('tooltip').plain()
+                'data-tooltip': ('Керуйте імпортом скриптів із Dev Wiki.')
             }).append(
                 $('<a>', {
                     'class': 'set',
                     href: mw.util.getUrl('MediaWiki:ImportJS', { action: 'edit' })
                 }).append(
                     $('<span>', {
-                        'class': 'representation AdminDashboardJSButton'
+                        'class': 'representation'
                     }).append(
                         $('<span>', {
                             text: 'IJS'

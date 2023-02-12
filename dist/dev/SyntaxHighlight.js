@@ -2,8 +2,8 @@
  * Forked version of "Syntax highlighter" gadget from MediaWiki.org
  * See copyright statement below for more info
  * 
- * Based on revision 5135197 of mediawikiwiki:User:Remember_the_dot/Syntax_highlighter.js
- * https://www.mediawiki.org/wiki/User:Remember_the_dot/Syntax_highlighter.js?oldid=5135197
+ * Based on revision 5678566 of mediawikiwiki:User:Remember_the_dot/Syntax_highlighter.js
+ * https://www.mediawiki.org/wiki/User:Remember_the_dot/Syntax_highlighter.js?oldid=5678566
  *
  * Please note that all changes are marked with "@change" comment
  * Necessary changes made by Rail
@@ -177,7 +177,7 @@ mw.loader.using("jquery.client", function() {
                 }
 
                 const endIndexOfLastColor = breakerRegex.lastIndex - match[0].length;
-                if (i < endIndexOfLastColor) //avoid calling writeText with text == "" to improve performance
+                if (i < endIndexOfLastColor) //avoid calling writeText with text === "" to improve performance
                 {
                     writeText(text.substring(i, endIndexOfLastColor), color);
                 }
@@ -232,16 +232,6 @@ mw.loader.using("jquery.client", function() {
                         }
                         else
                         {
-                            /** @change
-                             *
-                             * Implement https://github.com/Wikia/app/commit/abd582b044d69b724aa5df6ca5abc8bcf6887037#diff-67c2130eb4e6e8f627ce08cd7de0d73b7c24e71b2b85fb96025fd6880056d19f
-                             * to fix unclosed <br> tags behavior
-                             *
-                             * - `tagName` moved from nested `else` block
-                             * - variable is used in `if` statement below
-                             */
-                            const tagName = match[0].substring(1);
-
                             //some other kind of tag, search for its end
                             //the search is made easier because XML attributes may not contain the character ">"
                             const tagEnd = text.indexOf(">", i) + 1;
@@ -253,49 +243,52 @@ mw.loader.using("jquery.client", function() {
                                 break;
                             }
 
-                            if (text.charAt(tagEnd - 2) === "/" || tagName === "br")
+                            if (text.charAt(tagEnd - 2) !== "/")
                             {
-                                //empty tag
-                                writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
-                                i = tagEnd;
-                            }
-                            else
-                            {
-                                if (syntaxHighlighterConfig.sourceTags.indexOf(tagName) !== -1)
+                                const tagName = match[0].substring(1);
+                                if (syntaxHighlighterConfig.voidTags.indexOf(tagName) === -1)
                                 {
-                                    //tag that contains text in a different programming language
-                                    const stopAfter = "</" + tagName + ">";
-                                    var endIndex = text.indexOf(stopAfter, i);
-                                    if (endIndex === -1)
+                                    if (syntaxHighlighterConfig.sourceTags.indexOf(tagName) !== -1)
                                     {
-                                        endIndex = text.length;
+                                        //tag that contains text in a different programming language
+                                        var stopAfter = "</" + tagName + ">";
+                                        var endIndex = text.indexOf(stopAfter, i);
+                                        if (endIndex === -1)
+                                        {
+                                            endIndex = text.length;
+                                        }
+                                        else
+                                        {
+                                            endIndex += stopAfter.length;
+                                        }
+                                        writeText(text.substring(i - match[0].length, endIndex), syntaxHighlighterConfig.tagColor || color);
+                                        i = endIndex;
+                                    }
+                                    else if (syntaxHighlighterConfig.nowikiTags.indexOf(tagName) != -1)
+                                    {
+                                        //tag that can contain only HTML entities
+                                        writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
+                                        i = tagEnd;
+                                        highlightBlock(syntaxHighlighterConfig.tagColor || color, nowikiTagBreakerRegexCache[tagName]);
                                     }
                                     else
                                     {
-                                        endIndex += stopAfter.length;
+                                        //ordinary tag
+                                        writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
+                                        i = tagEnd;
+                                        if (!tagBreakerRegexCache[tagName])
+                                        {
+                                            tagBreakerRegexCache[tagName] = breakerRegexWithPrefix("</" + tagName + ">");
+                                        }
+                                        highlightBlock(syntaxHighlighterConfig.tagColor || color, tagBreakerRegexCache[tagName]);
                                     }
-                                    writeText(text.substring(i - match[0].length, endIndex), syntaxHighlighterConfig.tagColor || color);
-                                    i = endIndex;
-                                }
-                                else if (syntaxHighlighterConfig.nowikiTags.indexOf(tagName) !== -1)
-                                {
-                                    //tag that can contain only HTML entities
-                                    writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
-                                    i = tagEnd;
-                                    highlightBlock(syntaxHighlighterConfig.tagColor || color, nowikiTagBreakerRegexCache[tagName]);
-                                }
-                                else
-                                {
-                                    //ordinary tag
-                                    writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
-                                    i = tagEnd;
-                                    if (!tagBreakerRegexCache[tagName])
-                                    {
-                                        tagBreakerRegexCache[tagName] = breakerRegexWithPrefix("</" + tagName + ">");
-                                    }
-                                    highlightBlock(syntaxHighlighterConfig.tagColor || color, tagBreakerRegexCache[tagName]);
+                                    break;
                                 }
                             }
+
+                            //empty tag
+                            writeText(text.substring(i - match[0].length, tagEnd), syntaxHighlighterConfig.tagColor || color);
+                            i = tagEnd;
                         }
                         break;
                     case "=":
@@ -412,7 +405,6 @@ mw.loader.using("jquery.client", function() {
             }
         }
 
-
         //start!
         const startTime = Date.now();
         highlightBlock("", defaultBreakerRegex);
@@ -425,7 +417,7 @@ mw.loader.using("jquery.client", function() {
 
         //if highlighting took too long, disable it.
         const endTime = Date.now();
-        /*if (typeof(bestTime) == "undefined")
+        /*if (typeof(bestTime) === "undefined")
         {
             window.bestTime = endTime - startTime;
             document.title = bestTime;
@@ -552,7 +544,11 @@ mw.loader.using("jquery.client", function() {
 
         wpTextbox1 = document.getElementById("wpTextbox1");
         if (!wpTextbox1) return; //another script (such as the Visual Editor) has removed the edit box
-        
+
+        //ensure that the highlighter has not already been loaded
+        //this prevents a browser freeze if a user had it installed in their personal JavaScript and then it was added to the site-wide JavaScript
+        if (document.getElementById("wpTextbox0")) return;
+
         function configureColor(parameterName, hardcodedFallback, defaultOk)
         {
             if (typeof(syntaxHighlighterConfig[parameterName]) === "undefined")
@@ -624,6 +620,8 @@ mw.loader.using("jquery.client", function() {
         syntaxHighlighterConfig.nowikiTags = syntaxHighlighterConfig.nowikiTags || syntaxHighlighterSiteConfig.nowikiTags || ["nowiki", "pre"];
         syntaxHighlighterConfig.sourceTags = syntaxHighlighterConfig.sourceTags || syntaxHighlighterSiteConfig.sourceTags || ["math", "syntaxhighlight", "source", "timeline", "hiero", "infobox", "templatedata"]; // @change – added infobox and templatedata tags
         syntaxHighlighterConfig.timeout = syntaxHighlighterConfig.timeout || syntaxHighlighterSiteConfig.timeout || 25;
+        //voidTags is for people who really don't want to use a slash to close certain tags, although other empty tags require the slash
+        syntaxHighlighterConfig.voidTags = syntaxHighlighterConfig.voidTags || syntaxHighlighterSiteConfig.voidTags || ["br"]; // @change - inclue "br" as void tag by default
 
         syntaxHighlighterConfig.nowikiTags.forEach(function(tagName) {
             nowikiTagBreakerRegexCache[tagName] = nowikiTagBreakerRegex(tagName);

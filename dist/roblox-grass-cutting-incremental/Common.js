@@ -1,11 +1,15 @@
 // -- [ IMPORTS ] --
 // [ Astral Calculator ]
-// Script for calculating Astral requirements, both SP and time, including support for Astral Prestige SP requirement scaling, and factoring in manual and autocut statistics as well as other factors. Uses Suffix Converter.
+// Script for calculating Astral requirements, both SP and time, including support for Astral Prestige SP requirement scaling, as well as other factors.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:AstralCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Currency Gain Calculator ]
 // Script for calculating base gains of various currencies.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:CurrencyGainCalculator.js&action=raw&ctype=text/javascript');
+
+// [ Charger Calculator ]
+// Script for converting Charge to the Charger's bonuses, including support for Grasshops.
+mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:ChargerCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Eclipse Calculator ]
 // Script for calculating the Solar Ray requirement to go from one Eclipse to another.

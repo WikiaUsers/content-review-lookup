@@ -1,5 +1,5 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -55,6 +55,5 @@ setInterval(function () {
     $('.wds-avatar a[href$="JustAccount"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="Fleshka5856"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="Creepy%20Owl "]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
-    $('.wds-avatar a[href$="Lefsy"]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
     $('.wds-avatar a[href$="Lich%20night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');
 }, 500 );

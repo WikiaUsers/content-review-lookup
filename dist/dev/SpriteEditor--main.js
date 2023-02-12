@@ -1639,8 +1639,8 @@
 					'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 					'question': '=p',
 					'clear': true,
-					'content': 'local a = require("Module:' + loadedSpriteName + '")\n'
-					+ 'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
+					'content': 'local a = require("Module:' + loadedSpriteName + '")\n' +
+					'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 				}).always(function(a) {
 					if (!a.return) {
 						loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
@@ -1664,7 +1664,7 @@
 				loadNew(spriteSizeW, spriteSizeH, spacing);
 			}
 		}
-		mwData.preload = function() {
+		myData.preload = function() {
 			if (--preloads > 0) return;
 			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
 				myData.msg = i18no.msg;

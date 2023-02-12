@@ -1,0 +1,1 @@
+/* JS used in this wiki can be found at MediaWiki:Common.js */

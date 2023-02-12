@@ -5,48 +5,43 @@
             var navDropdownLinks = document.querySelectorAll(".fandom-community-header__local-navigation .wds-dropdown:first-child .wds-list a");
 
             for (var i = 0; i < navDropdownLinks.length; i++) {
-                var tracking = navDropdownLinks[i].dataset.tracking;
+                var link = navDropdownLinks[i];
+                var tracking = link.dataset.tracking;
+                var iconName;
 
-                switch (navDropdownLinks[i].dataset.tracking) {
+                switch (tracking) {
                     case "explore-all-pages":
-                        var icon = wds.icon("pages-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "pages";
+                        break;
                     case "explore-community":
-                        var icon = wds.icon("users-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "users";
+                        break;
                     case "interactive-maps":
-                        var icon = wds.icon("map-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "map";
+                        break;
                     case "explore-blogs":
-                        var icon = wds.icon("blocks-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "blocks";
+                        break;
                     case "explore-random":
-                        var icon = wds.icon("external-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "external";
+                        break;
                     case "explore-videos":
-                        var icon = wds.icon("video-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "video";
+                        break;
                     case "explore-images":
-                        var icon = wds.icon("images-tiny");
-                        icon.classList.add("navigation-item-icon");
-                        navDropdownLinks[i].querySelector("span").before(icon);
-                        break
+                        iconName = "images";
+                        break;
+                    default:
+                        iconName = "";
                 }
-            };
+                if (iconName) {
+                    var icon = wds.icon(iconName + "-tiny");
+                    icon.classList.add("navigation-item-icon");
+                    link.querySelector("span").before(icon);
+                }
+            }
         }
-    )
+    );
 
     importArticle({
         type: "script",

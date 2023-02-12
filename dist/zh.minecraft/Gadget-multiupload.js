@@ -8,7 +8,7 @@ mw.loader.using(['site']).then(function () {
 		uploadfiles: wgULS(undefined,undefined,undefined,"上传文件", "上傳檔案", "上載檔案"),
 		nofiles: wgULS(undefined,undefined,undefined,"请选择要上传的文件。", "請選取要上傳的檔案。", "請選取要上載的檔案。"),
 		nolicense: wgULS("请选择适用的授权协议。", "請選取適用的授權條款。"),
-		summary: "文件说明",
+		summary: "摘要",
 		license: "授权协议",
 		uploading: wgULS(undefined,undefined,undefined,"上传中……", "正在上傳……", "正在上載……"),
 		uploaded: wgULS(undefined,undefined,undefined,"已上传：", "已上傳：", "已上載："),

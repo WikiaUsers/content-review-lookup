@@ -101,8 +101,8 @@ function createCollapseButtons()
 $( createCollapseButtons );
  
 function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $('.insertusername').text(wgUserName); }
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
+    $('.insertusername').text(mw.config.get('wgUserName')); }
  $(UserNameReplace);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
@@ -436,7 +436,7 @@ $(buildLeaderboard);
 /* Verificar se usuário ganhou nova medalha */
 function checkForMedals() {
 	$.getJSON("https://starwars.fandom.com/pt/wiki/Star_Wars_Wiki:Medals?action=raw&cb="+Math.ceil(new Date().getTime() / 1000), function(obj) {
-		var medalhasAgora = JSON.stringify(obj.dataUser[wgUserName]);
+		var medalhasAgora = JSON.stringify(obj.dataUser[mw.config.get('wgUserName')]);
 		if (typeof (localStorage.medalhas) == "undefined")
 			localStorage.medalhas = medalhasAgora;
 		else if (localStorage.medalhas != medalhasAgora)
@@ -444,15 +444,15 @@ function checkForMedals() {
 			var medalhasSessao = JSON.parse(localStorage.medalhas);
 			var msg = '';
 			var medalhaNome = '';
-			if (medalhasSessao.length > obj.dataUser[wgUserName].length)
+			if (medalhasSessao.length > obj.dataUser[mw.config.get('wgUserName')].length)
 				msg = "Você perdeu alguma medalha"
 			else
 			{
-				for (var i=0; i<obj.dataUser[wgUserName].length; i++)
+				for (var i=0; i<obj.dataUser[mw.config.get('wgUserName')].length; i++)
 				{
-					if (localStorage.medalhas.search(obj.dataUser[wgUserName][i]) == -1)
+					if (localStorage.medalhas.search(obj.dataUser[mw.config.get('wgUserName')][i]) == -1)
 					{
-						medalhaNome = obj.dataUser[wgUserName][i].split(":")[0];
+						medalhaNome = obj.dataUser[mw.config.get('wgUserName')][i].split(":")[0];
 						if (localStorage.medalhas.search(medalhaNome) > -1)
 							msg = (msg=='') ? ("Você ganhou mais uma "+medalhaNome) : "Você ganhou múltiplas medalhas"
 						else
@@ -475,7 +475,7 @@ function alertarMedalhas(txt, medalhaNome, img, medalhasAgora) {
 				'<a class="sprite close-notification"></a>'+
 				'<img class="badge"  width="90" height="90" alt="'+medalhaNome+'" src="'+img+'" />'+
 				'<p>Você acabou de ganhar a medalha "'+medalhaNome+'"! '+txt+'</p>'+
-				'<div class="notification-details"><a href="/pt/wiki/User:'+wgUserName+'" title="User:'+wgUserName+'">Veja todas suas medalhas atuais!</a></div>'+
+				'<div class="notification-details"><a href="/pt/wiki/User:'+mw.config.get('wgUserName')+'" title="User:'+mw.config.get('wgUserName')+'">Veja todas suas medalhas atuais!</a></div>'+
 			'</div>'+
 		'</li>'+
 	'</ul>');

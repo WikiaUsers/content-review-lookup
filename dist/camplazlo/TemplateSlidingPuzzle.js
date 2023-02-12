@@ -1,1 +1,0 @@
-if(document.getElementById("slidingpuzzle")){var a=document.getElementById("slidingpuzzle").getElementsByTagName("p")[0].textContent,b=document.createElement("img");b.className="jqPuzzle";b.src=a;document.getElementById("slidingpuzzle").getElementsByTagName("p")[0].remove();document.getElementById("slidingpuzzle").appendChild(b)};

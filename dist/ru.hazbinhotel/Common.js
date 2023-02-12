@@ -50,7 +50,8 @@ UserTagsJS.modules.custom = {
 	'Lubitel obnimashek': ['intern'],
 	'JustAccount': ['intern'],
 	'Swit4er': ['translator'],
-	'Fleshka5856': ['intern']
+	'Fleshka5856': ['intern'],
+	'Fadri Gold': ['intern']
 }
 
 /* Выделение комментариев */
@@ -68,8 +69,8 @@ setInterval(function () {
     $('.wds-avatar a[href$="Lubitel%20obnimashek"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="JustAccount"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="Fleshka5856"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
+    $('.wds-avatar a[href$="Fadri%20Gold"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
     $('.wds-avatar a[href$="Creepy%20Owl "]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
-    $('.wds-avatar a[href$="Lefsy"]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
     $('.wds-avatar a[href$="Lich%20night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');
 }, 500 );
 
@@ -153,9 +154,9 @@ $().ready(function () {
 	
 	
 	/* Кнопка скролла */
-	const breakY = ($(document).height() - $(window).height()) * 50 / 100;
-
 	function handleScrollTo(e) {
+			const breakY = ($(document).height() - $(window).height()) * 50 / 100;
+		
 	        e.preventDefault();
 	        const reachHalf = $(window).scrollTop() > breakY
 	        $('html').animate({scrollTop: reachHalf ? 0 : $(document).height()}, '10');
@@ -183,6 +184,8 @@ $().ready(function () {
 	    .on('click', handleScrollTo)
 	
 	$(window).scroll(function () {
+		const breakY = ($(document).height() - $(window).height()) * 50 / 100;
+		
 	    const reachHalf = $(window).scrollTop() > breakY;
 	    wdsSecondScrollIcon.css('transform', 'rotate(' + (reachHalf ? 360 : 180) + 'deg)');
 	    scrollBottomButtonIcon.attr('class', 'scroll-button scroll-button--' + (reachHalf ? 'top' : 'bottom'));
@@ -230,6 +233,8 @@ window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Это�
 
 /* Конфигурация для dev:AddRailModule */
 window.AddRailModule = [
-	{page: 'Template:DiscordRail', prepend: true, maxAge: 0},
+	{page: 'Template:VKRail', maxAge: 0},
+	{page: 'Template:DiscordRail', maxAge: 0},
+	{page: 'Template:ToolsRail', maxAge: 0},
 	{page: 'Template:NewPagesModule', maxAge: 0}
-	];
+];

@@ -27,7 +27,7 @@
 			{ name: 'Pumpkin', mcName: 'Carved Pumpkin' },
 			{ name: 'Sugar Cane', mcName: 'Sugar Cane (item)' },
 			{ name: 'Seeds', mcName: 'Wheat Seeds' },
-			{ name: 'Wheat' }
+			{ name: 'Wheat', enchName: 'Enchanted Wheat' }
 		],
 		'Misc - Farming (agronomy)': [
 			{ name: 'Golden Carrot' }, //

@@ -8,6 +8,10 @@
 (function (window, $, mw) {
     "use strict";
     var sbte, h;
+    window.hsbwiki = window.hsbwiki || {};
+    if (window.hsbwiki.timingEventsLoaded)
+        return;
+    window.hsbwiki.timingEventsLoaded = true;
 
     /** International Customization Standard Notice (ICC-NOTICE-V1)
      * FLAGS: <code-modified: false> <code-appended: false> <msg-verified: true>
@@ -35,6 +39,20 @@
         formatCountdown: "$1 $2" // placement: [DAY, TIME]
     };
 
+    /* Maintain a private stack */
+    // Runs every SBST Minute: Math.floor(new SkyDuration("1m -S").valueOf() / RATIOS.magic * 1000)
+    var updateStack = [];
+
+    function updateStackAdd(callback) {
+        if (updateStack.length === 0)
+            setInterval(function () {
+                for (var i in updateStack)
+                    updateStack[i]();
+            }, 833);
+        callback();
+        updateStack.push(callback);
+    }
+
     function findEl(pSection, query) {
         return pSection && $(pSection).find(query) || $(query);
     }
@@ -52,43 +70,25 @@
         ////////////////////////////////////
         // Simple Timestamp Display
         ////////////////////////////////////
-        var timestampEl = findEl(pSection, ".sbte-timestamp"),
-            timestampElAlpha = findEl(pSection, ".sbte-timestamp-alpha");
-        var setTimestamp = function (isAlpha, elem) {
-            var skyDate = isAlpha ? new sbte.SkyRoutineAlpha(elem.data("skydate")) : new sbte.SkyRoutine(elem.data("skydate"));
+        var timestampEl = findEl(pSection, ".sbte-timestamp:not(.sbte-timestamp .sbte-timestamp)");
+        timestampEl.each(function () {
+            var elem = $(this);
+            var skyDate = elem.hasClass("alpha") ? new sbte.SkyDateAlpha(elem.data("skydate")) : new sbte.SkyDate(elem.data("skydate"));
             var elHov = $("<span class=\"hov\">");
             var elNohov = $("<span class=\"nohov\">");
             elem.addClass("hover-switch");
             elem.append(elHov, elNohov);
             elNohov.text(skyDate.date.toLocaleString(msg.locale, msg.localeOpts) /* + " (" + skyDate.sbstString + ")" */ );
             elHov.text(skyDate.sbstString);
-        };
-        timestampEl.each(function () {
-            setTimestamp(false, $(this));
-        });
-        timestampElAlpha.each(function () {
-            setTimestamp(true, $(this));
         });
         ////////////////////////////////////
         // Countdown Widget
         ////////////////////////////////////
-        var countdownEl = findEl(pSection, ".sbte-routine"),
-            countdownElAlpha = findEl(pSection, ".sbte-routine-alpha");
-        var setCountdown = function (isAlpha, elem) {
-            var routineInput = elem.data("routine");
-            if (!routineInput) {
-                console.warn(msg.routineNodef);
-                return;
-            }
-            var myRoutine = isAlpha ? new sbte.SkyRoutineAlpha(routineInput) : new sbte.SkyRoutine(routineInput);
-            var cdNameEl = elem.find(".sbte-cd-name");
-            var cdToEl = elem.find(".sbte-cd-to");
-            var cdToElHov = $("<span class=\"hov\">");
-            var cdToElNohov = $("<span class=\"nohov\">");
-            cdToEl.addClass("hover-switch");
-            cdToEl.append(cdToElHov, cdToElNohov);
-            var cdTimerEl = elem.find(".sbte-cd-timer");
-            var countDownFn = function (tout, seconds, countToDate, countFromDate, state) {
+        var countdownEl = findEl(pSection, ".sbte-routine:not(.sbte-routine .sbte-routine)");
+        var setCountdown = function (elem, fields) {
+            fields.cdTo.addClass("hover-switch");
+            fields.cdTo.append(fields.cdToHov, fields.cdToNohov);
+            var countDownFn = function (stopCountdown, seconds, countToDate, countFromDate, state) {
                 if (seconds <= 0)
                     return;
                 var s = seconds % 60;
@@ -96,37 +96,61 @@
                 var hrs = Math.floor(seconds % h.RATIOS[h.UNITS.day] / h.RATIOS[h.UNITS.hour]);
                 var d = Math.floor(seconds / h.RATIOS[h.UNITS.day]);
                 var timestring = getMsg("formatCountdown", getMsg(d > 1 ? "formatDayPlural" : "formatDay", d), h.fmtTime(hrs, m, s));
-                cdToElNohov.text(countToDate.toString());
-                cdToElHov.text(countToDate.date.toLocaleString(msg.locale, msg.localeOpts));
+                fields.cdToNohov.text(countToDate.toString());
+                fields.cdToHov.text(countToDate.date.toLocaleString(msg.locale, msg.localeOpts));
                 if (state === h.STATES.WAITING) {
-                    cdNameEl.text(msg.eventStart);
-                    cdTimerEl.removeClass("sbte-routine-ongoing sbte-routine-stopped").addClass("sbte-routine-waiting");
-                    cdTimerEl.text(timestring);
+                    fields.cdName.text(msg.eventStart);
+                    fields.cdTimer.removeClass("sbte-routine-ongoing sbte-routine-stopped").addClass("sbte-routine-waiting");
+                    fields.cdTimer.text(timestring);
                 } else {
-                    cdNameEl.text(msg.eventEnd);
-                    cdTimerEl.removeClass("sbte-routine-waiting sbte-routine-stopped").addClass("sbte-routine-ongoing");
-                    cdTimerEl.text(msg.active + timestring);
+                    fields.cdName.text(msg.eventEnd);
+                    fields.cdTimer.removeClass("sbte-routine-waiting sbte-routine-stopped").addClass("sbte-routine-ongoing");
+                    fields.cdTimer.text(msg.active + timestring);
                 }
+                elem.css("visibility", "visible");
             };
-            myRoutine.addEvent(h.STATES.WAITING, function () {
-                myRoutine.startCountdown(countDownFn);
+            fields.routine.addEvent(h.STATES.WAITING, function () {
+                fields.routine.startCountdown(countDownFn);
             });
-            myRoutine.addEvent(h.STATES.ONGOING, function () {
-                myRoutine.startCountdown(countDownFn);
+            fields.routine.addEvent(h.STATES.ONGOING, function () {
+                fields.routine.startCountdown(countDownFn);
             });
-            myRoutine.addEvent(h.STATES.STOPPED, function () {
-                cdNameEl.text(msg.eventStart);
-                cdToEl.text(msg.noTime);
-                cdTimerEl.removeClass("sbte-routine-waiting sbte-routine-ongoing").addClass("sbte-routine-stopped");
-                cdTimerEl.text(msg.ended);
+            fields.routine.addEvent(h.STATES.STOPPED, function () {
+                fields.cdName.text(msg.eventStart);
+                fields.cdTo.text(msg.noTime);
+                fields.cdTimer.removeClass("sbte-routine-waiting sbte-routine-ongoing").addClass("sbte-routine-stopped");
+                fields.cdTimer.text(msg.ended);
+                elem.css("visibility", "visible");
             });
-            myRoutine.trigger();
+            fields.routine.trigger();
         };
         countdownEl.each(function () {
-            setCountdown(false, $(this));
-        });
-        countdownElAlpha.each(function () {
-            setCountdown(true, $(this));
+            var elem = $(this);
+            var routineInput = elem.data("routine");
+            if (!routineInput) {
+                console.warn(msg.routineNodef);
+                return;
+            }
+            var allCount = elem.find(".sbte-cd-name, .sbte-cd-to, .sbte-cd-timer").length;
+            var alphaCount = elem.find(".sbte-cd-name.alpha, .sbte-cd-to.alpha, .sbte-cd-timer.alpha").length;
+            if (allCount !== alphaCount)
+                setCountdown(elem, {
+                    cdName: elem.find(".sbte-cd-name:not(.alpha)"),
+                    cdTo: elem.find(".sbte-cd-to:not(.alpha)"),
+                    cdToHov: $("<span class=\"hov\">"),
+                    cdToNohov: $("<span class=\"nohov\">"),
+                    cdTimer: elem.find(".sbte-cd-timer:not(.alpha)"),
+                    routine: new sbte.SkyRoutine(routineInput)
+                });
+            if (alphaCount > 0)
+                setCountdown(elem, {
+                    cdName: elem.find(".sbte-cd-name.alpha"),
+                    cdTo: elem.find(".sbte-cd-to.alpha"),
+                    cdToHov: $("<span class=\"hov\">"),
+                    cdToNohov: $("<span class=\"nohov\">"),
+                    cdTimer: elem.find(".sbte-cd-timer.alpha"),
+                    routine: new sbte.SkyRoutineAlpha(routineInput)
+                });
         });
         ////////////////////////////////////
         // SkyBlock Clock
@@ -167,33 +191,38 @@
             myFields.month.text(skydate.sbstMonth + 1);
             myFields.year.text(skydate.sbstFullYear);
         };
-        var hasClockField = findEl(pSection, ".sbte-clock").length > 0;
-        var hasClockFieldAlpha = findEl(pSection, ".sbte-clock-alpha").length > 0;
-        if (hasClockField || hasClockFieldAlpha) {
+        if (findEl(pSection, ".sbte-clock").length > 0) {
             // Instantiate objects
             var fields = {},
                 fieldsAlpha = {},
-                currentSkyDate = new sbte.SkyDate(),
-                currentSkyDateAlpha = new sbte.SkyDateAlpha();
+                requiresMain = false,
+                requiresAlpha = false,
+                currentSkyDate,
+                currentSkyDateAlpha;
             // Record all fields
             Object.keys(CLOCK_FIELDS).forEach(function (key) {
-                fields[key] = findEl(pSection, ".sbte-clock " + CLOCK_FIELDS[key]);
-                fieldsAlpha[key] = findEl(pSection, ".sbte-clock-alpha " + CLOCK_FIELDS[key]);
+                fields[key] = findEl(pSection, ".sbte-clock " + CLOCK_FIELDS[key] + ":not(.alpha)");
+                fieldsAlpha[key] = findEl(pSection, ".sbte-clock " + CLOCK_FIELDS[key] + ".alpha");
+                requiresMain = requiresMain || fields[key].length > 0;
+                requiresAlpha = requiresAlpha || fieldsAlpha[key].length > 0;
             });
             // Update function
-            if (hasClockField)
+            if (requiresMain) {
+                currentSkyDate = new sbte.SkyDate();
                 updateFields(currentSkyDate, fields);
-            if (hasClockFieldAlpha)
+            }
+            if (requiresAlpha) {
+                currentSkyDateAlpha = new sbte.SkyDateAlpha();
                 updateFields(currentSkyDateAlpha, fieldsAlpha);
-            // Runs every SBST Minute: Math.floor(new SkyDuration("1m -S").valueOf() / RATIOS.magic * 1000)
-            setInterval(function () {
-                if (hasClockField)
+            }
+            updateStackAdd(function () {
+                if (requiresMain)
                     updateFields(currentSkyDate.setTime(), fields);
-                if (hasClockFieldAlpha)
+                if (requiresAlpha)
                     updateFields(currentSkyDateAlpha.setTime(), fieldsAlpha);
-            }, 833);
+            });
             // Hidden by default to avoid awkward text before script runs, so make sure to show it
-            findEl(pSection, ".sbte-clock, .sbte-clock-alpha").show().css("visibility", "visible");
+            findEl(pSection, ".sbte-clock").css("visibility", "visible");
         }
     }
 
