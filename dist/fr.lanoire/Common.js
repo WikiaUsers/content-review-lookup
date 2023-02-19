@@ -73,6 +73,9 @@ window.setCookie = function(c_name, value, expiredays) {
 					$desc.val('{{Fichier\n' +
 							'| origine = \n' +
 							'| jeu = \n' +
+							'| cible2 = \n' +
+							'| cible3 = \n' +
+							'| cible4 = \n' +
 							'| quoi = \n' +
 							'| type = \n' + 
 							'}}\n'
@@ -119,7 +122,7 @@ window.setCookie = function(c_name, value, expiredays) {
 									);
 								});
 						} else { // Old style form just needs Information template in the summary box
-							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
+							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| cible2 = \n| cible3 = \n| cible4 = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
 							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://lanoire.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
@@ -148,6 +151,9 @@ window.setCookie = function(c_name, value, expiredays) {
 				strBuilder += '{{Fichier\n';
 				strBuilder += '| origine = ' + $.trim($('#origineBox').val()) + '\n';
 				strBuilder += '| jeu = ' + $.trim($('#jeuBox').val()) + '\n';
+				strBuilder += '| cible2 = ' + '\n';
+				strBuilder += '| cible3 = ' + '\n';
+				strBuilder += '| cible4 = ' + '\n';
 				strBuilder += '| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
 				strBuilder += '| type = ' + $.trim($('#typeBox').val()) + '\n';
 				strBuilder += '}}\n';

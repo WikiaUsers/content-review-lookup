@@ -1,0 +1,1 @@
+if(document.getElementsByClassName("move-to-body")[0]){for(i=0;i<document.getElementsByClassName("move-to-body").length;i++){var b=document.getElementsByClassName("move-to-body")[i].cloneNode(!0);document.getElementsByClassName("move-to-body")[i].remove();document.body.appendChild(b)}b=a=null;}

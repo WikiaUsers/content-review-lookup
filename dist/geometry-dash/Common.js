@@ -9,6 +9,32 @@ $(function() {
 	$('.InsertUsername').text(wgUserName);
 });
 
+/* CSS classes for daytime periods */
+(function() {
+    'use strict';
+var currentTime = new Date().getHours();
+if (0 <= currentTime && currentTime < 6) {
+    if (document.body) {
+        document.body.classList.add('night');
+    }
+}
+else if (6 <= currentTime && currentTime < 12) {
+    if (document.body) {
+        document.body.classList.add('morning');
+    }
+}
+else if (12 <= currentTime && currentTime < 18) {
+    if (document.body) {
+        document.body.classList.add('afternoon');
+    }
+}
+else {
+    if (document.body) {
+        document.body.classList.add('evening');
+    }
+}
+})();
+
 /***************************/
 /** Import Configuration ***/
 /***************************/

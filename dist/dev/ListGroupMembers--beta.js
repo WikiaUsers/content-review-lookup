@@ -31,8 +31,7 @@
 	            "wiki-specialist",
 	            "soap",
 	            "global-discussion-moderator",
-	            "voldev",
-	            "council"
+	            "voldev"
 	        ] ),
 	        LOCAL: Object.freeze( [
 	            "bureaucrat",

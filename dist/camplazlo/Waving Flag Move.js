@@ -1,0 +1,1 @@
+if(document.getElementById("wavingflag")){var a=document.getElementById("wavingflag").cloneNode(!0);a.style.left=document.getElementById("WikiaPage").clientWidth-10+"px";document.getElementById("wavingflag").remove();document.getElementById("WikiaPage").appendChild(a)};

@@ -1,0 +1,1 @@
+var a=document.createElement("div");a.id="backgroundLayer1";document.body.appendChild(a);var b=document.createElement("div");b.id="backgroundLayer2";document.body.appendChild(b);

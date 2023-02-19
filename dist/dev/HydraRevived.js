@@ -8,6 +8,8 @@
  * features from FandomDesktop.
  * 
  * @author Joritochip
+ *
+ * @maintainer TreeIsLife
  */
 
 /* TODO: Move tools and language select to sidebar */
@@ -18,7 +20,8 @@ $(function() {
 			'wgRailModuleParams',
 			'wgSiteName',
 			'wgUserLanguage',
-			'wgWikiaBarSkinData'
+			'wgWikiaBarSkinData',
+			'wgArticlePath'
 		]);
     
 	if (window.HydraRevivedReady || config.skin !== 'fandomdesktop') return;
@@ -140,7 +143,7 @@ $(function() {
 
     /** Search **/
     var $form = $('<form>', {
-            action: '/index.php',
+            action: config.wgArticlePath.replace('$1', 'Special:Search'),
             id: 'searchform'
         }),
         $bar = $('<div>', {

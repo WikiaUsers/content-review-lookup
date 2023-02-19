@@ -19,3 +19,40 @@ $(function () {
         collapsibleContent.classList.remove("mw-collapsible-content");
     }
 });
+
+/* 分欄 */
+$(function () {
+    const lang = (mw.config.get('wgUserVariant') || '').substring(3) || 'zh';
+    const tabberexAll = document.querySelectorAll('.tabberex');
+    tabberexAll.forEach(checkDefaultTab);
+    tabberexAll.forEach(removeDataDefault);
+    function checkDefaultTab(tabberex) {
+        const dataDefault = tabberex.dataset[lang + 'Default'];
+        if (dataDefault) {
+            tabberex.insertBefore(tabberex.childNodes[dataDefault - 1], tabberex.childNodes[0]);
+            return;
+        }
+        if (['cn','my','sg'].includes(lang)) {
+            const dataHansDefault = tabberex.dataset.hansDefault;
+            if (dataHansDefault) {
+                tabberex.insertBefore(tabberex.childNodes[dataHansDefault - 1], tabberex.childNodes[0]);
+            }
+        }
+        if (['hk','mo','tw'].includes(lang)) {
+            const dataHantDefault = tabberex.dataset.hantDefault;
+            if (dataHantDefault) {
+                tabberex.insertBefore(tabberex.childNodes[dataHantDefault - 1], tabberex.childNodes[0]);
+            }
+        }
+    }
+    function removeDataDefault(tabberex) {
+        delete tabberex.dataset.hansDefault;
+        delete tabberex.dataset.hantDefault;
+        delete tabberex.dataset.cnDefault;
+        delete tabberex.dataset.hkDefault;
+        delete tabberex.dataset.moDefault;
+        delete tabberex.dataset.myDefault;
+        delete tabberex.dataset.sgDefault;
+        delete tabberex.dataset.twDefault;
+    }
+});

@@ -232,9 +232,23 @@ window.dev.i18n.overrides['LockOldComments'] = window.dev.i18n.overrides['LockOl
 window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Этой ветке комментариев более " + window.lockOldComments.limit + " " + (window.lockOldComments.limit > 1 ? 'дней.' : 'дня.') + " Нет необходимости отвечать.";
 
 /* Конфигурация для dev:AddRailModule */
-window.AddRailModule = [
-	{page: 'Template:VKRail', maxAge: 0},
-	{page: 'Template:DiscordRail', maxAge: 0},
-	{page: 'Template:ToolsRail', maxAge: 0},
-	{page: 'Template:NewPagesModule', maxAge: 0}
-];
+ window.AddRailModule = [
+ 	{page: 'Template:NewPagesModule', maxAge: 0}
+ ];
+
+// slider
+document.addEventListener('click', function (e) {
+  var target = e.target;
+  if (!target.dataset) return;
+  if (!target.dataset.action) return;
+  var action = target.dataset.action;
+  var parent = target.closest('.js-min-slider');
+  var slides = parent.querySelectorAll('.min-slider__slide');
+  if (!parent) return;
+  slides.forEach(function (slide) {
+    var rotate = parseInt(slide.style.transform.replace('rotate(', '').replace('deg)', ''));
+    if (Number.isNaN(rotate)) throw new Error('Rotate cant be none');
+    var newRotate = action === 'prev' ? rotate - 90 : rotate + 90;
+    slide.style.transform = "rotate(" + newRotate + "deg)";
+  });
+});

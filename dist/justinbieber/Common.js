@@ -51,7 +51,7 @@ function loadMonth(month) {
     viewMonth = month;
 }
 
-$(document).ready(function() {
+mw.hook('AddRailModule.module').add(function () {
     initCalendar();
     $('#cal #prev').click(function() {
         loadMonth((viewMonth - 1 + 12) % 12);

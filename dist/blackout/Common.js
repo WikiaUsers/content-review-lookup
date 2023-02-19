@@ -1,10 +1,5 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-    ]
-});
+/* MessageBlock */
+window.MessageBlock = {
+	title: 'Blocked',
+	message: 'You have been blocked for $2 because you have been $1. If you wish to appeal this block, please do so under this message.'
+};

@@ -86,7 +86,6 @@
 			"soap",
 			"global-discussions-moderator",
 			"voldev",
-			"council",
 			"bureaucrat",
 			"sysop",
 			"threadmoderator",
@@ -103,8 +102,7 @@
 				"wiki-specialist",
 				"soap",
 				"global-discussions-moderator",
-				"voldev",
-				"council"
+				"voldev"
 			] ),
 			LOCAL: Object.freeze( [ 
 				"bureaucrat",
@@ -122,7 +120,6 @@
 			"wiki-representative": [ "wiki-manager" ],
 			"wiki-specialist": [ "content-team-member" ],
 			"soap": [ "grasp", "vstf" ],
-			"council": [ "councilor" ],
 			"bureaucrat": [ "bcrat", "crat" ],
 			"sysop": [ "admin" ],
 			"rollback": [ "rollbacker" ],

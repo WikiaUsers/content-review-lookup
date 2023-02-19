@@ -38,7 +38,6 @@
 	var toolbarSections;
 	var skipClose = false;
 	var api;
-	var namesList = {};
 	var options = {
 		cleanupSectionIDs: false,
 		createSampleSection: true, // Create a sample section on new sprite-creation (Open > New).
@@ -62,7 +61,6 @@
 	var imgHeight;
 	var imgWidth;
 	var imgSpacingOrg;
-
 	window.addEventListener('beforeunload', function (e) {
 		if (lastSaved !== history[historyPos - 1]) {
 			e.preventDefault();
@@ -152,27 +150,25 @@
 		}
 		return c;
 	}
+	function indexNames(name) {
+		const _indexFilter = function(ele) {
+			return ele.innerText.includes(name);
+		};
+		return Array.from(document.querySelectorAll("code[isSprite]")).filter(_indexFilter);
+	}
 	function markDuplicateNames(list) {
 		var names = Object.keys(list);
 		for (var i = 0; i < names.length; i++) {
-			if (!namesList[names[i]]) continue;
-			var length = namesList[names[i]].length;
+			var eleList = indexNames(names[i]);
+			var length = eleList.length;
 			for (var j = 0; j < length; j++) {
-				var obj = namesList[names[i]][j];
-				if (length > 1) {
-					obj.classList.add("spriteedit-dupe");
-					continue;
-				}
-				obj.classList.remove("spriteedit-dupe");
+				var obj = eleList[j];
+				obj.classList[length > 1 ? "add" : "remove"]("spriteedit-dupe");
 			}
 		}
-		if (root.querySelectorAll(".spriteedit-dupe").length) {
-			buttons.changes.setDisabled(true);
-			buttons.save.setDisabled(true);
-			return;
-		}
-		buttons.changes.setDisabled(false);
-		buttons.save.setDisabled(false);
+		var disable = root.querySelectorAll(".spriteedit-dupe").length ? true : false;
+		buttons.changes.setDisabled(disable);
+		buttons.save.setDisabled(disable);
 	}
 	function generateJSON() {
 		var a = Object.assign(blankJSON);
@@ -338,10 +334,9 @@
 		oldImageAsCanvas = document.createElement("canvas");
 		oldImageAsCanvas.width = imgData.width || imgData.naturalWidth;
 		oldImageAsCanvas.height = imgData.height || imgData.naturalHeight;
-		if (!options.isNew) {
-			var ctxOld = oldImageAsCanvas.getContext('2d');
-			ctxOld.drawImage(imgData, 0, 0);
-		}
+		if (options.isNew) return;
+		var ctxOld = oldImageAsCanvas.getContext('2d');
+		ctxOld.drawImage(imgData, 0, 0);
 	}
 	function saveJSON(summary, data, generatedJSON) {
 		api.postWithEditToken({
@@ -400,26 +395,26 @@
 		var gIVars = generateImage();
 		var generatedJSON = generateJSON();
 		var data = processData(generatedJSON);
-		if (gIVars[2]) { // Has changes
-			gIVars[0].toBlob(function(blob) {
-				api.upload(blob, {
-					filename: output.settings.image || loadedSpriteName + '.png',
-					comment: s,
-					formatversion: 2,
-					ignorewarnings: true
-				}).always(function(d) {
-					if (!d) {
-						toggleTBButtons(has_edit_permission);
-						alert(msg("image-error").plain());
-						return;
-					}
-					setupOldCanvas(gIVars[0]);
-					addMissingTag(s, data, generatedJSON);
-				});
-			});
-		} else {
+		if (!gIVars[2]) { // If nothing changed
 			addMissingTag(s, data, generatedJSON);
+			return;
 		}
+		gIVars[0].toBlob(function(blob) {
+			api.upload(blob, {
+				filename: output.settings.image || loadedSpriteName + '.png',
+				comment: s,
+				formatversion: 2,
+				ignorewarnings: true
+			}).always(function(d) {
+				if (!d) {
+					toggleTBButtons(has_edit_permission);
+					alert(msg("image-error").plain());
+					return;
+				}
+				setupOldCanvas(gIVars[0]);
+				addMissingTag(s, data, generatedJSON);
+			});
+		});
 	}
 	function updateTitle(changesMade) {
 		document.title = (loadedSpriteName.length && (loadedSpriteName + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
@@ -449,76 +444,45 @@
 		var d = offset;
 		var names;
 		var i;
-		var t;
-		var secID;
-		var list;
 		var n = {};
-		var box_code;
-		if (c[d] === "move-sections") {
-			var order = c[2 + offset];
-			var tmp = root.children[0];
-			var a = document.createElement("span");
-			root.prepend(a);
-			root.insertBefore(tmp, a);
-			for (i = 0; i < order.length; i++) {
-				root.insertBefore(document.querySelector('div[data-section-id="' + order[i] + '"]'), a);
-			}
-			root.removeChild(a);
-		} else if (c[d] === "sprite-default") {
-			var oldDefault = c[3 - offset];
-			var newDefault = c[2 + offset];
-			if (oldDefault) delete oldDefault.dataset.default;
-			if (newDefault) newDefault.dataset.default = ".";
+		if (typeof(c[d]) === "function") {
+			c[d]();
 		} else if (c[d] === "sprite-added") {
 			toShare.highestPos = c[5 + offset];
 			helper.removeSprite(c[3], true);
 		} else if (c[d] === "sprite-removed") {
 			toShare.highestPos = c[5 + offset];
 			root.querySelector('div[data-section-id="' + c[2] + '"] .spritedoc-boxes').appendChild(c[4]);
-			list = c[4].querySelectorAll(".spritedoc-name code[isSprite]");
+			var list = c[4].querySelectorAll(".spritedoc-name code[isSprite]");
 			for (i = 0; i < list.length; i++) {
-				t = list[i].textContent;
-				n[t] = true;
-				namesList[t] = namesList[t] || [];
-				namesList[t].push(list[i]);
+				n[list[i].textContent] = true;
 			}
 			sortSection(c[2]);
 			markDuplicateNames(n);
-		} else if (c[d] === "sprite-move") {
-			var newSection = c[3 - offset];
-			root.querySelector('div[data-section-id="' + newSection + '"] .spritedoc-boxes').appendChild(c[4]);
-			sortSection(newSection);
 		} else if (c[d] === "sprite-replace") {
 			var oldSprite = c[4 - offset];
 			var newSprite = c[3 + offset];
 			canvasCollection[c[2]].parentElement.replaceChild(newSprite, oldSprite);
 			canvasCollection[c[2]] = newSprite;
-		} else if (c[d] === "sprite-rename") {
+		} else if (c[d] === "sprite-rename") { // c[5] = code-element
 			var oldName = c[3 + offset];
 			var newName = c[4 - offset];
-			box_code = c[5];
-			namesList[newName].splice(namesList[newName].indexOf(box_code), 1);
-			namesList[oldName].push(box_code);
-			box_code.textContent = oldName;
+			c[5].textContent = oldName;
 			n[oldName] = true;
 			n[newName] = true;
 			markDuplicateNames(n);
 			sortSpriteNames(c[2]);
-			sortSection(box_code.closest('.spritedoc-section').dataset.sectionId);
+			sortSection(c[5].closest('.spritedoc-section').dataset.sectionId);
 		} else if (c[d] === "sprite-name-removed") { // c[3] = spritedoc-names
 			c[3].appendChild(c[4]);
 			c[4].children[0].textContent = c[5];
-			box_code = c[4].querySelector("code");
-			namesList[c[5]].push(box_code);
 			n[c[5]] = true;
 			markDuplicateNames(n);
 			sortSpriteNames(c[2]);
 			sortSection(c[3].closest('.spritedoc-section').dataset.sectionId);
 		} else if (c[d] === "sprite-name-added") {
-			box_code = c[4].querySelector("code");
-			namesList[c[5]].splice(namesList[c[5]].indexOf(box_code), 1);
 			n[c[5]] = true;
-			secID = c[4].closest('.spritedoc-section').dataset.sectionId;
+			var secID = c[4].closest('.spritedoc-section').dataset.sectionId;
 			c[4].parentElement.removeChild(c[4]);
 			markDuplicateNames(n);
 			sortSpriteNames(c[2]);
@@ -527,15 +491,11 @@
 			root.querySelector('div[data-section-id="' + c[2] + '"] span').textContent = c[3 + offset];
 		} else if (c[d] === "section-added") {
 			names = c[3].querySelectorAll("code[isSprite]");
+			root.removeChild(c[3]);
 			for (i = 0; i < names.length; i++) {
-				t = namesList[names[i].textContent] || [];
-				if (t.length) {
-					t.splice(t.indexOf(names[i]), 1);
-					n[names[i].textContent] = true;
-				}
+				n[names[i].textContent] = true;
 			}
 			markDuplicateNames(n);
-			root.removeChild(c[3]);
 		} else if (c[d] === "section-removed") {
 			if (root.children.length < c[5]) {
 				root.appendChild(c[3]);
@@ -544,17 +504,10 @@
 			}
 			names = c[3].querySelectorAll("code[isSprite]");
 			for (i = 0; i < names.length; i++) {
-				namesList[names[i].textContent] = namesList[names[i].textContent] || [];
-				t = namesList[names[i].textContent];
-				t.push(names[i]);
 				n[names[i].textContent] = true;
 			}
 			markDuplicateNames(n);
 			c[3].querySelector("span").textContent = c[4];
-		} else if (c[d] === "sprite-deprecated") {
-			c[2].classList.remove("spritedoc-deprecated");
-		} else if (c[d] === "sprite-not-deprecated") {
-			c[2].classList.add("spritedoc-deprecated");
 		}
 		buttons.undo.setDisabled(historyPos === 0);
 		buttons.redo.setDisabled(historyPos === history.length);
@@ -572,18 +525,17 @@
 			window.document.execCommand( 'insertText', false, paste );
 		};
 		box_code.onkeypress = function(e) {
-			if ( e.keyCode === 13 ) {
-				e.preventDefault();
-				e.target.blur();
-			}
+			if ( e.keyCode !== 13 ) return;
+			e.preventDefault();
+			e.target.blur();
 		};
 		box_code.addEventListener('focus', function() {
 			if (buttons.deprecated.getValue()) {
-				if (box_code.classList.contains("spritedoc-deprecated")) {
-					addHistory(["sprite-not-deprecated", "sprite-deprecated", box_code]);
-				} else {
-					addHistory(["sprite-deprecated", "sprite-not-deprecated", box_code]);
-				}
+				const _boxCode = box_code;
+				const _func = function() {
+					_boxCode.classList.toggle("spritedoc-deprecated");
+				};
+				addHistory([_func, _func]);
 				box_code.classList.toggle("spritedoc-deprecated");
 				box_code.blur();
 			} else {
@@ -597,49 +549,39 @@
 			var list = {};
 			box_code.textContent = box_code.textContent.trim();
 			var secId = box_code.closest('.spritedoc-section').dataset.sectionId;
+			orgT = box_code.getAttribute("data-original-text") || "";
 			if (box_code.textContent.length) {
-				orgT = box_code.getAttribute("data-original-text") || "";
-				if (orgT !== box_code.textContent) {
-					if (orgT.length) {
-						namesList[orgT] = namesList[orgT] || [];
-						namesList[orgT].splice(namesList[orgT].indexOf(box_code), 1);
-						list[orgT] = true;
-					}
-					namesList[box_code.textContent] = namesList[box_code.textContent] || [];
-					namesList[box_code.textContent].push(box_code);
-					list[box_code.textContent] = true;
-					markDuplicateNames(list);
-					if (orgT.length) {
-						addHistory([
-							"sprite-rename",
-							"sprite-rename",
-							posId,
-							orgT,
-							box_code.textContent,
-							box_code
-						]);
-					} else {
-						addHistory([
-							"sprite-name-added",
-							"sprite-name-removed",
-							posId,
-							box_code.closest(".spritedoc-names"),
-							box_code.parentElement,
-							box_code.textContent
-						]);
-					}
-					box_code.classList.remove("spriteedit-new");
-					box_code.removeAttribute("data-placeholder");
-					sortSpriteNames(posId);
-					sortSection(secId);
-				}
 				box_code.removeAttribute("data-original-text");
+				if (orgT === box_code.textContent) return;
+				if (orgT.length) {
+					list[orgT] = true;
+					addHistory([
+						"sprite-rename",
+						"sprite-rename",
+						posId,
+						orgT,
+						box_code.textContent,
+						box_code
+					]);
+				} else {
+					addHistory([
+						"sprite-name-added",
+						"sprite-name-removed",
+						posId,
+						box_code.closest(".spritedoc-names"),
+						box_code.parentElement,
+						box_code.textContent
+					]);
+				}
+				list[box_code.textContent] = true;
+				markDuplicateNames(list);
+				box_code.classList.remove("spriteedit-new");
+				box_code.removeAttribute("data-placeholder");
+				sortSpriteNames(posId);
+				sortSection(secId);
 			} else {
 				var isRemoved = false;
 				var cl = box_code.closest('.spritedoc-names');
-				orgT = box_code.getAttribute("data-original-text") || "";
-				if (orgT.length > 0 && cl.children.length > 1)
-					namesList[orgT].splice(namesList[orgT].indexOf(box_code), 1);
 				if (cl.children.length === 1) {
 					box_code.innerText = orgT;
 					helper.removeSprite(posId);
@@ -656,6 +598,8 @@
 						]);
 					cl.removeChild(box_code.parentElement);
 				}
+				markDuplicateNames(list);
+				list = {};
 				if (!orgT.length) return;
 				list[orgT] = true;
 				markDuplicateNames(list);
@@ -666,6 +610,7 @@
 				}
 			}
 		});
+
 		if (!(name || '').length) {
 			box_code.className = "spriteedit-new";
 			box_code.setAttribute("isSprite", "");
@@ -709,8 +654,6 @@
 					posID - 1,
 					posID
 				]);
-				namesList[fname] = namesList[fname] || [];
-				namesList[fname].push(cl.querySelector("code"));
 				var abc = {};
 				abc[fname] = true;
 				markDuplicateNames(abc);
@@ -722,9 +665,8 @@
 	function ttFunction(event) {
 		skipClose = true;
 		var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-		if (menu) {
+		if (menu)
 			document.body.removeChild(menu);
-		}
 		selectedEle = event.target.closest(".spritedoc-box");
 		selectedPos = selectedEle.dataset.pos;
 		if (selectedPos === "null") {
@@ -889,40 +831,52 @@
 		});
 
 		function moveSpriteClick(event) {
-			var sec = event.target.dataset.section;
-			var oldSec = selectedEle.closest(".spritedoc-section").dataset.sectionId;
+			const sec = event.target.dataset.section;
+			const oldSec = selectedEle.closest(".spritedoc-section").dataset.sectionId;
+			const eleSelected = selectedEle;
 			if (sec === oldSec) {
 				removeOverlays();
 				updateToolbar();
 				return;
 			}
 			addHistory([
-				"sprite-move",
-				"sprite-move",
-				sec, // New
-				oldSec, // Old
-				selectedEle
+				function() {
+					root.querySelector('div[data-section-id="' + oldSec + '"] .spritedoc-boxes').appendChild(eleSelected);
+					sortSection(oldSec);
+				},
+				function() {
+					root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes').appendChild(eleSelected);
+					sortSection(sec);
+				}
 			]);
-			root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes').appendChild(selectedEle);
+			root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes').appendChild(eleSelected);
 			removeOverlays();
 			sortSection(sec);
 			updateToolbar();
+		}
+		function setDefaultSprite(oldDefault, newDefault) {
+			if (oldDefault) delete oldDefault.dataset.default;
+			if (newDefault) newDefault.dataset.default = ".";
 		}
 		buttons.defaultSprite.on("click", function() {
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
 			document.body.removeChild(menu);
 			var oldDefault = document.querySelector('li[data-default]');
-			if (oldDefault) {
+			if (oldDefault)
 				delete oldDefault.dataset.default;
-			}
-			if (oldDefault !== selectedEle) {
+
+			if (oldDefault !== selectedEle)
 				selectedEle.dataset.default = ".";
-			}
+
+			const _oldDefault = oldDefault;
+			const _newDefault = document.querySelector('li[data-default]');
 			addHistory([
-				"sprite-default",
-				"sprite-default",
-				oldDefault,
-				document.querySelector('li[data-default]')
+				function() {
+					setDefaultSprite(_newDefault, _oldDefault);
+				},
+				function() {
+					setDefaultSprite(_oldDefault, _newDefault);
+				}
 			]);
 		});
 		buttons.moveSprite.on("click", function() {
@@ -1039,17 +993,17 @@
 		spriteNames.classList = 'spritedoc-names';
 		data.sort(function(a, b) {return a[0] < a[1];});
 		for (var name = 0; name < data.length; name++) {
-			if (name === 0 && pos) {
+			if (name === 0 && pos)
 				spriteBox.setAttribute('data-sort-key', data[name][0]);
-			}
+
 			// sprite names
 			var box_code = getCodeField(data[name][0]);
-			if (data[name][1]) {
+			if (data[name][1])
 				box_code.classList.add("spritedoc-deprecated");
-			}
-			if (pos) {
+
+			if (pos)
 				box_code.setAttribute("isSprite", "");
-			}
+
 			var spriteName = document.createElement('li');
 			spriteName.classList = 'spritedoc-name';
 			spriteName.append(box_code);
@@ -1072,24 +1026,79 @@
 	function generateSpriteView(id) {
 		var spriteBoxes = document.createElement('ul');
 		spriteBoxes.classList = 'spritedoc-boxes';
-		if (sections[id].children.length > 1) {
+		if (sections[id].children.length > 1)
 			sections[id].removeChild(sections[id].children[1]);
-		}
+
+		var dropZone = document.createElement("div");
+		dropZone.classList = "section-drag-overlay sprite-drop-area";
+		dropZone.style.display = "none";
+		dropZone.style.top = 0;
+		dropZone.style.left = 0;
+		dropZone.style.zIndex = 99;
+
 		sections[id].append(spriteBoxes);
+		spriteBoxes.append(dropZone);
 		if (sprites[id]) {
 			for (var pos = 0; pos < sprites[id].length; pos++) {
 				if (!sprites[id][pos]) continue;
 				// sprite box
 				var sb = getSpriteBox(pos, sprites[id][pos]);
 				spriteBoxes.append(sb);
-				var names = sb.querySelectorAll("code[isSprite]");
-				for (var namesPos = 0; namesPos < names.length; namesPos++) {
-					namesList[names[namesPos].textContent] = namesList[names[namesPos].textContent] || [];
-					namesList[names[namesPos].textContent].push(names[namesPos]);
-				}
 				sortSpriteNames(pos);
 			}
 		}
+		// Handle drag'n'drop
+		spriteBoxes.addEventListener("dragenter", function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			e.dataTransfer.dropEffect = 'copy';
+			dropZone.style.display = "unset";
+		});
+		dropZone.addEventListener("dragenter", function(e) {
+			e.preventDefault();
+		});
+		dropZone.addEventListener("dragover", function(e) {
+			e.preventDefault();
+		});
+		dropZone.addEventListener("dragleave", function(e) {
+			e.preventDefault();
+			dropZone.style.display = "none";
+		});
+		dropZone.addEventListener("drop", function(e) {
+			e.preventDefault();
+			dropZone.style.display = "none";
+			var ele = e.dataTransfer.getData("Text");
+			var files = e.dataTransfer.files;
+			if (files.length > 0) {
+				var sec = e.srcElement.closest(".spritedoc-section").dataset.sectionId;
+				if (!sec) return;
+				var boxes = root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes');
+				for (var i = 0; i < files.length; i++) {
+					if (files[i].type.match(/image.*/))
+						addFile(files[i], boxes.lastChild);
+				}
+				return;
+			}
+			if (!ele) return;
+			const selEle = document.querySelector('li[data-pos="' + ele + '"]');
+			if (!selEle) return;
+			const oldSec = selEle.closest(".spritedoc-section").dataset.sectionId;
+			const newSec = e.target.closest(".spritedoc-section").dataset.sectionId;
+			if (newSec === oldSec) return;
+			addHistory([
+				function() {
+					root.querySelector('div[data-section-id="' + oldSec + '"] .spritedoc-boxes').appendChild(selEle);
+					sortSection(oldSec);
+				},
+				function() {
+					root.querySelector('div[data-section-id="' + newSec + '"] .spritedoc-boxes').appendChild(selEle);
+					sortSection(newSec);
+				}
+			]);
+			root.querySelector('div[data-section-id="' + newSec + '"] .spritedoc-boxes').appendChild(selEle);
+			sortSection(newSec);
+		});
+
 		// Add images to section-button
 		if (has_edit_permission) {
 			var permOrg = has_edit_permission;
@@ -1098,73 +1107,9 @@
 			has_edit_permission = permOrg;
 		}
 	}
-	var lastDragoverSection;
-	document.body.ondragover = function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		e.dataTransfer.dropEffect = 'copy';
-		var sec = e.srcElement.closest(".spritedoc-section");
-		if ((sec === null && !lastDragoverSection) || (lastDragoverSection && lastDragoverSection === sec)) return;
-		console.log(lastDragoverSection);
-		console.log(sec);
-		console.log(e);
-		if (lastDragoverSection && (!sec || lastDragoverSection !== sec)) {
-			var oldEle = document.getElementsByClassName("section-drag-overlay");
-			if (oldEle.length)
-				oldEle[0].parentElement.removeChild(oldEle[0]);
-			lastDragoverSection = undefined;
-		}
-		if (sec) {
-			lastDragoverSection = sec;
-			var box = sec.querySelector(".spritedoc-boxes");
-			var ele = document.createElement("div");
-			ele.textContent = "Drop to add.";
-			ele.classList.add("section-drag-overlay");
-			ele.dataset.section = sec.dataset.sectionId;
-			box.append(ele);
-			ele.ondrop = function(e) {
-				e.preventDefault();
-				var ele = e.dataTransfer.getData("Text");
-				var sec = e.target.closest(".spritedoc-section").dataset.sectionId;
-				var selEle = document.querySelector('li[data-pos="' + ele + '"]');
-				var oldSec = selEle.closest(".spritedoc-section").dataset.sectionId;
-				if (sec === oldSec) return;
-				e.target.closest(".spritedoc-section").querySelector(".spritedoc-boxes").appendChild(
-					selEle
-				);
-				addHistory([
-					"sprite-move",
-					"sprite-move",
-					sec, // New
-					oldSec, // Old
-					selEle
-				]);
-				sortSection(sec);
-			};
-		}
-	};
 	function newSection(s) {
 		var spriteSection = helper.newSection(s);
 		root.append(spriteSection);
-		spriteSection.ondrop = function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var oldEle = document.getElementsByClassName("section-drag-overlay");
-			if (oldEle.length)
-				oldEle[0].parentElement.removeChild(oldEle[0]);
-			lastDragoverSection = undefined;
-			if (e.dataTransfer !== null) {
-				var files = e.dataTransfer.files;
-				var sec = e.srcElement.dataset.section || e.srcElement.closest(".spritedoc-section").dataset.section;
-				if (!sec) return;
-				var boxes = root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes');
-				for (var i = 0; i < files.length; i++) {
-					if (files[i].type.match(/image.*/)) {
-						addFile(files[i], boxes.lastChild);
-					}
-				}
-			}
-		};
 		highestID = Math.max(highestID, s.id);
 		sections[s.id] = spriteSection;
 		generateSpriteView(s.id);
@@ -1453,7 +1398,6 @@
 			canvasCollection = [];
 			history = [];
 			historyPos = 0;
-			namesList = {};
 			updateTitle(false);
 			buttons.undo.setDisabled(true);
 			buttons.redo.setDisabled(true);
@@ -1484,13 +1428,11 @@
 			imgHeight = Number(output.settings.height) || imgSize;
 			options.spacing = output.settings.spacing || 0;
 			imgSpacingOrg = options.spacing;
-			helper = window.SpriteEditorModules.helper;
 			helper.setSharedData({
 				imgWidth: imgWidth,
 				imgHeight: imgHeight,
 				toShare: toShare,
 				markDuplicateNames: markDuplicateNames,
-				namesList: namesList,
 				canvasCollection: canvasCollection,
 				addHistory: addHistory
 			});
@@ -1557,18 +1499,12 @@
 				if (data.query.userinfo && data.query.userinfo.blockid)
 					has_edit_permission = false;
 				if (has_edit_permission && data.query.pages && data.query.pages.length) {
-					for (i = 0; i < data.query.pages[0].protection.length; i++) {
-						if (!checkProtection(data.query.userinfo.rights || [], data.query.pages[0].protection[i])) {
-							has_edit_permission = false;
-							break;
-						}
-					}
-				}
-				if (has_edit_permission && data.query.pages && data.query.pages.length) {
-					for (i = 0; i < data.query.pages[1].protection.length; i++) {
-						if (!checkProtection(data.query.userinfo.rights || [], data.query.pages[1].protection[i])) {
-							has_edit_permission = false;
-							break;
+					for (var j = 0; j < 2; j++) {
+						for (i = 0; i < data.query.pages[j].protection.length; i++) {
+							if (!has_edit_permission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
+								has_edit_permission = false;
+								break;
+							}
 						}
 					}
 				}
@@ -1615,6 +1551,7 @@
 			loadSprite2();
 		}
 		function loadSprite(name, isNew, spriteSizeW, spriteSizeH, spacing) {
+			helper = window.SpriteEditorModules.helper;
 			if (!name.length) return;
 			var nameNew = (name.substring(name.length - 6) !== "Sprite") && name + "Sprite" || name;
 			if (name !== nameNew) {
@@ -1649,8 +1586,7 @@
 						output.settings = output.settings || {};
 						output.ids = output.ids || {};
 						output.sections = output.sections || [];
-						imgEle.src = config.wgArticlePath.replace("$1", "Special:Redirect/file/" + (output.settings.image || name + ".png"));
-						imgEle.src = imgEle.src + ( imgEle.src.includes('?') ? '&' : '?' ) + "version=" + Date.now();
+						imgEle.src = helper.filepath(output.settings.image || name + ".png");
 						document.body.append(imgEle);
 						imgEle.addEventListener("error", function() {
 							loadNew(options.defaultSpriteSize, options.defaultSpriteSize);

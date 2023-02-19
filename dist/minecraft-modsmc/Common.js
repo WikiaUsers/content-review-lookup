@@ -3,17 +3,18 @@
 //====================================================================
 // Replace download links with custom-designed Download buttons
 // By Wither. Please notify me if you plan to use this somewhere!
+// edit: Disabled as it seems unused and is causing some security concerns (see: PLATFORM-8094)
 //====================================================================
-
-! function() {
-   var theLink = mw.html.escape($(".DownloadLink").text());
-   $(".DownloadLink").replaceWith("<div class = 'DownloadButton'><span>Download</span></div>");
-   $(".DownloadButton").attr("href", theLink);
-   importStylesheetPage("MediaWiki:DownloadButton.css", "minecraft-modsmc");
-   $(".DownloadButton").on("click", function() {
-        window.open(theLink, '_blank');
-   });
-} ();
+//
+//! function() {
+//   var theLink = mw.html.escape($(".DownloadLink").text());
+//   $(".DownloadLink").replaceWith("<div class = 'DownloadButton'><span>Download</span></div>");
+//   $(".DownloadButton").attr("href", theLink);
+//   importStylesheetPage("MediaWiki:DownloadButton.css", "minecraft-modsmc");
+//   $(".DownloadButton").on("click", function() {
+//        window.open(theLink, '_blank');
+//   });
+//} ();
 
 //=============
 // RailWAM

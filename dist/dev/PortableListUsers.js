@@ -35,7 +35,6 @@
         'content-moderator': {},
         //'content-reviewer': {},
         //'content-volunteer': {},
-        //'council': {},
         //'emailconfirmed': {},
         //'fandom-editor': {},
         //'fandom-star': {},        

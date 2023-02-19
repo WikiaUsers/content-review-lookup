@@ -1,4 +1,4 @@
-// 03:59, 1 February 2023 (UTC) <nowiki>
+// 11:17, 19 February 2023 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -110,20 +110,20 @@ $elem.html(
 });
 // END 'ADD A BLOG POST' LINK
 
-// CREATE A 'MY BLOGS' LINK TO THE ACCOUNT NAVIGATION LINKS PAGE
+// CREATE A 'MY ACTIVITY' LINK TO THE ACCOUNT NAVIGATION LINKS PAGE
 mw.loader.using(['mediawiki.util'], function() {
-    var $elem = $('.my-blog');
+    var $elem = $('.my-activity');
     if (!$elem.length) return;
 
-    $elem.html(
-        $('<a>', {
-            href: mw.util.getUrl('User_blog:' + mw.config.get('wgUserName')),
-            text: $elem.text() || "My Blogs",
-    title: "Special:Myblog",            
+    $elem.html(function() {
+        return $('<a>', {
+            href: mw.util.getUrl('Special:UserProfileActivity/' + mw.config.get('wgUserName')),
+            text: $(this).text().replace('$1', mw.config.get('wgUserName')) || "My Activity",
+    title: "Special:UserProfileActivity/" + mw.config.get('wgUserName'),    
         })
-    );
+    });
 });
-// END 'MY BLOGS' LINK
+// END 'MY ACTIVITY' LINK
 
 // REPLACE ASTERISKS WITH ARABIC STARS FOR USER RIGHTS PAGE
 $(function () {

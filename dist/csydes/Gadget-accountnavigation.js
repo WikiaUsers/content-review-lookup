@@ -13,8 +13,12 @@
         blogs: {
             text: 'My Blogs',
             url: '/wiki/Special:Myblog'
-        }
     },
+        activity: {
+            text: 'My Activity',
+            url: '/wiki/Special:UserProfileActivity/' + user
+        }
+    }, 
         html = '',
         navLinks = true;
     for (var i in links) {

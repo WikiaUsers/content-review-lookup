@@ -1,7 +1,21 @@
 ;(function($, mw) {
 	'use strict';
 
+	const config = mw.config.get([
+		"isGamepedia",
+		"wgContentLanguage",
+		"wgDBname"
+	]);
+	const prefix = config.wgContentLanguage;
 	if (window.SpriteEditorModules.helper && window.SpriteEditorModules.helper.loaded) return;
+	var fileServer;
+	var serverURL = "https://images.wikia.com/";
+	if (config.isGamepedia || document.location.pathname.startsWith("/wiki/")) {
+		fileServer = serverURL + config.wgDBname + "/images";
+	} else {
+		var DBname = config.wgDBname.substring((prefix || "").replace("-","").length);
+		fileServer = serverURL + DBname + "/" + prefix + "/images";
+	}
 	var shared;
 	var defaultSpriteSize = 16;
 	var root = document.getElementById('mw-content-text');
@@ -64,8 +78,6 @@
 					var names = spriteSection.querySelectorAll("code[isSprite]");
 					var n = {};
 					for (var i = 0; i < names.length; i++) {
-						var t = shared.namesList[names[i].textContent] || [];
-						t.splice(t.indexOf(names[i]), 1);
 						n[names[i].textContent] = true;
 					}
 					if (orgName.length) {
@@ -89,18 +101,6 @@
 			spriteSection.append(section_h3);
 			return spriteSection;
 		},
-		removeSection: function(sectionID) {
-			var a = root.querySelector('div[data-section-id="' + sectionID + '"]');
-			shared.addHistory([
-				"section-removed",
-				"section-added",
-				sectionID,
-				a,
-				a.querySelector("span").textContent,
-				Array.from(root.children)[a]]
-			);
-			root.removeChild(a);
-		},
 		addSprite: function(positionID, img) {
 			var nc = this.newCanvas();
 			shared.canvasCollection[positionID] = nc;
@@ -116,16 +116,15 @@
 			var n = {};
 			for (var i = 0; i < codes.length; i++) {
 				var t = codes[i].textContent;
-				shared.namesList[t].splice(shared.namesList[t].indexOf(codes[i]), 1);
 				n[t] = true;
 			}
-			shared.markDuplicateNames(n);
 			var secID = cl.closest('.spritedoc-section').dataset.sectionId;
 			if (!skipHistory) {
 				shared.addHistory(["sprite-removed", "sprite-added", secID, id, cl, shared.toShare.highestPos, shared.toShare.highestPos]);
 			}
 			var clBoxes = cl.closest('.spritedoc-boxes');
 			clBoxes.removeChild(cl.closest('.spritedoc-box'));
+			shared.markDuplicateNames(n);
 		},
 		newCanvas: function() {
 			var c = document.createElement('canvas');
@@ -134,6 +133,16 @@
 			var ctx = c.getContext('2d');
 			ctx.imageSmoothingEnabled = false;
 			return c;
+		},
+		filepath: function(name) {
+			if (window.hex_md5) {
+				const hash = window.hex_md5(name);
+				return fileServer + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) +
+					"/revision/latest?format=original&version=" + Date.now() +
+					(prefix === 'en' ? '' : '&path-prefix=' + prefix);
+			} else {
+				return '';
+			}
 		}
 	};
 })(window.jQuery, window.mediaWiki);

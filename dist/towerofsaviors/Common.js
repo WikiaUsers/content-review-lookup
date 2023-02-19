@@ -80,3 +80,5 @@ window.texttip = function(){
     .on('mouseleave touchend',function(){$('.tt-tip').remove();}).parent('a').removeAttr('title');
     tt.children('a').removeAttr('title');
 };
+
+window.BackToTopModern = true;

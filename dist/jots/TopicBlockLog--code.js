@@ -243,7 +243,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Block'
 		
 		// New wiki section
 		$blockLog.append($(document.createElement("div"))
-			.prepend($localLogs = $(document.createElement("ul")))
+			.prepend($localLogs = $(document.createElement("ul")).addClass("mw-logevent-loglines"))
 			.prepend(new Make("h4")
 				.contains( Make.prototype.link(result.general.server, '', result.general.sitename) ).e
 			)

@@ -252,7 +252,7 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 			}
 			
 			// No title or title only contains formatting codes
-			if ( title === undefined || title !== '' && title.replace( /&([0-9a-gl-or]|#[0-9a-fA-F]{6}|\$[0-9a-fA-F]{3})/g, '' ) === '' ) {
+			if ( title === undefined || title !== '' && title.replace( /&([0-9a-gl-oERLDQAICGNr]|#[0-9a-fA-F]{6}|\$[0-9a-fA-F]{3})/g, '' ) === '' ) {
 				// Find deepest child title
 				var childElem = $elem[0], childTitle;
 				do {
@@ -295,8 +295,8 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 			}
 			
 			// Add classes for minecraft formatting codes
-			while ( content.search( /&(?:[0-9a-gl-o]|#[0-9a-fA-F]{6}|\$[0-9a-fA-F]{3})/ ) > -1 ) {
-				content = content.replace( /&([0-9a-gl-o])(.*?)(&r|$)/g, '<span class="format-$1">$2</span>&r' );
+			while ( content.search( /&(?:[0-9a-gl-oERLDQAICGN]|#[0-9a-fA-F]{6}|\$[0-9a-fA-F]{3})/ ) > -1 ) {
+				content = content.replace( /&([0-9a-gl-oERLDQAICGN])(.*?)(&r|$)/g, '<span class="format-$1">$2</span>&r' );
 				content = content.replace( /&(?:#([0-9a-fA-F]{6})|\$([0-9a-fA-F]{3}))(.*?)(&r|$)/g, '<span class="format-custom" style="color: #$1$2;">$3</span>&r' );
 			}
 			// Remove reset formatting

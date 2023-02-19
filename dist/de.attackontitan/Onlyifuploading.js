@@ -22,8 +22,8 @@ function setSpecialUploadTemplate() {
     if (editbox.value !== '') return;
     editbox.value = "{"+"{Dateiinfo\n"
                   + "|Beschreibung = \n"
-                  + "|Datum = \n"
                   + "|Quelle = \n"
+                  + "|Seite = \n"
                   + "|Lizenz = \n"
                   + "}"+"}";
 }

@@ -39,3 +39,11 @@ $(function() {
 window.AddRailModule = [
 	{page: 'Template:DiscordRailModule', prepend: true, maxAge: 86400}
 ];
+
+/********** dev:ReferencePopups **********/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});

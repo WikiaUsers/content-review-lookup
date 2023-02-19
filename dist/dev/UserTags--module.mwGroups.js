@@ -18,7 +18,7 @@ UserTagsJS.extensions.mwGroups = (function($, document) {
         _storageKey: 'UserTags-mwGroups-TagDataCache',
         _groupRegex: /^group-(.+)-member$/,
         start: function(config, username, logger/*, lang*/) {
-            var groups = ['blocked', 'bot', 'bureaucrat', 'checkuser', 'content-moderator', 'council', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'global-discussions-moderator', 'content-volunteer', 'wiki-representative', 'wiki-specialist', 'soap'];
+            var groups = ['blocked', 'bot', 'bureaucrat', 'checkuser', 'content-moderator', 'helper', 'rollback', 'staff', 'sysop', 'threadmoderator', 'global-discussions-moderator', 'content-volunteer', 'wiki-representative', 'wiki-specialist', 'soap'];
             if (!$.isArray(config)) {
 				if (!$.isPlainObject(config)) {
 				    config = groups;

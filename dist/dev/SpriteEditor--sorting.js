@@ -10,24 +10,34 @@
 	var shared;
 	var Demo = {};
 	var root = document.getElementById('mw-content-text');
-	var oldOrder = [];
+	var oldOrder;
+	var newOrder;
 	var msg;
+    function updateRoot(order) {
+        var tmp = root.children[0];
+        var a = document.createElement("span");
+        root.prepend(a);
+        root.insertBefore(tmp, a);
+        for (var i = 0; i < order.length; i++) {
+            root.insertBefore(order[i], a);
+        }
+        root.removeChild(a);
+    }
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
-	myData.setSections = function(s) {
+	myData.setSections = function(order) {
+        oldOrder = root.querySelectorAll('div.spritedoc-section');
 		var ele = document.getElementsByClassName("spriteedit-sorting")[0];
 		ele.innerHTML = "";
 		var items = [];
-		oldOrder = [];
-		for (var i = 0; i < s.length; i++) {
+		for (var i = 0; i < order.length; i++) {
 			items[items.length] = new Demo.DraggableItemWidget( {
 				data: 'item' + i,
 				icon: 'tag',
-				label: s[i].querySelector(".mw-headline").textContent
+				label: order[i].querySelector(".mw-headline").textContent
 			} );
-			items[items.length - 1].$element.get(0).dataset.sectionId = s[i].dataset.sectionId;
-			oldOrder[oldOrder.length] = s[i].dataset.sectionId;
+			items[items.length - 1].$element.get(0).dataset.sectionId = order[i].dataset.sectionId;
 		}
 		var Test = new Demo.DraggableGroupWidget( {
 			items: items
@@ -38,6 +48,18 @@
 	function formHtml() {
 		return '<div class="spriteedit-sorting">' + 
 			'</div>';
+	}
+
+	function moveSectionElements() {
+		var tmp = root.children[0];
+		var a = document.createElement("span");
+		root.prepend(a);
+		var eleList = document.querySelectorAll('div.spriteedit-sorting .oo-ui-draggableElement');
+		root.insertBefore(tmp, a);
+		for (var i = 0; i < eleList.length; i++) {
+			root.insertBefore(document.querySelector('div[data-section-id="' + eleList[i].dataset.sectionId + '"]'), a);
+		}
+		root.removeChild(a);
 	}
 
 	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
@@ -106,6 +128,7 @@
 
 			// initialise dialog, append content
 			SpriteEditorDialog.prototype.initialize = function () {
+
 				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
 				this.content = new OO.ui.PanelLayout({
 					expanded: false
@@ -123,24 +146,19 @@
 			// Handle actions
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
 				if (action === 'saveSorting') {
-					var newOrder = [];
-					var tmp = root.children[0];
-					var a = document.createElement("span");
-					root.prepend(a);
-					var eleList = document.querySelectorAll('div.spriteedit-sorting .oo-ui-draggableElement');
-					root.insertBefore(tmp, a);
-					for (var i = 0; i < eleList.length; i++) {
-						newOrder[newOrder.length] = eleList[i].dataset.sectionId;
-						root.insertBefore(document.querySelector('div[data-section-id="' + eleList[i].dataset.sectionId + '"]'), a);
-					}
-					root.removeChild(a);
+                    moveSectionElements();
+                    newOrder = root.querySelectorAll('div.spritedoc-section');
+                    const _oldOrder = oldOrder;
+                    const _newOrder = newOrder;
 					shared.addHistory([
-						"move-sections",
-						"move-sections",
-						oldOrder,
-						newOrder
+						function() {
+							updateRoot(_oldOrder);
+						},
+						function() {
+							updateRoot(_newOrder);
+						}
 					]);
-					modal.seDialog.close();
+                    modal.seDialog.close();
 				}
 				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
 			};

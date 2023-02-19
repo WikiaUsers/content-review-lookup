@@ -1,14 +1,18 @@
 if($('#mover').length) {
-   $('<span class="upon-moving">'+$('#mover').html()+'</span>').appendTo('.page-header__actions');
+   $('<span class="upon-moving ">'+$('#mover').html()+'</span>').appendTo('.page-header__actions');
    $('#mover').remove();
 }
 if($('.user-status').length) {
    $('<span class="upon-moving-status">'+$('.user-status').html()+'</span>').appendTo('.status-placeholder');
    $('.user-status').remove();
 }
-if($('#mover').length) {
-   $('<span class="upon-moving">'+$('#mover').html()+'</span>').appendTo('.page-header__actions');
-   $('#mover').remove();
+if($('#quotes-link').length) {
+   $('<span class="upon-moving quotes-link wds-button wds-is-text page-header__action-button has-label">'+$('#quotes-link').html()+'</span>').appendTo('.page-header__actions');
+   $('#quotes-link').remove();
+}
+if($('#gallery-link').length) {
+   $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#gallery-link').html()+'</span>').appendTo('.page-header__actions');
+   $('#gallery-link').remove();
 }
 if($('.user-status').length) {
    $('<span class="upon-moving-status">'+$('.user-status').html()+'</span>').appendTo('.status-placeholder');

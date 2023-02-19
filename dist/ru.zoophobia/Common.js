@@ -27,7 +27,6 @@ UserTagsJS.modules.custom = {
 	'LeraBE': ['founder'],
 	'Voidan Dether': ['technician'],
 	'Terabait24': ['technician'],
-	'Никитин Арсений': ['technician'],
 	'Merzlyak': ['discordMod'],
 	'Kostinger': ['discordMod'],
 	'TimurKhan': ['discordMod'],
@@ -44,7 +43,6 @@ setInterval(function () {
 	$('.wds-avatar a[href$="LeraBE"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
     $('.wds-avatar a[href$="Swit4er"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
     $('.wds-avatar a[href$="Terabait24"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
-    $('.wds-avatar a[href$="%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D0%B8%D0%BD%20%D0%90%D1%80%D1%81%D0%B5%D0%BD%D0%B8%D0%B9"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
     $('.wds-avatar a[href$="Voidan%20Dether"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
     $('.wds-avatar a[href$="Merzlyak"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
     $('.wds-avatar a[href$="Kostinger"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');

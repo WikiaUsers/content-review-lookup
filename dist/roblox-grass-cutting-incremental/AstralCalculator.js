@@ -52,8 +52,20 @@ function addAstralCalculator() { // Function for ensuring all the calculator's v
         function notateInt(e) { // Convert a Decimal number to a string and notate it using either locale string (comma-separated numbers), scientific notation with a fixed number of decimals or suffix notation.
             function checkNoDecimal(x) {
                 x = new Decimal(x);
-                if (new Decimal(x.toStringWithDecimalPlaces(decimals)).equals(x.floor())) {
-                    result = x.floor().toString();
+                if (x.lessThan(1.797693134862315907729305190789e308)) {
+                    if (Math.floor(x.mantissa) == new Decimal(x.mantissa).toStringWithDecimalPlaces(5)) {
+                        if (x.greaterThanOrEqualTo(1e3)) {
+                            result = Math.floor(new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals)) + "e" + x.exponent;
+                        } else {
+                            result = new Decimal(new Decimal(x.mantissa * 10 ** x.exponent).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "")).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "");
+                        }
+                    } else {
+                        if (x.greaterThanOrEqualTo(1e3)) {
+                            result = new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals) + "e" + x.exponent;
+                        } else {
+                            result = new Decimal(new Decimal(x.mantissa * 10 ** x.exponent).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "")).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "");
+                        }
+                    }
                 } else {
                     result = x.toStringWithDecimalPlaces(decimals);
                 }

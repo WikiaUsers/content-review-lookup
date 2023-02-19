@@ -1,10 +1,1 @@
-$(function(){
-    var tpbutton = document.createElement("a");
-    tpbutton.setAttribute("accesskey", "t");
-    tpbutton.setAttribute("href", wgServer + "/wiki/Talk:" + wgPageName);
-    tpbutton.setAttribute("class", "wikia-button secondary talk");
-    tpbutton.setAttribute("rel", "nofollow");
-    tpbutton.setAttribute("data-id", "comment");
-    tpbutton.innerHTML = "Talk";
-    $(tpbutton).insertAfter(".comments");
-});
+$(function(){var t=document.createElement("a");t.setAttribute("accesskey","t"),t.setAttribute("href",wgServer+"/wiki/Talk:"+wgPageName),t.setAttribute("class","wikia-button secondary talk"),t.setAttribute("rel","nofollow"),t.setAttribute("data-id","comment"),t.innerHTML="Talk",$(t).insertAfter(".comments")});

@@ -1,9 +1,9 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1671737159092
+ * Last modified: 1676784050900
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.5
+ * @version 1.0.6
  */
 
 /*
@@ -58,136 +58,93 @@
         return object;
     }
     
-    function makeSanitizer () {
-		var text = document.createTextNode('');
-		var span = document.createElement('span');
-		span.appendChild(text);
-		return function sanitizeHTML (value) {
-			text.nodeValue = value;
-			return span.innerHTML;
-		};
+    function create (tag, props, children) {
+		var el = document.createElement(tag);
+		Object.assign(el, props);
+		if (Array.isArray(children)) el.append.apply(el, children);
+		return el;
+    }
+    
+    function createNS (tag, props, children) {
+		var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+		for (var key in props) {
+			el.setAttribute(key, props[key]);
+		}
+		if (Array.isArray(children)) el.append.apply(el, children);
+		return el;
+    }
+    
+    function createIcon (d) {
+		return createNS('svg', {
+			width: 20,
+			height: 20,
+			viewBox: '0 0 24 24'
+		}, [
+			createNS('path', { d: 'M0 0h24v24H0z', fill: 'none' }),
+			createNS('path', {
+				d: d
+			})
+		]);
     }
     
     var helpers = {
-		sanitizeHTML: makeSanitizer(),
         ensureContainer: function () {
             if (document.querySelector('.toasts')) return;
-            var wrapper = document.createElement('div');
-            wrapper.classList.add('toasts');
+            var wrapper = create('div', { className: 'toasts' });
             wrapper.style.setProperty('width', document.documentElement.offsetWidth + 'px');
             wrapper.style.setProperty('bottom', '80px');
             document.body.appendChild(wrapper);
         },
-        parseHTML: function (html, fragment) {
-            var template = document.createElement('template'),
-                node;
-                
-            fragment = typeof fragment === 'boolean' ? fragment : false;
-            template.innerHTML = html;
-            node = template.content.cloneNode(true);
-            
-            if (fragment) return node;
-            return node.childNodes.length > 1 ? node.childNodes : node.childNodes[0];
-        },
         buildToast: function (message, type, icon) {
-            var hasIcon = type || icon,
-                html = '',
-                name = 'toast' + (
-					hasIcon
-						? ' toast-has-icon'
-						: ''
-				);
+            var hasIcon = type || icon;
+            var name = 'toast' + (
+				hasIcon
+					? ' toast-has-icon'
+					: ''
+			);
             name += type && type !== 'default'
 					? ' toast-' + type
 					: '';
             if (!icon && type) icon = type;
-            html += '<div class="' + name + '">';
-            if (this.icons[icon]) {
-                html += '<div class="toast-icon">';
-                html += this.icons[icon](20);
-                html += '</div>';
-            }
-            html += '<div class="toast-text">' + message + '</div>';
-            html += '</div>';
-            return this.parseHTML(html);
+            var html = create('div', { className: name }, [
+				this.icons[icon] && create('div', { className: 'toast-icon' }, [
+					this.icons[icon]
+				]),
+				create('div', { className: 'toast-text', textContent: message })
+			].filter(Boolean));
+            return html;
         },
         parseType: function (type, types) {
             return types[type] || '';
         },
         icons: {
-            warning: function (size) {
-                return [
-                    '<svg width="'
-                    + (size || 24)
-                    + '" height="'
-                    + (size || 24)
-                    + '" viewBox="0 0 24 24">',
-                    '<path d="M0 0h24v24H0z" fill="none" />',
-                    '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"'
-                    + '/>',
-                    '</svg>'
-                ].join('');
-            },
-            success: function (size) {
-                return [
-                    '<svg width="'
-                    + (size || 24)
-                    + '" height="'
-                    + (size || 24)
-                    + '" viewBox="0 0 24 24">',
-                    '<path d="M0 0h24v24H0z" fill="none" />',
-                    '<path d="'
-                    + 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-                    + '10-10S17.52 2 12 2zm-2 '
-                    + '15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"'
-                    + '/>',
-                    '</svg>'
-                ].join('');
-            },
-            info: function (size) {
-                return [
-                    '<svg width="'
-                    + (size || 24)
-                    + '" height="'
-                    + (size || 24)
-                    + '" viewBox="0 0 24 24">',
-                    '<path d="M0 0h24v24H0z" fill="none" />',
-                    '<path d="'
-                    + 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-                    + '10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"'
-                    + '/>',
-                    '</svg>'
-                ].join('');
-            },
-            error: function (size) {
-                return [
-                    '<svg width="'
-                    + (size || 24)
-                    + '" height="'
-                    + (size || 24)
-                    + '" viewBox="0 0 24 24">',
-                    '<path d="'
-                    + 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
-                    + '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"'
-                    + '/>',
-                    '</svg>'
-                ].join('');
-            }
+            warning: createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'),
+            success: createIcon(
+				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+					+ '10-10S17.52 2 12 2zm-2 '
+					+ '15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+			),
+            info: createIcon(
+				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+					+ '10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'
+			),
+            error: createIcon(
+				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
+					+ '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'
+			)
         }
     };
     
     var Toasts = {
         show: function (content, options) {
-            var toast;
             content = typeof content === 'string'
 				? content
 				: '';
-            content = helpers.sanitizeHTML(content);
             options = isObject(options)
 				? options
 				: {};
             helpers.ensureContainer();
-            toast = helpers.buildToast(
+            var toast = helpers.buildToast(
                 content,
                 helpers.parseType(options.type || '', this.types),
                 options.icon || ''

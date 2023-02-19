@@ -61,3 +61,22 @@ importArticles({    type: 'script',    articles: [        'u:dev:MediaWiki:Dragg
         article: 'u:dev:MediaWiki:LakeLinks.css'
     });
 })();
+
+$(document).ready(function() {
+  $('.copy-button').on('click', function() {
+    var copyText = $(this).parent().find('.copy-text');
+    copyText.select();
+    var successful = document.execCommand('copy');
+    if (successful) {
+      $(this).addClass('copy-success');
+      setTimeout(function() {
+        $('.copy-button').removeClass('copy-success');
+      }, 1500);
+    } else {
+      $(this).addClass('copy-failed');
+      setTimeout(function() {
+        $('.copy-button').removeClass('copy-failed');
+      }, 1500);
+    }
+  });
+});

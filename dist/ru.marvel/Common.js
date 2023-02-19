@@ -6,8 +6,8 @@
 //  4. Спойлер в статьях
 //  5. Следящий глаз
 //  6. Выпиливание "Категории" у Категорий
-
 //------------------------------------//
+
 nkch_gst_gadgets = [{
     name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
     title: "Недавняя активность", // Название в меню
@@ -24,6 +24,10 @@ nkch_gst_gadgets = [{
     name: "RemoveCatSpoiler",
     title: "Прежние Категории",
     description: "Прежние Категории"
+}, {
+    name: "PreviewRail",
+    title: "Рельса в предпросмотре",
+    description: "Имитация рельсы в предпросмотре."
 }, {
     name: "UCXSearch",
     title: "Быстрый поиск",
@@ -186,4 +190,5 @@ preloadTemplates_subpage =  "case-by-case" ;
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
-window.pPreview.RegExp.onlyinclude = ['.mw-parser-output p a'];
+window.pPreview.RegExp.onlyinclude = ['.mw-parser-output > p a'];
+window.pPreview.RegExp.iparents = ['.ns-special', '.РГ'];

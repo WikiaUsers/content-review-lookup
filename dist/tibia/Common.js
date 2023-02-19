@@ -625,7 +625,7 @@ function clearElement() {
     commands = {
         'get-house-url': function (e) {
             var $span, href;
-            href = game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0");
+            href = mw.html.escape(game.getHouseUrl(getCookie("TW_gameworld") || "0", e.getAttribute('data-houseid') || "0"));
             $span = $('<span>View the <a class="external text" href="' + href + '">Tibia.com house page</a>. (<a href="/wiki/Project:Settings">change settings</a>)</span>)');
             clearElement.call(e);
             $(e).append($span);
@@ -641,7 +641,7 @@ function clearElement() {
                 for (i = 0, len = params.length; i < len; i += 1) {
                     p = params[i];
                     if (o[p] !== undefined && o.hasOwnProperty(p)) {
-                        $tt.append('<div id="' + p + '">' + o[p] + '</div>');
+                    	$('<div>', { id: p, text: o[p] }).appendTo($tt);
                     }
                 }
                 $tt.addClass("show");

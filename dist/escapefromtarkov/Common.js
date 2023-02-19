@@ -42,3 +42,79 @@ $(document).ready(function() {
 
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
 });
+
+
+/* MapsExtended global config */
+window.mapsExtendedConfig = {
+    "sortMarkers": "category",
+    "openPopupsOnHover": false,
+    "useCustomPopups": true,
+    "allowFullscreen": true,
+    "fullscreenMode": "window",
+    "allowSearch": true,
+    "hiddenCategories": [
+        "settings"
+    ],
+    "categoryGroups": [
+        {
+            "label": "Exfils",
+            "children": [
+                "exfil_pmc",
+                "exfil_scav",
+                "exfil_shared"
+            ]
+        },
+        {
+            "label": "Spawns",
+            "children": [
+                "spawn_pmc",
+                {
+                    "label": "AI",
+                    "children": [
+                        "spawn_scav",
+                        "spawn_sniper",
+                        "spawn_boss",
+                        "spawn_cultist"
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Misc",
+            "children": [
+                "locked",
+                "quest",
+                "lever"
+            ]
+        },
+        {
+            "label": "Loot",
+            "children": [
+                "loot_key",
+                "loot_keycard",
+                "loot_loose",
+                {
+                    "label": "Containers",
+                    "children": [
+                        "container_stash",
+                        "container_ammo",
+                        "container_cash",
+                        "container_pc",
+                        "container_dead",
+                        "container_drawer",
+                        "container_grenade",
+                        "container_jacket",
+                        "container_medical",
+                        "container_safe",
+                        "container_duffle",
+                        "container_suitcase",
+                        "container_crate",
+                        "container_tool",
+                        "container_weapon",
+                        "container_greencrate"
+                    ]
+                }
+            ]
+        }
+    ]
+};

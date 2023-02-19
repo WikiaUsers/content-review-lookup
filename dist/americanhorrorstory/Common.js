@@ -1,3 +1,39 @@
+/* BHM toolbar advertisement */
+var toolbarLabel = 'BHM';
+var toolbarLinks = [
+    {link: 'https://bit.ly/FandomBHMblog-toolbar', label: 'Fandom blog'},
+    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003693116', label: 'Discussion post'},
+    {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
+];
+var toolbarElement = document.createElement( 'li' );
+var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );
+toolbarElement.classList.add( 'custom' );
+toolbarElement.classList.add( 'menu' );
+toolbarElement.classList.add( 'wds-dropdown' );
+toolbarElement.classList.add( 'wds-is-flipped' );
+toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' + 
+    '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
+'</span>' + 
+'<div class="wds-dropdown__content">' + 
+    '<ul class="wds-list wds-is-linked">' + 
+        toolbarLinks.map(function(link) {
+            return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
+        }).join('') + 
+    '</ul>' + 
+'</div>';
+
+toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
+
+/* BHM logo link */
+$('.fandom-community-header__image').append(
+    $('<a/>').addClass('hover-community-header-wrapper')
+        .append($('<div/>')
+            .addClass('message')
+            .text('Click here to learn more about Black History Month at Fandom.')
+        )
+        .attr('href', 'https://bit.ly/FandomBHMblog-logo')
+);
+
 /* JS extension configuration */
 AddTalkButtonText = 'Talk';
 

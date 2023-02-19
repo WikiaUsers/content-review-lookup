@@ -66,10 +66,6 @@
 			modules: modules,
 			tags: {
 				//Global Fandom Groups
-				'council': {
-					link:  msg('user-tag-council-link').plain(),
-					title: msg('user-tag-council-tooltip').plain()
-				},
 				'global-discussions-moderator': {
 					link:  msg('user-tag-global-discussions-moderator-link').plain(),
 					title: msg('user-tag-global-discussions-moderator-tooltip').plain()
