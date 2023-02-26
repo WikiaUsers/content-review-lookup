@@ -16,8 +16,12 @@ document.getElementById("feature4").addEventListener("click",function() {
 }, false);
 
 window.SpoilerAlertJS = {
-    question: 'This area contains spoilers. Are you sure you want to read it?',
+    question: 'Questa zona contiene spoiler. Sei sicuro di volerlo leggere?',
     yes: 'Yes',
     no: 'No',
     fadeDelay: 1600
 };
+
+document.getElementById('onClick').addEventListener("click",function() {
+    window.close();
+}, false);

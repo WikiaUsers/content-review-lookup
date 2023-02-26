@@ -1,0 +1,1 @@
+prompt("Are you new to the wiki? If so please read the rules first. ")

@@ -151,7 +151,7 @@
             if (($this.attr('class') || '').indexOf('Comment_wrapper__') !== -1) {
                 addedComments.push(this);
             } else if ($this.is(
-            	'.article-comments-app, [class*="CommentList_comment-list__"')) {
+            	'.article-comments-app, [class*="CommentList_comment-list__"]')) {
                 addedComments = addedComments.concat(
                 	$this.find('[class*="Comment_wrapper__"]').toArray());
             }

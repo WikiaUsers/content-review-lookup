@@ -6,6 +6,7 @@ var toolbarLinks = [
     {link: 'https://lgbtqia.fandom.com/f/p/4400000000000052335', label: 'Discussion post'},
     {link: 'https://lgbtqia.fandom.com/wiki/User_blog:TotallyWitchy/Celebrate_Black_History_Month_With_These_LGBTQIA%2B_Icons', label: 'Black queer icons'},
     {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
+    {link: 'https://bit.ly/FandomBHMTimeline', label: 'BHM Entertainment Timeline'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );

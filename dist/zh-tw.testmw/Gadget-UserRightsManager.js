@@ -1,7 +1,7 @@
 // <nowiki>
 // Adapted from [[mhtest:MediaWiki:Gadget-userRightsManagerTW.js]], itself adapted from [[w:User:MusikAnimal/userRightsManager.js]]
 (function() {
-	if (mw.config.get('wgPageName') != 'Test_Wiki:Request_permissions' && !mw.config.get('wgPageName').includes('URMTW-TESTPAGE-RFP')) {
+	if (mw.config.get('wgPageName') != 'Test_Wiki:請求權限' && !mw.config.get('wgPageName').includes('URMTW-TESTPAGE-RFP')) {
 		return;
 	}
 	

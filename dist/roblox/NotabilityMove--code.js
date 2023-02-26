@@ -1,5 +1,5 @@
 /*
-* NotabilityMove v2.1 (rev 1/19/2023)
+* NotabilityMove v2.2 (rev 2/23/2023)
 * @description Allows for quick moving of pages deemed non-notable.
 * @authors "Joritochip", "The JoTS", "Ozuzanna"
 *
@@ -51,7 +51,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
         event.preventDefault();
         event.stopPropagation();
 
-        var targUser = prompt('Please enter the target user:');
+        var targUser = prompt('Please enter the target user:', window.getSelection().toString());
         if (!targUser) return;
 
         var oldPageName = mw.config.get('wgPageName');

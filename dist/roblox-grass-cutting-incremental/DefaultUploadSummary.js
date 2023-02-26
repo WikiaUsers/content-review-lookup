@@ -1,7 +1,4 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:DefaultUploadSummary.js
-
-
-
 // Check if the page is Special:Upload, otherwise return null.
 if (window.location.pathname === "/wiki/Special:Upload") {
     console.log("[Default Upload Summary] [LOG]: Current page is 'Special:Upload'. Running script.");
@@ -50,3 +47,4 @@ if (window.location.pathname === "/wiki/Special:Upload") {
 } else {
     null;
 }
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:DefaultUploadSummary.js

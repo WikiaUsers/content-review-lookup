@@ -29,5 +29,5 @@ UserTagsJS.modules.autoconfirmed = true; // Switch on
 
 UserTagsJS.modules.custom = {
 	'Raz Mail': ['wikicoder'], 
-	'HelloSummerMemee': ['founder'],
+	'Thefishman4563': ['founder'],
 };

@@ -1,7 +1,7 @@
 //<nowiki>
 mw.loader.load('https://apis.google.com/js/platform.js');
 
-if (wgPageName === 'Special:Upload' || wgPageName === 'Special:MultipleUpload') {
+if (wgPageName === 'Special:Upload') {
     $('#wpUploadDescription').val('[[Category:Images]]');
 }
 //</nowiki>
@@ -14,10 +14,6 @@ window.lastEdited = {
     size: false,
     comment: false,
     time: true
-};
-
-window.railWAM = {
-    logPage: 'Project:WAM Log'
 };
 
 window.ajaxIndicator = 'https://slot1-images.wikia.nocookie.net/__cb1603999865266/common/skins/common/images/ajax.gif';
@@ -83,3 +79,18 @@ mw.hook('dev.i18n').add(function (i18n) {
     });
 });
 importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
+
+// Set a timer for the subscriber button for 3 seconds, because the issue is that it loaded too fast
+const timeout = setTimeout(() => {
+  // Check if the script has been loaded
+  if (!window.yt) {
+    // If the script has not been loaded, throw an error or handle it accordingly
+    throw new Error("Loading error.");
+  }
+}, 3000);
+
+// Load the script using mw.loader.load
+mw.loader.load("yt/platform.js", "text/javascript", () => {
+  // Once the script has been loaded, clear the timeout
+  clearTimeout(timeout);
+});

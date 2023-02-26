@@ -7,3 +7,6 @@ window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
 /* backtotopbutton */
 window.BackToTopModern = true;
+
+/*read progress bar*/
+window.enableReadProgressBarOnArticles = true;

@@ -1,21 +1,7 @@
 ;(function($, mw) {
 	'use strict';
 
-	const config = mw.config.get([
-		"isGamepedia",
-		"wgContentLanguage",
-		"wgDBname"
-	]);
-	const prefix = config.wgContentLanguage;
 	if (window.SpriteEditorModules.helper && window.SpriteEditorModules.helper.loaded) return;
-	var fileServer;
-	var serverURL = "https://images.wikia.com/";
-	if (config.isGamepedia || document.location.pathname.startsWith("/wiki/")) {
-		fileServer = serverURL + config.wgDBname + "/images";
-	} else {
-		var DBname = config.wgDBname.substring((prefix || "").replace("-","").length);
-		fileServer = serverURL + DBname + "/" + prefix + "/images";
-	}
 	var shared;
 	var defaultSpriteSize = 16;
 	var root = document.getElementById('mw-content-text');
@@ -137,9 +123,7 @@
 		filepath: function(name) {
 			if (window.hex_md5) {
 				const hash = window.hex_md5(name);
-				return fileServer + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) +
-					"/revision/latest?format=original&version=" + Date.now() +
-					(prefix === 'en' ? '' : '&path-prefix=' + prefix);
+				return window.SpriteEditorModules.helper.imageURL + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) + "?format=original&version=" + Date.now();
 			} else {
 				return '';
 			}

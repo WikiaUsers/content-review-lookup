@@ -489,6 +489,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"angelic": {
+				"name": "Angelic",
+				"colors": [
+					"holiday",
+					"yellow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"animated": {
 				"name": "Animated",
 				"colors": [
@@ -1269,6 +1278,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
             },
+			"bearberry": {
+				"name": "Bearberry",
+				"colors": [
+					"holiday",
+					"green",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"beast": {
 				"name": "Beast",
 				"colors": [
@@ -9014,6 +9032,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"lavis": {
+				"name": "Lavis",
+				"colors": [
+					"holiday",
+					"red",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"lazuli": {
 				"name": "Lazuli",
 				"colors": [
@@ -15156,6 +15183,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"sleighbell": {
+				"name": "Sleigh Bell",
+				"colors": [
+					"holiday",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"slipstream": {
 				"name": "Slipstream",
 				"colors": [
@@ -17070,6 +17105,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "common"
+			},
+			"topper": {
+				"name": "Topper",
+				"colors": [
+					"holiday",
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"torchbearer": {
 				"name": "Torchbearer",

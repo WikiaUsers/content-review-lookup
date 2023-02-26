@@ -8,3 +8,6 @@ window.UserTagsJS = {modules: {}, tags: {}};
 UserTagsJS.modules.inactive = 60;
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.mwGroups = ['patroller', 'chatmoderator'];
+
+/* Toolbar*/
+window.BackToTopModern = true;

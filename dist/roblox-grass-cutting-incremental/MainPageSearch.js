@@ -1,7 +1,4 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:MainPageSearch.js
-
-
-
 // [WIP] Check if the page has the 'MainPageSearch' ID. To-do: Include detection of the transclusion of the template in addition to the ID.
 const mainPageSearchIDCheck = document.getElementById("MainPageSearch");
 
@@ -30,3 +27,4 @@ if (mainPageSearchIDCheck === null) {
         window.open("https://roblox-grass-cutting-incremental.fandom.com/Special:Search?query=" + document.getElementById("SearchQueryInput").value);
     }
 }
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:MainPageSearch.js

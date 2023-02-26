@@ -82,22 +82,23 @@ window.mapsExtendedConfig = {
         {
             "label": "Misc",
             "children": [
+                "lever",
+                "stationarygun",
                 "locked",
-                "quest",
-                "lever"
+                "quest"
             ]
         },
         {
             "label": "Loot",
             "children": [
-                "loot_key",
                 "loot_keycard",
+                "loot_key",
                 "loot_loose",
                 {
                     "label": "Containers",
                     "children": [
-                        "container_stash",
                         "container_ammo",
+                        "container_stash",
                         "container_cash",
                         "container_pc",
                         "container_dead",
@@ -105,6 +106,7 @@ window.mapsExtendedConfig = {
                         "container_grenade",
                         "container_jacket",
                         "container_medical",
+                        "container_medcase",
                         "container_safe",
                         "container_duffle",
                         "container_suitcase",

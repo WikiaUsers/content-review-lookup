@@ -3,7 +3,9 @@ var toolbarLabel = 'BHM';
 var toolbarLinks = [
     {link: 'https://bit.ly/FandomBHMblog-toolbar', label: 'Fandom blog'},
     {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003693116', label: 'Discussion post'},
+    {link: 'https://americanhorrorstory.fandom.com/wiki/User_blog:Johnny_Warren/Black_American_Horror_History_Month', label: 'Black American Horror History'},
     {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
+    {link: 'https://bit.ly/FandomBHMTimeline', label: 'BHM Entertainment Timeline'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );

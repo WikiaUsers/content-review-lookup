@@ -14,6 +14,26 @@ window.hzbn.mwHtmlLinkFabric = function (classNames) {
 
 /* User Tags */
 
+const staff = [
+    {name: 'Swit4er', className: 'bur'},
+    {name: 'Voidan Dether', className: 'bur'},
+    {name: 'Terabait24', className: 'admin'},
+    {name: 'Никитин Арсений', className: 'admin'},
+    {name: 'P4kaidu', className: 'admin'},
+    {name: 'Merzlyak', className: 'discordMod'},
+    {name: 'Kostinger', className: 'discordMod'},
+    {name: 'TimurKhan', className: 'discordMod'},
+    {name: 'Владыка Аларак', className: 'intern'},
+    {name: 'IamNotFreddy', className: 'discordAdmin'},
+    {name: 'LeraBE', className: 'discordMod'},
+    {name: 'Lubitel obnimashek', className: 'intern'},
+    {name: 'JustAccount', className: 'intern'},
+    {name: 'Fleshka5856', className: 'intern'},
+    {name: 'Fadri Gold', className: 'intern'},
+    {name: 'Creepy Owl', className: 'contMod'},
+    {name: 'Lich night', className: 'threadMod'},
+];
+
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -35,12 +55,11 @@ window.UserTagsJS = {
     }
 };
 
-
-
 UserTagsJS.modules.custom = {
 	'Voidan Dether': ['founder'],
 	'Terabait24': ['technician'],
 	'Никитин Арсений': ['technician'],
+	'P4kaidu': ['technician'],
 	'Merzlyak': ['discordMod'],
 	'Kostinger': ['discordMod'],
 	'TimurKhan': ['discordMod'],
@@ -55,25 +74,11 @@ UserTagsJS.modules.custom = {
 }
 
 /* Выделение комментариев */
-setInterval(function () {
-    $('.wds-avatar a[href$="Voidan%20Dether"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
-    $('.wds-avatar a[href$="Swit4er"]').closest('.Reply, .Reply_body__PM9kM').addClass('bur');
-    $('.wds-avatar a[href$="Terabait24"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
-    $('.wds-avatar a[href$="%D0%9D%D0%B8%D0%BA%D0%B8%D1%82%D0%B8%D0%BD%20%D0%90%D1%80%D1%81%D0%B5%D0%BD%D0%B8%D0%B9"]').closest('.Reply, .Reply_body__PM9kM').addClass('admin');
-    $('.wds-avatar a[href$="Merzlyak"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
-    $('.wds-avatar a[href$="Kostinger"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
-    $('.wds-avatar a[href$="TimurKhan"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
-    $('.wds-avatar a[href$="%D0%92%D0%BB%D0%B0%D0%B4%D1%8B%D0%BA%D0%B0%20%D0%90%D0%BB%D0%B0%D1%80%D0%B0%D0%BA"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="IamNotFreddy"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordAdmin');
-    $('.wds-avatar a[href$="LeraBE"]').closest('.Reply, .Reply_body__PM9kM').addClass('discordMod');
-    $('.wds-avatar a[href$="Lubitel%20obnimashek"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="JustAccount"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="Fleshka5856"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="Fadri%20Gold"]').closest('.Reply, .Reply_body__PM9kM').addClass('intern');
-    $('.wds-avatar a[href$="Creepy%20Owl "]').closest('.Reply, .Reply_body__PM9kM').addClass('contMod');
-    $('.wds-avatar a[href$="Lich%20night"]').closest('.Reply, .Reply_body__PM9kM').addClass('threadmod');
-}, 500 );
-
+setInterval(function (user) {
+	staff.forEach(function (user) {
+	  $('.wds-avatar a[href$="' + window.encodeURIComponent(user.name) + '"]').closest('.Reply, .Reply_body__PM9kM').addClass('Reply--role-' + user.className)
+	})
+}, 500)
 
 // == Настройка гаджетов == //
 nkch_gst_gadgets = [{
@@ -110,8 +115,34 @@ nkch_gst_gadgets = [{
     description: "Капающие с неба разноцветные капли"
 }];
 
+
+
 /* Анимация в рейле */
 $().ready(function () {
+/* Фиксы достижений */
+function fixAchievements(){
+    setInterval(function () {
+        document.querySelectorAll('.badge-icon').forEach(function (badgeIcon) {
+            $(badgeIcon).data('bs.popover').config.content = $(badgeIcon).prev('.profile-hover').prop("outerHTML")
+                .replace('categoryselect-addcategory-button', 'Добавить категорию')
+                .replace('rte-ck-image-add', 'Добавить изображение')
+                .replaceAll(/([\u0400-\u04FF\s]*)?\s(\d*)?\s(изображений[в<br>]*\s)?[статьи|статей]*/g, function(match, p1, p2, p3) {
+                        const number = parseInt(p2)
+                    
+                        if (Number.isNaN(number)) return match;
+                        if (!p1 || !p2 || !p3) return match;
+                        if (number % 10 === 1) return [p1,p2, 'изображение в статью'].join(' ');
+                        if (number % 10 > 1 && number % 10 < 5) return [p1,p2, 'изображения в статьи'].join(' ');
+                        if (number % 10 === 0 || number % 10 > 4) return [p1,p2,p3, 'статьи'].join(' ');
+                })
+                .replaceAll(/⧼|⧽/g, '')
+                .trim()
+        })
+    }, 1000)
+}
+	
+  fixAchievements();
+
   var currentPageNamespace = mw.config.get('wgCanonicalNamespace');
   var hasPhotoModule = currentPageNamespace !== 'Special' && currentPageNamespace !== 'MediaWiki';
   var waitForEl = function waitForEl(selector, blockElement) {
@@ -137,21 +168,14 @@ $().ready(function () {
     });
   };
   waitForEl('.right-rail-wrapper', hasPhotoModule ? '.photo-module' : null).then(function () {
+  
     var railHeadings = document.querySelectorAll('.UserProfileAchievementsModule h2, .rail-module h2');
     railHeadings.forEach(function (rail) {
       return rail.insertAdjacentHTML('afterend', '<div class="rail-module__lines"></div>');
     });
   });
-  
-  /* Фиксы достижений */
-	  document.querySelectorAll('.badge-icon').forEach(function (badgeIcon) {
-	    $(badgeIcon).data('bs.popover').config.content = $(badgeIcon).prev('.profile-hover').prop("outerHTML")
-	        .replace('categoryselect-addcategory-button', 'Добавить категорию')
-	        .replace('rte-ck-image-add', 'Добавить изображение')
-	        .replace('статей', 'статьи')
-	        .replaceAll(/⧼|⧽/g, '');
-	})
-	
+ 
+
 	
 	/* Кнопка скролла */
 	function handleScrollTo(e) {

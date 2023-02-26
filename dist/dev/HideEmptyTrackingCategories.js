@@ -7,72 +7,72 @@
  * @author Magiczocker
  */
 
-;(function ($, mw) {
+;(function (mw) {
 	'use strict';
 
 	if (window.HideEmptyTrackingCategoriesLoaded ||
 		mw.config.get('wgCanonicalSpecialPageName') !== 'TrackingCategories') return;
 	window.HideEmptyTrackingCategoriesLoaded = true;
 
-	var table = document.getElementById('mw-trackingcategories-table');
+	const table = document.getElementById('mw-trackingcategories-table');
 	if (!table) return;
 
-	var displayEmptyRows = true;
-	var emptyText, disabledText, OO;
+	var msg;
+
+	/**
+	 * Update button text and category visibility.
+	 */
+	function update(ele) {
+		const hidden = table.classList.contains('categories-hidden'),
+		btn = ele.srcElement;
+		btn.textContent = msg(hidden ? 'labelHide' : 'labelShow').plain();
+		btn.title = msg(hidden ? 'titleHide' : 'titleShow').plain();
+		table.classList.toggle('categories-hidden');
+	}
 
 	/**
 	 * Initializes the script.
 	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
 	function init(i18n) {
-		var msg = i18n.msg;
-		// add button
-		var button = new OO.ui.ButtonWidget( { 
-			label: msg('labelHide').plain(),
-			title: msg('titleHide').plain(),
-			flags: ['primary', 'progressive']
-		} );
-		$(table).before(button.$element);
+		msg = i18n.msg;
+		const emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')), // "(empty)"
+		disabledText = mw.msg('trackingcategories-disabled'), // "Category is disabled"
+		rows = table.querySelectorAll('.mw-trackingcategories-name');
 
-		var rows = table.querySelectorAll('.mw-trackingcategories-name');
-
-		button.on('click', function () {
-			// toggle visibility
-			for (var i = 0; i < rows.length; i++) {
-				var td = rows[i],
-					span = td.querySelector('span');
-				if (td.textContent === disabledText ||
-					span && span.textContent === emptyText) {
-					td.parentNode.style.display = (displayEmptyRows ? 'none' : null);
-				}
+		for (var i = 0; i < rows.length; i++) {
+			const td = rows[i],
+			span = td.querySelector('span');
+			if (td.textContent === disabledText ||
+				span && span.textContent === emptyText) {
+				td.parentNode.classList.add('empty-category');
 			}
+		}
 
-			// update button
-			button.setLabel(msg(displayEmptyRows ? 'labelShow' : 'labelHide').plain())
-				  .setTitle(msg(displayEmptyRows ? 'titleShow' : 'titleHide').plain());
+		const button = document.createElement('button');
+		button.className = 'wds-button';
+		button.textContent = msg('labelHide').plain();
+		button.title = msg('titleHide').plain();
+		button.addEventListener('click', update);
 
-			// update state
-			displayEmptyRows = !displayEmptyRows;
-		});
+		table.before(button);
+
+		mw.util.addCSS('.categories-hidden .empty-category{display:none;}');
 	}
 
-	mw.loader.using(['mediawiki.api', 'jquery', 'oojs-ui', 'oojs-ui-core', 'oojs-ui-widgets']).then(function(require) {
-		OO = require('oojs');
-		return;
-	}).then(function () {
+	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 		return new mw.Api().loadMessagesIfMissing([
 			'categorytree-member-num',
 			'categorytree-num-empty',
 			'trackingcategories-disabled'
 		]);
 	}).then(function () {
-		emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')); // "(empty)"
-		disabledText = mw.msg('trackingcategories-disabled'); // "Category is disabled"
-		mw.hook('dev.i18n').add(function (i18n) {
+		mw.hook('dev.i18n').add(function(i18n) {
 			i18n.loadMessages('HideEmptyTrackingCategories').done(init);
 		});
-		if (!(window.dev && window.dev.i18n && window.dev.i18n.loadMessages)) {
-			mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
-		}
 	});
-})(window.jQuery, window.mediaWiki);
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+})(window.mediaWiki);

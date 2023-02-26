@@ -975,6 +975,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 2,
                 "offspringeligibility": "expired"
             },
+            "angelic": {
+                "name": "Angelic",
+                "types": [
+                    "holiday",
+                    "yellow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "animated": {
                 "name": "Animated",
                 "types": [
@@ -2514,6 +2531,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "20_hours_20",
                 "rarity": 3
+            },
+            "bearberry": {
+                "name": "Bearberry",
+                "types": [
+                    "holiday",
+                    "green",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "beast": {
                 "name": "Beast",
@@ -17945,6 +17989,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "13_hours_13",
                 "rarity": 2
             },
+            "lavis": {
+                "name": "Lavis",
+                "types": [
+                    "holiday",
+                    "red",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "lazuli": {
                 "name": "Lazuli",
                 "types": [
@@ -30722,6 +30783,22 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "sleighbell": {
+                "name": "Sleigh Bell",
+                "types": [
+                    "holiday",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "slipstream": {
                 "name": "Slipstream",
                 "types": [
@@ -34566,6 +34643,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 1,
                 "notes": [
                     "hidden"
+                ]
+            },
+            "topper": {
+                "name": "Topper",
+                "types": [
+                    "holiday",
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
                 ]
             },
             "torchbearer": {

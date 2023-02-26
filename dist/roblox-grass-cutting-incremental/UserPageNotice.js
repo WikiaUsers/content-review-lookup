@@ -1,7 +1,4 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:UserPageNotice.js
-
-
-
 // Check if current page is a sub-page of a page in the 'User' namespace.
 if (window.location.pathname.match(/[/]User:.*[/]/gi) && mw.config.get('wgAction') === "view") {
     const pagename = mw.config.get("wgCanonicalNamespace") + ":" + mw.config.get("wgTitle");
@@ -12,3 +9,4 @@ if (window.location.pathname.match(/[/]User:.*[/]/gi) && mw.config.get('wgAction
 else {
     null;
 }
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:UserPageNotice.js

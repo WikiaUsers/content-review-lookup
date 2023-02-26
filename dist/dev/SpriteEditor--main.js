@@ -1600,8 +1600,12 @@
 				loadNew(spriteSizeW, spriteSizeH, spacing);
 			}
 		}
-		myData.preload = function() {
+		myData.preload = function(args) {
 			if (--preloads > 0) return;
+			if (args) {
+				var logoURL = args[2].value.query.general.logo;
+				window.SpriteEditorModules.helper.imageURL = logoURL.substring(0,logoURL.search("/images/")) + "/images/";
+			}
 			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
 				myData.msg = i18no.msg;
 				msg = myData.msg;
@@ -1624,9 +1628,16 @@
 		},
 		myData.run = function() {
 			mw.hook('dev.i18n').add(myData.preload);
+			var getImageURL = api.get({
+				action: "query",
+				format: "json",
+				meta: "siteinfo",
+				formatversion: "2",
+				siprop: "general"
+			});
 			var md5JS = mw.loader.load('https://commons.wikimedia.org/w/index.php?title=MediaWiki:MD5.js&action=raw&ctype=text/javascript');
 			var i18nJS = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
-			Promise.allSettled([md5JS, i18nJS]).then(myData.preload);
+			Promise.allSettled([md5JS, i18nJS, getImageURL]).then(myData.preload);
 		};
 		$( document ).on( 'click.spriteEdit', function( e ) {
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];

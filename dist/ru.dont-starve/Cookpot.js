@@ -13,7 +13,7 @@ function timer() {
 	$('<span style="position: relative;"><img class="ingredientcookpot" id="cookpot1" onclick="cookpotDelete(0)"></span>').prependTo('#cookpotWorkSpace');
 
 	$('#cpclear').attr('onclick', 'cookpotDeleteAll()');
-	$(".cookpot > div > p > span > a").each(function() {
+	$(".cookpot .inglist a").each(function() {
 		var src = $(this).children('img').attr('data-src');
 		var title = $(this).attr('title');
 		var name = $(this).children('img').attr('data-image-name');
@@ -23,7 +23,7 @@ function timer() {
 		$(this).removeClass('image-thumbnail image');
 		$(this).attr('onclick', 'cookpotAdd("' + title + '","' + src + '")');
 	});
-	$(".cookpot > div > div > p > span > a").each(function() {
+	$(".cookpot .cookpoting a").each(function() {
 		$(this).removeAttr('href');
 		$(this).removeClass('image-thumbnail image');
 	});
@@ -125,10 +125,10 @@ $('#bmeat').click(function meat() {
 	$(".meat, .meatfish").addClass("light");
 	$(".veggie, .fish, .fruit, .other").removeClass("light");
 	$("#bmeat").css({
-		"background-color": "#b99557"
+		"background-color": "#88684c82"
 	});
 	$("#bveggie, #bfish, #bfruit, #bother").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 
@@ -136,10 +136,10 @@ $('#bfish').click(function fish() {
 	$(".fish, .meatfish").addClass("light");
 	$(".veggie, .meat, .fruit, .other").removeClass("light");
 	$("#bfish").css({
-		"background-color": "#b99557"
+		"background-color": "#88684c82"
 	});
 	$("#bveggie, #bmeat, #bfruit, #bother").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 
@@ -147,10 +147,10 @@ $('#bveggie').click(function veggie() {
 	$(".veggie").addClass("light");
 	$(".meat, .fish, .meatfish, .fruit, .other").removeClass("light");
 	$("#bveggie").css({
-		"background-color": "#b99557"
+		"background-color": "#88684c82"
 	});
 	$("#bmeat, #bfish, #bfruit, #bother").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 
@@ -158,10 +158,10 @@ $('#bfruit').click(function fruit() {
 	$(".fruit").addClass("light");
 	$(".veggie, .meat, .meatfish, .fish, .other").removeClass("light");
 	$("#bfruit").css({
-		"background-color": "#b99557"
+		"background-color": "#88684c82"
 	});
 	$("#bveggie, #bfish, #bmeat, #bother").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 
@@ -169,17 +169,17 @@ $('#bother').click(function other() {
 	$(".other").addClass("light");
 	$(".veggie, .meat, .fruit, .fish, .meatfish").removeClass("light");
 	$("#bother").css({
-		"background-color": "#b99557"
+		"background-color": "#88684c82"
 	});
 	$("#bveggie, #bmeat, #bfruit, #bfish").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 
 $('#bclear').click(function clear() {
 	$(".veggie, .meat, .fruit, .fish, .meatfish, .other").removeClass("light");
 	$("#bveggie, #bmeat, #bfruit, #bfish, #bother").css({
-		"background-color": "#0000"
+		"background-color": "transparent"
 	});
 });
 

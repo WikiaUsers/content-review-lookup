@@ -8,6 +8,7 @@ var toolbarLinks = [
     {link: 'https://www.instagram.com/p/CoHf3gVIKwS/?igshid=YmMyMTA2M2Y%3D', label: 'Instagram: Black drag history'},
     {link: 'https://www.instagram.com/p/Cokz108KgI5/?igshid=YmMyMTA2M2Y%3D', label: 'Instagram: Gladys Bentley'},
     {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
+    {link: 'https://bit.ly/FandomBHMTimeline', label: 'BHM Entertainment Timeline'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );

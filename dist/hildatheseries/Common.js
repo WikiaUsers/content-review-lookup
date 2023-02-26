@@ -1,3 +1,10 @@
+// dev:AutoCreateUserPages.js
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: '{{sub'+'st:welcome}}'
+},
+            summary: 'Welcome to Trollberg!'
+};
 /* Any JavaScript here will be loaded for all users on every page load. */
 importArticles({
     type: 'script',

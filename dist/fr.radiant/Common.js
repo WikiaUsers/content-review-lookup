@@ -35,7 +35,7 @@ function setPostInsta(url){
 			
 			var titre   = textPost.split("<br/>")[0];
 			var descr   = textPost.replace(titre, "").replace(/^<br\/>/, "");
-			var img_src = post.outerHTML.split('<img src="')[1].split('" alt="')[0].replaceAll("\\&quot;",'"');
+			var img_src = post.outerHTML.split('<img src="')[1].split('" alt="')[0].replaceAll("\\&quot;",'');
 			console.log(titre + "\n--\n" + descr + "\n--\n" + img_src);
 			
 			// et l'écrire

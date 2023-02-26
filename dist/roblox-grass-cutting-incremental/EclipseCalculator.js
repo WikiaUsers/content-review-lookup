@@ -67,3 +67,4 @@ if (eclipseCalculatorIDCheck === null) {
 	document.getElementById("ECCalculateButton").addEventListener("click", calcEclipseReq);
 	document.getElementById("ECSuffixButton").addEventListener("click", toggleSuffixes);
 }
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:EclipseCalculator.js

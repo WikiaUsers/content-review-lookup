@@ -46,6 +46,13 @@ nkch_gst_gadgets = [{
 // Настройка AddRailModule
 window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
 
+// Замена изображения для всплывающего окна ссылки
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
+window.pPreview.RegExp.onlyinclude = ['.mw-parser-output > p a'];
+window.pPreview.RegExp.iparents = ['.ns-special', '.РГ', '.comics-table', '.noPreview'];
+
 /* Подключение страниц */
 importArticles({
     type: 'script',
@@ -185,10 +192,3 @@ preloadTemplates_subpage =  "case-by-case" ;
 	// 	    $("#mw-hidden-catlinks").contents()
 	// 	);
 	// });
-
-// Замена изображения для всплывающего окна ссылки
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.defimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
-window.pPreview.noimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/Noimg.jpg/revision/latest?cb=20120406175848&path-prefix=ru';
-window.pPreview.RegExp.onlyinclude = ['.mw-parser-output > p a'];
-window.pPreview.RegExp.iparents = ['.ns-special', '.РГ'];

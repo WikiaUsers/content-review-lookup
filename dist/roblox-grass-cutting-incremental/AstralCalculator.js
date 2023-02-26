@@ -1,7 +1,4 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:AstralCalculator.js
-
-
-
 function addAstralCalculator() { // Function for ensuring all the calculator's variables and functions stay within.
     if (document.getElementById("AstralCalculator") !== null && document.getElementById("AstralCalculatorContainer") === null) {
         console.log("[Astral Calculator] [LOG]: ID located. Running script.");
@@ -53,9 +50,9 @@ function addAstralCalculator() { // Function for ensuring all the calculator's v
             function checkNoDecimal(x) {
                 x = new Decimal(x);
                 if (x.lessThan(1.797693134862315907729305190789e308)) {
-                    if (Math.floor(x.mantissa) == new Decimal(x.mantissa).toStringWithDecimalPlaces(5)) {
+                    if (Math.round(x.mantissa) == new Decimal(x.mantissa).toStringWithDecimalPlaces(5)) {
                         if (x.greaterThanOrEqualTo(1e3)) {
-                            result = Math.floor(new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals)) + "e" + x.exponent;
+                            result = Math.round(new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals)) + "e" + x.exponent;
                         } else {
                             result = new Decimal(new Decimal(x.mantissa * 10 ** x.exponent).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "")).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "");
                         }
@@ -553,3 +550,4 @@ function addAstralCalculator() { // Function for ensuring all the calculator's v
     }
 }
 addAstralCalculator();
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:AstralCalculator.js

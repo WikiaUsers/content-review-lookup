@@ -1,8 +1,4 @@
 // Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:ChargerCalculator.js
-// [WIP] To-do: (1) Add support for negative numbers (i.e. more current Charge than desired Charge).
-
-
-
 function addChargerCalculator() { // Function for ensuring all the calculator's variables and functions stay within.
     if (document.getElementById("ChargerCalculator") !== null && document.getElementById("ChargerCalculatorContainer") === null) {
         console.log("[Charger Calculator] [LOG]: ID located. Running script.");
@@ -44,9 +40,9 @@ function addChargerCalculator() { // Function for ensuring all the calculator's 
             function checkNoDecimal(x) {
                 x = new Decimal(x);
                 if (x.lessThan(1.797693134862315907729305190789e308)) {
-                    if (Math.floor(x.mantissa) == new Decimal(x.mantissa).toStringWithDecimalPlaces(5)) {
+                    if (Math.round(x.mantissa) == new Decimal(x.mantissa).toStringWithDecimalPlaces(5)) {
                         if (x.greaterThanOrEqualTo(1e3)) {
-                            result = Math.floor(new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals)) + "e" + x.exponent;
+                            result = Math.round(new Decimal(x.mantissa).toStringWithDecimalPlaces(decimals)) + "e" + x.exponent;
                         } else {
                             result = new Decimal(new Decimal(x.mantissa * 10 ** x.exponent).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "")).toStringWithDecimalPlaces(decimals).replace(/[.]0+/, "");
                         }
@@ -210,3 +206,4 @@ function addChargerCalculator() { // Function for ensuring all the calculator's 
     }
 }
 addChargerCalculator();
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:ChargerCalculator.js
