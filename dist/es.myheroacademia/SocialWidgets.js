@@ -49,11 +49,11 @@ $(window).load(function () {
  
   if (cfg.wgIsMainpage !== true) { // If it's not the homepage
     if ($('#TOP_RIGHT_BOXAD').length) { // Checks if there are ads
-      $('#TOP_RIGHT_BOXAD').after(generalModule, $('#wikia-recent-activity')); // Inserts module and Recent Wiki Activity (if there is) below ads
-    } else if (cfg.wgPageName === 'Special:WikiActivity') { // If there are no ads, checks if it's Special:WikiActivity
+      $('#TOP_RIGHT_BOXAD').after(generalModule, $('.recent-wiki-activity')); // Inserts module and Recent Wiki Activity (if there is) below ads
+    } else if (cfg.wgPageName === 'Special:RecentChanges') { // If there are no ads, checks if it's Special:WikiActivity
       $('#WikiaRail').prepend(generalModule, $('.CommunityCornerModule')); // Inserts module and Community Corner at the top of the sidebar
     } else { // If there are no ads and it isn't Special:WikiActivity
-      $('#WikiaRail').prepend(generalModule, $('#wikia-recent-activity')); // Inserts modules at the top of the sidebar
+      $('.right-rail-wrapper').prepend(generalModule, $('.recent-wiki-activity')); // Inserts modules at the top of the sidebar
     }
   } else { // If it's the homepage
     $('#home-social-widgets').html(homeModule); // Inserts home module
@@ -62,4 +62,27 @@ $(window).load(function () {
   $.getScript('https://platform.twitter.com/widgets.js', function (data) {
     return data;
   });
+});
+
+mw.hook('wikipage.content').add(function($content) {
+    if (!$content) {
+        return;
+    }
+    $content.find('.poll-maker').each(function() {
+        var $this = $(this),
+            id = $this.attr('data-poll-id'),
+            css = {
+                width: 'inherit',
+                height: 'inherit',
+                border: 0
+            };
+        $this.html(
+            $('<iframe>', {
+                src: 'https://www.poll-maker.com/frame' + id,
+                css: css,
+                seamless: 'seamless',
+                frameborder: 'no'
+            })
+        );
+    });
 });

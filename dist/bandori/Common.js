@@ -112,3 +112,17 @@ window.tooltips_config = {
     offsetX: 10,
     offsetY: 10
 };
+
+/*for load a filter element*/
+$(function(){
+	var $btns = $('.btn').click(function(){
+		if (this.id == 'all') {
+			$('#parent > div').fadeIn(450);
+		} else {
+			var $el = $('.' + this.id).fadeIn(450);
+			$('#parent > div').not($el).hide();
+		}
+		$btns.removeClass('active');
+		$(this).addClass('active');
+	});
+});

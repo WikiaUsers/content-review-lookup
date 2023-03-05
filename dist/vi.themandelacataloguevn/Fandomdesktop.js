@@ -1,0 +1,1 @@
+/* các code lập trình Javascript mà wiki sử dụng đều đã sử dụng hợp lý ở MediaWiki:Common.js và MediaWiki:ImportJS */

@@ -25,46 +25,46 @@
         progressBarInit();
     }
 
-function progressBarInit() {
+	function progressBarInit() {
 
-    // Double-run protection.
-    window.progressBarLoaded = true;
+	    // Double-run protection.
+	    window.progressBarLoaded = true;
 
-    importArticle({ article: 'u:dev:MediaWiki:ReadProgressBar.css' });
+	    importArticle({ article: 'u:dev:MediaWiki:ReadProgressBar.css' });
 
-    // Get article elements to get their height and create progress bar.
-    const navBar = document.querySelector('.fandom-sticky-header'),
-          pageHeader = document.querySelector('.page-header'),
-          siteHeader = document.querySelector('.community-header-wrapper'),
-          articleWrapper = document.getElementById('content'),
-          progressBarWrapper = document.createElement('div'),
-          progressBar = document.createElement('div');
-    progressBarWrapper.classList.add('article-progress-bar');
-    progressBar.classList.add('article-progress-bar__indicator');
-    navBar.appendChild(progressBarWrapper);
-    progressBarWrapper.appendChild(progressBar);
+	    // Get article elements to get their height and create progress bar.
+	    const navBar = document.querySelector('.fandom-sticky-header'),
+	          pageHeader = document.querySelector('.page-header'),
+	          siteHeader = document.querySelector('.community-header-wrapper'),
+	          articleWrapper = document.getElementById('content'),
+	          progressBarWrapper = document.createElement('div'),
+	          progressBar = document.createElement('div');
+	    progressBarWrapper.classList.add('article-progress-bar');
+	    progressBar.classList.add('article-progress-bar__indicator');
+	    navBar.appendChild(progressBarWrapper);
+	    progressBarWrapper.appendChild(progressBar);
 
-    // Get height of the article and use it along with the user's Y position to
-    // calculate the scrollbar's X position. Once the scrollbar's X position is
-    // greater than 100%, hide it behind the global nav bar; otherwise show it.
-    function scrolledProgressBar() {
-        var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
-            percentage = window.pageYOffset / articleHeight * 100;
-        progressBar.style.transform = 'translateX(' + (percentage - 100) + '%)',
-        percentage >= 100 ? hideProgressBar() : showProgressBar();
-    }
+	    // Get height of the article and use it along with the user's Y position to
+	    // calculate the scrollbar's X position. Once the scrollbar's X position is
+	    // greater than 100%, hide it behind the global nav bar; otherwise show it.
+	    function scrolledProgressBar() {
+	        var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
+	            percentage = window.pageYOffset / articleHeight * 100;
+	        progressBar.style.transform = 'translateX(' + (percentage - 100) + '%)',
+	        percentage >= 100 ? hideProgressBar() : showProgressBar();
+	    }
 
-    function hideProgressBar() {
-        progressBarWrapper.classList.add('hide');
-        progressBar.style.transform = 'translateX(0%)';
-    }
+	    function hideProgressBar() {
+	        progressBarWrapper.classList.add('hide');
+	        progressBar.style.transform = 'translateX(0%)';
+	    }
 
-    function showProgressBar() {
-        progressBarWrapper.classList.remove('hide');
-    }
+	    function showProgressBar() {
+	        progressBarWrapper.classList.remove('hide');
+	    }
 
-    ['scroll', 'resize'].forEach(function(event) {
-        window.addEventListener(event, scrolledProgressBar, { passive: true }, false);
-    });
+	    ['scroll', 'resize'].forEach(function(event) {
+	        window.addEventListener(event, scrolledProgressBar, { passive: true }, false);
+	    });
     }
 }(window.mediaWiki));

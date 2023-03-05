@@ -165,8 +165,6 @@ function mwCollapsibleSetup( $collapsibleContent ) {
 
 // Standard edit summaries
 
-window.dev = window.dev || {};
-
 window.dev.editSummaries = {
 	css: '#stdSummaries { ... }',
 	select: 'MediaWiki:Custom-StandardEditSummaries'

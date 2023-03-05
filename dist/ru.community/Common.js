@@ -192,3 +192,81 @@ $('.pi-theme-wikicard').css({
 	});	
 	}
 });
+
+
+
+
+
+// Configuration for adoptions form
+window.adoptInternational = {
+    // Please *remove* your language from the list
+    unsupportedLanguages: ['en','es','de','fr','it','nl','pl','pt','pt-br','zh'],
+    // Self-explanatory, you need to replace this with page and namespace config of your wiki
+    pageConfig: {
+        namespace: 'Запросы_прав',
+        namespaceId: 114,
+        adoptionsPage: 'Запросы_на_статус_администратора/бюрократа'
+    },
+    /**
+     * Wikitext schema for adoption requests created by this form
+     * It uses Mustache.js template form, which can be a little confusing.
+     *
+     * You add variables using the following syntax: `{{variableName}}`.
+     * If you want your variable to be unescaped (e.g. include HTML tags or URLs), you need to use `{{{variableName}}}`.
+     *
+     * This format doesn't particularly work with wikitext templates and magic words, thus I added `bStart` and `bEnd`
+     * variables, which correspond to "{{" and "}}" characters repsectively, but are to be used for *wikitext* syntax only.
+     *
+     * Example:
+     * `{{wikiURL}}` will produce: "https:&#x2F;&#x2F;wiki.fandom.com&#x2F;xx&#x2F;f&#x2F;p&#x2F;420"
+     * `{{{wikiURL}}}` will produce: "https://wiki.fandom.com/xx"
+     * `{{bStart}}wikiURL{{bEnd}}` will produce: "{{wikiURL}}" (wikitext)
+     *
+     * List of available variables:
+     * {{userName}} - Currently logged user
+     * {{wikiName}} - name of the wiki they want to adopt
+     * {{{wikiURL}}} - URL of the wiki they want to adopt
+     * {{permissionsType}} - Type of permissions they request
+     * {{numDays}} - Number of days they were active in within last 10 days
+     * {{numAdmins}} - Number of admins active in last 60 days
+     * {{comments}} - Their comments and rationale for adoption
+     * {{{communityVote}}} - URL to Discussions post with community vote for their request
+     *
+     * Technical:
+     * - {{bStart}} - replaced with "{{"
+     * - {{bEnd}} - replaced with "}}"
+     *
+     * Example below corresponds to EN CC's format, replace with your own
+     */
+    wikitextSchema: "{{bStart}}Forumheader/Adoption requests{{bEnd}}\n\n'''What is your username?'''\n{{userName}}\n\n'''Please link to the wiki here:'''\n{{{wikiURL}}}\n\n'''How many days have you edited the wiki in the past 10 days?'''\n{{numDays}}\n\n'''On the Special Pages  → Special:ListAdmins, how many admins have been active in the past 60 days?'''\n{{numAdmins}}\n\n'''Comments/Reasons for adoption:'''\n<nowiki>{{comments}}</nowiki>\n\n\n[[Category:Adoption requests|{{bStart}}PAGENAME{{bEnd}}]]",
+};
+
+/** Конфигурация страница Запросы на бота
+window.interwikiInternational = {
+        namespace: 'Запросы_интервики',
+    	namespaceId: 116,
+    	mainPage: 'Запросы_на_межъязыковые_ссылки',
+		interwikiSchema: '{{bStart}}Межъязыковая сслыка|{{from}}|{{to}}{{bEnd}}',
+		pageSchema: '{{bStart}}Запрос межъязыковых ссылок{{bEnd}}\n\n' +
+			'{{interwikis}}\n\n' +
+			'~~' + '~~',
+}; **/
+
+//Конфигурация страница Запросы на бота
+window.botFlagInternational = {
+	pageConfig: {
+		namespace: 'Запросы_бота',
+		namespaceId: 118,
+		requestsPage: 'Запросы_на_статус_бота'
+	},
+	titleSchema: '$1 для $2', // $1 = имя бота, $2 = название вики
+	wikitextSchema: '{{bStart}}Запрос на бота\n' +
+		'| 0-Статус         = Новый\n' +
+		'| 1-Вики навзание  = {{wikiName}}\n' +
+		'| 2-URL Бота       = {{{botUrl}}}\n' +
+		'| 3-Имя Бота       = {{botName}}\n' +
+		'| 4-Имя участника  = {{requesterName}}\n' +
+		'| 5-Голосование    = {{{communityVote}}}\n' +
+		'| 6-Комментарии    = {{comments}}\n' +
+	'{{bEnd}}'
+};

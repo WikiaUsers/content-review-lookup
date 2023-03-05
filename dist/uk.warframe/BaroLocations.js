@@ -7,6 +7,8 @@ const WHITELIST_BARO_PAGES = [
 	];
 Object.freeze(WHITELIST_BARO_PAGES);
 
-		$.get( "https://api.warframestat.us/pc/voidTrader/?language=uk", function( data ) {
-			$( "span#baroLocation" ).append( data.location.replace('Реле', 'реле'));
-		}, "json" );
+if (WHITELIST_BARO_PAGES.includes(NW_PAGE_NAME)) {
+	$.get( "https://api.warframestat.us/pc/voidTrader/?language=uk", function( data ) {
+		$( "span#baroLocation" ).append( data.location.replace('Реле', 'реле'));
+	}, "json" );
+}

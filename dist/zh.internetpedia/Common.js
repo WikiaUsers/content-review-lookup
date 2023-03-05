@@ -90,3 +90,44 @@ window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
     }
     return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; //保證每一語言有值
 }
+
+// 顶部滚动公告，代码来自萌娘百科 http://zh.moegirl.org.cn/MediaWiki:Common.js
+function autoScroll(obj) {
+    $(obj).animate({
+        height: "show",
+        paddingTop: "show",
+        marginTop: "show",
+        paddingBottom: "show",
+        marginBottom: "show",
+    });
+    var isFrozen = false;
+    setInterval(function () {
+        if (!isFrozen) {
+        $(obj)
+            .find("ul:first")
+            .animate(
+            {
+                marginTop: "-25px",
+            },
+            500,
+            function () {
+                $(this)
+                .css({
+                    marginTop: "0px",
+                })
+                .find("li:first")
+                .appendTo(this);
+            }
+            );
+        }
+    }, 5000);
+    $(window).on({
+        blur: function () {
+        isFrozen = true;
+        },
+        focus: function () {
+        isFrozen = false;
+        },
+    });
+}
+autoScroll("#scrollDiv");

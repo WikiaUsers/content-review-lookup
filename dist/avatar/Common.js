@@ -6,6 +6,8 @@ var toolbarLinks = [
     {link: 'https://avatar.fandom.com/f/p/4400000000000417412', label: 'Editing project'},
     {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
     {link: 'https://bit.ly/FandomBHMTimeline', label: 'BHM Entertainment Timeline'},
+    {link: 'https://bit.ly/FandomBHMInevitablyDope', label: 'Content Creator: Meet Inevitably Dope'},
+    {link: 'https://bit.ly/FandomBHMRecap', label: 'Blog: BHM at Fandom recap'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );

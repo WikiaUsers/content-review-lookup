@@ -110,16 +110,15 @@ nkch_gst_gadgets = [{
     title: "Тематический курсор",
     description: "Добавляет тематический курсор"
 }, {
-    name: "NeonRain",
-    title: "Неоновый дождь",
-    description: "Капающие с неба разноцветные капли"
+    name: "Weather",
+    title: "Погода",
+    description: "Атмосферные осадки для аутентичности"
 }];
 
 
 
-/* Анимация в рейле */
-$().ready(function () {
 /* Фиксы достижений */
+$().ready(function () {
 function fixAchievements(){
     setInterval(function () {
         document.querySelectorAll('.badge-icon').forEach(function (badgeIcon) {
@@ -142,7 +141,8 @@ function fixAchievements(){
 }
 	
   fixAchievements();
-
+  
+/* Анимация в рейле */
   var currentPageNamespace = mw.config.get('wgCanonicalNamespace');
   var hasPhotoModule = currentPageNamespace !== 'Special' && currentPageNamespace !== 'MediaWiki';
   var waitForEl = function waitForEl(selector, blockElement) {

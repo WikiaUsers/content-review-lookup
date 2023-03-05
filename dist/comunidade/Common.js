@@ -22,24 +22,8 @@ mw.hook('AddRailModule.module').add(function() {
 
 
 window.adoptInternational = {
-    // Please *remove* your language from the list
-    unsupportedLanguages: [
-        'de',
-        'en',
-        'es',
-        'fr',
-        'id',
-        'it',
-        'ja',
-        'nl',
-        'pl',
-        'ru',
-        'zh',
-        'zh-tw',
-        'zh-hk'
-    ],
-    // Self-explanatory, you need to replace this with page and namespace config of your wiki
-    pageConfig: {
+    unsupportedLanguages: ['en','es','de','fr','ru','it','nl','pl','zh'],
+   pageConfig: {
         namespace: 'Pedido de adoção',
         namespaceId: 118,
         adoptionsPage: 'Adoção:Pedidos'
@@ -54,13 +38,11 @@ window.adoptInternational = {
         "| 6-Razão para a adoção = {{comments}}\n" +
         "| 7-Endereço discussões = {{{communityVote}}}\n" +
     "{{bEnd}}",
-    
-    
-    i18n: {
+   i18n: {
         activeAdminsError: 'Por favor tenha em mente que caso haja administradores ativos, você deve primeiramente entrar em contato com eles sobre a possibilidade de se tornar admin.',
         adminsActivityLabel: 'Número de admins ativos nos últimos 60 dias',
         adoptionButtonLabel: 'Adotar uma wiki',
-        alreadyAdminError: 'Você já é um admin nesta wiki. Por favr tenha em mente de que você não precisa adotar uma wiki na qual você já tenha permissões de admin a menos que esteja se candidatando ao cargo de burocrata.',
+        alreadyAdminError: 'Você já é um admin nesta wiki. Por favor tenha em mente de que você não precisa adotar uma wiki na qual você já tenha permissões de admin a menos que esteja se candidatando ao cargo de burocrata.',
         alreadyBureaucratError: 'You are already a bureaucrat on this wiki. You do not need to adopt this wiki.',
         automaticQueryError: 'A wiki não respondeu a uma consulta automatizada. Por favor preencha os campos requisitados.',
         ccError: 'Wikis oficiais do Fandom não estão disponíveis para adoção.',
@@ -68,13 +50,13 @@ window.adoptInternational = {
         commentsLabel: 'Comentários/Razões para a adoção',
         communityVoteLabel: 'Voto da comunidade',
         invalidLanguageError: 'Para pedidos de adoção internacionais, por favor expanda a seção de Pedidos de adoção Internacional e visite a Central da Comunidade referente ao seu idioma para fazer um pedido de adoção.',
-        invalidUrlError: 'O forato de endereço fornecido não foi reconhecido.',
+        invalidUrlError: 'O formato de endereço fornecido não foi reconhecido.',
         linkLabel: 'Link',
         modalTitle: 'Pedido de Adoção',
         nameLabel: 'Nome da Wiki',
         noActivityError: 'Por favor, tenha em mente de que você deve ter contribuído com a wiki de maneira consistente durante uma semana antes de submeter um pedido de adoção.',
         noCommentsError: 'Por favor deixe um motivo do por que você quer adotar essa wiki e por que você estaria apto a ser um admin.',
-        noEditsError: 'Você prescisa ter contribuído por uma semana nessa wiki para poder adotá-la.',
+        noEditsError: 'Você precisa ter contribuído por uma semana nessa wiki para poder adotá-la.',
         noNameError: 'Por favor coloque o nome da wiki.',
         noUrlError: 'Por favor coloque o endereço da wiki.',
         permissionLabel: 'Tipos de permissões',

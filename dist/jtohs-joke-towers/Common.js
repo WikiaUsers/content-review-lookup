@@ -12,7 +12,8 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-		owner: {u:'Real JJT Owner!1!', order: -1/0},
+		owner: {u:'Owner', order: -1/0},
+		creator: {u:'The CSS Guy', order: -1e501},
 		montheditor: { u:'Editor of the Month', order: -1e500},
 		cool: { u:'Coolest Cools', order: -1e101},
 		former: {u:'Former Staff', order: -1e50},
@@ -20,15 +21,15 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Sanjay2133': ['owner', 'cool'],
+	'YataDev': ['owner'],
+	'Sanjay2133': ['creator', 'cool'],
 	'AlsoOmori': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],
 	'Bruhshard1': ['former'],
 	'YourNuglyGuy': ['formerowner'],
 	'Ferdinandloveslegos': ['formerowner'],
-	'The Difficulty Enthusiast': ['formerowner'],
-	'OrbentuneAlt': ['montheditor']
+	'The Difficulty Enthusiast': ['formerowner', 'montheditor'],
 };
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 180;

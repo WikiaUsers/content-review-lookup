@@ -8,7 +8,7 @@
         return false;
     } 
     window.PlutoySkyShardSchedule = {
-        version: '0.1.2',
+        version: '0.1.3',
         init: importArticles({
         	type: 'script',
         	articles: [
@@ -121,14 +121,16 @@
         // Button function: Subtracts 1 day date input and recalculates
         prev: function () {
             var input_dt = PlutoySkyShardSchedule.getInput();
-            document.getElementById("plutoy_date_picker").value = input_dt.minus({days: 1}).toString().slice(0,10);
+            var prev_sky_dt = input_dt.setZone(SKYZONE).minus({days: 1}).toString();
+            document.getElementById("plutoy_date_picker").value = prev_sky_dt.slice(0,10);
             PlutoySkyShardSchedule.displayResults();
         },
 
         // Button function: Adds 1 day date input and recalculates
         next: function () {
             var input_dt = PlutoySkyShardSchedule.getInput();
-            document.getElementById("plutoy_date_picker").value = input_dt.plus({days: 1}).toString().slice(0,10);
+            var next_sky_dt = input_dt.setZone(SKYZONE).plus({days: 1}).toString();
+            document.getElementById("plutoy_date_picker").value = next_sky_dt.slice(0,10);
             PlutoySkyShardSchedule.displayResults();
         },
 

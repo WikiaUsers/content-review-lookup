@@ -536,7 +536,7 @@
 					_boxCode.classList.toggle("spritedoc-deprecated");
 				};
 				addHistory([_func, _func]);
-				box_code.classList.toggle("spritedoc-deprecated");
+				_func();
 				box_code.blur();
 			} else {
 				box_code.setAttribute("data-original-text", box_code.textContent);
@@ -545,11 +545,10 @@
 		box_code.addEventListener('blur', function() {
 			if (buttons.deprecated.getValue()) return;
 			var posId = box_code.closest('.spritedoc-box').dataset.pos;
-			var orgT;
 			var list = {};
 			box_code.textContent = box_code.textContent.trim();
 			var secId = box_code.closest('.spritedoc-section').dataset.sectionId;
-			orgT = box_code.getAttribute("data-original-text") || "";
+			var orgT = box_code.getAttribute("data-original-text") || "";
 			if (box_code.textContent.length) {
 				box_code.removeAttribute("data-original-text");
 				if (orgT === box_code.textContent) return;
@@ -614,7 +613,7 @@
 		if (!(name || '').length) {
 			box_code.className = "spriteedit-new";
 			box_code.setAttribute("isSprite", "");
-			box_code.setAttribute( 'data-placeholder', msg("new-placeholder").plain() );
+			box_code.setAttribute('data-placeholder', msg("new-placeholder").plain());
 		}
 		return box_code;
 	}
@@ -839,19 +838,16 @@
 				updateToolbar();
 				return;
 			}
+			const _func = function(ele) {
+				root.querySelector('div[data-section-id="' + ele + '"] .spritedoc-boxes').appendChild(eleSelected);
+				sortSection(ele);
+			};
 			addHistory([
-				function() {
-					root.querySelector('div[data-section-id="' + oldSec + '"] .spritedoc-boxes').appendChild(eleSelected);
-					sortSection(oldSec);
-				},
-				function() {
-					root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes').appendChild(eleSelected);
-					sortSection(sec);
-				}
+				function() {_func(oldSec);},
+				function() {_func(sec);}
 			]);
-			root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes').appendChild(eleSelected);
 			removeOverlays();
-			sortSection(sec);
+			_func(sec);
 			updateToolbar();
 		}
 		function setDefaultSprite(oldDefault, newDefault) {
@@ -1085,18 +1081,15 @@
 			const oldSec = selEle.closest(".spritedoc-section").dataset.sectionId;
 			const newSec = e.target.closest(".spritedoc-section").dataset.sectionId;
 			if (newSec === oldSec) return;
+			const _func = function(ele) {
+				root.querySelector('div[data-section-id="' + ele + '"] .spritedoc-boxes').appendChild(selEle);
+				sortSection(ele);
+			};
 			addHistory([
-				function() {
-					root.querySelector('div[data-section-id="' + oldSec + '"] .spritedoc-boxes').appendChild(selEle);
-					sortSection(oldSec);
-				},
-				function() {
-					root.querySelector('div[data-section-id="' + newSec + '"] .spritedoc-boxes').appendChild(selEle);
-					sortSection(newSec);
-				}
+				function() {_func(oldSec);},
+				function() {_func(newSec);}
 			]);
-			root.querySelector('div[data-section-id="' + newSec + '"] .spritedoc-boxes').appendChild(selEle);
-			sortSection(newSec);
+			_func(newSec);
 		});
 
 		// Add images to section-button
@@ -1359,7 +1352,7 @@
 				});
 			});
 			oclick = function(ignoreWarning) {
-				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm('Changes you made may not be saved.')) return;
+				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm(msg("unsaved-changes").plain())) return;
 				if (openWindow("open", msg("open-module-missing").plain())) {
 					window.SpriteEditorModules.open.requestChanges();
 				}

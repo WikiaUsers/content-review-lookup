@@ -95,7 +95,7 @@ function calculate() {
 		/*lvl. 27*/	["Class: Adventurer","Skill: Carpenter lvl. 2","Skill: Metallurgist lvl. 2"],
 		/*lvl. 28*/	["Pagoda lvl. 7","Skill: Mechanic lvl. 2","Skill: Blacksmith lvl. 2"],
 		/*lvl. 29*/	["Skill: Alchemist lvl. 2"],
-		/*lvl. 30*/	["Bridge lvl. 1","Caravan lvl. 1","Class: Scientist","Skill: Athlete lvl. 5"],
+		/*lvl. 30*/	["Bridge lvl. 1","Dungeon lvl. 3","Caravan lvl. 1","Class: Scientist","Skill: Athlete lvl. 5"],
 		/*lvl. 31*/	["Outpost lvl. 1","Skill: Boatswain lvl. 2"],
 		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Skill: Carpenter lvl. 3","Skill: Metallurgist lvl. 3"],
 		/*lvl. 33*/	["Skill: Mechanic lvl. 3","Skill: Blacksmith lvl. 3"],

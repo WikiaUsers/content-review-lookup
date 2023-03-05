@@ -5,7 +5,7 @@
 
 ;(function() {
 	var centrals = [
-		'https://community.fandom.com', // en, de, it
+		'https://community.fandom.com', // en, de, it, ru
 		'https://comunidad.fandom.com', // es
 		'https://comunidade.fandom.com', // pt
 		'https://communaute.fandom.com', // fr

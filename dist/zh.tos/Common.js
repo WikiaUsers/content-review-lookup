@@ -557,3 +557,16 @@ wgPageName === '眾神的考驗' && importScript('MediaWiki:ThePantheonsOrdeal.j
 wgPageName === '神魔之塔 繁中維基主頁' && importScript('MediaWiki:MobilePage.js'),
 $.inArray('召喚獸', wgCategories) !== -1 && importScript('MediaWiki:PetGallery.js');
 */
+window.texttip1 = function(){
+    var tt = $('.tt-text1');
+    tt.removeAttr('title').on('mouseenter touchstart',function(){
+        var c = $(this).attr('class').replace("tt-text1", "");
+        var o = $(this).offset(), w = document.documentElement.clientWidth, b = $(this).hasClass('bottom');
+        var p = b ? {top: o.top+$(this).outerHeight()+5} : {bottom: document.documentElement.clientHeight-o.top-$(this).outerHeight()};
+        if(o.left<w/2) p.left = b ? o.left : o.left+$(this).outerWidth()+5;
+        else p.right = b ? w-o.left-$(this).outerWidth() : w-o.left+5;
+        $('<div>').addClass('tt-tip1 ' + c).css(p).html($(this).data('texttip')).appendTo('body');
+    })
+    .on('mouseleave touchend',function(){$('.tt-tip1').remove();}).parent('a').removeAttr('title');
+    tt.children('a').removeAttr('title');
+};

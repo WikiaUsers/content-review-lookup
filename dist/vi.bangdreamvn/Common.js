@@ -1,4 +1,5 @@
-/* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
+/* Any JavaScript here will be loaded for all users on every page load. */
+
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
 $(function() {
@@ -86,8 +87,8 @@ $(jstzConvertAll);
 
 /* AddRailModule on top */
 window.AddRailModule = [
-    {page: 'Bản mẫu:RailModule', prepend: true},
-    {page: 'Bản mẫu:Events', prepend: true}
+    {page: 'Template:RailModule', prepend: true},
+    {page: 'Template:Events', prepend: true}
 ];
 
 /* Discord Banner */
@@ -111,3 +112,17 @@ window.tooltips_config = {
     offsetX: 10,
     offsetY: 10
 };
+
+/*for load a filter element*/
+$(function(){
+	var $btns = $('.btn').click(function(){
+		if (this.id == 'all') {
+			$('#parent > div').fadeIn(450);
+		} else {
+			var $el = $('.' + this.id).fadeIn(450);
+			$('#parent > div').not($el).hide();
+		}
+		$btns.removeClass('active');
+		$(this).addClass('active');
+	});
+});

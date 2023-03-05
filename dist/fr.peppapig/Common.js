@@ -1,7 +1,7 @@
 /**
  * Boîtes déroulantes
  *
- * Pour [[Modèle:Méta palette de navigation]]
+ * Pour [[Modèle:Navbox]]
  */
 
 var Palette_Derouler = '[afficher]';

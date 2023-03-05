@@ -10,10 +10,10 @@
 // TODO: Revert to less ugly version once MW allows ES6+
 
 // jshint jquery:true, esversion:5
-/* globals require, module, mediaWiki, mw, OO */
-'use strict';
+/* globals mw */
 // TODO: Use async once MW allows it
 $( function() {
+	'use strict';
 	var i18n = {
 		autopatrolled: 'Autopatrolled',
 		// $1 is the user, $2 is the timestamp
@@ -495,7 +495,10 @@ $( function() {
 				legendElem.innerHTML += ', <span class="revisionpatrol-icon-' +
 					status + '-legend"> = ' + i18n[status + 'Legend'] + '</span>';
 			};
-			legendElem.innerHTML = legendElem.innerHTML.trim().slice( 0, -1 );
+			legendElem.innerHTML = legendElem.innerHTML.trim();
+			if (legendElem.innerHTML.slice( -1 ) === '.') {
+				legendElem.innerHTML = legendElem.innerHTML.slice( 0, -1 );
+			}
 			addLegend( 'patrolled' );
 			addLegend( 'autopatrolled' );
 			addLegend( 'unpatrolled' );

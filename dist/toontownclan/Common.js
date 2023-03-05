@@ -1,1 +1,0 @@
- importScriptPage('MediaWiki:Snow.js', 'ninjagaiden');

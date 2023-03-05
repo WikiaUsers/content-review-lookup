@@ -3,6 +3,7 @@
 
 	const config = mw.config.get([
 		'wgCanonicalSpecialPageName',
+		'wgIsTestModeEnabled',
 		'wgTitle'
 	]);
 	if (window.SpriteEditorLoaded || !(config.wgCanonicalSpecialPageName === 'Blankpage' && config.wgTitle.endsWith('/SpriteEditor'))) return;
@@ -10,27 +11,23 @@
 	window.SpriteEditorModules = {
 		shared: {}
 	};
-	importArticles(
-		{
-			type: 'style',
-			articles: [
-				'u:dev:MediaWiki:SpriteEditor.css',
-				'mediawiki.diff.styles'
-			]
-		},
-		{
-			type: 'script',
-			articles: [
-				'u:dev:MediaWiki:SpriteEditor/diff.js',
-				'u:dev:MediaWiki:SpriteEditor/helper.js',
-				'u:dev:MediaWiki:SpriteEditor/main.js',
-				'u:dev:MediaWiki:SpriteEditor/new.js',
-				'u:dev:MediaWiki:SpriteEditor/open.js',
-				'u:dev:MediaWiki:SpriteEditor/settings.js',
-				'u:dev:MediaWiki:SpriteEditor/sorting.js'
-			]
-		}
-	).then(function () {
+	var jsFiles = [
+		'MediaWiki:SpriteEditor/diff.js',
+		'MediaWiki:SpriteEditor/helper.js',
+		'MediaWiki:SpriteEditor/main.js',
+		'MediaWiki:SpriteEditor/new.js',
+		'MediaWiki:SpriteEditor/open.js',
+		'MediaWiki:SpriteEditor/settings.js',
+		'MediaWiki:SpriteEditor/sorting.js'
+	];
+	$('head').append('<link rel="stylesheet" type="text/css" href="https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:SpriteEditor.css&only=styles">');
+	var a;
+	if (config.wgIsTestModeEnabled) {
+		a = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=test:' + encodeURI(jsFiles.join("|test:")) + '&*');
+	} else {
+		a = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=' + encodeURI(jsFiles.join("|")) + '&*');
+	}
+	Promise.allSettled([a]).then(function () {
 		var checkExist = setInterval(function () {
 			if (window.SpriteEditorModules.main.run) {
 				window.SpriteEditorModules.main.run();

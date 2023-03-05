@@ -15,6 +15,10 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 // Script for calculating the Solar Ray requirement to go from one Eclipse to another.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:EclipseCalculator.js&action=raw&ctype=text/javascript');
 
+// [ Level Calculator ]
+// Script for calculating the requirement to go from one level to another, including support for The Island's three sub-realms (XP) and the Planetoid (Cosmic).
+mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:LevelCalculator.js&action=raw&ctype=text/javascript');
+
 // [ Suffix Converter ]
 // Script that converts its invoked function's value from scientific notation to suffix notation, and vice-versa. Requires Suffix Button to be fully operational, otherwise defaults to scientific notation. Also includes support for an interactive calculator to convert between the two notation types.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixConverter.js&action=raw&ctype=text/javascript');

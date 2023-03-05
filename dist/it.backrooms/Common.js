@@ -22,6 +22,6 @@ window.SpoilerAlertJS = {
     fadeDelay: 1600
 };
 
-document.getElementById('onClick').addEventListener("click",function() {
+document.getElementById("onClick").addEventListener("click",function() {
     window.close();
 }, false);
