@@ -67,6 +67,20 @@ window.RevealAnonIP = {
     permissions: ['bureaucrat', 'sysop', 'moderator']
 };
 
+// Float any links in the game box widget
+$(".game-box").each(function() {
+    var $this = $(this),
+        anchor = $this.find(".game-name a");
+    if (!anchor || $this.parents(".game-box-link").length > 0)
+        return;
+    $this.wrap($("<a>", {
+        class: "game-box-link",
+        href: anchor.attr("href"),
+        title: anchor.attr("title")
+    }));
+    $this.find("a").attr("tabindex", "-1");
+});
+
 // Importing from dev.fandom.com
 // See the pages for the code.
  importArticles({

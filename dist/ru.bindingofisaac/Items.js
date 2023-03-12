@@ -67,21 +67,25 @@
                 [].slice.call(el.children).sort(function(a, b) {
                     var x, y;
 
-                    if (data === 'tid') {
-                        x = parseInt(b.getAttribute('data-' + data), 10);
-                        y = parseInt(a.getAttribute('data-' + data), 10);
-                    } else {
-                        var x = b.getAttribute('data-' + data).toLowerCase();
-                        var y = a.getAttribute('data-' + data).toLowerCase();
-                    }
- 
-                    return (x < y ? 1 : -1);
+if (data === 'tid' || data === "quality") {
+  x = parseInt(b.getAttribute('data-' + data), 10);
+  y = parseInt(a.getAttribute('data-' + data), 10);
+} else {
+  var x = b.getAttribute('data-' + data).toLowerCase();
+  var y = a.getAttribute('data-' + data).toLowerCase();
+}
+
+if  (data === "quality") {
+  return (x > y ? 1 : -1);
+} 
+
+  return (x < y ? 1 : -1);
                 }).forEach(function(val, index) {
                     el.appendChild(val);
                 });
             });
         }
-	}
+    }
 	
 
     init();

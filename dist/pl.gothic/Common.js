@@ -52,30 +52,27 @@ mw.hook( 'wikipage.content' ).add( function() {
 	const categoryElements = document.querySelectorAll( '.categories-list .cat-el' );
 
 	// Sprawdź, czy istnieją elementy kategorii
-	if ( !!categoryElements ) {
-		/**
-		 * Wykorzystanie konstruktora MouseEvent() do zarejestrowania
-		 * wydarzenia kliknięcia, a później jego wykonania jest lepsze
-		 * od użycia location.replace(), bo pozwala m.in. na powrót do
-		 * poprzedniej strony przy użyciu nawigacji w przeglądarce.
-		 */
-		const clickEvent = new MouseEvent( 'click', {
-			view: window,
-			bubbles: true,
-			cancelable: false
-		} );
-
-		categoryElements.forEach( function( category ) {
-			const categoryLink = category.querySelector( 'a' );
-
-			category.addEventListener( 'click', function() {
-				categoryLink.dispatchEvent( clickEvent );
-			} );
-		} );
+	if ( !categoryElements ) {
+		return;
 	}
-} );
+	
+	/**
+	 * Wykorzystanie konstruktora MouseEvent() do zarejestrowania
+	 * wydarzenia kliknięcia, a później jego wykonania jest lepsze
+	 * od użycia location.replace(), bo pozwala m.in. na powrót do
+	 * poprzedniej strony przy użyciu nawigacji w przeglądarce.
+	 */
+	const clickEvent = new MouseEvent( 'click', {
+		view: window,
+		bubbles: true,
+		cancelable: false
+	} );
 
-importArticle( {
-	type: 'script',
-	article: 'MediaWiki:SocialMedia.js'
+	categoryElements.forEach( function( category ) {
+		const categoryLink = category.querySelector( 'a' );
+
+		category.addEventListener( 'click', function() {
+			categoryLink.dispatchEvent( clickEvent );
+		} );
+	} );
 } );

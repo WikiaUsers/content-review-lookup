@@ -107,7 +107,3 @@ window.MessageWallUserTags = {
         'Ladybrasa': 'Moderator'
     }
 };
-
-/*Preventing favicon from reverting to Fandom’s default*/
-
-document.write('<link REL="shortcut icon" HREF="/images/6/64/Site-favicon.ico" />')

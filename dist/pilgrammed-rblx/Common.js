@@ -448,10 +448,6 @@ function dialogueInit() {
     function changeText(time, string, dialogueID) {
         setTimeout(function () {
             dialogueTextes[dialogueID].innerHTML = string;
-
-            if (options[dialogueID].begin) return;
-            textSounds[dialogueID].currentTime = 0;
-            playSound(textSounds[dialogueID], dialogueID);
         }, time);
     }
 
@@ -499,9 +495,8 @@ function dialogueInit() {
 
         var string = '';
 
-        if (options[dialogueID].stopStartSound) {
-            startSounds[dialogueID].pause();
-        }
+        if (options[dialogueID].stopStartSound) startSounds[dialogueID].pause();
+        if (!options[dialogueID].begin) textSounds[dialogueID].play();
 
         for (var i in characters) {
             var character = characters[i];
@@ -552,9 +547,10 @@ function dialogueInit() {
         }, wait);
     }
 
-    function newSound(url, dialogueID) {
+    function newSound(url, dialogueID, loop) {
         var sound = document.createElement('audio');
         sound.src = url;
+        sound.loop = !!loop;
         dialogues[dialogueID].appendChild(sound);
         
         return sound;
@@ -644,7 +640,7 @@ function dialogueInit() {
 
         clickSounds[dialogueID] = newSound('https://static.wikia.nocookie.net/pilgrammed-rblx/images/4/4d/Click.ogg', dialogueID);
         startSounds[dialogueID] = newSound('', dialogueID);
-        textSounds[dialogueID] = newSound('', dialogueID);
+        textSounds[dialogueID] = newSound('https://static.wikia.nocookie.net/pilgrammed-rblx/images/d/d1/Dialog.ogg/revision/latest?cb=20230311220834&format=original', dialogueID, true);
         endSounds[dialogueID] = newSound('', dialogueID);
         restartMessages[dialogueID] = dialogue.querySelector('.d-reset');
         

@@ -11,13 +11,19 @@
     function mx()
     {
         var urlParams = new URLSearchParams(window.location.search);
-        var isDebug = urlParams.get("debugMapsExtended") == "1";
-        var isDisabled = urlParams.get("disableMapsExtended") == "1";
+        var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
+        var isDisabled = urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1";
 
         if (isDebug)
+        {
             var log = console.log.bind(window.console);
+            var error = console.error.bind(window.console);
+        }
         else
+        {
             var log = function(){};
+            var error = function(){};
+        }
 
         if (isDisabled)
             return;
@@ -49,8 +55,7 @@
 
         */
 
-        function EventHandler(sender) {
-            this._sender = sender;
+        function EventHandler() {
             this._listeners = [];
             this._listenersOnce = [];
         }
@@ -82,10 +87,7 @@
                 if (this._listeners)
                 {
                     for (var i = 0; i < this._listeners.length; i++)
-                    {
-                        //this._listeners[i](this._sender, args);
                         this._listeners[i](args);
-                    }
                 }
 
                 if (this._listenersOnce)
@@ -97,6 +99,10 @@
                 }
             }
         };
+
+
+// Helper functions
+
 
         // Deep copies the value of all keys from source to target, in-place and recursively
         // This is an additive process. If the key already exists on the target, it is unchanged.
@@ -165,9 +171,72 @@
             return target;
         }
 
+        // Find a specific value in an object using a path
+        function traverse(obj, path)
+        {
+            // Convert indexes to properties, and strip leading periods
+            path = path.replace("/\[(\w+)\]/g", ".$1").replace("/^\./", "");
+            var pathArray = path.split(".");
+            
+            for (var i = 0; i < pathArray.length; i++)
+            {
+                var key = pathArray[i];
+                if (key in obj)
+                    obj = obj[key];
+                else
+                    return;
+            }
+
+            return obj;
+        }
+
+        function isEmptyObject(obj)
+        {
+            for (var i in obj) return false; 
+            return true;
+        }
+
+        var decodeHTMLEntities = (function()
+        {
+            // This prevents any overhead from creating the object each time
+            var element = document.createElement("div");
+          
+            function decodeHTMLEntities(str)
+            {
+                if (str && typeof str === "string")
+                {
+                    // Strip script/html tags
+                    str = str.replace("/<script[^>]*>([\S\s]*?)<\/script>/gmi", "");
+                    str = str.replace("/<\/?\w(?:[^\"'>]|\"[^\"]*\"|'[^']*')*>/gmi", "");
+                    element.innerHTML = str;
+                    str = element.textContent;
+                    element.textContent = "";
+                }
+
+                return str;
+            }
+          
+            return decodeHTMLEntities;
+
+        })();
+
         function capitalizeFirstLetter(string)
         {
             return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function generateRandomString(length)
+        {
+            var result = "";
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charsLength = chars.length;
+            var counter = 0;
+            while (counter < length)
+            {
+                result += chars.charAt(Math.floor(Math.random() * charsLength));
+                counter += 1;
+            }
+            return result;
         }
 
         function preventDefault(e){ e.preventDefault(); }
@@ -245,7 +314,7 @@
                 }
             }
             
-            console.error("Could not find a CSS rule with the selector \"" + selectorString + "\"");
+            //console.error("Could not find a CSS rule with the selector \"" + selectorString + "\"");
             return;
         }
 
@@ -319,7 +388,13 @@
         function ExtendedMap(root)
         {
             this.creationTime = performance.now();
-            this.id = root.className;
+
+            // ID is unique to each instance
+            this.id = root.id;
+
+            // Map ID is unique to the map definition on this page, but not unique to each instance on the page
+            // It has the ID equivalency of the name of the map
+            this.mapId = root.className;
 
             // This element is permanently part of the parser output, as it is transcluded from the Map: page
             this.rootElement = root;
@@ -338,7 +413,7 @@
             // We could use Object.assign(this, map) (a shallow copy), then any objects are shared between the original map and the extended map
             // This isn't ideal, we want to preserve the original for future use (and use by other scripts), so we must do a deep copy
             // jQuery's extend is the fastest deep copy we have on hand
-            jQuery.extend(true, this, mw.config.get("interactiveMaps")[this.id]);
+            jQuery.extend(true, this, mw.config.get("interactiveMaps")[this.mapId]);
 
             // Lookup tables (iterating interactiveMap.markers is slow when the map has a lot of markers)
             // markerLookup may contain markers that do not yet have an associated element!
@@ -353,30 +428,78 @@
             var url = window.location;
             urlParams.delete("marker");
             window.history.replaceState({}, document.title, url.origin + url.pathname + (urlParams != "" ? "?" : "") + urlParams.toString() + url.hash);
-            
 
-            // Get the map config from one of the marker definitions
-            for (var i = 0; i < this.markers.length; i++)
+            var hasGlobalConfig = mapsExtended.isGlobalConfigLoaded;
+            var hasLocalConfig = mapsExtended.localConfigs[this.name] && !isEmptyObject(mapsExtended.localConfigs[this.name]);
+            var hasEmbedConfig = mapsExtended.embedConfigs[this.id] && !isEmptyObject(mapsExtended.embedConfigs[this.id]);
+
+            // Check whether a local config is present, and if so - validate it
+            if (hasLocalConfig)
             {
-                if (this.markers[i].config)
-                {
-                    // Move the configuration to the map itself
-                    if (!this.config) this.config = this.markers[i].config;
-
-                    // Delete the config from the definition
-                    delete this.markers[i].config;
-                }
+                // Validate the local config for this map (the returned value will contain a new config with fallbacks of the global and default configs)
+                var localConfig = mapsExtended.configValidator.validateConfig(mapsExtended.localConfigs[this.name]);
             }
 
-            if (!this.config) this.config = {};
+            // Check whether an embedded config is present, and if so - validate it
+            if (hasEmbedConfig)
+            {
+                // Validate the embedded config for this map (the returned value will contain a new config with fallback of the local, global, and default configs)
+                var embedConfig = mapsExtended.configValidator.validateConfig(mapsExtended.embedConfigs[this.id])
+            }
 
-            // Copy the global configuration over the per-map config, keeping any value already set in the per-map config
-            this.config = jQuery.extend(true, mapsExtended.config, this.config);
-            //traverseCopyValues(mapsExtended.config, this.config, [], true);
+            // Use the config based on precedence embed -> local -> global -> default
+            this.config = hasEmbedConfig ? embedConfig :
+                          hasLocalConfig ? localConfig : 
+                          hasGlobalConfig ? mapsExtended.globalConfig :
+                                            mapsExtended.defaultConfig;
 
             // Short circuit if the config says this map should be disabled
             if (this.config.disabled == true)
                 return;
+
+            this.events = 
+            {
+                // Fired when a category for this map is toggled. Contains the args: map, category, value
+                onCategoryToggled: new EventHandler(),
+
+                // Fired when a popup is created for the first time. Contains the args: map, marker, popup
+                onPopupCreated: new EventHandler(),
+
+                // Fired when a popup in this map is shown. Contains the args: map, marker, isNew (bool)
+                onPopupShown: new EventHandler(),
+
+                // Fired when a popup for this map is hidden. Contains the args: map, marker
+                onPopupHidden: new EventHandler(),
+
+                // Fired when a marker appears for the first time on this map. Contains the args: map, marker
+                onMarkerShown: new EventHandler(),
+
+                // Fired when a marker is hovered. Contains the args: map, marker, value, event
+                onMarkerHovered: new EventHandler(),
+
+                // Fired when a marker is clicked on this map. Contains the args: map, marker, event
+                onMarkerClicked: new EventHandler(),
+
+                // Fired when the map appears on the page or is otherwise initialized. Contains the args: map, isNew.
+                // This may be a refresh of the existing map (which occurs when the map is resized), in which case isNew is false.
+                // A refreshed map should be treated like a new map - any references to the old map and its markers will be invalid and should be discarded
+                onMapInit: new EventHandler(),
+
+                // Fired when the map disappears from the page, or is otherwise deinitialized before it is refreshed
+                onMapDeinit: new EventHandler(),
+
+                // Fired when the map is clicked, before any "click" events are fired. Contains the args:
+                // map (the map that was clicked)
+                // isDragging (to detect whether the click was the end of a drag),
+                // isMarker (to detect whether the click was on a marker)
+                // e (the event, note that target will not always be the base layer)
+                onMapClicked: new EventHandler(),
+
+                // These events are triggered by the attributeObserver, they only contain one argument "value"
+                onMapDragged: new EventHandler(),
+                onMapZoomed: new EventHandler(),
+                onMapPanned: new EventHandler()
+            };
 
             // Hook ExtendedMap events into MapsExtended events, effectively forwarding all events to the mapsExtended events object
             Object.keys(this.events).forEach(function(eventKey)
@@ -397,22 +520,6 @@
                     sourceEvent.subscribe(function(args){ targetEvent.invoke(args); });
                 
             }.bind(this));
-
-            
-            // Generate custom anchor style so we don't need to determine it for each and every marker
-            this.config.iconAnchorStyles = {};
-
-            // Vertical portion of iconAnchor
-            if (this.config.iconAnchor.startsWith("top"))         this.config.iconAnchorStyles["margin-top"] = "0px";
-            else if (this.config.iconAnchor.startsWith("center")) this.config.iconAnchorStyles["margin-top"] = "-13px";
-            else if (this.config.iconAnchor.startsWith("bottom")) this.config.iconAnchorStyles["margin-top"] = "-26px";
-            else console.error("Invalid vertical iconAnchor config! Should be one of: top, center, bottom");
-
-            // Horizontal portion of iconAnchor
-            if (this.config.iconAnchor.endsWith("left"))        this.config.iconAnchorStyles["margin-left"] = "0px";
-            else if (this.config.iconAnchor.endsWith("center")) this.config.iconAnchorStyles["margin-left"] = "-13px";
-            else if (this.config.iconAnchor.endsWith("right"))  this.config.iconAnchorStyles["margin-left"] = "-26px";
-            else console.error("Invalid horizontal iconAnchor config! Should be one of: left, center, right");
 
             
             // Process category definitions
@@ -510,17 +617,25 @@
 
             var attributeObserverConfig =
             [
+                /*
                 {
                     targetClass: "leaflet-container",
                     toggledClass: "leaflet-drag-target",
                     booleanName: "isDragging",
                     eventName: "onMapDragged"
                 },
+                */
                 {
                     targetClass: "leaflet-map-pane",
                     toggledClass: "leaflet-zoom-anim",
                     booleanName: "isZooming",
                     eventName: "onMapZoomed"
+                },
+                {
+                    targetClass: "leaflet-map-pane",
+                    toggledClass: "leaflet-pan-anim",
+                    booleanName: "isPanning",
+                    eventName: "onMapPanned"
                 }
             ];
 
@@ -678,7 +793,7 @@
                     if (!this.lastMarkerClicked && !this.lastMarkerHovered)
                     {
                         var markerElement = this.lastMarkerElementClicked;
-                        var markerPos = this.getTranslateXY(popupElement);
+                        var markerPos = this.getElementTransformPos(popupElement);
 
                         // Try to find the marker definition in the JSON file that matches the marker element in the DOM,
                         // using the content of the popup that was just shown as the basis of comparison
@@ -781,7 +896,7 @@
             if (this.isMapCreated() == false)
             {
                 // Leaflet not finished initializing
-                console.log("Leaflet not yet initialized for \"" + this.id + "\". Init will be deferred");
+                console.log(this.id + " (" + this.name + ") - Leaflet not yet initialized for map. Init will be deferred");
                 this.rootObserver.observe(this.elements.rootElement, { subtree: true, childList: true });
             }
             else
@@ -793,41 +908,6 @@
 
         ExtendedMap.prototype = 
         {
-            events: 
-            {
-                // Fired when a category for this map is toggled. Contains the args: map, category, value
-                onCategoryToggled: new EventHandler(),
-
-                // Fired when a popup is created for the first time. Contains the args: map, marker, popup
-                onPopupCreated: new EventHandler(),
-
-                // Fired when a popup in this map is shown. Contains the args: map, marker, isNew (bool)
-                onPopupShown: new EventHandler(),
-
-                // Fired when a popup for this map is hidden. Contains the args: map, marker
-                onPopupHidden: new EventHandler(),
-
-                // Fired when a marker appears for the first time on this map. Contains the args: map, marker
-                onMarkerShown: new EventHandler(),
-
-                // Fired when a marker is hovered. Contains the args: map, marker, value, event
-                onMarkerHovered: new EventHandler(),
-
-                // Fired when a marker is clicked on this map. Contains the args: map, marker, event
-                onMarkerClicked: new EventHandler(),
-
-                // Fired when the map appears on the page or is otherwise initialized. Contains the args: map, isNew.
-                // This may be a refresh of the existing map (which occurs when the map is resized), in which case isNew is false.
-                // A refreshed map should be treated like a new map - any references to the old map and its markers will be invalid and should be discarded
-                onMapInit: new EventHandler(),
-
-                // Fired when the map disappears from the page, or is otherwise deinitialized before it is refreshed
-                onMapDeinit: new EventHandler(),
-
-                onMapDragged: new EventHandler(),
-                onMapZoomed: new EventHandler(),
-            },
-
             // Init associates the map to the DOM.
             // It should be passed the root element with the class "interactive-map-xxxxxxxx",
             // though it will use the rootElement in this.element.rootElement if not
@@ -835,13 +915,11 @@
             {
                 if (this.initialized)
                 {
-                    log("Tried to initialize " + this.id + " when it was already initialized");
+                    log(this.id + " (" + this.name + ") - Tried to initialize map when it was already initialized");
                     return;
                 }
 
                 var isNew = !this.initializedOnce;
-                this.initialized = true;
-                this.initializedOnce = true;
 
                 if (!root) root = this.elements != null ? this.elements.rootElement : null;
                 if (!root) console.error("ExtendedMap.init did not find a reference to the root interactive-map-xxxxxxxx element!");
@@ -863,17 +941,23 @@
                 // Leaflet-specific elements
                 this.elements.leafletContainer = root.querySelector(".leaflet-container");
                 this.elements.leafletMapPane = this.elements.leafletContainer.querySelector(".leaflet-map-pane");
-                this.elements.leafletControlContainer = this.elements.leafletContainer.querySelector(".leaflet-control-container");
-                this.elements.leafletControlContainerBottomRight = this.elements.leafletControlContainer.querySelector(".leaflet-bottom.leaflet-right");
-                this.elements.leafletMarkerPane = this.elements.leafletMapPane.querySelector(".leaflet-marker-pane");
-                this.elements.leafletPopupPane = this.elements.leafletMapPane.querySelector(".leaflet-popup-pane");
                 this.elements.leafletOverlayPane = this.elements.leafletMapPane.querySelector(".leaflet-overlay-pane");
+                this.elements.leafletMarkerPane = this.elements.leafletMapPane.querySelector(".leaflet-marker-pane");
                 this.elements.leafletTooltipPane = this.elements.leafletMapPane.querySelector(".leaflet-tooltip-pane");
+                this.elements.leafletPopupPane = this.elements.leafletMapPane.querySelector(".leaflet-popup-pane");
+                this.elements.leafletProxy = this.elements.leafletMapPane.querySelector(".leaflet-proxy");
                 this.elements.leafletBaseImageLayer = this.elements.leafletOverlayPane.querySelector(".leaflet-image-layer");
+                this.elements.leafletControlContainer = this.elements.leafletContainer.querySelector(".leaflet-control-container");
+                this.elements.leafletControlContainerTopLeft= this.elements.leafletControlContainer.querySelector(".leaflet-top.leaflet-left");
+                this.elements.leafletControlContainerTopRight= this.elements.leafletControlContainer.querySelector(".leaflet-top.leaflet-right");
+                this.elements.leafletControlContainerBottomRight = this.elements.leafletControlContainer.querySelector(".leaflet-bottom.leaflet-right");
+                this.elements.leafletControlContainerBottomLeft = this.elements.leafletControlContainer.querySelector(".leaflet-bottom.leaflet-left");
 
                 // Leaflet control elements
-                this.elements.zoomInButton = this.elements.leafletControlContainerBottomRight.querySelector(".leaflet-control-zoom-in");
-                this.elements.zoomOutButton = this.elements.leafletControlContainerBottomRight.querySelector(".leaflet-control-zoom-out");
+                this.elements.editButton = this.elements.leafletControlContainer.querySelector(".interactive-maps__edit-control");
+                this.elements.zoomButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom");
+                this.elements.zoomInButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-in");
+                this.elements.zoomOutButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-out");
                 
                 // List of all marker elements
                 var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
@@ -901,6 +985,9 @@
                     // Create category groups
                     this.initCategoryGroups();
 
+                    // Rearrange controls
+                    this.initControls();
+
                     // Create search dropdown
                     this.initSearch();
 
@@ -909,13 +996,21 @@
 
                     // Set up tooltips
                     this.initTooltips();
+
+                    // Set up ruler
+                    //this.initCanvas();
+
+                    // Set up collectibles
+                    this.initCollectibles();
                 }
                 else
                 {
                     // Changing the size of the leafet container causes it to be remade (and the fullscreen button control destroyed)
                     // Re-add the fullscreen button to the DOM
-                    if (this.elements.leafletControlContainerBottomRight && this.config.enableFullscreen == true)
+                    if (this.config.enableFullscreen == true && this.controlAssociations["fullscreen"].isPresent)
                         this.elements.leafletControlContainerBottomRight.prepend(this.elements.fullscreenControl);
+                    
+                    this.initControls();
                 }
 
                 this.initMapEvents();
@@ -1025,6 +1120,10 @@
                         this.toggleMarkerHighlight(this.searchSelectedMarker, true);
                 }
 
+                // Set initialized when we've done everything
+                this.initialized = true;
+                this.initializedOnce = true;
+
                 this.toggleMarkerObserver(true);
                 this.togglePopupObserver(true);
 
@@ -1048,9 +1147,12 @@
                     if (Math.abs(e.pageX - this._mouseDownPos[0]) > 2 ||
                         Math.abs(e.pageY - this._mouseDownPos[1]) > 2)
                     {
+                        log("Started drag at x: " + this._mouseDownPos[0] + ", y: " + this._mouseDownPos[1]);
+                        
                         // This is a drag
                         this.isDragging = true;
-                        e.target.removeEventListener("mousemove", this._onMouseMove);
+                        this.elements.leafletContainer.removeEventListener("mousemove", this._onMouseMove);
+                        this.events.onMapDragged.invoke({value: true});
                     }   
                 }.bind(this);
 
@@ -1065,7 +1167,7 @@
 
                     // Save the position of the event, and subscribe to the mousemove event
                     this._mouseDownPos = [ e.pageX, e.pageY ];
-                    e.target.addEventListener("mousemove", this._onMouseMove);
+                    this.elements.leafletContainer.addEventListener("mousemove", this._onMouseMove);
                     this._invalidateLastClickEvent = false;
 
                     // Traverse up the click element until we find the marker or hit the root of the map
@@ -1088,26 +1190,65 @@
                     }
                 }.bind(this));
 
-                // Mouse up event on leaflet container
-                this.elements.leafletContainer.addEventListener("mouseup", function(e)
+                // Mouse up event on <s>leaflet container</s> window (mouseup won't trigger if the mouse is outside the leaflet window)
+                window.addEventListener("mouseup", function(e)
                 {
-                    // If mousing up after dragging, invalidate click event on whatever marker is hovered at the moment
-                    if (this.isDragging == true && this.lastMarkerHovered)
-                        this._invalidateLastClickEvent = true;
+                    // If the mouse was released on the map container or any item within it, the map was clicked
+                    if (this.elements.leafletContainer.contains(e.target))
+                    {
+                        var isOnBackground = e.target == this.elements.leafletContainer || e.target == this.elements.leafletBaseImageLayer; 
+                        
+                        this.events.onMapClicked.invoke(
+                        {
+                            map: this, event: e,
+                            
+                            // Clicked on map background
+                            isOnBackground: isOnBackground,
+    
+                            // Clicked on marker,
+                            isMarker: this.lastMarkerHovered != undefined,
+                            marker: this.lastMarkerHovered,
+    
+                            // Was the end of the drag
+                            wasDragging: this.isDragging,
+                        });
 
-                    // mouseup on the leafletContainer itself
-                    if (e.currentTarget == e.target && this.config.useCustomPopups == true && this.isDragging == false && this.lastPopupShown)
-                        this.lastPopupShown.hide();
+                        // Custom popups - If mousing up on the map background, not the end of a drag, and there is a popup showing
+                        if (this.config.useCustomPopups == true && isOnBackground && !this.isDragging && this.lastPopupShown)
+                        {
+                            // Hide the last popup shown
+                            this.lastPopupShown.hide();
+                        }
+                    }
+                    
+                    this.elements.leafletContainer.removeEventListener("mousemove", this._onMouseMove);
 
-                    // No longer dragging
-                    this.isDragging = false;
-                    e.target.removeEventListener("mousemove", this._onMouseMove);
+                    // If mousing up after dragging, regardless of if it ended within the window
+                    if (this.isDragging == true)
+                    {
+                        log("Ended drag at x: " + e.pageX + ", y: " + e.pageY);
+                        
+                        // No longer dragging
+                        this.isDragging = false;
+                        this.events.onMapDragged.invoke({value: false});
+
+                        // Invalidate click event on whatever marker is hovered
+                        if (this.lastMarkerHovered)
+                            this._invalidateLastClickEvent = true;
+                    }
                     
                 }.bind(this));
 
-                // Intercept wheel events to normalize zoom
-                // This doesn't actually cancel the wheel event (since it cannot be cancelled)
-                // but instead clicks the zoom buttons so that the wheel zoom doesn't occur
+                /*
+                this.elements.leafletContainer.addEventListener("mousemove", function(e)
+                {
+                    console.log("x: " + e.clientX + ", y: " + e.clientY);
+                    console.log(this.clientToTransformPosition([e.clientX, e.clientY]).toString());
+                    console.log(this.clientToScaledPosition([e.clientX, e.clientY]).toString());
+                    console.log(this.clientToUnscaledPosition([e.clientX, e.clientY]).toString());
+
+                }.bind(this));
+                */
                 
                 // Remove non-navigating hrefs, which show a '#' in the navbar, and a link in the bottom-left
                 this.elements.zoomInButton.removeAttribute("href");
@@ -1117,6 +1258,9 @@
                 this.elements.zoomOutButton.addEventListener("click", preventDefault);
 
                 /*
+                // Intercept wheel events to normalize zoom
+                // This doesn't actually cancel the wheel event (since it cannot be cancelled)
+                // but instead clicks the zoom buttons so that the wheel zoom doesn't occur
                 this.elements.leafletContainer.addEventListener("wheel", function(e)
                 {
                     var button = e.deltaY < 0 ? this.elements.zoomInButton : this.elements.zoomOutButton;
@@ -1131,7 +1275,6 @@
                     e.preventDefault();
                 }.bind(this));
                 */
-
                 this.events.onMapZoomed.subscribe(function(args)
                 {
                     this._isScaledMapImageSizeDirty = true;
@@ -1145,7 +1288,7 @@
             {
                 if (!this.initialized)
                 {
-                    console.logError("Tried to de-initialize " + this.id + " when it wasn't initialized");
+                    console.error(this.id + " (" + this.name + ") Tried to de-initialize map when it wasn't initialized");
                     return;
                 }
 
@@ -1190,6 +1333,13 @@
                     // Alternatively timeout after 10000ms
                     setTimeout(function(){ reject(this.id + " (" + this.name + ") - Timed out after 10 sec while waiting for the map to appear."); }.bind(this), 10000);
                 }.bind(this));
+            },
+
+            createLoadingOverlay: function()
+            {
+                var placeholder = document.createElement("div");
+                placeholder.innerHTML = "<div class=\"LoadingOverlay-module_overlay__UXv3B\"><div class=\"LoadingOverlay-module_container__ke-21\"><div class=\"fandom-spinner LoadingOverlay-module_spinner__Wl7dt\" style=\"width: 40px; height: 40px;\"><svg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\"><g transform=\"translate(20, 20)\"><circle fill=\"none\" stroke-width=\"2\" stroke-dasharray=\"119.38052083641213\" stroke-dashoffset=\"119.38052083641213\" stroke-linecap=\"round\" r=\"19\"><\/circle><\/g><\/svg><\/div><\/div><\/div>";
+                return placeholder.firstElementChild;
             },
 
             isMapCreated: function()
@@ -1252,9 +1402,19 @@
                 return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
             },
 
-            getMapLink: function(asHtmlString)
+            getMapLink: function(name, htmlElement)
             {
-                return "<a href=\"/wiki/Map:" + encodeURIComponent(this.name) + "\">Map:" + this.name + "</a>";
+                name = name || this.name;
+                
+                if (htmlElement)
+                {
+                    var a = document.createElement(a);
+                    a.href = "/wiki/" + encodeURIComponent(name);
+                    a.textContent = "Map:" + name;
+                    return a;
+                }
+                else
+                    return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
             },
 
             togglePopupObserver: function(state)
@@ -1324,9 +1484,69 @@
                 }
             },
 
+            /*
+                Some notes about positions
+                
+                - An unscaled position is one which matches the JSON definition, relative
+                to the original size of the map with the bounds applied.
+
+                - A pixel position is one that matches the resolution of the map image,
+                as defined by the JSON, but it won't always match the JSON definition
+                specifically because it does not factor in shifted lower or upper bounds
+                
+                - A scaled position is the pixel position scaled up to the current map
+                scale/zoom level. It is relative to the top left corner of the map image
+                at the current zoom level. It is analogous to DOM position of a map element
+                relative to the base image layer.
+
+                - A transform position is the position that Leaflet objects use. It is
+                relative to the leaflet-map-pane which gets translated when the user drags
+                and scales the map. Transform marker positions only changes when the map is
+                zoomed in and out. The transform position is in the same scale as the scaled
+                position, but just shifted by the transform position of the base layer.
+
+                Transform positions become invalid when the map is zoomed
+
+                - A viewport position is a position relative to the map viewport (that is,
+                the container that defines the size of the interactive map, and clips the
+                content within). A position at 0, 0 is always the top left corner of the
+                container. Viewport positions and transform positions are closely related.
+
+            */
+
+            // Gets the rect of any element
+            getElementRect: function(elem)
+            {
+                return elem.getBoundingClientRect();
+            },
+
+            // Gets the rect position of any element, relative to the window
+            getElementPos: function(elem)
+            {
+                var rect = elem.getBoundingClientRect();
+                return [ rect.x, rect.y ];
+            },
+
+            // Gets the rect size of any element, relative to the window
+            getElementSize: function(elem)
+            {
+                var rect = elem.getBoundingClientRect();
+                return [ rect.width, rect.height ];
+            },
+
+            // Get the current position of the viewport
+            getViewportPos: function()
+            {
+                return this.getElementPos(this.elements.leafletContainer);
+            },
+
+            // Get the current size of the viewport
+            getViewportSize: function()
+            {
+                return [ this.elements.leafletContainer.clientWidth, this.elements.leafletContainer.clientHeight ];
+            },
+
             // Scale a "unscaled" position to current map size, returning the scaled position
-            // An unscaled position is one which matches the JSON definition
-            // A scaled position takes into account the current zoom level
             unscaledToScaledPosition: function(unscaledPos)
             {
                 var scaledPos = [];
@@ -1339,57 +1559,184 @@
                 return scaledPos;
             },
 
-            // Converts a scaled position at an arbitrary zoom level to an unscaled pixel position
-            // A scaled position is the finally translate3d position of the marker element on the map
+            // Converts a scaled position at the current zoom level to an unscaled position
+            // This position is equivalent to the JSON positions (assuming the CORRECT origin of top-left)
             scaledToUnscaledPosition: function(scaledPos)
             {
-                var unscaledPos = [];
+                // Get the pixel position
+                var pixelPos = this.scaledToPixelPosition(scaledPos);
+
+                // Add the bounds to the pixel position to the
+                pixelPos[0] += this.bounds[0][0];
+                pixelPos[1] += this.bounds[0][1];
+
+                return pixelPos;
+            },
+                
+            scaledToPixelPosition: function(scaledPos)
+            {
+                var pixelPos = [];
                 var imageSize = this.getScaledMapImageSize();
 
-                var imagePos = this.getTranslateXY(this.elements.leafletBaseImageLayer);
+                // Scale the position down to the original range
+                pixelPos[0] = (scaledPos[0] / imageSize[0]) * this.size.width;
+                pixelPos[1] = (scaledPos[1] / imageSize[1]) * this.size.height;
 
-                // Scale the position back up to the original range, and round
-                unscaledPos[0] = ((scaledPos[0] - imagePos[0]) / imageSize[0]) * this.size.width;
-                unscaledPos[1] = ((scaledPos[1] - imagePos[1]) / imageSize[1]) * this.size.height;
-
-                return unscaledPos;
+                return pixelPos;
             },
 
-            // Get the current background image size at the current zoom level
-            getScaledMapImageSize: function()
+            pixelToScaledPosition: function(pixelPos)
             {
-                // Return the cached size if we have one and it doesn't need to be updated
-                if (!this._isScaledMapImageSizeDirty && this.scaledMapImageSize)
-                    return this.scaledMapImageSize;
-                
-                var size = [ this.elements.leafletBaseImageLayer.width, this.elements.leafletBaseImageLayer.height ];
+                var scaledPos = [];
+                var imageSize = this.getScaledMapImageSize(true);
 
-                // If the map was just shown, the base image layer may not have a width and height
-                // However, the style will always be correct, so we can fetch the size from that instead (at a minor performance penalty)
-                if (size[0] == 0 && size[1] == 0)
+                // Scale the position back up to the scaled range
+                scaledPos[0] = (pixelPos[0] / this.size.width) * imageSize[0];
+                scaledPos[1] = (pixelPos[1] / this.size.width) * imageSize[0];
+                
+                return scaledPos;
+            },
+
+            // Converts a scaled position at the current zoom level to a position which is accurate to
+            // transforms used in the Leaflet map. A transform position is typically identical, but is
+            // shifted by the map pane offset
+            scaledToTransformPosition: function(scaledPos)
+            {
+                // Get base layer transform position. This needs to be calculated on the fly as it will change as the user zooms
+                var baseLayerPos = this.getElementTransformPos(this.elements.leafletBaseImageLayer);
+
+                // Add the position of the base layer to the scaled position to get the transform position
+                return [ scaledPos[0] + baseLayerPos[0],
+                         scaledPos[1] + baseLayerPos[1] ];
+            },
+
+            // Converts a transform position to a scaled position which is accurate to the current zoom level
+            transformToScaledPosition: function(transformPos)
+            {
+                // Get base layer transform position. This needs to be calculated on the fly as it will change as the user zooms
+                var baseLayerPos = this.getElementTransformPos(this.elements.leafletBaseImageLayer);
+
+                return [ transformPos[0] - baseLayerPos[0],
+                         transformPos[1] - baseLayerPos[1] ];
+            },
+
+            // Converts a viewport position to a transform position that is relative to the map pane
+            viewportToTransformPosition: function(viewportPos)
+            {
+                // The transform position is simply the passed viewport position, minus the map pane viewport position (or transform position, they are identical in its case)
+                var mapPaneViewportPos = this.getElemMapViewportPos(this.elements.leafletMapPane);
+
+                return [ viewportPos[0] - mapPaneViewportPos[0],
+                         viewportPos[1] - mapPaneViewportPos[1] ];
+            },
+
+            // Converts a transform position relative to the map pane to a viewport pos
+            transformToViewportPosition: function(transformPos)
+            {
+                // The transform position is simply the passed viewport position, minus the map pane viewport position (or transform position, they are identical in its case)
+                var mapPaneViewportPos = this.getElemMapViewportPos(this.elements.leafletMapPane);
+
+                return [ transformPos[0] + mapPaneViewportPos[0],
+                         transformPos[1] + mapPaneViewportPos[1] ];
+            },
+
+            // Converts a client position to a transform position on the map, relative to the map pane
+            // A client position is one relative to the document viewport, not the document itself
+            // getBoundingClientRect also returns client positions
+            clientToTransformPosition: function(mousePos)
+            {
+                /*
+                // mousePos is [ e.clientX, e.clientY ]
+                var viewportRect = this.getElementRect(this.elements.leafletContainer);
+                var mapPaneRect = this.getElementRect(this.elements.leafletMapPane);
+
+                // Get the mouse position relative to the viewport
+                var mouseViewportPos = [ mousePos[0] - viewportRect.x, mousePos[1] - viewportRect.y ];
+
+                // Get the map pane position relative to the viewport
+                var mapPaneViewportPos = [ mapPaneRect.x - viewportRect.x , mapPaneRect.y - viewportRect.y ];
+                //var mapPaneViewportPos = this.getElementTransformPos(this.elements.leafletMapPane);
+
+                var mouseTransformPos = [ mouseViewportPos[0] - mapPaneViewportPos[0],
+                                          mouseViewportPos[1] - mapPaneViewportPos[1] ];
+                */
+
+                // The transform is just the offset from the mapPane's position
+                var mapPaneRect = this.getElementRect(this.elements.leafletMapPane);
+                return [ mousePos[0] - mapPaneRect.x, mousePos[1] - mapPaneRect.y ];
+            },
+
+            clientToUnscaledPosition: function(mousePos)
+            {
+                var scaledPos = this.clientToScaledPosition(mousePos);
+                return this.scaledToUnscaledPosition(scaledPos);
+            },
+
+            clientToScaledPosition: function(mousePos)
+            {
+                // The transform is just the offset from the mapPane's position
+                var baseImageRect = this.getElementRect(this.elements.leafletBaseImageLayer);
+                return [ mousePos[0] - baseImageRect.x, mousePos[1] - baseImageRect.y ];
+            },
+
+            // Gets the position of an element relative to the map image
+            // Keep in mind this is the top-left of the rect, not the center, so it will not be accurate to marker positions if used with the marker element
+            // You can pass true to centered to add half of the element's width and height to the output position
+            getElemMapScaledPos: function(elem, centered)
+            {
+                var baseRect = this.elements.leafletBaseImageLayer.getBoundingClientRect();
+                var elemRect = elem.getBoundingClientRect();
+
+                var pos = [ elemRect.x - baseRect.x, elemRect.y - baseRect.y ];
+                if (centered == true)
                 {
-                    size[0] = parseFloat(this.elements.leafletBaseImageLayer.style.width);
-                    size[1] = parseFloat(this.elements.leafletBaseImageLayer.style.height);
+                    pos[0] += elemRect.width / 2;
+                    pos[1] += elemRect.height / 2;
                 }
 
-                this._isScaledMapImageSizeDirty = false;
-                this.scaledMapImageSize = size;
-                return size;
+                return pos;
+                /*
+                // Get base layer transform position. This needs to be calculated on the fly as it will change as the user zooms
+                var baseLayerPos = this.getElementTransformPos(this.map.elements.leafletBaseImageLayer);
+
+                // Subtract the current position of the map overlay from the marker position to get the scaled position
+                var pos = this.map.getElementTransformPos(elem);
+                pos[0] -= baseLayerPos[0];
+                pos[1] -= baseLayerPos[1];
+                */
             },
 
-            // Get the current size of the viewport
-            getViewportSize: function()
+            // Get the position of an element relative to the map viewport
+            // Like with getElemMapScaledPos, this is the top left-of the rect, not the center
+            getElemMapViewportPos: function(elem, centered)
             {
-                return [ this.elements.leafletContainer.clientWidth, this.elements.leafletContainer.clientHeight ];
+                var viewRect = this.elements.leafletContainer.getBoundingClientRect();
+                var elemRect = elem.getBoundingClientRect();
+
+                var pos = [ elemRect.x - viewRect.x , elemRect.y - viewRect.y ];
+                if (centered == true)
+                {
+                    pos[0] += elemRect.width / 2;
+                    pos[1] += elemRect.height / 2;
+                }
+
+                return pos;
             },
 
-            // Get the transform:translate XY position from an element
-            getTranslateXY: function(element, accurate)
+            // Get the transform position of the element relative to the map pane
+            getElemMapTransformPos: function(elem, centered)
+            {
+                var scaledPos = this.getElemMapScaledPos(elem, centered);
+                return this.scaledToTransformPosition(scaledPos);
+            },
+
+            // Get the existing transform:translate XY position from an element
+            getElementTransformPos: function(element, accurate)
             {
                 // Throw error if the passed element is not in fact an element
                 if (!(element instanceof Element))
                 {
-                    console.error("getTranslateXY expects an Element but got the following value: " + element.toString());
+                    console.error("getElementTransformPos expects an Element but got the following value: " + element.toString());
                     return [0, 0];
                 }
 
@@ -1433,6 +1780,43 @@
                     }
                 }
                 */
+            },
+
+            getElementSize: function(element)
+            {
+                var rect = element.getBoundingClientRect();
+                return [ rect.width, rect.height ];
+            },
+
+            // Get the current background image size at the current zoom level
+            getScaledMapImageSize: function(live)
+            {
+                // Return the cached size if we have one and it doesn't need to be updated
+                if (!this._isScaledMapImageSizeDirty && this.scaledMapImageSize && !live)
+                    return this.scaledMapImageSize;
+                
+                // If we need a live-updating value, use an expensive calculation to get it
+                if (live)
+                {
+                    var rect = this.elements.leafletBaseImageLayer.getBoundingClientRect();
+                    var size = [ rect.width, rect.height ];
+                }
+                else
+                {
+                    var size = [ this.elements.leafletBaseImageLayer.width, this.elements.leafletBaseImageLayer.height ];
+    
+                    // If the map was just shown, the base image layer may not have a width and height
+                    // However, the style will always be correct, so we can fetch the size from that instead (at a minor performance penalty)
+                    if (size[0] == 0 && size[1] == 0)
+                    {
+                        size[0] = parseFloat(this.elements.leafletBaseImageLayer.style.width);
+                        size[1] = parseFloat(this.elements.leafletBaseImageLayer.style.height);
+                    }
+                }
+
+                this._isScaledMapImageSizeDirty = false;
+                this.scaledMapImageSize = size;
+                return size;
             },
 
             // openPopupsOnHover
@@ -1581,14 +1965,14 @@
                 
                 // Offset the tooltip based on the iconAnchor
                 if (marker.iconAnchor.startsWith("top"))
-                    tooltipElement.style.marginTop = "13px";
+                    tooltipElement.style.marginTop = (marker.height * 0.5) + "px";
                 else if (marker.iconAnchor.startsWith("bottom"))
-                    tooltipElement.style.marginTop = "-13px";
+                    tooltipElement.style.marginTop = (marker.height * -0.5) + "px";
 
                 if (marker.iconAnchor.endsWith("left"))
-                    tooltipElement.style.marginLeft = isShownOnLeftSide ? "7px" : "19px";
+                    tooltipElement.style.marginLeft = (marker.width * 0.5) + (isShownOnLeftSide ? -6 : 6) + "px"; // (50% of icon width) + 6 (tooltip tip on left) or - 6 (tooltip tip on right)
                 else if (marker.iconAnchor.endsWith("right"))
-                    tooltipElement.style.marginLeft = isShownOnLeftSide ? "-19px" : "-7px";
+                    tooltipElement.style.marginLeft = (marker.width * -0.5) + (isShownOnLeftSide ? -6 : 6) + "px";
                 
                 // We use two transforms, the transform of the marker and a local one which shifts the tooltip
                 tooltipElement.localTransform = localTransform;
@@ -1609,6 +1993,411 @@
                 
                 this.elements.tooltipElement.remove();
                 this.tooltipMarker = undefined;
+            },
+
+            // Canvas
+
+            initCanvas: function()
+            {
+                // Create a pane to contain all the ruler points
+                var canvasPane = document.createElement("div");
+                canvasPane.className = "leaflet-pane leaflet-canvas-pane";
+                this.elements.leafletCanvasPane = canvasPane;
+                this.elements.leafletTooltipPane.after(canvasPane);
+
+                // Although modern browsers technically double buffer canvases already, we still need to keep a double buffer
+                // because of the flicker encountered when changing the transform at the same time as setting a new canvas.
+                // The performance is the same, it's just that we can keep the old frame visible on screen in the space between
+                // clearing the screen and drawing the new frame
+                
+                var canvas1 = document.createElement("canvas");
+                var canvas2 = document.createElement("canvas");
+                canvas1.style.pointerEvents = canvas2.style.pointerEvents = "none";
+                canvas1.style.willChange = canvas2.style.willChange = "transform";
+                this.elements.leafletCanvasPane.appendChild(canvas1);
+                this.elements.leafletCanvasPane.appendChild(canvas2);
+
+                // Set the canvas width and height to be the size of the container, so that we're always drawing at the optimal resolution
+                // We can't set it to the scaled size of the map image because at high zoom levels the max pixel count will be exceeded
+                var leafletContainerSize = this.getElementSize(this.elements.leafletContainer);
+                canvas1.width = canvas2.width = leafletContainerSize[0];
+                canvas1.height = canvas2.height = leafletContainerSize[1];
+
+                var points = [];
+                var urlIndexes = [];
+                var icons = [];
+
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    if (this.categories[i].icon && !icons.includes(this.categories[i].icon))
+                        icons.push(this.categories[i].icon);
+                }
+                
+                for (var i = 0; i < 1000; i++)
+                {
+                    points.push({x: Math.floor(Math.random() * this.size.width), y: Math.floor(Math.random() * this.size.height)});
+                    urlIndexes.push(Math.floor(Math.random() * (icons.length - 0) + 0));
+                }
+
+                // Create a new Blob which contains our code to execute in order to render the canvas in a separate thread
+//              var blob = new Blob([`
+//              var ctx1, ctx2, points, images, indexes;
+// 
+//              var offset, ratio;         // Current offsets and scale of the canvas
+//              var bufferState;           // The current buffer being worked on
+//              var renderId;              // requestAnimationFrame id
+//              var intervalId;            // setTimeout id
+//              var renderMode = "once";   // The current render mode
+//              var renderInterval = 300;  // The current render interval
+//              var doubleBuffered = true; // Whether double buffering is currently enabled
+// 
+//              var renderRequestTime, renderStartTime, renderEndTime, lastRenderTime;
+// 
+//              // Below are control functions
+// 
+//              function startRender(args)
+//              {
+//                  stopRender()
+//                  
+//                  renderMode = args.mode;
+//                  renderInterval = args.interval;
+//                  doubleBuffered = args.doubleBuffered;
+//                  
+//                  requestRender();
+//              }
+//              
+//              function stopRender()
+//              {
+//                  renderMode = "once";
+//                  clearTimeout(intervalId);
+//                  cancelAnimationFrame(renderId);
+// 
+//                  // Do one more render with the renderMode of "once"
+//                  requestRender();
+//              }
+// 
+//              // Below are internal functions
+// 
+//              // Asks the host to update the canvas offset and ratio before we can update
+//              function requestRender()
+//              {
+//                  // If we're double buffering, invert the state so that we're working on the other canvas
+//                  if (doubleBuffered) bufferState = !bufferState;
+//                  
+//                  renderRequestTime = performance.now();
+//                  self.postMessage({cmd: "requestUpdate", bufferState: bufferState});
+//              }
+// 
+//              // This is called when the renderRequest returned a response
+//              function onBeginRender()
+//              {
+//                  renderStartTime = performance.now();
+//                  
+//                  // Cancel the last requested render
+//                  cancelAnimationFrame(renderId);
+// 
+//                  // Schedule a new render
+//                  renderId = requestAnimationFrame(render);
+//              }
+// 
+//              // This is called after the render completed
+//              function onEndRender()
+//              {
+//                  renderEndTime = performance.now();
+//                  console.log("Rendered canvas " + (bufferState ? 1 : 2) + " in " + (renderEndTime - renderStartTime) + "ms");
+// 
+//                  // Tell the main thread the render is done, so that the canvas may be presented
+//                  self.postMessage({ cmd: "present", bufferState: bufferState });
+// 
+//                  // Queue another render if required
+//                  if (renderMode == "continuous")
+//                  {
+//                      requestRender();
+//                  }
+//                  else if (renderMode == "interval")
+//                  {
+//                      var interval = Math.max(0, renderInterval - (renderEndTime - renderStartTime));
+//                      intervalId = setTimeout(function(){ requestRender(); }, interval);
+//                  }
+//              }
+// 
+//              function render(time)
+//              {
+//                  // Don't render if no time has passed since the last render
+//                  if (lastRenderTime != time)
+//                  {
+//                      var ctx = bufferState ? ctx1 : ctx2;
+//  
+//                      // Reset the transform matrix so we're not applying it additively
+//                      ctx.setTransform(1, 0, 0, 1, 0, 0);
+//                      
+//                      // Clear the new buffer,
+//                      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+//  
+//                      // Translate so that we start drawing the map in the top left of the base image canvas
+//                      ctx.translate(offset[0], offset[1]);
+// 
+//                      // Commented out, for some reason scaling the coordinate system will make images blurry
+//                      // even if the ratio is factored out of the scale. This does mean we have to manually scale
+//                      // up and down the coordinates, but it's a good trade-off if it means crispy images
+//                      //ctx.scale(ratio, ratio);
+//  
+//                      for (var i = 0; i < points.length; i++)
+//                      {
+//                          var icon = icons[indexes[i]];
+// 
+//                          // Scale the points so they operate at the current scale
+//                          // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
+//                          var x = Math.round(points[i].x * ratio);
+//                          var y = Math.round(points[i].y * ratio);
+//                          var width = icon.scaledWidth;
+//                          var height = icon.scaledHeight;
+//                          ctx.drawImage(icon.bitmap, x, y, width, height);
+//                          /*
+//                          ctx.beginPath();
+//                          ctx.arc(points[i].x, points[i].y, 2 / ratio, 0, 2 * Math.PI);
+//                          ctx.fill();
+//                          */
+//                      }
+//                  }
+// 
+//                  lastRenderTime = time;
+//                  onEndRender();
+//              }
+//              
+//              self.addEventListener("message", function(e)
+//              {
+//                  switch (e.data.cmd)
+//                  {
+//                      case "poke":
+//                      {
+//                          console.log("Ouch!");
+//                          break;
+//                      }
+//                      
+//                      // Initialize the worker. This is passed the points array, and the OffscreenCanvas (which we cache)
+//                      case "init":
+//                      {
+//                          points = e.data.points;
+//                          ctx1 = e.data.canvas1.getContext("2d");
+//                          ctx2 = e.data.canvas2.getContext("2d");
+// 
+//                          indexes = e.data.indexes;
+//                          var requests = e.data.icons.map(function(i) { return fetch(i.url); });
+//                          var responses = Promise.all(requests)
+//                          .then(function(values)
+//                          {
+//                              return Promise.all(values.map(function(r) { return r.blob(); }));
+//                              
+//                          })
+//                          .then(function(blobs)
+//                          {
+//                              return Promise.all(blobs.map(function(b, index)
+//                              {
+//                                  var icon = e.data.icons[index];
+//                                  return createImageBitmap(b, { resizeWidth: icon.scaledWidth, resizeHeight: icon.scaledHeight, resizeQuality: "high" });
+//                              }));
+//                          })
+//                          .then(function(bitmaps)
+//                          {
+//                              icons = [];
+//                              for (var i = 0; i < bitmaps.length; i++)
+//                              {
+//                                  var icon = e.data.icons[i];
+//                                  icon.bitmap = bitmaps[i];
+//                                  icons.push(icon);
+//                              }
+//                          });
+// 
+// 
+//                          
+//                          break;
+//                      }
+// 
+//                      case "start":
+//                      {
+//                          startRender(e.data);
+//                          break;
+//                      }
+// 
+//                      case "stop":
+//                      {
+//                          stopRender();
+//                          break;
+//                      }
+// 
+//                      // The host updated the drawing offset, ratio, and the buffer we're working on
+//                      case "update":
+//                      {
+//                          // Update the drawing offset, drawing ratio, and the buffer we're working on
+//                          offset = e.data.offset;
+//                          ratio = e.data.ratio;
+// 
+//                          onBeginRender();
+//                          break;
+//                      }
+//                  }
+//              });
+//              `]);
+
+                // Create a blob with the data above (this is the only way to make a new worker without creating a separate file)
+                var blobUrl = window.URL.createObjectURL(blob);
+                var worker = new Worker(blobUrl);
+                var offscreenCanvas1 = canvas1.transferControlToOffscreen();
+                var offscreenCanvas2 = canvas2.transferControlToOffscreen();
+
+                // Initialize the worker with these canvases
+                worker.postMessage({ cmd: "init", canvas1: offscreenCanvas1, canvas2: offscreenCanvas2, points: points, icons: icons, indexes: urlIndexes }, [offscreenCanvas1, offscreenCanvas2]);
+
+                worker.addEventListener("message", function(e)
+                {
+                    // Present the updated buffer and hide the old one
+                    if (e.data.cmd == "present")
+                    {
+                        var canvasNew = e.data.bufferState ? canvas1 : canvas2;
+                        var canvasOld = e.data.bufferState ? canvas2 : canvas1;
+                        canvasNew.hidden = false;
+                        canvasOld.hidden = true;
+                    }
+
+                    // The worker requested updated transformation state
+                    if (e.data.cmd == "requestUpdate")
+                    {
+                        var canvas = e.data.bufferState ? canvas1 : canvas2;
+    
+                        // Negate the map-pane transformation so the canvas stays in the same place (over the leaflet canvas)
+                        var mapPanePos = this.getElementTransformPos(this.elements.leafletMapPane);
+                        canvas.style.transform = "translate(" + -mapPanePos[0] + "px, " + -mapPanePos[1] + "px)";
+    
+                        // Calculate a transform offset so that we start drawing the map in the top left of the base image canvas
+                        var baseImagePos = this.getElementTransformPos(this.elements.leafletBaseImageLayer, true);
+                        var offset = [ mapPanePos[0] + baseImagePos[0], mapPanePos[1] + baseImagePos[1] ];
+    
+                        // This ratio is a multiplier to the coordinate system so that coordinates are scaled down to the scale of the canvas
+                        // allowing us to use pixel coordinates and have them translate correctly (this does mean that sizes also scale
+                        // we can negate this by dividing sizes by the ratio)
+                        var baseImageLayerSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                        var ratio = Math.min(baseImageLayerSize[0] / this.size.width, baseImageLayerSize[1] / this.size.height);
+    
+                        // Send the updated data to the worker
+                        worker.postMessage({ cmd: "update", offset: offset, ratio: ratio });
+                        
+                    }
+                }.bind(this));
+                
+                // Redraws the canvas every <interval> milliseconds until called again with value == false
+                function doContinuousRender(e)
+                {
+                    if (e.value == true)
+                        worker.postMessage({ cmd: "start", mode: "continuous", doubleBuffered: false });
+                    else
+                        worker.postMessage({ cmd: "stop" });
+                }
+
+                function doIntervalRender(e)
+                {
+                    if (e.value == true)
+                        worker.postMessage({ cmd: "start", mode: "interval", interval: 300, doubleBuffered: true });
+                    else
+                        worker.postMessage({ cmd: "stop" });
+                }
+
+                this.events.onMapZoomed.subscribe(doContinuousRender);
+                this.events.onMapDragged.subscribe(doIntervalRender);
+                this.events.onMapPanned.subscribe(doIntervalRender);
+            },
+
+            // Ruler
+
+            initRuler: function()
+            {
+                // Create a pane to contain all the ruler points
+                var rulerPane = document.createElement("div");
+                rulerPane.className = "leaflet-pane leaflet-ruler-pane";
+                this.elements.leafletRulerPane = rulerPane;
+                this.elements.leafletTooltipPane.after(rulerPane);
+                
+                var prev, zoomStepTimeoutId, zoomStepId, zoomStepFn = function(time)
+                {
+                    // Only apply the new transform if the time actually changed
+                    if (prev != time)
+                    {
+                        if (this.elements.rulerPoints)
+                        {
+                            for (var i = 0; i <  this.elements.rulerPoints.length; i++)
+                            {
+                                var elem = this.elements.rulerPoints[i];
+                                
+                                var pixelPos = elem._pixel_pos;
+
+                                // This is a combined pixel to scaled, then scaled to transform function
+                                var imageSize = this.getScaledMapImageSize(true);
+                                var baseLayerPos = this.getElementTransformPos(this.elements.leafletBaseImageLayer, true);
+                
+                                // Scale the pixel position back up to the scaled range and add the position
+                                // of the base layer to the scaled position to get the transform position
+                                var transformPos = [ ((pixelPos[0] / this.size.width) * imageSize[0]) + baseLayerPos[0],
+                                                     ((pixelPos[1] / this.size.width) * imageSize[0]) + baseLayerPos[1] ];
+
+                                // Set the transform position of the element back to the _leaflet_pos (for caching)
+                                elem._leaflet_pos.x = transformPos[0];
+                                elem._leaflet_pos.y = transformPos[1];
+
+                                elem.style.transform = "translate3d(" + transformPos[0] + "px, " + transformPos[1] + "px, 0px)";
+                            }
+                        }
+                    }
+
+                    prev = time;
+                    zoomStepId = window.requestAnimationFrame(zoomStepFn);
+                
+                }.bind(this);
+
+                // Subscribe to an event that fires on the start and end of the zoom
+                // in order to animate the popup transform alongside the marker transform
+                this.events.onMapZoomed.subscribe(function(e)
+                {
+                    // Cancel the last callback so that we're not running two at the same time
+                    window.cancelAnimationFrame(zoomStepId);
+                    window.clearInterval(zoomStepTimeoutId);
+                    
+                    // Zoom start
+                    if (e.value == true)
+                    {
+                        // Start a new animation
+                        zoomStepId = window.requestAnimationFrame(zoomStepFn);
+
+                        // Start a timeout for it too
+                        // This is more of a safety mechanism if anything, we don't want a situation where our zoomStep function is looping indefinetely
+                        zoomStepTimeoutId = window.setTimeout(function() { window.cancelAnimationFrame(zoomStepId); }, 300);
+                    }
+
+                    // Zoom end
+                    else
+                    {
+                    }
+
+                }.bind(this));
+                
+                this.events.onMapClicked.subscribe(function(args)
+                {
+                    if (args.wasDragging) return;
+
+                    var transformPosOfClick = this.clientToTransformPosition([ args.event.clientX, args.event.clientY ]);
+                    var pixelPosition = this.scaledToPixelPosition(this.clientToScaledPosition([ args.event.clientX, args.event.clientY ]));
+                    
+                    var dot = document.createElement("div");
+                    dot.className = "mapsExtended_rulerDot";
+                    dot.style.cssText = "transform: translate3d(" + transformPosOfClick[0] + "px, " + transformPosOfClick[1] + "px, 0px);";
+                    dot.innerHTML = "<svg viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"38\" stroke-width=\"16\"></circle></svg>";
+                    dot._leaflet_pos = { x: transformPosOfClick[0], y: transformPosOfClick[1] };
+                    dot._pixel_pos = pixelPosition;
+
+                    this.elements.leafletRulerPane.appendChild(dot);
+                    this.elements.rulerPoints = this.elements.rulerPoints || [];
+                    this.elements.rulerPoints.push(dot);
+
+                }.bind(this));
             },
 
             // Fullscreen
@@ -1682,9 +2471,6 @@
 
             initFullscreenStyles: once(function()
             {
-                // This works around Chrome's dumbass renderer which makes everything fuzzy when animating an opacity value via a CSS transition
-                mapsExtended.stylesheet.insertRule(".leaflet-marker-pane .leaflet-marker-icon img { backface-visibility: hidden; }");
-                
                 // Change scope of rule covering .leaflet-control-zoom to cover all leaflet-control
                 changeCSSRuleSelector(".Map-module_interactiveMap__135mg .leaflet-control-zoom",
                                 ".Map-module_interactiveMap__135mg .leaflet-control");
@@ -1699,35 +2485,6 @@
 
                 changeCSSRuleText(".leaflet-touch .leaflet-bar a:first-child", "border-top-left-radius: 3px; border-top-right-radius: 3px;");
                 changeCSSRuleText(".leaflet-touch .leaflet-bar a:last-child", "border-bottom-left-radius: 3px; border-bottom-right-radius: 3px;");
-
-                // Rule to match 3px border-radius of other buttons
-                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button { border-radius:3px; cursor:pointer; }");
-
-                // Rule to hide zoom-out SVG when zoom-in button should be shown and vice versa
-                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button-zoom-in > svg[data-id=\"wds-icons-zoom-out-small\"] { display:none; }");
-                mapsExtended.stylesheet.insertRule(".leaflet-control-fullscreen-button-zoom-out > svg[data-id=\"wds-icons-zoom-in-small\"] { display:none; }");
-
-                
-                // Rule to override the size of the map when in fullscreen so it fills the screen
-                mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen .leaflet-container, .windowed-fullscreen .mapsExtended_fullscreen .leaflet-container { height:100vh !important; width:100vw !important; }");
-
-                // Rule to move the filters dropdown to within the map body when in fullscreen
-                mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen  .interactive-maps .interactive-maps__filters-list, .windowed-fullscreen .mapsExtended_fullscreen .interactive-maps .interactive-maps__filters-list { width:fit-content; margin:12px 0 0 12px; position:absolute; z-index:9999; }")
-
-                // Rule to add background back to pill buttons
-                //mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button, .windowed-fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button { color: var(--theme-accent-label-color); background-color: var(--theme-accent-color); box-shadow: 0 1px 3px 0 rgb(14 25 26 / 30%); border: none; }")
-                //mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button:hover, .windowed-fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button:hover { background-color: var(--theme-accent-color--hover); box-shadow: inset 0 0 18px 36px hsl(0deg 0% 100% / 10%); }")
-                mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button, .windowed-fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button { background-color: rgba(var(--theme-page-background-color--rgb), 0.75); box-shadow: 0 1px 3px 0 rgb(14 25 26 / 30%); }");
-                mapsExtended.stylesheet.insertRule(".fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button:hover, .windowed-fullscreen .mapsExtended_fullscreen .interactive-maps__filters-list .wds-pill-button:hover { box-shadow: inset 0 0 18px 36px hsl(0deg 0% 100% / 10%); }");
-                
-                // Rule to make map root absolutely positioned when in windowedFullscreen
-                mapsExtended.stylesheet.insertRule(".windowed-fullscreen .mapsExtended_fullscreen { position: fixed; top: 0; left: 0; }");
-                
-                // These rules control hiding or moving of specific elements when we're in windowed fullscreen
-                mapsExtended.stylesheet.insertRule(".windowed-fullscreen { overflow: hidden !important; }");
-                mapsExtended.stylesheet.insertRule(".windowed-fullscreen .notifications-placeholder { transition: left 0.2s ease-in-out; left: 18px; }");
-                mapsExtended.stylesheet.insertRule(".windowed-fullscreen .fandom-sticky-header { transform: translateY(-1px); }");
-                mapsExtended.stylesheet.insertRule(".windowed-fullscreen .global-navigation, .windowed-fullscreen .main-container, .windowed-fullscreen .global-navigation, .windowed-fullscreen #WikiaBar { display: none !important; }");
                 
             }, window),
 
@@ -1738,172 +2495,268 @@
                 
                 // Modify and set up some styles - this is only executed once
                 this.initFullscreenStyles();
+                
+                // Fullscreen button - Create a new leaflet-control before the zoom control which when clicked will toggle fullscreen
+                var fullscreenControl = document.createElement("div");
+                fullscreenControl.className = "leaflet-control-fullscreen leaflet-bar leaflet-control";
 
-                // Create a new leaflet-control before the zoom control which when clicked will toggle fullscreen
+                var fullscreenControlButton = document.createElement("a");
+                fullscreenControlButton.className = "leaflet-control-fullscreen-button leaflet-control-fullscreen-button-zoom-in";
+                fullscreenControlButton.setAttribute("title", mapsExtended.i18n.msg("fullscreen-enter-tooltip").plain());
+
                 mw.hook("dev.wds").add(function(wds)
                 {
-                    var leafletControlContainerBottomRight = this.elements.leafletControlContainer.querySelector(".leaflet-bottom.leaflet-right");
-                    
-                    // Fullscreen button
-                    var fullscreenControl = document.createElement("div");
-                    fullscreenControl.className = "leaflet-control-fullscreen leaflet-bar leaflet-control";
-
-                    var fullscreenControlButton = document.createElement("a");
-                    fullscreenControlButton.className = "leaflet-control-fullscreen-button leaflet-control-fullscreen-button-zoom-in";
-                    fullscreenControlButton.setAttribute("title", mapsExtended.i18n.msg("fullscreen-enter-tooltip").plain());
-
                     var zoomInIcon = wds.icon("zoom-in-small");
                     var zoomOutIcon = wds.icon("zoom-out-small");
                     fullscreenControlButton.appendChild(zoomInIcon);
                     fullscreenControlButton.appendChild(zoomOutIcon);
+                });
                     
-                    fullscreenControl.appendChild(fullscreenControlButton);
-                    leafletControlContainerBottomRight.prepend(fullscreenControl);
-                    
-                    this.elements.fullscreenControl = fullscreenControl;
-                    this.elements.fullscreenControlButton = fullscreenControlButton;
-                    this.elements.leafletControlContainerBottomRight = leafletControlContainerBottomRight;
+                fullscreenControl.appendChild(fullscreenControlButton);
+                this.elements.leafletControlContainerBottomRight.prepend(fullscreenControl);
+                
+                this.elements.fullscreenControl = fullscreenControl;
+                this.elements.fullscreenControlButton = fullscreenControlButton;
 
-                    // Remove the fullscreen button if fullscreen is disabled
-                    if (this.config.enableFullscreen == false)
-                        fullscreenControl.remove();
+                // Remove the fullscreen button if fullscreen is disabled
+                if (this.config.enableFullscreen == false)
+                    fullscreenControl.remove();
 
-                    var removedMarkerQueryParam = false;
-
-                    function stopPropagation(e)
+                // Click event on fullscreen button
+                fullscreenControlButton.addEventListener("click", function(e)
+                {
+                    // Always exit fullscreen if in either mode
+                    if (this.isFullscreen || this.isWindowedFullscreen)
                     {
-                        e.stopPropagation();
+                        if (this.isFullscreen)         this.setFullscreen(false);
+                        if (this.isWindowedFullscreen) this.setWindowedFullscreen(false);
                     }
 
-                    // Click event on fullscreen button
-                    fullscreenControlButton.addEventListener("click", function(e)
+                    // If control key is pressed, use the opposite mode
+                    else if (e.ctrlKey || e.metaKey)
                     {
-                        // Always exit fullscreen if in either mode
-                        if (this.isFullscreen || this.isWindowedFullscreen)
-                        {
-                            if (this.isFullscreen)         this.setFullscreen(false);
-                            if (this.isWindowedFullscreen) this.setWindowedFullscreen(false);
-                        }
+                        if (this.config.fullscreenMode == "screen")
+                            this.setWindowedFullscreen(true);
+                        else if (this.config.fullscreenMode == "window")
+                            this.setFullscreen(true);
+                    }
 
-                        // If control key is pressed, use the opposite mode
-                        else if (e.ctrlKey || e.metaKey)
-                        {
-                            if (this.config.fullscreenMode == "screen")
-                                this.setWindowedFullscreen(true);
-                            else if (this.config.fullscreenMode == "window")
-                                this.setFullscreen(true);
-                        }
-
-                        // Otherwise use the default mode
-                        else
-                        {
-                            if (this.config.fullscreenMode == "screen")
-                                this.setFullscreen(true);
-                            else if (this.config.fullscreenMode == "window")
-                                this.setWindowedFullscreen(true);
-                        }
-                        
-                        e.stopPropagation();
-                        
-                    }.bind(this));
+                    // Otherwise use the default mode
+                    else
+                    {
+                        if (this.config.fullscreenMode == "screen")
+                            this.setFullscreen(true);
+                        else if (this.config.fullscreenMode == "window")
+                            this.setWindowedFullscreen(true);
+                    }
                     
-                    fullscreenControlButton.addEventListener("dblclick", stopPropagation);
-                    fullscreenControlButton.addEventListener("mousedown", stopPropagation);
-
-                    this.elements.rootElement.addEventListener("fullscreenchange", function(e)
-                    {
-                        this.isFullscreen = document.fullscreenElement == e.currentTarget;
-                        this.isFullscreenTransitioning = false;
-
-                        // Toggle the fullscreen class on the document body
-                        document.documentElement.classList.toggle("fullscreen", this.isFullscreen);
-
-                        // Toggle the fullscreen class on the root element
-                        this.elements.rootElement.classList.toggle("mapsExtended_fullscreen", this.isFullscreen);
-
-                        // Change the tooltip that is shown to the user on hovering over the button
-                        this.elements.fullscreenControlButton.setAttribute("title", this.isFullscreen || this.isWindowedFullscreen ? mapsExtended.i18n.msg("fullscreen-exit-tooltip").plain() : mapsExtended.i18n.msg("fullscreen-enter-tooltip").plain());
-
-                        // Toggle classes on the fullscreen A element to influence which icon is displayed
-                        this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isFullscreen && !this.isWindowedFullscreen);
-                        this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isFullscreen || this.isWindowedFullscreen);
-                        
-                    }.bind(this));
-
-                    document.addEventListener("keydown", function(e)
-                    {
-                        // F11 pressed
-                        if (e.keyCode == 122)
-                        {
-                            // ...while in windowed fullscreen but not normal fullscreen -> Enter normal fullscreen
-                            // ...while in windowed fullscreen and normal fullscreen -> Exit normal fullscreen
-                            if ((this.isWindowedFullscreen && !this.isFullscreen) || 
-                                (this.isWindowedFullscreen && this.isFullscreen))
-                            {
-                                this.toggleFullscreen();
-                                e.preventDefault();
-                                e.stopPropagation();
-                            }
-                        }
-
-                        // Escape pressed while in windowed fullscreen
-                        if (e.keyCode == 27 && this.isWindowedFullscreen) // Escape
-                            this.setWindowedFullscreen(false);
+                    e.stopPropagation();
                     
-                    }.bind(this));
+                }.bind(this));
+                
+                fullscreenControlButton.addEventListener("dblclick", stopPropagation);
+                fullscreenControlButton.addEventListener("mousedown", stopPropagation);
 
+                this.elements.rootElement.addEventListener("fullscreenchange", function(e)
+                {
+                    this.isFullscreen = document.fullscreenElement == e.currentTarget;
+                    this.isFullscreenTransitioning = false;
+
+                    // Toggle the fullscreen class on the document body
+                    document.documentElement.classList.toggle("fullscreen", this.isFullscreen);
+
+                    // Toggle the fullscreen class on the root element
+                    this.elements.rootElement.classList.toggle("mapsExtended_fullscreen", this.isFullscreen || this.isWindowedFullscreen);
+
+                    // Change the tooltip that is shown to the user on hovering over the button
+                    this.elements.fullscreenControlButton.setAttribute("title", this.isFullscreen || this.isWindowedFullscreen ? mapsExtended.i18n.msg("fullscreen-exit-tooltip").plain() : mapsExtended.i18n.msg("fullscreen-enter-tooltip").plain());
+
+                    // Toggle classes on the fullscreen A element to influence which icon is displayed
+                    this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isFullscreen && !this.isWindowedFullscreen);
+                    this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isFullscreen || this.isWindowedFullscreen);
+                    
+                }.bind(this));
+
+                document.addEventListener("keydown", function(e)
+                {
+                    // F11 pressed
+                    if (e.keyCode == 122)
+                    {
+                        // ...while in windowed fullscreen but not normal fullscreen -> Enter normal fullscreen
+                        // ...while in windowed fullscreen and normal fullscreen -> Exit normal fullscreen
+                        if ((this.isWindowedFullscreen && !this.isFullscreen) || 
+                            (this.isWindowedFullscreen && this.isFullscreen))
+                        {
+                            this.toggleFullscreen();
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }
+
+                    // Escape pressed while in windowed fullscreen
+                    if (e.keyCode == 27 && this.isWindowedFullscreen) // Escape
+                        this.setWindowedFullscreen(false);
+                
                 }.bind(this));
             },
 
-            // Search
+            // Controls
 
-            initSearchStyles: once(function()
+            controlAssociations:
             {
-                // Keep search dropdown open when search box is focused
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchDropdown.wds-dropdown:focus-within .wds-dropdown__content { display: block; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchDropdown.wds-dropdown:focus-within:not(.wds-no-chevron):after, .mapsExtended_searchDropdown.wds-dropdown:focus-within:not(.wds-no-chevron):before { display: block; }");
+                "zoom": { class: "leaflet-control-zoom" },
+                "fullscreen": { class: "leaflet-control-fullscreen" },
+                "edit": { class: "interactive-maps__edit-control", useParent: true }
+            },
+
+            // This may be called multiple times for one map, and should be because leaflet controls are recreated on deinitialization
+            initControls: function()
+            {
+                // Build a list of controls to look up where they are (we can't always assume where the controls are)
+                for (var key in this.controlAssociations)
+                {
+                    var control = this.controlAssociations[key];
+                    control.name = key;
+                    control.element = this.elements.leafletControlContainer.querySelector("." + control.class);
+                    control.isPresent = control.element != undefined;
+                    control.isPresentInConfig = this.config.hiddenCategories.includes(key) || this.config.mapControls.some(function(mc) { return mc.includes(key); });
+                    control.position = "";
+
+                    if (control.isPresent)
+                    {
+                        // Use parent of control if required
+                        if (control.useParent == true)
+                        {
+                            control.element = control.element.parentElement;
+                        }
+
+                        // Determine location of control
+                        if (control.element.parentElement.matches(".leaflet-bottom"))
+                        {
+                            if (control.element.parentElement.matches(".leaflet-left"))
+                                control.position = "bottom-left";
+                            else if (control.element.parentElement.matches(".leaflet-right"))
+                                control.position = "bottom-right";
+                        }
+                        else if (control.element.parentElement.matches(".leaflet-top"))
+                        {
+                            if (control.element.parentElement.matches(".leaflet-left"))
+                                control.position = "top-left";
+                            else if (control.element.parentElement.matches(".leaflet-right"))
+                                control.position = "top-right";
+                        }
+                    }
+                }
                 
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchDropdown > .wds-dropdown__content { width: 250px; padding: 0; overflow: hidden; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_search { display: flex; flex-direction: column; }");
-                
-                // Search box styling
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchBox { width: 100%; padding: 18px 12px; margin: 0 !important; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchBox > .wds-input__hint-container > .wds-input__hint { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }");
-        
-                // Search results styling
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults { width: 100%; overflow-y: auto; font-size: 14px; font-weight: normal; line-height: 1em; user-select: none; position: relative; flex-grow: 1; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_headerWrapper { position: sticky; top: -0.5px; background-color: var(--theme-page-background-color--secondary); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_header { padding: 12px; display: flex; align-items: center; background-color: rgba(var(--theme-page-text-color--rgb), 0.2); cursor: pointer; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_items:not(:empty) { overflow-y: hidden; padding: 8px 0; border-bottom: 1px solid var(--theme-border-color); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item { padding: 12px 24px; padding-bottom: 10px; cursor: pointer; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item.selected { color: var(--theme-accent-label-color); background-color: var(--theme-accent-color); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item.selected:hover { background-color: var(--theme-accent-color--hover); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item.selected:hover:active { background-color: var(--theme-accent-color); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item > div:last-of-type { font-size: 10px; color:var(--theme-page-text-mix-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_item.selected > div:last-of-type { color: var(--theme-accent-dynamic-color-2); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container:not(.filtered) .mapsExtended_searchResults_item:hover:not(.selected) { background-color: rgba(var(--theme-page-text-color--rgb), 0.1); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_header:hover { background-color: rgba(var(--theme-page-text-color--rgb), 0.3); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container:not(.filtered) .mapsExtended_searchResults_item:hover:active, .mapsExtended_searchResults_header:hover:active { background-color: rgba(var(--theme-page-text-color--rgb), 0.2); }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container { margin: 8px 0; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container.filtered { opacity: 0.5; cursor: default; }")
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container.filtered > .mapsExtended_searchResults_items > .mapsExtended_searchResults_item { cursor: default; pointe-events: none; }")
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container.collapsed { border-bottom: none; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchResults_container.collapsed > .mapsExtended_searchResults_items { display: none; }");
-        
-                // Leaflet marker highlight
-                mapsExtended.stylesheet.insertRule(".leaflet-marker-icon.search-result-highlight:before { content: ''; width: 64px; height: 64px; border-width: 2px; border-style: solid; border-color: var(--theme-accent-color); border-radius: 50%; background-color: rgba(var(--theme-accent-color--rgb), 65%); transition-property: filter, border-color; transition-duration: 0.2s; transition-timing-function: ease-in-out; position: absolute; left: calc(50% - 32px); top: calc(50% - 32px); z-index: -1 !important; }");
-                mapsExtended.stylesheet.insertRule(".leaflet-marker-icon.search-result-highlight.search-result-highlight-fixed:before { border-color: var(--theme-page-dynamic-color-1); filter: drop-shadow(0px 0px 8px var(--theme-page-dynamic-color-1)); }");
-        
-                // When mapsExtended_searchFiltered is applied to the root leaflet-container, any markers not with the search-result class will be hidden
-                mapsExtended.stylesheet.insertRule(".mapsExtended_searchFiltered .leaflet-marker-icon:not(.search-result), .mapsExtended_searchFiltered .mapsExtended_searchResults .mapsExtended_searchResults_item:not(.search-result), .mapsExtended_searchFiltered .mapsExtended_searchResults > .mapsExtended_searchResults_container:not(.search-result) { display: none !important; }");
-                
-            }, mapsExtended),
+                // Only modify control positions if mapControls is present, and all arrays within mapControls are an array
+                if (this.config.mapControls && Array.isArray(this.config.mapControls) && this.config.mapControls.length === 4 &&
+                    this.config.mapControls.every(function(mc) { return mc != undefined  && Array.isArray(mc); }));
+                {
+                    for (var i = 0; i < this.config.mapControls.length; i++)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                            {
+                                var position = "top-left";
+                                var container = this.elements.leafletControlContainerTopLeft;
+                                break;
+                            }
+                            case 1:
+                            {
+                                var position = "top-right";
+                                var container = this.elements.leafletControlContainerTopRight;
+                                break;
+                            }
+                            case 2:
+                            {
+                                var position = "bottom-right";
+                                var container = this.elements.leafletControlContainerBottomRight;
+                                break;
+                            }
+                            case 3:
+                            {
+                                var position = "bottom-left";
+                                var container = this.elements.leafletControlContainerBottomLeft;
+                                break;
+                            }
+                        }
+
+                        for (var j = 0; j < this.config.mapControls[i].length; j++)
+                        {
+                            var id = this.config.mapControls[i][j];
+                            var controlToMove = this.controlAssociations[id];
+
+                            // Control invalid
+                            if (controlToMove == undefined)
+                                log("No control found with the id " + id + " at mapControls[" + i + "][" + j + "] (" + position + ")");
+
+                            // Control valid, present, and in a different position to the one requested
+                            else if (controlToMove.isPresent && controlToMove.position != position)
+                            {
+                                controlToMove.position = position;
+
+                                // Append the element under a new control container
+                                container.appendChild(controlToMove.element);
+                            }
+                        }
+                    }
+                }
+
+                // Hide controls in hiddenControls
+                if (this.config.hiddenControls && Array.isArray(this.config.hiddenControls) && this.config.hiddenControls.length > 0)
+                {
+                    for (var i = 0; i < this.config.hiddenControls.length; i++)
+                    {
+                        var id = this.config.hiddedControls[i];
+                        var controlToHide = this.controlAssociations[id];
+                        
+                        // Control invalid
+                        if (controlToHide == undefined)
+                            log("No control found with the id " + id + " at hiddenControls[" + i + "]");
+                        
+                        // Control valid and present
+                        else if (controlToHide.isPresent)
+                        {
+                            controlsToHide.hidden = true;
+
+                            // Don't remove it from the DOM, just hide it
+                            controlToHide.element.style.display = "none";
+                        }
+                    }
+                }
+
+                // First time initializing, create rules to specifically hide controls in the wrong corner
+                // This helps to reduce flicker when the map is reinitialized and the controls have to be repositioned
+                if (!this.initializedOnce)
+                {
+                    for (var key in this.controlAssociations)
+                    {
+                        var control = this.controlAssociations[key];
+
+                        if (!control || !control.isPresent || control.isHidden)
+                            continue;
+
+                        var cornerSelector = "";
+                        if (control.position.startsWith("bottom"))   cornerSelector += ".leaflet-bottom";
+                        else if (control.position.startsWith("top")) cornerSelector += ".leaflet-top";
+                        if (control.position.endsWith("left"))       cornerSelector += ".leaflet-left";
+                        else if (control.position.endsWith("right")) cornerSelector += ".leaflet-right";
+
+                        var selector = "." + this.mapId + "[id='" + this.id + "'] .leaflet-control-container > *:not(" + cornerSelector + ") ." + control.class;
+                        mapsExtended.stylesheet.insertRule(selector + " { display: none; }");
+                    }
+
+                    // If there are controls in the top left, edit the margins on the fullscreen filters panel
+                    if (Array.isArray(this.config.mapControls[0]) && this.config.mapControls[0].length > 0)
+                        mapsExtended.stylesheet.insertRule(".mapsExtended_fullscreen .interactive-maps .interactive-maps__filters-list { margin-left: 56px !important; }");
+                }
+            },
+
+            // Search
             
             initSearch: function()
             {
-                // Modify and set up some styles - this is only run once
-                this.initSearchStyles();
-
                 // Create the search dropdown
                 var searchDropdown = document.createElement("div");
                 searchDropdown.className = "mapsExtended_searchDropdown wds-dropdown"
@@ -1941,7 +2794,7 @@
                 this.updateSearchSubtitle();
 
                 // Resize the searchRoot to be a bit less than the height of the root map container
-                searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - 36) + "px";
+                searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
 
                 /* Events and functions */
 
@@ -1959,7 +2812,7 @@
                 searchDropdownButton.addEventListener("mouseenter", function(e)
                 {
                     // Resize the searchRoot to be a bit less than the height of the root map container
-                    this.elements.searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 36)) + "px";
+                    this.elements.searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 35)) + "px";
                     
                 }.bind(this));
 
@@ -2484,51 +3337,7 @@
                 
                 // Change some of the scroll up/down shadows
                 deleteCSSRule(".interactive-maps__filters-dropdown-list--can-scroll-down::after, .interactive-maps__filters-dropdown-list--can-scroll-up::before");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown-list--can-scroll-up::before, .interactive-maps__filters-dropdown-list--can-scroll-down::after { opacity: 1; }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown-list::before { box-shadow: rgb(0 0 0 / 20%) 0px -20px 12px 8px; }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown-list::after { box-shadow: rgb(0 0 0 / 20%) 0px 20px 12px 8px }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown-list::before, .interactive-maps__filters-dropdown-list::after { content: \"\"; position: sticky; display: block; width: 100%; transition: opacity 0.2s linear; opacity: 0; }");
-                
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-list .wds-dropdown__content { padding: 0; overflow: hidden; background-color: rgba(var(--theme-page-background-color--secondary--rgb), 0.95); }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown-list { padding: 18px 12px; max-height: inherit; }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-list { margin-bottom: 12px; width: 100%; }");
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filters-list > .wds-dropdown { margin-right: 6px; }");
-                
-                // mapsExtended_categoryGroup rules
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroup { overflow-y: hidden; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroup .wds-checkbox { width:100%; }");
 
-                // mapsExtended_categoryGroupHeader rules
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroupHeader { position: relative; user-select: none; }");
-
-                // mapsExtended_categoryGroupHeaderLabel rules
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroupHeaderLabel { align-self: center; cursor: pointer; line-height: 1; }");
-
-                // mapsExtended_categoryGroupHeaderArrow rules
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroupHeaderArrow { color: rgba(var(--theme-page-text-color--rgb), 0.5); font-size: 10px; margin-left: 10px; cursor: pointer; align-self: center; flex-grow: 1; }");
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroupHeaderArrow:hover { color: var(--theme-page-text-color); }");
-
-                // mapsExtended_categoryGroupChildren rules
-                mapsExtended.stylesheet.insertRule(".mapsExtended_categoryGroupChildren { margin-left: 16px; transition: max-height 0.25s ease-in-out; max-height: fit-content; overflow-y: hidden; }");
-
-                // Insert a new rule which negates the margin-bottom on filters
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filter-all, .interactive-maps__filter:not(:last-child) { margin-bottom: 0; }");
-
-                // Insert a new rule which tightens the padding on filters
-                mapsExtended.stylesheet.insertRule(".interactive-maps__filter, .interactive-maps__filter-all { padding: 4px 3px; }");
-
-                // Insert new style rules to add indeterminate support to WDS checkboxes
-                var indeterminateSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 18 18'%3E%3Cpath d='M 3 15 L 15 15 L 15 3 L 3 3 L 3 15 Z M 16 1 L 2 1 C 1.447 1 1 1.447 1 2 L 1 16 C 1 16.552 1.447 17 2 17 L 16 17 C 16.552 17 17 16.552 17 16 L 17 2 C 17 1.447 16.552 1 16 1 Z' fill-rule='evenodd'/%3E%3Crect x='3.733' y='6.172' width='8.5' height='2.25' rx='1' ry='1' style='fill-rule: evenodd;' transform='matrix(1, -0.000663, 0, 1, 1.017, 1.708293)'/%3E%3C/svg%3E";
-                mapsExtended.stylesheet.insertRule(".wds-checkbox input[type=checkbox]:indeterminate+label:after { " +
-                    "background-color: var(--wds-checkbox-check-color);" +
-                    "mask-image: url(\"" + indeterminateSvg + "\");" + 
-                    "-webkit-mask-image: url(\"" + indeterminateSvg + "\");" + 
-                    "-webkit-mask-repeat: no-repeat;" +
-                    "mask-repeat: no-repeat;" +
-                "}");
-                mapsExtended.stylesheet.insertRule(".wds-checkbox input[type=checkbox]:indeterminate:hover:not(:disabled)+label:after { background-color: var(--wds-checkbox-check-color--hover); }");
-                mapsExtended.stylesheet.insertRule(".wds-checkbox input[type=checkbox]:indeterminate:hover:not(:disabled)+label:after { background-color: var(--wds-checkbox-check-color); }");
-                
             }, mapsExtended),
 
             // This function creates all the categoryGroups from the definitions in the categoryGroups array
@@ -2600,15 +3409,313 @@
                 }
 
                 // Resize the searchRoot to be a bit less than the height of the root map container
-                this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 36) + "px";
+                this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
 
                 // Add a listener which changes the min height of the search box when it is opened
                 this.elements.filtersDropdownButton.addEventListener("mouseenter", function(e)
                 {
                     // Resize the list to be a bit less than the height of the root map container
-                    this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 36)) + "px";
+                    this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 35)) + "px";
                     
                 }.bind(this));
+            },
+
+            // Collectibles
+
+            hasCollectibles: false,
+
+            initCollectibleStyles: once(function()
+            {
+                var rule = mapsExtended.util.findCSSRule(".interactive-maps__filters-dropdown-list", mapsExtended.stylesheet);
+                if (rule)
+                {
+                    rule.style.paddingBottom = "0";
+                    rule.style.maxHeight = "none";
+                }
+            }),
+
+            // Called on each of the maps to set up collectibles
+            initCollectibles: function()
+            {
+                var map = this;
+                
+                // Set up the checked summary on each of the collectible category labels
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    var category = this.categories[i];
+
+                    // Collectible categories are those whose ID's end with __c or __ch or __hc
+                    // or categories included in the collectibleCategories array in the map config
+                    // or categories where the custom property "collectible" is true
+                    category.collectible = category.hints.includes("collectible")
+                                        || (Array.isArray(this.config.collectibleCategories) && this.config.collectibleCategories.includes(category.id))
+                                        || category.collectible;
+                    
+                    if (!category.collectible)
+                        continue;
+
+                    this.hasCollectibles = true;
+
+                    if (category.elements && category.elements.filter)
+                    {
+                        category.elements.filter.addEventListener("click", function(e)
+                        {
+                            if (e.ctrlKey == true || e.metaKey == true)
+                            {
+                                if (this.isAnyCollected())
+                                    this.clearAllCollected();
+                                else
+                                    this.markAllCollected();
+
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        }.bind(category));
+                    }
+                }
+
+                // Skip this map if there are no collectibles
+                if (this.hasCollectibles == false) return;
+
+                this.initCollectibleStyles();
+
+                // Add a "Clear collected" button to the filter box
+                var clearButton = document.createElement("a");
+                clearButton.className = "mapsExtended_collectibleClearButton";
+                clearButton.textContent = mapsExtended.i18n.msg("clear-collected-button").plain();
+                this.elements.clearCollectedButton = clearButton;
+                this.elements.filtersDropdownList.after(clearButton);
+                
+                mw.loader.using(["oojs-ui-core", "oojs-ui-windows"], function()
+                {
+                    // When BannerNotifications is loaded, 
+                    mw.hook("dev.banners").add(function(banners)
+                    {
+                        map.elements.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
+
+                        // When the "Clear collected" button is clicked in the filters dropdown
+                        map.elements.clearCollectedButton.addEventListener("click", function()
+                        {
+                            var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
+
+                            // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
+                            OO.ui.confirm(confirmMsg).done(function(confirmed)
+                            {
+                                if (confirmed)
+                                {
+                                    var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
+                                    new BannerNotification(bannerMsg, "notify", null, 5000).show();
+                                    map.clearCollectedStates();
+                                }
+                                else
+                                    return;
+                            });
+                        });
+
+                    });
+
+                });
+                
+                // Load collected states from localStorage
+                this.loadCollectedStates();
+
+                // Update the collected labels to reflect the collected states
+                this.categories.forEach(function(c) { c.updateCollectedLabel(); });
+
+                // Events
+
+                // Update all collected labels and nudge collected states when the map is refreshed
+                this.events.onMapInit.subscribe(function(args)
+                {
+                    // Nudge collected states
+                    args.map.nudgeCollectedStates();
+
+                    // Update labels
+                    args.map.categories.forEach(function(c) { c.updateCollectedLabel(); });
+                });
+
+                // New marker shown - Set it's collected state to itself update the marker opacity
+                this.events.onMarkerShown.subscribe(function(args)
+                {
+                    args.marker.setMarkerCollected(args.marker.collected, true);
+                });
+
+                // New popup created
+                this.events.onPopupCreated.subscribe(function(args)
+                {
+                    var marker = args.marker;
+                    var map = args.map;
+                    var category = map.categoryLookup.get(marker.categoryId);
+                    
+                    // Check if the marker that triggered this popup is a collectible one
+                    if (category.collectible == true)
+                    {
+                        // Stop observing popup changes while we change the subtree of the popup
+                        map.togglePopupObserver(false);
+
+                        // Remove any old checkboxes (this can happen with live preview)
+                        var oldCheckbox = marker.popup.elements.popupTitle.querySelector(".wds-checkbox");
+                        if (oldCheckbox) oldCheckbox.remove();
+                        
+                        // Create checkbox container
+                        var popupCollectedCheckbox = document.createElement("div");
+                        popupCollectedCheckbox.className = "wds-checkbox";
+                
+                        // Create the checkbox itself
+                        var popupCollectedCheckboxInput = document.createElement("input");
+                        popupCollectedCheckboxInput.setAttribute("type", "checkbox");
+                        popupCollectedCheckboxInput.id = "checkbox_" + map.id + "_" + marker.id;
+                        popupCollectedCheckboxInput.marker = marker; // <- Store reference to marker on checkbox so we don't have to manually look it up
+                        popupCollectedCheckboxInput.checked = marker.collected;
+                        marker.popup.elements.popupCollectedCheckbox = popupCollectedCheckboxInput;
+                
+                        // Create label adjacent to checkbox
+                        var popupCollectedCheckboxLabel = document.createElement("label");
+                        popupCollectedCheckboxLabel.setAttribute("for", popupCollectedCheckboxInput.id);
+
+                        // Add checkbox input and label to checkbox container
+                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxInput);
+                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxLabel);
+
+                        // Add checkbox container after title element
+                        marker.popup.elements.popupTitle.after(popupCollectedCheckbox);
+
+                        // Checked changed event
+                        popupCollectedCheckboxInput.addEventListener("change", function(e)
+                        {
+                            if (e.currentTarget.marker)
+                                e.currentTarget.marker.setMarkerCollected(e.currentTarget.checked, false, true, true);
+                        });
+                
+                        map.togglePopupObserver(true);
+                    }
+                });
+
+                // Marker clicked - Toggle collected state on control-click
+                this.events.onMarkerClicked.subscribe(function(args)
+                {
+                    // Check if click was control-click
+                    if (args.event.ctrlKey == true || args.event.metaKey == true)
+                    {
+                        // Invert collected state on marker
+                        args.marker.setMarkerCollected(!args.marker.collected, true, true, true);
+
+                        // Don't open the popup with a control-click
+                        args.event.stopPropagation();
+                    }
+                });
+
+                // Save collected states when the tab loses focus
+                window.addEventListener("beforeunload", function(e)
+                {
+                    mapsExtended.maps.forEach(function(map)
+                    {
+                        if (map.hasCollectibles)
+                            map.saveCollectedStates();
+                    });
+                });
+            },
+
+            // Get the amount of markers that have been collected in total
+            getNumCollected: function()
+            {
+                var count = 0;
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    count = count + this.categories[i].getNumCollected();
+                }
+
+                return count;
+            },
+            
+            // Get the key used to store the collected states in localStorage
+            getStorageKey: function()
+            {
+                return mw.config.get("wgDBname") + "_" + this.name.replaceAll(" ", "_") + "_collected";
+            },
+
+            // Trigger the collected setter on all markers to update their opacity
+            nudgeCollectedStates: function()
+            {
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    if (!this.categories[i].collectible)
+                        continue;
+
+                    for (var j = 0; j < this.categories[i].markers.length; j++)
+                        this.categories[i].markers[j].setMarkerCollected(this.categories[i].markers[j].collected, true, false, false);
+                    
+                    this.categories[i].updateCollectedLabel();
+                }   
+            },
+
+            // Clear the collected state on all markers for this map, and then also the data of this map in localStorage
+            clearCollectedStates: function()
+            {
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    // Clear the collected states
+                    for (var j = 0; j < this.categories[i].markers.length; j++)
+                        this.categories[i].markers[j].setMarkerCollected(false, true, false, false);
+
+                    // Update label
+                    this.categories[i].updateCollectedLabel();
+                }
+                
+                var storageKey = this.getStorageKey();
+                localStorage.removeItem(storageKey);
+            },
+        
+            // Iterates over all markers in a map and stores an array of the IDs of "collected" markers
+            saveCollectedStates: function()
+            {
+                var collectedMarkers = [];
+                for (var i = 0; i < this.markers.length; i++)
+                {
+                    if (this.markers[i].collected) collectedMarkers.push(this.markers[i].id);
+                }
+        
+                var storageKey = this.getStorageKey();
+                //localStorage.setItem(storageKey, JSON.stringify(collectedMarkers));
+                
+                // Use the mw.storage API instead of using localStorage directly, because of its expiry feature
+                mw.storage.set(storageKey, JSON.stringify(collectedMarkers), this.config.collectibleExpiryTime == -1 ? undefined : this.config.collectibleExpiryTime);
+            },
+        
+            // Fetch the collected state data from localStorage and set the "collected" bool on each marker that is collected
+            loadCollectedStates: function()
+            {
+                var storageKey = this.getStorageKey();
+                var stateJson = mw.storage.get(storageKey) || "[]";
+                var stateData = JSON.parse(stateJson);
+        
+                for (var i = 0; i < stateData.length; i++)
+                {
+                    if (this.markerLookup.has(stateData[i]))
+                    {
+                        var marker = this.markerLookup.get(stateData[i]);
+        
+                        // Ensure that this marker is a collectible one
+                        if (marker && marker.category.collectible == true)
+                            marker.setMarkerCollected(true, true, false, false);
+                    }
+                }
+
+                this.resetCollectedStateExpiry();
+            },
+
+            // Resets the timer on the expiry of collected states
+            resetCollectedStateExpiry: function()
+            {
+                if (!mw.storage.setExpires) return;
+                
+                var storageKey = this.getStorageKey();
+
+                // Clear expiry time with a collectibleExpiryTime of -1
+                if (this.config.collectibleExpiryTime == -1)
+                    mw.storage.setExpires(storageKey);
+                else
+                    mw.storage.setExpires(storageKey, this.config.collectibleExpiryTime);
             }
         };
 
@@ -2955,6 +4062,9 @@
             this.map = map;
             this.nameNormalized = this.name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
 
+            // Calculate some of the values needed to determine icon anchors
+            if (this.icon) this.calculateCustomIconAnchor();
+
             map.categoryLookup.set(this.id, this);
 
             // Process hints (strings added after double underscore, separated by a single underscore)
@@ -3026,9 +4136,105 @@
             deinit: function()
             {
                 // Don't actually need to do anything here since no category elements are removed on refresh                
+            },
+
+            // Calculate the anchor styles and scaled size of an icon (in this case, an icon definition in either the category or marker)
+            // and add them in-place (adds scaledWidth and anchorStyles)
+            calculateCustomIconAnchor: function()
+            {
+                if (!this.icon) return;
+
+                // Cache the width and the height of the icon in scaled units (where markers have to fit into a box of 26px)
+                var ratio = Math.min(26 / this.icon.width, 26 / this.icon.height);
+                this.icon.scaledWidth = this.icon.width * ratio;
+                this.icon.scaledHeight = this.icon.height * ratio;
+
+                // Cache the styles that will be used to anchor icons on this category
+                this.icon.anchorStyles = {};
+                
+                // Vertical portion of iconAnchor
+                if (this.map.config.iconAnchor.startsWith("top"))         this.icon.anchorStyles["margin-top"] = "0px";
+                else if (this.map.config.iconAnchor.startsWith("center")) this.icon.anchorStyles["margin-top"] = "-" + (this.icon.scaledHeight * 0.5) + "px";
+                else if (this.map.config.iconAnchor.startsWith("bottom")) this.icon.anchorStyles["margin-top"] = "-" + (this.icon.scaledHeight * 1.0) + "px";
+                else console.error("Invalid vertical iconAnchor config! Should be one of: top, center, bottom");
+
+                // Horizontal portion of iconAnchor
+                if (this.map.config.iconAnchor.endsWith("left"))        this.icon.anchorStyles["margin-left"] = "0px";
+                else if (this.map.config.iconAnchor.endsWith("center")) this.icon.anchorStyles["margin-left"] = "-" + (this.icon.scaledWidth * 0.5) + "px";
+                else if (this.map.config.iconAnchor.endsWith("right"))  this.icon.anchorStyles["margin-left"] = "-" + (this.icon.scaledWidth * 1.0) + "px";
+                else console.error("Invalid horizontal iconAnchor config! Should be one of: left, center, right");
+            },
+
+            // Collectibles
+            
+            isAnyCollected: function()
+            {
+                return this.collectible ? this.markers.some(function(m) { return m.collected == true; }) : false;
+            },
+
+            getNumCollected: function()
+            {
+                var count = 0;
+                if (!this.collectible) return count;
+
+                for (var i = 0; i < this.markers.length; i++)
+                {
+                    if (this.markers[i].collected)
+                        count++;
+                }
+
+                return count;
+            },
+
+            getNumCollectible: function()
+            {
+                return this.collectible ? this.markers.length : 0;
+            },
+            
+            updateCollectedLabel: function()
+            {
+                if (!this.collectible)
+                    return;
+                
+                // Align icon to top of flex
+                if (!this.elements.collectedLabel)
+                {
+                    if (this.elements.checkboxLabelIcon) this.elements.checkboxLabelIcon.style.alignSelf = "flex-start";
+        
+                    var categoryLabel = this.elements.checkboxLabelText;
+        
+                    // Add amount collected "<collected> of <total> collected"
+                    var collectedLabel = document.createElement("div");
+                    collectedLabel.style.cssText = "font-size:small; opacity:50%";
+                    var collectedLabelText = document.createTextNode("");
+                    collectedLabel.appendChild(collectedLabelText);
+
+                    // Add collectedLabel as child of categoryLabel
+                    categoryLabel.appendChild(collectedLabel);
+
+                    this.elements.collectedLabel = collectedLabelText;
+                }
+
+                var count = this.getNumCollected();
+                var total = this.markers.length;
+                var perc = Math.round((count / total) * 100); // <- Not used in default label, but may be specified
+                var msg = mapsExtended.i18n.msg("category-collected-label", count, total, perc).plain();
+                
+                this.elements.collectedLabel.textContent = msg;
+            },
+
+            clearAllCollected: function(){ this.setAllCollected(false); },
+            markAllCollected: function(){ this.setAllCollected(true); },
+
+            setAllCollected: function(state)
+            {
+                for (var j = 0; j < this.markers.length; j++)
+                    this.markers[j].setMarkerCollected(state, true, false, true);
+
+                // Update label
+                this.updateCollectedLabel();
             }
         }
-
 
         /*
 
@@ -3042,13 +4248,19 @@
             Object.assign(this, markerJson);
 
             // Generate a new ID for the marker if the editor hasn't set one
-            if (!this.id) this.id = this.calculateMarkerHash();
+            if (!this.id )
+            {
+                this.id = generateRandomString(8);
+                this.usesNewId = true;
+            }
 
             // Warn if there already exists a marker with this ID
             if (map.markerLookup.has(this.id))
             {
-                console.error("Multiple markers exist with the id " + this.id + "!");
-                return null;
+                var newId = this.id + "_" + generateRandomString(8);
+                console.error("Multiple markers exist with the id " + this.id + "! Renamed to " + newId);
+                this.id = newId;
+                this.usesNewId = true;
             }
 
             // Add a reference to this marker in the markerLookup
@@ -3064,6 +4276,9 @@
             this.popup = new ExtendedPopup(this);
             this.name = this.popup.title;
             this.nameNormalized = this.name.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+
+            // Cache the width and the height of the icon in scaled units (where markers have to fit into a box of 26px)
+            if (this.icon) ExtendedCategory.prototype.calculateCustomIconAnchor.call(this);
 
             // Correct the position to always use xy
             if (map.coordinateOrder == "yx")
@@ -3108,13 +4323,18 @@
                 markerElement.id = this.id;
                 markerElement.style.zIndex = this.order;
 
+                this.width = this.icon && this.icon.scaledWidth || this.category.icon && this.category.icon.scaledWidth || this.markerElement.clientWidth;
+                this.height = this.icon && this.icon.scaledHeight || this.category.icon && this.category.icon.scaledHeight || this.markerElement.clientHeight;
+
                 // Update the iconAnchor if this is a custom marker
                 if (this.usesCustomIcon())
                 {
-                    for (var key in this.map.config.iconAnchorStyles)
+                    // Get anchor styles from this icon if it exists, or the category icon
+                    var anchorStyles = this.icon && this.icon.anchorStyles || this.category.icon && this.category.icon.anchorStyles || undefined;
+
+                    if (anchorStyles)
                     {
-                        if (this.map.config.iconAnchorStyles.hasOwnProperty(key))
-                            markerElement.style[key] = this.map.config.iconAnchorStyles[key];
+                        for (var key in anchorStyles) markerElement.style[key] = anchorStyles[key];
                     }
                 }
                 
@@ -3163,7 +4383,7 @@
                 
                 // While using a custom popup, don't ever pass click events on to Leaflet so that the leaflet popup doesn't get recreated
                 // ! Keep this check at the top because we should always cancel it regardless !
-                if (this.map.config.useCustomPopups)
+                if (this.map.config.useCustomPopups == true)
                     e.stopPropagation();
                 
                 // Don't activate marker if the click was the end of a drag
@@ -3180,7 +4400,7 @@
                         return;
                 }
 
-                if (this.map.config.useCustomPopups)
+                if (this.map.config.useCustomPopups == true)
                     this.popup.toggle();
 
                 // If popups should open only on hover, only non-trusted events (those initiated from scripts)
@@ -3209,7 +4429,7 @@
                 
                 // Sanity check to see if at least the ids match (id may NOT be present on all marker elements)
                 // No match if the id is present on both, but differs
-                if (markerElemId && markerJsonId && markerElemId != markerJsonId)
+                if (markerElemId && markerJsonId && markerElemId != markerJsonId && !markerJson.usesNewId)
                     return false;
 
                 // Color-based hint
@@ -3420,7 +4640,7 @@
             },
 
             // Returns the "scaled" position of a marker element or JSON position
-            // This is pixel position adjusted to the current viewport (zoom level and pan position)
+            // This is pixel position adjusted to the current map zoom level
             // It is not accurate to the transform:translate CSS position, as it factors out the base layer position
             getScaledMarkerPosition: function(marker)
             {
@@ -3432,10 +4652,10 @@
                 if (marker instanceof Element)
                 {
                     // Get base layer transform position. This needs to be calculated on the fly as it will change as the user zooms
-                    var baseLayerPos = this.map.getTranslateXY(this.map.elements.leafletBaseImageLayer);
+                    var baseLayerPos = this.map.getElementTransformPos(this.map.elements.leafletBaseImageLayer);
 
-                    // Subtract the current position of the map overlay to the marker position to get the scaled position
-                    pos = this.map.getTranslateXY(marker);
+                    // Subtract the current position of the map overlay from the marker position to get the scaled position
+                    pos = this.map.getElementTransformPos(marker);
                     pos[0] -= baseLayerPos[0];
                     pos[1] -= baseLayerPos[1];
                 }
@@ -3471,7 +4691,7 @@
             calculateMarkerHash: function(marker)
             {
                 marker = marker || this;
-                var str = "" + marker.position[0] + marker.position[1] + marker.popup.title + marker.popup.description + marker.popup.link.url + marker.popup.link.label;
+                var str = "" + marker.position[0] + marker.position[1] + marker.popup.title + marker.popup.description + (marker.popup.link != undefined ? marker.popup.link.url + marker.popup.link.label : "");
 
                 var hash = 0;
                 if (str.length == 0)
@@ -3485,6 +4705,58 @@
                 }
 
                 return hash.toString();
+            },
+
+            // Collectibles
+
+            collected: false,
+
+            // Sets the collected state of the marker.
+            // This should be called instead of setting collected directly and is called
+            // by user interactions, as well as on clear and initial load
+            setMarkerCollected: function(state, updatePopup, updateLabel, canShowBanner)
+            {
+                // Don't try to collect markers that aren't collectible
+                if (!this.category.collectible) return;
+
+                state = state || false;
+                
+                // Set the collected state on the marker
+                this.collected = state;
+
+                if (this.markerElement)
+                {
+                    // Set the marker collected style using a class rather than an inline attribute
+                    // This is required because with clustered markers, the opacity is overridden as part of the zoom animation on EVERY marker
+                    this.markerElement.classList.toggle("mapsExtended_collectedMarker", state);
+                }
+
+                // Set the collected state on the connected popup (if shown)
+                // This does not trigger the checked change event
+                if (updatePopup && this.popup.isPopupShown())
+                {
+                    var checkbox = this.popup.elements.popupCollectedCheckbox;
+                    checkbox.checked = state;
+                }
+
+                // Update the collected label
+                if (updateLabel) this.category.updateCollectedLabel();
+
+                // Show a congratulatory banner if all collectibles were collected
+                if (canShowBanner && this.map.config.enableCollectedAllNotification && state == true)
+                {
+                    // Check if all were collected
+                    var numCollected = this.category.getNumCollected();
+                    var numTotal = this.category.markers.length;
+                    
+                    // Show a banner informing the user that they've collected all markers
+                    if (numCollected == numTotal)
+                    {
+                        var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, this.category.name, this.map.getMapLink()).plain();
+                        this.map.elements.collectedMessageBanner.setContent(msg);
+                        this.map.elements.collectedMessageBanner.show();
+                    }
+                }
             }
         };
         
@@ -3517,7 +4789,8 @@
             initPopup: function(popupElement)
             {
                 this.initialized = true;
-                
+            
+                // Override the existing popupElement
                 if (this.map.config.useCustomPopups == true)
                 {
                     this.isCustomPopup = true;
@@ -3548,19 +4821,19 @@
 
                     // Vertical offset
                     if (this.marker.iconAnchor.startsWith("top"))
-                        popupElement.style.marginBottom = "13px"; // 0 + 9 (popup tip) + 4 (gap)
+                        popupElement.style.marginBottom = ((this.marker.height * 0.0) + 9 + 4) + "px"; // (0% of icon height) + 9 (popup tip) + 4 (gap)
                     else if (this.marker.iconAnchor.startsWith("center"))
-                        popupElement.style.marginBottom = "26px"; // 13 + 9 (popup tip) + 4 (gap)
+                        popupElement.style.marginBottom = ((this.marker.height * 0.5) + 9 + 4) + "px"; // (50% of icon height) + 9 (popup tip) + 4 (gap)
                     else if (this.marker.iconAnchor.startsWith("bottom"))
-                        popupElement.style.marginBottom = "35px"; // 26 (icon height) + 9 (popup tip) + 4 (gap)
+                        popupElement.style.marginBottom = ((this.marker.height * 1.0) + 9 + 4) + "px"; // (100% of icon height) + 9 (popup tip) + 4 (gap)
 
                     // Horizontal offset
                     if (this.marker.iconAnchor.endsWith("left"))
-                        popupElement.style.marginLeft = "13px"
+                        popupElement.style.marginLeft = (this.marker.width * 0.5) + "px";
                     if (this.marker.iconAnchor.endsWith("center"))
-                        popupElement.style.marginLeft = "0px"
+                        popupElement.style.marginLeft = (this.marker.width * 0.0) + "px";
                     if (this.marker.iconAnchor.endsWith("right"))
-                        popupElement.style.marginLeft = "-13px"
+                        popupElement.style.marginLeft = (this.marker.width * -0.5) + "px";
                 }
                 else
                 {
@@ -3570,19 +4843,19 @@
 
                     // Vertical offset
                     if (this.marker.iconAnchor.startsWith("top"))
-                        popupElement.style.marginBottom = "-6px"; // -26 (negate full icon height) + 9 (popup tip) + 4 (gap) + 7 (negate bottom)
+                        popupElement.style.marginBottom = ((this.marker.height * -1.0) + 9 + 4 + 7) + "px"; // -26 (negate full icon height) + 9 (popup tip) + 4 (gap) + 7 (negate bottom)
                     else if (this.marker.iconAnchor.startsWith("center"))
-                        popupElement.style.marginBottom = "7px"; // -13 (negate half icon height) + 9 (popup tip) + 4 (gap)  + 7 (negate bottom)
+                        popupElement.style.marginBottom = ((this.marker.height * -0.5) + 9 + 4 + 7) + "px"; // -13 (negate half icon height) + 9 (popup tip) + 4 (gap)  + 7 (negate bottom)
                     else if (this.marker.iconAnchor.startsWith("bottom"))
-                        popupElement.style.marginBottom = "20px"; // 9 (popup tip) + 4 (gap) + 7 (negate bottom)
+                        popupElement.style.marginBottom = ((this.marker.height * 0.0) + 9 + 4 + 7) + "px"; // 0 (keep icon height) + 9 (popup tip) + 4 (gap) + 7 (negate bottom)
                     
                     // Horizontal offset (same as above but adds 2px)
                     if (this.marker.iconAnchor.endsWith("left"))
-                        popupElement.style.marginLeft = "15px"
+                        popupElement.style.marginLeft = ((this.marker.width * 0.5) + 2) + "px";
                     if (this.marker.iconAnchor.endsWith("center"))
-                        popupElement.style.marginLeft = "2px"
+                        popupElement.style.marginLeft = ((this.marker.width * 0.0) + 2) + "px";
                     if (this.marker.iconAnchor.endsWith("right"))
-                        popupElement.style.marginLeft = "-11px"
+                        popupElement.style.marginLeft = ((this.marker.width * -0.5) + 2) + "px";
                 }
 
                 if (this.marker.map.config.openPopupsOnHover == true)
@@ -3605,9 +4878,6 @@
 
             initCustomPopupStyles: once(function()
             {
-                // This allows images to use their own size to expand the height of the popup, rather than using padding
-                //mapsExtended.stylesheet.insertRule(".MarkerPopup-module_image__7I5s4 { position: initial; }");
-
                 // Remove a rule that fixes the opacity to 1
                 deleteCSSRule(".leaflet-fade-anim .leaflet-map-pane .leaflet-popup");
 
@@ -3637,7 +4907,7 @@
 
                 // This is the maximum required HTML for a popup
                 customPopup.innerHTML = "<div class=\"leaflet-popup-content-wrapper\"><div class=\"leaflet-popup-content\" style=\"width: 301px;\"><div class=\"MarkerPopup-module_popup__eNi--\"><div class=\"MarkerPopup-module_content__9zoQq\"><div class=\"MarkerPopup-module_contentTopContainer__qgen9\"><div class=\"MarkerPopup-module_title__7ziRt\"><!-- Title --></div><div class=\"MarkerPopup-module_actionsContainer__q-GB8\"><div class=\"wds-dropdown MarkerPopupActions-module_actionsDropdown__Aq3A2\"><div class=\"wds-dropdown__toggle MarkerPopupActions-module_actionsDropdownToggle__R5KYk\" role=\"button\"><span></span><svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 18 18\" width=\"1em\" height=\"1em\" class=\"wds-icon wds-icon-small wds-dropdown__toggle-chevron\"><defs><path id=\"prefix__more-small\" d=\"M9 5c1.103 0 2-.896 2-2s-.897-2-2-2-2 .896-2 2 .897 2 2 2m0 8c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2m0-6c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2\"></path></defs><use fill-rule=\"evenodd\" xlink:href=\"#prefix__more-small\"></use></svg></div><div class=\"wds-dropdown__content wds-is-not-scrollable\"><ul class=\"MarkerPopupActions-module_dropdownContent__GYl-7\"><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"copy-link-marker-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-link-small\"></use></svg></span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Copy link</span></li><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"marker-report-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-alert-small\"></use></svg></span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Report Marker</span></li></ul></div></div></div></div><div class=\"MarkerPopup-module_scrollableContent__0N5PS\"><div class=\"MarkerPopup-module_description__fKuSE\"><div class=\"page-content MarkerPopup-module_descriptionContent__-ypRG\"><!-- Description --></div></div><div class=\"MarkerPopup-module_imageWrapper__HuaF2\"><img class=\"MarkerPopup-module_image__7I5s4\"></div></div><div class=\"MarkerPopup-module_link__f59Lh\"><svg class=\"wds-icon wds-icon-tiny MarkerPopup-module_linkIcon__q3Rbd\"><use xlink:href=\"#wds-icons-link-tiny\"></use></svg><a href=\"<!-- Link url -->\" target=\"_blank\" rel=\"noopener noreferrer\"><!-- Link label --></a></div></div></div></div></div><div class=\"leaflet-popup-tip-container\"><div class=\"leaflet-popup-tip\"></div></div>";
-                customPopup.style.transform = this.marker.markerElement.style.transform;
+                if (this.marker.markerElement) customPopup.style.transform = this.marker.markerElement.style.transform;
                 this.elements = this.fetchPopupElements(customPopup);
 
                 // Set title content
@@ -3687,23 +4957,19 @@
             applyCustomPopupEvents: function()
             {
                 // The following function updates the transform at each frame such that the marker and popup zoom at the same rate
-                var start, prev, zoomStep = function(time)
+                var prev, zoomStep = function(time)
                 {
-                    // Record the start time
-                    if (!start) start = time;
-                    
                     // Only apply the new transform if the time actually changed
                     if (prev != time)
                     {
                         this.elements.popupElement.style.transform = this.marker.markerElement.style.transform;
                         this.applyPopupOffsets();
                     }
-
-                    // Queue the next frame as long as the elapsed time is less than 300ms
-                    // This is more a timeout feature than anything
-                    if (time - start < 300) this._zoomStep = window.requestAnimationFrame(zoomStep);
-
+                    
                     prev = time;
+                    
+                    // Repeat indefinetely until it is stopped outside of this function
+                    this._zoomStepId = window.requestAnimationFrame(zoomStep);
                     
                 }.bind(this);
 
@@ -3714,14 +4980,19 @@
                     // Don't bother if the popup isn't actually shown
                     if (!this.isPopupShown()) return;
 
-                    // Cancel the last callback so that we're not running two at the same time
-                    window.cancelAnimationFrame(this._zoomStep);
+                    // Cancel the last callback and timeout so that we're not running two at the same time
+                    window.cancelAnimationFrame(this._zoomStepId);
+                    window.clearInterval(this._zoomStepTimeoutId);
                     
                     // Zoom start
                     if (e.value == true)
                     {
                         // Start a new animation
-                        this._zoomStep = window.requestAnimationFrame(zoomStep);
+                        this._zoomStepId = window.requestAnimationFrame(zoomStep);
+
+                        // Start a timeout for it too
+                        // This is more of a safety mechanism if anything, we don't want a situation where our zoomStep function is looping indefinetely
+                        this._zoomStepTimeoutId = window.setTimeout(function() { window.cancelAnimationFrame(this._zoomStepId); }.bind(this), 300);
                     }
 
                     // Zoom end
@@ -4281,145 +5552,1473 @@
             
         };
 
+        var configValidator = 
+        {
+            // Returns the type of a value, but uses "array" instead of object if the value is an array
+            getValidationType: function(value)
+            {
+                var type = typeof value;
+                if (Array.isArray(value)) type = "array";
+                return type;
+            },
+
+            // Returns the config info at a path where each level is separated by a '.'
+            getConfigInfoAtPath: function(path, data)
+            {
+                var pathArr = path.split(".");
+                var currentObj = data || defaultConfigInfo;
+            
+                for (var i = 0; i < pathArr.length; i++)
+                {
+                    var name = pathArr[i];
+                    var childObj = null;
+            
+                    if (Array.isArray(currentObj))
+                    {
+                        for (var j = 0; j < currentObj.length; j++)
+                        {
+                            if (currentObj[j].name === name) 
+                            {
+                                childObj = currentObj[j];
+                                break;
+                            }
+                        }
+                    } 
+                    else if (typeof currentObj === 'object')
+                    {
+                        childObj = currentObj.children && currentObj.children.find(function(obj){ return obj.name === name; });
+                    }
+            
+                    if (!childObj) return null;
+                    currentObj = childObj;
+                }
+            
+                return currentObj;
+                
+            },
+
+            // Using a path in the config, return the value in the config
+            // The config must ALWAYS be a root config, no sub-configs
+            // Does not recurse into arrays, unless the scope is defaults
+            // Returns { value, key, type }, or null if no path was found
+            getConfigOptionAtPath: function(path, config)
+            {
+                if (path == undefined || config == undefined) return null;
+                
+                var pathArr = path.split(".");
+                var currentData = config;
+                var foundKey;
+
+                // Short-circuit defaults
+                if (config._configScope == "defaults")
+                {
+                    var info = this.getConfigInfoAtPath(path);
+                    if (info)
+                        return { value: info.default, key: info.name, type: this.getValidationType(info.default) };
+                    else
+                        return;
+                }
+
+                for (var i = 0; i < pathArr.length; i++)
+                {
+                    var name = pathArr[i];
+                    var info = this.getConfigInfoAtPath(name, info);
+                    var childData = null;
+                    
+                    if (typeof currentData === 'object')
+                    {
+                        if (currentData.hasOwnProperty(info.name))
+                        {
+                            childData = currentData[info.name];
+                            foundKey = info.name;
+                        }
+                        else if (currentData.hasOwnProperty(info.alias))
+                        {
+                            childData = currentData[info.alias];
+                            foundKey = info.alias;
+                        }
+                    }
+            
+                    // Short circuit if there was no value at the key
+                    if (childData == undefined) return null;
+                    currentData = childData;
+                }
+            
+                return {
+                    value: currentData,
+                    key: foundKey,
+                    type: this.getValidationType(currentData)
+                };
+            },
+
+            flattenConfigInfoIntoDefaults: function(configInfos)
+            {
+                // Build up the flattened config object
+                var config = {};
+
+                for (var i = 0; i < configInfos.length; i++)
+                {
+                    var configInfo = configInfos[i];
+
+                    // Recurse into objects
+                    if (configInfo.type == "object" && configInfo.children && configInfo.children.length > 0)
+                    {
+                        config[configInfo.name] = this.flattenConfigInfoIntoDefaults(configInfo.children);
+
+                        // Also store into the original default value
+                        //configInfo.default = config[configInfo.name];
+                    }
+                    else
+                        config[configInfo.name] = configInfo.default;
+                }
+
+                return config;
+            },
+
+            // Post-process the defaultConfigInfo to add path and parent values
+            postProcessConfigInfo: function(children, parent)
+            {
+                for (var i = 0; i < children.length; i++)
+                {
+                    var info = children[i];
+                    info.parent = parent;
+                    info.path = parent && (parent.path + "." + info.name) || info.name;
+
+                    if (info.children != undefined && info.children.length > 0)
+                    {
+                        this.postProcessConfigInfo(info.children, info);
+                    }
+
+                    // Always convert info's "type" and "arrayType" field to an array to make it easier to work with
+                    if (info.type && !Array.isArray(info.type))
+                        info.type = [ info.type ];
+
+                    if (info.arrayType && !Array.isArray(info.arrayType))
+                        info.arrayType = [ info.arrayType ];
+                }
+            },
+
+            // Gets a fallback for a specific configuration source from a specific scope.
+            // <configType> should be the scope of the desired config, and if it is omitted will be set to the next scope down given config._configScope
+            // This function performs no validation, and assumes all lower configs have already been validated!
+            // Returns an object containing
+            // config: The full fallback configuration object (this will contain the _configName, _configSource, and _configScope)
+            // value: The value of the option that was found
+            // valueType: The type of the option that was found
+            // foundKey: The key/name of the option that was found
+            // isPresent: If false a fallback wasn't found and all of the above will not be present
+            getFallbackForConfigOption: function(configInfo, configName, configScope)
+            {
+                var fallbackConfig;
+                if (!configInfo || !configInfo.path) return { isPresent: false };
+
+                switch (configScope)
+                {
+                    // Embed gets fallback from local/per-map
+                    case "local":
+                    {
+                        fallbackConfig = window.dev.mapsExtended.localConfigs[configName];
+                        break;
+                    }
+
+                    // Local/per-map gets fallback from global
+                    case "global":
+                    {
+                        fallbackConfig = window.dev.mapsExtended.globalConfig;
+                        break;
+                    }
+
+                    // Global gets fallback from defaults
+                    case "defaults":
+                    {
+                        fallbackConfig = window.dev.mapsExtended.defaultConfig;
+                        break;
+                    }
+
+                    // No more fallbacks
+                    default:
+                    {
+                        return { isPresent: false };
+                    }
+                }
+
+                // If we found a fallback config in the next scope, actually check whether the config contains the option
+                if (fallbackConfig)
+                {
+                    var foundOption = this.getConfigOptionAtPath(configInfo.path, fallbackConfig);
+
+                    // Found fallback
+                    if (foundOption)
+                    {
+                        return {
+                            config: fallbackConfig,
+                            value: foundOption.value,
+                            valueType: foundOption.type,
+                            foundKey: foundOption.key,
+                            isPresent: true
+                        };
+                    }
+
+                }
+                
+                // We reach here if either no fallbackConfig was found, or no option in the fallbackConfig was found
+                // So try the next config down
+                var nextScope = this.getNextScopeInChain(configScope);
+                return this.getFallbackForConfigOption(configInfo, configName, nextScope);
+            },
+
+            getNextScopeInChain: function(configScope)
+            {
+                switch (configScope)
+                {
+                    case "embed":   return "local";
+                    case "local":   return "global";
+                    case "global":  return "defaults";
+                    default:        return;
+                }
+            },
+
+            // Validates a config option with a specific <configKey> in a <config> object against one or a collection of <configInfo>
+            validateConfigOption: function(configKey, configInfo, config, configName, configScope)
+            {
+                configInfo = configInfo || defaultConfigInfo;
+
+                // If multiple configInfo's were passed, find the first with this name
+                if (Array.isArray(configInfo))
+                    var info = configInfo.find(function(ci) { return ci.name == configKey || ci.alias == configKey; });
+                else
+                    var info = configInfo;
+
+                // An configInfo was found with this name
+                if (info)
+                {
+                    // Redirect if info has a value for "use"
+                    if (info.use) info = this.getConfigInfoAtPath(info.use);
+                }
+
+                // Note that configKey is just which property is requested, it does not indicate
+                // that a property at that key exists, just that it "should" be there
+                var foundKey = (config == undefined) ? undefined :
+                (config.hasOwnProperty(info.name) && info.name != undefined)   ? info.name :
+                (config.hasOwnProperty(info.alias) && info.alias != undefined) ? info.alias :
+                (config.hasOwnProperty(configKey) && configKey != undefined) ? configKey : undefined;
+                var foundValue = (config != undefined && foundKey != undefined) ? config[foundKey] : undefined;
+
+                var result =
+                {
+                    // The "requested" configKey passed to this function.
+                    key: configKey,
+
+                    // If a value at the requested configKey wasn't found, but an alias (or the original key) was found
+                    // foundKey is the value of the key that the config value actually exists under
+                    foundKey: foundKey,
+
+                    // This is the key that the configInfo expects
+                    actualKey: info.name,
+
+                    // The final value of this option, with validation fixes applied, fallbacks, etc
+                    value: foundValue,
+
+                    // The final type of this option
+                    valueType: this.getValidationType(foundValue),
+
+                    // The value of this option from the config file. This never changes
+                    initialValue: undefined,
+
+                    // The type of the value of this option in the config file.
+                    initialValueType: undefined,
+
+                    // The config info of the key. Will be undefined if no definition is found with the key
+                    info: info,
+
+                    // A boolean which is true when the input option passed all validations
+                    isValid: true,
+
+                    // A boolean which is true when the input was invalid, but the validator resolved it into a valid output (excluding fallbacks)
+                    isResolved: false,
+
+                    // A boolean which is true when the option is present in the config
+                    isPresent: foundKey != undefined,
+
+                    // True when the config found is using an alias of the actual config key
+                    isAliased: foundKey != undefined && foundKey == info.alias,
+
+                    // True when the value had to fall back to defaults or globals
+                    // The original value will still be kept in "initialValue"
+                    isFallback: false,
+
+                    // The source of the fallback (either "defaults" or "global")
+                    fallbackSource: undefined,
+
+                    // An array of objects { code, message } saying what went wrong if issues occurred. May appear even if the option is valid
+                    messages: [],
+
+                    // An array of child results objects which may contain all the same values as above
+                    children: [],
+                };
+
+                result.initialValue = result.value;
+                result.initialValueType = result.valueType;
+                
+                var value = result.value;
+                var valueType = result.valueType;
+                var isValidType = result.valueType && info && info.type && info.type.includes(result.valueType);
+                
+                // Option with this name doesn't exist at all
+                if (info == undefined)
+                {
+                    result.messages.push({ code: "unknown", message: "This key is not a valid config option." });
+                    result.isValid = false;
+                    return result;
+                }
+
+                // Option with this name does exist in the specification, but not in the config
+                else if (!result.isPresent)
+                {
+                    result.isValid = false;
+
+                    if (info.presence)
+                        result.messages.push({ code: "required_not_present", message: "Value not present in config and is required." });
+                    else
+                        result.messages.push({ code: "not_present", message: "Value is not present in the config, a fallback will be used." });
+                }
+
+                // Option with this name exists, and it's in the specification
+                else
+                {
+                    // Option is present, but under the alias key instead of the normal key
+                    if (result.isAliased)
+                    {
+                        result.messages.push({ code: "aliased", message: "This value exists under a key that has changed. Consider updating the key." });
+                    }
+
+                    // Option is present but undefined - Silently use defaults
+                    if (valueType == "object" && jQuery.isPlainObject(value) && jQuery.isEmptyObject(value) ||
+                        valueType == "string" && value == "" ||
+                        valueType == "array" && value.length == 0 ||
+                        value == undefined || value == null)
+                    {
+                        result.messages.push({ code: "is_empty", message: "Value is an empty value, using defaults instead." });
+                        result.isValid = false;
+                    }
+
+                    // Option is the wrong type
+                    if (!isValidType)
+                    {
+                        var error = { code: "mistyped" };
+                        result.messages.push(error);
+                        result.isValid = false;
+
+                        // Try to coerce if it can be coerced, typically from string
+
+                        // Convert string to boolean
+                        if (info.type.includes("boolean") && valueType == "string" && !isValidType)
+                        {
+                            var valueLower = value.toLowerCase();
+                            if (valueLower == "true" || valueLower == "false")
+                            {
+                                // Update the values
+                                value = result.value = valueLower == "true";
+                                valueType = result.valueType = "boolean";
+                                isValidType = true;
+                                result.isResolved = true;
+
+                                error.message = "Value should be a boolean but was passed a string. Consider removing the quotes.";
+                            }
+                        }
+
+                        // Convert string to number
+                        if (info.type.includes("number") && valueType == "string" && !isValidType)
+                        {
+                            var valueFloat = parseFloat(value);
+                            if (!isNaN(valueFloat))
+                            {
+                                // Update the values
+                                value = result.value = valueFloat;
+                                valueType = result.valueType = "number";
+                                isValidType = true;
+                                result.isResolved = true;
+
+                                error.message = "Value should be a number but was passed a string. Consider removing the quotes.";
+                            }
+                        }
+
+                        // Convert string to object or array
+                        if ((info.type.includes("object") || info.type.includes("array")) && valueType == "string" && !isValidType)
+                        {
+                            try 
+                            {
+                                var valueObj = JSON.parse(value);
+                                var success = false;
+
+                                // String was parsed to array and we expected it
+                                if (Array.isArray(valueObj) && info.type.includes("array"))
+                                {
+                                    valueType = result.valueType = "array";
+                                    success = true;
+                                }
+
+                                // String was parsed to object and we expected it
+                                else if (typeof valueObj == "object" && valueObj.constructor === Object && info.type.includes("object"))
+                                {
+                                    valueType = result.valueType = "object";
+                                    success = true;
+                                }
+
+                                if (success == true)
+                                {
+                                    value = result.value = valueObj;
+                                    isValidType = true;
+                                    result.isResolved = true;
+                                }
+                                else
+                                {
+                                    result.messages.push({ code: "parse_unexpected", message: "Successfully parsed string as JSON, but the value was not of type " + info.type });
+                                }
+                            }
+                            catch(error)
+                            {
+                                result.messages.push({ code: "parse_failed", message: "Could not parse string as JSON: " + error });
+                            }
+                        }
+
+                        // There's no way to convert it
+                        if (!isValidType)
+                        {
+                            error.message = "Value should be of type " + info.type + " but was passed a " + valueType + ", which could not be converted to this type.";
+                        }
+                    }
+                    
+                    if (isValidType)
+                    {
+                        // Number option must be a valid number
+                        if (valueType == "number" && (!isFinite(value) || isNaN(value)))
+                        {
+                            result.messages.push({ code: "invalid_number", message: "Value is not a valid number." });
+                            result.isValid = false;
+                        }
+
+                        // Option with validValues must be one of a list of values
+                        if (info.validValues)
+                        {
+                            // Force lowercase when we have a list of values
+                            if (valueType == "string") value = value.toLowerCase();
+
+                            if (!info.validValues.includes(value))
+                            {
+                                result.messages.push({ code: "invalid_value", message: "Should be one of: " + info.validValues.toString() });
+                                result.isValid = false;
+                            }
+                        }
+
+                        // Option must pass custom validation
+                        if (info.validation && info.validation(v) == false)
+                        {
+                            result.messages.push({ code: "other", message: "Failed custom validation: " + info.validationDesc });
+                            result.isValid = false;
+                        }
+                    }
+
+                    // For objects, we should recurse into any of the child configs if the definition says there should be some
+                    // For this, we iterate over properties in the configInfo to see what should be there rather than what IS there
+                    if (valueType == "object")
+                    {
+                        result.children = [];
+
+                        if (info.children && info.children.length > 0)
+                        {
+                            // Iterate the config info for properties that may be defined
+                            for (var i = 0; i < info.children.length; i++)
+                            {
+                                var childInfo = info.children[i];
+                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[foundKey], configName, configScope);
+                                childResult.parent = result;
+                                result.children.push(childResult);
+                            }
+                        }
+                        else
+                        {
+                            console.error("Config info definition " + info.name + " is type object yet does not define any keys in \"children\"!");
+                        }
+                    }
+
+                    // Recurse into arrays too, but use a single configInfo for each of the elements. The configInfo either has an arrayType or will have a
+                    // single element in "children" that represents each element in the array
+                    // With arrays, validation occurs on what *is* there rather than what *should be* there.
+                    else if (valueType == "array")
+                    {
+                        result.children = [];
+
+                        // Get info from first element of "children"
+                        if (info.children && info.children.length > 0)
+                        {
+                            if (info.children.length > 1) console.error("Config info definition " + info.name + " should only contain one child as it is of type \"array\"");
+                            var arrayElementInfo = info.children[0];
+                        }
+
+                        // Otherwise create it from arrayType
+                        else if (info.arrayType)
+                            var arrayElementInfo = { presence: false, default: undefined, type: info.arrayType };
+                        else
+                            console.error("Config info definition " + info.name + " contains neither an \"arrayType\" or an \"elementInfo\"");
+
+                        if (arrayElementInfo)
+                        {
+                            // Loop over each element in the values array, and validate it against the element info
+                            for (var i = 0; i < config[configKey].length; i++)
+                            {
+                                // Validate this array element, but NEVER fallback to an array element (only objects get fallbacks) the fallback will use defaults as we don't want to fall back on the values of array elements in the global config
+                                var childResult = this.validateConfigOption(i, arrayElementInfo, config[foundKey], configName, configScope);
+                                childResult.parent = result;
+                                result.children.push(childResult);
+                            }
+                        }
+                    }
+                }
+
+                // Result is invalid or not present, use fallback as result
+                if ((!result.isValid && !result.isResolved) || !result.isPresent)
+                {
+                    var fallbackResult = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
+                    
+                    if (fallbackResult.isPresent == true)
+                    {
+                        result.isFallback = true;
+                        result.value = fallbackResult.value;
+                        result.valueType = fallbackResult.valueType;
+                        result.foundKey = fallbackResult.foundKey;
+                        result.fallbackSource = fallbackResult.config._configScope;
+
+                        // If the default itself is an object, We have to make a results object for each child value too
+                        if (result.fallbackSource == "defaults" && result.valueType == "object")
+                        {
+                            result.children = [];
+                            
+                            for (var i = 0; i < info.children.length; i++)
+                            {
+                                var childInfo = info.children[i];
+                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[info.name], configName, configScope);
+                                childResult.parent = result;
+                                result.children.push(childResult);
+                            }
+                        }
+                    }
+                }
+
+                // Assign values from child results to the base value
+                if (result.children && result.children.length > 0)
+                {
+                    for (var i = 0; i < result.children.length; i++)
+                    {
+                        var childResult = result.children[i];
+                        var childKey = result.valueType == "array" ? childResult.key : childResult.actualKey;
+                                
+                        // If the result was aliased, move the value
+                        if (childResult.isAliased)
+                        {
+                            result.value[childKey] = result.value[childResult.foundKey];
+                            delete result.value[childResult.foundKey];
+                        }
+
+                        // If the child result was resolved or was a fallback, add it to the value property
+                        if (childResult.isResolved || childResult.isFallback)
+                            result.value[childKey] = childResult.value;
+                    }
+                }
+
+                return result;
+            },
+
+            // Validates the configuration object, returning the config filled out and any errors fixed using fallbacks and inherited values
+            // This means validateConfig is guaranteed to return a valid configuration, even if all the defaults are used, even if the config passed is completely incorrect
+            validateConfig: function(config)
+            {
+                var validation =
+                {
+                    name: config._configName,
+                    scope: config._configScope,
+                    source: config._configSource,
+                    type: "object",
+                    children: [],
+                    config: {}
+                };
+
+                // Loop over defaultConfigInfo and validate the values in the config against them. validateConfigOption will recurse into children
+                for (var i = 0; i < defaultConfigInfo.length; i++)
+                {
+                    var configInfo = defaultConfigInfo[i];
+                    var result = this.validateConfigOption(configInfo.name, defaultConfigInfo, config, config._configName, config._configScope);
+                    validation.children.push(result);
+
+                    if (result.isValid || result.isResolved || result.isFallback)
+                        validation.config[configInfo.name] = result.value;
+                }
+
+                //this.tabulateConfigValidation(validation);
+                return validation.config;
+            },
+
+            // Tablulate the results of the validation in the same way Extension:JsonConfig does
+            // Note that the layout of the root validation results list, and each result itself is such
+            // that all array or object-typed results have a "children" parameter. This simplifies recursion
+            tabulateConfigValidation: function(results)
+            {
+                var table = document.createElement("table");
+                table.className = "mw-json";
+                var tbody = table.createTBody();
+                document.querySelector("#content").appendChild(table);
+
+                var headerRow = tbody.insertRow();
+                var headerCell = document.createElement("th");
+                headerCell.setAttribute("colspan", "2");
+
+                // Build the header text (only for the root)
+                if (results.scope)
+                {
+                    var scopeStr = capitalizeFirstLetter(results.scope) + " config";
+                    var mapLink = ExtendedMap.prototype.getMapLink(results.name, true);
+                    var sourceStr = " - Defined as ";
+                    var sourceLink = document.createElement("a");
+    
+                    if (results.source == "Wikitext")
+                    {
+                        sourceStr += "Wikitext (on "
+                        var path = "";
+                        sourceLink.href = "/wiki/" + path;
+                        sourceLink.textContent = path;
+                    }
+                    if (results.source == "JavaScript")
+                    {
+                        sourceStr += "JavaScript (in ";
+                        var path = "MediaWiki:Common.js";
+                        sourceLink.href = "/wiki/" + path;
+                        sourceLink.textContent = path;
+                    }
+                    else if (results.source == "JSON (in map definition)")
+                    {
+                        sourceStr += "JSON (in ";
+                        var path = "Map:" + results.name;
+                        sourceLink.href = "/wiki/" + path;
+                        sourceLink.textContent = path;
+                    }
+                    else if (results.source == "JSON (in system message)")
+                    {
+                        sourceStr += "JSON (in ";
+                        var path = "MediaWiki:Custom-MapsExtended/" + results.name + ".json";
+                        sourceLink.href = "/wiki/" + path;
+                        sourceLink.textContent = path;
+                    }
+    
+                    headerCell.append(scopeStr, results.scope != "global" ? " for " : "", results.scope != "global" ? mapLink : "", sourceStr, sourceLink, ")");
+                    headerRow.appendChild(headerCell);
+                }
+
+                // Handle the case of an empty object or array
+                if (!results.children || results.children.length == 0)
+                {
+                    // Create table row
+                    var tr = tbody.insertRow();
+                    
+                    // Create table row value cell
+                    var td = tr.insertCell();
+
+                    td.className = "mw-json-empty";
+                    td.textContent = "Empty " + (results.type || results.valueType);
+                }
+                else
+                {
+                    for (var i = 0; i < results.children.length; i++)
+                    {
+                        var result = results.children[i];
+                        
+                        // Create table row
+                        var tr = tbody.insertRow();
+        
+                        // Create table row header + content
+                        var th = document.createElement("th");
+        
+                        // If aliased, add the key in the config striked-out to indicate it should be changed
+                        if (result.isAliased == true)
+                        {
+                            var oldKey = document.createElement("div");
+                            oldKey.textContent = result.foundKey;
+                            oldKey.style.textDecoration = "line-through";
+                            th.appendChild(oldKey);
+        
+                            var newKey = document.createElement("span");
+                            newKey.textContent = result.actualKey;
+                            th.appendChild(newKey);
+                        }
+                        else
+                        {
+                            var keySpan = document.createElement("span");
+                            keySpan.textContent = result.key;
+                            th.appendChild(keySpan);
+                        }
+        
+                        tr.appendChild(th);
+        
+                        // Create table row value cell
+                        var td = tr.insertCell();
+        
+                        // Determine how to format the value
+        
+                        // Arrays and objects get a sub-table
+                        if (result.valueType == "array" || result.valueType == "object")
+                        {
+                            td.appendChild(this.tabulateConfigValidation(result));
+
+                            if (!result.isPresent)
+                            {
+                                if (!tr.matches(".mw-json-row-empty *"))
+                                    tr.className = "mw-json-row-empty";
+                            }
+                        }
+        
+                        // Mutable values (string, number, boolean) just get printed
+                        else
+                        {
+                            td.className = "mw-json-value";
+                            var str = "";
+        
+                            if (result.isPresent == true)
+                            {
+                                // Invalid and not resolved
+                                if (!result.isValid && !result.isResolved)
+                                    td.classList.add("mw-json-value-error");
+        
+                                // Warnings
+                                else if (result.messages.length > 0)
+                                    td.classList.add("mw-json-value-warning");
+        
+                                // Not invalid and no warnings
+                                else
+                                    td.classList.add("mw-json-value-success");
+        
+                                // Append old value (if it differs)
+                                if (result.initialValue != result.value)
+                                {
+                                    if (result.initialValueType == "string")
+                                        str += "\"" + result.initialValue + "\"";
+                                    else
+                                        str += result.initialValue
+                                    
+                                    // Append arrow indicating this was changed to
+                                    str += " → "
+                                }
+            
+                                // Append current value
+                                if (result.valueType == "string")
+                                    str += "\"" + result.value + "\"";
+                                else
+                                    str += result.value;
+                            }
+                            else
+                            {
+                                if (!tr.matches(".mw-json-row-empty *"))
+                                    tr.className = "mw-json-row-empty";
+        
+                                // Append the fallback
+                                if (result.isFallback == true)
+                                {
+                                    if (result.valueType == "string")
+                                        str += "\"" + result.value + "\"";
+                                    else
+                                        str += result.value;
+                                    
+                                    // Message saying this fallback is from a specific config
+                                    str += " (from " + result.fallbackSource + ")";
+                                }
+                            }
+        
+                            // Finally set the string
+                            td.textContent = str;
+                        }
+        
+                        // Append any extra validation information)
+                        if (result.messages.length > 0 && result.isPresent)
+                        {
+                            var extraInfo = document.createElement("div");
+                            extraInfo.className = "mw-json-extra-value";
+                            extraInfo.textContent = result.messages.map(function(m) { return "(" + m.code.toUpperCase() + ") " + m.message; }).join("\n");
+                            td.appendChild(extraInfo);
+                        }
+                    }
+                }
+
+                return table;
+            }
+        }
+
+        var defaultConfigInfo =
+        [
+            {
+                name: "disabled",
+                presence: false,
+                default: false,
+                type: "boolean",
+                presence: false
+            },
+
+            // Markers
+
+            {
+                name: "iconAnchor",
+                presence: false,
+                default: "center",
+                type: "string",
+                validValues: [ "top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right" ]
+            },
+            {
+                name: "sortMarkers",
+                presence: false,
+                default: "latitude",
+                type: "string",
+                validValues: ["latitude", "longitude", "category", "unsorted"]
+            },
+
+            // Popups
+
+            {
+                name: "enablePopups",
+                alias: "allowPopups",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "openPopupsOnHover",
+                presence: false,
+                default: false,
+                type: "boolean"
+            },
+            {
+                name: "popupHideDelay",
+                presence: false,
+                default: 0.5,
+                type: "number"
+            },
+            {
+                name: "popupShowDelay",
+                presence: false,
+                default: 0.1,
+                type: "number"
+            },
+            {
+                name: "useCustomPopups",
+                presence: false,
+                default: false,
+                type: "boolean"
+            },
+
+            // Categories
+
+            {
+                name: "hiddenCategories",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "string",
+            },
+            {
+                name: "disabledCategories",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "string"
+            },
+            {
+                name: "categoryGroups",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: ["string", "object"],
+                children:
+                [
+                    {
+                        name: "categoryGroup",
+                        presence: false,
+                        default: undefined,
+                        type: ["string", "object"],
+                        children: 
+                        [
+                            {
+                                name: "label",
+                                presence: true,
+                                default: "Group",
+                                type: "string"
+                            },
+                            {
+                                name: "collapsible",
+                                presence: false,
+                                type: "boolean",
+                                default: true,
+                            },
+                            {
+                                name: "collapsed",
+                                presence: false,
+                                default: false,
+                                type: "boolean"
+                            },
+                            {
+                                name: "hidden",
+                                presence: false,
+                                default: false,
+                                type: "boolean"
+                            },
+                            {
+                                name: "children",
+
+                                // Use is used to point the validator to a different item
+                                // It should only be used with the name key
+                                use: "categoryGroups"
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // Map interface
+
+            {
+                name: "mapControls",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "array",
+                children:
+                [
+                    {
+                        name: "mapControlGroup",
+                        presence: true,
+                        default: [],
+                        type: "array",
+                        arrayType: "string",
+                        children:
+                        [
+                            {
+                                name: "mapControlGroupItem",
+                                presence: false,
+                                default: "",
+                                type: "string",
+                                validValues: [ "edit", "zoom", "fullscreen" ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "hiddenControls",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "string",
+                validValues: [ "edit", "zoom", "fullscreen" ]
+            },
+            {
+                name: "enableFullscreen",
+                alias: "allowFullscreen",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "fullscreenMode",
+                presence: false,
+                default: "window",
+                type: "string",
+                validValues: [ "window", "screen" ]
+            },
+
+            // Other features
+
+            {
+                name: "enableSearch",
+                alias: "allowSearch",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "enableTooltips",
+                alias: "allowTooltips",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+
+            // Ruler
+
+            {
+                name: "enableRuler",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "pixelsToMeters",
+                presence: false,
+                default: 100,
+                type: "number"
+            },
+
+            // Collectibles
+
+            {
+                name: "collectibleCategories",
+                presence: true,
+                default: [],
+                type: "array",
+                arrayType: "string",
+            },
+            {
+                name: "enableCollectedAllNotification",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "collectibleExpiryTime",
+                presence: false,
+                default: 2629743,
+                type: "number"
+            }
+        ];
+
         // Finally we are done with all the prototype definitions    
         // ---------
 
-        // mapsExtended stores some variables relating to MapExtensions
-        var mapsExtended =
+        function MapsExtended()
         {
-            // Array of maps currently active
-            maps: [],
-
-            // ExtendedMap constructor
-            ExtendedMap: ExtendedMap,
-
-            // Events - This object is automatically filled from the EventHandlers in the "events" object of ExtendedMap
-            // Using this interface is a quick way to to listen to events on ALL maps on the page rather than just a specific one
-            events: {}
-        };
-
-        // Cache mapsExtended in window.dev
-        window.dev = window.dev || {};
-        window.dev.mapsExtended = mapsExtended;
-        
-        mapsExtended.loaded = true;
-        mapsExtended.config = mapsExtended.config || {};
-
-        var defaultConfig =
-        {
-            disabled: false,
-            hiddenCategories: [],
-            disabledCategories: [],
-            sortMarkers: "latitude",
-            iconAnchor: "center",
-            enablePopups: true,
-            openPopupsOnHover: false,
-            popupHideDelay: 0.5,
-            popupShowDelay: 0.1,
-            enableFullscreen: true,
-            fullscreenMode: "window",
-            enableSearch: true,
-            enableTooltips: true,
-            useCustomPopups: false
-        };
-
-        // Load settings from an existing "global" configuration object (set in Common.js for example)
-        // Copy the default config over the global config, keeping any values set in the global
-        //mapsExtended.config = traverseCopyValues(defaultConfig, window.mapsExtendedConfig);
-        mapsExtended.config = jQuery.extend(true, {}, defaultConfig, window.mapsExtendedConfig);
-        delete window.mapsExtendedConfig;
-
-        // Add some utility functions to the mapsExtended object
-        mapsExtended.util =
-        {
-            once: once,
-            findCSSRule: findCSSRule,
-            preventDefault: preventDefault,
-            capitalizeFirstLetter: capitalizeFirstLetter,
-            stopPropagation: stopPropagation,
-            getIndexOfCSSRule: getIndexOfCSSRule,
-            deleteCSSRule: deleteCSSRule,
-            changeCSSRuleSelector: changeCSSRuleSelector,
-            appendCSSRuleSelector: appendCSSRuleSelector,
-            changeCSSRuleText: changeCSSRuleText,
-            changeCSSRuleStyle: changeCSSRuleStyle
-        };
-
-        // Create a stylesheet that can be used for some MapsExtended specific styles
-        mapsExtended.stylesheet = mw.util.addCSS("");
-
-        // Reset the currently-active map when it throws a "Maximum call stack size exceeded"
-        /*
-        window.addEventListener("error", function(e)
-        {
-        if (e.message == "Uncaught RangeError: Maximum call stack size exceeded")
-        {
-                // Select visible map
-                var activeMap = window.dev.mapsExtended.maps.find(function(m) { return m.isMapVisible(); });
-
-                // Set the display of the leaflet-container to none, this resets leaflet
-                if (activeMap.isDragging == true || activeMap.isZooming == true)
-                    return;
-                    activeMap.elements.leafletContainer.style.display = "none";
-        }
+            this.loaded = true;
             
-        });
-        */
+            // Flatten the defaultConfigInfo into a default config
+            configValidator.postProcessConfigInfo(defaultConfigInfo);
+            this.defaultConfig = configValidator.flattenConfigInfoIntoDefaults(defaultConfigInfo);
+            this.defaultConfig._configName = "Defaults";
+            this.defaultConfig._configSource = "JavaScript";
+            this.defaultConfig._configScope = "defaults";
 
-        // These keys will not be copied to the target
-        var ignoreSourceKeys = ["mapBounds", "useMarkerClustering"];
+            // Fetch global config from JavaScript (set in Common.js for example), depending on which is available first
+            this.globalConfig = window.mapsExtendedConfigs && window.mapsExtendedConfigs["global"] || window.mapsExtendedConfig || {};
+            this.isGlobalConfigLoaded = !isEmptyObject(this.globalConfig);
 
-        // Unfortunately Interactive Maps doesn't deserialize all properties of the JSON into the
-        // interactiveMaps object (in mw.config) (notably markers always includes custom properties,
-        // but everything else does not).
-
-        // Custom properties are used to configure MapsExtended, and in order to fetch them we must
-        // manually load the Map page content rather than use the existing deserialized maps in mw.config.
-        // The custom properties will be written directly back into mw.config.get("interactiveMaps")
-        // which in turn is copied to each ExtendedMap
-
-        // Update:
-        // Any custom field (outside of marker objects) are now sanitized/stripped when the JSON
-        // is saved, meaning that the only fields that may be present are those that are allowed :(
-        // The following code is kept just in case this is added back
-
-        new Promise(function(resolve, reject)
-        {
-            // Just resolve immediately
-            return resolve();
-
-            // If editing an interactive map in source mode, use the JSON text directly from the editor
-            // (this will always be valid because the script won't run unless there's an interactive map on the page)
-            if (mw.config.get("wgPageContentModel") == "interactivemap" && (mw.config.get("wgAction") == "edit" || mw.config.get("wgAction") == "submit"))
+            // Apply the global config over the defaults
+            if (this.isGlobalConfigLoaded == true)
             {
-                mw.hook("wikipage.editform").add(function(editform)
-                {
-                    var textBox = document.getElementById("wpTextbox1");
-
-                    // The definition exactly parsed from the JSON with no processing
-                    var editorMapDefinition = JSON.parse(textBox.value);
-                    editorMapDefinition.name = mw.config.get("wgTitle");
-
-                    // The definition as parsed by Interactive Maps
-                    var localMapDefinition = Object.values(mw.config.get("interactiveMaps"))[0];
-
-                    traverseCopyValues(editorMapDefinition, localMapDefinition, ignoreSourceKeys, true);
-
-                    resolve();
-                });
+                this.globalConfig._configName = "Global";
+                this.globalConfig._configSource = "JavaScript";
+                this.globalConfig._configScope = "global";
+                this.globalConfig._configSourcePath = "";
             }
+                
+            this.localConfigs = {};
+            this.embedConfigs = {};
+            this.isLocalConfigsLoaded = false;
+        }
 
-            // If viewing an interactive map (be it one or more transclusions or on the map page),
-            // fetch the text directly from the page with the MediaWiki revisions API
-            else
+        MapsExtended.prototype =
+        {
+            ExtendedMap: ExtendedMap,
+            ExtendedCategory: ExtendedCategory,
+            ExtendedMarker: ExtendedMarker,
+            ExtendedPopup: ExtendedPopup,
+            
+            // Utility functions to share with other libraries
+            util:
             {
-                // Build a chain of map titles, like Map:x|Map:y|Map:z, which is sorted alphabetically and does not contain dupes
-                // 1. Convert interactiveMaps to object array
-                // 2. Create an array based on a function which returns Map:map.name
-                // 3. Create a set from the array (which removes duplicates)
+                once: once,
+                findCSSRule: findCSSRule,
+                preventDefault: preventDefault,
+                isEmptyObject: isEmptyObject,
+                capitalizeFirstLetter: capitalizeFirstLetter,
+                stopPropagation: stopPropagation,
+                getIndexOfCSSRule: getIndexOfCSSRule,
+                deleteCSSRule: deleteCSSRule,
+                changeCSSRuleSelector: changeCSSRuleSelector,
+                appendCSSRuleSelector: appendCSSRuleSelector,
+                changeCSSRuleText: changeCSSRuleText,
+                changeCSSRuleStyle: changeCSSRuleStyle
+            },
+
+            configValidator: configValidator,
+
+            init: function()
+            {
+                // Array of ExtendedMaps currently active
+                this.maps = [];
+    
+                // Array of map titles on the page (not parallel to either of the above and below)
+                this.mapTitles = Object.values(mw.config.get("interactiveMaps")).map(function(m) { return m.name; });
+    
+                // interactive-map-xxx elements from the DOM
+                this.mapElements = document.querySelectorAll(".interactive-maps-container > [class^=\"interactive-map-\"]");
+
+                // The interactive-map-xxxxxx className is only unique to the Map definition, not the map instance, so give each map a unique ID
+                for (var i = 0; i < this.mapElements.length; i++)
+                    this.mapElements[i].id = generateRandomString(16);
+                
+                // Create a stylesheet that can be used for some MapsExtended specific styles
+                this.stylesheet = mw.util.addCSS("");
+                
+                // Events - This object is automatically filled from the EventHandlers in the "events" object of ExtendedMap
+                // Using this interface is a quick way to to listen to events on ALL maps on the page rather than just a specific one
+                this.events = {};
+    
+                this.loaded = true;
+    
+                // Preprocess marker elements so there's little flicker
+                for (var m = 0; m < this.mapElements.length; m++)
+                {
+                    var customIcons = this.mapElements[m].querySelectorAll(".MapMarker-module_markerCustomIcon__YfQnB");
+                    for (var i = 0; i < customIcons.length; i++)
+                        customIcons[i].style.marginTop = "calc(" + customIcons[i].style.marginTop + " / 2)";
+                }
+                
+                var mapsExtended = this;
+
+                // Fetch local configurations (from JavaScript and map defintions)
+                this.fetchLocalConfigs();
+
+                // Fetch embedded configurations (from data attributes on page)
+                this.fetchEmbedConfigs();
+                
+                return Promise.resolve()
+
+                // Fetch remote map definitions - this is no longer done
+                .then(this.fetchRemoteMapDefinitions.bind(this))
+                
+                // Fetch remote local configurations (from JSON system message using API)
+                .then(this.fetchRemoteLocalConfigs.bind(this))
+
+                // Load i18n internationalization messages
+                .then(this.loadi18n.bind(this))
+
+                // Initialize all maps on the page
+                .then(this.initMaps.bind(this))
+
+                .finally(function()
+                 {
+                     this.initialized = true;
+                     mw.hook("dev.mapsExtended").fire(this);
+                     
+                 }.bind(this));
+            },
+
+            deinit: function()
+            {
+                if (this.initialized == false) return;
+                this.initialized = false;
+                
+                // Deinitialize all maps
+                for (var key in this.maps)
+                {
+                    var map = this.maps[key];
+                    map.deinit();
+                    delete map.events;
+                }
+
+                delete this.maps;
+                delete this.mapElements;
+                delete this.mapTitles;
+                delete this.events;
+
+                /*
+                // Remove all styles from stylesheet
+                for (var i = 0; i < this.stylesheet.cssRules.length; i++)
+                    this.stylesheet.deleteRule(i);
+
+                this.stylesheet.ownerNode.remove();
+                */
+            },
+
+            fetchLocalConfigs: function()
+            {
+                // Fetch the local configs for each map definition currently in memory (i.e. doesn't need an API call)
+                for (var key in mw.config.get("interactiveMaps"))
+                {
+                    var map = mw.config.get("interactiveMaps")[key];
+                    var config = undefined;
+                    var configSource = undefined;
+
+                    // Check JavaScript (keyed by map name or map page ID)
+                    if (window.mapsExtendedConfigs && window.mapsExtendedConfigs[map.name] != undefined)
+                    {
+                        config = window.mapsExtendedConfigs[map.name];
+                        configSource = "JavaScript";
+                    }
+
+                    // Check JSON (in Map definition)
+                    else
+                    {
+                        // In the markers array of a map definition, get the first marker with a "config" object
+                        var markerWithConfig = map.markers.find(function(m){ return m.config != undefined; });
+                        
+                        if (markerWithConfig)
+                        {
+                            config = markerWithConfig.config;
+                            configSource = "JSON (in map definition)";
+                            
+                            // Remove the config object from the marker
+                            delete markerWithConfig.config;
+                        }
+                    }
+
+                    // If a config was found, save it to localConfigs
+                    if (config != undefined)
+                    {
+                        config._configName = map.name;
+                        config._configSource = configSource;
+                        config._configScope = "local";
+                        this.localConfigs[map.name] = config;
+                    }
+                }
+
+                // This flag determines whether we need to try and load a config using the API
+                this.isLocalConfigsLoaded = Object.keys(this.localConfigs).length == Object.keys(mw.config.get("interactiveMaps")).length;
+            },
+
+            fetchEmbedConfigs: function()
+            {
+                // Fetch any embed configs currently present on the page
+                for (var i = 0; i < this.mapElements.length; i++)
+                {
+                    // This is interactive-map-xxxxxxxx
+                    var mapElem = this.mapElements[i];
+
+                    // Find the definition that represents this map
+                    var map = mw.config.get("interactiveMaps")[mapElem.className];
+
+                    // Get the element DIV that encapsulates the transcluded map (the parent of interactive-map-container)
+                    var configElem = mapElem.parentElement.parentElement;
+
+                    // Short-circuit if the parent of the interactive-map-container is just the page content
+                    // or if a map definition behind the mapElem wasn't found
+                    if (!map || !configElem || configElem.id == "mw-content-text") continue;
+
+                    var embedConfig = {};
+
+                    // Check to see if a "config" data attribute exists, and if so, try to parse it for our entire embed configuration
+                    if (configElem.hasAttribute("data-config"))
+                    {
+                        try
+                        {
+                            embedConfig = JSON.parse(comfigElem.dataset.config);
+                        }
+                        catch(error)
+                        {
+                            console.error("Could not parse data-config attribute to JSON object:\n" + error);
+                        }
+                    }
+                    else
+                    {
+                        // Collect all the data attributes
+                        for (var key in configElem.dataset)
+                        {
+                            embedConfig[key] = configElem.dataset[key];
+                        }
+                    }
+
+                    // Store in mapsExtended.embedConfigs if there were data attributes present
+                    if (!isEmptyObject(embedConfig))
+                    {
+                        embedConfig._configName = map.name + " (" + mapElem.id + ")";
+                        embedConfig._configSource = "Wikitext";
+                        embedConfig._configScope = "embed";
+
+                        // Don't store the embed config using the map name since the same map
+                        // may be present multiple times on the page with different embed configs
+                        this.embedConfigs[mapElem.id] = embedConfig;
+                    }
+                }
+            },
+
+            fetchRemoteMapDefinitions: function()
+            {
+                // Unfortunately Interactive Maps doesn't deserialize all properties of the JSON into the
+                // interactiveMaps object (in mw.config) (notably markers always includes custom properties,
+                // but everything else does not).
+
+                // Custom properties are used to configure MapsExtended, and in order to fetch them we must
+                // manually load the Map page content rather than use the existing deserialized maps in mw.config.
+                // The custom properties will be written directly back into mw.config.get("interactiveMaps")
+                // which in turn is copied to each ExtendedMap
+
+                // Update:
+                // Any custom field (outside of marker objects) are now sanitized/stripped when the JSON
+                // is saved, meaning that the only fields that may be present are those that are allowed :(
+                // The following code is kept just in case this is added back
+
+                return new Promise(function(resolve, reject)
+                {
+                    // Just resolve immediately
+                    return resolve();
+
+                    // If editing an interactive map in source mode, use the JSON text directly from the editor
+                    // (this will always be valid because the script won't run unless there's an interactive map on the page)
+                    if (mw.config.get("wgPageContentModel") == "interactivemap" && (mw.config.get("wgAction") == "edit" || mw.config.get("wgAction") == "submit"))
+                    {
+                        mw.hook("wikipage.editform").add(function(editform)
+                        {
+                            var textBox = document.getElementById("wpTextbox1");
+
+                            // The definition exactly parsed from the JSON with no processing
+                            var editorMapDefinition = JSON.parse(textBox.value);
+                            editorMapDefinition.name = mw.config.get("wgTitle");
+
+                            // The definition as parsed by Interactive Maps
+                            var localMapDefinition = Object.values(mw.config.get("interactiveMaps"))[0];
+
+                            traverseCopyValues(editorMapDefinition, localMapDefinition, ignoreSourceKeys, true);
+
+                            resolve();
+                        });
+                    }
+
+                    // If viewing an interactive map (be it one or more transclusions or on the map page),
+                    // fetch the text directly from the page with the MediaWiki revisions API
+                    else
+                    {
+                        // Build a chain of map titles, like Map:x|Map:y|Map:z, which is sorted alphabetically and does not contain dupes
+                        // 1. Convert interactiveMaps to object array
+                        // 2. Create an array based on a function which returns Map:map.name
+                        // 3. Create a set from the array (which removes duplicates)
+                        // 4. Sort the array
+                        // 5. Join each of the elements in an array to form a string
+                        var titles = Array.from(new Set(Array.from(Object.values(mw.config.get("interactiveMaps")), function(m) { return "Map:" + m.name; }))).sort().join("|");
+
+                        // Build revisions API url, fetching the content of the latest revision of each Map page
+                        var params = new URLSearchParams(
+                        {
+                            action: "query",    // Query action (Fetch data from and about MediaWiki)
+                            prop: "revisions",  // Which properties to get (the revision information)
+                            rvprop: "content",  // Which properties to get for each revision (content of each revision slot)
+                            rvslots: "main",    // Which revision slots to return data for (main slot - the public revision)
+                            format: "json",     // The format of the returned data (JSON format)
+                            formatversion: 2,   // Output formatting
+                            redirects: 1,       // Follow redirects
+                            maxage: 300,        // Set the max-age HTTP cache control header to this many seconds (10 minutes)
+                            smaxage: 300,       // Set the s-maxage HTTP cache control header to this many seconds (10 minutes)
+                            titles: titles      // A list of titles to work on
+                        });
+
+                        var url = mw.config.get("wgServer") + "/api.php?" + params.toString();
+
+                        // Perform the request
+                        fetch(url)
+
+                        // When the HTTP response is returned...
+                        .then(function(response)
+                        {
+                            // Determine whether the response contains JSON
+                            var contentTypeHeader = response.headers.get("content-type");
+                            var isJson = contentTypeHeader && contentTypeHeader.includes("application/json");
+                            var data = isJson ? response.json() : null;
+                                
+                            if (!response.ok)
+                            {
+                                var error = (data && data.message) || response.status;
+                                throw { type: "request", value: error };
+                            }
+
+                            return data;
+                        })
+
+                        // When the response body text is parsed as JSON
+                        // An example of the returned response is:
+                        // https://pillarsofeternity.fandom.com/api.php?action=query&prop=revisions&rvprop=content&rvslots=*&format=json&formatversion=2&redirects=1&titles=Map:The+Goose+and+Fox+-+Lower|Map:The+Goose+and+Fox+-+Upper
+                        .then(function(data)
+                        {
+                            var pageData = Object.values(data.query.pages);
+                            var localDefinitions = Array.from(Object.values(mw.config.get("interactiveMaps")));
+                            var errors = [];
+
+                            for (var i = 0; i < pageData.length; i++)
+                            {
+                                // Instead of throwing, just log any errors to pass back
+                                if (pageData[i].invalid || pageData[i].missing || pageData[i].accessdenied || pageData[i].rvaccessdenied)
+                                {
+                                    if (pageData[i].invalid)
+                                        errors.push("API query with title \"" + pageData[i].title + "\" was invalid - " + pageData[i].invalidreason);
+                                    else if (pageData[i].missing)
+                                        errors.push("A page with the title \"" + pageData[i].title + "\" does not exist!");
+                                    else if (pageData[i].accessdenied || pageData[i].rvaccessdenied)
+                                        errors.push("You do not have permission to view \"" + pageData[i].title + "\"");
+                                    else if (pageData[i].texthidden)
+                                        errors.push("The latest revision of the page \"" + pageData[i].title + "\ was deleted");
+                                    continue;
+                                }
+
+                                try
+                                {
+                                    // Parse the content of the page as JSON into a JS object (adding the map name because the JSON will not contain this)
+                                    var remoteMapDefinition = JSON.parse(pageData[i].revisions[0].slots.main.content);
+                                    remoteMapDefinition.name = pageData[i].title.replace("Map:", "");
+                                    
+                                    var localMapDefinition = localDefinitions.find(function(d) { return d.name == remoteMapDefinition.name; });
+
+                                    // Copy the values of the remote definition onto the values of the local definition
+                                    traverseCopyValues(remoteMapDefinition, localMapDefinition, ignoreSourceKeys, true);
+                                }
+                                catch(error)
+                                {
+                                    errors.push("Error while parsing map data or deep copying into local map definition: " + error);
+                                    continue;
+                                }
+                            }
+
+                            // Reject the promise, returning any errors
+                            if (errors.length > 0) throw {type: "response", value: errors };
+                        })
+
+                        // Catch and log any errors that occur
+                        .catch(function(reason)
+                        {
+                            var str = "One or more errors occurred while " + (reason.type == "request" ? "performing HTTP request" : "parsing the HTTP response") + ". Custom properties may not be available!\n";
+
+                            if (typeof reason.value == "object")
+                                str += "--> " + reason.value.join("\n--> ");
+                            else
+                                str += "--> " + reason.value;
+
+                            console.error(str);
+                        });
+                    }
+                });
+            },
+            
+            fetchRemoteLocalConfigs: function()
+            {
+                var mapsExtended = this;
+
+                // As to not pollute the Map JSON definitions, users may also store map configurations in a separate
+                // file a subpage of MediaWiki:Custom-MapsExtended. For example a map with the name Map:Foobar will
+                // use the page MediaWiki:Custom-MapsExtended/Foobar.json
+                
+                // MediaWiki: pages typically store system messages which are unabled to be edited, but those prefixed with "Custom-"
+                // are whitelisted such that they can be edited by logged-in users. This prefix seems to be a free-for-use space, and
+                // many scripts use it as a place to store configurations and such in JSON format
+
+                // Below, we fetch this config and insert it into mapsExtended.localConfigs, keyed by the map name minus the Map: prefix
+                
+                // Don't bother using this method if all configs were already loaded
+                if (mapsExtended.isGlobalConfigLoaded == true &&
+                    mapsExtended.isLocalConfigsLoaded == true)
+                    return;
+                
+                var MX_CONFIG_PREFIX = "MediaWiki:Custom-MapsExtended/";
+                var MX_CONFIG_SUFFIX = ".json";
+
+                var configNames = [].concat(mapsExtended.isLocalConfigsLoaded == false ? mapsExtended.mapTitles : [],
+                                            mapsExtended.isGlobalConfigLoaded == false ? [ "global" ] : []);
+
+                // Build a chain of map config titles, like x|y|z, which is sorted alphabetically and does not contain dupes
+                // 1. Create an array based on a function which returns MediaWiki:Custom-MapsExtended/<mapname>.json (using Array.map)
+                // 2. Create a set from the array (which removes duplicates)
+                // 3. Convert the set back into an array (using Array.from)
                 // 4. Sort the array
                 // 5. Join each of the elements in an array to form a string
-                var titles = Array.from(new Set(Array.from(Object.values(mw.config.get("interactiveMaps")), function(m) { return "Map:" + m.name; }))).sort().join("|");
+                var titles = Array.from(new Set(configNames.map(function(title) { return MX_CONFIG_PREFIX + title + MX_CONFIG_SUFFIX; }))).sort().join("|");
 
                 // Build revisions API url, fetching the content of the latest revision of each Map page
                 var params = new URLSearchParams(
@@ -4431,15 +7030,22 @@
                     format: "json",     // The format of the returned data (JSON format)
                     formatversion: 2,   // Output formatting
                     redirects: 1,       // Follow redirects
-                    maxage: 300,        // Set the max-age HTTP cache control header to this many seconds (10 minutes)
-                    smaxage: 300,       // Set the s-maxage HTTP cache control header to this many seconds (10 minutes)
+                    origin: "*",
+                    maxage: 300,        // Set the max-age HTTP cache control header to this many seconds (5 minutes)
+                    smaxage: 300,       // Set the s-maxage HTTP cache control header to this many seconds (5 minutes)
                     titles: titles      // A list of titles to work on
                 });
 
-                var url = mw.config.get("wgServer") + "/api.php?" + params.toString();
+                var fetchParams =
+                {
+                    method: "GET",
+                    credentials: "omit",
+                };
 
-                // Perform the request
-                fetch(url)
+                var url = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api.php?" + params.toString();
+                
+                // Perform the request, returning the promise that is fulfilled at the end of the chain
+                return fetch(url, fetchParams)
 
                 // When the HTTP response is returned...
                 .then(function(response)
@@ -4452,19 +7058,16 @@
                     if (!response.ok)
                     {
                         var error = (data && data.message) || response.status;
-                        return Promise.reject({ type: "request", value: error });
+                        throw { type: "request", value: error };
                     }
 
                     return data;
                 })
 
-                // When the response body text is parsed as JSON
-                // An example of the returned response is:
-                // https://pillarsofeternity.fandom.com/api.php?action=query&prop=revisions&rvprop=content&rvslots=*&format=json&formatversion=2&redirects=1&titles=Map:The+Goose+and+Fox+-+Lower|Map:The+Goose+and+Fox+-+Upper
+                // When the response body text is parsed as JSON...
                 .then(function(data)
                 {
                     var pageData = Object.values(data.query.pages);
-                    var localDefinitions = Array.from(Object.values(mw.config.get("interactiveMaps")));
                     var errors = [];
 
                     for (var i = 0; i < pageData.length; i++)
@@ -4486,23 +7089,34 @@
                         try
                         {
                             // Parse the content of the page as JSON into a JS object (adding the map name because the JSON will not contain this)
-                            var remoteMapDefinition = JSON.parse(pageData[i].revisions[0].slots.main.content);
-                            remoteMapDefinition.name = pageData[i].title.replace("Map:", "");
-                            
-                            var localMapDefinition = localDefinitions.find(function(d) { return d.name == remoteMapDefinition.name; });
+                            var config = JSON.parse(pageData[i].revisions[0].slots.main.content);
+                            config._configName = pageData[i].title.replace(MX_CONFIG_PREFIX, "").replace(MX_CONFIG_SUFFIX, "");
+                            config._configSource = "JSON (in system message)";
 
-                            // Copy the values of the remote definition onto the values of the local definition
-                            traverseCopyValues(remoteMapDefinition, localMapDefinition, ignoreSourceKeys, true);
+                            // Insert it into mapsExtended.localConfig
+                            if (config._configName == "global")
+                            {
+                                config._configScope = "global";
+                                mapsExtended.globalConfig = config;
+                                mapsExtended.configValidator.validateConfig(config);
+                            }
+
+                            // Insert it into mapsExtended.localConfigs
+                            else
+                            {
+                                config._configScope = "local";
+                                mapsExtended.localConfigs[config._configName] = config;
+                            }
                         }
                         catch(error)
                         {
-                            errors.push("Error while parsing map data or deep copying into local map definition: " + error);
+                            errors.push("Error while parsing map data: " + error);
                             continue;
                         }
                     }
 
                     // Reject the promise, returning any errors
-                    if (errors.length > 0) Promise.reject({type: "response", value: errors });
+                    if (errors.length > 0) throw {type: "response", value: errors };
                 })
 
                 // Catch and log any errors that occur
@@ -4511,109 +7125,173 @@
                     var str = "One or more errors occurred while " + (reason.type == "request" ? "performing HTTP request" : "parsing the HTTP response") + ". Custom properties may not be available!\n";
 
                     if (typeof reason.value == "object")
-                        str + "--> " + reason.value.join("\n--> ");
+                        str += "--> " + reason.value.join("\n--> ");
                     else
-                        str + "--> " + reason.value;
+                        str += "--> " + reason.value;
 
-                    console.error(str);
+                    log(str);
                 })
 
-                // Always just resolve no matter the outcome
-                .finally(function()
-                {
-                    resolve();
+                .finally(function(){
+                
                 });
-            }
-        })
+            },
 
-        // Fetch and load i18n messages before processing individual maps
-        .then(function()
-        {
-            // i18n overrides (for testing purposes only)
-            /*
-            window.dev = window.dev || {};
-            window.dev.i18n = window.dev.i18n || {};
-            window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-            window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
-            window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 collected";
-            window.dev.i18n.overrides["MapsExtended"]["clear-collected-button"] = "Clear collected";
-            window.dev.i18n.overrides["MapsExtended"]["clear-collected-confirm"] = "Clear collected markers?";
-            window.dev.i18n.overrides["MapsExtended"]["clear-collected-banner"] = "Cleared $1 collected markers on $2.";
-            window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You collected all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
-            window.dev.i18n.overrides["MapsExtended"]["search-placeholder"] = "Search";
-            window.dev.i18n.overrides["MapsExtended"]["search-hint-noresults"] = "No results found for \"$1\"";
-            window.dev.i18n.overrides["MapsExtended"]["search-hint-results"] = "$1 markers in $2 categories";
-            window.dev.i18n.overrides["MapsExtended"]["search-hint-resultsfiltered"] = "$1 markers in $2 categories ($3 filtered)";
-            window.dev.i18n.overrides["MapsExtended"]["fullscreen-enter-tooltip"] = "Enter fullscreen";
-            window.dev.i18n.overrides["MapsExtended"]["fullscreen-exit-tooltip"] = "Exit fullscreen";
-            window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-success"] = "Copied to clipboard";
-            window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-failure"] = "There was a problem copying the link to the clipboard";
-            */
-
-            // The core module doesn't use any translations, but we might as well ensure it's loaded before running other modules
-            return new Promise(function(resolve, reject)
+            // Fetch and load i18n messages
+            loadi18n: function()
             {
-                mw.hook("dev.i18n").add(function(i18n)
-                {
-                    var CACHE_VERSION = 3; // Increment manually to force cache to update (do this when new entries are added)
+                // i18n overrides (for testing purposes only)
+                /*
+                window.dev = window.dev || {};
+                window.dev.i18n = window.dev.i18n || {};
+                window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+                window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
+                window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 collected";
+                window.dev.i18n.overrides["MapsExtended"]["clear-collected-button"] = "Clear collected";
+                window.dev.i18n.overrides["MapsExtended"]["clear-collected-confirm"] = "Clear collected markers?";
+                window.dev.i18n.overrides["MapsExtended"]["clear-collected-banner"] = "Cleared $1 collected markers on $2.";
+                window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You collected all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
+                window.dev.i18n.overrides["MapsExtended"]["search-placeholder"] = "Search";
+                window.dev.i18n.overrides["MapsExtended"]["search-hint-noresults"] = "No results found for \"$1\"";
+                window.dev.i18n.overrides["MapsExtended"]["search-hint-results"] = "$1 markers in $2 categories";
+                window.dev.i18n.overrides["MapsExtended"]["search-hint-resultsfiltered"] = "$1 markers in $2 categories ($3 filtered)";
+                window.dev.i18n.overrides["MapsExtended"]["fullscreen-enter-tooltip"] = "Enter fullscreen";
+                window.dev.i18n.overrides["MapsExtended"]["fullscreen-exit-tooltip"] = "Exit fullscreen";
+                window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-success"] = "Copied to clipboard";
+                window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-failure"] = "There was a problem copying the link to the clipboard";
+                */
 
-                    i18n.loadMessages("MapsExtended", { cacheVersion: CACHE_VERSION }).done(function(i18n)
+                // The core module doesn't use any translations, but we might as well ensure it's loaded before running other modules
+                return new Promise(function(resolve, reject)
+                {
+                    mw.hook("dev.i18n").add(function(i18n)
                     {
-                        // Save i18n instance to mapsExtended object
-                        mapsExtended.i18n = i18n;
-                        resolve();
+                        var CACHE_VERSION = 3; // Increment manually to force cache to update (do this when new entries are added)
+
+                        i18n.loadMessages("MapsExtended", { cacheVersion: CACHE_VERSION }).done(function(i18n)
+                        {
+                            // Save i18n instance to mapsExtended object
+                            mapsExtended.i18n = i18n;
+                            resolve();
+                        });
                     });
                 });
-            });
-        })
+            },
 
-        // Get existing maps on the page and create ExtendedMaps for them
-        .then(function()
-        {
-            var mapContainers = document.querySelectorAll(".interactive-maps-container > [class^=\"interactive-map-\"]");
-            var initPromises = [];
-
-            mapContainers.forEach(function(fandomMapRoot)
+            // Get existing maps on the page and create ExtendedMaps for them
+            initMaps: function()
             {
-                var map = new ExtendedMap(fandomMapRoot);
-                mapsExtended.maps.push(map);
+                var initPromises = [];
 
-                // We may have to wait a few frames for Leaflet to initialize, so
-                // create a promise which resolves then the map has fully loaded
-                initPromises.push(map.waitForPresence());
-            });
+                for (var i = 0; i < this.mapElements.length; i++)
+                {
+                    var map = new ExtendedMap(this.mapElements[i]);
+                    this.maps.push(map);
 
-            // Wait for all maps to appear
-            return Promise.allSettled(initPromises);
-        })
+                    // We may have to wait a few frames for Leaflet to initialize, so
+                    // create a promise which resolves then the map has fully loaded
+                    initPromises.push(map.waitForPresence());
+                }
 
-        // Finishing off...
-        .then(function(results)
+                // Wait for all maps to appear
+                return Promise.allSettled(initPromises)
+                    
+                // Finishing off...
+                .then(function(results)
+                {
+                    // Log the result of the map initialization
+                    results.forEach(function(r)
+                    {
+                        if (r.status == "fulfilled")
+                            console.log(r.value);
+                        else if (r.status == "rejected")
+                            console.error(r.reason);
+                    });
+                    
+                }.bind(this))
+
+                .catch(function(reason)
+                {
+                    console.error(reason);
+                });
+            }
+        };
+
+        var mapsExtended = new MapsExtended();
+        
+        // Cache mapsExtended in window.dev
+        window.dev = window.dev || {};
+        window.dev.mapsExtended = mapsExtended;
+
+        // This hook ensures that we init again on live preview
+        mw.hook("wikipage.content").add(function(content)
         {
-            // Log the result of the map initialization
-            results.forEach(function(r)
+            // prevObject will not be undefined if this is a live preview.
+            // The issue with live preview however, is that there is no hook that fires when the content is fully loaded
+            // The content object is also detached from the page, so we can't observe it
+            if (mapsExtended.initialized && content.prevObject)
             {
-                if (r.status == "fulfilled")
-                    console.log(r.value);
-                else if (r.status == "rejected")
-                    console.error(r.reason);
-            });
+                var wikiPreview = document.getElementById("wikiPreview");
+                
+                // Deinit the existing maps
+                mapsExtended.deinit();
 
-            // Fire hook to tell other scripts that mapsExtended has finished
-            mw.hook("dev.mapsExtended").fire(mapsExtended);
-        })
+                // Content is detached from the page, add a MutationObserver that will listen for re-creation of interactive-map elements
+                new MutationObserver(function(mutationList, observer)
+                {
+                    // If there were any added or removed nodes, check whether the map is fully created now
+                    if (mutationList.some(function(mr)
+                    {
+                        for (var i = 0; i < mr.addedNodes.length; i++)
+                        {
+                            var elem = mr.addedNodes[i];
+                            return elem instanceof Element &&
+                            (elem.classList.contains("interactive-maps") ||
+                                elem.classList.contains("leaflet-container") ||
+                                elem.closest(".interactive-maps-container") != undefined ||
+                                elem.matches(".interactive-maps-container > [class^=\"interactive-map-\"]"));
+                        }
 
-        .catch(function(reason)
-        {
-            console.error(reason);
+                        return false;
+                    }))
+                    {
+                        observer.disconnect();
+                        mapsExtended.init();
+                    }
+                    
+                }).observe(wikiPreview, { subtree: true, childList: true });
+            }
+            
+            // Otherwise if it was a regular preview, just initialize as normal
+            else
+            {
+                mapsExtended.init();
+            }
         });
+
+        /*
+        mapsExtended.stylesheet.insertRule(".interactive-maps, .interactive-maps * { pointer-events: none; cursor: default; }")
+        mapsExtended.stylesheet.insertRule(".LoadingOverlay-module_overlay__UXv3B { z-index: 99999; }");
+
+        // Add a loading overlay to each map
+        for (var i = 0; i < mapsExtended.mapElements.length; i++)
+        {
+            var mapElement = mapsExtended.mapElements[i];
+            mapElement.style.cursor = "default";
+            var leafletContainer = mapElement.querySelector(".leaflet-container");
+            leafletContainer.classList.add("loading");
+
+            var loadingOverlay = ExtendedMap.prototype.createLoadingOverlay();
+            leafletContainer.appendChild(loadingOverlay);
+        }
+        */
 
         // Load dependencies
         importArticles(
         {
             type: "script",
             articles: [
-                //"u:dev:MediaWiki:MapsExtended.css", // <- Uncomment after a CSS is made containing all rules defined in this script
+                "u:dev:MediaWiki:MapsExtended.css",
                 "u:dev:MediaWiki:I18n-js/code.js",
                 "u:dev:MediaWiki:BannerNotification.js",
                 "u:dev:MediaWiki:WDSIcons/code.js"
@@ -4621,469 +7299,6 @@
         });
         
     };
-
-    /*
-
-        MapsExtended_Collectibles.js
-        Author: Macklin
-
-        This script allows map markers (of Fandom Interactive Maps) to be marked as "collected", via a checkbox
-        that will be added to the popup when it is first created.
-
-        Collected markers will be dimmed to indicate to the user that it has been collected, and the label of
-        the associated category/filter will have (x of y collected) added to them
-
-    */
-
-    function mxc(mapsExtended)
-    {
-        // Intended to be applied to category definitions
-        var categoryFunctions =
-        {
-            isAnyCollected: function()
-            {
-                return this.collectible ? this.markers.some(function(m) { return m.collected == true; }) : false;
-            },
-
-            getNumCollected: function()
-            {
-                var count = 0;
-                if (!this.collectible) return count;
-
-                for (var i = 0; i < this.markers.length; i++)
-                {
-                    if (this.markers[i].collected)
-                        count++;
-                }
-
-                return count;
-            },
-
-            getNumCollectible: function()
-            {
-                return this.collectible ? this.markers.length : 0;
-            },
-            
-            updateCollectedLabel: function()
-            {
-                if (!this.collectible)
-                    return;
-                
-                // Align icon to top of flex
-                if (!this.elements.collectedLabel)
-                {
-                    if (this.elements.checkboxLabelIcon) this.elements.checkboxLabelIcon.style.alignSelf = "flex-start";
-        
-                    var categoryLabel = this.elements.checkboxLabelText;
-        
-                    // Add amount collected "<collected> of <total> collected"
-                    var collectedLabel = document.createElement("div");
-                    collectedLabel.style.cssText = "font-size:small; opacity:50%";
-                    var collectedLabelText = document.createTextNode("");
-                    collectedLabel.appendChild(collectedLabelText);
-
-                    // Add collectedLabel as child of categoryLabel
-                    categoryLabel.appendChild(collectedLabel);
-
-                    this.elements.collectedLabel = collectedLabelText;
-                }
-
-                var count = this.getNumCollected();
-                var total = this.markers.length;
-                var perc = Math.round((count / total) * 100); // <- Not used in default label, but may be specified
-                var msg = mapsExtended.i18n.msg("category-collected-label", count, total, perc).plain();
-                
-                this.elements.collectedLabel.textContent = msg;
-            },
-
-            clearAllCollected: function(){ this.setMarkersCollected(false); },
-            markAllCollected: function(){ this.setMarkersCollected(true); },
-
-            setMarkersCollected: function(state)
-            {
-                for (var j = 0; j < this.markers.length; j++)
-                    this.map.setMarkerCollected(this.markers[j], state, true, false, true);
-
-                // Update label
-                this.updateCollectedLabel();
-            }
-        };
-
-        // Modify the ExtendedMap prototype to add some collectible-specifc methods
-        Object.assign(mapsExtended.ExtendedMap.prototype,
-        {
-            hasCollectibles: false,
-
-            // Get the amount of markers that have been collected in total
-            getNumCollected: function()
-            {
-                var count = 0;
-                for (var i = 0; i < this.categories.length; i++)
-                {
-                    count = count + this.categories[i].getNumCollected();
-                }
-
-                return count;
-            },
-            
-            // Get the key used to store the collected states in localStorage
-            getStorageKey: function()
-            {
-                return mw.config.get("wgDBname") + "_Map:" + this.name.replaceAll(" ", "_") + "_states";
-            },
-
-            // Trigger the collected setter on all markers to update their opacity
-            nudgeCollectedStates: function()
-            {
-                for (var i = 0; i < this.categories.length; i++)
-                {
-                    if (!this.categories[i].collectible)
-                        continue;
-
-                    for (var j = 0; j < this.categories[i].markers.length; j++)
-                        this.setMarkerCollected(this.categories[i].markers[j], this.categories[i].markers[j].collected, true, false, false);
-                    
-                    this.categories[i].updateCollectedLabel();
-                }   
-            },
-
-            // Clear the collected state on all markers for this map, and then also the data of this map in localStorage
-            clearCollectedStates: function()
-            {
-                for (var i = 0; i < this.categories.length; i++)
-                {
-                    // Clear the collected states
-                    for (var j = 0; j < this.categories[i].markers.length; j++)
-                        this.setMarkerCollected(this.categories[i].markers[j], false, true, false, false);
-
-                    // Update label
-                    this.categories[i].updateCollectedLabel();
-                }
-                
-                var storageKey = this.getStorageKey();
-                localStorage.removeItem(storageKey);
-            },
-        
-            // Iterates over all markers in a map and stores an array of the IDs of "collected" markers
-            saveCollectedStates: function()
-            {
-                var collectedMarkers = [];
-                for (var i = 0; i < this.markers.length; i++)
-                {
-                    if (this.markers[i].collected) collectedMarkers.push(this.markers[i].id);
-                }
-        
-                var storageKey = this.getStorageKey();
-                localStorage.setItem(storageKey, JSON.stringify(collectedMarkers));
-            },
-        
-            // Fetch the collected state data from localStorage and set the "collected" bool on each marker that is collected
-            loadCollectedStates: function()
-            {
-                var storageKey = this.getStorageKey();
-                var stateJson = localStorage.getItem(storageKey) || "[]";
-                var stateData = JSON.parse(stateJson);
-        
-                for (var i = 0; i < stateData.length; i++)
-                {
-                    if (this.markerLookup.has(stateData[i]))
-                    {
-                        var marker = this.markerLookup.get(stateData[i]);
-        
-                        // Ensure that this marker is a collectible one
-                        if (marker && marker.category.collectible == true)
-                            this.setMarkerCollected(marker, true, true, false, false);
-                    }
-                }
-            },
-
-            // Sets the collected state of the marker.
-            // This should be called instead of setting collected directly and is called
-            // by user interactions, as well as on clear and initial load
-            setMarkerCollected: function(marker, state, updatePopup, updateLabel, canShowBanner)
-            {
-                // Don't try to collect markers that aren't collectible
-                if (!marker.category.collectible) return;
-                
-                // Set the collected state on the marker
-                marker.collected = state;
-
-                if (marker.markerElement)
-                {
-                    // Set the marker collected style using a class rather than an inline attribute
-                    // This is required because with clustered markers, the opacity is overridden as part of the zoom animation on EVERY marker
-                    if (state == true)
-                        marker.markerElement.classList.add("mapsExtended_collectedMarker_" + this.id);
-                    else
-                        marker.markerElement.classList.remove("mapsExtended_collectedMarker_" + this.id);
-                }
-
-                // Set the collected state on the connected popup (if shown)
-                // This does not trigger the checked change event
-                if (updatePopup && marker.popup.isPopupShown())
-                {
-                    var checkbox = marker.popup.elements.popupCollectedCheckbox;
-                    checkbox.checked = state;
-                }
-
-                // Update the collected label
-                if (updateLabel) marker.category.updateCollectedLabel();
-
-                // Show a congratulatory banner if all collectibles were collected
-                if (canShowBanner && mapsExtended.config.collectibles.enableCollectedAllNotification && state == true)
-                {
-                    // Check if all were collected
-                    var numCollected = marker.category.getNumCollected();
-                    var numTotal = marker.category.markers.length;
-                    
-                    // Show a banner informing the user that they've collected all markers
-                    if (numCollected == numTotal)
-                    {
-                        var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, marker.category.name, this.getMapLink()).plain();
-                        this.collectedMessageBanner.setContent(msg);
-                        this.collectedMessageBanner.show();
-                    }
-                }
-            }
-        });
-        
-        var defaultCollectiblesConfig =
-        {
-            collectibleCategories: [],
-            collectedMarkerOpacity: "50%",
-            enableCollectedAllNotification: true
-        };
-
-        // Apply the defaultCollectibles if the user has not set them - do this by Object.assign'ing
-        // both the properties read from the config (in Common.js) and default ones and applying this back to the object
-        mapsExtended.config.collectibles = Object.assign({}, defaultCollectiblesConfig, mapsExtended.config.collectibles);
-
-        var initMapCollectibleStyles = mapsExtended.util.once(function()
-        {
-            // Set up some reusable styles
-            mapsExtended.stylesheet.insertRule(".mapsExtended_collectibleClearButton { text-align: right; font-weight: 700; letter-spacing: .25px; text-transform: uppercase; font-size: 12px; margin: 12px; cursor: pointer; user-select: none; -webkit-user-select: none }");
-    
-            // Change filters box to better accomodate the clear collected button
-            mapsExtended.stylesheet.insertRule(".interactive-maps__filters-dropdown.wds-dropdown:hover > .wds-dropdown__content { display: flex !important; flex-direction: column; }")
-    
-            var rule = mapsExtended.util.findCSSRule(".interactive-maps__filters-dropdown-list", mapsExtended.stylesheet);
-            if (rule)
-            {
-                rule.style.paddingBottom = "0";
-                rule.style.maxHeight = "none";
-            }
-        });
-
-        // Called on each of the maps to set up collectibles
-        function initMapCollectibles(map)
-        {
-            // Apply the per-map configuration over the global configuration, overwriting any values set in the global
-            map.config.collectibles = Object.assign({}, mapsExtended.config.collectibles, map.config.collectibles);
-
-            // Add a rule controlling the selected marker opacity
-            window.dev.mapsExtended.stylesheet.insertRule(".mapsExtended_collectedMarker_" + map.id + " { opacity: " + map.config.collectibles.collectedMarkerOpacity.toString() + " !important; }");
-
-            // Set up the checked summary on each of the collectible category labels
-            for (var i = 0; i < map.categories.length; i++)
-            {
-                var category = map.categories[i];
-                Object.assign(category, categoryFunctions);
-
-                // Collectible categories are those whose ID's end with __c or __ch or __hc
-                // or categories included in the collectibleCategories array in the map config
-                // or categories where the custom property "collectible" is true
-                category.collectible = category.hints.includes("collectible")
-                                    || (Array.isArray(map.config.collectibleCategories) && map.config.collectibleCategories.includes(category.id))
-                                    || (Array.isArray(map.config.collectibles.collectibleCategories) && map.config.collectibles.collectibleCategories.includes(category.id))
-                                    || category.collectible;
-                
-                if (!category.collectible)
-                    continue;
-
-                map.hasCollectibles = true;
-
-                if (category.elements && category.elements.filter)
-                {
-                    category.elements.filter.addEventListener("click", function(e)
-                    {
-                        if (e.ctrlKey == true || e.metaKey == true)
-                        {
-                            if (this.isAnyCollected())
-                                this.clearAllCollected();
-                            else
-                                this.markAllCollected();
-
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }
-                    }.bind(category));
-                }
-
-                // Set up markers of this category
-                /*
-                for (var j = 0; j < category.markers.length; j++)
-                {
-                    // Set up clicked event on marker
-                    if (this.markerElement)
-                    {
-                        this.markerElement.addEventListener("click", this.onMarkerActivated);
-                    }
-                }
-                */
-            }
-
-            // Skip this map if there are no collectibles
-            if (map.hasCollectibles == false) return;
-
-            initMapCollectibleStyles();
-
-            // Add a "Clear collected" button to the filter box
-            var clearButton = document.createElement("a");
-            clearButton.className = "mapsExtended_collectibleClearButton";
-            clearButton.textContent = mapsExtended.i18n.msg("clear-collected-button").plain();
-            map.elements.clearCollectedButton = clearButton;
-            map.elements.filtersDropdownList.after(clearButton);
-            
-            mw.loader.using(["oojs-ui-core", "oojs-ui-windows"], function()
-            {
-                // When BannerNotifications is loaded, 
-                mw.hook("dev.banners").add(function(banners)
-                {
-                    map.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
-
-                    // When the "Clear collected" button is clicked in the filters dropdown
-                    map.elements.clearCollectedButton.addEventListener("click", function()
-                    {
-                        var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
-
-                        // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
-                        OO.ui.confirm(confirmMsg).done(function(confirmed)
-                        {
-                            if (confirmed)
-                            {
-                                var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
-                                new BannerNotification(bannerMsg, "notify", null, 5000).show();
-                                map.clearCollectedStates();
-                            }
-                            else
-                                return;
-                        });
-                    });
-                });
-            });
-            
-            // Load collected states from localStorage
-            map.loadCollectedStates();
-
-            // Update the collected labels to reflect the collected states
-            map.categories.forEach(function(c) { c.updateCollectedLabel(); });
-
-            // Events
-
-            // Update all collected labels and nudge collected states when the map is refreshed
-            map.events.onMapInit.subscribe(function(args)
-            {
-                // Nudge collected states
-                args.map.nudgeCollectedStates();
-
-                // Update labels
-                args.map.categories.forEach(function(c) { c.updateCollectedLabel(); });
-            });
-
-            // New marker shown - Set it's collected state to itself update the marker opacity
-            map.events.onMarkerShown.subscribe(function(args)
-            {
-                args.map.setMarkerCollected(args.marker, args.marker.collected, true);
-            });
-
-            // New popup created
-            map.events.onPopupCreated.subscribe(function(args)
-            {
-                var marker = args.marker;
-                var map = args.map;
-                var category = map.categoryLookup.get(marker.categoryId);
-                
-                // Check if the marker that triggered this popup is a collectible one
-                if (category.collectible == true)
-                {
-                    // Stop observing popup changes while we change the subtree of the popup
-                    map.togglePopupObserver(false);
-                    
-                    // Create checkbox container
-                    var popupCollectedCheckbox = document.createElement("div");
-                    popupCollectedCheckbox.className = "wds-checkbox";
-            
-                    // Create the checkbox itself
-                    var popupCollectedCheckboxInput = document.createElement("input");
-                    popupCollectedCheckboxInput.setAttribute("type", "checkbox");
-                    popupCollectedCheckboxInput.id = "checkbox_" + map.id + "_" + marker.id;
-                    popupCollectedCheckboxInput.marker = marker; // <- Store reference to marker on checkbox so we don't have to manually look it up
-                    popupCollectedCheckboxInput.checked = marker.collected;
-                    marker.popup.elements.popupCollectedCheckbox = popupCollectedCheckboxInput;
-            
-                    // Create label adjacent to checkbox
-                    var popupCollectedCheckboxLabel = document.createElement("label");
-                    popupCollectedCheckboxLabel.setAttribute("for", popupCollectedCheckboxInput.id);
-
-                    // Add checkbox input and label to checkbox container
-                    popupCollectedCheckbox.appendChild(popupCollectedCheckboxInput);
-                    popupCollectedCheckbox.appendChild(popupCollectedCheckboxLabel);
-
-                    // Add checkbox container after title element
-                    marker.popup.elements.popupTitle.after(popupCollectedCheckbox);
-
-                    // Checked changed event
-                    popupCollectedCheckboxInput.addEventListener("change", function(e)
-                    {
-                        map.setMarkerCollected(e.currentTarget.marker, e.currentTarget.checked, false, true, true);
-                    });
-            
-                    map.togglePopupObserver(true);
-                }
-            });
-
-            // Marker clicked - Toggle collected state on control-click
-            map.events.onMarkerClicked.subscribe(function(args)
-            {
-                // Check if click was control-click
-                if (args.event.ctrlKey == true || args.event.metaKey == true)
-                {
-                    // Invert collected state on marker
-                    args.map.setMarkerCollected(args.marker, !args.marker.collected, true, true, true);
-
-                    // Don't open the popup with a control-click
-                    args.event.stopPropagation();
-                }
-            });
-        }
-
-        // Initialize each existing map with collectibles
-        mapsExtended.maps.forEach(function(map) { initMapCollectibles(map); });
-
-        // Do not continue this script if all maps do not have collectibles
-        if (mapsExtended.maps.every(function(map) { return map.hasCollectibles == false; }))
-            return;
-        
-        // Save collected states when the tab loses focus
-        addEventListener("beforeunload", function(event)
-        {
-            mapsExtended.maps.forEach(function(map)
-            {
-                if (map.hasCollectibles)
-                    map.saveCollectedStates();
-            });
-        });
-
-        // Map added/initialized
-        mapsExtended.events.onMapInit.subscribe(function(args)
-        {
-            // Initialize new maps (never do this more than once for a map)
-            if (args.isNew == true) initMapCollectibles(args.map);
-        });
-
-        // Fire hook to tell other scripts that mapsExtended-collectibles has finished
-        mw.hook("dev.mapsExtended-collectibles").fire();
-    }
 
     /*
 
@@ -5100,18 +7315,18 @@
 
     function init()
     {
-        // Do not fire this script more than once
+        // Script was already loaded in this window
         if (window.dev && window.dev.mapsExtended && window.dev.mapsExtended.loaded == true)
         {
             console.error("MapsExtended - Not running script more than once on page!");
             return;
         }
-        
-        mx();
-        
-        // Wait for the core module to finish before running this module
-        // The recieving function is just passed a shortcut to Window.dev.mapsExtended
-        mw.hook("dev.mapsExtended").add(mxc);
+
+        // Script wasn't yet loaded
+        else
+        {
+            mx();
+        }
     }
 
     // The document cannot change readyState between the if and else

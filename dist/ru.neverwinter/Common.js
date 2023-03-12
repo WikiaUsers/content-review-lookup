@@ -5,16 +5,16 @@ $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
 $("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>На себе:</span></td><td><select class="equip"><option>Все</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
 
 // merges a repeating cell in a table
-/*$(function() {
-    $.map($(".merge-duplicate-td"), function(b, a) {
-        return $("tr td:nth-child(" + ++a + ")")
+$(function() {
+    $.map($("table"), function(b, a) {
+        return $(".merge-duplicate-td:nth-child(" + ++a + ")")
     }).forEach(function(b) {
         var a;
         b.each(function(b, c) {
             a && a.textContent == c.textContent ? ($(c).remove(), a.rowSpan++) : a = c
         })
     })
-});*/
+});
 
 // default setting to turn tooltips on
 var tooltipsOn = true;

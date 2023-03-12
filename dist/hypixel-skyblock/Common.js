@@ -528,13 +528,26 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $textAnchor.closest("tr").attr("id", id);
             });
 
-            // Now dectect if hash matches any row IDs
-
+            /* Now dectect if hash matches any row IDs */
             // Delay check so that scroll doesn't happen until page layout has settled
             // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
             setTimeout(function () {
                 _doHashIdCheck($content, true);
             }, 250);
+
+            // Float any links in the gallery widget
+            $(".frontpage-gallery .wikia-gallery-item").each(function() {
+                var $this = $(this),
+                    anchor = $this.find(".lightbox-caption a");
+                if (!anchor || $this.parents(".frontpage-gallery-link").length > 0)
+                    return;
+                $this.wrap($("<a>", {
+                    class: "frontpage-gallery-link",
+                    href: anchor.attr("href"),
+                    title: anchor.attr("title")
+                }));
+                $this.find("a").attr("tabindex", "-1");
+            });
         });
 
         $(window).on("hashchange", function () {

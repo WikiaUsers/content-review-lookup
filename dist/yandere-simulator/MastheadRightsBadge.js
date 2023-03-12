@@ -6,10 +6,9 @@
  * @version                 1.0.2
  * @license                 CC-BY-SA 3.0
  *
- * Forked to add support for Rollbacks, Bureaucrats, and Wiki Reps
+ * Forked to add support for Rollbacks and Bureaucrats
  * Also removes round avatars
  */
-// User config variables
 // User config variables
 mw.loader.using('mediawiki.api').then(function() {
     var config = window.MastheadRightsBadgeSettings || {};
@@ -42,7 +41,8 @@ getMessages([
     "user-identity-box-group-threadmoderator",
     "user-identity-box-group-chatmoderator",
     "user-identity-box-group-rollback",
-    "user-identity-box-group-wiki-manager",
+    "user-identity-box-group-wiki-representative",
+    "user-identity-box-group-wiki-specialist",
     "user-identity-box-group-staff",
     "user-identity-box-group-helper",
     "user-identity-box-group-soap",
@@ -56,7 +56,8 @@ getMessages([
         'threadmoderator': m["user-identity-box-group-threadmoderator"],
         'rollback': m["user-identity-box-group-rollback"],
         'chatmoderator': m["user-identity-box-group-chatmoderator"],
-        'wiki-manager': m["user-identity-box-group-wiki-manager"],
+        'wiki-representative': m["user-identity-box-group-wiki-representative"],
+        'wiki-specialist': m["user-identity-box-group-wiki-specialist"],
         'staff': m["user-identity-box-group-staff"],
         'helper': m["user-identity-box-group-helper"],
         'soap': m["user-identity-box-group-soap"],
@@ -70,8 +71,9 @@ getMessages([
         'threadmoderator': '393',
         'rollback': '392',
         'chatmoderator': '391',
-        'staff': '390.4',
-        'wiki-manager': '390.3',
+        'staff': '390.5',
+        'wiki-representative': '390.4',
+        'wiki-specialist': '390.3',
         'helper': '390.2',
         'soap': '390.1',
         'global-discussions-moderator': '390',
@@ -93,7 +95,8 @@ getMessages([
         'rollback': 'content-moderator',
         'threadmoderator': 'discussion-moderator',
         'chatmoderator': 'discussion-moderator',
-        'wiki-manager': 'staff',
+        'wiki-representative': 'staff',
+        'wiki-specialist': 'staff',
         'staff': 'staff',
         'helper': 'helper',
         'soap': 'soap',

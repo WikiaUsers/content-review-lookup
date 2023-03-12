@@ -13,3 +13,7 @@ window.BackToTopModern = true;
 window.tooltips_config = {
     noCSS: true,
 }
+
+/*LockOldComments*/
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 120;

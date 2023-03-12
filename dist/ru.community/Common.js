@@ -260,12 +260,12 @@ window.botFlagInternational = {
 		requestsPage: 'Запросы_на_статус_бота'
 	},
 	titleSchema: '$1 для $2', // $1 = имя бота, $2 = название вики
-	wikitextSchema: '{{bStart}}Запрос на бота\n' +
+	wikitextSchema: '{{bStart}}Запрос на статус бота\n' +
 		'| 0-Статус         = Новый\n' +
-		'| 1-Вики навзание  = {{wikiName}}\n' +
+		'| 1-Вики название  = {{wikiName}}\n' +
 		'| 2-URL Бота       = {{{botUrl}}}\n' +
 		'| 3-Имя Бота       = {{botName}}\n' +
-		'| 4-Имя участника  = {{requesterName}}\n' +
+		'| 4-Имя владельца  = {{requesterName}}\n' +
 		'| 5-Голосование    = {{{communityVote}}}\n' +
 		'| 6-Комментарии    = {{comments}}\n' +
 	'{{bEnd}}'

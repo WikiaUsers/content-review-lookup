@@ -1,4 +1,4 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
@@ -87,8 +87,8 @@ $(jstzConvertAll);
 
 /* AddRailModule on top */
 window.AddRailModule = [
-    {page: 'Template:RailModule', prepend: true},
-    {page: 'Template:Events', prepend: true}
+    {page: 'Bản mẫu:RailModule', prepend: true},
+    {page: 'Bản mẫu:Events', prepend: true}
 ];
 
 /* Discord Banner */

@@ -60,12 +60,6 @@ function einaus (inhalt, einblenden, ausblenden) {
     }
 }
 
-$(function UserNameReplace() {
-  if ( typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace )
-    return;
-  $('span.insertusername').text(wgUserName);
-});
-
 // Ein- und Ausblenden per Javascript
  
 // mit den folgenden Funktionen lässt sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln

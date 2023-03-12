@@ -31,6 +31,10 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 // Adds a button to easily toggle whether suffixes or scientific notation is displayed on the current article.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixSwitcher.js&action=raw&ctype=text/javascript');
 
+// [ Suffix Converter]
+// Adds an interactive tool to easily convert an inputted value into between scientific and suffix notation types.
+mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixConverter.js&action=raw&ctype=text/javascript');
+
 // [ User Page Notice ]
 // Script for adding a notice to user sub-pages that the current page is not a main wiki article.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:UserPageNotice.js&action=raw&ctype=text/javascript');
@@ -44,5 +48,3 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:MainPageSearch.js&action=raw&ctype=text/javascript');
 
 // -- [ Other scripts ] --
-// Disable UploadMultipleFiles' licence check.
-mw.config.set('UMFBypassLicenseCheck', true);

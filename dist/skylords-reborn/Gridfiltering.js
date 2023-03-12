@@ -56,7 +56,7 @@ gridFilters = {
     // whether we're talking about a list of card viewer instances or card icons
     var isList = $('#card-grid').hasClass('list-of-cards');
     var isStats = $('#grid-filter-container').hasClass('card-stats-table');
-    if (isStats) gridFilters.special.push(['Non-N/A', 'Non-N/A']);
+    if (isStats) gridFilters.special.push(['Non-N/A', 'Non-N/A'], ['+50% Damage', '+50% Damage']);
 
     $('#card-grid').css('max-height', incrH ? '400px' : isList ? '500px' : '230px');
 
@@ -156,6 +156,7 @@ gridFilters = {
                             $(row)
                                 .children()
                                 .each(function (i, e) {
+                                	console.log(i, e)
                                     if (i === 0) return;
                                     var e = $(e);
                                     var values = e.data('values');
@@ -312,6 +313,7 @@ gridFilters = {
     }
     function gridFilteringApply(firstRunAndIsStats) {
         if (firstRunAndIsStats === true) return;
+        var upgrade = $('#grid-filter-upgrade > select').val()
         for (var x = 0; x < gridElements.length; x++) {
             var elem = $(gridElements[x]['*']);
             var active = true;
@@ -340,7 +342,22 @@ gridFilters = {
                         var flag = rx.test(gridElements[x][y].join(', '));
                         if (!flag) active = false;
                     } else if (type === 'select') {
-                        if (gridElements[x][y].indexOf(value) === -1) active = false;
+                    	if (isStats && gridElements[x]['counter'] instanceof Array) {
+	                    	var $e = $(elem).find("td.stat-type-damage")
+	                    	var orig = $e.data('origvalues') || $e.data('values')
+	                    	if (orig instanceof Array) {
+	                    		if (value === '+50% damage') {
+	                    			$e.attr('data-values', orig.map(function(v) { return v * 1.5 }) )
+	                    			$e.text(orig[upgrade] * 1.5)
+	                    		} else {
+	                    			$e.attr('data-values', orig)
+	                    			$e.text(orig[upgrade])
+	                    		}
+	                    	}
+                    	}
+                    	if (value !== '+50% damage' && gridElements[x][y].indexOf(value) === -1) {
+                    		active = false;
+                    	}
                     }
                 }
             }

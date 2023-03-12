@@ -1,11 +1,11 @@
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:LevelCalculator.js
 function addLevelCalculator() { // Function for ensuring all the calculator's variables and functions stay within.
-    if (document.getElementById('LevelCalculator') !== null && document.getElementById('LevelCalculatorContainer') === null) {
+    if (document.getElementById('LevelCalculator') !== null) {
         console.log('[Level Calculator] [LOG]: ID located. Running script.');
         mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:Break_eternity.js&action=raw&ctype=text/javascript'); // Import Break Eternity.
         mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixesLong.js&action=raw&ctype=text/javascript'); // Import suffixes and suffixesLC arrays.
-
         // Create the calculator's user interface.
-        document.getElementById('LevelCalculator').innerHTML = "<div id='LevelCalculatorContainer'><div class='templatedesktop' style='text-align:center;padding:0.5em;width:80%;margin:auto'><span style='text-align:center;font-size:30px;color:#FFF'><img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1a/XP.png/revision/latest?cb=20221013231716' width='150'/> Level Calculator <img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1f/Cosmic.png/revision/latest?cb=20220704040837' width='150'/></span><div style='text-align:initial;padding:1em;background:initial;overflow:auto;float:left' class='templatedesktop'>Toggle Suffixes<br><button style='background:#FF0000' id='LCSuffixToggleButton'>Disabled</button></div><p>Current Level (<abbr id='LCCurrentLevelNotes' title='(n1) Default value: 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of 1e9.'>notes</abbr>): <input id='LCCurrentLevelInput' style='width:10%'/></p><p>Desired Level (<abbr id='LCGoalLevelNotes' title='(n1) Default value: Current Level + 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of 1e9.'>notes</abbr>): <input id='LCGoalLevelInput' style='width:10%'/></p><p>Current Realm (<abbr title='Default value: Normal Realm.'>notes</abbr>): <input id='LCCurrentRealmSlider' class='slider' type='range' value='0' min='0' max='3'/><br><small>Currently: <span id='LCCurrentRealmOutput'>?</span></small></p><br><p class='templatedesktop' style='border-left:initial;border-right:initial;border-radius:initial;padding:0.25em'>Result</p><p><button id='LCCalculateButton'>Calculate</button></p>At <span id='LCCurrentLevelTypeOutput'></span> <span id='LCCurrentLevelOutput'>?</span>, the requirement to reach <span id='LCGoalLevelTypeOutput'></span> <span id='LCGoalLevelOutput'>?</span> is:<br><span id='LCRequirementTypeOutput'></span> <span id='LCRequirementOutput'>?</span></table></div></div>";
+        document.getElementById('LevelCalculator').innerHTML = "<div id='LevelCalculatorContainer'><div class='templatedesktop' style='text-align:center;padding:0.5em;width:80%;margin:auto'><span style='text-align:center;font-size:30px;color:#FFF'><img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1a/XP.png/revision/latest?cb=20221013231716' width='150'/> Level Calculator <img src='https://static.wikia.nocookie.net/roblox-grass-cutting-incremental/images/1/1f/Cosmic.png/revision/latest?cb=20220704040837' width='150'/></span><div style='text-align:initial;padding:1em;background:initial;overflow:auto;float:left' class='templatedesktop'>Toggle Suffixes<br><button style='background:#FF0000' id='LCSuffixToggleButton'>Disabled</button></div><p>Current Level (<abbr id='LCCurrentLevelNotes' title='(n1) Default value: 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of 10,000,000.'>notes</abbr>): <input id='LCCurrentLevelInput' style='width:10%'/></p><p>Desired Level (<abbr id='LCGoalLevelNotes' title='(n1) Default value: Current Level + 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of 10,000,000.'>notes</abbr>): <input id='LCGoalLevelInput' style='width:10%'/></p><p>Current Realm (<abbr title='Default value: Normal Realm.'>notes</abbr>): <input id='LCCurrentRealmSlider' class='slider' type='range' value='0' min='0' max='3'/><br><small>Currently: <span id='LCCurrentRealmOutput'>?</span></small></p><br><p class='templatedesktop' style='border-left:initial;border-right:initial;border-radius:initial;padding:0.25em'>Result</p><p><button id='LCCalculateButton'>Calculate</button></p>At <span id='LCCurrentLevelTypeOutput'></span> <span id='LCCurrentLevelOutput'>?</span>, the requirement to reach <span id='LCGoalLevelTypeOutput'></span> <span id='LCGoalLevelOutput'>?</span> is:<br><span id='LCRequirementTypeOutput'></span> <span id='LCRequirementOutput'>?</span></table></div></div>";
 
         // Variable declarations.
         var decimals = 3; // Determines the maximum and fixed number of decimal digits for number output strings.
@@ -15,22 +15,6 @@ function addLevelCalculator() { // Function for ensuring all the calculator's va
         var currentLevel;
         var goalLevel;
         var realm;
-
-        // Function for updating suffix status and its respective toggle button based on localStorage data.
-        function updateSuffixStatus() {
-            if (window.localStorage.LevelCalculatorSuffixStatus === 'true') {
-                suffixStatus = true;
-                document.getElementById('LCSuffixToggleButton').setAttribute('style', 'background:#00FF00');
-                document.getElementById('LCSuffixToggleButton').innerHTML = 'Enabled';
-            } else {
-                suffixStatus = false;
-                document.getElementById('LCSuffixToggleButton').setAttribute('style', 'background:#FF0000');
-                document.getElementById('LCSuffixToggleButton').innerHTML = 'Disabled';
-            }
-            document.getElementById('LCCurrentLevelNotes').title = '(n1) Default value: 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of ' + notateInt(1e9) + '.';
-            document.getElementById('LCGoalLevelNotes').title = '(n1) Default value: Current Level + 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of ' + notateInt(1e9) + '.';
-        }
-        updateSuffixStatus();
 
         function toScientific(e) { // Ensure a user-inputted value is a scientific notation Decimal number.
             if (e.match(/[a-z]+/gi) !== null && suffixes[suffixesLC.indexOf(e.match(/[a-z]+/gi)[0].toLowerCase())] !== undefined) {
@@ -89,7 +73,6 @@ function addLevelCalculator() { // Function for ensuring all the calculator's va
                             extraZeroes = e.exponent % 3;
                         }
                         result = decimalMax(checkNoDecimal(e.mantissa * (10 ** extraZeroes)) % 10, 1) + 'e' + notateInt(checkNoDecimal(e.exponent)); // If suffix notation is enabled, return the input's mantissa converted to normal notation with its exponent converted to comma-separated numbers.
-                        console.log('testing: ' + result);
                         break;
                     default:
                         result = decimalMax(checkNoDecimal(e.mantissa) % 10, 1) + 'e' + notateInt(checkNoDecimal(e.exponent)); // Modification of the above: If the exponent is less than 1e6, return the mantissa with a fixed decimal length plus the exponent with comma-separated numbers.
@@ -99,6 +82,22 @@ function addLevelCalculator() { // Function for ensuring all the calculator's va
             }
             return result;
         }
+
+        // Function for updating suffix status and its respective toggle button based on localStorage data.
+        function updateSuffixStatus() {
+            if (window.localStorage.LevelCalculatorSuffixStatus === 'true') {
+                suffixStatus = true;
+                document.getElementById('LCSuffixToggleButton').setAttribute('style', 'background:#00FF00');
+                document.getElementById('LCSuffixToggleButton').innerHTML = 'Enabled';
+            } else {
+                suffixStatus = false;
+                document.getElementById('LCSuffixToggleButton').setAttribute('style', 'background:#FF0000');
+                document.getElementById('LCSuffixToggleButton').innerHTML = 'Disabled';
+            }
+            document.getElementById('LCCurrentLevelNotes').title = '(n1) Default value: 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of ' + notateInt(1e7) + '.';
+            document.getElementById('LCGoalLevelNotes').title = '(n1) Default value: Current Level + 1. (n2) Values above 100,000 may cause performance issues. It is not recommended to exceed values of ' + notateInt(1e7) + '.';
+        }
+        updateSuffixStatus();
 
         function decimalMin(x, y) { // Return the lowest of two Decimal inputs.
             x = new Decimal(x);
@@ -250,7 +249,7 @@ function addLevelCalculator() { // Function for ensuring all the calculator's va
             window.localStorage.LevelCalculatorSuffixStatus = suffixStatus;
             updateSuffixStatus();
             document.getElementById('LCRequirementOutput').innerHTML = '<i>Calculating...</i>';
-            updateResult();
+            setTimeout(updateResult, 1);
         });
         document.getElementById('LCCalculateButton').addEventListener('click', function() {
             document.getElementById('LCRequirementOutput').innerHTML = '<i>Calculating...</i>';
@@ -258,7 +257,18 @@ function addLevelCalculator() { // Function for ensuring all the calculator's va
         });
 
     } else {
-        console.log('[Level Calculator] [LOG]: Failed to locate ID or calculator already exists. Cancelling script.');
+        console.log('[Level Calculator] [LOG]: Calculator already exists or the Break Eternity library was not imported. Cancelling script.');
     }
 }
-addLevelCalculator();
+if (document.getElementById('LevelCalculator') !== null) {
+    const addLevelCalculatorInterval = setInterval(function() {
+        try {
+            addLevelCalculator();
+            new Decimal();
+            clearInterval(addLevelCalculatorInterval);
+        } catch (err) {}
+    }, 100);
+} else {
+    console.log('[Level Calculator] [LOG]: Failed to locate ID. Cancelling script.');
+}
+// Created by User:TheSeal27 for the Roblox Grass Cutting Incremental Wiki on Fandom. Original page: https://roblox-grass-cutting-incremental.fandom.com/wiki/MediaWiki:LevelCalculator.js

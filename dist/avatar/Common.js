@@ -1,13 +1,7 @@
-/* BHM toolbar advertisement */
-var toolbarLabel = 'BHM';
+/* WHM toolbar advertisement */
+var toolbarLabel = 'WHM';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomBHMblog-toolbar', label: 'Fandom blog'},
-    {link: 'https://avatar.fandom.com/f/p/4400000000000417353', label: 'Discussion post'},
-    {link: 'https://avatar.fandom.com/f/p/4400000000000417412', label: 'Editing project'},
-    {link: 'https://bit.ly/FandomBHMMillerStory', label: 'Editor Story: Meet Miller'},
-    {link: 'https://bit.ly/FandomBHMTimeline', label: 'BHM Entertainment Timeline'},
-    {link: 'https://bit.ly/FandomBHMInevitablyDope', label: 'Content Creator: Meet Inevitably Dope'},
-    {link: 'https://bit.ly/FandomBHMRecap', label: 'Blog: BHM at Fandom recap'},
+    {link: 'https://community.fandom.com/wiki/User_blog:Jpearson/Embrace_Equity_with_Fandom_this_Women\’s_History_Month', label: 'Fandom blog'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );
@@ -28,14 +22,14 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* BHM logo link */
+/* WHM logo link */
 $('.fandom-community-header__image').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Click here to learn more about Black History Month at Fandom.')
+            .text('Click here to learn more about Women\'s History Month at Fandom.')
         )
-        .attr('href', 'https://bit.ly/FandomBHMblog-logo')
+        .attr('href', 'https://community.fandom.com/wiki/User_blog:Jpearson/Embrace_Equity_with_Fandom_this_Women\’s_History_Month')
 );
 
 /* To replace the now dead "welcome bot" */

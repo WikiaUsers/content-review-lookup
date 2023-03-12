@@ -86,12 +86,11 @@ UserTagsJS.modules.custom = {
 	/* Admins */
 	/* Mini-Admins */
 	'A random student': ['head', 'hc-jc', 'ec-member'],
+	'Ŝenezala': ['miniadmin'],
 	/* Content Mods */
 	'GalaxE': [],
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member', 'head'],
 	/* Discussion Mods */
-	'KawaiiKunWolf': ['head', 'ec-sc', 'vc-jc', 'hc-member'],
-	'AoiRyugokuTSFG1': ['ec-member' ],
 	/* Rollbacks */
 	/* Chat Mods */
 	'SeiShii': ['chatmoderator', 'head', 'ec-member'],
@@ -107,6 +106,7 @@ UserTagsJS.modules.custom = {
 	'Ekhinyu': ['former-bureaucrat'],
 	/* Former Admins */
 	/* Former Mini-Admins */
+	'AoiRyugokuTSFG1': ['former-miniadmin' ],
 	/* Former Content Mods */
 	'Travid117': ['former-contentmod'],
 	/* Former Rollbacks */
@@ -117,6 +117,7 @@ UserTagsJS.modules.custom = {
 	'Tatsuya420': ['former-rollback'],
 	/* Former Discussion Mods */
 	'Grapeleaf Skeletonizer': ['former-discussionmod'],
+	'KawaiiKunWolf': ['former-discussionmod'],
 	/* Former Chat Mods */
 	'Rgis': ['former-chatmod'],
 	'EwImTrash': ['former-chatmod'],
@@ -226,13 +227,14 @@ window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Head Bureaucrat',
         'A_random_student': 'Head Mini-Admin',
-        'AoiRyugokuTSFG1': 'Mini-Admin',
+        'Ŝenezala': 'Mini-Admin',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GalaxE': 'Content Mod',
         'SeiShii': 'Head Chat Mod',
         'GhoulGirls90': 'Head Helper',
         'Littleslinky': 'Helper',
-        'UltimateGamer899': 'Helper',
+        'IDontKnowAName3': 'Helper',
+        'WakeTheDead17': 'Helper',
         'Keter_Delinquent': 'Helper',
         'Placeholder': 'Intern',
     }
@@ -250,14 +252,6 @@ window.MarkForDeletion = {
     replace: true
 };
 
-//RailWAM
-window.railWAM = {
-     logPage: 'Project:WAM Log',
-     loadOnPage: ['Special:WikiActivity', 'Project:WAM Log'],
-     showToAnons: 'false',
-     loadOnNamespace: 4
-};
-
 //Import for Content Staff
 if (mw.config.get('wgUserGroups').includes('rollback') || 
     mw.config.get('wgUserGroups').includes('content-moderator') || 
@@ -267,7 +261,6 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
         type: 'script',
         articles: [
             'u:dev:MediaWiki:MarkForDeletion/code.js',
-            //'u:dev:MediaWiki:CategoryRenameAuto-update/code.js', UCP status is unknown
         ]
     });
 }
@@ -283,12 +276,11 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
     });
 }
 //Import for all Staff
-if (mw.config.get('wgUserName').includes('GhoulGirls90') /*Intern*/ || 
-    mw.config.get('wgUserName').includes('VacantHelper1') /*Placeholder*/ || 
-    mw.config.get('wgUserName').includes('S0ul245Official') || 
-    mw.config.get('wgUserName').includes('RedLightningStrike')  || 
+if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ || 
+    mw.config.get('wgUserName').includes('WakeTheDead17') || 
+    mw.config.get('wgUserName').includes('IDontKnowAName3') || 
     mw.config.get('wgUserName').includes('Littleslinky') || 
-    mw.config.get('wgUserName').includes('MrCheeseTiger123') || 
+    mw.config.get('wgUserName').includes('GhoulGirls90') || 
     mw.config.get('wgUserName').includes('SeiShii') || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
@@ -299,7 +291,6 @@ if (mw.config.get('wgUserName').includes('GhoulGirls90') /*Intern*/ ||
     importArticles({
         type: 'script',
         articles: [
-            //'u:dev:MediaWiki:RCStats.js', UCP status is unknown
             //'u:dev:MediaWiki:RailWAM/code.js', WAM is not on UCP
         ]
     });

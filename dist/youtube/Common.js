@@ -81,13 +81,12 @@ mw.hook('dev.i18n').add(function (i18n) {
 importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
 
 // Set a timer for the subscriber button for 3 seconds, because the issue is that it loaded too fast
-const timeout = setTimeout(() => {
-  // Check if the script has been loaded
-  if (!window.yt) {
-    // If the script has not been loaded, throw an error or handle it accordingly
-    throw new Error("Loading error.");
-  }
-}, 3000);
+if ($( "body" ).hasClass( "ns-0" )) {
+  $(function() {
+    setTimeout( function() { mw.loader.load('https://apis.google.com/js/platform.js') },
+    1000)
+  });
+}
 
 // Load the script using mw.loader.load
 mw.loader.load("yt/platform.js", "text/javascript", () => {

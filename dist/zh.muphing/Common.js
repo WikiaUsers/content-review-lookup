@@ -1,5 +1,18 @@
 /* 此處內容將用於所有用戶載入的每個頁面。 */
 
+/* 訊息框 */
+mw.hook("wikipage.collapsibleContent").add(function () {
+    document.querySelectorAll(".mbox.mw-made-collapsible>.mw-collapsible-toggle, .multi-mbox.mw-made-collapsible>.mw-collapsible-toggle").forEach(function (toggle) {
+        changeTitle({ target: toggle });
+        toggle.removeEventListener('click', changeTitle);
+        toggle.addEventListener('click', changeTitle);
+    });
+    function changeTitle(e) {
+        const toggle = e.target;
+        toggle.title = toggle.querySelector(':scope>.mw-collapsible-text').innerHTML;
+    }
+});
+
 /* 多重訊息框 */
 $(function () {
     const collapsibleContentMbox = document.querySelectorAll(".multi-mbox>.mw-collapsible-content>.mbox.mw-collapsible");

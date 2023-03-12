@@ -537,6 +537,16 @@
             scripts: 'MediaWiki:Ripple.js'
         },
         
+        RoundedDesign: {
+            page: 'RoundedDesign',
+            styles: 'MediaWiki:RoundedDesign.css'
+        },
+        
+        SpoilerAlert: {
+        	page: 'SpoilerAlert/Demo',
+        	styles: 'MediaWiki:SpoilerAlert/code.js'
+        },
+        
         SpoilerBlur: {
         	page: 'SpoilerBlur',
         	styles: 'MediaWiki:SpoilerBlur.css'

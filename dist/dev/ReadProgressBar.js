@@ -8,63 +8,66 @@
 */
 
 ;(function(mw) {
-    'use strict';
+	'use strict';
 
-    // Get user name and namespace ID.
-    // If a username is returned, it means that the user is in a user's blog
-    // list page, in which the progress bar won't appear.
-    // If the namespace ID is not the same as the blogs or articles, add the
-    // progress bar (on the later it's also required to manually enable it
-    // with window.enableReadProgressBarOnArticles = true).
-    // We also add a double-run protection on the same if statement.
-    const config = mw.config.get(['profileUserName', 'wgNamespaceNumber']);
+	// Get user name and namespace ID.
+	// If a username is returned, it means that the user is in a user's blog
+	// list page, in which the progress bar won't appear.
+	// If the namespace ID is not the same as the blogs or articles, add the
+	// progress bar (on the later it's also required to manually enable it
+	// with window.enableReadProgressBarOnArticles = true).
+	// We also add a double-run protection on the same if statement.
+	const config = mw.config.get(['profileUserName', 'wgNamespaceNumber']);
 
-    if ((config.wgNamespaceNumber === 500 && !config.profileUserName ||
-         config.wgNamespaceNumber === 0 && window.enableReadProgressBarOnArticles) &&
-         !window.progressBarLoaded) {
-        progressBarInit();
-    }
+	if ((config.wgNamespaceNumber === 500 && !config.profileUserName ||
+		config.wgNamespaceNumber === 0 && window.enableReadProgressBarOnArticles) &&
+		!window.progressBarLoaded) {
+		progressBarInit();
+	}
 
 	function progressBarInit() {
 
-	    // Double-run protection.
-	    window.progressBarLoaded = true;
+		// Double-run protection.
+		window.progressBarLoaded = true;
 
-	    importArticle({ article: 'u:dev:MediaWiki:ReadProgressBar.css' });
+		importArticle({ article: 'u:dev:MediaWiki:ReadProgressBar.css' });
 
-	    // Get article elements to get their height and create progress bar.
-	    const navBar = document.querySelector('.fandom-sticky-header'),
-	          pageHeader = document.querySelector('.page-header'),
-	          siteHeader = document.querySelector('.community-header-wrapper'),
-	          articleWrapper = document.getElementById('content'),
-	          progressBarWrapper = document.createElement('div'),
-	          progressBar = document.createElement('div');
-	    progressBarWrapper.classList.add('article-progress-bar');
-	    progressBar.classList.add('article-progress-bar__indicator');
-	    navBar.appendChild(progressBarWrapper);
-	    progressBarWrapper.appendChild(progressBar);
+		// Get article elements to get their height and create progress bar.
+		const navBar = document.querySelector('.fandom-sticky-header'),
+			  pageHeader = document.querySelector('.page-header'),
+			  siteHeader = document.querySelector('.community-header-wrapper'),
+			  articleWrapper = document.getElementById('content'),
+			  progressBarWrapper = document.createElement('div'),
+			  progressBar = document.createElement('div'),
+			  barDirection = document.documentElement.getAttribute('dir') || 'ltr',
+			  barPosMin = barDirection === 'ltr' ? -100 : 0,
+			  barPosMax = barDirection === 'ltr' ? 0 : 100;
+		progressBarWrapper.classList.add('article-progress-bar');
+		progressBar.classList.add('article-progress-bar__indicator');
+		navBar.appendChild(progressBarWrapper);
+		progressBarWrapper.appendChild(progressBar);
 
-	    // Get height of the article and use it along with the user's Y position to
-	    // calculate the scrollbar's X position. Once the scrollbar's X position is
-	    // greater than 100%, hide it behind the global nav bar; otherwise show it.
-	    function scrolledProgressBar() {
-	        var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
-	            percentage = window.pageYOffset / articleHeight * 100;
-	        progressBar.style.transform = 'translateX(' + (percentage - 100) + '%)',
-	        percentage >= 100 ? hideProgressBar() : showProgressBar();
-	    }
+		// Get height of the article and use it along with the user's Y position
+		// to calculate the scrollbar's X position. Once the scrollbar's X
+		// position is greater than 100% (in ltr view) or less than 0% (in rtl
+		// view), hide it behind the global nav bar; otherwise show it.
+		function scrolledProgressBar() {
+			var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
+				percentage = window.pageYOffset / articleHeight * 100;
+			progressBar.style.transform = 'translateX(clamp(' + barPosMin + '%, ' + (barDirection === 'ltr' ? percentage - 100 : -percentage + 100) + '%, ' + barPosMax + '%)',
+			percentage >= 100 ? hideProgressBar() : showProgressBar();
+		}
 
-	    function hideProgressBar() {
-	        progressBarWrapper.classList.add('hide');
-	        progressBar.style.transform = 'translateX(0%)';
-	    }
+		function hideProgressBar() {
+			progressBarWrapper.classList.add('hide');
+		}
 
-	    function showProgressBar() {
-	        progressBarWrapper.classList.remove('hide');
-	    }
+		function showProgressBar() {
+			progressBarWrapper.classList.remove('hide');
+		}
 
-	    ['scroll', 'resize'].forEach(function(event) {
-	        window.addEventListener(event, scrolledProgressBar, { passive: true }, false);
-	    });
-    }
+		['scroll', 'resize'].forEach(function(event) {
+			window.addEventListener(event, scrolledProgressBar, { passive: true }, false);
+		});
+	}
 }(window.mediaWiki));

@@ -10,36 +10,54 @@
 (function(window, $, mw){
 	"use strict";
 	
-	const __NAME__ = "WikiActivity";
-	const __VERSION__ = "v1.1a";
-	const __OPTIONS__ = $.extend({}, window.wikiActivityOptions, window.rwaOptions);
-	const __DEPS__ = Object.freeze([
-		"mediawiki.Title",
-		"mediawiki.api",
-		"mediawiki.Uri",
-		"skin.fandomdesktop.rail.toggle.js"
-	]);
+	const options = $.extend(
+		{}, 
+		window.waOptions,
+		window.rwaOptions,
+		window.wikiActivityOptions
+	);
+	
+	if (options.disabled || window.WikiActivity) return;
 	
 	window.dev = $.extend({}, window.dev);
 	window.UCP = $.extend({}, window.UCP);
 	
+	function partition(array, fn, ctx) {
+		if (typeof fn !== "function") return array;
+		return [array.filter(fn, ctx), array.filter(function(value, index, arr) {
+			return !fn.apply(this, [value, index, arr]);
+		}, ctx)];
+	}
+	
+	function pad(n) {
+		return (Math.abs(n) < 10) ? (n >= 0 ? "0" + n : "-0" + Math.abs(n)) : n;
+	}
+	
+	function regesc(s) {
+		return s.replace( /[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&" );
+	}
+	
+	function truncate(s, l) {
+		return (s.length < l) ? s : s.substring(0, l).replace(/.$/gi, "...");
+	}
+	
 	window.WikiActivity = {
 		__NAME__: "WikiActivity",
 		__VERSION__: "v1.1a",
-		__DEPS__: Object.freeze([
-			"mediawiki.Title",
-			"mediawiki.api",
-			"mediawiki.Uri",
-			"skin.fandomdesktop.rail.toggle.js"
-		]),
 		__DEFAULTS__: Object.freeze({
 			include: [],
 			exclude: [],
-			botEdits: false,
-			minorEdits: false,
-			anonEdits: false,
+			flags: { 
+				bot: false, 
+				minor: false, 
+				anon: false, 
+				viewReported: false 
+			},
 			loadRail: false,
-			limit: 50
+			limit: 50,
+			headerLink: false,
+			theme: "default",
+			delay: 1250
 		}),
 		namespaces: Object.freeze([
 			0, // Main/Article namespace
@@ -66,9 +84,16 @@
 		]),
 		subpageCategories: Object.freeze([
 			"main",
+			"recentchanges",
 			"watchlist",
 			"feeds",
 			"media"
+		]),
+		subpageAliases: new Map([
+			["recentchanges", ["rc", "r"]],
+			["watchlist", ["following", "wl", "followed"]],
+			["feeds", ["f", "d", "social", "discussions"]],
+			["media", "m"]
 		]),
 		iconNames: new Map([
 			["pencil", "edit"],
@@ -85,26 +110,249 @@
 			["feeds", ["discussions", "discussion", "d", "f"]],
 			["media", ["image", "video"]]
 		]),
-		localScripts: new Set([
-			"User:" + mw.config.get("wgUserName") + "/wikiactivity.js",
-			"MediaWiki:Fandomdesktop.js/wikiactivity.js"
+		resources: Object.freeze({
+			deps: new Set([
+				"mediawiki.Title",
+				"mediawiki.api",
+				"mediawiki.Uri",
+				"skin.fandomdesktop.rail.toggle.js"
+			]),
+			scripts: new Set([
+				"User:" + mw.config.get("wgUserName") + "/wikiactivity.js",
+				"MediaWiki:Fandomdesktop.js/wikiactivity.js",
+				{ flag: "canPhalanx", name: "MediaWiki:Fandomdesktop.js/wikiactivity-canPhalanx.js" },
+				{ flag: "canBlock", name: "MediaWiki:Fandomdesktop.js/wikiactivity-admin.js" },
+				{ hook: "dev.i18n", name: "MediaWiki:I18n-js/code.js" },
+				{ hook: "dev.colors", name: "MediaWiki:Colors/code.js" },
+				{ hook: "dev.wds", name: "MediaWiki:WDSIcons/code.js" },
+				{ hook: "doru.ui", name: "MediaWiki:Dorui.js" }
+			]),
+			stylesheets: new Set([
+				"u:dev:MediaWiki:WikiActivity.css",
+				"User:" + mw.config.get("wgUserName") + "/wikiactivity.css",
+				"MediaWiki:Fandomdesktop.css/wikiactivity.css"
+			])
+		}),
+		userConstraints: new Map([
+			["isStaff", Object.freeze({ 
+				userGroups: "staff" 
+			})],
+			["canPhalanx", Object.freeze({ 
+				userGroups: Object.freeze([
+					"helper", 
+					"soap", 
+					"wiki-specialist", 
+					"wiki-representative"
+				]),
+				include: "staff"
+			})],
+			["canBlock", Object.freeze({
+				userGroups: Object.freeze([
+					"global-discussions-moderator",
+					"sysop"
+				]),
+				include: "canPhalanx"
+			})],
+			["isMod", Object.freeze({
+				userGroups: Object.freeze([
+					"discussions-moderator",
+					"forummoderator"
+				]),
+				include: "canBlock"
+			})],
+			["canRollback", Object.freeze({
+				userGroups: "rollback",
+				include: "isMod"
+			})],
+			["canPatrol", Object.freeze({
+				userGroups: "patroller",
+				include: "isMod"
+			})]
 		]),
-		devScripts: new Map([
-			["dev.i18n", "MediaWiki:I18n-js/code.js"],
-			["dev.colors", "MediaWiki:Colors/code.js"],
-			["dev.wds", "MediaWiki:WDSIcons/code.js"],
-			["doru.ui", "MediaWiki:Dorui.js"]
+		replacers: new Map([
+			[/\[\[([^\[\]\|]+)\|([^\[\]]+)\]\]/g, function(_, title, text) { 
+				return this.ui.a({
+					href: mw.util.getUrl(title),
+					text: text
+				}).outerHTML;
+			}],
+			[/\[\[([^\[\]]+)\]\]/g, function(_, title) {
+				return this.ui.a({
+					href: mw.util.getUrl(title),
+					text: title
+				}).outerHTML;
+			}]
 		]),
-		stylesheets: new Set([
-			"u:dev:MediaWiki:WikiActivity.css",
-			"User:" + mw.config.get("wgUserName") + "/wikiactivity.css",
-			"MediaWiki:Fandomdesktop.css/wikiactivity.css"
-		]),
-		isMemberOfGroup: function( group ) {
-			
+		isMemberOfGroup: function(group) {
+			return this.wgUserGroups.includes(group);
 		},
-		isMember: function( groupOrGroups ) {
+		isMember: function(groupOrGroups) {
+			if (typeof groupOrGroups === "string")
+				return this.isMemberOfGroup(groupOrGroups);
+			if (groupOrGroups instanceof Set)
+				groupOrGroups = Array.from(groupOrGroups);
+			return groupOrGroups.some(this.isMemberOfGroup, this);
+		},
+		matches: function(flag) {
+			if (!this.userConstraints.has(flag)) return false;
+			const restriction = this.userConstraints.get(flag);
+			const userGroups = restriction.userGroups;
 			
+			const include = restriction.include || null;
+			const exclude = restriction.exclude || null;
+			
+			if (this.isMember(userGroups)) return true;
+			if (exclude && this.matches(exclude)) return false;
+			if (include && this.matches(include)) return true;
+			
+			return false;
+		},
+		hook: function(hookIDs) {
+			if (typeof hookIDs === "string")
+				return mw.hook(hookIDs);
+			if (hookIDs instanceof Set)
+				hookIDs = Array.from(hookIDs);
+			
+			var hooks = hookIDs.map(function(hookID){
+				return mw.hook(hookID);
+			});
+			
+			const fns = Object.freeze(["add", "remove", "fire"]);
+			
+			function performHookCallback(name, obj) {
+				return fns.include(name) ? function() {
+					const a = Array.from(arguments);
+					hooks = hooks.map(function(hook){
+						return hook[name](a);
+					});
+					return handlers;
+				} : function( ) { return handlers };
+			}
+			
+			const handlers = fns.reduce(function(obj, key){
+				obj[key] = performHookCallback(key);
+				return obj;
+			}, {});
+			
+			return handlers;
+		},
+		setup: function() { 
+			this.hook(["wikiactivity.beforeload", "wa.beforeload"])
+				.fire(this);
+				
+			this.loadDeps()
+				.then(this.loadScripts.bind(this))
+				.then(this.loadResources.bind(this))
+				.then(this.init.bind(this));
+		},
+		loadDeps: function() {
+			return mw.loader.using(this.__DEPS__);
+		},
+		isLocalScript: function(resource) {
+			const resourceName = typeof resource !== "string" ?
+				resource.name :
+				resource;
+			
+			return /^u:dev:/i.test(resourceName);
+		},
+		checkResource: function(resource) {
+			return resource.flag ? 
+				this.matches(resource.flag) :
+				true;
+		},
+		initPromiseFromScript: function(hook, script) {
+			return (function(resolve, reject) {
+				const scriptName = typeof item === "string" ?
+					item : script.name;
+				
+				if (!this.checkResource(item)) return resolve();
+				
+				const params = Object.freeze({
+					type: "script",
+					article: scriptName
+				});
+				
+				importArticle(params)
+					.then(function(){ mw.hook(hook).add(resolve); })
+					["catch"](reject);
+			}).bind(this);
+		},
+		loadResources: function() {
+			const localStylesheets = Array.from(this.resources.stylesheets)
+				.filter(function(item) { 
+					return this.checkResource(item);
+				}, this);
+				
+			const scripts = partition(
+				Array.from(this.resources.scripts), 
+				function(item){ return this.isLocalScript(item) }, 
+				this
+			);
+			
+			const localScripts = scripts[0].filter(function(item) {
+				return this.checkResource(item);	
+			}, this);
+			
+			const devScripts = scripts[1].filter(function(item) {
+				return this.checkResource(item);
+			}, this);
+			
+			const promises = [window.importArticle({
+				type: "style",
+				articles: localStylesheets
+			}, {
+				type: "script",
+				articles: localScripts
+			})];
+			
+			devScripts.forEach(function(item){
+				promises.push(this.initPromiseFromScript(script));
+			}, this);
+			
+			return Promise.all(promises);
+		},
+		init: function(resources) {
+			this.i18no = resources[1];
+			this.colors = resources[2];
+			this.wds = resources[3];
+			this.ui = resources[4];
+			
+			this.hook(["wa.init", "wikiactivity.init"]).fire(this);
+			
+			this.i18no.loadMessages(this.__NAME__)
+				.then(this.start.bind(this));
+		},
+		start: function(i18n) {
+			this.i18n = i18n;
+			this.hook(["wa.msg.load", "wikiactivity.msg.load"])
+				.fire(this);
+				
+			return this.matchesPage() ? this.initActivity() : this.fallback();
+		},
+		msg: function() {
+			const args = Array.from(arguments);
+			const options = args.at(-1);
+			
+			if (typeof options === "string") {
+				return this.i18n.msg.apply(this.i18n, args);
+			}
+			
+			const target = options.fromContentLang ?
+				this.i18n.inContentLang() :
+				this.i18n;
+				
+			return target.msg.apply(this.i18n, args.slice(0, -1));
+		},
+		matchesPage: function() {
+			if (!this.i18n) return false;
+			
+			const title = this.msg("page-title", { 
+				fromContentLang: true
+			}).plain();
+			
+			if (this.mwc.wgNamespaceNumber !== -1) return false;
+			
+			const parts = this.mwc.wgTitle.split("/");
 		}
 	};
 }(window, jQuery, mediawiki));
