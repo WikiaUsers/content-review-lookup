@@ -120,6 +120,17 @@
 			ctx.imageSmoothingEnabled = false;
 			return c;
 		},
+		seperatePath: function(path) {
+			var a = path.split("/");
+			if (a.length == 1)
+				a[1] = a[0].substring(a[0].indexOf(":") + 1);
+			return {
+				full: path.substring(path.indexOf(":") + 1),
+				module: a[0].substring(a[0].indexOf(":") + 1),
+				name: a[a.length - 1],
+				all: a
+			};
+		},
 		filepath: function(name) {
 			if (window.hex_md5) {
 				const hash = window.hex_md5(name);

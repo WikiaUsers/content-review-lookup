@@ -20,9 +20,9 @@ window.MessageWallUserTags = {
     // mod (wiki moderator)
     // rollback (active editor)
     
-        'HelloSummerMemee': 'wiki founder',
+        'Thefishman4563': 'wiki founder',
         'Raz Mail': 'wiki admin',
-        'MatteoLynx': 'active editor' //rollbacker
+        'Soda.tbh': 'mod'
     }
 };
 

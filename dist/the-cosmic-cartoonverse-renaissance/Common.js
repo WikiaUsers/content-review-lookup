@@ -16,3 +16,9 @@ importArticles({
         'u:dev:MediaWiki:WikiActivity.js',
     ]
 });
+
+$(function() {
+    if(mw.config.get('wgUserName')) {
+        $('.insertusername').html(mw.config.get('wgUserName'));
+    }
+});

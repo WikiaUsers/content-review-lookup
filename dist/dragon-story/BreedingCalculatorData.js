@@ -1944,6 +1944,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "auldlang": {
+                "name": "Auld Lang",
+                "types": [
+                    "holiday",
+                    "black",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "auntie": {
                 "name": "Auntie",
                 "types": [
@@ -12753,6 +12770,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "generous": {
+                "name": "Generous",
+                "types": [
+                    "holiday",
+                    "purple",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "purple"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
+            },
             "genie": {
                 "name": "Genie",
                 "types": [
@@ -23174,6 +23218,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "nippy": {
+                "name": "Nippy",
+                "types": [
+                    "holiday",
+                    "blue",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "nivean": {
                 "name": "Nivean",
                 "types": [
@@ -25294,6 +25355,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "pious": {
+                "name": "Pious",
+                "types": [
+                    "diamond",
+                    "white",
+                    "blue"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
+                ]
+            },
             "pirate": {
                 "name": "Pirate",
                 "types": [
@@ -25971,6 +26049,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                             ]
                         ]
                     ]
+                ]
+            },
+            "prancer": {
+                "name": "Prancer",
+                "types": [
+                    "holiday",
+                    "pink",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
                 ]
             },
             "prankster": {

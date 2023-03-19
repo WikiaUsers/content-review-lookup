@@ -141,7 +141,7 @@ function addWikifButton() {
 }
 if (wgAction == 'edit' || wgAction == 'submit') {
         importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
+        $(addWikifButton)
 }
  
 // ============================================================
@@ -184,32 +184,3 @@ function infoboxToggle() {
 		storage.setItem('infoboxshow-' + page, nowShown);
 	}
 }
- 
-
-function addWikifButton() {
-        var toolbar = document.getElementById('toolbar')
-        if (!toolbar) return
-        var i = document.createElement('img')
-        i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png'
-        i.alt = i.title = 'викификатор'
-        i.onclick = Wikify
-        i.style.cursor = 'pointer'
-        toolbar.appendChild(i)
-}
-if (wgAction == 'edit' || wgAction == 'submit') {
-        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
-}
-
-
-/* Часы */
-
-window.DisplayClockJS = '%2H:%2M:%2S %2d %{ЯНВ;ФЕВ;МАР;АПР;МАЙ;ИЮН;ИЮЛ;АВГ;СЕН;ОКТ;НОЯ;ДЕК}m %Y (UTC)';
-importArticles({
-	type: 'script',
-	articles: [
-		// ...
-		'u:dev:DisplayClock/code.js',
-		// ...
-	]
-});

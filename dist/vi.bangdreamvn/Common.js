@@ -87,8 +87,8 @@ $(jstzConvertAll);
 
 /* AddRailModule on top */
 window.AddRailModule = [
-    {page: 'Bản mẫu:RailModule', prepend: true},
-    {page: 'Bản mẫu:Events', prepend: true}
+    {page: 'Template:RailModule', prepend: true},
+    {page: 'Template:Events', prepend: true}
 ];
 
 /* Discord Banner */

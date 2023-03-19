@@ -76,3 +76,35 @@ mw.hook( 'wikipage.content' ).add( function() {
 		} );
 	} );
 } );
+
+/**
+ * Dodaje hook wykonywany po załadowaniu prawego panelu
+ * Potrzebny do skryptów osadzanych w treści prawego panelu wiki
+ */
+;( function() {
+	// Prawy panel nie istnieje, zakończ
+	if (
+		!document.querySelector( '.page__right-rail' ) ||
+		window.rightRailHookLoaded
+	) {
+		return;
+	}
+	window.rightRailHookLoaded = true;
+
+	// Zarejestruj interwał nasłuchujący istnienia panelu co 100ms
+	const rightRailInterval = setInterval( function() {
+		// Panel został załadowany
+		if ( !document.querySelector( '.sticky-modules-wrapper' ) ) {
+			return;
+		}
+
+		// Usuń interwał
+		clearInterval( rightRailInterval );
+
+		// Wykonaj hook
+		mw.hook( 'custom.rightRail.loaded' ).fire(
+			// Zwróć callback z zawartością panelu
+			document.querySelector( '.right-rail-wrapper' )
+		);
+	}, 100 );
+} )();

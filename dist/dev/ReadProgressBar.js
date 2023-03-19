@@ -42,6 +42,8 @@
 			  barDirection = document.documentElement.getAttribute('dir') || 'ltr',
 			  barPosMin = barDirection === 'ltr' ? -100 : 0,
 			  barPosMax = barDirection === 'ltr' ? 0 : 100;
+        var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
+            percentage = 0;
 		progressBarWrapper.classList.add('article-progress-bar');
 		progressBar.classList.add('article-progress-bar__indicator');
 		navBar.appendChild(progressBarWrapper);
@@ -51,12 +53,45 @@
 		// to calculate the scrollbar's X position. Once the scrollbar's X
 		// position is greater than 100% (in ltr view) or less than 0% (in rtl
 		// view), hide it behind the global nav bar; otherwise show it.
-		function scrolledProgressBar() {
-			var articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight,
-				percentage = window.pageYOffset / articleHeight * 100;
-			progressBar.style.transform = 'translateX(clamp(' + barPosMin + '%, ' + (barDirection === 'ltr' ? percentage - 100 : -percentage + 100) + '%, ' + barPosMax + '%)',
-			percentage >= 100 ? hideProgressBar() : showProgressBar();
-		}
+		function scrolledProgressBarLTR() {
+            percentage = window.pageYOffset / articleHeight * 100;
+            progressBar.style.transform = 'translateX(clamp(' + barPosMin + '%, ' + (percentage - 100) + '%, ' + barPosMax + '%)';
+        }
+
+        function scrolledProgressBarRTL() {
+            percentage = window.pageYOffset / articleHeight * 100;
+            progressBar.style.transform = 'translateX(clamp(' + barPosMin + '%, ' + (-percentage + 100) + '%, ' + barPosMax + '%)';
+        }
+
+        // Hide progress bar when article is not on view (aka. when scroll
+        // percentage would be around or more than 100%) by using an intersection
+        // observer so (IO) we don't have to check every scroll event if the
+        // progress bar should be hidden or re-displayed.
+        function handleProgressBarVisibility() {
+            attachViewportObserver(articleWrapper);
+
+        	function attachViewportObserver(elem) {
+        		var observerConfig = {
+        			// Use the viewport as the observer.
+        			root: null,
+                    // Trigger intersection handler when scrolled past
+                    // (100% - 60px) the article.
+                    rootMargin: '-60px 0px 0px 0px'
+        		};
+
+        		var observer = new IntersectionObserver(function (e) {
+        			e.forEach(function (e) {
+        				// If the element is on view, trigger a function that
+        				// makes it visible.
+        				e.isIntersecting && showProgressBar();
+        				// Otherwise, hide it.
+        				!e.isIntersecting && hideProgressBar();
+        			});
+        		}, observerConfig);
+
+        		observer.observe(elem);
+        	}
+        }
 
 		function hideProgressBar() {
 			progressBarWrapper.classList.add('hide');
@@ -66,8 +101,22 @@
 			progressBarWrapper.classList.remove('hide');
 		}
 
-		['scroll', 'resize'].forEach(function(event) {
-			window.addEventListener(event, scrolledProgressBar, { passive: true }, false);
-		});
+        function updateArticleHeight() {
+            articleHeight = articleWrapper.clientHeight + pageHeader.clientHeight + siteHeader.clientHeight;
+        }
+
+		if (barDirection === 'rtl') {
+            ['scroll', 'resize'].forEach(function(event) {
+                window.addEventListener(event, scrolledProgressBarRTL, { passive: true });
+            });
+        } else {
+            ['scroll', 'resize'].forEach(function(event) {
+                window.addEventListener(event, scrolledProgressBarLTR, { passive: true });
+            });
+        }
+
+        window.addEventListener('resize', updateArticleHeight);
+
+        handleProgressBarVisibility();
 	}
 }(window.mediaWiki));

@@ -31,12 +31,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             stdmsgs = ['filedesc', 'license-header', 'fileexists-no-change', 'fileexists-duplicate-version', 'verification-error', 'fileexists-shared-forbidden', 'permissiondenied', 'watchthisupload', 'ignorewarnings', 'filewasdeleted'].join('|'),
             limit = (window.MultiUploadoption && window.MultiUploadoption.max) ? window.MultiUploadoption.max : -1,
             defaultlicense = (window.MultiUploadoption && window.MultiUploadoption.defaultlicense) ? window.MultiUploadoption.defaultlicense : '',
-            curFile = 0
-            ;
+            curFile = 0;
 
         function preload() {
             if (--preloads === 0) {
-                window.dev.i18n.loadMessages('MultiUpload').then(init);
+                window.dev.i18n.loadMessages('MultiUpload').done(init);
             }
         }
 
@@ -46,11 +45,11 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
 
             getMessages();
             $("#wpUploadFile").parent().parent().addClass("regularFileSelect");
-            $("tr.regularFileSelect").after('<tr class="multipleFileSelect"><td class="mw-label">&nbsp</td><td class="mw-input"><input type="file" id="multiupload" multiple /></td></tr>');
+            $("tr.regularFileSelect").after('<tr class="multipleFileSelect"><td class="mw-label">&nbsp;</td><td class="mw-input"><input type="file" id="multiupload" multiple /></td></tr>');
             $("#mw-htmlform-source > tbody > tr.mw-htmlform-field-UploadSourceField.regularFileSelect").remove();
-            $("#mw-upload-form > fieldset:nth-child(3)").remove();
+            $("#mw-upload-form > fieldset:nth-of-type(3)").remove();
             $("#mw-upload-form > span > input.mw-htmlform-submit").remove();
-            $("#mw-upload-form > fieldset:nth-child(2)").hide();
+            $("#mw-upload-form > fieldset:nth-of-type(2)").hide();
             $("span.mw-htmlform-submit-buttons").append('<input type="button" value="' + i18n.msg('uploadfiles').escape() + '" class="multipleFileSelect" id="multiFileSubmit" />');
             $("span.mw-htmlform-submit-buttons").append('<input type="button" value="' + i18n.msg('reset').escape() + '" class="multipleFileSelect" id="multiFileReset" />');
             $("#multiupload").change(addFields);
@@ -89,7 +88,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             	var watchuploads = mw.user.options.get('watchuploads') == "1" ? 'checked=\"checked\"' : '';
                 for (var index = 0; index < files.length; index++) {
                     var element = files[index];
-                    var filedesc = $("#mw-upload-form > fieldset:nth-child(2)").clone();
+                    var filedesc = $("#mw-upload-form > fieldset:nth-of-type(2)").clone();
                     filedesc.attr("id", "file-" + index);
                     filedesc.children("legend").text(i18n.msg('imagename').escape() + (index + 1));
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextField > td.mw-label > label").attr("for", "wpDestFile" + index);
@@ -114,7 +113,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
         */
         function reset() {
             files = [];
-            $("#mw-upload-form > fieldset:nth-child(2) ~ fieldset").remove();
+            $("#mw-upload-form > fieldset:nth-of-type(2) ~ fieldset").remove();
         }
 
         /*
@@ -200,10 +199,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             });
         }
         mw.hook('dev.i18n').add(preload);
-        importArticles({
-            type: 'script',
-            articles: [
-                'u:dev:MediaWiki:I18n-js/code.js',
-            ]
-        });
+        importArticle({
+			type: 'script',
+			article: 'u:dev:MediaWiki:I18n-js/code.js'
+		});
 });

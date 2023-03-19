@@ -4,8 +4,13 @@
 	if (window.SpriteEditorModules.main && window.SpriteEditorModules.main.loaded) return;
 	window.SpriteEditorModules.main = {loaded: true};
 	var myData = window.SpriteEditorModules.main;
+	myData.blacklist = [
+		"animatesprite",
+		"sprite"
+	];
 	const config = mw.config.get([
 		'wgArticlePath',
+		'wgFormattedNamespaces',
 		'wgSiteName'
 	]);
 	var preloads = 2;
@@ -13,7 +18,7 @@
 	var root = document.getElementById('mw-content-text');
 	var sections = [];
 	var highestID = 0;
-	var loadedSpriteName = "";
+	var loadedSpriteName = {full: ''};
 	var sprites = [];
 	var buttons;
 	var imgEle;
@@ -180,7 +185,7 @@
 		if (a.settings.version) {
 			a.settings.version = "version=" + Date.now();
 		} else {
-			a.settings.url = "require( [[Module:Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName + ".png") + "', 'format=original&version=" + Date.now() + "', '" + loadedSpriteName.toLowerCase().substring(0, loadedSpriteName.length - 6) + "-sprite' ),";
+			a.settings.url = "require( [[" + config.wgFormattedNamespaces[828] + ":Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName.name + ".png") + "', 'format=original&version=" + Date.now() + "', '" + loadedSpriteName.module.toLowerCase().substring(0, loadedSpriteName.module.length - 6) + "-sprite' ),";
 		}
 		a.settings.sheetsize = options.spritesPerRow * (imgWidth + options.spacing) - options.spacing;
 		if (options.spacing > 0)
@@ -348,7 +353,7 @@
 			summary: summary,
 			tags: tag_active && tag_exists && has_tag_permission && "spriteeditor" || undefined,
 			text: "return " + data,
-			title: 'Module:' + loadedSpriteName,
+			title: 'Module:' + loadedSpriteName.full,
 			formatversion: 2
 		}).always(function(d) {
 			toggleTBButtons(has_edit_permission);
@@ -401,7 +406,7 @@
 		}
 		gIVars[0].toBlob(function(blob) {
 			api.upload(blob, {
-				filename: output.settings.image || loadedSpriteName + '.png',
+				filename: output.settings.image || loadedSpriteName.name + '.png',
 				comment: s,
 				formatversion: 2,
 				ignorewarnings: true
@@ -417,8 +422,8 @@
 		});
 	}
 	function updateTitle(changesMade) {
-		document.title = (loadedSpriteName.length && (loadedSpriteName + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
-		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.length && (" – " + loadedSpriteName + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
+		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
+		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.full.length && (" – " + loadedSpriteName.name + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
 	}
 	function addHistory(data) {
 		if (history.length > historyPos) {
@@ -1434,7 +1439,7 @@
 				processData: processData,
 				generateJSON: generateJSON,
 				generateImage: generateImage,
-				title: loadedSpriteName
+				loaded: loadedSpriteName
 			});
 			window.SpriteEditorModules.sorting.setSharedData({
 				addHistory: addHistory
@@ -1445,7 +1450,7 @@
 				imgSpacingOrg: imgSpacingOrg,
 				options: options,
 				spriteData: output,
-				title: loadedSpriteName,
+				loaded: loadedSpriteName,
 				image: imgEle
 			});
 			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
@@ -1486,7 +1491,7 @@
 				uiprop: "rights|blockinfo"
 			};
 			if (!options.isNew)
-				requestData.titles = "Module:" + loadedSpriteName + "|File:" + (output.settings.image || loadedSpriteName + ".png");
+				requestData.titles = "Module:" + loadedSpriteName.full + "|File:" + (output.settings.image || loadedSpriteName.name + ".png");
 			api.get(Object.assign(requestData, c || {})).done(function(data) {
 				var i;
 				if (data.query.userinfo && data.query.userinfo.blockid)
@@ -1545,14 +1550,7 @@
 		}
 		function loadSprite(name, isNew, spriteSizeW, spriteSizeH, spacing) {
 			helper = window.SpriteEditorModules.helper;
-			if (!name.length) return;
-			var nameNew = (name.substring(name.length - 6) !== "Sprite") && name + "Sprite" || name;
-			if (name !== nameNew) {
-				var historyUrl = new URL(window.location);
-				historyUrl.searchParams.set('sprite', nameNew);
-				window.history.pushState({}, '', historyUrl);
-				name = nameNew;
-			}
+			if (name == undefined) return;
 			// Reset
 			options.isNew = isNew;
 			loadedSpriteName = name;
@@ -1569,7 +1567,7 @@
 					'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 					'question': '=p',
 					'clear': true,
-					'content': 'local a = require("Module:' + loadedSpriteName + '")\n' +
+					'content': 'local a = require("Module:' + loadedSpriteName.full + '")\n' +
 					'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 				}).always(function(a) {
 					if (!a.return) {
@@ -1579,7 +1577,7 @@
 						output.settings = output.settings || {};
 						output.ids = output.ids || {};
 						output.sections = output.sections || [];
-						imgEle.src = helper.filepath(output.settings.image || name + ".png");
+						imgEle.src = helper.filepath(output.settings.image || name.name + ".png");
 						document.body.append(imgEle);
 						imgEle.addEventListener("error", function() {
 							loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
@@ -1612,8 +1610,15 @@
 					options: options
 				});
 				var toOpen = new URL(document.location.href).searchParams.get("sprite");
+				var names = toOpen && window.SpriteEditorModules.helper.seperatePath(toOpen);
+				if (toOpen && (!names.module.endsWith("Sprite") || myData.blacklist.includes(names.module.toLowerCase()))) {
+					var historyUrl = new URL(window.location);
+					historyUrl.searchParams.delete("sprite");
+					window.history.pushState({}, '', historyUrl);
+					toOpen = undefined;
+				}
 				if (toOpen) {
-					loadSprite(toOpen, false);
+					loadSprite(names, false);
 				} else {
 					oclick(true);
 				}

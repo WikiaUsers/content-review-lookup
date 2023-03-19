@@ -95,7 +95,9 @@ $(function () {
       //205
       'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse',
       //210
-      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi'
+      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi', 'Frostbringer',
+      //215
+      'Winterstride', 'Icebreacher'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -1751,7 +1753,7 @@ $(function () {
         if (outfiter_GET.animate) {
           if (outfiter_readCookie('outfiter_apng_warn') !== 'done') {
             if (outfiter_apng_supported) {
-              alert('APNG has been enabled, you can save the animation as a single image but you can only see it animated on recent versions of ' + browsers_apng + '.');
+              //alert('APNG has been enabled, you can save the animation as a single image but you can only see it animated on recent versions of ' + browsers_apng + '.');
             }
             else if (outfiter_apng_supported === '') {
               alert('APNG not enabled, you need to use a recent version of ' + browsers_apng + ' to be able to save and view the animation as a single image.');

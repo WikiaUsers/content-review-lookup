@@ -172,9 +172,8 @@ $(function() {
             title: 'Search ' + config.wgSiteName,
             id: 'searchInput',
             tabindex: '1',
-            autocomplete: 'off',
             prependTo: $bar
-        });
+        }).attr('autocomplete', 'off');
 
     $right.append($form);
     $('.resizable-container .page').prepend($head);

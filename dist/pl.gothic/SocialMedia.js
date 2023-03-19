@@ -107,9 +107,6 @@ mw.loader.using( [ 'mediawiki.api', 'mediawiki.template.mustache' ], function() 
 		importArticle( {
 			type: 'style',
 			article: 'MediaWiki:SocialMedia.css'
-		}, {
-			type: 'script',
-			article: 'MediaWiki:RightRailHook.js'
 		} );
 		
 		// Wczytaj konfigurację JSON
@@ -130,7 +127,7 @@ mw.loader.using( [ 'mediawiki.api', 'mediawiki.template.mustache' ], function() 
 
 	// Uruchom skrypt
 	smRail.init();
-	
+
 	// Wyeksportuj API skryptu
 	window.smRailModule = smRail;
 } );

@@ -1,4 +1,33 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/* I moved the code up because it wasn't running at the end of the script. */
+/* This code is used to display a tile from the tileset, since the tileset is always updating, it would be inneficent to keep uploading all 1144 tiles to the wiki. */
+var allObstacleDisplays;
+
+function replaceObstacleDisplays() {
+	function updateObstacleDisplays() {
+		allObstacleDisplays = document.querySelectorAll('div[class^="display-obstacle-"]');
+		window.requestAnimationFrame(updateObstacleDisplays);
+		allObstacleDisplays.forEach(function(e) {
+				if (e.classList.contains('displayed')) {return;}
+				if (e == null || e == undefined) {return;}
+				var split = e.classList[0].split('-');
+				var size = 85;
+				if (split.length == 4) {
+					size = split.pop();
+				}
+				if (e.classList.contains('ve-ce-paragraphNode')) {
+					split[split.length-1] = 'paragraphNode';
+				}
+				e.innerHTML = '<iframe width="'+size+'" height="'+size+'" src="https://sqdldev.github.io/rolling-sky/tileset/display?tile='+split.pop()+'">';
+				e.style.cssText = "display: inline-block; height: max-content;";
+			   e.classList.add('displayed');
+		});
+	}
+	window.requestAnimationFrame(updateObstacleDisplays);
+}
+replaceObstacleDisplays();
+
 /* Username replace feature. Inserts viewing user's name into <span class="insertusername"></span> */
 window.UserTagsJS = {
 	modules: {},
@@ -8,7 +37,6 @@ window.UserTagsJS = {
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
- 
  
 importArticles({
     type: "script",

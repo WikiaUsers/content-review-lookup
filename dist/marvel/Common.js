@@ -239,10 +239,15 @@ $(function() {
 // THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
 ////////////////////////////////////////////////////////////////////
 */
-var wiki_name_number=Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + 1;
-var wiki_name_text=["Face Front, True Believers!", "'Nuff Said!", "Excelsior!", "Make Mine Marvel", "Avengers Assemble!", "To Me, My X-Men!", "With Great Power...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Wakanda Forever!", "I Am Iron Man", "I Am Groot", "By the Hoary Host of Hoggoth!", "Bamf!", "Whosoever Holds This Hammer, If They Be Worthy...", "By the Bristling Beard of Odin!", "Imperius Rex!", "Oh, My Stars and Garters!", "The Best There Is...", "...Hope You Survive the Experience!", "Sweet Christmas!", "Whatta Revoltin' Development!", "Have at Thee!", "And There Came a Day Unlike Any Other...", "Thwip!", "Champions Charge!" ][wiki_name_number];
-var elements=document.getElementsByClassName('fandom-community-header__community-name');
-var wiki_name=elements[0];
+let number_of_wiki_names = 27;
+let wiki_name_number = 0;
+
+while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
+  wiki_name_number = Math.random().toFixed(2) * 100;
+};
+let wiki_name_text=["Face Front, True Believers!", "'Nuff Said!", "Excelsior!", "Make Mine Marvel", "Avengers Assemble!", "To Me, My X-Men!", "With Great Power...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Wakanda Forever!", "I Am Iron Man", "I Am Groot", "By the Hoary Host of Hoggoth!", "Bamf!", "Whosoever Holds This Hammer, If They Be Worthy...", "By the Bristling Beard of Odin!", "Imperius Rex!", "Oh, My Stars and Garters!", "The Best There Is...", "...Hope You Survive the Experience!", "Sweet Christmas!", "Whatta Revoltin' Development!", "Have at Thee!", "And There Came a Day Unlike Any Other...", "Thwip!", "Champions Charge!" ][wiki_name_number];
+let elements=document.getElementsByClassName('fandom-community-header__community-name');
+let wiki_name=elements[0];
 wiki_name.textContent=wiki_name_text;
 
 

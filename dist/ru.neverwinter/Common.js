@@ -5,15 +5,44 @@ $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));
 $("#fieldset-equipment-table").prepend('<fieldset id="settings"><legend>Параметры:</legend><table><tbody><tr><td><span>Предмет:</span></td><td><input type="text" name="search" placeholder="Поиск предмета по имени"></div></td></tr><tr><td><span>Ячейка/Категория:</span></td><td><select class="category"><option>Все</option></select></td></tr><tr><td><span>Качество:</span></td><td><select class="quality"><option>Любое качество</option></select></td></tr><tr><td><span>На себе:</span></td><td><select class="equip"><option>Все</option></select></td></tr><tr><td><span>Класс:</span></td><td><select class="role"></select></td></tr><tr><td><span>Минимальный уровень:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr><tr><td><span>Уровень предмета:</span></td><td><label>Мин.: <input type="text" size="1" name="min"></label> - <label>Макс.: <input type="text" size="1" name="max"></label></td></tr></tbody></table><div style="float: right;"><span>Параметры (можно выбрать макс. три параметра): </span><div class="stats"></div></div></fieldset>');
 
 // merges a repeating cell in a table
-$(function() {
-    $.map($("table"), function(b, a) {
-        return $(".merge-duplicate-td:nth-child(" + ++a + ")")
-    }).forEach(function(b) {
-        var a;
-        b.each(function(b, c) {
-            a && a.textContent == c.textContent ? ($(c).remove(), a.rowSpan++) : a = c
-        })
-    })
+var all = $('.merge-duplicate-td');
+var first;
+var prev = undefined;
+var rowspan = 1;
+  
+var setRowspan = function() {
+  first.attr('rowspan', rowspan);
+  rowspan = 1;
+}
+    
+all.each(function() {
+  var txt = $(this).text();
+  if (prev === txt) {
+    rowspan += 1;
+    $(this).remove();
+  } else {
+    // doesnt match, set colspan on first and reset colspan counter
+    if (rowspan > 1) {
+      setRowspan();
+    }
+    first = $(this);
+    prev = txt;
+  }
+});
+  
+if (rowspan > 1) {
+  setRowspan();
+}
+    
+$('.artifact-weapon-table tr').each(function(){
+  var $this = $(this),
+      title = $this.attr('data-power');
+  var $foundFIgure = $('[data-power="'+title+'"]');
+    
+  if($foundFIgure.length > 1){
+    $foundFIgure.eq(0).addClass("artifact-weapon-table-top");
+    $foundFIgure.eq(1).addClass("artifact-weapon-table-bottom");
+  }
 });
 
 // default setting to turn tooltips on
@@ -310,7 +339,7 @@ $(function() {
             //ECMAScript 6
             //let {subject, level, category, quality, role, stats} = $(tr).data();
             
-            var $subject = $(tr).data('subject'), $quality = $(tr).data('quality'), $level = $(tr).data('level');
+            var $subject = $(tr).data('subject').toLowerCase(), $quality = $(tr).data('quality'), $level = $(tr).data('level');
             
             // Search by equip
             if (typeof $(this).data('equip') != 'undefined'){
@@ -363,7 +392,7 @@ $(function() {
             }
             // Search by name
             var $search = $("[name='search']").val().toLowerCase();
-            if ($search && $subject.toLowerCase().indexOf($search)) {
+            if ($subject.includes($search) == false) {
                 $(tr).hide();
                 return;
             }

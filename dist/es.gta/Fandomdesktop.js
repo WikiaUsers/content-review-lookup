@@ -22,7 +22,6 @@ window.UserTagsJS = {
 		    'Bloomdanix': ['asistente'],
             'Ale_-_Remastered': ['asistente'],
             'Claudio3862': ['asistente'],
-            'PNAS27': ['asistente'],
             'UlyssesAlanis14': ['asistente'],
             
             'WKorps': ['veterano'],

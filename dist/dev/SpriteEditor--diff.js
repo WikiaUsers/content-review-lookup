@@ -46,7 +46,7 @@
 			postData["fromcontentmodel-main"] = "Scribunto";
 			postData["fromcontentformat-main"] = "text/plain";
 		} else {
-			postData.fromtitle = "Module:" + shared.title;
+			postData.fromtitle = "Module:" + shared.loaded.full;
 		}
 		api.post(postData).done(function(d) {
 			var ele = document.getElementsByClassName("diff-tbl")[0];

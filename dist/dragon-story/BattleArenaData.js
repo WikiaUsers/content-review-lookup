@@ -982,6 +982,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"auldlang": {
+				"name": "Auld Lang",
+				"colors": [
+					"holiday",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"auntie": {
 				"name": "Auntie",
 				"colors": [
@@ -6428,6 +6437,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"generous": {
+				"name": "Generous",
+				"colors": [
+					"holiday",
+					"purple",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"genie": {
 				"name": "Genie",
 				"colors": [
@@ -11491,6 +11509,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"nippy": {
+				"name": "Nippy",
+				"colors": [
+					"holiday",
+					"blue",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"nivean": {
 				"name": "Nivean",
 				"colors": [
@@ -12557,6 +12584,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"pious": {
+				"name": "Pious",
+				"colors": [
+					"diamond",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"pirate": {
 				"name": "Pirate",
 				"colors": [
@@ -12889,6 +12925,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "common"
+			},
+			"prancer": {
+				"name": "Prancer",
+				"colors": [
+					"holiday",
+					"pink",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"prankster": {
 				"name": "Prankster",

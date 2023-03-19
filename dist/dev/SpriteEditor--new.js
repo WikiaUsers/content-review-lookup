@@ -4,6 +4,11 @@
 	if (window.SpriteEditorModules.new && window.SpriteEditorModules.new.loaded) return;
 	window.SpriteEditorModules.new = {loaded: true};
 	var api = new mw.Api();
+	var config = mw.config.get([
+		"wgFormattedNamespaces"
+	]);
+	var moduleName = config.wgFormattedNamespaces[828];
+	var helper = window.SpriteEditorModules.helper;
 	var myData = window.SpriteEditorModules.new;
 	var modal = {};
 	var shared = {};
@@ -22,9 +27,10 @@
 	myData.modal = modal;
 
 	function completeName(a) {
-		return (a.length && a.substring(a.length - 6) !== "Sprite") && a + "Sprite" || a;
+		return a + (!a.endsWith("Sprite") && "Sprite" || "");
 	}
 	function toggleOkayBtn(state) {
+		if (!okButton) return;
 		if (!requestState || !nameField.getValue().length || !sizeFieldW.getValue().length || !sizeFieldH.getValue().length || !spacingField.getValue().length) {
 			okButton.setDisabled(true);
 		} else {
@@ -57,19 +63,25 @@
 		nameField = new OO.ui.TextInputWidget();
 		nameField.on("change", function(e) {
 			requestState = false;
-			lastInput = completeName(e);
 			if (oldTimeout)
 				clearTimeout(oldTimeout);
 			okButton.setDisabled(true);
-			if (e.length) {
+			var names = helper.seperatePath("Module:" + e);
+			var newName = completeName(names.module);
+			if (names.module != newName) {
+				e = newName + e.substring(names.module.length);
+				names = helper.seperatePath("Module:" + e);
+			}
+			lastInput = names.full;
+			if (e.length && !window.SpriteEditorModules.main.blacklist.includes(names.module.toLowerCase())) {
 				oldTimeout = setTimeout(function() {
 					api.get({
 						action: "query",
 						format: "json",
-						titles: "Module:" + lastInput + "|File:" + lastInput + ".png",
+						titles: moduleName + ":" + names.full + "|File:" + names.name + ".png",
 						formatversion: "2"
 					}).done(function(data) {
-						if (data.query.normalized[0].from === "Module:" + lastInput &&
+						if (data.query.pages[1].title.toLowerCase() === (moduleName + ":" + lastInput).toLowerCase() &&
 						data.query.pages[0].missing &&
 						data.query.pages[1].missing)
 							requestState = true;
@@ -111,7 +123,7 @@
 		root.appendChild(spacingField.$element.get(0));
 	};
 	myData.openWindow = function() {
-		modal.windowManager.openWindow(modal.seDialog).opened.then(function() {
+		modal.windowManager.openWindow(modal.seDialog).opened.done(function() {
 			okButton = modal.seDialog.actions.get()[1];
 			okButton.setDisabled(true);
 		});

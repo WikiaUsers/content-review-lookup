@@ -13,7 +13,7 @@ mw.loader.using('site').then(function(){
         'Range',
         'MovementSpeed',
         'AttackWindup'
-    ], MAX_LVL = 18, MAX_LVL_WR = 15, data = {};
+    ], MAX_LVL = 18, data = {};
 
     function toLvl(champ, index, lvl) {
         var base = data[champ][index].base,
@@ -82,7 +82,7 @@ mw.loader.using('site').then(function(){
     // Note: change the trigger class if the new version is required
     function initEach() {
         var $this = $(this).addClass('lvlselect-initialized'),
-            $champ = $this.find('.lvlselect-champ')[0];
+            $champ = $this.find('.lvlselect-champ').eq(0),
             champ = $champ.text().trim(),
             $select = $('<select>', {
                 'change': update,
@@ -108,8 +108,8 @@ mw.loader.using('site').then(function(){
                     })
             );
         data[champ] = stats.map(function(stat) {
-            var $base = $this.find('#' + stat + '_' + champ)[0],
-                $plus = $this.find('#' + stat + '_' + champ + '_lvl')[0];
+            var $base = $this.find('#' + stat + '_' + champ).eq(0),
+                $plus = $this.find('#' + stat + '_' + champ + '_lvl').eq(0);
             return {
                 $base: $base,
                 $plus: $plus,
@@ -126,127 +126,11 @@ mw.loader.using('site').then(function(){
         ]);
         update.bind($select)();
     }
-    
-    function toLvlWR(champ, index, lvl) {
-        var base = data[champ][index].base,
-            plus = data[champ][index].plus,
-            value;
-        if (stats[index] === 'AttackSpeed') {
-            value = base * (
-                1 + plus / 100 * (lvl - 1) * (0.72 + 0.02 * (lvl - 1))
-            );
-            return Math.round(value * 1000) / 1000;
-        }
-        value = base + plus * (lvl - 1) * (0.72 + 0.02 * (lvl - 1));
-        return Math.round(value * 100) / 100;
-    }
 
-    function updateWR() {
-        var $this = $(this),
-            champ = $this.attr('data-champ'),
-            lvl = Number($this.val()),
-            champStats = data[champ];
-        stats.forEach(function(stat, index) {
-            var champStat = champStats[index],
-                $base = champStat.$base,
-                $plus = champStat.$plus,
-                base = champStat.base,
-                plus = champStat.plus;
-            switch (lvl) {
-                // Level N
-                case -1:
-                    if ($base.length || $plus.length) {
-                        if (base === 0) {
-                            $base.empty();
-                            $plus.text(plus);
-                        } else {
-                            $base.text(base);
-                            if (stat === 'AttackSpeed') {
-                                $plus.text(plus ? ' (+ ' + plus + '%)' : '');
-                            } else {
-                                $plus.text(plus ? ' (+ ' + plus + ')' : '');
-                            }
-                        }
-                    }
-                    break;
-                // Level "1 - MAX_LVL"
-                case 0:
-                    if ($base.length || $plus.length) {
-                        $base.text(plus ? '' : toLvlWR(champ, index, 1));
-                        $plus.text(
-                            plus ?
-                                base + ' – ' + toLvlWR(champ, index, MAX_LVL_WR) :
-                                ($base.length ? '' : base)
-                        );
-                    }
-                    break;
-                // Level dynamic
-                default:
-                    if ($plus.length) {
-                        $base.text('');
-                        $plus.text(toLvlWR(champ, index, lvl));
-                    }
-                    break;
-            }
-        });
-    }
-
-    // Note: change the trigger class if the new version is required
-    function initEachWR() {
-        var $this = $(this).addClass('lvlselect-initialized'),
-            $champ = $this.find('.lvlselect-champ')[0];
-            champ = $champ.text().trim(),
-            $select = $('<select>', {
-                'change': updateWR,
-                'data-champ': champ,
-                'id': 'lvl_' + champ
-            }).append(
-                $('<option>', {
-                    text: 'n',
-                    value: -1
-                }),
-                $('<option>', {
-                    selected: 'selected',
-                    text: '1-' + MAX_LVL_WR,
-                    value: 0
-                }),
-                Array
-                    .apply(null, Array(MAX_LVL_WR))
-                    .map(function(_, index) {
-                        return $('<option>', {
-                            text: index + 1,
-                            value: index + 1
-                        });
-                    })
-            );
-        data[champ] = stats.map(function(stat) {
-            var $base = $this.find('#' + stat + '_' + champ)[0],
-                $plus = $this.find('#' + stat + '_' + champ + '_lvl')[0];
-            return {
-                $base: $base,
-                $plus: $plus,
-                base: Number($base.text()) || 0,
-                plus: Number($plus.text()) || 0
-            };
-        });
-        $champ.html([
-            $('<label>', {
-                'for': 'lvl_' + champ,
-                'text': 'Level: '
-            }),
-            $select
-        ]);
-        updateWR.bind($select)();
-    }
-    
-    
     function init($content) {
         $content
             .find('.lvlselect:not(.lvlselect-initialized)')
             .each(initEach);
-        $content
-            .find('.lvlselect-wr:not(.lvlselect-initialized)')
-            .each(initEachWR);
     }
 
     mw.loader.using(['mediawiki.util']).then(function() {

@@ -1,10 +1,11 @@
-//<nowiki>
-mw.loader.load('https://apis.google.com/js/platform.js');
-
-if (wgPageName === 'Special:Upload') {
-    $('#wpUploadDescription').val('[[Category:Images]]');
+if ($( "body" ).hasClass( "ns-0" )) {
+  $(function() {
+    setTimeout( function() { mw.loader.load('https://apis.google.com/js/platform.js') },
+    1000)
+  });
 }
-//</nowiki>
+
+
 
 // change label
 $('.pi-data-label:contains("Username")').replaceWith('<h3 class="pi-data-label pi-secondary-font">Subscribers</h3>');

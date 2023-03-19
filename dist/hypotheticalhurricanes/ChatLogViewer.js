@@ -187,46 +187,33 @@ $cl.fn.onAfterLoaded = function() {
 
 /* generate markup */
 $cl.fn.generateMarkup = function(anchor) {
-    const selectMonth = `
-        <select id="chatlog-date-mm">
-            ${$cl.data.months.map((month, index) => `
-                <option value="${index + 1}">${month}</option>
-            `).join('')}
-        </select>
-    `;
-
-    const selectDate = `
-        <select id="chatlog-date-dd">
-            ${[...Array(31)].map((_, index) => `
-                <option value="${index + 1}">${index + 1}</option>
-            `).join('')}
-        </select>
-    `;
-
-    const selectYear = `
-        <select id="chatlog-date-yy">
-            ${$cl.data.years.map(year => `
-                <option value="${year}">${year}</option>
-            `).join('')}
-        </select>
-    `;
-
-    const ui = `
-        <nav id="chatlog">
-            <p>
-                Please select a date for the logs:<br />
-                ${selectMonth}
-                ${selectDate}
-                ${selectYear}
-                <input type="button" id="chatlog-go" value="go" />
-            </p>
-            <pre id="chatlog-status"></pre>
-            <section id="chatlog-output"></section>
-        </nav>
-    `;
-
+    /* html */
+    var ui = $(
+            '<nav id="chatlog">\n' +
+				'\t<p>\n' +
+					'\t\tPlease select a date for the logs:<br />\n' +
+					'\t\t<select id="chatlog-date-mm"></select>\n' +
+					'\t\t<select id="chatlog-date-dd"></select>\n' +
+					'\t\t<select id="chatlog-date-yy"></select>\n' +
+					'\t\t<input type="button" id="chatlog-go" value="go" />\n' +
+				'\t</p>\n' +
+				'\t<pre id="chatlog-status"></pre>\n' +
+				'\t<section id="chatlog-output"></section>\n' +
+			'</nav>'
+        ),
+        a = $(ui).find('#chatlog-date-dd'),
+        b = $(ui).find('#chatlog-date-mm'),
+        c = $(ui).find('#chatlog-date-yy');
+    for (var i = 1; i <= 31; i++) {
+        $(a).append('<option value="' + i +'">' + i + '</option>');
+        if (i <= 12) {
+            $(b).append('<option value="' + i +'">' + $cl.data.months[i - 1] + '</option>');
+        }
+    }
+    for (var i in $cl.data.years) {
+        $(c).append('<option value="' + $cl.data.years[i] +'">' + $cl.data.years[i] + '</option>');
+    }
     $(anchor).replaceWith(ui);
-};
 
     /* css */
     mw.util.addCSS(

@@ -22,8 +22,8 @@
 	myData.requestChanges = function() {
 		perRowEle.setValue(shared.options.spritesPerRow);
 		spacingEle.setValue(shared.options.spacing);
-		eleList[0].innerHTML = '<b>' + msg("image-path").plain() + '</b>: ' + (shared.spriteData.settings.image || shared.title + '.png');
-		eleList[1].innerHTML = '<b>' + msg("spritesheet-name").plain() + '</b>: ' + shared.title;
+		eleList[0].innerHTML = '<b>' + msg("image-path").plain() + '</b>: ' + (shared.spriteData.settings.image || shared.loaded.name + '.png');
+		eleList[1].innerHTML = '<b>' + msg("spritesheet-name").plain() + '</b>: ' + shared.loaded.full;
 		updateSheetWidth();
 		eleList[3].innerHTML = '<b>' + msg("sprite-size").plain() + '</b>: ' + shared.imgWidth + 'x' + shared.imgHeight + 'px';
 		eleList[4].innerHTML = '<b>' + msg("sprite-per-row").plain() + '</b>: ';

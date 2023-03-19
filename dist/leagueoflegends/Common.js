@@ -6,6 +6,7 @@ Mediawiki:Common.js/writemGridfiltering.js
 Mediawiki:Common.js/avatarGridfiltering.js
 Mediawiki:Common.js/esportsGridfiltering.js
 Mediawiki:Common.js/levelselect.js
+Mediawiki:Common.js/levelselectWR.js
 Mediawiki:Common.js/StatWheel.js
 Mediawiki:Common.js/StickyHeader.js
 Mediawiki:Common.js/DynamicFontSize.js

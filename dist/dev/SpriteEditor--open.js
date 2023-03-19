@@ -7,6 +7,7 @@
 	const config = mw.config.get([
 		'wgArticlePath'
 	]);
+	var helper = window.SpriteEditorModules.helper;
 	var myData = window.SpriteEditorModules.open;
 	var modal = {};
 	myData.modal = modal;
@@ -27,7 +28,7 @@
 		var names = Object.keys(list);
 		function loadSprite2(toOpen) {
 			var historyUrl = new URL(window.location);
-			historyUrl.searchParams.set('sprite', toOpen);
+			historyUrl.searchParams.set('sprite', toOpen.full);
 			window.history.pushState({}, '', historyUrl);
 			shared.loadSprite(toOpen, myData.isNew, myData.spriteSizeW, myData.spriteSizeH, myData.spacing);
 			windowClosed = true;
@@ -35,7 +36,7 @@
 		}
 		myData.loadSprite2 = loadSprite2;
 		function loadSprite(event) {
-			loadSprite2(event.target.closest(".previewBox").dataset.sprite);
+			loadSprite2(helper.seperatePath(event.target.closest(".previewBox").dataset.sprite));
 		}
 		function addSprite(i) {
 			var n = allPages[i];
@@ -44,27 +45,29 @@
 				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 				'question': '=p',
 				'clear': true,
-				'content': 'local a = require("Module:' + n + '")\n'
+				'content': 'local a = require("Module:' + n.full + '")\n'
 				+ 'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 			}).always(function(a) {
 				var output;
-				if (!a.return || windowClosed) return;
+				if (windowClosed) return;
+				if (a.return) {
 					output = JSON.parse(a.return);
-				output.settings = output.settings || {};
-				output.ids = output.ids || {};
-				output.sections = output.sections || [];
-				var ele = document.createElement('div');
-				ele.dataset.sprite = n;
-				ele.className = 'previewBox';
-				var ele2 = document.createElement('a');
-				var u = config.wgArticlePath.replace("$1", "Special:Redirect/file/" + (output.settings.image || n + ".png"));
-				ele2.style.backgroundImage = "url(" + u + ( u.includes('?') ? '&' : '?' ) + "version=" + Date.now() + ")";
-				ele2.onclick = loadSprite;
-				var ele3 = document.createElement('a');
-				ele3.textContent = n;
-				ele3.onclick = loadSprite;
-				ele.append(ele2, ele3);
-				root.appendChild(ele);
+					output.settings = output.settings || {};
+					output.ids = output.ids || {};
+					output.sections = output.sections || [];
+					var ele = document.createElement('div');
+					ele.dataset.sprite = "Module:" + n.full;
+					ele.className = 'previewBox';
+					var ele2 = document.createElement('a');
+					var u = window.SpriteEditorModules.helper.filepath(output.settings.image || n.name + ".png");
+					ele2.style.backgroundImage = "url(" + u + ")";
+					ele2.onclick = loadSprite;
+					var ele3 = document.createElement('a');
+					ele3.textContent = n.name;
+					ele3.onclick = loadSprite;
+					ele.append(ele2, ele3);
+					root.appendChild(ele);
+				}
 				if (allPages[i + 1]) {
 					addSprite(i + 1);
 				}
@@ -91,9 +94,13 @@
 		api.get(Object.assign(base, c || {})).done(function(data) {
 			var pages = data.query.allpages;
 			for (var i = 0; i < pages.length; i++) {
-				var p = pages[i];
-				if (p.title.substring(p.title.length - 6) === "Sprite") {
-					allPages.push(p.title.substring(p.title.indexOf(":") + 1));
+				var names = helper.seperatePath(pages[i].title);
+				if (names.module.endsWith("Sprite") && !window.SpriteEditorModules.main.blacklist.includes(names.module.toLowerCase())) {
+					allPages.push({
+						full: names.full,
+						module: names.module,
+						name: names.name
+					});
 				}
 			}
 			if (windowClosed)

@@ -8,7 +8,7 @@
         return false;
     } 
     window.PlutoySkyShardSchedule = {
-        version: '0.1.3',
+        version: '0.1.4',
         init: importArticles({
         	type: 'script',
         	articles: [
@@ -98,7 +98,7 @@
                 */'<div id="plutoy-shard-schedule" style="text-align: center;"></div>' + /*
                 */'<br>' + /*
                 */'<div style="text-align: center;"><small>' + /*
-                */'<b>Credits:</b> Thank you to Plutoy#5022 for creating <a href=https://sky-shards.netlify.app/>Sky Shards</a> and allowing me (Ray808080) to convert the code for the wiki.<br>Thank you to those who helped to discover the patterns shard eruption:<br> Clement#8978, Galerowfylery#1310, RandomZhii#4275, ChristianKingFu#8986, kion_Anzu#1021, Hucker#6095, LN🦇#5792' + /*
+                */'<b>Credits:</b> Thank you to Plutoy#5022 for creating <a href=https://sky-shards.pages.dev/>Sky Shards</a> and allowing me (Ray808080) to convert the code for the wiki.<br>Thank you to those who helped to discover the patterns shard eruption:<br> Clement#8978, Galerowfylery#1310, RandomZhii#4275, ChristianKingFu#8986, kion_Anzu#1021, Hucker#6095, LN🦇#5792' + /*
                 */'</small></div>';
                 
                 PlutoySkyShardSchedule.today();

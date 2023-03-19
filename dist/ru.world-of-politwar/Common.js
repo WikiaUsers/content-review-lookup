@@ -1,5 +1,5 @@
 /* == Кабинет администратора == */
-/* === Кнопка ImportJS. Сделано HIHRAIM'ом из AdminDashboard JS-Button */
+/* === Кнопка ImportJS. Сделано HIHRAIM'ом из AdminDashboard JS-Button === */
 (function() {
     if (
         mw.config.get('wgCanonicalSpecialPageName') !== 'AdminDashboard' ||
@@ -56,8 +56,8 @@
     );
 })();
 
-/* == Рельса == */
-/* === Популярные страницы. Сделано HIHRAIM'ом из TopArticles */
+/* == Дополнительное == */
+/* === Популярные страницы. Сделано HIHRAIM'ом из TopArticles === */
 (function() {
     'use strict';
     var results, i18n;
@@ -166,3 +166,15 @@
         article: 'u:dev:MediaWiki:TopArticles.css'
     });
 })();
+
+/* === Предварительный просмотр страницы при наведении на ссылку (изменение для скрипта LinkPreview) === */
+/* ==== Изменяет изображение, отображаемое, когда на странице нет изображений (взято с английской Pokemon Wiki) ==== */
+window.pPreview = $.extend(
+    true,
+    window.pPreview,
+    {
+        RegExp: (window.pPreview || {}).RegExp || {}
+    }
+);
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/pokemon/images/e/e3/No_Image.png';

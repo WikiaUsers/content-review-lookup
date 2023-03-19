@@ -7,6 +7,7 @@
  * 
  * Alternatively, you can force-disable cache by setting:
  * window.ShowWROnToolbarDisableCache = true;
+ * However this is not reccomended
  *
  * Authors: Noreplyz, Sophiedp
  * Rewritten by: Rail
@@ -72,11 +73,12 @@ mw.loader.using( [
     self.hasNoWr = self.getCachedData() === 'null';
 
     /**
-     * Scrap Special:Community to obtain information about assigned Wiki Representative
+     * Scrape Special:Community to obtain information about assigned Wiki Representative
      * or ARC (Admin Request Coordination – that's a non-EN thing) person and parse them.
      *
      * Theoretically Special:Community has an API but id doesn't contain WR information.
-     * We use `apioutput` value for `useskin` parameter to make this scrapping a bit more optimal.
+     * We use `apioutput` value for `useskin` parameter to make this scraping a bit more optimal (currently not working)
+     * Also passing `?uselang=qqx` to prevent potential issues coming from user language settings.
      *
      * @param {Function} callback
      */
@@ -84,10 +86,11 @@ mw.loader.using( [
         const communityPageUrl = mw.util.getUrl(
             conf.wgFormattedNamespaces[-1] + ':Community', {
                 useskin: 'apioutput',
-                safemode: 1
+                safemode: 1,
+                uselang: 'qqx'
             }
         );
-        const scrapRequest = function( callback ) {
+        const scrapeRequest = function( callback ) {
             fetch( communityPageUrl ).then( function( resp ) {
                 return resp.text();
             } ).then( function( html ) {
@@ -98,7 +101,7 @@ mw.loader.using( [
             } );
         };
 
-        scrapRequest( function( communityHtml ) {
+        scrapeRequest( function( communityHtml ) {
             const wrHandleSelector = 'a[data-tracking="wiki-representative-avatar-username"]';
             const wrHandle = communityHtml.querySelector( wrHandleSelector );
 
@@ -137,40 +140,43 @@ mw.loader.using( [
         toolbarElement.classList.add( 'wrOnToolbar' );
         toolbarElement.innerHTML = wrLabel + ':&nbsp;';
 
-        if ( !self.hasNoWr ) {
-            const wrLink = document.createElement( 'a' );
-            const wrUrl = mw.util.getUrl(
-                conf.wgFormattedNamespaces[2] + ':' + self.wikiRepresentative
-            );
-
-            wrLink.setAttribute( 'href', wrUrl );
-            wrLink.setAttribute( 'title', self.wikiRepresentative );
-            wrLink.innerText = self.wikiRepresentative;
-
-            toolbarElement.appendChild( wrLink );
-        } else {
-            // There is no WR – this requires mw.Api() call beforhand to get message in place
+        // There is no WR, end early
+        if ( self.hasNoWr ) {
+            // This requires mw.Api() call beforhand to get message in place
             new mw.Api().loadMessagesIfMissing( ['rightsnone'] ).then( function() {
                 const noneMessage = mw.messages.get( 'rightsnone' );
 
                 toolbarElement.innerHTML += noneMessage;
                 toolbarElement.setAttribute( 'title', noneMessage );
             } );
+
+            return toolbarWrapper.appendChild( toolbarElement );
         }
 
+        const wrLink = document.createElement( 'a' );
+        const wrUrl = mw.util.getUrl(
+            conf.wgFormattedNamespaces[2] + ':' + self.wikiRepresentative
+        );
+
+        wrLink.setAttribute( 'href', wrUrl );
+        wrLink.setAttribute( 'title', self.wikiRepresentative );
+        wrLink.innerText = self.wikiRepresentative;
+
+        toolbarElement.appendChild( wrLink );
         toolbarWrapper.appendChild( toolbarElement );
     };
 
     self.init = function() {
-        // Check for data in cache. If it's not present – scrap S:Community
-        if ( !self.getCachedData() ) {
-            self.getWikiRepresentative( function() {
-                self.buildUI();
-            } );
-        } else {
+        // Try to use data in cache first
+        if ( self.getCachedData() ) {
             self.wikiRepresentative = self.getCachedData();
-            this.buildUI();
+            return this.buildUI();
         }
+
+        // If that's not present, call S:Community
+        self.getWikiRepresentative( function() {
+            self.buildUI();
+        } );
     };
 
     self.init();

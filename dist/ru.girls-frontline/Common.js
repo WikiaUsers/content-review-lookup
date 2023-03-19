@@ -166,3 +166,15 @@
         article: 'u:dev:MediaWiki:TopArticles.css'
     });
 })();
+
+/* === Предварительный просмотр страницы при наведении на ссылку (изменение для скрипта LinkPreview) === */
+/* ==== Изменяет изображение, отображаемое, когда на странице нет изображений ==== */
+window.pPreview = $.extend(
+    true,
+    window.pPreview,
+    {
+        RegExp: (window.pPreview || {}).RegExp || {}
+    }
+);
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/girls-frontline/images/0/08/WA2000_art.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/girls-frontline/images/0/08/WA2000_art.png';

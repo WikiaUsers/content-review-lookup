@@ -11,7 +11,8 @@ mw.loader.using('site').then(function(){
         'Armor',
         'MagicResist',
         'Range',
-        'MovementSpeed'
+        'MovementSpeed',
+        'AttackWindup'
     ], MAX_LVL = 18, data = {};
 
     function toLvl(champ, index, lvl) {
@@ -63,7 +64,7 @@ mw.loader.using('site').then(function(){
                         $plus.text(
                             plus ?
                                 base + ' – ' + toLvl(champ, index, MAX_LVL) :
-                                ''
+                                ($base.length ? '' : base)
                         );
                     }
                     break;
@@ -81,7 +82,8 @@ mw.loader.using('site').then(function(){
     // Note: change the trigger class if the new version is required
     function initEach() {
         var $this = $(this).addClass('lvlselect-initialized'),
-            champ = $this.text().trim(),
+            $champ = $this.find('.lvlselect-champ').eq(0),
+            champ = $champ.text().trim(),
             $select = $('<select>', {
                 'change': update,
                 'data-champ': champ,
@@ -106,10 +108,8 @@ mw.loader.using('site').then(function(){
                     })
             );
         data[champ] = stats.map(function(stat) {
-            var $base = $(document.getElementById(stat + '_' + champ)),
-                $plus = $(document.getElementById(
-                    stat + '_' + champ + '_lvl'
-                ));
+            var $base = $this.find('#' + stat + '_' + champ).eq(0),
+                $plus = $this.find('#' + stat + '_' + champ + '_lvl').eq(0);
             return {
                 $base: $base,
                 $plus: $plus,
@@ -117,10 +117,10 @@ mw.loader.using('site').then(function(){
                 plus: Number($plus.text()) || 0
             };
         });
-        $this.html([
+        $champ.html([
             $('<label>', {
                 'for': 'lvl_' + champ,
-                'text': 'Nível: '
+                'text': 'Level: '
             }),
             $select
         ]);

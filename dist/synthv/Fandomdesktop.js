@@ -28,6 +28,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/3/33/Wiki-wordmark-muxin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/38/Wiki-wordmark-natalie.png',
 	    'https://images.wikia.nocookie.net/synthv/images/a/a0/Wiki-wordmark-natsuki-karin.png',
+	    'https://images.wikia.nocookie.net/synthv/images/c/c7/Wiki-wordmark-Ninezero.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/e/ee/Wiki-wordmark-Ryo.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/40/Wiki-wordmark-saki.png',

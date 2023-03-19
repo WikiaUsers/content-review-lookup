@@ -242,7 +242,7 @@ if (BGbackgroundD) {
             anim = {
                 // Рокстар Фокси
                 '1': [
-                    '//vignette.wikia.nocookie.net/comfort/images/5/59/RF1.gif/revision/latest?cb=20191001181006&path-prefix=ru', 
+                    '//vignette.wikia.nocookie.net/five-nights-at-freddys-rus/images/f/ff/UCN_-_Rockstar_Foxy.gif/revision/latest?cb=20180701173837&path-prefix=ru', 
                     'bottom: -40px; left: 0px;', 
                     {bottom: '-40px'},
                     {bottom: '-40px'}, 
