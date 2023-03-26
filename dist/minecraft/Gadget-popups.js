@@ -1,4 +1,4 @@
-// <syntaxhighlight lang="javascript">
+// <nowiki>
 // Imported from https://en.wikipedia.org/w/index.php?title=MediaWiki:Gadget-popups.js&oldid=1086319046
 //
 // Note: [PATCHED] marks intentional changes from the imported version. Keep these in mind when updating.
@@ -30,7 +30,7 @@ $(function () {
 	//////////////////////////////////////////////////
 	// Globals
 	//
-	
+
 	// Trying to shove as many of these as possible into the pg (popup globals) object
 	var pg = {
 		api: {}, // MediaWiki API requests
@@ -9407,4 +9407,4 @@ $(function () {
 	})();
 });
 // ENDFILE: run.js
-// </syntaxhighlight>
+// </nowiki>

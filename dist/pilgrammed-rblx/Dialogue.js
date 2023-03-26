@@ -15,6 +15,76 @@ var restartMessages = {};
 
 var dialoguePaths = {};
 
+var scaleElements = [];
+
+function getContainerScale(element) {
+	var computedStyle = getComputedStyle(element);
+	
+	var w = element.clientWidth;
+	var h = element.clientHeight;
+	
+	w -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight) + 
+		 parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth) + 
+		 parseFloat(computedStyle.marginLeft) + parseFloat(computedStyle.marginRight);
+	h -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom) + 
+		 parseFloat(computedStyle.borderTopWidth) + parseFloat(computedStyle.borderBottomWidth) + 
+		 parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom);
+	
+	return { w: w, h: h };
+}
+
+function scaleText(element) {
+	var parent = element.parentElement;
+	var fontSize = getComputedStyle(element).fontSize;
+	var sElement = scaleElements.find(function(e) {
+		return e.element == element;
+	});
+
+	if (!sElement) {
+		var event = element.addEventListener('change', function() {
+			scaleText(element);
+		});
+		sElement = { element: element, parent: parent, fontSize: fontSize };
+		scaleElements.push(sElement);
+	}
+	
+	element.style.fontSize = sElement.fontSize;
+	
+	var elementScale = getContainerScale(element);
+	var parentScale = getContainerScale(parent);
+
+	if (elementScale.w > parentScale.w || elementScale.h > parentScale.h) {
+		while (element.clientWidth > parent.clientWidth || element.clientHeight > parent.clientHeight) {
+			element.style.fontSize = parseFloat(element.style.fontSize) - 1 + 'px';
+		}
+	}
+	
+	return element;
+}
+
+function changeScale(element, px) {
+	var sElement = scaleElements.find(function (e) {
+		return e.element == element;
+	});
+	
+	if (sElement) {
+		sElement.fontSize = px;
+		scaleText(sElement.element);
+	}
+}
+
+function stopScale(element) {
+	var index = scaleElements.findIndex(function (e) {
+		return e.element == element;
+	});
+	
+	if (index > -1) scaleElements.splice(i, 1);
+}
+
+function scaleAllText() {
+	for (var i in scaleElements) scaleText(scaleElements[i].element);
+}
+
 function removeElement(element, wait) {
     setTimeout(function () {
         element.remove();
@@ -62,6 +132,8 @@ function loadOptions(optionsObject, dialogueID) {
     for (var name in defaultOptions[dialogueID].dstyle) {
         var value = defaultOptions[dialogueID].dstyle[name];
         if (typeof (value) == 'object') value = randomChoice(value);
+        value = getKeywordsFor(value);
+        if (name.match(/fontSize|font-size/)) changeScale(dialogueTextes[dialogueID], value);
         dialogueTextes[dialogueID].style[name] = value;
     }
 
@@ -73,7 +145,9 @@ function loadOptions(optionsObject, dialogueID) {
         for (var name in options[dialogueID].style) {
             var value = options[dialogueID].style[name];
             if (typeof (value) == 'object') value = randomChoice(value);
-            dialogueTextes[dialogueID].style[name] = getKeywordsFor(value);
+            value = getKeywordsFor(value);
+            if (name.match(/fontSize|font-size/)) changeScale(dialogueNames[dialogueID], value);
+            dialogueTextes[dialogueID].style[name] = value;
         }
     }
 
@@ -81,7 +155,9 @@ function loadOptions(optionsObject, dialogueID) {
         for (var name in options[dialogueID].nameStyle) {
             var value = options[dialogueID].nameStyle[name];
             if (typeof (value) == 'object') value = randomChoice(value);
-            dialogueNames[dialogueID].style[name] = getKeywordsFor(value);
+            value = getKeywordsFor(value);
+            if (name.match(/fontSize|font-size/)) changeScale(dialogueNames[dialogueID], value);
+            dialogueNames[dialogueID].style[name] = value;
         }
     }
 
@@ -110,11 +186,19 @@ function loadOptions(optionsObject, dialogueID) {
     if (dialogueNames[dialogueID].style.display === 'none') {
         dialogueNames[dialogueID].style.display = 'block';
     }
+    
+    scaleText(dialogueNames[dialogueID]);
 }
 
 function removeButtons(dialogueID) {
+	var buttons = dialogueOptions[dialogueID].children.length;
+
     dialogueOptions[dialogueID].style.display = 'none';
-    dialogueOptions[dialogueID].innerHTML = "";
+    for (var i = 0; i < buttons; i++) {
+    	var element = dialogueOptions[dialogueID].children.item(0);
+    	stopScale(element);
+    	element.remove();
+    }
 }
 
 function closePrompt(dialogueID) {
@@ -124,6 +208,7 @@ function closePrompt(dialogueID) {
 function changeText(time, string, dialogueID) {
     setTimeout(function () {
         dialogueTextes[dialogueID].innerHTML = string;
+        scaleText(dialogueTextes[dialogueID]);
     }, time);
 }
 
@@ -199,8 +284,11 @@ function appendButton(v, dialogueID) {
 
     if (v.btnstyle) {
         for (var name in v.btnstyle) {
-            var value = v.btnstyle[name];
-            btnText.style[name] = value;
+	        var value = v.btnstyle[name];
+	        if (typeof (value) == 'object') value = randomChoice(value);
+	        value = getKeywordsFor(value);
+	        if (name.match(/fontSize|font-size/)) changeScale(btnText, value);
+	        btnText.style[name] = value;
         }
     }
 
@@ -218,10 +306,14 @@ function appendButton(v, dialogueID) {
             nextDialogue(v, dialogueID);
         }
     });
+    scaleText(btnText);
+    
+    return btn;
 }
 
 function displayAnswers(current, dialogueID) {
     if (current.question !== undefined && typeof (current.answers) == "object" && typeof (current.answers[0]) != "string") {
+        dialogueOptions[dialogueID].style.display = 'flex';
         if (typeof (current.answers[0]) == "object") {
             for (var i in current.answers) {
                 var v = current.answers[i];
@@ -233,7 +325,6 @@ function displayAnswers(current, dialogueID) {
 
             appendButton(v, dialogueID);
         }
-        dialogueOptions[dialogueID].style.display = 'flex';
         return;
     }
 
@@ -329,7 +420,12 @@ if (fetchedDialogues.length) {
         try {
             createDialogue(dialogue, 'dialogue' + i);
         } catch (error) {
-            dialogue.querySelector('.d-response').innerHTML = error.stack;
+            var dialogText = dialogue.querySelector('.d-response')
+            dialogText.innerHTML = error.stack;
+            scaleText(dialogText);
         }
     }
 }
+
+window.addEventListener('resize', scaleAllText);
+window.addEventListener('orientationchange', scaleAllText);

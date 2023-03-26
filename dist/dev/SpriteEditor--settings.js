@@ -46,16 +46,16 @@
 			'<div class="settingsInfoline"></div>' +
 			'<h2>' + msg("save-title").plain() + '</h2>' +
 			'<div>' +
-				'<input id="se-section" type="checkbox" ' + (shared.options.cleanupSectionIDs && "checked" || "") + ' />' +
-				'<label for="se-section">' + msg("cleanup-ids").plain() + '</label>' +
+				'<input class="wds-toggle__input" id="se-section" type="checkbox" ' + (shared.options.cleanupSectionIDs && "checked" || "") + ' />' +
+				'<label class="wds-toggle__label" for="se-section">' + msg("cleanup-ids").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input id="se-sprite" type="checkbox" ' + (shared.options.removeUnusedSprites && "checked" || "") + ' />' +
-				'<label for="se-sprite">' + msg("remove-unused").plain() + '</label>' +
+				'<input class="wds-toggle__input" id="se-sprite" type="checkbox" ' + (shared.options.removeUnusedSprites && "checked" || "") + ' />' +
+				'<label class="wds-toggle__label" for="se-sprite">' + msg("remove-unused").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input id="se-deprecated" type="checkbox" ' + (shared.options.removeDeprecatedNames && "checked" || "") + ' />' +
-				'<label for="se-deprecated">' + msg("remove-deprecated").plain() + '</label>' +
+				'<input class="wds-toggle__input" id="se-deprecated" type="checkbox" ' + (shared.options.removeDeprecatedNames && "checked" || "") + ' />' +
+				'<label class="wds-toggle__label" for="se-deprecated">' + msg("remove-deprecated").plain() + '</label>' +
 			'</div>' +
 		'</div>';
 	}
@@ -121,7 +121,7 @@
 
 			// Create a new dialog window.
 			modal.seDialog = new SpriteEditorDialog({
-				size: 'small'
+				size: 'medium'
 			});
 
 			// Add window and open

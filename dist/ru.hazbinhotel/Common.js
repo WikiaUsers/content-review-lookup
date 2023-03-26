@@ -240,21 +240,6 @@ window.DiscussionTemplates = {
 };
 
 
-/* Конфигурация для dev:LinkPreview */
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-
-window.pPreview.wholepage = true;
-
-/* Конфигурация для dev:LockOldComments */
-window.lockOldComments = window.lockOldComments || {};
-window.lockOldComments.limit = 90;
-
-window.dev = window.dev || {};
-window.dev.i18n = window.dev.i18n || {};
-window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-window.dev.i18n.overrides['LockOldComments'] = window.dev.i18n.overrides['LockOldComments'] || {};
-window.dev.i18n.overrides['LockOldComments']['locked-reply-box'] = "🔒 Этой ветке комментариев более " + window.lockOldComments.limit + " " + (window.lockOldComments.limit > 1 ? 'дней.' : 'дня.') + " Нет необходимости отвечать.";
-
 /* Конфигурация для dev:AddRailModule */
  window.AddRailModule = [
  	{page: 'Template:NewPagesModule', maxAge: 0}

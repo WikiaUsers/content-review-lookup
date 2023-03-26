@@ -1,19 +1,27 @@
 $(function() {
 	var get_item_name_from_img_src = function (src) {
+            /* 
             var tokens, imgnamecomponents, name;
             tokens = src.split(/\//);
             
-            /*
-             * All image links follow a similar pattern: tokens[7] contains image name.
-             * Assumption: there are no slashes in the image name.
-             * Assumption: there is only one extension separator (.) in the image name.
-             * Example: Ancient_Amulet.gif
-             */
+            //*
+            // * All image links follow a similar pattern: tokens[7] contains image name.
+            // * Assumption: there are no slashes in the image name.
+            // * Assumption: there is only one extension separator (.) in the image name.
+            // * Example: Ancient_Amulet.gif
+            // *
             imgnamecomponents = (tokens[7] || "").split(".");
             
-            /* First element of the components corresponds to the image file, without the extension. */
+            // First element of the components corresponds to the image file, without the extension.
             name = decodeURIComponent(imgnamecomponents[0].replace(/_/g, ' ').toLowerCase());
-            
+            */
+            /* CODE ABOVE IS OBSOLOETE 
+            	Links can be easily obtained by using Special:Filepath instead
+            	Names from these links are also easier to get
+            */
+            const fileURL = new URL(src);
+            const fileName = fileURL.searchParams.get('file');
+            const name = fileName.split(".")[0].toLowerCase();
             return name;
         },
          calculator_array_sort = function(inputArr, numeric, by_key, reverse, sub_key) {
@@ -204,26 +212,33 @@ $(function() {
                 'Life Drain': [0, 0, 0, 0],
             },
             calculator_armor_get_link_for_name = function(item, part) {
+                 
                 /* Filter out every image that doesn't match. We should be left with a jQuery object containing one element.
                  * If we aren't, just get the first one anyway. */
                  
                 /* Wikia's Lazy Loading functionality requires us to check data-src. If data-src doesn't exist, it may have already been processed, so
                  * use the src as a fallback. This solves a rare issue of (usually a single) image not loading correctly. */
-                 
+                /* 
                 var $item = $('#calculator_armor_list_' + calculator_armor_parts_names[part] + '_img img').filter(function() {
                     var $this = $(this), dataSrc;
                     dataSrc = $this.attr('data-src') || $this.attr('src');
                     if(dataSrc !== null) {
-                        /* OLD CODE.
-                         * It should suffice to check if parsing the src would result in the same name as we've been provided.
-                         * var a = dataSrc.split('/');
-                         * return (decodeURIComponent(a[7]) === decodeURIComponent(item.replace(/ /g, '_') + '.gif') ? true : false);
-                         */
+                        // OLD CODE.
+                        // * It should suffice to check if parsing the src would result in the same name as we've been provided.
+                        // * var a = dataSrc.split('/');
+                        // * return (decodeURIComponent(a[7]) === decodeURIComponent(item.replace(/ /g, '_') + '.gif') ? true : false);
+                         //
                         return (get_item_name_from_img_src(dataSrc) === item.toLowerCase());
                     }
                 }).first();
                 
                 return $item.attr('data-src') || $item.attr('src');
+                */
+                /* CODE ABOVE IS OBSOLOETE 
+                Links can be easily obtained by using Special:Filepath instead
+                */
+                const baseurl = "https://tibia.fandom.com/wiki/Special:Filepath?file=";
+                return baseurl + item + ".gif";
             },
             get_items_data = function(name) {
                 var part = calculator_armor_names_parts[name],

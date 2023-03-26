@@ -1,18 +1,25 @@
 /* WHM toolbar advertisement */
 var toolbarLabel = 'WHM';
 var toolbarLinks = [
-    {link: 'https://community.fandom.com/wiki/User_blog:Jpearson/Embrace_Equity_with_Fandom_this_Women\’s_History_Month', label: 'Fandom blog'},
+    {link: 'https://bit.ly/FandomWHMBlog-toolbar', label: 'Fandom blog'},
+    {link: 'https://avatar.fandom.com/f/p/4400000000000418515', label: 'Discussions post'},
+    {link: 'https://spoti.fi/3loZ1Nu', label: 'WHM spotify playlist'},
+    {link: 'https://bit.ly/FandomWHMGamers', label: 'Gaming Stories: meet RinasaurusRex <br/>and Jessica Howard'},
+    {link: 'https://bit.ly/FandomWHMGamers2', label: 'Gaming Stories: meet Minnichi and<br/>LucyKuranSKYDOME'},
+    {link: 'https://bit.ly/FandomWHMGamers3', label: 'Gaming Stories: meet Miranda Phaal<br/>and Tiffany Tse'},
 ];
 var toolbarElement = document.createElement( 'li' );
-var toolbarWrapper = document.querySelector( '#WikiaBar .tools' );
+var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
 toolbarElement.classList.add( 'custom' );
 toolbarElement.classList.add( 'menu' );
 toolbarElement.classList.add( 'wds-dropdown' );
+toolbarElement.classList.add( 'wikiabar-button' );
 toolbarElement.classList.add( 'wds-is-flipped' );
 toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' + 
     '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
 '</span>' + 
 '<div class="wds-dropdown__content">' + 
+    '<h2 style="margin-left: 16px">Women\'s History Month</h2>' +
     '<ul class="wds-list wds-is-linked">' + 
         toolbarLinks.map(function(link) {
             return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
@@ -27,9 +34,9 @@ $('.fandom-community-header__image').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Click here to learn more about Women\'s History Month at Fandom.')
+            .text('Learn about Women\'s History Month at Fandom')
         )
-        .attr('href', 'https://community.fandom.com/wiki/User_blog:Jpearson/Embrace_Equity_with_Fandom_this_Women\’s_History_Month')
+        .attr('href', 'https://bit.ly/FandomWHMBlog-logo')
 );
 
 /* To replace the now dead "welcome bot" */

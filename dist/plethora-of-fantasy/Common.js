@@ -10,25 +10,28 @@ window.UserTagsJS = {
 		lore: 'Lore Simp',
 		braincell: 'The Only Braincell',
 		wolf: 'Official Wolf',
-		colours: 'Empress of Colours',
+		colours: 'The Colour Empress',
+		existence: 'An Existence',
 		dragon: 'Verified Dragon',
 		stalker: 'Stalker Flower',
 		kitsune: 'Kitsune Assassin',
 		feathery: 'Feathery Elf',
 		silver: 'Silver Lion',
-		activity: 'Discussions Activity Dominator'
+		activity: 'Discussions Activity Dominator',
+		collector: 'Collector of Stories',
 	}
 };
 UserTagsJS.modules.custom = {
 	'TilanissaWildhawk': ['reaper', 'children'],
 	'GingerAle0': ['lore', 'braincell'],
 	'Firewind0111': ['wolf'],
-	'Mintflower09': ['colours'],
+	'Mintflower09': ['colours, existence'],
 	'Moonshadow567': ['dragon'],
 	'ALostWonderer': ['stalker'],
 	'Featherfrost2907':['kitsune'],
 	'BLuFeather':['feathery', 'activity'],
-	'SilvermoonTC1234':['silver']
+	'SilvermoonTC1234':['silver'],
+	'Fincloud':['collector'],
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

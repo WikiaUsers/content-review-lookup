@@ -181,6 +181,22 @@
 					href: mw.util.getUrl(title),
 					text: title
 				}).outerHTML;
+			}],
+			[/\'{5}([^\']+)\'{5}/g, function(_, text) {
+				return this.ui.strong({
+					style: { "font-style": "italic" },
+					text: text
+				});
+			}],
+			[/\'{3}([^\']+)\'{3}/g, function(_, text) {
+				return this.ui.strong({
+					text: text
+				});
+			}],
+			[/\'{2}([^\']+)\'{2}/g, function(_, text) {
+				return this.ui.i({
+					text: text
+				});
 			}]
 		]),
 		isMemberOfGroup: function(group) {
@@ -253,7 +269,7 @@
 				resource.name :
 				resource;
 			
-			return /^u:dev:/i.test(resourceName);
+			return !/^u:dev:/i.test(resourceName);
 		},
 		checkResource: function(resource) {
 			return resource.flag ? 
@@ -269,11 +285,11 @@
 				
 				const params = Object.freeze({
 					type: "script",
-					article: scriptName
+					articles: scriptName
 				});
 				
-				importArticle(params)
-					.then(function(){ mw.hook(hook).add(resolve); })
+				importArticles(params)
+					.then(function() { mw.hook(hook).add(resolve); })
 					["catch"](reject);
 			}).bind(this);
 		},
@@ -284,20 +300,14 @@
 				}, this);
 				
 			const scripts = partition(
-				Array.from(this.resources.scripts), 
+				Array.from(this.resources.scripts).filter(function(item) {
+					return this.checkResource(item);
+				}, this), 
 				function(item){ return this.isLocalScript(item) }, 
 				this
 			);
 			
-			const localScripts = scripts[0].filter(function(item) {
-				return this.checkResource(item);	
-			}, this);
-			
-			const devScripts = scripts[1].filter(function(item) {
-				return this.checkResource(item);
-			}, this);
-			
-			const promises = [window.importArticle({
+			const promises = [window.importArticles({
 				type: "style",
 				articles: localStylesheets
 			}, {
@@ -305,11 +315,9 @@
 				articles: localScripts
 			})];
 			
-			devScripts.forEach(function(item){
-				promises.push(this.initPromiseFromScript(script));
-			}, this);
-			
-			return Promise.all(promises);
+			return Promise.all(devScripts.reduce(function(list, item){
+				return list.push(this.initPromiseFromScript(item)), list;
+			}, promises));
 		},
 		init: function(resources) {
 			this.i18no = resources[1];
@@ -333,9 +341,7 @@
 			const args = Array.from(arguments);
 			const options = args.at(-1);
 			
-			if (typeof options === "string") {
-				return this.i18n.msg.apply(this.i18n, args);
-			}
+			if (typeof options === "string") return this.i18n.msg.apply(this.i18n, args);
 			
 			const target = options.fromContentLang ?
 				this.i18n.inContentLang() :
@@ -353,6 +359,22 @@
 			if (this.mwc.wgNamespaceNumber !== -1) return false;
 			
 			const parts = this.mwc.wgTitle.split("/");
+			const pageTitle = parts.shift( );
+			
+			return [title, "WikiActivity"].includes(pageTitle);
+		},
+		initActivity: function() {
+			if (!this.matchesPage()) return this.fallback();
+			mw.config.get("wgCanonicalSpecialPageName", "WikiActivity");
+			this.hook(["wa.start", "wikiactivity.start"])
+				.fire(this);
+				
+			this.entries = {};
+			this.avatarCache = new Map();
+			this.currentURI = new mw.Uri();
+			this.namespaces = Array.from(this.defaultNamespaces);
+			
+			
 		}
 	};
 }(window, jQuery, mediawiki));

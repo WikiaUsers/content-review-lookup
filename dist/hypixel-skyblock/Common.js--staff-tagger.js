@@ -621,7 +621,7 @@
                         defaultResignDate = that.getField(user, "resignation"),
                         defaultBots = that.getField(user, "bot"),
                         defaultActivity = that.getField(user, "activity"),
-                        defaultReason = "Per request to be staff: [[HSW:STFREQS#New request for user rights by " + user + "]]",
+                        defaultReason = "Per request to be staff: [[HSW:STFREQS#Role Application by " + user + "]]",
                         defaultResignReason = "Staff resignation of [[User:" + user + "]]";
                     that.modal.setContent({
                         children: [{

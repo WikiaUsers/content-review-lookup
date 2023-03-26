@@ -46,3 +46,23 @@ if($('.move-to-top7').length) {
    $('<span class="top-block">'+$('.move-to-top7').html()+'</span>').appendTo('.page-header');
    $('.move-to-top7').remove();
 }
+if($('.move-to-top8').length) {
+   $('<span class="top-block">'+$('.move-to-top8').html()+'</span>').appendTo('.page-header');
+   $('.move-to-top8').remove();
+}
+if($('.move-to-top9').length) {
+   $('<span class="top-block">'+$('.move-to-top9').html()+'</span>').appendTo('.page-header');
+   $('.move-to-top9').remove();
+}
+if($('.move-to-top10').length) {
+   $('<span class="top-block">'+$('.move-to-top10').html()+'</span>').appendTo('.page-header');
+   $('.move-to-top10').remove();
+}
+if($('.move-to-top11').length) {
+   $('<span class="top-block">'+$('.move-to-top11').html()+'</span>').appendTo('.page-header');
+   $('.move-to-top11').remove();
+}
+if($('.move-to-top12').length) {
+   $('<span class="top-block">'+$('.move-to-top12').html()+'</span>').appendTo('.page-header');
+   $('.move-to-top12').remove();
+}

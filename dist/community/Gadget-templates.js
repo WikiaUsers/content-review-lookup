@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:Templates.js', 'internal-community');

@@ -72,195 +72,266 @@
 	});
 })();
 //CREDITS TO THEONEANDONLYSPOICY 
+
+
+//fixing, please don’t kill me.
 mw.loader.using('mediawiki.api', function() {
-	// Variable Declarations
-	var api = new mw.Api(), cookie_data, block_data, summary_output, dismiss_status, user_info;
+	var api = new mw.Api(), block_data;
 	var user = mw.config.get('wgUserName');
-	var startDate, startTime, startHour, startMinute, startSecond, start_am_pm, blockStartDateTime, blockStartDateTimeHHMMSS; // start time variables
-	var endDate, endTime, endHour, endMinute, endSecond, blockEndDateTime, blockEndDateTimeHHMMSS, blockexpire_current_timezone, blockexpire_UTC; // end time variables
-	var block_read_status_page = "User:" + user + "/Block_Notification_Read";
 	
-	// CSS for the Block Notification
-	mw.util.addCSS(".dimScreen{align-items:center;background:rgba(0,0,0,0.8);display:flex;height:100%;justify-content:center;left:0;position:fixed;top:0;width:100%;z-index:799}.block-notif-dismiss a{color:#3a3a3a}.block-notif-dismiss:hover{opacity:.7}");
-		
+	// If no user is logged in, abort JS.
+	if (!user) {
+		console.error("No user is currently logged in. \'BlockUserNotification\' JS aborted!");
+		return;
+	}
+	
+	// Custom CSS Implementation
+	mw.util.addCSS(".notifications-placeholder-custom .wds-banner-notification__container{bottom:50px;right:18px;font-family:rubik,helvetica,arial,sans-serif;position:fixed;z-index:200}");
+	
 	api.get({
 	action: 'query',
 	list: 'blocks',
-	bkusers: user,
+	bkusers: user
 	}).then(function(d) {
 		block_data = d.query.blocks;
 		
-		// If user is not blocked, do not continue with the script. Terminate here.
+		// If user is not blocked, do not continue with the script. Abort JS.
 		if (block_data.length < 1) {
-			console.error("You (" + user + ") are not blocked. \"BlockUserNotification\" JS aborted!");
-			document.cookie = "read=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+			console.error(user + " is not blocked. \'BlockUserNotification\' JS aborted!");
 			return;
-		}
-		
-		blockr = block_data[0].reason; // fetching block reason
-		blockID = block_data[0].id; // fetching block ID
-		blockperformer = block_data[0].by; // fetching block performer
-		blockperformer_url = blockperformer.replace(/ /g, "_");
-		blocktime = block_data[0].timestamp; // fetching block start time
-		blockexpire = block_data[0].expiry; // fetching block expiration
-		
-		//----------- | Block Start Time | -----------//
-		console.log("[RUNNING] Block (Start) Timestamp Process...");
-		
-		temp = blocktime.split("T"); 
-		startDate = temp[0];
-		temp = temp[1].split("Z");
-		startTime = temp[0];
-		
-		blockStartDateTimeHHMMSS = startTime.split(":"); // Splitting time into hours, minutes, seconds as array (blockEndDateTimeHHMMSS = {HH, MM, SS})
-		startMinute = blockStartDateTimeHHMMSS[1]; // MM
-		startSecond = blockStartDateTimeHHMMSS[2]; // SS
-		
-		if (parseInt(blockStartDateTimeHHMMSS[0]) == 0) {
-			startHour = "12";
-			start_am_pm = "AM";
-			// console.log("blockEndDateTimeHHMMSS parseInt: " + blockEndDateTimeHHMMSS);
-		}
-		else if (parseInt(blockStartDateTimeHHMMSS[0]) == 12) {
-			startHour = "12";
-			start_am_pm = "PM";
-		}
-		else if (parseInt(blockStartDateTimeHHMMSS[0]) > 12) {
-			startHour = parseInt(blockStartDateTimeHHMMSS[0])-12;
-			startHour = startHour.toString();
-			start_am_pm = "PM";
-		}
-		else {
-			startHour = blockStartDateTimeHHMMSS[0];
-			startHour = startHour.toString();
-			start_am_pm = "AM";
-		}
-		
-		// Formatting Start Time
-		startTime = startHour + ":" + startMinute + ":" + startSecond + " " + start_am_pm;
-		blockStartDateTime = startDate + ", " + startTime + " (UTC)";
-		
-		console.log("[PASSED] Block (Start) Timestamp Process");
-		// console.log("[INFO] blockStartDateTime: " + blockStartDateTime);
-		
-		//----------- | Time Formatting for Block End Time | -----------//
-		console.log("[RUNNING] Block (End) Timestamp Process...");
-		
-		if (blockexpire == "infinity") {
-			blockEndDateTime = "infinity";
-		}
-		else {
-			temp = blockexpire.split("T");
-			endDate = temp[0];
-			temp = temp[1].split("Z");
-			endTime = temp[0];
-			blockEndDateTime = endDate + ", " + endTime + " UTC";
-			
-			blockEndDateTimeHHMMSS = endTime.split(":"); // Splitting time into hours, minutes, seconds as array (blockEndDateTimeHHMMSS = {HH, MM, SS})
-			endMinute = blockStartDateTimeHHMMSS[1];
-			endSecond = blockStartDateTimeHHMMSS[2];
-			
-			temp = parseInt(blockEndDateTimeHHMMSS[0])-12;
-			
-			if (parseInt(blockEndDateTimeHHMMSS[0]) == 0) {
-				endHour = "12";
-				end_am_pm = "AM";
-			}
-			else if (parseInt(blockEndDateTimeHHMMSS[0]) == 12) {
-				endHour = "12";
-				end_am_pm = "PM";
-			}
-			else if (parseInt(blockEndDateTimeHHMMSS[0]) > 12) {
-				endHour = parseInt(blockEndDateTimeHHMMSS[0])-12;
-				endHour = endHour.toString();
-				end_am_pm = "PM";
-			}
-			else {
-				endHour = blockEndDateTimeHHMMSS[0];
-				endHour = endHour.toString();
-				end_am_pm = "AM";
-			}
-			
-			// Formatting End Time
-			endTime = endHour + ":" + endMinute + ":" + endSecond + " " + end_am_pm;
-			blockEndDateTime = endDate + ", " + endTime + " (UTC)";
-		}
-		
-		text_to_format = "<div class=\"default-background\" style=\"line-height: 1.5; border: 2px solid red; font-family: rubik, helvetica, arial, sans-serif;\"><center><span style=\"font-size: 16pt;\">'''You have been blocked from using the Tales of Tanorio Wiki.'''</span></center><hr/>You will not be able to do the following, until your block ends:<li>Discussing or upvoting in [https://talesoftanorio.fandom.com/f Discussions]; and</li><li>Editing any pages on the Tales of Tanorio Wiki]].</li><hr/><span style=\"font-size: 16pt; text-decoration: underline;\">Block Information</span><br/>Block Performer: [[User:" + blockperformer + "|" + blockperformer + "]]<br/>Block Start: " + blockStartDateTime + " <br/>Block Expiry: " + blockEndDateTime + "<br/>Block Reason:<blockquote style=\"margin-top: 0.5em;  margin-bottom: 0.5em;\"><i>" + blockr + "</i></blockquote><hr/>Please abide by the Rules and Guidelines so that the Tales of Tanorio Wiki]] can be a safe and fun place for all Fandom community members.<br/><center><div class=\"wds-button block-notif-dismiss\" id=\"block_notif_dismiss\" style=\"cursor: pointer; background-color: salmon; border-color: salmon; margin: 1em 0 0.5em 0; color: #3A3A3A;\">Dismiss</div></center></div>";
-		
-		// Cookies
-		var all_cookies = document.cookie; // get all cookies
-		var cookie_read_status = "0"; // variable to store cookie value for reading block notification
-		try {
-			var read_cookie_regex = /read=([0-1]+);/; // Regular expressions for finding cookie name (name="read") and value
-			var cookie_match = all_cookies.match(read_cookie_regex); // find cookie regex match. If no match is found error will be caught.
-			cookie_read_status = cookie_match[1];
-			console.warn("\'read\' cookie exists with value \"" + cookie_read_status + "\"!");
-		}
-		catch(err) {
-			console.error(err);
-			console.error("\'read\' cookie does not exist.");
-			// if cookie does not exist, create the cookie and set cookie value 0 (this means block notification has assumed "not to be read by blocked user"
-			if (blockexpire == "infinity") {
-				document.cookie = "read=0; path=/";
-				document.cookie = "blockid=" + blockID + "; path=/";
-			}
-			else {
-				blockexpire_current_timezone = new Date(blockexpire);
-				blockexpire_UTC = blockexpire_current_timezone.toUTCString();
-				document.cookie = "read=0; expires=" + blockexpire_UTC + "; path=/";
-				document.cookie = "blockexpiry=" + blockexpire + "; expires=" + blockexpire_UTC + "; path=/";
-				document.cookie = "blockreason=" + blockr + "; expires=" + blockexpire_UTC + "; path=/";
-				console.log("blockexpire_UTC:", blockexpire_UTC);
-			}
-			console.log("Read cookie created.");
-		}
-		
-		all_cookies = document.cookie;
-		var blockid_cookie_regex = /blockexpiry=(\S+);/;
-		var blockreason_cookie_regex = /blockreason=(.*?);/;
-		var blockid_cookie_match = all_cookies.match(blockid_cookie_regex);
-		var blockreason_cookie_match = all_cookies.match(blockreason_cookie_regex);
-		
-		if ((cookie_read_status === "1") && (blockexpire === blockid_cookie_match[1]) && (blockr === blockreason_cookie_match[1])) {
-			console.error(user + " has already dismissed notification and no change was made to block. i.e., Cookie value is \"" + cookie_read_status + "\".");
-			console.error("\"BlockUserNotification\" JS aborted!");
-			return;
-		}
-		else {
-			blockexpire_current_timezone = new Date(blockexpire);
-			blockexpire_UTC = blockexpire_current_timezone.toUTCString();
-			document.cookie = "read=0; expires=" + blockexpire_UTC + "; path=/";
-			document.cookie = "blockexpiry=" + blockexpire + "; expires=" + blockexpire_UTC + "; path=/";
-			document.cookie = "blockreason=" + blockr + "; expires=" + blockexpire_UTC + "; path=/";
-			console.warn("Block expiry comparison: \'" + blockid_cookie_match[1] + "\' to \'" + blockexpire + "\'");
-			console.warn("Block reason comparison: \'" + blockreason_cookie_match[1] + "\' to \'" + blockr + "\'");
 		}
 		
 		var block_display = document.createElement("div");
-		block_display.classList.add("dimScreen");
-		
-		api.get({
-			action: 'parse',
-			text: text_to_format
-		}).then(function(d) {
-			summary_output = d.parse.text["*"];
+		text_to_parse = "<div class=\"notifications-placeholder-custom\"><div class=\"wds-banner-notification__container\"><div class=\"wds-banner-notification wds-alert\"><div class=\"wds-banner-notification__icon\">[[File:Feather-core-x-octagon-white.svg|20px]]</div><div class=\"wds-banner-notification__text\"><b>You are currently blocked.</b> <i>More information about your block [[Special:MyContributions|here]].</i></div></div></div></div>";
+		api.parse(text_to_parse).done(function(text_output) {
 			var textParagraph = document.createElement("div");
-			textParagraph.innerHTML = summary_output;
+			textParagraph.innerHTML = text_output;
 			block_display.appendChild(textParagraph);
-			$(".mediawiki").eq(0).before(block_display);
-			console.log("Display block notification at this point.");
-			document.getElementById("block_notif_dismiss").onclick = function() {
-				if (blockexpire == "infinity") {
-					document.cookie = "read=1; path=/";
+			$(".mediawiki").eq(0).after(block_display);
+		});
+	});
+});
+//V2
+mw.loader.using('mediawiki.api', function() {
+	var config = mw.config.get([
+		'wgNamespaceNumber',
+		'wgRelevantUserName',
+		'wgServer', // Wiki URL
+		'wgSiteName', // Wiki Name
+		'wgContentLanguage' // Wiki Language Code
+	]);
+	
+	if (config.wgNamespaceNumber !== 2) {
+		console.error("The page is not a \"User\" namespace page. BlockSummary.js aborted!")
+		return; // Only run in "User" namespace.
+	}
+	
+	if (config.wgRelevantUserName === null) {
+		console.error("No relevant username attributed to the current viewed page. BlockSummary.js aborted!")
+		return; // Only run in "User" namespace.
+	}
+	
+	var wiki_name = config.wgSiteName;
+	var wiki_url = config.wgServer;
+	var wiki_lang = config.wgContentLanguage;
+	var wiki_lang_for_url = "";
+	
+	if (wiki_lang !== "en") {
+		wiki_lang_for_url = "/" + wiki_lang;
+	}
+	
+	wiki_url = wiki_url + wiki_lang_for_url;
+	
+	// If the wiki is not English, add language code next to the site name.
+	if (wiki_lang !== "en") {
+		lang_for_wiki_name = " (" + wiki_lang + ")";
+	}
+	else {
+		lang_for_wiki_name = "";
+	}
+	
+	var user = config.wgRelevantUserName; // grabbing username of user blocked
+	var url_user = user.replace(/ /g, "_");
+	
+	var api = new mw.Api(), data;
+	var blockr, blockID, blockperformer, blocktime, expire; // declaring variables for api.get
+	var parsedBlockReason; // parsed reason stored from parse API output
+	var startDate, startTime, startHour, startMinute, startSecond, start_am_pm, blockStartDateTime, blockStartDateTimeHHMMSS; // start time variables
+	var endDate, endTime, endHour, endMinute, endSecond, blockEndDateTime, blockEndDateTimeHHMMSS; // end time variables
+	var temp; // declaring variable for formatting text
+	var lang_for_wiki_name;
+
+	api.get({
+		action: 'query',
+		list: 'blocks',
+		bkusers: user,
+	}).then(function(d) {
+		data = d.query.blocks;
+		
+		// if the user is not blocked, terminate program
+		if (data === undefined || data.length < 1) { 
+			return;
+		}
+		
+		blockr = data[0].reason; // fetching block reason
+		blockID = data[0].id; // fetching block ID
+		blockperformer = data[0].by; // fetching block performer
+		blockperformer_url = blockperformer.replace(/ /g, "_");
+		blocktime = data[0].timestamp; // fetching block start time
+		expire = data[0].expiry; // fetching block expiration
+		
+		if (window.BlockSummary || !user)
+			return;
+		window.BlockSummary = true;
+		
+		
+		//----------- | Main Function for Block Report | -----------//
+		function main(user, blockreason, blockID, blockperformer, blockperformer_url, blocktime, blockexpire) {			
+			
+			// Passing wikitext for parsing
+			console.log("%c[RUNNING] Parsing block reason wikitext...", "background: #F9F983; color: black");
+			api.parse(blockreason).done(function(textOutput) {
+				console.log("%c[PASSED] Parsing block reason wikitext.", "background: limegreen; color: black");
+				
+				parsedBlockReason = textOutput;
+				
+				// console.log("[INFO] parsedBlockReason: " + parsedBlockReason);
+				
+				
+				//----------- | Block Start Time | -----------//
+				console.log("%c[RUNNING] Block (Start) Timestamp Process...", "background: #F9F983; color: black");
+				
+				temp = blocktime.split("T"); 
+				startDate = temp[0];
+				temp = temp[1].split("Z");
+				startTime = temp[0];
+				
+				blockStartDateTimeHHMMSS = startTime.split(":"); // Splitting time into hours, minutes, seconds as array (blockEndDateTimeHHMMSS = {HH, MM, SS})
+				startMinute = blockStartDateTimeHHMMSS[1]; // MM
+				startSecond = blockStartDateTimeHHMMSS[2]; // SS
+				
+				if (parseInt(blockStartDateTimeHHMMSS[0]) == 0) {
+					startHour = "12";
+					start_am_pm = "AM";
+					// console.log("blockEndDateTimeHHMMSS parseInt: " + blockEndDateTimeHHMMSS);
+				}
+				else if (parseInt(blockStartDateTimeHHMMSS[0]) == 12) {
+					startHour = "12";
+					start_am_pm = "PM";
+				}
+				else if (parseInt(blockStartDateTimeHHMMSS[0]) > 12) {
+					startHour = parseInt(blockStartDateTimeHHMMSS[0])-12;
+					startHour = startHour.toString();
+					start_am_pm = "PM";
 				}
 				else {
-					document.cookie = "read=1; expires=" + blockexpire_UTC + "; path=/";
+					startHour = blockStartDateTimeHHMMSS[0];
+					startHour = startHour.toString();
+					start_am_pm = "AM";
 				}
-				console.log("Dismiss block notification. i.e., updating \"read\" cookie to \"1\".");
-				location.reload();
-			};
-			console.log("\"BlockUserNotification\" JS successfully loaded.");
-		});
+				
+				// Formatting Start Time
+				startTime = startHour + ":" + startMinute + ":" + startSecond + " " + start_am_pm;
+				blockStartDateTime = startDate + ", " + startTime + " (UTC)";
+				
+				console.log("%c[PASSED] Block (Start) Timestamp Process", "background: limegreen; color: black");
+				// console.log("[INFO] blockStartDateTime: " + blockStartDateTime);
+				
+				//----------- | Time Formatting for Block End Time | -----------//
+				console.log("%c[RUNNING] Block (End) Timestamp Process...", "background: #F9F983; color: black");
+				
+				if (blockexpire == "infinity") {
+					blockEndDateTime = "infinity";
+				}
+				else {
+					temp = blockexpire.split("T");
+					endDate = temp[0];
+					temp = temp[1].split("Z");
+					endTime = temp[0];
+					blockEndDateTime = endDate + ", " + endTime + " UTC";
+					
+					blockEndDateTimeHHMMSS = endTime.split(":"); // Splitting time into hours, minutes, seconds as array (blockEndDateTimeHHMMSS = {HH, MM, SS})
+					endMinute = blockStartDateTimeHHMMSS[1];
+					endSecond = blockStartDateTimeHHMMSS[2];
+					
+					// console.log("blockEndDateTimeHHMMSS[0]: " + blockEndDateTimeHHMMSS[0]);
+					
+					temp = parseInt(blockEndDateTimeHHMMSS[0])-12;
+					// console.log("End Hour: " + temp.toString());
+					
+					if (parseInt(blockEndDateTimeHHMMSS[0]) == 0) {
+						endHour = "12";
+						end_am_pm = "AM";
+						// console.log("blockEndDateTimeHHMMSS parseInt: " + blockEndDateTimeHHMMSS);
+					}
+					else if (parseInt(blockEndDateTimeHHMMSS[0]) == 12) {
+						endHour = "12";
+						end_am_pm = "PM";
+					}
+					else if (parseInt(blockEndDateTimeHHMMSS[0]) > 12) {
+						endHour = parseInt(blockEndDateTimeHHMMSS[0])-12;
+						endHour = endHour.toString();
+						end_am_pm = "PM";
+					}
+					else {
+						endHour = blockEndDateTimeHHMMSS[0];
+						endHour = endHour.toString();
+						end_am_pm = "AM";
+					}
+					
+					// Formatting End Time
+					endTime = endHour + ":" + endMinute + ":" + endSecond + " " + end_am_pm;
+					blockEndDateTime = endDate + ", " + endTime + " (UTC)";
+				}
+				
+				console.log("%c[PASSED] Block (End) Timestamp Process", "background: limegreen; color: black");
+				// console.log("[INFO] blockEndDateTime: " + blockEndDateTime);
+				
+				
+				//----------- | HTML Display of Block Report | -----------//
+				console.log("%c[RUNNING] Creating HTML Display of Block Report...", "background: #F9F983; color: black");
+				
+				var Box = document.createElement("div"); // Box
+				Box.style.marginTop = "1em"; // setting top-margin for Box
+				Box.style.marginBottom = "1em"; // setting bottom-margin for Box
+				Box.style.paddingTop = "1em"; // setting padding-top for Box
+				Box.style.paddingLeft = "1em"; // setting padding-left for Box
+				Box.style.paddingRight = "1em"; // setting padding-right for Box
+				Box.style.paddingBottom = "1em"; // setting padding-bottom for Box
+				
+				
+				// adding classes for Box -- these classes are made by Fandom
+				Box.classList.add("warningbox");
+				Box.classList.add("mw-warning-with-logexcerpt");
+				Box.classList.add("mw-content-ltr");
+				
+				var textParagraph = document.createElement("p"); // create a text paragraph
+				
+				textParagraph.innerHTML = "<center><div style=\"font-size: 15pt; line-height: 1em\">" + "<a href=\"" + wiki_url + "/wiki/User:" + url_user + "\">" + user + "</a> is currently blocked on " + "<a href=\"" + wiki_url + "\">" + wiki_name + "<span style=\"font-size: 8pt;\">" + lang_for_wiki_name + "</a></span>.</div></center>" + 
+				"<center><span style=\"font-size: 8pt; padding: 0 0.25em 0 0.25em;\"><a href=\"" + wiki_url + "/wiki/User:" + url_user + "\">" + wiki_url + "/wiki/User:" + url_user + "</a></span></center>" + 
+				"<hr style=\"border: 1px solid rgb(var(--theme-alert-color--rgb)); background-color: rgb(var(--theme-alert-color--rgb));\">" +
+				"<span style=\"position: relative; float: right; border: 1.5px dotted; padding: 0 0.25em 0 0.25em\"><a href=\"" + wiki_url + "/wiki/Special:Log?type=block&page=User:" + url_user + "\">Block Log</a></span>" +
+				"<div style =\"font-size: 15pt; text-decoration: underline;\">Block Information</div>" + 
+				"<b><i>Username: </i></b>" + user +
+				"<br/><b><i>Block ID: </b></i>" + blockID +
+				"<br/><b><i>Block Performer: </b></i><a href=\"" + wiki_url + "/wiki/User:" + blockperformer_url + "\">" + blockperformer + "</a>" +
+				"<br/><b><i>Block Start: </b></i>" + blockStartDateTime +
+				"<br/><b><i>Block Expiry: </b></i>" + blockEndDateTime +
+				"<br/><b><i>Block Reason: </b></i><blockquote style=\"border-left: 5px solid rgba(var(--theme-alert-color--rgb), 0.5); padding-left: 0.5em;\">" + parsedBlockReason + "</blockquote>";
+				
+				Box.appendChild(textParagraph); // apply all text configurations into Box
+				
+				console.log("%c[DONE] HTML Display of Block Report", "background: limegreen; color: black");
+				
+				//----------- | Using setInterval to ensure prepending of Box to content page | -----------//
+				var interval = setInterval(function() {
+					if ($('.ns-2 #content').length) {
+						clearInterval(interval);
+						$(".ns-2 #content").eq(0).before(Box); // prepending Box to ".ns-2 #content"
+					}
+				}, 1000);	
+			});
+		}
+		main(user, blockr, blockID, blockperformer, blockperformer_url, blocktime, expire); // executing function
 	});
 });

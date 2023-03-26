@@ -80,7 +80,7 @@ function calculate() {
 		/*lvl. 12*/	["Garden lvl. 1","Class: Monk"],
 		/*lvl. 13*/	["Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2"],
 		/*lvl. 14*/	["Pagoda lvl. 4"],
-		/*lvl. 15*/	["Class: Geologist","Skill: Athlete lvl. 2"],
+		/*lvl. 15*/	["Chicken Coop lvl. 1","Class: Geologist","Skill: Athlete lvl. 2"],
 		/*lvl. 16*/	["Skill: Logistician lvl. 4","Skill: Antiquarian lvl. 2"],
 		/*lvl. 17*/	["Skill: Intellectual lvl. 2"],
 		/*lvl. 18*/	["Pagoda lvl. 5","Class: Archeologist"],

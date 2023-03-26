@@ -1,1 +1,0 @@
-importScript('MediaWiki:Plegable.js');

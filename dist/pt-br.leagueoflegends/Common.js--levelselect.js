@@ -120,7 +120,7 @@ mw.loader.using('site').then(function(){
         $champ.html([
             $('<label>', {
                 'for': 'lvl_' + champ,
-                'text': 'Level: '
+                'text': 'Nível: '
             }),
             $select
         ]);

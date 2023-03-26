@@ -1,154 +1,90 @@
-/* AjaxRC - configuration */
-window.ajaxPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
-window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
-window.ajaxIndicator = 'https://images.wikia.nocookie.net/software/images/a/a9/Indicator.gif';
-window.ajaxRefresh = 30000;
-$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-    'ajaxrc-refresh-text': 'AJAX',
-    'ajaxrc-refresh-hover': 'Enable page auto-refresh',
-}}}}});
+(function() {
+    'use strict';
 
-/* Auto Collapsible Table */
-var ShowHideConfig = { autoCollapse: 0};
-importScriptPage('ShowHide/code.js', 'dev');
+    if (document.getElementById('costs-table')) calculateDiff();
 
+    function calculateDiff() {
+        const costsTable = document.getElementById('costs-table')
+            , coinsCells = costsTable.querySelectorAll('td:nth-child(2)')
+            , head = document.head
+            , coinsValues = []
+            , coinsDifferences = []
+            , priceDifferences = []
+            , differencesCSS = '<style type="text/css" class="differences-styles">.theme-fandomdesktop-light {\
+    --pos-color: #33691e;\
+    --neg-color: #b71c1c;\
+    --null-color: #424242;\
+    }\
+    \
+    .theme-fandomdesktop-dark {\
+    --pos-color: #ccff90;\
+    --neg-color: #ef9a9a;\
+    --null-color: #bdbdbd;\
+    }\
+    \
+    .mw-plusminus-pos {\
+        color: var(--pos-color);\
+    }\
+    \
+    .mw-plusminus-neg {\
+        color: var(--neg-color);\
+    }\
+    \
+    .mw-plusminus-null {\
+        color: var(--null-color);\
+    }</styles>';
 
-// *******************************************************
-// Experimental javascript countdown timer Start (Splarka)
-// Version 0.0.3
-// *******************************************************
-//
-// Usage example:
-//  <span class="countdown" style="display:none;">
-//  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
-//  </span>
-//  <span class="nocountdown">Javascript disabled.</span>
- 
-function updatetimer(i) {
-  var now = new Date();
-  var then = timers[i].eventdate;
-  var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
- 
-  // catch bad date strings
-  if(isNaN(diff)) { 
-    timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-    return;
-  }
- 
-  // determine plus/minus
-  if(diff<0) {
-    diff = -diff;
-    var tpm = 'T plus ';
-  } else {
-    var tpm = '';
-  }
- 
-  // calcuate the diff
-  var left = (diff%60) + ' seconds';
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%60) + ' minutes ' + left;
-    diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%24) + ' hours ' + left;
-    diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' days ' + left
-  var diffing = count=Math.floor((then.getTime()-now.getTime())/1000);
-  if(diffing<0) {
-  timers[i].firstChild.nodeValue = 'Timer has expired';
-  } else {
-  timers[i].firstChild.nodeValue = tpm + left;
-  }
- 
- 
-  // a setInterval() is more efficient, but calling setTimeout()
-  // makes errors break the script rather than infinitely recurse
-  timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
-}
- 
-function checktimers() {
-  //hide 'nocountdown' and show 'countdown'
-  var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-  for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-  var countdowns = getElementsByClassName(document, 'span', 'countdown');
-  for(var i in countdowns) countdowns[i].style.display = 'inline'
- 
-  //set up global objects timers and timeouts.
-  timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
-  timeouts = new Array(); // generic holder for the timeouts, global
-  if(timers.length == 0) return;
-  for(var i in timers) {
-    timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-    updatetimer(i);  //start it up
-  }
-}
-addOnloadHook(checktimers);
- 
-// **************************************************
-//  - end -  Experimental javascript countdown timer
-// **************************************************
+        // Get amount of coins of each row. Because the amount of minerals is always equal
+        // to the amount of coins, we don't bother working with those too.
+        coinsCells.forEach(function getCoinsNumber(coinsCell) {
+            const coins = Number(coinsCell.innerText.replace(',', ''));
+    
+            coinsValues.push(coins);
+        });
 
-
-
-
-/* Highlight Admin Message Wall Comments */
-$('.speech-bubble-avatar')
-.filter(function () {
-    return $(this).has('a[href$="Kyle$calise"]').length;
-}).next().css({
-    backgroundColor: "orange"
-});
-
-var admins = ['Kyle$calise', 'Minifede', '-alex48starlings-'];
- 
-(function (admins) {
- 
-    if (!admins.length) return;
-    if ('view' !== ($.getUrlVar('action') || 'view')) return;
- 
-    var adminsRegex = [];
-    for (var i = 0; i < admins.length; i++) {
-        adminsRegex.push(admins[i].replace(/[\[\]{}()*+?.,\\^$|#\s-]/g, "\\$&"));
-    }
-    adminsRegex = adminsRegex.join('|');
- 
-    function addClassToComments () {
-        var regex = new RegExp('^(?:' + adminsRegex + ')$', 'i');
-        $('ul.comments li')
-        .filter(function () {
-            return regex.test(
-                $(this).attr('data-user')
-            );
-        })
-        .addClass('admin');
-    }
- 
-    function addClassToWall () {
-        var regex = new RegExp('(?:' + adminsRegex + ')$', 'i');
-        $('ul.comments li')
-        .filter(function () {
-            return regex.test(
-                $(this).children('.speech-bubble-avatar')
-                .children('a').attr('href')
-            );
-        })
-        .addClass('admin');
-    }
- 
-    function addClassToProfilePage () {
-        var regex = new RegExp('(?:' + adminsRegex + ')(?:/|$)', 'i');
-        if (regex.test(wgTitle)) {
-            $( '#UserProfileMasthead' ).addClass('admin');
-        }    
-    }
- 
-    $(function  () {
-        if (wgCanonicalNamespace == "Thread" || wgCanonicalNamespace == "Message_Wall") {
-            addClassToWall();
-        } else if ($('ul.comments li').length) {
-            addClassToComments();
+        // Now get the difference of price for each row.
+        for (var i = 0; i < coinsValues.length; i++) {
+            const hasPreviousCost = coinsValues[i - 1]
+                , previousCost = hasPreviousCost ? coinsValues[i - 1] : 0
+                , currentCost = coinsValues[i]
+                , costDifference = currentCost - previousCost;
+    
+            coinsDifferences.push(costDifference);
         }
-        if ($( '#UserProfileMasthead' ).length) {
-            addClassToProfilePage();
+
+        // Then get the difference of the difference of each price.
+        for (var i = 0; i < coinsDifferences.length; i++) {
+            const hasPreviousCost = coinsDifferences[i - 1]
+                , previousCost = hasPreviousCost ? coinsDifferences[i - 1] : 0
+                , currentCost = coinsDifferences[i]
+                , costDifference = currentCost - previousCost;
+    
+            priceDifferences.push(costDifference);
         }
-    });
- 
-}(admins));
+
+        // And, once both differences of each price is obtained, add it to the costs table.
+        for (var i = 0; i < priceDifferences.length; i++) {
+            const diffCell = document.querySelectorAll('#costs-table tr')[i + 1].querySelector('td:last-child')
+                , costDifference = coinsDifferences[i]
+                , differenceOfDifference = priceDifferences[i]
+                , differenceType = differenceOfDifference > 0 ? 'neg' : differenceOfDifference < 0 ? 'pos' : 'null'
+                , differenceSymbol = differenceOfDifference > 0 ? '+' : ''
+                , differenceHTML = '\
+                <a href="/wiki/Resources" title="Resources">\
+                    <img alt="Cost" src="https://galaxylife.fandom.com/Special:Filepath/Icon_costs.png?width=16" decoding="async" loading="lazy" width="16" height="16" data-image-name="Icon_costs.png" data-image-key="Icon_costs.png" data-src="https://galaxylife.fandom.com/Special:Filepath/Icon_costs.png?width=16" class="ls-is-cached lazyloaded">\
+                </a>\
+                ' + formattedNumber(costDifference) + ' <span class="mw-plusminus-' + differenceType + '">(' + differenceSymbol + formattedNumber(differenceOfDifference) +')</span>\
+                ';
+
+            diffCell.insertAdjacentHTML('beforeend', differenceHTML);
+        }
+
+        // Add commas to numbers with more than 4 digits where it corresponds.
+        // Code from https://stackoverflow.com/a/2901298/20503138
+        function formattedNumber(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        head.insertAdjacentHTML('beforeend', differencesCSS);
+    }
+}());

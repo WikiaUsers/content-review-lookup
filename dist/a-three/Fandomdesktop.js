@@ -20,13 +20,6 @@ window.tooltips_list = [
     }
 ];
 
-/* Countdown code */
-window.countdownTimer = {
-endtextmaintenance: function () {
-       $(this).text('This has ended');
-    }
-};
-
 /* Adding categories to customized upload page */
 if (['Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');
