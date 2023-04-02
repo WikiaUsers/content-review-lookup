@@ -443,8 +443,8 @@ window.hsbwiki = window.hsbwiki || {}
                         action: 'parse',
                         text: code,
                         prop: 'text',
-                        title: mw.config.get('wgPageName'),
-                        disablepp: 'true'
+                        contentmodel: 'wikitext',
+                        disablelimitreport: 'true'
                     };
 
                 // experimental support for using VE to parse calc templates

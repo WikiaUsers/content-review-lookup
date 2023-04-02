@@ -1,9 +1,16 @@
-if ($( "body" ).hasClass( "ns-0" )) {
-  $(function() {
-    setTimeout( function() { mw.loader.load('https://apis.google.com/js/platform.js') },
-    1000)
-  });
-}
+function loadYTButton() {
+  if ($('div.g-ytsubscribe').length) {
+    mw.loader.load('https://apis.google.com/js/platform.js');
+    return;
+  };
+  setInterval(function () { loadYTButton() }, 1000);
+};
+
+addEventListener("DOMContentLoaded", (event) => {
+  if ($("body").hasClass("ns-0")) {
+    loadYTButton();
+  };
+});
 
 
 
@@ -80,17 +87,3 @@ mw.hook('dev.i18n').add(function (i18n) {
     });
 });
 importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
-
-// Set a timer for the subscriber button for 3 seconds, because the issue is that it loaded too fast
-if ($( "body" ).hasClass( "ns-0" )) {
-  $(function() {
-    setTimeout( function() { mw.loader.load('https://apis.google.com/js/platform.js') },
-    1000)
-  });
-}
-
-// Load the script using mw.loader.load
-mw.loader.load("yt/platform.js", "text/javascript", () => {
-  // Once the script has been loaded, clear the timeout
-  clearTimeout(timeout);
-});

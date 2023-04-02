@@ -13,7 +13,7 @@
 ( function() {
 	mw.loader.using( 'mediawiki.util' ).then( function() {
 		if (mw.config.get("wgCanonicalNamespace") == "Self") {
-			$("#firstHeading").after('<div class="page-warning">This is a self page. Its contents are not guaranteed by wiki staff. <a href="https://lol.fandom.com/Help:Self">Click here for more information.</a></div>');
+			$("#firstHeading").after('<div class="page-warning">This is a self page. Its contents are not guaranteed by wiki staff. <a href="' + mw.config.get("wgServer") + '/Help:Self">Click here for more information.</a></div>');
 		}
 	});
 }() 

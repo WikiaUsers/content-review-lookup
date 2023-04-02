@@ -13,3 +13,10 @@ window.tooltips_list = [
 
 window.AddRailModule = [{prepend: true}];
 window.BackToTopModern = true;
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:BackToTopButton/code.js',
+    ]
+});

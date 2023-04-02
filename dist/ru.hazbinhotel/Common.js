@@ -12,68 +12,28 @@ window.hzbn.mwHtmlLinkFabric = function (classNames) {
   };
 };
 
-/* User Tags */
-
+/* Выделение комментариев */
 const staff = [
     {name: 'Swit4er', className: 'bur'},
     {name: 'Voidan Dether', className: 'bur'},
     {name: 'Terabait24', className: 'admin'},
     {name: 'Никитин Арсений', className: 'admin'},
     {name: 'P4kaidu', className: 'admin'},
+    {name: 'Creepy Owl', className: 'contMod'},
+    {name: 'Lich night', className: 'threadMod'},
+    {name: 'IamNotFreddy', className: 'discordAdmin'},
     {name: 'Merzlyak', className: 'discordMod'},
     {name: 'Kostinger', className: 'discordMod'},
     {name: 'TimurKhan', className: 'discordMod'},
-    {name: 'Владыка Аларак', className: 'intern'},
-    {name: 'IamNotFreddy', className: 'discordAdmin'},
     {name: 'LeraBE', className: 'discordMod'},
     {name: 'Lubitel obnimashek', className: 'intern'},
+    {name: 'Владыка Аларак', className: 'intern'},
     {name: 'JustAccount', className: 'intern'},
     {name: 'Fleshka5856', className: 'intern'},
     {name: 'Fadri Gold', className: 'intern'},
-    {name: 'Creepy Owl', className: 'contMod'},
-    {name: 'Lich night', className: 'threadMod'},
+    {name: 'YakenHgar', className: 'intern'},
 ];
 
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		bureaucrat: { link:"Hazbin_Hotel_Вики:Бюрократы" },
-		sysop: { link:"Hazbin_Hotel_Вики:Администраторы" },
-		'content-moderator': { link:"Hazbin_Hotel_Вики:Модераторы_контента" },
-		threadmoderator: { link:"Hazbin_Hotel_Вики:Модераторы_сообщества" },
-		bot: { link:"Hazbin_Hotel_Вики:Боты" },
-		
-		technician: { u: 'Техник' },
-		founder: { u: 'Основатель' },
-		intern: { u: 'Стажёр', link:"Hazbin_Hotel_Вики:Стажёры" },
-		discordMod: { u: 'Модератор Discord', link:"Hazbin_Hotel_Вики:Модераторы_Discord" },
-		discordAdmin: { u: 'Администратор Discord', link:"Hazbin_Hotel_Вики:Администраторы_Discord" },
-		translator: { u: 'Переводчик' }
-	},
-	getNameByTag: function (tag) {
-        return this.tags[tag].u;
-    }
-};
-
-UserTagsJS.modules.custom = {
-	'Voidan Dether': ['founder'],
-	'Terabait24': ['technician'],
-	'Никитин Арсений': ['technician'],
-	'P4kaidu': ['technician'],
-	'Merzlyak': ['discordMod'],
-	'Kostinger': ['discordMod'],
-	'TimurKhan': ['discordMod'],
-	'Владыка Аларак': ['intern'],
-	'IamNotFreddy': ['discordAdmin'],
-	'LeraBE': ['discordMod'],
-	'Lubitel obnimashek': ['intern'],
-	'JustAccount': ['intern'],
-	'Swit4er': ['translator'],
-	'Fleshka5856': ['intern'],
-	'Fadri Gold': ['intern']
-}
-
-/* Выделение комментариев */
 setInterval(function (user) {
 	staff.forEach(function (user) {
 	  $('.wds-avatar a[href$="' + window.encodeURIComponent(user.name) + '"]').closest('.Reply, .Reply_body__PM9kM').addClass('Reply--role-' + user.className)

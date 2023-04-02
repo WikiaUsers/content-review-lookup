@@ -42,9 +42,17 @@ window.UserTagsJS = {
                 u: 'PIA Member',
                 order: 4
             },
+            pbmdirector: {
+                u: 'PBM Director',
+                order: 10
+            },
+            pbmdirector: {
+                u: 'PET Specialist',
+                order: 11
+            },
             newuser: { 
                 u: 'New User',
-                order: 10
+                order: 12
             }
 	}
 };
@@ -64,6 +72,8 @@ UserTagsJS.modules.custom = {
     'Ood23doc': ['pia'], // NOTE: order of list here does NOT matter
     'CorruptBIOS': ['maintainer'], // NOTE: order of list here does NOT matter
     'Powershell_exe': ['maintainer'] // NOTE: order of list here does NOT matter
+    'Jovan6886': ['pbmdirector'] // NOTE: order of list here does NOT matter
+    'Lifeworm': ['petspecialist'] // NOTE: order of list here does NOT matter
 };
 var MessageBlock = {
   title : 'Blocked',

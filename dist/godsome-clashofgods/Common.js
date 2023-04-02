@@ -7,3 +7,9 @@ if (wgPageName == 'Resource_Calc') {
     	article:"MediaWiki:Resource_Calc.js"
 	});
 }
+if (wgPageName == 'Speed_Boost_Calc') {
+	importArticles({
+    	type: "script",
+    	article:"MediaWiki:Speed_Boost_Calc.js"
+	});
+}

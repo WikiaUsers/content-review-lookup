@@ -1,5 +1,6 @@
 /*Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
+
 window.BackToTopModern = true;
 
 var tooltips_config = {
@@ -212,3 +213,49 @@ function zselector( $content ) {
     mw.hook( 'wikipage.content' ).add( zselector );
     zselector( mw.util.$content );
 });
+
+/* Таблица Идентичностей Лимбуса*/
+function Filt(arr, clas){
+	All = [];
+	o = '.'+clas;
+	arr.forEach(function(Mini){al = Mini.querySelectorAll(o); if(al.length > 0 || Mini.classList.contains(clas)) All.push(Mini); });
+	
+	return All;
+}
+function Filter(Allmini, Sin){
+	if (Sin == '')
+		return Allmini;
+	Allmininext = [];
+	Sins = [];
+	rar = document.querySelectorAll('.IdTable .'+Sin+' .IdTBl.IdTBl1 i');
+	rar.forEach(function(Ra){Sins.push(Ra.textContent);});
+	
+	if(Sins.length > 0){
+		Sins.forEach(function(Ra){Allmininext = Allmininext.concat(Filt(Allmini,Sin+Ra));});
+		return Array.from(new Set(Allmininext));
+	}
+	return Allmini;
+}
+function UpdateTable() {
+	Allmini = document.querySelectorAll(".IdTable .IdTIc");
+	//Hide all
+	Allmini.forEach(function(Mini){Mini.style.display = "none";});
+	Allmininext = [];
+	AllRows = document.querySelectorAll(".IdTable .IdTRow");
+	AllRows.forEach(function(Mini){Allmini = Filter(Allmini, (Mini.classList.length >= 2 ? (Mini.classList.value.split(' ')).at(-1) : '')) });
+	
+	Allmini.forEach(function(Mini){Mini.style.display = "inline-block";});
+}
+
+document.querySelectorAll(".IdTBl").forEach( 
+	function(button){
+	button.addEventListener(
+		'click',
+		function (){ 
+			if(this.classList.contains("IdTCross"))
+				document.querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
+			else
+				this.classList.toggle("IdTBl1");
+			UpdateTable();
+	}, false
+);});

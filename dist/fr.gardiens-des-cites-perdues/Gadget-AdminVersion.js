@@ -14,8 +14,7 @@ $(document).ready(function() {
         type: "script",
         articles: [
             'u:dev:MediaWiki:MassEdit.js',
-            'u:dev:MediaWiki:CategoryQuickRemove',
-            'u:dev:MediaWiki:NoGlobalNav.js',
+            'u:dev:MediaWiki:CategoryQuickRemove'
         ]
     }, {
         type: "style",

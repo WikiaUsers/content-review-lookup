@@ -218,38 +218,3 @@
   }
  
   addOnloadHook( createNavigationBarToggleButton );
-
-// ================================================================
-// BEGIN - Username replace function ([[template:USERNAME]])
-// * Description: Inserts user name into <span class="insertusername"></span>
-// * Maintainers: [[User:Splarka]] (original), [[User:Spang]] (current)
-// ================================================================
-
-$(document).ready( function () {
-   if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-   $('span.insertusername').each(function() {
-       $(this).text(wgUserName);
-   });
-});
-
-// ================================================================
-// END - Username replace function ([[template:USERNAME]])
-// ================================================================
-
-
-UserTagsJS.modules.inactive = 60; // 60 days
-UserTagsJS.modules.autoconfirmed = true; // Switch on
-UserTagsJS.modules.newuser = {
-	days: 5, // Must have been on the Wiki for 5 days
-	edits: 10, // And have at least 10 edits to remove the tag
-	namespace: 0 // Edits must be made to articles to count
-};
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		montheditor: { u:'Editor of the Month', order:-1/0 },
-		featured: 'Featured',
-		templates: 'Templates Guru'
-	}
-};

@@ -101,6 +101,6 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.copy-content-text').on("click", copyText);
-	$('.copy-content-template').on("click", copyTemplate);
+	$('.copy-content-text').click(copyText);
+	$('.copy-content-template').click(copyTemplate);
 });

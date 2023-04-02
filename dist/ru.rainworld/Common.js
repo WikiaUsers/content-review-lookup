@@ -62,7 +62,7 @@ $(function() {
 	const elems = document.querySelectorAll("a[href^='http://rainworld.fandom.com/wiki/']");
 	if (elems.length > 0) {
 		elems.forEach(function(elem) {
-			elem.href = elem.href.replace(/fandom\.com/, 'miraheze.org');
+			elem.href = elem.href.replace(/rainworld\.fandom\.com/, 'rainworld.miraheze.org');
 		});
 	}
 });

@@ -936,6 +936,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"asterism": {
+				"name": "Asterism",
+				"colors": [
+					"dark",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"astro": {
 				"name": "Astro",
 				"colors": [
@@ -1574,6 +1582,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"blarney": {
+				"name": "Blarney",
+				"colors": [
+					"dark",
+					"green",
+					"yellow"
+				],
+				"rarity": "common"
+			},
 			"blast": {
 				"name": "Blast",
 				"colors": [
@@ -1892,6 +1909,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black",
 					"white",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"brightaries": {
+				"name": "Bright Aries",
+				"colors": [
+					"zodiac",
+					"shine",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4139,6 +4165,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"dazzle": {
+				"name": "Dazzle",
+				"colors": [
+					"shine",
+					"purple",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"dazzlestar": {
 				"name": "Dazzlestar",
 				"colors": [
@@ -4709,6 +4744,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"duskarch": {
+				"name": "Duskarch",
+				"colors": [
+					"dark",
+					"rainbow",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5449,6 +5493,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"purple"
 				],
 				"rarity": "unbreedable"
+			},
+			"fallacy": {
+				"name": "Fallacy",
+				"colors": [
+					"dark",
+					"blue",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"fallingleaf": {
 				"name": "Falling Leaf",
@@ -6958,6 +7011,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "common"
+			},
+			"gloomscale": {
+				"name": "Gloomscale",
+				"colors": [
+					"dark",
+					"white",
+					"black"
+				],
+				"rarity": "unbreedable"
 			},
 			"gloriosa": {
 				"name": "Gloriosa",
@@ -8534,6 +8596,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"incandescent": {
+				"name": "Incandescent",
+				"colors": [
+					"shine",
+					"pink",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"incognito": {
 				"name": "Incognito",
 				"colors": [
@@ -9048,6 +9119,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"name": "Kindheart",
 				"colors": [
 					"holiday",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"kindling": {
+				"name": "Kindling",
+				"colors": [
+					"shine",
+					"green",
 					"white"
 				],
 				"rarity": "unbreedable"
@@ -9945,6 +10025,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"luminescent": {
+				"name": "Luminescent",
+				"colors": [
+					"shine",
+					"yellow",
+					"black"
+				],
+				"rarity": "common"
+			},
 			"luminous": {
 				"name": "Luminous",
 				"colors": [
@@ -10482,6 +10571,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"mendacity": {
+				"name": "Mendacity",
+				"colors": [
+					"dark",
+					"red",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"menorah": {
 				"name": "Menorah",
 				"colors": [
@@ -10736,6 +10834,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"champion",
 					"metal"
+				],
+				"rarity": "unbreedable"
+			},
+			"mockery": {
+				"name": "Mockery",
+				"colors": [
+					"dark",
+					"purple",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -12780,6 +12887,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"phantasm": {
+				"name": "Phantasm",
+				"colors": [
+					"dark",
+					"black",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"phantom": {
 				"name": "Phantom",
 				"colors": [
@@ -13743,6 +13859,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"radiance": {
+				"name": "Radiance",
+				"colors": [
+					"diamond",
+					"shine",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"radiant": {
 				"name": "Radiant",
 				"colors": [
@@ -14039,12 +14164,29 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"reflection": {
+				"name": "Reflection",
+				"colors": [
+					"shine",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"reflector": {
 				"name": "Reflector",
 				"colors": [
 					"dark",
 					"black",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"refraction": {
+				"name": "Refraction",
+				"colors": [
+					"shine",
+					"rainbow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -15448,6 +15590,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"skycharge": {
+				"name": "Skycharge",
+				"colors": [
+					"shine",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"skyfun": {
 				"name": "Skyfun",
 				"colors": [
@@ -15658,6 +15809,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"dino",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"snide": {
+				"name": "Snide",
+				"colors": [
+					"dark",
+					"red",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -18028,6 +18188,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"umbertyke": {
+				"name": "Umbertyke",
+				"colors": [
+					"dark",
+					"green",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"umbrage": {
 				"name": "Umbrage",
 				"colors": [
@@ -19724,6 +19893,10 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"weaknesses": []
 			},
 			"membership": {
+				"strengths": [],
+				"weaknesses": []
+			},
+			"shine": {
 				"strengths": [],
 				"weaknesses": []
 			}

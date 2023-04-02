@@ -1,14 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /******************************/
-/* Mediaplayer     */
-/******************************/
-
-var mediaReplacer = mw.config.get('wgTimedMediaHandler');
-mediaReplacer['EmbedPlayer.RewriteSelector'] = 
-    mediaReplacer['EmbedPlayer.RewriteSelector'].replace('audio,', '');
-
-/******************************/
 /* Expand All Collapsible     */
 /******************************/
 function expandAllHandler(e, $el) {

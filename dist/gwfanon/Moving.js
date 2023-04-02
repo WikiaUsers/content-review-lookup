@@ -14,6 +14,18 @@ if($('#gallery-link').length) {
    $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#gallery-link').html()+'</span>').appendTo('.page-header__actions');
    $('#gallery-link').remove();
 }
+if($('#iconlink1').length) {
+   $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#iconlink1').html()+'</span>').appendTo('.page-header__actions');
+   $('#iconlink1').remove();
+}
+if($('#iconlink2').length) {
+   $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#iconlink2').html()+'</span>').appendTo('.page-header__actions');
+   $('#iconlink2').remove();
+}
+if($('#iconlink3').length) {
+   $('<span class="upon-moving gallery-link wds-button wds-is-text page-header__action-button has-label">'+$('#iconlink3').html()+'</span>').appendTo('.page-header__actions');
+   $('#iconlink3').remove();
+}
 if($('.user-status').length) {
    $('<span class="upon-moving-status">'+$('.user-status').html()+'</span>').appendTo('.status-placeholder');
    $('.user-status').remove();

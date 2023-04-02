@@ -7,6 +7,8 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomWHMGamers', label: 'Gaming Stories: meet RinasaurusRex<br/>and Jessica Howard'},
     {link: 'https://bit.ly/FandomWHMGamers2', label: 'Gaming Stories: meet Minnichi and<br/>LucyKuranSKYDOME'},
     {link: 'https://bit.ly/FandomWHMGamers3', label: 'Gaming Stories: meet Miranda Phaal<br/>and Tiffany Tse'},
+    {link: 'https://americanhorrorstory.fandom.com/wiki/User_blog:Johnny_Warren/Celebrating_Women%27s_History_Month!', label: 'AHS: The Women Behind the Story'},
+
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

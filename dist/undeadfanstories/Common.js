@@ -3,18 +3,68 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-                'janitor': { u:'Janitor' },
                 'inactive-admin': { u:'Inactive Admin', order: -1/0 },
                 'inactive-crat': { u:'Inactive Bureaucrat', order: -1/0 },
-                'lsofmankind': { u:'Last Hope of Mankind', order: -1/0 }
+                'uotm': { u:'User of the Month', order: -1/0 },
+                'formsta': { u:'Former Staff', order: -1/0 },
+                'bansta': { u:'Banned Former Staff', order: -1/0 },
+                'ultsur': { u:'Ultimate Survivor', order: -1/0 }
         }
 };
 UserTagsJS.modules.custom = {
-        'JayBaee': ['lsofmankind'],
-        'TheInfected': ['lsofmankind'],
-        'Pops Capo': ['lsofmankind']
+        'SomeDude34': ['ultsur'],
+        'TheBloodyNorthman': ['formsta'],
+        'WalkerMaimer': ['formsta'],
+        'Zedhead22': ['formsta'],
+        'WalkerMag102': ['formsta'],
+        'Snape4444': ['formsta'],
+        'Rick123Axel': ['formsta'],
+        'Lee Dixon': ['formsta'],
+        'BlastedDiamonds2': ['formsta'],
+        'RelicRaider': ['formsta'],
+        'JayBaee': ['formsta'],
+        'Enjoyableari': ['formsta'],
+        'Maxwestt': ['formsta'],
+        'Hallowseve97': ['formsta'],
+        'WesZombie': ['formsta'],
+        'Kulebubz': ['formsta'],
+        'Jamie141': ['formsta'],
+        'Pastelhaxe': ['formsta'],
+        'BulletRefutation': ['formsta'],
+        'Killerskull2': ['formsta'],
+        'Olivia253': ['formsta'],
+        'Thesaboteur7': ['formsta'],
+        'TheFlyingDutchman': ['formsta'],
+        'Daryl Maylam': ['formsta'],
+        'LOSTWD': ['formsta'],
+        'Headaches': ['formsta'],
+        'Benjaminthewill123123': ['formsta'],
+        'DominicT22': ['formsta'],
+        'Dixonlovessquirrels': ['formsta'],
+        'KuT': ['formsta'],
+        'Kaffe4200': ['formsta'],
+        'YoungAnarchy': ['formsta'],
+        'WinterFallout': ['formsta'],
+        'Skull26374': ['formsta'],
+        'TheLethalWeapon': ['formsta'],
+        'Wutdoyawant': ['formsta'],
+        'TheWalkingDrew': ['formsta'],
+        'Ttowen': ['formsta'],
+        'Moodyrocks': ['formsta'],
+        'AlexShepherd': ['formsta'],
+        'Crosider': ['bansta'],
+        'Vauseman': ['bansta'],
+        'TheInfected': ['bansta'],
+        'Pops Capo': ['bansta'],
+        'KnowledgeProspector': ['bansta'],
+        'NOStalgic': ['bansta'],
+        'GasmaskMerc Bot': ['bansta'],
+        'Johno1995': ['bansta'],
+        'Lee Everett': ['bansta'],
+        'PBR Sharpshoot': ['bansta'],
+        'Cperez13': ['bansta'],
 };
-UserTagsJS.modules.inactive = 40
+UserTagsJS.modules.inactive = 365
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
 // NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually

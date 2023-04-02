@@ -620,6 +620,11 @@
             styles: 'MediaWiki:ThemeColorClasses.css'
         },
         
+        ThemedFandomBranding: {
+            page: 'ThemedFandomBranding',
+            styles: 'MediaWiki:ThemedFandomBranding.css'
+        },
+        
         TimedSlider: {
             page: 'TimedSlider',
             scripts: 'MediaWiki:TimedSlider/code.js',

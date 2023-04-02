@@ -25,7 +25,7 @@ UserTagsJS.modules.custom = {
 	'TilanissaWildhawk': ['reaper', 'children'],
 	'GingerAle0': ['lore', 'braincell'],
 	'Firewind0111': ['wolf'],
-	'Mintflower09': ['colours, existence'],
+	'Mintflower09': ['colours', 'existence'],
 	'Moonshadow567': ['dragon'],
 	'ALostWonderer': ['stalker'],
 	'Featherfrost2907':['kitsune'],

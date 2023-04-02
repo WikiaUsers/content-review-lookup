@@ -133,6 +133,51 @@ $(function() {
         calculator_stats_update();
     }());
     
+    /* Blessings */
+    (function() {
+    	$('#calculator_blessings')
+    		.append('Level: ')
+    		.append('<input id="calculator_blessings_level" type="number" value="120" min="8" max="4000" step="1" style="width:55px;">')
+    		.append('</br></br>')
+    		.append('<table id="calculator_blessings_table"><thead><tr><th>Level</th><th>Regular Blessing</br><small>(each)</small></th><th>Enhanced Blessing</br><small>(each)</small></th><th>All 7 Blessings</th><th>All 7 Blessings</br><small>(using Henricus)</small></th></tr></thead><tbody></tbody></table>');
+    	
+    	regular_blessing = function(level) {	
+    		if (level < 30) {
+    			return 2000;
+    		} else if (level < 120) {
+    			return (200 * (level - 20));
+    		} else {
+    			return (20000 + 75 * (level - 120));
+    		}
+    	};
+    	enhanced_blessing = function(level) {	
+    		if (level < 30) {
+    			return 2600;
+    		} else if (level < 120) {
+    			return (260 * (level - 20));
+    		} else {
+    			return (26000 + 100 * (level - 120));
+    		}
+    	};
+    	fmt = function(x) {
+    		return x.toLocaleString('en-US', {maximumFractionDigits:2});
+    	};
+    	update_blessings_table = function (level) {
+    		var reg = regular_blessing(level),
+    		enh = enhanced_blessing(level),
+    		allBless = 5 * reg + 2 * enh,
+    		allBlessInq = Math.floor(5 * reg * 1.1 + 2 * enh);
+    		
+    		$('#calculator_blessings_table > tbody').empty();
+    		$('#calculator_blessings_table')
+    			.append('<tr><td>' + fmt(level) + '</td><td>' + fmt(reg) + '</td><td>' + fmt(enh) + '</td><td>' + fmt(allBless) + '</td><td>' + fmt(allBlessInq) + '</td></tr>');
+    	};
+    	$('#calculator_blessings_level').on('change keyup',function() {
+    		update_blessings_table(this.value);
+    	});
+    	update_blessings_table($('#calculator_blessings_level').val());
+    }());
+    
     /*Loot Bonus*/
     (function() {
         $('#calculator_lootbonus')

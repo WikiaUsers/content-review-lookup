@@ -163,36 +163,15 @@ $(function(){
 });
 
 
-//lw
+//ещё удобства
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
-        case 'Таблица_артефактов':
-            $('body').addClass('is-content-expanded')
-        break;
-    }
-});
-
-//comp. marks
-$(function(){   
-    switch ( mw.config.get('wgPageName') ) {
-        case 'Лист_достижений_персонажа':
-            $('body').addClass('is-content-expanded')
-        break;
-    }
-});
-
-$(function(){   
-    switch ( mw.config.get('wgPageName') ) {
-        case 'Шаблон:Полотно_сервера':
-            $('body').addClass('is-content-expanded')
-        break;
-    }
-});
-
-//Шаблон:Hof
-$(function(){   
-    switch ( mw.config.get('wgPageName') ) {
-        case 'Блог_участника:TRJ-VoRoN/Небосвод_почёта':
+      case 'Лист_достижений_персонажа':
+      case 'Шаблон:Полотно_сервера':
+      case 'Блог_участника:TRJ-VoRoN/Небосвод_почёта':
+      case 'Таблица_артефактов':
+      case 'Таблица_артефактов/Afterbirth':
+      case 'Таблица_артефактов/Afterbirth_+':
             $('body').addClass('is-content-expanded')
         break;
     }

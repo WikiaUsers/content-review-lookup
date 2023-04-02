@@ -1,4 +1,4 @@
-//To do: Reintroduce the i18n module, and maybe also use of mediawiki pages to store the settings for the module.
+//To do: Reintroduce the i18n module
 (function() {
     if (window.Discord && Discord.init) return;
 

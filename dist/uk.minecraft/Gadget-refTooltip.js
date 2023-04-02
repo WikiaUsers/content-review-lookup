@@ -4,17 +4,17 @@
 
 $( function() {
 	var i18n = {
-		cancelButton: 'Cancel',
-		doneButton: 'Done',
-		enableLabel: 'Enable reference tooltips',
-		optionsButtonTitle: 'Change reference tooltip options',
-		referencesSectionName: 'References',
-		saveFailedStorageFull: "Is your browser's localStorage full?",
-		saveFailedTitle: 'Saving options failed'
+		cancelButton: 'Скасувати',
+		doneButton: 'Готово',
+		enableLabel: 'Увімкнути примітки',
+		optionsButtonTitle: 'Змінити параметри примітки',
+		referencesSectionName: 'Примітки',
+		saveFailedStorageFull: "Місцеве сховище вашого браузера заповнено?",
+		saveFailedTitle: 'Не вдалося зберегти параметри'
 	};
 	
 	var $win = $( window );
-	var $body = $( '.mw-body' );
+	var $body = $( '#content' );
 	var $content = $( '#mw-content-text' );
 	var $tooltip = $();
 	var $tooltipText = $();
