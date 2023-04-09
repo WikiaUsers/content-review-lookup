@@ -218,5 +218,12 @@ function createNavigationBarToggleButton() {
 		NavFrame = divs[i];
 	}
 }
+tooltips_config = {
+    offsetX: 5,
+    offsetY: 8,
+    waitForImages: true,
+    events: ['CustomEvent'],
+    noCSS: true,
+}
  
 $( createNavigationBarToggleButton );

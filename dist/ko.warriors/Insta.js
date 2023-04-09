@@ -1,0 +1,1 @@
+$("#instagram").append("<rssapp-carousel id='C2FYLRVNWi7o551z'></rssapp-carousel><script src='https://widget.rss.app/v1/carousel.js' type='text/javascript' async></script>");

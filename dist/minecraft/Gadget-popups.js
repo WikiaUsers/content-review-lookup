@@ -2177,7 +2177,7 @@ $(function () {
 				subloop = true;
 				do {
 					open = str.indexOf('<nowiki>', substart);
-					close = str.indexOf('</nowiki>', substart);
+					close = str.indexOf('</nowiki>', substart); // <nowiki>
 					if (close <= open || open == -1) {
 						if (close == -1) {
 							return html + html_entities(str.substr(start));
@@ -4284,7 +4284,7 @@ $(function () {
 		for (var i = 1; i < len; i = i + 2) {
 			switch (splitted[i]) {
 				case '<nowiki>':
-				case '</nowiki>':
+				case '</nowiki>': // <nowiki>
 				case '<blockquote>':
 				case '</blockquote>':
 					break;

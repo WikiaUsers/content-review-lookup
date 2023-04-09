@@ -33,9 +33,9 @@ mw.loader.using(["mediawiki.util", "mediawiki.Uri"], function () {
         N: 5, // number of sprites
         H: 100, // width and height of a sprite in pixels
         T: 12000, // animation time in ms
-        NORM_IMAGE: 6,
+        NORM_IMAGE: 7,
         ANIM_IMAGE: [
-            "https://raw.githubusercontent.com/skyblock-wiki/wiki-assets/main/images/gifegg-1.gif"
+            "https://raw.githubusercontent.com/skyblock-wiki/wiki-assets/main/images/gifegg-0.gif"
         ],
         ANIM_CLASS: "gifeggs",
         MINWAIT: 3000, // minimum delay time in ms
@@ -56,7 +56,7 @@ mw.loader.using(["mediawiki.util", "mediawiki.Uri"], function () {
             console.log("[Easter Addons] Initializing..");
             $("<link>", {
                 rel: "stylesheet",
-                href: new mw.Title("Gadget-EasterAddons.css", 8).getUrl({
+                href: new mw.Title("Gadget-Events/EasterAddons.css", 8).getUrl({
                     action: "raw",
                     ctype: "text/css"
                 })
@@ -171,11 +171,10 @@ mw.loader.using(["mediawiki.util", "mediawiki.Uri"], function () {
                 setTimeout(this.calculate.bind(this, index), delay);
             } else {
                 var randomImg = Math.floor(Math.random() * (this.NORM_IMAGE + this.ANIM_IMAGE.length));
-                // randomImg = 5
                 var classes, backgroundImage;
                 if (randomImg < this.NORM_IMAGE)
                     // static images/continuous animations can be done in CSS
-                    classes = "active " + "egg" + (randomImg + 1);
+                    classes = "active " + "egg" + randomImg;
                 else {
                     // non-continuous animations should be reloaded with script to work
                     classes = "active " + this.ANIM_CLASS;

@@ -262,7 +262,7 @@ var tooltips = {
         return tip;
     },
     getBasicTooltip: function(elem) {
-        return $("#tooltip-basic-tooltip").html($(elem).data('tooltip-contents').replace(/\\n/g,'<br />')).each(tooltips.calcSize);
+        return $("#tooltip-basic-tooltip").html(mw.html.escape($(elem).data('tooltip-contents')).replace(/\\n/g,'<br />')).each(tooltips.calcSize);
     },
     getAdvancedTooltip: function(elem) {
         return $("#tooltip-advanced-tooltip-"+$(elem).data('tooltip-id-advanced-tooltip'));

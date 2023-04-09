@@ -542,7 +542,7 @@
         this.currentEventTime = this.nextEventTime = undefined;
         this.routinePtr = -1;
         // Handle Cycle
-        this.cycle = (data.cycle || "0|0").split("|");
+        this.cycle = (data.cycle || "0/0").split("/");
         if (this.cycle.length % 2 === 1)
             this.cycle.push(0);
         for (i = 0; i < this.cycle.length; i++) {

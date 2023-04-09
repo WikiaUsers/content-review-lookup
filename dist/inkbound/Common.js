@@ -3,16 +3,19 @@
 
 window.tooltips_list = [
 	{	classname: 'base-tooltip',
-        parse: '{'+'{Tooltip|<#param#>|<#param#2>}}',
+        parse: '{'+'{Tooltip|<#param#>|<#param2#>}}',
     },
     {	classname: 'binding-tooltip',
-        parse: '{'+'{Tooltip/Binding|<#param#>|<#param#2>}}',
+        parse: '{'+'{Tooltip/Binding|<#param#>|<#param2#>}}',
+    },
+    {	classname: 'vestige-tooltip',
+        parse: '{'+'{Tooltip/Vestige|<#param#>|<#param2#>}}',
     },
     {	classname: 'simple-image-tooltip',
-        parse: '{'+'{Tooltip/Image|<#param#>|<#param#2}}',
+        parse: '{'+'{Tooltip/Image|<#param#>|<#param2#}}',
     },
     {	classname: 'prefab-tooltip',
-        parse: '{'+'{Tooltip/Prefab|<#param#>|<#param#2>}}',
+        parse: '{'+'{Tooltip/Prefab|<#param#>|<#param2#>}}',
     },
 ];
 

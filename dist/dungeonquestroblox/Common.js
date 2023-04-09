@@ -18,7 +18,7 @@ UserTagsJS.modules.custom = {
     'LilyKillyKitty': ['former_staff'],
     'Noobyrblx011': ['former_staff'],
     'TotallyNotJullian': ['former_staff'],
-    'TheTreasureHunter': ['contributor'],
+    'TheTreasureHunter': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],

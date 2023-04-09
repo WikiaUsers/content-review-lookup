@@ -36,5 +36,5 @@ $('.fandom-community-header__image').append(
             .addClass('message')
             .text('Click here to view the current episode.')
         )
-        .attr('href', 'https://www.youtube.com/watch?v=djsJqNAGMuY')
+        .attr('href', 'https://youtu.be/63bUBEIhpNk')
 );

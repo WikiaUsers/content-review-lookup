@@ -534,7 +534,7 @@ function ShowRecentChangesWindow()
 	
 	api = new mw.Api();
 	
-	api.get( {action: 'query',list: 'recentchanges',rcprop: 'title|user|timestamp',rcnamespace: '1|15|110',rclimit: '100',rctoponly: 'true',rcend: sLastDate,format: 'json'} ).done( function ( data )
+	api.get( {action: 'query',list: 'recentchanges',rcprop: 'title|user|timestamp',rcnamespace: '1|15|110',rclimit: '3',rctoponly: 'true',rcend: sLastDate,format: 'json'} ).done( function ( data )
 	{
 		rc = data.query.recentchanges,
 		i=0,

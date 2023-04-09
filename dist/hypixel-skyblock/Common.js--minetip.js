@@ -41,38 +41,6 @@ $(function () {
             savedX = e.clientX;
             savedY = e.clientY;
         };
-        var handleLineBreak = function (line, maxchar, opt) {
-            // opt in kw (keep-word, default), bw (break-word)
-            var t = [line];
-            while (true) {
-                var lastline = t[t.length - 1];
-                if (lastline.length <= maxchar)
-                    break;
-                // choose break point
-                var pos;
-                if (opt === "bw") {
-                    pos = lastline.substring(0, maxchar);
-                } else {
-                    var selectedLen = maxchar + 1;
-                    while (selectedLen - (lastline.substring(0, selectedLen).match(/\\./g) || []).length !== maxchar + 1)
-                        selectedLen++;
-                    pos = lastline.substring(0, selectedLen).search(/ \S*$/); // last space in target range
-                    if (pos === -1)
-                        pos = lastline.search(/ /); // if no space in target range, use the first space following it
-                    if (pos === -1)
-                        break;
-                }
-                // find preceding color codes
-                var colcode = "";
-                var matchCodes = lastline.substring(0, pos).replaceAll("\\\\", "").replaceAll("\\&", "").match(/&[0-9a-fk-o]/g);
-                if (matchCodes)
-                    colcode = matchCodes.join("").replaceAll(/^.*?(&[0-9a-f][^0-9a-f]*)$/g, "$1");
-                // split line at pos
-                t[t.length - 1] = lastline.substring(0, pos);
-                t.push(colcode + lastline.substring(pos).trimStart());
-            }
-            return t;
-        };
 
         $(document.body).on({
             "mouseenter": function (e, trigger, x, y) {
@@ -98,22 +66,7 @@ $(function () {
 
                 // Apply normal escaping plus new line
                 if (description) {
-                    description = escape(description).replace(/\\\//g, "&#47;");
-                    var desclines = [];
-                    description.split(useSlashEscape ? "/" : "\\n").forEach(function (v) {
-                        var match1 = v.match(/^\$\[(.*?)\]/), // line options: $[]
-                            match2;
-                        if (!match1)
-                            desclines.push(v);
-                        else {
-                            // identify line options
-                            v = v.replace(/^\$\[.*?\]/g, "").replace(/&#47;/g, "\\/"); // this is to maintain genuine line length
-                            if (match2 = match1[1].match(/(?:^| )([kb]w):(\d+)(?:$| )/))
-                                desclines = desclines.concat(handleLineBreak(v, Number(match2[2]), match2[1]));
-                        }
-                    });
-
-                    description = desclines.join("&r<br>").replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
+                    description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
                     content += "<span class=\"minetip-description\">&f" + description.replace(useSlashEscape ? /\//g : /\\n/g, "&r<br>") + "&r</span>";
                 }
 
@@ -199,32 +152,6 @@ $(function () {
             }
         }, ".invslot .invslot-item, .minetip");
 
-        /*** Scrollable Tooltip (Experimental) ***/
-        $(document.body).on("keydown", function (e) {
-            if (!$tooltip.length)
-                return;
-            if (e.which === 27) { // esc
-                $tooltip.remove();
-                $tooltip = $();
-            } else if (overflowBottom || overflowTop) {
-                var top;
-                if (e.which === 40) { // down
-                    top = Math.max(winHeight - height, topPos - 14);
-                } else if (e.which === 38) { // up
-                    top = Math.min(0, topPos + 14);
-                }
-                if (!isNaN(top)) {
-                    e.preventDefault();
-                    // Recording
-                    overflowTop = top < 0;
-                    overflowBottom = top + height > winHeight;
-                    topPos = top;
-                    // Apply the positions
-                    $tooltip.css("top", top);
-                }
-            }
-        });
-
         /*** Item Pickup Effect ***/
         $(document.body).on({
             // pick up slot item for 300ms
@@ -239,8 +166,12 @@ $(function () {
                         $target.addClass("invslot-pickup");
                         var offset = $this.offset();
                         $target.css({
-                            "top": e.pageY - offset.top - 16,
-                            "left": e.pageX - offset.left - 16,
+                            // calculation: Imagine cursor at center of slot. Then top & left should be -2px to show
+                            // in normal position.
+                            // "Cursor coord" and "top-left coord of border-box of the .invslot" should be separated by 
+                            // 18px horizontally and vertically. This separation value minus 20 yields -2px.
+                            "top": e.pageY - offset.top - 20,
+                            "left": e.pageX - offset.left - 20,
                         }).show();
                         savedX = e.clientX, savedY = e.clientY;
                         $(document.body).on("mousemove", cacheMousemove);
@@ -262,8 +193,9 @@ $(function () {
                 if ($(this).is(":visible")) {
                     var offset = $(this).parent().offset();
                     $(this).css({
-                        "top": e.pageY - offset.top - 16,
-                        "left": e.pageX - offset.left - 16,
+                        // calculation method is written somewhere before here
+                        "top": e.pageY - offset.top - 20,
+                        "left": e.pageX - offset.left - 20,
                     });
                 }
             });

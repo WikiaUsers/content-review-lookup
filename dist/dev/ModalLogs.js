@@ -39,16 +39,12 @@
         ');
         $('.mw-contributions-user-tools').find(selector).click(function (e) {
             e.preventDefault();
+            qdmodal.show({
+                loading: true,
+                title: 'Loading...'
+            });
             var url = $(e.target).attr('href');
             $.get(url).done(function (data) {
-                qdmodal.show({
-                    loading: true,
-                    title: 'Loading...',
-                    onShow: function (modal) {
-                        //https://dev.fandom.com/wiki/Talk:QDmodal#Spinner_too_high
-                        modal.$content.find('.qdmodal-spinner').css('top', 'calc(50% - 3px)');
-                    }
-                });
                 modal(data, qdmodal);
             });
         });

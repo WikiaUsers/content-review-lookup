@@ -218,33 +218,40 @@ function zselector( $content ) {
 function Filt(arr, clas){
 	All = [];
 	o = '.'+clas;
-	arr.forEach(function(Mini){al = Mini.querySelectorAll(o); if(al.length > 0 || Mini.classList.contains(clas)) All.push(Mini); });
+	arr.forEach(function(Icon){al = Icon.querySelectorAll(o); if(al.length > 0 || Icon.classList.contains(clas)) All.push(Icon); });
 	
 	return All;
 }
-function Filter(Allmini, Sin){
-	if (Sin == '')
-		return Allmini;
-	Allmininext = [];
-	Sins = [];
-	rar = document.querySelectorAll('.IdTable .'+Sin+' .IdTBl.IdTBl1 i');
-	rar.forEach(function(Ra){Sins.push(Ra.textContent);});
+function Filter(AllIcons, Table, FilterClass){
+	if (FilterClass == '')
+		return AllIcons;
+	AllIconsnext = [];
+	Selected = [];
+	SelectedBlocks = Table.querySelectorAll('.IdTable .'+FilterClass+' .IdTBl.IdTBl1 i');
+	SelectedBlocks.forEach(function(Ra){Selected.push(Ra.textContent);});
 	
-	if(Sins.length > 0){
-		Sins.forEach(function(Ra){Allmininext = Allmininext.concat(Filt(Allmini,Sin+Ra));});
-		return Array.from(new Set(Allmininext));
+	if(Selected.length > 0){
+		Selected.forEach(function(Ra){AllIconsnext = AllIconsnext.concat(Filt(AllIcons,FilterClass+Ra));});
+		/*Is selected any block in Row*/ 
+		Table.querySelector('.IdTRow.'+FilterClass).classList.add('IdTRow1')
+		return Array.from(new Set(AllIconsnext));
 	}
-	return Allmini;
+	/*Is selected any block in Row*/
+	Table.querySelector('.IdTRow.'+FilterClass).classList.remove('IdTRow1')
+	return AllIcons;
 }
 function UpdateTable() {
-	Allmini = document.querySelectorAll(".IdTable .IdTIc");
+	Tables = document.querySelectorAll(".IdTable");
+	Tables.forEach(function(Table)	{
+	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
 	//Hide all
-	Allmini.forEach(function(Mini){Mini.style.display = "none";});
-	Allmininext = [];
-	AllRows = document.querySelectorAll(".IdTable .IdTRow");
-	AllRows.forEach(function(Mini){Allmini = Filter(Allmini, (Mini.classList.length >= 2 ? (Mini.classList.value.split(' ')).at(-1) : '')) });
+	AllIcons.forEach(function(Mini){Mini.classList.add("IdTIc1")});
 	
-	Allmini.forEach(function(Mini){Mini.style.display = "inline-block";});
+	AllRows = Table.querySelectorAll(".IdTable .IdTRow");
+	AllRows.forEach(function(Row){AllIcons = Filter(AllIcons, Table, (Row.classList.length >= 2 ? (Row.classList.value.split(' ')).at(0) : '')) });
+	
+	AllIcons.forEach(function(Mini){Mini.classList.remove("IdTIc1")});
+	});
 }
 
 document.querySelectorAll(".IdTBl").forEach( 
@@ -253,9 +260,11 @@ document.querySelectorAll(".IdTBl").forEach(
 		'click',
 		function (){ 
 			if(this.classList.contains("IdTCross"))
-				document.querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
+				this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
 			else
 				this.classList.toggle("IdTBl1");
 			UpdateTable();
 	}, false
 );});
+
+UpdateTable()

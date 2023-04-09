@@ -225,3 +225,10 @@ mw.loader.load('/index.php?title=MediaWiki:HairDyeSliders.js&action=raw&ctype=te
 if ( mw.config.get( 'wgAction' ) == 'edit' || mw.config.get( 'wgAction' ) == 'submit' ) {
 	mw.loader.load('/ru/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
 }
+
+$(function(){
+    $('.infobox .nowrap.tag a[title="Оружие"]').attr('href', 'https://terraria-game.fandom.com/ru/wiki/Оружие')
+    $('.infobox .nowrap.tag a[title="Материал"]').attr('href', 'https://terraria-game.fandom.com/ru/wiki/Рецепты')
+    $('.infobox .nowrap.tag a[title="Боеприпасы"]').attr('href', 'https://terraria-game.fandom.com/ru/wiki/Категория:Боеприпасы')
+    $('.infobox .auto a[title="Авто-атака"]').attr('href', 'https://terraria-game.fandom.com/ru/wiki/Авто-атака')
+});

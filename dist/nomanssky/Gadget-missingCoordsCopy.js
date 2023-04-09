@@ -1,7 +1,7 @@
 // adds string and button for admins to quickly mark a page with insufficient coordinate data
 $(function() {
 	if (document.getElementById('MissingCoordsMacro')) return;
-	var inputDiv = $('.oo-ui-layout.oo-ui-horizontalLayout')[0];
+	var inputDiv = $('#editform .oo-ui-layout.oo-ui-horizontalLayout')[0];
 	if (!mw.config.get("wgUserGroups").includes("sysop") || !inputDiv) return;
 	
 	var div = document.createElement('div');

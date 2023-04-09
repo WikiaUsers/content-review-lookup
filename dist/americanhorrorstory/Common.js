@@ -1,6 +1,8 @@
 /* WHM toolbar advertisement */
 var toolbarLabel = 'WHM';
 var toolbarLinks = [
+    {link: 'https://bit.ly/FandomWHMFinalGirls', label: 'Final Girls: The Trading Cards*'},
+    {link: 'https://bit.ly/FandomWHMFinalGirlsPlaylist', label: 'Final Girls: The Playlist'},
     {link: 'https://bit.ly/FandomWHMBlog-toolbar', label: 'Fandom blog'},
     {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003704743', label: 'Discussions post'},
     {link: 'https://spoti.fi/3loZ1Nu', label: 'WHM spotify playlist'},
@@ -36,9 +38,9 @@ $('.fandom-community-header__image').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Learn about Women\'s History Month at Fandom')
+            .text('Meet the Women\'s History Month Final Girls')
         )
-        .attr('href', 'https://bit.ly/FandomWHMBlog-logo')
+        .attr('href', 'https://bit.ly/FandomWHMFinalGirls')
 );
 
 /* JS extension configuration */

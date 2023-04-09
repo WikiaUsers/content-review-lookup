@@ -40,6 +40,7 @@
 		}
 		function addSprite(i) {
 			var n = allPages[i];
+			var oldSize = modal.seDialog.getBodyHeight();
 			api.get({
 				'action': 'scribunto-console',
 				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
@@ -70,8 +71,13 @@
 				}
 				if (allPages[i + 1]) {
 					addSprite(i + 1);
+				} else {
+					while (modal.seDialog.isPending())
+						modal.seDialog.popPending();
 				}
-				modal.windowManager.updateWindowSize(modal.seDialog);
+				var newSize = modal.seDialog.getBodyHeight();
+				if (oldSize != newSize)
+					modal.windowManager.updateWindowSize(modal.seDialog);
 			});
 		}
 		if (allPages[0])
@@ -113,6 +119,7 @@
 		});
 	}
 	myData.requestChanges = function() {
+		modal.seDialog.pushPending();
 		// Blank
 		var root = document.getElementsByClassName("spriteeditor-items")[0];
 		root.innerHTML = "";
@@ -188,7 +195,7 @@
 			modal.seDialog = new SpriteEditorDialog({
 				size: 'larger'
 			});
-
+			
 			// Add window and open
 			modal.windowManager.addWindows([modal.seDialog]);
 			modal.windowManager.openWindow(modal.seDialog);

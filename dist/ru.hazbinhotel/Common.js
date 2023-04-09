@@ -20,6 +20,7 @@ const staff = [
     {name: 'Никитин Арсений', className: 'admin'},
     {name: 'P4kaidu', className: 'admin'},
     {name: 'Creepy Owl', className: 'contMod'},
+    {name: 'PiperViolet', className: 'contMod'},
     {name: 'Lich night', className: 'threadMod'},
     {name: 'IamNotFreddy', className: 'discordAdmin'},
     {name: 'Merzlyak', className: 'discordMod'},

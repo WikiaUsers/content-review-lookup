@@ -155,6 +155,7 @@
     'Spidris': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Spidris Elite': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Srezz Yellow Eyes': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Sulphur Spouter': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Squid Warden': {'Inkwell': 'Inkwell (Black)'},
     'Tarnished Spirit': {'Book': 'Book (Orange)'},
     'Thaian': {'Amber': 'Amber (Item)'},

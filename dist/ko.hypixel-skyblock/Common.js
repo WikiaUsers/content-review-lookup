@@ -20,18 +20,11 @@ Any JavaScript here will be loaded for all users on every page load.
 */
 
 /* jshint
-    esversion: 5, esnext: false, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    forin: false,
-    -W082, -W084
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-
 /* global mw, BannerNotification */
 
 // //stackoverflow.com/questions/46041831
@@ -88,10 +81,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
         });
     };
     // Please note that ES5 script imports are moved to MediaWiki:ImportJS
-    // ES6 scripts needs to be imported here
     // (for convenience to promptly disable any script at any time)
+    // ES6 scripts needs to be imported here
     window.importScripts([
-        "MediaWiki:Common.js/skydate.js",
         "MediaWiki:Common.js/search.js"
     ]);
 
@@ -536,13 +528,26 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 $textAnchor.closest("tr").attr("id", id);
             });
 
-            // Now dectect if hash matches any row IDs
-
+            /* Now dectect if hash matches any row IDs */
             // Delay check so that scroll doesn't happen until page layout has settled
             // Otherwise the scroll to the id will be incorrect as other loaded content has moved the position before we get to it
             setTimeout(function () {
                 _doHashIdCheck($content, true);
             }, 250);
+
+            // Float any links in the gallery widget
+            $(".frontpage-gallery .wikia-gallery-item").each(function() {
+                var $this = $(this),
+                    anchor = $this.find(".lightbox-caption a");
+                if (!anchor || $this.parents(".frontpage-gallery-link").length > 0)
+                    return;
+                $this.wrap($("<a>", {
+                    class: "frontpage-gallery-link",
+                    href: anchor.attr("href"),
+                    title: anchor.attr("title")
+                }));
+                $this.find("a").attr("tabindex", "-1");
+            });
         });
 
         $(window).on("hashchange", function () {

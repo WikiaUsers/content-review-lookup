@@ -146,7 +146,7 @@ function loadOptions(optionsObject, dialogueID) {
             var value = options[dialogueID].style[name];
             if (typeof (value) == 'object') value = randomChoice(value);
             value = getKeywordsFor(value);
-            if (name.match(/fontSize|font-size/)) changeScale(dialogueNames[dialogueID], value);
+            if (name.match(/fontSize|font-size/)) changeScale(dialogueTextes[dialogueID], value);
             dialogueTextes[dialogueID].style[name] = value;
         }
     }
@@ -244,15 +244,40 @@ function displayQuestion(question, dialogueID) {
 
     for (var s = 0; s < question.length; s++) {
         var string = question.substring(s);
-        var htmlMatch = string.match(/^&#?\w+;|^<.+>/);
+        var escapeMatch = string.match(/^&#?\w+;/);
+        var htmlMatch = string.match(/^<.*>/);
 
-        if (htmlMatch) {
-            characters.push(htmlMatch[0]);
+        if (escapeMatch) {
+            characters.push(escapeMatch[0]);
+            s += escapeMatch[0].length - 1;
+        } else if (htmlMatch) {
+        	var htmlMatches = htmlMatch[0].match(/<[^>]*>/g);
+        	if (htmlMatches.length >= 2) {
+        		var htmlStr = htmlMatches[0];
+        		var htmlEnd = htmlMatches[1];
+        		
+        		var htmlMid = htmlMatch[0].substring(htmlMatches[0].length, htmlMatch[0].length - htmlMatches[1].length);
+        		
+        		for (var ss = 0; ss < htmlMid.length; ss++) {
+        			var str = '';
+
+        			if (ss <= 0) str += htmlStr;
+        			str += htmlMid[ss];
+        			if (ss >= (htmlMid.length + 1)) str += htmlEnd;
+        			
+        			characters.push(str);
+        		}
+        	} else {
+            	characters.push(htmlMatch[0]);
+        	}
+
             s += htmlMatch[0].length - 1;
         } else {
             characters.push(string[0]);
         }
     }
+    
+    console.log(characters);
 
     var string = '';
 
@@ -399,7 +424,7 @@ function createDialogue(dialogue, dialogueID) {
     endSounds[dialogueID] = newSound('', dialogueID);
     restartMessages[dialogueID] = dialogue.querySelector('.d-reset');
     
-    dialoguePaths[dialogueID] = JSON.parse(dialogueNames[dialogueID].innerHTML.replace(/<.+>/g, '').replace(/\{quot\}/g, '\\"').replace(/\{break\}/g, '<br/>'));
+    dialoguePaths[dialogueID] = JSON.parse(dialogueNames[dialogueID].innerText);
 
     restartMessages[dialogueID].addEventListener('click', function () {
         restartMessages[dialogueID].style.display = 'none';

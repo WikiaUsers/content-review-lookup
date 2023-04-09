@@ -332,7 +332,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"], function (
 	}
 	$("<link>", {
 		rel: "stylesheet",
-		href: new mw.Title("Gadget-HalloweenEffects.css", 8).getUrl({
+		href: new mw.Title("Gadget-Events/HalloweenEffects.css", 8).getUrl({
 			action: "raw",
 			ctype: "text/css"
 		})

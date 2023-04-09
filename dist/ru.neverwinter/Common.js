@@ -85,7 +85,7 @@ function showTip(e) {
     $t.removeAttr("title");
     $p.removeAttr("title");
    /*var url = "/ru/index.php?title="+$t.data("tt").replace(/ /g,"_").replace(/\?/g,"%3F").replace(/\+/g,"%2B")+"&action=render .tooltip-content";*/
-   var url = "/ru/index.php?title=" + encodeURIComponent(decodeURIComponent($t.data("tt"))) + "&action=render " + 'div[class*="tooltip-content"]';
+   var url = "/ru/index.php?title=" + encodeURIComponent(decodeURIComponent($t.data("tt"))) + "&action=render " + 'div[class*="tooltip"]';
     if (tipCache[url] != null) {
       $tfb.html(tipCache[url]);
       displayTip(e);
@@ -93,8 +93,8 @@ function showTip(e) {
     }
     $tfb.load(url,function () {
       if ($t != activeHoverLink) return;
-      if ($tfb.html() == "") $tfb.html('<div class="tooltip-content"><b>Error</b><br />This target either has no tooltip<br />or was not intended to have one.</div>');
-      $tfb.find(".tooltip-content").css("display","");
+      if ($tfb.html() == "") $tfb.html('<div class="tooltip"><b>Error</b><br />This target either has no tooltip<br />or was not intended to have one.</div>');
+      $tfb.find(".tooltip").css("display","");
       tipCache[url] = $tfb.html();
       displayTip(e);
     });

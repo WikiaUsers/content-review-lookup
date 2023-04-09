@@ -121,3 +121,9 @@ importArticles({
         "u:dev:MediaWiki:User_Avatar_Finder/code.js"
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js',
+    ]
+});

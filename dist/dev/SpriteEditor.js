@@ -2,10 +2,19 @@
 	'use strict';
 
 	const config = mw.config.get([
+		'wgCanonicalNamespace',
 		'wgCanonicalSpecialPageName',
 		'wgIsTestModeEnabled',
 		'wgTitle'
 	]);
+	var loadPHP = 'https://dev.fandom.com/de/load.php';
+	if (!window.SpriteEditorLoaded && config.wgCanonicalNamespace == "Module" && config.wgTitle.split("/")[0].endsWith("Sprite")) {
+		if (config.wgIsTestModeEnabled)
+			mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI('MediaWiki:SpriteEditor/openButton.js') + '&*');
+		else
+			mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=' + encodeURI('MediaWiki:SpriteEditor/openButton.js') + '&*');
+		window.SpriteEditorLoaded = true;
+	}
 	if (window.SpriteEditorLoaded || !(config.wgCanonicalSpecialPageName === 'Blankpage' && config.wgTitle.endsWith('/SpriteEditor'))) return;
 	window.SpriteEditorLoaded = true;
 	window.SpriteEditorModules = {
@@ -20,12 +29,12 @@
 		'MediaWiki:SpriteEditor/settings.js',
 		'MediaWiki:SpriteEditor/sorting.js'
 	];
-	$('head').append('<link rel="stylesheet" type="text/css" href="https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:SpriteEditor.css&only=styles">');
+	$('head').append('<link rel="stylesheet" type="text/css" href="' + loadPHP +'?mode=articles&articles=MediaWiki:SpriteEditor.css&only=styles">');
 	var a;
 	if (config.wgIsTestModeEnabled) {
-		a = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=test:' + encodeURI(jsFiles.join("|test:")) + '&*');
+		a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI(jsFiles.join("|test:")) + '&*');
 	} else {
-		a = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=' + encodeURI(jsFiles.join("|")) + '&*');
+		a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=' + encodeURI(jsFiles.join("|")) + '&*');
 	}
 	Promise.allSettled([a]).then(function () {
 		var checkExist = setInterval(function () {

@@ -48,6 +48,14 @@ window.SpoilerAlertJS = {
     fadeDelay: 1600
 };
 
+/* DISPLAYTITLE */
+
+var DisplayTitle = document.getElementsByClassName("DisplayTitle");
+var title =document.getElementsByClassName("page-header__title")[0];
+for (var i=0; i<DisplayTitle.length; i++) {
+    DisplayTitle[i].innerText = title.innerText;
+}
+
 /* DIALOGUE */
 
 function dialogueInit() {

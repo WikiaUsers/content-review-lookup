@@ -108,3 +108,36 @@ mw.hook( 'wikipage.content' ).add( function() {
 		);
 	}, 100 );
 } )();
+
+/**
+ * Dodaje do „Specjalna:Strony specjalne” link do strony „Gothicpedia:Raporty konserwacyjne”
+ */
+mw.loader.using( 'mediawiki.util', function() {
+	'use strict';
+
+	// Zakończ jeżeli strona to nie „Specjalna:Strony specjalne” lub jeśli skrypt już został wykonany
+	if ( mw.config.get( 'wgCanonicalSpecialPageName' ) !== 'Specialpages' || window.addedMaintenanceSpLink ) {
+		return;
+	}
+	window.addedMaintenanceSpLink = true;
+
+	// Znajdź listę stron specjalnych raportów konserwacyjnych
+	const maintenanceSpecialList = document.querySelector( '#mw-specialpagesgroup-maintenance + .mw-specialpages-list > ul' );
+	const gpMaintenanceReportUrl = mw.util.getUrl( mw.config.get( 'wgFormattedNamespaces' )[4] + ':Raporty konserwacyjne'  );
+
+	// Utwórz element listy oraz link
+	var listElement = document.createElement( 'li' );
+	var linkElement = document.createElement( 'a' );
+
+	// Nadaj liście klasy
+	listElement.classList.add( 'mw-specialpagecached' );
+	listElement.classList.add( 'mw-specialpagecustom' );
+
+	// Nadaj linkowi cel i tekst
+	linkElement.href = gpMaintenanceReportUrl;
+	linkElement.innerText = 'Szablony konserwacyjne';
+
+	// Umieść link w liście
+	listElement.append( linkElement );
+	maintenanceSpecialList.prepend( listElement );
+} );

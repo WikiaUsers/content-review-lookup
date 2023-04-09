@@ -25,7 +25,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util"]).then(function () {
 		},
 		// Remove files and categories
 		{
-			target: "(\\[\\[)?(File|Category):.*(\\]\\])?",
+			target: "(\\[\\[)?(File|Category):.*(\\]\\])",
 			replacement: "",
 		},
 		// Two+ new spaces, replace with a space

@@ -17,7 +17,6 @@ window.UserTagsJS = {
 		custom: {
 		    '': ['monthuser'], 
 		    ' ': ['yearuser'],
-		    'Alansanchez412': ['asistente'],
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
             'Ale_-_Remastered': ['asistente'],
@@ -61,7 +60,8 @@ window.UserTagsJS = {
             'Bruno_Cardozo': ['retirado'],
             'Matias_Montanna': ['retirado'],
             'Marco_Antonio_Guti%C3%A9rrez_Udaondo': ['retirado'],
-            'GuidoM1995': ['retirado']
+            'GuidoM1995': ['retirado'],
+            'Alansanchez412': ['retirado']
         }
     },
 	tags: {

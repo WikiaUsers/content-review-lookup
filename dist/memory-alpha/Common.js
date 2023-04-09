@@ -1,6 +1,8 @@
 /* WHM toolbar advertisement */
 var toolbarLabel = 'WHM';
 var toolbarLinks = [
+    {link: 'https://bit.ly/FandomWHMFinalGirls', label: 'Final Girls: The Trading Cards*'},
+    {link: 'https://bit.ly/FandomWHMFinalGirlsPlaylist', label: 'Final Girls: The Playlist'},
     {link: 'https://bit.ly/FandomWHMBlog-toolbar', label: 'Fandom blog'},
     {link: 'https://memory-alpha.fandom.com/f/p/4400000000003704747', label: 'Discussions post'},
     {link: 'https://spoti.fi/3loZ1Nu', label: 'WHM spotify playlist'},

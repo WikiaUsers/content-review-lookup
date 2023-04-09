@@ -1,27 +1,55 @@
 //скрипт підтягує локацію та дату прибуття Баро Кі’Тіра з api.warframestat.us та виводить рядок
 
 $(function() {
-	const NW_PAGE_NAME = mw.config.get("wgPageName");
-	if (NW_PAGE_NAME == 'Баро_Кі’Тір') {
+	const BARO_PAGE_NAME = mw.config.get("wgPageName");
+	const BARO_WHITELIST_PAGES = [
+		"Головна",
+		"Баро_Кі’Тір",
+		"Шаблон:Таймери",
+	];
+	Object.freeze(BARO_WHITELIST_PAGES);
+	if (BARO_WHITELIST_PAGES.includes(BARO_PAGE_NAME)) {
 		$.get( "https://api.warframestat.us/pc/voidTrader/?language=uk", function( data ) {
-			var mainText = data.active ? 'Торговець перебуває на реле %s. <br />Баро планує покинути реле через ' : 'Торговець прибуде на реле %s через 	';
+			var mainText;
 			var time = data.active ? data.expiry : data.activation;
 			[_, nodeName, planet] = data.location.match(/(.+) \((.+)\)/);
-			$( "div#baro_timer").css({'font-size':'25px', 'text-align':'center'}).append( 
-				$( "<span>" ).html(
-					mainText.replace('%s', '<a href="https://warframe.fandom.com/uk/wiki/Реле">'
-						+ nodeName.replace('Реле', '') + '</a> '
-						+ '(<a href="https://warframe.fandom.com/uk/wiki/'
-						+ planet + '">' + planet + '</a>)'
-					)
-				),
-				$("<span>", {
-					style: 'cursor:help;',
-					'data-time': new Date(time).getTime(),
-					title: new Date(time).toLocaleString(),
-					text: '1'
-				})
-			);
+			if (BARO_PAGE_NAME == 'Баро_Кі’Тір') {
+				mainText = data.active ? 'Торговець перебуває на реле %s. <br />Баро планує покинути реле через ' : 'Торговець прибуде на реле %s через ';
+				$( "div#baro_timer").css({'font-size':'25px', 'text-align':'center'}).append(
+					$( "<span>" ).html(
+						mainText.replace('%s', '<a href="https://warframe.fandom.com/uk/wiki/Реле">'
+							+ nodeName.replace('Реле', '') + '</a> '
+							+ '(<a href="https://warframe.fandom.com/uk/wiki/'
+							+ planet + '">' + planet + '</a>)'
+						)
+					),
+					$("<span>", {
+						style: 'cursor:help;',
+						'data-time': new Date(time).getTime(),
+						title: new Date(time).toLocaleString(),
+						text: '1'
+					})
+				);
+			} else {
+				mainText = data.active ? 'перебуває на реле %s. <br />Баро планує покинути реле через' : 'прибуде на реле %s';
+				$( "div#baro_timer").css('font-size','12px').attr('align','center').append( 
+					$( "<span>" ).html(
+						'<a href="https://warframe.fandom.com/uk/wiki/Баро_Кі’Тір">Баро Кі’Тір</a> ' +
+						mainText.replace('%s', '<a href="https://warframe.fandom.com/uk/wiki/Реле">'
+							+ nodeName.replace('Реле', '') + '</a> '
+							+ '(<a href="https://warframe.fandom.com/uk/wiki/'
+							+ planet + '">' + planet + '</a>)'
+						)
+					),
+					$("<br />"),
+					$("<span>", {
+						style: 'cursor:help;font-size:18px;font-weight:bold;',
+						'data-time': new Date(time).getTime(),
+						title: new Date(time).toLocaleString(),
+						text: '1'
+					})
+				);
+			}
 			setInterval(countdown, 1000);
 		}, "json" );
 	}

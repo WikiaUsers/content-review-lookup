@@ -9,10 +9,10 @@ $(function() {
 // only run when editing
 if (mw.user.options.get('showtoolbar') &&
 	mw.user.options.get('usebetatoolbar') &&
-	$.inArray(mw.config.get('wgAction'), ['edit', 'submit']) > -1) {
+	/edit|submit/.test(mw.config.get('wgAction'))) {
 		
 	// wait on the API library
-	$.when(mw.loader.using('mediawiki.api'), $.ready).then(function() {
+	mw.loader.using('mediawiki.api').then(function() {
 		// fetch the username and timestamp of the last revision
 		new mw.Api().get({
 			action: 'query',
@@ -43,7 +43,7 @@ if (mw.user.options.get('showtoolbar') &&
 			}
 			
 			// add the editor button
-			$.when(mw.loader.using('ext.wikiEditor'), $.ready).then(function() {
+			mw.loader.using('ext.wikiEditor').then(function() {
 				$('#wpTextbox1').wikiEditor('addToToolbar', {
 					section: 'advanced',
 					group: 'insert',

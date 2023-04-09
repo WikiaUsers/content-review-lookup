@@ -97,3 +97,24 @@ if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/7/77/LOIback.png/revision/latest?cb=20230219180108&path-prefix=ru)"});
         var name = "Легенды Изгальдины"
 }
+var cat = mw.config.get('wgCategories')
+var name = "Random war game 156 Вики"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/7/78/RWG156Back.png/revision/latest?cb=20230407161746&path-prefix=ru)"});
+        var name = "Random war game 156"
+}
+var cat = mw.config.get('wgCategories')
+var name = "Коты-воители: Новая История Вики"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/1/1e/CWNHBack.png/revision/latest?cb=20230407161953&path-prefix=ru)"});
+        var name = "Коты-воители: Новая История"
+}
+var cat = mw.config.get('wgCategories')
+var name = "Блеклый Закат Вики"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/5/5f/FadedSunsetBack2.png/revision/latest?cb=20230407162113&path-prefix=ru)"});
+        var name = "Блеклый Закат Вики"
+}

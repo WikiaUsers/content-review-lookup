@@ -192,7 +192,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 				deleteReason = mw.html.escape(
 					mw.util.getParamValue('nukereason') 
 						|| window.nukeDeleteReason && window.nukeDeleteReason.replaceAll(/\$1/g, user) 
-						|| "Mass removal of pages created by [[Special:Contributions/" + user + "|" + user + "]] ([[User talk:" + user + "|talk]])"
+						|| "Mass deletion of pages added by [[Special:Contributions/" + user + "|" + user + "]] ([[User talk:" + user + "|talk]])"
 				);
 				
 			this.addCheckboxHandler();
@@ -205,7 +205,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 				 '<br/>',
 				this.msg('nuke-list', user),
 				'<br>',
-				'Deletion reason: ',
+				'Reason: ',
 				$('<input>', {
 					css: {
 						width: "400px"

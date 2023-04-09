@@ -41,12 +41,15 @@ $(function(){
 			this.baseDStats = []; 
 			for (i = 0; i < this.detailedStatVals.length; i++) { this.baseDStats.push(parseFloat(this.detailedStatVals.eq(i).html(), 10)); }
 		  
-			this.sell = $("#equip-sellvalue"); //credit sell value element
+			this.sellDiv = $("#equip-sellvalue"); //credit sell value element
+			this.baseSellValue = parseFloat($("#equip-sellvalue").html(), 10);
 			
 			//primary and secondary weapons are more complicated so need specific stat indexes
 			//The infobox uses generic parameters to avoid being huge and remaking it & its css for this purpose didn't seem worth it
 			this.kDPSIdx = this.mainStatNames.indexOf("Kinetic DPS");
 			this.eDPSIdx = this.mainStatNames.indexOf("Energy DPS");
+			this.mainKDmgIdx = this.mainStatNames.indexOf("Kinetic Damage"); //for secondary weapons
+			this.mainEDmgIdx = this.mainStatNames.indexOf("Energy Damage"); //for secondary weapons
 			this.kDmgIdx = this.detailedStatTexts.indexOf("Kinetic Damage");
 			this.eDmgIdx = this.detailedStatTexts.indexOf("Energy Damage");
 			this.rateIdx = this.detailedStatTexts.indexOf("Fire Rate"); //doesn't scale but needed to re-calc DPS
@@ -62,7 +65,9 @@ $(function(){
 		//exponential growth calc
 		//(base value) * (exponential base ^ change in level) = new value
 		scaler.calc = function(baseValue, growthVal) {
-			return Math.round(baseValue * Math.pow(growthVal, this.realLevel - 1)); //1 is the minimum level
+			var newVal = baseValue * Math.pow(growthVal, this.realLevel - 1); //1 is the minimum level
+			//truncate newVal to 2 decimal places
+			return Math.floor(newVal * 100) / 100; //we are not dealing with any negative numbers so this is ok, but it may be slightly off on the second place.
 		};
 					
 		//When slider is updated, use stat element arrays and base values to change innerHTML of stat elements based on unique scaling info	above
@@ -70,71 +75,90 @@ $(function(){
 			var currLevel = +$("#equip-level-slider").val();
 			this.level.html(currLevel); //update displayed level
 			
-			this.realLevel = currLevel + this.getHiddenLevel();
+			this.realLevel = currLevel + this.getHiddenLevel(currLevel);
 
 			if (this.body.hasClass("category-Primary_weapons_ES2")){
 				if (this.kDPSIdx != -1){
-					var newKDmg = this.calc(this.baseDStats[this.kDmgIdx], 1.13); 
+					var newKDmg = Math.round(this.calc(this.baseDStats[this.kDmgIdx], 1.13)); 
 					this.detailedStatVals.eq(this.kDmgIdx).html(newKDmg); //set kinetic dmg val
 					
 					var newKDPS;
 					if (this.rateIdx != -1){
 						newKDPS = newKDmg * this.baseDStats[this.rateIdx];
-					} else { newKDPS = newKDmg; }
-					if (this.equiptype == "Scatter Gun"){ newKDPS = newKDPS * 0.5 * 9; }
-					if (this.equiptype == "Rail Gun") { newKDPS = newKDPS / 1.8 * 7.5; }
-					this.mainStatVals.eq(this.kDPSIdx).html(newKDPS); //set kinetic DPS val
-					
+					} 
+					else {
+						//Exception for Beam Lasers which have no displayed fire rate stat.
+						newKDPS = newKDmg; 
+					}
+					if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
+						//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
+						newKDPS = (newKDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
+					}
+					if (this.equiptype == "Rail Gun") {
+						//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
+						newKDPS = (newKDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+					}
+					this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS)); //set kinetic DPS val
 				}
 				if (this.eDPSIdx != -1){
-					var newEDmg = this.calc(this.baseDStats[this.eDmgIdx],1.13); 
+					var newEDmg = Math.round(this.calc(this.baseDStats[this.eDmgIdx],1.13)); 
 					this.detailedStatVals.eq(this.eDmgIdx).html(newEDmg); //set energy dmg val
 					
 					var newEDPS;
 					if (this.rateIdx != -1){
 						newEDPS = newEDmg * this.baseDStats[this.rateIdx];
-					} else { newEDPS = newEDmg; }
-					if (this.equiptype == "Scatter Gun"){ newEDPS = newEDPS * 0.5 * 9; }
-					if (this.equiptype == "Rail Gun") { newEDPS = newEDPS / 1.8 * 7.5; }
-					this.mainStatVals.eq(this.eDPSIdx).html(newEDPS); //set energy DPS val					
+					} 
+					else {
+						//Exception for Beam Lasers which have no displayed fire rate stat.
+						newEDPS = newEDmg; 
+					}
+					if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
+						//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
+						newEDPS = (newEDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
+					}
+					if (this.equiptype == "Rail Gun") {
+						//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
+						newEDPS = (newEDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+					}
+					this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS)); //set energy DPS val					
 				}	
-				this.detailedStatVals.eq(this.eCapIdx).html(this.calc(this.baseDStats[this.eCapIdx], 1.16)); //set energy capacity val
+				this.detailedStatVals.eq(this.eCapIdx).html(Math.round(this.calc(this.baseDStats[this.eCapIdx], 1.16))); //set energy capacity val
 				this.detailedStatVals.eq(this.eConIdx).html(this.calc(this.baseDStats[this.eConIdx], 1.14) + "/s"); //set energy consumption val
 			}
 			
 			else if (this.body.hasClass("category-Secondary_weapons_ES2")){
-				if (this.kDmgIdx != -1){
-					this.detailedStatVals.eq(this.kDmgIdx).html(this.calc(this.baseDStats[this.kDmgIdx], 1.13));					
+				if (this.mainKDmgIdx != -1){
+					this.mainStatVals.eq(this.mainKDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainKDmgIdx], 1.13)));					
 				}
-				if (this.eDmgIdx != -1){
-					this.detailedStatVals.eq(this.eDmgIdx).html(this.calc(this.baseDStats[this.eDmgIdx], 1.13));					
+				if (this.mainEDmgIdx != -1){
+					this.mainStatVals.eq(this.mainEDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainEDmgIdx], 1.13)));					
 				}
 				if (this.effRanIdx != -1){
-					this.detailedStatVals.eq(this.effRanIdx).html(this.calc(this.baseDStats[this.effRanIdx], 1.02) + "m");
+					this.detailedStatVals.eq(this.effRanIdx).html(Math.round(this.calc(this.baseDStats[this.effRanIdx], 1.02)) + "m");
 				}
-				if (this.effDurIdx != -1 && this.equip-name != "Corrosion Missiles"  && this.equip-name != "Scorpion Missiles"){
+				if (this.effDurIdx != -1 && this.equipname != "Corrosion Missiles"  && this.equipname != "Scorpion Missiles" && this.equipname != "Corrosion Mines"){
 					this.detailedStatVals.eq(this.effDurIdx).html(this.calc(this.baseDStats[this.effDurIdx], 1.02) + "s");
 				}
 				if (this.dmgIncIdx != -1){
-					this.detailedStatVals.eq(this.dmgIncIdx).html("+" + this.calc(this.baseDStats[this.dmgIncIdx], 1.02) + "%");
+					this.detailedStatVals.eq(this.dmgIncIdx).html("+" + Math.round(this.calc(this.baseDStats[this.dmgIncIdx], 1.02)) + "%");
 				}
 			}
 			
-			else if (this.body.hasClass("category-Energy-Cores_ES2")){
-				this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.18) + "/s");
-				this.mainStatVals.eq(1).html(this.calc(this.baseMStats[1], 1.18) + "/s");
-				this.mainStatVals.eq(2).html(this.calc(this.baseMStats[2], 1.18) + "/s");
+			else if (this.body.hasClass("category-Energy_Cores_ES2")){
+				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.18)) + "/s");
+				this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.18)) + "/s");
+				this.mainStatVals.eq(2).html(Math.round(this.calc(this.baseMStats[2], 1.18)) + "/s");
 			}
 			
 			else if (this.body.hasClass("category-Shields_ES2")){
-				this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.16));
+				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
 				
 				this.detailedStatVals.eq(0).html(this.calc(this.baseDStats[0], 0.99) + "s");
 				this.detailedStatVals.eq(1).html(this.calc(this.baseDStats[1], 0.99) + "s");
 			}
 			
 			else if (this.body.hasClass("category-Platings_ES2")){
-				this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.16));
+				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
 			}
 			
 			else if (this.body.hasClass("category-Sensors_ES2")){
@@ -144,24 +168,24 @@ $(function(){
 			}
 			
 			else if (this.body.hasClass("category-Boosters_ES2")){
-				this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.01) + "%");
-				this.mainStatVals.eq(1).html(this.calc(this.baseMStats[1], 1.01) + "%");
+				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.01) + "%"));
+				this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.01) + "%"));
 				
-				this.detailedStatVals.eq(0).html(this.calc(this.baseDStats[0], 1.01) + "%");
-				this.detailedStatVals.eq(1).html(this.calc(this.baseDStats[1], 1.16));
+				this.detailedStatVals.eq(0).html(Math.round(this.calc(this.baseDStats[0], 1.01) + "%"));
+				this.detailedStatVals.eq(1).html(Math.round(this.calc(this.baseDStats[1], 1.16)));
 				this.detailedStatVals.eq(2).html(this.calc(this.baseDStats[2], 1.14) + "/s");
 			}
 			
 			else if (this.body.hasClass("category-Cargo-Units_ES2")){
-				this.mainStatVals.eq(0).html("+" + this.calc(this.baseMStats[0], 1.036));
+				this.mainStatVals.eq(0).html("+" + Math.round(this.calc(this.baseMStats[0], 1.036)));
 				
 				this.detailedStatVals.eq(0).html("+" + this.calc(this.baseDStats[0], 1.05) + "%");
 			}
 		};
 		
 		// Returns hidden level value based on selected grade & rarity.
-		// Also updates the color theme of the infobox.
-		scaler.getHiddenLevel = function(){		
+		// Also updates the color theme of the infobox, the sell value, and calls updatePlatings()
+		scaler.getHiddenLevel = function(level){		
 			if (this.body.hasClass("category-Legendary_items")) {
 				return 7; //legendaries have 7 more item levels than common & cannot have grades
 			}
@@ -175,25 +199,34 @@ $(function(){
 			//remove current theme to reset to default white/gray theme
 			if (lastClass != "pi-layout-default") { $(infobox).removeClass(lastClass); }
 			
+			//if this is the 'Platings' page, update plating type based on rarity
+			if (this.body.hasClass("page-Platings")) { this.updatePlatings(rarity); }
+			
 			switch (rarity){				
 				case "com":
+					this.sellDiv.html(Math.round(this.baseSellValue * level));
 					break;
 				
 				case "unc":
 					hiddenLevel += 1.4;
+					this.sellDiv.html(Math.round(this.baseSellValue * level * 1.8));
 					$(infobox).addClass("pi-theme-uncommon");
 					break;
 					
 				case "rare":
 					hiddenLevel += 2.2;
+					this.sellDiv.html(Math.round(this.baseSellValue * level * 3));
 					$(infobox).addClass("pi-theme-rare");
 					break;
 					
 				case "sup":
-					hiddenLevel += 3.8;	
+					hiddenLevel += 3.8;
+					this.sellDiv.html(Math.round(this.baseSellValue * level * 6));
 					$(infobox).addClass("pi-theme-superior");
 					break;
 			}
+			//platings page infobox should ignore hidden levels from rarity
+			if (this.body.hasClass("page-Platings")) { hiddenLevel = 0; }
 			switch (grade){
 				
 				case "normal":
@@ -208,6 +241,40 @@ $(function(){
 					break;
 			}
 			return hiddenLevel;
+		};
+		
+		//changing plating rarity changes base main stat 1 (armor), main stat 2 (repair per kill), name, and description
+		scaler.updatePlatings = function(rarity){
+			
+			switch (rarity){				
+				case "com":
+					this.baseMStats[0] = 80;
+					this.mainStatVals.eq(1).html("5%");
+					$("#equip-name").html("Plating");
+					$("#equip-desc").html("Basic metallic alloy for hardened bulkheads. Protects against energy damage.");	
+					break;
+				
+				case "unc":
+					this.baseMStats[0] = 98;
+					this.mainStatVals.eq(1).html("6%");
+					$("#equip-name").html("Phase Plating");
+					$("#equip-desc").html('Carbon "Phase" armor that blends into the hull. Protects against energy damage.');	
+					break;
+					
+				case "rare":
+					this.baseMStats[0] = 111;
+					this.mainStatVals.eq(1).html("7%");
+					$("#equip-name").html("Meson Plating");
+					$("#equip-desc").html('Mesh-on "Meson" tungsten tightly-bound fortication. Protects against energy damage.');	
+					break;
+					
+				case "sup":
+					this.baseMStats[0] = 141;
+					this.mainStatVals.eq(1).html("8%");
+					$("#equip-name").html("Nano Plating");
+					$("#equip-desc").html("Nano-bond technology for incredible structural durability. Protects against energy damage.");	
+					break;
+			}
 		};
 		
 		scaler.init();

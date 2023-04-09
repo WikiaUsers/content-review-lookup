@@ -107,3 +107,13 @@ window.MessageWallUserTags = {
         'Ladybrasa': 'Moderator'
     }
 };
+
+//Welcome message for new users
+
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: false, 
+             3: '{{Welcome}}',
+},
+            summary: 'Script: Creating talkpage on first edit'
+};
