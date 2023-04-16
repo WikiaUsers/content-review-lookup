@@ -461,37 +461,37 @@ Date.prototype.toDateInputValue = (function() {
 
             // Responses for people with Season Pass
             if (has_pass) {
-                summary_message = "Du hast " + candle_count + " Saison-Kerze(n) mit einem Saisonpass gesammelt.";
+                summary_message = "You have collected " + candle_count + " Seasonal Candle(s) with a Seasonal Pass.";
                                 
                 // 1. SP Commentary: How many SC you missed
                 missing_candles = with_pass_before - candle_count;
                 // If someone has all the Seasonal Candles
                 if (candle_count == with_pass_before) {
-                    missing_message = "Du hast bis jetzt <b>alle</b> Saison-Kerzen gesammelt.";
+                    missing_message = "You've collected <b>all</b> the Seasonal Candles so far.";
                 // If someone is putting in impossibly large numbers
                 } else if (candle_count > with_pass_before) {
-                    missing_message = "Du hast bisher <b>alle</b> Saison-Kerzen gesammelt <b>...UND MEHR?</b>";
+                    missing_message = "You've collected <b>all</b> the Seasonal Candles so far <b>..AND MORE?</b>";
                 // Default response for reasonable numbers
                 } else {
-                    missing_message = "Du hast " + missing_candles + " mögliche Saisonale Kerze(n) verpasst.";
+                    missing_message = "You missed a potential " + missing_candles + " Seasonal Candle(s).";
                 }
 
                 // 2. SP Commentary: If you are able to buy all the cosmetics with the time remaining
                 candle_goal_with_pass = NEED_WITH_PASS - candle_count;
                 // If someone has enough SC to buy everything
                 if (candle_count >= NEED_WITH_PASS) {
-                    progress_message = "Du kannst alle Kosmetika dieser Saison kaufen!";
+                    progress_message = "You can buy all the cosmetics this Season!";
                     conclusion_message = "";
                 // If someone can/cannot reach the goal by the Season end
                 } else {
-                    progress_message = "Du bräuchtest <b>" + candle_goal_with_pass + " Saison-Kerze(n)</b>, um alle Kosmetika in dieser Saison zu kaufen.";
+                    progress_message = "You would need <b>" + candle_goal_with_pass + " Seasonal Candle(s)</b> to buy all the cosmetics in this Season.";
                     
                     // If it is a possible goal
                     if (candle_goal_with_pass <= with_pass_after) {
                         var remaining_with_pass_list = WITH_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
                         var required_days_with_pass = SkySeasonalCandleCalculator.min_days_required(remaining_with_pass_list, candle_goal_with_pass);
 
-                        conclusion_message = "Du solltest in der Lage sein, alle Kosmetika zu kaufen, wenn du nicht<b> " + required_days_with_pass + " von den " + total_remaining_days + " restlichen Tagen verpsst.</b>.";
+                        conclusion_message = "You should be able to buy all the cosmetics if you don't miss <b> " + required_days_with_pass + " out of the " + total_remaining_days + " day(s) remaining</b>.";
                     // If it is an impossible goal
                     } else {
                         conclusion_message = "Unfortunately, with the time remaining, <b>you will not be able to buy all the cosmetics</b>.";

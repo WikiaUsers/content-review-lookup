@@ -222,3 +222,9 @@ $( function() {
 	animate: false,
 	hoverDelay: 600,
 };
+
+/* Configuring AddRailModule */
+window.AddRailModule = [
+	{page: 'Template:RailModule', prepend: true},
+	'Template:NewPagesModule'
+];

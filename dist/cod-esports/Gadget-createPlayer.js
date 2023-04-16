@@ -67,6 +67,32 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 				titles = [ thistitle + '/Tournament Results', 
 					thistitle + '/Tournament Results/Online', 
 					thistitle + '/Tournament Results/Offline',
+					thistitle + '/Statistics',
+					'Tooltip:' + thistitle ];
+				texts = [ "{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything}}",
+					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=online}}",
+					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=offline}}",
+					"{{PlayerTabsHeader}}\n{{PlayerEventHistoryPage}}",
+					"{{PlayerTooltip}}"
+				];
+				makePage();
+			});
+		}
+		if (infoboxP) {
+			$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Create Streamer', 'ca-create-player', 'Create player subpages')).click(function() {
+				clearDisplayColor();
+				if (!confirm('Create Player?')) {
+					return;
+				}
+				statuscolor = "gadget-action-success";
+				tag = "create_player"
+				i = 0;
+				a = new mw.Api();
+				thistitle = mw.config.get("wgTitle");
+				summary = "Automatically creating player subpages via CreateStreamer";
+				titles = [ thistitle + '/Tournament Results', 
+					thistitle + '/Tournament Results/Online', 
+					thistitle + '/Tournament Results/Offline',
 					'Tooltip:' + thistitle ];
 				texts = [ "{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything}}",
 					"{{PlayerTabsHeader}}\n{{PlayerResults|%s|show=everything|type=online}}",

@@ -1,6 +1,6 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
 
-/* From Backrooms Wiki: 页面内自定义CSS功能 */
+/* From Errorrooms Wiki: 页面内自定义CSS功能 */
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {

@@ -84,7 +84,7 @@ UserTagsJS.modules.newuser = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'UserName 1': ['montheditor', 'featured'], // Add Editor of the Month + Featured
+	'SpookyScaryGaming': ['montheditor', 'featured'], // Add Editor of the Month + Featured
 	'UserName 2': ['featured'], // Add featured
 	'UserName 3': ['featured', 'templates'], // Add Featured + Templates Guru
 	'UserName 4': ['inactive'] // Always Inactive

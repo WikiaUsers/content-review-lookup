@@ -1558,6 +1558,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"blacklight": {
+				"name": "Blacklight",
+				"colors": [
+					"shine",
+					"black",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"blacksmith": {
 				"name": "Blacksmith",
 				"colors": [
@@ -5928,6 +5937,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"flash": {
+				"name": "Flash",
+				"colors": [
+					"shine",
+					"blue",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"flatfoot": {
 				"name": "Flatfoot",
 				"colors": [
@@ -6901,6 +6919,24 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"flower",
 					"white",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"glamourous": {
+				"name": "Glamourous",
+				"colors": [
+					"shine",
+					"white",
+					"purple"
+				],
+				"rarity": "common"
+			},
+			"glare": {
+				"name": "Glare",
+				"colors": [
+					"shine",
+					"green",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -9997,6 +10033,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"flower",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"lumancer": {
+				"name": "Lumancer",
+				"colors": [
+					"shine",
+					"arcane",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},

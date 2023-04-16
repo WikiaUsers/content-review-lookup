@@ -4,7 +4,7 @@
     browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
     maxerr: 999999, forin: false, -W082, -W084
 */
-/* global mediaWiki, console */
+/* global mediaWiki, console, importArticle */
 (function (window, $, mw) {
     "use strict";
     var sbte, h;
@@ -38,6 +38,9 @@
         formatDayPlural: "$1 days", // placement: [NUMBER]
         formatCountdown: "$1 $2" // placement: [DAY, TIME]
     };
+    msg.localeOptsUtc = Object.assign(Object.assign({}, msg.localeOpts), {
+        timezone: "UTC"
+    }); // -> make a copy of localeOpts, then override the "timezone" field
 
     /* Maintain a private stack */
     // Runs every SBST Minute: Math.floor(new SkyDuration("1m -S").valueOf() / RATIOS.magic * 1000)
@@ -68,92 +71,7 @@
 
     function main(pSection) {
         ////////////////////////////////////
-        // Simple Timestamp Display
-        ////////////////////////////////////
-        var timestampEl = findEl(pSection, ".sbte-timestamp:not(.sbte-timestamp .sbte-timestamp)");
-        timestampEl.each(function () {
-            var elem = $(this);
-            var skyDate = elem.hasClass("alpha") ? new sbte.SkyDateAlpha(elem.data("skydate")) : new sbte.SkyDate(elem.data("skydate"));
-            var elHov = $("<span class=\"hov\">");
-            var elNohov = $("<span class=\"nohov\">");
-            elem.addClass("hover-switch");
-            elem.append(elHov, elNohov);
-            elNohov.text(skyDate.date.toLocaleString(msg.locale, msg.localeOpts) /* + " (" + skyDate.sbstString + ")" */ );
-            elHov.text(skyDate.sbstString);
-        });
-        ////////////////////////////////////
-        // Countdown Widget
-        ////////////////////////////////////
-        var countdownEl = findEl(pSection, ".sbte-routine:not(.sbte-routine .sbte-routine)");
-        var setCountdown = function (elem, fields) {
-            fields.cdTo.addClass("hover-switch");
-            fields.cdTo.append(fields.cdToHov, fields.cdToNohov);
-            var countDownFn = function (stopCountdown, seconds, countToDate, countFromDate, state) {
-                if (seconds <= 0)
-                    return;
-                var s = seconds % 60;
-                var m = Math.floor(seconds % h.RATIOS[h.UNITS.hour] / h.RATIOS[h.UNITS.minute]);
-                var hrs = Math.floor(seconds % h.RATIOS[h.UNITS.day] / h.RATIOS[h.UNITS.hour]);
-                var d = Math.floor(seconds / h.RATIOS[h.UNITS.day]);
-                var timestring = getMsg("formatCountdown", getMsg(d > 1 ? "formatDayPlural" : "formatDay", d), h.fmtTime(hrs, m, s));
-                fields.cdToNohov.text(countToDate.toString());
-                fields.cdToHov.text(countToDate.date.toLocaleString(msg.locale, msg.localeOpts));
-                if (state === h.STATES.WAITING) {
-                    fields.cdName.text(msg.eventStart);
-                    fields.cdTimer.removeClass("sbte-routine-ongoing sbte-routine-stopped").addClass("sbte-routine-waiting");
-                    fields.cdTimer.text(timestring);
-                } else {
-                    fields.cdName.text(msg.eventEnd);
-                    fields.cdTimer.removeClass("sbte-routine-waiting sbte-routine-stopped").addClass("sbte-routine-ongoing");
-                    fields.cdTimer.text(msg.active + timestring);
-                }
-                elem.css("visibility", "visible");
-            };
-            fields.routine.addEvent(h.STATES.WAITING, function () {
-                fields.routine.startCountdown(countDownFn);
-            });
-            fields.routine.addEvent(h.STATES.ONGOING, function () {
-                fields.routine.startCountdown(countDownFn);
-            });
-            fields.routine.addEvent(h.STATES.STOPPED, function () {
-                fields.cdName.text(msg.eventStart);
-                fields.cdTo.text(msg.noTime);
-                fields.cdTimer.removeClass("sbte-routine-waiting sbte-routine-ongoing").addClass("sbte-routine-stopped");
-                fields.cdTimer.text(msg.ended);
-                elem.css("visibility", "visible");
-            });
-            fields.routine.trigger();
-        };
-        countdownEl.each(function () {
-            var elem = $(this);
-            var routineInput = elem.data("routine");
-            if (!routineInput) {
-                console.warn(msg.routineNodef);
-                return;
-            }
-            var allCount = elem.find(".sbte-cd-name, .sbte-cd-to, .sbte-cd-timer").length;
-            var alphaCount = elem.find(".sbte-cd-name.alpha, .sbte-cd-to.alpha, .sbte-cd-timer.alpha").length;
-            if (allCount !== alphaCount)
-                setCountdown(elem, {
-                    cdName: elem.find(".sbte-cd-name:not(.alpha)"),
-                    cdTo: elem.find(".sbte-cd-to:not(.alpha)"),
-                    cdToHov: $("<span class=\"hov\">"),
-                    cdToNohov: $("<span class=\"nohov\">"),
-                    cdTimer: elem.find(".sbte-cd-timer:not(.alpha)"),
-                    routine: new sbte.SkyRoutine(routineInput)
-                });
-            if (alphaCount > 0)
-                setCountdown(elem, {
-                    cdName: elem.find(".sbte-cd-name.alpha"),
-                    cdTo: elem.find(".sbte-cd-to.alpha"),
-                    cdToHov: $("<span class=\"hov\">"),
-                    cdToNohov: $("<span class=\"nohov\">"),
-                    cdTimer: elem.find(".sbte-cd-timer.alpha"),
-                    routine: new sbte.SkyRoutineAlpha(routineInput)
-                });
-        });
-        ////////////////////////////////////
-        // SkyBlock Clock
+        // 1. SkyBlock Clock
         ////////////////////////////////////
         var CLOCK_FIELDS = {
             h24: ".hour24",
@@ -224,13 +142,104 @@
             // Hidden by default to avoid awkward text before script runs, so make sure to show it
             findEl(pSection, ".sbte-clock").css("visibility", "visible");
         }
+        ////////////////////////////////////
+        // 2. Simple Timestamp Display
+        ////////////////////////////////////
+        var timestampEl = findEl(pSection, ".sbte-timestamp:not(.sbte-timestamp .sbte-timestamp)");
+        timestampEl.each(function () {
+            var elem = $(this);
+            var skyDate = elem.hasClass("alpha") ? new sbte.SkyDateAlpha(elem.data("skydate")) : new sbte.SkyDate(elem.data("skydate"));
+            elem.find(".utc").text(skyDate.date.toLocaleString(msg.locale, msg.localeOptsUtc));
+            elem.find(".local").text(skyDate.date.toLocaleString(msg.locale, msg.localeOpts));
+            elem.find(".sbst").text(skyDate.sbstString);
+        });
+        ////////////////////////////////////
+        // 3. Countdown Widget
+        ////////////////////////////////////
+        var countdownEl = findEl(pSection, ".sbte-routine:not(.sbte-routine .sbte-routine)");
+        var setCountdown = function (elem, fields) {
+            var countDownFn = function (stopCountdown, seconds, countToDate, countFromDate, state) {
+                if (seconds <= 0)
+                    return;
+                var s = seconds % 60;
+                var m = Math.floor(seconds % h.RATIOS[h.UNITS.hour] / h.RATIOS[h.UNITS.minute]);
+                var hrs = Math.floor(seconds % h.RATIOS[h.UNITS.day] / h.RATIOS[h.UNITS.hour]);
+                var d = Math.floor(seconds / h.RATIOS[h.UNITS.day]);
+                var timestring = getMsg("formatCountdown", getMsg(d > 1 ? "formatDayPlural" : "formatDay", d), h.fmtTime(hrs, m, s));
+                fields.cdUtc.text(countToDate.date.toLocaleString(msg.locale, msg.localeOptsUtc));
+                fields.cdLocal.text(countToDate.date.toLocaleString(msg.locale, msg.localeOpts));
+                fields.cdSbst.text(countToDate.toString());
+                if (state === h.STATES.WAITING) {
+                    fields.cdName.text(msg.eventStart);
+                    fields.cdTimer.removeClass("cd-ongoing cd-stopped").addClass("cd-waiting");
+                    fields.cdTimer.text(timestring);
+                } else {
+                    fields.cdName.text(msg.eventEnd);
+                    fields.cdTimer.removeClass("cd-waiting cd-stopped").addClass("cd-ongoing");
+                    fields.cdTimer.text(msg.active + timestring);
+                }
+                elem.css("visibility", "visible");
+            };
+            fields.routine.addEvent(h.STATES.WAITING, function () {
+                fields.routine.startCountdown(countDownFn);
+            });
+            fields.routine.addEvent(h.STATES.ONGOING, function () {
+                fields.routine.startCountdown(countDownFn);
+            });
+            fields.routine.addEvent(h.STATES.STOPPED, function () {
+                fields.cdName.text(msg.eventStart);
+                fields.cdUtc.text(msg.noTime);
+                fields.cdLocal.text(msg.noTime);
+                fields.cdSbst.text(msg.noTime);
+                fields.cdTimer.removeClass("cd-waiting cd-ongoing").addClass("cd-stopped");
+                fields.cdTimer.text(msg.ended);
+                elem.css("visibility", "visible");
+            });
+            fields.routine.trigger();
+        };
+        countdownEl.each(function () {
+            var elem = $(this);
+            var routineInput = elem.data("routine");
+            if (!routineInput) {
+                console.warn(msg.routineNodef);
+                return;
+            }
+            var allCount = elem.find(".cd-name, .cd-to, .cd-timer").length;
+            var alphaCount = elem.find(".cd-name.alpha, .cd-to.alpha, .cd-timer.alpha").length;
+            if (allCount !== alphaCount)
+                setCountdown(elem, {
+                    cdName: elem.find(".cd-name:not(.alpha)"),
+                    cdUtc: elem.find(".cd-utc:not(.alpha)"),
+                    cdLocal: elem.find(".cd-local:not(.alpha)"),
+                    cdSbst: elem.find(".cd-sbst:not(.alpha)"),
+                    cdTimer: elem.find(".cd-timer:not(.alpha)"),
+                    routine: new sbte.SkyRoutine(routineInput)
+                });
+            if (alphaCount > 0)
+                setCountdown(elem, {
+                    cdName: elem.find(".cd-name.alpha"),
+                    cdUtc: elem.find(".cd-utc.alpha"),
+                    cdLocal: elem.find(".cd-local.alpha"),
+                    cdSbst: elem.find(".cd-sbst.alpha"),
+                    cdTimer: elem.find(".cd-timer.alpha"),
+                    routine: new sbte.SkyRoutineAlpha(routineInput)
+                });
+        });
     }
-
-    // Run on content load
+    // Load dependencies and run when dependencies ready
     mw.hook("hsbwiki.sbte").add(function (sbtelib) {
         sbte = sbtelib;
         h = sbte.helpers;
         mw.hook("wikipage.content").add(main);
     });
+    // If used without gadget loading, uncomment this part
+    /*
+    mw.loader.using(["mediawiki.api"], function () {
+        importArticle({
+            type: "script",
+            article: "MediaWiki:Gadget-SkyBlockTimeEngine.js"
+        });
+    });
+    */
 
 })(window, jQuery, mediaWiki);

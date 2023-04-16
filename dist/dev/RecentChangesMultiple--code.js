@@ -46,6 +46,9 @@
 	module.version = "0.0.0";
 	var i18n = {
 		TEXT: {
+			de: { // GERMAN
+				footer : "Version {0} von {1}",
+			},			
 			en: { // ENGLISH
 				footer : "Version {0} by {1}",
 			},

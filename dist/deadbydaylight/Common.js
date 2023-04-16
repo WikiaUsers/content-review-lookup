@@ -14,6 +14,7 @@ $(function(){
 	SetAppropriateDimensions(); //Deprecated but still used until old BP BG cost will be used
 	SetHeadersShadows();
 	SetPerkCheckBoxes();
+	ScrollToTabberID();
 	
 	$.each($(".mw-collapsible-text"), function(index, element){
 		console.log("element #" + index);
@@ -255,6 +256,18 @@ function SetPerkCheckBoxes(){
 	        el.parentNode.insertBefore(x, el.nextSibling);
 	    }
     );
+}
+
+function ScrollToTabberID(){
+	$("li[data-hash]").each(function() {
+		console.log("Found Tabber Node, ID: " + $(this).attr('data-hash'))
+	    $(this).attr('id', $(this).attr('data-hash'))
+	    if(window.location.hash.replace('#', "") == $(this).attr('data-hash')){
+	        $('html, body').animate({
+	            scrollTop: $(this).offset().top - 45
+	        }, 250);
+	    }
+	});
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

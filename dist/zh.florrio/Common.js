@@ -70,3 +70,51 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 	'海洋（滤镜）' : 'url(https://static.wikia.nocookie.net/florrio/images/1/1f/%E6%B5%B7%E6%B4%8B%EF%BC%88%E6%BB%A4%E9%95%9C%EF%BC%89%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054046&path-prefix=zh)',
 	'PvP' : 'url(https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&path-prefix=zh)'
 }[scene];
+(function () {
+    const eles = document.querySelectorAll('.js-action-play');
+    eles.forEach(function (e) {
+        const targetId = e.getAttribute('data-media-id');
+        if (!targetId) {
+            console.error('No data-media-id present on element', e);
+            return;
+        }
+        const target = document.getElementsByClassName('media-id-' + targetId)[0];
+        if (!target) {
+            console.error('No element found with .media-id-' + targetId, e);
+            return;
+        }
+        e.addEventListener('click', function () {
+            console.log(target);
+            if (target.paused || target.ended) {
+                target.play();
+            } else {
+                target.pause();
+            }
+        });
+    });
+})();
+
+mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
+/*
+ * A faster alternative to importing stylesheets where API requests are not needed
+ * HTML class "transcluded-css" comes from [[Template:CSS]]
+ * After this CSS importing method is approved, the previous one will be removed soon
+ */
+mw.hook("wikipage.content").add(function () {
+    $("span.transcluded-css").each(function () {
+        mw.util.addCSS($(this).text());
+        $(this).remove();
+    });
+});
+
+$.getJSON(mw.util.wikiScript("index"), {
+    title: "MediaWiki:Custom-import-scripts.json",
+    action: "raw"
+}).done(function (result, status) {
+    if (status != "success" || typeof (result) != "object") return;
+    var scripts = result[mw.config.get("wgPageName")];
+    if (scripts) {
+        if (typeof (scripts) == "string") scripts = [scripts];
+        importArticles({ type: "script", articles: scripts });
+    }
+});

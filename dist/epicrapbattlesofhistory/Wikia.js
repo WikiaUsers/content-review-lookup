@@ -34,7 +34,6 @@ function addMastheadTags() {
     rights["Awesomesix"] = ["Ex-KGB", "TDERB Writer"];
     rights["Tesla Man"] = ["Impeccably Dressed"];
     rights["MetalFire"] = ["Chat-Maud", "Metalgawea"];
-    rights["Bobdave"] = ["Hey Jude", "Cheeky Nando's Eater", "Top Lad", "Big Bang Smasher"];
     rights["BreZ"] = ["Lion King"];
     rights["Andrew0218"] = ["Davy"];
     rights["Tkid115"] = ["Assassin-pool", "Night-Shift", "E-dubbled", "Sexy Comic"];

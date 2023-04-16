@@ -11,3 +11,10 @@ UserTagsJS.modules.mwGroups = ['patroller', 'chatmoderator'];
 
 /* Toolbar*/
 window.BackToTopModern = true;
+
+/* Spoiler*/
+document.getElementById("spoilers_image").addEventListener("click", function() {
+    $('#spoilers').fadeOut(400, function () {
+        this.style.display = "none";
+    });
+});

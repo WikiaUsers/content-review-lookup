@@ -532,7 +532,6 @@ var Main =  (function () {
             });
         });
         tLoadPromises[tLoadPromises.length] = mw.loader.using([
-            'mediawiki.special.recentchanges',
             'mediawiki.special.changeslist',
             'mediawiki.special.changeslist.enhanced',
             'ext.fandom.photoGallery.gallery.css',

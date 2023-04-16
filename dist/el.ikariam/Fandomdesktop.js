@@ -1,3 +1,5 @@
+var wgNamespaceNumber = mw.config.values.wgNamespaceNumber;
+var wgPageName = mw.config.values.wgPageName;
 $('.page-content').css('overflow-x','unset');
 // Patching in changes to table sorting and alt rows.
 $(function changeTS() {
@@ -71,7 +73,7 @@ var bdur = {
 	'Τείχος':(function(){var t=[],c={a:57600,b:11,c:1.1,d:3240,e:[2430]};for(var i=0;i<48;i++){var d=Math.round(c.a/c.b*Math.pow(c.c,i+1)-c.d)-(c.e!=undefined?(c.e[i]!=undefined?c.e[i]:0):0);t.push((d>1728e3?1728e3:d));}return t;})(),
 	'Υαλουργείο':(function(){var t=[],c={a:72000,b:11,c:1.1,d:6120};for(var i=0;i<61;i++){var d=Math.round(c.a/c.b*Math.pow(c.c,i+1)-c.d)-(c.e!=undefined?(c.e[i]!=undefined?c.e[i]:0):0);t.push((d>1728e3?1728e3:d));}return t;})()
 };
-console.log(bdur);
+// console.log(bdur);
 var LD = {
 	buildings:['Ακαδημία','Αλάνα','Αποθήκη','Αποστακτήριο','Αρχείο Ναυτικών Χαρτών','Αρχιτεκτονικό γραφείο','Δημαρχείο','Λιμένας','Εργαστήριο','Ανταλλακτήριο','Κυβερνείο','Κρησφύγετο','Λιθουργείο','Μαύρη Αγορά','Μουσείο','Ναυπηγείο','Ναός','Ξυλοκόπος','Ξυλουργός','Οινοποιείο','Οπτικός','Παλάτι','Πειρατικό Φρούριο','Περιοχή Δοκιμών Πυροτεχνημάτων','Πρεσβεία','Πύργος Αλχημιστή','Στρατώνας','Ταβέρνα','Τείχος','Υαλουργείο'],
 	warehouse:['Αποθήκη','Αποθήκης'],

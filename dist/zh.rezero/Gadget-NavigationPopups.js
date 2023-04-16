@@ -1882,7 +1882,7 @@ $(function () {
 	 * Returns <code>null</code> on failure.
 	 * @return {Date}
 	 */
-	Downloader.prototype.getLastModifiedDate = function () {
+	Downloader.prototype.getLastModifi艾达te = function () {
 		if (!this.http) {
 			return null;
 		}
@@ -1940,7 +1940,7 @@ $(function () {
 				try {
 					if (d.getStatus() == 200) {
 						d.data = d.getData();
-						d.lastModified = d.getLastModifiedDate();
+						d.lastModified = d.getLastModifi艾达te();
 						callback(d);
 					} else if (typeof onfailure == typeof 1) {
 						if (onfailure > 0) {
@@ -5226,7 +5226,7 @@ $(function () {
 			}
 			var minor = h[i].minor ? '<b>m </b>' : '';
 			var editDate = new Date(h[i].timestamp);
-			var thisDay = formattedDate(editDate);
+			var thisDay = formatt艾达te(editDate);
 			var thisTime = formattedTime(editDate);
 			if (thisDay == day) {
 				thisDay = '';
@@ -5316,10 +5316,10 @@ $(function () {
 		return new Date(date.toLocaleString('en-US', { timeZone: timeZone }));
 	}
 
-	function formattedDateTime(date) {
+	function formatt艾达teTime(date) {
 		// fallback for IE11 and unknown timezones
 		if (useTimeOffset()) {
-			return formattedDate(date) + ' ' + formattedTime(date);
+			return formatt艾达te(date) + ' ' + formattedTime(date);
 		}
 
 		if (getMWDateFormat() === 'ISO 8601') {
@@ -5336,7 +5336,7 @@ $(function () {
 		return date.toLocaleString(getLocales(), options);
 	}
 
-	function formattedDate(date) {
+	function formatt艾达te(date) {
 		// fallback for IE11 and unknown timezones
 		if (useTimeOffset()) {
 			// we adjust the UTC time, so we print the adjusted UTC, but not really UTC values
@@ -5666,14 +5666,14 @@ $(function () {
 					pg.escapeQuotesHTML(
 						(user.editcount ? user.editcount : '0') +
 							popupString(' edits since: ') +
-							(user.registration ? formattedDate(new Date(user.registration)) : '')
+							(user.registration ? formatt艾达te(new Date(user.registration)) : '')
 					)
 				);
 		}
 
 		if (queryobj.usercontribs && queryobj.usercontribs.length) {
 			ret.push(
-				popupString('last edit on ') + formattedDate(new Date(queryobj.usercontribs[0].timestamp))
+				popupString('last edit on ') + formatt艾达te(new Date(queryobj.usercontribs[0].timestamp))
 			);
 		}
 
@@ -8332,9 +8332,9 @@ $(function () {
 	}
 	function diffDatesTableRow(revision, label) {
 		var txt = '';
-		var lastModifiedDate = new Date(revision.timestamp);
+		var lastModifi艾达te = new Date(revision.timestamp);
 
-		txt = formattedDateTime(lastModifiedDate);
+		txt = formatt艾达teTime(lastModifi艾达te);
 
 		var revlink = generalLink({
 			url: mw.config.get('wgScript') + '?oldid=' + revision.revid,
