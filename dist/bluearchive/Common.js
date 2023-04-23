@@ -291,6 +291,7 @@ $(function() {
 	switch (mw.config.get('wgPageName')) {
 	    case 'User:Thefrozenfish/Sandbox': 
 	    case 'Template:Gacha_Simulator':
+	    case 'Gacha/Simulator':
 			setupGachaSimulator();
 	        break;
 	}

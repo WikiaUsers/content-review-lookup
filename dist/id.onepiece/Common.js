@@ -1,67 +1,57 @@
-/* Version du JS revue par @John Trololo et @Think D. Solucer */
-/* <pre> */
-$(function()
-{
+// =====================================
+//        Variables for functions
+// =====================================
+// ArchiveTool
+ArchiveToolConfig = { 
+   archiveListTemplate: 'Archived Talk Tabs',	// Template to use on the main talk page
+   archivePageTemplate: 'Archived Talk Tabs',	// Template to use on the archived talk pages
+   archiveSubpage: 'Archive',					// Basename to use for archived talk pages
+   userLang: true
+};
 
-    /* Début JS */
-    
-/*****************************************************************
-** S'il vous plait, ne mettez aucun code JS avant les imports ****
-*********** !!! TOUJOURS APRES les imports !!! *******************
-******************************************************************/
+// BackToTopButton
+window.BackToTopModern = true;
 
-importArticles({
-    type: "script",
-    articles: [
+// =====================================
+//                Imports
+// =====================================
 
-// JS du wiki
-        'MediaWiki:Utilisateurs.js',
-        'MediaWiki:Forum.js', // Pour le forum
-        'MediaWiki:Common.js/Other.js', // Autre
-        
+// See MediaWiki:ImportJS
 
-// Projet "en suspens"
+// =====================================
+//                Functions
+// =====================================
 
-//'MediaWiki:Common.js/Verif_octets.js', // Pour éviter les modifs trolls
-//'MediaWiki:Common.js/Poisson_avril.js', // Special 1er avril
-//'MediaWiki:Common.js/Aide_fofo_scan.js', // Pour les debutants sur les topic des scans
-//'MediaWiki:Common.js/Hommytroll.js', // Hommy <3
-// 'MediaWiki:Common.js/Noel.js', // Pour noel
-
-// JS externe au wiki
-        'u:dev:MediaWiki:ShowHide/code.js',
-        'u:dev:MediaWiki:RevealAnonIP/code.js',
-        'u:dev:MediaWiki:GalleryButtonCustomText/code.js',
-        //'u:dev:SpoilerAlert/code.js',
-        //'l:MediaWiki:Chat-headline',
-    ]
-});
-            
-        
-//InterlanguageFlags
-importArticles({
-    type: "style",
-    articles: [
-        "w:c:dev:InterlanguageFlags/code.css"
-    ]
-});
-
-// Tout afficher (Vivre Card)
+// Expand All
 var expandAllFlag = 0;
 var $expandAll = $('.expandAll a');
 $('.expandAll a').click(function(){
-    if (expandAllFlag == 0){
+    if (expandAllFlag === 0){
         $('.mw-collapsible .mw-collapsible-toggle-collapsed').click();
         expandAllFlag = 1;
-        $expandAll.text('Tout refermer');
+        $expandAll.text('Collapse All');
     } else {
         $('.mw-collapsible .mw-collapsible-toggle-expanded').click();
         expandAllFlag = 0;
-        $expandAll.text('Tout afficher');
+        $expandAll.text('Expand All');
     }
 });
-//End of Expand All
+// END of Expand All
 
-   /* Fin JS */
+// Template:Tabs
+$(function() {
+	// If a sub-tab is "selected", make the parent tabs also "selected"
+	$('.at-selected').parents('.article-tabs li').each(function () {
+		$(this).addClass('at-selected');
+	});
+
+	// Margin fix
+	$('.article-tabs .at-selected .article-tabs').each(function () {
+		// Get height of subtabs
+		var $TabsHeight = $(this).height();
+
+		// Increase bottom margin of main tabs
+		$(this).parents('.article-tabs').last().css('margin-bottom' , '+=' + $TabsHeight);
+	});
 });
-/* </pre> */
+// END of Template:Tabs

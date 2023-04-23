@@ -32,3 +32,4 @@ window.tooltips_list = [
         parse: '{' + '{Template:Profile picture tip|1=<#name#>|2=<#text#>|d=<#default#>|o=<#obtain#>}}',
     }
 ];
+var oggPlayerButtonOnly = false;

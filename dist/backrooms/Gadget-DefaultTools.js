@@ -2,15 +2,15 @@ window.ecpButton = true;
 window.EditBasePageText = 'Edit parent page';
 window.PurgeButtonText = 'Purge page cache';
 window.aceCustomSettings = {
-    theme: 'dracula', // best dark theme tbh (idk light theme, 'tomorrow' is nice though)
+    theme: 'nord_dark', // best dark theme tbh (idk light theme, 'tomorrow' is nice though)
     wrap: true,
     showInvisibles: false,
     showPrintMargin: false,
-    autoScrollEditorIntoView: true,
+    autoScrollEditorIntoView: true
 };
 window.AjaxRename = {
 	renameReasons: {
-		'Fixing title' : 'Fixing title',
+		'Fixing title' : 'Fixing title'
 	},
 	check: {
         ignorewarnings: false,
@@ -18,9 +18,9 @@ window.AjaxRename = {
         deletetargets: false,
         movesubpages: true,
         movetalk: true,
-        watch: false,
-    },
-},
+        watch: false
+    }
+};
 
 importArticles({
     type: 'script',
@@ -36,6 +36,6 @@ importArticles({
         'u:dev:MediaWiki:CustomizeAce.js',
         'u:dev:MediaWiki:MaximizeAce.js',
         'u:dev:MediaWiki:PurgeButton.js',
-        'u:dev:MediaWiki:Stella.js',
-    ],
+        'u:dev:MediaWiki:Stella.js'
+    ]
 });

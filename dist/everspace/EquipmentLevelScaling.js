@@ -17,6 +17,9 @@ $(function(){
 			this.body = $(document.body); //for determining main type of equipment in update
 			this.equipname = $("#equip-name").html();
 			this.equiptype = $("#equip-subtype").html();
+			//Use pre-set alt text of the equipment type icon in the infobox to get the type. This should be consistent for all infobox instances.
+			this.altText = $(".pi-item.pi-data[data-item-name='equiptype'] a img").attr('alt');
+			
 			
 			this.level = $("#level"); //equipment level element, should be on default value (1)
 		  
@@ -86,118 +89,113 @@ $(function(){
 
 			this.realLevel = currLevel + this.getHiddenLevel(currLevel);
 			
-			//TODO when all equipment type icons are uploaded, change all .hasClass in this function to instead use equiptype
-			//var altText = $(".pi-item.pi-data[data-item-name='equiptype'] a img").attr('alt');
-			//the alt text is set in the template so it will be consistent as long as the icon is there & correct (equip type set correctly)
-			//mainly, this will fix legendary items having their base values displayed instead of their level 1 values initially.
-			if (this.body.hasClass("category-Primary_weapons_ES2")){
-				if (this.kDPSIdx != -1){
-					var newKDmg = this.calc(this.baseDStats[this.kDmgIdx], 1.13); 
-					this.detailedStatVals.eq(this.kDmgIdx).html(Math.round(newKDmg)); //set kinetic dmg val
+			switch (this.altText) {
+				case ("Primary Weapon"):
+					if (this.kDPSIdx != -1){
+						var newKDmg = this.calc(this.baseDStats[this.kDmgIdx], 1.13); 
+						this.detailedStatVals.eq(this.kDmgIdx).html(Math.round(newKDmg)); //set kinetic dmg val
+						
+						var newKDPS;
+						if (this.rateIdx != -1){
+							newKDPS = newKDmg * this.baseDStats[this.rateIdx];
+						} 
+						else {
+							//Exception for Beam Lasers which have no displayed fire rate stat.
+							newKDPS = newKDmg; 
+						}
+						if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
+							//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
+							newKDPS = (newKDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
+						}
+						if (this.equiptype == "Rail Gun") {
+							//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
+							newKDPS = (newKDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+						}
+						this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS)); //set kinetic DPS val
+					}
+					if (this.eDPSIdx != -1){
+						var newEDmg = this.calc(this.baseDStats[this.eDmgIdx],1.13); 
+						this.detailedStatVals.eq(this.eDmgIdx).html( Math.round(newEDmg)); //set energy dmg val
+						
+						var newEDPS;
+						if (this.rateIdx != -1){
+							newEDPS = newEDmg * this.baseDStats[this.rateIdx];
+						} 
+						else {
+							//Exception for Beam Lasers which have no displayed fire rate stat.
+							newEDPS = newEDmg; 
+						}
+						if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
+							//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
+							newEDPS = (newEDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
+						}
+						if (this.equiptype == "Rail Gun") {
+							//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
+							newEDPS = (newEDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+						}
+						this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS)); //set energy DPS val					
+					}	
+					this.detailedStatVals.eq(this.eCapIdx).html(Math.round(this.calc(this.baseDStats[this.eCapIdx], 1.16))); //set energy capacity val
+					this.detailedStatVals.eq(this.eConIdx).html(this.calc(this.baseDStats[this.eConIdx], 1.14) + "/s"); //set energy consumption val
+					break;
 					
-					var newKDPS;
-					if (this.rateIdx != -1){
-						newKDPS = newKDmg * this.baseDStats[this.rateIdx];
-					} 
-					else {
-						//Exception for Beam Lasers which have no displayed fire rate stat.
-						newKDPS = newKDmg; 
+				case ("Secondary Weapon"):
+					if (this.mainKDmgIdx != -1){
+						this.mainStatVals.eq(this.mainKDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainKDmgIdx], 1.13)));					
 					}
-					if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
-						//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
-						newKDPS = (newKDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
+					if (this.mainEDmgIdx != -1){
+						this.mainStatVals.eq(this.mainEDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainEDmgIdx], 1.13)));					
 					}
-					if (this.equiptype == "Rail Gun") {
-						//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
-						newKDPS = (newKDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+					if (this.effRanIdx != -1){
+						this.detailedStatVals.eq(this.effRanIdx).html(Math.round(this.calc(this.baseDStats[this.effRanIdx], 1.02)) + "m");
 					}
-					this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS)); //set kinetic DPS val
-				}
-				if (this.eDPSIdx != -1){
-					var newEDmg = this.calc(this.baseDStats[this.eDmgIdx],1.13); 
-					this.detailedStatVals.eq(this.eDmgIdx).html( Math.round(newEDmg)); //set energy dmg val
+					if (this.effDurIdx != -1 && this.equipname != "Corrosion Missiles"  && this.equipname != "Scorpion Missiles" && this.equipname != "Corrosion Mines" && this.equipname != "Bird's Nest"){
+						this.detailedStatVals.eq(this.effDurIdx).html(this.calc(this.baseDStats[this.effDurIdx], 1.02) + "s");
+					}
+					if (this.dmgIncIdx != -1){
+						this.detailedStatVals.eq(this.dmgIncIdx).html("+" + Math.round(this.calc(this.baseDStats[this.dmgIncIdx], 1.02)) + "%");
+					}
+					break;
+				
+				case ("Energy Core"):
+					this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.18)) + "/s");
+					this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.18)) + "/s");
+					this.mainStatVals.eq(2).html(Math.round(this.calc(this.baseMStats[2], 1.18)) + "/s");
+					break;
+				
+				case ("Shield"):
+					this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
+					this.detailedStatVals.eq(0).html(this.calc(this.baseDStats[0], 0.99) + "s");
+					this.detailedStatVals.eq(1).html(this.calc(this.baseDStats[1], 0.99) + "s");
+					break;
+				
+				case ("Plating"):
+					this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
+					break;
+				
+				case ("Sensor"):
+					this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.012) + "km");
+					this.mainStatVals.eq(1).html(this.calc(this.baseMStats[1], 1.012) + "km");
+					this.mainStatVals.eq(2).html(this.calc(this.baseMStats[2], 1.015) + "km");
+					break;
+				
+				case ("Booster"):
+					this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.01)) + "%");
+					this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.01)) + "%");
+					this.detailedStatVals.eq(0).html(Math.round(this.calc(this.baseDStats[0], 1.01)) + "%");
+					this.detailedStatVals.eq(1).html(Math.round(this.calc(this.baseDStats[1], 1.16)));
+					this.detailedStatVals.eq(2).html(this.calc(this.baseDStats[2], 1.14) + "/s");
 					
-					var newEDPS;
-					if (this.rateIdx != -1){
-						newEDPS = newEDmg * this.baseDStats[this.rateIdx];
-					} 
-					else {
-						//Exception for Beam Lasers which have no displayed fire rate stat.
-						newEDPS = newEDmg; 
+					if (this.equipname == "Cruise Booster"){
+						this.passiveValDiv.html("+" + Math.round(this.calc(this.basePassiveVal, 1.01)) + "%");
 					}
-					if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
-						//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
-						newEDPS = (newEDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
-					}
-					if (this.equiptype == "Rail Gun") {
-						//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
-						newEDPS = (newEDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
-					}
-					this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS)); //set energy DPS val					
-				}	
-				this.detailedStatVals.eq(this.eCapIdx).html(Math.round(this.calc(this.baseDStats[this.eCapIdx], 1.16))); //set energy capacity val
-				this.detailedStatVals.eq(this.eConIdx).html(this.calc(this.baseDStats[this.eConIdx], 1.14) + "/s"); //set energy consumption val
-			}
-			
-			else if (this.body.hasClass("category-Secondary_weapons_ES2")){
-				if (this.mainKDmgIdx != -1){
-					this.mainStatVals.eq(this.mainKDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainKDmgIdx], 1.13)));					
-				}
-				if (this.mainEDmgIdx != -1){
-					this.mainStatVals.eq(this.mainEDmgIdx).html(Math.round(this.calc(this.baseMStats[this.mainEDmgIdx], 1.13)));					
-				}
-				if (this.effRanIdx != -1){
-					this.detailedStatVals.eq(this.effRanIdx).html(Math.round(this.calc(this.baseDStats[this.effRanIdx], 1.02)) + "m");
-				}
-				if (this.effDurIdx != -1 && this.equipname != "Corrosion Missiles"  && this.equipname != "Scorpion Missiles" && this.equipname != "Corrosion Mines" && this.equipname != "Bird's Nest"){
-					this.detailedStatVals.eq(this.effDurIdx).html(this.calc(this.baseDStats[this.effDurIdx], 1.02) + "s");
-				}
-				if (this.dmgIncIdx != -1){
-					this.detailedStatVals.eq(this.dmgIncIdx).html("+" + Math.round(this.calc(this.baseDStats[this.dmgIncIdx], 1.02)) + "%");
-				}
-			}
-			
-			else if (this.body.hasClass("category-Energy_Cores_ES2")){
-				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.18)) + "/s");
-				this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.18)) + "/s");
-				this.mainStatVals.eq(2).html(Math.round(this.calc(this.baseMStats[2], 1.18)) + "/s");
-			}
-			
-			else if (this.body.hasClass("category-Shields_ES2")){
-				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
+					break;
 				
-				this.detailedStatVals.eq(0).html(this.calc(this.baseDStats[0], 0.99) + "s");
-				this.detailedStatVals.eq(1).html(this.calc(this.baseDStats[1], 0.99) + "s");
-			}
-			
-			else if (this.body.hasClass("category-Platings_ES2")){
-				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.16)));
-			}
-			
-			else if (this.body.hasClass("category-Sensors_ES2")){
-				this.mainStatVals.eq(0).html(this.calc(this.baseMStats[0], 1.012) + "km");
-				this.mainStatVals.eq(1).html(this.calc(this.baseMStats[1], 1.012) + "km");
-				this.mainStatVals.eq(2).html(this.calc(this.baseMStats[2], 1.015) + "km");
-			}
-			
-			else if (this.body.hasClass("category-Boosters_ES2")){
-				this.mainStatVals.eq(0).html(Math.round(this.calc(this.baseMStats[0], 1.01)) + "%");
-				this.mainStatVals.eq(1).html(Math.round(this.calc(this.baseMStats[1], 1.01)) + "%");
-				
-				this.detailedStatVals.eq(0).html(Math.round(this.calc(this.baseDStats[0], 1.01)) + "%");
-				this.detailedStatVals.eq(1).html(Math.round(this.calc(this.baseDStats[1], 1.16)));
-				this.detailedStatVals.eq(2).html(this.calc(this.baseDStats[2], 1.14) + "/s");
-				
-				if (this.equipname == "Cruise Booster"){
-					this.passiveValDiv.html("+" + Math.round(this.calc(this.basePassiveVal, 1.01)) + "%");
-				}
-			}
-			
-			else if (this.body.hasClass("category-Cargo_Units_ES2")){
-				this.mainStatVals.eq(0).html("+" + Math.round(this.calc(this.baseMStats[0], 1.036)));
-				
-				this.detailedStatVals.eq(0).html("+" + this.calc(this.baseDStats[0], 1.05) + "%");
-			}
+				case ("Cargo Unit"):
+					this.mainStatVals.eq(0).html("+" + Math.round(this.calc(this.baseMStats[0], 1.036)));
+					this.detailedStatVals.eq(0).html("+" + this.calc(this.baseDStats[0], 1.05) + "%");
+					break;
+			} //end of equipment type switch block
 			
 			if ($(infobox).hasClass("pi-theme-legend")) {
 				if(this.traitDiv1.length){ //if there is a trait value

@@ -99,20 +99,3 @@ UserTagsJS.modules.metafilter = {
 
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.isblocked = true;
-
-// ===================
-// MessageWallUserTags config
-// ===================
-window.MessageWallUserTags = {
-    tagColor: 'Ghostwhite',  //Tag color – The color of the tag's text
-    glow: true,           //Glow effect toggle – Value of 'true' turns on the glow effect, 'false' turns it off
-    glowSize: '20px',     //Glow size – The default radius of the text-shadow glow effect
-    glowColor: 'Indigo', //Glow color
-    users: {
-    	'MichaelMason115': 'Discord Moderator',
-        'AMGSheena': 'Developer',
-        'Akuma_Kira': 'Developer',
-        'Shruk': 'Owner',
-        'Centaura': 'Lead QA',
-    }
-};

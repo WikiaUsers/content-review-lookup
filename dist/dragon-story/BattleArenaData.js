@@ -1921,6 +1921,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bright": {
+				"name": "Bright",
+				"colors": [
+					"shine",
+					"white",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"brightaries": {
 				"name": "Bright Aries",
 				"colors": [
@@ -2020,6 +2029,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"metal",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"brilliance": {
+				"name": "Brilliance",
+				"colors": [
+					"shine",
+					"red",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6956,6 +6974,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"rainbow"
 				],
 				"rarity": "ultra"
+			},
+			"gleaming": {
+				"name": "Gleaming",
+				"colors": [
+					"shine",
+					"yellow",
+					"white"
+				],
+				"rarity": "unbreedable"
 			},
 			"gleeful": {
 				"name": "Gleeful",
@@ -14963,6 +14990,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"scintillating": {
+				"name": "Scintillating",
+				"colors": [
+					"shine",
+					"purple",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"scion": {
 				"name": "Scion",
 				"colors": [
@@ -18193,6 +18229,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"blue"
 				],
 				"rarity": "rare"
+			},
+			"twinkle": {
+				"name": "Twinkle",
+				"colors": [
+					"shine",
+					"blue",
+					"yellow"
+				],
+				"rarity": "common"
 			},
 			"twinstar": {
 				"name": "Twin Star",

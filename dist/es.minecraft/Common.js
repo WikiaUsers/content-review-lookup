@@ -367,6 +367,7 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
  * Set minimum height for animations to prevent moving the page if the frames
  * differ in height
  */
+/*
 ( function() {
 	// Set frames to be visible for measuring height
 	var $animated = $content.find( '.animated' ).addClass( 'animated-visible' );
@@ -400,6 +401,7 @@ mw.hook( 'wikipage.content' ).add( function( $content ) {
 		$( this ).css( 'min-height', animateds[i].height );
 	} ).removeClass( 'animated-visible' );
 }() );
+*/
 
 } );
 /* End wiki content hook */

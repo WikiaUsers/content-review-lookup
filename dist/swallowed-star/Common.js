@@ -46,6 +46,11 @@ function updateCountdown() {
 // Spoiler text
 var spoiler = document.querySelector(".spoiler");
 
-spoiler.addEventListener("click", function () {
-    spoiler.classList.toggle("active");
+spoiler.addEventListener("click", function (event) {
+    if (event.target.tagName === 'A') { // check if clicked element is an <a> tag
+        event.preventDefault(); // prevent default link behavior
+        window.location.href = event.target.href; // navigate to the link immediately
+    } else {
+        spoiler.classList.toggle("active");
+    }
 });

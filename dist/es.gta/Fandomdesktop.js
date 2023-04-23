@@ -19,7 +19,6 @@ window.UserTagsJS = {
 		    ' ': ['yearuser'],
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
-            'Ale_-_Remastered': ['asistente'],
             'Claudio3862': ['asistente'],
             'UlyssesAlanis14': ['asistente'],
             

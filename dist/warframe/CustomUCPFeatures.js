@@ -137,6 +137,7 @@ function highlightUser(block, name, highlightBool) {
 			case "JoeBot":
 			case "Owlbot":
 			case "ScientiaBot":
+			case "SOAP Bot":
 			case "Погрузочный бот":
 			case "Wikia":
 			case "WikiaBot":

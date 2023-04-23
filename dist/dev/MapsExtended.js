@@ -8,6 +8,354 @@
 */
 (function() // <- Immediately invoked function expression to scope variables and functions to this script
 {
+    /*
+        EventHandler
+
+        This is similar to the event handler model in C#. You can subscribe or "listen" to an event to be notified when it triggered.
+        Unlike addEventListener, these events don't need to be attached to elements in the DOM,
+
+        Usage:
+        var onSomething = new EventHandler();
+        onSomething.subscribe(function(args)
+        {
+            // This function is called when invoke is called
+        })
+
+        onSomething.invoke({ someString: "someValue" });
+
+    */
+
+    function EventHandler() {
+        this._listeners = [];
+        this._listenersOnce = [];
+    }
+
+    EventHandler.prototype =
+    {
+        subscribe: function(listener)
+        {
+            this._listeners.push(listener);
+        },
+        
+        subscribeOnce: function(listener)
+        {
+            this._listenersOnce.push(listener);
+        },
+        
+        unsubscribe: function(listener)
+        {
+            var index = this._listeners.indexOf(listener);
+            if (index != -1)
+            {
+                this._listeners.splice(index, 1);
+                this._listernerParams.splice(index, 1);
+            }
+        },
+        
+        invoke: function(args)
+        {
+            if (this._listeners)
+            {
+                for (var i = 0; i < this._listeners.length; i++)
+                    this._listeners[i](args);
+            }
+
+            if (this._listenersOnce)
+            {
+                for (var i = 0; i < this._listenersOnce.length; i++)
+                    this._listenersOnce[i](args);
+
+                this._listenersOnce = [];
+            }
+        }
+    };
+
+
+// Helper functions
+    
+
+    // Loads a *single* module of name, returns a promise which resolves when the module is loaded, with a reference to the exported module
+    function loadModule(name)
+    {
+        var moduleName = mw.loader.getModuleNames().find(function(n){ return n === name || n.startsWith(name + "-"); });
+        return mw.loader.using(moduleName).then(function(require){ return require(moduleName); });
+    }
+
+
+    // Deep copies the value of all keys from source to target, in-place and recursively
+    // This is an additive process. If the key already exists on the target, it is unchanged.
+    // This way, the target is only ever added to, values are never modified or removed
+        
+    // Arrays are not recursed, and are treated as a value unless recurseArrays is true
+
+    // The string array ignoreList may be used to skip copying specific keys (at any depth) from the source
+    function traverseCopyValues(source, target, ignoreList, recurseArrays)
+    {
+        // Return if the source is empty
+        if (!source) return target;
+
+        // Intialize target if it's not defined
+        if (!target)
+        {
+            if (Array.isArray(source))
+                target = [];
+            else
+                target = {};
+        }
+        
+        if (typeof source != typeof target)
+        {
+            console.error("Type mismatch");
+            return target;
+        }
+
+        if (Array.isArray(source))
+        {
+            if (!recurseArrays) return target;
+
+            /*
+            if (Array.isArray(source) && source.length != target.length)
+            {
+                console.error("Length mismatch between source and target");
+                return;
+            }
+            */
+        }
+
+        // This traverses both objects and arrays
+        for (var key in source)
+        {
+            if (!source.hasOwnProperty(key) || (ignoreList && ignoreList.includes(key))) continue;
+            
+            // Replicate this value on the target if it doesn't exist
+            if (target[key] == undefined)
+            {
+                // If the source is an object or array, traverse into it and create new values
+                if (typeof source[key] === "object")
+                    target[key] = traverseCopyValues(source[key], target[key], ignoreList, recurseArrays);
+                else
+                    target[key] = source[key];
+            }
+
+            // If the value on the target does exist
+            else
+            {
+                // If the source is an object or array, traverse into it (non-modify)
+                if (key !== "e" && typeof source[key] === "object")
+                    traverseCopyValues(source[key], target[key], ignoreList, recurseArrays);
+            }
+        }
+
+        return target;
+    }
+
+    // Find a specific value in an object using a path
+    function traverse(obj, path)
+    {
+        // Convert indexes to properties, and strip leading periods
+        path = path.replace("/\[(\w+)\]/g", ".$1").replace("/^\./", "");
+        var pathArray = path.split(".");
+        
+        for (var i = 0; i < pathArray.length; i++)
+        {
+            var key = pathArray[i];
+            if (key in obj)
+                obj = obj[key];
+            else
+                return;
+        }
+
+        return obj;
+    }
+
+    function isEmptyObject(obj)
+    {
+        for (var i in obj) return false; 
+        return true;
+    }
+
+    var decodeHTMLEntities = (function()
+    {
+        // This prevents any overhead from creating the object each time
+        var element = document.createElement("div");
+      
+        function decodeHTMLEntities(str)
+        {
+            if (str && typeof str === "string")
+            {
+                // Strip script/html tags
+                str = str.replace("/<script[^>]*>([\S\s]*?)<\/script>/gmi", "");
+                str = str.replace("/<\/?\w(?:[^\"'>]|\"[^\"]*\"|'[^']*')*>/gmi", "");
+                element.innerHTML = str;
+                str = element.textContent;
+                element.textContent = "";
+            }
+
+            return str;
+        }
+      
+        return decodeHTMLEntities;
+
+    })();
+
+    function capitalizeFirstLetter(string)
+    {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function generateRandomString(length)
+    {
+        var result = "";
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charsLength = chars.length;
+        var counter = 0;
+        while (counter < length)
+        {
+            result += chars.charAt(Math.floor(Math.random() * charsLength));
+            counter += 1;
+        }
+        return result;
+    }
+
+    function preventDefault(e){ e.preventDefault(); }
+    function stopPropagation(e){ e.stopPropagation(); }
+
+    // This function returns a new function that can only be called once.
+    // When the new function is called for the first time, it will call the "fn"
+    // function with the given "context" and arguments and save the result.
+    // On subsequent calls, it will return the saved result without calling "fn" again.
+    function once(fn, context)
+    {     
+        var result;
+        return function()
+        { 
+            if (fn)
+            {
+                result = fn.apply(context || this, arguments);
+                fn = context = null;
+            }
+            return result;
+        };
+    }
+    
+    // This function finds a rule with a specific selector. We do this to modify some built-in rules so they don't have to be redefined
+    function findCSSRule(selectorString, styleSheet)
+    {
+        // helper function searches through the document stylesheets looking for @selectorString
+        // will also recurse through sub-rules (such as rules inside media queries)
+        function recurse(node, selectorString)
+        {
+            if (node.cssRules)
+            {
+                for (var i = 0; i < node.cssRules.length; i++)
+                {
+                    if (node.cssRules[i].selectorText == selectorString)
+                        return node.cssRules[i];
+                    if (node.cssRules[i].cssRules)
+                    {
+                        var rule = recurse(node.cssRules[i], selectorString);
+                        if (rule) return rule;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+
+        // Find from a specific sheet
+        if (styleSheet)
+        {
+            var rule = recurse(styleSheet, selectorString);
+            if (rule) return rule;
+        }
+
+        // Find from all stylesheets in document
+        else
+        {
+            for (var i = 0; i < document.styleSheets.length; i++)
+            {
+                var sheet = document.styleSheets[i];
+                try
+                {
+                    if (sheet.cssRules)
+                    {
+                        var rule = recurse(sheet, selectorString);
+                        if (rule) return rule;
+                    }
+                }
+                catch(e)
+                {
+                    continue;
+                }
+                
+            }
+        }
+        
+        //console.error("Could not find a CSS rule with the selector \"" + selectorString + "\"");
+        return;
+    }
+
+    function getIndexOfCSSRule(cssRule, styleSheet)
+    {
+        if (!styleSheet.cssRules)
+            return -1;
+        
+        for (var i = 0; i < styleSheet.cssRules.length; i++)
+        {
+            if (styleSheet.cssRules[i].selectorText == cssRule.selectorText)
+                return i;
+        }
+
+        return -1;
+    }
+
+    function deleteCSSRule(selector, styleSheet)
+    {
+        var rule = findCSSRule(selector, styleSheet);
+
+        if (rule != null)
+        {
+            var ruleIndex = getIndexOfCSSRule(rule, rule.parentStyleSheet);
+            rule.parentStyleSheet.deleteRule(ruleIndex);
+        }
+    }
+
+    // Modifies the first CSS rule found with a <selector> changing it to <newSelector>
+    function changeCSSRuleSelector(selector, newSelector, styleSheet)
+    {
+        var rule = findCSSRule(selector, styleSheet);
+        if (rule != null) rule.selectorText = newSelector;
+        return rule;
+    }
+
+    function appendCSSRuleSelector(selector, additionalSelector, styleSheet)
+    {
+        var rule = findCSSRule(selector, styleSheet);
+        if (rule != null) rule.selectorText = ", " + additionalSelector;
+        return rule;
+    }
+
+    // Modifies a CSS rule with a <selector>, setting it's new style block declaration entirely
+    function changeCSSRuleText(selector, cssText, styleSheet)
+    {
+        var rule = findCSSRule(selector, styleSheet);
+        if (rule != null) rule.style.cssText = cssText;
+        return rule;
+    }
+
+    // Modifies a CSS rule with a <selector>, setting the value of a specific property
+    function changeCSSRuleStyle(selector, property, value, styleSheet)
+    {
+        var rule = findCSSRule(selector, styleSheet);
+        if (rule != null) rule.style[property] = value;
+        return rule;
+    }
+
+
+// MapsExtended
+
+    
     function mx()
     {
         var urlParams = new URLSearchParams(window.location.search);
@@ -36,342 +384,6 @@
         {
             log("No interactive maps found on page. document.readyState is \"" + document.readyState + "\". Page content element is:\n" + document.querySelector(".page-content").innerHTML.toString());
             return;
-        }
-
-        /*
-            EventHandler
-
-            This is similar to the event handler model in C#. You can subscribe or "listen" to an event to be notified when it triggered.
-            Unlike addEventListener, these events don't need to be attached to elements in the DOM,
-
-            Usage:
-            var onSomething = new EventHandler();
-            onSomething.subscribe(function(args)
-            {
-                // This function is called when invoke is called
-            })
-
-            onSomething.invoke({ someString: "someValue" });
-
-        */
-
-        function EventHandler() {
-            this._listeners = [];
-            this._listenersOnce = [];
-        }
-
-        EventHandler.prototype =
-        {
-            subscribe: function(listener)
-            {
-                this._listeners.push(listener);
-            },
-            
-            subscribeOnce: function(listener)
-            {
-                this._listenersOnce.push(listener);
-            },
-            
-            unsubscribe: function(listener)
-            {
-                var index = this._listeners.indexOf(listener);
-                if (index != -1)
-                {
-                    this._listeners.splice(index, 1);
-                    this._listernerParams.splice(index, 1);
-                }
-            },
-            
-            invoke: function(args)
-            {
-                if (this._listeners)
-                {
-                    for (var i = 0; i < this._listeners.length; i++)
-                        this._listeners[i](args);
-                }
-
-                if (this._listenersOnce)
-                {
-                    for (var i = 0; i < this._listenersOnce.length; i++)
-                        this._listenersOnce[i](args);
-
-                    this._listenersOnce = [];
-                }
-            }
-        };
-
-
-// Helper functions
-
-
-        // Deep copies the value of all keys from source to target, in-place and recursively
-        // This is an additive process. If the key already exists on the target, it is unchanged.
-        // This way, the target is only ever added to, values are never modified or removed
-            
-        // Arrays are not recursed, and are treated as a value unless recurseArrays is true
-
-        // The string array ignoreList may be used to skip copying specific keys (at any depth) from the source
-        function traverseCopyValues(source, target, ignoreList, recurseArrays)
-        {
-            // Return if the source is empty
-            if (!source) return target;
-
-            // Intialize target if it's not defined
-            if (!target)
-            {
-                if (Array.isArray(source))
-                    target = [];
-                else
-                    target = {};
-            }
-            
-            if (typeof source != typeof target)
-            {
-                console.error("Type mismatch");
-                return target;
-            }
-
-            if (Array.isArray(source))
-            {
-                if (!recurseArrays) return target;
-
-                /*
-                if (Array.isArray(source) && source.length != target.length)
-                {
-                    console.error("Length mismatch between source and target");
-                    return;
-                }
-                */
-            }
-
-            // This traverses both objects and arrays
-            for (var key in source)
-            {
-                if (!source.hasOwnProperty(key) || (ignoreList && ignoreList.includes(key))) continue;
-                
-                // Replicate this value on the target if it doesn't exist
-                if (target[key] == undefined)
-                {
-                    // If the source is an object or array, traverse into it and create new values
-                    if (typeof source[key] === "object")
-                        target[key] = traverseCopyValues(source[key], target[key], ignoreList, recurseArrays);
-                    else
-                        target[key] = source[key];
-                }
-
-                // If the value on the target does exist
-                else
-                {
-                    // If the source is an object or array, traverse into it (non-modify)
-                    if (key !== "e" && typeof source[key] === "object")
-                        traverseCopyValues(source[key], target[key], ignoreList, recurseArrays);
-                }
-            }
-
-            return target;
-        }
-
-        // Find a specific value in an object using a path
-        function traverse(obj, path)
-        {
-            // Convert indexes to properties, and strip leading periods
-            path = path.replace("/\[(\w+)\]/g", ".$1").replace("/^\./", "");
-            var pathArray = path.split(".");
-            
-            for (var i = 0; i < pathArray.length; i++)
-            {
-                var key = pathArray[i];
-                if (key in obj)
-                    obj = obj[key];
-                else
-                    return;
-            }
-
-            return obj;
-        }
-
-        function isEmptyObject(obj)
-        {
-            for (var i in obj) return false; 
-            return true;
-        }
-
-        var decodeHTMLEntities = (function()
-        {
-            // This prevents any overhead from creating the object each time
-            var element = document.createElement("div");
-          
-            function decodeHTMLEntities(str)
-            {
-                if (str && typeof str === "string")
-                {
-                    // Strip script/html tags
-                    str = str.replace("/<script[^>]*>([\S\s]*?)<\/script>/gmi", "");
-                    str = str.replace("/<\/?\w(?:[^\"'>]|\"[^\"]*\"|'[^']*')*>/gmi", "");
-                    element.innerHTML = str;
-                    str = element.textContent;
-                    element.textContent = "";
-                }
-
-                return str;
-            }
-          
-            return decodeHTMLEntities;
-
-        })();
-
-        function capitalizeFirstLetter(string)
-        {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function generateRandomString(length)
-        {
-            var result = "";
-            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var charsLength = chars.length;
-            var counter = 0;
-            while (counter < length)
-            {
-                result += chars.charAt(Math.floor(Math.random() * charsLength));
-                counter += 1;
-            }
-            return result;
-        }
-
-        function preventDefault(e){ e.preventDefault(); }
-        function stopPropagation(e){ e.stopPropagation(); }
-
-        // This function returns a new function that can only be called once.
-        // When the new function is called for the first time, it will call the "fn"
-        // function with the given "context" and arguments and save the result.
-        // On subsequent calls, it will return the saved result without calling "fn" again.
-        function once(fn, context)
-        {     
-            var result;
-            return function()
-            { 
-                if (fn)
-                {
-                    result = fn.apply(context || this, arguments);
-                    fn = context = null;
-                }
-                return result;
-            };
-        }
-        
-        // This function finds a rule with a specific selector. We do this to modify some built-in rules so they don't have to be redefined
-        function findCSSRule(selectorString, styleSheet)
-        {
-            // helper function searches through the document stylesheets looking for @selectorString
-            // will also recurse through sub-rules (such as rules inside media queries)
-            function recurse(node, selectorString)
-            {
-                if (node.cssRules)
-                {
-                    for (var i = 0; i < node.cssRules.length; i++)
-                    {
-                        if (node.cssRules[i].selectorText == selectorString)
-                            return node.cssRules[i];
-                        if (node.cssRules[i].cssRules)
-                        {
-                            var rule = recurse(node.cssRules[i], selectorString);
-                            if (rule) return rule;
-                        }
-                    }
-                }
-                
-                return false;
-            }
-
-
-            // Find from a specific sheet
-            if (styleSheet)
-            {
-                var rule = recurse(styleSheet, selectorString);
-                if (rule) return rule;
-            }
-
-            // Find from all stylesheets in document
-            else
-            {
-                for (var i = 0; i < document.styleSheets.length; i++)
-                {
-                    var sheet = document.styleSheets[i];
-                    try
-                    {
-                        if (sheet.cssRules)
-                        {
-                            var rule = recurse(sheet, selectorString);
-                            if (rule) return rule;
-                        }
-                    }
-                    catch(e)
-                    {
-                        continue;
-                    }
-                    
-                }
-            }
-            
-            //console.error("Could not find a CSS rule with the selector \"" + selectorString + "\"");
-            return;
-        }
-
-        function getIndexOfCSSRule(cssRule, styleSheet)
-        {
-            if (!styleSheet.cssRules)
-                return -1;
-            
-            for (var i = 0; i < styleSheet.cssRules.length; i++)
-            {
-                if (styleSheet.cssRules[i].selectorText == cssRule.selectorText)
-                    return i;
-            }
-
-            return -1;
-        }
-
-        function deleteCSSRule(selector, styleSheet)
-        {
-            var rule = findCSSRule(selector, styleSheet);
-
-            if (rule != null)
-            {
-                var ruleIndex = getIndexOfCSSRule(rule, rule.parentStyleSheet);
-                rule.parentStyleSheet.deleteRule(ruleIndex);
-            }
-        }
-
-        // Modifies the first CSS rule found with a <selector> changing it to <newSelector>
-        function changeCSSRuleSelector(selector, newSelector, styleSheet)
-        {
-            var rule = findCSSRule(selector, styleSheet);
-            if (rule != null) rule.selectorText = newSelector;
-            return rule;
-        }
-
-        function appendCSSRuleSelector(selector, additionalSelector, styleSheet)
-        {
-            var rule = findCSSRule(selector, styleSheet);
-            if (rule != null) rule.selectorText = ", " + additionalSelector;
-            return rule;
-        }
-
-        // Modifies a CSS rule with a <selector>, setting it's new style block declaration entirely
-        function changeCSSRuleText(selector, cssText, styleSheet)
-        {
-            var rule = findCSSRule(selector, styleSheet);
-            if (rule != null) rule.style.cssText = cssText;
-            return rule;
-        }
-
-        // Modifies a CSS rule with a <selector>, setting the value of a specific property
-        function changeCSSRuleStyle(selector, property, value, styleSheet)
-        {
-            var rule = findCSSRule(selector, styleSheet);
-            if (rule != null) rule.style[property] = value;
-            return rule;
         }
 
         /*
@@ -498,7 +510,19 @@
                 // These events are triggered by the attributeObserver, they only contain one argument "value"
                 onMapDragged: new EventHandler(),
                 onMapZoomed: new EventHandler(),
-                onMapPanned: new EventHandler()
+                onMapPanned: new EventHandler(),
+
+                // Fired when the map goes fullscreen
+                onMapFullscreen: new EventHandler(),
+
+                // Fired when the leaflet container element is resized.
+                onMapResized: new EventHandler(),
+
+                // Fired when the map-container element is resized
+                onMapModuleResized: new EventHandler(),
+
+                // Triggered after a search has been performed. Contains the args: map, search
+                onSearchPerformed: new EventHandler()
             };
 
             // Hook ExtendedMap events into MapsExtended events, effectively forwarding all events to the mapsExtended events object
@@ -521,6 +545,17 @@
                 
             }.bind(this));
 
+            // Infer iconAnchor from iconPosition
+            if (this.config["iconPosition"] != undefined)
+            {
+                this.config["iconAnchor"] = "";
+                if (this.config["iconPosition"].startsWith("top"))     this.config["iconAnchor"] += "bottom";
+                if (this.config["iconPosition"].startsWith("center"))  this.config["iconAnchor"] += "center";
+                if (this.config["iconPosition"].startsWith("bottom"))  this.config["iconAnchor"] += "top";
+                if (this.config["iconPosition"].endsWith("left"))      this.config["iconAnchor"] += "-right";
+                if (this.config["iconPosition"].endsWith("center"))    this.config["iconAnchor"] += "";
+                if (this.config["iconPosition"].endsWith("right"))     this.config["iconAnchor"] += "-left";
+            }
             
             // Process category definitions
             for (var i = 0; i < this.categories.length; i++)
@@ -529,6 +564,30 @@
             // Process marker definitions
             for (var i = 0; i < this.markers.length; i++)
                 this.markers[i] = new ExtendedMarker(this, this.markers[i]);
+
+            // Remove empty categories (categories that contain no markers)
+            for (var i = 0; i < this.categories.length; i++)
+            {
+                if (this.categories[i].markers.length == 0)
+                {
+                    log("Removed category \"" + this.categories[i].name + "\" (" + this.categories[i].id + ") because it contained no markers");
+
+                    // Remove from lookup
+                    this.categoryLookup.delete(this.categories[i].id);
+
+                    // Remove elements from DOM
+                    var filterInputElement = document.getElementById(this.mapId + "__checkbox-" + this.categories[i].id);
+                    var filterElement = filterInputElement.closest(".interactive-maps__filter");
+                    filterElement.remove();
+
+                    // Delete instance
+                    delete this.categories[i];
+                    
+                    // Splice loop
+                    this.categories.splice(i, 1);
+                    i--;
+                }
+            }
 
             // Sort marker definitions, but instead of rearranging the original array, store the index of the sorted marker
             var sortedMarkers = this.markers.slice().sort(this.markerCompareFunction(this.config.sortMarkers));
@@ -882,11 +941,43 @@
 
             }.bind(this);
 
+            this.resizeObserved = /*mw.util.debounce(200, */function(e)
+            {
+                for (var i = 0; i < e.length; i++)
+                {
+                    var entry = e[i];
+                    
+                    if (entry.target == this.elements.leafletContainer)
+                    {
+                        this.events.onMapResized.invoke(
+                        {
+                            map: this,
+                            rect: entry.contentRect,
+                            lastRect: this.events.onMapResized.lastRect || entry.contentRect
+                        });
+                        this.events.onMapResized.lastRect = entry.contentRect;
+                    }
+                    else if (entry.target == this.elements.mapModuleContainer)
+                    {
+                        this.events.onMapModuleResized.invoke(
+                        {
+                            map: this,
+                            rect: entry.contentRect,
+                            lastRect: this.events.onMapModuleResized.lastRect || entry.contentRect
+                        });
+                        this.events.onMapModuleResized.lastRect = entry.contentRect;
+                    }
+                }
+
+            }.bind(this);//);
+            
+
             this.rootObserver = new MutationObserver(this.rootObserved);
             this.selfObserver = new MutationObserver(this.selfObserved);
             this.leafletAttributeObserver = new MutationObserver(this.leafletAttributeObserved);
-            this.popupObserver = new MutationObserver(this.popupObserved);
             this.markerObserver = new MutationObserver(this.markerObserved);
+            this.popupObserver = new MutationObserver(this.popupObserved);
+            this.resizeObserver = new ResizeObserver(this.resizeObserved);
             
             // Finally, connect to the DOM
             
@@ -927,6 +1018,7 @@
                 // References to Leaflet elements in the DOM        
                 this.elements = this.elements || {};
                 this.elements.rootElement = root;
+                this.elements.interactiveMapsContainer = root.closest(".interactive-maps-container");
                 this.elements.mapModuleContainer = root.querySelector(".Map-module_container__dn27-");
 
                 // Filters/category elements
@@ -962,6 +1054,11 @@
                 // List of all marker elements
                 var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
 
+                // Move the map module container to before its parent, then delete its parent
+                //var mapModuleContainerParent = this.elements.mapModuleContainer.parentElement;
+                //mapModuleContainerParent.before(this.elements.mapModuleContainer);
+                //mapModuleContainerParent.remove();
+
                 // Things to do only once (pre-match)
                 if (isNew)
                 {
@@ -979,17 +1076,22 @@
                         if (category) category.init(filterElement);
                     }
 
+                    this.initMinimalLayout();
+
                     // Create fullscreen button
                     this.initFullscreen();
                     
                     // Create category groups
                     this.initCategoryGroups();
 
-                    // Rearrange controls
-                    this.initControls();
-
                     // Create search dropdown
                     this.initSearch();
+
+                    // Create sidebar
+                    this.initSidebar();
+
+                    // Rearrange controls
+                    this.initControls();
 
                     // Set up events for hover popups
                     this.initOpenPopupsOnHover();
@@ -1114,10 +1216,10 @@
                 {
                     // Because we lost the marker references, we need to re-show and re-highlight the markers in the search results
                     // Could just do the marker icon-centric stuff, but it's easier to update everything
-                    if (this.lastSearch)
-                        this.updateSearchList(this.lastSearch);
-                    if (this.searchSelectedMarker)
-                        this.toggleMarkerHighlight(this.searchSelectedMarker, true);
+                    if (this.search.lastSearch)
+                        this.updateSearchList(this.search.lastSearch);
+                    if (this.search.selectedMarker)
+                        this.toggleMarkerHighlight(this.search.selectedMarker, true);
                 }
 
                 // Set initialized when we've done everything
@@ -1130,6 +1232,8 @@
                 this.leafletAttributeObserver.disconnect();
                 this.leafletAttributeObserver.observe(this.elements.leafletContainer, { attributes: true });    
                 this.leafletAttributeObserver.observe(this.elements.leafletMapPane, { attributes: true });    
+                this.resizeObserver.observe(this.elements.leafletContainer);
+                this.resizeObserver.observe(this.elements.mapModuleContainer);
                 
                 var associatedCount = this.markers.filter(function(x) { return x.markerElement; }).length;
                 console.log(this.id + " (" + this.name + ") - Initialized, associated " + associatedCount + " of " + this.markers.length + " markers (using " + markerElements.length + " elements), isNew: " + isNew);
@@ -1296,6 +1400,8 @@
                 this.togglePopupObserver(false);
                 
                 this.leafletAttributeObserver.disconnect();
+                this.resizeObserver.disconnect();
+
                 this.isDragging = this.isZooming = false;
                 this._isScaledMapImageSizeDirty = true;
                 
@@ -1819,6 +1925,17 @@
                 return size;
             },
 
+            initMinimalLayout: function()
+            {
+                if (this.config["minimalLayout"] == true)
+                {
+                    this.isMinimalLayout = true;
+                    this.elements.interactiveMapsContainer.style.padding = "0";
+                    this.elements.rootElement.classList.add("mapsExtended_minimalLayout");
+                    this.elements.mapModuleContainer.prepend(this.elements.filtersList);
+                }
+            },
+
             // openPopupsOnHover
 
             initOpenPopupsOnHover: function()
@@ -1947,7 +2064,7 @@
                 var tooltipElement = this.elements.tooltipElement;
                 
                 // Show the marker on top of everything else
-                marker.markerElement.style.zIndex = marker.order + this.markers.length;
+                marker.markerElement.style.zIndex = (marker.order + this.markers.length).toString();
                 
                 // Set the content of the tooltip
                 tooltipElement.textContent = marker.popup.title;
@@ -1989,7 +2106,7 @@
                 
                 // Don't set zIndex if the marker is highlighted in search
                 if (marker && !marker.markerElement.classList.contains(".search-result-highlight"))
-                    marker.markerElement.style.zIndex = marker.order;
+                    marker.markerElement.style.zIndex = marker.order.toString();
                 
                 this.elements.tooltipElement.remove();
                 this.tooltipMarker = undefined;
@@ -2457,6 +2574,8 @@
 
                 this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isWindowedFullscreen);
                 this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isWindowedFullscreen);
+
+                this.events.onMapFullscreen.invoke({ map: this, fullscreen: value, mode: "window" });
             },
 
             toggleFullscreen: function(value)
@@ -2565,7 +2684,7 @@
                     // Toggle the fullscreen class on the document body
                     document.documentElement.classList.toggle("fullscreen", this.isFullscreen);
 
-                    // Toggle the fullscreen class on the root element
+                    // Toggle the fullscreen class on the root map element
                     this.elements.rootElement.classList.toggle("mapsExtended_fullscreen", this.isFullscreen || this.isWindowedFullscreen);
 
                     // Change the tooltip that is shown to the user on hovering over the button
@@ -2574,6 +2693,8 @@
                     // Toggle classes on the fullscreen A element to influence which icon is displayed
                     this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isFullscreen && !this.isWindowedFullscreen);
                     this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isFullscreen || this.isWindowedFullscreen);
+
+                    this.events.onMapFullscreen.invoke({ map: this, fullscreen: value, mode: "screen" });
                     
                 }.bind(this));
 
@@ -2757,6 +2878,10 @@
             
             initSearch: function()
             {
+                var search = {};
+                search.elements = {};
+                this.search = search;
+
                 // Create the search dropdown
                 var searchDropdown = document.createElement("div");
                 searchDropdown.className = "mapsExtended_searchDropdown wds-dropdown"
@@ -2776,21 +2901,24 @@
 
                 var searchRoot = searchDropdown.querySelector(".mapsExtended_search");
                 var searchBox = searchRoot.querySelector(".mapsExtended_searchBox");
-                var searchBoxText = searchBox.querySelector("#mapsExtended_searchInput");
+                var searchBoxInput = searchBox.querySelector("#mapsExtended_searchInput");
                 var searchBoxHint = searchBox.querySelector(".wds-input__hint");
+                var searchBoxHintContainer = searchBox.querySelector(".wds-input__hint-container");
                 var searchResultsList = searchRoot.querySelector(".mapsExtended_searchResults");
                 var searchDropdownButton = searchDropdown.querySelector(".mapsExtended_searchDropdownButton");
 
                 // Cache the elements
-                this.elements.searchRoot = searchRoot;
-                this.elements.searchBox = searchBox;
-                this.elements.searchBoxText = searchBoxText;
-                this.elements.searchBoxHint = searchBoxHint;
-                this.elements.searchResultsList = searchResultsList;
-                this.elements.searchDropdownButton = searchDropdownButton;
+                search.elements.searchRoot = searchRoot;
+                search.elements.searchBox = searchBox;
+                search.elements.searchBoxInput = searchBoxInput;
+                search.elements.searchBoxHint = searchBoxHint;
+                search.elements.searchBoxHintContainer = searchBoxHintContainer;
+                search.elements.searchResultsList = searchResultsList;
+                search.elements.searchDropdown = searchDropdown;
+                search.elements.searchDropdownButton = searchDropdownButton;
 
                 // Set some strings from i18n
-                searchBoxText.setAttribute("placeholder", mapsExtended.i18n.msg("search-placeholder").plain());
+                searchBoxInput.setAttribute("placeholder", mapsExtended.i18n.msg("search-placeholder").plain());
                 this.updateSearchSubtitle();
 
                 // Resize the searchRoot to be a bit less than the height of the root map container
@@ -2799,10 +2927,10 @@
                 /* Events and functions */
 
                 // Add a listener which fires when the input value of the search box changes. This drives search
-                searchBoxText.addEventListener("input", function(e)
+                searchBoxInput.addEventListener("input", function(e)
                 {
                     if (e.target.value == "" || e.target.value == undefined)
-                        this.updateSearchList(this.emptySearch);
+                        this.updateSearchList(this.search.emptySearch);
                     else
                         this.updateSearchList(this.searchMarkers(e.target.value));
 
@@ -2812,7 +2940,7 @@
                 searchDropdownButton.addEventListener("mouseenter", function(e)
                 {
                     // Resize the searchRoot to be a bit less than the height of the root map container
-                    this.elements.searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 35)) + "px";
+                    searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35)) + "px";
                     
                 }.bind(this));
 
@@ -2835,14 +2963,15 @@
                     selected = !selected;
                     
                     // Deselect the previous marker
-                    if (selected == true && this.searchSelectedMarker && marker != this.searchSelectedMarker)
+                    if (selected == true && this.search.selectedMarker && marker != this.search.selectedMarker)
                     {
-                        var deselectedMarker = this.searchSelectedMarker;
-                        this.searchSelectedMarker = undefined;
+                        var deselectedMarker = this.search.selectedMarker;
+                        this.search.selectedMarker = undefined;
                         this.toggleMarkerHighlight(deselectedMarker, false);
                         this.toggleMarkerSelected(deselectedMarker, false);
                     }
 
+                    this.toggleMarkerHighlight(marker, selected);
                     this.toggleMarkerSelected(marker, selected);
                     
                 }.bind(this);
@@ -2882,18 +3011,34 @@
                     if (args.category.disabled) return;
                     
                     // Deselect the current marker if it belongs to the category being filtered out
-                    if (args.value == false && this.searchSelectedMarker && this.searchSelectedMarker.categoryId == args.category.id)
-                        this.toggleMarkerSelected(this.searchSelectedMarker, false);
+                    if (args.value == false && this.search.selectedMarker && this.search.selectedMarker.categoryId == args.category.id)
+                        this.toggleMarkerSelected(this.search.selectedMarker, false);
                     
                     args.category.elements.searchResultsContainer.classList.toggle("filtered", !args.value);
                     this.updateSearchSubtitle();
                     
                 }.bind(this));
 
+                this.events.onMarkerShown.subscribe(function(args)
+                {
+                    if (this.search.lastSearch == undefined || this.search.lastSearch.isEmptySearch == true)
+                        return;
+
+                    // Re-apply search results class if the newly-shown markers are included in the results
+                    if (this.search.lastSearch.markerMatches.includes(args.marker) && args.marker.markerElement)
+                        args.marker.markerElement.classList.add("search-result");
+                    
+                }.bind(this));
+
+                search.elements.searchCategories = [];
+
                 for (var i = 0; i < this.categories.length; i++)
                 {
                     var category = this.categories[i];
                     if (category.disabled || category.startDisabled) continue;
+                    
+                    var searchCategory = {};
+                    searchCategory.category = category;
 
                     // Create a container for markers in this category
                     var container = document.createElement("div");
@@ -2908,7 +3053,7 @@
                     header.addEventListener("mouseleave", onCategoryHeaderHovered);
                     header.addEventListener("click", onCategoryHeaderClicked);
 
-                    var headerIcon = category.elements.checkboxLabelIcon.cloneNode(true);
+                    var headerIcon = category.elements.categoryIcon.cloneNode(true);
                     header.appendChild(headerIcon);
 
                     var headerTextWrapper = document.createElement("div");
@@ -2966,11 +3111,24 @@
                     }
 
                     searchResultsList.appendChild(container);
+
+                    searchCategory.elements =
+                    {
+                        container: container,
+                        header: header,
+                        headerIcon: headerIcon,
+                        headerText: headerText,
+                        headerCount: headerCount,
+                        headerWrapper: headerWrapper,
+                        itemsList: itemsList
+                    };
+                    
+                    search.elements.searchCategories.push(searchCategory);
                 };
 
                 // Hide the seach box if the config says to
                 if (this.config.enableSearch == false)
-                    searchDropdown.style.display = "none";
+                    searchBox.style.display = searchDropdown.style.display = "none";
 
                 // Finally, add the searchDropdown to the map
                 this.elements.filtersList.prepend(searchDropdown);
@@ -2987,7 +3145,7 @@
                 for (var i = 0; i < this.categories.length; i++)
                     emptySearch.counts[this.categories[i].id] = this.categories[i].markers.length;
                 
-                this.emptySearch = emptySearch;
+                this.search.emptySearch = emptySearch;
 
                 // Construct update the search list with a full search
                 this.updateSearchList();
@@ -2998,13 +3156,16 @@
             updateSearchList: function(search)
             {
                 var t0 = performance.now();
-                if (!search) search = this.emptySearch;
+                if (!search) search = this.search.emptySearch;
 
                 var numFilteredCategories = 0;
                 var numDisplayedCategories = 0;
 
                 // Toggle mapsExtended_searchFiltered class on if the search has results
                 this.elements.rootElement.classList.toggle("mapsExtended_searchFiltered", !search.isEmptySearch);
+
+                // Hide search results element if the search has no results
+                this.search.elements.searchResultsList.style.display = search.results.length > 0 ? "" : "none";
                 
                 for (var i = 0; i < this.markers.length; i++)
                 {
@@ -3015,7 +3176,7 @@
                     
                     var isInResults = search.results.includes(marker);
                     var isInMatches = search.markerMatches.includes(marker);
-                    var wasInMatches = this.lastSearch != undefined && this.lastSearch.markerMatches.includes(marker);
+                    var wasInMatches = this.search.lastSearch != undefined && this.search.lastSearch.markerMatches.includes(marker);
                     
                     if (marker.markerElement)
                         marker.markerElement.classList.toggle("search-result", isInResults);
@@ -3039,7 +3200,7 @@
                     
                     var isInResults = search.categories.includes(category);
                     var isInMatches = search.categoryMatches.includes(category);
-                    var wasInMatches = this.lastSearch != undefined && this.lastSearch.categoryMatches.includes(category);
+                    var wasInMatches = this.search.lastSearch != undefined && this.search.lastSearch.categoryMatches.includes(category);
 
                     // Update the highlighted search string in the category header
                     if (isInMatches && !search.isEmptySearch)
@@ -3061,11 +3222,13 @@
                     category.elements.searchResultsHeaderCount.textContent = "(" + (search.counts[category.id] || 0) + ")";
                 }
 
-                this.lastSearch = search;
+                this.search.lastSearch = search;
                 this.updateSearchSubtitle();
                 
                 var t1 = performance.now();
                 log("Updating search elements took " + (t1 - t0) + " milliseconds.");
+
+                this.events.onSearchPerformed.invoke({ map: this, search: search });
             },
 
             highlightTextWithSearchTerm: function(element, text, textNormalized, searchTerm)
@@ -3094,7 +3257,7 @@
             {
                 for (var i = 0; i < category.markers.length; i++)
                 {
-                    this.toggleMarkerHighlight(category.markers[i], value && this.lastSearch.results.includes(category.markers[i]));
+                    this.toggleMarkerHighlight(category.markers[i], value && this.search.lastSearch.results.includes(category.markers[i]));
                 }
             },
 
@@ -3108,13 +3271,13 @@
                     this.lastMarkerElementClicked = marker.markerElement;
                 }
                 
-                this.searchSelectedMarker = value ? marker : undefined;
+                this.search.selectedMarker = value ? marker : undefined;
                 
                 // Set/unset the selected class on the list item
                 marker.searchResultsItem.classList.toggle("selected", value);
 
                 // Set/unset the search-result-highlight-fixed class on the marker element
-                marker.markerElement.classList.toggle("search-result-highlight", value);
+                //marker.markerElement.classList.toggle("search-result-highlight", value);
                 marker.markerElement.classList.toggle("search-result-highlight-fixed", value);
 
                 // Show/hide the marker popup
@@ -3128,7 +3291,9 @@
                 if (!(marker && marker.markerElement)) return;
 
                 // Don't allow highlighting a marker that is already selected in the search list
-                if (this.searchSelectedMarker == marker) return;
+                if (this.search.selectedMarker == marker) return;
+
+                this.search.highlightedMarker = value ? marker : undefined;
 
                 // Set the value if it wasn't passed to the opposite of whatevr it currently is
                 if (value == undefined)
@@ -3141,9 +3306,9 @@
             // This updates the hint shown under the search box to reflect the state of the search
             updateSearchSubtitle: function()
             {
-                var lastSearch = this.lastSearch;
+                var lastSearch = this.search.lastSearch;
                 var hasResults = lastSearch && lastSearch.results && lastSearch.results.length > 0;
-                this.elements.searchBox.classList.toggle("has-error", lastSearch && !hasResults);
+                this.search.elements.searchBox.classList.toggle("has-error", lastSearch && !hasResults);
                 
                 if (lastSearch)
                 {
@@ -3158,13 +3323,13 @@
                         var numFilteredCategories = lastSearch.categories.filter(function(c) { return c.visible == false; }).length;
 
                         if (numFilteredCategories > 0)
-                            this.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-resultsfiltered", numMarkers, numDisplayedCategories, numFilteredCategories).plain();
+                            this.search.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-resultsfiltered", numMarkers, numDisplayedCategories, numFilteredCategories).plain();
                         else
-                            this.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-results", numMarkers, numDisplayedCategories).plain();
+                            this.search.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-results", numMarkers, numDisplayedCategories).plain();
                     }
                     else
                     {
-                        this.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-noresults", lastSearch.searchTerm).plain();
+                        this.search.elements.searchBoxHint.textContent = mapsExtended.i18n.msg("search-hint-noresults", lastSearch.searchTerm).plain();
                     }
                 }
             },
@@ -3177,8 +3342,8 @@
             {
                 var t0 = performance.now();
 
-                if (this.searches == undefined)
-                    this.searches = [ this.emptySearch ];
+                if (this.search.searchHistory == undefined)
+                    this.search.searchHistory = [ this.search.emptySearch ];
 
                 if (!searchTerm || searchTerm == "")
                     return emptySearch;
@@ -3190,10 +3355,10 @@
                 // For the closest matching previous search, this is the amount of characters that were added to the new search
                 var closestSearchMinimumDiff = Infinity;
 
-                for (var i = this.searches.length - 1; i >= 0; i--)
+                for (var i = this.search.searchHistory.length - 1; i >= 0; i--)
                 {
                     // If the new search term was exactly the same as a previous term, don't bother repeating the search
-                    if (searchTerm == this.searches[i].searchTerm)
+                    if (searchTerm == this.search.searchHistory[i].searchTerm)
                     {
                         closestSearchIndex = i;
                         closestSearchMinimumDiff = 0;
@@ -3201,10 +3366,10 @@
                     }
 
                     // If the old search term is found within the new search term
-                    else if (searchTerm.includes(this.searches[i].searchTerm))
+                    else if (searchTerm.includes(this.search.searchHistory[i].searchTerm))
                     {
                         // ...determine how many character less it has
-                        var diff = searchTerm.length - this.searches[i].searchTerm.length;
+                        var diff = searchTerm.length - this.search.searchHistory[i].searchTerm.length;
 
                         /// And if it has the smallest difference so far, remember it
                         if (diff < closestSearchMinimumDiff)
@@ -3229,14 +3394,14 @@
                 // Reuse previous search results as a basis for the new results
                 if (closestSearchIndex != -1)
                 {
-                    baseSearch = this.searches[closestSearchIndex];
+                    baseSearch = this.search.searchHistory[closestSearchIndex];
                     log("Centering search on \"" + baseSearch.searchTerm + "\" with " + baseSearch.markerMatches.length + " marker matches and " + baseSearch.categoryMatches.length + " category matches");
                 }
 
                 // Otherwise base off all markers
                 else
                 {
-                    baseSearch = this.emptySearch;
+                    baseSearch = this.search.emptySearch;
                     log("Centering search on all markers");
                 }
                 
@@ -3305,11 +3470,11 @@
                     }
 
                     // Add this search to the search history
-                    this.searches.push(search);
+                    this.search.searchHistory.push(search);
 
                     // Remove the first item in the search history if it exceeds 100 searches
-                    if (this.searches.length > 100)
-                        this.searches.unshift();
+                    if (this.search.searchHistory.length > 100)
+                        this.search.searchHistory.unshift();
                 }
 
                 // Search is idential
@@ -3325,99 +3490,770 @@
                 return search;
             },
 
-            // Category groups
+            // Sidebar
 
-            initCategoryGroupsStyles: once(function()
+            initSidebar: function()
             {
-                // Change selectors that are rooted to interactive-maps__filters-dropdown to instead be rooted to interactive-maps__filters-list
-                // so that they apply to all dropdowns within interactive-maps__filters-list
-                changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown::after, .interactive-maps__filters-dropdown .wds-dropdown::before",
-                                   ".interactive-maps__filters-list .wds-dropdown::after, .interactive-maps__filters-list .wds-dropdown::before");
-                changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown__content", ".interactive-maps__filters-list .wds-dropdown__content");
-                
-                // Change some of the scroll up/down shadows
-                deleteCSSRule(".interactive-maps__filters-dropdown-list--can-scroll-down::after, .interactive-maps__filters-dropdown-list--can-scroll-up::before");
+                // Nothing relies on the sidebar existing, so if it shouldn't be enabled, don't run the code at all
+                if (this.config.enableSidebar == false)
+                    return;
 
-            }, mapsExtended),
+                var sidebar = {};
+                sidebar.elements = {};
+                sidebar.isShowing = true;
+                this.sidebar = sidebar;
 
-            // This function creates all the categoryGroups from the definitions in the categoryGroups array
-            // It's fairly complex since it supports nesting categories to any depth
-            initCategoryGroups: function()
-            {
-                // Simplify the filters dropdown by making interactive-maps__filters-dropdown and .wds-dropdown the same object
-                var filtersDropdownInner = this.elements.filtersDropdown.querySelector(".wds-dropdown");
-                this.elements.filtersDropdown.classList.add("wds-dropdown");
-                filtersDropdownInner.before(this.elements.filtersDropdown.querySelector(".wds-dropdown__toggle"));
-                filtersDropdownInner.before(this.elements.filtersDropdown.querySelector(".wds-dropdown__content"));
-                filtersDropdownInner.remove();
-                
-                // Modify and set up some styles - this is only executed once
-                this.initCategoryGroupsStyles();
-                
-                // If there are no category groups, or if the object is not an array
-                // just map the categories directly so that all categories are at the root
-                if (!this.config.categoryGroups || !Array.isArray(this.config.categoryGroups))
-                    this.config.categoryGroups = this.categories.map(function(c){ return c.id; });
+                // Enable or disable automatically showing or hiding the sidebar
+                this.sidebar.autoShowHide = (this.config.sidebarBehaviour == "autoAlways" || this.config.sidebarBehaviour == "autoInitial");
 
-                // Remove original "Select all" checkbox
-                var selectAllFilterElement = this.elements.filterAllCheckboxInput.closest(".interactive-maps__filter-all");
-                var selectAllLabelText = this.elements.filterAllCheckboxInput.nextElementSibling.textContent;
-                selectAllFilterElement.remove();
-
-                // To simplify the hierarchical structure, create a brand new root "Select all" group
-                // and put all the categoryGroups within it (they will be created recursively in the ctor)
-                var rootGroup = new CategoryGroup(
+                // Show and hide the sidebar automatically as the size of the map module changes
+                this.events.onMapModuleResized.subscribe(function(args)
                 {
-                    label: selectAllLabelText,
-                    children: this.config.categoryGroups.slice(),
-                    map: this
+                    if (!this.sidebar.autoShowHide) return;
+
+                    if (sidebar.isShowing == true && args.rect.width < 800 && args.lastRect.width >= 800)
+                    {
+                        log("Toggled sidebar off automatically");
+                        this.toggleSidebar(false, true);
+                    }
+                    else if (sidebar.isShowing == false && args.rect.width >= 800 && args.lastRect.width < 800)
+                    {
+                        log("Toggled sidebar on automatically");
+                        this.toggleSidebar(true, true);
+                    }
+                }.bind(this));
+
+                // To to avoid the filtersList being shown over the sidebar on fullscreen (or minimal layout), move it to the map-module-container
+                this.events.onMapFullscreen.subscribe(function(args)
+                {
+                    if (sidebarSearchBody.expanded == true && sidebarSearchBody.resizedExpandedHeight == undefined)
+                    {
+                        sidebarSearchBody.ignoreNextResize = true;
+                        sidebarSearchBody.style.height = sidebarSearchBody.calculateExpandedHeight() + "px";
+                    }
+
+                    sidebarFloatingToggle.updateToggle(false);
+                    
+                    // Don't move filters list if we're already in a minimal layout
+                    if (this.isMinimalLayout == true) return;
+
+                    if (args.fullscreen)
+                        this.elements.mapModuleContainer.prepend(this.elements.filtersList);
+                    else
+                    {
+                        var elem = this.elements.rootElement.querySelector(".interactive-maps");
+                        elem.prepend(this.elements.filtersList);
+                    }
+                }.bind(this));
+
+                // Get sidebar width from rule
+
+                var sidebarWrapper = document.createElement("div");
+                sidebarWrapper.className = "mapsExtended_sidebarWrapper";
+                sidebarWrapper.classList.add("mapsExtended_sidebarWrapper" + capitalizeFirstLetter(this.config.sidebarSide));
+                if (this.config.sidebarOverlay == true) sidebarWrapper.classList.add("overlay");
+                this.elements.mapModuleContainer.prepend(sidebarWrapper);
+
+                // Create the sidebar in the same parent as the leaflet-container div
+                var sidebarRoot = document.createElement("div");
+                sidebarRoot.className = "mapsExtended_sidebar";
+                sidebarRoot.resizeObserver = new ResizeObserver(function(e)
+                {
+                    resizeCategoryToggles();
+                    if (categorySectionBody.classList.contains("expanded"))
+                        categorySectionBody.style.maxHeight = categorySectionBody.scrollHeight + "px";
+                });
+                sidebarWrapper.append(sidebarRoot);
+
+                var sidebarContent = document.createElement("div");
+                sidebarContent.className = "mapsExtended_sidebarContent";
+                sidebarRoot.append(sidebarContent);
+
+                mw.loader.using(["oojs-ui-core"], function()
+                {
+                    sidebarContent.addEventListener("scroll", OO.ui.throttle(function()
+                    {
+                        sidebarFloatingToggle.updateToggle();
+                    }, 150), { passive: true });
                 });
 
-                this.config.categoryGroups = [ rootGroup ];
-                var categoryGroupTree = rootGroup.flattenedGroups;
-                categoryGroupTree[rootGroup.id] = rootGroup;
-                
-                // Use filter() to get a list of category matching the predicate
-                // In this case, all categories that have not been assigned to any of the
-                // category groups at any level in the hierarchy
-                var ungroupedCategories = this.categories.filter(function(c)
+                // Create the button that toggles the sidebar
+                var sidebarToggleButton = document.createElement("button");
+                sidebarToggleButton.className = "mapsExtended_sidebarToggle wds-pill-button";
+                sidebarToggleButton.title = mapsExtended.i18n.msg("sidebar-hide-tooltip").plain();
+                sidebarToggleButton.addEventListener("click", function()
                 {
-                    // Check if any category group in the config contains this category
-                    return !Object.values(categoryGroupTree).some(function(cg)
+                    this.sidebar.elements.sidebarToggleButton.blur();
+                    this.toggleSidebar();
+
+                    if (this.config.sidebarBehaviour == "autoInitial")
+                        this.sidebar.autoShowHide = false;
+
+                }.bind(this));
+                this.elements.filtersList.prepend(sidebarToggleButton);
+
+                // Header
+                var sidebarHeader = document.createElement("div");
+                sidebarHeader.className = "mapsExtended_sidebarHeader";
+                sidebarHeader.textContent = mapsExtended.i18n.msg("sidebar-header", this.name).plain();
+                sidebarContent.append(sidebarHeader);
+
+                // Create a button that floats over the sidebar
+                var sidebarFloatingToggle = document.createElement("div");
+                sidebarFloatingToggle.className = "mapsExtended_sidebarFloatingToggle";
+                sidebarFloatingToggle.title = mapsExtended.i18n.msg("sidebar-hide-tooltip").plain();
+                sidebarFloatingToggle.addEventListener("click", function(){ this.toggleSidebar(); }.bind(this));
+                sidebarFloatingToggle.updateToggle = function(forceValue)
+                {
+                    sidebarFloatingToggle.classList.toggle("mapsExtended_sidebarFloatingToggleScrolled", forceValue != undefined ? forceValue : sidebarContent.scrollTop > 20);
+                };
+                sidebarContent.after(sidebarFloatingToggle);
+
+
+                // Search
+
+                // Create an element that will clear the search box when it is clicked
+                var searchClearButton = document.createElement("div");
+                searchClearButton.className = "mapsExtended_sidebarSearchClearButton";
+                searchClearButton.style.display = "none";
+                searchClearButton.addEventListener("click", function(e)
+                {
+                    searchBoxInput.value = "";
+                    searchBoxInput.dispatchEvent(new Event("input"));
+                    searchBoxInput.focus();
+                    searchBoxInput.select();
+                });
+
+                // Create an element that sits over the input which is used to expand and collapse the results
+                var searchDropdownButton = document.createElement("div");
+                searchDropdownButton.className = "mapsExtended_sidebarSearchDropdownButton";
+                var searchDropdownIcon;
+
+                // Expose some variables so they can be hoisted by the function below
+                var searchBoxInput = this.search.elements.searchBoxInput;
+                var searchBoxHintContainer = this.search.elements.searchBoxHintContainer;
+                var searchResultsList = this.search.elements.searchResultsList;
+ 
+                searchDropdownButton.addEventListener("click", function(e)
+                {
+                    // Invert expanded state
+                    sidebarSearchBody.expanded = !sidebarSearchBody.expanded;
+                    var expanded = sidebarSearchBody.expanded;
+
+                    // When search is expanded, the toggle that reveals the results list is shifted to the right
+                    // When search is collapsed, the toggle covers the entire search input
+                    searchDropdownButton.classList.toggle("expanded", expanded);
+                    sidebarSearchBody.classList.toggle("expanded", expanded);
+
+                    // Make sure the resizeObserver doesn't respond to changes while we're animating
+                    sidebarSearchBody.ignoreAllResize = true;
+
+                    sidebarSearchBody.style.height = sidebarSearchBody.clientHeight + "px";
+
+                    if (expanded)
                     {
-                        // Check if a category group contains a category with this ID
-                        return cg.categories.some(function(cgc)
+                        // Focus text box if expanded
+                        searchBoxInput.focus();
+                        searchBoxInput.select();
+
+                        var idealExpandedHeight = sidebarSearchBody.calculateExpandedHeight();
+                        var maxHeight = sidebarSearchBody.calculateMaxHeight();
+
+                        // If the user has set a custom expanded height, snap it to the maxHeight if it's close enough
+                        if (Math.abs(maxHeight - sidebarSearchBody.resizedExpandedHeight) <= 10)
+                            sidebarSearchBody.resizedExpandedHeight = maxHeight;
+                        
+                        // The expanded height is either the one that has been set by the user, or the ideal height, but no less than the maxHeight
+                        var toHeight = Math.min(sidebarSearchBody.resizedExpandedHeight || idealExpandedHeight, maxHeight) + "px";
+
+                        sidebarSearchBody.style.maxHeight = maxHeight + "px";
+                    }
+                    else
+                    {
+                        // Reset minHeight
+                        sidebarSearchBody.style.minHeight = sidebarSearchBody.style.maxHeight = "";
+
+                        // Collapsed height is always 0
+                        var toHeight = 0 + "px";
+                    }
+                    
+                    if (!sidebarSearchBody.onTransitionEnd)
+                    {
+                        sidebarSearchBody.onTransitionEnd = function(e)
                         {
-                            // Check if this category ID matches the testing ID
-                            return cgc.id == c.id;
-                        });
-                    });
-                });
-                
-                // If there are ungrouped categories
-                if (ungroupedCategories.length > 0)
-                {
-                    // Add any categories that aren't grouped to the rootGroup
-                    ungroupedCategories.forEach(function(uc)
+                            sidebarSearchBody.style.transition = "";
+                            
+                            if (sidebarSearchBody.expanded)
+                            {
+                                // Set min height programatically
+                                var hintContainerStyle = window.getComputedStyle(searchBoxHintContainer);
+                                var hintMarginTop = parseInt(hintContainerStyle["marginTop"] || 0);
+                                var minHeight = searchBoxHintContainer.clientHeight + hintMarginTop + 1;
+                                
+                                sidebarSearchBody.minHeight = minHeight;
+                                sidebarSearchBody.style.minHeight = minHeight + "px";
+                            }
+                            else
+                            {
+                                searchBoxInput.value = "";
+                                
+                                // Trigger input change event on searchBox after height transition has finished, in order to reset search
+                                searchBoxInput.dispatchEvent(new Event("input", { bubbles: true }));
+                            }
+
+                            sidebarSearchBody.ignoreAllResize = false;
+                            sidebarSearchBody.ignoreNextResize = true;
+                        }
+                        
+                    }
+
+                    requestAnimationFrame(function()
                     {
-                        rootGroup.addCategoryToGroup(uc.id);
-                        rootGroup.children.push(uc);
+                        sidebarSearchBody.style.transition = "height 0.35s ease";
+                        sidebarSearchBody.addEventListener("transitionend", sidebarSearchBody.onTransitionEnd, { once: true });
+                        sidebarSearchBody.style.height = toHeight; 
                     });
-
-                    // Update the checked visual state
-                    rootGroup.updateCheckedVisualState();
-                }
-
-                // Resize the searchRoot to be a bit less than the height of the root map container
-                this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
-
-                // Add a listener which changes the min height of the search box when it is opened
-                this.elements.filtersDropdownButton.addEventListener("mouseenter", function(e)
-                {
-                    // Resize the list to be a bit less than the height of the root map container
-                    this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen ? 60 : 35)) + "px";
+                    
+                    searchDropdownIcon.style.transform = "rotate(" + (expanded ? 180 : 360) + "deg)";
                     
                 }.bind(this));
+
+                // This triggers when the scrollHeight of the searchResultsList changes
+                // which happens whenever a search is performed, or a category is collapsed
+                searchResultsList.resizeObserver = new ResizeObserver(function(e)
+                {
+                    if (!sidebar.isShowing || !sidebarSearchBody.expanded) return;
+
+                    // This flag is set to prevent overwriting our saved expandedHeight when setting the maxHeight
+                    sidebarSearchBody.ignoreNextResize = true;
+
+                    var searchResultsMaxHeight = (searchResultsList.scrollHeight + $(searchBoxHintContainer).outerHeight(true) + 2);
+
+                    // Set the max height on the searchBody
+                    if (this.search.lastSearch.results.length > 0)
+                        sidebarSearchBody.style.maxHeight = searchResultsMaxHeight + "px";
+                    else
+                        sidebarSearchBody.style.maxHeight = Math.min(searchResultsMaxHeight, sidebarSearchBody.minHeight) + "px"
+                    
+                }.bind(this));
+
+                // Disable resize when no results
+                this.events.onSearchPerformed.subscribe(function(args)
+                {
+                    if (!sidebar.isShowing) return;
+
+                    // Show the clear button if there is a search term present
+                    searchClearButton.style.display = args.search.searchTerm.length > 0 ? "" : "none";
+                    
+                    // Show the resize handle if there are results, hide if there aren't
+                    sidebarSearchBody.style.resize = args.search.results.length == 0 ? "none" : "";
+                });
+
+                // Create new element which will contain the results list
+                var sidebarSearchBody = document.createElement("div");
+                sidebarSearchBody.className = "mapsExtended_sidebarSearchBody";
+                sidebarSearchBody.expanded = false;
+
+                sidebarSearchBody.resizeObserver = new ResizeObserver(/*mw.util.debounce(200, */function(e)
+                {
+                    // Ignore this resize if the ignoreNextResize flag is set
+                    if (sidebarSearchBody.ignoreNextResize || sidebarSearchBody.ignoreAllResize)
+                    {
+                        sidebarSearchBody.ignoreNextResize = false;
+                        return;
+                    }
+                    
+                    if (!sidebar.isShowing || !sidebarSearchBody.expanded) return;
+                    
+                    // Save the expanded size of the search body
+                    sidebarSearchBody.resizedExpandedHeight = e[0].contentRect.height;
+                    console.log(sidebarSearchBody.resizedExpandedHeight);
+                });//);
+
+                // This function returns a value that is the "ideal" expanded height
+                sidebarSearchBody.calculateExpandedHeight = function()
+                {
+                    // Get top of sidebarSearchBody
+                    var sidebarSearchBodyRect = sidebarSearchBody.getBoundingClientRect();
+
+                    // Get bottom of sidebarRoot
+                    var sidebarRootRect = sidebarRoot.getBoundingClientRect();
+
+                    var categorySectionBodyRect = categorySectionBody.getBoundingClientRect();
+                    var categorySectionBodyHeight = categorySectionBody.classList.contains("expanded") ? categorySectionBodyRect.height : 0;
+
+                    // Add some offsets to keep the other buttons within view
+                    // Toggle button height + toggle button margin + sidebar root padding bottom
+                    var expandedHeight = (sidebarRootRect.bottom - sidebarSearchBodyRect.top) - (42 + 42 + 12 + 12 + 20) - categorySectionBodyHeight;
+
+                    // If the resulting height is too small (< 400), add the categorySectionBody back onto the height
+                    if (expandedHeight < 400) expandedHeight += categorySectionBodyHeight;
+
+                    return expandedHeight;
+                };
+
+                // This function returns the maximum height of the contents of the searchBody
+                sidebarSearchBody.calculateMaxHeight = function()
+                {
+                    var maxHeight = 1;
+
+                    // Add margins of sidebarSearchBody
+                    var styles = window.getComputedStyle(sidebarSearchBody);
+                    maxHeight += ( parseFloat(styles.marginTop || 0) + parseFloat(styles.marginBottom || 0) )
+
+                    // Add scrollHeight of each child of sidebarSearchBody
+                    for (var i = 0; i < sidebarSearchBody.children.length; i++)
+                    {
+                        maxHeight += sidebarSearchBody.children[i].scrollHeight;
+                    }
+
+                    return maxHeight;
+                }
+                
+
+                // Categories
+
+
+                // Show all / hide all buttons
+                var categoryToggleButtons = document.createElement("div");
+                categoryToggleButtons.className = "mapsExtended_sidebarCategoryToggleButtons";
+
+                var showAllButton = document.createElement("div");
+                showAllButton.className = "mapsExtended_sidebarControl";
+                showAllButton.textContent = mapsExtended.i18n.msg("sidebar-show-all-button").plain();
+                showAllButton.addEventListener("click", function(e)
+                {
+                    for (var i = 0; i < this.categories.length; i++)
+                        this.categories[i].toggle(true);
+                }.bind(this));
+                categoryToggleButtons.append(showAllButton);
+
+                var hideAllButton = document.createElement("div");
+                hideAllButton.className = "mapsExtended_sidebarControl";
+                hideAllButton.textContent = mapsExtended.i18n.msg("sidebar-hide-all-button").plain();
+                hideAllButton.addEventListener("click", function(e)
+                {
+                    for (var i = 0; i < this.categories.length; i++)
+                        this.categories[i].toggle(false);
+                }.bind(this));
+                categoryToggleButtons.append(hideAllButton);
+                sidebarContent.append(categoryToggleButtons);
+
+                // Category section header
+                var categorySectionHeader = document.createElement("div");
+                categorySectionHeader.className = "mapsExtended_sidebarControl mapsExtended_sidebarCategorySectionHeader";
+                categorySectionHeader.textContent = mapsExtended.i18n.msg("sidebar-categories-header").plain();
+                sidebarContent.append(categorySectionHeader);
+
+                categorySectionHeader.addEventListener("click", function(e)
+                {
+                    var value = categorySectionBody.classList.toggle("expanded");
+
+                    // Rotate menuControlIcon
+                    menuControlIcon.style.transform = "rotate(" + (value ? 180 : 360) + "deg)";
+                    categorySectionBody.style.maxHeight = (value ? categorySectionBody.scrollHeight : 0) + "px";
+                });
+
+                // Category section body
+                var categorySectionBody = document.createElement("div");
+                categorySectionBody.className = "mapsExtended_sidebarCategorySectionBody expanded"
+                sidebarContent.append(categorySectionBody);
+                
+                var menuControlIcon;
+                mw.hook("dev.wds").add(function(wds)
+                {
+                    // Add a menu icon to the sidebarToggleButton
+                    var menuIcon = wds.icon("menu-tiny");
+                    sidebarToggleButton.appendChild(menuIcon);
+
+                    var closeIcon = wds.icon("close-tiny");
+                    sidebarFloatingToggle.appendChild(closeIcon.cloneNode(true));
+
+                    // Add a foldout icon to the category header
+                    menuControlIcon = wds.icon("menu-control-tiny");
+                    menuControlIcon.style.marginLeft = "auto";
+                    menuControlIcon.style.transform = "rotate(180deg)";
+                    menuControlIcon.style.transition = "transform 0.35s ease";
+                    categorySectionHeader.appendChild(menuControlIcon);
+
+                    // Add a cross button to the searchClearButton
+                    searchClearButton.appendChild(closeIcon.cloneNode(true));
+
+                    // Add a foldout icon to the search box
+                    searchDropdownIcon = menuControlIcon.cloneNode(true);
+                    searchDropdownIcon.style.transform = "rotate(360deg)";
+                    searchDropdownButton.appendChild(searchDropdownIcon);
+
+                    // Add eye icons to show all and hide all buttons
+                    var eyeIcon = wds.icon("eye-small");
+                    eyeIcon.style.marginRight = "6px"
+                    showAllButton.prepend(eyeIcon);
+
+                    var eyeCrossedIcon = wds.icon("eye-crossed-small");
+                    eyeCrossedIcon.style.marginRight = "6px"
+                    hideAllButton.prepend(eyeCrossedIcon);
+                });
+
+                // If there are less than 10 categories, use a single column layout
+                var useOneColumnLayout = this.categories.length <= 10;
+
+                // This function creates the category toggles shown in the sidebar for a specific CategoryGroup
+                var createCategoryGroup = function(categoryGroup, addToElement)
+                {
+                    var sidebarCategoryGroup = {};
+                    sidebarCategoryGroup.elements = {};
+                    sidebarCategoryGroup.label = categoryGroup.label;
+                    sidebarCategoryGroup.categories = categoryGroup.categories;
+                    sidebarCategoryGroup.categoryToggles = [];
+                    
+                    sidebar.categoryGroups = sidebar.categoryGroups || [];
+                    sidebar.categoryGroups.push(sidebarCategoryGroup);
+                    
+                    var categoryContainer = document.createElement("div");
+                    categoryContainer.className = "mapsExtended_sidebarCategory_container";
+                    sidebarCategoryGroup.elements.categoryContainer = categoryContainer;
+
+                    // Create a label for the category group
+                    if (!categoryGroup.isRoot)
+                    {
+                        var categoryHeader = document.createElement("div");
+                        categoryHeader.className = "mapsExtended_sidebarCategory_header";
+                        sidebarCategoryGroup.elements.categoryHeader = categoryHeader;
+
+                        // Build category group label by traversing parents and adding hyphen separator
+                        var groupLabel = categoryGroup.label;
+                        var parentGroup = categoryGroup.parentGroup;
+                        while (parentGroup != undefined && parentGroup.isRoot == false)
+                        {
+                            groupLabel = parentGroup.label + " – " + groupLabel;
+                            parentGroup = parentGroup.parentGroup;
+                        }
+                        
+                        categoryHeader.textContent = groupLabel;
+                        categoryContainer.append(categoryHeader);
+                        sidebarCategoryGroup.labelWithPrefix = groupLabel;
+
+                        // Prevent double click from selecting text
+                        document.addEventListener("mousedown", function(e)
+                        {
+                            if (e.detail > 1) e.preventDefault();
+                        }, false);
+
+                        // Toggle all categories by clicking category header
+                        categoryHeader.addEventListener("click", function(e)
+                        {
+                            // Hide if any are shown
+                            var anyShown = this.categories.some(function(c) { return c.visible == true; });
+
+                            // Perform the hiding/showing using the toggle function of ExtendedCategory
+                            for (var i = 0; i < this.categories.length; i++)
+                                this.categories[i].toggle(!anyShown)
+
+                        }.bind(sidebarCategoryGroup));
+                    }
+                    else
+                    {
+                        var categoryHeader = document.createElement("div");
+                        categoryHeader.className = "mapsExtended_sidebarCategory_header";
+                        sidebarCategoryGroup.elements.categoryHeader = categoryHeader;
+                        categoryContainer.append(categoryHeader);
+                    }
+
+                    // Create a list to hold each of the categories
+                    var categoryList = document.createElement("div");
+                    categoryList.className = "mapsExtended_sidebarCategory_list";
+                    if (useOneColumnLayout == true) categoryList.style.columnCount = "1";
+                    sidebarCategoryGroup.elements.categoryList = categoryList;
+                    categoryContainer.append(categoryList);
+
+                    // Create a new item for each of the categories in this group
+                    for (var i = 0; i < categoryGroup.categories.length; i++)
+                    {
+                        var category = categoryGroup.categories[i];
+
+                        var categoryNumMarkers = document.createElement("span");
+                        categoryNumMarkers.textContent = category.markers.length.toString();
+
+                        var categoryListItem = document.createElement("div");
+                        categoryListItem.category = category;
+                        categoryListItem.className = "mapsExtended_sidebarCategory_listItem";
+                        categoryListItem.classList.toggle("hidden", !category.visible);
+                        categoryListItem.append(category.elements.categoryIcon.cloneNode(true),
+                                                category.elements.categoryLabel.cloneNode(true),
+                                                categoryNumMarkers);
+
+                        // Toggle specific category by clicking on item
+                        categoryListItem.addEventListener("click", function(e)
+                        {
+                            var item = e.currentTarget;
+                            item.category.toggle();
+                        });
+
+                        // Update the visual toggle state whenever the actual category visibility changes
+                        category.onCategoryToggled.subscribe(function(value){ this.classList.toggle("hidden", !value); }.bind(categoryListItem));
+
+                        categoryList.append(categoryListItem);
+                        sidebarCategoryGroup.categoryToggles.push(categoryListItem);
+                    }
+
+                    categorySectionBody.append(categoryContainer);
+
+                    // Create subgroups
+                    for (var i = 0; i < categoryGroup.subgroups.length; i++)
+                    {
+                        var subgroup = categoryGroup.subgroups[i];
+                        createCategoryGroup(subgroup, categoryContainer);
+                    }
+
+                    // This is used to nest subgroups
+                    //addToElement.append(categoryContainer);
+                };
+
+                // Create category groups starting with the root
+                createCategoryGroup(this.categoryGroups[0], categorySectionBody);
+
+                // Finally, add the sidebar to the page
+                sidebarWrapper.append(sidebarRoot);
+
+                // Resize all categoryToggles to the closest multiple of 30
+                var resizeCategoryToggles = function()
+                {
+                    for (var i = 0; i < this.sidebar.categoryGroups.length; i++)
+                    {
+                        for (var j = 0; j < this.sidebar.categoryGroups[i].categoryToggles.length; j++)
+                        {
+                            var categoryToggle = this.sidebar.categoryGroups[i].categoryToggles[j];
+                            categoryToggle.style.height = "30px";
+                            var d = Math.round(categoryToggle.scrollHeight / 30);
+                            if (d > 1) categoryToggle.style.height = (30 *  d) + "px";
+                        }
+                    }
+
+                    if (categorySectionBody.classList.contains(""))
+                    categorySectionBody.style.maxHeight = categorySectionBody.scrollHeight + "px";
+                    
+                }.bind(this);
+                
+                // Save sidebar elements
+                sidebar.elements.sidebarWrapper = sidebarWrapper;
+                sidebar.elements.sidebarRoot = sidebarRoot;
+                sidebar.elements.sidebarContent = sidebarContent;
+                sidebar.elements.sidebarToggleButton = sidebarToggleButton;
+                sidebar.elements.sidebarHeader = sidebarHeader;
+                sidebar.elements.sidebarFloatingToggle = sidebarFloatingToggle;
+                sidebar.elements.searchClearButton = searchClearButton;
+                sidebar.elements.searchDropdownButton = searchDropdownButton;
+                sidebar.elements.sidebarSearchBody = sidebarSearchBody;
+
+                if (this.config.sidebarInitialState == "show" || (this.config.sidebarInitialState == "auto" && this.elements.mapModuleContainer.clientWidth >= 800))
+                    this.toggleSidebar(true, true);
+                else
+                    this.toggleSidebar(false, true);
+            },
+
+            // Toggles the sidebar elements
+            toggleSidebar: function(value, noAnimation)
+            {
+                // If value isn't passed, just invert sidebar.isShowing
+                value = value != undefined ? value : !this.sidebar.isShowing;
+
+                // Set sidebar.isShowing to the new value
+                this.sidebar.isShowing = value;
+
+                var leafletMapPane = this.elements.leafletMapPane;
+
+                // Search elements
+                var searchRoot = this.search.elements.searchRoot;
+                var searchDropdown = this.search.elements.searchDropdown;
+                var searchResultsList = this.search.elements.searchResultsList;
+                var searchBox = this.search.elements.searchBox;
+                var searchBoxInput = this.search.elements.searchBoxInput;
+                var searchBoxHintContainer = this.search.elements.searchBoxHintContainer;
+
+                // Sidebar elements
+                var sidebarRoot = this.sidebar.elements.sidebarRoot;
+                var sidebarWrapper = this.sidebar.elements.sidebarWrapper;
+                var sidebarHeader = this.sidebar.elements.sidebarHeader;
+                var sidebarToggleButton = this.sidebar.elements.sidebarToggleButton;
+                var sidebarSearchBody = this.sidebar.elements.sidebarSearchBody;
+                var searchClearButton = this.sidebar.elements.searchClearButton;
+                var searchDropdownButton = this.sidebar.elements.searchDropdownButton;
+
+                sidebarToggleButton.title = mapsExtended.i18n.msg(value ? "sidebar-hide-tooltip" : "sidebar-show-tooltip").plain();
+                
+                this.elements.filtersDropdown.classList.toggle("disabled", value);
+                searchDropdown.classList.toggle("disabled", value);
+
+                // Toggles and not animating
+                if (!this.sidebar.isAnimating)
+                {
+                    this.sidebar.isAnimating = true;
+
+                    // Create an element to test the width of the sidebar when it's fully expanded
+                    // (without actually expanding it)
+                    var sidebarWrapperWidthTest = this.sidebar.elements.sidebarWrapperWidthTest;
+                    if (!sidebarWrapperWidthTest)
+                    {
+                        sidebarWrapperWidthTest = document.createElement("div");
+                        sidebarWrapperWidthTest.className = sidebarWrapper.className;
+                        sidebarWrapperWidthTest.classList.add("expanded");
+                        sidebarWrapperWidthTest.style.display = "none";
+                        this.sidebar.elements.sidebarWrapperWidthTest = sidebarWrapperWidthTest;
+                    }
+                    
+                    sidebarWrapper.after(sidebarWrapperWidthTest);
+                    var sidebarWidth = parseInt(window.getComputedStyle(sidebarWrapperWidthTest).minWidth || 0);
+                    //var sidebarWidth = sidebarRoot.offsetWidth + (sidebarRoot.offsetWidth - sidebarRoot.clientWidth);
+                    var sidebarHalfWidth = sidebarWidth / 2;
+                    sidebarWrapperWidthTest.remove();
+
+                    // Show sidebar elements
+                    if (value == true) toggleSidebarElements(true);
+
+                    var startPos = this.sidebar._mapPaneStartPos = this.getElementTransformPos(leafletMapPane, true);
+                    var endPos = this.sidebar._mapPaneEndPos = [ startPos[0] + (value ? -sidebarHalfWidth : sidebarHalfWidth), startPos[1] ];
+
+                    if (noAnimation)
+                    {
+                        this.sidebar.isAnimating = false;
+                        if (value == false) toggleSidebarElements(false);
+                    }
+                    else
+                    {
+                        // Set transition properties
+                        leafletMapPane.style.transition = "transform 0.35s ease";
+                        sidebarWrapper.style.transition = "min-width 0.35s ease";
+                        sidebarRoot.style.transition = "transform 0.35s ease";
+                        
+                        sidebarRoot.addEventListener("transitionend", function onTransitionEnd(e)
+                        {
+                            if (!(e.propertyName == "transform" && e.target == sidebarRoot)) return;
+
+                            // Remove callback
+                            e.currentTarget.removeEventListener("transitionend", onTransitionEnd);
+
+                            // Remove transition
+                            leafletMapPane.style.transition =
+                            sidebarWrapper.style.transition = 
+                            sidebarRoot.style.transition = "";
+    
+                            // Remove supporting data
+                            this.sidebar._mapPaneStartPos = this.sidebar._mapPaneEndPos = this.sidebar._onTransitionEnd = undefined;
+    
+                            // Hide sidebar elements
+                            if (this.sidebar.isShowing == false) toggleSidebarElements(false);
+                            
+                            this.sidebar.isAnimating = false;
+                        }.bind(this));
+                    }
+                }
+
+                // Toggled while already animating
+                else
+                {
+                    // Reverse start and end pos
+                    var startPos = this.sidebar._mapPaneEndPos;
+                    var endPos = this.sidebar._mapPaneStartPos;
+                    this.sidebar._mapPaneStartPos = startPos;
+                    this.sidebar._mapPaneEndPos = endPos;
+                }
+
+                requestAnimationFrame(function()
+                {
+                    // Immediately toggle wrapper expanded. Most of the actual transitioning occurs in CSS.
+                    sidebarWrapper.classList.toggle("expanded", value);
+    
+                    // Offsets the map pan transform while the map width is changing (as a result of the sidebar growing)
+                    // This is done so that the transform doesn't snap after the fact, which can be distracting
+                    leafletMapPane.style.transform = "translate3d(" + endPos[0] + "px, " + endPos[1] + "px, 0px)";
+                });
+
+                // Only set the following if we're not animating
+                if (!this.sidebar.isAnimating)
+                {
+                    /*
+                    var widthChanged = (value ? sidebarWidth : 0) + "px" != sidebarWrapper.style.minWidth;
+                    
+                    // Change the min-width of the sidebarWrapper
+                    sidebarWrapper.style.minWidth = (value ? sidebarWidth : 0) + "px";
+
+                    if (widthChanged == true)
+                    {
+                        // Change the min-width of the sidebarWrapper
+                        var startPos = this.getElementTransformPos(this.elements.leafletMapPane, true);
+                        var endPos = [ startPos[0] + (value ? -sidebarHalfWidth : sidebarHalfWidth), startPos[1] ];
+                        this.elements.leafletMapPane.style.transform = "translate3d(" + endPos[0] + "px, " + endPos[1] + "px, 0px)";
+                    }
+    
+                    // Change the transform of the sidebarRoot
+                    sidebarRoot.style.transform = "translateX(" + (value ? 0 : -sidebarWidth) + "px)";
+                    */
+                }
+
+                function toggleSidebarElements(value)
+                {
+                    if (value)
+                    {
+                        // Move the search box to the sidebar
+                        searchBox.classList.remove("mapsExtended_searchBox");
+                        searchBox.classList.add("has-hint");
+                        searchBox.classList.add("mapsExtended_sidebarSearchBox");
+                        sidebarHeader.after(searchBox);
+    
+                        // Add sidebar control class to search input
+                        searchBoxInput.classList.add("mapsExtended_sidebarControl");
+    
+                        // Add searchClearButton to searchBoxInput
+                        searchBoxInput.after(searchClearButton);
+    
+                        // Add searchDropdownButton to searchBoxInput
+                        searchBoxInput.after(searchDropdownButton);
+    
+                        // Move searchBoxHintContainer to sidebarSearchBody
+                        sidebarSearchBody.appendChild(searchBoxHintContainer);
+    
+                        // Move the searchResultsList to the searchBox
+                        searchResultsList.classList.add("mapsExtended_sidebarSearchResults");
+                        sidebarSearchBody.appendChild(searchResultsList);
+    
+                        // Append the searchBody to the searchBox
+                        searchBox.appendChild(sidebarSearchBody);
+
+                        sidebarRoot.resizeObserver.observe(sidebarRoot);
+                        
+                        for (var i = 0; i < searchResultsList.children.length; i++)
+                            searchResultsList.resizeObserver.observe(searchResultsList.children[i]);
+                        
+                        sidebarSearchBody.resizeObserver.observe(sidebarSearchBody);
+                    }
+                    else
+                    {
+                        // Move the search box to searchRoot
+                        searchBox.classList.add("mapsExtended_searchBox");
+                        searchBox.classList.add("has-hint");
+                        searchBox.classList.remove("mapsExtended_sidebarSearchBox");
+                        searchRoot.append(searchBox);
+    
+                        // Remove sidebar control class from search input
+                        searchBoxInput.classList.remove("mapsExtended_sidebarControl");
+    
+                        // Move searchBoxHintContainer to the searchBox
+                        searchBox.appendChild(searchBoxHintContainer);
+    
+                        // Move the searchResultsList to the searchRoot
+                        searchResultsList.classList.remove("mapsExtended_sidebarSearchResults");
+                        searchRoot.appendChild(searchResultsList);
+                        
+                        // Remove the searchBody, searchClearButton, and searchDropdownButton from the DOM
+                        sidebarSearchBody.remove();
+                        searchClearButton.remove();
+                        searchDropdownButton.remove();
+                        
+                        sidebarRoot.resizeObserver.disconnect();
+                        searchResultsList.resizeObserver.disconnect();
+                        sidebarSearchBody.resizeObserver.disconnect();
+                    }
+                }
             },
 
             // Collectibles
@@ -3426,7 +4262,7 @@
 
             initCollectibleStyles: once(function()
             {
-                var rule = mapsExtended.util.findCSSRule(".interactive-maps__filters-dropdown-list", mapsExtended.stylesheet);
+                var rule = findCSSRule(".interactive-maps__filters-dropdown-list", mapsExtended.stylesheet);
                 if (rule)
                 {
                     rule.style.paddingBottom = "0";
@@ -3716,6 +4552,195 @@
                     mw.storage.setExpires(storageKey);
                 else
                     mw.storage.setExpires(storageKey, this.config.collectibleExpiryTime);
+            },
+            
+
+            // Category groups
+
+            
+            initCategoryGroupsStyles: once(function()
+            {
+                // Change selectors that are rooted to interactive-maps__filters-dropdown to instead be rooted to interactive-maps__filters-list
+                // so that they apply to all dropdowns within interactive-maps__filters-list
+                changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown::after, .interactive-maps__filters-dropdown .wds-dropdown::before",
+                                   ".interactive-maps__filters-list .wds-dropdown::after, .interactive-maps__filters-list .wds-dropdown::before");
+                changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown__content", ".interactive-maps__filters-list .wds-dropdown__content");
+                
+                // Change some of the scroll up/down shadows
+                deleteCSSRule(".interactive-maps__filters-dropdown-list--can-scroll-down::after, .interactive-maps__filters-dropdown-list--can-scroll-up::before");
+
+            }, mapsExtended),
+
+            // This function creates all the categoryGroups from the definitions in the categoryGroups array
+            // It's fairly complex since it supports nesting categories to any depth
+            initCategoryGroups: function()
+            {
+                // Simplify the filters dropdown by making interactive-maps__filters-dropdown and .wds-dropdown the same object
+                var filtersDropdownInner = this.elements.filtersDropdown.querySelector(".wds-dropdown");
+                this.elements.filtersDropdown.classList.add("wds-dropdown");
+                filtersDropdownInner.before(this.elements.filtersDropdown.querySelector(".wds-dropdown__toggle"));
+                filtersDropdownInner.before(this.elements.filtersDropdown.querySelector(".wds-dropdown__content"));
+                filtersDropdownInner.remove();
+                
+                // Modify and set up some styles - this is only executed once
+                this.initCategoryGroupsStyles();
+
+                // Remove original "Select all" checkbox
+                var selectAllFilterElement = this.elements.filterAllCheckboxInput.closest(".interactive-maps__filter-all");
+                var selectAllLabelText = this.elements.filterAllCheckboxInput.nextElementSibling.textContent;
+                selectAllFilterElement.remove();
+                
+                // If there are no category groups, or if the object is not an array
+                // just map the categories directly so that all categories are at the root
+                if (!this.config.categoryGroups || !Array.isArray(this.config.categoryGroups))
+                    this.config.categoryGroups = this.categories.map(function(c){ return c.id; });
+
+                // Move categoryGroups from config to this
+                
+                // To simplify the hierarchical structure, create a brand new root "Select all" group
+                // the children of which is the elements of categoryGroups
+                this.categoryGroups =
+                [
+                    {
+                        label: selectAllLabelText,
+                        children: structuredClone(this.config.categoryGroups),
+                        map: this
+                    }
+                ]
+
+                // Do some pre-processing on categoryGroups to remove invalid groups
+                var preprocessGroup = function(group)
+                {
+                    // Group must have a label
+                    if (!group.label || typeof group.label != "string")
+                    {
+                        log("Category group with the children " + group.children + " does not have a label!");
+                        return false;
+                    }
+
+                    // Group must have children
+                    if (!group.children || !Array.isArray(group.children) || group.children.length == 0)
+                        return false;
+
+                    group.categories = [];
+                    group.allCategories = [];
+                    group.subgroups = [];
+                    group.allSubgroups = [];
+                    
+                    // Process children, and remove invalid entries
+                    for (var i = 0; i < group.children.length; i++)
+                    {
+                        var c = group.children[i];
+
+                        // Child is category ID
+                        if (typeof c == "string")
+                        {
+                            if (this.categoryLookup.has(c))
+                            {
+                                group.children[i] = this.categoryLookup.get(c);
+                                group.categories.push(group.children[i]);
+                                group.allCategories.push(group.children[i]);
+                            }
+                            else
+                            {
+                                log("A category with the ID \"" + c + "\" defined in the category group \"" + group.label + "\" does not exist!");
+                                c = null;
+                            }
+                        }
+
+                        // Child is nested group
+                        else if (typeof c == "object")
+                        {
+                            if (preprocessGroup(c))
+                            {
+                                group.subgroups.push(c);
+                                group.allSubgroups.push(c);
+
+                                // If nested group has groups, add them to allSubgroups
+                                if (c.allSubgroups.length > 0)
+                                {
+                                    for (var j = 0; j < c.allSubgroups.length; j++)
+                                        group.allSubgroups.push(c.allSubgroups[j]);
+                                }
+
+                                // If nested group has categories, add them to allCategories
+                                if (c.allCategories.length > 0)
+                                {
+                                    for (var j = 0; j < c.allCategories.length; j++)
+                                        group.allCategories.push(c.allCategories[j]);
+                                }
+                            }
+                            else
+                            {
+                                console.log("Category group \"" + (c.label || "undefined") + "\" was invalid and will be removed");
+                                c = null;
+                            }
+                        }
+
+                        // c is set to null if the child is invalid
+                        if (c == null)
+                        {
+                            group.children.splice(i, 1);
+                            i--;
+                        }
+                    }
+
+                    // The group still has children, it's valid
+                    return group.children.length > 0;
+
+                }.bind(this);
+
+                preprocessGroup(this.categoryGroups[0]);
+
+                // Finally actually create the CategoryGroups out of the definition (they will be created recursively in the ctor)
+                var rootGroup = this.categoryGroups[0] = new CategoryGroup(this.categoryGroups[0]);
+                var categoryGroupTree = rootGroup.flattenedGroups;
+                categoryGroupTree[rootGroup.id] = rootGroup;
+                
+                // Use filter() to get a list of category matching the predicate
+                // In this case, all categories that have not been assigned to any of the
+                // category groups at any level in the hierarchy
+                var ungroupedCategories = this.categories.filter(function(c)
+                {
+                    // Don't include disabled categories
+                    if (c.startDisabled == true) return false;
+                    
+                    // Check if any category group in the config contains this category
+                    return !Object.values(categoryGroupTree).some(function(cg)
+                    {
+                        // Check if a category group contains a category with this ID
+                        return cg.categories.some(function(cgc)
+                        {
+                            // Check if this category ID matches the testing ID
+                            return cgc.id == c.id;
+                        });
+                    });
+                });
+                
+                // If there are ungrouped categories
+                if (ungroupedCategories.length > 0)
+                {
+                    // Add any categories that aren't grouped to the rootGroup
+                    ungroupedCategories.forEach(function(uc)
+                    {
+                        rootGroup.addCategoryToGroupById(uc.id);
+                        rootGroup.children.push(uc);
+                    });
+
+                    // Update the checked visual state
+                    rootGroup.updateCheckedVisualState();
+                }
+
+                // Resize the searchRoot to be a bit less than the height of the root map container
+                this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
+
+                // Add a listener which changes the min height of the search box when it is opened
+                this.elements.filtersDropdownButton.addEventListener("mouseenter", function(e)
+                {
+                    // Resize the list to be a bit less than the height of the root map container
+                    this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35)) + "px";
+                    
+                }.bind(this));
             }
         };
 
@@ -3732,20 +4757,15 @@
             this.hidden = group.hidden;
             this.children = group.children;
             this.map = group.map || parentGroup.map;
-            this.isValid = this.isGroupValid();
+
+            this.categories = this.categories || [];
+            this.subgroups = this.subgroups || [];
+            this.allCategories = this.allCategories || [];
+            this.allSubgroups = this.allSubgroups || [];
             
-            this.categories = [];
-            this.subgroups = [];
             this.flattenedGroups = {};
             this.checkboxes = [];
             this.elements = this.elements || {};
-
-            // Don't create an invalid group
-            if (!this.isValid)
-            {
-                log("Category group " + this.id + " does not contain any valid categories and will not be created");
-                return;
-            }
             
             if (this.isRoot)
             {
@@ -3816,27 +4836,17 @@
                 parentGroup.elements.container.appendChild(groupElem);
 
             // Move actual category filters into group
-            for (var j = 0; j < this.children.length; j++)
+            for (var i = 0; i < this.children.length; i++)
             {
-                var newChild = undefined;
-
-                // Child is category ID
-                if (typeof this.children[j] == "string")
-                    newChild = this.addCategoryToGroup(this.children[j]);
-
-                // Child is subgroup
-                else if (typeof this.children[j] == "object")
-                    newChild = this.addSubgroupToGroup(this.children[j]);
-
-                // Replace element at this index with the category, or the new CategoryGroup object
-                if (newChild)
-                    this.children[j] = newChild;
-
-                // If it was invalid, remove it at this index
-                else
+                if (typeof this.children[i] == "object")
                 {
-                    this.children.splice(j, 1);
-                    j--;
+                    // Child is category
+                    if (this.children[i] instanceof ExtendedCategory)
+                        this.addCategoryToGroup(this.children[i])
+
+                    // Child is subgroup (we can trust that any other object is a subgroup because of the preprocessing)
+                    else
+                        this.children[i] = this.addSubgroupToGroup(this.children[i]);
                 }
             }
 
@@ -3909,7 +4919,7 @@
                 container.style.maxHeight = container.scrollHeight + "px";
 
                 // Hide every other group
-                this.config.categoryGroups.forEach(function(cg)
+                this.categoryGroups.forEach(function(cg)
                 {
                     if (cg.groupElement != e.currentTarget) cg.containerElement.style.maxHeight = "0px";
                 });
@@ -3931,34 +4941,20 @@
 
         CategoryGroup.prototype = 
         {
-            isGroupValid: function()
+            // Adds an ExtendedCategory to this group
+            addCategoryToGroup: function(category)
             {
-                // The root group is always valid since it will contain all ungrouped categories (they are added after the fact)
-                if (this.isRoot == true) return true;
+                if (!this.categories.includes(category)) this.categories.push(category);
+                if (!this.allCategories.includes(category)) this.allCategories.push(category);
                 
-                var validCategories = Array.from(this.map.categoryLookup.keys());
-                
-                function checkIsValid(group)
-                {
-                    if (!group.children || !Array.isArray(group.children) || group.children.length == 0)
-                        return false;
-                    
-                    return group.children.some(function(c)
-                    {
-                        if (typeof c == "string")
-                            return validCategories.includes(c);
-                        else if (typeof c == "object")
-                            return checkIsValid(c);
-        
-                        return false;
-                    });
-                }
+                this.elements.container.appendChild(category.elements.filter);
+                this.registerCheckbox(category.elements.checkboxInput);
 
-                return checkIsValid(this);
+                return category;
             },
-            
+
             // Adds a category to this group, given a category ID
-            addCategoryToGroup: function(categoryId)
+            addCategoryToGroupById: function(categoryId)
             {
                 var category = this.map.categoryLookup.get(categoryId);
                     
@@ -3968,11 +4964,7 @@
                     return;
                 }
 
-                this.elements.container.appendChild(category.elements.filter);
-                this.categories.push(category);
-                this.registerCheckbox(category.elements.checkboxInput);
-
-                return category;
+                return this.addCategoryToGroup(category);
             },
 
             // Adds a subgroup to this group, given a group definition (see docs)
@@ -3980,10 +4972,6 @@
             addSubgroupToGroup: function(group)
             {
                 var childGroup = new CategoryGroup(group, this);
-                
-                if (childGroup.isValid == false)
-                    return null;
-                
                 this.subgroups.push(childGroup);
                 this.registerCheckbox(childGroup.elements.checkbox);
                 this.flattenedGroups[this.id + "/" + childGroup.id] = childGroup;
@@ -4083,6 +5071,9 @@
             // Categories always start enabled, for the same reason
             this.disabled = false;
 
+            // Set up an event that will be fired when the toggle state of this category changes
+            this.onCategoryToggled = new EventHandler();
+
             this.elements = {};
         }
 
@@ -4090,6 +5081,8 @@
         {
             toggle: function(value)
             {
+                value = value != undefined ? value : !this.visible;
+
                 if (this.elements && this.elements.checkboxInput)
                 {
                     // Toggle by simulating click (can't set checked directly unfortunately)
@@ -4106,8 +5099,8 @@
                 this.elements.filter = filterElement
                 this.elements.checkboxInput = this.elements.filter.querySelector("input");
                 this.elements.checkboxLabel = this.elements.filter.querySelector("label");
-                this.elements.checkboxLabelIcon = this.elements.checkboxLabel.querySelector(".interactive-maps__filters-marker-icon");
-                this.elements.checkboxLabelText = this.elements.checkboxLabel.querySelector("span:last-child");
+                this.elements.categoryIcon = this.elements.checkboxLabel.querySelector(".interactive-maps__filters-marker-icon");
+                this.elements.categoryLabel = this.elements.checkboxLabel.querySelector("span:last-child");
 
                 // Set some values on the filter element itself
                 filterElement.category = this;
@@ -4118,6 +5111,7 @@
                 {
                     this.visible = e.target.checked;
                     this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: e.target.checked });
+                    this.onCategoryToggled.invoke(e.target.checked);
                     
                 }.bind(this));
 
@@ -4199,9 +5193,9 @@
                 // Align icon to top of flex
                 if (!this.elements.collectedLabel)
                 {
-                    if (this.elements.checkboxLabelIcon) this.elements.checkboxLabelIcon.style.alignSelf = "flex-start";
+                    if (this.elements.categoryIcon) this.elements.categoryIcon.style.alignSelf = "flex-start";
         
-                    var categoryLabel = this.elements.checkboxLabelText;
+                    var categoryLabel = this.elements.categoryLabel;
         
                     // Add amount collected "<collected> of <total> collected"
                     var collectedLabel = document.createElement("div");
@@ -4321,7 +5315,7 @@
                 this.markerElement = markerElement;
                 markerElement.marker = this;
                 markerElement.id = this.id;
-                markerElement.style.zIndex = this.order;
+                markerElement.style.zIndex = this.order.toString();
 
                 this.width = this.icon && this.icon.scaledWidth || this.category.icon && this.category.icon.scaledWidth || this.markerElement.clientWidth;
                 this.height = this.icon && this.icon.scaledHeight || this.category.icon && this.category.icon.scaledHeight || this.markerElement.clientHeight;
@@ -4335,6 +5329,7 @@
                     if (anchorStyles)
                     {
                         for (var key in anchorStyles) markerElement.style[key] = anchorStyles[key];
+                        markerElement.classList.add("uses-icon-anchor");
                     }
                 }
                 
@@ -4526,7 +5521,7 @@
                 return;
             },
 
-            // Returns true if the marker uses a custom icon. Does not require an element reference
+            // Returns true if the marker uses a custom icon (either from the marker itself, or the category it belongs to)
             usesCustomIcon: function()
             {
                 /*
@@ -6370,6 +7365,13 @@
                 validValues: [ "top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right" ]
             },
             {
+                name: "iconPosition",
+                presence: false,
+                default: undefined,
+                type: "string",
+                validValues: [ "top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right" ]
+            },
+            {
                 name: "sortMarkers",
                 presence: false,
                 default: "latitude",
@@ -6478,8 +7480,15 @@
                 ]
             },
 
+
             // Map interface
 
+            {
+                name: "minimalLayout",
+                presence: false,
+                default: false,
+                type: "boolean",
+            },
             {
                 name: "mapControls",
                 presence: false,
@@ -6528,6 +7537,42 @@
                 default: "window",
                 type: "string",
                 validValues: [ "window", "screen" ]
+            },
+
+            // Sidebar
+
+            {
+                name: "enableSidebar",
+                presence: false,
+                default: false,
+                type: "boolean"
+            },
+            {
+                name: "sidebarOverlay",
+                presence: false,
+                default: false,
+                type: "boolean"
+            },
+            {
+                name: "sidebarSide",
+                presence: false,
+                default: "left",
+                type: "string",
+                validValues: [ "left", "right" ]
+            },
+            {
+                name: "sidebarBehaviour",
+                presence: false,
+                default: "autoInitial",
+                type: "string",
+                validValues: [ "autoAlways", "autoInitial", "manual" ]
+            },
+            {
+                name: "sidebarInitialState",
+                presence: false,
+                default: "auto",
+                type: "string",
+                validValues: [ "auto", "show", "hide" ]
             },
 
             // Other features
@@ -6623,23 +7668,6 @@
             ExtendedCategory: ExtendedCategory,
             ExtendedMarker: ExtendedMarker,
             ExtendedPopup: ExtendedPopup,
-            
-            // Utility functions to share with other libraries
-            util:
-            {
-                once: once,
-                findCSSRule: findCSSRule,
-                preventDefault: preventDefault,
-                isEmptyObject: isEmptyObject,
-                capitalizeFirstLetter: capitalizeFirstLetter,
-                stopPropagation: stopPropagation,
-                getIndexOfCSSRule: getIndexOfCSSRule,
-                deleteCSSRule: deleteCSSRule,
-                changeCSSRuleSelector: changeCSSRuleSelector,
-                appendCSSRuleSelector: appendCSSRuleSelector,
-                changeCSSRuleText: changeCSSRuleText,
-                changeCSSRuleStyle: changeCSSRuleStyle
-            },
 
             configValidator: configValidator,
 
@@ -6668,12 +7696,14 @@
                 this.loaded = true;
     
                 // Preprocess marker elements so there's little flicker
+                /*
                 for (var m = 0; m < this.mapElements.length; m++)
                 {
                     var customIcons = this.mapElements[m].querySelectorAll(".MapMarker-module_markerCustomIcon__YfQnB");
                     for (var i = 0; i < customIcons.length; i++)
                         customIcons[i].style.marginTop = "calc(" + customIcons[i].style.marginTop + " / 2)";
                 }
+                */
                 
                 var mapsExtended = this;
 
@@ -7145,20 +8175,27 @@
                 window.dev = window.dev || {};
                 window.dev.i18n = window.dev.i18n || {};
                 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
-                window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
-                window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 collected";
-                window.dev.i18n.overrides["MapsExtended"]["clear-collected-button"] = "Clear collected";
-                window.dev.i18n.overrides["MapsExtended"]["clear-collected-confirm"] = "Clear collected markers?";
-                window.dev.i18n.overrides["MapsExtended"]["clear-collected-banner"] = "Cleared $1 collected markers on $2.";
-                window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You collected all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
-                window.dev.i18n.overrides["MapsExtended"]["search-placeholder"] = "Search";
-                window.dev.i18n.overrides["MapsExtended"]["search-hint-noresults"] = "No results found for \"$1\"";
-                window.dev.i18n.overrides["MapsExtended"]["search-hint-results"] = "$1 markers in $2 categories";
-                window.dev.i18n.overrides["MapsExtended"]["search-hint-resultsfiltered"] = "$1 markers in $2 categories ($3 filtered)";
-                window.dev.i18n.overrides["MapsExtended"]["fullscreen-enter-tooltip"] = "Enter fullscreen";
-                window.dev.i18n.overrides["MapsExtended"]["fullscreen-exit-tooltip"] = "Exit fullscreen";
-                window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-success"] = "Copied to clipboard";
-                window.dev.i18n.overrides["MapsExtended"]["copy-link-banner-failure"] = "There was a problem copying the link to the clipboard";
+                var overrides = window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
+                overrides["category-collected-label"] = "$1 of $2 collected";
+                overrides["clear-collected-button"] = "Clear collected";
+                overrides["clear-collected-confirm"] = "Clear collected markers?";
+                overrides["clear-collected-banner"] = "Cleared $1 collected markers on $2.";
+                overrides["collected-all-banner"] = "Congratulations! You collected all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
+                overrides["search-placeholder"] = "Search";
+                overrides["search-hint-noresults"] = "No results found for \"$1\"";
+                overrides["search-hint-results"] = "$1 markers in $2 categories";
+                overrides["search-hint-resultsfiltered"] = "$1 markers in $2 categories ($3 filtered)";
+                overrides["fullscreen-enter-tooltip"] = "Enter fullscreen";
+                overrides["fullscreen-exit-tooltip"] = "Exit fullscreen";
+                overrides["copy-link-banner-success"] = "Copied to clipboard";
+                overrides["copy-link-banner-failure"] = "There was a problem copying the link to the clipboard";
+                overrides["sidebar-header"] = "$1 - Interactive Map";
+                overrides["sidebar-categories-header"] = "Categories";
+                overrides["sidebar-show-all-button"] = "Show All";
+                overrides["sidebar-hide-all-button"] = "Hide All";
+                overrides["sidebar-hide-tooltip"] = "Hide sidebar";
+                overrides["sidebar-show-tooltip"] = "Show sidebar";
+                console.log("i18n messages are being overridden!");
                 */
 
                 // The core module doesn't use any translations, but we might as well ensure it's loaded before running other modules
@@ -7166,7 +8203,7 @@
                 {
                     mw.hook("dev.i18n").add(function(i18n)
                     {
-                        var CACHE_VERSION = 3; // Increment manually to force cache to update (do this when new entries are added)
+                        var CACHE_VERSION = 5; // Increment manually to force cache to update (do this when new entries are added)
 
                         i18n.loadMessages("MapsExtended", { cacheVersion: CACHE_VERSION }).done(function(i18n)
                         {
@@ -7285,18 +8322,32 @@
             leafletContainer.appendChild(loadingOverlay);
         }
         */
-
-        // Load dependencies
-        importArticles(
+        
+        var imports = 
         {
-            type: "script",
-            articles: [
-                "u:dev:MediaWiki:MapsExtended.css",
+            articles:
+            [
                 "u:dev:MediaWiki:I18n-js/code.js",
                 "u:dev:MediaWiki:BannerNotification.js",
                 "u:dev:MediaWiki:WDSIcons/code.js"
             ]
+        };
+
+        // importArticles cannot detect whether a CSS has been imported already (it will simply stack)
+        // Check for the presence of the .mapsExtended rule to detemine whether to import
+        var isMxCSSImported = findCSSRule(".mapsExtended") != undefined;
+        if (!isMxCSSImported) imports.articles.push("u:dev:MediaWiki:MapsExtended.css");
+
+        // Load dependencies
+        importArticles(imports);
+
+        // Load modules
+        /*
+        loadModule("tooltips").then(function(tooltip)
+        {
+            mw.hook("wds-tooltips").fire(tooltip);
         });
+        */
         
     };
 

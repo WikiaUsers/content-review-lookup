@@ -77,7 +77,7 @@ UserTagsJS.modules.custom = {
 	'Safwaaan.R': ['threadmoderator'],
 	'3meraldKv': ['founder'],
 	'Simplydisc': ['wiki-developer'],
-	'Superduperwhoopershmooperregularperson': ['wiki-developer'],
+	'Superduperwhoopershmooperregularperson': ['wiki-developer', 'threadmoderator'],
 	// Retired Wiki Staff
 	'imnotacan': ['retired-staff'],
 	'RedElephantKing': ['retired-staff'],
@@ -88,7 +88,6 @@ UserTagsJS.modules.custom = {
 	'Piteous': ['wiki-helper'],
 	'PenguinTech': ['wiki-helper'],
 	'NJMapz': ['wiki-helper'],
-	'Brzi145900': ['wiki-helper'],
 	'Dxrknrg': ['wiki-helper'],
 };
 //* END of UserTags *//

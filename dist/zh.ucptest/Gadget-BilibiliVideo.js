@@ -1,1 +1,0 @@
-mw.loader.load("/wiki/User:123855714/BilibiliVideo.js?action=raw&ctype=text/javascript&r="+parseInt(Math.random()*10), "text/javascript");

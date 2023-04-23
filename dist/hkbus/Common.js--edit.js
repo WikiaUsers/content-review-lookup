@@ -1,4 +1,4 @@
-//<source lang="JavaScript">
+// <syntaxhighlight lang="javascript">
 if (mwCustomEditButtons) {
 }
 
@@ -138,4 +138,6 @@ function createSummaryInput()
 }
 addOnloadHook(createSummaryInput);
 
-//</source>
+// </syntaxhighlight>
+
+// [[Category:JavaScript頁面]]

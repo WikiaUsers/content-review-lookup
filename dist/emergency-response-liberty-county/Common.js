@@ -6,6 +6,7 @@ window.MessageBlock = {
 	autocheck : true
 };
 
+TBL_GROUP = "roblox-en";
 
 
 window.ajaxPages = ["Some Frequently Updated Page"];

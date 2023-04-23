@@ -5,23 +5,23 @@ window.FastDeleteNoConfirm = true;
 window.fdButtons = [
 	{
         summary: '[[Rules|Rule 1]].',
-        label: 'F',
+        label: 'F'
     },
     {
         summary: 'Spam',
-        label: 'S',
-    },
+        label: 'S'
+    }
 ];
 window.AjaxDelete = {
 	deleteReasons: {
 		'Unfixable broken redirect' : 'Unfixable broken redirect',
 		'Useless redirect' : 'Useless redirect',
-		'Useless template' : 'Useless template',
+		'Useless template' : 'Useless template'
 	},
 	autoCheckWatch: false,
 	noUndelete: true,
-	reload: true,
-},
+	reload: true
+};
 
 importArticles({
     type: 'script',
@@ -34,6 +34,6 @@ importArticles({
         'u:dev:MediaWiki:AjaxUndo/code.js',
         'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:MediaWiki:Nuke/code.js',
-        'u:dev:MediaWiki:JWB/load.js',
-    ],
+        'u:dev:MediaWiki:JWB/load.js'
+    ]
 });

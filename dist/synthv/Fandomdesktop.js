@@ -19,6 +19,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/f/f3/Wiki-wordmark-haiyi-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/07/Wiki-wordmark-Hanakuna-Chifuyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/9b/Wiki-wordmark-Kevin.png',
+	    'https://images.wikia.nocookie.net/synthv/images/8/86/Wiki-wordmark-jun.png',
 	    'https://images.wikia.nocookie.net/synthv/images/a/ab/Wiki-wordmark-koharu-rikka.png',
 	    'https://images.wikia.nocookie.net/synthv/images/6/69/Wiki-wordmark-kotonoha-akane.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/ca/Wiki-wordmark-kotonoha-aoi.png',

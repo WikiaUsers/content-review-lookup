@@ -172,12 +172,6 @@ addOnloadHook(toggleInit);
  
 // </syntax>
 
-function addPageBottom() {
-        $("#WikiaRail").append('<div style="clear:both; border:1px solid transparent; border-radius:1em; overflow:hidden;" align="center"><img src="https://images.wikia.nocookie.net/pandorahearts/images/c/cd/Leo_sitting2.jpg" width="250"></div>');
-}
- 
-$(addPageBottom);
-
 // Insert user name //
 
 function UserNameReplace() {

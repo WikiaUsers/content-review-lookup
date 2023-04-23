@@ -18,6 +18,10 @@ window.DiscussionTemplates = {
             name: 'Template:Off-topic/en',
             title: 'Your posts'
         },
+        'Off-topic/thread': {
+            name: 'Template:Off-topic/thread',
+            title: 'Your posts'
+        },
     },
-    allowedGroups: ['sysop']
+    allowedGroups: ['sysop', 'threadmoderator', 'content-moderator']
 };

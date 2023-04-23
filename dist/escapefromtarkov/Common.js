@@ -46,6 +46,8 @@ $(document).ready(function() {
 
 /* MapsExtended global config */
 window.mapsExtendedConfig = {
+    "minimalLayout": true,
+    "enableSidebar": true,
     "iconAnchor": "center",
     "enableSearch": true,
     "openPopupsOnHover": false,

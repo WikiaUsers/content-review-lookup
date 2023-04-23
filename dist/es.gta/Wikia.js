@@ -69,7 +69,6 @@ window.UserTagsJS = {
 		    'Bloomdanix': ['asistente'],
 		    'GhostRiley2000': ['asistente'],
             'GuidoM1995': ['asistente'],
-            'Ale_-_Remastered': ['asistente']
         }
     },
 	tags: {

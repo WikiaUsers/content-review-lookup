@@ -3794,6 +3794,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "rarity": 3,
                 "offspringeligibility": "expired"
             },
+            "bright": {
+                "name": "Bright",
+                "types": [
+                    "shine",
+                    "white",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
             "brightaries": {
                 "name": "Bright Aries",
                 "types": [
@@ -3996,6 +4013,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "10_hours_10",
                 "rarity": 3,
                 "offspringeligibility": "tournament",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "brilliance": {
+                "name": "Brilliance",
+                "types": [
+                    "shine",
+                    "red",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]
@@ -13835,6 +13869,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "28_hours_28",
                 "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "gleaming": {
+                "name": "Gleaming",
+                "types": [
+                    "shine",
+                    "yellow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
                 "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
@@ -30339,6 +30390,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "scintillating": {
+                "name": "Scintillating",
+                "types": [
+                    "shine",
+                    "purple",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "scion": {
                 "name": "Scion",
                 "types": [
@@ -36841,6 +36909,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "12_hours_12",
                 "rarity": 2,
                 "offspringeligibility": "expired"
+            },
+            "twinkle": {
+                "name": "Twinkle",
+                "types": [
+                    "shine",
+                    "blue",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "blue"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "twinstar": {
                 "name": "Twin Star",

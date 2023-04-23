@@ -204,19 +204,34 @@
       value: Object.freeze({
         NAMES: Object.freeze({
           STANDARD: Object.freeze([
-            "Common",
-            "Fandomdesktop"
+            Object.freeze({
+              NAME: "Common",
+              SUFFIXES: Object.freeze([".css", ".js"]),
+            }),
+            Object.freeze({
+              NAME: "Fandomdesktop",
+              SUFFIXES: Object.freeze([".css", ".js"]),
+            }),
+            Object.freeze({
+              NAME: "FandomMobile",
+              SUFFIXES: Object.freeze([".css"]),
+            })
           ]),
+
           CUSTOM: Object.freeze([
-            "Global",
-            "ImportJS",
-            "JSPages"
-          ]),
+            Object.freeze({
+              NAME: "Global",
+              SUFFIXES: Object.freeze([".css", ".js"]),
+            }),
+            Object.freeze({
+              NAME: "ImportJS",
+            }),
+            Object.freeze({
+              NAME: "JSPages",
+            }),
+          ])
         }),
-        SUFFIXES: Object.freeze([
-          ".css",
-          ".js"
-        ]),
+
         DIVISIONS: Object.freeze([
           "siteFiles",
           "userFiles",
@@ -551,7 +566,8 @@
   this.buildDefaultFiles = function () {
 
     // Declarations
-    var assembledFiles, fileNames, prefix, suffixes, prefixes, divisions;
+    var assembledFiles, fileNames, isSiteFile, fileName, prefix, prefixes,
+      divisions;
 
     // Definitions
     assembledFiles = {};
@@ -567,7 +583,6 @@
 
     // Aliases
     fileNames = this.Files.NAMES;
-    suffixes = this.Files.SUFFIXES;
     divisions = this.Files.DIVISIONS;
 
     // Populate files object with container arrays
@@ -576,34 +591,42 @@
     });
 
     // Assemble non-rulebreaking file names
-    fileNames.STANDARD.forEach(function (paramFile) {
+    fileNames.STANDARD.forEach(function (paramFileObject) {
       divisions.forEach(function (paramColumn) {
-        prefix = prefixes[(paramColumn === "siteFiles") ? "mw" : "my"];
 
-        suffixes.forEach(function (paramSuffix) {
+        fileName = paramFileObject.NAME;
+        isSiteFile = paramColumn === "siteFiles";
+        prefix = prefixes[isSiteFile ? "mw" : "my"];
+        fileName = (isSiteFile) ? fileName : fileName.toLowerCase();
+
+        paramFileObject.SUFFIXES.forEach(function (paramSuffix) {
           assembledFiles[paramColumn].push({
-            name: paramFile + paramSuffix,
-            href: mw.util.getUrl(prefix + paramFile.toLowerCase() + paramSuffix)
+            name: fileName + paramSuffix,
+            href: mw.util.getUrl(prefix + fileName + paramSuffix)
           });
         });
       });
     }.bind(this));
 
     // Handle rule-breakers
-    fileNames.CUSTOM.forEach(function (paramFile) {
-      if (paramFile === "Global") {
-        suffixes.forEach(function (paramSuffix) {
+    fileNames.CUSTOM.forEach(function (paramFileObject) {
+      fileName = paramFileObject.NAME;
+
+      if (fileName === "Global") {
+        fileName = fileName.toLowerCase();
+
+        paramFileObject.SUFFIXES.forEach(function (paramSuffix) {
           assembledFiles.userFiles.push({
-            name: paramFile + paramSuffix,
-            href: prefixes.cc + paramFile.toLowerCase() + paramSuffix
+            name: fileName + paramSuffix,
+            href: prefixes.cc + fileName + paramSuffix
           });
         }.bind(this));
       } else {
-        prefix = prefixes[(paramFile === "ImportJS") ? "mw" : "sp"];
+        prefix = prefixes[(fileName === "ImportJS") ? "mw" : "sp"];
 
         assembledFiles.siteFiles.push({
-          name: paramFile,
-          href: mw.util.getUrl(prefix + paramFile)
+          name: fileName,
+          href: mw.util.getUrl(prefix + fileName)
         });
       }
     }.bind(this));

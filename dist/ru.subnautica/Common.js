@@ -1,53 +1,22 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-// Автоматические аватары на заглавной
-!function(mw, $) {
-    'use strict';
-    if (!mw.config.get('wgIsMainPage')) return;
-
-    $('.mainpage-avatar').each(function() {
-        var $this_elem = $(this).empty(),
-            data_obj = {
-                id: {
-                    action: 'query',
-                    list: 'users',
-                    ususers: $(this).attr('data-name'),
-                    format: 'json'
-                },
-                avatar: {
-                    controller: 'UserProfilePage',
-                    method: 'getLightboxData',
-                    tab: 'avatar',
-                    format: 'json'
-                }
-            };
-
-        $.get('/api.php', data_obj.id, function(d) {
-            data_obj.avatar.userId = d.query.users[0].userid;
-
-            $.post('/wikia.php', data_obj.avatar, function(t) {
-                $('<img />', {
-                        src: $(t.body).find('img.avatar').attr('src'),
-                        width: '55px',
-                        height: '55px',
-                        style: 'cursor: pointer;'
-                    })
-                    .click(function() {
-                        window.open('/wiki/User:' + data_obj.id.aufrom, '_blank')
-                    })
-                    .appendTo($this_elem);
-            });
-        });
-    });
-}(this.mediaWiki, this.jQuery);
-
-/* Discord 
-importArticles({
-    type: "script",
-    articles: [
-        'u:dev:MediaWiki:DiscordIntegrator/code.js'
-    ]
-}); */
+/* Подвальный отдел сколково Subnautica вики */
+function randomBackground () {
+	var backgroundLight = [
+	'https://static.wikia.nocookie.net/subnautica/images/7/7d/BGL1.jpg/revision/latest?path-prefix=ru'
+	];
+	
+	var backgroundDark = [
+	'https://static.wikia.nocookie.net/subnautica/images/7/7b/BGD1.jpg/revision/latest?path-prefix=ru'
+	];
+	
+	if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-dark')) {
+		document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundDark[Math.floor((backgroundDark.length) * Math.random())] + ') !important');
+	}
+	if (document.getElementsByTagName("body")[0].classList.contains('theme-fandomdesktop-light')) {
+		document.getElementsByTagName("body")[0].setAttribute("style", 'background-image:url('+ backgroundLight[Math.floor((backgroundLight.length) * Math.random())] + ') !important');
+	}
+}
 
 /****************************************/
 /* sliders using jquery by User:Tierrie */

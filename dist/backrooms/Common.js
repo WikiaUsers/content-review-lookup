@@ -2,7 +2,7 @@ window.SpoilerAlertJS = {
     question: 'This area contains spoilers. Are you sure you want to read it?',
     yes: 'Yes',
     no: 'No',
-    fadeDelay: 1600
+    fadeDelay: 1500
 };
 
 // UserTags thingamajigs
@@ -17,8 +17,20 @@ window.UserTagsJS = {
 		technician: { u:'Technician', order:2 },
 		'content-moderator': { order:3 }, // <- usergroup wrapped in quotes as there is a hyphen in the name
 		threadmoderator: { order:4 },
+		rollback: { u:'Trusted', order:5 },
 	},
 };
+
+// random number generator
+const random = document.querySelector('.random');
+const rng = document.createElement('rng');
+rng.textContent = Math.imul(getRandomIntInclusive(300, 32000), getRandomIntInclusive(300, 32000)); // just a little over a billion possibilities
+random.appendChild(rng);
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
 UserTagsJS.modules.autoconfirmed = false;
