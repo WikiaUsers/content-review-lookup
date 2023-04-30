@@ -4,7 +4,6 @@
 	specialChars.style.display = 'none';
 	var a = document.createElement('a');
 	a.innerText = '[Show Special Characters]';
-	a.style.textAlign = 'right';
 	specialChars.insertAdjacentElement('beforebegin', a);
 	a.onclick = (function() {
 		if (specialChars.style.display) {

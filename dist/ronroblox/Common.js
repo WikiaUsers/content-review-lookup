@@ -77,17 +77,19 @@ UserTagsJS.modules.custom = {
 	'Safwaaan.R': ['threadmoderator'],
 	'3meraldKv': ['founder'],
 	'Simplydisc': ['wiki-developer'],
+	'Dheewali': ['wiki-developer'],
 	'Superduperwhoopershmooperregularperson': ['wiki-developer', 'threadmoderator'],
 	// Retired Wiki Staff
 	'imnotacan': ['retired-staff'],
-	'RedElephantKing': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
 	'GrayshaValor': ['ron-hos'],
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Helpers
-	'Piteous': ['wiki-helper'],
-	'PenguinTech': ['wiki-helper'],
 	'NJMapz': ['wiki-helper'],
-	'Dxrknrg': ['wiki-helper'],
+	'LoxyWoxy7': ['wiki-helper'],
+	'KujiMarakuma': ['wiki-helper'],
+	'DaBingchilinger': ['wiki-helper'],
+	'Jjc0308': ['wiki-helper'],
+	'Dbowmaster19': ['wiki-helper'],
 };
 //* END of UserTags *//

@@ -1,3 +1,15 @@
+// Configuration for interlanguage links form
+window.interwikiInternational = {
+    namespace: 'Interlanguage_link',
+    namespaceId: 152,
+    mainPage: 'Community_Central:Interlanguage_link_requests',
+    interwikiSchema: '{{bStart}}InterwikiLink|{{from}}|{{to}}{{bEnd}}',
+    pageSchema: '{{bStart}}Interlanguage Link Request|awaiting{{bEnd}}\n' +
+    '<!-- Staff: replace "awaiting" with "done" or "not done" to complete request -->\n' +
+    '{{interwikis}}\n\n' +
+    '~~' + '~~'
+};
+
 //Redirect Special:Chat to Discord
 if (mw.config.get('wgPageName') === 'Special:Chat') {
     window.location = 'https://community.fandom.com/wiki/Discord';

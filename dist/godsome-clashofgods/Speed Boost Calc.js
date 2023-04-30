@@ -1,23 +1,23 @@
 const dataJson = {
-    "SpeedBoost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
-    "BuildingSpeedBoost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
-    "ResearchSpeedBoost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
-    "TrainingSpeedBoost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
-    "HealingSpeedBoost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
+    "Speed Boost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
+    "Building Speed Boost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
+    "Research Speed Boost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
+    "Training Speed Boost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
+    "Healing Speed Boost": [1, 5, 10, 15, 30, 60, 180, 600, 900, 1440, 4320, 10080, 43200],
 };
 
 var imgNameList = {
-    "SpeedBoost": "9/9d/Speed_Boost.png/revision/latest", 
-    "BuildingSpeedBoost": "6/62/Building_Speed_Boost.png/revision/latest", 
-    "ResearchSpeedBoost": "7/75/Research_Speed_Boost.png/revision/latest",
-    "TrainingSpeedBoost": "3/34/Training_Speed_Boost.png/revision/latest",
-    "HealingSpeedBoost": "c/c8/Healing_Speed_Boost.png/revision/latest",
+    "Speed Boost": "9/9d/Speed_Boost.png/revision/latest", 
+    "Building Speed Boost": "6/62/Building_Speed_Boost.png/revision/latest", 
+    "Research Speed Boost": "7/75/Research_Speed_Boost.png/revision/latest",
+    "Training Speed Boost": "3/34/Training_Speed_Boost.png/revision/latest",
+    "Healing Speed Boost": "c/c8/Healing_Speed_Boost.png/revision/latest",
 };
 
 //make Result Section
 function makeResultDiv() {
     var resourceTitle = document.createElement('h2');
-    resourceTitle.appendChild(document.createTextNode("재화"));
+    resourceTitle.appendChild(document.createTextNode("Speed Boost"));
     var resultDiv = document.createElement('ul');
 
     var resultItemDiv = document.createElement('li');

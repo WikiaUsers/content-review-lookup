@@ -386,3 +386,11 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 	$( gridFiltering )
 });
 /* End Grid Filtering */
+
+/* Word Count */
+function countWords() {
+  var text = document.getElementById("article-text").innerText;
+  var words = text.trim().split(/\s+/);
+  var wordCount = words.length;
+  document.getElementById("word-count").innerText = wordCount;
+}

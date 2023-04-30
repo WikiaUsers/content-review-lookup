@@ -42,9 +42,9 @@ window.MessageBlock = {
 /* SPOILERS */
 
 window.SpoilerAlertJS = {
-    question: 'hey you, you better stay out or im gonna be angry',
-    yes: 'okay…',
-    no: 'no lol',
+    question: 'This section contains spoilers. Would you like to see them?',
+    yes: 'Yes',
+    no: 'No',
     fadeDelay: 1600
 };
 
@@ -750,11 +750,11 @@ window.resultsTextArray = [
     "woah good job man" 
 ];
 window.questions = [
-    ["how many tickets are there",
+    ["how many tickets were there at the time of this quiz",
     "26 tickets",
     "25 tickets",
-    "24 tickets",
-    "27 tickets"], 
+    "40 tickets",
+    "42 tickets"], 
 
     ["when was ticketmaster added?",
     "march 10th",
@@ -778,7 +778,25 @@ window.questions = [
     "yes",
     "no",
     "maybe",
-    "so"]
+    "so"],
+    
+    ["who was the first ticket hero",
+    "covert",
+    "firestorm",
+    "atrophy",
+    "surge"],
+    
+    ["what's the ultimate test",
+    "transcendental",
+    "this",
+    "gateway"
+    "the impossible quiz"],
+    
+    ["how old is the ticketmaster",
+    "vintage",
+    "old",
+    "ancient",
+    "living fossil"]
 ];
 importArticles({
     type: 'script',

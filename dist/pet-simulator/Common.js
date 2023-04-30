@@ -1,3 +1,9 @@
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;
+
+
+
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 /* Replaces {{USERNAME}} with the name of the user browsing the page.

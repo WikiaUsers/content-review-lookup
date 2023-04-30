@@ -4,9 +4,9 @@ var dataJson = {
     "Lumber": [1000, 10000, 50000, 100000, 150000, 500000, 1500000, 5000000],
     "Stone": [750, 7500, 37500, 75000, 112500, 375000, 1125000, 3750000],
     "Gold": [500, 3000, 15000, 50000, 200000, 600000, 2000000],
-    "ChaosGem": [5, 10, 50, 100, 200, 500, 1000, 2000, 3000, 5000],
-    "VIPPoints": [5, 10, 50, 100, 200, 500, 1000, 5000],
-    "StaminaRestoration": [50, 100, 500, 1000],
+    "Chaos Gem": [5, 10, 50, 100, 200, 500, 1000, 2000, 3000, 5000],
+    "VIP Points": [5, 10, 50, 100, 200, 500, 1000, 5000],
+    "Stamina Restoration": [50, 100, 500, 1000],
 };
 
 var imgNameList = {
@@ -14,15 +14,15 @@ var imgNameList = {
     "Lumber": "d/d3/Lumber.png/revision/latest", 
     "Stone": "d/d4/Stone.png/revision/latest",
     "Gold": "1/10/Gold.png/revision/latest",
-    "ChaosGem": "7/70/Chaos_Gem.png/revision/latest",
-    "VIPPoints": "4/46/VIP_Points.png/revision/latest",
-    "StaminaRestoration": "/d/d4/Stamina_Restoration.png/revision/latest",
+    "Chaos Gem": "7/70/Chaos_Gem.png/revision/latest",
+    "VIP Points": "4/46/VIP_Points.png/revision/latest",
+    "Stamina Restoration": "/d/d4/Stamina_Restoration.png/revision/latest",
 };
 
 //make Result Section
 function makeResultDiv() {
     var resourceTitle = document.createElement('h2');
-    resourceTitle.appendChild(document.createTextNode("재화"));
+    resourceTitle.appendChild(document.createTextNode("Resource"));
     var resultDiv = document.createElement('ul');
     
     for (var resourceName in dataJson) {

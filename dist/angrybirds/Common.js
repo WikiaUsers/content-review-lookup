@@ -35,5 +35,5 @@ window.pPreview = $.extend(
     }
 );
 
-window.pPreview.defimage = 'https://static.wikia.nocookie.net/angrybirds/images/5/54/Image_Not_Avalible_%28New%29.png';
-window.pPreview.noimage = 'https://static.wikia.nocookie.net/angrybirds/images/5/54/Image_Not_Avalible_%28New%29.png';
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/angrybirds/images/6/6c/Image_Not_Available.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/angrybirds/images/6/6c/Image_Not_Available.png';

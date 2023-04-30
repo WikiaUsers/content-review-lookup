@@ -19,6 +19,7 @@ window.UserTagsJS = {
 		    ' ': ['yearuser'],
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
+		    'Alansanchez412': ['asistente'],
             'Claudio3862': ['asistente'],
             'UlyssesAlanis14': ['asistente'],
             
@@ -38,6 +39,7 @@ window.UserTagsJS = {
             'Antony97': ['veterano'],
             'WeisserHirsch': ['veterano'],
             'Troll_GT': ['veterano'],
+            'Fabrix199': ['veterano'],
             
             'FabianVercetti': ['retirado'],
             'Leandritodepompeya': ['retirado'],
@@ -59,8 +61,7 @@ window.UserTagsJS = {
             'Bruno_Cardozo': ['retirado'],
             'Matias_Montanna': ['retirado'],
             'Marco_Antonio_Guti%C3%A9rrez_Udaondo': ['retirado'],
-            'GuidoM1995': ['retirado'],
-            'Alansanchez412': ['retirado']
+            'GuidoM1995': ['retirado']
         }
     },
 	tags: {

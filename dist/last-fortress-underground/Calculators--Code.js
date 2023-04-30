@@ -109,7 +109,7 @@ $(function() {
 	            value_III += '<option value="' + x + '">' + x + '</option>';	
 	        }
 	    }    
-	    for (x in one_more_reward_I){
+	    /*for (x in one_more_reward_I){
             if (one_more_reward_I.hasOwnProperty(x)){
                 reward_I += '<option value="' + x + '">' + x + '</option>';	
             }
@@ -123,7 +123,7 @@ $(function() {
             if (one_more_reward_III.hasOwnProperty(x)){
                 reward_III += '<option value="' + x + '">' + x + '</option>';	
             }
-        }   
+        }   */
 	    for (x in booster_card){
 	        if (booster_card.hasOwnProperty(x)){
 	            card += '<option value="' + x + '">' + x + '</option>';	
@@ -147,24 +147,26 @@ $(function() {
 	        '<tr>' +
 	        '<td style="width:30%">Value Points I:</td>' +
 	        '<td style="width:20%"><select id="value_points_I">' + value_I + '</select></td>' +
-	        '<td style="width:30%">One More Reward I:</td>' +
-			'<td style="width:20%"><select id="one_more_reward_I">' + reward_I + '</select></td>' +
+	        /*'<td style="width:30%">One More Reward I:</td>' +
+			'<td style="width:20%"><select id="one_more_reward_I">' + reward_I + '</select></td>' +*/
 	        '</tr><tr>' +
 	        '<td>Value Points II:</td>' +
 	        '<td><select id="value_points_II">' + value_II + '</select></td>' +
-	        '<td>One More Reward II:</td><td style="width:20%"><select id="one_more_reward_II">' + reward_II + '</select></td>' +
+	        /*'<td>One More Reward II:</td><td style="width:20%"><select id="one_more_reward_II">' + reward_II + '</select></td>' +*/
 	        '</tr><tr>' + 
 	        '<td>Value Points III:</td>' +
 	        '<td><select id="value_points_III">' + value_III + '</select></td>' +
-	        '<td>One More Reward III:</td><td style="width:20%"><select id="one_more_reward_III">' + reward_III + '</select></td>' +
+	        /*'<td>One More Reward III:</td><td style="width:20%"><select id="one_more_reward_III">' + reward_III + '</select></td>' +*/
 	        '</tr><tr>' + 
 	        '<td>Booster Card:</td>' +
 	        '<td><select id="booster_card">' + card + '</select></td>' +
-	        '<td>Incentive: Recruitment:</td><td style="width:20%"><select id="incentive_recruitment">' + incentive + '</select></td>' +
+	        '</tr><tr>' + 
+	        '<td style="width:30%">Incentive: Recruitment:</td><td style="width:20%"><select id="incentive_recruitment">' + incentive + '</select></td>' +
 	        '</tr><tr>' + 
 	        '<td>Points per Recruit:</td>' +
 	        '<td><select id="points_per_recruit">' + ppr_ + '</select></td>' +
-	        '<td>Initial Points:</td><td style="width:20%"><input type="text" size="8" maxlength="8" id="initial_points" value="0" /></td>' +
+	        '</tr><tr>' + 
+	        '<td style="width:30%">Initial Points:</td><td style="width:20%"><input type="text" size="8" maxlength="8" id="initial_points" value="0" /></td>' +
 	        '</tr><tr><td></td></tr><tr>'+
 	        '<td>Total Modifier: </td><td><span id="calc_modifier"></span></td>'+
 	        '</tr>' +
@@ -202,9 +204,9 @@ $(function() {
 	        var vp1 = value_points_I[$('#value_points_I').val()][0];              
 	        var vp2 = value_points_II[$('#value_points_II').val()][0];              
 	        var vp3 = value_points_III[$('#value_points_III').val()][0];   
-	        var omr1 = one_more_reward_I[$('#one_more_reward_I').val()][0];              
+	        /*var omr1 = one_more_reward_I[$('#one_more_reward_I').val()][0];              
 	        var omr2 = one_more_reward_II[$('#one_more_reward_II').val()][0];              
-	        var omr3 = one_more_reward_III[$('#one_more_reward_III').val()][0]; 
+	        var omr3 = one_more_reward_III[$('#one_more_reward_III').val()][0];*/ 
 	        var boost = booster_card[$('#booster_card').val()][0];              
 	        var incentive = incentive_recruitment[$('#incentive_recruitment').val()][0];   
 	        var ppr = points_per_recruit[$('#points_per_recruit').val()][0];   
@@ -229,10 +231,11 @@ $(function() {
 	        var c8t = (c8r%10)*100+Math.floor(c8r/10)*900;
 	        var c9r = Math.ceil(Math.max(chests[8]-ip,0)/(ppr*total_modifier/100));
 	        var c9t = (c9r%10)*100+Math.floor(c9r/10)*900;
-	        
+
+	        /*
 	        if(!omr1){
 	        	//placeholder for adding rewards to calculator
-	        };
+	        };*/
 	        
 	        $('#calc_modifier').html(total_modifier);
 	        $('#calc_c1r').html(c1r);
@@ -256,7 +259,7 @@ $(function() {
 		};
 	 
 	    $('#initial_points').keyup(update_recruit);
-	    $('#one_more_reward_I,#one_more_reward_II,#one_more_reward_III,#value_points_I,#value_points_II,#value_points_III,#booster_card,#incentive_recruitment,#points_per_recruit').change(update_recruit);
+	    $('#value_points_I,#value_points_II,#value_points_III,#booster_card,#incentive_recruitment,#points_per_recruit').change(update_recruit);
 	    update_recruit();
 	
 	};

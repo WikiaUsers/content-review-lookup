@@ -148,7 +148,7 @@ $(function () {
       var loyalty = 1 + parseInt($('#calculator_ew_loyalty_bonus').val(), 10) / 100;
       loyalty = isNaN(loyalty) ? 1 : loyalty;
       var level = parseInt($('#calculator_ew_skill_level').val(), 10);
-      level = isNaN(level) ? 10 : level > 150 ? 150 : level;
+      level = isNaN(level) ? 10 : level > 200 ? 200 : level;
       var pct_left = parseFloat($('#calculator_ew_left').val(), 10);
       pct_left = isNaN(pct_left) || pct_left > 100 ? 100 : pct_left;
 
@@ -277,7 +277,7 @@ $(function () {
         '<tr>' +
         '<td>Current Skill (Base + Loyalty)</td><td>% left</td>' +
         '</tr><tr>' +
-        '<td><input id="calculator_ew_skill_level" type="number" value="0" min="0" max="150" style="width:50px;"></td>' +
+        '<td><input id="calculator_ew_skill_level" type="number" value="0" min="0" max="200" style="width:50px;"></td>' +
         '<td><input id="calculator_ew_left" type="number" value="100" min="0.01" max="100" style="width:55px;"><br/>' +
         '<div style="width: 136px; border:1px #000000 solid;">' +
         '<span id="calculator_ew_skill_bar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
@@ -289,7 +289,7 @@ $(function () {
         '<tr>' +
         '<td><label for="calculator_ew_skill_trained">Trained Skill</label></td><td><label for="calculator_ew_skill_left_trained">% left</label></td><td><label for="calculator_ew_nweapons"># of Weapons</label></td><td><label for="calculator_ew_weapcost_gold">Cost (Gold)</label></td><td><label for="calculator_ew_weapcost_coins">Cost (TC)</label></td>' +
         '</tr><tr>' +
-        '<td><input id="calculator_ew_skill_trained" type="number" value="0" min="0" max="150" style="width:50px;"></td>' +
+        '<td><input id="calculator_ew_skill_trained" type="number" value="0" min="0" max="200" style="width:50px;"></td>' +
         '<td><span id="calculator_ew_skill_left_trained">100</span><br/>' +
         '<div style="width: 136px; border:1px #000000 solid;">' +
         '<span id = "calculator_ew_skill_trainedbar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
@@ -452,7 +452,7 @@ $(function () {
 
       for (let type of changedskills) {
         var level = parseInt($('#calculator_rs_' + type + '_level').val(), 10);
-        if (level > 150) level = 150;
+        if (level > 200) level = 200;
 
         var pct_left = parseInt($('#calculator_rs_' + type + '_left').val(), 10);
         if (pct_left > 100) {
@@ -512,7 +512,7 @@ $(function () {
           type +
           '_level" type="number" value="' +
           minskills[type] +
-          '" min="0" max="150" style="width:40px;"></td>' +
+          '" min="0" max="200" style="width:40px;"></td>' +
           '<td><input id="calculator_rs_' +
           type +
           '_left" type="number" value="100" min="1" max="100" style="width:40px;"><br/>' +

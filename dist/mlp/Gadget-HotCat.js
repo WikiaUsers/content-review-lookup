@@ -1,4 +1,4 @@
-//<source lang="javascript">
+//<syntaxhighlight lang="javascript">
 
 /*
   HotCat V2.21
@@ -2878,4 +2878,4 @@ mw.loader.using("mediawiki.user", function () {
     return true;
   });
 });
-//</source>
+//</syntaxhighlight>

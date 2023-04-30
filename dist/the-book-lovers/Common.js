@@ -6,3 +6,11 @@ window.us_conlog_background = "82EEFD"
 window.us_conlog_border
 mw.loader.getScript("/w/index.php?title=User:Guywan/Scripts/ConfirmLogout.js&action=raw&ctype=text/javascript")
 ; // Backlink: [[User:Guywan/Scripts/ConfirmLogout.js]]
+
+// Ajax auto-refresh
+window.ajaxPages = [
+    'Special:RecentChanges',
+    'Special:WikiActivity',
+    'Special:Contributions'
+];
+window.AjaxRCRefreshText = 'Auto-refresh';

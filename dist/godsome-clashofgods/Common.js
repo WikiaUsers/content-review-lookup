@@ -13,3 +13,9 @@ if (wgPageName == 'Speed_Boost_Calc') {
     	article:"MediaWiki:Speed_Boost_Calc.js"
 	});
 }
+if (wgPageName == 'Resource calculator') {
+	importArticles({
+    	type: "script",
+    	article:"MediaWiki:Resource calculator.js"
+	});
+}

@@ -97,17 +97,6 @@ if (checkIDLucy) {
     replaceGroupsLucy();
 }
 /*--------------*/
-const checkIDSpoletta = document.querySelector('#Spoletta');
-const newGroupSpoletta = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Don <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/e/e3/Don_Spoletta.png/revision/latest?cb=20220817072324&format=original" width="30" height="30"></a></li></ul>';
-const replaceGroupsSpoletta = function () {
-	hideGroups.classList.add('hide');
-    findContainer.insertAdjacentHTML('beforeend', newGroupSpoletta);
-};
-
-if (checkIDSpoletta) {
-    replaceGroupsSpoletta();
-}
-/*--------------*/
 const checkIDSkykal = document.querySelector('#Lord_Skykal');
 const newGroupSkykal = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Fürst Axolotl <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/a/a3/Axolotl_Skykal.png/revision/latest?cb=20220818173031&format=original" width="30" height="30"></a></li></ul>';
 const replaceGroupsSkykal = function () {
@@ -150,4 +139,20 @@ const addHideOverflowClass = function () {
 
 if (checkPage) {
 	addHideOverflowClass();
+}
+
+
+
+/*----------------------------------------------------------------------------*/
+/* Move the language dropdown to the left */
+const welcomeCustom = document.querySelector('.welcome'); //check if it's the main page by the class
+const linksCustom = '<div class="page-header__languages" style="float: right; padding-top: 15px;"><div class="wds-dropdown"><div class="wds-dropdown__toggle">English<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg></div><div class="wds-dropdown__content"><ul class="wds-list wds-is-linked"><li><a href="https://fractured.fandom.com/de/wiki/" data-tracking-label="lang-de">Deutsch</a></li><li><a href="https://fractured.fandom.com/it/wiki/" data-tracking-label="lang-it">Italiano</a></li></ul></div></div></div>';
+
+const headerCustom = document.querySelector('.page-header__title-wrapper'); //find the header
+const addLanguageLinks = function () {
+	headerCustom.insertAdjacentHTML('beforeend', linksCustom);
+};
+
+if (welcomeCustom) {
+    addLanguageLinks();
 }

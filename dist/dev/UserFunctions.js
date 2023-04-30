@@ -21,22 +21,24 @@ var __assign = (this && this.__assign) || function () {
 };
 var UserFunctions = /** @class */ (function () {
     function UserFunctions(selector) {
-        if (selector === void 0) { selector = '.user-functions, .UserFunctions'; }
-        this._el = $(selector);
         this.userName = mw.config.get('wgUserName');
         this.userGroups = mw.config.get('wgUserGroups');
-        this.isLoggedIn = this.userName !== null;
+        this.isLoggedIn = !mw.user.isAnon();
+        this._elements = $(selector);
     }
-    Object.defineProperty(UserFunctions.prototype, "$elements", {
+    Object.defineProperty(UserFunctions.prototype, "elements", {
+        get: function () {
+            return this._elements;
+        },
         set: function (selector) {
-            this._el = $(selector);
+            this._elements = $(selector);
         },
         enumerable: false,
         configurable: true
     });
     UserFunctions.prototype.init = function () {
         var _this = this;
-        this._el.each(function (index, element) {
+        this._elements.each(function (_, element) {
             var $el = $(element);
             var username = $el.data('username') !== undefined;
             var ifLoggedIn = $el.data('if-logged-in') !== undefined;
@@ -59,27 +61,6 @@ var UserFunctions = /** @class */ (function () {
             }
         });
     };
-    /**
-     * Get standard compare boolean map
-     * @example toBoolMap('foo|!bar') === { foo: true, bar: false }
-     */
-    UserFunctions.prototype.toBoolMap = function (data) {
-        var arr = data.split('|');
-        var map = {};
-        arr.forEach(function (item) {
-            var key = item.trim().replace(/^!/, '');
-            map[key] = !item.startsWith('!');
-        });
-        return map;
-    };
-    /**
-     * Data is means yes or no
-     * - `false`, `no`, `n`, `0` → `false`
-     * - others → `true`
-     */
-    UserFunctions.prototype.toBoolean = function (data) {
-        return ![false, 'false', 'no', 'n', 0, '0'].includes(data);
-    };
     UserFunctions.prototype.handleUserName = function ($el) {
         var text = $el.text();
         $el.html('');
@@ -92,35 +73,37 @@ var UserFunctions = /** @class */ (function () {
         else {
             $el.text(this.userName);
         }
-        $el.attr('userfunctions-hit', 'true');
+        $el.attr('data-user-fn-hit', 'true');
         return $el;
     };
     UserFunctions.prototype.handleIfLoggedIn = function ($el) {
-        var yes = this.toBoolean($el.data('if-logged-in'));
+        var yes = UserFunctions.parseBool($el.data('if-logged-in'));
         var show = (yes && this.isLoggedIn) || (!yes && !this.isLoggedIn);
-        $el.toggle(show).attr('data-userfunctions-hit', '' + show);
+        $el.toggle(show).attr('data-user-fn-hit', '' + show);
         return $el;
     };
     UserFunctions.prototype.handleIfUserName = function ($el) {
-        var users = this.toBoolMap($el.data('if-username'));
-        var show = !!users[this.userName];
-        $el.toggle(show).attr('data-userfunctions-hit', '' + show);
+        var _a;
+        var users = __assign((_a = {}, _a['' + this.userName] = false, _a), UserFunctions.parseBoolMap($el.data('if-username')));
+        var show = !!users['' + this.userName];
+        $el.toggle(show).attr('data-user-fn-hit', '' + show);
         return $el;
     };
     UserFunctions.prototype.handleIfUserGroup = function ($el) {
-        var map = this.toBoolMap($el.data('if-usergroup'));
+        var _this = this;
+        var groups = UserFunctions.parseBoolMap($el.data('if-usergroup'));
         var show = false;
-        for (var group in map) {
-            var yes = map[group];
-            if ((yes && this.userGroups.includes(group)) ||
-                (!yes && !this.userGroups.includes(group))) {
+        Object.keys(groups).forEach(function (key) {
+            var yes = groups[key];
+            if ((yes && _this.userGroups.includes(key)) ||
+                (!yes && !_this.userGroups.includes(key))) {
                 show = true;
             }
             else {
                 show = false;
             }
-        }
-        $el.toggle(show).attr('data-userfunctions-hit', '' + show);
+        });
+        $el.toggle(show).attr('data-user-fn-hit', '' + show);
         return $el;
     };
     UserFunctions.prototype.handleUnknown = function ($el) {
@@ -135,13 +118,34 @@ var UserFunctions = /** @class */ (function () {
             target: '_blank',
             text: 'see documentation',
         }), ']'))
-            .attr('data-userfunctions-hit', 'true')
-            .attr('data-userfunctions-error', 'true');
+            .attr('data-user-fn-hit', 'true')
+            .attr('data-user-fn-error', 'true');
+    };
+    /**
+     * Get standard compare boolean map
+     * @example toBoolMap('foo|!bar') === { foo: true, bar: false }
+     */
+    UserFunctions.parseBoolMap = function (data) {
+        var arr = data.split('|');
+        var map = {};
+        arr.forEach(function (item) {
+            var key = item.trim().replace(/^!/, '');
+            map[key] = !item.startsWith('!');
+        });
+        return map;
+    };
+    /**
+     * Data is means yes or no
+     * - `false`, `no`, `n`, `0` → `false`
+     * - others → `true`
+     */
+    UserFunctions.parseBool = function (data) {
+        return ![false, 'false', 'no', 'n', 0, '0'].includes(data);
     };
     return UserFunctions;
 }());
 window.dev = __assign(__assign({}, window.dev), { UserFunctions: UserFunctions });
 // Run
-var app = new UserFunctions();
+var app = new UserFunctions('.user-functions, .UserFunctions');
 app.init();
 //# sourceMappingURL=index.js.map

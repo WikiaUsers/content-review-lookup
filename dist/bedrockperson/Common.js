@@ -15,6 +15,13 @@ importArticles({
         "w:c:dev:Countdown/code.js"
     ]
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
+    ]
+});
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
 // Version 0.0.3

@@ -382,7 +382,7 @@
         var test = document.querySelector(".interactive-maps-container");
         if (test == undefined)
         {
-            log("No interactive maps found on page. document.readyState is \"" + document.readyState + "\". Page content element is:\n" + document.querySelector(".page-content").innerHTML.toString());
+            log("No interactive maps found on page. document.readyState is \"" + document.readyState + "\"");
             return;
         }
 
@@ -435,28 +435,21 @@
             // Unscaled size / bounds
             this.size = { width: Math.abs(this.bounds[1][0] - this.bounds[0][0]),
                          height: Math.abs(this.bounds[1][1] - this.bounds[0][1]) };
-            
-            // Remove marker query parameter from URL so that when the map goes fullscreen, it isn't zoomed into the marker again
-            var url = window.location;
-            urlParams.delete("marker");
-            window.history.replaceState({}, document.title, url.origin + url.pathname + (urlParams != "" ? "?" : "") + urlParams.toString() + url.hash);
 
             var hasGlobalConfig = mapsExtended.isGlobalConfigLoaded;
-            var hasLocalConfig = mapsExtended.localConfigs[this.name] && !isEmptyObject(mapsExtended.localConfigs[this.name]);
-            var hasEmbedConfig = mapsExtended.embedConfigs[this.id] && !isEmptyObject(mapsExtended.embedConfigs[this.id]);
+            var hasLocalConfig = mapsExtended.localConfigs[this.name] != undefined && !isEmptyObject(mapsExtended.localConfigs[this.name]);
+            var hasEmbedConfig = mapsExtended.embedConfigs[this.id] != undefined && !isEmptyObject(mapsExtended.embedConfigs[this.id]);
 
-            // Check whether a local config is present, and if so - validate it
+            // Check whether a local config is present
             if (hasLocalConfig)
             {
-                // Validate the local config for this map (the returned value will contain a new config with fallbacks of the global and default configs)
-                var localConfig = mapsExtended.configValidator.validateConfig(mapsExtended.localConfigs[this.name]);
+                var localConfig = mapsExtended.localConfigs[this.name];
             }
 
-            // Check whether an embedded config is present, and if so - validate it
+            // Check whether an embedded config is present
             if (hasEmbedConfig)
             {
-                // Validate the embedded config for this map (the returned value will contain a new config with fallback of the local, global, and default configs)
-                var embedConfig = mapsExtended.configValidator.validateConfig(mapsExtended.embedConfigs[this.id])
+                var embedConfig = mapsExtended.embedConfigs[this.id];
             }
 
             // Use the config based on precedence embed -> local -> global -> default
@@ -941,7 +934,7 @@
 
             }.bind(this);
 
-            this.resizeObserved = /*mw.util.debounce(200, */function(e)
+            this.resizeObserved = OO.ui.throttle(function(e)
             {
                 for (var i = 0; i < e.length; i++)
                 {
@@ -969,7 +962,7 @@
                     }
                 }
 
-            }.bind(this);//);
+            }.bind(this), 250);
             
 
             this.rootObserver = new MutationObserver(this.rootObserved);
@@ -1054,11 +1047,6 @@
                 // List of all marker elements
                 var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
 
-                // Move the map module container to before its parent, then delete its parent
-                //var mapModuleContainerParent = this.elements.mapModuleContainer.parentElement;
-                //mapModuleContainerParent.before(this.elements.mapModuleContainer);
-                //mapModuleContainerParent.remove();
-
                 // Things to do only once (pre-match)
                 if (isNew)
                 {
@@ -1114,7 +1102,7 @@
                     
                     this.initControls();
                 }
-
+                
                 this.initMapEvents();
         
                 var skipIndexAssociation = false;
@@ -1425,7 +1413,7 @@
             {
                 if (this.initialized)
                 {
-                    return Promise.resolve(this.id + " (" + this.name + ") - The map was initialized immediately (took " + (performance.now() - this.creationTime) + "ms)");
+                    return Promise.resolve(this.id + " (" + this.name + ") - The map was initialized immediately (took " + Math.round(performance.now() - this.creationTime) + "ms)");
                 }
                 
                 return new Promise(function(resolve, reject)
@@ -1433,7 +1421,7 @@
                     // Store resolve function (it will be called by selfObserver above)
                     this._waitForPresenceResolve = function()
                     {
-                        resolve(this.id + " (" + this.name + ") - Successfully deferred until Leaflet fully initialized (took " + (performance.now() - this.creationTime) + "ms)");
+                        resolve(this.id + " (" + this.name + ") - Successfully deferred until Leaflet fully initialized (took " + Math.round(performance.now() - this.creationTime) + "ms)");
                     };
                     
                     // Alternatively timeout after 10000ms
@@ -2531,7 +2519,13 @@
                 this.isFullscreenTransitioning = true;
 
                 if (value == true)
-                    return this.elements.rootElement.requestFullscreen();
+                {
+                    return this.elements.rootElement.requestFullscreen()
+                    .catch(function(error)
+                    {
+                        console.error("Error attempting to enable fullscreen mode: " + error.message + " (" + error.name + ")");
+                    });
+                }
                 else if (value == false)
                     return document.exitFullscreen();
                 else
@@ -2554,16 +2548,11 @@
                 // Enter windowed fullscreen
                 if (value)
                 {
-                    // Move element to end of body
-                    document.body.appendChild(this.elements.rootElement);
                 }
 
                 // Exit windowed fullscreen
                 else
                 {
-                    // Move element to end of original parent
-                    this.elements.rootElementParent.appendChild(this.elements.rootElement);
-
                     // Restore the scroll position
                     window.scroll({ top: this.fullscreenScrollPosition, left: 0, behavior: "auto" });
                 }
@@ -2614,6 +2603,10 @@
                 
                 // Modify and set up some styles - this is only executed once
                 this.initFullscreenStyles();
+
+                // Don't continue if fullscreen is disabled
+                if (this.config.enableFullscreen == false)
+                    return;
                 
                 // Fullscreen button - Create a new leaflet-control before the zoom control which when clicked will toggle fullscreen
                 var fullscreenControl = document.createElement("div");
@@ -2637,13 +2630,17 @@
                 this.elements.fullscreenControl = fullscreenControl;
                 this.elements.fullscreenControlButton = fullscreenControlButton;
 
-                // Remove the fullscreen button if fullscreen is disabled
-                if (this.config.enableFullscreen == false)
-                    fullscreenControl.remove();
-
                 // Click event on fullscreen button
                 fullscreenControlButton.addEventListener("click", function(e)
                 {
+                    // Remove marker query parameter from URL so that when the map goes fullscreen, it isn't zoomed into the marker again
+                    var url = window.location;
+                    if (urlParams.has("marker"))
+                    {
+                        urlParams.delete("marker");
+                        window.history.replaceState({}, document.title, url.origin + url.pathname + (urlParams != "" ? "?" : "") + urlParams.toString() + url.hash);
+                    }
+                    
                     // Always exit fullscreen if in either mode
                     if (this.isFullscreen || this.isWindowedFullscreen)
                     {
@@ -2676,6 +2673,26 @@
                 fullscreenControlButton.addEventListener("dblclick", stopPropagation);
                 fullscreenControlButton.addEventListener("mousedown", stopPropagation);
 
+                document.addEventListener("keydown", function(e)
+                {
+                    if (!this.isFullscreen && !this.isWindowedFullscreen) return;
+
+                    // True if the browser is in either Fullscreen API or browser-implemented fullscreen (via F11)
+                    var inBrowserFullscreen = matchMedia("(display-mode: fullscreen)").matches;
+
+                    // Escape pressed
+                    if (e.keyCode == 27) // Escape
+                    {
+                        // Ignore if the lightbox is showing (close lightbox first)
+                        if (document.getElementById("LightboxModal") != undefined)
+                            return;
+
+                        // ...while in windowed fullscreen and not browser fullscreen
+                        if (this.isWindowedFullscreen)// && !inBrowserFullscreen)
+                            this.setWindowedFullscreen(false);
+                    }
+                }.bind(this));
+
                 this.elements.rootElement.addEventListener("fullscreenchange", function(e)
                 {
                     this.isFullscreen = document.fullscreenElement == e.currentTarget;
@@ -2694,31 +2711,51 @@
                     this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-in", !this.isFullscreen && !this.isWindowedFullscreen);
                     this.elements.fullscreenControlButton.classList.toggle("leaflet-control-fullscreen-button-zoom-out", this.isFullscreen || this.isWindowedFullscreen);
 
-                    this.events.onMapFullscreen.invoke({ map: this, fullscreen: value, mode: "screen" });
+                    // Move overlay elements to show on top of the fullscreen elements
+                    this.moveOverlayElementsFullscreen(this.isFullscreen);
+
+                    if (this.isFullscreen == true)
+                        this.fullscreenOverlayObserver.observe(document.body, { childList: true });
+                    else
+                        this.fullscreenOverlayObserver.disconnect();
+
+                    this.events.onMapFullscreen.invoke({ map: this, fullscreen: this.isFullscreen || this.isWindowedFullscreen, mode: "screen" });
                     
                 }.bind(this));
 
-                document.addEventListener("keydown", function(e)
+                // Add an observer which triggers every time elements get added to the document body while in fullscreen
+                this.fullscreenOverlayObserver = new MutationObserver(function(mutationList, observer)
                 {
-                    // F11 pressed
-                    if (e.keyCode == 122)
-                    {
-                        // ...while in windowed fullscreen but not normal fullscreen -> Enter normal fullscreen
-                        // ...while in windowed fullscreen and normal fullscreen -> Exit normal fullscreen
-                        if ((this.isWindowedFullscreen && !this.isFullscreen) || 
-                            (this.isWindowedFullscreen && this.isFullscreen))
-                        {
-                            this.toggleFullscreen();
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }
-                    }
+                    // Don't use while not in actual fullscreen
+                    if (!this.isFullscreen) return;
 
-                    // Escape pressed while in windowed fullscreen
-                    if (e.keyCode == 27 && this.isWindowedFullscreen) // Escape
-                        this.setWindowedFullscreen(false);
-                
+                    if (mutationList.some(function(ml) { return ml.type == "childList" && ml.addedNodes.length > 0; }))
+                    {
+                        this.moveOverlayElementsFullscreen(true);
+                    }
                 }.bind(this));
+            },
+
+            moveOverlayElementsFullscreen: function(value)
+            {
+                var classes = ["notifications-placeholder", "oo-ui-windowManager", "lightboxContainer"];
+                classes.forEach(this.moveElementFullscreen.bind(this));
+            },
+
+            // This function is a general purpose function used to move elements to and from the map root so they appear while in fullscreen
+            // If entered fullscreen: Moves the element to the end of map.rootElement
+            // If exited fullscreen: Moves the element back to the body
+            moveElementFullscreen: function(className)
+            {
+                var value = this.isFullscreen;
+                var element = value ? document.querySelector("body > ." + className) : this.elements.rootElement.querySelector("." + className);
+                if (!element) return;
+
+                var isElementFullscreened = element.parentElement == this.elements.rootElement;
+                if (value && !isElementFullscreened)
+                    this.elements.rootElement.append(element);
+                else if (!value && isElementFullscreened)
+                    document.body.append(element);
             },
 
             // Controls
@@ -2988,21 +3025,12 @@
                 {
                     var category = e.currentTarget.category;
                     var container = category.elements.searchResultsContainer;
-                    var items = category.searchResultsItemsList;
-                    var header = category.elements.searchResultsHeader;
 
-                    var listRect = searchResultsList.getBoundingClientRect();
-                    var containerRect = container.getBoundingClientRect();
-                    var headerRect = header.getBoundingClientRect();
-
-                    container.collapsed = !container.collapsed || false;
-                    container.classList.toggle("collapsed", container.collapsed);
+                    container.classList.toggle("collapsed");
 
                     // Scroll to item if we've scrolled past it
                     if (searchResultsList.scrollTop > container.offsetTop)
                         searchResultsList.scrollTop = container.offsetTop;
-
-                    //searchResultsList.scrollTop = container.;
                     
                 }.bind(this);
 
@@ -3014,7 +3042,12 @@
                     if (args.value == false && this.search.selectedMarker && this.search.selectedMarker.categoryId == args.category.id)
                         this.toggleMarkerSelected(this.search.selectedMarker, false);
                     
+                    // Toggle the "filtered" class on the container
                     args.category.elements.searchResultsContainer.classList.toggle("filtered", !args.value);
+
+                    // Toggle the "collapsed" class on the container
+                    args.category.elements.searchResultsContainer.classList.toggle("collapsed", !args.value);
+
                     this.updateSearchSubtitle();
                     
                 }.bind(this));
@@ -3226,7 +3259,7 @@
                 this.updateSearchSubtitle();
                 
                 var t1 = performance.now();
-                log("Updating search elements took " + (t1 - t0) + " milliseconds.");
+                log("Updating search elements took " + Math.round(t1 - t0) + " ms.");
 
                 this.events.onSearchPerformed.invoke({ map: this, search: search });
             },
@@ -3485,7 +3518,7 @@
                 }
 
                 var t1 = performance.now();
-                log("Search took " + (t1 - t0) + " milliseconds.");
+                log("Search took " + Math.round(t1 - t0) + " ms.");
 
                 return search;
             },
@@ -3569,13 +3602,10 @@
                 sidebarContent.className = "mapsExtended_sidebarContent";
                 sidebarRoot.append(sidebarContent);
 
-                mw.loader.using(["oojs-ui-core"], function()
+                sidebarContent.addEventListener("scroll", OO.ui.throttle(function()
                 {
-                    sidebarContent.addEventListener("scroll", OO.ui.throttle(function()
-                    {
-                        sidebarFloatingToggle.updateToggle();
-                    }, 150), { passive: true });
-                });
+                    sidebarFloatingToggle.updateToggle();
+                }, 150), { passive: true });
 
                 // Create the button that toggles the sidebar
                 var sidebarToggleButton = document.createElement("button");
@@ -3585,7 +3615,7 @@
                 {
                     this.sidebar.elements.sidebarToggleButton.blur();
                     this.toggleSidebar();
-
+                    
                     if (this.config.sidebarBehaviour == "autoInitial")
                         this.sidebar.autoShowHide = false;
 
@@ -3602,7 +3632,14 @@
                 var sidebarFloatingToggle = document.createElement("div");
                 sidebarFloatingToggle.className = "mapsExtended_sidebarFloatingToggle";
                 sidebarFloatingToggle.title = mapsExtended.i18n.msg("sidebar-hide-tooltip").plain();
-                sidebarFloatingToggle.addEventListener("click", function(){ this.toggleSidebar(); }.bind(this));
+                sidebarFloatingToggle.addEventListener("click", function()
+                {
+                    this.toggleSidebar();
+                    
+                    if (this.config.sidebarBehaviour == "autoInitial")
+                        this.sidebar.autoShowHide = false;
+                    
+                }.bind(this));
                 sidebarFloatingToggle.updateToggle = function(forceValue)
                 {
                     sidebarFloatingToggle.classList.toggle("mapsExtended_sidebarFloatingToggleScrolled", forceValue != undefined ? forceValue : sidebarContent.scrollTop > 20);
@@ -3767,7 +3804,6 @@
                     
                     // Save the expanded size of the search body
                     sidebarSearchBody.resizedExpandedHeight = e[0].contentRect.height;
-                    console.log(sidebarSearchBody.resizedExpandedHeight);
                 });//);
 
                 // This function returns a value that is the "ideal" expanded height
@@ -4260,16 +4296,6 @@
 
             hasCollectibles: false,
 
-            initCollectibleStyles: once(function()
-            {
-                var rule = findCSSRule(".interactive-maps__filters-dropdown-list", mapsExtended.stylesheet);
-                if (rule)
-                {
-                    rule.style.paddingBottom = "0";
-                    rule.style.maxHeight = "none";
-                }
-            }),
-
             // Called on each of the maps to set up collectibles
             initCollectibles: function()
             {
@@ -4313,7 +4339,8 @@
                 // Skip this map if there are no collectibles
                 if (this.hasCollectibles == false) return;
 
-                this.initCollectibleStyles();
+                this.elements.filtersList.style.paddingBottom = "0";
+                this.elements.filtersList.style.maxHeight = "none";
 
                 // Add a "Clear collected" button to the filter box
                 var clearButton = document.createElement("a");
@@ -4322,32 +4349,28 @@
                 this.elements.clearCollectedButton = clearButton;
                 this.elements.filtersDropdownList.after(clearButton);
                 
-                mw.loader.using(["oojs-ui-core", "oojs-ui-windows"], function()
+                // When BannerNotifications is loaded, 
+                mw.hook("dev.banners").add(function(banners)
                 {
-                    // When BannerNotifications is loaded, 
-                    mw.hook("dev.banners").add(function(banners)
+                    map.elements.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
+
+                    // When the "Clear collected" button is clicked in the filters dropdown
+                    map.elements.clearCollectedButton.addEventListener("click", function()
                     {
-                        map.elements.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
+                        var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
 
-                        // When the "Clear collected" button is clicked in the filters dropdown
-                        map.elements.clearCollectedButton.addEventListener("click", function()
+                        // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
+                        OO.ui.confirm(confirmMsg).done(function(confirmed)
                         {
-                            var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
-
-                            // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
-                            OO.ui.confirm(confirmMsg).done(function(confirmed)
+                            if (confirmed)
                             {
-                                if (confirmed)
-                                {
-                                    var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
-                                    new BannerNotification(bannerMsg, "notify", null, 5000).show();
-                                    map.clearCollectedStates();
-                                }
-                                else
-                                    return;
-                            });
+                                var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
+                                new BannerNotification(bannerMsg, "notify", null, 5000).show();
+                                map.clearCollectedStates();
+                            }
+                            else
+                                return;
                         });
-
                     });
 
                 });
@@ -5414,6 +5437,10 @@
             {
                 if (!markerJson) markerJson = this;
 
+                // Short-circuit of the element already has an associated marker
+                if (markerElem.marker != undefined && markerElem.marker != markerJson)
+                    return false;
+
                 // Valid if these two are already associated
                 if (markerJson.markerElement == markerElem && markerJson.id == markerElem.id)
                     return true;
@@ -5437,8 +5464,8 @@
                     return false;
 
                 // Icon-based hint
-                var markerElemIcon = this.getMarkerIcon(markerElem);
-                var markerJsonIcon = this.getMarkerIcon(markerJson);
+                var markerElemIcon = this.getMarkerIcon(markerElem, true);
+                var markerJsonIcon = this.getMarkerIcon(markerJson, true);
                 
                 // Sanity check to see if at least the icons match (icon may NOT be present on all marker elements)
                 // No match if the icon is present on both, but differs
@@ -5546,16 +5573,29 @@
                     {
                         var img = marker.querySelector("img");
 
-                        if (img)
+                        if (img && img.src)
                         {
+                            var url = new URL(img.src);
+
+                            // Remove all parameters (excluding cb cachebuster param)
+                            if (url.searchParams.has("cb") != null && url.searchParams.size > 1)
+                                url.search = "?cb=" + url.searchParams.get("cb");
+                            else
+                                url.search = "";
+                            
+                            url = url.toString();
+                                
                             // Cache the marker icon in the element object so we don't have to re-retrieve it
-                            marker.icon = { url: img.src };
+                            marker.icon = { url: url };
 
                             // Fetch the file name using the URL
                             var stripIndex = marker.icon.url.indexOf("/revision/");
                             marker.icon.title = marker.icon.url.substring(0, stripIndex);
                             var lastSlashIndex = marker.icon.title.lastIndexOf("/");
                             marker.icon.title = marker.icon.title.substring(lastSlashIndex + 1);
+
+                            // Decode URL-escaped characters
+                            marker.icon.title = decodeURIComponent(marker.icon.title);
                         }
                     }
 
@@ -5577,14 +5617,17 @@
                     {
                         if (fileNameOnly)
                         {
-                            // Remove any file: prefix (the comparing src attribute will never have this)
-                            // Convert any spaces to underscores
-                            var fileName = icon.title.replace("file:", "").replace("File:", "").replace(" ", "_");
-                            
-                            // Ensure that the first letter is upper case (the img src will always be)
-                            fileName = fileName.charAt(0).toUpperCase() + fileName.slice(1);
-
-                            return fileName;
+                            if (!icon.fileName)
+                            {
+                                // Remove any file: prefix (the comparing src attribute will never have this)
+                                // Convert any spaces to underscores
+                                icon.fileName = icon.title.replace("file:", "").replace("File:", "").replace(/\s/g, "_");
+                                
+                                // Ensure that the first letter is upper case (the img src will always be)
+                                icon.fileName = icon.fileName.charAt(0).toUpperCase() + icon.fileName.slice(1);
+                            }
+    
+                            return icon.fileName;
                         }
                         else
                         {
@@ -5799,6 +5842,8 @@
                 
                 // Get references to all the popup elements
                 this.elements = this.elements || this.fetchPopupElements(popupElement);
+
+                this.wrapPopupImages();
                 
                 // Process any popup changes that are pending
                 this.processPendingChanges();
@@ -5897,7 +5942,7 @@
             createCustomPopup: function()
             {
                 var customPopup = document.createElement("div");
-                customPopup.className = "leaflet-popup  leaflet-zoom-animated";
+                customPopup.className = "leaflet-popup leaflet-zoom-animated mapsExtended_customPopup";
                 customPopup.style.cssText = "opacity: 1; bottom: 0; left: -150px;";
 
                 // This is the maximum required HTML for a popup
@@ -6094,6 +6139,26 @@
                 return e;
             },
 
+            // This adds the requisite features for an image to be shown by lightbox when it is clicked
+            // - img is wrapped in an <a> tag with the href pointing to the image (this isn't used, but is required by the A tag), and a class of "image"
+            // - img itself has a data attribute "data-image-key", the name of the file
+            wrapPopupImages: function()
+            {
+                if (!this.elements.popupImage) return;
+
+                // Add data attribute, sourcing it from alt (but without the File prefix)
+                this.elements.popupImage.dataset.imageKey = this.elements.popupImage.alt.replace("File:", "");
+
+                // Create a tag
+                var a = document.createElement("a");
+                a.href = this.elements.popupImage.src;
+                a.className = "image";
+
+                // Wrap image with a tag
+                this.elements.popupImage.before(a);
+                a.appendChild(this.elements.popupImage);
+            },
+
             isPopupShown: function()
             {
                 return this.elements && this.elements.popupElement
@@ -6194,7 +6259,7 @@
                         
                         var currentOpacity = window.getComputedStyle(this.elements.popupElement).opacity;
 
-                        // If the opacity is already nearly 0, hide immeidately
+                        // If the opacity is already nearly 0, hide immediately
                         if (currentOpacity < 0.1)
                         {
                             this.elements.popupElement.remove();
@@ -6557,6 +6622,53 @@
                 return type;
             },
 
+            flattenConfigInfoIntoDefaults: function(configInfos)
+            {
+                // Build up the flattened config object
+                var config = {};
+
+                for (var i = 0; i < configInfos.length; i++)
+                {
+                    var configInfo = configInfos[i];
+
+                    // Recurse into objects
+                    if (configInfo.type == "object" && configInfo.children && configInfo.children.length > 0)
+                    {
+                        config[configInfo.name] = this.flattenConfigInfoIntoDefaults(configInfo.children);
+
+                        // Also store into the original default value
+                        //configInfo.default = config[configInfo.name];
+                    }
+                    else
+                        config[configInfo.name] = configInfo.default;
+                }
+
+                return config;
+            },
+
+            // Post-process the defaultConfigInfo to add path and parent values
+            postProcessConfigInfo: function(children, parent)
+            {
+                for (var i = 0; i < children.length; i++)
+                {
+                    var info = children[i];
+                    info.parent = parent;
+                    info.path = parent && (parent.path + "." + info.name) || info.name;
+
+                    if (info.children != undefined && info.children.length > 0)
+                    {
+                        this.postProcessConfigInfo(info.children, info);
+                    }
+
+                    // Always convert info's "type" and "arrayType" field to an array to make it easier to work with
+                    if (info.type && !Array.isArray(info.type))
+                        info.type = [ info.type ];
+
+                    if (info.arrayType && !Array.isArray(info.arrayType))
+                        info.arrayType = [ info.arrayType ];
+                }
+            },
+
             // Returns the config info at a path where each level is separated by a '.'
             getConfigInfoAtPath: function(path, data)
             {
@@ -6646,50 +6758,90 @@
                 };
             },
 
-            flattenConfigInfoIntoDefaults: function(configInfos)
+            getValidationForScope: function(configScope, mapName)
             {
-                // Build up the flattened config object
-                var config = {};
-
-                for (var i = 0; i < configInfos.length; i++)
+                switch (configScope)
                 {
-                    var configInfo = configInfos[i];
+                    case "embed":
+                        return window.dev.mapsExtended.embedConfigValidations[mapName];
+                        
+                    case "local":
+                        return window.dev.mapsExtended.localConfigValidations[mapName];
 
-                    // Recurse into objects
-                    if (configInfo.type == "object" && configInfo.children && configInfo.children.length > 0)
-                    {
-                        config[configInfo.name] = this.flattenConfigInfoIntoDefaults(configInfo.children);
+                    case "global":
+                        return window.dev.mapsExtended.globalConfigValidation;
 
-                        // Also store into the original default value
-                        //configInfo.default = config[configInfo.name];
-                    }
-                    else
-                        config[configInfo.name] = configInfo.default;
+                    case "defaults":
+                        return window.dev.mapsExtended.defaultConfigValidation;
+
+                    default:
+                        return null;
                 }
-
-                return config;
             },
 
-            // Post-process the defaultConfigInfo to add path and parent values
-            postProcessConfigInfo: function(children, parent)
+            // Using a path in the config, return a validated result in the config
+            // The config must ALWAYS be a root config, no sub-configs allowed
+            // Does not recurse into arrays, unless the scope is defaults
+            // Returns the validation result, or null if no path was found
+            getValidationResultAtPath: function(path, validation)
             {
-                for (var i = 0; i < children.length; i++)
+                if (path == undefined || validation == undefined) return null;
+                
+                var pathArr = path.split(".");
+                var currentData = validation;
+
+                for (var i = 0; i < pathArr.length; i++)
                 {
-                    var info = children[i];
-                    info.parent = parent;
-                    info.path = parent && (parent.path + "." + info.name) || info.name;
-
-                    if (info.children != undefined && info.children.length > 0)
+                    var name = pathArr[i];
+                    var childData = null;
+                    
+                    for (var j = 0; j < currentData.children.length; j++)
                     {
-                        this.postProcessConfigInfo(info.children, info);
+                        if (currentData.children[j].key == name)
+                        {
+                            childData = currentData.children[j];
+                            break;
+                        }
                     }
+            
+                    // Short circuit if there was no validation with this name
+                    if (childData == undefined) return null;
+                    currentData = childData;
+                }
+            
+                return currentData;
+            },
 
-                    // Always convert info's "type" and "arrayType" field to an array to make it easier to work with
-                    if (info.type && !Array.isArray(info.type))
-                        info.type = [ info.type ];
+            findValidationMatchingPredicate: function(fn, array)
+            {
+                if (!fn || !array || array.length == 0)
+                    return null
 
-                    if (info.arrayType && !Array.isArray(info.arrayType))
-                        info.arrayType = [ info.arrayType ];
+                for (var key in array)
+                {
+                    var result = array[key];
+                    
+                    if (fn(result) == true)
+                        return result;
+
+                    if (result.children && result.children.length > 0)
+                    {
+                        var childResult = this.findValidationMatchingPredicate(fn, result.children);
+                        if (childResult != null) return childResult;
+                    }
+                }
+
+                return null;
+            },
+
+            getNextScopeInChain: function(configScope)
+            {
+                switch (configScope)
+                {
+                    case "embed":   return "local";
+                    case "local":   return "global";
+                    case "global":  return "defaults";
+                    default:        return;
                 }
             },
 
@@ -6709,6 +6861,12 @@
 
                 switch (configScope)
                 {
+                    case "embed":
+                    {
+                        fallbackConfig = window.dev.mapsExtended.embedConfigs[configName];
+                        break;
+                    }
+                    
                     // Embed gets fallback from local/per-map
                     case "local":
                     {
@@ -6740,6 +6898,7 @@
                 // If we found a fallback config in the next scope, actually check whether the config contains the option
                 if (fallbackConfig)
                 {
+                    var validation = this.getValidationForScope(configScope, configName);
                     var foundOption = this.getConfigOptionAtPath(configInfo.path, fallbackConfig);
 
                     // Found fallback
@@ -6750,7 +6909,8 @@
                             value: foundOption.value,
                             valueType: foundOption.type,
                             foundKey: foundOption.key,
-                            isPresent: true
+                            isPresent: true,
+                            validation: this.getValidationResultAtPath(configInfo.path, validation)
                         };
                     }
 
@@ -6760,17 +6920,6 @@
                 // So try the next config down
                 var nextScope = this.getNextScopeInChain(configScope);
                 return this.getFallbackForConfigOption(configInfo, configName, nextScope);
-            },
-
-            getNextScopeInChain: function(configScope)
-            {
-                switch (configScope)
-                {
-                    case "embed":   return "local";
-                    case "local":   return "global";
-                    case "global":  return "defaults";
-                    default:        return;
-                }
             },
 
             // Validates a config option with a specific <configKey> in a <config> object against one or a collection of <configInfo>
@@ -6890,7 +7039,7 @@
                     // Option is present but undefined - Silently use defaults
                     if (valueType == "object" && jQuery.isPlainObject(value) && jQuery.isEmptyObject(value) ||
                         valueType == "string" && value == "" ||
-                        valueType == "array" && value.length == 0 ||
+                        //valueType == "array" && value.length == 0 ||
                         value == undefined || value == null)
                     {
                         result.messages.push({ code: "is_empty", message: "Value is an empty value, using defaults instead." });
@@ -6906,19 +7055,36 @@
 
                         // Try to coerce if it can be coerced, typically from string
 
-                        // Convert string to boolean
-                        if (info.type.includes("boolean") && valueType == "string" && !isValidType)
+                        // Convert string or number to boolean
+                        if (info.type.includes("boolean") && !isValidType)
                         {
-                            var valueLower = value.toLowerCase();
-                            if (valueLower == "true" || valueLower == "false")
+                            // Convert string to boolean
+                            if (valueType == "string")
                             {
-                                // Update the values
-                                value = result.value = valueLower == "true";
+                                var validValues = ["true", "false", "yes", "no", "1", "0"];
+                                var valueLower = value.toLowerCase();
+                                
+                                if (validValues.includes(valueLower))
+                                {
+                                    // Update the values
+                                    value = result.value = (valueLower == "true" || valueLower == "yes" || valueLower == "1");
+                                    valueType = result.valueType = "boolean";
+                                    isValidType = true;
+                                    result.isResolved = true;
+    
+                                    error.message = "Value should be a boolean but was passed a string (which was successfully interpreted as a boolean). Consider removing the quotes.";
+                                    result.messages.push({ code: "ignore", message: "The previous message may be ignored on JSON-sourced (map definition) local configs." });
+                                }
+                            }
+
+                            // Convert number to boolean
+                            else if (valueType == "number" && (value == 1 || value == 0))
+                            {
+                                value = result.value = value == 1;
                                 valueType = result.valueType = "boolean";
                                 isValidType = true;
                                 result.isResolved = true;
-
-                                error.message = "Value should be a boolean but was passed a string. Consider removing the quotes.";
+                                error.message = "Value should be a boolean but was passed a number (which was successfully interpreted as a boolean)."
                             }
                         }
 
@@ -7074,15 +7240,15 @@
                 // Result is invalid or not present, use fallback as result
                 if ((!result.isValid && !result.isResolved) || !result.isPresent)
                 {
-                    var fallbackResult = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
+                    var fallback = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
                     
-                    if (fallbackResult.isPresent == true)
+                    if (fallback.isPresent == true)
                     {
                         result.isFallback = true;
-                        result.value = fallbackResult.value;
-                        result.valueType = fallbackResult.valueType;
-                        result.foundKey = fallbackResult.foundKey;
-                        result.fallbackSource = fallbackResult.config._configScope;
+                        result.value = fallback.value;
+                        result.valueType = fallback.valueType;
+                        result.foundKey = fallback.foundKey;
+                        result.fallbackSource = fallback.config._configScope;
 
                         // If the default itself is an object, We have to make a results object for each child value too
                         if (result.fallbackSource == "defaults" && result.valueType == "object")
@@ -7096,6 +7262,26 @@
                                 childResult.parent = result;
                                 result.children.push(childResult);
                             }
+                        }
+
+                        if (fallback.validation && fallback.validation.children && fallback.validation.children.length > 0)
+                            result.children = fallback.validation.children;
+                    }
+                }
+
+                // Determine what is being overridden
+                else
+                {
+                    var override = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
+                    if (override.isPresent == true)
+                    {
+                        result.isOverride = true;
+                        result.overridesSource = override.config._configScope;
+
+                        // Determine whether the override is required
+                        if (result.value == override.value)
+                        {
+                            result.messages.push({ code: "redundant_override", message: "This option is unnecessarily overriding an option with the same value from " + result.overridesSource + ", and may be omitted." });
                         }
                     }
                 }
@@ -7124,36 +7310,87 @@
                 return result;
             },
 
-            // Validates the configuration object, returning the config filled out and any errors fixed using fallbacks and inherited values
+            // Validates the configuration object, returning the validation containing a config filled out and any errors fixed using fallbacks and inherited values
             // This means validateConfig is guaranteed to return a valid configuration, even if all the defaults are used, even if the config passed is completely incorrect
             validateConfig: function(config)
             {
+                var metadata = {
+                    _configName: config._configName,
+                    _configScope: config._configScope,
+                    _configSource: config._configSource,
+                };
+                
                 var validation =
                 {
+                    // Validation metadata
                     name: config._configName,
                     scope: config._configScope,
                     source: config._configSource,
                     type: "object",
+
+                    // All validations of this config, including fallbacks
                     children: [],
+
+                    // Only validations from config options on this config
+                    childrenSelf: [],
+
+                    // The output config, a validation of the input without root fallbacks
+                    configSelf: {},
+
+                    // The output config, a validation of the input including every other config option that wasn't passed
+                    // This can be seen as a combination of the input, and the next config source up the chain (e.g Global | Defaults)
                     config: {}
                 };
+
+                Object.assign(validation.config, metadata);
+                Object.assign(validation.configSelf, metadata);
 
                 // Loop over defaultConfigInfo and validate the values in the config against them. validateConfigOption will recurse into children
                 for (var i = 0; i < defaultConfigInfo.length; i++)
                 {
                     var configInfo = defaultConfigInfo[i];
                     var result = this.validateConfigOption(configInfo.name, defaultConfigInfo, config, config._configName, config._configScope);
+                    
                     validation.children.push(result);
 
                     if (result.isValid || result.isResolved || result.isFallback)
+                    {
+                        if (!result.isFallback)
+                        {
+                            validation.childrenSelf.push(result);
+                            validation.configSelf[configInfo.name] = result.value;
+                        }
+                        
                         validation.config[configInfo.name] = result.value;
+                    }
                 }
 
-                //this.tabulateConfigValidation(validation);
-                return validation.config;
+                // Warn the editor if they have any raw boolean values in the map definition configuration
+                // Only do this on the map page, in edit mode, and for logged in users
+                if (metadata._configScope == "local" && metadata._configSource == "JSON (in map definition)" && mapsExtended.isOnMapPage && (mapsExtended.isInEditMode || mapsExtended.isDebug) && !mw.user.isAnon() &&
+                   this.findValidationMatchingPredicate(function(r) { return r.initialValueType == "boolean"; }, validation.childrenSelf) != null)
+                {
+                    var errorBox = document.createElement("div")
+                    errorBox.className = "mw-message-box mw-message-box-warning";
+                    errorBox.innerHTML = "<p><strong>This map uses a map definition config containing one or more raw boolean values.</strong> It is advised that you replace these values with strings instead, or use an external config, as any edits to this map in the Interactive Map Editor will cause them to be lost. Visit the <a href=\"https://dev.fandom.com/wiki/MapsExtended#JSON_configuration_(map_definition)\">documentation</a> for more info.</p>";
+
+                    var previewnote = document.querySelector(".previewnote");
+                    var content = document.getElementById("mw-content-text");
+                    
+                    if (previewnote)
+                        previewnote.appendChild(errorBox);
+                    else if (content)
+                    {
+                        errorBox.classList.add("error");
+                        errorBox.style.fontSize = "inherit";
+                        content.prepend(errorBox);
+                    }
+                }
+
+                return validation;
             },
 
-            // Tablulate the results of the validation in the same way Extension:JsonConfig does
+            // Tabulate the results of the validation in the same way Extension:JsonConfig does
             // Note that the layout of the root validation results list, and each result itself is such
             // that all array or object-typed results have a "children" parameter. This simplifies recursion
             tabulateConfigValidation: function(results)
@@ -7161,15 +7398,21 @@
                 var table = document.createElement("table");
                 table.className = "mw-json";
                 var tbody = table.createTBody();
-                document.querySelector("#content").appendChild(table);
 
                 var headerRow = tbody.insertRow();
                 var headerCell = document.createElement("th");
                 headerCell.setAttribute("colspan", "2");
 
+                var isRoot = results.scope != undefined;
+
                 // Build the header text (only for the root)
-                if (results.scope)
+                if (isRoot)
                 {
+                    table.classList.add("mw-collapsible");
+                    table.classList.add("mw-collapsed");
+                    table.style.width = "100%";
+                    table.style.marginBottom = "1em";
+                    
                     var scopeStr = capitalizeFirstLetter(results.scope) + " config";
                     var mapLink = ExtendedMap.prototype.getMapLink(results.name, true);
                     var sourceStr = " - Defined as ";
@@ -7204,8 +7447,45 @@
                         sourceLink.textContent = path;
                     }
     
-                    headerCell.append(scopeStr, results.scope != "global" ? " for " : "", results.scope != "global" ? mapLink : "", sourceStr, sourceLink, ")");
+                    headerCell.append(scopeStr, results.scope != "global" ? " for " : "", results.scope != "global" ? mapLink : "", sourceStr, sourceLink, ") ");
                     headerRow.appendChild(headerCell);
+
+                    mw.hook("dev.wds").add(function(wds)
+                    {
+                        var helpTooltip = document.createElement("div");
+                        helpTooltip.style.cssText = "position: absolute; left: 12px; top: 50%; transform: translateY(-50%)";
+                        
+                        var questionIcon = wds.icon("question-small");
+                        questionIcon.style.verticalAlign = "middle";
+                        helpTooltip.appendChild(questionIcon);
+                        
+                        headerCell.style.position = "relative";
+                        headerCell.prepend(helpTooltip);
+                        
+                        var popup = new OO.ui.PopupWidget(
+                        {
+                    		$content: $("<span>This table is a validated output of a MapsExtended config. It is only shown in edit mode, or while debug mode for MapsExtended is enabled</span>"),
+                    		width: 250,
+                            align: "force-right",
+                            position: "above"
+                    	});
+
+                        var popupElement = popup.$element[0];
+                        var popupContent = popupElement.querySelector(".oo-ui-popupWidget-popup");
+                        popupContent.style.fontSize = "14px";
+                        popupContent.style.padding = "15px";
+                        popupContent.style.textAlign = "left";
+
+                        helpTooltip.append(popupElement);
+                        helpTooltip.addEventListener("mouseenter", function()
+                        {
+                            popup.toggle(true);
+                        });
+                        helpTooltip.addEventListener("mouseleave", function()
+                        {
+                            popup.toggle(false);
+                        });
+                    });
                 }
 
                 // Handle the case of an empty object or array
@@ -7283,7 +7563,7 @@
                                     td.classList.add("mw-json-value-error");
         
                                 // Warnings
-                                else if (result.messages.length > 0)
+                                else if (result.messages.length > 0 && !result.messages.some(function(m){ return m.code == "redundant_override"; }))
                                     td.classList.add("mw-json-value-warning");
         
                                 // Not invalid and no warnings
@@ -7307,6 +7587,15 @@
                                     str += "\"" + result.value + "\"";
                                 else
                                     str += result.value;
+
+                                /*
+                                // Append the override source
+                                if (result.isOverride == true)
+                                {
+                                    // Message saying this value overrides another from a specific config
+                                    str += " (overrides " + result.overridesSource + ")";
+                                }
+                                */
                             }
                             else
                             {
@@ -7339,6 +7628,23 @@
                             td.appendChild(extraInfo);
                         }
                     }
+                }
+
+                if (isRoot)
+                {
+                    // Make the table collapsible, then add it to the page
+                    mw.loader.using("jquery.makeCollapsible", function()
+                    {
+                        $(table).makeCollapsible();
+
+                        // Add it either before the edit form, or after the content
+                        var editform = document.getElementById("editform");
+                        var content = document.getElementById("content");
+                        if (editform != null)
+                            editform.before(table);
+                        else if (content != null)
+                            content.append(table);
+                    });
                 }
 
                 return table;
@@ -7636,6 +7942,10 @@
         function MapsExtended()
         {
             this.loaded = true;
+            this.isDebug = isDebug;
+            this.isDisabled = isDisabled;
+            this.isInEditMode = mw.config.get("wgAction") == "edit";
+            this.isOnMapPage = mw.config.get("wgPageContentModel") == "interactivemap" || mw.config.get("wgNamespaceNumber") == 2900;
             
             // Flatten the defaultConfigInfo into a default config
             configValidator.postProcessConfigInfo(defaultConfigInfo);
@@ -7644,22 +7954,15 @@
             this.defaultConfig._configSource = "JavaScript";
             this.defaultConfig._configScope = "defaults";
 
-            // Fetch global config from JavaScript (set in Common.js for example), depending on which is available first
-            this.globalConfig = window.mapsExtendedConfigs && window.mapsExtendedConfigs["global"] || window.mapsExtendedConfig || {};
-            this.isGlobalConfigLoaded = !isEmptyObject(this.globalConfig);
-
-            // Apply the global config over the defaults
-            if (this.isGlobalConfigLoaded == true)
-            {
-                this.globalConfig._configName = "Global";
-                this.globalConfig._configSource = "JavaScript";
-                this.globalConfig._configScope = "global";
-                this.globalConfig._configSourcePath = "";
-            }
-                
+            this.globalConfig = {};
+            this.globalConfigValidation = {}
+            this.isGlobalConfigLoaded = false;
             this.localConfigs = {};
-            this.embedConfigs = {};
+            this.localConfigValidations = {}
             this.isLocalConfigsLoaded = false;
+            this.embedConfigs = {};
+            this.embedConfigValidations = {};
+            this.isEmbedConfigsLoaded = false;
         }
 
         MapsExtended.prototype =
@@ -7707,22 +8010,35 @@
                 
                 var mapsExtended = this;
 
-                // Fetch local configurations (from JavaScript and map defintions)
+                // Fetch global configuration (from JavaScript)
+                this.fetchGlobalConfig();
+
+                // Fetch local configurations (from JavaScript and map definitions)
                 this.fetchLocalConfigs();
 
                 // Fetch embedded configurations (from data attributes on page)
                 this.fetchEmbedConfigs();
-                
-                return Promise.resolve()
 
-                // Fetch remote map definitions - this is no longer done
-                .then(this.fetchRemoteMapDefinitions.bind(this))
-                
-                // Fetch remote local configurations (from JSON system message using API)
-                .then(this.fetchRemoteLocalConfigs.bind(this))
+                // These promises execute in parallel, and do not depend on each other
+                return Promise.all(
+                [
+                    // Load module dependencies (Although it means delaying the initialization, it's better we don't have to have many mw.loader.using's everywhere)
+                    this.loadDeps(),
+                    
+                    // Load i18n internationalization messages
+                    this.loadi18n(),
+                    
+                    // Fetch remote map definitions - this is no longer done
+                    this.fetchRemoteMapDefinitions(),
 
-                // Load i18n internationalization messages
-                .then(this.loadi18n.bind(this))
+                    // Fetch remote local (or global) configurations (from JSON system message using API)
+                    this.fetchRemoteConfigs(),
+                ])
+
+                // These promises execute sequentially
+
+                // Validate all configurations
+                .then(this.validateAllConfigs.bind(this))
 
                 // Initialize all maps on the page
                 .then(this.initMaps.bind(this))
@@ -7760,6 +8076,22 @@
 
                 this.stylesheet.ownerNode.remove();
                 */
+            },
+
+            fetchGlobalConfig: function()
+            {
+                // Fetch global config from JavaScript (set in Common.js for example), depending on which is available first
+                this.globalConfig = window.mapsExtendedConfigs && window.mapsExtendedConfigs["global"] || window.mapsExtendedConfig || {};
+                this.isGlobalConfigLoaded = !isEmptyObject(this.globalConfig);
+    
+                // Apply the global config over the defaults
+                if (this.isGlobalConfigLoaded == true)
+                {
+                    this.globalConfig._configName = "Global";
+                    this.globalConfig._configSource = "JavaScript";
+                    this.globalConfig._configScope = "global";
+                    this.globalConfig._configSourcePath = "";
+                }
             },
 
             fetchLocalConfigs: function()
@@ -7859,6 +8191,8 @@
                         // Don't store the embed config using the map name since the same map
                         // may be present multiple times on the page with different embed configs
                         this.embedConfigs[mapElem.id] = embedConfig;
+                        
+                        this.isEmbedConfigsLoaded = true;
                     }
                 }
             },
@@ -8017,7 +8351,7 @@
                 });
             },
             
-            fetchRemoteLocalConfigs: function()
+            fetchRemoteConfigs: function()
             {
                 var mapsExtended = this;
 
@@ -8073,6 +8407,8 @@
                 };
 
                 var url = mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/api.php?" + params.toString();
+
+                var loadedConfigs = 0;
                 
                 // Perform the request, returning the promise that is fulfilled at the end of the chain
                 return fetch(url, fetchParams)
@@ -8128,7 +8464,8 @@
                             {
                                 config._configScope = "global";
                                 mapsExtended.globalConfig = config;
-                                mapsExtended.configValidator.validateConfig(config);
+                                mapsExtended.isGlobalConfigLoaded = true;
+                                loadedConfigs++;
                             }
 
                             // Insert it into mapsExtended.localConfigs
@@ -8136,6 +8473,8 @@
                             {
                                 config._configScope = "local";
                                 mapsExtended.localConfigs[config._configName] = config;
+                                mapsExtended.isLocalConfigsLoaded = true;
+                                loadedConfigs++;
                             }
                         }
                         catch(error)
@@ -8163,7 +8502,82 @@
                 })
 
                 .finally(function(){
+                    log("Loaded " + loadedConfigs + " remote MapsExtended configurations");
+                });
+            },
+
+            // Validate all configurations, storing the validated config back into their associated object
+            // This needs to be done backwards in order of presedence, as each scope uses the results of the last
+            validateAllConfigs: function()
+            {
+                this.configValidator.validateConfig(this.defaultConfig);
                 
+                if (this.isGlobalConfigLoaded)
+                {
+                    this.globalConfigValidation = this.configValidator.validateConfig(this.globalConfig);
+                    this.globalConfig = this.globalConfigValidation.configSelf;
+
+                    if (this.isOnMapPage && (this.isInEditMode || isDebug))
+                        this.configValidator.tabulateConfigValidation(this.globalConfigValidation);
+                }
+
+                for (var key in this.localConfigs)
+                {
+                    // Validate the local config for this map (the returned value will contain a new config with fallbacks of the global and default configs)
+                    this.localConfigValidations[key] = this.configValidator.validateConfig(this.localConfigs[key]);
+                    this.localConfigs[key] = this.localConfigValidations[key].configSelf;
+                    
+                    if (this.isOnMapPage && (this.isInEditMode || isDebug))
+                        this.configValidator.tabulateConfigValidation(this.localConfigValidations[key]);
+                }
+                
+                for (var key in this.embedConfigs)
+                {
+                    // Validate the embedded config for this map (the returned value will contain a new config with fallback of the local, global, and default configs)
+                    this.embedConfigValidations[key] = this.configValidator.validateConfig(this.embedConfigs[key]);
+                    this.embedConfigs[key] = this.embedConfigValidations[key].configSelf;
+                    
+                    if (this.isInEditMode || isDebug)
+                        this.configValidator.tabulateConfigValidation(this.embedConfigValidations[key]);
+                }
+
+                // Here, set the final configs. This is merged result of the config and all configs below it
+                
+                if (this.isGlobalConfigLoaded)
+                    this.globalConfig = this.globalConfigValidation.config;
+                for (var key in this.localConfigs)
+                    this.localConfigs[key] = this.localConfigValidations[key].config;
+                for (var key in this.embedConfigs)
+                    this.embedConfigs[key] = this.embedConfigValidations[key].config;
+
+                if (isDebug)
+                {
+                    log("The following map configurations have been verified and loaded:");
+                    if (this.isGlobalConfigLoaded)
+                    {
+                        log("Global configuration:");
+                        log(this.globalConfig);
+                    }
+                    if (this.isLocalConfigsLoaded)
+                    {
+                        log("Local configuration(s):");
+                        log(this.localConfigs);
+                    }
+                    if (this.isEmbedConfigsLoaded)
+                    {
+                        log("Embed configuration(s):");
+                        log(this.embedConfigs);
+                    }
+                }
+            },
+
+            loadDeps: function()
+            {
+                var loadStartTime = performance.now();
+                return mw.loader.using(["oojs-ui-core", "oojs-ui-windows"])
+                .then(function()
+                {
+                    log("Loaded module dependencies in " + Math.round(performance.now() - loadStartTime) + "ms");
                 });
             },
 
@@ -8197,6 +8611,8 @@
                 overrides["sidebar-show-tooltip"] = "Show sidebar";
                 console.log("i18n messages are being overridden!");
                 */
+                
+                var loadStartTime = performance.now();
 
                 // The core module doesn't use any translations, but we might as well ensure it's loaded before running other modules
                 return new Promise(function(resolve, reject)
@@ -8207,6 +8623,8 @@
 
                         i18n.loadMessages("MapsExtended", { cacheVersion: CACHE_VERSION }).done(function(i18n)
                         {
+                            log("Loaded i18n library + messages in " + Math.round(performance.now() - loadStartTime) + "ms");
+                            
                             // Save i18n instance to mapsExtended object
                             mapsExtended.i18n = i18n;
                             resolve();

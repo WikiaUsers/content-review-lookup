@@ -35,6 +35,14 @@ UserTagsJS.modules.custom = {
 window.onload = function(){
   $('.advanced-tooltip').show();
 };
+
+const fadeinclass = document.getElementsByClassName("fadein");
+for(let i = 0; i < fadeinclass.length; i++) {
+	let sec = (i/2).toString();
+	fadeinclass[i].style.animationDelay = sec.concat("s");
+}
+
+
 mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 $( function() {
 /**

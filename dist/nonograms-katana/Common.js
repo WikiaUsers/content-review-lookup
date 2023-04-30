@@ -99,7 +99,7 @@ function calculate() {
 		/*lvl. 31*/	["Outpost lvl. 1","Skill: Boatswain lvl. 2"],
 		/*lvl. 32*/	["Alchemist's Hut lvl. 6","Tailor lvl. 1","Skill: Carpenter lvl. 3","Skill: Metallurgist lvl. 3"],
 		/*lvl. 33*/	["Skill: Mechanic lvl. 3","Skill: Blacksmith lvl. 3"],
-		/*lvl. 34*/	["Skill: Alchemist lvl. 3","? Skill: Cameleer lvl. 1"],
+		/*lvl. 34*/	["Skill: Alchemist lvl. 3","Skill: Cameleer lvl. 1"],
 		/*lvl. 35*/	["Skill: Athlete lvl. 6","Skill: Intellectual lvl. 3"],
 		/*lvl. 36*/	[""],
 		/*lvl. 37*/	[""],

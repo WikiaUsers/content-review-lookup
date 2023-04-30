@@ -1,6 +1,6 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1676784050900
+ * Last modified: 1682579374075
  * @author Arashiryuu0
  * @module Toasts
  * @version 1.0.6
@@ -21,6 +21,7 @@
 	latedef: true,
 	shadow: outer,
 	varstmt: false,
+	laxbreak: true,
 	quotmark: single,
 	singleGroups: true,
 	futurehostile: true

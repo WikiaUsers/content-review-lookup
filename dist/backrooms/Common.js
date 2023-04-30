@@ -21,17 +21,6 @@ window.UserTagsJS = {
 	},
 };
 
-// random number generator
-const random = document.querySelector('.random');
-const rng = document.createElement('rng');
-rng.textContent = Math.imul(getRandomIntInclusive(300, 32000), getRandomIntInclusive(300, 32000)); // just a little over a billion possibilities
-random.appendChild(rng);
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
@@ -41,3 +30,14 @@ UserTagsJS.modules.custom = {
 	'PexyWasTaken': ['technician'],
 	'ScutoidWasTaken': ['technician'],
 };
+
+// random number generator
+const random = document.querySelector('.random');
+const rng = document.createElement('rng');
+rng.textContent = Math.imul(getRandomIntInclusive(320, 32000), getRandomIntInclusive(320, 32000)); // just a little over a billion possibilities
+random.appendChild(rng);
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

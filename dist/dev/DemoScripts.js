@@ -685,6 +685,11 @@
             scripts: 'MediaWiki:UserStatus/demo.js'
         },
         
+        UWStyle: {
+            page: 'UWStyle',
+            styles: 'MediaWiki:UWStyle.css'
+        },
+        
         /* // Disabled in Favour of ProfileTags
         UserTags: {
             exec: function () {

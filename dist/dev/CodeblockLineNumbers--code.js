@@ -1,10 +1,10 @@
 /**
  * Adds numbers to each line of code in a codeblock.
- * // current update is for mw version `1.37.6`
+ * // current update is for mw version `1.39.3`
  * @name CodeblockLineNumbers
  * @author Arashiryuu0
  * @version 1.2.4
- * Last modified: 1675408137640
+ * Last modified: 1682579289295
  */
 	
 /*
@@ -22,6 +22,7 @@
 	latedef: true,
 	shadow: outer,
 	varstmt: false,
+	laxbreak: true,
 	quotmark: single,
 	singleGroups: true,
 	futurehostile: true

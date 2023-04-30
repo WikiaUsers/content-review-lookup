@@ -11,17 +11,19 @@ function prntf(s,r)
 }
 const lg = mw.config.values.wgUserLanguage;
 const LD = {
-	units:{
-		second:['δ','δευτερόλεπτα','δευτερόλεπτο'],
-		minute:['λ','λεπτά','λεπτό'],
-		hour:['ω','ώρες','ώρα'],
-		day:['Η','ημέρες','ημέρα'],
-		month:['Μ','μήνες','μήνας'],
-		year:['Ε','έτη','έτος'],
-		century:['Α','αιώνες','αιώνας']
+	units: {
+		second: ['δ','δευτερόλεπτα','δευτερόλεπτο'],
+		minute: ['λ','λεπτά','λεπτό'],
+		hour: ['ω','ώρες','ώρα'],
+		day: ['Η','ημέρες','ημέρα'],
+		month: ['Μ','μήνες','μήνας'],
+		year: ['Ε','έτη','έτος'],
+		century: ['Α','αιώνες','αιώνας']
 	},
-	tho:'.',
-	dec:',',
+	tho: '.',
+	dec: ',',
+	bigtooltip: 'Οι διαστάσεις της επεξήγησης υπερβαίνουν τις<br />διαθέσιμες διαστάσεις του φυλλομετρητή σας<br />Επικοινωνήστε με τους διαχειριστές της εγκυκλοπαίδειας!<br />Σας ευχαριστούμε.',
+	and: 'και',
 	wood: 'Ξύλο',
 	wine: 'Κρασί',
 	marble: 'Μάρμαρο',
@@ -32,12 +34,15 @@ const LD = {
 	citizen: 'Πολίτης',
 	aristocracy: 'Αριστοκρατία',
 	oligarchy: 'Ολιγαρχία',
+	resgenit: ['ξύλου','κρασιού','μαρμάρου','kρυστάλλου','Θείου'],
+	resrds: ['Τ','Γ','Α','ΜΜ','Τροχαλία','Γεωμετρία','Αλφάδι','Μέγιστη μείωση'],
 	headertips: ['Μετάβαση στη σελίδα<br />«<b>Υλικά και Πόροι</b>»','Διάρκεια κατασκευής','Ελάχιστος αριθμός και επίπεδα<br />αποθηκών και αλανών','Βαθμολογία<br />Αρχιμαστόρων','Εδώ θα βρείτε πληροφορίες για<br />τις απαιτούμενες ποσότητες<br />{0}<br />(ανά επίπεδο και αθροιστικά),<br />λαμβάνοντας υπόψη τις<br />επιδράσεις των ερευνών και του<br />αντίστοιχου μειωτικού κτηρίου<br />{1}'],
 	restips: {
+		nores: 'Καμία Έρευνα ή Μειωτικό Κτήριο<br />(<b>0 %</b> Μείωση)<br /><b>{0}</b> μονάδες {1}',
 		rdres: ['Τροχαλία','Γεωμετρία','Αλφάδι','Μέγιστη Μείωση'],
-		none: ['Δεν απαιτείται ποσότητα κιβωτίων {0}<br />για το <b>{1}<sup>ο</sup></b> επιπέδου','Καμία Έρευνα ή Μειωτικό Κτήριο<br />(<b>0 %</b> Μείωση)<br /><b>{0}</b> κιβώτια {1}<br />για την ολοκλήρωση <b>{2}</b> του <b>{3}<sup>ου</sup></b> επιπέδου'],
-		table: ['Έρευνα','Έρευνες','Μειωτικό κτήριο','Επίπεδο','Ποσοστό','Συνολικό<br />ποσοστό','Ποσότητα {0}','μείωσης','τελική','αθροιστική'],
-		mr: 'Μέγιστη μείωση<br />({0} % + {1} % + {2} % + {3} % = {4} %)<br /><b>{5} &times; {6} % = {7} &asymp; {8}{12}<br />({9} &times; {6} % = {10} &asymp; {11}{12})</b>'
+		none: ['Δεν απαιτείται<br />ποσότητα κιβωτίων<br />{0}<br />για το <b>{1}<sup>ο</sup></b> επίπεδο','Καμία Έρευνα ή Μειωτικό Κτήριο<br />(<b>0 %</b> Μείωση)<br /><b>{0}</b> κιβώτια {1}<br />για την ολοκλήρωση <b>{2}</b> του <b>{3}<sup>ου</sup></b> επιπέδου'],
+		table: ['Έρευνα','Έρευνες','Σύνολο<br />ερευνών','Μειωτικό κτήριο','Επίπεδο','Ποσοστό','Συνολικό<br />ποσοστό','Ποσότητα {0}','μείωσης','τελική','αθροιστική'],
+		mr: 'Μέγιστη μείωση<br />({0} % + {1} % + {2} % + {3} % = {4} %)<br /><b>{5} &times; {6} % = {7} &asymp; {8} {12}<br />({9} &times; {6} % = {10} &asymp; {11} {12})</b>',
 	},
 	durtips: {
 		displayed: 'Ο εμφανιζόμενος χρόνος κτισίματος<br />(χωρίς επίδραση από το πολίτευμα)',
@@ -45,12 +50,13 @@ const LD = {
 		accum: 'Ο αθροιστικός χρόνος κτισίματος<br />(χωρίς επίδραση από το πολίτευμα)',
 		SBT: 'Η Μείωση Χρόνου Οικοδόμησης θα μειώσει<br />στο ½ τον πραγματικό χρόνο κτισίματος.<br />Ο νέος χρόνος κτισίματος θα είναι:<br /><b>{0}</b>',
 		CI: 'Με την «Άμεση Ολοκλήρωση» ολοκληρώνεται<br />η κατασκευή του κτηρίου <b>αμέσως</b>',
-		SBTCI: 'Η Μείωση Χρόνου Οικοδόμησης θα μειώσει<br>στο ½ τον πραγματικό χρόνο κτισίματος.<br>Ο νέος χρόνος κτισίματος θα είναι:<br><b>{0}</b><br>Το 2<sup>ο</sup> πάτημα ή η Άμεση Ολοκλήρωση (ΑΟ)<br>ολοκληρώνει την κατασκευή αμέσως.',
-		aristocracy: 'Ο χρόνος κτισίματος αφού<br>μειωθεί με την επίδραση της Αριστοκρατίας<br><b>{0}</b>',
-		oligarchy: 'Ο χρόνος κτισίματος αφού<br>αυξηθεί με την επίδραση της Ολιγαρχίας<br><b>{0}</b>',
+		ambro: '<b>{0}</b> Μονάδες Αμβροσίας<br />με κάθε πάτημα!',
+		SBTCI: 'Η Μείωση Χρόνου Οικοδόμησης θα μειώσει<br />στο ½ τον πραγματικό χρόνο κτισίματος.<br />Ο νέος χρόνος κτισίματος θα είναι:<br /><b>{0}</b><br />Το 2<sup>ο</sup> πάτημα ή η Άμεση Ολοκλήρωση (ΑΟ)<br />ολοκληρώνει την κατασκευή αμέσως.',
+		aristocracy: 'Ο χρόνος κτισίματος αφού μειωθεί<br />με την επίδραση της «<b>Αριστοκρατίας</b>»<br /><b>{0}</b>',
+		oligarchy: 'Ο χρόνος κτισίματος αφού αυξηθεί<br />με την επίδραση της «<b>Ολιγαρχίας</b>»<br /><b>{0}</b>',
 	},
-	storagetips: ['Χωρίς Έρευνες','Χωρίς Έρευνες','Με την έρευνα της Τροχαλίας','Με την έρευνα της Γεωμετρίας','Με την έρευνα του Αλφαδιού','Με τη Μέγιστη Μείωση','και χωρίς Αμβροσία','και με Αμβροσία'],
-	scoretips: ['Υλικά','Είδος','Ποσότητα','Πόντοι'],
+	storagetips: ['Ελάχιστος αριθμός<br />αποθηκών','Ελάχιστος αριθμός<br />αλανών','Χρήση<br />Αμβροσίας','{0}η {1}','Χωρίς χρήση Αμβροσίας','Με χρήση Αμβροσίας','Με την έρευνα της Τροχαλίας','Με την έρευνα της Γεωμετρίας','Με την έρευνα του Αλφαδιού','Με τη Μέγιστη Μείωση','Ελάχιστο απαιτούμενο επίπεδο<br />{0}<br />{1} {2}','χωρίς τις σχετικές έρευνες','με την έρευνα της «<b>Τροχαλίας</b>»','με την έρευνα της «<b>Γεωμετρίας</b>»','με την έρευνα του «<b>Αλφαδιού</b>»','με τη «<b>Μέγιστη Μείωση</b>»','χωρίς «<b>Αμβροσία</b>»','με «<b>Αμβροσία</b>»','<b>{0}<sup>ης</sup></b> Αποθήκης','<b>{0}<sup>ης</sup></b> Αλάνας','Δεν απαιτείται κατασκευή<br />{0}'],
+	scoretips: ['Υλικά','Πόντοι','Είδος','Ποσότητα'],
 	academy: {
 		name: 'Ακαδημία',
 		headertips: ['Μέγιστος αριθμός<br />επιστημόνων']
@@ -392,31 +398,195 @@ const bData = {
 		get dur(){var t=[],c=this.time;for(var i=0;i<this.maxLevel;i++){var d=Math.round(c.a/c.b*Math.pow(c.c,i+1)-c.d)-(c.e!=undefined?(c.e[i]!=undefined?c.e[i]:0):0);t.push((d>1728e3?1728e3:d));}return t;}
 	},
 }
-function img(i,t,a,c,w,h,l) // Image, title, alternative text, class, width, height, link
+function optcap(x,am)
+{
+	am = am ? true : false;
+	var wh = bData.warehouse.cp.map(function(v){return (am?2:1)*v;});
+	wh.unshift(0);
+	var dp = bData.dump.cp.map(function(v){return (am?2:1)*v;});
+	dp.unshift(0);
+	var L1 = wh.length-1;
+	var L2 = dp.length-1;
+	var max = (am?2:1)*(25e2+5*wh[L1]+3*dp[L2]);
+	var nwh = wh.filter(function(a){return a<=x;});
+	var ndp = dp.filter(function(a){return a<=x;});
+	var aL1 = nwh.length;
+	var aL2 = ndp.length;
+	var a = [[0,0,0,0,0],[0,0,0]];
+	var n = 0;
+	if(x<=(am?2:1)*(25e2+2*(wh[L1]+dp[L2])))
+	{
+		fg:
+		for(var i2=0;i2<aL2;i2++)
+		{
+			for(var j2=0;j2<aL1;j2++)
+			{
+				for(var i1=0;i1<aL2;i1++)
+				{
+					for(var j1=0;j1<aL1;j1++)
+					{
+						n=(am?2:1)*25e2+nwh[j1]+nwh[j2]+ndp[i1]+ndp[i2];
+						if(n>=x)
+						{
+							a=[[j1,j2,0,0,0],[i1,i2,0]];
+							break fg;
+						}
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		var j1=L1,j2=L1,i1=L2,i2=L2;
+		sg:
+		for(var j5=0;j5<aL1;j5++)
+		{
+			for(var j4=0;j4<aL1;j4++)
+			{
+				for(var i3=0;i3<aL2;i3++)
+				{
+					for(var j3=0;j3<aL1;j3++)
+					{
+						n=(am?2:1)*25e2+wh[j1]+wh[j2]+nwh[j3]+nwh[j4]+nwh[j5]+dp[i1]+dp[i2]+ndp[i3];
+						if(n>=x)
+						{
+							a=[[j1,j2,j3,j4,j5],[i1,i2,i3]];
+							break sg;
+						}
+					}
+				}
+			}
+		}
+	}
+	a[0][0] = x>(am?2:1)*25e2 && x<(am?2:1)*105e2 ? 1 : a[0][0];
+	a = x<=max ? a : [[L1,L1,L1,L1,L1],[L2,L2,L2]];
+	return a;
+}
+function BldTm(t,k,p,s) // Seconds, Format, Precision, Space (Delimiter)
+{
+	var units = LD.units;
+	var colors = {'second':'blue','minute':'blue','hour':'blue','day':'green','month':'orange','year':'red'};
+	t = t || 0;
+	k = k || 0; // 0: short format, 1: long format
+	p = p || 6;
+	var pt = p;
+	s = s || ' ';
+	if(!isFinite(t)){return ' \u221E ';}
+	if(t < 0) t *= -1;
+	var a = {'second':1,'minute':60,'hour':60,'day':24,'month':30,'year':365};
+	var b = {};
+	var l = {};
+	var c = 1;
+	for(var d in Object.keys(a))
+	{
+		c *= a[Object.keys(a)[d]];
+		b[Object.keys(a)[d]] = c/(d==Object.keys(a).length-1?30:1);
+		l[Object.keys(a)[d]] = [];
+		for(var g=0;g<4;g++) { l[Object.keys(a)[d]][g] = units[Object.keys(a)[d]][g]; }
+	}
+	var i = Object.keys(a).length;
+	var z = {};
+	while(i--){z[Object.keys(a)[i]] = b[Object.keys(a)[i]];}
+	t = Math.ceil(t);
+	var retarr = [];
+	for(var f in z)
+	{
+		var timeInSecs=Math.floor(t/z[f]);
+		if(isNaN(timeInSecs)) {return retarr.join(s);}
+		if(pt>0 && (timeInSecs>0 || retarr.length>0))
+		{
+			t = t-timeInSecs*z[f];
+			if(timeInSecs>0) { retarr.push('<span style=\'color:'+(p!=6?'grey':colors[f])+'\'>'+NumToStr(timeInSecs)+' '+l[f][k===0?k:(timeInSecs===1?2:1)]+'</span>'); }
+			pt = timeInSecs===0 ? pt : (pt-1);
+		}
+	}
+	return retarr.join(s);
+}
+function Img(i,t,a,c,w,h,l) // Image, title, alternative text, class, width, height, link
 {
 	var s = ' style="width:'+(w&&w!==''?w+'px':'auto')+';height:'+(h&&h!==''?h+'px':'auto')+'"';
-	var p = i&&i!==''?'<img src="https://ikariam.fandom.com/'+(lg=='en'?'':lg+'/')+'wiki/Special:Filepath/'+i+'"'+(t&&t!==''?' data-tooltip="'+t+'"':'')+(' alt="'+(a&&a!==''?a:i.replace('_',' '))+'"')+(c&&c!==''?' class="'+c+' ikariam-tooltip"':'')+' data-image-key="'+i+'" data-image-name="'+i.replace('_',' ')+'"'+s+'>':'';
+	var p = i&&i!==''?'<img src="https://ikariam.fandom.com/'+(lg=='en'?'':lg+'/')+'wiki/Special:Filepath/'+i+'"'+(t&&t!==''?' data-tooltip="'+t+'"':'')+(' alt="'+(a&&a!==''?a:i.replace('_',' '))+'"')+(c&&c!==''?' class="'+c+' ikar-tooltip"':'')+' data-image-key="'+i+'" data-image-name="'+i.replace('_',' ')+'"'+s+'>':'';
 	return (l&&l!==''?'<a href="'+(l!==''?l:'/'+(lg=='en'?'':lg+'/')+'wiki/Special:Filepath/'+i)+'">':'')+p+(l&&l!==''?'</a>':'');
 }
-function icon(r,w,h) // index of image, width, height
+function Icon(r,w,h) // index of image, width, height
 {
 	var res = ['wood_small.gif','wine_small.gif','marble_small.gif','crystal_small.gif','sulphur_small.gif','ambrosia.png','gold_small.gif','icon_citizen.gif'];
 	var rel = [LD.wood,LD.wine,LD.marble,LD.glass,LD.sulfur,LD.ambrosia,LD.gold,LD.citizen];
-	return img(res[r][0].toUpperCase()+res[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),'image image-thumbnail link-internal',w?w:25,h?h:20,'/'+(lg=='en'?'':lg+'/')+'wiki/'+rel[r][0].toUpperCase()+rel[r].slice(1));
+	return Img(res[r][0].toUpperCase()+res[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),rel[r][0].toUpperCase()+rel[r].slice(1),'image image-thumbnail link-internal',w?w:25,h?h:20,'/'+(lg=='en'?'':lg+'/')+'wiki/'+rel[r][0].toUpperCase()+rel[r].slice(1));
 }
-
+function Tooltip(txt,tip) // Text, Tooltip
+{
+	return '<div class="ikar-tooltip" style="display:inline" data-tooltip="'+tip+'">'+txt+'</div>';
+}
+function Tooltips(q,r,s,a) // Tips Generator for resources (Quantity, Research, reSource, Accumulative)
+{
+	var rel = LD.resgenit; 
+	switch(r)
+	{
+		case '': // No research
+			return Tooltip(NumToStr(q),prntf('<div style="text-align:center">'+LD.restips.nores+'</div>',[NumToStr(q),rel[s]]));
+		case LD.resrds[0]: // Pulley
+		case LD.resrds[1]: // Geometry
+		case LD.resrds[2]: // Spirit Level
+			var h = ['<th colspan="'+(r===LD.resrds[1]?2:(r===LD.resrds[2]?3:1))+'">'+LD.restips.table[r!==LD.resrds[0]?1:0]+'</th>',r!==LD.resrds[0]?'<th rowspan="2">'+LD.restips.table[2]+'</th>':'','<th>'+LD.resrds[4]+'</th>'+(r===LD.resrds[1]||r===LD.resrds[2]?'<th>'+LD.resrds[5]+'</th>':'')+(r===LD.resrds[2]?'<th>'+LD.resrds[6]+'</th>':''),'<th colspan="2">'+LD.restips.table[3]+'</th>','<th rowspan="2">'+LD.restips.table[6]+'</th>','<th colspan="3">'+prntf(LD.restips.table[7],[Icon(resources.indexOf(s),12,10)])+'</th>','<th>'+LD.restips.table[4]+'</th><th>'+LD.restips.table[5]+'</th>','<th>'+LD.restips.table[8]+'</th><th>'+LD.restips.table[9]+'</th><th>'+LD.restips.table[10]+'</th>'];
+			var t = '<table class="darktable zebra" style="display:inline-block;text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr>'+h[0]+h[1]+h[3]+h[4]+h[5]+h[3]+h[4]+h[5]+'</tr><tr>'+h[2]+h[6]+h[7]+h[6]+h[7]+'</tr></thead><tbody>';
+			for(var i=0;i<26;i++)
+			{
+				t += '<tr><td>2 %</td>'+(r===LD.resrds[1]||r===LD.resrds[2]?'<td>4 %</td>':'')+(r===LD.resrds[2]?'<td>8 %</td>':'')+(r===LD.resrds[0]?'':'<td>'+(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0))+' %</td>')+'<td>'+i+'</td><td>'+i+' %</td><td>'+((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+i)+' %</td><td style="text-align:right">'+NumToStr(Math.ceil(((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+i)*q/100))+'</td><td style="text-align:right">'+NumToStr(Math.floor((100-((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+i))*q/100))+'</td><td style="text-align:right">'+NumToStr(Math.floor((100-((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+i))*a/100))+'</td><td'+(i==25?' colspan="6"':'')+'>'+(i==25?'':(i+26)+'</td><td>'+(i+26)+' %</td><td>'+((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+(i+26))+' %</td><td style="text-align:right">'+NumToStr(Math.ceil(((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+(i+26))*q/100))+'</td><td style="text-align:right">'+NumToStr(Math.floor((100-((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+(i+26)))*q/100))+'</td><td style="text-align:right">'+NumToStr(Math.floor((100-((r===LD.resrds[0]?2:(r===LD.resrds[1]?6:(r===LD.resrds[2]?14:0)))+(i+26)))*a/100)))+'</td></tr>';
+			}
+			t += '</tbody><tfoot><tr>'+h[2]+h[1]+h[6]+h[4]+h[7]+h[6]+h[4]+h[7]+'</tr><tr>'+h[0]+h[3]+h[5]+h[3]+h[5]+'</tr></tfoot></table>';
+			return t;
+		case LD.resrds[3]: // Maximum Reduction
+			var p = [2,4,8,50];
+			var sm = p.reduce(function(a,b){return a+b},0);
+			return prntf(LD.restips.mr,p.concat([sm,NumToStr(q),100-sm,NumToStr(q*(100-sm)/100,false,2),NumToStr(Math.floor(q*(100-sm)/100),false,0),NumToStr(a),NumToStr(a*(100-sm)/100,false,2),NumToStr(Math.floor(a*(100-sm)/100),false,0),Icon(resources.indexOf(s),12,10)]));
+	}
+}
+function NumToStr(inputNum,outputSign,precision)
+{
+	precision = precision ? "10e" + (precision - 1) : 1;
+	var ret, val, sign, i, j;
+	var tho = LD.tho;
+	var dec = LD.dec;
+	if(!isFinite(inputNum)) { return '\u221E'; }
+	sign = inputNum > 0 ? 1 : inputNum == 0 ? 0 : -1;
+	if(sign)
+	{
+		val = (( Math.floor(Math.abs(inputNum * precision)) / precision ) + '').split('.');
+		ret = val[1] !== undefined ? [dec, val[1]] : [];
+		val = val[0].split('');
+		i = val.length;
+		j = 1;
+		while(i--)
+		{
+			ret.unshift(val.pop());
+			if(i && j % 3 === 0)
+			{
+				ret.unshift(tho);
+			}
+			j++;
+		}
+		if(outputSign)
+		{
+			ret.unshift(sign == 1 ? '+' : '-');
+		}
+		return ret.join('');
+	}
+	else return inputNum;
+}
 var bid = Object.keys(bData).filter(function(v,k){return $('table#'+v).length==1;}).join('');
 //$('table#'+bid+' tr:lt(2) th').css({'position':'sticky','top':'50px'});
 for(var i=0;i<4;i++)
 {
-	$('table#'+bid+' tr:eq(1) th:eq('+(i+1)+') '+([0,3].indexOf(i)!=-1?'a':'*')).addClass('ikariam-tooltip').attr('data-tooltip',LD.headertips[i]);
+	$('table#'+bid+' tr:eq(1) th:eq('+(i+1)+') '+([0,3].indexOf(i)!=-1?'a':'*')).addClass('ikar-tooltip').attr('data-tooltip',LD.headertips[i]);
 }
 var resources = ['wood','wine','marble','glass','sulfur'];
 var reductblds = ['carpentering','vineyard','architect','optician','fireworker']
 var res = resources.filter(function(n){return Object.keys(bData[bid]).indexOf(n)!==-1;});
 $.each(res,function(k,v)
 {
-	$('table#'+bid+' tr:eq(2) th:eq('+k+') *').addClass('ikariam-tooltip').attr('data-tooltip',prntf(LD.headertips[4],[icon(resources.indexOf(v))+'<br />'+LD[v],img(LD[reductblds[resources.indexOf(v)]].name+'.png',LD[reductblds[resources.indexOf(v)]].name,LD[reductblds[resources.indexOf(v)]].name,'',40,40)+'<br />'+LD[reductblds[resources.indexOf(v)]].name]));
+	$('table#'+bid+' tr:eq(2) th:eq('+k+') *').addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.headertips[4],[Icon(resources.indexOf(v))+'<br />'+LD[v],Img(LD[reductblds[resources.indexOf(v)]].name+'.png',LD[reductblds[resources.indexOf(v)]].name,LD[reductblds[resources.indexOf(v)]].name,'',40,40)+'<br />'+LD[reductblds[resources.indexOf(v)]].name]));
 });
 var extracols = $('table#'+bid+' tr:eq(1) th').length-5;
 for(var i=0;i<extracols;i++)
@@ -424,21 +594,113 @@ for(var i=0;i<extracols;i++)
 	switch(bid)
 	{
 		case 'academy':
-			$('table#'+bid+' tr:eq(1) th:eq('+(i+5)+') *').addClass('ikariam-tooltip').attr('data-tooltip',LD[bid].headertips[i]);
+			$('table#'+bid+' tr:eq(1) th:eq('+(i+5)+') *').addClass('ikar-tooltip').attr('data-tooltip',LD[bid].headertips[i]);
 			break;
 	}
 }
-console.log(bid,extracols);
-
+var costs = {};
+var accumulative = {};
+var accdurs = bData[bid].dur.reduce(function(a,b,i){return i===0?[b]:a.concat(a[i-1]+b);},0);
+var allcosts = {};
+var maxres = [];
+$.each(res,function(i,r)
+{
+	costs[r] = costs[r]==undefined ? bData[bid][r] : costs[r];
+	accumulative[r] = accumulative[r]==undefined ? [] : accumulative[r];
+	allcosts[r] = allcosts[r]==undefined ? [] : allcosts[r];
+	costs[r].reduce(function(a,b,i) { return accumulative[r][i] = a+b; },0);
+});
+$('tr[id^="'+bid+'_"]').each(function(a,tr)
+{
+	var lvl = $(tr).attr('id').replace(/\D+/g,'');
+	$(tr).find('th:first').text($(tr).find('th:first').text().trim());
+	// Resources columns
+	$.each(res,function(k,v)
+	{
+		allcosts[v][lvl-1] = [bData[bid][v][lvl-1],accumulative[v][lvl-1]];
+		maxres[lvl-1] = bData[bid][v][lvl-1]>maxres[lvl-1] ? bData[bid][v][lvl-1] : (maxres[lvl-1]||0);
+		var contents = $(tr).find('> td:eq('+k+')').contents();
+		if(contents.length==1)
+		{
+			$(tr).find('> td:eq('+k+')').addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.restips.none[0],[Icon(resources.indexOf(v)),lvl]));
+		}
+		else
+		{
+			$(tr).find('> td:eq('+k+') > div:lt(2)').each(function(b,c)
+			{
+				$(c).addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.restips.none[1],[NumToStr(allcosts[v][lvl-1][b]),Icon(resources.indexOf(v)),b==0?'':LD.and,lvl]));
+			});
+			$(tr).find('> td:eq('+k+') > table tr').each(function(d,e)
+			{
+				$(e).find('td:last a').addClass('ikar-tooltip').attr('data-tooltip',LD.restips.rdres[d]);
+			});
+		}
+	});
+	// Building duration column
+	var ambrosia = bData[bid].dur[lvl-1]<=300?0:(Math.floor(bData[bid].dur[lvl-1]/1800)*4+4);
+	ambrosia = ambrosia>148?148:ambrosia;
+	var dr = $(tr).find('> td:eq('+(res.length)+') > div');
+	$(dr).eq(0).addClass('ikar-tooltip').attr('data-tooltip',LD.durtips.displayed);
+	$(dr).eq(1).addClass('ikar-tooltip').attr('data-tooltip',LD.durtips.displayed+'<br /><b>'+BldTm(bData[bid].dur[lvl-1],1,2)+'</b>');
+	$(dr).eq(2).addClass('ikar-tooltip').attr('data-tooltip',LD.durtips.actual+'<br /><b>'+BldTm(bData[bid].dur[lvl-1],1)+'</b>');
+	$(dr).eq(3).addClass('ikar-tooltip').attr('data-tooltip',LD.durtips.accum+'<br /><b>'+BldTm(accdurs[lvl-1],1)+'</b>');
+	$(dr).eq(4).find('> a').eq(0).addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.durtips.SBT,[BldTm(bData[bid].dur[lvl-1]/2,1)]));
+	$(dr).eq(4).find('> a').eq(1).addClass('ikar-tooltip').attr('data-tooltip',LD.durtips.CI);
+	$(dr).eq(4).find('> span,> span > a').addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.durtips.ambro,[ambrosia]));
+	$(dr).eq(4).find('> a').last().addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.durtips.SBTCI,[BldTm(bData[bid].dur[lvl-1]/2,1)]));
+	$(dr).eq(5).find('> a').eq(0).addClass('ikar-tooltip').attr('data-tooltip',LD.aristocracy);
+	$(dr).eq(5).find('> a').eq(1).addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.durtips.aristocracy,[BldTm(bData[bid].dur[lvl-1]*.8,1)]));
+	$(dr).eq(6).find('> a').eq(0).addClass('ikar-tooltip').attr('data-tooltip',LD.oligarchy);
+	$(dr).eq(6).find('> a').eq(1).addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.durtips.oligarchy,[BldTm(bData[bid].dur[lvl-1]*1.2,1)]));
+	// Storage column
+	var st = $(tr).find('> td:eq('+(res.length+1)+') > table > tbody > tr');
+	$(st).eq(0).find('th').eq(1).find('a').addClass('ikar-tooltip').attr('data-tooltip',LD.storagetips[0]);
+	$(st).eq(0).find('th').eq(2).find('a').addClass('ikar-tooltip').attr('data-tooltip',LD.storagetips[1]);
+	$(st).eq(1).find('th').eq(1).find('a').addClass('ikar-tooltip').attr('data-tooltip',LD.storagetips[2]);
+	$.each($(st).eq(1).find('th').slice(2),function(a,b)
+	{
+		$(b).addClass('ikar-tooltip').attr('data-tooltip',prntf(LD.storagetips[3],[a+(a<5?1:-4),LD[(a<5?'warehouse':'dump')].name]));
+	});
+	$.each($(st).slice(2),function(c,d)
+	{
+		if(c>1 && c%2==0)
+		{
+			$(d).find('th').first().addClass('ikar-tooltip').attr('data-tooltip',LD.storagetips[(c/2)+5]);
+		}
+		$(d).find('th').last().addClass('ikar-tooltip').attr('data-tooltip',LD.storagetips[4+(c%2)]);
+		$(d).find('td').each(function(e,f)
+		{
+			var lv = optcap(maxres[lvl-1],c%2)[e<5?0:1][e+(e<5?0:-5)];
+			$(f).addClass('ikar-tooltip').attr('data-tooltip',lv==0?prntf(LD.storagetips[20],[prntf(LD.storagetips[18+(e<5?0:1)],[e+(e<5?1:-4)])]):prntf(LD.storagetips[10],[LD.storagetips[Math.floor(c/2)+11],LD.storagetips[16+(c%2)],prntf(LD.storagetips[18+(e<5?0:1)],[e+(e<5?1:-4)])])).text(lv);
+		});
+	});
+	// Score column
+	var sm = [0,0,0,0];
+	var t = ['',''];
+	$.each(res,function(k,v)
+	{
+		sm[0] += allcosts[v][lvl-1][0];
+		sm[1] += allcosts[v][lvl-1][0]/100;
+		sm[2] += allcosts[v][lvl-1][1];
+		sm[3] += allcosts[v][lvl-1][1]/100;
+		t[0] += '<tr><td>'+Icon(resources.indexOf(v),12,10)+'</td><td>'+NumToStr(allcosts[v][lvl-1][0])+'</td><td>'+NumToStr(allcosts[v][lvl-1][0]/100,false,2)+'</td></tr>';
+		t[1] += '<tr><td>'+Icon(resources.indexOf(v),12,10)+'</td><td>'+NumToStr(allcosts[v][lvl-1][1])+'</td><td>'+NumToStr(allcosts[v][lvl-1][1]/100,false,2)+'</td></tr>';
+	});
+	var tbl = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th colspan="2">'+LD.scoretips[0]+'</th><th rowspan="2">'+LD.scoretips[1]+'</th></tr><tr><th>'+LD.scoretips[2]+'</th><th>'+LD.scoretips[3]+'</th></tr></thead><tbody>{0}</tbody><tfoot><tr><th>&Sigma;</th><th>{1}</th><th>{2}</th></tr></tfoot></table>';
+	$(tr).find('> td:eq('+(res.length+2)+') > div').each(function(k,v)
+	{
+		$(v).addClass('ikar-tooltip').attr('data-tooltip',prntf(tbl,[t[k],NumToStr(sm[2*k]),NumToStr(Math.floor(sm[2*k+1]))])).find('a').removeAttr('title');
+	});
+});
 $(document).ready(function()
 {
 	mw.hook('wikipage.content').add(function($content)
 	{
 		try
 		{
-			$('.ikariam-tooltip').hover(function(e)
+			$('.ikar-tooltip').hover(function(e)
 			{
-				$('#ikariam-tooltip-content').remove();
+				$('#ikar-tooltip-content').remove();
 				var txt = '';
 				var attrs = $(this).attr('data-tooltip').split('|');
 				if(attrs.length==1)
@@ -449,29 +711,48 @@ $(document).ready(function()
 				{
 					switch(attrs[1])
 					{
-						case 'Τ':
-						case 'Γ':
-						case 'Α':
+						case LD.resrds[0]:
+						case LD.resrds[1]:
+						case LD.resrds[2]:
+						case LD.resrds[3]:
 						case 'ΟΜ':
-							txt = Tips(attrs[0],attrs[1],attrs[2],attrs[3]);
-							break;
-						case 'ΜΜ':
-							txt = attrs[0]+'<br>Κείμενο Μέγιστης Μείωσης<br>Άλλο κείμενο<br>'+attrs[2];
+							txt = Tooltips(attrs[0],attrs[1],attrs[2],attrs[3]);
 							break;
 					}
 				}
 				$(this).removeAttr('title');
-				$('<div id="ikariam-tooltip-content" class="WikiaArticle" style="line-height:1.15;border:1px solid #F1D031;color:#444;background:#fbeecb;box-shadow:0 2px 2px #999;position:absolute;padding:2px;text-align:center;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;z-index:6000000;margin:0px;min-height:0px;overflow:hidden;font-size:14px;display:none"></div>').html(txt).appendTo('body');
-				$('#ikariam-tooltip-content').css('display','inline-block').fadeIn('fast');
+				$('<div id="ikar-tooltip-content" class="WikiaArticle" style="line-height:1.15;border:1px solid #F1D031;color:#444;background:#fbeecb;box-shadow:0 2px 2px #999;position:absolute;padding:2px;text-align:center;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;z-index:6000000;margin:0px;min-height:0px;overflow:hidden;font-size:14px;display:none"></div>').html(txt).appendTo('body');
+				$('#ikar-tooltip-content').css('display','inline-block').fadeIn('fast').find('sup').css('vertical-align','super');
 			},function()
 			{
-				$('#ikariam-tooltip-content').remove();
-			}).mousemove(function(e)
+				$('#ikar-tooltip-content').remove();
+			}).on('mousemove mousewheel',function(e)
 			{
-				var tooltip = e.target;
-				var top = e.pageY+10+tooltip.clientHeight<=document.body.clientHeight ? e.pageY+10 : (e.pageY-tooltip.clientHeight<=0 ? 0 : e.pageY-tooltip.clientHeight);
-				var left = e.pageX+15+tooltip.clientWidth<=document.body.clientWidth ? e.pageX+15 : (e.pageX-5-tooltip.clientWidth<=0 ? 0 : e.pageX-5-tooltip.clientWidth);
-				$('#ikariam-tooltip-content').css({'top':top+'px','left':left+'px'})
+				var dX = e.type=='mousewheel' ? e.originalEvent.deltaX : 0;
+				var dY = e.type=='mousewheel' ? e.originalEvent.deltaY : 0;
+				var bH = $('div.fandom-sticky-header').prop('outerHeight') || 0;
+				var top, left;
+				var target = e.target;
+				var tooltip = document.getElementById('ikar-tooltip-content');
+				var vp = {'H':$('body').prop('clientHeight'),'W':$('body').prop('clientWidth'),'T':$('body').scrollTop(),'L':$('body').scrollLeft()};
+				if(tooltip)
+				{
+					var tg = target.getBoundingClientRect();
+					var tt = tooltip.getBoundingClientRect();
+					if(tt.height>vp.H || tt.width>vp.W)
+					{
+						$('#ikar-tooltip-content').html('<div style="color:red;font-weight:bold;white-space:nowrap">'+LD.bigtooltip+'</div>');
+					}
+					else
+					{
+						if((tg.top<=vp.H && tg.bottom>=0) || (tg.left<=vp.W && tg.right>=0))
+						{
+							top = (e.pageY+10+tt.height<=vp.T+vp.H ? e.pageY+10 : (e.pageY-tooltip.clientHeight<=vp.T ? vp.T : e.pageY-tooltip.clientHeight))+(vp.T==0?0:dY)+bH;
+							left = (e.pageX+15+tt.width<=vp.L+vp.W ? e.pageX+15 : (e.pageX-5-tooltip.clientWidth<=vp.L ? vp.L : e.pageX-5-tooltip.clientWidth))+(vp.L==0?0:dX);
+						}
+					}
+					$('#ikar-tooltip-content').css({'top':top+'px','left':left+'px'});
+				}
 			});
 		}
 		catch(e)

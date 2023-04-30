@@ -23,9 +23,9 @@ window.AjaxDelete = {
 	reload: true
 };
 
-importArticles({
-    type: 'script',
-    articles: [
+importDevCodes = function() {
+	function getCodePages() {
+		return [
 		'u:dev:MediaWiki:Discussions Delete All/code.js',
 		'u:dev:MediaWiki:MultipleFileDelete/code.js',
 		'u:dev:MediaWiki:AjaxBatchDelete/code.js',
@@ -35,5 +35,35 @@ importArticles({
         'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:MediaWiki:Nuke/code.js',
         'u:dev:MediaWiki:JWB/load.js'
-    ]
-});
+			];
+	}
+
+	function concatPages() {
+		return getCodePages().join('|');
+	}
+
+	function getImportQuery() {
+		return {
+			mode: 'articles',
+			only: 'scripts',
+			articles: concatPages()
+		};
+	}
+
+	function importCodes() {
+		const devLoad = 'https://dev.fandom.com/load.php';
+		const rlModules = [
+			'mediawiki.Uri',
+			'ext.fandom.ContentReview.legacyLoaders.js'
+		];
+
+		mw.loader.using( rlModules, function() {
+			const devUri = new mw.Uri( devLoad );
+
+			devUri.query = getImportQuery();
+			mw.loader.load( devUri.toString() );
+		} );
+	}
+
+	return importCodes();
+};

@@ -5,9 +5,7 @@ mw.loader.using(["mediawiki.api"]).then(function() {
         return;
     }
     // Since the footer doesn't exist in edit or submit mode, return
-    if ($(document.body).hasClass("action-edit")) {
-        return;
-    } else if ($(document.body).hasClass("action-submit")) {
+    if ($(document.body).hasClass("action-edit") || $(document.body).hasClass("action-submit")) {
         return;
     }
     // Prevents double loading
@@ -33,8 +31,7 @@ mw.loader.using(["mediawiki.api"]).then(function() {
         // -- Global Navigation Icons/Logos -- //
         /// "Fandom.com" to "Curse.com"
         $(".is-gamepedia h2.global-footer__header a")
-            .attr("href", "https://web.archive.org/web/20190617171825/https://www.curse.com/")
-            //.attr("href", "https://www.curse.com/")
+            .attr("href", "http://www.curse.com/")
             .attr("title", (footer_link_curse))
             .attr("aria-label", (footer_link_curse));
         /// "Fandom.com" to "Gamepedia.com"
@@ -44,7 +41,7 @@ mw.loader.using(["mediawiki.api"]).then(function() {
             .attr("aria-label", (footer_link_gamepedia));
         
         // -- Explore Properties Section -- //
-        $('.is-gamepedia .global-footer__link[data-tracking-label="explore.fandom"]')
+        $(".is-gamepedia .global-footer__link[data-tracking-label=\"explore.fandom\"]")
             .attr("href", "https://www.gamepedia.com/")
             .attr("data-tracking-label", "explore.gamepedia")
             .attr("aria-label", (footer_link_gamepedia))
@@ -61,19 +58,19 @@ mw.loader.using(["mediawiki.api"]).then(function() {
         var gpWikisList = $("<ul>")
             .addClass("global-footer__links");
         var gpWikisListItem1 = $("<a>")
-            .attr("href","https://minecraft.fandom.com/wiki/Minecraft_Wiki")
+            .attr("href","https://minecraft.gamepedia.com/wiki/Minecraft_Wiki")
             .addClass("global-footer__link")
             .attr("data-tracking-label","gampedia-wikis.minecraft")
             .attr("aria-label", (footer_gpwikis_minecraft))
             .text(footer_gpwikis_minecraft);
         var gpWikisListItem2 = $("<a>")
-            .attr("href","https://terraria.fandom.com/wiki/Terraria Wiki")
+            .attr("href","https://terraria.gamepedia.com/wiki/Terraria Wiki")
             .addClass("global-footer__link")
             .attr("data-tracking-label","gampedia-wikis.terraria")
             .attr("aria-label", (footer_gpwikis_terraria))
             .text(footer_gpwikis_terraria);
         var gpWikisListItem3 = $("<a>")
-            .attr("href","https://zelda.fandom.com/wiki/Main_Page")
+            .attr("href","https://zelda.gamepedia.com/wiki/Main_Page")
             .addClass("global-footer__link")
             .attr("data-tracking-label","gampedia-wikis.zelda")
             .attr("aria-label", (footer_gpwikis_zelda))
@@ -98,13 +95,13 @@ mw.loader.using(["mediawiki.api"]).then(function() {
         $(".is-gamepedia .global-footer__bottom > div:first-child").text(footer_bottom_bar);
         
         // -- Community Section -- //
-        $('.is-gamepedia .global-footer__link[data-tracking-label="community.community-central"]')
+        $(".is-gamepedia .global-footer__link[data-tracking-label=\"community.community-central\"]")
             .attr("href", "https://web.archive.org/web/20210803141801/https://www.gamepedia.com/wikiconnect")
             .attr("data-tracking-label", "community.wikiconnect")
             .attr("aria-label", (footer_link_wikiconnect))
             .text(footer_link_wikiconnect);
-        $('.is-gamepedia .global-footer__link[data-tracking-label="community.help"]')
-            .attr("href", "https://help.fandom.com/wiki/Gamepedia_Help_Wiki");
+        $(".is-gamepedia .global-footer__link[data-tracking-label=\"community.help\"]")
+            .attr("href", "https://help.gamepedia.com/wiki/Gamepedia_Help_Wiki");
         
         var title_special_search = document.querySelector(".rootpage-Special_Search.is-gamepedia .page-header__title-wrapper h1.page-header__title");
         if ((title_special_search) !== true) {
@@ -120,13 +117,13 @@ mw.loader.using(["mediawiki.api"]).then(function() {
     
     // -- Overview Section -- //
     /// "Fandom.com/about" to "Gamepedia.com/about"
-    $('.is-gamepedia .global-footer__link[data-tracking-label="company-overview.about"]')
+    $(".is-gamepedia .global-footer__link[data-tracking-label=\"company-overview.about\"]")
         .attr("href", "https://www.gamepedia.com/about");
     /// "Fandom.com/about#contact" to "Help.fandom.com/wiki/How_to_contact_Gamepedia"
-    $('.is-gamepedia .global-footer__link[data-tracking-label="company-overview.contact"]')
+    $(".is-gamepedia .global-footer__link[data-tracking-label=\"company-overview.contact\"]")
         .attr("href", "https://help.fandom.com/wiki/How_to_contact_Gamepedia");
     /// Remove "What is Fandom?"
-    $('.is-gamepedia .global-footer__link[data-tracking-label="company-overview.what-is-fandom"]')
+    $(".is-gamepedia .global-footer__link[data-tracking-label=\"company-overview.what-is-fandom\"]")
         .remove();
     
     // -- Fandom Apps Section -- //
@@ -134,11 +131,11 @@ mw.loader.using(["mediawiki.api"]).then(function() {
     var curseforge_app_section = $("<section>")
         .addClass("global-footer__section")
         .addClass("global-footer__section-curseforge-stores");
-    var curseforge_app_svg = $('<svg class="global-footer__icon"><use xlink:href="#wds-brand-fandom-logo-store"></use></svg>');
+    var curseforge_app_svg = $("<svg class=\"global-footer__icon\"><use xlink:href=\"#wds-brand-fandom-logo-store\"></use></svg>");
     var curseforge_app_store = $("<ul>")
         .addClass("global-footer__links");
-    var curseforge_app_store_apple = $('<li><a href="https://download.curseforge.com/" class="global-footer__link" data-tracking-label="community-apps.windows-app" aria-label="CurseForge\'s Windows App"><img class="global-footer__link-icon" src="https://static.wikia.nocookie.net/central/images/4/48/Aeywoo_-_Get_It_On_Badge_Windows.png" alt="Get It On Windows"></img></a></li>');
-    var curseforge_app_store_google = $('<li><a href="https://download.curseforge.com/" class="global-footer__link" data-tracking-label="community-apps.macos-app" aria-label="CurseForge\'s MacOS App"><img class="global-footer__link-icon" src="https://static.wikia.nocookie.net/central/images/b/b3/Aeywoo_-_Get_It_On_Badge_MacOS.png" alt="Get It On MacOS"></img></a></li>');
+    var curseforge_app_store_apple = $("<li><a href=\"https://download.curseforge.com/\" class=\"global-footer__link\" data-tracking-label=\"community-apps.windows-app\" aria-label=\"CurseForge\'s Windows App\"><img class=\"global-footer__link-icon\" src=\"https://static.wikia.nocookie.net/central/images/4/48/Aeywoo_-_Get_It_On_Badge_Windows.png\" alt=\"Get It On Windows\"></img></a></li>");
+    var curseforge_app_store_google = $("<li><a href=\"https://download.curseforge.com/\" class=\"global-footer__link\" data-tracking-label=\"community-apps.macos-app\" aria-label=\"CurseForge\'s MacOS App\"><img class=\"global-footer__link-icon\" src=\"https://static.wikia.nocookie.net/central/images/b/b3/Aeywoo_-_Get_It_On_Badge_MacOS.png\" alt=\"Get It On MacOS\"></img></a></li>");
     // Extra defining for unnamed divisions
     var global_footer_content = document.querySelector(".is-gamepedia .global-footer .global-footer__content");
     if (global_footer_content) {

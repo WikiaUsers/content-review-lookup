@@ -39,7 +39,7 @@ window.pageData = [
    'See art here from [[User:LettuceBirb|Lettuce]], MS, and more!',
    'Lettuce\'s Gijinks is open for business! He sells Glowy Specs™',
    'TZM\'s lair. Yeah, he hides it well. More coming soon.',
-   '<h1 class="page-header__title">PrismastebanZ\'s Hidden Messy Sanctuary</h1>' + 'I\'m blue da ba de ba duh da ba. Also, welcome to my hidden messy sanctuary.' + '<div class="mq-wrapper"><span><wikitext>[[File:Rei Ayanami Toast.gif]] [[File:1z148ow th.gif]] [[File:Rei Ayanami Toast.gif]]</span></div></wikitext>' + '<wikitext>{{PrismaZ/SideImages}}</wikitext>' + '<poll>Have you found this page yet?<br>Yes<br>No</poll>',
+   '<h1 class="page-header__title">PrismastebanZ\'s Hidden Messy Sanctuary</h1>' + 'I\'m blue da ba de ba duh da ba. Also, welcome to my hidden messy sanctuary.' + '<div class="mq-wrapper"><span><wikitext>[[File:Rei Ayanami Toast.gif]] [[File:1z148ow th.gif]] [[File:Rei Ayanami Toast.gif]]</span></div></wikitext>' + '<poll>Have you found this page yet?<br>Yes<br>No</poll>',
    'DATAFORLASTPAGEINABOVELIST'
 
 ];

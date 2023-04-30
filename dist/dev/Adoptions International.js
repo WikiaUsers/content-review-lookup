@@ -24,9 +24,10 @@ mw.loader.using( [
 		'pt',
 		'pt-br',
 		'ru',
-		'zh',
-		'zh-tw',
-		'zh-hk'
+		// Waiting IWR-zh onboarding
+		// 'zh',
+		// 'zh-tw',
+		// 'zh-hk'
 	] );
 
 	window.adoptInternational.adoptionConfig = ( window.adoptInternational.adoptionConfig || {} );

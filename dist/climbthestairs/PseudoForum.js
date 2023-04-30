@@ -183,12 +183,11 @@ window.pseudoForum = {
                     "<time class=\"mtb-timeago\" datetime=\"" + msg.time + "\"/>" +
                     "<time class=\"mtb-time\">" + new Date(msg.time).format() + "</time>" +
                 "</a>";
-            if (msg.edit) {
+            if (msg.edit)
                 timestamp =
                     "<a href=\"?diff="      + msg.diff + "\" class=\"mtb-diff\">Edited by</a> " +
                     "<a href=\"/wiki/User:" + msg.edit + "\" class=\"mtb-user\">" + msg.edit + "</a> " +
                     timestamp;
-            }
             return "" +
                 "<div class=\"pf-msg-toolbar\">" +
                     "<div class=\"mtb-timestamp\">" + timestamp + "</div>" +
@@ -305,12 +304,14 @@ window.pseudoForum = {
         $textarea.on("input", function() {
             $(this).resize(210);
         }).on("keydown", function(e) {
-            if (e.key !== "Tab") return;
-            if ($(this).next().children(".etb-msg").children().hasClass("disabled")) {
+            if (e.key !== "Tab")
+            	return;
+            const $x = $(this).next().children(".etb-msg").children();
+            if ($x.hasClass("disabled")) {
                 e.preventDefault();
             } else if (e.shiftKey) {
                 e.preventDefault();
-                $(this).next().children(".etb-msg").children().last().focus();
+                $x.last().focus();
             }
         });
         // Formatting toolbar

@@ -1,80 +1,74 @@
 // Page protection indicators
-// jshint jquery:true, esversion:5
-/* globals require, module, mediaWiki, mw, OO */
-'use strict';
+;(function($, mw) {
+	'use strict';
 
-function getImageURL(name, store, size) {
-	var encodedName = mw.util.wikiUrlencode(name);
-	return "/media/"
-		+ store
-		+ "/"
-		+ encodedName;
-}
-
-function mimicIndicator(id, link, imgName, imgStore, title) {
-	var encodedLink = mw.util.getUrl(link);
-	return $("<div>")
-		.attr("id", "mw-indicator-" + id)
-		.addClass("mw-indicator")
-		.append($("<a>")
-			.attr({
-				"href": encodedLink,
-				"title": title,
-				"class": "image"
-			}).append($("<img>")
-				.attr({
-				"alt": title,
-				"src": getImageURL(imgName, imgStore, 25),
-				"width": "25",
-				"height": "25"
-				})
-			)
-		);
-}
-
-$(function() {
-	var protectionLevelData = mw.config.get("wgRestrictionEdit");
-	var moveProtectionLevelData = mw.config.get("wgRestrictionMove");
-	
-	if (protectionLevelData === null) {
+	const config = mw.config.get([
+		'wgRestrictionEdit',
+		'wgIsMainPage',
+		'wgAction'
+	]);
+	const protectionLevelData = config.wgRestrictionEdit;
+	if (
 		// Null on nonexistent or special pages. Avoids a crash there.
-		return;
-	}
-	if (mw.config.get("wgAction") !== "view") {
+		!protectionLevelData ||
 		// No need to display the indicator when viewing history or editing the page
+		config.wgAction !== 'view') {
 		return;
 	}
-	if (mw.config.get("wgIsMainPage")) {
-		// The indicator lock breaks formatting on the main page due to the level 1 header being hidden
-		return;
+
+	function getImageThumbnailURL(name, store, size) {
+		const encodedName = mw.util.wikiUrlencode(name);
+		return 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/' +
+			store +
+			'/' +
+			encodedName +
+			'/revision/latest';
 	}
-	
-	var protectionLevel = protectionLevelData[0];
-	if (protectionLevel === "autoconfirmed") {
-		mimicIndicator(
-			"protection-semi",
-			"Minecraft Wiki:Автопідтверджені користувачи",
-			"Semi-protected page lock.png",
-			"9/9b",
-			"Ця сторінка захищена від правок незареєстрованими або новими користувачами."
-		).appendTo($(".mw-indicators"));
-	} else if (protectionLevel === "sysop") {
-		mimicIndicator(
-			"protection-full",
-			"Minecraft Wiki:Адміністратори",
-			"Fully-protected page lock.png",
-			"4/49",
-			"Ця сторінка повністю захищена від правок звичайними користувачами."
-		).appendTo($(".mw-indicators"));
+
+	function mimicIndicator(id, link, imgName, imgStore, title) {
+		const encodedLink = mw.util.getUrl(link);
+		return $('<a style="padding: 5px 12px;height: 36px;margin: 0 3px 0 2px;">')
+			.attr({
+				'href': encodedLink,
+				'title': title
+			}).append($('<img>')
+				.attr({
+				'alt': title,
+				'src': getImageThumbnailURL(imgName, imgStore, 25),
+				'srcset': getImageThumbnailURL(imgName, imgStore, 38) +
+					' 1.5x, ' +
+					getImageThumbnailURL(imgName, imgStore, 50) +
+					' 2x',
+				'width': '25',
+				'height': '25'
+				})
+			);
 	}
-	
-	if (moveProtectionLevelData[0] === "sysop") {
+
+	const protectionLevel = protectionLevelData[0];
+	if (protectionLevel === 'autoconfirmed') {
 		mimicIndicator(
-			"protection-move",
-			"Minecraft Wiki:Захист сторінок",
-			"Move protected page lock.png",
-			"b/b0",
-			"Ця сторінка повністю захищена від перейменування звичайними користувачами."
-		).appendTo($(".mw-indicators"));
+			'protection-semi',
+			'Minecraft Wiki:Автопідтверджені користувачи',
+			'Semi-protected page lock.png',
+			'9/9b',
+			'Ця сторінка напівзахищена, тому редагувати її можуть лише зареєстровані користувачі.'
+		).prependTo($('.page-header__actions'));
+	} else if (protectionLevel === 'directoreditprotected') {
+		mimicIndicator(
+			'protection-director',
+			'Minecraft Wiki:Директори',
+			'Director-protected page lock.png',
+			'8/85',
+			'Ця сторінка захищена лише для директорів, тому лише директори можуть її редагувати.'
+		).prependTo($('.page-header__actions'));
+	} else if (protectionLevel === 'sysop') {
+		mimicIndicator(
+			'protection-full',
+			'Minecraft Wiki:Адміністратори',
+			'Fully-protected page lock.png',
+			'4/49',
+			'Ця сторінка повністю захищена, тому редагувати її можуть лише адміністратори.'
+		).prependTo($('.page-header__actions'));
 	}
-});
+})(window.jQuery, window.mediaWiki);

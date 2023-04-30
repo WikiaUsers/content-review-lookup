@@ -268,3 +268,27 @@ document.querySelectorAll(".IdTBl").forEach(
 );});
 
 UpdateTable()
+
+/* Уровень идентичностей*/
+var $module = $('<input type="range" min="1" max="30" value="30" class="slider" id="Range"></input>');
+$('.SinSlider').prepend($module);
+
+var slider = document.querySelector("#Range");
+if(slider != null)
+{
+SetSlider(slider.value);
+slider.oninput = function() {
+    SetSlider(this.value);
+}
+
+function SetSlider(n)
+{
+	var Blocks = document.querySelectorAll(".math");
+	Blocks.forEach(function(Block){
+		base = parseFloat(Block.querySelector('i').innerHTML); 
+		add = parseFloat(Block.querySelector('b').innerHTML); 
+		
+		Block.querySelector('span').innerHTML = Math.round(n*add+base);
+	});
+}
+}

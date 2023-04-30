@@ -25,3 +25,13 @@ window.AutoCreateUserPagesConfig = {
 };
 /* TBL Extension */
 TBL_GROUP = "roblox-en";
+
+/*LinKPreviewJS*/
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} }); /*Configuration Object*/
+window.pPreview.csize = 100; /*Cache Size*/
+window.pPreview.debug = false; /*Debug Mode (bool)*/
+window.pPreview.apid = true; /*Use API to get*/
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/arena-defense-arenadev/images/6/6a/NoImageRA.png/revision/latest/scale-to-width-down/800?cb=20230427041420'; /*Image not found*/
+window.pPreview.delay = 90; /*Hover reaction delay*/
+window.pPreview.dock = '#mw-content-text'; /*Article Container*/
+window.pPreview.tlen = 1000; /*Max text length*/

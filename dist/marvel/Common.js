@@ -238,7 +238,7 @@ $(function() {
 ////////////////////////////////////////////////////////////////////
 // THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
 ////////////////////////////////////////////////////////////////////
-*/
+
 var number_of_wiki_names = 27;
 var wiki_name_number = 0;
 
@@ -250,7 +250,7 @@ var elements=document.getElementsByClassName('fandom-community-header__community
 var wiki_name=elements[0];
 wiki_name.textContent=wiki_name_text;
 
-
+*/
 /* 
 ////////////////////////////////////////////////////////////////////
 // THE BELOW CODE ADDS CUSTOM BUTTONS TO THE JAVASCRIPT EDIT TOOLBAR
