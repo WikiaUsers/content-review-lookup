@@ -21,7 +21,7 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                     document.querySelector("#firstHeading").innerHTML = "Управление оповещениями";
 
                     mw.util.addCSS(
-                        ".sitenotice:not(.nkch-sitenotice):not(.nkch-anonnotice) { display: none; }" +
+                        ".sitenotice-wrapper:not(.nkch-sitenotice-wrapper):not(.nkch-anonnotice-wrapper) { display: none; }" +
 
                         ".oo-ui-fieldLayout-field { width: 100%; }" +
                         ".oo-ui-textInputWidget { max-width: 100%; }" +
@@ -64,32 +64,36 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
 
                     /* ~ Sitenotice Preview ~ */
                     const sitenoticePreview = $("<div>", {
-                        class: "nkch-sitenotice sitenotice"
+                        class: "nkch-sitenotice-wrapper sitenotice-wrapper"
                     }).appendTo(".notifications-placeholder");
 
                     const sitenoticePreview_header = $("<div>", {
-                        class: "nkch-sitenotice__header sitenotice__header"
+                        class: "nkch-sitenotice-wrapper__header sitenotice-wrapper__header"
                     }).appendTo(sitenoticePreview);
 
                     const sitenoticePreview_title = $("<h1>", {
-                        class: "nkch-sitenotice__title sitenotice__title",
+                        class: "nkch-sitenotice-wrapper__title sitenotice-wrapper__title",
                         text: "Предпросмотр: Sitenotice"
                     }).appendTo(sitenoticePreview_header);
 
                     const sitenoticePreview_content = $("<div>", {
-                        class: "nkch-sitenotice__content sitenotice__content"
+                        class: "nkch-sitenotice-wrapper__content sitenotice-wrapper__content"
                     }).appendTo(sitenoticePreview);
 
+                    const sitenoticePreview_localNotice = $("<div>", {
+                        class: "localNotice"
+                    }).appendTo(sitenoticePreview_content);
+
                     const sitenoticePreview_readMore = $("<div>", {
-                        class: "nkch-sitenotice__read-more sitenotice__read-more",
+                        class: "nkch-sitenotice-wrapper__read-more sitenotice-wrapper__read-more",
                         html: "<p>" + mw.message("sitenotice-read-more").text() + "</p>"
                     }).appendTo(sitenoticePreview);
 
-                    sitenoticePreview_header.append("<svg class='wds-icon wds-icon-tiny sitenotice__close'><use xlink:href='#wds-icons-close-tiny'></use></svg>");
+                    sitenoticePreview_header.append("<svg class='wds-icon wds-icon-tiny sitenotice-wrapper__close'><use xlink:href='#wds-icons-close-tiny'></use></svg>");
 
 
                     const sitenoticeModal = $("<div>", {
-                        class: "nkch-sitenotice__modal sitenotice__modal wds-is-hidden"
+                        class: "nkch-sitenotice-wrapper__modal sitenotice-wrapper__modal wds-is-hidden"
                     }).appendTo("body");
 
                     const sitenoticeModal_curtain = $("<div>", {
@@ -106,51 +110,59 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                     }).appendTo(sitenoticeModal_wrapper);
 
                     const sitenoticeModal_content = $("<div>", {
-                        class: "wds-dialog__content sitenotice__modal-content"
+                        class: "wds-dialog__content sitenotice-wrapper__modal-content"
                     }).appendTo(sitenoticeModal_wrapper);
+
+                    const sitenoticeModal_localNotice = $("<div>", {
+                        class: "localNotice"
+                    }).appendTo(sitenoticeModal_content);
 
                     const sitenoticeModal_actions = $("<div>", {
                         class: "wds-dialog__actions"
                     }).appendTo(sitenoticeModal_wrapper);
 
                     const sitenoticeModal_button = $("<button>", {
-                        class: "wds-button wds-dialog__actions-button sitenotice__modal-close",
+                        class: "wds-button wds-dialog__actions-button sitenotice-wrapper__modal-close",
                         text: mw.message("sitenotice-modal-close").text()
                     }).appendTo(sitenoticeModal_actions);
 
                     const sitenoticeModal_overlay = $("<div>", {
-                        class: "sitenotice__modal-overlay"
+                        class: "sitenotice-wrapper__modal-overlay"
                     }).appendTo(sitenoticeModal_curtain);
 
 
                     /* ~ Anonnotice Preview ~ */
                     const anonnoticePreview = $("<div>", {
-                        class: "nkch-anonnotice sitenotice"
+                        class: "nkch-anonnotice-wrapper sitenotice-wrapper"
                     }).appendTo(".notifications-placeholder");
 
                     const anonnoticePreview_header = $("<div>", {
-                        class: "nkch-anonnotice__header sitenotice__header"
+                        class: "nkch-anonnotice-wrapper__header sitenotice-wrapper__header"
                     }).appendTo(anonnoticePreview);
 
                     const anonnoticePreview_title = $("<h1>", {
-                        class: "nkch-anonnotice__title sitenotice__title",
+                        class: "nkch-anonnotice-wrapper__title sitenotice-wrapper__title",
                         text: "Предпросмотр: Anonnotice"
                     }).appendTo(anonnoticePreview_header);
 
                     const anonnoticePreview_content = $("<div>", {
-                        class: "nkch-anonnotice__content sitenotice__content"
+                        class: "nkch-anonnotice-wrapper__content sitenotice-wrapper__content"
                     }).appendTo(anonnoticePreview);
 
+                    const anonnoticePreview_localNotice = $("<div>", {
+                        class: "localNotice"
+                    }).appendTo(anonnoticePreview_content);
+
                     const anonnoticePreview_readMore = $("<div>", {
-                        class: "nkch-anonnotice__read-more sitenotice__read-more",
+                        class: "nkch-anonnotice-wrapper__read-more sitenotice-wrapper__read-more",
                         html: "<p>ПОДРОБНЕЕ</p>"
                     }).appendTo(anonnoticePreview);
 
-                    anonnoticePreview_header.append("<svg class='wds-icon wds-icon-tiny sitenotice__close'><use xlink:href='#wds-icons-close-tiny'></use></svg>");
+                    anonnoticePreview_header.append("<svg class='wds-icon wds-icon-tiny sitenotice-wrapper__close'><use xlink:href='#wds-icons-close-tiny'></use></svg>");
 
 
                     const anonnoticeModal = $("<div>", {
-                        class: "nkch-anonnotice__modal sitenotice__modal wds-is-hidden"
+                        class: "nkch-anonnotice-wrapper__modal sitenotice-wrapper__modal wds-is-hidden"
                     }).appendTo("body");
 
                     const anonnoticeModal_curtain = $("<div>", {
@@ -167,20 +179,24 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                     }).appendTo(anonnoticeModal_wrapper);
 
                     const anonnoticeModal_content = $("<div>", {
-                        class: "wds-dialog__content sitenotice__modal-content"
+                        class: "wds-dialog__content sitenotice-wrapper__modal-content"
                     }).appendTo(anonnoticeModal_wrapper);
+
+                    const anonnoticeModal_localNotice = $("<div>", {
+                        class: "localNotice"
+                    }).appendTo(anonnoticeModal_content);
 
                     const anonnoticeModal_actions = $("<div>", {
                         class: "wds-dialog__actions"
                     }).appendTo(anonnoticeModal_wrapper);
 
                     const anonnoticeModal_button = $("<button>", {
-                        class: "wds-button wds-dialog__actions-button sitenotice__modal-close",
+                        class: "wds-button wds-dialog__actions-button sitenotice-wrapper__modal-close",
                         text: "ЗАКРЫТЬ"
                     }).appendTo(anonnoticeModal_actions);
 
                     const anonnoticeModal_overlay = $("<div>", {
-                        class: "sitenotice__modal-overlay"
+                        class: "sitenotice-wrapper__modal-overlay"
                     }).appendTo(anonnoticeModal_curtain);
 
                     /* ~ actions ~ */
@@ -257,17 +273,17 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                             api.get({
                                 action: "parse",
                                 text: input_SN.getValue(),
-                                wrapoutputclass: "localNotice",
+                                wrapoutputclass: "sitenotice",
                                 format: "json",
                             }).done(
                                 function (data) {
-                                    sitenoticePreview_content[0].innerHTML = data.parse.text['*'];
-                                    sitenoticePreview[0].classList.add("sitenotice--visible");
+                                    sitenoticePreview_localNotice[0].innerHTML = data.parse.text['*'];
+                                    sitenoticePreview[0].classList.add("sitenotice-wrapper--visible");
 
                                     var isBigEnough = sitenoticePreview_content[0].clientHeight > 178;
-                                    sitenoticePreview_readMore[0].classList.toggle("sitenotice__read-more--visible", isBigEnough);
+                                    sitenoticePreview_readMore[0].classList.toggle("sitenotice-wrapper__read-more--visible", isBigEnough);
 
-                                    sitenoticeModal_content[0].innerHTML = data.parse.text['*'];
+                                    sitenoticeModal_localNotice[0].innerHTML = data.parse.text['*'];
                                 }
                             );
                         }
@@ -293,17 +309,17 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                             api.get({
                                 action: "parse",
                                 text: input_AN.getValue(),
-                                wrapoutputclass: "localNotice",
+                                wrapoutputclass: "sitenotice",
                                 format: "json",
                             }).done(
                                 function (data) {
-                                    anonnoticePreview_content[0].innerHTML = data.parse.text['*'];
-                                    anonnoticePreview[0].classList.add("sitenotice--visible");
+                                    anonnoticePreview_localNotice[0].innerHTML = data.parse.text['*'];
+                                    anonnoticePreview[0].classList.add("sitenotice-wrapper--visible");
 
                                     var isBigEnough = anonnoticePreview_content[0].clientHeight > 178;
-                                    anonnoticePreview_readMore[0].classList.toggle("sitenotice__read-more--visible", isBigEnough);
+                                    anonnoticePreview_readMore[0].classList.toggle("sitenotice-wrapper__read-more--visible", isBigEnough);
 
-                                    anonnoticeModal_content[0].innerHTML = data.parse.text['*'];
+                                    anonnoticeModal_localNotice[0].innerHTML = data.parse.text['*'];
                                 }
                             );
                         }
@@ -326,11 +342,11 @@ if (!nkch.nm.isActive && mw.config.get("wgCanonicalNamespace") === "Special" && 
                     });
 
                     $(sitenoticePreview_header[0].querySelector("svg")).on("click", function (e) {
-                        sitenoticePreview[0].classList.remove("sitenotice--visible");
+                        sitenoticePreview[0].classList.remove("sitenotice-wrapper--visible");
                     });
 
                     $(anonnoticePreview_header[0].querySelector("svg")).on("click", function (e) {
-                        anonnoticePreview[0].classList.remove("sitenotice--visible");
+                        anonnoticePreview[0].classList.remove("sitenotice-wrapper--visible");
                     });
 
 

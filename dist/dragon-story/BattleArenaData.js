@@ -1641,6 +1641,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"rarity": "rare",
 				"unusable": true
 			},
+			"bloom": {
+				"name": "Bloom",
+				"colors": [
+					"flower",
+					"red",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"blooming": {
 				"name": "Blooming",
 				"colors": [
@@ -1978,6 +1987,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink",
 					"yellow",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"brighttaurus": {
+				"name": "Bright Taurus",
+				"colors": [
+					"zodiac",
+					"shine",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -3389,6 +3407,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"rarity": "unbreedable",
 				"unusable": true
 			},
+			"corsage": {
+				"name": "Corsage",
+				"colors": [
+					"flower",
+					"pink",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"corsair": {
 				"name": "Corsair",
 				"colors": [
@@ -3562,6 +3589,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"olympus",
 					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"crimsonmum": {
+				"name": "Crimson Mum",
+				"colors": [
+					"flower",
+					"red",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -4396,6 +4432,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"spooky",
 					"black",
 					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"dendrobium": {
+				"name": "Dendrobium",
+				"colors": [
+					"flower",
+					"blue",
+					"pink"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5237,6 +5282,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"encore": {
+				"name": "Encore",
+				"colors": [
+					"flower",
+					"yellow",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"end": {
 				"name": "End",
 				"colors": [
@@ -5814,6 +5868,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"firelily": {
+				"name": "Fire Lily",
+				"colors": [
+					"flower",
+					"purple",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"fireopal": {
 				"name": "Fire Opal",
 				"colors": [
@@ -6010,6 +6073,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"dino",
 					"pink",
 					"blue"
+				],
+				"rarity": "unbreedable"
+			},
+			"floret": {
+				"name": "Floret",
+				"colors": [
+					"flower",
+					"pink",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},
@@ -9485,6 +9557,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"leafy": {
+				"name": "Leafy",
+				"colors": [
+					"flower",
+					"green",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"leer": {
 				"name": "Leer",
 				"colors": [
@@ -11917,6 +11998,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"nightshade": {
+				"name": "Nightshade",
+				"colors": [
+					"flower",
+					"black",
+					"purple"
+				],
+				"rarity": "common"
+			},
 			"nightsky": {
 				"name": "Nightsky",
 				"colors": [
@@ -13320,6 +13410,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"fey",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"polydaisy": {
+				"name": "Polydaisy",
+				"colors": [
+					"flower",
+					"rainbow",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -14907,6 +15006,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"rarity": "rare",
 				"unusable": true
 			},
+			"satinflower": {
+				"name": "Satinflower",
+				"colors": [
+					"flower",
+					"red",
+					"blue"
+				],
+				"rarity": "common"
+			},
 			"saturn": {
 				"name": "Saturn",
 				"colors": [
@@ -15396,6 +15504,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"rainbow",
 					"blue",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"sharpetal": {
+				"name": "Sharpetal",
+				"colors": [
+					"flower",
+					"purple",
 					"yellow"
 				],
 				"rarity": "unbreedable"

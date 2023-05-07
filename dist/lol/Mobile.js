@@ -95,4 +95,22 @@ $(function() {
     $('.mw-special-CargoTables .cargoTable tr:first-of-type > th:first-of-type').html('_pageName');
 });
 
+$(function() {
+	var navboxEnable = $("#mobile-navbox-enable").length;
+	
+	if (navboxEnable) {
+		$(".navbox").css("display", "table");
+		$(".navbox table:first-child").each(function(i, e) {
+			if ($(e).hasClass("mw-collapsible")) {
+				$(e).addClass("mw-collapsed");
+				$(e).find("tbody:first").children("tr").each(function(trIndex, tr) {
+					if (trIndex != 0) {
+						$(tr).css("display", "none");
+					}
+				});
+			}
+		});
+	}
+});
+
 // </nowiki>

@@ -141,7 +141,7 @@ window.fdButtons = [
 ];
 
 /* ========== AddRailModule ========== */
-window.AddRailModule = ['Шаблон:Статья_месяца'];
+window.AddRailModule = ['Шаблон:СМР'];
 
 /* ========== LockOldComments ========== */
 window.lockOldComments = (window.lockOldComments || {});

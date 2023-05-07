@@ -1,0 +1,1 @@
+//importScriptPage('MediaWiki:Snow.js','c'); //cute winter-themed snowfall

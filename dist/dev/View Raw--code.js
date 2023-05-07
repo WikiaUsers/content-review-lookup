@@ -13,7 +13,7 @@
 			'u:dev:MediaWiki:Placement.js'
 		]
 	});
-	var preloads = 2;
+	var preloads = 3;
 	function preload () {
 		if (--preloads === 0) {
 			window.dev.i18n.loadMessages('View Raw').then(init);
@@ -49,4 +49,5 @@
 	}
 	mw.hook('dev.i18n').add(preload);
 	mw.hook('dev.placement').add(preload);
+	mw.loader.using('mediawiki.Uri').then(preload);
 })();

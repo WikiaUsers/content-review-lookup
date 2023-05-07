@@ -105,10 +105,3 @@ function createCollapseButtons() {
                 }
         }
 }
-
-//Discord Integrator Location
-$(function() {
-    mw.hook('DiscordIntegrator.added').add(function($el) {
-        $el.appendTo('#WikiaRail');
-    });
-});

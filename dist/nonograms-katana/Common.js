@@ -105,7 +105,7 @@ function calculate() {
 		/*lvl. 37*/	[""],
 		/*lvl. 38*/	[""],
 		/*lvl. 39*/	["Skill: Cameleer lvl. 2"],
-		/*lvl. 40*/	["Airship lvl. 1"],
+		/*lvl. 40*/	["Dungeon lvl. 4","Airship lvl. 1"],
 		/*lvl. 41*/	[""],
 		/*lvl. 42*/	[""],
 		/*lvl. 43*/	[""],

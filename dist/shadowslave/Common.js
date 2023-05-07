@@ -155,11 +155,12 @@ $( function () {
 		} else {
 			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
 		}
-	} );
-} );
+	});
+});
+
 
 /* Allow direct link to Tabber */
-(function ($) {
+$( function () {
     var hash = window.location.hash.replace('#', '').replace(/_/g, ' ');
     if (hash === '') return;
     $(function() {
@@ -168,14 +169,4 @@ $( function () {
             if (currentTabber.length) currentTabber.click();
         }, 100);
     });    
-})(jQuery);
-
-
-/* Auto sort table*/
-$(document).on('readystatechange', function(){
-	if (document.readyState == "complete" || document.readyState == "interactive") {
-    	$("table.sortable[data-autosort]").each(function(){
-			$($("th", this)[$(this).attr("data-autosort")-1]).click();
-		});
-	}  
 });

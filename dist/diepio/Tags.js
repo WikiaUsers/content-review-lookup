@@ -241,14 +241,19 @@ UserTagsJS.modules.mwGroups      = [
 /* Custom Tags */
 UserTagsJS.modules.custom = {
     /** Staff Ranks **/
-    'JustLeafy'         : ['st'],
-    'Banarama'          : ['st'],
     'AJ (QA)'           : ['st'],
-    'EXPLODINGLLAMA'    : ['st'],
-    'GeoScoph'          : ['st'],
-    'CyberDGun'         : ['st'],
-    'Somerandom222'     : ['st'],
     'Anonymoususer12321': ['st', 'sa'],
+    'Banarama'          : ['st'],
+    'CyberDGun'         : ['st'],
+    'Eclipse227'        : ['st'],
+    'EXPLODINGLLAMA'    : ['st'],
+    'Firestorm587'      : ['st'],
+    'GeoScoph'          : ['st'],
+    'Iamnoob33'         : ['st'],
+    'JustLeafy'         : ['st'],
+    'Ovary'             : ['st'],
+    'Smashy1234'        : ['st'],
+    'Somerandom222'     : ['st'],
     'MrMewshmallow'     : ['founder'],
 
     /** Staff Artist **

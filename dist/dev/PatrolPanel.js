@@ -20,7 +20,7 @@ mw.loader.using([
             rcshow: '!patrolled'
         }).done(function(data) {
             var changes = data.query.recentchanges;
-            var lis = $('<table class="wikitable" style="width:100%; table-layout:fixed; text-align: center;"><th>Title</th><th>Change</th><th>User</th><th>Summary</th><th>Timestamp</th>');
+            var lis = $('<table class="wikitable" style="width:100%; table-layout:fixed; text-align: center; word-break: break-word"><th>Title</th><th>Change</th><th>User</th><th>Summary</th><th>Timestamp</th>');
             $.each(changes, function(i, v) {
                 var diff;
                 if ((v.newlen - v.oldlen) > 0) {

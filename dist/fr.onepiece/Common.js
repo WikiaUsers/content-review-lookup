@@ -31,4 +31,19 @@ $('.expandAll a').click(function(){
 });    
  //End of Expand All
 
+/* Version du JS revue par @Captain Disfiking */
+// =====================================
+//        Variables pour les fonctions
+// =====================================
+// ArchiveTool
+ArchiveToolConfig = { 
+   archiveListTemplate: 'Archived Talk Tabs',	// Modèle à utiliser sur la page principale de discussion
+   archivePageTemplate: 'Archived Talk Tabs',	//Modèle à utiliser sur la pages de discussion archivées
+   archiveSubpage: 'Archive',					// Nom de base à utiliser sur les pages de discussion archivées
+   userLang: true
+};
+
+// BackToTopButton
+window.BackToTopModern = true;
+
    /* Fin JS */

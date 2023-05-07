@@ -956,12 +956,10 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             return null; // Failsafe for crap wiki configurations
         }
         // The first step is to determine the Element for the reference node
-        // NOTE: When a reference contains special HTML chars like '&', they get encoded
-        //	to '.26', however the '.' marks the start of a class which is a problem...
-        //   jQuery supports escaping the dot so we can work around this. There are other
-        //   special characters but I think only dot will occur in cite's #ids.
-        //      : might occur too
-        var $cite = $(frag.attr('href').replace(/([.:])/g, '\\$1'));
+        // NOTE: We do it this way because querySelector and its jQuery
+        //       alternatives will throw an error when the element ID contains
+        //       special characters, such as "&".
+        var $cite = $(document.getElementById(frag.attr('href').replace(/([.:])/g, '\\$1').substring(1)));
         if (!$cite.length) {
             // This happens when the ref tag is of the "name=X" form, but X doesn't exist
             return null;

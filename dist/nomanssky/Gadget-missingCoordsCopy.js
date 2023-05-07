@@ -27,7 +27,7 @@ $(function() {
 	
 	var dateCalc = '#time: d F Y | now + 1 month';
 	div.id = 'MissingCoordsMacro';
-	div.innerText = '{{MissingCoords|{{subst:' + dateCalc + '}}}}';
+	div.innerText = '{{Missing' + 'Coords|{{subst:' + dateCalc + '}}}}';
 	div.style.marginLeft = 'auto';
 	
 	inputDiv.appendChild(div);

@@ -1,32 +1,20 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-let Regina = 1234567890;
-console.log(Regina);
+let targetValue = 5;
 
-/* User Tags */
-
-window.UserTagsJS = {
-    tags: {
-        founder: { u: 'Founder' }
-    },
-    modules: {
-        inactive: {
-            days: 30,
-            namespaces: [0],
-            zeroIsInactive: true
-        },
-        mwGroups: [
-            'founder',
-            'rollback',
-            'bot'
-        ],
-        custom: {
-            'KiwiReg': ['founder']
-        }
-    }
-};
-
-/*
-Credits to MLB Wiki ^^
-Implemented by Lara :>
-*/
+if (targetValue == 3)
+{
+	console.log("nope, it's 3");
+}
+else if (targetValue == 4)
+{
+	console.log("nope, it's 4");
+}
+else if (targetValue == 5)
+{
+	console.log("yes, target hit: " + targetValue);
+}
+else
+{
+	console.log("not 3, 4 or 5");
+}

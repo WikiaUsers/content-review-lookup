@@ -41,7 +41,7 @@
 	    });
 	
 	    // visual source editor
-	    if (ve.init) {
+	    if (window.ve && ve.init) {
 	        var checkExist = setInterval(function () {
 	            if ($('.CodeMirror').length) {
 	                addEvent($('.CodeMirror'));

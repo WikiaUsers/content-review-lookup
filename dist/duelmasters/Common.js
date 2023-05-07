@@ -112,12 +112,7 @@ function searchJavaScript()
 						if(condition.value === "Greater than"){
 							categoriesToInclude.push(startsWithNumber?("∞ "+categoryName):(categoryName+" ∞"));
 						}
-						
-						// if searching for greater than or equal, add the infinite ones as well
-  if (condition.value === "Greater than or equal") {
-    categoriesToInclude.push(startsWithNumber ? (number.value + " " + categoryName) : (categoryName + " " + number.value));
-  }
-                       
+
 						powerCats.forEach(function (powerCat){
 							var power = powerCat.trim().split(" ");
 							power = startsWithNumber? power[0] : power[power.length-1];
@@ -301,21 +296,11 @@ function searchJavaScript()
 		option.textContent = "Equals";
 		dropdown.appendChild(option);
 
-        var option = document.createElement("option");
-        option.value = "Greater than or equal";
-        option.textContent = "Greater than or equal";
-        dropdown.appendChild(option);
-
 		option = document.createElement("option");
         option.value = "Greater than";
 		option.textContent = "Greater than";
         dropdown.appendChild(option);
 
-        option = document.createElement("option");
-        option.value = "Less than or equal";
-		option.textContent = "Less than or equal";
-        dropdown.appendChild(option);
-        
         option = document.createElement("option");
         option.value = "Less than";
 		option.textContent = "Less than";

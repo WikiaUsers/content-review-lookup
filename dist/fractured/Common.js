@@ -107,7 +107,19 @@ const replaceGroupsSkykal = function () {
 if (checkIDSkykal) {
     replaceGroupsSkykal();
 }
+/*----------------------*/
+const checkIDSpoletta = document.querySelector('#Spoletta');
 
+const newGroupSpoletta = '<ul class="grouptags"><li><a href="/wiki/Special:ListUsers?group=bureaucrat" title="Bureaucrat">Don <img src="https://static.wikia.nocookie.net/fractured_gamepedia_en/images/e/e3/Don_Spoletta.png/revision/latest?cb=20220817072324&format=original" width="30" height="30"></a></li></ul>';
+ 
+const replaceGroupsSpoletta = function () {
+	hideGroups.classList.add('hide');
+    findContainer.insertAdjacentHTML('beforeend', newGroupSpoletta);
+};
+ 
+if (checkIDSpoletta) {
+	replaceGroupsSpoletta();
+}
 
 
 /*-----------------------------------------------------------------------------------*/

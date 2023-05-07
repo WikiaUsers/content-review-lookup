@@ -1,3 +1,4 @@
+// <nowiki>
 /* WHM toolbar advertisement */
 var toolbarLabel = 'WHM';
 var toolbarLinks = [
@@ -576,3 +577,5 @@ $('.ns-15 .page-header__title').prepend('Category ');
     });
  
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
+
+// </nowiki>

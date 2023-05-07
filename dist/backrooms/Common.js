@@ -41,3 +41,29 @@ function getRandomIntInclusive(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+// hard obfuscator (does not occasionally transform text into readable phrases)
+const hardobfu = $('.hard-obfuscate');
+setInterval(function() {
+  hardobfu.text(hardobfuscator(hardobfu.text()));
+}, 100);
+function hardobfuscator(hard) {
+    var length = hard.length;
+    var text = '';
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*)(+=][}{\|></?";
+
+    for( var i=0; i < length; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
+// fade-in
+var fadeinclass = document.getElementsByClassName("fadeintext");
+    for(var i = 0; i < fadeinclass.length; i++) {
+        var sec = (i/4).toString();
+        fadeinclass[i].style.animation = "fadeInAnimation ease 1.5s";
+        fadeinclass[i].style.animationDelay = sec.concat("s");
+        fadeinclass[i].style.animationIterationCount = "1";
+        fadeinclass[i].style.animationFillMode = "forwards";
+    }

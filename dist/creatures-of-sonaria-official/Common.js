@@ -1,9 +1,9 @@
-importArticles({
-	type: 'script',
-	articles: [
-		'MediaWiki:Common.js/shoom-calc.js'
-		]
-})
+// importArticles({
+// 	type: 'script',
+// 	articles: [
+// 		'MediaWiki:Common.js/shoom-calc.js'
+// 		]
+// })
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* UserTags */
 
@@ -35,36 +35,49 @@ UserTagsJS.modules.mwGroups = ['developer', 'tester', 'officialcreaturecreator']
 /* END - UserTags */
 
 /* Filtering by each class... */
-if (this) {
-document.getElementsByClassName('all')[0]
-        .addEventListener('click', function (event) {
-            filterSelection("all")
-        });
 
-document.getElementsByClassName('tier1')[0]
+(function($) {
+	if(document.getElementsByClassName('all')){
+	    document.getElementsByClassName('all')[0]
+	        .addEventListener('click', function (event) {
+	            filterSelection("all")
+	        });
+	} // otherwise does not exist
+        
+    if(document.getElementsByClassName('tier1')){
+	    document.getElementsByClassName('tier1')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier1")
         });
+	} // otherwise does not exist
 
-document.getElementsByClassName('tier2')[0]
+	if(document.getElementsByClassName('tier2')){
+	    document.getElementsByClassName('tier2')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier2")
         });
+	} // otherwise does not exist
 
-document.getElementsByClassName('tier3')[0]
+	if(document.getElementsByClassName('tier3')){
+	    document.getElementsByClassName('tier3')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier3")
         });
+	} // otherwise does not exist
         
-document.getElementsByClassName('tier4')[0]
+    if(document.getElementsByClassName('tier4')){
+	    document.getElementsByClassName('tier4')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier4")
         });
-        
-document.getElementsByClassName('tier5')[0]
+	} // otherwise does not exist
+	
+	if(document.getElementsByClassName('tier5')){
+	    document.getElementsByClassName('tier5')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier5")
         });
+	} // otherwise does not exist
 
 /* Rest of code */
 filterSelection("all")
@@ -73,12 +86,12 @@ function filterSelection(c) {
 	  x = document.getElementsByClassName("filterDiv");
 	  if (c == "all") c = "";
 	  for (i = 0; i < x.length; i++) {
-	    remove(x[i], "show");
-	    if (x[i].className.indexOf(c) > -1) add(x[i], "show");
+	    removeFilterSection(x[i], "show");
+	    if (x[i].className.indexOf(c) > -1) addFilterSection(x[i], "show");
 	 }
 }
 
-function add(element, name) {
+function addFilterSection(element, name) {
   var i, arr1, arr2;
   arr1 = element.className.split(" ");
   arr2 = name.split(" ");
@@ -87,7 +100,7 @@ function add(element, name) {
   }
 }
 
-function remove(element, name) {
+function removeFilterSection(element, name) {
   var i, arr1, arr2;
   arr1 = element.className.split(" ");
   arr2 = name.split(" ");
@@ -109,4 +122,5 @@ for (var i = 0; i < btns.length; i++) {
     this.className += " active";
   });
 }
-}
+  //console.log('logs immediately');
+})(jQuery);

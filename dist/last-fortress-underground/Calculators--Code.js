@@ -49,21 +49,7 @@ var incentive_recruitment = {
 		'150%':[150]
         };	
 
-var one_more_reward_I = {
-		'True':[1],
-		'False':[0]
-		};
-		
-var one_more_reward_II = {
-		'True':[1],
-		'False':[0]
-		};
-		
-var one_more_reward_III = {
-		'True':[1],
-		'False':[0]
-		};
-		
+	
 var booster_card = {
 		'0%':[0],
 		'50%':[50],
@@ -72,8 +58,8 @@ var booster_card = {
 		};
 
 var points_per_recruit = {
-		'4000':[4000],
-		'6800':[6800]
+		'Combat Hero Recruitment Points':[4000],
+		'Faction Recruitment Cards':[6800]
 		};
 		
 var chests = [
@@ -93,7 +79,7 @@ $(function() {
 	
 	do_recruit1 = function(){
 	    var x,y,z,a,b,d;
-	    var value_I='',value_II='',value_III='',reward_I='',reward_II='',reward_III='',card='',incentive='',ppr_='';
+	    var value_I='',value_II='',value_III='',card='',incentive='',ppr_='';
 	    for (x in value_points_I){
 	        if (value_points_I.hasOwnProperty(x)){
 	            value_I += '<option value="' + x + '">' + x + '</option>';	
@@ -109,21 +95,6 @@ $(function() {
 	            value_III += '<option value="' + x + '">' + x + '</option>';	
 	        }
 	    }    
-	    /*for (x in one_more_reward_I){
-            if (one_more_reward_I.hasOwnProperty(x)){
-                reward_I += '<option value="' + x + '">' + x + '</option>';	
-            }
-        }   
-        for (x in one_more_reward_II){
-            if (one_more_reward_II.hasOwnProperty(x)){
-                reward_II += '<option value="' + x + '">' + x + '</option>';	
-            }
-        }    
-        for (x in one_more_reward_III){
-            if (one_more_reward_III.hasOwnProperty(x)){
-                reward_III += '<option value="' + x + '">' + x + '</option>';	
-            }
-        }   */
 	    for (x in booster_card){
 	        if (booster_card.hasOwnProperty(x)){
 	            card += '<option value="' + x + '">' + x + '</option>';	
@@ -147,23 +118,19 @@ $(function() {
 	        '<tr>' +
 	        '<td style="width:30%">Value Points I:</td>' +
 	        '<td style="width:20%"><select id="value_points_I">' + value_I + '</select></td>' +
-	        /*'<td style="width:30%">One More Reward I:</td>' +
-			'<td style="width:20%"><select id="one_more_reward_I">' + reward_I + '</select></td>' +*/
 	        '</tr><tr>' +
 	        '<td>Value Points II:</td>' +
 	        '<td><select id="value_points_II">' + value_II + '</select></td>' +
-	        /*'<td>One More Reward II:</td><td style="width:20%"><select id="one_more_reward_II">' + reward_II + '</select></td>' +*/
 	        '</tr><tr>' + 
 	        '<td>Value Points III:</td>' +
 	        '<td><select id="value_points_III">' + value_III + '</select></td>' +
-	        /*'<td>One More Reward III:</td><td style="width:20%"><select id="one_more_reward_III">' + reward_III + '</select></td>' +*/
 	        '</tr><tr>' + 
 	        '<td>Booster Card:</td>' +
 	        '<td><select id="booster_card">' + card + '</select></td>' +
 	        '</tr><tr>' + 
 	        '<td style="width:30%">Incentive: Recruitment:</td><td style="width:20%"><select id="incentive_recruitment">' + incentive + '</select></td>' +
 	        '</tr><tr>' + 
-	        '<td>Points per Recruit:</td>' +
+	        '<td>Recruitment Method:</td>' +
 	        '<td><select id="points_per_recruit">' + ppr_ + '</select></td>' +
 	        '</tr><tr>' + 
 	        '<td style="width:30%">Initial Points:</td><td style="width:20%"><input type="text" size="8" maxlength="8" id="initial_points" value="0" /></td>' +
@@ -175,9 +142,9 @@ $(function() {
 			//t2
 	        '<table class="wikitable">' + 
 	        '<tr>' +
-	        '<th style="width:40%">Chest Points: </th>'+
-	        '<th style="width:30%">Total Recruits: </th>'+
-	        '<th style="width:30%">Blue Tokens: </th>'+
+	        '<th>Chest Points: </th>'+
+	        '<th>Total Recruits: </th>'+
+	        '<th><span id="tokens"></span></th>'+
 	        '</tr>' +
 	        '<td>'+chests[0]+'<td><span id="calc_c1r"></span></td><td><span id="calc_c1t"></span></td>'+
 	        '</tr>' +
@@ -204,62 +171,55 @@ $(function() {
 	        var vp1 = value_points_I[$('#value_points_I').val()][0];              
 	        var vp2 = value_points_II[$('#value_points_II').val()][0];              
 	        var vp3 = value_points_III[$('#value_points_III').val()][0];   
-	        /*var omr1 = one_more_reward_I[$('#one_more_reward_I').val()][0];              
-	        var omr2 = one_more_reward_II[$('#one_more_reward_II').val()][0];              
-	        var omr3 = one_more_reward_III[$('#one_more_reward_III').val()][0];*/ 
 	        var boost = booster_card[$('#booster_card').val()][0];              
 	        var incentive = incentive_recruitment[$('#incentive_recruitment').val()][0];   
 	        var ppr = points_per_recruit[$('#points_per_recruit').val()][0];   
 	        var ip = parseInt($('#initial_points').val());  
 	        var total_modifier = 100+vp1+vp2+vp3+boost+incentive;
 
-			var c1r = Math.ceil(Math.max(chests[0]-ip,0)/(ppr*total_modifier/100));
-	        var c1t = (c1r%10)*100+Math.floor(c1r/10)*900;
-			var c2r = Math.ceil(Math.max(chests[1]-ip,0)/(ppr*total_modifier/100));
-	        var c2t = (c2r%10)*100+Math.floor(c2r/10)*900;
-			var c3r = Math.ceil(Math.max(chests[2]-ip,0)/(ppr*total_modifier/100));
-	        var c3t = (c3r%10)*100+Math.floor(c3r/10)*900;
-			var c4r = Math.ceil(Math.max(chests[3]-ip,0)/(ppr*total_modifier/100));
-	        var c4t = (c4r%10)*100+Math.floor(c4r/10)*900;
-			var c5r = Math.ceil(Math.max(chests[4]-ip,0)/(ppr*total_modifier/100));
-	        var c5t = (c5r%10)*100+Math.floor(c5r/10)*900;
-			var c6r = Math.ceil(Math.max(chests[5]-ip,0)/(ppr*total_modifier/100));
-	        var c6t = (c6r%10)*100+Math.floor(c6r/10)*900;
-			var c7r = Math.ceil(Math.max(chests[6]-ip,0)/(ppr*total_modifier/100));
-	        var c7t = (c7r%10)*100+Math.floor(c7r/10)*900;
-			var c8r = Math.ceil(Math.max(chests[7]-ip,0)/(ppr*total_modifier/100));
-	        var c8t = (c8r%10)*100+Math.floor(c8r/10)*900;
-	        var c9r = Math.ceil(Math.max(chests[8]-ip,0)/(ppr*total_modifier/100));
-	        var c9t = (c9r%10)*100+Math.floor(c9r/10)*900;
+                var chests_r= chests.map(x => Math.ceil(Math.max(x-ip,0)/(ppr*total_modifier/100)));
+                var chests_t= chests_r.map(x => (x%10)*100+Math.floor(x/10)*900);
 
-	        /*
-	        if(!omr1){
-	        	//placeholder for adding rewards to calculator
-	        };*/
-	        
+	        var tokens = "Blue Tokens:"
+                if(ppr >4000){
+                    tokens = "Faction Recruitment Cards:"
+                    chests_t= chests_r;
+                };
+
 	        $('#calc_modifier').html(total_modifier);
-	        $('#calc_c1r').html(c1r);
-	        $('#calc_c1t').html(c1t);
-	        $('#calc_c2r').html(c2r);
-	        $('#calc_c2t').html(c2t);
-	        $('#calc_c3r').html(c3r);
-	        $('#calc_c3t').html(c3t);
-	        $('#calc_c4r').html(c4r);
-	        $('#calc_c4t').html(c4t);
-	        $('#calc_c5r').html(c5r);
-	        $('#calc_c5t').html(c5t);
-	        $('#calc_c6r').html(c6r);
-	        $('#calc_c6t').html(c6t);
-	        $('#calc_c7r').html(c7r);
-	        $('#calc_c7t').html(c7t);
-	        $('#calc_c8r').html(c8r);
-	        $('#calc_c8t').html(c8t);
-	        $('#calc_c9r').html(c9r);
-	        $('#calc_c9t').html(c9t);
+
+        $('#calc_c1t').html(chests_t[0]);
+        $('#calc_c2t').html(chests_t[1]);
+        $('#calc_c3t').html(chests_t[2]);
+        $('#calc_c4t').html(chests_t[3]);
+        $('#calc_c5t').html(chests_t[4]);
+        $('#calc_c6t').html(chests_t[5]);
+        $('#calc_c7t').html(chests_t[6]);
+        $('#calc_c8t').html(chests_t[7]);
+        $('#calc_c9t').html(chests_t[8]);
+
+        $('#calc_c1r').html(chests_r[0]);
+        $('#calc_c2r').html(chests_r[1]);
+        $('#calc_c3r').html(chests_r[2]);
+        $('#calc_c4r').html(chests_r[3]);
+        $('#calc_c5r').html(chests_r[4]);
+        $('#calc_c6r').html(chests_r[5]);
+        $('#calc_c7r').html(chests_r[6]);
+        $('#calc_c8r').html(chests_r[7]);
+        $('#calc_c9r').html(chests_r[8]);
+
+	        $('#tokens').html(tokens);
 		};
 	 
 	    $('#initial_points').keyup(update_recruit);
 	    $('#value_points_I,#value_points_II,#value_points_III,#booster_card,#incentive_recruitment,#points_per_recruit').change(update_recruit);
+
+    $('#value_points_I').children().get(-1).selected = true;
+    $('#value_points_II').children().get(-1).selected = true;
+    $('#value_points_III').children().get(-1).selected = true;
+    $('#booster_card').children().get(-2).selected = true;
+    $('#incentive_recruitment').children().get(-1).selected = true;
+
 	    update_recruit();
 	
 	};

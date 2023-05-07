@@ -7,6 +7,7 @@ window.MessageWallUserTags = {
         'username': 'usergroup',
         'Golfpecks256': 'Wiki Adopter • Bureaucrat • Administrator',
         'TheSystemGuy99': 'Administrator',
+        'Catchycatpaws': 'Administrator',
         'Hulk10': 'Bureaucrat • Administrator',
         'Dinotrux18': 'Administrator'
     }

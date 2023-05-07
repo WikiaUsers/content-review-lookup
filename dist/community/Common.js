@@ -5,7 +5,7 @@ window.interwikiInternational = {
     mainPage: 'Community_Central:Interlanguage_link_requests',
     interwikiSchema: '{{bStart}}InterwikiLink|{{from}}|{{to}}{{bEnd}}',
     pageSchema: '{{bStart}}Interlanguage Link Request|awaiting{{bEnd}}\n' +
-    '<!-- Staff: replace "awaiting" with "done" or "not done" to complete request -->\n' +
+    '<!-- Staff: replace "awaiting" with "accepted" or "rejected" to complete request -->\n' +
     '{{interwikis}}\n\n' +
     '~~' + '~~'
 };

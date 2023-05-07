@@ -93,6 +93,11 @@
             styles: 'MediaWiki:CodeblockLineNumbers/code.js'
         },
         
+        CollapsedGlobalNavigation: {
+            page: 'CollapsedGlobalNavigation',
+            styles: 'MediaWiki:CollapsedGlobalNavigation.css'
+        },
+        
         Contextlink: {
             selector: '.context-link',
             styles: 'MediaWiki:Global_Lua_Modules/Context-link.css'
@@ -243,6 +248,11 @@
         FloatingTitle: {
             page: 'FloatingTitle',
             styles: 'MediaWiki:FloatingTitle.css'
+        },
+        
+        FusionButtonSet: {
+            page: 'FusionButtonSet',
+            styles: 'MediaWiki:FusionButtonSet.css'
         },
         
         GamepediaTheme: {
@@ -463,11 +473,6 @@
             disabledByDefault: true
         },
         
-        Obfuscator: {
-            page: 'Obfuscator/demo',
-            styles: 'MediaWiki:Obfuscator.css'
-        },
-        
         OfficialWikisBadge: {
             page: 'OfficialWikisBadge',
             styles: 'MediaWiki:OfficialWikisBadge.css'
@@ -598,7 +603,10 @@
             page: 'Special:BlankPage',
             scripts: 'MediaWiki:Stella.js'
         },
-        
+        StylizedTabs: {
+        	page: 'StylizedTabs',
+        	styles: 'MediaWiki:StylizedTabs.css'
+        },
         Tabber: {
             page: 'Global_Lua_Modules/Tabber',
             styles: 'MediaWiki:Global_Lua_Modules/Tabber.css'

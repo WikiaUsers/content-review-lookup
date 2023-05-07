@@ -14,3 +14,4 @@
 			a.innerText = '[Show Special Characters]';
 		}
 	});
+})();

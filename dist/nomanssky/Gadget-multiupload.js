@@ -22,6 +22,13 @@ mw.loader.using(['site']).then(function() {
 	$("#wpDestFile").parent().parent().addClass("regularFileSelect");
 	$("#wpIgnoreWarning").parent().parent().addClass("regularFileSelect");
 	$("span.mw-htmlform-submit-buttons").append('<input type="button" value="'+i18n.uploadfiles+'" class="multipleFileSelect" style="display:none;" id="multiFileSubmit" />');
+	var urlParams = new URLSearchParams(window.location.search);
+	if (urlParams.get('multiple') == 'true') {
+		$('input[value="' + i18n.yes + '"]')[0].checked = true;
+		$(".regularFileSelect").hide();
+		$(".multipleFileSelect").show();
+	}
+	
 	$("input[name='multipleFiles']").change(function(){
 		if (this.value===i18n.yes) {
 			$(".regularFileSelect").hide();

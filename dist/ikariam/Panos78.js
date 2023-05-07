@@ -493,7 +493,7 @@ $(document).ready(function()
 			console.log(e);
 		}
 		FaithTableGenerator();
-		$('[title], .ikariam-tooltip').hover(function(e)
+		$('.ikariam-tooltip').hover(function(e)
 		{
 			var txt = '';
 			var title = $(this).attr('title');

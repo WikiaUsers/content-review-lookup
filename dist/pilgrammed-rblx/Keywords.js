@@ -1,26 +1,44 @@
 var special = {
     keys: {
-        _sanchezname: {
+        _friend: {
             func: function () {
-                var consonants = ['B', 'Z', 'R', 'V'];
-                var vowels = ['y', 'e', 'n', 'r'];
-                var conso2 = ['n', 'm', 'g', 'k'];
+                var words = [
+                	"Green",
+			        "Pink",
+			        "Blue",
+			        "Sky",
+			        "Grass",
+			        "Window",
+			        "Sponge",
+			        "Water",
+			        "King",
+			        "Dark",
+			        "Ominous",
+			        "Story",
+			        "John",
+			        "Bank",
+			        "Snow",
+			        "Ol'",
+			        "Sparking",
+			        "Twirp",
+			        "Chirp",
+			        "Goose",
+			        "Redbird",
+			        "Sandwich",
+			        "Fighter",
+			        "Help",
+			        "Fruit Cup",
+			        "Bowl",
+			        "Avocado",
+			        "Forest",
+			        "Soul",
+			        "Safety",
+			        "Tip",
+			        "Leg",
+			        "Toast"
+                ];
 
-                return randomChoice(consonants) + randomChoice(vowels) + randomChoice(conso2) + randomChoice(vowels) + randomChoice(conso2);
-            }
-        },
-
-        _sancheztext: {
-            func: function () {
-                var c1 = ['r', 'gr', 'yell', 'bl', 'or', 's'];
-                var c2 = ['ed', 'een', 'ow', 'eige', 'urple', 'ange', 'ilver'];
-                var s = [];
-
-                for (var i = 0; i < 5; i++) {
-                    s.push(randomChoice(c1) + randomChoice(c2));
-                }
-
-                return s.join('');
+                return randomChoice(words);
             }
         }
     },
