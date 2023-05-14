@@ -8,3 +8,10 @@ $('#wpTextbox1').on('wikiEditor-toolbar-buildSection-advanced', function(event, 
     section.groups.insert.tools.redirect.action.options.pre = '#ĐỔI [[';
     section.groups.insert.tools.redirect.action.options.post = ']]\n\n[[Thể loại:Trang Đổi Hướng]]';
 });
+
+/* Allowing for lists of certain user groups to be rendered */
+window.listUsers = {
+    talk: true,
+    customgroups: ['content-moderator','threadmoderator'],
+    limit: 50
+};

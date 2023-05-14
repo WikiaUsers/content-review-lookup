@@ -36,43 +36,51 @@ UserTagsJS.modules.mwGroups = ['developer', 'tester', 'officialcreaturecreator']
 
 /* Filtering by each class... */
 
-(function($) {
-	if(document.getElementsByClassName('all')){
+
+/* 
+
+if($("#myDiv").length){
+            alert("The element you're testing is present.");
+        }
+
+*/
+
+	if($('all').length){
 	    document.getElementsByClassName('all')[0]
 	        .addEventListener('click', function (event) {
 	            filterSelection("all")
 	        });
 	} // otherwise does not exist
         
-    if(document.getElementsByClassName('tier1')){
+    if($('tier1').length){
 	    document.getElementsByClassName('tier1')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier1")
         });
 	} // otherwise does not exist
 
-	if(document.getElementsByClassName('tier2')){
+	if($('tier2').length){
 	    document.getElementsByClassName('tier2')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier2")
         });
 	} // otherwise does not exist
 
-	if(document.getElementsByClassName('tier3')){
+	if($('tier3').length){
 	    document.getElementsByClassName('tier3')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier3")
         });
 	} // otherwise does not exist
         
-    if(document.getElementsByClassName('tier4')){
+    if($('tier4').length){
 	    document.getElementsByClassName('tier4')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier4")
         });
 	} // otherwise does not exist
 	
-	if(document.getElementsByClassName('tier5')){
+	if($('tier5').length){
 	    document.getElementsByClassName('tier5')[0]
         .addEventListener('click', function (event) {
             filterSelection("tier5")
@@ -80,6 +88,7 @@ UserTagsJS.modules.mwGroups = ['developer', 'tester', 'officialcreaturecreator']
 	} // otherwise does not exist
 
 /* Rest of code */
+
 filterSelection("all")
 function filterSelection(c) {
 	  var x, i;
@@ -123,4 +132,3 @@ for (var i = 0; i < btns.length; i++) {
   });
 }
   //console.log('logs immediately');
-})(jQuery);

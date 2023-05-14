@@ -8,23 +8,6 @@ window.LockOldBlogs = {
     nonexpiryCategory: 'Never archived blogs'
 };
 
-// Upload form - need to run before adding hide buttons
-	if ( mw.config.get('wgCanonicalSpecialPageName') === 'Upload' ) {
-		setupUploadForm();
-	}
-
-	addHideButtons();
-
-	if( document.getElementById('mp3-navlink') !== null ) {
-		document.getElementById('mp3-navlink').onclick = onArticleNavClick;
-		document.getElementById('mp3-navlink').getElementsByTagName('a')[0].href = 'javascript:void(0)';
-	}
-
-	if( window.storagePresent ) {
-		initVisibility();
-	}
-
-
 /* UserTags */
 window.UserTagsJS = {
     tags: {
@@ -127,3 +110,115 @@ importArticles({
         'u:dev:MediaWiki:WallGreeting.js',
     ]
 });
+
+function getElementsByClass(searchClass, node, tag)
+{
+    var classElements = new Array();
+
+    if(node == null)
+        node = document;
+
+    if(tag == null)
+        tag = '*';
+
+    var els = node.getElementsByTagName(tag);
+    var elsLen = els.length;
+    var tester = new ClassTester(searchClass);
+
+    for(i = 0, j = 0; i < elsLen; i++)
+    {
+        if(tester.isMatch(els[i]))
+        {
+            classElements[j] = els[i];
+            j++;
+        }
+    }
+    
+    return classElements;
+}
+
+function ClassTester(className)
+{
+    this.regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
+}
+
+ClassTester.prototype.isMatch = function(element)
+{
+    return this.regex.test(element.className);
+}
+
+function getParentByClass(className, element) {
+    var tester = new ClassTester(className);
+    var node = element.parentNode;
+
+    while(node != null && node != document)
+    {
+        if(tester.isMatch(node))
+            return node;
+
+        node = node.parentNode;
+    }
+
+    return null;
+}
+
+function addHideButtons() {
+    var hidables = getElementsByClass('hidable');
+
+    for( var i = 0; i < hidables.length; i++ ) {
+        var box = hidables[i];
+        var button = getElementsByClass('hidable-button', box, 'span');
+
+        if( button != null && button.length > 0 ) {
+            button = button[0];
+
+            button.onclick = toggleHidable;
+            button.appendChild( document.createTextNode('[Hide]') );
+
+            if( new ClassTester('start-hidden').isMatch(box) )
+                button.onclick('bypass');
+        }
+    }
+}
+
+function toggleHidable(bypassStorage) {
+    var parent = getParentByClass('hidable', this);
+    var content = getElementsByClass('hidable-content', parent);
+    var nowShown;
+
+    if( content != null && content.length > 0 ) {
+        content = content[0];
+
+        if( content.style.display == 'none' ) {
+            content.style.display = content.oldDisplayStyle;
+            this.firstChild.nodeValue = '[Hide]';
+            nowShown = true;
+        } else {
+            content.oldDisplayStyle = content.style.display;
+            content.style.display = 'none';
+            this.firstChild.nodeValue = '[Show]';
+            nowShown = false;
+        }
+
+        if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
+            var page = window.pageName.replace(/\W/g, '_');
+            var items = getElementsByClass('hidable');
+            var item = -1;
+
+            for( var i = 0; i < items.length; i++ ) {
+                if( items[i] == parent ) {
+                    item = i;
+                    break;
+                }
+            }
+
+            if( item == -1 ) {
+                return;
+            }
+
+            localStorage.setItem('hidableshow-' + item + '_' + page, nowShown);
+        }
+    }
+}
+
+$( addHideButtons );

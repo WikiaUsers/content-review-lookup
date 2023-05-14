@@ -103,6 +103,7 @@
             });
         },
         buildHeader: function(data) {
+        	var invite = data.invite || this.messages.invite || data.instant_invite;
             return ui.div({
                 classes: ['widget-header'],
                 children: [
@@ -110,25 +111,26 @@
                         classes: ['widget-logo'],
                         href: 'https://discord.com/?utm_source=Discord%20Widget&utm_medium=Logo',
                         target: '_blank'
+                    }),
+                    invite && ui.a({
+                        classes: ['widget-btn-connect'],
+                        href: invite,
+                        target: '_blank',
+                        html: "Join Now!",
+                        style: {
+                            'min-width': '100px',
+                        }
                     })
                 ]
             });
         },
         buildFooter: function(data) {
-            var invite = data.invite || this.messages.invite || data.instant_invite;
-			
             return ui.div({
                 classes: ['widget-footer'],
                 children: [
                     this.messages.footer && ui.span({
                         classes: ['widget-footer-info'],
                         html: this.messages.footer
-                    }),
-                    invite && ui.a({
-                        classes: ['widget-btn-connect'],
-                        href: invite,
-                        target: '_blank',
-                        html: "Join Now!"
                     })
                 ]
             });
@@ -196,7 +198,7 @@
 
             var partition = full / columns;
 
-            for (var i = 0; i < children.length; i++) {
+            for (i = 0; i < children.length; i++) {
                 sum += this.getHeight(children[i]);
                 if (sum > partition) {
                     break;

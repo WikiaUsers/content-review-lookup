@@ -213,7 +213,6 @@ function zselector( $content ) {
     mw.hook( 'wikipage.content' ).add( zselector );
     zselector( mw.util.$content );
 });
-
 /* Таблица Идентичностей Лимбуса*/
 function Filt(arr, clas){
 	All = [];
@@ -266,9 +265,48 @@ document.querySelectorAll(".IdTBl").forEach(
 			UpdateTable();
 	}, false
 );});
+UpdateTable();
 
-UpdateTable()
+/* Аддон в виде сортировок таблицы */
+function Sort(Table, Par){
+	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
+	AllIcons.forEach(function(Mini){
+		clas = '';
+		Mini.classList.forEach(function(Class){
+			if (Class.startsWith(Par))
+				clas = Class;
+		});
+		if (clas != '')
+			Mini.style.order = -clas.substring(Par.length);
+		else
+			Mini.style.order = 1;
+	});
+	
+	
+    var list = $(AllIcons).get();
+    for (var i = 0; i < list.length; i++) {
+        list[i].parentNode.appendChild(list[i]);
+    }
+}
 
+document.querySelectorAll(".IdTSo").forEach( 
+	function(button){
+	button.addEventListener(
+		'click',
+		function (){ 
+			if(this.classList.contains("IdTSo1"))
+			{
+				Sort(this.closest('.IdTable'),'INVALIDE');
+				this.classList.remove("IdTSo1");
+			}
+			else
+			{
+			Sort(this.closest('.IdTable'),this.classList[0]);
+			this.closest('.IdTable').querySelectorAll(".IdTSo1").forEach(function(button){button.classList.remove("IdTSo1");});
+			this.classList.add("IdTSo1");
+			}
+	}, false
+);});
 /* Уровень идентичностей*/
 var $module = $('<input type="range" min="1" max="30" value="30" class="slider" id="Range"></input>');
 $('.SinSlider').prepend($module);
@@ -279,7 +317,7 @@ if(slider != null)
 SetSlider(slider.value);
 slider.oninput = function() {
     SetSlider(this.value);
-}
+};
 
 function SetSlider(n)
 {

@@ -149,7 +149,6 @@ window.lockOldComments.limit = 180;
 
 /* ========== Выделение комментариев статусников ========== */
 setInterval(function () {
-    $('.wds-avatar a[href$="BroSafari"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur1');
     $('.wds-avatar a[href$="Cyberpunk%20Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur2');
     $('.wds-avatar a[href$="Cyberpunk_Ginger"]').closest('.Reply, .Reply_body__PM9kM').addClass('Bur2');
     $('.wds-avatar a[href$="Luchezze"]').closest('.Reply, .Reply_body__PM9kM').addClass('Admin');

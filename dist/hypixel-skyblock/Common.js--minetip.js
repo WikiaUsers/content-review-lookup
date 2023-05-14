@@ -56,13 +56,15 @@ $(function () {
                 }
 
                 var title = $elem.attr("data-minetip-title"),
-                    description = $.trim($elem.attr("data-minetip-text"));
+                    description = $.trim($elem.attr("data-minetip-text")),
+                    content = "";
                 if ((!title || title === "") && (!description || description === ""))
                     return;
-                if (!title || title === "")
-                    title = " ";
 
-                var content = "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
+                // Handle title
+                if (title && title !== "") {
+                    content += "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
+                }
 
                 // Apply normal escaping plus new line
                 if (description) {

@@ -132,3 +132,13 @@ RETF.replace = function(text) {
 };
  
 RETF.load();
+
+/* Top nav notice */
+$('.fandom-community-header__community-name-wrapper').append(
+    $('<a/>').addClass('hover-community-header-wrapper')
+        .append($('<div/>')
+            .addClass('message')
+            .text('Fonts')
+        )
+        .attr('href', 'https://cc71test.fandom.com/wiki/Fonts')
+);

@@ -27,50 +27,53 @@ var ascend_type = {
 		'First-Gen Hero':[2]
 		};
 		
-var solari_recipe={
-'Uncommon (Green)':[0,0,0],
-'Rare (Blue)':[2,0,1],
-'Elite (Purple)':[2,1,1],
-'Epic (Orange)':[1,2,1],
-'Master (Red)':[1,3,1],
-'Legendary (Gold color)':[1,4,1],
-'Legendary 1-Star':[1,5,0],
-'Legendary 2-Star':[1,5,0],
-'Legendary 3-Star':[1,5,0],
-'Myth (Rainbow color)':[1,5,0],
-'Myth 1-Star':[1,5,0],
-'Myth 2-Star':[1,5,0],
-'Myth 3-Star':[1,5,0]
-};
+var solari_recipe=[
+[0,0,0],
+[2,0,1],
+[2,1,1],
+[1,2,1],
+[1,3,1],
+[1,4,1],
+[1,5,0],
+[1,5,0],
+[1,5,0],
+[1,5,0],
+[1,5,0],
+[1,5,0],
+[1,5,0]
+];
 
-var combat_recipe={
-'Uncommon (Green)':[0,0,0],
-'Rare (Blue)':[2,0,1],
-'Elite (Purple)':[2,1,0],
-'Epic (Orange)':[1,2,1],
-'Master (Red)':[2,3,0],
-'Legendary (Gold color)':[1,3,1],
-'Legendary 1-Star':[2,5,0],
-'Legendary 2-Star':[1,3,1],
-'Legendary 3-Star':[1,3,1],
-'Myth (Rainbow color)':[2,3,1],
-'Myth 1-Star':[2,5,0],
-'Myth 2-Star':[2,3,1],
-'Myth 3-Star':[2,3,1]
-};
+var combat_recipe=[
+[0,0,0],
+[2,0,1],
+[2,1,0],
+[1,2,1],
+[2,3,0],
+[1,3,1],
+[2,5,0],
+[1,3,1],
+[1,3,1],
+[2,3,1],
+[2,5,0],
+[2,3,1],
+[2,3,1]
+];
 
-var first_gen_recipe={
-'Epic (Orange)':[0,0,0],
-'Master (Red)':[1,3,1],
-'Legendary (Gold color)':[1,3,1],
-'Legendary 1-Star':[2,3,1],
-'Legendary 2-Star':[2,3,1],
-'Legendary 3-Star':[2,3,1],
-'Myth (Rainbow color)':[2,3,1],
-'Myth 1-Star':[2,3,1],
-'Myth 2-Star':[2,3,1],
-'Myth 3-Star':[2,3,1]
-};
+var first_gen_recipe=[
+[0,0,0],
+[0,0,0],
+[0,0,0],
+[0,0,0],
+[1,3,1],
+[1,3,1],
+[2,3,1],
+[2,3,1],
+[2,3,1],
+[2,3,1],
+[2,3,1],
+[2,3,1],
+[2,3,1]
+];
 
 /*Get Info Calc*/
 $(function() {
@@ -82,22 +85,22 @@ $(function() {
 	        if (ascend_qualities.hasOwnProperty(x)){
 	            ascend_start += '<option value="' + x + '">' + x + '</option>';	
 	            ascend_end += '<option value="' + x + '">' + x + '</option>';	
-	        };
-	    };    
+	        }
+	    }  
 	    for (x in hero_base_rarity){
 	        if (hero_base_rarity.hasOwnProperty(x)){
 	            rarity += '<option value="' + x + '">' + x + '</option>';	
-	        };
-	    };   
+	        }
+	    } 
 	    for (x in ascend_type){
 	        if (ascend_type.hasOwnProperty(x)){
 	            type += '<option value="' + x + '">' + x + '</option>';	
-	        };
-	    };     
+	        }
+	    }  
 
 	    $('#calculator_ascending').html(
 	    	//t1
-	        '<table>' + 
+	        '<table class="fandom-table">' + 
 	        '<tr>' +
 	        '<td>Solari/Combat/First-Gen:</td>' +
 	        '<td><select id="type">' + type + '</select></td>' +
@@ -114,23 +117,33 @@ $(function() {
 	        '</table>'+
 	        
 			//t2
-	        '<table>' + 
+	        '<table class="fandom-table">' + 
 	        '<tr>' +
-	        '<th>How many Hero shards you need to ascend to selected quality</td>' +
+	        '<th colspan="7">How many Hero shards you need to ascend to selected quality</th>' +
 		'</tr><tr>' +
-	        '<th>Uncommon (Green): </th>'+
+	        '<th>Ascending Ingredients</th>'+
 	        '<th>Rare (Blue): </th>'+
 	        '<th>Elite (Purple): </th>'+
 	        '<th>Epic (Orange): </th>'+
 	        '<th>Master (Red): </th>'+
 	        '<th>Legendary (Gold): </th>'+
+	        '<th><span id="equivalent"></span></th>'+
 		'</tr><tr>' +
-	        '<td>Uncommon (Green): </td>'+
-	        '<td>Rare (Blue): </td>'+
-	        '<td>Elite (Purple): </td>'+
-	        '<td>Epic (Orange): </td>'+
-	        '<td>Master (Red): </td>'+
-	        '<td>Legendary (Gold): </td>'+
+	        '<th>Other Heroes, same Faction: </th>'+
+	        '<td><span id="calc_rare"></span></td>'+
+	        '<td><span id="calc_elite"></span></td>'+
+	        '<td><span id="calc_epic"></span></td>'+
+	        '<td><span id="calc_master"></span></td>'+
+	        '<td><span id="calc_legendary"></span></td>'+
+	        '<td><span id="calc_total"></span></td>'+
+		'</tr><tr>' +
+	        '<th>Same exact Hero: </th>'+
+	        '<td><span id="calc_rare_s"></span></td>'+
+	        '<td><span id="calc_elite_s"></span></td>'+
+	        '<td><span id="calc_epic_s"></span></td>'+
+	        '<td><span id="calc_master_s"></span></td>'+
+	        '<td><span id="calc_legendary_s"></span></td>'+
+	        '<td><span id="calc_total_s"></span></td>'+
 	        '</tr>' +
 	        '</table>'
 	    ); 
@@ -141,29 +154,101 @@ $(function() {
 	        var ascend_e = ascend_qualities[$('#ascend_end').val()][0];   
 	        var ascend_s = ascend_qualities[$('#ascend_start').val()][0];   
 	        var typ = ascend_type[$('#type').val()][0]; 
-                var recipe = 0;
-                if(typ===2){  
+            var recipe;
+            
+            if(typ===2){  
 	            recipe = first_gen_recipe;   
-                };
-                if(typ===1){  
+            }
+            if(typ===1){  
 	            recipe = combat_recipe;   
-                };
-                if(typ===0){  
+            }
+            if(typ===0){  
 	            recipe = solari_recipe;   
-                };
-	     
-            };
+            }
+
+			//now do some recursive/loop stuff to get total amount of shards
+			
+			var range = recipe.slice(ascend_s +1, ascend_e + 1);
+			var shards=[0,0,0,0,0,0];
+			var shards_specific=[0,0,0,0,0,0];
+			
+			for (var x = 0; x < range.length; x++){
+				//[0,1,2] = N count,0-5 quality,bool specific
+				if(range[x][2]===0){
+					shards[range[x][1]]+=range[x][0];
+				}
+				if(range[x][2]===1){
+					shards_specific[range[x][1]]+=range[x][0];
+				}
+			}
+			
+			var range_total = recipe.slice(0, ascend_e + 1);
+			len=13;
+			var total_shards = Array(len).fill(0);
+			var total_shards_specific = Array(len).fill(0);
+			var first=0;
+			for (var i = 0; i < range_total.length; i++) {
+				//check if we consider blue, purple or orange shards as base
+				if(range_total[i][1]===rarit & first===0){
+					first=1;
+					shards_specific[i-1]+=1;
+					if(range_total[i][2]===0){
+						total_shards[i]=range_total[i][0];
+						total_shards_specific[i]=total_shards_specific[i-1]+1;
+					}
+					else{
+						total_shards_specific[i]=range_total[i][0];
+						total_shards[i]=total_shards[i-1];
+					}
+				}
+				//cumulative sum of previous recipes
+				if(range_total[i][1]>rarit){
+					if(range_total[i][2]===0){
+						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0]+total_shards_specific[range_total[i][1]]*range_total[i][0];
+						total_shards_specific[i]=total_shards_specific[i-1];
+					}
+					else{
+						total_shards_specific[i]=total_shards_specific[i-1]+total_shards_specific[range_total[i][1]]*range_total[i][0];
+						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0];
+					}
+				}
+			}
+			
 	
-	    $('#rarity,#ascend_start,#ascend_end,#type').change(update_ascend);
+	        var equivalent = 'Equivalent Shards (Blue)';
+	        if(rarit===3){
+	        	equivalent='Equivalent Shards (Orange)';
+	        }
+	        /* //debug stuff
+			$('#calc_rare').html(typ);
+			$('#calc_elite').html(total_shards[ascend_e]);
+			$('#calc_epic').html(shards[3]);
+			*/
+	
+			$('#calc_rare').html(shards[1]);
+			$('#calc_elite').html(shards[2]);
+			$('#calc_epic').html(shards[3]);
+			$('#calc_master').html(shards[4]);
+			$('#calc_legendary').html(shards[5]);
+			$('#calc_rare_s').html(shards_specific[1]);
+			$('#calc_elite_s').html(shards_specific[2]);
+			$('#calc_epic_s').html(shards_specific[3]);
+			$('#calc_master_s').html(shards_specific[4]);
+			$('#calc_legendary_s').html(shards_specific[5]);
+			$('#calc_total').html(total_shards[ascend_e]);
+			$('#calc_total_s').html(total_shards_specific[ascend_e]);
+			$('#equivalent').html(equivalent);
+
+        };
+	
+    $('#rarity,#ascend_start,#ascend_end,#type').change(update_ascend);
 
     $('#rarity').children().get(1).selected = true;
     $('#ascend_start').children().get(1).selected = true;
     $('#ascend_end').children().get(5).selected = true;
     $('#type').children().get(1).selected = true;
+    
     update_ascend();
-            
-
-	
 	};
 	
 	do_ascend();

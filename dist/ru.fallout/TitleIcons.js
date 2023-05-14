@@ -3,6 +3,8 @@
     'use strict';
 
     function TitleIcons() {
+        if (window.titleiconLoaded) return;
+        window.titleiconLoaded = true;
 	   
 		if ( $('.va-titleicons').length ) {
 			var previewCount = $('.va-titleicons-preview > a').length;

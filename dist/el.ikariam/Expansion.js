@@ -87,6 +87,7 @@ function expLoader()
 		},
 		dump: {
 			name: 'Αλάνα',
+			extracoltips: ['Χωρίς χρήση Αμβροσίας','Χωρητικότητα αποθήκευσης Δημαρχείου','Χωρητικότητα αποθήκευσης<br />Αλάνας {0}<sup>ου</sup> επιπέδου','Άθροισμα χωρητικότητας αποθήκευσης','Με χρήση Αμβροσίας','Μεταβαση στον<br />«Υπολογισμό χωρητικότητας»']
 		},
 		embassy: {
 			name: 'Πρεσβεία',
@@ -147,6 +148,7 @@ function expLoader()
 		},
 		warehouse: {
 			name: 'Αποθήκη',
+			extracoltips: ['Xρήση<br />Αμβροσίας','Ολική<br />χωρητικότητα','Ασφαλής<br />χωρητικότητα','Ενεργός<br />χρήστης','Ανενεργός<br />χρήστης','Χωρητικότητα<br />αποθήκευσης<br />Δημαρχείου','Χωρητικότητα αποθήκευσης<br />Αποθήκης {0}<sup>ου</sup> επιπέδου','Συνολική<br />χωρητικότητα','Χωρίς χρήση Αμβροσίας','Με χρήση Αμβροσίας','{0} {1} {2} {3}','Ολική χωρητικότητα','Ασφαλής χωρητικότητα','Συνολική χωρητικότητα','Συνολική ασφαλής χωρητικότητα','«Δημαρχείου»','«Αποθήκης» {0}<sup>ου</sup> επιπέδου','χωρίς Αμβροσία','με Αμβροσία','ενεργού χρήστη','ανενεργού χρήστη','Μεταβαση στον<br />«Υπολογισμό χωρητικότητας»']
 		},
 		winegrower: {
 			name: 'Οινοποιείο',
@@ -579,10 +581,62 @@ function expLoader()
 		}
 		else return inputNum;
 	}
+	// Storage capacity calculator for Warehouses and Dumps
+	function CapCalcTable()
+	{
+		var cp ={w:[8000,16401,25455,35331,46181,58159,71421,86138,102493,120687,140942,163502,188637,216646,247860,282647,321416,364622,412768,466416,526189,592779,666959,749584,841609,944094,1058219,1185297,1326787,1484315,1659690,1854922,2072252,2314171,2583453,2883186,3216807,3588142,4001450,4461476,4973499,5543400,6177729,6883779,7669673,8544460,9518219,10602179,11808851,13152172,14647676,16312668,18166439,20230485,22528769,25088000,27937955,31111829,34646637,38583648,42968887,47853679,53295269,59357506,66111616,73637056,82022473,91366775,101780329,113386298,126322135,140741251,156814887,174734197,194712581,216988297,241827374,269526873,300418536,334872863,373303675,416173213,463997848,517354466,576887609],d:[32000,65401,101073,139585,181437,227119,277128,331991,392268,458564,531535,611896,700427,797983,905498,1024000,1154614,1298578,1457248,1632119,1824830,2037185,2271165,2528951,2812939,3125764,3470326,3849813,4267731,4727939,5234678,5792619,6406896,7083160,7827629,8647143,9549229,10542172,11635086,12838003,14161964,15619122,17222851,18987875,20930401,23068269,25421121,28010583,30860463,33996977,37448993,41248299,45429902,50032358,55098129,60673986,66811447,73567262,81003948,89190382,98202448,108123754,119046431,131072000,144312338,158890744,174943109,192619216,212084166,233519956,257127222,283127160,311763649,343305589,378049493,416322336,458484710,504934306,556109751,612494861]};
+		$('table#capacity_calc tr:eq(0) td').prepend($('input#cap_calc_ambro').length==0?'<input id="cap_calc_ambro" type="checkbox" /> ':'');
+		$('[id^="cap_calc_w"],[id^="cap_calc_d"]').each(function(k,v)
+		{
+			$(v).html('<input type="number" min="0" max="'+(80+(k<5?5:0))+'" value="0" step="1" style="width:40px" pattern="[0-9]*" required>');
+		});
+		$('td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').each(function(k,v)
+		{
+			$(this).on('change input',function(a)
+			{
+				if(isNaN(parseInt(a.target.value)))
+				{
+					a.target.value = 0;
+				}
+				else if(parseInt(a.target.value)>80+(k<5?5:0))
+				{
+					a.target.value = 80+(k<5?5:0);
+				}
+				var t = parseInt(isNaN(parseInt(a.target.value)) ? 0 : a.target.value);
+				var c = t==0 ? 0 : cp[k<5?'w':'d'][parseInt(a.target.value)-1];
+				console.log('#cap_calc_c'+(a.target.parentNode.id.split('_')[2]));
+				$('#cap_calc_c'+(a.target.parentNode.id.split('_')[2])).text(NumToStr(c*($('#cap_calc_ambro').prop('checked')+1)));
+			});
+		});
+		$('#cap_calc_ambro').on('change',function()
+		{
+			var v = $(this).prop('checked');
+			$('#cap_calc_cth').text(NumToStr(25e2*(v+1)));
+			$('td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').each(function(a,b)
+			{
+				var c = parseInt($(b).val())==0 ? 0 : cp[a<5?'w':'d'][parseInt($(b).val())-1];
+				$('#cap_calc_c'+$(b).parent().prop('id').split('_')[2]).text(NumToStr(c*(v+1)));
+			});
+		});
+		$('#cap_calc_ambro,td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').on('change input',function()
+		{
+			var sum = 0;
+			$('table tr td[id^="cap_calc_c"]').each(function()
+			{
+				sum += parseInt($(this).text().replace(/\D+/g,''));
+			});
+			$('#cap_calc_sum').text(NumToStr(sum));
+			sum = 0;
+		});
+	}
 	var bid = Object.keys(bData).filter(function(v,k){return $('table[id^="'+v+'-"]').length>0;}).join('');
 	if(bid!='')
 	{
 		bid = bid.split('-')[0];
+		if(['dump','warehouse'].indexOf(bid)!==-1)
+		{
+			CapCalcTable();
+		}
 		var tids = $.map($('table[id^="'+bid+'-"]'),function(n){return n.id;});
 		$.each(tids,function(x,tid)
 		{
@@ -698,6 +752,41 @@ function expLoader()
 				{
 					$(v).addClass('ikar-tooltip').attr('data-tooltip',prntf(tbl,[t[k],NumToStr(sm[2*k]),NumToStr(Math.floor(sm[2*k+1]))])).find('a').removeAttr('title');
 				});
+				// Extra columns
+				for(var i=0;i<extracols;i++)
+				{
+					switch(bid)
+					{
+						case 'dump':
+							$(tr).find('> td:eq('+(res.length+3+i)+') > table tr').each(function(g,h)
+							{
+								if(g!=4)
+								{
+									var txt = LD[bid].extracoltips[g+(g<4?0:-(g<6?1:5))];
+									$(h).addClass('ikar-tooltip').attr('data-tooltip',[2,7].indexOf(g)!=-1?prntf(txt,[lvl]):txt).find('a').removeAttr('title');
+								}
+							});
+							$(tr).find('> td:eq('+(res.length+3+i)+') > div').addClass('ikar-tooltip').attr('data-tooltip',LD[bid].extracoltips[6]);
+							break;
+						case 'warehouse':
+							var rw = $(tr).find('> td:eq('+(res.length+3+i)+') > table tr');
+							var arr = LD[bid].extracoltips;
+							$(rw).slice(0,2).find('th').each(function(a,b)
+							{
+								$(b).addClass('ikar-tooltip').attr('data-tooltip',a<1?'':arr[a-1]);
+							});
+							$(rw).slice(2).find('th').each(function(a,b)
+							{
+								$(b).addClass('ikar-tooltip').attr('data-tooltip',a%3==0?a!=3?arr[a/3+5]:prntf(arr[a/3+5],[lvl]):arr[8+([1,4,7].indexOf(a)==-1)]);
+							});
+							$(rw).slice(2).find('td').each(function(a,b)
+							{
+								$(b).addClass('ikar-tooltip').attr('data-tooltip',prntf(arr[10],[arr[13-(a<12)*2+(a%3!=0)],a<6?arr[15]:a<12?prntf(arr[16],[lvl]):'',arr[17+Math.floor(a/3)%2],a%3==0?'':arr[18+a%3]]));
+							});
+							$(tr).find('> td:eq('+(res.length+3+i)+') > div').addClass('ikar-tooltip').attr('data-tooltip',arr[21]);
+							break;
+					}
+				}
 			});
 		});
 	}

@@ -66,4 +66,4 @@ var fadeinclass = document.getElementsByClassName("fadeintext");
         fadeinclass[i].style.animationDelay = sec.concat("s");
         fadeinclass[i].style.animationIterationCount = "1";
         fadeinclass[i].style.animationFillMode = "forwards";
-    }
+}

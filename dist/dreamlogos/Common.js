@@ -8,6 +8,13 @@ window.dev.editSummaries = {
      css: '#stdSummaries { ... }',
      select: 'MediaWiki:StandardEditSummary'
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Reconstitution.js',
+    ]
+});
  
 window.UserTagsJS = {
 	modules: {},

@@ -311,6 +311,11 @@
             styles: 'MediaWiki:InterlanguageFlags.css'
         },
         
+        Ivory: {
+            page: 'Ivory',
+            styles: 'MediaWiki:Ivory.css'
+        },
+        
         Katsuragi: {
             page: 'Katsuragi',
             styles: 'MediaWiki:Katsuragi.css'

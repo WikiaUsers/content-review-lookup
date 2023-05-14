@@ -35,3 +35,16 @@ window.pPreview.noimage = 'https://static.wikia.nocookie.net/arena-defense-arena
 window.pPreview.delay = 90; /*Hover reaction delay*/
 window.pPreview.dock = '#mw-content-text'; /*Article Container*/
 window.pPreview.tlen = 1000; /*Max text length*/
+
+/*SocialShareWidget*/
+$(document).ready(function() {
+  var $widget = $('#social-share-widget');
+  var initialOffset = $widget.offset().top;
+
+  $(window).scroll(function() {
+    var currentOffset = $widget.offset().top;
+    var scrollDistance = currentOffset - initialOffset;
+
+    $widget.css('top', (50 + scrollDistance) + '%');
+  });
+});

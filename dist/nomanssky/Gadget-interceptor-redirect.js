@@ -32,7 +32,7 @@ mw.hook("wikipage.content").add(function($content) {
 		var name = input.value;
 		var newName = convertGreek(name);
 		var linkElement = $('#redirectLink')[0];
-		linkElement.href = '/' + newName;
+		linkElement.href = '/Special:EditPage/' + newName;
 		linkElement.innerText = newName;
 
 		function convertGreek(name) {

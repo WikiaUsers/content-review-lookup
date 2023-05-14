@@ -6,4 +6,11 @@ $('.insertusername').text(mw.config.get('wgUserName'));
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
-/*javascript is SO painful.*/
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
+});
+/*javascript!?*/

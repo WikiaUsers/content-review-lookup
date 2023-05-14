@@ -3,26 +3,33 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		bureaucrat: { u:'Wiki Official'},
-		founder: { u:'Creator'},
-		blocked: { u:'Suspended'},
+		founder: { u:'Founder'},
 		newuser: { u:'New User'},
 		inactive: { u: 'Inactive' },
-		bannedfromchat: {u: 'Suspended From Chat'},
 		montheditor: { u:'Editor of the Month' },
 		featured: { u:'Featured User' },
 		moderator: {u:'Moderator'},
-		ministerformagic: {u:'Minister for Magic'},
-		terminated: { u:'Terminated'}
+		headeditor: {u:'Head Editor'},
+		rollback: {u:'Rollback'},
+		terminated: { u:'Terminated'},
+		blocked: { u:'Edit Banned'},
+		discordbanned: {u:'Discord Banned'},
+		bannedfromchat: {u: 'Chat Banned'},
 		
 	}
 };
+
+window.RevealAnonIP = {
+    permissions: ['rollback', 'admin', 'bureaucrat']
+};
+
 UserTagsJS.modules.custom = {
-	'DieselDorky16': ['ministerformagic', 'founder', 'bureaucrat']
+	'LavatearsRune': ['headeditor', 'bureaucrat']
 };
 UserTagsJS.modules.newuser = {
-	days: 45, // Must have been on the Wiki for 45 days
-	edits: 10, // And have at least 10 edits to remove the tag
-	namespace: 0 // Edits must be made to articles to count
+	days: 0, // Must have been on the Wiki for 45 days - Normally 45 days, but user acct migration.
+	edits: 1, // And have at least 10 edits to remove the tag - Normally 10 edits, but user acct migration.
+	namespace: 0 // Edits must be made to articles to count - No change in Migration
 };
 
 UserTagsJS.modules.inactive = 45;
@@ -45,5 +52,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:EditConflictAlert/code.js',
+        'u:dev:MediaWiki:MoreSocialLinks.js',
     ]
 });

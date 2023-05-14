@@ -5,8 +5,8 @@ mw.hook("wikipage.content").add(function($content) {
     if (
         /sysop|vstf|staff|helper|content-volunteer|content-moderator/.test(mw.config.get('wgUserGroups').join())
     ) {
-        $content.find(".admins-only.hide").removeClass("hide");
-        $content.find(".admins-only.default").addClass("hide");
+        $content.find(".admins-only").addClass("visible");
+        $content.find(".admins-only").removeClass("default");
     }
 });
 

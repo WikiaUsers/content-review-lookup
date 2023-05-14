@@ -20,8 +20,8 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
 	'Billybob125poopz': ['bureaucrat', 'pooper', 'rosenist', 'owner', 'potatofartz'], // Hope this works
-	'JamesAdventure' : ['bureaucrat', 'pooper'],
-	'Fantastic_Plums' : ['admin'],
+	'The_Toon_Tomahawk' : ['bureaucrat', 'pooper'],
+	'Fantastic_Plums' : ['admin', 'pooper'],
 	'NANGYLOL' : ['pooper'],
 	'NoiceDrinkz' : ['pooper', 'birthdaycollab'],
 	'RadStink' : ['pooper', 'rosenist', 'rollback'],

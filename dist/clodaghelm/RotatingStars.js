@@ -4,7 +4,7 @@
  * @source			 codepen.io/lbebber/pen/xbZKvQ
 **/
 
-$(document).ready(function() {
+$(function() {
 	var stars = 800;
 	var $stars = $('.stars');
 	var r = 800;

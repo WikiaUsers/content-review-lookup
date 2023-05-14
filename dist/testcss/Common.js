@@ -18,3 +18,10 @@ else
 {
 	console.log("not 3, 4 or 5");
 }
+});
+//modern-looking achievements leaderboard
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ModernLeaderboard.js',
+    ]

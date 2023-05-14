@@ -3,6 +3,4 @@ window.enableReadProgressBarOnArticles = true;
 
 window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
-
-
-/*read progress bar*/
+window.discussEmbedForum = "4400000000000005580";

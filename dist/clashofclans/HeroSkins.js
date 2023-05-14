@@ -37,7 +37,12 @@ $(document).ready(function() {
 			if (Mode == 'Preview') {
 				Mode = 'Idle';
 			}else if (Mode == 'Idle') {
-				Mode = 'Pose';
+				//Check if poses exist
+				if ( $(Wardrobe).find('.Models .Poses').length ) {
+					Mode = 'Pose';
+				}else {
+					Mode = 'KO';
+				}
 			}else if (Mode == 'Pose') {
 				Mode = 'KO';
 			}else if (Mode == 'KO') {
@@ -226,6 +231,12 @@ $(document).ready(function() {
 					sfx = new Audio(location + '8/85/Royal_Champion_Death.ogg');
 				}else {
 					sfx = new Audio(location + 'e/e1/Royal_Champion_Pose.ogg');
+				}
+			}else if (Hero == 'BM') {
+				if (Mode == 'KO') {
+					sfx = new Audio(location + 'b/ba/Battle_Machine_Death.ogg');
+				}else {
+					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
 				}
 			}
 			

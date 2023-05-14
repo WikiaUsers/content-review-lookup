@@ -43,9 +43,18 @@ $(function ($) {
 	$('form:has(.Form-Gundam)').submit(function () {
 		$(this).find(':input, textarea, select').filter(
 			function () {
-				return ($(this).hasClass('createboxInput') || ['hidden', 'checkbox'].includes($(this).attr('type'))) && !this.value
+				return ($(this).hasClass('createboxInput') || ['hidden'].includes($(this).attr('type'))) && !this.value
 			}).attr('disabled', 'disabled');
 
 		return true;
+	});
+
+	// Parse specific references for Template:Ref_name
+	var jqRefSpec = $('.ref-spec');
+	jqRefSpec.each(function (_i, el) {
+		var jqBase = $(el).prev();
+		var sBase = jqBase.find('a').html();
+		jqBase.find('a').html(sBase.slice(0, -1) + ', ' + el.innerHTML + ']');
+		el.remove();
 	});
 });

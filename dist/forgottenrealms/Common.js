@@ -208,12 +208,13 @@ $( function() {
 	 }
 	/* Avoid the purge confirmation all together, restoring legacy behaviour until extension is fixed */
 	 $('.DPL-purge a').on( 'click', function( e ) {
+	 	if ( !this.href.includes( 'action=purge' ) ) return;
+		e.preventDefault();
 		var $form = $( '<form>' ).attr( {
 			method: 'POST',
 			action: this.href,
 		} ).appendTo( document.body );
 		$form.submit();
-		e.preventDefault();
 	} );
 } );
 

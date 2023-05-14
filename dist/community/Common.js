@@ -10,35 +10,38 @@ window.interwikiInternational = {
     '~~' + '~~'
 };
 
-//Redirect Special:Chat to Discord
-if (mw.config.get('wgPageName') === 'Special:Chat') {
-    window.location = 'https://community.fandom.com/wiki/Discord';
-}
+// Adoption & such requests in these languages will *not* work 
+window.communityRequestsUnsupportedLangs = ['de', 'es', 'fr', 'it', 'pl', 'pt', 'pt-br', 'zh', 'zh-tw', 'zh-hk'];
 
-//LockForums - lock after 60 days (default: 30)
-window.LockForums = {
-    expiryDays: 60
+// Configuration for extend permissions form
+window.adoptRetainInternational = {
+    unsupportedLanguages: window.communityRequestsUnsupportedLangs,
+    requirementsConfig: {
+        activityDays: 10,
+        permissionTypes: [
+            'bureaucrat',
+            'sysop'
+        ]
+    },
+    pageConfig: {
+        namespace: 'Adoption',
+        namespaceId: 118,
+        adoptionsPage: 'Adoption:Requests'
+    },
+    wikitextSchema: '{{bStart}}Permissions Extend Request\n' +
+    '|0-Status               = awaiting<!- Staff: replace "awaiting" with "accepted" or "rejected" to complete request-->\n' +
+    '|1-User                 = {{userName}}\n' +
+    '|2-URL                  = {{{wikiURL}}}\n' +
+    '|3-Permissions          = {{permissionsType}}\n' +
+    '|4-Days edited          = {{numDays}}\n' +
+    '|5-Reason               = {{comments}}\n' +
+    '|6-Community discussion = {{{communityVote}}}\n' +
+    '{{bEnd}}\n\n'
 };
-
-window.AddRailModule = [{
-    page: 'MediaWiki:DiscordAMA',
-    prepend: true
-}];
 
 // Configuration for adoptions form
 window.adoptInternational = {
-    unsupportedLanguages: [
-        'de',
-        'es',
-        'fr',
-        'it',
-        'pl',
-        'pt',
-        'pt-br',
-        'zh',
-        'zh-tw',
-        'zh-hk'
-    ],
+    unsupportedLanguages: window.communityRequestsUnsupportedLangs,
     adoptionConfig: {
         activityDays: 10,
         adminsDays: 60,
@@ -52,35 +55,6 @@ window.adoptInternational = {
         namespaceId: 118,
         adoptionsPage: 'Adoption:Requests'
     },
-    /**
-     * Wikitext schema for adoption requests created by this form
-     * It uses Mustache.js template form
-     *
-     * You add variables using the following syntax: `{{variableName}}`.
-     * If you want your variable to be unescaped (e.g. include HTML tags or URLs), you need to use `{{{variableName}}}`.
-     *
-     * This format doesn't particularly work with wikitext templates and magic words, thus I added `bStart` and `bEnd`
-     * variables, which correspond to "{{" and "}}" characters repsectively, but are to be used for *wikitext* syntax only.
-     *
-     * Example:
-     * `{{wikiURL}}` will produce: "https:&#x2F;&#x2F;wiki.fandom.com&#x2F;xx&#x2F;f&#x2F;p&#x2F;420"
-     * `{{{wikiURL}}}` will produce: "https://wiki.fandom.com/xx"
-     * `{{bStart}}wikiURL{{bEnd}}` will produce: "{{wikiURL}}" (wikitext)
-     *
-     * List of available variables:
-     * {{userName}} - Currently logged user
-     * {{wikiName}} - name of the wiki they want to adopt
-     * {{{wikiURL}}} - URL of the wiki they want to adopt
-     * {{permissionsType}} - Type of permissions they request
-     * {{numDays}} - Number of days they were active in within last 10 days
-     * {{numAdmins}} - Number of admins active in last 60 days
-     * {{comments}} - Their comments and rationale for adoption
-     * {{{communityVote}}} - URL to Discussions post with community vote for their request
-     *
-     * Technical:
-     * - {{bStart}} - replaced with "{{"
-     * - {{bEnd}} - replaced with "}}"
-     */
     wikitextSchema: "{{bStart}}Adoption request\n" +
     "|1-User            = {{userName}}\n" +
     "|2-Link to wiki    = {{{wikiURL}}}\n" +
@@ -91,3 +65,37 @@ window.adoptInternational = {
     "|7-Community vote  = {{{communityVote}}}\n" +
     "{{bEnd}}"
 };
+
+//Redirect Special:Chat to Discord
+if (mw.config.get('wgPageName') === 'Special:Chat') {
+    window.location = mw.util.getUrl('Discord');
+}
+
+//LockForums - lock after 60 days (default: 30)
+window.LockForums = {
+    expiryDays: 60
+};
+
+window.AddRailModule = [{
+    page: 'MediaWiki:DiscordAMA',
+    prepend: true
+}];
+
+//Message wall greeting for [[Mesage wall:Sophiedp]], uses [[User:Sophiedp/notstaff]]
+//written by Sophiedp, with premission from Sannse
+mw.loader.using('mediawiki.api').then(function () {
+    if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsMessageWallPage')) {
+        var params = {
+            action: 'parse',
+            format: 'json',
+            page: 'User:Sophiedp/notstaff',
+            prop: 'text',
+            wrapoutputclass: 'greeting',
+            disablelimitreport: 1,
+            formatversion: '2'
+        };
+        new mw.Api().get(params).done(function (data) {
+            $('#MessageWall').prepend(data.parse.text).find('.greeting').css('margin-bottom', '20px');
+        });
+    }
+});

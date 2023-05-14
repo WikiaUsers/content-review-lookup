@@ -462,6 +462,52 @@ $(document).ready(function()
 	{
 		try
 		{
+			if($('#firstHeading').text().trim()=='Dump' || $('#firstHeading').text().trim()=='Warehouse')
+			{
+				var cp ={w:[8000,16401,25455,35331,46181,58159,71421,86138,102493,120687,140942,163502,188637,216646,247860,282647,321416,364622,412768,466416,526189,592779,666959,749584,841609,944094,1058219,1185297,1326787,1484315,1659690,1854922,2072252,2314171,2583453,2883186,3216807,3588142,4001450,4461476,4973499,5543400,6177729,6883779,7669673,8544460,9518219,10602179,11808851,13152172,14647676,16312668,18166439,20230485,22528769,25088000,27937955,31111829,34646637,38583648,42968887,47853679,53295269,59357506,66111616,73637056,82022473,91366775,101780329,113386298,126322135,140741251,156814887,174734197,194712581,216988297,241827374,269526873,300418536,334872863,373303675,416173213,463997848,517354466,576887609],d:[32000,65401,101073,139585,181437,227119,277128,331991,392268,458564,531535,611896,700427,797983,905498,1024000,1154614,1298578,1457248,1632119,1824830,2037185,2271165,2528951,2812939,3125764,3470326,3849813,4267731,4727939,5234678,5792619,6406896,7083160,7827629,8647143,9549229,10542172,11635086,12838003,14161964,15619122,17222851,18987875,20930401,23068269,25421121,28010583,30860463,33996977,37448993,41248299,45429902,50032358,55098129,60673986,66811447,73567262,81003948,89190382,98202448,108123754,119046431,131072000,144312338,158890744,174943109,192619216,212084166,233519956,257127222,283127160,311763649,343305589,378049493,416322336,458484710,504934306,556109751,612494861]};
+				$('table#capacity_calc tr:eq(0) td').prepend('<input id="cap_calc_ambro" type="checkbox" /> ');
+				$('[id^="cap_calc_w"],[id^="cap_calc_d"]').each(function(k,v)
+				{
+					$(v).html('<input type="number" min="0" max="'+(80+(k<5?5:0))+'" value="0" step="1" style="width:40px" pattern="[0-9]*" required>');
+				});
+				$('td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').each(function(k,v)
+				{
+					$(this).on('change input',function(a)
+					{
+						if(isNaN(parseInt(a.target.value)))
+						{
+							a.target.value = 0;
+						}
+						else if(parseInt(a.target.value)>80+(k<5?5:0))
+						{
+							a.target.value = 80+(k<5?5:0);
+						}
+						var t = parseInt(isNaN(parseInt(a.target.value)) ? 0 : a.target.value);
+						var c = t==0 ? 0 : cp[k<5?'w':'d'][parseInt(a.target.value)-1];
+						$('#cap_calc_c'+(a.target.parentNode.id.split('_')[2])).text(NumToStr(c*($('#cap_calc_ambro').prop('checked')+1)));
+					});
+				});
+				$('#cap_calc_ambro').on('change',function()
+				{
+					var v = $(this).prop('checked');
+					$('#cap_calc_cth').text(NumToStr(25e2*(v+1)));
+					$('td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').each(function(a,b)
+					{
+						var c = parseInt($(b).val())==0 ? 0 : cp[a<5?'w':'d'][parseInt($(b).val())-1];
+						$('#cap_calc_c'+$(b).parent().prop('id').split('_')[2]).text(NumToStr(c*(v+1)));
+					});
+				});
+				$('#cap_calc_ambro,td[id^="cap_calc_w"] input[type="number"],td[id^="cap_calc_d"] input[type="number"]').on('change input',function()
+				{
+					var sum = 0;
+					$('table tr td[id^="cap_calc_c"]').each(function()
+					{
+						sum += parseInt($(this).text().replace(/\D+/g,''));
+					});
+					$('#cap_calc_sum').text(NumToStr(sum));
+					sum = 0;
+				});
+			}
 			if($('#firstHeading').text().trim()=='Pirate Fortress')
 			{
 				$('#rewardscalc').html('<form><label for="rank"><input type="number" id="rank" name="rank" min="1" max="50" value="1" step="1" style="width:40px"></label></form><table id="rewardtable" class="darktable zebra" style="display:inline;color:#000;font-weight:normal;font-size:11px;background-color:transparent;border:0px;overflow:auto"><thead><tr><th colspan="10" style="text-align:center">'+lg['en'].rcvdres+'<div style="font-weight:normal">(<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAJCAYAAAD+WDajAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEFJREFUeNpi/P//PwMIhOrzQhhAsPriZ0YQzYQugcxnQhaE6YABxhA9HhRdyICJAQ/AayzxOtFdzYRuFLIVAAEGANwqFwuukYKqAAAAAElFTkSuQmCC"> × <span id="rank_v">2,75</span> = '+icon(0,13,10)+'+<img src="data:image/gif;base64,R0lGODlhGgAUAPZ9AA8KCScZFjY2FjslJFMzM0VAG3pIC0xzC15KNzNedXNIR2tWQnRgTXtoVYdUD5dlFaNyHIteK61+IolSUp5cXYFuW4VzYYh2Y415ZI58abRqasV4dlyJD2ibEHOtEnuPNHSlILeLLYWrN8qfNIfIFbuXXZOBbZmHdbGafMGWQdStQuG8Tc6sbd++YKHKT+3KU+/QbPXVY+zPefPWeEWGpV2TrE+Ut2ees2OrzmqszXqyzW2y1G+53ny20nK323a63Hu/4X/A4aCQgKqbi7mihbSnmIyoqZmuq5OytqWxpa2zpL+0pLu+q8qvidW4jNy+lMS7oMS5q7vHvePGi/XahejIl+XHnebInO/anv7kg9jEqNbKrM3Cs8LKvtPKvOzPpenRrfXlvYzA15TD2ITD4onH5o3J5pPK5JvN5ZXN6JbQ7qLQ5qTT667Z7bTa7Lrd7Lvh8s3QwcnUzc/YztvSxOXayenj2crg5s7p9tLr99bu+PXw6Pz37wAAAAAAAAAAACH5BAUAAH0ALAAAAAAaABQAAAf/gH2Cg3ZCKIOIfU4HHCBOiYhLdg0ZF02QHYwgLpCCWl51CxcNFZBEHIxEnWBeXEN2GA0NiU4EAQUHHR2QdEtFXnsNJhlPg04UAxMbAh0cHom9dkV7CycnJn1XA8kbEwAfzh0kglZ2UXVeXnYIGRXYVxrdAQEEJBwdHs9WdF4ZGSdR1jGoMMvJAAIEAGygkAvfLi+9KDGwQAcBAgYM+kwgoEyBggFONnAgsatTJydOFDwaRISECEhVXpQwSRMSFRgwSlQxuSVOzTAxwoSAEKHTER9l5pjkIwNLFhgPHjiYIojJGSlGyASpkQTSlykzZsQYkcLACgOCkKQx08MHkARyZhLxwTJjxIoXD1ZAkOBAkJI3QH6MoaFDDaK5VFqEqPtAxQoHDwbdYIMjjRs8QLoMwtIiRYgYKiQ8SPFCtCAoZ3LsgIMGTh4eg6pMqTLjRQoJLFjAUIFWkA0xevq0WdOmx52ayDsFAgA7" style="width:auto;height:10px">)</div></th></tr><tr><th style="text-align:center" title="'+lg['en'].citytitle+'">'+lg['en'].city+'</th><th style="text-align:center" title="'+lg['en'].citynum+'">'+img('Townhall l.png','','','image',15,15,'Town hall')+'</th><th style="text-align:center" title="'+lg['en'].wlvls+'">'+img('Warehouse l.png','','','image',15,15,'Warehouse')+'</th><th style="text-align:center" title="'+lg['en'].safeqnty+'"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAJCAYAAAD+WDajAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAEFJREFUeNpi/P//PwMIhOrzQhhAsPriZ0YQzYQugcxnQhaE6YABxhA9HhRdyICJAQ/AayzxOtFdzYRuFLIVAAEGANwqFwuukYKqAAAAAElFTkSuQmCC" style="width:auto;height:15px"></th><th style="text-align:center" title="'+lg['en'].safewoodqnty+'">'+icon(0,20,15)+'</th><th style="text-align:center" title='+lg['en'].safewineqnty+'">'+icon(1,20,15)+'</th><th style="text-align:center" title="'+lg['en'].safemarbleqnty+'">'+icon(2,20,15)+'</th><th style="text-align:center" title="'+lg['en'].safecrystalqnty+'">'+icon(3,20,15)+'</th><th style="text-align:center" title="'+lg['en'].safesulfurqnty+'">'+icon(4,20,15)+'</th><th style="text-align:center" title="'+lg['en'].safesumqnty+'">'+lg['en'].sum+'</th></tr></thead><tbody></tbody><tfoot><tr><th style="text-align:center;width:40px">'+lg['en'].sum+'</th><th id="townsum" style="text-align:center" title="'+lg['en'].townsum+'">0</th><th id="levelsum" style="text-align:center" title="'+lg['en'].levelsum+'">0</th><th id="safesum" style="text-align:center" title="'+lg['en'].safesum+'">0</th><th id="woodsum" style="text-align:center" title="'+lg['en'].woodsum+'">0</th><th id="winesum" style="text-align:center" title="'+lg['en'].winesum+'">0</th><th id="marblesum" style="text-align:center" title="'+lg['en'].marblesum+'">0</th><th id="glasssum" style="text-align:center" title="'+lg['en'].glasssum+'">0</th><th id="sulfursum" style="text-align:center" title="'+lg['en'].sulfursum+'">0</th><th id="sum" style="text-align:center" title="'+lg['en'].resqntysum+'">0</th></tr></tfoot></table>');
