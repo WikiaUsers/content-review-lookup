@@ -119,9 +119,11 @@ $(function() {
 			//t2
 	        '<table class="fandom-table">' + 
 	        '<tr>' +
-	        '<th colspan="7">How many Hero shards you need to ascend to selected quality</th>' +
+	        '<th colspan="7">Amount of Hero shards you need to ascend the Hero to selected quality</th>' +
+	        '<th>Equivalent Sum: </th>'+
 		'</tr><tr>' +
 	        '<th>Ascending Ingredients</th>'+
+	        '<th>Uncommon (Green): </th>'+
 	        '<th>Rare (Blue): </th>'+
 	        '<th>Elite (Purple): </th>'+
 	        '<th>Epic (Orange): </th>'+
@@ -130,6 +132,7 @@ $(function() {
 	        '<th><span id="equivalent"></span></th>'+
 		'</tr><tr>' +
 	        '<th>Other Heroes, same Faction: </th>'+
+	        '<td><span id="calc_uncommon"></span></td>'+
 	        '<td><span id="calc_rare"></span></td>'+
 	        '<td><span id="calc_elite"></span></td>'+
 	        '<td><span id="calc_epic"></span></td>'+
@@ -138,6 +141,7 @@ $(function() {
 	        '<td><span id="calc_total"></span></td>'+
 		'</tr><tr>' +
 	        '<th>Same exact Hero: </th>'+
+	        '<td><span id="calc_uncommon_s"></span></td>'+
 	        '<td><span id="calc_rare_s"></span></td>'+
 	        '<td><span id="calc_elite_s"></span></td>'+
 	        '<td><span id="calc_epic_s"></span></td>'+
@@ -169,8 +173,8 @@ $(function() {
 			//now do some recursive/loop stuff to get total amount of shards
 			
 			var range = recipe.slice(ascend_s +1, ascend_e + 1);
-			var shards=[0,0,0,0,0,0];
-			var shards_specific=[0,0,0,0,0,0];
+			var shards=[0,0,0,0,0,0,0];
+			var shards_specific=[0,0,0,0,0,0,0];
 			
 			for (var x = 0; x < range.length; x++){
 				//[0,1,2] = N count,0-5 quality,bool specific
@@ -182,62 +186,68 @@ $(function() {
 				}
 			}
 			
-			var range_total = recipe.slice(0, ascend_e + 1);
+			var range_total = recipe;//.slice(0, ascend_e + 1);
 			len=13;
 			var total_shards = Array(len).fill(0);
 			var total_shards_specific = Array(len).fill(0);
 			var first=0;
-			for (var i = 0; i < range_total.length; i++) {
-				//check if we consider blue, purple or orange shards as base
+			for (var i = 0; i < ascend_e+1; i++) {
+				//check if we consider green, blue, purple or orange shards as base
 				if(range_total[i][1]===rarit & first===0){
 					first=1;
-					shards_specific[i-1]+=1;
 					if(range_total[i][2]===0){
 						total_shards[i]=range_total[i][0];
-						total_shards_specific[i]=total_shards_specific[i-1]+1;
+						total_shards_specific[i]=1;
 					}
 					else{
-						total_shards_specific[i]=range_total[i][0];
-						total_shards[i]=total_shards[i-1];
+						total_shards_specific[i]=range_total[i][0]+1;
+						total_shards[i]=0;
 					}
 				}
 				//cumulative sum of previous recipes
-				if(range_total[i][1]>rarit){
+				else if(first===1){
 					if(range_total[i][2]===0){
 						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0]+total_shards_specific[range_total[i][1]]*range_total[i][0];
 						total_shards_specific[i]=total_shards_specific[i-1];
 					}
 					else{
-						total_shards_specific[i]=total_shards_specific[i-1]+total_shards_specific[range_total[i][1]]*range_total[i][0];
+						total_shards_specific[i]=total_shards_specific[i-1]+(Math.max(total_shards_specific[range_total[i][1]],1))*range_total[i][0];
 						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0];
 					}
 				}
 			}
 			
 	
-	        var equivalent = 'Equivalent Shards (Blue)';
+	        var equivalent = 'Rare Shards (Blue)';
 	        if(rarit===3){
-	        	equivalent='Equivalent Shards (Orange)';
+	        	equivalent='Epic Shards (Orange)';
 	        }
-	        /* //debug stuff
-			$('#calc_rare').html(typ);
-			$('#calc_elite').html(total_shards[ascend_e]);
-			$('#calc_epic').html(shards[3]);
-			*/
-	
+	        if(rarit===2){
+	        	equivalent='Elite Shards (Purple)';
+	        }
+	        if(rarit===0){
+	        	equivalent='Uncommon Shards (Green)';
+	        }
+	        
+			$('#calc_uncommon').html(shards[0]);
 			$('#calc_rare').html(shards[1]);
 			$('#calc_elite').html(shards[2]);
 			$('#calc_epic').html(shards[3]);
 			$('#calc_master').html(shards[4]);
 			$('#calc_legendary').html(shards[5]);
+			$('#calc_uncommon_s').html(shards_specific[0]);
 			$('#calc_rare_s').html(shards_specific[1]);
 			$('#calc_elite_s').html(shards_specific[2]);
 			$('#calc_epic_s').html(shards_specific[3]);
 			$('#calc_master_s').html(shards_specific[4]);
 			$('#calc_legendary_s').html(shards_specific[5]);
-			$('#calc_total').html(total_shards[ascend_e]);
-			$('#calc_total_s').html(total_shards_specific[ascend_e]);
+			$('#calc_total').html(total_shards[ascend_e]-total_shards[ascend_s]);
+			$('#calc_total_s').html(total_shards_specific[ascend_e]-Math.max(total_shards_specific[ascend_s],1));
 			$('#equivalent').html(equivalent);
+			
+			//debug
+			//$('#calc_uncommon').html(total_shards[2]);
+			//$('#calc_uncommon_s').html(total_shards[i-1]);
 
         };
 	

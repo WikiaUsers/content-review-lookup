@@ -219,28 +219,31 @@
          * @type {string}
          * @see I18nEdit.fetchAllLuaPages
          */
-        luaFetcher: `
-local p = {}
-require('Dev:No globals')
-function p.main()
-	local frame = mw.getCurrentFrame()
-	local list = frame:preprocess([=[
-{{#dpl:
-| namespace = Module
-| titleregexp = .*\/i18n$
-| nottitleregexp = ^Sandbox
-| format         = ,%PAGE%{{!}},
-}}]=])
-	local data = {}
-	for page in mw.text.gsplit(list, '|', true) do
-		if page == '' then
-			break
-		end
-		data[page] = mw.loadData(page)
-	end
-	return mw.text.jsonEncode(data)
-end
-return p`,
+        luaFetcher: [
+            'local p = {}                                           ',
+            'require(\'Dev:No interwiki access\')                   ',
+            'require(\'Dev:No globals\')                            ',
+            'function p.main()                                      ',
+            '    local frame = mw.getCurrentFrame()                 ',
+            '    local list = frame:preprocess(table.concat({       ',
+            '        \'{{#dpl:\',                                   ',
+            '        \'| namespace = Module\',                      ',
+            '        \'| titleregexp = .*\\/i18n$\',                ',
+            '        \'| nottitleregexp = ^Sandbox\',               ',
+            '        \'| format         = ,%PAGE%{{!}},,\',         ',
+            '        \'}}\'                                         ',
+            '    }, \'\\n\'))                                       ',
+            '    local data = {}                                    ',
+            '    for page in mw.text.gsplit(list, \'|\', true) do   ',
+            '        if page == \'\' then                           ',
+            '            break                                      ',
+            '        end                                            ',
+            '        data[page] = mw.loadData(page)                 ',
+            '    end                                                ',
+            '    return mw.text.jsonEncode(data)                    ',
+            'end                                                    ',
+            'return p                                               '
+        ].join('\n'),
         /**
          * Options for what will happen to messages in other languages when a translation is updated.
          * @type {string[]}
@@ -1085,7 +1088,11 @@ return p`,
                         ]
                     }),
                     ui.div({
-                        classes: ['wds-dropdown__content'],
+                        classes: {
+                            'wds-dropdown__content': true,
+                            'wds-is-left-aligned': newProps.alignment === 'left',
+                            'wds-is-right-aligned': newProps.alignment === 'right'
+                        },
                         child: ui.ul({
                             classes: ['wds-list', 'wds-is-linked'],
                             children: newProps.children.map(function(child, index) {
@@ -1194,6 +1201,7 @@ return p`,
                         this.buildDropdown({
                             toggle: this.getLanguageFromCode(this.state.selectedFrom),
                             id: 'I18nEdit-picker-fromDropdown',
+                            alignment: 'left',
                             click: this.onClickChangeFrom.bind(this, page),
                             children: completeLangs.map(function(lang) {
                                 return ui.a({
@@ -1238,6 +1246,7 @@ return p`,
             event.preventDefault();
             this.state.selectedFrom = $(event.currentTarget).find('a').attr('data-lang');
             $('#I18nEdit-picker-fromDropdown')
+                .parent()
                 .replaceWith(this.buildPickerFrom(page, this.state.selectedFrom));
             this.replacePickerLanguages();
         },

@@ -2,6 +2,8 @@
 var toolbarLabel = 'AAPI';
 var toolbarLinks = [
     {link: 'https://avatar.fandom.com/f/p/4400000000000419951', label: 'Discussions post for AAPI'},
+    {link: 'https://bit.ly/AAPIFandomBlog', label: 'Fandom blog for AAPI month'},
+    {link: 'https://bit.ly/FandomAAPIplaylist', label: 'AAPI spotify playlist'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

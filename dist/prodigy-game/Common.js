@@ -1,11 +1,3 @@
-//TopicBlockLog config
-TBL_WIKIS = [
-    "prodigy-fan-ideas",
-    "community",
-    "prodigy-game-fanon",
-    "prodigy-glitch",
-];
-
 // Auto Refresh Settings
 var ajaxPages = [
     "Special:RecentChanges",

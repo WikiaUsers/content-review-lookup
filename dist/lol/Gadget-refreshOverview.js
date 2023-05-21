@@ -337,10 +337,9 @@ $(function() {
 		// get list of pages to touch
 		var pageListTouch = [];
 		if ($container.attr('data-to-touch')) {
-			pageListTouch = $container.attr('data-to-touch').split(',')
+			pageListTouch = $container.attr('data-to-touch').split(',');
 		}
-		var touches = pageListTouch.map(window.blankEdit);
-		
+
 		// construct full list of pages to purge
 		var pageListPurge = $container.attr('data-to-refresh').split(',');
 		$container.find('input').each(function() {
@@ -349,25 +348,48 @@ $(function() {
 				pageListPurge.push($(this).attr('name') + '/Current Rosters');
 			}
 		});
-		var purges = pageListPurge.map(window.purgeTitle);
-		
-		
-		return Promise.all(touches).then(function() {
-			return Promise.all(purges);
-		}).then(function() {
-			return new mw.Api().postWithToken('csrf', {
-				action: 'customlogswrite',
-				logtype: 'ro-news',
-				title: mw.config.get('wgPageName'),
-				publish: 1,
-				'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
-				'custom2': $container.attr('data-ro-team')
+
+		var wherePageList = pageListTouch.map(function(e) {
+			return '"' + e + '"';
+		});
+
+		return new mw.Api().get({
+			action : 'cargoquery',
+			tables : 'PlayerRedirects',
+			where : 'AllName IN (' + wherePageList.join(", ") + ')',
+			fields : 'OverviewPage',
+			group_by : 'OverviewPage'
+		}).then(function(data) {
+			data.cargoquery.forEach(function(page){
+				var title = page.title.OverviewPage;
+				if (!pageListTouch.includes(title) && !pageListTouch.includes(title.charAt(0).toLowerCase() + title.slice(1))) {
+					pageListTouch.push(title);
+					pageListPurge.push(title);
+
+				};
 			});
-		}).then(function() {
-			console.log(pageListTouch);
-			console.log(pageListPurge);
-			console.log('done!');
-			displayResultStatus('gadget-action-success', $inner);
+
+			var touches = pageListTouch.map(window.blankEdit);
+
+			var purges = pageListPurge.map(window.purgeTitle);
+
+			return Promise.all(touches).then(function() {
+				return Promise.all(purges);
+			}).then(function() {
+				return new mw.Api().postWithToken('csrf', {
+					action: 'customlogswrite',
+					logtype: 'ro-news',
+					title: mw.config.get('wgPageName'),
+					publish: 1,
+					'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
+					'custom2': $container.attr('data-ro-team')
+				});
+			}).then(function() {
+				console.log(pageListTouch);
+				console.log(pageListPurge);
+				console.log('done!');
+				displayResultStatus('gadget-action-success', $inner);
+			});
 		});
 	}
 	

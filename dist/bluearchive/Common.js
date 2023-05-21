@@ -154,10 +154,8 @@ function createGachaCurrentRow(rowContent, girlsIcons, girlRank, currentGachaGir
 	}) + "</tr>" ;
 }
 
-function setUpButtonBehaviour(girls, girlsIcons, girlRank) {
+function setUpButtonBehaviour(girls, girlsIcons, girlRank, welfare, possibleLimitedGirl) {
 	var numberOfRolls = 0;
-	var welfare = ["Nodoka", "Tsurugi Swimsuit", "Izumi Swimsuit", "Tomoe", "Fubuki", "Michiru", "Ayane Swimsuit", "Shizuko Swimsuit", "Hibiki Cheerleader", "Hasumi Gym", "Junko New Year", "Nonomi"]; // welfare girls who can not appear in gacha
-	var possibleLimitedGirl = ['Azusa Swimsuit', 'Aru New Year', 'Wakamo', "Mashiro Swimsuit", "Hina Swimsuit", "Iori Swimsuit", "Neru Bunny Girl", "Karin Bunny Girl", "Miku", "Mutsuki New Year", "Hoshino Swimsuit", "Izuna Swimsuit", "Chise Swimsuit", "Mari Gym", "Yuuka Gym", "Fuuka New Year", "Haruna New Year", "Mika", "Nagisa", "Toki"].sort(); // limited girl who can only appear if chosen
 	var pullRates = {
 		/* Format rank : probability */
 		1: 78.5,
@@ -183,18 +181,19 @@ function setUpButtonBehaviour(girls, girlsIcons, girlRank) {
 	var gacha3StarAmountText = $("#gacha-3-star");
 	var numberOfGemsText = $("#gems-spent");
 	var numberOfRollsText = $("#number-of-rolls");
-	var optionsString = '<label for="limited-select">Choose limited gacha: </label><select id="limited-select"><option value="none"></option>';
-	possibleLimitedGirl.forEach(function(girl) {
-		optionsString += '<option value="' + girl + '">' + girl + '</option>';
-	});
-	optionsString += '</select>';
-	$("#selector-box").html(optionsString);
-	var selector = $("#limited-select");
 	var historicalGirlsNrs = {};
-
 	var currentGirls = [];
 	var amountRolled = {1: 0, 2: 0,3: 0};
+
 	return setTimeout(function () {
+		console.log(possibleLimitedGirl, welfare)
+		var optionsString = '<label for="limited-select">Select Limited Gacha: </label><select id="limited-select"><option value="none"></option>';
+		possibleLimitedGirl.forEach(function(girl) {
+			optionsString += '<option value="' + girl + '">' + girl + '</option>';
+		});
+		optionsString += '</select>';
+		$("#selector-box").html(optionsString);
+		var selector = $("#limited-select");
 		rollButton.click(function () {
 			var currentGachaGirl = selector[0].value;
 			var	currentIgnored = welfare.concat(currentGachaGirl === "none" ? possibleLimitedGirl : possibleLimitedGirl.filter(function(v) { return v !== currentGachaGirl; }));
@@ -235,7 +234,7 @@ function setUpButtonBehaviour(girls, girlsIcons, girlRank) {
 			numberOfGemsText.html(numberOfRolls*1200);
 		});
 		rollButton.html("Roll Gacha");
-	}, 5000); // Timeout to allow all images and characters to load before button is enabled
+	}, 7500); // Timeout to allow all images and characters to load before button is enabled
 }
 
 function setupGachaSimulator() { 
@@ -243,6 +242,8 @@ function setupGachaSimulator() {
 	var girls = {1:[], 2:[], 3:[]};
 	var girlsIcons = {};
 	var girlRank = {};
+	var welfare = [];
+	var possibleLimitedGirl = [];
 
 	mw.loader.using([ 'mediawiki.api'], function() {
 		var api = new mw.Api();
@@ -262,10 +263,11 @@ function setupGachaSimulator() {
 					var icon = api.get({ action: 'parse', page: 'Template:' + name + ' Icon'});
 					api.get({
 					    action: 'expandtemplates',
-						text: '{{' + dataPage + '|Get|rarity}}'
+						text: '{{' + dataPage + '|Get|rarity|obtain}}'
 					}).done(function(formated_data) {
 						if (formated_data && formated_data.expandtemplates && formated_data.expandtemplates["*"]) {
-							var rank = (formated_data.expandtemplates["*"].match(/File:Star Icon\.png/g)||[]).length;
+							var rankObtain = formated_data.expandtemplates["*"].split("¤");
+							var rank = (rankObtain[0].match(/File:Star Icon\.png/g)||[]).length;
 							if (rank == 0) {
 								console.error("Error in tamplate for " + name + '. Rank given was 0. Is the template formatted correctly without using number parameters (e.g. "|1 = abc|"? https://bluearchive.fandom.com/wiki/' + dataPage.replace(/ /g, "_") + '?action=edit');
 							} else {
@@ -273,6 +275,12 @@ function setupGachaSimulator() {
 									girls[rank].push(name);
 									girlsIcons[name] = formated_icon.parse.text["*"];
 									girlRank[name] = rank;
+									if (rankObtain[1].toLowerCase().includes("welfare")) {
+										welfare.push(name);
+									} else if (rankObtain[1].toLowerCase().includes("limit")) {
+										possibleLimitedGirl.push(name);
+										possibleLimitedGirl.sort();
+									}
 								});
 							}
 						} else {
@@ -281,15 +289,16 @@ function setupGachaSimulator() {
 					});
 				});
 			}
-			setUpButtonBehaviour(girls, girlsIcons, girlRank);
+			setUpButtonBehaviour(girls, girlsIcons, girlRank, welfare, possibleLimitedGirl );
 		});
 	});
 }
+
 // ############### CALLERS ############
 // function equivalent to jquery ready. Runs once the page loads on all pages
 $(function() {
 	switch (mw.config.get('wgPageName')) {
-	    case 'User:Thefrozenfish/Sandbox': 
+	    case 'User:Thefrozenfish/Sandbox/Gacha': 
 	    case 'Template:Gacha_Simulator':
 	    case 'Gacha/Simulator':
 			setupGachaSimulator();

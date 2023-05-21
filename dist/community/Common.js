@@ -68,7 +68,9 @@ window.adoptInternational = {
 
 //Redirect Special:Chat to Discord
 if (mw.config.get('wgPageName') === 'Special:Chat') {
-    window.location = mw.util.getUrl('Discord');
+    mw.loader.using('mediawiki.util').add(function () {
+        window.location = mw.util.getUrl('Discord'); 
+    });
 }
 
 //LockForums - lock after 60 days (default: 30)
@@ -83,8 +85,8 @@ window.AddRailModule = [{
 
 //Message wall greeting for [[Mesage wall:Sophiedp]], uses [[User:Sophiedp/notstaff]]
 //written by Sophiedp, with premission from Sannse
-mw.loader.using('mediawiki.api').then(function () {
-    if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsMessageWallPage')) {
+if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsMessageWallPage')) {
+    mw.loader.using('mediawiki.api').then(function () {
         var params = {
             action: 'parse',
             format: 'json',
@@ -97,5 +99,5 @@ mw.loader.using('mediawiki.api').then(function () {
         new mw.Api().get(params).done(function (data) {
             $('#MessageWall').prepend(data.parse.text).find('.greeting').css('margin-bottom', '20px');
         });
-    }
-});
+    });
+}

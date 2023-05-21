@@ -8,7 +8,7 @@ function i18n_callback(i18n) {
     }
     
     function heimu_set_state() {
-        if (window.localStorage.toggle_state == "1") $("span.heimu").addClass("heimu-toggled");
+        if (window.localStorage.toggle_state == "1") $(".heimu, .heimu-img-wrapper").addClass("heimu-toggled");
         else $("span.heimu").removeClass("heimu-toggled");
     }
     

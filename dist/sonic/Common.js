@@ -2,6 +2,9 @@
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 window.archiveListTemplate = 'Archive';
 
+//fullpath specifier setting
+preloadTemplates_subpage = "case-by-case";
+
 //Handling new navbox by @Luma.dash
 window.setTimeout(function() {
 var $container = $('.navb'), $imgBox = $('#contain');

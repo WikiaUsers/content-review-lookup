@@ -4251,6 +4251,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "bundle": {
+                "name": "Bundle",
+                "types": [
+                    "flower",
+                    "yellow",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
+                ]
+            },
             "bundled": {
                 "name": "Bundled",
                 "types": [
@@ -8154,6 +8171,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "25_hours_25",
                 "rarity": 3,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "dawnbloom": {
+                "name": "Dawnbloom",
+                "types": [
+                    "flower",
+                    "purple",
+                    "black"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -12605,6 +12639,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "fragrant": {
+                "name": "Fragrant",
+                "types": [
+                    "flower",
+                    "white",
+                    "red"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "16_hours_16",
+                "rarity": 3,
+                "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
             "franken": {
                 "name": "Franken",
                 "types": [
@@ -13567,6 +13618,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "offspringeligibility": "worldevent",
                 "notes": [
                     "feature"
+                ]
+            },
+            "germination": {
+                "name": "Germination",
+                "types": [
+                    "flower",
+                    "yellow",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "green"
+                            ]
+                        ]
+                    ]
                 ]
             },
             "ghastly": {
@@ -27964,6 +28042,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "6_hours_6",
                 "rarity": 3,
                 "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "prune": {
+                "name": "Prune",
+                "types": [
+                    "flower",
+                    "pink",
+                    "purple"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 4,
+                "offspringeligibility": "leaderboard",
                 "notes": [
                     "feature"
                 ]

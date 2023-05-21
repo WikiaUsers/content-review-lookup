@@ -1,8 +1,13 @@
 /**
  * Importing code and stylesheets for embedding interactive graphs using Desmos API.
  * Documentation on library: https://www.desmos.com/api/v1.6/docs/index.html#document-quickstart
+ * 
+ * TODO: Calculator script doesn't run on [[Void Relic/Math]] even though elements were added. I assume
+ * this has to do with load priority and since DOM is fully loaded by the time the calculator elements are added,
+ * the relevant scripts doesn't fire.
  */
 (function() {
+	// TODO: Use latest API (v1.8)
 	const API_KEY = "dcb31709b452b1cf9dc26972add0fda6";	// Using public demonstration API key for non-commercial use
 	const DESMOS_API = "https://www.desmos.com/api/v1.6/calculator.js?apiKey=" + API_KEY;
 	const ENDPOINT = new URL(DESMOS_API);

@@ -235,6 +235,16 @@ $(document).ready(function() {
 			}else if (Hero == 'BM') {
 				if (Mode == 'KO') {
 					sfx = new Audio(location + 'b/ba/Battle_Machine_Death.ogg');
+				}else if (Mode == 'Preview'){
+					sfx = new Audio(location + 'c/c3/Battle_Machine_Preview.ogg');
+				}else {
+					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
+				}
+			}else if (Hero == 'BC') {
+				if (Mode == 'KO') {
+					sfx = new Audio(location + 'f/f9/Battle_Copter_Death.ogg');
+				}else if (Mode == 'Preview'){
+					sfx = new Audio(location + 'd/d0/Battle_Copter_Preview.ogg');
 				}else {
 					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
 				}

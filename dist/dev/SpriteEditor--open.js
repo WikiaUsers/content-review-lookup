@@ -80,8 +80,12 @@
 					modal.windowManager.updateWindowSize(modal.seDialog);
 			});
 		}
-		if (allPages[0])
+		if (allPages[0]) {
 			addSprite(0);
+		} else {
+			while (modal.seDialog.isPending())
+				modal.seDialog.popPending();
+		}
 	}
 	myData.setSharedData = function(d) {
 		shared = d;

@@ -11,7 +11,7 @@ window.UserTagsJS = {
                 order: 1
             },
             maintainer: { 
-                u: 'Wiki Maintainer',
+                u: 'AbuseFilter Manager',
                 order: 2 
             },
             bureaucrat: { 

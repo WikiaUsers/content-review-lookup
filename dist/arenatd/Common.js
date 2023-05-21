@@ -48,3 +48,35 @@ $(document).ready(function() {
     $widget.css('top', (50 + scrollDistance) + '%');
   });
 });
+/*tally form embed*/
+mw.hook('wikipage.content').add(function($content) {
+    if (!$content) {
+        return;
+    }
+    $content.find('.tallyforms').each(function() {
+        var $this = $(this),
+            id = $this.attr('data-forms-id'),
+            css = {
+                width: 'inherit',
+                height: 'inherit',
+                border: 0
+            };
+        $this.html(
+            $('<iframe>', {
+                src: 'https://tally.so/embed/' + id ,
+                css: css
+            })
+        );
+    });
+});
+/*open roblox game */
+$(function() {
+    function openRobloxLink() {
+        var link = "roblox://placeId=7396774756";
+        window.open(link);
+    }
+
+    $('.play-defense').click(function() {
+        openRobloxLink();
+    });
+});

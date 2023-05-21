@@ -58,7 +58,10 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-	'Phineas99cp': ['founder'],
+	'Fourless': ['flipprstaff'],
+	'NyaatsukiChr': ['flipprstaff'],
+	'BuddyCrafted1': ['flipprstaff'],
+	'Phineas99cp': ['founder']
 };
 
 UserTagsJS.modules.mwGroups = [

@@ -2,9 +2,9 @@
 
 /* Custom Staff Userpage */
 
-const nerd = 'https://unofficial-alphabet-lore.fandom.com/wiki/User:Eterhox';
+const nerd= /(User:Eterhox|Message_Wall:Eterhox|User_blog:Eterhox\/?|Special:Contributions\/Eterhox|Special:UserProfileActivity\/Eterhox)/.test(window.location.href);
 
-if (window.location.href === nerd) {
+if (nerd) {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.type = 'text/css';

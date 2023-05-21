@@ -654,7 +654,7 @@ mw.loader.using( [
 				augroup: 'sysop|bureaucrat',
 				aulimit: 'max',
 				auwitheditsonly: 1, // avoid auactiveusersonly
-				usprop: 'groups',
+				usprop: 'groupmemberships',
 				ususers: userName
 			} ).done( function( data ) {
 				if ( !data.query ) {
@@ -689,6 +689,8 @@ mw.loader.using( [
 					$( '#wikiname' ).val( data.query.general.sitename );
 				}
 
+
+
 				if ( data.query.statistics ) {
 					if ( $( '#communityvote' ).val() === '' && data.query.statistics.activeusers >= 2 ) {
 						mw.notify( i18n.msg( 'provideCommunityVote' ).plain(), {
@@ -701,9 +703,7 @@ mw.loader.using( [
 				var ucDays = 0;
 				if ( data.query.usercontribs ) {
 					if ( data.query.usercontribs.length === 0 ) {
-						exception = i18n.msg( 'noEditsError' ).plain();
-
-						return mw.notify( exception, {
+						mw.notify( i18n.msg( 'noEditsError' ).plain(), {
 							tag: 'adoptionRetain',
 							type: 'warn'
 						} );
@@ -718,7 +718,7 @@ mw.loader.using( [
 					}
 
 					ucDays = ucDArr.length;
-					if ( ucDays < 5)  {
+					if ( ucDays < 5) {
 						mw.notify( i18n.msg( 'noActivityError' ).plain(), {
 							tag: 'adoptionRetain',
 							type: 'warn'
@@ -728,27 +728,57 @@ mw.loader.using( [
 
 				$( '#numDays' ).val( ucDays );
 
-				// @todo nested ifs
-				if ( data.query.users ) {
-					if ( data.query.users[0] ) {
-						if ( data.query.users[0].groups ) {
-							if ( data.query.users[0].groups.indexOf( 'bureaucrat' ) > -1 ) {
-								exception = i18n.msg( 'alreadyBureaucratError' ).plain();
+				/**
+				 * Let's verify what permissions user has
+				 *
+				 * @param userMemberships
+				 * @param groupName
+				 * @returns {Object}
+				 */
+				function checkUserGroups( groupName ) {
+					const userMemberships = data.query.users[0].groupmemberships;
 
-								return mw.notify( exception, {
-									tag: 'adoptionRetain',
-									type: 'error'
-								} );
-							}
+					var groupData = {
+						isMember: false,
+						isTemp: false
+					};
 
-							if ( data.query.users[0].groups.indexOf( 'sysop' ) > -1 ) {
-								return mw.notify( i18n.msg( 'alreadyAdminError' ).plain(), {
-									tag: 'adoptionRetain',
-									type: 'warn'
-								} );
-							}
+					const groupMembership = userMemberships.find( function( membership ) {
+						if ( membership.group === groupName ) {
+							return membership;
 						}
+					} );
+
+					if ( groupMembership ) {
+						groupData.isMember = true;
+						groupData.isTemp = ( groupMembership.expiry !== 'infinity' );
 					}
+
+					return groupData;
+				}
+
+				if ( data.query.users[0] ) {
+					const userAdminStatus = checkUserGroups( 'sysop' );
+					const userBcratStatus = checkUserGroups( 'bureaucrat' );
+
+					// User is already permanent bureaucrat
+					if ( userBcratStatus.isMember && !userBcratStatus.isTemp ) {
+						exception = i18n.msg( 'alreadyBureaucratError' ).plain();
+						return mw.notify( exception, {
+							tag: 'adoptionRetain',
+							type: 'error'
+						} );
+					}
+
+					// User is already permanent admin
+					if ( userAdminStatus.isMember && !userAdminStatus.isTemp ) {
+						exception = i18n.msg( 'alreadyAdminError' ).plain();
+						return mw.notify( exception, {
+							tag: 'adoptionRetain',
+							type: 'warn'
+						} );
+					}
+
 				}
 			} ).fail( function( data ) {
 				mw.notify( i18n.msg( 'automaticQueryError' ).plain(), {

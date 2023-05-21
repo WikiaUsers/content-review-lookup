@@ -2,7 +2,7 @@ window.ecpButton = true;
 window.EditBasePageText = 'Edit parent page';
 window.PurgeButtonText = 'Purge page cache';
 window.aceCustomSettings = {
-    theme: 'nord_dark', // best dark theme tbh (idk light theme, 'tomorrow' is nice though)
+    theme: 'nord_dark',
     wrap: true,
     showInvisibles: false,
     showPrintMargin: false,
@@ -22,9 +22,9 @@ window.AjaxRename = {
     }
 };
 
-importDevCodes = function() {
-	function getCodePages() {
-		return [
+importArticles({
+    type: 'script',
+    articles: [
 		'u:dev:MediaWiki:MassNullEdit/code.js',
 		'u:dev:MediaWiki:ClearSandbox/code.js',
 		'u:dev:MediaWiki:EditorColorPicker.js',
@@ -37,35 +37,5 @@ importDevCodes = function() {
         'u:dev:MediaWiki:MaximizeAce.js',
         'u:dev:MediaWiki:PurgeButton.js',
         'u:dev:MediaWiki:Stella.js'
-			];
-	}
-
-	function concatPages() {
-		return getCodePages().join('|');
-	}
-
-	function getImportQuery() {
-		return {
-			mode: 'articles',
-			only: 'scripts',
-			articles: concatPages()
-		};
-	}
-
-	function importCodes() {
-		const devLoad = 'https://dev.fandom.com/load.php';
-		const rlModules = [
-			'mediawiki.Uri',
-			'ext.fandom.ContentReview.legacyLoaders.js'
-		];
-
-		mw.loader.using( rlModules, function() {
-			const devUri = new mw.Uri( devLoad );
-
-			devUri.query = getImportQuery();
-			mw.loader.load( devUri.toString() );
-		} );
-	}
-
-	return importCodes();
-};
+    ]
+});

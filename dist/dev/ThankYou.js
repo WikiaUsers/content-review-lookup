@@ -2,14 +2,15 @@
 	'use strict';
 
 	window.dev = window.dev || {};
-	if ( window.dev.thankyou ) {
+	window.dev.thankyou = window.dev.thankyou || {
+		maxDays: window.tyMaxDays || 30,
+		mode: window.tyMode || 'latest',
+		position: window.tyPosition || -1
+	}
+	if ( window.dev.thankyou.enabled ) {
 		return;
 	}
-	window.dev.thankyou = {
-		maxDays: 30,
-		mode: 'latest',
-		position: -1
-	};
+	window.dev.thankyou.enabled = true;
 
 	var config = mw.config.get( [
 		'wgAction',

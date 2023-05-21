@@ -2150,6 +2150,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bundle": {
+				"name": "Bundle",
+				"colors": [
+					"flower",
+					"yellow",
+					"green"
+				],
+				"rarity": "unbreedable"
+			},
 			"bundled": {
 				"name": "Bundled",
 				"colors": [
@@ -4134,6 +4143,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"blue",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"dawnbloom": {
+				"name": "Dawnbloom",
+				"colors": [
+					"flower",
+					"purple",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -6379,6 +6397,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"fragrant": {
+				"name": "Fragrant",
+				"colors": [
+					"flower",
+					"white",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"franken": {
 				"name": "Franken",
 				"colors": [
@@ -6834,6 +6861,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "unbreedable"
+			},
+			"germination": {
+				"name": "Germination",
+				"colors": [
+					"flower",
+					"yellow",
+					"green"
+				],
+				"rarity": "common"
 			},
 			"ghastly": {
 				"name": "Ghastly",
@@ -13851,6 +13887,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"holiday",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"prune": {
+				"name": "Prune",
+				"colors": [
+					"flower",
+					"pink",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},

@@ -2,12 +2,6 @@
 /***** Any JavaScript here will be loaded for users using the MonoBook skin *****/
 /********************************************************************************/
 
-/* DiscordBanner setup */
-window.DiscordBannerSettings = {
-    bannerStyle: '4',
-    inviteLink: 'nd3hG3jpBB', 
-    prependToRail: true
-};
 
 /* BackToTopButton */
 window.BackToTopModern = true;

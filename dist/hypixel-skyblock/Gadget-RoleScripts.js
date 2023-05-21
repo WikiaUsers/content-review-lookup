@@ -203,7 +203,6 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
             articles: [
                 'u:dev:MediaWiki:MassRollback.js',
                 'u:dev:MediaWiki:MassNullEdit/code.js',
-                'u:dev:MediaWiki:MassEdit/code.js',
                 'u:dev:MediaWiki:MassRename/code.js',
                 'u:dev:MediaWiki:MassCategorization/code.js',
                 'u:dev:MediaWiki:AjaxBatchRedirect.js',
@@ -218,6 +217,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
         importArticles({
             type: 'script',
             articles: [
+                'u:dev:MediaWiki:MassEdit/code.js',
                 'u:dev:MediaWiki:MassProtect/code.js',
                 'u:dev:MediaWiki:AjaxBatchUndelete.js',
                 'u:dev:MediaWiki:PowerDelete.js',

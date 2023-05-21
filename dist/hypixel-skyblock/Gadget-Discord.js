@@ -1,4 +1,19 @@
-//To do: Reintroduce the i18n module
+/** International Customization Standard Notice (ICC-NOTICE-V2)
+ * REVISION: 1
+ * FLAGS: <code-modified: false> <code-appended: false> <msg-verified: true>
+ * Please update flags accordingly. Please refer to en:Project:INT#ICS for details.
+ * 
+ * Below are the localization settings that you can modify.
+ */
+var msg = {
+    branding: "new",
+    footer: "Server meant for wiki talk, not game help",
+    header: "Wiki Editor Chat",
+    invite: "https://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki:Discord",
+    theme: "dark",
+};
+
+
 (function() {
     if (window.Discord && Discord.init) return;
 
@@ -30,11 +45,7 @@
         handleMessages: function() {
             window.dev = window.dev || {};
 
-            this.messages.branding = "new";
-            this.messages.footer = "Server meant for wiki talk, not game help";
-            this.messages.header = "Wiki Editor Chat";
-            this.messages.invite = "https://hypixel-skyblock.fandom.com/wiki/Hypixel_SkyBlock_Wiki:Discord";
-            this.messages.theme = "dark";
+            this.messages = msg;
         },
         logo: function(data) {
         		// svg source from https://discord.com/branding

@@ -13,12 +13,14 @@
 //Note: imageusage, embeddedin, and backlinks can take &xxcount=true to return only the number of them.
 
 mw.loader.using('mediawiki.util').done(function() {
+	'use strict';
     if (window.CacheCheckLoaded) {
         return;
     }
     window.CacheCheckLoaded = true;
 
     var removeIfFalse = false,
+    	aliase = [],
         skips = window.cacheSkip || [],
         skipLimit = Number(window.cacheSkipLimit) || 1000,
         list = $('ol.special').length ? $('ol.special > li') : $('ul.gallery > li, div.wikia-gallery-item'),
@@ -75,40 +77,41 @@ mw.loader.using('mediawiki.util').done(function() {
     ) {
         return;
     } else if (page === 'Specialpages') {
-        pages.push('BrokenRedirects', 'DoubleRedirects');
-        $('#mw-content-text table:first .mw-specialpagecached, #mw-specialpagesgroup-maintenance + .mw-specialpages-list li').each(function() {
-            var $this = $(this),
-                exceptions = {
-                    'Uncategorizedfiles': 'Uncategorizedimages', 
-                    'Unusedfiles': 'Unusedimages',
-                    'Unusedvideos': 'UnusedVideos',
-                    'Brokenredirects': 'BrokenRedirects',
-                    'Doubleredirects': 'DoubleRedirects'
-                },
-                link = $this.children('a').attr('title').substring(8);
-            link = link.charAt(0) + link.slice(1).toLowerCase();
+    	$.getJSON(qstr + 'meta=siteinfo&formatversion=2&siprop=specialpagealiases').then(function(data) {
+			var spa = data.query.specialpagealiases;
+			for (var i = 0; i < spa.length; i++) {
+				var aliasList = spa[i].aliases;
+				for (var j = 0; j < aliasList.length; j++) {
+					aliase[aliasList[j].replace(/_/g, ' ')] = spa[i].realname;
+				}
+			}
+		}).then(function() {
+	        pages.push('BrokenRedirects', 'DoubleRedirects');
+	        $('#mw-specialpagesgroup-maintenance + .mw-specialpages-list li.mw-specialpagecached').each(function() {
+	            var $this = $(this),
+	                link = $this.children('a').attr('title').substring(8);
 
-            if (link in exceptions) {
-                link = exceptions[link];
-            }
-            if (pages.indexOf(link) === -1) {
-                return;
-            }
+				var tmp = aliase[link] || link;
+	            if (pages.indexOf(tmp) === -1) {
+					console.log('[CacheCheck]', 'Missing page: ' + tmp + ' (' + link + ')');
+	                return;
+	            }
 
-            $.getJSON(qstr + 'list=querypage&qppage=' + link, function(data) {
-                var results = data.query.querypage.results;
-                if (results.length === 0) {
-                    takeAction($this);
-                }
-                if (
-                    link === 'Uncategorizedcategories' &&
-                    results.length === 1 &&
-                    results[0].title === window.topLevelCat
-                ) {
-                    takeAction($this);
-                }
-            });
-        });
+	            $.getJSON(qstr + 'list=querypage&qppage=' + tmp, function(data) {
+	                var results = data.query.querypage.results;
+	                if (results.length === 0) {
+	                    takeAction($this);
+	                }
+	                if (
+	                    tmp === 'Uncategorizedcategories' &&
+	                    results.length === 1 &&
+	                    results[0].title === window.topLevelCat
+	                ) {
+	                    takeAction($this);
+	                }
+	            });
+	        });
+		});
         return;
     }
 
