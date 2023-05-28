@@ -1,3 +1,5 @@
+/* This script is a modified version of https://dev.fandom.com/wiki/MediaWiki:Discord.js, maintained by Dorumin et al. */
+
 /** International Customization Standard Notice (ICC-NOTICE-V2)
  * REVISION: 1
  * FLAGS: <code-modified: false> <code-appended: false> <msg-verified: true>
@@ -281,7 +283,7 @@ var msg = {
 		
 		style = importArticle({
         	type: 'style',
-        	article: 'u:dev:MediaWiki:Discord.css'
+        	article: 'MediaWiki:Gadget-Discord.css'
 		})[0];
 	});
 

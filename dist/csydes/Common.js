@@ -1,4 +1,4 @@
-// 10:13, 21 May 2023 (UTC) <nowiki>
+// 00:15, 22 May 2023 (UTC) <nowiki>
 
 // AUTO-REFRESH RECENT CHANGES
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -85,7 +85,7 @@ window.dev.i18n.overrides['AdminDashboard_JS-Button'] = window.dev.i18n.override
 
 // CUSTOMISE THE DESIRED MESSAGES
 window.dev.i18n.overrides['AdminDashboard_JS-Button']['text'] = 'Desktop JavaScript';
-window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise your wiki with local JavaScript.';
+window.dev.i18n.overrides['AdminDashboard_JS-Button']['tooltip'] = 'Customise how your wiki appears on desktop and tablet using JavaScript.';
 // END ADMINDASHBOARD JS-BUTTON OVERRIDES
 
 // PREVENT USERS WITHOUT ROLLBACK RIGHTS FROM USING THE ROLLBACK SCRIPT

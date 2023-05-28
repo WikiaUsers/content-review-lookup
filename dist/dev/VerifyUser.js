@@ -111,8 +111,8 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
                 command = '!verify';
             (window.dev = window.dev || {}).VerifyUser = window.dev.VerifyUser || {};
 
-            if (mw.util.getParamValue('user') && mw.util.getParamValue('tag')) {
-                discordHandle = mw.util.getParamValue('user') + '#' + mw.util.getParamValue('tag');
+            if (mw.util.getParamValue('user')) {
+                discordHandle = mw.util.getParamValue('user') + (mw.util.getParamValue('tag') ? '#' + mw.util.getParamValue('tag') : '');
             }
             // Custom commands (e.g. /verify for Wiki-Bot)
             var customCommand = mw.util.getParamValue('c');
@@ -142,7 +142,8 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
 
             // Display warning and disable submit button if Discord tag is invalid
             $('#verify-input').on('keypress keydown keyup', function() {
-                if (!$(this).val().match(/^.{2,32}#[0-9]{4}$/)) {
+            	// Check for old and new-style usernames
+                if (!$(this).val().match(/^.{2,32}#[0-9]{4}$/) && !$(this).val().match(/^[a-z0-9_.]{2,32}$/)) {
                     $('#verify-input-invalid').css('visibility', 'visible');
                     $('#verify').addClass('wds-is-disabled');
                 } else {

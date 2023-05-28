@@ -572,6 +572,12 @@
             scripts: 'MediaWiki:SearchSuggest/code.js'
         },
         
+        SlightlyWider: {
+            page: "SlightlyWider",
+            styles: "MediaWiki:SlightlyWider.css",
+            disabledByDefault: true
+        },
+        
         SnowStorm: {
             page: 'SnowStorm/Demo',
             scripts: 'MediaWiki:SnowStorm.js',

@@ -353,11 +353,11 @@ window.MessageWallUserTags = {
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
 
-        'ItzSpongeBob_1999': 'Discussion Moderator • Rollback',
         'PinkPugPrincess': 'Discussion Moderator',
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
 
         'TheJasbre202': 'Rollback',
+        'ItzSpongeBob_1999': 'Rollback',
     }
 };
 

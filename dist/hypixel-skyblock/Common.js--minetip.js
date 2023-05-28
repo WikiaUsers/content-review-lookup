@@ -235,7 +235,8 @@ $(function () {
 
         // This hook forces it to apply script even in TabViews
         mw.hook("wikipage.content").add(function (pSection) {
-            $(pSection).find(".format-k .format-k").removeClass("format-k");
+            $(".invslot *").removeAttr("title"); // prevent unwatned browser tooltips for invslots
+            $(pSection).find(".format-k .format-k").removeClass("format-k"); // remove nested obfuscated class
         });
     }());
 });

@@ -15,3 +15,25 @@ importArticles({
     ]
 });
 //===================================================================
+
+// Custom Username Tagsz
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+	founder: 'Wikia Founder',
+        formerstaff: 'Former Staff'
+	}
+};
+UserTagsJS.modules.custom = {
+	'A Mystery Anamatronic': ['founder'],
+	'FiveCraft': ['formerstaff'],
+	'Redx360': ['formerstaff'],
+	'22garrets': ['formerstaff'],
+	'Cadethefrogger': ['formerstaff'],
+	'Kaz Heater': ['formerstaff']
+};
+UserTagsJS.modules.metafilter = {
+	rollback: ['formerstaff'],
+	inactive: ['formerstaff']
+};
+//======================

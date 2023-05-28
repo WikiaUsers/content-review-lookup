@@ -168,6 +168,31 @@
         return obj;
     }
 
+    // This function takes an array xs and a key (which can either be a property name or a function)
+    function groupByArray(xs, key)
+    {
+        // Reduce is used to call a function for each element in the array
+        return xs.reduce(function(rv, x)
+        {
+            // Here we're checking whether key is a function, and if it is, we're calling it with x as the argument
+            // Otherwise, we're assuming that key is a property name and we're accessing that property on x
+            var v = key instanceof Function ? key(x) : x[key];
+
+            // rv is the returned array of key-value pairs, that we're building up as we go
+            // Find the existing kvp in the results with a key property equal to v
+            var el = rv.find(function(r){ return r && r.key === v; });
+
+            // If we find an existing pair, we'll add x to its values array.
+            if (el) el.values.push(x);
+            
+            // If we don't find one, create one with an array contain just the value
+            else rv.push({ key: v, values: [x] });
+
+            return rv;
+
+        }, []);
+    }
+
     function isEmptyObject(obj)
     {
         for (var i in obj) return false; 
@@ -215,6 +240,34 @@
             counter += 1;
         }
         return result;
+    }
+
+    function getIntersectionPoint(line1, line2)
+    {
+        var x1 = line1[0][0];
+        var y1 = line1[0][1];
+        var x2 = line1[1][0];
+        var y2 = line1[1][1];
+        var x3 = line2[0][0];
+        var y3 = line2[0][1];
+        var x4 = line2[1][0];
+        var y4 = line2[1][1];
+        
+        var denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+        
+        if (denominator === 0)
+        {
+            // Lines are parallel, there is no intersection
+            return null;
+        }
+        
+        var ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+        var ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+        
+        var intersectionX = x1 + ua * (x2 - x1);
+        var intersectionY = y1 + ua * (y2 - y1);
+        
+        return [intersectionX, intersectionY];
     }
 
     function preventDefault(e){ e.preventDefault(); }
@@ -500,9 +553,22 @@
                 // e (the event, note that target will not always be the base layer)
                 onMapClicked: new EventHandler(),
 
-                // These events are triggered by the attributeObserver, they only contain one argument "value"
+                // Fired when the user started or ended dragging a map
                 onMapDragged: new EventHandler(),
+
+                // Fired when the user paused or resumed an in-progress drag, by not moving their mouse
+                onMapDraggedMove: new EventHandler(),
+
+                // Zoom event triggered by the attributeObserver, contains the args
+                // map (the map that was zoomed)
+                // value (true if starting a zoom, false if ending a zoom)
+                // type (the type of zoom this is, typically how it was initiated. Values are button, wheel, box, key)
+                // center (the center position of the zoom in viewport pixel units)
+                // scaleDelta (the delta scale factor that the map is zooming to)
+                // scale (the new scale of the map after the zoom)
                 onMapZoomed: new EventHandler(),
+
+                // Pan event triggered by the attributeObserver
                 onMapPanned: new EventHandler(),
 
                 // Fired when the map goes fullscreen
@@ -548,6 +614,20 @@
                 if (this.config["iconPosition"].endsWith("left"))      this.config["iconAnchor"] += "-right";
                 if (this.config["iconPosition"].endsWith("center"))    this.config["iconAnchor"] += "";
                 if (this.config["iconPosition"].endsWith("right"))     this.config["iconAnchor"] += "-left";
+            }
+
+            // Infer hiddenCategories from visibleCategories
+            // A category is hidden if it either isn't present in visibleCategories, or is present in hiddenCategories
+            if (this.config["visibleCategories"] != undefined && this.config["visibleCategories"].length > 0)
+            {
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    var id = this.categories[i].id;
+                    
+                    // Add all categories NOT in visibleCategories to hiddenCategories
+                    if (!this.config.visibleCategories.includes(id) && !this.config.hiddenCategories.includes(id))
+                        this.config.hiddenCategories.push(id);
+                }
             }
             
             // Process category definitions
@@ -713,7 +793,20 @@
                             {
                                 log(config.booleanName + " - " + value);
                                 this[config.booleanName] = value;
-                                this.events[config.eventName].invoke({ map: this, value: value });
+
+                                if (config.eventName == "onMapZoomed")
+                                {
+                                    this.events[config.eventName].invoke({
+                                        map: this,
+                                        value: value,
+                                        center: this.zoomCenter,
+                                        type: this.zoomType,
+                                        scaleDelta: this.getElementTransformScale(this.elements.leafletBaseImageLayer, true),
+                                        scale: this.getElementTransformScale(this.elements.leafletProxy, true) * 2
+                                    });
+                                }
+                                else
+                                    this.events[config.eventName].invoke({ map: this, value: value });
                             }
                             
                         }
@@ -963,7 +1056,7 @@
                 }
 
             }.bind(this), 250);
-            
+
 
             this.rootObserver = new MutationObserver(this.rootObserved);
             this.selfObserver = new MutationObserver(this.selfObserved);
@@ -1064,6 +1157,8 @@
                         if (category) category.init(filterElement);
                     }
 
+                    this.initCursorDebug();
+
                     this.initMinimalLayout();
 
                     // Create fullscreen button
@@ -1087,7 +1182,8 @@
                     // Set up tooltips
                     this.initTooltips();
 
-                    // Set up ruler
+                    // Set up canvas
+                    //this.initThreadedCanvas();
                     //this.initCanvas();
 
                     // Set up collectibles
@@ -1232,20 +1328,48 @@
 
             initMapEvents: function()
             {
+                var mouseDownPos, mouseMoveStopTimer;
+                
                 // Is called on mousemove after mousedown, and for subsequent mousemove events until dragging more than 2px
-                this._onMouseMove = function(e)
+                var onMouseMove = function(e)
                 {
-                    // If the position of the move is 2px away from the mousedown position
-                    if (Math.abs(e.pageX - this._mouseDownPos[0]) > 2 ||
-                        Math.abs(e.pageY - this._mouseDownPos[1]) > 2)
+                    // Don't consider this a drag if shift was held on mouse down
+                    if (this.isBoxZoomDragging) return;
+                    
+                    if (!this.isDragging)
                     {
-                        log("Started drag at x: " + this._mouseDownPos[0] + ", y: " + this._mouseDownPos[1]);
-                        
-                        // This is a drag
-                        this.isDragging = true;
-                        this.elements.leafletContainer.removeEventListener("mousemove", this._onMouseMove);
-                        this.events.onMapDragged.invoke({value: true});
-                    }   
+                        // If the position of the move is 2px away from the mousedown position
+                        if (Math.abs(e.pageX - this.mouseDownPos[0]) > 2 ||
+                            Math.abs(e.pageY - this.mouseDownPos[1]) > 2)
+                        {
+                            log("Started drag at x: " + this.mouseDownPos[0] + ", y: " + this.mouseDownPos[1] + " (" + this.mouseDownMapPos + ")");
+                            
+                            // This is a drag
+                            this.isDragging = true;
+                            //this.elements.leafletContainer.removeEventListener("mousemove", onMouseMove);
+                            this.events.onMapDragged.invoke({value: true});
+                        }
+                    }
+                    else
+                    {
+                        // Determine whether we're resuming a drag
+                        if (!this.isDraggingMove)
+                        {
+                            log("Resuming drag");
+                            this.isDraggingMove = true;
+                            this.events.onMapDraggedMove.invoke(true);
+                        }
+    
+                        // Cancel the timeout which in 300ms will indicate we've paused dragging
+                        clearTimeout(mouseMoveStopTimer);
+                        mouseMoveStopTimer = setTimeout(function()
+                        {
+                            log("Pausing drag");
+                            this.isDraggingMove = false;
+                            this.events.onMapDraggedMove.invoke(false);
+                        }.bind(this), 100);
+                    }
+                    
                 }.bind(this);
 
                 // Mouse down event on leaflet container
@@ -1254,16 +1378,22 @@
                 {
                     // Ignore right clicks
                     if (e.button == 2) return;
-                    
-                    var elem = e.target;
 
-                    // Save the position of the event, and subscribe to the mousemove event
-                    this._mouseDownPos = [ e.pageX, e.pageY ];
-                    this.elements.leafletContainer.addEventListener("mousemove", this._onMouseMove);
+                    // Determine whether this is a box zoom
+                    if (e.shiftKey) this.isBoxZoomDragging = true;
+
+                    // Save the position of the event
+                    this.mouseDownPos = [ e.pageX, e.pageY ];
+                    this.mouseDownMapPos = [ e.offsetX, e.offsetY ];
+                    this.pageToMapOffset = [ e.offsetX - e.pageX, e.offsetY - e.pageY ];
+
+                    // Subscribe to the mousemove event so that the movement is tracked
+                    this.elements.leafletContainer.addEventListener("mousemove", onMouseMove);
                     this._invalidateLastClickEvent = false;
 
                     // Traverse up the click element until we find the marker or hit the root of the map
                     // This is because markers may have sub-elements that may be the target of the click
+                    var elem = e.target;
                     while (true)
                     {
                         // No more parent elements
@@ -1282,7 +1412,8 @@
                     }
                 }.bind(this));
 
-                // Mouse up event on <s>leaflet container</s> window (mouseup won't trigger if the mouse is outside the leaflet window)
+                // Mouse up event on <s>leaflet container</s> window
+                // (mouseup won't trigger if the mouse is released outside the leaflet window)
                 window.addEventListener("mouseup", function(e)
                 {
                     // If the mouse was released on the map container or any item within it, the map was clicked
@@ -1313,12 +1444,15 @@
                         }
                     }
                     
-                    this.elements.leafletContainer.removeEventListener("mousemove", this._onMouseMove);
+                    this.elements.leafletContainer.removeEventListener("mousemove", onMouseMove);
 
                     // If mousing up after dragging, regardless of if it ended within the window
                     if (this.isDragging == true)
                     {
-                        log("Ended drag at x: " + e.pageX + ", y: " + e.pageY);
+                        this.mouseUpPos = [ e.pageX, e.pageY ];
+                        this.mouseUpMapPos = [ e.pageX + this.pageToMapOffset[0], e.pageY + this.pageToMapOffset[1] ];
+                        
+                        log("Ended drag at x: " + e.pageX + ", y: " + e.pageY + " (" + this.mouseUpMapPos.toString() + ")");
                         
                         // No longer dragging
                         this.isDragging = false;
@@ -1327,6 +1461,18 @@
                         // Invalidate click event on whatever marker is hovered
                         if (this.lastMarkerHovered)
                             this._invalidateLastClickEvent = true;
+                    }
+
+                    // If mousing up after starting a box zoom, record this zoom as a box zoom
+                    if (this.isBoxZoomDragging == true)
+                    {
+                        this.isBoxZoomDragging = false;
+                        this.zoomType = "box";
+                        this.zoomCenter = [ this.mouseUpMapPos[0] - this.mouseDownMapPos[0],
+                                            this.mouseUpMapPos[1] - this.mouseDownMapPos[1] ];
+                        this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                        this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                        this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
                     }
                     
                 }.bind(this));
@@ -1346,8 +1492,41 @@
                 this.elements.zoomInButton.removeAttribute("href");
                 this.elements.zoomOutButton.removeAttribute("href");
                 this.elements.zoomInButton.style.cursor = this.elements.zoomOutButton.style.cursor = "pointer";
-                this.elements.zoomInButton.addEventListener("click", preventDefault);
-                this.elements.zoomOutButton.addEventListener("click", preventDefault);
+                this.elements.zoomInButton.addEventListener("click", zoomButtonClick.bind(this));
+                this.elements.zoomOutButton.addEventListener("click", zoomButtonClick.bind(this));
+                function zoomButtonClick(e)
+                {
+                    this.zoomType = "button";
+                    this.zoomCenter = [ this.elements.leafletContainer.clientWidth / 2, this.elements.leafletContainer.clientHeight / 2 ];
+                    this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                    this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                    this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                    e.preventDefault();
+                };
+
+                // Record zoom position when scroll wheel is used
+                this.elements.leafletContainer.addEventListener("wheel", function(e)
+                {
+                    this.zoomType = "wheel";
+                    this.zoomCenter = [ e.offsetX, e.offsetY ];
+                    this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                    this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                    this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                    
+                }.bind(this));
+
+                // Record key zoom when keyboard keys are used
+                this.elements.leafletContainer.addEventListener("keydown", function(e)
+                {
+                    if (e.key == "-" || e.key == "=")
+                    {
+                        this.zoomType = "key";
+                        this.zoomCenter = [ this.elements.leafletContainer.clientWidth / 2, this.elements.leafletContainer.clientHeight / 2 ];
+                        this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                        this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                        this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                    }
+                }.bind(this));
 
                 /*
                 // Intercept wheel events to normalize zoom
@@ -1640,7 +1819,7 @@
                 return [ this.elements.leafletContainer.clientWidth, this.elements.leafletContainer.clientHeight ];
             },
 
-            // Scale a "unscaled" position to current map size, returning the scaled position
+            // Scale a "unscaled" (JSON) position to current map size, returning the scaled position
             unscaledToScaledPosition: function(unscaledPos)
             {
                 var scaledPos = [];
@@ -1653,18 +1832,17 @@
                 return scaledPos;
             },
 
-            // Converts a scaled position at the current zoom level to an unscaled position
+            // Converts a scaled (zoomed) position at the current zoom level to an unscaled (JSON) position
             // This position is equivalent to the JSON positions (assuming the CORRECT origin of top-left)
             scaledToUnscaledPosition: function(scaledPos)
             {
-                // Get the pixel position
-                var pixelPos = this.scaledToPixelPosition(scaledPos);
+                var unscaledPos = [];
+                var imageSize = this.getScaledMapImageSize();
 
-                // Add the bounds to the pixel position to the
-                pixelPos[0] += this.bounds[0][0];
-                pixelPos[1] += this.bounds[0][1];
+                unscaledPos[0] = (scaledPos[0] / imageSize[0]) * this.size.width + this.bounds[0][0];
+                unscaledPos[1] = (scaledPos[1] / imageSize[1]) * this.size.height + this.bounds[0][1];
 
-                return pixelPos;
+                return unscaledPos;
             },
                 
             scaledToPixelPosition: function(scaledPos)
@@ -1824,6 +2002,15 @@
                 return this.scaledToTransformPosition(scaledPos);
             },
 
+            getElementTransformPos_css: function(element)
+            {
+                var values = element.style.transform.split(/\w+\(|\);?/);
+                if (!values[1] || !values[1].length) return {};
+                values = values[1].split(/,\s?/g);
+
+                return [ parseInt(values[0], 10), parseInt(values[1], 10), parseInt(values[2], 10) ];
+            },
+
             // Get the existing transform:translate XY position from an element
             getElementTransformPos: function(element, accurate)
             {
@@ -1837,8 +2024,12 @@
                 // This is the more programatic way to get the position, calculating it 
                 if (accurate && this.elements.leafletMapPane.contains(element))
                 {
+                    /*
+                    // The same as below, but using JQuery
                     var pos = $(element).position();
+                    console.log("jQuery.position took " + (performance.now() - t));
                     return [ pos.left, pos.top ];
+                    */
                     
                     var mapRect = this.elements.leafletMapPane.getBoundingClientRect();
                     var elemRect = element.getBoundingClientRect();
@@ -1876,6 +2067,50 @@
                 */
             },
 
+            getElementTransformScale: function(element, css)
+            {
+                // Throw error if the passed element is not in fact an element
+                if (!(element instanceof Element))
+                {
+                    console.error("getElementTransformScale expects an Element but got the following value: " + element.toString());
+                    return [0, 0];
+                }
+
+                // CSS scale
+                if (css)
+                {   
+                    /*
+                    // Computed style - It may not be valid if the scale style was added this frame
+                    var style = window.getComputedStyle(element);
+
+                    // Calculate the scale factor using the transform matrix
+                    var matrix = new DOMMatrixReadOnly(style.transform);
+                    return [ Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+                             Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d) ]
+
+                    /*
+                    // Get the transform property value
+                    var transformValue = style.getPropertyValue("transform");
+                    
+                    // Extract the scale value from the transform property
+                    var match = transformValue.match(/scale\(([^\)]+)\)/);
+                    var scaleValue = match ? match[1] : "1";
+
+                    return scaleValue;
+                    */
+
+                    var match = element.style.transform.match(/scale\(([^\)]+)\)/);
+                    return match ? parseFloat(match[1]) : 1;
+                }
+
+                // Actual scale
+                else
+                {
+                    var rect = element.getBoundingClientRect();
+                    return [ rect.width / element.offsetWidth, rect.height / element.offsetHeight ];
+                }
+            },
+
             getElementSize: function(element)
             {
                 var rect = element.getBoundingClientRect();
@@ -1885,9 +2120,11 @@
             // Get the current background image size at the current zoom level
             getScaledMapImageSize: function(live)
             {
+                /*
                 // Return the cached size if we have one and it doesn't need to be updated
                 if (!this._isScaledMapImageSizeDirty && this.scaledMapImageSize && !live)
                     return this.scaledMapImageSize;
+                */
                 
                 // If we need a live-updating value, use an expensive calculation to get it
                 if (live)
@@ -1911,6 +2148,68 @@
                 this._isScaledMapImageSizeDirty = false;
                 this.scaledMapImageSize = size;
                 return size;
+            },
+
+            initCursorDebug: function()
+            {
+                return;
+                if (isDebug)
+                {
+                    var cursorDebug = document.createElement("div");
+                    cursorDebug.className = "mapsExtended_cursorDebug";
+                    cursorDebug.style.cssText = "position: absolute; top: 0; right: 0; z-index: 1; padding: 0.1em; background-color: var(--theme-page-background-color);  color: var(--theme-body-text-color); font-family: monospace; text-align: right; line-height: 1.2em; white-space: pre"
+                    this.elements.mapModuleContainer.append(cursorDebug);
+
+                    var updateText = function(e)
+                    {
+                        if (e instanceof Event)
+                            cursorPos = [ e.clientX, e.clientY ];
+                        else
+                            cursorPos = e;
+                        
+                        var transformPos = this.clientToTransformPosition(cursorPos);
+                        var scaledPos = this.clientToScaledPosition(cursorPos);
+                        var unscaledPos = this.clientToUnscaledPosition(cursorPos);
+
+                        var str = "Transform pos: " + Math.round(transformPos[0]) + ", " + Math.round(transformPos[1]);
+                        str += "\r\nScaled (pixel) pos: " + Math.round(scaledPos[0]) + ", " + Math.round(scaledPos[1]);
+                        str += "\r\nUnscaled (JSON) pos: " + Math.round(unscaledPos[0]) + ", " + Math.round(unscaledPos[1]);
+
+                        if (points.length > 0)
+                        {
+                            str += "\r\nCtrl+Click to add to list";
+                            str += "\r\n" + points.map(function(p){ return "[" + Math.round(p[0]) + ", " + Math.round(p[1]) + "]"; }).join("\r\n");
+                            str += "\r\nClick here to finish and copy";
+                        }
+                        else
+                            str += "\r\nCtrl+Click to start list";
+                        cursorDebug.textContent = str;
+                        
+                    }.bind(this);
+
+                    var points = [];
+
+                    this.elements.leafletContainer.addEventListener("click", function(e)
+                    {
+                        if (!e.ctrlKey) return;
+                        var cursorPos = [ e.clientX, e.clientY ];
+                        var unscaledPos = this.clientToUnscaledPosition(cursorPos);
+                        points.push(unscaledPos);
+                        updateText(cursorPos);
+                        
+                    }.bind(this));
+
+                    cursorDebug.addEventListener("click", function(e)
+                    {
+                        if (points.length > 0)
+                        {
+                            navigator.clipboard.writeText("[ " + points.map(function(p){ return "[" + Math.round(p[0]) + ", " + Math.round(p[1]) + "]"; }).join(", ") + " ]");
+                            points = [];
+                        }
+                    });
+
+                    this.elements.leafletContainer.addEventListener("mousemove", updateText.bind(this));
+                }
             },
 
             initMinimalLayout: function()
@@ -2073,11 +2372,15 @@
                     tooltipElement.style.marginTop = (marker.height * 0.5) + "px";
                 else if (marker.iconAnchor.startsWith("bottom"))
                     tooltipElement.style.marginTop = (marker.height * -0.5) + "px";
+                else
+                    tooltipElement.style.marginTop = "";
 
                 if (marker.iconAnchor.endsWith("left"))
                     tooltipElement.style.marginLeft = (marker.width * 0.5) + (isShownOnLeftSide ? -6 : 6) + "px"; // (50% of icon width) + 6 (tooltip tip on left) or - 6 (tooltip tip on right)
                 else if (marker.iconAnchor.endsWith("right"))
                     tooltipElement.style.marginLeft = (marker.width * -0.5) + (isShownOnLeftSide ? -6 : 6) + "px";
+                else
+                    tooltipElement.style.marginLeft = "";
                 
                 // We use two transforms, the transform of the marker and a local one which shifts the tooltip
                 tooltipElement.localTransform = localTransform;
@@ -2100,9 +2403,761 @@
                 this.tooltipMarker = undefined;
             },
 
-            // Canvas
+            // Main thread canvas
 
             initCanvas: function()
+            {
+                // Performance options
+
+                // The amount of pixels each side of the viewport to draw, in order to prevent constant redrawing when the 
+                var CANVAS_EDGE_BUFFER = 200;
+
+                // Don't continue if there are no paths
+                if (!this.config.paths || this.config.paths.length == 0)
+                    return;
+
+                // Set the canvas width and height to be the size of the container, so that we're always drawing at the optimal resolution
+                // We can't set it to the scaled size of the map image because at high zoom levels the max pixel count will be exceeded
+                var leafletContainerSize = this.getElementSize(this.elements.leafletContainer);
+
+                // Create a pane to contain all the ruler points
+                var canvasPane = document.createElement("div");
+                canvasPane.className = "leaflet-pane leaflet-canvas-pane";
+                this.elements.leafletCanvasPane = canvasPane;
+                this.elements.leafletTooltipPane.after(canvasPane);
+                
+                var canvas = document.createElement("canvas");
+                //canvas.className = "leaflet-zoom-animated";
+                canvas.style.pointerEvents = "none";
+                //canvas.style.willChange = "transform";
+                canvas.width = leafletContainerSize[0];
+                canvas.height = leafletContainerSize[1];
+                this.elements.leafletCanvasPane.appendChild(canvas);
+
+                //var offscreenCanvas = new OffscreenCanvas(leafletContainerSize[0], leafletContainerSize[1]);
+                //var ctx = offscreenCanvas.getContext("2d");
+                var ctx = canvas.getContext("2d");
+
+                var points = [];
+                var iconIndexes = [];
+                var icons = [];
+                var initialized = false;
+
+                function pointsToBSpline(points)
+                {
+                    var ax, ay, bx, by, cx, cy, dx, dy;
+
+                    // Add last two points to the start of the array
+                    points.unshift(points[points.length - 2], points[points.length - 1]);
+
+                    // Add first two points to the end of the array
+                    points.push(points[2], points[3]);
+
+                    var splinePoints = [];
+
+                    for (var t = 0; t < 1; t += 0.1)
+                    {
+                        ax = (-points[0].x + 3 * points[1].x - 3 * points[2].x + points[3].x) / 6;
+                        ay = (-points[0].y + 3 * points[1].y - 3 * points[2].y + points[3].y) / 6;
+                        bx = (points[0].x - 2 * points[1].x + points[2].x) / 2;
+                        by = (points[0].y - 2 * points[1].y + points[2].y) / 2;
+                        cx = (-points[0].x + points[2].x) / 2;
+                        cy = (-points[0].y + points[2].y) / 2;
+                        dx = (points[0].x + 4 * points[1].x + points[2].x) / 6;
+                        dy = (points[0].y + 4 * points[1].y + points[2].y) / 6;
+
+                        splinePoints.push([ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx,
+                                           ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy]);
+                    }
+
+                    return splinePoints;
+                }
+
+                // https://observablehq.com/@pamacha/chaikins-algorithm
+                function chaikin(arr, num)
+                {
+                    if (num === 0) return arr;
+
+                    var l = arr.length;
+                    var smooth = arr.map(function(c,i)
+                    {
+                        return[[0.75*c[0] + 0.25*arr[(i + 1)%l][0],0.75*c[1] + 0.25*arr[(i + 1)%l][1]],
+                               [0.25*c[0] + 0.75*arr[(i + 1)%l][0],0.25*c[1] + 0.75*arr[(i + 1)%l][1]]];
+                    }).flat();
+                    return num === 1 ? smooth : chaikin(smooth, num - 1);
+                }
+
+                // Given a source style, remove properties from a target style that are the same as those on the source
+                // This allows us to avoid unnecessarily setting properties to the same value 
+                function removeDuplicateStyleProps(target, source)
+                {
+                    for (var key in target)
+                    {
+                        if (Object.hasOwn(target, key) && Object.hasOwn(source, key) && target[key] == source[key])
+                            delete target[key];
+                    }
+                }
+
+                for (var i = 0; i < this.categories.length; i++)
+                {
+                    if (this.categories[i].icon && !icons.includes(this.categories[i].icon))
+                        icons.push(this.categories[i].icon);
+                }
+                
+                for (var i = 0; i < 1000; i++)
+                {
+                    points.push({x: Math.floor(Math.random() * this.size.width), y: Math.floor(Math.random() * this.size.height)});
+                    iconIndexes.push(Math.floor(Math.random() * (icons.length - 0) + 0));
+                }
+
+                // Create blobs from HTMImageElements
+                Promise.resolve()
+                .then(function(blobs)
+                {
+                    return Promise.all(icons.map(function(icon, index)
+                    {
+                        return createImageBitmap(icon.img, { resizeWidth: icon.scaledWidth, resizeHeight: icon.scaledHeight, resizeQuality: "high" });
+                    }));
+                })
+                .then(function(bitmaps)
+                {
+                    for (var i = 0; i < bitmaps.length; i++)
+                    {
+                        var icon = icons[i];
+                        icon.bitmap = bitmaps[i];
+                    }
+                })
+                .finally(function()
+                {
+                    initialized = true;
+                });
+
+                var stylesLookup = new Map();
+                var pathsByStyle = [];
+
+                // Process styles, performing some error checking and creating a lookup table
+                for (var i = 0; i < this.config.styles.length; i++)
+                {
+                    var s = this.config.styles[i];
+                    var error = false;
+
+                    if (!s.id)
+                    {
+                        console.error("Path style at index " + index + " does not contain an id!");
+                        error = true;
+                    }
+                    
+                    if (stylesLookup.has(s.id))
+                    {
+                        console.error("Path style at index " + index + " has an ID that is used by another style");
+                        error = true;
+                    }
+
+                    // Remove this style from config
+                    if (error)
+                    {
+                        this.config.styles.splice(i, 1);
+                        i--;
+                        continue;
+                    }
+
+                    // Add this style to the lookup
+                    else
+                    {
+                        stylesLookup.set(s.id, s);
+
+                        if (this.config.canvasRenderOrderMode == "auto")
+                            pathsByStyle.push({ id: s.id, style: s, paths: [], pathsWithOverrides: [] });
+                    }
+                }
+
+                // Process paths, adding them to pathsByStyle
+                for (var i = 0; i < this.config.paths.length; i++)
+                {
+                    var path = this.config.paths[i];
+
+                    // Ensure ID uniqueness
+                    if (!path.id || this.config.paths.some(function(p){ return p.id == path.id && p != path; }))
+                    {
+                        path.id = generateRandomString(8);
+                        console.error("Path at the index " + i + " does not have a unique ID! Forced its ID to " + path.id);
+                    }
+
+                    var hasInheritedStyle = stylesLookup.has(path.styleId);
+                    var hasOverrideStyle = path.style != undefined && typeof path.style == "object";
+                    var styleGroup = null;
+
+                    // Ensure that the styleId matches a style in pathStyles
+                    if (!hasInheritedStyle && path.styleId != undefined)
+                    {
+                        console.error("Path " + path.id + " uses an ID of \"" + path.styleId + "\" that was not found in the styles array!");
+                        delete path.styleId;
+                    }
+
+                    // Catch any paths that don't define a style at all
+                    if (!hasInheritedStyle && !hasOverrideStyle)
+                    {
+                        console.error("Path " + path.id + " must contain either a styleId or should define its own style");
+                        this.config.paths.splice(i, 1);
+                        i--;
+                        continue;
+                    }
+
+                    if (hasInheritedStyle && hasOverrideStyle)
+                    {
+                        removeDuplicateStyleProps(path.overrideStyle, stylesLookup.get(path.styleId));
+                    }
+
+                    // This is the final style that the path will use
+                    var style = hasInheritedStyle && hasOverrideStyle ? jQuery.extend(true, {}, stylesLookup.get(path.styleId), path.overrideStyle) :
+                                hasInheritedStyle && !hasOverrideStyle ? stylesLookup.get(path.styleId) :
+                                !hasInheritedStyle && hasOverrideStyle ? path.style :
+                                !hasInheritedStyle && !hasOverrideStyle ? null : null;
+                    path.style = style;
+
+                    if (path.pointsType == "coordinate")
+                    {
+                        path.position = path.points;
+                        delete path.points;
+                        delete path.pointsType;
+                        delete path.pointsDepth;
+                    }
+
+                    // Smooth the vertices in this path
+                    if (style.smoothing == true)
+                    {
+                        for (var p = 0; p < path.pointsFlat.length; p++)
+                        {
+                            if (path.pointsFlat[p].length * Math.pow(2, style.smoothingIterations) > 250000)
+                                console.error("Path " + path.id + " at index " + i + " with " + style.smoothingIterations + " Chaikin iterations will not be smoothed as the number of points would exceed 250,000");
+                            else
+                                path.pointsFlat[p] = chaikin(path.pointsFlat[p], style.smoothingIterations);
+                        }
+                    }
+
+                    // Paths are grouped by style, and drawn in the order of the styles array
+                    if (this.config.canvasRenderOrderMode == "auto")
+                    {
+                        if (hasInheritedStyle)
+                        {
+                            // Get the style (group) it references
+                            styleGroup = pathsByStyle.find(function(v) { return v.id == path.styleId; });
+
+                            // If the path has overrides, add it to pathsWithOverrides
+                            if (hasOverrideStyle)
+                                styleGroup.pathsWithOverrides.push(path);
+
+                            // Otherwise just add it to paths
+                            else
+                                styleGroup.paths.push(path);
+                        }
+                        else
+                        {
+                            // Create a new styleGroup that contains just this path and its unique style
+                            styleGroup = { id: "_path_" + path.id + "_style_", style: path.style, paths: [ path ]};
+
+                            // Insert a new styleGroup after the group of the last path (this is not always the end of the pathsByStyle array)
+                            var lastStyleGroupIndex = i == 0 ? 0 : pathsByStyle.indexOf(this.config.paths[i - 1].styleGroup) + 1;
+                            pathsByStyle.splice(lastStyleGroupIndex, 0, styleGroup);
+                        }
+                    }
+
+                    // Paths are drawn in the same order of the paths array, just lump together adjacent paths with the same style
+                    else if (this.config.canvasRenderOrderMode == "manual")
+                    {
+                        // If the last styleGroup uses the same style as this path, add this path to that group
+                        if (hasInheritedStyle && i > 0 && this.paths[i - 1].styleGroup.id == path.styleId)
+                        {
+                            styleGroup = this.paths[i - 1].styleGroup;
+
+                            // If the path has overrides, add it to pathsWithOverrides
+                            if (hasOverrideStyle)
+                                styleGroup.pathsWithOverrides.push(path);
+
+                            // Otherwise just add it to paths
+                            else
+                                styleGroup.paths.push(path);
+                        }
+                        else
+                        {
+                            // Otherwise just create a whole new styleGroup
+                            styleGroup = { id: "_path_" + path.id + "_style_", style: style, paths: [ path ]};
+                        }
+                    }
+
+                    path.styleGroup = styleGroup;
+                }
+
+                this.pathsByStyle = pathsByStyle;
+
+                function applyStyleToCanvas(ctx, style)
+                {
+                    if (style.fill == true)
+                    {
+                        if (style.fillColor != undefined)   ctx.fillStyle = style.fillColor;
+                    }
+
+                    if (style.stroke == true)
+                    {
+                        if (style.strokeWidth != undefined) ctx.lineWidth = style.strokeWidth;
+                        if (style.strokeColor != undefined) ctx.strokeStyle = style.strokeColor;
+                        if (style.lineCap != undefined)     ctx.lineCap = style.lineCap;
+                        if (style.lineJoin != undefined)    ctx.lineJoin = style.lineJoin;
+                        if (style.miterLimit != undefined)  ctx.miterLimit = style.miterLimit;
+                        if (style.lineDashArray != undefined)
+                        {
+                            if (style.lineDashOffset != undefined) ctx.lineDashOffset = style.lineDashOffset;
+                            ctx.setLineDash(style.lineDashArray);
+                        }
+                    }
+
+                    if (style.shadowColor != undefined)     ctx.shadowColor = style.shadowColor;
+                    if (style.shadowBlur != undefined)      ctx.shadowBlur = style.shadowBlur;
+                    if (style.shadowOffset != undefined)
+                    {
+                        ctx.shadowOffsetX = style.shadowOffset[0];
+                        ctx.shadowOffsetY = style.shadowOffset[1];
+                    }
+                }
+
+                function drawPath(ctx, path)
+                {
+                    switch (path.type)
+                    {
+                        case "polygon":
+                        {
+                            switch (path.pointsType)
+                            {
+                                case "single":
+                                    drawPolygon(ctx, path.points);
+                                    break;
+                                case "singleWithHoles":
+                                    drawSinglePolygonWithHoles(ctx, path.points);
+                                    break;
+                                case "multiple":
+                                    drawMultiplePolygonsWithHoles(ctx, path.points);
+                                    break;
+                            }
+                            
+                            break;
+                        }
+                        case "polyline":
+                        {
+                            switch (path.pointsType)
+                            {
+                                case "single":
+                                    drawPolyline(ctx, path.points);
+                                    break;
+                                case "multiple":
+                                    drawMultiplePolylines(ctx, path.points);
+                                    break;
+                            }
+                            break;
+                        }
+                        case "circle":
+                        {
+                            if (path.pointsType == "single")
+                                drawCircles(ctx, path.points, path.radius);
+                            else
+                                drawCircle(ctx, path.position, path.radius);
+                            break;
+                        }
+                        case "ellipse":
+                        {
+                            drawEllipse(ctx, path.position, path.radiusX, path.radiusY, path.rotation);
+                            break;
+                        }
+                        case "rectangle":
+                        {
+                            drawRectangle(ctx, path.position, path.width, path.height);
+                            break;
+                        }
+                        case "rounded_rectangle":
+                        {
+                            drawRoundedRectangle(ctx, path.position, path.width, path.radii);
+                            break;
+                        }
+                    }
+
+                    if (path.type != "polyline")
+                    {
+                        if (path.style.fill == true)
+                            ctx.fill(path.style.fillRule);
+                    }
+                    
+                    if (path.style.stroke == true)
+                        ctx.stroke();
+                }
+
+                // Draw with just the moveTo and lineTo, no beginPath or closePath
+                function drawPoints(ctx, points)
+                {
+                    ctx.moveTo(points[0][0], points[0][1]);
+                    for (p = 1; p < points.length; p++)
+                        ctx.lineTo(points[p][0], points[p][1]);
+                }
+
+                function drawPolyline(ctx, points)
+                {
+                    ctx.beginPath();
+                    drawPoints(ctx, points);
+                }
+
+                function drawMultiplePolylines(ctx, points)
+                {
+                    ctx.beginPath();
+                    for (mp = 0; mp < points.length; mp++)
+                        drawPoints(ctx, points[mp]);
+                }
+
+                // Draw a single polygon, without holes
+                function drawPolygon(ctx, points)
+                {
+                    ctx.beginPath();
+                    drawPoints(ctx, points);
+                    ctx.closePath();
+                }
+
+                function drawSinglePolygonWithHoles(ctx, points)
+                {
+                    ctx.beginPath();
+                    for (sp = 0; sp < points.length; sp++)
+                    {
+                        drawPoints(ctx, points[sp]);
+                        ctx.closePath();
+                    }
+                }
+
+                function drawMultiplePolygonsWithHoles(ctx, points)
+                {
+                    for (mp = 0; mp < points.length; mp++)
+                        drawSinglePolygonWithHoles(ctx, points[mp]);
+                }
+
+                function drawCircle(ctx, position, radius)
+                {
+                    ctx.beginPath();
+                    ctx.arc(position[0], position[1], radius, 0, Math.PI * 2);
+                }
+
+                function drawCircles(ctx, points, radius)
+                {
+                    ctx.beginPath();
+                    for (p = 0; p < points.length; p++)
+                    {
+                        ctx.moveTo(points[p][0], points[p][1]);
+                        ctx.arc(points[p][0], points[p][1], radius, 0, Math.PI * 2);
+                    }
+                }
+
+                function drawEllipse(ctx, position, radiusX, radiusY, rotation)
+                {
+                    ctx.beginPath();
+                    ctx.ellipse(position[0], position[1], radiusX, radiusY, rotation, 0, Math.PI * 2);
+                }
+
+                function drawRectangle(ctx, position, width, height)
+                {
+                    ctx.beginPath();
+                    ctx.rect(position[0], position[1], width, height);
+                }
+
+                function drawRoundedRectangle(ctx, position, width, height, radii)
+                {
+                    ctx.beginPath();
+                    ctx.roundRect(position[0], position[1], width, height, radii);
+                }
+
+                var offset = [0,0], lastOffset = [NaN,NaN];
+                var ratio, lastRatio, mapPanePos, baseImagePos, baseImageLayerSize;
+                var i, j, p, mp, sp, path;
+
+                var render = function()
+                {
+                    var start = performance.now();
+                    
+                    // Reset the transform matrix so we're not applying it additively
+                    ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    //ctx.reset();
+                    //ctx.setTransform(ratio, 0, 0, ratio, offset[0], offset[1]);
+                    
+                    // Clear the new buffer,
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                    // Translate so that we start drawing the map in the top left of the base image canvas
+                    ctx.translate(offset[0], offset[1]);
+
+                    // Commented out, for some reason scaling the coordinate system will make images blurry
+                    // even if the ratio is factored out of the scale. This does mean we have to manually scale
+                    // up and down the coordinates, but it's a good trade-off if it means crispy images
+                    ctx.scale(ratio, ratio);
+
+                    /*
+                    for (var i = 0; i < points.length; i++)
+                    {
+                        var icon = icons[iconIndexes[i]];
+
+                        // Scale the points so they operate at the current scale
+                        // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
+                        var x = Math.round(points[i].x * ratio) - Math.round(icon.scaledWidth / 2);
+                        var y = Math.round(points[i].y * ratio) - Math.round(icon.scaledWidth / 2);
+                        var width = icon.scaledWidth;
+                        var height = icon.scaledHeight;
+                        ctx.drawImage(icon.bitmap, x, y, width, height);
+                    }
+                    
+                    for (var i = 0; i < points.length; i++)
+                    {
+                        var icon = icons[iconIndexes[i]];
+
+                        // Scale the points so they operate at the current scale
+                        // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
+                        ctx.drawImage(icon.bitmap, Math.round(points[i].x - (icon.scaledWidth / ratio / 2)),
+                                                   Math.round(points[i].y - (icon.scaledHeight / ratio / 2)),
+                                                   Math.round(icon.scaledWidth / ratio),
+                                                   Math.round(icon.scaledHeight / ratio));
+                    }
+                    */
+
+                    for (i = 0; i < this.pathsByStyle.length; i++)
+                    {
+                        currentStyle = this.pathsByStyle[i].style;
+                        
+                        // Apply the style to the context
+                        applyStyleToCanvas(ctx, this.pathsByStyle[i].style);
+
+                        // Draw all the shapes
+                        for (j = 0; j < this.pathsByStyle[i].paths.length; j++)
+                        {
+                            drawPath(ctx, this.pathsByStyle[i].paths[j]);
+                        }
+
+                        // Draw all the overrides
+                        for (j = 0; j < this.pathsByStyle[i].pathsWithOverrides.length; j++)
+                        {
+                            applyStyleToCanvas(ctx, this.pathsByStyle[i].pathsWithOverrides[j].style);
+                            drawPath(ctx, this.pathsByStyle[i].pathsWithOverrides[j]);
+                        }
+                    }
+
+                    for (var i = 0; i < points.length; i++)
+                    {
+                        continue;
+                        ctx.beginPath();
+                        ctx.arc(points[i].x, points[i].y, 5, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+
+                    // Write offscreen canvas to onscreen canvas
+                    //rctx.clearRect(0, 0, rctx.canvas.width, rctx.canvas.height);
+                    //rctx.drawImage(offscreenCanvas, 0, 0);
+
+                    log("Rendered canvas in " + Math.round(performance.now() - start) + "ms");
+
+                }.bind(this);
+
+                var renderId, lastRequestTime, continuousRenderEnabled;
+
+                var updateCanvas = function()
+                {
+                    // Negate the map-pane transformation so the canvas stays in the same place (over the leaflet canvas)
+                    mapPanePos = this.getElementTransformPos(this.elements.leafletMapPane);
+                    canvas.style.transform = "translate(" + Math.round(-mapPanePos[0]) + "px, " + Math.round(-mapPanePos[1]) + "px)";
+
+                    // Calculate a transform offset so that we start drawing the map in the top left of the base image canvas
+                    baseImagePos = this.getElementTransformPos(this.elements.leafletBaseImageLayer, true);
+                    offset = [ mapPanePos[0] + baseImagePos[0], mapPanePos[1] + baseImagePos[1] ];
+
+                    // This ratio is a multiplier to the coordinate system so that coordinates are scaled down to the scale of the canvas
+                    // allowing us to use pixel coordinates and have them translate correctly (this does mean that sizes also scale
+                    // we can negate this by dividing sizes by the ratio)
+                    baseImageLayerSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                    ratio = Math.min(baseImageLayerSize[0] / this.size.width, baseImageLayerSize[1] / this.size.height);
+                
+                }.bind(this);
+
+                var renderOnce = function(dontUpdate)
+                {
+                    if (!dontUpdate) updateCanvas();
+                        
+                    // Don't render if the offset or ratio didn't actually change
+                    if (ratio == lastRatio && offset[0] == lastOffset[0] && offset[1] == lastOffset[1])
+                    {
+                        console.log("Skipping render");
+                    }
+                    else
+                    {
+                        lastOffset = offset;
+                        lastRatio = ratio;
+                        render();
+                    }
+                    
+                }.bind(this);
+
+                var renderLoop = function(time)
+                {
+                    if (lastRequestTime < time)
+                    {
+                        renderOnce();
+                    }
+
+                    lastRequestTime = time;
+
+                    // Queue next render
+                    if (continuousRenderEnabled == true)
+                        renderId = requestAnimationFrame(renderLoop);
+                    
+                }.bind(this);
+
+                // This function should be called when we want continuous render to be turned on or off
+                // If does not actually toggle continuous render, it just updates the state depending on whether
+                // the map is currently being dragged, panned, or is zooming
+                var triggerContinuousRender = function()
+                {
+                    var enabled = (this.isDragging && this.isDraggingMove) || this.isPanning || this.isZooming;
+                    if (this.isZoomingStatic) enabled = false;
+                    
+                    if (continuousRenderEnabled != enabled)
+                    {
+                        log("Toggled continuous rendering " + (enabled ? "on" : "off"));
+                        continuousRenderEnabled = enabled;
+                        //canvas.classList.remove("leaflet-zoom-animation");
+
+                        // Request render for next frame
+                        cancelAnimationFrame(renderId);
+                        requestAnimationFrame(renderLoop);
+                    }
+                }.bind(this);
+
+                // Instead of redrawing the canvas for every frame of the zoom
+                // Scale it using a CSS transform and transition,
+                // then render a single frame and scale back to the original
+                this.events.onMapZoomed.subscribe(function(args)
+                {
+                    // If we're dragging or panning while a zoom is initiated, do a continuous render instead of a CSS scale
+                    if (((this.isDragging && this.isDraggingMove) || this.isPanning) && this.isZoomingStatic == false)
+                    {
+                        // Ensure we're no longer performing CSS scale
+                        canvas.classList.remove("leaflet-zoom-animated");
+                        
+                        triggerContinuousRender();
+                        return;
+                    }
+
+                    this.isZoomingStatic = args.value;
+                    triggerContinuousRender();
+                    
+                    // Perform a CSS scale animation
+                    if (args.value == true)
+                    {
+                        cancelAnimationFrame(renderId);
+
+                        this.zoomEndTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                        this.zoomEndViewportPos = this.transformToViewportPosition(this.zoomEndTransform);
+                        this.zoomEndSize = [ this.zoomStartSize[0] * args.scaleDelta, this.zoomStartSize[1] * args.scaleDelta ];
+
+                        this.zoomScaleDelta = args.scaleDelta;
+                        this.zoomScale = args.scale;
+                        
+                        // Typically the center of the zoom will be
+                        // - the center of the screen (if button or key zooming),
+                        // - the mouse position (if wheel zooming)
+                        // - the center of the drawn box (if box zooming)
+                        // However, Leaflet modifies the origin such that a zoom out does not result in the map having to be moved back
+                        // Reverse engineering the methods by which leaflet calculates this is too difficult, but since we already have
+                        // the before and after rects, we can just use that to determine a "center of enlargement", which will either be
+                        // the center of zoom above, or a clamped/modified origin
+                        
+                        // Determine the center of enlargement by:
+                        // - Drawing a line between the top left corner of the baseImageLayer pre-transform, to the top left corner post-transform
+                        // - Drawing another line between the top right corner pre-transform, to the top right post-transform
+                        // - Calculating the intersection between those lines
+                        var zoomStartTopRight = [ this.zoomStartViewportPos[0] + this.zoomStartSize[0], this.zoomStartViewportPos[1] ];
+                        var zoomEndTopRight = [ this.zoomEndViewportPos[0] + this.zoomEndSize[0], this.zoomEndViewportPos[1] ];
+                        var intersectionPoint = getIntersectionPoint([ this.zoomStartViewportPos, this.zoomEndViewportPos ], [ zoomStartTopRight, zoomEndTopRight ]);
+
+                        // Apply the scale transformation at the origin (the leaflet-zoom-animation class handles the transition itself)
+                        canvas.style.transformOrigin = intersectionPoint[0] + "px " + intersectionPoint[1] + "px";
+
+                        // Perform "preemptive scaling"
+                        
+                        var startScale, endScale;
+
+                        // When we're zooming in, use the current render and scale up
+                        if (args.scaleDelta >= 1.0)
+                        {
+                            startScale = 1.0;
+                            endScale = args.scaleDelta;
+                        }
+                        
+                        // When we're zooming out, we don't want the edges of the canvas showing
+                        // Render at the end scale, scale the canvas up so that it appears the same size as the current render, and then animate it scale down
+                        else
+                        {
+                            startScale = 1.0 / args.scaleDelta;
+                            endScale = 1.0;
+                            
+                            // Negate the map-pane transformation so the canvas stays in the same place (over the leaflet canvas)
+                            mapPanePos = this.getElementTransformPos(this.elements.leafletMapPane);
+                            canvas.style.transform = "translate(" + Math.round(-mapPanePos[0]) + "px, " + Math.round(-mapPanePos[1]) + "px)";
+        
+                            // Calculate a transform offset so that we start drawing the map in the top left of the base image canvas
+                            offset = [ mapPanePos[0] + this.zoomEndTransform[0], mapPanePos[1] + this.zoomEndTransform[1] ];
+                            ratio = Math.min(this.zoomEndSize[0] / this.size.width, this.zoomEndSize[1] / this.size.height);
+                            renderOnce(true);
+                        }
+
+                        // We have better control over initial states using the Web Animation API versus CSS transitions,
+                        // So while we could use the leaflet-zoom-anim / leaflet-zoom-animated classes, doing it this way
+                        // Means we don't need to use any tricks when we want an initial state that differs from the current
+                        canvas.animate(
+                        [{ transform: canvas.style.transform + " scale(" + startScale + ")" },
+                         { transform: canvas.style.transform + " scale(" + endScale + ")" } ],
+                        {
+                            easing: "cubic-bezier(0, 0, 0.25, 1)",
+                            duration: 250
+                        })
+                        .addEventListener("finish", function()
+                        {
+                            //canvas.style.transform = canvas.style.transform + " scale(" + endScale + ")";
+                            renderOnce();
+                        });
+
+                        log("Started CSS canvas scale animation to x" + args.scale + " (" + args.scaleDelta + ") at an origin of " + intersectionPoint);
+                    }
+                    else
+                    {
+                        // Remove the scale transformation
+                        //canvas.style.transformOrigin = "";
+                        //var scaleIndex = canvas.style.transform.indexOf("scale(");
+                        //if (scaleIndex >= 0) canvas.style.transform = canvas.style.transform.substring(0, scaleIndex);
+                        
+                        if (this.zoomScaleDelta >= 1.0)
+                        {       
+                            // Render the canvas once, which also moves the transform back to fill the viewport
+                            //renderOnce();
+                        }
+                    }
+                }.bind(this));
+                
+                this.events.onMapDragged.subscribe(triggerContinuousRender);
+                this.events.onMapDraggedMove.subscribe(triggerContinuousRender);
+                this.events.onMapPanned.subscribe(triggerContinuousRender);
+
+                this.events.onMapResized.subscribe(function()
+                {
+                    var leafletContainerSize = this.getElementSize(this.elements.leafletContainer);
+                    canvas.width = leafletContainerSize[0];
+                    canvas.height = leafletContainerSize[1];
+                    renderOnce();
+                    
+                }.bind(this));
+            },
+
+            // Canvas
+
+            initThreadedCanvas: function()
             {
                 // Create a pane to contain all the ruler points
                 var canvasPane = document.createElement("div");
@@ -2135,7 +3190,11 @@
                 for (var i = 0; i < this.categories.length; i++)
                 {
                     if (this.categories[i].icon && !icons.includes(this.categories[i].icon))
-                        icons.push(this.categories[i].icon);
+                        icons.push( { url: this.categories[i].icon.url,
+                                      width: this.categories[i].icon.width,
+                                      height: this.categories[i].icon.height,
+                                      scaledWidth: this.categories[i].icon.scaledWidth,
+                                      scaledHeight: this.categories[i].icon.scaledHeight });
                 }
                 
                 for (var i = 0; i < 1000; i++)
@@ -2145,205 +3204,217 @@
                 }
 
                 // Create a new Blob which contains our code to execute in order to render the canvas in a separate thread
-//              var blob = new Blob([`
-//              var ctx1, ctx2, points, images, indexes;
-// 
-//              var offset, ratio;         // Current offsets and scale of the canvas
-//              var bufferState;           // The current buffer being worked on
-//              var renderId;              // requestAnimationFrame id
-//              var intervalId;            // setTimeout id
-//              var renderMode = "once";   // The current render mode
-//              var renderInterval = 300;  // The current render interval
-//              var doubleBuffered = true; // Whether double buffering is currently enabled
-// 
-//              var renderRequestTime, renderStartTime, renderEndTime, lastRenderTime;
-// 
-//              // Below are control functions
-// 
-//              function startRender(args)
-//              {
-//                  stopRender()
-//                  
-//                  renderMode = args.mode;
-//                  renderInterval = args.interval;
-//                  doubleBuffered = args.doubleBuffered;
-//                  
-//                  requestRender();
-//              }
-//              
-//              function stopRender()
-//              {
-//                  renderMode = "once";
-//                  clearTimeout(intervalId);
-//                  cancelAnimationFrame(renderId);
-// 
-//                  // Do one more render with the renderMode of "once"
-//                  requestRender();
-//              }
-// 
-//              // Below are internal functions
-// 
-//              // Asks the host to update the canvas offset and ratio before we can update
-//              function requestRender()
-//              {
-//                  // If we're double buffering, invert the state so that we're working on the other canvas
-//                  if (doubleBuffered) bufferState = !bufferState;
-//                  
-//                  renderRequestTime = performance.now();
-//                  self.postMessage({cmd: "requestUpdate", bufferState: bufferState});
-//              }
-// 
-//              // This is called when the renderRequest returned a response
-//              function onBeginRender()
-//              {
-//                  renderStartTime = performance.now();
-//                  
-//                  // Cancel the last requested render
-//                  cancelAnimationFrame(renderId);
-// 
-//                  // Schedule a new render
-//                  renderId = requestAnimationFrame(render);
-//              }
-// 
-//              // This is called after the render completed
-//              function onEndRender()
-//              {
-//                  renderEndTime = performance.now();
-//                  console.log("Rendered canvas " + (bufferState ? 1 : 2) + " in " + (renderEndTime - renderStartTime) + "ms");
-// 
-//                  // Tell the main thread the render is done, so that the canvas may be presented
-//                  self.postMessage({ cmd: "present", bufferState: bufferState });
-// 
-//                  // Queue another render if required
-//                  if (renderMode == "continuous")
-//                  {
-//                      requestRender();
-//                  }
-//                  else if (renderMode == "interval")
-//                  {
-//                      var interval = Math.max(0, renderInterval - (renderEndTime - renderStartTime));
-//                      intervalId = setTimeout(function(){ requestRender(); }, interval);
-//                  }
-//              }
-// 
-//              function render(time)
-//              {
-//                  // Don't render if no time has passed since the last render
-//                  if (lastRenderTime != time)
-//                  {
-//                      var ctx = bufferState ? ctx1 : ctx2;
-//  
-//                      // Reset the transform matrix so we're not applying it additively
-//                      ctx.setTransform(1, 0, 0, 1, 0, 0);
-//                      
-//                      // Clear the new buffer,
-//                      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-//  
-//                      // Translate so that we start drawing the map in the top left of the base image canvas
-//                      ctx.translate(offset[0], offset[1]);
-// 
-//                      // Commented out, for some reason scaling the coordinate system will make images blurry
-//                      // even if the ratio is factored out of the scale. This does mean we have to manually scale
-//                      // up and down the coordinates, but it's a good trade-off if it means crispy images
-//                      //ctx.scale(ratio, ratio);
-//  
-//                      for (var i = 0; i < points.length; i++)
-//                      {
-//                          var icon = icons[indexes[i]];
-// 
-//                          // Scale the points so they operate at the current scale
-//                          // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
-//                          var x = Math.round(points[i].x * ratio);
-//                          var y = Math.round(points[i].y * ratio);
-//                          var width = icon.scaledWidth;
-//                          var height = icon.scaledHeight;
-//                          ctx.drawImage(icon.bitmap, x, y, width, height);
-//                          /*
-//                          ctx.beginPath();
-//                          ctx.arc(points[i].x, points[i].y, 2 / ratio, 0, 2 * Math.PI);
-//                          ctx.fill();
-//                          */
-//                      }
-//                  }
-// 
-//                  lastRenderTime = time;
-//                  onEndRender();
-//              }
-//              
-//              self.addEventListener("message", function(e)
-//              {
-//                  switch (e.data.cmd)
-//                  {
-//                      case "poke":
-//                      {
-//                          console.log("Ouch!");
-//                          break;
-//                      }
-//                      
-//                      // Initialize the worker. This is passed the points array, and the OffscreenCanvas (which we cache)
-//                      case "init":
-//                      {
-//                          points = e.data.points;
-//                          ctx1 = e.data.canvas1.getContext("2d");
-//                          ctx2 = e.data.canvas2.getContext("2d");
-// 
-//                          indexes = e.data.indexes;
-//                          var requests = e.data.icons.map(function(i) { return fetch(i.url); });
-//                          var responses = Promise.all(requests)
-//                          .then(function(values)
-//                          {
-//                              return Promise.all(values.map(function(r) { return r.blob(); }));
-//                              
-//                          })
-//                          .then(function(blobs)
-//                          {
-//                              return Promise.all(blobs.map(function(b, index)
-//                              {
-//                                  var icon = e.data.icons[index];
-//                                  return createImageBitmap(b, { resizeWidth: icon.scaledWidth, resizeHeight: icon.scaledHeight, resizeQuality: "high" });
-//                              }));
-//                          })
-//                          .then(function(bitmaps)
-//                          {
-//                              icons = [];
-//                              for (var i = 0; i < bitmaps.length; i++)
-//                              {
-//                                  var icon = e.data.icons[i];
-//                                  icon.bitmap = bitmaps[i];
-//                                  icons.push(icon);
-//                              }
-//                          });
-// 
-// 
-//                          
-//                          break;
-//                      }
-// 
-//                      case "start":
-//                      {
-//                          startRender(e.data);
-//                          break;
-//                      }
-// 
-//                      case "stop":
-//                      {
-//                          stopRender();
-//                          break;
-//                      }
-// 
-//                      // The host updated the drawing offset, ratio, and the buffer we're working on
-//                      case "update":
-//                      {
-//                          // Update the drawing offset, drawing ratio, and the buffer we're working on
-//                          offset = e.data.offset;
-//                          ratio = e.data.ratio;
-// 
-//                          onBeginRender();
-//                          break;
-//                      }
-//                  }
-//              });
-//              `]);
+                // var blob = new Blob([`
+                // var canvas1, canvas2, ctx1, ctx2, points, images, indexes;
+
+                // var initialized;           // Whether the canvas has been initialized and is ready to render
+                // var offset, ratio;         // Current offsets and scale of the canvas
+                // var bufferState;           // The current buffer being worked on
+                // var renderId;              // requestAnimationFrame id
+                // var intervalId;            // setTimeout id
+                // var renderMode = "once";   // The current render mode
+                // var renderInterval = 300;  // The current render interval
+                // var doubleBuffered = true; // Whether double buffering is currently enabled
+
+                // var renderRequestTime, renderStartTime, renderEndTime, lastRenderTime;
+
+                // // Below are control functions
+
+                // function startRender(args)
+                // {
+                //     //stopRender();
+                    
+                //     renderMode = args.mode;
+                //     renderInterval = args.interval;
+                //     doubleBuffered = args.doubleBuffered;
+                    
+                //     requestRender();
+                // }
+                
+                // function stopRender()
+                // {
+                //     renderMode = "once";
+                //     clearTimeout(intervalId);
+                //     cancelAnimationFrame(renderId);
+
+                //     // Do one more render with the renderMode of "once"
+                //     requestRender();
+                // }
+
+                // // Below are internal functions
+
+                // // Asks the host to update the canvas offset and ratio before we can update
+                // function requestRender()
+                // {
+                //     // If we're double buffering, invert the state so that we're working on the other canvas
+                //     if (doubleBuffered) bufferState = !bufferState;
+                    
+                //     renderRequestTime = performance.now();
+                //     self.postMessage({cmd: "requestUpdate", bufferState: bufferState});
+                // }
+
+                // // This is called when the renderRequest returned a response
+                // function onBeginRender()
+                // {
+                //    if (!initialized) return;
+                   
+                //    renderStartTime = performance.now();
+                    
+                //    // Cancel the last requested render
+                //    cancelAnimationFrame(renderId);
+
+                //    // Schedule a new render
+                //    renderId = requestAnimationFrame(render);
+                // }
+
+                // // This is called after the render completed
+                // function onEndRender()
+                // {
+                //     renderEndTime = performance.now();
+                //     console.log("Rendered canvas " + (bufferState ? 1 : 2) + " in " + Math.round(renderEndTime - renderStartTime) + "ms");
+
+                //     // Tell the main thread the render is done, so that the canvas may be presented
+                //     self.postMessage({ cmd: "present", bufferState: bufferState });
+
+                //     // Queue another render if required
+                //     if (renderMode == "continuous")
+                //     {
+                //         requestRender();
+                //     }
+                //     else if (renderMode == "interval")
+                //     {
+                //         var interval = Math.max(0, renderInterval - (renderEndTime - renderStartTime));
+                //         intervalId = setTimeout(function(){ requestRender(); }, interval);
+                //     }
+                // }
+
+                // function render(time)
+                // {
+                //     // Don't render if no time has passed since the last render
+                //     if (lastRenderTime != time)
+                //     {
+                //         var ctx = bufferState ? ctx1 : ctx2;
+    
+                //         // Reset the transform matrix so we're not applying it additively
+                //         ctx.setTransform(1, 0, 0, 1, 0, 0);
+                        
+                //         // Clear the new buffer,
+                //         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+                //         // Translate so that we start drawing the map in the top left of the base image canvas
+                //         ctx.translate(offset[0], offset[1]);
+
+                //         // Commented out, for some reason scaling the coordinate system will make images blurry
+                //         // even if the ratio is factored out of the scale. This does mean we have to manually scale
+                //         // up and down the coordinates, but it's a good trade-off if it means crispy images
+                //         //ctx.scale(ratio, ratio);
+    
+                //         for (var i = 0; i < points.length; i++)
+                //         {
+                //             var icon = icons[indexes[i]];
+
+                //             // Scale the points so they operate at the current scale
+                //             // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
+                //             var x = Math.round((points[i].x * ratio) -  (icon.scaledWidth / 2));
+                //             var y = Math.round((points[i].y * ratio) -  (icon.scaledHeight / 2));
+                //             var width = icon.scaledWidth;
+                //             var height = icon.scaledHeight;
+                //             ctx.drawImage(icon.bitmap, x, y, width, height);
+                //             /*
+                //             ctx.beginPath();
+                //             ctx.arc(points[i].x, points[i].y, 2 / ratio, 0, 2 * Math.PI);
+                //             ctx.fill();
+                //             */
+                //         }
+                //     }
+
+                //     lastRenderTime = time;
+                //     onEndRender();
+                // }
+                
+                // self.addEventListener("message", function(e)
+                // {
+                //     switch (e.data.cmd)
+                //     {
+                //         case "poke":
+                //         {
+                //             console.log("Ouch!");
+                //             break;
+                //         }
+                        
+                //         // Initialize the worker. This is passed the points array, and the OffscreenCanvas (which we cache)
+                //         case "init":
+                //         {
+                //             points = e.data.points;
+                //             ctx1 = e.data.canvas1.getContext("2d");
+                //             ctx2 = e.data.canvas2.getContext("2d");
+
+                //             indexes = e.data.indexes;
+                //             var requests = e.data.icons.map(function(i) { return fetch(i.url); });
+                //             var responses = Promise.all(requests)
+                //             .then(function(values)
+                //             {
+                //                 return Promise.all(values.map(function(r) { return r.blob(); }));
+                                
+                //             })
+                //             .then(function(blobs)
+                //             {
+                //                 return Promise.all(blobs.map(function(b, index)
+                //                 {
+                //                     var icon = e.data.icons[index];
+                //                     return createImageBitmap(b, { resizeWidth: icon.scaledWidth, resizeHeight: icon.scaledHeight, resizeQuality: "high" });
+                //                 }));
+                //             })
+                //             .then(function(bitmaps)
+                //             {
+                //                 icons = [];
+                //                 for (var i = 0; i < bitmaps.length; i++)
+                //                 {
+                //                     var icon = e.data.icons[i];
+                //                     icon.bitmap = bitmaps[i];
+                //                     icons.push(icon);
+                //                 }
+                //             })
+                //             .finally(function()
+                //             {
+                //                initialized = true;
+                //             });
+                            
+                //             break;
+                //         }
+
+                //         case "start":
+                //         {
+                //             startRender(e.data);
+                //             break;
+                //         }
+
+                //         case "stop":
+                //         {
+                //             stopRender();
+                //             break;
+                //         }
+
+                //         // The host updated the drawing offset, ratio, and the buffer we're working on
+                //         case "update":
+                //         {
+                //             // Update the drawing offset, drawing ratio, and the buffer we're working on
+                //             if (e.data.offset) offset = e.data.offset;
+                //             if (e.data.ratio) ratio = e.data.ratio;
+                            
+                //             // Resize the canvas if a new size was passed
+                //             if (e.data.size && (e.data.size[0] != ctx1.canvas.width || e.data.size[1] != ctx1.canvas.height))
+                //             {
+                //                 ctx1.canvas.width = ctx2.canvas.width = e.data.size[0];
+                //                 ctx1.canvas.height = ctx2.canvas.height = e.data.size[1];
+                //             }
+
+                //             onBeginRender();
+                //             break;
+                //         }
+                //     }
+                // });
+                // `]);
 
                 // Create a blob with the data above (this is the only way to make a new worker without creating a separate file)
                 var blobUrl = window.URL.createObjectURL(blob);
@@ -2391,25 +3462,43 @@
                 }.bind(this));
                 
                 // Redraws the canvas every <interval> milliseconds until called again with value == false
-                function doContinuousRender(e)
+                function doContinuousRender(value)
                 {
-                    if (e.value == true)
+                    if (value == true)
                         worker.postMessage({ cmd: "start", mode: "continuous", doubleBuffered: false });
                     else
                         worker.postMessage({ cmd: "stop" });
                 }
 
-                function doIntervalRender(e)
+                function doIntervalRender(value)
                 {
-                    if (e.value == true)
+                    if (value == true)
                         worker.postMessage({ cmd: "start", mode: "interval", interval: 300, doubleBuffered: true });
                     else
                         worker.postMessage({ cmd: "stop" });
                 }
 
-                this.events.onMapZoomed.subscribe(doContinuousRender);
-                this.events.onMapDragged.subscribe(doIntervalRender);
-                this.events.onMapPanned.subscribe(doIntervalRender);
+                var renderState = false;
+
+                var doRenderBasedOnMapState = function()
+                {
+                    var state = (this.isDragging || this.isPanning || this.isZooming);
+                    if (state != renderState)
+                    {
+                        renderState = state;
+                        doContinuousRender(state);
+                    }
+                }.bind(this);
+
+                this.events.onMapZoomed.subscribe(doRenderBasedOnMapState);
+                this.events.onMapDragged.subscribe(doRenderBasedOnMapState);
+                this.events.onMapPanned.subscribe(doRenderBasedOnMapState);
+
+                this.events.onMapResized.subscribe(function()
+                {
+                    var leafletContainerSize = this.getElementSize(this.elements.leafletContainer);
+                    worker.postMessage({ cmd: "update", size: leafletContainerSize });
+                }.bind(this));
             },
 
             // Ruler
@@ -3544,12 +4633,12 @@
                 {
                     if (!this.sidebar.autoShowHide) return;
 
-                    if (sidebar.isShowing == true && args.rect.width < 800 && args.lastRect.width >= 800)
+                    if (sidebar.isShowing == true && args.rect.width < 1000 && args.lastRect.width >= 1000)
                     {
                         log("Toggled sidebar off automatically");
                         this.toggleSidebar(false, true);
                     }
-                    else if (sidebar.isShowing == false && args.rect.width >= 800 && args.lastRect.width < 800)
+                    else if (sidebar.isShowing == false && args.rect.width >= 1000 && args.lastRect.width < 1000)
                     {
                         log("Toggled sidebar on automatically");
                         this.toggleSidebar(true, true);
@@ -4146,7 +5235,8 @@
                     // Show sidebar elements
                     if (value == true) toggleSidebarElements(true);
 
-                    var startPos = this.sidebar._mapPaneStartPos = this.getElementTransformPos(leafletMapPane, true);
+                    var jqueryStartPos = $(leafletMapPane).position();
+                    var startPos = this.sidebar._mapPaneStartPos = [ jqueryStartPos.left, jqueryStartPos.top ];//this.getElementTransformPos(leafletMapPane, true);
                     var endPos = this.sidebar._mapPaneEndPos = [ startPos[0] + (value ? -sidebarHalfWidth : sidebarHalfWidth), startPos[1] ];
 
                     if (noAnimation)
@@ -4339,8 +5429,8 @@
                 // Skip this map if there are no collectibles
                 if (this.hasCollectibles == false) return;
 
-                this.elements.filtersList.style.paddingBottom = "0";
-                this.elements.filtersList.style.maxHeight = "none";
+                this.elements.filtersDropdownList.style.paddingBottom = "0";
+                this.elements.filtersDropdownList.style.maxHeight = "none";
 
                 // Add a "Clear collected" button to the filter box
                 var clearButton = document.createElement("a");
@@ -4764,6 +5854,13 @@
                     this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35)) + "px";
                     
                 }.bind(this));
+
+                this.elements.filtersDropdownList.addEventListener("scroll", OO.ui.throttle(function(e)
+                {
+                    var scroll = e.target.scrollTop / (e.target.scrollHeight - e.target.offsetHeight);
+                    e.target.classList.toggle("can-scroll-up", scroll > 0.02);
+                    e.target.classList.toggle("can-scroll-down", scroll < 0.98);
+                }, 150), { passive: true });
             }
         };
 
@@ -4920,17 +6017,25 @@
             // Set up collapsible on group
             headerArrow.addEventListener("click", function(e)
             {
-                if (this.elements.container.style.maxHeight == "0px")
+                var collapsed = !this.collapsed;
+                this.collapsed = collapsed;
+
+                if (collapsed == false)
                 {
-                    this.collapsed = false;
-                    this.elements.container.style.maxHeight = this.expandedHeight + "px";
-                    this.elements.headerArrow.textContent = "▼";
+                    containerElem.style.width = "";
+                    containerElem.style.maxHeight = this.expandedHeight + "px";
+                    headerArrow.textContent = "▼";
                 }
                 else
                 {
-                    this.collapsed = true;
-                    this.elements.container.style.maxHeight = "0px";
-                    this.elements.headerArrow.textContent = "▲";
+                    containerElem.style.maxHeight = "0px";
+                    headerArrow.textContent = "▲";
+
+                    containerElem.addEventListener("transitionend", function(e)
+                    {
+                        if (e.propertyName != "max-height") return;
+                        containerElem.style.width = collapsed ? "0" : "";
+                    }, { once: true });
                 }
             }.bind(this));
             /*
@@ -5051,6 +6156,8 @@
                 this.elements.container.style.maxHeight = (this.collapsed && this.collapsible)
                                                         ? "0px"
                                                         : this.expandedHeight + "px";
+                
+                this.elements.container.style.width = (this.collapsed && this.collapsible) ? "0" : "";
 
                 // Set the maxHeight of all child groups of this group
                 this.subgroups.forEach(function(childGroup){ childGroup.setInitialHeight(); });
@@ -5123,7 +6230,10 @@
                 this.elements.checkboxInput = this.elements.filter.querySelector("input");
                 this.elements.checkboxLabel = this.elements.filter.querySelector("label");
                 this.elements.categoryIcon = this.elements.checkboxLabel.querySelector(".interactive-maps__filters-marker-icon");
+                this.elements.categoryIconImg = this.elements.categoryIcon.querySelector("img");
                 this.elements.categoryLabel = this.elements.checkboxLabel.querySelector("span:last-child");
+
+                if (this.icon) this.icon.img = this.elements.categoryIconImg;
 
                 // Set some values on the filter element itself
                 filterElement.category = this;
@@ -6758,15 +7868,15 @@
                 };
             },
 
-            getValidationForScope: function(configScope, mapName)
+            getValidationForScope: function(configScope, metadata)
             {
                 switch (configScope)
                 {
                     case "embed":
-                        return window.dev.mapsExtended.embedConfigValidations[mapName];
+                        return window.dev.mapsExtended.embedConfigValidations[metadata._configId];
                         
                     case "local":
-                        return window.dev.mapsExtended.localConfigValidations[mapName];
+                        return window.dev.mapsExtended.localConfigValidations[metadata._configScope == "embed" ? metadata._configMapName : metadata._configId];
 
                     case "global":
                         return window.dev.mapsExtended.globalConfigValidation;
@@ -6849,28 +7959,28 @@
             // <configType> should be the scope of the desired config, and if it is omitted will be set to the next scope down given config._configScope
             // This function performs no validation, and assumes all lower configs have already been validated!
             // Returns an object containing
-            // config: The full fallback configuration object (this will contain the _configName, _configSource, and _configScope)
+            // config: The full fallback configuration object (this will contain the config metadata)
             // value: The value of the option that was found
             // valueType: The type of the option that was found
             // foundKey: The key/name of the option that was found
             // isPresent: If false a fallback wasn't found and all of the above will not be present
-            getFallbackForConfigOption: function(configInfo, configName, configScope)
+            getFallbackForConfigOption: function(configInfo, configMetadata, scope)
             {
                 var fallbackConfig;
                 if (!configInfo || !configInfo.path) return { isPresent: false };
 
-                switch (configScope)
+                switch (scope)
                 {
                     case "embed":
                     {
-                        fallbackConfig = window.dev.mapsExtended.embedConfigs[configName];
+                        fallbackConfig = window.dev.mapsExtended.embedConfigs[configMetadata._configId];
                         break;
                     }
                     
                     // Embed gets fallback from local/per-map
                     case "local":
                     {
-                        fallbackConfig = window.dev.mapsExtended.localConfigs[configName];
+                        fallbackConfig = window.dev.mapsExtended.localConfigs[configMetadata._configScope == "embed" ? configMetadata._configMapName : configMetadata._configId];
                         break;
                     }
 
@@ -6898,7 +8008,7 @@
                 // If we found a fallback config in the next scope, actually check whether the config contains the option
                 if (fallbackConfig)
                 {
-                    var validation = this.getValidationForScope(configScope, configName);
+                    var validation = this.getValidationForScope(scope, configMetadata);
                     var foundOption = this.getConfigOptionAtPath(configInfo.path, fallbackConfig);
 
                     // Found fallback
@@ -6918,12 +8028,12 @@
                 
                 // We reach here if either no fallbackConfig was found, or no option in the fallbackConfig was found
                 // So try the next config down
-                var nextScope = this.getNextScopeInChain(configScope);
-                return this.getFallbackForConfigOption(configInfo, configName, nextScope);
+                var nextScope = this.getNextScopeInChain(scope);
+                return this.getFallbackForConfigOption(configInfo, configMetadata, nextScope);
             },
 
             // Validates a config option with a specific <configKey> in a <config> object against one or a collection of <configInfo>
-            validateConfigOption: function(configKey, configInfo, config, configName, configScope)
+            validateConfigOption: function(configKey, configInfo, config, configMetadata)
             {
                 configInfo = configInfo || defaultConfigInfo;
 
@@ -7172,11 +8282,22 @@
                             }
                         }
 
-                        // Option must pass custom validation
-                        if (info.validation && info.validation(v) == false)
+                        var customValidation = info.customValidation || configInfo.customValidation;
+
+                        // Option must pass custom validation if it is present
+                        if (customValidation != undefined && typeof customValidation == "function")
                         {
-                            result.messages.push({ code: "other", message: "Failed custom validation: " + info.validationDesc });
-                            result.isValid = false;
+                            var customValidationResult = customValidation(value, config);
+
+                            if (customValidationResult.result == false)
+                            {
+                                if (customValidationResult.message)
+                                    result.messages.push(customValidationResult.message);
+                                else
+                                    result.messages.push({ code: "other", message: "Failed custom validation " });
+
+                                result.isValid = false;
+                            }
                         }
                     }
 
@@ -7192,7 +8313,7 @@
                             for (var i = 0; i < info.children.length; i++)
                             {
                                 var childInfo = info.children[i];
-                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[foundKey], configName, configScope);
+                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[foundKey], configMetadata);
                                 childResult.parent = result;
                                 result.children.push(childResult);
                             }
@@ -7220,8 +8341,8 @@
                         // Otherwise create it from arrayType
                         else if (info.arrayType)
                             var arrayElementInfo = { presence: false, default: undefined, type: info.arrayType };
-                        else
-                            console.error("Config info definition " + info.name + " contains neither an \"arrayType\" or an \"elementInfo\"");
+                        //else
+                        //    console.error("Config info definition " + info.name + " contains neither an \"arrayType\" or an \"elementInfo\"");
 
                         if (arrayElementInfo)
                         {
@@ -7229,9 +8350,11 @@
                             for (var i = 0; i < config[configKey].length; i++)
                             {
                                 // Validate this array element, but NEVER fallback to an array element (only objects get fallbacks) the fallback will use defaults as we don't want to fall back on the values of array elements in the global config
-                                var childResult = this.validateConfigOption(i, arrayElementInfo, config[foundKey], configName, configScope);
+                                var childResult = this.validateConfigOption(i, arrayElementInfo, config[foundKey], configMetadata);
                                 childResult.parent = result;
                                 result.children.push(childResult);
+
+                                // Apply fallback only if they were the defaults
                             }
                         }
                     }
@@ -7240,7 +8363,7 @@
                 // Result is invalid or not present, use fallback as result
                 if ((!result.isValid && !result.isResolved) || !result.isPresent)
                 {
-                    var fallback = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
+                    var fallback = this.getFallbackForConfigOption(info, configMetadata, this.getNextScopeInChain(configMetadata._configScope));
                     
                     if (fallback.isPresent == true)
                     {
@@ -7258,7 +8381,7 @@
                             for (var i = 0; i < info.children.length; i++)
                             {
                                 var childInfo = info.children[i];
-                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[info.name], configName, configScope);
+                                var childResult = this.validateConfigOption(childInfo.name, childInfo, config[info.name], configMetadata);
                                 childResult.parent = result;
                                 result.children.push(childResult);
                             }
@@ -7272,7 +8395,7 @@
                 // Determine what is being overridden
                 else
                 {
-                    var override = this.getFallbackForConfigOption(info, configName, this.getNextScopeInChain(configScope));
+                    var override = this.getFallbackForConfigOption(info, configMetadata, this.getNextScopeInChain(configMetadata._configScope));
                     if (override.isPresent == true)
                     {
                         result.isOverride = true;
@@ -7315,7 +8438,8 @@
             validateConfig: function(config)
             {
                 var metadata = {
-                    _configName: config._configName,
+                    _configId: config._configId,
+                    _configMapName: config._configMapName,
                     _configScope: config._configScope,
                     _configSource: config._configSource,
                 };
@@ -7323,7 +8447,8 @@
                 var validation =
                 {
                     // Validation metadata
-                    name: config._configName,
+                    id: config._configId,
+                    name: config._configMapName,
                     scope: config._configScope,
                     source: config._configSource,
                     type: "object",
@@ -7349,7 +8474,7 @@
                 for (var i = 0; i < defaultConfigInfo.length; i++)
                 {
                     var configInfo = defaultConfigInfo[i];
-                    var result = this.validateConfigOption(configInfo.name, defaultConfigInfo, config, config._configName, config._configScope);
+                    var result = this.validateConfigOption(configInfo.name, defaultConfigInfo, config, metadata);
                     
                     validation.children.push(result);
 
@@ -7539,7 +8664,7 @@
                         // Determine how to format the value
         
                         // Arrays and objects get a sub-table
-                        if (result.valueType == "array" || result.valueType == "object")
+                        if ((result.valueType == "array" || result.valueType == "object") && result.info.debugAsString != true)
                         {
                             td.appendChild(this.tabulateConfigValidation(result));
 
@@ -7585,6 +8710,8 @@
                                 // Append current value
                                 if (result.valueType == "string")
                                     str += "\"" + result.value + "\"";
+                                else if (result.valueType == "array")
+                                    str += JSON.stringify(result.value);
                                 else
                                     str += result.value;
 
@@ -7723,6 +8850,13 @@
 
             {
                 name: "hiddenCategories",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "string",
+            },
+            {
+                name: "visibleCategories",
                 presence: false,
                 default: [],
                 type: "array",
@@ -7898,6 +9032,417 @@
                 type: "boolean"
             },
 
+            // Custom features
+
+            {
+                name: "canvasRenderOrderMode",
+                presence: false,
+                default: "auto",
+                type: "string",
+                validValues: [ "auto", "manual" ]
+            },
+            {
+                name: "paths",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "object",
+                children:
+                [
+                    {
+                        name: "path",
+                        presence: false,
+                        default: undefined,
+                        type: "object",
+                        children: 
+                        [
+                            {
+                                name: "id",
+                                presence: true,
+                                type: ["string", "number"]
+                            },
+                            {
+                                name: "styleId",
+                                presence: false,
+                                type: ["string", "number"]
+                            },
+                            {
+                                name: "style",
+                                presence: false,
+                                type: "object",
+                                use: "styles.style",
+                                customValidation: function(value, config)
+                                {
+                                    if (config.styleId != null)
+                                        config.overrideStyle = jQuery.extend(true, {}, value);
+
+                                    return { result: true };
+                                }
+                            },
+                            {
+                                name: "categoryId",
+                                presence: false,
+                                type: ["string", "number"]
+                            },
+                            {
+                                name: "title",
+                                presence: false,
+                                type: "string"
+                            },
+                            {
+                                name: "link",
+                                presence: false,
+                                type: "string"
+                            },
+                            {
+                                name: "popup",
+                                presence: false,
+                                type: "object",
+                                children:
+                                [
+                                    {
+                                        name: "title",
+                                        presence: true,
+                                        type: "string"
+                                    },
+                                    {
+                                        name: "description",
+                                        presence: false,
+                                        type: "string"
+                                    },
+                                    {
+                                        name: "image",
+                                        presence: false,
+                                        type: "string"
+                                    },
+                                    {
+                                        name: "link",
+                                        presence: false,
+                                        type: "object",
+                                        children: 
+                                        [
+                                            {
+                                                name: "url",
+                                                presence: true,
+                                                type: "string",
+                                            },
+                                            {
+                                                name: "label",
+                                                presence: true,
+                                                type: "string",
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: "type",
+                                presence: true,
+                                default: "polyline",
+                                type: "string",
+                                validValues: [ "polygon", "polyline", "line", "circle", "ellipse", "rectangle"  ]
+                            },
+                            {
+                                name: "scaling",
+                                presence: false,
+                                default: true,
+                                type: "boolean"
+                            },
+                            {
+                                name: "smoothing",
+                                presence: false,
+                                default: false,
+                                type: "boolean"
+                            },
+                            {
+                                name: "smoothingIterations",
+                                presence: false,
+                                default: 5,
+                                type: "number"
+                            },
+                            {
+                                name: "points",
+                                presence: false,
+                                type: "array",
+                                arrayType: "array",
+                                debugAsString: true,
+                                customValidation: function(value, config)
+                                {
+                                    var errors = [];
+                                    
+                                    // Position already present
+                                    if (config.position)
+                                    {
+                                        errors.push({ code: "POINTS_ONE_ONLY", message: "\"points\" and \"position\" are mutually exclusive, only one may be present." });
+                                    }
+
+                                    // If we're at this point, the type and presence checks have passed already
+                                    if (value.length == 0)
+                                    {
+                                        errors.push({ code: "POINTS_EMPTY_ROOT_ARRAY", message: "If the points array is defined, it must contain at least one element" });
+                                    }
+
+                                    // This functions checks to see that each element in a multidimensional array has the same type across depths, among other checks
+
+                                    var depthTypes = [];
+                                    var depthTypeIsArray = [];
+                                    var listDepth; // The depth at which we expect a list of values
+                                    var valueDepth; // The depth at which we expect actual values (string or array[2] of number)
+                                    var indexes = [];
+
+                                    function isCoordinate(v)
+                                    {
+                                        if (Array.isArray(v))
+                                            return v.length == 2 && typeof v[0] == "number" && typeof v[1] == "number";
+                                        else
+                                            return typeof v == "string";
+                                    }
+                                    
+                                    function traverse(a, d)
+                                    {
+                                        var isArray = Array.isArray(a);
+                                        var type = isArray ? "array" : typeof a;
+                                        
+                                        // Is this a value (either array[2] or string)
+                                        var isValue = isCoordinate(a);
+
+                                        // Is this an array of values
+                                        var isValuesArray = !isValue && isArray && isCoordinate(a[0]);
+
+                                        if (!valueDepth && isValue)
+                                        {
+                                            valueDepth = d;
+
+                                            // Here, also determine what sort of path this is
+                                            config.pointsDepth = valueDepth;
+                                            config.pointsType = valueDepth == 0 ? "coordinate" :
+                                                                valueDepth == 1 ? "single" :
+                                                                valueDepth == 2 ? (config.type == "polygon" ? "singleWithHoles" : "multiple") :
+                                                                valueDepth == 3 ? "multipleWithHoles" : "error";
+
+                                            if (config.pointsType == "error")
+                                            {
+                                                errors.push({ code: "POINTS_UNRECOGNIZED_DEPTH", message: "The points array had a depth of more than 3 nested arrays, this format is unknown" });
+                                                return false;
+                                            }
+                                        }
+
+                                        if (!listDepth && isValuesArray)
+                                        {
+                                            listDepth = d;
+                                        }
+
+                                        // If this is the depth we expect a coordinate pair (array[2] or string)
+                                        if (d == valueDepth)
+                                        {
+                                            // Check if it is indeed a value
+                                            if (!isValue)
+                                            {
+                                                errors.push({ code: "POINTS_EXPECTED_VALUE", message: "Element at points" + indexes.map(function(i){ return "[" + i + "]"; }).join() + " was of type " + type + (isArray ? "[" + a.length + "]" : ")") + ", but it needs to be either an array[2] or string." });
+                                                return false;
+                                            }
+
+                                            // If an array, check that it contains two AND ONLY TWO numbers
+                                            if (isArray && (a.length != 2 || typeof a[0] != "number" || typeof a[1] != "number"))
+                                            {
+                                                errors.push({ code: "POINTS_COORDS_MISLENGTH", message: "The coordinate at points" + indexes.map(function(i){ return "[" + i + "]"; }).join() + " does not have two coordinates!" });
+                                                return false;
+                                            }
+                                        }
+
+                                        // If one greater than the valueDepth, it should ALWAYS be a number
+                                        if (d == valueDepth + 1 && type != "number")
+                                        {
+                                            errors.push({ code: "POINTS_COORD_NOT_NUMBER", message: "The coordinate at points" + indexes.map(function(i){ return "[" + i + "]"; }).join() + " is not a number!" });
+                                            return false;
+                                        }
+
+                                        // If any less than valueDepth, if should ALWAYS be an array
+                                        else if (d < valueDepth && !isArray)
+                                        {
+                                            errors.push({ code: "POINTS_EXPECTED_ARRAY", message: "Element at points" + indexes.map(function(i){ return "[" + i + "]"; }).join() + " was of type " + type + ", but at this depth it should be an array." });
+                                            return false;
+                                        }
+
+                                        // If the depth is greater than valueDepth + 1, it shouldn't exist
+                                        else if (d > valueDepth + 1)
+                                        {
+                                            errors.push({ code: "POINTS_UNBALANCED", error: "The type of each element is not equal across depths." });
+                                            return false;
+                                        }
+
+                                        // Set the depthType if it hasn't been set already
+                                        if (!depthTypes[d])
+                                        {
+                                            depthTypeIsArray[d] = isArray;
+                                            depthTypes[d] = type;
+                                        }
+                                        
+                                        // Check whether the type matches the type expected at this depth
+                                        if (type != depthTypes[d] || isArray != depthTypeIsArray[d])
+                                        {
+                                        }
+                        
+                                        // Recurse into this array
+                                        if (isArray)
+                                        {
+                                            if (a.length == 0)
+                                            {
+                                                errors.push({ code: "POINTS_EMPTY_SUB_ARRAY", message: "points" + indexes.map(function(i){ return "[" + i + "]"; }).join() + " contains an empty array." });
+                                                return false;
+                                            }
+                                            
+                                            // Check to see if the poly array contains the correct amount of coordinates for the type of feature
+                                            if (isValuesArray)
+                                            {
+                                                config.pointsFlat = config.pointsFlat || [];
+                                                config.pointsFlat.push(a);
+    
+                                                if (config.type == "polygon" && a.length < 3)
+                                                {
+                                                    errors.push({ code: "POINTS_POLYGON_COUNT", message: "The points array at " + indexes.map(function(i, n){ return n < d ? "[" + i + "]" : ""; }).join() + " needs 3 or more points, but only has " + a.length });
+                                                    return false;
+                                                }
+                                                else if ((config.type == "polyline" || config.type == "line") && a.length < 2)
+                                                {
+                                                    errors.push({ code: "POINTS_POLYLINE_COUNT", message: "The points array at " + indexes.map(function(i, n){ return n < d ? "[" + i + "]" : ""; }).join() + " needs 2 or more points, but only has " + a.length });
+                                                    return false;
+                                                }
+                                            }
+                                            
+                                            for (var i = 0; i < a.length; i++)
+                                            {
+                                                indexes[d] = i;
+                                                if (traverse(a[i], d + 1) == false)
+                                                    return false;
+                                            }
+                                        }
+                                
+                                        return true;
+                                    }
+                                    
+                                    return { result: traverse(value, 0) == true && errors.length == 0, messages: errors };
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            {
+                name: "styles",
+                presence: false,
+                default: undefined,
+                type: "array",
+                arrayType: "object",
+                children:
+                [
+                    {
+                        name: "style",
+                        presence: false,
+                        default: undefined,
+                        type: "object",
+                        children: 
+                        [
+                            {        
+                                name: "id",
+                                presence: false,
+                                type: [ "number", "string" ],
+                            },
+                            {        
+                                name: "stroke",
+                                presence: false,
+                                default: true,
+                                type: "boolean",
+                            },
+                            {        
+                                name: "strokeColor",
+                                presence: false,
+                                default: "black",
+                                type: "string",
+                            },
+                            {        
+                                name: "strokeWidth",
+                                presence: false,
+                                default: 1.0,
+                                type: "number",
+                            },
+                            {        
+                                name: "lineDashArray",
+                                presence: false,
+                                default: undefined,
+                                type: "array",
+                                arrayType: "number"
+                            },
+                            {        
+                                name: "lineDashOffset",
+                                presence: false,
+                                default: 0.0,
+                                type: "number"
+                            },
+                            {        
+                                name: "lineCap",
+                                presence: false,
+                                default: "round",
+                                type: "string",
+                                validValues: [ "butt", "round", "square" ]
+                            },
+                            {        
+                                name: "lineJoin",
+                                presence: false,
+                                default: "round",
+                                type: "string",
+                                validValues: [ "round", "bevel", "miter" ]
+                            },
+                            {        
+                                name: "miterLimit",
+                                presence: false,
+                                default: 1.0,
+                                type: "number"
+                            },
+                            {        
+                                name: "fill",
+                                presence: false,
+                                default: true,
+                                type: "boolean"
+                            },
+                            {        
+                                name: "fillColor",
+                                presence: false,
+                                default: "black",
+                                type: "string"
+                            },
+                            {        
+                                name: "fillRule",
+                                presence: false,
+                                default: "evenodd",
+                                type: "string",
+                                validValues: [ "nonzero", "evenodd" ]
+                            },
+                            {        
+                                name: "shadowColor",
+                                presence: false,
+                                default: undefined,
+                                type: "string"
+                            },
+                            {        
+                                name: "shadowBlur",
+                                presence: false,
+                                default: undefined,
+                                type: "number"
+                            },
+                            {        
+                                name: "shadowOffset",
+                                presence: false,
+                                default: undefined,
+                                type: "array",
+                                arrayType: "number"
+                            }
+                        ]
+                    }
+                ]
+            },
+
             // Ruler
 
             {
@@ -7950,7 +9495,8 @@
             // Flatten the defaultConfigInfo into a default config
             configValidator.postProcessConfigInfo(defaultConfigInfo);
             this.defaultConfig = configValidator.flattenConfigInfoIntoDefaults(defaultConfigInfo);
-            this.defaultConfig._configName = "Defaults";
+            this.defaultConfig._configId = "defaults";
+            this.defaultConfig._configMapName = "";
             this.defaultConfig._configSource = "JavaScript";
             this.defaultConfig._configScope = "defaults";
 
@@ -8087,7 +9633,8 @@
                 // Apply the global config over the defaults
                 if (this.isGlobalConfigLoaded == true)
                 {
-                    this.globalConfig._configName = "Global";
+                    this.globalConfig._configId = "global";
+                    this.globalConfig._configMapName = "";
                     this.globalConfig._configSource = "JavaScript";
                     this.globalConfig._configScope = "global";
                     this.globalConfig._configSourcePath = "";
@@ -8129,7 +9676,7 @@
                     // If a config was found, save it to localConfigs
                     if (config != undefined)
                     {
-                        config._configName = map.name;
+                        config._configId = config._configMapName = map.name;
                         config._configSource = configSource;
                         config._configScope = "local";
                         this.localConfigs[map.name] = config;
@@ -8177,14 +9724,29 @@
                         // Collect all the data attributes
                         for (var key in configElem.dataset)
                         {
-                            embedConfig[key] = configElem.dataset[key];
+                            var configInfo = configValidator.getConfigInfoAtPath(key);
+                            if (configInfo.type == "array" || configInfo.type == "object")
+                            {
+                                try
+                                {
+                                    var obj = JSON.parse(configElem.dataset[key]);
+                                    embedConfig[key] = obj;
+                                }
+                                catch(e)
+                                {
+                                    console.error("Could not parse embed config option " + key + " to " + configInfo.type + "\n" + e.toString());
+                                }
+                            }
+                            else
+                                embedConfig[key] = configElem.dataset[key];
                         }
                     }
 
                     // Store in mapsExtended.embedConfigs if there were data attributes present
                     if (!isEmptyObject(embedConfig))
                     {
-                        embedConfig._configName = map.name + " (" + mapElem.id + ")";
+                        embedConfig._configId = mapElem.id;
+                        embedConfig._configMapName = map.name;
                         embedConfig._configSource = "Wikitext";
                         embedConfig._configScope = "embed";
 
@@ -8456,11 +10018,11 @@
                         {
                             // Parse the content of the page as JSON into a JS object (adding the map name because the JSON will not contain this)
                             var config = JSON.parse(pageData[i].revisions[0].slots.main.content);
-                            config._configName = pageData[i].title.replace(MX_CONFIG_PREFIX, "").replace(MX_CONFIG_SUFFIX, "");
+                            config._configId = config._configMapName = pageData[i].title.replace(MX_CONFIG_PREFIX, "").replace(MX_CONFIG_SUFFIX, "");
                             config._configSource = "JSON (in system message)";
 
                             // Insert it into mapsExtended.localConfig
-                            if (config._configName == "global")
+                            if (config._configId == "global")
                             {
                                 config._configScope = "global";
                                 mapsExtended.globalConfig = config;
@@ -8472,7 +10034,7 @@
                             else
                             {
                                 config._configScope = "local";
-                                mapsExtended.localConfigs[config._configName] = config;
+                                mapsExtended.localConfigs[config._configId] = config;
                                 mapsExtended.isLocalConfigsLoaded = true;
                                 loadedConfigs++;
                             }

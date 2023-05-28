@@ -60,3 +60,15 @@ $(function() {
 });
 
 /* COMMA IN CONTRIBS USER HEADER END */
+
+
+/* LINK ON RAIL ACTIVITY BOX BEGIN */
+
+$('#WikiaRail').on('afterLoad.rail', function() {
+  const recentChangesLink = $('<a/>').attr('href', '/wiki/Special:RecentChanges');
+  const wikiActivityRailHeader = $('#wikia-recent-activity.rail-module.recent-wiki-activity .rail-module__header');
+  recentChangesLink.append(wikiActivityRailHeader.html());
+  wikiActivityRailHeader.empty().prepend(recentChangesLink);
+});
+
+/* LINK ON RAIL ACTIVITY BOX END */

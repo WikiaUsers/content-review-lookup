@@ -96,14 +96,17 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 
 mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
 /*
- * A faster alternative to importing stylesheets where API requests are not needed
- * HTML class "transcluded-css" comes from [[Template:CSS]]
- * After this CSS importing method is approved, the previous one will be removed soon
+ * HTML class "transcluded-css", which is to be deprecated, comes from [[Template:CSS]]
+ * The new "import-css" class comes from [[Module:CSS]]
+ * After this revision is approved, the "transcluded-css" one will be removed soon
  */
 mw.hook("wikipage.content").add(function () {
     $("span.transcluded-css").each(function () {
         mw.util.addCSS($(this).text());
         $(this).remove();
+    });
+    $("span.import-css").each(function () {
+    	mw.util.addCSS($(this).attr("data-css"));
     });
 });
 

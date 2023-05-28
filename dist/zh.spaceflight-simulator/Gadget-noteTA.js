@@ -1,4 +1,8 @@
 // <nowiki>
+/* mw.loader.load('https://code.jquery.com/jquery-1.12.4.js'); */
+mw.loader.load('https://code.jquery.com/ui/1.12.1/jquery-ui.js');
+mw.loader.load('/zh/wiki/MediaWiki:Gadget-noteTA.css?action=raw&ctype=text/css', 'text/css' );
+
 noteTAViewer = ( function() { $( function() {
 	var api = null;
 	var init = function( hash ) {
@@ -26,7 +30,7 @@ noteTAViewer = ( function() { $( function() {
 			} ).done( function( results ) {
 				$dialog.html( results.parse.text['*'] );
 				if ( collapse ) {
-					$dialog.find( '.mw-collapsible' ).makeCollapsible();
+					/* $dialog.find( '.mw-collapsible' ).makeCollapsible(); */
 					$dialog.find( '.mw-collapsible-toggle' ).on( 'click.mw-collapse', function( e ) {
 						var $collapsibleContent = $( this ).parent( '.mw-collapsible' ).find( '.mw-collapsible-content' );
 						setTimeout( function() {

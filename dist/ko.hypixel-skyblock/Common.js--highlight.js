@@ -251,7 +251,7 @@
                                     $("<input>")
                                     .attr({
                                         "type": "button",
-                                        "value": "Reset"
+                                        "value": "표시 초기화"
                                     })
                                     .click(function () {
                                         rows[iTable].each(function (iRow) {

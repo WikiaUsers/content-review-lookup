@@ -1,4 +1,9 @@
 $(function() {
+	$("#BtnASND").click(function() {
+	    $(".evolution").css("display", "none");
+	    $("#TextASND").css("display", "block");
+	});
+	
 	$("#BtnAWK").click(function() {
 	    $(".evolution").css("display", "none");
 	    $("#TextAWK").css("display", "block");

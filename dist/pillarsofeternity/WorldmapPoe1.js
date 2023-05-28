@@ -4,7 +4,7 @@
     as the logic for the arrows that appear when dragging the map around (and disappear if the
     map is at the edge of the container).
 
-    This is used in conjunction with Template:Worldmap_poe1 and MediaWiki:Hydradark.css
+    This is used in conjunction with Template:Worldmap_poe1 and MediaWiki:Common.css
 
     Author: Macklin (Pillars of Eternity wiki)
 */
@@ -19,7 +19,89 @@
     var rootParent = root.parentElement;
 
     var container = root.querySelector(".worldmap-content-inner");
-    var content = container.firstElementChild;
+
+    var content = null;
+
+    if (container.children.length > 1)
+    {
+        var multipleMapCurrentMap = container.firstElementChild;
+        var multipleMaps = [];
+
+        multipleMaps = Array.from(container.children);
+
+        // Content element is container holding all maps
+        content = document.createElement("div");
+        container.appendChild(content);
+
+        // Move all elements in container under content
+        for (var i = 0; i < multipleMaps.length; i++)
+        {
+            content.appendChild(multipleMaps[i]);
+
+            // Give element an ID if it doesn't already
+            if (multipleMaps[i].id == "") multipleMaps[i].id = "worldmap_" + i;
+        }
+
+        var switchMap = function(id)
+        {
+            if (!id) return;
+            
+            var mapToSwitchTo = multipleMaps.find(function(m){ return m.id == id; });
+            var mapToSwitchFrom = multipleMapCurrentMap;
+            
+            if (!mapToSwitchTo || mapToSwitchTo == mapToSwitchFrom) return;
+
+            // Save position and scale of last map
+            mapToSwitchFrom.dataset.lastScale = scaleFactor;
+            mapToSwitchFrom.dataset.lastPosition = JSON.stringify(pos);
+
+            for (var i = 0; i < multipleMaps.length; i++)
+                multipleMaps[i].style.display = (multipleMaps[i].id == id) ? "" : "none";
+
+            // Set position and scale to new map's last scale
+            try { pos = JSON.parse(mapToSwitchTo.dataset.lastPosition) }
+            catch(e) { pos = { x: 0, y: 0 }; }
+            scaleFactor = parseFloat(mapToSwitchTo.dataset.lastScale) || 0.0;
+            //contentScaler.style.transform = mapToSwitchTo.dataset.lastScale || "scale(1.0)";
+            //content.style.transform = mapToSwitchTo.dataset.lastPosition || "";
+
+            multipleMapCurrentMap = mapToSwitchTo;
+        }
+
+        // If a hash is set in the URL, and it refers to a direct child of worldmap-content-inner, use it as the first map
+        if (location.hash)
+        {
+            var hashElem = document.getElementById(location.hash.replace("#", ""));
+            if (hashElem.parentElement == content)
+            {
+                switchMap(hashElem.id);
+            }
+        }
+
+        // Switch maps on hash change. Maps must all be back-to-back within worldmap-content-inner
+        window.addEventListener("hashchange", function(e)
+        {
+            var hash = new URL(e.newURL).hash.replace("#", "");
+            switchMap(hash);
+        });
+
+        // Make nodes with an a href that have a hash instead change the map
+        var mapSwitchNodes = content.querySelectorAll(".poe1mapnode a[href^='#']");
+        mapSwitchNodes.forEach(function(switchNode)
+        {
+            switchNode.addEventListener("click", function(e)
+            {
+                switchMap(switchNode.hash.replace("#", ""));
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+    }
+    else
+    {
+        // Content element is first (and only) map
+        content = container.firstElementChild;
+    }
 
     // Encapsulate the content in a div with transform: scale
     // This makes it far simpler to deal with than stacking transforms on one element

@@ -29,20 +29,10 @@ UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
 UserTagsJS.modules.userfilter = { 'ScutoidWasTaken': ['sysop'] };
 UserTagsJS.modules.custom = {
+	'Dotvoid': ['bot'],
 	'PexyWasTaken': ['technician'],
 	'ScutoidWasTaken': ['technician'],
 };
-
-// random number generator
-const random = document.querySelector('.random');
-const rng = document.createElement('rng');
-rng.textContent = Math.imul(getRandomIntInclusive(320, 32000), getRandomIntInclusive(320, 32000)); // just a little over a billion possibilities
-random.appendChild(rng);
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 // fade-in
 var fadeinclass = document.getElementsByClassName("fadeintext");

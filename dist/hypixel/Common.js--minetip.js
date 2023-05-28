@@ -1,8 +1,12 @@
-/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true, esnext: false */
-
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
 
+/* jshint
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
+*/
 /* global mw */
 
 $(function () {
@@ -260,7 +264,8 @@ $(function () {
 
         // This hook forces it to apply script even in TabViews
         mw.hook("wikipage.content").add(function (pSection) {
-            $(pSection).find(".format-k .format-k").removeClass("format-k");
+            $(".invslot *").removeAttr("title"); // prevent unwatned browser tooltips for invslots
+            $(pSection).find(".format-k .format-k").removeClass("format-k"); // remove nested obfuscated class
         });
     }());
 });

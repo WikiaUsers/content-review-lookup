@@ -69,11 +69,15 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
-/*open roblox game */
 $(function() {
     function openRobloxLink() {
         var link = "roblox://placeId=7396774756";
-        window.open(link);
+        window.open(link, "_self");
+
+        mw.hook("dev.toasts").add(function(toasts) {
+            var toastMessage = "Game Launched!";
+            toasts.success(toastMessage);
+        });
     }
 
     $('.play-defense').click(function() {

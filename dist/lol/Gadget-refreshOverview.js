@@ -328,6 +328,33 @@ $(function() {
 		return buttonList.join('<br>') + '<br>';
 	}
 	
+	function getPlayerRedirects(pageListTouch) {
+		if (pageListTouch.length === 0) {
+			return Promise.resolve([]);
+		}
+		
+		var wherePageList = pageListTouch.map(function(e) {
+			return '"' + e + '"';
+		});
+		
+		return new mw.Api().get({
+			action : 'cargoquery',
+			tables : 'PlayerRedirects',
+			where : 'AllName IN (' + wherePageList.join(", ") + ')',
+			fields : 'OverviewPage',
+			group_by : 'OverviewPage'
+		}).then(function(data) {
+			var redirects = [];
+			data.cargoquery.forEach(function(page){
+				var title = page.title.OverviewPage;
+				if (!pageListTouch.includes(title) && !pageListTouch.includes(title.charAt(0).toLowerCase() + title.slice(1))) {
+					redirects.push(title);
+				};
+			});
+			return redirects;
+		});
+	}
+	
 	function refreshNewsDataPages(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -349,30 +376,17 @@ $(function() {
 			}
 		});
 
-		var wherePageList = pageListTouch.map(function(e) {
-			return '"' + e + '"';
-		});
-
-		return new mw.Api().get({
-			action : 'cargoquery',
-			tables : 'PlayerRedirects',
-			where : 'AllName IN (' + wherePageList.join(", ") + ')',
-			fields : 'OverviewPage',
-			group_by : 'OverviewPage'
-		}).then(function(data) {
-			data.cargoquery.forEach(function(page){
-				var title = page.title.OverviewPage;
-				if (!pageListTouch.includes(title) && !pageListTouch.includes(title.charAt(0).toLowerCase() + title.slice(1))) {
-					pageListTouch.push(title);
-					pageListPurge.push(title);
-
-				};
+		return getPlayerRedirects(pageListTouch)
+		.then(function(redirects) {
+			redirects.forEach(function(e) {
+				pageListTouch.push(e);
+				pageListPurge.push(e);
 			});
-
+	
 			var touches = pageListTouch.map(window.blankEdit);
-
+	
 			var purges = pageListPurge.map(window.purgeTitle);
-
+	
 			return Promise.all(touches).then(function() {
 				return Promise.all(purges);
 			}).then(function() {

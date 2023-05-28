@@ -38,21 +38,25 @@ window.UserTagsJS = {
                 u: 'PB Facilitator',
                 order: 3 
             },
+            fow: { 
+                u: 'Former Wiki Owner',
+                order: 10
+            },
             pia: { 
                 u: 'PIA Member',
                 order: 4
             },
             pbmdirector: {
                 u: 'PBM Director',
-                order: 10
+                order: 11
             },
             pbmdirector: {
                 u: 'PET Specialist',
-                order: 11
+                order: 12
             },
             newuser: { 
                 u: 'New User',
-                order: 12
+                order: 13
             }
 	}
 };
@@ -66,7 +70,8 @@ UserTagsJS.modules.newuser = { // should be equal to auto-confirmed
 	namespace: 0
 };
 UserTagsJS.modules.custom = {
-	'CombatSwift': ['owner'], // NOTE: order of list here does NOT matter
+    'PinewoodBuildersSocialMedia': ['owner'], // NOTE: order of list here does NOT matter
+    'CombatSwift': ['fow'], // NOTE: order of list here does NOT matter
     'Coasterteam': ['facilitator'], // NOTE: order of list here does NOT matter
     'WickyTheUnicorn': ['pia'], // NOTE: order of list here does NOT matter
     'Ood23doc': ['pia'], // NOTE: order of list here does NOT matter

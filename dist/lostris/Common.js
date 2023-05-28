@@ -8,3 +8,11 @@ $('.fandom-community-header__image').append(
         )
         .attr('href', 'https://community.fandom.com/wiki/User_blog:CuBaN_VeRcEttI/Celebrate_Black_History_Month_with_Fandom')
 );
+
+
+$('#WikiaRail').on('afterLoad.rail', function() {
+  const recentChangesLink = $('<a/>').attr('href', '/wiki/Special:RecentChanges');
+  const wikiActivityRailHeader = $('#wikia-recent-activity.rail-module.recent-wiki-activity .rail-module__header');
+  recentChangesLink.append(wikiActivityRailHeader.html());
+  wikiActivityRailHeader.empty().prepend(recentChangesLink);
+});
