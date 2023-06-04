@@ -11,3 +11,10 @@ window.AddRailModule = [{
     page: 'Template:DiscussionsRailModule',
     maxAge: 86400,
 }];
+/* Configuration for SpoilerWarning */
+window.SpoilerAlertJS = {
+    question: 'This area contains scary spoilers! You still wanna see it?',
+    yes: 'Yup!',
+    no: 'Better not!',
+    fadeDelay: 1000
+};

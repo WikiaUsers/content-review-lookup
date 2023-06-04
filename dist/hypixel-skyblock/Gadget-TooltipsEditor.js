@@ -127,7 +127,7 @@ $.when(
             "Special": "SL",
             "Very Special": "VSL",
         },
-        specialchars: ("❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ")
+        specialchars: ("❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ ϕ")
             .replaceAll(" ", " &nbsp; ")
             .split(" ")
             .map(function (v) {

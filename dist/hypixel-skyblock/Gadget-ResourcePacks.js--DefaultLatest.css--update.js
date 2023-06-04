@@ -576,6 +576,109 @@
 		]
 	};
 
+	const customArmorFiles = [
+		{ name:"Adaptive", c:true, l:true, b:true },
+		{ name:"Angler", c:true, l:true, b:true },
+		{ name:"Arachne's", c:true, l:true, b:true },
+		{ name:"Armor of Magma", h:true, c:true, l:true, b:true },
+		{ name:"Aurora", c:true, l:true, b:true },
+		{ name:"Bat Person", c:true, l:true, b:true },
+		{ name:"Berserker", c:true, l:true, b:true },
+		{ name:"Blaze", c:true, l:true, b:true },
+		{ name:"Bouncy", h:true, c:true, l:true, b:true },
+		{ name:"Cactus", h:true, c:true, l:true, b:true },
+		{ name:"Celeste", h:true, c:true, l:true, b:true },
+		{ name:"Cheap Tuxedo", c:"Cheap Tuxedo Jacket", l:"Cheap Tuxedo Pants", b:"Cheap Tuxedo Oxfords" },
+		{ l:"Chicken Leggs" },
+		{ l:"Creeper Pants" },
+		{ name:"Crimson", c:true, l:true, b:true },
+		{ name:"Crypt Witherlord", h:true, c:true, l:true, b:true },
+		{ name:"Crystal", h:true, c:true, l:true, b:true },
+		{ name:"Elegant Tuxedo", c:"Elegant Tuxedo Jacket", l:"Elegant Tuxedo Pants", b:"Elegant Tuxedo Oxfords" },
+		{ name:"Emperor", c:"Emperor Robes", l:true, b:"Emperor Shoes" },
+		{ b:"Exceedingly Comfy Sneakers" },
+		{ name:"Fallen Star", c:true, l:true, b:true },
+		{ name:"Fancy Tuxedo", c:"Fancy Tuxedo Jacket", l:"Fancy Tuxedo Pants", b:"Fancy Tuxedo Oxfords" },
+		{ name:"Farm Armor", h:true, c:true, l:true, b:true },
+		{ name:"Farm Suit", h:true, c:true, l:true, b:true },
+		{ b:"Farmer Boots" },
+		{ l:"Femurgrowth Leggings" },
+		{ name:"Fervor", c:true, l:true, b:true },
+		{ name:"Final Destination", c:true, l:true, b:true },
+		{ c:"Flaming Chestplate" },
+		{ name:"Frozen Blaze", c:true, l:true, b:true },
+		{ name:"Glacite", c:true, l:true, b:true },
+		{ name:"Goblin", c:true, l:true, b:true },
+		{ name:"Goldor's", c:true, l:true, b:true },
+		{ name:"Great Spook", h:true, c:true, l:true, b:true },
+		{ name:"Growth", h:"Helmet of Growth", c:"Chestplate of Growth", l:"Leggings of Growth", b:"Boots of Growth" },
+		{ c:"Guardian Chestplate" },
+		{ name:"Heat", h:true, c:true, l:true, b:true },
+		{ name:"Heavy", h:true, c:true, l:true, b:true },
+		{ name:"Hollow", c:true, l:true, b:true },
+		{ name:"Holy Dragon", c:true, l:true, b:true },
+		{ name:"Kuudra Follower", c:true, l:true, b:true },
+		{ name:"Lapis Armor", c:true, l:true, b:true },
+		{ name:"Leaflet", c:"Leaflet Tunic", l:"Leaflet Pants", b:"Leaflet Sandals" },
+		{ name:"Magma Lord", c:true, l:true, b:true },
+		{ name:"Maxor's", c:true, l:true, b:true },
+		{ name:"Mercenary", b:true }, // rest of pieces aren't leather
+		{ c:"Metal Chestplate" },
+		{ name:"Miner's Outfit", h:true, c:true, l:true, b:true },
+		{ name:"Mineral", c:true, l:true, b:true },
+		{ name:"Minos Hunter", c:true, l:true, b:true },
+		{ l:"Moogma Leggings" },
+		{ name:"Mushroom", h:true, c:true, l:true, b:true },
+		{ name:"Necromancer Lord", c:true, l:true, b:true },
+		{ name:"Necron's", c:true, l:true, b:true },
+		{ name:"Nutcracker", c:true, l:true, b:true },
+		{ c:"Obsidian Chestplate" },
+		{ name:"Old Dragon", c:true, l:true, b:true },
+		{ name:"Pack", h:"Helmet of the Pack", c:"Chestplate of the Pack" }, // legs/boots aren't leather
+		{ name:"Protector Dragon", c:true, l:true, b:true },
+		{ name:"Pumpkin", h:true, c:true, l:true, b:true },
+		{ name:"Rampart", c:true, l:true, b:true },
+		{ name:"Reaper", c:true, l:true, b:true },
+		{ name:"Rising Sun", l:"Leggings of the Rising Sun", b:"Boots of the Rising Sun" }, // chestplate isn't leather
+		{ name:"Rotten", h:true, c:true, l:true, b:true },
+		{ name:"Salmon", h:true, c:true, l:true, b:true },
+		{ name:"Shadow Assassin", c:true, l:true, b:true },
+		{ name:"Shark Scale", c:true, l:true, b:true },
+		{ name:"Shimmering Light", c:"Shimmering Light Tunic", l:"Shimmering Light Trousers", b:"Shimmering Light Slippers" },
+		{ name:"Skeleton Grunt", h:true, c:true, l:true, b:true },
+		{ name:"Skeleton Lord", c:true, l:true, b:true },
+		{ name:"Skeleton Master", h:true, c:true, l:true, b:true },
+		{ name:"Skeleton Soldier", h:true, c:true, l:true, b:true },
+		{ b:"Slug Boots" },
+		{ name:"Snow Suit", c:true, l:true, b:true },
+		{ name:"Speedster", h:true, c:true, l:true, b:true },
+		{ b:"Spirit Boots" },
+		{ name:"Sponge", c:true, l:true, b:true },
+		{ name:"Spooky", c:true, l:true, b:true },
+		{ b:"Squid Boots" },
+		{ b:"Squire Boots" },
+		{ name:"Starlight", c:true, b:true }, // helmet/leggings aren't leather
+		{ c:"Steel Chestplate" },
+		{ l:"Stereo Pants" },
+		{ c:"Stone Chestplate" },
+		{ name:"Storm's", c:true, l:true, b:true },
+		{ name:"Strong Dragon", c:true, l:true, b:true },
+		{ name:"Super Heavy", h:true, c:true, l:true, b:true },
+		{ name:"Superior Dragon", c:true, l:true, b:true },
+		{ name:"Tarantula", h:true, c:true, l:true, b:true },
+		{ name:"Terror", c:true, l:true, b:true },
+		{ name:"Thunder", c:true, l:true, b:true },
+		{ name:"Unstable Dragon", c:true, l:true, b:true },
+		{ name:"Water Hydra", h:true, c:true, l:true, b:true },
+		{ name:"Wise Dragon", c:true, l:true, b:true },
+		{ name:"Wither", c:true, l:true, b:true },
+		{ name:"Yog", h:true, c:true, l:true, b:true },
+		{ name:"Young Dragon", c:true, l:true, b:true },
+		{ name:"Zombie Commander", h:true, c:true, l:true, b:true },
+		{ name:"Zombie Lord", h:true, c:true, l:true, b:true },
+		{ name:"Zombie Soldier", h:true, c:true, l:true, b:true },
+	];
+
 	const mappedFiles = Object.keys(files)
 		.map((key) =>
 			files[key].map((file) => {
@@ -587,11 +690,25 @@
 			})
 		)
 		.flat();
+	
+	const customArmorUrlBase = 'https://hsbwrp.fewfre.com/latest/piece_renders';
+	const mappedCustomArmorFiles = customArmorFiles.reduce((arr, { name, h, c, l, b })=>{
+		[{ type:'Helmet', flag:h }, { type:'Chestplate', flag:c }, { type:'Leggings', flag:l }, { type:'Boots', flag:b }]
+		.forEach(({ type, flag:existsOrName }) => {
+			if(existsOrName){
+				const fullName = existsOrName === true ? `${name} ${type}` : existsOrName;
+				 arr.push({ name:fullName, url:`${customArmorUrlBase}/${fullName.replace("'", "%27")}.png` }) // encoding the apostrophe prevents it causing issues when used inside a css string 
+			}
+		});
+		return arr;
+	}, []);
 
 	const fileNames = mappedFiles.map((file) => `File:${file.mcName}.png`);
 	const fileNamesGif = mappedFiles.map((file) => `File:${file.mcName}.gif`);
 	const skyblockFileNames = mappedFiles.map((file) => `File:${file.name}.${file.sbExt ?? 'png'}`);
 	const skyblockEnchantedFileNames = mappedFiles.map((file) => `File:${file.enchName}.${file.sbEnchExt ?? file.sbExt ?? 'png'}`);
+	const customArmorFileNames = mappedCustomArmorFiles.map((file) => `File:${file.name}.png`);
+	
 	// CSS Styles
 	const enchantedFilter = 'filter:url(#mcglint)'; // filter:drop-shadow(0 0 6px #aa03aa)
 	// Test script styles
@@ -627,12 +744,23 @@
 
 		return Promise.all(chunks.map((chunk) => fetchUrls(chunk, wiki))).then((res) => res.reduce((arr, r) => [...arr, ...Object.values(r?.query?.pages ?? {})], []));
 	}
+	
+	function wikiApiPagesToUrlMap(pages) {
+		return Object.fromEntries(pages.map((page) => [page.title, page.imageinfo?.[0]?.url]));
+	}
 
-	Promise.all([fetchAllFiles(fileNames, 'minecraft'), fetchAllFiles(fileNamesGif, 'minecraft'), fetchAllFiles(skyblockFileNames, 'hypixel-skyblock'), fetchAllFiles(skyblockEnchantedFileNames, 'hypixel-skyblock')]).then(([pages, pagesGif, sbPages, sbEnchPages]) => {
-		const urlsMap = Object.fromEntries(pages.map((page) => [page.title, page.imageinfo?.[0]?.url]));
-		const gifUrlsMap = Object.fromEntries(pagesGif.map((page) => [page.title, page.imageinfo?.[0]?.url]));
-		const sbUrlsMap = Object.fromEntries(sbPages.map((page) => [page.title, page.imageinfo?.[0]?.url]));
-		const sbEnchantedUrlsMap = Object.fromEntries(sbEnchPages.map((page) => [page.title, page.imageinfo?.[0]?.url]));
+	Promise.all([
+		fetchAllFiles(fileNames, 'minecraft'),
+		fetchAllFiles(fileNamesGif, 'minecraft'),
+		fetchAllFiles(skyblockFileNames, 'hypixel-skyblock'),
+		fetchAllFiles(skyblockEnchantedFileNames, 'hypixel-skyblock'),
+		fetchAllFiles(customArmorFileNames, 'hypixel-skyblock'),
+	]).then(([pages, pagesGif, sbPages, sbEnchPages, sbCaPages]) => {
+		const urlsMap = wikiApiPagesToUrlMap(pages);
+		const gifUrlsMap = wikiApiPagesToUrlMap(pagesGif);
+		const sbUrlsMap = wikiApiPagesToUrlMap(sbPages);
+		const sbEnchantedUrlsMap = wikiApiPagesToUrlMap(sbEnchPages);
+		const sbCustomArmorUrlsMap = wikiApiPagesToUrlMap(sbCaPages);
 		const cssEntries = ['/* Script for updating this page is on DefaultLatest.css/update.js */'],
 			missing = [],
 			sbMissing = [],
@@ -677,6 +805,16 @@
 			}
 			previewUrls.at(-1).urlPairs.push([sbUrlsMap[sbKey], mcUrl]);
 		});
+		
+		// Special section for colored armors
+		previewUrls.push({ label: 'Colored Skyblock Armors', urlPairs: [] });
+		mappedCustomArmorFiles.forEach((file) => {
+			const key = `File:${file.name}.png`;
+			cssEntries.push(`img[data-image-name="${file.name}.${file.sbExt ?? 'png'}"]{ content: url('${file.url}') }`);
+			let pairs = [sbCustomArmorUrlsMap[key], file.url];
+			pairs.tooltip = key;
+			previewUrls.at(-1).urlPairs.push(pairs);
+		});
 
 		cssEntries.push(`${enchantedNames.map((name) => `img[data-image-name="${name}"]`).join(', ')} { ${enchantedFilter} }`);
 
@@ -693,7 +831,7 @@
 				`<textarea style="background:black; color:white; width:100vw; height:50vh;">${cssEntries.join('\n')}</textarea>`,
 				`<h2>Previews: (${previewUrls.length} categories, ${mappedFiles.length} images)</h2>`,
 				'<div>',
-				previewUrls.map(({ label, urlPairs }) => `<div><h4>${label}</h4><div style="${urlPairListStyle}">${urlPairs.map((urls) => `<span style="${previewPairStyle}">${urls.map((url) => `<img src="${url}" height="40" />`).join('')}</span>`).join('')}</div></div>`).join(''),
+				previewUrls.map(({ label, urlPairs }) => `<div><h4>${label}</h4><div style="${urlPairListStyle}">${urlPairs.map((urls) => `<span style="${previewPairStyle}" ${urls.tooltip ? `title="${urls.tooltip}"` : ""}>${urls.map((url) => `<img src="${url}" height="40" />`).join('')}</span>`).join('')}</div></div>`).join(''),
 				'</div>',
 				'</div>'
 			].join('')

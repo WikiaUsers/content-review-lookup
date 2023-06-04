@@ -26,7 +26,7 @@ window.adoptRetainInternational = {
     pageConfig: {
         namespace: 'Adoption',
         namespaceId: 118,
-        adoptionsPage: 'Adoption:Requests'
+        requestsPage: 'Adoption:Requests/Extend_permissions'
     },
     wikitextSchema: '{{bStart}}Permissions Extend Request\n' +
     '|0-Status               = awaiting<!- Staff: replace "awaiting" with "accepted" or "rejected" to complete request-->\n' +
@@ -83,11 +83,26 @@ window.AddRailModule = [{
     prepend: true
 }];
 
+// Temp fix for Admin+ quizzes; 
+// approved by Tim Q
+
+    $(function () {
+        $('#technical-foundations').append("<div class='typeform-widget' data-url='https://form.typeform.com/to/Whr9PBJs' style='width: 100%; height: 775px;margin-top:20px'></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id='typef_orm', b='https://embed.typeform.com/'; if(!gi.call(d,id)) { js=ce.call(d,'script'); js.id=id; js.src=b+'embed.js'; q=gt.call(d,'script')[0]; q.parentNode.insertBefore(js,q) } })() </script>" );
+    });
+
+    $(function () {
+        $('#content-development').append("<div class='typeform-widget' data-url='https://form.typeform.com/to/hkQ0e8un' style='width: 100%; height: 775px;margin-top:20px'></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id='typef_orm', b='https://embed.typeform.com/'; if(!gi.call(d,id)) { js=ce.call(d,'script'); js.id=id; js.src=b+'embed.js'; q=gt.call(d,'script')[0]; q.parentNode.insertBefore(js,q) } })() </script>" );
+    });
+
+    $(function () {
+        $('#community-building').append("<div class='typeform-widget' data-url='https://form.typeform.com/to/SKYUS6lb' style='width: 100%; height: 775px;margin-top:20px'></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id='typef_orm', b='https://embed.typeform.com/'; if(!gi.call(d,id)) { js=ce.call(d,'script'); js.id=id; js.src=b+'embed.js'; q=gt.call(d,'script')[0]; q.parentNode.insertBefore(js,q) } })() </script>" );
+    });
+
 //Message wall greeting for [[Mesage wall:Sophiedp]], uses [[User:Sophiedp/notstaff]]
 //written by Sophiedp, with premission from Sannse
 if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsMessageWallPage')) {
     mw.loader.using('mediawiki.api').then(function () {
-        var params = {
+        new mw.Api().get({
             action: 'parse',
             format: 'json',
             page: 'User:Sophiedp/notstaff',
@@ -95,9 +110,20 @@ if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsM
             wrapoutputclass: 'greeting',
             disablelimitreport: 1,
             formatversion: '2'
-        };
-        new mw.Api().get(params).done(function (data) {
+        }).done(function (data) {
             $('#MessageWall').prepend(data.parse.text).find('.greeting').css('margin-bottom', '20px');
         });
     });
 }
+
+/* For Pride Month. Explicitly approved by Fandom Staff for Community Central only */
+
+$(function() {
+    $('.global-navigation__logo  > svg.wds-icon').remove(); // only remove the logo.
+    $('.global-navigation__logo').prepend(
+        $('<img>', {
+            src: 'https://static.wikia.nocookie.net/central/images/9/99/Fandom_Pride.png/revision/latest/scale-to-width-down/33',
+            style: 'margin-bottom: 6px'
+        })
+    );
+});

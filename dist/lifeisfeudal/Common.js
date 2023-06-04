@@ -26,25 +26,3 @@ function collapseHandlerThis(t) {
    }
    t.classList.toggle('collapsed-icon');
 }
-
-
-/***********************************************
-/* Fix the alignment of the content background *
-/***********************************************/
-
-function fixContent () {
-    var content = $('div#content');
-    var baseWidth = 1612;
-    var baseInset = 60;
-    
-    var ratio = $(content).width() / baseWidth;
-    var result = Math.floor(baseInset * ratio);
-    
-    $(content).css('border-width',result + 'px 0');
-    $(content).css('background-position','left -' + result + 'px, left calc(100% + ' + result + 'px), left top');
-    $(content).css('padding','1em ' + result + 'px');
-};
-
-fixContent();
-
-$( window ).on('resize',fixContent);

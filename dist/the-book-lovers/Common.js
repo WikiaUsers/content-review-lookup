@@ -75,61 +75,49 @@ function createDivToggleButton(){
 $( createDivToggleButton );
 
 
-//purging
-(function dailyPurge() {
-  // Check if the required MW modules are loaded
-  if (typeof mw === 'undefined' || !mw.loader || !mw.loader.using) {
-    console.error('Unable to load the necessary MW modules.');
-    return;
-  }
 
-  // Check if the page needs to be purged
-  function checkPagePurge(Blog:Staff_Blog_Posts) {
-    // Get the last purge time of the page via API
-    var api = new mw.Api();
-    api.get({
-      action: 'query',
-      prop: 'revisions',
-      titles: Blog:Staff_Blog_Posts,
-      rvprop: 'timestamp',
-      formatversion: 2
-    }).done(function(data) {
-      var revisions = data.query.pages[0].revisions;
-      if (revisions.length > 0) {
-        var lastPurgeTime = new Date(revisions[0].timestamp).getTime();
-        var currentTime = Date.now();
+//automatic daily purge of Blog:Staff Blog Posts
 
-        if (!lastPurgeTime || (currentTime - lastPurgeTime) >= 86400000) {
-          // Purge the page
-          purgePage(Blog:Staff_Blog_Posts);
-        }
-      }
-    }).fail(function(xhr, status, error) {
-      // Display an error message
-      console.error('Failed to retrieve page information: ' + Blog:Staff_Blog_Posts + ' - ' + error);
-    });
-  }
+(function DailyPurge(window, $, mw) {
+	"use strict";
 
-  // Purge the page
-  function purgePage(Blog:Staff_Blog_Posts) {
-    // Construct the URL for purging the page
-    var purgeUrl = mw.util.getUrl(Blog:Staff_Blog_Posts, { action: 'purge' });
+	const pagesList = [
+		'Blog:Staff Blog Posts'
+                'Category:Staff Blog Posts'
+	].map(function(string) {
+		return string.replaceAll(' ', '_');
+	});
+	if (!pagesList.includes(mw.config.get('wgPageName')))
+		return;
 
-    // Send an AJAX request to purge the page
-    $.ajax({
-      url: purgeUrl,
-      type: 'GET',
-      success: function(data) {
-        // Display a success message
-        console.log('Page purged successfully: ' + Blog:Staff_Blog_Posts);
-      },
-      error: function(xhr, status, error) {
-        // Display an error message
-        console.error('Failed to purge page: ' + Blog:Staff_Blog_Posts + ' - ' + error);
-      }
-    });
-  }
+	mw.loader.using('mediawiki.api').then(function() {
+		try {
+			const lastPurgeTimestamp = 
+				mw.config.get('wgPageParseReport')
+				.cachereport
+				.timestamp;
 
-  // Usage: Call the checkPagePurge function with the desired page title
-  checkPagePurge('Blog:Staff_Blog_Posts');
-})();
+			const lastPurgeTimeParts = lastPurgeTimestamp.match(/(....)(..)(..)(..)(..)(..)/);
+			const lastPurgeTime = new Date(Date.UTC(
+				lastPurgeTimeParts[1],
+				lastPurgeTimeParts[2] - 1,
+				lastPurgeTimeParts[3],
+				lastPurgeTimeParts[4],
+				lastPurgeTimeParts[5],
+				lastPurgeTimeParts[6],
+			));
+
+			if (Date.now() - lastPurgeTime.valueOf() <= 24 * 60 * 60 * 1000)
+				return;
+
+		} catch(e) {
+			return;
+		}
+
+		(new mw.Api()).post({
+			action: 'purge',
+			titles: mw.config.get('wgPageName')
+		});
+	});
+
+})(window, jQuery, mediaWiki);

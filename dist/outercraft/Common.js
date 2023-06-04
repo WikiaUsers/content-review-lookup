@@ -5,7 +5,7 @@ window.tooltips_config = {
 };
 window.tooltips_list = [
 	{
-		classname: 'itemLore',
-		parse: '{{item=<#item#>|rarity=<#rarity#>|type=<#type#>|show=no}}'
+		classname: 'itemLore-tooltip',
+		parse: '{'+'{Lore|item=<#item#>|type=<#type#>|effects=<#effects#>}}'
 	}
 ]

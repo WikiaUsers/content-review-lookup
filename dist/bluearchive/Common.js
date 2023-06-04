@@ -140,15 +140,23 @@ function createGachaCurrentRow(rowContent, girlsIcons, girlRank, currentGachaGir
 		style = "text-align: center;";
 		if (girlsIcons) {
 			text = girlsIcons[content];
+			// These 2 lines to tilt the background colour similar to the icons
+			text = text.replaceAll("transform:skewX(-10deg)", "");
+			style += "transform: skewX(-10deg); ";
+		    // Removes margin from the icons, which centers them a bit more
+		    text = text.replaceAll("margin-left:8px; margin-right:-7px", "");
 			if (girlRank[content] === 3) {
-				text = text.replaceAll("transform:skewX(-10deg)", "");
-				style += "transform: skewX(-10deg);";
 				if (content === currentGachaGirl) {
-					style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(184,145, 28,0.52) 100%);";
+					style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(182,174,190,0.52) 100%); ";
 				} else {
-					style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(182,174,190,0.52) 100%);";
+					style += "background: rgba(155, 133, 230, .5); ";
 				}
+			} else if (girlRank[content] === 2) {
+				style += "background: rgba(230, 143, 22, .5); ";
+			} else {
+				style += "background: rgba(38, 138, 203, .5); ";
 			}
+			style += "girl: " + content + ";";
 		}
 		return '<td style="' + style + '">' + text + "</td>";
 	}) + "</tr>" ;

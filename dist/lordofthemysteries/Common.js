@@ -13,6 +13,15 @@ window.BackToTopModern = true;
 window.tooltips_config = {
     noCSS: true,
 }
+window.tooltips_list = [
+    {
+        classname: 'sequence-tooltip',
+        parse: '{' + '{Template:Seq/data|1=<#seq#>|2=<#text#>}}'
+    }, {
+        classname: 'pathway-tooltip',
+        parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
+    }
+]
 
 /*LockOldComments*/
 window.lockOldComments = (window.lockOldComments || {});

@@ -60,14 +60,18 @@ function createGachaCurrentRow(rowContent, girlsIcons, girl_rank, currentGachaGi
 		if (girlsIcons && girlsIcons[content]) {
 			girlsIcons[content].done(function(formated_icon) {
 				text = formated_icon.parse.text["*"];
-				if (girl_rank[content] === 6) {
+				if (girl_rank[content] === 3) {
 					if (content === currentGachaGirl) {
-						style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(184,145, 28,0.52) 100%);";
-					} else {
 						style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(182,174,190,0.52) 100%);";
+					} else {
+						style += "background: rgba(155, 133, 230, .5);";
 					}
+				} else if (girl_rank[content] === 2) {
+					style += "background: rgba(230, 143, 22, .5);";
+				} else {
+					style += "background: rgba(38, 138, 203, .5);";
 				}
-
+				style += "girl: " + content + ";";
 			});
 		}
 		return '<td style="' + style + '">' + text + "</td>";
@@ -79,44 +83,38 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 	var girl_rank = {};
 	
 	// Just add whatever you want to simulate, since there's no basis for these ranks
-	var welfare = []; // welfare girls who can not appear in gacha
-	limited_star6_chars = ["Musician Of The Forest, Cranberry", "Pukin"].sort(); // Will be selectable in the dropdown and only appear if chosen
-	unlimited_star6_chars = ["Snow White", "Ripple"]; // Will appear in any pull
-	star5_chars = ["La Pucelle", "Top Speed"];
-	star4_chars = ["Tama"];
-	star3_chars = characters.filter(function(char) { // All chars who are not 4, 5, or 6 star
-		return !(limited_star6_chars.includes(char) || unlimited_star6_chars.includes(char) || star5_chars.includes(char) || star4_chars.includes(char));
+	var welfare = ["Stats Tooltip/pr", "Custom Character Icon/pr"]; // welfare girls who can not appear in gacha
+	var limited_star3_chars = ["Musician Of The Forest, Cranberry", "Pythie Frederica", "Pfle", "Pukin", "Archfiend Pam", "Grim Heart", "Puk Puck", "Ratsumukana-honome-no-kami", "The First Lapis Lazuline", "Francisca Francesca", "Kashikiakarukushihime", "The First Mage", "Agrielreymwaed Quarky", "Halna Midi Meren", "Navi Ru", "Yoshiko Yoshinoura", "Miss Satou", "Shou Minamida", "Sumire", "John Shepherdspie", "Mana", "Lyr Cuem Sataborn", "Yol", "Touta Magaoka", "Tomoki Tatehara"].sort();// Will be selectable in the dropdown and only appear if chosen
+	var unlimited_star3_chars = ["Snow White", "Ripple", "Hardgore Alice", "Clantail", "Pechka", "Magical Daisy", "Lapis Lazuline", "Shadow Gale", "Tepsekemei", "7753", "Princess Deluge", "Marika Fukuroi", "Styler Mimi", "Uluru", "Sorami Nakano", "Dark Cutie", "Tetty Goodgripp", "Kana", "Thunder-General Adelheid", "Calkoro", "Miss Marguerite", "Pastel Mary", "Dreamy☆Chelsea", "Ragi Zwe Nento", "Fal", "Lake of Fire Flame Flamey"] ;  // Will appear in any pull
+	var star2_chars = ["Ruler", "Sister Nana", "Calamity Mary", "@Meow-Meow", "Nokko", "Rionetta", "Detec Bell", "Melville", "Kuru-Kuru Hime", "Hana Gekokujou", "Weddin", "Toko", "Princess Tempest", "Kafuria", "Filru", "Uttakatta", "Stanczyka", "Premium Sachiko", "Glassianne", "Blade Brenda", "Cannon Catherine", "Miss Ril", "Diko Narakunoin", "Pshuke Prains", "Love Lulu", "Maiya", "Alma", "Puppeta", "Amy", "Monako", "Clarissa Toothedge", "Rareko", "La Pucelle", "Top Speed", "Tama", "Nemurin", "Nokko", "Cherna Mouse", "Keek", "Captain Grace", "Rain Pow", "Postaire", "Tot Pop", "Sonia Bean", "Princess Inferno", "Prism Cherry", "Shufflin", "Premium Sachiko", "Micchan the Dictionary", "CQ Angel Hamuel", "Shufflin Ⅱ", "Bluebell Candy", "Lethe", "Mephis Pheles", "Sally Raven", "Ranyi", "Princess Lightning", "Love Me Ren-Ren", "Nephilia", "Jouvet", "Fav", "Toko"];
+	var star1_chars = characters.filter(function(char) {
+		return !(limited_star3_chars.includes(char) || unlimited_star3_chars.includes(char) || star2_chars.includes(char));
 	});
-	limited_star6_chars.forEach(function (girl) {
-			girl_rank[girl] = 6;
-		});
-	unlimited_star6_chars.forEach(function (girl) {
-			girl_rank[girl] = 6;
-		});
-	star5_chars.forEach(function (girl) {
-			girl_rank[girl] = 5;
-		});
-	star4_chars.forEach(function (girl) {
-			girl_rank[girl] = 4;
-		});
-	star3_chars.forEach(function (girl) {
+	limited_star3_chars.forEach(function (girl) {
 			girl_rank[girl] = 3;
 		});
-	girls = {3: star3_chars, 4: star4_chars, 5: star5_chars, 6: limited_star6_chars.concat(unlimited_star6_chars)};
+	unlimited_star3_chars.forEach(function (girl) {
+			girl_rank[girl] = 3;
+		});
+	star2_chars.forEach(function (girl) {
+			girl_rank[girl] = 2;
+		});
+	star1_chars.forEach(function (girl) {
+			girl_rank[girl] = 1;
+		});
+	girls = {1: star1_chars, 2: star2_chars, 3: limited_star3_chars.concat(unlimited_star3_chars)};
 	var pullRates = {
 		/* Format rank : probability */
-		3: 78.5,
-		4: 13.5,
-		5: 5,
-		6: 2.3,
-		7: 0.7 // 7 is used for rateup limited 6*
+		1: 78.5,
+		2: 18.5,
+		3: 2.3,
+		4: 0.7 // 4 is used for rateup limited 3*
 	};
 	var pullRatesLastPull = {
 		// No 1* girls on the last pull
-		4: pullRates[3] + pullRates[4],
-		5: pullRates[5],
-		6: pullRates[6],
-		7: pullRates[7],
+		2: pullRates[1] + pullRates[2],
+		3: pullRates[3],
+		4: pullRates[4],
 	};
 
 	var gachaArray = makeGachaArray(pullRates);
@@ -125,14 +123,13 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 	var rollButton = $("#roll-gacha");
 	var gachaResultsDiv = $("#current-result");
 	var historyResultsDiv = $("#history-results");
+	var gacha1StarAmountText = $("#gacha-1-star");
+	var gacha2StarAmountText = $("#gacha-2-star");
 	var gacha3StarAmountText = $("#gacha-3-star");
-	var gacha4StarAmountText = $("#gacha-4-star");
-	var gacha5StarAmountText = $("#gacha-5-star");
-	var gacha6StarAmountText = $("#gacha-6-star");
 	var numberOfGemsText = $("#gems-spent");
 	var numberOfRollsText = $("#number-of-rolls");
-	var optionsString = '<label for="limited-select">Choose limited gacha: </label><select id="limited-select"><option value="none"></option>';
-	limited_star6_chars.forEach(function(girl) {
+	var optionsString = '<label for="limited-select"  style="display: block;">Choose Limited Gacha: </label><select id="limited-select"><option value="none"></option>';
+	limited_star3_chars.forEach(function(girl) {
 		optionsString += '<option value="' + girl + '">' + girl + '</option>';
 	});
 	optionsString += '</select>';
@@ -141,17 +138,17 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 	var historicalGirlsNrs = {};
 
 	var currentGirls = [];
-	var amountRolled = {3: 0, 4: 0, 5: 0, 6: 0};
+	var amountRolled = {1: 0, 2: 0,3: 0};
 	rollButton.click(function () {
 		var currentGachaGirl = selector[0].value;
-		var	currentIgnored = welfare.concat(currentGachaGirl === "none" ? limited_star6_chars : limited_star6_chars.filter(function(v) { return v !== currentGachaGirl; }));
+		var	currentIgnored = welfare.concat(currentGachaGirl === "none" ? limited_star3_chars : limited_star3_chars.filter(function(v) { return v !== currentGachaGirl; }));
 
 		currentGirls = [];
 		for (var i=0; i<10; i++) {
 			rank = pullRandomElement(i == 9 ? gachaArrayLastPull : gachaArray);
 			girl = null;
-			if (rank === "7") {
-				rank = "6";
+			if (rank === "4") {
+				rank = "3";
 				if (currentGachaGirl !== "none") {
 					girl = currentGachaGirl;
 				}
@@ -175,10 +172,9 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 			createGachaCurrentRow(currentGirls.slice(5), girlsIcons, girl_rank, currentGachaGirl)
 		);
 		historyResultsDiv.html(createHistoricalGachaTable(historicalGirlsNrs, girlsIcons, girl_rank, currentGachaGirl));
+		gacha1StarAmountText.html(amountRolled[1]);
+		gacha2StarAmountText.html(amountRolled[2]);
 		gacha3StarAmountText.html(amountRolled[3]);
-		gacha4StarAmountText.html(amountRolled[4]);
-		gacha5StarAmountText.html(amountRolled[5]);
-		gacha6StarAmountText.html(amountRolled[6]);
 		numberOfRollsText.html(++numberOfRolls);
 		numberOfGemsText.html(numberOfRolls*1200);
 	});
@@ -192,15 +188,16 @@ function setupGachaSimulator() {
 		    action: 'query',
 		    format: 'json',
 		    list: 'categorymembers',
-		    cmtitle: 'Category:Characters',
+		    cmtitle: 'Category:Character_Icon',
 		    cmlimit: 500,
 		    cmprop: 'title',
-		    cmnamespace: 0
+		    cmnamespace: 10
 		} ).done( function ( response ) {
 			var girlsIcons = {};
 			var characters = response.query.categorymembers.map(function (obj){
-				var girl = obj.title;
-				girlsIcons[girl] = api.get({ action: 'parse', page: 'Template:' + girl + ' Icon'});
+				var icon = obj.title;
+				var girl = icon.slice(9, -5);
+				girlsIcons[girl] = api.get({ action: 'parse', page: icon});
 				return girl;
 			});
 			
@@ -213,6 +210,7 @@ function setupGachaSimulator() {
 $(function() {
 	switch (mw.config.get('wgPageName')) {
 	    case 'User:Thefrozenfish/Sandbox/Gacha': 
+	    case 'Fanmade_Gacha_Simulator': 
 			setupGachaSimulator();
 	        break;
 	}
@@ -251,7 +249,7 @@ window.PurgeButtonText = 'Purge';
 
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page'; 
-window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity"]; 
+window.ajaxPages = ["Special:RecentChanges", "Special:WikiActivity"]; 
 window.BackToTopModern = true; 
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.

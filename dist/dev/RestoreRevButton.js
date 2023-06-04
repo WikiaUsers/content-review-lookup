@@ -7,7 +7,7 @@ $( function() {
 	var pname = mw.config.get('wgPageName');
 	var revid, revcontainer, backup;
 	
-	$('#pagehistory > li').each(function() {
+	$('#pagehistory > ul > li').each(function() {
 		$(this).append(
 			(' '),
 			$('<span>', {
@@ -63,5 +63,5 @@ $( function() {
 			});
 		});
 	});
-	mw.util.addCSS( '#pagehistory > li:not(.selected) .restore-revid { display: none }' );
+	mw.util.addCSS( '#pagehistory > ul > li:not(.selected) .restore-revid { display: none }' );
 } );

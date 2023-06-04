@@ -1,9 +1,9 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1682579374075
+ * Last modified: 1685330140931
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.6
+ * @version 1.0.7
  */
 
 /*
@@ -118,7 +118,7 @@
         parseType: function (type, types) {
             return types[type] || '';
         },
-        icons: {
+        icons: new Proxy({
             warning: createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'),
             success: createIcon(
 				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
@@ -133,7 +133,12 @@
 				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
 					+ '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'
 			)
-        }
+        }, {
+			get: function (target, prop) {
+				if (target[prop] instanceof Node) return target[prop].cloneNode(true);
+				return target[prop];
+			}
+        })
     };
     
     var Toasts = {

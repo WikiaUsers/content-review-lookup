@@ -14,26 +14,13 @@ importArticles({
         'w:c:dev:AjaxRC/code.js',
     ]
 });
-//===================================================================
-
-// Custom Username Tagsz
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-	founder: 'Wikia Founder',
-        formerstaff: 'Former Staff'
-	}
+// ==============================
+window.DiscussionTemplates = {
+    templates: {
+        'welcome': {
+            name: 'Template:Welcome',
+            title: 'Welcome'
+        },
+    },
+    allowedGroups: ['sysop', 'content-moderator', 'threadmoderator']
 };
-UserTagsJS.modules.custom = {
-	'A Mystery Anamatronic': ['founder'],
-	'FiveCraft': ['formerstaff'],
-	'Redx360': ['formerstaff'],
-	'22garrets': ['formerstaff'],
-	'Cadethefrogger': ['formerstaff'],
-	'Kaz Heater': ['formerstaff']
-};
-UserTagsJS.modules.metafilter = {
-	rollback: ['formerstaff'],
-	inactive: ['formerstaff']
-};
-//======================

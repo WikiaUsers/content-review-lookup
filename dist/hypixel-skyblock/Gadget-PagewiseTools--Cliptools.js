@@ -10,7 +10,7 @@ Table of Contents
     browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
     maxerr: 999999, forin: false, -W082, -W084
 */
-/* global mw, BannerNotification */
+/* global mw, BannerNotification, confirm, console */
 
 mw.loader.using(["mediawiki.api"]).then(function () {
     "use strict";
@@ -131,9 +131,8 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                 if (!data.goals)
                     mw.notify("The API supplies no bingo goals at the moment", { title: "No Data Yet", type: "error" });
                 else {
-                    var notice = "Note: This data is for:\n\n" + th(data.id + 1) + " bingo event (held in " + mo(data.id) + ")",
-                    id = "goals-" + getYear(data.id) + "-" + getMonth(data.id);
-                    copyToClipboard("{{Collapsible Section Button|id=" + id + "|name=Show/Hide}}\n{{Collapsible Section|id=" + id + "|mode=begin}}\n" + constructTable(data.goals) + "\n{{Collapsible Section|mode=end}}", notice);
+                    var notice = "Note: This data is for:\n\n" + th(data.id + 1) + " bingo event (held in " + mo(data.id) + ")";
+                    copyToClipboard(constructTable(data.goals), notice);
                 }
             });
         });

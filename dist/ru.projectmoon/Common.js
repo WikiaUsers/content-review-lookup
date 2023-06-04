@@ -308,7 +308,9 @@ document.querySelectorAll(".IdTSo").forEach(
 	}, false
 );});
 /* Уровень идентичностей*/
-var $module = $('<input type="range" min="1" max="30" value="30" class="slider" id="Range"></input>');
+var Arr = document.querySelector(".SinSlider").classList;
+var MaxValue = Arr[Arr.length - 1];
+var $module = $('<input type="range" min="1" max="' + MaxValue +'" value="' + MaxValue+ '" class="slider" id="Range"></input>');
 $('.SinSlider').prepend($module);
 
 var slider = document.querySelector("#Range");

@@ -1973,6 +1973,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"brightgemini": {
+				"name": "Bright Gemini",
+				"colors": [
+					"zodiac",
+					"shine",
+					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
 			"brightlotus": {
 				"name": "Bright Lotus",
 				"colors": [
@@ -4508,6 +4517,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"valentine",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"dewdrop": {
+				"name": "Dewdrop",
+				"colors": [
+					"flower",
+					"red",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -7427,6 +7445,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"grandiflora": {
+				"name": "Grandiflora",
+				"colors": [
+					"flower",
+					"red",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"grandrainbow": {
 				"name": "Grand Rainbow",
 				"colors": [
@@ -9515,6 +9542,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "rare"
+			},
+			"lathyrus": {
+				"name": "Lathyrus",
+				"colors": [
+					"flower",
+					"yellow",
+					"white"
+				],
+				"rarity": "common"
 			},
 			"lattice": {
 				"name": "Lattice",
@@ -12659,6 +12695,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"palebegonia": {
+				"name": "Pale Begonia",
+				"colors": [
+					"flower",
+					"white",
+					"pink"
+				],
+				"rarity": "unbreedable"
+			},
 			"palelantern": {
 				"name": "Pale Lantern",
 				"colors": [
@@ -15518,6 +15563,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"valentine",
 					"purple"
+				],
+				"rarity": "unbreedable"
+			},
+			"shadowpetunia": {
+				"name": "Shadow Petunia",
+				"colors": [
+					"flower",
+					"black",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

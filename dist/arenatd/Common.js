@@ -84,3 +84,5 @@ $(function() {
         openRobloxLink();
     });
 });
+/*right rail module*/
+window.AddRailModule = [{prepend: true}];

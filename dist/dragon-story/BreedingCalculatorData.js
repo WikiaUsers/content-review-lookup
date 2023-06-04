@@ -3905,6 +3905,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "brightgemini": {
+                "name": "Bright Gemini",
+                "types": [
+                    "zodiac",
+                    "shine",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "18_hours_18",
+                "rarity": 3,
+                "offspringeligibility": "wheel",
+                "notes": [
+                    "feature"
+                ]
+            },
             "brightlotus": {
                 "name": "Bright Lotus",
                 "types": [
@@ -8917,6 +8934,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "14_hours_14",
                 "rarity": 3,
                 "offspringeligibility": "crafted",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "dewdrop": {
+                "name": "Dewdrop",
+                "types": [
+                    "flower",
+                    "red",
+                    "green"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "15_hours_15",
+                "rarity": 3,
+                "offspringeligibility": "tournament",
                 "notes": [
                     "feature"
                 ]
@@ -14818,6 +14852,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     ]
                 ]
             },
+            "grandiflora": {
+                "name": "Grandiflora",
+                "types": [
+                    "flower",
+                    "red",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "22_hours_22",
+                "rarity": 4,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "grandrainbow": {
                 "name": "Grand Rainbow",
                 "types": [
@@ -18988,6 +19039,33 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 ],
                 "incubation": "15_hours_15",
                 "rarity": 2
+            },
+            "lathyrus": {
+                "name": "Lathyrus",
+                "types": [
+                    "flower",
+                    "yellow",
+                    "white"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "4_hours_4",
+                "rarity": 1,
+                "parents": [
+                    [
+                        [
+                            "types", [
+                                "yellow"
+                            ]
+                        ],
+                        [
+                            "types", [
+                                "white"
+                            ]
+                        ]
+                    ]
+                ]
             },
             "lattice": {
                 "name": "Lattice",
@@ -25540,6 +25618,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                     "feature"
                 ]
             },
+            "palebegonia": {
+                "name": "Pale Begonia",
+                "types": [
+                    "flower",
+                    "white",
+                    "pink"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "6_hours_6",
+                "rarity": 3,
+                "offspringeligibility": "dragontales",
+                "notes": [
+                    "feature"
+                ]
+            },
             "palelantern": {
                 "name": "Pale Lantern",
                 "types": [
@@ -31479,6 +31574,23 @@ if (mw.config.get("wgPageName") === "Breeding_Calculator") {
                 "incubation": "18_hours_18",
                 "rarity": 4,
                 "offspringeligibility": "leaderboard",
+                "notes": [
+                    "feature"
+                ]
+            },
+            "shadowpetunia": {
+                "name": "Shadow Petunia",
+                "types": [
+                    "flower",
+                    "black",
+                    "yellow"
+                ],
+                "environments": [
+                    "dragon_islands"
+                ],
+                "incubation": "8_hours_8",
+                "rarity": 2,
+                "offspringeligibility": "dragontales",
                 "notes": [
                     "feature"
                 ]

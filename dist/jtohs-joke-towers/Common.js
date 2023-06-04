@@ -24,15 +24,16 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.custom = {
 	'YataDev': ['owner', 'cool'],
-	'Sanjay2133': ['creator', 'cool', 'montheditor'],
+	'Sanjay2133': ['creator', 'cool'],
 	'AlsoOmori': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],
-	'Bruhshard1': ['former'],
+	'Bruhshard1': ['former', 'montheditor'],
 	'YourNuglyguy': ['formerowner', 'god'],
-	'Ferdinandloveslegos': ['formerowner', 'montheditor'],
+	'Ferdinandloveslegos': ['formerowner'],
 	'The Difficulty Enthusiast': ['formerowner'],
-	'OrbentuneAlt': ['nothing']
+	'OrbentuneAlt': ['nothing'],
+	'Bryanjr7747': ['montheditor']
 };
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 180;

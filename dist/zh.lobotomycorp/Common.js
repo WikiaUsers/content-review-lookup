@@ -8,7 +8,7 @@ document.getElementById("work_preference_button").addEventListener("click", func
     var stat = document.getElementsByClassName("work_preference_stat");
 	//初始状态时执行
 	if (workPreferenceButtonCount==0){
-		workPreferenceButton.innerHTML = "文字描述";
+		workPreferenceButton.innerHTML = "显示文字";
 		for (i = 0; i < level.length; i++) {
 			level[i].style.display = "none";
 		}
@@ -17,7 +17,7 @@ document.getElementById("work_preference_button").addEventListener("click", func
 		}
 		workPreferenceButtonCount = 1;
 	}else{
-		workPreferenceButton.innerHTML = "详细数据";
+		workPreferenceButton.innerHTML = "显示数字";
 		for (i = 0; i < level.length; i++) {
 			level[i].style.display = "block";
 		}

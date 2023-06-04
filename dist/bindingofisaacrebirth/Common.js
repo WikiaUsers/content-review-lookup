@@ -9,8 +9,9 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	return mw.loader.getScript( 'https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts' );
 } ).then( function () {
 
-	// Link titles
+	// HTML attribute removal
 	$( '.notitle a' ).removeAttr( 'title' );
+	$( 'img.no-alt' ).removeAttr( 'alt' );
 
 	// Slideshows
 	importArticle( {
@@ -24,106 +25,10 @@ $.when( mw.loader.using( 'mediawiki.api' ), $.ready ).then( function () {
 	$( 'div.collection' ).on( 'scroll', function () {
 		$( 'div.collection' ).scrollLeft( $( this ).scrollLeft() );
 	} );
-
-	// Custom fonts
-	// $( '.custom-font' ).each( function () {
-	// 	for ( var i = 0; i < this.classList.length; ++i ) {
-	// 		if ( this.classList[ i ].substring( 0, 12 ) === 'custom-font-' ) {
-	// 			useCustomFont( this, this.classList[ i ].substr( 12 ) );
-	// 			return;
-	// 		}
-	// 	}
-	// 	useCustomFont( this, 'TeamMeat' );
-	// } );
-	$(
-		'.pi-header,' +
-		':not( .pi-group ) > .pi-data > .pi-data-label,' +
-		'.pi-smart-data-label'
-	).each( function () { useCustomFont( this, 'TeamMeat-Bold' ) } );
-	$(
-		'.pi-group > .pi-data > .pi-data-label,' +
-		'.pi-item[data-source="quote"] > .pi-data-value,' +
-		'.pi-item[data-source="type"] > .pi-data-value'
-	).each( function () { useCustomFont( this, 'TeamMeat' ) } );
 	
 	// Crafting recipes
 	loadCraftingRecipes( 50 );
 } );
-
-var specialCharacters = {
-	/* ! */ '\u0021': "emark",
-	/* " */ '\u0022': "oquote",
-	/* # */ '\u0023': "hash",
-	/* $ */ '\u0024': "dol",
-	/* % */ '\u0025': "percent",
-	/* & */ '\u0026': "and",
-	/* ' */ '\u0027': "apos",
-	/* ( */ '\u0028': "oparen",
-	/* ) */ '\u0029': "cparen",
-	/* * */ '\u002A': "star",
-	/* + */ '\u002B': "plus",
-	/* . */ '\u002E': "point",
-	/* / */ '\u002F': "slash",
-	/* : */ '\u003A': "colon",
-	/* ; */ '\u003B': "scolon",
-	/* < */ '\u003C': "lthan",
-	/* = */ '\u003D': "equal",
-	/* > */ '\u003E': "gthan",
-	/* ? */ '\u003F': "qmark",
-	/* @ */ '\u0040': "at",
-	/* [ */ '\u005B': "obrkt",
-	/* \ */ '\u005C': "bslash",
-	/* ] */ '\u005D': "cbrkt",
-	/* { */ '\u007B': "obrace",
-	/* | */ '\u007C': "vbar",
-	/* } */ '\u007D': "cbrace",
-	/* ~ */ '\u007E': "tilde",
-	/* ¢ */ '\u00A2': "cent",
-	/* £ */ '\u00A3': "pound",
-	/* ¤ */ '\u00A4': "curren",
-	/* § */ '\u00A7': "ss",
-	/* © */ '\u00A9': "copy",
-	/* ® */ '\u00AE': "regtm",
-	/* ° */ '\u00B0': "degree",
-	/* ± */ '\u00B1': "pm",
-	/* ¶ */ '\u00B6': "pilcrow",
-	/* “ */ '\u201C': "oquote",
-	/* ” */ '\u201D': "cquote",
-	/* † */ '\u2020': "dagger",
-	/* ‡ */ '\u2021': "diesis",
-	/* € */ '\u20AC': "euro"
-};
-
-// function useCustomFont( element, name ) {
-// 	var childNodes = element.childNodes;
-// 	for ( var i = 0; i < childNodes.length; ++i ) {
-// 		var childNode = childNodes[ i ];
-// 		if ( childNode.nodeType !== Node.TEXT_NODE ) {
-// 			continue;
-// 		}
-
-// 		var char     = '',
-// 			str      = childNode.textContent,
-// 			str2     = '<span style="white-space:nowrap">',
-// 			font     = 'font-' + name,
-// 			intro    = '<div class="' + font + ' ' + font + '-',
-// 			j        = 0,
-// 			len      = 0,
-// 			charCode = 0;
-// 		while ( j < str.length ) {
-// 			charCode = str.charCodeAt( j );
-// 			len      = charCode >= 0xD800 && charCode <= 0xDBFF ? 2 : 1;
-// 			char     = str.substr( j, len );
-// 			str2    += ( char === ' ' ? '</span> <span style="white-space:nowrap">' : intro + ( specialCharacters[ char ] || char ) + '">' + char + '</div>' );
-// 			j       += len;
-// 		}
-// 		str2 += '</span>';
-
-// 		var template = document.createElement( 'template' );
-// 		template.innerHTML = '<span class="custom-font custom-font-enabled">' + str2 + '</span>';
-// 		childNode.replaceWith( template.content.firstChild );
-// 	}
-// }
 
 function loadCraftingRecipes( n ) {
 	var i, j, max, str, parserOutput, element, parent, clonedParent,
@@ -167,30 +72,30 @@ function loadCraftingRecipes( n ) {
 }
 
 //Collection fast load icon
-!function( $, mw ) {
-	var page  = mw.config.get( 'wgTitle' )
-	  , pages = [
-	  	    'Collection Page (Rebirth)',
-  'Collection Page (Afterbirth)',
-  'Collection Page (Afterbirth †)',
-  'Collection Page (Repentance)'
-	  	]; 
+( function ( $, mw ) {
+	var page  = mw.config.get( 'wgTitle' ),
+	    pages = [
+		    'Collection Page (Rebirth)',
+		    'Collection Page (Afterbirth)',
+		    'Collection Page (Afterbirth †)',
+		    'Collection Page (Repentance)'
+	    ];
 
 	if ( pages.indexOf( page ) == -1 ) return;
 
-    $( 'img.lazyload' ).each( function() {
+	$( 'img.lazyload' ).each( function() {
 		$( this )
-          .attr( 'src', $( this ).attr( 'data-src' ) )
-          .attr( 'class', 'lazyloaded' );
-    });
-}( jQuery, mediaWiki );
+			.attr( 'src', $( this ).attr( 'data-src' ) )
+			.attr( 'class', 'lazyloaded' );
+	});
+} )( jQuery, mediaWiki );
 
-$(function(){   
-    switch ( mw.config.get('wgPageName') ) {
-        case 'Collection_Page_(Repentance)':
-            $('body').addClass('is-content-expanded')
-        break;
-    }
-});
+$( function () {
+	switch ( mw.config.get('wgPageName') ) {
+		case 'Collection_Page_(Repentance)':
+			$('body').addClass('is-content-expanded');
+			break;
+	}
+} );
 
 // </nowiki>

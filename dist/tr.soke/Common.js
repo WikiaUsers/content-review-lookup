@@ -1,62 +1,3 @@
-/* <pre><nowiki> */
-
-if (mw.config.get('wgPageName') === 'Wookieepedia:IRC/Cloak_requests') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:AjaxCloakRequest.js'
-    });
-}
-
-if ((mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWUWalkthrough.css'
-        });
-}
-
-if ((mw.config.get('wgPageName').substring(0,mw.config.get('wgPageName').indexOf('/')) == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
-    (mw.config.get('wgPageName').substring(0,61) == 'Wookieepedia:Star Wars: Uprising Super Walkthrough/Abilities/') ||
-    (mw.config.get('wgPageName').substring(0,17) == 'Template:Uprising') ||
-    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
-    (mw.config.get('wgPageName') == 'Template:CurrencyIcon') ||
-    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
-    (mw.config.get('wgPageName') == 'Template:TrainerCard') ||
-    (mw.config.get('wgPageName') == 'Template:TrainerCard/Main')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWU_Super_Walkthrough_Fonts.css'
-        });
-}
-
-if ((mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Burnin_Konn') || 
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components') || 
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Materials') || 
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Anoat_sector') || 
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/Components/Crystals') || 
-    (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Components') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/Abilities') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/doc') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingCanonTabs/Main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingEquipmentInfobox/main') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingPageFooter/General') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingComponentBox') || 
-    (mw.config.get('wgPageName') == 'Template:EquipmentProgressionTable') || 
-    (mw.config.get('wgPageName') == 'Template:AbilityList') || 
-    (mw.config.get('wgPageName') == 'Template:EquipmentTable') || 
-    (mw.config.get('wgPageName') == 'Template:UprisingAbilityBox/Main')) {
-        importArticles({
-            type: 'style',
-            article: 'MediaWiki:SWU_Super_Walkthrough_Equipment.css'
-        });
-}
-
 // onload stuff
 var firstRun = true;
 
@@ -101,6 +42,7 @@ function loadFunc() {
 	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
 	fixSearch();
 	hideContentSub();
+	addTalkheaderPreload();
 
 	var body = document.getElementsByTagName('body')[0];
 	var bodyClass = body.className;
@@ -179,7 +121,7 @@ function fillPreloads() {
 
 	$( '#lf-preload' ).attr( 'style', 'display: block' );
 
-	$.get( wgScript, { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+	$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdpreloads', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 		var	$preloadOptionsList,
 			lines = data.split( '\n' );
 
@@ -188,7 +130,7 @@ function fillPreloads() {
 			if ( templateName !== '' ) {
 				templateName = 'Template:' + templateName + '/preload';
 				templateName = templateName.replace( ' ', '_' );
-				$.get( wgScript, { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+				$.get( mw.config.get( 'wgScript' ), { title: templateName, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 					if ($('.CodeMirror').length > 0) {
 						WikiEditorCodeMirror.doc.replaceSelection(data);
 						return;
@@ -214,7 +156,7 @@ function fillPreloads() {
 function doCustomPreload() {
 	var value = $( '#lf-preload-pagename > input' ).val();
 	value = value.replace( ' ', '_' );
-	$.get( wgScript, { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+	$.get( mw.config.get( 'wgScript' ), { title: value, action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 		if ($('.CodeMirror').length > 0) {
 			WikiEditorCodeMirror.doc.replaceSelection(data);
 			return;
@@ -776,7 +718,7 @@ $( function () {
 		if( !$hideContent.length ) {
 			return;
 		}
-		$hideContent.toggle();
+		$hideContent.toggle($(this).text().includes('show'));
 		if ( $( this ).text().indexOf( 'hide' ) >= 1 ) {
 			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
 		} else {
@@ -827,6 +769,15 @@ function hideContentSub() {
                 $wikiaHeader.hide();
             }
         }
+	}
+}
+
+/**
+ * Adds {{Talkheader}} template to preload parameter on new talk page links
+ **/
+function addTalkheaderPreload() {
+	if (mw.config.get('wgNamespaceNumber') === 0) {
+		document.querySelector('#ca-talk.new').href += '&preload=Template:Talkheader/preload';
 	}
 }
 
@@ -911,7 +862,7 @@ window.RollbackWikiDisable = true;
 
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
-
+	if ( $( '#stdEditSummaries' ).length ) return;
 		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,
 				$summaryLabel = $( '.ve-ui-summaryPanel' ),
@@ -948,8 +899,3 @@ $( function eraIconsOasis() {
     	}
     }
 } );
-
- /* May the Fourth 2021 fun! */
-   $(function () {
-        $('#fourth').append("<iframe width='100%'  height='1200px' style='background-color:transparent!important' src='https://gleam.io/Rz3FG/win-stars-wars-day-prizes-with-fanatical'></iframe>");
-    });

@@ -29,6 +29,5 @@ function hideSpoilers() {
   }
 }
 
-$(document).ready(function() {
-  hideSpoilers();
+mw.hook('wikipage.content').add(hideSpoilers);
 });

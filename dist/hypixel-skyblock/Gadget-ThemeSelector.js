@@ -1,4 +1,10 @@
 (function($){
+	// prevent double load
+	window.hsbwiki = window.hsbwiki || {};
+	if (window.hsbwiki.themeSelectorLoaded)
+		return;
+	window.hsbwiki.themeSelectorLoaded = true;
+	
 	var SELECTED_CACHE_KEY = 'hsw-themeselector-selected';
 	var stylesheetPrefix = "https://hypixel-skyblock.fandom.com/index.php?action=raw&ctype=text/css&title=";
 	var themes = [
@@ -79,7 +85,7 @@
 		
 		var id = getSelectedId();
 		if(id) {
-			const href = themes.find(function(t){ return t.id == id }).stylesheet;
+			var href = themes.find(function(t){ return t.id == id; }).stylesheet;
 			addStylesheetToHead(href);
 		}
 	}
@@ -114,7 +120,7 @@
 	
 	function getSelectedId() {
 		var id = localStorage.getItem(SELECTED_CACHE_KEY);
-		if(!id || !themes.find(function(t){ return t.id == id })){ id = 'default'; }
+		if(!id || !themes.find(function(t){ return t.id == id; })){ id = 'default'; }
 		return id;
 	}
 	

@@ -14,7 +14,7 @@ $(function() {
 			var time = data.active ? data.expiry : data.activation;
 			[_, nodeName, planet] = data.location.match(/(.+) \((.+)\)/);
 			if (BARO_PAGE_NAME == 'Баро_Кі’Тір') {
-				mainText = data.active ? 'Торговець перебуває на реле %s. <br />Баро планує покинути реле через ' : 'Торговець прибуде на реле %s через ';
+				mainText = data.active ? 'Баро Кі’Тір перебуває на реле %s. <br />Торговець планує покинути реле за ' : 'Баро Кі’Тір прибуде на реле %s за ';
 				$( "div#baro_timer").css({'font-size':'25px', 'text-align':'center'}).append(
 					$( "<span>" ).html(
 						mainText.replace('%s', '<a href="https://warframe.fandom.com/uk/wiki/Реле">'
@@ -23,6 +23,7 @@ $(function() {
 							+ planet + '">' + planet + '</a>)'
 						)
 					),
+					$("<br>"),
 					$("<span>", {
 						style: 'cursor:help;',
 						'data-time': new Date(time).getTime(),
@@ -31,7 +32,7 @@ $(function() {
 					})
 				);
 			} else {
-				mainText = data.active ? 'перебуває на реле %s. <br />Баро планує покинути реле через' : 'прибуде на реле %s';
+				mainText = data.active ? 'перебуває на реле %s. <br />Баро планує покинути реле за' : 'прибуде на реле %s';
 				$( "div#baro_timer").css('font-size','12px').attr('align','center').append( 
 					$( "<span>" ).html(
 						'<a href="https://warframe.fandom.com/uk/wiki/Баро_Кі’Тір">Баро Кі’Тір</a> ' +

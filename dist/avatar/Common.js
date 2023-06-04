@@ -1,9 +1,7 @@
-/* WHM toolbar advertisement */
-var toolbarLabel = 'AAPI';
+/* Pride toolbar advertisement */
+var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://avatar.fandom.com/f/p/4400000000000419951', label: 'Discussions post for AAPI'},
-    {link: 'https://bit.ly/AAPIFandomBlog', label: 'Fandom blog for AAPI month'},
-    {link: 'https://bit.ly/FandomAAPIplaylist', label: 'AAPI spotify playlist'}
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
@@ -26,14 +24,13 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* WHM logo link */
+/* Pride logo link */
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Celebrating AAPI month on Avatar Wiki')
+            .text('Celebrating Pride Month on Avatar Wiki')
         )
-        .attr('href', 'https://avatar.fandom.com/f/p/4400000000000419951')
 );
 
 /* To replace the now dead "welcome bot" */

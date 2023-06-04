@@ -1,8 +1,4 @@
 // <nowiki>
-/* mw.loader.load('https://code.jquery.com/jquery-1.12.4.js'); */
-mw.loader.load('https://code.jquery.com/ui/1.12.1/jquery-ui.js');
-mw.loader.load('/zh/wiki/MediaWiki:Gadget-noteTA.css?action=raw&ctype=text/css', 'text/css' );
-
 noteTAViewer = ( function() { $( function() {
 	var api = null;
 	var init = function( hash ) {
@@ -30,7 +26,7 @@ noteTAViewer = ( function() { $( function() {
 			} ).done( function( results ) {
 				$dialog.html( results.parse.text['*'] );
 				if ( collapse ) {
-					/* $dialog.find( '.mw-collapsible' ).makeCollapsible(); */
+					$dialog.find( '.mw-collapsible' ).makeCollapsible();
 					$dialog.find( '.mw-collapsible-toggle' ).on( 'click.mw-collapse', function( e ) {
 						var $collapsibleContent = $( this ).parent( '.mw-collapsible' ).find( '.mw-collapsible-content' );
 						setTimeout( function() {
@@ -56,7 +52,7 @@ noteTAViewer = ( function() { $( function() {
 				titleDesc = '';
 			}
 			wikitext += '<span style="float: right;">{{edit|' + actualTitle + '|section=0}}</span>\n';
-			wikitext += '; 本文使用标题手工转换\n';
+			wikitext += '; 本文使用[[wikipedia:zh:Help:中文维基百科的繁简、地区词处理#條目標題|标题手工转换]]\n';
 			wikitext += '* 转换标题为：-{D|' + titleConv + '}-' + titleDesc + '\n';
 			wikitext += '* 实际标题为：-{R|' + actualTitle + '}-；当前显示为：-{|' + titleConv + '}-\n';
 		} else {
@@ -82,7 +78,7 @@ noteTAViewer = ( function() { $( function() {
 								textVariant[text] = [ variant ];
 							}
 						} );
-						multititleText += '; 本文标题可能经过转换\n';
+						multititleText += '; 本文[[wikipedia:zh:Help:中文维基百科的繁简、地区词处理#條目標題|标题可能经过转换]]\n';
 						multititleText += '* 转换标题为：';
 						var multititle = [], titleConverted = variantText[mw.config.get( 'wgUserVariant' )];
 						for ( var variant in variantText ) {
@@ -134,7 +130,7 @@ noteTAViewer = ( function() { $( function() {
 		if ( $noteTAlocal.length ) {
 			collapse = true;
 			wikitext += '<span style="float: right;">{{edit|' + actualTitle + '|section=0}}</span>\n';
-			wikitext += '; 本文使用全文手工转换\n';
+			wikitext += '; 本文使用[[wikipedia:zh:Help:中文维基百科的繁简、地区词处理#控制自动转换的代碼|全文手工转换]]\n';
 			var $noteTAlocals = $noteTAlocal.children( '*[data-noteta-code]' );
 			$noteTAlocals.each( function() {
 				var $this = $( this );
