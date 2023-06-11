@@ -76,7 +76,7 @@ $( createDivToggleButton );
 
 
 
-//automatic daily purge of Blog:Staff Blog Posts
+//automatic daily purge
 
 (function DailyPurge(window, $, mw) {
 	"use strict";
@@ -84,6 +84,7 @@ $( createDivToggleButton );
 	const pagesList = [
 		'Blog:Staff Blog Posts'
                 'Category:Staff Blog Posts'
+                'Special:Community'
 	].map(function(string) {
 		return string.replaceAll(' ', '_');
 	});

@@ -49,7 +49,7 @@ $(function () {
 				text : '{{' + '#invoke:PickBanScore|main|page=' + overviewPage + '}}',
 				prop : 'text'
 			}).then(function(data) {
-				var str = data.parse.text['*'];
+				var str = window.processParserOutput(data.parse.text['*']);
 				if (str.includes('Lua error')) {
 					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule! Perhaps you need to add a |notab=yes? We will now print the error that was detected.");
 					window.reportError(str);

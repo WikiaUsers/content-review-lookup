@@ -11,8 +11,11 @@ window.BackToTopModern = true;
 
 // Custom Tooltip CSS removal
 window.tooltips_config = {
+	offsetX: 20,
+    offsetY: 20,
+    waitForImages: true,
     noCSS: true,
-}
+},
 window.tooltips_list = [
     {
         classname: 'sequence-tooltip',
@@ -21,7 +24,7 @@ window.tooltips_list = [
         classname: 'pathway-tooltip',
         parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
     }
-]
+],
 
 /*LockOldComments*/
 window.lockOldComments = (window.lockOldComments || {});

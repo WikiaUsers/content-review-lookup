@@ -71,7 +71,7 @@
             license = $(license);
             license.find('option[value=""]').addClass('empty-license');
             license.on('change', function() {
-                $this = $(this);
+                var $this = $(this);
                 if($this.val()) {
                     $this.closest('form').find('input[type=submit]').prop('disabled', false).attr('title', '');
                 } else {
@@ -150,7 +150,7 @@
             return true;
         },
         msg: function(name, lang) {
-            lang = lang || PFD.overrideLang || wgUserLanguage || wgContentLanguage;
+            lang = lang || PFD.overrideLang || mw.config.get('wgUserLanguage') || mw.config.get('wgContentLanguage');
             if(PFD.messages[lang] && PFD.messages[lang][name]) return PFD.messages[lang][name];
             return PFD.messages.en[name] || ('('+name+')');
         },
@@ -169,13 +169,13 @@
                 $('#fileDescTemplatesMoreInfo').append($('<span class="button">').html(PFD.templates[id].buttonlabel || PFD.msg('basic-version')).data('id', id).click(function(){
                     if(PFD.isAlt && PFD.textarea.val() != PFD.templates[$(this).data('id')].altdesc && !confirm(PFD.msg('confirm-overwrite')))
                         return false;
-                    PFD.textarea.val(PFD.templates[$(this).data('id')].desc)
+                    PFD.textarea.val(PFD.templates[$(this).data('id')].desc);
                     PFD.isAlt = false;
                 })).append(' ');
                 $('#fileDescTemplatesMoreInfo').append($('<span class="button">').html(PFD.templates[id].altbuttonlabel || PFD.msg('alternative-version')).data('id', id).click(function(){
                     if(!PFD.isAlt && PFD.textarea.val() != PFD.templates[$(this).data('id')].desc && !confirm(PFD.msg('confirm-overwrite')))
                         return false;
-                    PFD.textarea.val(PFD.templates[$(this).data('id')].altdesc)
+                    PFD.textarea.val(PFD.templates[$(this).data('id')].altdesc);
                     PFD.isAlt = true;
                 }));
                 $('#fileDescTemplatesMoreInfo').append(' <span style="display:inline-block;vertical-align:middle;cursor:help;" class="tooltip-icon" title="'+PFD.msg('template-change-notice')+'">?</span>');
@@ -317,5 +317,5 @@
             },
         }
     };
-    $(function() { PFD.init() });
-})(jQuery);
+    $(function() { PFD.init(); });
+})(window.jQuery);

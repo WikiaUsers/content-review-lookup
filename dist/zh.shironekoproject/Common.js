@@ -1,9 +1,64 @@
 /**
  * @copyright
- * http://zh.shironekoproject.wikia.com 白貓Project wiki
+ * https://shironekoproject.fandom.com/zh 白貓Project wiki
  * cc-by-sa 3.0
  */
 
+/** EXPERIMENTAL Fix Tabview makeCollapsible */
+mw.loader.using('jquery.makeCollapsible').then(function () {
+    $('.mw-collapsible').makeCollapsible();
+    setTimeout(function() {
+        setTimeout(function() {
+            $('.mw-collapsible').makeCollapsible();
+            setTimeout(function() {
+                $('.mw-collapsible').makeCollapsible();
+                setTimeout(function() {
+                    $('.mw-collapsible').makeCollapsible();
+                    setTimeout(function() {
+                        $('.mw-collapsible').makeCollapsible();
+                        setTimeout(function() {
+                            $('.mw-collapsible').makeCollapsible();
+                            setTimeout(function() {
+                                $('.mw-collapsible').makeCollapsible();
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }, 1000);
+
+        $('li[data-tab^=flytabs_]') .each(function() {
+            $(this).click(function() {
+                setTimeout(function () {
+                    $('.mw-collapsible').makeCollapsible();
+                    setTimeout(function () {
+                        $('.mw-collapsible').makeCollapsible();
+                        setTimeout(function () {
+                            $('.mw-collapsible').makeCollapsible();
+                            setTimeout(function () {
+                                $('.mw-collapsible').makeCollapsible();
+                                setTimeout(function () {
+                                    $('.mw-collapsible').makeCollapsible();
+                                    setTimeout(function () {
+                                        $('.mw-collapsible').makeCollapsible();
+                                        setTimeout(function () {
+                                            $('.mw-collapsible').makeCollapsible();
+                                            setTimeout(function () {
+                                                $('.mw-collapsible').makeCollapsible();
+                                            }, 1000);
+                                       }, 1000);
+                                    }, 1000);
+                                }, 1000);
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            });
+        });
+    }, 1000);
+});
+
+/** */
 ; (function ($) {
   var updateResult = function (lookupTable) {
     var filters = [];

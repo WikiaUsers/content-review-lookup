@@ -17,14 +17,13 @@ function makeGachaArray(rates) {
 	return array;
 }
 
-function createHistoricalGachaTable(historicalGirlsNrs, girlsIcons, girl_rank, currentGachaGirl) {
-	var finalHtml = "";
+function createHistoricalGachaTable(historicalGirlsNrs, table_id, girl_rank, currentGachaGirl) {
 	var currentGirls = [];
 	var currentAmount = [];
 	
 	function addRow() {
-		finalHtml += createGachaCurrentRow(currentGirls, girlsIcons, girl_rank, currentGachaGirl);
-		finalHtml += createGachaCurrentRow(currentAmount);
+		createGachaCurrentRow(currentGirls, table_id, girl_rank, currentGachaGirl);
+		createGachaCurrentRow(currentAmount, table_id);
 		currentGirls = [];
 		currentAmount = [];
 	}
@@ -50,35 +49,38 @@ function createHistoricalGachaTable(historicalGirlsNrs, girlsIcons, girl_rank, c
 	if (currentGirls.length) {
 		addRow();
 	}
-	return finalHtml;
 }
 
-function createGachaCurrentRow(rowContent, girlsIcons, girl_rank, currentGachaGirl) {
-	return "<tr>" + rowContent.map(function (content) {
-		text = content;
+function createGachaCurrentRow(rowContent, table_id, girl_rank, currentGachaGirl) {
+	var row = $("<tr></tr>");
+	rowContent.forEach(function (content) {
 		style = "text-align: center;";
-		if (girlsIcons && girlsIcons[content]) {
-			girlsIcons[content].done(function(formated_icon) {
-				text = formated_icon.parse.text["*"];
-				if (girl_rank[content] === 3) {
-					if (content === currentGachaGirl) {
-						style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(182,174,190,0.52) 100%);";
-					} else {
-						style += "background: rgba(155, 133, 230, .5);";
-					}
-				} else if (girl_rank[content] === 2) {
-					style += "background: rgba(230, 143, 22, .5);";
+		if (girl_rank && girl_rank[content]) {
+			if (girl_rank[content] === 3) {
+				if (content === currentGachaGirl) {
+					style += "background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(182,174,190,0.52) 100%);";
 				} else {
-					style += "background: rgba(38, 138, 203, .5);";
+					style += "background: rgba(155, 133, 230, .5);";
 				}
-				style += "girl: " + content + ";";
-			});
+			} else if (girl_rank[content] === 2) {
+				style += "background: rgba(230, 143, 22, .5);";
+			} else {
+				style += "background: rgba(38, 138, 203, .5);";
+			}
+			style += "girl: " + content + ";";
 		}
-		return '<td style="' + style + '">' + text + "</td>";
-	}) + "</tr>" ;
+		var cell = $('<td style="' + style + '"></td>');
+		if (girl_rank && girl_rank[content]) {
+			$('div[data-girl="' + content + '"] > div:first-child').clone(true).appendTo(cell);
+		} else {
+			cell.text(content);	
+		}
+		cell.appendTo(row);
+	});
+	row.appendTo($(table_id));
 }
 
-function setUpButtonBehaviour(characters, girlsIcons) {
+function setUpButtonBehaviour(characters) {
 	var numberOfRolls = 0;
 	var girl_rank = {};
 	
@@ -119,16 +121,7 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 
 	var gachaArray = makeGachaArray(pullRates);
 	var gachaArrayLastPull = makeGachaArray(pullRatesLastPull);
-
-	var rollButton = $("#roll-gacha");
-	var gachaResultsDiv = $("#current-result");
-	var historyResultsDiv = $("#history-results");
-	var gacha1StarAmountText = $("#gacha-1-star");
-	var gacha2StarAmountText = $("#gacha-2-star");
-	var gacha3StarAmountText = $("#gacha-3-star");
-	var numberOfGemsText = $("#gems-spent");
-	var numberOfRollsText = $("#number-of-rolls");
-	var optionsString = '<label for="limited-select"  style="display: block;">Choose Limited Gacha: </label><select id="limited-select"><option value="none"></option>';
+	var optionsString = '<label for="limited-select" style="display: block;">Choose Limited Gacha: </label><select id="limited-select"><option value="none"></option>';
 	limited_star3_chars.forEach(function(girl) {
 		optionsString += '<option value="' + girl + '">' + girl + '</option>';
 	});
@@ -139,7 +132,7 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 
 	var currentGirls = [];
 	var amountRolled = {1: 0, 2: 0,3: 0};
-	rollButton.click(function () {
+	$("#roll-gacha").click(function () {
 		var currentGachaGirl = selector[0].value;
 		var	currentIgnored = welfare.concat(currentGachaGirl === "none" ? limited_star3_chars : limited_star3_chars.filter(function(v) { return v !== currentGachaGirl; }));
 
@@ -166,50 +159,34 @@ function setUpButtonBehaviour(characters, girlsIcons) {
 				historicalGirlsNrs[girl] = 1;
 			}
 		}
-
-		gachaResultsDiv.html(
-			createGachaCurrentRow(currentGirls.slice(0, 5), girlsIcons, girl_rank, currentGachaGirl) + 
-			createGachaCurrentRow(currentGirls.slice(5), girlsIcons, girl_rank, currentGachaGirl)
-		);
-		historyResultsDiv.html(createHistoricalGachaTable(historicalGirlsNrs, girlsIcons, girl_rank, currentGachaGirl));
-		gacha1StarAmountText.html(amountRolled[1]);
-		gacha2StarAmountText.html(amountRolled[2]);
-		gacha3StarAmountText.html(amountRolled[3]);
-		numberOfRollsText.html(++numberOfRolls);
-		numberOfGemsText.html(numberOfRolls*1200);
+		$("#current-result tr").remove();
+		$("#history-results tr").remove();
+		createGachaCurrentRow(currentGirls.slice(0, 5), '#current-result', girl_rank, currentGachaGirl); 
+		createGachaCurrentRow(currentGirls.slice(5   ), '#current-result', girl_rank, currentGachaGirl);
+		createHistoricalGachaTable(historicalGirlsNrs, '#history-results', girl_rank, currentGachaGirl);
+		$("#gacha-1-star").html(amountRolled[1]);
+		$("#gacha-2-star").html(amountRolled[2]);
+		$("#gacha-3-star").html(amountRolled[3]);
+		$("#number-of-rolls").html(++numberOfRolls);
+		$("#gems-spent").html(numberOfRolls*1200);
 	});
-	rollButton.html("Roll Gacha");
+	$("#roll-gacha").html("Roll Gacha");
 }
 
 function setupGachaSimulator() { 
-	mw.loader.using([ 'mediawiki.api'], function() {
-		var api = new mw.Api();
-		api.get( {
-		    action: 'query',
-		    format: 'json',
-		    list: 'categorymembers',
-		    cmtitle: 'Category:Character_Icon',
-		    cmlimit: 500,
-		    cmprop: 'title',
-		    cmnamespace: 10
-		} ).done( function ( response ) {
-			var girlsIcons = {};
-			var characters = response.query.categorymembers.map(function (obj){
-				var icon = obj.title;
-				var girl = icon.slice(9, -5);
-				girlsIcons[girl] = api.get({ action: 'parse', page: icon});
-				return girl;
-			});
-			
-			setUpButtonBehaviour(characters, girlsIcons);
-		});
-	});
+	var characters = Object.values($("#icons div.icon")).map(function (iconContainer) {
+		if (!(iconContainer && iconContainer.innerHTML && iconContainer.innerHTML.length > 100)) {
+			return null;
+		}
+		return iconContainer.getAttribute("data-girl");
+	}).filter(function (e) {return !!e;});
+	setUpButtonBehaviour(characters);
 }
 // ############### CALLERS ############
 // function equivalent to jquery ready. Runs once the page loads on all pages
 $(function() {
 	switch (mw.config.get('wgPageName')) {
-	    case 'User:Thefrozenfish/Sandbox/Gacha': 
+	    case 'User:Thefrozenfish/Sandbox': 
 	    case 'Fanmade_Gacha_Simulator': 
 			setupGachaSimulator();
 	        break;

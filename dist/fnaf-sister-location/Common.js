@@ -15,9 +15,11 @@ importArticles({
     ]
 });
 // ==============================
+
+// Discussion Templates
 window.DiscussionTemplates = {
     templates: {
-        'welcome': {
+        'Welcome': {
             name: 'Template:Welcome',
             title: 'Welcome'
         },

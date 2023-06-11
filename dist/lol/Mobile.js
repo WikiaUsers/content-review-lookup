@@ -1,5 +1,19 @@
 // <nowiki>
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/* tournament participant logos */
+
+$(function() {
+	$('.tournament-roster-logo-cell > figure').each(function() {
+		$(this).replaceWith($(this).html());
+	});
+	$('.tournament-roster-logo-cell > a, .sections-toggler > a').each(function() {
+		$(this).replaceWith($(this).html());
+	});
+	$('.tournament-roster-logo-cell > img.article-media-placeholder').each(function() {
+		$(this).removeClass("article-media-placeholder");
+	});
+});
  
 /* functions for gadgets */
 window.displayColor = function(colorclass, id) {

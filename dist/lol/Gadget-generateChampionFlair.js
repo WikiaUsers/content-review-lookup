@@ -11,7 +11,7 @@ $(function() {
 			disablelimitreport: 1,
 			disableeditsection: 1
 		}).then(function(data) {
-			var text = data.parse.text['*'];
+			var text = window.processParserOutput(data.parse.text['*']);
 			
 			// regex last updated after AWS -> GCS migration
 			// current expected url format:

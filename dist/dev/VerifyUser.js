@@ -143,7 +143,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.template.mustache']).then(function
             // Display warning and disable submit button if Discord tag is invalid
             $('#verify-input').on('keypress keydown keyup', function() {
             	// Check for old and new-style usernames
-                if (!$(this).val().match(/^.{2,32}#[0-9]{4}$/) && !$(this).val().match(/^[a-z0-9_.]{2,32}$/)) {
+                if (!$(this).val().match(/^.{2,32}#[0-9]{1,4}$/) && !$(this).val().match(/^[a-z0-9_.]{2,32}$/)) {
                     $('#verify-input-invalid').css('visibility', 'visible');
                     $('#verify').addClass('wds-is-disabled');
                 } else {

@@ -7,6 +7,11 @@ var slideshows = {
 	cyclingEnabled: false,
 
 	/**
+	 * Delay between two automatic cycling frames.
+	 */
+	autoInterval: 1500,
+
+	/**
 	 * Internal data used by this script.
 	 */
 	data: {
@@ -172,14 +177,19 @@ var slideshows = {
 			return;
 		}
 		slideshows.cyclingEnabled = true;
-		( function interval() {
-			if ( !slideshows.data.auto.length ) {
-				slideshows.cyclingEnabled = false;
-				return;
-			}
-			slideshows.data.auto.forEach( slideshows.cycle );
-			setTimeout( interval, 1500 );
-		} )();
+		setTimeout( slideshows.runAutoInterval, slideshows.autoInterval );
+	},
+
+	/**
+	 * Clycles slides of all enabled slideshows.
+	 */
+	runAutoInterval: function () {
+		if ( !slideshows.data.auto.length ) {
+			slideshows.cyclingEnabled = false;
+			return;
+		}
+		slideshows.data.auto.forEach( slideshows.cycle );
+		setTimeout( slideshows.runAutoInterval, slideshows.autoInterval );
 	},
 
 	/**

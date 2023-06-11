@@ -1,0 +1,1 @@
+mw.loader.load("https://terraria.fandom.com/wiki/MediaWiki:Gadget-hydraRevived.js?action=raw\u0026ctype=text/javascript");

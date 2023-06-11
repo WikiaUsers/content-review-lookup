@@ -38,8 +38,8 @@ $(function() {
 $(function() {
 	$(".galleria .gallery .gallerybox .thumb")
 	.each(function () {
-		var $fileURL = $(this).find("img").attr("data-image-key");
-		var $fileName = $(this).find("img").attr("data-image-name");
+		var $fileURL = mw.html.escape($(this).find("img").attr("data-image-key"));
+		var $fileName = mw.html.escape($(this).find("img").attr("data-image-name"));
 		var $fileLink = '<div class="immagine-info"><a href="/it/wiki/File:' + $fileURL + '" title="' + $fileName + '"><div class="immagine-info-icon"></div></a></div>';
 
 		$(this).append($fileLink);
@@ -97,9 +97,9 @@ $(function () {
 	var $button = $('.wds-button-group .wds-dropdown .wds-list');
 	
 	$button.append(
-		'<li><a href="/it/wiki/' + mw.config.get("wgPageName") + '?useskin=mercury" title="Vedi nella skin Mobile">Vedi come su Mobile</a></li>' +
-		'<li><a href="/it/wiki/Speciale:PuntanoQui/' + mw.config.get("wgPageName") + '" title="Puntano qui">Puntano qui</a></li>' +
-		'<li><a href="/it/wiki/Speciale:Prefissi/' + mw.config.get("wgPageName") + '" title="Sottopagine">Sottopagine</a></li>'
+		'<li><a href="/it/wiki/' + mw.html.escape(mw.config.get("wgPageName")) + '?useskin=mercury" title="Vedi nella skin Mobile">Vedi come su Mobile</a></li>' +
+		'<li><a href="/it/wiki/Speciale:PuntanoQui/' + mw.html.escape(mw.config.get("wgPageName")) + '" title="Puntano qui">Puntano qui</a></li>' +
+		'<li><a href="/it/wiki/Speciale:Prefissi/' + mw.html.escape(mw.config.get("wgPageName")) + '" title="Sottopagine">Sottopagine</a></li>'
 	);
 });
 // END Strumenti aggiuntivi

@@ -180,7 +180,7 @@ mw.loader.using(['site','mediawiki.ui.button','mediawiki.util','mediawiki.api'])
 	
 	var username = mw.config.get('wgUserName');
 	var providedUsername = cleanUser(mw.util.getParamValue('user'));
-	var discordHandle = ( mw.util.getParamValue('discord') && mw.util.getParamValue('tag') ? mw.util.getParamValue('discord') + '#' + mw.util.getParamValue('tag') : '' );
+	var discordHandle = ( mw.util.getParamValue('discord') ? mw.util.getParamValue('discord') + ( mw.util.getParamValue('tag') ? '#' + mw.util.getParamValue('tag') : '' ) : '' );
 	$("#no-duv").hide();
 	var dv = '<div style="text-align:center;line-height:180%;">' +
 		( username ?

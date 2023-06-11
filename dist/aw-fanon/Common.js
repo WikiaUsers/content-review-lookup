@@ -6,7 +6,7 @@ window.tooltips_config = {
  
 window.tooltips_list = [
     {
-        classname: 'ability-tooltip',
-        parse: '{'+'{<#ability#>|<#magnitude#>|duration=<#duration#>|tt=<#tt#>|show=no}}',
+        classname: 'link-tooltip',
+        parse: '{'+'{<#tooltip#>|tt=<#tt#>|show=no}}',
     }
 ];

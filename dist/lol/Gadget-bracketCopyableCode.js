@@ -24,7 +24,7 @@ $(function() {
 			text : text,
 			prop : 'text'
 		}).then(function(data) {
-			var str = data.parse.text['*'];
+			var str = window.processParserOutput(data.parse.text['*']);
 			var tbl = str.split('*****');
 			str = tbl[1];
 			var el = document.createElement('textarea');

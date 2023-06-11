@@ -13,7 +13,7 @@ $(function() {
 			disableeditsection: 1,
 			text: '{{#invoke:DisambigPopup|main|' + disambigTitle + '}}'
 		}).then(function(data) {
-			var wikitext = data.parse.text['*'];
+			var wikitext = window.processParserOutput(data.parse.text['*']);
 			$(el).addClass('catlink-disambiguations-activated');
 			$(el).wrap('<span class="disambig-link-wrapper"></span>');
 			var newEl = document.createElement('span');

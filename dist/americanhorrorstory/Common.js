@@ -1,16 +1,9 @@
-/* WHM toolbar advertisement */
-var toolbarLabel = 'WHM';
+/* Pride toolbar advertisement */
+var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomWHMFinalGirls', label: 'Final Girls: The Trading Cards*'},
-    {link: 'https://bit.ly/FandomWHMFinalGirlsPlaylist', label: 'Final Girls: The Playlist'},
-    {link: 'https://bit.ly/FandomWHMBlog-toolbar', label: 'Fandom blog'},
-    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003704743', label: 'Discussions post'},
-    {link: 'https://spoti.fi/3loZ1Nu', label: 'WHM spotify playlist'},
-    {link: 'https://bit.ly/FandomWHMGamers', label: 'Gaming Stories: meet RinasaurusRex<br/>and Jessica Howard'},
-    {link: 'https://bit.ly/FandomWHMGamers2', label: 'Gaming Stories: meet Minnichi and<br/>LucyKuranSKYDOME'},
-    {link: 'https://bit.ly/FandomWHMGamers3', label: 'Gaming Stories: meet Miranda Phaal<br/>and Tiffany Tse'},
-    {link: 'https://americanhorrorstory.fandom.com/wiki/User_blog:Johnny_Warren/Celebrating_Women%27s_History_Month!', label: 'AHS: The Women Behind the Story'},
-
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
+    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003741403', label: 'Discussions post'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
@@ -23,7 +16,7 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
     '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
 '</span>' + 
 '<div class="wds-dropdown__content">' + 
-    '<h2 style="margin-left: 16px">Women\'s History Month</h2>' +
+    '<h2 style="margin-left: 16px">Pride Month</h2>' +
     '<ul class="wds-list wds-is-linked">' + 
         toolbarLinks.map(function(link) {
             return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
@@ -33,14 +26,14 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* WHM logo link */
-$('.fandom-community-header__image').append(
+/* Pride logo link */
+$('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Meet the Women\'s History Month Final Girls')
+            .text('Celebrating Pride Month')
         )
-        .attr('href', 'https://bit.ly/FandomWHMFinalGirls')
+        .attr('href', 'https://bit.ly/FandomPrideBlog-header')
 );
 
 /* JS extension configuration */

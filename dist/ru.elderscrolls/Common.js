@@ -1017,4 +1017,6 @@ $(document).ready(function() {
 	//if ($("div.interactive-maps-container").length) {interactiveMapZoom();} // Запускаем при наличии интерактивной карты на странице
 	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
 	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
+	/* Фикс иконки и интерактива изображений в теле статьи */
+	// setTimeout(function(){ $("a.image:last-child div").hide() }, 5000);
 });

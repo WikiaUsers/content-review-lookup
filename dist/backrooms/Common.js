@@ -7,6 +7,13 @@ window.SpoilerAlertJS = {
     fadeDelay: 1500
 };
 
+// For [[Module:CSS]]
+mw.hook("wikipage.content").add(function () {
+    $("span.import-css").each(function () {
+    	mw.util.addCSS($(this).attr("data-css"));
+    });
+});
+
 // UserTags thingamajigs
 window.UserTagsJS = {
 	modules: {},

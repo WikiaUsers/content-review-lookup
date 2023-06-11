@@ -10,8 +10,7 @@ $(function() {
 			text : text,
 			prop : 'text'
 		}).then(function(data) {
-			console.log(data.parse.text['*']);
-			return data.parse.text['*'];
+			return window.processParserOutput(data.parse.text['*']);
 		});
 	}
 	function updateDisplay(html){

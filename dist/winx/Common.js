@@ -13,15 +13,12 @@ window.LockOldBlogs = {
 };
 
 //Featured
-$(function() {
-    if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-featured' ).length ) {
-        $( '.page-header__contribution > div' ).first().append( $( '#title-featured' ).show() );
-    } else if ( $( '.wds-community-header' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#featured' ).attr( 'style', 'position: absolute; right: 300px;' )
-        );
-    } else {
-        $( '.WikiaPageHeader' ).append( $( '#featured' ) );
-        $( '#featured' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+$( function () {
+    if ( $( '#icons' ).length ) {
+        if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+            $( '.page-header__actions' ).prepend( $( '#icons' ).show() );
+        } else {
+            $( '.page-header__contribution > div' ).first().append( $( '#icons' ).show() );
+        }
     }
-});
+} );

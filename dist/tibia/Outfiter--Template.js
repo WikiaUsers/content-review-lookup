@@ -95,7 +95,9 @@ $(function () {
       //205
       'Giant_Beaver', 'Ripptor', 'Parade_Horse', 'Jousting_Horse', 'Tourney_Horse',
       //210
-      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi'
+      'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi', 'Frostbringer',
+      //215
+      'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink

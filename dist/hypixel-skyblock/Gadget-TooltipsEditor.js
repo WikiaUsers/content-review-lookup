@@ -64,10 +64,12 @@ $.when(
             },
             "image": {
                 display: "Image",
+                replace: true,
                 optional: true
             },
             "link": {
                 display: "Link",
+                replace: true,
                 optional: true
             },
         },

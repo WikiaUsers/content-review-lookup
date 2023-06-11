@@ -11,22 +11,6 @@ window.rwaOptions = {
 ///////////////// START CODES TAKEN FROM ONETWOTHREEFALL'S GLOBAL JS ///////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//======================================================================
-// Adds separate list of uncreated categories on Special:Categories.
-//======================================================================
-
-function unCats() {
-    var $newCats = $('<div>').css('float', 'right').text('Uncreated categories:');
-    var $newCatsList = $('<ul>').appendTo($newCats);
-    $('.mw-spcontent > ul').before($newCats);
-    $('.mw-spcontent > ul > li').has('.newcategory').clone().appendTo($newCatsList);
-} 
- 
-if (mw.config.get('wgCanonicalSpecialPageName') === 'Categories') {
-    unCats();
-    mw.hook('wikipage.content').add(unCats);
-}
-
 //====================================================
 // Adds a button to clear Deletion reasons
 //====================================================
@@ -113,13 +97,6 @@ if (roll || cmod || sysop) {
 			"u:dev:MediaWiki:MassSetTemplateType.js",
 			"u:dev:MediaWiki:TemplateTypeButtons/code.js",
 		)
-	});
-}
-
-if (roll && !(cmod || sysop)) {
-	importArticles({
-		type: 'script',
-		articles: ["u:dev:MediaWiki:MarkForDeletion/code.js"]
 	});
 }
 

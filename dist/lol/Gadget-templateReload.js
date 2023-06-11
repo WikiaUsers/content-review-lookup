@@ -16,7 +16,7 @@ $(function() {
 			prop : 'text',
 			title : mw.config.get('wgPageName')
 		}).then(function(data) {
-			var result = data.parse.text['*'];
+			var result = window.processParserOutput(data.parse.text['*']);
 			console.log(result);
 			$elem.html(result);
 			mw.hook('wikipage.content').fire($elem);

@@ -163,3 +163,16 @@ jQuery(function($) {
             .insertAfter($('a.subtle[href$="Message_Wall:' + name.replace(/(["])/g, '\\$1') + '"]'));
     });
 });
+
+/* Configure tooltips js module */
+window.tooltips_config = {
+    offsetX: 5,
+    offsetY: 10,
+    waitForImages: false,
+};
+ 
+window.tooltips_list = [{
+    classname: 'popup-tooltip',
+    parse: '{' + '{<#popup#>|<#item#>}}'
+}];
+/*! Configure tooltips js module */

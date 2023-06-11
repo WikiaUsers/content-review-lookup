@@ -29,7 +29,7 @@ mw.hook("wikipage.content").add(function($content) {
 	$('#mw-content-text').html(html);
 	$('#interceptorName')[0].oninput = (function(e) {
 		var input = e.target;
-		var name = input.value;
+		var name = input.value.trim();
 		var newName = convertGreek(name);
 		var linkElement = $('#redirectLink')[0];
 		linkElement.href = '/Special:EditPage/' + newName;
@@ -77,7 +77,7 @@ mw.hook("wikipage.content").add(function($content) {
 	});
 	$('#copyCodeButton')[0].onclick = (function(e) {
 		var btn = e.target;
-		var name = $('#interceptorName')[0].value;
+		var name = $('#interceptorName')[0].value.trim();
 		btn.style.pointerEvents = 'none';
 		var text = '#REDIRECT [[' + name + ']]';
 		navigator.clipboard.writeText(text);

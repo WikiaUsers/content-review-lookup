@@ -303,3 +303,7 @@ mw.hook( 'wikipage.content' ).add( launch );
 
 /* End of Template:Imagestack *
 /*********************************************/
+
+$(document).ready(function(){
+    $('.mw-references-wrap, .mw-references-columns').before('<h2>References</h2>');
+});

@@ -19,6 +19,10 @@ window.pagifyAndRunAll = function(f, pagelist, size) {
 	return runSome();
 }
 
+window.processParserOutput = function(text) {
+	return $(text).find(".mw-parser-output")[0].outerHTML;
+}
+
 //*************************************
 // purge functions
 //*************************************

@@ -21,6 +21,7 @@
 	if (
 		config.wgCanonicalNamespace !== 'File' ||
 		window.FileToolsLoaded ||
+		document.getElementsByClassName('sharedUploadNotice').length ||
 		!/sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
 	) return;
 	window.FileToolsLoaded = true;

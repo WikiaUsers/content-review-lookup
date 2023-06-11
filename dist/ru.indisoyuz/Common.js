@@ -137,6 +137,13 @@ $('.wikicard').css({
 	}
 });
 
+/*Фафиконы отдельно для Шаблон:Вики*/
+$('.indi-favicon').each(function(){
+var wiki = $(this).attr('data-url');
+
+$("<img>").attr("src", 'https://' + wiki + '.fandom.com/ru/wiki/Special:Filepath/Site-favicon.ico').appendTo(this);
+});
+
 /*Слайдер*/
 $('.sldr-btn-left').click(function(){
     $('.arh-slide').each(function(){

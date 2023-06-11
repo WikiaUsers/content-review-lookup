@@ -79,7 +79,10 @@ function mapStringToAge(string) {
 	  return "ColorSAV";
     case 'SAJM':
 	case 'Space Age Jupiter Moon':
-	  return "ColorSAJM";	  
+	  return "ColorSAJM";	 
+	case 'SAT':
+	case 'Space Age Titan':
+	  return "ColorSAT";
   }
   return undefined;
 }
