@@ -39,8 +39,8 @@
         
 // Switch setting's tabs function
         switchSettings: function(class_name) {
-            $('.MedalSetMenu').hide();
-            $('.' + class_name).show();
+            $('.CurrencyMedalSetMenu').hide();
+            $('.Currency' + class_name).show();
         },
         
 // Link's matcher
@@ -60,25 +60,25 @@
 
 // New medal form        
         addMedalForm: function() {
-            $('.MedalList').append(
-                '<div class="MedalForm CustomForm" style="padding-bottom:5px; border-bottom:1px solid grey;">' +
-                    '<div class="MedalImagePreview" style="display:inline-block; width:80px; text-align:center;">' +
+            $('.CurrencyMedalList').append(
+                '<div class="CurrencyMedalForm CustomForm" style="padding-bottom:5px; border-bottom:1px solid grey;">' +
+                    '<div class="CurrencyMedalImagePreview" style="display:inline-block; width:80px; text-align:center;">' +
                         '<img height="70" style="margin:0 5px -3px 0; cursor:help;"/>' +
                     '</div>' +
                     '<div style="display:inline-block; width:475px;">' +
                         '<div style="margin-top:5px;">' + 
-                            '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;" title="Submit changes">✓</button>' +
-                            '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
+                            '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.CurrencyMedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;" title="Submit changes">✓</button>' +
+                            '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.CurrencyMedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
                             'Medal name : ' + 
-                            '<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" data-prev="undefined"/>' +
+                            '<input class="CurrencyMedalListName" style="float:right; width:324px; margin-right:5px;" data-prev="undefined"/>' +
                         '</div>' +
                         '<div style="margin-top:5px;">' +
                             'Title : ' +
-                            '<input class="MedalListTitle" style="float:right; width:380px; margin-right:5px;" />' +
+                            '<input class="CurrencyMedalListTitle" style="float:right; width:380px; margin-right:5px;" />' +
                         '</div>' +
                         '<div style="margin-top:5px;">' +
                             'Image link : ' +
-                            '<input class="MedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />' +
+                            '<input class="CurrencyMedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />' +
                         '</div>' +
                     '</div>' +
                 '</div>'
@@ -87,11 +87,11 @@
         
 // New user form
         addUserForm: function() {
-            $('.MedalUser').append(
-                '<div class="UserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
-                    '<input class="MedalUserName" style="float:left; width:40%; margin-left:5px;" />' +
-                    '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
-                    '<button onclick="$(this).parents(\'.UserForm\').find(\'.medalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;">Medals</button>' +
+            $('.CurrencyMedalUser').append(
+                '<div class="CurrencyUserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
+                    '<input class="CurrencyMedalUserName" style="float:left; width:40%; margin-left:5px;" />' +
+                    '<button onclick="$(this).parents(\'.CurrencyCustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
+                    '<button onclick="$(this).parents(\'.CurrencyUserForm\').find(\'.CurrencymedalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;">Medals</button>' +
                     '<br />' +
                     medalCollectForm +
                 '</div>'
@@ -100,12 +100,12 @@
         
 // Append medal settings (using in user form)
         appendMedalSettings: function($that) {
-            var imgLink = $that.find('.MedalListLinkImage').val();
-            var titleNew = $that.find('.MedalListTitle').val();
-            var nameNew = $that.find('.MedalListName').val();
-            var prevName = $that.find('.MedalListName').attr('data-prev');
+            var imgLink = $that.find('.CurrencyMedalListLinkImage').val();
+            var titleNew = $that.find('.CurrencyMedalListTitle').val();
+            var nameNew = $that.find('.CurrencyMedalListName').val();
+            var prevName = $that.find('.CurrencyMedalListName').attr('data-prev');
             
-            $that.find('.MedalImagePreview img')
+            $that.find('.CurrencyMedalImagePreview img')
                 .attr('src', imgLink)
                 .attr('title', titleNew)
                 .attr('data-prev', nameNew);
@@ -115,16 +115,16 @@
                 return;
             }
             
-            var to_add = '<div class="medalCollectBox" data-section="' + mw.html.escape(nameNew) + '" style="display:inline-block; margin:5px 0 0 10px;">' +
+            var to_add = '<div class="CurrencymedalCollectBox" data-section="' + mw.html.escape(nameNew) + '" style="display:inline-block; margin:5px 0 0 10px;">' +
                             '<input type="checkbox">' + 
                                 mw.html.escape(nameNew) + 
-                            '&nbsp;<input class="MedalCollectAmount" style="width:30px; text-align:center;"/>' +
+                            '&nbsp;<input class="CurrencyMedalCollectAmount" style="width:30px; text-align:center;"/>' +
                          '</div>';
             
             // Changing default cfg
             var medalCollectSaveForm = $(medalCollectForm).append(to_add);
             
-            $('.medalCollectForm').each(function() {
+            $('.CurrencymedalCollectForm').each(function() {
                 $(this).append(to_add);
             });
             
@@ -140,9 +140,9 @@
         
 // Delete medal settings (using in user form)
         deleteMedalSettings: function($that) {
-            var medal_name = $that.find('.MedalListName').val();
+            var medal_name = $that.find('.CurrencyMedalListName').val();
             // If someone decide to cheat
-            var prev_name = $that.find('.MedalListName').attr('data-prev');
+            var prev_name = $that.find('.CurrencyMedalListName').attr('data-prev');
             
             // Changing default cfg
             var medalCollectSaveForm = $(medalCollectForm);
@@ -173,19 +173,19 @@
             };
                         
             // Collecting users
-            $('.UserForm').each(function() {
-                var user = $(this).find('.MedalUserName').val();
+            $('.CurrencyUserForm').each(function() {
+                var user = $(this).find('.CurrencyMedalUserName').val();
                 if (user === '') return;
                 
                 var medals = [];
                 
-                $(this).find('.medalCollectBox').each(function() {
+                $(this).find('.CurrencymedalCollectBox').each(function() {
                     if (!$(this).find('input[type="checkbox"]').prop('checked')) {
                         return;
                     }
                     
                     var medal_name = $(this).attr('data-section');
-                    var medal_count = $(this).find('.MedalCollectAmount').val();
+                    var medal_count = $(this).find('.CurrencyMedalCollectAmount').val();
                     if (medal_count.match(/\d+/) && medal_count !== 1) {
                         medal_name += ':' + medal_count;
                     }
@@ -197,15 +197,15 @@
             });
                     
             // Collectings medals
-            $('.MedalForm').each(function() {
-                var medal_name = $(this).find('.MedalListName').val();
+            $('.CurrencyMedalForm').each(function() {
+                var medal_name = $(this).find('.CurrencyMedalListName').val();
                 if (medal_name === '') return;
                 
-                var medal_image = $(this).find('.MedalListLinkImage').val();
+                var medal_image = $(this).find('.CurrencyMedalListLinkImage').val();
                 if (!medalFunctions.medalMatcher(medal_image)) return;
                             
                 result.dataMedal[medal_name] = {
-                    title: $(this).find('.MedalListTitle').val(),
+                    title: $(this).find('.CurrencyMedalListTitle').val(),
                     image_url: medal_image
                 };
             });
@@ -246,9 +246,9 @@
             setOffY = parseFloat(offSet.top) + $(that).height() + 5;
             
             $('body').append(
-                '<div class="badgetooltip" style="position:absolute; z-index:6000000;">' +
-                    '<div class="badgetooltiparrow" style="width:0; height:0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid black; margin: 0 auto;"></div>' +
-                    '<div class="badgetooltipwindow" style="width: 160px; background-color:white; border:2px solid black; border-radius:5px; text-align:center; padding:5px;">' +
+                '<div class="Currencybadgetooltip" style="position:absolute; z-index:6000000;">' +
+                    '<div class="Currencybadgetooltiparrow" style="width:0; height:0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 10px solid black; margin: 0 auto;"></div>' +
+                    '<div class="Currencybadgetooltipwindow" style="width: 160px; background-color:white; border:2px solid black; border-radius:5px; text-align:center; padding:5px;">' +
                         $('<span style="font-weight:bold;">').text(badgename).prop('outerHTML') +
                         '<hr />' +
                         $('<span>').text(title).prop('outerHTML') +
@@ -256,10 +256,10 @@
                 '</div>'
             );
             
-            $('.badgetooltip').css({top: setOffY, left: setOffX});
+            $('.Currencybadgetooltip').css({top: setOffY, left: setOffX});
             
             $(that).on('mouseout', function() {
-                $('.badgetooltip').remove();
+                $('.Currencybadgetooltip').remove();
             });
         },
         
@@ -283,8 +283,8 @@
             medalBorderLeft = (medalFunctions.medalMatcher(MedalSettings.border.top_left)) ? $('<img width="40" />').attr('src', MedalSettings.border.top_left).prop('outerHTML') : '';
             
             $('#WikiaRail').prepend(
-                '<section class="RewardModule rail-module">' +
-                    '<div class="RewardContainer" style="position:relative; width:100%; padding: 0;">' +
+                '<section class="CurrencyRewardModule rail-module">' +
+                    '<div class="CurrencyRewardContainer" style="position:relative; width:100%; padding: 0;">' +
                         // Borders: Top-Left; Top-Right; Bottom-Left; Bottom-Right;
                         '<div style="position:absolute; top:0; left:0;">' + 
                             medalBorderLeft + 
@@ -299,13 +299,13 @@
                             medalBorderLeft +
                         '</div>' +
                         // Title
-                        $('<h2 class="activity-heading">').text(MedalSettings.module_title).prop('outerHTML') +
+                        $('<h2 class="Currencyactivity-heading">').text(MedalSettings.module_title).prop('outerHTML') +
                         // Medal's section
-                        '<div class="RewardSection" style="margin:0 5px;">' + 
-                            '<div class="in" style="text-align:center;"></div>' +
+                        '<div class="CurrencyRewardSection" style="margin:0 5px;">' + 
+                            '<div class="Currencyin" style="text-align:center;"></div>' +
                         '</div>' +
                         // Additional section
-                        '<div class="MedalAdditionalSection" style="width:100%; text-align:center;"></div>' +
+                        '<div class="CurrencyMedalAdditionalSection" style="width:100%; text-align:center;"></div>' +
                     '</div>' +
                 '</section>'
             );
@@ -313,24 +313,24 @@
             if (MedalSettings.dataUser[user].length > 12) {
                 medalModal = true;
                 
-                medalModalForm.append('<div class="ModalMedalCollection"><div class="in" style="text-align:center;"></div></div>');
+                medalModalForm.append('<div class="CurrencyModalMedalCollection"><div class="Currencyin" style="text-align:center;"></div></div>');
             
-                $('.MedalAdditionalSection').append(
-                        $('<button type="button" class="MedalMore" style="cursor:pointer;">').text((MedalSettings.module_more === '' || typeof(MedalSettings.module_more) === 'undefined') ? 'Show more' : MedalSettings.module_more).prop('outerHTML')
+                $('.CurrencyMedalAdditionalSection').append(
+                        $('<button type="button" class="CurrencyMedalMore" style="cursor:pointer;">').text((MedalSettings.module_more === '' || typeof(MedalSettings.module_more) === 'undefined') ? 'Show more' : MedalSettings.module_more).prop('outerHTML')
                 );
             }
             
             if (MedalSettings.module_info !== '' && typeof(MedalSettings.module_info) !== 'undefined') {
-                $('.MedalAdditionalSection').append(
-                    $('<a class="button" style="margin-left:1px; cursor:info;">')
+                $('.CurrencyMedalAdditionalSection').append(
+                    $('<a class="Currencybutton" style="margin-left:1px; cursor:info;">')
                         .text(MedalSettings.module_info_title)
                         .attr('href', mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/wiki/' + MedalSettings.module_info)
                         .prop('outerHTML')
                 );
             }
             
-            if (!$('.MedalAdditionalSection').is(':empty')) {
-                $('.MedalAdditionalSection').css('margin', '5px 0 -20px 0');
+            if (!$('.CurrencyMedalAdditionalSection').is(':empty')) {
+                $('.CurrencyMedalAdditionalSection').css('margin', '5px 0 -20px 0');
             }
         
             $.each(MedalSettings.dataUser[user], function (i, v) {
@@ -340,7 +340,7 @@
                 if (v.indexOf(':') > -1) {
                     count = v.replace(/.+:(.+)/g, '$1');
                     v = v.replace(/(.+):.+/g, '$1');
-                    imgBody += $('<div class="RewardCount" style="position:absolute; bottom:0; right:0; padding:0 4px; background-color:white; border:1px solid black; border-radius:10px; cursor:help; color:black;">').text('x' + count).attr('title', MedalSettings.module_count_info).prop('outerHTML');
+                    imgBody += $('<div class="CurrencyRewardCount" style="position:absolute; bottom:0; right:0; padding:0 4px; background-color:white; border:1px solid black; border-radius:10px; cursor:help; color:black;">').text('x' + count).attr('title', MedalSettings.module_count_info).prop('outerHTML');
                 }
                 
                 // Additional protect (if file not from Wikia image hosting)
@@ -351,15 +351,15 @@
                 imgBody += $('<img style="cursor:help; vertical-align:middle;" width="50" onmouseover="medalFunctions.tooltip(this);" />').attr('src', MedalSettings.dataMedal[v].image_url).attr('data-title', MedalSettings.dataMedal[v].title).attr('data-name', v).prop('outerHTML');
      
                 if (medalModal) {
-                    medalModalForm.find('.ModalMedalCollection .in').append('<div class="RewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');
+                    medalModalForm.find('.CurrencyModalMedalCollection .in').append('<div class="CurrencyRewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');
  
                     if (i > 11) return;
                 }
  
-                $('.RewardSection .in').append('<div class="RewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');
+                $('.CurrencyRewardSection .in').append('<div class="CurrencyRewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');
             });
  
-            $('.MedalMore').click(function() {
+            $('.CurrencyMedalMore').click(function() {
                 showCustomModal( mw.html.escape(MedalSettings.module_title + ' ' + user), medalModalForm, {width: 400});
             });
         },
@@ -378,8 +378,8 @@
             
             // Variables for this function
             medalCollect = [];
-            medalDeleteImg = '<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite trash" />';
-            medalCollectForm = $('<div class="medalCollectForm" style="display:none; text-align:left; margin-top:5px; border-top:1px solid black;">');
+            medalDeleteImg = '<img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="Currencysprite trash" />';
+            medalCollectForm = $('<div class="CurrencymedalCollectForm" style="display:none; text-align:left; margin-top:5px; border-top:1px solid black;">');
         
             if (typeof MedalSettings === "undefined") {
                 // If settings not exists or broken: ask to create new!
@@ -394,14 +394,14 @@
             medalModalForm.append(
                 '<div style="padding-bottom:5px; border-bottom:solid 1px #36759c; margin-top:-5px;">' +
                     '<div style="text-align:center;">' +
-                        '<button type="button" class="wikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalMainDialog\')">Main</button>&nbsp;' +
-                        '<button type="button" class="wikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalUserDialog\')">Users</button>&nbsp;' +
-                        '<button type="button" class="wikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalListDialog\')">Medals</button>' +
+                        '<button type="button" class="Currencywikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalMainDialog\')">Main</button>&nbsp;' +
+                        '<button type="button" class="Currencywikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalUserDialog\')">Users</button>&nbsp;' +
+                        '<button type="button" class="Currencywikia-button medalSwitch" onclick="medalFunctions.switchSettings(\'MedalListDialog\')">Medals</button>' +
                     '</div>' +
                 '</div>' +
                 '<div style="height:270px;">' +
                     // Main settings menu
-                    '<div class="MedalMainDialog MedalSetMenu">' +
+                    '<div class="CurrencyMedalMainDialog MedalSetMenu">' +
                         '<h2 style="padding:5px 0 5px 5px; background-color:rgba(0,0,0,0.1); border-bottom:solid 1px #36759c; margin-bottom:5px;">Main Settings</h2>' +
                         '<div>Module title: ' + $('<input id="MedalTitle" style="float:right; width:80%;" />').attr('value', MedalSettings.module_title).prop('outerHTML') + '</div>' +
                         '<div style="margin-top:5px;">Expand button: ' + $('<input id="MedalMore" style="float:right; width:80%;" />').attr('value', MedalSettings.module_more).prop('outerHTML') + '</div>' +
@@ -412,20 +412,20 @@
                         '<div style="margin-top:5px;">Border right: ' + $('<input id="MedalBorderRight" style="float:right; width:80%;" />').attr('value', MedalSettings.border.top_right).prop('outerHTML') + '</div>' +
                     '</div>' +
                     // User's settings menu
-                    '<div class="MedalUserDialog MedalSetMenu" style="display:none;">' +
+                    '<div class="CurrencyMedalUserDialog MedalSetMenu" style="display:none;">' +
                         '<h2 style="padding:5px 0 5px 5px; background-color:rgba(0,0,0,0.1); border-bottom:solid 1px #36759c;">' +
                             'Users' +
                             '<button onclick="medalFunctions.addUserForm()" style="padding:0 4px; margin:0 10px 0 0; float:right;">Add user form</button>' +
                         '</h2>' +
-                        '<div class="MedalUser" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
+                        '<div class="CurrencyMedalUser" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
                     '</div>' +
                     // Medal's settings menu
-                    '<div class="MedalListDialog MedalSetMenu" style="display:none;">' +
+                    '<div class="CurrencyMedalListDialog MedalSetMenu" style="display:none;">' +
                         '<h2 style="padding:5px 0 5px 5px; background-color:rgba(0,0,0,0.1); border-bottom:solid 1px #36759c;">' +
                             'Medals' +
                             '<button onclick="medalFunctions.addMedalForm()" style="padding:0 4px; margin:0 10px 0 0; float:right;">Add medal form</button>' +
                         '</h2>' +
-                        '<div class="MedalList" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
+                        '<div class="CurrencyMedalList" style="height:240px; overflow-y:scroll; border-bottom:solid 1px #36759c;"></div>' +
                     '</div>' +
                 '</div>'
             );
@@ -435,25 +435,25 @@
                 // Because we need to know all kinds of medals
                 medalCollect.push(k);
                 
-                medalModalForm.find('.MedalList').append(
-                    '<div class="MedalForm CustomForm" style="padding-bottom:5px; border-bottom:1px solid grey;">' +
-                        '<div class="MedalImagePreview" style="display:inline-block; width:80px; text-align:center;">' +
+                medalModalForm.find('.CurrencyMedalList').append(
+                    '<div class="CurrencyMedalForm CustomForm" style="padding-bottom:5px; border-bottom:1px solid grey;">' +
+                        '<div class="CurrencyMedalImagePreview" style="display:inline-block; width:80px; text-align:center;">' +
                             $('<img height="70" style="margin:0 5px -3px 0; cursor:help;"/>').attr('src', v.image_url).attr('title', v.title).prop('outerHTML') +
                         '</div>' +
                         '<div style="display:inline-block; width:475px;">' +
                             '<div style="margin-top:5px;">' + 
-                                '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✓</button>' +
-                                '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.MedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
+                                '<button onclick="medalFunctions.appendMedalSettings($(this).parents(\'.CurrencyMedalForm\'))" style="padding:0 4px; margin:0 6px 0 0; float:right;">✓</button>' +
+                                '<button onclick="medalFunctions.deleteMedalSettings($(this).parents(\'.CurrencyMedalForm\'))" style="padding:0 0 0 3px; margin:0 5px 0 0; float:right;">' + medalDeleteImg + '</button>' +
                                 'Medal name : ' + 
-                                $('<input class="MedalListName" style="float:right; width:324px; margin-right:5px;" />').attr('value', k).attr('data-prev', k).prop('outerHTML') +
+                                $('<input class="CurrencyMedalListName" style="float:right; width:324px; margin-right:5px;" />').attr('value', k).attr('data-prev', k).prop('outerHTML') +
                             '</div>' +
                             '<div style="margin-top:5px;">' +
                                 'Title : ' +
-                                $('<input class="MedalListTitle" style="float:right; width:380px; margin-right:5px;" />').attr('value', v.title).prop('outerHTML') +
+                                $('<input class="CurrencyMedalListTitle" style="float:right; width:380px; margin-right:5px;" />').attr('value', v.title).prop('outerHTML') +
                             '</div>' +
                             '<div style="margin-top:5px;">' +
                                 'Image link : ' +
-                                $('<input class="MedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />').attr('value', v.image_url).prop('outerHTML') +
+                                $('<input class="CurrencyMedalListLinkImage" style="float:right; width:380px;  margin-right:5px;" />').attr('value', v.image_url).prop('outerHTML') +
                             '</div>' +
                         '</div>' +
                     '</div>'
@@ -463,10 +463,10 @@
             // Preparing default 'module' for medals
             $.each(medalCollect, function(i,v) {
                 medalCollectForm.append(
-                    $('<div class="medalCollectBox" style="display:inline-block; margin:5px 0 0 10px;">' +
+                    $('<div class="CurrencymedalCollectBox" style="display:inline-block; margin:5px 0 0 10px;">' +
                         '<input type="checkbox">' + 
                         $('<span>').text(v + ' ').prop('outerHTML') + 
-                        '<input class="MedalCollectAmount" style="width:30px; text-align:center;"/>' +
+                        '<input class="CurrencyMedalCollectAmount" style="width:30px; text-align:center;"/>' +
                     '</div>').attr('data-section', v).prop('outerHTML')
                 );
             });
@@ -484,17 +484,17 @@
                         var count = val.replace(/.+:(.+)/g, '$1');
                         val = val.replace(/(.+):.+/g, '$1');
                         
-                        medalCollectFormNew.find('.medalCollectBox[data-section="' + val + '"] .MedalCollectAmount').attr('value', count);
+                        medalCollectFormNew.find('.CurrencymedalCollectBox[data-section="' + val + '"] .MedalCollectAmount').attr('value', count);
                     }
                     
-                    medalCollectFormNew.find('.medalCollectBox[data-section="' + val + '"] input[type="checkbox"]').attr('checked', 'checked');
+                    medalCollectFormNew.find('.CurrencymedalCollectBox[data-section="' + val + '"] input[type="checkbox"]').attr('checked', 'checked');
                 });
                 
-                medalModalForm.find('.MedalUser').append(
-                    '<div class="UserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
-                        $('<input class="MedalUserName" style="float:left; width:40%; margin-left:5px;" />').attr('value', k).prop('outerHTML') +
-                        '<button onclick="$(this).parents(\'.CustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
-                        '<button onclick="$(this).parents(\'.UserForm\').find(\'.medalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;"> Medals</button>' +
+                medalModalForm.find('.CurrencyMedalUser').append(
+                    '<div class="CurrencyUserForm CustomForm" style="text-align:center; margin-top:5px; border-bottom:1px solid black; padding-bottom:5px;">' +
+                        $('<input class="CurrencyMedalUserName" style="float:left; width:40%; margin-left:5px;" />').attr('value', k).prop('outerHTML') +
+                        '<button onclick="$(this).parents(\'.CurrencyCustomForm\').remove()" style="padding:0 0 0 3px; margin:0 5px; float:left;">' + medalDeleteImg + '</button>' +
+                        '<button onclick="$(this).parents(\'.CurrencyUserForm\').find(\'.CurrencymedalCollectForm\').toggle()" style="padding:0 0 0 3px; margin:0 5px; width:100px;"> Medals</button>' +
                         '<br />' +
                         medalCollectFormNew.prop('outerHTML') +
                     '</div>'
@@ -513,7 +513,7 @@
                     buttons: [{
                         message: 'Purge page',
                         handler: function() { 
-                            location.href += (location.href.indexOf('?') > -1) ? '&action=purge' : '?action=purge';
+                            location.href += (location.href.indexOf('?') > -2) ? '&action=purge' : '?action=purge';
                         }
                     },{
                         message: 'Reset changes',

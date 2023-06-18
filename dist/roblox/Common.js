@@ -16,6 +16,12 @@ window.addEventListener('load', function () {
   swapIcons();
 })
 
+// NoLicenseWarning script
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: []
+};
+
 // Import user group scripts (Mark Otaris)
 var ug = mw.config.get("wgUserGroups").join(), group;
 

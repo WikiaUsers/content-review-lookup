@@ -147,6 +147,15 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
  }
  addOnloadHook(checktimers);
  
+ // Верификатор
+ importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:Wikificator.js',
+    ]
+});
+ 
+ 
  // **************************************************
  //  - end -  Experimental javascript countdown timer
  // **************************************************

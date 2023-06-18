@@ -6,7 +6,7 @@ function timeStamp_GemCalculators_js() {
 function doCalcDarkElixirToGems(resources) {
    var ranges = [1,10,100,1000,10000,100000];
    var gems = [1,5,25,125,600,3000];
-   var storagemax = 350000;
+   var storagemax = 370000;
  
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -28,7 +28,7 @@ function doCalcDarkElixirToGems(resources) {
 function doCalcResourceToGems(resources) {
    var ranges = [100,1000,10000,100000,1000000,10000000];
    var gems = [1,5,25,125,600,3000];
-   var storagemax = 20000000;
+   var storagemax = 22000000;
 
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -50,7 +50,7 @@ function doCalcResourceToGems(resources) {
 function doCalcBuilderResourceToGems(resources) {
    var ranges = [100,1000,10000,100000,1000000,10000000];
    var gems = [1,10,50,250,1200,6000];
-   var storagemax = 5000000;
+   var storagemax = 6500000;
    
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -99,6 +99,7 @@ function doCalcTimeToGems(secondsinput) {
    return gems;
 }
 
+// Deprecated since Builder Base timers use the same formula as HV as of BB2.0
 function doCalcBuilderTimeToGems(secondsinput) {
    var timerange = [60,3600,86400,604800];
    var gemsrange = [1,50,500,2000];
@@ -394,7 +395,7 @@ $(document).ready(function() {
         var minutes = parseInt(document.getElementById("bt2gm").value);
         var seconds = parseInt(document.getElementById("bt2gs").value);
         var secondsinput = 86400 * days + 3600 * hours + 60 * minutes + seconds;
-        var result = doCalcBuilderTimeToGems(secondsinput);
+        var result = doCalcTimeToGems(secondsinput);
         if (result != 1) {
             document.getElementById("calc-bt2g").innerHTML = " = " + result + " Gems";
         } else {
@@ -416,7 +417,7 @@ $(document).ready(function() {
     $("span#calcBuilderGemsToTimeHarness").html('<input type="text" value="0" id="bg2t" style="text-align: right; width: 50px; background-color:white;"></input>');
     $("#doCalcBuilderGemsToTime").click(function() {
         var gems = parseInt(document.getElementById("bg2t").value);
-        var result = calcBuilderGemsToTime(gems);
+        var result = calcGemsToTime(gems);
         document.getElementById("calc-bg2t").innerHTML = " = " + result;
     });
     $("span#calcGemsToResourcesHarness").html('<input type="text" value="0" id="g2r" style="text-align: right; width: 50px; background-color:white;"></input>');

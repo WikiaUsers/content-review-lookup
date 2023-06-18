@@ -109,22 +109,22 @@ $(function() {
     $('.mw-special-CargoTables .cargoTable tr:first-of-type > th:first-of-type').html('_pageName');
 });
 
+// display navboxes in mobile and collapse them
+
 $(function() {
-	var navboxEnable = $("#mobile-navbox-enable").length;
-	
-	if (navboxEnable) {
-		$(".navbox").css("display", "table");
-		$(".navbox table:first-child").each(function(i, e) {
-			if ($(e).hasClass("mw-collapsible")) {
-				$(e).addClass("mw-collapsed");
-				$(e).find("tbody:first").children("tr").each(function(trIndex, tr) {
-					if (trIndex != 0) {
-						$(tr).css("display", "none");
-					}
-				});
+	$(".navbox").each(function(i, e) {
+		if (!$(e).find("table:first-child").hasClass("mw-collapsed")) {
+			$(e).css("display", "table");
+		}
+	});
+});
+
+$.when(mw.loader.using('mediawiki.util'), $.ready).then(function () {
+	$(".navbox span.mw-collapsible-toggle").each(function(i, e) {
+			if ($(e).attr("aria-expanded") === "true") {
+				$(e).click();
 			}
-		});
-	}
+	});
 });
 
 // </nowiki>

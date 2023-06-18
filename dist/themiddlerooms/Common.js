@@ -6,12 +6,16 @@ window.MessageBlock = {
 	autocheck : false
 };
 
+window.EditRootPageText = "Edit main page";
+
 importArticles({
 	type: 'script',
 	articles: [
-		'u:dev:MessageBlock/code.js'
+		'u:dev:MessageBlock/code.js',
+		'u:dev:MediaWiki:ParentPageEdit.js'
 	]
 });
+
 
 /*************
  * credit to Vastmine1029 go check out his userpage on dev.fandom.com

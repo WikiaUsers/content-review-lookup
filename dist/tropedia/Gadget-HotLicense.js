@@ -240,7 +240,7 @@ function setupLicenseDropdown() {
 
 }
 
-if (wgNamespaceNumber == 6) {
+if (mw.config.get("wgNamespaceNumber") == 6) {
   wgAjaxLicensePreview = true;
   wgAjaxUploadDestCheck = false;
   importScriptURI(stylepath + '/common/upload.js?195');

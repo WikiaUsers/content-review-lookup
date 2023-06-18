@@ -495,7 +495,12 @@ var namespaces = [
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
+$('.references-small').hide();
+$('<span class="button onclick="toggleReflist()">Show</span>').insertBefore('.references-small');
 
+function toggleReflist() {
+$('.references-small').show(950);
+}
 
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//

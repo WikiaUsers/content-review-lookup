@@ -7,7 +7,7 @@ window.SpoilerAlertJS = {
     fadeDelay: 1500
 };
 
-// For [[Module:CSS]]
+// For [[Module:CSS]]; [[T:CSS]] dependency
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
     	mw.util.addCSS($(this).attr("data-css"));
@@ -37,7 +37,7 @@ UserTagsJS.modules.metafilter = false;
 UserTagsJS.modules.userfilter = { 'ScutoidWasTaken': ['sysop'] };
 UserTagsJS.modules.custom = {
 	'Dotvoid': ['bot'],
-	'PexyWasTaken': ['technician'],
+	'Pexy0': ['technician'],
 	'ScutoidWasTaken': ['technician'],
 };
 

@@ -8,7 +8,13 @@
 	]);
 	var msg;
 
-	if (config.wgCanonicalSpecialPageName !== 'Upload') return;
+	if (
+		window.UploadMultipleFilesJSLoaded ||
+		config.wgCanonicalSpecialPageName !== 'Upload'
+	) {
+		return;
+	}
+	window.UploadMultipleFilesJSLoaded = true;
 	
 	function init() {
 		$('#wpUploadFile').parent().parent().addClass('regularFileSelect');

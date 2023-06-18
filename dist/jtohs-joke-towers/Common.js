@@ -19,7 +19,8 @@ window.UserTagsJS = {
 		former: {u:'Former Staff', order: -1e50},
 		formerowner: {u:'Former Owner', order: -1e69},
 		god: {u:'God of the Wiki', order: -1e100},
-		nothing: {u: '⠀⠀⠀', order: -1e100}
+		nothing: {u: '⠀⠀⠀', order: -1e100},
+		bureaureal: {u: 'BUREAUCRAT (REAL)', order: -1e110}
 	}
 };
 UserTagsJS.modules.custom = {
@@ -33,7 +34,40 @@ UserTagsJS.modules.custom = {
 	'Ferdinandloveslegos': ['formerowner'],
 	'The Difficulty Enthusiast': ['formerowner'],
 	'OrbentuneAlt': ['nothing'],
-	'Bryanjr7747': ['montheditor']
+	'Bryanjr7747': ['montheditor'],
+	'Jtohisgoodimo': ['bureaureal']
 };
+window.quizName = "The Hard Quiz";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "You suck so much, that's REALLY sad.",
+    "mid",
+    "You're clearly the biggest Babassian fan ever" 
+];
+window.questions = [
+    ["sin 120°",
+    "√3/2",
+    "√2/2",
+    "1/2",
+    "-√2/2",
+    "-√3/2",
+    "-1/2"],
+
+    ["sin 30°",
+    "1/2",
+    "√2/2",
+    "√3/2",
+    "-√2/2",
+    "-√3/2",
+    "-1/2"],
+
+    ["sin 45°",
+    "√2/2",
+    "√3/2",
+    "1/2",
+    "-√2/2",
+    "-√3/2",
+    "-1/2"],
+];
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 180;

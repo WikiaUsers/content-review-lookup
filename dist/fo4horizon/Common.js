@@ -305,5 +305,5 @@ mw.hook( 'wikipage.content' ).add( launch );
 /*********************************************/
 
 $(document).ready(function(){
-    $('.mw-references-wrap, .mw-references-columns').before('<h2>References</h2>');
+    $('.mw-references-wrap').before('<h2>References</h2>');
 });

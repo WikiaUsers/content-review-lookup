@@ -23,7 +23,7 @@
 
             //fix for short pages
             if($(container).height() < $(tip).height()) {
-                $('#WikiaArticle').css('overflow', 'unset');
+                $('#content').css('overflow', 'unset');
                 return;
             }
 

@@ -173,7 +173,9 @@ $(function () {
       //160
       'Bashmu', 'Carnisylvan', 'Chimera', 'Naga_(A)', 'Naga_(B)',
       //170
-      'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist'
+      'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
+      //180
+      'Werecrocodile', 'Werepanther'
     ],
     //outfits the array index is the id(starting at 200)
     //must also be added to Template:OutfiterLink
@@ -183,7 +185,7 @@ $(function () {
       //205
       'Nordic_Chieftain', 'Fire-Fighter', 'Fencer', 'Shadowlotus_Disciple', 'Ancient_Aucar',
       //210
-      'Frost_Tracer', 'Armoured_Archer'
+      'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -211,7 +213,8 @@ $(function () {
       Tyrant: 8,
       Ghost_Blade: 8,
       'Fire-Fighter': 8,
-      Armoured_Archer: 8
+      Armoured_Archer: 8,
+      Decaying_Defender: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -385,6 +388,9 @@ $(function () {
       Gnome: true,
       Gnome_Female: true,
       Scientist: true,
+      Weretiger: true,
+      Werecrocodile: true,
+      Werepanther: true,
       None: true
     },
     //no mount
@@ -456,7 +462,10 @@ $(function () {
       'Naga_(B)': true,
       'Naga_(C)': true,
       'Naga_(D)': true,
-      Scientist: true
+      Scientist: true,
+      Weretiger: true,
+      Werecrocodile: true,
+      Werepanther: true
     },
     //no addon
     outfiter_a_names = {
@@ -503,7 +512,8 @@ $(function () {
       Lost_Soul: true,
       Phantom: true,
       Werehyaena: true,
-      Scientist: true
+      Scientist: true,
+      Werecrocodile: true
     },
     //no ride frame
     outfiter_no_ride_names = {
@@ -574,7 +584,10 @@ $(function () {
       'Naga_(B)': true,
       'Naga_(C)': true,
       'Naga_(D)': true,
-      Scientist: true
+      Scientist: true,
+      Weretiger: true,
+      Werecrocodile: true,
+      Werepanther: true
     },
     //outfits with no floor movement
     outfiter_no_floor_move_names = {

@@ -1,15 +1,12 @@
 // <nowiki>
-/* WHM toolbar advertisement */
-var toolbarLabel = 'WHM';
+/* Pride toolbar advertisement */
+var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomWHMFinalGirls', label: 'Final Girls: The Trading Cards*'},
-    {link: 'https://bit.ly/FandomWHMFinalGirlsPlaylist', label: 'Final Girls: The Playlist'},
-    {link: 'https://bit.ly/FandomWHMBlog-toolbar', label: 'Fandom blog'},
-    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003704747', label: 'Discussions post'},
-    {link: 'https://spoti.fi/3loZ1Nu', label: 'WHM spotify playlist'},
-    {link: 'https://bit.ly/FandomWHMGamers', label: 'Gaming Stories: meet RinasaurusRex<br/>and Jessica Howard'},
-    {link: 'https://bit.ly/FandomWHMGamers2', label: 'Gaming Stories: meet Minnichi and<br/>LucyKuranSKYDOME'},
-    {link: 'https://bit.ly/FandomWHMGamers3', label: 'Gaming Stories: meet Miranda Phaal<br/>and Tiffany Tse'},
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
+    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003742913', label: 'Discussion post'},
+    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003739278', label: 'Pride logo announcement'},
+
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
@@ -22,7 +19,7 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
     '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
 '</span>' + 
 '<div class="wds-dropdown__content">' + 
-    '<h2 style="margin-left: 16px">Women\'s History Month</h2>' +
+    '<h2 style="margin-left: 16px">Pride Month</h2>' +
     '<ul class="wds-list wds-is-linked">' + 
         toolbarLinks.map(function(link) {
             return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
@@ -31,6 +28,18 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 '</div>';
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
+
+/* Pride logo link */
+$('.fandom-community-header__community-name-wrapper').append(
+    $('<a/>').addClass('hover-community-header-wrapper')
+        .append($('<div/>')
+            .addClass('message')
+            .text('Celebrating Pride Month')
+        )
+        .attr('href', 'https://bit.ly/FandomPrideBlog-header')
+);
+
+/** Pride end **/
 
 
 $().ready( function() {

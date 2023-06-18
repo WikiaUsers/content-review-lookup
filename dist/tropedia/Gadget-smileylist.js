@@ -3,7 +3,7 @@ var smileyList;
 
 function showSmileyList()
 {
-  vis = (smileyList.style.display == "block");
+  var vis = (smileyList.style.display == "block");
   if (!vis)
   {
     var toolbar = document.getElementById('editpage-specialchars');
@@ -34,8 +34,8 @@ function smileys2()
   }*/
 
   var smileyspan = document.createElement("span");
-  smileyspan.innerHTML = "<small><b>Smileys</b></small>"
-  smileyspan.id = "edittools_smileys"
+  smileyspan.innerHTML = "<small><b>Smileys</b></small>";
+  smileyspan.id = "edittools_smileys";
   smileyspan.title = "Smileys";
   smileyspan.style.cursor = "pointer";
   smileyspan.onclick = function() {
@@ -56,7 +56,7 @@ function smileys2()
     req = new ActiveXObject("Microsoft.XMLHTTP");
   }
   if (req) {
-    req.open("GET", wgServer + wgScript + "?title=MediaWiki:Smileys", true);
+    req.open("GET", mw.config.get("wgServer") + mw.config.get("wgScript") + "?title=MediaWiki:Smileys", true);
     //req.overrideMimeType("text/xml");
     req.onreadystatechange = function()
     {
@@ -79,7 +79,7 @@ function smileys2()
           addSmiley2(smileyList,imgs.item(0));
         }
       }
-    }
+    };
     req.send(null);
   }
 

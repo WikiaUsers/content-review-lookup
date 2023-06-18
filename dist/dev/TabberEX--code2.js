@@ -71,9 +71,9 @@
 			$(tab).addClass("oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget oo-ui-tabOptionWidget")
 			.css("cursor", "pointer");
 			if (tab_locations[i] === undefined)
-				$(tab).attr("onclick", "tabberex_switchTab(\"" + tabber_id + "\", " + (i + 1) + ")");
+				$(tab).attr("onclick", "tabberex_switchTab(\"" + mw.html.escape(tabber_id) + "\", " + (i + 1) + ")");
 			else
-				$(tab).attr("onclick", "location = \"" + tab_locations[i] + "\"");
+				$(tab).attr("onclick", "location = \"" + mw.html.escape(tab_locations[i]) + "\"");
 			var tab_span = document.createElement("span");
 			$(tab_span).addClass("oo-ui-labelElement-label");
 			if (tab_ex_headers[i] === undefined)

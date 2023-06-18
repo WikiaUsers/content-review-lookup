@@ -65,410 +65,409 @@
         'wgPageContentModel',
         'wgUserLanguage',
         'wgUserVariant'
-   ]),
+    ]),
 
-        /*
-         * @var {number} Current time in milliseconds, used to set and check cache age.
-         */
-        now = Date.now(),
+    /*
+     * @var {number} Current time in milliseconds, used to set and check cache age.
+     */
+    now = Date.now(),
 
-        /*
-         * @var {number} Length of one day in milliseconds, used in cache age calculations.
-         */
-        oneDay = 1000 * 60 * 60 * 24,
+    /*
+     * @var {number} Length of one day in milliseconds, used in cache age calculations.
+     */
+    oneDay = 1000 * 60 * 60 * 24,
 
-        /*
-         * @var {string} Prefix used for localStorage keys that contain i18n-js cache data.
-         */
-        cachePrefix = 'i18n-cache-',
+    /*
+     * @var {string} Prefix used for localStorage keys that contain i18n-js cache data.
+     */
+    cachePrefix = 'i18n-cache-',
 
-        /*
-         * @var {boolean} Whether a fallback loop warning been shown
-         */
-        warnedAboutFallbackLoop = false,
+    /*
+     * @var {boolean} Whether a fallback loop warning been shown
+     */
+    warnedAboutFallbackLoop = false,
 
-        /*
-         * @var {object} Cache of loaded I18n instances.
-         */
-        cache = {},
+    /*
+     * @var {object} Cache of loaded I18n instances.
+     */
+    cache = {},
 
-        /*
-         * Initial overrides object, initialised below with the i18n global variable.
-         * Allows end-users to override specific messages.
-         * See documentation for how to use.
-         *
-         * @var {(null|object)} overrides
-         */
-        overrides = null,
+    /*
+     * Initial overrides object, initialised below with the i18n global variable.
+     * Allows end-users to override specific messages.
+     * See documentation for how to use.
+     *
+     * @var {(null|object)} overrides
+     */
+    overrides = null,
 
-        /*
-         * Mapping of deprecated language codes that were used in previous
-         * versions of MediaWiki to up-to-date, current language codes.
-         *
-         * These codes shouldn't be used to store translations unless there are
-         * language changes to /includes/language/LanguageCode.php in mediawiki/core.
-         *
-         * These may or may not be valid BCP 47 codes; they are included here
-         * because MediaWiki renamed these particular codes at some point.
-         *
-         * Note that 'als' is actually a valid ISO 639 code (Tosk Albanian), but it
-         * was previously used in MediaWiki for Alsatian, which comes under 'gsw'.
-         *
-         * @var {object.<string, string>} Mapping from deprecated MediaWiki-internal
-         *   language code to replacement MediaWiki-internal language code.
-         *
-         * @see /includes/language/LanguageCode.php in MediaWiki core
-         * @see https://meta.wikimedia.org/wiki/Special_language_codes
-         */
-        deprecatedCodes = {
-            'als': 'gsw', // T25215
-            'bat-smg': 'sgs', // T27522
-            'be-x-old': 'be-tarask', // T11823
-            'fiu-vro': 'vro', // T31186
-            'roa-rup': 'rup', // T17988
-            'zh-classical': 'lzh', // T30443
-            'zh-min-nan': 'nan', // T30442
-            'zh-yue': 'yue' // T30441
-        },
+    /*
+     * Mapping of deprecated language codes that were used in previous
+     * versions of MediaWiki to up-to-date, current language codes.
+     *
+     * These codes shouldn't be used to store translations unless there are
+     * language changes to /includes/language/LanguageCode.php in mediawiki/core.
+     *
+     * These may or may not be valid BCP 47 codes; they are included here
+     * because MediaWiki renamed these particular codes at some point.
+     *
+     * Note that 'als' is actually a valid ISO 639 code (Tosk Albanian), but it
+     * was previously used in MediaWiki for Alsatian, which comes under 'gsw'.
+     *
+     * @var {object.<string, string>} Mapping from deprecated MediaWiki-internal
+     *   language code to replacement MediaWiki-internal language code.
+     *
+     * @see /includes/language/LanguageCode.php in MediaWiki core
+     * @see https://meta.wikimedia.org/wiki/Special_language_codes
+     */
+    deprecatedCodes = {
+        'als': 'gsw', // T25215
+        'bat-smg': 'sgs', // T27522
+        'be-x-old': 'be-tarask', // T11823
+        'fiu-vro': 'vro', // T31186
+        'roa-rup': 'rup', // T17988
+        'zh-classical': 'lzh', // T30443
+        'zh-min-nan': 'nan', // T30442
+        'zh-yue': 'yue' // T30441
+    },
 
+    /**
+     * Mapping of non-standard language codes used in MediaWiki to
+     * standardized BCP 47 codes.
+     *
+     * @var {object.<string, string>} Mapping from nonstandard
+     *   MediaWiki-internal codes to BCP 47 codes
+     *
+     * @see /includes/language/LanguageCode.php in MediaWiki core
+     * @see https://meta.wikimedia.org/wiki/Special_language_codes
+     * @see https://phabricator.wikimedia.org/T125073
+     */
+    nonStandardCodes = {
+        'cbk-zam': 'cbk', // T124657
+        'crh-ro': 'crh-Latn-RO',
+        'de-formal': 'de-x-formal',
+        'eml': 'egl', // T36217
+        'en-rtl': 'en-x-rtl',
+        'es-formal': 'es-x-formal',
+        'hu-formal': 'hu-x-formal',
+        'kk-cn': 'kk-Arab-CN',
+        'kk-tr': 'kk-Latn-TR',
+        'map-bms': 'jv-x-bms', // [[wikipedia:en:Banyumasan_dialect]] T125073
+        'mo': 'ro-Cyrl-MD', // T125073
+        'nrm': 'nrf', // [[wikipedia:en:Norman_language]] T25216
+        'nl-informal': 'nl-x-informal',
+        'roa-tara': 'nap-x-tara', // [[wikipedia:en:Tarantino_dialect]]
+        'simple': 'en-simple',
+        'sr-ec': 'sr-Cyrl', // T117845
+        'sr-el': 'sr-Latn', // T117845
+        'zh-cn': 'zh-Hans-CN',
+        'zh-sg': 'zh-Hans-SG',
+        'zh-my': 'zh-Hans-MY',
+        'zh-tw': 'zh-Hant-TW',
+        'zh-hk': 'zh-Hant-HK',
+        'zh-mo': 'zh-Hant-MO'
+    },
 
-        /**
-         * Mapping of non-standard language codes used in MediaWiki to
-         * standardized BCP 47 codes.
-         *
-         * @var {object.<string, string>} Mapping from nonstandard
-         *   MediaWiki-internal codes to BCP 47 codes
-         *
-         * @see /includes/language/LanguageCode.php in MediaWiki core
-         * @see https://meta.wikimedia.org/wiki/Special_language_codes
-         * @see https://phabricator.wikimedia.org/T125073
-         */
-        nonStandardCodes = {
-            'cbk-zam': 'cbk', // T124657
-            'de-formal': 'de-x-formal',
-            'eml': 'egl', // T36217
-            'en-rtl': 'en-x-rtl',
-            'es-formal': 'es-x-formal',
-            'hu-formal': 'hu-x-formal',
-            'kk-cn': 'kk-Arab-CN',
-            'kk-kz': 'kk-Cyrl-KZ',
-            'kk-tr': 'kk-Latn-TR',
-            'map-bms': 'jv-x-bms', // [[wikipedia:en:Banyumasan_dialect]] T125073
-            'mo': 'ro-Cyrl-MD', // T125073
-            'nrm': 'nrf', // [[wikipedia:en:Norman_language]] T25216
-            'nl-informal': 'nl-x-informal',
-            'roa-tara': 'nap-x-tara', // [[wikipedia:en:Tarantino_dialect]]
-            'simple': 'en-x-simple',
-            'sr-ec': 'sr-Cyrl', // T117845
-            'sr-el': 'sr-Latn', // T117845
-            'zh-cn': 'zh-Hans-CN',
-            'zh-sg': 'zh-Hans-SG',
-            'zh-my': 'zh-Hans-MY',
-            'zh-tw': 'zh-Hant-TW',
-            'zh-hk': 'zh-Hant-HK',
-            'zh-mo': 'zh-Hant-MO'
-        },
-
-        /*
-         * Language fallbacks for those that don't only fallback to 'en' or have no
-         * fallbacks ('en').
-         *
-         * Current revision: mediawiki-core 7609761ab4e
-         *
-         * Shouldn't need updating unless there're language fallback chain changes
-         * to /languages/messages files in mediawiki/core.
-         *
-         * To generate this, use `$ grep -R "fallback =" /path/to/messages/`,
-         * pipe the result to a text file and format the result.
-         *
-         * Another way to generate the list is to copy from
-         * https://github.com/wikimedia/jquery.i18n/blob/master/src/jquery.i18n.fallbacks.js
-         * AND remove deprecated codes from the copied list.
-         *
-         * Please note that there's bidirectional/multidirectional fallback in languages,
-         * including 'cdo' <=> 'nan', 'pt' <=> 'pt-br', 'zh' <=> 'zh-hans' <=> 'zh-hant'
-         *
-         * @var {object.<string, string[]>} Mapping from language codes to fallback
-         * language codes
-         */
-        fallbacks = {
-            'ab': ['ru'],
-            'abs': ['id'],
-            'ace': ['id'],
-            'acm': ['ar'],
-            'ady': ['ady-cyrl'],
-            'aeb': ['aeb-arab'],
-            'aeb-arab': ['ar'],
-            'aln': ['sq'],
-            'alt': ['ru'],
-            'ami': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
-            'an': ['es'],
-            'anp': ['hi'],
-            'arn': ['es'],
-            'arq': ['ar'],
-            'ary': ['ar'],
-            'arz': ['ar'],
-            'ast': ['es'],
-            'atj': ['fr'],
-            'av': ['ru'],
-            'avk': ['fr', 'es', 'ru'],
-            'awa': ['hi'],
-            'ay': ['es'],
-            'azb': ['fa'],
-            'ba': ['ru'],
-            'ban': ['id'],
-            'ban-bali': ['ban'],
-            'bar': ['de'],
-            'bbc': ['bbc-latn'],
-            'bbc-latn': ['id'],
-            'bcc': ['fa'],
-            'bci': ['fr'],
-            'be-tarask': ['be'],
-            'bgn': ['fa'],
-            'bh': ['bho'],
-            'bjn': ['id'],
-            'blk': ['my'],
-            'bm': ['fr'],
-            'bpy': ['bn'],
-            'bqi': ['fa'],
-            'btm': ['id'],
-            'bug': ['id'],
-            'bxr': ['ru'],
-            'ca': ['oc'],
-            'cbk-zam': ['es'],
-            'cdo': ['nan', 'zh-hant', 'zh', 'zh-hans'],
-            'ce': ['ru'],
-            'co': ['it'],
-            'crh': ['crh-latn'],
-            'crh-cyrl': ['ru'],
-            'crh-ro': ['ro'],
-            'cs': ['sk'],
-            'csb': ['pl'],
-            'cv': ['ru'],
-            'de-at': ['de'],
-            'de-ch': ['de'],
-            'de-formal': ['de'],
-            'dsb': ['hsb', 'de'],
-            'dtp': ['ms'],
-            'dty': ['ne'],
-            'egl': ['it'],
-            'eml': ['it'],
-            'es-formal': ['es'],
-            'ext': ['es'],
-            'fit': ['fi'],
-            'fon': ['fr'],
-            'frc': ['fr'],
-            'frp': ['fr'],
-            'frr': ['de'],
-            'fur': ['it'],
-            'gag': ['tr'],
-            'gan': ['gan-hant', 'gan-hans', 'zh-hant', 'zh', 'zh-hans'],
-            'gan-hans': ['gan', 'gan-hant', 'zh-hans', 'zh', 'zh-hant'],
-            'gan-hant': ['gan', 'gan-hans', 'zh-hant', 'zh', 'zh-hans'],
-            'gcr': ['fr'],
-            'gl': ['pt'],
-            'gld': ['ru'],
-            'glk': ['fa'],
-            'gn': ['es'],
-            'gom': ['gom-deva', 'gom-latn'],
-            'gom-deva': ['gom-latn'],
-            'gor': ['id'],
-            'gsw': ['de'],
-            'guc': ['es'],
-            'hak': ['zh-hant', 'zh', 'zh-hans'],
-            'hif': ['hif-latn'],
-            'hrx': ['de'],
-            'hsb': ['dsb', 'de'],
-            'hsn': ['zh-cn', 'zh-hans', 'zh', 'zh-hant'],
-            'ht': ['fr'],
-            'hu-formal': ['hu'],
-            'hyw': ['hy'],
-            'ii': ['zh-cn', 'zh-hans', 'zh', 'zh-hant'],
-            'ike-cans': ['iu'],
-            'ike-latn': ['iu'],
-            'inh': ['ru'],
-            'io': ['eo'],
-            'iu': ['ike-cans'],
-            'jut': ['da'],
-            'jv': ['id'],
-            'kaa': ['kk-latn', 'kk-cyrl'],
-            'kab': ['fr'],
-            'kbd': ['kbd-cyrl'],
-            'kbp': ['fr'],
-            'kea': ['pt'],
-            'khw': ['ur'],
-            'kiu': ['tr'],
-            'kjh': ['ru'],
-            'kjp': ['my'],
-            'kk': ['kk-cyrl'],
-            'kk-arab': ['kk', 'kk-cyrl'],
-            'kk-cn': ['kk-arab', 'kk', 'kk-cyrl'],
-            'kk-cyrl': ['kk'],
-            'kk-kz': ['kk-cyrl', 'kk'],
-            'kk-latn': ['kk', 'kk-cyrl'],
-            'kk-tr': ['kk-latn', 'kk', 'kk-cyrl'],
-            'kl': ['da'],
-            'ko-kp': ['ko'],
-            'koi': ['ru'],
-            'krc': ['ru'],
-            'krl': ['fi'],
-            'ks': ['ks-arab'],
-            'ksh': ['de'],
-            'ksw': ['my'],
-            'ku': ['ku-latn'],
-            'ku-arab': ['ku', 'ckb'],
-            'ku-latn': ['ku'],
-            'kum': ['ru'],
-            'kv': ['ru'],
-            'lad': ['es'],
-            'lb': ['de'],
-            'lbe': ['ru'],
-            'lez': ['ru', 'az'],
-            'li': ['nl'],
-            'lij': ['it'],
-            'liv': ['et'],
-            'lki': ['fa'],
-            'lld': ['it', 'rm', 'fur'],
-            'lmo': ['pms', 'eml', 'lij', 'vec', 'it'],
-            'ln': ['fr'],
-            'lrc': ['fa'],
-            'ltg': ['lv'],
-            'luz': ['fa'],
-            'lzh': ['zh-hant', 'zh', 'zh-hans'],
-            'lzz': ['tr'],
-            'mad': ['id'],
-            'mag': ['hi'],
-            'mai': ['hi'],
-            'map-bms': ['jv', 'id'],
-            'mdf': ['myv', 'ru'],
-            'mg': ['fr'],
-            'mhr': ['mrj', 'ru'],
-            'min': ['id'],
-            'mnw': ['my'],
-            'mo': ['ro'],
-            'mrj': ['mhr', 'ru'],
-            'ms-arab': ['ms'],
-            'mwl': ['pt'],
-            'myv': ['mdf', 'ru'],
-            'mzn': ['fa'],
-            'nah': ['es'],
-            'nan': ['cdo', 'zh-hant', 'zh', 'zh-hans'],
-            'nap': ['it'],
-            'nb': ['no', 'nn'],
-            'nds': ['de'],
-            'nds-nl': ['nl'],
-            'nia': ['id'],
-            'nl-informal': ['nl'],
-            'nn': ['no', 'nb'],
-            'no': ['nb'],
-            'nrm': ['nrf', 'fr'],
-            'oc': ['ca', 'fr'],
-            'olo': ['fi'],
-            'os': ['ru'],
-            'pcd': ['fr'],
-            'pdc': ['de'],
-            'pdt': ['de'],
-            'pfl': ['de'],
-            'pms': ['it'],
-            'pnt': ['el'],
-            'pt': ['pt-br'],
-            'pt-br': ['pt'],
-            'pwn': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
-            'qu': ['qug', 'es'],
-            'qug': ['qu', 'es'],
-            'rgn': ['it'],
-            'rmy': ['ro'],
-            'roa-tara': ['it'],
-            'rsk': ['sr-cyrl', 'sr-ec'],
-            'rue': ['uk', 'ru'],
-            'rup': ['ro'],
-            'ruq': ['ruq-latn', 'ro'],
-            'ruq-cyrl': ['mk'],
-            'ruq-latn': ['ro'],
-            'sa': ['hi'],
-            'sah': ['ru'],
-            'scn': ['it'],
-            'sdc': ['it'],
-            'sdh': ['cbk', 'fa'],
-            'se': ['nb', 'fi'],
-            'se-fi': ['se', 'fi', 'sv'],
-            'se-no': ['se', 'nb', 'nn'],
-            'se-se': ['se', 'sv'],
-            'ses': ['fr'],
-            'sg': ['fr'],
-            'sgs': ['lt'],
-            'sh': ['sh-latn', 'sh-cyrl', 'bs', 'sr-latn', 'sr-el', 'hr'],
-            'sh-cyrl': ['sr-cyrl', 'sr-ec', 'sh', 'sh-latn'],
-            'sh-latn': ['sh', 'sh-cyrl', 'bs', 'sr-latn', 'sr-el', 'hr'],
-            'shi': ['shi-latn', 'fr'],
-            'shi-latn': ['shi', 'fr'],
-            'shi-tfng': ['shi', 'shi-latn', 'fr'],
-            'shy': ['shy-latn'],
-            'shy-latn': ['fr'],
-            'sjd': ['ru'],
-            'sk': ['cs'],
-            'skr': ['skr-arab'],
-            'skr-arab': ['skr'],
-            'sli': ['de'],
-            'sma': ['sv', 'nb'],
-            'smn': ['fi'],
-            'sr': ['sr-cyrl', 'sr-ec'],
-            'sr-cyrl': ['sr-ec', 'sr'],
-            'sr-ec': ['sr-cyrl', 'sr'],
-            'sr-el': ['sr-latn', 'sr'],
-            'sr-latn': ['sr-el', 'sr'],
-            'srn': ['nl'],
-            'sro': ['it'],
-            'stq': ['de'],
-            'sty': ['ru'],
-            'su': ['id'],
-            'szl': ['pl'],
-            'szy': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
-            'tay': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
-            'tcy': ['kn'],
-            'tet': ['pt'],
-            'tg': ['tg-cyrl'],
-            'tg-cyrl': ['tg'],
-            'tg-latn': ['tg', 'tg-cyrl'],
-            'trv': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
-            'tt': ['tt-cyrl', 'ru'],
-            'tt-cyrl': ['ru'],
-            'ty': ['fr'],
-            'tyv': ['ru'],
-            'udm': ['ru'],
-            'ug': ['ug-arab'],
-            'vec': ['it'],
-            'vep': ['et'],
-            'vls': ['nl'],
-            'vmf': ['de'],
-            'vmw': ['pt'],
-            'vot': ['fi'],
-            'vro': ['et'],
-            'wa': ['fr'],
-            'wls': ['fr'],
-            'wo': ['fr'],
-            'wuu': ['wuu-hans', 'wuu-hant', 'zh-hans', 'zh', 'zh-hant'],
-            'wuu-hans': ['wuu', 'wuu-hant', 'zh-hans', 'zh', 'zh-hant'],
-            'wuu-hant': ['wuu', 'wuu-hans', 'zh-hant', 'zh', 'zh-hans'],
-            'xal': ['ru'],
-            'xmf': ['ka'],
-            'yi': ['he'],
-            'yue': ['yue-hant', 'yue-hans'],
-            'yue-hans': ['yue', 'yue-hant'],
-            'yue-hant': ['yue', 'yue-hans'],
-            'za': ['zh-hans', 'zh', 'zh-hant'],
-            'zea': ['nl'],
-            'zgh': ['kab'],
-            'zh': ['zh-hans', 'zh-hant', 'zh-cn', 'zh-tw', 'zh-hk'],
-            'zh-cn': ['zh-hans', 'zh', 'zh-hant'],
-            'zh-hans': ['zh-cn', 'zh', 'zh-hant'],
-            'zh-hant': ['zh-tw', 'zh-hk', 'zh', 'zh-hans'],
-            'zh-hk': ['zh-hant', 'zh-tw', 'zh', 'zh-hans'],
-            'zh-mo': ['zh-hk', 'zh-hant', 'zh-tw', 'zh', 'zh-hans'],
-            'zh-my': ['zh-sg', 'zh-hans', 'zh-cn', 'zh', 'zh-hant'],
-            'zh-sg': ['zh-hans', 'zh-cn', 'zh', 'zh-hant'],
-            'zh-tw': ['zh-hant', 'zh-hk', 'zh', 'zh-hans']
-        };
+    /*
+     * Language fallbacks for those that don't only fallback to 'en' or have no
+     * fallbacks ('en').
+     *
+     * Current revision: mediawiki-core 7609761ab4e
+     *
+     * Shouldn't need updating unless there're language fallback chain changes
+     * to /languages/messages files in mediawiki/core.
+     *
+     * To generate this, use `$ grep -R "fallback =" /path/to/messages/`,
+     * pipe the result to a text file and format the result.
+     *
+     * Another way to generate the list is to copy from
+     * https://github.com/wikimedia/jquery.i18n/blob/master/src/jquery.i18n.fallbacks.js
+     * AND remove deprecated codes from the copied list.
+     *
+     * Please note that there's bidirectional/multidirectional fallback in languages,
+     * including 'cdo' <=> 'nan', 'pt' <=> 'pt-br', 'zh' <=> 'zh-hans' <=> 'zh-hant'
+     *
+     * @var {object.<string, string[]>} Mapping from language codes to fallback
+     * language codes
+     */
+    fallbacks = {
+        'ab': ['ru'],
+        'abs': ['id'],
+        'ace': ['id'],
+        'acm': ['ar'],
+        'ady': ['ady-cyrl'],
+        'aeb': ['aeb-arab'],
+        'aeb-arab': ['ar'],
+        'aln': ['sq'],
+        'alt': ['ru'],
+        'ami': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
+        'an': ['es'],
+        'anp': ['hi'],
+        'arn': ['es'],
+        'arq': ['ar'],
+        'ary': ['ar'],
+        'arz': ['ar'],
+        'ast': ['es'],
+        'atj': ['fr'],
+        'av': ['ru'],
+        'avk': ['fr', 'es', 'ru'],
+        'awa': ['hi'],
+        'ay': ['es'],
+        'azb': ['fa'],
+        'ba': ['ru'],
+        'ban': ['id'],
+        'ban-bali': ['ban'],
+        'bar': ['de'],
+        'bbc': ['bbc-latn'],
+        'bbc-latn': ['id'],
+        'bcc': ['fa'],
+        'bci': ['fr'],
+        'be-tarask': ['be'],
+        'bgn': ['fa'],
+        'bh': ['bho'],
+        'bjn': ['id'],
+        'blk': ['my'],
+        'bm': ['fr'],
+        'bpy': ['bn'],
+        'bqi': ['fa'],
+        'btm': ['id'],
+        'bug': ['id'],
+        'bxr': ['ru'],
+        'ca': ['oc'],
+        'cbk-zam': ['es'],
+        'cdo': ['nan', 'zh-hant', 'zh', 'zh-hans'],
+        'ce': ['ru'],
+        'co': ['it'],
+        'crh': ['crh-latn'],
+        'crh-cyrl': ['ru'],
+        'crh-ro': ['ro'],
+        'cs': ['sk'],
+        'csb': ['pl'],
+        'cv': ['ru'],
+        'de-at': ['de'],
+        'de-ch': ['de'],
+        'de-formal': ['de'],
+        'dsb': ['hsb', 'de'],
+        'dtp': ['ms'],
+        'dty': ['ne'],
+        'egl': ['it'],
+        'eml': ['it'],
+        'es-formal': ['es'],
+        'ext': ['es'],
+        'fit': ['fi'],
+        'fon': ['fr'],
+        'frc': ['fr'],
+        'frp': ['fr'],
+        'frr': ['de'],
+        'fur': ['it'],
+        'gag': ['tr'],
+        'gan': ['gan-hant', 'gan-hans', 'zh-hant', 'zh', 'zh-hans'],
+        'gan-hans': ['gan', 'gan-hant', 'zh-hans', 'zh', 'zh-hant'],
+        'gan-hant': ['gan', 'gan-hans', 'zh-hant', 'zh', 'zh-hans'],
+        'gcr': ['fr'],
+        'gl': ['pt'],
+        'gld': ['ru'],
+        'glk': ['fa'],
+        'gn': ['es'],
+        'gom': ['gom-deva', 'gom-latn'],
+        'gom-deva': ['gom-latn'],
+        'gor': ['id'],
+        'gsw': ['de'],
+        'guc': ['es'],
+        'hak': ['zh-hant', 'zh', 'zh-hans'],
+        'hif': ['hif-latn'],
+        'hrx': ['de'],
+        'hsb': ['dsb', 'de'],
+        'hsn': ['zh-cn', 'zh-hans', 'zh', 'zh-hant'],
+        'ht': ['fr'],
+        'hu-formal': ['hu'],
+        'hyw': ['hy'],
+        'ii': ['zh-cn', 'zh-hans', 'zh', 'zh-hant'],
+        'ike-cans': ['iu'],
+        'ike-latn': ['iu'],
+        'inh': ['ru'],
+        'io': ['eo'],
+        'iu': ['ike-cans'],
+        'jut': ['da'],
+        'jv': ['id'],
+        'kaa': ['kk-latn', 'kk-cyrl'],
+        'kab': ['fr'],
+        'kbd': ['kbd-cyrl'],
+        'kbp': ['fr'],
+        'kea': ['pt'],
+        'khw': ['ur'],
+        'kiu': ['tr'],
+        'kjh': ['ru'],
+        'kjp': ['my'],
+        'kk': ['kk-cyrl'],
+        'kk-arab': ['kk', 'kk-cyrl'],
+        'kk-cn': ['kk-arab', 'kk', 'kk-cyrl'],
+        'kk-cyrl': ['kk'],
+        'kk-kz': ['kk-cyrl', 'kk'],
+        'kk-latn': ['kk', 'kk-cyrl'],
+        'kk-tr': ['kk-latn', 'kk', 'kk-cyrl'],
+        'kl': ['da'],
+        'ko-kp': ['ko'],
+        'koi': ['ru'],
+        'krc': ['ru'],
+        'krl': ['fi'],
+        'ks': ['ks-arab'],
+        'ksh': ['de'],
+        'ksw': ['my'],
+        'ku': ['ku-latn'],
+        'ku-arab': ['ku', 'ckb'],
+        'ku-latn': ['ku'],
+        'kum': ['ru'],
+        'kv': ['ru'],
+        'lad': ['es'],
+        'lb': ['de'],
+        'lbe': ['ru'],
+        'lez': ['ru', 'az'],
+        'li': ['nl'],
+        'lij': ['it'],
+        'liv': ['et'],
+        'lki': ['fa'],
+        'lld': ['it', 'rm', 'fur'],
+        'lmo': ['pms', 'eml', 'lij', 'vec', 'it'],
+        'ln': ['fr'],
+        'lrc': ['fa'],
+        'ltg': ['lv'],
+        'luz': ['fa'],
+        'lzh': ['zh-hant', 'zh', 'zh-hans'],
+        'lzz': ['tr'],
+        'mad': ['id'],
+        'mag': ['hi'],
+        'mai': ['hi'],
+        'map-bms': ['jv', 'id'],
+        'mdf': ['myv', 'ru'],
+        'mg': ['fr'],
+        'mhr': ['mrj', 'ru'],
+        'min': ['id'],
+        'mnw': ['my'],
+        'mo': ['ro'],
+        'mrj': ['mhr', 'ru'],
+        'ms-arab': ['ms'],
+        'mwl': ['pt'],
+        'myv': ['mdf', 'ru'],
+        'mzn': ['fa'],
+        'nah': ['es'],
+        'nan': ['cdo', 'zh-hant', 'zh', 'zh-hans'],
+        'nap': ['it'],
+        'nb': ['no', 'nn'],
+        'nds': ['de'],
+        'nds-nl': ['nl'],
+        'nia': ['id'],
+        'nl-informal': ['nl'],
+        'nn': ['no', 'nb'],
+        'no': ['nb'],
+        'nrm': ['nrf', 'fr'],
+        'oc': ['ca', 'fr'],
+        'olo': ['fi'],
+        'os': ['ru'],
+        'pcd': ['fr'],
+        'pdc': ['de'],
+        'pdt': ['de'],
+        'pfl': ['de'],
+        'pms': ['it'],
+        'pnt': ['el'],
+        'pt': ['pt-br'],
+        'pt-br': ['pt'],
+        'pwn': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
+        'qu': ['qug', 'es'],
+        'qug': ['qu', 'es'],
+        'rgn': ['it'],
+        'rmy': ['ro'],
+        'roa-tara': ['it'],
+        'rsk': ['sr-cyrl', 'sr-ec'],
+        'rue': ['uk', 'ru'],
+        'rup': ['ro'],
+        'ruq': ['ruq-latn', 'ro'],
+        'ruq-cyrl': ['mk'],
+        'ruq-latn': ['ro'],
+        'sa': ['hi'],
+        'sah': ['ru'],
+        'scn': ['it'],
+        'sdc': ['it'],
+        'sdh': ['cbk', 'fa'],
+        'se': ['nb', 'fi'],
+        'se-fi': ['se', 'fi', 'sv'],
+        'se-no': ['se', 'nb', 'nn'],
+        'se-se': ['se', 'sv'],
+        'ses': ['fr'],
+        'sg': ['fr'],
+        'sgs': ['lt'],
+        'sh': ['sh-latn', 'sh-cyrl', 'bs', 'sr-latn', 'sr-el', 'hr'],
+        'sh-cyrl': ['sr-cyrl', 'sr-ec', 'sh', 'sh-latn'],
+        'sh-latn': ['sh', 'sh-cyrl', 'bs', 'sr-latn', 'sr-el', 'hr'],
+        'shi': ['shi-latn', 'fr'],
+        'shi-latn': ['shi', 'fr'],
+        'shi-tfng': ['shi', 'shi-latn', 'fr'],
+        'shy': ['shy-latn'],
+        'shy-latn': ['fr'],
+        'sjd': ['ru'],
+        'sk': ['cs'],
+        'skr': ['skr-arab'],
+        'skr-arab': ['skr'],
+        'sli': ['de'],
+        'sma': ['sv', 'nb'],
+        'smn': ['fi'],
+        'sr': ['sr-cyrl', 'sr-ec'],
+        'sr-cyrl': ['sr-ec', 'sr'],
+        'sr-ec': ['sr-cyrl', 'sr'],
+        'sr-el': ['sr-latn', 'sr'],
+        'sr-latn': ['sr-el', 'sr'],
+        'srn': ['nl'],
+        'sro': ['it'],
+        'stq': ['de'],
+        'sty': ['ru'],
+        'su': ['id'],
+        'szl': ['pl'],
+        'szy': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
+        'tay': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
+        'tcy': ['kn'],
+        'tet': ['pt'],
+        'tg': ['tg-cyrl'],
+        'tg-cyrl': ['tg'],
+        'tg-latn': ['tg', 'tg-cyrl'],
+        'trv': ['zh-tw', 'zh-hant', 'zh', 'zh-hans'],
+        'tt': ['tt-cyrl', 'ru'],
+        'tt-cyrl': ['ru'],
+        'ty': ['fr'],
+        'tyv': ['ru'],
+        'udm': ['ru'],
+        'ug': ['ug-arab'],
+        'vec': ['it'],
+        'vep': ['et'],
+        'vls': ['nl'],
+        'vmf': ['de'],
+        'vmw': ['pt'],
+        'vot': ['fi'],
+        'vro': ['et'],
+        'wa': ['fr'],
+        'wls': ['fr'],
+        'wo': ['fr'],
+        'wuu': ['wuu-hans', 'wuu-hant', 'zh-hans', 'zh', 'zh-hant'],
+        'wuu-hans': ['wuu', 'wuu-hant', 'zh-hans', 'zh', 'zh-hant'],
+        'wuu-hant': ['wuu', 'wuu-hans', 'zh-hant', 'zh', 'zh-hans'],
+        'xal': ['ru'],
+        'xmf': ['ka'],
+        'yi': ['he'],
+        'yue': ['yue-hant', 'yue-hans'],
+        'yue-hans': ['yue', 'yue-hant'],
+        'yue-hant': ['yue', 'yue-hans'],
+        'za': ['zh-hans', 'zh', 'zh-hant'],
+        'zea': ['nl'],
+        'zgh': ['kab'],
+        'zh': ['zh-hans', 'zh-hant', 'zh-cn', 'zh-tw', 'zh-hk'],
+        'zh-cn': ['zh-hans', 'zh', 'zh-hant'],
+        'zh-hans': ['zh-cn', 'zh', 'zh-hant'],
+        'zh-hant': ['zh-tw', 'zh-hk', 'zh', 'zh-hans'],
+        'zh-hk': ['zh-hant', 'zh-tw', 'zh', 'zh-hans'],
+        'zh-mo': ['zh-hk', 'zh-hant', 'zh-tw', 'zh', 'zh-hans'],
+        'zh-my': ['zh-sg', 'zh-hans', 'zh-cn', 'zh', 'zh-hant'],
+        'zh-sg': ['zh-hans', 'zh-cn', 'zh', 'zh-hant'],
+        'zh-tw': ['zh-hant', 'zh-hk', 'zh', 'zh-hans']
+    };
 
     /*
      * Override the if wgPageContentModel is not wikitext.

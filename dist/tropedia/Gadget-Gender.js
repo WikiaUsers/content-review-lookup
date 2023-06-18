@@ -1,13 +1,13 @@
 // If on a user or user talk page, and not a subpage...
-if ((wgNamespaceNumber == 2 || wgNamespaceNumber == 3) &&
-    !/\//.test(wgTitle)) {
+if ([2, 3].includes(mw.config.get("wgNamespaceNumber")) &&
+    !/\//.test(mw.config.get("wgTitle"))) {
   // add a hook to...
   $(function() {
     // init AJAX and request the user's gender from the API
     var a = sajax_init_object();
-    a.open("GET", wgServer + wgScriptPath + 
+    a.open("GET", mw.config.get("wgServer") +mw.config.get(" wgScriptPath") + 
                   "/api.php?format=json&action=query&list=users&ususers=" + 
-                  escape(wgTitle.replace(/ /, "_")) + "&usprop=gender",
+                  escape(mw.config.get("wgTitle").replace(/ /, "_")) + "&usprop=gender",
            true);
  
     // when response arrives...

@@ -27,7 +27,7 @@ function showTime( $target ) {
 }
 
 function liveClock() {
-    appendCSS( '#utcdate a { font-weight:bolder; font-size:100%; }' );
+    mw.util.addCSS( '#utcdate a { font-weight:bolder; font-size:100%; }' );
 
 	if ( window.UTCLiveClockConfig === undefined ) {
 		window.UTCLiveClockConfig = {};
@@ -49,6 +49,6 @@ function liveClock() {
 
 	showTime();
 }
-$( document ).ready( liveClock );
+mw.loader.using( 'mediawiki.util' ).then(liveClock);
 
-} )( mediaWiki, jQuery );
+} )( window.mediaWiki, window.jQuery );

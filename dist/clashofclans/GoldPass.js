@@ -20,6 +20,7 @@ $(document).ready(function() {
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
+	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');	
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    var heroAbilityDPH = [0];
@@ -569,6 +570,9 @@ $(document).ready(function() {
 	  // Two lookup arrays for the GW's life aura ability
 	  var auraPercentIncrease = [0,200,211,222,233,244,256,268,281,295,310,326,343,361,380,400,420,440,460,480,500,520,540,560,580,600,620,640,660,680,700,720,740,760,780,800,820,840,860,880,900];
 	  var auraMaxHPIncrease = [0,70,76,82,88,94,101,108,116,125,135,146,158,171,185,200,215,230,245,260,275,290,305,320,335,350,365,380,395,410,425,440,455,470,485,500,515,530,545,560,575];
+	  // Lookup arrays for the apprentice's aura ability
+	  // Styled in thousandths for ease of comparison
+	  var apprenticeAuraPercentIncrease = [0,240,260,280,300]
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
 	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70]
 		$(".AttackSpeed").each(function() {
@@ -698,9 +702,9 @@ $(document).ready(function() {
 				if (rageTowerCheckBox.checked === true) {
 					// Grand Warden statue (has Statue class) is not a building and so gains full buff
 					if (isHero === true && isStatue === false) {
-						towerRageMultiplier = 15/10;
+						towerRageMultiplier = 145/100;
 					} else {
-						towerRageMultiplier = 2;
+						towerRageMultiplier = 19/10;
 					}
 				}
 			}
@@ -984,6 +988,7 @@ $(document).ready(function() {
 		$(".HP").each(function() {
 			var initialHP = $(this).attr("title") * 1;
 			var auraLevel = $("#lifeAuraLevel").val() * 1;
+			var apprenticeLevel = $("#apprenticeAuraLevel").val() * 1;
 			var auraPercent = auraPercentIncrease[auraLevel];
 			if (isNaN(auraPercent) === true) {
 			    auraPercent = 0;
@@ -992,9 +997,15 @@ $(document).ready(function() {
 			if (isNaN(auraMaxHP) === true) {
 			    auraMaxHP = 0;
 			}
+			var apprenticePercent = apprenticeAuraPercentIncrease[apprenticeLevel];
+			if (isNaN(apprenticePercent) === true) {
+				apprenticePercent = 0;
+			}
 			var calcPercentHP = initialHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = initialHP + auraMaxHP;
-			var calcNewHP = Math.min(calcPercentHP,calcMaxHP);
+			var calcWardenHP = Math.min(calcPercentHP,calcMaxHP);
+			var calcApprenticeHP = initialHP * (1000 + apprenticePercent)/1000;
+			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			$(this).text(roundedHP.format("#,##0[.]###"));
 			if (initialHP === roundedHP) {
@@ -1228,7 +1239,7 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP, #apprenticeAuraLevel").val("0").change();
 		if (document.getElementById("hammerJamBoost") != null) {
 			document.getElementById("hammerJamBoost").checked = false;
 		}

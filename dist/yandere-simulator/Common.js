@@ -85,8 +85,8 @@ UserTagsJS.modules.custom = {
 	'Jackboog21': ['head', 'hc-sc', 'vc-sc'],
 	/* Admins */
 	/* Mini-Admins */
-	'A random student': ['head', 'hc-jc', 'ec-member'],
-	'Ŝenezala': ['miniadmin'],
+	'A random student': ['former-miniadmin', 'hc-jc', 'ec-member'],
+	'Ŝenezala': ['miniadmin', 'head'],
 	/* Content Mods */
 	'GalaxE': [],
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member', 'head'],

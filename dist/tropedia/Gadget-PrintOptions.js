@@ -1,4 +1,4 @@
-if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
+if (typeof (PrintDialog) == 'undefined' && mw.config.get("wgNamespaceNumber") >= 0) {
  
  var PrintDialog = {
   install: function() {
@@ -7,22 +7,22 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
 
   open: function() {
    var dlgButtons = {};
-   dlgButtons['Print'] = function() {
+   dlgButtons.Print = function() {
     $.each(PrintDialog.questions, function(i, v) {
                   response = $('#PrintOption' + i).val();
                   if (v.type == 'checkbox') response = $('#PrintOption' + i).attr('checked');
                   PrintDialog[v.returnvalue] = response;
-    })
+    });
     PrintDialog.changePrintCSS();
     PrintDialog.otherEnhancements();
-    $(this).dialog('close')
+    $(this).dialog('close');
     window.print();
     if( !$.browser.opera) {
       window.location = window.location;
     }
    };
-   dlgButtons['Cancel'] = function() {
-    $(this).dialog('close')
+   dlgButtons.Cancel = function() {
+    $(this).dialog('close');
    };
    var $dialog = $('<div></div>')
           .html('<div id="PrintDialogContainer"></div>')
@@ -42,7 +42,7 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
      if( v.type =="checkbox") {
       $('#PrintDialogContainer').append('<input type="checkbox" id="PrintOption' + i + '" style="" ' + (v.checked ? 'checked' : '') + '>' + v.label + '<br>');
      }
-   })
+   });
 
   }, /* end open */
 
@@ -55,7 +55,7 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
     */
     if( false ) {
        var stylesheets=document.styleSheets;
-       for( i=0; i < stylesheets.length; i++ ) {
+       for(var i=0; i < stylesheets.length; i++ ) {
          var stylesheet = stylesheets[i];
          var disabled = false;
          var screen = false;
@@ -69,16 +69,17 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
          }
 
          /* now test individual stylesheet rules */
+         var rules;
          try {
-           var rules = stylesheet.cssRules || stylesheet.rules;
+           rules = stylesheet.cssRules || stylesheet.rules;
          } catch(e) { /* Cross domain issue. */ continue; }
          stylesheet.compatdelete = stylesheet.deleteRule || stylesheet.removeRule;
-         for( j=0; rules && j < rules.length; j++) {
+         for(var j=0; rules && j < rules.length; j++) {
            var rule = rules[j];
            var hasPrint = false;
            var hasScreen = false;
            if( rule.type == 4 && rule.media ) {
-             for( k=0; k < rule.media.length; k++ ) {
+             for(var k=0; k < rule.media.length; k++ ) {
                if( rule.media[k] == "print" ) {
                  hasPrint = true;
                } else if (rule.media[k] == "screen" ) {
@@ -114,7 +115,7 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
 
   /* Rewrite the "retrieved from" url to be readable */
   otherEnhancements: function() {
-    link = $('div.printfooter a')
+    link = $('div.printfooter a');
     link.text( decodeURI( link.text() ) );
   },
 
@@ -149,7 +150,7 @@ if (typeof (PrintDialog) == 'undefined' && wgNamespaceNumber >= 0) {
     returnvalue: 'blacktext'
    }
   ]
- }
+ };
 
  $(document).ready( PrintDialog.install );
 }

@@ -7,7 +7,7 @@ var pageName = mw.config.get('wgPageName')
 // S'execute si c'est sur la page d'accueil (ou les modèles qui composent la page d'accueil)
 if(pageName === "Wiki_Radiant" || pageName === "Modèle:RéseauxSociaux"){
 	// Permet d'intéger le compte Insta de Tony Valente
-	$("#IntegrationInstagram").append('<iframe src="https://instagram.com/tonytonyvalente/embed" width=100% height=820 frameborder="0" allowfullscreen="allowfullscreen"></iframe>')
+	$("#IntegrationInstagram").append('<iframe src="https://www.instagram.com/tonytonyvalente/embed" width=100% height=820 frameborder="0" allowfullscreen="allowfullscreen"></iframe>')
 	
 	// Permet d'intéger le compte Tiktok de Tony Valente
 	$("#IntegrationTiktok").append('<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@tonyvalenteofficial" data-unique-id="tonyvalenteofficial" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@tonyvalenteofficial?refer=creator_embed">@tonyvalenteofficial</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>')
@@ -15,7 +15,7 @@ if(pageName === "Wiki_Radiant" || pageName === "Modèle:RéseauxSociaux"){
 	
 /************************************************************************/
 
-// Ajout fonction qui permet d'integrer les sondages (https://radiant.fandom.com/fr/f?catId=3100000000000000032) sur la page d'accueil
+// Ajout fonction qui permet d'integrer les sondages (https://www.radiant.fandom.com/fr/f?catId=3100000000000000032) sur la page d'accueil
 //
 // NB : Réutilisation et transformation du code de "MediaWiki:DiscussionsActivity.js" pour cette utilisation spécifique !
 //

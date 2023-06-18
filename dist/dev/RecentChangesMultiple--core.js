@@ -877,7 +877,7 @@ var RCMManager =  (function () {
         };
         this._handleWikiDataLoadError = function (pWikiData, pTries, pID, pErrorMessage, pInc) {
             var errorCont = $("<div>").appendTo($(_this.statusNode).find(".rcm-status-alerts-cont"));
-            var string = "<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>";
+            var string = "<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + mw.html.escape(pWikiData.servername) + "</span>]", pTries) + "</div>";
             if (pErrorMessage == "error-loading-syntaxhang" && 'https:' == document.location.protocol) {
                 string += "<div class='rcm-error'>" + i18n_1["default"]("error-loading-http") + "</div>";
             }
@@ -909,7 +909,7 @@ var RCMManager =  (function () {
             clearTimeout(_this.loadErrorTimeoutID);
             _this.loadErrorTimeoutID = 0;
             var errorCont = $("<div>").appendTo($(_this.statusNode).find(".rcm-status-alerts-cont"));
-            errorCont.html("<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + pWikiData.servername + "</span>]", pTries) + "</div>");
+            errorCont.html("<div class='rcm-error'>" + i18n_1["default"](pErrorMessage, "[<span class='errored-wiki'>" + mw.html.escape(pWikiData.servername) + "</span>]", pTries) + "</div>");
             _this.addRefreshButtonTo(errorCont[0]);
             errorCont.append(" ");
             var retry = function () {

@@ -692,7 +692,7 @@
 					row += "; fm: " + fm
 					debugFlag = "&debug=true"
 				}
-				row += ") <a href='/Interactive_Map?name=" + name + debugFlag + "'><img src='" + namedIcons["focus"].options.iconUrl + "' style='width:12px;height:12px;'></a>"
+				row += ") <a href='/Interactive_Map?id=" + id + debugFlag + "'><img src='" + namedIcons["focus"].options.iconUrl + "' style='width:12px;height:12px;'></a>"
 			}
 			row += "<br/>"
 	

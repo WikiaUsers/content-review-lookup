@@ -13,3 +13,5 @@ mw.hook('wikipage.content').add(function() {
   $(pi_wdsTabs).animate({ scrollLeft: pi_wdsTabs.width() }, 200);
   $('.type-last-tab .pi-image-collection.wds-tabber .wds-tabs__tab').last().click();
 });
+// Reference pop-ups
+importScriptPage('ReferencePopups/code.js', 'dev');

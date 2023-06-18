@@ -2,6 +2,8 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:AnchoredRollback/code.js',
+'u:dev:MediaWiki:FileTools.js'
+
     ]
 });
 

@@ -2,7 +2,7 @@
 window.enableReadProgressBarOnArticles = true;
 window.MessageBlock = {
 	title : 'You have been blocked',
-	message : 'You have received a $2 block for the following reason(s): $1.',
+	message : 'You have received a $2 block for the following reason(s): $1. Please take some time to review our rules (PMEBGW:Rules).',
 	autocheck : true
 };
 window.lockOldComments.limit = 90;

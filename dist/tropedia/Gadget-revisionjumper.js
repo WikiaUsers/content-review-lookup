@@ -1,6 +1,13 @@
  // <nowiki>
-
- switch (wgUserLanguage){
+var wgServer = mw.config.get('wgServer');
+var wgScript = mw.config.get('wgScript');
+var wgPageName = mw.config.get('wgPageName');
+var wgUserName = mw.config.get('wgUserName');
+var wgCurRevisionId = mw.config.get('wgCurRevisionId');
+var wgScriptPath = mw.config.get('wgScriptPath');
+var wgAction = mw.config.get('wgAction');
+var wgCanonicalNamespace = mw.config.get('wgCanonicalNamespace');
+switch (mw.config.get("wgUserLanguage")){
    case 'de':
    case 'de-at':
    case 'de-ch':
@@ -93,10 +100,10 @@
  diffoptionnames[1] = new Array();
  var numberrevisionjumperlength = numberrevisionjumper.length;
  var timerevisionjumperlength = timerevisionjumper.length;
- for(a=0;a<numberrevisionjumper.length;a++){
+ for(var a=0;a<numberrevisionjumper.length;a++){
    diffoptionnames[0][a] = numberrevisionjumper[a];
  }
- for(b=0;b<timerevisionjumper.length;b++){
+ for(var b=0;b<timerevisionjumper.length;b++){
    diffoptionnames[1][b] = timerevisionjumper[b];
  }
  
@@ -122,7 +129,7 @@
  
   // Get URL parameters
   asReadInUrlParameters = location.search.substring(1, location.search.length).split("&");
-  for (i = 0; i < asReadInUrlParameters.length; i++) {
+  for (var i = 0; i < asReadInUrlParameters.length; i++) {
     asReadInUrlParameter = asReadInUrlParameters[i].split("=");
     UrlParameters[decodeURIComponent(asReadInUrlParameter[0])] = decodeURIComponent(asReadInUrlParameter[1]);
   }
@@ -130,7 +137,7 @@
  
  function addrevisionjumper(){
  if (wgCanonicalNamespace != 'Special') {
-  for(j=0;j<2;j++){
+  for(var j=0;j<2;j++){
    var difflink = new Array();
    if(UrlParameters["diff"] && !disabledisplayondiff) {
     difflink[0] = document.getElementById('differences-prevlink');
@@ -161,7 +168,7 @@
    }
    if(difflink[j]) {
     var newlink = document.createElement('select');
-    newlink.onchange = j == 0 ? function(){movetodiff(0);} : function(){movetodiff(1)}; 
+    newlink.onchange = j == 0 ? function(){movetodiff(0);} : function(){movetodiff(1);}; 
     newlink.setAttribute('id', 'movetodiff'+j);
     newlink.setAttribute('name', 'movetodiff'+j);
     difflink[j].parentNode.insertBefore( newlink, difflink[j].nextSibling );
@@ -255,7 +262,7 @@
     currentmovetodiffid.getElementsByTagName("option")[0].appendChild(newoptiontext);
     for (var k=0; k<2; k++) {
       if(k==0) { var thisiteration = numberrevisionjumperlength+1; } else { var thisiteration = timerevisionjumperlength+1; }
-      for(m=1;m<thisiteration;m++) {
+      for(var m=1;m<thisiteration;m++) {
         var newoption = document.createElement("option");
         if(k==0) {
           if(j==0) {
@@ -316,7 +323,7 @@
  
  function movetodiff(type){
    var handt = numberrevisionjumperlength+timerevisionjumperlength;
-   for (i=0;i<(handt+4);i++) {
+   for (var i=0;i<(handt+4);i++) {
      if (document.getElementById('movetodiff'+type).options[i+1].selected == true) {
        if (i<numberrevisionjumperlength || i==handt) {
          if(UrlParameters["diff"]) {
@@ -445,7 +452,7 @@
              var monthmatched = false;
              var daymatched = false;
              var hourmatched = false;
-             for(d=1;d<regexprevision.length;d++){
+             for(var d=1;d<regexprevision.length;d++){
               if(regexprevision[d]) {
                if(regexprevision[d].search(/a/)!=-1) { 
                  if(type==0) {
@@ -553,16 +560,16 @@
          var lasttime = false;
          while(!lasttime){
            var getjumptime = prompt(configrevisionjumper[19], actualyear+'-'+actualmonth+'-'+actualday+' 00:00');
-           var lasttime = getjumptime.match(/([^\-]*)\-([^\-]*)\-(\S*)\s?([^\:]*)?\:?([^\b]*)?/);
+           lasttime = getjumptime.match(/([^\-]*)\-([^\-]*)\-(\S*)\s?([^\:]*)?\:?([^\b]*)?/);
            lastyear = RegExp.$1;
            lastmonth = parseInt(RegExp.$2);
            lastday = parseInt(RegExp.$3);
            lasthour = RegExp.$4;
            lastminute = RegExp.$5;
          }
-         if (lastmonth < 10) { lastmonth = "0" + lastmonth.toString(); } else { lastmonth = lastmonth.toString() }
-         if (lastday < 10) { lastday = "0" + lastday.toString(); } else { lastday = lastday.toString() }
-         if (lasthour) { lasthour = parseInt(lasthour); if (lasthour == 0) { var lasthour2 = "00"; } else if (lasthour < 10) { var lasthour2 = "0" + lasthour.toString(); } else { var lasthour2 = lasthour.toString() } }
+         if (lastmonth < 10) { lastmonth = "0" + lastmonth.toString(); } else { lastmonth = lastmonth.toString(); }
+         if (lastday < 10) { lastday = "0" + lastday.toString(); } else { lastday = lastday.toString(); }
+         if (lasthour) { lasthour = parseInt(lasthour); if (lasthour == 0) { var lasthour2 = "00"; } else if (lasthour < 10) { var lasthour2 = "0" + lasthour.toString(); } else { var lasthour2 = lasthour.toString(); } }
          if (lastminute) { lastminute = parseInt(lastminute); if (lastminute == 0) { var lastminute2 = "00"; } else if (lastminute < 10) { var lastminute2 = "0" + lastminute.toString(); } else { var lastminute2 = lastminute.toString() } }
          if (lasthour2 && lastminute2) {
            var lastdate = Date.parse(lastmonth + ' ' + lastday + ' ' + lastyear + ' ' + lasthour2 + ':' + lastminute2 + ':00');

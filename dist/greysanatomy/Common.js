@@ -6,6 +6,7 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000394927', label: 'Discussion post'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000394902', label: 'Queer highlights in Grey\'s Anatomy'},
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

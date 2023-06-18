@@ -75,7 +75,8 @@ var toolbarLabel = 'Pride';
 var toolbarLinks = [
     {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
-    {link: 'https://hellskitchen.fandom.com/f/p/4400000000000070350', label: 'Discussion post'}
+    {link: 'https://hellskitchen.fandom.com/f/p/4400000000000070350', label: 'Discussion post'},
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
