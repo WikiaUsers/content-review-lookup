@@ -299,6 +299,10 @@
 
     window.DiscussionTemplates = {
       templates: {
+        "Welcome message": {
+          name: "Template:DT-Welcome",
+          title: "Welcome to Star Wars Fanon"
+        },
         "Image Policy": {
           name: "Template:DT-Image Policy",
           title: "Image Policy"

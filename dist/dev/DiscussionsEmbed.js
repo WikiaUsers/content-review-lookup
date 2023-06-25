@@ -1,15 +1,14 @@
 /* Based on https://dev.fandom.com/wiki/MediaWiki:DiscussionsRailModule/UCP.js */
 
-(function (window, $, mw) {
+(function ($, mw) {
+	'use strict';
 	$.when(mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.jqueryMsg"]), mw.hook("wikipage.content"))
 	.then(function() {
 		return new mw.Api().loadMessagesIfMissing(["recirculation-discussions-latest-discussions", "recirculation-discussion-link-text", "recirculation-discussions-in", "recirculation-discussion-title"]);
 	})
 	.then(function() {
-		if (typeof window.discussEmbed === "undefined") {
-			const discussEmbed = {};
-			window.discussEmbed = discussEmbed;
-		}
+		var discussEmbed = typeof window.discussEmbed !== "undefined" ? window.discussEmbed : {};
+		window.discussEmbed = discussEmbed;
 
 		if (!discussEmbed.isActive) {
 			discussEmbed.isActive = true;
@@ -307,4 +306,8 @@
 			});
 		}
 	});
-})(this, jQuery, mediaWiki);
+	importArticle({
+		type: 'style',
+		article: 'u:dev:MediaWiki:DiscussionsEmbed.css'
+	});
+})(window.jQuery, window.mediaWiki);

@@ -720,7 +720,33 @@ if ( purge_pages.includes(mw.config.get('wgPageName')) ) {
         });
     });
 }
-
+//load script for [[MapConvert]]
+$(function(){
+	if (mw.config.get('wgPageName') === 'MapConvert') {
+		importArticles({
+			type: 'script',
+			article: 'MediaWiki:CoordinatesConverter.js'
+	    });
+	}
+});
+//load script for [[Transcripts/Parser]]
+$(function(){
+	if (mw.config.get('wgPageName') === 'Transcripts/Parser') {
+		importArticles({
+			type: 'script',
+			article: 'MediaWiki:TranscriptParser.js'
+	    });
+	}
+});
+//load script for [[Template:Scene/Maker]]
+$(function(){
+	if (mw.config.get('wgPageName') === 'Template:Scene/Maker') {
+		importArticles({
+			type: 'script',
+			article: 'MediaWiki:SceneMaker.js'
+	    });
+	}
+});
 /* Animation starter for the daylight viewport in combination with 'day_cycle' class and keyframes*/
 $(function () {
 	if (document.getElementById("dayview")) {
@@ -731,7 +757,7 @@ $(function () {
 $(function () {
 	if (document.getElementById("minutes")) {
 		var minutes = new Date().getMinutes();
-		if (minutes < 10) {minutes = "0" + minutes}
+		if (minutes < 10) {minutes = "0" + minutes;}
 		document.getElementById("minutes").innerHTML = "hh:"+ minutes;
 	}
 });
@@ -834,7 +860,7 @@ $(function(){
 		looturl = 'https://tibia.fandom.com/wiki/Loot_Statistics:',
 		creaturenames = {'Sabretooth': 'Sabretooth (Creature)',
 						'Mooh\'tah Warrior': 'Mooh\'Tah Warrior'
-						}
+						};
 		lootValueData = [];
 		
 		$.each($('#lootValueData').text().split('|'), function() {
@@ -850,7 +876,7 @@ $(function(){
 			}
 		});
 		
-		lootValueData.sort(function(x,y){return (y.v - x.v)});
+		lootValueData.sort(function(x,y){return (y.v - x.v);});
 		
 		//$('#lootValueTable > tbody > tr')[1].remove();
 		
@@ -887,7 +913,7 @@ $(function(){
 		var notif = '<div id="kw-notification" style="display: none;">' +
 		'<div id="kw-content">' +
 		'<span>Keyword copied to clipboard!</span>' +
-		'</div></div>'
+		'</div></div>';
 		
 		$('.resizable-container').before(notif);
 		
@@ -926,7 +952,7 @@ $(function(){
 		var notif = '<div id="kw-notification" style="display: none;">' +
 		'<div id="kw-content">' +
 		'<span>Keyword copied to clipboard!</span>' +
-		'</div></div>'
+		'</div></div>';
 		
 		$('.resizable-container').before(notif);
 		

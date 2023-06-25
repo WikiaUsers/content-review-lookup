@@ -5,8 +5,10 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://familyguy.fandom.com/wiki/User_blog:Lady_Lostris/Celebrate_Pride_Month,_love,_and_acceptance_with_Fandom_and_the_Family_Guy_Wiki!', label: 'Overview blog'},
-    {link: 'https://familyguy.fandom.com/wiki/User_blog:Buckimion/Celebrating_Pride_Month_with_Bruce_and_Jeffrey', label: 'Pride with Bruce and Jeffrey'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'}
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'},
+    {link: 'https://familyguy.fandom.com/wiki/User_blog:Buckimion/Celebrating_Pride_Month_with_Bruce_and_Jeffrey', label: 'Pride with Bruce and Jeffrey'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

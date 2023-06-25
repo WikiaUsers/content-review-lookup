@@ -88,9 +88,7 @@ $( window ).resize( fp.equalizeColumns );
 /* End Front Page column height equalization *
 /*********************************************/
 
-
-importScriptPage( 'QuickIW/code.js', 'dev' );
-window.UserTagsJS = {
+var UserTagsJS = {
     modules: {},
     tags: {
         devcode: {
@@ -136,6 +134,8 @@ window.UserTagsJS = {
     }
 };
 
+window.UserTagsJS = UserTagsJS;
+
 UserTagsJS.modules.inactive = 35; // Inactive if no edits in 35 days
 
 UserTagsJS.modules.userfilter = {
@@ -147,10 +147,6 @@ UserTagsJS.modules.custom = {
         'LibertyPrimeTF2': ['devwriter'],
         'OzzAR0th': ['devart']
 };
-importArticle({
-    type: 'script',
-    article: 'w:c:dev:UserTags/code.js'
-});
 
 UserTagsJS.modules.inactive = 35; // Inactive if no edits in 35 days
 
@@ -165,7 +161,7 @@ UserTagsJS.modules.custom = {
 };
 
 function UserContribsMenuItem() {
-	$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/Special:Contributions/'+ encodeURIComponent (wgUserName) +'">My contributions</a></li>');
+	$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/Special:Contributions/'+ encodeURIComponent (mw.config.get('wgUserName')) +'">My contributions</a></li>');
 }
  
 $(UserContribsMenuItem);
@@ -184,7 +180,7 @@ function createCollapseButtons()
     var Tables = document.getElementsByTagName( "table" );
  
     for ( var i = 0; i < Tables.length; i++ ) {
-        if ( hasClass( Tables[i], "collapsible" ) ) {
+        if ( Tables[i].classList.contains( "collapsible" ) ) {
  
             /* only add button and increment count if there is a header row to work with */
             var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
@@ -209,7 +205,7 @@ function createCollapseButtons()
  
             ButtonLink.style.color = Header.style.color;
             ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
-            ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
+            ButtonLink.addEventListener('click', collapseTable(tableIndex));
             ButtonLink.appendChild( ButtonText );
  
             Button.appendChild( document.createTextNode( "[" ) );
@@ -221,15 +217,15 @@ function createCollapseButtons()
         }
     }
  
-    for ( var i = 0;  i < tableIndex; i++ ) {
-        if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
-            collapseTable( i );
+    for ( var j = 0;  j < tableIndex; j++ ) {
+        if ( NavigationBoxes[j].classList.contains( "collapsed" ) || ( tableIndex >= autoCollapse && NavigationBoxes[i].classList.contains( "autocollapse" ) ) ) {
+            collapseTable( j );
         } 
-        else if ( hasClass( NavigationBoxes[i], "innercollapse" ) ) {
-            var element = NavigationBoxes[i];
+        else if ( NavigationBoxes[j].classList.contains( "innercollapse" ) ) {
+            var element = NavigationBoxes[j];
             while (element = element.parentNode) {
-                if ( hasClass( element, "outercollapse" ) ) {
-                    collapseTable ( i );
+                if ( element.classList.contains( "outercollapse" ) ) {
+                    collapseTable ( j );
                     break;
                 }
             }

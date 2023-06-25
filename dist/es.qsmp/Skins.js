@@ -1,3 +1,4 @@
+/* Basada en HeroSkins CoC Wiki */
 $(document).ready(function() {
     $('.skin-container:not([data-mode])').attr('data-mode', 'preview').find('.models > div:first-child').addClass('active');
 

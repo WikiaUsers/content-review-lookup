@@ -35,10 +35,7 @@ $('.fandom-community-header__community-name-wrapper').append(
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
     {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
-    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213107', label: 'Discussion post'},
-    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000212609', label: 'Week 1 - The Gays in Art Class'},
-    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213088', label: 'Week 2 - The punk lesbians of Kitty Section'}
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

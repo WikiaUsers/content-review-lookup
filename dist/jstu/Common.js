@@ -1,1 +1,0 @@
-document.getElementById("wpUploadDescription").value = "{{Information\n| description = \n| date = \n| source = \n| author = \n}}";

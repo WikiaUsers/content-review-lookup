@@ -6,7 +6,9 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://memory-alpha.fandom.com/f/p/4400000000003742913', label: 'Discussion post'},
     {link: 'https://memory-alpha.fandom.com/f/p/4400000000003739278', label: 'Pride logo announcement'},
-
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

@@ -5,14 +5,8 @@
  * Originally by [[wikia:User:Splarka|Splarka]], then by [[User:Spang|Spang]],
  * This (jQuery) version by [[wikia:User:Joeyaa]], written to be backwards compatible
  */
- 
-if (wgUserName != 'null') {
+
+var wgUserName = mw.config.get('wgUserName');
+if (wgUserName) {
 	$('.insertusername').html(wgUserName);
 }
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:WikiActivity.js',
-    ]
-});

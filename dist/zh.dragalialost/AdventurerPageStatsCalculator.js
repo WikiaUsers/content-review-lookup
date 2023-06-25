@@ -1,9 +1,10 @@
-;(function(mw) {
+mw.hook('wikipage.content').add(function() {
 	'use strict';
-	// Constants
-	var MIN_LEVEL, MAX_LEVEL, MIN_HP, MAX_HP, MIN_STR, MAX_STR, NAT_RARITY;
+	var apsc = document.getElementById('AdventurerPageStatsCalculator');
+	if (!apsc) return;
 
-	var html = '<div id="adv-level-input-container" style="display:inline-block; text-align:center;">' +
+	var data = apsc.dataset,
+	    html = '<div id="adv-level-input-container" style="display:inline-block; text-align:center;">' +
 		'<form id="adv-rarity-select" style="display:inline;">' +
 			'<div id="adv-rarity-input-3" style="display:inline;"></div>' +
 			'<div id="adv-rarity-input-4" style="display:inline;"></div>' +
@@ -21,35 +22,46 @@
 			'</div>' +
 		'</div>' +
 	'</div>';
-
+	apsc.innerHTML = html;
+	var MIN_LEVEL = 1,
+	    MAX_LEVEL = 80,
+	    MIN_HP = [data.minHp3, data.minHp4, data.minHp5],
+	    MAX_HP = data.maxHp,
+	    MIN_STR = [data.minStr3, data.minStr4, data.minStr5],
+	    MAX_STR = data.maxStr,
+	    NAT_RARITY = data.rarity,
+	    ele = {
+	    	input: document.getElementById("adv-rarity-input-4"),
+	    	input1: document.getElementById("adv-level-input"),
+	    	input3: document.getElementById("adv-rarity-input-3"),
+	    	input4: document.getElementById("adv-rarity-input-4"),
+	    	input5: document.getElementById("adv-rarity-input-5"),
+	    	str: document.getElementById("adv-str"),
+	    	strLabel: document.getElementById("adv-str-label"),
+	    	hp: document.getElementById("adv-hp"),
+	    	hpLabel: document.getElementById("adv-hp-label")
+	    };
 	// Initialize the empty divs with content
-	function init() {
-		if (NAT_RARITY == 3) {
-			var input3 = document.getElementById("adv-rarity-input-3");
-			input3.innerHTML = '<input type="radio" value=3 name="rarity"><label for="adv-rarity-input-3">3★</label>';
-			input3.children[0].addEventListener('input', calcStats);
-			var input4 = document.getElementById("adv-rarity-input-4");
-			input4.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
-			input4.children[0].addEventListener('input', calcStats);
-		} else if (NAT_RARITY == 4) {
-			var input = document.getElementById("adv-rarity-input-4");
-			input.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
-			input.children[0].addEventListener('input', calcStats);
-		}
-		var input5 = document.getElementById("adv-rarity-input-5");
-		input5.innerHTML = '<input type="radio" value=5 name="rarity" checked=1><label for="adv-rarity-input-5">5★</label>';
-		input5.children[0].addEventListener('input', calcStats);
-		var input1 = document.getElementById("adv-level-input");
-		input1.innerHTML = '<label for="adv-level-input-field" style="font-weight:bold;">等级</label><input type="number" id="adv-level-input-field" value=80 min=1 max=80 style="width:40px; text-align:center; margin-left:5px;">';
-		input1.children[1].addEventListener('input', calcStats);
-		calcStats();
+	if (NAT_RARITY == 3) {
+		ele.input3.innerHTML = '<input type="radio" value=3 name="rarity"><label for="adv-rarity-input-3">3★</label>';
+		ele.input3.children[0].addEventListener('input', calcStats);
+		ele.input4.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
+		ele.input4.children[0].addEventListener('input', calcStats);
+	} else if (NAT_RARITY == 4) {
+		ele.input.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
+		ele.input.children[0].addEventListener('input', calcStats);
 	}
+	ele.input5.innerHTML = '<input type="radio" value=5 name="rarity" checked=1><label for="adv-rarity-input-5">5★</label>';
+	ele.input5.children[0].addEventListener('input', calcStats);
+	ele.input1.innerHTML = '<label for="adv-level-input-field" style="font-weight:bold;">等级</label><input type="number" id="adv-level-input-field" value=80 min=1 max=80 style="width:40px; text-align:center; margin-left:5px;">';
+	ele.input1.children[1].addEventListener('input', calcStats);
+	ele.levelInput = document.getElementById('adv-level-input-field');
+	calcStats();
 
 	// Calculate the HP and STR stats
 	function calcStats() {
 		// Get the level and rarity
-		var levelInput = document.getElementById('adv-level-input-field');
-		var level = levelInput.value;
+		var level = ele.levelInput.value;
 		var rarity = document.querySelector('input[name = "rarity"]:checked').value;
 	
 		// Manually set the level cap if we're dealing with a lower rarity
@@ -96,14 +108,14 @@
 
 	// Set the HP value in the display
 	function setHP(value, level) {
-		document.getElementById("adv-hp-label").textContent = (value !== "-") ? ("Lv." + level + " HP") : "HP";
-		document.getElementById("adv-hp").textContent = value;
+		ele.hpLabel.textContent = (value !== "-") ? ("Lv." + level + " HP") : "HP";
+		ele.hp.textContent = value;
 	}
 
 	// Set the Str value in the display
 	function setStr(value, level) {
-		document.getElementById("adv-str-label").textContent = (value !== "-") ? ("Lv." + level + " 攻") : "攻";
-		document.getElementById("adv-str").textContent = value;
+		ele.strLabel.textContent = (value !== "-") ? ("Lv." + level + " 攻") : "攻";
+		ele.str.textContent = value;
 	}
 
 	// Calculate the HP
@@ -121,21 +133,4 @@
 		var statGain = (level-1) * steps;
 		return Math.ceil(MIN_STR[rarity-3] + statGain);
 	}
-
-	function preload() {
-		var ele = document.getElementById('AdventurerPageStatsCalculator');
-		if (!ele) return;
-		var data = ele.dataset;
-		ele.innerHTML = html;
-		MIN_LEVEL = 1;
-		MAX_LEVEL = 80;
-		MIN_HP = [data.minHp3, data.minHp4, data.minHp5];
-		MAX_HP = data.maxHp;
-		MIN_STR = [data.minStr3, data.minStr4, data.minStr5];
-		MAX_STR = data.maxStr;
-		NAT_RARITY = data.rarity;
-		init();
-	}
-	// Load modules, init, etc.
-	mw.hook('wikipage.content').add(preload);
-})(window.mediaWiki);
+});

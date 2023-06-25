@@ -8,6 +8,7 @@ importArticles({
 		"u:dev:MediaWiki:AjaxRC.js",
 		"MediaWiki:Usernames.js",
 		"MediaWiki:HeroSkins.js",
+		"MediaWiki:HeroSkins2.js",
 		"MediaWiki:Toggle.js",
 		"MediaWiki:Protection.js",
 		"MediaWiki:AOTM.js",

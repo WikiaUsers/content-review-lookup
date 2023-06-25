@@ -8,10 +8,16 @@
 -----------------------
 - HeroSkins.css
 
----------
- AUTHORS 
----------
+-----------------------
+ AUTHORS & MAINTAINERS
+-----------------------
 - E12Dragon: current and original version
+
+--------------
+ INFORMATION
+--------------
+- For the old Hero Skin Wardrobes ("Template:Wardrobe-BK" etc)
+
 */
 $(document).ready(function() {
 	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
@@ -19,26 +25,31 @@ $(document).ready(function() {
 	//Define an undefined active model div and mode 
 	$('.HeroSkinMenu:not([data-mode])').each(function () {
 		$(this).attr('data-mode', 'Preview');
-		$(this).find('.HeroSkinMenu-Models > div:first-child').addClass('active');
+		$(this).find('.Models > div:first-child').addClass('active');
 	});
 	//Set GWM for GW wardrobe
 	$('.HeroSkinMenu[data-hero="GW"]').attr('data-gwm', 'Ground');
 	
-	$('.HeroSkinMenu .HeroSkinMenu-Interface-Toggle, .HeroSkinMenu .HeroSkinMenu-Interface-GWM').click(function () {
+	$('.HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
 		var Wardrobe = $(this).parents('.HeroSkinMenu');
 		var Hero = $(Wardrobe).attr('data-hero');
-		var Skin = $(this).siblings('.HeroSkinMenu-Interface-Title').text();
+		var Skin = $(this).siblings('.Title').text();
 		var Mode = $(Wardrobe).attr('data-mode');
 		var GWM = $(Wardrobe).attr('data-gwm');
 		
 		//Toggle through the different models
-		if ($(this).hasClass('HeroSkinMenu-Interface-Toggle')) {
-			$(Wardrobe).find('.HeroSkinMenu-Models > div').removeClass('active');
+		if ($(this).hasClass('Toggle')) {
+			$(Wardrobe).find('.Models > div').removeClass('active');
 			if (Mode == 'Preview') {
-				Mode = 'Pose';
-			}else if (Mode == 'Pose') {
 				Mode = 'Idle';
 			}else if (Mode == 'Idle') {
+				//Check if poses exist
+				if ( $(Wardrobe).find('.Models .Poses').length ) {
+					Mode = 'Pose';
+				}else {
+					Mode = 'KO';
+				}
+			}else if (Mode == 'Pose') {
 				Mode = 'KO';
 			}else if (Mode == 'KO') {
 				Mode = 'Downed';
@@ -48,13 +59,13 @@ $(document).ready(function() {
 			//When clicking the Mode toggle, we want to only add active to a single model mode. 
 			if (Mode == 'Preview') {
 				//First, if we are on preview, there is only one
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's').addClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's').addClass('active');
 			}else if (GWM == 'Air') {
 				//If in GW wardrobe and set to air, we need to activate only the air ones. Does not apply to preview
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's.Air').addClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's.Air').addClass('active');
 			}else {
 				//If we are on ground or in another wardrobe
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's:not(.Air)').addClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air)').addClass('active');
 			}
 			$(Wardrobe).attr('data-mode', Mode);
 		}else { //Then GWM button must have be clicked instead
@@ -63,19 +74,19 @@ $(document).ready(function() {
 			if (GWM == 'Ground') {
 				GWM = 'Air';
 				//If Mode is Preview we don't want to remove active as Preview is unique
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's:not(.Air):not(.Previews)').removeClass('active'); 
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's.Air').addClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air):not(.Previews)').removeClass('active'); 
+				$(Wardrobe).find('.Models .' + Mode + 's.Air').addClass('active');
 			}else {
 				GWM = 'Ground';
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's.Air').removeClass('active');
-				$(Wardrobe).find('.HeroSkinMenu-Models .' + Mode + 's:not(.Air)').addClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's.Air').removeClass('active');
+				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air)').addClass('active');
 			}
 			//Replace wardrobe value with new value
 			$(Wardrobe).attr('data-gwm', GWM);
 		}
 	});
 	
-	$(".SkinIcon").click(function () {
+	$(".HeroSkinMenu .SkinIcon").click(function () {
 		if (!$(this).hasClass('active')) {
 			//Get Skin
 			var Skin = $(this).attr("data-name");
@@ -104,7 +115,7 @@ $(document).ready(function() {
 			}
 			
 			//Hide the last active skin for the hero
-			$(Wardrobe).find('.SkinIcon, .HeroSkinMenu-Interface-Load, .Theme, .Preview, .Idle, .Pose, .KO, .Downed').removeClass("active");
+			$(Wardrobe).find('.SkinIcon, .Load, .Theme, .Preview, .Idle, .Pose, .KO, .Downed').removeClass("active");
 			$(Wardrobe).find('.SkinIcon').removeClass('played');
 	
 			//Make all things associated with the skin active (so they are visible)
@@ -118,38 +129,38 @@ $(document).ready(function() {
 			
 			//Add Tier to preview
 			if ($(this).attr('data-type')) {
-				$(Wardrobe).attr('data-type', Tier);
-				$(Wardrobe).find('.HeroSkinMenu-Interface-Subtitle').text(Tier);
+				$(Wardrobe).find('.SkinPreview').attr('data-type', Tier);
+				$(Wardrobe).find('.Subtitle').text(Tier);
 			}else {
-				$(Wardrobe).removeAttr('data-type');
-				$(Wardrobe).find('.HeroSkinMenu-Interface-Subtitle').text('');
+				$(Wardrobe).find('.SkinPreview').removeAttr('data-type');
+				$(Wardrobe).find('.Subtitle').text('');
 			}
 			
 			//Add theme to preview
 			if (Theme !== '') {
-				$(Wardrobe).attr('data-theme', Theme);
+				$(Wardrobe).find('.SkinPreview').attr('data-theme', Theme);
 			}else {
-				$(Wardrobe).removeAttr('data-theme');
+				$(Wardrobe).find('.SkinPreview').removeAttr('data-theme');
 			}
 			
 			//Change Skin Title
-			$(Wardrobe).find('.HeroSkinMenu-Interface-Title').text(Skin);
+			$(Wardrobe).find('.Title').text(Skin);
 		}
 	});
 	
-	$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .HeroSkinMenu-Interface-Toggle, .HeroSkinMenu .HeroSkinMenu-Interface-GWM').click(function () {
+	$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
 		var Wardrobe = $(this).parents('.HeroSkinMenu');
 		var Hero = $(Wardrobe).attr('data-hero');
-		var Skin = $(Wardrobe).find('.HeroSkinMenu-Interface-Title').text();
+		var Skin = $(Wardrobe).find('.Title').text();
 		var Mode = $(Wardrobe).attr('data-mode');
 		
 		//Lazyloading loading icon
-		if ($(Wardrobe).find('.HeroSkinMenu-Models > div.active > div.active img').hasClass('lazyload') ) {
-				$(Wardrobe).find('.HeroSkinMenu-Interface-Load').addClass('active');
+		if ($(Wardrobe).find('.Models > div.active > div.active img').hasClass('lazyload') ) {
+				$(Wardrobe).find('.Load').addClass('active');
 				var interval = setInterval(function () {
-					if ( $(Wardrobe).find('.HeroSkinMenu-Models > div.active > div.active img').hasClass('lazyloaded') ) {
+					if ( $(Wardrobe).find('.Models > div.active > div.active img').hasClass('lazyloaded') ) {
 						clearInterval(interval);
-						$(Wardrobe).find('.HeroSkinMenu-Interface-Load').removeClass('active');
+						$(Wardrobe).find('.Load').removeClass('active');
 					}
 			}, 10 );
 		}
@@ -166,13 +177,11 @@ $(document).ready(function() {
 		*/
 		
 		//Play the "click" sound
-		if (!$(this).hasClass('played')) {
-			new Audio(location + 'e/e6/Button_Click.ogg').play();
-		}
+		new Audio(location + 'e/e6/Button_Click.ogg').play();
 				
 		if (Mode !== 'Downed') {
-			if ($(Wardrobe).find('.HeroSkinMenu-Models > div.active > div.active').attr('data-sfx')) {
-				sfx = new Audio(location + $(Wardrobe).find('.HeroSkinMenu-Models > div.active > div.active').attr('data-sfx'));
+			if ($(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx')) {
+				sfx = new Audio(location + $(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx'));
 			}else if (Hero == 'BK') {
 				if (Mode == 'KO') {
 					sfx = new Audio(location + 'b/b0/Barbarian_King_Death.ogg');
@@ -229,6 +238,22 @@ $(document).ready(function() {
 				}else {
 					sfx = new Audio(location + 'e/e1/Royal_Champion_Pose.ogg');
 				}
+			}else if (Hero == 'BM') {
+				if (Mode == 'KO') {
+					sfx = new Audio(location + 'b/ba/Battle_Machine_Death.ogg');
+				}else if (Mode == 'Preview'){
+					sfx = new Audio(location + 'c/c3/Battle_Machine_Preview.ogg');
+				}else {
+					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
+				}
+			}else if (Hero == 'BC') {
+				if (Mode == 'KO') {
+					sfx = new Audio(location + 'f/f9/Battle_Copter_Death.ogg');
+				}else if (Mode == 'Preview'){
+					sfx = new Audio(location + 'd/d0/Battle_Copter_Preview.ogg');
+				}else {
+					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
+				}
 			}
 			
 			//Play the sfx on click
@@ -238,7 +263,7 @@ $(document).ready(function() {
 		}
 		//Stop any existing skin sfx when another one is played
 		if (Mode !== 'Downed') {
-			$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .HeroSkinMenu-Interface-Toggle, .HeroSkinMenu .HeroSkinMenu-Interface-GWM').click(function () {
+			$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
 					if (Skin !== $(this).attr('data-name')) {
 						sfx.pause();
 						sfx.currentTime = 0;

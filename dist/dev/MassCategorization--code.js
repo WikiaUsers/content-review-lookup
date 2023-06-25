@@ -50,8 +50,7 @@
             'i18n-js',
             'modal-js',
             'banners-js',
-            'dorui',
-            'lodash'
+            'dorui'
         ],
         onload: function(key, arg) {
             switch (key) {
@@ -69,9 +68,6 @@
                 case 'banners-js':
                     var BannerNotification = arg;
                     this.BannerNotification = BannerNotification;
-                    break;
-                case 'lodash':
-                    this.lodash = arg.lodash;
                     break;
                 case 'dorui':
                     ui = arg;
@@ -139,8 +135,6 @@
 
             // Loader modules
             mw.loader.using('mediawiki.api').then(this.onload.bind(this, 'api'));
-
-            this.getPrefixedModule('lodash').then(this.onload.bind(this, 'lodash'));
         },
 
         // Functions
@@ -352,11 +346,7 @@
             // Reflow the modal when the user resizes the textarea
             // You'd expect you could do this easier without observers. ¯\_(ツ)_/¯
             new MutationObserver(
-                // Thottling still looks smooth because of the transition
-                this.lodash.throttle(
-                    this.reflowModal.bind(this),
-                    150
-                )
+                this.reflowModal.bind(this)
             )
                 .observe(this.refs.pagesTextarea, {
                     attributes: true,

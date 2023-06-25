@@ -1,5 +1,5 @@
 ;(function($, mw) {
-	function init() {
+	mw.hook('wikipage.content').add(function() {
 		$('#sazwtracker').each(function() {
 			var warriors = {};
 			var sortedWarriors = [];
@@ -614,6 +614,5 @@
 			}
 			updateBlob();
 		});
-	}
-	mw.hook('wikipage.content').add(init);
+	});
 })(window.jQuery, window.mediaWiki);

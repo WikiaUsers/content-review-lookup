@@ -1,10 +1,12 @@
 /* Pride toolbar button */
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://open.spotify.com/playlist/0wItHPtLJBq7BBFdmXfbtW', label: 'Pride spotify playlist'},
-    {link: 'https://community.fandom.com/wiki/User_blog:Idekmandy/Fandom_Celebrates_Pride_Month:_Looking_Back_%26_Moving_Forward_With_the_Queens_of_RuPaul%27s_Drag_Race', label: 'Pride blog with Drag Queens interview'},
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://muppet.fandom.com/wiki/Forum:Celebrate_Pride_Month,_love,_and_acceptance_with_Fandom_and_the_Muppet_Wiki!', label: 'Forum post'},
-    {link: 'https://community.fandom.com/wiki/User_blog:Idekmandy/Editor_Stories:_Fandom_Celebrates_Pride_With_Itsbartbytheway', label: 'Pride Stories: Celebrate with Itsbartbytheway'}
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

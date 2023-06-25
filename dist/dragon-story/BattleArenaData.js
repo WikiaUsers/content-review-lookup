@@ -84,6 +84,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "super"
 			},
+			"admittance": {
+				"name": "Admittance",
+				"colors": [
+					"rainbow",
+					"blue",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"adorable": {
 				"name": "Adorable",
 				"colors": [
@@ -343,6 +352,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"valentine",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"ambit": {
+				"name": "Ambit",
+				"colors": [
+					"rainbow",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -2910,6 +2927,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "common"
 			},
+			"chromatide": {
+				"name": "Chromatide",
+				"colors": [
+					"rainbow",
+					"green",
+					"purple"
+				],
+				"rarity": "common"
+			},
 			"chrome": {
 				"name": "Chrome",
 				"colors": [
@@ -3208,6 +3234,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"comprisal": {
+				"name": "Comprisal",
+				"colors": [
+					"rainbow",
+					"yellow",
+					"pink"
+				],
+				"rarity": "common"
+			},
 			"confection": {
 				"name": "Confection",
 				"colors": [
@@ -3289,6 +3324,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"red"
+				],
+				"rarity": "unbreedable"
+			},
+			"content": {
+				"name": "Content",
+				"colors": [
+					"rainbow",
+					"purple",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -5249,6 +5293,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"emotive": {
+				"name": "Emotive",
+				"colors": [
+					"rainbow",
+					"black",
+					"purple"
+				],
+				"rarity": "unbreedable"
+			},
 			"empathy": {
 				"name": "Empathy",
 				"colors": [
@@ -5477,6 +5530,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"yellow"
 				],
 				"rarity": "rare"
+			},
+			"eventide": {
+				"name": "Eventide",
+				"colors": [
+					"rainbow",
+					"red",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"evergreen": {
 				"name": "Evergreen",
@@ -6205,6 +6267,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"flux": {
+				"name": "Flux",
+				"colors": [
+					"rainbow",
+					"pink",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"focal": {
 				"name": "Focal",
 				"colors": [
@@ -6735,6 +6806,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"gamut": {
+				"name": "Gamut",
+				"colors": [
+					"rainbow",
+					"red",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"gardener": {
 				"name": "Gardener",
 				"colors": [
@@ -7063,6 +7143,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"flower",
 					"white",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"glamour": {
+				"name": "Glamour",
+				"colors": [
+					"rainbow",
+					"yellow",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -8757,6 +8846,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"fairytale",
 					"black",
 					"white"
+				],
+				"rarity": "unbreedable"
+			},
+			"impartial": {
+				"name": "Impartial",
+				"colors": [
+					"rainbow",
+					"yellow",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -13094,6 +13192,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"rainbow",
 					"white",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"persona": {
+				"name": "Persona",
+				"colors": [
+					"rainbow",
+					"green",
+					"purple"
 				],
 				"rarity": "unbreedable"
 			},
@@ -18682,6 +18789,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"red"
 				],
 				"rarity": "common"
+			},
+			"variegated": {
+				"name": "Variegated",
+				"colors": [
+					"rainbow",
+					"yellow",
+					"purple"
+				],
+				"rarity": "unbreedable"
 			},
 			"vela": {
 				"name": "Vela",

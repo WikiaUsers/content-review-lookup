@@ -615,8 +615,8 @@
             scripts: 'MediaWiki:Stella.js'
         },
         StylizedTabs: {
-        	page: 'StylizedTabs',
-        	styles: 'MediaWiki:StylizedTabs.css'
+            page: 'StylizedTabs',
+            styles: 'MediaWiki:StylizedTabs.css'
         },
         Tabber: {
             page: 'Global_Lua_Modules/Tabber',
@@ -731,6 +731,11 @@
                 mw.config.set('wgCanonicalSpecialPageName', 'Wantedpages');
             }
         },
+        
+        WdsTooltips: {
+            page: 'WdsTooltips',
+            styles: 'MediaWiki:WdsTooltips.css'
+        }
         
         WikiaCommunityCentralTheme: {
             page: 'WikiaCommunityCentralTheme',

@@ -1,36 +1,3 @@
-// Ajax auto-refresh
-window.ajaxPages = [
-    'Special:RecentChanges',
-    'Special:WikiActivity',
-    'Special:Contributions'
-];
-window.AjaxRCRefreshText = 'Auto-refresh';
-
-/**
- * Add a css class to user tags based on the tag's text
- */
-(function () {
-    // Don't run on pages w/o a masthead
-    if (!$('#userProfileApp').length) return;
-
-    // Wait until the masthead loads
-    const interval = setInterval(function () {
-        if ($('#userProfileApp').length) {
-            clearInterval(interval);
-            // Get all the tags
-            const userTags = document.querySelectorAll('.user-identity-header__tag');
-
-            // For each tag add a class equal to
-            // 'user-identity-header__tag--' + lowercased tag text
-            userTags.forEach(function (tag) {
-                tag.classList.add(
-                    'user-identity-header__tag--' + tag.textContent.toLowerCase().replace(' ', '-')
-                );
-            });
-        }
-    }, 1000);
-})();
-
 // adds show/hide-button to navigation bars
 function createDivToggleButton(){
     var indexNavigationBar = 0;
@@ -80,7 +47,7 @@ $( createDivToggleButton );
 
 (function DailyPurge(window, $, mw) {
 	"use strict";
-
+/*add pages to be purged every 24 hours directly below*/
 	const pagesList = [
 		'Blog:Staff Blog Posts'
                 'Category:Staff Blog Posts'
@@ -122,3 +89,46 @@ $( createDivToggleButton );
 	});
 
 })(window, jQuery, mediaWiki);
+
+// give a user a message if they use a prohibited word
+// List of prohibited words
+const prohibitedWords = ["shit", "damn", "fuck", "piss"];
+
+// Function to check if the user's input contains any prohibited words
+function containsProhibitedWords(input) {
+  for (let i = 0; i < prohibitedWords.length; i++) {
+    const word = prohibitedWords[i];
+    if (input.toLowerCase().includes(word)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Check if the user's input contains prohibited words
+if (containsProhibitedWords(userInput)) {
+  console.log("no no no, we don't allow that word here");
+  // Here, you can take appropriate action such as hiding the user's comment or showing a warning message
+}
+
+
+// customize Moderators usernames
+// Get all the usernames
+var usernames = document.getElementsByClassName('username');
+
+// Loop through each username
+for (var i = 0; i < usernames.length; i++) {
+  var username = usernames[i];
+
+  // Check if the user belongs to the "content-moderator" usergroup
+  if (username.classList.contains('content-moderator')) {
+    // Set the color of the username to #ed092f (red)
+    username.style.color = '#ed092f';
+  }
+
+  // Check if the user belongs to the "threadmoderator" usergroup
+  if (username.classList.contains('threadmoderator')) {
+    // Set the color of the username to #09ede6 (blue)
+    username.style.color = '#09ede6';
+  }
+}

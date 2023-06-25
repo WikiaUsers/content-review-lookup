@@ -5,6 +5,8 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://walkingdead.fandom.com/f/p/4400000000003743281', label: 'Discussion post'},
     {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'},
     {link: 'https://walkingdead.fandom.com/f/p/4400000000003740069', label: 'Celebrating Pride: Andrew and Dexter'},
     {link: 'https://walkingdead.fandom.com/f/p/4400000000003740381', label: 'Celebrating Pride: Aaron and Eric'},
     {link: 'https://walkingdead.fandom.com/f/p/4400000000003740499', label: 'Celebrating Pride: Carol (Comic Series)'},

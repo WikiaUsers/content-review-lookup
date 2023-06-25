@@ -101,7 +101,7 @@ $(function() {
             $("#gtw-clock #c-event [data-to]").each(function() {
             	var td = parseInt($(this).attr("data-to"))-Math.round(time/1000);
             	var ts = "";
-            	if(td>86400) ts+=(td/86400|0)+"d ";
+            	if(td>86400) ts+=(td/86400|0)+"h ";
             	if(td>3600) ts+=clock_pad(td%86400/3600|0)+":";
             	if(td>60) ts+=clock_pad(td%3600/60|0)+":";
             	ts+=clock_pad(td%60);

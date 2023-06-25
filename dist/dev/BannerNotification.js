@@ -19,17 +19,6 @@
 		warning: 'warn'
 	};
 
-    function getUCPBannerModuleName() {
-        var modules = mw.loader.getModuleNames();
-        var prefix = 'BannerNotifications-';
-        var len = prefix.length;
-        var bannerModule = modules.find(function(mod) {
-            return mod.slice(0, len) === prefix;
-        });
-
-        return bannerModule;
-    }
-
     // your gold standard create class utility. yes. this will fuck up the display name in the console.
     // The alternative is passing a named constructor as its own parameter, but I just think this looks better
     // Eh... it also lets you omit the instanceof check in your own code
@@ -163,7 +152,7 @@
         });
     }
 
-    var bannerModule = getUCPBannerModuleName();
+    var bannerModule = 'ext.fandom.bannerNotifications.js';
 
 	mw.loader.using(bannerModule).then(function(require) {
 		var mod = require(bannerModule);

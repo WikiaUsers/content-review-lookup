@@ -377,7 +377,7 @@
 
       $element.find(".wds-dropdown").removeClass("wds-dropdown");
 
-      var detailsElements = document.querySelectorAll("#wikiMenu details");
+      var detailsElements = document.querySelectorAll("#wikiMenu :is(.wiki-menu__contents > details, .menu.wiki > details)");
       detailsElements.forEach(function (deet) {
         deet.addEventListener("toggle", toggleOpenOneOnly);
       });

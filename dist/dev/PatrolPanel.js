@@ -5,7 +5,7 @@ mw.loader.using([
     if (mw.config.get('wgNamespaceNumber') !== -1 || mw.config.get('wgTitle') !== 'PatrolPanel') {
         return;
     }
-    var intro = 'Howdy ' + mw.config.get('wgUserGroups')[0] + '! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style="color: var(--themed-button-background); font-weight: bold;">administrator/content moderator</span>. This feed doesn\'t show edits by any of the afformentioned groups; and only shows edits within the main namespace.';
+    var intro = 'Howdy ' + mw.config.get('wgUserGroups')[0] + '! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style="color: var(--themed-button-background); font-weight: bold;">administrator/content moderator</span>. This feed doesn\'t show edits by any of the aformentioned groups and only shows edits within the main namespace.';
     document.title = 'Patrol Panel';
     $('.page-header__title').text('Patrol Panel!');
     var api = new mw.Api();

@@ -5,8 +5,11 @@ var toolbarLinks = [
     {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
     {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213107', label: 'Discussion post'},
     {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'},
     {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000212609', label: 'Week 1 - The Gays in Art Class'},
-    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213088', label: 'Week 2 - The punk lesbians of Kitty Section'}
+    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213088', label: 'Week 2 - The punk lesbians of Kitty Section'},
+    {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213614', label: 'Week 3 - The uninterested bunch'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

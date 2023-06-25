@@ -22,6 +22,19 @@ importArticles({
     ]
 });
 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		bureaucrat: { u:'Administrator' },
+		inactive: { u: 'Has not edited recently' }
+	}
+};
+
+// Add custom
+UserTagsJS.modules.custom = {
+	'HiddenVale': ['Administrator'],
+};
+
 /** Extra toolbar options ****************************************************** 
   *
   To disable this script, add <code>mwCustomEditButtons = [];<code> to [[Special:Mypage/monobook.js]]

@@ -20,8 +20,8 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
 	'Billybob125poopz': ['bureaucrat', 'pooper', 'rosenist', 'owner', 'potatofartz'], // Hope this works
-	'The_Toon_Tomahawk' : ['bureaucrat', 'pooper'],
-	'Fantastic_Plums' : ['admin', 'pooper'],
+	// 'The_Toon_Tomahawk' : ['bureaucrat', 'pooper'],
+	'Fantastic_Plums' : ['pooper'],
 	'NANGYLOL' : ['pooper'],
 	'NoiceDrinkz' : ['pooper', 'birthdaycollab'],
 	'RadStink' : ['pooper', 'rosenist', 'rollback'],
@@ -30,14 +30,13 @@ UserTagsJS.modules.custom = {
 	'VintagePineapple' : ['pooper'],
 	'PlumsInc' : ['pooper'],
 	'DizzyingKaleidoscope' : ['pooper'],
-	'CJ-Melon' : ['pooper', 'birthdaycollab']
+	'CJ-Melon' : ['pooper', 'birthdaycollab'],
+	'Fryciopoop' : ['pooper'],
+	'VreyIsGrey' : ['pooper'],
+	'McSentry' : ['pooper']
 };
 /*End of User Tags*/
 
-/*RailWAM (Detotaited WAM)*/
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
 // Michael Rosen Discord
 window.DiscordIntegratorConfig = {
     siderail: {
