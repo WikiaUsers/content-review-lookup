@@ -33,4 +33,26 @@ importArticles({
         "MediaWiki:Common.js/Toggler.js"
     ]
 });
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
+//////////////////////////////////////////////////////////////////// */
+
+var number_of_wiki_names = 4;
+var wiki_name_number = 0;
+
+while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
+  wiki_name_number = Math.random().toFixed(2) * 100;
+};
+var wiki_name_text=["Mỗi ngày trở nên tươi sáng hơn - Every Day Gets Brighter", "Ngươi cũng không phải là chính mình...", "Không có lý do gì để chạy. Bạn đang chạy trốn khỏi ai?", "Bạn đã đến Hiệp hội huyền bí Bythorne, tôi có thể giúp gì cho bạn?"][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
+
+/* 
+////////////////////////////////////////////////////////////////////
+// THE BELOW CODE ADDS CUSTOM BUTTONS TO THE JAVASCRIPT EDIT TOOLBAR
+////////////////////////////////////////////////////////////////////
+*/
+
 /* còn lại các code javascript mà wiki này sử dụng đều đã sử dụng hợp lý ở MediaWiki:ImportJS */

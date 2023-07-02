@@ -1,17 +1,20 @@
 /* Pride toolbar button */
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003743281', label: 'Discussion post'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
-    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
-    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740069', label: 'Celebrating Pride: Andrew and Dexter'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740381', label: 'Celebrating Pride: Aaron and Eric'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740499', label: 'Celebrating Pride: Carol (Comic Series)'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003741483', label: 'Celebrating Pride: Paul "Jesus" Monroe/Rovia'},
-    {link: 'https://walkingdead.fandom.com/f/p/4400000000003741524', label: 'Celebrating Pride: Alex and Wes'}
+	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
+    {link: 'https://bit.ly/PrideEditorStory-Kurt', label: 'June 28: Pride Highlight: Meet Kurt'},
+    {link: 'https://bit.ly/PrideEditorStory-Vinny', label: 'June 27: Pride Highlight: Meet Vinny'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'June 23: Pride Highlight: Meet Sam/Lemon Skweezy'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'June 20: How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'June 15: Pride Stories: Celebrate with Bart'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003743281', label: 'June 12: Discussions post'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'June 6: Pride blog with Drag Queens interview'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003741524', label: 'June 5: Celebrating Pride: Alex and Wes'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003741483', label: 'June 4: Celebrating Pride: Paul "Jesus" Monroe/Rovia'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740499', label: 'June 3: Celebrating Pride: Carol (Comic Series)'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740381', label: 'June 2: Celebrating Pride: Aaron and Eric'},
+    {link: 'https://walkingdead.fandom.com/f/p/4400000000003740069', label: 'June 1: Celebrating Pride: Andrew and Dexter'},
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'June 1: Pride spotify playlist'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

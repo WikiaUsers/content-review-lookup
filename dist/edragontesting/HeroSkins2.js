@@ -200,6 +200,11 @@ $(document).ready(function() {
 		If a skin has more than one audio for an animation,
 		then an exception needs to be outlined here. 
 		*/
+		
+		//Play the "click" sfx
+		if (!$(this).hasClass('played') && !$(this).hasClass('HSM-Sound') && !$(Wardrobe).hasClass('muted')) {
+			new Audio(location + 'e/e6/Button_Click.ogg').play();
+		}
 				
 		if (Mode !== 'Downed') {
 			if ($(Wardrobe).find('.HSM-Models > div.active > div.active').attr('data-sfx')) {
@@ -284,7 +289,6 @@ $(document).ready(function() {
 			
 			//Play the sfx on click unless it has already been played or the wardrobe is muted or we are clicking the sound button
 			if (!$(this).hasClass('played') && !$(this).hasClass('HSM-Sound') && !$(Wardrobe).hasClass('muted')) {
-				new Audio(location + 'e/e6/Button_Click.ogg').play();
 				sfx.play();
 			}
 			

@@ -105,7 +105,8 @@
         
         CSS3Tooltip: {
             page: 'CSS3Tooltip',
-            styles: 'MediaWiki:CSS3Tooltip.css'
+            styles: 'MediaWiki:CSS3Tooltip.css',
+            scripts: 'MediaWiki:CSS3Tooltip/code-2/demo.js'
         },
         
         DataTables: {
@@ -734,8 +735,8 @@
         
         WdsTooltips: {
             page: 'WdsTooltips',
-            styles: 'MediaWiki:WdsTooltips.css'
-        }
+            styles: ['MediaWiki:WdsTooltips.css', 'MediaWiki:WdsTooltips/demo.css']
+        },
         
         WikiaCommunityCentralTheme: {
             page: 'WikiaCommunityCentralTheme',

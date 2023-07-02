@@ -35,7 +35,7 @@ window.questions = [
     "Awakened",	
     "Aspirants",
     "Dormant",
-    "Sleepers"],
+    "Dreamers"],
     
     ["What serves as both an anchor and exit point for Awakened to enter and exit Dream Realm?",
     "Gateway",

@@ -121,7 +121,7 @@ $(function () {
    customisation
    ================ */
 window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:Watchlist","Special:Log","Special:Contributions"];
-window.ajaxRefresh = 30000
+window.ajaxRefresh = 30000;
 AjaxRCRefreshText = 'Auto-refresh via AJAX';
 AjaxRCRefreshHoverText = 'Automatically refreshes the page';
 /* ================
@@ -170,3 +170,45 @@ window.AutoCreateUserPagesConfig = {
     summary: 'Automatic creation of user pages via script',
     notify: '<a href="/wiki/User talk:$2">Welcome to Tardis!, $1!</a>'
 };
+
+/* ================
+   {{cite source}}
+   Accesability
+   tweaks
+   ================ */
+$(document).ready(function(){
+	$('.inline-citation-extra').each(function(i, obj) {
+	    $(obj).attr("aria-hidden","true");
+	    var citeID = $(obj).attr('id');
+	    var citeIDNum = citeID.slice(29); //get number at end of ID
+	    var toggle = $(".mw-customtoggle-citation" + citeIDNum);
+	    $(toggle).attr("aria-controls",citeID);
+		$(toggle).attr("title","Expand " + $(toggle).attr("title").slice(14));
+		$(toggle).attr("aria-label",$(toggle).attr("title"));
+	});
+}); 
+$(".inline-citation-extra").on("afterExpand.mw-collapsible", function() {
+	$(this).attr("aria-hidden","false");
+	var citeIDNum = $(this).attr('id').slice(29); //get number at end of ID
+	var toggle = $(".mw-customtoggle-citation" + citeIDNum);
+	$(toggle).attr("aria-expanded","true");
+	$(toggle).attr("title","Collapse " + $(toggle).attr("title").slice(7));
+	$(toggle).attr("aria-label",$(toggle).attr("title"));
+});
+$(".inline-citation-extra").on("afterCollapse.mw-collapsible", function() {
+	$(this).attr("aria-hidden","true");
+	var citeIDNum = $(this).attr('id').slice(29); //get number at end of ID
+	var toggle = $(".mw-customtoggle-citation" + citeIDNum);
+	$(toggle).attr("aria-expanded","false");
+	$(toggle).attr("title","Expand " + $(toggle).attr("title").slice(9));
+	$(toggle).attr("aria-label",$(toggle).attr("title"));
+});
+
+/* ================
+   {{nwlh}}
+   ================ */
+$(document).ready(function(){
+	$('.non-wlh-link').children("a").each(function(i, obj) {
+		$(obj).removeAttr("target");
+	});
+});

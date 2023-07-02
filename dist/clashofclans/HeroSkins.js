@@ -8,10 +8,16 @@
 -----------------------
 - HeroSkins.css
 
----------
- AUTHORS 
----------
+-----------------------
+ AUTHORS & MAINTAINERS
+-----------------------
 - E12Dragon: current and original version
+
+--------------
+ INFORMATION
+--------------
+- For the old Hero Skin Wardrobes (pre June 2023 update)
+
 */
 $(document).ready(function() {
 	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
@@ -80,7 +86,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	$(".SkinIcon").click(function () {
+	$(".HeroSkinMenu .SkinIcon").click(function () {
 		if (!$(this).hasClass('active')) {
 			//Get Skin
 			var Skin = $(this).attr("data-name");

@@ -594,6 +594,7 @@
 			{ name: 'Skeleton Horse' },
 			{ name: 'Skeleton Horse Pet (summoned)', mcName:'Saddled Skeleton Horse' },
 			{ name: 'Skeleton' },
+			{ name: 'Skeleton (Unarmed)', mcName: 'Skeleton Without Bow' },
 			{ name: 'Slime', png:true },
 			{ name: 'Snow Golem' },
 			{ name: 'Spider Jockey' },

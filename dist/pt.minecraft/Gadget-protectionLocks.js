@@ -46,7 +46,7 @@
 	}
 
 	const protectionLevel = protectionLevelData[0];
-	if (protectionLevel === 'autoconfirmed') {
+	if (protectionLevel === 'autoconfirmed') { // [[File:Semi-protected page lock.png]]
 		mimicIndicator(
 			'protection-semi',
 			'Minecraft Wiki:Usuários autoconfirmados',
@@ -54,7 +54,7 @@
 			'9/9b',
 			'Esta página é semi-protegida para que somente usuários registrados possam editá-la.'
 		).prependTo($('.page-header__actions'));
-	} else if (protectionLevel === 'directoreditprotected') {
+	} else if (protectionLevel === 'directoreditprotected') { // [[File:Director-protected page lock.png]]
 		mimicIndicator(
 			'protection-director',
 			'Minecraft Wiki:Diretores',
@@ -62,7 +62,7 @@
 			'8/85',
 			'Esta página é protegida apenas por diretores de modo que somente os diretores podem editá-la.'
 		).prependTo($('.page-header__actions'));
-	} else if (protectionLevel === 'sysop') {
+	} else if (protectionLevel === 'sysop') { // [[File:Fully-protected page lock.png]]
 		mimicIndicator(
 			'protection-full',
 			'Minecraft Wiki:Administradores',

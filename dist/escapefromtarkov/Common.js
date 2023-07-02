@@ -90,6 +90,7 @@ window.mapsExtendedConfig = {
                         "spawn_sniper",
                         "spawn_boss",
                         "spawn_rogueraider",
+                        "spawn_bloodhound",
                         "spawn_cultist"
                     ]
                 }

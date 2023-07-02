@@ -4,7 +4,7 @@
 ;( function () {
 	var conf = mw.config.get( [ 'wgArticleId', 'wgNamespaceNumber', 'wgPageName', 'wgPageContentModel' ] );
 	
-	if ( conf.wgArticleId === 0 || conf.wgNamespaceNumber !== 10 || !conf.wgPageName.match( /estilos\.css$/ ) || conf.wgPageContentModel === 'css' ) {
+	if ( conf.wgArticleId === 0 || conf.wgNamespaceNumber !== 10 || !conf.wgPageName.match( /\.css$/ ) || conf.wgPageContentModel === 'css' ) {
 		return;
 	}
 	

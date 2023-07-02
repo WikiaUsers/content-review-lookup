@@ -90,8 +90,8 @@ $(document).ready(function() {
     	['6/6d/CHG_Walls_Igloo_Walls.png', 'Igloo Walls'],
     	['0/01/CHG_Walls_Gingerbread_Walls.png', 'Gingerbread Walls'],
     	['3/3a/CHG_Walls_Goblin_Walls.png', 'Goblin Walls'],
-    	['a/a8/CHG_Walls_Chess_Walls_1.png', 'Chess Walls Type 1'],
-    	['f/f8/CHG_Walls_Chess_Walls_2.png', 'Chess Walls Type 2'],
+    	['a/a8/CHG_Walls_Chess_Walls_1.png', 'White Chess Walls'],
+    	['f/f8/CHG_Walls_Chess_Walls_2.png', 'Black Chess Walls'],
     	['b/bc/CHG_Walls_Greenhouse_Walls.png', 'Greenhouse Walls'],
     	['c/c4/CHG_Walls_Summer_Walls.png', 'Summer Walls'],
     ];
@@ -141,8 +141,8 @@ $(document).ready(function() {
     	['e/e7/CHG_Roof_Gingerbread_Roof.png', 'Gingerbread Roof'],
     	['c/cd/CHG_Roof_Gingerbread_Roof_2.png', 'Gingerbread Roof Type 2'],
     	['f/fd/CHG_Roof_Goblin_Roof.png', 'Goblin Roof'],
-    	['d/d2/CHG_Roof_Chess_Roof_1.png', 'Chess Roof Type 1'],
-    	['c/c7/CHG_Roof_Chess_Roof_2.png', 'Chess Roof Type 2'],
+    	['d/d2/CHG_Roof_Chess_Roof_1.png', 'White Chess Roof'],
+    	['c/c7/CHG_Roof_Chess_Roof_2.png', 'Black Chess Roof'],
     	['c/c0/CHG_Roof_Greenhouse_Roof.png', 'Greenhouse Roof'],
     	['7/79/CHG_Roof_Summer_Roof.png', 'Summer Roof'],
     ];

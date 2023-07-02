@@ -157,7 +157,7 @@
 	}
 	function indexNames(name) {
 		const _indexFilter = function(ele) {
-			return ele.innerText.includes(name);
+			return ele.innerText === name;
 		};
 		return Array.from(document.querySelectorAll("code[isSprite]")).filter(_indexFilter);
 	}
@@ -184,7 +184,7 @@
 		delete a.settings.spacing;
 		if (a.settings.version) {
 			a.settings.version = "version=" + Date.now();
-		} else {
+		} else if (a.settings.url || options.isNew) {
 			a.settings.url = "require( [[" + config.wgFormattedNamespaces[828] + ":Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName.name + ".png") + "', 'format=original&version=" + Date.now() + "', '" + loadedSpriteName.module.toLowerCase().substring(0, loadedSpriteName.module.length - 6) + "-sprite' ),";
 		}
 		a.settings.sheetsize = options.spritesPerRow * (imgWidth + options.spacing) - options.spacing;
@@ -203,12 +203,13 @@
 				for (var k = 0; k < names.length; k++) {
 					if (options.removeDeprecatedNames && names[k].children[0].classList.contains("spritedoc-deprecated")) continue;
 					if (boxes[j].dataset.pos === "null") continue;
+					var p = options.removeUnusedSprites && options.removeWhitespace && boxes[j].dataset.posTmp || boxes[j].dataset.pos;
 					a.ids[names[k].children[0].textContent] = {
-						pos: boxes[j].dataset.pos,
+						pos: p,
 						section: secId
 					};
 					if (boxes[j].dataset.default) {
-						a.settings.pos = boxes[j].dataset.pos;
+						a.settings.pos = p;
 					}
 					if (names[k].children[0].classList.contains("spritedoc-deprecated")) {
 						a.ids[names[k].children[0].textContent].deprecated = true;
@@ -281,6 +282,23 @@
 			return to_return.join("\n");
 		}
 	}
+	function addDummyPos() {
+		var allPos = [];
+		var allSprites = root.querySelectorAll('li[class="spritedoc-box"]');
+		for (var i = 0; i < allSprites.length; i++) {
+			if (allSprites[i].dataset.pos === "null") continue;
+			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll("code").length) {
+				continue;
+			}
+			allPos.push(Number(allSprites[i].dataset.pos));
+		}
+		allPos.sort(function(a, b) {
+			return a - b;
+		});
+		allPos.forEach(function(item, index) {
+			document.querySelectorAll("li[data-pos='" + item + "']")[0].dataset.posTmp = index + 1;
+		});
+	}
 	function getPosCoords(pos, useOrg) {
 		var sPR = useOrg && options.spritesPerRowOrg || options.spritesPerRow;
 		var s = useOrg && imgSpacingOrg || options.spacing;
@@ -294,6 +312,9 @@
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
 		var keepOldSprites = !options.removeUnusedSprites && !options.isNew;
+		if (options.removeUnusedSprites && options.removeWhitespace) {
+			addDummyPos();
+		}
 		var spritesPerRow = options.spritesPerRow;
 		c.width = (imgWidth + options.spacing) * spritesPerRow - options.spacing;
 		c.height = 0;
@@ -309,7 +330,7 @@
 			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll("code").length) {
 				continue;
 			}
-			sID = allSprites[i].dataset.pos;
+			sID = options.removeUnusedSprites && options.removeWhitespace && allSprites[i].dataset.posTmp || allSprites[i].dataset.pos;
 			if (sID === "null") continue;
 			coords = getPosCoords(sID, false);
 			drawn[sID] = true;
@@ -1288,7 +1309,7 @@
 						}
 					]
 				});
-				dia.$body.get(0).querySelector(".oo-ui-messageDialog-message").innerHTML = '© Magiczocker 2022<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a>';
+				dia.$body.get(0).querySelector(".oo-ui-messageDialog-message").innerHTML = '© Magiczocker 2023<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a>';
 			});
 			var frame = new OO.ui.PanelLayout({
 				classes: [ 'spriteedit-toolbar' ],

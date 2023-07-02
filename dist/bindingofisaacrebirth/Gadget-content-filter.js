@@ -8,7 +8,77 @@
  */
 
 // <nowiki>
-( function () {
+
+/**
+ * Utility functions and variables set by the content filter.
+ * @typedef Util
+ * 
+ * @property {number} selectedFilter
+ * The currently selected filter.
+ * 
+ * @property {( container: Element ) => void} applyFilter
+ * Removes elements with a filter from a container.
+ */
+
+( function ( $, mw, console, /** @type {Util} */ util ) {
+
+/** @this {(...msg: string[] ) => void} */
+function logger() {
+	var args = Array.prototype.slice.call(arguments);
+	args.unshift("Content Filter:");
+	this.apply(null, args);
+}
+var log   = logger.bind( console.log ),
+    warn  = logger.bind( mw.log.warn ),
+    error = logger.bind( mw.log.error );
+
+if ( util ) {
+	error( 'Another instance of the script is already running.' );
+	return;
+}
+
+log( 'Loading.' );
+
+/**
+ * MediaWiki configuration values.
+ * @typedef MWConfig
+ * 
+ * @property {string} skin
+ * The wiki skin.
+ * 
+ * @property {string} wgAction
+ * The action being realised on the page (view, edit, history, etc.).
+ * 
+ * @property {string} wgArticlePath
+ * The URL path to any article, by replacing $1 with the target page name.
+ * 
+ * @property {string} wgPageName
+ * The current page name.
+ */
+
+/**
+ * MediaWiki configuration values.
+ * @type {MWConfig}
+ */
+var config = mw.config.get( [ 'skin', 'wgAction', 'wgArticlePath', 'wgPageName' ] );
+
+if ( config.skin !== 'fandomdesktop' ) {
+	error(
+		'This script only works with the FandomDesktop skin. ' +
+		'To prevent compatibility issues with other skins, it will be disabled.'
+	);
+	return;
+}
+
+if ( ![ 'view', 'edit' ].includes( config.wgAction ) ) {
+	return;
+}
+
+/**
+ * The number of filtering layers (bits) used on pages.
+ * @type {number}
+ */
+var filterCount = 4; // max filter = 15 (1111)
 
 /**
  * An available filter.
@@ -24,6 +94,93 @@
  * A description of the filter.
  * Use false to not show any.
  */
+
+/**
+ * The list of available filters.
+ * Use false instead of an object to deactivate a filter and keep URL
+ * compatibility.
+ * @type {( Filter | false )[]}
+ */
+var filters = [
+	{
+		filter: 1, // 0001
+		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
+		description: 'Hide content unavailable with Rebirth'
+	},
+	{
+		filter: 2, // 0010
+		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/95/Dlc_a_indicator.png/revision/latest',
+		description: 'Hide content unavailable with Afterbirth'
+	},
+	{
+		filter: 4, // 0100
+		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/4c/Dlc_a†_indicator.png/revision/latest',
+		description: 'Hide content unavailable with Afterbirth+'
+	},
+	{
+		filter: 8, // 1000
+		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f2/Dlc_r_indicator.png/revision/latest',
+		description: 'Hide content unavailable with Repentance'
+	}
+];
+
+/**
+ * If an element on a page has this class (directly on the page or
+ * transcluded), the filtering becomes available, even if the page is not
+ * from a namespace in filteredNamespaces or in filteredSpecialTitles.
+ * Use false to disable this functionality.
+ * @type {string}
+ */
+var filterEnableClass = 'cf-enable';
+
+/**
+ * The name of the URL parameter used to store the selected filter.
+ * @type {string}
+ */
+var urlParam = 'dlcfilter';
+
+/**
+ * If an element with this ID is on a page (directly on the page or
+ * transcluded), the filter buttons will be inserted in it. These will
+ * then not appear on the page header.
+ * Use false to disable this functionality.
+ * @type {string|false}
+ */
+var filtersInfoId = 'cf-info';
+
+/**
+ * To indicate with which filters some content should be visible or hidden,
+ * the corresponding elements have to use a specific filtering class:
+ * 
+ *     <filterClassIntro><mask>
+ * 
+ * (<filterClassIntro> being the value of this parameter and <mask>
+ *  the bitmask of the filters the associated content should be available
+ *  with)
+ * 
+ * Each element also has to use a filtering type class (either
+ * blockFilterClass, wrapperFilterClass, or inlineFilterClass).
+ * 
+ * For instance, if the available filters were previously defined as:
+ * 
+ *     filters: [
+ *         'filter1',  // 01
+ *         'filter2'   // 10
+ *     ],
+ * 
+ * using "0" (00) as <mask> will hide the content while any of the filters
+ * are enabled, using "1" (01) as <mask> will hide the content while the
+ * second filter is enabled, using "2" (10) as <mask> will hide the content
+ * while the first filter is enabled, using "3" (11) as <mask> will have no
+ * effect (the content will be shown with any filter enabled). If the value
+ * of this parameter is 'filter-', then the following tags are valid uses:
+ * 
+ *     <span class="filter-2 …"> … </span>
+ *     <img class="filter-1 …" />
+ * 
+ * @type {string}
+ */
+var filterClassIntro = 'dlc-';
 
 /**
  * A filter type.
@@ -70,144 +227,6 @@
  */
 
 /**
- * TODO
- * @template T
- * @typedef {( e: T ) => boolean} Predicate
- */
-
-/**
- * TODO
- * @typedef {( msg: string ) => void} Logger
- */
-
-/**
- * The version number of the content filter.
- * @type {string}
- */
-var version = '1.6';
-
-/** @type {Logger} */
-var log = console.log;
-/** @type {Logger} */
-var warn = mw.log.warn;
-/** @type {Logger} */
-var error = mw.log.error;
-
-/**
- * The title displayed on top of the buttons.
- * @type {string}
- */
-var title = 'Filter content';
-
-/**
- * The number of filtering layers (bits) used on pages.
- * @type {number}
- */
-var filterCount = 4; // max filter = 15 (1111)
-
-/**
- * The list of available filters.
- * Use false instead of an object to deactivate a filter and keep URL
- * compatibility.
- * @type {( Filter | false )[]}
- */
-var filters = [
-	{
-		filter: 1, // 0001
-		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Rebirth'
-	},
-	{
-		filter: 2, // 0010
-		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/95/Dlc_a_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Afterbirth'
-	},
-	{
-		filter: 4, // 0100
-		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/4c/Dlc_a†_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Afterbirth+'
-	},
-	{
-		filter: 8, // 1000
-		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f2/Dlc_r_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Repentance'
-	}
-];
-
-/**
- * The namespaces where the filtering should be available.
- * @type {number[]}
- */
-var filteredNamespaces = [ 0, 2 ];
-
-/**
- * The pages where the filtering should be available, if they are not from a
- * namespace where the filtering is available.
- * @type {string[]}
- */
-var filteredSpecialTitles = [
-	'Special:Random'
-];
-
-/**
- * If an element on a page has this class (directly on the page or
- * transcluded), the filtering becomes available, even if the page is not
- * from a namespace in filteredNamespaces or in filteredSpecialTitles.
- * Use false to disable this functionality.
- * @type {string}
- */
-var filterEnableClass = 'content-filter-enable';
-
-/**
- * The name of the URL parameter used to store the selected filter.
- * @type {string}
- */
-var urlParam = 'dlcfilter';
-
-/**
- * If an element with this ID is on a page (directly on the page or
- * transcluded), the filter buttons will be inserted in it. These will
- * then not appear on the page header.
- * Use false to disable this functionality.
- * @type {string|false}
- */
-var filtersInfoId = 'content-filter-info';
-
-/**
- * To indicate with which filters some content should be visible or hidden,
- * the corresponding elements have to use a specific filtering class:
- * 
- *     <filterClassIntro><mask>
- * 
- * (<filterClassIntro> being the value of this parameter and <mask>
- *  the bitmask of the filters the associated content should be available
- *  with)
- * 
- * Each element also has to use a filtering type class (either
- * blockFilterClass, wrapperFilterClass, or inlineFilterClass).
- * 
- * For instance, if the available filters were previously defined as:
- * 
- *     filters: [
- *         'filter1',  // 01
- *         'filter2'   // 10
- *     ],
- * 
- * using "0" (00) as <mask> will hide the content while any of the filters
- * are enabled, using "1" (01) as <mask> will hide the content while the
- * second filter is enabled, using "2" (10) as <mask> will hide the content
- * while the first filter is enabled, using "3" (11) as <mask> will have no
- * effect (the content will be shown with any filter enabled). If the value
- * of this parameter is 'filter-', then the following tags are valid uses:
- * 
- *     <span class="filter-2 …"> … </span>
- *     <img class="filter-1 …" />
- * 
- * @type {string}
- */
-var filterClassIntro = 'dlc-';
-
-/**
  * The list of filter types.
  * @type {FilterType[]}
  */
@@ -218,12 +237,18 @@ var filterTypes = [
 /**
  * If an element with a filter bitmask class is inside an element with this
  * class, the corresponding bitmask is applied to the surrounding section.
- * If the element is not in a section, then the bitmask is applied to the
- * entire page: the filter buttons not matching the bitmask are disabled.
- * Use false to disable this functionality.
  * @type {string | false}
  */
 var contextFilterClass = 'context-box';
+
+/**
+ * If an element with a filter bitmask class is inside an element with the
+ * `contextFilterClass` class and this id, the corresponding bitmask is applied
+ * to the entire page: the filter buttons not matching the bitmask are disabled.
+ * Use false to disable this functionality.
+ * @type {string | false}
+ */
+var pageContextFilterId = 'context-page';
 
 /**
  * This class can be used on elements to make them invisible to filtering:
@@ -264,13 +289,13 @@ var contentEndClass = 'content-filter-end';
  *      ! Column 1
  *      ! Main column 2
  *      ! Column 3
- *      …
+ *      ...
  *      |}
  *     {| class="main-column-3"
  *      ! Column 1
  *      ! Column 2
  *      ! Main column 3
- *      …
+ *      ...
  *      |}
  * 
  * Use false to disable this functionality.
@@ -292,7 +317,7 @@ var listTableClass = 'content-filter-list';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var inContentAddClass = false;
+var inContentAdClass = 'gpt-ad';
 
 /**
  * The maximum number of consecutive times the script should allow an
@@ -304,65 +329,10 @@ var inContentAddClass = false;
 var applyFilterLimit = 10;
 
 /**
- * Utility functions and variables set by the content filter.
- */
-var util = {
-	/**
-	 * Indicates whether the content filtering has been loaded and finished
-	 * modifying the DOM.
-	 * @type {boolean}
-	 */
-	loaded: false,
-	/**
-	 * The currently selected filter.
-	 * @type {number}
-	 */
-	selectedFilter: 0,
-	/**
-	 * Gets the numeric filter preventing content from being removed with any
-	 * filter.
-	 * @returns {number} The maximum allowed numeric filter.
-	 */
-	getFilterMax: function () { return -1; },
-	/**
-	 * Gets the numeric filter of an element.
-	 * @param {Element} _ The element.
-	 * @returns {number | false} The numeric filter of the given element, false
-	 *                           if it does not have any.
-	 */
-	getFilter: function ( _ ) { return -1; },
-	/**
-	 * Removes elements with a filter from a container.
-	 * @param {Element} _ The container to remove elements from.
-	 */
-	applyFilter: function ( _ ) {}
-};
-
-/**
- * MediaWiki configuration values.
- * @typedef MWConfig
- * 
- * @property {string} wgArticlePath
- * The URL path to any article, by replacing $1 with the target page name.
- * 
- * @property {string} wgPageName
- * The current page name.
- */
-
-/**
- * MediaWiki configuration values.
- * @type {MWConfig}
- */
-var config = mw.config.get( [ 'wgArticlePath', 'wgPageName' ] );
-
-/**
- * The maximum number of consecutive times the script should allow an
- * element removal handler to not remove the corresponding element, or
- * add other ones. This value is used to prevent infinite loops with custom
- * handlers.
+ * The page content.
  * @type {Element}
  */
-var parserOutput = null;
+var bodyContent = null;
 
 /**
  * The table of contents from the parser output.
@@ -374,7 +344,7 @@ var toc = null;
  * The filter form items.
  * @type {HTMLLIElement[]} 
  */
-var items = [];
+var buttons = [];
 
 /**
  * The current page title.
@@ -400,9 +370,9 @@ var pageFilter = 0;
 
 /**
  * The index of the currently selected filter form item.
- * @type {number}
+ * @type {number | false}
  */
-var selectedIndex = -1;
+var selectedIndex = false;
 
 /**
  * The currently selected filter.
@@ -411,86 +381,85 @@ var selectedIndex = -1;
 var selectedFilter = 0;
 
 /**
- * The list of actions to perform after applying a filter to a page.
- * Functions from this list can also add new actions to this same list.
- * @type {[ (e:Element)=>void, Element ][]}
+ * Whether the filters can be used on the current page.
  */
-var postponed = [];
+var filteringAvailable = false;
 
 /**
- * Initializes the content filter on a page.
+ * Called when some text should be processed by the content filter.
+ * @param {JQuery} $content The content element to process.
  */
-function init() {
-	log( 'Content Filter v' + version );
+function onContentLoaded( $content ) {
+	var content = $content[ 0 ];
 
-	if ( window.contentFilterUtil && !window.contentFilterUtil.loaded ) {
-		error(
-			'Content Filter: Another instance of the script is already ' +
-			'running. Please wait for it to finish before running it again.'
-		);
+	if ( content.classList.contains( 'mw-body-content' ) ) {
+		contentInit( content );
+	}
+
+	applyFilter( content );
+}
+
+/**
+ * Configures the content filter with a page content.
+ * @param {Element} content The page content.
+ */
+function contentInit( content ) {
+	if ( !filteringAvailable && !isFilteringForced( document ) ) {
 		return;
 	}
 
-	if ( !document.body.classList.contains( 'skin-fandomdesktop' ) ) {
-		error(
-			'Content Filter: This script only works with the ' +
-			'FandomDesktop skin. To prevent issues with other skins, it ' +
-			'will be disabled.'
-		);
-		return;
-	}
+	log( 'Initializing state.' );
 
-	util.getFilterMax = getFilterMax;
-	util.getFilter    = getFilter;
-	window.contentFilterUtil = util;
+	bodyContent = content;
+	toc         = document.getElementById( 'toc' );
+	pageFilter  = getPageFilter();
 
-	if ( !isFilteringAvailable( currentTitle, document ) ) {
-		util.loaded = true;
-		return;
-	}
+	buttons = filters.map( generateMenuButton );
+	insertMenu();
 
-	var contentText = document.getElementById( 'mw-content-text' );
-	parserOutput = contentText &&
-		contentText.getElementsByClassName( 'mw-parser-output' )[ 0 ];
-	toc          = document.getElementById( 'toc' );
-	pageFilter   = getPageFilter();
-
-	generateFilterItems();
-	insertFilterElement();
-
-	if ( !updateSelectedIndex() ) {
-		util.loaded = true;
+	updateSelectedIndex();
+	if ( selectedIndex === false ) {
 		return;
 	}
 
 	updateSelectedFilterItem();
-	applyFilter( parserOutput );
 
-	util.selectedFilter = selectedFilter;
-	util.applyFilter    = applyFilter;
-	util.loaded         = true;
+	// @ts-ignore
+	window.contentFilterUtil = {
+		selectedFilter: selectedFilter,
+		applyFilter: applyFilter
+	};
 }
 
 /**
  * Indicates whether the filters can be used on a page.
- * @param {mw.Title} pageTitle  The page title.
- * @param {Document} [document] The page document.
+ * @param {mw.Title} pageTitle The page title.
  * @returns {boolean} True if the filters can be used, false otherwise.
  */
-function isFilteringAvailable( pageTitle, document ) {
+function isFilteringAvailable( pageTitle ) {
 	var namespace = pageTitle.getNamespaceId();
-	if ( filteredNamespaces.includes( namespace ) ) {
+	if ( [ 0, 2 ].includes( namespace ) ) {
 		return true;
 	}
 
 	var pageName = pageTitle.getPrefixedText();
-	if ( filteredSpecialTitles.includes( pageName ) ) {
+	if ( pageName === 'Special:Random' ) {
 		return true;
 	}
 
+	return false;
+}
+
+/**
+ * Indicates whether the filters should be used on a page because of the use of
+ * in-content specific markers.
+ * @param {Document} content The page content.
+ * @returns {boolean} True if the filters should be used, false otherwise.
+ */
+function isFilteringForced( content ) {
 	if (
-		document && filterEnableClass &&
-		document.getElementsByClassName( filterEnableClass ).length
+		content && filterEnableClass &&
+		content.getElementsByClassName( filterEnableClass ).length
 	) {
 		return true;
 	}
@@ -504,57 +473,45 @@ function isFilteringAvailable( pageTitle, document ) {
  * @returns {number}
  */
 function getPageFilter() {
-	if ( !contextFilterClass || !parserOutput ) {
+	if ( !pageContextFilterId || !bodyContent ) {
 		return getFilterMax();
 	}
-	var contextBoxes = parserOutput.getElementsByClassName( contextFilterClass );
-	for ( var i = 0; i < contextBoxes.length; ++i ) {
-		var contextBox = contextBoxes[ i ];
-		if ( getPreviousHeading( contextBox ) ) {
-			break;
-		}
-		for ( var j = 0; j < filterTypes.length; ++j ) {
-			var filterType = filterTypes[ j ],
-				filter     = getFilter( contextBox ),
-				children   = contextBox.getElementsByClassName(
-					filterType.class
-				);
-			if ( contextBox.classList.contains( filterType.class ) ) {
-				if ( filterType.fixed !== false ) {
-					return filterType.fixed;
-				}
-				if ( filter !== false ) {
-					return filter;
-				}
-			}
-			if ( filterType.fixed !== false ) {
-				if ( children.length ) {
-					return filterType.fixed;
-				}
-				continue;
-			}
-			for ( var k = 0; k < children.length; ++k ) {
-				filter = getFilter( children[ k ] );
-				if ( filter !== false ) {
-					return filter;
-				}
-			}
-		}
-	}
-	return getFilterMax();
-}
 
-/**
- * Gets the last heading element used before an element.
- * @param {Element} element The element.
- * @returns {Element} The previous heading element if there is one, null otherwise.
- */
-function getPreviousHeading( element ) {
-	element = element.previousElementSibling;
-	while ( element && !( element instanceof HTMLHeadingElement ) ) {
-		element = element.previousElementSibling;
+	var pageContextBox = document.getElementById( pageContextFilterId );
+	if ( !pageContextBox ) {
+		return getFilterMax();
 	}
-	return element;
+
+	for ( var j = 0; j < filterTypes.length; ++j ) {
+		var filterType = filterTypes[ j ],
+		    filter     = getFilter( pageContextBox ),
+		    children   = pageContextBox.getElementsByClassName( filterType.class );
+
+		if ( pageContextBox.classList.contains( filterType.class ) ) {
+			if ( filterType.fixed !== false ) {
+				return filterType.fixed;
+			}
+			if ( filter !== false ) {
+				return filter;
+			}
+		}
+
+		if ( filterType.fixed !== false ) {
+			if ( children.length ) {
+				return filterType.fixed;
+			}
+			continue;
+		}
+
+		for ( var k = 0; k < children.length; ++k ) {
+			filter = getFilter( children[ k ] );
+			if ( filter !== false ) {
+				return filter;
+			}
+		}
+	}
+
+	return getFilterMax();
 }
 
 /**
@@ -569,7 +526,7 @@ function getFilterMax() {
 /**
  * Gets the numeric filter of an element.
  * @param {Element} element The element.
- * @returns {number|false} The numeric filter of the given element, false if it
+ * @returns {number | false} The numeric filter of the given element, false if it
  *                         does not have any.
  */
 function getFilter( element ) {
@@ -598,45 +555,50 @@ function findClassStartingWith( element, intro ) {
 }
 
 /**
- * Generates the filter form items.
+ * An extension of URI parameters.
+ * @typedef {{ [ k: string ]: number }} UriExtension
  */
-function generateFilterItems() {
-	var itemBase = document.createElement( 'li' ),
-		aBase    = document.createElement( 'a' ),
-		imgBase  = document.createElement( 'img' );
-	itemBase.classList.add( 'content-filter-item' );
-	imgBase.loading = 'eager';
-	for ( var i = 0; i < filters.length; ++i ) {
-		var filter = filters[ i ];
-		if ( !filter ) {
-			items.push( null );
-			continue;
-		}
-		var item = itemBase.cloneNode( true ),
-			a    = aBase.cloneNode( true );
-		item.id = 'content-filter-item-' + i;
-		if ( filter.filter & pageFilter ) {
-			if ( filter.description ) {
-				item.title = filter.description;
-			}
-			/** @type {{[k:string]:number}} */
-			var obj = {};
-			obj[ urlParam ] = i;
-			currentUri.extend( obj );
-			a.href = currentUri.toString();
-		} else {
-			item.classList.add( 'content-filter-item-deactivated' );
-		}
-		if ( isUrl( filter.title ) ) {
-			var img = imgBase.cloneNode( true );
-			img.src = filter.title;
-			a.appendChild( img );
-		} else {
-			a.textContent = filter.title;
-		}
-		item.appendChild( a );
-		items.push( item );
+
+/**
+ * Generates a filter menu button.
+ * @param {Filter | false} filter The configurated filter.
+ * @param {number}         index  The index of the filter.
+ * @returns {?HTMLLIElement} The generated filter menu button.
+ */
+function generateMenuButton( filter, index ) {
+	if ( !filter ) {
+		return null;
 	}
+
+	var button = document.createElement( 'li' ),
+	    a      = document.createElement( 'a' );
+
+	button.id = 'cf-button-' + index;
+	button.classList.add( 'cf-button' );
+
+	if ( filter.filter & pageFilter ) {
+		if ( filter.description ) {
+			button.title = filter.description;
+		}
+		/** @type {UriExtension} */
+		var uriParams = {};
+		uriParams[ urlParam ] = index;
+		a.href = currentUri.extend( uriParams ).toString();
+	} else {
+		button.classList.add( 'cf-button-deactivated' );
+	}
+
+	if ( isUrl( filter.title ) ) {
+		var img = document.createElement( 'img' );
+		img.src = filter.title;
+		img.loading = 'eager';
+		a.appendChild( img );
+	} else {
+		a.textContent = filter.title;
+	}
+
+	button.appendChild( a );
+	return button;
 }
 
 /**
@@ -655,22 +617,23 @@ function isUrl( str ) {
 }
 
 /**
- * Generates the filter form and puts it on the page.
+ * Generates the filter menu and puts it on the page.
  */
-function insertFilterElement() {
+function insertMenu() {
+	if ( config.wgAction === 'edit' ) {
+		// No filtering in edit mode: it would require reloading the page.
+		return;
+	}
+
 	var ul = document.createElement( 'ul' );
-	ul.id = 'content-filter';
-	for ( var i = 0; i < items.length; ++i ) {
-		if ( items[ i ] ) {
-			ul.appendChild( items[ i ] );
+	ul.classList.add( 'cf-menu' );
+
+	for ( var i = 0; i < buttons.length; ++i ) {
+		if ( buttons[ i ] ) {
+			ul.appendChild( buttons[ i ] );
 		}
 	}
-	if ( title ) {
-		var titleDiv = document.createElement( 'div' );
-		titleDiv.id          = 'content-filter-title';
-		titleDiv.textContent = title;
-		ul.appendChild( titleDiv );
-	}
+
 	if ( filtersInfoId ) {
 		var info = document.getElementById( filtersInfoId );
 		if ( info ) {
@@ -679,42 +642,64 @@ function insertFilterElement() {
 			return;
 		}
 	}
+
 	var wrapper = document.getElementsByClassName( 'page-header__actions' )[ 0 ];
 	wrapper.prepend( ul );
 }
 
 /**
+ * Gets the value of the URL parameter used to store the selected filter.
+ * @returns {number | false} The selected filter index, false if none has been specified.
+ */
+function getFilterParamValue() {
+	var value = mw.util.getParamValue( urlParam );
+	if ( value ) {
+		return parseInt( value, 10 );
+	}
+
+	return false;
+}
+
+/**
  * Updates the index of the currently selected filter form item from the URL
  * parameters.
- * @returns {boolean} True if a valid filter should be applied, false otherwise.
  */
 function updateSelectedIndex() {
-	var urlParamValue = mw.util.getParamValue( urlParam );
-	if ( !urlParamValue ) {
-		return false;
+	if ( config.wgAction === 'edit' ) {
+		// No filtering in edit mode: it would require reloading the page.
+		selectedIndex = false;
+		return;
 	}
-	selectedIndex = parseInt( urlParamValue, 10 );
-	if ( !isIndex( selectedIndex, items ) ) {
-		selectedIndex = -1;
+
+	var filterParamValue = getFilterParamValue();
+	if ( filterParamValue === false ) {
+		selectedIndex = false;
+		return;
+	}
+
+	selectedIndex = filterParamValue;
+	if ( !isIndex( selectedIndex, buttons ) ) {
+		selectedIndex = false;
 		error(
-			'Content Filter: The selected numeric filter (' +
-			urlParamValue + ') is unavailable, please use an integer x ' +
-			'so 0 ≤ x ≤ ' + ( items.length - 1 ) + '. ' +
+			'The selected numeric filter (' + filterParamValue + ') is unavailable, ' +
+			'please use an integer x so 0 ≤ x ≤ ' + ( buttons.length - 1 ) + '. ' +
 			'No filtering will be performed.'
 		);
-		return false;
+		return;
 	}
+
 	var filter = filters[ selectedIndex ];
 	if ( !filter ) {
-		selectedIndex = -1;
+		selectedIndex = false;
 		error(
-			'Content Filter: The selected numeric filter (' + urlParam +
-			') has been diabled. No filtering will be performed.'
+			'The selected numeric filter (' + urlParam + ') has been diabled. ' +
+			'No filtering will be performed.'
 		);
-		return false;
+		return;
 	}
+
 	selectedFilter = filter.filter;
-	return true;
+	log( 'Using ' + selectedFilter + ' as active filter.' );
 }
 
 /**
@@ -732,47 +717,48 @@ function isIndex( number, array ) {
  * @param {Element} container The container to remove elements from.
  */
 function applyFilter( container ) {
+	if ( !bodyContent ) {
+		error( 'No main content detected.' );
+		return;
+	}
+
+	if ( selectedIndex === false ) {
+		return;
+	}
+
+	log( 'Processing filter tags in content text.' );
+
 	preprocess( container );
 	for ( var i = 0; i < filterTypes.length; ++i ) {
 		var filterType = filterTypes[ i ],
-			elements   = container.getElementsByClassName(
-				filterType.class
-			),
-			oldLength  = elements.length,
-			loopLimit  = 0,
-			skip       = function ( /** @type {Element} */ element ) {
+		    elements   = container.getElementsByClassName( filterType.class ),
+		    oldLength  = elements.length,
+		    loopLimit  = 0;
+		while ( elements.length ) {
+			var element = elements[ 0 ];
+			if ( applyFilterType( filterType, element ) ) {
 				element.classList.replace(
 					filterType.class,
-					'content-filter-element-skipped'
+					'cf-element-skipped'
 				);
-				return true;
-			};
-		while ( elements.length ) {
-			applyFilterType( filterType, elements[ 0 ], skip );
+			}
 			if ( elements.length >= oldLength && ++loopLimit >= applyFilterLimit ) {
 				error(
-					'Content Filter: Too many element removals have been ' +
-					'realized without reducing the number of elements.'
+					'Too many element removals have been realized ' +
+					'without reducing the number of elements.'
 				);
 				break;
 			}
 		}
-		elements = container.getElementsByClassName( 'content-filter-element-skipped' );
+		elements = container.getElementsByClassName( 'cf-element-skipped' );
 		while ( elements.length ) {
-			elements[ 0 ].classList.replace( 'content-filter-element-skipped', filterType.class );
-		}
-	}
-	while ( postponed.length ) {
-		var todo = postponed;
-		postponed = [];
-		for ( i = 0; i < todo.length; ++i ) {
-			todo[ i ][ 0 ]( todo[ i ][ 1 ] );
+			elements[ 0 ].classList.replace( 'cf-element-skipped', filterType.class );
 		}
 	}
 	postprocess( container );
 
 	Array.prototype.forEach.call(
-		document.getElementsByTagName( 'a' ),
+		container.getElementsByTagName( 'a' ),
 		updateAnchorFilter
 	);
 }
@@ -780,45 +766,44 @@ function applyFilter( container ) {
 /**
  * Removes an element with a filter if its numeric filter does not match the
  * selected one.
- * @param {FilterType}         filterType The filter type of the element.
- * @param {Element}            element    The element.
- * @param {Predicate<Element>} skip       A function to use to tell the script
- *                                        to leave the element in place.
+ * @param {FilterType} filterType The filter type of the element.
+ * @param {Element}    element    The element.
+ * @returns {boolean} True if the element should be left in place, false otherwise.
  */
-function applyFilterType( filterType, element, skip ) {
+function applyFilterType( filterType, element ) {
 	var filter = filterType.fixed;
 	if ( filter === false ) {
 		filter = getFilter( element );
 		if ( filter === false ) {
 			element.classList.remove( filterType.class );
 			warn(
-				'Content Filter: The element does not have any valid ' +
-				'numeric filter class, but its filter type is not fixed.'
+				'The element does not have any valid numeric filter class, ' +
+				'but its filter type is not fixed.'
 			);
-			return;
+			return false;
 		}
 	}
+
 	if ( ( filter & selectedFilter ) > 0 ) {
 		switch ( filterType.mode ) {
 		case 'block':
 			element.classList.remove( filterType.class );
-			return;
+			return false;
 		case 'wrapper':
 			unwrap( element );
-			return;
+			return false;
 		case 'inline':
 			removeElementWithoutContext( element );
-			return;
+			return false;
 		}
 	}
-	if ( handleFilter( filterType, element, skip ) ) {
-		return;
+
+	if ( handleFilter( filterType, element ) ) {
+		return false;
 	}
-	skip( element );
-	warn(
-		'Content Filter: Unmatched ' + filterType.mode + ' filter "' +
-		filterType.class + '"'
-	);
+
+	warn( 'Unmatched ' + filterType.mode + ' filter "' + filterType.class + '".' );
+	return true;
 }
 
 /**
@@ -827,7 +812,7 @@ function applyFilterType( filterType, element, skip ) {
  */
 function removeElementWithoutContext( element ) {
 	var parent = element.parentElement;
-	while ( parent !== parserOutput && !hasSibling( element ) && parent.tagName !== 'TD' ) {
+	while ( parent !== bodyContent && !hasSibling( element ) && parent.tagName !== 'TD' ) {
 		element = parent;
 		parent  = parent.parentElement;
 	}
@@ -837,13 +822,11 @@ function removeElementWithoutContext( element ) {
 /**
  * Removes an element with a filter, assuming its numeric filter does not match
  * the selected one.
- * @param {FilterType}         filterType The filter type of the element.
- * @param {Element}            element    The element to remove.
- * @param {Predicate<Element>} skip       A function to use as return value to tell
- *                                        the script to leave the element in place.
+ * @param {FilterType} filterType The filter type of the element.
+ * @param {Element}    element    The element to remove.
  * @returns {boolean} True if the removal has been handled properly, false otherwise.
  */
-function handleFilter( filterType, element, skip ) {
+function handleFilter( filterType, element ) {
 	if (
 		handleItemDictionary( element ) ||
 		handleInnerList( element ) ||
@@ -890,7 +873,7 @@ function handleFilter( filterType, element, skip ) {
 	}
 
 	var previousElement = element.previousElementSibling,
-		previousText    = getPreviousText( element );
+	    previousText    = getPreviousText( element );
 	if (
 		previousText ?
 			!previousText.endsWith( '.' ) :
@@ -901,8 +884,8 @@ function handleFilter( filterType, element, skip ) {
 
 	/** @type {ChildNode} */
 	var node        = element,
-		nextNode    = node,
-		textContent = '';
+	    nextNode    = node,
+	    textContent = '';
 	do {
 		textContent = node.textContent.trimEnd();
 		nextNode    = node.nextSibling;
@@ -1015,8 +998,8 @@ function getKeyType( element ) {
 		sibling = sibling.previousSibling;
 	}
 	var slashIndex = -1,
-		plusIndex  = -1,
-		keyType    = DictKeyType.UNIQUE;
+	    plusIndex  = -1,
+	    keyType    = DictKeyType.UNIQUE;
 	if ( sibling ) {
 		slashIndex = sibling.textContent.lastIndexOf( '/' );
 		plusIndex  = sibling.textContent.lastIndexOf( '+' );
@@ -1069,7 +1052,7 @@ function handleInnerList( element ) {
 		return false;
 	}
 	var sibling = innerList.previousSibling,
-		lis     = innerList.children;
+	    lis     = innerList.children;
 	while ( sibling ) {
 		sibling.remove();
 		sibling = innerList.previousSibling;
@@ -1077,7 +1060,7 @@ function handleInnerList( element ) {
 	var upperBound = getFilterMax() + 1;
 	for ( var i = 0; i < lis.length; ) {
 		var li    = lis[ i ],
-			child = li.firstChild;
+		    child = li.firstChild;
 		while ( isGhostNode( child ) ) {
 			child = child.nextSibling;
 		}
@@ -1133,7 +1116,7 @@ function handleNavListVertical( dlcIcon ) {
 		return false;
 	}
 	var row   = cell.parentElement,
-		table = row.parentElement.parentElement;
+	    table = row.parentElement.parentElement;
 	if ( !table.classList.contains( 'nav-list-vertical' ) ) {
 		return false;
 	}
@@ -1165,7 +1148,7 @@ function preprocessItemDictionaries( container ) {
 			headlines[ 0 ].textContent.match( 'Synergies|Interactions' )
 		) {
 			var headingLevel = getHeadingLevel( headings[ i ] ),
-				nextElement  = headings[ i ].nextElementSibling;
+			    nextElement  = headings[ i ].nextElementSibling;
 			while ( !isOutOfSection( nextElement, headingLevel ) ) {
 				if ( nextElement.tagName === 'UL' ) {
 					preprocessItemDictionary( nextElement );
@@ -1182,8 +1165,8 @@ function preprocessItemDictionaries( container ) {
  */
 function preprocessItemDictionary( ul ) {
 	var lis           = ul.children,
-		keySpanBase   = document.createElement( 'span' ),
-		valueSpanBase = document.createElement( 'span' );
+	    keySpanBase   = document.createElement( 'span' ),
+	    valueSpanBase = document.createElement( 'span' );
 	ul.classList.add( 'dlc-filter-dict' );
 	keySpanBase.classList.add( 'dlc-filter-dict-key' );
 	valueSpanBase.classList.add( 'dlc-filter-dict-value' );
@@ -1193,8 +1176,8 @@ function preprocessItemDictionary( ul ) {
 			continue;
 		}
 		var keySpan   = keySpanBase.cloneNode( true ),
-			valueSpan = valueSpanBase.cloneNode( true ),
-			node      = li.firstChild;
+		    valueSpan = valueSpanBase.cloneNode( true ),
+		    node      = li.firstChild;
 		while (
 			node && (
 				node.nodeType !== Node.TEXT_NODE ||
@@ -1205,7 +1188,7 @@ function preprocessItemDictionary( ul ) {
 			node = li.firstChild;
 		}
 		if ( !node ) {
-			error( 'key error' );
+			error( 'Key error?' );
 			continue;
 		}
 		var colonIndex = node.textContent.indexOf( ':' );
@@ -1214,7 +1197,7 @@ function preprocessItemDictionary( ul ) {
 		);
 		node.textContent = node.textContent.substr( colonIndex + 1 );
 		var lastNode    = li.lastChild,
-			lastElement = li.lastElementChild;
+		    lastElement = li.lastElementChild;
 		if ( lastElement && lastElement.tagName === 'UL' ) {
 			lastElement.classList.add( 'dlc-filter-dict-inner' );
 			lastNode = lastElement.previousSibling;
@@ -1243,7 +1226,7 @@ function postprocessItemDictionaries( container ) {
 			li = li.nextElementSibling
 		) {
 			var keys   = li.getElementsByClassName( 'dlc-filter-dict-key' ),
-				values = li.getElementsByClassName( 'dlc-filter-dict-value' );
+			    values = li.getElementsByClassName( 'dlc-filter-dict-value' );
 			unwrap( keys[ 0 ] );
 			if ( values.length ) {
 				unwrap( values[ 0 ] );
@@ -1254,7 +1237,7 @@ function postprocessItemDictionaries( container ) {
 				continue;
 			}
 			var subdict = subdicts[ 0 ],
-				firstLi = subdict.getElementsByTagName( 'li' )[ 0 ];
+			    firstLi = subdict.getElementsByTagName( 'li' )[ 0 ];
 			unwrap( firstLi, subdict );
 			if ( !subdict.firstElementChild ) {
 				subdict.remove();
@@ -1374,7 +1357,7 @@ function removeElement( element ) {
  */
 function removeHeadingElement( element ) {
 	var headingLevel = getHeadingLevel( element ),
-		sibling      = element.nextElementSibling;
+	    sibling      = element.nextElementSibling;
 	while ( !isOutOfSection( sibling, headingLevel ) ) {
 		var toRemove = sibling;
 		sibling = sibling.nextElementSibling;
@@ -1402,9 +1385,9 @@ function removeListItem( item ) {
  */
 function removeTableCell( cell ) {
 	var row    = cell.parentElement,
-		tbody  = row.parentElement,
-		table  = tbody.parentElement,
-		column = 0;
+	    tbody  = row.parentElement,
+	    table  = tbody.parentElement,
+	    column = 0;
 	for (
 		var sibling = cell.previousElementSibling;
 		sibling;
@@ -1463,7 +1446,7 @@ function removeDefaultElement( element ) {
 		return;
 	}
 	var parent  = element.parentElement,
-		sibling = element.previousElementSibling;
+	    sibling = element.previousElementSibling;
 	element.remove();
 	ensureNonEmptySection( sibling );
 	if ( !parent.hasChildNodes() ) {
@@ -1481,7 +1464,7 @@ function ensureNonEmptySection( element ) {
 		return;
 	}
 	while ( !( element instanceof HTMLHeadingElement ) ) {
-		if ( !inContentAddClass || !element.classList.contains( inContentAddClass ) ) {
+		if ( !inContentAdClass || !element.classList.contains( inContentAdClass ) ) {
 			return;
 		}
 		element = element.previousElementSibling;
@@ -1512,10 +1495,10 @@ function removeTocElement( id ) {
 		return false;
 	}
 	var parent     = element.parentElement,
-		number     = element.getElementsByClassName( 'tocnumber' )[ 0 ].textContent,
-		lastDotPos = number.lastIndexOf( '.', 1 ) + 1,
-		lastNumber = +number.substring( lastDotPos ),
-		nextParent = parent.nextElementSibling;
+	    number     = element.getElementsByClassName( 'tocnumber' )[ 0 ].textContent,
+	    lastDotPos = number.lastIndexOf( '.', 1 ) + 1,
+	    lastNumber = +number.substring( lastDotPos ),
+	    nextParent = parent.nextElementSibling;
 	while ( nextParent ) {
 		var nextNumbers = nextParent.getElementsByClassName( 'tocnumber' );
 		for ( var i = 0; i < nextNumbers.length; ++i ) {
@@ -1529,6 +1512,19 @@ function removeTocElement( id ) {
 	}
 	parent.parentNode.removeChild( parent );
 	return true;
+}
+
+/**
+ * Gets the last heading element used before an element.
+ * @param {Element} element The element.
+ * @returns {Element} The previous heading element if there is one, null otherwise.
+ */
+function getPreviousHeading( element ) {
+	element = element.previousElementSibling;
+	while ( element && !( element instanceof HTMLHeadingElement ) ) {
+		element = element.previousElementSibling;
+	}
+	return element;
 }
 
 /**
@@ -1565,39 +1561,13 @@ function findParentWithClass( element, className ) {
 	if ( !element ) {
 		return null;
 	}
-	while ( element && element !== parserOutput ) {
+	while ( element && element !== bodyContent ) {
 		if ( element.classList.contains( className ) ) {
 			return element;
 		}
 		element = element.parentElement;
 	}
 	return null;
-}
-
-/**
- * Indicates whether an element or all its children have a class.
- * @param {Element} element   The element.
- * @param {string}  className The class name.
- * @returns {boolean} True if the element or all its children have the given class,
- *                    false otherwise.
- */
-function hasClassOrChildren( element, className ) {
-	if ( !element ) {
-		return false;
-	}
-	if ( element.classList.contains( className ) ) {
-		return true;
-	}
-	var children = element.children;
-	if ( !children.length ) {
-		return false;
-	}
-	for ( var i = 0; i < children.length; ++i ) {
-		if ( !hasClassOrChildren( children[ i ], className ) ) {
-			return false;
-		}
-	}
-	return true;
 }
 
 /**
@@ -1889,12 +1859,16 @@ function unwrap( element, target ) {
  * Updates the selected filter form item.
  */
 function updateSelectedFilterItem() {
+	if ( selectedIndex === false ) {
+		return;
+	}
+
 	delete currentUri.query[ urlParam ];
-	var item = items[ selectedIndex ];
+	var item = buttons[ selectedIndex ];
 	if ( !item ) {
 		return;
 	}
-	item.classList.add( 'content-filter-item-active' );
+	item.classList.add( 'cf-button-active' );
 	item.firstElementChild.setAttribute( 'href', currentUri.toString() );
 }
 
@@ -1903,7 +1877,7 @@ function updateSelectedFilterItem() {
  * @param {HTMLAnchorElement} a The anchor.
  */
 function updateAnchorFilter( a ) {
-	if ( !a.href || a.parentElement.classList.contains( 'content-filter-item' ) ) {
+	if ( !a.href || a.parentElement.classList.contains( 'cf-button' ) ) {
 		return;
 	}
 
@@ -1935,13 +1909,16 @@ function updateAnchorFilter( a ) {
 		}
 	}
 
-	/** @type {{ [ k: string ]: number }} */
+	/** @type {UriExtension} */
 	var obj = {};
+	// @ts-ignore
 	obj[ urlParam ] = selectedIndex;
-	uri.extend( obj );
-	a.href = uri.toString();
+	a.href = uri.extend( obj ).toString();
 }
 
-$( init );
-} )();
+filteringAvailable = isFilteringAvailable( currentTitle );
+mw.hook( 'wikipage.content' ).add( onContentLoaded );
+
+// @ts-ignore
+} )( jQuery, mediaWiki, console, window.contentFilterUtil );
 // </nowiki>

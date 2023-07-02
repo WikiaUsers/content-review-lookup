@@ -276,7 +276,7 @@ $(function userNameReplace() {
     }
     $("span.insertusername").html(mw.config.get('wgUserName'));
 });
- 
+
 // Add custom edit buttons
 if (mw.config.get('mwCustomEditButtons')) {
     mw.config.get('mwCustomEditButtons')[mw.config.get('mwCustomEditButtons').length] = {
@@ -322,6 +322,15 @@ $(function () {
     $('.firstHeading, #WikiaUserPagesHeader h1, #WikiaPageHeader h1').html(newTitle);
     $('.#user_masthead_head h2').html(newTitle + '<small id="user_masthead_since">' + edits + '</small>');
 });
+
+// New Images module
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:NewImages.js',
+    ]
+});
+ 
 // Message wall icons
 // By [[User:AnimatedCartoons]]
 setInterval(function () {

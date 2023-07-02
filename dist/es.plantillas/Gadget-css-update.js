@@ -22,30 +22,57 @@
 			return;
 		}
 		
-		var title;
-		if ( conf.wgPageName.match( /\/estilos.css$/ ) ) {
-			title = conf.wgPageName.substring( 10, conf.wgPageName.length - 12 );
-		} else {
-			title = conf.wgPageName.substring( 10 );
+		var title = conf.wgPageName;
+		if ( title.match( /\.css$/ ) ) {
+			return;
 		}
+		title = title.replace( 'Plantilla:', '' );
 		
 		api = new mw.Api();
-		$.when( getRevision( 'Plantilla:' + title + '/estilos.css' ), getRevision( 'MediaWiki:' + title + '.css' ) ).then( function ( template, mediawiki ) {
-			
-			var caseFunction = null;
-
-			if ( !template ) {
-				caseFunction = caseTemplateWithoutCss;
-			} else if ( !mediawiki ) {
-				caseFunction = caseMediaWikiNotCreated;
-			} else if ( template.sha1 !== mediawiki.sha1 ) {
-				caseFunction = caseMediaWikiOutdated;
+		
+		var common = 'Plantilla:' + title + '/common.css';
+		var fandomdesktop = 'Plantilla:' + title + '/fandomdesktop.css';
+		var fandommobile = 'Plantilla:' + title + '/fandommobile.css';
+		var mwCommon = 'MediaWiki:' + title + '/common.css';
+		var mwFandomdesktop = 'MediaWiki:' + title + '/fandomdesktop.css';
+		var mwFandommobile = 'MediaWiki:' + title + '/fandommobile.css';
+		getChecksums( [
+			common, fandomdesktop, fandommobile,
+			mwCommon, mwFandomdesktop, mwFandommobile
+		] ).then( function ( cs ) {
+			if ( !cs[ common ] && !cs[ fandomdesktop ] && !cs[ fandommobile ] ) {
+				caseTemplateWithoutCss( title );
+			} else if ( cs[ common ] === cs[ mwCommon ] && cs[ fandomdesktop ] === cs[ mwFandomdesktop ] && cs[ fandommobile ] === cs[ mwFandommobile ] ) {
+				caseUpToDate();
 			} else {
-				caseFunction = caseUpToDate;
+				caseOutdated( title, cs );
+			}
+		} );
+	}
+	
+	function getChecksums( titles ) {
+		var promise = $.Deferred();
+
+		api.get( {
+			action: 'query',
+			format: 'json',
+			formatversion: 2,
+			prop: 'revisions',
+			rvprop: 'sha1',
+			titles: titles.join( '|' )
+		} ).then( function ( result ) {
+			var checksums = {};
+
+			for ( var i = 0; i < result.query.pages.length; i++ ) {
+				var page = result.query.pages[ i ];
+				if ( page.missing ) continue;
+				checksums[ page.title ] = page.revisions[ 0 ].sha1;
 			}
 			
-			caseFunction( title, template.content );
+			promise.resolve( checksums );
 		} );
+
+		return promise;
 	}
 	
 	function getRevision( title ) {
@@ -55,7 +82,7 @@
 			action: 'query',
 			formatversion: 2,
 			prop: 'revisions',
-			rvprop: 'content|sha1',
+			rvprop: 'content',
 			rvslots: '*',
 			titles: title
 		} ).then( function ( result ) {
@@ -65,15 +92,34 @@
 				return;
 			}
 			
-			var sha1 = page.revisions[ 0 ].sha1;
 			var content = page.revisions[ 0 ].slots.main.content;
-			
-			promise.resolve( {
-				content: content,
-				sha1: sha1
-			} );
+			promise.resolve( content );
 		} );
 		
+		return promise;
+	}
+
+	function getMultipleRevisions( titles ) {
+		var promise = $.Deferred();
+
+		var promises = [];
+		for ( var i = 0; i < titles.length; i++ ) {
+			promises.push( getRevision( titles[ i ] ) );
+		}
+
+		$.when.apply( undefined, promises ).then( function() {
+			var content = {};
+			for ( var i = 0; i < titles.length; i++ ) {
+				var title = titles[ i ];
+				var page = arguments[ i ];
+
+				if ( page ) {
+					content[ title ] = page;
+				}
+			}
+			promise.resolve( content );
+		} );
+
 		return promise;
 	}
 	
@@ -85,50 +131,98 @@
 		addModule( 'Esta plantilla no tiene CSS propio, por lo que no es necesario actualizarlo.' );
 	}
 	
-	function caseMediaWikiNotCreated( title, content ) {
-		var label = 'Esta plantilla tiene CSS propio, pero no ha sido trasladado a una página MediaWiki para ser importado.';
-		if ( conf.wgPageName.match( /estilos\.css$/ ) ) {
-			addModule(
-				label,
-				'Crear',
-				function () {
-					performEdit( title, content );
-				}
-			);
-		} else {
-			addModule(
-				label,
-				'Revisar',
-				'/es/wiki/Plantilla:' + title + '/estilos.css'
-			);
-		}
-	}
-	
-	function caseMediaWikiOutdated( title, content ) {
-		var label = 'El CSS propio de esta plantilla no ha sido actualizado en la página MediaWiki.';
-		
-		if ( conf.wgPageName.match( /estilos\.css$/ ) ) {
-			addModule(
-				label,
-				'Actualizar',
-				function () {
-					performEdit( title, content );
-				}
-			);
-		} else {
-			addModule(
-				label,
-				'Revisar',
-				'/es/wiki/Plantilla:' + title + '/estilos.css'
-			);
-		}
-	}
-	
 	function caseUpToDate() {
 		addModule( 'El CSS propio de esta página ya se encuentra actualizado en la página MediaWiki.' );
 	}
+
+	function caseOutdated( title, cs ) {
+		var common = 'Plantilla:' + title + '/common.css';
+		var fandomdesktop = 'Plantilla:' + title + '/fandomdesktop.css';
+		var fandommobile = 'Plantilla:' + title + '/fandommobile.css';
+		var mwCommon = 'MediaWiki:' + title + '/common.css';
+		var mwFandomdesktop = 'MediaWiki:' + title + '/fandomdesktop.css';
+		var mwFandommobile = 'MediaWiki:' + title + '/fandommobile.css';
+
+		var requiredRevisions = [];
+		if ( cs[ common ] !== cs[ mwCommon ] ) {
+			requiredRevisions.push( common );
+		}
+		if ( cs[ fandomdesktop ] !== cs[ mwFandomdesktop ] ) {
+			requiredRevisions.push( fandomdesktop );
+		}
+		if ( cs[ fandommobile ] !== cs[ mwFandommobile ] ) {
+			requiredRevisions.push( fandommobile );
+		}
+
+		var section = document.createElement( 'div' );
+		section.insertAdjacentText( 'afterbegin', 'Las siguientes hojas de estilos necesitan ser actualizadas.' );
+
+		var ul = document.createElement( 'ul' );
+		section.append( ul );
+
+		for ( var i = 0; i < requiredRevisions.length; i++ ) {
+			var page = requiredRevisions[ i ];
+			var li = document.createElement( 'li' );
+			var a = document.createElement( 'a' );
+			a.href = '/es/wiki/' + page;
+			a.innerText = '/' + page.split( /\//g ).at( -1 );
+			a.dataset.page = page;
+
+			li.append( a );
+			ul.append( li );
+		}
+
+		var button = createButton( 'Actualizar', updateCss );
+		addModule( section, [ button ] );
+	}
+
+	function updateCss() {
+		var list = document.querySelectorAll( '#css-module ul a' );
+		var titles = [];
+		for ( var i = 0; i < list.length; i++ ) {
+			var link = list[ i ];
+			titles.push( link.dataset.page );
+		}
+
+		getMultipleRevisions( titles ).then( function ( contents ) {
+			var entries = Object.entries( contents );
+			for ( var i = 0; i < entries.length; i++ ) {
+				var entry = entries[ i ];
+				var title = entry[ 0 ];
+				var content = entry[ 1 ];
+
+				api.postWithToken( 'csrf', {
+					action: 'edit',
+					summary: 'Actualización de CSS a través de módulo.',
+					text: content,
+					title: title.replace( 'Plantilla', 'MediaWiki' )
+				} ).then( function () {
+					new BannerNotification( 'Se ha actualizado la siguiente hoja de estilos: ' + title.replace( 'Plantilla:', '' ) + '.', 'confirm' ).show();
+				} );
+			}
+
+			var titles = Object.keys( contents );
+			for ( var j = 0; j < titles.length; j++ ) {
+				verifyImport( titles[ j ] );
+			}
+		} );
+	}
+
+	function createButton( text, callback ) {
+		var button;
+		if ( typeof callback === 'string' ) {
+			button = document.createElement( 'a' );
+			button.href = callback;
+		} else {
+			button = document.createElement( 'button' );
+			button.addEventListener( 'click', callback );
+		}
+		button.classList.add( 'wds-button' );
+		button.innerText = text;
+		return button;
+	}
 	
-	function addModule( text, buttonText, buttonCallback ) {
+	function addModule( text, buttons ) {
 		findContainer( '.sticky-modules-wrapper' ).then( function ( wrapper ) {
 			var module = document.createElement( 'section' );
 			module.classList.add( 'rail-module' );
@@ -139,22 +233,19 @@
 			header.innerText = 'Estado de CSS';
 			module.append( header );
 			
-			var content = document.createElement( 'p' );
-			content.innerText = text;
+			var content;
+			if ( typeof text === 'string' ) {
+				content = document.createElement( 'p' );
+				content.innerText = text;
+			} else {
+				content = text;
+			}
 			module.append( content );
 			
-			if ( buttonText && buttonCallback ) {
-				var button;
-				if ( typeof buttonCallback === 'string' ) {
-					button = document.createElement( 'a' );
-					button.href = buttonCallback;
-				} else {
-					button = document.createElement( 'button' );
-					button.addEventListener( 'click', buttonCallback );
+			if ( buttons ) {
+				for ( var i = 0; i < buttons.length; i++ ) {
+					module.append( buttons[ i ] );
 				}
-				button.classList.add( 'wds-button' );
-				button.innerText = buttonText;
-				module.append( button );
 			}
 			
 			wrapper.prepend( module );
@@ -174,38 +265,21 @@
 		return promise;
 	}
 	
-	function performEdit( title, content ) {
-		var promise = $.Deferred();
-		
-		document.querySelector( '#css-module button' ).disabled = true;
-
-		var page = title.replace( '/estilos.css', '' );
-		api.postWithToken( 'csrf', {
-			action: 'edit',
-			text: content,
-			title: 'MediaWiki:' + page + '.css'
-		} ).then( function () {
-			return verifyImport( 'MediaWiki:' + page + '.css' );
-		} ).then( function () {
-			showBanner();
-			promise.resolve();
-		} );
-		
-		return promise;
-	}
-	
 	function verifyImport( title ) {
+		title = title.replace( 'Plantilla', 'MediaWiki' );
 		var promise = $.Deferred();
 		
-		var source = 'https://plantillas.fandom.com/es/load.php?lang=es&modules=site.styles&only=styles&skin=fandomdesktop';
-		var titles = [];
+		var mediawiki = 'MediaWiki:' + title.split( /\//g ).at( -1 );
+		if ( mediawiki === 'MediaWiki:fandommobile.css' ) {
+			mediawiki = 'MediaWiki:FandomMobile.css';
+		}
 
-		for ( var i = 0; i < document.styleSheets.length; i++ ) {
-			var sheet = document.styleSheets[ i ];
-			if ( sheet.href !== source ) continue;
-			var url = new URL( sheet.cssRules[ 0 ].href, mw.config.get( 'wgServer' ) );
-			titles = url.searchParams.get( 'articles' ).split( /\|/g );
-			
+		getRevision( mediawiki ).then( function ( content ) {
+			var atImport = content.match( /@import url\("(.*?)"\);/ );
+
+			var importUrl = new URL ( atImport[ 1 ], mw.config.get( 'wgServer' ) );
+			var titles = importUrl.searchParams.get( 'articles' ).split( /\|/g );
+
 			var isAlreadyImported = titles.find( function ( item ) {
 				return item === title;
 			} );
@@ -215,36 +289,25 @@
 			}
 
 			titles.push( title );
-			break;
-		}
-		
-		if ( titles.length === 0 ) {
-			promise.resolve();
-			return;
-		}
-
-		var cssImport = '@import url("/es/load.php?mode=articles&articles=' + titles.join( '|' ) + '&only=styles");';
-		api.postWithToken( 'csrf', {
-			action: 'edit',
-			text: cssImport,
-			title: 'MediaWiki:Common.css'
-		} ).then( function () {
-			promise.resolve();
+			var cssImport = '@import url("/es/load.php?mode=articles&articles=' + titles.join( '|' ) + '&only=styles");';
+			api.postWithToken( 'csrf', {
+				action: 'edit',
+				text: cssImport,
+				title: mediawiki
+			} );
 		} );
 		
 		return promise;
 	}
 	
-	function showBanner() {
-		mw.hook( 'dev.banners' ).add( function ( BannerNotification ) {
-		    new BannerNotification( 'Se ha actualizado correctamente el CSS.', 'confirm' ).show();
-		} );
+	var BannerNotification;
+	mw.hook( 'dev.banners' ).add( function ( BN ) {
+		BannerNotification = BN;
+		mw.hook( 'wikipage.content' ).add( init );
+	} );
 		
-		importArticle( {
-		    type: 'script',
-		    article: 'u:dev:MediaWiki:BannerNotification.js'
-		} );
-	}
-	
-	mw.hook( 'wikipage.content' ).add( init );
+	importArticle( {
+		type: 'script',
+		article: 'u:dev:MediaWiki:BannerNotification.js'
+	} );
 } )();

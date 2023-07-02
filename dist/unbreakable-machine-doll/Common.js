@@ -1,4 +1,9 @@
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+//＝＝＝＝＝＝＝＝＝＝＝＝【Add Rail Module】＝＝＝＝＝＝＝＝＝＝＝＝//
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
+window.AddRailModule = ['Template:Main_Page/Featured_Article', 'Template:Main_Page/Poll'];
+
+//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Auto Refresh】＝＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 // Ajax Pages
@@ -49,7 +54,7 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) importScriptPage('Media
 window.BackToTopModern = true;
 
 // Arrow Icon
-window.BackToTopArrow = true;
+window.BackToTopArrow = false;
 
 // Button Text 
 window.BackToTopText = "Back to Top";
@@ -239,7 +244,7 @@ window.LIRoptions = {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest/scale-to-width-down/350?cb=20170626182120&path-prefix=ru';
-window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/borderlands/images/f/f5/%D0%97%D0%B0%D0%B3%D0%BB%D1%83%D1%88%D0%BA%D0%B0.png/revision/latest/scale-to-width-down/200?cb=20160122074659&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/unbreakable-machine-doll/images/d/d7/No_Available_Image_H.jpg/revision/latest?cb=20160830183959&format=original';
 window.pPreview.tlen = 4000;
 window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];
 

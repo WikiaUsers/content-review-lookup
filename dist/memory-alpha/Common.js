@@ -2,13 +2,16 @@
 /* Pride toolbar advertisement */
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
-    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003742913', label: 'Discussion post'},
-    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003739278', label: 'Pride logo announcement'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
-    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
-    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'}
+	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
+    {link: 'https://bit.ly/PrideEditorStory-Kurt', label: 'June 28: Pride Highlight: Meet Kurt'},
+    {link: 'https://bit.ly/PrideEditorStory-Vinny', label: 'June 27: Pride Highlight: Meet Vinny'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'June 23: Pride Highlight: Meet Sam/Lemon Skweezy'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'June 20: How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'June 15: Pride Stories: Celebrate with Bart'},
+    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003741403', label: 'June 6: Discussions post'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'June 6: Pride blog with Drag Queens interview'},
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'June 1: Pride spotify playlist'},
+    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003739278', label: 'May 30 - Pride logo announcement'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

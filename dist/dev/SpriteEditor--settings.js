@@ -50,8 +50,12 @@
 				'<label class="wds-toggle__label" for="se-section">' + msg("cleanup-ids").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input class="wds-toggle__input" id="se-sprite" type="checkbox" ' + (shared.options.removeUnusedSprites && "checked" || "") + ' />' +
-				'<label class="wds-toggle__label" for="se-sprite">' + msg("remove-unused").plain() + '</label>' +
+				'<input class="wds-toggle__input" id="se-unused" type="checkbox" ' + (shared.options.removeUnusedSprites && "checked" || "") + ' />' +
+				'<label class="wds-toggle__label" for="se-unused">' + msg("remove-unused").plain() + '</label>' +
+			'</div>' +
+			'<div>' +
+				'<input class="wds-toggle__input" id="se-whitespace" type="checkbox" ' + (shared.options.removeWhitespace && "checked" || "") + ' />' +
+				'<label class="wds-toggle__label" for="se-whitespace">' + msg("remove-whitespace").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
 				'<input class="wds-toggle__input" id="se-deprecated" type="checkbox" ' + (shared.options.removeDeprecatedNames && "checked" || "") + ' />' +
@@ -94,6 +98,11 @@
 				this.content.$element.append(formHtml());
 				this.$body.append(this.content.$element);
 				this.$content.addClass('spriteedit-ui-Dialog');
+				var sd_ele = document.getElementById("se-unused");
+				sd_ele.addEventListener('click', function() {
+					document.getElementById("se-whitespace").disabled = !this.checked;	
+				});
+				document.getElementById("se-whitespace").disabled = !sd_ele.checked;
 				eleList = document.getElementsByClassName("settingsInfoline");
 				// Hide empty action bar
 				var ele = this.$content.get(0);
@@ -106,8 +115,9 @@
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
 				if (action === 'saveSettings') {
 					shared.options.cleanupSectionIDs = document.getElementById("se-section").checked;
-					shared.options.removeUnusedSprites = document.getElementById("se-sprite").checked;
+					shared.options.removeUnusedSprites = document.getElementById("se-unused").checked;
 					shared.options.removeDeprecatedNames = document.getElementById("se-deprecated").checked;
+					shared.options.removeWhitespace = document.getElementById("se-whitespace").checked;
 					shared.options.spritesPerRow = Number(perRowEle.getValue());
 					shared.options.spacing = Number(spacingEle.getValue());
 					modal.seDialog.close();

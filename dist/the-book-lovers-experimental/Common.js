@@ -1,10 +1,38 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+/* experimental toolbar button for main wiki */
+var toolbarLabel = 'Important';
+var toolbarLinks = [
+    {link: 'http://the-book-lovers.fandom.com/wiki/The_book_lovers_Wiki:Rules', label: 'Rules'},
+    {link: 'http://the-book-lovers.fandom.com/wiki/The_book_lovers_Wiki:Wiki_Staff', label: 'Staff'},
+    {link: 'https://docs.google.com/forms/d/e/1FAIpQLSf-ZiP9CkR47YzySmRp1LYkYQuXeqb0kd4TKdJCis-lH40zpg/viewform?usp=send_form&amp;usp=embed_facebook&amp;usp=embed_facebook&amp;usp=embed_facebook', label: 'Staff Application'}
+];
 // Ajax auto-refresh
 window.ajaxPages = [
     'Special:RecentChanges',
     'Special:WikiActivity',
     'Special:Contributions'
 ];
+var toolbarElement = document.createElement( 'li' );
+var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
+toolbarElement.classList.add( 'custom' );
+toolbarElement.classList.add( 'menu' );
+toolbarElement.classList.add( 'wds-dropdown' );
+toolbarElement.classList.add( 'wikiabar-button' );
+toolbarElement.classList.add( 'wds-is-flipped' );
+toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' + 
+    '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
+'</span>' + 
+'<div class="wds-dropdown__content">' + 
+    '<h2 style="margin-left: 16px">Important</h2>' +
+    '<ul class="wds-list wds-is-linked">' + 
+        toolbarLinks.map(function(link) {
+            return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
+        }).join('') + 
+    '</ul>' + 
+'</div>';
+
+toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
+
 window.AjaxRCRefreshText = 'Auto-refresh';
 
 /**

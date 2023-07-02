@@ -19,10 +19,11 @@ window.UserTagsJS = {
 		silver: 'Silver Lion',
 		activity: 'Discussions Activity Dominator',
 		collector: 'Collector of Stories',
+		keeper: 'Keeper of Knowledge',
 	}
 };
 UserTagsJS.modules.custom = {
-	'TilanissaWildhawk': ['reaper', 'children'],
+	'Tilan-Tidewaters': ['reaper', 'children'],
 	'GingerAle0': ['lore', 'braincell'],
 	'Firewind0111': ['wolf'],
 	'Mintflower09': ['colours', 'existence'],
@@ -32,6 +33,7 @@ UserTagsJS.modules.custom = {
 	'BLuFeather':['feathery', 'activity'],
 	'SilvermoonTC1234':['silver'],
 	'Fincloud':['collector'],
+	'Thornflower91454':['keeper'],
 };
 //trying to activate the "inactive" user tag
 UserTagsJS.modules.inactive = {

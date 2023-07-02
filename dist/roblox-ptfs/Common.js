@@ -1,3 +1,19 @@
+
+/* Progress Bar */
+window.enableReadProgressBarOnArticles = true;
+/*Back to Top*/
+window.BackToTopModern = true;
+
+/* SPOILERS */
+var spoilers = document.querySelectorAll("span.blockspoiler");
+for (var i = 0; i < spoilers.length; i++)
+{
+    spoilers[i].addEventListener("click", function(e)
+    {
+        e.target.classList.toggle("blockspoiler-spoiled");
+    });
+}
+
 //Block log
 TBL_GROUP = "roblox-en";
 

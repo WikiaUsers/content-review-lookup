@@ -5,3 +5,10 @@
 if(mw.config.get('wgNamespaceNumber')===0){
   document.getElementsByClassName('page-header__page-subtitle')[0].style.display='none';
 }
+
+/* Customizing text of auto-created user pages */
+
+window.AutoCreateUserPagesConfig = {
+  content: '{{Welcome}}',
+  notify: '<a href="/wiki/User:$2">Welcome to the Little Bear Wiki!</a>'
+}

@@ -8,7 +8,7 @@
 		'wgTitle'
 	]);
 	var loadPHP = 'https://dev.fandom.com/load.php';
-	if (!window.SpriteEditorLoaded && config.wgCanonicalNamespace == "Module" && config.wgTitle.split("/")[0].endsWith("Sprite")) {
+	if (!window.SpriteEditorLoaded && (config.wgCanonicalNamespace == "Module" || config.wgCanonicalNamespace == "Template") && config.wgTitle.split("/")[0].endsWith("Sprite")) {
 		if (config.wgIsTestModeEnabled)
 			mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI('MediaWiki:SpriteEditor/openButton.js') + '&*');
 		else

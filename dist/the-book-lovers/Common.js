@@ -90,45 +90,43 @@ $( createDivToggleButton );
 
 })(window, jQuery, mediaWiki);
 
-// give a user a message if they use a prohibited word
-// List of prohibited words
-const prohibitedWords = ["shit", "damn", "fuck", "piss"];
+// prevents existing tags from being hidden
+(window.dev = window.dev [[:Template:!!]] {}).profileTags = { noHideTags: true };
 
-// Function to check if the user's input contains any prohibited words
-function containsProhibitedWords(input) {
-  for (let i = 0; i < prohibitedWords.length; i++) {
-    const word = prohibitedWords[i];
-    if (input.toLowerCase().includes(word)) {
-      return true;
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		inactive: { u: 'Has not edited recently' }
+	}
+};
+
+//tagging Moderators to never be tagged as "usergroup-inactive" except inactive Moderators
+UserTagsJS.modules.userfilter = {
+	'The Dreamland Terminal': ['inactive'], // User is *never* inactive
+	'Moonwatcher x Qibli': ['inactive'],
+	'Lord Keefe Nope Sencen[]': ['inactive'],
+	'Renee Di Angelo': ['inactive'],
+	'StellarJasmine': ['inactive'],
+	'MountainCow': ['inactive'],
+	'.lemon_rxse.': ['inactive'],
+	'SilverySilveny': ['inactive'],
+	'Lovoken': ['inactive']
+};
+
+
+/*force the DA page for KOTLC to show up when certain terms are searched*/
+UserTagsJS.modules.implode = {
+	'Half-Admin | Content+Thread': ['threadmoderator', 'content-moderator'], // Adds 'Half-Admin | Content+Thread' BUT also removes Thread Moderator and Content Moderator
+
+$(function() {
+  if (mw.config.get('wgCanonicalSpecialPageName') === 'Search') {
+    var searchTerm = mw.util.getParamValue('search');
+    var redirectTerms = ['Keepers Of The Lost Cities', 'Keeper Of The Lost Cities', 'KOTLC', 'kotlc', 'KoTLC', 'KotLC'];
+
+    if (redirectTerms.includes(searchTerm)) {
+      var disambiguationLink = mw.util.wikiGetlink('Disambiguation:Keepers Of The Lost Cities (Disambiguation)');
+      var searchResults = $('#mw-search-results');
+      searchResults.empty().append('<li class="mw-search-result"><a href="' + disambiguationLink + '">' + searchTerm + '</a></li>');
     }
   }
-  return false;
-}
-
-// Check if the user's input contains prohibited words
-if (containsProhibitedWords(userInput)) {
-  console.log("no no no, we don't allow that word here");
-  // Here, you can take appropriate action such as hiding the user's comment or showing a warning message
-}
-
-
-// customize Moderators usernames
-// Get all the usernames
-var usernames = document.getElementsByClassName('username');
-
-// Loop through each username
-for (var i = 0; i < usernames.length; i++) {
-  var username = usernames[i];
-
-  // Check if the user belongs to the "content-moderator" usergroup
-  if (username.classList.contains('content-moderator')) {
-    // Set the color of the username to #ed092f (red)
-    username.style.color = '#ed092f';
-  }
-
-  // Check if the user belongs to the "threadmoderator" usergroup
-  if (username.classList.contains('threadmoderator')) {
-    // Set the color of the username to #09ede6 (blue)
-    username.style.color = '#09ede6';
-  }
-}
+});

@@ -4,7 +4,7 @@ $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Fejrer Pride-Måned')
+            .text('Fejrer Handicap Pride-Måned')
         )
         .attr('href', 'https://bit.ly/FandomPrideBlog-header')
 );

@@ -1965,6 +1965,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"brightcancer": {
+				"name": "Bright Cancer",
+				"colors": [
+					"zodiac",
+					"shine",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"brightdaisy": {
 				"name": "Bright Daisy",
 				"colors": [
@@ -3036,6 +3045,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink"
 				],
 				"rarity": "common"
+			},
+			"classic": {
+				"name": "Classic",
+				"colors": [
+					"fairytale",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"cleopatra": {
 				"name": "Cleopatra",
@@ -6770,6 +6787,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "rare"
 			},
+			"gala": {
+				"name": "Gala",
+				"colors": [
+					"rainbow",
+					"pink",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"galanthus": {
 				"name": "Galanthus",
 				"colors": [
@@ -8326,6 +8352,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"black",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"hobgoblin": {
+				"name": "Hobgoblin",
+				"colors": [
+					"fairytale",
+					"green",
+					"white"
 				],
 				"rarity": "unbreedable"
 			},
@@ -10094,6 +10129,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"loot": {
+				"name": "Loot",
+				"colors": [
+					"diamond",
+					"fairytale",
+					"white"
+				],
+				"rarity": "unbreedable"
+			},
 			"lordoflight": {
 				"name": "Lord of Light",
 				"colors": [
@@ -10311,6 +10355,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"flower",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"luddite": {
+				"name": "Luddite",
+				"colors": [
+					"fairytale",
+					"green"
 				],
 				"rarity": "unbreedable"
 			},
@@ -10635,6 +10687,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"magus": {
+				"name": "Magus",
+				"colors": [
+					"fairytale",
+					"white",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"malachite": {
 				"name": "Malachite",
 				"colors": [
@@ -10911,6 +10972,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"merchant": {
+				"name": "Merchant",
+				"colors": [
+					"fairytale",
+					"blue"
+				],
+				"rarity": "unbreedable"
+			},
 			"mercury": {
 				"name": "Mercury",
 				"colors": [
@@ -11168,6 +11237,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black"
 				],
 				"rarity": "unbreedable"
+			},
+			"monastic": {
+				"name": "Monastic",
+				"colors": [
+					"fairytale",
+					"yellow",
+					"blue"
+				],
+				"rarity": "common"
 			},
 			"monile": {
 				"name": "Monile",
@@ -12866,6 +12944,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				"colors": [
 					"purple",
 					"pink"
+				],
+				"rarity": "unbreedable"
+			},
+			"panoramic": {
+				"name": "Panoramic",
+				"colors": [
+					"rainbow",
+					"black"
 				],
 				"rarity": "unbreedable"
 			},
@@ -18994,6 +19080,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"vivacious": {
+				"name": "Vivacious",
+				"colors": [
+					"rainbow",
+					"green",
+					"white"
+				],
+				"rarity": "common"
+			},
 			"vivid": {
 				"name": "Vivid",
 				"colors": [
@@ -19098,6 +19193,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"white",
 					"blue",
 					"yellow"
+				],
+				"rarity": "unbreedable"
+			},
+			"warrior": {
+				"name": "Warrior",
+				"colors": [
+					"fairytale",
+					"champion",
+					"red"
 				],
 				"rarity": "unbreedable"
 			},
@@ -19409,6 +19513,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"holiday",
 					"white",
 					"green"
+				],
+				"rarity": "unbreedable"
+			},
+			"wholeness": {
+				"name": "Wholeness",
+				"colors": [
+					"rainbow",
+					"black",
+					"yellow"
 				],
 				"rarity": "unbreedable"
 			},

@@ -30,8 +30,6 @@ const staff = [
     {name: 'Владыка Аларак', className: 'intern'},
     {name: 'JustAccount', className: 'intern'},
     {name: 'Fleshka5856', className: 'intern'},
-    {name: 'Fadri Gold', className: 'intern'},
-    {name: 'YakenHgar', className: 'intern'},
 ];
 
 setInterval(function (user) {

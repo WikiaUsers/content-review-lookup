@@ -318,8 +318,19 @@ function delete_table_m(){
 
 //Calculates how many fragments are still needed to complete a mosaic, plus some other useful information.
 function mosaic_calculator_f(){
+	var mosaic_sizes = [368, 640, 640, 640, 1280, 2560, 2560, 2560, 2560, 2560];
+	var mosaics_f = [0];
+	var fragment_counter = 0;
+	for (i = 0; i < mosaic_sizes.length; i++){
+		fragment_counter = fragment_counter + mosaic_sizes[i];
+		mosaics_f.push(fragment_counter);
+	}
+	//var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808, 16368];
+	
+	var max_fragments = mosaics_f[mosaics_f.length - 1];
 	var fragments = document.getElementById("fragments").value;
-	//If the input is not a number or if the number is not between 0 and 13,808, clears the table.
+	
+	//If the input is not a number or if the number is not between 0 and last mosaic fragment, clears the table.
 	if(isNaN(fragments)){
     	document.getElementById("wrong_number").innerHTML = "Please enter a number.";
 		delete_table_m();
@@ -330,20 +341,19 @@ function mosaic_calculator_f(){
 		delete_table_m();
 		return;
 	}
-	if (fragments > 13808){
-		document.getElementById("wrong_number").innerHTML = "You have enter a number bigger than 13,808.";
+	if (fragments > max_fragments){
+		document.getElementById("wrong_number").innerHTML = "You have enter a number bigger than " + max_fragments + '.';
 		delete_table_m();
 		return;
 	}
-	if (fragments == 13808){
+	if (fragments == max_fragments){
 		document.getElementById("wrong_number").innerHTML = "Congratulations, you have completed all mosaics.";
 		delete_table_m();
 		return;
 	}
 	document.getElementById("wrong_number").innerHTML = "";
 	
-	//Logic of the calculator..
-	var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808];
+	//Logic of the calculator.
 	for (i = 1; i < mosaics_f.length; i++){
 		if (fragments < mosaics_f[i]){
 			document.getElementById("mosaic").innerHTML = "#" + i;

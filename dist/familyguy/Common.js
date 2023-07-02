@@ -2,13 +2,16 @@
 /* Pride toolbar advertisement */
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
-    {link: 'https://bit.ly/FandomPridePlaylist', label: 'Pride spotify playlist'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'Pride blog with Drag Queens interview'},
-    {link: 'https://familyguy.fandom.com/wiki/User_blog:Lady_Lostris/Celebrate_Pride_Month,_love,_and_acceptance_with_Fandom_and_the_Family_Guy_Wiki!', label: 'Overview blog'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'Pride Stories: Celebrate with Itsbartbytheway'},
-    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'How to Strengthen LGBTQIA+ Allyship'},
-    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'Pride Highlight: Meet Sam/Lemon Skweezy'},
-    {link: 'https://familyguy.fandom.com/wiki/User_blog:Buckimion/Celebrating_Pride_Month_with_Bruce_and_Jeffrey', label: 'Pride with Bruce and Jeffrey'}
+	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
+    {link: 'https://bit.ly/PrideEditorStory-Kurt', label: 'June 28: Pride Highlight: Meet Kurt'},
+    {link: 'https://bit.ly/PrideEditorStory-Vinny', label: 'June 27: Pride Highlight: Meet Vinny'},
+    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'June 23: Pride Highlight: Meet Sam/Lemon Skweezy'},
+    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'June 20: How to Strengthen LGBTQIA+ Allyship'},
+    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'June 15: Pride Stories: Celebrate with Bart'},
+    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'June 6: Pride blog with Drag Queens interview'},
+    {link: 'https://familyguy.fandom.com/wiki/User_blog:Lady_Lostris/Celebrate_Pride_Month,_love,_and_acceptance_with_Fandom_and_the_Family_Guy_Wiki!', label: 'June 6: Overview blog'},
+    {link: 'https://familyguy.fandom.com/wiki/User_blog:Buckimion/Celebrating_Pride_Month_with_Bruce_and_Jeffrey', label: 'June 2: Pride with Bruce and Jeffrey'},
+    {link: 'https://bit.ly/FandomPridePlaylist', label: 'June 1: Pride spotify playlist'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
