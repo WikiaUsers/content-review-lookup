@@ -1,41 +1,23 @@
 /**
  * Name:        Content Filter script
- * Author:      Derugon
  * Description: Removes information from pages according to a filter, which can
  *              be enabled/disabled from the toolbar. See the gitlab page for
  *              more information.
- * Repository:  https://gitlab.com/Derugon/mediawiki-gadget-dlc-filter
  */
 
 // <nowiki>
 
-/**
- * Utility functions and variables set by the content filter.
- * @typedef Util
- * 
- * @property {number} selectedFilter
- * The currently selected filter.
- * 
- * @property {( container: Element ) => void} applyFilter
- * Removes elements with a filter from a container.
- */
-
-( function ( $, mw, console, /** @type {Util} */ util ) {
+( function ( $, mw, console, array ) {
 
 /** @this {(...msg: string[] ) => void} */
 function logger() {
-	var args = Array.prototype.slice.call(arguments);
-	args.unshift("Content Filter:");
-	this.apply(null, args);
+	const args = array.slice.call( arguments );
+	args.unshift( 'Content Filter:' );
+	this.apply( null, args );
 }
-var log   = logger.bind( console.log ),
-    warn  = logger.bind( mw.log.warn ),
-    error = logger.bind( mw.log.error );
-
-if ( util ) {
-	error( 'Another instance of the script is already running.' );
-	return;
-}
+const log   = logger.bind( console.log );
+const warn  = logger.bind( mw.log.warn );
+const error = logger.bind( mw.log.error );
 
 log( 'Loading.' );
 
@@ -60,7 +42,7 @@ log( 'Loading.' );
  * MediaWiki configuration values.
  * @type {MWConfig}
  */
-var config = mw.config.get( [ 'skin', 'wgAction', 'wgArticlePath', 'wgPageName' ] );
+const config = mw.config.get( [ 'skin', 'wgAction', 'wgArticlePath', 'wgPageName' ] );
 
 if ( config.skin !== 'fandomdesktop' ) {
 	error(
@@ -78,7 +60,7 @@ if ( ![ 'view', 'edit' ].includes( config.wgAction ) ) {
  * The number of filtering layers (bits) used on pages.
  * @type {number}
  */
-var filterCount = 4; // max filter = 15 (1111)
+const filterCount = 4; // max filter = 15 (1111)
 
 /**
  * An available filter.
@@ -101,7 +83,7 @@ var filterCount = 4; // max filter = 15 (1111)
  * compatibility.
  * @type {( Filter | false )[]}
  */
-var filters = [
+const filters = [
 	{
 		filter: 1, // 0001
 		title: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
@@ -125,19 +107,26 @@ var filters = [
 ];
 
 /**
+ * The class used on the page content.
+ * @type {string}
+ */
+const bodyContentClass = 'mw-body-content';
+
+/**
  * If an element on a page has this class (directly on the page or
  * transcluded), the filtering becomes available, even if the page is not
  * from a namespace in filteredNamespaces or in filteredSpecialTitles.
  * Use false to disable this functionality.
  * @type {string}
  */
-var filterEnableClass = 'cf-enable';
+const filterEnableClass = 'cf-enable';
 
 /**
  * The name of the URL parameter used to store the selected filter.
  * @type {string}
  */
-var urlParam = 'dlcfilter';
+const urlParam = 'dlcfilter';
+// const urlParam = 'cfval';
 
 /**
  * If an element with this ID is on a page (directly on the page or
@@ -146,7 +135,7 @@ var urlParam = 'dlcfilter';
  * Use false to disable this functionality.
  * @type {string|false}
  */
-var filtersInfoId = 'cf-info';
+const filtersInfoId = 'cf-info';
 
 /**
  * To indicate with which filters some content should be visible or hidden,
@@ -164,8 +153,8 @@ var filtersInfoId = 'cf-info';
  * For instance, if the available filters were previously defined as:
  * 
  *     filters: [
- *         'filter1',  // 01
- *         'filter2'   // 10
+ *         { filter: 1, ... }, // 01
+ *         { filter: 2, ... }, // 10
  *     ],
  * 
  * using "0" (00) as <mask> will hide the content while any of the filters
@@ -173,14 +162,14 @@ var filtersInfoId = 'cf-info';
  * second filter is enabled, using "2" (10) as <mask> will hide the content
  * while the first filter is enabled, using "3" (11) as <mask> will have no
  * effect (the content will be shown with any filter enabled). If the value
- * of this parameter is 'filter-', then the following tags are valid uses:
+ * of this parameter is 'cf-value-', then the following tags are valid uses:
  * 
- *     <span class="filter-2 …"> … </span>
- *     <img class="filter-1 …" />
+ *     <span class="cf-val-2 ..."> ... </span>
+ *     <img class="cf-val-1 ..." />
  * 
  * @type {string}
  */
-var filterClassIntro = 'dlc-';
+const filterClassIntro = 'dlc-';
 
 /**
  * A filter type.
@@ -230,7 +219,7 @@ var filterClassIntro = 'dlc-';
  * The list of filter types.
  * @type {FilterType[]}
  */
-var filterTypes = [
+const filterTypes = [
 	{ class: 'dlc', fixed: false, mode: 'inline' }
 ];
 
@@ -239,7 +228,8 @@ var filterTypes = [
  * class, the corresponding bitmask is applied to the surrounding section.
  * @type {string | false}
  */
-var contextFilterClass = 'context-box';
+const contextFilterClass = 'context-box';
+// const contextFilterClass = 'cf-scope-section';
 
 /**
  * If an element with a filter bitmask class is inside an element with the
@@ -248,7 +238,8 @@ var contextFilterClass = 'context-box';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var pageContextFilterId = 'context-page';
+const pageContextFilterId = 'context-page';
+// const pageContextFilterId = 'cf-scope-page';
 
 /**
  * This class can be used on elements to make them invisible to filtering:
@@ -258,7 +249,8 @@ var pageContextFilterId = 'context-page';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var skipClass = 'content-filter-skip';
+const skipClass = 'content-filter-skip';
+// const skipClass = 'cf-skip';
 
 /**
  * If a page has navigation bars or elements considered out of the page
@@ -268,7 +260,8 @@ var skipClass = 'content-filter-skip';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var contentEndClass = 'content-filter-end';
+const contentEndClass = 'content-filter-end';
+// const contentEndClass = 'cf-end';
 
 /**
  * By default, a row is removed from a table if its first cell is removed.
@@ -301,7 +294,8 @@ var contentEndClass = 'content-filter-end';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var mainColumnClassIntro = 'content-filter-main-column-';
+const mainColumnClassIntro = 'content-filter-main-column-';
+// const mainColumnClassIntro = 'cf-table-col-';
 
 /**
  * If a table has this class, its cells can be removed (instead of being
@@ -309,7 +303,8 @@ var mainColumnClassIntro = 'content-filter-main-column-';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var listTableClass = 'content-filter-list';
+const listTableClass = 'content-filter-list';
+// const listTableClass = 'cf-list';
 
 /**
  * This class works the same way as skipClass, except that the element will
@@ -317,7 +312,7 @@ var listTableClass = 'content-filter-list';
  * Use false to disable this functionality.
  * @type {string | false}
  */
-var inContentAdClass = 'gpt-ad';
+const inContentAdClass = 'gpt-ad';
 
 /**
  * The maximum number of consecutive times the script should allow an
@@ -326,11 +321,11 @@ var inContentAdClass = 'gpt-ad';
  * handlers.
  * @type {number}
  */
-var applyFilterLimit = 10;
+const applyFilterLimit = 10;
 
 /**
  * The page content.
- * @type {Element}
+ * @type {HTMLElement}
  */
 var bodyContent = null;
 
@@ -341,26 +336,20 @@ var bodyContent = null;
 var toc = null;
 
 /**
- * The filter form items.
- * @type {HTMLLIElement[]} 
- */
-var buttons = [];
-
-/**
  * The current page title.
  */
-var currentTitle = new mw.Title( config.wgPageName );
+const currentTitle = new mw.Title( config.wgPageName );
 
 /**
  * The current URI.
  * Used to set links to the current page with a filter on or off.
  */
-var currentUri = new mw.Uri( document.location.href );
+const currentUri = new mw.Uri( document.location.href );
 
 /**
  * The default URI used with invalid URIs.
  */
-var defaultUri = new mw.Uri();
+const defaultUri = new mw.Uri();
 
 /**
  * The page global filter.
@@ -382,6 +371,7 @@ var selectedFilter = 0;
 
 /**
  * Whether the filters can be used on the current page.
+ * @type {boolean}
  */
 var filteringAvailable = false;
 
@@ -390,9 +380,9 @@ var filteringAvailable = false;
  * @param {JQuery} $content The content element to process.
  */
 function onContentLoaded( $content ) {
-	var content = $content[ 0 ];
+	const content = $content[ 0 ];
 
-	if ( content.classList.contains( 'mw-body-content' ) ) {
+	if ( isMainContent( content ) ) {
 		contentInit( content );
 	}
 
@@ -400,8 +390,17 @@ function onContentLoaded( $content ) {
 }
 
 /**
+ * TODO
+ * @param {HTMLElement} content
+ * @returns {boolean}
+ */
+function isMainContent( content ) {
+	return content.classList.contains( bodyContentClass );
+}
+
+/**
  * Configures the content filter with a page content.
- * @param {Element} content The page content.
+ * @param {HTMLElement} content The page content.
  */
 function contentInit( content ) {
 	if ( !filteringAvailable && !isFilteringForced( document ) ) {
@@ -414,7 +413,6 @@ function contentInit( content ) {
 	toc         = document.getElementById( 'toc' );
 	pageFilter  = getPageFilter();
 
-	buttons = filters.map( generateMenuButton );
 	insertMenu();
 
 	updateSelectedIndex();
@@ -423,12 +421,6 @@ function contentInit( content ) {
 	}
 
 	updateSelectedFilterItem();
-
-	// @ts-ignore
-	window.contentFilterUtil = {
-		selectedFilter: selectedFilter,
-		applyFilter: applyFilter
-	};
 }
 
 /**
@@ -437,12 +429,12 @@ function contentInit( content ) {
  * @returns {boolean} True if the filters can be used, false otherwise.
  */
 function isFilteringAvailable( pageTitle ) {
-	var namespace = pageTitle.getNamespaceId();
+	const namespace = pageTitle.getNamespaceId();
 	if ( [ 0, 2 ].includes( namespace ) ) {
 		return true;
 	}
 
-	var pageName = pageTitle.getPrefixedText();
+	const pageName = pageTitle.getPrefixedText();
 	if ( pageName === 'Special:Random' ) {
 		return true;
 	}
@@ -477,15 +469,15 @@ function getPageFilter() {
 		return getFilterMax();
 	}
 
-	var pageContextBox = document.getElementById( pageContextFilterId );
+	const pageContextBox = document.getElementById( pageContextFilterId );
 	if ( !pageContextBox ) {
 		return getFilterMax();
 	}
 
 	for ( var j = 0; j < filterTypes.length; ++j ) {
-		var filterType = filterTypes[ j ],
-		    filter     = getFilter( pageContextBox ),
-		    children   = pageContextBox.getElementsByClassName( filterType.class );
+		const filterType = filterTypes[ j ];
+		const children   = pageContextBox.getElementsByClassName( filterType.class );
+		var   filter     = getFilter( pageContextBox );
 
 		if ( pageContextBox.classList.contains( filterType.class ) ) {
 			if ( filterType.fixed !== false ) {
@@ -525,95 +517,43 @@ function getFilterMax() {
 
 /**
  * Gets the numeric filter of an element.
- * @param {Element} element The element.
- * @returns {number | false} The numeric filter of the given element, false if it
- *                         does not have any.
+ * @param {HTMLElement} element The element.
+ * @returns {number | false} The numeric filter of the given element,
+ *                           false if it does not have any.
  */
 function getFilter( element ) {
-	var filterClass = findClassStartingWith( element, filterClassIntro );
+	if ( 'cfVal' in element.dataset ) {
+		return +element.dataset.cfVal;
+	}
+
+	const filterClass = findClassStartingWith( element, filterClassIntro );
 	if ( filterClass === null ) {
 		return false;
 	}
-	var filter = +filterClass;
-	return filter < 0 ? false : filter;
+
+	const filter = +filterClass;
+	if ( filter < 0 ) {
+		return false;
+	}
+
+	element.dataset.cfVal = filterClass;
+	return filter;
 }
 
 /**
  * Gets the first class of an element beginning with a specific string.
- * @param {Element} element The element.
- * @param {string}  intro   The beginning of the class name.
+ * @param {HTMLElement} element The element.
+ * @param {string}      intro   The beginning of the class name.
  * @returns {string} The first corresponding class name, null otherwise.
  */
 function findClassStartingWith( element, intro ) {
-	var classList = element.classList;
+	const classList = element.classList;
 	for ( var i = 0; i < classList.length; ++i ) {
 		if ( classList[ i ].startsWith( intro ) ) {
 			return classList[ i ].substr( intro.length );
 		}
 	}
 	return null;
-}
-
-/**
- * An extension of URI parameters.
- * @typedef {{ [ k: string ]: number }} UriExtension
- */
-
-/**
- * Generates a filter menu button.
- * @param {Filter | false} filter The configurated filter.
- * @param {number}         index  The index of the filter.
- * @returns {?HTMLLIElement} The generated filter menu button.
- */
-function generateMenuButton( filter, index ) {
-	if ( !filter ) {
-		return null;
-	}
-
-	var button = document.createElement( 'li' ),
-	    a      = document.createElement( 'a' );
-
-	button.id = 'cf-button-' + index;
-	button.classList.add( 'cf-button' );
-
-	if ( filter.filter & pageFilter ) {
-		if ( filter.description ) {
-			button.title = filter.description;
-		}
-		/** @type {UriExtension} */
-		var uriParams = {};
-		uriParams[ urlParam ] = index;
-		a.href = currentUri.extend( uriParams ).toString();
-	} else {
-		button.classList.add( 'cf-button-deactivated' );
-	}
-
-	if ( isUrl( filter.title ) ) {
-		var img = document.createElement( 'img' );
-		img.src = filter.title;
-		img.loading = 'eager';
-		a.appendChild( img );
-	} else {
-		a.textContent = filter.title;
-	}
-
-	button.appendChild( a );
-	return button;
-}
-
-/**
- * Indicates whether a string is a valid URL.
- * @param {string} str The string to test.
- * @returns {boolean} True if the given string is a valid URL, false otherwise.
- */
-function isUrl( str ) {
-	try {
-		var uri = new mw.Uri( str );
-		return uri.toString() !== defaultUri.toString() &&
-			   ( uri.protocol === 'http' || uri.protocol === 'https' );
-	} catch ( _ ) {
-		return false;
-	}
 }
 
 /**
@@ -625,17 +565,13 @@ function insertMenu() {
 		return;
 	}
 
-	var ul = document.createElement( 'ul' );
+	const ul = document.createElement( 'ul' );
 	ul.classList.add( 'cf-menu' );
 
-	for ( var i = 0; i < buttons.length; ++i ) {
-		if ( buttons[ i ] ) {
-			ul.appendChild( buttons[ i ] );
-		}
-	}
+	filters.forEach( insertMenuButton, ul );
 
 	if ( filtersInfoId ) {
-		var info = document.getElementById( filtersInfoId );
+		const info = document.getElementById( filtersInfoId );
 		if ( info ) {
 			info.append( ul );
 			info.style.display = null;
@@ -643,21 +579,70 @@ function insertMenu() {
 		}
 	}
 
-	var wrapper = document.getElementsByClassName( 'page-header__actions' )[ 0 ];
+	const wrapper = document.getElementsByClassName( 'page-header__actions' )[ 0 ];
 	wrapper.prepend( ul );
 }
 
 /**
- * Gets the value of the URL parameter used to store the selected filter.
- * @returns {number | false} The selected filter index, false if none has been specified.
+ * An extension of URI parameters.
+ * @typedef {{ [ k: string ]: number }} UriExtension
  */
-function getFilterParamValue() {
-	var value = mw.util.getParamValue( urlParam );
-	if ( value ) {
-		return parseInt( value, 10 );
+
+/**
+ * Generates a filter menu button.
+ * @this {HTMLUListElement}
+ * @param {Filter | false} filter The configurated filter.
+ * @param {number}         index  The index of the filter.
+ */
+function insertMenuButton( filter, index ) {
+	if ( !filter ) {
+		return;
 	}
 
-	return false;
+	const button = document.createElement( 'li' );
+	const a      = document.createElement( 'a' );
+
+	button.id = 'cf-button-' + index;
+	button.classList.add( 'cf-button' );
+
+	if ( filter.filter & pageFilter ) {
+		if ( filter.description ) {
+			button.title = filter.description;
+		}
+		/** @type {UriExtension} */
+		const uriParams = {};
+		uriParams[ urlParam ] = index;
+		a.href = currentUri.extend( uriParams ).toString();
+	} else {
+		button.classList.add( 'cf-button-deactivated' );
+	}
+
+	if ( isUrl( filter.title ) ) {
+		const img = document.createElement( 'img' );
+		img.src = filter.title;
+		img.loading = 'eager';
+		a.appendChild( img );
+	} else {
+		a.textContent = filter.title;
+	}
+
+	button.appendChild( a );
+	this.appendChild( button );
+}
+
+/**
+ * Indicates whether a string is a valid URL.
+ * @param {string} str The string to test.
+ * @returns {boolean} True if the given string is a valid URL, false otherwise.
+ */
+function isUrl( str ) {
+	try {
+		const uri = new mw.Uri( str );
+		return uri.toString() !== defaultUri.toString() &&
+			   ( uri.protocol === 'http' || uri.protocol === 'https' );
+	} catch ( _ ) {
+		return false;
+	}
 }
 
 /**
@@ -671,28 +656,28 @@ function updateSelectedIndex() {
 		return;
 	}
 
-	var filterParamValue = getFilterParamValue();
+	const filterParamValue = getFilterParamValue();
 	if ( filterParamValue === false ) {
 		selectedIndex = false;
 		return;
 	}
 
 	selectedIndex = filterParamValue;
-	if ( !isIndex( selectedIndex, buttons ) ) {
+	if ( !isIndex( selectedIndex, filters ) ) {
 		selectedIndex = false;
 		error(
 			'The selected numeric filter (' + filterParamValue + ') is unavailable, ' +
-			'please use an integer x so 0 ≤ x ≤ ' + ( buttons.length - 1 ) + '. ' +
+			'please use an integer x so 0 ≤ x ≤ ' + ( filters.length - 1 ) + '. ' +
 			'No filtering will be performed.'
 		);
 		return;
 	}
 
-	var filter = filters[ selectedIndex ];
+	const filter = filters[ selectedIndex ];
 	if ( !filter ) {
 		selectedIndex = false;
 		error(
-			'The selected numeric filter (' + urlParam + ') has been diabled. ' +
+			'The selected numeric filter (' + urlParam + ') has been disabled. ' +
 			'No filtering will be performed.'
 		);
 		return;
@@ -700,6 +685,19 @@ function updateSelectedIndex() {
 
 	selectedFilter = filter.filter;
 	log( 'Using ' + selectedFilter + ' as active filter.' );
+}
+
+/**
+ * Gets the value of the URL parameter used to store the selected filter.
+ * @returns {number | false} The selected filter index, false if none has been specified.
+ */
+function getFilterParamValue() {
+	const value = mw.util.getParamValue( urlParam );
+	if ( value ) {
+		return parseInt( value, 10 );
+	}
+
+	return false;
 }
 
 /**
@@ -714,7 +712,7 @@ function isIndex( number, array ) {
 
 /**
  * Removes elements with a filter from a container.
- * @param {Element} container The container to remove elements from.
+ * @param {HTMLElement} container The container to remove elements from.
  */
 function applyFilter( container ) {
 	if ( !bodyContent ) {
@@ -730,12 +728,12 @@ function applyFilter( container ) {
 
 	preprocess( container );
 	for ( var i = 0; i < filterTypes.length; ++i ) {
-		var filterType = filterTypes[ i ],
-		    elements   = container.getElementsByClassName( filterType.class ),
-		    oldLength  = elements.length,
-		    loopLimit  = 0;
+		const filterType = filterTypes[ i ];
+		const elements   = container.getElementsByClassName( filterType.class );
+		const oldLength  = elements.length;
+		var   loopLimit  = 0;
 		while ( elements.length ) {
-			var element = elements[ 0 ];
+			const element = elements[ 0 ];
 			if ( applyFilterType( filterType, element ) ) {
 				element.classList.replace(
 					filterType.class,
@@ -750,14 +748,14 @@ function applyFilter( container ) {
 				break;
 			}
 		}
-		elements = container.getElementsByClassName( 'cf-element-skipped' );
-		while ( elements.length ) {
-			elements[ 0 ].classList.replace( 'cf-element-skipped', filterType.class );
+		const skippedElements = container.getElementsByClassName( 'cf-element-skipped' );
+		while ( skippedElements.length ) {
+			skippedElements[ 0 ].classList.replace( 'cf-element-skipped', filterType.class );
 		}
 	}
 	postprocess( container );
 
-	Array.prototype.forEach.call(
+	array.forEach.call(
 		container.getElementsByTagName( 'a' ),
 		updateAnchorFilter
 	);
@@ -766,8 +764,8 @@ function applyFilter( container ) {
 /**
  * Removes an element with a filter if its numeric filter does not match the
  * selected one.
- * @param {FilterType} filterType The filter type of the element.
- * @param {Element}    element    The element.
+ * @param {FilterType}  filterType The filter type of the element.
+ * @param {HTMLElement} element    The element.
  * @returns {boolean} True if the element should be left in place, false otherwise.
  */
 function applyFilterType( filterType, element ) {
@@ -808,7 +806,7 @@ function applyFilterType( filterType, element ) {
 
 /**
  * Removes an element and its empty parents.
- * @param {Element} element The element to remove.
+ * @param {HTMLElement} element The element to remove.
  */
 function removeElementWithoutContext( element ) {
 	var parent = element.parentElement;
@@ -822,8 +820,8 @@ function removeElementWithoutContext( element ) {
 /**
  * Removes an element with a filter, assuming its numeric filter does not match
  * the selected one.
- * @param {FilterType} filterType The filter type of the element.
- * @param {Element}    element    The element to remove.
+ * @param {FilterType}  filterType The filter type of the element.
+ * @param {HTMLElement} element    The element to remove.
  * @returns {boolean} True if the removal has been handled properly, false otherwise.
  */
 function handleFilter( filterType, element ) {
@@ -846,7 +844,7 @@ function handleFilter( filterType, element ) {
 	if ( contextFilterClass ) {
 		parent = findParentWithClass( element, contextFilterClass );
 		if ( parent ) {
-			var heading = getPreviousHeading( parent );
+			const heading = getPreviousHeading( parent );
 			removeElement( heading || parent );
 			return true;
 		}
@@ -860,7 +858,7 @@ function handleFilter( filterType, element ) {
 
 	removeGhostSiblings( element );
 	if ( !getNextText( element ) ) {
-		var nextElement = element.nextElementSibling;
+		const nextElement = element.nextElementSibling;
 		if ( !nextElement ) {
 			removeElement( element.parentElement );
 			return true;
@@ -872,8 +870,8 @@ function handleFilter( filterType, element ) {
 		}
 	}
 
-	var previousElement = element.previousElementSibling,
-	    previousText    = getPreviousText( element );
+	const previousElement = element.previousElementSibling;
+	const previousText    = getPreviousText( element );
 	if (
 		previousText ?
 			!previousText.endsWith( '.' ) :
@@ -883,9 +881,9 @@ function handleFilter( filterType, element ) {
 	}
 
 	/** @type {ChildNode} */
-	var node        = element,
-	    nextNode    = node,
-	    textContent = '';
+	var node        = element;
+	var nextNode    = node;
+	var textContent = '';
 	do {
 		textContent = node.textContent.trimEnd();
 		nextNode    = node.nextSibling;
@@ -909,7 +907,7 @@ function handleFilter( filterType, element ) {
 
 /**
  * Does things before removing elements from a container.
- * @param {Element} container The container to remove elements from.
+ * @param {HTMLElement} container The container to remove elements from.
  */
 function preprocess( container ) {
 	preprocessItemDictionaries( container );
@@ -917,7 +915,7 @@ function preprocess( container ) {
 
 /**
  * Does things after removing elements from a container.
- * @param {Element} container The container to remove elements from.
+ * @param {HTMLElement} container The container to remove elements from.
  */
 function postprocess( container ) {
 	postprocessItemDictionaries( container );
@@ -928,19 +926,19 @@ function postprocess( container ) {
 /**
  * Removes an element with an inline filter and its related content in a list
  * using items as a key.
- * @param {Element} element The element to remove.
+ * @param {HTMLElement} element The element to remove.
  * @returns {boolean} True if the removal has been handled by this function,
  *                    false if it should be handled the default way.
  */
 function handleItemDictionary( element ) {
-	var parent = element.parentElement;
+	const parent = element.parentElement;
 	if (
 		parent.tagName !== 'SPAN' ||
 		!parent.classList.contains( 'dlc-filter-dict-key' )
 	) {
 		return false;
 	}
-	var keyType = getKeyType( element );
+	const keyType = getKeyType( element );
 	switch ( keyType ) {
 	case DictKeyType.UNIQUE:
 	case DictKeyType.COMBINED:
@@ -972,7 +970,7 @@ function handleItemDictionary( element ) {
 /**
  * TODO
  */
-var DictKeyType = {
+const DictKeyType = {
 	UNIQUE: 0,
 	COMBINED: 1,
 	FIRST_ALTERNATIVE: 2,
@@ -982,7 +980,7 @@ var DictKeyType = {
 
 /**
  * Gets the type of key an element is part of.
- * @param {Element} element The element.
+ * @param {HTMLElement} element The element.
  * @returns {number} A key type from the DictKeyType enumeration.
  * @see DictKeyType
  */
@@ -997,9 +995,9 @@ function getKeyType( element ) {
 	) {
 		sibling = sibling.previousSibling;
 	}
-	var slashIndex = -1,
-	    plusIndex  = -1,
-	    keyType    = DictKeyType.UNIQUE;
+	var slashIndex = -1;
+	var plusIndex  = -1;
+	var keyType    = DictKeyType.UNIQUE;
 	if ( sibling ) {
 		slashIndex = sibling.textContent.lastIndexOf( '/' );
 		plusIndex  = sibling.textContent.lastIndexOf( '+' );
@@ -1031,7 +1029,7 @@ function getKeyType( element ) {
 
 /**
  * TODO
- * @param {Element} element The element to remove.
+ * @param {HTMLElement} element The element to remove.
  * @returns {boolean} True if the removal has been handled by this function,
  *                    false if it should be handled the default way.
  */
@@ -1039,33 +1037,33 @@ function handleInnerList( element ) {
 	if ( hasPreviousSibling( element ) ) {
 		return false;
 	}
-	var parent = element.parentElement;
+	const parent = element.parentElement;
 	if ( parent.tagName !== 'LI' || parent.childNodes.length === 1 ) {
 		return false;
 	}
-	var innerList = parent.lastElementChild;
+	const innerList = parent.lastElementChild;
 	if ( !innerList || innerList.tagName !== 'UL' ) {
 		return false;
 	}
-	var filter = getFilter( element );
+	const filter = getFilter( element );
 	if ( filter === false ) {
 		return false;
 	}
-	var sibling = innerList.previousSibling,
-	    lis     = innerList.children;
+	var sibling = innerList.previousSibling;
 	while ( sibling ) {
 		sibling.remove();
 		sibling = innerList.previousSibling;
 	}
-	var upperBound = getFilterMax() + 1;
+	const lis        = innerList.children;
+	const upperBound = getFilterMax() + 1;
 	for ( var i = 0; i < lis.length; ) {
-		var li    = lis[ i ],
-		    child = li.firstChild;
+		const li    = lis[ i ];
+		var   child = li.firstChild;
 		while ( isGhostNode( child ) ) {
 			child = child.nextSibling;
 		}
-		if ( child instanceof Element ) {
-			var childFilter = getFilter( child );
+		if ( child instanceof HTMLElement ) {
+			const childFilter = getFilter( child );
 			if (
 				childFilter &&
 				!haveSimilarBits( upperBound, filter, childFilter )
@@ -1107,16 +1105,16 @@ function haveSimilarBits( upperBound, fst, snd ) {
 
 /**
  * Removes a DLC icon and its related content in a vertical list navigation.
- * @param {Element} dlcIcon The DLC icon.
+ * @param {HTMLElement} dlcIcon The DLC icon.
  * @returns {boolean} True if the DLC icon has been handled properly, false otherwise.
  */
 function handleNavListVertical( dlcIcon ) {
-	var cell = dlcIcon.parentElement;
+	const cell = dlcIcon.parentElement;
 	if ( cell.tagName !== 'TD' ) {
 		return false;
 	}
-	var row   = cell.parentElement,
-	    table = row.parentElement.parentElement;
+	const row   = cell.parentElement;
+	const table = row.parentElement.parentElement;
 	if ( !table.classList.contains( 'nav-list-vertical' ) ) {
 		return false;
 	}
@@ -1130,30 +1128,32 @@ function handleNavListVertical( dlcIcon ) {
 	}
 	
 	cell.remove();
-	var nextRow = row.nextElementSibling;
+	const nextRow = row.nextElementSibling;
 	nextRow.children[ index ].remove();
 	return true;
 }
 
 /**
  * TODO
- * @param {Element} container
+ * @param {HTMLElement} container
  */
 function preprocessItemDictionaries( container ) {
-	var headings   = container.querySelectorAll( 'h2, h3, h4, h5, h6' );
+	const headings = container.querySelectorAll( 'h2, h3, h4, h5, h6' );
 	for ( var i = 0; i < headings.length; ++i ) {
-		var headlines = headings[ i ].getElementsByClassName( 'mw-headline' );
+		const headlines = headings[ i ].getElementsByClassName( 'mw-headline' );
 		if (
 			headlines.length &&
 			headlines[ 0 ].textContent.match( 'Synergies|Interactions' )
 		) {
-			var headingLevel = getHeadingLevel( headings[ i ] ),
-			    nextElement  = headings[ i ].nextElementSibling;
-			while ( !isOutOfSection( nextElement, headingLevel ) ) {
+			const headingLevel = getHeadingLevel( headings[ i ] );
+			for (
+				var nextElement = headings[ i ].nextElementSibling;
+				!isOutOfSection( nextElement, headingLevel );
+				nextElement = nextElement.nextElementSibling
+			) {
 				if ( nextElement.tagName === 'UL' ) {
 					preprocessItemDictionary( nextElement );
 				}
-				nextElement = nextElement.nextElementSibling;
 			}
 		}
 	}
@@ -1161,23 +1161,23 @@ function preprocessItemDictionaries( container ) {
 
 /**
  * TODO
- * @param {Element} ul
+ * @param {HTMLElement} ul
  */
 function preprocessItemDictionary( ul ) {
-	var lis           = ul.children,
-	    keySpanBase   = document.createElement( 'span' ),
-	    valueSpanBase = document.createElement( 'span' );
+	const lis           = ul.children;
+	const keySpanBase   = document.createElement( 'span' );
+	const valueSpanBase = document.createElement( 'span' );
 	ul.classList.add( 'dlc-filter-dict' );
 	keySpanBase.classList.add( 'dlc-filter-dict-key' );
 	valueSpanBase.classList.add( 'dlc-filter-dict-value' );
 	for ( var i = 0; i < lis.length; ++i ) {
-		var li = lis[ i ];
+		const li = lis[ i ];
 		if ( li.tagName !== 'LI' ) {
 			continue;
 		}
-		var keySpan   = keySpanBase.cloneNode( true ),
-		    valueSpan = valueSpanBase.cloneNode( true ),
-		    node      = li.firstChild;
+		const keySpan   = keySpanBase.cloneNode( true );
+		const valueSpan = valueSpanBase.cloneNode( true );
+		var   node      = li.firstChild;
 		while (
 			node && (
 				node.nodeType !== Node.TEXT_NODE ||
@@ -1191,13 +1191,13 @@ function preprocessItemDictionary( ul ) {
 			error( 'Key error?' );
 			continue;
 		}
-		var colonIndex = node.textContent.indexOf( ':' );
+		const colonIndex = node.textContent.indexOf( ':' );
 		keySpan.append(
 			document.createTextNode( node.textContent.substr( 0, colonIndex ) )
 		);
 		node.textContent = node.textContent.substr( colonIndex + 1 );
-		var lastNode    = li.lastChild,
-		    lastElement = li.lastElementChild;
+		var   lastNode    = li.lastChild;
+		const lastElement = li.lastElementChild;
 		if ( lastElement && lastElement.tagName === 'UL' ) {
 			lastElement.classList.add( 'dlc-filter-dict-inner' );
 			lastNode = lastElement.previousSibling;
@@ -1215,29 +1215,29 @@ function preprocessItemDictionary( ul ) {
 
 /**
  * TODO
- * @param {Element} container
+ * @param {HTMLElement} container
  */
 function postprocessItemDictionaries( container ) {
-	var uls = container.getElementsByClassName( 'dlc-filter-dict' );
+	const uls = container.getElementsByClassName( 'dlc-filter-dict' );
 	while ( uls.length ) {
 		for (
 			var li = uls[ 0 ].firstElementChild;
 			li;
 			li = li.nextElementSibling
 		) {
-			var keys   = li.getElementsByClassName( 'dlc-filter-dict-key' ),
-			    values = li.getElementsByClassName( 'dlc-filter-dict-value' );
+			const keys   = li.getElementsByClassName( 'dlc-filter-dict-key' );
+			const values = li.getElementsByClassName( 'dlc-filter-dict-value' );
 			unwrap( keys[ 0 ] );
 			if ( values.length ) {
 				unwrap( values[ 0 ] );
 				continue;
 			}
-			var subdicts = li.getElementsByClassName( 'dlc-filter-dict-inner' );
+			const subdicts = li.getElementsByClassName( 'dlc-filter-dict-inner' );
 			if ( !subdicts.length ) {
 				continue;
 			}
-			var subdict = subdicts[ 0 ],
-			    firstLi = subdict.getElementsByTagName( 'li' )[ 0 ];
+			const subdict = subdicts[ 0 ];
+			const firstLi = subdict.getElementsByTagName( 'li' )[ 0 ];
 			unwrap( firstLi, subdict );
 			if ( !subdict.firstElementChild ) {
 				subdict.remove();
@@ -1251,10 +1251,10 @@ function postprocessItemDictionaries( container ) {
 
 /**
  * Remove empty "category" navs.
- * @param {Element} container
+ * @param {HTMLElement} container
  */
 function postprocessCategoryNavs( container ) {
-	var navs = container.getElementsByClassName( 'nav-category' );
+	const navs = container.getElementsByClassName( 'nav-category' );
 	for ( var i = 0; i < navs.length; ++i ) {
 		if ( navs[ i ].classList.contains( 'nav-list-vertical' ) ) {
 			continue;
@@ -1285,18 +1285,18 @@ function postprocessCategoryNavs( container ) {
  * @param {Element} container
  */
 function postprocessListNavs( container ) {
-	var navs = container.getElementsByClassName( 'nav-list-vertical' );
+	const navs = container.getElementsByClassName( 'nav-list-vertical' );
 	for ( var i = 0; i < navs.length; ++i ) {
-		var row       = navs[ i ].lastElementChild.lastElementChild;
-		var cells     = row.children;
-		var firstCell = cells[ 0 ];
-		var lastChild = firstCell.lastChild;
+		const row       = navs[ i ].lastElementChild.lastElementChild;
+		const cells     = row.children;
+		const firstCell = cells[ 0 ];
+		var   lastChild = firstCell.lastChild;
 		while ( !( lastChild instanceof HTMLElement ) ) {
 			lastChild.remove();
 			lastChild = firstCell.lastChild;
 		}
 		while ( cells.length > 1 ) {
-			var nodes = cells[ 1 ].children;
+			const nodes = cells[ 1 ].children;
 			for ( var j = 0; j < nodes.length; ++j ) {
 				firstCell.append( nodes[ j ] );
 			}
@@ -1356,10 +1356,10 @@ function removeElement( element ) {
  * @param {Element} element The <h2/h3/h4/h5/h6> element.
  */
 function removeHeadingElement( element ) {
-	var headingLevel = getHeadingLevel( element ),
-	    sibling      = element.nextElementSibling;
+	const headingLevel = getHeadingLevel( element );
+	var   sibling      = element.nextElementSibling;
 	while ( !isOutOfSection( sibling, headingLevel ) ) {
-		var toRemove = sibling;
+		const toRemove = sibling;
 		sibling = sibling.nextElementSibling;
 		toRemove.remove();
 	}
@@ -1384,10 +1384,10 @@ function removeListItem( item ) {
  * @param {Element} cell The <th/td> element.
  */
 function removeTableCell( cell ) {
-	var row    = cell.parentElement,
-	    tbody  = row.parentElement,
-	    table  = tbody.parentElement,
-	    column = 0;
+	const row    = cell.parentElement;
+	const tbody  = row.parentElement;
+	const table  = tbody.parentElement;
+	var   column = 0;
 	for (
 		var sibling = cell.previousElementSibling;
 		sibling;
@@ -1398,7 +1398,7 @@ function removeTableCell( cell ) {
 
 	if ( tbody.tagName === 'THEAD' && cell.tagName === 'TH' ) {
 		// TODO: Fix with mw-collapsible & sortable.
-		var isLastColumn = !cell.nextElementSibling;
+		const isLastColumn = !cell.nextElementSibling;
 		row.removeChild( cell );
 		if ( !tbody.nextElementSibling ) {
 			return;
@@ -1417,7 +1417,7 @@ function removeTableCell( cell ) {
 		}
 	}
 
-	var mainColumn = mainColumnClassIntro &&
+	const mainColumn = mainColumnClassIntro &&
 		findClassStartingWith( table, mainColumnClassIntro ) || 1;
 	if ( +mainColumn === column + 1 ) {
 		removeElement( row );
@@ -1445,8 +1445,8 @@ function removeDefaultElement( element ) {
 		removeElement( element.parentElement );
 		return;
 	}
-	var parent  = element.parentElement,
-	    sibling = element.previousElementSibling;
+	const parent  = element.parentElement;
+	const sibling = element.previousElementSibling;
 	element.remove();
 	ensureNonEmptySection( sibling );
 	if ( !parent.hasChildNodes() ) {
@@ -1472,7 +1472,7 @@ function ensureNonEmptySection( element ) {
 	if ( !isOutOfSection( element.nextElementSibling, getHeadingLevel( element ) ) ) {
 		return;
 	}
-	var previousElement = element.previousElementSibling;
+	const previousElement = element.previousElementSibling;
 	removeTocElement( element.getElementsByClassName( 'mw-headline' )[ 0 ].id );
 	element.parentNode.removeChild( element );
 	ensureNonEmptySection( previousElement );
@@ -1490,19 +1490,19 @@ function removeTocElement( id ) {
 	if ( !toc ) {
 		return false;
 	}
-	var element = toc.querySelector( '[href="#' + id + '"]' );
+	const element = toc.querySelector( '[href="#' + id + '"]' );
 	if ( !element ) {
 		return false;
 	}
-	var parent     = element.parentElement,
-	    number     = element.getElementsByClassName( 'tocnumber' )[ 0 ].textContent,
-	    lastDotPos = number.lastIndexOf( '.', 1 ) + 1,
-	    lastNumber = +number.substring( lastDotPos ),
-	    nextParent = parent.nextElementSibling;
+	const parent     = element.parentElement;
+	const number     = element.getElementsByClassName( 'tocnumber' )[ 0 ].textContent;
+	const lastDotPos = number.lastIndexOf( '.', 1 ) + 1;
+	var   lastNumber = +number.substring( lastDotPos );
+	var   nextParent = parent.nextElementSibling;
 	while ( nextParent ) {
-		var nextNumbers = nextParent.getElementsByClassName( 'tocnumber' );
+		const nextNumbers = nextParent.getElementsByClassName( 'tocnumber' );
 		for ( var i = 0; i < nextNumbers.length; ++i ) {
-			var textContent = nextNumbers[ i ].textContent;
+			const textContent = nextNumbers[ i ].textContent;
 			nextNumbers[ i ].textContent =
 				textContent.substring( 0, lastDotPos ) + lastNumber +
 				textContent.substring( number.length );
@@ -1552,10 +1552,10 @@ function isOutOfSection( element, headingLevel ) {
 
 /**
  * Indicates whether an element or one of its parents has a class.
- * @param {Element} element   The element.
- * @param {string}  className The class name.
- * @returns {Element} The element or one of its parents which has the given class,
- *                    null if there aren't any.
+ * @param {HTMLElement} element   The element.
+ * @param {string}      className The class name.
+ * @returns {HTMLElement} The element or one of its parents which has the given
+ *                        class, null if there aren't any.
  */
 function findParentWithClass( element, className ) {
 	if ( !element ) {
@@ -1573,7 +1573,7 @@ function findParentWithClass( element, className ) {
 /**
  * Indicates whether an element has a sibling.
  * Ignores comments and "invisible" strings.
- * @param {Element} element The element.
+ * @param {Node} element The element.
  * @returns {boolean} True if the element has no sibling other than a comment or
  *                    an "invisible" string, false otherwise.
  */
@@ -1584,7 +1584,7 @@ function hasSibling( element ) {
 /**
  * Indicates whether an element has a previous sibling.
  * Ignores comments and "invisible" strings.
- * @param {Element} element The element.
+ * @param {Node} element The element.
  * @returns {boolean} True if the element has a previous sibling other than
  *                    a comment or an "invisible" string, false otherwise.
  */
@@ -1605,7 +1605,7 @@ function hasPreviousSibling( element ) {
 /**
  * Indicates whether an element has a next sibling.
  * Ignores comments and "invisible" strings.
- * @param {Element} element The element.
+ * @param {Node} element The element.
  * @returns {boolean} True if the element has a next sibling other than
  *                    a comment or an "invisible" string, false otherwise.
  */
@@ -1625,7 +1625,7 @@ function hasNextSibling( element ) {
 
 /**
  * Indicates whether an element has a filter applied to it (not alrealy handled).
- * @param {Element} element The element.
+ * @param {HTMLElement} element The element.
  * @returns {boolean} True if the element has a filter type class, false otherwise.
  */
 function hasFilter( element ) {
@@ -1652,6 +1652,7 @@ function isGhostNode( node ) {
 	if ( !node ) {
 		return false;
 	}
+
 	switch ( node.nodeType ) {
 	case Node.COMMENT_NODE:
 		return true;
@@ -1659,10 +1660,11 @@ function isGhostNode( node ) {
 		return !node.textContent || !node.textContent.trim();
 	case Node.ELEMENT_NODE:
 		/** @type {Element} */ // @ts-ignore
-		var element = ( node );
+		const element = node;
 		return element.classList.contains( 'mw-collapsible-toggle' ) ||
 		       skipClass && element.classList.contains( skipClass );
 	}
+
 	return false;
 }
 
@@ -1789,12 +1791,12 @@ function removeNextNodeUntilText( node, text, removeText ) {
 
 /**
  * Gets the text from the text node before a DOM element.
- * @param {Element} element The element.
+ * @param {Node} element The element.
  * @returns {string} The text content of the previous text node,
  *                   an empty string if there aren't any.
  */
 function getPreviousText( element ) {
-	var previousNode = element.previousSibling;
+	const previousNode = element.previousSibling;
 	return previousNode instanceof Text && previousNode.textContent ?
 		previousNode.textContent.trim() :
 		'';
@@ -1802,12 +1804,12 @@ function getPreviousText( element ) {
 
 /**
  * Gets the text from the text node after a DOM element.
- * @param {Element} element The element.
+ * @param {Node} element The element.
  * @returns {string} The text content of the next text node,
  *                   an empty string if there aren't any.
  */
 function getNextText( element ) {
-	var nextNode = element.nextSibling;
+	const nextNode = element.nextSibling;
 	return nextNode instanceof Text && nextNode.textContent ?
 		nextNode.textContent.trim() :
 		'';
@@ -1815,15 +1817,15 @@ function getNextText( element ) {
 
 /**
  * Removes an element, leaving its content in place.
- * @param {Element}  element The element to remove.
- * @param {Element} [target] The node which should be directly after the initial
- *                           element contents, defaults to the initial element.
+ * @param {HTMLElement}  element The element to remove.
+ * @param {HTMLElement} [target] The node which should be directly after the initial
+ *                               element contents, defaults to the initial element.
  */
 function unwrap( element, target ) {
 	if ( !target ) {
 		target = element;
 	}
-	var parent = target.parentElement;
+	const parent = target.parentElement;
 	if ( !parent ) {
 		return;
 	}
@@ -1864,7 +1866,7 @@ function updateSelectedFilterItem() {
 	}
 
 	delete currentUri.query[ urlParam ];
-	var item = buttons[ selectedIndex ];
+	const item = document.getElementById( 'cf-button-' + selectedIndex );
 	if ( !item ) {
 		return;
 	}
@@ -1893,7 +1895,7 @@ function updateAnchorFilter( a ) {
 		return;
 	}
 
-	var match = uri.path.match(
+	const match = uri.path.match(
 		mw.util
 			.escapeRegExp( config.wgArticlePath )
 			.replace( '\\$1', '(.*)' )
@@ -1903,22 +1905,26 @@ function updateAnchorFilter( a ) {
 	}
 
 	if ( match[ 1 ] ) {
-		var pageTitle = new mw.Title( mw.Uri.decode( match[ 1 ] ) );
+		const pageTitle = new mw.Title( mw.Uri.decode( match[ 1 ] ) );
 		if ( !isFilteringAvailable( pageTitle ) ) {
 			return;
 		}
 	}
 
 	/** @type {UriExtension} */
-	var obj = {};
+	const obj = {};
 	// @ts-ignore
 	obj[ urlParam ] = selectedIndex;
 	a.href = uri.extend( obj ).toString();
 }
 
 filteringAvailable = isFilteringAvailable( currentTitle );
+
 mw.hook( 'wikipage.content' ).add( onContentLoaded );
 
-// @ts-ignore
-} )( jQuery, mediaWiki, console, window.contentFilterUtil );
+module.exports = {
+	applyFilter: applyFilter
+};
+
+} )( jQuery, mediaWiki, console, Array.prototype );
 // </nowiki>

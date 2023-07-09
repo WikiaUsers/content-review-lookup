@@ -14,8 +14,8 @@
 			"ammessages": "editold|pipe-separator",
 			"amlang": config.wgUserLanguage
 		}).then (function(data){
-			RevisionEditLinks.editlabel = RevisionEditLinks.editlabel==null?data.query.allmessages[0]["*"]:RevisionEditLinks.editlabel;
-			var separator = data.query.allmessages[1]["*"];
+			 var editlabel = RevisionEditLinks.editlabel = RevisionEditLinks.editlabel==null?data.query.allmessages[0]["*"]:RevisionEditLinks.editlabel,
+			separator = data.query.allmessages[1]["*"];
 			$(".mw-contributions-list > li").queue(function(){
 				var pgname = $(this).find('.mw-contributions-title').length?$(this).find('.mw-contributions-title').text():config.wgPageName,
 				revid = $(this).attr('data-mw-revid');
@@ -39,7 +39,5 @@
 	mw.loader.using([
         'mediawiki.api',
         'mediawiki.user',
-        'mediawiki.util',
-        'mediawiki.notification'
     ], putEditLinks);
 })(jQuery, mediaWiki);

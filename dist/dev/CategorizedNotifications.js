@@ -147,7 +147,7 @@ $(function() {
 			).appendTo(tabber);
 		});
 		
-		mw.util.addCSS('.notifications .categorized-notifications .tab-wrapper>ul::after,.notifications .categorized-notifications .tab-wrapper>ul::before,.notifications .categorized-notifications .tab-empty{display:none}.notifications .categorized-notifications .tab-empty:only-child{display:flex}.notifications .categorized-notifications .tab-wrapper,.notifications .categorized-notifications .tab-wrapper>ul{width:100%;height:100%}.notifications .categorized-notifications{display:flex;flex-direction:column;height:100%}.notifications .categorized-notifications .wds-tab__content{height:100%;overflow-x:hidden}');
+		mw.util.addCSS('.notifications .categorized-notifications .tab-empty,.notifications .categorized-notifications .tab-wrapper>ul::after,.notifications .categorized-notifications .tab-wrapper>ul::before{display:none}.notifications .categorized-notifications .tab-empty:only-child{display:flex;flex-direction:column;align-items:center;padding-top:30px}.notifications .categorized-notifications .tab-wrapper,.notifications .categorized-notifications .tab-wrapper>ul{width:100%;height:100%}.notifications .categorized-notifications{display:flex;flex-direction:column;height:100%}.notifications .categorized-notifications .wds-tab__content{height:100%;overflow-x:hidden}');
 		
 		beginObserving(tabber);
 	});

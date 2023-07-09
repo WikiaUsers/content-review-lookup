@@ -226,6 +226,8 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.Uri', 'ext.fandom
                 'u:dev:MediaWiki:Nuke/code.js',
                 'u:dev:MediaWiki:Reconstitution.js',
                 'u:dev:MediaWiki:AjaxBatchDelete.js',
+                'u:dev:MediaWiki:ChangeModelButton.js',
+                'u:dev:MediaWiki:AjaxContentModel.js',
             ]
         });
     }

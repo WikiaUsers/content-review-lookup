@@ -266,3 +266,12 @@ importScript("MediaWiki:Common.js/masthead.js");
 
 /* easy patrol */
 importScriptPage('AjaxPatrol/code.js', 'dev' );
+
+importArticles({
+    type: 'script',
+    articles: [
+        // ...
+        'w:c:dev:ReferencePopups/code.js',
+        // ...
+    ]
+});

@@ -11,19 +11,12 @@
 */
 
 /* jshint
-    esversion: 5, esnext: false, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    forin: false,
-    -W082, -W084
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-
-/* global mw */
+/* global mw, console */
 
 mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(function () {
     //##############################################################
@@ -31,15 +24,18 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
     // Code to allow making {{Slot}} clickable to show different content [Part 1/2]
     function clickTab(id) {
         var $parent = $(this).parents(".mcui-tabber").eq(0);
-        id = "ui-" + id;
-        if (!$("#" + id).length) {
-            console.warn("No such tab ID \"" + id + "\"");
+        var uiid = "ui-" + id;
+        if (!$("#" + uiid).length) {
+            console.warn("No such tab ID \"" + uiid + "\"");
             return;
         }
-        $parent.find(".mcui-tab-content#" + id).siblings(".mcui-tab-content").addClass("hidden");
-        $parent.find(".mcui-tab-content#" + id).removeClass("hidden");
+        var $activeContent = $parent.find(".mcui-tab-content#" + uiid);
+        $activeContent.siblings(".mcui-tab-content").addClass("hidden");
+        $activeContent.removeClass("hidden");
+        $parent.find(".mcui-tab.active").removeClass("active");
+        $parent.find(".mcui-tab[data-tab=\"" + id + "\"]").addClass("active");
         // Since images don't load on hidden tabs, force them to load
-        var onloadEl = $parent.find(".mcui-tab-content#" + id + " .lzy[onload]");
+        var onloadEl = $parent.find(".mcui-tab-content#" + uiid + " .lzy[onload]");
         if (onloadEl.length) onloadEl.load();
     }
 
@@ -61,11 +57,6 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
 
     // This hook forces it to apply script even in TabViews and page preview
     mw.hook("wikipage.content").add(function (pSection) {
-        // Handle tabber content on load
-        pSection.find(".mcui-tabber .mcui-tab-content ~ .mcui-tab-content").each(function () {
-            $(this).addClass("hidden");
-        });
-
         // Allow making {{Slot}} clickable to show different content [Part 2/2]
         (function () {
             if (!pSection.find(".mcui-tabber").length) return;
@@ -78,17 +69,21 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 }
             });
 
-            // Makes an extra button to go back to the first UI tab
+            // Make pagination, and make first click
             pSection.find(".mcui-tabber").each(function () {
-                var elementId = $(this).find(":first-child").attr("id");
-                if (!elementId) return;
-                var className = elementId.replace("ui-", "");
-                $(this).find(".mcui").append(
-                    $("<div>").addClass("mcui-returnbutton noselect").text("↻")
-                    .click(function () {
-                        clickTab.call(this, className);
-                    })
-                );
+                var tabber = $(this);
+                var tabs = [];
+                tabber.find(".mcui-tab-content").each(function () {
+                    var elementId = $(this).attr("id");
+                    if (!elementId) return;
+                    var id = elementId.replace("ui-", "");
+                    tabs.push($("<div>", { class: "mcui-tab", "data-tab": id }));
+                });
+                if (tabs.length > 0) {
+                    var pagination = $("<div>", { class: "mcui-pagination", html: tabs });
+                    tabber.addClass("jsready").prepend(pagination);
+                    clickTab.call(tabs[0], tabs[0].data("tab"));
+                }
             });
         })();
     });

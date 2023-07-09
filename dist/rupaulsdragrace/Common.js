@@ -39,9 +39,9 @@ $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Celebrating Pride Month')
+            .text('Vote in our Snatchdown for the Crown!')
         )
-        .attr('href', 'https://bit.ly/FandomPrideBlog-header')
+        .attr('href', 'https://bit.ly/Snatchdown-header')
 );
 
 /* Auto Refresh */

@@ -301,6 +301,10 @@
 	}
 
 $(document).ready(function() {
+    $('.character-filters span.mw-ui-button').on('click', function(event) {
+        $(event.target).toggleClass('mw-ui-progressive');
+        updateFilters();
+    });
     $('.character-filters label').on('click', function(event) {
         $(event.target).toggleClass('mw-ui-progressive');
         updateFilters();

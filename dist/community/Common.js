@@ -115,15 +115,3 @@ if (mw.config.get('profileUserName') === 'Sophiedp' && mw.config.get('profileIsM
         });
     });
 }
-
-/* For Pride Month. Explicitly approved by Fandom Staff for Community Central only */
-
-$(function() {
-    $('.global-navigation__logo  > svg.wds-icon').remove(); // only remove the logo.
-    $('.global-navigation__logo').prepend(
-        $('<img>', {
-            src: 'https://static.wikia.nocookie.net/central/images/9/99/Fandom_Pride.png/revision/latest/scale-to-width-down/33',
-            style: 'margin-bottom: 6px'
-        })
-    );
-});

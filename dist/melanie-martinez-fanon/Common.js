@@ -5,20 +5,6 @@
        'w:c:dev:UserTags/code.js',
    ]
 });
-window.UserTagsJS = {
-        modules: {},
-        tags: {
-                Alli1: {u:'The Meme Queen'},
-                Alli2: {u:'Frisk'},
-                MainCoders: {u:'Coder'},
-                Alli3: {u:'Alli'},
-                Gamers: {u:'Gamer'},
-        }
-};
-UserTagsJS.modules.custom = {
-    
-        'XXCastAwayXx': ['Alli1','Alli2','MainCoders','Alli3','Gamers'],
-};
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */

@@ -1231,6 +1231,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"bardic": {
+				"name": "Bardic",
+				"colors": [
+					"fairytale",
+					"pink",
+					"black"
+				],
+				"rarity": "unbreedable"
+			},
 			"bashful": {
 				"name": "Bashful",
 				"colors": [
@@ -3873,6 +3882,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
             },
+			"curse": {
+				"name": "Curse",
+				"colors": [
+					"fairytale",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"cursedidol": {
 				"name": "Cursed Idol",
 				"colors": [
@@ -6366,6 +6384,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"pink"
 				],
 				"rarity": "unbreedable"
+			},
+			"forester": {
+				"name": "Forester",
+				"colors": [
+					"fairytale",
+					"blue",
+					"red"
+				],
+				"rarity": "common"
 			},
 			"forestfire": {
 				"name": "Forestfire",
@@ -14994,6 +15021,15 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 				],
 				"rarity": "unbreedable"
 			},
+			"roguish": {
+				"name": "Roguish",
+				"colors": [
+					"fairytale",
+					"black",
+					"red"
+				],
+				"rarity": "unbreedable"
+			},
 			"romantic": {
 				"name": "Romantic",
 				"colors": [
@@ -17284,6 +17320,14 @@ if (mw.config.get("wgPageName") === "Battle_Arena") {
 					"black"
 				],
 				"rarity": "common"
+			},
+			"storybook": {
+				"name": "Storybook",
+				"colors": [
+					"fairytale",
+					"red"
+				],
+				"rarity": "unbreedable"
 			},
 			"strategist": {
 				"name": "Strategist",

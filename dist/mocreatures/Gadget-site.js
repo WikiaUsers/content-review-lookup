@@ -56,7 +56,7 @@ mw.hook( 'wikipage.content' ).add( function( $wikipageContent ) {
 	 * subframes which will only be cycled every time the parent frame is displayed.
 	 * Animations with the "animated-paused" class will be skipped each interval.
 	 *
-	 * Requires some styling from [[MediaWiki:Gadget-site-styles.css]].
+	 * Requires some styling from [[MediaWiki:Styles.css]].
 	 */
 	var advanceFrame = function( parentElem, parentSelector ) {
 		var curFrame = parentElem.querySelector( parentSelector + ' > .animated-active' );

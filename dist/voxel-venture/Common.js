@@ -59,15 +59,15 @@ $("#apply").click(function() {
 
 ///// outputs
 	//1
-	document.getElementById("inputFinal1").innerHTML = Math.abs(refineryInput1 * refineryMultiply);
-	document.getElementById("outputFinal1").innerHTML = Math.abs(refineryOutput1 * refineryMultiply);
+	document.getElementById("inputFinal1").innerHTML = refineryInput1 * refineryMultiply;
+	document.getElementById("outputFinal1").innerHTML = refineryOutput1 * refineryMultiply;
 	//2
-	document.getElementById("inputFinal2").innerHTML = Math.abs(refineryInput2 * refineryMultiply);
-	document.getElementById("outputFinal2").innerHTML = Math.abs(refineryOutput2 * refineryMultiply);
+	document.getElementById("inputFinal2").innerHTML = refineryInput2 * refineryMultiply;
+	document.getElementById("outputFinal2").innerHTML = refineryOutput2 * refineryMultiply;
 	//3
-	document.getElementById("inputFinal3").innerHTML = Math.abs(refineryInput3 * refineryMultiply);
+	document.getElementById("inputFinal3").innerHTML = refineryInput3 * refineryMultiply;
 	//4
-	document.getElementById("inputFinal4").innerHTML = Math.abs(refineryInput4 * refineryMultiply);
+	document.getElementById("inputFinal4").innerHTML = refineryInput4 * refineryMultiply;
 	//5
-	document.getElementById("inputFinal5").innerHTML = Math.abs(refineryInput5 * refineryMultiply);
+	document.getElementById("inputFinal5").innerHTML = refineryInput5 * refineryMultiply;
 });

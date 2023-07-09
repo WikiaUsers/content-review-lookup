@@ -69,13 +69,13 @@ mw.hook('wikipage.content').add(function() {
 			case "3":
 				if (level > 60) {
 					level = 60;
-					levelInput.value = "60";
+					ele.levelInput.value = "60";
 				}
 				break;
 			case "4":
 				if (level > 70) {
 					level = 70;
-					levelInput.value = "70";
+					ele.levelInput.value = "70";
 				}
 				break;
 		}

@@ -12,7 +12,8 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-		owner: {u:'Owner', order: -1/0},
+		wikimanager: {u:'Wiki Manager', order: -1/0},
+		forummanager: {u:'Forums Manager', order: -1/0},
 		creator: {u:'The CSS Guy', order: -1e76},
 		montheditor: { u:'Editor of the Month', order: -1e75},
 		cool: { u:'Certified Cool Kid', order: -1e70},
@@ -20,22 +21,25 @@ window.UserTagsJS = {
 		formerowner: {u:'Former Owner', order: -1e69},
 		god: {u:'God of the Wiki', order: -1e100},
 		nothing: {u: '⠀⠀⠀', order: -1e100},
-		bureaureal: {u: 'BUREAUCRAT (REAL)', order: -1e110}
+		bureaureal: {u: 'BUREAUCRAT (REAL)', order: -1e110},
+		difficultyevo: {u:'ROBLOX EVOLUTION SEASON 5 PART 19', order:-1e35}
 	}
 };
 UserTagsJS.modules.custom = {
-	'YataDev': ['owner', 'cool'],
-	'Sanjay2133': ['creator', 'cool'],
+	'YataDev': ['cool', 'formerowner'],
+	'Sanjay2133': ['wikimanager', 'creator', 'cool'],
+	'Oh Noez! Oh Noez!': ['forumsmanager'],
+	'SodafizzIGuess': ['former'],
 	'AlsoOmori': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],
-	'Bruhshard1': ['former', 'montheditor'],
+	'Bruhshard1': ['former'],
 	'YourNuglyguy': ['formerowner', 'god'],
 	'Ferdinandloveslegos': ['formerowner'],
 	'The Difficulty Enthusiast': ['formerowner'],
 	'OrbentuneAlt': ['nothing'],
-	'Bryanjr7747': ['montheditor'],
-	'Jtohisgoodimo': ['bureaureal']
+	'Jtohisgoodimo': ['bureaureal'],
+	'TotallyNotAMeme00': ['montheditor']
 };
 window.quizName = "The Hard Quiz";
 window.quizLang = "en";

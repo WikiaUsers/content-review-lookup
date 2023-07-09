@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:!mods/code.js', 'dev');

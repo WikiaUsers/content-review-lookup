@@ -6,14 +6,15 @@ brush_on_grid = {
 effect : [1,"Poof_Effect"],
 caster : [2,"Mage_Outfit_Male_White"],
 target : [3,"Target_Dummy_(Object)"],
-sprite_1 : [4,"Fireworks_in_Shape_of_'1'"],
-sprite_2 : [5,"Fireworks_in_Shape_of_'2'"],
-sprite_3 : [6,"Fireworks_in_Shape_of_'3'"]
+sprite_1 : [4,"The Cobra Amulet Carpet"],
+sprite_2 : [5,"The Idol of Tukh Carpet"],
+sprite_3 : [6,"The Supreme Cube Carpet"]
 };
 //arrays for storing selected cells to decide the area size
 field_rows = []; 
 field_cols = [];
-
+//selected brush with starting default 
+brush = "effect";
 //default scene grid size
 max_col = 5;
 max_row = 5;
@@ -22,23 +23,23 @@ array_col = "";
 
 var default_scene_template = 
 "{{Scene"+
-"\n|effect=Poof Effect"+
+"\n|effect="+brush_on_grid.effect[1]+ 
 "\n|effect_2="+
 "\n|background=canvas"+
-"\n|caster=Mage Outfit Male White"+
+"\n|caster="+brush_on_grid.caster[1]+ 
 "\n|casting_effect="+
 "\n|look_direction="+
 "\n|caster_name ="+ 
 "\n|effect_on_caster="+
 "\n|effect_under_caster="+
-"\n|target="+
+"\n|target="+brush_on_grid.target[1]+ 
 "\n|effect_on_target="+
 "\n|effect_under_target="+
 "\n|damage_effect="+
 "\n|rotate90="+
-"\n|sprite_1=Fireworks_in_Shape_of_'1'"+ 
-"\n|sprite_2=Fireworks_in_Shape_of_'2'"+ 
-"\n|sprite_3=Fireworks_in_Shape_of_'3'"+ 
+"\n|sprite_1="+brush_on_grid.sprite_1[1]+ 
+"\n|sprite_2="+brush_on_grid.sprite_2[1]+ 
+"\n|sprite_3="+brush_on_grid.sprite_3[1]+ 
 "\n|edge_size=32"+
 "\n|input_array="+array_grid+
 "\n|input_col="+array_col+
@@ -80,7 +81,6 @@ function generate_scene_data(){
 	array_col = "";
 	for (var o=0;o < max_col*max_row; o++) {
 		clicked_id = current_col+"-"+current_row;
-		selected_brush =document.getElementById("brush").value;
 		if (document.getElementById(clicked_id).className.indexOf("has_") == 0){
 				field = brush_on_grid[document.getElementById(clicked_id).className.replace("has_","")][0]+",";
 		} else {
@@ -108,15 +108,15 @@ function generate_scene_data(){
 
 
 function draw_field(element){
-selected_brush =document.getElementById("brush").value;
+
 selected_row = Number(element.id.split("-")[1]);
 selected_col = Number(element.id.split("-")[0]);
 
 	if (element.innerHTML  =="") {
-			element.className  = "has_"+selected_brush;
+			element.className  = "has_"+brush;
 			effect = document.createElement("div");
 			img = document.createElement("img");
-			img.src = "https://tibia.fandom.com/index.php?title=Special:FilePath&file="+ brush_on_grid[selected_brush][1]+".gif";
+			img.src = "https://tibia.fandom.com/index.php?title=Special:FilePath&file="+ brush_on_grid[brush][1]+".gif";
 			effect.appendChild(img);
 			element.appendChild(effect);
 			field_rows.push(selected_row);
@@ -153,6 +153,10 @@ function CopyText(){
 	document.execCommand("copy");
 }
 
+function SetBrush(element){
+	brush = element.value;
+}
+
 function expand_template(){
 var api = new mw.Api();
 scene_template_text = document.getElementById("scene_template_input").value;
@@ -174,14 +178,13 @@ api.post({
 var tool_html = 
 '<table>'+
 '<tr><td><label for="scene_name">spell name :</label></td><td><input id="scene_name" type="text"></td></tr>'+
-'<tr><td><label for="brush">brush :</label></td><td><select name="brush" id="brush">'+
-'<option value="effect">Effect</option>'+
-'<option value="caster">Caster</option>'+
-'<option value="target">Target</option>'+
-'<option value="sprite_1">sprite_1</option>'+
-'<option value="sprite_2">sprite_2</option>'+
-'<option value="sprite_3">sprite_3</option>'+
-'</select></td></tr>'+
+'<tr><td>brushes:</td><td><input type="radio" name="brush" id="effect" value="effect" checked><label for="effect"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.effect[1]+'.gif"> Effect</label>'+
+'<input type="radio" name="brush" id="caster" value="caster"><label for="caster"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.caster[1]+'.gif"> Caster</label>'+
+'<input type="radio" name="brush" id="target" value="target"><label for="target"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.target[1]+'.gif"> Target</label>'+
+'<input type="radio" name="brush" id="sprite_1" value="sprite_1"><label for="sprite_1"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_1[1]+'.gif"> sprite_1</label>'+
+'<input type="radio" name="brush" id="sprite_2" value="sprite_2"><label for="sprite_2"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_2[1]+'.gif"> sprite_2</label>'+
+'<input type="radio" name="brush" id="sprite_3" value="sprite_3"><label for="sprite_3"><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&amp;file='+brush_on_grid.sprite_3[1]+'.gif"> sprite_3</label>'+
+'</td></tr>'+
 '</table>'+
 '<table>'+
 '<tr><td><div id="output_table"></div></td><td><div id="scene_area"></div></td></tr></table>'+
@@ -202,4 +205,5 @@ document.getElementById("expand_scene").onclick = function(){expand_template();}
 document.getElementById("copy").onclick = function(){CopyText();};
 document.getElementById("clear_table").onclick = function(){clear_table();};
 document.querySelectorAll('div[id="output_table"]>table>tr>td').forEach(function(cell) {cell.onclick = function(){draw_field(this);generate_scene_data();};});
+document.getElementsByName('brush').forEach(function(brush) {brush.onclick = function(){SetBrush(this);};});
 });

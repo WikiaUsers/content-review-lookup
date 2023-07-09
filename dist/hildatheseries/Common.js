@@ -3,7 +3,7 @@ window.AutoCreateUserPagesConfig = {
             content: {
              2: '{{sub'+'st:welcome}}'
 },
-            summary: 'Welcome to Trollberg!'
+            summary: 'Welcome to Trolberg!'
 };
 /* Any JavaScript here will be loaded for all users on every page load. */
 importArticles({

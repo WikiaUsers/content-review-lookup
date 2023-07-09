@@ -92,3 +92,5 @@ function Palette( $content ) {
 		.css( 'cursor', 'pointer' );
 }
 mw.hook( 'wikipage.content' ).add( Palette );
+
+window.AddRailModule = [{prepend: true}];

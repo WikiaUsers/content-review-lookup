@@ -1,11 +1,12 @@
-$(function UserNameReplace() {
-    if (wgUserName) {
-        var spans = getElementsByClassName(document, "span", "insertusername");
+mw.hook('wikipage.content').add(function() {
+	var wgUserName = mw.config.get('wgUserName');
+	if (wgUserName) {
+		var spans = document.getElementsByClassName("insertusername");
 
-        for (var i = 0; i < spans.length; i++) {
-            spans[i].innerHTML = wgUserName;
-        }
-    }
+		for (var i = 0; i < spans.length; i++) {
+			spans[i].innerHTML = wgUserName;
+		}
+	}
 });
 
 // AutoRefreshing //
@@ -14,86 +15,153 @@ window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
 window.ajaxPages = ["Especial:CambiosRecientes", "Especial:WikiActivity"];
 
 /* Añadir botones extra de edición */
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20110312135211/es.starwars/images/2/29/Button_user.png",
-        "speedTip": "Insertar infobox de personaje",
-        "tagOpen": "{{Infobox Personaje \n|Nombre = ",
-        "tagClose": "\n|Imagen = \n|Japonés = \n|Rōmaji = \n|Debutmanga = \n|Debutanime =  \n|Aparición = \n|Seiyū = \n|Edad = \n|Genero = \n|Especie = \n|Estado = \n|Altura = \n|Peso = \n|Rango = \n|Ocupación = \n|Clasificación = \n|Afiliación = \n|Familia = \n|Armas = \n}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20110312002752/es.starwars/images/f/fd/Button_blockquote.png",
-        "speedTip": "Insertar infobox de episodio",
-        "tagOpen": "{{Infobox Episodio \n|Episodio   = ",
-        "tagClose": "\n|Imagen     = \n|Japonés      = \n|Rōmaji     = \n|Ingles     = \n|Numero     = \n|Manga      = \n|Japon      = \n|España     = \n|EE.UU      = \n|Anterior   = \n|Siguiente  = \n|Personajes = \n|Objetos    = \n}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20120211214150/es.starwars/images/0/05/Bot%C3%B3n_novela.png",
-        "speedTip": "Insertar infobox de capítulo",
-        "tagOpen": "{{Infobox Capítulo \n|Nombre          = ",
-        "tagClose": "\n|Imagen          = \n|Japonés           = \n|Rōmaji          = \n|Ingles          = \n|Número          = \n|Episodio        = \n|Páginas Totales = \n|Japón           = \n|Anterior        = \n|Siguiente       = \n}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/es.starwars/images/8/8c/Button_RedX.png",
-        "speedTip": "Proponer que el artículo sea borrado",
-        "tagOpen": "{{Borrar",
-        "tagClose": "|Motivo}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20110312002754/es.starwars/images/f/f1/Button_info-1.png",
-        "speedTip": "Insertar aviso de Esbozo",
-        "tagOpen": "{{Esbozo",
-        "tagClose": "}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-        "speedTip": "Insertar aviso de construyendo",
-        "tagOpen": "{{Enobras",
-        "tagClose": "|Usuario}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/avatar/images/4/4d/Merge_Button.png",
-        "speedTip": "Insertar aviso de Spoiler",
-        "tagOpen": "{{Spoiler",
-        "tagClose": "}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20130908155221/shingeki-no-kyojin/es/images/thumb/2/25/Emblema_de_la_Legi%C3%B3n_de_Reconocimiento.png/14px-Emblema_de_la_Legi%C3%B3n_de_Reconocimiento.png",
-        "speedTip": "Insertar plantilla miembros Legión de Reconocimiento",
-        "tagOpen": "{{Miembros de la Legión de Reconocimiento",
-        "tagClose": "}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20130908155727/shingeki-no-kyojin/es/images/thumb/5/54/Emblema_de_las_Tropas_Estacionarias.png/20px-Emblema_de_las_Tropas_Estacionarias.png",
-        "speedTip": "Insertar plantilla miembros Tropas Estacionarias",
-        "tagOpen": "{{Miembros de las Tropas Estacionarias",
-        "tagClose": "}}",
-        "sampleText": ""
-    };
-
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/__cb20130908155737/shingeki-no-kyojin/es/images/thumb/e/ee/Emblema_de_la_Polic%C3%ADa_Militar.png/16px-Emblema_de_la_Polic%C3%ADa_Militar.png",
-        "speedTip": "Insertar plantilla miembros Policía Militar",
-        "tagOpen": "{{Miembros de la Policía Militar",
-        "tagClose": "}}",
-        "sampleText": ""
-    };
+if ( [ 'edit', 'submit' ].indexOf( mw.config.get( 'wgAction' ) ) !== -1 ) {
+	// Add a hook handler.
+	mw.hook( 'wikiEditor.toolbarReady' ).add( function ( $textarea ) {
+		// Configure a new toolbar entry on the given $textarea jQuery object.
+		$textarea.wikiEditor( 'addToToolbar', {
+			sections: {
+				plantillas: {
+					type: 'toolbar',
+					label: 'Plantillas'
+				}
+			}
+		} );
+		$textarea.wikiEditor( 'addToToolbar', {
+			section: 'plantillas',
+			groups: {
+				default: {
+					label: ''
+				}
+			}
+		} );
+		$textarea.wikiEditor( 'addToToolbar', {
+			section: 'plantillas',
+			group: 'default',
+			tools: {
+				'character-infobox': {
+					type: 'button',
+					label: 'Insertar infobox de personaje',
+					icon: 'https://images.wikia.com/esstarwars/images/2/29/Button_user.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Infobox Personaje \n|Nombre = ',
+							post: '\n|Imagen = \n|Japonés = \n|Rōmaji = \n|Debutmanga = \n|Debutanime =  \n|Aparición = \n|Seiyū = \n|Edad = \n|Genero = \n|Especie = \n|Estado = \n|Altura = \n|Peso = \n|Rango = \n|Ocupación = \n|Clasificación = \n|Afiliación = \n|Familia = \n|Armas = \n}}'
+						}
+					}
+				},
+				'episode-infobox': {
+					type: 'button',
+					label: 'Insertar infobox de episodio',
+					icon: 'https://images.wikia.com/esstarwars/images/f/fd/Button_blockquote.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Infobox Episodio \n|Episodio   = ',
+							post: '\n|Imagen     = \n|Japonés      = \n|Rōmaji     = \n|Ingles     = \n|Numero     = \n|Manga      = \n|Japon      = \n|España     = \n|EE.UU      = \n|Anterior   = \n|Siguiente  = \n|Personajes = \n|Objetos    = \n}}'
+						}
+					}
+				},
+				'chapter-infobox': {
+					type: 'button',
+					label: 'Insertar infobox de capítulo',
+					icon: 'https://images.wikia.com/esstarwars/images/0/05/Bot%C3%B3n_novela.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Infobox Capítulo \n|Nombre          = ',
+							post: '\n|Imagen          = \n|Japonés           = \n|Rōmaji          = \n|Ingles          = \n|Número          = \n|Episodio        = \n|Páginas Totales = \n|Japón           = \n|Anterior        = \n|Siguiente       = \n}}'
+						}
+					}
+				},
+				'deletion': {
+					type: 'button',
+					label: 'Proponer que el artículo sea borrado',
+					icon: 'https://images.wikia.com/esstarwars/images/8/8c/Button_RedX.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Borrar',
+							post: '|Motivo}}'
+						}
+					}
+				},
+				'sketch-notice': {
+					type: 'button',
+					label: 'Insertar aviso de Esbozo',
+					icon: 'https://images.wikia.com/esstarwars/images/f/f1/Button_info-1.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Esbozo',
+							post: '}}'
+						}
+					}
+				},
+				'construction-notice': {
+					type: 'button',
+					label: 'Insertar aviso de construyendo',
+					icon: 'https://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Enobras',
+							post: '|Usuario}}'
+						}
+					}
+				},
+				'spoiler': {
+					type: 'button',
+					label: 'Insertar aviso de Spoiler',
+					icon: 'https://images.wikia.com/avatar/images/4/4d/Merge_Button.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Spoiler',
+							post: '}}'
+						}
+					}
+				},
+				'reconnaissance-members': {
+					type: 'button',
+					label: 'Insertar plantilla miembros Legión de Reconocimiento',
+					icon: 'https://images.wikia.com/shingeki-no-kyojin/es/images/thumb/2/25/Emblema_de_la_Legi%C3%B3n_de_Reconocimiento.png/32px-Emblema_de_la_Legi%C3%B3n_de_Reconocimiento.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Miembros de la Legión de Reconocimiento',
+							post: '}}'
+						}
+					}
+				},
+				'stationary-troops': {
+					type: 'button',
+					label: 'Insertar plantilla miembros Tropas Estacionarias',
+					icon: 'https://images.wikia.com/shingeki-no-kyojin/es/images/thumb/5/54/Emblema_de_las_Tropas_Estacionarias.png/32px-Emblema_de_las_Tropas_Estacionarias.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Miembros de las Tropas Estacionarias',
+							post: '}}'
+						}
+					}
+				},
+				'military-police': {
+					type: 'button',
+					label: 'Insertar plantilla miembros Policía Militar',
+					icon: 'https://images.wikia.com/shingeki-no-kyojin/es/images/thumb/e/ee/Emblema_de_la_Polic%C3%ADa_Militar.png/32px-Emblema_de_la_Polic%C3%ADa_Militar.png',
+					action: {
+						type: 'encapsulate',
+						options: {
+							pre: '{{Miembros de la Policía Militar',
+							post: '}}'
+						}
+					}
+				}
+			}
+		} );
+	} );
 }
 
 // Etiqueta Inactivo

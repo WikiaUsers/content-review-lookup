@@ -96,3 +96,11 @@ var hasClass = (function () {
         return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
     };
 })();
+
+/* IMPORT JS */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:PortableCSSPad/code.js',
+    ]
+});

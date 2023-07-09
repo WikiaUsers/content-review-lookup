@@ -10,18 +10,17 @@
 
 	// Alternative to "mw.hook( 'wikipage.content' ).add()" that fires with all
 	// previously given event data.
-	var contentMemories = [];
+	const contentMemories = [];
 	mw.hook( 'wikipage.content' ).add( function ( $element ) {
 		if ( !contentMemories.includes( $element ) ) {
 			contentMemories.push( $element );
 		}
 	} );
 	window.safeAddContentHook = function () {
-		var callback, contentMemory;
 		for ( var i = 0; i < arguments.length; i++ ) {
-			callback = arguments[ i ];
+			const callback = arguments[ i ];
 			for ( var j = 0; j < contentMemories.length - 1; ) {
-				contentMemory = contentMemories[ j ];
+				const contentMemory = contentMemories[ j ];
 				if ( contentMemory[ 0 ].isConnected ) {
 					callback.call( null, contentMemory );
 					j++;
@@ -33,29 +32,29 @@
 		}
 	};
 
+	// Hide CodeEditor warnings related to the use of "const" in JS,
+	//   since this is the only ES6 feature recognized by the JS validator.
+	// About browsers without any support:
+	//   - IE11 only has issues dealing with "const" in "for" loops, and
+	//   - Opera Mini handles "const" the same way as "var".
+	mw.hook( 'codeEditor.configure' ).add( function ( editSession ) {
+		editSession.addEventListener( 'changeAnnotation', function () {
+			const annotations = editSession.getAnnotations();
+			if ( !annotations.every( isValidAnnotation ) ) {
+				editSession.setAnnotations( annotations.filter( isValidAnnotation ) );
+			}
+		} );
+	} );
+	function isValidAnnotation( annotation ) {
+		return annotation.text !== "'const' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).";
+	}
+
 // [START: DOM ready]
 $( function () {
 
 	// HTML attribute removal
 	$( '.notitle a' ).removeAttr( 'title' );
 	$( 'img.no-alt' ).removeAttr( 'alt' );
-
-	// Slideshows
-	mw.loader.using( 'mediawiki.api' ).then( function () {
-		return mw.loader.getScript( 'https://dev.fandom.com/load.php?mode=articles&articles=MediaWiki:ArticlesAsResources.js&only=scripts' );
-	} ).then( function () {
-		importArticle( {
-			type: 'script',
-			article: 'MediaWiki:Slideshows.js'
-		} ).then( function () {
-			slideshows.init();
-		} );
-	} );
-
-	// Collection pages
-	$( 'div.collection' ).on( 'scroll', function () {
-		$( 'div.collection' ).scrollLeft( $( this ).scrollLeft() );
-	} );
 
 	// Collection fast load icon
 	switch ( mw.config.get('wgPageName') ) {

@@ -20,6 +20,8 @@
 
 */
 $(document).ready(function() {
+	if ( !$( '.HSM-Container').length ) return;
+	
 	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
 	
 	//Global Wardrobe Sound on/off
@@ -44,6 +46,9 @@ $(document).ready(function() {
 	//Set GWM for GW wardrobe
 	$('.HSM-Container[data-hero="GW"]').attr('data-gwm', 'Ground');
 	
+	//If finished loading JS
+	$('.HSM-Container').addClass('loaded');
+	
 	//Clicking toggle or GWM
 	$('.HSM-Container .HSM-Toggle, .HSM-Container .HSM-GWM').click(function () {
 		var Wardrobe = $(this).parents('.HSM-Container');
@@ -58,7 +63,12 @@ $(document).ready(function() {
 			if (Mode == 'Preview') {
 				Mode = 'Idle';
 			}else if (Mode == 'Idle') {
-				Mode = 'Pose';
+				//Only set mode to poses if it exists
+				if ( $(Wardrobe).find('.HSM-Models-Pose').length ) {
+					Mode = 'Pose';
+				}else {
+					Mode = 'KO';
+				}
 			}else if (Mode == 'Pose') {
 				Mode = 'KO';
 			}else if (Mode == 'KO') {

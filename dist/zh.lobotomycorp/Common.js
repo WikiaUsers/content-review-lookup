@@ -1,12 +1,11 @@
-
 //Abn_Infobox Work_preference 数据形式切换
 var workPreferenceButtonCount = 0;
 
 document.getElementById("work_preference_button").addEventListener("click", function(){
-	let workPreferenceButton = document.getElementById("work_preference_button");
-	let level = document.getElementsByClassName("work_preference_level");
-    let stat = document.getElementsByClassName("work_preference_stat");
-	//初始状态时执行
+	var workPreferenceButton = document.getElementById("work_preference_button");
+    var level = document.getElementsByClassName("work_preference_level");
+    var stat = document.getElementsByClassName("work_preference_stat");
+	console.log("workPreference button clicked");
 	if (workPreferenceButtonCount==0){
 		workPreferenceButton.innerHTML = "显示文字";
 		for (i = 0; i < level.length; i++) {
@@ -28,28 +27,34 @@ document.getElementById("work_preference_button").addEventListener("click", func
 	}
 });
 
-//SideBar
+// Retrans 左侧工具栏按钮
+    //按钮位置剪切
+document.getElementsByClassName("page-side-tools")[0].appendChild(document.getElementById("retrans-button"));
 
-//翻译切换功能
-mw.hook('dev.addSideTool').add(function (addSideTool) {
-	let preretrans = document.getElementsByClassName("preretrans")
-	let postretrans = document.getElementsByClassName("postretrans")
-	let retransButtonCount = 0
-	
-	const retransButton = addSideTool(icon: retrans | <svg><text>译</text></svg> ),
-		$button = retransButton.$button,
-		$tooltip = retransButton.$tooltip;
-
-	$tooltip.text('查看修订后的翻译文本');
-	$button.on('click', function() {
-    	if (retransButtonCount==0){
-    		preretrans.style.display = "none";
-    		postretrans.style.display = "inline"
-    		retransButtonCount = 1;
-    	}else{
-    		preretrans.style.display = "inline";
-    		postretrans.style.display = "none";
-    		retransButtonCount = 0;
-    	}
-  });
+    //按钮切换功能
+var retransButtonCount = 0;
+document.getElementById("retrans-button").addEventListener("click", function(){
+	var preRetrans = document.getElementsByClassName("pre-retrans");
+    var postRetrans = document.getElementsByClassName("post-retrans");
+    var retransButton = document.getElementById("retrans-button");
+	console.log("retrans button clicked");
+	if (retransButtonCount==0){
+		retransButton.innerHTML = "原";
+		for (i = 0; i < preRetrans.length; i++) {
+			preRetrans[i].style.display = "none";
+		}
+		for (i = 0; i < postRetrans.length; i++) {
+			postRetrans[i].style.display = "inline";
+		}
+    	retransButtonCount = 1;
+    }else{
+    	retransButton.innerHTML = "译";
+    	for (i = 0; i < preRetrans.length; i++) {
+			preRetrans[i].style.display = "inline";
+		}
+		for (i = 0; i < postRetrans.length; i++) {
+			postRetrans[i].style.display = "none";
+		}
+    	retransButtonCount = 0;
+    }
 });

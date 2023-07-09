@@ -1,7 +1,8 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+
 importArticles({
-    type: "script",
+    type: 'script',
     articles: [
-	"MediaWiki:RepeatableTimer.js" 		// Таймер обратного отсчета
-   ]
-})
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+    ]
+});

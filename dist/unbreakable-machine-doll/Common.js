@@ -1,7 +1,7 @@
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝【Add Rail Module】＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-window.AddRailModule = ['Template:Main_Page/Featured_Article', 'Template:Main_Page/Poll'];
+window.AddRailModule = ['Template:Main_Page/Featured_Trivia', 'Template:Main_Page/Featured_Poll'];
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Auto Refresh】＝＝＝＝＝＝＝＝＝＝＝＝＝//
@@ -54,7 +54,7 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) importScriptPage('Media
 window.BackToTopModern = true;
 
 // Arrow Icon
-window.BackToTopArrow = false;
+/*window.BackToTopArrow = false;*/
 
 // Button Text 
 window.BackToTopText = "Back to Top";

@@ -1,1 +1,0 @@
-console.log('Bo nie było białego');

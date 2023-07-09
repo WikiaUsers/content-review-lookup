@@ -1,4 +1,3 @@
-
 /* SORT WHATLINKSHERE ALPHABETICALLY BEGIN */
 
 (function($) {

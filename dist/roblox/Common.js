@@ -1,7 +1,9 @@
 // NoLicenseWarning script
 window.NoLicenseWarning = {
     forceLicense: true,
-    excludedGroups: []
+    excludedGroups: [
+        'sysop',
+    ]
 };
 
 // Import user group scripts (Mark Otaris)
