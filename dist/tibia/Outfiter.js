@@ -97,7 +97,9 @@ $(function () {
       //210
       'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi', 'Frostbringer',
       //215
-      'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer'
+      'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer',
+      //220
+      'Spirit_of_Purity', 'Darkfire_Devourer'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -186,7 +188,7 @@ $(function () {
       //205
       'Nordic_Chieftain', 'Fire-Fighter', 'Fencer', 'Shadowlotus_Disciple', 'Ancient_Aucar',
       //210
-      'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender'
+      'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -216,7 +218,8 @@ $(function () {
       Ghost_Blade: 8,
       'Fire-Fighter': 8,
       Armoured_Archer: 8,
-      Decaying_Defender: 8
+      Decaying_Defender: 8,
+      Darklight_Evoker: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -307,7 +310,9 @@ $(function () {
       Floating_Scholar: 8,
       Brass_Speckled_Koi: 8,
       Ink_Spotted_Koi: 8,
-      Tangerine_Flecked_Koi: 8
+      Tangerine_Flecked_Koi: 8,
+      Spirit_of_Purity: 8,
+      Darkfire_Devourer: 8
     },
     outfiter_sprites_mount_walking = {
     },

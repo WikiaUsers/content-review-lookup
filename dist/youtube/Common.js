@@ -1,17 +1,19 @@
-function loadYTButton() {
-  if ($('div.g-ytsubscribe').length) {
+var conStyle = "background-color:black;color:red;font-weight:bold;font-family:Rubik;padding:1%";
+console.group("%cDebugging the subscribe button. Please message an administrator if you're seeing an error prefixed with [YT] in the following nested console messages, ignore anything that does not have the prefix.", conStyle);
+console.debug("[YT] Initial target:", document.querySelector("div.g-ytsubscribe"));
+
+var loadInterval = setInterval(function() {
+  console.debug("[YT] Target:", document.querySelector("div.g-ytsubscribe"));
+  if (!document.querySelector("div.g-ytsubscribe")) {
+    clearInterval(loadInterval);
+    console.debug("[YT] Stopping the loop");
+    console.assert(!document.querySelector("div.g-ytsubscribe"));
+    console.groupEnd();
+  } else {
+    console.count("[YT] Firing payload");
     mw.loader.load('https://apis.google.com/js/platform.js');
-    return;
-  };
-  setInterval(function () { loadYTButton() }, 1000);
-};
-
-addEventListener("DOMContentLoaded", (event) => {
-  if ($("body").hasClass("ns-0")) {
-    loadYTButton();
-  };
-});
-
+  }
+}, 1000);
 
 
 // change label

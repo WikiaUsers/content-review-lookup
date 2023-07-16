@@ -59,3 +59,6 @@ window.railWAM = {
 /* DiscussionsEmbed */
 window.discussEmbedLimit = 8;
 window.discussEmbedSortTrending = 1;
+
+/* BackToTopButton */
+window.BackToTopModern = true;

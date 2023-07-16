@@ -19,7 +19,7 @@ window.mw.hook('wikipage.content').add(function (content) {
       if (!file) {
         return;
       }
-      var format = file.split('.').pop();
+      var format = file.split('.').pop().substr(0,3);
       var preload = data.preload;
       var download = data.download;
       var options = data.options;

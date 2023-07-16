@@ -17,7 +17,8 @@ window.communityRequestsUnsupportedLangs = ['de', 'es', 'fr', 'it', 'pl', 'pt', 
 window.adoptRetainInternational = {
     unsupportedLanguages: window.communityRequestsUnsupportedLangs,
     requirementsConfig: {
-        activityDays: 10,
+        activityDays: 30,
+        activityDaysTarget: 10,
         permissionTypes: [
             'bureaucrat',
             'sysop'

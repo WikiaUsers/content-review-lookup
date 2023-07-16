@@ -8,3 +8,8 @@ function myFunction() {
   var popup = document.getElementById("myPopup");
   popup.classList.toggle("show");
 }
+
+/* dev:BackToTopButton/code.js features */
+window.BackToTopModern = true;
+window.BackToTopArrow = true;
+window.BackToTopStart = 200;

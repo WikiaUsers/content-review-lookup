@@ -102,5 +102,6 @@ importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:PortableCSSPad/code.js',
+        'u:dev:MediaWiki:UTCClock/code.js',
     ]
 });

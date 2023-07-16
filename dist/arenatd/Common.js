@@ -86,3 +86,5 @@ $(function() {
 });
 /*right rail module*/
 window.AddRailModule = [{prepend: true}];
+
+/* Input placeholer text*/

@@ -16,7 +16,6 @@ window.hzbn.mwHtmlLinkFabric = function (classNames) {
 const staff = [
     {name: 'Swit4er', className: 'bur'},
     {name: 'Voidan Dether', className: 'bur'},
-    {name: 'Terabait24', className: 'admin'},
     {name: 'P4kaidu', className: 'admin'},
     {name: 'Creepy Owl', className: 'admin'},
     {name: 'Lich night', className: 'threadMod'},

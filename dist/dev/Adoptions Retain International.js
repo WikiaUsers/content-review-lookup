@@ -32,6 +32,7 @@ mw.loader.using( [
 
 	window.adoptRetainInternational.requirementsConfig = ( window.adoptRetainInternational.requirementsConfig || {} );
 	window.adoptRetainInternational.requirementsConfig.activityDays = ( window.adoptRetainInternational.requirementsConfig.activityDays || 10 );
+	window.adoptRetainInternational.requirementsConfig.activityDaysTarget = ( window.adoptRetainInternational.requirementsConfig.activityDaysTarget || 5 );
 	window.adoptRetainInternational.requirementsConfig.permissionTypes = ( window.adoptRetainInternational.requirementsConfig.permissionTypes || [
 		'bureaucrat',
 		'sysop',
@@ -400,46 +401,6 @@ mw.loader.using( [
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: i18n.msg( 'communityVoteHeader' ).plain()
-									}
-								]
-							},
-							{
-								type: 'div',
-								classes: ['sectionContent'],
-								children: [
-									{
-										type: 'label',
-										attr: {
-											for: 'communityvote'
-										},
-										text: i18n.msg( 'communityVoteLabel' ).plain()
-									},
-									{
-										type: 'input',
-										classes: ['formInput'],
-										attr: {
-											id: 'communityvote',
-											name: 'communityvote',
-											type: 'text',
-											placeholder: i18n.msg( 'placeholderCommunityVote' ).plain()
-										}
-									}
-								]
-							}
-						]
-					},
-					{
-						type: 'div',
-						classes: ['formSection'],
-						children: [
-							{
-								type: 'div',
-								classes: ['sectionHeaderWrapper'],
-								children: [
-									{
-										type: 'h3',
-										classes: ['sectionHeader'],
 										text: i18n.msg( 'commentsHeader' ).plain()
 									}
 								]
@@ -481,8 +442,7 @@ mw.loader.using( [
 						wikiUrl: 'https://' + filterFandomDomain( getVal( 'adoptionRetainUrl' ) ),
 						permissionsType: ( getVal( 'permissionstype' ) || 'bureaucrat' ),
 						numDays: ( getVal( 'numDays' ) || 0 ),
-						comments: getVal( 'comment' ),
-						communityVote: getVal( 'communityvote' )
+						comments: getVal( 'comment' )
 					};
 
 					if ( exception !== '' ) {
@@ -522,7 +482,6 @@ mw.loader.using( [
 						numDays: formValues.numDays,
 						numAdmins: formValues.numAdmins,
 						comments: formValues.comments,
-						communityVote: formValues.communityVote,
 						// Don't ask
 						bStart: '{{',
 						bEnd: '}}'
@@ -644,7 +603,7 @@ mw.loader.using( [
 			$.getJSON( '//' + url + '/api.php?format=json&callback=?', {
 				action: 'query',
 				meta: 'siteinfo',
-				siprop: 'general|statistics',
+				siprop: 'general',
 				list: 'allusers|usercontribs|users',
 				uclimit: 'max',
 				ucuser: userName,
@@ -689,17 +648,6 @@ mw.loader.using( [
 					$( '#wikiname' ).val( data.query.general.sitename );
 				}
 
-
-
-				if ( data.query.statistics ) {
-					if ( $( '#communityvote' ).val() === '' && data.query.statistics.activeusers >= 2 ) {
-						mw.notify( i18n.msg( 'provideCommunityVote' ).plain(), {
-							tag: 'adoptionRetain',
-							type: 'warn'
-						} );
-					}
-				}
-
 				var ucDays = 0;
 				if ( data.query.usercontribs ) {
 					if ( data.query.usercontribs.length === 0 ) {
@@ -718,7 +666,7 @@ mw.loader.using( [
 					}
 
 					ucDays = ucDArr.length;
-					if ( ucDays < 5) {
+					if ( ucDays < conf.requirementsConfig.activityDaysTarget ) {
 						mw.notify( i18n.msg( 'noActivityError' ).plain(), {
 							tag: 'adoptionRetain',
 							type: 'warn'

@@ -1,37 +1,24 @@
 /* jshint
-    esversion: 5, esnext: false, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    -W082, -W084, -W097
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-/* global mw, ace, importArticles */
+/* global mw, ace, importArticles, console, confirm, alert, prompt */
 
 $.when(
     $.Deferred(function (def) {
-        $(function () {
+        mw.hook('dev.qdmodal').add(function(QDmodal) {
+            def.resolve(QDmodal);
+        });
+    }),
+    $.Deferred(function (def) {
+        $(function () { // DOM ready
             def.resolve();
         });
     }),
-    mw.loader.using(["mediawiki.util", "mediawiki.api", "ext.codeEditor.ace"]),
-    $.Deferred(function (def) {
-        if (mw.libs.QDmodal) {
-            def.resolve(mw.libs.QDmodal);
-        } else {
-            $.ajax({
-                cache: true,
-                dataType: "script",
-                url: "https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:QDmodal.js"
-            }).done(function () {
-                def.resolve(mw.libs.QDmodal);
-            });
-        }
-    })
-).then(function () {
+    mw.loader.using(["mediawiki.util", "mediawiki.api", "ext.codeEditor.ace"])
+).then(function (QDmodal) {
     "use strict";
     // Pages
     var allowedPages = [
@@ -40,7 +27,8 @@ $.when(
     ].map(function (p) {
         return mw.config.get("wgFormattedNamespaces")[828] + ":" + p;
     });
-    if (!allowedPages.includes(mw.config.get("wgPageName")) || (window.TooltipsEditor && window.TooltipsEditor.loaded)) return;
+    if (!allowedPages.includes(mw.config.get("wgPageName")) || (window.TooltipsEditor && window.TooltipsEditor.loaded))
+        return;
 
     var api = new mw.Api();
 
@@ -50,7 +38,7 @@ $.when(
     TooltipsEditor = that = window.TooltipsEditor = {
 
         // variables; undefined variables are just for easier variable tracking
-        modal: new mw.libs.QDmodal("TooltipsEditor"),
+        modal: new QDmodal("TooltipsEditor"),
         loaded: true,
         deloadAll: function () {
             that.actions = that.closing = that.isInMain = that.data = that.json = that.oldjson = that.oldjsonkeys = that.editor = that.lastFocusedEditor = that.lastFocusedElement = undefined;
@@ -1275,13 +1263,6 @@ $.when(
 
         // entry point
         init: function () {
-            importArticles({
-                type: "style",
-                articles: [
-                    "MediaWiki:Gadget-TooltipsEditor.css",
-                ],
-            });
-
             $(".editTooltips").click(function () {
                 api.get({
                     action: "query",
@@ -1316,4 +1297,16 @@ $.when(
     };
 
     TooltipsEditor.init();
+
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:BannerNotification.js',
+        ]
+    }, {
+        type: "style",
+        articles: [
+            "MediaWiki:Gadget-TooltipsEditor.css",
+        ],
+    });
 }).catch(console.warn);

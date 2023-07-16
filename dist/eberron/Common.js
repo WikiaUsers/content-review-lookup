@@ -23,3 +23,9 @@ $( function() {
 		e.preventDefault();
 	} );
 } );
+
+/* Configuring AddRailModule */
+window.AddRailModule = [
+	{page: 'Template:RailModule', prepend: true},
+	'Template:NewPagesModule'
+];

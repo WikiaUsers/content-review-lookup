@@ -61,8 +61,8 @@ UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.nonuser = true;
 UserTagsJS.modules.stopblocked = false;
 UserTagsJS.modules.newuser = {
-	days: 5, // Must have been on the Wiki for 5 days
-	edits: 10, // And have at least 10 edits to remove the tag
+	days: 2, // Must have been on the Wiki for 2 days
+	edits: 16, // And have at least 16 edits to remove the tag
 	namespace: 0 // Edits must be made to articles to count
 };
 UserTagsJS.modules.inactive = 30; // Inactive if no edits in 30 days

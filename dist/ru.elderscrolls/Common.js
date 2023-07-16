@@ -58,16 +58,11 @@ window.wfPlugins.push(function (txt, r) {
 
 /*----------------------------- Блок "Новые страницы" ------------------------*/
 // Блок правой панели. Всзято с вики "Убежище"
-$(function(){
-	if (
-		$('#WikiaRail').length
-		&& wikiconfig.wgCanonicalNamespace != 'Special'
-		&& wikiconfig.wgCanonicalNamespace != 'MediaWiki'
-	)
+function addNewPages(){
 	$('<section class="rail-module"></section>')
 		.appendTo('#WikiaRail')
 		.load('/ru/index.php?title=Template:RailModuleNewPages&action=render');
-});
+}
 
 /*----------------------------- Кнопка "Back To Top" -------------------------*/
 // Created by Noemon from Dead Space Wiki
@@ -978,45 +973,11 @@ function slideRegenerate(){
 	});
 }
 
-/*------- Добавление функции отображения маркеров при мастабировании карты ---*/
-// После обновления карт не работает
-/*function interactiveMapZoom() {
-	window.setInterval(function() {
-	  if ($(".leaflet-proxy").css("transform").split(',')[3] < 0.125) {
-	    $(".leaflet-marker-icon").each(function( index ) {
-	      if (($(this).attr("alt") == "zone3")||($(this).attr("alt") == "zone2")) {
-	      	$(this).hide();
-	      }
-	      if ($(this).attr("alt") == "zone1") {
-	      	$(this).show();
-	      }
-	    })
-	  }
-	  else if ($(".leaflet-proxy").css("transform").split(',')[3] >= 0.25) {
-	    $(".leaflet-marker-icon").each(function( index ) {
-	      $(this).show();
-	    })
-	  }
-	  else {
-	   $(".leaflet-marker-icon").each(function( index ) {
-	      if (($(this).attr("alt") == "zone1")||($(this).attr("alt") == "zone2")) {
-	      	$(this).show();
-	      }
-	      if ($(this).attr("alt") == "zone3") {
-	      	$(this).hide();
-	      }
-	    })
-	  }
-	},500);
-}
-*/
 /****************** Подключение функций после загрузки страницы ***************/
 $(document).ready(function() {
 	randomBackground();
 	fixTable();
-	//if ($("div.interactive-maps-container").length) {interactiveMapZoom();} // Запускаем при наличии интерактивной карты на странице
 	setTimeout(function(){ slideRegenerate(); }, 2000); // Запускаем отложено, т.к. галереи подгружаются не сразу
 	setTimeout(function(){ switcher(); }, 5000); // Запускаем отложено, т.к. инструменты подгружаются не сразу
-	/* Фикс иконки и интерактива изображений в теле статьи */
-	// setTimeout(function(){ $("a.image:last-child div").hide() }, 5000);
+	setTimeout(function(){ addNewPages(); }, 2000); // Запускаем отложено, т.к. правая панель подгружаются не сразу
 });

@@ -82,7 +82,7 @@ mw.hook('wikipage.content').add(function() {
 		// Convert it to base 4.
 		var base4 = base10.toString(4);
 		// Count the number of digits in the base 4 number.
-		var digits = Math.log(base4) * Math.LOG10E + 1 || 0;
+		var digits = Math.log(base4) * Math.LOG10E + 1 | 0;
 		if (base4 === 0 && digits === 0) {
 			digits++;
 		}

@@ -61,7 +61,7 @@
             this.api = new mw.Api();
             this.pageName = this.config.wgPageName.replace(/_/g, ' ');
             this.insert();
-            var preload = $.proxy(this.preload, this);
+            var preload = this.preload.bind(this);
             mw.hook('dev.modal').add(preload);
             mw.hook('dev.i18n').add(preload);
         },
@@ -77,7 +77,7 @@
                     mw.loader.using([
                         'mediawiki.diff.styles'
                     ])
-                ).then($.proxy(this.render, this));
+                ).then(this.render.bind(this));
             }
         },
         /**
@@ -302,10 +302,10 @@
                 });
                 if (this.options.diffModal) {
                     link.attr('data-disable-quickdiff', '');
-                    link.click($.proxy(function(e) {
+                    link.click((function(e) {
                         e.preventDefault();
                         this.modal.show();
-                    }, this));
+                    }).bind(this));
                 }
                 return [
                     ' (',
@@ -463,7 +463,7 @@
         (mw.config.get('isGamepedia') ? 'jquery.timeago' : 'jquery')
     ]).then(function() {
         if (lastEdited.shouldRun()) {
-            $($.proxy(lastEdited.init, lastEdited));
+            $(lastEdited.init.bind(lastEdited));
         }
     });
 })();

@@ -47,8 +47,24 @@ $( function() {
 		}
 	}
 
+	window.ARKCode = {
+		text: 'Texte',
+		visualisation: 'Visualisation',
+		decodeText: 'Texte décodé',
+		decode: 'Décoder'
+	};
 	// Load our other scripts conditionally
 	[
+		// RegionMapStyles
+		[ '#regionMapStyles', [ 'u:ark:MediaWiki:RegionMapStyles.js' ] ],
+		// Colorblind
+		[ '#colorblind', [ 'u:ark:MediaWiki:Colorblind.js' ] ],
+		// KillXP
+		[ '#creatureKillXP', [ 'u:ark:MediaWiki:Killxp.js' ] ],
+		// CloningCost
+		[ '#creature-select', [ 'u:ark:MediaWiki:CloningCost.js' ] ],
+		// ARKCode
+		[ '#ARKCode', [ 'u:ark:MediaWiki:ARKCode.js' ] ],
 		// Cooking calculator
 		[ '#cookingCalc', [ 'MediaWiki:Cooking calculator.js' ] ],
 		// Wild creature stats calculator

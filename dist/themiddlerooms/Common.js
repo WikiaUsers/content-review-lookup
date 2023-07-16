@@ -63,3 +63,29 @@ mw.loader.using('mediawiki.api', function() {
 	});
 });
 // </nowiki>
+
+// UserTags
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		// usergroup: { associated tag data }
+		inactive: { order:-2 },
+		bot: { link:'Help:Bots', order:-1 },
+		bureaucrat: { order:0 }, // <- lower order number = before other order tags (ex: tag with 1 will be placed before tag with 2)
+		sysop: { order:1 },
+		manager: { u:'Wiki System Manager', order:2 },
+		'content-moderator': { order:3 }, // <- usergroup wrapped in quotes as there is a hyphen in the name
+		threadmoderator: { order:4 },
+		rollback: { u:'Rollbacker', order:5 },
+	},
+};
+
+UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // Since UserTags replaces Inactive script (if there is a person with a custom tag and becomes inactive, it will not show so this is a patch.)
+UserTagsJS.modules.autoconfirmed = false;
+UserTagsJS.modules.newuser = false;
+UserTagsJS.modules.metafilter = false;
+UserTagsJS.modules.userfilter = { 'Middlerooms Wiki Abuse Filter': ['bureaucrat'] };
+UserTagsJS.modules.custom = {
+	'Middlerooms Wiki Abuse Filter': ['bot', 'sysop'],
+	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
+};

@@ -112,8 +112,7 @@ window.setCookie = function(c_name, value, expiredays) {
 								// To real DOM
 								$customRows = $(customRows);
 								$description.closest('tr').hide().after($customRows);
-								$customRows.find("textarea").tooltip({trigger: 'focus'});
-					
+
 								// Bind submit to verify function
 								$description.closest('form').submit(this.verifySummary);
 					

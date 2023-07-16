@@ -1,80 +1,38 @@
-$(function() {
-    'use strict';
-    if ([
-            'Allpages',
-            'Prefixindex'
-        ].indexOf(mw.config.get('wgCanonicalSpecialPageName')) === -1 ||
-        window.AllPagesHideRedirectLoaded
-    ) {
-        return;
-    }
-    window.AllPagesHideRedirectLoaded = true;
-    var AllPagesHideRedirect = {
-        shown: $('.allpagesredirect').css('display') === 'block',
-        preload: function(i18n) {
-            i18n.loadMessages('AllPagesHideRedirect')
-                .then($.proxy(this.init, this));
-        },
-        init: function(i18n) {
-            this.i18n = i18n;
-            if ($('.mw-htmlform-submit-buttons').length) {
-                this.$label = $('<span>', {
-                    'class': 'oo-ui-labelElement-label',
-                    text: this.getMsg()
-                });
-                this.$button = $('<span>', {
-                    'class': [
-                        'oo-ui-buttonElement',
-                        'oo-ui-buttonElement-framed',
-                        'oo-ui-flaggedElement-primary',
-                        'oo-ui-flaggedElement-progressive',
-                        'oo-ui-labelElement',
-                        'oo-ui-widget-enabled'
-                    ].join(' '),
-                    click: $.proxy(this.click, this),
-                    id: 'AllPagesHideRedirectButton'
-                }).append(
-                    $('<button>', {
-                        'class': 'oo-ui-buttonElement-button',
-                        tabindex: '0'
-                    }).append(this.$label)
-                );
-            } else {
-                this.$label = this.$button = $('<a>', {
-                    'class': 'button',
-                    click: $.proxy(this.click, this),
-                    href: '#',
-                    id: 'AllPagesHideRedirectButton',
-                    text: this.getMsg()
-                });
-            }
-            this.$css = $('<style>', {
-                id: 'AllPagesHideRedirectCSS',
-                text: this.getCSS()
-            }).appendTo('head');
-            $('.mw-input, .mw-htmlform-submit-buttons').last().append(this.$button);
-            mw.hook('AllPagesHideRedirect.loaded').fire();
-        },
-        getCSS: function() {
-            return  '.allpagesredirect {' +
-                        'display: ' + (this.shown ? 'block' : 'none') + ';' +
-                    '}';
-        },
-        getMsg: function() {
-            return this.i18n.msg(this.shown ? 'hide' : 'show').plain();
-        },
-        click: function(event) {
-            event.preventDefault();
-            this.shown = !this.shown;
-            this.$css.text(this.getCSS());
-            this.$label.text(this.getMsg());
-        }
-    };
-    importArticle({
-        type: 'script',
-        article: 'u:dev:MediaWiki:I18n-js/code.js'
-    });
-    mw.hook('dev.i18n').add(
-        $.proxy(AllPagesHideRedirect.preload, AllPagesHideRedirect)
-    );
-});
+(function(mw) {
+	'use strict';
+	if ([
+			'Allpages',
+			'Prefixindex'
+		].indexOf(mw.config.get('wgCanonicalSpecialPageName')) === -1 ||
+		window.AllPagesHideRedirectLoaded
+	) {
+		return;
+	}
+	window.AllPagesHideRedirectLoaded = true;
+	var preloads = 2;
+	var msg, sheet, button;
+	function update() {
+		sheet.disabled = !sheet.disabled;
+		button.textContent = msg(sheet.disabled ? 'hide' : 'show').plain();
+	}
+	function init(i18n) {
+		msg = i18n.msg;
+		sheet = mw.util.addCSS( '.allpagesredirect { display: none; }' );
+		button = document.createElement('span');
+		button.classList.add('wds-button');
+		button.textContent = msg('show').plain();
+		button.addEventListener('click', update);
+		document.getElementsByClassName('mw-htmlform-submit-buttons')[0].append(button);
+		mw.hook('AllPagesHideRedirect.loaded').fire();
+	}
+	function preload() {
+		if (--preloads>0) return;
+		window.dev.i18n.loadMessages('AllPagesHideRedirect').then(init);
+	}
+	importArticle({
+		type: 'script',
+		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	});
+	mw.hook('dev.i18n').add(preload);
+	mw.loader.using('mediawiki.util').then(preload);
+})(window.mediaWiki);

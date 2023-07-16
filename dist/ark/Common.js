@@ -49,6 +49,16 @@ $( function() {
 
 	// Load our other scripts conditionally
 	[
+		// RegionMapStyles
+		[ '#regionMapStyles', [ 'MediaWiki:RegionMapStyles.js' ] ],
+		// Colorblind
+		[ '#colorblind', [ 'MediaWiki:Colorblind.js' ] ],
+		// KillXP
+		[ '#creatureKillXP', [ 'MediaWiki:Killxp.js' ] ],
+		// CloningCost
+		[ '#creature-select', [ 'MediaWiki:CloningCost.js' ] ],
+		// ARKCode
+		[ '#ARKCode', [ 'MediaWiki:ARKCode.js' ] ],
 		// Cooking calculator
 		[ '#cookingCalc', [ 'MediaWiki:Cooking calculator.js' ] ],
 		// Wild creature stats calculator
@@ -251,3 +261,27 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
 	$( gridFiltering )
 });
 /* End Grid Filtering */
+
+mw.hook('wikipage.content').add(function() {
+	if (window.interactiveMapLoaded) return;
+	window.interactiveMapLoaded = true;
+	var ele = document.getElementById('interactiveMap');
+	if (!(ele || ele.dataset.svg)) return;
+	ele.style.position = 'relative';
+	ele.style.width = '600px';
+	ele.style.height = '600px';
+	ele.style.textAlign = 'left';
+
+	var img = ele.getElementsByTagName('img')[0];
+	img.style.position = 'absolute';
+	img.style.width = '600px';
+	img.style.height = '600px';
+
+	fetch('https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/' + ele.dataset.svg + '/revision/latest').then(function(a) {
+		return a.text();
+	}).then(function(b) {
+		var ele2 = document.createElement('svg');
+		ele.append(ele2);
+		ele2.outerHTML = b;
+	});
+});

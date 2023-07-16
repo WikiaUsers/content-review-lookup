@@ -108,7 +108,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                // To real DOM
 	                $customRows = $(customRows);
 	                $description.closest('tr').hide().after($customRows);
-	                $customRows.find("textarea").tooltip({trigger: 'focus'});
+	                //$customRows.find("textarea").tooltip({trigger: 'focus'});
 	     
 	                function verifySummary() {
 	                    if (!$('#wpLicense').val()) {
@@ -154,7 +154,6 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                    strBuilder += '|Source = ' + $.trim($customRows.find('#sourceBox').val()) + '\n';
 	                    strBuilder += '|Objet = ' + $.trim($customRows.find('#purposeBox').val()) + '\n';
 	                    strBuilder += '|Personnages dans image = ' + $.trim($customRows.find('#characterBox').val()).replace(/\]\set\s/g, '], ') + '\n';
-	                    strBuilder += '|Jutsu dans image = ' + $.trim($customRows.find('#jutsuBox').val()).replace(/\]\set\s/g, '], ') + '\n';
 	                    strBuilder += '|Portion = ' + $.trim($customRows.find('#portionBox').val()) + '\n';
 	                    strBuilder += '|Résolution = ' + resolution + '\n';
 	                    strBuilder += '|Remplaçabilité = ' + $.trim($customRows.find('#replaceBox').val()) + '\n'; 
@@ -177,7 +176,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                });
 	            });
 	        } else { // Old style form just needs Information template in the summary box
-	            $('#wpUploadDescription').val('{{Information Fichier\n|Description = \n|Source = \n|Objet = \n|Personnages dans image = \n|Jutsu dans image = \n|Portion = \n|Résolution = \n|Remplaçabilité = \n|Autre Information = \n}}'); // Add link to guided form
+	            $('#wpUploadDescription').val('{{Information Fichier\n|Description = \n|Source = \n|Objet = \n|Personnages dans image = \n|Portion = \n|Résolution = \n|Remplaçabilité = \n|Autre Information = \n}}'); // Add link to guided form
 	            $("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://naruto.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 	        }
 	    }

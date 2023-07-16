@@ -6,16 +6,18 @@
 		'wgAction'
 	]);
 	window.RevisionEditLinks = window.RevisionEditLinks || {};
+	var RevisionEditLinks = window.RevisionEditLinks;
 	function putEditLinks(){
 		new mw.Api().get({
 			"action": "query",
 			"format": "json",
 			"meta": "allmessages",
 			"ammessages": "editold|pipe-separator",
-			"amlang": config.wgUserLanguage
+			"amlang": config.wgUserLanguage,
+			"formatversion": 2
 		}).then (function(data){
-			 var editlabel = RevisionEditLinks.editlabel = RevisionEditLinks.editlabel==null?data.query.allmessages[0]["*"]:RevisionEditLinks.editlabel,
-			separator = data.query.allmessages[1]["*"];
+			 var editlabel = RevisionEditLinks.editlabel = RevisionEditLinks.editlabel==null ? data.query.allmessages[0].content : RevisionEditLinks.editlabel,
+			separator = data.query.allmessages[1].content;
 			$(".mw-contributions-list > li").queue(function(){
 				var pgname = $(this).find('.mw-contributions-title').length?$(this).find('.mw-contributions-title').text():config.wgPageName,
 				revid = $(this).attr('data-mw-revid');
@@ -28,8 +30,8 @@
 				if (revid == null) {
 					$(this).find("tr.mw-changeslist-line").queue(function(){
 						var revid = $(this).attr('data-mw-revid');
-						$(this).find(".mw-changeslist-diff").after(separator + '<span><a href="' + mw.util.getUrl(pgname) + '?action=edit&amp;oldid=' + revid + '" class="mw-changeslist-edit" title="' + pgname + '">' + editlabel + '</a></span>')
-					})
+						$(this).find(".mw-changeslist-diff").after(separator + '<span><a href="' + mw.util.getUrl(pgname) + '?action=edit&amp;oldid=' + revid + '" class="mw-changeslist-edit" title="' + pgname + '">' + editlabel + '</a></span>');
+					});
 				} else {
 					$(this).find('.mw-changeslist-links:not(.mw-usertoollinks, .mw-history-histlinks)').append('<span><a href="' + mw.util.getUrl(pgname) + '?action=edit&amp;oldid=' + revid + '" class="mw-changeslist-edit" title="' + pgname + '">' + editlabel + '</a></span>');
 				}
@@ -38,6 +40,6 @@
 	}
 	mw.loader.using([
         'mediawiki.api',
-        'mediawiki.user',
+        'mediawiki.util'
     ], putEditLinks);
-})(jQuery, mediaWiki);
+})(window.jQuery, window.mediaWiki);

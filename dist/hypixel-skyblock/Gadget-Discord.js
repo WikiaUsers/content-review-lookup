@@ -37,8 +37,6 @@ var msg = {
                     ui = arg;
                     break;
             }
-            console.log(this.loaded);
-            console.log(type);
             if (--this.loaded) return;
             this.init();
         },

@@ -9,7 +9,6 @@
  */
 
 /* global $, mw, importArticles, BannerNotification */
-"use strict";
 
 $.when.apply($, [
     $.Deferred(function (def) {
@@ -23,9 +22,7 @@ $.when.apply($, [
     mw.loader.using([
         "mediawiki.api",
         "mediawiki.user",
-        mw.loader.getModuleNames().find(function (module) {
-            return module.startsWith("BannerNotification");
-        })
+        "ext.fandom.bannerNotifications.js"
     ]).then(function () {
         var api = new mw.Api();
 
@@ -71,6 +68,8 @@ $.when.apply($, [
         });
     });
 }))).then(function (_, aliases, i18n, rights) {
+    "use strict";
+
     aliases = aliases[0];
     var that;
     var AjaxContentModel = that = this; // jshint ignore:line

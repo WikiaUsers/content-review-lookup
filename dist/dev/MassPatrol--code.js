@@ -20,7 +20,7 @@
 
 	function init(i18n) {
 		var MassPatrol = {
-			rcids:[],
+			revids:[],
 			patroltoken:"",
 			total:0,
 			init: function () {
@@ -56,16 +56,16 @@
 				for (var i = 0; i < rcArray.length; i++) {
 					var each = rcArray[i];
 
-					if (each.revid >= pageConfig.wgDiffOldId)
+					if (each.revid >= (pageConfig.wgDiffOldId || 0))
 						capture = true; //Start Capture
 					if (capture && !("patrolled" in each)) //Capturing starts, and unpatrolled
-						MassPatrol.rcids.push(each.rcid);
+						MassPatrol.revids.push(each.revid);
 					if (each.revid >= pageConfig.wgDiffNewId)
 						break; //End Early
 				}
 
 				//Set max patrol length (for end counter: will be shift-ing this array)
-				MassPatrol.total = MassPatrol.rcids.length;
+				MassPatrol.total = MassPatrol.revids.length;
 
 				//Build HTML For Mass Patrol Button
 				var button = $('<span>', {
@@ -98,11 +98,11 @@
 				}).prepend(unpatrolled);
 			},
 			patrolRecursive: function() {
-				if (MassPatrol.rcids.length === 0)
+				if (MassPatrol.revids.length === 0)
 					return $("#massPatrol").text("["+i18n.msg('patrolled',MassPatrol.total).plain()+"]");
 				$.post(pageConfig.wgScriptPath+"/api.php?format=json&action=patrol",{
-					rcid:MassPatrol.rcids.shift(),
-					token:MassPatrol.patroltoken
+					revid: MassPatrol.revids.shift(),
+					token: MassPatrol.patroltoken
 				},MassPatrol.patrolRecursive);
 			}
 		};

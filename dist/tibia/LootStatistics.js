@@ -54,9 +54,15 @@
     'Cloak of Terror': {'Crown': 'Crown (Plant)'},
     'Cobra Vizier': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Control Tower': {'Crystal Pedestal': 'Crystal Pedestal (Red)'},
+    'Converter': {'Darklight Core': 'Darklight Core (Object)'},
     'Crape Man': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Crazed Winter Rearguard': {'Ice Flower': 'Ice Flower (Item)'},
     'Crazed Winter Vanguard': {'Ice Flower': 'Ice Flower (Item)'},
+    'Darklight Construct': {'Darklight Core': 'Darklight Core (Object)'},
+    'Darklight Emitter': {'Darklight Core': 'Darklight Core (Object)'},
+    'Darklight Matter': {'Darklight Core': 'Darklight Core (Object)', 'Darklight Matter': 'Darklight Matter (Object)'},
+    'Darklight Striker': {'Darklight Core': 'Darklight Core (Object)'},
+    'Darklight Source': {'Darklight Core': 'Darklight Core (Object)'},
     'Deepworm': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Demodras': {'Book': 'Book (Gemmed)'},
     'Dharalion': {'Parchment': 'Parchment (Rewritable)'},
@@ -185,6 +191,8 @@
     'Usurper Warlock': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Unwanted': {'Candy Floss': 'Candy Floss (Large)', 'Ice Cream Cone': 'Ice Cream Cone (Sprinkles)'},
     'Vibrant Phantom': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
+    'Walking Pillar': {'Darklight Core': 'Darklight Core (Object)'},
+    'Wandering Pillar': {'Darklight Core': 'Darklight Core (Object)'},
     'War Golem': {'Crystal Pedestal': 'Crystal Pedestal (Red)'},
     'Worker Golem': {'Crystal Pedestal': 'Crystal Pedestal (Cyan)'},
     'White Pale': {'Horn': 'Horn (Ring)'}
@@ -230,7 +238,7 @@
   	'Corrupt Naga Scales', 'Rogue Naga Scales', 'Naga Archer Scales', 'Naga Warrior Scales',
   	'Ripptor Scales', 'Stalking Seeds', 'Fairy Wings', 'Prehemoth Horns', 'Moonlight Crystals',
   	'Grapes', 'Stampor Talons', 'Deepling Warts', 'Deepworm Spike Roots', 'Diremaw Legs',
-  	'Half-Digested Stones', 'Terramite Eggs', 'Crab Man Claws'
+  	'Half-Digested Stones', 'Terramite Eggs', 'Crab Man Claws', 'Seeds'
   ],
   
   //exceptions for items that don't match the auto to_singular rules
@@ -1448,7 +1456,7 @@
       lootmatch = theline.match(loot_regexps[0]);
       //regular loot
       if (lootmatch) {
-        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute|hazard)\b/i);
+        lootignore = theline.match(/\b(?:active prey bonus|boss bonus|gut charm|increased loot|boosted loot|active wealth duplex|due to low stamina|goshnar's tribute|hazard|bakragore's tribute)\b/i);
         if (!lootignore) {
           lootparser_loot_process_loot(lootmatch[1], lootmatch[2], monsters, loot_exp, loot_tem);
         }

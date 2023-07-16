@@ -8,11 +8,12 @@
  * @author magiczocker
  */
 
-;(function($, mw) {
+;(function(mw) {
 	'use strict';
 
 	const config = mw.config.get([
 		'wgCanonicalNamespace',
+		'wgArticlePath',
 		'wgUserGroups',
 		'wgPageName',
 		'wgTitle'
@@ -62,9 +63,19 @@
 
 	/**
 	 * Refresh button.
+	 * @param {object} element - Button data.
 	 */
-	events.refresh = function() {
-		$('#mw-imagepage-section-filehistory').load(window.location.pathname + ' #mw-imagepage-section-filehistory', function() {
+	events.refresh = function(element) {
+		element.srcElement.textContent = '...';
+		const pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1';
+		fetch(pathname).then(function(response) {
+			return response.text();
+		}).then(function(data) {
+			const parser = new DOMParser();
+			return parser.parseFromString(data, 'text/html');
+		}).then(function(data) {
+			const section = 'mw-imagepage-section-filehistory';
+			document.getElementById(section).innerHTML = data.getElementById(section).innerHTML;
 			addButtons();
 		});
 	};
@@ -127,6 +138,7 @@
 	 * Create button.
 	 * @param {string} label - Button label.
 	 * @param {string} data - Image value for revert/delete.
+	 * @returns {object} Button
 	 */
 	function createButton(label, data) {
 		const btn = document.createElement('button');
@@ -187,4 +199,4 @@
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});
-})(window.jQuery, window.mediaWiki);
+})(window.mediaWiki);

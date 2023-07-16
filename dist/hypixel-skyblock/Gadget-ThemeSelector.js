@@ -1,8 +1,7 @@
 (function($){
 	// prevent double load
 	window.hsbwiki = window.hsbwiki || {};
-	if (window.hsbwiki.themeSelectorLoaded)
-		return;
+	if (window.hsbwiki.themeSelectorLoaded) return;
 	window.hsbwiki.themeSelectorLoaded = true;
 	
 	var SELECTED_CACHE_KEY = 'hsw-themeselector-selected';
@@ -70,7 +69,7 @@
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
 		
 		// Insert dropdown to nav
-		$(".wiki-tools > .wds-button:last-of-type").after($dropdown);
+		$(".wiki-tools > .wds-button:not([class*='hsw-']):last-of-type").after($dropdown);
 		
 		update();
 	}

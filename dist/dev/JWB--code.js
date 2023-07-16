@@ -36,7 +36,6 @@ window.JWB = JWB;
 		JWB.allowed = false;
 		return;
 	}
-
 	importArticle({
 		type: 'style',
 		article: 'u:dev:MediaWiki:JWB.css'
@@ -121,7 +120,7 @@ window.JWB = JWB;
 				users = false; //fallback when page doesn't exist
 			}
 			JWB.bot = groups.indexOf('bot') !== -1 && (users === false || bots.indexOf(JWB.username) !== -1);
-			JWB.sysop = groups.indexOf('sysop') !== -1;
+			JWB.sysop = /sysop|staff|wiki-representative|wiki-specialist|soap/.test(groups.join());
 			if (JWB.username === "Joeytje50" && response.query.userinfo.id === 13299994) {//TEMP: Dev full access to entire interface.
 				JWB.bot = true;
 				users.push("Joeytje50");
@@ -147,6 +146,7 @@ var objs = ['page', 'api', 'fn', 'pl', 'messages', 'setup', 'settings', 'ns'];
 for (var i=0;i<objs.length;i++) {
 	JWB[objs[i]] = {};
 }
+JWB.spinner = $('<svg style="pointer-events:none" class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>');
 JWB.lang = mw.config.get('wgUserLanguage');
 JWB.index_php = mw.config.get('wgScript');
 JWB.isStopped = true;
@@ -538,8 +538,6 @@ JWB.pl.getList = function(abbrs, lists, data) {
 //JWB.pl.getList(['wr'], ['watchlistraw'], {}) for watchlists
 JWB.pl.generate = function() {
 	var $fields = $('#pagelistPopup fieldset').not('[disabled]');
-	var spinner = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
-	$('#pagelistPopup').find('button[type="submit"]').append(spinner);
 	var abbrs = [], lists = [], data = {'continue': ''};
 	$fields.each(function() {
 		var list = $(this).find('legend input').attr('name');
@@ -576,7 +574,10 @@ JWB.pl.generate = function() {
 			console.log(abbrs, lists, data);
 		}
 	});
-	if (abbrs.length) JWB.pl.getList(abbrs, lists, data);
+	if (abbrs.length) {
+		$('#pagelistPopup').find('button[type="submit"]').append(JWB.spinner);
+		JWB.pl.getList(abbrs, lists, data);
+	}
 };
 /***** Setup functions *****/
 JWB.setup.save = function(name) {
@@ -801,10 +802,13 @@ JWB.status = function(action, done) {
 	$('#summary, .editbutton').prop('disabled', !done); //Disable box when not done (so busy loading). re-enable when done loading.
 	var status = JWB.msg('status-'+action).plain();
 	if (status === false) return;
-	var spinImg = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
+	//var spinImg = '<svg class="wds-spinner" width="45" height="45" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><g transform="translate(22.5, 22.5)"><circle class="wds-spinner__stroke" fill="none" stroke-width="5" stroke-dasharray="125" stroke-dashoffset="125" stroke-linecap="round" r="20"></circle>/g&gt;</g></svg>';
 	if (status) {
-		if (!done) { //spinner if not done
-			status += ' ' + spinImg;
+		//if (!done) { //spinner if not done
+			//status += ' ' + spinImg;
+		//}
+		if (done) {
+			JWB.spinner.remove();
 		}
 	} else {
 		status = action;

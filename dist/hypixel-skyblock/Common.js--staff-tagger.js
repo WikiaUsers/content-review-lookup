@@ -8,21 +8,15 @@
  */
 
 /* jshint
-    esversion: 5, forin: true, esnext: false,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    sub: true, forin: false,
-    -W082, -W084, -W097
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-
-/* global mw, BannerNotification */
-"use strict";
+/* global mw, Promise, console, importArticles */
 (function () {
+    "use strict";
+
     if (window.StaffTagger && window.StaffTagger.Loaded)
         return;
 
@@ -33,14 +27,16 @@
     $.when(
         mw.loader.using([
             "mediawiki.util",
-            "mediawiki.api",
-            mw.loader.getModuleNames().find(function (module) {
-                return module.startsWith("BannerNotification");
-            }),
+            "mediawiki.api"
         ]),
         $.Deferred(function (def) {
-            mw.hook("dev.modal").add(function () {
-                def.resolve();
+            mw.hook("dev.modal").add(function (Modal) {
+                def.resolve(Modal);
+            });
+        }),
+        $.Deferred(function (def) {
+            mw.hook("dev.banners").add(function (BannerNotification) {
+                def.resolve(BannerNotification);
             });
         }),
         $.Deferred(function (def) {
@@ -56,7 +52,7 @@
                 });
             }
         })
-    ).then(function () {
+    ).then(function (_, Modal, BannerNotification) {
         if (!/codeeditor|sysop|bureaucrat|soap|staff|helper|wiki-manager|content-team-member|util/.test(mw.config.get("wgUserGroups").join("\n")))
             return;
 
@@ -450,8 +446,7 @@
                 if (!window.StaffTaggerOpts.canRemoveSelfTopRank && [user].concat(bots).indexOf(myname) !== -1) {
                     for (var i = 0; i <= 4; i++) { // Removing CM+ from self disallowed
                         var r = that.ranksAvailable[i];
-                        if (mygroups.indexOf(r) !== -1 // rank exists in operating user
-                            &&
+                        if (mygroups.indexOf(r) !== -1 && // rank exists in operating user
                             ranks.indexOf(r) === -1) // rank does not exist in given ranks (i.e. will be removed)
                             return false;
                     }
@@ -922,8 +917,8 @@
                     that.toStaffMode();
                     for (var i in that.existingGroups)
                         $("#StaffTagger-rank-" + that.existingGroups[i]).prop("checked", true);
-                    var former = cachedStaffData[user] && cachedStaffData[user]["former"] &&
-                        that.parsePipeList(cachedStaffData[user]["former"]) || [];
+                    var former = cachedStaffData[user] && cachedStaffData[user].former &&
+                        that.parsePipeList(cachedStaffData[user].former) || [];
                     if (!(former.length === 1 && former[0] === ""))
                         for (var j in former)
                             if (that.rankLongs[former[j]])
@@ -981,7 +976,7 @@
         // note: StaffTagger must be defined before its methods can be passed to another
         // constructor, hence the need to assign the modal after StaffTagger's definition
         Object.assign(StaffTagger, {
-            modal: new window.dev.modal.Modal({
+            modal: new Modal.Modal({
                 id: "StaffTagger-modal",
                 title: "Staff Tagger v2.1",
                 content: "",
@@ -1009,6 +1004,14 @@
         });
 
         StaffTagger.init();
+    });
+
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:Modal.js',
+            'u:dev:MediaWiki:BannerNotification.js',
+        ]
     });
 })();
 //</pre>

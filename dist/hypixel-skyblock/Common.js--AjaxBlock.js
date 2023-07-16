@@ -13,17 +13,12 @@
  */
 
 /* jshint
-    esversion: 5, forin: false,
-    immed: true, indent: 4, 
-    latedef: true, newcap: true,
-    noarg: true, esnext: false,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    -W082, -W084
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-/* global mw, importArticle, BannerNotification */
+/* global mw, importArticle, BannerNotification, console */
 
 $.when(
     mw.loader.using("mediawiki.api"),
@@ -75,7 +70,6 @@ $.when(
             "wgArticlePath",
             "wgPageName",
         ]),
-        isUCP = wg.wgVersion !== "1.19.24",
         pagePathname = wg.wgArticlePath.replace("$1", "");
 
     if (!rights.test(wg.wgUserGroups.join("\n"))) return logMsg("Right requirements not met, exiting...");
@@ -379,20 +373,10 @@ $.when(
                         modal.hide();
 
                         if (d.unblock) {
-                            !isUCP
-                                ?
-                                new BannerNotification(i18n.msg("success-unblock", user).escape(), "confirm", $(".banner-notifications-placeholder")).show() :
-                                mw.notify(i18n.msg("success-unblock", user).escape(), {
-                                    type: "success"
-                                });
+                            new BannerNotification(i18n.msg("success-unblock", user).escape(), "confirm", $(".banner-notifications-placeholder")).show();
                             logMsg(i18n.msg("success-unblock", user).escape());
                         } else {
-                            !isUCP
-                                ?
-                                new BannerNotification(i18n.msg("error-unblock", user, d).escape(), "warn", $(".banner-notifications-placeholder")).show() :
-                                mw.notify(i18n.msg("error-unblock", user, d).escape(), {
-                                    type: "warn"
-                                });
+                            new BannerNotification(i18n.msg("error-unblock", user, d).escape(), "warn", $(".banner-notifications-placeholder")).show();
                             logWarn(i18n.msg("error-unblock", user, d).escape());
                         }
                     });
@@ -460,12 +444,7 @@ $.when(
                     Api.post(query).always(function (d) {
                         modal.hide();
                         if (d.block) {
-                            !isUCP
-                                ?
-                                new BannerNotification(i18n.msg("success-block", user).escape(), "confirm", $(".banner-notifications-placeholder")).show() :
-                                mw.notify(i18n.msg("success-block", user).escape(), {
-                                    type: "success"
-                                });
+                            new BannerNotification(i18n.msg("success-block", user).escape(), "confirm", $(".banner-notifications-placeholder")).show();
                             logMsg(i18n.msg("success-block", user).escape());
 
                             console.log(rangeBlock, isIP, config.extras.rangeblock, config.extras.rangeBlock);
@@ -474,31 +453,16 @@ $.when(
                                 Api.post(rangeBlockQuery)
                                     .done(function (d) {
                                         if (d.block) {
-                                            !isUCP
-                                                ?
-                                                new BannerNotification("The " + range + " CIDR range for \"" + user + "\" has been blocked sucessfully!", "confirm", $(".banner-notifications-placeholder")).show() :
-                                                mw.notify("The " + range + " CIDR range for \"" + user + "\" has been blocked sucessfully!", {
-                                                    type: "success"
-                                                });
+                                            new BannerNotification("The " + range + " CIDR range for \"" + user + "\" has been blocked sucessfully!", "confirm", $(".banner-notifications-placeholder")).show();
                                             logMsg("The " + range + " CIDR range for \"" + user + "\" has been blocked sucessfully!");
                                         } else {
-                                            !isUCP
-                                                ?
-                                                new BannerNotification("API error in blocking the " + range + " CIDR range for \"" + user + "\": " + d + " (API Error Code \"" + d + "\")", "warn", $(".banner-notifications-placeholder")).show() :
-                                                mw.notify("The " + range + " CIDR range for \"" + user + "\" has been blocked sucessfully!", {
-                                                    type: "warn"
-                                                });
+                                            new BannerNotification("API error in blocking the " + range + " CIDR range for \"" + user + "\": " + d + " (API Error Code \"" + d + "\")", "warn", $(".banner-notifications-placeholder")).show();
                                             logWarn("API error in blocking the", range, "CIDR range for \"", user, "\":", d, "(API Error Code \"" + d + "\")");
                                         }
                                     });
                             }
                         } else {
-                            !isUCP
-                                ?
-                                new BannerNotification(i18n.msg("error-block", user, d).escape(), "warn", $(".banner-notifications-placeholder")).show() :
-                                mw.notify(i18n.msg("error-block", user, d).escape(), {
-                                    type: "warn"
-                                });
+                            new BannerNotification(i18n.msg("error-block", user, d).escape(), "warn", $(".banner-notifications-placeholder")).show();
                             logWarn(i18n.msg("error-block", user, d).escape());
                         }
                     });

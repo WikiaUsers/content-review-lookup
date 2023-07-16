@@ -1,13 +1,36 @@
 #######
+MULTI UPLOAD
+#######
+/* Multi Upload */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+
+<!--
+#######
+DUDAMOBILE MOBILE SITE APP
+#######
+/* DudaMobile Mobile Site App */
+importArticles({
+    type: 'script',
+    articles: [
+        'DM_redirect.js',
+    ]
+--/>
+
+#######
 BACK TO TOP BUTTON
 #######
+/* Back To Top Button */
 /* Any JavaScript here will be loaded for all users on every page load. */
 window.BackToTopModern = true;
 
 #######
 NEWS TICKER
 #######
-/* Ticker */
+/* News Ticker */
 var ticker;
 var tickertxt;
 var tickerdiv;

@@ -52,6 +52,7 @@ $( createDivToggleButton );
 		'Blog:Staff Blog Posts'
                 'Category:Staff Blog Posts'
                 'Special:Community'
+                'Template:Winter's profile template'
 	].map(function(string) {
 		return string.replaceAll(' ', '_');
 	});
