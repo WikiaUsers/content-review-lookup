@@ -1,1 +1,0 @@
-console.log ('MediaWiki:Gadget-extra-toolbar-buttons-log — loaded');

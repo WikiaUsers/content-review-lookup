@@ -2,6 +2,11 @@
 /* Pride toolbar advertisement */
 var toolbarLabel = 'Disability Pride';
 var toolbarLinks = [
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395102', label: 'July 18: Disability Pride - Multiple Sclerosis'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395100', label: 'July 17: Disability Pride - Amputation'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395098', label: 'July 16: Disability Pride - Dyslexia'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395097', label: 'July 15: Disability Pride - Autism'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395094', label: 'July 14: Disability Pride - OCD'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395090', label: 'July 13: Disability Pride - Heart disease'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395089', label: 'July 12: Disability Pride - ADHD'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395084', label: 'July 11: Disability Pride character highlights'}

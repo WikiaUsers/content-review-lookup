@@ -106,11 +106,8 @@ function enable( slideshow ) {
 	}
 
 	const activeIndex = slideshow.classList.contains( 'dlc-slideshow' ) ? slides.length - 1 : 0;
-	const activeSlide = slides[ activeIndex ];
-	const activeTitle = titles[ activeIndex ];
-	if ( !activeSlide || !activeTitle ) {
-		domPanic();
-	}
+	const activeSlide = slides[ activeIndex ] || domPanic();
+	const activeTitle = titles[ activeIndex ] || domPanic();
 
 	activeSlide.classList.add( 'infobox2-slide-active' );
 	if ( activeTitle.classList.contains( 'infobox2-slide-title' ) ) {
@@ -155,7 +152,9 @@ function appendTitle( title ) {
 
 	const titlePlaceholder = document.createElement( 'span' );
 	titlePlaceholder.classList.add( 'infobox2-slide-title-placeholder' );
-	title.replaceWith( titlePlaceholder );
+
+	const parent = title.parentElement || domPanic();
+	parent.replaceChild( titlePlaceholder, title );
 	this.appendChild( title );
 }
 
@@ -203,18 +202,18 @@ function disable( slideshow ) {
 	if ( !isEnabled( slideshow ) ) {
 		slides.forEach( function ( slide ) {
 			const title = getSlideTitle( slide );
-			if ( title ) {
-				title.remove();
+			if ( !title ) {
+				return;
 			}
+			
+			const parent = title.parentElement || domPanic();
+			parent.removeChild( title );
 		} );
 		return;
 	}
 
 	const titleBar         = getTitleBar( slideshow );
-	const localClickEvents = clickEvents.get( slideshow );
-	if ( !localClickEvents ) {
-		domPanic();
-	}
+	const localClickEvents = clickEvents.get( slideshow ) || domPanic();
 
 	slideshow.classList.remove( 'infobox2-slideshow-enabled' );
 
@@ -228,16 +227,13 @@ function disable( slideshow ) {
 			return;
 		}
 
-		const title = getSlideTitle( slide );
-		if ( !title ) {
-			domPanic();
-		}
-
+		const title = getSlideTitle( slide ) || domPanic();
 		title.classList.remove( 'infobox2-slide-title-active' );
 
 		const titlePlaceholder = slide.getElementsByClassName( 'infobox2-slide-title-placeholder' )[ 0 ];
 		if ( titlePlaceholder ) {
-			titlePlaceholder.replaceWith( title );
+			const titlePlaceholderParent = titlePlaceholder.parentElement || domPanic();
+			titlePlaceholderParent.replaceChild( title, titlePlaceholder );
 		}
 
 		const titleEvent = localClickEvents.titles.get( title );
@@ -247,7 +243,7 @@ function disable( slideshow ) {
 	} );
 
 	if ( titleBar ) {
-		titleBar.remove();
+		slideshow.removeChild( titleBar );
 	}
 
 	clickEvents.delete( slideshow );
@@ -259,15 +255,8 @@ function disable( slideshow ) {
  * @param {HTMLElement} [title] The title of the slide.
  */
 function setActiveSlide( slide, title ) {
-	const slideshow = slide.parentElement;
-	if ( !slideshow ) {
-		domPanic();
-	}
-
-	const activeSlide = getActiveSlide( slideshow );
-	if ( !activeSlide ) {
-		domPanic();
-	}
+	const slideshow   = slide.parentElement || domPanic();
+	const activeSlide = getActiveSlide( slideshow ) || domPanic();
 
 	activeSlide.classList.remove( 'infobox2-slide-active' );
 	slide.classList.add( 'infobox2-slide-active' );
@@ -293,14 +282,12 @@ function setActiveSlide( slide, title ) {
  * @param {HTMLElement} slideshow The slideshow.
  */
 function cycle( slideshow ) {
-	const activeSlide = getActiveSlide( slideshow );
-	if ( !activeSlide ) {
-		domPanic();
-	}
+	const activeSlide = getActiveSlide( slideshow ) || domPanic();
 
 	setActiveSlide(
 		getNextSiblingByClassName( activeSlide, 'infobox2-slide' ) ||
-		getChildByClassName( slideshow, 'infobox2-slide' )
+		getChildByClassName( slideshow, 'infobox2-slide' ) ||
+		domPanic()
 	);
 }
 
@@ -309,11 +296,13 @@ function cycle( slideshow ) {
  * @param {HTMLElement} slide The slide to remove.
  */
 function removeSlide( slide ) {
-	const title = getSlideTitle( slide );
-	slide.remove();
+	const parent = slide.parentElement || domPanic();
+	parent.removeChild( slide );
 
+	const title = getSlideTitle( slide );
 	if ( title ) {
-		title.remove();
+		const titleParent = title.parentElement || domPanic();
+		titleParent.removeChild( title );
 	}
 
 	const slideshow = slide.parentElement;
@@ -347,7 +336,7 @@ function getSlides( slideshow ) {
  *                         null if there is not any.
  */
 function getActiveSlide( slideshow ) {
-	return array.find.call( slideshow.children, isActiveSlide ) || null;
+	return array.filter.call( slideshow.children, isActiveSlide )[ 0 ] || null;
 }
 
 /**
@@ -357,7 +346,7 @@ function getActiveSlide( slideshow ) {
  *                         null if it does not have any.
  */
 function getTitleBar( slideshow ) {
-	return array.find.call( slideshow.children, isTitleBar ) || null;
+	return array.filter.call( slideshow.children, isTitleBar )[ 0 ] || null;
 }
 
 /**
@@ -395,12 +384,8 @@ function isTitleBar( element ) {
  * @returns {HTMLElement?} The title of the slide, null if it does not have any.
  */
 function getSlideTitle( slide ) {
-	const slideshow = slide.parentElement;
-	if ( !slideshow ) {
-		return domPanic();
-	}
-
-	const titlebar = getTitleBar( slideshow );
+	const slideshow = slide.parentElement || domPanic();
+	const titlebar  = getTitleBar( slideshow );
 	if ( titlebar ) {
 		return titlebar.children[ getSlides( slideshow ).indexOf( slide ) ] || domPanic();
 	}
@@ -416,12 +401,8 @@ function getSlideTitle( slide ) {
 function getTitleSlide( title ) {
 	for ( var parent = title.parentElement; parent; parent = parent.parentElement ) {
 		if ( parent.classList.contains( 'infobox2-slideshow-titlebar' ) ) {
-			const slideshow = parent.parentElement;
-			if ( !slideshow ) {
-				domPanic();
-			}
-	
-			const index = array.slice.call( parent.children ).indexOf( title );
+			const slideshow = parent.parentElement || domPanic();
+			const index     = array.slice.call( parent.children ).indexOf( title );
 			return getSlides( slideshow )[ index ] || null;
 		}
 	
@@ -440,21 +421,14 @@ function getTitleSlide( title ) {
  * @returns {HTMLElement} The title of the slide, null if there is not any.
  */
 function enableTitle( slide ) {
-	const title = getSlideTitle( slide );
-	if ( !title ) {
-		domPanic();
-	}
+	const title = getSlideTitle( slide ) || domPanic();
 
 	const click = function () {
-		if ( title.classList.contains( 'infobox2-slide-title-active' ) ) {
+		if ( !title.classList.contains( 'infobox2-slide-title-active' ) ) {
 			return;
 		}
 
-		const slide = getTitleSlide( title );
-		if ( !slide ) {
-			domPanic();
-		}
-
+		const slide = getTitleSlide( title ) || domPanic();
 		setActiveSlide( slide, title );
 	};
 
@@ -465,7 +439,7 @@ function enableTitle( slide ) {
 }
 
 /**
- * Clycles slides of all enabled slideshows.
+ * Cycles slides of all enabled slideshows.
  */
 function runAutoInterval() {
 	if ( !auto.length ) {
@@ -484,10 +458,7 @@ function runAutoInterval() {
  * @param {HTMLElement} slideshow The slideshow.
  */
 function setMinHeight( slideshow ) {
-	const activeSlide = getActiveSlide( slideshow );
-	if ( !activeSlide ) {
-		domPanic();
-	}
+	const activeSlide = getActiveSlide( slideshow ) || domPanic();
 
 	activeSlide.classList.remove( 'infobox2-slide-active' );
 
@@ -510,8 +481,8 @@ function setMinHeight( slideshow ) {
  * Gets the first element following an element which has a given class.
  * @param {HTMLElement} element   The element.
  * @param {string}      className The class name.
- * @returns An element following the given element which has the given
- *          class, null if there is not any.
+ * @returns {HTMLElement?} An element following the given element which has the given
+ *                         class, null if there is not any.
  */
 function getNextSiblingByClassName( element, className ) {
 	for ( var sibling = element.nextElementSibling; sibling; sibling = sibling.nextElementSibling ) {
@@ -527,11 +498,11 @@ function getNextSiblingByClassName( element, className ) {
  * Gets the first element within a container which has a given class.
  * @param {HTMLElement} container The container.
  * @param {string}      className The class name.
- * @returns An element from the container which has the given class, null
- *          if there is not any.
+ * @returns {HTMLElement?} An element from the container which has the given class,
+ *                         null if there is not any.
  */
 function getChildByClassName( container, className ) {
-	return array.find.call( container.getElementsByClassName( className ), isChild, container );
+	return array.filter.call( container.getElementsByClassName( className ), isChild, container )[ 0 ] || null;
 }
 
 /**
@@ -550,18 +521,15 @@ function isChild( element ) {
  * @param {HTMLElement} element The element to remove.
  */
 function unwrap( element ) {
-	const parent = element.parentElement;
-	if ( !parent ) {
-		domPanic();
-	}
+	const parent    = element.parentElement || domPanic();
+	var   childNode = element.firstChild;
 
-	var childNode = element.firstChild;
 	while ( childNode ) {
 		parent.insertBefore( childNode, element );
 		childNode = element.firstChild;
 	}
 
-	element.remove();
+	parent.removeChild( element );
 }
 
 module.exports = {

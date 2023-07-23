@@ -97,7 +97,9 @@ $(function () {
       //210
       'Mutated_Abomination', 'Brass_Speckled_Koi', 'Ink_Spotted_Koi', 'Tangerine_Flecked_Koi', 'Frostbringer',
       //215
-      'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer'
+      'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer',
+      //220
+      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -214,7 +216,9 @@ $(function () {
       Ghost_Blade: 8,
       'Fire-Fighter': 8,
       Armoured_Archer: 8,
-      Decaying_Defender: 8
+      Decaying_Defender: 8,
+      Darklight_Evoker: 8,
+      Frost_Tracer: 8
     },
     outfiter_sprites_walking = {
       CM: 2,

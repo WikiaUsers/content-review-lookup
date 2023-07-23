@@ -75,6 +75,7 @@ if (url.pathname.startsWith("/zh/wiki/") &&                                     
             // Some elements don't load immediately, just try it multiple times
             tryUpdateLinkWithVariant(".recent-wiki-activity");
             tryUpdateLinkWithVariant(".popular-pages");
+            tryUpdateLinkWithVariant(".recentImages__carousel");
 
             // Update link of <a> tag with cutsom variant
             function updateLinkWithVariant() {

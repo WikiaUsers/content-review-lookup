@@ -1,1 +1,0 @@
-mw.loader.load("https://github.com/Frederisk/Wikitext-Extension-Gadget/releases/latest/download/index-vscode.js");

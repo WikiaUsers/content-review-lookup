@@ -1,13 +1,12 @@
 var a=new Date;if(18==a.getDate()&&0==a.getMonth()&&2012==a.getFullYear())window.location="http://en.wikipedia.org/wiki/Main_Page"; 
 
-/** Import module **************************************************************
+/** Импорт модуля **************************************************************
  *
- *  Description: Includes a raw wiki page as javascript or CSS, 
- *               used for including user made modules.
- *  Maintainers: [[User:AzaToth]]
+ *  Описание: Включает необработанную вики-страницу в виде javascript или CSS,
+ *               используемую для включения пользовательских модулей.
  */
  
-importedScripts = {}; // object keeping track of included scripts, so a script ain't included twice
+importedScripts = {}; // объект отслеживает включенные скрипты, поэтому скрипт не включается дважды
 
 function importScript( page ) {
 	if( importedScripts[page] ) {
@@ -39,7 +38,6 @@ function importStylesheet( page ) {
 /** Extra toolbar options ******************************************************
 *
 *  Description: UNDOCUMENTED
-*  Maintainers: [[User:MarkS]]?, [[User:Voice of All]], [[User:R. Koot]]
 */
 
 //This is a modified copy of a script by User:MarkS for extra features added by User:Voice of All.
@@ -190,7 +188,6 @@ $(checktimers);
  /* Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.
- * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
  */
  
 var hasClass = (function () {
@@ -366,9 +363,9 @@ function toggleInit()
                     togglerElems[togglerID] = elem;
                 }
  
-                // all classes are of form _toggler_op-CLASS
-                // figure out what class we're toggling
-                // if none is specified, then we use the current toggle group
+                // все классы из  _toggler_op-CLASS
+                // выяснить, какой класс мы переключаем
+                // если ничего не указано, то используем текущую группу переключателей
                 var toBeToggled;
                 var hyphen = elemClass.indexOf('-');
                 if (hyphen != -1)
@@ -385,7 +382,7 @@ function toggleInit()
         }
     }
  
-    // add javascript links to all toggler elements
+    // добавить ссылки javascript на все элементы переключателя
     for (var i = 0; i < togglerElems.length; i++)
         createTogglerLink(togglerElems[i], i);
 }
@@ -399,17 +396,15 @@ function owwsitesearch(f){
  
 $(toggleInit);
 
-// Additional UserRights Icons in profile mastheads
+// Дополнительные значки прав пользователя в заголовках профилей
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');
-// END Additional UserRights Icons in profile mastheads
+// КОНЕЦ Дополнительные значки прав пользователя в заголовках профилей
 
 /****************************************/
-/* sliders using jquery by User:Tierrie */
 /****************************************/
 mw.loader.using( ['jquery.cookie']);
  
 /****************************************/
-/* sliders using jquery by User:Tierrie */
 /****************************************/
 //wsl.loadScript("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
 //wsl.loadScript("http://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
@@ -418,17 +413,17 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
   $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
  
   var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
-  $("[class*=portal_sliderlink]").click(function() { // bind click event to link
+  $("[class*=portal_sliderlink]").click(function() { // привязать событие клика к ссылке
     $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
     console.log("Sliding to " + this.className.match(/portal_sliderlink-(\d+)/)[1]);
     return false;
   });
   $('#portal_next').click(function() {
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // перейти на следующую вкладку
     return false;
   });
-  $('#portal_prev').click(function() { // bind click event to link
-    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
+  $('#portal_prev').click(function() { // привязать событие клика к ссылке
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // перейти на предыущую вкладку
     return false;
   });
 });

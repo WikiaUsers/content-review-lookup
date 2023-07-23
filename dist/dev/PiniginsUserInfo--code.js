@@ -20,16 +20,11 @@
 
 	function addEntry(data, label, value, join) {
 		var text = '';
-		if (data.query.users[0][value]) {
-			text = '<b>' + label + '</b> ';
-			if (join) {
-				text += data.query.users[0][value].join(', ');
-			} else {
-				text += data.query.users[0][value];
-			}
-			text += '<br />';
+		var v = data.query.users[0][value];
+		if (v) {
+			text += join ? v.join(', ') : v;
 		}
-		return text;
+		document.getElementById('PUI-' + value).textContent = text;
 	}
 	function getUserInfo() {
 		var username = input.value;
@@ -38,19 +33,25 @@
 			action: 'query',
 			list: 'users',
 			ususers: username,
-			usprop: 'registration|gender|editcount|blockinfo|groups'
+			usprop: 'registration|gender|editcount|blockinfo|groups',
+			formatversion: 2
 		}).done(function(data) {
-			if (username === '') {
-				info.innerHTML = '<br /><b>' + msg('enterUsername').escape() + '</b>';
+			if (data.query.users[0].missing || data.query.users[0].invalid || username === '') {
+				info.innerHTML = '<br><b>' + msg('enterUsername').escape() + '</b>';
 			} else {
 				info.innerHTML =
-					'<br />' +
-					addEntry(data, msg('id').escape(), 'userid') +
-					addEntry(data, msg('username').escape(), 'name') +
-					addEntry(data, msg('editcount').escape(), 'editcount') +
-					addEntry(data, msg('dateRegistered').escape(), 'registration') +
-					addEntry(data, msg('gender').escape(), 'gender') +
-					addEntry(data, msg('groups').escape(), 'groups', true);
+					'<br><b>' + msg('id').escape() + '</b> <span id="PUI-userid"></span>' +
+					'<br><b>' + msg('username').escape() + '</b> <span id="PUI-name"></span>' +
+					'<br><b>' + msg('editcount').escape() + '</b> <span id="PUI-editcount"></span>' +
+					'<br><b>' + msg('dateRegistered').escape() + '</b> <span id="PUI-registration"></span>' +
+					'<br><b>' + msg('gender').escape() + '</b> <span id="PUI-gender"></span>' +
+					'<br><b>' + msg('groups').escape() + '</b> <span id="PUI-groups"></span>';
+				addEntry(data, msg('id').escape(), 'userid');
+				addEntry(data, msg('username').escape(), 'name');
+				addEntry(data, msg('editcount').escape(), 'editcount');
+				addEntry(data, msg('dateRegistered').escape(), 'registration');
+				addEntry(data, msg('gender').escape(), 'gender');
+				addEntry(data, msg('groups').escape(), 'groups', true);
 			}
 		});
 	}

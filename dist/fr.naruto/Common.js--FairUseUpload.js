@@ -109,7 +109,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 	                // To real DOM
 	                $customRows = $(customRows);
 	                $description.closest('tr').hide().after($customRows);
-	                $customRows.find("textarea").tooltip({trigger: 'focus'});
+	                //$customRows.find("textarea").tooltip({trigger: 'focus'});
 	     
 	                function verifySummary() {
 	                    if (!$('#wpLicense').val()) {

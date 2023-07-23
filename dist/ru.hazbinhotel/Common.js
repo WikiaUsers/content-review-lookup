@@ -26,7 +26,6 @@ const staff = [
     {name: 'LeraBE', className: 'discordMod'},
     {name: 'Om3gaZT', className: 'discordMod'},
     {name: 'Lubitel obnimashek', className: 'intern'},
-    {name: 'Владыка Аларак', className: 'intern'},
     {name: 'JustAccount', className: 'intern'},
     {name: 'Fleshka5856', className: 'intern'},
 ];

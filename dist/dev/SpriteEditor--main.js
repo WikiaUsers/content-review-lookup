@@ -180,7 +180,6 @@
 		a.settings = Object.assign({}, output.settings);
 		a.sections = [];
 		a.ids = {};
-		delete a.settings.pos;
 		delete a.settings.spacing;
 		if (a.settings.version) {
 			a.settings.version = "version=" + Date.now();
@@ -208,9 +207,6 @@
 						pos: p,
 						section: secId
 					};
-					if (boxes[j].dataset.default) {
-						a.settings.pos = p;
-					}
 					if (names[k].children[0].classList.contains("spritedoc-deprecated")) {
 						a.ids[names[k].children[0].textContent].deprecated = true;
 					}
@@ -295,8 +291,11 @@
 		allPos.sort(function(a, b) {
 			return a - b;
 		});
+		var extraIncrement = 0;
 		allPos.forEach(function(item, index) {
-			document.querySelectorAll("li[data-pos='" + item + "']")[0].dataset.posTmp = index + 1;
+			if (!extraIncrement && (!output.settings.pos || ((index + 1) == output.settings.pos && !document.querySelector("li[data-pos='" + (index + 1) + '"]')) ) ) // If no defaultSprite exists, the pos 1 shouldn't be blocked.
+				extraIncrement++;
+			document.querySelector("li[data-pos='" + item + "']").dataset.posTmp = index + 1 + extraIncrement;
 		});
 	}
 	function getPosCoords(pos, useOrg) {
@@ -312,15 +311,20 @@
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
 		var keepOldSprites = !options.removeUnusedSprites && !options.isNew;
-		if (options.removeUnusedSprites && options.removeWhitespace) {
+		var needDummy = options.removeUnusedSprites && options.removeWhitespace;
+		if (needDummy) {
 			addDummyPos();
+		}
+		var defaultSprite = document.querySelector("li[data-default]");
+		if (defaultSprite) {
+			output.settings.pos = needDummy && defaultSprite.dataset.posTmp || defaultSprite.dataset.pos;
 		}
 		var spritesPerRow = options.spritesPerRow;
 		c.width = (imgWidth + options.spacing) * spritesPerRow - options.spacing;
 		c.height = 0;
 		if (keepOldSprites)
 			c.height = Math.ceil(Math.ceil((imgEle.naturalHeight + imgSpacingOrg) / (imgHeight + imgSpacingOrg)) * options.spritesPerRowOrg / spritesPerRow) * (imgHeight + options.spacing) - options.spacing;
-		c.height = Math.max(c.height, Math.ceil(toShare.highestPos / spritesPerRow) * (imgHeight + options.spacing) - options.spacing);
+		c.height = Math.max(c.height, Math.ceil(Math.max((output.settings.pos || 0), toShare.highestPos) / spritesPerRow) * (imgHeight + options.spacing) - options.spacing);
 		var i;
 		var sID;
 		var drawn = [];
@@ -339,13 +343,14 @@
 				coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
 			);
 		}
+		var coordsOld;
 		if (keepOldSprites) { // Copy old sprites to new canvas
 			var rowsOrg = Math.ceil(imgEle.naturalHeight / imgHeight);
 			for (i = 0; i < rowsOrg; i++) { // Rows
 				for (var j = 0; j < options.spritesPerRowOrg; j++) { // Columns
 					sID = i * options.spritesPerRowOrg + j + 1;
-					if (drawn[sID] || sID > toShare.heighestPos) continue;
-					var coordsOld = getPosCoords(sID, true);
+					if (drawn[sID] || sID > toShare.highestPos) continue;
+					coordsOld = getPosCoords(sID, true);
 					coords = getPosCoords(sID, false);
 					ctx.drawImage(imgEle,
 						coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
@@ -353,6 +358,14 @@
 					);
 				}
 			}
+		} else {
+			sID = output.settings.pos || 1;
+			coordsOld = getPosCoords(sID, true);
+			coords = getPosCoords(sID, false);
+			ctx.drawImage(imgEle,
+				coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
+				coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
+			);
 		}
 		return [c, oldImageAsCanvas, oldImageAsCanvas.toDataURL() !== c.toDataURL()];
 	}
@@ -664,6 +677,8 @@
 				var fname = f.name.trim().replace( /\.[^\.]+$/, '' ).replace( /_/g, ' ' );
 				if (!fname.length) return;
 				toShare.highestPos++;
+				if (toShare.highestPos == output.settings.pos) // Prevent replacing default image.
+					toShare.highestPos++;
 				var posID = toShare.highestPos;
 				var secID = ele.closest(".spritedoc-section").dataset.sectionId;
 				helper.addSprite(posID, imgEle);
@@ -884,8 +899,10 @@
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
 			document.body.removeChild(menu);
 			var oldDefault = document.querySelector('li[data-default]');
-			if (oldDefault)
+			if (oldDefault) {
 				delete oldDefault.dataset.default;
+				delete output.settings.pos;
+			}
 
 			if (oldDefault !== selectedEle)
 				selectedEle.dataset.default = ".";

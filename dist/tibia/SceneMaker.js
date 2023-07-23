@@ -169,8 +169,15 @@ api.post({
 	function ( data ) {
 		var expanded_result = data.expandtemplates.wikitext;
 		document.getElementById("scene_area").innerHTML =""; 
-		expanded_result = expanded_result.replaceAll("https://","<img src='https://").replaceAll(".gif",".gif'>");
+		//these replacements are made to fix some issues with the  returned expanded text so it displays correctly
+		//fix for {{filepath}} results
+		expanded_result = expanded_result.replaceAll("https://static","<img src='https://static").replaceAll("prefix=en","prefix=en'>");
+		//fix for 'Special:Redirect' urls
+		expanded_result = expanded_result.replaceAll("https://tibia.","<img src='https://tibia.").replaceAll(".gif</div>",".gif'></div>");
+		//removing automatic cateogry in expanded result
 		expanded_result = expanded_result.replace("[[Category:Pages with Scenes]]","");
+		//fix for missiles, shouldnt come up that often
+		try {expanded_result = expanded_result.replace(/..\&frame../,expanded_result.match(/\&frame../)[0]+"'>");} catch(err){}
 		document.getElementById("scene_area").insertAdjacentHTML( 'afterbegin', expanded_result);
 	});
 }

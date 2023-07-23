@@ -99,7 +99,7 @@ $(function () {
       //215
       'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer',
       //220
-      'Spirit_of_Purity', 'Darkfire_Devourer'
+      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -219,7 +219,8 @@ $(function () {
       'Fire-Fighter': 8,
       Armoured_Archer: 8,
       Decaying_Defender: 8,
-      Darklight_Evoker: 8
+      Darklight_Evoker: 8,
+      Frost_Tracer: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -643,12 +644,9 @@ $(function () {
 
   $('#outfiter_container').html(
     '<div class="outfiter">' +
-    '<table>' +
-    '<tr>' +
-    '<td>' +
-    '<div class="outer_border radio_list_wrap">' +
+    '<div class="outer_border radio_list_wrap mselector">' +
     '<div class="div2_no_padding">' +
-    '<div class="div2_title">Mounts shortcut</div>' +
+    '<div class="div2_title">Mounts</div>' +
     '<div class="radio_list_cont">' +
     '<div class="radio_list_out radio_mounts">' +
     '<input type="text" size="15" class="dark_input omsearch" placeholder="Search" />' +
@@ -656,9 +654,9 @@ $(function () {
     '</div>' +
     '</div>' +
     '</div>' +
-    '<div class="outer_border radio_list_wrap">' +
+    '<div class="outer_border radio_list_wrap oselector">' +
     '<div class="div2_no_padding">' +
-    '<div class="div2_title">Outfits shortcut</div>' +
+    '<div class="div2_title">Outfits</div>' +
     '<div class="radio_list_cont">' +
     '<div class="radio_list_out radio_outfits">' +
     '<input type="text" size="15" class="dark_input omsearch" placeholder="Search" />' +
@@ -666,9 +664,7 @@ $(function () {
     '</div>' +
     '</div>' +
     '</div>' +
-    '</td>' +
-    '<td>' +
-    '<div class="outer_border">' +
+    '<div class="outer_border viewer">' +
     '<div class="div2">' +
     '<div class="div2_title">Outfit Selector</div>' +
     '<div class="omain_wrap">' +
@@ -779,10 +775,6 @@ $(function () {
     '</div>' +
     '</div>' +
     '</div>' +
-    '</div>' +
-    '</td>' +
-    '</tr>' +
-    '</table>' +
     '<div class="anistep_step_cont"></div>' +
     '<div class="template_code_code_cont"></div>' +
     '<div class="hide hide_canvas">' +
@@ -853,7 +845,7 @@ $(function () {
       outfiter_acurrent = 0,
       //default outfiter options
       outfiter_def = {
-        outfit: 0, addon1: false, addon2: false, female: false, facing: 1,
+        outfit: 0, addon1: false, addon2: false, female: false, facing: 2,
         c1: 0, c2: 0, c3: 0, c4: 0,
         soft: false, animate: false, sanim: false,
         hpbar: false, charn: '',

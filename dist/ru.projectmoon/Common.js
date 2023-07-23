@@ -328,7 +328,17 @@ function SetSlider(n)
 		base = parseFloat(Block.querySelector('i').innerHTML); 
 		add = parseFloat(Block.querySelector('b').innerHTML); 
 		
-		Block.querySelector('span').innerHTML = Math.round(n*add+base);
+		Block.querySelector('span').innerHTML = Math.max(Math.round(n*add+base),1);
 	});
 }
 }
+/* Тир 2 для скилов */
+$(document.querySelectorAll("#skillreplaced")).css("display","block")
+document.querySelectorAll("#skillreplaced .Pas").forEach(function(skill)
+	{
+		Arr = skill.classList;
+		fin = Arr[Arr.length - 1];
+		skill.innerHTML = document.querySelector("#skillreplace ."+fin).innerHTML;
+	}
+	
+)

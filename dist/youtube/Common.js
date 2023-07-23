@@ -28,6 +28,21 @@ window.lastEdited = {
 
 window.ajaxIndicator = 'https://slot1-images.wikia.nocookie.net/__cb1603999865266/common/skins/common/images/ajax.gif';
 
+(function ($, mw) {
+    function loadHighlights() {
+        var deferred = $.Deferred(),
+            apiEndpoint = 'https://youtube.fandom.com/api.php',
+            page = 'MediaWiki:Custom-UserTags.json',
+            params;
+
+        params = {
+            action: 'query',
+            format: 'json',
+            prop: 'revisions',
+            rvprop: 'content',
+            titles: page,
+            indexpageids: 1
+        };
         mw.loader.using(['mediawiki.util'], function () {
             $.ajax(apiEndpoint, {
                 data: params,
@@ -88,4 +103,4 @@ mw.hook('dev.i18n').add(function (i18n) {
         });
     });
 });
-importArticle({ type: 'script', article: 'u:dev:I18n-js/code.js' });
+importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });

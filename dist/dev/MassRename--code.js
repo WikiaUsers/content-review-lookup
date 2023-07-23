@@ -40,6 +40,15 @@ mw.loader.using('mediawiki.api', function () {
                         id: 'redirect-check'
                     })
                 ),
+                $('<br>'),
+                $('<label>', {
+                    'for': 'custom-summary',
+                    text: i18n.msg('custom-summary').plain()
+                }).append(
+					$('<input>', {
+					    id: 'custom-summary'
+					})
+                ),
                 $('<textarea>', {
                     id: 'text-rename',
                     placeholder: 'old_name new_name'
@@ -182,6 +191,7 @@ mw.loader.using('mediawiki.api', function () {
                     to: newName.replace('_', ' '),
                     noredirect: '',
                     reason:
+                    	($('#custom-summary')[0].value.length > 0 && $('#custom-summary')[0].value) ||
                         window.massRenameSummary ||
                         i18n.inContentLang().msg('summary').plain(),
                     bot: true,

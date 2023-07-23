@@ -22,6 +22,7 @@ window.UserTagsJS = {
     modules: {},
     tags: {
         // group: { prizes }
+        old: { u:'OLD BUILDER 🔨', title:'Old Builder' },
         valen: { u:'LOVELY 😍', title:'Valenbrainz Contest Winner' },
         winterworld: { u:'FROSTY 🥶', title:'Winter World Contest Winner'},
         feastivus: { u:'FESTIVE 🎅', title:'Feastivus 2019 Contest Winner'},
@@ -58,11 +59,8 @@ window.UserTagsJS = {
         matd: { u: 'MAGIC! AT THE DISCO 🪩', title:'Magic! At The Disco Contest Winner'},
         pasta: { u: 'FORGOTTEN PAST ⚱️', title:'Forgotten Past Duo Contest Winner'},
         grandmaster: { u: 'GRANDMASTER 🏅', title:'Grandmaster Contest Winner'},
-        snapdragonsresort: { u: 'SNAPDRAGON’S RESORT 🩴', title:'Snapdragon’s Resort Contest Winner'},
+        resort: { u: 'SNAPDRAGON’S RESORT 🩴', title:'Snapdragon’s Resort Contest Winner'},
         deepseason: { u: 'DEEP SEA-SON 🐬', title:'Deep Sea-son Contest Winner'},
-        theinvasion: { u: 'THE INVASION 🪖', title:'The Invasion Contest Winner'},
-        electrofirefest: { u: 'ELECTROFIRE FEST 🪫', title:'Electrofire Fest Contest Winner'},
-        spookytown: { u: 'SPOOKY TOWN 🦴', title:'Spooky Town Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
@@ -80,7 +78,9 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-'AbsoluteGei': ['discmod','tenthcontest','pvzh', 'luckozombie'],
+    'J192': ['old'],
+    'Zomplant Jelo': ['old'],
+    'AbsoluteGei': ['discmod','tenthcontest','pvzh', 'luckozombie'],
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'Baryonyx138': ['worldcontest'],
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod', 'lawnofdoom2'],
@@ -104,7 +104,7 @@ UserTagsJS.modules.custom = {
     'NotComet': ['pv3'],
     'Wynaut821': ['summernights2'],
     'CongruentSausage803': ['greatfieryfeast'],
-    'Creepes': ['log','pasta'],
+    'Creepes': ['log','pasta','resort'],
     'Rocky105': ['chompersdream'],
     'Partyfanboy8': ['pasta'],
 };

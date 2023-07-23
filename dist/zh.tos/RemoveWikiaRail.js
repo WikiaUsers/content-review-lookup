@@ -1,1 +1,0 @@
-$('(function RemoveWikiaRail(){if(typeof jQuery=="undefined"){setTimeout(RemoveWikiaRail,100);return}$("#WikiaRail").remove();$("#WikiaMainContent").addClass("removeWikiaRail")})();')

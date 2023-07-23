@@ -54,7 +54,7 @@
     'Cloak of Terror': {'Crown': 'Crown (Plant)'},
     'Cobra Vizier': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Control Tower': {'Crystal Pedestal': 'Crystal Pedestal (Red)'},
-    'Converter': {'Darklight Core': 'Darklight Core (Object)'},
+    'Converter': {'Darklight Core': 'Darklight Core (Object)', 'Darklight Matter': 'Darklight Matter (Object)'},
     'Crape Man': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Crazed Winter Rearguard': {'Ice Flower': 'Ice Flower (Item)'},
     'Crazed Winter Vanguard': {'Ice Flower': 'Ice Flower (Item)'},

@@ -615,6 +615,10 @@
             page: 'Special:BlankPage',
             scripts: 'MediaWiki:Stella.js'
         },
+        StylizedDiff: {
+            page: 'StylizedDiff',
+            styles: 'MediaWiki:StylizedDiff.css'
+        },
         StylizedTabs: {
             page: 'StylizedTabs',
             styles: 'MediaWiki:StylizedTabs.css'

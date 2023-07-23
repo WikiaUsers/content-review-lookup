@@ -52,6 +52,12 @@
             resultsHeader: 'Wyniki',
             noQuestionsHeader: 'Nie wprowadzono pytań'
         },
+        ru: { // Russian
+            nxtBtn: 'Дальше',
+            rplBtn: 'Снова',
+            resultsHeader: 'Результаты',
+            noQuestionsHeader: 'Вопросов больше нет. Пожалуйста, добавьте больше на страницу MediaWiki:Common.js.'
+        },
         tr: { // Türkçe
             nxtBtn: 'Sonraki',
             rplBtn: 'Tekrar',

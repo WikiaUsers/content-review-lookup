@@ -1,1 +1,0 @@
-$('<script type="text/javascript">if (skin == "wikiamobile") {if (document.URL.indexOf("redirect=no") == -1) {document.write("正在重定向至手機版主頁⋯⋯");window.location = "http://zh.tos.wikia.com/wiki/M";}}</script>').appendTo('#mobilepage');

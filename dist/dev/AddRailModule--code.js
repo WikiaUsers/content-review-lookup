@@ -262,22 +262,13 @@
         modsPrepared = prepareMods(context, mods);
 
         $.when(railLoaded, modsPrepared).done(function () {
-            var $ads;
             if (modsToPrepend.length) {
-                $ads = $rail.find('#top-right-boxad-wrapper, #top-boxad-wrapper, #NATIVE_TABOOLA_RAIL').last();
-                attachMods(modsToPrepend, $ads[0] ? function (fragment) {
-                    $rail[0].insertBefore(fragment, $ads[0].nextSibling);
-                } : function (fragment) {
-                    $rail[0].insertBefore(fragment, $rail[0].firstChild);
-                });
+                // Top ads live in `#rail-boxad-wrapper`, which is `#WikiaRail`'s previous sibling.
+                attachMods(modsToPrepend, $rail[0].prepend.bind($rail[0]));
             }
             if (modsToAppend.length) {
-                $ads = $rail.find('.rail-sticky-module').first();
-                attachMods(modsToAppend, $ads[0] ? function (fragment) {
-                    $rail[0].insertBefore(fragment, $ads[0]);
-                } : function (fragment) {
-                    $rail[0].appendChild(fragment);
-                });
+                // Bottom ads live in `.sticky-modules-wrapper > #WikiaAdInContentPlaceHolder`, which is `#WikiaRail`'s sibling.
+                attachMods(modsToAppend, $rail[0].appendChild.bind($rail[0]));
             }
         });
     }
