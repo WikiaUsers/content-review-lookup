@@ -35,6 +35,11 @@ mw.hook('wikipage.content').add(function() {
 			info: '<abbr title="Heroes in the regular summoning pool that can be summoned at 5★ rarity">[?]</abbr>',
 		},
 		{
+			data: 'specialRate',
+			label: '4<img alt="★" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.5.png" data-image-key="Icon_Rarity_4.5.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" class=" lazyloaded"> Special Rate',
+			info: '<abbr title="Heroes in the 5★ special rate summoning pool that are initially summoned at 4★ rarity but end up being 5★ rarity">[?]</abbr>',
+		},
+		{
 			data: 'regular_4_3_2_1',
 			label: 'Regular 1-4<img alt="★" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.png" data-image-key="Icon_Rarity_4.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" class=" ls-is-cached lazyloaded">',
 			info: '<abbr  title="Heroes in the regular summoning pool that  can be summoned at 4★ rarity or lower">[?]</abbr>',
@@ -46,23 +51,33 @@ mw.hook('wikipage.content').add(function() {
 		},
 		{
 			data: 'legendary',
-			label: 'Legendary',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Legend.png" data-image-key="Icon_Hero_Type_Legend.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" class=" lazyloaded"> Legendary',
 			info: '[<a href="../Category:Legendary_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'mythic',
-			label: 'Mythic',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Mythic.png" data-image-key="Icon_Hero_Type_Mythic.png" data-src="ttps://static.wikia.nocookie.net/feheroes_gamepedia_en/images/9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" class=" lazyloaded"> Mythic',
 			info: '[<a href="../Category:Mythic_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'duo',
-			label: 'Duo',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/d/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Duo.png" data-image-key="Icon_Hero_Type_Duo.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/d/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" class=" lazyloaded"> Duo',
 			info: '[<a href="../Category:Duo_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'harmonized',
-			label: 'Harmonized',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Har..png" data-image-key="Icon_Hero_Type_Har..png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" class=" lazyloaded"> Harmonized',
 			info: '[<a href="../Category:Harmonized_Heroes" target=_blank>?</a>]',
+		},
+		{
+			data: 'ascended',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" decoding="async" width="20" height="20" data-image-name="Icon FlowerBud L.png" data-image-key="Icon_FlowerBud_L.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" class=" lazyloaded"> Ascended',
+			info: '[<a href="../Category:Ascended_Heroes" target=_blank>?</a>]',
+		},
+		{
+			data: 'rearmed',
+			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" decoding="async" width="20" height="20" data-image-name="Icon Arcane Weapon.png" data-image-key="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" class=" lazyloaded"> Rearmed',
+			info: '[<a href="../Category:Rearmed_Heroes" target=_blank>?</a>]',
 		}
 	];
 

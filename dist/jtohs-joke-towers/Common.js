@@ -22,7 +22,6 @@ window.UserTagsJS = {
 		god: {u:'God of the Wiki', order: -1e100},
 		nothing: {u: '⠀⠀⠀', order: -1e100},
 		bureaureal: {u: 'BUREAUCRAT (REAL)', order: -1e110},
-		difficultyevo: {u:'ROBLOX EVOLUTION SEASON 5 PART 19', order:-1e35}
 	}
 };
 UserTagsJS.modules.custom = {

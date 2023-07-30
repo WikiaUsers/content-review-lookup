@@ -4,46 +4,11 @@
  *   - Skill Type (Active/Passive)
  *   - Skill Level Learned
  **/
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('skill_filter');
-	if (!main) return;
 
-	var html = '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
-		'<div style="display: inline-block"><h4>Filter skills:</h4></div>' +
-		'<div id="skill-select-container">' +
-			'<div id="skill-name-search-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
-				'<input type="text" id="skill-name-search-text" placeholder="Search by Skill Name">' +
-			'</div>' +
-			'<div id="skill-type-select-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
-				'<select id="skill-type-select" name="skill-type-select" class="form-control">' +
-					'<option selected="selected" value="">Show all skill types</option>' +
-					'<option value="Active">Active</option>' +
-					'<option value="Passive">Passive</option>' +
-				'</select>' +
-			'</div>' +
-			'<div id="skill-level-select-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
-				'<select id="skill-level-select" name="skill-level-select" class="form-control">' +
-					'<option selected="selected" value="">Show all level skills</option>' +
-					'<option value="1-10">1-10</option>' +
-					'<option value="11-20">11-20</option>' +
-					'<option value="21-30">21-30</option>' +
-					'<option value="31-40">31-40</option>' +
-					'<option value="41-50">41-50</option>' +
-				'</select>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-	main.innerHTML = html;
-	var ele = {
-		search: document.getElementById('skill-name-search-text'),
-		typeSelect: document.getElementById('skill-type-select'),
-		levelSelect: document.getElementById('skill-level-select'),
-		collapsible: document.getElementsByClassName("skill-collapsible")
-	};
-	ele.search.addEventListener('keyup', filterSkills);
-	ele.typeSelect.addEventListener('change', filterSkills);
-	ele.levelSelect.addEventListener('change', filterSkills);
+	var ele;
+
 	function filterSkills() {
 		// Get all the values from the filter / select inputs
 		var skillNameText = ele.search.value.toUpperCase();
@@ -102,4 +67,45 @@ mw.hook('wikipage.content').add(function() {
 		}
 		return false;
 	}
-});
+
+	function init($content) {
+		var main = $content.find('#skill_filter')[0];
+		if (!main) return;
+
+		main.innerHTML = '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
+			'<div style="display: inline-block"><h4>Filter skills:</h4></div>' +
+			'<div id="skill-select-container">' +
+				'<div id="skill-name-search-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
+					'<input type="text" id="skill-name-search-text" placeholder="Search by Skill Name">' +
+				'</div>' +
+				'<div id="skill-type-select-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
+					'<select id="skill-type-select" name="skill-type-select" class="form-control">' +
+						'<option selected="selected" value="">Show all skill types</option>' +
+						'<option value="Active">Active</option>' +
+						'<option value="Passive">Passive</option>' +
+					'</select>' +
+				'</div>' +
+				'<div id="skill-level-select-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
+					'<select id="skill-level-select" name="skill-level-select" class="form-control">' +
+						'<option selected="selected" value="">Show all level skills</option>' +
+						'<option value="1-10">1-10</option>' +
+						'<option value="11-20">11-20</option>' +
+						'<option value="21-30">21-30</option>' +
+						'<option value="31-40">31-40</option>' +
+						'<option value="41-50">41-50</option>' +
+					'</select>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+		ele = {
+			search: $content.find('#skill-name-search-text')[0],
+			typeSelect: $content.find('#skill-type-select')[0],
+			levelSelect: $content.find('#skill-level-select')[0],
+			collapsible: $content.find('.skill-collapsible')
+		};
+		ele.search.addEventListener('keyup', filterSkills);
+		ele.typeSelect.addEventListener('change', filterSkills);
+		ele.levelSelect.addEventListener('change', filterSkills);
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

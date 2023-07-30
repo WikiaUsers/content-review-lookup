@@ -99,3 +99,19 @@ if (checkPageFAQ) {
 if (checkPageRacers) {
 	addHideOverflowClass();
 }
+/***************************************/
+/***************************************/
+/***************************************/
+/***************************************/
+/***************************************/
+/***************************************/
+/* Taken from https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:common.js */
+$('.fandom-community-header__community-name-wrapper').append(
+	/* Adds A+ Wiki Badge to Title */
+    $('<img/>').addClass('hover-community-header-wrapper').css('height', '30px')
+	.attr('src', 'https://static.wikia.nocookie.net/sky-children-of-the-light/images/9/96/Fandom-A%2Bwiki-badge.png'),
+	
+	/* Adds Fandom Compass Badge to Title */
+	$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('padding-left', '5px').css('position', 'absolute').css('left', '100%').css('top', '-20px')
+	.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009')
+);

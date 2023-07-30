@@ -1,46 +1,12 @@
 /* Created by Dan Floyd (aka "Floydman"). */
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
-	var vng = document.getElementById('VilleinNumberGenerator');
-	var vn = document.getElementById('VilleinNumber');
-	if (!(vng || vn)) return;
 
-	var isGenerator = vng ? true : false;
-	var data = isGenerator ? {} : vn.dataset;
+	var roundCanvasTwo, isGenerator, ele, config;
 	var blobColor = "#66CAD9";
 	var backColor = "#345885";
-	var roundCanvasTwo;
 	var pi = Math.PI;
-	var html = '<span id="VilleinNumber"></span><br/>' +
-		'Number (0-1023): <input type="number" id="base10input" name="base10input" value="462"><br/>' +
-		'Panel Width (in pixels): <input type="number" id="inputwidth" name="panelwidth" value="200"><br/>' +
-		'<input type="radio" name="layercount" value="1" id="radio1">1 Layer (1 Digit)<br/>' +
-		'<input type="radio" name="layercount" value="2" id="radio2" checked>2 Layers (5 Digits)<br/>' +
-		'<input type="button" value="Submit" id="inputbutton">';
 
-	if (isGenerator) vng.innerHTML = html;
-	var config = {
-		base10input: Number(data.base10 || 15),
-		layercount: Number(data.layers || 2),
-		panelwidth: Number(data.width || 150)
-    },
-	ele = {
-		VilleinNumber: isGenerator ? document.getElementById('VilleinNumber') : vn,
-		base10input: document.getElementById('base10input'),
-		inputwidth: document.getElementById('inputwidth'),
-		radio2: document.getElementById('radio2'),
-		inputbutton: document.getElementById('inputbutton'),
-		canvasFinal: document.createElement("CANVAS"),
-		canvasAllDigits: document.createElement("CANVAS"),
-		canvasSingleDigit: document.createElement("CANVAS")
-	};
-	if (isGenerator) {
-		ele.base10input.addEventListener('keyup', enterPressed);
-		ele.inputwidth.addEventListener('keyup', enterPressed);
-		ele.inputbutton.addEventListener('click', goodNumber);
-	} else {
-		convert10to4();
-	}
 	function enterPressed(target) {
 		if (target.which === 13) goodNumber();
 	}
@@ -361,4 +327,44 @@ mw.hook('wikipage.content').add(function() {
 			rounds++;
 		}
 	}
-});
+
+	function init($content) {
+		var vng = $content.find('#VilleinNumberGenerator')[0];
+		var vn = $content.find('#VilleinNumber')[0];
+		if (!(vng || vn)) return;
+	
+		isGenerator = vng ? true : false;
+		var data = isGenerator ? {} : vn.dataset;
+		var html = '<span id="VilleinNumber"></span><br/>' +
+			'Number (0-1023): <input type="number" id="base10input" name="base10input" value="462"><br/>' +
+			'Panel Width (in pixels): <input type="number" id="inputwidth" name="panelwidth" value="200"><br/>' +
+			'<input type="radio" name="layercount" value="1" id="radio1">1 Layer (1 Digit)<br/>' +
+			'<input type="radio" name="layercount" value="2" id="radio2" checked>2 Layers (5 Digits)<br/>' +
+			'<input type="button" value="Submit" id="inputbutton">';
+	
+		if (isGenerator) vng.innerHTML = html;
+		config = {
+			base10input: Number(data.base10 || 15),
+			layercount: Number(data.layers || 2),
+			panelwidth: Number(data.width || 150)
+	    };
+		ele = {
+			VilleinNumber: isGenerator ? $content.find('#VilleinNumber')[0] : vn,
+			base10input: $content.find('#base10input')[0],
+			inputwidth: $content.find('#inputwidth')[0],
+			radio2: $content.find('#radio2')[0],
+			inputbutton: $content.find('#inputbutton')[0],
+			canvasFinal: document.createElement("CANVAS"),
+			canvasAllDigits: document.createElement("CANVAS"),
+			canvasSingleDigit: document.createElement("CANVAS")
+		};
+		if (isGenerator) {
+			ele.base10input.addEventListener('keyup', enterPressed);
+			ele.inputwidth.addEventListener('keyup', enterPressed);
+			ele.inputbutton.addEventListener('click', goodNumber);
+		} else {
+			convert10to4();
+		}
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

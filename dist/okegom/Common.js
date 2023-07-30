@@ -12,3 +12,10 @@ $( function () {
 
 /* Modernize the BackToTop button */
 window.BackToTopModern = true;
+
+/* Locked Comment settings */
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides["LockOldComments"] = window.dev.i18n.overrides["LockOldComments"] || {};
+window.dev.i18n.overrides["LockOldComments"]["locked-reply-box"] = "🔒 Replies are disabled to comment threads over 60 days old.";

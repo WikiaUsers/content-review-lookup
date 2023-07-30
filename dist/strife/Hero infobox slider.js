@@ -1,19 +1,19 @@
-mw.hook('wikipage.content').add(function() {
+mw.hook('wikipage.content').add(function($content) {
 	'use strict';
-	var main = document.getElementById('hero_infobox_slider');
+	var main = $content.find('#hero_infobox_slider')[0];
 	if (!main) return;
 	var hero, slider;
 	var minLevel = 0;
 	var maxLevel = 0;
 	var ele = {
-		armor: document.getElementById('heroslider-armor') || {},
-		attackdamage: document.getElementById('heroslider-attackdamage') || {},
-		healthregen: document.getElementById('heroslider-healthregen') || {},
-		level: document.getElementById('heroslider-level') || {},
-		magicarmor: document.getElementById('heroslider-magicarmor') || {},
-		maxhealth: document.getElementById('heroslider-maxhealth') || {},
+		armor: $content.find('#heroslider-armor')[0] || {},
+		attackdamage: $content.find('#heroslider-attackdamage')[0] || {},
+		healthregen: $content.find('#heroslider-healthregen')[0] || {},
+		level: $content.find('#heroslider-level')[0] || {},
+		magicarmor: $content.find('#heroslider-magicarmor')[0] || {},
+		maxhealth: $content.find('#heroslider-maxhealth')[0] || {},
 		
-		herostatstable: document.getElementById('herostatstable')
+		herostatstable: $content.find('#herostatstable')[0]
 	};
 
 	function initialize() {
@@ -22,8 +22,8 @@ mw.hook('wikipage.content').add(function() {
 		if ( levels.length > 0 ) {
 			minLevel = parseInt( levels[0], 10 );
 			maxLevel = parseInt( levels[levels.length - 1], 10 );
-				document.getElementById('heroslider-level').textContent = 'Level ' + maxLevel;
-				var sliderOuter = document.getElementById('heroslider-outer');
+				$content.find('#heroslider-level')[0].textContent = 'Level ' + maxLevel;
+				var sliderOuter = $content.find('#heroslider-outer')[0];
 				slider = document.createElement('input');
 				slider.id = 'heroslider';
 				slider.type = 'range';
@@ -109,12 +109,12 @@ mw.hook('wikipage.content').add(function() {
 						achievedLevel = Math.max( achievedLevel, requiredLevel );
 					}
 				}
-				shortDescSpan = document.getElementById(id + '-short');
-				descSpan = document.getElementById(id);
+				shortDescSpan = $content.find('#' + id + '-short')[0];
+				descSpan = $content.find('#' + id)[0];
 				if ( achievedLevel > 0 ) {
 					achievedAbility = ability[achievedLevel];
-					document.getElementById(id + '-manacost').textContent = achievedAbility.manaCost ;
-					document.getElementById(id + '-range').textContent = achievedAbility.range ;
+					$content.find('#' + id + '-manacost')[0].textContent = achievedAbility.manaCost ;
+					$content.find('#' + id + '-range')[0].textContent = achievedAbility.range ;
 					for ( var constant in achievedAbility.constants ) {
 						console.log(achievedAbility.constants[constant]);
 						shortDescSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );

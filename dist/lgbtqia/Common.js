@@ -1,4 +1,4 @@
-/* Pride toolbar advertisement */
+/* Pride toolbar advertisement
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
 	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
@@ -33,14 +33,14 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* Pride logo link */
+/* Disability Pride logo link */
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Celebrating Pride Month')
+            .text('Celebrating Disability Pride Month')
         )
-        .attr('href', 'https://bit.ly/FandomPrideBlog-header')
+        .attr('href', 'https://bit.ly/DisabilityPrideMonth-Chris')
 );
 
 /* Standard edit summaries

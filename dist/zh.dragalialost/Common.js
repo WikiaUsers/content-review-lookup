@@ -37,14 +37,14 @@ $(document).ready(function() {
 });
 
 /* [[Halidom]] */
-mw.hook('wikipage.content').add(function() {
-	var container = document.getElementById("halidom-grid-toggle-container");
+mw.hook('wikipage.content').add(function($content) {
+	var container = $content.find('#halidom-grid-toggle-container')[0];
 	if (container) {
-		var HalidomMapTable = document.getElementsByClassName('HalidomMapTable')[0];
+		var HalidomMapTable = $content.find('.HalidomMapTable')[0];
 		container.innerHTML =
 		'<input type="checkbox" id="halidom-grid-toggle" class="wds-toggle__input">' +
 		'<label for="halidom-grid-toggle" class="wds-toggle__label">切换网格视图</label>';
-		document.getElementById('halidom-grid-toggle').addEventListener('change', function() {
+		$content.find('#halidom-grid-toggle')[0].addEventListener('change', function() {
 			HalidomMapTable.classList.toggle('HalidomMapLines');
 		});
 	}

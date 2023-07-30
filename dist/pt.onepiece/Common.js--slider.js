@@ -3,11 +3,11 @@
 //================================
 
 // Code from http://dragonage.wikia.com/wiki/MediaWiki:Common.js created by "Tierrie"
-// see also http://pt.onepiece.wikia.com/wiki/MediaWiki:Common.js/slider.js
+// see also http://onepiece.wikia.com/wiki/MediaWiki:Common.js/slider.js
 
 mw.loader.using(["jquery.cookie"]);
 
-mw.loader.using(["jquery.ui.tabs"], function() {
+mw.loader.using(["jquery.ui"], function() {
   $(".portal_vtab").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
   $(".portal_vtab > ul > li").removeClass("ui-corner-top").addClass("ui-corner-left");
 

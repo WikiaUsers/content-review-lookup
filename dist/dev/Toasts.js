@@ -1,9 +1,9 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1685330140931
+ * Last modified: 1690306730730
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.7
+ * @version 1.0.8
  */
 
 /*
@@ -40,6 +40,19 @@
             'u:dev:MediaWiki:Toasts.css'
         ]
     });
+	
+    function log (level) {
+		var parts = [
+			'%c[Toasts] %o',
+			'color: #C9F',
+			new Date().toUTCString()
+		];
+		return function () {
+			console.groupCollapsed.apply(null, parts);
+			console[level in console ? level : 'log'].apply(null, arguments);
+			console.groupEnd();
+		};
+    }
     
     function isObject (item) {
         return toString.call(item) === '[object Object]';
@@ -88,6 +101,8 @@
 		]);
     }
     
+    var onError = log('error');
+    
     var helpers = {
         ensureContainer: function () {
             if (document.querySelector('.toasts')) return;
@@ -104,12 +119,12 @@
 					: ''
 			);
             name += type && type !== 'default'
-					? ' toast-' + type
-					: '';
+				? ' toast-' + type
+				: '';
             if (!icon && type) icon = type;
             var html = create('div', { className: name }, [
 				this.icons[icon] && create('div', { className: 'toast-icon' }, [
-					this.icons[icon]
+					this.icons[icon].cloneNode(true)
 				]),
 				create('div', { className: 'toast-text', textContent: message })
 			].filter(Boolean));
@@ -118,7 +133,7 @@
         parseType: function (type, types) {
             return types[type] || '';
         },
-        icons: new Proxy({
+        icons: {
             warning: createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'),
             success: createIcon(
 				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
@@ -133,12 +148,7 @@
 				'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 '
 					+ '10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'
 			)
-        }, {
-			get: function (target, prop) {
-				if (target[prop] instanceof Node) return target[prop].cloneNode(true);
-				return target[prop];
-			}
-        })
+        }
     };
     
     var Toasts = {
@@ -152,7 +162,7 @@
             helpers.ensureContainer();
             var toast = helpers.buildToast(
                 content,
-                helpers.parseType(options.type || '', this.types),
+                helpers.parseType(arguments[2], this.types),
                 options.icon || ''
             );
             document.querySelector('.toasts').appendChild(toast);
@@ -167,37 +177,25 @@
                 return new Promise(function (resolve) {
                     setTimeout(resolve, 300);
                 });
-            }, console.error)
+            }, onError)
             .then(function () {
                 toast.parentElement.removeChild(toast);
                 if (document.querySelectorAll('.toasts .toast').length) return;
                 var toasts = document.querySelector('.toasts');
                 toasts.parentElement.removeChild(toasts);
-            }, console.error);
+            }, onError);
         },
         info: function (content, options) {
-            options = isObject(options)
-				? options
-				: {};
-            return this.show(content, Object.assign(options, { type: 'info' }));
+            return this.show(content, options, 'info');
         },
         error: function (content, options) {
-            options = isObject(options)
-				? options
-				: {};
-            return this.show(content, Object.assign(options, { type: 'error' }));
+            return this.show(content, options, 'error');
         },
         success: function (content, options) {
-            options = isObject(options)
-				? options
-				: {};
-            return this.show(content, Object.assign(options, { type: 'success' }));
+            return this.show(content, options, 'success');
         },
         warning: function (content, options) {
-            options = isObject(options)
-				? options
-				: {};
-            return this.show(content, Object.assign(options, { type: 'warning' }));
+            return this.show(content, options, 'warning');
         },
         'default': function (content, options) {
             return this.show(content, options);

@@ -2,12 +2,25 @@
 //        Variables for functions
 // =====================================
 // ArchiveTool
-var ArchiveToolConfig = { 
-   archiveListTemplate: 'Archived Talk Tabs',
-   archivePageTemplate: 'Archived Talk Tabs',
-   archiveSubpage: 'Archive',
+ArchiveToolConfig = { 
+   archiveListTemplate: 'Archived Talk Tabs',	// Template to use on the main talk page
+   archivePageTemplate: 'Archived Talk Tabs',	// Template to use on the archived talk pages
+   archiveSubpage: 'Archive',					// Basename to use for archived talk pages
    userLang: true
 };
+
+// BackToTopButton
+window.BackToTopModern = true;
+
+// =====================================
+//                Imports
+// =====================================
+
+// See MediaWiki:ImportJS
+
+// =====================================
+//                Functions
+// =====================================
 
 // Expand All
 var expandAllFlag = 0;
@@ -25,11 +38,20 @@ $('.expandAll a').click(function(){
 });
 // END of Expand All
 
-// BackToTopButton
-window.BackToTopModern = true;
+// Template:Tabs
+$(function() {
+	// If a sub-tab is "selected", make the parent tabs also "selected"
+	$('.at-selected').parents('.article-tabs li').each(function () {
+		$(this).addClass('at-selected');
+	});
 
-// =====================================
-//                Imports
-// =====================================
+	// Margin fix
+	$('.article-tabs .at-selected .article-tabs').each(function () {
+		// Get height of subtabs
+		var $TabsHeight = $(this).height();
 
-// See MediaWiki:ImportJS
+		// Increase bottom margin of main tabs
+		$(this).parents('.article-tabs').last().css('margin-bottom' , '+=' + $TabsHeight);
+	});
+});
+// END of Template:Tabs

@@ -125,7 +125,7 @@ function fixAchievements(){
   };
   waitForEl('.right-rail-wrapper', hasPhotoModule ? '.photo-module' : null).then(function () {
   
-    var railHeadings = document.querySelectorAll('.UserProfileAchievementsModule h2, .rail-module h2');
+    var railHeadings = document.querySelectorAll('.UserProfileAchievementsModule h2, .rail-module h2, .recentImages__title');
     railHeadings.forEach(function (rail) {
       return rail.insertAdjacentHTML('afterend', '<div class="rail-module__lines"></div>');
     });
@@ -198,6 +198,8 @@ window.DiscussionTemplates = {
 
 /* Конфигурация для dev:AddRailModule */
  window.AddRailModule = [
+ 	{page: 'Template:DiscordRail', prepend: true, maxAge: 0},
+ 	{page: 'Template:VKRail', prepend: true, maxAge: 0},
  	{page: 'Template:NewPagesModule', maxAge: 0}
  ];
 

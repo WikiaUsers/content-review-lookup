@@ -1,16 +1,8 @@
 // https://vincoding.com/weekly-repeating-countdown-timer-javascript/
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
 
-	var countdown = document.getElementsByClassName('customCountdown');
-	if (!countdown.length) return;
-
-	var curday = [];
-	var secTime = [];
-	var ticker = [];
-	for (var i=0; i<countdown.length; i++) {
-		getSeconds(i);
-	}
+	var countdown, curday, secTime, ticker;
 
 	function getSeconds(cd) {
 		var tmpDate = new Date();
@@ -70,4 +62,17 @@ mw.hook('wikipage.content').add(function() {
 			((curday[cd] + hours) === 0 ? '' : hours + 'h ') +
 			mins + 'm';
 	}
-});
+
+	function init($content) {
+		countdown = $content.find('.customCountdown');
+		if (!countdown.length) return;
+
+		curday = [];
+		secTime = [];
+		ticker = [];
+		for (var i=0; i<countdown.length; i++) {
+			getSeconds(i);
+		}
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

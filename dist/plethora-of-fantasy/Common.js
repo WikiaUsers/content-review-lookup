@@ -8,7 +8,6 @@ window.UserTagsJS = {
 		reaper: 'Reaper of Tides',
 		children: 'Hoarder of Children',
 		lore: 'Lore Simp',
-		braincell: 'The Only Braincell',
 		wolf: 'Official Wolf',
 		colours: 'The Colour Empress',
 		existence: 'An Existence',
@@ -24,7 +23,7 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.custom = {
 	'Tilan-Tidewaters': ['reaper', 'children'],
-	'GingerAle0': ['lore', 'braincell'],
+	'GingerAle0': ['lore'],
 	'Firewind0111': ['wolf'],
 	'Mintflower09': ['colours', 'existence'],
 	'Moonshadow567': ['dragon'],

@@ -1,70 +1,73 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* SORT WHATLINKSHERE ALPHABETICALLY BEGIN */
 
-// createElement is taken from Chinese Wikipedia
-// List of authors can be found at http://zh.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
-function createElement(tag,children,props){
-	var element = document.createElement(tag);
-	if(!(children instanceof Array)){children=[children];}
-	for(var i=0;i<children.length;i++){
-		var child=children[i];
-		if(typeof child=='string'){child=document.createTextNode(child);}
-		if(child){element.appendChild(child);}
-	}
-	if(typeof props=='object'){
-		for(var k in props){
-			switch(k){
-			case 'styles':
-				var styles=props.styles;
-				for(var s in styles){element.style[s]=styles[s];}
-				break;
-			case 'events':
-				var events=props.events;
-				for(var e in events){ addHandler(element,e,events[e]); }
-				break;
-			case 'class':
-				element.className=props[k];break;
-			default:
-				element.setAttribute(k,props[k]);
-			}
-		}
-	}
-	return element;
-}
+(function($) {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;
+    var sorted_list,
+        $list = $('#mw-whatlinkshere-list');
+    sorted_list = $list.children('li').sort(function (a, b) {
+        return ($(a).find('a:first').attr('title') > $(b).find('a:first').attr('title')) ? 1 : -1;
+    });
+    $list.children('li').remove();
+    $list.append(sorted_list);
+})(jQuery);
+
+/* SORT WHATLINKSHERE ALPHABETICALLY END */
 
 
 
-var STRINGTAGTEXT; // yeah, this is a global variable.  Bite me.
+/* DEV INACTIVEUSERS BEGIN */
 
-function createStringTags(){
-    var stringTags
-    try{  // Some of the newer browsers support getElementsByClassName natively
-        stringTags= document.getElementsByClassName('stringTags'); // find all tab definitions in the article
-    } catch (el) { // and some don't
-        return 0;
-    }
-    if (stringTags.length == 0) return 0;
+InactiveUsers = { 
+    months: 6,
+    gone: ['username1', 'username2'],
+    text: 'inactive'
+};
 
-    STRINGTAGTEXT = new Array(stringTags.length);
-    for (var i=0; i < stringTags.length; i++){
-        var curTag = stringTags[i];
-        if (curTag.textContent) {
-            STRINGTAGTEXT[i] = curTag.textContent;
-        } else {
-            STRINGTAGTEXT[i] = curTag.innerText;
+/* DEV INACTIVEUSERS END */
+
+
+/* COMMA IN CONTRIBS USER HEADER BEGIN */
+
+$(function() {
+  var selector = '#userProfileApp .user-identity-stats strong';
+  function prettify(strongs) {
+    strongs.forEach(function(strong, i) {
+      var text = strong.textContent;
+      if (text.length > 3 && text.indexOf(',') === -1) {
+        strong.textContent = parseInt(text).toLocaleString('en', {useGrouping:true});
+      }
+    })
+  }
+  mw.hook('wikipage.content').add(function($content) {
+    var strongs = document.querySelectorAll(selector);
+    if (strongs.length) {
+      prettify(strongs);
+    } else {
+      // alternatively, run a setInterval or setTimeout.
+      new MutationObserver(function(mutations, observer) {
+        var strongs = document.querySelectorAll(selector);
+        if (strongs.length) {
+          observer.disconnect();
+          prettify(strongs);
         }
-        newLink = createElement('A', 
-                                curTag.title,
-                                {'href':'javascript:insertStringTags(' + i + ');'}
-                               );
-        while (curTag.childNodes[0]) {
-            curTag.removeChild(curTag.childNodes[0]);
-        }
-        curTag.appendChild(newLink);
+      }).observe(document.querySelector('.page__main'), {
+        childList: true, // observe direct children
+        subtree: true, // and lower descendants too
+      });
     }
-}
+  });
+});
 
-addOnloadHook(createStringTags);
+/* COMMA IN CONTRIBS USER HEADER END */
 
-function insertStringTags(idx){
-    insertTags(STRINGTAGTEXT[idx], '', '');
-}
+
+/* LINK ON RAIL ACTIVITY BOX BEGIN */
+
+$('#WikiaRail').on('afterLoad.rail', function() {
+  const recentChangesLink = $('<a/>').attr('href', '/wiki/Special:RecentChanges');
+  const wikiActivityRailHeader = $('#wikia-recent-activity.rail-module.recent-wiki-activity .rail-module__header');
+  recentChangesLink.append(wikiActivityRailHeader.html());
+  wikiActivityRailHeader.empty().prepend(recentChangesLink);
+});
+
+/* LINK ON RAIL ACTIVITY BOX END */

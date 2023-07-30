@@ -1,3 +1,4 @@
+// <nowiki>
 $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () { 
 	var ns = mw.config.get("wgCanonicalNamespace");
 	var infoboxP = document.getElementById('infoboxPlayer');
@@ -131,3 +132,4 @@ $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () {
 		}
 	}
 });
+// </nowiki>

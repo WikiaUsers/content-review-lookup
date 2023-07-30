@@ -1,4 +1,11 @@
-/* global mw, $ */
+var articles = [];
+
+if (document.getElementById('AtlasOfWorlds')) articles.push('MediaWiki:Atlas of Worlds.js');
+if (document.getElementById('monster_main')) articles.push('MediaWiki:Monster.js');
+
+if (articles.length) importArticle({ type: 'script', articles: articles });
+
+/* global $ */
 /* jshint strict:false, browser:true */
 
 ( function() {
@@ -6,7 +13,7 @@
 /* DO NOT ADD CODE ABOVE THIS LINE */
 
 /* Translation strings */
-const i18n = {
+var i18n = {
     expand: 'Expand',
     collapse: 'Collapse'
 };
@@ -16,40 +23,40 @@ const i18n = {
  * @param  tables  Table elements to be transformed into responsive tables
  */
 function reponsive_table (tables) {
-    if ( tables.length > 0 ) {
-        const expand = '<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 180V56c0-13.3 10.7-24 24-24h124c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H64v84c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12zM288 44v40c0 6.6 5.4 12 12 12h84v84c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12V56c0-13.3-10.7-24-24-24H300c-6.6 0-12 5.4-12 12zm148 276h-40c-6.6 0-12 5.4-12 12v84h-84c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24V332c0-6.6-5.4-12-12-12zM160 468v-40c0-6.6-5.4-12-12-12H64v-84c0-6.6-5.4-12-12-12H12c-6.6 0-12 5.4-12 12v124c0 13.3 10.7 24 24 24h124c6.6 0 12-5.4 12-12z"></path></svg><span>' + i18n.expand + '</span>';
-        const collapse = '<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M436 192H312c-13.3 0-24-10.7-24-24V44c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v84h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm-276-24V44c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v84H12c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24zm0 300V344c0-13.3-10.7-24-24-24H12c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h84v84c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-84h84c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12H312c-13.3 0-24 10.7-24 24v124c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"></path></svg><span>' + i18n.collapse + '</span>';
-        const do_toggle = function( wrap ) {
-            if ( wrap.classList.contains('is-expanded') ) {
-                this.innerHTML = expand;
-                wrap.classList.remove('is-expanded');
-            } else {
-                this.innerHTML = collapse;
-                wrap.classList.add('is-expanded');
-            }
-        };
-        for ( var i = 0; i < tables.length; i++ ) {
-            var table = tables[i];
-            var wrap = document.createElement('div');
-            wrap.classList.add('c-responsive-table');
-            table.before(wrap);
-            var scroll = document.createElement('div');
-            scroll.classList.add('c-responsive-table__scroll');
-            wrap.appendChild(scroll);
-            scroll.appendChild(table);
-            table.classList.add('c-responsive-table__table');
-            if ( scroll.offsetHeight < scroll.scrollHeight ) {
-                var toolbar = document.createElement('div');
-                toolbar.classList.add('c-responsive-table__toolbar');
-                scroll.before(toolbar);
-                var toggle = document.createElement('button');
-                toggle.classList.add('c-responsive-table__toolbar-button');
-                toggle.innerHTML = expand;
-                toolbar.appendChild(toggle);
-                toggle.addEventListener( 'click', do_toggle.bind(toggle, wrap) );
-            }
-        }
-    }
+	if ( tables.length > 0 ) {
+		var expand = '<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 180V56c0-13.3 10.7-24 24-24h124c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H64v84c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12zM288 44v40c0 6.6 5.4 12 12 12h84v84c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12V56c0-13.3-10.7-24-24-24H300c-6.6 0-12 5.4-12 12zm148 276h-40c-6.6 0-12 5.4-12 12v84h-84c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24V332c0-6.6-5.4-12-12-12zM160 468v-40c0-6.6-5.4-12-12-12H64v-84c0-6.6-5.4-12-12-12H12c-6.6 0-12 5.4-12 12v124c0 13.3 10.7 24 24 24h124c6.6 0 12-5.4 12-12z"></path></svg><span>' + i18n.expand + '</span>';
+		var collapse = '<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M436 192H312c-13.3 0-24-10.7-24-24V44c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v84h84c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm-276-24V44c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v84H12c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24zm0 300V344c0-13.3-10.7-24-24-24H12c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h84v84c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-84h84c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12H312c-13.3 0-24 10.7-24 24v124c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12z"></path></svg><span>' + i18n.collapse + '</span>';
+		var do_toggle = function( wrap ) {
+			if ( wrap.classList.contains('is-expanded') ) {
+				this.innerHTML = expand;
+				wrap.classList.remove('is-expanded');
+			} else {
+				this.innerHTML = collapse;
+				wrap.classList.add('is-expanded');
+			}
+		};
+		for ( var i = 0; i < tables.length; i++ ) {
+			var table = tables[i];
+			var wrap = document.createElement('div');
+			wrap.classList.add('c-responsive-table');
+			table.before(wrap);
+			var scroll = document.createElement('div');
+			scroll.classList.add('c-responsive-table__scroll');
+			wrap.appendChild(scroll);
+			scroll.appendChild(table);
+			table.classList.add('c-responsive-table__table');
+			if ( scroll.offsetHeight < scroll.scrollHeight ) {
+				var toolbar = document.createElement('div');
+				toolbar.classList.add('c-responsive-table__toolbar');
+				scroll.before(toolbar);
+				var toggle = document.createElement('button');
+				toggle.classList.add('c-responsive-table__toolbar-button');
+				toggle.innerHTML = expand;
+				toolbar.appendChild(toggle);
+				toggle.addEventListener( 'click', do_toggle.bind(toggle, wrap) );
+			}
+		}
+	}
 }
 
 /**
@@ -57,7 +64,7 @@ function reponsive_table (tables) {
  * @param  config  Object containing configuration
  */
 function hoverbox(config) {
-    const defaults = {
+    var defaults = {
         mainClass: 'hoverbox',
         activatorClass: 'hoverbox__activator',
         displayClass: 'hoverbox__display'
@@ -165,16 +172,16 @@ function veiledModifier() {
 }
 
 function boolean_table() {
-    $('.boolean-table').find('table').find('td').each(function () {
-        var text = $(this).html();
-        if (text == '0') {
-            $(this).html('&#x2717;');
-            $(this).addClass('table-cell-xmark');
-        } else if (text == '1') {
-            $(this).html('&#x2713;');
-            $(this).addClass('table-cell-checkmark');
-        }
-    })
+	document.querySelectorAll('.boolean-table table td').forEach(function(ele) {
+		var text = ele.textContent.trim();
+		if (text === '0') {
+			ele.textContent = '✗';
+			ele.classList.add('table-cell-xmark');
+		} else if (text === '1') {
+			ele.textContent = '✓';
+			ele.classList.add('table-cell-checkmark');        
+		}
+	});
 }
 
 function quality_selector() {
@@ -191,7 +198,7 @@ function quality_selector() {
         $('.quality-section-select').removeClass('quality-selected');
         $('.quality-box').removeClass('quality-selected');
         $('.quality .quality-' + index).addClass('quality-selected');
-    })
+    });
 }
 
 /* Fires when DOM is ready */
@@ -206,7 +213,7 @@ $(function() {
     
     // Responsive tables
     reponsive_table( document.getElementsByClassName('responsive-table') );
-    const table_containers = document.getElementsByClassName('responsive-table-container');
+    var table_containers = document.getElementsByClassName('responsive-table-container');
     for (var i = 0; i < table_containers.length; i++) {
         reponsive_table( table_containers[i].getElementsByTagName('table') );
     }
@@ -230,7 +237,6 @@ $(function() {
     // Change 1 & 0 to checkmarks in tables 
     boolean_table();
     
-
 });
 /* End DOM ready */
 

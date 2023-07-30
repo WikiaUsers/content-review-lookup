@@ -38,8 +38,10 @@ addOnloadHook(
     }
 );
 function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $('.insertusername').html(wgUserName); }
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') == null) return;
+    $('.insertusername').text(mw.config.get('wgUserName')); }
+ $(UserNameReplace);
+ 
  addOnloadHook(UserNameReplace);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js

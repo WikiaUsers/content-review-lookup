@@ -113,7 +113,7 @@
 	if (typeof window.LoopOgvOpts !== 'object')
 		window.LoopOgvOpts = {};
 	const opts = {
-		mode: 'hover',
+		mode: 'autoplay',
 	};
 	Object.assign(opts, window.LoopOgvOpts);
 	

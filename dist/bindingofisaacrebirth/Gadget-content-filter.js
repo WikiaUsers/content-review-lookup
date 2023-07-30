@@ -730,26 +730,30 @@ function applyFilter( container ) {
 	for ( var i = 0; i < filterTypes.length; ++i ) {
 		const filterType = filterTypes[ i ];
 		const elements   = container.getElementsByClassName( filterType.class );
-		const oldLength  = elements.length;
+		var   oldLength  = elements.length;
 		var   loopLimit  = 0;
-		while ( elements.length ) {
-			const element = elements[ 0 ];
+		var   minElement = 0;
+		while ( elements[ minElement ] ) {
+			const element = elements[ minElement ];
 			if ( applyFilterType( filterType, element ) ) {
 				element.classList.replace(
 					filterType.class,
 					'cf-element-skipped'
 				);
 			}
-			if ( elements.length >= oldLength && ++loopLimit >= applyFilterLimit ) {
+			if ( elements.length < oldLength ) {
+				oldLength = elements.length;
+				loopLimit = 0;
+			} else if ( ++loopLimit >= applyFilterLimit ) {
 				error(
 					'Too many element removals have been realized ' +
 					'without reducing the number of elements.'
 				);
-				break;
+				++minElement;
 			}
 		}
 		const skippedElements = container.getElementsByClassName( 'cf-element-skipped' );
-		while ( skippedElements.length ) {
+		while ( skippedElements[ 0 ] ) {
 			skippedElements[ 0 ].classList.replace( 'cf-element-skipped', filterType.class );
 		}
 	}
@@ -1920,7 +1924,7 @@ function updateAnchorFilter( a ) {
 
 filteringAvailable = isFilteringAvailable( currentTitle );
 
-mw.hook( 'wikipage.content' ).add( onContentLoaded );
+safeAddContentHook( onContentLoaded );
 
 module.exports = {
 	applyFilter: applyFilter

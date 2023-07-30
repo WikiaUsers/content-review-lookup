@@ -90,11 +90,12 @@ function showTab(title) {
 
 ;(function(mw) {
 	if (!['Planets', 'Template:Planets'].includes(mw.config.get('wgPageName'))) return;
-	function init() {
-		var gameUniverse = document.getElementById('game_universe');
-		var gameSwitch = document.querySelector('#view .switch');
-		var gameSpan = document.querySelectorAll('#data > span');
-		var solarSystem = document.getElementById('solar-system');
+	function init($content) {
+		var gameUniverse = $content.find('#game_universe')[0];
+		if (!gameUniverse) return;
+		var gameSwitch = $content.find('#view .switch')[0];
+		var gameSpan = $content.find('#data > span');
+		var solarSystem = $content.find('#solar-system')[0];
 
 		if( window.innerWidth < 620 ) {
 			gameUniverse.classList.remove('view-3D');
@@ -108,10 +109,10 @@ function showTab(title) {
 			gameSwitch.classList.toggle('on');
 			gameSwitch.classList.toggle('off');
 		});
-		gameSpan.forEach(function(value) {
+		gameSpan.each(function(index, value) {
 			value.addEventListener('click', function() {
 				solarSystem.classList = value.classList[0];
-				gameSpan.forEach(function(value2) {
+				gameSpan.each(function(index2, value2) {
 					if (value2.classList.contains('active')) {
 						value2.classList.remove('active');
 						return;

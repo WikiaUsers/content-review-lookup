@@ -187,16 +187,5 @@ setTimeout(function () {
   });
 }, 5000);
 
-
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
-window.UserTagsJS = {
-		modules: {},
-		tags: {
-			sysop: { u: 'Professeur' }
-			montheditor: { u:'Editor of the Month' },
-		    featured: { u:'Featured' },
-		    templates: { u:'Templates Guru' }
-}
-
 // empêcher les balises existantes d'être masquées
 (window.dev = window.dev [[:Template:!!]] {}).profileTags = { noHideTags: true };

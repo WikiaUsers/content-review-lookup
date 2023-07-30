@@ -1,6 +1,6 @@
-mw.hook('wikipage.content').add(function() {
+mw.hook('wikipage.content').add(function($content) {
 	'use strict';
-	var table = document.getElementById('statTable');
+	var table = $content.find('#statTable')[0];
 	if (!table) return;
 
 	var primary_stat_point    = 4; //Increase 1 primary per how many points
@@ -67,7 +67,7 @@ mw.hook('wikipage.content').add(function() {
 		input.min = 1;
 		input.max = 1000;
 		input.value = 1;
-		document.getElementById(name).append(input);
+		$content.find('#' + name).append(input);
 		skillArray[name][4] = input;
 		//return input;
 	}
@@ -198,12 +198,12 @@ mw.hook('wikipage.content').add(function() {
 	var statCanvas = document.createElement('canvas');
 	statCanvas.width = 368;
 	statCanvas.height = 530;
-	document.getElementById("statCanvas").append(statCanvas);
+	$content.find('#statCanvas')[0].append(statCanvas);
 	var resultCanvas = document.createElement('canvas');
 	resultCanvas.width = 180;
 	resultCanvas.height = 530;
-	document.getElementById("resultCanvas").prepend(resultCanvas);
-	document.getElementById('calcButton').addEventListener('click', calculate);
+	$content.find('#resultCanvas')[0].prepend(resultCanvas);
+	$content.find('#calcButton')[0].addEventListener('click', calculate);
 	var statBackground;
 	var resultBackground;
 

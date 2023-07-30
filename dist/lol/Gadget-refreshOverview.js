@@ -120,7 +120,9 @@ $(function () {
 					tags: 'refresh_overview'
 				}).then(function(data) {
 					if (tbl.length == 0) {
-						return window.purgeTitle(overviewPage + '/Picks and Bans');
+						var pbPagesToPurge = $dataDiv.attr('data-extra-pb-overviews') ? $dataDiv.attr('data-extra-pb-overviews').split(',') : [];
+						pbPagesToPurge.unshift(overviewPage + '/Picks and Bans');
+						return window.purgeAll(pbPagesToPurge);
 					}
 					return updatePB(tbl);
 				}, raiseError);

@@ -52,7 +52,6 @@ $( createDivToggleButton );
 		'Blog:Staff Blog Posts'
                 'Category:Staff Blog Posts'
                 'Special:Community'
-                'Template:Winter's profile template'
 	].map(function(string) {
 		return string.replaceAll(' ', '_');
 	});
@@ -103,7 +102,7 @@ window.UserTagsJS = {
 
 //tagging Moderators to never be tagged as "usergroup-inactive" except inactive Moderators
 UserTagsJS.modules.userfilter = {
-	'The Dreamland Terminal': ['inactive'], // User is *never* inactive
+	'The Dreamland Terminal[]': ['inactive'], // User is *never* inactive
 	'Moonwatcher x Qibli': ['inactive'],
 	'Lord Keefe Nope Sencen[]': ['inactive'],
 	'Renee Di Angelo': ['inactive'],
@@ -115,19 +114,5 @@ UserTagsJS.modules.userfilter = {
 };
 
 
-/*force the DA page for KOTLC to show up when certain terms are searched*/
 UserTagsJS.modules.implode = {
 	'Half-Admin | Content+Thread': ['threadmoderator', 'content-moderator'], // Adds 'Half-Admin | Content+Thread' BUT also removes Thread Moderator and Content Moderator
-
-$(function() {
-  if (mw.config.get('wgCanonicalSpecialPageName') === 'Search') {
-    var searchTerm = mw.util.getParamValue('search');
-    var redirectTerms = ['Keepers Of The Lost Cities', 'Keeper Of The Lost Cities', 'KOTLC', 'kotlc', 'KoTLC', 'KotLC'];
-
-    if (redirectTerms.includes(searchTerm)) {
-      var disambiguationLink = mw.util.wikiGetlink('Disambiguation:Keepers Of The Lost Cities (Disambiguation)');
-      var searchResults = $('#mw-search-results');
-      searchResults.empty().append('<li class="mw-search-result"><a href="' + disambiguationLink + '">' + searchTerm + '</a></li>');
-    }
-  }
-});

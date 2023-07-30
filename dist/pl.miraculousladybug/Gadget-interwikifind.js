@@ -59,7 +59,8 @@ mw.loader.using( 'mediawiki.api', function () {
 					prop: "langlinks",
 					titles: apresult.title,
 					formatversion: "2",
-					lllimit: "max"
+					lllimit: "max",
+					redirects: 1
 				}).done( function ( interwikiresult ) {			
 					var iwarticle=interwikiresult.query.pages[0];			
 					if(!(iwarticle.langlinks)) {

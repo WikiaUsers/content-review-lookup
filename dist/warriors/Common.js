@@ -2,6 +2,8 @@
 /* Disablity Pride toolbar button */
 var toolbarLabel = 'DPM';
 var toolbarLinks = [
+	{link: 'https://warriors.fandom.com/wiki/User_blog:Lady_Lostris/Disability_Pride_Month_-_Going_Through_the_(E)motions', label: 'July 25: General Disability Pride Month Blog'},
+	{link: 'https://community.fandom.com/wiki/User_blog:Spongebob456/Disability_Pride_Month:_Going_Through_the_(E)motions', label: 'July 24: Going Through the (E)motions with Chris'},
 	{link: 'https://warriors.fandom.com/wiki/User_blog:Vector_Sigma/Disability_Pride_Month_Celebration', label: 'July 1: Disability Pride Month Celebration Blog'}
 ];
 var toolbarElement = document.createElement( 'li' );
@@ -32,7 +34,7 @@ $('.fandom-community-header__community-name-wrapper').append(
             .addClass('message')
             .text('Celebrating Disability Pride Month')
         )
-        .attr('href', 'https://warriors.fandom.com/wiki/User_blog:Vector_Sigma/Disability_Pride_Month_Celebration')
+        .attr('href', 'https://bit.ly/DisabilityPrideMonth-Chris')
 );
 
 /*ta['ca-nstab-forum'] = new Array('c','View the forum page');*/

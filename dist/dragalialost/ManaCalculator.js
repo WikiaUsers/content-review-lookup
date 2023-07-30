@@ -1,17 +1,17 @@
-mw.hook('wikipage.content').add(function() {
-	var huc = document.getElementById('HelperUseCalculator');
+mw.hook('wikipage.content').add(function($content) {
+	var huc = $content.find('#HelperUseCalculator')[0];
 	if (!huc) return;
-	
+
 	var manaButton = document.createElement('input');
 	manaButton.type = 'number';
-	document.getElementById('huc-mana').append(manaButton);
+	$content.find('#huc-mana')[0].append(manaButton);
 	var userButton = document.createElement('input');
 	userButton.type = 'number';
-	document.getElementById('huc-users').append(userButton);
-	var friends = document.getElementById('huc-friends');
-	var nonfriends = document.getElementById('huc-nonfriends');
+	$content.find('#huc-users')[0].append(userButton);
+	var friends = $content.find('#huc-friends')[0];
+	var nonfriends = $content.find('#huc-nonfriends')[0];
 
-    document.getElementById('huc-calculate').addEventListener('click',function() {
+    $content.find('#huc-calculate')[0].addEventListener('click',function() {
 		var mana = manaButton.value;
 		var users = userButton.value;
 		friends.innerHTML = Math.floor( (mana - users * 10) / (20 - 10) );

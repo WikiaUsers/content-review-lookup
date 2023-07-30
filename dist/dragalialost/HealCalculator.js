@@ -1,79 +1,7 @@
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
-	var hc = document.getElementById('HealCalculator');
-	if (!hc) return;
 
-	var html =
-	addEntry('HP', 'HP') +
-	addEntry('STR', 'STR') +
-	addEntry('Potency %', 'PTNCY') +
-	addEntry('Potency Buff %', 'PTNCYB') +
-	addEntry('Active Strength Buff %', 'STRB') +
-	'<div style="width:100%">' +
-		'<div class="dt-term"><div>Healing CoAbility %</div></div>' +
-		'<div class="dd-description"><div style="display:inline;"><select id="Healing coAbility" name="Healing coAbility">' +
-			addOption('Recovery Potency', '0') +
-			addOption('Recovery Potency', '2') +
-			addOption('Recovery Potency', '4') +
-			addOption('Recovery Potency', '6') +
-			addOption('Recovery Potency', '8') +
-			addOption('Recovery Potency', '10') +
-			addOption('Recovery Potency', '12') +
-			addOption('Recovery Potency', '14') +
-			addOption('Recovery Potency', '16') +
-			addOption('Recovery Potency', '20') +
-			'</select></div></div>' +
-	'</div>' +
-	'<div style="width:100%">' +
-		'<div class="dt-term"><div>Strength CoAbility %</div></div>' +
-		'<div class="dd-description"><div style="display:inline;"><select id="Strength coAbility" name="Strength coAbility">' +
-			addOption('Strength', '0') +
-			addOption('Strength', '1') +
-			addOption('Strength', '2') +
-			addOption('Strength', '3') +
-			addOption('Strength', '4') +
-			addOption('Strength', '5') +
-			addOption('Strength', '6') +
-			addOption('Strength', '7') +
-			addOption('Strength', '8') +
-			addOption('Strength', '10') +
-			'</select></div></div>' +
-	'</div>' +
-	addCheckbox('Same Element?', 'ELEM') +
-	addCheckbox('Raid?', 'RAID') +
-	addCheckbox('Include Healing Over Time?', 'checkbox') +
-	'<div id="HOT" style="display:none">' +
-		addEntry('REGEN%', 'REGEN') +
-		addEntry('DURATION', 'DUR') +
-		addEntry('HEAL FREQUENCY', 'FREQ') +
-	'</div>' +
-	'<div style="width:100%">' +
-		'<div class="dt-term"><div>Total Heal</div></div>' +
-		'<div class="dd-description"><div id="total" style="display:inline;"></div></div>' +
-	'</div>' +
-	'<button id="calculate">Calculate</button>';
-
-	hc.innerHTML = html;
-	var ele = {
-		HP: document.getElementById('HP'),
-		STR: document.getElementById('STR'),
-		PTNCY: document.getElementById('PTNCY'),
-		PTNCYB: document.getElementById('PTNCYB'),
-		STRB: document.getElementById('STRB'),
-		SCOBUFF: document.getElementById("Strength coAbility"),
-		HCOBUFF: document.getElementById("Healing coAbility"),
-		ELEM: document.getElementById('ELEM'),
-		RAID: document.getElementById('RAID'),
-		DUR: document.getElementById('DUR'),
-		FREQ: document.getElementById('FREQ'),
-		REGEN: document.getElementById('REGEN'),
-		TOTAL: document.getElementById("total"),
-		HOT: document.getElementById("HOT"),
-		CHECKBOX: document.getElementById('checkbox'),
-		calculate: document.getElementById('calculate')
-	};
-	ele.CHECKBOX.addEventListener('click', display);
-	ele.calculate.addEventListener('click', calculate);
+	var ele;
 
 	function addEntry(label, id) {
 		return '<div style="width:100%"><div class="dt-term"><div>' + label + '</div></div>' +
@@ -118,4 +46,78 @@ mw.hook('wikipage.content').add(function() {
 	function display() {
 		ele.HOT.style.display = ele.CHECKBOX.checked ? "block" : "none";
 	}
-});
+	function init($content) {
+		var main = $content.find('#HealCalculator')[0];
+		if (!main) return;
+		main.innerHTML = addEntry('HP', 'HP') +
+		addEntry('STR', 'STR') +
+		addEntry('Potency %', 'PTNCY') +
+		addEntry('Potency Buff %', 'PTNCYB') +
+		addEntry('Active Strength Buff %', 'STRB') +
+		'<div style="width:100%">' +
+			'<div class="dt-term"><div>Healing CoAbility %</div></div>' +
+			'<div class="dd-description"><div style="display:inline;"><select id="HealingCoAbility" name="Healing coAbility">' +
+				addOption('Recovery Potency', '0') +
+				addOption('Recovery Potency', '2') +
+				addOption('Recovery Potency', '4') +
+				addOption('Recovery Potency', '6') +
+				addOption('Recovery Potency', '8') +
+				addOption('Recovery Potency', '10') +
+				addOption('Recovery Potency', '12') +
+				addOption('Recovery Potency', '14') +
+				addOption('Recovery Potency', '16') +
+				addOption('Recovery Potency', '20') +
+				'</select></div></div>' +
+		'</div>' +
+		'<div style="width:100%">' +
+			'<div class="dt-term"><div>Strength CoAbility %</div></div>' +
+			'<div class="dd-description"><div style="display:inline;"><select id="StrengthCoAbility" name="Strength coAbility">' +
+				addOption('Strength', '0') +
+				addOption('Strength', '1') +
+				addOption('Strength', '2') +
+				addOption('Strength', '3') +
+				addOption('Strength', '4') +
+				addOption('Strength', '5') +
+				addOption('Strength', '6') +
+				addOption('Strength', '7') +
+				addOption('Strength', '8') +
+				addOption('Strength', '10') +
+				'</select></div></div>' +
+		'</div>' +
+		addCheckbox('Same Element?', 'ELEM') +
+		addCheckbox('Raid?', 'RAID') +
+		addCheckbox('Include Healing Over Time?', 'checkbox') +
+		'<div id="HOT" style="display:none">' +
+			addEntry('REGEN%', 'REGEN') +
+			addEntry('DURATION', 'DUR') +
+			addEntry('HEAL FREQUENCY', 'FREQ') +
+		'</div>' +
+		'<div style="width:100%">' +
+			'<div class="dt-term"><div>Total Heal</div></div>' +
+			'<div class="dd-description"><div id="total" style="display:inline;"></div></div>' +
+		'</div>' +
+		'<button id="calculate">Calculate</button>';
+
+		ele = {
+			HP: $content.find('#HP')[0],
+			STR: $content.find('#STR')[0],
+			PTNCY: $content.find('#PTNCY')[0],
+			PTNCYB: $content.find('#PTNCYB')[0],
+			STRB: $content.find('#STRB')[0],
+			SCOBUFF: $content.find('#StrengthCoAbility')[0],
+			HCOBUFF: $content.find('#HealingCoAbility')[0],
+			ELEM: $content.find('#ELEM')[0],
+			RAID: $content.find('#RAID')[0],
+			DUR: $content.find('#DUR')[0],
+			FREQ: $content.find('#FREQ')[0],
+			REGEN: $content.find('#REGEN')[0],
+			TOTAL: $content.find('#total')[0],
+			HOT: $content.find('#HOT')[0],
+			CHECKBOX: $content.find('#checkbox')[0],
+			calculate: $content.find('#calculate')[0]
+		};
+		ele.CHECKBOX.addEventListener('click', display);
+		ele.calculate.addEventListener('click', calculate);
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

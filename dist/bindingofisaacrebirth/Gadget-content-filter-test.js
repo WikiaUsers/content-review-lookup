@@ -52,7 +52,7 @@ if ( config.skin !== 'fandomdesktop' ) {
 	return;
 }
 
-if ( config.wgAction !== 'view' && config.wgAction !== 'edit' ) {
+if ( ![ 'view', 'edit' ].includes( config.wgAction ) ) {
 	return;
 }
 
@@ -444,11 +444,11 @@ function insertMenu() {
 
 	const ul = document.createElement( 'ul' );
 	ul.classList.add( 'cf-menu' );
-	filters.map( generateMenuButton ).forEach( ul.appendChild, ul );
+	ul.append.apply( ul, filters.map( generateMenuButton ) );
 
 	const info = document.getElementById( filtersInfoId );
 	if ( info ) {
-		info.appendChild( ul );
+		info.append( ul );
 		info.style.display = '';
 	} else {
 		const wrapper = document.getElementsByClassName( 'page-header__actions' )[ 0 ];
@@ -460,7 +460,7 @@ function insertMenu() {
 			domPanic( 'Page header not found.' );
 		}
 
-		wrapper.insertBefore( ul, wrapper.firstChild );
+		wrapper.prepend( ul );
 	}
 
 	// See note [ButtonRemoval]
@@ -668,8 +668,7 @@ function parseTag( tag ) {
 	}
 
 	tag.dataset.cfContext = '' + nextTagIndex;
-	context.classList.add( 'cf-context' );
-	context.classList.add( 'cf-context-' + nextTagIndex );
+	context.classList.add( 'cf-context', 'cf-context-' + nextTagIndex );
 	nextTagIndex++;
 
 	tag.addEventListener( 'mouseenter', onTagHover );
@@ -913,7 +912,7 @@ function getFilterParamValue() {
  */
 function isFilteringAvailable( pageTitle ) {
 	const namespace = pageTitle.getNamespaceId();
-	if ( namespace == 0 || namespace == 2 ) {
+	if ( [ 0, 2 ].includes( namespace ) ) {
 		return true;
 	}
 
@@ -996,8 +995,7 @@ function getTagContext_firstChild( tag ) {
  * @param {HTMLElement} element
  */
 function addElementToView( element ) {
-	element.classList.add( 'cf-view' );
-	element.classList.add( 'cf-view-' + this );
+	element.classList.add( 'cf-view', 'cf-view-' + this );
 }
 
 /**

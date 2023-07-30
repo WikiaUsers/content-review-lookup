@@ -30,6 +30,11 @@ mw.loader.using( 'mediawiki.cookie', function() {
         // Perform to all tracking elements found
         trackers.forEach( function( tracker ) {
             // Remove tracking attributes from elements
+            var trackingData = tracker.getAttribute('data-tracking');
+            if (
+            	trackingData === 'theme-switch-light' ||
+            	trackingData === 'theme-switch-dark'
+            ) return;
             tracker.removeAttribute( 'data-tracking' );
             tracker.removeAttribute( 'data-tracking-label' );
         } );

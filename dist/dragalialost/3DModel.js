@@ -1,4 +1,5 @@
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
+	'use strict';
 	var types = {
 		drk: 'https://dgk3593.github.io/dl-model/#/id=%s/showAC=false/showSettings=false/bg=transparent/AA=true',
 		notte: 'https://mushymato.github.io/dl-fbx/#/%s'
@@ -44,12 +45,15 @@ mw.hook('wikipage.content').add(function() {
 		ele.appendChild(l);
 	}
 
-	var drkModels = document.getElementsByClassName("modelViewerDgk");
-	var notteModels = document.querySelectorAll('div[id^="modelViewer"]');
-	for (var id = 0; id < drkModels.length; id++) {
-		addModellBtn(drkModels[id], 'drk', drkModels[id].dataset.id);
+	function init($content) {
+		var drkModels = $content.find(".modelViewerDgk");
+		var notteModels = $content.find('div[id^="modelViewer"]');
+		for (var id = 0; id < drkModels.length; id++) {
+			addModellBtn(drkModels[id], 'drk', drkModels[id].dataset.id);
+		}
+		for (var id2 = 0; id2 < notteModels.length; id2++) {
+			addModellBtn(notteModels[id2], 'notte', notteModels[id2].dataset.id);
+		}
 	}
-	for (var id2 = 0; id2 < notteModels.length; id2++) {
-		addModellBtn(notteModels[id2], 'notte', notteModels[id2].dataset.id);
-	}
-});
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

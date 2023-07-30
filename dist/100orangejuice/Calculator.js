@@ -1,7 +1,7 @@
-mw.hook('wikipage.content').add(function() {
+mw.hook('wikipage.content').add(function($content) {
 	'use strict';
 
-	var calculator = document.getElementById('calculator');
+	var calculator = $content.find('#calculator')[0];
 	if (!calculator) return;
 
 	var values = {
@@ -89,13 +89,13 @@ mw.hook('wikipage.content').add(function() {
 
 	calculator.append(calc);
 
-	var win = document.getElementById('crc-win');
-	var loss = document.getElementById('crc-loss');
-	var chapter = document.getElementById('crc-chapter');
-	var mixersOn = document.getElementById('crc-mixers-on');
-	var doublexp = document.getElementById('crc-doublexp');
-	var oranges = document.getElementById('crc-oranges');
-	var xp = document.getElementById('crc-xp');
+	var win = $content.find('#crc-win')[0];
+	var loss = $content.find('#crc-loss')[0];
+	var chapter = $content.find('#crc-chapter')[0];
+	var mixersOn = $content.find('#crc-mixers-on')[0];
+	var doublexp = $content.find('#crc-doublexp')[0];
+	var oranges = $content.find('#crc-oranges')[0];
+	var xp = $content.find('#crc-xp')[0];
 	var mixers = calc.querySelectorAll('.crc-mixer input');
 
 	function updateChapter() {

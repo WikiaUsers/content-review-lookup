@@ -5,7 +5,7 @@
 //
 // MODULE: Autoconfirmed Users
 // Tags users who are not autoconfirmed (have not contributed significantly
-// anywhere in the Wikia network)
+// anywhere in the Fandom network)
 //
 UserTagsJS.extensions.autoconfirmed = (function($) {
 	"use strict";

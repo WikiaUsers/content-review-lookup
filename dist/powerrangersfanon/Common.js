@@ -1,3 +1,4 @@
+/* Any JavaScript here will be loaded for all users on every page load. */
 importArticle({type:'script', article:'w:c:dev:UserBadges/code.js'});
 
 window.UserBadgesJS = {
@@ -10,3 +11,13 @@ window.UserBadgesJS = {
 	custom: {}, // Map of user names to arrays of strings
 	names: {} // Badge display names
 }
+/*Table Filter from https://pad.fandom.com/wiki/MediaWiki:FilterTable.js*/
+importArticles(
+    {    
+        type: 'script',
+        articles: [   
+            'u:pad:MediaWiki:FilterTable.js',
+            'u:dev:MediaWiki:MassEdit/code.js',
+        ]
+    }
+);

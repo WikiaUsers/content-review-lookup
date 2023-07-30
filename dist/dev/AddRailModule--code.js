@@ -261,14 +261,30 @@
         };
         modsPrepared = prepareMods(context, mods);
 
+        // In Fandom's infinite wisdom, `#WikiaRail` is now a React root for the recently-introduced "Recent Images" rail module.
+        // To prevent our custom rail modules from getting clobbered, we'll insert them before and after `#WikiaRail` instead.
+        // This has been reported through Zendesk as #1270911.
         $.when(railLoaded, modsPrepared).done(function () {
+            var $railWrapper = $rail.parent('.right-rail-wrapper');
+            if (!$railWrapper[0]) { return; }
+            var $ads;
             if (modsToPrepend.length) {
                 // Top ads live in `#rail-boxad-wrapper`, which is `#WikiaRail`'s previous sibling.
-                attachMods(modsToPrepend, $rail[0].prepend.bind($rail[0]));
+                $ads = $railWrapper.children('#rail-boxad-wrapper').last();
+                attachMods(modsToPrepend, $ads[0] ? function (fragment) {
+                    $railWrapper[0].insertBefore(fragment, $ads[0].nextSibling);
+                } : function (fragment) {
+                    $railWrapper[0].insertBefore(fragment, $rail[0]);
+                });
             }
             if (modsToAppend.length) {
                 // Bottom ads live in `.sticky-modules-wrapper > #WikiaAdInContentPlaceHolder`, which is `#WikiaRail`'s sibling.
-                attachMods(modsToAppend, $rail[0].appendChild.bind($rail[0]));
+                $ads = $railWrapper.children('.sticky-modules-wrapper').first();
+                attachMods(modsToAppend, $ads[0] ? function (fragment) {
+                    $railWrapper[0].insertBefore(fragment, $ads[0]);
+                } : function (fragment) {
+                    $railWrapper[0].insertBefore(fragment, $rail[0].nextSibling);
+                });
             }
         });
     }

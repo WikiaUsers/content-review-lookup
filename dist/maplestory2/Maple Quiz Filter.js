@@ -1,22 +1,8 @@
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('maple_quiz_filter');
-	if (!main) return;
 
-	var html = '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
-		'<div style="display: inline-block"><h4>Filter questions:</h4></div>' +
-		'<div id="question-container">' +
-			'<div id="question-search-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
-				'<input type="text" style="min-width:300px;" id="question-text" placeholder="Search for Question">' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-	main.innerHTML = html;
-	var ele = {
-		questionText: document.getElementById("question-text"),
-		questionsTable: document.getElementsByClassName('questions-table')
-	};
-	ele.questionText.addEventListener('keyup', filterQuestions);
+	var ele;
+
 	/**
 	 * Function that filters Maple OX questions:
 	 **/
@@ -44,4 +30,23 @@ mw.hook('wikipage.content').add(function() {
 			}
 		}
 	}
-});
+
+	function init($content) {
+		var main = $content.find('#maple_quiz_filter')[0];
+		if (!main) return;
+		main.innerHTML =  '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
+			'<div style="display: inline-block"><h4>Filter questions:</h4></div>' +
+			'<div id="question-container">' +
+				'<div id="question-search-container" style="padding: 10px 10px 0 10px; display:inline-block;">' +
+					'<input type="text" style="min-width:300px;" id="question-text" placeholder="Search for Question">' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+		ele = {
+			questionText: $content.find('#question-text')[0],
+			questionsTable: $content.find('.questions-table')
+		};
+		ele.questionText.addEventListener('keyup', filterQuestions);
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);
