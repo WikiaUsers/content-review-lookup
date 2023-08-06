@@ -7,12 +7,12 @@
  * @description Play audio files with a native HTML5 player
  */
 
-window.mw.hook('wikipage.content').add(function (content) {
+(function (mw) {
   'use strict';
 
   var msg;
 
-  function init() {
+  function init(content) {
     content[0].querySelectorAll('.html5audio:not(.loaded)').forEach(function (div) {
       var data = div.dataset;
       var file = data.file;
@@ -74,14 +74,14 @@ window.mw.hook('wikipage.content').add(function (content) {
       div.classList.add('loaded');
     });
   }
-  window.mw.hook('dev.i18n').add(function(i18n) {
+  mw.hook('dev.i18n').add(function(i18n) {
     i18n.loadMessages('HTML5AudioPlayer').done(function(i18no) {
       msg = i18no.msg;
-      init();
+      mw.hook('wikipage.content').add(init);
     });
   });
   importArticle({
     type: 'script',
     article: 'u:dev:MediaWiki:I18n-js/code.js'
   });
-});
+})(window.mediaWiki);

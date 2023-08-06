@@ -1,3 +1,5 @@
+/* [[Template:3DModelDgk]] */
+/* [[Template:3DModelNotteMoe]] */
 (function(mw) {
 	'use strict';
 	var types = {

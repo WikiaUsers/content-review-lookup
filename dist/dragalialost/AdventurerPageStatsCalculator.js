@@ -1,9 +1,70 @@
+/* [[Template:AdventurerPageStatsCalculator]] */
 (function(mw) {
 	'use strict';
-	var MIN_LEVEL = 1,
-	    MAX_LEVEL = 80,
-	    SPIRAL_MAX_LEVEL = 100;
-	var data, MIN_HP, MAX_HP, ADD_MAX_HP, MIN_STR, MAX_STR, ADD_MAX_STR, NAT_RARITY, HAS_SPIRAL_LIMIT_BREAK, ele;
+	var minLevel = 1,
+	    maxLevel = 80,
+	    spiralMaxLevel = 100;
+	var data, minHp, maxHp, addMaxHp, minStr, maxStr, addMaxStr, hasSpiralLimitBreak, ele;
+
+	// Check if level is a number we can calculate with
+	function validateLevel(value) {
+		if (isNaN(value) || value === "") {
+			return false;
+		}
+		return true;
+	}
+
+	// Check if rarity is either 3, 4, or 5
+	function validateRarity(rarity) {
+		if ([3, 4, 5].includes(Number(rarity))) {
+			return true;
+		}
+		return false;
+	}
+
+	// Set the HP value in the display
+	function setHP(value, level) {
+		ele.hpLabel.textContent = (value !== "-") ? ("Level" + level + " HP") : "HP";
+		ele.hp.textContent = value;
+	}
+
+	// Set the Str value in the display
+	function setStr(value, level) {
+		ele.strLabel.textContent = (value !== "-") ? ("Level" + level + " Str") : "Str";
+		ele.str.textContent = value;
+	}
+
+	// Calculate the HP
+	function calculateHP(level, rarity) {
+		var levelDiff = maxLevel - minLevel;
+		var steps = (maxHp - minHp[2]) / levelDiff;
+		var statGain = (level-1) * steps;
+		return Math.ceil(minHp[rarity-3] + statGain);
+	}
+
+	// Calculate the Str
+	function calculateStr(level, rarity) {
+		var levelDiff = maxLevel - minLevel;
+		var steps = (maxStr - minStr[2]) / levelDiff;
+		var statGain = (level-1) * steps;
+		return Math.ceil(minStr[rarity-3] + statGain);
+	}
+
+	// Calculate the HP for Level 80+
+	function calculateSpiralHP(level) {
+		var levelDiff = spiralMaxLevel - maxLevel;
+		var steps = (addMaxHp - maxHp) / levelDiff;
+		var statGain = (level-80) * steps;
+		return Math.ceil(maxHp + statGain);
+	}
+
+	// Calculate the Str for Level 80+
+	function calculateSpiralStr(level) {
+		var levelDiff = spiralMaxLevel - maxLevel;
+		var steps = (addMaxStr - maxStr) / levelDiff;
+		var statGain = (level-80) * steps;
+		return Math.ceil(maxStr + statGain);
+	}
 
 	// Calculate the HP and STR stats
 	function calcStats() {
@@ -26,25 +87,25 @@
 				}
 				break;
 			case "5":
-				if (level > MAX_LEVEL) {
-					if (HAS_SPIRAL_LIMIT_BREAK) {
-						if (level > SPIRAL_MAX_LEVEL) {
-							level = SPIRAL_MAX_LEVEL;
-							levelInput.value = SPIRAL_MAX_LEVEL;
+				if (level > maxLevel) {
+					if (hasSpiralLimitBreak) {
+						if (level > spiralMaxLevel) {
+							level = spiralMaxLevel;
+							ele.levelInput.value = spiralMaxLevel;
 						}
 					} else {
-						level = MAX_LEVEL;
-						levelInput.value = MAX_LEVEL;
+						level = maxLevel;
+						ele.levelInput.value = maxLevel;
 					}
 				}
 		}
 
 		// Validate the level and rarity before calculating HP and Str
 		if(validateLevel(level) && validateRarity(rarity)) {
-			if (HAS_SPIRAL_LIMIT_BREAK) {
+			if (hasSpiralLimitBreak) {
 				// Level 80+ after Mana Spiral is unlocked has a different calc
-				setHP(calculateSpiralHP(level, rarity), level);
-				setStr(calculateSpiralStr(level, rarity), level);
+				setHP(calculateSpiralHP(level), level);
+				setStr(calculateSpiralStr(level), level);
 			} else {
 				setHP(calculateHP(level, rarity), level);
 				setStr(calculateStr(level, rarity), level);
@@ -55,69 +116,10 @@
 		}
 	}
 
-	// Check if level is a number we can calculate with
-	function validateLevel(value) {
-		if (isNaN(value) || value == "") {
-			return false;
-		}
-		return true;
-	}
-
-	// Check if rarity is either 3, 4, or 5
-	function validateRarity(rarity) {
-		if (rarity == 3 || rarity == 4 || rarity == 5 || rarity == "3" || rarity == "4" || rarity == "5") {
-			return true;
-		}
-		return false;
-	}
-
-	// Set the HP value in the display
-	function setHP(value, level) {
-		ele.hpLabel.textContent = (value !== "-") ? ("Level" + level + " HP") : "HP";
-		ele.hp.textContent = value;
-	}
-
-	// Set the Str value in the display
-	function setStr(value, level) {
-		ele.strLabel.textContent = (value !== "-") ? ("Level" + level + " Str") : "Str";
-		ele.str.textContent = value;
-	}
-
-	// Calculate the HP
-	function calculateHP(level, rarity) {
-		var levelDiff = MAX_LEVEL - MIN_LEVEL;
-		var steps = (MAX_HP - MIN_HP[2]) / levelDiff;
-		var statGain = (level-1) * steps;
-		return Math.ceil(MIN_HP[rarity-3] + statGain);
-	}
-
-	// Calculate the Str
-	function calculateStr(level, rarity) {
-		var levelDiff = MAX_LEVEL - MIN_LEVEL;
-		var steps = (MAX_STR - MIN_STR[2]) / levelDiff;
-		var statGain = (level-1) * steps;
-		return Math.ceil(MIN_STR[rarity-3] + statGain);
-	}
-
-	// Calculate the HP for Level 80+
-	function calculateSpiralHP(level, rarity) {
-		var levelDiff = SPIRAL_MAX_LEVEL - MAX_LEVEL;
-		var steps = (ADD_MAX_HP - MAX_HP) / levelDiff;
-		var statGain = (level-80) * steps;
-		return Math.ceil(MAX_HP + statGain);
-	}
-
-	// Calculate the Str for Level 80+
-	function calculateSpiralStr(level, rarity) {
-		var levelDiff = SPIRAL_MAX_LEVEL - MAX_LEVEL;
-		var steps = (ADD_MAX_STR - MAX_STR) / levelDiff;
-		var statGain = (level-80) * steps;
-		return Math.ceil(MAX_STR + statGain);
-	}
 	function init($content) {
-		var main = $content.find('#AdventurerPageStatsCalculator')[0];
+		var main = $content.find('#AdventurerPageStatsCalculator:not(.loaded)')[0];
 		if (!main) return;
-
+		main.classList.add('loaded');
 		data = data || main.dataset;
 		main.innerHTML = '<div id="adv-level-input-container" style="display:inline-block; text-align:center;">' +
 			'<form id="adv-rarity-select" style="display:inline;">' +
@@ -137,14 +139,14 @@
 				'</div>' +
 			'</div>' +
 		'</div>';
-		var MIN_HP = [data.minHp3, data.minHp4, data.minHp5],
-		MAX_HP = data.maxHp,
-		ADD_MAX_HP = data.addMaxHp1,
-		MIN_STR = [data.minStr3, data.minStr4, data.minStr5],
-		MAX_STR = data.maxStr,
-		ADD_MAX_STR = data.addMaxAtk1,
-		NAT_RARITY = data.rarity,
-		HAS_SPIRAL_LIMIT_BREAK = data.maxLimitBreakCount == 5,
+		minHp = [Number(data.minHp3 || 0), Number(data.minHp4 || 0), Number(data.minHp5) || 0];
+		maxHp = Number(data.maxHp);
+		addMaxHp = Number(data.addMaxHp1);
+		minStr = [Number(data.minStr), Number(data.minStr4), Number(data.minStr5)];
+		maxStr = Number(data.maxStr);
+		addMaxStr = Number(data.addMaxAtk1);
+		var natRarity = Number(data.rarity);
+		hasSpiralLimitBreak = data.maxLimitBreakCount === '5';
 		ele = {
 			input: $content.find('#adv-rarity-input-4')[0],
 			input1: $content.find('#adv-level-input')[0],
@@ -158,24 +160,24 @@
 		};
 
 		// Initialize the empty divs with content
-		var maxLevel = MAX_LEVEL;
-		if (HAS_SPIRAL_LIMIT_BREAK) {
-			maxLevel = SPIRAL_MAX_LEVEL;
+		var maxLevel2 = maxLevel;
+		if (hasSpiralLimitBreak) {
+			maxLevel2 = spiralMaxLevel;
 		}
 
 		// Create the rarity radio buttons
-		if (NAT_RARITY == 3) {
+		if (natRarity === 3) {
 			ele.input3.innerHTML = '<input type="radio" value=3 name="rarity"><label for="adv-rarity-input-3">3★</label>';
 			ele.input3.children[0].addEventListener('input', calcStats);
 			ele.input4.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
 			ele.input4.children[0].addEventListener('input', calcStats);
-		} else if (NAT_RARITY == 4) {
+		} else if (natRarity === 4) {
 			ele.input4.innerHTML = '<input type="radio" value=4 name="rarity"><label for="adv-rarity-input-4">4★</label>';
 			ele.input4.children[0].addEventListener('input', calcStats);
 		}
 		ele.input5.innerHTML = '<input type="radio" value=5 name="rarity" checked=1><label for="adv-rarity-input-5">5★</label>';
 		ele.input5.children[0].addEventListener('input', calcStats);
-		ele.input1.innerHTML = '<label for="adv-level-input-field" style="font-weight:bold;">Level</label><input type="number" id="adv-level-input-field" value=' + maxLevel + ' min=1 max=' + maxLevel + ' style="width:40px; text-align:center; margin-left:5px;">';
+		ele.input1.innerHTML = '<label for="adv-level-input-field" style="font-weight:bold;">Level</label><input type="number" id="adv-level-input-field" value=' + maxLevel2 + ' min=1 max=' + maxLevel2 + ' style="width:40px; text-align:center; margin-left:5px;">';
 		ele.input1.children[1].addEventListener('input', calcStats);
 		ele.levelInput = $content.find('#adv-level-input-field')[0];
 		calcStats();

@@ -1,11 +1,11 @@
 /**
  * Creates simple non-intrusive pop-up notifications.
- * Last modified: 1690306730730
+ * Last modified: 1691250473268
  * @author Arashiryuu0
  * @module Toasts
- * @version 1.0.8
+ * @version 1.1.0
  */
-
+ 
 /*
 	jshint
 	undef: true,
@@ -26,7 +26,7 @@
 	singleGroups: true,
 	futurehostile: true
 */
-
+ 
 ;(function (mw) {
     'use strict';
     
@@ -47,9 +47,12 @@
 			'color: #C9F',
 			new Date().toUTCString()
 		];
+		var method = level in console
+			? level
+			: 'log';
 		return function () {
 			console.groupCollapsed.apply(null, parts);
-			console[level in console ? level : 'log'].apply(null, arguments);
+			console[method].apply(null, arguments);
 			console.groupEnd();
 		};
     }
@@ -112,17 +115,11 @@
             document.body.appendChild(wrapper);
         },
         buildToast: function (message, type, icon) {
-            var hasIcon = type || icon;
-            var name = 'toast' + (
-				hasIcon
-					? ' toast-has-icon'
-					: ''
-			);
-            name += type && type !== 'default'
-				? ' toast-' + type
-				: '';
+            var name = ['toast'];
+            if (type || icon) name.push('toast-has-icon');
+			if (type !== '') name.push('toast-' + type);
             if (!icon && type) icon = type;
-            var html = create('div', { className: name }, [
+            var html = create('div', { className: name.join(' ') }, [
 				this.icons[icon] && create('div', { className: 'toast-icon' }, [
 					this.icons[icon].cloneNode(true)
 				]),
@@ -131,7 +128,7 @@
             return html;
         },
         parseType: function (type, types) {
-            return types[type] || '';
+            return types[type] || types['default'];
         },
         icons: {
             warning: createIcon('M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'),
@@ -151,54 +148,55 @@
         }
     };
     
-    var Toasts = {
+    function defaultToast (content, options) {
+        content = typeof content === 'string'
+			? content
+			: '';
+        options = isObject(options)
+			? options
+			: {};
+        helpers.ensureContainer();
+        var toast = helpers.buildToast(
+            content,
+            helpers.parseType(arguments[2], defaultToast.types),
+            helpers.parseType(options.icon, defaultToast.types)
+        );
+        document.querySelector('.toasts').appendChild(toast);
+        new Promise(function (resolve) {
+			var timeout = options.timeout
+				? options.timeout
+				: 3000;
+            setTimeout(resolve, timeout);
+        })
+        .then(function () {
+            toast.classList.add('closing');
+            return new Promise(function (resolve) {
+                setTimeout(resolve, 300);
+            });
+        }, onError)
+        .then(function () {
+            toast.parentElement.removeChild(toast);
+            if (document.querySelectorAll('.toasts .toast').length) return;
+            var toasts = document.querySelector('.toasts');
+            toasts.parentElement.removeChild(toasts);
+        }, onError);
+    }
+    
+    Object.assign(defaultToast, {
         show: function (content, options) {
-            content = typeof content === 'string'
-				? content
-				: '';
-            options = isObject(options)
-				? options
-				: {};
-            helpers.ensureContainer();
-            var toast = helpers.buildToast(
-                content,
-                helpers.parseType(arguments[2], this.types),
-                options.icon || ''
-            );
-            document.querySelector('.toasts').appendChild(toast);
-            new Promise(function (resolve) {
-				var timeout = options.timeout
-					? options.timeout
-					: 3000;
-                setTimeout(resolve, timeout);
-            })
-            .then(function () {
-                toast.classList.add('closing');
-                return new Promise(function (resolve) {
-                    setTimeout(resolve, 300);
-                });
-            }, onError)
-            .then(function () {
-                toast.parentElement.removeChild(toast);
-                if (document.querySelectorAll('.toasts .toast').length) return;
-                var toasts = document.querySelector('.toasts');
-                toasts.parentElement.removeChild(toasts);
-            }, onError);
+			return defaultToast(content, options, options.type);
         },
         info: function (content, options) {
-            return this.show(content, options, 'info');
+            return defaultToast(content, options, 'info');
         },
         error: function (content, options) {
-            return this.show(content, options, 'error');
+            return defaultToast(content, options, 'error');
         },
         success: function (content, options) {
-            return this.show(content, options, 'success');
+            return defaultToast(content, options, 'success');
         },
         warning: function (content, options) {
-            return this.show(content, options, 'warning');
-        },
-        'default': function (content, options) {
-            return this.show(content, options);
+            return defaultToast(content, options, 'warning');
         },
         types: {
             'default': '',
@@ -207,18 +205,19 @@
             'error': 'error',
             'info': 'info'
         }
-    };
+    });
     
-    Object.defineProperty(Toasts, Symbol.toStringTag, {
+    Object.defineProperty(defaultToast, Symbol.toStringTag, {
         configurable: false,
+        enumerable: false,
         writable: false,
         value: 'Toasts'
     });
     
-    deepFreeze(Toasts);
+    deepFreeze(defaultToast);
     
     window.dev = window.dev || {};
-    window.dev.toasts = Toasts;
+    window.dev.toasts = defaultToast;
     
     mw.hook('dev.toasts').fire(window.dev.toasts);
 })(window.mediaWiki);

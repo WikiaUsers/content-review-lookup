@@ -310,7 +310,10 @@ document.querySelectorAll(".IdTSo").forEach(
 /* Уровень идентичностей*/
 var Arr = document.querySelector(".SinSlider").classList;
 var MaxValue = Arr[Arr.length - 1];
-var $module = $('<input type="range" min="1" max="' + MaxValue +'" value="' + MaxValue+ '" class="slider" id="Range"></input>');
+var BeginValue = Arr[Arr.length - 1];
+if (Arr.length>2)
+BeginValue = Arr[Arr.length - 2];
+var $module = $('<input type="range" min="1" max="' + MaxValue +'" value="' + BeginValue+ '" class="slider" id="Range"></input>');
 $('.SinSlider').prepend($module);
 
 var slider = document.querySelector("#Range");
@@ -327,8 +330,10 @@ function SetSlider(n)
 	Blocks.forEach(function(Block){
 		base = parseFloat(Block.querySelector('i').innerHTML); 
 		add = parseFloat(Block.querySelector('b').innerHTML); 
-		
-		Block.querySelector('span').innerHTML = Math.max(Math.round(n*add+base),1);
+		var val = Math.round(n*add+base)
+                if(add > 0)
+                   val = Math.max(val,1);
+		Block.querySelector('span').innerHTML = val;
 	});
 }
 }

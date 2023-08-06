@@ -1,3 +1,4 @@
+/* [[Maple OX Quiz]] */
 (function(mw) {
 	'use strict';
 
@@ -32,8 +33,9 @@
 	}
 
 	function init($content) {
-		var main = $content.find('#maple_quiz_filter')[0];
+		var main = $content.find('#maple_quiz_filter:not(.loaded)')[0];
 		if (!main) return;
+		main.classList.add('loaded');
 		main.innerHTML =  '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
 			'<div style="display: inline-block"><h4>Filter questions:</h4></div>' +
 			'<div id="question-container">' +

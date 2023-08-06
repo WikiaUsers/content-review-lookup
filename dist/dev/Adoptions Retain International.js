@@ -299,7 +299,7 @@ mw.loader.using( [
 											id: 'wikiname',
 											name: 'wikiname',
 											type: 'text',
-											disabled: '',
+											//disabled: '',
 											required: '',
 											placeholder: i18n.msg( 'nameHeader' ).plain()
 										}
@@ -382,7 +382,7 @@ mw.loader.using( [
 											name: 'numDays',
 											type: 'number',
 											value: '0',
-											disabled: '',
+											//disabled: '',
 											required: ''
 										}
 									}
@@ -575,7 +575,7 @@ mw.loader.using( [
 			} );
 
 		$( 'body' ).off( 'change.adoptionRetainURL' ).on( 'change.adoptionRetainURL', '#adoptionRetainUrl', function() {
-			$( '.adoptionRetainPrefill' ).prop( 'disabled', true );
+			//$( '.adoptionRetainPrefill' ).prop( 'disabled', true );
 
 			exception = '';
 			const url = filterFandomDomain( $( '#adoptionRetainUrl' ).val() );
@@ -585,7 +585,7 @@ mw.loader.using( [
 					tag: 'adoptionRetain',
 					type: 'error'
 				} );
-				$( '.adoptionRetainPrefill' ).prop( 'disabled', false );
+				//$( '.adoptionRetainPrefill' ).prop( 'disabled', false );
 
 				return;
 			}
@@ -621,7 +621,7 @@ mw.loader.using( [
 						tag: 'adoptionRetain',
 						type: 'error'
 					} );
-					$('.adoptionRetainPrefill').prop( 'disabled', false );
+					//$('.adoptionRetainPrefill').prop( 'disabled', false );
 
 					return;
 				}
@@ -733,7 +733,7 @@ mw.loader.using( [
 					tag: 'adoptionRetain',
 					type: 'error'
 				} );
-				$( '.adoptionRetainPrefill' ).prop( 'disabled', false );
+				//$( '.adoptionRetainPrefill' ).prop( 'disabled', false );
 
 				return;
 			} );

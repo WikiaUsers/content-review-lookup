@@ -1,13 +1,86 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-var inceptionYear = 2016;
-var currentYear = new Date().getFullYear();
-
 $(function(){
 	console.log("Custom Javascript executed");
+	
 	SoS2();
+	CosmeticExpandingButton();
+	SoSArchiveButton();
+	ForceSourceEditor();
+	TooltipCursorTracker();
+	
+	/**************************************************************************/
+	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
+	SetAppropriateDimensions(); //Deprecated but still used until old BP BG cost will be used
+	SetHeadersShadows();
+	SetPerkCheckBoxes();
+	ScrollToTabberID();
+	
+	$.each($(".mw-collapsible-text"), function(index, element){
+		console.log("element #" + index);
+		$(element).click(function(){
+			setTimeout(function(){
+				SetAppropriateDimensionsCosts();
+			},
+			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
+		});
+	});
+	
+	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
+	CreateEditSourceLink(); //Deprecated?
+});
+
+/******************************************************************************/
+
+function SoS2(){
+	console.log("SoS2 Executed");
+	
+	$('.sos2 > .sosPerk').each(function(i){
+	    $(this).hover(
+	        function(){
+	            $(this).addClass('sosPerkHovered');
+	            $(this).parent().children().filter(':not(.sosPerkHovered):not(.sosPerkDesc)').addClass('sosPerkNotHovered');
+	        },
+	        function(){
+	            $(this).removeClass('sosPerkHovered', 115);
+	            $(this).parent().children().removeClass('sosPerkNotHovered');
+	     });
+	});
+	console.log("SoS2 Initialisation completed");
+}
+
+function CosmeticExpandingButton(){
+	console.log("CosmeticExpandingButton Executed");
+	
+	$('span.divButton').click(function() {
+    var expandableArea = $('.' + this.id);
+    var underlyingOutfitPieces = expandableArea.children();
+    var cosmeticTable = $(this).closest('.cosmeticTable');
+    var expandString = $('#expandString').text();
+    var collapseString = $('#collapseString').text();
+    var baseHeight = parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) 
+    				+ 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10);
+    var openedHeight = baseHeight + (underlyingOutfitPieces.length) * parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10);
+    
+    if(parseInt(cosmeticTable.css("height"), 10) > parseInt(getComputedStyle(document.body).getPropertyValue('--thumbnailSize'), 10) + 2 * parseInt(getComputedStyle(document.body).getPropertyValue('--headerHeight'), 10)){
+        $(this).text("⇓ " + expandString + " ⇓");
+        cosmeticTable.css('height', baseHeight + 'px');
+    }
+    else
+    {
+        $(this).text("⇑ " + collapseString + " ⇑");
+        cosmeticTable.css('height', openedHeight + 'px');
+    }
+});
+}
+
+function SoSArchiveButton(){
+	console.log("Creating handlers for SoS Archives");
+	
+	var inceptionYear = 2016;
+	var currentYear = new Date().getFullYear();
+
 	for(i = inceptionYear; i <= currentYear; i++){
-		console.log("Creating handlers for year " + i);
 		$('#inceptionPerks' + i).css('font-weight', 'bold');
 		$('#inceptionPerks' + i).css('color', '#e2ce97');
 		$('#inceptionPerks' + i).css('display', 'inline');
@@ -22,40 +95,6 @@ $(function(){
 		
 		$('#inceptionPerks' + i).click(GetInceptionPerksHandler(i));
 	}
-	/**************************************************************************/
-	//MobileViewHovers(); //Currnently not used, as the Mobile version doesn't load Common.js
-	SetAppropriateDimensions();
-	SetHeadersShadows();
-	SetPerkCheckBoxes();
-	
-	$.each($(".mw-collapsible-text"), function(index, element){
-		console.log("element #" + index);
-		$(element).click(function(){
-			setTimeout(function(){
-				SetAppropriateDimensionsCosts();
-			},
-			1); //Must be delayed because the real height is 0 at the time of executing the script. This is due to table is collapsed (basically height of all TR elements are set to 0)
-		});
-	});
-	
-	//I think this needs to try catch block as the .getAttribute() throws the error when you don't have the visual edit button present, thus moving to the end
-	CreateEditSourceLink();
-});
-
-function SoS2(){
-	console.log("SoS2 Executed");
-	$(".sos2 > .sosPerk").each(function(i){
-	    $(this).hover(
-	        function(){
-	            $(this).addClass("sosPerkHovered");
-	            $(this).parent().children().filter(":not(.sosPerkHovered):not(.sosPerkDesc)").addClass("sosPerkNotHovered");
-	        },
-	        function(){
-	            $(this).removeClass("sosPerkHovered", 115);
-	            $(this).parent().children().removeClass("sosPerkNotHovered");
-	     });
-	});
-	console.log("SoS2 Initiallised");
 }
 
 function GetInceptionPerksHandler(year){
@@ -64,12 +103,9 @@ function GetInceptionPerksHandler(year){
 		var switcher = $('#inceptionPerks' + year);
 		var rowsDisplayed = inceptionRows.css('display') == 'table-row';
 		var text = 'Show/Hide (only) Introduced Perks this year';
-		//console.log("rowsDisplayed: " + rowsDisplayed);
-		//console.log($('.inception-row' + year));
-		//console.log(year);
-		
+
 		if(rowsDisplayed){
-		inceptionRows.css('display', 'none');
+			inceptionRows.css('display', 'none');
 			switcher.html(text + '&#10060;');
 			rowsDisplayed = false;
 		}else{
@@ -78,6 +114,50 @@ function GetInceptionPerksHandler(year){
 			rowsDisplayed = true;
 		}
 	};
+}
+
+function ForceSourceEditor(){
+	console.log("ForceSourceEditor script Executed");
+	$("a[href*='veaction']").attr("href", function(){
+		return this.href.replace("veaction", "action");
+	});
+}
+
+function TooltipCursorTracker(){
+	console.log("TooltipCursorTracker script Executed");
+	
+	var minWidth = 240;
+	var maxWidth = 400;
+	//we have to show the hidden elements (display: none or hidden) in order to being able calculate the position 
+	$('.wds-tab__content').each(function(){
+		$(this).addClass('wds-tab__content_shown');
+	});
+	//reason why it's set like this is to avoid using !important flag as much as possible, leaving it as a true last resort
+    $('.tooltip').find('.tooltiptext').each(function(){
+    	$(this).width(Math.min(Math.max($(this).text().length * 2.5, minWidth), maxWidth));	
+    });
+    
+	$('.tooltip:not(.linkIncluded)').mousemove(function(event){
+	    var tooltipText = $(this).find('.tooltiptext');
+	    tooltipText.css('left', (event.clientX - $(this).offset().left - (tooltipText.width() / 2) ) + 'px');
+	});
+	
+	$('.tooltip.linkIncluded').each(function(){
+		var tooltipBlockLeftOffset = $(this).offset().left;
+	    var tooltipText = $(this).find('.tooltiptext');
+	    $(this).find('.tooltipBaseText').hover(function(event){
+	    	/*hover in*/
+	    	tooltipText.css('left', (event.clientX - tooltipBlockLeftOffset - (tooltipText.width() / 2) ) + 'px');
+	    },function(){
+	    	/*hover out*/
+	    });
+	});
+	
+	//after claculation we can hide it back
+	$('.wds-tab__content_shown').each(function(){
+		$(this).removeClass('wds-tab__content_shown');
+	});
+	console.log("TooltipCursorTracker FINISHED");
 }
 /******************************************************************************/
 
@@ -176,6 +256,18 @@ function SetPerkCheckBoxes(){
 	        el.parentNode.insertBefore(x, el.nextSibling);
 	    }
     );
+}
+
+function ScrollToTabberID(){
+	$("li[data-hash]").each(function() {
+		console.log("Found Tabber Node, ID: " + $(this).attr('data-hash'))
+	    $(this).attr('id', $(this).attr('data-hash'))
+	    if(window.location.hash.replace('#', "") == $(this).attr('data-hash')){
+	        $('html, body').animate({
+	            scrollTop: $(this).offset().top - 45
+	        }, 250);
+	    }
+	});
 }
 /*********************************************************************************************/
 /*********************************************************************************************/

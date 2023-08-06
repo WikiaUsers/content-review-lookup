@@ -1,3 +1,18 @@
+/* Пользовательский ProfileCard */
+    var currentUrl = decodeURIComponent(window.location.href);
+    var username = currentUrl.replace(/.*\/(Участник:|Стена_обсуждения:|Служебная:Вклад\/|Служебная:UserProfileActivity\/)/g, "").replace(/\?action=(edit|history|purge|protect|delete)/, "");
+    var profile = "https://genshin-impact.fandom.com/ru/wiki/Участник:" + username;
+
+    if (/(Стена_обсуждения:|Служебная:Вклад\/|Служебная:UserProfileActivity\/|Участник:)/.test(currentUrl)) {
+        $.ajax({
+        url: profile,
+        success: function(response) {
+            var profileDiv = $(response).find('div[class*="profile-theme--"]');
+            $('#userProfileApp').append(profileDiv);
+            }
+        });
+    }
+
 /* ImprovedTabbers */
     window.ImprovedTabbers = {
         HideHeaderTitle: true,

@@ -1,7 +1,8 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Stats calculator]] */
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('stat-calculator-loading');
-	if (!main) return;
+
+	var preloads = 2;
 	var growthVectors = [
 		[1048576,8388608,8388608,1073741824,524288,256,1048576,1073741824,1,134217728,1048576,536870912,64,274877906944,536870912,8589934592,274877906944,137438953472,4,1024,64,68719476736,8388608,2097152,33554432,32,8,524288,1073741824,8,4194304,256,67108864,65536,256,65536,524288,536870912,262144,2,137438953472,32768,8,2,256,16777216,2147483648,1073741824,268435456,8192,4194304,4,1073741824,274877906944,2097152,1,8589934592,4,274877906944,16,2147483648,8,16384,8192],
 		[294912,33554433,100663296,768,274882101248,540672,137438953984,68719607808,6291456,4194432,67584,262145,67633152,536870920,10240,274877923328,33558528,5368709120,275951648768,9437184,8388609,1073742336,2112,528384,2147483649,541065216,277025390592,137447342080,4160,536879104,83886080,147456,2097184,274877907968,393216,8256,138412032,32772,262160,134217729,34359740416,268435968,2147483656,73728,274877906946,1048704,137438961664,134225920,1074790400,10485760,3072,4294967328,4259840,4294967304,4352,2097184,2147483664,67371008,33280,34359738880,1073741888,137439477760,1048608,65600],
@@ -48,7 +49,6 @@ mw.hook('wikipage.content').add(function() {
 	var vectorCalcStats = [-35, -28, -21, -14, -7];
 	var variations = ["Bane", "Neut", "Boon"];
 	var wikiServer = mw.config.get( 'wgServer' );
-	var wikiScriptApi = mw.config.get('wgScriptPath') + '/api.php';
 	var wikiArticlePath = mw.config.get("wgArticlePath");
 	var heroes;
 	var heroWeapons;
@@ -69,11 +69,13 @@ mw.hook('wikipage.content').add(function() {
 	var mergeStatIncreases;
 	var baneNeutralizationStatIncreases;
 	var weaponStatMod;
+	var elements;
+	var $content;
 	
-	document.getElementById("stat-calculator-loading").outerHTML = '<div style=overflow:hidden>' +
+	var html = '<div style=overflow:hidden>' +
   '<div style=float:right;width:82px;height:82px;padding-left:20px>' +
     '<a id=heroIconLink href=#>' +
-      '<img id=heroIcon style=width:100%;height:100% src="" onload="$(\'#heroIcon\').show()">' +
+      '<img id=heroIcon style=width:100%;height:100% src="">' +
     '</a>' +
   '</div>' +
   '<div class=form-group style=overflow:hidden>' +
@@ -120,251 +122,34 @@ mw.hook('wikipage.content').add(function() {
     '</div>' +
   '</div>' +
 '</div>';
-	document.getElementById('LvInput').outerHTML = '<input type="number" id="LvInput" name="LvInput" style="width: 3em;" minlength="1" maxlength="2" size="2" min="1" max="255" value="20" required/>';
-	var elements = {
-		heroSelect: document.getElementById("heroSelect"),
-		raritySelect: document.getElementById('raritySelect'),
-		mergeSelect: document.getElementById('mergeSelect'),
-		ivSelect: document.getElementById('ivSelect'),
-		weaponSelect: document.getElementById('weaponSelect'),
-		LvInput: document.getElementById('LvInput'),
-		enemyStatSelect: document.getElementById('enemyStatSelect'),
-		weaponRow: document.getElementById('weaponRow'),
-		selectedWeapon: document.getElementById('selectedWeapon'),
-		variationHeaders: document.getElementById('variationHeaders'),
-		infoWeapon: document.getElementById('infoWeapon'),
-		infoBVID: document.getElementById('infoBVID')
-	};
+	var htmlLvInput = '<input type="number" id="LvInput" name="LvInput" style="width: 3em;" minlength="1" maxlength="2" size="2" min="1" max="255" value="20" required/>';
 
-	_populateSelectBox(elements.mergeSelect, ["+0","+1","+2","+3","+4","+5","+6","+7","+8","+9","+10"]);
-	_populateSelectBox(elements.ivSelect, IVs);
-	
-	elements.heroSelect.addEventListener('change', onSelectHeroChange);
-	elements.raritySelect.addEventListener('change', onRarityChange);
-	elements.mergeSelect.addEventListener('change', onMergeChange);
-	elements.ivSelect.addEventListener('change', onMergeChange);
-	elements.weaponSelect.addEventListener('change', onWeaponChange);
-	elements.enemyStatSelect.addEventListener('change', onAllegianceChange);
-	elements.LvInput.addEventListener('change', onLevelChange);
-	
-	$.getJSON("https://feheroes.fandom.com/api.php" +
-		"?action=cargoquery" +
-		"&format=json" +
-		"&limit=5000" +
-		"&tables=Units%3Dh%2CHeroBVIDs%3Db%2CUnitStats%3Ds" +
-		"&fields=h._pageName%3DpageName%2CCONCAT(h.Name%2C'%3A%20'%2Ch.Title)%3DHero%2Cb.BVID%3DBVID%2Cs.HPGR3%3DGrowthHP%2Cs.AtkGR3%3DGrowthAtk%2Cs.SpdGR3%3DGrowthSpd%2Cs.DefGR3%3DGrowthDef%2Cs.ResGR3%3DGrowthRes%2CCONCAT(s.Lv1HP5-1)%3DInitHP%2CCONCAT(s.Lv1Atk5-1)%3DInitAtk%2CCONCAT(s.Lv1Spd5-1)%3DInitSpd%2CCONCAT(s.Lv1Def5-1)%3DInitDef%2CCONCAT(s.Lv1Res5-1)%3DInitRes" +
-		"&where=IFNULL(Properties__full%2C'')%20NOT%20LIKE%20'%25enemy%25'" +
-		"&join_on=h._pageName%3Db.Hero%2Ch.WikiName%3Ds.WikiName" +
-		"&group_by=h._pageName").then(function(data) {
-		heroes = data.cargoquery;
-		$.getJSON("https://feheroes.fandom.com/api.php" +
-			"?action=cargoquery" +
-			"&format=json" +
-			"&limit=5000" +
-			"&tables=UnitSkills%3Dh%2CSkills%3Dw%2CUnits%3Du" +
-			"&fields=u._pageName%3DhPageName%2Cw.Name%3DWeaponName%2Ch.defaultRarity%3DdefaultRarity%2Cw._pageName%3DwPageName%2Cw.StatModifiers%3DStatModifiers" +
-			"&where=Scategory%3D'weapon'%20AND%20w.StatModifiers%20IS%20NOT%20NULL%20AND%20h.defaultRarity%20IS%20NOT%20NULL%20AND%20IFNULL(u.Properties__full%2C'')%20NOT%20LIKE%20'%25enemy%25'" +
-			"&join_on=h.skill%3Dw.WikiName%2Ch.WikiName%3Du.WikiName" +
-			"&group_by=h.WikiName%2Ch.skill" +
-			"&order_by=h.defaultRarity%20DESC").then(function(data) {
-			heroWeapons = data.cargoquery;
-			initializeHeroList();
-		});
-	});
+	function positivePart(x) {
+		return isNaN(x) ? NaN : (x > 0 ? x : 0);
+	}
 
-	function initializeHeroList() {
-		if (!heroes) return;
+	function statLimit(x) {
+		return isNaN(x) ? NaN : (x > 99 ? 99 : x);
+	}
 
-		var heroList = [];
-		
-		heroes.forEach(function(hero) { // NEED TESTING
-			heroList.push(hero.title.Hero);
-		});
+	function _populateSelectBox(ele, list, defaultIndex) {
+		ele.options.length = 0;
+		for (var i = 0; i < list.length; i++) {
+			var opt = document.createElement('option');
+			opt.textContent = list[i];
+			opt.value = list[i];
+			ele.appendChild(opt);
+		}
+		ele.selectedIndex = defaultIndex || 0;
+	}
 
-		_populateSelectBox(elements.heroSelect, heroList);
-		elements.heroSelect.value = heroes[Math.round(Math.random()*(heroList.length-1))].title.Hero;
-		onSelectHeroChange();
-	}
-	
-	function initializeRarities() {
-		if (!selectedHero) return;
-		var ele = elements.raritySelect;
-		var rarityList = [5,4,3,2,1];
-	
-		_populateSelectBox(ele, rarityList);
-		ele.value = 5;
-	
-		onRarityChange();
-	}
-	
-	function forEachStat(doFunction) {
-		forEachStatType( function (i) {
-			for (var v = 0; v < 3; v++) {
-				doFunction(i,v);
-			}
-		});
-	}
-	
-	function forEachStatType(doFunction) {
-		for (var i=0; i < 5; i++) {
-			doFunction(i);
-		}
-	}
-	
-	function getStatOrderArray(statset) {
-		var index = new Array(5);
-		for (var z = 0; z < 5; z++) {
-			for (var i=4,prev=5; i >= 0; i--) {
-				if ( !((statset[i] < statset[prev]) || index.includes(i)) ) { // NEED TESTING
-					index[z] = i;
-					prev = i;
-				}
-			}
-		}
-		return index;
-	}
-	
-	function initializeHeroStats() {
-		if (!selectedHero || !selectedRarity) return;
-		selectedRarity = parseInt(selectedRarity);
-		rarity3Lv1StatSet = [
-			selectedHero.InitHP,
-			selectedHero.InitAtk,
-			selectedHero.InitSpd,
-			selectedHero.InitDef,
-			selectedHero.InitRes
-		].map(function(x) {
-			return parseInt(x);
-		});
-		
-		for (var j = 0; j < IVs.length; j++) {
-			var IV = IVs[j];
-			var plus = IV.match(/\+([\w]*)/);
-			var minus = IV.match(/\−([\w]*)/);
-			plus = plus == null ? [] : plus;
-			minus = minus == null ? [] : minus;
-			var incIndex = statTypes.indexOf(plus[1]);
-			var decIndex = statTypes.indexOf(minus[1]);
-			var IVStatSet = rarity3Lv1StatSet.concat();
-			IVStatSet[incIndex]++;
-			IVStatSet[decIndex]--;
-			greatestToLeastIndexes[IVs[j]] = getStatOrderArray(IVStatSet);
-		}
-	
-		var Lv1StatSet = rarity3Lv1StatSet.map(function(x) {
-			return x - 1;
-		});
-	
-		for (var i = 1, nonHPGreatestToLeastIndexes = greatestToLeastIndexes.Neutral.filter(function(x) {
-			return x!= 0;
-		}), increaseTypeIsHP = false; i < selectedRarity; i++) {
-			if (increaseTypeIsHP) {
-				for (var index in Lv1StatSet) {
-					if (index != nonHPGreatestToLeastIndexes[0] && index != nonHPGreatestToLeastIndexes[1]) {
-						Lv1StatSet[index]++;
-					}
-				}
-			} else {
-				Lv1StatSet[nonHPGreatestToLeastIndexes[0]]++;
-				Lv1StatSet[nonHPGreatestToLeastIndexes[1]]++;
-			}
-			increaseTypeIsHP = !increaseTypeIsHP;
-		}
-		
-		growthRates = [
-			selectedHero.GrowthHP,
-			selectedHero.GrowthAtk,
-			selectedHero.GrowthSpd,
-			selectedHero.GrowthDef,
-			selectedHero.GrowthRes
-		].map(function(x) {
-			return parseInt(x);
-		});
-		
-		forEachStat(function(i,v) {
-			selectedLv1Stats[i][v] = Lv1StatSet[i]+(v-1);
-		});
-		
-		forEachStatType(function(i) {
-			selectedLv40Stats[i] = getLv40StatArray(Lv1StatSet[i],growthRates[i],selectedRarity);
-		});
-	}
-	
-	function getLv40StatArray(lv1NeutStat, growthRate, rarity) {
-		var bane = lv1NeutStat - 1 + getGrowthValue(growthRate - 5, rarity);
-		var neut = lv1NeutStat + getGrowthValue(growthRate, rarity);
-		var boon = lv1NeutStat + 1 + getGrowthValue(growthRate + 5, rarity);
-		return [bane, neut, boon];
-	}
-	
-	function getGrowthValue(growthRate, rarity) {
-		return Math.trunc(0.39 * getAppliedGrowthRate(growthRate, rarity));
-	}
-	
-	function getAppliedGrowthRate(growthRate, rarity) {
-		return Math.trunc(growthRate * (0.79 + (0.07 * rarity)));
-	}
-	
-	function updateHeroIcon() {
-		$("#heroIcon").hide();
-
-		var decodedPageName = selectedHero.pageName;
-		var url = "?action=query&prop=imageinfo&iiprop=url&titles=File:"+ decodedPageName.replace(/[^À-ɏḀ-ỿ\w\d\s._-]/g, "") +"_Face_FC.png&format=json";
-	
-			url = encodeURI(wikiServer + wikiScriptApi + url);
-		$.get(url, function(data) {
-			var pages = data.query.pages;
-			$("#heroIcon").attr('src', pages[Object.keys(pages)[0]].imageinfo[0].url);
-		});
-		$("#heroIconLink").attr('href', wikiServer + wikiArticlePath.replace("$1", encodeURIComponent(decodedPageName)));
-	}
-	
-	function onSelectHeroChange() {
-		var value = elements.heroSelect.value;
-		for (var h=0; h<heroes.length; h++) {
-			var hero = heroes[h].title;
-			if (hero.pageName == value) {
-				selectedHero = hero;
-				break;
-			}
-		}
-		//if (!selectedHero) selectedHero = {};
-		initializeRarities();
-		updateHeroIcon();
-	}
-	
-	function onRarityChange() {
-		selectedRarity = elements.raritySelect.value;
-		initializeHeroStats();
-		weaponHero = null;
-		for (var h=0; h<heroWeapons.length; h++) {
-			var hw = heroWeapons[h].title;
-			if (hw.hPageName == selectedHero.pageName && parseInt(hw.defaultRarity) <= selectedRarity) {
-				weaponHero = hw;
-				break;
-			}
-		}
-
-		if (weaponHero == null) {
-			elements.weaponRow.style.display = "none";
-		} else {
-			elements.weaponRow.style = null;
-			elements.selectedWeapon.innerHTML = "<a href=\""+wikiArticlePath.replace("$1", encodeURIComponent(weaponHero.wPageName))+"\">"+weaponHero.WeaponName+"</a>";
-		}
-		getWeaponStatModData(elements.weaponSelect);
-		getMergeData(elements.mergeSelect);
-		getLevelData(elements.LvInput);
-		populateStatFields();
-		populateDebugInfo();
-	}
-	
 	function getMergeData(obj) {
 		selectedMerge = parseInt(obj.value.slice(1));
 		var selectedIV = elements.ivSelect.value;
 		var plus = selectedIV.match(/\+([\w]*)/);
 		var minus = selectedIV.match(/\−([\w]*)/);
-		plus = plus == null ? [] : plus;
-		minus = minus == null ? [] : minus;
+		plus = plus === null ? [] : plus;
+		minus = minus === null ? [] : minus;
 		boonIndex = statTypes.indexOf(plus[1]);
 		baneIndex = statTypes.indexOf(minus[1]);
 	
@@ -372,14 +157,14 @@ mw.hook('wikipage.content').add(function() {
 		baneNeutralizationStatIncreases = [[0,0,0,0,0],[0,0,0,0,0]];
 	
 		for (var i = 0, increaseIndex = 0; i < selectedMerge * 2; i++, increaseIndex++) {
-			if (increaseIndex == 5) {
+			if (increaseIndex === 5) {
 				increaseIndex = 0;
 			}
 			mergeStatIncreases[greatestToLeastIndexes[selectedIV][increaseIndex]]++;
 		}
 		
 		if (selectedMerge >= 1) {
-			if (baneIndex == -1) {
+			if (baneIndex === -1) {
 				baneNeutralizationStatIncreases[0][greatestToLeastIndexes[selectedIV][0]]++;
 				baneNeutralizationStatIncreases[0][greatestToLeastIndexes[selectedIV][1]]++;
 				baneNeutralizationStatIncreases[0][greatestToLeastIndexes[selectedIV][2]]++;
@@ -392,15 +177,56 @@ mw.hook('wikipage.content').add(function() {
 			}
 		}
 	}
-	function onMergeChange() {
-		getMergeData(elements.mergeSelect);
-		populateStatFields();
+
+	function forEachStatType(doFunction) {
+		for (var i=0; i < 5; i++) {
+			doFunction(i);
+		}
 	}
+
+	function forEachStat(doFunction) {
+		forEachStatType( function (i) {
+			for (var v = 0; v < 3; v++) {
+				doFunction(i,v);
+			}
+		});
+	}
+
+	function getAppliedGrowthRate(growthRate, rarity) {
+		return Math.trunc(growthRate * (0.79 + (0.07 * rarity)));
+	}
+
+	function getGrowthValue(growthRate, rarity) {
+		return Math.trunc(0.39 * getAppliedGrowthRate(growthRate, rarity));
+	}
+
+	function populateDebugInfo() {
+		if (weaponHero) {
+			var wpInfo = "";
+			var wpArray = weaponHero.StatModifiers.split(",").map(function(x) {
+				return parseInt(x);
+			});
+			for (var index in wpArray) {
+				if (wpArray[index] !== 0 && (!isNaN(wpArray[index]))) {
+					var sign = wpArray[index] > 0 ? "+" : "";
+					wpInfo += ", "+statTypes[index] + sign + wpArray[index];
+				}
+			}
+			wpInfo = wpInfo.slice(2);
+			elements.infoWeapon.textContent = wpInfo;
+		}
 	
+		forEachStatType(function (i) {
+			$content.find("#infoGrowths"+statTypes[i])[0].textContent = getAppliedGrowthRate(growthRates[i], selectedRarity);
+		});
+	
+		elements.infoBVID.textContent = "0x"+selectedHero.BVID;
+	}
+
 	function getWeaponStatModData(obj) {
 		weaponStatMod = [0,0,0,0,0];
-		if (obj.checked && weaponHero != null) {
-			var nullStatMod = weaponHero.StatModifiers == "";
+		if (obj.checked && weaponHero !== null) {
+			var nullStatMod = weaponHero.StatModifiers === "";
 			if (nullStatMod) {
 				weaponStatMod = [NaN,NaN,NaN,NaN,NaN];
 			}
@@ -409,28 +235,16 @@ mw.hook('wikipage.content').add(function() {
 			});
 		}
 	}
-	
-	function onWeaponChange() {
-		getWeaponStatModData(elements.weaponSelect);
-		populateStatFields();
-	}
-	
-	function onAllegianceChange() {
-		useEnemyStats = elements.enemyStatSelect.checked;
-		getLevelData(elements.LvInput);
-		updateLvlUStatFields();
-	}
-	
-	
+
 	function getLevelData(obj) {
 		level = parseInt(obj.value);
 		if (level < 1 || isNaN(level)) {
 			level = -1;
 			return;
-		} else if (level == 1) {
+		} else if (level === 1) {
 			forEachStat(function(i,v) {selectedCustomLvStats[i][v] = selectedLv1Stats[i][v];});
 			return;
-		} else if (level == 40) {
+		} else if (level === 40) {
 			forEachStat(function(i,v) {selectedCustomLvStats[i][v] = selectedLv40Stats[i][v];});
 			return;
 		}
@@ -465,15 +279,10 @@ mw.hook('wikipage.content').add(function() {
 			});
 		}
 	}
-	
-	function onLevelChange() {
-		getLevelData(elements.LvInput);
-		updateLvlUStatFields();
-	}
-	
+
 	function populateStatFields() {
 		var finalLv1Stats, finalLv40Stats;
-		if (selectedMerge == 0) {
+		if (selectedMerge === 0) {
 			elements.variationHeaders.style = null;
 	
 			finalLv1Stats = [
@@ -501,18 +310,18 @@ mw.hook('wikipage.content').add(function() {
 				var lv40 = finalLv40Stats[i][v];
 				lv40 = isNaN(lv40) ? "?" : lv40;
 				
-				var ele1 = document.getElementById(statType + "Lv1"+variation);
-				var ele40 = document.getElementById(statType + "Lv40"+variation);
+				var ele1 = $content.find('#' + statType + "Lv1"+variation)[0];
+				var ele40 = $content.find('#' + statType + "Lv40"+variation)[0];
 				
 				ele1.style.visibility = null;
 				ele40.style.visibility = null;
 	
 	
-				document.getElementById(statType + "Lv1"+variation).textContent = lv1;
-				document.getElementById(statType + "Lv40"+variation).textContent = lv40;
-				if ((v == 0 && i == baneIndex) || (v == 1 && baneIndex == -1) || (v == 2 && i == boonIndex) || (v == 1 && i != boonIndex && i!= baneIndex)) {
-					$("#"+statType+"Lv1"+variation).wrapInner("<b></b>");
-					$("#"+statType+"Lv40"+variation).wrapInner("<b></b>");
+				$content.find('#' + statType + "Lv1"+variation)[0].textContent = lv1;
+				$content.find('#' + statType + "Lv40"+variation)[0].textContent = lv40;
+				if ((v === 0 && i === baneIndex) || (v === 1 && baneIndex === -1) || (v === 2 && i === boonIndex) || (v === 1 && i !== boonIndex && i!== baneIndex)) {
+					$content.find("#" + statType + "Lv1" + variation).wrapInner("<b></b>");
+					$content.find("#" + statType + "Lv40" + variation).wrapInner("<b></b>");
 				}
 			});
 		} else {
@@ -534,41 +343,209 @@ mw.hook('wikipage.content').add(function() {
 				statLimit( positivePart(selectedLv40Stats[4][1] + mergeStatIncreases[4] + baneNeutralizationStatIncreases[1][4] + weaponStatMod[4]) )
 			];
 	
-			if (baneIndex != -1) {
+			if (baneIndex !== -1) {
 				finalLv1Stats[baneIndex] = statLimit( positivePart(selectedLv1Stats[baneIndex][0] + mergeStatIncreases[baneIndex] + weaponStatMod[baneIndex]) );
 				finalLv40Stats[baneIndex] = statLimit( positivePart(selectedLv40Stats[baneIndex][0] + mergeStatIncreases[baneIndex] + weaponStatMod[baneIndex]) );
 			}
-			if (boonIndex != -1) {
+			if (boonIndex !== -1) {
 				finalLv1Stats[boonIndex] = statLimit( positivePart(selectedLv1Stats[boonIndex][2] + mergeStatIncreases[boonIndex] + weaponStatMod[boonIndex]) );
 				finalLv40Stats[boonIndex] = statLimit( positivePart(selectedLv40Stats[boonIndex][2] + mergeStatIncreases[boonIndex] + weaponStatMod[boonIndex]) );
 			}
 	
 			forEachStatType(function(i) {
 				var statType = statTypes[i];
-				document.getElementById(statType + "Lv1Bane").style.visibility = "hidden";
-				document.getElementById(statType + "Lv40Bane").style.visibility = "hidden";
-				document.getElementById(statType + "LvUBane").style.visibility = "hidden";
-				document.getElementById(statType + "Lv1Boon").style.visibility = "hidden";
-				document.getElementById(statType + "Lv40Boon").style.visibility = "hidden";
-				document.getElementById(statType + "LvUBoon").style.visibility = "hidden";
+				$content.find('#' + statType + "Lv1Bane")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "Lv40Bane")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "LvUBane")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "Lv1Boon")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "Lv40Boon")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "LvUBoon")[0].style.visibility = "hidden";
 	
 				var lv1 = finalLv1Stats[i];
 				lv1 = isNaN(lv1) ? "?" : lv1;
 				var lv40 = finalLv40Stats[i];
 				lv40 = isNaN(lv40) ? "?" : lv40;
 	
-				document.getElementById(statType + "Lv1Neut").textContent = lv1;
-				document.getElementById(statType + "Lv40Neut").textContent = lv40;
-				$("#"+statType+"Lv1Neut").wrapInner("<b></b>");
-				$("#"+statType+"Lv40Neut").wrapInner("<b></b>");
+				$content.find('#' + statType + "Lv1Neut")[0].textContent = lv1;
+				$content.find('#' + statType + "Lv40Neut")[0].textContent = lv40;
+				$content.find("#"+statType+"Lv1Neut").wrapInner("<b></b>");
+				$content.find("#"+statType+"Lv40Neut").wrapInner("<b></b>");
 			});
 		}
 		updateLvlUStatFields();
 	}
+
+	function onRarityChange() {
+		selectedRarity = elements.raritySelect.value;
+		initializeHeroStats();
+		weaponHero = null;
+		for (var h=0; h<heroWeapons.length; h++) {
+			var hw = heroWeapons[h].title;
+			if (hw.hPageName === selectedHero.pageName && parseInt(hw.defaultRarity) <= selectedRarity) {
+				weaponHero = hw;
+				break;
+			}
+		}
+
+		if (weaponHero === null) {
+			elements.weaponRow.style.display = "none";
+		} else {
+			elements.weaponRow.style = null;
+			elements.selectedWeapon.innerHTML = "<a href=\""+wikiArticlePath.replace("$1", encodeURIComponent(weaponHero.wPageName))+"\">"+weaponHero.WeaponName+"</a>";
+		}
+		getWeaponStatModData(elements.weaponSelect);
+		getMergeData(elements.mergeSelect);
+		getLevelData(elements.LvInput);
+		populateStatFields();
+		populateDebugInfo();
+	}
+
+	function initializeRarities() {
+		if (!selectedHero) return;
+		var ele = elements.raritySelect;
+		var rarityList = [5,4,3,2,1];
 	
+		_populateSelectBox(ele, rarityList);
+		ele.value = 5;
+	
+		onRarityChange();
+	}
+
+	function updateHeroIcon() {
+		$content.find("#heroIcon").hide();
+
+		var decodedPageName = selectedHero.pageName;
+		$content.find("#heroIcon").attr('src', wikiArticlePath.replace('$1', 'Special:FilePath/' + decodedPageName.replace(/[^À-ɏḀ-ỿ\w\d\s._-]/g, "") + '_Face_FC.png'));
+		$content.find("#heroIconLink").attr('href', wikiServer + wikiArticlePath.replace("$1", encodeURIComponent(decodedPageName)));
+	}
+
+	function onSelectHeroChange() {
+		var value = elements.heroSelect.value;
+		for (var h=0; h<heroes.length; h++) {
+			var hero = heroes[h].title;
+			if (hero.pageName === value) {
+				selectedHero = hero;
+				break;
+			}
+		}
+		//if (!selectedHero) selectedHero = {};
+		initializeRarities();
+		updateHeroIcon();
+	}
+
+	function initializeHeroList() {
+		if (!heroes) return;
+
+		var heroList = [];
+
+		heroes.forEach(function(hero) { // NEED TESTING
+			heroList.push(hero.title.Hero);
+		});
+
+		_populateSelectBox(elements.heroSelect, heroList);
+		elements.heroSelect.value = heroes[Math.round(Math.random()*(heroList.length-1))].title.Hero;
+		onSelectHeroChange();
+	}
+
+	function getStatOrderArray(statset) {
+		var index = new Array(5);
+		for (var z = 0; z < 5; z++) {
+			for (var i=4,prev=5; i >= 0; i--) {
+				if ( !((statset[i] < statset[prev]) || index.includes(i)) ) { // NEED TESTING
+					index[z] = i;
+					prev = i;
+				}
+			}
+		}
+		return index;
+	}
+
+	function getLv40StatArray(lv1NeutStat, growthRate, rarity) {
+		var bane = lv1NeutStat - 1 + getGrowthValue(growthRate - 5, rarity);
+		var neut = lv1NeutStat + getGrowthValue(growthRate, rarity);
+		var boon = lv1NeutStat + 1 + getGrowthValue(growthRate + 5, rarity);
+		return [bane, neut, boon];
+	}
+
+	function initializeHeroStats() {
+		if (!selectedHero || !selectedRarity) return;
+		selectedRarity = parseInt(selectedRarity);
+		rarity3Lv1StatSet = [
+			selectedHero.InitHP,
+			selectedHero.InitAtk,
+			selectedHero.InitSpd,
+			selectedHero.InitDef,
+			selectedHero.InitRes
+		].map(function(x) {
+			return parseInt(x);
+		});
+
+		for (var j = 0; j < IVs.length; j++) {
+			var IV = IVs[j];
+			var plus = IV.match(/\+([\w]*)/);
+			var minus = IV.match(/\−([\w]*)/);
+			plus = plus === null ? [] : plus;
+			minus = minus === null ? [] : minus;
+			var incIndex = statTypes.indexOf(plus[1]);
+			var decIndex = statTypes.indexOf(minus[1]);
+			var IVStatSet = rarity3Lv1StatSet.concat();
+			IVStatSet[incIndex]++;
+			IVStatSet[decIndex]--;
+			greatestToLeastIndexes[IVs[j]] = getStatOrderArray(IVStatSet);
+		}
+	
+		var Lv1StatSet = rarity3Lv1StatSet.map(function(x) {
+			return x - 1;
+		});
+	
+		for (var i = 1, nonHPGreatestToLeastIndexes = greatestToLeastIndexes.Neutral.filter(function(x) {
+			return x!== 0;
+		}), increaseTypeIsHP = false; i < selectedRarity; i++) {
+			if (increaseTypeIsHP) {
+				for (var index in Lv1StatSet) {
+					if (index !== nonHPGreatestToLeastIndexes[0] && index !== nonHPGreatestToLeastIndexes[1]) {
+						Lv1StatSet[index]++;
+					}
+				}
+			} else {
+				Lv1StatSet[nonHPGreatestToLeastIndexes[0]]++;
+				Lv1StatSet[nonHPGreatestToLeastIndexes[1]]++;
+			}
+			increaseTypeIsHP = !increaseTypeIsHP;
+		}
+
+		growthRates = [
+			selectedHero.GrowthHP,
+			selectedHero.GrowthAtk,
+			selectedHero.GrowthSpd,
+			selectedHero.GrowthDef,
+			selectedHero.GrowthRes
+		].map(function(x) {
+			return parseInt(x);
+		});
+
+		forEachStat(function(i,v) {
+			selectedLv1Stats[i][v] = Lv1StatSet[i]+(v-1);
+		});
+
+		forEachStatType(function(i) {
+			selectedLv40Stats[i] = getLv40StatArray(Lv1StatSet[i],growthRates[i],selectedRarity);
+		});
+	}
+
+	function onMergeChange() {
+		getMergeData(elements.mergeSelect);
+		populateStatFields();
+	}
+	
+	function onWeaponChange() {
+		getWeaponStatModData(elements.weaponSelect);
+		populateStatFields();
+	}
+
 	function updateLvlUStatFields() {
 		var finalCustomLvStats;
-		if (selectedMerge == 0) {
+		if (selectedMerge === 0) {
 			finalCustomLvStats = [
 				selectedCustomLvStats[0].map(function(e) { return statLimit( positivePart(e + weaponStatMod[0]) ); }),
 				selectedCustomLvStats[1].map(function(e) { return statLimit( positivePart(e + weaponStatMod[1]) ); }),
@@ -583,19 +560,19 @@ mw.hook('wikipage.content').add(function() {
 	
 				var lvU = finalCustomLvStats[i][v];
 
-				var eleU = document.getElementById(statType + "LvU"+variation);
+				var eleU = $content.find('#' + statType + "LvU"+variation)[0];
 	
 				eleU.style.visibility = null;
 	
-				if (level == -2 || isNaN(lvU)) {
+				if (level === -2 || isNaN(lvU)) {
 					eleU.textContent = "?";
 				} else if (level > 0) {
 					eleU.textContent = finalCustomLvStats[i][v];
-				} else if (level == -1) {
+				} else if (level === -1) {
 					eleU.textContent = "—";
 				}
-				if ((v == 0 && i == baneIndex) || (v == 1 && baneIndex == -1) || (v == 2 && i == boonIndex) || (v == 1 && i != boonIndex && i!= baneIndex)) {
-					$("#"+statType+"LvU"+variation).wrapInner("<b></b>");
+				if ((v === 0 && i === baneIndex) || (v === 1 && baneIndex === -1) || (v === 2 && i === boonIndex) || (v === 1 && i !== boonIndex && i !== baneIndex)) {
+					$content.find("#"+statType+"LvU"+variation).wrapInner("<b></b>");
 				}
 			});
 		} else {
@@ -606,72 +583,116 @@ mw.hook('wikipage.content').add(function() {
 				statLimit( positivePart(selectedCustomLvStats[3][1] + mergeStatIncreases[3] + weaponStatMod[3]) ),
 				statLimit( positivePart(selectedCustomLvStats[4][1] + mergeStatIncreases[4] + weaponStatMod[4]) )
 			];
-			if (baneIndex != -1) {
+			if (baneIndex !== -1) {
 				finalCustomLvStats[baneIndex] = statLimit( positivePart(selectedCustomLvStats[baneIndex][0] + mergeStatIncreases[baneIndex] + weaponStatMod[baneIndex]) );
 			}
-			if (boonIndex != -1) {
+			if (boonIndex !== -1) {
 				finalCustomLvStats[boonIndex] = statLimit( positivePart(selectedCustomLvStats[boonIndex][2] + mergeStatIncreases[boonIndex] + weaponStatMod[boonIndex]) );
 			}
 	
 			forEachStatType(function(i) {
 				var statType = statTypes[i];
-				document.getElementById(statType + "LvUBane").style.visibility = "hidden";
-				document.getElementById(statType + "LvUBoon").style.visibility = "hidden";
+				$content.find('#' + statType + "LvUBane")[0].style.visibility = "hidden";
+				$content.find('#' + statType + "LvUBoon")[0].style.visibility = "hidden";
 	
 				var lvU = finalCustomLvStats[i];
 	
-				if (level == -2 || isNaN(lvU)) {
-					document.getElementById(statType + "LvUNeut").textContent = "?";
+				if (level === -2 || isNaN(lvU)) {
+					$content.find('#' + statType + "LvUNeut")[0].textContent = "?";
 				} else if (level > 0) {
-					document.getElementById(statType + "LvUNeut").textContent = finalCustomLvStats[i];
-				} else if (level == -1) {
-					document.getElementById(statType + "LvUNeut").textContent = "—";
+					$content.find('#' + statType + "LvUNeut")[0].textContent = finalCustomLvStats[i];
+				} else if (level === -1) {
+					$content.find('#' + statType + "LvUNeut")[0].textContent = "—";
 				}
-				$("#"+statType+"LvUNeut").wrapInner("<b></b>");
+				$content.find("#" + statType + "LvUNeut").wrapInner("<b></b>");
 			});
 		}
 	}
-	
-	function populateDebugInfo() {
-		if (weaponHero) {
-			var wpInfo = "";
-			var wpArray = weaponHero.StatModifiers.split(",").map(function(x) {
-				return parseInt(x);
-			});
-			for (var index in wpArray) {
-				var num = wpArray[index];
-				if (num != 0 && (!isNaN(num))) {
-					var sign = num > 0 ? "+" : "";
-					wpInfo += ", "+statTypes[index]+sign+wpArray[index];
-				}
-			}
-			wpInfo = wpInfo.slice(2);
-			elements.infoWeapon.textContent = wpInfo;
-		}
-	
-		forEachStatType(function (i) {
-			document.getElementById("infoGrowths"+statTypes[i]).textContent = getAppliedGrowthRate(growthRates[i], selectedRarity);
+
+	function onAllegianceChange() {
+		useEnemyStats = elements.enemyStatSelect.checked;
+		getLevelData(elements.LvInput);
+		updateLvlUStatFields();
+	}
+
+	function onLevelChange() {
+		getLevelData(elements.LvInput);
+		updateLvlUStatFields();
+	}
+
+	function init(content) {
+		var main = content.find('#stat-calculator-loading:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		$content = content;
+
+		main.outerHTML = html;
+		$content.find('#LvInput')[0].outerHTML = htmlLvInput;
+
+		elements = {
+			heroIcon: $content.find('#heroIcon')[0],
+			heroSelect: $content.find("#heroSelect")[0],
+			raritySelect: $content.find('#raritySelect')[0],
+			mergeSelect: $content.find('#mergeSelect')[0],
+			ivSelect: $content.find('#ivSelect')[0],
+			weaponSelect: $content.find('#weaponSelect')[0],
+			LvInput: $content.find('#LvInput')[0],
+			enemyStatSelect: $content.find('#enemyStatSelect')[0],
+			weaponRow: $content.find('#weaponRow')[0],
+			selectedWeapon: $content.find('#selectedWeapon')[0],
+			variationHeaders: $content.find('#variationHeaders')[0],
+			infoWeapon: $content.find('#infoWeapon')[0],
+			infoBVID: $content.find('#infoBVID')[0]
+		};
+
+		_populateSelectBox(elements.mergeSelect, ["+0","+1","+2","+3","+4","+5","+6","+7","+8","+9","+10"]);
+		_populateSelectBox(elements.ivSelect, IVs);
+
+		elements.heroIcon.addEventListener('load', function() {
+			$content.find('#heroIcon').show();
 		});
-	
-		elements.infoBVID.textContent = "0x"+selectedHero.BVID;
+		elements.heroSelect.addEventListener('change', onSelectHeroChange);
+		elements.raritySelect.addEventListener('change', onRarityChange);
+		elements.mergeSelect.addEventListener('change', onMergeChange);
+		elements.ivSelect.addEventListener('change', onMergeChange);
+		elements.weaponSelect.addEventListener('change', onWeaponChange);
+		elements.enemyStatSelect.addEventListener('change', onAllegianceChange);
+		elements.LvInput.addEventListener('input', onLevelChange);
+
+		initializeHeroList();
 	}
-	
-	function positivePart(x) {
-		return isNaN(x) ? NaN : (x > 0 ? x : 0);
+
+	function preload() {
+		if (--preloads>0) return;
+		mw.hook('wikipage.content').add(init);
 	}
-	
-	function statLimit(x) {
-		return isNaN(x) ? NaN : (x > 99 ? 99 : x);
-	}
-	
-	function _populateSelectBox(ele, list, defaultIndex) {
-		ele.options.length = 0;
-		for (var i = 0; i < list.length; i++) {
-			var opt = document.createElement('option');
-			opt.textContent = list[i];
-			opt.value = list[i];
-			ele.appendChild(opt);
-		}
-		ele.selectedIndex = defaultIndex || 0;
-	}
-});
+
+	mw.loader.using('mediawiki.api').then(function() {
+		new mw.Api().get({
+			action: 'cargoquery',
+			limit: 5000,
+			tables: 'Units=h,HeroBVIDs=b,UnitStats=s',
+			fields: 'h._pageName=pageName,CONCAT(h.Name,": ",h.Title)=Hero,b.BVID=BVID,s.HPGR3=GrowthHP,s.AtkGR3=GrowthAtk,s.SpdGR3=GrowthSpd,s.DefGR3=GrowthDef,s.ResGR3=GrowthRes,CONCAT(s.Lv1HP5-1)=InitHP,CONCAT(s.Lv1Atk5-1)=InitAtk,CONCAT(s.Lv1Spd5-1)=InitSpd,CONCAT(s.Lv1Def5-1)=InitDef,CONCAT(s.Lv1Res5-1)=InitRes',
+			where: 'IFNULL(Properties__full,"") NOT LIKE "%enemy%"',
+			'join_on': 'h._pageName=b.Hero,h.WikiName=s.WikiName',
+			'group_by': 'h._pageName'
+		}).then(function(data) {
+			heroes = data.cargoquery;
+			preload();
+		});
+
+		new mw.Api().get({
+			action: 'cargoquery',
+			limit: 5000,
+			tables: 'UnitSkills=h,Skills=w,Units=u',
+			fields: 'u._pageName=hPageName,w.Name=WeaponName,h.defaultRarity=defaultRarity,w._pageName=wPageName,w.StatModifiers=StatModifiers',
+			where: 'Scategory="weapon" AND w.StatModifiers IS NOT NULL AND h.defaultRarity IS NOT NULL AND IFNULL(u.Properties__full,"") NOT LIKE "%enemy%"',
+			'join_on': 'h.skill=w.WikiName,h.WikiName=u.WikiName',
+			'group_by': 'h.WikiName,h.skill',
+			'order_by': 'h.defaultRarity DESC'
+		}).then(function(data) {
+			heroWeapons = data.cargoquery;
+			preload();
+		});
+	});
+})(window.mediaWiki);

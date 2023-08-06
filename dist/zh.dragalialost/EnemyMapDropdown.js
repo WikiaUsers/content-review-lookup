@@ -1,3 +1,4 @@
+/* [[Template:EnemyHeader]] */
 (function(mw) {
 	'use strict';
 
@@ -18,15 +19,15 @@
 	}
 
 	function displayEnemyMapInfo() {
-		var enemyTables = document.getElementsByClassName("enemy-info-table table");
+		var enemyTables = document.querySelectorAll(".enemy-info-table table");
 		for (var j = 0; j < enemyTables.length; j++) {
 			var enemyTable = enemyTables[j];
 			for (var i = 1; i < enemyTable.rows.length; i++) {
 				var row = enemyTable.rows[i];
-				if (mapSelect.value == "Display All Quests") {
+				if (mapSelect.value === "Display All Quests") {
 					row.style.display = "";
 				} else {
-					if (row.cells[0].innerHTML == mapSelect.value) {
+					if (row.cells[0].textContent === mapSelect.value) {
 						row.style.display = "";
 					} else {
 						row.style.display = "none";
@@ -40,7 +41,7 @@
 		ele.options.length = 0;
 		for (var i = 0; i < list.length; i++) {
 			var opt = document.createElement('option');
-			opt.innerHTML = list[i];
+			opt.textContent = list[i];
 			opt.value = list[i];
 			ele.appendChild(opt);
 		}
@@ -48,9 +49,10 @@
 	}
 
 	function init($content) {
-		var main = $content.find('#EnemyMapDropdown')[0];
+		var main = $content.find('#EnemyMapDropdown:not(.loaded)')[0];
 		if (!main) return;
-		maps = main.textContent;
+		main.classList.add('loaded');
+		maps = main.textContent.split(', ');
 		main.style.display = '';
 		main.innerHTML = '<select id="mapSelect" name="mapSelect"></select>';
 	

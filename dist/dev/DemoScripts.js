@@ -88,6 +88,11 @@
             styles: 'MediaWiki:ClassicDevWikiTheme.css'
         },
         
+        CheapTooltip: {
+        	page: 'CheapTooltip',
+        	styles: 'MediaWiki:CheapTooltip.css'
+        },
+        
         CodeblockLineNumbers: {
             page: 'MediaWiki:CodeblockLineNumbers/code.js',
             styles: 'MediaWiki:CodeblockLineNumbers/code.js'

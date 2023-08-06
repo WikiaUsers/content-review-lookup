@@ -4,7 +4,7 @@
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Sky Seasonal Candle Calculator
 // Author: Ray808080
-// Version: 0.1.2
+// Version: 0.1.3
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Instructions: To use, place the following:
 /*  <div id="sky-seasonal-candle-calculator-wrapper">
@@ -87,8 +87,10 @@ Date.prototype.toDateInputValue = (function() {
                 */'- <span id="sscc_need_no_pass"></span> Seasonal Candles with NO Season Pass. <span id="sscc_skippable_message"></span> Takes approximately <span id="sscc_need_no_pass_days"></span> standard days.<br>' + /*
                 */'- <span id="sscc_need_with_pass"></span> Seasonal Candles with the Season Pass. Takes approximately <span id="sscc_need_with_pass_days"></span> standard days.</p>' + /*
 
-                */'<i>Note: Please know you should never feel pressured to buy the Season Pass.</i></p>' + /*
-
+				*/'<p>' + /*
+                */'<i>Note: Please know you should never feel pressured to buy the Season Pass.</i>' + /*
+				
+				*/'<br>' + /*
                 */'<label for="sscc_date_picker">Choose date:</label>&nbsp;' + /*
                 */'<input type="date" id="sscc_date_picker" name="sscc_date_picker" onchange="return SkySeasonalCandleCalculator.calculate();">&nbsp;' + /*
                 */'<input type="submit" class="wds-button wds-is-secondary" value="Today" onclick="return SkySeasonalCandleCalculator.today();">&nbsp;' + /*
@@ -108,7 +110,9 @@ Date.prototype.toDateInputValue = (function() {
 
                 */'<input type="submit" class="wds-button" value="Calculate" onclick="return SkySeasonalCandleCalculator.calculate();">&nbsp;' + /*
                 */'<input type="submit" class="wds-button wds-is-secondary" value="Clear" onclick="return SkySeasonalCandleCalculator.reset();">' + /*
-                */'<br><br>' + /*
+                
+                */'</p>' + /*
+                */'<br>' + /*
 
                 */'<p id="sscc_custom_comment"></p>' + /*         
                 */'<div id="sscc_general_table"></div>';

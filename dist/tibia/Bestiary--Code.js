@@ -68,8 +68,8 @@ $(function(){
                         if (matches !== null && matches.length > 0) {
                             propn = matches[1];
                             propv = v.replace(/^\s*\|\s?.+?=\s?/, ''); //Remove bar, prop name and leading empty space
-                            propv = propv.replace(/\[\[([^\]]+?)\|(.+?)\]\]/g, '<a href="' + path1 + '$1">$2</a>'); //Replace [[page|display]] with link tags
-                            propv = propv.replace(/\[\[(.+?)\]\]/g, '<a href="' + path1 + '$1">$1</a>'); //Replace [[page]] with link tags
+                            propv = propv.replace(/\[\[([^\]]+?)\|(.+?)\]\]/g, '<a href="' + path1 + '$1">$2</a>'); //Replace [ [ page|display ] ] with link tags (using spaces between brackets to avoid red link detection)
+                            propv = propv.replace(/\[\[(.+?)\]\]/g, '<a href="' + path1 + '$1">$1</a>'); //Replace [ [ page ] ] with link tags (using spaces between brackets to avoid red link detection)
                             if (propn == 'location') {
                                 propv = propv.replace(/\u007B\u007BMapper Coords\|?([0-9.|]+)?\|text=([\w ]+)\|?([0-9.|]+)?\u007D\u007D/g, '<a href="' + path1 + 'Mapper?coords=$1$3">$2</a>').replace(/\|/g, '-'); //Replace Mapper template links
                                 propv = propv.replace(/\s\[(http.+?)\s(.+?)\]/g, ' <a href="$1">$2</a>'); //Replace mapper direct links

@@ -10,6 +10,7 @@
         return;
     }
     var i18n;
+    var preloads = 2;
     function addAnnouncement() {
         var ajaxProps = {
             action: 'parse',
@@ -88,17 +89,22 @@
         ).appendTo(mw.util.$content);
     }
 
-    mw.hook('dev.i18n').add(function(i18no) {
-        i18no.loadMessages('AddAnnouncement').done(function(d) {
+	function init() {
+		if (--preloads>0) return;
+        window.dev.i18n.loadMessages('AddAnnouncement').done(function(d) {
             i18n = d;
-                $('<button>', {
-                    'class': 'wds-button',
-                    'type': 'checkbox',
-                    'id': 'addAnnouncement',
-                    'text': i18n.msg('add').plain()
-                }).click(addAnnouncement).appendTo(mw.util.$content);
+            $('<button>', {
+                'class': 'wds-button',
+                'type': 'checkbox',
+                'id': 'addAnnouncement',
+                'text': i18n.msg('add').plain()
+            }).click(addAnnouncement).appendTo(mw.util.$content);
         });
-    });
+    }
+
+    mw.hook('dev.i18n').add(init);
+    mw.loader.using('mediawiki.util').then(init);
+
     importArticle({
         type:'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'

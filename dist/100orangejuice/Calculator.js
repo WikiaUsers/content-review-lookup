@@ -1,8 +1,10 @@
+/* Calculator script for [[Co-op Reward Modifier]] */
 mw.hook('wikipage.content').add(function($content) {
 	'use strict';
 
-	var calculator = $content.find('#calculator')[0];
+	var calculator = $content.find('#calculator:not(.loaded)')[0];
 	if (!calculator) return;
+	calculator.classList.add('loaded');
 
 	var values = {
 		difficulty: {
@@ -119,13 +121,13 @@ mw.hook('wikipage.content').add(function($content) {
 	});
 
 	chapter.addEventListener('focusout', function() {
-		var loss_chapter = chapter.value;
-		if (typeof(Number(loss_chapter)) !== 'number' || loss_chapter > 30) {
+		var lossChapter = chapter.value;
+		if (typeof(Number(lossChapter)) !== 'number' || lossChapter > 30) {
 			chapter.value = 30;
-		} else if (loss_chapter < 1) {
+		} else if (lossChapter < 1) {
 			chapter.value = 1;
-		} else if (Math.floor( loss_chapter ) !== Number( loss_chapter )) {
-			chapter.value = Math.floor(loss_chapter);
+		} else if (Math.floor( lossChapter ) !== Number( lossChapter )) {
+			chapter.value = Math.floor(lossChapter);
 		}
 	});
 
@@ -136,33 +138,33 @@ mw.hook('wikipage.content').add(function($content) {
 	});
 
 	function inputFunc() {
-		var outcome_modifier = 1.2; // modifier for a win
+		var outcomeModifier = 1.2; // modifier for a win
 		if (calc.querySelector('input[name="outcome"]:checked').value === 'loss') {
-			var loss_chapter = chapter.value;
-			if (typeof(Number(loss_chapter)) !== 'number' || Math.floor(loss_chapter) != Number(loss_chapter) || loss_chapter < 1) {
+			var lossChapter = chapter.value;
+			if (typeof(Number(lossChapter)) !== 'number' || Math.floor(lossChapter) !== Number(lossChapter) || lossChapter < 1) {
 				oranges.innerHTML = '<span class="error">Error</span>';
 				xp.innerHTML = '<span class="error">Error</span>';
 				return;
 			}
-			outcome_modifier = Math.min( loss_chapter, 30 ) * ( 0.1 / 3 );
+			outcomeModifier = Math.min( lossChapter, 30 ) * ( 0.1 / 3 );
 		}
 
-		var modified_oranges_base = 6 * outcome_modifier;
-		var modified_xp_base = 100 * outcome_modifier;
+		var modifiedOrangesBase = 6 * outcomeModifier;
+		var modifiedXpBase = 100 * outcomeModifier;
 
-		var other_modifiers = values.difficulty[calc.querySelector('input[name="difficulty"]:checked').value];
+		var otherModifiers = values.difficulty[calc.querySelector('input[name="difficulty"]:checked').value];
 		if (mixersOn.checked) {
 			for ( var i=0; i<mixers.length; i++ ) {
-				other_modifiers += mixers[i].checked ? values.mixer[mixers[i].value] : 0;
+				otherModifiers += mixers[i].checked ? values.mixer[mixers[i].value] : 0;
 			}
 		}
 		
-		var event_modifiers = 1;
-		if (doublexp.checked) event_modifiers++;
+		var eventModifiers = 1;
+		if (doublexp.checked) eventModifiers++;
 
-		oranges.innerHTML = Math.trunc( modified_oranges_base * other_modifiers );
+		oranges.innerHTML = Math.trunc( modifiedOrangesBase * otherModifiers );
 
-		xp.innerHTML = Math.trunc( Math.trunc( modified_xp_base * other_modifiers ) * event_modifiers );
+		xp.innerHTML = Math.trunc( Math.trunc( modifiedXpBase * otherModifiers ) * eventModifiers );
 	}
 	var calcInput = calc.getElementsByTagName('input');
 	for (var i=0; i<calcInput.length; i++) {

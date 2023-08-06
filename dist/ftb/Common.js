@@ -501,6 +501,18 @@ mw.hook('wikipage.content').add(function(){
 					}
 				});
 			}
+		},
+		
+		/**
+		 * Accessibility button on silly pages like [[Feed The Beast Wiki:Extremely Scary Editathon]]
+		 */
+		spookyFont: {
+			conditional: function(){return $('#spookyfont').length;},
+			exec: function(){
+				$('#spookyfont').on('click', function(){
+					$('#spookytext').attr('style', '');
+				});
+			}
 		}
 	};
 

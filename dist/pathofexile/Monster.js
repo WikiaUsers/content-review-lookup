@@ -1,25 +1,8 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Template:Monster infobox]] */
+(function($, mw) {
 	'use strict';
-	var main = document.getElementById('monster_main');
-	if (!main) return;
-	const dataset = main.dataset;
-	main.innerHTML = '<table class="monster_container">' +
-		'<thead>' +
-			'<tr><th class="info_header">Fetching data...</th></tr>' +
-		'</thead>' +
-		'<tbody></tbody>' +
-	'</table>';
-	const i18n = {
-		missing_monster: 'No monster found with ' + dataset.metadata_id,
-		calculating: 'Calculating properties',
-		query_error: 'A database query error has occured.',
-		invalid_rarity: 'Rarity given is invalid. Only Normal, Magic, Rare and Unique are acceptable values.',
-		invalid_difficulty: 'Difficulty given is invalid. Only part1, part2 and endgame are acceptable values.',
-		invalid_level: 'Level given is not a number or outside of the valid range (1-100)',
-		// (x to y)
-		range: 'to',
-	};
 
+	var i18n, dataset;
 	var init_level = 0;
 	const init_max = 3;
 	const difficulties = {
@@ -1193,14 +1176,35 @@ mw.hook('wikipage.content').add(function() {
 	};
 
 	function _run_final_init() {
-		init_level = init_level + 1;
+		init_level++;
 		// Prevents from being run until all the cargo data is asyncronously loaded
 		if (init_level >= init_max) {
 			monster_finalize_init();
 		}
 	}
 
-	function monster_init() {
+	function init($content) {
+		var main = $content.find('#monster_main:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		dataset = main.dataset;
+		main.innerHTML = '<table class="monster_container">' +
+			'<thead>' +
+				'<tr><th class="info_header">Fetching data...</th></tr>' +
+			'</thead>' +
+			'<tbody></tbody>' +
+		'</table>';
+		i18n = {
+			missing_monster: 'No monster found with ' + dataset.metadata_id,
+			calculating: 'Calculating properties',
+			query_error: 'A database query error has occured.',
+			invalid_rarity: 'Rarity given is invalid. Only Normal, Magic, Rare and Unique are acceptable values.',
+			invalid_difficulty: 'Difficulty given is invalid. Only part1, part2 and endgame are acceptable values.',
+			invalid_level: 'Level given is not a number or outside of the valid range (1-100)',
+			// (x to y)
+			range: 'to',
+		};
+
 		Cargo.query({
 			tables: ['monster_base_stats', 'monster_life_scaling', 'monster_map_multipliers'],
 			fields: [
@@ -1474,5 +1478,5 @@ mw.hook('wikipage.content').add(function() {
 	}
 	//test_stat();
 
-	monster_init();
-});
+	mw.hook('wikipage.content').add(init);
+})(window.jQuery, window.mediaWiki);

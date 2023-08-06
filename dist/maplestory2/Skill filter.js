@@ -4,47 +4,12 @@
  *   - Skill Type (Active/Passive)
  *   - Skill Level Learned
  **/
+
 (function(mw) {
 	'use strict';
 
 	var ele;
 
-	function filterSkills() {
-		// Get all the values from the filter / select inputs
-		var skillNameText = ele.search.value.toUpperCase();
-		var skillTypeSelect = ele.typeSelect.value;
-		var skillLevelSelect = ele.levelSelect.value;
-	
-		// Get all the skills
-		var skillsToFilter = ele.collapsible;
-	
-		// Go through every skill
-		for (var i = 0; i < skillsToFilter.length; i++) {
-			// Get the skill information from the data attributes
-			var skillName = skillsToFilter[i].getAttribute("data-skill-name");
-			var skillType = skillsToFilter[i].getAttribute("data-skill-type");
-			var skillLevel = skillsToFilter[i].getAttribute("data-skill-level");
-	
-			// Check skill name
-			var matchesSkillName = (skillName.toUpperCase().indexOf(skillNameText) > -1);
-	
-			// Check skill type
-			var hasSkillType = (skillTypeSelect == "" || skillType == skillTypeSelect);
-	
-			// Check skill level
-			var levels = skillLevelSelect.split("-");
-			var inSkillLevel = isInLevelRange(skillLevel, levels);
-	
-			// If it matches all the filter / selects, then display the skill.
-			// Otherwise, hide the skill.
-			if (matchesSkillName && hasSkillType && inSkillLevel) {
-				skillsToFilter[i].style.display = "";
-			} else {
-				skillsToFilter[i].style.display = "none";
-			}
-		}
-	}
-	
 	/**
 	 * Function that returns whether or not a skill level is within a level range
 	 * @param skillLevel The level the skill is learned at
@@ -68,10 +33,46 @@
 		return false;
 	}
 
-	function init($content) {
-		var main = $content.find('#skill_filter')[0];
-		if (!main) return;
+	function filterSkills() {
+		// Get all the values from the filter / select inputs
+		var skillNameText = ele.search.value.toUpperCase();
+		var skillTypeSelect = ele.typeSelect.value;
+		var skillLevelSelect = ele.levelSelect.value;
+	
+		// Get all the skills
+		var skillsToFilter = ele.collapsible;
+	
+		// Go through every skill
+		for (var i = 0; i < skillsToFilter.length; i++) {
+			// Get the skill information from the data attributes
+			var skillName = skillsToFilter[i].getAttribute("data-skill-name");
+			var skillType = skillsToFilter[i].getAttribute("data-skill-type");
+			var skillLevel = skillsToFilter[i].getAttribute("data-skill-level");
+	
+			// Check skill name
+			var matchesSkillName = (skillName.toUpperCase().indexOf(skillNameText) > -1);
+	
+			// Check skill type
+			var hasSkillType = (skillTypeSelect === "" || skillType === skillTypeSelect);
+	
+			// Check skill level
+			var levels = skillLevelSelect.split("-");
+			var inSkillLevel = isInLevelRange(skillLevel, levels);
+	
+			// If it matches all the filter / selects, then display the skill.
+			// Otherwise, hide the skill.
+			if (matchesSkillName && hasSkillType && inSkillLevel) {
+				skillsToFilter[i].style.display = "";
+			} else {
+				skillsToFilter[i].style.display = "none";
+			}
+		}
+	}
 
+	function init($content) {
+		var main = $content.find('#skill_filter:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
 		main.innerHTML = '<div id="skill-filter-container" style="padding: 0 1em 1em 1em; border: 3px #67c9f3 solid; border-radius: 5px; background: rgba(255, 255, 255, 0.5); display: inline-block;">' +
 			'<div style="display: inline-block"><h4>Filter skills:</h4></div>' +
 			'<div id="skill-select-container">' +

@@ -6,7 +6,7 @@
  * @author Magiczocker
  */
 
-;(function(mw) {
+(function(mw) {
 	'use strict';
 	const config = mw.config.get([
 		'wgRestrictionComment',
@@ -45,7 +45,7 @@
 			var expiry = [];
 
 			for (var i = 0; i < curProtect.length; i++) {
-				if (curProtect[i].type != 'comment') {
+				if (curProtect[i].type !== 'comment') {
 					protections[protections.length] = curProtect[i].type + '=' + curProtect[i].level;
 					expiry[expiry.length] = curProtect[i].expiry;
 				}

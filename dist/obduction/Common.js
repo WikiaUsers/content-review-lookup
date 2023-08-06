@@ -6,4 +6,4 @@ mw.hook('wikipage.content').add(function($content) {
 	if ($content.find('#GauntletMazeSolver')[0]) articles.push('MediaWiki:Gauntlet Maze Solver.js');
 	
 	if (articles.length) importArticles({type: "script", articles: articles});
-})
+});

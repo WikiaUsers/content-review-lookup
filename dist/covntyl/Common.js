@@ -12,7 +12,7 @@ window.pPreview = $.extend(
         RegExp: (window.pPreview || {}).RegExp || {}
     }
 );
-window.pPreview.defimage = 'https://static.wikia.nocookie.net/covntyl/images/4/45/Sestres.jpg';
-window.pPreview.noimage = 'https://static.wikia.nocookie.net/covntyl/images/4/45/Sestres.jpg';
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/covntyl/images/0/0e/Talugtug_Townhall.jpg';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/covntyl/images/0/0e/Talugtug_Townhall.jpg';
 
 mw.config.set('UMFBypassLicenseCheck', true);

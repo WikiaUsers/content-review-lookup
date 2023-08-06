@@ -1,3 +1,12 @@
+mw.hook('wikipage.content').add(function($content) {
+	var articles = [];
+
+	if ($content.find('#Dienstoffiziersymbole')) articles.push('MediaWiki:Dienstoffizier Symbole.js');
+	if ($content.find('#Dienstoffizierpowers')) articles.push('MediaWiki:Dienstoffizier powers.js');
+
+	if (articles.length) importArticles({type: 'script', articles: articles});
+});
+
 /********************
 /* Shared functions *
 /********************/

@@ -44,25 +44,28 @@
             });
         },
         initWLH: function() {
-            var target = $('#mw-whatlinkshere-target').val();
-            $('#mw-whatlinkshere-target').parent().append(
-                ' &nbsp;',
-                ui.button({
-                    attrs: {
-                        title: this.i18n.msg('description-short').plain()
-                    },
-                    classes: ['wds-button'],
-                    events: {
-                        click: this.clickWLH.bind(this, target)
-                    },
-                    text: this.i18n.msg('title').plain()
-                }),
-                ui.span({
-                    attrs: {
-                        id: 'RemoveLegacyThreadsStatus'
-                    }
-                })
-            );
+            var target = $('#mw-htmlform-whatlinkshere-target input').val();
+            $('#mw-htmlform-whatlinkshere-target')
+                .closest('form')
+                .find('.mw-htmlform-submit-buttons')
+                .append(
+                    ' &nbsp;',
+                    ui.button({
+                        attrs: {
+                            title: this.i18n.msg('description-short').plain()
+                        },
+                        classes: ['wds-button'],
+                        events: {
+                            click: this.clickWLH.bind(this, target)
+                        },
+                        text: this.i18n.msg('title').plain()
+                    }),
+                    ui.span({
+                        attrs: {
+                            id: 'RemoveLegacyThreadsStatus'
+                        }
+                    })
+                );
         },
         clickWLH: function(page, event) {
             event.preventDefault();

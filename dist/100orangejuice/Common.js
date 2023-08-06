@@ -1,37 +1,48 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-//Gif Hover
-$("img", "#gifs-rows").hover(function() {
-  $('.preset-file').toggle();
-  $('.gif-file').toggle();
+//Import scripts that are needed without MediaWiki:ImportJS to prevent useless downloading
+mw.hook('wikipage.content').add(function($content) {
+	var articles = [];
+
+	if ($content.find('#calculator')[0]) articles.push('MediaWiki:Calculator.js');
+	if ($content.find('.customCountdown')[0]) articles.push('MediaWiki:Countdown.js');
+
+	if (articles.length) importArticle({type: 'script', articles: articles});
+
+	//Gif Hover
+	$content.find("img", "#gifs-rows").hover(function() {
+		$content.find('.preset-file').toggle();
+		$content.find('.gif-file').toggle();
+	});
+
+	// Audio can only play 1 element at a time
+    $content.find('audio').on('play', function() {
+        $content.find('audio').not(this).each(function(index, audio) {
+            audio.pause();
+        });
+    });
 });
 
 //Auto change theme by month function
 var monthcss = 'MediaWiki:' + [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-    ][new Date().getMonth()] + '.css';
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+][new Date().getMonth()] + '.css';
 
-function importMWCSS(title) {
-	var url = mw.config.get('wgScript') + ('?title='+title+'&action=raw&ctype=text/css');
-	var link = document.createElement('link');
-	link.type = 'text/css';
-	link.rel = 'stylesheet';
-	link.href = url;
-	document.getElementsByTagName('head') [0].appendChild(link);
-};
-
-importMWCSS(monthcss);
+importArticle({
+	type: 'style',
+	article: monthcss
+});
 
 /* Custom Tooltips for use with the Tooltips/code.js */
 window.tooltips_list = [
@@ -49,12 +60,3 @@ window.tooltips_list = [
 		parse: '{'+'{Tooltip/FieldEvents|<#fieldevents#>}}'
 	}
 ];
-
-// Audio can only play 1 element at a time
-$(function(){
-    $("audio").on("play", function() {
-        $("audio").not(this).each(function(index, audio) {
-            audio.pause();
-        });
-    });
-});

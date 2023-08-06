@@ -1,4 +1,6 @@
 /* Created by Dan Floyd (aka "Floydman"). */
+/* [[Template:Villein Number Generator]]*/
+/* [[Template:VilleinNumber]]*/
 (function(mw) {
 	'use strict';
 
@@ -7,93 +9,28 @@
 	var backColor = "#345885";
 	var pi = Math.PI;
 
-	function enterPressed(target) {
-		if (target.which === 13) goodNumber();
-	}
+	// This function is currently unused.
+	function calculateLayers(digits) {
+		/* Calculates and displays the number of layers necessary to display the number in Villein numerals.
+		Layers are added from the inside out, and the number of digits added to the increase
+		in digits per layer increases by 4 each time. This script will work for any positive
+		whole number input, but the whole tool is capped at 1023 because that is the largest number
+		that can be displayed on Obduction's Villein control panels. That means the largest output you'll
+		see is 2. */
 
-	function goodNumber() {
-		if (Number(ele.base10input.value) >= 0 && Number(ele.base10input.value) <= 1023) {
-			convert10to4();
-		} else {
-			alert("Generated number must be a whole number from 0 to 1023.");
+		var s1 = 1;
+		var rounds = 1;
+		while (s1 < digits) {
+			s1 = s1 + (4 * rounds);
+			rounds++;
 		}
 	}
 
-	function convert10to4() {
-		var element = ele.VilleinNumber;
+	function drawCanvasTwo1Digit() {
+		var ctx = ele.canvasAllDigits.getContext("2d");
+		var img = ele.canvasSingleDigit;
 
-		var canvasFinal = ele.canvasFinal;
-		canvasFinal.width = isGenerator ? Number(ele.inputwidth.value) : config.panelwidth;
-		canvasFinal.height = canvasFinal.width;
-		element.appendChild(canvasFinal);
-
-		var canvasAllDigits = ele.canvasAllDigits;
-		canvasAllDigits.width = canvasFinal.width / 1.5;
-		canvasAllDigits.height = canvasFinal.height / 1.5;
-
-		var canvasSingleDigit = ele.canvasSingleDigit;
-		if (isGenerator ? ele.radio2.checked : config.layercount) {
-			canvasSingleDigit.width = canvasAllDigits.width * 0.5;
-			canvasSingleDigit.height = canvasAllDigits.height * 0.5;
-		} else {
-			canvasSingleDigit.width = canvasAllDigits.width;
-			canvasSingleDigit.height = canvasAllDigits.height;
-		}
-
-		var radiusCircle = canvasSingleDigit.width * 0.2;
-		var pinch = canvasSingleDigit.width * 0.08;
-
-		// Get the value of the input field.
-		var base10 = isGenerator ? Number(ele.base10input.value) : config.base10input;
-		// Convert it to base 4.
-		var base4 = base10.toString(4);
-		// Count the number of digits in the base 4 number.
-		var digits = Math.log(base4) * Math.LOG10E + 1 | 0;
-		if (base4 === 0 && digits === 0) {
-			digits++;
-		}
-		roundCanvasTwo = 1;
-		calculateLayers(digits);
-		checkInteger(digits, base4, pinch, radiusCircle);
-		drawCanvasFinal(base4, base10);
-	}
-
-	function checkInteger(digits, base4, pinch, rc) {
-		var CurrentDigit;
-		var DigitsLeft = digits;
-		var CurrentDigitString;
-		if (isGenerator ? ele.radio2.checked : config.layercount) {
-			while (DigitsLeft >= -4) {
-				CurrentDigitString = String(base4).charAt(DigitsLeft - 1);
-				CurrentDigit = Number(CurrentDigitString);
-				check4Value(CurrentDigit, pinch, rc);
-				DigitsLeft--;
-			}
-		} else {
-			CurrentDigitString = String(base4).charAt(DigitsLeft - 1);
-			CurrentDigit = Number(CurrentDigitString);
-			check4Value(CurrentDigit, pinch, rc);
-		}
-	}
-
-	function check4Value(CurrentDigit, pinch, rc) {
-		if (CurrentDigit === 0) {
-			drawDigitZero(rc);
-		} else if (CurrentDigit === 1) {
-			drawDigitOne(pinch, rc);
-		} else if (CurrentDigit === 2) {
-			drawDigitTwo(pinch, rc);
-		} else if (CurrentDigit === 3) {
-			drawDigitThree(pinch, rc);
-		} else {
-			drawDigitZero(rc);
-		}
-
-		if (isGenerator ? ele.radio2.checked : config.layercount) {
-			drawCanvasTwo5Digits();
-		} else {
-			drawCanvasTwo1Digit();
-		}
+		ctx.drawImage(img, 0, 0, ele.canvasAllDigits.width, ele.canvasAllDigits.height);
 	}
 
 	function drawCanvasTwo5Digits() {
@@ -118,13 +55,6 @@
 		}
 
 		roundCanvasTwo++;
-	}
-
-	function drawCanvasTwo1Digit() {
-		var ctx = ele.canvasAllDigits.getContext("2d");
-		var img = ele.canvasSingleDigit;
-
-		ctx.drawImage(img, 0, 0, ele.canvasAllDigits.width, ele.canvasAllDigits.height);
 	}
 
 	function drawCanvasFinal(base4, base10) {
@@ -153,7 +83,7 @@
 		ele.canvasFinal.title = "\"".concat(String(base10),"\" in Base 10","\r","\"",String(base4),"\" in Base 4");
 	}
 
-	function drawDigitZero (rc) {
+	function drawDigitZero(rc) {
 		var ctx = ele.canvasSingleDigit.getContext("2d");
 		var h2 = ele.canvasSingleDigit.height * 0.5;
 		var w2 = ele.canvasSingleDigit.width * 0.5;
@@ -311,21 +241,93 @@
 		ctx.stroke();
 	}
 
-	// This function is currently unused.
-	function calculateLayers(digits) {
-		/* Calculates and displays the number of layers necessary to display the number in Villein numerals.
-		Layers are added from the inside out, and the number of digits added to the increase
-		in digits per layer increases by 4 each time. This script will work for any positive
-		whole number input, but the whole tool is capped at 1023 because that is the largest number
-		that can be displayed on Obduction's Villein control panels. That means the largest output you'll
-		see is 2. */
-
-		var s1 = 1;
-		var rounds = 1;
-		while (s1 < digits) {
-			s1 = s1 + (4 * rounds);
-			rounds++;
+	function check4Value(CurrentDigit, pinch, rc) {
+		if (CurrentDigit === 0) {
+			drawDigitZero(rc);
+		} else if (CurrentDigit === 1) {
+			drawDigitOne(pinch, rc);
+		} else if (CurrentDigit === 2) {
+			drawDigitTwo(pinch, rc);
+		} else if (CurrentDigit === 3) {
+			drawDigitThree(pinch, rc);
+		} else {
+			drawDigitZero(rc);
 		}
+
+		if (isGenerator ? ele.radio2.checked : config.layercount) {
+			drawCanvasTwo5Digits();
+		} else {
+			drawCanvasTwo1Digit();
+		}
+	}
+
+	function checkInteger(digits, base4, pinch, rc) {
+		var CurrentDigit;
+		var DigitsLeft = digits;
+		var CurrentDigitString;
+		if (isGenerator ? ele.radio2.checked : config.layercount) {
+			while (DigitsLeft >= -4) {
+				CurrentDigitString = String(base4).charAt(DigitsLeft - 1);
+				CurrentDigit = Number(CurrentDigitString);
+				check4Value(CurrentDigit, pinch, rc);
+				DigitsLeft--;
+			}
+		} else {
+			CurrentDigitString = String(base4).charAt(DigitsLeft - 1);
+			CurrentDigit = Number(CurrentDigitString);
+			check4Value(CurrentDigit, pinch, rc);
+		}
+	}
+
+	function convert10to4() {
+		var element = ele.VilleinNumber;
+
+		var canvasFinal = ele.canvasFinal;
+		canvasFinal.width = isGenerator ? Number(ele.inputwidth.value) : config.panelwidth;
+		canvasFinal.height = canvasFinal.width;
+		element.appendChild(canvasFinal);
+
+		var canvasAllDigits = ele.canvasAllDigits;
+		canvasAllDigits.width = canvasFinal.width / 1.5;
+		canvasAllDigits.height = canvasFinal.height / 1.5;
+
+		var canvasSingleDigit = ele.canvasSingleDigit;
+		if (isGenerator ? ele.radio2.checked : config.layercount) {
+			canvasSingleDigit.width = canvasAllDigits.width * 0.5;
+			canvasSingleDigit.height = canvasAllDigits.height * 0.5;
+		} else {
+			canvasSingleDigit.width = canvasAllDigits.width;
+			canvasSingleDigit.height = canvasAllDigits.height;
+		}
+
+		var radiusCircle = canvasSingleDigit.width * 0.2;
+		var pinch = canvasSingleDigit.width * 0.08;
+
+		// Get the value of the input field.
+		var base10 = isGenerator ? Number(ele.base10input.value) : config.base10input;
+		// Convert it to base 4.
+		var base4 = base10.toString(4);
+		// Count the number of digits in the base 4 number.
+		var digits = Math.log(base4) * Math.LOG10E + 1 | 0;
+		if (base4 === 0 && digits === 0) {
+			digits++;
+		}
+		roundCanvasTwo = 1;
+		//calculateLayers(digits);
+		checkInteger(digits, base4, pinch, radiusCircle);
+		drawCanvasFinal(base4, base10);
+	}
+
+	function goodNumber() {
+		if (Number(ele.base10input.value) >= 0 && Number(ele.base10input.value) <= 1023) {
+			convert10to4();
+		} else {
+			alert("Generated number must be a whole number from 0 to 1023.");
+		}
+	}
+
+	function enterPressed(target) {
+		if (target.which === 13) goodNumber();
 	}
 
 	function init($content) {

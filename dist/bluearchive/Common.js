@@ -42,15 +42,6 @@ mw.loader.using('mediawiki.util').then(function () {
 
 mw.hook('wikipage.content').add(expandAll_Buttons);
 expandAll_Buttons($('#content'));
-window.lastEdited = {
-	size: false,
-	diff: false,
-	position: {
-		element: document.getElementById('mw-content-text'),
-		method: 'prepend'
-	},    
-
-}
 
 /*******************/
 /* LastEdit     */
@@ -62,6 +53,16 @@ importArticles({
         'u:dev:MediaWiki:LastEdited/code.js',
     ]
 });
+
+window.lastEdited = {
+	size: false,
+	diff: true,
+	position: {
+		element: document.getElementById('mw-content-text'),
+		method: 'prepend'
+	},    
+
+}
 
 /*******************/
 /* Tooltip     */

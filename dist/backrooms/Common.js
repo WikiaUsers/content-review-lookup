@@ -2,9 +2,6 @@
 
 // For [[Module:CSS]]; [[T:CSS]] dependency
 var css = mw.util.addCSS($("span.import-css").attr("data-css"));
-var exceptions_page = $(".page-MediaWiki_Custom-Exceptions #mw-content-text .mw-parser-output");
-var exceptions = exceptions_page.toString().split(" ");
-
 $("span.import-css").each(function () {
 	css.disabled = true;
 });
@@ -13,20 +10,6 @@ $(".css-button").click(function() {
 	$("span.import-css").each(function () {
 		css.disabled = !css.disabled;
 	});
-});
-
-mw.hook("wikipage.content").add(function () {
-	if (mw.config.get("wgPageName") == "MediaWiki:Custom-Exceptions") {
-		var pre = $('<pre>', {
-			text: exceptions_page.text().trim()
-		});
-		exceptions_page.replaceWith(pre);
-	}
-	else if (exceptions.includes(mw.config.get("wgPageName"))) {
-		$("span.import-css").each(function () {
-			css.disabled = !css.disabled;
-		});
-	}
 });
 
 // UserTags thingamajigs

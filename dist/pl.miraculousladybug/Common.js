@@ -45,7 +45,7 @@ mw.loader.using( 'mediawiki.api', function () {
 			format: "json",
 			list: "allrevisions",
 			formatversion: "2",
-			arvnamespace: "0",
+			arvnamespace: "0|6",
 			arvprop: "ids|timestamp|flags|comment|user|size",
 			arvstart: startDate,
 			arvend: endDate,

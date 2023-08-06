@@ -1,8 +1,10 @@
-;(function(mw) {
+/* [[Strength]] */
+(function(mw) {
 	'use strict';
-	function init() {
-		var damageCalc = document.getElementById('damageCalc');
+	function init($content) {
+		var damageCalc = $content.find('#damageCalc:not(.loaded)')[0];
 		if (!damageCalc) return;
+		damageCalc.classList.add('loaded');
 		damageCalc.innerHTML = '<div id="dmgCalcContainer">' +
 			'<p>Enter your strength</p>' +
 			'<input id="str" type="text" placeholder="Between 10 and 99" maxlength="2" autocomplete="off" spellcheck="false">' +
@@ -11,9 +13,9 @@
 			'<span id="output">+0%</span>' +
 		'</div>';
 
-		document.getElementById('calc').addEventListener('click', function() {
-			var output = document.getElementById('output');
-			var str = Number(document.getElementById('str').value);
+		$content.find('#calc')[0].addEventListener('click', function() {
+			var output = $content.find('#output')[0];
+			var str = Number($content.find('#str')[0].value);
 			if ( isNaN(str) ) {
 				output.textContent = "Strength must be a number.";
 			} else if ( str < 10 || str > 99) {

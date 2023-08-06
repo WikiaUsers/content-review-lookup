@@ -1,7 +1,8 @@
+/* [[Template:HelperUseCalculator]] */
 mw.hook('wikipage.content').add(function($content) {
-	var huc = $content.find('#HelperUseCalculator')[0];
+	var huc = $content.find('#HelperUseCalculator:not(.loaded)')[0];
 	if (!huc) return;
-
+	huc.classList.add('loaded');
 	var manaButton = document.createElement('input');
 	manaButton.type = 'number';
 	$content.find('#huc-mana')[0].append(manaButton);

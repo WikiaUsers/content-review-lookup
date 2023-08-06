@@ -1,25 +1,27 @@
+/* [[Template:Test]] */
 mw.hook('wikipage.content').add(function($content) {
 	'use strict';
-	var table = $content.find('#statTable')[0];
+	var table = $content.find('#statTable:not(.loaded)')[0];
 	if (!table) return;
+	table.classList.add('loaded');
 
-	var primary_stat_point    = 4; //Increase 1 primary per how many points
-	var secondary_stat_point  = 5; //Increase 1 secondary per how many points
-	var health_per_stat_point = 10; //Increase health by 10 per point
-	var mana_per_stat_point   = 10; //Increase mana by 10 per point
-	var weight_per_stat_point = 10; //Increase weight by 10 per point
+	var primaryStatPoint    = 4; //Increase 1 primary per how many points
+	var secondaryStatPoint  = 5; //Increase 1 secondary per how many points
+	var healthPerStatPoint  = 10; //Increase health by 10 per point
+	var manaPerStatPoint    = 10; //Increase mana by 10 per point
+	var weightPerStatPoint  = 10; //Increase weight by 10 per point
 
 	//Basic Stats
 	var strength        =   15;
 	var dexterity       =   10;
 	var endurance       =   15;
 	var physical        =   5;
-	var poison_resist   =   5;
+	var poisonResist    =   5;
 	var potential       =   5;
 	var intelligence    =   5;
 	var willpower       =   5;
-	var fire_resist     =   5;
-	var ice_resist      =   5;
+	var fireResist      =   5;
+	var iceResist       =   5;
 	
 	//Skill List and their variables | null means not implemented
 	var skillArray = {
@@ -36,7 +38,7 @@ mw.hook('wikipage.content').add(function($content) {
 		gathering    : [0 , null],
 		healing      : [0,"end","int"],
 		hewing       : [0,"str","dex"],
-		leather_works: [0,"str","pot"],
+		leatherWorks : [0,"str","pot"],
 		lockpicking  : [0 , null],
 		lumberjack   : [0,"end","dex"],
 		magery       : [0,"int","will"],
@@ -49,10 +51,10 @@ mw.hook('wikipage.content').add(function($content) {
 		tinkering    : [0 , null]
 	};
 
-	var health          = 20; // Default health is 20 not counting the default stats
-	var mana            = 20; // Default mana is 20 not counting the default stats
-	var weight          = 20; // Default weight is 20 not counting the default stats
-	var total_points    = 0;  // Total skills points added up
+	var health      = 20; // Default health is 20 not counting the default stats
+	var mana        = 20; // Default mana is 20 not counting the default stats
+	var weight      = 20; // Default weight is 20 not counting the default stats
+	var totalPoints = 0;  // Total skills points added up
 
 	var imageLink = 'https://static.wikia.nocookie.net/arcfall_gamepedia_en/images/';
 	var statusImageSource = imageLink + "e/ea/Statpage.png";
@@ -84,12 +86,12 @@ mw.hook('wikipage.content').add(function($content) {
 		dexterity       =   10;
 		endurance       =   15;
 		physical        =   5;
-		poison_resist   =   5;
+		poisonResist    =   5;
 		potential       =   5;
 		intelligence    =   5;
 		willpower       =   5;
-		fire_resist     =   5;
-		ice_resist      =   5;
+		fireResist      =   5;
+		iceResist       =   5;
 
 		health          =   20;
 		mana            =   20;
@@ -109,7 +111,7 @@ mw.hook('wikipage.content').add(function($content) {
 		skillArray.gathering[0]           = getInput("gathering");
 		skillArray.healing[0]             = getInput("healing");
 		skillArray.hewing[0]              = getInput("hewing");
-		skillArray.leather_works[0]       = getInput("leather_works");
+		skillArray.leatherWorks[0]        = getInput("leatherWorks");
 		skillArray.lockpicking[0]         = getInput("lockpicking");
 		skillArray.lumberjack[0]          = getInput("lumberjack");
 		skillArray.magery[0]              = getInput("magery");
@@ -126,56 +128,56 @@ mw.hook('wikipage.content').add(function($content) {
 		for (var i in skillArray) {
 			var skill = skillArray[i];
 
-			if (skill[1] != null) {
+			if (skill[1] !== null) {
 				switch(skill[1]) {
 					case "str":
-					    strength += Math.floor(skill[0] / primary_stat_point);                
+					    strength += Math.floor(skill[0] / primaryStatPoint);                
 					break;
 
 					case "dex":
-					    dexterity += Math.floor(skill[0] / primary_stat_point);
+					    dexterity += Math.floor(skill[0] / primaryStatPoint);
 					break;
 
 					case "end":
-					    endurance += Math.floor(skill[0] / primary_stat_point);
+					    endurance += Math.floor(skill[0] / primaryStatPoint);
 					break;
 
 					case "pot":
-					    potential += Math.floor(skill[0] / primary_stat_point);
+					    potential += Math.floor(skill[0] / primaryStatPoint);
 					break;
 
 					case "int":
-					    intelligence += Math.floor(skill[0] / primary_stat_point);
+					    intelligence += Math.floor(skill[0] / primaryStatPoint);
 					break;
 
 					case "will":
-					    willpower += Math.floor(skill[0] / primary_stat_point);
+					    willpower += Math.floor(skill[0] / primaryStatPoint);
 					break;
 					}
-					if (skill[2] != null) {
+					if (skill[2] !== null) {
 					switch(skill[2]) {
 						case "str":
-							strength += Math.floor(skill[0] / secondary_stat_point);
+							strength += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 
 						case "dex":
-							dexterity += Math.floor(skill[0] / secondary_stat_point);
+							dexterity += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 
 						case "end":
-							endurance += Math.floor(skill[0] / secondary_stat_point);
+							endurance += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 
 						case "pot":
-							potential += Math.floor(skill[0] / secondary_stat_point);
+							potential += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 
 						case "int":
-							intelligence += Math.floor(skill[0] / secondary_stat_point);
+							intelligence += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 
 						case "will":
-							willpower += Math.floor(skill[0] / secondary_stat_point);
+							willpower += Math.floor(skill[0] / secondaryStatPoint);
 						break;
 					}
 				}
@@ -183,15 +185,17 @@ mw.hook('wikipage.content').add(function($content) {
 		}
 
 		//calculate health / mana / weight
-		health += (endurance * health_per_stat_point);
-		mana += ((intelligence + willpower) * mana_per_stat_point);
-		weight += (strength * weight_per_stat_point);   
+		health += (endurance * healthPerStatPoint);
+		mana += ((intelligence + willpower) * manaPerStatPoint);
+		weight += (strength * weightPerStatPoint);   
 
-		total_points = 0;
+		totalPoints = 0;
 
 		for (var j in skillArray) {
-			var skill2 = skillArray[j];
-			total_points += parseInt(skill2[0]);
+			if (skillArray.hasOwnProperty(j)) {
+				var skill2 = skillArray[j];
+				totalPoints += parseInt(skill2[0]);
+			}
 		}
 	}
 
@@ -203,7 +207,6 @@ mw.hook('wikipage.content').add(function($content) {
 	resultCanvas.width = 180;
 	resultCanvas.height = 530;
 	$content.find('#resultCanvas')[0].prepend(resultCanvas);
-	$content.find('#calcButton')[0].addEventListener('click', calculate);
 	var statBackground;
 	var resultBackground;
 
@@ -219,13 +222,13 @@ mw.hook('wikipage.content').add(function($content) {
 				statContext.fillText(dexterity,131,446);
 				statContext.fillText(endurance,131,465);
 				statContext.fillText(physical,131,487);
-				statContext.fillText(poison_resist,131,507);
+				statContext.fillText(poisonResist,131,507);
 
 				statContext.fillText(potential,319,426);
 				statContext.fillText(intelligence,319,446);
 				statContext.fillText(willpower,319,465);
-				statContext.fillText(fire_resist,319,487);
-				statContext.fillText(ice_resist,319,507);
+				statContext.fillText(fireResist,319,487);
+				statContext.fillText(iceResist,319,507);
 			break;
 
 			case "resultCanvas":
@@ -246,7 +249,7 @@ mw.hook('wikipage.content').add(function($content) {
 				resultContext.fillText(health,126,33);
 				resultContext.fillText(mana,126,53); 
 				resultContext.fillText(weight,126,73);
-				resultContext.fillText(total_points,126,93); 
+				resultContext.fillText(totalPoints,126,93); 
 			break;
 	
 			case "calculate":
@@ -267,6 +270,7 @@ mw.hook('wikipage.content').add(function($content) {
 		calcStats();
 		drawStats("calculate");
 	}
+	$content.find('#calcButton')[0].addEventListener('click', calculate);
 
 	var statContext = statCanvas.getContext("2d");
 	var resultContext = resultCanvas.getContext("2d");

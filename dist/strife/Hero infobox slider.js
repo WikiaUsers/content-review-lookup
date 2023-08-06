@@ -1,38 +1,21 @@
-mw.hook('wikipage.content').add(function($content) {
+/* [[Template:Hero infobox/layout]] */
+/* [[Template:Hero ability table/row/layout]] */
+(function(mw) {
 	'use strict';
-	var main = $content.find('#hero_infobox_slider')[0];
-	if (!main) return;
-	var hero, slider;
-	var minLevel = 0;
-	var maxLevel = 0;
-	var ele = {
-		armor: $content.find('#heroslider-armor')[0] || {},
-		attackdamage: $content.find('#heroslider-attackdamage')[0] || {},
-		healthregen: $content.find('#heroslider-healthregen')[0] || {},
-		level: $content.find('#heroslider-level')[0] || {},
-		magicarmor: $content.find('#heroslider-magicarmor')[0] || {},
-		maxhealth: $content.find('#heroslider-maxhealth')[0] || {},
-		
-		herostatstable: $content.find('#herostatstable')[0]
-	};
 
-	function initialize() {
-		hero = JSON.parse( '{"level":{' + main.textContent.replaceAll(':,', ':\"\",') + '}}' );
-		var levels = Object.keys( hero.level );
-		if ( levels.length > 0 ) {
-			minLevel = parseInt( levels[0], 10 );
-			maxLevel = parseInt( levels[levels.length - 1], 10 );
-				$content.find('#heroslider-level')[0].textContent = 'Level ' + maxLevel;
-				var sliderOuter = $content.find('#heroslider-outer')[0];
-				slider = document.createElement('input');
-				slider.id = 'heroslider';
-				slider.type = 'range';
-				sliderOuter.appendChild(slider);
-				slider.min = minLevel;
-				slider.max = maxLevel;
-				slider.value = maxLevel;
-			slider.addEventListener('change', updateStats);
+	var hero, slider, ele, $content;
+
+	function parseConstants( constantsList ) {
+		var constants = {};
+		var constantsLines = constantsList.split( '\n' );
+
+		for ( var i = 0; i < constantsLines.length; ++i ) {
+			var constantParts = constantsLines[i].split( ',' );
+			if ( constantParts.length > 2 ) {
+				constants[constantParts[0].split( ';' )[0]] = constantParts[1];
+			}
 		}
+		return constants;
 	}
 
 	function addAbility( id, requiredLevelList, manaCostList, rangeList, constantsList ) {
@@ -54,17 +37,36 @@ mw.hook('wikipage.content').add(function($content) {
 		hero.abilities[id] = ability;
 	}
 
-	function parseConstants( constantsList ) {
-		var constants = {};
-		var constantsLines = constantsList.split( '\n' );
+	function updateAbilities( level ) {
+		if ( !('abilities' in hero) ) return;
 
-		for ( var i = 0; i < constantsLines.length; ++i ) {
-			var constantParts = constantsLines[i].split( ',' );
-			if ( constantParts.length > 2 ) {
-				constants[constantParts[0].split( ';' )[0]] = constantParts[1];
+		var ability, descSpan, shortDescSpan, achievedAbility, achievedLevel;
+
+		for ( var id in hero.abilities ) {
+			if (hero.abilities.hasOwnProperty(id)) {
+				ability = hero.abilities[id];
+				achievedLevel = 0;
+				for (var requiredLevel in ability ) {
+					if (ability.hasOwnProperty(requiredLevel) && requiredLevel <= level) {
+						achievedLevel = Math.max( achievedLevel, requiredLevel );
+					}
+				}
+				shortDescSpan = $content.find('#' + id + '-short')[0];
+				descSpan = $content.find('#' + id)[0];
+				if ( achievedLevel > 0 ) {
+					achievedAbility = ability[achievedLevel];
+					$content.find('#' + id + '-manacost')[0].textContent = achievedAbility.manaCost ;
+					$content.find('#' + id + '-range')[0].textContent = achievedAbility.range ;
+					for ( var constant in achievedAbility.constants ) {
+						if (achievedAbility.constants.hasOwnProperty(constant)) {
+							console.log(achievedAbility.constants[constant]);
+							shortDescSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
+							descSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
+						}
+					}
+				}
 			}
 		}
-		return constants;
 	}
 
 	function updateStats() {
@@ -72,7 +74,7 @@ mw.hook('wikipage.content').add(function($content) {
 		var data = hero.level[level];
 		ele.level.textContent = 'Level ' + level;
 		if ( data.attackdamagemin && data.attackdamagemax ) {
-			if ( data.attackdamagemin != data.attackdamagemax ) {
+			if ( data.attackdamagemin !== data.attackdamagemax ) {
 				ele.attackdamage.textContent = data.attackdamagemin + '-' + data.attackdamagemax;
 			} else {
 				ele.attackdamage.textContent = data.attackdamagemax;
@@ -88,7 +90,7 @@ mw.hook('wikipage.content').add(function($content) {
 
 		
 		ele.herostatstable.querySelectorAll('td:first-of-type').forEach(function(ele) {
-			if ( parseInt( ele.textContent, 10 ) == level ) {
+			if ( parseInt( ele.textContent, 10 ) === level ) {
 				ele.classList.add( 'current' );
 			} else {
 				ele.classList.remove( 'current' );
@@ -98,31 +100,47 @@ mw.hook('wikipage.content').add(function($content) {
 		updateAbilities( level );
 	}
 
-	function updateAbilities( level ) {
-		if ( 'abilities' in hero ) {
-			var ability, descSpan, shortDescSpan, achievedAbility, achievedLevel;
-			for ( var id in hero.abilities ) {
-				ability = hero.abilities[id];
-				achievedLevel = 0;
-				for ( var requiredLevel in ability ) {
-					if ( requiredLevel <= level ) {
-						achievedLevel = Math.max( achievedLevel, requiredLevel );
-					}
-				}
-				shortDescSpan = $content.find('#' + id + '-short')[0];
-				descSpan = $content.find('#' + id)[0];
-				if ( achievedLevel > 0 ) {
-					achievedAbility = ability[achievedLevel];
-					$content.find('#' + id + '-manacost')[0].textContent = achievedAbility.manaCost ;
-					$content.find('#' + id + '-range')[0].textContent = achievedAbility.range ;
-					for ( var constant in achievedAbility.constants ) {
-						console.log(achievedAbility.constants[constant]);
-						shortDescSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
-						descSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
-					}
-				}
-			}
+	function init(content) {
+		$content = content;
+		var main = $content.find('#hero_infobox_slider:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		var minLevel = 0;
+		var maxLevel = 0;
+		ele = {
+			armor: $content.find('#heroslider-armor')[0] || {},
+			attackdamage: $content.find('#heroslider-attackdamage')[0] || {},
+			healthregen: $content.find('#heroslider-healthregen')[0] || {},
+			level: $content.find('#heroslider-level')[0] || {},
+			magicarmor: $content.find('#heroslider-magicarmor')[0] || {},
+			maxhealth: $content.find('#heroslider-maxhealth')[0] || {},
+			
+			herostatstable: $content.find('#herostatstable')[0]
+		};
+
+		hero = JSON.parse( '{"level":{' + main.textContent.replaceAll(':,', ':\"\",') + '}}' );
+		var levels = Object.keys( hero.level );
+		if ( levels.length > 0 ) {
+			minLevel = parseInt( levels[0], 10 );
+			maxLevel = parseInt( levels[levels.length - 1], 10 );
+				$content.find('#heroslider-level')[0].textContent = 'Level ' + maxLevel;
+				var sliderOuter = $content.find('#heroslider-outer')[0];
+				slider = document.createElement('input');
+				slider.id = 'heroslider';
+				slider.type = 'range';
+				sliderOuter.appendChild(slider);
+				slider.min = minLevel;
+				slider.max = maxLevel;
+				slider.value = maxLevel;
+			slider.addEventListener('input', updateStats);
+		}
+
+		var stats = $content.find('#hero_infobox_slider_stats')[0];
+		if (stats) {
+			var statsData = stats.dataset;
+    		addAbility( statsData.id, statsData.requiredlevels, statsData.manacost, statsData.range, statsData.constants );
 		}
 	}
-	initialize();
-});
+
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

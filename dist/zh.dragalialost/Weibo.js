@@ -1,7 +1,4 @@
-/**
- * Name:        Weibo
- * Description: Allows intergration with Weibo
- */
+/* [[Dragalia_Lost_Wiki/News]] */
  
 mw.hook('wikipage.content').add(function($content) {
     if (!$content) {

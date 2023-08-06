@@ -1,7 +1,9 @@
+/* [[Template:Gauntlet Maze Solver]] */
 mw.hook('wikipage.content').add(function($content) {
 	'use strict';
-	var main = $content.find('#GauntletMazeSolver')[0];
+	var main = $content.find('#GauntletMazeSolver:not(.loaded)')[0];
 	if (!main) return;
+	main.classList.add('loaded');
 	main.innerHTML = '<div id="leftDiv" style="float:left">' +
 		'<div id="mainDiv"></div>' +
 		'<div id="pathDiv">' +

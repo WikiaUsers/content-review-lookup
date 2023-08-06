@@ -1,4 +1,5 @@
-;(function($, mw) {
+/* [[Template:ListFilter]] [[Module:ListFilter]] */
+(function($, mw) {
 	'use strict';
 	function filter(list, filter) {
 		if (!filter.length) {
@@ -49,9 +50,10 @@
 			this.style.display = '';
 		});
 	}
-	mw.hook('wikipage.content').add(function() {
-		var ele = document.getElementsByClassName('character-filters')[0];
+	mw.hook('wikipage.content').add(function($content) {
+		var ele = $content.find('.character-filters:not(.loaded)')[0];
 		if (!ele) return;
+		ele.classList.add('loaded');
 		$('.character-filters span.mw-ui-button').on('click', function(event) {
 			$(event.target).toggleClass('mw-ui-progressive');
 			updateFilters();

@@ -157,10 +157,10 @@
 		return opts;
 	}
 
-	function init() {
-		var countdown = $('.countdown:not(.handled)');
+	function init($content) {
+		var countdown = $content.find('.countdown:not(.handled)');
 		if (!countdown.length) return;
-		$('.nocountdown').css('display', 'none');
+		$content.find('.nocountdown').css('display', 'none');
 		countdown
 		.css('display', 'inline')
 		.find('.countdowndate')
@@ -187,10 +187,10 @@
 		p.loadMessages('Countdown', {
 			cacheVersion: 2
 		}).then(function(p) {
-			mw.hook('wikipage.content').add(function() {
+			mw.hook('wikipage.content').add(function($content) {
 				i18n = p;
 				i18n.useUserLang();
-				init();
+				init($content);
 			});
 		});
 	});

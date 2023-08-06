@@ -13,7 +13,7 @@ $.when(mw.loader.using('mediawiki.util'), $.ready).then( function () {
 		if (nowTime >= expTime) {
 			$(this).css('display', 'none');
 		}
-	})
+	});
 } );
 
 /* temp fix until tipping over disables hovers on edit buttons etc */
@@ -42,7 +42,7 @@ $(function() {
 });
 
 $(function() {
-	if (mw.config.get('wgPageName') != 'MediaWiki:Gadgets-definition') return;
+	if (mw.config.get('wgPageName') !== 'MediaWiki:Gadgets-definition') return;
 	if (window.location.href.indexOf("history") > 0) return;
 	var urlPrefix = mw.config.get('wgServer') + '/MediaWiki:Gadget-';
 	function replaceWithLink(str) {
@@ -54,7 +54,7 @@ $(function() {
 	$('#mw-content-text li').each(function() {
 		var html = $(this).html();
 		var htmlParts = html.split('|');
-		for (i in htmlParts) {
+		for (var i in htmlParts) {
 			if (htmlParts[i].endsWith('css') || htmlParts[i].endsWith('js')) {
 				htmlParts[i] = replaceWithLink(htmlParts[i]);
 			}

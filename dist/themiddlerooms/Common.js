@@ -84,8 +84,9 @@ UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // Since UserT
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
-UserTagsJS.modules.userfilter = { 'Middlerooms Wiki Abuse Filter': ['bureaucrat'] };
+UserTagsJS.modules.userfilter = { 'Blueberry Bot': ['bureaucrat'] };
 UserTagsJS.modules.custom = {
-	'Middlerooms Wiki Abuse Filter': ['bot', 'sysop'],
+	'Blueberry Bot': ['bot', 'sysop'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
+	'KeelerWeeler': ['rollback'],
 };

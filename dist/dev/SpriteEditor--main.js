@@ -200,15 +200,26 @@
 			for (var j = 0; j < boxes.length; j++) {
 				var names = boxes[j].querySelectorAll(".spritedoc-name");
 				for (var k = 0; k < names.length; k++) {
-					if (options.removeDeprecatedNames && names[k].children[0].classList.contains("spritedoc-deprecated")) continue;
+					var name = names[k].children[0];
+					if (options.removeDeprecatedNames && name.classList.contains("spritedoc-deprecated")) continue;
 					if (boxes[j].dataset.pos === "null") continue;
 					var p = options.removeUnusedSprites && options.removeWhitespace && boxes[j].dataset.posTmp || boxes[j].dataset.pos;
-					a.ids[names[k].children[0].textContent] = {
+					a.ids[name.textContent] = {
 						pos: p,
 						section: secId
 					};
-					if (names[k].children[0].classList.contains("spritedoc-deprecated")) {
-						a.ids[names[k].children[0].textContent].deprecated = true;
+					if (name.classList.contains("spritedoc-deprecated")) {
+						a.ids[name.textContent].deprecated = true;
+					}
+					// eSports
+					if (name.classList.contains("spritedoc-nolink")) {
+						a.ids[name.textContent].nolink = true;
+					}
+					if (name.classList.contains("spritedoc-black")) {
+						a.ids[name.textContent].black = true;
+					}
+					if (name.classList.contains("spritedoc-dark")) {
+						a.ids[name.textContent].dark = true;
 					}
 				}
 			}
@@ -223,12 +234,13 @@
 			names.sort();
 		}
 		for (var i = 0; i < names.length; i++) {
-			var t = isNaN(data[names[i]]);
-			var u = t && "\'" || "";
-			if (String(data[names[i]]).substring(0,7) === "require") {
+			var d = data[names[i]];
+			var t = isNaN(d);
+			var u = ((typeof(d) == "string" && !d.length) || t) && "\'" || "";
+			if (String(d).substring(0,7) === "require") {
 				u = "";
 			}
-			to_return.push( names[i] + " = " + u + data[names[i]] + u );
+			to_return.push( names[i] + " = " + u + d + u );
 		}
 		var id = ("\t").repeat(ident);
 		var joinVar = ident === 2 && ",\n" + id || ", ";
@@ -1039,7 +1051,12 @@
 			var box_code = getCodeField(data[name][0]);
 			if (data[name][1])
 				box_code.classList.add("spritedoc-deprecated");
-
+			if (data[name][2] && data[name][2].nolink)
+				box_code.classList.add("spritedoc-nolink");
+			if (data[name][2] && data[name][2].black)
+				box_code.classList.add("spritedoc-black");
+			if (data[name][2] && data[name][2].dark)
+				box_code.classList.add("spritedoc-dark");
 			if (pos)
 				box_code.setAttribute("isSprite", "");
 
@@ -1499,7 +1516,7 @@
 				toShare.highestPos = Math.max(toShare.highestPos, posID);
 				sprites[secID] = sprites[secID] || [];
 				sprites[secID][posID] = sprites[secID][posID] || [];
-				sprites[secID][posID].push( [name, output.ids[name].deprecated] );
+				sprites[secID][posID].push( [name, output.ids[name].deprecated, output.ids[name]] );
 			}
 			for (var i = 0; i < output.sections.length; i++) {
 				newSection(output.sections[i]);

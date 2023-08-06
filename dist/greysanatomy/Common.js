@@ -2,7 +2,10 @@
 /* Pride toolbar advertisement */
 var toolbarLabel = 'Disability Pride';
 var toolbarLinks = [
-    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395124', label: 'July 27: Post-Traumatic Stress Disorder'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395131', label: 'July 31: Disability Pride - Deaf'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395128', label: 'July 30: Disability Pride - Huntington\'s Disease'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395127', label: 'July 29: Disability Pride - Spinal Stroke'},
+    {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395124', label: 'July 27: Disability Pride - PTSD'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395121', label: 'July 25: Disability Pride discussion post'},
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395120', label: 'July 25: Disability Pride - Cancer (Grey\'s Anatomy)'},
     {link: 'https://bit.ly/DisabilityPrideMonth-Chris', label: 'July 24: Going Through the (E)motions with Chris'},

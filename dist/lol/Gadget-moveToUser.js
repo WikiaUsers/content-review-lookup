@@ -1,20 +1,33 @@
 $(function () { 
 	$(mw.util.addPortletLink('p-cactions', 'javascript:;', '!Move To User', 'ca-move-to-user', 'Move to user ns of article creator & null edit', 'z', '#ca-patrol-all')).click(function() {
 		clearDisplayColor();
-		var reason = prompt("Enter reason for move","This page doesn't meet our notability guidelines or quality standards. Please join our Discord linked in the sidebar if you have any questions!");
+		var a = new mw.Api();
 		
-		if (!reason) {
-			return;
+		var reason
+		
+		function getDiscordURL() {
+			return a.get({action:"expandtemplates", text:"{{DiscordURL}}", prop:"wikitext"}).then(function(data){
+				return data.expandtemplates.wikitext;	
+			});
+		}
+		
+		function promptReason(discordURL) {
+			reason = prompt("Enter reason for move","This page doesn't meet our notability guidelines or quality standards. Please join our Discord if you have any questions! " + discordURL);
+			if (!reason) {
+				return Promise.reject();
+			}
+			return Promise.resolve();
 		}
 
 		var fulltitle = mw.config.get('wgPageName');
-		var a = new mw.Api();
+		
 		var subpages = [
 			'Tooltip:%s',
 			'%s/Tournament Results',
 			'%s/Schedule History',
 			'%s/Pick-Ban History',
 		];
+		
 		subpages = subpages.map(function(p) {
 			return p.replace('%s', fulltitle);
 		});
@@ -133,7 +146,9 @@ $(function () {
 			return Promise.all(deletions);
 		}
 		
-		return getRevisions()
+		return getDiscordURL()
+			.then(promptReason)
+			.then(getRevisions)
 			.then(patrolAndAccept)
 			.then(getUser)
 			.then(checkTarget)

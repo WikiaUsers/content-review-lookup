@@ -1,8 +1,8 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Upgrades]] */
+(function(mw) {
 	'use strict';
-	var calc = document.getElementById('StatCalc');
-	if (!calc) return;
-	calc.innerHTML = '<div id="statCalcContainer">' +
+
+	var html = '<div id="statCalcContainer">' +
 		'<div id="statCentre">' +
 			'<div>' +
 				'<p>Choose a weapon</p>' +
@@ -62,20 +62,8 @@ mw.hook('wikipage.content').add(function() {
 		tennis: [5, 2, 5.5],
 		uRock: [5, 7, 0],
 		uStick: [7, 2, 8]
-	},
-	ele = {
-		option: document.getElementById('weaponList'),
-		feather: document.getElementById('feather'),
-		teeth: document.getElementById('teeth'),
-		glass: document.getElementById('glass'),
-		output: document.getElementById('statsOutput'),
-		speedBar: document.getElementById('speedBar'),
-		damageBar: document.getElementById('damageBar'),
-		blockBar: document.getElementById('blockBar'),
-		infoSpeed: document.getElementById('infoSpeed'),
-		infoDamage: document.getElementById('infoDamage'),
-		infoBlock: document.getElementById('infoBlock')
 	};
+	var ele;
 	function updateBars() {
 		var speed = Number(ele.infoSpeed.textContent);
 		var damage = Number(ele.infoDamage.textContent);
@@ -85,7 +73,7 @@ mw.hook('wikipage.content').add(function() {
 		ele.damageBar.style.width = (damage * factor) + 'px';
 		ele.blockBar.style.width = (block * factor) + 'px';
 	}
-	document.getElementById('calcStats').addEventListener('click', function() {
+	function calcValues() {
 		var option = ele.option.value;
 		var feather = Number(ele.feather.value);
 		var teeth = Number(ele.teeth.value);
@@ -100,7 +88,7 @@ mw.hook('wikipage.content').add(function() {
 			output.textContent = 'Make sure all inputs are numbers.';
 		} else if (feather < 0 || teeth < 0 || glass < 0) {
 			output.textContent = 'How can you have a negative upgrade.';
-		} else if ((feather == 0 && teeth == 0 && glass == 0)) {
+		} else if ((feather === 0 && teeth === 0 && glass === 0)) {
 			output.textContent = 'At least one upgrade has to be greater than 0.';
 		} else if ((feather + teeth + glass) > 30) {
 			output.textContent = 'The total number of upgrades can\'t exceed 30.';
@@ -113,12 +101,34 @@ mw.hook('wikipage.content').add(function() {
 			ele.infoDamage.textContent = damage;
 			updateBars();
 		}
-	});
-	ele.option.addEventListener('change', function() {
-		var option = this.value;
-		ele.infoSpeed.textContent = weaponStats[option][0];
-		ele.infoDamage.textContent = weaponStats[option][1];
-		ele.infoBlock.textContent = weaponStats[option][2];
-		updateBars();
-	});
-});
+	}
+	
+	function init($content) {
+		var calc = $content.find('#StatCalc:not(.loaded)')[0];
+		if (!calc) return;
+		calc.classList.add('loaded');
+		calc.innerHTML = html;
+		ele = {
+			option: $content.find('#weaponList')[0],
+			feather: $content.find('#feather')[0],
+			teeth: $content.find('#teeth')[0],
+			glass: $content.find('#glass')[0],
+			output: $content.find('#statsOutput')[0],
+			speedBar: $content.find('#speedBar')[0],
+			damageBar: $content.find('#damageBar')[0],
+			blockBar: $content.find('#blockBar')[0],
+			infoSpeed: $content.find('#infoSpeed')[0],
+			infoDamage: $content.find('#infoDamage')[0],
+			infoBlock: $content.find('#infoBlock')[0]
+		};
+		$content.find('#calcStats')[0].addEventListener('click', calcValues);
+		ele.option.addEventListener('change', function() {
+			var option = this.value;
+			ele.infoSpeed.textContent = weaponStats[option][0];
+			ele.infoDamage.textContent = weaponStats[option][1];
+			ele.infoBlock.textContent = weaponStats[option][2];
+			updateBars();
+		});
+	}
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

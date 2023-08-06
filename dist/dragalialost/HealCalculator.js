@@ -1,3 +1,4 @@
+/* [[Healing Formula]] */
 (function(mw) {
 	'use strict';
 
@@ -47,8 +48,9 @@
 		ele.HOT.style.display = ele.CHECKBOX.checked ? "block" : "none";
 	}
 	function init($content) {
-		var main = $content.find('#HealCalculator')[0];
+		var main = $content.find('#HealCalculator:not(.loaded)')[0];
 		if (!main) return;
+		main.classList.add('loaded');
 		main.innerHTML = addEntry('HP', 'HP') +
 		addEntry('STR', 'STR') +
 		addEntry('Potency %', 'PTNCY') +

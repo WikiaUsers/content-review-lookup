@@ -94,11 +94,11 @@ UserTagsJS.modules.custom = {
 	/* Rollbacks */
 	/* Chat Mods */
 	'SeiShii': ['chatmoderator', 'head', 'ec-member'],
+	'GhoulGirls90': ['chatmoderator'],
 	/* Helpers and Intern */
 	'Littleslinky': ['helpers'],
 	'RedLightningStrike': ['helpers', 'ec-member'],
 	'S0ul245Official': ['helpers'],
-	'GhoulGirls90': ['helpers'],
 	'PLACEHOLDER': ['intern'],
 	
 	//Former Staff

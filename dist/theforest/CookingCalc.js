@@ -1,7 +1,6 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Test/cookingCalc]] */
+(function(mw) {
 	'use strict';
-	var cookingCalcDiv = document.getElementById('cookingCalc');
-	if (!cookingCalcDiv) return;
 
 	var cookingStats = {
 		// health, stamina, food, water
@@ -40,15 +39,15 @@ mw.hook('wikipage.content').add(function() {
 		var ingEl = null;
 		var ingNrEl = null;
 		var csEl = document.getElementById('cookingCalcCraftingSpeed');
-		if (csEl != null) {
+		if (csEl !== null) {
 			var cs = csEl.value / 100.0;
 			for (var i = 0; i < 8; i++) {
 				ingEl = document.getElementById('cookingCalcIng' + i);
 				ingNrEl = document.getElementById('cookingCalcIngNr' + i);
-				if (ingEl != null && ingNrEl != null) {
+				if (ingEl !== null && ingNrEl !== null) {
 					ing = ingEl.value;
 					ingNr = ingNrEl.value;
-					if (cookingStats[ing] != null) {
+					if (cookingStats[ing] !== null) {
 						for (var j = 0; j < 4; j++) {
 							results[j] += ingNr * cookingStats[ing][j] * (cs * 1.5625 - 0.3125);
 						}
@@ -59,42 +58,49 @@ mw.hook('wikipage.content').add(function() {
 		}
 		for (var k = 0; k < 5; k++) {
 			var rEl = document.getElementById('cookingR' + k);
-			if (rEl != null) {
+			if (rEl !== null) {
 				rEl.innerHTML = results[k].toFixed(2);
 			}
 		}
 	}
 
-	var tableRows = '';
-	var dropDownOptions = '';
-	for (var ing in cookingStats) {
-		if (ing) {
-			dropDownOptions += '<option>' + ing + '</option>';
+	function init($content) {
+		var cookingCalcDiv = $content.find('#cookingCalc:not(.loaded)')[0];
+		if (!cookingCalcDiv) return;
+		cookingCalcDiv.classList.add('loaded');
+
+		var tableRows = '';
+		var dropDownOptions = '';
+		for (var ing in cookingStats) {
+			if (ing) {
+				dropDownOptions += '<option>' + ing + '</option>';
+			}
+		}
+		for (var i = 0; i < 8; i++) {
+			tableRows += '<tr><td><select id="cookingCalcIng' + i + '">' + dropDownOptions + '</select></td><td><input type="number" min="0" max="1000" maxlength="4" value="0" id="cookingCalcIngNr' + i + '" style="width:5em"></td></tr>';
+		}
+		cookingCalcDiv.innerHTML = '<table class="wikitable">' +
+			'<tr><th>Crafting Speed</th><td><input type="number" min="100" max="2000" maxlength="4" value="100" id="cookingCalcCraftingSpeed" style="width:5em">%</td></tr>' +
+			'<tr><th>Ingredient</th><th>Number</th></tr>' +
+			tableRows +
+		'</table>' +
+		'<table class="wikitable"><tr><th>Results</th><th colspan="5"><label><input type="radio" name="foodkind">Food</label><label><input type="radio" name="foodkind">Drink</label></td></tr><tr><th></th><th>Health</th><th>Stamina</th><th>Food</th><th>Water</th><th>Weight</th></tr>' +
+			'<tr><th>Values</th><td id="cookingR0">1</td><td id="cookingR1">1</td><td id="cookingR2">1</td><td id="cookingR3">1</td><td id="cookingR4">0.1</td></tr>' +
+		'</table>';
+		cookingCalcDiv.querySelector('table:nth-child(2) th > label:nth-child(1)').addEventListener('change', function() {
+			cookingCalcChangeKind(true);
+		});
+		cookingCalcDiv.querySelector('table:nth-child(2) th > label:nth-child(2)').addEventListener('change', function() {
+			cookingCalcChangeKind(false);
+		});
+		$content.find('#cookingCalcCraftingSpeed')[0].addEventListener('change', calcCooking);
+		for (var j = 0; j < 8; j++) {
+			var ele = $content.find('#cookingCalcIng' + j)[0];
+			var eleNr = $content.find('#cookingCalcIngNr' + j)[0];
+			ele.selectedIndex = j;
+			ele.addEventListener('change', calcCooking);
+			eleNr.addEventListener('change', calcCooking);
 		}
 	}
-	for (var i = 0; i < 8; i++) {
-		tableRows += '<tr><td><select id="cookingCalcIng' + i + '">' + dropDownOptions + '</select></td><td><input type="number" min="0" max="1000" maxlength="4" value="0" id="cookingCalcIngNr' + i + '" style="width:5em"></td></tr>';
-	}
-	cookingCalcDiv.innerHTML = '<table class="wikitable">' +
-		'<tr><th>Crafting Speed</th><td><input type="number" min="100" max="2000" maxlength="4" value="100" id="cookingCalcCraftingSpeed" style="width:5em">%</td></tr>' +
-		'<tr><th>Ingredient</th><th>Number</th></tr>' +
-		tableRows +
-	'</table>' +
-	'<table class="wikitable"><tr><th>Results</th><th colspan="5"><label><input type="radio" name="foodkind">Food</label><label><input type="radio" name="foodkind">Drink</label></td></tr><tr><th></th><th>Health</th><th>Stamina</th><th>Food</th><th>Water</th><th>Weight</th></tr>' +
-		'<tr><th>Values</th><td id="cookingR0">1</td><td id="cookingR1">1</td><td id="cookingR2">1</td><td id="cookingR3">1</td><td id="cookingR4">0.1</td></tr>' +
-	'</table>';
-	cookingCalcDiv.querySelector('table:nth-child(2) th > label:nth-child(1)').addEventListener('change', function() {
-		cookingCalcChangeKind(true);
-	});
-	cookingCalcDiv.querySelector('table:nth-child(2) th > label:nth-child(2)').addEventListener('change', function() {
-		cookingCalcChangeKind(false);
-	});
-	document.getElementById('cookingCalcCraftingSpeed').addEventListener('change', calcCooking);
-	for (var j = 0; j < 8; j++) {
-		var ele = document.getElementById('cookingCalcIng' + j);
-		var eleNr = document.getElementById('cookingCalcIngNr' + j);
-		ele.selectedIndex = j;
-		ele.addEventListener('change', calcCooking);
-		eleNr.addEventListener('change', calcCooking);
-	}
-});
+	mw.hook('wikipage.content').add(init);
+})(window.mediaWiki);

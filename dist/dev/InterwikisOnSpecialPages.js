@@ -7,7 +7,7 @@
  * @author Magiczocker01
  */
 
-;(function($, mw) {
+(function($, mw) {
 	'use strict';
 	
 	var config = mw.config.get([
@@ -17,7 +17,7 @@
 		'wgTitle'
 	]);
 	
-	if (window.InterwikisOnSpecialPagesLoaded || (config.wgNamespaceNumber == -1 && !config.wgCanonicalSpecialPageName) ) return; 
+	if (window.InterwikisOnSpecialPagesLoaded || (config.wgNamespaceNumber === -1 && !config.wgCanonicalSpecialPageName) ) return; 
 	window.InterwikisOnSpecialPagesLoaded = true;
 	
 	var pagename = '',
@@ -25,7 +25,7 @@
 
 	if ( [8, 9, 202].includes(config.wgNamespaceNumber)) { // MediaWiki, Discussion, Gamepedia User Profile
 		pagename = config.wgCanonicalNamespace + ':' + config.wgTitle;
-	} else if ( config.wgNamespaceNumber == -1 ) { // Special pages
+	} else if ( config.wgNamespaceNumber === -1 ) { // Special pages
 		pagename = config.wgCanonicalNamespace + ':' + config.wgCanonicalSpecialPageName;
 		var subpageIdx = config.wgTitle.indexOf( '/' );
 		if ( subpageIdx >= 0 )
@@ -70,9 +70,11 @@
 		
 		// Adding language-entries
 		for ( var lang in langs ) {
-			var link_ele = '<a href="'+ langs[lang].url.replace('$1', pagename) +'" data-tracking-label="lang-' + langs[lang].prefix + '">' + langs[lang].language + '</a>';
-			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append('<li>' + link_ele + '</li>');
-			$( '.page-footer__languages .wds-collapsible-panel__content' ).append(link_ele);
+			if (langs.hasOwnProperty(lang)) {
+				var linkEle = '<a href="'+ langs[lang].url.replace('$1', pagename) +'" data-tracking-label="lang-' + langs[lang].prefix + '">' + langs[lang].language + '</a>';
+				$( '.page-header__languages .wds-dropdown__content .wds-list' ).append('<li>' + linkEle + '</li>');
+				$( '.page-footer__languages .wds-collapsible-panel__content' ).append(linkEle);
+			}
 		}
 	}
 
