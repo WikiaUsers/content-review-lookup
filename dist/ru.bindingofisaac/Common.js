@@ -77,14 +77,6 @@ if (mw.config.get('wgPageName') === 'Блог_участника:TRJ-VoRoN/Не�
 
 
 
-
-
-//Подсветка активной статьи
-if ($('#blight').length) {
-   $('#blight .sn[data-title="' + mw.config.get('wgPageName') + '"]').addClass("snlight");
-}
-
-
 //Подсветка кнопок сортировки
 $(document).on('click', '.rentable_sort span', function(){
 	  $(this).addClass('active_ita').siblings().removeClass('active_ita')

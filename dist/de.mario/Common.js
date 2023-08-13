@@ -2,7 +2,7 @@
 function UserNameReplace() {
   if ( typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace )
     return;
-  $('span.insertusername').text(wgUserName);
+  $('span.insertusername').text(mw.config.get('wgUserName'));
 }
 $(UserNameReplace);
 

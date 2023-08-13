@@ -1,9 +1,8 @@
-;(function($, mw) {
+;(function() {
 	'use strict';
 
 	if (window.SpriteEditorModules.helper && window.SpriteEditorModules.helper.loaded) return;
 	var shared;
-	var defaultSpriteSize = 16;
 	var root = document.getElementById('mw-content-text');
 	window.SpriteEditorModules.helper = {
 		loaded: true,
@@ -12,55 +11,55 @@
 		},
 		newSection: function(s) {
 			// section header
-			var section_h3_span = document.createElement('span');
-			var section_h3 = document.createElement('h3');
+			var sectionH3Span = document.createElement('span');
+			var sectionH3 = document.createElement('h3');
 			var spriteSection = document.createElement('div');
-			section_h3.append(section_h3_span);
-			section_h3_span.id = s.name || undefined;
-			section_h3_span.contentEditable = true;
-			section_h3_span.textContent = s.name;
-			section_h3_span.className = 'mw-headline';
-			section_h3_span.onpaste = function(e) {
+			sectionH3.append(sectionH3Span);
+			sectionH3Span.id = s.name || undefined;
+			sectionH3Span.contentEditable = true;
+			sectionH3Span.textContent = s.name;
+			sectionH3Span.className = 'mw-headline';
+			sectionH3Span.onpaste = function(e) {
 				e.preventDefault();
 			    var paste = (e.clipboardData || window.clipboardData).getData('text');
 			    paste = paste.replace( /\n/g, ' ' ).trim();
 			    window.document.execCommand( 'insertText', false, paste );
 			};
-			section_h3_span.onkeypress = function(e) {
+			sectionH3Span.onkeypress = function(e) {
 				if ( e.keyCode === 13 ) {
 					e.preventDefault();
 					e.target.blur();
 				}
 			};
-			section_h3_span.addEventListener("focus", function() {
-				if (!section_h3_span.getAttribute("data-placeholder")) {
-					section_h3_span.setAttribute("data-original-text", section_h3_span.textContent);
+			sectionH3Span.addEventListener("focus", function() {
+				if (!sectionH3Span.getAttribute("data-placeholder")) {
+					sectionH3Span.setAttribute("data-original-text", sectionH3Span.textContent);
 				}
 			});
-			section_h3_span.addEventListener("blur", function() {
-				var orgName = section_h3_span.getAttribute("data-original-text") || "";
-				section_h3_span.textContent = section_h3_span.textContent.trim();
-				if (orgName.length === 0 && section_h3_span.textContent.length ) {
+			sectionH3Span.addEventListener("blur", function() {
+				var orgName = sectionH3Span.getAttribute("data-original-text") || "";
+				sectionH3Span.textContent = sectionH3Span.textContent.trim();
+				if (orgName.length === 0 && sectionH3Span.textContent.length ) {
 					shared.addHistory([
 						"section-added",
 						"section-removed",
 						s.id,
 						spriteSection,
-						section_h3_span.textContent,
+						sectionH3Span.textContent,
 						Array.from(root.children).indexOf(spriteSection)
 					]);
-				} else if (section_h3_span.textContent.length && orgName !== section_h3_span.textContent) {
+				} else if (sectionH3Span.textContent.length && orgName !== sectionH3Span.textContent) {
 					shared.addHistory([
 						"section-rename",
 						"section-rename",
 						s.id,
 						orgName,
-						section_h3_span.textContent
+						sectionH3Span.textContent
 					]);
 				}
-				section_h3_span.removeAttribute("data-original-text");
-				section_h3_span.removeAttribute('data-placeholder');
-				if (!section_h3_span.textContent.length) {
+				sectionH3Span.removeAttribute("data-original-text");
+				sectionH3Span.removeAttribute('data-placeholder');
+				if (!sectionH3Span.textContent.length) {
 					var names = spriteSection.querySelectorAll("code[isSprite]");
 					var n = {};
 					for (var i = 0; i < names.length; i++) {
@@ -84,7 +83,7 @@
 			// section body
 			spriteSection.classList = 'spritedoc-section';
 			spriteSection.setAttribute('data-section-id',s.id);
-			spriteSection.append(section_h3);
+			spriteSection.append(sectionH3);
 			return spriteSection;
 		},
 		addSprite: function(positionID, img) {
@@ -122,7 +121,7 @@
 		},
 		seperatePath: function(path) {
 			var a = path.split("/");
-			if (a.length == 1)
+			if (a.length === 1)
 				a[1] = a[0].substring(a[0].indexOf(":") + 1);
 			return {
 				full: path.substring(path.indexOf(":") + 1),

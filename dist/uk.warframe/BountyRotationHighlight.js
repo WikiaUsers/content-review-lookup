@@ -1,67 +1,105 @@
-//скрипт виділяє назву активної ротації контракту
+//скрипт додає клас 'current-bounty-rotation' до стовпця активної ротації контракту,
+//а також виводить час до завершення
 
 $(function() {
-  const BOUNTY_LOCATION = {
-    'Ostrons':"CetusBounty", 
-    'Entrati':"NecraliskBounty",
-    'Solaris United':"FortunaBounty"
-  };
-  const ROT_NUMBER = {
-    'A':"1", 
-    'B':"2",
-    'C':"3"
-  };
-  var bountyRewards = {};
-  var currentBountyRewards = {};
-  $.when($.get( 'https://api.warframestat.us/drops/search/Bounty?grouped_by=location', "json" ), $.get( 'https://api.warframestat.us/pc/syndicateMissions/?language=uk', "json" )).done(function(data1, data2) {
-    $.each( data1[0], function (index, rewards) {
-      if (rewards.rewards.length > 1) {
-        bountyRewards[index] = [];
-        $.each( rewards.rewards, function ( i, reward ) {
-          bountyRewards[index].push(reward.item);
-        });
-      }
-    });
-    $.each( data2[0], function (index, syndicate) {
-      if (BOUNTY_LOCATION[syndicate.syndicateKey]) {
-        $.each( syndicate.jobs, function (index1, job) {
-          var name = BOUNTY_LOCATION[syndicate.syndicateKey] + (index1+1);
-          if (job.enemyLevels[0] == job.enemyLevels[1]) {
-            name = BOUNTY_LOCATION[syndicate.syndicateKey] + '6';
-          } else if (job.enemyLevels[0] == 50 && job.enemyLevels[1] == 70) {
-            name = BOUNTY_LOCATION[syndicate.syndicateKey] + '7';
-          } else if (BOUNTY_LOCATION[syndicate.syndicateKey] == 'NecraliskBounty' && job.enemyLevels[0] == 30 && job.enemyLevels[1] == 40 && job.isVault ) {
-            name = 'IsolationVault1';
-          } else if (BOUNTY_LOCATION[syndicate.syndicateKey] == 'NecraliskBounty' && job.enemyLevels[0] == 40 && job.enemyLevels[1] == 50) {
-            name = 'IsolationVault2';
-          } else if (BOUNTY_LOCATION[syndicate.syndicateKey] == 'NecraliskBounty' && job.enemyLevels[0] == 50 && job.enemyLevels[1] == 60) {
-            name = 'IsolationVault3';
-          } 
-          currentBountyRewards[name] = job.rewardPool;
-        });
-      }
-    });
-    $('.bounty').each(  function () {
-      colorChange(bountyRewards, currentBountyRewards, $(this));
-    });
-    
-  });
-  
-  function colorChange(allB, currB, table) {
-    var bName = table.attr('id').replace(/\-./, '');
-    if (bName == 'IsolationVault1' || bName == 'IsolationVault2' || bName == 'IsolationVault3' || bName == 'ArcanaIsoVaultBounty1' || bName == 'ArcanaIsoVaultBounty2' || bName == 'ArcanaIsoVaultBounty3' ) {
-    	bName = 'NecraliskBounty4';
-    } else if ( bName == 'NecraliskBounty1' ) {
-    	bName = 'NecraliskBounty2';
-    }
-    var curData = currentBountyRewards[bName];
-    $.each( allB, function (bounty, rewards) {
-      if (rewards.toString().includes(curData) && !(bName.slice(-1) != '6' && bounty.includes('100 - 100'))) {
-        if  (!bounty.includes('100 - 100') && bName.slice(-1) == '6') { return; }  
-        var rot = bounty.slice(-1);
-        console.log(bounty, table.attr('id'))
-        table.find('tr th:nth-child('+ ROT_NUMBER[rot] +') a').css({"color": "green", "font-weight": "bold", });
-      }
-    });
-  }
+	const IMG_URL = 'https://static.wikia.nocookie.net/warframe/images/';
+	const IMG_PREFIX = '/revision/latest?path-prefix=uk';
+	const WIKI_URL = 'https://warframe.fandom.com/uk/wiki/';
+	const ICONS = {
+		'reputation': 'b/b1/Репутація_іконка_uk.png',
+		'motherToken': '3/3d/Медальйон_Матері_uk.png',
+	};
+	const ISOVAULT_IDS = {
+		'NecraliskBounty7': 'IsolationVault1',
+		'NecraliskBounty8': 'IsolationVault2',
+		'NecraliskBounty9': 'IsolationVault3',
+		'ArcanaIsoVaultBounty1': 'IsolationVault1',
+		'ArcanaIsoVaultBounty2': 'IsolationVault2',
+		'ArcanaIsoVaultBounty3': 'IsolationVault3',
+	};
+	const BOUNTY_IDS = {
+		'Ostron':"CetusBounty", 
+		'Entrati':"NecraliskBounty",
+		'Solaris United':"FortunaBounty"
+	};
+	const ROT_NUMBER = {
+		'A':"1", 
+		'B':"2",
+		'C':"3"
+	};
+	$.get('https://api.tenno.tools/worldstate/pc', function (data) {
+		$.each(data.bounties.data, function(_, syndicateData) {
+			if (BOUNTY_IDS[syndicateData.syndicate]) {
+				$.each(syndicateData.jobs, function(i, bounty) {
+					var bountyID = BOUNTY_IDS[syndicateData.syndicate] + (i + 1);
+					bountyID = ISOVAULT_IDS[bountyID] || bountyID;
+					var isEntrati = syndicateData.syndicate === 'Entrati';
+					$('.bounty').each(function() {
+						var tableID = $(this)[0].id.replace(/\-./, '');
+						var endTime = syndicateData.end * 1000;
+						if ((ISOVAULT_IDS[tableID] || tableID) == bountyID) {
+							if (bounty.rotation) {
+								$(this).find('tr:nth-child(2) th:nth-child('+ ROT_NUMBER[bounty.rotation] +') a')
+								.addClass('current-bounty-rotation')
+								.parent().append(
+									$('<span>', {
+										'data-time': endTime,
+										title: 'Закінчиться ' + new Date(endTime).toLocaleString(),
+									})
+								);
+							}
+							$stageTh = $(this).find('tr th[colspan=6]');
+							if ($stageTh.length) {
+								var tableLength = $stageTh.length;
+								$stageTh.each(function(i1, th) {
+									var additionalReward = (i1 == tableLength - 1) ? bounty.xpAmounts[bounty.xpAmounts.length-1] : bounty.xpAmounts[i1];
+									var additionalRewardBonus = Math.floor(additionalReward * 0.25);
+									//console.log(tableLength, $(th).text(), additionalReward)
+									$(th).append(
+										' (',
+										$('<span>', {
+											text: '+' + (additionalReward + additionalRewardBonus).toLocaleString(),
+											title: 'За завершення етапу: ' + additionalReward.toLocaleString() + ', за виконання додаткових цілей ще +' + additionalRewardBonus.toLocaleString(),
+											css: {'border-bottom': '1px dotted gray'}
+										}),
+										$('<img>', {
+											class: 'icon ' + (isEntrati ? '' : 'dark-invert'),
+											src: IMG_URL +
+												(isEntrati ? ICONS.motherToken : ICONS.reputation ) +
+												IMG_PREFIX,
+											title: isEntrati ? 'Медальйон Матері' : 'Репутація',
+											href: WIKI_URL + (isEntrati ? 'Медальйон Матері' : 'Репутація'),
+											css: {'cursor': 'pointer'}
+										}),
+										')'
+									);
+								});
+							}
+						}
+					});
+				});
+			}
+		});
+	});
+	setInterval(countdown, 1000);
+
+	function countdown() {
+    	$( 'table.bounty span[data-time]' ).each( function () {
+			var countDownDate = $( this ).attr('data-time');
+			var now = new Date().getTime();
+			var distance = countDownDate - now;
+			
+			var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+			var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+			var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+			var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+			var timer = 
+				(hours > 0 ? hours + " год " : '') + 
+				(minutes > 0 ? minutes + " хв" : '') + 
+				(hours < 0 ? ' ' + seconds + " c" : '');
+
+			$( this ).text( '(' + timer + ')');
+			if (seconds < 0) { $( this ).text('(закінчилось ' + timer + ')'); }
+		});
+	}
 });

@@ -9,7 +9,7 @@ var SocialMediaButtons = {
 };
 
 /* Community Choice Awards */
-if (wgPageName === 'User_blog:TheBlueRogue/Beyond_Earth_Community_Choice_Awards') {
+if (mw.config.get('wgPageName') === 'User_blog:TheBlueRogue/Beyond_Earth_Community_Choice_Awards') {
 	challengers = {};
  
  	//Destiny CCA Images
@@ -154,8 +154,8 @@ if (wgPageName === 'User_blog:TheBlueRogue/Beyond_Earth_Community_Choice_Awards'
 				$(this).attr('title','0%');				
 			}
 			else if (titleReplace) {
-				var titleReplace = titleReplace.replace(/[^[0-9\,\.\%]+/g,'');
-				$(this).attr('title',titleReplace);
+				var titleReplace2 = titleReplace.replace(/[^[0-9\,\.\%]+/g,'');
+				$(this).attr('title',titleReplace2);
 			}
 			else {
 				$(this).attr('title','0%');		

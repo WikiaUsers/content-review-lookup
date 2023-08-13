@@ -1,5 +1,6 @@
 // <nowiki>
-
+(function($, mw) {
+	'use strict';
 window.popupButton = function(e) {
 	e.stopPropagation();
 	var hiddenClass = $(this).attr('data-toggler-hiddenclass');
@@ -44,34 +45,34 @@ window.popupButton = function(e) {
 		// for the most part, this situation should only occur with relatively small areas
 		// e.g. front page sections
 		// so to make things SIGNIFICANTLY simpler, don't worry about maybe spilling off window
-		var coords = $(this).offset();
-		var parentCoords = $(windowContainer).offset();
-		leftCoord = parseInt(coords.left) - parseInt(parentCoords.left);
+		var coords1 = $(this).offset();
+		var parentCoords1 = $(windowContainer).offset();
+		leftCoord = parseInt(coords1.left) - parseInt(parentCoords1.left);
 		totalWidth = $(windowContainer).width();
 		// may as well grab y values here too since they're conditional, we'll use them later though
-		topCoord = parseInt(coords.top) - parseInt(parentCoords.top);
+		topCoord = parseInt(coords1.top) - parseInt(parentCoords1.top);
 		totalHeight = $(windowContainer).height();
 	}
 	else if (windowContainerY.length > 0) {
 		// this comes from above, verticality stuff is constrained by parent element
-		var coords = $(this).offset();
-		var parentCoords = $(windowContainerY).offset();
-		topCoord = parseInt(coords.top) - parseInt(parentCoords.top);
+		var coords2 = $(this).offset();
+		var parentCoords2 = $(windowContainerY).offset();
+		topCoord = parseInt(coords2.top) - parseInt(parentCoords2.top);
 		totalHeight = $(windowContainerY).height();
 		
 		// this comes from below, horizontal-ness stuff is constrained only by the window
-		var coords = this.getBoundingClientRect();
-		leftCoord = parseInt(coords.left);
+		var coords3 = this.getBoundingClientRect();
+		leftCoord = parseInt(coords3.left);
 		totalWidth = $(window).width();
 	}
 	else {
 		// getBoundingClientRect in order to get position within current window
 		// we want to avoid spilling off window
 		// n.b. this implies avoiding spilling off document as well
-		var coords = this.getBoundingClientRect();
-		leftCoord = parseInt(coords.left);
+		var coords4 = this.getBoundingClientRect();
+		leftCoord = parseInt(coords4.left);
 		totalWidth = $(window).width();
-		topCoord = parseInt(coords.top);
+		topCoord = parseInt(coords4.top);
 		totalHeight = $(window).height();
 	}
 	
@@ -119,9 +120,9 @@ window.popupButton = function(e) {
 	$(document).click(function(){
 		$('.popup-content-wrapper-action').addClass(hiddenClass);
 	});
-}
+};
 
-mw.hook('wikipage.content').add(function() {
+mw.hook('wikipage.content').add(function($content) {
 	// implements freeform toggle akin to Dynamic Tabs - only one section can be shown at a time
 	// assign class "optionfromlist-toggler" to each toggler to make them recognized at all
 	// assign attr "data-toggle-section" & this value as a class to each toggler
@@ -132,8 +133,8 @@ mw.hook('wikipage.content').add(function() {
 	// assign attrs data-toggler-show and data-toggler-hide to each
 	// assign classes of the values of the attr of show/hide to the content that you want it to control
 	
-	function oflRun() {
-		$this = $(this);
+	function oflRun(e) {
+		var $this = $(e.srcElement);
 		if($this.hasClass('active')) return;
 		var thisSection = $this.attr('data-toggle-section');
 		$('.' + thisSection).removeClass('active');
@@ -150,11 +151,11 @@ mw.hook('wikipage.content').add(function() {
 		
 	}
 	
-	$('.optionfromlist-toggler').click(oflRun);
+	$content.find('.optionfromlist-toggler').click(oflRun);
 	
 	// no "active" or "inactive" toggles here, otherwise behaves the same as above
-	$('.alwaysactive-toggler').click(function() {
-		$this = $(this);
+	$content.find('.alwaysactive-toggler').click(function() {
+		var $this = $(this);
 		var toHide = $this.attr('data-toggler-hide');
 		var toShow = $this.attr('data-toggler-show');
 		if (! toHide.startsWith('.')) toHide = '.' + toHide;
@@ -165,33 +166,43 @@ mw.hook('wikipage.content').add(function() {
 		$(toShow).removeClass(hiddenClass);
 	});
 	
-	$('.sections-toggler').click(function() {
-		$this = $(this);
-		var toHide = $this.attr('data-toggler-hide');
-		var toShow = $this.attr('data-toggler-show');
-		var toHide_tbl = toHide.split(';');
-		var toShow_tbl = toShow.split(';');
+	$content.find('.sections-toggler').click(function() {
+		var $this = $(this);
+		var toHideData = $this.attr('data-toggler-hide');
+		var toShowData = $this.attr('data-toggler-show');
+		var toHide_tbl = toHideData.split(';');
+		var toShow_tbl = toShowData.split(';');
 		
 		var hiddenClass = $this.attr('data-toggler-hiddenclass');
 		hiddenClass = hiddenClass ? hiddenClass : 'toggle-section-hidden';
 		
-		for(i in toHide_tbl) {
-			var toHide = toHide_tbl[i];
-			if (! toHide.startsWith('.')) toHide = '.' + toHide;
-			$(toHide).addClass(hiddenClass);
+		for (var i in toHide_tbl) {
+			if (toHide_tbl.hasOwnProperty(i)) {
+				var toHide = toHide_tbl[i];
+				if (! toHide.startsWith('.')) toHide = '.' + toHide;
+				$(toHide).addClass(hiddenClass);
+			}
 		}
 		
-		for (i in toShow_tbl) {
-			var toShow = toShow_tbl[i];
-			if (! toShow.startsWith('.')) toShow = '.' + toShow;
-			$(toShow).removeClass(hiddenClass);
+		for (var j in toShow_tbl) {
+			if (toShow_tbl.hasOwnProperty(j)) {
+				var toShow = toShow_tbl[j];
+				if (! toShow.startsWith('.')) toShow = '.' + toShow;
+				$(toShow).removeClass(hiddenClass);
+			}
 		}
 	});
 	
 	// checkboxes to show-hide rows in a table (or whatever)
-	$('.checkbox-togglers').each(function() {
-		$(this).find('input').each(function() {
-			this.addEventListener('change', function(e) {
+	$content.find('.checkbox-togglers').each(function(undefined, ele) {
+		$(ele).find('span[data-toggle-class]').each(function(index, eleSpan) {
+			var dataset = eleSpan.dataset;
+			var input = document.createElement('input');
+			input.type = 'checkbox';
+			if (dataset.checked) input.checked = dataset.checked;
+			if (dataset.toggleClass) input.dataset.toggleClass = dataset.toggleClass;
+			if (dataset.togglerHiddenclass) input.dataset.togglerHiddenclass = dataset.togglerHiddenclass;
+			input.addEventListener('change', function() {
 				var $this = $(this);
 				var classToToggle = $this.attr('data-toggle-class');
 				if (! classToToggle.startsWith('.')) classToToggle = '.' + classToToggle;
@@ -199,11 +210,12 @@ mw.hook('wikipage.content').add(function() {
 				hiddenClass = hiddenClass ? hiddenClass : 'toggle-section-hidden';
 				$(classToToggle).toggleClass(hiddenClass);
 			});
+			eleSpan.parentElement.prepend(input);
 		});
 	});
 	
-	$('.all-toggle-all-toggler').off('click');
-	$('.all-toggle-all-toggler').click(function() {
+	$content.find('.all-toggle-all-toggler').off('click');
+	$content.find('.all-toggle-all-toggler').click(function() {
 		var attr = $(this).attr('data-all-toggle-key');
 		console.log(attr);
 		$('.all-toggle-all-toggler[data-all-toggle-key="' + attr +'"]').toggleClass('active');
@@ -213,8 +225,8 @@ mw.hook('wikipage.content').add(function() {
 	
 	
 	// Show-Hide individual columns of tables, using Widget:ColumnShowHide
-	$('.column-show-hide-toggler').off('click');
-	$('.column-show-hide-toggler').click(function(e) {
+	$content.find('.column-show-hide-toggler').off('click');
+	$content.find('.column-show-hide-toggler').click(function() {
 		var tableIndex = $(this).closest('.column-show-hide').attr('data-table-index');
 		var columnIndex = $(this).attr('name');
 		var selectors = [
@@ -225,8 +237,8 @@ mw.hook('wikipage.content').add(function() {
 		$(selectorsStr).toggleClass('column-show-hide-hidden');
 	});
 	
-	$('.column-show-hide-show-all').off('click');
-	$('.column-show-hide-show-all').click(function(e) {
+	$content.find('.column-show-hide-show-all').off('click');
+	$content.find('.column-show-hide-show-all').click(function() {
 		$(this).closest('.column-show-hide').find('.column-show-hide-toggler').prop("checked", true);
 		var tableIndex = $(this).closest('.column-show-hide').attr('data-table-index');
 		var selectors = [
@@ -241,8 +253,8 @@ mw.hook('wikipage.content').add(function() {
 	// LAZY STUFF
 	
 	function processAllLazyTogglers(toggleClass) {
-		if (lazySectionsAlreadyStarted[toggleClass]) return $.Deferred().resolve();
-		lazySectionsAlreadyStarted[toggleClass] = true;
+		if (window.lazySectionsAlreadyStarted[toggleClass]) return $.Deferred().resolve();
+		window.lazySectionsAlreadyStarted[toggleClass] = true;
 		var elList = [];
 		$('.optionfromlist-toggler-lazy.' + toggleClass).each(function() {
 			elList.push(this);
@@ -254,7 +266,7 @@ mw.hook('wikipage.content').add(function() {
 		if (elList.length == 0) {
 			return $.Deferred().resolve();
 		}
-		$thisEl = $(elList.pop());
+		var $thisEl = $(elList.pop());
 		return processOneLazyToggler($thisEl)
 		.then(function() {
 			return processEachLazyToggler(elList);
@@ -263,7 +275,7 @@ mw.hook('wikipage.content').add(function() {
 	
 	function processOneLazyToggler($thisEl) {
 		var $contentParent = $(getParentFromToggler($thisEl));
-		if (lazyContentAlreadyLoaded[$contentParent.attr('id')]) {
+		if (window.lazyContentAlreadyLoaded[$contentParent.attr('id')]) {
 			switchToNonLazy($thisEl);
 			return $.Deferred().resolve();
 		}
@@ -274,7 +286,7 @@ mw.hook('wikipage.content').add(function() {
 		console.log(toParse);
 		return parseHTML(toParse)
 		.then(function(html) {
-			lazyContentAlreadyLoaded[$contentParent.attr('id')] = true;
+			window.lazyContentAlreadyLoaded[$contentParent.attr('id')] = true;
 			return addHTMLToSection(html, $thisEl);
 		});
 	}
@@ -312,7 +324,7 @@ mw.hook('wikipage.content').add(function() {
 		$thisEl.click(oflRun);
 	}
 	
-	$('.optionfromlist-toggler-lazy').each(function() {
+	$content.find('.optionfromlist-toggler-lazy').each(function() {
 		$(this).click(function() {
 			if (typeof lazyContentAlreadyLoaded === 'undefined') window.lazyContentAlreadyLoaded = {};
 			if (typeof lazySectionsAlreadyStarted === 'undefined') window.lazySectionsAlreadyStarted = {};
@@ -334,11 +346,11 @@ mw.hook('wikipage.content').add(function() {
 	// Or to guarantee a full width on the fixed-width inner content with an arbitrarily large outer width value
 	// (such as in tournament-team history)
 	
-	$('.popup-button-action').off('click');
-	$('.popup-button-action').click(window.popupButton);
+	$content.find('.popup-button-action').off('click');
+	$content.find('.popup-button-action').click(window.popupButton);
 	
-	$('.popup-button-lazy').off('click');
-	$('.popup-button-lazy').click(function(e) {
+	$content.find('.popup-button-lazy').off('click');
+	$content.find('.popup-button-lazy').click(function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var $button = $(this);
@@ -355,7 +367,7 @@ mw.hook('wikipage.content').add(function() {
 			result = result.replace('\\"','"');
 			var resultBody = $(result).html();
 			$button.find('.popup-content-inner-action').html(resultBody);
-			$button.off('click')
+			$button.off('click');
 			$button.click(window.popupButton);
 			mw.hook('wikipage.content').fire($button);
 			return $.Deferred().resolve();
@@ -365,4 +377,5 @@ mw.hook('wikipage.content').add(function() {
 	});
 	
 });
+})(window.jQuery, window.mediaWiki);
 // </nowiki>

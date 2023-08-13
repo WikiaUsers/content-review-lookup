@@ -20,13 +20,20 @@ Source: (Stand 17. Nov 2020)
  https://developer.mozilla.org/en-US/docs/Web/CSS/mask-image
  https://developer.mozilla.org/en-US/docs/Web/CSS/mask-position
 */
-'use strict';
-var enchantedGrids = document.querySelectorAll('.page-content .enchanted');
-for (var i = 0; i < enchantedGrids.length; i++){
-	var link = enchantedGrids[i].querySelector('.sprite').style.getPropertyValue('background-image');
-	var pos = enchantedGrids[i].querySelector('.sprite').style.getPropertyValue('background-position');
-	var node = document.createElement('span');
-    node.className = 'glint';
-    node.setAttribute('style', 'mask-image: ' + link + '; mask-position: ' + pos + '; -webkit-mask-image: ' + link + '; -webkit-mask-position: ' + pos );
-    enchantedGrids[i].appendChild(node);
-}
+mw.hook('wikipage.content').add(function($content) {
+	'use strict';
+	$content.find('.enchanted:not(.loaded)')
+		.addClass('loaded')
+		.each(function(index, ele) {
+			var sprite = $(ele).find('.sprite');
+			var link = sprite.css('background-image');
+			var pos = sprite.css('background-position');
+			var node = $('<span>')
+				.addClass('glint')
+				.css('mask-image', link)
+				.css('mask-position', pos)
+				.css('-webkit-mask-image', link)
+				.css('-webkit-mask-position', pos)
+				.appendTo(sprite);
+		});
+});

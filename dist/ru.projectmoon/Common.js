@@ -226,22 +226,27 @@ function Filter(AllIcons, Table, FilterClass){
 		return AllIcons;
 	AllIconsnext = [];
 	Selected = [];
-	SelectedBlocks = Table.querySelectorAll('.IdTable .'+FilterClass+' .IdTBl.IdTBl1 i');
+	SelectedBlocks = Table.querySelectorAll('.IdTable .IdTRow.'+FilterClass+' .IdTBl.IdTBl1 i');
 	SelectedBlocks.forEach(function(Ra){Selected.push(Ra.textContent);});
 	
 	if(Selected.length > 0){
 		Selected.forEach(function(Ra){AllIconsnext = AllIconsnext.concat(Filt(AllIcons,FilterClass+Ra));});
-		/*Is selected any block in Row*/ 
-		Table.querySelector('.IdTRow.'+FilterClass).classList.add('IdTRow1')
+		/*Is selected any block in Row*/
+                Row = Table.querySelector('.IdTRow.'+FilterClass);
+		Row.classList.add('IdTRow1');
+                if (Row.closest('.IdTMain') != null)
+		    Row.closest('.IdTMain').classList.add('IdTMain1');
 		return Array.from(new Set(AllIconsnext));
 	}
 	/*Is selected any block in Row*/
-	Table.querySelector('.IdTRow.'+FilterClass).classList.remove('IdTRow1')
+	Table.querySelector('.IdTRow.'+FilterClass).classList.remove('IdTRow1');
 	return AllIcons;
 }
 function UpdateTable() {
 	Tables = document.querySelectorAll(".IdTable");
 	Tables.forEach(function(Table)	{
+        AllMains = Table.querySelectorAll(".IdTable .IdTMain");
+	AllMains.forEach(function(Main){Main.classList.remove('IdTMain1');});
 	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
 	//Hide all
 	AllIcons.forEach(function(Mini){Mini.classList.add("IdTIc1")});
@@ -252,51 +257,17 @@ function UpdateTable() {
 	AllIcons.forEach(function(Mini){Mini.classList.remove("IdTIc1")});
 	});
 }
-
-document.querySelectorAll(".IdTBl").forEach( 
-	function(button){
-	button.addEventListener(
-		'click',
-		function (){ 
-			if(this.classList.contains("IdTCross"))
-				this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
-			else
-				this.classList.toggle("IdTBl1");
-			UpdateTable();
-	}, false
-);});
-UpdateTable();
-
-/* Аддон в виде сортировок таблицы */
-function Sort(Table, Par){
-	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
-	AllIcons.forEach(function(Mini){
-		clas = '';
-		Mini.classList.forEach(function(Class){
-			if (Class.startsWith(Par))
-				clas = Class;
-		});
-		if (clas != '')
-			Mini.style.order = -clas.substring(Par.length);
-		else
-			Mini.style.order = 1;
-	});
-	
-	
-    var list = $(AllIcons).get();
-    for (var i = 0; i < list.length; i++) {
-        list[i].parentNode.appendChild(list[i]);
-    }
-}
-
-document.querySelectorAll(".IdTSo").forEach( 
-	function(button){
-	button.addEventListener(
-		'click',
-		function (){ 
+function ClickButtonFilter(){
+                if(this.classList.contains("IdTCross"))
+                    this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
+                else
+                    this.classList.toggle("IdTBl1");
+                UpdateTable();
+       }
+function ClickButtonSort(){
 			if(this.classList.contains("IdTSo1"))
 			{
-				Sort(this.closest('.IdTable'),'INVALIDE');
+				Sort(this.closest('.IdTable'),'INVALID');
 				this.classList.remove("IdTSo1");
 			}
 			else
@@ -305,8 +276,45 @@ document.querySelectorAll(".IdTSo").forEach(
 			this.closest('.IdTable').querySelectorAll(".IdTSo1").forEach(function(button){button.classList.remove("IdTSo1");});
 			this.classList.add("IdTSo1");
 			}
-	}, false
-);});
+       }
+
+mw.loader.using('mediawiki.util').then(function() {
+function InitTable(){
+
+    document.querySelectorAll(".IdTBl").forEach( 
+        function(button){
+
+        button.removeEventListener('click', ClickButtonFilter, false);
+        button.addEventListener('click', ClickButtonFilter, false);
+       });
+document.querySelectorAll(".IdTSo").forEach( 
+	function(button){
+        button.removeEventListener('click', ClickButtonSort, false);
+        button.addEventListener('click', ClickButtonSort, false);
+       });
+    UpdateTable();
+}
+    mw.hook( 'wikipage.content' ).add(InitTable);
+    InitTable( mw.util.$content );
+});
+
+/* Тир 2 для скилов */
+mw.loader.using('mediawiki.util').then(function() {
+function InitTier(){
+		$(document.querySelectorAll("#skillreplaced")).css("display","block")
+		document.querySelectorAll("#skillreplaced .Pas").forEach(function(skill)
+			{
+				Arr = skill.classList;
+				fin = Arr[Arr.length - 1];
+				skill.innerHTML = document.querySelector("#skillreplace ."+fin).innerHTML;
+			}
+			
+		);
+	}
+	mw.hook( 'wikipage.content' ).add(InitTier);
+	InitTier( mw.util.$content );
+});
+
 /* Уровень идентичностей*/
 var Arr = document.querySelector(".SinSlider").classList;
 var MaxValue = Arr[Arr.length - 1];
@@ -337,13 +345,3 @@ function SetSlider(n)
 	});
 }
 }
-/* Тир 2 для скилов */
-$(document.querySelectorAll("#skillreplaced")).css("display","block")
-document.querySelectorAll("#skillreplaced .Pas").forEach(function(skill)
-	{
-		Arr = skill.classList;
-		fin = Arr[Arr.length - 1];
-		skill.innerHTML = document.querySelector("#skillreplace ."+fin).innerHTML;
-	}
-	
-)

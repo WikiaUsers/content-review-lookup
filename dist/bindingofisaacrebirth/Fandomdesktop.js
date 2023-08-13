@@ -49,6 +49,32 @@
 		return annotation.text !== "'const' is available in ES6 (use 'esversion: 6') or Mozilla JS extensions (use moz).";
 	}
 
+	// Shows gadget dependencies on the Preferences page.
+	// I.e. if a gx gadget requires a gy gadget, you can show this dependency
+	// by specifying it with a placeholder element on the Gx description
+	// [[MediaWiki:gadget-gx]]:
+	//   <span class="htmlform-field-constraint" data-field-requires="gy"></span> ...
+	mw.hook( 'htmlform.enhance' ).add( function () {
+		const $fieldSet = $( '#mw-prefsection-gadgets' );
+		if ( !$fieldSet.length || $fieldSet.hasClass( 'htmlform-constrained' ) ) {
+			return;
+		}
+		$fieldSet.find( '.mw-htmlform-field-HTMLCheckField' ).each( function () {
+			const $field      = $( this );
+			const $constraint = $field.find( '.htmlform-field-constraint' ).first();
+			if ( !$constraint.length ) {
+				return;
+			}
+			const required = $constraint.attr( 'data-field-requires' );
+			if ( required ) {
+				$( '#mw-input-wpgadget-' + required )
+					.parents( '.oo-ui-fieldLayout-field' ).first()
+					.siblings( '.oo-ui-fieldLayout-header' ).first()
+					.append( $field );
+			}
+		} );
+	} );
+
 // [START: DOM ready]
 $( function () {
 

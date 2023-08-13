@@ -6,7 +6,7 @@
 mw.loader.using('mediawiki.api', function () {
     if (
         window.MassRenameLoaded ||
-        !/sysop|wiki_guardian|content-moderator|bot|bot-global|staff|helper|wiki-representative|global-discussions-moderator|content-volunteer|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|content-moderator|bot|bot-global|staff|wiki-representative|global-discussions-moderator|content-volunteer|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }

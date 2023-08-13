@@ -3,12 +3,13 @@
     'use strict';
     var config = mw.config.get([
         'wgCanonicalSpecialPageName',
+        'wgFormattedNamespaces',
         'wgPageName',
         'wgUserGroups'
     ]);
     var ui;
     if (
-        !/sysop|bot|soap|staff|bot-global|helper|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join('\n')) ||
+        !/sysop|bot|soap|staff|bot-global|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join('\n')) ||
         window.RemoveLegacyThreads && window.RemoveLegacyThreads.init
     ) {
         return;
@@ -247,14 +248,15 @@
                 this.getAllNamespacePages(2001)
             ).then(function(talk, blogComment, thread, boardThread) {
                 var filteredTalk = talk.filter(function(title) {
-                    return title.match(this.THREAD_REGEX);
+                    return title.replace(config.wgFormattedNamespaces[1] + ':', 'Talk:').match(this.THREAD_REGEX);
                 }, this);
                 return filteredTalk.concat(blogComment, thread, boardThread);
             }.bind(this));
         },
         getAllNamespacePages: function(namespace, cont, oldResults) {
             var results = oldResults || [];
-            return this.api.get({
+            var $promise = $.Deferred();
+            this.api.get({
                 action: 'query',
                 list: 'allpages',
                 aplimit: 'max',
@@ -268,11 +270,27 @@
                 }));
                 // eslint-disable-next-line dot-notation
                 var contData = data['continue'];
-                if (!contData) {
-                    return results;
+                if (contData) {
+                    this.getAllNamespacePages(namespace, contData, results)
+                        .then($promise.resolve.bind($promise));
+                } else {
+                    $promise.resolve(results);
                 }
-                return this.getAllNamespacePages(namespace, contData, results);
-            }.bind(this));
+            }.bind(this)).fail(function(code, info) {
+                if (
+                    code === 'badvalue' &&
+                    info &&
+                    info.error &&
+                    typeof info.error.info === 'string' &&
+                    info.error.info.includes('apnamespace')
+                ) {
+                    // The wiki just doesn't have the namespace we're blanking.
+                    $promise.resolve([]);
+                } else {
+                    $promise.reject(code, info);
+                }
+            });
+            return $promise;
         },
         blankPage: function(page) {
             return this.api.postWithEditToken({

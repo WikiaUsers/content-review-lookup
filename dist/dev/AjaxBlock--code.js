@@ -91,7 +91,6 @@
             return this.hasRights([
                 'sysop',
                 'staff',
-                'helper',
                 'global-discussions-moderator',
                 'wiki-representative',
                 'wiki-specialist',

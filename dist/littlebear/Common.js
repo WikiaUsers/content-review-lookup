@@ -1,12 +1,16 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Format appearances and references sections */
+/* Format list sections */
 
-$('h2:contains("Appearances and references")+ol').wrap('<div id="appearances-and-references"/>');
+$('h2:contains("Appearances and references")+ol').wrap('<div class="collapsible-list"/>');
 
-var listItems = $('div#appearances-and-references > ol > li > ol > li');
+$('h2:contains("Little Bear filmography")+ol').wrap('<div class="collapsible-list"/>');
 
-var subLists = $('div#appearances-and-references > ol > li > ol');
+$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="collapsible-list"/>');
+
+var listItems = $('div.collapsible-list > ol > li > ol > li');
+
+var subLists = $('div.collapsible-list > ol > li > ol');
 
 function button(){
   var buttonOne = $('<a>').html('Show/Hide').css('cursor','pointer').click(function(){
@@ -26,12 +30,12 @@ if (listItems.length < 10){
   subLists.css('display', 'none');
 }
 
-$('div#appearances-and-references').prepend('<span id="appearances-and-references-desc">This list of appearances and references includes '+listItems.length+' items.</span>');
+$('div.collapsible-list').prepend('<span class="collapsible-list-desc">This list includes '+listItems.length+' items.</span>');
 
-$('span#appearances-and-references-desc').append(' (').append(button()).append(')');
+$('span.collapsible-list-desc').append(' (').append(button()).append(')');
 
 /* Hide link returning to base page on subpages in the main namespace */
 
 if(mw.config.get('wgNamespaceNumber') === 0){
-  document.getElementsByClassName('page-header__page-subtitle')[0].style.display = 'none';
+  $('div.page-header__page-subtitle').css('display','none');
 }

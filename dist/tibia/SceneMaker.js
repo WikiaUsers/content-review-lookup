@@ -170,7 +170,7 @@ api.post({
 		var expanded_result = data.expandtemplates.wikitext;
 		document.getElementById("scene_area").innerHTML =""; 
 		//these replacements are made to fix some issues with the  returned expanded text so it displays correctly
-		//fix for {{filepath}} results
+		//fix for { { filepath } } results
 		expanded_result = expanded_result.replaceAll("https://static",'<img src="https://static').replaceAll('prefix=en','prefix=en">');
 		//fix for 'Special:Redirect' urls
 		expanded_result = expanded_result.replaceAll('https://tibia.','<img src="https://tibia.').replaceAll('.gif</div>','.gif"></div>');

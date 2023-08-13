@@ -39,7 +39,6 @@
         //'fandom-editor': {},
         //'fandom-star': {},        
         //'global-discussions-moderator': {},
-        //'helper': {},
         //'imagereviewer': {},
         //'notifications-cms-user': {},
         //'request-to-be-forgotten-admin': {},

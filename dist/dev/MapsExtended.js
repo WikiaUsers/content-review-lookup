@@ -6729,9 +6729,17 @@
                         {
                             if (!icon.fileName)
                             {
+                                icon.fileName = icon.title;
+                                
                                 // Remove any file: prefix (the comparing src attribute will never have this)
+                                if (icon.title.toLowerCase().startsWith("file:") || 
+                                    icon.title.toLowerCase().startsWith(mw.config.get("wgFormattedNamespaces")[6].toLowerCase() + ":"))
+                                {
+                                    icon.fileName = icon.title.substring(icon.title.indexOf(":") + 1);
+                                }
+                                
                                 // Convert any spaces to underscores
-                                icon.fileName = icon.title.replace("file:", "").replace("File:", "").replace(/\s/g, "_");
+                                icon.fileName = icon.fileName.replace(/\s/g, "_");
                                 
                                 // Ensure that the first letter is upper case (the img src will always be)
                                 icon.fileName = icon.fileName.charAt(0).toUpperCase() + icon.fileName.slice(1);

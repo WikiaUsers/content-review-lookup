@@ -1,6 +1,8 @@
+/* JS for [[Module:Reload]] */
 // <nowiki>
-$(function() {
-	
+(function($, mw) {
+	'use strict';
+
 	function getNewContent(container, reset) {
 		var template = $(container).attr('data-for-template');
 		var targetId = $(container).attr('data-target-id');
@@ -33,15 +35,33 @@ $(function() {
 		});
 		return ret;
 	}
-	
-	$('.template-reload-submit').click(function(e) {
-		e.preventDefault();
-		return getNewContent($(this).closest('.template-reload'));
+
+	mw.hook('wikipage.content').add(function($content) {
+		var main = $content.find('#templateReload:not(.loaded)')[0];
+		if (!main) return;
+
+		main.classList.add('loaded');
+		main.outerHTML =
+		'<form>' +
+			'<input data-key="minplacement"> Minimum place<br>' +
+			'<select data-key="show">' +
+			'<option value="everything">Show All</option>' +
+			'<option value="overviewpage">Show First 10</option>' +
+			'</select><br>' +
+			'<input type="submit" value="Filter!" class="template-reload-submit">' +
+			'<input type="Button" value="Reset" class="template-reload-reset">' +
+		'</form>';
+
+		$content.find('.template-reload-submit').click(function(e) {
+			e.preventDefault();
+			return getNewContent($(this).closest('.template-reload'));
+		});
+
+		$content.find('.template-reload-reset').click(function(e) {
+			e.preventDefault();
+			return getNewContent($(this).closest('.template-reload'), true);
+		});
+
 	});
-	
-	$('.template-reload-reset').click(function(e) {
-		e.preventDefault();
-		return getNewContent($(this).closest('.template-reload'), true);
-	});
-});
+})(window.jQuery, window.mediaWiki);
 // </nowiki>

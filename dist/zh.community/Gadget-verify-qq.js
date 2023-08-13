@@ -2,19 +2,19 @@
  * @name Verify-QQ-number
  * @desc The form that help users add SHA-1 QQ number hash with salt
  *       to User:Username/qq-hash page for join Fandom QQ Group.
- * @author 机智的小鱼君
+ * @author 机智的小鱼君, 米斯蒂娅
  */
 
 // this javascript file must write in es3 syntax
 
-$(function () {
+(function () {
   // Variables
   var config = mw.config.get(),
     pageName = config.wgPageName.replace(/\s+/g, '_'),
     userName = config.wgUserName.replace(/\s+/g, '_'),
     mwApi = new mw.Api({ parameters: { format: 'json', formatversion: 2 } }),
     verifyPage = 'User:' + config.wgUserName + '/qq-hash',
-    appRoot = document.getElementById('VERIFY_QQ_APP')
+    appRoot = $('#VERIFY_QQ_APP')
 
   // Utils
   function SHA1(str) {
@@ -23,7 +23,7 @@ $(function () {
       .then(function (buf) {
         return Array.prototype.map
           .call(new Uint8Array(buf), function (x) {
-            return ('00' + x.toString(16)).slice(-2)
+            return x.toString(16).padStart(2, '0')
           })
           .join('')
       })
@@ -47,128 +47,118 @@ $(function () {
           summary: '保存QQ号验证数据',
         })
         .then(function (data) {
-          return hash
+          if (data.edit && data.edit.result === 'Success') {
+            return hash
+          } else {
+            return Promise.reject(data.error.code)
+          }
         })
     })
   }
 
   // UI
-  function VerifyBox() {
-    var $container = $('<div>', {
-      id: 'verify-qq-container',
+  function createVerifyBox() {
+    var input = new OO.ui.TextInputWidget({ validate: 'integer' })
+    var button = new OO.ui.ButtonWidget({
+      label: '保存',
+      required: true,
+      flags: ['primary', 'progressive'],
     })
-    var $input = $('<input>', {
-      id: 'verify-qq-input',
-      type: 'number',
-      placeholder: 'QQ号',
-      style: 'display: block; width: 20em; padding: 0.2em 0.5em;',
+    var result = $('<div>')
+    button.on('click', function () {
+      var qqNumber = input.getValue()
+      result.empty()
+      if (!validateQQNumber(qqNumber)) {
+        result.empty().append(
+          new OO.ui.MessageWidget({
+            type: 'error',
+            inline: true,
+            label: '请输入正确的QQ号码',
+          }).$element
+        )
+        return
+      }
+      button.setDisabled(true).setLabel('正在保存')
+      saveQQHashToPage(qqNumber)
+        .then(function () {
+          button.setLabel('保存')
+          result.empty().append(
+            new OO.ui.MessageWidget({
+              type: 'success',
+              inline: true,
+              label: '保存成功',
+            }).$element
+          )
+          setTimeout(function () {
+            if (pageName === verifyPage) location.reload()
+          }, 1500)
+        })
+        .catch(function (errorCode) {
+          result.empty().append(
+            new OO.ui.MessageWidget({
+              type: 'error',
+              label: new OO.ui.HtmlSnippet(
+                [
+                  '保存失败：',
+                  $('<code>', { text: errorCode }),
+                  '<br>请将以下内容手动保存到',
+                  $('<a>', {
+                    text: verifyPage,
+                    href: mw.util.getUrl(verifyPage),
+                    target: '_blank',
+                  }),
+                  '：',
+                  $('<code>', { text: hash }),
+                ].join('')
+              ),
+            }).$element
+          )
+          button.setDisabled(false).setLabel('保存')
+        })
     })
-    var $submitButton = $('<button>', {
-      id: 'verify-qq-button',
-      text: '确定',
-      class: 'wds-button wds-primary',
+    var fieldset = new OO.ui.FieldsetLayout({
+      label: '',
+      classes: ['container'],
     })
-    var $errorMsg = $('<div>', { id: 'verify-qq-error', class: 'error' })
-    var $tips = $('<ol>').append(
+    fieldset.addItems([
+      new OO.ui.ActionFieldLayout(input, button, {
+        label: '保存QQ号验证数据',
+        align: 'top',
+      }),
+    ])
+    tips = $('<ol>').append(
       $('<li>', { text: '在上方输入框内输入您的QQ号' }),
       $('<li>', { text: '点击确定按钮' }),
       $('<li>', {
         text: '您的QQ号将被混淆加密后保存在wiki中',
       }),
       $('<li>').append(
-        '保存成功，申请加群，请填写该内容作为验证答案: ',
+        '保存成功，申请加群，请填写该内容作为验证答案：',
         $('<code>', { text: userName })
       )
     )
+    return $('<div>').append(fieldset.$element, tips, result)
+  }
 
-    $submitButton.on('click', function (e) {
-      e.preventDefault()
-      var qqNumber = $input.val().trim()
-
-      $errorMsg.empty()
-      if (!validateQQNumber(qqNumber)) {
-        $errorMsg.append($('<div>', { text: '请输入正确的QQ号码' }))
-        return
-      }
-
-      $submitButton.attr('disabled', '').text('正在保存')
-
-      saveQQHashToPage(qqNumber)
-        .then(function (hash) {
-          $submitButton.text('保存成功')
-          if (pageName === verifyPage) location.reload()
-        })
-        .catch(function (errorCode) {
-          $errorMsg.empty().append(
-            $('<div>').append(
-              $('<div>', {
-                html: '保存失败：<code>' + errorCode + '</code>',
-              }),
-              $('<div>').append(
-                '请将以下内容手动保存到',
-                $('<a>', {
-                  text: verifyPage,
-                  href: mw.util.getUrl(verifyPage),
-                  target: '_blank',
-                }),
-                ': <code>' + hash + '</code>'
-              )
-            )
-          )
-          $submitButton.removeAttr('disabled').text('再试一次')
-        })
-    })
-    $input.on('change', function () {
-      $errorMsg.empty()
-    })
-
-    $container.append(
-      $('<h2>', { text: '验证您的QQ号' }),
-      $('<label>', {
-        for: 'verify-qq-input',
-        style: 'display: block;',
-        text: '保存QQ号验证数据',
-      }),
-      $('<div>', { style: 'display:flex;gap:1em' }).append(
-        $input,
-        $submitButton
-      ),
-      $errorMsg,
-      $tips
-    )
-
-    this.App = $container
-    this.mount = function (target) {
-      $(target).empty().append(this.App)
+  if (pageName === '社区中心:交流群/QQ群') {
+    if (!userName) {
+      appRoot.empty().append(
+        new OO.ui.MessageWidget({
+          type: 'notice',
+          label: '请先登录后再使用该功能。',
+        }).$element
+      )
+      return
     }
-  }
-
-  // Main
-  var verifyBox = new VerifyBox()
-  if (
-    pageName.startsWith('User:') &&
-    pageName.endsWith('/qq-hash') &&
-    pageName.split('/').shift().split(':').pop() !== userName
+    appRoot.empty().append(createVerifyBox())
+  } else if (pageName === verifyPage) {
+    $('#mw-content-text').prepend(createVerifyBox())
+  } else if (
+    config.wgNamespaceNumber === 2 &&
+    config.wgTitle.endsWith('/qq-hash') &&
+    userName &&
+    !config.wgTitle.startsWith(userName)
   ) {
-    $('#mw-content-text').prepend(
-      $('<div>', {
-        id: 'verify-qq-container',
-        class: 'error',
-        text: '警告：请勿修改他人的QQ验证数据！',
-      })
-    )
-    return
+    OO.ui.alert('警告：请勿修改他人的QQ验证数据！', { size: 'large' })
   }
-  if (!userName) {
-    verifyBox = $('<div>', {
-      id: 'verify-qq-container',
-      text: '请先登录后再使用该功能。',
-    })
-  }
-  if (pageName === verifyPage) {
-    $('#mw-content-text').prepend(verifyBox.App)
-    return
-  }
-
-  verifyBox.mount(appRoot)
-})
+})()

@@ -5,6 +5,7 @@ MediaWiki:Universal.js - Loaded by both Common.js and Mobile.js, so loaded on ev
 */
 
 mw.hook('wikipage.content').add(function($content) {
+	// [[Template:AudioLooping]]
 	var audioAll = $content[0].querySelectorAll('div[data-audio]');
 	for (var i = 0; i < audioAll.length; i++) {
 		var audio = document.createElement('audio');
@@ -15,6 +16,14 @@ mw.hook('wikipage.content').add(function($content) {
 		audio.controls = true;
 		audio.loop = true;
 		audioAll[i].appendChild(audio);
+	}
+
+	// [[Template:Style]]
+	var styles = $content[0].querySelectorAll('#pageStyles[data-style]');
+	for (i = 0; i < styles.length; i++) {
+		var style = document.createElement('style');
+		style.append(styles[i].dataset.style);
+		styles[i].appendChild(style);
 	}
 
 	var articles = [];

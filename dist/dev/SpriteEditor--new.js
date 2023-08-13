@@ -68,7 +68,7 @@
 			okButton.setDisabled(true);
 			var names = helper.seperatePath("Module:" + e);
 			var newName = completeName(names.module);
-			if (names.module != newName) {
+			if (names.module !== newName) {
 				e = newName + e.substring(names.module.length);
 				names = helper.seperatePath("Module:" + e);
 			}

@@ -959,7 +959,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
         // NOTE: We do it this way because querySelector and its jQuery
         //       alternatives will throw an error when the element ID contains
         //       special characters, such as "&".
-        var $cite = $(document.getElementById(frag.attr('href').replace(/([.:])/g, '\\$1').substring(1)));
+        var $cite = $(document.getElementById(decodeURIComponent(frag.attr('href').substring(1))));
         if (!$cite.length) {
             // This happens when the ref tag is of the "name=X" form, but X doesn't exist
             return null;

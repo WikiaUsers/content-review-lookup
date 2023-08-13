@@ -3,7 +3,6 @@
 
 	if (window.SpriteEditorModules.settings && window.SpriteEditorModules.settings.loaded) return;
 	window.SpriteEditorModules.settings = {loaded: true};
-	var api = new mw.Api();
 	var myData = window.SpriteEditorModules.settings;
 	var modal = {};
 	var shared = {};
@@ -98,11 +97,11 @@
 				this.content.$element.append(formHtml());
 				this.$body.append(this.content.$element);
 				this.$content.addClass('spriteedit-ui-Dialog');
-				var sd_ele = document.getElementById("se-unused");
-				sd_ele.addEventListener('click', function() {
+				var sdEle = document.getElementById("se-unused");
+				sdEle.addEventListener('click', function() {
 					document.getElementById("se-whitespace").disabled = !this.checked;	
 				});
-				document.getElementById("se-whitespace").disabled = !sd_ele.checked;
+				document.getElementById("se-whitespace").disabled = !sdEle.checked;
 				eleList = document.getElementsByClassName("settingsInfoline");
 				// Hide empty action bar
 				var ele = this.$content.get(0);

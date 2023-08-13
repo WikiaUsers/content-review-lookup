@@ -30,3 +30,23 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 1600
 };
+
+/* This locks any dead threads in this wiki */
+var LockForums = {
+    expiryDays: 14,
+    expiryMessage: 'This thread has been archived due to inactivity.'
+};
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:FileUsageAuto-update/code.js',
+    ]
+});
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:HeaderLinks/code.js',
+    ]
+});

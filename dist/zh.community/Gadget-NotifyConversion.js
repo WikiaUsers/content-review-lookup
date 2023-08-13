@@ -8,7 +8,7 @@ mw.loader.using('mediawiki.util').then(function () {
     var conf = mw.config.get(),
         variant = conf.wgUserVariant,
         url = new URL(location.href)
-        // now = Date.now()
+        now = Date.now()
  
     // 在特定条件下不弹框
     if (

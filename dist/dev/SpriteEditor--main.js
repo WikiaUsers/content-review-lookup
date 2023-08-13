@@ -23,11 +23,11 @@
 	var buttons;
 	var imgEle;
 	var canvasCollection = [];
-	var has_edit_permission = true;
-	var has_tag_permission = false;
-	var has_new_tag_permission = false;
-	var tag_exists = false;
-	var tag_active = false;
+	var hasEditPermission = true;
+	var hasTagPermission = false;
+	var hasNewTagPermission = false;
+	var tagExists = false;
+	var tagActive = false;
 	var lastSaved;
 	var tbExpanded = false;
 	var history = [
@@ -228,7 +228,7 @@
 	}
 	// Serialize JSON
 	function getNames(data, ident) {
-		var to_return = [];
+		var toReturn = [];
 		var names = Object.keys(data);
 		if (ident === 2) {
 			names.sort();
@@ -236,28 +236,28 @@
 		for (var i = 0; i < names.length; i++) {
 			var d = data[names[i]];
 			var t = isNaN(d);
-			var u = ((typeof(d) == "string" && !d.length) || t) && "\'" || "";
+			var u = ((typeof(d) === "string" && !d.length) || t) && "\'" || "";
 			if (String(d).substring(0,7) === "require") {
 				u = "";
 			}
-			to_return.push( names[i] + " = " + u + d + u );
+			toReturn.push( names[i] + " = " + u + d + u );
 		}
 		var id = ("\t").repeat(ident);
 		var joinVar = ident === 2 && ",\n" + id || ", ";
-		return "{" + (ident === 2 && "\n" + id || " ") + to_return.join(joinVar) + (ident === 2 && "\n" + ("\t").repeat(ident - 1) || " ") + "},";
+		return "{" + (ident === 2 && "\n" + id || " ") + toReturn.join(joinVar) + (ident === 2 && "\n" + ("\t").repeat(ident - 1) || " ") + "},";
 	}
 	function processData(data, tr, ident, sortNames) {
-		var to_return = tr || [
+		var toReturn = tr || [
 			"{"
 		];
 		ident = ident || 1;
 		var names = Object.keys(data);
 		if (sortNames && ident > 1) {
-			var use_name = data[names[0]] && data[names[0]].name || 0;
+			var useName = data[names[0]] && data[names[0]].name || 0;
 			var dataA;
 			var dataB;
 			names = names.sort(function(a, b) {
-				if (use_name) {
+				if (useName) {
 					dataA = data[a].name.toLowerCase();
 					dataB = data[b].name.toLowerCase();
 				} else {
@@ -275,19 +275,19 @@
 			var needQuotes = names[i] !== (names[i].match(/(\d|\w)+/gm) || [])[0];
 			if (data[names[i]].pos || data[names[i]].id || data[names[i]].sheetsize || data[names[i]].classname || data[names[i]].stylesheet) {
 				if (!isNaN(names[i])) {
-					to_return.push( id + getNames(data[names[i]], ident + 1) );
+					toReturn.push( id + getNames(data[names[i]], ident + 1) );
 				} else {
-					to_return.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + ' = ' + getNames(data[names[i]], ident + 1) );
+					toReturn.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + ' = ' + getNames(data[names[i]], ident + 1) );
 				}
 			} else if (typeof(data[names[i]]) === "object") {
-				to_return.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + " = {" );
-				processData(data[names[i]], to_return, ident + 1, names[i] !== "sections");
-				to_return.push( id + "}," );
+				toReturn.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + " = {" );
+				processData(data[names[i]], toReturn, ident + 1, names[i] !== "sections");
+				toReturn.push( id + "}," );
 			}
 		}
 		if (ident === 1) {
-			to_return.push( "}" );
-			return to_return.join("\n");
+			toReturn.push( "}" );
+			return toReturn.join("\n");
 		}
 	}
 	function addDummyPos() {
@@ -305,7 +305,7 @@
 		});
 		var extraIncrement = 0;
 		allPos.forEach(function(item, index) {
-			if (!extraIncrement && (!output.settings.pos || ((index + 1) == output.settings.pos && !document.querySelector("li[data-pos='" + (index + 1) + '"]')) ) ) // If no defaultSprite exists, the pos 1 shouldn't be blocked.
+			if (!extraIncrement && (!output.settings.pos || ((index + 1) === Number(output.settings.pos) && !document.querySelector("li[data-pos='" + (index + 1) + '"]')) ) ) // If no defaultSprite exists, the pos 1 shouldn't be blocked.
 				extraIncrement++;
 			document.querySelector("li[data-pos='" + item + "']").dataset.posTmp = index + 1 + extraIncrement;
 		});
@@ -389,6 +389,19 @@
 		var ctxOld = oldImageAsCanvas.getContext('2d');
 		ctxOld.drawImage(imgData, 0, 0);
 	}
+	function updateTitle(changesMade) {
+		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
+		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.full.length && (" – " + loadedSpriteName.name + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
+	}
+	function toggleTBButtons(active) {
+		buttons.changes.setDisabled(!active);
+		buttons.deprecated.setDisabled(!active);
+		buttons.deprecated2.setDisabled(!(active && buttons.deprecated.getValue()));
+		buttons.newSection.setDisabled(!active);
+		buttons.save.setDisabled(!active);
+		buttons.settings.setDisabled(!active);
+		buttons.sortSections.setDisabled(!active);
+	}
 	function saveJSON(summary, data, generatedJSON) {
 		api.postWithEditToken({
 			action: "edit",
@@ -397,12 +410,12 @@
 			notminor: true,
 			recreate: true,
 			summary: summary,
-			tags: tag_active && tag_exists && has_tag_permission && "spriteeditor" || undefined,
+			tags: tagActive && tagExists && hasTagPermission && "spriteeditor" || undefined,
 			text: "return " + data,
 			title: 'Module:' + loadedSpriteName.full,
 			formatversion: 2
 		}).always(function(d) {
-			toggleTBButtons(has_edit_permission);
+			toggleTBButtons(hasEditPermission);
 			buttons.open.setDisabled(false);
 			buttons.undo.setDisabled(historyPos === 0);
 			buttons.redo.setDisabled(historyPos === history.length);
@@ -420,7 +433,7 @@
 		});
 	}
 	function addMissingTag(summary, data, generatedJSON) {
-		if (!tag_exists && has_new_tag_permission) {
+		if (!tagExists && hasNewTagPermission) {
 			api.postWithEditToken({
 				action: "managetags",
 				format: "json",
@@ -430,7 +443,7 @@
 				reason: "Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]"
 			}).always(function(e) {
 				if (!e.error) {
-					tag_exists = true;
+					tagExists = true;
 				}
 				saveJSON(summary, data, generatedJSON);
 			});
@@ -458,7 +471,7 @@
 				ignorewarnings: true
 			}).always(function(d) {
 				if (!d) {
-					toggleTBButtons(has_edit_permission);
+					toggleTBButtons(hasEditPermission);
 					alert(msg("image-error").plain());
 					return;
 				}
@@ -466,10 +479,6 @@
 				addMissingTag(s, data, generatedJSON);
 			});
 		});
-	}
-	function updateTitle(changesMade) {
-		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
-		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.full.length && (" – " + loadedSpriteName.name + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
 	}
 	function addHistory(data) {
 		if (history.length > historyPos) {
@@ -565,44 +574,45 @@
 		updateTitle(lastSaved !== history[historyPos - 1]);
 	}
 	function getCodeField(name) {
-		var box_code = document.createElement('code');
-		box_code.contentEditable = has_edit_permission;
-		box_code.textContent = name;
+		var boxCode = document.createElement('code');
+		boxCode.contentEditable = hasEditPermission;
+		boxCode.textContent = name;
 
-		box_code.onpaste = function(e) {
+		boxCode.onpaste = function(e) {
 			e.preventDefault();
 			var paste = (e.clipboardData || window.clipboardData).getData('text');
 			paste = paste.replace( /\n/g, ' ' ).trim();
 			window.document.execCommand( 'insertText', false, paste );
 		};
-		box_code.onkeypress = function(e) {
+		boxCode.onkeypress = function(e) {
 			if ( e.keyCode !== 13 ) return;
 			e.preventDefault();
 			e.target.blur();
 		};
-		box_code.addEventListener('focus', function() {
+		boxCode.addEventListener('focus', function() {
 			if (buttons.deprecated.getValue()) {
-				const _boxCode = box_code;
+				const _boxCode = boxCode;
+				const btnValue = (buttons.deprecated2.getLabel()).toLowerCase();
 				const _func = function() {
-					_boxCode.classList.toggle("spritedoc-deprecated");
+					_boxCode.classList.toggle("spritedoc-" + btnValue); // Needs support for translations
 				};
 				addHistory([_func, _func]);
 				_func();
-				box_code.blur();
+				boxCode.blur();
 			} else {
-				box_code.setAttribute("data-original-text", box_code.textContent);
+				boxCode.setAttribute("data-original-text", boxCode.textContent);
 			}
 		});
-		box_code.addEventListener('blur', function() {
+		boxCode.addEventListener('blur', function() {
 			if (buttons.deprecated.getValue()) return;
-			var posId = box_code.closest('.spritedoc-box').dataset.pos;
+			var posId = boxCode.closest('.spritedoc-box').dataset.pos;
 			var list = {};
-			box_code.textContent = box_code.textContent.trim();
-			var secId = box_code.closest('.spritedoc-section').dataset.sectionId;
-			var orgT = box_code.getAttribute("data-original-text") || "";
-			if (box_code.textContent.length) {
-				box_code.removeAttribute("data-original-text");
-				if (orgT === box_code.textContent) return;
+			boxCode.textContent = boxCode.textContent.trim();
+			var secId = boxCode.closest('.spritedoc-section').dataset.sectionId;
+			var orgT = boxCode.getAttribute("data-original-text") || "";
+			if (boxCode.textContent.length) {
+				boxCode.removeAttribute("data-original-text");
+				if (orgT === boxCode.textContent) return;
 				if (orgT.length) {
 					list[orgT] = true;
 					addHistory([
@@ -610,30 +620,30 @@
 						"sprite-rename",
 						posId,
 						orgT,
-						box_code.textContent,
-						box_code
+						boxCode.textContent,
+						boxCode
 					]);
 				} else {
 					addHistory([
 						"sprite-name-added",
 						"sprite-name-removed",
 						posId,
-						box_code.closest(".spritedoc-names"),
-						box_code.parentElement,
-						box_code.textContent
+						boxCode.closest(".spritedoc-names"),
+						boxCode.parentElement,
+						boxCode.textContent
 					]);
 				}
-				list[box_code.textContent] = true;
+				list[boxCode.textContent] = true;
 				markDuplicateNames(list);
-				box_code.classList.remove("spriteedit-new");
-				box_code.removeAttribute("data-placeholder");
+				boxCode.classList.remove("spriteedit-new");
+				boxCode.removeAttribute("data-placeholder");
 				sortSpriteNames(posId);
 				sortSection(secId);
 			} else {
 				var isRemoved = false;
-				var cl = box_code.closest('.spritedoc-names');
+				var cl = boxCode.closest('.spritedoc-names');
 				if (cl.children.length === 1) {
-					box_code.innerText = orgT;
+					boxCode.innerText = orgT;
 					helper.removeSprite(posId);
 					isRemoved = true;
 				} else if (cl.children.length > 1) {
@@ -642,11 +652,11 @@
 							"sprite-name-removed",
 							"sprite-name-added",
 							posId,
-							box_code.closest(".spritedoc-names"),
-							box_code.parentElement,
+							boxCode.closest(".spritedoc-names"),
+							boxCode.parentElement,
 							orgT
 						]);
-					cl.removeChild(box_code.parentElement);
+					cl.removeChild(boxCode.parentElement);
 				}
 				markDuplicateNames(list);
 				list = {};
@@ -662,11 +672,11 @@
 		});
 
 		if (!(name || '').length) {
-			box_code.className = "spriteedit-new";
-			box_code.setAttribute("isSprite", "");
-			box_code.setAttribute('data-placeholder', msg("new-placeholder").plain());
+			boxCode.className = "spriteedit-new";
+			boxCode.setAttribute("isSprite", "");
+			boxCode.setAttribute('data-placeholder', msg("new-placeholder").plain());
 		}
-		return box_code;
+		return boxCode;
 	}
 	function createContextButton(icon, lbl, tooltip) {
 		return new OO.ui.ButtonInputWidget( {
@@ -689,7 +699,7 @@
 				var fname = f.name.trim().replace( /\.[^\.]+$/, '' ).replace( /_/g, ' ' );
 				if (!fname.length) return;
 				toShare.highestPos++;
-				if (toShare.highestPos == output.settings.pos) // Prevent replacing default image.
+				if (toShare.highestPos === Number(output.settings.pos)) // Prevent replacing default image.
 					toShare.highestPos++;
 				var posID = toShare.highestPos;
 				var secID = ele.closest(".spritedoc-section").dataset.sectionId;
@@ -802,13 +812,13 @@
 		buttons.mirrorSpriteVertical.setFlags(['primary', 'progressive']);
 		buttons.mirrorSpriteVertical.$icon.get(0).style.transform = "rotate(90deg)";
 
-		if (has_edit_permission) {
+		if (hasEditPermission) {
 			$(ele2).append(buttons.changeSprite.$element);
 			$(ele2).append(buttons.defaultSprite.$element);
 		}
 		$(ele2).append(buttons.downloadSprite.$element);
-		if (has_edit_permission) {
-			if (imgWidth == imgHeight) {
+		if (hasEditPermission) {
+			if (Number(imgWidth) === Number(imgHeight)) {
 				$(ele2).append(buttons.rotateSpriteLeft.$element);
 				$(ele2).append(buttons.rotateSpriteRight.$element);
 			}
@@ -837,7 +847,7 @@
 			for (var i = 0; i < additionalRotation; i++) {
 				newImg = rotateSprite(newImg);
 			}
-			if (skipHistory == true)
+			if (skipHistory === true)
 				return newImg;
 			helper.addSprite(selectedPos, newImg);
 			orgCanvas.parentElement.replaceChild(canvasCollection[selectedPos], orgCanvas); // Replacing old with new.
@@ -992,14 +1002,14 @@
 
 	function getNewBoxFunction(a) {
 		return function() {
-			var box_code = getCodeField();
+			var boxCode = getCodeField();
 			var spriteName = document.createElement('li');
 			spriteName.classList = 'spritedoc-name';
-			spriteName.append(box_code);
+			spriteName.append(boxCode);
 			a.append(spriteName);
 			var orgVar = buttons.deprecated.getValue();
 			buttons.deprecated.setValue(false);
-			box_code.focus();
+			boxCode.focus();
 			buttons.deprecated.setValue(orgVar);
 		};
 	}
@@ -1042,30 +1052,30 @@
 
 		const spriteNames = document.createElement('ul');
 		spriteNames.classList = 'spritedoc-names';
-		data.sort(function(a, b) {return a[0] < a[1];});
+		data.sort(function(a) {return a[0] < a[1];});
 		for (var name = 0; name < data.length; name++) {
 			if (name === 0 && pos)
 				spriteBox.setAttribute('data-sort-key', data[name][0]);
 
 			// sprite names
-			var box_code = getCodeField(data[name][0]);
+			var boxCode = getCodeField(data[name][0]);
 			if (data[name][1])
-				box_code.classList.add("spritedoc-deprecated");
+				boxCode.classList.add("spritedoc-deprecated");
 			if (data[name][2] && data[name][2].nolink)
-				box_code.classList.add("spritedoc-nolink");
+				boxCode.classList.add("spritedoc-nolink");
 			if (data[name][2] && data[name][2].black)
-				box_code.classList.add("spritedoc-black");
+				boxCode.classList.add("spritedoc-black");
 			if (data[name][2] && data[name][2].dark)
-				box_code.classList.add("spritedoc-dark");
+				boxCode.classList.add("spritedoc-dark");
 			if (pos)
-				box_code.setAttribute("isSprite", "");
+				boxCode.setAttribute("isSprite", "");
 
 			var spriteName = document.createElement('li');
 			spriteName.classList = 'spritedoc-name';
-			spriteName.append(box_code);
+			spriteName.append(boxCode);
 			spriteNames.append(spriteName);
 		}
-		if (has_edit_permission) {
+		if (hasEditPermission) {
 			var addNameBtn = new OO.ui.ButtonInputWidget( {
 				classes: [ 'spriteedit-add-name' ],
 				framed: false,
@@ -1153,11 +1163,11 @@
 		});
 
 		// Add images to section-button
-		if (has_edit_permission) {
-			var permOrg = has_edit_permission;
-			has_edit_permission = false;
+		if (hasEditPermission) {
+			var permOrg = hasEditPermission;
+			hasEditPermission = false;
 			spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
-			has_edit_permission = permOrg;
+			hasEditPermission = permOrg;
 		}
 	}
 	function newSection(s) {
@@ -1193,14 +1203,6 @@
 		}
 		root.insertBefore(frame.$element.get(0), root.firstChild);
 	};
-	function toggleTBButtons(active) {
-		buttons.changes.setDisabled(!active);
-		buttons.deprecated.setDisabled(!active);
-		buttons.newSection.setDisabled(!active);
-		buttons.save.setDisabled(!active);
-		buttons.settings.setDisabled(!active);
-		buttons.sortSections.setDisabled(!active);
-	}
 	mw.loader.using( [
 			'mediawiki.api',
 			'jquery',
@@ -1285,6 +1287,30 @@
 					invisibleLabel: !tbExpanded,
 					title: msg("mark-deprecated-hover").plain()
 				}),
+				deprecated2: new OO.ui.DropdownWidget( {
+				    label: '',
+				    disabled: true,
+				    menu: {
+				        items: [
+				            new OO.ui.MenuOptionWidget( {
+				                data: 'deprecated',
+				                label: 'Deprecated'
+				            } ),
+				            new OO.ui.MenuOptionWidget( {
+				                data: 'black',
+				                label: 'Black'
+				            } ),
+				            new OO.ui.MenuOptionWidget( {
+				                data: 'dark',
+				                label: 'Dark'
+				            } ),
+				            new OO.ui.MenuOptionWidget( {
+				                data: 'nolink',
+				                label: 'Nolink'
+				            } )
+				        ]
+				    }
+				} ),
 				cancelMove: createButton(
 					'previous',
 					msg("cancel-move-label").plain(),
@@ -1296,6 +1322,9 @@
 					msg("description-toggle-hover").plain()
 				)
 			};
+			// Selecting default
+			buttons.deprecated2.getMenu().selectItemByData( 'deprecated' );
+			
 			toggleTBButtons(false);
 			buttons.undo.setDisabled(true);
 			buttons.redo.setDisabled(true);
@@ -1312,7 +1341,8 @@
 				mainItems: new OO.ui.ButtonGroupWidget({items: [
 					buttons.newSection,
 					buttons.sortSections,
-					buttons.deprecated
+					buttons.deprecated,
+					buttons.deprecated2
 				]}),
 				toolItems: new OO.ui.ButtonGroupWidget({items: [
 					buttons.settings,
@@ -1359,6 +1389,9 @@
 			);
 			root.append( frame.$element.get(0) );
 			// Setup click-functions
+			buttons.deprecated.on('click', function() {
+				buttons.deprecated2.setDisabled(!buttons.deprecated.getValue());	
+			});
 			buttons.cancelMove.on('click', function() {
 				removeOverlays();
 				updateToolbar();
@@ -1368,6 +1401,7 @@
 				buttons.descriptionToggle.setIcon(tbExpanded && "previous" || "next");
 				var buttonNames = Object.keys(buttons);
 				for (var i = 0; i < buttonNames.length; i++) {
+					if (buttonNames[i] === "deprecated2") continue;
 					buttons[buttonNames[i]].setInvisibleLabel(!tbExpanded);
 				}
 			});
@@ -1455,11 +1489,11 @@
 			buttons.undo.setDisabled(true);
 			buttons.redo.setDisabled(true);
 			buttons.deprecated.setValue(false);
-			has_edit_permission = true;
-			has_tag_permission = false;
-			has_new_tag_permission = false;
-			tag_exists = false;
-			tag_active = false;
+			hasEditPermission = true;
+			hasTagPermission = false;
+			hasNewTagPermission = false;
+			tagExists = false;
+			tagActive = false;
 
 			// Disable toolbar buttons; reactive if data is loaded
 			toggleTBButtons(false);
@@ -1511,12 +1545,14 @@
 			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
 			options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
 			for (var name in output.ids) {
-				const secID = output.ids[name].section;
-				const posID = output.ids[name].pos;
-				toShare.highestPos = Math.max(toShare.highestPos, posID);
-				sprites[secID] = sprites[secID] || [];
-				sprites[secID][posID] = sprites[secID][posID] || [];
-				sprites[secID][posID].push( [name, output.ids[name].deprecated, output.ids[name]] );
+				if (output.ids.hasOwnProperty(name)) {
+					const secID = output.ids[name].section;
+					const posID = output.ids[name].pos;
+					toShare.highestPos = Math.max(toShare.highestPos, posID);
+					sprites[secID] = sprites[secID] || [];
+					sprites[secID][posID] = sprites[secID][posID] || [];
+					sprites[secID][posID].push( [name, output.ids[name].deprecated, output.ids[name]] );
+				}
 			}
 			for (var i = 0; i < output.sections.length; i++) {
 				newSection(output.sections[i]);
@@ -1531,7 +1567,7 @@
 			if (d) {
 				d.dataset.default = ".";
 			}
-			toggleTBButtons(has_edit_permission);
+			toggleTBButtons(hasEditPermission);
 		}
 		function loadSprite2(c) {
 			var requestData = {
@@ -1550,31 +1586,31 @@
 			api.get(Object.assign(requestData, c || {})).done(function(data) {
 				var i;
 				if (data.query.userinfo && data.query.userinfo.blockid)
-					has_edit_permission = false;
-				if (has_edit_permission && data.query.pages && data.query.pages.length) {
+					hasEditPermission = false;
+				if (hasEditPermission && data.query.pages && data.query.pages.length) {
 					for (var j = 0; j < 2; j++) {
 						for (i = 0; i < data.query.pages[j].protection.length; i++) {
-							if (!has_edit_permission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
-								has_edit_permission = false;
+							if (!hasEditPermission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
+								hasEditPermission = false;
 								break;
 							}
 						}
 					}
 				}
-				if (!tag_exists && data.query.tags && data.query.tags.length) {
+				if (!tagExists && data.query.tags && data.query.tags.length) {
 					for (i = 0; i < data.query.tags.length; i++) {
 						if (data.query.tags[i].name === "spriteeditor") {
-							tag_exists = true;
-							tag_active = data.query.tags[i].active;
+							tagExists = true;
+							tagActive = data.query.tags[i].active;
 						}
 					}
 				}
 				if (data.query.userinfo && data.query.userinfo.rights) {
 					if (data.query.userinfo.rights.indexOf( 'managechangetags' ) > 0) {
-						has_new_tag_permission = true;
+						hasNewTagPermission = true;
 					}
 					if (data.query.userinfo.rights.indexOf( 'applychangetags' ) > 0) {
-						has_tag_permission = true;
+						hasTagPermission = true;
 					}
 				}
 				if (data.continue) {
@@ -1605,7 +1641,7 @@
 		}
 		function loadSprite(name, isNew, spriteSizeW, spriteSizeH, spacing) {
 			helper = window.SpriteEditorModules.helper;
-			if (name == undefined) return;
+			if (name === undefined) return;
 			// Reset
 			options.isNew = isNew;
 			loadedSpriteName = name;
@@ -1678,7 +1714,7 @@
 					oclick(true);
 				}
 			});
-		},
+		};
 		myData.run = function() {
 			mw.hook('dev.i18n').add(myData.preload);
 			var getImageURL = api.get({
@@ -1692,7 +1728,7 @@
 			var i18nJS = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
 			Promise.allSettled([md5JS, i18nJS, getImageURL]).then(myData.preload);
 		};
-		$( document ).on( 'click.spriteEdit', function( e ) {
+		$( document ).on( 'click.spriteEdit', function() {
 			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
 			if (!skipClose && menu) {
 				document.body.removeChild(menu);

@@ -7,7 +7,7 @@
 (function() {
     'use strict';
     if (
-        !/(sysop|staff|helper|soap|global-discussions-moderator|wiki-representative|wiki-specialist)/.test(mw.config.get('wgUserGroups')) ||
+        !/(sysop|staff|soap|global-discussions-moderator|wiki-representative|wiki-specialist)/.test(mw.config.get('wgUserGroups')) ||
         window.MassBlockLoaded
     ) {
         return;

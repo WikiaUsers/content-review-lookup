@@ -54,3 +54,9 @@ spoiler.addEventListener("click", function (event) {
         spoiler.classList.toggle("active");
     }
 });
+
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'vMetShpPkb',
+    prependToRail: true
+};

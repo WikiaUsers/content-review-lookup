@@ -8,9 +8,13 @@ var talk = document.getElementById('ca-talk');
 var edit;
 if (namespace % 2 === 0 && namespace !== -1) {
 	if (editable === true) {
-    	edit = document.getElementById('ca-edit');
+		if (document.getElementById('ca-formedit') === null) {
+			edit = document.getElementById('ca-edit');
+		} else {
+    		edit = document.getElementById('ca-formedit');
+		}
 	} else {
-    	edit = document.getElementById('ca-viewsource');
+		edit = document.getElementById('ca-viewsource');
 	}
 }
 edit.after(talk);

@@ -1,18 +1,14 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Template:DropdownSelects]] */
+(function($, mw) {
 	'use strict';
-	var main = document.getElementById('DropdownSelects');
-	if (!main) return;
 
-	var OO;
-	var data = main.dataset;
-	var colorMenu, weaponMenu, movementMenu, entryMenu, availabilityDropdown, abilityDropdown;
+	var data, OO, colorMenu, weaponMenu, movementMenu, entryMenu,
+		availabilityDropdown, abilityDropdown, selectAllData,
+		$elementsToFilter, addAvailabilityFilter, addAbilityFilter;
+	var imageUrl = 'https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/';
 
 	//Begin actual code
-	var SELECT_ALL_DATA = -1;
-	var SELECT_ALL_LABEL = "All";
-	var $elementsToFilter = $( ".hero-filter-element" );
-	var addAvailabilityFilter = typeof $elementsToFilter[0].dataset.availabilityClasses === 'string';
-	var addAbilityFilter = typeof $elementsToFilter[0].dataset.abilities === 'string';
+	var selectAllLabel = "All";
 	var optionTemplate = [
 		{
 			data: 'ghb',
@@ -31,17 +27,17 @@ mw.hook('wikipage.content').add(function() {
 		},
 		{
 			data: 'regular_5',
-			label: 'Regular 5<img alt="★" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/4e/Icon_Rarity_5.png/revision/latest/scale-to-width-down/20?cb=20180513213447" decoding="async" width="20" height="20" data-image-name="Icon Rarity 5.png" data-image-key="Icon_Rarity_5.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/4e/Icon_Rarity_5.png/revision/latest/scale-to-width-down/20?cb=20180513213447" class=" lazyloaded">', 
+			label: 'Regular 5<img alt="★" src="' + imageUrl + '4/4e/Icon_Rarity_5.png/revision/latest/scale-to-width-down/20?cb=20180513213447" decoding="async" width="20" height="20" data-image-name="Icon Rarity 5.png" data-image-key="Icon_Rarity_5.png" data-src="' + imageUrl + '4/4e/Icon_Rarity_5.png/revision/latest/scale-to-width-down/20?cb=20180513213447" class=" lazyloaded">', 
 			info: '<abbr title="Heroes in the regular summoning pool that can be summoned at 5★ rarity">[?]</abbr>',
 		},
 		{
 			data: 'specialRate',
-			label: '4<img alt="★" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.5.png" data-image-key="Icon_Rarity_4.5.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" class=" lazyloaded"> Special Rate',
+			label: '4<img alt="★" src="' + imageUrl + 'b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.5.png" data-image-key="Icon_Rarity_4.5.png" data-src="' + imageUrl + 'b/b0/Icon_Rarity_4.5.png/revision/latest/scale-to-width-down/20?cb=20230513213447" class=" lazyloaded"> Special Rate',
 			info: '<abbr title="Heroes in the 5★ special rate summoning pool that are initially summoned at 4★ rarity but end up being 5★ rarity">[?]</abbr>',
 		},
 		{
 			data: 'regular_4_3_2_1',
-			label: 'Regular 1-4<img alt="★" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.png" data-image-key="Icon_Rarity_4.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" class=" ls-is-cached lazyloaded">',
+			label: 'Regular 1-4<img alt="★" src="' + imageUrl + '7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" decoding="async" width="20" height="20" data-image-name="Icon Rarity 4.png" data-image-key="Icon_Rarity_4.png" data-src="' + imageUrl + '7/7d/Icon_Rarity_4.png/revision/latest/scale-to-width-down/20?cb=20180513213504" class=" ls-is-cached lazyloaded">',
 			info: '<abbr  title="Heroes in the regular summoning pool that  can be summoned at 4★ rarity or lower">[?]</abbr>',
 		},
 		{
@@ -51,32 +47,32 @@ mw.hook('wikipage.content').add(function() {
 		},
 		{
 			data: 'legendary',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Legend.png" data-image-key="Icon_Hero_Type_Legend.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" class=" lazyloaded"> Legendary',
+			label: '<img alt="" src="' + imageUrl + 'a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Legend.png" data-image-key="Icon_Hero_Type_Legend.png" data-src="' + imageUrl + 'a/a2/Icon_Hero_Type_Legend.png/revision/latest/scale-to-width-down/20?cb=20220410030231" class=" lazyloaded"> Legendary',
 			info: '[<a href="../Category:Legendary_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'mythic',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Mythic.png" data-image-key="Icon_Hero_Type_Mythic.png" data-src="ttps://static.wikia.nocookie.net/feheroes_gamepedia_en/images/9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" class=" lazyloaded"> Mythic',
+			label: '<img alt="" src="' + imageUrl + '9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Mythic.png" data-image-key="Icon_Hero_Type_Mythic.png" data-src="' + imageUrl + '9/92/Icon_Hero_Type_Mythic.png/revision/latest/scale-to-width-down/20?cb=20220410030230" class=" lazyloaded"> Mythic',
 			info: '[<a href="../Category:Mythic_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'duo',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/d/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Duo.png" data-image-key="Icon_Hero_Type_Duo.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/d/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" class=" lazyloaded"> Duo',
+			label: '<img alt="" src="' + imageUrl + 'd/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Duo.png" data-image-key="Icon_Hero_Type_Duo.png" data-src="' + imageUrl + 'd/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" class=" lazyloaded"> Duo',
 			info: '[<a href="../Category:Duo_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'harmonized',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Har..png" data-image-key="Icon_Hero_Type_Har..png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" class=" lazyloaded"> Harmonized',
+			label: '<img alt="" src="' + imageUrl + '4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Har..png" data-image-key="Icon_Hero_Type_Har..png" data-src="' + imageUrl + '4/41/Icon_Hero_Type_Har..png/revision/latest/scale-to-width-down/20?cb=20220410030227" class=" lazyloaded"> Harmonized',
 			info: '[<a href="../Category:Harmonized_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'ascended',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" decoding="async" width="20" height="20" data-image-name="Icon FlowerBud L.png" data-image-key="Icon_FlowerBud_L.png" data-src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" class=" lazyloaded"> Ascended',
+			label: '<img alt="" src="' + imageUrl + '1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" decoding="async" width="20" height="20" data-image-name="Icon FlowerBud L.png" data-image-key="Icon_FlowerBud_L.png" data-src="' + imageUrl + '1/13/Icon_FlowerBud_L.webp/revision/latest/scale-to-width-down/20?cb=20211018053729" class=" lazyloaded"> Ascended',
 			info: '[<a href="../Category:Ascended_Heroes" target=_blank>?</a>]',
 		},
 		{
 			data: 'rearmed',
-			label: '<img alt="" src="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" decoding="async" width="20" height="20" data-image-name="Icon Arcane Weapon.png" data-image-key="https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" class=" lazyloaded"> Rearmed',
+			label: '<img alt="" src="' + imageUrl + '8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" decoding="async" width="20" height="20" data-image-name="Icon Arcane Weapon.png" data-image-key="' + imageUrl + '8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" class=" lazyloaded"> Rearmed',
 			info: '[<a href="../Category:Rearmed_Heroes" target=_blank>?</a>]',
 		}
 	];
@@ -94,7 +90,7 @@ mw.hook('wikipage.content').add(function() {
 			indicator: "down",
 			label: label,
 			menu: {
-				items: [[SELECT_ALL_DATA, SELECT_ALL_LABEL]].concat(commaList).map(function(ele) {
+				items: [[selectAllData, selectAllLabel]].concat(commaList).map(function(ele) {
 					return new OO.ui.MenuOptionWidget( {
 						data: ele[0],
 						label: ele[1],
@@ -137,7 +133,7 @@ mw.hook('wikipage.content').add(function() {
 			return option;
 		}
 
-		var ALL_OPTION = createOption({ data:SELECT_ALL_DATA, label: SELECT_ALL_LABEL });
+		var ALL_OPTION = createOption({ data:selectAllData, label: selectAllLabel });
 		var widget = new OO.ui.DropdownWidget( {
 			indicator: "down",
 			label: label,
@@ -149,7 +145,7 @@ mw.hook('wikipage.content').add(function() {
 			}
 		});
 
-		widget.getMenu().on("choose", function (item, isSelected) {
+		widget.getMenu().on('choose', function (item, isSelected) {
 			var items = widget.getMenu().items;
 			if (item === ALL_OPTION) {
 				// If ALL_OPTION changed, update the rest of the toggles
@@ -162,7 +158,6 @@ mw.hook('wikipage.content').add(function() {
 				ALL_OPTION.setSelected(selectedCount === (items.length - 1));
 			}
 			// update the label
-			widget.setLabel(getLabel(widget.getMenu().findSelectedItems()));
 			function getLabel (selectedItems) {
 				if (ALL_OPTION.isSelected()) {
 					return label; // original label
@@ -181,6 +176,7 @@ mw.hook('wikipage.content').add(function() {
 				}
 				return label;
 			}
+			widget.setLabel(getLabel(widget.getMenu().findSelectedItems()));
 			
 			onChoose.call(this, item, isSelected);
 		});
@@ -202,65 +198,84 @@ mw.hook('wikipage.content').add(function() {
 		var entryItem = entryMenu.findSelectedItem();
 		var availItems = availabilityDropdown.getMenu().findSelectedItems().map(function (item) { return item.getData(); });
 		var abilityItem = abilityDropdown.getMenu().findSelectedItem();
-		$elementsToFilter.css( "display", function () {
-		var weaponProps = (this.dataset.weaponProps || "").split(";");
-		var titles = (this.dataset.titles || "").split(";");
-		var avails = (this.dataset.availabilityClasses || "").split(";");
-		var abilities = (this.dataset.abilities || "").split(";");
+		$elementsToFilter.css( 'display', function () {
+		var weaponProps = (this.dataset.weaponProps || '').split(';');
+		var titles = (this.dataset.titles || '').split(';');
+		var avails = (this.dataset.availabilityClasses || '').split(';');
+		var abilities = (this.dataset.abilities || '').split(';');
 
-		return (!colorItem || colorItem.getLabel() === SELECT_ALL_LABEL || weaponProps.indexOf(colorItem.getLabel()) > -1) &&
-			(!weaponItem || weaponItem.getLabel() === SELECT_ALL_LABEL || weaponProps.indexOf(weaponItem.getLabel()) > -1) &&
-			(!moveItem || moveItem.getLabel() === SELECT_ALL_LABEL || this.dataset.moveType === moveItem.getLabel()) &&
-			(!entryItem || entryItem.getLabel() === SELECT_ALL_LABEL || titles.indexOf(entryItem.getData() + '') > -1) &&
-			(!abilityItem || abilityItem.getData() === SELECT_ALL_DATA || abilities.includes(abilityItem.getData())) &&
-			(availItems.indexOf(SELECT_ALL_DATA) > -1 || avails.filter(function (unitAvail) { return availItems.includes(unitAvail); }).length) ? "" : "none";
+		return (!colorItem || colorItem.getLabel() === selectAllLabel || weaponProps.indexOf(colorItem.getLabel()) > -1) &&
+			(!weaponItem || weaponItem.getLabel() === selectAllLabel || weaponProps.indexOf(weaponItem.getLabel()) > -1) &&
+			(!moveItem || moveItem.getLabel() === selectAllLabel || this.dataset.moveType === moveItem.getLabel()) &&
+			(!entryItem || entryItem.getLabel() === selectAllLabel || titles.indexOf(entryItem.getData() + '') > -1) &&
+			(!abilityItem || abilityItem.getData() === selectAllData || abilities.includes(abilityItem.getData())) &&
+			(availItems.indexOf(selectAllData) > -1 || avails.filter(function (unitAvail) { return availItems.includes(unitAvail); }).length) ? '' : 'none';
 		} );
 	}
 
-	mw.loader.using('oojs-ui-core').then(function(require) {
-		OO = require('oojs');
-		var colorDropdown = makeDropdown("Color", data.colors);
-		var weaponDropdown = makeDropdown("Weapon Types", data.weaponTypes);
-		var movementDropdown = makeDropdown("Move Types", data.moveTypes);
-		var entryDropdown = makeDropdown("Entry", data.titles);
-		availabilityDropdown = addAvailabilityFilter && makeMultiSelectDropdown("Availability", applyFilterAction, optionTemplate);
-		abilityDropdown = addAbilityFilter && makeDropdown("Ability", [
+	function init($content) {
+		var main = $content.find('#DropdownSelects:not(.loaded)')[0];
+		if (!main) return;
+
+		main.classList.add('loaded');
+		data = main.dataset;
+		selectAllData = -1;
+		$elementsToFilter = $content.find( '.hero-filter-element' );
+		addAvailabilityFilter = typeof $elementsToFilter[0].dataset.availabilityClasses === 'string';
+		addAbilityFilter = typeof $elementsToFilter[0].dataset.abilities === 'string';
+		var colorDropdown = makeDropdown('Color', data.colors);
+		var weaponDropdown = makeDropdown('Weapon Types', data.weaponTypes);
+		var movementDropdown = makeDropdown('Move Types', data.moveTypes);
+		var entryDropdown = makeDropdown('Entry', data.titles);
+		availabilityDropdown = addAvailabilityFilter && makeMultiSelectDropdown('Availability', applyFilterAction, optionTemplate);
+		abilityDropdown = addAbilityFilter && makeDropdown('Ability', [
 			['refresher', 'Refresher'],
 			['resplendent', 'Resplendent'],
 		]);
 
 		colorMenu = colorDropdown.getMenu();
-		movementMenu = movementDropdown.getMenu();
-		weaponMenu = weaponDropdown.getMenu();
-		entryMenu = entryDropdown.getMenu();
-		//var availabilityMenu = availabilityDropdown.getMenu();
-		var abilityMenu = abilityDropdown.getMenu();
+		colorMenu.on( 'choose', applyFilterAction );
 
-		weaponMenu.$element.append( "<hr/>" );
-		weaponMenu.addItems(data.weaponClasses.split(",").map(function(ele) {
-		return new OO.ui.MenuOptionWidget( {
-			label: ele
-		} );
+		movementMenu = movementDropdown.getMenu();
+		movementMenu.on( 'choose', applyFilterAction );
+
+		weaponMenu = weaponDropdown.getMenu();
+		weaponMenu.on( 'choose', applyFilterAction );
+
+		entryMenu = entryDropdown.getMenu();
+		entryMenu.on( 'choose', applyFilterAction );
+
+		//var availabilityMenu = availabilityDropdown.getMenu();
+
+		if (abilityDropdown) {
+			var abilityMenu = abilityDropdown.getMenu();
+			abilityMenu.on('choose', applyFilterAction);
+			abilityDropdown.$element.css( 'max-width', '9em' );
+		}
+
+		weaponMenu.$element.append( '<hr/>' );
+		weaponMenu.addItems(data.weaponClasses.split(',').map(function(ele) {
+			return new OO.ui.MenuOptionWidget( {
+				label: ele
+			} );
 		}));
 
-		colorDropdown.$element.css( "max-width", "9em" );
-		weaponDropdown.$element.css( "max-width", "12em" );
-		movementDropdown.$element.css( "max-width", "10em" );
-		entryDropdown.$element.css( "max-width", "20em" );
-		availabilityDropdown.$element.css( "max-width", "14em" );
-		abilityDropdown.$element.css( "max-width", "9em" );
+		colorDropdown.$element.css( 'max-width', '9em' );
+		weaponDropdown.$element.css( 'max-width', '12em' );
+		movementDropdown.$element.css( 'max-width', '10em' );
+		entryDropdown.$element.css( 'max-width', '20em' );
+		if (availabilityDropdown) availabilityDropdown.$element.css( 'max-width', '14em' );
 
-		colorMenu.on( "choose", applyFilterAction );
-		movementMenu.on( "choose", applyFilterAction );
-		weaponMenu.on( "choose", applyFilterAction );
-		entryMenu.on( "choose", applyFilterAction );
-		abilityMenu.on('choose', applyFilterAction);
+		var hlItems = [colorDropdown, weaponDropdown, movementDropdown, entryDropdown];
+		if (addAvailabilityFilter) hlItems.push(availabilityDropdown);
+		if (addAbilityFilter) hlItems.push(abilityDropdown);
 
 		new OO.ui.HorizontalLayout( {
-			items: [colorDropdown, weaponDropdown, movementDropdown, entryDropdown,
-				addAvailabilityFilter && availabilityDropdown,
-				addAbilityFilter && abilityDropdown,    
-			]
+			items: hlItems
 		} ).$element.insertAfter( main );
+	}
+	mw.loader.using('oojs-ui-core').then(function(require) {
+		OO = require('oojs');
+		mw.hook('wikipage.content').add(init);
 	});
-});
+})(window.jQuery, window.mediaWiki);

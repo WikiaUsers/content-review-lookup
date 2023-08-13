@@ -9,6 +9,7 @@
 	var msg;
 
 	function generate(index, ele) {
+		ele.classList.add('loaded');
 		// Variables
 		var data = ele.dataset;
 		var videoId;
@@ -68,7 +69,7 @@
 	}
 
 	function init($content) {
-		$content.find('.BiliVideo, .BilibiliVideo').each(generate);
+		$content.find('.BiliVideo:not(.loaded), .BilibiliVideo:not(.loaded)').each(generate);
 	}
 
 	// i18n-js

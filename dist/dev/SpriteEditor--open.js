@@ -4,9 +4,6 @@
 	if (window.SpriteEditorModules.open && window.SpriteEditorModules.open.loaded) return;
 	window.SpriteEditorModules.open = {loaded: true};
 	var api = new mw.Api();
-	const config = mw.config.get([
-		'wgArticlePath'
-	]);
 	var helper = window.SpriteEditorModules.helper;
 	var myData = window.SpriteEditorModules.open;
 	var modal = {};
@@ -19,13 +16,9 @@
 	var allPages = [];
 	var windowClosed = false;
 	function createList() { // Compares images with lists; creates html
-		var list = {};
-		var a = 0;
-		var name = "";
 		var root = document.getElementsByClassName("spriteeditor-items")[0];
 		root.innerHTML = "";
 		modal.windowManager.updateWindowSize(modal.seDialog);
-		var names = Object.keys(list);
 		function loadSprite2(toOpen) {
 			var historyUrl = new URL(window.location);
 			historyUrl.searchParams.set('sprite', toOpen.full);
@@ -46,8 +39,8 @@
 				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 				'question': '=p',
 				'clear': true,
-				'content': 'local a = require("Module:' + n.full + '")\n'
-				+ 'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
+				'content': 'local a = require("Module:' + n.full + '")\n' +
+				'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 			}).always(function(a) {
 				var output;
 				if (windowClosed) return;
@@ -76,7 +69,7 @@
 						modal.seDialog.popPending();
 				}
 				var newSize = modal.seDialog.getBodyHeight();
-				if (oldSize != newSize)
+				if (oldSize !== newSize)
 					modal.windowManager.updateWindowSize(modal.seDialog);
 			});
 		}

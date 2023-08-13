@@ -3,7 +3,6 @@
 
 	if (window.SpriteEditorModules.sorting && window.SpriteEditorModules.sorting.loaded) return;
 	window.SpriteEditorModules.sorting = {loaded: true};
-	var api = new mw.Api();
 	var myData = window.SpriteEditorModules.sorting;
 	var modal = {};
 	myData.modal = modal;

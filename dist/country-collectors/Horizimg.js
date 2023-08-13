@@ -1,5 +1,12 @@
 // convert files defined to <div>s including
 // the correlating background-image
+
+/*
+  attributions:
+    https://fallout.fandom.com/wiki/MediaWiki:Common.js#L-38
+    https://dev.fandom.com/wiki/MediaWiki:DiscordIntegrator/code.js#L-46
+*/
+
 $(document).ready(function() {
 	'use strict';
 	var fd = ({
@@ -23,17 +30,18 @@ $(document).ready(function() {
 		}
 	}).apiGetter();
 		
-	setTimeout($.proxy(function() {
+	document.body.addEventListener('load', $.proxy(function(event) {
+		var img = event.target;
 		this.d.forEach(function(el) {
-			[].forEach.call(document.querySelectorAll('img[data-image-name="' + el[0] + '"]:not(a img)'), function(img) {
-				$.proxy(function defer() {
+			if ($(img).is('img[data-image-name="' + el[0] + '"]:not(a img)')) {
+				(function defer(pos, img) {
 					if (img.getAttribute("src").startsWith("data:image/gif")) {
-						setTimeout(function() { defer() }, 50);
+						setTimeout($.proxy(function() { defer(pos, img); }, this), 50);
 					} else {
 						img.onload = $.proxy(function() {
 							var div = $("<div>", {
 								class: "cc-imghoriz",
-								style: "background-image: url('" + img.getAttribute("src") + "')"
+								style: "background-image: url('" + img.getAttribute("data-src") + "')"
 							});
 							div.css("background-position", (
 								(!this.pos || isNaN(parseInt(this.pos)))
@@ -42,10 +50,10 @@ $(document).ready(function() {
 							div.css("width", img.height);
 							div.css("height", img.height);
 							$(img).replaceWith(div);
-						}, {pos: el[1], img: img});
+						}, this);
 					}
-				}, {pos: el[1], img: img})();
-			}, {pos: el[1]});
-		});
-	}, {d: fd}), 1000);
+				})(el[1], img);
+			}
+		}, this);
+	}, {d: fd}), true);
 });

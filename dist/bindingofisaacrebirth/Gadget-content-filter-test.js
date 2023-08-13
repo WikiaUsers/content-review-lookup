@@ -1,18 +1,21 @@
 /**
- * Name:        Content Filter script
- * Description: Removes information from pages according to a filter, which can
- *              be enabled/disabled from the toolbar. See the gitlab page for
- *              more information.
+ * Name:        TODO
+ * Description: TODO
  */
 
 // <nowiki>
 
 ( function ( mw, document, console, array ) {
 
-/** @this {(...msg: string[] ) => void} */
+if ( window.cf && window.cf.buttons ) {
+	// already loaded
+	return;
+}
+
+/** @this {( ...msg: string[] ) => void} */
 function logger() {
 	const args = array.slice.call( arguments );
-	args.unshift( 'Content Filter:' );
+	args.unshift( '[content-filter]' );
 	this.apply( null, args );
 }
 const log   = logger.bind( console.log );
@@ -20,102 +23,6 @@ const warn  = logger.bind( mw.log.warn );
 const error = logger.bind( mw.log.error );
 
 log( 'Loading.' );
-
-/**
- * MediaWiki configuration values.
- * @typedef MWConfig
- * 
- * @property {string} skin
- * The wiki skin.
- * 
- * @property {string} wgAction
- * The action being realised on the page (view, edit, history, etc.).
- * 
- * @property {string} wgArticlePath
- * The URL path to any article, by replacing $1 with the target page name.
- * 
- * @property {string} wgPageName
- * The current page name.
- */
-
-/**
- * MediaWiki configuration values.
- * @type {MWConfig}
- */
-const config = mw.config.get( [ 'skin', 'wgAction', 'wgArticlePath', 'wgPageName' ] );
-
-if ( config.skin !== 'fandomdesktop' ) {
-	error(
-		'This script only works with the FandomDesktop skin. ' +
-		'To prevent compatibility issues with other skins, it will be disabled.'
-	);
-	return;
-}
-
-if ( ![ 'view', 'edit' ].includes( config.wgAction ) ) {
-	return;
-}
-
-/**
- * The number of filtering layers (bits) used on pages.
- * @type {number}
- */
-const filterCount = 4; // max filter = 15 (1111)
-
-/**
- * An available filter.
- * @typedef Filter
- * 
- * @property {number} filter
- * The corresponding numeric filter.
- * 
- * @property {string} url
- * An URL to the filter image.
- * 
- * @property {string} [description]
- * A description of the filter.
- */
-
-/**
- * The list of available filters.
- * @type {Filter[]}
- */
-const filters = [
-	{
-		filter: 1, // 0001
-		url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/2/25/Dlc_na_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Rebirth'
-	},
-	{
-		filter: 2, // 0010
-		url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/9/95/Dlc_a_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Afterbirth'
-	},
-	{
-		filter: 4, // 0100
-		url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/4/4c/Dlc_a†_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Afterbirth+'
-	},
-	{
-		filter: 8, // 1000
-		url: 'https://static.wikia.nocookie.net/bindingofisaacre_gamepedia/images/f/f2/Dlc_r_indicator.png/revision/latest',
-		description: 'Hide content unavailable with Repentance'
-	}
-];
-
-/**
- * The class used on the page content.
- * @type {string}
- */
-const bodyContentClass = 'mw-body-content';
-
-/**
- * If an element on a page has this class (directly on the page or
- * transcluded), the filtering becomes available, even if the page is not
- * from a namespace in filteredNamespaces or in filteredSpecialTitles.
- * @type {string}
- */
-const filterEnableClass = 'cf-enable';
 
 /**
  * The name of the URL parameter used to store the selected filter.
@@ -133,187 +40,33 @@ const urlParam = 'dlcfilter';
 const filtersInfoId = 'cf-info';
 
 /**
- * TODO
- * @type {string}
- */
-const filterClass = 'dlc';
-// const filterClass = 'cf-val';
-
-/**
- * To indicate with which filters some content should be visible or hidden,
- * the corresponding elements have to use a specific filtering class:
+ * MediaWiki configuration values.
+ * @typedef MWConfig
  * 
- *     <filterClassIntro><mask>
+ * @property {string} wgAction
+ * The action being realised on the page (view, edit, history, etc.).
  * 
- * (<filterClassIntro> being the value of this parameter and <mask>
- *  the bitmask of the filters the associated content should be available
- *  with)
- * 
- * Each element also has to use a filtering type class (either
- * blockFilterClass, wrapperFilterClass, or inlineFilterClass).
- * 
- * For instance, if the available filters were previously defined as:
- * 
- *     filters: [
- *         { filter: 1, ... }, // 01
- *         { filter: 2, ... }, // 10
- *     ],
- * 
- * using "0" (00) as <mask> will hide the content while any of the filters
- * are enabled, using "1" (01) as <mask> will hide the content while the
- * second filter is enabled, using "2" (10) as <mask> will hide the content
- * while the first filter is enabled, using "3" (11) as <mask> will have no
- * effect (the content will be shown with any filter enabled). If the value
- * of this parameter is 'cf-value-', then the following tags are valid uses:
- * 
- *     <span class="cf-val-2 ..."> ... </span>
- *     <img class="cf-val-1 ..." />
- * 
- * @type {string}
+ * @property {string} wgArticlePath
+ * The URL path to any article, by replacing $1 with the target page name.
  */
-const filterClassIntro = 'dlc-';
-// const filterClassIntro = 'cf-val-';
 
 /**
- * If an element with a filter bitmask class is inside an element with this
- * class, the corresponding bitmask is applied to the surrounding section.
- * @type {string}
+ * MediaWiki configuration values.
+ * @type {MWConfig}
  */
-const contextFilterClass = 'context-box';
-// const contextFilterClass = 'cf-scope-section';
+const config = mw.config.get( [ 'wgAction', 'wgArticlePath' ] );
 
-/**
- * If an element with a filter bitmask class is inside an element with the
- * `contextFilterClass` class and this id, the corresponding bitmask is applied
- * to the entire page: the filter buttons not matching the bitmask are disabled.
- * @type {string}
- */
-const pageContextFilterId = 'context-page';
-// const pageContextFilterId = 'cf-scope-page';
-
-/**
- * This class can be used on elements to make them invisible to filtering:
- * the script will go through them when trying to remove elements. For
- * instance, the button used to collapse tables (.mw-collapsible-toggle) is
- * skipped by default.
- * @type {string}
- */
-const skipClass = 'content-filter-skip';
-// const skipClass = 'cf-skip';
-
-/**
- * If a page has navigation bars or elements considered out of the page
- * content at the bottom of the page, using this class on at least the first
- * one will prevent these elements from being removed with a previous
- * section (see contextFilterClass).
- * @type {string}
- */
-const contentEndClass = 'content-filter-end';
-// const contentEndClass = 'cf-end';
-
-/**
- * By default, a row is removed from a table if its first cell is removed.
- * If the title cell of a table is not the first one, then a class with the
- * following format can be used to indicate which cell should be considered
- * the main one:
- * 
- *     <mainColumnClassIntro><index>
- * 
- * (<mainColumnClassIntro> being the value of this parameter and <index>
- *  the index of the main cell, the first one being 1)
- * 
- * For instance, if the value of this parameter is 'main-column-', then the
- * following classes can be used to respectively make the second and third
- * columns the main ones:
- * 
- *     {| class="main-column-2"
- *      ! Column 1
- *      ! Main column 2
- *      ! Column 3
- *      ...
- *      |}
- *     {| class="main-column-3"
- *      ! Column 1
- *      ! Column 2
- *      ! Main column 3
- *      ...
- *      |}
- * 
- * @type {string}
- */
-const mainColumnClassIntro = 'content-filter-main-column-';
-// const mainColumnClassIntro = 'cf-table-col-';
-
-/**
- * If a table has this class, its cells can be removed (instead of being
- * only cleared), the following cells on the column will then be shifted.
- * @type {string}
- */
-const listTableClass = 'content-filter-list';
-// const listTableClass = 'cf-list';
-
-/**
- * This class works the same way as skipClass, except that the element will
- * be put back on the page somewhere else if it has to be removed.
- * @type {string}
- */
-const inContentAdClass = 'gpt-ad';
-
-/**
- * The current page title.
- * @type {mw.Title}
- */
-const currentTitle = new mw.Title( config.wgPageName );
-
-/**
- * The current URI.
- * Used to set links to the current page with a filter on or off.
- * @type {mw.Uri}
- */
-const currentUri = new mw.Uri( document.location.href );
-
-/**
- * The maximum allowed numeric filter, preventing content from being removed
- * with any filter.
- * @type {number}
- */
-const filterMax = Math.pow( 2, filterCount ) - 1;
-
-/**
- * TODO
- * @type {mw.hook<[ ?number, number ]>}
- */
-const filterHook = mw.hook( 'contentFilter.filter' );
-
-/**
- * TODO
- * @type {boolean}
- */
-var hasMainBeenSet = false;
-
-/**
- * The page global filter.
- * @type {number}
- */
-var pageFilter = filterMax;
+// Note [EditModeFilter]:
+//   No filtering in edit mode, it would require reloading the page.
+if ( config.wgAction !== 'view' ) {
+	return;
+}
 
 /**
  * The index of the currently selected filter form item.
  * @type {number?}
  */
 var selectedIndex = null;
-
-/**
- * The currently selected filter.
- * @type {number}
- */
-var selectedFilter = filterMax;
-
-/**
- * TODO
- * @type {number}
- */
-var nextTagIndex = 0;
 
 /**
  * Handles an "impossible" case, supposedly caused by other scripts breaking the
@@ -335,124 +88,67 @@ function domPanic( note ) {
 }
 
 /**
- * Called when some text should be processed by the content filter.
- * @param {JQuery} $content The content element to process.
+ * Gets the value of the URL parameter used to store the selected filter from an URL.
+ * @param {string} [url] The URL, the current page one otherwise.
+ * @returns {number?} The selected filter index, null if none has been specified.
  */
-function onContentLoaded( $content ) {
-	const content = $content[ 0 ];
-	if ( !content ) {
-		return;
-	}
-
-	const isMain = isMainContent( content );
-	if ( isMain ) {
-		if ( !filteringAvailable && !isFilteringForced( document ) ) {
-			return;
-		}
-
-		log( 'Initializing state.' );
-
-		pageFilter = getPageFilter();
-	}
-
-	parseFilter( content );
-
-	if ( isMain ) {
-		insertMenu();
-
-		if ( !hasMainBeenSet ) {
-			filterHook.add( updateView );
-			hasMainBeenSet = true;
-		}
-	}
+function getFilterParamValue( url ) {
+	const value = mw.util.getParamValue( urlParam, url );
+	return value ? parseInt( value, 10 ) : null;
 }
 
 /**
- * TODO
- * @param {HTMLElement} content
- * @returns {boolean}
+ * Either sets the value of, or removes, the URL parameter used to store the
+ * selected filter from an URL.
+ * @param {number?} value The selected filter index, null if none has been specified.
+ * @param {string}  [url] The URL, the current page one otherwise.
+ * @returns {string} The updated URL.
  */
-function isMainContent( content ) {
-	return content.classList.contains( bodyContentClass );
+function setFilterParamValue( value, url ) {
+	const uri = new mw.Uri( url || document.location.href );
+
+	if ( value === null ) {
+		delete uri.query[ urlParam ];
+	} else {
+		uri.query[ urlParam ] = value;
+	}
+
+	return uri.toString();
 }
 
 /**
- * Indicates whether the filters should be used on a page because of the use of
- * in-content specific markers.
- * @param {Document} content The page content.
- * @returns {boolean} True if the filters should be used, false otherwise.
+ * Updates the index of the currently selected filter.
+ * @param {number?} index TODO
  */
-function isFilteringForced( content ) {
-	if (
-		content && filterEnableClass &&
-		content.getElementsByClassName( filterEnableClass ).length
-	) {
-		return true;
+function setSelectedIndex( index ) {
+	selectedIndex = index;
+	if ( selectedIndex === null ) {
+		log( 'No filter used.' );
+	} else {
+		log( 'Using ' + Math.pow( 2, selectedIndex ) + ' as active filter.' );
 	}
-
-	return false;
-}
-
-/**
- * Checks if the entire page is limited to some versions then sets the page
- * global filter accordingly.
- * @returns {number}
- */
-function getPageFilter() {
-	const pageContextBox = document.getElementById( pageContextFilterId );
-	if ( !pageContextBox ) {
-		return filterMax;
-	}
-
-	if ( isTag( pageContextBox ) ) {
-		return getFilter( pageContextBox );
-	}
-
-	const tagChild = pageContextBox.getElementsByClassName( filterClass )[ 0 ];
-	if ( !tagChild ) {
-		error(
-			"Neither the page context and any of its children have a " +
-			"filter value property."
-		);
-		return filterMax;
-	}
-
-	return getFilter( tagChild );
-}
-
-/**
- * TODO
- * @param {HTMLElement} element
- * @returns {boolean}
- */
-function isTag( element ) {
-	return element.classList.contains( filterClass );
 }
 
 /**
  * Generates the filter menu and puts it on the page.
+ * @param {HTMLElement[]} _
+ * @param {number}        pageFilter
  */
-function insertMenu() {
-	// Note [ButtonRemoval]:
-	//   We remove the previous button (and its hook handlers) to avoid
-	//   memory leaks when the page content gets recreated multiple times in edit
-	//   preview mode.
-	const oldMenu = document.getElementsByClassName( 'cf-menu' )[ 0 ];
-	if ( oldMenu ) {
-		oldMenu.remove();
-	}
+function insertMenu( _, pageFilter ) {
+	buttons.forEach( checkPageContext, pageFilter );
 
-	const ul = document.createElement( 'ul' );
-	ul.classList.add( 'cf-menu' );
-	ul.append.apply( ul, filters.map( generateMenuButton ) );
+	const parent = menu.parentElement;
+	if ( parent && parent.classList.contains( 'page-header__cf' ) ) {
+		parent.remove();
+	}
 
 	const info = document.getElementById( filtersInfoId );
 	if ( info ) {
-		info.append( ul );
-		info.style.display = '';
+		info.appendChild( menu );
+		info.style.removeProperty( 'display' );
 	} else {
-		const wrapper = document.getElementsByClassName( 'page-header__actions' )[ 0 ];
-		if ( !wrapper ) {
+		const headerMeta = document.getElementsByClassName( 'page-header__meta' )[ 0 ];
+		if ( !headerMeta ) {
 			// Note [MenuHeaderPanic]:
 			//   Panicking here simply means that we couldn't place the buttons on
 			//   the page. If this happens, we should either add a fallback location,
@@ -460,312 +156,152 @@ function insertMenu() {
 			domPanic( 'Page header not found.' );
 		}
 
-		wrapper.prepend( ul );
+		const headerWrapper = document.createElement( 'div' );
+		headerWrapper.classList.add( 'page-header__cf' );
+		headerWrapper.appendChild( menu );
+
+		headerMeta.insertAdjacentElement( 'afterend', headerWrapper );
+	}
+}
+
+/**
+ * TODO
+ * @this {number}
+ * @param {HTMLLIElement} button
+ */
+function checkPageContext( button ) {
+	const filterIndex = button.dataset.cfFilter;
+	if ( !filterIndex ) {
+		return;
 	}
 
-	// See note [ButtonRemoval]
-	filterHook.remove( updateSelectedButton ).add( updateSelectedButton );
+	if ( this & Math.pow( 2, +filterIndex ) ) {
+		button.classList.remove( 'cf-button-deactivated' );
+	} else {
+		button.classList.add( 'cf-button-deactivated' );
+	}
+}
+
+/**
+ * TODO
+ */
+function createMenu() {
+	const ul = document.createElement( 'ul' );
+	ul.classList.add( 'wds-list', 'wds-is-linked' );
+	buttons.forEach( ul.appendChild, ul );
+
+	const content = document.createElement( 'div' );
+	content.classList.add( 'wds-dropdown__content' );
+	content.appendChild( ul );
+
+	const dropdown = document.createElement( 'div' );
+	dropdown.classList.add( 'wds-dropdown', 'cf-menu' );
+	dropdown.append( toggle, content );
+	return dropdown;
+}
+
+/**
+ * TODO
+ */
+function createToggle() {
+	const toggle = document.createElement( 'div' );
+	toggle.classList.add( 'wds-dropdown__toggle' );
+	return toggle;
 }
 
 /**
  * Generates a filter menu button.
- * @param {Filter} filter The configurated filter.
- * @param {number} index  The index of the filter.
  * @returns {HTMLLIElement}
  */
-function generateMenuButton( filter, index ) {
-	const button = document.createElement( 'li' );
+function createBaseButton() {
+	const a = document.createElement( 'a' );
+	a.href = setFilterParamValue( null );
+	a.textContent = 'All versions';
+	a.addEventListener( 'click', onButtonClick );
 
-	button.id = 'cf-button-' + index;
-	button.classList.add( 'cf-button' );
-	button.dataset.cfView = '' + index;
+	const li = document.createElement( 'li' );
+	li.id = 'cf-button-all';
+	li.classList.add( 'cf-button' );
+	li.appendChild( a );
 
-	if ( filter.filter & pageFilter ) {
-		if ( filter.description ) {
-			button.title = filter.description;
-		}
+	return li;
+}
 
-		button.addEventListener( 'mouseenter', onButtonEnter );
-		button.addEventListener( 'mouseleave', onButtonLeave );
-		button.addEventListener( 'click', onButtonClick );
-	} else {
-		button.classList.add( 'cf-button-deactivated' );
-	}
+/**
+ * TODO
+ * @param {number} index
+ * @param {string} title
+ * @returns {HTMLLIElement}
+ */
+function createFilterButton( index, title ) {
+	const titleSpan = document.createElement( 'span' );
+	titleSpan.classList.add( 'cf-button-title' );
+	titleSpan.textContent = title;
 
-	const img = document.createElement( 'img' );
-	img.src     = filter.url;
-	img.loading = 'eager';
+	const a = document.createElement( 'a' );
+	a.href = setFilterParamValue( index );
+	a.append( titleSpan, ' only' );
+	a.addEventListener( 'click', onButtonClick );
 
-	button.appendChild( img );
+	const li = document.createElement( 'li' );
+	li.id = 'cf-button-' + index;
+	li.classList.add( 'cf-button' );
+	li.dataset.cfFilter = '' + index;
+	li.appendChild( a );
 
-	return button;
+	return li;
 }
 
 /**
  * TODO
  * @this {HTMLElement}
+ * @param {MouseEvent} event
  */
-function onButtonEnter() {
-	// TODO: hook add/remove handler on filter hook
-	if ( selectedIndex !== null ) {
-		return;
-	}
+function onButtonClick( event ) {
+	const li          = this.parentElement || domPanic();
+	const filterIndex = li.dataset.cfFilter || null;
 
-	const viewIndex = this.dataset.cfView;
-	if ( !viewIndex ) {
-		domPanic( 'Missing view property on menu button.' );
-	}
+	const filterValue = filterIndex ? +filterIndex : null;
+	mw.hook( 'contentFilter.filter' ).fire( filterValue );
 
-	parseView( +viewIndex );
-
-	array.forEach.call(
-		document.getElementsByClassName( 'cf-view-' + viewIndex ),
-		addViewFragmentHighlighting
-	);
-}
-
-/**
- * TODO
- * @this {HTMLElement}
- */
-function onButtonLeave() {
-	const viewIndex = this.dataset.cfView;
-	if ( !viewIndex ) {
-		domPanic( 'Missing view property on menu button.' );
-	}
-
-	array.forEach.call(
-		document.getElementsByClassName( 'cf-view-' + viewIndex ),
-		removeViewFragmentHighlighting
-	);
-}
-
-/**
- * TODO
- * @this {HTMLElement}
- */
-function onButtonClick() {
-	const viewIndex = this.dataset.cfView;
-	if ( !viewIndex ) {
-		domPanic( 'Missing view property on menu button.' );
-	}
-
-	if ( currentUri.query[ urlParam ] === viewIndex ) {
-		delete currentUri.query[ urlParam ];
-	} else {
-		currentUri.query[ urlParam ] = viewIndex;
-	}
-	window.history.replaceState( {}, '', currentUri.toString() );
-
-	setSelectedIndex( getFilterParamValue() );
-}
-
-/**
- * TODO
- * @param {HTMLElement} viewFragment
- */
-function addViewFragmentHighlighting( viewFragment ) {
-	viewFragment.classList.add( 'cf-view-hover' );
-}
-
-/**
- * TODO
- * @param {HTMLElement} viewFragment
- */
-function removeViewFragmentHighlighting( viewFragment ) {
-	viewFragment.classList.remove( 'cf-view-hover' );
+	window.history.replaceState( {}, '', setFilterParamValue( filterValue ) );
+	event.preventDefault();
 }
 
 /**
  * Updates the selected filter button.
  * @param {number?} index The filter index.
  */
-function updateSelectedButton( index ) {
-	const activeButtons = document.getElementsByClassName( 'cf-button-active' );
-	while ( activeButtons[ 0 ] ) {
-		disableActiveButton( activeButtons[ 0 ] );
+function updateActiveButton( index ) {
+	const buttonIndex  = index === null ? 0 : index + 1;
+	const activeButton = buttons[ buttonIndex ];
+	if ( !activeButton ) {
+		domPanic( 'Unregistrered button ' + buttonIndex + '.' );
 	}
 
-	if ( index === null ) {
-		return;
-	}
-
-	const item = document.getElementById( 'cf-button-' + index );
-	if ( !item ) {
-		domPanic( "Missing menu button." );
-	}
-
-	item.classList.add( 'cf-button-active' );
+	buttons.forEach( unsetActiveButton );
+	setActiveButton( activeButton );
 }
 
 /**
  * TODO
- * @param {HTMLElement} item
+ * @param {HTMLLIElement} button
  */
-function disableActiveButton( item ) {
-	item.classList.remove( 'cf-button-active' );
+function unsetActiveButton( button ) {
+	button.classList.remove( 'cf-button-active' );
 }
 
 /**
  * TODO
- * @param {HTMLElement} container
+ * @param {HTMLLIElement} button
  */
-function parseFilter( container ) {
-	if ( hasContainerBeenParsed( container ) ) {
-		warn( 'The newly added content is already managed by this script.' );
-		return;
-	}
-
-	if ( container.getElementsByClassName( 'cf-container' ).length ) {
-		error(
-			'The newly added content contains managed elements which are ' +
-			'already managed by this script. The filtering has been disabled ' +
-			'on the newly added content.'
-		);
-		// TODO: handle this case properly, by only registering new tags and
-		//       regenerating the associated view fragments, or domPanic().
-		return;
-	}
-
-	container.classList.add( 'cf-container' );
-
-	array.forEach.call(
-		container.getElementsByClassName( filterClass ),
-		parseTag
-	);
-}
-
-/**
- * TODO
- * @param {HTMLElement?} container
- * @returns {boolean}
- */
-function hasContainerBeenParsed( container ) {
-	while ( container ) {
-		if ( container.classList.contains( 'cf-container' ) ) {
-			return true;
-		}
-
-		container = container.parentElement;
-	}
-
-	return false;
-}
- 
-/**
- * TODO
- * @param {HTMLElement} tag
- */
-function parseTag( tag ) {
-	if ( tag.dataset.cfContext ) {
-		return;
-	}
-
-	const context = getTagContext( tag );
-	if ( !context ) {
-		// TODO: warn();
-		return;
-	}
-
-	tag.dataset.cfContext = '' + nextTagIndex;
-	context.classList.add( 'cf-context', 'cf-context-' + nextTagIndex );
-	nextTagIndex++;
-
-	tag.addEventListener( 'mouseenter', onTagHover );
-	tag.addEventListener( 'mouseleave', onTagHover );
-}
-
-/**
- * TODO
- * @this {HTMLElement}
- */
-function onTagHover() {
-	array.forEach.call(
-		document.getElementsByClassName( 'cf-context-' + this.dataset.cfContext ),
-		toggleContextFragmentHighlighting
-	);
-}
-
-/**
- * TODO
- * @param {HTMLElement} contextFragment
- */
-function toggleContextFragmentHighlighting( contextFragment ) {
-	contextFragment.classList.toggle( 'cf-context-hover' );
-}
-
-/**
- * TODO
- * @param {number} index
- */
-function parseView( index ) {
-	array.forEach.call(
-		document.getElementsByClassName( 'cf-container' ),
-		parseViewStackContainer,
-		index
-	);
-}
-
-/**
- * TODO
- * @this {number}
- * @param {HTMLElement} container
- */
-function parseViewStackContainer( container ) {
-	if ( container.classList.contains( 'cf-container-view-' + this ) ) {
-		return;
-	}
-
-	const filter = filters[ this ];
-	if ( !filter ) {
-		domPanic();
-	}
-
-	/** @type {HTMLElement[]} */
-	const stack = [];
-
-	array.forEach.call(
-		container.getElementsByClassName( filterClass ),
-		parseViewStackTag,
-		{ stack: stack, filter: filter.filter }
-	);
-
-	stack.forEach( addElementToView, this );
-
-	container.classList.add( 'cf-container-view-' + this );
-}
-
-/**
- * TODO
- * @this {{ stack: HTMLElement[], filter: number }}
- * @param {HTMLElement} tag
- */
-function parseViewStackTag( tag ) {
-	const tagFilter = getFilter( tag );
-
-	if ( tagFilter & this.filter ) {
-		this.stack.push( tag );
-		return;
-	}
-
-	array.forEach.call(
-		document.getElementsByClassName( 'cf-context-' + tag.dataset.cfContext ),
-		parseViewStackContext,
-		this.stack
-	);
-}
-
-/**
- * TODO
- * @this {HTMLElement[]}
- * @param {HTMLElement} context
- */
-function parseViewStackContext( context ) {
-	/** @type {HTMLElement?} */
-	var element = context;
-	do {
-		element = applyViewRule( element, this );
-	} while ( element );
+function setActiveButton( button ) {
+	button.classList.add( 'cf-button-active' );
+	const a = button.firstElementChild || domPanic();
+	toggle.innerHTML = a.innerHTML +
+		'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron">' +
+			'<use xlink:href="#wds-icons-dropdown-tiny"></use>' +
+		'</svg>';
 }
 
 /**
@@ -787,7 +323,7 @@ function updateView( index ) {
 		return;
 	}
 
-	parseView( index );
+	cf.parseView( index );
 
 	array.forEach.call(
 		document.getElementsByClassName( 'cf-view-' + index ),
@@ -839,363 +375,73 @@ function updateAnchorFilter( a ) {
 			.replace( '\\$1', '(.*)' )
 	);
 
-	if ( match && match[ 1 ] ) {
-		const pageTitle = new mw.Title( mw.Uri.decode( match[ 1 ] ) );
-		if ( !isFilteringAvailable( pageTitle ) ) {
-			return;
-		}
-	}
-
-	uri.query[ urlParam ] = selectedIndex;
-	a.href = uri.toString();
-}
-
-/**
- * Updates the index of the currently selected filter form item from the URL
- * parameters.
- * @param {number?} index TODO
- */
-function setSelectedIndex( index ) {
-	selectedIndex = index;
-	if ( selectedIndex === null ) {
-		selectedFilter = filterMax;
-
-		filterHook.fire( selectedIndex, selectedFilter );
+	if ( !match || !match[ 1 ] ) {
 		return;
 	}
 
-	if ( !filters[ selectedIndex ] ) {
-		selectedIndex  = null;
-		selectedFilter = filterMax;
-		error(
-			'The selected numeric filter (' + selectedIndex + ') is unavailable, ' +
-			'please use an integer x so 0 ≤ x ≤ ' + ( filters.length - 1 ) + '. ' +
-			'No filtering will be performed.'
-		);
+	const pageTitle = new mw.Title( mw.Uri.decode( match[ 1 ] ) );
+	if ( !cf.isFilteringAvailable( pageTitle ) ) {
 		return;
 	}
 
-	const filter = filters[ selectedIndex ];
-	if ( !filter ) {
-		selectedIndex  = null;
-		selectedFilter = filterMax;
-		error(
-			'The selected numeric filter (' + urlParam + ') has been disabled. ' +
-			'No filtering will be performed.'
-		);
-		return;
-	}
-
-	selectedFilter = filter.filter;
-	log( 'Using ' + selectedFilter + ' as active filter.' );
-
-	filterHook.fire( selectedIndex, selectedFilter );
-}
-
-/**
- * Gets the value of the URL parameter used to store the selected filter.
- * @returns {number?} The selected filter index, null if none has been specified.
- */
-function getFilterParamValue() {
-	const value = mw.util.getParamValue( urlParam );
-	if ( !value ) {
-		return null;
-	}
-
-	return parseInt( value, 10 );
-}
-
-/**
- * Indicates whether the filters can be used on a page.
- * @param {mw.Title} pageTitle The page title.
- * @returns {boolean} True if the filters can be used, false otherwise.
- */
-function isFilteringAvailable( pageTitle ) {
-	const namespace = pageTitle.getNamespaceId();
-	if ( [ 0, 2 ].includes( namespace ) ) {
-		return true;
-	}
-
-	const pageName = pageTitle.getPrefixedText();
-	if ( pageName === 'Special:Random' ) {
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Gets the numeric filter of an element.
- * @param {HTMLElement} element The element.
- * @returns {number} The numeric filter of the given element.
- */
-function getFilter( element ) {
-	if ( element.dataset.cfVal ) {
-		return +element.dataset.cfVal;
-	}
-
-	if ( !element.classList.contains( filterClass ) ) {
-		return filterMax;
-	}
-
-	const classList = element.classList;
-	for ( var i = 0; i < classList.length; ++i ) {
-		const className = classList[ i ];
-		if ( !className || !className.startsWith( filterClassIntro ) ) {
-			continue;
-		}
-
-		const filterClass = className.substring( filterClassIntro.length );
-		const filter      = +filterClass;
-		if ( filter < 0 ) {
-			continue;
-		}
-
-		element.dataset.cfVal = filterClass;
-		return filter;
-	}
-
-	return filterMax;
+	a.href = setFilterParamValue( selectedIndex, a.href );
 }
 
 /**
  * TODO
- * @param {HTMLElement} tag
- * @returns {HTMLElement?}
+ * @type {HTMLLIElement[]}
  */
-function getTagContext( tag ) {
-	const result = (
-		getTagContext_firstChild( tag ) ||
-		null
-	);
-
-	// TODO: other rules
-
-	return result;
-}
+const buttons = [
+	createBaseButton(),
+	createFilterButton( 0, 'Rebirth' ),
+	createFilterButton( 1, 'Afterbirth' ),
+	createFilterButton( 2, 'Afterbirth+' ),
+	createFilterButton( 3, 'Repentance' )
+];
 
 /**
  * TODO
- * <A> (tag) ... </A>
- *     ==>   [ <A> (tag) ... </A> ]
- * @param {HTMLElement} tag
- * @returns {HTMLElement?}
+ * @type {HTMLDivElement}
  */
-function getTagContext_firstChild( tag ) {
-	if ( getPreviousSibling( tag ) ) {
-		return null;
-	}
-
-	return tag.parentElement;
-}
+const toggle = createToggle();
 
 /**
  * TODO
- * @this {number}
- * @param {HTMLElement} element
+ * @type {HTMLDivElement}
  */
-function addElementToView( element ) {
-	element.classList.add( 'cf-view', 'cf-view-' + this );
-}
+const menu = createMenu();
 
 /**
  * TODO
- * @param {HTMLElement} element
- * @param {HTMLElement[]} stack
- * @returns {HTMLElement?}
+ * @type {number | null}
  */
-function applyViewRule( element, stack ) {
-	const result = (
-		applyViewRule_parentInView( element, stack ) ||
-		applyViewRule_allChildren( element, stack ) ||
-		null
-	);
+const paramValue = getFilterParamValue();
 
-	// TODO: other rules
+mw.hook( 'contentFilter.filter' )
+	.fire( paramValue )
+	.add( setSelectedIndex );
 
-	if ( !result ) {
-		stack.push( element );
-	}
-
-	return result;
-}
-
-/**
- * TODO
- * Remove child fragment.
- * [ <A> ... [ <X/> ] ... </A> ]
- *     ==>   [ <A> ... <X/> ... </A> ]
- * @param {HTMLElement} element
- * @param {HTMLElement[]} stack
- * @returns {HTMLElement?}
- */
-function applyViewRule_parentInView( element, stack ) {
-	const previousElement = stack.pop();
-	if ( !previousElement ) {
-		return null;
-	}
-
-	if ( !isChildOf( element, previousElement ) ) {
-		stack.push( previousElement );
-		return null;
-	}
-
-	return previousElement;
-}
-
-/**
- * TODO
- * Merge adjacent fragments.
- * <A> [ <B1/> ] ... [ <Bn/> ] [ <X/> ] </A>
- *     ==>   [ <A> <B1/> ... <Bn/> <X/> </A> ]
- * @param {HTMLElement} element
- * @param {HTMLElement[]} stack
- * @returns {HTMLElement?}
- */
-function applyViewRule_allChildren( element, stack ) {
-	if ( getNextSibling( element ) ) {
-		return null;
-	}
-
-	/** @type {HTMLElement[]} */
-	const previousElements = [];
-	var previousSibling = getPreviousSibling( element );
-	while ( previousSibling ) {
-		const previousElement = stack.pop();
-		if ( !previousElement ) {
-			// no previous element in view.
-			restoreStack( stack, previousElements );
-			return null;
-		}
-
-		previousElements.push( previousElement );
-
-		if (
-			!previousSibling.isSameNode( previousElement ) &&
-			!isChildOf( previousSibling, previousElement )
-		) {
-			// previous element not in view.
-			restoreStack( stack, previousElements );
-			return null;
-		}
-
-		element         = previousElement;
-		previousSibling = getPreviousSibling( element );
-	}
-
-	return element.parentElement;
-}
-
-/**
- * TODO
- * @param {HTMLElement[]} stack
- * @param {HTMLElement[]} toRestore
- */
-function restoreStack( stack, toRestore ) {
-	stack.push.apply( stack, toRestore.reverse() );
-}
+mw.hook( 'contentFilter.content' )
+	.add( insertMenu )
+	.add( function onFirstContentParsed() {
+		mw.hook( 'contentFilter.content' )
+			.remove( onFirstContentParsed );
+		mw.hook( 'contentFilter.filter' )
+			.add( updateView )
+			.add( updateActiveButton );
+	} );
 
 
-
-
-
-
-
-
-/**
- * TODO
- * @param {Node} child
- * @param {Node} parent
- * @returns {boolean}
- */
-function isChildOf( child, parent ) {
-	const cmp = child.compareDocumentPosition( parent );
-	return ( cmp & Node.DOCUMENT_POSITION_CONTAINS ) > 0;
-}
-
-
-
-
-
-/**
- * TODO
- * Indicates whether a node has a previous sibling.
- * Ignores comments and "invisible" strings.
- * @param {Node} node The node.
- * @returns {ChildNode?} True if the element has a previous sibling other than
- *                       a comment or an "invisible" string, null otherwise.
- */
-function getPreviousSibling( node ) {
-	var sibling = node.previousSibling;
-	if ( !sibling ) {
-		return null;
-	}
-
-	while ( isGhostNode( sibling ) ) {
-		sibling = sibling.previousSibling;
-		if ( !sibling ) {
-			return null;
-		}
-	}
-
-	return sibling;
-}
-
-/**
- * TODO
- * @param {Node} node The node.
- * @returns {ChildNode?}
- */
-function getNextSibling( node ) {
-	var sibling = node.nextSibling;
-	if ( !sibling ) {
-		return null;
-	}
-
-	while ( isGhostNode( sibling ) ) {
-		sibling = sibling.nextSibling;
-		if ( !sibling ) {
-			return null;
-		}
-	}
-
-	return sibling;
-}
-
-/**
- * Indicates whether a node should be considered as an additional non-essential node.
- * @param {Node} node The node.
- * @returns {boolean} True if the node is non-essential, false otherwise.
- */
-function isGhostNode( node ) {
-	if ( !node ) {
-		return false;
-	}
-
-	switch ( node.nodeType ) {
-	case Node.COMMENT_NODE:
-		return true;
-	case Node.TEXT_NODE:
-		return !node.textContent || !node.textContent.trim();
-	case Node.ELEMENT_NODE:
-		/** @type {HTMLElement} */ // @ts-ignore
-		const element = node;
-		return element.classList.contains( 'mw-collapsible-toggle' ) ||
-		       element.classList.contains( skipClass );
-	}
-
-	return false;
-}
-
-/**
- * Whether the filters can be used on the current page.
- * @type {boolean}
- */
-const filteringAvailable = isFilteringAvailable( currentTitle );
-
-setSelectedIndex( getFilterParamValue() );
-
-safeAddContentHook( onContentLoaded );
+// Note [UsingCore]:
+//   All code parts requiring the use of the core module are moved behinds
+//   hooks. These hooks should be fired from the core module itself,
+//   so there is no point in waiting for it to load.
+mw.loader.using( 'ext.gadget.content-filter-core', function () {
+	$.extend( cf, {
+		paramValue: paramValue,
+		buttons: buttons
+	} );
+} );
 
 } )( mediaWiki, document, console, Array.prototype );
 // </nowiki>

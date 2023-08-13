@@ -1,22 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-mw.hook('wikipage.content').add(function($content) {
-	var articles = [];
+;(function($, mw) {
+	'use strict';
 
-	if ($content.find('.modelViewerDgk')[0]) articles.push('MediaWiki:3DModel.js');
-	if ($content.find('div[id^="modelViewer"]')[0]) articles.push('MediaWiki:3DModel.js');
-	if ($content.find('#AdventurerPageStatsCalculator')[0]) articles.push('MediaWiki:AdventurerPageStatsCalculator.js');
-	if ($content.find('#EnemyMapDropdown')[0]) articles.push('MediaWiki:EnemyMapDropdown.js');
-	if ($content.find('#HealCalculator')[0]) articles.push('MediaWiki:HealCalculator.js');
-	if ($content.find('#HelperUseCalculator')[0]) articles.push('MediaWiki:ManaCalculator.js');
-	if ($content.find('.no-history-tabber')[0]) articles.push('MediaWiki:Tabber.js');
-	if ($content.find('#UnitStatsCalculator')[0]) articles.push('MediaWiki:UnitStatsCalculator.js');
-
-	if (articles.length) importArticles({type: "script", articles: articles});
-});
-
-;(function(mw, $) {
-	
 	function filter(list, filter) {
 		if (!filter.length) {
 			return list;
@@ -82,52 +68,62 @@ mw.hook('wikipage.content').add(function($content) {
 		});
 	}
 
-$(document).ready(function() {
-    $('.character-filters span.mw-ui-button').on('click', function(event) {
-        $(event.target).toggleClass('mw-ui-progressive');
-        updateFilters();
-    });
-    $('.character-filters label').on('click', function(event) {
-        $(event.target).toggleClass('mw-ui-progressive');
-        updateFilters();
-    });
-    $('#vestige-toggle').click(function(event) {
-        $(this).toggleClass('mw-ui-progressive');
-        $('.base-vestige').toggle();
-        $('.refined-vestige').toggle();
-    });
-    
-    $(".event-dialogue > p").each(function() {
-        var wrapper = $('<div style="display: flex; align-items: flex-start;margin-top: 10px;margin-bottom: 10px;"></div>');
-        var text = $(this).text().trim();
-        var img = $(this).find("a:first-child");
-        var imgWrapper = $('<div style="padding-right: 10px"></div>');
-        var textWrapper = $('<div style="flex-grow: 1"></div>');
+	mw.hook('wikipage.content').add(function($content) {
+		var articles = [];
 
-        textWrapper.text(text);
-        imgWrapper.append(img);
-        wrapper.append(imgWrapper);
-        wrapper.append(textWrapper);
+		if ($content.find('.modelViewerDgk')[0]) articles.push('MediaWiki:3DModel.js');
+		if ($content.find('div[id^="modelViewer"]')[0]) articles.push('MediaWiki:3DModel.js');
+		if ($content.find('#AdventurerPageStatsCalculator')[0]) articles.push('MediaWiki:AdventurerPageStatsCalculator.js');
+		if ($content.find('#EnemyMapDropdown')[0]) articles.push('MediaWiki:EnemyMapDropdown.js');
+		if ($content.find('#HealCalculator')[0]) articles.push('MediaWiki:HealCalculator.js');
+		if ($content.find('#HelperUseCalculator')[0]) articles.push('MediaWiki:ManaCalculator.js');
+		if ($content.find('.no-history-tabber')[0]) articles.push('MediaWiki:Tabber.js');
+		if ($content.find('#UnitStatsCalculator')[0]) articles.push('MediaWiki:UnitStatsCalculator.js');
 
-        $(this).parent().append(wrapper);
-        $(this).remove();
-    });
-    
-    //start of font size toggle for story
-    
-    $("#smallText").click(function() {
-    	$(".event-dialogue").css("font-size", "0.875em");
-    });
-    
-    $("#mediumText").click(function() {
-    	$(".event-dialogue").css("font-size", "1.125em");
-    });
-    
-    $("#largeText").click(function() {
-    	$(".event-dialogue").css("font-size", "1.875em");
-    });
-    
-    //end of font size toggle for story
-});
+		if (articles.length) importArticles({type: "script", articles: articles});
 
-})(window.mediaWiki, window.jQuery);
+		$content.find('.character-filters span.mw-ui-button').on('click', function(event) {
+	        $(event.target).toggleClass('mw-ui-progressive');
+	        updateFilters();
+	    });
+	    $content.find('.character-filters label').on('click', function(event) {
+	        $(event.target).toggleClass('mw-ui-progressive');
+	        updateFilters();
+	    });
+	    $content.find('#vestige-toggle').click(function() {
+	        $(this).toggleClass('mw-ui-progressive');
+	        $content.find('.base-vestige').toggle();
+	        $content.find('.refined-vestige').toggle();
+	    });
+	    
+	    $content.find(".event-dialogue > p").each(function() {
+	        var wrapper = $('<div style="display: flex; align-items: flex-start;margin-top: 10px;margin-bottom: 10px;"></div>');
+	        var text = $(this).text().trim();
+	        var img = $(this).find("a:first-child");
+	        var imgWrapper = $('<div style="padding-right: 10px"></div>');
+	        var textWrapper = $('<div style="flex-grow: 1"></div>');
+	
+	        textWrapper.text(text);
+	        imgWrapper.append(img);
+	        wrapper.append(imgWrapper);
+	        wrapper.append(textWrapper);
+	
+	        $(this).parent().append(wrapper);
+	        $(this).remove();
+	    });
+	    
+	    //start of font size toggle for story
+	    
+	    $content.find("#smallText").click(function() {
+	    	$content.find(".event-dialogue").css("font-size", "0.875em");
+	    });
+	    
+	    $content.find("#mediumText").click(function() {
+	    	$content.find(".event-dialogue").css("font-size", "1.125em");
+	    });
+	    
+	    $content.find("#largeText").click(function() {
+	    	$content.find(".event-dialogue").css("font-size", "1.875em");
+	    });
+	});
+})(window.jQuery, window.mediaWiki);

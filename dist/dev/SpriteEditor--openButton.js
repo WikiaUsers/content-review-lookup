@@ -11,7 +11,7 @@
 		return c;
 	}
 	var ele, inner, label;
-	if (config.skin == "fandomdesktop") {
+	if (config.skin === "fandomdesktop") {
 		var clickFunc = function() {
 			window.location.href = getURL();
 		};
@@ -42,7 +42,7 @@
 				'u:dev:MediaWiki:CustomTools.js'
 			]
 		});
-	} else if (config.skin == "vector" || config.skin == "vector-2022") {
+	} else if (config.skin === "vector" || config.skin === "vector-2022") {
 		ele = document.createElement("li");
 		ele.id = "se-open";
 		ele.className = "vector-tab-noicon mw-list-item collapsible";
@@ -54,7 +54,7 @@
 		inner.appendChild(label);
 		ele.appendChild(inner);
 		document.querySelector("#right-navigation .vector-menu-content > ul").appendChild(ele);
-		if (config.skin == "vector-2022")
+		if (config.skin === "vector-2022")
 			document.getElementById("p-views").classList.remove("emptyPortlet");
 	}
 })(window.mediaWiki);

@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Main page */
-if (wgPageName === 'Civilization_Games_Wiki') {
+if (mw.config.get('wgIsMainPage')) {
 	$(function() {
 		/** Hide tabbers until the entire system is ready - 
             works with MediaWiki:Mainpage_Box_Content **/
@@ -26,8 +26,8 @@ if (wgPageName === 'Civilization_Games_Wiki') {
 }
 
 /* Starships Viewer */
-if ( wgPageName.match(/(Supremacy|Purity|Harmony)_\(Starships\)/) ) {
-    importScript('MediaWiki:Starshipmenu.js');
+if ( mw.config.get('wgPageName').match(/(Supremacy|Purity|Harmony)_\(Starships\)/) ) {
+    importArticle({type: 'script', article: 'MediaWiki:Starshipmenu.js'});
 }
 
 /* CivBE Expedition highlighting */

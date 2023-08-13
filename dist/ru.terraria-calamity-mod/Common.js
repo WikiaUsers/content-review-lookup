@@ -66,3 +66,12 @@ $("table.ajax").each(function (i) {
 		});
 	});
 });
+
+//Must have for that page, without expanded it looks bad 
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+      case 'Заглавная':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});
