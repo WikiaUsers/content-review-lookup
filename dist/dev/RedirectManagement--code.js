@@ -16,7 +16,7 @@
         !(/DoubleRedirects|BrokenRedirects/g.test(config.wgCanonicalSpecialPageName)) ||
         window.RedirectManagementLoaded ||
         (
-            !(/sysop|staff|helper|content-moderator|content-volunteer|wiki-specialist|wiki-representative|soap/.test(config.wgUserGroups)) &&
+            !(/sysop|staff|content-moderator|content-volunteer|wiki-specialist|wiki-representative|soap/.test(config.wgUserGroups)) &&
             config.wgCanonicalSpecialPageName === 'BrokenRedirects'
         )
     ) {

@@ -116,3 +116,11 @@ UserTagsJS.modules.userfilter = {
 
 UserTagsJS.modules.implode = {
 	'Half-Admin | Content+Thread': ['threadmoderator', 'content-moderator'], // Adds 'Half-Admin | Content+Thread' BUT also removes Thread Moderator and Content Moderator
+
+window.DisplayClockJS = {
+    format: '%2I:%2M:%2S %p %2d %{January;Febuary;March;April;May;June;July;August;September;October;November;December}m %Y (UTC)',
+    interval: 600, /* How often the timer updates in milliseconds (1000=1 second) */
+    location: 'header',
+    monofonts: 'Consolas, monospace', /* The font the clock uses by default */
+};
+importArticle({type:'script', article:'u:dev:MediaWiki:UTCClock/code.js'});

@@ -32,7 +32,7 @@ mw.loader.using([
     
     if (
         window.MassUserRightsLoaded ||
-        !/sysop|bureaucrat|staff|helper|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())
+        !/sysop|bureaucrat|staff|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())
     ) {
         return;
     }
@@ -228,7 +228,7 @@ mw.loader.using([
 		 */
 		function show () {
 		    // Removes options admins can't use
-			if (!/bureaucrat|staff|helper|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())) {
+			if (!/bureaucrat|staff|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join())) {
 				$('#user-rights-type option[value="rollback"],#user-rights-type option[value="sysop"],#user-rights-type option[value="content-moderator"],#user-rights-type option[value="bureaucrat"]').remove();
             }
             // Support for custom groups

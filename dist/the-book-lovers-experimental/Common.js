@@ -1,4 +1,16 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+/*home page test*/
+var images =
+[
+    "https://static.wikia.nocookie.net/mistborn/images/b/bb/Mistborn_trilogy_main_characters_poster.jpg/revision/latest?cb=20230814200601",
+    "https://static.wikia.nocookie.net/mistborn/images/1/10/Elend.png/revision/latest?cb=20161005041207",
+]
+
+var image = images[Math.floor(Math.random() * images.length)];
+var stylesheet = mw.util.addCSS("body { --theme-body-background-image-random: url(" + image + "); }");
+
+
+
 /* experimental toolbar button for main wiki */
 var toolbarLabel = 'Important';
 var toolbarLinks = [

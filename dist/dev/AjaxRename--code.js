@@ -263,7 +263,6 @@ mw.loader.using('mediawiki.api').then(function() {
 		rights: Object.freeze({
 			"global": Object.freeze([
 				'staff',
-				'helper',
 				'global-discussions-moderator',
 				'wiki-representative',
 				'wiki-specialist',				
@@ -272,7 +271,6 @@ mw.loader.using('mediawiki.api').then(function() {
 
 			"checkuser": Object.freeze([
 				'soap',
-				'helper',
 				'staff',
 				'global-discussions-moderator',				
 				'wiki-representative',
@@ -284,7 +282,6 @@ mw.loader.using('mediawiki.api').then(function() {
 			"block": Object.freeze([
 				'sysop',
 				'staff',
-				'helper',
 				'bureaucrat',
 				'global-discussions-moderator',
 				'wiki-representative',
@@ -294,15 +291,11 @@ mw.loader.using('mediawiki.api').then(function() {
 
 			"delete": Object.freeze([
 				'content-moderator',
-				'threadmoderator',
 				'sysop',
 				'soap',
 				'staff',
-				'helper',
-				'global-discussions-moderator',
 				'wiki-representative',
 				'wiki-specialist',
-				'util',
 			]),
 
 			"move": Object.freeze([

@@ -6,10 +6,16 @@ window.tooltips_config = {
     noCSS: true,
 };
 window.tooltips_list = [
+    // Used in The Burgle Cats-related articles
     {
         classname: 'burgle-ability-tooltip',
         parse: '{' + '{BurgleCatsSkillDetail|<#skillname#>}}',
-    }
+    },
+    // Used in Template:Lineup
+    {
+        classname: 'lineup-slot-info',
+        parse: '{' + '{LineupSlotInfo|<#unitname#>|<#level#>|<#talents#>}}',
+    },
 ];
 /* end of tooltip */
 

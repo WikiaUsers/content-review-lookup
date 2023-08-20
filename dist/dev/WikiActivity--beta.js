@@ -184,7 +184,6 @@
 		//
 		const CAN_BLOCK = Object.freeze( [ 
 			"staff",
-			"helper",
 			"wiki-representative",
 			"wiki-specialist",
 			"soap",

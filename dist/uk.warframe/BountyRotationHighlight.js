@@ -29,14 +29,14 @@ $(function() {
 	};
 	$.get('https://api.tenno.tools/worldstate/pc', function (data) {
 		$.each(data.bounties.data, function(_, syndicateData) {
-			if (BOUNTY_IDS[syndicateData.syndicate]) {
+			if (BOUNTY_IDS[syndicateData.syndicate] && data.bounties.time >= syndicateData.start) {
 				$.each(syndicateData.jobs, function(i, bounty) {
-					var bountyID = BOUNTY_IDS[syndicateData.syndicate] + (i + 1);
+					var bountyID = BOUNTY_IDS[syndicateData.syndicate] + (i + 1),
+						isEntrati = syndicateData.syndicate === 'Entrati';
 					bountyID = ISOVAULT_IDS[bountyID] || bountyID;
-					var isEntrati = syndicateData.syndicate === 'Entrati';
 					$('.bounty').each(function() {
-						var tableID = $(this)[0].id.replace(/\-./, '');
-						var endTime = syndicateData.end * 1000;
+						var tableID = $(this)[0].id.replace(/\-./, ''),
+							endTime = syndicateData.end * 1000;
 						if ((ISOVAULT_IDS[tableID] || tableID) == bountyID) {
 							if (bounty.rotation) {
 								$(this).find('tr:nth-child(2) th:nth-child('+ ROT_NUMBER[bounty.rotation] +') a')
@@ -84,19 +84,18 @@ $(function() {
 	setInterval(countdown, 1000);
 
 	function countdown() {
+		var now = new Date().getTime();
     	$( 'table.bounty span[data-time]' ).each( function () {
-			var countDownDate = $( this ).attr('data-time');
-			var now = new Date().getTime();
-			var distance = countDownDate - now;
-			
-			var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-			var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-			var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-			var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-			var timer = 
-				(hours > 0 ? hours + " год " : '') + 
-				(minutes > 0 ? minutes + " хв" : '') + 
-				(hours < 0 ? ' ' + seconds + " c" : '');
+			var countDownDate = $( this ).attr('data-time'),
+				distance = countDownDate - now,
+				days = Math.floor(distance / (1000 * 60 * 60 * 24)),
+				hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+				minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+				seconds = Math.floor((distance % (1000 * 60)) / 1000),
+				timer = 
+					(hours > 0 ? hours + " год " : '') + 
+					(minutes > 0 ? minutes + " хв" : '') + 
+					(hours <=0 ? ' ' + seconds + " c" : '');
 
 			$( this ).text( '(' + timer + ')');
 			if (seconds < 0) { $( this ).text('(закінчилось ' + timer + ')'); }

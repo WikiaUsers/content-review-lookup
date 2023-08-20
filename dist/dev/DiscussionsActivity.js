@@ -199,7 +199,6 @@
     function canSeeMapReports() {
       const moderateInteractiveMapGroups = {
         "content-moderator": true,
-        "helper": true,
         "soap": true,
         "staff": true,
         "sysop": true,

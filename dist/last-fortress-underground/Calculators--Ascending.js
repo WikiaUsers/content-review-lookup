@@ -24,7 +24,8 @@ var ascend_qualities={
 var ascend_type = {
 		'Solari Hero':[0],
 		'Combat Hero':[1],
-		'First-Gen Hero':[2]
+		'Wreakers/Lawbringers':[2],
+		'Spacetime Travelers':[3]
 		};
 		
 var solari_recipe=[
@@ -75,6 +76,22 @@ var first_gen_recipe=[
 [2,3,1]
 ];
 
+var spacetime_travelers_recipe=[
+[0,0,0],
+[0,0,0],
+[0,0,0],
+[1,2,1],
+[2,2,0],
+[2,2,1],
+[2,2,0],
+[2,2,1],
+[2,2,1],
+[2,2,1],
+[4,2,0],
+[2,2,1],
+[2,2,1]
+];
+
 /*Get Info Calc*/
 $(function() {
 	
@@ -102,7 +119,7 @@ $(function() {
 	    	//t1
 	        '<table class="fandom-table">' + 
 	        '<tr>' +
-	        '<td>Solari/Combat/First-Gen:</td>' +
+	        '<td>Hero Faction:</td>' +
 	        '<td><select id="type">' + type + '</select></td>' +
 	        '</tr><tr>' +
 	        '<td>Hero Base Rarity:</td>' +
@@ -169,6 +186,9 @@ $(function() {
             if(typ===0){  
 	            recipe = solari_recipe;   
             }
+            if(typ===3){  
+	            recipe = spacetime_travelers_recipe;   
+            }
 
 			//now do some recursive/loop stuff to get total amount of shards
 			
@@ -192,32 +212,36 @@ $(function() {
 			var total_shards_specific = Array(len).fill(0);
 			var first=0;
 			for (var i = 0; i < ascend_e+1; i++) {
-				//check if we consider green, blue, purple or orange shards as base
-				if(range_total[i][1]===rarit & first===0){
-					first=1;
-					if(range_total[i][2]===0){
-						total_shards[i]=range_total[i][0];
-						total_shards_specific[i]=1;
-					}
-					else{
-						total_shards_specific[i]=range_total[i][0]+1;
-						total_shards[i]=0;
-					}
-				}
+				
 				//cumulative sum of previous recipes
-				else if(first===1){
+				if(first===1){
 					if(range_total[i][2]===0){
-						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0]+total_shards_specific[range_total[i][1]]*range_total[i][0];
+						total_shards[i]=total_shards[i-1]+(Math.max(total_shards[range_total[i][1]]+total_shards_specific[range_total[i][1]],1))*range_total[i][0];
 						total_shards_specific[i]=total_shards_specific[i-1];
 					}
-					else{
-						total_shards_specific[i]=total_shards_specific[i-1]+(Math.max(total_shards_specific[range_total[i][1]],1))*range_total[i][0];
+					if(range_total[i][2]===1){
 						total_shards[i]=total_shards[i-1]+total_shards[range_total[i][1]]*range_total[i][0];
+						total_shards_specific[i]=total_shards_specific[i-1]+Math.max(total_shards_specific[range_total[i][1]],1)*range_total[i][0];
+					}
+				}
+					
+				//check if we consider green, blue, purple or orange shards as base
+				if(first===0){
+					if(range_total[i][1]===rarit){
+						first=1;
+						if(range_total[i][2]===0){
+							total_shards[i]=range_total[i][0];
+							total_shards_specific[i]=1;
+						}
+						if(range_total[i][2]===1){
+							total_shards[i]=0;
+							total_shards_specific[i]=1+range_total[i][0];
+						}
 					}
 				}
 			}
 			
-	
+			//text modifier
 	        var equivalent = 'Rare Shards (Blue)';
 	        if(rarit===3){
 	        	equivalent='Epic Shards (Orange)';
@@ -242,12 +266,12 @@ $(function() {
 			$('#calc_master_s').html(shards_specific[4]);
 			$('#calc_legendary_s').html(shards_specific[5]);
 			$('#calc_total').html(total_shards[ascend_e]-total_shards[ascend_s]);
-			$('#calc_total_s').html(total_shards_specific[ascend_e]-Math.max(total_shards_specific[ascend_s],1));
+			$('#calc_total_s').html(total_shards_specific[ascend_e]-total_shards_specific[ascend_s]);
 			$('#equivalent').html(equivalent);
 			
 			//debug
-			//$('#calc_uncommon').html(total_shards[2]);
-			//$('#calc_uncommon_s').html(total_shards[i-1]);
+			//$('#calc_uncommon').html(total_shards_specific[ascend_s]);
+			//$('#calc_uncommon_s').html(total_shards_specific[ascend_e]);
 
         };
 	

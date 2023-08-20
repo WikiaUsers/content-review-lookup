@@ -10,7 +10,9 @@ window.pseudoForum = {
     Object.assign(String.prototype, {
         // Return HTML as plain text
         toText: function() {
-            return this.replace(/</g, "&lt;");
+            return this
+            	.replaceAll("<", "&lt;")
+            	.replaceAll("&", "&amp;");
         },
     });
     // Array
@@ -34,7 +36,20 @@ window.pseudoForum = {
     Object.assign(Date.prototype, {
         // Return name of month
         getMonthName: function() {
-            return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][this.getMonth()];
+            return [
+            	"January",
+            	"February",
+            	"March",
+            	"April",
+            	"May",
+            	"June",
+            	"July",
+            	"August",
+            	"September",
+            	"October",
+            	"November",
+            	"December",
+            ][this.getMonth()];
         },
         // Return formatted date
         format: function() {

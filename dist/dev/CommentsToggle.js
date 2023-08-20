@@ -16,7 +16,7 @@
 
 	if (
 		window.commentsToggleLoaded ||
-		!/threadmoderator|sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
+		!/threadmoderator|sysop|soap|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
 	) return;
 	window.commentsToggleLoaded = true;
 

@@ -132,7 +132,6 @@
 		groups: Object.freeze({
 			"global": Object.freeze([
 				'staff',
-				'helper',
 				'global-discussions-moderator',
 				'wiki-representative',
 				'soap',
@@ -140,7 +139,6 @@
 
 			"checkuser": Object.freeze([
 				'soap',
-				'helper',
 				'staff',
 				'wiki-representative',
 				'wiki-specialist',
@@ -152,7 +150,6 @@
 			"block": Object.freeze([
 				'sysop',
 				'staff',
-				'helper',
 				'bureaucrat',
 				'global-discussions-moderator',
 				'wiki-representative',
@@ -162,11 +159,9 @@
 
 			"delete": Object.freeze([
 				'content-moderator',
-				'threadmoderator',
 				'sysop',
 				'soap',
 				'staff',
-				'helper',
 				'wiki-representative',
 				'wiki-specialist',
 			]),

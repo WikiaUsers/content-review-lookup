@@ -24,7 +24,7 @@
         config.wgAction !== 'view' ||
         config.wgNamespaceNumber === -1 ||
         config.wgUserName === null ||
-        /content-moderator|sysop|helper|staff|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups.join('|')) ||
+        /content-moderator|sysop|staff|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups.join('|')) ||
         window.MarkForDeletionLoaded
     ) {
         return;

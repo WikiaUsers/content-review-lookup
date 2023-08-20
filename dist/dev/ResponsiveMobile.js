@@ -52,13 +52,13 @@
     }
 
     function isContentModOrAbove() {
-      return /sysop|staff|helper|wiki-representative|wiki-specialist|content-moderator|soap/.test(
+      return /sysop|staff|wiki-representative|wiki-specialist|content-moderator|soap/.test(
         conf.wgUserGroups
       );
     }
 
     function isSysopOrAbove() {
-      return /sysop|staff|helper|wiki-representative|wiki-specialist|soap/.test(
+      return /sysop|staff|wiki-representative|wiki-specialist|soap/.test(
         conf.wgUserGroups
       );
     }

@@ -53,7 +53,7 @@ codeLoad.definitions = {
     },
     "highlight": {
         "title": "Highlight",
-        "description": "Add highlighting to known members of the [[w:Help:SpamTaskForce|SOAP]], [[w:Help:Volunteers and Developers#Helpers|Helper]], [[Help:Community Team|Fandom Staff]], and [[w:Help:Bots|Bot]] groups",
+        "description": "Add highlighting to known members of the [[w:Help:SOAP|SOAP]], [[w:Help:Wiki Specialists|Wiki Specialist]], [[w:Help:Wiki Representatives|Wiki Representative]], [[w:Help:Community Team|Fandom Staff]], and [[w:Help:Bots|Bot]] groups",
         "articles": [
             "dev:Highlight.css"
         ],

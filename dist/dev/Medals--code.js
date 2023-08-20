@@ -377,7 +377,6 @@
             var group_list = mw.config.get('wgUserGroups');
             if (group_list.indexOf('sysop') == -1 &&
                 group_list.indexOf('content-moderator') == -1 &&
-                group_list.indexOf('helper') == -1 &&
                 group_list.indexOf('staff') == -1 &&
                 group_list.indexOf('soap') == -1) {
                 // No rights - nothing to do here :P

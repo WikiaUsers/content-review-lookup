@@ -75,3 +75,17 @@ $(function(){
         break;
     }
 });
+// BackToTopModern button
+window.BackToTopModern = true;
+//gadgets toggeler
+nkch_gst_gadgets = [{
+    name: "Hiderail", // название гаджета с MediaWiki:Gadgets-definition; обязательно
+    title: "Скрытие правой рельсы страницы", // Название в меню
+    description: "Мы настоятельно рекомендуем вас это сделать, вики мгновенно станет приятнее для глаз" // Описание гаджета в меню при наведении
+},];
+
+/* This imports the latest version of previewTab from Terraria: https://terraria.gamepedia.com/MediaWiki:Gadget-previewTab.css */
+//import css before js to reduce CSS Flash
+$('head').first().append('<link rel="stylesheet" type="text/css" href="https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-previewTab.css&action=raw&ctype=text/css" />');
+/* This imports the latest version of previewTab from Terraria: https://terraria.gamepedia.com/MediaWiki:Gadget-previewTab.js */
+mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-previewTab.js&action=raw&ctype=text/javascript');

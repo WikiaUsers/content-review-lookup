@@ -18,7 +18,6 @@
             'sysop',
             'staff',
             'soap',
-            'helper',
             'global-discussions-moderator',
             'wiki-representative',            
             'wiki-specialist'

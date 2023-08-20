@@ -139,7 +139,7 @@ function createDiscussionsFeed() {
     if(mw.config.get('wgNamespaceNumber') == -1 && mw.config.get('wgTitle') == "DiscussionsFeed") { //TODO: i18n make dictionary
         document.title = msg('discFeed').plain() + ' - ' + mw.config.get('wgSiteName');
         var ug = mw.config.get('wgUserGroups');
-        var canBlock = Boolean(ug.indexOf('sysop') > -1 || ug.indexOf('staff') > -1 || ug.indexOf('wiki-representative') > -1 || ug.indexOf('wiki-specialist') > -1 || ug.indexOf('helper') > -1 || ug.indexOf('soap') > -1 || ug.indexOf('global-discussions-moderator') > -1),
+        var canBlock = Boolean(ug.indexOf('sysop') > -1 || ug.indexOf('staff') > -1 || ug.indexOf('wiki-representative') > -1 || ug.indexOf('wiki-specialist') > -1 || ug.indexOf('soap') > -1 || ug.indexOf('global-discussions-moderator') > -1),
             isMod = Boolean(canBlock || ug.indexOf('threadmoderator') > -1);
         document.getElementById("firstHeading").textContent = msg('discFeed').plain();
         var content = document.getElementById("mw-content-text");

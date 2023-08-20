@@ -74,7 +74,6 @@
                 const allowedGroups = Object.freeze( [ 
                     "sysop",
                     "staff",
-                    "helper",
                     "soap",
                     "wiki-representative",
                     "wiki-specialist"

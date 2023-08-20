@@ -166,7 +166,7 @@
                 var profile = $.client.profile(),
                     run = false,
                     // usergroups that can edit mediawiki pages
-                    allowed = ['sysop', 'soap', 'helper', 'wiki-specialist', 'wiki-representative', 'staff']
+                    allowed = ['sysop', 'soap', 'wiki-specialist', 'wiki-representative', 'staff']
                     .concat(config.allowed),
                     mwi,
                     i;

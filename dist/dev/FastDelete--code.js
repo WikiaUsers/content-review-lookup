@@ -26,7 +26,7 @@
         conf.wgArticleId === 0 ||
         (conf.wgNamespaceNumber === 2 && $('.noarticletext').length) ||
         (conf.wgNamespaceNumber != 2 && !$('#ca-delete').length) ||
-        !/sysop|staff|helper|wiki-representative|wiki-specialist|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
+        !/sysop|staff|wiki-representative|wiki-specialist|content-moderator|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
     }

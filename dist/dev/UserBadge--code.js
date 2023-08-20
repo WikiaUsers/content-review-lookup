@@ -31,8 +31,6 @@
       'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
     'wiki-specialist':
       'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
-    helper:
-      'https://vignette.wikia.nocookie.net/central/images/c/c8/Badge-Helper.svg',
     soap: 'https://vignette.wikia.nocookie.net/central/images/9/9a/Badge-SOAP.svg',
     'global-discussions-moderator':
       'https://vignette.wikia.nocookie.net/central/images/4/40/Badge-GlobalDiscussionsModerator.svg',

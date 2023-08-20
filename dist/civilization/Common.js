@@ -27,7 +27,16 @@ if (mw.config.get('wgIsMainPage')) {
 
 /* Starships Viewer */
 if ( mw.config.get('wgPageName').match(/(Supremacy|Purity|Harmony)_\(Starships\)/) ) {
-    importArticle({type: 'script', article: 'MediaWiki:Starshipmenu.js'});
+    importArticles({
+    	type: 'script',
+    	articles: [
+    		'MediaWiki:SpriteSpin.js',
+    		'MediaWiki:StarshipsViewer.js'
+    	]
+    }, {
+		type: 'style',
+		article: 'MediaWiki:StarshipsViewer.css',
+	});
 }
 
 /* CivBE Expedition highlighting */

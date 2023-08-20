@@ -23,7 +23,7 @@
 		config.wgCanonicalNamespace !== 'File' ||
 		window.FileToolsLoaded ||
 		document.getElementsByClassName('sharedUploadNotice').length ||
-		!/sysop|soap|helper|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
+		!/sysop|soap|wiki-specialist|wiki-representative|staff/.test(config.wgUserGroups.join())
 	) return;
 	window.FileToolsLoaded = true;
 
@@ -57,7 +57,7 @@
 			reason: sum,
 			expiry: '2 weeks'
 		}).done(function() {
-			element.srcElement.textContent = msg('protected').plain();
+			element.target.textContent = msg('protected').plain();
 		});
 	};
 
@@ -66,7 +66,7 @@
 	 * @param {object} element - Button data.
 	 */
 	events.refresh = function(element) {
-		element.srcElement.textContent = '...';
+		if (element) element.target.textContent = '...';
 		const pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1';
 		fetch(pathname).then(function(response) {
 			return response.text();
@@ -106,7 +106,7 @@
 	events.delete = function(element) {
 		const sum = summary('delete');
 		if (!sum) return;
-		const ele = element.srcElement;
+		const ele = element.target;
 		api.postWithEditToken({
 			action: 'delete',
 			title: config.wgPageName,
@@ -127,7 +127,7 @@
 		api.postWithEditToken({
 			action: 'filerevert',
 			filename: config.wgTitle, 
-			archivename: element.srcElement.dataset.filepath, 
+			archivename: element.target.dataset.filepath, 
 			comment: sum
 		}).done(function() {
 			events.refresh();

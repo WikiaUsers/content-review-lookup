@@ -59,7 +59,7 @@ nkch_gst_gadgets = [{
     description: "Меню в правой верхней части страницы для быстрой смены темы"
 }, {
 	name: "Font",
-    title: "Системный шрифт",
+    title: "Тематический шрифт",
     description: "Заменяет шрифт на сайте"
 }, {
     name: "Cursor",
@@ -198,12 +198,14 @@ window.DiscussionTemplates = {
 
 /* Конфигурация для dev:AddRailModule */
  window.AddRailModule = [
- 	{page: 'Template:DiscordRail', prepend: true, maxAge: 0},
- 	{page: 'Template:VKRail', prepend: true, maxAge: 0},
- 	{page: 'Template:NewPagesModule', maxAge: 0}
+ 	{page: 'Template:DiscordRail', maxAge: 0},
+ 	{page: 'Template:VKRail', maxAge: 0},
+ 	{page: 'Template:NewPagesModule', maxAge: 0},
+ 	{page: 'Template:CodeRail', maxAge: 0},
+ 	{page: 'Template:SliderRail', maxAge: 0}
  ];
 
-// slider
+/* Слайдер в рейле */
 document.addEventListener('click', function (e) {
   var target = e.target;
   if (!target.dataset) return;

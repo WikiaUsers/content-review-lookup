@@ -38,13 +38,13 @@ importArticles({
 // THE BELOW CODE randomly changes text above top navigation from "Wiki TheMandelacatalogueVN" to one from the list
 //////////////////////////////////////////////////////////////////// */
 
-var number_of_wiki_names = 9;
+var number_of_wiki_names = 12;
 var wiki_name_number = 0;
 
 while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
   wiki_name_number = Math.random().toFixed(2) * 100;
 };
-var wiki_name_text=["Mỗi ngày trở nên tươi sáng hơn", "Ngươi cũng không phải là chính mình...", "Không có lý do gì để chạy. Bạn đang chạy trốn khỏi ai?", "Bạn đã đến Hiệp hội huyền bí Bythorne, tôi có thể giúp gì cho bạn?", "Tôi đang ở trong nhà của bạn.", "Dậy đi Joseph", "Hello???", "Ngươi là ai?! Tránh xa tôi ra!", "A messenger..."][wiki_name_number];
+var wiki_name_text=["Mỗi ngày trở nên tươi sáng hơn", "Ngươi cũng không phải là chính mình...", "Không có lý do gì để chạy. Bạn đang chạy trốn khỏi ai?", "Bạn đã đến Hiệp hội huyền bí Bythorne, tôi có thể giúp gì cho bạn?", "Tôi đang ở trong nhà của bạn.", "Dậy đi Joseph", "Hello???", "Ngươi là ai?! Tránh xa tôi ra!", "A messenger...","Mystifying Oracle WIKI VIETNAM", "The Scrimblo Catalogue WIKI VIETNAM", "Alex Kister WIKI VIETNAM"][wiki_name_number];
 var elements=document.getElementsByClassName('fandom-community-header__community-name');
 var wiki_name=elements[0];
 wiki_name.textContent=wiki_name_text;

@@ -1,6 +1,8 @@
 // <nowiki>
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+mw.loader.load('/load.php?lang=en&modules=u%3Adev%3AMediaWiki%3ASpriteEditor.js&skin=fandomdesktop&version=ztntf');
+
 /* expiration of matches starting in schedule navboxes (and anything else) */
 $.when(mw.loader.using('mediawiki.util'), $.ready).then( function () {
 	var $expirationList = $('.upcoming-matches');

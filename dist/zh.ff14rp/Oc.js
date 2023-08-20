@@ -37,7 +37,15 @@ mw.hook("wikipage.content").add(function($content) {
 				}
 			}
 		}
-		occans[i].style.backgroundImage = 'url("'+canvas.toDataURL("image/png")+'")';
+		var imgNode = null;
+		if (jsonObject.imgNode) {
+			imgNode = document.querySelector(jsonObject.imgNode);
+		}
+		if (imgNode) {
+			imgNode.style.backgroundImage = 'url("'+canvas.toDataURL("image/png")+'")';
+		} else {
+			occans[i].style.backgroundImage = 'url("'+canvas.toDataURL("image/png")+'")';
+		}
 	}
 	var occans = document.getElementsByClassName("occan");//div列表
 	if (occans.length==0) return;

@@ -1,7 +1,6 @@
-mw.hook('wikipage.content').add(function() {
+/* [[Template:CloningCost]] */
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('creature-select');
-	if (!main) return;
 
 	// Constants from the CloningChamber blueprint are retrieved by Purlovia
 	// at extraction time. The values are ready to use as-is.
@@ -131,70 +130,81 @@ mw.hook('wikipage.content').add(function() {
 	};
 	
 	var CHAMBER_MAX_SHARDS = 48 * 1000;
-
-	var creatureSelect = document.createElement('select');
-		document.getElementById('creature-select').append(creatureSelect);
-	var babyMatureSpeedMultiplier = document.createElement('input');
-		babyMatureSpeedMultiplier.type = 'number';
-		babyMatureSpeedMultiplier.min = 0.1;
-		babyMatureSpeedMultiplier.max = 100;
-		babyMatureSpeedMultiplier.step = 0.1;
-		babyMatureSpeedMultiplier.value = 1.0;
-		document.getElementById('baby-mature-speed-multiplier').append(babyMatureSpeedMultiplier);
-	var characterLevel = document.createElement('input');
-		characterLevel.type = 'number';
-		characterLevel.min = 1;
-		characterLevel.max = 500;
-		characterLevel.step = 1;
-		characterLevel.value = 224;
-		document.getElementById('character-level').append(characterLevel);
-	var costPerLevelElement = document.getElementById('cost-per-level');
-	var baseCostElement = document.getElementById('base-cost');
-	var cloneCostElement = document.getElementById('clone-cost');
-	var cloneTimeElement = document.getElementById('clone-time');
-	var cloneTimeReadableElement = document.getElementById('clone-time-readable');
-
-	createSelect(Object.keys(creatures).sort());
-	babyMatureSpeedMultiplier.addEventListener('input', calculate);
-	characterLevel.addEventListener('input', calculate);
-	calculate();
-
-	function createSelect(creatureNames) {
-		creatureNames.forEach(function (name) {
-			var option = document.createElement('option');
-			option.innerText = name;
-			option.value = name;
-			creatureSelect.appendChild(option);
-		});
-		creatureSelect.addEventListener('change', calculate);
-	}
+	var ele;
 
 	function calculate() {
-		var creatureName = creatureSelect.options[creatureSelect.selectedIndex].value;
+		var creatureName = ele.creatureSelect.options[ele.creatureSelect.selectedIndex].value;
 		var creature = creatures[creatureName];
-		var creatureLevel = parseFloat(characterLevel.value) || 0;
+		var creatureLevel = parseFloat(ele.characterLevel.value) || 0;
 		// Clone Cost
 		var baseCost = creature[0];
 		var costPerLevel = creature[1];
 		var costForLevel = costPerLevel * creatureLevel;
 		
 		var cloneCost = costForLevel + baseCost;
-		var cloneTime = (creature[2] + creature[3] * creatureLevel) / (parseFloat(babyMatureSpeedMultiplier.value) || 1);
+		var cloneTime = (creature[2] + creature[3] * creatureLevel) / (parseFloat(ele.babyMatureSpeedMultiplier.value) || 1);
 		
 		// console.log('CloneCostResult: ' + cloneCost);
 		// console.log('CloneTimeResult: ' + cloneTime);
 		
-		costPerLevelElement.innerText = Math.round(costPerLevel);
-		baseCostElement.innerText = Math.round(baseCost);
-		cloneCostElement.innerText = Math.round(cloneCost);
+		ele.costPerLevel.innerText = Math.round(costPerLevel);
+		ele.baseCost.innerText = Math.round(baseCost);
+		ele.cloneCost.innerText = Math.round(cloneCost);
 		if (Number.parseInt(cloneCost) >= CHAMBER_MAX_SHARDS) {
 			document.getElementById('clone-cost-color').style = "background-color:#cf4c4c8a !important;";
 		} else {
 			document.getElementById('clone-cost-color').style = "background-color:#2ebf338a !important";
-			cloneTimeElement.innerText = Math.round(cloneTime);
+			ele.cloneTime.innerText = Math.round(cloneTime);
 			var cloneTimeReadable = new Date(cloneTime * 1000);
-			cloneTimeReadableElement.innerText = (cloneTimeReadable.getUTCDate() - 1 /* 1. Januar */) + ' d ' + cloneTimeReadable.getUTCHours() + ' h ' +
+			ele.cloneTimeReadable.innerText = (cloneTimeReadable.getUTCDate() - 1 /* 1. Januar */) + ' d ' + cloneTimeReadable.getUTCHours() + ' h ' +
 			cloneTimeReadable.getUTCMinutes() + ' m ' + cloneTimeReadable.getUTCSeconds() + ' s';
 		}
 	}
-});
+
+	function createSelect(creatureNames) {
+		creatureNames.forEach(function (name) {
+			var option = document.createElement('option');
+			option.innerText = name;
+			option.value = name;
+			ele.creatureSelect.appendChild(option);
+		});
+		ele.creatureSelect.addEventListener('change', calculate);
+	}
+
+	mw.hook('wikipage.content').add(function($content) {
+		var main = $content.find('#creature-select:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		ele = {
+			costPerLevel: $content.find('#cost-per-level')[0],
+			baseCost:$content.find('#base-cost')[0],
+			cloneCost: $content.find('#clone-cost')[0],
+			cloneTime: $content.find('#clone-time')[0],
+			cloneTimeReadable: $content.find('#clone-time-readable')[0],
+			creatureSelect: document.createElement('select'),
+			babyMatureSpeedMultiplier: document.createElement('input'),
+			characterLevel: document.createElement('input')
+		};
+
+		ele.babyMatureSpeedMultiplier.type = 'number';
+		ele.babyMatureSpeedMultiplier.min = 0.1;
+		ele.babyMatureSpeedMultiplier.max = 100;
+		ele.babyMatureSpeedMultiplier.step = 0.1;
+		ele.babyMatureSpeedMultiplier.value = 1.0;
+
+		ele.characterLevel.type = 'number';
+		ele.characterLevel.min = 1;
+		ele.characterLevel.max = 500;
+		ele.characterLevel.step = 1;
+		ele.characterLevel.value = 224;
+
+		$content.find('#creature-select')[0].append(ele.creatureSelect);
+		$content.find('#baby-mature-speed-multiplier')[0].append(ele.babyMatureSpeedMultiplier);
+		$content.find('#character-level')[0].append(ele.characterLevel);
+
+		createSelect(Object.keys(creatures).sort());
+		ele.babyMatureSpeedMultiplier.addEventListener('input', calculate);
+		ele.characterLevel.addEventListener('input', calculate);
+		calculate();
+	});
+})(window.mediaWiki);

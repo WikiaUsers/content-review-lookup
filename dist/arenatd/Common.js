@@ -2,7 +2,7 @@
 /*Message Block*/
 window.MessageBlock = {
 	title : 'Blocked',
-	message : 'You have received a $2 block because you have $1. This is an automated message. If you need anymore help, please check our Discord Server at https://arenatd.fandom.com/Discord .',
+	message : 'You have received a $2 block with the reason $1. Important: This is an automated message. If you need anymore help, please check our Discord Server at https://arenatd.fandom.com/Discord or leave a message wall on one of our Staff pages at https://arenatd.fandom.com/Staff. Do read the rules before continuing your wiki journey. Thanks. ',
 	autocheck : true
 };
 

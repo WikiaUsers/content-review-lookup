@@ -1,17 +1,16 @@
-// Used by [[Template:ARKCode]]
-mw.hook('wikipage.content').add(function() {
+/* [[Template:ARKCode]] */
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('ARKCode');
-	if (!main) return;
 
-	window.ARKCode = window.ARKCode || {
+	window.ARKCodeI18n = window.ARKCodeI18n || {
 		text: 'Input',
 		visualisation: 'Visualization',
 		decodeText: 'Decoded text',
-		decode: 'Decode'
+		decode: 'Decode',
+		example: 'dasadsdddswadswadsww daadddasdasw dddwdswwdwasdswadsdaasws'
 	};
-	var i18n = window.ARKCode;
-
+	var i18n = window.ARKCodeI18n;
+	var ele;
 	var CSS =
 	'#ARKCode #acVisu{' +
 		'background-color:black;' +
@@ -27,37 +26,14 @@ mw.hook('wikipage.content').add(function() {
 		'margin-bottom: -5px;' +
 	'}';
 
-	main.innerHTML = '<style>' + CSS + '</style>' +
-	'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
-		'<div style="font-weight:bold;">' + i18n.text + '</div>' +
-		'<textarea id="acText" style="writing-mode: vertical-lr; text-orientation:upright;width: 7em; height: 27em">dasadsdddswadswadsww daadddasdasw dddwdswwdwasdswadsdaasws</textarea>' +
-	'</div>' +
-	'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
-		'<div style="font-weight:bold">' + i18n.visualisation + '</div>' +
-		'<div id="acVisu"></div>' +
-	'</div>' +
-	'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
-		'<div style="font-weight:bold">' + i18n.decodeText + '</div>' +
-		'<div id="acOutput" style="border:solid 1px darkgreen;background-color:#ccffcc;padding: 1em;margin: 0.5em 0"></div>' +
-		'<button type="button" id="acDecode">' + i18n.decode + '</button>' +
-	'</div>';
-
-	var acText = document.getElementById('acText');
-	var codeRep = document.getElementById('acVisu');
-	var acOutput = document.getElementById('acOutput');
-	var acDecode = document.getElementById('acDecode');
-
-	acText.addEventListener('keyup', ARKCodeDecode);
-	acDecode.addEventListener('click', ARKCodeDecode);
-
 	var ARKCodeImages = [
-		'6/6f/ARKCode0.png',
-		'b/b3/ARKCode1.png',
-		'a/aa/ARKCode2.png',
-		'4/40/ARKCode3.png'
+		'6/6f/ARKCode0.png', // [[File:ARKCode0.png]]
+		'b/b3/ARKCode1.png', // [[File:ARKCode1.png]]
+		'a/aa/ARKCode2.png', // [[File:ARKCode2.png]]
+		'4/40/ARKCode3.png'  // [[File:ARKCode3.png]]
 	];
 	function ARKCodeDecode() {
-		var code = acText.value;
+		var code = ele.acText.value;
 
 		//codeRep.innerHTML = '';
 
@@ -67,10 +43,10 @@ mw.hook('wikipage.content').add(function() {
 		var ii = 0;
 		var c = 0;
 		for (var i = 0; i < code.length; i++) {
-			if (code[i] == ' ' || code[i] == '\n') {
+			if (code[i] === ' ' || code[i] === '\n') {
 				output += ' ';
 				ii = 0;
-				if (code[i] == '\n') {
+				if (code[i] === '\n') {
 					codeRepOutput += '<br/>';
 				}
 				continue;
@@ -91,7 +67,7 @@ mw.hook('wikipage.content').add(function() {
 	
 			codeRepOutput += '<img alt="' + add + '" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/' + ARKCodeImages[add] + '" width="46" height="24">';
 	
-			if (ii == 3 || i == code.length - 1) {
+			if (ii === 3 || i === code.length - 1) {
 				ii = 0;
 				if (c > 31 && c < 127)
 					output += String.fromCharCode(c);
@@ -100,7 +76,36 @@ mw.hook('wikipage.content').add(function() {
 				ii++;
 			}
 		}
-		acOutput.textContent = output;
-		codeRep.innerHTML = codeRepOutput;
+		ele.acOutput.textContent = output;
+		ele.codeRep.innerHTML = codeRepOutput;
 	}
-});
+	mw.hook('wikipage.content').add(function($content) {
+		var main = $content.find('#ARKCode:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		main.innerHTML = '<style>' + CSS + '</style>' +
+		'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
+			'<div style="font-weight:bold;">' + i18n.text + '</div>' +
+			'<textarea id="acText" style="writing-mode: vertical-lr; text-orientation:upright;width: 7em; height: 27em">' + i18n.example + '</textarea>' +
+		'</div>' +
+		'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
+			'<div style="font-weight:bold">' + i18n.visualisation + '</div>' +
+			'<div id="acVisu"></div>' +
+		'</div>' +
+		'<div style="display:inline-block;margin:0 0.5em;vertical-align:top">' +
+			'<div style="font-weight:bold">' + i18n.decodeText + '</div>' +
+			'<div id="acOutput" style="border:solid 1px darkgreen;background-color:#ccffcc;padding: 1em;margin: 0.5em 0"></div>' +
+			'<button type="button" id="acDecode">' + i18n.decode + '</button>' +
+		'</div>';
+	
+		ele = {
+			acText: $content.find('#acText')[0],
+			codeRep: $content.find('#acVisu')[0],
+			acOutput: $content.find('#acOutput')[0],
+			acDecode: $content.find('#acDecode')[0]
+		};
+	
+		ele.acText.addEventListener('keyup', ARKCodeDecode);
+		ele.acDecode.addEventListener('click', ARKCodeDecode);
+	});
+})(window.mediaWiki);

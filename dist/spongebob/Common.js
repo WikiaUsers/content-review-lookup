@@ -357,7 +357,6 @@ window.MessageWallUserTags = {
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
 
         'TheJasbre202': 'Rollback',
-        'ItzSpongeBob_1999': 'Rollback',
     }
 };
 

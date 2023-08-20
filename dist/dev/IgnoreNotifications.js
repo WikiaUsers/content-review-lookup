@@ -46,7 +46,6 @@
 */
     
     var unblock_groups = [
-        "helper",
         "soap",
         "staff",
         "wiki-representative",        

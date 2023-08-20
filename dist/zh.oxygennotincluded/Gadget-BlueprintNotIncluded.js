@@ -1,7 +1,7 @@
 /**
  * @name BlueprintNotIncluded.js
  * @author DDElephant
- * @description Add blueprint from blueprintnotincluded.com to article
+ * @description Add blueprint from blueprintnotincluded.org to article
  */
 $(function () {
   $(".blueprint").html(function () {
@@ -26,7 +26,7 @@ $(function () {
       class: "blueprint-show blueprint-iframe",
       id: "bni-" + id,
       src:
-        "//blueprintnotincluded.com/b/" +
+        "//blueprintnotincluded.org/b/" +
         id +
         "/hideui/" +
         width +

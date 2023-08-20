@@ -1,5 +1,6 @@
 /* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página */
 function getpar(object)
+
 {
 	var par = $(object)[0].parentNode;
 	var el = par;

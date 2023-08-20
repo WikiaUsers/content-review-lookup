@@ -115,7 +115,7 @@
 	}
 
 	function regionButton(ele) {
-		var btn = ele.srcElement;
+		var btn = ele.target;
 		var id = btn.id;
 		var regionLevel = Number(btn.dataset.level);
 	

@@ -11,7 +11,7 @@
     window.LangSetupLoaded = true;
     var api, languages,
         contentLang = mw.config.get('wgContentLanguage'),
-        notCustom = /soap|helper|wiki-specialist|wiki-representative|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
+        notCustom = /soap|wiki-specialist|wiki-representative|staff|util/.test(mw.config.get('wgUserGroups').join('|')),
         // [[MediaWiki:Custom-language-codes.json]]
         languageCodeSortingId = 33075,
         modal;

@@ -33,7 +33,6 @@
     const mandatoryExcludedGroups = [
         'staff',
         'util',
-        'helper',
         'content-volunteer',
         'wiki-specialist',
         'wiki-representative',

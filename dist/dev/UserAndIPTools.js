@@ -140,16 +140,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 		rights: Object.freeze({
 			"global": Object.freeze([
 				'staff',
-				'helper',
 				'global-discussions-moderator',
 				'wiki-representative',
+				'wiki-specialist',				
 				'soap',
 			]),
 
 			"checkuser": Object.freeze([
 				'soap',
-				'helper',
 				'staff',
+				'global-discussions-moderator',
 				'wiki-representative',
 				'wiki-specialist',
 				'checkuser',
@@ -159,24 +159,20 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 			"block": Object.freeze([
 				'sysop',
 				'staff',
-				'helper',
 				'bureaucrat',
 				'global-discussions-moderator',
 				'wiki-representative',
+				'wiki-specialist',				
 				'soap',
 			]),
 
 			"delete": Object.freeze([
 				'content-moderator',
-				'threadmoderator',
 				'sysop',
 				'soap',
 				'staff',
-				'helper',
-				'global-discussions-moderator',
 				'wiki-representative',
 				'wiki-specialist',
-				'util',
 			]),
 
 			"move": Object.freeze([

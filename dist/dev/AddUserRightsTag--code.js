@@ -11,7 +11,7 @@
         'wgUserGroups'
     ]);
     if (
-        !/bureaucrat|sysop|staff|helper|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join()) ||
+        !/bureaucrat|sysop|staff|wiki-representative|wiki-specialist/.test(config.wgUserGroups.join()) ||
         !mw.config.get('profileUserName') ||
         window.AddUserRightsTagLoaded
     ) {

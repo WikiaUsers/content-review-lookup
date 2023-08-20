@@ -1,5 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Spoilers */
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers. Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};
+
 /* Auto-Refresh for Wiki Activity */
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';

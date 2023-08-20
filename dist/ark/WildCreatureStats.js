@@ -1,3 +1,4 @@
+/* [[Template:WildStats]] */
 var wildStatCalcDiv = null;
 var stats = null;
 var wildCreatureStats = null;

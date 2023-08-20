@@ -47,7 +47,7 @@ function EUTA(i18n){
 	/* only local and global staff and if script has not already run */
 	if (
 		window.EditUserTalkArchiveLoaded ||
-		!/sysop|staff|helper|wiki-representative|wiki-specialist|content-volunteer|soap/.test(mw.config.get("wgUserGroups").join())
+		!/sysop|staff|wiki-representative|wiki-specialist|content-volunteer|soap/.test(mw.config.get("wgUserGroups").join())
 	) {
 		return;
 	}

@@ -26,7 +26,6 @@
  		USER_GROUPS: Object.freeze( { 
  			GLOBAL: Object.freeze( [ 
 	            "staff",
-	            "helper",
 	            "wiki-representative",
 	            "wiki-specialist",
 	            "soap",

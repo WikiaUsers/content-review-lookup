@@ -11,10 +11,8 @@ importArticles({
         'w:dev:MediaWiki:ReferencePopups/code.js',
         'w:dev:MediaWiki:UTCClock/code.js',
         'w:dev:MediaWiki:YoutubePlayer/code.js',
-        'w:dev:ExtendedNavigation/code.js',
         "w:dev:MediaWiki:InputUsername/code.js",
-        "w:dev:ShowHide/code.js",
-
+        'u:dev:MediaWiki:CategoryQuickRemove.js',
     ]
 });
  

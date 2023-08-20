@@ -21,7 +21,7 @@
         !Array.isArray(buttons) ||
         buttons.length === 0 ||
         !$user ||
-        !/sysop|staff|helper|global-discussions-moderator|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups) ||
+        !/sysop|staff|global-discussions-moderator|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups) ||
         $user === config.wgUserName
     ) {
         return;

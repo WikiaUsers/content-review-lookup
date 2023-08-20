@@ -20,6 +20,7 @@
 		root.innerHTML = "";
 		modal.windowManager.updateWindowSize(modal.seDialog);
 		function loadSprite2(toOpen) {
+			toOpen = helper.seperatePath(toOpen);
 			var historyUrl = new URL(window.location);
 			historyUrl.searchParams.set('sprite', toOpen.full);
 			window.history.pushState({}, '', historyUrl);
@@ -29,7 +30,7 @@
 		}
 		myData.loadSprite2 = loadSprite2;
 		function loadSprite(event) {
-			loadSprite2(helper.seperatePath(event.target.closest(".previewBox").dataset.sprite));
+			loadSprite2(event.target.closest(".previewBox").dataset.sprite);
 		}
 		function addSprite(i) {
 			var n = allPages[i];

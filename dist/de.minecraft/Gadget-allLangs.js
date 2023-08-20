@@ -1,4 +1,4 @@
-;(function($, mw) {
+(function($, mw) {
 	'use strict';
 	var pagename = '';
 	const config = mw.config.get([
@@ -11,7 +11,7 @@
 	if ( [8, 9, 202].includes(config.wgNamespaceNumber)) { // MediaWiki, Diskussion, Profil
 		pagename = config.wgCanonicalNamespace + ':' + config.wgTitle;
 	} 
-	else if ( config.wgNamespaceNumber == -1 ) { // Spezialseiten
+	else if ( config.wgNamespaceNumber === -1 ) { // Spezialseiten
 		pagename = config.wgCanonicalNamespace + ':' + config.wgCanonicalSpecialPageName;
 		const subpageIdx = config.wgTitle.indexOf( '/' );
 		if ( subpageIdx >= 0 )
@@ -58,9 +58,9 @@
 		for ( var lang in langs ) {
 			$( '.page-header__languages .wds-dropdown__content .wds-list' ).append(
 				'<li>' +
-					'<a href="https://minecraft' + ( lang == 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + (lang == 	'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename + '">' + langs[lang] + '</a>' +
+					'<a href="https://minecraft' + ( lang === 'technik' ? '-technik.fandom.com/de' : '.fandom.com' + (lang === 'en' ? '' : '/' + lang ) ) + '/wiki/' + pagename + '">' + langs[lang] + '</a>' +
 				'</li>'
 			);
 		}
 	}
-})(this.jQuery, this.mediaWiki);
+})(window.jQuery, window.mediaWiki);

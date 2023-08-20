@@ -94,7 +94,7 @@
         }).join('\n');
         pre.html(text);
 
-        if (/sysop|staff|wiki-representative|wiki-specialist|helper/.test(mw.config.get('wgUserGroups'))) {
+        if (/sysop|staff|wiki-representative|wiki-specialist/.test(mw.config.get('wgUserGroups'))) {
             var local = [];
             var dev = [];
             pre.text().split('\n').forEach(function (line) {

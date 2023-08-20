@@ -100,7 +100,7 @@ function loadMonth(month) {
     var newMonth = '';
     for (var i = 0; i < days[month]; i++) {
         var classes = (month == currentMonth && i == currentDay) ? "day current" : "day";
-        newMonth = newMonth + '<a href="/wiki/' + months[month] + '_' + (i+1) + '"><div class="' + classes + '">' + (i+1) + '</div></a>';
+        newMonth = newMonth + '<a href="/wiki/Template:Calendar/' + months[month] + '_' + (i+1) + '"><div class="' + classes + '">' + (i+1) + '</div></a>';
     }
     $('#cal #cal-frame').fadeOut('fast', function() {
         $('#cal #cal-frame').html(newMonth).fadeIn('fast');

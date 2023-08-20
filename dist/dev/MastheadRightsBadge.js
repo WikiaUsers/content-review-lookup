@@ -37,11 +37,9 @@ mw.loader.using('mediawiki.api').then(function() {
         "user-identity-box-group-sysop",
         "user-identity-box-group-content-moderator",
         "user-identity-box-group-threadmoderator",
-        "user-identity-box-group-chatmoderator",
         "user-identity-box-group-staff",
         "user-identity-box-group-wiki-representative",
         "user-identity-box-group-wiki-specialist",
-        "user-identity-box-group-helper",
         "user-identity-box-group-soap",
         "user-identity-box-group-global-discussions-moderator",
     ]).then(function(m) {
@@ -50,11 +48,9 @@ mw.loader.using('mediawiki.api').then(function() {
             'sysop': m["user-identity-box-group-sysop"],
             'content-moderator': m["user-identity-box-group-content-moderator"],
             'threadmoderator': m["user-identity-box-group-threadmoderator"],
-            'chatmoderator': m["user-identity-box-group-chatmoderator"],
             'staff': m["user-identity-box-group-staff"],
             'wiki-representative': m["user-identity-box-group-wiki-representative"],
             'wiki-specialist': m["user-identity-box-group-wiki-specialist"],
-            'helper': m["user-identity-box-group-helper"],
             'soap': m["user-identity-box-group-soap"],
             'global-discussions-moderator': m["user-identity-box-group-global-discussions-moderator"]
         };
@@ -63,11 +59,9 @@ mw.loader.using('mediawiki.api').then(function() {
             'sysop',
             'content-moderator',
             'threadmoderator',
-            'chatmoderator',
             'staff',
             'wiki-representative',
             'wiki-specialist',
-            'helper',
             'soap',
             'global-discussions-moderator'
         ];
@@ -85,11 +79,9 @@ mw.loader.using('mediawiki.api').then(function() {
                 'sysop': 'admin',
                 'content-moderator': 'content-moderator',
                 'threadmoderator': 'discussion-moderator',
-                'chatmoderator': 'discussion-moderator',
                 'staff': 'staff',
                 'wiki-representative': 'staff',
                 'wiki-specialist': 'staff',
-                'helper': 'helper',
                 'soap': 'soap',
                 'global-discussions-moderator': 'global-discussions-moderator',
             };

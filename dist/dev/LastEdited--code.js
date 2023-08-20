@@ -52,7 +52,7 @@
         // The amount of dependencies to load
         loaded: 2,
         // If the user can rollback edits
-        canRollback: /(sysop|helper|soap|staff|content-moderator|rollback|wiki-representative|wiki-specialist|content-volunteer)/.test(mw.config.get('wgUserGroups').join(' ')),
+        canRollback: /(sysop|soap|staff|content-moderator|rollback|wiki-representative|wiki-specialist|content-volunteer)/.test(mw.config.get('wgUserGroups').join(' ')),
         /**
          * Initializes everything
          */
@@ -229,7 +229,7 @@
                     this.userLink('User talk:', user, i18n.msg('talk').plain()) +
                     ' | ' +
                     this.userLink('Special:Contributions/', user, i18n.msg('contribs').plain());
-            if (/(bureaucrat|sysop|helper|soap|staff)/.test(this.config.wgUserGroups.join(' '))) {
+            if (/(bureaucrat|sysop|wiki-representative|wiki-specialist|soap|staff)/.test(this.config.wgUserGroups.join(' '))) {
                 links += ' | ' + this.userLink('Special:Block/', user, i18n.msg('block').plain());
             }
             if (this.options.avatar) {

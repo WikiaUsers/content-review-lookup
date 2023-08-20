@@ -1,8 +1,7 @@
-mw.hook('wikipage.content').add(function() {
+(function(mw) {
 	'use strict';
-	var main = document.getElementById('colorblind');
-	if (!main) return;
 
+	var coloblindSelect;
 	var html = '<select id="coloblindSelect" style="font-size:10px;">' +
 		'<option>Colorvision</option>' +
 		'<option value="deuteranopia">Prota- / Deuteranopia</option>' +
@@ -26,26 +25,6 @@ mw.hook('wikipage.content').add(function() {
 		'</defs>' +
 	'</svg>';
 
-	main.innerHTML = html;
-	var coloblindSelect = document.getElementById('coloblindSelect');
-	coloblindSelect.addEventListener('change', setColorblind);
-
-	function setColorblind() {
-		var mode = coloblindSelect.value.toLowerCase();
-		var svgMaps = document.getElementsByClassName('replaced-svg');
-		if (svgMaps.length == 0) {
-			// if svg-files are not yet replaced with inline-code
-			replaceSVGWithInline();
-		}
-		var colorBlindEls = document.getElementsByClassName('colorBlindToggleable');
-		Array.from(colorBlindEls).forEach(function(el) {
-			// remove other colorblind-classes				
-			el.classList.remove('spawningMap-deuteranopia', 'spawningMap-tritanopia');
-			if (mode != 'colorvision')
-				el.classList.add('spawningMap-' + mode);
-		});
-	}
-
 	function replaceSVGWithInline() {
 		/*
 		* Replace all SVG images with inline SVG. source: https://stackoverflow.com/a/43015413/1523086
@@ -62,7 +41,7 @@ mw.hook('wikipage.content').add(function() {
 				// Get the SVG tag, ignore the rest
 				var svg = xmlDoc.getElementsByTagName('svg')[0];
 				// Add replaced image's ID to the new SVG
-				if (svg != null && typeof imgID !== 'undefined') {
+				if (svg !== null && typeof imgID !== 'undefined') {
 					svg.setAttribute('id', imgID);
 				}
 				// Add replaced image's classes to the new SVG
@@ -94,4 +73,29 @@ mw.hook('wikipage.content').add(function() {
 			});
 		});
 	}
-});
+
+	function setColorblind() {
+		var mode = coloblindSelect.value.toLowerCase();
+		var svgMaps = document.getElementsByClassName('replaced-svg');
+		if (svgMaps.length === 0) {
+			// if svg-files are not yet replaced with inline-code
+			replaceSVGWithInline();
+		}
+		var colorBlindEls = document.getElementsByClassName('colorBlindToggleable');
+		Array.from(colorBlindEls).forEach(function(el) {
+			// remove other colorblind-classes				
+			el.classList.remove('spawningMap-deuteranopia', 'spawningMap-tritanopia');
+			if (mode !== 'colorvision')
+				el.classList.add('spawningMap-' + mode);
+		});
+	}
+
+	mw.hook('wikipage.content').add(function($content) {
+		var main = $content.find('#colorblind:not(.loaded)')[0];
+		if (!main) return;
+		main.classList.add('loaded');
+		main.innerHTML = html;
+		coloblindSelect = $content.find('#coloblindSelect')[0];
+		coloblindSelect.addEventListener('change', setColorblind);
+	});
+})(window.mediaWiki);

@@ -175,7 +175,6 @@ window.rwaOptions = window.rwaOptions || { };
         "staff",
         "wiki-representative",
         "wiki-specialist",
-        "helper",
         "soap",
         "global-discussions-moderator"
     ] );

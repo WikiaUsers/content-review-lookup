@@ -1,4 +1,4 @@
-mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaWiki:DataFetch.js'], function() { $(function () {
+mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'u:ark:MediaWiki:DataFetch.js'], function() { $(function () {
 
 	var SharedDataPage = 'Data:Spawn Map/Shared';
 	var RarityClasses = [
@@ -9,22 +9,23 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 		'cr-region-map-common',
 		'cr-region-map-very-common'
 	];
-	var Strings = {
-		CreatureSpawns: 'Creature Spawns',
-		SelectCreature: 'Select a creature', // WIP T66: Select a creature or container
-		OptionGroupCreatures: 'Creatures',
-		OptionGroupContainers: 'Group Containers',
-		DataLoadErrorAnon: 'Failed to load data; try refreshing the page',
-		DataLoadErrorSigned: 'Failed to load the data page - check if it exists and is a valid JSON:',
-		ToggleDetails: ' full spawn groups details',
-		DeselectGroups: 'deselect all containers',
-		TooltipFrom: 'from',
-		TooltipTo: 'to',
-		TooltipLat: 'lat',
-		TooltipLong: 'lon',
-		TooltipUntameable: 'untameable',
-		TooltipUntameableLocal: 'creatures at this location are not tameable',
+	window.SpawnMapsI18n = window.SpawnMapsI18n || {
+		creatureSpawns: 'Creature Spawns',
+		selectCreature: 'Select a creature', // WIP T66: Select a creature or container
+		optionGroupCreatures: 'Creatures',
+		optionGroupContainers: 'Group Containers',
+		dataLoadErrorAnon: 'Failed to load data; try refreshing the page',
+		dataLoadErrorSigned: 'Failed to load the data page - check if it exists and is a valid JSON:',
+		toggleDetails: ' full spawn groups details',
+		deselectGroups: 'deselect all containers',
+		tooltipFrom: 'from',
+		tooltipTo: 'to',
+		tooltipLat: 'lat',
+		tooltipLong: 'lon',
+		tooltipUntameable: 'untameable',
+		tooltipUntameableLocal: 'creatures at this location are not tameable',
 	};
+	var i18n = window.SpawnMapsI18n;
 	var RE_CONTAINER_NAME = /DinoSpawnEntries_?|SpawnEntries_?/i;
 	var CACHE_EXPIRY_TIME = 24 * 60 * 60;
 
@@ -51,9 +52,9 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 
 	function populateCreatureSelector(context) {
 		context.$select.empty();
-		context.$select.append($('<option>').val('').text(Strings.SelectCreature));
+		context.$select.append($('<option>').val('').text(i18n.selectCreature));
 
-		var $creatureGroup = $('<optgroup label="' + Strings.OptionGroupCreatures +'">');
+		var $creatureGroup = $('<optgroup label="' + i18n.optionGroupCreatures +'">');
 		context.creatures.forEach(function (name) {
 			var displayName = context.shared.NameTranslations[name] ? context.shared.NameTranslations[name] : name;
 			$creatureGroup.append($('<option>').text(displayName).val(name));
@@ -103,9 +104,9 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 				} else {
 					$extendedLegend.find('li.is-detail').hide();
 				}
-			})).append(Strings.ToggleDetails);
+			})).append(i18n.toggleDetails);
 			// Construct a button to toggle all groups in the legend.
-			var $deselectGroups = $('<button class="mass-group-deselect">').text(Strings.DeselectGroups).click(function() {
+			var $deselectGroups = $('<button class="mass-group-deselect">').text(i18n.deselectGroups).click(function() {
 				$extendedLegend.find('input[type=checkbox]:checked').each(function() {
 					$(this).prop('checked', false).change();
 				});
@@ -183,7 +184,7 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 					// Tamability.
 					var tamable = !(spawner.u || context.shared.GeneralUntamability[name]);
 					if (!tamable) {
-						tooltipExtra = '\n' + (!spawner.u ? Strings.TooltipUntameable : Strings.TooltipUntameableLocal);
+						tooltipExtra = '\n' + (!spawner.u ? i18n.tooltipUntameable : i18n.tooltipUntameableLocal);
 					}
 
 					// Render locations.
@@ -198,7 +199,7 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 							var left = Math.max(0, 100 * ((x - context.offsetLeft) / mapWidth - context.pointSize / (2 * mapWidth)));
 							var top = Math.max(0, 100 * ((y - context.offsetTop) / mapHeight - context.pointSize / (2 * mapWidth)));
 							// Tooltip.
-							var tooltipText = Strings.TooltipLat + ' ' + y + ', ' + Strings.TooltipLong + ' ' + x + tooltipExtra;
+							var tooltipText = i18n.tooltipLat + ' ' + y + ', ' + i18n.tooltipLong + ' ' + x + tooltipExtra;
 							// Display.
 							$container.append($('<div class="dot point">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
 								left: left.toFixed(1) + '%',
@@ -221,10 +222,10 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 							var bottom = Math.min(100, 100 * (100 - y2 - (100 - context.offsetBottom)) / mapHeight - heightAdjust);
 							var right = Math.min(100, 100 * (100 - x2 - (100 - context.offsetRight)) / mapWidth - widthAdjust);
 							// Tooltip.
-							var tooltipText = Strings.TooltipFrom + ' ' +
-											  Strings.TooltipLat + ' ' + y1 + ', ' + Strings.TooltipLong  + ' ' + x1 +
-											  '\n' + Strings.TooltipTo + ' ' +
-											  Strings.TooltipLat + ' ' + y2 + ', ' + Strings.TooltipLong  + ' ' + x2 +
+							var tooltipText = i18n.tooltipFrom + ' ' +
+											  i18n.tooltipLat + ' ' + y1 + ', ' + i18n.tooltipLong  + ' ' + x1 +
+											  '\n' + i18n.tooltipTo + ' ' +
+											  i18n.tooltipLat + ' ' + y2 + ', ' + i18n.tooltipLong  + ' ' + x2 +
 											  tooltipExtra;
 							// Display.
 							$container.append($('<div class="square">').addClass(rarityClass + (!tamable ? ' untameable' : '')).css({
@@ -293,7 +294,7 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 							  .change(function () {
 									showGroups(context, $(this).val());
 							  });
-			context.$legend.append($('<tr class="no-icon"><td colspan="2"><b>'+Strings.CreatureSpawns+'</b></td></tr>'));
+			context.$legend.append($('<tr class="no-icon"><td colspan="2"><b>'+i18n.creatureSpawns+'</b></td></tr>'));
 			context.$legend.append(context.$select);
 
 			// Gather creature names from data.
@@ -321,9 +322,9 @@ mw.loader.using([(mw.config.get('wgIsTestModeEnabled') ? 'test:' : '') + 'MediaW
 
 		}, function() {
 			displayError(context, mw.config.get('wgUserName') != null
-				? (Strings.DataLoadErrorSigned + ' [[' + context.pageName + ']]')
-				: Strings.DataLoadErrorAnon);
+				? (i18n.dataLoadErrorSigned + ' [[' + context.pageName + ']]')
+				: i18n.dataLoadErrorAnon);
 		});
 	});
 
-}) });
+}); });

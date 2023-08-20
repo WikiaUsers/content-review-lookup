@@ -15,3 +15,13 @@ function showTab(tabId) {
   const tabContentToShow = document.getElementById(tabId);
   tabContentToShow.classList.add('show');
 }
+
+function addCustomLink() {
+  var linkContainer = document.getElementById('mitglieder');
+  var link = document.createElement('a');
+  link.href = 'https://www.example.com';
+  link.textContent = 'Gehe zu Beispiel';
+  linkContainer.appendChild(link);
+}
+
+addCustomLink();

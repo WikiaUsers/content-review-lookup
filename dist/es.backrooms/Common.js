@@ -80,3 +80,7 @@ $(document).ready(function() {
     }
   });
 });
+
+window.AddRailModule = [{prepend: true}];
+
+window.AddRailModule = ['Template:RailModule'];

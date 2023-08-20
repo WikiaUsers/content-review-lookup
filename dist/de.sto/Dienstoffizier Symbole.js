@@ -38,7 +38,7 @@
 
 	/* Sets the provided image name to the image input */
 	function setImageName(ele) {
-		var index = ele.srcElement.dataset.index;
+		var index = ele.target.dataset.index;
 		var iconNames = getImageNames( getSpecies( ), getGender( ) );
 		var name = iconNames[index].substring(5, iconNames[index].length - 9).replace(/ /g, "_");
 		$content.find( '[name="Doffseite[image]"]' )[0].value = name;

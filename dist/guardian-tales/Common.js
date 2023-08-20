@@ -13,3 +13,16 @@ var itemboxTooltip = document.querySelectorAll('.custom-tooltip .itembox');
 itemboxTooltip.forEach(function(element) {
 	element.tabIndex = -1;
 });
+
+// hide LastEdited's summary
+if (!window.lastEdited) {
+	window.lastEdited = { comment: false };
+}
+
+// import [[MediaWiki:Group-sysop.js]]
+if (mw.config.get('wgUserGroups').includes('sysop')) {
+	importArticle({
+		type: 'script',
+		article: 'MediaWiki:Group-sysop.js'
+	});
+}
