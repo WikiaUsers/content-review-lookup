@@ -5,7 +5,7 @@
  * Description: Adds a user's gender from preferences
  *              to the top of their masthead as a tag
  */
-(function() {
+(function($, mw) {
     'use strict';
     if (!mw.config.get('profileUserName') || window.MastheadGenderLoaded) {
         return;
@@ -24,13 +24,13 @@
             var cached = this.cache[this.username];
             if (this.validCache(cached)) {
                 this.findContainer()
-                    .then($.proxy(this.insert, this, cached.value));
+                    .then(this.insert.bind(this, cached.value));
             } else {
                 $.when(
                     this.loader(),
                     this.findContainer(),
                     this.waitForI18n()
-                ).done($.proxy(this.callback, this));
+                ).done(this.callback.bind(this));
             }
             if (Math.round(Math.random() * 10) === 1) {
                 // Let's clean up the cache but only sometimes
@@ -114,5 +114,5 @@
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.util'
-    ]).then($.proxy(MastheadGender.init, MastheadGender));
-})();
+    ]).then(MastheadGender.init.bind(MastheadGender));
+})(window.jQuery, window.mediaWiki);

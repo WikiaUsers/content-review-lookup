@@ -252,18 +252,26 @@ $(function () {
         '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Ferumbras_Exercise_Dummy.gif" style="float:left">' +
         '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Exercise_Dummy.gif" style="float:right"></div>' +
         '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Bow.gif" style="float:left;">' +
-        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Sword.gif" style="float:right;"></div>' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Shield.gif" style="float:right;"></div>' +
         '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Rod.gif" style="float:left;">' +
-        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Axe.gif" style="float:right;"></div>' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Sword.gif" style="float:right;"></div>' +
         '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Wand.gif" style="float:left;">' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Axe.gif" style="float:right;"></div>' +
+        '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Shield.gif" style="float:left;">' +
         '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Club.gif" style="float:right;"></div>' +
+        '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Sword.gif" style="float:left;">' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Bow.gif" style="float:right;"></div>' +
+        '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Axe.gif" style="float:left;">' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Rod.gif" style="float:right;"></div>' +
+        '<div><img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Club.gif" style="float:left;">' +
+        '<img src="https://tibia.fandom.com/index.php?title=Special:FilePath&file=Lasting_Exercise_Wand.gif" style="float:right;"></div>' +
         '</div></div>' +
         '<div style="position:relative;">' +
         '<label>Loyalty points:' +
         '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:55px;"></label>' +
         '<label>Loyalty bonus:' +
         '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step="5" style="width:45px;">%</label><br/><br/>' +
-        '<label>Skill/Vocation: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Magic/Mage</option><option value="meleeknight">Melee/Knight</option><option value="distancepaladin">Distance/Paladin</option><option value="magicpaladin">Magic/Paladin</option><option value="magicknight">Magic/Knight</option></select><label><br/><br/>' +
+        '<label>Vocation and Skill: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Mage: Magic Level</option><option value="meleeknight">Knight: Melee/Shielding</option><option value="magicknight">Knight: Magic Level</option><option value="distancepaladin">Paladin: Distance</option><option value="magicpaladin">Paladin: Magic Level</option></select><label><br/><br/>' +
         '<label>Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select></label><br/><br/>' +
         '<label><input type="checkbox" name="ew_event" value="double">Double Skills Event</label>' +
         '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +

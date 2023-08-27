@@ -4,16 +4,18 @@
 
 $('h2:contains("Appearances and references")+ol').wrap('<div class="collapsible-list"/>');
 
+$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="collapsible-list"/>');
+
 $('h2:contains("Little Bear filmography")+ol').wrap('<div class="collapsible-list"/>');
 
-$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="collapsible-list"/>');
+$('h2:contains("Little Bear bibliography and filmography")+ol').wrap('<div class="collapsible-list"/>');
 
 var listItems = $('div.collapsible-list > ol > li > ol > li');
 
 var subLists = $('div.collapsible-list > ol > li > ol');
 
 function button(){
-  var buttonOne = $('<a>').html('Show/Hide').css('cursor','pointer').click(function(){
+  var buttonOne = $('<a>').html('<small>show/hide</small>').css('cursor','pointer').click(function(){
     if (subLists.css('display') == 'none'){
       subLists.css('display', 'block');
     } else {
@@ -32,7 +34,7 @@ if (listItems.length < 10){
 
 $('div.collapsible-list').prepend('<span class="collapsible-list-desc">This list includes '+listItems.length+' items.</span>');
 
-$('span.collapsible-list-desc').append(' (').append(button()).append(')');
+$('span.collapsible-list-desc').append(' <small>(</small>').append(button()).append('<small>)</small>');
 
 /* Hide link returning to base page on subpages in the main namespace */
 

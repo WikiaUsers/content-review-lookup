@@ -221,6 +221,27 @@ function Filt(arr, clas){
 	
 	return All;
 }
+function Sort(Table, Par){
+	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
+	AllIcons.forEach(function(Mini){
+		clas = '';
+		Mini.classList.forEach(function(Class){
+			if (Class.startsWith(Par))
+				clas = Class;
+		});
+		if (clas != '')
+			Mini.style.order = -clas.substring(Par.length);
+		else
+			Mini.style.order = 1;
+	});
+	
+	
+    var list = $(AllIcons).get();
+    for (var i = 0; i < list.length; i++) {
+        list[i].parentNode.appendChild(list[i]);
+    }
+}
+
 function Filter(AllIcons, Table, FilterClass){
 	if (FilterClass == '')
 		return AllIcons;

@@ -6,7 +6,7 @@
  * Author:      KockaAdmiralac <1405223@gmail.com>
  * Version:     v1.0
  */
-(function() {
+(function($, mw) {
     var Bandcamp = {
         selector: '.Bandcamp, [data-widget="bandcamp"]',
         properties: {
@@ -16,24 +16,24 @@
             id: ['track', 'album']
         },
         init: function($content) {
-            $content.find(this.selector).each($.proxy(this.setup, this));
+            $content.find(this.selector).each(this.setup.bind(this));
         },
         setup: function(_, el) {
             var $el = $(el);
             $el.html('<svg class="wds-icon" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.69 12.6L5.143 22.867a.722.722 0 0 1-.753.05.733.733 0 0 1-.391-.65V1.733c0-.274.15-.524.391-.65a.724.724 0 0 1 .753.05l14.545 10.266a.734.734 0 0 1 0 1.201z" fill-rule="evenodd"/></svg>');
-            $el.find('svg').click($.proxy(this.load, this));
+            $el.find('svg').click(this.load.bind(this));
         },
         load: function(e) {
             var $el = $(e.target).closest(this.selector),
                 data = $el.data(),
                 url = 'https://bandcamp.com/EmbeddedPlayer';
-            $.each(this.properties, $.proxy(function(k, v) {
+            $.each(this.properties, (function(k, v) {
                 v.forEach(function(el) {
                     if (data[el]) {
                         url += '/' + el + '=' + this[k + 'Process'](data[el]);
                     }
                 }, this);
-            }, this));
+            }).bind(this));
             $el.html(
                 $('<iframe>', {
                     src: url
@@ -61,5 +61,5 @@
             return Math.round(Number(val));
         }
     };
-    mw.hook('wikipage.content').add($.proxy(Bandcamp.init, Bandcamp));
-})();
+    mw.hook('wikipage.content').add(Bandcamp.init.bind(Bandcamp));
+})(window.jQuery, window.mediaWiki);

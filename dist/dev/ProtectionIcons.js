@@ -194,10 +194,10 @@
          * @returns {void}
          */
         init: function () {
-            mw.hook('dev.i18n').add($.proxy(Main.i18nHandler, Main));
-            mw.hook('dev.wds').add($.proxy(Main.wdsHandler, Main));
+            mw.hook('dev.i18n').add(Main.i18nHandler.bind(Main));
+            mw.hook('dev.wds').add(Main.wdsHandler.bind(Main));
             $.when(this.i18nIsLoaded, this.wdsIsLoaded).done(
-                $.proxy(Main.getJSON, Main)
+                Main.getJSON.bind(Main)
             );
             importArticle({
                 type: 'style',

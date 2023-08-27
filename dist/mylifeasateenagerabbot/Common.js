@@ -324,3 +324,11 @@ importArticles({
  'dev:PreloadTemplates.js'
  ]
 });
+
+/*** Spoiler text ***/
+window.SpoilerAlertJS = {
+    question: 'Hey! Stop right there! This area contains some spoilers for the next new episode of ''[[My Life as a Teenage Rabbot]]'' that hasn't been released yet. Do you want to see them?',
+    yes: 'Yes! Spoil me!',
+    no: 'No, wait! GO BACK!',
+    fadeDelay: 1600
+};

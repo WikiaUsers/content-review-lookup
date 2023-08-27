@@ -2,58 +2,6 @@
 var titles = document.getElementById('tab-header').getElementsByTagName('li');
 var divs = document.getElementById('tab-content').getElementsByClassName('dom');
 
-(function(window, $) {
-    init = function() {
-        $("body").each(function() {
-			dragElement();
-        })
-    }
-    $(function() {
-        init()
-    })
-})(window, window.jQuery, undefined);
-
-function dragElement() {
-  var toc = document.getElementById("toc")
-  if (toc) {
-    /* if present, the header is where you move the DIV from:*/
-    toc.onmousedown = dragMouseDown;
-  }
-  function dragMouseDown(e) {
-    var event = e || window.event;
-    
-    // get the mouse cursor position at startup:
-    var pagex = event.pageX||event.clientX+document.documentElement.scrollLeft;
-    var pageY = event.pageY||event.clientY+document.documentElement.scrollTop;
-    
-    var spaceX = pageX-box.offsetLeft;
-    var spaceY = pageY-box.offsetTop;
-    
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = function(e) {
-    var event = e || window.event;
-    // calculate the new cursor position:
-    var pageX=event.pageX||event.clientX+document.documentElement.scrollLeft;
-    var pageY=event.pageY||event.clientY+document.documentElement.scrollTop;
-    
-    // set the element's new position:
-    toc.style.top = pageY - spaceY + "px";
-    toc.style.left = pageX - spaceX + "px";
-  }
-}
-  function closeDragElement() {
-    /* stop moving when mouse button is released:*/
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-
-
-
-
-
-
   
 $(document).on('click', '#zero',function(){ 
            for(var j=0; j<titles.length; j++){
@@ -127,36 +75,3 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 
 /* lockdown for reference popup configuration */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
-/* -- 为页面加载JS脚本或CSS样式表 -- */
-/* 参见[[模板:ResourceLoader]]*/
-/* 来源：碧蓝航线WIKI*/
-$('.resourceLoader').each(function () {
-  var $x = $(this);
-  var text = $.trim($x.text());
-
-  if (!text) return;
-
-  //加载模块
-  if ($x.data('isModule') === true)
-    return mw.loader.load(text);
-
-  //自动补充MediaWiki命名空间
-  var ns = text.match('^.*?:');
-  if (!ns) text = 'MediaWiki:' + text;
-
-  //加载CSS样式表
-  var mime = ($x.data('mime') || "text/javascript").toLowerCase();
-  if (mime == "text/css") {
-    if (text.slice(-4).toLowerCase() !== '.css') text = text + '.css';
-    //if ($x.data('debug') !== true) text = text + '&debug=false';
-    return mw.loader.load("//wiki.biligame.com/ys/index.php?title=" + text + "&action=raw&ctype=text/css", "text/css");
-  }
-
-  //加载JS脚本
-  if (ns && ns[0].toLowerCase() !== 'mediawiki:') {
-    return console.log('ResourceLoader: 不允许加载MediaWiki以外的js脚本');
-  }
-  if (text.slice(-3).toLowerCase() !== '.js') text = text + '.js';
-  //if ($x.data('debug') !== true) text = text + '&debug=false';
-  return mw.loader.load("//wiki.biligame.com/ys/index.php?title=" + text + "&action=raw&ctype=text/javascript", "text/javascript");
-});

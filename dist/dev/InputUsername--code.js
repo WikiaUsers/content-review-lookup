@@ -11,8 +11,7 @@
  * they so desire.
  */
 
-/* global $, mw */
-;(function (window, $, mw) {
+;(function ($, mw) {
     'use strict';
     var username = mw.config.get('wgUserName');
     if (
@@ -34,7 +33,7 @@
         inputUsername($rail);
     } else if ($rail.length) {
         $rail.on('afterLoad.rail',
-            $.proxy(inputUsername, null, $rail)
+            inputUsername.bind(null, $rail)
         );
     }
-})(window, jQuery, mediaWiki);
+})(window.jQuery, window.mediaWiki);

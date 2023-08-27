@@ -654,6 +654,9 @@ $( function () {
 			} else if ( cats[i].title === 'Category:Canon articles with Legends counterparts' ) {
 				addEditIntro( 'Template:Canon_editintro' );
 				break;
+			} else if ( cats[i].title === 'Category:Consensus track' ) {
+				addEditIntro( 'Template:CT_editintro' );
+				break;
 			} else if ( mw.config.get( 'wgPageName' ) === 'Template:DYK editintro' ) {
 				addEditIntro( 'Template:Good_editintro' );
 				break;

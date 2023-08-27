@@ -1,14 +1,9 @@
 // [[Category:Internal]] Meta-category for internal technical pages
 
 // For [[Module:CSS]]; [[T:CSS]] dependency
-var css = mw.util.addCSS($("span.import-css").attr("data-css"));
-$("span.import-css").each(function () {
-	css.disabled = true;
-});
-
-$(".css-button").click(function() {
+mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
-		css.disabled = !css.disabled;
+		mw.util.addCSS($(this).attr("data-css"));
 	});
 });
 

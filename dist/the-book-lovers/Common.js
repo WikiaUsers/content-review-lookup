@@ -124,3 +124,21 @@ window.DisplayClockJS = {
     monofonts: 'Consolas, monospace', /* The font the clock uses by default */
 };
 importArticle({type:'script', article:'u:dev:MediaWiki:UTCClock/code.js'});
+
+// Function to display the clock with user-specified time zone
+function displayTimeClock() {
+    const timeTemplates = document.getElementsByClassName("time-template");
+    for (const template of timeTemplates) {
+        const timeZone = template.getAttribute("data-timezone") || "UTC";
+        const currentTime = new Date().toLocaleString("en-US", { timeZone: timeZone });
+
+        const clockElement = document.createElement("div");
+        clockElement.className = "time-clock";
+        clockElement.textContent = `Current time: ${currentTime}`;
+
+        template.appendChild(clockElement);
+    }
+}
+
+// Wait for the page to fully load before adding the clocks
+document.addEventListener("DOMContentLoaded", displayTimeClock);

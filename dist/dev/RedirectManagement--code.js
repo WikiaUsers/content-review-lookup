@@ -5,7 +5,7 @@
  * @author KockaAdmiralac
  * <nowiki>
  */
-(function() {
+(function($, mw) {
     var config = mw.config.get([
         'wgCanonicalSpecialPageName',
         'wgContentLanguage',
@@ -40,7 +40,7 @@
         onClick: function() {
             var summary = window.RedirectManagementSummary ||
                 this.i18n.inContentLang().msg(this.double ? 'editSummary' : 'deleteReason').plain();
-            $('.special > li').each($.proxy(function(_, el) {
+            $('.special > li').each((function(_, el) {
                 var children = $(el).children();
                 if (children.length !== 4) {
                     // Already resolved
@@ -64,17 +64,17 @@
                 } : {
                     action: 'delete',
                     reason: reason
-                })).done($.proxy(function(d) {
+                })).done((function(d) {
                     if (d.error) {
                         console.error(this.i18nPrefix('error', page) + ': ' + d.error.code);
                     } else {
                         console.info(this.i18nPrefix('success', page));
                     }
-                }, this))
-                .fail($.proxy(function() {
+                }).bind(this))
+                .fail((function() {
                     console.error(this.i18nPrefix('error', page));
-                }, this));
-            }, this));
+                }).bind(this));
+            }).bind(this));
             setTimeout(function() {
                 location.reload();
             }, 15000);
@@ -104,7 +104,7 @@
                     })
                 );
             }
-            $('#btn-resolve-redirects').click($.proxy(this.onClick, this));
+            $('#btn-resolve-redirects').click(this.onClick.bind(this));
         },
         msg: function(name) {
             return this.i18n.msg(name).plain();
@@ -116,8 +116,8 @@
     ], function() {
         mw.hook('dev.i18n').add(function(i18no) {
             i18no.loadMessages('RedirectManagement').done(
-                $.proxy(RedirectManagement.init, RedirectManagement)
+                RedirectManagement.init.bind(RedirectManagement)
             );
         });
     });
-})();
+})(window.jQuery, window.mediaWiki);

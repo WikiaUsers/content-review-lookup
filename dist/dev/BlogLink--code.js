@@ -200,15 +200,12 @@
             // Add PTP link only if the script is loaded on the wiki
             if (this.config.talk) {
                 mw.hook("pseudotalkpages.loaded").add(function () {
-                    $.proxy(
-                        BlogLink.addLink(
-                            "talk",
-                            "User:" + config.wgUserName + "/Talk",
-                            "talk",
-                            "#bl-blog"
-                        ),
-                        BlogLink
-                    );
+                    (BlogLink.addLink(
+                        "talk",
+                        "User:" + config.wgUserName + "/Talk",
+                        "talk",
+                        "#bl-blog"
+                    )).bind(BlogLink);
                 });
             }
 
@@ -230,6 +227,6 @@
         $.when(
             $i18n.loadMessages("BlogLink", {cacheVersion: 1}),
             mw.loader.using("mediawiki.util")
-        ).done($.proxy(BlogLink.main, BlogLink));
+        ).done(BlogLink.main.bind(BlogLink));
     });
 }(this, this.jQuery, this.mediaWiki));

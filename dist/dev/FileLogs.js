@@ -5,7 +5,7 @@
  * Description: Adds log excerpts to file pages of deleted
  *              or moved files.
  */
-(function() {
+(function($, mw) {
     'use strict';
     var config = mw.config.get([
         'wgAction',
@@ -30,7 +30,7 @@
             $.when(
                 this.getLogs(),
                 this.getMessage()
-            ).then($.proxy(this.callback, this));
+            ).then(this.callback.bind(this));
         },
         getLogs: function() {
             return this.api.get({
@@ -66,7 +66,7 @@
                         uselang: config.wgUserLanguage
                     }) +
                     ' #mw-content-text > ul',
-                    $.proxy(this.loaded, this)
+                    this.loaded.bind(this)
                 )
             ).prependTo('#mw-content-text');
             mw.hook('FileLogs.inserted').fire(this.$warning);
@@ -80,5 +80,5 @@
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.util'
-    ]).then($.proxy(FileLogs.init, FileLogs));
-})();
+    ]).then(FileLogs.init.bind(FileLogs));
+})(window.jQuery, window.mediaWiki);

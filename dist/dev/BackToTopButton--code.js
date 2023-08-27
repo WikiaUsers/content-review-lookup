@@ -2,7 +2,7 @@
 // I don't like scrolling back to top on long pages neither do you :)
 // Created by Noemon from Dead Space Wiki
 // Used files: [[File:BackToTopArrow_white.png]] [[File:BlackToTopArrow.png]]
-(function(window, $, mw) {
+(function($, mw) {
     'use strict';
  
     var buttonStart = typeof window.BackToTopStart === 'number' ?
@@ -84,8 +84,8 @@
             ],
             click: click
         }).appendTo(document.body);
-        $.proxy(modernReposition, $button.children('div'))();
-        $(window).on('resize', throttle(100, $.proxy(modernReposition, $button.children('div'))));
+        modernReposition.bind($button.children('div'))();
+        $(window).on('resize', throttle(100, modernReposition.bind($button.children('div'))));
         init();
     }
     
@@ -105,10 +105,10 @@
                 last_exec = +new Date();
                 callback.apply(that, args);
             }
-            ;function clear() {
+            function clear() {
                 timeout_id = undefined;
             }
-            ;if (debounce_mode && !timeout_id) {
+            if (debounce_mode && !timeout_id) {
                 exec();
             }
             timeout_id && clearTimeout(timeout_id);
@@ -118,11 +118,11 @@
                 timeout_id = setTimeout(debounce_mode ? clear : exec, debounce_mode === undefined ? delay - elapsed : delay);
             }
         }
-        ;if ($.guid) {
+        if ($.guid) {
             wrapper.guid = callback.guid = callback.guid || $.guid++;
         }
         return wrapper;
-    };
+    }
  
     function modernReposition() {
         this.css({
@@ -181,7 +181,7 @@
                 article: lib.s
             });
             mw.hook('dev.' + lib.h).add(
-                $.proxy(modernPreload, null, a.length)
+                modernPreload.bind(null, a.length)
             );
         });
     } else if (window.BackToTopArrow) {
@@ -199,4 +199,4 @@
         type: 'style',
         article: 'u:dev:MediaWiki:BackToTopButton.css'
     });
-}(this, jQuery, mediaWiki));
+}(window.jQuery, window.mediaWiki));

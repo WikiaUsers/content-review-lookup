@@ -126,6 +126,6 @@
     };
 
     mw.loader.using("mediawiki.util").then(
-        $.proxy(EraIcons.init, EraIcons)
+        EraIcons.init.bind(EraIcons)
     );
 }(this, this.jQuery, this.mediaWiki));

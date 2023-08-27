@@ -148,9 +148,9 @@ mw.loader.using('jquery.ui', function () {
 
     // Delegate the touch handlers to the widget's element
     self.element.bind({
-      touchstart: $.proxy(self, '_touchStart'),
-      touchmove: $.proxy(self, '_touchMove'),
-      touchend: $.proxy(self, '_touchEnd')
+      touchstart: self.bind('_touchStart'),
+      touchmove: self.bind('_touchMove'),
+      touchend: self.bind('_touchEnd')
     });
 
     // Call the original $.ui.mouse init method
@@ -166,9 +166,9 @@ mw.loader.using('jquery.ui', function () {
 
     // Delegate the touch handlers to the widget's element
     self.element.unbind({
-      touchstart: $.proxy(self, '_touchStart'),
-      touchmove: $.proxy(self, '_touchMove'),
-      touchend: $.proxy(self, '_touchEnd')
+      touchstart: self.bind('_touchStart'),
+      touchmove: self.bind('_touchMove'),
+      touchend: self.bind('_touchEnd')
     });
 
     // Call the original $.ui.mouse destroy method

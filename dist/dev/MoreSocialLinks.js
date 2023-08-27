@@ -35,7 +35,7 @@
             $.when(
                 window.dev.i18n.loadMessages('MoreSocialLinks'),
                 this.findContainer()
-            ).then($.proxy(this.init, this));
+            ).then(this.init.bind(this));
         },
         findContainer: function() {
 	        var promise = $.Deferred();
@@ -54,23 +54,23 @@
             $.get('https://services.fandom.com/user-attribute/user/bulk', {
                 cb: Date.now(),
                 id: config.profileUserId
-            }).then($.proxy(this.show, this));
+            }).then(this.show.bind(this));
         },
         show: function(data) {
-            $.each(data.users[config.profileUserId], $.proxy(this.eachLink, this));
+            $.each(data.users[config.profileUserId], this.eachLink.bind(this));
             if (Number(config.wgUserId) === Number(config.profileUserId)) {
                 this.links.edit = '#';
             }
             var links = window.dev.ui({
                 type: 'ul',
                 classes: ['user-identity-social'],
-                children: $.map(this.links, $.proxy(this.mapLink, this))
+                children: $.map(this.links, this.mapLink.bind(this))
             });
             $(links).append(this.$links.find('.user-identity-social__icon.wds-dropdown'));
             this.$links.replaceWith(links);
             this.initModal();
             $(links).find('.edit > a')
-                .click($.proxy(this.edit, this))
+                .click(this.edit.bind(this))
                 .removeAttr('target');
         },
         eachLink: function(k, v) {
@@ -149,7 +149,7 @@
                     classes: [
                         'MoreSocialLinksForm'
                     ],
-                    children: $.map(this.linkFields, $.proxy(this.mapGroup, this))
+                    children: $.map(this.linkFields, this.mapGroup.bind(this))
                         .filter(Boolean)
                 },
                 context: this,
@@ -188,7 +188,7 @@
         },
         save: function() {
             var data = {};
-            $('.MoreSocialLinksForm input').each($.proxy(function(_, el) {
+            $('.MoreSocialLinksForm input').each((function(_, el) {
                 var $el = $(el),
                     val = $el.val(),
                     name = $el.attr('name'),
@@ -209,7 +209,7 @@
                         data[name] = val;
                         break;
                 }
-            }, this));
+            }).bind(this));
             $.ajax({
                 context: this,
                 data: data,
@@ -249,5 +249,5 @@
     // I18n-js and UI-js fire their hooks immediately after loading, while Modal
     // needs to wait for ooui-js-windows to load, so it is guaranteed to load
     // last.
-    mw.hook('dev.modal').add($.proxy(MoreSocialLinks.loaded, MoreSocialLinks));
+    mw.hook('dev.modal').add(MoreSocialLinks.loaded.bind(MoreSocialLinks));
 })();

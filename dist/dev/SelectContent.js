@@ -33,7 +33,7 @@ mw.hook('wikipage.content').add(function(content) {
         // creates <select>
         var $select = $('<select>', {
             appendTo: containers[i],
-            change: $.proxy(onChange, this)
+            change: onChange.bind(this)
         });
 
         // creates <option> corresponding to field names

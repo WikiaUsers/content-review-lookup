@@ -1,5 +1,5 @@
 // <nowiki>
-(function() {
+(function($, mw) {
     if (window.AjaxTemplateLoaded || mw.config.get('wgNamespaceNumber') === -1) {
         return;
     }
@@ -10,7 +10,7 @@
             this.api = new mw.Api();
             this.$element = $('<a>', {
                 'class': 'wds-button wds-is-secondary',
-                'click': $.proxy(this.click, this),
+                'click': this.click.bind(this),
                 'text': i18n.msg('button').plain()
             });
             this.config = mw.config.get([
@@ -41,7 +41,7 @@
             }
             this.api
                 .postWithEditToken(options)
-                .then($.proxy(this.callback, this));
+                .then(this.callback.bind(this));
         },
         callback: function(d) {
             if (!d.error) {
@@ -52,13 +52,13 @@
             $.when(
                 i18n.loadMessages('AjaxTemplate'),
                 mw.loader.using('mediawiki.api')
-            ).then($.proxy(this.init, this));
+            ).then(this.init.bind(this));
         }
     };
-    mw.hook('dev.i18n').add($.proxy(AjaxTemplate.hook, AjaxTemplate));
+    mw.hook('dev.i18n').add(AjaxTemplate.hook.bind(AjaxTemplate));
     importArticle({
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
-})();
+})(window.jQuery, window.mediaWiki);
 // </nowiki>

@@ -1,18 +1,22 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 
-var pageName = mw.config.get('wgPageName')
+var pageName = mw.config.get('wgPageName');
 
 /************************************************************************/
+// Pour tous les balises "IntegrationInstagram", intégrer un embed selon leur username
+var elementsII = document.getElementsByClassName("IntegrationInstagram");
+for (var e =0; e<elementsII.length; e++){
+	var username = elementsII[e].getAttribute("data-username");
+    $(elementsII[e]).append('<iframe src="https://www.instagram.com/'+username+'/embed" width=100% height=820 frameborder="0" allowfullscreen="allowfullscreen"></iframe>');
+}
 
-// S'execute si c'est sur la page d'accueil (ou les modèles qui composent la page d'accueil)
-if(pageName === "Wiki_Radiant" || pageName === "Modèle:RéseauxSociaux"){
-	// Permet d'intéger le compte Insta de Tony Valente
-	$("#IntegrationInstagram").append('<iframe src="https://www.instagram.com/tonytonyvalente/embed" width=100% height=820 frameborder="0" allowfullscreen="allowfullscreen"></iframe>')
-	
-	// Permet d'intéger le compte Tiktok de Tony Valente
-	$("#IntegrationTiktok").append('<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@tonyvalenteofficial" data-unique-id="tonyvalenteofficial" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@tonyvalenteofficial?refer=creator_embed">@tonyvalenteofficial</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>')
-	}
-	
+// Pour tous les balises "IntegrationTiktok", intégrer un embed selon leur username
+var elementsIT = document.getElementsByClassName("IntegrationTiktok");
+for (var e =0; e<elementsIT.length; e++){
+	var username = elementsIT[e].getAttribute("data-username");
+    $(elementsIT[e]).append('<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@'+username+'" data-unique-id="'+username+'" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@'+username+'?refer=creator_embed">@'+username+'</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>');
+}
+
 /************************************************************************/
 
 // Ajout fonction qui permet d'integrer les sondages (https://www.radiant.fandom.com/fr/f?catId=3100000000000000032) sur la page d'accueil
@@ -80,7 +84,7 @@ function integrationLastPolls() {
 				// Ajouter une balise HTML avec comme attribut son IDentifiant (pour DiscussionsPollEmbed.js)
 				const poll = document.createElement("div");
 				poll.setAttribute("class","discussions-poll");
-				poll.setAttribute("data-thread-id", post.threadId)
+				poll.setAttribute("data-thread-id", post.threadId);
 			
 				fragment.appendChild(poll);
 				fragment.appendChild(document.createElement("br"));

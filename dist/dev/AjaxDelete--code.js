@@ -4,7 +4,7 @@
  * Allows to delete pages (through ?action=delete links) without leaving the current page.
  * Supports deleting revisions and restoring pages (does not support restoring individual revisions)
  * For personal use
- * @author Dorumin
+ * @author Sophiedp
  * @author KockaAdmiralac
  */
 (function() {
@@ -319,7 +319,7 @@
             var customReason = $('#AjaxDeleteCustomReason').val(),
                 selectedReason = $('#AjaxDeleteReasonSelect').val();
             this.apiCall(
-                selectedReason === 'other' ?
+                (!selectedReason || selectedReason === 'other') ?
                     customReason :
                     customReason ?
                         selectedReason + ': ' + customReason :

@@ -59,7 +59,7 @@ mw.loader.using([
 	 */
 	PreferenceLinks.init = function () {
 		mw.hook('dev.wds').add(
-			$.proxy(this.lang, this)
+			this.lang.bind(this)
 		);
 		importArticle({
 			type: 'script',
@@ -79,7 +79,7 @@ mw.loader.using([
 			amlang: config.wgUserLanguage,
 			list: 'gadgets'
 		}).done(
-			$.proxy(this.done, this)
+			this.done.bind(this)
 		);
 	};
 	/**
@@ -103,7 +103,7 @@ mw.loader.using([
 	PreferenceLinks.main = function () {
 		var $list = $('<ul>', {'class': 'wds-list wds-is-linked'});
 		var place = '.global-navigation__bottom .wds-list > li > a[data-tracking-label="account.preferences"]';
-		$.each(this.buttons, $.proxy(function (k, v) {
+		$.each(this.buttons, (function (k, v) {
 			if (v === 'gadgets' && this.warnings) {
 				return;
 			}
@@ -115,7 +115,7 @@ mw.loader.using([
 					})
 				)
 			);
-		}, this));
+		}).bind(this));
 		var $parent = $(place).parent();
 		$('.global-navigation__bottom > .wds-dropdown .wds-dropdown__content').addClass('wds-is-not-scrollable');
 		$parent.after(

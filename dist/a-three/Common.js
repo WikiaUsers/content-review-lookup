@@ -7,16 +7,3 @@ window.BackToTopModern = true;
 window.AddRailModule = [
     {page: 'Template:CurrentBirthday', prepend: true},
 ];
-
-/* For card details on card icon hover */
-window.tooltips_config = {
-    offsetX: 10,
-    offsetY: 10
-};
-
-window.tooltips_list = [
-    {
-        classname: 'icon_img',
-        parse: '{'+'{Card_ID/Image|<#card#>}}'
-    }
-];

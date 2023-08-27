@@ -188,9 +188,9 @@ $(function() {
                     var viewportTop, refOffsetTop, teHref;
 
                     if (!te.$ref && !te.comment) {
-                        teHref = te.type === "supRef" ?
+                        teHref = decodeURI(te.type === "supRef" ?
                             te.$element.find("a").attr("href") :
-                            te.$element.attr("href");
+                            te.$element.attr("href"));
 
                         te.$ref = teHref && $("#" + $.escapeSelector(teHref.slice(1)));
 

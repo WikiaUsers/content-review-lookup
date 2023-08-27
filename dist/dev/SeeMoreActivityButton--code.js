@@ -110,7 +110,7 @@
         } else {
             $rail.on(
                 'afterLoad.rail',
-                $.proxy(this._execute, this)
+                this._execute.bind(this)
             );
         }
     };
@@ -136,7 +136,7 @@
             })
         );
         // Diff link addition.
-        $activity.find('.page-title-link').each($.proxy(function(i, p) {
+        $activity.find('.page-title-link').each((function(i, p) {
             var $p = $(p);
             $p.parent().before(
                 $('<a>', {
@@ -145,7 +145,7 @@
                     html:    this.icon.diff.cloneNode(true)
                 })
             );
-        }, this));
+        }).bind(this));
         // Old styling.
         if (Boolean(this.conf.old)) {
             $activity.addClass('seemoreactivity-old');

@@ -3,8 +3,8 @@
  * documentation at: https://dev.fandom.com/wiki/SpoilerAlert
  * © Peter Coester, 2012
  */
-/* jshint curly:false jquery:true browser:true */
-(function () {
+/* jshint curly:false */
+(function ($, mw) {
     'use strict';
     var config = mw.config.get([
         'wgArticleId',
@@ -27,7 +27,7 @@
         preload: function() {
             if (--this.toLoad === 0) {
                 window.dev.i18n.loadMessages('SpoilerAlert')
-                    .then($.proxy(this.init, this));
+                    .then(this.init.bind(this));
             }
         },
         init: function(i18n) {
@@ -76,7 +76,7 @@
                                 'class': 'wds-button'
                             },
                             events: {
-                                click: $.proxy(this.yes, this)
+                                click: this.yes.bind(this)
                             },
                             text: this.config.yes
                         },
@@ -87,7 +87,7 @@
                                 'class': 'wds-button'
                             },
                             events: {
-                                click: $.proxy(this.no, this)
+                                click: this.no.bind(this)
                             },
                             text: this.config.no
                         }
@@ -157,7 +157,7 @@
         type: 'style',
         article: 'u:dev:MediaWiki:SpoilerAlert.css'
     });
-    mw.hook('dev.ui').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
-    mw.hook('dev.i18n').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
-    mw.hook('dev.placement').add($.proxy(SpoilerAlert.preload, SpoilerAlert));
-})();
+    mw.hook('dev.ui').add(SpoilerAlert.preload.bind(SpoilerAlert));
+    mw.hook('dev.i18n').add(SpoilerAlert.preload.bind(SpoilerAlert));
+    mw.hook('dev.placement').add(SpoilerAlert.preload.bind(SpoilerAlert));
+})(window.jQuery, window.mediaWiki);

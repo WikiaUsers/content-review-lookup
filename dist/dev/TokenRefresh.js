@@ -4,7 +4,7 @@
  * Author:      KockaAdmiralac <1405223@gmail.com>
  * Version:     v1.2
  */
-(function() {
+(function($, mw) {
     if (window.TokenRefreshLoaded) {
         return;
     }
@@ -13,7 +13,7 @@
         init: function() {
             this.api = new mw.Api();
             this.interval = setInterval(
-                $.proxy(this.fetch, this),
+                this.fetch.bind(this),
                 window.TokenRefreshInterval || 600000
             );
         },
@@ -23,7 +23,7 @@
                 action: 'query',
                 meta: 'tokens',
                 type: 'csrf|patrol|watch'
-            }).done($.proxy(this.callback, this));
+            }).done(this.callback.bind(this));
         },
         callback: function(d) {
             var t = d.query.tokens,
@@ -39,5 +39,5 @@
             }
         }
     };
-    mw.loader.using('mediawiki.api').then($.proxy(TokenRefresh.init, TokenRefresh));
-})();
+    mw.loader.using('mediawiki.api').then(TokenRefresh.init.bind(TokenRefresh));
+})(window.jQuery, window.mediaWiki);

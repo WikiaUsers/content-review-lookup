@@ -1,35 +1,42 @@
 // Allows filtering pages in a category by namespace
-(function (window, $, mw) {
+(function ($, mw) {
     'use strict';
     
-    if (window.catFilter) { return; }
+    if (window.catFilter) return;
     window.catFilter = { loaded: true };
-    
+
+    var mainNamespace = '';
+	var mwconfig = mw.config.get([
+		'wgFormattedNamespaces',
+		'wgNamespaceNumber',
+		'wgTitle'
+	]);
+
     //Creates a combo box with the namespace
     function createNamespaceCmbList(dropOptions) {
         var Html = mw.html;
         var cmbOutput = "";
-        var objNamespace = mw.config.get("wgNamespaceIds");
+        var objNamespace = mwconfig.wgFormattedNamespaces;
         var i;
         if (dropOptions) {
             for (i = 0; i < dropOptions.length; i += 1) {
                 cmbOutput += Html.element("option", {
-                    "value": dropOptions[i]
-                }, dropOptions[i]);
+                    "value": dropOptions[i].val
+                }, dropOptions[i].key);
             }
         }
         Object.keys(objNamespace).forEach(function (key) {
-            if (objNamespace.hasOwnProperty(key) && key.length > 0) {
+            if (objNamespace.hasOwnProperty(key) && Number(key) > 0) {
                 cmbOutput += Html.element("option", {
                     "value": key
-                }, key);
+                }, objNamespace[key]);
             }
         });
         return cmbOutput;
     }
 
     function processAction(type, actionConfig, successMsg, failMsg, runMethod) {
-        var mwApi = (new mw.Api());
+        var mwApi = new mw.Api();
         var promise;
         if (actionConfig) {
             if (type === "post") {
@@ -49,26 +56,21 @@
     }
     //Checks for valid namespace to remove links
     function getNamespacesFilter() {
-        var objNamespace = mw.config.get("wgNamespaceIds");
+        var objNamespace = mwconfig.wgFormattedNamespaces;
         // var nsNameList = $("#namespaceDropdown").val() || "";
         var nsFilters = [];
         var nsName;
         // for (ns = 0; ns < nsNameList.length; ns += 1) {
         nsName = $("#namespaceDropdown").val() || "";
-        if (nsName === "main") {
-            nsFilters.push(0);
-        }
-        if (objNamespace[nsName]) {
-            nsFilters.push(objNamespace[nsName]);
-        }
+        nsFilters.push(nsName);
         // }
         return nsFilters.join("|");
     }
 
     function main() {
         var Html = mw.html;
-        var dropList = createNamespaceCmbList(["main"]);
-        var namespaceDropdown = "Namespace " + Html.element("select", {
+        var dropList = createNamespaceCmbList([{val:0,key:mainNamespace}]);
+        var namespaceDropdown = mw.msg('namespace') + Html.element("select", {
             id: "namespaceDropdown",
             // style: "float:right",
             // multiple: "",
@@ -77,14 +79,14 @@
         var formOutput = namespaceDropdown;
         formOutput += " " + Html.element("button", {
             id: "catfilter-ns-button"
-        }, "Show");
+        }, mw.msg('show'));
         formOutput += Html.element("textarea", {
             id: "catfilter-pages-textarea",
             style: "display:none; height: 5em; width: 100%;"
         }, "");
         $("#mw-content-text").prepend(formOutput);
         $("#catfilter-ns-button").on("click", function () {
-            var page = mw.config.get("wgTitle");
+            var page = mwconfig.wgTitle;
             var config = {
                 action: "query",
                 list: "categorymembers",
@@ -112,8 +114,17 @@
 
         });
     }
-    
-    if (mw.config.get("wgNamespaceNumber") === 14) {
-    	main();
+    console.log(mwconfig);
+    if (mwconfig.wgNamespaceNumber === 14) {
+    	mw.loader.using( ['mediawiki.api'] ).then(function () {
+			return new mw.Api().loadMessagesIfMissing([
+				'blanknamespace',
+				'namespace',
+				'show'
+			]);
+		}).then(function() {
+			mainNamespace = mw.msg('blanknamespace').slice(1, -1);
+			main();
+		});
     }
-})(window, jQuery, mediaWiki);
+})(window.jQuery, window.mediaWiki);

@@ -21,7 +21,7 @@ window.DiscussionTemplates = {
     templates: {
         'Welcome': {
             name: 'Template:Welcome',
-            title: 'Welcome'
+            title: 'Welcome to the Five Nights at Freddy\'s: Sister Location Wikia!'
         },
     },
     allowedGroups: ['sysop', 'content-moderator', 'threadmoderator']

@@ -79,11 +79,6 @@ window.LockForums = {
     expiryDays: 60
 };
 
-window.AddRailModule = [{
-    page: 'MediaWiki:DiscordAMA',
-    prepend: true
-}];
-
 // Temp fix for Admin+ quizzes; 
 // approved by Tim Q
 

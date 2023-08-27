@@ -1,13 +1,23 @@
-/* jshint jquery: true, maxerr: 99999999, esversion: 5, undef: true */
-
 // Taken from https://minecraft.gamepedia.com/MediaWiki:Common.js
 // Creates minecraft style tooltips
-// Replaces normal tooltips. Supports minecraft [[formatting codes]] (except k), and a description with line breaks (/).
 
+/* jshint
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
+*/
 /* global mw */
 
 $(function () {
     "use strict";
+    /* Wiki config */
+    var useSlashEscape = true;
+
+    window.minetipConfig = window.minetipConfig || {};
+    if (window.minetipLoaded)
+        return;
+    window.minetipLoaded = true;
     (window.updateTooltips = (function () {
         var escapeChars = {
             "\\&": "&#38;",
@@ -20,7 +30,10 @@ $(function () {
                 return escapeChars[char];
             });
         };
-        var $tooltip = $();
+        var $tooltip = $(),
+            overflowTop = false,
+            overflowBottom = false,
+            topPos, leftPos;
         var $win = $(window),
             winWidth, winHeight, width, height;
         var savedX, savedY;
@@ -33,69 +46,35 @@ $(function () {
             "mouseenter": function (e, trigger, x, y) {
                 $tooltip.remove();
 
-                var $elem = $(this),
-                    title = $elem.attr("data-minetip-title");
-                if (title === undefined) {
-                    title = $elem.attr("title");
-                    if (title !== undefined) {
-                        title = $.trim(title.replace(/&/g, "\\&"));
-                        $elem.attr("data-minetip-title", escape(title));
-                    }
-                }
+                var $elem = $(this);
 
-                var $follow = $elem.find(".slot-image-follow");
+                // Pickup effect handling
+                var $follow = $elem.find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $elem.trigger("mouseleave");
                     return;
                 }
 
-                // No title or title only contains formatting codes
-                if (title === undefined || title !== "" && title.replace(/&([0-9a-fk-or])/g, "") === "") {
-                    // Find deepest child title
-                    var childElem = $($elem[0]),
-                        childTitle;
-                    do {
-                        if (typeof childElem.attr("title") !== "undefined" && childElem.attr("title") !== false) {
-                            childTitle = childElem.title;
-                        }
-                        childElem = childElem.children(":first");
-                    } while (childElem.length !== 0);
-                    if (childTitle === undefined) {
-                        return;
-                    }
-
-                    // Append child title as title may contain formatting codes
-                    if (!title) {
-                        title = "";
-                    }
-                    title += $.trim(childTitle.replace(/&/g, "\\&"));
-
-                    // Set the retrieved title as data for future use
-                    $elem.attr("data-minetip-title", title);
-                }
-
-                if (!$elem.data("minetip-ready")) {
-                    // Remove title attributes so the native tooltip doesn't get in the way
-                    $elem.find("[title]").addBack().removeAttr("title");
-                    $elem.data("minetip-ready", true);
-                }
-
-                if (title === "") {
+                var title = $elem.attr("data-minetip-title"),
+                    description = $.trim($elem.attr("data-minetip-text")),
+                    content = "";
+                if ((!title || title === "") && (!description || description === ""))
                     return;
+
+                // Handle title
+                if (title && title !== "") {
+                    content += "<span class=\"minetip-title\">&f" + escape(title) + "&r</span>";
                 }
 
-                var content = "<span class=\"minetip-title format-7\">&7" + escape(title) + "&r</span>";
-
-                var description = $.trim($elem.attr("data-minetip-text"));
+                // Apply normal escaping plus new line
                 if (description) {
-                    // Apply normal escaping plus "/"
                     description = escape(description).replace(/\\\\/g, "&#92;").replace(/\\\//g, "&#47;");
-                    content += "<span class=\"minetip-description format-7\">&7" + description.replace(/\//g, "&r<br>") + "&r</span>";
+                    content += "<span class=\"minetip-description\">&f" + description.replace(useSlashEscape ? /\//g : /\\n/g, "&r<br>") + "&r</span>";
                 }
 
                 // Add classes for minecraft formatting codes
                 while (content.search(/&[0-9a-fk-o]/) > -1) {
-                    content = content.replace(/&([0-9a-fk-o])(.*?)(&r|$)/g, "<span class=\"format-$1\">$2&r</span>");
+                    content = content.replace(/&([0-9a-fk-o])(.*?)(&[0-9a-fr]|$)/g, "<span class=\"format-$1\">$2&r</span>$3");
                 }
                 // Remove reset formatting
                 content = content.replace(/&r/g, "");
@@ -118,35 +97,30 @@ $(function () {
                     return;
                 }
 
-                var $follow = $(this).find(".slot-image-follow");
+                // Pickup effect handling
+                var $follow = $(this).find(".invslot-pickup");
                 if ($follow.length !== 0 && $follow.is(":visible")) {
                     $(this).trigger("mouseleave");
                     return;
                 }
 
-                if (!$(e.target).is(":hover"))
-                    return;
-
                 // Get event data from remote trigger
                 x = e.clientX || trigger.clientX || x;
                 y = e.clientY || trigger.clientY || y;
-
-                if (typeof y !== "number") return;
+                if (!$(e.target).is(":hover") || typeof x !== "number" || typeof y !== "number")
+                    return;
 
                 // Get mouse position and add default offsets
                 var top = y - 34;
                 var left = x + 14;
-
                 // If going off the right of the screen, go to the left of the cursor
                 if (left + width > winWidth) {
                     left -= width + 36;
                 }
-
                 // If now going off to the left of the screen, resort to going above the cursor
                 if (left < 0) {
                     left = 0;
                     top -= height - 22;
-
                     // Go below the cursor if too high
                     if (top < 0) {
                         top += height + 47;
@@ -158,6 +132,11 @@ $(function () {
                 } else if (top + height > winHeight) {
                     top = winHeight - height;
                 }
+                // Recording
+                overflowTop = top < 0;
+                overflowBottom = top + height > winHeight;
+                topPos = top;
+                leftPos = left;
 
                 // Apply the positions
                 $tooltip.css({
@@ -172,65 +151,37 @@ $(function () {
 
                 $tooltip.remove();
                 $tooltip = $();
-            },
-        }, ".minetip, .invslot-item");
+            }
+        }, ".invslot .invslot-item, .minetip");
 
+        /*** Item Pickup Effect ***/
         $(document.body).on({
-            "mouseenter": function () {
-                var $links = $(this).find("a:not(.invslot-hover-overlay)");
-                switch ($(this).find(".invslot-hover-overlay").length) {
-                    case 0:
-                        $(this).append(
-                            $("<a>").addClass("invslot-hover-overlay").attr("href", $($links[0]).attr("href"))
-                        );
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        $(this).find(".invslot-hover-overlay").each(function (i, el) {
-                            if (i) $(el).remove();
-                        });
-                        break;
-                }
-            },
             // pick up slot item for 300ms
             // allowed: left/right click
             "mousedown": function (e) {
                 var $this = $(this);
-                if (e.which !== 2) {
-                    var $source = $this.find("img:first");
-                    if ($source.length !== 0) {
-                        var $target;
-                        switch ($this.find(".slot-image-follow").length) {
-                            case 0:
-                                $target = $source.clone();
-                                $target.addClass("slot-image-follow").appendTo($this.find(".invslot-hover-overlay"));
-                                break;
-                            case 1:
-                                $target = $this.find(".slot-image-follow");
-                                break;
-                            default:
-                                $this.find(".slot-image-follow").each(function (i, elm) {
-                                    if (i) elm.remove();
-                                    else $target = elm;
-                                });
-                                break;
-                        }
+                if (e.which !== 2 && !window.minetipConfig.noPickup) {
+                    var iid = $this.attr("data-iid");
+                    var $source = $this.find("img");
+                    if ((typeof iid === "string") || ($source.length > 0) || $this.hasClass("invsprite")) {
+                        var $target = $this;
+                        $target.addClass("invslot-pickup");
                         var offset = $this.offset();
                         $target.css({
-                            "top": e.pageY - offset.top - 16,
-                            "left": e.pageX - offset.left - 16,
+                            // calculation: Imagine cursor at center of slot. Then top & left should be -2px to show
+                            // in normal position.
+                            // "Cursor coord" and "top-left coord of border-box of the .invslot" should be separated by 
+                            // 18px horizontally and vertically. This separation value minus 20 yields -2px.
+                            "top": e.pageY - offset.top - 20,
+                            "left": e.pageX - offset.left - 20,
                         }).show();
-                        $source.hide();
                         savedX = e.clientX, savedY = e.clientY;
                         $(document.body).on("mousemove", cacheMousemove);
                         $this.trigger("mouseleave");
                         var timer = setInterval(function () {
-                            $source.show();
-                            $target.css({
-                                "top": 0,
-                                "left": 0,
-                            }).hide();
+                            $target.css("top", ""); // removing top styling
+                            $target.css("left", ""); // removing left styling
+                            $target.removeClass("invslot-pickup");
                             $(document.body).off("mousemove", cacheMousemove);
                             $this.trigger("mousemove", [e, savedX, savedY]);
                             clearInterval(timer);
@@ -238,28 +189,24 @@ $(function () {
                     }
                 }
             },
-        }, ".invslot-item");
-
+        }, ".invslot .invslot-item");
         $(document.body).on("mousemove", function (e) {
-            $(".slot-image-follow").each(function () {
+            $(".invslot-pickup").each(function () {
                 if ($(this).is(":visible")) {
                     var offset = $(this).parent().offset();
                     $(this).css({
-                        "top": e.pageY - offset.top - 16,
-                        "left": e.pageX - offset.left - 16,
+                        // calculation method is written somewhere before here
+                        "top": e.pageY - offset.top - 20,
+                        "left": e.pageX - offset.left - 20,
                     });
                 }
             });
+            if ($(".minetip:hover, .invslot .invslot-item:hover").length < 1 && $("#minetip-tooltip").length > 0)
+                $("#minetip-tooltip").remove();
         });
     })());
     (function () {
-        // The following list is taken from https://obfuscator.uo1.net/js/obfuscator.js
-        var strongObfuscator = "AÀÁÂÃÄÅĀĂĄǍǞǠȀȂȦΆΑАѦӐӒḀẠẢẤẦẨẬẶἈἉᾈᾉᾸᾹᾺᾼ₳ÅȺẮẰẲẴἌἎἏᾌΆǺẪBƁΒВḂḄḆCÇĆĈĊČƇʗСҪḈ₢₵ℂⅭϹϾҀDÐĎĐƉƊḊḌḎḐḒⅮEÈÉÊËĒĔĖĘĚȄȆȨΕЀЁЕӖḘḚḜẸẺẼẾỀỆḔḖỂỄԐℇƐἙῈЄFϜḞ₣ҒƑϝғҒ₣GĜĞĠĢƓǤǦǴḠ₲HĤĦȞΗНҢҤӇӉḢḤḦḨḪῌꜦIΊÌÍÎÏĨĪĬĮİƖƗǏȈȊΙΪІЇӀӏḬḮỈỊἸἹῘῙῚǐ1JĴʆЈʃKĶƘǨΚЌКԞḰḲḴ₭KLĹĻĽĿŁԼḶḸḺḼℒⅬ˪MΜМӍḾṀṂⅯNÑŃŅŇǸΝṄṆṈṊ₦ƝO0θϑ⍬ÒÓÔÕÖØŌŎŐƆƟƠǑǪǬǾȌȎȪȬȮȰΘΟϴОѲӦӨӪՕỌỎỐỒỔỘỚỜỞỠỢΌΌṌṐṒὈʘṎỖPƤΡРҎṔṖῬ₱ℙQԚℚRŔŖŘȐȒṘṚṜṞ℞ɌⱤSŚŜŞŠȘЅՏṠṢṨṤṦTŢŤŦƮȚΤТҬṪṬṮṰ₮ȾΊΊꚌUÙÚÛÜŨŪŬŮŰŲƯǓǕǗǛȔȖԱՍṲṴṶṸỤỦỨỪỬỮỰǙ⊍⊎Մ⊌ṺVѴѶṼṾ⋁ⅤƲWŴԜẀẂẄẆẈ₩ƜШXΧХҲẊẌⅩY¥ÝŶŸƳȲΥΫϓУҮҰẎỲỴỶỸῨῩZŹŻŽƵȤΖẐẒẔaàáâãäåāăąǎǟǡǻȁȃȧаӑӓḁẚạảấầẩẫậắằẳẵặɑάαἀἁἂἃἄἅἆἇὰάᾀᾁᾂᾃᾄᾅᾆᾇᾰᾱᾲᾳᾴᾶᾷ⍶⍺ɑbƀƃƅɒɓḃḅḇþϸƄьҍcçćĉċčƈςϛсҫḉⅽ¢ϲҁdďđɖɗḋḍḏḑḓⅾƌժ₫ðeèéêëēĕėęěȅȇȩеѐёҽҿӗḕḗḙḛḝẹẻẽếềểễệεɛϵєϱѳөӫɵfſḟẛƒғϝ£ƒgĝğġģǥǧǵɠɡգզցḡɕʛɢhĥħȟɦɧћիհḣḥḧḩḫẖℏһʜӊiį¡ìíîïĩīĭįıǐȉȋɨɩΐίιϊіїɪḭḯỉịἰἱἲἳὶίῑΐῐῒῖὶjĵǰȷɟʝјյϳkķĸƙǩκкҝҟḱḳḵlŀĺļľłƚǀɫɬɭḷḹḻḽŀ⎩ḹmɱḿṁṃ₥ⅿnɴñńņňŉŋƞǹɲɳήηπпբդըղոռրṅṇṉṋἠἡἢἣἤἥἦἧὴήᾐᾑᾒᾓᾔᾕᾖᾗῂῃῄῆῇიoòóôõöōŏőơǒǫǭȍȏȫȭȯȱʘοόоӧծձօṍṏṑṓọỏốồổỗộớờởỡợὀὁὂὃὄὅὸόσ๐pþρрҏթṕṗῤῥ⍴qʠԛգզϙrŕŗřȑȓɼɽгѓґӷṙṛṝṟгѓґӷsśŝşšșʂѕԑṡṣṥṧṩtţťŧƫțʈṫṭṯṱẗȶէե†ԷՒէȽҭuµùúûüũūŭůűųưǔǖǘǚǜȕȗɥμυцկմնսվևṳṵṷṹṻụủứừửữựvʋνѵѷүұṽṿⅴ∨ΰϋύὐὑὒὓὔὕὖὗὺύῠῡῢΰῦῧʋwŵԝẁẃẅẇẉẘxϰхҳẋẍⅹyýÿŷƴȳγуўӯӱӳẏẙỳỵỷỹʏzźżžƶȥʐʑẑẓẕ2ƻƨշ3ЗҘӞƷӠЗҘӞՅɜɝзҙӟ4ЧЧӴ5Ƽ6əǝә8ՑБƂГΓЃҐӶЖҖӜИЍӢӤЙҊЛӅԒΛПΠЦҴЬƄЫӸЪѢՒЭӬвʙʙɞжҗӂӝзƨɜɝӟиѝӥйҋӣкĸκќқҝҟҡԟлӆԓмӎнʜңҥӈӊцџҵчҷҹӌӵшɯաъѣыӹэǝɘəӭэӭ";
-
-        var availableInMinecraftFont = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,:;\'\"(!?)+-*/=";
-
-        // var listChoice = strongObfuscator; // due to some texts not displaying in Minecraft font I have to disable this
-        var listChoice = availableInMinecraftFont,
+        var listChoice = "ÀÁÂÈÊËÓÔÕÚßãõğŒŞşŴŵžȇ#$%&+-/0123456789=?ABCDEFGHJKLMNOPQRSTUVWXYZ\^_abcdeghjmnopqrsuvwxyzÇüéâäàåçêëèîÄÅÉæÆôöòûùÿÖÜø£ØƒáóúñÑªº¿¬½¼«»│┤╡╕╛┐┘∈⌡∙·²",
             listLength = listChoice.length;
 
         function genObfuscatedText() {
@@ -271,7 +218,7 @@ $(function () {
             $(element || ".format-k").contents().each(function () {
                 if (this.nodeType === 3) {
                     var text = "";
-                    this.wholeText.split("").forEach(function (ch, i) {
+                    this.wholeText.split("").forEach(function (ch) {
                         if (/\S/.test(ch))
                             text += genObfuscatedText();
                         else
@@ -288,7 +235,8 @@ $(function () {
 
         // This hook forces it to apply script even in TabViews
         mw.hook("wikipage.content").add(function (pSection) {
-            $(pSection).find(".format-k .format-k").removeClass("format-k");
+            $(".invslot *").removeAttr("title"); // prevent unwatned browser tooltips for invslots
+            $(pSection).find(".format-k .format-k").removeClass("format-k"); // remove nested obfuscated class
         });
     }());
 });

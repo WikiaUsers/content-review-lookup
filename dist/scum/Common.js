@@ -47,13 +47,16 @@ mw.hook('wikipage.content').add(function($content) {
       var $this = $(this),
           data = $this.data()
       var id = encodeURIComponent(('' + data.id).trim());
+      var pos1 = encodeURIComponent(('' + data.pos1).trim());
+      var pos2 = encodeURIComponent(('' + data.pos2).trim());
+      var zoom = encodeURIComponent(('' + data.zoom).trim());
  
       if (data.loaded) {
           return;
       }
  
       $this.html(mw.html.element('iframe', {
-          src: 'https://scum-map.com/en/embed_map/'+ id,
+          src: 'https://scum-map.com/en/embed_map/'+ id + '/' + pos1 + ',' + pos2 + ',' + zoom,
           title: ('' + data.title).trim(),
           frameBorder: ('' + data.frameBorder).trim(),
           allowfullscreen: ('' + data.allowfullscreen).trim(),

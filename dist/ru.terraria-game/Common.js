@@ -138,6 +138,9 @@ window.getBossHp = function() {
 	}
 	spanToWriteResult.innerHTML = resultText;
 }
+/*Right module discord */
+window.AddRailModule = [
+    {page: 'Template:Discord', prepend: true}];
 
 var timeUntilNewCheck = 1000;
 var currentCheck = 1;
@@ -161,4 +164,3 @@ function checkSpan(){
 }
 
 checkSpan();
-/*  */

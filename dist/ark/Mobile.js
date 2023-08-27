@@ -43,7 +43,7 @@ var fpmobilecollapse = fpmobilecollapse || {
             }
         } );
     }
-}
+};
 
 window.fpmobilecollapse = fpmobilecollapse;
 
@@ -64,31 +64,42 @@ $(function() {
 });
 
 // Load our other scripts conditionally
-$(function() {
-	
+mw.hook('wikipage.content').add(function($content) {
+	// Load our other scripts conditionally
+	var articles = [];
 	[
-		// Dev:Countdown
-		[ '.countdown', [ 'u:dev:MediaWiki:Countdown/code.js' ] ],
+		// RegionMapStyles
+		[ '#regionMapStyles', 'u:ark:MediaWiki:RegionMapStyles.js' ],
+		// Colorblind
+		[ '#colorblind', 'u:ark:MediaWiki:Colorblind.js' ],
+		// KillXP
+		[ '#creatureKillXP', 'u:ark:MediaWiki:Killxp.js' ],
+		// CloningCost
+		[ '#creature-select', 'u:ark:MediaWiki:CloningCost.js' ],
+		// ARKCode
+		[ '#ARKCode', 'u:ark:MediaWiki:ARKCode.js' ],
 		// Cooking calculator
-		[ '#cookingCalc', [ 'MediaWiki:Cooking calculator.js' ] ],
-		// Creature article scripts
-		[ '.cloningcalc, .killxpcalc', [
-			// Kill XP calculator
-			'MediaWiki:Killxp.js',
-			// Experimental cloning calculator
-			'MediaWiki:CloningCalculator.js' 
-		] ],
+		[ '#cookingCalc', 'u:ark:MediaWiki:Cooking calculator.js' ],
+		// Wild creature stats calculator
+		[ '.wildstatscalc, #wildStatCalc', 'u:ark:MediaWiki:WildCreatureStats.js' ],
+		// Kill XP calculator
+		[ '.killxpcalc', 'u:ark:MediaWiki:Killxp.js' ],
+		// Experimental cloning calculator
+		[ '.cloningcalc', 'u:ark:MediaWiki:CloningCalculator.js' ],
 		// Common Data page fetch function if a spawn map or an interactive region map are present.
 		// Separate request for cache efficiency (load once, not every time for a combination).
-		[ '.data-map-container[data-spawn-data-page-name], .interactive-regionmap', [ 'MediaWiki:DataFetch.js' ] ],
+		[ '.data-map-container[data-spawn-data-page-name], .interactive-regionmap', 'u:ark:MediaWiki:DataFetch.js' ],
 		// Interactive region map
-		[ '.interactive-regionmap', [ 'MediaWiki:RegionMaps.js' ] ],
+		[ '.interactive-regionmap', 'u:ark:MediaWiki:RegionMaps.js' ],
 		// Data map scripts
-		[ '.data-map-container', [ 'MediaWiki:ResourceMaps.js', 'MediaWiki:SpawnMaps.js' ] ],
+		[ '.data-map-container', 'u:ark:MediaWiki:ResourceMaps.js' ],
+		[ '.data-map-container', 'u:ark:MediaWiki:SpawnMaps.js' ],
+		// Grid filtering
+		[ '#creature-grid', 'u:ark:MediaWiki:GridFiltering.js' ]
 	].forEach(function (req) {
-		if (document.querySelectorAll(req[0]).length > 0) {
-			importArticles({ type: 'script', articles: req[1] })
-		}
+		if ($content.find(req[0]).length > 0) articles.push(req[1]);
 	});
-	
+	// Dev:Countdown
+	articles.push('u:dev:MediaWiki:Countdown/code.js');
+	importArticles({ type: 'script', articles: articles });
 });

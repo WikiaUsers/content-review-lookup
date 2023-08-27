@@ -484,9 +484,9 @@ var Main =  (function () {
             if (Global_1["default"].debug) {
                 mw.log = console.log;
             }
-            $(document).ready($.proxy(_this._ready, _this));
-            $(document).on("unload", $.proxy(_this._unload, _this));
-            $(window).focus($.proxy(_this._onFocus, _this));
+            $(document).ready(_this._ready.bind(_this));
+            $(document).on("unload", _this._unload.bind(_this));
+            $(window).focus(_this._onFocus.bind(_this));
         });
     };
     Main.prototype._ready = function () {

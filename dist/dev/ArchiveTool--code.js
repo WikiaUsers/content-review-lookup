@@ -65,7 +65,7 @@
             $.when(
                 i18n.loadMessages('ArchiveTool'),
                 mw.loader.using('mediawiki.api')
-            ).then($.proxy(this.init, this));
+            ).then(this.init.bind(this));
         },
         init: function(i18n) {
             this.i18n = i18n;
@@ -75,7 +75,7 @@
             this.api = new mw.Api();
             $('<li>', {
                 id: 'control_archive',
-                click: $.proxy(this.click, this)
+                click: this.click.bind(this)
             }).append(
                 $('<a>', {
                     id: 'ca-archive',
@@ -112,7 +112,7 @@
                 titles: config.wgPageName,
                 rvprop: 'timestamp|content',
                 rvslots: 'main'
-            }).done($.proxy(this.cbRevisions, this));
+            }).done(this.cbRevisions.bind(this));
         },
         cbRevisions: function(q) {
             this.$loading.hide();
@@ -120,8 +120,8 @@
                 content = rev['*'] ? rev['*'] : rev.slots.main['*'],
                 lines = content.split('\n'),
                 $table = $('<table>', {
-                    mousedown: $.proxy(this.tableClick, this),
-                    mouseup: $.proxy(this.tableUnclick, this)
+                    mousedown: this.tableClick.bind(this),
+                    mouseup: this.tableUnclick.bind(this)
                 }).append(
                     $('<thead>').append(
                         $('<tr>').append(
@@ -176,32 +176,32 @@
             }).append(
                 $('<a>', {
                     'class': 'wds-button secondary',
-                    'click': $.proxy(this.clickSelect, this),
+                    'click': this.clickSelect.bind(this),
                     'text': this.i18n.msg('select').plain()
                 }),
                 ' ',
                 $('<a>', {
                     'class': 'wds-button secondary',
-                    'click': $.proxy(this.clickDeselect, this),
+                    'click': this.clickDeselect.bind(this),
                     'text': this.i18n.msg('deselect').plain()
                 }),
                 ' ',
                 $('<a>', {
                     'class': 'wds-button',
-                    'click': $.proxy(this.archive, this),
+                    'click': this.archive.bind(this),
                     'text': this.i18n.msg('save').plain()
                 }),
                 ' ',
                 $('<a>', {
                     'class': 'wds-button',
-                    'click': $.proxy(this.clickAbort, this),
+                    'click': this.clickAbort.bind(this),
                     'text': this.i18n.msg('abort').plain()
                 })
             ).prependTo(this.$container)
             .clone(true)
             .appendTo(this.$container);
             this.clicked = false;
-            $('body').mouseup($.proxy(this.bodyUnclick, this));
+            $('body').mouseup(this.bodyUnclick.bind(this));
         },
         clickAbort: function() {
             this.$loading.hide();
@@ -287,10 +287,10 @@
                 apprefix: config.wgTitle + '/' + this.config.archiveSubpage,
                 aplimit: 'max',
                 apdir: 'ascending'
-            }).done($.proxy(this.cbRun, this));
+            }).done(this.cbRun.bind(this));
         },
         cbRun: function(q) {
-            $.each(q.query.allpages, $.proxy(function(_, value) {
+            $.each(q.query.allpages, (function(_, value) {
                 var qt = parseInt(
                     value.title.substr(
                         config.wgPageName.length +
@@ -301,7 +301,7 @@
                 if (qt >= this.archiveNo) {
                     this.archiveNo = qt + 1;
                 }
-            }, this));
+            }).bind(this));
             this.archiveTitle = config.wgPageName + '/' +
                                 this.config.archiveSubpage + ' ' +
                                 this.archiveNo;
@@ -324,8 +324,8 @@
                     .plain(),
                 minor: true,
                 createonly: true
-            }).done($.proxy(this.cbSaveArchive, this))
-            .fail($.proxy(this.cbFailSave, this));
+            }).done(this.cbSaveArchive.bind(this))
+            .fail(this.cbFailSave.bind(this));
         },
         cbSaveArchive: function(q) {
             if (q.error && q.error.code === 'articleexists') {
@@ -364,8 +364,8 @@
                     .msg('summary-to', this.archiveTitle)
                     .plain(),
                 minor: true
-            }).done($.proxy(this.cbSaveTalk, this))
-            .fail($.proxy(this.cbFailSaveTalk, this));
+            }).done(this.cbSaveTalk.bind(this))
+            .fail(this.cbFailSaveTalk.bind(this));
         },
         cbSaveTalk: function(q) {
             if (q.edit.result === 'Success') {
@@ -405,12 +405,11 @@
             );
         }
     };
-    mw.hook('dev.i18n').add($.proxy(ArchiveTool.hook, ArchiveTool));
-    importArticle({
+    mw.hook('dev.i18n').add(ArchiveTool.hook.bind(ArchiveTool));
+    importArticles({
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
-    });
-    importArticle({
+    }, {
         type: 'style',
         article: 'u:dev:MediaWiki:ArchiveTool.css'
     });

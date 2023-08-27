@@ -26,7 +26,7 @@
                     $('<a>', {
                         'class': 'custom',
                         'text': 'Publish user activity'
-                    }).click($.proxy(this.click, this))
+                    }).click(this.click.bind(this))
                 )
             );
         },
@@ -51,7 +51,7 @@
             $.get(mw.util.getUrl('Special:UserActivity', {
                 uselang: 'en',
                 offset: offset
-            }), $.proxy(this.cbWikis, this));
+            }), this.cbWikis.bind(this));
         },
         cbWikis: function(data) {
             var $data = $(data),
@@ -60,7 +60,7 @@
                     .find('a')
                     .eq(2)
                     .attr('href');
-            $data.find('.user-activity__table-wrapper .mw-datatable > tbody > tr').each($.proxy(function(_, row) {
+            $data.find('.user-activity__table-wrapper .mw-datatable > tbody > tr').each((function(_, row) {
                 var $children = $(row).children(),
                     $wiki = $children.eq(0);
                 this.wikis.push({
@@ -70,7 +70,7 @@
                     title: $wiki.text().trim(),
                     url: $wiki.find('a').attr('href').trim()
                 });
-            }, this));
+            }).bind(this));
             if (nextHref) {
                 this.getWikis(new mw.Uri(nextHref).query.offset);
             } else {
@@ -116,7 +116,7 @@
                 summary: 'Updating wiki list with Matrix.js',
                 minor: true,
                 bot: true
-            }).done($.proxy(this.cbAPI, this));
+            }).done(this.cbAPI.bind(this));
         },
         cbAPI: function(d) {
             $('#matrix-spinner').remove();
@@ -130,5 +130,5 @@
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.Uri'
-    ]).then($.proxy(Matrix.init, Matrix));
-})(jQuery, mediaWiki);
+    ]).then(Matrix.init.bind(Matrix));
+})(window.jQuery, window.mediaWiki);

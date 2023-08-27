@@ -5,7 +5,8 @@ $(function() {
 	$(".page").find("h2:has(.mw-headline)").wrapInner('<div class="h2-content" />');
 });
 
-/** Нормальное сворачивание для Шаблон:Световые конусы по категории Таблица **/
+/** Кнопки и сворачивание **/
+/*** Нормальное сворачивание для Шаблон:Световые конусы по категории Таблица ***/
 mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
     $(".lightcone-table-buttons .mw-customtoggle-lightcone-passive").click(function() {
 	if($(".lightcone-table #mw-customcollapsible-lightcone-passive").hasClass("mw-collapsed")){
@@ -20,6 +21,25 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
 	} else {
 		$(".lightcone-table #mw-customcollapsible-lightcone-passive").attr("colspan", 5);
 	}
+    });
+});
+/*** Симуляция сортировки используя сворачивание в одну кнопку ***/
+mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
+    $(".sort__btn").click(function() {
+		$(".ascending").toggleClass("collapsed");
+		$(".descending").toggleClass("collapsed");
+		if($(".ascending").hasClass("collapsed")){
+			$(".sort__btn img").attr({
+				src: "https://static.wikia.nocookie.net/honkai-star-rail/images/6/69/UI_%D0%98%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_%D0%A1%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0_%D0%92%D0%B2%D0%B5%D1%80%D1%85.png/revision/latest?cb=20230821152822&format=original&path-prefix=ru",
+				alt: "Сортировка вверх"
+			});
+		};
+		if($(".descending").hasClass("collapsed")){
+			$(".sort__btn img").attr({
+				src: "https://static.wikia.nocookie.net/honkai-star-rail/images/a/a5/UI_%D0%98%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_%D0%A1%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0_%D0%92%D0%BD%D0%B8%D0%B7.png/revision/latest?cb=20230821152912&format=original&path-prefix=ru",
+				alt: "Сортировка вниз"
+			});
+		};
     });
 });
 

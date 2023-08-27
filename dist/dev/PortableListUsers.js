@@ -93,7 +93,7 @@
         if (--this.preloads === 0) {
             this.api = new mw.Api();
             window.dev.i18n.loadMessages('PortableListUsers').then(
-                $.proxy(this.init, this)
+                this.init.bind(this)
             );
         }
     };
@@ -118,7 +118,7 @@
             }).append(
                 $('<a>', {
                     'text': this.i18n('title').plain(),
-                    'click': $.proxy(this.click, this)
+                    'click': this.click.bind(this)
                 })
             )
         });
@@ -183,7 +183,7 @@
             offset: 0,
             uselang: 'en'
         }).done(
-            $.proxy(this.getData, this)
+            this.getData.bind(this)
         );
     };
     /**
@@ -225,12 +225,12 @@
             if (d.error) {
                 return;
             }
-            $.each(d.listuserssearchuser, $.proxy(function (k, v) {
+            $.each(d.listuserssearchuser, (function (k, v) {
                 obj[v.username] = v.username;
                 if (!this.data[v.username]) {
                     this.data[v.username] = v;
                 }
-            }, this));
+            }).bind(this));
         }
         this.loadModal();
     };
@@ -277,7 +277,7 @@
             title: this.i18n('title').plain()
         });
         this.modal.create().then(
-            $.proxy(this.createContent, this)
+            this.createContent.bind(this)
         );
         this.modal.show();
     };
@@ -290,9 +290,9 @@
         this.$.list = $(this.mobile ? '#lu-list' : '#lu-table');
         this.$.group = $('#lu-group-select');
         this.$.group.change(
-            $.proxy(this.getUsers, this)
+            this.getUsers.bind(this)
         );
-        $.each(this.users, $.proxy(function (k, v) {
+        $.each(this.users, (function (k, v) {
             this.$.group.append(
                 $('<option>', {
                     'text': k,
@@ -300,10 +300,10 @@
                     'selected': this.currentGroup === k ? true : false
                 })
             );
-        }, this));
+        }).bind(this));
         this.$.edits = $('#lu-edits-select');
         this.$.edits.change(
-            $.proxy(this.loadModal, this)
+            this.loadModal.bind(this)
         );
         $.each([
             '0',
@@ -313,7 +313,7 @@
             '20',
             '50',
             '100'
-        ], $.proxy(function (k, v) {
+        ], (function (k, v) {
             this.$.edits.append(
                 $('<option>', {
                     'text': this.i18n('number', v).plain(),
@@ -321,7 +321,7 @@
                     'selected': this.currentNumber === v ? true : false
                 })
             );
-        }, this));
+        }).bind(this));
         this.createRow();
         this.addContent();
     };
@@ -331,7 +331,7 @@
      * @returns {void}
      */
     LU.addContent = function () {
-        $.each(this.data, $.proxy(function (k, v) {
+        $.each(this.data, (function (k, v) {
             if (this.users[this.currentGroup][v.username || k]) {
                 var count = v.edit_count || '0';
                 if (Number(count) < Number(this.currentNumber)) {
@@ -346,7 +346,7 @@
                     v.groups
                 );
             }
-        }, this));
+        }).bind(this));
         $('#lu-tally').html(
             this.i18n(
                 'tally',
@@ -553,16 +553,16 @@
         LU.mobile = false;
     }
     mw.loader.using(packages).then(
-        $.proxy(LU.preload, LU)
+        LU.preload.bind(LU)
     );
     mw.hook('dev.i18n').add(
-        $.proxy(LU.preload, LU)
+        LU.preload.bind(LU)
     );
     mw.hook('dev.modal').add(
-        $.proxy(LU.preload, LU)
+        LU.preload.bind(LU)
     );
     mw.hook('dev.placement').add(
-        $.proxy(LU.preload, LU)
+        LU.preload.bind(LU)
     );
     importArticles({
         type: 'script',

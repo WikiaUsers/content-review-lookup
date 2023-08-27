@@ -1,8 +1,14 @@
-// See [[mw:Reference Tooltips]]
+/**
+ * Reference Tooltips
+ * 
+ * Author: Yair rand, Jack who built the house
+ * Licenses: CC BY-SA
+ * Source: https://ru.wikipedia.org/wiki/MediaWiki:Gadget-referenceTooltips.js
+ */
 
 ( function () {
 
-// ruwiki settings
+// sw settings
 var REF_LINK_SELECTOR = '.reference, a[href^="#CITEREF"]',
 	COMMENTED_TEXT_CLASS = 'ts-comment-commentedText',
 	COMMENTED_TEXT_SELECTOR = ( COMMENTED_TEXT_CLASS ? '.' + COMMENTED_TEXT_CLASS + ', ' : '') +
@@ -19,9 +25,9 @@ mw.messages.set( {
 	'rt-activationMethod': 'Подсказка появляется при',
 	'rt-hovering': 'наведении',
 	'rt-clicking': 'клике',
-	'rt-delay': 'Задержка перед появлением подсказки (в миллисекундах)',
+	'rt-delay': 'Задержка перед появлением подсказки (в мс)',
 	'rt-tooltipsForComments': 'Показывать всплывающие подсказки над <span title="Пример всплывающей подсказки" class="' + ( COMMENTED_TEXT_CLASS || 'rt-commentedText' ) + '" style="border-bottom: 1px dotted; cursor: help;">подчёркнутым точками текстом</span> в стиле всплывающих примечаний (позволяет видеть такие подсказки на устройствах, где не поддерживается мышь)',
-	'rt-disabledNote': 'Вы можете включить всплывающие примечания обратно, используя ссылку внизу страницы.',
+	'rt-disabledNote': 'Вы можете включить всплывающие примечания обратно, используя ссылку в правой колонке',
 	'rt-done': 'Готово',
 	'rt-enabled': 'Всплывающие подсказки с примечаниями включены'
 } );
@@ -48,8 +54,8 @@ var SECONDS_IN_A_DAY = 60 * 60 * 24,
 	$window = $( window );
 
 function rt( $content ) {
-	// Popups gadget
-	if ( window.pg ) {
+	// [[w:c:dev:ReferencePopups]]
+	if ( window.dev && window.dev.ReferencePopups) {
 		return;
 	}
 
@@ -61,7 +67,7 @@ function rt( $content ) {
 			'RTsettings',
 			Number( enabled ) + '|' + delay + '|' + Number( activatedByClick ) + '|' +
 				Number( tooltipsForComments ),
-			{ path: '/', expires: 90 * SECONDS_IN_A_DAY }
+			{ path: mw.config.get( 'wgScriptPath' ) + '/wiki', expires: 90 * SECONDS_IN_A_DAY }
 		);
 	}
 
@@ -70,7 +76,8 @@ function rt( $content ) {
 		setSettingsCookie();
 		$( '.rt-enableItem' ).remove();
 		rt( $content );
-		mw.notify( mw.msg( 'rt-enabled' ) );
+
+		new BannerNotification( mw.msg( 'rt-enabled' ), 'confirm', undefined, 5000 ).show();
 	}
 
 	function disableRt() {
@@ -80,31 +87,23 @@ function rt( $content ) {
 	}
 
 	function addEnableLink() {
-		// #footer-places – Vector
-		// #f-list – Timeless, Monobook, Modern
-		// parent of #footer li – Cologne Blue
-		var $footer = $( '#footer-places, #f-list' );
-		if ( !$footer.length ) {
-			$footer = $( '#footer li' ).parent();
-		}
-		$footer.append(
+		$( '.page-tools-module ul' ).append(
 			$( '<li>' )
-				.addClass( 'rt-enableItem' )
-				.append(
-					$( '<a>' )
-						.text( mw.msg( 'rt-enable-footer' ) )
-						.attr( 'href', 'javascript:' )
-						.click( function ( e ) {
-							e.preventDefault();
-							enableRt();
-						} )
+			.addClass( 'rt-enableItem' )
+			.append(
+				$( '<a>' )
+				.text( mw.msg( 'rt-enable-footer' ) )
+				.attr( 'href', '#')
+				.click( function ( e ) {
+					e.preventDefault();
+					enableRt();
+				} )
 			)
 		);
 	}
 
 	function TooltippedElement( $element ) {
-		var tooltip,
-			events,
+		var events,
 			te = this;
 
 		function onStartEvent( e ) {
@@ -196,8 +195,8 @@ function rt( $content ) {
 		};
 
 		this.showRef = function ( $element, ePageX, ePageY ) {
-			// Popups gadget
-			if ( window.pg ) {
+			// [[w:c:dev:ReferencePopups]]
+			if ( window.dev && window.dev.ReferencePopups) {
 				disableRt();
 				return;
 			}
@@ -216,14 +215,14 @@ function rt( $content ) {
 						te.$element.find( 'a' ).attr( 'href' ) :
 						te.$element.attr( 'href' ); // harvardRef
 					te.$ref = teHref &&
-						$( '#' + $.escapeSelector( teHref.slice( 1 ) ) );
+						$( '#' + $.escapeSelector( decodeURI( teHref ).slice( 1 ) ) );
 					if ( !te.$ref || !te.$ref.length || !te.$ref.text() ) {
 						te.noRef = true;
 						return;
 					}
 				}
 
-				if ( !tooltipInitiallyPresent && !te.comment && te.$ref ) {
+				if ( !tooltipInitiallyPresent && !te.comment ) {
 					viewportTop = $window.scrollTop();
 					var offset = te.$ref.offset();
 					if(!offset) return;
@@ -845,7 +844,12 @@ function rt( $content ) {
 	}
 
 	if ( !enabled ) {
-		addEnableLink();
+		if ( $( '.WikiaRail .wikia-recent-activity' ).length ) {
+			addEnableLink();
+		} else {
+			$( '#WikiaRail' ).on( 'afterLoad.rail', addEnableLink );
+		}
+
 		return;
 	}
 
@@ -885,9 +889,5 @@ if ( settingsString ) {
 }
 
 mw.hook( 'wikipage.content' ).add( rt );
-
-// Caused by [[phab:T238991]]. The bug stayed for almost a month and affected many users which would
-// have two tooltips appear simultaneously if we remove the fix, so we better keep it indefinitely.
-mw.config.set( 'wgPopupsReferencePreviews', false );
 
 }() );

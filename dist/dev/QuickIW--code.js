@@ -22,7 +22,7 @@
                         'mediawiki.user',
                         'mediawiki.util'
                     ])
-                ).then($.proxy(this.init, this));
+                ).then(this.init.bind(this));
             }
         },
         init: function(i18n) {
@@ -32,7 +32,7 @@
             $('.skin-fandomdesktop .page-header .page-header__actions .wds-dropdown__content > ul, .page-header__contribution-buttons .wds-list, .UserProfileActionButton .WikiaMenuElement').append(
                 $('<li>').append(
                     $('<a>', {
-                        click: $.proxy(this.click, this),
+                        click: this.click.bind(this),
                         id: 'QuickIW',
                         href: '#',
                         text: i18n.msg('interwiki').plain()
@@ -121,8 +121,8 @@
                 minor: true,
                 bot: true
             })
-            .then($.proxy(this.callback, this))
-            .fail($.proxy(this.fail, this));
+            .then(this.callback.bind(this))
+            .fail(this.fail.bind(this));
         },
         callback: function(d) {
             if (d.error) {
@@ -153,6 +153,6 @@
         type: 'style',
         article: 'u:dev:MediaWiki:QuickIW.css'
     });
-    mw.hook('dev.i18n').add($.proxy(QuickIW.preload, QuickIW));
-    mw.hook('dev.modal').add($.proxy(QuickIW.preload, QuickIW));
+    mw.hook('dev.i18n').add(QuickIW.preload.bind(QuickIW));
+    mw.hook('dev.modal').add(QuickIW.preload.bind(QuickIW));
 }(jQuery, mediaWiki));

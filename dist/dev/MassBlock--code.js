@@ -4,7 +4,7 @@
  * @author Ozank
  * @author KockaAdmiralac
  */
-(function() {
+(function($, mw) {
     'use strict';
     if (
         !/(sysop|staff|soap|global-discussions-moderator|wiki-representative|wiki-specialist)/.test(mw.config.get('wgUserGroups')) ||
@@ -35,15 +35,15 @@
         _loading: 0,
         paused: true,
         hooks: function() {
-            mw.hook('dev.i18n').add($.proxy(this.preload, this));
-            mw.hook('dev.modal').add($.proxy(this.preload, this));
-            mw.hook('dev.placement').add($.proxy(this.preload, this));
-            mw.hook('dev.ui').add($.proxy(this.preload, this));
+            mw.hook('dev.i18n').add(this.preload.bind(this));
+            mw.hook('dev.modal').add(this.preload.bind(this));
+            mw.hook('dev.placement').add(this.preload.bind(this));
+            mw.hook('dev.ui').add(this.preload.bind(this));
         },
         preload: function() {
             if (++this._loading === 4) {
                 this.ui = window.dev.ui;
-                window.dev.i18n.loadMessages('MassBlock').then($.proxy(this.init, this));
+                window.dev.i18n.loadMessages('MassBlock').then(this.init.bind(this));
             }
         },
         init: function(i18n) {
@@ -152,7 +152,7 @@
                 element: 'tools',
                 type: 'prepend'
             });
-            $('#t-bb').click($.proxy(this.click, this));
+            $('#t-bb').click(this.click.bind(this));
         },
         click: function() {
             if (this.blockModal) {
@@ -189,9 +189,9 @@
                     }
                 ],
                 events: {
-                    addGroupContents: $.proxy(this.addGroupContents, this),
-                    pause: $.proxy(this.pause, this),
-                    start: $.proxy(this.start, this)
+                    addGroupContents: this.addGroupContents.bind(this),
+                    pause: this.pause.bind(this),
+                    start: this.start.bind(this)
                 }
             });
             this.blockModal.create();
@@ -211,7 +211,7 @@
                 gmlimit: 'max',
                 format: 'json'
             })
-            .done($.proxy(function(d) {
+            .done((function(d) {
                 if (!d.error) {
                     (d.users || d.query.allusers).forEach(function(user) {
                         $('#text-mass-block').val($('#text-mass-block').val() + user.name + '\n');
@@ -220,14 +220,14 @@
                 else {
                     $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ d.error.code +'<br/>');
                 }
-            }, this))
-            .fail($.proxy(function(code) {
+            }).bind(this))
+            .fail((function(code) {
                 if (isLegacy) {
                     $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +'!<br/>');
                 } else {
                     $('#text-error-output').append(this.i18n.msg('groupError').escape() + ' ' + group +' : '+ code +'<br/>');
                 }
-            }, this));
+            }).bind(this));
         },
         pause: function() {
             this.paused = true;
@@ -289,33 +289,33 @@
             if ($('#block-iw').prop('checked')) {
                 params.reblock = true;
             }
-            this.api.post(params).done($.proxy(function(d) { 
+            this.api.post(params).done((function(d) { 
                 if (d.error) {
                     this.blockFail(d.error.code, name)();
                 } else {
                     console.log(this.i18n.msg('blockDone', name).plain());
                 }
-            }, this)).fail(this.blockFail(this.msg('ajaxError'), name));        
+            }).bind(this)).fail(this.blockFail(this.msg('ajaxError'), name));        
             setTimeout(
-                $.proxy(this.process, this),
+                this.process.bind(this),
                 window.massBlockDelay || 1000
             );
         },
         blockFail: function(error, name) {
-            return $.proxy(function(code) {
+            return (function(code) {
                 if (!isLegacy) {
                     error = code;
                 }
                 var msg = this.i18n.msg('blockFail', name, error);
                 console.error(msg.plain());
                 $('#text-error-output').append('<br />', msg.escape());
-            }, this);
+            }).bind(this);
         },
         msg: function(msg) {
             return this.i18n.msg(msg).plain();
         }
     };
     mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.user']).then(
-        $.proxy(MassBlock.hooks, MassBlock)
+        MassBlock.hooks.bind(MassBlock)
     );
-})();
+})(window.jQuery, window.mediaWiki);

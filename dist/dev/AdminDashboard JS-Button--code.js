@@ -1,4 +1,4 @@
-(function() {
+(function($, mw) {
     if (
         mw.config.get('wgCanonicalSpecialPageName') !== 'AdminDashboard' ||
         window.AdminDashboardJSButtonLoaded
@@ -26,7 +26,7 @@
                     ),
                     i18n.msg('text').plain()
                 )
-            ).hover($.proxy(this.hover, this), $.proxy(this.unhover, this));
+            ).hover(this.hover.bind(this), this.unhover.bind(this));
             $('.control a[data-tracking="special-css"]').parent().after(this.$control);
             this.$tooltip = $('.control-section.wiki > header > .dashboard-tooltip');
         },
@@ -38,11 +38,11 @@
         },
         hook: function(i18n) {
             i18n.loadMessages('AdminDashboard_JS-Button')
-                .then($.proxy(this.init, this));
+                .then(this.init.bind(this));
         }
     };
-    mw.hook('dev.i18n').add($.proxy(AdminDashboardJSButton.hook, AdminDashboardJSButton));
-    importArticle(
+    mw.hook('dev.i18n').add(AdminDashboardJSButton.hook.bind(AdminDashboardJSButton));
+    importArticles(
         {
             type: 'script',
             article: 'u:dev:MediaWiki:I18n-js/code.js'
@@ -52,4 +52,4 @@
             article: 'u:dev:MediaWiki:AdminDashboardJSButton.css'
         }
     );
-})();
+})(window.jQuery, window.mediaWiki);

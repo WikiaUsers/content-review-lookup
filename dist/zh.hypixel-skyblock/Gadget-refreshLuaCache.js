@@ -2,6 +2,7 @@
 $( function () {
 	// Note: mainModule must contain a `local PREFIX = prefixname_01_`
 	var supportedCaches = {
+		invslot: { type:"simple", dataModule:"Inventory_slot/Datasheet", mainModule:"Cache", prefixVar:"INVSLOT_PREFIX" },
 		slot_aliases: { type:"simple", dataModule:"Inventory_slot/Aliases", mainModule:"Cache", prefixVar:"SLOT_ALIASES_PREFIX" },
 		item_variants: { type:"simple", dataModule:"Item/Variants", mainModule:"Cache", prefixVar:'ITEM_VARIANTS_PREFIX' },
 		item_api_data: { type:"simple", dataModule:"Item/ApiData/AsCacheTable", mainModule:"Cache", prefixVar:'ITEM_API_DATA_PREFIX' },

@@ -576,7 +576,7 @@ $cp.json.que = {};
 // generate url based on filename + lang
 $cp.json.stringToUrl = function(file, lang) {
 	var lang = ["pt", "fr", "es", "de", "ru"].indexOf(lang) > -1 ? lang : "en",
-		url = "https://icer.ink/media1." + (["characters", "worlds"].indexOf(file) > -1 ? "friends.go.com/content/disney-land-clubpenguin/" + lang + "/" : ["lands", "text"].indexOf(file) > -1 ? "friends.go.com/content/" + lang + "/" : ["markup", "images"].indexOf(file) > -1 ? "friends.go.com/content/" : "clubpenguin.com/play/" + lang + "/web_service/game_configs/") + file + ".jsonp";
+		url = "https://icerink.solero.me/media1." + (["characters", "worlds"].indexOf(file) > -1 ? "friends.go.com/content/disney-land-clubpenguin/" + lang + "/" : ["lands", "text"].indexOf(file) > -1 ? "friends.go.com/content/" + lang + "/" : ["markup", "images"].indexOf(file) > -1 ? "friends.go.com/content/" : "clubpenguin.com/play/" + lang + "/web_service/game_configs/") + file + ".jsonp";
 	return url;
 }
 
@@ -1054,7 +1054,7 @@ $cp.pfarm = {
 
 // data
 	// base images url
-$cp.pfarm.data.baseURI = "https://icer.ink/media8.clubpenguin.com/mobile/cp-mobile-ui/clubpenguin_v1_6/en_US/deploy/metaplace/devicepng/assets/";
+$cp.pfarm.data.baseURI = "https://icerink.solero.me/media8.clubpenguin.com/mobile/cp-mobile-ui/clubpenguin_v1_6/en_US/deploy/metaplace/devicepng/assets/";
 	// namespaces
 $cp.pfarm.data.ns = {
 	xlink: "https://www.w3.org/1999/xlink",
