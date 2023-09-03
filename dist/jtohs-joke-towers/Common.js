@@ -21,7 +21,7 @@ window.UserTagsJS = {
 		formerowner: {u:'Former Owner', order: -1e69},
 		god: {u:'God of the Wiki', order: -1e100},
 		nothing: {u: '⠀⠀⠀', order: -1e100},
-		bureaureal: {u: 'BUREAUCRAT (REAL)', order: -1e110},
+		bureaureal: {u: 'BUREAUREAL', order: -1e110},
 	}
 };
 UserTagsJS.modules.custom = {
@@ -38,7 +38,8 @@ UserTagsJS.modules.custom = {
 	'The Difficulty Enthusiast': ['formerowner'],
 	'OrbentuneAlt': ['nothing'],
 	'Jtohisgoodimo': ['bureaureal'],
-	'TotallyNotAMeme00': ['montheditor']
+	'Touchgrass210779': ['montheditor'],
+	'MapleIsNotAMapleLeaf': ['montheditor']
 };
 window.quizName = "The Hard Quiz";
 window.quizLang = "en";

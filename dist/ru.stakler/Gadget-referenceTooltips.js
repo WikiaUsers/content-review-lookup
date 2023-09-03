@@ -6,7 +6,7 @@
  * Source: https://ru.wikipedia.org/wiki/MediaWiki:Gadget-referenceTooltips.js
  */
 
-( function () {
+$( function () {
 
 // sw settings
 var REF_LINK_SELECTOR = '.reference, a[href^="#CITEREF"]',
@@ -54,7 +54,7 @@ var SECONDS_IN_A_DAY = 60 * 60 * 24,
 	$window = $( window );
 
 function rt( $content ) {
-	// [[w:c:dev:ReferencePopups]]
+	// [[dev:ReferencePopups]]
 	if ( window.dev && window.dev.ReferencePopups) {
 		return;
 	}
@@ -195,7 +195,7 @@ function rt( $content ) {
 		};
 
 		this.showRef = function ( $element, ePageX, ePageY ) {
-			// [[w:c:dev:ReferencePopups]]
+			// [[dev:ReferencePopups]]
 			if ( window.dev && window.dev.ReferencePopups) {
 				disableRt();
 				return;
@@ -890,4 +890,4 @@ if ( settingsString ) {
 
 mw.hook( 'wikipage.content' ).add( rt );
 
-}() );
+} );

@@ -347,7 +347,6 @@ window.MessageWallUserTags = {
         
         'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
-        'SPONGEBOBSUPERFANINFINITY': 'Administrator',
         'Thelxinoe': 'Administrator',
         'FireMatch': 'Administrator',
     

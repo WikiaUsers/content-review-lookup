@@ -1,10 +1,36 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Tomica knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Nah, from whom you got those completely wrong info about Tomica?",
+    "Umm... If there were grades about Tomica knowledge, you would at least get an ordinary grade.",
+    "Congrats! If you could write a doctoral thesis about Tomica, you had great chances to pass it!" 
+];
+window.questions = [
+    ["Who is the leader of Dark Spinner?",
+    "Chamber",
+    "Clutch",
+    "Oiler"], 
+
+    ["Whom does Autobahn work for?",
+    "Shigeru Kokudou",
+    "Dr. Bariki Kudou",
+    "Dr. Jennifer"],
+
+    ["Who of those doesn't appear in Tomica Kizuna Gattai Earth Granner?",
+    "Gou Kurumada",
+    "Raiga Kudou",
+    "Kuga Kudou"]
+    ];
+
 window.MessageBlock = {
-  title : 'Blocked',
+  title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
   autocheck : true
 };
+
+addOnloadHook(createCollapseButtons);
 
 /** Magic editintros ****************************************************
  *
@@ -22,7 +48,7 @@ function addEditIntro(name) {
 
 
 if (wgNamespaceNumber == 0) {
-    $(function() {
+    addOnloadHook(function() {
         if (document.getElementById('disambigbox'))
             addEditIntro('Template:Disambig_editintro');
     });
@@ -31,6 +57,9 @@ if (wgNamespaceNumber == 0) {
 /****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/
+//wsl.loadScript("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
+//wsl.loadScript("https://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
+
 mw.loader.using(['jquery.ui.tabs'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
@@ -57,11 +86,13 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 /******************************/
 /* changes the redirect image */
 /******************************/
-$(function ChangeRedirectImage() {
+function ChangeRedirectImage() {
     $('.redirectMsg img').attr('src', 'https://images.wikia.nocookie.net/__cb20100902033555/dragonage/images/b/b5/Redirectltr.png');
-});
+}
+addOnloadHook(ChangeRedirectImage);
 
 //ArchiveTool configuration 
+
 var ArchiveToolConfig = {
     archiveListTemplate: 'ArchCat',
     archivePageTemplate: 'ArchPage',

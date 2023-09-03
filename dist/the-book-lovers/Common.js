@@ -110,7 +110,6 @@ UserTagsJS.modules.userfilter = {
 	'MountainCow': ['inactive'],
 	'.lemon_rxse.': ['inactive'],
 	'SilverySilveny': ['inactive'],
-	'Lovoken': ['inactive']
 };
 
 
@@ -142,3 +141,34 @@ function displayTimeClock() {
 
 // Wait for the page to fully load before adding the clocks
 document.addEventListener("DOMContentLoaded", displayTimeClock);
+
+//autocreate userpages
+window.AutoCreateUserPagesConfig = {
+	content: {
+		2: "{{sub" + "st:MediaWiki:Welcome-user-page}}",
+		3: false,
+	},
+	summary: "Script: Automatically creating user profile",
+};
+
+// Only import these scripts for content mods and admins so we don't waste the
+// bandwith of users who can't actually use them.
+if (
+	mw.config.get("wgUserGroups").includes("content-moderator") ||
+	mw.config.get("wgUserGroups").includes("sysop")
+) {
+	importArticles({
+		type: "script",
+		articles: [
+			"u:dev:MediaWiki:AjaxBatchDelete.js",
+			"u:dev:MediaWiki:MassEdit/code.js",
+			"u:dev:MediaWiki:MassCategorization/code.js",
+			"u:dev:MediaWiki:PowerDelete.js",
+			"u:dev:MediaWiki:Stella.js",
+			"u:dev:MediaWiki:dev:AdminDashboard_block/code.js,
+			"u:dev:MediaWiki:dev:dev:Discussions Restore All.js,
+			"u:dev:MediaWiki:dev:dev:AddAnnouncement/code.js,
+			"u:dev:MediaWiki:dev:dev:DiscussionsAFLog.js,
+		],
+	});
+}

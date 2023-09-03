@@ -94,9 +94,10 @@ UserTagsJS.modules.custom = {
     'BlueTide': ['rollback', 'handy'],
     'Nmcconnell': ['rollback'],
     'Amber saffeels': ['lumpy'],
-    'Splendit-HTF': ['rollback', 'splendid'],
+    'Splendit-HTF': ['sysop', 'splendid'],
     'OrigamiHound': ['rollback'],
-    'SpongeBob\'s Biggest Enthusiast': ['sysop', 'sniffles', 'pop']
+    'SpongeBob\'s Biggest Enthusiast': ['sysop', 'sniffles', 'pop'],
+    'Tabletstoons123': ['rollback']
 };
 
 UserTagsJS.modules.mwGroups = ['bureaucrat,sysop']; 

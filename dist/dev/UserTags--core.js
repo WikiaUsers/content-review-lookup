@@ -1428,12 +1428,9 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             'staff',
             'wiki-representative',
             'wiki-specialist',
-            'helper',
             'soap',
             'global-discussions-moderator',
             'voldev',
-            'vanguard',
-            'council',
             'content-volunteer',
             'authenticated', // Official PR accounts of companies
         ],

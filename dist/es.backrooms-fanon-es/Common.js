@@ -1,41 +1,20 @@
-// [[Category:Internal]] Meta-category for internal technical pages
-
+/* Das folgende JavaScript wird für alle Benutzer geladen. */
 // For [[Module:CSS]]; [[T:CSS]] dependency
-mw.hook("wikipage.content").add(function () {
-	$("span.import-css").each(function () {
-		mw.util.addCSS($(this).attr("data-css"));
-	});
-});
-
-// UserTags thingamajigs
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		inactive: { order: -2 },
-		bot: { link:'Help:Bots', order: -1 },
-		bureaucrat: { order: 0 }, // <- lower order value = will be placed before other tags (in space, not as of which loads first)
-		sysop: { order: 1 },
-		'content-moderator': { order: 2 },
-		threadmoderator: { order: 3 }
-	}
-};
-
-UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
-UserTagsJS.modules.autoconfirmed = false;
-UserTagsJS.modules.newuser = false;
-UserTagsJS.modules.metafilter = false;
-
-// fade-in
-var fadeinclass = document.getElementsByClassName("fadeintext");
-    for(var i = 0; i < fadeinclass.length; i++) {
-        var sec = (i/4).toString();
-        fadeinclass[i].style.animation = "fadeInAnimation ease 1.5s";
-        fadeinclass[i].style.animationDelay = sec.concat("s");
-        fadeinclass[i].style.animationIterationCount = "1";
-        fadeinclass[i].style.animationFillMode = "forwards";
-}
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
         mw.util.addCSS($(this).attr("data-css"));
     });
 });
+
+/* A+ Wiki Badge */
+$('.fandom-community-header__community-name-wrapper').append(
+	$('<a>')
+	.attr('href', 'https://community.fandom.com/wiki/Admin_Plus')
+	.css('height', '30px')
+	.append(
+		$('<img>')
+		.addClass('hover-community-header-wrapper')
+		.css('height', '30px')
+		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/a/a7/A%2BWiki.webp/revision/latest?cb=20230828211532&path-prefix=de')
+	)
+);

@@ -6,13 +6,15 @@ mw.hook("wikipage.content").add(function () {
     });
 });
 
-
-// fade-in
-var fadeinclass = document.getElementsByClassName("fadeintext");
-    for(var i = 0; i < fadeinclass.length; i++) {
-        var sec = (i/4).toString();
-        fadeinclass[i].style.animation = "fadeInAnimation ease 1.5s";
-        fadeinclass[i].style.animationDelay = sec.concat("s");
-        fadeinclass[i].style.animationIterationCount = "1";
-        fadeinclass[i].style.animationFillMode = "forwards";
-}
+/* A+ Wiki Badge */
+$('.fandom-community-header__community-name-wrapper').append(
+	$('<a>')
+	.attr('href', 'https://community.fandom.com/wiki/Admin_Plus')
+	.css('height', '30px')
+	.append(
+		$('<img>')
+		.addClass('hover-community-header-wrapper')
+		.css('height', '30px')
+		.attr('src', 'https://static.wikia.nocookie.net/backrooms/images/a/a7/A%2BWiki.webp/revision/latest?cb=20230828211532&path-prefix=de')
+	)
+);

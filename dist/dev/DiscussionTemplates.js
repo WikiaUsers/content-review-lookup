@@ -56,7 +56,11 @@
             params.page = window.DiscussionTemplates.templates[selected.template].name;
 		}
         new mw.Api().get(params).done(function (d) {
-            var content = d.parse.text['*'].replace(/\n<\/p>/g, '</p><p><br></p>').replace(/<p><br \/>/g, '<p><br></p><p>').replace(/href="\/wiki/g, 'href="' + mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/wiki');
+            var content = d.parse.text['*']
+                .replace(/\n<\/p>$/, '</p>')
+                .replace(/\n<\/p>/g, '</p><p><br></p>')
+                .replace(/<p><br \/>/g, '<p><br></p><p>')
+                .replace(/href="\/wiki/g, 'href="' + mw.config.get('wgServer') + mw.config.get('wgScriptPath') + '/wiki');
             if (trimRegex.test(content)) {
                 content = content.replace(trimRegex, '</p>');
             }

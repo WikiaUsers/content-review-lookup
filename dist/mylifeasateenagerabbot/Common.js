@@ -1,334 +1,44 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/***Fandom Developers Wiki's UserTag configuration ***/
-window.UserTagsJS = {
-	modules: {},
-	tags: {},
-	oasisPlaceBefore: ''
-};
+/*** Internal technical pages ***/
+// [[Category:Internal]] Meta-category for internal technical pages
 
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		bureaucrat: { u:'Bureaucrat', link:'Project:Bureaucrats' },
-		inactive: { u: 'Not active!' }
-	}
-};
-
-/*** UserTags ***/
-window.UserTagsJS = {
-	modules: {},
-	tags: {}
-};
-UserTagsJS.modules.inactive = 30;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller', 'rollback', 'sysop', 'bot', 'bot-global'];
-UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat', 'founder'],
-	bureaucrat: ['founder'],
-	threadmoderator: ['sysop', 'bureaucrat']
-};
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		bureaucrat: { u: 'Bureaucrat', order: 100 },
-		content-moderator: { u: 'Content Moderator', order: 101 },
-		rollback: { u: ' Rollback', order: 102 },
-		bureaucrat: { order: 1 }
-	}
-};
-UserTagsJS.modules.custom = {
-	'Jenny_Wakeman9': ['content-moderator', 'rollback', 'bureaucrat'] // NOTE: order of list here does NOT matter
-};
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
-
-/*** JavaScript enhancements ***/
-importArticles({
- type: 'script',
- articles: [
- 'dev:ListFiles/code.js'
- 'dev:Accordion.js'
- 'dev:Themes.js'
- 'dev:RequireLicense.js'
- 'dev:NewImages.js'
- 'dev:WikiForum/core.js'
- 'dev:WikiForum/theme/default.js'
- 'dev:WikiForum/loader/default.js'
- 'dev:CommunityPageRailModule.js'
- 'dev:DiscordIntegrator/code.js'
- 'dev:DeepLTranslate/code.js'
- 'dev:HideEmptyTrackingCategories.js'
- 'dev:QuickPurge.js'
- 'dev:Sofix.js'
- 'dev:FixPhalanxBlockLinks.js'
- 'dev:WallGreeting.js'
- 'dev:User_Avatar_Finder/code.js'
- 'dev:AdminDashboard_JS-Button/code.js'
- 'dev:AjaxRC/code.js'
- 'dev:BlogLink/code.js'
- 'dev:DisableBotMessageWalls/code.js'
- 'dev:DiscussionsActivity.js'
- 'dev:DiscussionsRailModule/code.js'
- 'dev:DupImageList/code.js'
- 'dev:DynamicImages/code.js'
- 'dev:Ripple.js'
- 'dev:CategoryIcon.js'
- 'dev:EditConflictAlert/code.js'
- 'dev:EditcountTag/code.js'
- 'dev:EraIcons/code.js'
- 'dev:FastOldImageDelete/code.js'
- 'dev:FileUsageAuto-update/code.js'
- 'dev:FixMultipleUpload/code.js'
- 'dev:FloatingToc/code.js'
- 'dev:HeaderLinks/code.js'
- 'dev:ImageCategory/code.js'
- 'dev:PageRenameAuto-update/code.js'
- 'dev:PowerPageMaker/code.js'
- 'dev:ProtectionIcons.js'
- 'dev:ReferencePopups/code.js'
- 'dev:TimedSlider/code.js'
- 'dev:User_Avatar_Finder/code.js'
- 'dev:UserTags/code.js'
- 'dev:YoutubePlayer/code.js'
- 'dev:ModernLeaderboard.js'
- 'dev:AddAnnouncement/code.js'
- 'dev:AddArticleToCategory/code.js'
- 'dev:AddBlockUserTag/code.js'
- 'dev:AddRailModule/code.js'
- 'dev:AddSectionButton/code.js'
- 'dev:AddUserRightsTag/code.js'
- 'dev:AddSideTool.js'
- 'dev:AdminDashboard_JS-Button/code.js'
- 'dev:AjaxAbuseLog.js'
- 'dev:AjaxBlock/code.js'
- 'dev:AjaxDelete/code.js'
- 'dev:AjaxEditPreview.js'
- 'dev:AjaxPoll.js'
- 'dev:AjaxRedirect/code.js'
- 'dev:AjaxRename/code.js'
- 'dev:AjaxTooltips.js'
- 'dev:LinkPreview/code.js'
- 'dev:AjaxUndo/code.js'
- 'dev:AjaxUserRights.js'
- 'dev:AllPagesHideRedirect/code.js'
- 'dev:AlwaysShowBottomBar.js'
- 'dev:ApesterIntegrator.js'
- 'dev:ArchiveTool/code.js'
- 'dev:ArticleCommentsHeader.js'
- 'dev:ArticlePreview/code.js'
- 'dev:AudioIntegrator/AudioIntegrator.js'
- 'dev:Bang.js'
- 'dev:BlockLookup.js'
- 'dev:BulkVideoUpload.js'
- 'dev:CategoryClasses.js'
- 'dev:CategoryMaintenanceTables.js'
- 'dev:CategoryPageListing.js'
- 'dev:CategoryRedLinks.js'
- 'dev:CategorySorter.js'
- 'dev:CatFilter/code.js'
- 'dev:ChangeModelButton.js'
- 'dev:CodeLoad.js'
- 'dev:CollapsibleList.js'
- 'dev:CommentsToggle.js'
- 'dev:CompareLink.js'
- 'dev:CopyCodeButton.js'
- 'dev:CopyText/code.js'
- 'dev:CorrectFileHeadings.js'
- 'dev:CreatePageForm.js'
- 'dev:CustomComments.js'
- 'dev:CustomizeAce.js'
- 'dev:CustomSlider.js'
- 'dev:CustomTools.js'
- 'dev:DataTables.js'
- 'dev:DecodeURI/code.js'
- 'dev:DedicatedTalkButton.js'
- 'dev:DeleteTalkpage.js'
- 'dev:Developer Contributions/code.js'
- 'dev:Digital Clock.js'
- 'dev:DisableBotMessageWalls/code.js'
- 'dev:Discord.js'
- 'dev:DiscordBanner.js'
- 'dev:DiscordChat.js'
- 'dev:Discussions Delete All/code.js'
- 'dev:DiscussionsActivity.js'
- 'dev:DiscussionsEmbed.js'
- 'dev:DiscussionsFeed.js'
- 'dev:FAQ/code.js'
- 'dev:Nuke/code.js'
- 'dev:NukeInlineStyles.js'
- 'dev:NullEditButton/code.js'
- 'dev:Status/code.js'
- 'dev:ThemeStyle/code.js'
- 'dev:ThemeToggler.js'
- 'dev:TimeanddateClock.js'
- 'dev:SupportedLanguages/code.js'
- 'dev:DiscussionsRailModule/UCP.js'
- 'dev:DiscussionsRC.js'
- 'dev:DiscussionsViewer.js'
- 'dev:DiscussionTemplates.js'
- 'dev:DisplayTimer/code.js'
- 'dev:DivEditor/code.js'
- 'dev:DPLforumBoardCustomization.js'
- 'dev:DupImageList/code.js'
- 'dev:EditcountTab.js'
- 'dev:EditcountTag/code.js'
- 'dev:EditIntroButton/code.js'
- 'dev:EditLeaderboard.js'
- 'dev:EditorColorPicker.js'
- 'dev:EditUserTalkArchive.js'
- 'dev:ExploreMenuIcons.js'
- 'dev:ExternalLinkWarning.js'
- 'dev:FandomMergeNotice.js'
- 'dev:FAQ/code.js'
- 'dev:FastFileDelete.js'
- 'dev:FileForm.js'
- 'dev:FileLogs.js'
- 'dev:FileTools.js'
- 'dev:FileUsageAuto-update/code.js'
- 'dev:FilterStrings.js'
- 'dev:FirstEditDate.js'
- 'dev:FixFeaturedArticlesImages.js'
- 'dev:FixPhalanxBlockLinks.js'
- 'dev:Flags/code.js'
- 'dev:FloatingTableHeader/Code.js'
- 'dev:GalleryCaptions/code.js'
- 'dev:HeaderLinks/code.js'
- 'dev:HideClearCache.js'
- 'dev:HideFandomBotLogs.js'
- 'dev:ImportJS-Plus.js'
- 'dev:I18nEdit.js'
- 'dev:ImageCategory/code.js'
- 'dev:ImageCompare.js'
- 'dev:ImageMapEdit.js'
- 'dev:ImageMapEditZoom.js'
- 'dev:UserBlockNotification.js'
- 'dev:InterwikisOnSpecialPages.js'
- 'dev:ItemComparisonForm.js'
- 'dev:JumpToContent.js'
- 'dev:LakeLinks.js'
- 'dev:LangSelect.js'
- 'dev:LangSwitch.js'
- 'dev:Latinify/code.js'
- 'dev:Less/code.2.js'
- 'dev:LinkedUserTags.js'
- 'dev:LinkPreview/code.js'
- 'dev:ListAdmins/code.js'
- 'dev:ListFiles/code.js'
- 'dev:ListGroupMembers.js'
- 'dev:LivePreviewWarnings.js'
- 'dev:LockOldComments.js'
- 'dev:MarkBlocked.js'
- 'dev:MarkForDeletion/code.js'
- 'dev:MassNullEdit/code.js'
- 'dev:MassPatrol/code.js'
- 'dev:MassProtect/code.js'
- 'dev:MassRename/code.js'
- 'dev:MastheadGender/code.js'
- 'dev:Medals/code.js'
- 'dev:MastheadRightsBadge.js'
- 'dev:MediaWikiBacklink/code.js'
- 'dev:MessageBlock/code.js'
- 'dev:MessageWallUserTags/code.js'
- 'dev:MisspelledPage/code.js'
- 'dev:MoreSocialLinks.js'
- 'dev:MoveSubcategoriesToTheTop.js'
- 'dev:BackToTopButton/code.js'
- 'dev:MultipleActivity.js'
- 'dev:PowerDelete.js'
- 'dev:PreloadFileDescription.js'
- 'dev:PreloadRedLinks.js'
- 'dev:PreloadTemplates.js'
- 'dev:ProfileTags.js'
- 'dev:ProtectionIcons.js'
- 'dev:ReadProgressBar.js'
- 'dev:ReferencePopups/code.js'
- 'dev:Reconstitution.js'
- 'dev:RelatedDiscussionsPosts.js'
- 'dev:RestoreRevButton.js'
- 'dev:ResponsiveImageMap.js'
- 'dev:RevealAnonIP.js'
- 'dev:SandboxTab/code.js'
- 'dev:ScrollUpButton.js'
- 'dev:SearchSuggest/code.js'
- 'dev:SectionURLOnScroll.js'
- 'dev:SeeMoreActivityButton/code.js'
- 'dev:SelectContent.js'
- 'dev:Selector.js'
- 'dev:SelfLinkInTabber.js'
- 'dev:ShowUserGroups.js'
- 'dev:SpoilerAlert/code.js'
- 'dev:Status/code.js'
- 'dev:Standard Edit Summary/code.js'
- 'dev:Stella.js'
- 'dev:StickySummary.js'
- 'dev:SummaryButtonsCore.js'
- 'dev:SyntaxHighlight.js'
- 'dev:TabberDefault.js'
- 'dev:TabViewEditLinks/code.js'
- 'dev:ThemeStyle/code.js'
- 'dev:Toggler.js'
- 'dev:Tooltips.js'
- 'dev:TopEditors/code.js'
- 'dev:Translator/Translator.js'
- 'dev:TwitterFollowButton/code.js'
- 'dev:UnifiedControlPanel.js'
- 'dev:UploadMultipleFiles.js'
- 'dev:UserActivityTab/code.js'
- 'dev:UserAvatarLink.js'
- 'dev:UserInfo.js'
- 'dev:UserStatus.js'
- 'dev:UserUnusedFiles/code.js'
- 'dev:View_Source/code.js'
- 'dev:View_Raw/code.js'
- 'dev:WatchlistTab.js'
- 'dev:WhatLinksHere/code.js'
- 'dev:WikiActivity.js'
- 'dev:WikiaURL.js'
- 'dev:Wikificator.js'
- 'dev:WikiForum/core.js'
- 'dev:WikiForum/theme/default.js'
- 'dev:WikiForum/loader/default.js'
- 'dev:WikiInfo.js'
- 'dev:WikiStatistics/code.js'
- 'dev:Status/code.js'
- 'dev:NoLicenseWarning.js'
- 'dev:MassEdit/code.js'
- 'dev:TemplateTypeButtons/code.js'
- 'dev:FileTools.js'
- 'dev:FirstEditDate.js'
- 'dev:FixFeaturedArticlesImages.js'
- 'dev:ImportJSPage/code.js'
- 'dev:InactiveUsers/code.js'
- 'dev:InputUsername/code.js'
- 'dev:MarkBlocked.js'
- 'dev:MediaWikiBacklink/code.js'
- 'dev:MoreSocialLinks.js'
- 'dev:OrganizedSocialActivity.js'
- 'dev:OriginalImages.js'
- 'dev:ProtectionIcons.js'
- 'dev:SandboxTab/code.js'
- 'dev:SearchSuggest/code.js'
- 'dev:SeeMoreActivityButton/code.js'
- 'dev:SelectContent.js'
- 'dev:ShortUrl.js'
- 'dev:Standard Edit Summary/code.js'
- 'dev:Toggler.js'
- 'dev:PortableCSSPad/code.js'
- 'dev:MapsExtended.js'
- 'dev:WikiForum/core.js'
- 'dev:WikiForum/theme/default.js'
- 'dev:WikiForum/loader/default.js'
- 'dev:ThankYou.js'
- 'dev:LinkPreview/code.js'
- 'dev:PreloadTemplates.js'
- ]
+// For [[Module:CSS]]; [[T:CSS]] dependency
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		mw.util.addCSS($(this).attr("data-css"));
+	});
 });
 
-/*** Spoiler text ***/
-window.SpoilerAlertJS = {
-    question: 'Hey! Stop right there! This area contains some spoilers for the next new episode of ''[[My Life as a Teenage Rabbot]]'' that hasn't been released yet. Do you want to see them?',
-    yes: 'Yes! Spoil me!',
-    no: 'No, wait! GO BACK!',
-    fadeDelay: 1600
+// UserTags thingamajigs
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		inactive: { order: -2 },
+		bot: { link:'Help:Bots', order: -1 },
+		bureaucrat: { order: 0 }, // <- lower order value = will be placed before other tags (in space, not as of which loads first)
+		sysop: { order: 1 },
+		'content-moderator': { order: 2 },
+		threadmoderator: { order: 3 }
+	}
 };
+
+UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
+UserTagsJS.modules.autoconfirmed = false;
+UserTagsJS.modules.newuser = false;
+UserTagsJS.modules.metafilter = false;
+
+// fade-in
+var fadeinclass = document.getElementsByClassName("fadeintext");
+    for(var i = 0; i < fadeinclass.length; i++) {
+        var sec = (i/4).toString();
+        fadeinclass[i].style.animation = "fadeInAnimation ease 1.5s";
+        fadeinclass[i].style.animationDelay = sec.concat("s");
+        fadeinclass[i].style.animationIterationCount = "1";
+        fadeinclass[i].style.animationFillMode = "forwards";
+}
+
+/*** Rail Module customization ***/
+window.AddRailModule = [{prepend: true}];
+window.AddRailModule = ['Template:RailModule'];
+
+/*** Back to top button customization ***/
+window.BackToTopArrow = true;

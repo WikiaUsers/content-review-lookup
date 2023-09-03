@@ -6,22 +6,10 @@ importArticles({
     ]
 });
 
-function showTab(tabId) {
-  const tabContents = document.querySelectorAll('.tab-content');
-  for (const content of tabContents) {
-    content.classList.remove('show');
-  }
+document.addEventListener("DOMContentLoaded", function() {
+  var container = document.getElementById("container");
 
-  const tabContentToShow = document.getElementById(tabId);
-  tabContentToShow.classList.add('show');
-}
-
-function addCustomLink() {
-  var linkContainer = document.getElementById('mitglieder');
-  var link = document.createElement('a');
-  link.href = 'https://www.example.com';
-  link.textContent = 'Gehe zu Beispiel';
-  linkContainer.appendChild(link);
-}
-
-addCustomLink();
+  container.addEventListener("click", function() {
+    window.location.href = "https://jaradans-test.fandom.com/de/wiki/";
+  });
+});

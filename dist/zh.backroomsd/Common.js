@@ -1,4 +1,3 @@
-/* 这里的任何JavaScript将为所有用户在每次页面载入时加载。 */
 (function () {
     const eles = document.querySelectorAll('.js-action-play');
     eles.forEach(function (e) {
@@ -23,16 +22,39 @@
     });
 })();
 
-/*
- * A faster alternative to importing stylesheets where API requests are not needed
- * HTML class "transcluded-css" comes from [[Template:CSS]]
- * After this CSS importing method is approved, the previous one will be removed soon
- */
-mw.hook("wikipage.content").add(function() {
-	mw.loader.using("mediawiki.util", function() {
-		$("span.transcluded-css").each(function() {
-			mw.util.addCSS($(this).text());
-			$(this).remove();
-		});
+mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
+mw.hook("wikipage.content").add(function () {
+    $("span.import-css").each(function () {
+    	mw.util.addCSS($(this).attr("data-css"));
+    });
+    
+    $(".sitenotice-tab-container").each(function() {
+		var container = $(this);
+		function switchTab(offset) {
+			return function() {
+				var tabs = container.children(".sitenotice-tab").toArray();
+				var no = Number(container.find(".sitenotice-tab-no")[0].innerText) + offset;
+				var count = tabs.length;
+				if (no < 1) no = count;
+				else if (no > count) no = 1;
+				for (var i = 0; i < count; i++)
+					tabs[i].style.display = (i + 1 == no ? null : "none");
+				container.find(".sitenotice-tab-no")[0].innerText = no;
+			};
+		}
+		container.find(".sitenotice-tab-arrow.prev").click(switchTab(-1));
+		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
 	});
+});
+
+$.getJSON(mw.util.wikiScript("index"), {
+    title: "MediaWiki:Custom-import-scripts.json",
+    action: "raw"
+}).done(function (result, status) {
+    if (status != "success" || typeof (result) != "object") return;
+    var scripts = result[mw.config.get("wgPageName")];
+    if (scripts) {
+        if (typeof (scripts) == "string") scripts = [scripts];
+        importArticles({ type: "script", articles: scripts });
+    }
 });

@@ -4,10 +4,6 @@
 	if (window.SpriteEditorModules.main && window.SpriteEditorModules.main.loaded) return;
 	window.SpriteEditorModules.main = {loaded: true};
 	var myData = window.SpriteEditorModules.main;
-	myData.blacklist = [
-		"animatesprite",
-		"sprite"
-	];
 	const config = mw.config.get([
 		'wgArticlePath',
 		'wgFormattedNamespaces',

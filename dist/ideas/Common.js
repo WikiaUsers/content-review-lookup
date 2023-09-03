@@ -287,3 +287,38 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	' Coolot1': ['montheditor', 'achievementleader'],
 };
+
+$("span.image-hover").each(function() {
+    var a = [$(this).attr("data-default"), $(this).attr("data-hover")],
+        b = /^https{0,1}\:\/\//;
+    if (a[0].search(b) + a[1].search(b) == 0) {
+        $(this).replaceWith(function() {
+            return $("<img />").attr({
+                "class": "image-hover",
+                "src": a[0].replace(/"/g,"&quot;"),
+                "data-a": a[0].replace(/"/g,"&quot;"),
+                "data-b": a[1].replace(/"/g,"&quot;")
+            }).mouseover(function() {
+                $(this).attr(
+                    "src",
+                    $(this).attr("data-b")
+                );
+            }).mouseout(function() {
+                $(this).attr(
+                    "src",
+                    $(this).attr("data-a")
+                );
+            });
+        });
+    }
+});
+
+.fadeout img:hover {
+    opacity:0;
+}
+.fadeout img:active {
+    opacity:0;
+}
+body:not(.editor) .fadeout-container.fadeout-hide-bottom > :nth-child(2) {
+    visibility: hidden; /* the 'body:not(.editor)' is used to prevent hiding the image in editing mode where it is not displayed properly */
+}

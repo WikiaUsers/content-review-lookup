@@ -32,6 +32,24 @@ $(document).ready(function() {
 		}
 	});
 	
+	//Function for scrolling buttons
+	$('.HSM-Scroll-Right').click(function() {
+		var element = $(this).parents('.HSM-Container').find('.HSM-Icons');
+		var width = Math.floor( element.width() - 30); //Less than full width helps user recognise how far it scrolled
+		event.preventDefault();
+		$(element).animate({
+			scrollLeft: "+=" + width + "px"
+		}, "slow");
+	});
+	$('.HSM-Scroll-Left').click(function() {
+		var element = $(this).parents('.HSM-Container').find('.HSM-Icons');
+		var width = Math.floor( element.width() - 30);
+		event.preventDefault();
+		$(element).animate({
+			scrollLeft: "-=" + width + "px"
+		}, "slow");
+	});
+	
 	//Function to show all skins
 	$('.HSM-Container .HSM-Author').click(function () {
 		$(this).parents('.HSM-Container').addClass('all-skins');

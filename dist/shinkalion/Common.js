@@ -1,10 +1,36 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Shinkalion knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "You won't make a great Shinkalion Driver, considering your poor knowledge!",
+    "Some Shinkalion Drivers know less than you, but there are still others who know more than you!",
+    "Congrats! Your knowledge is exactly what S.U.E.I. looks after!" 
+];
+window.questions = [
+    ["Who of those characters existed for real in history?",
+    "Carl Roman Abt",
+    "Nagato Yamaguchi",
+    "Midori Kurume"], 
+
+    ["Who from S.U.E.I. staff of Season 1 doesn't appear in Season 2?",
+    "Chikuma Kiyosu",
+    "Akagi Honjo",
+    "Akatsuki Ogura"],
+
+    ["Who of those doesn't have siblings?",
+    "Akita Oga",
+    "Hayato Hayasugi",
+    "Shin Arata"]
+    ];
+
 window.MessageBlock = {
-  title : 'Blocked',
+  title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
   autocheck : true
 };
+
+addOnloadHook(createCollapseButtons);
 
 /** Magic editintros ****************************************************
  *
@@ -22,7 +48,7 @@ function addEditIntro(name) {
 
 
 if (wgNamespaceNumber == 0) {
-    $(function() {
+    addOnloadHook(function() {
         if (document.getElementById('disambigbox'))
             addEditIntro('Template:Disambig_editintro');
     });
@@ -31,6 +57,9 @@ if (wgNamespaceNumber == 0) {
 /****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/
+//wsl.loadScript("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
+//wsl.loadScript("https://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
+
 mw.loader.using(['jquery.ui.tabs'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
@@ -57,11 +86,13 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 /******************************/
 /* changes the redirect image */
 /******************************/
-$(function ChangeRedirectImage() {
+function ChangeRedirectImage() {
     $('.redirectMsg img').attr('src', 'https://images.wikia.nocookie.net/__cb20100902033555/dragonage/images/b/b5/Redirectltr.png');
-});
+}
+addOnloadHook(ChangeRedirectImage);
 
 //ArchiveTool configuration 
+
 var ArchiveToolConfig = {
     archiveListTemplate: 'ArchCat',
     archivePageTemplate: 'ArchPage',

@@ -1,5 +1,29 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Tenkai Knights knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Considering your poor knowledge you won't be of much help for the Corekai!",
+    "Let's say you would be an average warrior in the combat against The Corrupted, not bad, but also not good.",
+    "Congratulations! The Corrupted and their leader Vilius would be easily defeated by you!" 
+];
+window.questions = [
+    ["Who of those characters has siblings?",
+    "Toxsa Dalton",
+    "Guren Nash",
+    "Ceylan Jones"], 
+
+    ["Who owns the Shop of Wonders?",
+    "Mr. White",
+    "Mr. Nash",
+    "Mr. Dalton"],
+
+    ["Who of those is never a member of the kids who become the Tenkai Knights?",
+    "Kiiro",
+    "Gen",
+    "Beni"]
+    ];
+
 window.MessageBlock = {
   title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
@@ -75,7 +99,6 @@ var ArchiveToolConfig = {
     archiveSubpage: 'Archive',
     userLang: true
 };
-
 
 /////////////////
 // END OF CODE //

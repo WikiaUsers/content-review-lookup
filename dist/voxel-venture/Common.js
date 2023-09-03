@@ -1,5 +1,4 @@
-// code to create a spoiler thing like in reddit or discord
-/////// (for the reviewers, look at [[User:BrandadCheeser4]] to see examples of this code in use)
+// code for spoiler tags, similar to the ones present on reddit and discord
 /// lectern chapter I
 $(".spoiler").addClass("preSpoiler");
 
@@ -56,6 +55,16 @@ $("#apply").click(function() {
 	var refineryInput4 = document.getElementById("input4").textContent;
 	//5
 	var refineryInput5 = document.getElementById("input5").textContent;
+	//6
+	var refineryInput6 = document.getElementById("input6").textContent;
+	//7
+	var refineryInput7 = document.getElementById("input7").textContent;
+	//8
+	var refineryInput8 = document.getElementById("input8").textContent;
+	//9
+	var refineryInput9 = document.getElementById("input9").textContent;
+	//10
+	var refineryInput10 = document.getElementById("input10").textContent;
 
 ///// outputs
 	//1
@@ -70,4 +79,14 @@ $("#apply").click(function() {
 	document.getElementById("inputFinal4").innerHTML = refineryInput4 * refineryMultiply;
 	//5
 	document.getElementById("inputFinal5").innerHTML = refineryInput5 * refineryMultiply;
+	//6
+	document.getElementById("inputFinal6").innerHTML = refineryInput6 * refineryMultiply;
+	//7
+	document.getElementById("inputFinal7").innerHTML = refineryInput7 * refineryMultiply;
+	//8
+	document.getElementById("inputFinal8").innerHTML = refineryInput8 * refineryMultiply;
+	//9
+	document.getElementById("inputFinal9").innerHTML = refineryInput9 * refineryMultiply;
+	//10
+	document.getElementById("inputFinal10").innerHTML = refineryInput10 * refineryMultiply;
 });

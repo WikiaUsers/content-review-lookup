@@ -271,7 +271,7 @@ $(function () {
         '<input id="calculator_ew_loyalty_pts" type="number" value="0" min="0" max="10000" style="width:55px;"></label>' +
         '<label>Loyalty bonus:' +
         '<input id="calculator_ew_loyalty_bonus" type="number" value="0" min="0" max="50" step="5" style="width:45px;">%</label><br/><br/>' +
-        '<label>Vocation and Skill: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Mage: Magic Level</option><option value="meleeknight">Knight: Melee/Shielding</option><option value="magicknight">Knight: Magic Level</option><option value="distancepaladin">Paladin: Distance</option><option value="magicpaladin">Paladin: Magic Level</option></select><label><br/><br/>' +
+        '<label>Vocation and Skill: <select name="calculator_ew_voc_skill"><option value="magicmage" selected>Mage: Magic Level</option><option value="meleeknight">Knight: Melee/Shielding</option><option value="magicknight">Knight: Magic Level</option><option value="distancepaladin">Paladin: Distance/Shielding</option><option value="magicpaladin">Paladin: Magic Level</option></select><label><br/><br/>' +
         '<label>Weapon Type: <select name="calculator_ew_wep_type"><option value="training">Training (50x, 1min40s)</option><option value="regular" selected>Regular (500x, 16min40s)</option><option value="durable">Durable (1,800x, 1h)</option><option value="lasting">Lasting (14,400x, 8h)</option></select></label><br/><br/>' +
         '<label><input type="checkbox" name="ew_event" value="double">Double Skills Event</label>' +
         '<label><input type="checkbox" name="ew_dummy" value="expert">House Dummy</label><br/><br/>' +

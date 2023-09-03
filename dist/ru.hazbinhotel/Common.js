@@ -20,6 +20,7 @@ const staff = [
     {name: 'Creepy Owl', className: 'admin'},
     {name: 'Lich night', className: 'threadMod'},
     {name: 'IamNotFreddy', className: 'discordAdmin'},
+    {name: 'KykS911', className: 'discordAdmin'},
     {name: 'Merzlyak', className: 'discordMod'},
     {name: 'Kostinger', className: 'discordMod'},
     {name: 'TimurKhan', className: 'discordMod'},
@@ -36,11 +37,11 @@ setInterval(function (user) {
 	})
 }, 500)
 
-// == Настройка гаджетов == //
+/* Настройка гаджетов */
 nkch_gst_gadgets = [{
-    name: "RWA", // название гаджета с MediaWiki:Gadget-Название; обязательно
-    title: "Недавняя вики-деятельность", // Название в меню
-    description: "Недавняя вики-деятельность" // Описание гаджета в меню при наведении
+    name: "RWA", 
+    title: "Недавняя вики-деятельность", 
+    description: "Недавняя вики-деятельность"
 },  {
     name: "RemoveCatSpoiler",
     title: "Прежние Категории",
@@ -49,10 +50,6 @@ nkch_gst_gadgets = [{
     name: "UCXSearch",
     title: "Быстрый поиск",
     description: "Поисковая строка в локальном меню без модального окна"
-}, {
-    name: "ThemeToggler",
-    title: "Переключатель темы",
-    description: "Иконка в левой части страницы для переключения темы"
 }, {
     name: "NkchToggler",
     title: "Быстрая смена темы",

@@ -1,10 +1,36 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Mazica Party knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "Mazica Academy won‘t accept you as a student, considering your poor knowledge!",
+    "Given your knowledge you would at least make an average student at Mazica Academy!",
+    "Congrats! You have such a vast knowledge, that you could easily become one of the top students at Mazica Academy!" 
+];
+window.questions = [
+    ["Who is Kezuru‘s best friend?",
+    "Cratch",
+    "Kanna",
+    "Eric"], 
+
+    ["Who is Kezuru‘s main partner Mazin?",
+    "Ballonya",
+    "Fuclock",
+    "Discou"],
+
+    ["Who of those has siblings?",
+    "Eric",
+    "Cratch",
+    "Kanna"]
+    ];
+
 window.MessageBlock = {
-  title : 'Blocked',
+  title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
   autocheck : true
 };
+
+addOnloadHook(createCollapseButtons);
 
 /** Magic editintros ****************************************************
  *
@@ -22,7 +48,7 @@ function addEditIntro(name) {
 
 
 if (wgNamespaceNumber == 0) {
-    $(function() {
+    addOnloadHook(function() {
         if (document.getElementById('disambigbox'))
             addEditIntro('Template:Disambig_editintro');
     });
@@ -31,6 +57,9 @@ if (wgNamespaceNumber == 0) {
 /****************************************/
 /* sliders using jquery by User:Tierrie */
 /****************************************/
+//wsl.loadScript("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js");
+//wsl.loadScript("https://dragonage.wikia.com/index.php?title=MediaWiki:Jquery-ui.min.js&action=raw&ctype=text/javascript");
+
 mw.loader.using(['jquery.ui.tabs'], function() {
     $(function() {
         var $tabs = $("#portal_slider").tabs({
@@ -57,11 +86,13 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 /******************************/
 /* changes the redirect image */
 /******************************/
-$(function ChangeRedirectImage() {
+function ChangeRedirectImage() {
     $('.redirectMsg img').attr('src', 'https://images.wikia.nocookie.net/__cb20100902033555/dragonage/images/b/b5/Redirectltr.png');
-});
+}
+addOnloadHook(ChangeRedirectImage);
 
 //ArchiveTool configuration 
+
 var ArchiveToolConfig = {
     archiveListTemplate: 'ArchCat',
     archivePageTemplate: 'ArchPage',

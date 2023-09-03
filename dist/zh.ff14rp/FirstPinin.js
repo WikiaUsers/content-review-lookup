@@ -5,21 +5,22 @@ mw.hook("wikipage.content").add(function($content) {
 		if(letter) return letter;
 		return char.charAt(0).toUpperCase();
 	}
-	var form = document.querySelector("form[name='createbox']");
-	if(form) form.addEventListener("submit", function(event) {
-		// 阻止默认的表单提交行为
-		event.preventDefault();
-		// 在提交前添加新元素到表单中
-		var form = document.querySelector("form[name='createbox']");
-		var newInput = document.createElement("input");
-		newInput.type = "hidden";
-		newInput.name = "preloadparams[]";
-		var value = form.querySelector("input[name='title']").value;
-		value = getFirstPinyin(value);
-		newInput.value = value;
-		var submitButton = form.querySelector("input[type='submit']");
-		form.insertBefore(newInput, submitButton);
-		// 执行其他提交操作，例如提交表单
-		form.submit();
-	});
+	var forms = document.querySelectorAll("form[name='createbox']");
+	for(var i = 0; i < forms.length; i++) {
+		forms[i].addEventListener("submit", function(event) {
+			// 阻止默认的表单提交行为
+			event.preventDefault();
+			// 在提交前添加新元素到表单中
+			var newInput = document.createElement("input");
+			newInput.type = "hidden";
+			newInput.name = "preloadparams[]";
+			var value = this.querySelector("input[name='title']").value;
+			value = getFirstPinyin(value);
+			newInput.value = value;
+			var submitButton = this.querySelector("input[type='submit']");
+			this.insertBefore(newInput, submitButton);
+			// 执行其他提交操作，例如提交表单
+			this.submit();
+		});
+	}
 });

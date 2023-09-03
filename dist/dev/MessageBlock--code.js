@@ -46,7 +46,7 @@ mw.loader.using('mediawiki.api', function() {
 			durationDropdown = $('#mw-input-wpExpiry .oo-ui-dropdownWidget-handle .oo-ui-labelElement-label');
 
 		var reasonBox = $('#mw-input-wpReason .oo-ui-textInputWidget-type-text .oo-ui-inputWidget-input'),
-			reasonDropdown = $('#mw-input-wpReason-select .oo-ui-dropdownWidget-handle .oo-ui-labelElement-label');
+			reasonDropdown = $('#mw-input-wpReason .oo-ui-dropdownWidget-handle .oo-ui-labelElement-label');
 
 		var duration = durationBox.is(':disabled') ? durationDropdown.text() : durationBox.val(),
 			blockmessage = prompt(

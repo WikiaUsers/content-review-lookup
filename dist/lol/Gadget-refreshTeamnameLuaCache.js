@@ -102,20 +102,12 @@ $(function() {
 
 		function reportSuccess() {
 			console.log("Done!");
-			if (page == "") {
-				displayColor(statusColorSuccess, 'ca-refresh-teamnames-all');
-			} else {
-				displayColor(statusColorSuccess, 'ca-refresh-teamnames-page');
-			}
+			displayColor(statusColorSuccess, 'ca-refresh-teamnames-page');
 		}
 
 		function reportFailure() {
 			console.log("failed");
-			if (page == "") {
-				displayColor(statusColorError, 'ca-refresh-teamnames-all');
-			} else {
-				displayColor(statusColorError, 'ca-refresh-teamnames-page');
-			}
+			displayColor(statusColorError, 'ca-refresh-teamnames-page');
 		}
 
 		return queryForDuplicates()
@@ -127,10 +119,6 @@ $(function() {
 	
 	$(mw.util.addPortletLink('p-views', 'javascript:;', 'Refresh Page Teamnames', 'ca-refresh-teamnames-page', 'Refresh Page Teamnames')).click(function() {
 			return refreshTeamnames('ca-refresh-teamnames-page', mw.config.get('wgPageName'));
-	});
-
-	$(mw.util.addPortletLink('p-views', 'javascript:;', '!Refresh All Teamnames', 'ca-refresh-teamnames-all', 'Refresh All Teamnames')).click(function() {
-			return refreshTeamnames('ca-refresh-teamnames-all', '');
 	});
 	
 	moveToPViews($('#ca-refresh-teamnames-page'));

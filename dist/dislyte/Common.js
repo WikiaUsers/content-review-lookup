@@ -7,7 +7,7 @@ window.tooltips_list = [
         parse: '{' + '{Template:Status effect tip|1=<#name#>|2=<#type#>|3=<#color#>|4=<#desc#>|title=<#title#>|boxwidth=<#boxwidth#>}}',
     },  {
         classname: 'item-tooltip',
-        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#desc#>|title=<#title#>}}',
+        parse: '{' + '{Template:Item tip|1=<#name#>|2=<#color#>|3=<#desc#>|4=<#flavortext#>|title=<#title#>}}',
     },  {
     	classname: 'esper-tooltip',
         parse: '{' + '{Template:Esper tip|1=<#name#>|2=<#god#>|3=<#star#>}}',

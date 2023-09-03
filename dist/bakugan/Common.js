@@ -1,5 +1,29 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+window.quizName = "Test your Bakugan knowledge!";
+window.quizLang = "en";
+window.resultsTextArray = [ 
+    "You're nothing but a Baku-Noob!",
+    "Your knowledge could be better, but it is not too bad.",
+    "Congratulations! You're an absolute Bakugan-Expert!" 
+];
+window.questions = [
+    ["Who doesn't belong to the original Battle Brawlers from Season 1?",
+    "Mira",
+    "Alice",
+    "Julie"], 
+
+    ["Who was never a member of the Awesome Brawlers?",
+    "Magnus",
+    "Ajit",
+    "Shun"],
+
+    ["Which of those main Bakugan of Generation 3 wasn't one in Generation 2?",
+    "Ventri",
+    "Dragonoid",
+    "Trox"]
+    ];
+
 window.MessageBlock = {
   title : 'Block',
   message : 'You have been blocked for $2 because you have committed the following offence(s): $1',
@@ -75,28 +99,6 @@ var ArchiveToolConfig = {
     archiveSubpage: 'Archive',
     userLang: true
 };
-
-window.quizName = "Test your Bakugan knowledge!";
-window.quizLang = "en";
-window.resultsTextArray = [ 
-    "You're nothing but a Baku-Noob!",
-    "Your knowledge could be better, but it is not too bad.",
-    "Congratulations! You're an absolute Bakugan-Expert!" 
-];
-window.questions = [
-    ["Who doesn't belong to the original Battle Brawlers from Season 1?",
-    "Mira",
-    "Alice",
-    "Julie"], 
-    ["Who was never a member of the Awesome Brawlers?",
-    "Magnus",
-    "Ajit",
-    "Shun"],
-    ["Which of those main Bakugan of Generation 3 wasn't one in Generation 2",
-    "Ventri",
-    "Dragonoid",
-    "Trox"]
-    ];
 
 /////////////////
 // END OF CODE //
