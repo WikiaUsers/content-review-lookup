@@ -1,7 +1,7 @@
 ;(function($, mw) {
 	"use strict";
 	if (mw.config.get("wgCanonicalSpecialPageName") != "Contributions") return;
-	
+
 	var username = mw.config.get("wgRelevantUserName");
 	if (username === null) {
 		// Do nothing if only on Special:Contributions and not a subpage
@@ -14,7 +14,7 @@
 		}).then(function(rights) {
 			if (rights.indexOf("threads:delete") !== -1) {
 				//Only do anything if the user has undeletion rights and is on the contributions page
-				
+
 				var api = new mw.Api();
 				var optionalNotificationsSystemPromise = mw.loader.using("mw.notify");
 
@@ -33,7 +33,7 @@
 				}).then(function(data) {
 					var userID = data.query.users[0].userid;
 					var LIMIT = 100;
-					
+
 					function undeleteSingle(ID, isThread) {
 						var requestUrl = mw.util.wikiScript("wikia") + "?controller=Discussion"+(isThread ? "Thread" : "Post")+"&method=undelete&"+(isThread ? "thread" : "post")+"Id="+ID;
 						return fetch(requestUrl, {
@@ -44,7 +44,7 @@
 
 					function loopThroughAllPosts(posts, i) {
 						if (i < posts.length) {
-							if (posts[i].isDeleted) {
+							if (posts[i].isDeleted && posts[i]._embedded.thread[0].containerType == "FORUM") {
 								return undeleteSingle(posts[i].id).catch(errorMessageNotification).finally(function() {
 									return loopThroughAllPosts(posts, i+1);
 								});
@@ -65,7 +65,7 @@
 							}
 						}).then(function(resp) {
 							var posts = resp._embedded["doc:posts"];
-							
+
 							return loopThroughAllPosts(posts, 0).then(function() {
 								if (posts.length === LIMIT) {
 									return _undeleteAll(page+1);
@@ -73,11 +73,11 @@
 							});
 						});
 					}
-					
+
 					function undeleteAll() {
 						return _undeleteAll(0);
 					}
-					
+
 					// var restorationButton = new OO.ui.ButtonWidget( {
 					// 	label: "Restore all posts",
 					// 	active: true
@@ -85,11 +85,11 @@
 					var restorationButton = $('<button class="wds-button">');
 						restorationButton.append(wds.icon( 'trash-open-small' ));
 						restorationButton.append('<span>Restore all posts</span>');
-					
+
 					$( ".mw-contributions-user-tools" ).append( $( document.createElement("div") ).append( restorationButton ) );
 
 					restorationButton.on("click", function() {
-						restorationButton.prop("disabled", true); 
+						restorationButton.prop("disabled", true);
 						optionalNotificationsSystemPromise.then(function() {
 							mw.notify("Restoration in progress...", { type: "info" });
 						});

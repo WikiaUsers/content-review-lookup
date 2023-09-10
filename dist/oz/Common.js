@@ -69,6 +69,7 @@ importArticles({
         "u:dev:AjaxRC/code.js",
         "u:dev:LastEdited/code.js",
         "u:dev:UserTags/code.js",
-        "u:dev:MessageWallUserTags/code.js"
+        "u:dev:MessageWallUserTags/code.js",
+        "u:dev:MediaWiki:ThankYou.js"
     ]
 });

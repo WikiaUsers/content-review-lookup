@@ -1,3 +1,51 @@
+/*##################################################################################################
+#                                                                                                  #
+#                                       AVERTISSEMENT MODIFICATIONS    TEST                        #
+#                                                                                                  #
+#       @Auteur : Hulothe                                                                          #
+#       @Usage : Averti des utilsateurs qui ne modifient que pour gagner des badges                #
+#                                                                                                  #
+###################################################################################################*/
+
+var ug = wgUserGroups.join(' ');
+if (ug.indexOf('helper') + ug.indexOf('sysop') + ug.indexOf('prefetenchef') > -3 && mw.config.get('wgNamespaceNumber') === 1200) {
+    $( document ).ready(function() {
+                if (wgCanonicalNamespace !== "Mur") {
+                   return false;
+                }
+                $('.WikiaArticle').prepend('<input type="button" value="Avertir pour modifications inutiles" id="modif-badges-avert">');
+            var avertissement = '<p>Bonjour ' + $('.UserProfileMasthead .masthead-info h1').text() + ',</p>' +
+'<p>Merci pour tes récentes contributions sur le Wiki Harry Potter&nbsp;!</p>' +
+'<p>Je dois cependant t\'informer que les modifications ayant pour but de gagner des badges sont interdites sur le wikia, et c\'est apparemment dans cette intention que tu as modifié des pages ou commenté des billets. Ne t\'en fais pas, tu gagneras des badges en modifiant, mais il ne faut pas que ça devienne un prétexte et une source de mauvaises contributions.</p>' +
+'<p>Ce n\'est rien de grave, ne t\'inquiète pas, mais je te demande de tenir compte de ces recommandations à l\'avenir. + Si tu as des questions, n\'hésite pas à m\'en faire part&nbsp;!</p>' +
+'<p>À bientôt&nbsp;:)</p>'
+	    $('#modif-badges-avert').click(function() {
+                var succès = "Message posté avec succès !";
+	        $.post(mw.util.wikiScript('wikia'), {
+                    controller   : 'WallExternal',
+                    method       : 'postNewMessage',
+                    pagenamespace: '1200',
+                    pagetitle    : $('.UserProfileMasthead .masthead-info h1').text(),
+                    messagetitle : 'Modifications pour les badges',
+                    body         : avertissement + '\n\n~~' + '~',
+                    format       : 'json'
+                });
+                alert(succès);
+                window.location.reload();			
+        });
+    });
+}
+
+/* Activité du Wiki - rename edits */
+function RwaMore() {
+    $('.activity-feed-more').children('a').click();   
+}
+var numitemsrwa = $(".activityfeed li").length;
+if (numitemsrwa < 30) {
+    RwaMore();
+}
+
+
 //==============================================================================TESTS==============================================================================//
 
 $('.centralhelpbox').click(function(){

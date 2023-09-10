@@ -86,27 +86,19 @@ UserTagsJS.modules.custom = {
     'BonnieBunny1987': ['lifty', 'shifty'],
     'KennyX1994': ['sysop', 'cuddles', 'flaky', 'bandmstudios' ],
     'IThrowLemonsAtLife': ['bandmstudios'],
-    'Smart zombie': ['sysop', 'bureaucrat', 'nutty', 'formerstaff'],
+    'Smart zombie': ['honorarybureaucrat', 'nutty', 'formerstaff'],
     'Mr Creeper500': ['sysop', 'semiactive', 'cuddles', 'flippy'],
     'DinoLord00': ['lumpy', 'mole', 'russell'],
     'Fasterrr': ['rollback'],
     'Zrenjaninac': ['handy', 'mime', 'mole'],
     'BlueTide': ['rollback', 'handy'],
-    'Nmcconnell': ['rollback'],
+    'Sleep Mast R': ['rollback'],
     'Amber saffeels': ['lumpy'],
     'Splendit-HTF': ['sysop', 'splendid'],
     'OrigamiHound': ['rollback'],
     'SpongeBob\'s Biggest Enthusiast': ['sysop', 'sniffles', 'pop'],
     'Tabletstoons123': ['rollback']
 };
-
-UserTagsJS.modules.mwGroups = ['bureaucrat,sysop']; 
-UserTagsJS.modules.mwGroups = ['rollback'];
-UserTagsJS.modules.mwGroups = ['contentmoderator'];
-
-if (wgUserName != 'null') {
-	$('.insertusername').html(wgUserName);
-}
 
 window.MessageWallUserTags = {
     tagColor: 'black',
@@ -116,24 +108,30 @@ window.MessageWallUserTags = {
         "Lord_O'_Darkness": 'Admin',
         'Yong_feng': 'Honorary Bureaucrat',
         'AnimationFan15': 'Honorary Bureaucrat • Rollback • Cuddles • Toy Chica • Lapis Lazuli',
-        'Rorosilky5': 'Flippy • Kenny',
-        'Sandgar': 'Content Moderator • Flaky • Nutty • BandMStudios',
-        'PokemonTDHTF98': 'Lifty • Shifty',
-        'AdamISAWESOME': 'Lumpy • Mole',
-        'BonnieBunny1987': 'Lifty • Shifty',
         'KennyX1994': 'Bureaucrat • Cuddles • Flaky • BandMStudios', 
-        'IThrowLemonsAtLife': 'BandMStudios',
-        'Smart_zombie': 'Bureaucrat • Nutty',
+        'Smart_zombie': 'Honorary Bureaucrat • Nutty',
         'Mr_Creeper500': 'Bureaucrat • Cuddles • Flippy',
         'DinoLord00': 'Admin • Russell • Lumpy • Mole',
         'Fasterrr': 'Rollback',
-        'Zrenjaninac': 'Admin • Handy • The Mole',
-        'BlueTide': 'Rollback • Handy Fan',
-        'Nmcconnell': 'Rollback',
-        'Splendit-HTF': 'Rollback • Splendid',
+        'Zrenjaninac': 'Admin • Handy • The Mole • Mime',
+        'BlueTide': 'Rollback • Handy',
+        'Sleep Mast R': 'Rollback',
+        'Splendit-HTF': 'Admin • Splendid',
         'OrigamiHound': 'Rollback',
+	    'SpongeBob\'s Biggest Enthusiast': 'Admin • Sniffles • Pop',
+	    'Tabletstoons123': 'Rollback',
+	    'TravellingEye': 'Admin',
+	    'MattDet': 'Admin'
     }
 };
+
+UserTagsJS.modules.mwGroups = ['bureaucrat,sysop']; 
+UserTagsJS.modules.mwGroups = ['rollback'];
+UserTagsJS.modules.mwGroups = ['contentmoderator'];
+
+if (wgUserName != 'null') {
+	$('.insertusername').html(wgUserName);
+}
  
 //Auto Message Blocked
 var MessageBlock = {

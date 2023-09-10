@@ -1,7 +1,7 @@
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝【Add Rail Module】＝＝＝＝＝＝＝＝＝＝＝＝//
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-window.AddRailModule = ['Template:Main_Page/Featured_Trivia', 'Template:Main_Page/Featured_Poll'];
+window.AddRailModule = ['Template:Main_Page/Featured_Poll'];
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 //＝＝＝＝＝＝＝＝＝＝＝＝＝【Auto Refresh】＝＝＝＝＝＝＝＝＝＝＝＝＝//
@@ -72,53 +72,6 @@ window.BackToTopStart = 800;
 
 
 
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-//＝＝＝＝＝＝＝＝＝＝＝【Custom Edit Buttons】＝＝＝＝＝＝＝＝＝＝＝//
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-if (mwCustomEditButtons) {
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile":"http://unbreakable-machine-doll.wikia.com/wiki/Special:FilePath?file=Ō_Accent_Button.png",
-     "speedTip":"Adds the ō character.",
-     "tagOpen":"ō",
-     "tagClose":"",
-     "sampleText":""
-};
- 
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile":"http://unbreakable-machine-doll.wikia.com/wiki/Special:FilePath?file=Ū_Accent_Button.png",
-     "speedTip":"Adds the ū character.",
-     "tagOpen":"ū",
-     "tagClose":"",
-     "sampleText":""
-};
-}
-
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
 

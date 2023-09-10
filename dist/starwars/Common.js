@@ -645,7 +645,7 @@ $( function () {
 			} else if ( cats[i].title === 'Category:Wookieepedia Comprehensive articles' ) {
 				addEditIntro( 'Template:Comprehensive_editintro' );
 				break;
-			} else if ( cats[i].title === 'Category:Articles undergoing major edits' || cats[i].title === 'Category:Works in progress' ) {
+			} else if ( cats[i].title === 'Category:Articles undergoing major edits' ) {
 				addEditIntro( 'Template:Inuse_editintro' );
 				break;
 			} else if ( cats[i].title === 'Category:Legends articles with canon counterparts' ) {

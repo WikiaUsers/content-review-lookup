@@ -85,8 +85,8 @@ $(function createCollapseButtons() {
  * See w:c:dev:AjaxRC for info & attribution 
  */
 
-window.AjaxRCRefreshText = 'Автообновление';
-window.AjaxRCRefreshHoverText = 'Автоматически обновлять страницу';
+window.AjaxRCRefreshText = 'Автооновлення';
+window.AjaxRCRefreshHoverText = 'Автоматично оновляти сторінку';
 window.ajaxPages = ["Служебная:RecentChanges", "Служебная:WikiActivity"];
 
 /************* Wikify *************/
@@ -96,7 +96,7 @@ function addWikifButton() {
     if (!toolbar) return;
     var i = document.createElement('img');
     i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png';
-    i.alt = i.title = 'Биллофикатор';
+    i.alt = i.title = 'Білофікатор';
     i.onclick = Wikify;
     i.style.cursor = 'pointer';
     toolbar.appendChild(i);

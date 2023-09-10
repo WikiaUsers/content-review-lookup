@@ -79,6 +79,16 @@ $(function() {
 				text : '{{#invoke:Teamname|refreshCache|' + page + '}}'
 			});
 		}
+		
+		function logAction() {
+			console.log('writing custom log...');
+			return new mw.Api().postWithToken('csrf', {
+				action: 'customlogswrite',
+				logtype: 'ro-teamnames',
+				title: mw.config.get('wgPageName'),
+				publish: 1,
+			});
+		}
 
 		function getAndPrintWarnings() {
 			console.log("getting warnings")
@@ -114,6 +124,7 @@ $(function() {
 			.then(blankEditIfNeeded, reportFailure)
 			.then(getAndPrintWarnings, reportFailure)
 			.then(doRefresh, reportFailure)
+			.then(logAction, reportFailure)
 			.then(reportSuccess, reportFailure);
 	}
 	

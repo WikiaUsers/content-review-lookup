@@ -23,6 +23,7 @@ mw.loader.using( 'mediawiki.api', function () {
 			arvprop: "ids|timestamp|flags|comment|user|size",
 			arvstart: startDate,
 			arvend: endDate,
+			arvlimit:"1",
 			arvcontinue: editcontinue,
 		}).done( function ( allrevisionsresult ) {
 			allrevisionsresult.query.allrevisions.forEach( function (result) {

@@ -37,7 +37,4 @@ $(document).ready(function() {
         $(this).hide();
     });
 
-    // Community Spotlight modules
-    $("#PixelCruxModule a").removeClass("external");
-
 });

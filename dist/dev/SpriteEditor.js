@@ -8,6 +8,7 @@
 		'wgTitle'
 	]);
 	if (window.SpriteEditorLoaded) return;
+	window.SpriteEditorLoaded = true;
 	
 	window.SpriteEditorModules = {
 		shared: {},
@@ -37,10 +38,8 @@
 			mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI('MediaWiki:SpriteEditor/openButton.js') + '&*');
 		else
 			mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=' + encodeURI('MediaWiki:SpriteEditor/openButton.js') + '&*');
-		window.SpriteEditorLoaded = true;
 	}
 	if (config.wgCanonicalSpecialPageName === 'Blankpage' && config.wgTitle.endsWith('/SpriteEditor')) {
-		window.SpriteEditorLoaded = true;
 		var jsFiles = [
 			'MediaWiki:SpriteEditor/diff.js',
 			'MediaWiki:SpriteEditor/helper.js',

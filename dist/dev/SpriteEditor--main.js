@@ -2,7 +2,8 @@
 	'use strict';
 
 	if (window.SpriteEditorModules.main && window.SpriteEditorModules.main.loaded) return;
-	window.SpriteEditorModules.main = {loaded: true};
+	window.SpriteEditorModules.main = window.SpriteEditorModules.main || {};
+	window.SpriteEditorModules.main.loaded = true;
 	var myData = window.SpriteEditorModules.main;
 	const config = mw.config.get([
 		'wgArticlePath',
@@ -1284,6 +1285,7 @@
 					title: msg("mark-deprecated-hover").plain()
 				}),
 				deprecated2: new OO.ui.DropdownWidget( {
+					classes: [ 'spriteedit-deprecated-dropdown' ],
 				    label: '',
 				    disabled: true,
 				    menu: {
@@ -1683,6 +1685,8 @@
 			if (args) {
 				var logoURL = args[2].value.query.general.logo;
 				window.SpriteEditorModules.helper.imageURL = logoURL.substring(0,logoURL.search("/images/")) + "/images/";
+				var reg = /\/images\/[a-f0-9]{1}\/[a-f0-9]{2}\//gm;
+				if (!reg.exec(logoURL)) window.SpriteEditorModules.helper.no_md5 = true;
 			}
 			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
 				myData.msg = i18no.msg;

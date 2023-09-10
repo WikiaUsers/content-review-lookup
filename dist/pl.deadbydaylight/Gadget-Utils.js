@@ -32,11 +32,12 @@ function ModifySidebar( action, section, name, link ) {
 			var liNode, aNode;
 			if (section == 'toolbox'){
 				//find all li.wds-dropdown that has children span with inner text TOOLBOX
-				var els = Array.from(document.querySelectorAll('li.wds-dropdown')) //find all li with class wds-dropdown
-										.filter(el => Object.keys(Array.from(el.getElementsByTagName('span')) //filter this list to only cases that contains a span-
-																	.filter(spanEl => spanEl.innerText == "TOOLBOX")).length > 0 ); //that has inner text TOOLBOX
+					//find all li with class wds-dropdown
+					//filter this list to only cases that contains a span-
+					//that has inner text TOOLBOX
+				var eligibleLists = Array.from(document.querySelectorAll('li.wds-dropdown')).filter(function(el) { return Object.keys(Array.from(el.getElementsByTagName('span')).filter(function(spanEl) { return spanEl.innerText == "TOOLBOX" })).length > 0 });
 				var mainNode;
-				for (let element of els){
+				for (var element in eligibleLists){
                     liNode = document.createElement( 'li' );
 					aNode = document.createElement( 'a' );
 	

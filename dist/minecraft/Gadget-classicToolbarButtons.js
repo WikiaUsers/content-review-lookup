@@ -1,21 +1,18 @@
 // <nowiki>
-;(function($, mw) {
+;(function(mw) {
 	'use strict';
 
-	if (!(
-		mw.user.options.get( 'showtoolbar' ) &&
-		//!mw.user.options.get( 'usebetatoolbar' ) &&
-		['edit', 'submit'].indexOf(mw.config.get('wgAction')) > -1
-	)) return;
+	if ( [ 'edit', 'submit' ].indexOf( mw.config.get( 'wgAction' ) ) === -1 ) return;
 
-	const buttons = [
+	const buttons = [ // ooui icon, label, pre, post, peri, group, section 
 		[
 			'strikethrough',
 			'Strike',
 			'<s>',
 			'</s>',
 			'Strike-through text',
-			'.section-main > .group-format'
+			'format',
+			'main'
 		],
 		[
 			'underline',
@@ -23,7 +20,8 @@
 			'<span style="text-decoration: underline">',
 			'</span>',
 			'Underlined text',
-			'.section-main > .group-format'
+			'format',
+			'main'
 		],
 		[
 			'code',
@@ -31,7 +29,8 @@
 			'<code>',
 			'</code>',
 			'Code',
-			'.section-advanced > .group-insert'
+			'insert',
+			'advanced'
 		],
 		[
 			'ongoingConversation',
@@ -39,7 +38,8 @@
 			'<!-- ',
 			' -->',
 			'Comment',
-			'.section-advanced > .group-insert'
+			'insert',
+			'advanced'
 		],
 		[
 			'ocr',
@@ -47,49 +47,39 @@
 			'<blockquote>\n',
 			'\n</blockquote>',
 			'Block quote',
-			'.section-advanced > .group-insert'
+			'insert',
+			'advanced'
 		]
 	];
 
-	function init(require) {
-		const OO = require('oojs');
-		const $toolbar = $( '.section-advanced > .group-insert' );
-		const $currentFocused = $('#wpTextbox1');
-
-		buttons.forEach(function(button) {
-			const $button = new OO.ui.ButtonWidget({
-				framed: false,
-				icon: button[0],
-				label: '',
-				invisibleLabel: true,
-				title: button[1]
-			});
-			const $element = $button.$element;
-			$element.addClass('tool');
-			// $element.find('.oo-ui-iconElement-icon').append(img);
-			$(button[5]).append($element);
-			$element.on('click', function() {
-				$currentFocused.textSelection(
-					'encapsulateSelection', {
-						pre: button[2],
-						peri: button[4],
-						post: button[3]
-					}
-				);
-			});
-			$toolbar.append($button);
-		});
-	}
-
 	mw.loader.using([
-		'ext.wikiEditor',
-		'oojs-ui',
-		'oojs-ui-core',
-		'oojs-ui-widgets',
-		// Icons
-		'oojs-ui.styles.icons-editing-styling', // strikethrough
-		'oojs-ui.styles.icons-editing-advanced', // ocr
+		'oojs-ui.styles.icons-editing-styling', // strikethrough, underline
+		'oojs-ui.styles.icons-editing-advanced', // code, ocr
 		'oojs-ui.styles.icons-moderation' // ongoingConversation
-	]).then(init);
-})(window.jQuery, window.mediaWiki);
+	]).then(function() {
+		mw.hook( 'wikiEditor.toolbarReady' ).add( function ( $textarea ) {
+			buttons.forEach(function(button) {
+				$textarea.wikiEditor( 'addToToolbar', {
+					section: button[6],
+					group: button[5],
+					tools: {
+						mcwCustomButton: {
+							label: button[1],
+							type: 'button',
+							oouiIcon: button[0],
+							action: {
+								type: 'encapsulate',
+								options: {
+									pre: button[2],
+									post: button[3],
+									peri: button[4]
+								}
+							}
+						}
+					}
+				} );
+			});
+		} );
+	});
+})(window.mediaWiki);
 // </nowiki>

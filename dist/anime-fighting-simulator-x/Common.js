@@ -14,9 +14,10 @@ function initializeCalculator(calculatorElement) {
 
   var inputAttributes = [];
   var inputFields = [];
-
+  var inputElementsLength = inputElements.length;
+    
   // Loop through input elements to gather attributes and fields
-  for (var i = 0; i < inputElements.length; i++) {
+  for (var i = 0; i < inputElementsLength; i++) {
     var inputElement = inputElements[i];
     var variable = inputElement.getAttribute('data-variable');
     var inputField = inputElement.querySelector('input');
@@ -29,22 +30,26 @@ function initializeCalculator(calculatorElement) {
   function evaluateFormulas() {
     var values = {}; // Stores user input values
 
+    
     // Loop through input elements to retrieve values
-    for (var i = 0; i < inputElements.length; i++) {
+    for (var i = 0; i < inputElementsLength; i++) {
       var inputElement = inputElements[i];
       var variable = inputElement.getAttribute('data-variable');
       var inputField = inputElement.querySelector('input');
       var inputValue = parseFloat(inputField.value) || 0;
+      
+      var FieldMin = inputField.min; // Set minimum value
+      var FieldMax = inputField.max;
 
       // Input validation: Restricting range to (1-150)
-      if (inputValue < 1 & inputValue != "") {
-        inputValue = 1;
-      } else if (inputValue > 150) {
-        inputValue = 150;
+      if (inputValue < FieldMin & inputValue != "") {
+        inputValue = FieldMin;
+      } else if (inputValue > FieldMax) {
+        inputValue = FieldMax;
       }
       if (inputValue == "") {
          inputField.value = "";
-         values[variable] = 1;
+         values[variable] = FieldMin;
       } else {
          inputField.value = inputValue; // Update input value
          values[variable] = inputValue;
@@ -52,7 +57,8 @@ function initializeCalculator(calculatorElement) {
     }
 
     // Loop through output elements and calculate results
-    for (var j = 0; j < outputElements.length; j++) {
+    outputElementsLength = outputElements.length;
+    for (var j = 0; j < outputElementsLength; j++) {
       var outputElement = outputElements[j];
       var formula = outputElement.getAttribute('data-formula');
 
@@ -67,22 +73,24 @@ function initializeCalculator(calculatorElement) {
         var result = eval(formula.replace(/\b\w+\b/g, function (match) {
           return values[match] || match;
         }));
-        outputElement.textContent = result;
+        outputElement.innerHTML = formatNumber(result);
       } catch (error) {
-        outputElement.textContent = values[variable] || 'Formula Error'; // Use validated value or "Formula Error"
+        outputElement.innerHTML = formatNumber(values[variable]) || 'Formula Error'; // Use validated value or "Formula Error"
       }
     }
   }
 
   // Set up event handlers for input elements
-  for (var k = 0; k < inputElements.length; k++) {
+  for (var k = 0; k < inputElementsLength; k++) {
     var inputElement = inputElements[k];
+    var FieldMin = inputElement.getAttribute('data-FieldMin') || 1;
+    var FieldMax = inputElement.getAttribute('data-FieldMax') || 1;
     var inputField = document.createElement('input');
-    inputField.placeholder = '1';
-    inputField.defaultValue = '1';
+    inputField.placeholder = FieldMin;
+    inputField.defaultValue = FieldMin;
     inputField.type = 'number'; // Set input type to "number"
-    inputField.min = 1; // Set minimum value
-    inputField.max = 150; // Set maximum value
+    inputField.min = FieldMin; // Set minimum value
+    inputField.max = FieldMax; // Set maximum value
     inputField.step = 1; // Set step
     inputElement.appendChild(inputField);
 
@@ -98,8 +106,28 @@ function initializeCalculator(calculatorElement) {
 var calculatorElements = document.querySelectorAll('.calculator');
 
 if (calculatorElements.length > 0) {
-  for (var l = 0; l < calculatorElements.length; l++) {
-    var calculatorElement = calculatorElements[l];
-    initializeCalculator(calculatorElement);
+	calculatorElementsLength = calculatorElements.length;
+  for (var l = 0; l < calculatorElementsLength; l++) {
+    initializeCalculator(calculatorElements[l]);
+  }
+}
+
+
+
+
+function formatNumber(num) {
+  if (num < 30) {
+	  var formattedNumber = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num);
+	  var parts = formattedNumber.split('.');
+	  var integerPart = parts[0];
+	  var decimalPart = parts[1];
+	
+	  if (decimalPart !== undefined) {
+	    return integerPart + '.<small>' + decimalPart + '</small>';
+	  } else {
+	    return formattedNumber;
+	  }
+  } else {
+	  return parseInt(num);
   }
 }

@@ -122,8 +122,12 @@
 		seperatePath: window.SpriteEditorModules.seperatePath,
 		filepath: function(name) {
 			if (window.hex_md5) {
-				const hash = window.hex_md5(name);
-				return window.SpriteEditorModules.helper.imageURL + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) + "?format=original&version=" + Date.now();
+				if (window.SpriteEditorModules.helper.no_md5) {
+					return window.SpriteEditorModules.helper.imageURL + '/' + encodeURIComponent(name) + "?format=original&version=" + Date.now();
+				} else {
+					const hash = window.hex_md5(name);
+					return window.SpriteEditorModules.helper.imageURL + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) + "?format=original&version=" + Date.now();
+				}
 			} else {
 				return '';
 			}

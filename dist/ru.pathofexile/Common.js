@@ -1,3 +1,12 @@
+mw.hook('wikipage.content').add(function($content) {
+	var articles = [];
+	
+	if ($content.find('#AtlasOfWorlds')[0]) articles.push('MediaWiki:Atlas of Worlds.js');
+	if ($content.find('#monster_main')[0]) articles.push('MediaWiki:Monster.js');
+	
+	if (articles.length) importArticle({ type: 'script', articles: articles });
+});
+
 /* global mw, $ */
 /* jshint strict:false, browser:true */
 

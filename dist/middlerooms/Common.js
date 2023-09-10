@@ -86,6 +86,6 @@ UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
 UserTagsJS.modules.userfilter = { 'Blueberry Bot': ['bureaucrat'] };
 UserTagsJS.modules.custom = {
-	'Blueberry Bot': ['bot', 'sysop'],
+	'Blueberry Bot': ['bot'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 };

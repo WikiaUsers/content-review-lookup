@@ -4,7 +4,7 @@
  * Author: WooperIsBest
  * Co-Author: Caburum
  * A simple script that adds extra page actions to the page contributions dropdown menu
-*/
+ */
 
 ;(function ($, mw) {
 	'use strict';
@@ -24,15 +24,13 @@
 		return new mw.Api().loadMessagesIfMissing([
 			'whatlinkshere',
 			'log',
-			'purge',
 			'currentrev',
 			'movesubpage'
 		]);
 	}).then(function() {
-		link('linkshere', 'Special:WhatLinksHere/' + currentPage, 'whatlinkshere');
+		link('whatlinkshere ca-linkshere', 'Special:WhatLinksHere/' + currentPage, 'whatlinkshere');
 		link('logs', 'Special:Log?page=' + currentPage, 'log');
-		link('purge', currentPage + '?action=purge', 'purge');
-		link('latestdiff', currentPage + '?diff=latest', 'currentrev');
+		link('latestrevision ca-latestdiff', currentPage + '?diff=latest', 'currentrev');
 		link('subpages', 'Special:PrefixIndex/' + currentPage + '/', 'movesubpage');
 	});
 
