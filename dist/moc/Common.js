@@ -22,6 +22,18 @@ window.mapsExtendedConfigs =
             children: [ "" ]
         },
         {
+            label: "TradeSkills",
+            children: [ "" ]
+        },
+        {
+            label: "Event Mobs",
+            children: [ "" ]
+        },
+        {
+            label: "Guild Halls",
+            children: [ "" ]
+        },
+        {
             label: "Inn",
             children: [ "" ]
         }

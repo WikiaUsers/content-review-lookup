@@ -75,3 +75,12 @@ window.questions = [
 ];
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 180;
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{subst:' + 'TemplateUserPage}}',
+        3: false,
+        1202: false
+    },
+    summary: 'Creating user page',
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+};

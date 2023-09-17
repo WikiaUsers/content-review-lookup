@@ -45,6 +45,13 @@
 			author: "Skeletony",
 			packsUrl: "https://hypixel.net/threads/worlds-and-beyond-16x-crystal-hollows-update-version-1-5.3597207/"
 		},
+		{
+			id: 'hypixel+',
+			name: "Hypixel+",
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/Hypixel%2B.css",
+			author: "ic22487",
+			packsUrl: "https://hypixel.net/threads/0-16-1-update-hypixel-for-1-8-1-12-and-1-19.4174260/"
+		},
 	];
 	
 	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><rect class="hsw-dd-brown" x="1" y="5" width="16" height="12" rx="2" ry="2" /><rect class="hsw-dd-green" x="1" y="1" width="16" height="4" rx="2" ry="2" /><rect class="c" x="1" y="1" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" /><polyline class="d" points="1 5 3.19 5 5 4.68 6.82 6.84 8.66 5 11.32 5 13.29 4.01 14.76 6 17 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>';

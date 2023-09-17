@@ -15,10 +15,12 @@ window.UserTagsJS = {
 	tags: {
 		coder: { u: 'Coder', order: 110 },
 		designer: { u: 'Designer', order: 111},
+		fanonunioncounselor: { u: 'Fanon Union Counselor', order: 112 },
 	}
 };
 /** Users **/
 UserTagsJS.modules.custom = { // NOTE: order of list here does NOT matter //
 	'JoasJSD' : ['coder', 'designer'],
+	'Yindeenia01' : ['fanonunioncounselor'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];

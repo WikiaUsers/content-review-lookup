@@ -13,12 +13,23 @@ mw.hook("wikipage.content").add(function($content) {
 	function draw(i) {//正式为第i个occan绘画
 		console.log("occan:"+i+"开始绘制", occanjsonObject[i]);
 		//前置工作
+		var imgNode = null, nodeWidth = 0, nodeHeight = 0;
+		var jsonObject = occanjsonObject[i];
+		if (jsonObject.imgNode) {
+			imgNode = document.querySelector(jsonObject.imgNode);
+		}
+		if(imgNode) {
+			nodeWidth = imgNode.offsetWidth;
+			nodeHeight = imgNode.offsetHeight;
+		} else {
+			nodeWidth = document.querySelector('#content').offsetWidth;
+			nodeHeight = occanjsonObject[i].height || 720;
+		}
 		var canvas = document.createElement("canvas");
-		canvas.width = occanjsonObject[i].width || "1280";
-		canvas.height = occanjsonObject[i].height || "720";
+		canvas.width = occanjsonObject[i].width || nodeWidth;
+		canvas.height = occanjsonObject[i].height || nodeHeight;
 		var ctx = canvas.getContext("2d");//创建CanvasRenderingContext2D
 		//开始绘制图像
-		var jsonObject = occanjsonObject[i];
 		var data = jsonObject.data;
 		for (var key in data) {
 			var arrayI = data[key];
@@ -29,17 +40,29 @@ mw.hook("wikipage.content").add(function($content) {
 						if(!occansImgs[i][pars[0]]) continue;
 						pars[0] = occansImgs[i][pars[0]];
 					}
+					for(var j = 0; j < pars.length; j++) {
+						if(typeof pars[j] === 'string') {
+							if(pars[j].startsWith("%w")) {
+								pars[j] = parseInt(pars[j].slice(2)) * nodeWidth / 100;
+							} else if(pars[j].startsWith("%h")) {
+								pars[j] = parseInt(pars[j].slice(2)) * nodeHeight / 100;
+							}
+						}
+					}
 					ctx[method].apply(ctx, pars);
 				}  else if (method == "SET") {//设置参数需要特殊处理
+					if(typeof pars[1] === 'string') {
+						if(pars[1].startsWith("%w")) {
+							pars[1] = parseInt(pars[1].slice(2)) * nodeWidth / 100;
+						} else if(pars[1].startsWith("%h")) {
+							pars[1] = parseInt(pars[1].slice(2)) * nodeHeight / 100;
+						}
+					}
 					ctx[pars[0]] = pars[1];
 				} else{
 					console.log("occan:"+i+","+method+"方法不存在");
 				}
 			}
-		}
-		var imgNode = null;
-		if (jsonObject.imgNode) {
-			imgNode = document.querySelector(jsonObject.imgNode);
 		}
 		if (imgNode) {
 			imgNode.style.backgroundImage = 'url("'+canvas.toDataURL("image/png")+'")';

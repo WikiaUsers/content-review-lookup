@@ -199,7 +199,8 @@ window.DiscussionTemplates = {
  	{page: 'Template:VKRail', maxAge: 0},
  	{page: 'Template:NewPagesModule', maxAge: 0},
  	{page: 'Template:CodeRail', maxAge: 0},
- 	{page: 'Template:SliderRail', maxAge: 0}
+ 	{page: 'Template:SliderRail', maxAge: 0},
+ 	{page: 'Template:VideoRail', maxAge: 0}
  ];
 
 /* Слайдер в рейле */

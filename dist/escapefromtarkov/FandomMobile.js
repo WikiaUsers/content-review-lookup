@@ -27,9 +27,9 @@ $.when( mw.loader.using( ['mediawiki.util', 'jquery.cookie'] ), $.ready ).then( 
 		$(this).click(function() {
 			setDealer(index, this);
 		});
-		$(this).find('figure').each(function() {
+		/*$(this).find('figure').each(function() {
 			$(this).replaceWith($(this).find('a').html());
-		});
+		});*/
 		if (parseInt($.cookie("lastDealer")) === index  || (index === 0 && ! parseInt($.cookie("lastDealer")))) {
 			setDealer(index, this);
 		}

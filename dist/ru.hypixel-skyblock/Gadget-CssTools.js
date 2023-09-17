@@ -1,17 +1,21 @@
-/*
+/**
+ * This is part of the CSS Integration Tool. This script can be used on any language environment.
+ * Author: Hypixel SkyBlock Wiki
  * (Y01) Less
  * (Y02) Less Source Updater
  */
 // Загружает Less, а программа обновления цветов персонала для администраторов
-mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'ext.fandom.ContentReview.legacyLoaders.js'], function () {
+mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'mediawiki.Title', 'ext.fandom.ContentReview.legacyLoaders.js'], function () {
     var api = new mw.Api();
     var conf = mw.config.get([
-        "wgUserGroups",
-        "wgPageName",
-        "wgFormattedNamespaces",
-        "wgAction",
-        "wgContentLanguage",
-    ]);
+    		"wgUserGroups",
+        	"wgPageName",
+        	"wgFormattedNamespaces",
+        	"wgAction",
+        	"wgContentLanguage",
+        ]),
+        enLessConfig = "https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Custom-Less.json",
+        localLessConfig = mw.util.getUrl("MediaWiki:Custom-Less.json");
     if (!/bureaucrat|sysop|codeeditor|util|staff|helper|global-discussions-moderator|wiki-manager|content-team-member|soap/.test(conf.wgUserGroups.join("\n")))
         return;
 
@@ -32,15 +36,16 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'ext.fandom.ContentReview.leg
     }
     $.when(
         // получить список страниц из английской Вики
-        getJsonOrEmpty("https://hypixel-skyblock.fandom.com/wiki/MediaWiki:Custom-Less.json", false),
+        getJsonOrEmpty(enLessConfig, false),
         // также включите для страниц из локальной вики [[MediaWiki:Custom-Less.json]]
-        getJsonOrEmpty(mw.util.getUrl("MediaWiki:Custom-Less.json"), true)
+        getJsonOrEmpty(localLessConfig, true)
     ).then(function (lessJson, lessJsonLocal) {
         var lessPages = lessJson.concat(lessJsonLocal);
         var mwns = conf.wgFormattedNamespaces[8] + ":"; // локализованное пространство имен mw
         lessPages = ["Common.css", "Custom-common.less"].concat(lessPages).map(function (s) {
             return mwns + s;
         });
+        // Prepare Less Script Options
         window.lessOpts = window.lessOpts || [];
         window.lessOpts.push({
             // это страница, на которой есть скомпилированный CSS
@@ -62,12 +67,49 @@ mw.loader.using(['mediawiki.api', 'mediawiki.Uri', 'ext.fandom.ContentReview.leg
             // разрешенные группы
             allowed: ["codeeditor"],
         };
+        // Import Less Script
         importArticles({
             type: "script",
             articles: [
                 "u:dev:MediaWiki:Less/code.2.js",
             ]
         });
+    	// Display Page Links
+        if (lessPages.includes(conf.wgPageName) && conf.wgAction === "view") {
+            api.get({
+                action: "query",
+                titles: lessPages.join("|"),
+                prop: "info"
+            }).then(function (data) {
+                if (data.error)
+                    return console.warn(data.error);
+                var allPages = Object.keys(data.query.pages).filter(function (k) {
+                    return Number(k) > 0;
+                }).map(function (k) {
+                    return data.query.pages[k].title;
+                }).sort().map(function (page) {
+                    var pagelink = (new mw.Title(page, 0)).getUrl();
+                    var li = $("<li style=\"display: inline;margin-right:1em;white-space:nowrap;\">");
+                    li.append($("<a href=\"" + pagelink + "\">" + page.replaceAll(mwns, "").replaceAll("Custom-common.less/", "") + "</a>"));
+                    return li;
+                });
+                var ul = $("<ul style=\"line-break:anywhere;\">");
+                ul.append(allPages);
+                var configlinks = "[<a href=\"" + enLessConfig + "\">en config</a>] " +
+                    (conf.wgContentLanguage !== "en" ? "[<a href=\"" + localLessConfig + "\">local config</a>] " : "");
+                var div = $("<div class=\"page-header__custom-pagelist\">");
+                div.append([
+                    $("<b>Список CSS-страниц: </b>"),
+                    $("<small>", {
+                        html: $("<span>", {
+                            html: configlinks
+                        })
+                    }),
+                    ul
+                ]);
+                $("#mw-clearyourcache").before(div);
+            }).catch(console.warn);
+        }
     }).catch(console.warn);
 
     //###########################################

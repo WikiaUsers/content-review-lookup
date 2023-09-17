@@ -1,12 +1,5 @@
 /* <pre><nowiki> */
 
-if (mw.config.get('wgPageName') === 'Wookieepedia:IRC/Cloak_requests') {
-    importArticles({
-        type: 'script',
-        article: 'MediaWiki:AjaxCloakRequest.js'
-    });
-}
-
 if ((mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough') ||
     (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/ArmoryBox') ||
     (mw.config.get('wgPageName') == 'Wookieepedia:Star_Wars:_Uprising_Super_Walkthrough/FactionsBox')) {

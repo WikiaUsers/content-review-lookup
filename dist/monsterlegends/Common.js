@@ -33,4 +33,6 @@ if (mw.config.get('wgPageName') === 'Breeding_Calculator' || mw.config.get('wgPa
 }
 
 /* LinkPreview */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/monsterlegends/images/8/8c/Thumb-unknownmonster.jpg';
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/monsterlegends/images/8/8c/Thumb-unknownmonster.jpg';

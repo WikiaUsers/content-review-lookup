@@ -3,3 +3,5 @@ window.AddRailModule = [
 	"Template:HandyLinks",
 	"Template:NewPagesModule"
 ];
+
+mw.config.set('UMFBypassLicenseCheck', true);

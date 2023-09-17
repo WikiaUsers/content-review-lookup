@@ -759,3 +759,98 @@ $(function() {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* 
+ * Boss HP Calculator
+ * Script by [[User:Wormix Game]]
+ */
+var bossName = "";
+var hpModuleInvokeResult = null;
+var maxAsyncWaitForResultCount = 10;
+var maxChecksForCalcSpan = 5;
+
+var l10n_boss_calc = l10nFactory(mw.config.get( 'wgPageContentLanguage' ), {
+        // time format: prefix + <time> + postfix
+        unstableConnection:{
+            'en': "ERROR: unstable connection"
+        },
+        error:{
+        	'en': "ERROR"
+        },
+        loading:{
+        	'en': "Loading..."
+        },
+        incorrectValue:{
+        	'en': "The value should be between 1 and 256."
+        },
+        incorrectType:{
+        	'en': "The value should be an integer number."
+        },
+        players:{
+        	'en': "Players"
+        },
+        calculate:{
+        	'en': "Calculate"
+        }
+    });
+
+function checkResult(currentRequestCount){
+	var spanToWriteResult = $("#calcResult")[0];
+	if (hpModuleInvokeResult == null){
+		if (currentRequestCount != maxAsyncWaitForResultCount){
+			setTimeout(checkResult, 1000, currentRequestCount + 1);
+		}else{
+			spanToWriteResult.innerHTML = l10n_boss_calc('unstableConnection');
+		}
+	}else{
+		spanToWriteResult.innerHTML = hpModuleInvokeResult;
+	}
+}
+
+window.getBossHp = function() {
+	var spanToWriteResult = $("#calcResult")[0];
+	var playersCount = Number($("#players-count-field")[0].value);
+	var resultText = l10n_boss_calc('error'); // Print "ERROR" by default
+	if (!isNaN(playersCount)){
+		if (0 < playersCount && playersCount <= 256){
+			var api = new mw.Api();
+			hpModuleInvokeResult = null;
+			api.get({
+				action: 'expandtemplates',
+				text: '{{Boss hp calculator/table|' + bossName + '|players=' +  playersCount + '}}'
+			}).done(function(data) {
+				hpModuleInvokeResult = data.expandtemplates['*'];
+			});
+			resultText = l10n_boss_calc('loading');
+			checkResult(1);
+		}else{
+			resultText = l10n_boss_calc('incorrectValue');
+		}
+	}else{
+		resultText = l10n_boss_calc('incorrectType');
+	}
+	spanToWriteResult.innerHTML = resultText;
+}
+
+var timeUntilNewCheck = 1000;
+var currentCheck = 1;
+
+function checkSpan(){
+	var spanToInsertControls = $("#calc")[0];
+	if (spanToInsertControls !== undefined){
+		bossName = $("#calc")[0].innerText;
+		if (bossName !== "") {
+			spanToInsertControls.innerHTML = "";
+		}
+		$('<input id="players-count-field" type="number" max="256" min="2" placeholder="' + l10n_boss_calc('players') + '" value="2" maxlength="3">').appendTo(spanToInsertControls);
+		$('<input id="calculate-hp-boss" onclick="getBossHp()" type="button" value="' + l10n_boss_calc('calculate') + '">').appendTo(spanToInsertControls);
+	}else{
+		timeUntilNewCheck += 2000;
+		if (currentCheck != maxChecksForCalcSpan){
+			currentCheck += 1;
+			setTimeout(checkSpan, timeUntilNewCheck);
+		}
+	}
+}
+
+checkSpan();

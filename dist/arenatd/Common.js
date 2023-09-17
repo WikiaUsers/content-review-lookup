@@ -69,6 +69,7 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
+/*Open Roblox Game using URI*/
 $(function() {
     function openRobloxLink() {
         var link = "roblox://placeId=7396774756";

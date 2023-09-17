@@ -35,6 +35,15 @@ $(".spoiler4").click(function (){
  $(".preSpoiler4A").removeClass("preSpoiler4A");
 });
 
+/// generic spoiler
+$(".spoilerGeneric").addClass("preSpoilerGeneric");
+
+$(".spoilerGeneric").click(function (){
+ $(".spoilerGeneric").addClass("appSpoilerGeneric");
+ $(".spoilerGeneric").removeClass("preSpoilerGeneric");
+ $(".preSpoilerGenericA").removeClass("preSpoilerGenericA");
+});
+
 // for Template:Refinery
 
 $(document).ready(function() {
