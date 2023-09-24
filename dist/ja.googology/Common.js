@@ -52,14 +52,14 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
   })();
 }
 
-// hide-on-oasis-skin クラスについての特殊な処理を行う。
+// hide-on-desktop-skin クラスについての特殊な処理を行う。
 //
-// スキンが Oasis であるならば hide-on-oasis-skin クラスを持つ HTML 要素の CSS の display プロパティの値を none にセットする。
-if (mw.config.get('skin') === "oasis") {
+// スキンが fandomdesktop であるならば hide-on-desktop-skin クラスを持つ HTML 要素の CSS の display プロパティの値を none にセットする。
+if (mw.config.get('skin') === "fandomdesktop") {
 	// デバッグのためのログを出力する。
-	console.log("Processing 'hide-on-oasis-skin' class");
+	console.log("Processing 'hide-on-desktop-skin' class");
 
-	var elements = document.getElementsByClassName('hide-on-oasis-skin');
+	var elements = document.getElementsByClassName('hide-on-desktop-skin');
 
 	for (var i = 0; i < elements.length; i++) {
 		elements[i].style.display = 'none';

@@ -22,7 +22,7 @@ window.UserTagsJS = {
     modules: {},
     tags: {
         // group: { prizes }
-        old: { u:'OLD BUILDER 🔨', title:'Old Builder' },
+        old: { u:'FOUNDER 🔨', title:'Founder' },
         valen: { u:'LOVELY 😍', title:'Valenbrainz Contest Winner' },
         winterworld: { u:'FROSTY 🥶', title:'Winter World Contest Winner'},
         feastivus: { u:'FESTIVE 🎅', title:'Feastivus 2019 Contest Winner'},
@@ -61,6 +61,9 @@ window.UserTagsJS = {
         grandmaster: { u: 'GRANDMASTER 🏅', title:'Grandmaster Contest Winner'},
         resort: { u: 'SNAPDRAGON’S RESORT 🩴', title:'Snapdragon’s Resort Contest Winner'},
         deepseason: { u: 'DEEP SEA-SON 🐬', title:'Deep Sea-son Contest Winner'},
+        shroomdynasty: { u: 'THE SHROOM DYNASTY 🍒', title:'The Shroom Dynasty Contest Winner'},
+        electrofire: { u: 'ELECTRO FIRE FEST 🎪', title:'Electrofire Fest Contest Winner'},
+        spookytown: { u: 'SPOOKY TOWN 🎸', title:'Spooky Town Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
@@ -80,7 +83,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
     'J192': ['old'],
     'Zomplant Jelo': ['old'],
-    'AbsoluteGei': ['discmod','tenthcontest','pvzh', 'luckozombie'],
+    'AbsoluteGei': ['tenthcontest','pvzh', 'luckozombie'],
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'Baryonyx138': ['worldcontest'],
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod', 'lawnofdoom2'],
@@ -105,7 +108,7 @@ UserTagsJS.modules.custom = {
     'Wynaut821': ['summernights2'],
     'CongruentSausage803': ['greatfieryfeast'],
     'Creepes': ['log','pasta','resort'],
-    'Rocky105': ['chompersdream'],
+    'Rocky105': ['chompersdream','shroomdynasty'],
     'Partyfanboy8': ['pasta'],
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];

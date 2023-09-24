@@ -14,9 +14,9 @@ itemboxTooltip.forEach(function(element) {
 	element.tabIndex = -1;
 });
 
-// hide LastEdited's summary
+// hide LastEdited's summary and modal
 if (!window.lastEdited) {
-	window.lastEdited = { comment: false };
+	window.lastEdited = { diffModal: false, comment: false };
 }
 
 // import [[MediaWiki:Group-sysop.js]]

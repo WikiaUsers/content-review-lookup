@@ -2,4 +2,3 @@
 window.tooltips_config = {
     noCSS: true,
 }
-importScriptPage('MediaWiki:StatCalculator.js');

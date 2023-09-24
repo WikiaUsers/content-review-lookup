@@ -30,7 +30,7 @@
         format = 'mpeg';
       }
   
-      if (preload !== 'auto' || preload !== 'metadata') {
+      if (preload !== 'auto' && preload !== 'metadata') {
         preload = 'none';
       }
       opts.preload = preload;

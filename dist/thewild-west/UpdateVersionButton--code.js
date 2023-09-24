@@ -1,6 +1,6 @@
 /**
  * Name:        UpdateVersionButton
- * Version:     v1.0
+ * Version:     v1.1
  * Author:      theEmeraldMinecraftM
  * Description: Adds a button below the edit dropdown to automatically update the version template
  */
@@ -25,7 +25,7 @@
                 new mw.Api()  // Make an edit POST request
                     .edit( config.wgPageName, function ( revision ) {
                         return {
-                            text: revision.content.replace( /(?<={{Version\|).*(?=}})/, version ),  // Replace the old version (+ any notes) with the new version
+                            text: revision.content.replace( /(?<={{Version\|)[^}}]*(?=}})/, version ),  // Replace the old version (+ any notes) with the new version
                             summary: 'Marked page as up-to-date (' + version + ')',
                             minor: true
                         };

@@ -142,6 +142,10 @@ function insertMenu( _, pageFilter ) {
 		parent.remove();
 	}
 
+	if ( buttons.filter( isButtonActivated ).length < 2 ) {
+		return;
+	}
+
 	const info = document.getElementById( filtersInfoId );
 	if ( info ) {
 		info.appendChild( menu );
@@ -180,6 +184,15 @@ function checkPageContext( button ) {
 	} else {
 		button.classList.add( 'cf-button-deactivated' );
 	}
+}
+
+/**
+ * TODO
+ * @param {HTMLLIElement} button
+ * @returns {boolean}
+ */
+function isButtonActivated( button ) {
+	return !button.classList.contains( 'cf-button-deactivated' );
 }
 
 /**
@@ -418,8 +431,8 @@ const menu = createMenu();
 const paramValue = getFilterParamValue();
 
 mw.hook( 'contentFilter.filter' )
-	.fire( paramValue )
-	.add( setSelectedIndex );
+	.add( setSelectedIndex )
+	.fire( paramValue );
 
 mw.hook( 'contentFilter.content' )
 	.add( insertMenu )

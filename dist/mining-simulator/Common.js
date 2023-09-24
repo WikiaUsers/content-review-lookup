@@ -44,3 +44,11 @@ while (ahrefc < getcategories.length) {
     }
     ahrefc += 1;
 }
+
+// Fixes Thread namespace links on Special:WhatLinksHere.
+if (mw.config.get('wgPageName').replace(/\/.+/, '') === 'Special:WhatLinksHere') {
+    $('#mw-whatlinkshere-list>>[title^="Thread:"]').each(function(_, elem) {
+        elem.innerHTML = elem.title;
+    });
+    console.log('Fixed any link(s) to Thread namespace on current page.');
+}

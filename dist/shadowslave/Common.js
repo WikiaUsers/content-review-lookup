@@ -182,14 +182,14 @@ $(function () {
     function toggleText () {
         if ($(this).hasClass('shown')) {
             $(this).removeClass('shown');
-            $(this).text('Show');
+            $(this).text('Show Spoilers');
         } else {
             $(this).addClass('shown');
-            $(this).text('Hide');
+            $(this).text('Hide Spoilers');
         }
     }
 
-    button.text('Show');
+    button.text('Show Spoilers');
 
 	button.click(toggleText);
 });

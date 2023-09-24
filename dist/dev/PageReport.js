@@ -16,7 +16,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 		}),
 		api.loadMessagesIfMissing(messageKeys
 			.concat(
-				messageKeys.map(function(key) { return key + "-value" }), 
+				messageKeys.map(function(key) { return key + "-value" }),
 				['size-kilobytes', 'size-megabytes', 'scribunto-limitreport-profile-percent', 'scribunto-limitreport-profile-ms', 'whatlinkshere']
 			)
 		)
@@ -46,6 +46,8 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 
 	function parseDate(s) {
 		var m = s.match(/^(?<yyyy>\d{4})(?<mm>\d{2})(?<dd>\d{2})?(?<hh>\d{2})?(?<m>\d{2})?(?<ss>\d{2})?(?<ms>\d{4})?$/);
+		// monthIndex is 0-based, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC#parameters
+		m[2] -= 1
 
 		return new Date(Date.UTC.apply(Date, m.slice(1).map(function(v) { return +v }).filter(Boolean)));
 	}
@@ -88,7 +90,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 				id: report + "-" + key,
 				html: [
 					$('<th>', { text: mw.msg(report + '-' + key) }),
-					$('<td>', { 
+					$('<td>', {
 						text: mw.message.apply(mw, [
 							report + '-' + key + '-value',
 						].concat(value.limit
@@ -104,7 +106,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 	var $transclusionReport = $('<table>', {
 		class: "PageReport-transclusionReport-table wikitable",
 		html: [
-			$('<caption>', { 
+			$('<caption>', {
 				html: ['(', $('<a>', {
 					href: mw.util.getUrl('Special:WhatLinksHere/' + mw.config.get('wgPageName')),
 					text: mw.msg("whatlinkshere"),
@@ -123,7 +125,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 			'min-width': '600px',
 		},
 		html: [
-			$('<caption>', { 
+			$('<caption>', {
 				html: ['(', $('<a>', {
 					href: mw.util.getUrl('Special:AllPages', { namespace: 828 }),
 					text: i18n.msg('all-modules').plain(),
@@ -147,7 +149,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 										$('<th>', { text: i18n.msg('lua-function').plain() }),
 										$('<th>', { text: i18n.msg('lua-time-usage').plain() }),
 										$('<th>', { text: i18n.msg('lua-time-percentage').plain() }),
-									]	
+									]
 								}),
 							].concat(parserReport.scribunto['limitreport-profile'].map(function(d) {
 								return $('<tr>', {
@@ -163,7 +165,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 				}),
 			})
 		] : [], parserReport.scribunto['limitreport-logs'] ? [
-			$('<tr>', { 
+			$('<tr>', {
 				html: $('<th>', {
 					colspan: 2,
 					text: mw.msg('scribunto-limitreport-logs'),
@@ -175,7 +177,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 						text: parserReport.scribunto['limitreport-logs'],
 					}).makeCollapsible().find('.mw-collapsible-toggle').click().end(),
 				}),
-			}) 
+			})
 		] : [])),
 	});
 
@@ -185,7 +187,7 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 			'min-width': '600px',
 		},
 		html: [
-			$('<caption>', { 
+			$('<caption>', {
 				html: $('<a>', {
 					href: mw.util.getUrl('Category:Pages with script errors'),
 					text: i18n.msg('script-errors-description').plain(),
@@ -199,7 +201,8 @@ mw.loader.using(['jquery.makeCollapsible', 'mediawiki.api']).then(function() {
 
 	function onClick() {
 		var date = parseDate(parserReport.cachereport.timestamp);
-		var nextRefreshDate = new Date(+date + parserReport.cachereport.ttl);
+		// ttl is in s but date uses ms
+		var nextRefreshDate = new Date(+date + parserReport.cachereport.ttl * 1000);
 
 		modal.show({
 			title: i18n.msg('title').escape(),

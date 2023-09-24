@@ -24,7 +24,37 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
   script_2.async = true;
   document.head.appendChild(script_2);
 
-  // Apply MathJax to comment
+// hide-on-desktop-skin class imported from Japanese version
+//
+// When the skin is fandomdesktop, set display property of CSS with HTML element having
+// hide-on-desktop-skin class as none.
+if (mw.config.get('skin') === "fandomdesktop") {
+	// Output log for debug
+	console.log("Processing 'hide-on-desktop-skin' class");
+
+	var elements = document.getElementsByClassName('hide-on-desktop-skin');
+
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'none';
+	}
+}
+
+// Finish of code for MathJax by Emk
+
+//Fixing out-of-alignment ol's with high numbers
+var ols=document.getElementsByTagName("ol");
+for(var i=0;i<ols.length;i++){
+    var maxnum=ols[i].start+ols[i].childElementCount-1;
+    if(maxnum>999){
+        ols[i].style.paddingLeft=(-1+Math.floor(Math.log10(maxnum)*2)/4)+"em";
+    }
+}
+
+//Adding page jumping for blog post listings (click the #)
+var pageLocation=window.location+'';
+document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a onclick="var pageToScrollTo=prompt(\'Page number?\');window.location=pageLocation.split(\'?page=\')[0]+\'?page=\'+pageToScrollTo;">#</a>&nbsp;...';
+
+  // Apply MathJax to comment (not working?)
   (function() {
     'use strict';
     // Modified a sample from https://docs.mathjax.org/en/latest/web/typeset.html
@@ -53,21 +83,3 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
     });
   })();
 }
-
-// Finish of code for MathJax by Emk
-
-//Fixing out-of-alignment ol's with high numbers
-var ols=document.getElementsByTagName("ol");
-for(var i=0;i<ols.length;i++){
-    var maxnum=ols[i].start+ols[i].childElementCount-1;
-    if(maxnum>999){
-        ols[i].style.paddingLeft=(-1+Math.floor(Math.log10(maxnum)*2)/4)+"em";
-    }
-}
-
-//Adding page jumping for blog post listings (click the #)
-var pageLocation=window.location+'';
-document.getElementsByClassName("paginator-spacer")[0].innerHTML='...&nbsp;<a onclick="var pageToScrollTo=prompt(\'Page number?\');window.location=pageLocation.split(\'?page=\')[0]+\'?page=\'+pageToScrollTo;">#</a>&nbsp;...';
-
-//Trying to fix forums (thread creation button). So far only works for Forum:Googology
-document.getElementById("forumCreateThreadBox").innerHTML='<button onclick="window.location.href=(window.location.href).replace(\':Googology\',\':\'+( (x=prompt(\'Title?\')) ==\'Googology\' ? \'Forbidden thread title\' : x ));">Create new thread</button>';
