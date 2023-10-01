@@ -37,3 +37,36 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
+/* PDF Functionality */
+var pdfs = document.querySelectorAll(".mw-parser-output .pdf");
+pdfs.forEach(function(e)
+{
+    var embed = document.createElement("embed");
+    embed.src = e.dataset.src;
+    embed.type = "application/pdf";
+    embed.style.cssText = e.style.cssText;
+    e.replaceWith(embed);
+});
+
+/* Google Forms embed for forms without the /e attr. */
+mw.hook('wikipage.content').add(function($content) {
+    if (!$content) {
+        return;
+    }
+    $content.find('.googleforms-alt').each(function() {
+        var $this = $(this),
+            id = $this.attr('data-forms-id'),
+            widget = $this.attr('data-widget') || true;
+            css = {
+                width: 'inherit',
+                height: 'inherit',
+                border: 0
+            };
+        $this.html(
+            $('<iframe>', {
+                src: 'https://docs.google.com/forms/d/' + id + '/viewform?embedded=true&hl=' + mw.config.get('wgUserLanguage'),
+                css: css
+            })
+        );
+    });
+});

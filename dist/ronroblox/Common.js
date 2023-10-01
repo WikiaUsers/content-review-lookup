@@ -91,5 +91,7 @@ UserTagsJS.modules.custom = {
 	'DaBingchilinger': ['wiki-helper'],
 	'Jjc0308': ['wiki-helper'],
 	'Dbowmaster19': ['wiki-helper'],
+	'Beester master': ['wiki-helper'],
+	'PanzerundLancer': ['wiki-helper'],
 };
 //* END of UserTags *//

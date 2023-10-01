@@ -61,7 +61,7 @@ switch (Object.prototype.toString.call(scene))
 
 document.getElementsByClassName("fandom-community-header__background")[0].style.backgroundImage = 
 {
-	'花园' : 'url(https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&path-prefix=zh)',
+	'花园' : 'url(https://static.wikia.nocookie.net/florrio/images/f/fd/%E8%83%8C%E6%99%AF.svg/revision/latest?cb=20230930230146&path-prefix=zh)',
 	'蚁穴' : 'url(https://static.wikia.nocookie.net/florrio/images/5/52/%E8%9A%81%E7%A9%B4%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053958&path-prefix=zh)',
 	'沙漠' : 'url(https://static.wikia.nocookie.net/florrio/images/5/5b/%E6%B2%99%E6%BC%A0%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054014&path-prefix=zh)',
 	'火蚁穴' : 'url(https://static.wikia.nocookie.net/florrio/images/a/a5/%E7%81%AB%E8%9A%81%E7%A9%B4%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054022&path-prefix=zh)',

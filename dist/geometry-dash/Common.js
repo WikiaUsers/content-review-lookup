@@ -6,11 +6,19 @@
 
 /* Template:USERNAME Substitution */
 $(function() {
-	$('.InsertUsername').text(wgUserName);
+	('.InsertUsername').text(wgUserName);
 });
 
-/* CSS classes for daytime periods */
-(function() {
+/* Class addition for VisualEditor Source Mode edit preview */
+//var element = document.querySelector('.fandom-preview-panel');
+//element.classList.add('page');
+//document.querySelector(".target").classList.add("page");
+//document.addEventListener("DOMContentLoaded", function() {
+document.querySelector(".fandom-preview-panel").classList.add("page");
+//});
+
+/* Class addition for daytime periods */
+$(function() {
     'use strict';
 var currentTime = new Date().getHours();
 if (0 <= currentTime && currentTime < 6) {
@@ -33,7 +41,7 @@ else {
         document.body.classList.add('evening');
     }
 }
-})();
+});
 
 /***************************/
 /** Import Configuration ***/

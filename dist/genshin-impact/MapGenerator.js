@@ -5,12 +5,13 @@ $(function() {
 	
     // Load dependencies and cache
 	var config = mw.config.get(['wgAction', 'wgPageName']);
-	var markers = {count:0};
+	var markers = { count:0 };
 	var REGION = 'Mondstadt';
 	var api = new mw.Api();
 	var loadedImages = { _BADIMAGE:{} };
 	var loadedTemplates = {};
 	var mapRefs;
+	var zoom = 1;
 	var mapGenerator = {
 		init: function() {
 			// Clean page
@@ -23,19 +24,42 @@ $(function() {
 						'<img id="mapImage" src="'+mapRefs[REGION].map+'" />'+
 					'</div>'+
 					'<span class="wds-button" id="quickMapGenerator">Generate Maps</span>'+
+					'<span class="wds-button" id="ZoomIn">'+
+						'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
+							'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />'+
+							'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z" />'+
+							'<path fill-rule="evenodd" d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z" />'+
+						'</svg>'+
+					'</span>'+
+					'<span class="wds-button" id="ZoomOut">'+
+						'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
+							'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>'+
+							'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>'+
+							'<path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>'+
+						'</svg>'+
+					'</span>'+
 				'</div>');
+			var tabs = '';
+			Object.keys(mapRefs).forEach(function(region){
+				if (region == REGION) {
+					tabs += '<span class="active-tab"	id="'+region+'"	> '+region+' </span>';
+				} else {
+					tabs += '<span class="inactive-tab"	id="'+region+'"	> '+region+' </span>';
+				}
+			});
 			var regionSelector = $(
 				'<div id="regionSelect" class="custom-tabs-default custom-tabs">'+
-					'<span class="active-tab"	id="Mondstadt"	> Mondstadt </span>'+
-					'<span class="inactive-tab"	id="Liyue"		> Liyue </span>'+
-					'<span class="inactive-tab"	id="Inazuma"	> Inazuma </span>'+
-					'<span class="inactive-tab"	id="Sumeru"		> Sumeru </span>'+
-					'<span class="inactive-tab"	id="Fontaine"	> Fontaine </span>'+
+					tabs+
 				'</div>'
 			);
 			var body = $('#mw-content-text.mw-body-content');
-			body.append($('<h2><span class="mw-headline" id="Quick_Generator">Quick Generator</span></h2>'));
 			body.append(regionSelector);
+			body.append($(
+				'<input class="giw-checkbox" type="checkbox" id="mapDownload">'+
+				'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">Download generated maps directly</label>'+
+				'<h2>'+
+					'<span class="mw-headline" id="Quick_Generator">Quick Generator</span>'+
+				'</h2>'));
 			body.append(container);
 			body.append($(''));
 			body.append($(
@@ -55,8 +79,8 @@ $(function() {
 					'<span class="wds-button" id="MapGenerator">Generate Map</span>'+
 				'</center>'));
 			mapGenerator.loadTemplates(mapRefs[REGION].templates);
-			document.querySelector('#mapContainer').style.left = mapRefs[REGION].offset.left;	// Default map offset
-			document.querySelector('#mapContainer').style.top = mapRefs[REGION].offset.top;		// Default map offset
+			document.querySelector('#mapContainer').style.setProperty('left', mapRefs[REGION].offset.left);	// Default map offset
+			document.querySelector('#mapContainer').style.setProperty('top', mapRefs[REGION].offset.top);	// Default map offset
 			$('#mapContainer').draggable();
 			$('#mapContainer').css('height', (screen.height-250)+'px'); // Limit container so no scrolling is required
 			mw.util.addCSS(
@@ -106,6 +130,20 @@ $(function() {
 					'position: absolute;\n'+
 					'z-index: 999;\n'+
 				'}\n'+
+				'#ZoomIn {\n'+
+					'bottom: 37px;\n'+
+					'right: 5px;\n'+
+					'position: absolute;\n'+
+					'z-index: 999;\n'+
+					'border-radius: 3px 3px 0 0;\n'+
+				'}\n'+
+				'#ZoomOut {\n'+
+					'bottom: 5px;\n'+
+					'right: 5px;\n'+
+					'position: absolute;\n'+
+					'z-index: 999;\n'+
+					'border-radius: 0 0 3px 3px;\n'+
+				'}\n'+
 				'#quickMapSection {\n'+
 					'overflow: hidden;\n'+
 					'position: relative;\n'+
@@ -121,19 +159,20 @@ $(function() {
 					markers.count++;
 					var newMarker = {
 						src: 'File:Map-guide-marker-53.png',
-						x: event.layerX,
-						y: event.layerY,
+						x: event.layerX/zoom,
+						y: event.layerY/zoom,
 						type: (event.target.id == 'templateImage' ? 'Precise' : 'Quick'),
 						elem: $('<img '+
 							'src="'+loadedImages['File:Map-guide-marker-53.png'].src+'" '+
 							'id="marker'+markers.count+'" '+
 							'class="mapMarker" '+
 							'style="'+
-								'left:'+(event.layerX-(loadedImages['File:Map-guide-marker-53.png'].size/2))+'px; '+
-								'top:'+(event.layerY-(loadedImages['File:Map-guide-marker-53.png'].size/2))+'px; '+
+								'left:'+(event.layerX-(loadedImages['File:Map-guide-marker-53.png'].size*zoom/2))+'px; '+
+								'top:'+(event.layerY-(loadedImages['File:Map-guide-marker-53.png'].size*zoom/2))+'px; '+
 								'z-index:'+markers.count+'; '+
 								'position:absolute'+'; '+
 							'" '+
+							'width="'+(loadedImages['File:Map-guide-marker-53.png'].size*zoom)+'px" '+
 						'/>')
 					};
 					markers['marker'+markers.count] = newMarker;
@@ -161,8 +200,8 @@ $(function() {
 						'</div>'
 					);
 					$('#'+(event.target.closest('#TemplateManager') ? 'TemplateManager' : 'mapContainer')).append(menu);
-					document.querySelector('.markerSettings').style.top = markers[event.target.id].y+(document.querySelector('.markerSettings').clientHeight/2)+'px';
-					document.querySelector('.markerSettings').style.left = markers[event.target.id].x-(document.querySelector('.markerSettings').clientWidth/2)+'px';
+					document.querySelector('.markerSettings').style.setProperty('top', markers[event.target.id].y+(document.querySelector('.markerSettings').clientHeight/2)+'px');
+					document.querySelector('.markerSettings').style.setProperty('left', markers[event.target.id].x-(document.querySelector('.markerSettings').clientWidth/2)+'px');
 				}
 			});
 			document.addEventListener('click', function(event) {
@@ -173,18 +212,21 @@ $(function() {
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
 					marker.setAttribute('src', loadedImages[type].src);
-					marker.style.top = (markers[markerID].y - (loadedImages[type].size/2))+ 'px';
-					marker.style.left = (markers[markerID].x - (loadedImages[type].size/2))+ 'px';
+					marker.setAttribute('width', (marker.naturalWidth*zoom)+'px');
+					marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*zoom+ 'px');
+					marker.style.setProperty('left', (markers[markerID].x - (marker.naturalWidth/2))*zoom+ 'px');
 					markers[markerID].src = type;
 				} else if (event.target && event.target.closest('#regionSelect') && REGION !== event.target.id) {
 					closeMarkerSettings();
 					REGION = event.target.id;
 					mapGenerator.loadImages(mapRefs[REGION].templates);
 					mapGenerator.loadTemplates(mapRefs[REGION].templates);
-					document.querySelector('img#mapImage').setAttribute('src', mapRefs[REGION].map);
+					var map =	document.querySelector('img#mapImage');
+					map.setAttribute('src', mapRefs[REGION].map);
+					map.setAttribute('width', map.naturalWidth*zoom+'px');
 					var container = document.querySelector('#mapContainer');
-					container.style.top = mapRefs[REGION].offset.top;
-					container.style.left = mapRefs[REGION].offset.left;
+					container.style.setProperty('top', mapRefs[REGION].offset.top);
+					container.style.setProperty('left', mapRefs[REGION].offset.left);
 					var curr = document.querySelector('#regionSelect > .active-tab');
 					curr.classList.remove('active-tab');
 					curr.classList.add('inactive-tab');
@@ -197,6 +239,20 @@ $(function() {
 				} else if (event.target && event.target.id == 'quickMapGenerator') {
 					closeMarkerSettings();
 					mapGenerator.processQuickMarkers();
+				} else if (event.target && event.target.id == 'ZoomIn') {
+					if (zoom < 8) {
+						zoom = zoom * 2;
+						mapGenerator.updateZoom();
+					} else {
+						alert('Max zoom reached!');
+					}
+				} else if (event.target && event.target.id == 'ZoomOut') {
+					if (zoom > 0.0125) {
+						zoom = zoom / 2;
+						mapGenerator.updateZoom();
+					} else {
+						alert('Max zoom reached!');
+					}
 				} else if (event.target && event.target.id == 'MapGenerator') {
 					closeMarkerSettings();
 					mapGenerator.processPreciseMarkers();
@@ -232,13 +288,13 @@ $(function() {
 					valid = true;
 					context.drawImage(
 						loadedImages[markers[id].src].canvas,
-						(markers[id].x-(loadedImages[markers[id].src].size/2)),	// Position
-						(markers[id].y-(loadedImages[markers[id].src].size/2))	// Position
+						(markers[id].x-(loadedImages[markers[id].src].size*zoom/2)),	// Position
+						(markers[id].y-(loadedImages[markers[id].src].size*zoom/2))		// Position
 					);
 				}
 			});
 			if (!valid) {alert('No valid marker to generate map off.');}
-			else {window.open(canvas.toDataURL()); canvas.remove();}
+			else {mapGenerator.openImage(canvas.toDataURL(), template); canvas.remove();}
 		},
 		processQuickMarkers: function() {
 			var valid = false;
@@ -260,7 +316,7 @@ $(function() {
 								((mapInfo.x*mapInfo.scale)-(loadedImages[markers[id].src].size/2)),	// Position
 								((mapInfo.y*mapInfo.scale)-(loadedImages[markers[id].src].size/2))	// Position
 							);
-							window.open(canvas.toDataURL()); canvas.remove();
+							mapGenerator.openImage(canvas.toDataURL(), mapInfo.src); canvas.remove();
 						} else if (attemptLoad) {
 							mapGenerator.loadImages([mapInfo.src, markers[id].src]);
 							attemptLoad = false;
@@ -304,10 +360,10 @@ $(function() {
 			var container = document.querySelector('#TemplatesList');
 			var loading = document.querySelector('#TemplatesLoading');
 			if (loadedTemplates[REGION]) {
-				loading.style.display = 'none';
+				loading.style.setProperty('display', 'none');
 				container.innerHTML = loadedTemplates[REGION];
 			} else {
-				loading.style.display = '';
+				loading.style.setProperty('display', '');
 				container.innerHTML = '';
 				mapGenerator.loadImages(templates);
 				var waitForTemplates = function() {
@@ -331,7 +387,7 @@ $(function() {
 								'</div>';
 						});
 						loadedTemplates[REGION] = gallery;
-						loading.style.display = 'none';
+						loading.style.setProperty('display', 'none');
 						container.innerHTML = gallery;
 					} else {
 						window.setTimeout(waitForTemplates, 500);
@@ -372,11 +428,11 @@ $(function() {
 										loadedImages[file].context = loadedImages[file].canvas.getContext('2d');
 										loadedImages[file].src = src;
 										loadedImages[file].size = size;
-										var imageObj2 = new Image();
-										imageObj2.crossOrigin = "anonymous";
-										imageObj2.src = src;
-										imageObj2.onload = function() {
-											loadedImages[file].context.drawImage(imageObj2, 0, 0);
+										loadedImages[file].img = new Image();
+										loadedImages[file].img.crossOrigin = "anonymous";
+										loadedImages[file].img.src = src;
+										loadedImages[file].img.onload = function() {
+											loadedImages[file].context.drawImage(loadedImages[file].img, 0, 0);
 											loadedImages[file].LOADED = true;
 										};
 									}
@@ -386,12 +442,50 @@ $(function() {
 					}
 				}
 			}
+		},
+		openImage: function(src, name) {
+			if (src && src.length>0 && name && name.length>0) {
+				if (document.querySelector('#mapDownload').checked) {
+					var link = document.createElement('a');
+					link.download = name.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
+					link.href = src;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+				} else {
+					var newTab = window.open();
+					newTab.document.write(
+						'<!DOCTYPE html>'+
+						'<body>'+
+							'<img src="'+src+'" />'+
+						'</body>'+
+						'<style>'+
+							'body { background: #1a1d23; text-align: center;}'+
+						'</style>'
+					);
+					newTab.document.close();
+				}
+			}
+		},
+		updateZoom: function() {
+			var map = document.querySelector('img#mapImage');
+			var container = document.querySelector('#mapContainer');
+			var section = document.querySelector('#quickMapSection');
+			map.setAttribute('width', map.naturalWidth*zoom+'px');
+			container.style.setProperty('left', section.clientWidth/2-map.clientWidth/2+'px');
+			container.style.setProperty('top', section.clientHeight/2-map.clientHeight/2+'px');
+			container.setAttribute('zoom', zoom);
+			document.querySelectorAll('#mapContainer > .mapMarker').forEach(function(marker){
+				marker.setAttribute('width', (marker.naturalWidth*zoom)+'px');
+				marker.style.setProperty('left', ((markers[marker.id].x-(marker.naturalWidth/2)))*zoom+'px');
+				marker.style.setProperty('top', ((markers[marker.id].y-(marker.naturalHeight/2)))*zoom+'px');
+			});
 		}
 	};
 	
 	if (config.wgPageName == 'Special:Map' && config.wgAction == 'view') {
 		// Uses user page to store JSON for now as mediawiki namespace is unusable unless Wiki Rep
-		api.get({action: 'query', prop: 'revisions', titles: 'User:Mikevoir/Sandbox.json', rvprop: 'content', rvslots: '*'}).then(function(data){
+		api.get({action: 'query', prop: 'revisions', titles: 'MediaWiki:Custom-MapGenerator.json', rvprop: 'content', rvslots: '*'}).then(function(data){
 			mapRefs = JSON.parse(data.query.pages[Object.keys(data.query.pages)[0]].revisions[0].slots.main['*']);
 			mapGenerator.loadImages([
 				'File:Map-guide-marker-32.png',

@@ -45,10 +45,11 @@ while (ahrefc < getcategories.length) {
     ahrefc += 1;
 }
 
-// Fixes Thread namespace links on Special:WhatLinksHere.
-if (mw.config.get('wgPageName').replace(/\/.+/, '') === 'Special:WhatLinksHere') {
-    $('#mw-whatlinkshere-list>>[title^="Thread:"]').each(function(_, elem) {
+// -----------------------[ Link Fixer ]---
+// Fixes links to Thread and File namespaces on Special:WhatLinksHere and File pages. Suggestion from User:DestroyerTau.
+if (mw.config.get('wgPageName').replace(/\/.+/, '') === 'Special:WhatLinksHere' || mw.config.get('wgNamespaceNumber') === 6) {
+    $('#mw-whatlinkshere-list>>[title^="Thread:"],.mw-imagepage-linkstoimage-ns1201>').each(function(_, elem) {
         elem.innerHTML = elem.title;
     });
-    console.log('Fixed any link(s) to Thread namespace on current page.');
+    console.log('Fixed link(s) to Thread or File namespaces on current page.');
 }

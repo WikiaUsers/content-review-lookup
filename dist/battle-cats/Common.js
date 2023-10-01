@@ -16,6 +16,11 @@ window.tooltips_list = [
         classname: 'lineup-slot-info',
         parse: '{' + '{LineupSlotInfo|<#unitname#>|<#level#>|<#talents#>}}',
     },
+    // Used in Cat Filter
+    {
+    	classname: 'cat-filter-icon-button',
+    	parse: '{' + '{FilterIconInfo|<#name#>|<#desc#>}}',
+    }
 ];
 /* end of tooltip */
 

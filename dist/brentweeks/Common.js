@@ -118,3 +118,13 @@ window.DisplayClockJS = {
     monofonts: 'Consolas, monospace', /* The font the clock uses by default */
 };
 importArticle({type:'script', article:'u:dev:MediaWiki:UTCClock/code.js'});
+
+//default to classic categories
+
+// Get all elements with the class "category-layout-selector__item"
+var items = document.querySelectorAll('li.category-layout-selector__item');
+
+// Loop through each item and add the "is-active" class
+items.forEach(function(item) {
+  item.classList.add('is-active');
+});

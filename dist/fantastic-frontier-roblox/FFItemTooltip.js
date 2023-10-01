@@ -130,7 +130,7 @@ mw.hook("wikipage.content").add(function($content) {
                 setTooltip(cache[article]); // The article data was cached, load it.
             }
         } else { // The article wasn't found in cache, pull it.
-            tooltip.html("<div class=\"it-title\">Loading...</div>");
+            tooltip.html("<div class=\"it-title it-loading\">Loading...</div>");
             tooltip.show();
             updatePosition();
             
@@ -215,6 +215,7 @@ mw.hook("wikipage.content").add(function($content) {
 	$('#content').on('mouseenter', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {
 		var elem = $(this);
 		var article = elem.is("div") ? elem.attr("data-article") : elem.attr("href").substr(6); // Trim away /wiki/.
+		if (article.indexOf("action=") > -1) return; // Don't allow pulling any links with "action=", as it may be an URL query part.
 		updateTooltip(article);
 	});
 	$('#content').on('mouseleave', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {

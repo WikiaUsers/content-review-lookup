@@ -1,2 +1,0 @@
-mw.loader.load( '//ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-wikificator.js&action=raw&ctype=text/javascript' );
-mw.log.warn("Use of MediaWiki:Wikificator.js is deprecated. Use MediaWiki:Gadget-wikificator.js instead.");

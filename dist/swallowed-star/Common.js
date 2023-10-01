@@ -1,5 +1,5 @@
 // Set the target day and time
-var targetDay = 3; // Wednesday (0=Sunday, 1=Monday, ..., 6=Saturday)
+var targetDay = 2; // Wednesday (0=Sunday, 1=Monday, ..., 6=Saturday)
 var targetHour = 4; // 4:00 am
 var targetOffset = 0; // UTC+2 for European clock mode
 

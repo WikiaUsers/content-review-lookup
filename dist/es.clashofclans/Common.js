@@ -6,7 +6,7 @@ importArticles({
         'u:dev:UserTags/code.js',
 		'w:c:clashofclans:MediaWiki:ModeToggle.js',
 		'w:c:clashofclans:MediaWiki:GemCalculators.js',
-		'w:c:clashofclans:MediaWiki:HeroSkins.js',
+		'w:c:clashofclans:MediaWiki:HeroSkins2.js',
 		'w:c:clashofclans:MediaWiki:Toggle.js',
 		"u:dev:MediaWiki:BackToTopButton/code.js",
 		]

@@ -1,6 +1,21 @@
 // Output console log
 console.log("Running MediaWiki:Common.js...");
 
+// hide-on-desktop-skin class imported from Japanese version
+//
+// When the skin is fandomdesktop, set display property of CSS with HTML element having
+// hide-on-desktop-skin class as none.
+if (mw.config.get('skin') === "fandomdesktop") {
+	// Output log for debug
+	console.log("Processing 'hide-on-desktop-skin' class");
+
+	var elements = document.getElementsByClassName('hide-on-desktop-skin');
+
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].style.display = 'none';
+	}
+}
+
 // Load MathJax, originally written by Emk for Japanese Gwiki
 // by adapting the code for UCP from the code by Aycabta for the classic wiki 
 //
@@ -23,21 +38,6 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
   script_2.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
   script_2.async = true;
   document.head.appendChild(script_2);
-
-// hide-on-desktop-skin class imported from Japanese version
-//
-// When the skin is fandomdesktop, set display property of CSS with HTML element having
-// hide-on-desktop-skin class as none.
-if (mw.config.get('skin') === "fandomdesktop") {
-	// Output log for debug
-	console.log("Processing 'hide-on-desktop-skin' class");
-
-	var elements = document.getElementsByClassName('hide-on-desktop-skin');
-
-	for (var i = 0; i < elements.length; i++) {
-		elements[i].style.display = 'none';
-	}
-}
 
 // Finish of code for MathJax by Emk
 

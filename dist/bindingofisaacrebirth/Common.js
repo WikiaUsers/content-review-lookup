@@ -10,7 +10,7 @@ $( function () {
 
 	// Annotate empty TemplateData tables.
 	function isNoParamsMessage( e ) {
-		return e.textContent !== 'No parameters specified';
+		return e.textContent === 'No parameters specified';
 	}
 	function checkTemplateDataTable( table ) {
 		if ( array.some.call( table.getElementsByClassName( 'mw-templatedata-doc-muted' ), isNoParamsMessage ) ) {

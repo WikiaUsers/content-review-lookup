@@ -569,6 +569,31 @@ function chooseHelpTools(s) {
   setCookie('edittoolshelpmenu', s);
 }
 
+/* bloqueie comentários de blogs que não foram comentados por mais de 30 dias.
+    por: [[Usuário:Joeyaa|Joey Ahmadi]]
+*/
+
+$(function() {
+if (wgNamespaceNumber == 500 && $('#article-comments-ul li').size() > 1) {
+var then = $('#article-comments-ul > .SpeechBubble:first .permalink').attr('href');
+then = new String(then.match(/\d{8}/));
+var nomesdomes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho',
+'Agosto','Setembro','Outubro','Novembro','Dezembro'];
+var ano = then.match(/^\d{4}/);
+var mes = then.substring(4,6); 
+mes--;
+mes= nomesdomes[mes];
+var dia = then.match(/\d{2}$/);
+then = new Date(dia+' de '+mes+' de '+ano); 
+var antigo = parseInt(now - then);
+antigo = Math.floor(antigo/(1000*60*60*24));
+if (antigo > 30) {
+$('#article-comm').attr('disabled','disabled').text('Esta postagem do blog não é comentada há mais de 30 dias. Não há necessidade de comentar.');
+$('#article-comm-submit').attr('disabled','disabled');
+$('.article-comm-reply').remove();
+}
+}
+});
 
 /* 
 ////////////////////////////////////////////////

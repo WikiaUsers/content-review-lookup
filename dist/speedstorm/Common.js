@@ -67,17 +67,17 @@ if (communityHeaderWrapper) {
 /***************************************/
 /***************************************/
 /*Social media buttons add links*/
-const checkSocialMediaClass = document.querySelector('.socialMedia');
-const steamButton = document.querySelector('#steam');
-const container = document.querySelector('.sci');
-const addLinks = function () {
-const links = '<li data-text="Steam"><div class="SMbutton steam"><a href="https://store.steampowered.com/app/1537830/Disney_Speedstorm"><i class="fa fa-steam" aria-hidden="true"></i></a></div></li><li data-text="Youtube"><div class="SMbutton yt"><a href="https://www.youtube.com/c/DisneySpeedstorm/"><i class="fa fa-youtube" aria-hidden="true"></i></a></div></li><li data-text="Facebook"><div class="SMbutton facebook"><a href="https://www.facebook.com/disneyspeedstorm/"><i class="fa fa-facebook" aria-hidden="true"></i></a></div></li><li data-text="Twitter"><div class="SMbutton twitter"><a href="https://twitter.com/speedstormgame"><i class="fa fa-twitter" aria-hidden="true"></i></a></div></li>';
-container.insertAdjacentHTML('afterbegin', links); 
-};
+// const checkSocialMediaClass = document.querySelector('.socialMedia');
+// const steamButton = document.querySelector('#steam');
+// const container = document.querySelector('.sci');
+// const addLinks = function () {
+// const links = '<li data-text="Steam"><div class="SMbutton steam"><a href="https://store.steampowered.com/app/1537830/Disney_Speedstorm"><i class="fa fa-steam" aria-hidden="true"></i></a></div></li><li data-text="Youtube"><div class="SMbutton yt"><a href="https://www.youtube.com/c/DisneySpeedstorm/"><i class="fa fa-youtube" aria-hidden="true"></i></a></div></li><li data-text="Facebook"><div class="SMbutton facebook"><a href="https://www.facebook.com/disneyspeedstorm/"><i class="fa fa-facebook" aria-hidden="true"></i></a></div></li><li data-text="Twitter"><div class="SMbutton twitter"><a href="https://twitter.com/speedstormgame"><i class="fa fa-twitter" aria-hidden="true"></i></a></div></li>';
+// container.insertAdjacentHTML('afterbegin', links); 
+// };
 
-if(checkSocialMediaClass) {
-    addLinks();
-}
+// if(checkSocialMediaClass) {
+//     addLinks();
+// }
 
 /***************************************/
 /***************************************/
