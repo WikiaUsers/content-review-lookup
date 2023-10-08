@@ -1,2 +1,6 @@
-window.pPreview = {};
-window.pPreview.noimage = "https://static.wikia.nocookie.net/unofficialrgd/images/d/dd/Unknown.png/revision/latest?cb=20230114070101";
+$(function(){
+    setInterval(function(){
+        $('#digital-lunge').html(Math.floor(Math.random() * 301));
+        $('#digital-slash').html(Math.floor(Math.random() * 151));
+    }, 1);
+})();

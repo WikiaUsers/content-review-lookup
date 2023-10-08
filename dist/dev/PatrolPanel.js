@@ -5,10 +5,10 @@ mw.loader.using([
     if (mw.config.get('wgNamespaceNumber') !== -1 || mw.config.get('wgTitle') !== 'PatrolPanel') {
         return;
     }
-    var intro = 'Howdy ' + mw.config.get('wgUserGroups')[0] + '! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style="color: var(--themed-button-background); font-weight: bold;">administrator/content moderator</span>. This feed doesn\'t show edits by any of the aformentioned groups and only shows edits within the main namespace.';
+    const intro = `Howdy ${mw.config.get('wgUserGroups')[0]}! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style="color: var(--themed-button-background); font-weight: bold;">administrator/content moderator</span>. This feed doesn\'t show edits by any of the aformentioned groups and only shows edits within the main namespace.`;
     document.title = 'Patrol Panel';
     $('.page-header__title').text('Patrol Panel!');
-    var api = new mw.Api();
+    const api = new mw.Api();
     function updateTable() {
         api.get({
             action: 'query',
@@ -19,10 +19,10 @@ mw.loader.using([
             rcend: '2017-08-17T19:44:17Z',
             rcshow: '!patrolled'
         }).done(function(data) {
-            var changes = data.query.recentchanges;
-            var lis = $('<table class="wikitable" style="width:100%; table-layout:fixed; text-align: center; word-break: break-word"><th>Title</th><th>Change</th><th>User</th><th>Summary</th><th>Timestamp</th>');
+            const changes = data.query.recentchanges;
+            let lis = $('<table class="wikitable" style="width:100%; table-layout:fixed; text-align: center; word-break: break-word"><th>Title</th><th>Change</th><th>User</th><th>Summary</th><th>Timestamp</th>');
             $.each(changes, function(i, v) {
-                var diff;
+                let diff;
                 if ((v.newlen - v.oldlen) > 0) {
                     diff = $('<strong class=\"mw-plusminus-pos\">+ ' + Math.abs(v.newlen - v.oldlen) + '</strong>');
                 } else if ((v.newlen - v.oldlen) === 0) {
@@ -30,7 +30,7 @@ mw.loader.using([
                 } else {
                     diff = $('<strong class=\"mw-plusminus-neg\">- ' + Math.abs(v.newlen - v.oldlen) + '</strong>');
                 }
-                var tr = $('<tr>');
+                const tr = $('<tr>');
                 tr.append($('<td><a href="' + mw.util.getUrl(v.title) + '">' + mw.html.escape(v.title) + '</a>\n<a style="color: grey; font-style:italic;" href="' + mw.util.getUrl('Special:Diff/' + v.revid) + '">(diff)</a>'))
                     .append($('<td>', {
                         html: diff[0]

@@ -709,7 +709,7 @@ $(function () {
     }
 });
 /* purging the cache of the pages in the array showing time sensitive data */
-var purge_pages = ['Rashid','Main Page','TibiaWiki:New website skin and new features','Tibiadrome/Rotation','Tibiadrome','Dream Scar/Boss of the Day','Template:Eventviewer'];
+var purge_pages = ["Rashid","Main Page","TibiaWiki:New website skin and new features","Tibiadrome/Rotation","Tibiadrome","Dream Scar/Boss of the Day","Template:Eventviewer","A Piece of Cake/Status","A Pirate's Death to Me/Status","Annual Autumn Vintage/Status","Annual Autumn Vintage/Status2","April's Fools/Status","Bewitched/Status","Christmas/Status","Demon's Lullaby/Status","Double Daily Reward Events/Status","Double Experience and Skill Events/Status","Flower Month/Status","Grimvale Mini World Change/Status","Halloween/Status","Hot Cuisine Quest/Status","Last Creep Standing/Status","Masquerade Days/Status","Orcsoberfest/Status","Orcsoberfest/Status2","Rapid Respawn Events/Status","Rise of Devovorga/Status","Spring into Life/Status","The Colours of Magic/Status","The Colours of Magic/Status2","The First Dragon Quest/Status","The Lightbearer/Status","Tibia Anniversary/Status","Winterlight Solstice/Status","Template:EventsGadget"];
 purge_pages = purge_pages.concat(game.worlds);
 if ( purge_pages.includes(mw.config.get('wgPageName')) ) {
     $(function () {

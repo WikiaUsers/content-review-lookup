@@ -227,3 +227,13 @@ function newstickergo() {
   tickerdiv.style.left = (parseInt(tickerdiv.style.left) > (-10 - tickertxt) ) ? parseInt(tickerdiv.style.left) - 10 + "px" : parseInt(ticker.style.width) + 10 + "px";
 } 
 $(newsticker);
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});
+window.MultiUploadoption = {
+    max: 30
+};

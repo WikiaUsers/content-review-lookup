@@ -1,18 +1,9 @@
 /* Pride toolbar button
 var toolbarLabel = 'Pride';
 var toolbarLinks = [
-	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
-    {link: 'https://bit.ly/PrideEditorStory-Kurt', label: 'June 28: Pride Highlight: Meet Kurt'},
-    {link: 'https://bit.ly/PrideEditorStory-Vinny', label: 'June 27: Pride Highlight: Meet Vinny'},
     {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213868', label: 'Week 4 - Concerned confessions'},
-    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'June 23: Pride Highlight: Meet Sam/Lemon Skweezy'},
-    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'June 20: How to Strengthen LGBTQIA+ Allyship'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'June 15: Pride Stories: Celebrate with Bart'},
     {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000213088', label: 'Week 2 - The punk lesbians of Kitty Section'},
-    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003741403', label: 'June 6: Discussions post'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'June 6: Pride blog with Drag Queens interview'},
     {link: 'https://miraculousladybug.fandom.com/f/p/4400000000000212609', label: 'Week 1 - The Gays in Art Class'},
-    {link: 'https://bit.ly/FandomPridePlaylist', label: 'June 1: Pride spotify playlist'}
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
@@ -35,15 +26,15 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* Disability Pride logo link */
+/* Disability Pride logo link 
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
             .text('Celebrating Disability Pride Month')
         )
-        .attr('href', 'https://bit.ly/DisabilityPrideMonth-Chris')
-);
+        .attr('href', '')
+);*/
 
 /* User Tags */
 window.UserTagsJS = {

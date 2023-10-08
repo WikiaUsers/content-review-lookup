@@ -11,6 +11,13 @@
 		},
 
 		{
+			id: 'hypixel+',
+			name: "Hypixel+",
+			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/Hypixel%2B.css",
+			author: "ic22487",
+			packsUrl: "https://hypixel.net/threads/0-16-1-update-hypixel-for-1-8-1-12-and-1-19.4174260/"
+		},
+		{
 			id: 'furfsky',
 			name: "FurfSky Reborn",
 			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/FurfSkyReborn.css",
@@ -45,13 +52,6 @@
 			author: "Skeletony",
 			packsUrl: "https://hypixel.net/threads/worlds-and-beyond-16x-crystal-hollows-update-version-1-5.3597207/"
 		},
-		{
-			id: 'hypixel+',
-			name: "Hypixel+",
-			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-ResourcePacks.js/Hypixel%2B.css",
-			author: "ic22487",
-			packsUrl: "https://hypixel.net/threads/0-16-1-update-hypixel-for-1-8-1-12-and-1-19.4174260/"
-		},
 	];
 	
 	var TOOLBAR_ICON = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><rect class="hsw-dd-brown" x="1" y="5" width="16" height="12" rx="2" ry="2" /><rect class="hsw-dd-green" x="1" y="1" width="16" height="4" rx="2" ry="2" /><rect class="c" x="1" y="1" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" /><polyline class="d" points="1 5 3.19 5 5 4.68 6.82 6.84 8.66 5 11.32 5 13.29 4.01 14.76 6 17 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>';
@@ -66,6 +66,8 @@
 	// Thanks to https://blog.logrocket.com/complete-guide-using-css-filters-svgs for helping figure the filters out
 	// Hiding the svg in anyways seems to break the filter, so instead move it offscreen
 	var SVG_FILTER = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"><feImage href="https://static.wikia.nocookie.net/hypixel-skyblock/images/3/32/Mcglint.gif" x="0" y="0" preserveAspectRatio="none" result="IMAGE"/><feBlend in="IMAGE" in2="SourceGraphic" mode="screen" result="BLEND"/><feComposite operator="in" in="BLEND" in2="SourceGraphic"/></filter></svg>';
+	// Before Safari 17 filter didn't work and showed nothing; now with Safari 17 it just makes the image vanish. So this is a custom filter that does nothing other than prevent css from breaking. Image with no enchant = better than no image
+	var SVG_FILTER_SAFARI = '<svg style="position:fixed;top:-1000px"><filter id="mcglint"></filter></svg>';
 	
 	var CONTENT_ID = 'hsw-resourcepack-dropdown';
 	
@@ -107,7 +109,14 @@
 		var $dropdown = $("<div>").addClass("wds-button wds-is-secondary wds-dropdown "+CONTENT_ID);
 		var $toggle = $("<a>").addClass("wds-dropdown__toggle").attr("title", "Resource Packs").html(TOOLBAR_ICON).appendTo($dropdown);
 		$("<div>").addClass("wds-dropdown__content wds-is-right-aligned").appendTo($dropdown);
-		$(SVG_FILTER).appendTo($toggle);
+		
+		// Safari 3.0+ "[object HTMLElementConstructor]" - https://stackoverflow.com/a/9851769
+		var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
+		if(isSafari) {
+			$(SVG_FILTER_SAFARI).appendTo($toggle);
+		} else {
+			$(SVG_FILTER).appendTo($toggle);
+		}
 		
 		// Insert dropdown to nav
 		$(".wiki-tools > .wds-button:last-of-type").after($dropdown);

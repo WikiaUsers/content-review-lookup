@@ -17,18 +17,18 @@ mw.loader.using(["jquery.ui"], function() {
     }
   });
 
-  $(".portal_sliderlink").click(function() { // binding click event
+  $(".portal_sliderlink").click(function() { // Liaison avec l'événement clic
     $tabs.tabs("select", this.className.match(/portal_sliderlink-(\d+)/)[1]);
     return false;
   });
-  $(".portal_next").click(function() { // binding click event
+  $(".portal_next").click(function() { // Liaison avec l'événement clic
 	var selected = $tabs.tabs("option", "selected");
-    $tabs.tabs("select", selected + 1); // switch to next tab
+    $tabs.tabs("select", selected + 1); // passer à l'onglet suivant
     return false;
   });
-  $(".portal_prev").click(function() { // binding click event
+  $(".portal_prev").click(function() { // Liaison avec l'événement clic
 	var selected = $tabs.tabs("option", "selected");
-    $tabs.tabs("select", selected - 1); // switch to previous tab
+    $tabs.tabs("select", selected - 1); // revenir à l'onglet précédent
     return false;
   });
 });

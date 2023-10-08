@@ -61,34 +61,40 @@ addOnloadHook(checktimers)
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-// --------------------------------------------------
-//  <TT> News ticker 2.0, by Splarka, better version
-// --------------------------------------------------
+/* ############################################################################# */
+/* ### TICKER                                                                ### */
+/* ### --------------------------------------------------------------------  ### */
+/* ### Description: Displays a ticker, as in [[Template:Ticker]]             ### */
+/* ### Credit:      unknown                                                  ### */
+/* ###              User:FDekker                                             ### */
+/* ############################################################################# */
+$(function() {
+    $(".ticker").each(function(_, ticker) {
+        var step = 10;  // How many pixels to move text each tick
+        var tickerSpeed = 200;
+        
+        ticker = $(ticker);
+        
+        if (ticker.attr('data-speed') !== undefined)
+            tickerSpeed = parseInt(ticker.attr('data-speed'));
+            
+        if (ticker.attr('data-step') !== undefined)
+            step = parseInt(ticker.attr('data-step'));
+            
+        ticker.css("display", "block");
 
-var ticker;
-var tickertxt;
-var tickerdiv;
+        var wrapper = $(".tickerWrapper", ticker);
+        wrapper.css("left", (step + ticker.width()) + "px");
 
-function newsticker() {
-  if (document.getElementById) {
-  if ((document.getElementById('ticker'))&&(document.getElementById('tickerdiv'))&&(document.getElementById('tickertxt'))) {
-    ticker = document.getElementById('ticker'); 
-    ticker.style.display = 'block';
-    tickerdiv = document.getElementById('tickerdiv');
-    tickertxt = document.getElementById('tickertxt').offsetWidth; 
-    tickerdiv.style.left = parseInt(ticker.style.width) + 10 + 'px';
-    lefttime=setInterval("newstickergo()",200);
-  }
-  }
-}
+        var text = $(".tickerText", ticker);
+        var textWidth = text.outerWidth();
 
-function newstickergo() {
-  tickerdiv.style.left = (parseInt(tickerdiv.style.left) > (-10 - tickertxt) ) ? parseInt(tickerdiv.style.left) - 10 + "px" : parseInt(ticker.style.width) + 10 + "px";
-} 
-addOnloadHook(newsticker);
-
-// --------------------------------------------------
-//             End <TT> News ticker 2.0
-// --------------------------------------------------
-
-//</source>
+        setInterval(function() {
+            var offset =
+                (wrapper.position().left > -(textWidth + step))
+                    ? (wrapper.position().left - step) + "px"  // Move left
+                    : (ticker.width() + step) + "px";  // Reset
+            wrapper.css("left", offset);
+        }, tickerSpeed);
+    });
+});

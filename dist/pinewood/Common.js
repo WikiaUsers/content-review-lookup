@@ -1,6 +1,11 @@
 // This script was created, and is primarily maintained by moo1210.
 /* Any JavaScript here will be loaded for all users on every page load. */
 // UsersTags config (imported in MediaWiki:ImportJS)
+
+// Console Message //
+console.log('%cHeads up!', 'color: blue; font-size: 30px');
+console.log('%cDo not enter any code here from anyone or paste any text here unless you understand exactly what you are doing, close this window and stay safe. See https://community.fandom.com/wiki/Help:Online_security', 'color: white; font-size: 15px');
+
 window.UserTagsJS = {
 	modules: {
 		implode: {
@@ -77,16 +82,21 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 	var userNamesToRights = {};
 	var everyLinkOnPage = document.querySelectorAll('a[href]');
 	var userPageLinkRegex = RegExp("\/wiki\/(?:User:)(.*)");
-	// Fetch user links on page
-	for (var i = 0; i < everyLinkOnPage.length; i++) {
-	  var linkMatchResults = everyLinkOnPage[i].getAttribute("href").match(userPageLinkRegex);
-		if (linkMatchResults != null) {
-		  if (!userNamesToLinks[linkMatchResults[1]]) {
-		  	userNamesToLinks[linkMatchResults[1]] = [];
+	
+	// Fetch user links on pag
+	$(function(){
+    console.log('test');
+		for (var i = 0; i < everyLinkOnPage.length; i++) {
+		  var linkMatchResults = everyLinkOnPage[i].getAttribute("href").match(userPageLinkRegex);
+			if (linkMatchResults != null) {
+			  if (!userNamesToLinks[linkMatchResults[1]]) {
+			  	userNamesToLinks[linkMatchResults[1]] = [];
+			  }
+			  userNamesToLinks[linkMatchResults[1]].push(everyLinkOnPage[i]);
 		  }
-		  userNamesToLinks[linkMatchResults[1]].push(everyLinkOnPage[i]);
-	  }
-	}
+		}
+	});
+	
 	// Fetch user groups for users linked on page
 	// (MediaWiki's API, and therefore Fandom's, has a cap of 50 members per API requests by default, I wouldn't expect to find more than usually, but in some cases you may if you clicked on list 500 results in page history, for example, so this splits up the requests to handle that correctly.)
 	

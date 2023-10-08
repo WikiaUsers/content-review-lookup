@@ -149,7 +149,7 @@ $(function() {
     
     //set initial state
     if (window.sessionStorage.wpInvertor && window.sessionStorage.wpInvertor !== 'undefined') {
-        $chkbox.attr('checked', 'checked');
+        $chkbox.get(0).checked = true;
     }
     if (window.sessionStorage.wpFilter) {
         activeFilter = JSON.parse(window.sessionStorage.wpFilter);
@@ -157,7 +157,7 @@ $(function() {
         activeFilter.push('all');
     }
     $chkbox.on('change', function(e) {
-        window.sessionStorage.wpInvertor = $('.wp-checkbox').attr('checked') || '';
+        window.sessionStorage.wpInvertor = this.checked || '';
         var fakee = {target: {selectedOptions: []}};
         $.each(activeFilter, function(i, v) {
             var item = $list.find('[value="' + v + '"]').get(0);

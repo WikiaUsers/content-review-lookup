@@ -90,6 +90,9 @@ if (document.querySelector(".loot-container-table") != null)
 	    This snippet re-anchors the page to rows in a table when the page loads.
 	    It works on both rows (tr) and cells (td + th) that have been assigned an ID.
 	    Since UCX, anchoring to a position in a really long page almost never works
+	    
+	    Because the wide-table-wrapper changes the structure of the DOM, the :target
+	    selector gets invalidated and will not apply
 	*/
 	
 	var lastAnchoredRow = null;
@@ -109,23 +112,9 @@ if (document.querySelector(".loot-container-table") != null)
 	        // Highlight the row if one was anchored to
 	        anchor.classList.add("anchored-row");
 	        
+	        // Remove the anchored-row class from the last row
 	        if (lastAnchoredRow != null) lastAnchoredRow.classList.remove("anchored-row");
-	
-	        // Scroll the row into view
-	        anchor.scrollIntoView({behavior: fromHashChange ? "auto" : "smooth", block: "center", inline: "nearest"});
 	        lastAnchoredRow = anchor;
-	    }
-	    
-	    // Anchor to section
-	    else if (anchor.classList.contains("mw-headline"))
-	    {
-	        var headerOffset = 50;
-	        var elementPosition = anchor.getBoundingClientRect().top;
-	        var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-	        window.scrollTo({
-	             top: offsetPosition,
-	             behavior: "auto"
-	        });
 	    }
 	}
 	
@@ -168,6 +157,19 @@ if (document.querySelector(".loot-container-table") != null)
 	   var title = t.getAttribute("title");
 	   t.setAttribute("title", title.replaceAll("\\n", "\n"));
 	});
+	
+	// ======
+	/*
+	    Create an IntersectionObserver which sets "isSticky on the .fandom-community-header__background
+	    when it starts being sticky. That way we can conditionally style it.
+	*/
+	
+	new IntersectionObserver(function(e)
+	{
+	    var entry = e[0];
+	    entry.target.classList.toggle('isSticky', entry.intersectionRatio < 1)
+	    
+	}, { threshold: 1.0 }).observe(document.querySelector(".fandom-community-header__background"));
 
 })();
 

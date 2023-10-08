@@ -1,4 +1,11 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* ================
+   Other imports
+   ================ */
+importArticle({
+    type: 'script',
+    article: 'u:dev:MediaWiki:BannerNotification.js'
+});
+
 /*BackToTopButton*/
 window.BackToTopModern = true;
 
@@ -12,13 +19,13 @@ window.tooltips_config = {
 window.tooltips_list = [
     {
         classname: 'sequence-tooltip',
-        parse: '{' + '{Template:Order Link/data|1=<#sequence#>|2=<#text#>}}'
+        parse: '{' + '{Template:Seq/data|1=<#seq#>|2=<#text#>}}'
     }, {
-        classname: 'order-tooltip',
-        parse: '{' + '{Template:Divine Path Link/data|1=<#pathway#>}}'
+        classname: 'pathway-tooltip',
+        parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
     }
 ],
 
 /*LockOldComments*/
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 90;
+window.lockOldComments.limit = 120;

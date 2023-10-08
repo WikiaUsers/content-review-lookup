@@ -2,7 +2,7 @@
  * Heavily taken from https://dev.fandom.com/wiki/MediaWiki:LinkPreview/code.js
  * and 
  * https://dev.fandom.com/wiki/MediaWiki:Tooltips.js
- * 
+ *
  * Maintainer: Doubleterrainbow
  **/
 (function shTooltipWrapper ($) {
@@ -21,6 +21,7 @@
 
     var flip = false;
     var cancel = false;
+    var hasCreatedLoading = false;
     var currentEl = {}; // {href, ?data}
 
     var apiUri;
@@ -57,7 +58,7 @@
 
         apiUri = new mw.Uri({path: mwc.wgScriptPath + '/api.php'});
         // show preview delay, ms
-        Settings.delay = Settings.delay !== undefined ? Settings.delay : 100;
+        Settings.delay = Settings.delay !== undefined ? Settings.delay : 150;
         // suppress hover events for x ms
         // Settings.throttling = timeout until x
         Settings.throttle = Settings.throttle !== undefined ? Settings.throttle : 100;
@@ -176,7 +177,6 @@
             return true;
         } 
         
-        log('mouseEnter event:', ev, 'currentEl:', currentEl);
         setTimeout(getLinkData.bind(this, ev), Settings.delay);
         return false;
     }
@@ -185,6 +185,7 @@
         log('onMouseLeave ', ev, Settings.throttling, currentEl.href);
         currentEl.href = '';
         cancel = true;
+        hasCreatedLoading = false;
         $('.sh-tooltip.loading').hide();
         $('.sh-tooltip').hide();
 
@@ -196,11 +197,30 @@
         setTooltipPosition(e.pageX, e.pageY);
     }
 
+    function isBalanced(str) {
+        var map = {
+          '(': ')',
+          '[': ']',
+          '{': '}',
+        };
+        var closing = Object.values(map);
+        var stack = [];
+              
+        for (var i = 0; i < str.length; i++) {
+          if (map[str[i]]) {
+            stack.push(str[i]);
+          } else if (closing.includes(str[i]) && str[i] !== map[stack.pop()]) {
+            return false;
+          }
+        }
+        return !stack.length;
+      }
+
     function parseInfoboxTemplate (text) {
         var contents = text;
 
         templateName = undefined;
-        regexTemplateName = /\{\{(?:\{1\|)?([A-Z]{3,})/g;
+        regexTemplateName = /\{\{(?:\{1\|)?([\w\s]+)\n\|/g;
         templateNameMatches = regexTemplateName.exec(text);
         if (templateNameMatches !== null && templateNameMatches.length > 1) {
             templateName = templateNameMatches[1];
@@ -213,10 +233,14 @@
         for (var i = 0; i < paramLines.length; i++) {
             var paramName = paramLines[i].split("=")[0].replace("|", "").trim();
             var value = paramLines[i].split("=")[1].trim();
+
+            if (!isBalanced(value)) {
+                value = value.replaceAll("{", "").replaceAll("}", "");
+            }
+
             params[paramName] = value;
         }
 
-        log("found params", params);
         return {
             "name": templateName,
             "params": params
@@ -239,24 +263,28 @@
     }
 
     function createTooltipFromTemplate(infoboxData) {
-        populated_template = '';
+        populatedTemplate = '';
 
         for (var i = 0; i < Settings.templates.length; i++) {
+            log("Checking if matches ", Settings.templates[i].templatename);
             if (infoboxData.name !== undefined && 
                 Settings.templates[i].templatename == infoboxData.name) {
                 var value = Settings.templates[i].template;
 
-                populated_template = value;
+                populatedTemplate = value;
                 
                 var matches = value.match(/<#\s*[a-z0-9_\-]+?\s*#>/gi);
                 if(matches) {
-                    for(var x=0; x<matches.length; x++) {
+                    for(var x=0; x < matches.length; x++) {
                         var paramName = /<#\s*([a-z0-9_\-]+?)\s*#>/i.exec(matches[x])[1];
                         var matchingInfoboxParam = infoboxData.params[paramName];
+                        var rx = new RegExp('<#\\s*'+paramName.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")+'\\s*#>', 'g');
                         if (matchingInfoboxParam != undefined) {
-                            var rx = new RegExp('<#\\s*'+paramName.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")+'\\s*#>', 'g');
                             log("replacing", paramName, "with value=", matchingInfoboxParam);
-                            populated_template = populated_template.replace(rx, matchingInfoboxParam);
+                            populatedTemplate = populatedTemplate.replace(rx, matchingInfoboxParam);
+                        } else {
+                            log("setting", paramName, "empty");
+                            populatedTemplate = populatedTemplate.replace(rx, "");
                         }
                     }
                 }
@@ -264,7 +292,7 @@
             }
         }
 
-        return populated_template;
+        return populatedTemplate;
     }
     
     function createUri (href) {
@@ -345,6 +373,11 @@
         log("height =", tooltipHeight, "width =", tooltipWidth);
         log("setting pos to left:", coordX, "top:", coordY);
         $("#tooltip-container").css({left: coordX + 'px', top: coordY + 'px'});
+
+        // Ensure only one tooltip is visible
+        if ($(".sh-tooltip").filter(":visible").length > 1) {
+            $(".sh-tooltip.loading").hide();
+        }
     }
     
     function showExistingTooltip(tooltipId) {
@@ -365,6 +398,7 @@
         if (!nuri || !nuri.truepath || cancel) {
             log('gp no href', ev, forcepath);
             $('.sh-tooltip').hide();
+            $('.sh-tooltip.loading').hide();
             return;
         }
 
@@ -374,7 +408,10 @@
             return this;
         }
 
-        createLoadingDiv();
+        if ($('.sh-tooltip').filter(':visible').length === 0 && !hasCreatedLoading) {
+            log("Creating loading for el", currentEl.href);
+            createLoadingDiv();
+        }
 
         var apiRequest;
         apiRequest = new mw.Uri({path: nuri.interwiki + '/api.php'});
@@ -402,7 +439,7 @@
             
             var text = data.parse.wikitext['*'];
             log('api wikitext:', text);
-            if (!text) { return; }
+            if (!text || cancel) { return; }
 
             var template = parseLinkMatch(nuri.truepath);
 
@@ -410,28 +447,29 @@
             if (template === undefined) {
                 var infoboxData = parseInfoboxTemplate(text);
     
-                var summaryRegex = /}}(?:<\/onlyinclude>)?\n/g;
+                var summaryRegex = /(\n|\s)}}(?:<\/onlyinclude>)?\s*\n/g;
                 var summaryParts = text.split(summaryRegex);
                 if (summaryParts[summaryParts.length - 1] !== undefined) { 
                     summary = summaryParts[summaryParts.length - 1].split('\n\n')[0];
                 }
     
                 template = createTooltipFromTemplate(infoboxData);
-                log("Created template", template);
+
             }
             
-            var pageTitle = nuri.truepath.replace("_", " ");
+            var pageTitle = nuri.truepath.replaceAll("_", " ");
             template = template.replaceAll("%TEXT%", summary)
                                 .replaceAll("%PAGE%", pageTitle)
+                                .replaceAll("{{BASEPAGENAME}}", pageTitle)
                                 .replaceAll("{{PAGENAME}}", pageTitle);
-
+            
             if (!template) {
                 Settings.RegExp.ilinks.push(nuri.truepath);
                 $('.sh-tooltip').hide();
                 return;
             }
            
-            convertTemplateToHTML(tooltipId, template, forcepath);
+            convertTemplateToHTML(tooltipId, nuri.truepath, template, forcepath);
 
             return this;
         })
@@ -483,28 +521,30 @@
     }
 
     function createLoadingDiv() {
-        var div = $('<div class="sh-tooltip loading">');
-        
-        if (Settings.loadingContent !== undefined) {
-            div.html(Settings.loadingContent);
-        } else {
-            div.css("height", "50px")
-                .css("width", "80px")
-                .css("background", "white")
-                .css("border-radius", "8px")
-                .css("color", "black")
-                .css("padding", "10px")
-                .text("Loading...");
-        }
-        
-        if ($('.sh-tooltip.loading').length === 0) {
-            $('#tooltip-container').append(div);
-        } else {
+        hasCreatedLoading = true;
+        var shouldShowTooltip = $('.sh-tooltip').filter(':visible').length === 0 && !cancel;
+        if ($('.sh-tooltip.loading').length > 0 && shouldShowTooltip) {
             $('.sh-tooltip.loading').fadeIn("fast");
+        } else if (shouldShowTooltip) {
+            var div = $('<div class="sh-tooltip loading">');
+            
+            if (Settings.loadingContent !== undefined) {
+                div.html(Settings.loadingContent);
+            } else {
+                div.css("height", "50px")
+                    .css("width", "80px")
+                    .css("background", "white")
+                    .css("border-radius", "8px")
+                    .css("color", "black")
+                    .css("padding", "10px")
+                    .text("Loading...");
+            }
+            
+            $('#tooltip-container').append(div);
         }
     }
 
-    function convertTemplateToHTML(divId, template, forcepath) {
+    function convertTemplateToHTML(divId, path, template, forcepath) {
         var div = $('<div class="sh-tooltip">').attr("id", divId);
         var twrap = $('<div>');
 
@@ -524,7 +564,9 @@
         $.getJSON(apipage).done(function(data) {
             twrap.html(data.parse.text['*']);
             div.html(twrap);
-            addTooltipToWindow(div, divId, forcepath ? true : false);
+            if (currentEl.href === path) {
+                addTooltipToWindow(div, divId, forcepath ? true : false);
+            }
         }).fail(function(obj, stat, err){
             log('parse template fail', obj, stat, err);
             $('.sh-tooltip').hide();

@@ -49,3 +49,4 @@ if (mw.config.get('skin') === "oasis") {
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.display = 'none';
     }
+}

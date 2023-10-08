@@ -13,7 +13,7 @@
 	window.MorePageActionsLoaded = true;
 
 	const ddm = $('#p-cactions > ul'), // Gets dropdown menu
-	currentPage = encodeURIComponent(mw.config.get('wgPageName')),
+	currentPage = encodeURIComponent(mw.config.get('wgRelevantPageName')),
 	path = mw.config.get('wgArticlePath');
 
 	function link(id, page, msg) {
@@ -28,9 +28,9 @@
 			'movesubpage'
 		]);
 	}).then(function() {
-		link('whatlinkshere ca-linkshere', 'Special:WhatLinksHere/' + currentPage, 'whatlinkshere');
+		link('whatlinkshere', 'Special:WhatLinksHere/' + currentPage, 'whatlinkshere');
 		link('logs', 'Special:Log?page=' + currentPage, 'log');
-		link('latestrevision ca-latestdiff', currentPage + '?diff=latest', 'currentrev');
+		link('latestrevision', currentPage + '?diff=latest', 'currentrev');
 		link('subpages', 'Special:PrefixIndex/' + currentPage + '/', 'movesubpage');
 	});
 

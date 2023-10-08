@@ -6,6 +6,7 @@
 //  4. Спойлер в статьях
 //  5. Следящий глаз
 //  6. Выпиливание "Категории" у Категорий
+//  7. Discord Widget
 //------------------------------------//
 
 nkch_gst_gadgets = [{
@@ -58,12 +59,12 @@ importArticles({
     type: 'script',
     articles: [
         'u:fallout:MediaWiki:Gadget-InterlanguageChecker.js', // InterlanguageChecker
+        'MediaWiki:DiscordWidget.js' // InterlanguageChecker
     ]
 });
 
 // выполнение при готовности страницы
-$(document).ready(function()
-{
+$(document).ready(function() {
 	// Перемещение эпиграфа в верх на страницах выпуска
 	$('.autopream').each(function() {
 	    $(this).insertAfter($(this).parent().find('.autopream + .epigraph'));
@@ -141,7 +142,7 @@ document.querySelector(".wds-button.add-new-image").addEventListener("click", fu
       }
     }
   setTimeout(checkModal, 100);
-})
+});
 
 // Настройка блокировки статей от спойлеров
 window.SpoilerAlertJS = {

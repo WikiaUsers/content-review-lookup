@@ -49,7 +49,7 @@ $(document).ready(function() {
 							) + "%");
 							div.css("width", img.height);
 							div.css("height", img.height);
-							$(img).replaceWith(div);
+							$(img).removeClass("lazyloaded").replaceWith(div);
 						}, this);
 					}
 				})(el[1], img);

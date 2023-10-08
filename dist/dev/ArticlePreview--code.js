@@ -142,7 +142,7 @@
 					.map( function( name ) { 
 						const script = al.scripts[ name ];
 
-						if ( window.dev[ name ] ) { 
+						if ( window.dev && window.dev[ name ] ) { 
 							al.loadedScripts.push( script );
 							return Promise.resolve( );
 						}

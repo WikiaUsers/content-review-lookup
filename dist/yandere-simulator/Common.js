@@ -82,23 +82,18 @@ UserTagsJS.modules.mwGroups = ['sysop', 'council', 'rollback', 'chatmoderator', 
 UserTagsJS.modules.custom = {
     //Current Staff
     /* Bureaucrats */
-	'Jackboog21': ['head', 'hc-sc', 'vc-sc'],
+	'Jackboog21': ['head', 'hc-sc'],
 	/* Admins */
 	/* Mini-Admins */
-	'A random student': ['former-miniadmin', 'hc-jc', 'ec-member'],
 	'Ŝenezala': ['miniadmin', 'head'],
 	/* Content Mods */
-	'GalaxE': [],
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member', 'head'],
 	/* Discussion Mods */
 	/* Rollbacks */
 	/* Chat Mods */
-	'SeiShii': ['chatmoderator', 'head', 'ec-member'],
-	'GhoulGirls90': ['chatmoderator'],
+	'GhoulGirls90': ['chatmoderator', 'head'],
 	/* Helpers and Intern */
 	'Littleslinky': ['helpers'],
-	'RedLightningStrike': ['helpers', 'ec-member'],
-	'S0ul245Official': ['helpers'],
 	'PLACEHOLDER': ['intern'],
 	
 	//Former Staff
@@ -107,8 +102,11 @@ UserTagsJS.modules.custom = {
 	/* Former Admins */
 	/* Former Mini-Admins */
 	'AoiRyugokuTSFG1': ['former-miniadmin' ],
+	'A random student': ['former-miniadmin', 'hc-jc', 'ec-member'],
 	/* Former Content Mods */
 	'Travid117': ['former-contentmod'],
+	'GalaxE': [],
+	'SeiShii': ['former-chatmoderator', 'ec-member'],
 	/* Former Rollbacks */
 	'DezertFokx': ['former-rollback'],
 	'Third-Impact-is-Coming': ['former-rollback'],
@@ -133,6 +131,8 @@ UserTagsJS.modules.custom = {
 	'Shadow Bonnie202': ['former-helper'],
 	'ThatNerdyGamerGirl': ['former-helper'],
 	'MrCheeseTiger1234': ['former-helper', 'ec-member'],
+	'RedLightningStrike': ['former-helpers', 'ec-member'],
+	'S0ul245Official': ['former-helpers'],
 	/* Former Interns */
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
@@ -226,16 +226,10 @@ window.MastheadRightsBadgeSettings = {
 window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Head Bureaucrat',
-        'A_random_student': 'Head Mini-Admin',
-        'Ŝenezala': 'Mini-Admin',
+        'Ŝenezala': 'Head Mini-Admin',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
-        'GalaxE': 'Content Mod',
-        'SeiShii': 'Head Chat Mod',
-        'GhoulGirls90': 'Head Helper',
-        'Littleslinky': 'Helper',
-        'IDontKnowAName3': 'Helper',
-        'WakeTheDead17': 'Helper',
-        'Keter_Delinquent': 'Helper',
+        'GhoulGirls90': 'Head Chat Mod',
+        'Littleslinky': 'Head Helper',
         'Placeholder': 'Intern',
     }
 };
@@ -277,11 +271,8 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
 }
 //Import for all Staff
 if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ || 
-    mw.config.get('wgUserName').includes('WakeTheDead17') || 
-    mw.config.get('wgUserName').includes('IDontKnowAName3') || 
     mw.config.get('wgUserName').includes('Littleslinky') || 
     mw.config.get('wgUserName').includes('GhoulGirls90') || 
-    mw.config.get('wgUserName').includes('SeiShii') || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
     mw.config.get('wgUserGroups').includes('content-moderator') ||
@@ -295,6 +286,11 @@ if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ ||
         ]
     });
 }
+
+//LockOldComments
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 183;
+window.lockOldComments.addNoteAbove = true;
 
 //AjaxRC
 window.ajaxSpecialPages = [

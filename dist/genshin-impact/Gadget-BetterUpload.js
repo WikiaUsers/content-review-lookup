@@ -1,7 +1,6 @@
 $(function() {
 	(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
-		'default': '==Licensing==\n{{Fairuse}}',
-		_PRIORITY: 0
+		'default': '==Licensing==\n{{Fairuse}}'
 	};
 	
 	// Double load protection
@@ -12,7 +11,6 @@ $(function() {
 	var api = new mw.Api();
 	var PRELOAD_BY_NAME = { None: '' };
 	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName']);
-	importScriptPage('MediaWiki:Gadget-BetterUpload.js/settings.js', 'genshin-impact'); // load settings
 	
 	// Main class
 	var betterUpload = {
@@ -33,12 +31,7 @@ $(function() {
 			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
 			
 			betterUpload.renderPreview();
-			mw.hook('dev.BetterUpload').add(function(sett){
-				if (!window.dev.BetterUpload._PRIORITY || !sett._PRIORITY || window.dev.BetterUpload._PRIORITY < sett._PRIORITY) {
-					window.dev.BetterUpload = sett;
-					betterUpload.genPreloads();
-				}
-			});
+			betterUpload.genPreloads();
 		},
 		genPreloads: function() {
 			console.log(window.dev.BetterUpload);
@@ -111,41 +104,41 @@ $(function() {
 								option.setAttribute('numref', index);
 								fillin_list.append(option);
 							});
-						}
-						document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
-							var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
-							var preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
-							var valnum = document.querySelector('#mw-htmlform-description tbody select#wpFillin').selectedOptions[0].getAttribute('numref');
-							var valsettings = preloadSettings.fillin[valnum];
-							var newpreload = preloadSettings.preload;
-							valsettings.values.forEach(function(rep, ind){
-								var regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
-								if (regex.test(newpreload)) {
-									newpreload = newpreload.replace(regex, rep);
-								}
-							});
-							if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview')) {
-								document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
-							}
-							if (valsettings.reference) {
-								var refPreview =  document.createElement('div');
-								refPreview.classList.add('refPreview');
-								api.get({
-									action: 'parse',
-									text: valsettings.reference,
-									prop: 'text',
-									disablelimitreport: true,
-									contentmodel: 'wikitext'
-								}).then(function(data){
-									if (data && data.parse && data.parse.text && data.parse.text['*']) {
-										refPreview.innerHTML = data.parse.text['*'];
-										document.querySelector('tr.wpFillinRow .mw-input').append(refPreview);
+							document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
+								var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
+								var preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
+								var valnum = document.querySelector('#mw-htmlform-description tbody select#wpFillin').selectedOptions[0].getAttribute('numref');
+								var valsettings = preloadSettings.fillin[valnum];
+								var newpreload = preloadSettings.preload;
+								valsettings.values.forEach(function(rep, ind){
+									var regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
+									if (regex.test(newpreload)) {
+										newpreload = newpreload.replace(regex, rep);
 									}
 								});
-							}
-							document.querySelector('textarea#wpUploadDescription').value = newpreload;
-							betterUpload.renderPreview();
-						});
+								if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview')) {
+									document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
+								}
+								if (valsettings.reference) {
+									var refPreview =  document.createElement('div');
+									refPreview.classList.add('refPreview');
+									api.get({
+										action: 'parse',
+										text: valsettings.reference,
+										prop: 'text',
+										disablelimitreport: true,
+										contentmodel: 'wikitext'
+									}).then(function(data){
+										if (data && data.parse && data.parse.text && data.parse.text['*']) {
+											refPreview.innerHTML = data.parse.text['*'];
+											document.querySelector('tr.wpFillinRow .mw-input').append(refPreview);
+										}
+									});
+								}
+								document.querySelector('textarea#wpUploadDescription').value = newpreload;
+								betterUpload.renderPreview();
+							});
+						}
 						document.querySelector('textarea#wpUploadDescription').value = preload;
 						betterUpload.renderPreview();
 					} else { alert('Invalid option.'); }
@@ -188,7 +181,7 @@ $(function() {
                 text: document.querySelector('#wpUploadDescription').value
             };
 			if (file && filename && filename.length>0) {
-				api.upload(file, params).done(loadFilePage).fail(loadFilePage);
+				api.upload(file, params).then(loadFilePage, loadFilePage);
 				var loadFilePage = function() {
 					window.open(
 						window.location.href.replace(/^(.+\/wiki\/).+$/, '$1')+
@@ -205,26 +198,50 @@ $(function() {
 	mw.loader.using('mediawiki.api').then(function(){
 		// Check we're in Special:Upload
 		if (config.wgCanonicalSpecialPageName == 'Upload') {
-			if (document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label')) {
-				setTimeout(betterUpload.init);
-			} else {
-				// set up the mutation observer
-				var observer = new MutationObserver(function (mutations, me) {
-					// mutations is an array of mutations that occurred
-					// me is the MutationObserver instance
-					var targetNode = document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label');
-					if (targetNode) {
-						setTimeout(betterUpload.init);
-						me.disconnect(); // stop observing
-						return;
+			api.get({
+				action: 'query',
+				prop: 'revisions',
+				titles: [
+					'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
+					'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
+				],
+				rvprop: 'content',
+				rvslots: '*'
+			}).then(function(data){
+				var page = {user: 0, site: 0};
+				Object.keys(data.query.pages).forEach(function(id){
+					if (data.query.pages[id].title == 'MediaWiki:Gadget-BetterUpload.json') {
+						page.site = id;
+					} else {
+						page.user = id;
 					}
 				});
-				// start observing
-				observer.observe(document, {
-				  childList: true,
-				  subtree: true
-				});
-			}
+				if (page.user == -1) {
+					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
+				} else {
+					window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
+				}
+				if (document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label')) {
+					betterUpload.init();
+				} else {
+					// set up the mutation observer
+					var observer = new MutationObserver(function (mutations, me) {
+						// mutations is an array of mutations that occurred
+						// me is the MutationObserver instance
+						var targetNode = document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label');
+						if (targetNode) {
+							betterUpload.init();
+							me.disconnect(); // stop observing
+							return;
+						}
+					});
+					// start observing
+					observer.observe(document, {
+					  childList: true,
+					  subtree: true
+					});
+				}
+			});
 		}
 	});
 });

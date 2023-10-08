@@ -36,7 +36,7 @@ window.UserTagsJS = {
         warpedcontest: { u: 'ARCANE ✨', title:'Warped Contest Winner'},
         starrycontest: { u: 'CELESTIAL 🔮', title:'Starry Contest Winner'},
         zombiecontest2: { u: 'ON YOUR LAWN 🧟', title:'2020 Zombie Contest Winner'},
-        wildfire: { u: 'INCENDIARY 🌸', title:'2020 Wildfire Contest Winner'},
+        wildfire: { u: 'INCENDIARY 🧯', title:'2020 Wildfire Contest Winner'},
         lawnofdoom2: { u: 'HAUNTED 🎃', title:'Lawn of Doom 2020 Contest Winner'},
         pluggedin: { u: 'TELEVISED 📺', title:'2020 Plugged In Contest Winner'},
         ox: { u: 'OX 🐂', title:'Year of the Ox Contest Winner'},
@@ -64,11 +64,17 @@ window.UserTagsJS = {
         shroomdynasty: { u: 'THE SHROOM DYNASTY 🍒', title:'The Shroom Dynasty Contest Winner'},
         electrofire: { u: 'ELECTROFIRE FEST 🎪', title:'Electrofire Fest Contest Winner'},
         spookytown: { u: 'ROCK & GHOUL 🎸', title:'Rock & Ghoul Contest Winner'},
+        november23: { u: '???', title:'??? Contest Winner'},
+        december23: { u: '???', title:'??? Contest Winner'},
+        january24: { u: '???', title:'??? Contest Winner'},
+        february24: { u: '???', title:'??? Contest Winner'},
+        march24: { u: '???', title:'??? Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
         sysop: { u:'ADMINISTRATOR 🧊' },
         bureaucrat: { u:'BUREAUCRAT 🥦' },
+        representative: { u:'REPRESENTATIVE 🌸' },
         
         //group: { negative }
         blocked: { u:'BLOCKED ⛔'},
@@ -81,12 +87,14 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
+    'Saunt3D': ['representative'],
     'J192': ['old'],
     'Zomplant Jelo': ['old'],
     'AbsoluteGei': ['tenthcontest','pvzh', 'luckozombie'],
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'Baryonyx138': ['worldcontest'],
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod', 'lawnofdoom2'],
+    'Dartichoke Enjoyer': ['discmod','electrofire'],
     'DigoBlaze12': ['zombiecontest'],
     'DrAhxelYT12': ['worldcontest'],
     'DsFanboy': ['discowner'],
@@ -118,6 +126,17 @@ UserTagsJS.modules.metafilter = {
     'content-moderator': ['sysop', 'bureaucrat'],
     sysop: ['bureaucrat'],
 };
+
+var number_of_wiki_names = 14;
+var wiki_name_number = 0;
+
+while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
+  wiki_name_number = Math.random().toFixed(2) * 100;
+};
+var wiki_name_text=["Songs for your soul!", "Turn it up to eleven!", "Boo! A guitar!", "The raveyard!", "Monster mosh pit!", "Spooky solo!", "Skeleton strumming!", "Lyrics to rest in peace to!", "Creepy choir!", "Dangerous duet!", "Cause this is thriller! Thriller night!", "Frankendancing!", "I am afraid of pianos!", "Scary."][wiki_name_number];
+var elements=document.getElementsByClassName('fandom-community-header__community-name');
+var wiki_name=elements[0];
+wiki_name.textContent=wiki_name_text;
 
 /*WikiActivity config*/
 
