@@ -415,7 +415,7 @@
             }
             this.modal = new window.dev.modal.Modal({
                 buttons: buttons,
-                content: '<div id="lastEdited-diff-changes" class="WikiaArticle diff">' +
+                content: '<div id="lastEdited-diff-changes" class="page-content">' +
                              '<table class="diff">' +
                                  data.diff.body +
                              '</table>' +

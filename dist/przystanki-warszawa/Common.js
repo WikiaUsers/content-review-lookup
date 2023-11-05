@@ -7,6 +7,11 @@ PFD_templates = [
     },
     'Specyficzne',
     {
+        label:   'Rozkład jazdy',
+        desc:    'Rozkład jazdy linii [[]] z przystanku \'\'{{przystanek||}} \'\'.\n[[Kategoria:Rozkłady jazdy]]',
+        license: 'PD',
+    },
+    {
         label:   'Schemat rozmieszczenia przystanków',
         desc:    '{{Plik\n| Opis        = Schemat rozmieszczenia przystanków w zespole [[]] w .\n| Data        = \n| Źródło      = \n| Autor       = Adam Klocusky\n| Inne wersje = \n}}\n[[Kategoria:Schematy rozmieszczenia przystanków]]',
         license: 'CC-self-4',

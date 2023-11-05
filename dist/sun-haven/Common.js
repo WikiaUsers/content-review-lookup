@@ -13,31 +13,24 @@ window.shTooltips.templates = [
                     "}}"
 	},
     {
-		templatename: "FOOD",
-		template: "{{Tooltip/Food/data|<#name#>}}"
-	},
-	{
 		templatename: "NPC",
-		template: "{{Tooltip/NPC/data|%PAGE%|name=<#name#>}}"
+		template: "{{NPC tooltip|%PAGE%|name=<#name#>}}"
 	},
     {
-		templatename: "CROP",
-		template: "{{Tooltip/crop/data|<#name#>}}"
-	},
-    {
-		templatename: "TOOL",
-		template: "{{Tooltip/tool/data|<#name#>}}"
-	},
-    {
-		templatename: "EQUIPMENT",
-		template: "{{Tooltip/equipment/data|<#name#>|set=<#armorset#>" + 
-                    "|source=<#source#>|effect=<#effect#>}}"
+		templatename: "Item infobox",
+		template: "{{Item tooltip|%PAGE%|image=<#image#>|sell=<#sell#>|selltype=<#selltype#>" +
+                    "|itemType=<#itemType#>|selltype=<#selltype#>|restores=<#restores#>" +
+                    "|statInc=<#statInc#>|statAmt=<#statAmt#>|region=<#region#>|location=<#location#>" +
+                    "|node=<#node#>|season=<#season#>|seed=<#seed#>|produces=<#produces#>|exp=<#exp#>" +
+                    "|requirement=<#requirement#>|set=<#armorset#>" + 
+                    "}}"
 	},
     {
         linkmatch: /Template:.+/,
         template: '{{Tooltip/template|%PAGE%}}'
     }
 ];
+
 var loadingImage = "https://static.wikia.nocookie.net/sun-haven/images/8/86/Crafting_Table.gif/revision/latest?cb=20210702142456";
 window.shTooltips.loadingContent = '<div style="padding: 10px;"><img src="' + loadingImage + '"/>';
 window.shTooltips.delay = 300;

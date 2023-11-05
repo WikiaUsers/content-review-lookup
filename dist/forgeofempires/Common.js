@@ -113,3 +113,9 @@ for(var j=0;j<myClears.length;j++)
 {
     myClears[j].previousElementSibling.style.clear = "both";
 }
+
+/* Adds Fandom Compass Badge to Title */
+$('.fandom-community-header__community-name-wrapper').append(
+	$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('padding-left', '5px').css('position', 'absolute').css('left', '100%').css('top', '-20px')
+	.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009')
+);

@@ -372,6 +372,8 @@
 	}
 
 	mw.loader.using(['jquery', 'mediawiki.api']).then(function() {
+		window.dev.ct.setup = setup;
+
 		mw.hook('dev.ct').fire(setup);
 
 		if (window.CustomTools) {
@@ -381,8 +383,6 @@
 		if (mw.user.options.get('userjs-custom-tools')) {
 			setup(JSON.parse(mw.user.options.get('userjs-custom-tools')));
 		}
-		
-		window.dev.ct.setup = setup;
 	});
 
 	importArticle({

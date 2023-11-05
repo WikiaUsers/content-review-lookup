@@ -31,3 +31,6 @@ mw.loader.using( ['jquery.ui'], function() {
 
 /* lockdown for reference popup configuration */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
+
+/* Disable license check for multi upload */
+mw.config.set('UMFBypassLicenseCheck', true);

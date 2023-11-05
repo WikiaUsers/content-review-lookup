@@ -1,6 +1,6 @@
-( function() {
+;( function($, mw) {
 'use strict';
-
+var OO;
 /** "Global" vars (preserved between editing sessions) **/
 var i18n = {
 	blockedNotice: 'You cannot edit this sprite as you are blocked.',
@@ -720,7 +720,7 @@ var create = function( state ) {
 		if ( !supports( 'position', 'sticky' ) && !supports( 'position', '-webkit-sticky' ) ) {
 			var fixedClass = 'spriteedit-toolbar-fixed';
 			var contentOffset = $content.offset().left + 1;
-			$win.on( 'scroll.spriteEdit', $.throttle( 32, function() {
+			$win.on( 'scroll.spriteEdit', OO.ui.throttle( function() {
 				var fixed = $toolbar.hasClass( fixedClass ),
 					scrollTop = $win.scrollTop(),
 					offset = $barContainer.offset().top;
@@ -729,7 +729,7 @@ var create = function( state ) {
 				} else if ( fixed && scrollTop < offset ) {
 					$toolbar.removeClass( fixedClass ).css( 'left', '' );
 				}
-			} ) );
+			}, 32 ) );
 		}
 		
 		$( '#spriteedit-undo' ).find( 'button' ).on( 'click.spriteEdit', function() {
@@ -1392,7 +1392,7 @@ var create = function( state ) {
 		
 		
 		/* Window events */
-		$win.on( 'resize.spriteEdit', $.throttle( 32, function() {
+		$win.on( 'resize.spriteEdit', OO.ui.throttle( function() {
 			var $conflict = $( '#spriteedit-dialog-conflict' );
 			if ( $conflict.length && $conflict.is( ':visible' ) ) {
 				var $textarea = $conflict.find( 'textarea' );
@@ -1400,7 +1400,7 @@ var create = function( state ) {
 					$conflict.find( '.spriteedit-dialog-text' ).height() - $textarea.parent()[0].offsetTop
 				) + 'px' );
 			}
-		} ) );
+		}, 32 ) );
 		
 		var updateMouse = function( e ) {
 			mouse.moved = true;
@@ -1422,9 +1422,9 @@ var create = function( state ) {
 		} );
 		
 		// Disable smooth scrolling once scrolling ends so it does not interfere with user scrolling.
-		$win.on( 'scroll.spriteEdit', $.debounce( 250, function() {
+		$win.on( 'scroll.spriteEdit', OO.ui.debounce( function() {
 			$root.removeClass( 'spriteedit-smoothscroll' );
-		} ) );
+		}, 250 ) );
 	};
 	
 	
@@ -1473,15 +1473,11 @@ var create = function( state ) {
 	 * if something went wrong, or nothing if the diff is empty.
 	 */
 	var makeDiff = function( data ) {
-		if ( !data || !data.query || !data.query.pages ) {
+		if ( !data || !data.compare ) {
 			return i18n.genericError;
 		}
 		
-		var page = data.query.pages[0];
-		if ( !page ) {
-			return i18n.diffErrorMissingPage;
-		}
-		var diff = page.revisions[0].diff.body;
+		var diff = data.compare.body;
 		if ( diff === undefined ) {
 			return i18n.diffError;
 		}
@@ -1656,6 +1652,7 @@ var create = function( state ) {
 				}
 				
 				names.getObject().then( function( obj ) {
+					/*
 					if ( spriteSettings[i18n.luaKeySettingsUrl] ) {
 						var url = $doc.data( 'original-url' ).split( '?' );
 						// Update the version parameter if the sheet was modified
@@ -1668,6 +1665,7 @@ var create = function( state ) {
 						obj[i18n.luaKeySettings][i18n.luaKeySettingsUrl] =
 							luaTable.func( $doc.data( 'urlfunc' ).replace( /\$1/, url[1] ) );
 					}
+					*/
 					deferred.resolve( 'return ' + luaTable.create( obj ) );
 				} );
 				
@@ -1695,13 +1693,15 @@ var create = function( state ) {
 						return new mw.Api( {
 							ajax: { contentType: 'multipart/form-data' },
 						} ).post( {
-							action: 'query',
-							prop: 'revisions',
-							titles: dataPage,
-							rvprop: '',
-							rvdifftotext: table,
-							rvlimit: 1,
-							formatversion: 2,
+							action: 'compare',
+							format: 'json',
+							fromtitle: dataPage,
+							totitle: dataPage,
+							toslots: 'main',
+							prop: 'diff',
+							'totext-main': table,
+							'tocontentmodel-main': 'Scribunto',
+							formatversion: 2
 						} );
 					} );
 				} ).then( function( data ) {
@@ -3923,7 +3923,19 @@ if ( !HTMLCanvasElement.prototype.toBlob ) {
 
 
 // Finally start the editor
-create( 'initial' );
+mw.loader.using([
+	'mediawiki.api',
+	'mediawiki.util',
+	'mediawiki.confirmCloseWindow',
+	'oojs-ui',
+	'oojs-ui-core',
+	'oojs-ui-widgets'
+	]).then(function(require) {
+	OO = require('oojs');
+	return;
+}).then(function() {
+	create( 'initial' );
+});
 
 
-}() );
+})(window.jQuery, window.mediaWiki);

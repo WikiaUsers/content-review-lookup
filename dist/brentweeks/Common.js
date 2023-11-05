@@ -128,3 +128,36 @@ var items = document.querySelectorAll('li.category-layout-selector__item');
 items.forEach(function(item) {
   item.classList.add('is-active');
 });
+
+
+$(function() {
+    // Check if we're on the page where you want to enable chat
+    if (mw.config.get('wgPageName') === 'LiveChatTest') {
+        // Create a div for the chat and append it to the page
+        var chatContainer = $('<div id="chat-container"></div>').appendTo('body');
+        chatContainer.css({
+            'position': 'fixed',
+            'bottom': '0',
+            'right': '10px',
+            'background': 'white',
+            'border': '1px solid #ccc',
+            'padding': '10px',
+            'max-height': '300px',
+            'overflow-y': 'auto'
+        });
+
+        // Create an input field for users to type messages
+        var inputField = $('<input type="text" id="chat-input" placeholder="Type your message"/>').appendTo(chatContainer);
+
+        // Listen for Enter key press to send messages
+        inputField.keypress(function(e) {
+            if (e.which === 13) { // Enter key
+                var message = inputField.val();
+                inputField.val('');
+
+                // Append the message to the chat container
+                $('<div class="chat-message"></div>').text(message).appendTo(chatContainer);
+            }
+        });
+    }
+});

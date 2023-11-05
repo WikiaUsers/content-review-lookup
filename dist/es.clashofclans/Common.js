@@ -8,6 +8,7 @@ importArticles({
 		'w:c:clashofclans:MediaWiki:GemCalculators.js',
 		'w:c:clashofclans:MediaWiki:HeroSkins2.js',
 		'w:c:clashofclans:MediaWiki:Toggle.js',
+		'MediaWiki:ClanHouseGenerator.js',
 		"u:dev:MediaWiki:BackToTopButton/code.js",
 		]
 });

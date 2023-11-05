@@ -3,6 +3,9 @@
 //Неактивные пользователи
 window.InactiveUsers = { 
     months: 1,
-    text: 'Неактивен'
+    text: 'Неактивный'
 };
 importScriptPage('InactiveUsers/code.js', 'dev');
+
+//ProfileTags, предотвращает удаление существующих тегов
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

@@ -1,5 +1,15 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+// TROXEL 3D viewer
+$.getScript('https://trove.fandom.com/wiki/MediaWiki:LibTroxel.js?action=raw');
+// END of TROXEL 3D viewer
+
+/* LockOldComments */
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 90;
+window.lockOldComments.addNoteAbove = true;
+
 // AJAX tables
 function addAjaxDisplayLink() {
 	$("table.ajax").each(function (i) {

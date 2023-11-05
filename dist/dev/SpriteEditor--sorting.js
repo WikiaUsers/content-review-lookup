@@ -8,25 +8,24 @@
 	myData.modal = modal;
 	var shared;
 	var Demo = {};
-	var root = document.getElementById('mw-content-text');
 	var oldOrder;
 	var newOrder;
 	var msg;
     function updateRoot(order) {
-        var tmp = root.children[0];
+        var tmp = shared.root.children[0];
         var a = document.createElement("span");
-        root.prepend(a);
-        root.insertBefore(tmp, a);
+        shared.root.prepend(a);
+        shared.root.insertBefore(tmp, a);
         for (var i = 0; i < order.length; i++) {
-            root.insertBefore(order[i], a);
+            shared.root.insertBefore(order[i], a);
         }
-        root.removeChild(a);
+        shared.root.removeChild(a);
     }
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
 	myData.setSections = function(order) {
-        oldOrder = root.querySelectorAll('div.spritedoc-section');
+        oldOrder = shared.root.querySelectorAll('div.spritedoc-section');
 		var ele = document.getElementsByClassName("spriteedit-sorting")[0];
 		ele.innerHTML = "";
 		var items = [];
@@ -50,15 +49,15 @@
 	}
 
 	function moveSectionElements() {
-		var tmp = root.children[0];
+		var tmp = shared.root.children[0];
 		var a = document.createElement("span");
-		root.prepend(a);
+		shared.root.prepend(a);
 		var eleList = document.querySelectorAll('div.spriteedit-sorting .oo-ui-draggableElement');
-		root.insertBefore(tmp, a);
+		shared.root.insertBefore(tmp, a);
 		for (var i = 0; i < eleList.length; i++) {
-			root.insertBefore(document.querySelector('div[data-section-id="' + eleList[i].dataset.sectionId + '"]'), a);
+			shared.root.insertBefore(document.querySelector('div[data-section-id="' + eleList[i].dataset.sectionId + '"]'), a);
 		}
-		root.removeChild(a);
+		shared.root.removeChild(a);
 	}
 
 	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
@@ -146,7 +145,7 @@
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
 				if (action === 'saveSorting') {
                     moveSectionElements();
-                    newOrder = root.querySelectorAll('div.spritedoc-section');
+                    newOrder = shared.root.querySelectorAll('div.spritedoc-section');
                     const _oldOrder = oldOrder;
                     const _newOrder = newOrder;
 					shared.addHistory([

@@ -270,6 +270,11 @@
             }
         },
         
+        GlitchText: {
+        	page: 'GlitchText',
+        	styles: 'MediaWiki:GlitchText.css'
+        },
+        
         GlobalNavDarkTheme: {
             page: 'GlobalNavDarkTheme',
             styles: 'MediaWiki:GlobalNavDarkTheme.css'
@@ -571,6 +576,12 @@
         SpoilerBlur: {
             page: 'SpoilerBlur',
             styles: 'MediaWiki:SpoilerBlur.css'
+        },
+        
+        SpoilerTags: {
+            page: 'SpoilerTags',
+            scripts: 'MediaWiki:SpoilerTags.js',
+            styles: 'MediaWiki:SpoilerTags.css'
         },
         
         SearchSuggest: {

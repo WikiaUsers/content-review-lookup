@@ -1,1 +1,0 @@
-importScriptPage("Stable/ChatPlugins/code.js", "gamedezyner");

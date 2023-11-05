@@ -92,4 +92,6 @@ mw.loader.load('https://terraria.gamepedia.com/index.php?title=MediaWiki:Gadget-
 
 /*Right module discord */
 window.AddRailModule = [
-    {page: 'Template:Discord', prepend: true}];
+    {page: 'Template:Discord', prepend: true},
+	'Template:RailModule2',    
+];

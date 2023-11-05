@@ -1,47 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /***************************/
-/* Interface Modification **/
+/***** Script Imports ******/
 /***************************/
 
-/* Template:USERNAME Substitution */
-$(function() {
-	('.InsertUsername').text(wgUserName);
-});
-
-/* Class addition for VisualEditor Source Mode edit preview */
-//var element = document.querySelector('.fandom-preview-panel');
-//element.classList.add('page');
-//document.querySelector(".target").classList.add("page");
-//document.addEventListener("DOMContentLoaded", function() {
-document.querySelector(".fandom-preview-panel").classList.add("page");
-//});
-
-/* Class addition for daytime periods */
-$(function() {
-    'use strict';
-var currentTime = new Date().getHours();
-if (0 <= currentTime && currentTime < 6) {
-    if (document.body) {
-        document.body.classList.add('night');
-    }
-}
-else if (6 <= currentTime && currentTime < 12) {
-    if (document.body) {
-        document.body.classList.add('morning');
-    }
-}
-else if (12 <= currentTime && currentTime < 18) {
-    if (document.body) {
-        document.body.classList.add('afternoon');
-    }
-}
-else {
-    if (document.body) {
-        document.body.classList.add('evening');
-    }
-}
-});
+// See [[MediaWiki:ImportJS]].
 
 /***************************/
 /** Import Configuration ***/
@@ -50,7 +13,7 @@ else {
 /* StandardEditSummary */
 window.dev = window.dev || {};
 window.dev.editSummaries = {
-	css: '#edit-summaries',
+	css: false,
 	select: [
 		'(browse edit summaries)',
 		'1. General editing', [
@@ -92,7 +55,39 @@ UserTagsJS.modules.newuser = {
 };
 
 /***************************/
-/***** Script Imports ******/
+/* Interface Modification **/
 /***************************/
 
-// See [[MediaWiki:ImportJS]].
+/* Template:USERNAME Substitution */
+$(function() {
+	$('.username-insert').text(wgUserName);
+});
+
+/* CSS classes for daytime periods */
+$(function() {
+    'use strict';
+var currentTime = new Date().getHours();
+if (0 <= currentTime && currentTime < 6) {
+    if (document.body) {
+        document.body.classList.add('night');
+    }
+}
+else if (6 <= currentTime && currentTime < 12) {
+    if (document.body) {
+        document.body.classList.add('morning');
+    }
+}
+else if (12 <= currentTime && currentTime < 18) {
+    if (document.body) {
+        document.body.classList.add('afternoon');
+    }
+}
+else {
+    if (document.body) {
+        document.body.classList.add('evening');
+    }
+}
+});
+
+/* Class addition for VisualEditor Source Mode edit preview */
+document.querySelector('.fandom-preview-panel').classList.add('page');

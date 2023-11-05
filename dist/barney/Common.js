@@ -9,3 +9,14 @@ $('.fandom-community-header__image').append(
         )
         .attr('href', 'https://barney.fandom.com/wiki/User_blog:Barneymiller123abc/Celebrating_Fifteen_Years_of_Barney_Wiki')
 );
+
+window.AddRailModule = [{
+    page: 'Template:DiscordRailModule',
+    appendAfter: '.DiscordIntegratorModule .rail-module',
+}];
+
+window.rwaOptions = {
+    limit: 50,
+    namespaces: [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],
+    autoInit: true 
+};

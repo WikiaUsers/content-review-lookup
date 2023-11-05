@@ -52,64 +52,67 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     });
 
     //Create da calculators
-	var dungeons = [
-		{ name: "None", difficulties: ["Pick Dungeon First"]},
-		{ name: "Glided Skies", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Northern Lands", difficulties: ["Insane", "Nightmare", "Nightmare With Odin-R"]},
-		{ name: "Enchanted Forest", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Aquatic Temple", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Volcanic Chambers", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Orbital Outpost", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Boss Raids", difficulties: ["Unapplicable"]},
-		{ name: "Steampunk Sewers", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Ghastly Harbor", difficulties: ["Insane", "Nightmare"]},
-		{ name: "The Canals", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Samurai Palace", difficulties: ["Insane", "Nightmare"]},
-		{ name: "The Underworld", difficulties: ["Insane", "Nightmare"]},
-		{ name: "King's Castle", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Pirate Island", difficulties: ["Insane", "Nightmare"]},
-		{ name: "Winter Outpost", difficulties: ["Easy","Medium","Hard","Insane", "Nightmare"]},
-		{ name: "Desert Temple", difficulties: ["Easy","Medium","Hard","Insane", "Nightmare"]},
+    var dungeons = [
+        { name: "None", difficulties: ["Pick Dungeon First"]},
+        { name: "Yokai Peak", difficulties: ["Insane", "Nightmare"]},
+        { name: "Gilded Skies", difficulties: ["Insane", "Nightmare"]},
+        { name: "Northern Lands", difficulties: ["Insane", "Nightmare", "Nightmare With Odin-R"]},
+        { name: "Enchanted Forest", difficulties: ["Insane", "Nightmare"]},
+        { name: "Aquatic Temple", difficulties: ["Insane", "Nightmare"]},
+        { name: "Volcanic Chambers", difficulties: ["Insane", "Nightmare"]},
+        { name: "Orbital Outpost", difficulties: ["Insane", "Nightmare"]},
+        { name: "Boss Raids", difficulties: ["Unapplicable"]},
+        { name: "Steampunk Sewers", difficulties: ["Insane", "Nightmare"]},
+        { name: "Ghastly Harbor", difficulties: ["Insane", "Nightmare"]},
+        { name: "The Canals", difficulties: ["Insane", "Nightmare"]},
+        { name: "Samurai Palace", difficulties: ["Insane", "Nightmare"]},
+        { name: "The Underworld", difficulties: ["Insane", "Nightmare"]},
+        { name: "King's Castle", difficulties: ["Insane", "Nightmare"]},
+        { name: "Pirate Island", difficulties: ["Insane", "Nightmare"]},
+        { name: "Winter Outpost", difficulties: ["Easy", "Medium", "Hard", "Insane", "Nightmare"]},
+        { name: "Desert Temple", difficulties: ["Easy", "Medium", "Hard", "Insane", "Nightmare"]},
     ];
     var dungeonsWithEXP = [
-    	{name: "Glided Skies Insane", baseEXP: 63500000000},
-    	{name: "Glided Skies Nightmare", baseEXP: 115500000000},
-    	{name: "Northern Lands Insane", baseEXP: 21820000000},
-    	{name: "Northern Lands Nightmare", baseEXP: 36600000000},
-    	{name: "Northern Lands Nightmare With Odin-R", baseEXP: 58600000000},
-    	{name: "Enchanted Forest Insane", baseEXP: 6900000000},
-    	{name: "Enchanted Forest Nightmare", baseEXP: 11280000000},
-		{name: "Aquatic Temple Insane", baseEXP: 2034000000},
-    	{name: "Aquatic Temple Nightmare", baseEXP: 3564000000},
-    	{name: "Volcanic Chambers Insane", baseEXP: 755000000},
-    	{name: "Volcanic Chambers Nightmare", baseEXP: 1225000000},
-    	{name: "Orbital Outpost Insane", baseEXP: 329000000},
-    	{name: "Orbital Outpost Nightmare", baseEXP: 506500000},
-    	{name: "Boss Raids Unapplicable", baseEXP: 130000000},
-    	{name: "Steampunk Sewers Insane", baseEXP: 35700000},
-    	{name: "Steampunk Sewers Nightmare", baseEXP: 59600000},
-		{name: "Ghastly Harbor Insane", baseEXP: 12840000},
-    	{name: "Ghastly Harbor Nightmare", baseEXP: 24160000},
-		{name: "The Canals Insane", baseEXP: 4594000},
-    	{name: "The Canals Nightmare", baseEXP: 8005000},
-		{name: "Samurai Palace Insane", baseEXP: 1934000},
-    	{name: "Samurai Palace Nightmare", baseEXP: 3500000},
-		{name: "The Underworld Insane", baseEXP: 546000},
-    	{name: "The Underworld Nightmare", baseEXP: 924000},
-    	{name: "King's Castle Insane", baseEXP: 135900},
-    	{name: "King's Castle Nightmare", baseEXP: 271800},
-		{name: "Pirate Island Insane", baseEXP: 51150},
-    	{name: "Pirate Island Nightmare", baseEXP: 82200},
-		{name: "Winter Outpost Easy", baseEXP: 6564},
-		{name: "Winter Outpost Medium", baseEXP: 9180},
-		{name: "Winter Outpost Hard", baseEXP: 16140},
-		{name: "Winter Outpost Insane", baseEXP: 27840},
-		{name: "Winter Outpost Nightmare", baseEXP: 46180},
-		{name: "Desert Temple Easy", baseEXP: 253},
-		{name: "Desert Temple Medium", baseEXP: 396},
-		{name: "Desert Temple Hard", baseEXP: 785},
-		{name: "Desert Temple Insane", baseEXP: 1307},
-		{name: "Desert Temple Nightmare", baseEXP: 2669},
+        {name: "Yokai Peak Insane", baseEXP: 192650000000},
+        {name: "Yokai Peak Nightmare", baseEXP: 350950000000},
+        {name: "Gilded Skies Insane", baseEXP: 63500000000},
+        {name: "Gilded Skies Nightmare", baseEXP: 115500000000},
+        {name: "Northern Lands Insane", baseEXP: 21820000000},
+        {name: "Northern Lands Nightmare", baseEXP: 36600000000},
+        {name: "Northern Lands Nightmare With Odin-R", baseEXP: 58600000000},
+        {name: "Enchanted Forest Insane", baseEXP: 6900000000},
+        {name: "Enchanted Forest Nightmare", baseEXP: 11280000000},
+        {name: "Aquatic Temple Insane", baseEXP: 2034000000},
+        {name: "Aquatic Temple Nightmare", baseEXP: 3564000000},
+        {name: "Volcanic Chambers Insane", baseEXP: 755000000},
+        {name: "Volcanic Chambers Nightmare", baseEXP: 1225000000},
+        {name: "Orbital Outpost Insane", baseEXP: 329000000},
+        {name: "Orbital Outpost Nightmare", baseEXP: 506500000},
+        {name: "Boss Raids Unapplicable", baseEXP: 130000000},
+        {name: "Steampunk Sewers Insane", baseEXP: 35700000},
+        {name: "Steampunk Sewers Nightmare", baseEXP: 59600000},
+        {name: "Ghastly Harbor Insane", baseEXP: 12840000},
+        {name: "Ghastly Harbor Nightmare", baseEXP: 24160000},
+        {name: "The Canals Insane", baseEXP: 4594000},
+        {name: "The Canals Nightmare", baseEXP: 8005000},
+        {name: "Samurai Palace Insane", baseEXP: 1934000},
+        {name: "Samurai Palace Nightmare", baseEXP: 3500000},
+        {name: "The Underworld Insane", baseEXP: 546000},
+        {name: "The Underworld Nightmare", baseEXP: 924000},
+        {name: "King's Castle Insane", baseEXP: 135900},
+        {name: "King's Castle Nightmare", baseEXP: 271800},
+        {name: "Pirate Island Insane", baseEXP: 51150},
+        {name: "Pirate Island Nightmare", baseEXP: 82200},
+        {name: "Winter Outpost Easy", baseEXP: 6564},
+        {name: "Winter Outpost Medium", baseEXP: 9180},
+        {name: "Winter Outpost Hard", baseEXP: 16140},
+        {name: "Winter Outpost Insane", baseEXP: 27840},
+        {name: "Winter Outpost Nightmare", baseEXP: 46180},
+        {name: "Desert Temple Easy", baseEXP: 253},
+        {name: "Desert Temple Medium", baseEXP: 396},
+        {name: "Desert Temple Hard", baseEXP: 785},
+        {name: "Desert Temple Insane", baseEXP: 1307},
+        {name: "Desert Temple Nightmare", baseEXP: 2669},
     ];
     var difficulties = ["Pick Dungeon First"];
     var dungeonsNames = dungeons.map(function (a) { return a.name; });
@@ -136,22 +139,22 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             goalField.label, goalField.input, createBr(),
             submit, createBr()
         );
-		
-		dungeonField.select.oninput = function() {
-			dungeons.forEach(function (a) {
+        
+        dungeonField.select.oninput = function() {
+            dungeons.forEach(function (a) {
                 if (a.name == dungeonField.select.value) {
-                	removeChildren(difficultyField.select);
-                	
-                	a.difficulties.forEach(function (value) {
-            			var option = document.createElement("option");
-            			option.value = option.label = value;
-            			difficultyField.select.append(option);
-        			});
+                    removeChildren(difficultyField.select);
+                    
+                    a.difficulties.forEach(function (value) {
+                        var option = document.createElement("option");
+                        option.value = option.label = value;
+                        difficultyField.select.append(option);
+                    });
                 }
             });
-		};
+        };
         submit.onclick = function () {
-        	var dungeonEXP = 1;
+            var dungeonEXP = 1;
             var selectedDungeon = dungeonField.select.value + " " + difficultyField.select.value;
             dungeonsWithEXP.forEach(function (a) {
                 if (a.name == selectedDungeon) {
@@ -163,25 +166,25 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
             var xp = calculateXp(current, goal);
             var xpString = addCommas(xp);
-        	var modifier = 1;
-        	if (eventCheckBox.input.checked) {
-				modifier++;
+            var modifier = 1;
+            if (eventCheckBox.input.checked) {
+                modifier++;
             }
-			if (boosterCheckBox.input.checked) {
-				modifier++;
+            if (boosterCheckBox.input.checked) {
+                modifier++;
             }
             var amountOfRuns = Math.ceil((xp/modifier/dungeonEXP));
             var amountOfVIPRuns = Math.ceil((xp/(modifier+0.2)/dungeonEXP));
 
-			if (dungeonEXP == 1) {
+            if (dungeonEXP == 1) {
             result.update("You will need about " + xpString + " experience.");
-			}
-			else {
-			result.update("You will need about " + xpString + " experience." + "\n" +
-			"Without VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
-			"With VIP, you will need at least " + amountOfVIPRuns + " runs of " + selectedDungeon + " to reach your goal level"
-			);	
-			}
+            }
+            else {
+            result.update("You will need about " + xpString + " experience." + "\n" +
+            "Without VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
+            "With VIP, you will need at least " + amountOfVIPRuns + " runs of " + selectedDungeon + " to reach your goal level"
+            );  
+            }
         };
     }
 
@@ -428,11 +431,11 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * ability);
     }
 
-	function removeChildren(parent){
-		while (parent.lastChild){
-			parent.removeChild(parent.lastChild)
-		}
-	}
+    function removeChildren(parent){
+        while (parent.lastChild){
+            parent.removeChild(parent.lastChild)
+        }
+    }
     function truncate(num) {
         // Leave numbers below 1K unchanged
         if (num < 1e3) {

@@ -1,5 +1,7 @@
 ;(function(mw) {
 	'use strict';
+	if (window.SpriteEditorModules.openButton && window.SpriteEditorModules.openButton.loaded) return;
+	window.SpriteEditorModules.openButton = {loaded: true};
 	var config = mw.config.get([
 			"skin",
 			"wgArticlePath",

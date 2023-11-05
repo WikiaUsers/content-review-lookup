@@ -73,17 +73,20 @@ $(function() {
 				'<div id="TemplatesList"></div>'+
 				'<hr />'+
 				'<center>'+
+					'<span id="TemplateManagerNote">No template selected.</span>'+
 					'<div id="TemplateManager" rel="">'+
 						'<img id="templateImage" width="100%" src="" rel="" />'+
 					'</div>'+
 					'<span class="wds-button" id="MapGenerator">Generate Map</span>'+
 				'</center>'));
 			mapGenerator.loadTemplates(mapRefs[REGION].templates);
+			document.querySelector('#mapImage').onload = function() { mapGenerator.updateZoom(); };
 			document.querySelector('#mapContainer').style.setProperty('left', mapRefs[REGION].offset.left);	// Default map offset
 			document.querySelector('#mapContainer').style.setProperty('top', mapRefs[REGION].offset.top);	// Default map offset
 			$('#mapContainer').draggable();
 			$('#mapContainer').css('height', (screen.height-250)+'px'); // Limit container so no scrolling is required
 			mw.util.addCSS(
+				'.custom-tabs > span {flex: 1 0 20%;}'+
 				'.markerSettings > ul {\n'+
 					'display: flex;\n'+
 					'list-style-type: none;\n'+
@@ -157,26 +160,34 @@ $(function() {
 				if (event.target && (event.target.id == 'mapImage' || event.target.id == 'templateImage')) {
 					event.preventDefault();
 					markers.count++;
+					var localZoom = (event.target.id == 'templateImage' ? 1 : zoom); // ignore zoom setting if not quickGen
+					var img = new Image();
+					img.onload = function () {
+						img.setAttribute('width', (loadedImages['File:Map-guide-marker-53.png'].size*localZoom)+'px');
+						img.setAttribute('style', 
+							'left:'+(event.layerX-(loadedImages['File:Map-guide-marker-53.png'].size*localZoom/2))+'px; '+
+							'top:'+(event.layerY-(loadedImages['File:Map-guide-marker-53.png'].size*localZoom/2))+'px; '+
+							'z-index:'+markers.count+'; '+
+							'position:absolute'+'; '
+						);
+						delete img.onload;
+					};
+					img.setAttribute('id', 'marker'+markers.count);
+					img.setAttribute('src', loadedImages['File:Map-guide-marker-53.png'].src);
 					var newMarker = {
 						src: 'File:Map-guide-marker-53.png',
-						x: event.layerX/zoom,
-						y: event.layerY/zoom,
+						x: event.layerX/localZoom,
+						y: event.layerY/localZoom,
 						type: (event.target.id == 'templateImage' ? 'Precise' : 'Quick'),
-						elem: $('<img '+
-							'src="'+loadedImages['File:Map-guide-marker-53.png'].src+'" '+
-							'id="marker'+markers.count+'" '+
-							'class="mapMarker" '+
-							'style="'+
-								'left:'+(event.layerX-(loadedImages['File:Map-guide-marker-53.png'].size*zoom/2))+'px; '+
-								'top:'+(event.layerY-(loadedImages['File:Map-guide-marker-53.png'].size*zoom/2))+'px; '+
-								'z-index:'+markers.count+'; '+
-								'position:absolute'+'; '+
-							'" '+
-							'width="'+(loadedImages['File:Map-guide-marker-53.png'].size*zoom)+'px" '+
-						'/>')
+						elem: img
 					};
 					markers['marker'+markers.count] = newMarker;
-					$('#'+(event.target.id == 'templateImage'? 'TemplateManager' : 'mapContainer')).append(newMarker.elem);
+					if (event.target.id == 'templateImage')  {
+						$('#TemplateManager').append(img);
+					} else {
+						$('#mapContainer').append(img);
+					}
+					
 					console.log(markers);
 				} else if (event.target && /^marker\d+/.test(event.target.id)) {
 					markers.count--;
@@ -211,31 +222,48 @@ $(function() {
 					var markerID = event.target.getAttribute('rel');
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
+					var localZoom = (event.target.closest('templateImage') ? 1 : zoom); // ignore zoom setting if not quickGen
+					marker.onload = function() {
+						marker.setAttribute('width', (marker.naturalWidth*localZoom)+'px');
+						marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*localZoom+ 'px');
+						marker.style.setProperty('left', (markers[markerID].x - (marker.naturalWidth/2))*localZoom+ 'px');
+						delete marker.onload;
+					};
 					marker.setAttribute('src', loadedImages[type].src);
-					marker.setAttribute('width', (marker.naturalWidth*zoom)+'px');
-					marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*zoom+ 'px');
-					marker.style.setProperty('left', (markers[markerID].x - (marker.naturalWidth/2))*zoom+ 'px');
 					markers[markerID].src = type;
 				} else if (event.target && event.target.closest('#regionSelect') && REGION !== event.target.id) {
 					closeMarkerSettings();
+					
+					// Looad new region
 					REGION = event.target.id;
 					mapGenerator.loadImages(mapRefs[REGION].templates);
 					mapGenerator.loadTemplates(mapRefs[REGION].templates);
-					var map =	document.querySelector('img#mapImage');
+					if (mapRefs[REGION].offset.zoom) { zoom = mapRefs[REGION].offset.zoom; }
+					
+					// Update quick generator
+					var map = document.querySelector('img#mapImage');
 					map.setAttribute('src', mapRefs[REGION].map);
-					map.setAttribute('width', map.naturalWidth*zoom+'px');
+					
 					var container = document.querySelector('#mapContainer');
 					container.style.setProperty('top', mapRefs[REGION].offset.top);
 					container.style.setProperty('left', mapRefs[REGION].offset.left);
+					
+					// Update tabs
 					var curr = document.querySelector('#regionSelect > .active-tab');
 					curr.classList.remove('active-tab');
 					curr.classList.add('inactive-tab');
 					event.target.classList.add('active-tab');
 					event.target.classList.remove('inactive-tab');
+					
+					// Clean markers
 					markers = {count:0};
 					document.querySelectorAll('.mapMarker').forEach(function(marker){marker.remove();});
+					
+					// Reset template selection
+					document.querySelector('#TemplateManagerNote').innerHTML = 'No template selected.';
 					document.querySelector('#templateImage').setAttribute('src', '');
 					document.querySelector('#templateImage').setAttribute('rel', '');
+					
 				} else if (event.target && event.target.id == 'quickMapGenerator') {
 					closeMarkerSettings();
 					mapGenerator.processQuickMarkers();
@@ -268,6 +296,12 @@ $(function() {
 						});
 						manager.setAttribute('rel', template);
 						manager.setAttribute('src', loadedImages[template].src);
+						document.querySelector('#TemplateManagerNote').innerHTML = 
+							'<strong>'+
+								template
+									.replace(/^File:/, '')
+									.replace(/ Map Template\.png$/, '')+
+							'</strong>';
 					}
 				} else {
 					closeMarkerSettings();
@@ -430,11 +464,11 @@ $(function() {
 										loadedImages[file].size = size;
 										loadedImages[file].img = new Image();
 										loadedImages[file].img.crossOrigin = "anonymous";
-										loadedImages[file].img.src = src;
 										loadedImages[file].img.onload = function() {
 											loadedImages[file].context.drawImage(loadedImages[file].img, 0, 0);
 											loadedImages[file].LOADED = true;
 										};
+										loadedImages[file].img.src = src;
 									}
 								});
 							}

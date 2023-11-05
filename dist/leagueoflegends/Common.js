@@ -304,4 +304,29 @@ window.itemComparisonFormPages = [
 	'League_of_Legends_Wiki:Lane_Lookup',
 ];
 
+// Custom context menu to allow downloading of ext-audiobutton files.
+
+var menu = document.createElement("div");
+
+menu.setAttribute("id", "context-menu");
+menu.innerHTML = '<ul><li><a href="#">Download</a></li></ul>';
+document.getElementsByTagName('body')[0].appendChild(menu);
+
+document.onclick = function(e){
+    menu.style.display = 'none';
+}
+
+var buttons = document.querySelectorAll('a.ext-audiobutton');
+for (var i = 0; i < buttons.length; i++) {
+	buttons[i].oncontextmenu = function(e){
+		e.preventDefault();
+		var y = e.pageY - 30;
+		menu.style.left = e.pageX + 'px';
+		menu.style.top = y + 'px';
+		menu.style.display = 'block';
+		menu.getElementsByTagName("a")[0].href = this.previousElementSibling.getElementsByTagName("source")[0].src;
+		menu.getElementsByTagName("a")[0].download = "";
+ }
+}
+
 /* DO NOT ADD CODE BELOW THIS LINE */

@@ -2,24 +2,22 @@
  * Скрипт для загрузки любых сценариев праздничных мероприятий в определенное время года.
  * Все параметры скрипта по-прежнему полностью настраиваются пользователем.
  */
-
 /* jshint
-    esversion: 5, forin: true,
-    immed: true, indent: 4,
-    latedef: true, newcap: true,
-    noarg: true, undef: true,
-    undef: true, unused: true,
-    browser: true, jquery: true,
-    onevar: true, eqeqeq: true,
-    multistr: true, maxerr: 999999,
-    forin: false,
-    -W082, -W084
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-/* global window, mw */
-$(function () {
+/* global mediaWiki, console */
+(function ($, mw) {
+    "use strict";
     var thisdate = new Date(),
         thisyear = thisdate.getFullYear(),
-        nextyear = thisyear + 1;
+        nextyear = thisyear + 1,
+        conf = mw.config.get([
+            "debug",
+            "wgAction"
+        ]);
 
     if (window.HSWEventsLoaded)
         return;
@@ -29,27 +27,48 @@ $(function () {
         window[obj] = Object.assign(defaults, window[obj] || {});
     }
 
-    function ajaxCall(name, url, def) {
-        $.ajax({
-            // cache: true,
-            dataType: "script",
-            url: url + "?action=raw&ctype=text/javascript&redirect=no"
-        }).done(function () {
-            if (def) {
+    function loadScript(name, host, page, def) {
+        mw.loader.getScript(host + "/load.php?mode=articles&only=scripts&articles=" + page).done(function () {
+            if (def)
                 def.resolve(window[name]);
-            }
         });
     }
 
-    function getDefAndAjax(name, straightToResolve, url) {
+    function deferredLoadScript(name, straightToResolve, host, page) {
         return $.Deferred(function (def) {
-            if (straightToResolve) {
+            if (straightToResolve)
                 def.resolve(window[name]);
-            } else {
-                ajaxCall(name, url, def);
-            }
+            else
+                loadScript(name, host, page, def);
         });
     }
+
+    var loadAndRun = {
+        fireworkShow: function () {
+            loadScript("fireworkShow", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-Events/FireworkEffects.js");
+            $.when(window.fireworkShow.optionalDeferredRegister).then(function () {
+                window.fireworkShow.start();
+            });
+        },
+        EasterAddons: function () {
+            loadScript("EasterAddons", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-Events/EasterAddons.js");
+            $.when(window.EasterAddonsConfig.optionalDeferredRegister).then(function () {
+                window.EasterAddons.start();
+            });
+
+        },
+        HalloweenEffects: function () {
+            loadScript("HalloweenEffects", "https://hypixel-skyblock.fandom.com", "MediaWiki:Gadget-Events/HalloweenEffects.js");
+            $.when(window.HalloweenEffectsConfig.optionalDeferredRegister).then(function () {
+                window.HalloweenEffects.start();
+            });
+        },
+        snowStorm: function () {
+            $.when(deferredLoadScript("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com", "MediaWiki:SnowStorm.js")).then(function () {
+                window.snowStorm.start();
+            });
+        }
+    };
 
     function during(date0, date1) {
         return date0.getFullYear() === date1.getFullYear() &&
@@ -76,13 +95,13 @@ $(function () {
 
         function getTill(thisyearlist, nextyearlist, mode) {
             if (mode === "month")
-                return Math.min.apply(this, thisyearlist.map(function (v, i) {
+                return Math.min.apply(null, thisyearlist.map(function (v, i) {
                     var firstdayofmonththisyear = new Date(thisyear, v - 1, 1, 0, 0, 0, 0),
                         firstdayofmonthnextyear = new Date(nextyear, nextyearlist[i] - 1, 1, 0, 0, 0, 0);
                     return ((thisdate < firstdayofmonththisyear) && firstdayofmonththisyear || firstdayofmonthnextyear) - thisdate;
                 }));
             else
-                return Math.min.apply(this, thisyearlist.map(function (v, i) {
+                return Math.min.apply(null, thisyearlist.map(function (v, i) {
                     return ((thisdate < v) && v || nextyearlist[i]) - thisdate;
                 }));
         }
@@ -103,14 +122,14 @@ $(function () {
         } else {
             var till = getTill(thisyearlist, nextyearlist, mode);
             if (till < 86400000) { // Celebration in less than 1 day
-                if (mw.config.get("debug"))
+                if (conf.debug)
                     console.log(eventTag + till + "ms till celebration.");
                 setTimeout(function () {
                     console.log(eventTag + "Начало празднования!");
                     promise.resolve(true);
                 }, till);
             } else
-            if (mw.config.get("debug"))
+            if (conf.debug)
                 console.log(eventTag + "Больше одного дня до празднования. Оставшиеся дни: " + (till / 86400000).toFixed(2));
             promise.resolve(false);
         }
@@ -130,11 +149,11 @@ $(function () {
             2029: "13 Feb 2029",
             2030: "3 Feb 2030",
             2031: "23 Jan 2031",
-            2032: "11 Feb 2032",
+            2032: "11 Feb 2032"
         };
         return [
-            new Date("1 January " + year), // new year (Gregorian calendar)
-            new Date(cny_lookup[year]), // new year (Chinese calendar)
+            new Date("1 Января " + year), // new year (Gregorian calendar)
+            new Date(cny_lookup[year]) // new year (Chinese calendar)
         ];
     }
 
@@ -152,7 +171,7 @@ $(function () {
             2029: "1 Apr 2029",
             2030: "21 Apr 2030",
             2031: "13 Apr 2031",
-            2032: "28 Mar 2032",
+            2032: "28 Mar 2032"
         };
         var d = new Date(easter_lookup[year]);
         d.setDate(d.getDate() - 3); // should start on Good Fridays
@@ -161,65 +180,70 @@ $(function () {
         });
     }
 
-    var deffers = [$.Deferred(), $.Deferred(), $.Deferred()];
-
-    assignDefault("fireworkShow", {
+    var defers = [$.Deferred(), $.Deferred(), $.Deferred()];
+	assignDefault("fireworkShow", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[0]
+        optionalDeferredRegister: defers[0]
     });
-    ajaxCall("fireworkShow", "https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Gadget-FireworkEffects.js");
-
     assignDefault("EasterAddonsConfig", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[1]
+        optionalDeferredRegister: defers[1]
     });
-    ajaxCall("EasterAddons", "https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Gadget-EasterAddons.js");
-
     assignDefault("HalloweenEffectsConfig", {
         autoStart: false,
         startOnEvent: true,
-        optionalDeferredRegister: deffers[2]
+        optionalDeferredRegister: defers[2]
     });
-    ajaxCall("HalloweenEffects", "https://hypixel-skyblock.fandom.com/ru/wiki/MediaWiki:Gadget-HalloweenEffects.js");
-
     assignDefault("snowStorm", {
         autoStart: false,
         startOnEvent: true,
         onlyStartOnViewMode: true,
     });
 
-    $.when.apply(
-        null,
-        [
-            getDefAndAjax("snowStorm", window.snowStorm && window.snowStorm.flakes, "https://dev.fandom.com/wiki/MediaWiki:SnowStorm.js")
-        ].concat(deffers)
-    ).then(function () {
-        if (!window.fireworkShow.autoStart && window.fireworkShow.startOnEvent) {
+    if (!(window.fireworkShow.onlyStartOnViewMode && conf.wgAction !== "view")) {
+        if (window.fireworkShow.autoStart) {
+            loadAndRun.fireworkShow();
+        } else if (window.fireworkShow.startOnEvent) {
             waitTill(getFireworkDates, "date", "FireworkEffects").then(function (toStart) {
                 if (toStart)
-                    window.fireworkShow.start();
+                    loadAndRun.fireworkShow();
             });
         }
-        if (!window.EasterAddonsConfig.autoStart && window.EasterAddonsConfig.startOnEvent) {
+    }
+
+    if (!(window.EasterAddonsConfig.onlyStartOnViewMode && conf.wgAction !== "view")) {
+        if (window.EasterAddonsConfig.autoStart) {
+            loadAndRun.fireworkShow();
+        } else if (window.EasterAddonsConfig.startOnEvent) {
             waitTill(getEasterDates, "date", "EasterAddons").then(function (toStart) {
                 if (toStart)
-                    window.EasterAddons.start();
+                    loadAndRun.EasterAddons();
             });
         }
-        if (!window.HalloweenEffectsConfig.autoStart && window.HalloweenEffectsConfig.startOnEvent) {
+    }
+
+    if (!(window.HalloweenEffectsConfig.onlyStartOnViewMode && conf.wgAction !== "view")) {
+        if (window.HalloweenEffectsConfig.autoStart) {
+            loadAndRun.fireworkShow();
+        } else if (window.HalloweenEffectsConfig.startOnEvent) {
             waitTill([10], "month", "HalloweenEffects").then(function (toStart) {
                 if (toStart)
-                    window.HalloweenEffects.start();
+                    loadAndRun.HalloweenEffects();
             });
         }
-        if (!window.snowStorm.autoStart && window.snowStorm.startOnEvent &&
-            !(window.snowStorm.onlyStartOnViewMode && mw.config.get("wgAction") !== "view")) {
+    }
+
+    if (!(window.snowStorm.onlyStartOnViewMode && conf.wgAction !== "view")) {
+        if (window.snowStorm.autoStart) {
+            loadAndRun.fireworkShow();
+        } else if (window.snowStorm.startOnEvent) {
             waitTill([12], "month", "SnowStorm").then(function (toStart) {
                 if (toStart)
-                    window.snowStorm.start();
+                    loadAndRun.snowStorm();
             });
         }
-    });
-});
+    }
+
+})(jQuery, mediaWiki);

@@ -1,38 +1,25 @@
 /* jshint
-	esversion: 5, esnext: false, forin: true,
-	immed: true, indent: 4,
-	latedef: true, newcap: true,
-	noarg: true, undef: true,
-	undef: true, unused: true,
-	browser: true, jquery: true,
-	onevar: true, eqeqeq: true,
-	multistr: true, maxerr: 999999,
-	-W082, -W084, -W097
+    esversion: 5, esnext: false, forin: true, immed: true, indent: 4,
+    latedef: true, newcap: true, noarg: true, undef: true, unused: true,
+    browser: true, jquery: true, onevar: true, eqeqeq: true, multistr: true,
+    maxerr: 999999, forin: false, -W082, -W084
 */
-/* global mw, ace, console, confirm, alert, prompt */
+/* global mw, ace, importArticles, console, confirm, alert, prompt */
 
-"use strict";
 $.when(
     $.Deferred(function (def) {
-        $(function () {
+        mw.hook('dev.qdmodal').add(function(QDmodal) {
+            def.resolve(QDmodal);
+        });
+    }),
+    $.Deferred(function (def) {
+        $(function () { // DOM ready
             def.resolve();
         });
     }),
-    mw.loader.using(["mediawiki.util", "mediawiki.api", "ext.codeEditor.ace"]),
-    $.Deferred(function (def) {
-        if (mw.libs.QDmodal) {
-            def.resolve(mw.libs.QDmodal);
-        } else {
-            $.ajax({
-                cache: true,
-                dataType: "script",
-                url: "https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:QDmodal.js"
-            }).done(function () {
-                def.resolve(mw.libs.QDmodal);
-            });
-        }
-    })
-).then(function () {
+    mw.loader.using(["mediawiki.util", "mediawiki.api", "ext.codeEditor.ace"])
+).then(function (QDmodal) {
+    "use strict";
     // Pages
     var allowedPages = [
         "Inventory_slot/Tooltips",
@@ -40,7 +27,8 @@ $.when(
     ].map(function (p) {
         return mw.config.get("wgFormattedNamespaces")[828] + ":" + p;
     });
-    if (!allowedPages.includes(mw.config.get("wgPageName")) || (window.TooltipsEditor && window.TooltipsEditor.loaded)) return;
+    if (!allowedPages.includes(mw.config.get("wgPageName")) || (window.TooltipsEditor && window.TooltipsEditor.loaded)) 
+    return;
 
     var api = new mw.Api();
 
@@ -50,7 +38,7 @@ $.when(
     TooltipsEditor = that = window.TooltipsEditor = {
 
         // variables; undefined variables are just for easier variable tracking
-        modal: new mw.libs.QDmodal("TooltipsEditor"),
+        modal: new QDmodal("TooltipsEditor"),
         loaded: true,
         deloadAll: function () {
             that.actions = that.closing = that.isInMain = that.data = that.json = that.oldjson = that.oldjsonkeys = that.editor = that.lastFocusedEditor = that.lastFocusedElement = undefined;
@@ -64,10 +52,12 @@ $.when(
             },
             "image": {
                 display: "Image",
+                replace: true,
                 optional: true
             },
             "link": {
                 display: "Link",
+                replace: true,
                 optional: true
             },
         },
@@ -127,7 +117,7 @@ $.when(
             "Special": "SL",
             "Very Special": "VSL",
         },
-        specialchars: ("❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ")
+        specialchars: ("❤ ❈ ❁ ✦ ☣ ☠ ✎ ∞ ✯ ♣ ❂ ⚔ ⫽ α ✹ ⸕ ☘ 🗲 ❣ ⚚ ⸎ ʬ ϕ")
             .replaceAll(" ", " &nbsp; ")
             .split(" ")
             .map(function (v) {
@@ -1273,14 +1263,6 @@ $.when(
 
         // entry point
         init: function () {
-            $("<link>", {
-                rel: "stylesheet",
-                href: new mw.Title("Gadget-TooltipsEditor.css", 8).getUrl({
-                    action: "raw",
-                    ctype: "text/css"
-                })
-            }).appendTo("head");
-
             $(".editTooltips").click(function () {
                 api.get({
                     action: "query",
@@ -1315,4 +1297,16 @@ $.when(
     };
 
     TooltipsEditor.init();
+    
+    importArticles({
+        type: 'script',
+        articles: [
+            'u:dev:MediaWiki:BannerNotification.js',
+        ]
+    }, {
+        type: "style",
+        articles: [
+            "MediaWiki:Gadget-TooltipsEditor.css",
+        ],
+    });
 }).catch(console.warn);

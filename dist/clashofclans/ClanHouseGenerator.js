@@ -145,6 +145,7 @@ $(document).ready(function() {
     	['c/c7/CHG_Roof_Chess_Roof_2.png', 'Black Chess Roof'],
     	['c/c0/CHG_Roof_Greenhouse_Roof.png', 'Greenhouse Roof'],
     	['7/79/CHG_Roof_Summer_Roof.png', 'Summer Roof'],
+    	['f/f6/CHG_Roof_Halloween_Roof.png', 'Halloween Roof'],
     ];
     
     var decoration = [
@@ -177,6 +178,7 @@ $(document).ready(function() {
     	['b/b7/CHG_Decoration_Crystal.png', 'Crystals'],
     	['b/b7/CHG_Decoration_Cauldron.png', 'Cauldron'],
     	['c/cd/CHG_Decoration_Log.png', 'Log'],
+    	['1/1c/CHG_Decoration_Dinosaur.png', 'Dinosaur'],
     ];
     
     //Add containers

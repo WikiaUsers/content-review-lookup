@@ -1,5 +1,8 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 /* Спойлеры */
+
+window.AddRailModule = ['Template:RailModule'];
+
 $(function(){
     $('.spoil').each(function(){
         $(this).click(function() {

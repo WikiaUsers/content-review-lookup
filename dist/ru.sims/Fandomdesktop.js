@@ -1,9 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-// 17:01, 21 June 2022 (UTC)
-/* Quick license */
-importScript('MediaWiki:Fandomdesktop.js/Quicklicense.js');
-
 //Стиль кнопки назад dev wiki
 window.BackToTopModern = true;
 

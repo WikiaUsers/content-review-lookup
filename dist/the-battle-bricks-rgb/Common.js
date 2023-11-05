@@ -26,3 +26,5 @@ UserTagsJS.modules.implode = {
 	'inactive-sysop': ['sysop', 'inactive'],
 	'inacive-bureaucrat': ['bureaucrat', 'inactive']
 };
+
+window.AddRailModule = ['Template:Foo', 'Template:Bar', 'Template:Baz', 'Template:NewPagesModule'];

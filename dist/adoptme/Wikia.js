@@ -54,7 +54,7 @@ mw.loader.using('mediawiki.api', function() {
 });
 
 var MessageBlock = {
-    title: 'Moderator Notice', // Title of Mesaage
-    message: '<div style="border: 1px solid black; padding: 0.5em;">You have been warned/blocked for <u><b>$2</b></u> for the following reason:<div style="border: 1px solid black; padding: 0.5em; margin-top: 0.5em; margin-bottom: 0.5em;">$1</div>Please read the [[Rules and Guidelines]] to have a better understanding of the expectations within [[Adopt Me! Wiki]].<br/><br/><u><b>Note:</b></u><br/><li><u>1 hour</u> = Warning</li><li><u>1 week, 2 weeks, 1 month, infinite</u> = Block</li><hr/><u><b>Appeal</b></u><br/>Appeal processes can be done at our appeal wiki: https://adoptme-appeals.fandom.com. <br/><i>See prerequisites and eligibilities there first.</i><div style="text-align: right;"><br/>[[User:Vastmine1029|Vastmine1029]] <sup>([[User_talk:Vastmine1029|Talk]] &bull; [[Special:Contributions/Vastmine1029|Contributions]])</sup> 06:49, 24 February 2021 (UTC)</div></div>', // Body of Message; $1 = reason, $2 = duration
-    autocheck: false // Change to "true" when stated by Wiki Administration Team.
+    title: 'Block Notice', // Title of Mesaage
+    message: '<div style="border: 2px solid; padding: 0.5em;">You have been blocked for <u><b>$2</b></u> for the following reason:<div style="border: 1px solid; padding: 0.5em; margin-top: 0.5em; margin-bottom: 0.5em;">$1</div>Please read the [[Adopt Me! Wiki:Rules and Guidelines|Rules and Guidelines]] to have a better understanding of the expectations within [[w:c:adoptme|Adopt Me! Wiki]].<hr/><u><b>Appeal</b></u><br/>See the [[Adopt Me! Wiki:Appeal System|Appeal System]] for information on how to appeal and its process.', // Body of Message; $1 = reason, $2 = duration
+    autocheck: true
 };

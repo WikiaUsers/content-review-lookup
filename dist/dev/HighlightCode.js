@@ -1,5 +1,5 @@
 mw.loader.using('mediawiki.util').then(function () {
-	var pre = $('pre');
+	var pre = $('pre:not(.hljs)');
     if (!pre.length || mw.config.get('wgAction') !== 'view' || (
     	//Don't run on ImportJS, [[ImportJS-Plus]] can be used instead
         mw.config.get('wgNamespaceNumber') === 8 &&
@@ -9,11 +9,11 @@ mw.loader.using('mediawiki.util').then(function () {
     }
     var isDarkTheme = mw.config.get('isDarkTheme');
 
-    //Import CSS from https://cdnjs.com/libraries/highlight.js (via well known CDN, using SRI and locking to a version)
+    //Import CSS from https://cdnjs.com/libraries/highlight.js (via well known CDN, using SRI, and locking to a version)
     //DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
     $('<link>', {
         rel: 'stylesheet',
-        href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-' + (isDarkTheme ? 'dark' : 'light') + '.min.css',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-' + (isDarkTheme ? 'dark' : 'light') + '.min.css',
         integrity: (isDarkTheme ? 'sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPTg==' : 'sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q=='),
         crossorigin: 'anonymous',
         appendTo: $('head')
@@ -27,7 +27,7 @@ mw.loader.using('mediawiki.util').then(function () {
     ');
 
     //Apply lang class to pre if possible (rather than highlight.js trying to guess the lang of the pre)
-    const ext = new mw.Title(mw.config.get('wgPageName')).getExtension();
+    var ext = new mw.Title(mw.config.get('wgPageName')).getExtension();
     if (ext) {
         pre.addClass(ext);
     } else if (pre.parent().attr('class').includes('mw-highlight-lang-')) {
@@ -39,25 +39,20 @@ mw.loader.using('mediawiki.util').then(function () {
         });
     }
 
-    //Import JS from https://cdnjs.com/libraries/highlight.js (via a well known CDN, using SRI and locking to a version)
+    //Import JS from https://cdnjs.com/libraries/highlight.js (via a well known CDN, using SRI, and locking to a version)
     //DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
     var js = $.ajax({
-        url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js',
+        url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js',
         dataType: 'script',
         method: 'GET',
         scriptAttrs: {
-            integrity: 'sha512-bgHRAiTjGrzHzLyKOnpFvaEpGzJet3z4tZnXGjpsCcqOnAH6VGUx9frc5bcIhKTVLEiCO6vEhNAgx5jtLUYrfA==',
+            integrity: 'sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==',
             crossorigin: 'anonymous'
         }
     });
 
     $.when(js).then(function () {
         pre.each(function () {
-            //Only run once
-            if ($(this).hasClass('hljs')) {
-                return;
-            }
-
             //Handle [[Template:Script Install]]'s `importArticles` having no linebreaks due to the PI removing them
             if (mw.config.get('wgDBname') === 'dev' && $(this).parents('.pi-theme-install.type-javascript').length) {
                 //First <span> is empty for some reason

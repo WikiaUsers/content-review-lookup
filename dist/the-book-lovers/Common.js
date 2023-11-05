@@ -142,3 +142,28 @@ if (
 		],
 	});
 }
+
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: 'Hello $1! {{AutoCreateUserpage}}',
+    },
+    summary: 'Userpage AutoCreated',
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1! Please edit it and tell the community about yourself.</a>'
+};
+
+
+
+UserTagsJS.modules.inactive = {
+	days: 30,
+	namespaces: [0, 'MediaWiki', 'Template'],
+	zeroIsInactive: true 
+};
+
+UserTagsJS.modules.implode = {
+	'Inactive-Bureaucrat': ['bureaucrat', 'inactive'],
+	'Inactive-Administrator': ['sysop', 'inactive'],
+	'Half-Admin': ['threadmoderator', 'content-moderator']
+};
+
+
+//Making a custom tag that is added to users after 360 days on the Wiki

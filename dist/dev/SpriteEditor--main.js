@@ -6,13 +6,15 @@
 	window.SpriteEditorModules.main.loaded = true;
 	var myData = window.SpriteEditorModules.main;
 	const config = mw.config.get([
+		'wgArticleId',
 		'wgArticlePath',
 		'wgFormattedNamespaces',
+		'wgPageName',
 		'wgSiteName'
 	]);
 	var preloads = 2;
 	var oclick;
-	var root = document.getElementById('mw-content-text');
+	var root = document.getElementById('sprite-root') || document.getElementById('mw-content-text');
 	var sections = [];
 	var highestID = 0;
 	var loadedSpriteName = {full: ''};
@@ -205,18 +207,12 @@
 						pos: p,
 						section: secId
 					};
-					if (name.classList.contains("spritedoc-deprecated")) {
-						a.ids[name.textContent].deprecated = true;
-					}
-					// eSports
-					if (name.classList.contains("spritedoc-nolink")) {
-						a.ids[name.textContent].nolink = true;
-					}
-					if (name.classList.contains("spritedoc-black")) {
-						a.ids[name.textContent].black = true;
-					}
-					if (name.classList.contains("spritedoc-dark")) {
-						a.ids[name.textContent].dark = true;
+					
+					var flags = window.SpriteEditorModules.main.flags;
+					for (var l = 0; l < flags.length; l++) {
+						if (name.classList.contains("spritedoc-" + flags[l][0])) {
+							a.ids[name.textContent][flags[l][0]] = true;
+						}
 					}
 				}
 			}
@@ -367,15 +363,14 @@
 					);
 				}
 			}
-		} else {
-			sID = output.settings.pos || 1;
-			coordsOld = getPosCoords(sID, true);
-			coords = getPosCoords(sID, false);
-			ctx.drawImage(imgEle,
-				coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
-				coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
-			);
 		}
+		sID = output.settings.pos || 1;
+		coordsOld = getPosCoords(sID, true);
+		coords = getPosCoords(sID, false);
+		ctx.drawImage(imgEle,
+			coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
+			coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
+		);
 		return [c, oldImageAsCanvas, oldImageAsCanvas.toDataURL() !== c.toDataURL()];
 	}
 	function setupOldCanvas(imgData) {
@@ -387,6 +382,7 @@
 		ctxOld.drawImage(imgData, 0, 0);
 	}
 	function updateTitle(changesMade) {
+		if (window.SpriteEditorModules.openButton) return;
 		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
 		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.full.length && (" – " + loadedSpriteName.name + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
 	}
@@ -395,6 +391,7 @@
 		buttons.deprecated.setDisabled(!active);
 		buttons.deprecated2.setDisabled(!(active && buttons.deprecated.getValue()));
 		buttons.newSection.setDisabled(!active);
+		buttons.reorder.setDisabled(!active);
 		buttons.save.setDisabled(!active);
 		buttons.settings.setDisabled(!active);
 		buttons.sortSections.setDisabled(!active);
@@ -589,9 +586,9 @@
 		boxCode.addEventListener('focus', function() {
 			if (buttons.deprecated.getValue()) {
 				const _boxCode = boxCode;
-				const btnValue = (buttons.deprecated2.getLabel()).toLowerCase();
+				const btnValue = buttons.deprecated2.getMenu().findSelectedItem().getData();
 				const _func = function() {
-					_boxCode.classList.toggle("spritedoc-" + btnValue); // Needs support for translations
+					_boxCode.classList.toggle("spritedoc-" + btnValue);
 				};
 				addHistory([_func, _func]);
 				_func();
@@ -1014,7 +1011,7 @@
 		var spriteBox = document.createElement('li');
 		spriteBox.classList = 'spritedoc-box';
 		spriteBox.setAttribute('data-pos', pos);
-		if (pos) {
+		if (pos && hasEditPermission) {
 			spriteBox.setAttribute("draggable","true");
 			spriteBox.ondragstart = function(event) {
 				event.dataTransfer.setData("Text", event.target.dataset.pos);
@@ -1056,14 +1053,14 @@
 
 			// sprite names
 			var boxCode = getCodeField(data[name][0]);
-			if (data[name][1])
-				boxCode.classList.add("spritedoc-deprecated");
-			if (data[name][2] && data[name][2].nolink)
-				boxCode.classList.add("spritedoc-nolink");
-			if (data[name][2] && data[name][2].black)
-				boxCode.classList.add("spritedoc-black");
-			if (data[name][2] && data[name][2].dark)
-				boxCode.classList.add("spritedoc-dark");
+			
+			var flags = window.SpriteEditorModules.main.flags;
+			if (data[name][2]) {
+				for (var l = 0; l < flags.length; l++) {
+					if (data[name][2][flags[l][0]])
+						boxCode.classList.add("spritedoc-" + flags[l][0]);
+				}
+			}
 			if (pos)
 				boxCode.setAttribute("isSprite", "");
 
@@ -1100,6 +1097,7 @@
 		dropZone.style.zIndex = 99;
 
 		sections[id].append(spriteBoxes);
+		
 		spriteBoxes.append(dropZone);
 		if (sprites[id]) {
 			for (var pos = 0; pos < sprites[id].length; pos++) {
@@ -1110,6 +1108,8 @@
 				sortSpriteNames(pos);
 			}
 		}
+		
+		if (!hasEditPermission) return;
 		// Handle drag'n'drop
 		spriteBoxes.addEventListener("dragenter", function(e) {
 			e.stopPropagation();
@@ -1160,15 +1160,13 @@
 		});
 
 		// Add images to section-button
-		if (hasEditPermission) {
-			var permOrg = hasEditPermission;
-			hasEditPermission = false;
-			spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
-			hasEditPermission = permOrg;
-		}
+		var permOrg = hasEditPermission;
+		hasEditPermission = false;
+		spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
+		hasEditPermission = permOrg;
 	}
 	function newSection(s) {
-		var spriteSection = helper.newSection(s);
+		var spriteSection = helper.newSection(s, hasEditPermission);
 		root.append(spriteSection);
 		highestID = Math.max(highestID, s.id);
 		sections[s.id] = spriteSection;
@@ -1212,6 +1210,7 @@
 			'oojs-ui.styles.icons-editing-core', // undo, redo
 			'oojs-ui.styles.icons-editing-list', // listBullet
 			// 'oojs-ui.styles.icons-editing-styling',
+			'oojs-ui.styles.icons-layout', // viewCompact
 			'oojs-ui.styles.icons-interactions', // checkall, close, settings, subtract
 			'oojs-ui.styles.icons-media', // imageAdd, imageGallery
 			'oojs-ui.styles.icons-moderation', // flag, star, trash, unStar
@@ -1230,6 +1229,16 @@
 		}
 
 		function createToolbar() {
+			var flag_items = [];
+			var flags = window.SpriteEditorModules.main.flags;
+			for (var i = 0; i < flags.length; i++) {
+				flag_items.push(
+					new OO.ui.MenuOptionWidget( {
+		                data: flags[i][0],
+		                label: flags[i][1]
+		            } )
+				);
+			}
 			// Toolbar buttons
 			buttons = {
 				about: createButton(
@@ -1289,24 +1298,7 @@
 				    label: '',
 				    disabled: true,
 				    menu: {
-				        items: [
-				            new OO.ui.MenuOptionWidget( {
-				                data: 'deprecated',
-				                label: 'Deprecated'
-				            } ),
-				            new OO.ui.MenuOptionWidget( {
-				                data: 'black',
-				                label: 'Black'
-				            } ),
-				            new OO.ui.MenuOptionWidget( {
-				                data: 'dark',
-				                label: 'Dark'
-				            } ),
-				            new OO.ui.MenuOptionWidget( {
-				                data: 'nolink',
-				                label: 'Nolink'
-				            } )
-				        ]
+				        items: flag_items
 				    }
 				} ),
 				cancelMove: createButton(
@@ -1318,6 +1310,11 @@
 					tbExpanded && "previous" || "next",
 					"",
 					msg("description-toggle-hover").plain()
+				),
+				reorder: createButton(
+					"viewCompact",
+					msg("reorder-sprites-label").plain(),
+					msg("reorder-sprites-hover").plain()
 				)
 			};
 			// Selecting default
@@ -1339,6 +1336,7 @@
 				mainItems: new OO.ui.ButtonGroupWidget({items: [
 					buttons.newSection,
 					buttons.sortSections,
+					buttons.reorder,
 					buttons.deprecated,
 					buttons.deprecated2
 				]}),
@@ -1386,6 +1384,8 @@
 				toolbarSections.arrowItem.$element
 			);
 			root.append( frame.$element.get(0) );
+			if (window.SpriteEditorModules.openButton)
+				root.getElementsByClassName("spriteedit-toolbar")[0].style.display = "none";
 			// Setup click-functions
 			buttons.deprecated.on('click', function() {
 				buttons.deprecated2.setDisabled(!buttons.deprecated.getValue());	
@@ -1431,6 +1431,11 @@
 					window.SpriteEditorModules.settings.requestChanges();
 				}
 			});
+			buttons.reorder.on('click', function() {
+				if (openWindow("reorder", msg("reorder-module-missing").plain())) {
+					window.SpriteEditorModules.reorder.requestChanges();
+				}
+			});
 			buttons.sortSections.on('click', function(){
 				if (openWindow("sorting", msg("sorting-module-missing").plain())) {
 					window.SpriteEditorModules.sorting.setSections(root.querySelectorAll('div.spritedoc-section'));
@@ -1453,10 +1458,11 @@
 		}
 
 		// init
-		root.innerHTML = '';
-		window.SpriteEditorModules.new.setSharedData({
-			options: options
-		});
+		if (window.SpriteEditorModules.new) {
+			window.SpriteEditorModules.new.setSharedData({
+				options: options
+			});
+		}
 		function openWindow(win, err) {
 			if (!window.SpriteEditorModules[win]) {
 				alert(err);
@@ -1519,27 +1525,46 @@
 				toShare: toShare,
 				markDuplicateNames: markDuplicateNames,
 				canvasCollection: canvasCollection,
-				addHistory: addHistory
+				addHistory: addHistory,
+				root: root
 			});
-			window.SpriteEditorModules.diff.setSharedData({
-				options: options,
-				processData: processData,
-				generateJSON: generateJSON,
-				generateImage: generateImage,
-				loaded: loadedSpriteName
-			});
-			window.SpriteEditorModules.sorting.setSharedData({
-				addHistory: addHistory
-			});
-			window.SpriteEditorModules.settings.setSharedData({
-				imgWidth: imgWidth,
-				imgHeight: imgHeight,
-				imgSpacingOrg: imgSpacingOrg,
-				options: options,
-				spriteData: output,
-				loaded: loadedSpriteName,
-				image: imgEle
-			});
+			if (window.SpriteEditorModules.reorder) {
+				window.SpriteEditorModules.reorder.setSharedData({
+					options: options,
+					spriteData: output,
+					toShare: toShare,
+					imgWidth: imgWidth,
+					imgHeight: imgHeight,
+					addHistory: addHistory,
+					root: root
+				});
+			}
+			if (window.SpriteEditorModules.diff) {
+				window.SpriteEditorModules.diff.setSharedData({
+					options: options,
+					processData: processData,
+					generateJSON: generateJSON,
+					generateImage: generateImage,
+					loaded: loadedSpriteName
+				});
+			}
+			if (window.SpriteEditorModules.sorting) {
+				window.SpriteEditorModules.sorting.setSharedData({
+					addHistory: addHistory,
+					root: root
+				});
+			}
+			if (window.SpriteEditorModules.settings) {
+				window.SpriteEditorModules.settings.setSharedData({
+					imgWidth: imgWidth,
+					imgHeight: imgHeight,
+					imgSpacingOrg: imgSpacingOrg,
+					options: options,
+					spriteData: output,
+					loaded: loadedSpriteName,
+					image: imgEle
+				});
+			}
 			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
 			options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
 			for (var name in output.ids) {
@@ -1581,6 +1606,11 @@
 			};
 			if (!options.isNew)
 				requestData.titles = "Module:" + loadedSpriteName.full + "|File:" + (output.settings.image || loadedSpriteName.name + ".png");
+			if (window.SpriteEditorModules.openButton) {
+				hasEditPermission = false;
+				loadSprite3();
+				return;
+			}
 			api.get(Object.assign(requestData, c || {})).done(function(data) {
 				var i;
 				if (data.query.userinfo && data.query.userinfo.blockid)
@@ -1656,7 +1686,7 @@
 					'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 					'question': '=p',
 					'clear': true,
-					'content': 'local a = require("Module:' + loadedSpriteName.full + '")\n' +
+					'content': 'local require2=require\nfunction require() return {getUrl=function() return true end} end\nlocal a = require2("Module:' + loadedSpriteName.full + '")\nrequire=require2\n' +
 					'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 				}).always(function(a) {
 					if (!a.return) {
@@ -1691,16 +1721,24 @@
 			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
 				myData.msg = i18no.msg;
 				msg = myData.msg;
-				document.getElementById('firstHeading').textContent = msg("title").plain();
+				if (!window.SpriteEditorModules.openButton)
+					document.getElementById('firstHeading').textContent = msg("title").plain();
 				updateTitle(false);
 				createToolbar();
 				var openDialog = window.SpriteEditorModules.open;
-				openDialog.setSharedData({
-					loadSprite: loadSprite,
-					openWindow: openWindow,
-					options: options
-				});
-				var toOpen = new URL(document.location.href).searchParams.get("sprite");
+				if (openDialog) {
+					openDialog.setSharedData({
+						loadSprite: loadSprite,
+						openWindow: openWindow,
+						options: options
+					});
+				}
+				var toOpen;
+				if (window.SpriteEditorModules.openButton) {
+					toOpen = typeof(config.wgArticleId) === "number" && config.wgPageName || "";
+				} else {
+					toOpen = new URL(document.location.href).searchParams.get("sprite");
+				}
 				var names = toOpen && window.SpriteEditorModules.helper.seperatePath(toOpen);
 				if (toOpen && (!names.module.endsWith("Sprite") || myData.blacklist.includes(names.module.toLowerCase()))) {
 					var historyUrl = new URL(window.location);
@@ -1716,6 +1754,7 @@
 			});
 		};
 		myData.run = function() {
+			root.innerHTML = '';
 			mw.hook('dev.i18n').add(myData.preload);
 			var getImageURL = api.get({
 				action: "query",

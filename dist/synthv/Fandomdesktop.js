@@ -11,6 +11,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/2/24/Wiki-wordmark-chiyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/05/Wiki-wordmark-chiyu-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/5c/Wiki-wordmark-Cong-Zheng.png',
+	    'https://static.wikia.nocookie.net/synthv/images/3/34/Wiki-wordmark-D-Lin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/2/2a/Wiki-wordmark-eleanor-forte-sv1.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/f1/Wiki-wordmark-Eleanor-Forte-AI.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/94/Wiki-wordmark-feng-yi.png',
@@ -18,6 +19,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/c/c3/Wiki-wordmark-haiyi.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/f3/Wiki-wordmark-haiyi-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/07/Wiki-wordmark-Hanakuna-Chifuyu.png',
+	    'https://static.wikia.nocookie.net/synthv/images/9/94/Wiki-wordmark-Haruno-Sora.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/74/Wiki-wordmark-Kasane-Teto.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/9b/Wiki-wordmark-Kevin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/86/Wiki-wordmark-jun.png',
@@ -25,6 +27,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/6/69/Wiki-wordmark-kotonoha-akane.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/ca/Wiki-wordmark-kotonoha-aoi.png',
 	    'https://images.wikia.nocookie.net/synthv/images/b/b6/Wiki-wordmark-kyomachi-seika.png',
+	    'https://static.wikia.nocookie.net/synthv/images/f/f0/Wiki-wordmark-Lin-Lai.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/5b/Wiki-wordmark-Mai.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/c4/Wiki-wordmark-Mo-chen.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/33/Wiki-wordmark-muxin.png',
@@ -32,6 +35,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/a/a0/Wiki-wordmark-natsuki-karin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/c/c7/Wiki-wordmark-Ninezero.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
+	    'https://static.wikia.nocookie.net/synthv/images/6/6b/Wiki-wordmark-Ritchy.png',
 	    'https://images.wikia.nocookie.net/synthv/images/e/ee/Wiki-wordmark-Ryo.png',
 	    'https://images.wikia.nocookie.net/synthv/images/4/40/Wiki-wordmark-saki.png',
 	    'https://images.wikia.nocookie.net/synthv/images/e/ee/Wiki-wordmark-Saki-AI.png',
@@ -52,6 +56,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/fc/Wiki-wordmark-yuma.png',
+	    'https://static.wikia.nocookie.net/synthv/images/3/3a/Wiki-wordmark-Yun-Quan.png',
 	];
 
 	$('.fandom-community-header__image img').attr('src', images[Math.floor(Math.random() * images.length)]);

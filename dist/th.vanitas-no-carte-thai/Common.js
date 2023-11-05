@@ -1,4 +1,4 @@
-/* จาวาสคริปต์ใด ๆ ในหน้านี้จะถูกโหลดให้แก่ผู้ใช้ทุกคนในทุกหน้า */
+/* Any JavaScript here will be loaded for all users on every page load. */
 
 // <syntax type="javascript">
  

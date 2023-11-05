@@ -22,5 +22,5 @@ document.getElementById("nav5").addEventListener("click",function() {
 }, false);
 
 document.getElementById("nav6").addEventListener("click",function() {
-    location.href = 'https://roblox.fandom.com/uk/wiki/Категорія:Скриптинг' ;
+    location.href = 'https://roblox.fandom.com/uk/wiki/Категорія:Скриптинґ' ;
 }, false);

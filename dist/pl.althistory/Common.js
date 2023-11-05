@@ -1,0 +1,1 @@
+importScriptPage('MediaWiki:PowerPageMaker/code.js', 'dev');

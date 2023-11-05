@@ -5,6 +5,7 @@
 |*|         all complaints should be addressed to that parroteer, or to one of the wiki's admins
 \*/
 
+
 /* =================================== *\
 	# global object
 \* =================================== */
@@ -32,150 +33,173 @@ $cl.data.users = {
     data: {} // users whose information has already been loaded: key = user, value = object
 };
 
+
 /* =================================== *\
 	# functions
 \* =================================== */
 
 /* 0-pad a single-digit number */
 $cl.fn.padNum = function(n) {
-    return n.toString().padStart(2, '0');
+	return (n < 10 ? '0' : '') + n;
 };
 
 /* get subpage by date */
-$cl.fn.getLogsDate = () => {
-	const dd = $('#chatlog-date-dd').val();
-	const mm = $('#chatlog-date-mm').val();
-	const yy = $('#chatlog-date-yy').val();
-	const formattedMonth = $cl.data.months[Number(mm) - 1];
-	return `${$cl.fn.padNum(dd)} ${formattedMonth} ${yy}`;
+$cl.fn.getLogsDate = function() {
+    var a = $('#chatlog-date-dd').val(),
+        b = $('#chatlog-date-mm').val(),
+        c = $('#chatlog-date-yy').val();
+    return $cl.fn.padNum(a) + ' ' + $cl.data.months[Number(b) - 1] + ' ' + c;
 };
 
 /* enable & disable ui inputs */
 $cl.fn.setInputsState = function(state) {
-    const elements = $('#chatlog').find('input, button, select');
-    elements.prop('disabled', state === 0 || state === false);
+    var a = $('#chatlog').find('input, button, select');
+    if (state === 0 || state === false) {
+        $(a).attr('disabled', 'disabled');
+    } else {
+        $(a).removeAttr('disabled');
+    }
 };
 
 /* get logs content of a given date */
-$cl.fn.getLogs = async function() {
-    const date = $cl.fn.getLogsDate();
-    $('#chatlog-status').html(`Loading logs from ${date}`);
-    try {
-        const response = await $.getJSON(`/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=Project:Chat/Logs/${encodeURIComponent(date)}&cb=${new Date().getTime()}`);
-        const page = response.query.pages;
-        const pageId = Object.keys(page)[0];
-        if (pageId === '-1') {
-        	// logs for that date do not exist
-            $('#chatlog-status').html(`Logs from ${$cl.fn.getLogsDate()} could not be found.<br />Please try again later or pick a different date`);
-            $cl.fn.setInputsState(1);
-            return;
+$cl.fn.getLogs = function() {
+    var date = $cl.fn.getLogsDate();
+    $('#chatlog-status').html('Loading logs from ' + date);
+    $.getJSON('/api.php?action=query&format=json&prop=revisions&rvprop=content&titles=Project:Chat/Logs/' + encodeURIComponent(date) + '&cb=' + new Date().getTime(), function(data) {
+        // $cl.fn.setInputsState(1);
+        var a = data.query.pages,
+            b;
+        for (var pageid in a) {
+            if (pageid == '-1') {
+                // logs for that date do not exist
+                $('#chatlog-status').html('Logs from ' + $cl.fn.getLogsDate() + ' could not be found.<br />Please try again later or pick a different date');
+                $cl.fn.setInputsState(1);
+                return;
+            } else {
+                // logs could be found
+                b = a[pageid];
+            }
+            break;
         }
-        $cl.data.users.curr = [];
-        $cl.fn.parseRawContent(page[pageId].revisions[0]['*']);
-    } catch (error) {
-        console.error(error);
-    }
+        $cl.data.users.curr = []; // reset user list
+        $cl.fn.parseRawContent(b.revisions[0]['*']);
+    });
 };
 
 /* parse raw page content */
 $cl.fn.parseRawContent = function(data) {
-    let content = '\n' + data.replace(/^\<pre class\="ChatLog"\>\n|\n\<\/pre\>\n\[\[Category\:.+\]\]$/g, '');
-    let messages = content.match(/\[\d{4}\-\d\d\-\d\d \d\d\:\d\d\:\d\d\].+(?:\n(?!\[\d{4}\-\d\d\-\d\d \d\d\:\d\d\:\d\d\]).*)*/g);
-    $cl.fn.parseSeparatedMessages(messages);
+    var a = '\n' + data.replace(/^\<pre class\="ChatLog"\>\n|\n\<\/pre\>\n\[\[Category\:.+\]\]$/g, ''),
+        b = a.match(/\[\d{4}\-\d\d\-\d\d \d\d\:\d\d\:\d\d\].+(?:\n(?!\[\d{4}\-\d\d\-\d\d \d\d\:\d\d\:\d\d\]).*)*/g);
+    $cl.fn.parseSeparatedMessages(b);
 };
 
 /* parse separated messages */
 $cl.fn.parseSeparatedMessages = function(messages) {
-    const output = $('<ul />');
-    messages.forEach(msg => $(output).append($cl.fn.parseMsg(msg)));
+    var output = $('<ul />');
+    for (var i in messages) {
+        $(output).append($cl.fn.parseMsg(messages[i]));
+    }
     $('#chatlog-output').html(output);
-    $('#chatlog-status').html(`Logs from ${$cl.fn.getLogsDate()} have successfully loaded! :)`);
+    $('#chatlog-status').html('Logs from ' + $cl.fn.getLogsDate() + ' have successfully loaded! :)');
     $cl.fn.addAvatars();
 };
 
 /* go through each message and convert it to a <li>. if a message contains '.continued', make several <li>s */
 $cl.fn.parseMsg = function(msg) {
-    let char22 = msg.charAt(22),
-        output;
+    //return $('<li>' + msg + '</li>');
+    /*  experimental:*/
+    var output,
+        char22 = msg.charAt(22);
     if (char22 === '-') {
         // inline alert
-        output = $(`<li class="inline-alert">${msg.substr(26)}</li>`);
+        output = $('<li class="inline-alert" />').html(msg.substr(26));
         $cl.data.lastPoster = ''; // bast-poster blank memory
     } else {
         // ordinary message
-        let raw = msg.replace(/^.+\&lt\;.+?\&gt\; */, '').split('\n'),
-            nonborder = []; 
-        for (let i = 0; i < raw.length; i += 2) {
+        var raw = msg.replace(/^.+\&lt\;.+?\&gt\; */, '').split('\n'),
+            nonborder = []; // in the logs, every '2n + 1'th array item (e.g. 1, 3, 5...) is used as a blank newline to separate lines in messages with Shift+Enter
+        for (var i = 0; i < raw.length; i += 2) {
             nonborder.push(raw[i]);
         }
-        let [user, content] = msg.substr(26).split('&gt;'),
+        var user = msg.substr(26).split('&gt;')[0],
             t = msg.substr(12, 5),
-            $output = $(`<li data-user="${user}"></li>`);
-        $output.append(`<img class="avatar"/>`);
-        $output.append(`<span class="time">${t}</span>`);
-        $output.append(`<span class="username">${user}</span>`);
-        $output.append(`<span class="message">${nonborder.join('\n')}</span>`);
+            content = nonborder.join('\n');
+        output = $('<li />')
+        //.html(msg.substr(26).replace(/^.+?\&gt\; */, ''))
+            .attr({
+                'data-user': user
+            });
+        $('<img class="avatar" />').appendTo(output);
+        $('<span class="time" />').html(t).appendTo(output);
+        $('<span class="username" />').html(user).appendTo(output);
+        $('<span class="message" />').html(content).appendTo(output);
         // check if message continues the former message
         if ($cl.data.lastPoster === user) {
-            $output.addClass('continued');
+            $(output).addClass('continued');
         } else {
             $cl.data.lastPoster = user;
         }
         // check if is '/me'
         if (msg.split('&gt;')[1].indexOf('/me') === 1) {
-            $output.addClass('me-message');
-            $output.find('.message').html(`* ${user} ${$output.find('.message').html().substr(4)}`);
+            $(output).addClass('me-message');
+            $(output).find('.message').html('* ' + user + ' ' + $(output).find('.message').html().substr(4));
         }
         // add user to list
         if ($cl.data.users.curr.indexOf(user) === -1) {
             $cl.data.users.curr.push(user);
         }
-        output = $output;
     }
     return output;
 };
 
-
 /* add avatars */
 $cl.fn.addAvatars = function() {
-    const missing = [];
-    for (const user of $cl.data.users.curr) {
+    var missing = [],
+        user;
+    for (var i in $cl.data.users.curr) {
+        user = $cl.data.users.curr[i];
         if (!$cl.data.users.data.hasOwnProperty(user)) {
             missing.push(user);
         }
     }
     $cl.fn.queryUsers(missing, function() {
         $('#chatlog-output .avatar').each(function() {
-            const avatar = $cl.data.users.data[$(this).parent().data('user')].avatar;
-            $(this).attr('src', avatar || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23c00' viewBox='0 0 16 16'%3E%3Crect width='16' height='16'/%3E%3C/svg%3E");
+            var avatar = $cl.data.users.data[$(this).parent().attr('data-user')].avatar;
+            if (avatar) {
+                $(this).attr('src', avatar);
+            } else {
+                $(this).css('border', '2px groove #c00');
+            }
         });
         $cl.fn.onAfterLoaded();
     });
+    // when done, execute '$cl.fn.onAfterLoaded'
 };
 
 /* get user ids and avatar urls */
 $cl.fn.queryUsers = function(users, cb) {
-  if (users.length === 0) {
-    return cb();
-  }
-
-  Promise.all([
-  	// some information is missing - make a request
-    $.getJSON(`/api.php?action=query&format=json&list=users&ususers=${encodeURIComponent(users.join('|'))}&cb=${new Date().getTime()}`),
-    $.getJSON(`/api/v1/User/Details?ids=${users.join(',')}&size=28&cb=${new Date().getTime()}`)
-  ])
-    .then(([usersdata, wikiausers]) => {
-      usersdata.query.users.forEach(a => {
-        $cl.data.users.data[a.name] = { id: a.userid, avatar: '' };
-      });
-
-      wikiausers.items.forEach(a => {
-        $cl.data.users.data[a.name].avatar = a.avatar;
-      });
-      
-      // no missing information about users
-      cb();
-    });
+    var ids = [];
+    if (users.length > 0) {
+        // some information is missing - make a request
+        $.getJSON('/api.php?action=query&format=json&list=users&ususers=' + encodeURIComponent(users.join('|')) + '&cb=' + new Date().getTime(), function(usersdata) {
+            for (var i in usersdata.query.users) {
+                var a = usersdata.query.users[i];
+                $cl.data.users.data[a.name] = {};
+                $cl.data.users.data[a.name].id = a.userid;
+                ids.push(a.userid);
+            }
+            $.getJSON('/api/v1/User/Details?ids=' + ids.join(',') + '&size=28&cb=' + new Date().getTime(), function(wikiausers) {
+                for (var i in wikiausers.items) {
+                    var a = wikiausers.items[i];
+                    $cl.data.users.data[a.name].avatar = a.avatar;
+                }
+                cb();
+            });
+        });
+    } else {
+        // no missing information about users
+        cb();
+    }
 };
 
 /* when the log list been updated */

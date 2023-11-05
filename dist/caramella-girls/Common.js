@@ -5,6 +5,12 @@ window.MastheadRightsBadgeSettings = {
     iconSize: '25px',
 };
 
+window.MessageWallUserTags = {
+    users: {
+        'Jackboog21': 'Bureaucrat',
+    }
+};
+
 //TopicBlockList
 TBL_WIKIS = [ "community"];
 
@@ -12,14 +18,6 @@ TBL_WIKIS = [ "community"];
 window.MarkForDeletion = {
     promptedDeleteReason: "Vandalism/Spam",
     replace: true
-};
-
-//RailWAM
-window.railWAM = {
-     logPage: 'Project:WAM Log',
-     loadOnPage: ['Special:WikiActivity', 'Project:WAM Log'],
-     showToAnons: 'false',
-     loadOnNamespace: 4
 };
 
 //Import for Content Staff
@@ -47,13 +45,7 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
     });
 }
 //Import for all Staff
-if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ || 
-    mw.config.get('wgUserName').includes('VacantHelper1') || 
-    mw.config.get('wgUserName').includes('VacantHelper2') || 
-    mw.config.get('wgUserName').includes('VacantHelper3') || 
-    mw.config.get('wgUserName').includes('VacantHelper4') || 
-    mw.config.get('wgUserName').includes('VacantHelper5') || 
-    mw.config.get('wgUserName').includes('VacantHelper5') || 
+if (mw.config.get('wgUserName').includes('Vacant') || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
     mw.config.get('wgUserGroups').includes('content-moderator') ||
@@ -63,11 +55,16 @@ if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ ||
     importArticles({
         type: 'script',
         articles: [
-            'u:dev:MediaWiki:RCStats.js',
-            'u:dev:MediaWiki:RailWAM/code.js',
+            /*'u:dev:MediaWiki:RCStats.js',
+            'u:dev:MediaWiki:RailWAM/code.js',*/
         ]
     });
 }
+
+//LockOldComments
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 365; //183
+window.lockOldComments.addNoteAbove = true;
 
 //AjaxRC
 window.ajaxSpecialPages = [
@@ -79,11 +76,13 @@ window.ajaxSpecialPages = [
     ];
 window.ajaxRefresh = 60000;
  
+//WikiActivity
+window.rwaOptions = {
+    refresh : true,
+};
+
 //BackToTopButton
 window.BackToTopModern = true;
-
-//Refresh Live! Chat every 30 seconds
-window.chatReloadTime = 30000;
 
 /*This section is intentionally commented out until DPLforums are added to the wiki
 window.dplforumBoards = [

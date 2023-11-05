@@ -87,7 +87,8 @@ window.ajaxPages = [
     "Special:RecentChanges",
     "Special:WikiActivity",
     "Special:Watchlist",
-    "Special:AbuseLog"
+    "Special:AbuseLog",
+    "Special:DiscussionsAbuseFilter/logs"
 ];
 window.ajaxRefresh = 30000;
 window.AjaxRCRefreshText = 'Auto-refresh';
@@ -280,16 +281,75 @@ if ($('section.ChatModule').length > 0){
 */
 /* End change chat description */
 
-/* Custom edit buttons
- * For source mode use only
- */
-if ( mwCustomEditButtons ) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
-        "speedTip": "Redirect",
-        "tagOpen": "#REDIRECT [[",
-        "tagClose": "]]",
-        "sampleText": "Target page"
-    };
+/* Start of paragon power stuff */
+// From Animal Crossing Wiki
+function numberWithCommas(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-/* End custom edit buttons */
+
+window.convertDegreeToPower = function() {
+	var paragondegree = $("#paragon-degree-input").val();
+	var paragonpower = 0;
+	//If nothing else changes, just default to the old value as output of the pierce, attack cooldown, base damage, etc.
+	var basedamage_old = $("#paragon-basedamage-input").val();
+	var basedamage_new = basedamage_old;
+	var pierce_old = $("#paragon-pierce-input").val();
+	var pierce_new = pierce_old;
+	
+	//paragon degrees and stuff like that
+	if (paragondegree > 1) {
+		if (paragondegree == 100) {
+	    	paragonpower = 200000;
+	    	basedamage_new = 2 * basedamage_old + 10;
+	    	pierce_new = 2 * pierce_old + 100;
+		}
+		else {
+	    	paragonpower = (50 * (paragondegree * paragondegree * paragondegree) + 5025 * (paragondegree * paragondegree) + 168324 * paragondegree + 843000)/600;
+	    	basedamage_new = basedamage_old * (1 + 0.01 * (paragondegree - 1)) + Math.floor((paragondegree - 1)/10);
+	    	pierce_new = pierce_old * (1 + 0.01 * (paragondegree - 1)) + (paragondegree - 1); // e.g. 200 * (1 + 0.01 (100 - 1)) + (100 - 1)
+		}
+		$("#paragon-power-output").html(numberWithCommas(paragonpower.toFixed(0)));
+		$("#paragon-basedamage-output").html(numberWithCommas(basedamage_new.toFixed(0)));
+		$("#paragon-pierce-output").html(numberWithCommas(pierce_new.toFixed(0)));
+	}
+	else if (paragondegree == 1) {
+    	paragonpower = 0;
+    	
+    	$("#paragon-power-output").html(numberWithCommas(paragonpower.toFixed(0)));
+		$("#paragon-basedamage-output").html("same value...");
+		$("#paragon-pierce-output").html("same value...");
+	}
+	
+
+};
+
+$("#convert-degree-to-power-loader").html('   \
+<div id="convert-degree-to-power-form" style="max-width:500px;">   \
+<table style="width:100%;">   \
+<tr><td>Paragon Degree</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-degree-input"></td>   \
+<tr><td>Original Pierce</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-pierce-input"></td></tr>   \
+<tr><td>Original Attack Cooldown [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-attackcooldown-input"></td></tr>   \
+<tr><td>Original Ability Cooldown [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-abilitycooldown-input"></td></tr>   \
+<tr><td>Original Base Damage</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-basedamage-input"></td></tr>   \
+<tr><td>Original Extra Boss Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extrabossdamage-input"></td></tr>   \
+<tr><td>Original Extra MOAB-Class Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extrablimpdamage-input"></td></tr>   \
+<tr><td>Original Extra Ceramic Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extraceramicdamage-input"></td></tr>   \
+<tr><td>Original Extra Fortified Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extrafortifieddamage-input"></td></tr>   \
+<tr><td>Original Extra Camo Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extracamodamage-input"></td></tr>   \
+<tr><td>Original Extra Lead Damage [coming soon...]</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="0" id="paragon-extraleaddamage-input"></td></tr>   \
+<tr><td colspan="2" style="text-align:center; padding: 5px;"><button id="convert-degree-to-power-button" onClick="convertDegreeToPower();">Convert Degree to Power</button></td></tr>   \
+<tr> <td>Paragon Power</td><td style="text-align: right; color:blue;"><b><span id="paragon-power-output">[no output]</span> Power</b></td></tr>   \
+<tr> <td>New Pierce</td><td style="text-align: right; color:#DCDCDC;"><b><span id="paragon-pierce-output">[no output]</span></b></td></tr></tr>   \
+<tr> <td>New Attack Cooldown</td><td style="text-align: right; color:#FFFF66;"><b><span id="paragon-attackcooldown-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Ability Cooldown</td><td style="text-align: right; color:#FF9999;"><b><span id="paragon-abilitycooldown-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Base Damage</td><td style="text-align: right; color:red;"><b><span id="paragon-basedamage-output">[no output]</span></b></td></tr></tr>   \
+<tr> <td>New Extra Boss Damage</td><td style="text-align: right; color:#ADFF2F;"><b><span id="paragon-extrabossdamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra Elite Boss Damage</td><td style="text-align: right; color:#228B22;"><b><span id="paragon-extraelitebossdamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra MOAB-Class Damage</td><td style="text-align: right; color:#40E0D0;"><b><span id="paragon-extrablimpdamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra Ceramic Damage</td><td style="text-align: right; color:#CD853F;"><b><span id="paragon-extraceramicdamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra Fortified Damage</td><td style="text-align: right; color:#D2691E;"><b><span id="paragon-extrafortifieddamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra Camo Damage</td><td style="text-align: right; color:#006400;"><b><span id="paragon-extracamodamage-output">coming soon!</span></b></td></tr></tr>   \
+<tr> <td>New Extra Lead Damage</td><td style="text-align: right; color:#404040;"><b><span id="paragon-extraleaddamage-output">coming soon!</span></b></td></tr></tr>   \
+</table> </div>   \
+');
+/* end of paragon power stuff */

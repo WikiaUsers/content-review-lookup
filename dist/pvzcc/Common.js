@@ -63,12 +63,9 @@ window.UserTagsJS = {
         deepseason: { u: 'DEEP SEA-SON 🐬', title:'Deep Sea-son Contest Winner'},
         shroomdynasty: { u: 'THE SHROOM DYNASTY 🍒', title:'The Shroom Dynasty Contest Winner'},
         electrofire: { u: 'ELECTROFIRE FEST 🎪', title:'Electrofire Fest Contest Winner'},
-        spookytown: { u: 'ROCK & GHOUL 🎸', title:'Rock & Ghoul Contest Winner'},
-        november23: { u: '???', title:'??? Contest Winner'},
+        rockandghoul: { u: 'ROCK & GHOUL 🎸', title:'Rock & Ghoul Contest Winner'},
+        starfruitstation: { u: 'STARFRUIT’S STATION 🤩', title:'Starfruit’s Station Contest Winner'},
         december23: { u: '???', title:'??? Contest Winner'},
-        january24: { u: '???', title:'??? Contest Winner'},
-        february24: { u: '???', title:'??? Contest Winner'},
-        march24: { u: '???', title:'??? Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
@@ -94,13 +91,14 @@ UserTagsJS.modules.custom = {
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'Baryonyx138': ['worldcontest'],
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod', 'lawnofdoom2'],
-    'Dartichoke Enjoyer': ['discmod','electrofire'],
+    'Dartichoke Enjoyer': ['discmod','electrofire','rockandghoul'],
     'DigoBlaze12': ['zombiecontest'],
+    'DolphiGaming': ['discmod'],
     'DrAhxelYT12': ['worldcontest'],
     'DsFanboy': ['discowner'],
     'DMdarkmatter': ['grandmaster','deepseason'],
-    'Krayleb': ['foodfight2'],
-    'KyaOBeans': ['discowner','ox'],
+    'Krayleb': ['discmod','foodfight2'],
+    'KyaOBeans': ['ox'],
     "Nuttin' to see here": ['zombiecontest2','faroutfestival','blastfest','matd'],
     'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest', 'discmod'],
     'Reapeageddon': ['plantcontest'],
@@ -127,16 +125,13 @@ UserTagsJS.modules.metafilter = {
     sysop: ['bureaucrat'],
 };
 
-var number_of_wiki_names = 14;
-var wiki_name_number = 0;
+var wiki_name_texts=["Shoot for the moon!","Twinkle twinkle little Starfruit!","Zero gravity!","It's not rocket science!","Black hole!","Orbital strike!","One small step for plants!","One giant leap for plantkind!","Supernova!","The infinite vastness calls!","Deep space!","Fly like a comet!","Let's go!"];
 
-while (wiki_name_number < 1 || wiki_name_number > number_of_wiki_names) {
-  wiki_name_number = Math.random().toFixed(2) * 100;
-};
-var wiki_name_text=["Songs for your soul!", "Turn it up to eleven!", "Boo! A guitar!", "The raveyard!", "Monster mosh pit!", "Spooky solo!", "Skeleton strumming!", "Lyrics to rest in peace to!", "Creepy choir!", "Dangerous duet!", "Cause this is thriller! Thriller night!", "Frankendancing!", "I am afraid of pianos!", "Scary."][wiki_name_number];
+var chosen_index = Math.floor(Math.random() * wiki_name_texts.length);
+
 var elements=document.getElementsByClassName('fandom-community-header__community-name');
 var wiki_name=elements[0];
-wiki_name.textContent=wiki_name_text;
+wiki_name.textContent=wiki_name_texts[chosen_index];
 
 /*WikiActivity config*/
 

@@ -189,3 +189,10 @@ async function generateArticle(paragraphs) {
 function pasteArticle(articleText) {
   // TODO: Implement paste function
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    var links = document.querySelectorAll('a[href*="/products/"]');
+    links.forEach(function(link) {
+        link.href = link.href.replace(/_/g, '-');
+    });
+});

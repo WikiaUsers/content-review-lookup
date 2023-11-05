@@ -123,3 +123,23 @@ mw.loader.using(['jquery.client', 'mediawiki.util']).then(function() {
         findAvatars(content);
     });
 });
+
+function get_player_headshot(){
+	url = "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=119729064&size=720x720&format=Png&isCircular=false";
+	
+	fetch(url)
+	.then(function(response){
+		return response.json();
+	})
+	.then(function(data){
+	 display_image(data.imageUrl);
+	})
+	.catch(function(error){
+	 console.log("Error: " + error);
+	});
+	
+}
+
+function display_Image(headshotImage){
+	document.getElementById("headshotImage").src = headshotImage;
+}

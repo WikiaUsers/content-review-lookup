@@ -23,14 +23,16 @@
 	mw.loader.using(['mediawiki.api']).then(function() {
 		return new mw.Api().loadMessagesIfMissing([
 			'whatlinkshere',
+			'pageinfo',
 			'log',
 			'currentrev',
 			'movesubpage'
 		]);
 	}).then(function() {
 		link('whatlinkshere', 'Special:WhatLinksHere/' + currentPage, 'whatlinkshere');
+		link('info', currentPage + '?action=info', 'pageinfo');
 		link('logs', 'Special:Log?page=' + currentPage, 'log');
-		link('latestrevision', currentPage + '?diff=latest', 'currentrev');
+		link('latestdiff', currentPage + '?diff=cur', 'currentrev');
 		link('subpages', 'Special:PrefixIndex/' + currentPage + '/', 'movesubpage');
 	});
 

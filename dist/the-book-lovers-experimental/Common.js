@@ -1,4 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+window.AddRailModule = [{prepend: true}];
+
 /*home page test*/
 var images =
 [
@@ -123,9 +125,9 @@ $( createDivToggleButton );
 	"use strict";
 
 	const pagesList = [
-		'Blog:Staff Blog Posts'
-                'Category:Staff Blog Posts'
-                'Special:Community'
+		'Blog:Staff Blog Posts',
+                'Category:Staff Blog Posts',
+                'Special:Community',
 	].map(function(string) {
 		return string.replaceAll(' ', '_');
 	});

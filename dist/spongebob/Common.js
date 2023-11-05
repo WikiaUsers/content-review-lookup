@@ -11,7 +11,8 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    'The_Smarter,_Wiser_King_Dedede': ['assistant']
+    'The_Smarter,_Wiser_King_Dedede': ['assistant'],
+    'PinkPugPrincess': ['assistant']
 };
 
 UserTagsJS.modules.inactive = 30;
@@ -351,8 +352,8 @@ window.MessageWallUserTags = {
         'FireMatch': 'Administrator',
     
         'The_Smarter,_Wiser_King_Dedede': 'Assistant',
+        'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
-        'PinkPugPrincess': 'Discussion Moderator',
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
 
         'TheJasbre202': 'Rollback',

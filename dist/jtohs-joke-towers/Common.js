@@ -29,7 +29,6 @@ UserTagsJS.modules.custom = {
 	'Sanjay2133': ['wikimanager', 'creator', 'cool'],
 	'Oh Noez! Oh Noez!': ['forumsmanager'],
 	'SodafizzIGuess': ['former'],
-	'AlsoOmori': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],
 	'Bruhshard1': ['former'],

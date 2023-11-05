@@ -4,5 +4,5 @@
 $( ".external" ).attr( "target", "_self" );
 $( ".mw-parser-output a[href^='https://spaceflight-simulator.fandom.com/zh/']" ).attr( "target", "_self" );
 
-/* NoteTA */
-$( "#wikiPreview .mw-indicators" ).after( '<div style="clear: both;"/>' );
+/* 模板数据 */
+$( "section.mw-templatedata-doc-wrap code:not( :last-child )" ).after( " " );

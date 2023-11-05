@@ -90,3 +90,11 @@ function UserNameReplace() {
 
 /* End of the {{USERNAME}} replacement */
 TBL_GROUP = "roblox-en";
+
+/* multiple file delete */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultipleFileDelete/code.js',
+    ]
+});

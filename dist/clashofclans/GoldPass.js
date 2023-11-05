@@ -17,11 +17,17 @@ $(document).ready(function() {
 	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>')
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
+	/* Event boosts: change the options as appropriate for the event
+	Last event: Mashup Madness */
+	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost"> <option value="0">0</option> <option value="30">30</option></select> %</div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    var heroAbilityDPH = [0];
@@ -247,6 +253,10 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
+		var eventBoostPercent = $("#eventBuilderBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+			eventBoostPercent = 0;
+		}
 		var hammerJamCheckBox = document.getElementById("hammerJamBoost");
 		var autoForgeCheckBox = document.getElementById("autoForgeBoost");
 		// Multiply initial value by 50% if hammer jam check box is true
@@ -254,19 +264,19 @@ $(document).ready(function() {
 		if (hammerJamCheckBox != null) {
 			if (hammerJamCheckBox.checked === true) {
 				var hammerJamCost = discountCost(cellValueCost,50);
-				var calcNewCost = discountCost(hammerJamCost,boostPercent);
+				var calcNewCost = discountCost(hammerJamCost,boostPercent+eventBoostPercent);
 			} else {
-				var calcNewCost = discountCost(cellValueCost,boostPercent);
+				var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 			}
 		} else if (autoForgeCheckBox != null) {
 			if (autoForgeCheckBox.checked === true) {
 				var autoForgeCost = discountCost(cellValueCost,50);
-				var calcNewCost = discountCost(autoForgeCost,boostPercent);
+				var calcNewCost = discountCost(autoForgeCost,boostPercent+eventBoostPercent);
 			} else {
-				var calcNewCost = discountCost(cellValueCost,boostPercent);
+				var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 			}
 		} else {
-			var calcNewCost = discountCost(cellValueCost,boostPercent);
+			var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 		}
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
@@ -281,7 +291,11 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-        var calcNewCost = discountCost(cellValueCost,boostPercent);
+		var eventBoostPercent = $("#eventTrainingBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+		    eventBoostPercent = 0;
+		}
+        var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
             $(".tCost").removeClass("StatModifiedGP");
@@ -295,7 +309,11 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-		var calcNewCost = discountCost(cellValueCost,boostPercent);
+		var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+		    eventBoostPercent = 0;
+		}
+		var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 		$(this).text(calcNewCost.format("#,##0[.]###"));
 		if (calcNewCost == cellValueCost) {
 			$(".rCost").removeClass("StatModifiedGP");
@@ -309,8 +327,12 @@ $(document).ready(function() {
 		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventBuilderBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
  
 		// Calculate the EXP gain and put into the xpArray
 		var xpGain = Math.floor(Math.sqrt(newtimeSeconds));
@@ -334,10 +356,14 @@ $(document).ready(function() {
 		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventResearchBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
   		var output = outputTime(newtimeSeconds);
   		
 		$(this).text(output.trim());
@@ -348,13 +374,17 @@ $(document).ready(function() {
 		}
       });
 		$(".1B").each(function() {
-			var str = $(this).attr("title");
-			var reducePercent = $("#trainingBoost").val() * 1;
-			if (isNaN(reducePercent) === true) {
+		var str = $(this).attr("title");
+		var reducePercent = $("#trainingBoost").val() * 1;
+		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventTrainingBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		var baseTrainTime = readTime(str);
-		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent);
+		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent+eventReducePercent);
 		
 		// Obtain new training times for 2, 3, 4 barracks
 		// Following barracks changes in October 2022, 3 and 4 barracks are obsoleted. Effectively, a working barracks is worth two barracks, as though there's a invisible (always functional) barracks in the background
@@ -517,11 +547,15 @@ $(document).ready(function() {
 			if (isNaN(boostPercent) === true) {
 		    	boostPercent = 0;
 			}
+			var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+			if (isNaN(eventBoostPercent) === true) {
+		    	eventBoostPercent = 0;
+			}
 			var costArray = [];
 			for (x in initArray) {
 				costArray.push(labCostShortToLong(initArray[x]));
 			}
-			var discountArray = arrayCostDiscount(costArray,boostPercent);
+			var discountArray = arrayCostDiscount(costArray,boostPercent+eventBoostPercent);
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(labCostLongToShort(discountArray[x]));
@@ -531,7 +565,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent === 0) {
+			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -550,11 +584,15 @@ $(document).ready(function() {
 			if (isNaN(boostPercent) === true) {
 		    	boostPercent = 0;
 			}
+			var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+			if (isNaN(eventBoostPercent) === true) {
+		    	eventBoostPercent = 0;
+			}
 			var timeArray = [];
 			for (x in initArray) {
 				timeArray.push(readTime(initArray[x]));
 			}
-			var discountArray = arrayTimeDiscount(timeArray,boostPercent);
+			var discountArray = arrayTimeDiscount(timeArray,boostPercent+eventBoostPercent);
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(outputTime(discountArray[x]));
@@ -564,7 +602,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent === 0) {
+			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -1046,6 +1084,10 @@ $(document).ready(function() {
 			if (isNaN(rageSpellLevel) === true) {
 		    hasteSpellLevel = 0;
 		    }
+		    var capitalHasteSpellLevel = $("#capitalHasteSpellLevel").val() * 1;
+		    if (isNaN(capitalHasteSpellLevel) === true) {
+		    	capitalHasteSpellLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -1090,6 +1132,8 @@ $(document).ready(function() {
                 } else {
                     hasteBoost = (6 * hasteSpellLevel) + 22;
                 }
+            } else if (capitalHasteSpellLevel > 0) {
+            	hasteBoost = capitalHasteSpellLevel + 6;
             }
             var rageSpeed = initialSpeed + Math.max(rageBoost,towerRageBoost);
 			var hasteSpeed = initialSpeed + hasteBoost;
@@ -1249,7 +1293,7 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP, #apprenticeAuraLevel").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
 		if (document.getElementById("hammerJamBoost") != null) {
 			document.getElementById("hammerJamBoost").checked = false;
 		}

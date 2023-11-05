@@ -167,7 +167,7 @@
 
         $.when(
             $.get(url.getRelativePath()),
-            mw.loader.using("mediawiki.diff.styles")
+            mw.loader.using(["mediawiki.diff.styles", "mediawiki.interface.helpers.styles"])
         ).always(function (response) {
             delete url.query.action;
             delete url.query.diffonly;

@@ -1,13 +1,21 @@
+/*The Middlerooms Wiki Custom Javascripts*/
 /* To administrators, please ask permission from Khai before adding/changing javascripts. */
 
+/*MessageBlock Configuration*/
 window.MessageBlock = {
 	title : 'You have been blocked',
 	message : 'You have received a $2 block. The reason is $1. This is an automated message to the administrator that blocked you.',
 	autocheck : false
 };
+/*LockOldComments Configuration*/
+window.lockOldComments = (window.lockOldComments || {}); // Configuration Core
 
+window.lockOldComments.limit = 120; // Amount of time to lock comment
+
+
+/*EditRootPageText Configuration*/
 window.EditRootPageText = "Edit main page";
-
+/* Imports (configurations should stay above this)*/
 importArticles({
 	type: 'script',
 	articles: [
@@ -74,6 +82,8 @@ window.UserTagsJS = {
 		bureaucrat: { order:0 }, // <- lower order number = before other order tags (ex: tag with 1 will be placed before tag with 2)
 		sysop: { order:1 },
 		manager: { u:'Wiki System Manager', order:2 },
+		cw: { u:'Contest Winner', order:6 },
+		gf: { u:'Good Effort', order:7 },
 		'content-moderator': { order:3 }, // <- usergroup wrapped in quotes as there is a hyphen in the name
 		threadmoderator: { order:4 },
 		rollback: { u:'Rollbacker', order:5 },
@@ -87,5 +97,8 @@ UserTagsJS.modules.metafilter = false;
 UserTagsJS.modules.userfilter = { 'Blueberry Bot': ['bureaucrat'] };
 UserTagsJS.modules.custom = {
 	'Blueberry Bot': ['bot'],
+	'Ntdll32': ['cw'],
+	'Dan7935': ['gf'],
+	'CarsonTheGamer0205': ['rollback'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 };

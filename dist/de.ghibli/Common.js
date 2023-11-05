@@ -1,5 +1,10 @@
 /* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen.*/
 
+/* BACK TO TOP */
+window.BackToTopModern = true;
+
+
+
 /* LINKPREVIEW */
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 

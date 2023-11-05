@@ -8,13 +8,15 @@ https://dev.fandom.com/wiki/PortableCSSPad
 https://dev.fandom.com/wiki/PreloadFileDescription
 */
 
-PFD_license = 'Fairuse';
-importArticles({
-	type: 'script',
-	articles: [
-		'u:dev:MediaWiki:UploadMultipleFiles.js',
-		'u:dev:MediaWiki:QuickDiff/code.js',
-		'u:dev:MediaWiki:PortableCSSPad/code.js',
-		'u:dev:MediaWiki:PreloadFileDescription.js',
-	]
-});
+if (mw.config.get('wgUserGroups').includes('sysop')) {
+	PFD_license = 'Fairuse';
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:UploadMultipleFiles.js',
+			'u:dev:MediaWiki:QuickDiff/code.js',
+			'u:dev:MediaWiki:PortableCSSPad/code.js',
+			'u:dev:MediaWiki:PreloadFileDescription.js',
+		]
+	});
+}

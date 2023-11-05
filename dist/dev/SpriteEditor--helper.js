@@ -3,22 +3,26 @@
 
 	if (window.SpriteEditorModules.helper && window.SpriteEditorModules.helper.loaded) return;
 	var shared;
-	var root = document.getElementById('mw-content-text');
 	window.SpriteEditorModules.helper = {
 		loaded: true,
 		setSharedData: function(data) {
 			shared = data;
 		},
-		newSection: function(s) {
+		newSection: function(s, perm) {
 			// section header
 			var sectionH3Span = document.createElement('span');
 			var sectionH3 = document.createElement('h3');
 			var spriteSection = document.createElement('div');
 			sectionH3.append(sectionH3Span);
 			sectionH3Span.id = s.name || undefined;
-			sectionH3Span.contentEditable = true;
+			sectionH3Span.contentEditable = perm;
 			sectionH3Span.textContent = s.name;
 			sectionH3Span.className = 'mw-headline';
+			// section body
+			spriteSection.classList = 'spritedoc-section';
+			spriteSection.setAttribute('data-section-id',s.id);
+			spriteSection.append(sectionH3);
+			if (!perm) return spriteSection;
 			sectionH3Span.onpaste = function(e) {
 				e.preventDefault();
 			    var paste = (e.clipboardData || window.clipboardData).getData('text');
@@ -46,7 +50,7 @@
 						s.id,
 						spriteSection,
 						sectionH3Span.textContent,
-						Array.from(root.children).indexOf(spriteSection)
+						Array.from(shared.root.children).indexOf(spriteSection)
 					]);
 				} else if (sectionH3Span.textContent.length && orgName !== sectionH3Span.textContent) {
 					shared.addHistory([
@@ -72,18 +76,13 @@
 							s.id,
 							spriteSection,
 							orgName,
-							Array.from(root.children).indexOf(spriteSection)
+							Array.from(shared.root.children).indexOf(spriteSection)
 						]);
 					}
-					root.removeChild(spriteSection);
+					shared.root.removeChild(spriteSection);
 					shared.markDuplicateNames(n);
 				}
 			});
-
-			// section body
-			spriteSection.classList = 'spritedoc-section';
-			spriteSection.setAttribute('data-section-id',s.id);
-			spriteSection.append(sectionH3);
 			return spriteSection;
 		},
 		addSprite: function(positionID, img) {
@@ -96,7 +95,7 @@
 			);
 		},
 		removeSprite: function(id, skipHistory) {
-			var cl = root.querySelector('li[data-pos="' + id + '"]');
+			var cl = shared.root.querySelector('li[data-pos="' + id + '"]');
 			var codes = cl.querySelectorAll("code[isSprite]") || [];
 			var n = {};
 			for (var i = 0; i < codes.length; i++) {

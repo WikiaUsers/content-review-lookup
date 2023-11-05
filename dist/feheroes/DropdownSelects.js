@@ -74,6 +74,11 @@
 			data: 'rearmed',
 			label: '<img alt="" src="' + imageUrl + '8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" decoding="async" width="20" height="20" data-image-name="Icon Arcane Weapon.png" data-image-key="' + imageUrl + '8/86/Icon_Arcane_Weapon.png/revision/latest/scale-to-width-down/20?cb=20220916064333" class=" lazyloaded"> Rearmed',
 			info: '[<a href="../Category:Rearmed_Heroes" target=_blank>?</a>]',
+		},
+		{
+			data: 'attuned',
+			label: '<img alt="" src="' + imageUrl + '2/2e/Icon_Attuned_Skill.png/revision/latest/scale-to-width-down/20?cb=20231016055110" decoding="async" width="20" height="20" data-image-name="Icon Attuned Skill.png" data-image-key="' + imageUrl + '2/2e/Icon_Attuned_Skill.png/revision/latest/scale-to-width-down/20?cb=20231016055110" class=" lazyloaded"> Attuned',
+			info: '[<a href="../Category:Attuned_Heroes" target=_blank>?</a>]',
 		}
 	];
 

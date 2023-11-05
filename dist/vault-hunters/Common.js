@@ -1,12 +1,13 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Any JavaScripts here are copied from either [[w:c:minecraft:Common.js]] or [[w:c:minecraft:MediaWiki:Gadget-purge.js]]*/
+
+/* Config for [[w:c:dev:PreloadFileDescription]] */
+PFD_template = '{'+'{Information\n| description = \n| source = \n| date = \n| author = \n| permission = \n| other versions = \n}}';
+PFD_license = 'License';
+PFD_discourageEditorFileUpload = true
+
+/* Any JavaScripts below here are copied from [[w:c:minecraft:MediaWiki:Common.js]]*/
 ( function() {
 'use strict';
-/* Variables for interface text used throughout the script, for ease of translating */
-var i18n = {
-	// File upload
-	defaultLicense: 'License'
-};
 
 /* Fires when DOM is ready */
 $( function() {
@@ -21,24 +22,6 @@ $( function() {
  */
 if ( document.location.search.indexOf( "undo=" ) !== -1 && document.getElementsByName( 'wpAutoSummary' )[0] ) {
 	document.getElementsByName( 'wpAutoSummary' )[0].value='1';
-}
-
-/**
- * Set unlicensed as the default license on file pages
- *
- * That way the file will be categorised so someone can find a license for the file
- */
-if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
-	var $license = $( '#wpLicense' );
-	if ( $license.length ) {
-		if ( $license.val() === '' ) {
-			$license.val( i18n.defaultLicense );
-		}
-		
-		mw.loader.using( 'mediawiki.special.upload', function() {
-			$license.change();
-		} );
-	}
 }
 
 } );

@@ -1,5 +1,3 @@
-/* <nowiki> */
- 
 /* ######################################################################## */
 /* ### JavaScript here is loaded for all users and all skins.           ### */
 /* ######################################################################## */
@@ -15,8 +13,6 @@ $(".openchat a").click(function() {
    return false;
 });
 
-
-/* </nowiki> */
 
 var hasClass = (function () {
     var reCache = {};

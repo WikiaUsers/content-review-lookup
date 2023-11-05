@@ -28,12 +28,20 @@ if (mw.config.get("wgUserGroups").indexOf('poweruser') > -1) {
 */
 
 /*----------If you got any question with this code for the filter, please contact LeafWolf233 through Touken Ranbu wiki ----------*/
-/*----------For the custom mutil-filter on the character table (Ver. 1.0)----------*/
+/*----------For the custom mutil-filter on the character table (Ver. 2.0)----------*/
  
 /*-----Varibles-----*/
-//grab datas from the table, not including the header
-const container = document.querySelector(".tabbertab[title='All Characters Details']");
+
+//grab datas from the table
+const page = document.querySelector('div.tabber');
+//const actv = page.childNodes[0].querySelector('div ul li div a'); //Tab Labels
+//console.log(actv.innerHTML);
+
+const container = page.childNodes[1];//Table displayed on tab selection
+console.log(container);
+//not including the header
 const table = container.querySelectorAll("tr:not(#header)");
+console.log(table.length);
  
 //buttons
 const tantouFilter = document.querySelector("div#Tantou");
@@ -53,6 +61,7 @@ const r2Filter = document.querySelector("span#Medium");
 const r3Filter = document.querySelector("span#High");
 const r4Filter = document.querySelector("span#Special");
 const r5Filter = document.querySelector("span#Highest");
+const r6Filter = document.querySelector("span#Godly");//New Rarity tier
  
 const smithFilter = document.querySelector("span#Smith");
 const dropFilter = document.querySelector("span#Drop");
@@ -60,7 +69,7 @@ const limitedTimeFilter = document.querySelector("span#Limited");
  
 const resetFilter = document.querySelector("span#Reset");
  
-//arraies that store differrent types of clicked buttons' id
+//arrays that store id for differrent types of clicked buttons
 const types = [];
 const kiwameStatus = [];
 const rarity = [];
@@ -68,62 +77,67 @@ const availability = [];
 const allButtons = [types, kiwameStatus, rarity, availability];
  
 //path for buttons' image
-const tantou = "https://vignette.wikia.nocookie.net/touken-ranbu/images/6/69/Tantou.png";
+const tantou = "https://static.wikia.nocookie.net/touken-ranbu/images/6/69/Tantou.png";
 const waki = "https://vignette.wikia.nocookie.net/touken-ranbu/images/b/b8/Wakizashi.png";
-//const wakiClicked = "https://vignette.wikia.nocookie.net/touken-ranbu/images/a/a4/Wakizashi-r3.png";
-const uchi = "https://vignette.wikia.nocookie.net/touken-ranbu/images/4/46/Uchigatana.png";
-const tachi = "https://vignette.wikia.nocookie.net/touken-ranbu/images/5/54/Tachi.png";
-const ootachi = "https://vignette.wikia.nocookie.net/touken-ranbu/images/f/f3/Ootachi.png";
-const yari = "https://vignette.wikia.nocookie.net/touken-ranbu/images/b/b4/Yari.png";
-const nagi = "https://vignette.wikia.nocookie.net/touken-ranbu/images/4/49/Naginata.png";
-const tsurugi = "https://vignette.wikia.nocookie.net/touken-ranbu/images/c/c1/Tsurugi.png";
-const toku = "https://vignette.wikia.nocookie.net/touken-ranbu/images/5/57/Toku-button.png";
-const kiwame = "https://vignette.wikia.nocookie.net/a-normal-playground/images/5/56/Kiwame.png";
+//const wakiClicked = "https://static.wikia.nocookie.net/touken-ranbu/images/a/a4/Wakizashi-r3.png";
+const uchi = "https://static.wikia.nocookie.net/touken-ranbu/images/4/46/Uchigatana.png";
+const tachi = "https://static.wikia.nocookie.net/touken-ranbu/images/5/54/Tachi.png";
+const ootachi = "https://static.wikia.nocookie.net/touken-ranbu/images/f/f3/Ootachi.png";
+const yari = "https://static.wikia.nocookie.net/touken-ranbu/images/b/b4/Yari.png";
+const nagi = "https://static.wikia.nocookie.net/touken-ranbu/images/4/49/Naginata.png";
+const tsurugi = "https://static.wikia.nocookie.net/touken-ranbu/images/c/c1/Tsurugi.png";
+const toku = "https://static.wikia.nocookie.net/touken-ranbu/images/5/57/Toku-button.png";
+const kiwame = "https://static.wikia.nocookie.net/touken-ranbu/images/d/da/Kiwame-button.png"
+//const kiwame = "https://static.wikia.nocookie.net/a-normal-playground/images/5/56/Kiwame.png";
 const generalClicked = "https://vignette.wikia.nocookie.net/touken-ranbu/images/6/62/Clicked-button.png"; //for testing purpose
 //button's border style
 const unclickedBorder = "2px solid rgb(205,208,214)";
 const clickedBorder = "2px solid rgb(255, 255, 255)";
  
-/*-----Calling functions-----*/
+///-----Calling functions-----///
 //bind events to buttons
-tantouFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tantou, generalClicked)});
-wakiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, waki, generalClicked)});
-uchiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, uchi, generalClicked)});
-tachiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tachi, generalClicked)});
-ootachiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, ootachi, generalClicked)});
-yariFilter.addEventListener("click", function() {buttonOperationDiv(this, types, yari, generalClicked)});
-nagiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, nagi, generalClicked)});
-tsurugiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tsurugi, generalClicked)});
+tantouFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tantou, generalClicked);});
+wakiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, waki, generalClicked);});
+uchiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, uchi, generalClicked);});
+tachiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tachi, generalClicked);});
+ootachiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, ootachi, generalClicked);});
+yariFilter.addEventListener("click", function() {buttonOperationDiv(this, types, yari, generalClicked);});
+nagiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, nagi, generalClicked);});
+tsurugiFilter.addEventListener("click", function() {buttonOperationDiv(this, types, tsurugi, generalClicked);});
  
-tokuFilter.addEventListener("click", function() {buttonOperationDiv(this, kiwameStatus, toku, generalClicked)});
-kiwameFilter.addEventListener("click", function() {buttonOperationDiv(this, kiwameStatus, kiwame, generalClicked)});
+tokuFilter.addEventListener("click", function() {buttonOperationDiv(this, kiwameStatus, toku, generalClicked);});
+kiwameFilter.addEventListener("click", function() {buttonOperationDiv(this, kiwameStatus, kiwame, generalClicked);});
  
-r1Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity)});
-r2Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity)});
-r3Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity)});
-r4Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity)});
-r5Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity)});
+r1Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
+r2Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
+r3Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
+r4Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
+r5Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
+r6Filter.addEventListener("click", function() {buttonOperationSpan(this, rarity);});
  
-smithFilter.addEventListener("click", function() {buttonOperationSpan(this, availability)});
-dropFilter.addEventListener("click", function() {buttonOperationSpan(this, availability)});
-limitedTimeFilter.addEventListener("click", function() {buttonOperationSpan(this, availability)});
+smithFilter.addEventListener("click", function() {buttonOperationSpan(this, availability);});
+dropFilter.addEventListener("click", function() {buttonOperationSpan(this, availability);});
+limitedTimeFilter.addEventListener("click", function() {buttonOperationSpan(this, availability);});
  
-resetFilter.addEventListener("click", function() {resetAll()});
+resetFilter.addEventListener("click", function() {resetAll();});
  
  
  
-/*-----Functions-----*/
+///-----Functions-----///
 //main function for button made by div [the code is inspired by Kévin Bibollet from stack overflow]
 function buttonOperationDiv(clickedElement, buttonArray, unclickedImageSrc, clickedImageSrc){
     //store button's img element and img's src for future use
     currentImg = clickedElement.querySelector("img");
     currentImgSrc = currentImg.getAttribute("src");
+	console.log("current",currentImgSrc, "clicked", clickedImageSrc);
     //is the button being clicked
     isFiltered = (currentImgSrc === clickedImageSrc);
+	console.log(isFiltered);
  
     //button was clicked, undo the filtering
     if(isFiltered){ 
         currentImg.setAttribute("src", unclickedImageSrc);
+		console.log("unclicked",unclickedImageSrc);
         //remove the id from the array
         removeFromArray(clickedElement.id, buttonArray);
         //if no other button is in clicked status, set the table back to dafault display
@@ -135,6 +149,7 @@ function buttonOperationDiv(clickedElement, buttonArray, unclickedImageSrc, clic
         }
     }else{ //button isn't clicked, start filtering
         currentImg.setAttribute("src", clickedImageSrc);
+		console.log("else clicked",clickedImageSrc);
         //store id into array
         buttonArray.push(clickedElement.id);
         hideAllRows();
@@ -286,10 +301,10 @@ function resetAll(){
     const buttonDivs = [tantouFilter, wakiFilter, uchiFilter, tachiFilter, ootachiFilter, yariFilter, nagiFilter, tsurugiFilter, tokuFilter, kiwameFilter];
     const buttonImgSrc = [tantou, waki, uchi, tachi, ootachi, yari, nagi, tsurugi, toku, kiwame];
     for(var i in buttonDivs){
-        buttonDivs[i].querySelector("img").setAttribute("src", buttonImgSrc[i])
+        buttonDivs[i].querySelector("img").setAttribute("src", buttonImgSrc[i]);
     }
     //border
-    const buttonSpans = [r1Filter, r2Filter, r3Filter, r4Filter, r5Filter, smithFilter, dropFilter, limitedTimeFilter];
+    const buttonSpans = [r1Filter, r2Filter, r3Filter, r4Filter, r5Filter, r6Filter, smithFilter, dropFilter, limitedTimeFilter];
     for(var c in buttonSpans){
         buttonSpans[c].style.border = unclickedBorder;
     }

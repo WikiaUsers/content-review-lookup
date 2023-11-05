@@ -96,9 +96,9 @@
 			},
 			history:function(data){
 				var unpatrolled = $('<abbr>',{
-					class:'unpatrolled',
-					title:'This edit has not yet been patrolled',
-					text:'\xa0!\xa0'
+					class: 'unpatrolled',
+					title: i18n.msg('unpatrolled').plain(),
+					text:' \xa0!\xa0'
 				});
 				var obj = $('li[data-mw-revid]').filter(function(i,obj){
 					return data.find(function(e){
