@@ -172,6 +172,7 @@ $(function() {
 						);
 						delete img.onload;
 					};
+					img.classList.add('mapMarker');
 					img.setAttribute('id', 'marker'+markers.count);
 					img.setAttribute('src', loadedImages['File:Map-guide-marker-53.png'].src);
 					var newMarker = {
@@ -187,8 +188,6 @@ $(function() {
 					} else {
 						$('#mapContainer').append(img);
 					}
-					
-					console.log(markers);
 				} else if (event.target && /^marker\d+/.test(event.target.id)) {
 					markers.count--;
 					delete markers[event.target.id];
@@ -303,6 +302,7 @@ $(function() {
 									.replace(/ Map Template\.png$/, '')+
 							'</strong>';
 					}
+					window.scrollTo(0, document.getElementById('TemplateManagerNote').offsetTop);
 				} else {
 					closeMarkerSettings();
 				}

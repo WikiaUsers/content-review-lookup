@@ -82,11 +82,12 @@ window.UserTagsJS = {
 		bureaucrat: { order:0 }, // <- lower order number = before other order tags (ex: tag with 1 will be placed before tag with 2)
 		sysop: { order:1 },
 		manager: { u:'Wiki System Manager', order:2 },
-		cw: { u:'Contest Winner', order:6 },
-		gf: { u:'Good Effort', order:7 },
-		'content-moderator': { order:3 }, // <- usergroup wrapped in quotes as there is a hyphen in the name
-		threadmoderator: { order:4 },
-		rollback: { u:'Rollbacker', order:5 },
+		cw: { u:'Contest Winner', order:7 },
+		ra: { u:'Regional Admin', order:3 },
+		gf: { u:'Good Effort', order:8 },
+		'content-moderator': { order:4 }, // <- usergroup wrapped in quotes as there is a hyphen in the name
+		threadmoderator: { order:5 },
+		rollback: { u:'Rollbacker', order:6 },
 	},
 };
 
@@ -99,6 +100,8 @@ UserTagsJS.modules.custom = {
 	'Blueberry Bot': ['bot'],
 	'Ntdll32': ['cw'],
 	'Dan7935': ['gf'],
-	'CarsonTheGamer0205': ['rollback'],
+	'CarsonTheGamer0205': ['rollback', 'ra'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
+	'Underscrach': ['ra'],
+	'KeelerWeeler': ['ra']
 };

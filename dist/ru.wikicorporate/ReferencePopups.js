@@ -37,121 +37,6 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
     }
 };
 
-
-// i18n messages
-(function ( module, lang ) {
-    /*jshint forin:false */
-    "use strict";
-    var i18n = {
-        en: {
-            coreConfigureText: 'Configure Reference Popups',
-            coreConfigureHover: 'Change settings for Reference Popups'
-        },
-        ar: {
-            coreConfigureText: 'اضبط تلميحات المراجع',
-            coreConfigureHover: 'اضبط إعدادات تلميح المراجع'
-        },
-        be: {
-            coreConfigureText: 'Налада усплываючых падказак',
-            coreConfigureHover: 'Змяніць налады усплываючых падказак'
-        },
-        ca: {
-            coreConfigureText: 'Configura referències emergents',
-            coreConfigureHover: 'Canviar la configuració de referències emergents'
-        },
-        de: {
-            coreConfigureText: 'Referenz-Popups konfigurieren',
-            coreConfigureHover: 'Einstellungsänderungen für Referenz-Popups'
-        },
-        el: {
-            coreConfigureText: 'Ρύθμιση Αναδυόμενων Αναφορών',
-            coreConfigureHover: 'Αλλαγή ρυθμίσεων για τις Αναδυόμενες Αναφορές'
-        },
-        es: {
-            coreConfigureText: 'Configurar popups de referencias',
-            coreConfigureHover: 'Modificar la configuración de los popups de referencias'
-        },
-        fr: {
-            coreConfigureText: 'Configurer Popups de Référence',
-            coreConfigureHover: 'Modifier les préférences pour les Popups de Référence'
-        },
-        hi: {
-            coreConfigureText: 'उद्धरण पॉपअप कॉन्फिगर करें',
-            coreConfigureHover: 'उद्धरण पॉपअप के सेटिंग्स को बदलें'
-        },
-        it: {
-            coreConfigureText: 'Configura le note a popup',
-            coreConfigureHover: 'Cambia le impostazioni per le note a popup'
-        },
-        ja: {
-            coreConfigureText: '注釈ふきだしの設定',
-            coreConfigureHover: '注釈ふきだしの設定を変更する'
-        },
-        ko: {
-            coreConfigureText: '주석 말풍선 설정',
-            coreConfigureHover: '주석 말풍선 설정하기'
-        },
-        nl: {
-            coreConfigureText: 'Configureer Referentie Popups',
-            coreConfigureHover: 'Wijzig de instellingen voor Referentie Popups'
-        },
-        pl: {
-            coreConfigureText: 'Skonfiguruj wyskakujące przypisy',
-            coreConfigureHover: 'Zmień ustawienia dla wyskakujących przypisów'
-        },
-        'pt-br': {
-            coreConfigureText: 'Configurar Popups de Referência',
-            coreConfigureHover: 'Mudar configurações para Popups de Referência'
-        },
-        ro: {
-            coreConfigureText: 'Configurați popupurile de referință',
-            coreConfigureHover: 'Schimbă setările pentru popupurile de referință'
-        },
-        ru: {
-            coreConfigureText: 'Настройка всплывающих подсказок',
-            coreConfigureHover: 'Изменить настройки всплывающих подсказок'
-        },
-        tr: {
-            coreConfigureText: 'Referans Bildirimlerini Yapılandır',
-            coreConfigureHover: 'Referans Bildirimleri\'nin seçeneklerini değiştir'
-        },
-        uk: {
-            coreConfigureText: 'Налаштування спливаючих підказок',
-            coreConfigureHover: 'Змінити налаштування спливаючих підказок'
-        },
-        vi: {
-            coreConfigureText: 'Thiết Đặt Popup Tham Khảo',
-            coreConfigureHover: 'Thay đổi thiết đặt cho Popup Tham Khảo'
-        },
-        zh: {
-            coreConfigureText: '设置参考资料弹窗',
-            coreConfigureHover: '更改参考资料弹窗设置'
-        },
-        'zh-hans': {
-            coreConfigureText: '设置参考资料弹窗',
-            coreConfigureHover: '更改参考资料弹窗设置'
-        },
-        'zh-hant': {
-            coreConfigureText: '設定參考資料彈窗',
-            coreConfigureHover: '變更參考資料彈窗設定'
-        },
-        'zh-hk': {
-            coreConfigureText: '設置參考資料彈窗',
-            coreConfigureHover: '更改參考資料彈窗設置'
-        },
-        'zh-tw': {
-            coreConfigureText: '設定參考資料彈窗',
-            coreConfigureHover: '變更參考資料彈窗設定'
-        }
-    };
-    var msg = module.messages = module.messages || {};
-    for (var m in i18n.en) {
-        msg[m] = msg[m] || (i18n[lang] && i18n[lang][m]) || i18n.en[m];
-    }
-})(dev.ReferencePopups, mediaWiki.config.get('wgUserLanguage'));
-
-
-
 // The popup itself is separated from the core logic which makes it reusable.
 // Load dependencies
 (function ( window, $, mw ) {
@@ -204,79 +89,6 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 // Wikia are using jQuery 1.8 which removed the deprecated $.curCSS...
 // but jQuery UI 1.8 needs it and they didn't update THAT to 1.9...
     $.curCSS = $.curCSS || $.css;
-
-// Custom CSS. Try to make the popup fit into the skin by adapting to the color scheme
-    /*(function ( color, Colors, mw, $ ) {
-        // Colors interfacing. It doesn't handle various common values.
-        function ifOk ( val, alt ) {
-            // Colors chokes on transparent
-            return (val && val !== 'transparent' && val !== 'rgba(0, 0, 0, 0)') ? val : alt;
-        }
-        function tryParse ( val, alt ) {
-            try {
-                return Colors.parse(val);
-            } catch (e) {
-                if (window.console) {
-                    window.console.warn('Colors Parse Error (' + val + '): ', e, e.stack);
-                }
-                return Colors.parse(alt);
-            }
-        }
-        function toRgba ( color, alpha ) {
-            return 'rgba(' + color.red() + ',' + color.green() + ',' + color.blue() + ',' + alpha + ')';
-        }
-
-        if (mw.config.get('skin') === 'oasis' || mw.config.get('skin') === 'fandomdesktop') {
-            color.page = Colors.parse(Colors.fandom.page);
-            color.pageBorder = Colors.parse(Colors.fandom.border);
-            color.accent = Colors.parse(Colors.fandom.menu);
-            color.popText = Colors.fandom.text;
-        } else {
-            var $content = $('#content');
-            color.page = tryParse(ifOk($('#globalWrapper').css('backgroundColor'), $content.css('backgroundColor')), 'white');
-            color.pageBorder = tryParse(ifOk($content.css('borderLeftColor'), $content.css('borderRightColor')), '#AAA');
-            color.accent = tryParse(ifOk($('#footer').css('borderTopColor'), $('body').css('backgroundColor')), '#fabd23');
-            color.popText = tryParse($('#mw-content-text').css('color'), 'black');
-        }
-        // Calculate color variants, we want the popup to stand out from the page slightly
-        // I do that by calculating a module color like the rail modules.
-        var mixCol;
-        if (color.page.isBright()) { // Darken, desaturate and blue shift
-            color.back = color.page.mix(mixCol = 'black', 95).mix('blue', 97);
-        } else { // Lighten, desaturate
-            color.back = color.page.mix(mixCol = 'white', 95);
-        }
-        color.popEdge = color.accent.mix(color.pageBorder, 90);
-
-        // Background gradient colors, faint glass-like effect
-        color.backA = toRgba(color.back, 0.95);
-        color.backB = toRgba(color.back.mix(mixCol, 99), 0.95);
-        color.backC = toRgba(color.back.mix(mixCol, 97), 0.95);
-
-        // Style sheet for the popup itself
-        Colors.css('\
-	.refpopups-box {\
-		background-color: $back;\
-		color: $popText;\
-		border-color: $popEdge;\
-		background: -webkit-linear-gradient(30deg, $backA, $backB 15%, $backB 25%, $backA 40%, $backA 50%, $backB 60%, $backB 70%, $backC 70%, $backC 90%, $backA 92%);\
-		background: linear-gradient(60deg, $backA, $backB 15%, $backB 25%, $backA 40%, $backA 50%, $backB 60%, $backB 70%, $backC 70%, $backC 90%, $backA 92%);\
-	}\
-	.refpopups-chevron-in {\
-		border-top-color: $back;\
-		border-top-color: $backA;\
-	}\
-	.refpopups-flipped > .refpopups-chevron-in {\
-		border-bottom-color: $back;\
-		border-bottom-color: $backA;\
-	}\
-	.refpopups-chevron-out {\
-		border-top-color: $popEdge;\
-	}\
-	.refpopups-flipped > .refpopups-chevron-out {\
-		border-bottom-color: $popEdge;\
-	}', color);
-    })(module.colors = module.colors || {}, Colors, mw, $);*/
 
 // The reference popup itself. [Requires UI 1.8, tries to use parts of 1.9]
 // It's implemented as jQuery UI widget for structural and convenience reasons, but this
@@ -865,28 +677,12 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
         }
     }
 
-// Add configuration buttons to the interface.
-// Lockdown prevents it at the admin's option (NOT RECOMMENDED)
-    if (!module.lockdown) {
-        $(function ( $ ) {
-            // We insert the configuration link below the categories, above article comments.
-            // It displays as a float right, cleared block.
-            $('#articleCategories, #catlinks').first().after(
-                $('<a href="#configure-refpopups" class="refpopups-configure-page" />')
-                .html('[' + module.messages.coreConfigureText + ']')
-                .click(onClickConfigure)
-                );
-        });
-    }
-
 // Debugging function to shut everything down.
 // Also functions as the double run protection
     module.unloadCore = function () {
         // Detach events
         $('#mw-content-text').off('.RefPopups');
         $(window).off('.RefPopups');
-        // Remove configuration buttons
-        $('a[href="#configure-refpopups"]').remove();
         // Close currently open popups, if any
         cleanupPopups();
 
@@ -894,60 +690,6 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
         delete this.unloadCore;
     };
     $(window).trigger('dev-ReferencePopups-config', module.settings = $.extend({}, userConfig));
-
-// Interfacing code to load and display the configuration interface.
-// The interface is stored in a separate file to reduce the size.
-    var configureIsPending = false;
-    function onClickConfigure ( ev ) {
-        ev.preventDefault();
-        var closeFunc = function () {
-            configureIsPending = false;
-        }, interfaceFunc = function ( confFunc ) {
-            confFunc(userConfig, function ( newSettings ) {
-                store.set('RefPopupsJS', newSettings);
-                // We need to kill any active popups in order to apply the
-                // new settings to them. This is especially important for disabled
-                // since they'll be left open otherwise.
-                cleanupPopups();
-                applyHoverEvents();
-
-                // Signal the new configuration to anyone interested in it
-                $(window).trigger('dev-ReferencePopups-config', module.settings = $.extend({}, newSettings));
-            }, closeFunc);
-        };
-
-        // If a lazy-load is running then don't open a second time, it "works" but
-        // not properly due to duplicate #ids
-        if (configureIsPending) {
-            return;
-        }
-        configureIsPending = true;
-
-        // Already loaded is the best.
-        if (module.configure) {
-            // It may or may not be a promise.
-            $.when(module.configure).done(interfaceFunc).fail(closeFunc);
-            return;
-        }
-
-        // Do lazy load. This would be a hell of a lot easier if we had an explicit
-        // dependency system. Then I could just require() and wait for the promise.
-        $.ajax({
-            url: mw.config.get('wgScriptPath') + '/load.php',
-            data: {
-                mode: 'articles',
-                only: 'scripts',
-                articles: 'MediaWiki:Trash/script1.js'
-            },
-            dataType: 'script',
-            cache: true
-        }).then(function () {
-            // WARN: This only works with same origin because browsers suck.
-            //	Cross-origin fires done immediately before the code runs.
-            // Chain promise
-            $.when(module.configure).done(interfaceFunc).fail(closeFunc);
-        }).fail(closeFunc);
-    }
 
     function constructPopup ( $ref ) {
         var frag = $ref.find('a[href^="#cite_note"]').first();
@@ -966,11 +708,11 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
 
         // Create the content box. Sometimes people ram giant images in to the reference
         // so we wrap it in a scrollable box to avoid spill.
-        var $content = $('<div style="overflow:auto">'),
+        var $content = $('<div style="overflow:auto">');/*,
             // Configuration button
             $conf = $('<a href="#" class="refpopups-configure" />')
             .prop('title', module.messages.coreConfigureHover)
-            .click(onClickConfigure);
+            .click(onClickConfigure);*/
 
         // We need to get just the reference body itself, without the backreference links
         $content.append($cite.find('.reference-text').clone());
@@ -984,7 +726,7 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
         // NOTE: We're not using the $.fn.referencePopup wrapper as it's safer to stay
         //	in our own namespace.
         return new module.Popup({
-            content: $conf.add($content),
+            content: $content,
             activateBy: userConfig.react,
             hoverDelay: userConfig.hoverDelay,
             animation: userConfig.animate && 'fold',

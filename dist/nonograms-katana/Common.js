@@ -45,10 +45,10 @@ function calculate() {
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/b/b9/Fan.png/revision/latest?cb=20210710185840"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Shuriken.png/revision/latest?cb=20210710190109"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/e/e9/Katana.png/revision/latest?cb=20210710190010"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/9/9a/Spikes.png/revision/latest?cb=20210710190757"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/6/67/Spikes_%28Makibishi%29.png/revision/latest?cb=20210710190757"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/7/7c/Boomerang.png/revision/latest?cb=20210710190854"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/31/Petard.png/revision/latest?cb=20210710190156"],
-		["5","https://static.wikia.nocookie.net/nonograms-katana/images/3/3b/Bomb.png/revision/latest?cb=20210710190341"],
+		["5","https://static.wikia.nocookie.net/nonograms-katana/images/c/ce/Bomb_%28Horoku%29.png/revision/latest?cb=20210710190341"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/c/c9/Steel.png/revision/latest?cb=20210710193716"],
 		["5","https://static.wikia.nocookie.net/nonograms-katana/images/a/a7/Iron_sand.png/revision/latest?cb=20210710194025"],
 		["2","https://static.wikia.nocookie.net/nonograms-katana/images/6/6d/Sushi.png/revision/latest?cb=20210710194303"],
@@ -72,10 +72,10 @@ function calculate() {
 		/*lvl. 4*/	["Pagoda lvl. 1"],
 		/*lvl. 5*/	["Warehouse lvl. 1"],
 		/*lvl. 6*/	["Alchemist's Hut lvl. 1","Class: Wizard"],
-		/*lvl. 7*/	["Pagoda lvl. 2","Field lvl. 1","Skill: Logistician lvl. 1","Skill: Weapon Collector lvl. 1","Skill: Treasure Hunter lvl. 1"],
+		/*lvl. 7*/	["Field lvl. 1","Pagoda lvl. 2","Skill: Logistician lvl. 1","Skill: Weapon Collector lvl. 1","Skill: Treasure Hunter lvl. 1"],
 		/*lvl. 8*/	["Furnace lvl. 1","Food Stall lvl. 1"],
 		/*lvl. 9*/	["Smithy lvl. 1","Windmill lvl. 1","Class: Rogue"],
-		/*lvl. 10*/	["Gong lvl. 1","Pagoda lvl. 3","Dungeon lvl. 1","Skill: Logistician lvl. 2","Skill: Athlete lvl. 1","Skill: Antiquarian lvl. 1"],
+		/*lvl. 10*/	["Dungeon lvl. 1","Gong lvl. 1","Pagoda lvl. 3","Skill: Logistician lvl. 2","Skill: Athlete lvl. 1","Skill: Antiquarian lvl. 1"],
 		/*lvl. 11*/	["Lumber Mill lvl. 1","Skill: Intellectual lvl. 1"],
 		/*lvl. 12*/	["Garden lvl. 1","Class: Monk"],
 		/*lvl. 13*/	["Rock Garden lvl. 1","Skill: Logistician lvl. 3","Skill: Weapon Collector lvl. 2","Skill: Treasure Hunter lvl. 2"],
@@ -85,11 +85,11 @@ function calculate() {
 		/*lvl. 17*/	["Skill: Intellectual lvl. 2"],
 		/*lvl. 18*/	["Pagoda lvl. 5","Class: Archeologist"],
 		/*lvl. 19*/	["Skill: Logistician lvl. 5","Skill: Weapon Collector lvl. 3","Skill: Treasure Hunter lvl. 3"],
-		/*lvl. 20*/	["Onsen lvl. 1","Skill: Athlete lvl. 3"],
+		/*lvl. 20*/	["Onsen lvl. 1","Dungeon lvl. 2","Skill: Athlete lvl. 3"],
 		/*lvl. 21*/	["Coffee Bonsai lvl. 1","Class: Samurai","Skill: Gardener lvl. 1","Skill: Rock Garden Contemplator lvl. 1"],
-		/*lvl. 22*/	["Ship lvl. 1","Pier lvl. 1","Skill: Carpenter lvl. 1","Skill: Metallurgist lvl. 1"],
+		/*lvl. 22*/	["Pier lvl. 1","Ship lvl. 1","Skill: Carpenter lvl. 1","Skill: Metallurgist lvl. 1"],
 		/*lvl. 23*/	["Pagoda lvl. 6","Skill: Mechanic lvl. 1","Skill: Blacksmith lvl. 1","Ship: Exploring"],
-		/*lvl. 24*/	["Class: Ninja","Skill: Alchemist lvl. 1","Ship: Fishing"],
+		/*lvl. 24*/	["Food Stall lvl. 2","Class: Ninja","Skill: Alchemist lvl. 1","Ship: Fishing"],
 		/*lvl. 25*/	["Skill: Athlete lvl. 4","Ship: Prospecting"],
 		/*lvl. 26*/	["Skill: Gardener lvl. 2","Skill: Rock Garden Contemplator lvl. 2","Skill: Boatswain lvl. 1","Ship: Patrolling"],
 		/*lvl. 27*/	["Class: Adventurer","Skill: Carpenter lvl. 2","Skill: Metallurgist lvl. 2"],
@@ -203,7 +203,7 @@ function calculate() {
 	if (level > 13) {
 		document.getElementById("bt_ram").innerHTML = bt_ram + " x ";
 		var imgBTram = document.createElement("img");
-		imgBTram.src = "https://static.wikia.nocookie.net/nonograms-katana/images/0/0e/Battering_ram.png/revision/latest?cb=20210710192019";
+		imgBTram.src = "https://static.wikia.nocookie.net/nonograms-katana/images/2/2f/Battering_ram_%28Kikkosha%29.png/revision/latest?cb=20210710192019";
 		imgBTram.width = "30";
 		imgBTram.height = "30";
 		document.getElementById("bt_ram").appendChild(imgBTram);

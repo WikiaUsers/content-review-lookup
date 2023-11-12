@@ -2,39 +2,21 @@
 
 /* Format list sections */
 
-$('h2:contains("Appearances and references")+ol').wrap('<div class="collapsible-list"/>');
+$('h2:contains("Appearances and references")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="collapsible-list"/>');
+$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-$('h2:contains("Little Bear filmography")+ol').wrap('<div class="collapsible-list"/>');
+$('h2:contains("Little Bear filmography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-$('h2:contains("Little Bear bibliography and filmography")+ol').wrap('<div class="collapsible-list"/>');
+$('h2:contains("Little Bear bibliography and filmography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-var listItems = $('div.collapsible-list > ol > li > ol > li');
+var listItems = $('div#mw-customcollapsible-list > ol > li > ol > li');
 
-var subLists = $('div.collapsible-list > ol > li > ol');
-
-function button(){
-  var buttonOne = $('<a>').html('<small>show/hide</small>').css('cursor','pointer').click(function(){
-    if (subLists.css('display') == 'none'){
-      subLists.css('display', 'block');
-    } else {
-      subLists.css('display', 'none');
-    }
-  });
-
-  return buttonOne;
+if (listItems.length > 10){
+  $('div#mw-customcollapsible-list').addClass('mw-collapsed');
 }
 
-if (listItems.length < 10){
-  subLists.css('display', 'block');
-} else {
-  subLists.css('display', 'none');
-}
-
-$('div.collapsible-list').prepend('<span class="collapsible-list-desc">This list includes '+listItems.length+' items.</span>');
-
-$('span.collapsible-list-desc').append(' <small>(</small>').append(button()).append('<small>)</small>');
+$('div#mw-customcollapsible-list').before('This list includes '+listItems.length+' items. <small>(<a class="mw-customtoggle-list" style="cursor:pointer;">show / hide</a>)</small>');
 
 /* Hide link returning to base page on subpages in the main namespace */
 

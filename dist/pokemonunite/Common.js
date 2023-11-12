@@ -6,4 +6,10 @@ importArticles({
     articles: [
         "w:c:dev:Countdown/code.js"
     ]
-});
+    
+//* Eraicons */
+importArticles({
+    type: "script",
+    articles: [
+        "dev:EraIcons/code.js"
+    ]

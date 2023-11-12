@@ -90,3 +90,14 @@ mw.hook("wikipage.content").add(function () {
         mw.util.addCSS($(this).attr("data-css"));
     });
 });
+var csslist;
+$("span.import-css").each(function () {
+    csslist = mw.util.addCSS($(this).attr("data-css"));
+    csslist.disabled = true;
+});
+
+$(".css-button").click(function() {
+    $("span.import-css").each(function () {
+        csslist.disabled = !csslist.disabled;
+    });
+});

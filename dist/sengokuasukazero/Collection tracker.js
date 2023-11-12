@@ -1,4 +1,5 @@
-;(function($, mw) {
+/* [[Sengoku Asuka ZERO Wiki:Collection tracker]] */
+(function($, mw) {
 	'use strict';
 
 	var warriors, sortedWarriors, warriorBlobUrl, filters, compare, canStore, $content;

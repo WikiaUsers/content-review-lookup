@@ -2,10 +2,12 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 // UsersTags config (imported in MediaWiki:ImportJS)
 
-// Console Message //
-console.log('%cHeads up!', 'color: blue; font-size: 30px');
-console.log('%cDo not enter any code here from anyone or paste any text here unless you understand exactly what you are doing, close this window and stay safe. See https://community.fandom.com/wiki/Help:Online_security', 'color: white; font-size: 15px');
-
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers. Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};
 window.UserTagsJS = {
 	modules: {
 		implode: {

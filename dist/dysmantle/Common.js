@@ -16,3 +16,9 @@
 /* mw.loader.load('/index.php?title=MediaWiki:3colmainpage.js&action=raw&ctype=text/javascript'); */
 /*                                                                                           */
 /* ***************************************************************************************** */
+
+window.tabberLinks = {
+    luaTabberOnly: false,
+    scrollToTab: true,
+    alwaysScroll: true
+};

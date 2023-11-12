@@ -311,6 +311,12 @@
             styles: ['MediaWiki:HydraRevived/main.css', 'MediaWiki:HydraRevived/preload.css']
         },
         
+        InfoboxTabberLinks: {
+            page: "InfoboxTabberLinks",
+            styles: 'MediaWiki:Global_Lua_Modules/Tabber.css',
+            scripts: 'MediaWiki:InfoboxTabberLinks.js'
+        },
+        
         InfoWidgets: {
             selector: '#infowidgets-demo',
             styles: 'MediaWiki:InfoWidgets/demo.css',

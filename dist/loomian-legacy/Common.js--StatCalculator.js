@@ -15,7 +15,7 @@ function calcHealth(Base, UP, TP, Level) {
 	if(isNaN(UP)) {
 		UP = 0;
 	}
-	return Math.floor((2*Base+UP+TP/4)*Level/100+Level+10);
+	return Math.floor((2*Base+UP+Math.floor(TP/4))*Level/100+Level+10);
 }
 function calcEnergy(Base, UP, TP, Level, Personality) {
 	if(isNaN(Base)) {
@@ -30,7 +30,7 @@ function calcEnergy(Base, UP, TP, Level, Personality) {
 	if(isNaN(UP)) {
 		UP = 0;
 	}
-	return Math.floor(Math.floor((2*Base+UP+TP/4)*Level/65+80)*Personality);
+	return Math.floor(Math.floor((2*Base+UP+Math.floor(TP/4))*Level/65+80)*Personality);
 }
 function calcStat(Base, UP, TP, Level, Personality) {
 	if(isNaN(Base)) {
@@ -45,7 +45,7 @@ function calcStat(Base, UP, TP, Level, Personality) {
 	if(isNaN(UP)) {
 		UP = 0;
 	}
-	return Math.floor(Math.floor((2*Base+UP+TP/4)*Level/100+5)*Personality);
+	return Math.floor(Math.floor((2*Base+UP+Math.floor(TP/4))*Level/100+5)*Personality);
 }
 
 // Input box creator
@@ -53,7 +53,7 @@ $(document).ready(function() {
 	var i = 1;
 	var length = document.querySelectorAll('.StatsTable').length;
 	while(i <= length) {
-		$("span#LevelBox-"+i).html('<input onClick="this.select();" type="number" value="20" class="Level oo-ui-inputWidget-input"></input>');
+		$("span#LevelBox-"+i).html('<input onClick="this.select();" type="number" value="50" class="Level oo-ui-inputWidget-input"></input>');
 		
 		$("span#HPUPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="HPUP oo-ui-inputWidget-input"></input>');
 		$("span#HPTPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="HPTP oo-ui-inputWidget-input"></input>');

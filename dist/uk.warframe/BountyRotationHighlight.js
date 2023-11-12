@@ -20,19 +20,27 @@ $(function() {
 	const BOUNTY_IDS = {
 		'Ostron':"CetusBounty", 
 		'Entrati':"NecraliskBounty",
-		'Solaris United':"FortunaBounty"
+		'Solaris United':"FortunaBounty",
+		'Plague Star':"PlagueStar",
+		'Ghoul Purge':"GhoulBounty"
 	};
 	const ROT_NUMBER = {
 		'A':"1", 
 		'B':"2",
 		'C':"3"
 	};
+	const PLAGUE_STAR_TIER = [
+		['З', 'звичайний'],
+		['У', 'ускладнений'],
+		['ШС', '«Шлях сталі»']
+	];
 	$.get('https://api.tenno.tools/worldstate/pc', function (data) {
 		$.each(data.bounties.data, function(_, syndicateData) {
 			if (BOUNTY_IDS[syndicateData.syndicate] && data.bounties.time >= syndicateData.start) {
 				$.each(syndicateData.jobs, function(i, bounty) {
-					var bountyID = BOUNTY_IDS[syndicateData.syndicate] + (i + 1),
-						isEntrati = syndicateData.syndicate === 'Entrati';
+					var isEntrati = syndicateData.syndicate === 'Entrati',
+						isPlagueStar = syndicateData.syndicate === 'Plague Star',
+						bountyID = isPlagueStar ? 'PlagueStar' : BOUNTY_IDS[syndicateData.syndicate] + (i + 1);
 					bountyID = ISOVAULT_IDS[bountyID] || bountyID;
 					$('.bounty').each(function() {
 						var tableID = $(this)[0].id.replace(/\-./, ''),
@@ -52,26 +60,37 @@ $(function() {
 							if ($stageTh.length) {
 								var tableLength = $stageTh.length;
 								$stageTh.each(function(i1, th) {
-									var additionalReward = (i1 == tableLength - 1) ? bounty.xpAmounts[bounty.xpAmounts.length-1] : bounty.xpAmounts[i1];
-									var additionalRewardBonus = Math.floor(additionalReward * 0.25);
-									//console.log(tableLength, $(th).text(), additionalReward)
+									var additionalReward = (i1 == tableLength - 1) ? bounty.xpAmounts[bounty.xpAmounts.length-1] : bounty.xpAmounts[i1],
+										additionalRewardBonus = Math.floor(additionalReward * 0.25),
+										plagueStarBonus = 25 * ((i >= 1 ? i+1 : i) + 1),
+										plagueStarStanding = 100 * ((i >= 1 ? i+1 : i) + 1),
+										rewardSum = additionalReward + (isPlagueStar ? (i1 != 1 ? 0 : plagueStarBonus + plagueStarStanding) : additionalRewardBonus),
+										rewardSumText = (isPlagueStar ? PLAGUE_STAR_TIER[i][0] + ':\xa0' : '') + '+' + (rewardSum).toLocaleString(),
+										rewardSumTitle = (isPlagueStar && i1 == 1 ? 
+										'За завершення етапу 2 ('+ PLAGUE_STAR_TIER[i][1] + '): ' + additionalReward.toLocaleString() + ', завершення етапу 3 ('+ PLAGUE_STAR_TIER[i][1] + '): ' + plagueStarStanding 
+										: 'За завершення етапу' +  (isPlagueStar ? ' ('+ PLAGUE_STAR_TIER[i][1] + ')' : '') + ': ' + additionalReward.toLocaleString()) +
+											(isPlagueStar ? (i1 != 1 ? '' : ', за виконання додаткової цілей на етапі 3 ще +' + plagueStarBonus) : ', за виконання додаткових цілей ще +' +  additionalRewardBonus.toLocaleString());
 									$(th).append(
-										' (',
 										$('<span>', {
-											text: '+' + (additionalReward + additionalRewardBonus).toLocaleString(),
-											title: 'За завершення етапу: ' + additionalReward.toLocaleString() + ', за виконання додаткових цілей ще +' + additionalRewardBonus.toLocaleString(),
-											css: {'border-bottom': '1px dotted gray'}
-										}),
-										$('<img>', {
-											class: 'icon ' + (isEntrati ? '' : 'dark-invert'),
-											src: IMG_URL +
-												(isEntrati ? ICONS.motherToken : ICONS.reputation ) +
-												IMG_PREFIX,
-											title: isEntrati ? 'Медальйон Матері' : 'Репутація',
-											href: WIKI_URL + (isEntrati ? 'Медальйон Матері' : 'Репутація'),
-											css: {'cursor': 'pointer'}
-										}),
-										')'
+											append: [
+												' (',
+												$('<span>', {
+													text: rewardSumText,
+													title: rewardSumTitle,
+													css: {'border-bottom': '1px dotted gray'}
+												}),
+												$('<img>', {
+													class: 'icon ' + (isEntrati ? '' : 'dark-invert'),
+													src: IMG_URL +
+													(isEntrati ? ICONS.motherToken : ICONS.reputation ) +
+													IMG_PREFIX,
+													title: isEntrati ? 'Медальйон Матері' : 'Репутація',
+													href: WIKI_URL + (isEntrati ? 'Медальйон Матері' : 'Репутація'),
+													css: {'cursor': 'pointer'}
+												}),
+												')'
+											]
+										})
 									);
 								});
 							}

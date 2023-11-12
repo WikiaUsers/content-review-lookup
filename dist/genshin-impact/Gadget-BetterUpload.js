@@ -181,15 +181,13 @@ $(function() {
                 text: document.querySelector('#wpUploadDescription').value
             };
 			if (file && filename && filename.length>0) {
-				api.upload(file, params).then(loadFilePage, loadFilePage);
 				var loadFilePage = function() {
 					window.open(
-						window.location.href.replace(/^(.+\/wiki\/).+$/, '$1')+
-						'File:'+
-						encodeURIComponent(filename), // URI encoding required
+						mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
 						'_self' // load in current tab
 					);
 				};
+				api.upload(file, params).then(loadFilePage, loadFilePage);
 			} else { alert('Missing file or file name.'); }
 		},
 	};

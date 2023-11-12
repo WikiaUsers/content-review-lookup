@@ -1,25 +1,5 @@
 /* © Star Wars Wiki */
 
-// Variable pour PreloadTemplates
-preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates";
- 
-// Variables pour Standard Edit Summary
-window.dev = window.dev || {};
-window.dev.editSummaries = {
-     css: '#stdSummaries { ... }',
-     select: 'MediaWiki:Custom-StandardEditSummary'
-}; 
- 
-// 2. AjaxRC import statement
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:Standard Edit Summary/code.js',
-        'u:dev:Mediawiki:PreloadTemplates.js',
-        "w:c:dev:MediaWiki:Countdown/code.js"
-    ]
-});
-
 /* subtitle */
 // add the original english title as a subtitle for the article, linking to Wookieepedia's corresponding page.
  

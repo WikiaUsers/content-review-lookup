@@ -1,4 +1,3 @@
-/* จาวาสคริปต์ใด ๆ ในหน้านี้จะถูกโหลดให้แก่ผู้ใช้ทุกคนในทุกหน้า */
 // [[Category:Internal]] Meta-category for internal technical pages
 
 // For [[Module:CSS]]; [[T:CSS]] dependency

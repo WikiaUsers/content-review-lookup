@@ -102,3 +102,10 @@ $(function() {
 		});
 	});
 });
+
+/*----- Link Preview -----*/
+/* Config object */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/armoredwarfare_gamepedia/images/c/c9/Logo.png';
+window.pPreview.RegExp.iimages = [/Disambig\.png/, /Credits_\.png/, /Experience\.png/, /Golds\.png/, /Cmdr_skill_proc_module_damage_when_near_allies\.png/ ];
+window.pPreview.RegExp.noinclude = [ ".no-link-preview", ".reference", ".error" ];

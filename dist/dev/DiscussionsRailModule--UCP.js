@@ -163,15 +163,18 @@
 
                             item.content.title.$e.classList.add("page-title");
 
-                            Object.assign(item.content.title.$e.style, {
+                            item.content.$e.appendChild(item.content.title.$e);
+
+                            /* - item : content : title : link - */
+
+                            item.content.title.link.$e.classList.add("discussions-activity__page-title", "page-title-link");
+
+                            Object.assign(item.content.title.link.$e.style, {
+                            	display: "block",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap"
                             });
-
-                            item.content.$e.appendChild(item.content.title.$e);
-
-                            /* - item : content : title : link - */
 
                             item.content.title.link.$e.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f/p/" + post.threadId);
 
@@ -194,10 +197,18 @@
                             item.content.$e.appendChild(item.content.text.$e);
 
                             /* - item : content : text : lastReply - */
+                            
+                            item.content.text.lastReply.$e.classList.add("discussions-activity__username", "edit-info-user");
 
                             Object.assign(item.content.text.lastReply.$e.style, {
+                            	display: "block",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
                                 color: "rgba(var(--right-rail-text-color--rgb),.75)",
-                                fontSize: "12px"
+                                fontSize: "12px",
+                                fontWeight: "400",
+                                maxWidth: "150px"
                             });
 
                             item.content.text.lastReply.$e.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/wiki/" + mw.Title.makeTitle(2, post.createdBy.name).getPrefixedText());
@@ -207,11 +218,12 @@
 
                             /* - item : content : text : timeago - */
 
-                            item.content.text.timeago.$e.classList.add("discussions-activity__timeago");
+                            item.content.text.timeago.$e.classList.add("timeago", "discussions-activity__timeago", "edit-info-time");
 
                             Object.assign(item.content.text.timeago.$e.style, {
                                 color: "rgba(var(--right-rail-text-color--rgb),.75)",
-                                fontSize: "12px"
+                                fontSize: "12px",
+                                fontWeight: "400"
                             });
 
                             var diff = now * 1000 - discussionsThreads[i].modificationDate.epochSecond * 1000,

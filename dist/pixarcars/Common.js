@@ -38,3 +38,13 @@ importArticles({
 });
 
 window.MassCategorizationGroups = ['sysop'];
+
+
+// Special:Upload pre-load text [test]
+
+PFD_templates = [
+    {
+        label:   'Images',
+        desc:    '{' + '{aboutfile\n|description=\n|source=\n|author=\n|licensing=\n}}\n{' + '{uncategorized}}',
+    },
+];

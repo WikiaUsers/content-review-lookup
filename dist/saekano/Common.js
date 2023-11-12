@@ -159,3 +159,13 @@ if($(".parenttab").length) {
 }
 
 }(window, jQuery, mediaWiki));
+
+$(function() {
+  $(".fullwidthbanner").each(function() {
+    if ($("img", this).attr("src")) srcAttr = "src";
+    else if ($("img", this).attr("data-src")) srcAttr = "data-src"; //lazy-loader
+    $("img", this).attr(srcAttr, $("img", this).attr(srcAttr).replace(/\/scale-to-width\/\d*\?/g, "/scale-to-width/"+$(this).width()+"?")); 
+    $("img", this).attr("width", "" );
+    $("img", this).attr("height", "" );
+  });
+});
