@@ -43,7 +43,7 @@
                 $.when(
                     window.dev.i18n.loadMessages('AjaxDelete'),
                     mw.loader.using(['mediawiki.api', 'mediawiki.Title'])
-                ).then($.proxy(this.init, this));
+                ).then(this.init.bind(this));
             }
         },
         init: function(i18n) {
@@ -55,12 +55,12 @@
             this.BannerNotification = dev.banners.BannerNotification;
             this.buildDeleteReasons();
             this.fetchUndeleteAliases();
-            $(document).click($.proxy(this.click, this));
+            $(document).click(this.click.bind(this));
             if (
                 [-1, 1201, 2001].indexOf(config.wgNamespaceNumber) === -1 &&
                 !this.config.disableShortcut
             ) {
-                var bindShortcut = $.proxy(this.bindShortcut, this);
+                var bindShortcut = this.bindShortcut.bind(this);
                 var moduleName = mw.loader.getModuleNames().find(function(name) {
                     return name.indexOf('GlobalShortcuts-') === 0;
                 });
@@ -90,7 +90,7 @@
                 action: 'query',
                 meta: 'siteinfo',
                 siprop: 'specialpagealiases'
-            }).done($.proxy(this.cbAliasFetch, this));
+            }).done(this.cbAliasFetch.bind(this));
         },
         fetchDeleteReasons: function() {
             this.api.get({
@@ -98,7 +98,7 @@
                 meta: 'allmessages',
                 ammessages: 'deletereason-dropdown|filedelete-reason-dropdown',
                 amlang: config.wgContentLanguage
-            }).done($.proxy(this.cbFetch, this));
+            }).done(this.cbFetch.bind(this));
         },
         cbFetch: function(d) {
             if (d.error) {
@@ -304,7 +304,7 @@
                 $('#AjaxDeleteReasonSelect').focus();
             }
             // When Enter is pressed, execute the deletion
-            $reason.keydown($.proxy(this.keydown, this));
+            $reason.keydown(this.keydown.bind(this));
         },
         keydown: function(event) {
             if (event.which === 13 || event.which === 11) {
@@ -342,7 +342,7 @@
             if (watchlist) {
                 params.watchlist = 'watch';
             }
-            this.api.post(params).done($.proxy(this.cbDone, this)).fail($.proxy(this.cbFail, this));
+            this.api.post(params).done(this.cbDone.bind(this)).fail(this.cbFail.bind(this));
         },
         cbDone: function(d) {
             if (d.error) {
@@ -421,7 +421,7 @@
             return this.i18n.msg(code).plain();
         }
     };
-    var preload = $.proxy(AjaxDelete.preload, AjaxDelete);
+    var preload = AjaxDelete.preload.bind(AjaxDelete);
     mw.hook('dev.i18n').add(preload);
     mw.hook('dev.showCustomModal').add(preload);
     mw.hook('dev.banners').add(preload);

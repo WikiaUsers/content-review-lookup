@@ -1,4 +1,4 @@
-// [[Category:Internal]] Meta-category for internal technical pages
+// [[Category:Internal]]
 
 // For [[Module:CSS]]; [[T:CSS]] dependency
 mw.hook("wikipage.content").add(function () {

@@ -1,6 +1,18 @@
 /*The Middlerooms Wiki Custom Javascripts*/
 /* To administrators, please ask permission from Khai before adding/changing javascripts. */
 
+// Template CSS core javascript [with permission: https://backrooms.fandom.com/wiki/Message_Wall:Pexy0?threadId=4400000000000149433#4400000000000732499] 
+
+// credits goes to Pexy, original Javascript can be found here: https://backrooms.fandom.com/wiki/MediaWiki:Common.js
+
+// this javascript was borrowed with permission from pexy
+
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		mw.util.addCSS($(this).attr("data-css"));
+	});
+});
+
 /*MessageBlock Configuration*/
 window.MessageBlock = {
 	title : 'You have been blocked',
@@ -100,7 +112,7 @@ UserTagsJS.modules.custom = {
 	'Blueberry Bot': ['bot'],
 	'Ntdll32': ['cw'],
 	'Dan7935': ['gf'],
-	'CarsonTheGamer0205': ['rollback', 'ra'],
+	'CarsonTheGamer0205': ['ra'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 	'Underscrach': ['ra'],
 	'KeelerWeeler': ['ra']

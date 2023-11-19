@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision: 10/17/2023 10:23
+// Current revision: 11/15/2023 21:44
 
 $(function() {
 
@@ -190,7 +190,10 @@ $(function() {
 						!document.querySelector('.mw-changeslist-src-mw-new .mw-changeslist-diff')
 					)
 				){
-					document.querySelectorAll('.mw-changeslist-src-mw-new').forEach(function(node){if (node) {newDiffLink.searchRevid(node);}});
+					document.querySelectorAll('.mw-changeslist-src-mw-new').forEach(function(node){
+						if (node) { newDiffLink.searchRevid(node); }
+					});
+					betterDiff.quickDiffLoad();
 				}
 			}
 			
@@ -278,15 +281,9 @@ $(function() {
 						}).then(function(data){
 							if (data.query.recentchanges.length>0) {
 								document.querySelector('#userPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
-								var patrolID = function(page) {
-									api.post({
-										action: 'patrol',
-										format: 'json',
-										revid: page.revid,
-										token: tokens.patrol
-									});
-								};
-								data.query.recentchanges.forEach(patrolID);
+								data.query.recentchanges.forEach(function(page) {
+									betterDiff.patrolRevision(page.revid, page.rcid);
+								});
 								document.querySelector('#userPatrolDetails').innerHTML = 'Patrolled '+data.query.recentchanges.length+' edits!';
 							} else {
 								document.querySelector('#userPatrolDetails').innerHTML = 'User has no edits to patrol!';
@@ -302,38 +299,8 @@ $(function() {
 			// Diff link string's storage for modal button
 			var href = '';
 			
-			// Add custom link
-			var addQuick = function(diff) {
-				if (diff && diff.getAttribute('href')) {
-					var href = diff.getAttribute('href');
-					var newid = /diff=(\d+)/.exec(href)[1];
-					var oldid = /oldid=\d+/.test(href) ? /oldid=(\d+)/.exec(href)[1] : '0';
-					var link = document.createElement('a');
-					link.setAttribute('newid', newid);
-					link.setAttribute('oldid', oldid);
-					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute('title'));
-					link.innerHTML = 'view';
-					link.style.cursor = 'pointer';
-					link.classList.add('quickDiff');
-					if (diff.parentElement.nodeName == 'SPAN') {
-						var span = document.createElement('span');
-						span.appendChild(link);
-						diff.parentElement.after(span);
-					} else {
-						diff.after(' | ', link);
-					}
-				}
-			};
-			
-			// Get locations where to add custom link
-			var addLinks = function() {
-				if (!document.querySelector('.quickDiff')) {
-					document.querySelectorAll('.mw-changeslist-groupdiff').forEach(addQuick);
-					document.querySelectorAll('.mw-changeslist-diff').forEach(addQuick);
-				}
-			};
-			addLinks();
-			betterDiff.RecentChangesReload(addLinks);
+			betterDiff.quickDiffLoad();
+			betterDiff.RecentChangesReload(betterDiff.quickDiffLoad);
 			
 			var generateModal = function(modal, event) {
 				betterDiff.fetchTokens();
@@ -393,6 +360,9 @@ $(function() {
 								'</a> '+
 								'<span class="mw-diff-edit">('+
 									'<a href="/wiki/'+betterDiff.urlEncode(data.totitle)+'?action=edit&oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">edit</a>'+
+								')</span> '+
+								'<span class="mw-diff-undo">('+
+									'<a href="/wiki/'+betterDiff.urlEncode(data.totitle)+'?action=edit&undoafter='+data.fromrevid+'&undo='+data.torevid+'" title="&quot;Undo&quot; reverts this edit and opens the edit form in preview mode. It allows adding a reason in the summary.">undo</a>'+
 								')</span>'+
 							'</strong>'+
 						'</div>'+
@@ -467,7 +437,7 @@ $(function() {
 						'</table>'
 					);
 					modal.setTitle('Changes: '+data.compare.totitle);
-					if (event.target.classList.contains('quickDiff') && can.patrol && tokens.patrol.length>2) {
+					if (can.patrol && tokens.patrol.length>2) {
 						api.get({
 							action: 'query',
 							list: 'recentchanges',
@@ -594,71 +564,124 @@ $(function() {
 						}
 					});
 				popup.create();
-				document.addEventListener('click', function(event) {
-					
-					// Load diff modal
-					if (event.target && (
-						event.target.classList.contains('quickDiff') ||
-						event.target.id == 'differences-nextlink' ||
-						event.target.id == 'differences-prevlink'
-					)) {
-						generateModal(popup, event);
-					// Patrol revisions shown in modal if user has perms and there's any to patrol
-					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
-						document.querySelector('.patrollink').innerHTML = 
+				var massPatrol = function() {
+					if (!document.querySelector('.patrollink a')) {alert('Nothing to mass patrol.\nIf you believe this to be an error, please contact [[User:Mikevoir]]!');}
+					else {
+						var link = document.querySelector('.patrollink a');
+						var wrapper = document.querySelector('.patrollink');
+						wrapper.innerHTML = 
 						'[<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="16px" style="vertical-align: middle;" border="0" />]';
-						var torevid = event.target.getAttribute('torevid');
-						var fromrevid = event.target.getAttribute('fromrevid');
+						console.log(link);
+						var torevid = link.getAttribute('torevid');
+						var fromrevid = link.getAttribute('fromrevid');
 						api.get({
 							action: 'query',
 							list: 'recentchanges',
 							rcshow: '!patrolled',
 							rcprop: 'ids',
 							format: 'json',
-							rctitle: event.target.getAttribute('title').replace(/\&quot;/g, '"'),
+							rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
 							formatversion: '2',
 							rclimit: 'max'
 						}).then(function(data) {
 							var num = 0;
 							var revids = [];
-							while (
-								data.query.recentchanges[num] &&
-								(
-									(fromrevid && torevid && data.query.recentchanges[num].revid >= fromrevid && data.query.recentchanges[num].revid <= torevid) ||
-									(torevid && data.query.recentchanges[num].revid == torevid)
-								)
-							) {
-								revids.push(data.query.recentchanges[num].revid);
+							while (data.query.recentchanges[num]) {
+								if (
+									(
+										torevid && fromrevid &&
+										data.query.recentchanges[num].revid >= fromrevid &&
+										data.query.recentchanges[num].revid <= torevid
+									) ||
+									(
+										torevid && !fromrevid &&
+										data.query.recentchanges[num].revid == torevid
+									)
+								) {revids.push(data.query.recentchanges[num].revid);}
 								num++;
 							}
 							if (revids.length>0) {
 								revids.forEach(betterDiff.patrolRevision);
-								document.querySelector('.patrollink').innerHTML = '[Edits patrolled: '+revids.length+']';
+								wrapper.innerHTML = '[Edits patrolled: '+revids.length+']';
 							} else {
-								document.querySelector('.patrollink').innerHTML = '[Error, no valid revisions found!]';
+								wrapper.innerHTML = '[Error, no valid revisions found!]';
 								console.log('api result:',data);
 							}
 						}).catch(function(err){
-							document.querySelector('.patrollink a').innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+							wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
 							console.log('api result:', err);
 						});
 					}
+				};
+				document.addEventListener('click', function(event) {
+					// Load diff modal
+					if (event.target && (
+						event.target.classList.contains('quickDiff') ||
+						event.target.id == 'differences-nextlink' ||
+						event.target.id == 'differences-prevlink'
+					)) {
+						if (event.target.classList.contains('quickDiff')) {
+							if (document.querySelector('.link-focused')) {document.querySelector('.link-focused').classList.remove('link-focused');}
+							event.target.classList.add('link-focused');
+						}
+						generateModal(popup, event);
+					// Patrol revisions shown in modal if user has perms and there's any to patrol
+					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
+						massPatrol();
+					}
+				});
+				document.addEventListener('keydown', function(event) {
+					if (event.altKey && [80, 49].includes(event.keyCode)) {
+						massPatrol();
+					}
 				});
 			});
-			
+		},
+		
+		// Get locations where to add custom link for quickDiff
+		quickDiffLoad: function() {
+			var addLink = function(diff) {
+				if (diff && diff.getAttribute('href')) {
+					var href = diff.getAttribute('href');
+					var newid = /diff=(\d+)/.exec(href)[1];
+					var oldid = /oldid=\d+/.test(href) ? /oldid=(\d+)/.exec(href)[1] : '0';
+					var link = document.createElement('a');
+					link.setAttribute('newid', newid);
+					link.setAttribute('oldid', oldid);
+					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute	('title'));
+					link.innerHTML = 'view';
+					link.style.cursor = 'pointer';
+					link.classList.add('quickDiff');
+					diff.classList.add('quickDiffLoaded');
+					if (diff.parentElement.nodeName == 'SPAN') {
+						var span = document.createElement('span');
+						span.appendChild(link);
+						diff.parentElement.after(span);
+					} else {
+						diff.after(' | ', link);
+					}
+				}
+			};
+			document.querySelectorAll('.mw-changeslist-groupdiff:not(.quickDiffLoaded)').forEach(addLink);
+			document.querySelectorAll('.mw-changeslist-diff:not(.quickDiffLoaded)').forEach(addLink);
 		},
 		
 		// Patrol inputted revid if user can patrol
-		patrolRevision: function(id) {
-			if (can.patrol && id && tokens.patrol.length>2) {
+		patrolRevision: function(revid, rcid) {
+			if (can.patrol && revid && tokens.patrol.length>2) {
 				api.post({
 					action: 'patrol',
 					format: 'json',
-					revid: id,
+					revid: revid,
 					token: tokens.patrol
 				}).catch(function(log) {
-					console.log('tokens', tokens);
-					console.log('error msg:', log);
+					if (rcid && log && log == 'nosuchrevid') {
+						alert('Revision from deleted page detected, opening patrolling page.');
+						window.open('https://genshin-impact.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+					} else {
+						console.log('tokens', tokens);
+						console.log('error msg:', log);
+					}
 				});
 			}
 		},

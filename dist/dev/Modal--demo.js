@@ -20,12 +20,12 @@
                     this.content(mw.util.$content);
                 }
                 mw.hook('wikipage.content')
-                    .add($.proxy(this.content, this));
+                    .add(this.content.bind(this));
             }
         },
         content: function($content) {
             $content.find('span[data-modal-demo]:not(.loaded)')
-                .each($.proxy(this.each, this));
+                .each(this.each.bind(this));
         },
         each: function(_, el) {
             var $this = $(el),
@@ -40,7 +40,7 @@
                 this.modals[modal] = new this.modal.Modal(func());
                 this.modals[modal].create();
             }
-            $this.click($.proxy(this.click, this));
+            $this.click(this.click.bind(this));
         },
         click: function(e) {
             this.modals[$(e.target).data('modal-demo')].show();
@@ -136,6 +136,6 @@
             'u:dev:MediaWiki:Modal.js'
         ]
     });
-    mw.hook('dev.modal').add($.proxy(ModalDemo.modal, ModalDemo));
-    mw.hook('dev.ui').add($.proxy(ModalDemo.ui, ModalDemo));
+    mw.hook('dev.modal').add(ModalDemo.modal.bind(ModalDemo));
+    mw.hook('dev.ui').add(ModalDemo.ui.bind(ModalDemo));
 })();

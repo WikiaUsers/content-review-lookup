@@ -1,7 +1,7 @@
 (function($, mw, config){
     function ArticlePreview(){
         this._hooks(['dev.i18n', 'dev.colors', 'dev.wds'])
-            .add($.proxy(this._setup, this));
+            .add(this._setup.bind(this));
     }
     
     ArticlePreview.prototype._hooks = function(hooks){
@@ -147,16 +147,16 @@
     ArticlePreview.prototype.getContent = function(event, link, callback){
         var Api = new mw.Api(),
             page = link.replace(this.patterns.shortURL, 
-            $.proxy(function(match, title){
+            (function(match, title){
                 var result = '';
                 if (this.patterns.urlParam1.test(title)){
                     result = this.patterns.urlParam1.exec(title)[1];
                 } else result = title;
                 return result;
-            }, this)),
+            }).bind(this)),
             pageName = page.replace(/\_/g, ' ').replace(this.patterns.urlParam2, '');
         this.params.page = decodeURIComponent(pageName);
-        $.when(Api.get(this.params)).done($.proxy(callback, this, event));
+        $.when(Api.get(this.params)).done(callback.bind(this, event));
     };
     
     ArticlePreview.prototype.parseContent = function(event, response){
@@ -173,9 +173,9 @@
     
     ArticlePreview.prototype.parseData = function(event, $code){
         var $imgElem = $code.find('img'),
-            imgSrc = $imgElem.not($.proxy(function(index, img){
+            imgSrc = $imgElem.not((function(index, img){
                 return this.patterns.dataImage.test($(img).attr('src'));
-            }, this)).eq(0).attr('src'),
+            }).bind(this)).eq(0).attr('src'),
             $img = null,
             $pElem = $code.find('p'),
             $p = $pElem.not(function(){

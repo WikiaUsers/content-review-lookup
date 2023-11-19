@@ -39,10 +39,10 @@
      */
     function LangSearch() {
         $ph
-            .on('mouseenter.langSearch', $.proxy(this.load, this))
-            .find('.wds-list').prepend($.proxy(this.ui, this));
+            .on('mouseenter.langSearch', this.load.bind(this))
+            .find('.wds-list').prepend(this.ui.bind(this));
         if ($ph.children('.wds-dropdown__content').is(':visible')) {
-            $.proxy(this.load, this)();
+            this.load.bind(this)();
         }
     }
     /**
@@ -80,9 +80,9 @@
                 rvprop: 'content',
                 titles: 'MediaWiki:Custom-LanguageSearch/registry.json',
                 indexpageids: 1
-            }).always($.proxy(this.store, this));
+            }).always(this.store.bind(this));
         } else {
-            $.proxy(this.render, this)(c.d);
+            this.render.bind(this)(c.d);
         }
     };
     /**
@@ -95,7 +95,7 @@
             .replace(/\/\*[\s\S]*?\*\//g, '')
             .trim();
         localStorage.langSearchCache = JSON.stringify({ 'd': d, 'cb': Date.now() });
-        $.proxy(this.render, this)(d);
+        this.render.bind(this)(d);
     };
     /**
      * Searchbar renderer.
@@ -105,12 +105,12 @@
         this.data = JSON.parse(d);
         $ph.find('.wds-list')
             .children().not(this.$content)
-            .each($.proxy(this.attr, this));
+            .each(this.attr.bind(this));
         this.$content.find('.wikiaThrobber')
             .replaceWith(window.dev.wds.icon('magnifying-glass-tiny'));
         this.$content.find('textarea')
             .prop('disabled', false)
-            .on('input.langSearch', $.proxy(this.view, this));
+            .on('input.langSearch', this.view.bind(this));
     };
     /**
      * Language attribute handler for search filter.
@@ -202,8 +202,8 @@
     }).appendTo(document.head);
 
     // Library dependencies (w:c:dev).
-    mw.hook('dev.ui').add($.proxy(langSearchInit, langSearchInit));
-    mw.hook('dev.wds').add($.proxy(langSearchInit, langSearchInit));
+    mw.hook('dev.ui').add(langSearchInit.bind(langSearchInit));
+    mw.hook('dev.wds').add(langSearchInit.bind(langSearchInit));
     ['UI-js/code', 'WDSIcons/code'].forEach(function(s) {
         importArticle({
             type: 'script',
@@ -215,9 +215,9 @@
     importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:LanguageSearch.css'
-    }).then($.proxy(langSearchInit, langSearchInit));
+    }).then(langSearchInit.bind(langSearchInit));
 
     // MediaWiki API module.
-    mw.loader.using('mediawiki.api').then($.proxy(langSearchInit, langSearchInit));
+    mw.loader.using('mediawiki.api').then(langSearchInit.bind(langSearchInit));
 
 })(jQuery, mediaWiki);

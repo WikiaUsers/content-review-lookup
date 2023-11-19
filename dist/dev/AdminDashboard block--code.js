@@ -28,7 +28,7 @@
                     ),
                     i18n.msg('block').escape()
                 )
-            ).hover($.proxy(this.hover, this), $.proxy(this.unhover, this));
+            ).hover(this.hover.bind(this), this.unhover.bind(this));
             $('section.wiki ul.controls').append(this.$control);
             this.$tooltip = $('.control-section.wiki > header > .dashboard-tooltip');
         },
@@ -40,11 +40,11 @@
         },
         hook: function(i18n) {
             i18n.loadMessages('AdminDashboard block')
-                .then($.proxy(this.init, this));
+                .then(this.init.bind(this));
         }
     };
-    mw.hook('dev.i18n').add($.proxy(AdminDashboardBlock.hook, AdminDashboardBlock));
-    importArticle(
+    mw.hook('dev.i18n').add(AdminDashboardBlock.hook.bind(AdminDashboardBlock));
+    importArticles(
         {
             type: 'script',
             article: 'u:dev:MediaWiki:I18n-js/code.js'

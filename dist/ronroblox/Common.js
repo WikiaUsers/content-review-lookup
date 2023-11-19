@@ -72,22 +72,19 @@ UserTagsJS.modules.custom = {
 	// Current Staff: Edited.
 	'RabbyDevs': ['head-of-wiki','content-moderator'],
 	'Aurawra': ['content-moderator'],
-	'Arrokotth': ['content-moderator'],
 	'FamicomBruv': ['content-moderator'],
 	'Safwaaan.R': ['threadmoderator'],
 	'3meraldKv': ['founder'],
 	'Simplydisc': ['wiki-developer'],
-	'Dheewali': ['wiki-developer'],
 	'Superduperwhoopershmooperregularperson': ['wiki-developer', 'threadmoderator'],
 	// Retired Wiki Staff
 	'imnotacan': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
-	'GrayshaValor': ['ron-hos'],
+	'GrayshaValor': ['ron-senior-administrator'],
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Helpers
 	'NJMapz': ['wiki-helper'],
 	'LoxyWoxy7': ['wiki-helper'],
-	'KujiMarakuma': ['wiki-helper'],
 	'DaBingchilinger': ['wiki-helper'],
 	'Jjc0308': ['wiki-helper'],
 	'Dbowmaster19': ['wiki-helper'],

@@ -45,12 +45,12 @@
                 method: 'getUserData',
                 format: 'json',
                 userId: this.mwconfig.wgUserId
-            }).done($.proxy(function(data) {
+            }).done((function(data) {
                 if (data.userData.userTalkUrl) {
                     this.namespaces.push('User talk');
                 }
                 this.init();
-            }, this));
+            }).bind(this));
         },
         notify: function(msg, type) {
             msg = msg || 'An unknown error occurred while executing AutoCreateUserPages.';
@@ -77,7 +77,7 @@
                 $.get(mw.util.wikiScript('wikia'), $.extend({type: 'comments'}, socialActivity))
             ]);
             
-            $.when.apply($, deferreds).done($.proxy(this.cbContribs, this)).fail($.proxy(this.cbContribsFail, this));
+            $.when.apply($, deferreds).done(this.cbContribs.bind(this)).fail(this.cbContribsFail.bind(this));
         },
         cbContribsFail: function (d) {
             if (typeof d == 'string') {
@@ -96,8 +96,8 @@
                 m[2].status !== 200 ||
                 c[2].status !== 200
             ) {
-                this.notify('An unexpected response occurred while fetching user social activity: '
-                    + p[2].status + ' ' + m[2].status + ' ' + c[2].status);
+                this.notify('An unexpected response occurred while fetching user social activity: ' +
+                    p[2].status + ' ' + m[2].status + ' ' + c[2].status);
             } else if (
                 d[0].query.usercontribs.length ||
                 (
@@ -109,8 +109,8 @@
                 this.api.get({
                     action: 'query',
                     prop: 'revisions',
-                    titles: this.namespaces.map(function(el) { return el + ':' + this.mwconfig.wgUserName }, this).join('|')
-                }).done($.proxy(this.cbFetch, this)).fail($.proxy(this.cbFetchFail, this));
+                    titles: this.namespaces.map(function(el) { return el + ':' + this.mwconfig.wgUserName; }, this).join('|')
+                }).done(this.cbFetch.bind(this)).fail(this.cbFetchFail.bind(this));
             } else {
                 console.info('[AutoCreateUserPages] Zero edit count and social activity, returning...');
             }
@@ -165,7 +165,7 @@
                 summary: this.config.summary,
                 minor: true,
                 bot: true
-            }).done($.proxy(this.cbCreate, this));
+            }).done(this.cbCreate.bind(this));
             return true;
         },
         cbCreate: function(d) {
@@ -184,5 +184,5 @@
             }
         }
     };
-    mw.loader.using(['mediawiki.util', 'mediawiki.api']).then($.proxy(AutoCreateUserPages.preload, AutoCreateUserPages));
+    mw.loader.using(['mediawiki.util', 'mediawiki.api']).then(AutoCreateUserPages.preload.bind(AutoCreateUserPages));
 })();

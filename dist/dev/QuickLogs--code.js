@@ -52,7 +52,7 @@ mw.loader.using('mediawiki.util').then(function() {
         },
         /// Returns whether you're not looking at your contribs and another function of passed
         notOwnPageAnd: function(check) {
-            return !this.ownPage() && $.proxy(check, this)();
+            return !this.ownPage() && check.bind(this)();
         },
         /// Returns whether the current user has any of the rights provided
         hasRights: function(rights) {
@@ -649,12 +649,12 @@ mw.loader.using('mediawiki.util').then(function() {
             return promise;
         },
         i18n: function(i18n) {
-            i18n.loadMessages('QuickLogs').then($.proxy(QuickLogs.cbI18n, QuickLogs));
+            i18n.loadMessages('QuickLogs').then(QuickLogs.cbI18n.bind(QuickLogs));
         },
         wallsExist: function(wgMessageWallsExist) {
             wgMessageWallsExist
-                .then($.proxy(QuickLogs.cbWalls, QuickLogs, true))
-                ['catch']($.proxy(QuickLogs.cbWalls, QuickLogs, false));
+                .then(QuickLogs.cbWalls.bind(QuickLogs, true))
+                ['catch'](QuickLogs.cbWalls.bind(QuickLogs, false));
         },
         cbI18n: function(i18nd) {
             this.i18n = i18nd;
@@ -697,14 +697,14 @@ mw.loader.using('mediawiki.util').then(function() {
             key: 'logs'
         },
         checkUserLink: {
-            check: function() { return !QuickLogs.ownPage() && QuickLogs.checkUser },
+            check: function() { return !QuickLogs.ownPage() && QuickLogs.checkUser; },
             href: new mw.Title('CheckUser', -1).getUrl({
                 user: QuickLogs.user
             }),
             key: 'check-user-ip'
         },
         abuse: {
-            check: function() { return QuickLogs.abuseFilter },
+            check: function() { return QuickLogs.abuseFilter; },
             click: QuickLogs.loadAbuseLog.bind(QuickLogs)
         },
         rights: {
@@ -752,5 +752,5 @@ mw.loader.using('mediawiki.util').then(function() {
             'mediawiki.api',
             'mediawiki.user'
         ])
-    ).then($.proxy(QuickLogs.cbAF, QuickLogs));
+    ).then(QuickLogs.cbAF.bind(QuickLogs));
 });

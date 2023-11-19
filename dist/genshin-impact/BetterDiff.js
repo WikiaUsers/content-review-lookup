@@ -559,28 +559,23 @@ $(function() {
 						}
 					});
 				popup.create();
-				document.addEventListener('click', function(event) {
-					
-					// Load diff modal
-					if (event.target && (
-						event.target.classList.contains('quickDiff') ||
-						event.target.id == 'differences-nextlink' ||
-						event.target.id == 'differences-prevlink'
-					)) {
-						generateModal(popup, event);
-					// Patrol revisions shown in modal if user has perms and there's any to patrol
-					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
-						document.querySelector('.patrollink').innerHTML = 
+				var massPatrol = function() {
+					if (!document.querySelector('.patrollink a')) {alert('Nothing to mass patrol.\nIf you believe this to be an error, please contact [[User:Mikevoir]]!');}
+					else {
+						var link = document.querySelector('.patrollink a');
+						var wrapper = document.querySelector('.patrollink');
+						wrapper.innerHTML = 
 						'[<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="16px" style="vertical-align: middle;" border="0" />]';
-						var torevid = event.target.getAttribute('torevid');
-						var fromrevid = event.target.getAttribute('fromrevid');
+						console.log(link);
+						var torevid = link.getAttribute('torevid');
+						var fromrevid = link.getAttribute('fromrevid');
 						api.get({
 							action: 'query',
 							list: 'recentchanges',
 							rcshow: '!patrolled',
 							rcprop: 'ids',
 							format: 'json',
-							rctitle: event.target.getAttribute('title').replace(/\&quot;/g, '"'),
+							rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
 							formatversion: '2',
 							rclimit: 'max'
 						}).then(function(data) {
@@ -602,19 +597,40 @@ $(function() {
 							}
 							if (revids.length>0) {
 								revids.forEach(betterDiff.patrolRevision);
-								document.querySelector('.patrollink').innerHTML = '[Edits patrolled: '+revids.length+']';
+								wrapper.innerHTML = '[Edits patrolled: '+revids.length+']';
 							} else {
-								document.querySelector('.patrollink').innerHTML = '[Error, no valid revisions found!]';
+								wrapper.innerHTML = '[Error, no valid revisions found!]';
 								console.log('api result:',data);
 							}
 						}).catch(function(err){
-							document.querySelector('.patrollink a').innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+							wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
 							console.log('api result:', err);
 						});
 					}
+				};
+				document.addEventListener('click', function(event) {
+					// Load diff modal
+					if (event.target && (
+						event.target.classList.contains('quickDiff') ||
+						event.target.id == 'differences-nextlink' ||
+						event.target.id == 'differences-prevlink'
+					)) {
+						if (event.target.classList.contains('quickDiff')) {
+							if (document.querySelector('.link-focused')) {document.querySelector('.link-focused').classList.remove('link-focused');}
+							event.target.classList.add('link-focused');
+						}
+						generateModal(popup, event);
+					// Patrol revisions shown in modal if user has perms and there's any to patrol
+					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
+						massPatrol();
+					}
+				});
+				document.addEventListener('keydown', function(event) {
+					if (event.altKey && [80, 49].includes(event.keyCode)) {
+						massPatrol();
+					}
 				});
 			});
-			
 		},
 		
 		// Get locations where to add custom link for quickDiff

@@ -33,7 +33,7 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* Disability Pride logo link */
+/* Disability Pride logo link
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
@@ -42,6 +42,7 @@ $('.fandom-community-header__community-name-wrapper').append(
         )
         .attr('href', 'https://bit.ly/DisabilityPrideMonth-Chris')
 );
+*/
 
 // User tags
 window.UserTagsJS = {

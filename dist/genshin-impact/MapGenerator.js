@@ -221,7 +221,7 @@ $(function() {
 					var markerID = event.target.getAttribute('rel');
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
-					var localZoom = (event.target.closest('templateImage') ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.closest('#TemplateManager') ? 1 : zoom); // ignore zoom setting if not quickGen
 					marker.onload = function() {
 						marker.setAttribute('width', (marker.naturalWidth*localZoom)+'px');
 						marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*localZoom+ 'px');

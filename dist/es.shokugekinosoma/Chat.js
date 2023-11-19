@@ -1,0 +1,1 @@
+importScriptPage('ChatHacksNoStar/code.js', 'dev');

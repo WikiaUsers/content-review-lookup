@@ -281,3 +281,19 @@ window.syntaxHighLightArea = "div.SectionCopy";
 window.customUserAccountAge = {
   showFullDate: true
 };
+
+/* Function for Table Button */
+$(document).ready(function() {
+	$(".wordCell").click(function() {
+		var rowNumber = $(this).data("row");
+		var row = $(this).closest("table").next().find("tr[data-row='" + rowNumber + "']");
+		if (row.hasClass("hidden")) {
+			$(this).addClass("highlighted").css("border-style", "inset");
+			row.removeClass("hidden").show();
+		}
+		else {
+			$(this).removeClass("highlighted").css("border-style", "outset");
+			row.addClass("hidden").hide();
+		}
+	});
+});

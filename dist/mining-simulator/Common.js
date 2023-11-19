@@ -53,3 +53,18 @@ if (mw.config.get('wgPageName').replace(/\/.+/, '') === 'Special:WhatLinksHere' 
     });
     console.log('Fixed link(s) to Thread or File namespaces on current page.');
 }
+
+
+// -----------------------[ Medals Note ]---
+// Appends a note to the Medals text on a user's profile.
+if ([2, 500, 1200].indexOf(mw.config.get('wgNamespaceNumber')) !== -1) {
+    const attempt = function() {
+        document.getElementsByClassName('RewardContainer')[0].getElementsByClassName('activity-heading')[0].innerHTML = "Medals <small><abbr title='Contact any wiki administrator to request these to be updated.'>(?)</abbr></small>"
+    }
+    const attempt_a = setInterval(function() {
+        attempt();
+        if (document.getElementsByClassName('RewardContainer')[0]) {
+            clearInterval(attempt_a);
+        }
+    }, 1e3);
+}

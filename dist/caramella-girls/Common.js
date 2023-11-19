@@ -8,6 +8,7 @@ window.MastheadRightsBadgeSettings = {
 window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Bureaucrat',
+        'Makara Furusawa': 'Helper',
     }
 };
 
@@ -45,7 +46,7 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
     });
 }
 //Import for all Staff
-if (mw.config.get('wgUserName').includes('Vacant') || 
+if (mw.config.get('wgUserName').includes('Makara Furusawa') /*Helper*/ || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
     mw.config.get('wgUserGroups').includes('content-moderator') ||

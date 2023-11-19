@@ -62,7 +62,7 @@ UserTagsJS.extensions.newuser = (function($, mw, Date) {
 			   ) {
 				this._doCustomAjax(username, namespace);
 			} else {
-				$($.proxy(this._onDomReady, this, username));
+				$(this._onDomReady.bind(this, username));
 			}
 
 			// Start the core AJAX if needed and return the promise to delay further

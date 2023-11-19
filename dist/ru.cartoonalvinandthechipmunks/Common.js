@@ -15,18 +15,23 @@
     } else if (h > 9 && h <= 15) {
         // Время от 10:00 до 15:59
         s = [
-        'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/5/5f/Background_D.jpg/revision/latest?cb=20230626201310&format=original&path-prefix=ru'
+        'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/7/71/Background_D_%28HR%29.png/revision/latest?cb=20231115204901&format=original&path-prefix=ru'
         ];
-    } else if (h > 15 && h <= 20) {
-        // Время от 16:00 до 20:59
+    } else if (h > 15 && h <= 18) {
+        // Время от 16:00 до 18:59
         s = [
         'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/d/d0/Background_E.jpg/revision/latest?cb=20231004091243&format=original&path-prefix=ru'
         ];
+    } else if (h > 18 && h <= 20) {
+        // Время от 19:00 до 20:59
+        s = [
+        'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/2/2b/Background_LE.png/revision/latest?cb=20231116222830&format=original&path-prefix=ru'
+        ];  
     } else {
         // Время от 21:00 до 05:59
         s = [
         'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/e/e7/Background_N_%2801%29.jpeg/revision/latest?cb=20230801070610&format=original&path-prefix=ru',
-        'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/4/43/Background_N_%2802%29.jpg/revision/latest?cb=20230626201058&format=original&path-prefix=ru',
+        'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/6/68/Background_N_%2802_HR%29.png/revision/latest?cb=20231115204943&format=original&path-prefix=ru',
         'https://static.wikia.nocookie.net/cartoonalvinandthechipmunks/images/4/4c/Background_N_%2803%29.jpeg/revision/latest?cb=20230927221130&format=original&path-prefix=ru'
         ];
     }

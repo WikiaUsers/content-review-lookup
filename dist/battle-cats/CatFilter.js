@@ -17,23 +17,24 @@ var params = {
 
 // read json file, initialize filter UI elements, event handling
 mw.loader.using('mediawiki.api').then(function () {
-	if (mw.config.get('wgPageName') == 'Cat_Filter') {
-		api = new mw.Api();
-		api.get(params).done(function (data) {
-			var content = data.query.pages[0].revisions[0].slots.main.content;
-			var map = new Map(Object.entries(JSON.parse(content)));
+	if (mw.config.get('wgPageName') != 'Cat_Filter') {
+		return;
+	}
+	api = new mw.Api();
+	api.get(params).done(function (data) {
+		var content = data.query.pages[0].revisions[0].slots.main.content;
+		var map = new Map(Object.entries(JSON.parse(content)));
 
-			// initialize form elements, filter and clear once to pre-render images
-			initForm();
+		// initialize form elements, filter and clear once to pre-render images
+		initForm();
+		filtering(map);
+		clear();
+		// event handling
+		$("#filter-submit-button").click(function () {
 			filtering(map);
-			clear();
-			// event handling
-			$("#filter-submit-button").click(function () {
-				filtering(map);
-			});
-			$("#filter-clear-button").click(clear);
 		});
-	};
+		$("#filter-clear-button").click(clear);
+	});
 });
 
 /**
@@ -111,8 +112,8 @@ function clear() {
  */
 function wrappingImage(names, imageUrls, link) {
 	var result = "";
-	var classes = ["image-normal", "image-evolved", "image-true"];
-	for (var i = 0; i <= 2; i++) {
+	var classes = ["image-normal", "image-evolved", "image-true", "image-ultra"];
+	for (var i = 0; i <= 3; i++) {
 		result += "<a href='" + link + "' title='" + names[i] + "' class='" + classes[i] + "' style='position: absolute; top: 0; left: 0; z-index: " + (i + 2) + ";'><img src='" + imageUrls[i] + "' width='70' height='70'></a>";
 	}
 	return "<div style='display: inline-block; position: relative; height: 70px; width: 70px; animation-play-state: inherit;'>" + result + '</div>';
@@ -164,7 +165,7 @@ function initForm() {
 	var attackArr = ["single", "area", "long", "omni"];
 	var targetArr = ["red", "floating", "black", "metal", "angel", "alien", "zombie", "aku", "relic", "traitless"];
 	var traitSpecificArr = ["weaken", "freeze", "slow", "attacks-only", "strong", "resistant", "insanely-tough", "massive-damage", "insane-damage", "knockback", "warp", "curse", "dodge"];
-	var neutralArr = ["strengthen", "survive", "base-destroyer", "critical", "zombie-killer", "soulstrike", "barrier-breaker", "shield-piercing", "savage-blow", "extra-money", "metal-ability", "mini-wave", "wave", "mini-surge", "surge", "wave-shield", "colossus-slayer", "behemoth-slayer",
+	var neutralArr = ["strengthen", "survive", "base-destroyer", "critical", "zombie-killer", "soulstrike", "barrier-breaker", "shield-piercing", "savage-blow", "extra-money", "metal-ability", "mini-wave", "wave", "mini-surge", "surge", "wave-shield", "counter-surge", "colossus-slayer", "behemoth-slayer",
 		"immune-weaken", "immune-freeze", "immune-slow", "immune-knockback", "immune-waves", "immune-surge", "immune-warp", "immune-curse", "immune-toxic"];
 	var collabArr = ["witch-killer", "eva-angel-killer"];
 	var talentArr = ["resist-weaken", "resist-freeze", "resist-slow", "resist-knockback", "resist-wave", "resist-warp", "resist-curse", "resist-surge", "resist-toxic", "defense-up", "attack-up", "move-speed-up", "improved-knockback", "cost-down", "recover-speed-up", "attack-freq-up"];

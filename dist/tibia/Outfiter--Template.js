@@ -187,7 +187,9 @@ $(function () {
       //205
       'Nordic_Chieftain', 'Fire-Fighter', 'Fencer', 'Shadowlotus_Disciple', 'Ancient_Aucar',
       //210
-      'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender'
+      'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
+      //215
+      'Draccoon_Herald'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {

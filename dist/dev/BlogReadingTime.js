@@ -19,14 +19,15 @@
 				blogDetailsReadingTime: 'page-header__blog-post-details__reading-time'
 			},
 			blogImages = blogContent.querySelectorAll('img'),
-			// Approximate average reading speed of an adult (meassured in words per minute).
+			// The fallback value for words per minute is the approximate average reading
+			// speed of an adult (meassured in words per minute).
 			wordsPerMinute = typeof window.fandomDevBlogReadingTimeWpm === 'number' ? window.fandomDevBlogReadingTimeWpm : 265,
 			// The time needed to read an image varies wildly, so we'll just use some arbitrary
 			// medium number to represent the time, in seconds, that it takes to scan an image.
 			imageSeconds = 12;
 
 		var readingSeconds = 0,
-			text = blogContent.textContent?.replace(/(\r\n|\n|\r)/gm, '').split(' ') || [];
+			text = blogContent.textContent.length ? blogContent.textContent.replace(/(\r\n|\n|\r)/gm, '').split(' ') : [];
 	
 		if (blogImages.length) {
 			blogImages.forEach(function(image) {
@@ -35,7 +36,7 @@
 		}
 
 		// Calculate how many seconds it would take to read the blog without counting
-		// for empty strings/words.
+		// empty strings/words.
 		const textSeconds = 60 * text.filter(function(word) { return '' !== word }).length / wordsPerMinute,
 			blogDetails = document.querySelector('.' + classes.blogDetails);
 

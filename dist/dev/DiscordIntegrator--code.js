@@ -34,14 +34,14 @@
                     cacheVersion: 3
                 }),
                 mw.loader.using('mediawiki.api')
-            ).then($.proxy(this.preload, this));
+            ).then(this.preload.bind(this));
         },
         /**
          * Preload resources
          */
         preload: function(i18n) {
             this.i18n = i18n;
-            mw.hook('wikipage.content').add($.proxy(this.insertToContent, this));
+            mw.hook('wikipage.content').add(this.insertToContent.bind(this));
             this.api = new mw.Api();
             this.api.get({
                 action: 'query',
@@ -66,7 +66,7 @@
                 uselang: 'content', // T97096
                 smaxage: 300,
                 maxage: 300
-            }).done($.proxy(function(d) {
+            }).done((function(d) {
                 if (!d.error) {
                     d.query.allmessages.forEach(function(el) {
                         if(el['*']) {
@@ -79,7 +79,7 @@
                         this.init();
                     }
                 }
-            }, this));
+            }).bind(this));
         },
         /**
          * Parse the configuration that needs to be parsed
@@ -95,14 +95,14 @@
                     // actual message text, which often contains no wikitext at all.
                     smaxage: 86400,
                     maxage: 86400
-                }).done($.proxy(function(d) {
+                }).done((function(d) {
                     if (!d.error) {
                         this.config[msg] = d.parse.text['*'];
                         if (--this._loading === 0) {
                             this.init();
                         }
                     }
-                }, this));
+                }).bind(this));
             }
         },
         /**
@@ -114,7 +114,7 @@
                 if (clas) {
                     var classSplit = clas.split(/\s+/);
                     if (classSplit.indexOf('loaded') === -1 && classSplit.indexOf('is-ready') === -1) {
-                        $('#WikiaRail').on('afterLoad.rail', $.proxy(this.insertToSiderail, this));
+                        $('#WikiaRail').on('afterLoad.rail', this.insertToSiderail.bind(this));
                     } else {
                         this.insertToSiderail();
                     }
@@ -170,11 +170,11 @@
          * in which to place the widget and placing it
          */
         insertToContent: function($content) {
-            $content.find('.DiscordIntegrator:not(.loaded)').each($.proxy(function(cabbage, el) {
+            $content.find('.DiscordIntegrator:not(.loaded)').each((function(cabbage, el) {
                 el = $(el);
                 el.html(this.generateContent(el.data()))
                   .addClass('loaded');
-            }, this));
+            }).bind(this));
         },
         /**
          * Determines the theme of the widget.
@@ -238,5 +238,5 @@
     importArticle({
         type: 'script',
         article: 'u:dev:MediaWiki:I18n-js/code.js'
-    }).then($.proxy(DiscordIntegrator.imported, DiscordIntegrator));
+    }).then(DiscordIntegrator.imported.bind(DiscordIntegrator));
 })();

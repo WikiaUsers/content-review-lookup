@@ -7,7 +7,7 @@
         username: mw.config.get('wgUserName'),
         i18n: function(i18n) {
             i18n.loadMessages('Developer Contributions')
-                .then($.proxy(this.init, this));
+                .then(this.init.bind(this));
         },
         devUrl: function(title) {
             return 'https://dev.fandom.com/wiki/' + mw.util.wikiUrlencode(title);
@@ -29,7 +29,7 @@
                     v: Date.now(),
                     format: 'json'
                 },
-                success: $.proxy(this.success, this),
+                success: this.success.bind(this),
                 error: this.error
             });
         },
@@ -117,6 +117,6 @@
         article: 'u:dev:MediaWiki:I18n-js/code.js'
     });
     mw.hook('dev.i18n').add(
-        $.proxy(DeveloperContributions.i18n, DeveloperContributions)
+        DeveloperContributions.i18n.bind(DeveloperContributions)
     );
 })();

@@ -927,7 +927,7 @@
             c = JSON.parse(localStorage.highlightJSCache || '{}');
         } catch(e) {
             delete localStorage.highlightJSCache;
-            $.proxy(hljs.registry.init, hljs.registry)();
+            hljs.registry.init.bind(hljs.registry)();
         }
         var t = Date.now(),
             a = Number(c.cb || +t-21600000),
@@ -941,9 +941,9 @@
                 rvprop: 'content',
                 titles: 'MediaWiki:Custom-Highlight-js/registry.json',
                 indexpageids: 1
-            }).always($.proxy(this.call, this));
+            }).always(this.call.bind(this));
         } else {
-            $.proxy(this.set, this, c.d)();
+            this.set.bind(this, c.d)();
         }
     };
     hljs.registry.call = function(d) {
@@ -951,7 +951,7 @@
             .replace(/\/\*[\s\S]*?\*\//g, '')
             .trim();
         localStorage.highlightJSCache = JSON.stringify({ 'd': d, 'cb': Date.now() });
-        $.proxy(this.set, this, d)();
+        this.set.bind(this, d)();
     };
     hljs.registry.set = function(d) {
         try {
@@ -967,12 +967,12 @@
             mw.hook('dev.highlight').fire(hljs);
         } catch(e) {
             delete localStorage.highlightJSCache;
-            $.proxy(hljs.registry.init, hljs.registry)();
+            hljs.registry.init.bind(hljs.registry)();
         }
     };
 
     // Library bootloader.
     // Loads the JSON registry from Dev Wiki.
-    mw.loader.using('mediawiki.api').then($.proxy(hljs.registry.init, hljs.registry));
+    mw.loader.using('mediawiki.api').then(hljs.registry.init.bind(hljs.registry));
 
 })(((window.dev = window.dev || {}).highlight = window.dev.highlight || {}), window, jQuery, mediaWiki);

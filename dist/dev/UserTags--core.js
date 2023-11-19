@@ -111,7 +111,7 @@ dev.UserTags.Logger = (function(console, slice, apply) {
         group: function(collapsed) {
             return apply.call(collapsed ? groupCollapsed : group, console);
         },
-        groupEnd: $.proxy(console.groupEnd || $.noop, console)
+        groupEnd: (console.groupEnd || $.noop).bind(console)
     });
 
     return Logger;
@@ -282,8 +282,8 @@ dev.UserTags.SledgeAJAX = (function(Object, $, mw, Logger) {
                         data: request,
                         dataType: 'json'
                     })
-                    .done($.proxy(this._onAjaxDone, this, passPromises))
-                    .fail($.proxy(this._onAjaxFail, this, passPromises))
+                    .done(this._onAjaxDone.bind(this, passPromises))
+                    .fail(this._onAjaxFail.bind(this, passPromises))
                     ;
             }
 
@@ -460,8 +460,8 @@ dev.UserTags.SledgeAJAX = (function(Object, $, mw, Logger) {
                 };
             for (var i = 0, len = requests.length ; i < len ; ++i) {
                 this.request(requests[i].data)
-                    .done($.proxy(callbackDone, requests[i].dfd))
-                    .fail($.proxy(callbackFail, requests[i].dfd))
+                    .done(callbackDone.bind(requests[i].dfd))
+                    .fail(callbackFail.bind(requests[i].dfd))
                     ;
             }
         }
@@ -967,8 +967,8 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 allStarted = $.Deferred(),
                 data = new TagCollection(),
                 counter = { c: modules.length },
-                done = $.proxy(this._moduleDone, this, allStarted, counter, data),
-                fail = $.proxy(this._moduleResolve, this, allStarted, counter, data),
+                done = this._moduleDone.bind(this, allStarted, counter, data),
+                fail = this._moduleResolve.bind(this, allStarted, counter, data),
                 debugFunc;
 
             // Tracking completion for lock-up due to bad promise handling
@@ -997,8 +997,8 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                         if (debugOn) {
                             this._activeModules[modules[i].name] = 1;
                             result
-                                .done($.proxy(debugFunc, this, modules[i].name, 'resolved'))
-                                .fail($.proxy(debugFunc, this, modules[i].name, 'REJECTED'))
+                                .done(debugFunc.bind(this, modules[i].name, 'resolved'))
+                                .fail(debugFunc.bind(this, modules[i].name, 'REJECTED'))
                                 ;
                         }
 
@@ -1152,10 +1152,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
 
             // Debugging hook for deadlocked modules
             if (debugOn) {
-                settings.listActiveModules = $.proxy(
-                    this._modules.getActiveModules,
-                    this._modules
-                );
+                settings.listActiveModules = this._modules.getActiveModules.bind(this._modules);
             }
 
             // Save this for later since we need to merge it with the module results
@@ -1183,13 +1180,13 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
 
             // Next stage processing begins when the DOM is ready (find masthead)
             timingDom = Date.now();
-            var interval = setInterval($.proxy(function () {
+            var interval = setInterval((function () {
             	if (!$('#userProfileApp .user-identity-header__attributes').length) {
             		return;
             	}
             	clearInterval(interval);
             	this._onDomReady($);
-            }, this), 100);
+            }).bind(this), 100);
         },
 
         //
@@ -1263,7 +1260,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
                 })
                 .always(function() {
                     // Now that we're all set, we just need the modules to complete
-                    self._modulesPromise.done($.proxy(self._onModulesDone, self));
+                    self._modulesPromise.done(self._onModulesDone.bind(self));
                 })
                 ;
         },
@@ -1312,7 +1309,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             // tags: previously added tags (blacklist-based stuff for staff etc)
             if (userGroups && data && data.groupSet) {
                 this.OasisTagsModule._blacklist = this.OasisTagsModule._blacklist.filter(function(g) {
-                    return (tags.filter(function(tag){return tag.name===g}).length || !(
+                    return (tags.filter(function(tag){return tag.name===g;}).length || !(
                                 data.groupSet[g] &&
                                 userGroups.indexOf(g) > -1)
                             );

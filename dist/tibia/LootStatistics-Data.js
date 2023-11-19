@@ -19,6 +19,11 @@ window.loot_parser_data = {
     '8.6': {
       'changed': {
 //
+'Brain Squid': '13.22.14339',
+'Knowledge Elemental': '13.22.14339',
+'Energetic Book': '13.22.14339',
+'Energuardian of Tales': '13.22.14339',
+//
 'Werelion': '13.22.14282',
 'Werelioness': '13.22.14282',
 'Streaked Devourer': '13.22.14282',
@@ -399,11 +404,11 @@ window.loot_parser_data = {
 'Burning Book': '12.31.9530',
 'Guardian of Tales': '12.31.9530',
 //'Biting Book': '12.31.9530',
-'Energetic Book': '12.31.9530',
-'Energuardian of Tales': '12.31.9530',
+//'Energetic Book': '12.31.9530',
+//'Energuardian of Tales': '12.31.9530',
 'Ink Blob': '12.31.9530',
-'Brain Squid': '12.31.9530',
-'Knowledge Elemental': '12.31.9530',
+//'Brain Squid': '12.31.9530',
+//'Knowledge Elemental': '12.31.9530',
 'Cursed Book': '12.31.9530',
 'Frazzlemaw': '12.31.9530',
 'Guzzlemaw': '12.31.9530',

@@ -114,7 +114,8 @@ function calculate() {
 		/*lvl. 46*/	[""],
 		/*lvl. 47*/	[""],
 		/*lvl. 48*/	[""],
-		/*lvl. 49*/	["Skill: Aeronaut lvl. 2"]];
+		/*lvl. 49*/	["Skill: Aeronaut lvl. 2"],
+		/*lvl. 50*/	["Dungeon lvl. 5"]];
 	
 	//Images for additional rewards.
 	var firework = "https://static.wikia.nocookie.net/nonograms-katana/images/2/24/Firework.png/revision/latest?cb=20211025160230";

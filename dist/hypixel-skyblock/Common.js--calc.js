@@ -34,16 +34,15 @@
          strict:true, trailing:true
 */
 
-/*global mediaWiki, hsbwiki, importArticle */
-window.hsbwiki = window.hsbwiki || {}
+/*global mediaWiki, hsbwiki, importArticle, console */
+window.hsbwiki = window.hsbwiki || {};
 
-;
-(function ($, mw, hsb, undefined) {
+(function ($, mw, hsbwiki, undefined) {
     'use strict';
-    if (hsb.calculatorLoaded) {
+    if (hsbwiki.calculatorLoaded) {
         return;
     }
-    hsb.calculatorLoaded = true;
+    hsbwiki.calculatorLoaded = true;
 
     /**
      * Caching for search suggestions
@@ -223,14 +222,14 @@ window.hsbwiki = window.hsbwiki || {}
                         // if (!!param.ooui.setDisabled) {
                         //     param.ooui.setDisabled(!show);
                         // }
-                        // [skywiki] Yet another hacky way to get around not having ooui
+                        // [HSW] Yet another hacky way to get around not having ooui
                         param.$ui.prop('disabled', !show);
                     } else {
                         // param.layout.toggle(show);
                         // if (!!param.$ui.setDisabled) {
                         //     param.ooui.setDisabled(!show);
                         // }
-                        // [skywiki] Yet another hacky way to get around not having ooui
+                        // [HSW] Yet another hacky way to get around not having ooui
                         param.$ui.closest('tr').toggle(show);
                         param.$ui.prop('disabled', !show);
 
@@ -608,7 +607,7 @@ window.hsbwiki = window.hsbwiki || {}
                  */
                 fixed: function ($td, param) {
                     $td.text(param.def);
-                    param.$ui = $td; // [skywiki] custom way of doing much less involved "param.ooui"
+                    param.$ui = $td; // [HSW] custom way of doing much less involved "param.ooui"
                     return $td;
                 },
 
@@ -659,7 +658,7 @@ window.hsbwiki = window.hsbwiki || {}
                         });
                     }
 
-                    param.$ui = $select; // [skywiki] custom way of doing much less involved "param.ooui"
+                    param.$ui = $select; // [HSW] custom way of doing much less involved "param.ooui"
                     $td.append($select);
                     return $td;
                 },
@@ -697,7 +696,7 @@ window.hsbwiki = window.hsbwiki || {}
                         });
                     }
 
-                    param.$ui = $input; // [skywiki] custom way of doing much less involved "param.ooui"
+                    param.$ui = $input; // [HSW] custom way of doing much less involved "param.ooui"
                     $td.append($input);
                     return $td;
                 },
@@ -720,7 +719,7 @@ window.hsbwiki = window.hsbwiki || {}
                         })
                         .val(param.def);
 
-                    param.$ui = $input; // [skywiki] custom way of doing much less involved "param.ooui"
+                    param.$ui = $input; // [HSW] custom way of doing much less involved "param.ooui"
                     $td.append($input);
 
                     if (param.type === 'article') {
@@ -749,16 +748,9 @@ window.hsbwiki = window.hsbwiki || {}
         // be aware using div tags relies on wikitext for parsing
         // so you can't use anchor or img tags
         // use the wikitext equivalent instead
-        if ($elem.children().length) {
-            $elem = $elem.children();
-            lines = $elem.html();
-        } else {
-            // .html() causes html characters to be escaped for some reason
-            // so use .text() instead for <pre> tags
-            lines = $elem.text();
-        }
-
-        lines = lines.split('\n');
+        // .html() causes html characters to be escaped for some reason
+        // so use .text() instead for <pre> tags
+        lines = $elem.text().split('\n');
 
         config = helper.parseConfig.call(this, lines);
 
@@ -908,7 +900,7 @@ window.hsbwiki = window.hsbwiki || {}
                 // } else {
                 //     val = param.ooui.getValue();
                 // }
-                // [skywiki] note: hacky version of the above to get it working on fandom
+                // [HSW] note: hacky version of the above to get it working on fandom
                 if (param.type === 'check') {
                     val = param.$ui[0].checked ? 'true' : 'false';
                 } else {
@@ -992,7 +984,7 @@ window.hsbwiki = window.hsbwiki || {}
         article: 'MediaWiki:Common.js/calc.css'
     });
 
-    hsb.calc = {};
-    hsb.calc.lookup = lookupCalc;
+    hsbwiki.calc = {};
+    hsbwiki.calc.lookup = lookupCalc;
 
 }(jQuery, mediaWiki, hsbwiki));

@@ -83,7 +83,7 @@
      * @description Preloads the hook
      */
     mw.loader.using(['ext.fandom.tcs.dialog.js', 'mediawiki.user']).then(
-        $.proxy(Main.buttons, Main),
+        Main.buttons.bind(Main),
         mw.util.addCSS('.temptype-button { margin: 3px 3px 0 0; padding: 4px 10px; }') // Smaller buttons (more like legacy version)
     );
 })();

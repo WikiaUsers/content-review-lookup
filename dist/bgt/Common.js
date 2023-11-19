@@ -3,18 +3,19 @@
 window.UserTagsJS = {
     modules: {},
     tags: {
-        blocked: { u:'Buzzed Off' },
-        bureaucrat: { u:'Judge' },
-        sysop: { u:'Finalist' },
-        "content-moderator" : { u:'Semi-Finalist' },
-        threadmoderator: { u:'Semi-Finalist' },
-        rollback: { u:'Auditionee' },
-        episodepageseditor: { u:'Episode Page Editor' }
+        blocked: { u: 'Buzzed Off' },
+        bureaucrat: { u: 'Judge' },
+        sysop: { u: 'Finalist' },
+        "content-moderator": { u: 'Semi-Finalist' },
+        threadmoderator: { u: 'Semi-Finalist' },
+        rollback: { u: 'Auditionee' },
+        episodepageseditor: { u: 'Episode Page Editor' },
+        creator: { u: 'Head Judge' }
     }
 };
 
 window.UserTagsJS.modules.custom = {
-    'PeteFromLeeds': ['Head Judge'],
+    'PeteFromLeeds': ['creator'],
     'Jerry1111111111': ['episodepageseditor'],
     'Mrdoctorwho61': ['episodepageseditor'],
     'CoasterKing2020': ['episodepageseditor'],

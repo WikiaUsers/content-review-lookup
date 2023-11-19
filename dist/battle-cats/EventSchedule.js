@@ -258,6 +258,11 @@ $(document).ready(function() { // on document ready
 			if (now >= endTime || now < startTime - MARGIN_PRE_MS) return "";
 		}
 		var image = images.get(name);
+		if (image === undefined) {
+			msg = name + " is not recognised as a valid event name!";
+			alert(msg);
+			return '<strong class="error">' + msg + '</strong>';
+		}
 		if (name.includes('(R)') || name.includes('(N)')) name = name.substring(0, name.length - 4);
 		var displayName = withName ? '<span style="font-weight: bold">' + name + '</span><br>' : "";
 		var clock, timer;

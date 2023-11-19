@@ -5,7 +5,7 @@ $(function() {
 	$(".page").find("h2:has(.mw-headline)").wrapInner('<div class="h2-content" />');
 });
 
-/** Кнопки и сворачивание **/
+/** Кнопки, сворачивание и базовое исправление размеров**/
 /*** Нормальное сворачивание для Шаблон:Световые конусы по категории Таблица ***/
 mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
     $(".lightcone-table-buttons .mw-customtoggle-lightcone-passive").click(function() {
@@ -41,6 +41,21 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api'], function() {
 			});
 		};
     });
+});
+
+/*** Псевдо-таблицы с сворачиваемыми колонками ***/
+$(function() {
+    if ($(".wrappable.pseudo-ascension-stats").length > 0) {
+        $(window)
+            .on('resize', function() {
+                if ($(".wrappable.pseudo-ascension-stats").height() > 1000) {
+                    $(".wrappable.pseudo-ascension-stats").addClass("wrapped");
+                } else {
+                    $(".wrappable.pseudo-ascension-stats").removeClass("wrapped");
+                }
+            })
+            .trigger('resize');
+    };
 });
 
 /** Взято с Minecraft Wiki **/

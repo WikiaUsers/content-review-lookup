@@ -39,10 +39,10 @@
         hooks: function () {
             this.preloads = 2;
             mw.hook('dev.i18n').add(
-                $.proxy(this.preload, this)
+                this.preload.bind(this)
             );
             mw.hook('dev.placement').add(
-                $.proxy(this.preload, this)
+                this.preload.bind(this)
             );
 	        importArticles({
         		type: 'script',
@@ -61,7 +61,7 @@
             if (--this.preloads === 0) {
                 this.api = new mw.Api();
                 window.dev.i18n.loadMessages('BotManagement').then(
-                    $.proxy(this.init, this)
+                    this.init.bind(this)
                 );
             }
         },
@@ -94,7 +94,7 @@
                     $('<a>', {
                         'href': '#',
                         'text': this.i18n.msg(isBot ? 'remove' : 'add').plain(),
-                        'click': $.proxy(this.click, this)
+                        'click': this.click.bind(this)
                     })
                 )
             });
@@ -113,7 +113,7 @@
                 return;
             }
             this.api.getToken('userrights').done(
-                $.proxy(this.changeRights, this)
+                this.changeRights.bind(this)
             );
         },
         /**
@@ -140,8 +140,8 @@
             params[isBot ? 'remove' : 'add'] = 'bot';
             params.expiry = (options.expire || 'infinite');
             this.api.postWithToken('userrights', params).done(
-                $.proxy(this.done, this)
-            ).fail($.proxy(this.fail, this));
+                this.done.bind(this)
+            ).fail(this.fail.bind(this));
         },
         /**
          * @method done
@@ -179,7 +179,7 @@
                 $('<a>', {
                     'href': '#',
                     'text': this.i18n.msg('notifLink').plain(),
-                    'click': $.proxy(this.click, this)
+                    'click': this.click.bind(this)
                 })
             );
             mw.notify($notif, {
@@ -188,6 +188,6 @@
         }
     };
     mw.loader.using('mediawiki.api').then(
-        $.proxy(Main.hooks, Main)
+        Main.hooks.bind(Main)
     );
 })();

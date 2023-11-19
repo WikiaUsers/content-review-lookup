@@ -46,8 +46,8 @@
                         ? $.extend(data.poll, { created: data.creationDate.epochSecond * 1000 })
                         : $.Deferred().reject(getMsg("error").plain());
                 })
-                .then($.proxy(AjaxPoll.create, this))
-                .fail($.proxy(AjaxPoll.error, this));
+                .then(AjaxPoll.create.bind(this))
+                .fail(AjaxPoll.error.bind(this));
         },
 
         create: function (poll) {
@@ -55,7 +55,7 @@
 
             var $poll = $("<form>", {
                 action: mw.util.wikiScript("wikia") + "?controller=DiscussionPoll&method=castVote",
-                submit: $.proxy(AjaxPoll.submit, this),
+                submit: AjaxPoll.submit.bind(this),
                 appendTo: this,
             });
 
@@ -152,7 +152,7 @@
                 data: new FormData(form),
                 processData: false,
                 contentType: false,
-            }).then($.proxy(AjaxPoll.load, this));
+            }).then(AjaxPoll.load.bind(this));
         },
     };
 

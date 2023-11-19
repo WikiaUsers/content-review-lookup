@@ -92,3 +92,25 @@
 }) (window.mediaWiki);
 
 window.i = window.i || 0; //Required for SignatureCheck to work properly
+
+(function() {
+    const tables = document.querySelectorAll('.pbinder.mw-collapsible');
+
+    tables.forEach(function(table) {
+        const collapsibleButton = table.querySelector('.mw-collapsible-toggle'),
+            header = table.querySelector('.header'),
+            content = header.innerHTML,
+            contentContainer = document.createElement('div'),
+            buttonContainer = document.createElement('div');
+
+        header.innerHTML = '';
+        header.append(contentContainer);
+        header.append(buttonContainer);
+
+        contentContainer.className = 'header-content-container';
+        contentContainer.innerHTML = content;
+
+        buttonContainer.className = 'header-button-container';
+        buttonContainer.append(collapsibleButton);
+    });
+}());
