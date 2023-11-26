@@ -2,15 +2,11 @@
 
 /* Format list sections */
 
-$('h2:contains("Appearances and references")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
+$('h2:contains("Appearances and references")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-$('h2:contains("Little Bear bibliography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
+$('h2:contains("Credits")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
-$('h2:contains("Little Bear filmography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
-
-$('h2:contains("Little Bear bibliography and filmography")+ol').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
-
-var listItems = $('div#mw-customcollapsible-list > ol > li > ol > li');
+var listItems = $('div#mw-customcollapsible-list > ul > li > ul > li');
 
 if (listItems.length > 10){
   $('div#mw-customcollapsible-list').addClass('mw-collapsed');
@@ -23,3 +19,14 @@ $('div#mw-customcollapsible-list').before('This list includes '+listItems.length
 if(mw.config.get('wgNamespaceNumber') === 0){
   $('div.page-header__page-subtitle').css('display','none');
 }
+
+/* Customizing text of auto-created user and user talk pages */
+
+window.AutoCreateUserPagesConfig = {
+  content: {
+    2: '{{Placeholder}}',
+    3: '{{Welcome}}'
+  },
+  summary: 'auto creating user and user talk pages',
+  notify: '<a href="/wiki/User_talk:$2">Welcome to the Little Bear Wiki!</a>'
+};

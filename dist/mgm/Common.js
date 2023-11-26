@@ -1,3 +1,5 @@
+InactiveUsers = { months: 6 };
+
 /* Message Wall User Tags */
 window.MessageWallUserTags = {
     tagColor: 'red',

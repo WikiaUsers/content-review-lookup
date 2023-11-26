@@ -17,7 +17,7 @@ window.importScripts = function(pages) {
         match = match || v;
     
         $.ajax({
-            url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com/ru/wiki/' + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
+            url: 'https://' + (Array.isArray(match) ? match[0] : wiki) + '.fandom.com/wiki/' + (Array.isArray(match) ? match[1] : match) + '?action=raw&ctype=text/javascript',
             dataType: "script",
             cache: true,
         }).then(function() {

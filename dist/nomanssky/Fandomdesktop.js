@@ -42,6 +42,6 @@ $(function(){
 $(function(){
 	$("#WikiaBar").before("<div class='nms-back-to-top' title='Scroll to top of page'>↑</div>");
 	$(".nms-back-to-top").click(function(){
-		document.getElementsByClassName("community-header-wrapper")[0].scrollIntoView();
+		window.location.hash = '';
 	});
 });

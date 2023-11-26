@@ -23,7 +23,8 @@
 				noAudio:"no-audio",
 				nowPlaying:"now-playing",
 				OggAudio:"OggPlayer-Audio",
-				play:"play"
+				play:"play",
+				focusable:"focusable"
 			},
 			init: function() {
 				//Test Audio Support
@@ -66,6 +67,21 @@
 					}
 				});
 				target.click(OggPlayer.clickButton).append(audioObj).attr('title',i18n.msg(OggPlayer.constRef.play).plain());
+				
+				if (target.hasClass(OggPlayer.constRef.focusable)) {
+					target.attr("tabindex", 0)
+					target.on("keypress", function(e) {
+						// enter key pressed
+						if (e.which === 13) {
+							target.trigger("click");
+						}
+						// space bar pressed
+						else if (e.which === 32) {
+							e.preventDefault();
+							target.trigger("click");
+						}
+					});
+				}
 			},
 			clickButton: function(){
 				var focusDom = $(this).find("audio."+OggPlayer.constRef.OggAudio).get(0);

@@ -1,16 +1,11 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-
-/* HazbinHotel exts */
-window.hzbn = $.extend(true, window.hzbn, {});
-window.hzbn.mwHtmlLinkFabric = function (classNames) {
-  return function (pageName, text) {
-    return $('<a>', {
-      class: classNames,
-      href: mw.util.getUrl(pageName),
-      text: text
-    }).prop('outerHTML');
-  };
-};
+/* Импорт JS-страниц Fixes.js */
+importArticles({
+	    type: 'script',
+	    articles: [
+	        'u:ru.wikicorporate:MediaWiki:Fixes.js',
+	        'u:ru.wikicorporate:MediaWiki:Scroll.js'
+	    ]
+	});
 
 /* Выделение комментариев */
 const staff = [
@@ -94,80 +89,6 @@ function fixAchievements(){
 }
 	
   fixAchievements();
-  
-/* Анимация в рейле */
-  var currentPageNamespace = mw.config.get('wgCanonicalNamespace');
-  var hasPhotoModule = currentPageNamespace !== 'Special' && currentPageNamespace !== 'MediaWiki';
-  var waitForEl = function waitForEl(selector, blockElement) {
-    return new Promise(function (resolve, reject) {
-      var targetNode = document.querySelector(selector);
-      var timeoutId;
-      new MutationObserver(function (_, observer) {
-        clearInterval(timeoutId);
-        timeoutId = setTimeout(function () {
-          if (blockElement && !targetNode.querySelectorAll(blockElement).length) {
-            clearInterval(timeoutId);
-            return;
-          }
-
-          observer.disconnect();
-          return resolve();
-        }, 500);
-      }).observe(targetNode, {
-        childList: true,
-        subtree: true
-      });  
-
-    });
-  };
-  waitForEl('.right-rail-wrapper', hasPhotoModule ? '.photo-module' : null).then(function () {
-  
-    var railHeadings = document.querySelectorAll('.UserProfileAchievementsModule h2, .rail-module h2, .recentImages__title');
-    railHeadings.forEach(function (rail) {
-      return rail.insertAdjacentHTML('afterend', '<div class="rail-module__lines"></div>');
-    });
-  });
- 
-
-	
-	/* Кнопка скролла */
-	function handleScrollTo(e) {
-			const breakY = ($(document).height() - $(window).height()) * 50 / 100;
-		
-	        e.preventDefault();
-	        const reachHalf = $(window).scrollTop() > breakY
-	        $('html').animate({scrollTop: reachHalf ? 0 : $(document).height()}, '10');
-	}
-	
-	const wdsSecondScroll = $('<a>', {
-	    class: 'wds-button wds-is-secondary',
-	    html: '<svg class="wds-icon wds-icon-small" viewBox="0 0 284.929 284.929"><g><path d="M282.082,195.285L149.028,62.24c-1.901-1.903-4.088-2.856-6.562-2.856s-4.665,0.953-6.567,2.856L2.856,195.285 C0.95,197.191,0,199.378,0,201.853c0,2.474,0.953,4.664,2.856,6.566l14.272,14.271c1.903,1.903,4.093,2.854,6.567,2.854 c2.474,0,4.664-0.951,6.567-2.854l112.204-112.202l112.208,112.209c1.902,1.903,4.093,2.848,6.563,2.848 c2.478,0,4.668-0.951,6.57-2.848l14.274-14.277c1.902-1.902,2.847-4.093,2.847-6.566 C284.929,199.378,283.984,197.188,282.082,195.285z"/></g></svg>'
-	})
-	    .prependTo('.fandom-sticky-header > .wiki-tools')
-	    .on('click', handleScrollTo)
-	    
-	
-	const wdsSecondScrollIcon = wdsSecondScroll.children();
-	wdsSecondScrollIcon.css({
-		transition: 'transform .3s',
-		transform: 'rotate(360deg)'
-	})
-	
-	
-	const scrollBottomButtonIcon = $('<a>', {
-	    class: 'scroll-button scroll-button--bottom',
-	})
-	    .appendTo('#WikiaBar')
-	    .on('click', handleScrollTo)
-	
-	$(window).scroll(function () {
-		const breakY = ($(document).height() - $(window).height()) * 50 / 100;
-		
-	    const reachHalf = $(window).scrollTop() > breakY;
-	    wdsSecondScrollIcon.css('transform', 'rotate(' + (reachHalf ? 360 : 180) + 'deg)');
-	    scrollBottomButtonIcon.attr('class', 'scroll-button scroll-button--' + (reachHalf ? 'top' : 'bottom'));
-	})
-});
 
 /* Конфигурация для dev:DiscussionTemplates */
 window.DiscussionTemplates = {

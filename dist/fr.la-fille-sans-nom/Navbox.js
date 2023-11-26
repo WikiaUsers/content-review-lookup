@@ -1,7 +1,7 @@
 /** Modèle : Méta palette de navigation - ©  Wikipédia
  * --> Provient de : https://fr.wikipedia.org/wiki/MediaWiki:Common.js#L-173
  * 
- * [[Catégorie:MediaWiki]] [[Catégorie:Javascript]] [[Catégorie:Modèles - Navboxes|#1]]
+ * [[Catégorie:MediaWiki]] [[Catégorie:Javascript]] [[Catégorie:Modèles - Navboxes| ]]
 
 /**
  * Navboxes

@@ -611,7 +611,7 @@ if (!nkch.ma.isActive) {
 													) {
 														ma__list_item__main.append(ma__list_item__details);
 
-														ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").plain() + "</b>: " + multipleArray[loopIndex].parsedcomment;
+														ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").plain() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment);
 													}
 
 													ma__list_item__date_and_size.prepend(ma__list_item__size);
@@ -635,7 +635,7 @@ if (!nkch.ma.isActive) {
 													) {
 														ma__list_item__main.append(ma__list_item__details);
 
-														ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").plain() + "</b>: " + multipleArray[loopIndex].parsedcomment;
+														ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").plain() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment);
 													}
 
 													ma__list_item__date_and_size.prepend(ma__list_item__size);
@@ -675,7 +675,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + multipleArray[loopIndex].parsedcomment;
+																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment);
 																}
 																break;
 															case "restore":
@@ -696,7 +696,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + multipleArray[loopIndex].parsedcomment;
+																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment);
 																}
 																break;
 															case "move_prot":
@@ -719,8 +719,8 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + multipleArray[loopIndex].parsedcomment + "<br>";
-																	if (logsCase[0].params.description != undefined && logsCase[0].params.description != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-params").plain() + "</b>: " + logsCase[0].params.description;
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment) + "<br>";
+																	if (logsCase[0].params.description != undefined && logsCase[0].params.description != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-params").plain() + "</b>: " + mw.html.escape(logsCase[0].params.description);
 																}
 																break;
 															case "unprotect":
@@ -755,8 +755,8 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + multipleArray[loopIndex].parsedcomment + "<br>";
-																	if (logsCase[0].params.target_title != undefined && logsCase[0].params.target_title != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-new-name").plain() + "</b>: " + logsCase[0].params.target_title;
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment) + "<br>";
+																	if (logsCase[0].params.target_title != undefined && logsCase[0].params.target_title != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-new-name").plain() + "</b>: " + mw.html.escape(logsCase[0].params.target_title);
 																}
 																break;
 															case "block":
@@ -778,8 +778,8 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
-																	if (logsCase[0].params.duration != undefined && logsCase[0].params.duration != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-duration").plain() + "</b>: " + logsCase[0].params.duration;
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(logsCase[0].comment) + "<br>";
+																	if (logsCase[0].params.duration != undefined && logsCase[0].params.duration != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-duration").plain() + "</b>: " + mw.html.escape(logsCase[0].params.duration);
 																}
 																break;
 															case "unblock":
@@ -800,7 +800,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
+																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(logsCase[0].comment) + "<br>";
 																}
 																break;
                                                             case "reblock":
@@ -822,8 +822,8 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
-																	if (logsCase[0].params.duration != undefined && logsCase[0].params.duration != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-duration").plain() + "</b>: " + logsCase[0].params.duration;
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(logsCase[0].comment) + "<br>";
+																	if (logsCase[0].params.duration != undefined && logsCase[0].params.duration != "") ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-duration").plain() + "</b>: " + mw.html.escape(logsCase[0].params.duration);
 																}
 																break;
 															case "rights":
@@ -846,7 +846,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + logsCase[0].comment + "<br>";
+																	if (multipleArray[loopIndex].parsedcomment != undefined && multipleArray[loopIndex].parsedcomment != "") ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-reason").parse() + "</b>: " + mw.html.escape(logsCase[0].comment) + "<br>";
 																	if (logsCase[0].params.oldmetadata != undefined && Array.isArray(logsCase[0].params.oldmetadata)) {
 																		if (logsCase[0].params.oldmetadata.length > 0) {
 																			var userRights = "";
@@ -864,7 +864,7 @@ if (!nkch.ma.isActive) {
 																				}
 																			);
 
-																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-old").plain() + "</b>: " + userRights + "<br>";
+																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-old").plain() + "</b>: " + mw.html.escape(userRights) + "<br>";
 																		} else {
 																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-old").plain() + "</b>: " + i18n.msg("ma-v2-details-rights-none").plain() + "<br>";
 																		}
@@ -887,7 +887,7 @@ if (!nkch.ma.isActive) {
 																				}
 																			);
 
-																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-new").plain() + "</b>: " + userRights + "<br>";
+																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-new").plain() + "</b>: " + mw.html.escape(userRights) + "<br>";
 																		} else {
 																			ma__list_item__details.innerHTML += "<b>" + i18n.msg("ma-v2-details-rights-new").plain() + "</b>: " + i18n.msg("ma-v2-details-rights-none").plain() + "<br>";
 																		}
@@ -912,7 +912,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").parse() + "</b>: " + multipleArray[loopIndex].parsedcomment;
+																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").parse() + "</b>: " + mw.html.escape(multipleArray[loopIndex].parsedcomment);
 																}
 																break;
 															default:
@@ -933,7 +933,7 @@ if (!nkch.ma.isActive) {
 																) {
 																	ma__list_item__main.append(ma__list_item__details);
 
-																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").parse() + "</b>: " + logsCase[0].comment
+																	ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-summary").parse() + "</b>: " + mw.html.escape(logsCase[0].comment);
 																}
 														}
 													}
@@ -1065,7 +1065,7 @@ if (!nkch.ma.isActive) {
 															) {
 																ma__list_item__main.append(ma__list_item__details);
 
-																if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + postContent;
+																if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + mw.html.escape(postContent);
 																if (postPictures != null) ma__list_item__details.append(nkch.ma.actions.getPostPictures(multipleArray[loopIndex]));
 															}
 													}
@@ -1120,7 +1120,7 @@ if (!nkch.ma.isActive) {
 													) {
 														ma__list_item__main.append(ma__list_item__details);
 
-														if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + postContent;
+														if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + mw.html.escape(postContent);
 														if (postPictures != null) ma__list_item__details.append(nkch.ma.actions.getPostPictures(multipleArray[loopIndex]));
 													}
 
@@ -1202,7 +1202,7 @@ if (!nkch.ma.isActive) {
 													) {
 														ma__list_item__main.append(ma__list_item__details);
 
-														if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + postContent;
+														if (postContentFiltered.length != 0) ma__list_item__details.innerHTML = "<b>" + i18n.msg("ma-v2-details-text").parse() + "</b>: " + mw.html.escape(postContent);
 														if (postPictures != null) ma__list_item__details.append(nkch.ma.actions.getPostPictures(multipleArray[loopIndex]));
 													}
 													break;

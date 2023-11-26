@@ -99,7 +99,8 @@ $(function () {
       //215
       'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer',
       //220
-      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer'
+      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer', 'Mystic_Jaguar_(Mount)','Gorgon_Hydra'
+      //225
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -311,7 +312,8 @@ $(function () {
       Floating_Scholar: 8,
       Brass_Speckled_Koi: 8,
       Ink_Spotted_Koi: 8,
-      Tangerine_Flecked_Koi: 8
+      Tangerine_Flecked_Koi: 8,
+      Gorgon_Hydra: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -320,6 +322,7 @@ $(function () {
       Krakoloss: true,
       Shellodon: true,
       Mutated_Abomination: true,
+      Gorgon_Hydra: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

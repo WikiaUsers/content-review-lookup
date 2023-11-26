@@ -1336,7 +1336,7 @@
 				mainItems: new OO.ui.ButtonGroupWidget({items: [
 					buttons.newSection,
 					buttons.sortSections,
-					buttons.reorder,
+					//buttons.reorder,
 					buttons.deprecated,
 					buttons.deprecated2
 				]}),

@@ -17,6 +17,7 @@
 	    }).then(function(res) {
 	        $('.page-header__title-wrapper').append(
 	            $('<div>', {
+	            	class: "supportedLangs",
 	                html: msg('availableInLangs', res.parse.langlinks.length).parse()
 	            }).css({ color: '#666' })
 	        );

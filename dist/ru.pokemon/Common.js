@@ -1,6 +1,6 @@
 /* == Рельса == */
 /* === Кастомные блоки, настройка AddRailModule === */
-window.AddRailModule = ['Template:Наш_Discord-сервер', 'Template:Случайная_статья_о_покемоне', 'Template:Новые статьи'];
+window.AddRailModule = ['Template:Случайная_статья_о_покемоне', 'Template:Новые статьи'];
 
 /* == Кабинет администратора == */
 /* === Кнопка ImportJS. Сделано HIHRAIM'ом из AdminDashboard JS-Button === */

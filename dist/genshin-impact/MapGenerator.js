@@ -322,8 +322,8 @@ $(function() {
 					valid = true;
 					context.drawImage(
 						loadedImages[markers[id].src].canvas,
-						(markers[id].x-(loadedImages[markers[id].src].size*zoom/2)),	// Position
-						(markers[id].y-(loadedImages[markers[id].src].size*zoom/2))		// Position
+						(markers[id].x-(loadedImages[markers[id].src].size/2)),	// Position
+						(markers[id].y-(loadedImages[markers[id].src].size/2))	// Position
 					);
 				}
 			});

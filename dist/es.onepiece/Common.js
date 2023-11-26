@@ -1,13 +1,42 @@
-$(function UserNameReplace() {
-    var username = mw.config.get('wgUserName');
-    if (username) {
-        var spans = document.getElementsByClassName('insertusername');
-  
-        for (var i = 0; i < spans.length; i++){
-            spans[i].textContent = username;
-        }
+// =====================================
+//        Variables for functions
+// =====================================
+// ArchiveTool
+ArchiveToolConfig = { 
+   archiveListTemplate: 'Archived Talk Tabs',	// Template to use on the main talk page
+   archivePageTemplate: 'Archived Talk Tabs',	// Template to use on the archived talk pages
+   archiveSubpage: 'Archive',					// Basename to use for archived talk pages
+   userLang: true
+};
+
+// BackToTopButton
+window.BackToTopModern = true;
+
+// =====================================
+//                Imports
+// =====================================
+
+// See MediaWiki:ImportJS
+
+// =====================================
+//                Functions
+// =====================================
+
+// Expand All
+var expandAllFlag = 0;
+var $expandAll = $('.expandAll a');
+$('.expandAll a').click(function(){
+    if (expandAllFlag === 0){
+        $('.mw-collapsible .mw-collapsible-toggle-collapsed').click();
+        expandAllFlag = 1;
+        $expandAll.text('Collapse All');
+    } else {
+        $('.mw-collapsible .mw-collapsible-toggle-expanded').click();
+        expandAllFlag = 0;
+        $expandAll.text('Expand All');
     }
 });
+// END of Expand All
 
 // Plantilla:Partes
 $(function() {
@@ -26,4 +55,15 @@ $(function() {
 	});
 });
 // END of Plantilla:Partes
+
+$(function UserNameReplace() {
+    var username = mw.config.get('wgUserName');
+    if (username) {
+        var spans = document.getElementsByClassName('insertusername');
+  
+        for (var i = 0; i < spans.length; i++){
+            spans[i].textContent = username;
+        }
+    }
+});
 window.MassCategorizationGroups = ['sysop', 'moderador de contenido'];

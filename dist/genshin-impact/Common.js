@@ -15,3 +15,8 @@ $( '#wpTextbox1' ).on( 'wikiEditor-toolbar-buildSection-advanced', function( eve
 	section.groups.insert.tools.redirect.action.options.pre = '#REDIRECT [[';
 	section.groups.insert.tools.redirect.action.options.post = ']]\n\n[[Category:Redirect Pages]]';
 } );
+
+/* Prevent .mobile-player in Template:VO from being focusable on desktop */
+$(".skin-fandomdesktop .mobile-player audio").each(function() {
+	$(this).attr("tabindex", "-1")
+});

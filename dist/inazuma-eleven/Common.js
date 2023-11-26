@@ -93,7 +93,9 @@
 
 window.i = window.i || 0; //Required for SignatureCheck to work properly
 
-(function() {
+var headerInterval;
+
+function updateTableHeader() {
     const tables = document.querySelectorAll('.pbinder.mw-collapsible');
 
     tables.forEach(function(table) {
@@ -112,5 +114,11 @@ window.i = window.i || 0; //Required for SignatureCheck to work properly
 
         buttonContainer.className = 'header-button-container';
         buttonContainer.append(collapsibleButton);
+
+        clearInterval(headerInterval);
     });
-}());
+}
+
+mw.hook('wikipage.content').add(function() {
+    headerInterval = setInterval(updateTableHeader, 100);
+});

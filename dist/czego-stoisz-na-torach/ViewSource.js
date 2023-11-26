@@ -458,7 +458,7 @@
 
     function replaceRegularLinks (all, link, title) {
         title = title || '';
-        return '[<a href="' + link.replace('"', '') + '">' + link + '</a>'+ title + ']';
+        return '[<a href="' + mw.html.escape(link) + '">' + link + '</a>'+ title + ']';
     }
 
     function replaceModules (all, prefix, title, postfix) {

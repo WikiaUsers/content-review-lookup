@@ -188,7 +188,7 @@ $(function(){
             $('body').addClass('is-content-expanded');
             break;
         case 'Abel':
-        	rng = Math.floor(Math.random() * 1000);
+        	rng = Math.floor(Math.random() * 500);
         	if (rng == 1) {
 	            $('body').addClass('abel');
 	            $('.page-header__title').addClass('abelTitle');

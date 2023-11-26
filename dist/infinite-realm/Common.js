@@ -31,7 +31,7 @@ function showSpoilerWarning() {
   warning.innerText = "Welcome to the Infinite Realm Wiki! However, please be warned that the content here reflects the current state of the ongoing web novel, Infinite Realm: Monsters and Legends.";
 
   const advice = document.createElement('p');
-  advice.innerHTML = "To avoid spoilers, make sure you've read the first 3 volumes on <a href='https://www.amazon.com/dp/B08SCFZWP5'>Kindle Unlimited</a>, as well as the latest chapters on <a href='https://www.royalroad.com/fiction/27325/infinite-realm-monsters-legends'>Royal Road</a> before continuing.";
+  advice.innerHTML = "To avoid spoilers, make sure you've read the first 5 published volumes on <a href='https://www.amazon.com/dp/B08SCFZWP5'>Kindle Unlimited</a>, as well as the <a href='https://www.royalroad.com/fiction/27325/infinite-realm-monsters-legends'>latest chapters on Royal Road</a> before continuing.";
 
   const button = document.createElement('button');
   button.classList.add('ir-spoiler-button');

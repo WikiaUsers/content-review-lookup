@@ -1,4 +1,10 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+/* Импорт JS-страниц Fixes.js */
+importArticles({
+	    type: 'script',
+	    articles: [
+	        'u:ru.wikicorporate:MediaWiki:Fixes.js'
+	    ]
+	});
 
 /* Выделение комментариев */
 setInterval(function () {

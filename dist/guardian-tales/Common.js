@@ -18,3 +18,11 @@ itemboxTooltip.forEach(function(element) {
 if (!window.lastEdited) {
 	window.lastEdited = { diffModal: false, comment: false };
 }
+
+// use original image on map-edit page for lossless quality and accuracy
+if (window.location.search === "?action=mapedit") {
+	setTimeout(function () {
+		var image = document.querySelector(".leaflet-image-layer");
+		image.src += "&format=original";
+	}, 5000);
+}

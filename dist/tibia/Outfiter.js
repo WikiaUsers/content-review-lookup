@@ -101,7 +101,7 @@ $(function () {
       //220
       'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer', 'Corpsefire_Skull', 'Magma_Skull',
       //225
-      'Doom_Skull'
+      'Doom_Skull','Mystic_Jaguar_(Mount)','Gorgon_Hydra'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -321,7 +321,8 @@ $(function () {
       Darkfire_Devourer: 8,
       Corpsefire_Skull: 8,
       Magma_Skull: 8,
-      Doom_Skull: 8
+      Doom_Skull: 8,
+      Gorgon_Hydra: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -330,6 +331,7 @@ $(function () {
       Krakoloss: true,
       Shellodon: true,
       Mutated_Abomination: true,
+      Gorgon_Hydra: true
     },
     //image names with _Female suffix for female
     outfiter_f_suffix_inames = {

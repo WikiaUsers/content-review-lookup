@@ -7,7 +7,7 @@
         i18n.loadMessages('CopyText').done(function (i18n) {
             function showSuccess() {
                 if (window.BannerNotification) {
-                    new BannerNotification(i18n.msg('success').escape(), 'confirm').show();
+                    new BannerNotification(i18n.msg('success').escape(), 'confirm', null, 5000).show();
                 } else {
                     mw.notify(i18n.msg('success').plain());
                 }

@@ -51,7 +51,8 @@
                 text: this.i18n.msg('button').plain()
             });
         },
-        onClick: function() {
+        onClick: function(event) {
+            event.preventDefault();
             this.pages = $('.special > li').toArray().map(function(li) {
                 var $li = $(li);
                 var children = $li.children();

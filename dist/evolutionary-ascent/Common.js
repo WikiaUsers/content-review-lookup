@@ -18,13 +18,19 @@ window.tooltips_config = {
 },
 window.tooltips_list = [
     {
-        classname: 'sequence-tooltip',
-        parse: '{' + '{Template:Seq/data|1=<#seq#>|2=<#text#>}}'
-    }, {
-        classname: 'pathway-tooltip',
-        parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
+        classname: 'divinePath-tooltip',
+        parse: '{' + '{Template:Divine Path/data|1=<#seq#>|2=<#text#>}}'
     }
 ],
+
+window.tooltips_list = [
+    {
+        classname: 'order-tooltip',
+        parse: '{' + '{#invoke:Divine Path|orderLink|1=<#seq#>|2=<#text#>}}'
+    },
+    // ... other tooltip configurations
+];
+
 
 /*LockOldComments*/
 window.lockOldComments = (window.lockOldComments || {});

@@ -406,7 +406,7 @@
         if (!parserTags[tag])
             if (/\//g.test(all)) return '&lt;/' + tag;
             else return '&lt;' + tag;
-        return delim + '<a href="' + parserTags[tag] + '">' + tag + '</a>';
+        return delim + '<a href="' + mw.html.escape(parserTags[tag]) + '">' + tag + '</a>';
     }
 
     function replaceHeaders (m) {
@@ -416,7 +416,7 @@
 
     function replaceWikiLink (all, link, title) {
         title = title || '';
-        return '[[<a href="' + createHref(link) + '">' + link + '</a>'+ title + ']]';
+        return '[[<a href="' + mw.html.escape(createHref(link)) + '">' + link + '</a>'+ title + ']]';
     }
 
     function replaceTemplates (all, delim, name) {
@@ -453,19 +453,19 @@
                 href = templ + m[2];
             }
         }
-        return delim + m[1] + '<a href="' + createHref(href) + '">' + m[2] + '</a>' + m[3];
+        return delim + m[1] + '<a href="' + mw.html.escape(createHref(href)) + '">' + m[2] + '</a>' + m[3];
     }
 
     function replaceRegularLinks (all, link, title) {
         title = title || '';
-        return '[<a href="' + link.replace('"', '') + '">' + link + '</a>'+ title + ']';
+        return '[<a href="' + mw.html.escape(link) + '">' + link + '</a>'+ title + ']';
     }
 
     function replaceModules (all, prefix, title, postfix) {
         // experimental stuff. doesn't recognize {{#invoke:module{{{var}}}}}
         // /({{#invoke:)([\s\S]*?)(\||})/igm
         var page = config.wgFormattedNamespaces[828] + ':' + title.trim();
-        return (prefix + '<a href="' + createHref(page) + '">' + title.trim() + '</a>' + postfix);
+        return (prefix + '<a href="' + mw.html.escape(createHref(page)) + '">' + title.trim() + '</a>' + postfix);
     }
 
     function createPseudoToc () {

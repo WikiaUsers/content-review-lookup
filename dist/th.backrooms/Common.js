@@ -1,4 +1,4 @@
-// [[Category:Internal]] Meta-category for internal technical pages
+// [[Category:Internal]]
 
 // For [[Module:CSS]]; [[T:CSS]] dependency
 mw.hook("wikipage.content").add(function () {
@@ -7,7 +7,7 @@ mw.hook("wikipage.content").add(function () {
 	});
 });
 
-// UserTags thingamajigs
+// UserTags config
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -25,7 +25,7 @@ UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
 
-// fade-in
+// Fade-in
 var fadeinclass = document.getElementsByClassName("fadeintext");
     for(var i = 0; i < fadeinclass.length; i++) {
         var sec = (i/4).toString();
@@ -34,3 +34,11 @@ var fadeinclass = document.getElementsByClassName("fadeintext");
         fadeinclass[i].style.animationIterationCount = "1";
         fadeinclass[i].style.animationFillMode = "forwards";
 }
+
+// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
+
+$('.fandom-community-header__community-name-wrapper').append(
+	$('<a/>').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
+		$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('position', 'relative').css('top', '10px')
+		.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009').attr('title', 'This wiki is part of Fandom Compass')
+));

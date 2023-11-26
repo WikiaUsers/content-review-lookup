@@ -79,7 +79,7 @@
 		}
 	}
 	function addTool() {
-		var urlWithHash = './Special:UserInfo#' + config.wgRelevantUserName;
+		var urlWithHash = './Special:UserInfo#' + mw.html.escape(config.wgRelevantUserName);
 		$('<li>', { id: 'userinfo' })
 		.html('<a href="' + urlWithHash + '">' + msg('userInfo').escape() + '</a>')
 		.prependTo('.toolbar .tools');

@@ -1,6 +1,6 @@
 (function($){
 	var SELECTED_CACHE_KEY = 'hsw-resourcepacks-selected';
-	var stylesheetPrefix = "https://hypixel-skyblock.fandom.com/index.php?action=raw&ctype=text/css&title=";
+	var stylesheetPrefix = mw.config.get('wgServer')+mw.config.get('wgScript')+"?action=raw&ctype=text/css&title=";
 	var packDefault = { id:'default', name:"마인크래프트: V1.8.9 (위키 기본값)", author:"Mojang" };
 	var packs = [
 		{

@@ -45,6 +45,6 @@ window.MassCategorizationGroups = ['sysop'];
 PFD_templates = [
     {
         label:   'Images',
-        desc:    '{' + '{aboutfile\n|description=\n|source=\n|author=\n|licensing=\n}}\n{' + '{uncategorized}}',
+        desc:    '{' + '{aboutfile\n|description=Describe the subject or image contents\n|source=Where the image is from\n|artist=Author of the image\n|edited=Describe edits, if any\n|other_versions=Link to another closely related file\n}}\n{' + '{uncategorized}}',
     },
 ];

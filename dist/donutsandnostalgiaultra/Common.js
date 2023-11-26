@@ -291,7 +291,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Character Template\n| Image                   = ",
+					pre: "{{Template:Character Template\n| Image                   = ",
 					post: "\n| Name                    = \n| CurrentAlias            = \n| Aliases                 = \n\n| Affiliation             = \n| Relatives               = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Personality             = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Marvel                  = \n| Wikipedia               = \n| Links                   = \n}}"
 				}
 			}
@@ -310,7 +310,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Team Template\n| Image                   = ",
+					pre: "{{Template:Team Template\n| Image                   = ",
 					post: "\n| Name                    = \n| EditorialNames          = \n| Aliases                 = \n\n| Leaders                 = \n| CurrentMembers          = \n| FormerMembers           = \n\n| Identity                = \n| Affiliation             = \n| Allies                  = \n| Enemies                 = \n\n| Origin                  = \n| Status                  = \n| Reality                 = \n| BaseOfOperations        = \n| PlaceOfFormation        = \n| PlaceOfDissolution      = \n\n| Creators                = \n| First                   = \n| Last                    = \n\n| History                 = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -329,7 +329,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Location Template\n| Image                   = ",
+					pre: "{{Template:Location Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Aliases                 = \n\n| Reality                 = \n| Galaxy                  = \n| StarSystem              = \n| Planet                  = \n| Continent               = \n| Country                 = \n| Region                  = \n| State                   = \n| City                    = \n| Locale                  = \n\n| Population              = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| PointsOfInterest        = \n| Residents               = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -348,7 +348,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Item Template\n| Image                   = ",
+					pre: "{{Template:Item Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Aliases                 = \n\n| CurrentOwner            = \n| PreviousOwners          = \n| AlternateOwners         = \n\n| Type                    = \n| Material                = \n| Dimensions              = \n| Weight                  = \n\n| Origin                  = \n| Reality                 = \n| LeadDesigner            = \n| AdditionalDesigners     = \n| PlaceOfCreation         = \n| PlaceOfDestruction      = \n\n| Creators                = \n| First                   = \n\n| History                 = \n| Properties              = \n| AlternateVersions       = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -367,7 +367,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Reality Template\n| Title                   = \n| Image                   = ",
+					pre: "{{Template:Reality Template\n| Title                   = \n| Image                   = ",
 					post: "\n| EarthNumber             = \n| EarthNumberRef          = \n| Aliases                 = \n| Status                  = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Residents               = \n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -386,7 +386,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Race Template\n| Image                   = ",
+					pre: "{{Template:Race Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Aliases                 = \n\n| Identity                = \n| Affiliation             = \n\n| BodyType                = \n| AvgHeight               = \n| AvgWeight               = \n| Eyes                    = \n| Hair                    = \n| Skin                    = \n| NumberOfLimbs           = \n| NumberOfFingers         = \n| NumberOfToes            = \n| SpecialAdaptations      = \n| UnusualFeatures         = \n\n| Origin                  = \n| Status                  = \n| Reality                 = \n| GalaxyOfOrigin          = \n| StarSystemOfOrigin      = \n| HomePlanet              = \n| BaseOfOperations        = \n| PlaceOfBirth            = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Habitat                 = \n| Gravity                 = \n| Atmosphere              = \n| Population              = \n\n| Powers                  = \n| Abilities               = \n| AvgStrength             = \n| Weaknesses              = \n\n| GovernmentType          = \n| TechnologyLevel         = \n| CulturalTraits          = \n| Representatives         = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -405,7 +405,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Vehicle Template\n| Image                   = ",
+					pre: "{{Template:Vehicle Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Aliases                 = \n\n| CurrentOwner            = \n| PreviousOwners          = \n\n| TransportMethod         = \n| CurrentModel            = \n| PreviousModels          = \n| Dimensions              = \n\n| Origin                  = \n| Reality                 = \n| Status                  = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
@@ -424,7 +424,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Comic Template\n| Image1              = ",
+					pre: "{{Template:Storylines\n| Image1              = ",
 					post: "\n| Image1_Artist1      = \n| Image2              = \n| Image2_Text         = \n| Image2_Artist1      = \n\n| ReleaseDate         = \n| Month               = \n| Year                = \n\n| Editor-in-Chief     = \n| Pages               = \n| Rating              = \n| OriginalPrice       = \n\n| Quotation           = \n| Speaker             = \n\n| StoryTitle1         = \n| Writer1_1           = \n| Penciler1_1         = \n| Inker1_1            = \n| Colorist1_1         = \n| Letterer1_1         = \n| Editor1_1           = \n\n|  Appearing1         = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Races and Species:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Synopsis1           = \n\n| Solicit             = \n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
 				}
 			}
@@ -443,7 +443,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 			type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = \n| format                  = \n| type                    = \n| genres                  = \n| featured                = \n\n| SeeAlso                 = \n\n",
+					pre: "{{Template:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = \n| format                  = \n| type                    = \n| genres                  = \n| featured                = \n\n| SeeAlso                 = \n\n",
 					post: "}}"
 				}
 			}
@@ -462,7 +462,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Image Template\n| License                 = ",
+					pre: "{{Template:Image Template\n| License                 = ",
 					post: "\n| ImageType               = \n\n| Reality                 = \n| Subject1                = \n| Subject2                = \n| Subject3                = \n| Subject4                = \n| Subject5                = \n\n| Source                  = \n| CoverArtist1            = \n| Penciler1               = \n| Inker1                  = \n| Colorist1               = \n| Letterer1               = \n}}"
 				}
 			}
@@ -481,7 +481,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Gallery Template\n| GalleryType             = \n| GalleryData             = \n\n==Comics==\n===Interior Art===\n<gallery position=\"center\" captionalign=\"center\">\n",
+					pre: "{{Template:Gallery Template\n| GalleryType             = \n| GalleryData             = \n\n==Comics==\n===Interior Art===\n<gallery position=\"center\" captionalign=\"center\">\n",
 					post: "\n</gallery>\n\n| SeeAlso                 = \n}}"
 				}
 			}
@@ -500,7 +500,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Episode Template\n| Image               = ",
+					pre: "{{Template:Episode Template\n| Image               = ",
 					post: "\n| Day                 = \n| Month               = \n| Year                = \n\n| Director1           = \n| Producer1           = \n| Writer1             = \n\n| Quotation           = \n| Speaker             = \n\n| EpisodeTitle        = \n| Synopsis            = \n\n| Appearing           = \n'''Featured Characters:'''\n* <br/>\n'''Supporting Characters:'''\n* <br/>\n'''Antagonists:'''\n* <br/>\n'''Other Characters:'''\n* <br/>\n'''Locations:'''\n* <br/>\n'''Items:'''\n* <br/>\n'''Vehicles:'''\n* <br/>\n\n| Notes               = \n| Trivia              = \n| Recommended         = \n| Links               = \n}}"
 				}
 			}
