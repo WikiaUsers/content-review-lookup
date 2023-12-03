@@ -426,7 +426,7 @@
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/d/d6/HJ_Mawlurk.png',
-            'Чревосил'
+            'Чревосид'
         ],
         [
             'https://vignette.wikia.nocookie.net/hollowknight/images/b/b5/HJ_Brooding_Mawlek.png',

@@ -1,0 +1,1 @@
+if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {var els = document.querySelectorAll("a[href='http://bookwormadvs.wikia.com/wiki/Literature_wikis']").style.display = 'none';}

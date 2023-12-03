@@ -1,5 +1,5 @@
-// YouTubeAudio by "The JoTS"
-// v2.0.0
+// YouTubeAudioUCP by "The JoTS"
+// v0.9.0 (based off YouTubeAudio v2.0.0 - Pre-UCP)
 
 // todo: allow styling on slider/range and play button image.
 
@@ -76,11 +76,13 @@ function createPlayersFromFlash(objs) {
         
         var sliderStep; // "connection" for incrementing slider position
         
-        // Verify if YouTube flash object
-        if ( this.hasAttribute("data") === null
-            || this.getAttribute("height") === null || parseInt(this.getAttribute("height"), 10) > 30
-            || !((vid = /youtube.com\/v\/([\w_-]+)/.exec(this.getAttribute("data"))).length) ) return;
-            
+        // Verify if YouTube object AND is designated for audio
+        var src = this.getAttribute("src");
+        var srcParams = src && (new URL('https:'+src)).searchParams;
+        if ( !( (vid=/youtube.com\/embed\/([\w_-]+)/.exec(src)).length > 0
+        		&& srcParams.has("preferYTA")) )
+        	return;
+        	
         vid = vid[1]; // no need to keep array ref
         
         // Elements
@@ -103,7 +105,7 @@ function createPlayersFromFlash(objs) {
         var showRange = function(visible)
             { range.style.display = (visible ? "block" : "none"); };
         
-        $(this).remove(); // remove flash player
+        $(this).remove(); // remove original player
         
         // Events
         range.onmousedown = function() { player.pauseVideo(); };
@@ -144,7 +146,8 @@ function createPlayersFromFlash(objs) {
                             clearInterval(sliderStep); // just in case
                             affixSlider(player, range).then(
                                 function(v)   { sliderStep = v; },
-                                function(err) { console.log(err);} );
+                                function(err) { console.log(err); }
+                            );
                     }
                 }
             }
@@ -158,12 +161,13 @@ function createPlayersFromFlash(objs) {
 
 // Main function
 $(function(window, mw) {
-    var objs = $("object[type=\"application/x-shockwave-flash\"");
+    var objs = $("iframe[src^='//www.youtube.com/embed/'");
 
     var t = setInterval(function() {
         // wait until YT is defined
         
-        if(typeof(YT) === "undefined"||typeof(YT.Player) === "undefined")return;
+        if (typeof(YT) === "undefined"
+        		|| typeof(YT.Player) === "undefined") return;
         
         clearInterval(t); // terminate interval
         createPlayersFromFlash(objs); // callback

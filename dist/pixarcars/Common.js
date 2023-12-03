@@ -40,7 +40,7 @@ importArticles({
 window.MassCategorizationGroups = ['sysop'];
 
 
-// Special:Upload pre-load text [test]
+// Special:Upload pre-load config
 
 PFD_templates = [
     {
@@ -48,3 +48,6 @@ PFD_templates = [
         desc:    '{' + '{aboutfile\n|description=Describe the subject or image contents\n|source=Where the image is from\n|artist=Author of the image\n|edited=Describe edits, if any\n|other_versions=Link to another closely related file\n}}\n{' + '{uncategorized}}',
     },
 ];
+
+PFD_requireLicense = true;
+PFD_discourageEditorFileUpload = true

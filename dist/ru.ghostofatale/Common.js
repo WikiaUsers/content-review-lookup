@@ -25,3 +25,6 @@ var value = document.getElementsByClassName("wds-community-header__counter-value
     line = ['Cтраница','Cтраницы','Cтраниц'], // строка замен
     nword = getNumEnding(value,line); // вызов функции обмена исходного слова на замену
 label.innerHTML = lin.replace(lin,nword); // вставка исправления
+
+/* InactiveUsers Неактивные пользователи*/
+InactiveUsers = { months: 2 };

@@ -6,19 +6,27 @@ $('h2:contains("Appearances and references")+ul').wrap('<div class="mw-collapsib
 
 $('h2:contains("Credits")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
 
+$('h2:contains("Contents")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');
+
 var listItems = $('div#mw-customcollapsible-list > ul > li > ul > li');
 
 if (listItems.length > 10){
   $('div#mw-customcollapsible-list').addClass('mw-collapsed');
 }
 
-$('div#mw-customcollapsible-list').before('This list includes '+listItems.length+' items. <small>(<a class="mw-customtoggle-list" style="cursor:pointer;">show / hide</a>)</small>');
+$('div#mw-customcollapsible-list').before('This list includes '+listItems.length+' items. <small id="show-hide-button">(<a class="mw-customtoggle-list" style="cursor:pointer;">show / hide</a>)</small>');
 
 /* Hide link returning to base page on subpages in the main namespace */
 
 if(mw.config.get('wgNamespaceNumber') === 0){
-  $('div.page-header__page-subtitle').css('display','none');
+  $('div.page-header__page-subtitle').css('display', 'none');
 }
+
+/* Fix red talk links */
+
+$('a.new#ca-talk').attr('href', function(i, origValue){
+  return origValue+'&section=new';
+});
 
 /* Customizing text of auto-created user and user talk pages */
 

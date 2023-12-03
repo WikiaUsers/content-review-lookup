@@ -1,1 +1,0 @@
-window.bgrandom_list = ["MmLol.png"];

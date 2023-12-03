@@ -21,14 +21,15 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
         //Staff
-        blu: {u:'Head of Command'},
         red: {u:'Wiki Coder'},
-        vio: {u:'Administrator'},
-        yel: {u:'Administrator'},
-        cyn: {u:'Content Mod'},
-        grn: {u:'Rollback'},
         //org: {u:''},
+        yel: {u:'Discussions Mod'},
+        //grn: {u:''},
+        cyn: {u:'Head of Command'},
+        //blu: {u:''},
+        vio: {u:'Administrator'},
         bot: {u:'Bot'},
+        
         //Non-Staff
         zac: {u:'Zacharie'},
         awe: {u: 'Awesome'},
@@ -38,14 +39,16 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    'AetherBytes' : ['blu'],
+    
     'TheSecondEdgeOfTheBlade' : ['red'],
-    'Dr. Regina Phalange' : ['vio'],
-    'Yossipossi' : ['yel'],
-    'Geshtro' : ['grn'],
+    // '' : ['org'],
+    'KingSpriggan129' : ['yel'],
+    // '' : ['grn'],
     'Slade The Demon' : ['cyn'],
-    //'' : ['org'],
+    //'AetherBytes' : ['blu'],
+    'Dr. Regina Phalange' : ['vio'],
     'JazCode' : ['bot'],
+    
     //Non-Staff
     'Daponyx' : ['bam'],
     'SquidFairy' : ['high'],
@@ -55,6 +58,8 @@ UserTagsJS.modules.custom = {
 
 UserTagsJS.modules.mwGroups = [
     'bureaucrat',
+    'content-moderator',
+    'threadmoderator',
     'moderator',
     'chatmoderator',
     'patroller',
@@ -92,12 +97,11 @@ window.MessageWallUserTags = {
     glowSize: '22px',
     glowColor: 'GhostWhite',
     users: {
-        'AetherBytes': 'Head of Command',
+    	'Slade The Demon' : 'Head of Command',
         'TheSecondEdgeOfTheBlade' : 'Wiki Coder',
+        'AetherBytes': 'Administrator',
         'Dr. Regina Phalange' : 'Administrator',
-        'Yossipossi': 'Administrator',
-        'Slade The Demon' : 'Content Mod',
-        'Geshtro' : 'Rollback',
+        'KingSpriggan129' : 'Discussions Mod',
         'JazCode' : 'Bot',
     }
 };

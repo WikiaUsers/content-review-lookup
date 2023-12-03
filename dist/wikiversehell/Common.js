@@ -13,26 +13,20 @@ window.UserTagsJS = {
 	
 	modules: {},
 	tags: {
-		ventmod: { u:'Vent Moderator' },
-		headventmod: { u:'Head Vent Moderator' },
 		officialwikicoder: { u:'Official Wiki Coder' },
 		codinghelp: { u:'Code Helper' },
-		bureaucrat: { u:'Burrowcrat' }, 
-		sysop: { u:'Admin smh' },
+		bureaucrat: { u:'Bureaucrat' }, 
+		sysop: { u:'Administrator' },
 		threadmoderator: { u:'Thread Mod' },
 		'content-moderator': { u:'Content Mod' },
 		adminapprentice: { u:'Admin Apprentice' },
 		maptest: { u:'Map Tester' },
-		specialrole: { u:'Writing Lord' },
-		lebesrole: { u:'Wiki Mom' },
 		newuser: { u:'Just Joined!' },
 	} 
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'rollback', 'content-moderator', 'threadmoderator'];
 UserTagsJS.modules.custom = {
-	'Halcyonmetanoia': ['officialwikicoder', 'codinghelp'],
-	'GhostTheWick': ['codinghelp'],
-	'LeahForsea': ['lebesrole'],
+	'.uni.universal.': ['officialwikicoder', 'codinghelp'],
 	'Rosellia Teh Hybrid': ['maptest'],
 };
 window.MessageBlock = {

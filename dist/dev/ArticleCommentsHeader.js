@@ -7,6 +7,7 @@
 
 mw.loader.using('mediawiki.api').then(function() {
     var wg = mw.config.get([
+        'wgArticleId',
         'wgPageName',
         'wgNamespaceNumber',
         'wgIsMainPage'
@@ -14,7 +15,8 @@ mw.loader.using('mediawiki.api').then(function() {
 
     var $comments = $('#articleComments');
     
-    if (wg.wgIsMainPage) return;
+    // Don't display on main page and non-existent articles.
+    if (wg.wgIsMainPage || wg.wgArticleId === 0) return;
 
     if ($comments.length === 0) {
         // Check if the namespace would normally have comments

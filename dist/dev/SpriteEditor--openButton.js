@@ -14,13 +14,10 @@
 	}
 	var ele, inner, label;
 	if (config.skin === "fandomdesktop") {
-		var clickFunc = function() {
-			window.location.href = getURL();
-		};
 		mw.hook('dev.ct').add(function(customTools) { // ToDo: Localization
 			customTools([
 				{
-					click: clickFunc,
+					link: getURL(),
 					// i18n: 'SpriteEditor',
 					icon: 'images',
 					placement: 'page-tools-left',
@@ -28,7 +25,7 @@
 					text: 'Open in SpriteEditor'
 				},
 				{
-					click: clickFunc,
+					link: getURL(),
 					// i18n: 'SpriteEditor',
 					icon: 'images',
 					placement: 'page-actions-dropdown',

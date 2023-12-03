@@ -4,36 +4,8 @@ var ajaxPages = ["Special:WikiActivity","Special:Contributions","Special:NewPage
 var AjaxRCRefreshText = 'Auto-refresh';
 var AjaxRCRefreshHoverText = 'Enable auto-refreshing page loads';
 
-/* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
- 
-//collapsing in the community corner
-(function ($) {
-    function makeColl () {
-        $('.CommunityCornerModule').find('.mw-collapsible').makeCollapsible();
-    }
-    $(function(){
-        var no = new MutationObserver(function(e) {
-            for(var i in e) {
-                if (e[i].addedNodes && e[i].addedNodes.length > 0) {
-                    for (var k in e[i].addedNodes) {
-                        if (e[i].addedNodes[k] instanceof Node && $(e[i].addedNodes[k]).hasClass('CommunityCornerModule')) {
-                            no.disconnect();
-                            mw.loader.using('jquery.makeCollapsible', makeColl);
-                            return;
-                        }
-                    }//for added node
-                }//if added nodes
-            }//for mutation record
-        });//mutation observer
-        if ($('#WikiaRail').length) {
-            no.observe($('#WikiaRail').get(0), {childList: true});
-        }
-    });//doc.rdy
-}(jQuery)); //collapsing in the community corner
- 
- 
-/*Скрипт альтернативного виджета дискорда*/
-/*Автор скрипта: Сибирский Смотритель*/
+/* Alternative Discord widget */
+/* Script author: Сибирский Смотритель */
 (function () {
  
 if ( $('#WikiaRail').length )
@@ -138,5 +110,8 @@ importArticles({
     ]
 });
 
-// prevents existing tags from being hidden
+/* prevents existing tags from being hidden */
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
+
+/* InactiveUsers */
+InactiveUsers = { months: 2 };

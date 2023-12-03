@@ -14,20 +14,41 @@ $(function() {
 	
 	// Main class
 	var betterUpload = {
-		init: function() {
+		init: function(curr) {
 			// Add custom form submit
 			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
 			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
 			  event.preventDefault();
+			  betterUpload.saveEdit();
 			  betterUpload.attemptUpload();
 			});
+			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) { // Special render for reupload
+				document.querySelector('label[for="wpUploadDescription"]').innerHTML = 'Upload summary:';
+				document.querySelector('label[for="wpUploadDescription"]').setAttribute('for', 'wpUploadSummary');
+				document.querySelector('input#wpUploadDescription').setAttribute('name', 'wpUploadSummary');
+				document.querySelector('input#wpUploadDescription').setAttribute('id', 'wpUploadSummary');
+				var tar = document.querySelector('.mw-htmlform-field-HTMLTextField + .mw-htmlform-field-HTMLTextField');
+				var ren = document.createElement('tr');
+				ren.classList.add('mw-htmlform-field-HTMLTextAreaField');
+				ren.innerHTML =
+				'<td class="mw-label">'+
+					'<label for="wpUploadDescription">Page content:</label>'+
+				'</td>'+
+				'<td class="mw-input">'+
+					'<textarea id="wpUploadDescription" cols="80" rows="8" name="wpUploadDescription" style="font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace;"></textarea>'+
+				'</td>';
+				tar.parentNode.insertBefore(
+					ren,
+					tar.nextSibling
+				);
+			}
 			
 			// Page default changes
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label').innerHTML = 'Page content:';
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-input > textarea').addEventListener('change', betterUpload.renderPreview);
+			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Page content:';
+			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
 			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
-			document.querySelector('textarea#wpUploadDescription').value = window.dev.BetterUpload.default || '';
-			document.querySelector('tr.mw-htmlform-field-Licenses').remove();
+			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (window.dev.BetterUpload.default || '');
+			if (document.querySelector('tr.mw-htmlform-field-Licenses')) { document.querySelector('tr.mw-htmlform-field-Licenses').remove(); }
 			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
 			
 			betterUpload.renderPreview();
@@ -170,9 +191,31 @@ $(function() {
 				}).fail(console.log);
 			}
 		},
+		saveEdit: function() {
+			if (document.querySelector('input#wpUploadSummary')) {
+				var filename = document.querySelector('#wpDestFile').value;
+				var summary = document.querySelector('input#wpUploadSummary');
+				var params = {
+					action: 'edit',
+					title: 'File:'+filename,
+					ignorewarnings: '1',
+					format: 'json',
+					text: document.querySelector('#wpUploadDescription').value,
+					recreate: 1,
+					token: mw.user.tokens.get('csrfToken')
+				};
+				if (summary && summary.value.length>0) {
+					params.summary = summary.value;
+				}
+				if (filename && filename.length>0) {
+					api.post(params);
+				} else { alert('Missing file or file name. Could not save page content.'); }
+			} else {return;}
+		},
 		attemptUpload: function() {
 			var filename = document.querySelector('#wpDestFile').value;
 			var file = document.querySelector('#wpUploadFile').files[0];
+			var comment = document.querySelector('input#wpUploadSummary');
 			var params = {
                 token: mw.user.tokens.get('csrfToken'),
                 filename: filename,
@@ -180,6 +223,9 @@ $(function() {
                 format: 'json',
                 text: document.querySelector('#wpUploadDescription').value
             };
+            if (comment && comment.value.length>0) {
+            	params.comment = comment.value;
+            }
 			if (file && filename && filename.length>0) {
 				var loadFilePage = function() {
 					window.open(
@@ -188,7 +234,7 @@ $(function() {
 					);
 				};
 				api.upload(file, params).then(loadFilePage, loadFilePage);
-			} else { alert('Missing file or file name.'); }
+			} else { alert('Missing file or file name. Could not upload file.'); }
 		},
 	};
 	
@@ -196,22 +242,28 @@ $(function() {
 	mw.loader.using('mediawiki.api').then(function(){
 		// Check we're in Special:Upload
 		if (config.wgCanonicalSpecialPageName == 'Upload') {
+			var titles = [
+				'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
+				'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
+			];
+			if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
+				titles.push('File:'+document.querySelector('#wpDestFile').value);
+			}
 			api.get({
 				action: 'query',
 				prop: 'revisions',
-				titles: [
-					'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
-					'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
-				],
+				titles: titles,
 				rvprop: 'content',
 				rvslots: '*'
 			}).then(function(data){
-				var page = {user: 0, site: 0};
+				var page = {user: -1, site: -1, curr: null};
 				Object.keys(data.query.pages).forEach(function(id){
-					if (data.query.pages[id].title == 'MediaWiki:Gadget-BetterUpload.json') {
+					if (data.query.pages[id].ns == 8) {
 						page.site = id;
-					} else {
+					} else if (data.query.pages[id].ns == 2 && !data.query.pages[id].missing) {
 						page.user = id;
+					} else if (data.query.pages[id].ns == 6 && !data.query.pages[id].missing) {
+						page.curr = data.query.pages[id].revisions[0].slots.main['*'];
 					}
 				});
 				if (page.user == -1) {
@@ -219,18 +271,24 @@ $(function() {
 				} else {
 					window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
 				}
-				if (document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label')) {
-					betterUpload.init();
+				var setInit = function() {
+					if (/wpForReUpload/.test(window.location.href)) { // Special:Upload?wpForReUpload=1
+						betterUpload.init(page.curr);
+					} else { // Special:Upload
+						betterUpload.init();
+					}
+				};
+				if (document.querySelector('#wpUploadDescription')) {
+					setInit();
 				} else {
 					// set up the mutation observer
 					var observer = new MutationObserver(function (mutations, me) {
 						// mutations is an array of mutations that occurred
 						// me is the MutationObserver instance
-						var targetNode = document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label');
+						var targetNode = document.querySelector('#wpUploadDescription');
 						if (targetNode) {
-							betterUpload.init();
 							me.disconnect(); // stop observing
-							return;
+							betterUpload.init();
 						}
 					});
 					// start observing

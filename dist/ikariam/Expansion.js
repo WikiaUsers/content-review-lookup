@@ -128,6 +128,9 @@ function expLoader()
 		shipyard: {
 			name: 'Shipyard',
 		},
+		shrineofolympus: {
+			name: 'Gods&apos; Shrine',
+		},
 		stonemason: {
 			name: 'Stonemason',
 		},
@@ -330,6 +333,18 @@ function expLoader()
 			wood:[105,202,324,477,671,914,1222,1609,2096,2711,3485,4460,5689,7238,9190,11648,14746,18650,23568,29765,37573,47412,59808,75428,95108,119906,151151,190520,240124,302626,381378,480605,605632,763166,961659,1211759,1526886,1923946],
 			marble:[0,0,0,0,0,778,1052,1397,1832,2381,3071,3942,5038,6420,8161,10354,13118,16601,20989,26517,33484,42261,53321,67256,84814,106938,134814,169937,214192,269954,340214,428741,540286,680832,857920,1081051,1362196,1716438],
 			time:{a:64800,b:7,c:1.05,d:7128},
+			get dur(){var t=[],c=this.time;for(var i=0;i<this.maxLevel;i++){var d=Math.round(c.a/c.b*Math.pow(c.c,i+1)-c.d)-(c.e!=undefined?(c.e[i]!=undefined?c.e[i]:0):0);t.push((d>1728e3?1728e3:d));}return t;}
+		},
+		shrineOfOlympus:
+		{
+			buildingId:34,
+			maxLevel:41,
+			wood:[890,1116,1400,1755,2201,2760,3461,4340,5442,6824,8558,10732,13457,16876,21162,26537,33277,41730,52329,65621,82289,103190,129400,162268,203484,255169,319982,401258,503177,630984,791254,992233,1244260,1560302,1956619,2453600,3076815,3858325,4838340,6067278,7608367],
+			wine:[0,0,124,155,194,243,305,381,478,598,749,937,1173,1469,1839,2303,2883,3610,4520,5658,7084,8870,11105,13903,17407,21793,27285,34161,42770,53547,67041,83936,105088,131570,164725,206236,258208,323276,404741,506736,634434],
+			marble:[0,0,0,0,231,299,386,499,646,835,1079,1396,1805,2333,3017,3901,5044,6522,8433,10904,14099,18230,23571,30478,39408,50954,65884,85188,110148,142421,184151,238107,307872,398079,514716,665528,860528,1112662,1438672,1860203,2405243],
+			glass:[0,0,0,0,0,0,0,0,268,347,448,579,749,969,1252,1619,2094,2707,3500,4526,5852,7567,9784,12651,16357,21150,27347,35360,45720,59116,76437,98833,127791,165233,213647,276245,357185,461841,597160,772128,998361],
+			sulfur:[0,0,0,0,0,0,0,0,0,0,133,178,239,320,429,575,770,1032,1383,1853,2483,3327,4458,5973,8004,10726,14372,19259,25807,34581,46339,62094,83206,111497,149406,200203,268273,359485,481710,645492,864959],
+			time:{a:48,b:1,c:1.25,d:0},
 			get dur(){var t=[],c=this.time;for(var i=0;i<this.maxLevel;i++){var d=Math.round(c.a/c.b*Math.pow(c.c,i+1)-c.d)-(c.e!=undefined?(c.e[i]!=undefined?c.e[i]:0):0);t.push((d>1728e3?1728e3:d));}return t;}
 		},
 		stonemason: {
@@ -865,8 +880,9 @@ function expLoader()
 		});
 	});
 }
-var pN = {"Academy":"academy","Alchemist Tower":"alchemist","Architect&apos;s Office":"architect","Barracks":"barracks","Black Market":"blackMarket","Carpenter":"carpentering","Dockyard":"dockyard","Dump":"dump","Embassy":"embassy","Firework Test Area":"fireworker","Forester&apos;s House":"forester","Glassblower":"glassblowing","Governor&apos;s Residence":"palaceColony","Hideout":"safehouse","Museum":"museum","Optician":"optician","Palace":"palace","PirateFortress":"pirateFortress","Sea Chart Archive":"marineChartArchive","Shipyard":"shipyard","Stonemason":"stonemason","Tavern":"tavern","Temple":"temple","Town Hall":"townHall","Town Wall":"wall","Trading Port":"port","Trading Post":"branchOffice","Warehouse":"warehouse","Wine Press":"vineyard","Winegrower":"winegrower","Workshop":"workshop"};
+var pN = {"Academy":"academy","Alchemist Tower":"alchemist","Architect&apos;s Office":"architect","Barracks":"barracks","Black Market":"blackMarket","Carpenter":"carpentering","Dockyard":"dockyard","Dump":"dump","Embassy":"embassy","Firework Test Area":"fireworker","Forester&apos;s House":"forester","Glassblower":"glassblowing","Gods'_Shrine":"shrineofolympus","Governor&apos;s Residence":"palaceColony","Hideout":"safehouse","Museum":"museum","Optician":"optician","Palace":"palace","PirateFortress":"pirateFortress","Sea Chart Archive":"marineChartArchive","Shipyard":"shipyard","Stonemason":"stonemason","Tavern":"tavern","Temple":"temple","Town Hall":"townHall","Town Wall":"wall","Trading Port":"port","Trading Post":"branchOffice","Warehouse":"warehouse","Wine Press":"vineyard","Winegrower":"winegrower","Workshop":"workshop"};
 var pName = mw.config.get('wgPageName').replace('Building:','');
+console.log(pName,Object.keys(pN).indexOf(pName)!=-1);
 if(Object.keys(pN).indexOf(pName)!=-1)
 {
 	if($('div#'+pN[pName]+'_tabber').length==1)

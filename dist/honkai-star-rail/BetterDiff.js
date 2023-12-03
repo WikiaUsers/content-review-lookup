@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision: 11/15/2023 21:44
+// Current revision: 11/30/2023 19:36
 
 $(function() {
 
@@ -131,12 +131,16 @@ $(function() {
 						link.href = href;
 						link.title = page;
 						if (target.nodeType == 3) {
-							var split = /^([^\d\w]*)([\d\w\s]*)([^\d\w]*)$/.exec(target.textContent);
+							var split = /^([^\d\w]*)([\d\w\s]+)([^\d\w]*)$/.exec(target.textContent);
+							var paren = target.parentNode;
+							console.log(target.textContent, 'newdiff split');
 							link.innerHTML = split[2] || 'diff';
-							if (split[1].length>0) {target.parentNode.insertBefore(document.createTextNode(split[1]), target);}
-							target.parentNode.insertBefore(link, target);
-							if (split[3].length>0) {target.parentNode.insertBefore(document.createTextNode(split[3]), target);}
 							target.remove();
+							paren.prepend(
+								split[1].length>0 ? split[1] : "",
+								link,
+								split[3].length>0 ? split[3] : ""
+							);
 							return;
 						} else {
 							link.innerHTML = options.label;
@@ -571,7 +575,6 @@ $(function() {
 						var wrapper = document.querySelector('.patrollink');
 						wrapper.innerHTML = 
 						'[<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="16px" style="vertical-align: middle;" border="0" />]';
-						console.log(link);
 						var torevid = link.getAttribute('torevid');
 						var fromrevid = link.getAttribute('fromrevid');
 						api.get({
@@ -677,7 +680,7 @@ $(function() {
 				}).catch(function(log) {
 					if (rcid && log && log == 'nosuchrevid') {
 						alert('Revision from deleted page detected, opening patrolling page.');
-						window.open('https://genshin-impact.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+						window.open('https://honkai-star-rail.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
 					} else {
 						console.log('tokens', tokens);
 						console.log('error msg:', log);

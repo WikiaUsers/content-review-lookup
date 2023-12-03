@@ -60,7 +60,8 @@ window.RevealAnonIP = {
 function updatetimer(i) {
     var now = new Date();
     var then = timers[i].eventdate;
-    var diff = count = Math.floor((then.getTime() - now.getTime()) / 1000);
+    var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
+    var count = diff;
  
     // bắt chuỗi ngày xấu (catch bad date strings)
     if (isNaN(diff)) {
@@ -91,18 +92,18 @@ function updatetimer(i) {
  
 $(function checktimers() {
     //ẩn "không đếm ngược" và hiện 'đếm ngược' (hide 'nocountdown' and show 'countdown')
-    var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
+    var nocountdowns = document.getElementsByClassName('nocountdown');
     for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
-    var countdowns = getElementsByClassName(document, 'span', 'countdown');
-    for (var i in countdowns) countdowns[i].style.display = 'inline';
+    var countdowns = document.getElementsByClassName('countdown');
+    for (var j in countdowns) countdowns[j].style.display = 'inline';
  
     //thiết lập đối tượng tính giờ và hết giờ toàn cầu. (set up global objects timers and timeouts.)
-    timers = getElementsByClassName(document, 'span', 'countdowndate'); //global
+    timers = document.getElementsByClassName('countdowndate'); //global
     timeouts = new Array(); // generic holder for the timeouts, global
     if (timers.length === 0) return;
-    for (var i in timers) {
-        timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-        updatetimer(i); //start it up
+    for (var k in timers) {
+        timers[k].eventdate = new Date(timers[k].firstChild.nodeValue);
+        updatetimer(k); //start it up
     }
 });
  

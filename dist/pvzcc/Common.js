@@ -125,7 +125,7 @@ UserTagsJS.modules.metafilter = {
     sysop: ['bureaucrat'],
 };
 
-var wiki_name_texts=["Shoot for the moon!","Twinkle twinkle little Starfruit!","Zero gravity!","It's not rocket science!","Black hole!","Orbital strike!","One small step for plants!","One giant leap for plantkind!","Supernova!","The infinite vastness calls!","Deep space!","Fly like a comet!","Let's go!"];
+var wiki_name_texts=["This is war!", "This is war... probably?", "Stand your ground!", "Look out!", "Watch the skies!", "They're everywhere!", "How did we get here?", "For the wiki!", "For the wiki... and pizza!", "For the wiki... and tacos!", "What is even happening at this point?", "That's probably not safe!", "It's a trial!", "It's a trap!", "Trial denial!", "Swords and shields!", "Contains fragile pottery!", "It's a family heirloom!", "Priceless artifacts!", "Treasure chests of... loot!", "Trapped chests aren't very nice!", "We need to tinker!", "Divide and conquer!", "Contested territory!", "Ooh, shiny!", "You're finally awake!", "The great conclusion!", "An epic finale!", "A storied special!", "Keep an eye on the Marigolds!"];
 
 var chosen_index = Math.floor(Math.random() * wiki_name_texts.length);
 

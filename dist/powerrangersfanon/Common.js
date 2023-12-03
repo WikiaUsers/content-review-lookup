@@ -18,6 +18,7 @@ importArticles(
         articles: [   
             'u:pad:MediaWiki:FilterTable.js',
             'u:dev:MediaWiki:MassEdit/code.js',
+            'u:dev:MediaWiki:WHAM/code.2.js',
         ]
     }
 );

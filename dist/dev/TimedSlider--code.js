@@ -56,4 +56,18 @@ jQuery(function ($) {
             }, delayms);
         }
     });
+    
+    // Fix for image loading lazy
+	var intersectionObserver = new IntersectionObserver( function( entries ) {
+		entries.forEach( function( entry ) {
+			if ( entry.isIntersecting ){
+				$( entry.target ).find( 'img' ).attr( 'loading', 'eager' );
+				intersectionObserver.unobserve( entry.target );
+			}
+		});
+	});
+	var observe_targets = document.querySelectorAll( '.ts-container' );
+	observe_targets.forEach( function( element ){
+		intersectionObserver.observe( element );
+	});
 });

@@ -25,15 +25,16 @@ UserTagsJS.modules.custom = {
 	'NANGYLOL' : ['pooper'],
 	'NoiceDrinkz' : ['pooper', 'birthdaycollab'],
 	'RadStink' : ['pooper', 'rosenist', 'rollback'],
-	'KNIGH7YTP' : ['pooper'],
+	'KNIGH7YTP' : ['pooper', 'birthdaycollab'],
 	'XxGOLDENROSENxX' : ['pooper'],
 	'VintagePineapple' : ['pooper'],
 	'PlumsInc' : ['pooper'],
 	'DizzyingKaleidoscope' : ['pooper'],
 	'CJ-Melon' : ['pooper', 'birthdaycollab'],
-	'Fryciopoop' : ['pooper'],
-	'VreyIsGrey' : ['pooper'],
-	'McSentry' : ['pooper']
+	'Fryciopoop' : ['pooper', 'birthdaycollab'],
+	'VreyIsGrey' : ['pooper', 'birthdaycollab'],
+	'McSentry' : ['pooper'],
+	'HuyHanhwww' : ['rosenist']
 };
 /*End of User Tags*/
 

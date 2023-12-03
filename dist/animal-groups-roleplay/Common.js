@@ -37,3 +37,11 @@ $('.book').bind('mouseover', function() {
 $('.book').bind('mouseoff', function() {
   $('.bookcover').fadeOut();
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WHAM/code.2.js',
+        'u:dev:MediaWiki:Nuke/code.js',
+    ]
+});

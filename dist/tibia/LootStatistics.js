@@ -26,6 +26,8 @@
     'Gamemaster': 'Gamemaster (Creature)',
     'Goshnar\'s Greed (Feeding)': 'Goshnar\'s Greed',
     'Hacker': 'Hacker (Creature)',
+    'Lionet': 'Lionet (Creature)',
+    'Mirade': 'Mirade (Creature)',
     'Mooh\'tah Warrior': 'Mooh\'Tah Warrior',
     'Nomad': 'Nomad (Basic)',
     'Northern Pike': 'Northern Pike (Creature)',

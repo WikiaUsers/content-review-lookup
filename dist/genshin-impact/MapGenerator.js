@@ -124,7 +124,6 @@ $(function() {
 				'}\n'+
 				'#TemplateManager {\n'+
 					'width: 600px;\n'+
-					'overflow: hidden;\n'+
 					'position: relative;\n'+
 				'}\n'+
 				'#quickMapGenerator {\n'+
