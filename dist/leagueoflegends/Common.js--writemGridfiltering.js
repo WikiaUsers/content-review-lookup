@@ -1,6 +1,7 @@
 /* Author:     Karol "[[User:Nanaki]]" Dylewski */
 /* License:    CC-BY-SA 3.0 */
  
+ 
 ( function( $ ) {
 	function writemGridFiltering() {
 		var writemGrid = $(writemGridContainer)
@@ -8,7 +9,7 @@
 		if(!writemGridFilteringSwitches()) return
  
 		window.writemGridElements = []
-		writemGrid.find('.writem-icon').each(function() {
+		writemGrid.find('.item-icon').each(function() {
 			var obj = {}
 			var elem = $(this)
 			obj['*'] = elem

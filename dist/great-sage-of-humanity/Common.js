@@ -1,5 +1,29 @@
 /**================================================================================
+ *                 Display None For Reference Headline Without Ref
+ *                                  @Author : Zarenth
+ * ================================================================================*/
+// function hideReferenceHeadline() {
+//     var referenceHeadline = document.getElementById('reference-headline');
+//     var nextElement = referenceHeadline.nextElementSibling;
+
+//     if (nextElement && nextElement.classList.contains('ScrollBox') && !nextElement.querySelector('.mw-references-wrap')) {
+//         referenceHeadline.style.display = 'none';
+//     }
+// }
+// hideReferenceHeadline();
+/**================================================================================
+ *                        Move Indicator next to edit button
+ *         Copied from https://starwars.fandom.com/wiki/MediaWiki:Common.js
+ * ================================================================================*/
+function indicatorBesideEdit() {
+    if ( $( '#article-indicator' ).length && $( '.page-header__actions' ).length ) {
+      $( '.page-header__actions' ).first().prepend( $( '#article-indicator' ).show() );
+    }
+}
+indicatorBesideEdit();
+/**================================================================================
  *                   Default Fairuse License When Uploading File
+ *                                @Author : Zarenth
  * ================================================================================*/
 $(document).on("submit", function (e) {
   if (e.target.id == "mw-upload-form") {
@@ -7,15 +31,6 @@ $(document).on("submit", function (e) {
       .find('[name="wpLicense"] [value=""]:not([disabled])')
       .attr("value", "Fairuse");
   }
-});
-/**================================================================================
- *                        Move Indicator next to edit button
- *         Copied from https://starwars.fandom.com/wiki/MediaWiki:Common.js
- * ================================================================================*/
-$( function indicatorBesideEdit() {
-    if ( $( '#article-indicator' ).length && $( '.page-header__actions' ).length ) {
-      $( '.page-header__actions' ).first().prepend( $( '#article-indicator' ).show() );
-    }
 });
 /**================================================================================
  *                             Link Preview Configuration.

@@ -1,15 +1,7 @@
-/* Случайный главный фон для вики */
-function randomBg() {
-    var imgs = [
-        'https://vignette.wikia.nocookie.net/tlj/images/a/a6/%D0%A4%D0%BE%D0%BD1.jpg/revision/latest?cb=20170228185047&path-prefix=ru',
-        'https://vignette.wikia.nocookie.net/tlj/images/d/d6/%D0%A4%D0%BE%D0%BD3.jpg/revision/latest?cb=20170228185130&path-prefix=ru',
-        'https://vignette.wikia.nocookie.net/tlj/images/3/3c/%D0%A4%D0%BE%D0%BD2.jpg/revision/latest?cb=20170228185108&path-prefix=ru',
-    ];
- 
-    $('body').css('background-image','url(' + imgs[Math.floor((imgs.length) * Math.random())] + ')');
-}
- 
-$(randomBg);
+
+
+
+
 
 /* Новые кнопки в редакторе*/
 if (mwCustomEditButtons) {

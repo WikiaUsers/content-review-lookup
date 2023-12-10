@@ -20,8 +20,10 @@ window.UserTagsJS = {
 		    'Alexis21155': ['asistente'],
 		    'Bloomdanix': ['asistente'],
 		    'Alansanchez412': ['asistente'],
-            'Claudio3862': ['asistente'],
+            'Claudio3862': ['asistente'], 
+            'JLGTAWorld': ['asistente'],
             'UlyssesAlanis14': ['asistente'],
+            'The_Leo%27s_Mind': ['asistente'],
             
             'WKorps': ['veterano'],
             'ClaudeSpeed9425': ['veterano'],

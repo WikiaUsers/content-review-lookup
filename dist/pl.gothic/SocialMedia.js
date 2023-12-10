@@ -17,7 +17,7 @@ mw.loader.using( [ 'mediawiki.api', 'mediawiki.template.mustache' ], function() 
 	
 	/**
 	 * Ta funkcja odpytuje API MediaWiki w celu zdobycia konfiguracji modułu
-	 * mediów społecznościowych przechowywanej na stronie MediaWiki:SocialMedia.json
+	 * mediów społecznościowych przechowywanej na stronie MediaWiki:Custom-SocialMedia.json
 	 */
 	smRail.getJsonConfig = function( callback ) {
 		var jsonConfig;
@@ -25,7 +25,7 @@ mw.loader.using( [ 'mediawiki.api', 'mediawiki.template.mustache' ], function() 
 		new mw.Api().get( {
 			formatversion: 2,
 			action: 'query',
-			titles: 'MediaWiki:SocialMedia.json',
+			titles: 'MediaWiki:Custom-SocialMedia.json',
 			prop: 'revisions',
 			rvprop: [
 				'content',

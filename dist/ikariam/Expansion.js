@@ -130,6 +130,7 @@ function expLoader()
 		},
 		shrineofolympus: {
 			name: 'Gods&apos; Shrine',
+			blesstip: ['Maximum Blessing<br /><b>{0} %</b>','Donated<br />Favour','Blessing<br />per city']
 		},
 		stonemason: {
 			name: 'Stonemason',
@@ -782,6 +783,18 @@ function expLoader()
 								}
 							});
 							$(tr).find('> td:eq('+(res.length+3+i)+') > div').addClass('ikar-tooltip').attr('data-tooltip',LD[bid].extracoltips[6]);
+							break;
+						case 'shrineOfOlympus':
+							if(i==1)
+							{
+								var blesstbl = '<table class="darktable zebra" style="text-align:center;line-height:1.0;border:none !important;background:transparent;font-size:10px;padding:0px;border-collapse:collapse;margin-left:auto;margin-right:auto"><thead><tr><th colspan="2">'+prntf(LD.shrineofolympus.blesstip[0],[3+2*lvl])+'</th></tr><tr><th>'+LD.shrineofolympus.blesstip[1]+'</th><th>'+LD.shrineofolympus.blesstip[2]+'</th></tr></thead><tbody>{0}</tbody></table>';
+								var blesstr = '';
+								for(var z=0;z<=10;z++)
+								{
+									blesstr += '<tr><td>'+(100*z)+'</td><td>'+NumToStr((3+2*lvl)*(0.4+0.6*(z/10)),false,2)+' %</td></tr>';
+								}
+								$(tr).find('> td:eq('+(res.length+3+i)+')').addClass('ikar-tooltip').attr('data-tooltip',prntf(blesstbl,[blesstr]));
+							}
 							break;
 						case 'warehouse':
 							var rw = $(tr).find('> td:eq('+(res.length+3+i)+') > table tr');

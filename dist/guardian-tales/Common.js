@@ -19,6 +19,23 @@ if (!window.lastEdited) {
 	window.lastEdited = { diffModal: false, comment: false };
 }
 
+// loop the video inside class="videoloop"
+var videoLoop = document.querySelectorAll('.videoloop video');
+if (videoLoop) {
+	videoLoop.forEach(function(video) {
+		video.loop = true;
+	});
+}
+
+// add default aspect-ratio to hero illustrations to animate `aspect-ratio` states in [[Template:HeroGallery]]
+var heroCard = document.querySelectorAll('.card__hero');
+if (heroCard.length > 0) {
+	heroCard.forEach(function(cardHero) {
+		var image = cardHero.querySelector('img, video');
+		image.style.setProperty('--illust-aspect-ratio', image.getAttribute('width') + ' \/ ' + image.getAttribute('height'));
+	});
+}
+
 // use original image on map-edit page for lossless quality and accuracy
 if (window.location.search === "?action=mapedit") {
 	setTimeout(function () {

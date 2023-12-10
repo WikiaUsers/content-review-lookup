@@ -44,6 +44,31 @@ nkch_gst_gadgets = [{
 }
 ];
 
+"use strict";
+
+var WidgetBot = document.createElement('script');
+WidgetBot.setAttribute('src', 'https://cdn.jsdelivr.net/npm/@widgetbot/crate@3');
+WidgetBot.setAttribute('async', true);
+WidgetBot.setAttribute('defer', true);
+WidgetBot.onload = function () {
+  return new Crate({
+    server: '277509745080926220',
+    channel: '534838139383054352',
+    glyph: ['https://static.wikia.nocookie.net/marvel/images/c/cc/VenomDiscLogo.gif/revision/latest/scale-to-width-down/200?cb=20210120172230&path-prefix=ru', '100%']
+  });
+};
+document.body.appendChild(WidgetBot);
+
+
+/* Подключение страниц */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:fallout:MediaWiki:Gadget-InterlanguageChecker.js', // InterlanguageChecker
+        // 'MediaWiki:DiscordWidget.js'
+    ]
+});
+
 // Настройка AddRailModule
 window.AddRailModule = ['Template:Проект:Комиксы/Комиксы недели', 'Template:NewPagesModule', 'Template:Уголок'];
 
@@ -54,15 +79,6 @@ window.pPreview.noimage = 'https://static.wikia.nocookie.net/marvel/images/c/c5/
 window.pPreview.RegExp.onlyinclude = ['.mw-parser-output > p a'];
 window.pPreview.RegExp.iparents = ['.ns-special', '.РГ', '.comics-table', '.noPreview'];
 
-/* Подключение страниц */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:fallout:MediaWiki:Gadget-InterlanguageChecker.js', // InterlanguageChecker
-        'MediaWiki:DiscordWidget.js' // InterlanguageChecker
-    ]
-});
-
 // выполнение при готовности страницы
 $(document).ready(function() {
 	// Перемещение эпиграфа в верх на страницах выпуска
@@ -72,21 +88,6 @@ $(document).ready(function() {
 	// Удаление дубля
 	$('.autopream + p > span.lang').parent().css({'display' : 'none'});
 	$('.autopream + p > b').parent().css({'display' : 'none'});
-	
-	// Всплывающая подсказка красных ссылок
-	// mw.loader.using("mediawiki.api").then(
-	// 	function() {
-	// 		if (mw.config.get("skin") !== "fandomdesktop"){
-	// 			return;
-	// 			} else {
-	// 				document.querySelectorAll("a.new").forEach(
-	// 				    function (i) {
-	// 				        i.setAttribute("title", decodeURI(new mw.Uri(i.href).path.replace(mw.config.get("wgScriptPath"), "").replace("/wiki/", "").replace(/_/g, " ")));
-	// 				    }
-	// 				);
-	// 			}
-	// 		}
-	// );
 
 	// Случайная надпись
 	var wiki_name_number=Math.floor(Math.random() * 12);
@@ -151,34 +152,6 @@ window.SpoilerAlertJS = {
     no: 'Нет',
     fadeDelay: 1600
 };
-
-/* Настройка для dev:PreloadTemplates */ 
-preloadTemplates_subpage =  "case-by-case" ;
-
-
-// Глаз на странице поиска
-// $(document).ready(function() {
-// 	$('<div class="error"><div class="error-image"><div class="error-image-animate"></div></div></div>').appendTo('.unified-search__layout__left-rail');
-
-//     // если открыта страница поиска
-//     if (wgCanonicalSpecialPageName === 'Search') 
-//     {
-//         document.onmousemove = function (event) {
-// 		    var width  = window.innerWidth,
-// 				height = window.innerHeight,
-// 		        x = event.x - 450,
-// 				y = event.y - height + 275;
-// 			document.querySelector('.error-image-animate').style.transform = 'rotate(' + 57.2958 * arcctg(x, y) + 'deg';
-
-// 			function arcctg(x, y) {
-// 				if (x > 0 && y > 0) return Math.PI / 2 - Math.atan(x / y);
-// 				if (x < 0 && y > 0) return Math.PI / 2 - Math.atan(x / y);
-// 				if (x < 0 && y < 0) return Math.PI + Math.atan(y / x);
-// 				if (x > 0 && y < 0) return 3 * Math.PI / 2 + Math.abs(Math.atan(x / y));
-// 			}
-// 		}
-//     }
-// });
 
 // "Категории"
 	// Перемещает ссылки, удаляя ненужный контент

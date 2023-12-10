@@ -53,7 +53,7 @@
 	// sets the URL used by query (format=json not appended)
 	function setURL() {
 		url = baseURL;
-		for (var p in urlParameters) {
+		for (var p in urlParameters) {fi
 			url += '&' + p + '=' + urlParameters[p];
 		}
 		var	link = '<a id="qo-url" href="' + url + '">' + url + '</a>';
@@ -661,8 +661,11 @@
 
 				// set filenames
 				$table.find('.TablePager_col_img_name').each(function () {
-					filenames += getFile($(this).children('a:first')) + "\n";
-					count++;
+					var filename = getFile($(this).children('a:first'))
+					if (filename !== "Special:Upload") {
+						filenames += filename + "\n";
+						count++;
+					}
 				});
 				$tr = $('<tr id="filenames-list-tr"><td colspan="6" style="text-align:center; padding:10px;">Here is a raw list of the ' + count + ' filename(s) currently shown on this page, provided by the <a title="w:c:dev:ListFiles" href="https://dev.fandom.com/wiki/ListFiles">ListFiles</a> script on the Fandom Developers Wiki.<br /><textarea id="filenames-list-textarea" style="width:95%; height:150px;"></textarea></td></tr>');
 				$tr.find('#filenames-list-textarea').val(filenames);

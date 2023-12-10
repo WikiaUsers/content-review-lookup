@@ -71,17 +71,23 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     itemGridFilters = {
         'search': 'search',
         'modes' : ['- Game Modes - ',
-            ['Classic 5v5', '• Classic 5v5'],
-            ['ARAM', '• ARAM'],
-            ['FGM', '• FGM Exclusive']
+            ['classic sr 5v5', '• Classic SR 5v5'],
+            ['aram', '• ARAM'],
+            ['FGM', '• FGM']
         ]
     };
-
+    
     /* Config for [[MediaWiki:Common.js/writemGridfiltering.js]] */
     writemGridContainer = '#writem-grid';
     writemGridFilters = {
-        'search': 'search'
-    };
+        'search': 'search',
+        'modes' : ['- Game Modes - ',
+            ['classic sr 5v5', '• Classic SR 5v5'],
+            ['aram', '• ARAM'],
+            ['duel', '• Duel'],
+            ['FGM', '• FGM']
+        ]
+	};
 
     /* Config for [[MediaWiki:Common.js/avatarGridfiltering.js]] */
     avatarGridContainer = '#avatar-grid';

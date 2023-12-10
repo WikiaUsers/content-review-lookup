@@ -40,7 +40,7 @@
 				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
 				'question': '=p',
 				'clear': true,
-				'content': 'local a = require("Module:' + n.full + '")\n' +
+				'content': 'local require2=require\nfunction require() return {getUrl=function() return true end} end\nlocal a = require2("Module:' + n.full + '")\nrequire=require2\n' +
 				'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 			}).always(function(a) {
 				var output;

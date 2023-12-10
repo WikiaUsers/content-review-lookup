@@ -66,8 +66,13 @@
 				if (!sectionH3Span.textContent.length) {
 					var names = spriteSection.querySelectorAll("code[isSprite]");
 					var n = {};
-					for (var i = 0; i < names.length; i++) {
+					var i;
+					for (i = 0; i < names.length; i++) {
 						n[names[i].textContent] = true;
+					}
+					var sprites = spriteSection.querySelectorAll(".spritedoc-box");
+					for (i = 0; i < sprites.length; i++) {
+						shared.backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
 					}
 					if (orgName.length) {
 						shared.addHistory([
@@ -98,6 +103,7 @@
 			var cl = shared.root.querySelector('li[data-pos="' + id + '"]');
 			var codes = cl.querySelectorAll("code[isSprite]") || [];
 			var n = {};
+			shared.backgroundSprites[id] = {sprite: cl.querySelector("canvas")};
 			for (var i = 0; i < codes.length; i++) {
 				var t = codes[i].textContent;
 				n[t] = true;

@@ -38,6 +38,12 @@ $(function() {
     $('span.insertusername').html(mw.config.get('wgUserName'));
 });
 
+importArticle({
+    type: "script",
+    article: [
+        "w:c:dev:DisplayClock/code.js"
+    ]
+});
 
 /* Import modules */
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];

@@ -66,9 +66,9 @@
 			/* - section : header : text - */
 
 			if (window.discussEmbedSortTrending === 1) {
-				discussEmbed.el.section.header.text.$e.innerHTML = mw.msg('recirculation-discussion-title');
+				discussEmbed.el.section.header.text.$e.innerText = mw.msg('recirculation-discussion-title');
 			} else {
-				discussEmbed.el.section.header.text.$e.innerHTML = mw.msg('recirculation-discussions-latest-discussions');
+				discussEmbed.el.section.header.text.$e.innerText = mw.msg('recirculation-discussions-latest-discussions');
 			}
 			discussEmbed.el.section.header.$e.appendChild(discussEmbed.el.section.header.text.$e);
 
@@ -76,7 +76,7 @@
 
 			discussEmbed.el.section.header.link.$e.classList.add("mcf-card-discussions__link");
 			discussEmbed.el.section.header.link.$e.href = encodeURI(mw.config.get("wgServer") + mw.config.get("wgScriptPath") + "/f");
-			discussEmbed.el.section.header.link.$e.innerHTML = mw.msg('recirculation-discussion-link-text');
+			discussEmbed.el.section.header.link.$e.innerText = mw.msg('recirculation-discussion-link-text');
 			discussEmbed.el.section.header.$e.appendChild(discussEmbed.el.section.header.link.$e);
 
 			/* - section : header : link : icon - */
@@ -217,7 +217,7 @@
 								/* - item : user : text - */
 
 								item.user.text.$e.classList.add("mcf-card-discussions__user-subtitle");
-								item.user.text.$e.innerHTML = discussionsThreads[i].createdBy.name;
+								item.user.text.$e.innerText = discussionsThreads[i].createdBy.name;
 								item.user.$e.appendChild(item.user.text.$e);
 
 								/* - item : content - */
@@ -228,7 +228,7 @@
 								/* - item : content : title - */
 
 								item.content.title.$e.classList.add("mcf-card-discussions__content");
-								item.content.title.$e.innerHTML = discussionsThreads[i].title;
+								item.content.title.$e.innerText = discussionsThreads[i].title;
 								item.content.$e.appendChild(item.content.title.$e);
 
 								/* - item : content : meta - */
@@ -239,7 +239,7 @@
 								/* - item : content : meta : forum - */
 
 								item.content.meta.forum.$e.classList.add("mcf-card-discussions__in");
-								item.content.meta.forum.$e.innerHTML = mw.msg("recirculation-discussions-in") + " " + discussionsThreads[i].forumName;
+								item.content.meta.forum.$e.innerText = mw.msg("recirculation-discussions-in") + " " + discussionsThreads[i].forumName;
 								item.content.meta.$e.appendChild(item.content.meta.forum.$e);
 
 								/* - item : content : meta : counters - */
@@ -260,7 +260,7 @@
 
 								/* - item : content : meta : counters : heartText - */
 
-								item.content.meta.counters.heartText.$e.innerHTML = discussionsThreads[i].upvoteCount;
+								item.content.meta.counters.heartText.$e.innerText = discussionsThreads[i].upvoteCount;
 								item.content.meta.counters.$e.appendChild(item.content.meta.counters.heartText.$e);
 
 								/* - item : content : meta : counters : comment - */
@@ -276,7 +276,7 @@
 
 								/* - item : content : meta : counters : commentText - */
 
-								item.content.meta.counters.commentText.$e.innerHTML = discussionsThreads[i].postCount;
+								item.content.meta.counters.commentText.$e.innerText = discussionsThreads[i].postCount;
 								item.content.meta.counters.$e.appendChild(item.content.meta.counters.commentText.$e);
 
 								resolve();
@@ -298,7 +298,7 @@
 					color: "var(--theme-alert-color)"
 				});
 
-				discussEmbed.el.section.error.$e.innerHTML = "An error has occurred. Unable to get a list of messages.";
+				discussEmbed.el.section.error.$e.innerText = "An error has occurred. Unable to get a list of messages.";
 
 				discussEmbed.el.section.$e.appendChild(discussEmbed.el.section.error.$e);
 

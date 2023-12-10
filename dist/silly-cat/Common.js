@@ -35,46 +35,49 @@ window.mapsExtendedConfig = {
     "sortMarkers": "category",
 };
 
-//Automatically expand pages to full-width and hide right bar on FandomDesktop by default
-$(function() {
-    if( !$('body.skin-fandomdesktop').length ){
-        return;
-    }
-	//common.js is loaded BEFORE skin.fandomdesktop.js module.
-	mw.loader.using("skin.fandomdesktop.js").then(function(){
-	    if( !$('.is-content-expanded').length ){
-	        if( ((mw.config.get("wgUserName") === null) ? localStorage.contentwidth : mw.user.options.get('contentwidth')) !== "collapsed"){
-	        	$("button.content-size-toggle").click();
-	    	}
-	    }
-	    if( !$('aside.page__right-rail.is-rail-hidden').length ){
-	    	if( (mw.config.get("wgUserName") !== null) && (mw.user.options.get('rightrailvisible') !== "visible") ){
-	    		$("button.right-rail-toggle").click();
-	    	}
-	    }
-	});
-	// page tools into header (place here to init dropdown function properly.)
-	if(!$('aside.page__right-rail.is-rail-hidden').length){
-		return;
-	}
-	var $box = $('.page-header__top');
-	if(!$box.length){
-		return;
-	}
-	$("#WikiaRail").on("afterLoad.rail", function(){
-		var $pageTools = $('#p-tb');
-		if(!$pageTools.length){
-			return;
-		}
-		var $t = $('<div class="page-header__pagetools"><div class="wds-dropdown"><div class="wds-dropdown__toggle">'+$pageTools.find('h2').text()+'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg></div><div class="wds-dropdown__content wds-is-not-scrollable"></div></div></div>');
-		$pageTools.find('ul').clone().removeClass().addClass('wds-list wds-is-linked').appendTo($t.find("div.wds-dropdown__content"));
-		var $cate = $box.find('.page-header__meta');
-		if($cate.length){
-			$cate.after($t);
-		}
-		else{
-			$box.prepend($t);
-		}
-	});
-	
-});
+// GadgetsStateToggler Config
+nkch_gst_gadgets = [{
+    name: "PageEditInfo",
+    title: "Page Edit Info",
+    description: "Show details about the creator and last edit to the current page."
+}, {
+    name: "adBlock",
+    title: "AdBlock",
+    description: "Blocks all advertisements in Silly Cat Wiki."
+}, {
+    name: "WiderPage",
+    title: "Wider Page",
+    description: "Dynamically hide GlobalNav thus makes the page wider."
+}, {
+    name: "scrollSpy",
+    title: "Scroll Spy",
+    description: "allows selection of multiple files directly from a single dialog box."
+}, {
+    name: "Sillynonymous",
+    title: "Sillynonymous",
+    description: "Replace default fandom's avatar into silly milly cat."
+}, {
+    name: "Snowflake",
+    title: "Snowflake",
+    description: "Adds a falling snow to the Mainpage."
+}, {
+    name: "scrollUpButton",
+    title: "Scroll Up Button",
+    description: "Adds a scroll to top and bottom button."
+}, {
+    name: "uploadMultipleFiles",
+    title: "Upload Multiple Files",
+    description: "allows selection of multiple files directly from a single dialog box."
+}, {
+    name: "Stella",
+    title: "Stella",
+    description: "Displays a list of maintenance categories needing attention on the wiki."
+}, {
+    name: "Modern Changes",
+    title: "Modernized Changes",
+    description: "Modernizes the appearance of pages that show recent changes or logs."
+}, {
+    name: "HydraRevived", 
+    title: "Hydra Revived", 
+    description: "Reintroduces elements from the legacy Hydra skin to FandomDesktop." 
+}];

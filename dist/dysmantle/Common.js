@@ -22,3 +22,10 @@ window.tabberLinks = {
     scrollToTab: true,
     alwaysScroll: true
 };
+
+window.aceCustomSettings = {
+    wrap: true,
+    theme: "nord_dark",
+    tabSize: 2,
+    showInvisibles: true
+};

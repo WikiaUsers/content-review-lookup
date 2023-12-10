@@ -19,6 +19,7 @@
 	var highestID = 0;
 	var loadedSpriteName = {full: ''};
 	var sprites = [];
+	var backgroundSprites = [];
 	var buttons;
 	var imgEle;
 	var canvasCollection = [];
@@ -83,6 +84,7 @@
 			window.history.forward();
 			return;
 		}
+		if (document.getElementById('sprite-root')) return; // Don't recreate the view if the editor is used as a previewer.
 		myData.run();
 	});
 
@@ -155,10 +157,9 @@
 		return c;
 	}
 	function indexNames(name) {
-		const _indexFilter = function(ele) {
+		return Array.from(document.querySelectorAll("code[isSprite]")).filter(function(ele) {
 			return ele.innerText === name;
-		};
-		return Array.from(document.querySelectorAll("code[isSprite]")).filter(_indexFilter);
+		});
 	}
 	function markDuplicateNames(list) {
 		var names = Object.keys(list);
@@ -166,8 +167,7 @@
 			var eleList = indexNames(names[i]);
 			var length = eleList.length;
 			for (var j = 0; j < length; j++) {
-				var obj = eleList[j];
-				obj.classList[length > 1 ? "add" : "remove"]("spriteedit-dupe");
+				eleList[j].classList[length > 1 ? "add" : "remove"]("spriteedit-dupe");
 			}
 		}
 		var disable = root.querySelectorAll(".spriteedit-dupe").length ? true : false;
@@ -195,24 +195,22 @@
 				name: sections[i].querySelector("span").textContent,
 				id: secId
 			} );
-			var boxes = sections[i].querySelector(".spritedoc-boxes").children;
-			for (var j = 0; j < boxes.length; j++) {
-				var names = boxes[j].querySelectorAll(".spritedoc-name");
-				for (var k = 0; k < names.length; k++) {
-					var name = names[k].children[0];
-					if (options.removeDeprecatedNames && name.classList.contains("spritedoc-deprecated")) continue;
-					if (boxes[j].dataset.pos === "null") continue;
-					var p = options.removeUnusedSprites && options.removeWhitespace && boxes[j].dataset.posTmp || boxes[j].dataset.pos;
-					a.ids[name.textContent] = {
-						pos: p,
-						section: secId
-					};
-					
-					var flags = window.SpriteEditorModules.main.flags;
-					for (var l = 0; l < flags.length; l++) {
-						if (name.classList.contains("spritedoc-" + flags[l][0])) {
-							a.ids[name.textContent][flags[l][0]] = true;
-						}
+			var names = sections[i].querySelectorAll(".spritedoc-name");
+			for (var k = 0; k < names.length; k++) {
+				var dataset = names[k].closest(".spritedoc-box").dataset;
+				var name = names[k].children[0];
+				if (options.removeDeprecatedNames && name.classList.contains("spritedoc-deprecated")) continue;
+				if (dataset.pos === "null") continue;
+				var p = options.removeUnusedSprites && options.removeWhitespace && dataset.posTmp || dataset.pos;
+				a.ids[name.textContent] = {
+					pos: p,
+					section: secId
+				};
+				
+				var flags = window.SpriteEditorModules.main.flags;
+				for (var l = 0; l < flags.length; l++) {
+					if (name.classList.contains("spritedoc-" + flags[l][0])) {
+						a.ids[name.textContent][flags[l][0]] = true;
 					}
 				}
 			}
@@ -350,18 +348,13 @@
 		}
 		var coordsOld;
 		if (keepOldSprites) { // Copy old sprites to new canvas
-			var rowsOrg = Math.ceil(imgEle.naturalHeight / imgHeight);
-			for (i = 0; i < rowsOrg; i++) { // Rows
-				for (var j = 0; j < options.spritesPerRowOrg; j++) { // Columns
-					sID = i * options.spritesPerRowOrg + j + 1;
-					if (drawn[sID] || sID > toShare.highestPos) continue;
-					coordsOld = getPosCoords(sID, true);
-					coords = getPosCoords(sID, false);
-					ctx.drawImage(imgEle,
-						coordsOld.x, coordsOld.y, imgWidth, imgHeight, // Source coords.
-						coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
-					);
-				}
+			var list = Object.keys(backgroundSprites);
+			for (i = 0; i < list.length; i++) {
+				coords = getPosCoords(list[i], false);
+				ctx.drawImage(backgroundSprites[list[i]].sprite,
+					0, 0, imgWidth, imgHeight, // Source coords.
+					coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
+				);
 			}
 		}
 		sID = output.settings.pos || 1;
@@ -498,6 +491,7 @@
 		var d = offset;
 		var names;
 		var i;
+		var sprites;
 		var n = {};
 		if (typeof(c[d]) === "function") {
 			c[d]();
@@ -510,6 +504,9 @@
 			var list = c[4].querySelectorAll(".spritedoc-name code[isSprite]");
 			for (i = 0; i < list.length; i++) {
 				n[list[i].textContent] = true;
+			}
+			if (backgroundSprites[c[3]]) {
+				delete backgroundSprites[c[3]];
 			}
 			sortSection(c[2]);
 			markDuplicateNames(n);
@@ -544,6 +541,10 @@
 		} else if (c[d] === "section-rename") {
 			root.querySelector('div[data-section-id="' + c[2] + '"] span').textContent = c[3 + offset];
 		} else if (c[d] === "section-added") {
+			sprites = c[3].querySelectorAll(".spritedoc-box");
+			for (i = 0; i < sprites.length; i++) {
+				backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
+			}
 			names = c[3].querySelectorAll("code[isSprite]");
 			root.removeChild(c[3]);
 			for (i = 0; i < names.length; i++) {
@@ -555,6 +556,10 @@
 				root.appendChild(c[3]);
 			} else {
 				root.insertBefore(c[3], Array.from(root.children)[c[5]]);
+			}
+			sprites = c[3].querySelectorAll(".spritedoc-box");
+			for (i = 0; i < sprites.length; i++) {
+				delete backgroundSprites[Number(sprites[i].dataset.pos)];
 			}
 			names = c[3].querySelectorAll("code[isSprite]");
 			for (i = 0; i < names.length; i++) {
@@ -678,7 +683,11 @@
 			icon: icon,
 			label: lbl,
 			invisibleLabel: false,
-			title: tooltip
+			title: tooltip,
+			flags: [
+				'primary',
+				'progressive'
+			]
 		} );
 	}
 	function addFile(f, ele) {
@@ -698,22 +707,17 @@
 				var posID = toShare.highestPos;
 				var secID = ele.closest(".spritedoc-section").dataset.sectionId;
 				helper.addSprite(posID, imgEle);
-				var cl = getSpriteBox(posID, [[fname, false]]);
-				var spd = ele.closest(".spritedoc-box");
-				spd.parentElement.insertBefore(cl, spd);
 				addHistory([
 					"sprite-added",
 					"sprite-removed",
 					String(secID),
 					String(posID),
-					cl,
+					getSpriteBox(posID, [[fname, false]]),
 					posID - 1,
 					posID
 				]);
-				var abc = {};
-				abc[fname] = true;
-				markDuplicateNames(abc);
-				sortSection(secID);
+				historyPos--;
+				moveHistory(1);
 			});
 		};
 		reader.readAsDataURL(f);
@@ -794,18 +798,8 @@
 				msg("flip-v-hover").plain()
 			),
 		};
-
-		buttons.changeSprite.setFlags(['primary', 'progressive']);
-		buttons.defaultSprite.setFlags(['primary', 'progressive']);
 		buttons.deleteSprite.setFlags(['primary', 'destructive']);
-		buttons.downloadSprite.setFlags(['primary', 'progressive']);
-		buttons.moveSprite.setFlags(['primary', 'progressive']);
-		buttons.rotateSpriteLeft.setFlags(['primary', 'progressive']);
-		buttons.rotateSpriteRight.setFlags(['primary', 'progressive']);
-		buttons.mirrorSpriteHorizontal.setFlags(['primary', 'progressive']);
-		buttons.mirrorSpriteVertical.setFlags(['primary', 'progressive']);
 		buttons.mirrorSpriteVertical.$icon.get(0).style.transform = "rotate(90deg)";
-
 		if (hasEditPermission) {
 			$(ele2).append(buttons.changeSprite.$element);
 			$(ele2).append(buttons.defaultSprite.$element);
@@ -939,14 +933,15 @@
 			document.body.removeChild(menu);
 			selectedEle.setAttribute("ghost", "true");
 			var sections = root.querySelectorAll(".spritedoc-section");
+			var ele = document.createElement("div");
+			ele.textContent = "Click to move.";
+			ele.classList.add("section-move-overlay");
 			for (var i = 0; i < sections.length; i++) {
 				var box = sections[i].querySelector(".spritedoc-boxes");
-				var ele = document.createElement("div");
-				ele.textContent = "Click to move.";
-				ele.classList.add("section-move-overlay");
-				ele.dataset.section = sections[i].dataset.sectionId;
-				ele.addEventListener("click", moveSpriteClick);
-				box.append(ele);
+				var ele2 = ele.cloneNode(true);
+				ele2.dataset.section = sections[i].dataset.sectionId;
+				ele2.addEventListener("click", moveSpriteClick);
+				box.append(ele2);
 			}
 			updateToolbar();
 		});
@@ -1336,7 +1331,7 @@
 				mainItems: new OO.ui.ButtonGroupWidget({items: [
 					buttons.newSection,
 					buttons.sortSections,
-					//buttons.reorder,
+					buttons.reorder,
 					buttons.deprecated,
 					buttons.deprecated2
 				]}),
@@ -1526,7 +1521,8 @@
 				markDuplicateNames: markDuplicateNames,
 				canvasCollection: canvasCollection,
 				addHistory: addHistory,
-				root: root
+				root: root,
+				backgroundSprites: backgroundSprites
 			});
 			if (window.SpriteEditorModules.reorder) {
 				window.SpriteEditorModules.reorder.setSharedData({
@@ -1536,7 +1532,8 @@
 					imgWidth: imgWidth,
 					imgHeight: imgHeight,
 					addHistory: addHistory,
-					root: root
+					root: root,
+					backgroundSprites: backgroundSprites
 				});
 			}
 			if (window.SpriteEditorModules.diff) {
@@ -1580,6 +1577,22 @@
 			for (var i = 0; i < output.sections.length; i++) {
 				newSection(output.sections[i]);
 			}
+			for (var k = 0; k < toShare.highestPos; k++) {
+				if (root.querySelector('li[class="spritedoc-box"][data-pos="' + k + '"]')) continue;
+				var c = document.createElement("canvas");
+				c.width = imgWidth;
+				c.height = imgHeight;
+				var ctxOld = c.getContext('2d');
+				var coords = getPosCoords(k, true);
+				ctxOld.drawImage(imgEle,
+					coords.x, coords.y, imgWidth, imgHeight, // source coords
+					0, 0, c.width, c.height // canvas coords
+				);
+				backgroundSprites[k] = {
+					sprite: c
+				};
+			}
+			
 			if (options.isNew && options.createSampleSection) {
 				newSection({
 					id: 1,
@@ -1613,33 +1626,32 @@
 			}
 			api.get(Object.assign(requestData, c || {})).done(function(data) {
 				var i;
-				if (data.query.userinfo && data.query.userinfo.blockid)
+				if (data.query.userinfo && data.query.userinfo.blockid) {
 					hasEditPermission = false;
-				if (hasEditPermission && data.query.pages && data.query.pages.length) {
+					loadSprite3();
+					return;
+				}
+				if (data.query.pages && data.query.pages.length) {
 					for (var j = 0; j < 2; j++) {
 						for (i = 0; i < data.query.pages[j].protection.length; i++) {
 							if (!hasEditPermission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
 								hasEditPermission = false;
-								break;
+								loadSprite3();
+								return;
 							}
 						}
 					}
 				}
 				if (!tagExists && data.query.tags && data.query.tags.length) {
-					for (i = 0; i < data.query.tags.length; i++) {
-						if (data.query.tags[i].name === "spriteeditor") {
-							tagExists = true;
-							tagActive = data.query.tags[i].active;
-						}
+					var entry = data.query.tags.find(function(a) {return a.name === "spriteeditor";});
+					if (typeof(entry) === "object") {
+						tagExists = true;
+						tagActive = entry.active;
 					}
 				}
 				if (data.query.userinfo && data.query.userinfo.rights) {
-					if (data.query.userinfo.rights.indexOf( 'managechangetags' ) > 0) {
-						hasNewTagPermission = true;
-					}
-					if (data.query.userinfo.rights.indexOf( 'applychangetags' ) > 0) {
-						hasTagPermission = true;
-					}
+					hasNewTagPermission = data.query.userinfo.rights.indexOf( 'managechangetags' ) > 0;
+					hasTagPermission = data.query.userinfo.rights.indexOf( 'applychangetags' ) > 0;
 				}
 				if (data.continue) {
 					loadSprite2(data.continue);
@@ -1649,6 +1661,8 @@
 			});
 		}
 		function loadNew(sizeW, sizeH, spacing) {
+			sizeW = typeof(sizeW) === "undefined" && options.defaultSpriteSize || sizeW;
+			sizeH = typeof(sizeH) === "undefined" && options.defaultSpriteSize || sizeH;
 			output = Object.assign(blankJSON);
 			output.settings = {};
 			output.sections = [];
@@ -1680,35 +1694,35 @@
 			imgEle.style.width = "0";
 			imgEle.style.height = "0";
 			imgEle.crossOrigin = '*';
-			if (!isNew) {
-				api.get({
-					'action': 'scribunto-console',
-					'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
-					'question': '=p',
-					'clear': true,
-					'content': 'local require2=require\nfunction require() return {getUrl=function() return true end} end\nlocal a = require2("Module:' + loadedSpriteName.full + '")\nrequire=require2\n' +
-					'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
-				}).always(function(a) {
-					if (!a.return) {
-						loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
-					} else {
-						output = JSON.parse(a.return);
-						output.settings = output.settings || {};
-						output.ids = output.ids || {};
-						output.sections = output.sections || [];
-						imgEle.src = helper.filepath(output.settings.image || name.name + ".png");
-						document.body.append(imgEle);
-						imgEle.addEventListener("error", function() {
-							loadNew(options.defaultSpriteSize, options.defaultSpriteSize);
-						});
-						imgEle.addEventListener("load", function() {
-							loadSprite2();
-						});
-					}
-				});
-			} else {
+			if (isNew) {
 				loadNew(spriteSizeW, spriteSizeH, spacing);
+				return;
 			}
+			api.get({
+				'action': 'scribunto-console',
+				'title': 'Module:SpriteEditorDummy', // Dummy name (Doesn't need to exist)
+				'question': '=p',
+				'clear': true,
+				'content': 'local require2=require\nfunction require() return {getUrl=function() return true end} end\nlocal a = require2("Module:' + loadedSpriteName.full + '")\nrequire=require2\n' +
+				'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
+			}).always(function(a) {
+				if (!a.return) {
+					loadNew();
+					return;
+				}
+				output = JSON.parse(a.return);
+				output.settings = output.settings || {};
+				output.ids = output.ids || {};
+				output.sections = output.sections || [];
+				imgEle.src = helper.filepath(output.settings.image || name.name + ".png");
+				imgEle.addEventListener("error", function() {
+					loadNew();
+				});
+				imgEle.addEventListener("load", function() {
+					loadSprite2();
+				});
+				document.body.append(imgEle);
+			});
 		}
 		myData.preload = function(args) {
 			if (--preloads > 0) return;

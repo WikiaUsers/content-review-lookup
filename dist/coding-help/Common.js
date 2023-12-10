@@ -48,3 +48,5 @@ window.UserTagsJS = {
 		'bot-global': { link: 'Project:Bots' }
 	}
 };
+
+window.ExternalLinkWarningNamespaces = ['Message_Wall', '0', '1'];

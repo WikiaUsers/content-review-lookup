@@ -14,7 +14,7 @@ if (listItems.length > 10){
   $('div#mw-customcollapsible-list').addClass('mw-collapsed');
 }
 
-$('div#mw-customcollapsible-list').before('This list includes '+listItems.length+' items. <small id="show-hide-button">(<a class="mw-customtoggle-list" style="cursor:pointer;">show / hide</a>)</small>');
+$('div#mw-customcollapsible-list').before('<span>This list includes '+listItems.length+' items. <small id="show-hide-button">(<a class="mw-customtoggle-list">show / hide</a>)</small></span>');
 
 /* Hide link returning to base page on subpages in the main namespace */
 

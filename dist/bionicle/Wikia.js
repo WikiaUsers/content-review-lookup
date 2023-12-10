@@ -1,1 +1,0 @@
-$('ul.tools li:first-child').after('<li><a href="/index.php?title=w:c:lego.answers">Ask a question about BIONICLE!</a></li>');

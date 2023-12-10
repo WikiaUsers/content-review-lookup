@@ -31,11 +31,12 @@ window.importScriptURICallback = jQuery.getScript;
 window.UserTagsJS = {
     modules: {},
     tags: {
+        'staff': { link: 'Project:职员团队' },
+        'wiki-representative': { link: 'Help:Fandom代表' },
+        'soap': { link: 'Help:SOAP' },
+        'fandom-star': { link: 'Help:Fandom之星' },
         'bureaucrat': { link: 'Project:社区中心团队' },
-        'helper': { link: 'Project:国际团队' },
-        'staff': { link: 'Project:员工团队' },
         'sysop': { link: 'Project:社区中心团队' },
-        'vstf': { link: 'Help:VSTF' },
         'content-moderator': { link: 'Project:PVT' },
 
 /* The CPT project has been archived
@@ -68,11 +69,13 @@ UserTagsJS.modules.metafilter = {
 */
 // But again, we've got PVT-ZH!
 UserTagsJS.modules.custom = {
-    'Winston Sung': ['pvt', 'pvt-zh'],
     '机智的小鱼君': ['pvt', 'pvt-zh'],
+    'Winston Sung': ['pvt', 'pvt-zh'],
+    'MysticNebula70': ['pvt', 'pvt-zh'],
     '铁桶': ['pvt', 'pvt-zh'],
     'Lakejason0': ['pvt', 'pvt-zh'],
-    'Dianliang233': ['pvt', 'pvt-zh']
+    'Dianliang233': ['pvt', 'pvt-zh'],
+    'Adaihappyjan': ['pvt', 'pvt-zh']
 };
 UserTagsJS.modules.metafilter = {
 	'pvt': ['pvt-zh']

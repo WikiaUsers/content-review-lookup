@@ -19,12 +19,121 @@ $(document).ready(function() {
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
+	$("span#chooseTwoHarness").html('<div id="chooseTwoInput">' +
+		'<div id="firstChoice">' +
+    		'<div id="firstChoiceOption"> First Choice:' +
+        	'<select name="firstChoiceChoice" id="firstChoiceChoice">' +
+        	'</select>' +
+    	'</div>' +
+		'<div id="firstChoiceLevel">' +
+    		'<div id="firstChoiceLvl"> First Choice Level:' +
+        	'<select name="firstChoiceLevel" id="firstChoiceLevel">' +
+        	'</select>' +
+    	'</div>' +
+    	'<div id="secondChoice">' +
+    		'<div id="secondChoiceOption"> Second Choice:' +
+        	'<select name="secondChoiceChoice" id="secondChoiceChoice">' +
+        	'</select>' +
+    	'</div>' +
+		'<div id="secondChoiceLevel">' +
+    		'<div id="secondChoiceLvl"> Second Choice Level:' +
+        	'<select name="secondChoiceLevel" id="secondChoiceLevel">' +
+    	    '</select>' +
+    	'</div>' +
+	'</div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
    var heroAbilityDPH = [0];
    var heroAbilitySpeed = [];
    var heroLevel = 0;
    var deathDamageArray = [];
+   	/* Auxillary functions to refresh the level options for the choices
+    Call on initialisation and whenever the choice is amended */
+    function refreshFirstLevelChoices() {
+    	var firstChoiceName = $("select#firstChoiceChoice option:selected").text();
+        var levelCap = dictLevelCaps[firstChoiceName];
+        var firstLevelChoices = $("select#firstChoiceLevel");
+    	firstLevelChoices.empty();
+    	for (i = 0; i < levelCap; i++) {
+    		firstLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
+    	}
+    }
+    function refreshSecondLevelChoices() {
+    	var secondChoiceName = $("select#secondChoiceChoice option:selected").text();
+        var levelCap = dictLevelCaps[secondChoiceName];
+        var secondLevelChoices = $("select#secondChoiceLevel");
+    	secondLevelChoices.empty();
+    	for (i = 0; i < levelCap; i++) {
+    		secondLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
+    	}
+    }
+    // Function to initialise the options we have available
+    function initChoices() {
+    	// Temporarily enable all options (we will disable one later)
+        $("select#firstChoiceChoice").children().prop('disabled',false);
+        $("select#secondChoiceChoice").children().prop('disabled',false);
+    	// Initialize selections to the first and second items, respectively
+        $("select#firstChoiceChoice option[value=0]").prop('selected',true);
+    	$("select#secondChoiceChoice option[value=1]").prop('selected',true);
+    	// Also disable the first item for second choice and second item for first choice
+    	$("select#secondChoiceChoice option[value=0]").prop('disabled',true);
+    	$("select#firstChoiceChoice option[value=1]").prop('disabled',true);
+    }
+   /* Initialize the choices
+   We first start by writing down level caps corresponding to each choice */
+    var dictLevelCaps = {
+    	"Choice 1": 1,
+        "Choice 2": 2,
+        "Choice 3": 3,
+        "Choice 4": 4,
+        "Choice 5": 5,
+    	"Choice 6": 6
+    };
+    /* 
+    Fix the options available to us. TODO: Make the options vary by page
+    Alternatively, we could create separate harnesses and separate inputs for each
+    This would enable testing on other pages
+    */
+    pageName = mw.config.get('wgTitle');
+    var options = [];
+    switch (pageName) {
+    	case ("Modifiers Test"):
+    		options = ["Choice 1", "Choice 3", "Choice 5", "Choice 6"];
+    		break;
+    	case ("Modifiers Test 2"):
+    		options = ["Choice 1", "Choice 2", "Choice 4", "Choice 6"];
+    		break;
+    	default:
+    		options = ["Choice 1", "Choice 2", "Choice 3"];
+    }
+	// Insert options
+    for (i = 0; i < options.length; i++) {
+        $("select#firstChoiceChoice").append($("<option></option>").attr("value",i).text(options[i]));
+        $("select#secondChoiceChoice").append($("<option></option>").attr("value",i).text(options[i]));
+    }
+    // Initialize options
+    initChoices();
+    refreshFirstLevelChoices();
+    refreshSecondLevelChoices();
+	// The below two functions disable the option for the other choice that the changed choice is picking
+   $("select#firstChoiceChoice").change(function() {
+   		// Identify the choice to disable, and enable all other choices
+  		var firstChoice = $("select#firstChoiceChoice").val();
+    	var choiceToDisable = $("select#secondChoiceChoice option[value=" + firstChoice + "]");
+    	choiceToDisable.prop('disabled',true);
+    	choiceToDisable.siblings().prop('disabled',false);
+		
+		refreshFirstLevelChoices();
+   });
+   $("select#secondChoiceChoice").change(function() {
+   	    // Identify the choice to disable, and enable all other choices
+  		var secondChoice = $("select#secondChoiceChoice").val();
+    	var choiceToDisable = $("select#firstChoiceChoice option[value=" + secondChoice + "]");
+    	choiceToDisable.prop('disabled',true);
+    	choiceToDisable.siblings().prop('disabled',false);
+    	
+		refreshSecondLevelChoices();
+   });
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
 	  $(this).attr("title", initialStr);
@@ -1171,6 +1280,10 @@ $(document).ready(function() {
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP").val("0").change();
+		// Reinitialise the choices
+		initChoices();
+    	refreshFirstLevelChoices();
+    	refreshSecondLevelChoices();
 		if (document.getElementById("hammerJamBoost") != null) {
 			document.getElementById("hammerJamBoost").checked = false;
 		}

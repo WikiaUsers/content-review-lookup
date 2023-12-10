@@ -11,7 +11,7 @@
 	var msg;
 	var sprites = [];
 	myData.modal = modal;
-
+	
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
@@ -48,9 +48,10 @@
 			c.style.width="32px";
 			var s = shared.root.querySelector('li[class="spritedoc-box"][data-pos="' + this.data.substr(6) + '"]');
 			var ctxOld = c.getContext('2d');
+			var p = this.data.substr(6);
 			if (!s) {
-				ctxOld.fillStyle = "blue";
-				ctxOld.fillRect(0, 0, c.width, c.height);
+				ctxOld.drawImage(shared.backgroundSprites[Number(p)].sprite, 0, 0);
+				c.style.opacity = 0.2;
 			} else {
 				sprites[Number(this.data.substr(6))] = s;
 				ctxOld.drawImage(s.querySelector("canvas"), 0, 0);
@@ -59,6 +60,8 @@
 				.addClass( 'demo-simpleWidget' )
 				.append( $(c) );
 			this.$element.get(0).dataset.spriteid = this.data.substr(6);
+			if (!s)
+				this.$element.get(0).dataset.spriteidorg = p;
 		};
 		/* Setup */
 		OO.inheritClass( Demo.SimpleWidget, OO.ui.Widget );
@@ -101,25 +104,37 @@
 		var tmp = shared.root.children[0];
 		var eleList = document.querySelectorAll('div.spriteedit-reorder .oo-ui-draggableElement');
 		const changes = [];
+		const changesBackground = [];
 		for (var i = 0; i < eleList.length; i++) {
 			var old = eleList[i].dataset.spriteid;
 			if ((shared.spriteData.settings.pos || -1) === Number(old))
 				changes.push(["pos", Number(old), i + 1]);
-			if (!shared.root.querySelector('li[class="spritedoc-box"][data-pos="' + old + '"]')) continue;
 			if (Number(old) === i + 1) continue;
+			if (!shared.root.querySelector('li[class="spritedoc-box"][data-pos="' + old + '"]')) { // Moved background
+				changesBackground.push([shared.backgroundSprites[Number(old)], old, String(i + 1)]);
+				continue;
+			}
 			changes.push([sprites[Number(old)], old, i + 1]);
 		}
 		const _func = function(is_undo) {
 			var settings = shared.spriteData.settings;
-			for (var i = 0; i < changes.length; i++) {
+			var i;
+			for (i = 0; i < changes.length; i++) {
 				if (changes[i][0] === "pos") {
 					settings.pos = changes[i][is_undo ? 1 : 2];
 					continue;
 				}
 				changes[i][0].dataset.pos = changes[i][is_undo ? 1 : 2];
 			}
+			for (i = 0; i < changesBackground.length; i++) {
+				delete shared.backgroundSprites[ changesBackground[i][is_undo ? 2 : 1] ];
+			}
+			for (i = 0; i < changesBackground.length; i++) {
+				shared.backgroundSprites[ changesBackground[i][is_undo ? 1 : 2] ] = changesBackground[i][0];
+			}
 		};
-		if (!changes.length) return;
+		myData.changedBackgroundTiles = changesBackground;
+		if (!changes.length && !changesBackground.length) return;
 		_func(false);
 		shared.addHistory([
 			function() {_func(true);},

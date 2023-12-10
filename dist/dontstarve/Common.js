@@ -3,6 +3,11 @@
 /* Most scripts can be refered to http://dev.wikia.com */
 /* ######################################################################### */
 
+importArticles({
+    type: "script",
+    article: "u:dev:CopyText/code.js",
+});
+
 
 /* ######################################################################### */
 /* Wiki log setting
@@ -31,36 +36,6 @@ window.UserTagsJS = {
 UserTagsJS.modules.mwGroups = ['bot', 'bureaucrat', 'chatmoderator','content-moderator', 'sysop', 'inactive', 'rollback', 'bannedfromchat', 'sysop', 'threadmoderator'];
 UserTagsJS.modules.inactive = 30; // 30 days
 
-/* ######################################################################### */
-/* END Wiki log setting
-/* ######################################################################### */
-
-
-/* ######################################################################### */
-/* Blog and Forum control setting */
-/* ######################################################################### */
-
-window.LockOldBlogs = {
-    expiryDays: 30,
-    expiryMessage: "This blog is considered archived because it hasn\'t been commented on in over <expiryDays> days. The conversation is considered over. There is no need to comment.",
-    nonexpiryCategory: "Never archived blogs"
-}; 
-
-window.LockForums = {
-    expiryDays: 30,
-    expiryMessage: "This forum has been automatically archived because its most recent comment is over <expiryDays> days old.",
-    warningDays: 25,
-    warningMessage: "This forum is now <actualDays> days old; please do not comment unless it is absolutely necessary. This forum will archive automatically when the last comment is <expiryDays> days old.",
-    banners: false,
-    ignoreDeletes: true,
-    warningPopup: true,
-    warningPopupMessage: "By posting on an old forum you may be filling up the e-mail boxes of many people who are still following this topic but are not interested in the discussion anymore. Are you sure you want to do this?",
-    disableOn: ["156904"],
-};
-
-/* ######################################################################### */
-/* END Blog and Forum control setting */
-/* ######################################################################### */
 
 
 /* ######################################################################### */
@@ -75,42 +50,6 @@ $(function() {
     $('span.insertusername').html(mw.config.get('wgUserName'));
 });
 
-/* ######################################################################### */
-/* END {{Username}} setting */
-/* ######################################################################### */
-
-
-/* ######################################################################### */
-/* {{Games}} setting */
-/* ######################################################################### */
- 
-// Description: Add game icons to top right corner of articles
-// Credit:      User:Porter21
- 
-$(function addTitleIcons() {
-   if (skin == 'monobook' || skin == 'oasis') {
-      var insertTarget;
- 
-      switch (skin) {
-         case 'monobook':
-            insertTarget = $('#firstHeading');
-            break;
-         case 'oasis':
-            if (wgAction != 'submit' && wgNamespaceNumber != 112) {
-               insertTarget = $('#WikiaPageHeader');
-            }
-            break;
-      }
- 
-      if (insertTarget) {
-         $('#directory-in-header').css('position', 'absolute').prependTo(insertTarget);
-      }
-   }
-});
- 
-/* ######################################################################### */
-/* END {{Games}} setting */
-/* ######################################################################### */
 
 
 /* ######################################################################### */
@@ -130,48 +69,12 @@ PFD_templates = [{
  
 PFD_requireLicense = true;
 
-/* ######################################################################### */
-/* END PreloadFileDescription */
-/* ######################################################################### */
 
 /* ######################################################################### */
-/* Lock old comments script*/
-/**
-Code that prevents people from replying to comments older than a year. Once the reply button is clicked, it will be replaced with a message. The style of this message is controlled by div.DSWOldCommentWarning class in the Wiki's CSS.
-This was attempted to be imported by the ImportJS, however that doesn't seem to reliably work, sometimes import is attempted before the importer code loads, making the imports not work until the page is refreshed.
-**/
-/* ######################################################################### */
- 
-(function ($) {
-    $("#WikiaArticleComments").on("focus","ul.comments li.SpeechBubble button.article-comm-reply",function(event){
-        var button= $(this);
-        var permalink = button.parent().siblings(".permalink").first();
- 
-        var lastSegment = permalink.attr("href").split('/').pop();
-        var datepart = lastSegment.split('-')[2].slice(0,8); // YYYYMMDD
-        var year = datepart.slice(0,4);
-        var month = datepart.slice(4,6);
-        var day = datepart.slice(6,8);
-        var currentDate = new Date();
-        var commentDate = new Date(year, month - 1, day ); // months count from 0
-        var diffMilliseconds = currentDate.getTime() - commentDate.getTime();
-        var diffDays = Math.floor(diffMilliseconds / 1000 / 60 / 60 / 24);
- 
-        if (diffDays > 365)
-        {
-            event.stopImmediatePropagation();
-            button.after('<div class="DSWOldCommentWarning" style="float:right;"><p>This comment is too old to reply.</p></div>');
-            button.remove();
-        }
- 
-    });
-})(this.jQuery);
-/* ######################################################################### */
-/* End lock old comments */
+/* Collapsible tables */
 /* ######################################################################### */
 
 /* The following is code to allow collapsible tables from the Templates wiki - Bluegiest */
-
 /**
  * Collapsible tables ********************************************************
  *
@@ -269,3 +172,69 @@ function createCollapseButtons() {
 }
 
 $( createCollapseButtons );
+
+/* ######################################################################### */
+/* Table Filters */
+/* ######################################################################### */
+
+/* Table Filters
+ * Copied from [[w:c:starwars]]
+ * Show/hide for media timeline -- Grunny
+ * modified from Queron
+ **/
+$( function () {
+	if( !$( '.table-filters' ).length ) {
+		return;
+	}
+	$( '.table-filters' ).find( 'div > a' ).click( function () {
+
+		var	hideBtnClass = $( this ).parent().attr( 'class' );
+		
+		var statusDST = $( 'div.dst > a' ).attr( 'class' );
+		var statusRoG = $( 'div.rog > a' ).attr( 'class' );
+		var statusSW = $( 'div.sw > a' ).attr( 'class' );
+		var statusHam = $( 'div.ham > a' ).attr( 'class' );
+		
+		var hideContent;
+		var filters = '';
+		
+		
+		if(statusDST != 'hidden' && statusRoG != 'hidden' && hideBtnClass != 'dst')
+		{
+			filters = filters + ':not(.dst)';
+		}
+		
+		if(statusRoG != 'hidden' && hideBtnClass != 'rog')
+		{
+			filters = filters + ':not(.rog)';
+		}
+		
+		if(statusSW != 'hidden' && hideBtnClass != 'sw')
+		{
+			filters = filters + ':not(.sw)';
+		}
+		
+		if(statusHam != 'hidden' && hideBtnClass != 'ham')
+		{
+			filters = filters + ':not(.ham)';
+		}
+		
+		hideContent = $( 'tr.' + hideBtnClass + filters );
+		
+		if( !hideContent.length ) {
+			return;
+		}
+		
+		if ( $( this ).text().search(/\bhide\b/) >= 0 ) {
+			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
+			$( '.table-filters' ).find( 'div.' + hideBtnClass + ' > a' ).addClass("hidden").removeClass("visible");
+			hideContent.hide();
+		} else {
+			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
+			$( '.table-filters' ).find( 'div.' + hideBtnClass + ' > a' ).addClass("visible").removeClass("hidden");
+			hideContent.show();
+		}
+		
+		
+	} );
+} );
