@@ -47,3 +47,10 @@ mw.hook("wikipage.content").add(function () {
 		container.find(".sitenotice-tab-arrow.next").click(switchTab(1));
 	});
 });
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js',
+    ]
+});

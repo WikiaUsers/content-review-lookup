@@ -1267,3 +1267,62 @@ function p.main(frame)
 end
 
 return p
+
+/* Personaje2 (de NIJISANJI website) */
+.njsj-caption {
+	position: relative;
+	left: 50%;
+	display: inline-block; 
+	max-width: 100%;
+	height: 22px;
+	margin-top: 16px;
+	padding-left: 40px;
+	text-align: right; 
+	transform: translateX(-50%);
+}
+.njsj-caption::before {
+	content:"";
+	position: absolute; 
+	top: 0px;
+	left: 0px;
+	width: 6px;
+	height: 6px;
+	background-color: black;
+	border-radius: 50%;
+	transition: background 0.3s ease 0s;
+}
+.njsj-caption span {
+	position: relative; 
+	display: block;
+	float: right; 
+	max-width: calc(100% + 25px);
+	height: 100%;
+	overflow: hidden;
+	font-weight: 700;
+	font-size: 13px;
+	white-space: nowrap;
+	text-align: right;
+	text-overflow: ellipsis;
+}
+.njsj-caption span::after {
+	content:"";
+	position: absolute;
+	top: calc(100% - 2px);
+	right: 0px;width: 100%; 
+	height: 2px;
+	background-color: black; 
+	border-radius: 1px;
+	transition: background 0.3s ease 0s;
+}
+.njsj-caption::after {
+	content:"";
+	position: absolute;
+	top: 2.5px;
+	left: 7px;
+	width: 40px;
+	height: calc(100% - 3px);
+	border-left: 2.4px solid black;
+	border-bottom:2px solid black;
+	border-radius: 1px;
+	transform: skew(30deg);
+}

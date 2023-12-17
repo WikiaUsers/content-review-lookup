@@ -173,3 +173,13 @@ $(function UserNameReplace() {
 });
  
 /* End of the {{USERNAME}} replacement */
+
+// Special:Upload pre-load config
+PFD_templates = [
+    {
+        label:   'Images',
+        desc:    '{' + '{file info\n|description=\n|source=\n|artist=\n}}\n[' + '[Category:Uncategorized]]',
+    },
+];
+
+PFD_requireLicense = true;

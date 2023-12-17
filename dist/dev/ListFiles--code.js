@@ -53,7 +53,7 @@
 	// sets the URL used by query (format=json not appended)
 	function setURL() {
 		url = baseURL;
-		for (var p in urlParameters) {fi
+		for (var p in urlParameters) {
 			url += '&' + p + '=' + urlParameters[p];
 		}
 		var	link = '<a id="qo-url" href="' + url + '">' + url + '</a>';

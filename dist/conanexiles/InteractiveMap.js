@@ -39,8 +39,8 @@
 			'			</li>' +
 			'			<li class="options-group"><label class="options-group-label" onclickx="toggleGroups(\'options-group-thralls\')" group="options-group-thralls">Thralls</label>' +
 			'				<ul id="options-group-thralls" class="options-group-content" style="display: none;">' +
-			'					<li><label><input class="overlaySelect" type="checkbox" name="Fighter">Fighter & Archer I-III</label></li>' +
-			'					<li><label><input class="overlaySelect" type="checkbox" name="Profession">Profession Thrall I-III</label></li>' +
+			'					<!--<li><label><input class="overlaySelect" type="checkbox" name="Fighter">Fighter & Archer I-III</label></li>' +
+			'					<li><label><input class="overlaySelect" type="checkbox" name="Profession">Profession Thrall I-III</label></li>-->' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="FighterT4">T4 Fighter</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="ArcherT4">T4 Archer</label></li>' +
 			'					<li><label style="font-weight: bold;">T4 Profession Thrall</label>' +

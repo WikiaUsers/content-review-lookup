@@ -284,3 +284,4 @@ Tabs.init();
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
+window.lockOldComments = (window.lockOldComments || {});

@@ -25,7 +25,7 @@ window.tabberLinks = {
 
 window.aceCustomSettings = {
     wrap: true,
-    theme: "nord_dark",
+    theme: "dracula",
     tabSize: 2,
-    showInvisibles: true
+    showInvisibles: false
 };

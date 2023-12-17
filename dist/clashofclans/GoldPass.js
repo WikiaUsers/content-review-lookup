@@ -18,7 +18,7 @@ $(document).ready(function() {
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option></select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
@@ -622,7 +622,7 @@ $(document).ready(function() {
 	  // Styled in thousandths for ease of comparison
 	  var apprenticeAuraPercentIncrease = [0,240,260,280,300]
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70]
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72]
 		$(".AttackSpeed").each(function() {
 			var initialSpeed = $(this).attr("title") * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
@@ -750,9 +750,9 @@ $(document).ready(function() {
 				if (rageTowerCheckBox.checked === true) {
 					// Grand Warden statue (has Statue class) is not a building and so gains full buff
 					if (isHero === true && isStatue === false) {
-						towerRageMultiplier = 145/100;
+						towerRageMultiplier = 13/10;
 					} else {
-						towerRageMultiplier = 19/10;
+						towerRageMultiplier = 16/10;
 					}
 				}
 			}
@@ -973,9 +973,9 @@ $(document).ready(function() {
 				if (rageTowerCheckBox.checked === true) {
 					// Grand Warden statue (has Statue class) is not a building and so gains full buff
 					if ($(this).hasClass("Hero") === true && $(this).hasClass("Statue") === false) {
-						towerRageMultiplier = 15/10;
+						towerRageMultiplier = 13/10;
 					} else {
-						towerRageMultiplier = 2;
+						towerRageMultiplier = 16/10;
 					}
 				}
 			}
@@ -1168,7 +1168,7 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
 			var poisonTowerDebuff = 0;
@@ -1223,7 +1223,7 @@ $(document).ready(function() {
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
-		var wallHP = [300,500,700,900,1400,2000,2500,3000,3500,4000,5000,7000,9000,11000,12500,13500];
+		var wallHP = [300,500,700,900,1400,2000,2500,3000,3500,4000,5000,7000,9000,11000,12500,13500,14500];
 		var currentWallLevel = 0;
 		var currentWBLevel = 0;
 		$(".HTK").each(function() {

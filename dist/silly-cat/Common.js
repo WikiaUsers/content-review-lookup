@@ -37,9 +37,9 @@ window.mapsExtendedConfig = {
 
 // GadgetsStateToggler Config
 nkch_gst_gadgets = [{
-    name: "PageEditInfo",
-    title: "Page Edit Info",
-    description: "Show details about the creator and last edit to the current page."
+    name: "Performance",
+    title: "Performance Mode",
+    description: "Disable background, icon, and discord widget gif animation."
 }, {
     name: "adBlock",
     title: "AdBlock",
@@ -67,17 +67,17 @@ nkch_gst_gadgets = [{
 }, {
     name: "uploadMultipleFiles",
     title: "Upload Multiple Files",
-    description: "allows selection of multiple files directly from a single dialog box."
+    description: "Allows selection of multiple files directly from a single dialog box."
 }, {
     name: "Stella",
     title: "Stella",
     description: "Displays a list of maintenance categories needing attention on the wiki."
 }, {
+    name: "Responsive",
+    title: "Responsive Mobile",
+    description: "Optimizes FandomDesktop for mobile and tablet devices. (might break)"
+}, {
     name: "Modern Changes",
     title: "Modernized Changes",
     description: "Modernizes the appearance of pages that show recent changes or logs."
-}, {
-    name: "HydraRevived", 
-    title: "Hydra Revived", 
-    description: "Reintroduces elements from the legacy Hydra skin to FandomDesktop." 
 }];

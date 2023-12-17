@@ -168,31 +168,18 @@ importArticles({
     ]
 });
 
+/* PageCreator*/
 importArticles({
     type: 'script',
     articles: [
-        // ...
-        'u:dev:LastEdited/code.js',
-        // ...
+        'u:dev:MediaWiki:PageCreator/code2.js',
     ]
 });
 
-window.lastEdited = {
-    avatar: true,
-    avatarsize: 15,
-    size: true,
-    diff: true,
-    comment: false,
-    time: 'timestamp',
-    timezone: 'UTC',
-    lang: 'es',
-    position: {
-        element: document.getElementById('WikiaArticle'),
-        method: 'prepend'
-    },
-    namespaces: {
-        include: [],
-        exclude: []
-    },
-    pages: []
-};
+/* LastEdited */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:LastEdited/code.js',
+    ]
+});

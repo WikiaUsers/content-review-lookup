@@ -43,6 +43,10 @@
 			'<div class="settingsInfoline"></div>' +
 			'<div class="settingsInfoline"></div>' +
 			'<div class="settingsInfoline"></div>' +
+		'</div>';
+	}
+	function formHtml2() {
+		return '<div style="padding: 0 24px">' +
 			'<h2>' + msg("save-title").plain() + '</h2>' +
 			'<div>' +
 				'<input class="wds-toggle__input" id="se-section" type="checkbox" ' + (shared.options.cleanupSectionIDs && "checked" || "") + ' />' +
@@ -91,11 +95,43 @@
 			// initialise dialog, append content
 			SpriteEditorDialog.prototype.initialize = function () {
 				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				this.content = new OO.ui.PanelLayout({
-					expanded: false
-				});
-				this.content.$element.append(formHtml());
+				function PageOneLayout( name, config ) {
+				    PageOneLayout.super.call( this, name, config );
+				    this.$element.append( formHtml() );
+				}
+				OO.inheritClass( PageOneLayout, OO.ui.PageLayout );
+				PageOneLayout.prototype.setupOutlineItem = function () {
+				    this.outlineItem.setLabel( msg("spritesheet-info").plain() );
+				};
+				
+				function PageTwoLayout( name, config ) {
+				    PageTwoLayout.super.call( this, name, config );
+				    this.$element.append( formHtml2() );
+				}
+				OO.inheritClass( PageTwoLayout, OO.ui.PageLayout );
+				PageTwoLayout.prototype.setupOutlineItem = function () {
+				    this.outlineItem.setLabel( msg("save-title").plain() );
+				};
+				
+				function PageThreeLayout( name, config ) {
+				    PageTwoLayout.super.call( this, name, config );
+				    this.$element.append( '<div style="padding: 0 24px"><h2>' + msg("about-label").plain() + '</h2><br />© Magiczocker 2023<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a></div>' );
+				}
+				OO.inheritClass( PageThreeLayout, OO.ui.PageLayout );
+				PageThreeLayout.prototype.setupOutlineItem = function () {
+				    this.outlineItem.setLabel( msg("about-label").plain() );
+				};
+				
+				var page1 = new PageOneLayout( 'one' ),
+				    page2 = new PageTwoLayout( 'two' ),
+				    page3 = new PageThreeLayout( 'three' );
+				var booklet = new OO.ui.BookletLayout( {
+				    outlined: true
+				} );
+				this.content = booklet;
+				booklet.addPages( [ page1, page2, page3 ] );
 				this.$body.append(this.content.$element);
+				booklet.$element.get(0).style.height = "500px";
 				this.$content.addClass('spriteedit-ui-Dialog');
 				var sdEle = document.getElementById("se-unused");
 				sdEle.addEventListener('click', function() {
@@ -130,7 +166,7 @@
 
 			// Create a new dialog window.
 			modal.seDialog = new SpriteEditorDialog({
-				size: 'medium'
+				size: 'large'
 			});
 
 			// Add window and open

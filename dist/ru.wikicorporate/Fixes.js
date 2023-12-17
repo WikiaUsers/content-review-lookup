@@ -22,3 +22,16 @@ setInterval(function () {
         )
     } 
 }, 500)
+
+/* Фикс категорий */
+var catBGCleaner = setInterval(function () {
+    if (document.getElementsByClassName('category-page__member-thumbnail').length > 0) {
+        var pageCategory = document.getElementsByClassName('category-page__member-thumbnail')
+        Array.prototype.forEach.call(pageCategory,
+            function (image) {
+                image.src = image.src.replace(/(\/smart\/width\/[\d]*\/height\/[\d]*)/g, "")
+            }
+        )
+        clearInterval(catBGCleaner)    
+    } 
+}, 500)

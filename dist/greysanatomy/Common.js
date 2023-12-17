@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/* Pride toolbar advertisement */
+/* Pride toolbar advertisement
 var toolbarLabel = 'Disability Pride';
 var toolbarLinks = [
     {link: 'https://greysanatomy.fandom.com/f/p/4400000000000395131', label: 'July 31: Disability Pride - Deaf'},
@@ -43,7 +43,7 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 
-/* Pride logo link */
+/* Pride logo link
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')

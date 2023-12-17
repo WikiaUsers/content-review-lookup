@@ -313,7 +313,7 @@
 	function generateImage() {
 		var c = helper.newCanvas();
 		var ctx = c.getContext('2d');
-		var keepOldSprites = !options.removeUnusedSprites && !options.isNew;
+		var keepOldSprites = !options.removeUnusedSprites && !options.isNew && !options.removeWhitespace;
 		var needDummy = options.removeUnusedSprites && options.removeWhitespace;
 		if (needDummy) {
 			addDummyPos();
@@ -543,6 +543,7 @@
 		} else if (c[d] === "section-added") {
 			sprites = c[3].querySelectorAll(".spritedoc-box");
 			for (i = 0; i < sprites.length; i++) {
+				if (!sprites[i].draggable) continue;
 				backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
 			}
 			names = c[3].querySelectorAll("code[isSprite]");
@@ -1160,8 +1161,91 @@
 		spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
 		hasEditPermission = permOrg;
 	}
+	function newSection2(s, perm) {
+		// section header
+		var sectionH3Span = document.createElement('span');
+		var sectionH3 = document.createElement('h3');
+		var spriteSection = document.createElement('div');
+		sectionH3.append(sectionH3Span);
+		sectionH3Span.id = s.name || undefined;
+		sectionH3Span.contentEditable = perm;
+		sectionH3Span.textContent = s.name;
+		sectionH3Span.className = 'mw-headline';
+		// section body
+		spriteSection.classList = 'spritedoc-section';
+		spriteSection.setAttribute('data-section-id',s.id);
+		spriteSection.append(sectionH3);
+		if (!perm) return spriteSection;
+		sectionH3Span.onpaste = function(e) {
+			e.preventDefault();
+		    var paste = (e.clipboardData || window.clipboardData).getData('text');
+		    paste = paste.replace( /\n/g, ' ' ).trim();
+		    window.document.execCommand( 'insertText', false, paste );
+		};
+		sectionH3Span.onkeypress = function(e) {
+			if ( e.keyCode === 13 ) {
+				e.preventDefault();
+				e.target.blur();
+			}
+		};
+		sectionH3Span.addEventListener("focus", function() {
+			if (!sectionH3Span.getAttribute("data-placeholder")) {
+				sectionH3Span.setAttribute("data-original-text", sectionH3Span.textContent);
+			}
+		});
+		sectionH3Span.addEventListener("blur", function() {
+			var orgName = sectionH3Span.getAttribute("data-original-text") || "";
+			sectionH3Span.textContent = sectionH3Span.textContent.trim();
+			if (orgName.length === 0 && sectionH3Span.textContent.length ) {
+				addHistory([
+					"section-added",
+					"section-removed",
+					s.id,
+					spriteSection,
+					sectionH3Span.textContent,
+					Array.from(root.children).indexOf(spriteSection)
+				]);
+			} else if (sectionH3Span.textContent.length && orgName !== sectionH3Span.textContent) {
+				addHistory([
+					"section-rename",
+					"section-rename",
+					s.id,
+					orgName,
+					sectionH3Span.textContent
+				]);
+			}
+			sectionH3Span.removeAttribute("data-original-text");
+			sectionH3Span.removeAttribute('data-placeholder');
+			if (!sectionH3Span.textContent.length) {
+				var names = spriteSection.querySelectorAll("code[isSprite]");
+				var n = {};
+				var i;
+				for (i = 0; i < names.length; i++) {
+					n[names[i].textContent] = true;
+				}
+				var sprites = spriteSection.querySelectorAll(".spritedoc-box");
+				for (i = 0; i < sprites.length; i++) {
+					if (!sprites[i].draggable) continue;
+					backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
+				}
+				if (orgName.length) {
+					addHistory([
+						"section-removed",
+						"section-added",
+						s.id,
+						spriteSection,
+						orgName,
+						Array.from(root.children).indexOf(spriteSection)
+					]);
+				}
+				root.removeChild(spriteSection);
+				markDuplicateNames(n);
+			}
+		});
+		return spriteSection;
+	}
 	function newSection(s) {
-		var spriteSection = helper.newSection(s, hasEditPermission);
+		var spriteSection = newSection2(s, hasEditPermission);
 		root.append(spriteSection);
 		highestID = Math.max(highestID, s.id);
 		sections[s.id] = spriteSection;
@@ -1204,7 +1288,6 @@
 			'oojs-ui.styles.icons-editing-advanced', // tableAddRowAfter
 			'oojs-ui.styles.icons-editing-core', // undo, redo
 			'oojs-ui.styles.icons-editing-list', // listBullet
-			// 'oojs-ui.styles.icons-editing-styling',
 			'oojs-ui.styles.icons-layout', // viewCompact
 			'oojs-ui.styles.icons-interactions', // checkall, close, settings, subtract
 			'oojs-ui.styles.icons-media', // imageAdd, imageGallery
@@ -1236,11 +1319,6 @@
 			}
 			// Toolbar buttons
 			buttons = {
-				about: createButton(
-					'info',
-					msg("about-label").plain(),
-					msg("about-hover").plain()
-				),
 				open: createButton(
 					'folderPlaceholder',
 					msg("open-label").plain(),
@@ -1344,28 +1422,9 @@
 					buttons.cancelMove
 				]}),
 				arrowItem: new OO.ui.ButtonGroupWidget({items: [
-					buttons.about,
 					buttons.descriptionToggle
 				]})
 			};
-			var winMgr = new OO.ui.WindowManager();
-			root.parentElement.append(winMgr.$element.get(0));
-			var dia = new OO.ui.MessageDialog();
-			winMgr.addWindows({aboutWin: dia});
-			buttons.about.on("click", function() {
-				winMgr.openWindow("aboutWin", {
-					title: msg("about-title").plain(),
-					message: '',
-					actions: [
-						{
-							action: 'reject',
-							label: msg("dialog-button-close").plain(),
-							flags: [ 'safe', 'close' ]
-						}
-					]
-				});
-				dia.$body.get(0).querySelector(".oo-ui-messageDialog-message").innerHTML = '© Magiczocker 2023<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a>';
-			});
 			var frame = new OO.ui.PanelLayout({
 				classes: [ 'spriteedit-toolbar' ],
 				expanded: false,

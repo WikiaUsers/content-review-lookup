@@ -1,6 +1,6 @@
 //this code is used in [[Template:Scene/Maker]]
 $(function(){
-grid_size = 15;
+grid_size = 20;
 //what number the brush represents in the grid
 brush_on_grid = {
 effect : [1,"Poof_Effect"],
@@ -13,7 +13,7 @@ sprite_3 : [6,"The Supreme Cube Carpet"]
 //arrays for storing selected cells to decide the area size
 field_rows = []; 
 field_cols = [];
-//selected brush with starting default 
+//default brush
 brush = "effect";
 //default scene grid size
 max_col = 5;

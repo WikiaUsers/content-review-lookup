@@ -311,12 +311,6 @@
             styles: ['MediaWiki:HydraRevived/main.css', 'MediaWiki:HydraRevived/preload.css']
         },
         
-        InfoboxTabberLinks: {
-            page: "InfoboxTabberLinks",
-            styles: 'MediaWiki:Global_Lua_Modules/Tabber.css',
-            scripts: 'MediaWiki:InfoboxTabberLinks.js'
-        },
-        
         InfoWidgets: {
             selector: '#infowidgets-demo',
             styles: 'MediaWiki:InfoWidgets/demo.css',
@@ -637,17 +631,26 @@
             page: 'Special:BlankPage',
             scripts: 'MediaWiki:Stella.js'
         },
+        
         StylizedDiff: {
             page: 'StylizedDiff',
             styles: 'MediaWiki:StylizedDiff.css'
         },
+        
         StylizedTabs: {
             page: 'StylizedTabs',
             styles: 'MediaWiki:StylizedTabs.css'
         },
+        
         Tabber: {
             page: 'Global_Lua_Modules/Tabber',
             styles: 'MediaWiki:Global_Lua_Modules/Tabber.css'
+        },
+        
+        TabberLinks: {
+            page: "TabberLinks",
+            styles: 'MediaWiki:Global_Lua_Modules/Tabber.css',
+            scripts: 'MediaWiki:TabberLinks.js'
         },
         
         TableHash: {

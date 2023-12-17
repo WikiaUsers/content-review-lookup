@@ -1,1 +1,1 @@
-span class="g-ytsubscribe" data-channelid="https://youtube.com/@MetalWiki?si=nGECtqmyZfrX5rDp" data-layout="default" data-count="default"></span>
+span class="g-ytsubscribe" data-channelid="https://youtube.com/@MetalWiki" data-layout="default" data-count="default"></span>

@@ -5,20 +5,26 @@ var pageName = mw.config.get('wgPageName');
 /************************************************************************/
 // Pour tous les balises "IntegrationInstagram", intégrer un embed selon leur username
 var elementsII = document.getElementsByClassName("IntegrationInstagram");
-for (var e =0; e<elementsII.length; e++){
+for (var e=0; e<elementsII.length; e++){
 	var username = elementsII[e].getAttribute("data-username");
     $(elementsII[e]).append('<iframe src="https://www.instagram.com/'+username+'/embed" width=100% height=820 frameborder="0" allowfullscreen="allowfullscreen"></iframe>');
 }
 
 // Pour tous les balises "IntegrationTiktok", intégrer un embed selon leur username
 var elementsIT = document.getElementsByClassName("IntegrationTiktok");
-for (var e =0; e<elementsIT.length; e++){
+for (var e=0; e<elementsIT.length; e++){
 	var username = elementsIT[e].getAttribute("data-username");
     $(elementsIT[e]).append('<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@'+username+'" data-unique-id="'+username+'" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@'+username+'?refer=creator_embed">@'+username+'</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>');
 }
 
 /************************************************************************/
-
+// Pour les images dans le carrousel des images récentes de la colonne de droite, ajouter un blur/flou pour éviter tous spoils
+function addBlurInCarousel(){
+    var elementRimg = document.getElementsByClassName("recentImage__image");
+	for (var e=0; e<elementRimg.length; e++)
+		elementRimg[e].classList.add("spoilManga");
+}
+/************************************************************************/
 // Ajout fonction qui permet d'integrer les sondages (https://www.radiant.fandom.com/fr/f?catId=3100000000000000032) sur la page d'accueil
 //
 // NB : Réutilisation et transformation du code de "MediaWiki:DiscussionsActivity.js" pour cette utilisation spécifique !
@@ -114,3 +120,5 @@ function integrationLastPolls() {
 // S'execute si c'est sur la page d'accueil (ou les modèles qui composent la page d'accueil)
 if(pageName === "Wiki_Radiant" || pageName === "Modèle:Sondage")
 	integrationLastPolls();
+	
+setTimeout(addBlurInCarousel, 1500); // Le temps que la page ait eu le temps de charger

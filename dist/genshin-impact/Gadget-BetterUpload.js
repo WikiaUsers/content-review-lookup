@@ -260,9 +260,9 @@ $(function() {
 				Object.keys(data.query.pages).forEach(function(id){
 					if (data.query.pages[id].ns == 8) {
 						page.site = id;
-					} else if (data.query.pages[id].ns == 2 && !data.query.pages[id].missing) {
+					} else if (data.query.pages[id].ns == 2 && data.query.pages[id].missing!=="") {
 						page.user = id;
-					} else if (data.query.pages[id].ns == 6 && !data.query.pages[id].missing) {
+					} else if (data.query.pages[id].ns == 6 && data.query.pages[id].missing!=="") {
 						page.curr = data.query.pages[id].revisions[0].slots.main['*'];
 					}
 				});

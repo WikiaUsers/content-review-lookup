@@ -2,6 +2,6 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:ScrollUpButton.js',
+        'u:dev:MediaWiki:BackToTopButton/code.js',
     ]
 });

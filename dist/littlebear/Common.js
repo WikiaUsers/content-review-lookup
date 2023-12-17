@@ -16,24 +16,16 @@ if (listItems.length > 10){
 
 $('div#mw-customcollapsible-list').before('<span>This list includes '+listItems.length+' items. <small id="show-hide-button">(<a class="mw-customtoggle-list">show / hide</a>)</small></span>');
 
-/* Hide link returning to base page on subpages in the main namespace */
-
-if(mw.config.get('wgNamespaceNumber') === 0){
-  $('div.page-header__page-subtitle').css('display', 'none');
-}
-
 /* Fix red talk links */
 
-$('a.new#ca-talk').attr('href', function(i, origValue){
-  return origValue+'&section=new';
-});
+$('a.new#ca-talk').attr('href', 'https://littlebear.fandom.com/wiki/'+mw.config.get("wgCanonicalNamespace")+' talk:'+mw.config.get("wgTitle"));
 
 /* Customizing text of auto-created user and user talk pages */
 
 window.AutoCreateUserPagesConfig = {
   content: {
     2: '{{Placeholder}}',
-    3: '{{Welcome}}'
+    3: '{{SUB'+'ST:Welcome/preload}}'
   },
   summary: 'auto creating user and user talk pages',
   notify: '<a href="/wiki/User_talk:$2">Welcome to the Little Bear Wiki!</a>'

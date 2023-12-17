@@ -55,7 +55,7 @@ $(function() {
 			var body = $('#mw-content-text.mw-body-content');
 			body.append(regionSelector);
 			body.append($(
-				'<input class="giw-checkbox" type="checkbox" id="mapDownload">'+
+				'<input class="giw-checkbox" type="checkbox" id="mapDownload" checked>'+
 				'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">Download generated maps directly</label>'+
 				'<h2>'+
 					'<span class="mw-headline" id="Quick_Generator">Quick Generator</span>'+

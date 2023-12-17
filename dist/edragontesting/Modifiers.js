@@ -4,6 +4,7 @@ $(document).ready(function() {
     /* Create inputs */
 	$("span#builderBoostHarness").html('<div id="builderBoostInput">Builder Boost: <select name="builderBoost" id="builderBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> </select> %</div>');
 	$("span#hammerJamHarness").html('<div id="hammerJamInput">Toggle Hammer Jam? <input type="checkbox" name="hammerJamBoost" id="hammerJamBoost"></input></div>');
+	$("span#autoForgeHarness").html('<div id="autoForgeInput">Toggle Auto Forge Prices? <input type="checkbox" name="autoForgeBoost" id="autoForgeBoost"></input></div>');
 	$("span#trainingBoostHarness").html('<div id="trainingBoostInput">Training Boost: <select name="trainingBoost" id="trainingBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#researchBoostHarness").html('<div id="researchBoostInput">Research Boost: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#armyBoostHarness").html('<div id="armyBoostInput">Toggle Army Boost? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
@@ -13,32 +14,42 @@ $(document).ready(function() {
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
+	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
-	$("span#chooseTwoHarness").html('<div id="chooseTwoInput">' +
-		'<div id="firstChoice">' +
-    		'<div id="firstChoiceOption"> First Choice:' +
-        	'<select name="firstChoiceChoice" id="firstChoiceChoice">' +
-        	'</select>' +
+	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
+	/* Event boosts: change the options as appropriate for the event
+	Last event: Mashup Madness */
+	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost"> <option value="0">0</option> <option value="30">30</option></select> %</div>');
+	// Hero gear boosts
+	$("span#heroGearToggleHarness").html('<div id="heroGearToggle">Enable Hero Gear? <input type="checkbox" name="heroGearToggle" id="heroGearToggle"></input></div>');
+	$("span#heroGearHarness").html('<div id="heroGearInput">' +
+		'<div id="firstHeroGear">' +
+    		'<div id="firstHeroGearOption"> Equipment 1: ' +
+        	'<select name="firstHeroGearChoice" id="firstHeroGearChoice">' +
+        	'</select></div>' +
     	'</div>' +
-		'<div id="firstChoiceLevel">' +
-    		'<div id="firstChoiceLvl"> First Choice Level:' +
-        	'<select name="firstChoiceLevel" id="firstChoiceLevel">' +
-        	'</select>' +
+		'<div id="firstHeroGearLevel">' +
+    		'<div id="firstHeroGearLvl"> Level: ' +
+        	'<select name="firstHeroGearLevel" id="firstHeroGearLevel">' +
+        	'</select></div>' +
     	'</div>' +
-    	'<div id="secondChoice">' +
-    		'<div id="secondChoiceOption"> Second Choice:' +
-        	'<select name="secondChoiceChoice" id="secondChoiceChoice">' +
-        	'</select>' +
+    	'<div id="secondHeroGear">' +
+    		'<div id="secondHeroGearOption"> Equipment 2: ' +
+        	'<select name="secondHeroGearChoice" id="secondHeroGearChoice">' +
+        	'</select></div>' +
     	'</div>' +
-		'<div id="secondChoiceLevel">' +
-    		'<div id="secondChoiceLvl"> Second Choice Level:' +
-        	'<select name="secondChoiceLevel" id="secondChoiceLevel">' +
-    	    '</select>' +
+		'<div id="secondHeroGearLevel">' +
+    		'<div id="secondHeroGearLvl"> Level: ' +
+        	'<select name="secondHeroGearLevel" id="secondHeroGearLevel">' +
+    	    '</select></div>' +
     	'</div>' +
 	'</div>');
     /* Get the initial cell values, remove commas, and 
@@ -47,21 +58,21 @@ $(document).ready(function() {
    var heroAbilitySpeed = [];
    var heroLevel = 0;
    var deathDamageArray = [];
-   	/* Auxillary functions to refresh the level options for the choices
+    /* Auxillary functions to refresh the level options for the choices
     Call on initialisation and whenever the choice is amended */
-    function refreshFirstLevelChoices() {
-    	var firstChoiceName = $("select#firstChoiceChoice option:selected").text();
-        var levelCap = dictLevelCaps[firstChoiceName];
-        var firstLevelChoices = $("select#firstChoiceLevel");
+    function refreshFirstGearChoices() {
+    	var firstGearName = $("select#firstHeroGearChoice option:selected").text();
+        var levelCap = dictLevelCaps[firstGearName];
+        var firstLevelChoices = $("select#firstHeroGearLevel");
     	firstLevelChoices.empty();
     	for (i = 0; i < levelCap; i++) {
     		firstLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
     	}
     }
-    function refreshSecondLevelChoices() {
-    	var secondChoiceName = $("select#secondChoiceChoice option:selected").text();
-        var levelCap = dictLevelCaps[secondChoiceName];
-        var secondLevelChoices = $("select#secondChoiceLevel");
+    function refreshSecondGearChoices() {
+    	var secondGearName = $("select#secondHeroGearChoice option:selected").text();
+        var levelCap = dictLevelCaps[secondGearName];
+        var secondLevelChoices = $("select#secondHeroGearLevel");
     	secondLevelChoices.empty();
     	for (i = 0; i < levelCap; i++) {
     		secondLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
@@ -70,69 +81,75 @@ $(document).ready(function() {
     // Function to initialise the options we have available
     function initChoices() {
     	// Temporarily enable all options (we will disable one later)
-        $("select#firstChoiceChoice").children().prop('disabled',false);
-        $("select#secondChoiceChoice").children().prop('disabled',false);
+        $("select#firstHeroGearChoice").children().prop('disabled',false);
+        $("select#secondHeroGearChoice").children().prop('disabled',false);
     	// Initialize selections to the first and second items, respectively
-        $("select#firstChoiceChoice option[value=0]").prop('selected',true);
-    	$("select#secondChoiceChoice option[value=1]").prop('selected',true);
+        $("select#firstHeroGearChoice option[value=0]").prop('selected',true);
+    	$("select#secondHeroGearChoice option[value=1]").prop('selected',true);
     	// Also disable the first item for second choice and second item for first choice
-    	$("select#secondChoiceChoice option[value=0]").prop('disabled',true);
-    	$("select#firstChoiceChoice option[value=1]").prop('disabled',true);
+    	$("select#secondHeroGearChoice option[value=0]").prop('disabled',true);
+    	$("select#firstHeroGearChoice option[value=1]").prop('disabled',true);
     }
    /* Initialize the choices
    We first start by writing down level caps corresponding to each choice */
     var dictLevelCaps = {
-    	"Choice 1": 1,
-        "Choice 2": 2,
-        "Choice 3": 3,
-        "Choice 4": 4,
-        "Choice 5": 5,
-    	"Choice 6": 6
+    	"Barbarian Puppet": 18,
+        "Rage Vial": 18,
+        "Earthquake Boots": 18,
+        "Vampstache": 18,
+        "Giant Gauntlet": 27,
+    	"Archer Puppet": 18,
+    	"Invisibility Vial": 18,
+    	"Giant Arrow": 18,
+    	"Healer Puppet": 18,
+    	"Frozen Arrow": 27,
+    	"Eternal Tome": 18,
+    	"Life Gem": 18,
+    	"Rage Gem": 18,
+    	"Healing Tome": 18,
+    	"Royal Gem": 18,
+    	"Seeking Shield": 18,
     };
-    /* 
-    Fix the options available to us. TODO: Make the options vary by page
-    Alternatively, we could create separate harnesses and separate inputs for each
-    This would enable testing on other pages
-    */
+    // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
-    var options = [];
+    var heroGearOptions = [];
     switch (pageName) {
     	case ("Modifiers Test"):
-    		options = ["Choice 1", "Choice 3", "Choice 5", "Choice 6"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet"];
     		break;
     	case ("Modifiers Test 2"):
-    		options = ["Choice 1", "Choice 2", "Choice 4", "Choice 6"];
+    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"];
     		break;
-    	default:
-    		options = ["Choice 1", "Choice 2", "Choice 3"];
+    	default: // Having all options in one makes it excellent for testing
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Royal Gem", "Seeking Shield"];
     }
 	// Insert options
-    for (i = 0; i < options.length; i++) {
-        $("select#firstChoiceChoice").append($("<option></option>").attr("value",i).text(options[i]));
-        $("select#secondChoiceChoice").append($("<option></option>").attr("value",i).text(options[i]));
+    for (i = 0; i < heroGearOptions.length; i++) {
+        $("select#firstHeroGearChoice").append($("<option></option>").attr("value",i).text(heroGearOptions[i]));
+        $("select#secondHeroGearChoice").append($("<option></option>").attr("value",i).text(heroGearOptions[i]));
     }
     // Initialize options
     initChoices();
-    refreshFirstLevelChoices();
-    refreshSecondLevelChoices();
+    refreshFirstGearChoices();
+    refreshSecondGearChoices();
 	// The below two functions disable the option for the other choice that the changed choice is picking
-   $("select#firstChoiceChoice").change(function() {
+   $("select#firstHeroGearChoice").change(function() {
    		// Identify the choice to disable, and enable all other choices
-  		var firstChoice = $("select#firstChoiceChoice").val();
-    	var choiceToDisable = $("select#secondChoiceChoice option[value=" + firstChoice + "]");
+  		var firstChoice = $("select#firstHeroGearChoice").val();
+    	var choiceToDisable = $("select#secondHeroGearChoice option[value=" + firstChoice + "]");
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
 		
-		refreshFirstLevelChoices();
+		refreshFirstGearChoices();
    });
-   $("select#secondChoiceChoice").change(function() {
+   $("select#secondHeroGearChoice").change(function() {
    	    // Identify the choice to disable, and enable all other choices
-  		var secondChoice = $("select#secondChoiceChoice").val();
-    	var choiceToDisable = $("select#firstChoiceChoice option[value=" + secondChoice + "]");
+  		var secondChoice = $("select#secondHeroGearChoice").val();
+    	var choiceToDisable = $("select#firstHeroGearChoice option[value=" + secondChoice + "]");
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
     	
-		refreshSecondLevelChoices();
+		refreshSecondGearChoices();
    });
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
@@ -353,17 +370,30 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
+		var eventBoostPercent = $("#eventBuilderBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+			eventBoostPercent = 0;
+		}
 		var hammerJamCheckBox = document.getElementById("hammerJamBoost");
+		var autoForgeCheckBox = document.getElementById("autoForgeBoost");
 		// Multiply initial value by 50% if hammer jam check box is true
+		// Same deal with autoforge check box
 		if (hammerJamCheckBox != null) {
 			if (hammerJamCheckBox.checked === true) {
 				var hammerJamCost = discountCost(cellValueCost,50);
-				var calcNewCost = discountCost(hammerJamCost,boostPercent);
+				var calcNewCost = discountCost(hammerJamCost,boostPercent+eventBoostPercent);
 			} else {
-				var calcNewCost = discountCost(cellValueCost,boostPercent);
+				var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
+			}
+		} else if (autoForgeCheckBox != null) {
+			if (autoForgeCheckBox.checked === true) {
+				var autoForgeCost = discountCost(cellValueCost,50);
+				var calcNewCost = discountCost(autoForgeCost,boostPercent+eventBoostPercent);
+			} else {
+				var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 			}
 		} else {
-			var calcNewCost = discountCost(cellValueCost,boostPercent);
+			var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 		}
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
@@ -378,7 +408,11 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-        var calcNewCost = discountCost(cellValueCost,boostPercent);
+		var eventBoostPercent = $("#eventTrainingBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+		    eventBoostPercent = 0;
+		}
+        var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
         $(this).text(calcNewCost.format("#,##0[.]###"));
         if (calcNewCost == cellValueCost) {
             $(".tCost").removeClass("StatModifiedGP");
@@ -392,7 +426,11 @@ $(document).ready(function() {
 		if (isNaN(boostPercent) === true) {
 		    boostPercent = 0;
 		}
-		var calcNewCost = discountCost(cellValueCost,boostPercent);
+		var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+		if (isNaN(eventBoostPercent) === true) {
+		    eventBoostPercent = 0;
+		}
+		var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
 		$(this).text(calcNewCost.format("#,##0[.]###"));
 		if (calcNewCost == cellValueCost) {
 			$(".rCost").removeClass("StatModifiedGP");
@@ -406,8 +444,12 @@ $(document).ready(function() {
 		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventBuilderBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
  
 		// Calculate the EXP gain and put into the xpArray
 		var xpGain = Math.floor(Math.sqrt(newtimeSeconds));
@@ -431,10 +473,14 @@ $(document).ready(function() {
 		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventResearchBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent);
+		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
   		var output = outputTime(newtimeSeconds);
   		
 		$(this).text(output.trim());
@@ -445,13 +491,17 @@ $(document).ready(function() {
 		}
       });
 		$(".1B").each(function() {
-			var str = $(this).attr("title");
-			var reducePercent = $("#trainingBoost").val() * 1;
-			if (isNaN(reducePercent) === true) {
+		var str = $(this).attr("title");
+		var reducePercent = $("#trainingBoost").val() * 1;
+		if (isNaN(reducePercent) === true) {
 		    reducePercent = 0;
 		}
+		var eventReducePercent = $("#eventTrainingBoost").val() * 1;
+		if (isNaN(eventReducePercent) === true) {
+		    eventReducePercent = 0;
+		}
 		var baseTrainTime = readTime(str);
-		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent);
+		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent+eventReducePercent);
 		
 		// Obtain new training times for 2, 3, 4 barracks
 		// Following barracks changes in October 2022, 3 and 4 barracks are obsoleted. Effectively, a working barracks is worth two barracks, as though there's a invisible (always functional) barracks in the background
@@ -614,11 +664,15 @@ $(document).ready(function() {
 			if (isNaN(boostPercent) === true) {
 		    	boostPercent = 0;
 			}
+			var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+			if (isNaN(eventBoostPercent) === true) {
+		    	eventBoostPercent = 0;
+			}
 			var costArray = [];
 			for (x in initArray) {
 				costArray.push(labCostShortToLong(initArray[x]));
 			}
-			var discountArray = arrayCostDiscount(costArray,boostPercent);
+			var discountArray = arrayCostDiscount(costArray,boostPercent+eventBoostPercent);
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(labCostLongToShort(discountArray[x]));
@@ -628,7 +682,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent === 0) {
+			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -647,11 +701,15 @@ $(document).ready(function() {
 			if (isNaN(boostPercent) === true) {
 		    	boostPercent = 0;
 			}
+			var eventBoostPercent = $("#eventResearchBoost").val() * 1;
+			if (isNaN(eventBoostPercent) === true) {
+		    	eventBoostPercent = 0;
+			}
 			var timeArray = [];
 			for (x in initArray) {
 				timeArray.push(readTime(initArray[x]));
 			}
-			var discountArray = arrayTimeDiscount(timeArray,boostPercent);
+			var discountArray = arrayTimeDiscount(timeArray,boostPercent+eventBoostPercent);
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(outputTime(discountArray[x]));
@@ -661,7 +719,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent === 0) {
+			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -677,6 +735,9 @@ $(document).ready(function() {
 	  // Two lookup arrays for the GW's life aura ability
 	  var auraPercentIncrease = [0,200,211,222,233,244,256,268,281,295,310,326,343,361,380,400,420,440,460,480,500,520,540,560,580,600,620,640,660,680,700,720,740,760,780,800,820,840,860,880,900];
 	  var auraMaxHPIncrease = [0,70,76,82,88,94,101,108,116,125,135,146,158,171,185,200,215,230,245,260,275,290,305,320,335,350,365,380,395,410,425,440,455,470,485,500,515,530,545,560,575];
+	  // Lookup arrays for the apprentice's aura ability
+	  // Styled in thousandths for ease of comparison
+	  var apprenticeAuraPercentIncrease = [0,240,260,280,300]
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
 	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70]
 		$(".AttackSpeed").each(function() {
@@ -690,6 +751,7 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }  
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			// Try to prevent floating-point errors from making weird behaviour
 			var attackFreq = 1000 / (initialSpeed * 1000);
 			// Now it's the attack frequency we want to modify, so modify away!
@@ -699,9 +761,15 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
-			// Whichever poison is more severe will take precedence. Also only apply if unit is not a Building
+			var poisonTowerMultiplier = 1;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerMultiplier = 75/100;
+            	}
+			}
+			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
-				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier);
+				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			
 			var freezeMultiplier = 1;
@@ -746,6 +814,13 @@ $(document).ready(function() {
 			} else {
 				$(this).addClass("StatModified");
 				$(this).removeClass("StatPoisoned");
+			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
 			}
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
@@ -792,9 +867,9 @@ $(document).ready(function() {
 				if (rageTowerCheckBox.checked === true) {
 					// Grand Warden statue (has Statue class) is not a building and so gains full buff
 					if (isHero === true && isStatue === false) {
-						towerRageMultiplier = 15/10;
+						towerRageMultiplier = 145/100;
 					} else {
-						towerRageMultiplier = 2;
+						towerRageMultiplier = 19/10;
 					}
 				}
 			}
@@ -900,10 +975,18 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
+			}
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
 			}
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
@@ -935,11 +1018,19 @@ $(document).ready(function() {
 		    	THpoisonSpellLevel = 0;
 		    }
             var freezeCheckBox = document.getElementById("freezeBoost");
+            var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
             if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -978,6 +1069,7 @@ $(document).ready(function() {
 			// Currently this class won't support abilities. It's because there's currently no instance where this is needed
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			// First calculate buffed DPS by rage
 			
 			var rageMultiplier = 1;
@@ -1015,8 +1107,14 @@ $(document).ready(function() {
 			if (THpoisonSpellLevel > 0) {
 				THpoisonMultiplier = (15 - THpoisonSpellLevel)/20;
 			}
+			var poisonTowerMultiplier = 1;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerMultiplier = 75/100;
+            	}
+			}
 			if ($(this).hasClass("Building") === false) {
-				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier);
+				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			var freezeMultiplier = 1;
 			if (freezeCheckBox != null) {
@@ -1037,6 +1135,13 @@ $(document).ready(function() {
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -1048,6 +1153,7 @@ $(document).ready(function() {
 		$(".HP").each(function() {
 			var initialHP = $(this).attr("title") * 1;
 			var auraLevel = $("#lifeAuraLevel").val() * 1;
+			var apprenticeLevel = $("#apprenticeAuraLevel").val() * 1;
 			var auraPercent = auraPercentIncrease[auraLevel];
 			if (isNaN(auraPercent) === true) {
 			    auraPercent = 0;
@@ -1056,9 +1162,15 @@ $(document).ready(function() {
 			if (isNaN(auraMaxHP) === true) {
 			    auraMaxHP = 0;
 			}
+			var apprenticePercent = apprenticeAuraPercentIncrease[apprenticeLevel];
+			if (isNaN(apprenticePercent) === true) {
+				apprenticePercent = 0;
+			}
 			var calcPercentHP = initialHP * (1000 + auraPercent)/1000;
 			var calcMaxHP = initialHP + auraMaxHP;
-			var calcNewHP = Math.min(calcPercentHP,calcMaxHP);
+			var calcWardenHP = Math.min(calcPercentHP,calcMaxHP);
+			var calcApprenticeHP = initialHP * (1000 + apprenticePercent)/1000;
+			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			$(this).text(roundedHP.format("#,##0[.]###"));
 			if (initialHP === roundedHP) {
@@ -1089,6 +1201,10 @@ $(document).ready(function() {
 			if (isNaN(rageSpellLevel) === true) {
 		    hasteSpellLevel = 0;
 		    }
+		    var capitalHasteSpellLevel = $("#capitalHasteSpellLevel").val() * 1;
+		    if (isNaN(capitalHasteSpellLevel) === true) {
+		    	capitalHasteSpellLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -1101,6 +1217,7 @@ $(document).ready(function() {
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
 			var towerRageBoost = 0;
@@ -1132,6 +1249,8 @@ $(document).ready(function() {
                 } else {
                     hasteBoost = (6 * hasteSpellLevel) + 22;
                 }
+            } else if (capitalHasteSpellLevel > 0) {
+            	hasteBoost = capitalHasteSpellLevel + 6;
             }
             var rageSpeed = initialSpeed + Math.max(rageBoost,towerRageBoost);
 			var hasteSpeed = initialSpeed + hasteBoost;
@@ -1169,8 +1288,13 @@ $(document).ready(function() {
 			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
-			
-			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel]);
+			var poisonTowerDebuff = 0;
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+                poisonTowerDebuff = 35;
+            	}
+			}
+			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff);
 			
 			minSpeed = minSpeed * (100 - poisonDebuff) /100;
 			maxSpeed = maxSpeed * (100 - poisonDebuff) /100;
@@ -1200,6 +1324,13 @@ $(document).ready(function() {
             } else {
                 $(this).removeClass("StatPoisoned");
             }
+            if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
             if (freezeCheckBox != null) {
                 if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
                     $(this).addClass("StatFrozen");
@@ -1279,13 +1410,16 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #targetHP").val("0").change();
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
 		// Reinitialise the choices
 		initChoices();
-    	refreshFirstLevelChoices();
-    	refreshSecondLevelChoices();
+    	refreshFirstGearChoices();
+    	refreshSecondGearChoices();
 		if (document.getElementById("hammerJamBoost") != null) {
 			document.getElementById("hammerJamBoost").checked = false;
+		}
+		if (document.getElementById("autoForgeBoost") != null) {
+			document.getElementById("autoForgeBoost").checked = false;
 		}
 		if (document.getElementById("armyBoost") != null) {
 			document.getElementById("armyBoost").checked = false;
@@ -1304,6 +1438,9 @@ $(document).ready(function() {
         }
         if (document.getElementById("valkRageBoost") != null) {
             document.getElementById("valkRageBoost").checked = false;
+        }
+        if (document.getElementById("poisonTowerBoost") != null) {
+            document.getElementById("poisonTowerBoost").checked = false;
         }
 		$(".GoldPass").each(function() {
 			var returnInitial = $(this).attr("title");
