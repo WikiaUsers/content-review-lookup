@@ -50,3 +50,5 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
 importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
+
+dev:MassProtect/code.js

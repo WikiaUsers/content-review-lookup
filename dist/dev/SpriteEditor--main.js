@@ -386,7 +386,7 @@
 		buttons.newSection.setDisabled(!active);
 		buttons.reorder.setDisabled(!active);
 		buttons.save.setDisabled(!active);
-		buttons.settings.setDisabled(!active);
+		buttons.settings.setDisabled();
 		buttons.sortSections.setDisabled(!active);
 	}
 	function saveJSON(summary, data, generatedJSON) {
@@ -1253,6 +1253,9 @@
 		sortSection(s.id);
 		return spriteSection;
 	}
+	function getEditPermission() {
+		return hasEditPermission;
+	}
 	updateToolbar = function() {
 		var toolbar = root.querySelector('.spriteedit-toolbar');
 		root.removeChild(toolbar);
@@ -1517,6 +1520,12 @@
 				options: options
 			});
 		}
+		if (window.SpriteEditorModules.settings) {
+			window.SpriteEditorModules.settings.setSharedData({
+				loaded: loadedSpriteName,
+				getEditPermission: getEditPermission
+			});
+		}
 		function openWindow(win, err) {
 			if (!window.SpriteEditorModules[win]) {
 				alert(err);
@@ -1618,7 +1627,8 @@
 					options: options,
 					spriteData: output,
 					loaded: loadedSpriteName,
-					image: imgEle
+					image: imgEle,
+					getEditPermission: getEditPermission
 				});
 			}
 			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));

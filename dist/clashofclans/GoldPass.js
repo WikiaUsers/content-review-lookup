@@ -9,31 +9,234 @@ $(document).ready(function() {
 	$("span#researchBoostHarness").html('<div id="researchBoostInput">Research Boost: <select name="researchBoost" id="researchBoost"> <option value="0">0</option> <option value="10">10</option> <option value="15">15</option> <option value="20">20</option> <option value="30">30</option> </select> %</div>');
 	$("span#armyBoostHarness").html('<div id="armyBoostInput">Toggle Army Boost? <input type="checkbox" name="armyBoost" id="armyBoost"></input></div>');
 	$("span#freezeHarness").html('<div id="freezeInput">Toggle Frost? <input type="checkbox" name="freezeBoost" id="freezeBoost"></input></div>');
+	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Frost Potency: '+
+		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
+			'<option value="0">0</option>'+
+			'<option value="30">30</option>'+
+			// '<option value="35">35</option>'+
+			// '<option value="40">40</option>'+
+			// '<option value="45">45</option>'+
+			'<option value="50">50</option>'+
+			// '<option value="55">55</option>'+
+			// '<option value="60">60</option>'+
+			// '<option value="65">65</option>'+
+			// '<option value="70">70</option>'+
+			// '<option value="75">75</option>'+
+		'</select> %</div>');
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
 	$("span#rageSpellHarness").html('<div id="rageSpellInput">Rage Spell Level: <select name="rageSpellLevel" id="rageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> </select></div>');
 	$("span#capitalRageSpellHarness").html('<div id="capitalRageSpellInput">Rage Spell Level: <select name="capitalRageSpellLevel" id="capitalRageSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
-	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>')
+	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
 	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
 	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
-	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Aura Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option> <option value="12">12</option> <option value="13">13</option> <option value="14">14</option> <option value="15">15</option> <option value="16">16</option> <option value="17">17</option> <option value="18">18</option> <option value="19">19</option> <option value="20">20</option> <option value="21">21</option> <option value="22">22</option> <option value="23">23</option> <option value="24">24</option> <option value="25">25</option> <option value="26">26</option> <option value="27">27</option> <option value="28">28</option> <option value="29">29</option> <option value="30">30</option> <option value="31">31</option> <option value="32">32</option> <option value="33">33</option> <option value="34">34</option> <option value="35">35</option> <option value="36">36</option> <option value="37">37</option> <option value="38">38</option> <option value="39">39</option> <option value="40">40</option></select></div>');
+	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
+	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
+	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
+	$("span#rageAuraHarness").html('<div id="rageAuraInput">Rage Gem Level: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
 	/* Event boosts: change the options as appropriate for the event
-	Last event: Mashup Madness */
-	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
-	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
-	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost"> <option value="0">0</option> <option value="30">30</option></select> %</div>');
+	Last event: Cookie Rumble */
+	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput" style="display:none;">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
+	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost"> <option value="0">0</option> <option value="15">15</option> <option value="30">30</option></select> %</div>');
+	$("span#modifierModeHarness").html('<div id="modifierModeToggle">Modifier Mode: '+
+		'<select name="modifierMode" id="modifierMode">'+
+   			'<option value="Attack">Attack</option>'+
+    		'<option value="Defense">Defense</option>'+
+		'</select></div>');
+	// Hero gear boosts
+	$("span#heroGearToggleHarness").html('<div id="heroGearEnableToggle">Enable Hero Equipment? <input type="checkbox" name="heroGearToggle" id="heroGearToggle"></input></div>');
+	$("span#heroGearHarness").html('<div id="heroGearInput">' +
+		'<table><tr>' +
+		'<td><div id="firstHeroGear">' +
+    		'<div id="firstHeroGearOption"> Equipment 1: ' +
+        	'<select name="firstHeroGearChoice" id="firstHeroGearChoice">' +
+        	'</select></div>' +
+    	'</div></td>' +
+		'<td><div id="firstHeroGearLevel">' +
+    		'<div id="firstHeroGearLvl"> Level: ' +
+        	'<select name="firstHeroGearLevel" id="firstHeroGearLevel">' +
+        	'</select></div>' +
+    	'</div></td></tr>' +
+    	'<tr><td><div id="secondHeroGear">' +
+    		'<div id="secondHeroGearOption"> Equipment 2: ' +
+        	'<select name="secondHeroGearChoice" id="secondHeroGearChoice">' +
+        	'</select></div>' +
+    	'</div></td>' +
+		'<td><div id="secondHeroGearLevel">' +
+    		'<div id="secondHeroGearLvl"> Level: ' +
+        	'<select name="secondHeroGearLevel" id="secondHeroGearLevel">' +
+    	    '</select></div>' +
+    	'</div></td></tr>' +
+	'</table></div>');
     /* Get the initial cell values, remove commas, and 
        set the cell's title attribute to its original value. */
-   var heroAbilityDPH = [0];
-   var heroAbilitySpeed = [];
-   var heroLevel = 0;
+   // Auxillary array for wall HTKs
    var deathDamageArray = [];
+    /* Auxillary functions to refresh the level options for the choices
+    Call on initialisation and whenever the choice is amended */
+    function refreshFirstGearChoices() {
+    	var firstGearName = $("select#firstHeroGearChoice option:selected").text();
+        var levelCap = dictLevelCaps[firstGearName];
+        var firstLevelChoices = $("select#firstHeroGearLevel");
+    	firstLevelChoices.empty();
+    	for (i = 0; i < levelCap; i++) {
+    		firstLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
+    	}
+    	// Hide the level if there is only one level available
+        if (levelCap == 1) {
+        	$("#firstHeroGearLvl").css("display","none");
+        } else {
+        	$("#firstHeroGearLvl").css("display","block");
+        }
+    }
+    function refreshSecondGearChoices() {
+    	var secondGearName = $("select#secondHeroGearChoice option:selected").text();
+        var levelCap = dictLevelCaps[secondGearName];
+        var secondLevelChoices = $("select#secondHeroGearLevel");
+    	secondLevelChoices.empty();
+    	for (i = 0; i < levelCap; i++) {
+    		secondLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
+    	}
+        // Hide the level if there is only one level available
+        if (levelCap == 1) {
+        	$("#secondHeroGearLvl").css("display","none");
+        } else {
+        	$("#secondHeroGearLvl").css("display","block");
+        }
+    }
+    // Function to initialise the options we have available
+    function initChoices() {
+    	// Temporarily enable all options (we will disable one later)
+        $("select#firstHeroGearChoice").children().prop('disabled',false);
+        $("select#secondHeroGearChoice").children().prop('disabled',false);
+    	// Initialize selections to the first and second items, respectively
+        $("select#firstHeroGearChoice option[value=0]").prop('selected',true);
+    	$("select#secondHeroGearChoice option[value=1]").prop('selected',true);
+    	// Also disable the first item for second choice and second item for first choice
+    	$("select#secondHeroGearChoice option[value=0]").prop('disabled',true);
+    	$("select#firstHeroGearChoice option[value=1]").prop('disabled',true);
+    }
+    function toggleModifierMode() {
+      	//Change the visibility of various items depending on the mode selected
+        //If an item is to be made invisible, also reset it to its initial value
+        var mode = $("select#modifierMode").val();
+        if (mode == "Attack") {
+        	// Reset the values of defense-only items
+            $("#rageTowerBoost, #valkRageBoost").prop("checked",false);
+            $("#poisonSpellLevel, #frostPotencyLevel").val("0").change();
+        	// Disable defense-only items
+        	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
+            // Enable all disabled items (except for hero gear inputs and hero ability toggle)
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #normalAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
+            // Re-initialize hero gear options
+            refreshHeroGear();
+        } else {
+        	// Reset the values of offense-only items
+            $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
+        	$("#poisonTowerBoost, #normalAbliityBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
+        	// Disable offense-only items
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #normalAbilityHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
+            // Enable all disabled items
+            $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
+        }
+    }
+    function refreshHeroGear() {
+    	initChoices();
+    	refreshFirstGearChoices();
+    	refreshSecondGearChoices();
+    }
+   /* Initialize the choices
+   We first start by writing down level caps corresponding to each choice 
+   NOTE: Frozen Arrow is included because its max level is known (it's an epic)
+   but currently no stats have been added to the following dictionaries. */
+    var dictLevelCaps = {
+    	"Barbarian Puppet": 18,
+        "Rage Vial": 18,
+        "Earthquake Boots": 18,
+        "Vampstache": 18,
+        "Giant Gauntlet": 27,
+    	"Archer Puppet": 18,
+    	"Invisibility Vial": 18,
+    	"Giant Arrow": 18,
+    	"Healer Puppet": 18,
+    	"Frozen Arrow": 27,
+    	"Eternal Tome": 1, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
+    	"Life Gem": 18,
+    	"Rage Gem": 18,
+    	"Healing Tome": 18,
+    	"Royal Gem": 18,
+    	"Seeking Shield": 18,
+    };
+    // Fix the options available to us, depending on the name of the page
+    pageName = mw.config.get('wgTitle');
+    var heroGearOptions = [];
+    switch (pageName) {
+    	case ("Barbarian King"):
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet"];
+    		break;
+    	case ("Archer Queen"):
+    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet"];
+    		break;
+     	case ("Grand Warden"):
+    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome"];
+    		break;
+    	case ("Royal Champion"):
+    		heroGearOptions = ["Royal Gem", "Seeking Shield"];
+    		break;
+    	default: // Having all options in one makes it excellent for testing
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Royal Gem", "Seeking Shield"];
+    }
+	// Insert options
+    for (i = 0; i < heroGearOptions.length; i++) {
+        $("select#firstHeroGearChoice").append($("<option></option>").attr("value",i).text(heroGearOptions[i]));
+        $("select#secondHeroGearChoice").append($("<option></option>").attr("value",i).text(heroGearOptions[i]));
+    }
+    // Initialize options
+    refreshHeroGear();
+    // Only toggle modifier mode if it is on the page
+    if ($("select#modifierMode").val() != undefined) {
+    	toggleModifierMode();
+    }
+    // Disable the hero gear and ability harnesses at first
+    $("#heroGearHarness, #heroAbilityHarness").css("display","none");
+    // Whenever modifier mode is changed
+	$("select#modifierMode").change(function() {
+		toggleModifierMode();
+ 	});
+	// The below two functions disable the option for the other choice that the changed choice is picking
+    $("select#firstHeroGearChoice").change(function() {
+   		// Identify the choice to disable, and enable all other choices
+  		var firstChoice = $("select#firstHeroGearChoice").val();
+    	var choiceToDisable = $("select#secondHeroGearChoice option[value=" + firstChoice + "]");
+    	choiceToDisable.prop('disabled',true);
+    	choiceToDisable.siblings().prop('disabled',false);
+		
+		refreshFirstGearChoices();
+    });
+    $("select#secondHeroGearChoice").change(function() {
+   	    // Identify the choice to disable, and enable all other choices
+  		var secondChoice = $("select#secondHeroGearChoice").val();
+    	var choiceToDisable = $("select#firstHeroGearChoice option[value=" + secondChoice + "]");
+    	choiceToDisable.prop('disabled',true);
+    	choiceToDisable.siblings().prop('disabled',false);
+    	
+		refreshSecondGearChoices();
+    });
+	$("#heroGearToggle").change(function() {
+  		var tog = $("#heroGearToggle");
+        if (tog.is(":checked") === true) {
+        	$("#heroGearHarness, #heroAbilityHarness").css("display","block");
+        } else {
+        	$("#heroGearHarness, #heroAbilityHarness").css("display","none");
+        }
+	});
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
 	  $(this).attr("title", initialStr);
@@ -52,21 +255,29 @@ $(document).ready(function() {
 	  var initialRange = $(this).text().replace(/,/g,"");
 	  $(this).attr("title", initialRange);
    });
+   $(".AttackType").each(function() {
+	  var initialAttackType = $(this).text().trim();
+	  $(this).attr("title", initialAttackType);
+   });
+   /* Superseded by hero damage increase dictionaries
    $(".AbilityDPH").each(function() {
 	  // First take the hit speed. Damage increase works on the original DPS
 	  // Hero pages should only have one attack speed cell
 	  var attackSpeed = $(".AttackSpeed").attr("title") * 1;
 	  var damageIncrease = $(this).text().replace(/,/g,"") * (attackSpeed * 1000) / 1000;
 	  heroAbilityDPH.push(damageIncrease);
-   });
+   }); */
+   // Still used for normal troops e.g. Baby Dragon
    $(".AbilityDI").each(function() {
 	  var damageIncrease = $(this).text().replace(/%/g,"") * 1;
 	  $(this).attr("title", damageIncrease);
    });
+   // Still used for direct lookup (but modified from its original use)
    $(".AbilitySpeed").each(function() {
       var speedIncrease = $(this).text().replace(/,/g,"") * 1;
-      heroAbilitySpeed.push(speedIncrease);
+      $(this).attr("title", speedIncrease);
    });
+   // Still used for normal troops e.g. Baby Dragon
    $(".AbilityAS").each(function() {
       var attackSpeedIncrease = $(this).text().replace(/%/g,"") * 1;
       $(this).attr("title", attackSpeedIncrease);
@@ -616,14 +827,89 @@ $(document).ready(function() {
 	  // Add an array for Wall damage
 	  var wallDamageArray = [];
 	  // Two lookup arrays for the GW's life aura ability
-	  var auraPercentIncrease = [0,200,211,222,233,244,256,268,281,295,310,326,343,361,380,400,420,440,460,480,500,520,540,560,580,600,620,640,660,680,700,720,740,760,780,800,820,840,860,880,900];
-	  var auraMaxHPIncrease = [0,70,76,82,88,94,101,108,116,125,135,146,158,171,185,200,215,230,245,260,275,290,305,320,335,350,365,380,395,410,425,440,455,470,485,500,515,530,545,560,575];
+	  var auraPercentIncrease = [0,400,500,600,700,800,900,1000];
+	  var auraMaxHPIncrease = [0,275,350,425,500,575,650,725];
+	  // Another one for GW's rage aura ability
+	  var rageAuraPercentIncrease = [0,20,25,30,35,40,45,50];
 	  // Lookup arrays for the apprentice's aura ability
 	  // Styled in thousandths for ease of comparison
-	  var apprenticeAuraPercentIncrease = [0,240,260,280,300]
+	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
+	  var apprenticeAuraPercentIncrease = [0,240,260,280,300];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72]
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72];
+	  /* Hero Equipment stat dictionaries. We include one for each of the following:
+			1. DPS bonus (effectively adds to DPH, but we'll add raw DPS)
+			2. HP bonus
+			3. HP regen bonus (let's also list Royal Gem's HP regen because that's literally all it does)
+			4. Attack speed bonus
+			5. Ability damage increase (%)
+			6. Ability DPH increase
+			7. Ability movement speed
+			8. Ability attack type (simply a string to replace another)
+		What is not given a dictionary:
+			1. Self-heal per second
+			2. Other ability aspects e.g. duration, projectile damage, etc.
+	  */
+		var dictDPSBonus = {
+			"Rage Vial": [17,22,27,32,37,42,48,54,60,66,72,79,86,94,104,112,120,128],
+			"Earthquake Boots": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
+			"Vampstache": [9,10,12,13,15,16,18,19,22,27,32,37,42,48,53,58,63,68],
+			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,140,145,150,155,160,165,170,175,180],
+			"Archer Puppet": [26,34,42,49,55,62,71,80,90,100,109,115,122,127,132,136,140,144],
+			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
+			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
+			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
+			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105]
+		};
+		var dictHPBonus = {
+			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],
+			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1140,1295,1449,1604,1758,1913],
+			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
+			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
+			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
+			"Life Gem": [150,163,172,181,192,203,225,249,275,304,336,351,366,381,396,411,426,441],
+			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
+			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
+			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380]
+		};
+		var dictHPRecoveryBonus = {
+			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],
+			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
+			"Archer Puppet": [160,175,190,205,220,235,250,265,280,295,310,325,340,360,380,400,420,440],
+			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
+			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400]
+		};
+		var dictASBonus = {
+			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+		};
+		var dictAbilityDIBonus = {
+			"Rage Vial": [120,120,130,130,130,135,135,135,140,140,140,145,145,145,150,150,150,155]
+		};
+		var dictAbilityDPHBonus = {
+			"Invisibility Vial": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740]
+		};
+		var dictAbilitySpeedBonus = { //Written in number of tenths
+			"Rage Vial": [340,340,383,383,383,415,415,415,447,447,447,480,480,480,511,511,511,543]
+		};
+		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
+			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)")
+		};
+		// Read the equipment and level
+		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1
+		// This is to be compatible with the dictionaries, which are also zero-indexed
+		var firstHeroGearName, firstHeroGearLvl, secondHeroGearName, secondHeroGearLvl;
+		if ($("#heroGearToggle").is(":checked") === true) {
+    		firstHeroGearName = $("select#firstHeroGearChoice option:selected").text();
+    		firstHeroGearLvl = $("select#firstHeroGearLevel").val();
+      		secondHeroGearName = $("select#secondHeroGearChoice option:selected").text();
+    		secondHeroGearLvl = $("select#secondHeroGearLevel").val();
+    	}
 		$(".AttackSpeed").each(function() {
+			// Flags for CSS styling
+			var frostUsed = false;
+			var poisonUsed = false;
+			
 			var initialSpeed = $(this).attr("title") * 1;
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
@@ -632,12 +918,41 @@ $(document).ready(function() {
 			var THpoisonSpellLevel = $("#THpoisonSpellLevel").val() * 1;
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
-		    }  
+		    }
+		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
+		    if (isNaN(HHpoisonSpellLevel) === true) {
+		    	HHpoisonSpellLevel = 0;
+		    }
+		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
+		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
+		    if (HHpoisonSpellLevel > 0) {
+		    	poisonSpellLevel = HHpoisonSpellLevel + 4;
+		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			
+			var firstGearASBoost = 0;
+			var secondGearASBoost = 0;
+			
+			var firstGearASArray = dictASBonus[firstHeroGearName];
+			if (firstGearASArray != undefined) {
+    			firstGearASBoost = firstGearASArray[firstHeroGearLvl];
+        		if (isNaN(firstGearASBoost)) {
+        			firstGearASBoost = 0;
+        		}
+    		}
+			var secondGearASArray = dictASBonus[secondHeroGearName];
+			if (secondGearASArray != undefined) {
+    			secondGearASBoost = secondGearASArray[secondHeroGearLvl];
+        		if (isNaN(secondGearASBoost)) {
+        			secondGearASBoost = 0;
+        		}
+    		}
+			
 			// Try to prevent floating-point errors from making weird behaviour
 			var attackFreq = 1000 / (initialSpeed * 1000);
 			// Now it's the attack frequency we want to modify, so modify away!
+			
 		    // Expand this part later to add support for poison, etc.
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
@@ -652,29 +967,47 @@ $(document).ready(function() {
 			}
 			// Whichever poison is most severe will take precedence. Also only apply if unit is not a Building
 			if ($(this).hasClass("Building") === false) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+					poisonUsed = true;
+				}
 				attackFreq *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			
+			// Frost: Compare the toggle (50%) and potency multipliers
 			var freezeMultiplier = 1;
-			if (freezeCheckBox != null) { // Only apply frost effect if unit is not a Builder
-				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+			var frostMultiplier = 1;
+			if (freezeCheckBox != null) {
+				if (freezeCheckBox.checked === true) {
                 freezeMultiplier = 0.5;
             	}
 			}
-			attackFreq *= freezeMultiplier;
+			var frostPotency = $("#frostPotencyLevel").val() * 1;
+			if (isNaN(frostPotency) === true) {
+		    	frostPotency = 0;
+		    }
+		    frostMultiplier = (100 - frostPotency) / 100;
+		    // Only apply frost against non-Builders
+		    if ($(this).hasClass("Builder") === false) {
+		    	if (Math.min(freezeMultiplier,frostMultiplier) < 1) {
+		    		frostUsed = true; // Enables frozen CSS if any frost modifier is picked
+		    	}
+		    	// Pick the strongest of frost toggle and frost potency
+				attackFreq *= Math.min(freezeMultiplier,frostMultiplier);
+		    }
 			
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
-			var normalAbilityMultiplier = 1;
+			var normalAbilityAS = 0;
 			if (normalAbilityCheckBox != null) {
 				if (normalAbilityCheckBox.checked === true) {
-					var normalAbilityAS = $(".AbilityAS").attr("title") * 1;
+					normalAbilityAS = $(".AbilityAS").attr("title") * 1;
 					if (isNaN(normalAbilityAS) === true) {
 						normalAbilityAS = 0;
 					}
-					normalAbilityMultiplier = (100 + normalAbilityAS) / 100;
 				}
 			}
-			attackFreq *= normalAbilityMultiplier;
+			// Stack all of the positive multipliers together additively
+			var positiveAbilityMultiplier = (100 + normalAbilityAS + firstGearASBoost + secondGearASBoost) / 100;
+			attackFreq *= positiveAbilityMultiplier;
 			
 			attackFreqArray.push(attackFreq);
 			// Now display the new attack speed:
@@ -691,36 +1024,32 @@ $(document).ready(function() {
 			if (initialSpeed == displaySpeed) {
 				$(this).removeClass("StatModified");
 				$(this).removeClass("StatPoisoned");
-			} else if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
+			} else if (poisonUsed && $(this).hasClass("Building") === false) {
 				$(this).addClass("StatPoisoned");
 				$(this).removeClass("StatModified");
 			} else {
 				$(this).addClass("StatModified");
 				$(this).removeClass("StatPoisoned");
 			}
-			if (poisonTowerCheckBox != null) {
-				if (poisonTowerCheckBox.checked === true) {
-					$(this).addClass("StatPoisoned");
-				} else {
-					$(this).removeClass("StatPoisoned");
-				}
-			}
-			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-					$(this).addClass("StatFrozen");
-				} else {
-					$(this).removeClass("StatFrozen");
-				}
+			if (frostUsed === true) {
+				$(this).addClass("StatFrozen");
+			} else {
+				$(this).removeClass("StatFrozen");
 			}
 		});
 		// Make a function for calculating DPH, since some different classes (DPH and DPHRange) call on it
+		// Note: DPH increase from passives or ability will be handled before feeding that DPH into here (it is observed to stack multiplicatively)
 		function calcDPH(initialDPH,isHero,isBuilding,isStatue) {
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
+			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
 		    	rageSpellLevel = 0;
+		    }
+		    if (isNaN(rageAuraLevel) === true) {
+		    	rageAuraLevel = 0;
 		    }
 		    // Set the rage level to 4 if using Super Valkyrie Rage checkbox
 		    if (valkRageCheckBox != null) {
@@ -734,6 +1063,7 @@ $(document).ready(function() {
 			var calcNewDPH = initialDPH;
 			var rageMultiplier = 1;
 			var towerRageMultiplier = 1;
+			var auraRageMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if (isBuilding === true) {
@@ -756,18 +1086,45 @@ $(document).ready(function() {
 					}
 				}
 			}
-			var rageDamage = initialDPH * Math.max(rageMultiplier,towerRageMultiplier);
-			
-			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
-			var heroAbilityDamageIncrease = 0;
-			if (heroAbilityCheckBox != null) {
-				if (heroAbilityCheckBox.checked === true) {
-                heroLevel++;
-                var abilityLevel = Math.floor(heroLevel / 5);
-                heroAbilityDamageIncrease = heroAbilityDPH[abilityLevel];
+			if (rageAuraLevel > 0) {
+				var auraBoost = rageAuraPercentIncrease[rageAuraLevel];
+				// If the unit is a Hero, apply half this boost
+				if (isHero === true) {
+					auraRageMultiplier = (100 + (auraBoost * 5 / 10)) / 100;
+				} else {
+					auraRageMultiplier = (100 + auraBoost) / 100;
 				}
 			}
-			var heroAbilityDamage = initialDPH + heroAbilityDamageIncrease;
+			var rageDamage = initialDPH * Math.max(rageMultiplier, towerRageMultiplier, auraRageMultiplier);
+			
+			// For hero ability damage increase, look it up from dictionary
+			var firstGearAbilityDI = 0;
+			var secondGearAbilityDI = 0;
+			
+    		var firstGearArray = dictAbilityDIBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilityDI = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAbilityDI)) {
+        			firstGearAbilityDI = 0;
+        		}
+    		}
+      		var secondGearArray = dictAbilityDIBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilityDI = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAbilityDI)) {
+        			secondGearAbilityDI = 0;
+        		}
+    		}
+    		
+    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+			var heroAbilityMultiplier = 1;
+			if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					// Assuming that DI increases are additive. If they're not, I'll have to tweak it to use max
+                	heroAbilityMultiplier = (100 + firstGearAbilityDI + secondGearAbilityDI) / 100;
+				}
+			}
+			var heroAbilityDamage = initialDPH * heroAbilityMultiplier;
 			
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var normalAbilityMultiplier = 1;
@@ -787,17 +1144,68 @@ $(document).ready(function() {
 		}
 		$(".DPH").each(function() {
 			var initialDPH = $(this).attr("title") * 1;
+			var baseDPH = initialDPH;
 			var calcNewDPH = initialDPH;
+			// First, alter the initial DPH by passive DPS-increasing equipment
+			// We'll write our attack speed in milliseconds
+			var attackSpeed = $(".AttackSpeed").attr("title") * 1000;
+			
+			// Next, lookup the passive DPS increases from gear
+			var firstGearDPS = 0;
+			var secondGearDPS = 0;
+			var firstGearAbilityDPH = 0;
+			var secondGearAbilityDPH = 0;
+			
+			// Set passive DPS bonuses first
+    		var firstGearArray = dictDPSBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearDPS = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearDPS)) {
+        			firstGearDPS = 0;
+        		}
+    		}
+      		var secondGearArray = dictDPSBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearDPS = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearDPS)) {
+        			secondGearDPS = 0;
+        		}
+    		}
+    		// Add this to initial DPH
+    		baseDPH = initialDPH + ((firstGearDPS + secondGearDPS) * attackSpeed / 1000);
+    		// Then ability damage (if hero ability checkbox is turned on)
+    		firstGearArray = dictAbilityDPHBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilityDPH = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAbilityDPH)) {
+        			firstGearAbilityDPH = 0;
+        		}
+    		}
+      		secondGearArray = dictAbilityDPHBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilityDPH = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAbilityDPH)) {
+        			secondGearAbilityDPH = 0;
+        		}
+    		}
+    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					baseDPH += (firstGearAbilityDPH + secondGearAbilityDPH);
+				}
+			}
+			
+			// Now begin work on the base DPH
 			if ($(this).hasClass("Hero") === true) {
 				if ($(this).hasClass("Statue") === true) {
-					calcNewDPH = calcDPH(initialDPH,true,false,true);
+					calcNewDPH = calcDPH(baseDPH,true,false,true);
 				} else {
-					calcNewDPH = calcDPH(initialDPH,true,false,false);
+					calcNewDPH = calcDPH(baseDPH,true,false,false);
 				}
 			} else if ($(this).hasClass("Building") === true) {
-				calcNewDPH = calcDPH(initialDPH,false,true,false);
+				calcNewDPH = calcDPH(baseDPH,false,true,false);
 			} else {
-				calcNewDPH = calcDPH(initialDPH,false,false,false);
+				calcNewDPH = calcDPH(baseDPH,false,false,false);
 			}
 			// Don't add the DPH to the array if it's an alternative, secondary damage
 			if ($(this).hasClass("Secondary") === false) {
@@ -835,9 +1243,11 @@ $(document).ready(function() {
                 $(this).addClass("StatModified");
             }
 		});
-		// The way it's currently coded, the ability toggle is not reusable. So re-set the hero level to zero
-		heroLevel = 0;
 		$(".DPS").each(function() {
+			// Flags for CSS styling
+			var poisonUsed = false;
+			var frostUsed = false;
+			
 			var initialDPS = $(this).attr("title") * 1;
 			var attackFreq = attackFreqArray[0];
 			//Here, DPS is calculated by taking the DPS
@@ -849,6 +1259,8 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
             }
+            // These aren't used directly to calculate DPS (instead it works directly on attack speed)
+            // Instead, we simply use them to determine if CSS should be styled
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -857,30 +1269,47 @@ $(document).ready(function() {
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
 		    }
+			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
+		    if (isNaN(HHpoisonSpellLevel) === true) {
+		    	HHpoisonSpellLevel = 0;
+		    }
+		    var freezeUsed = false;
 			var freezeCheckBox = document.getElementById("freezeBoost");
+			if (freezeCheckBox != null) {
+				if (freezeCheckBox.checked === true) {
+					freezeUsed = true;
+				}
+			}
+			var frostPotency = $("#frostPotencyLevel").val() * 1;
+			if (isNaN(frostPotency) === true) {
+		    	frostPotency = 0;
+		    }
+		    var poisonTowerUsed = false;
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
-			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					poisonTowerUsed = true;
+				}
+			}
+			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			freezeUsed = (freezeCheckBox.checked === true || frostPotency > 0) && ($(this).hasClass("Building") === false);
+			if (poisonUsed) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
 			}
-			if (poisonTowerCheckBox != null) {
-				if (poisonTowerCheckBox.checked === true) {
-					$(this).addClass("StatPoisoned");
-				} else {
-					$(this).removeClass("StatPoisoned");
-				}
-			}
-			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-					$(this).addClass("StatFrozen");
-				} else {
-					$(this).removeClass("StatFrozen");
-				}
+			if (freezeUsed) {
+				$(this).addClass("StatFrozen");
+			} else {
+				$(this).removeClass("StatFrozen");
 			}
 		});
 		// Alternative DPS for different attack speeds
 		$(".DPS2").each(function() {
+			// Flags for CSS styling
+			var poisonUsed = false;
+			var frostUsed = false;
+			
             var initialDPS = $(this).attr("title") * 1;
             var attackFreq = attackFreqArray[1];
             //Here, DPS is calculated by taking the DPS
@@ -892,6 +1321,8 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
             }
+			            // These aren't used directly to calculate DPS (instead it works directly on attack speed)
+            // Instead, we simply use them to determine if CSS should be styled
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -900,32 +1331,100 @@ $(document).ready(function() {
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
 		    }
-            var freezeCheckBox = document.getElementById("freezeBoost");
-            var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
-            if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
-                $(this).addClass("StatPoisoned");
-            } else {
-                $(this).removeClass("StatPoisoned");
-            }
-            if (poisonTowerCheckBox != null) {
-				if (poisonTowerCheckBox.checked === true) {
-					$(this).addClass("StatPoisoned");
-				} else {
-					$(this).removeClass("StatPoisoned");
+		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
+		    if (isNaN(HHpoisonSpellLevel) === true) {
+		    	HHpoisonSpellLevel = 0;
+		    }
+		    var freezeUsed = false;
+			var freezeCheckBox = document.getElementById("freezeBoost");
+			if (freezeCheckBox != null) {
+				if (freezeCheckBox.checked === true) {
+					freezeUsed = true;
 				}
 			}
-            if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-                    $(this).addClass("StatFrozen");
-                } else {
-                    $(this).removeClass("StatFrozen");
-                }
-            }
+			var frostPotency = $("#frostPotencyLevel").val() * 1;
+			if (isNaN(frostPotency) === true) {
+		    	frostPotency = 0;
+		    }
+		    var poisonTowerUsed = false;
+			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			if (poisonTowerCheckBox != null) {
+				if (poisonTowerCheckBox.checked === true) {
+					poisonTowerUsed = true;
+				}
+			}
+			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
+			freezeUsed = (freezeCheckBox.checked === true || frostPotency > 0) && ($(this).hasClass("Building") === false);
+			if (poisonUsed) {
+				$(this).addClass("StatPoisoned");
+			} else {
+				$(this).removeClass("StatPoisoned");
+			}
+			if (freezeUsed) {
+				$(this).addClass("StatFrozen");
+			} else {
+				$(this).removeClass("StatFrozen");
+			}
         });
 		// And (perhaps confusingly) "AltDPS", for DPS that's different due to damage bonuses on targets,
 		// or simply if you just want DPS altered by buffs/debuffs without dependency on DPH
 		$(".AltDPS").each(function() {
+			// Flags for CSS styling
+			var poisonUsed = false;
+			var frostUsed = false;
+			
 			var initialDPS = $(this).attr("title") * 1;
+			var baseDPS = initialDPS;
+
+			// First, alter the initial DPH by passive DPS-increasing equipment
+			// We'll write our attack speed in milliseconds
+			var attackSpeed = $(".AttackSpeed").attr("title") * 1000;
+			// First modify this base DPS by hero equipment
+			// Lookup the passive DPS increase and ability DPH increases
+			var firstGearDPS = 0;
+			var secondGearDPS = 0;
+			var firstGearAbilityDPH = 0;
+			var secondGearAbilityDPH = 0;
+			
+			// Set passive DPS bonuses first
+    		var firstGearArray = dictDPSBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearDPS = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearDPS)) {
+        			firstGearDPS = 0;
+        		}
+    		}
+      		var secondGearArray = dictDPSBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearDPS = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearDPS)) {
+        			secondGearDPS = 0;
+        		}
+    		}
+    		baseDPS = initialDPS + firstGearDPS + secondGearDPS;
+    		
+    		// Then ability damage (if hero ability checkbox is turned on)
+    		firstGearArray = dictAbilityDPHBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilityDPH = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAbilityDPH)) {
+        			firstGearAbilityDPH = 0;
+        		}
+    		}
+      		secondGearArray = dictAbilityDPHBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilityDPH = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAbilityDPH)) {
+        			secondGearAbilityDPH = 0;
+        		}
+    		}
+    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					baseDPS += (firstGearAbilityDPH + secondGearAbilityDPH) * 1000 / attackSpeed;
+				}
+			}
+			
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
@@ -941,6 +1440,10 @@ $(document).ready(function() {
 			if (isNaN(capitalRageSpellLevel) === true) {
 		    	capitalRageSpellLevel = 0;
 		    }
+		    var rageAuraLevel = $("#rageAuraLevel").val() * 1;
+			if (isNaN(rageAuraLevel) === true) {
+		    	rageAuraLevel = 0;
+		    }
 			var poisonSpellLevel = $("#poisonSpellLevel").val() * 1;
 			if (isNaN(poisonSpellLevel) === true) {
 		    	poisonSpellLevel = 0;
@@ -949,7 +1452,19 @@ $(document).ready(function() {
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
 		    }
-			// Currently this class won't support abilities. It's because there's currently no instance where this is needed
+			var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
+		    if (isNaN(HHpoisonSpellLevel) === true) {
+		    	HHpoisonSpellLevel = 0;
+		    }
+		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
+		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
+		    if (HHpoisonSpellLevel > 0) {
+		    	poisonSpellLevel = HHpoisonSpellLevel + 4;
+		    }
+		    var frostPotency = $("#frostPotencyLevel").val() * 1;
+			if (isNaN(frostPotency) === true) {
+		    	frostPotency = 0;
+		    }
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
@@ -957,6 +1472,7 @@ $(document).ready(function() {
 			
 			var rageMultiplier = 1;
 			var towerRageMultiplier = 1;
+			var auraRageMultiplier = 1;
 			if (rageSpellLevel > 0) {
 				// If the unit is a building (has Building class), don't apply rage modifiers. If it is not a building but is a Hero (gains reduced multiplier), use the reduced damage multiplier.
 				if ($(this).hasClass("Building") === true) {
@@ -979,11 +1495,66 @@ $(document).ready(function() {
 					}
 				}
 			}
-            var rageDPS = initialDPS * Math.max(rageMultiplier,towerRageMultiplier);
-			// This next part takes the max of one element (because there's no support for abilities)
-			// If support for abilities is required in the future, it'll make more sense
-			var buffedDPS = Math.max(rageDPS);
+			if (rageAuraLevel > 0) {
+				var auraBoost = rageAuraPercentIncrease[rageAuraLevel];
+				// If the unit is a Hero, apply half this boost
+				if ($(this).hasClass("Hero") === true) {
+					auraRageMultiplier = (100 + (auraBoost * 5 / 10)) / 100;
+				} else {
+					auraRageMultiplier = (100 + auraBoost) / 100;
+				}
+			}
+            var rageDPS = baseDPS * Math.max(rageMultiplier,towerRageMultiplier,auraRageMultiplier);
+			// Now we adjust for hero abilities
+			var firstGearAbilityDI = 0;
+			var secondGearAbilityDI = 0;
+			var abilityDPS = baseDPS;
 			
+    		firstGearArray = dictAbilityDIBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilityDI = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAbilityDI)) {
+        			firstGearAbilityDI = 0;
+        		}
+    		}
+      		secondGearArray = dictAbilityDIBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilityDI = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAbilityDI)) {
+        			secondGearAbilityDI = 0;
+        		}
+    		}
+    		// If the ability is used, calculate the ability DPS
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					// Assuming that DI increases are additive. If they're not, I'll have to tweak it to use max
+					abilityDPS *= (100 + firstGearAbilityDI + secondGearAbilityDI) / 100;
+				}
+			}
+			// Now take the max of both
+			var buffedDPS = Math.max(rageDPS, abilityDPS);
+			
+			// Add attack speed increases from hero equipment
+			// Normal abilities are currently not supported, however
+			// This acts on attack frequency, but can be directly multiplied in (see reasoning below for debuffs)
+			var firstGearASBoost = 0;
+			var secondGearASBoost = 0;
+			
+			var firstGearASArray = dictASBonus[firstHeroGearName];
+			if (firstGearASArray != undefined) {
+    			firstGearASBoost = firstGearASArray[firstHeroGearLvl];
+        		if (isNaN(firstGearASBoost)) {
+        			firstGearASBoost = 0;
+        		}
+    		}
+			var secondGearASArray = dictASBonus[secondHeroGearName];
+			if (secondGearASArray != undefined) {
+    			secondGearASBoost = secondGearASArray[secondHeroGearLvl];
+        		if (isNaN(secondGearASBoost)) {
+        			secondGearASBoost = 0;
+        		}
+    		}
+    		buffedDPS *= (100 + firstGearASBoost + secondGearASBoost) / 100;
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
@@ -997,15 +1568,25 @@ $(document).ready(function() {
             	}
 			}
 			if ($(this).hasClass("Building") === false) {
+				if (Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier) < 1) {
+					poisonUsed = true;
+				}
 				buffedDPS *= Math.min(poisonMultiplier,THpoisonMultiplier,poisonTowerMultiplier);
 			}
 			var freezeMultiplier = 1;
+			var frostMultiplier = 1;
+			if (frostPotency > 0) {
+				frostMultiplier = (100 - frostPotency)/100;
+			}
 			if (freezeCheckBox != null) {
 				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
 					freezeMultiplier = 0.5;
 				}
 			}
-			buffedDPS *= freezeMultiplier;
+			if (Math.min(frostMultiplier, freezeMultiplier) < 1) {
+				frostUsed = true;
+			}
+			buffedDPS *= Math.min(frostMultiplier, freezeMultiplier);
 			var finalDPS = buffedDPS.toFixed(3) * 1;
 			$(this).text(finalDPS.format("#,##0[.]###"));
 			if (initialDPS === finalDPS) {
@@ -1013,28 +1594,41 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
 			}
-			if (poisonSpellLevel + THpoisonSpellLevel > 0 && $(this).hasClass("Building") === false) {
+			if (poisonUsed && $(this).hasClass("Building") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
-            if (poisonTowerCheckBox != null) {
-				if (poisonTowerCheckBox.checked === true) {
-					$(this).addClass("StatPoisoned");
-				} else {
-					$(this).removeClass("StatPoisoned");
-				}
-			}
-            if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-                    $(this).addClass("StatFrozen");
-                } else {
-                    $(this).removeClass("StatFrozen");
-                }
+            if (frostUsed) {
+                $(this).addClass("StatFrozen");
+            } else {
+                $(this).removeClass("StatFrozen");
             }
 		});
 		$(".HP").each(function() {
 			var initialHP = $(this).attr("title") * 1;
+			var baseHP = initialHP;
+			// First modify the initial HP via hero equipment
+			
+			var firstGearHP = 0;
+			var secondGearHP = 0;
+			
+			var firstGearHPArray = dictHPBonus[firstHeroGearName];
+    		if (firstGearHPArray != undefined) {
+    			firstGearHP = firstGearHPArray[firstHeroGearLvl];
+        		if (isNaN(firstGearHP)) {
+        			firstGearHP = 0;
+        		}
+    		}
+      		secondGearHPArray = dictHPBonus[secondHeroGearName];
+    		if (secondGearHPArray != undefined) {
+    			secondGearHP = secondGearHPArray[secondHeroGearLvl];
+        		if (isNaN(secondGearHP)) {
+        			secondGearHP = 0;
+        		}
+    		}
+    		baseHP = initialHP + firstGearHP + secondGearHP;
+			
 			var auraLevel = $("#lifeAuraLevel").val() * 1;
 			var apprenticeLevel = $("#apprenticeAuraLevel").val() * 1;
 			var auraPercent = auraPercentIncrease[auraLevel];
@@ -1049,10 +1643,10 @@ $(document).ready(function() {
 			if (isNaN(apprenticePercent) === true) {
 				apprenticePercent = 0;
 			}
-			var calcPercentHP = initialHP * (1000 + auraPercent)/1000;
-			var calcMaxHP = initialHP + auraMaxHP;
+			var calcPercentHP = baseHP * (1000 + auraPercent)/1000;
+			var calcMaxHP = baseHP + auraMaxHP;
 			var calcWardenHP = Math.min(calcPercentHP,calcMaxHP);
-			var calcApprenticeHP = initialHP * (1000 + apprenticePercent)/1000;
+			var calcApprenticeHP = baseHP * (1000 + apprenticePercent)/1000;
 			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
 			$(this).text(roundedHP.format("#,##0[.]###"));
@@ -1062,9 +1656,69 @@ $(document).ready(function() {
                 $(this).addClass("StatModifiedGP");
             }
 		});
+		$(".HPRecovery").each(function() {
+			var initialHPRec = $(this).attr("title") * 1;
+			// This stat is currently only modified by hero equipment
+			var firstGearHPRec = 0;
+			var secondGearHPRec = 0;
+			
+			var firstGearHPArray = dictHPRecoveryBonus[firstHeroGearName];
+    		if (firstGearHPArray != undefined) {
+    			firstGearHPRec = firstGearHPArray[firstHeroGearLvl];
+        		if (isNaN(firstGearHPRec)) {
+        			firstGearHPRec = 0;
+        		}
+    		}
+      		secondGearHPArray = dictHPRecoveryBonus[secondHeroGearName];
+    		if (secondGearHPArray != undefined) {
+    			secondGearHPRec = secondGearHPArray[secondHeroGearLvl];
+        		if (isNaN(secondGearHPRec)) {
+        			secondGearHPRec = 0;
+        		}
+    		}
+    		var finalHPRec = initialHPRec + firstGearHPRec + secondGearHPRec;
+    		$(this).text(finalHPRec.format("#,##0[.]###"));
+			if (initialHPRec === finalHPRec) {
+                $(this).removeClass("StatModifiedGP");
+            } else {
+                $(this).addClass("StatModifiedGP");
+            }
+		});
 		$(".Speed").each(function() {
+			// Flags for CSS styling
+			var poisonUsed = false;
+			var frostUsed = false;
+			
 			var initialSpeed = $(this).attr("title") * 1;
-			var initialSpeedStr = $(this).attr("title");
+			var baseSpeed = initialSpeed;
+			
+			var firstGearAbilitySpeed = 0;
+			var secondGearAbilitySpeed = 0;
+			// Set the base speed via hero equipment (currently only supports the use in ability)
+			var firstGearArray = dictAbilitySpeedBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilitySpeed = firstGearArray[firstHeroGearLvl] / 10;
+        		if (isNaN(firstGearAbilitySpeed)) {
+        			firstGearAbilitySpeed = 0;
+        		}
+    		}
+      		var secondGearArray = dictAbilitySpeedBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilitySpeed = secondGearArray[secondHeroGearLvl] / 10;
+        		if (isNaN(secondGearAbilitySpeed)) {
+        			secondGearAbilitySpeed = 0;
+        		}
+    		}
+    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					/* Unlike other buffs, ability speed sets the base movement speed
+					 I am assuming that they do not stack and that the best one is used instead
+					 And if neither gear gives speed, then use the initial speed */
+					baseSpeed = Math.max(firstGearAbilitySpeed, secondGearAbilitySpeed, initialSpeed);
+				}
+			}
+			
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
 			if (isNaN(rageSpellLevel) === true) {
@@ -1078,11 +1732,11 @@ $(document).ready(function() {
 		    }
 		    var capitalRageSpellLevel = $("#capitalRageSpellLevel").val() * 1;
 			if (isNaN(capitalRageSpellLevel) === true) {
-		    capitalRageSpellLevel = 0;
+		    	capitalRageSpellLevel = 0;
 		    } 
 			var hasteSpellLevel = $("#hasteSpellLevel").val() * 1;
 			if (isNaN(rageSpellLevel) === true) {
-		    hasteSpellLevel = 0;
+		    	hasteSpellLevel = 0;
 		    }
 		    var capitalHasteSpellLevel = $("#capitalHasteSpellLevel").val() * 1;
 		    if (isNaN(capitalHasteSpellLevel) === true) {
@@ -1096,7 +1750,20 @@ $(document).ready(function() {
 			if (isNaN(THpoisonSpellLevel) === true) {
 		    	THpoisonSpellLevel = 0;
 		    }
-			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+		    var HHpoisonSpellLevel = $("#HHpoisonSpellLevel").val() * 1;
+		    if (isNaN(HHpoisonSpellLevel) === true) {
+		    	HHpoisonSpellLevel = 0;
+		    }
+		    /* Set the poison spell level to headhunter lv + 4 if HH level is nonzero
+		    There should be no conflict because HH level is attack-only while Poison level is defense-only */
+		    if (HHpoisonSpellLevel > 0) {
+		    	poisonSpellLevel = HHpoisonSpellLevel + 4;
+		    }
+		    var frostPotency = $("#frostPotencyLevel").val() * 1;
+		    if (isNaN(frostPotency) === true) {
+		    	frostPotency = 0;
+		    }
+		    // Hero ability check box is already defined and used above
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
@@ -1135,36 +1802,23 @@ $(document).ready(function() {
             } else if (capitalHasteSpellLevel > 0) {
             	hasteBoost = capitalHasteSpellLevel + 6;
             }
-            var rageSpeed = initialSpeed + Math.max(rageBoost,towerRageBoost);
-			var hasteSpeed = initialSpeed + hasteBoost;
-
-			var minAbilityBoost = 0;
-			var maxAbilityBoost = 0;
-			// The same code can be used for both types of speed boosts (since only one of the below checkboxes will be used at a time)
+            /* We will need to multiply and divide by 10 since ability speed is written in tenths,
+            	to avoid floating-point errors */
+            var rageSpeed = (baseSpeed * 10 + Math.max(rageBoost,towerRageBoost) * 10) / 10;
+			var hasteSpeed = (baseSpeed * 10 + hasteBoost * 10) / 10;
 			
-			if (heroAbilityCheckBox != null) {
-				if (heroAbilityCheckBox.checked === true) {
-					if (heroAbilitySpeed.length > 0) {
-					//Sorting is currently unnecessary. But if for some reason,
-					//higher ability levels get a speed nerf, this is here to obtain the minimum/maximum boosts
-						heroAbilitySpeed.sort(function(a, b){return a - b});
-						minAbilityBoost = heroAbilitySpeed[0];
-						maxAbilityBoost = heroAbilitySpeed[heroAbilitySpeed.length-1];
-					}
-				}
-			} else if (normalAbilityCheckBox != null) {
+			var abilityBoost = $(".AbilitySpeed").attr("title") * 1;
+			if (isNaN(abilityBoost) === true) {
+				abilityBoost = 0;
+			}
+			
+			var abilitySpeed = baseSpeed;
+			if (normalAbilityCheckBox != null) {
 				if (normalAbilityCheckBox.checked === true) {
-					// If using the normal ability check box, there should only be one entry in the speed boost (if at all). So first check if the array isn't empty, otherwise do nothing
-					if (heroAbilitySpeed.length > 0) {
-						minAbilityBoost = heroAbilitySpeed[0];
-						maxAbilityBoost = heroAbilitySpeed[0];
-					}
+					abilitySpeed = (baseSpeed * 10 + abilityBoost * 10) / 10;
 				}
 			}
-			var minAbilitySpeed = initialSpeed + minAbilityBoost;
-			var maxAbilitySpeed = initialSpeed + maxAbilityBoost;
-			var minSpeed = Math.max(rageSpeed,hasteSpeed,minAbilitySpeed);
-			var maxSpeed = Math.max(rageSpeed,hasteSpeed,maxAbilitySpeed);
+			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, abilitySpeed);
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
@@ -1178,48 +1832,78 @@ $(document).ready(function() {
             	}
 			}
 			var poisonDebuff = Math.max(poisonSpeedDebuff[poisonSpellLevel],THpoisonSpeedDebuff[THpoisonSpellLevel],poisonTowerDebuff);
+			poisonUsed = (poisonDebuff > 0);
 			
-			minSpeed = minSpeed * (100 - poisonDebuff) /100;
-			maxSpeed = maxSpeed * (100 - poisonDebuff) /100;
+			buffedSpeed = buffedSpeed * (100 - poisonDebuff) /100;
 			
+			var freezeDebuff = 0;
 			if (freezeCheckBox != null) {
-				if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-					minSpeed *= 0.5;
-					maxSpeed *= 0.5;
+				if (freezeCheckBox.checked === true) {
+					freezeDebuff = 50;
 				}
 			}
-			
-			if (minSpeed === maxSpeed) {
-				var output = maxSpeed.toString();
-				$(this).text(output);
-			} else {
-				var output = minSpeed + "-" + maxSpeed;
-				$(this).text(output);
+			// We can use frost potency directly
+			if ($(this).hasClass("Builder") === false) {
+				buffedSpeed = buffedSpeed * (100 - Math.max(freezeDebuff, frostPotency)) / 100;
+				frostUsed = (Math.max(freezeDebuff, frostPotency) > 0);
 			}
 			
-			if (initialSpeedStr.trim() == output.trim()) {
+			$(this).text(buffedSpeed.format("#,##0[.]###"));
+			if (buffedSpeed === initialSpeed) {
                 $(this).removeClass("StatModified");
             } else {
                 $(this).addClass("StatModified");
             }
-			if (poisonSpellLevel > 0 || THpoisonSpellLevel > 0) {
+			if (poisonUsed) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
             }
-            if (poisonTowerCheckBox != null) {
-				if (poisonTowerCheckBox.checked === true) {
-					$(this).addClass("StatPoisoned");
-				} else {
-					$(this).removeClass("StatPoisoned");
+            if (frostUsed) {
+                $(this).addClass("StatFrozen");
+            } else {
+                $(this).removeClass("StatFrozen");
+            }
+		});
+		$(".AttackType").each(function() {
+			// Work with strings
+			var initialAttackType = $(this).attr("title");
+			var finalAttackType = initialAttackType;
+			// This stat is currently only modified by hero equipment, and during a hero ability
+			var firstGearAttackType = "";
+			var secondGearAttackType = "";
+			
+			var firstGearAtkArray = dictAttackTypeText[firstHeroGearName];
+    		if (firstGearAtkArray != undefined) {
+    			firstGearAttackType = firstGearAtkArray[firstHeroGearLvl];
+        		if (firstGearAttackType === undefined) {
+        			firstGearAttackType = "";
+        		}
+    		}
+      		secondGearAtkArray = dictAttackTypeText[secondHeroGearName];
+    		if (secondGearAtkArray != undefined) {
+    			secondGearAttackType = secondGearAtkArray[secondHeroGearLvl];
+        		if (firstGearAttackType === undefined) {
+        			secondGearAttackType = "";
+        		}
+    		}
+    		/* Since there's only one gear that modifies attack type, I will not consider what happens when both try to stack (for now)
+    		Additionally, this attack type only appears during hero ability */
+    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+    				if (firstGearAttackType.length > 0) {
+    					finalAttackType = firstGearAttackType;
+    				} else if (secondGearAttackType.length > 0) {
+    					finalAttackType = secondGearAttackType;
+    				}
 				}
-			}
-            if (freezeCheckBox != null) {
-                if (freezeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
-                    $(this).addClass("StatFrozen");
-                } else {
-                    $(this).removeClass("StatFrozen");
-                }
+    		}
+    		$(this).text(finalAttackType.trim());
+    		if (initialAttackType.trim() === finalAttackType.trim()) {
+                $(this).removeClass("StatModified");
+            } else {
+                $(this).addClass("StatModified");
             }
 		});
 		//Add a look-up array for wall HTK. Also define two variables to be used inside the loop here, and reset them afterwards
@@ -1293,34 +1977,18 @@ $(document).ready(function() {
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
-		if (document.getElementById("hammerJamBoost") != null) {
-			document.getElementById("hammerJamBoost").checked = false;
-		}
-		if (document.getElementById("autoForgeBoost") != null) {
-			document.getElementById("autoForgeBoost").checked = false;
-		}
-		if (document.getElementById("armyBoost") != null) {
-			document.getElementById("armyBoost").checked = false;
-		}
-		if (document.getElementById("freezeBoost") != null) {
-            document.getElementById("freezeBoost").checked = false;
-        }
-		if (document.getElementById("heroAbilityBoost") != null) {
-            document.getElementById("heroAbilityBoost").checked = false;
-        }
-		if (document.getElementById("normalAbilityBoost") != null) {
-            document.getElementById("normalAbilityBoost").checked = false;
-        }
-        if (document.getElementById("rageTowerBoost") != null) {
-            document.getElementById("rageTowerBoost").checked = false;
-        }
-        if (document.getElementById("valkRageBoost") != null) {
-            document.getElementById("valkRageBoost").checked = false;
-        }
-        if (document.getElementById("poisonTowerBoost") != null) {
-            document.getElementById("poisonTowerBoost").checked = false;
-        }
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost").prop("checked",false);
+		// Reinitialise the choices
+		$("select#modifierMode").val("Attack").change();
+    	// Only toggle modifier mode if it is on the page
+    	if ($("select#modifierMode").val() != undefined) {
+    		toggleModifierMode();
+    	}
+		// Reset hero gear
+		refreshHeroGear();
+        $("#heroGearHarness, #heroAbilityHarness").css("display","none");
+        // Now reset all modified cells
 		$(".GoldPass").each(function() {
 			var returnInitial = $(this).attr("title");
 			$(this).text(returnInitial);
@@ -1333,6 +2001,11 @@ $(document).ready(function() {
 			$(this).removeClass("StatModified");
 			$(this).removeClass("StatFrozen");
             $(this).removeClass("StatPoisoned");
+		});
+		$(".AttackType").each(function() {
+			var returnInitial = $(this).attr("title");
+			$(this).text(returnInitial);
+			$(this).removeClass("StatModified");
 		});
 		$(".ModifierStat").each(function() {
             var returnInitial = $(this).attr("title") * 1;

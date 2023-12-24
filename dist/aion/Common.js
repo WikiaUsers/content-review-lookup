@@ -1,16 +1,5 @@
-/**** Custom edit buttons ****/
-if (mwCustomEditButtons) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "https://vignette.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
-        "speedTip": "Redirect",
-        "tagOpen": "#REDIRECT [[",
-        "tagClose": "]]",
-        "sampleText": "Insert text"
-    };
-}
-
-/* ** Page flip view used in [[Template:Book]]
-  Courtesy of pcj - used with permission ** */
+/*** Page flip view used in [[Template:Book]]
+	 Courtesy of pcj - used with permission   ***/
 function pageLeft() {
     if ($("#book .text:visible").prevAll("#book .text").length !== 0) {
         thisPage = $("#book .text:visible").prevAll("#book .text").length;
@@ -18,7 +7,7 @@ function pageLeft() {
         $("#book .text").eq(thisPage - 1).show();
         $(".buttonright").css("opacity", "1.0").css("filter", "alpha(opacity=10)");
         newThisPage = $("#book .text:visible").prevAll("#book .text").length + 1;
-        $(".page").text("- " + newThisPage + "/" + $("#book .text").length + " -");
+        $("#book .page").text("- " + newThisPage + "/" + $("#book .text").length + " -");
         if ($("#book .text:visible").prevAll("#book .text").length === 0) $(".buttonleft").css("opacity", "0.3").css("filter", "alpha(opacity=03)");
     }
 }
@@ -30,7 +19,7 @@ function pageRight() {
         $("#book .text").eq(thisPage + 1).show();
         $(".buttonleft").css("opacity", "1.0").css("filter", "alpha(opacity=10)");
         newThisPage = $("#book .text:visible").prevAll("#book .text").length + 1;
-        $(".page").text("- " + newThisPage + "/" + $("#book .text").length + " -");
+        $("#book .page").text("- " + newThisPage + "/" + $("#book .text").length + " -");
         if ($("#book .text:visible").nextAll("#book .text").length === 0) $(".buttonright").css("opacity", "0.3").css("filter", "alpha(opacity=03)");
     }
 }
@@ -43,7 +32,7 @@ $(function() {
     }
 });
 
-//Tooltip Code
+/*** Tooltip Code ***/
 var tooltipsOn = true;
 var $tfb;
 var activeHoverLink = null;
@@ -108,8 +97,8 @@ function bindTT() {
 // check to see if it is active then do it
 $(function() {
     if (tooltipsOn) {
-        $("#WikiaMainContent").append('<div id="tfb" class="htt"></div>');
+        $("#content").append('<div id="tfb" class="htt"></div>');
         $tfb = $("#tfb");
-        $("#WikiaMainContent span.ajaxttlink").each(bindTT);
+        $("#content span.ajaxttlink").each(bindTT);
     }
 });

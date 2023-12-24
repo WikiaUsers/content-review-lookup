@@ -70,6 +70,8 @@ $(function(){
 			this.effRanIdx = this.detailedStatTexts.indexOf("Effect Range");
 			this.effDurIdx = this.detailedStatTexts.indexOf("Effect Duration"); 
 			this.dmgIncIdx = this.detailedStatTexts.indexOf("Damage Dealt");
+			this.chargeDurIdx = this.detailedStatTexts.indexOf("Charge Duration"); //Charge stats needed for scatter & rail gun DPS
+			this.chargeDmgIdx = this.detailedStatTexts.indexOf("Charge Damage Increase");
 			
 			this.realLevel = 0;
 		};
@@ -103,13 +105,9 @@ $(function(){
 							//Exception for Beam Lasers which have no displayed fire rate stat.
 							newKDPS = newKDmg; 
 						}
-						if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
-							//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
-							newKDPS = (newKDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
-						}
-						if (this.equiptype == "Rail Gun") {
-							//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
-							newKDPS = (newKDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+						if ((this.equiptype == "Scatter Gun" || this.equiptype == "Rail Gun") && this.equipname != "Repeater"){
+							//DPS = (base damage * charge dmg increase %) / (charge duration + 1/fire rate), 1/fire rate is refire time
+							newKDPS = (newKDmg * (this.baseDStats[this.chargeDmgIdx] /100)) / (this.baseDStats[this.chargeDurIdx] + 1 / this.baseDStats[this.rateIdx]);
 						}
 						this.mainStatVals.eq(this.kDPSIdx).html(Math.round(newKDPS)); //set kinetic DPS val
 					}
@@ -125,13 +123,9 @@ $(function(){
 							//Exception for Beam Lasers which have no displayed fire rate stat.
 							newEDPS = newEDmg; 
 						}
-						if (this.equiptype == "Scatter Gun" && this.equipname != "Repeater") {
-							//9 = charge damage increase, 0.5 = charge time, (1 / fire rate) = refire time
-							newEDPS = (newEDmg * 9) / (0.5 + 1 / this.baseDStats[this.rateIdx]);
-						}
-						if (this.equiptype == "Rail Gun") {
-							//7.5 = charge damage increase, 1.8 = charge time, (1 / fire rate) = refire time
-							newEDPS = (newEDmg * 7.5) / (1.8 + 1 / this.baseDStats[this.rateIdx]);
+						if ((this.equiptype == "Scatter Gun" || this.equiptype == "Rail Gun") && this.equipname != "Repeater"){
+							//DPS = (base damage * charge dmg increase %) / (charge duration + 1/fire rate), 1/rate is refire time
+							newEDPS = (newEDmg * (this.baseDStats[this.chargeDmgIdx] /100)) / (this.baseDStats[this.chargeDurIdx] + 1 / this.baseDStats[this.rateIdx]);
 						}
 						this.mainStatVals.eq(this.eDPSIdx).html(Math.round(newEDPS)); //set energy DPS val					
 					}	

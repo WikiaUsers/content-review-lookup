@@ -63,3 +63,14 @@ $(document).ready(function() {
 	}
 } );
 } )( jQuery, mediaWiki );
+
+window.MultiUploadoption = {
+    max: 100
+};
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});

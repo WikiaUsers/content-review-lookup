@@ -84,3 +84,23 @@ $(function() {
 });
  
 /* End of the {{USERNAME}} replacement */
+
+
+/* AutoCreateUserPages using form MediaWiki:Welcome-user-page
+	Require dev script AutoCreateUserPages.js */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{sub'+'st:MediaWiki:Welcome-user-page}}',
+        3: '{{autowelcome}}',
+    1202: false
+},
+    summary: 'Auto creating user page',
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+};
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AutoCreateUserPages.js',
+    ]
+});

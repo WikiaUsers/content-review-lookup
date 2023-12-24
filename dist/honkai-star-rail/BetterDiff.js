@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision: 11/30/2023 19:36
+// Current revision: 12/18/2023 16:17
 
 $(function() {
 
@@ -261,10 +261,10 @@ $(function() {
 		userPatrol: function() {
 			if (!document.querySelector('#userPatrol') && can.patrol) {
 				var wrapper = $(
-					'<div class="userPatrolWrapper" style="white-space: nowrap; width: 100%">'+
+					'<div class="userPatrolWrapper" style="display: flex; width: 100%">'+
 						'<span id="userPatrolDetails" style="margin-right: 3px;"></span>'+
 						'<input name="userPatrol" id="userPatrol" placeholder="User to mass patrol" />'+
-						'<span class="wds-button" id="submitUserPatrol" style="padding: 1px 3px; position: relative;">Patrol User</span>'+
+						'<span class="wds-button" id="submitUserPatrol" style="white-space: nowrap; padding: 1px 3px; position: relative;">Patrol User</span>'+
 					'</div>'
 				);
 				var cell = $('.mw-rcfilters-ui-table-placeholder');

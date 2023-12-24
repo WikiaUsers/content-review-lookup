@@ -75,7 +75,7 @@ $(document).ready(function() {
     	['3/3b/CHG_Ground_Goblin_Floor.png', 'Goblin Ground'],
     	['d/d1/CHG_Ground_Chess_Floor.png', 'Chess Floor'],
     	['1/16/CHG_Ground_Greenhouse_Floor.png', 'Greenhouse Ground'],
-    	['9/99/CHG_Ground_Clashmas.png', 'Clashmas Ground'],
+    	['9/99/CHG_Ground_Clashmas.png', 'Bakery Ground'],
     ];
     
     var walls = [
@@ -95,7 +95,7 @@ $(document).ready(function() {
     	['f/f8/CHG_Walls_Chess_Walls_2.png', 'Black Chess Walls'],
     	['b/bc/CHG_Walls_Greenhouse_Walls.png', 'Greenhouse Walls'],
     	['c/c4/CHG_Walls_Summer_Walls.png', 'Summer Walls'],
-    	['3/36/CHG_Walls_Clashmas.png', 'Clashmas Walls'],
+    	['3/36/CHG_Walls_Clashmas.png', 'Bakery Walls'],
     ];
     
     var roof = [
@@ -148,7 +148,7 @@ $(document).ready(function() {
     	['c/c0/CHG_Roof_Greenhouse_Roof.png', 'Greenhouse Roof'],
     	['7/79/CHG_Roof_Summer_Roof.png', 'Summer Roof'],
     	['f/f6/CHG_Roof_Halloween_Roof.png', 'Halloween Roof'],
-    	['f/f1/CHG_Roof_Clashmas.png', 'Clashmas Roof'],
+    	['f/f1/CHG_Roof_Clashmas.png', 'Bakery Roof'],
     ];
     
     var decoration = [
@@ -182,7 +182,7 @@ $(document).ready(function() {
     	['b/b7/CHG_Decoration_Cauldron.png', 'Cauldron'],
     	['c/cd/CHG_Decoration_Log.png', 'Log'],
     	['1/1c/CHG_Decoration_Dinosaur.png', 'Dinosaur'],
-    	['1/19/CHG_Decoration_Clashmas.png', 'Clashmas Log'],
+    	['1/19/CHG_Decoration_Clashmas.png', 'Bakery Decoration'],
     ];
     
     //Add containers

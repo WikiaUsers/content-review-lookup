@@ -349,6 +349,7 @@
 	'tamru the black': '',
 	'brokul': '',
 	'despor': '',
+	'dragon hoard': '',	
 	'mitmah vanguard': ''
 	},
   //item: {creatures that drop them normally as keys}

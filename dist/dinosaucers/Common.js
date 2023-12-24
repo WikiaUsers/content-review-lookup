@@ -17,13 +17,9 @@ UserTagsJS.modules.custom = {
 
 UserTagsJS.modules.inactive = 60;
 
-// LinkPreview
-/* Config object */
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.RegExp.noinclude = [ ".page-header__indicators", ".mw-indicator", "img", ".thumb", ".no-link-preview", ".reference", ".error" ];
-
 // ReferencePop
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };
+/* The disable ReferencesPopups' animation by default, and why it doesn't affect? */
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false }; /* ? */
 
 // Recover style on TOC that's removed by a Fandom script. Found on dev.fandom.com then check on kingdomthegame.fandom.com/wiki/MediaWiki:Common.js.
 // And do you know that you can use italic or bold header in TOC? In current day, Offical Fandom Wikia straight up remove this TOC's style in their script. If want to taken back like Wikipedia's choice of style, you must use JS for justice...

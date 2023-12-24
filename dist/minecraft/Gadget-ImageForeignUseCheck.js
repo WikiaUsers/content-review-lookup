@@ -27,8 +27,7 @@ if (wgNamespaceNumber == 6) {
 			"Thai":"minecraft.fandom.com/th",
 			"Turkish":"minecraft.fandom.com/tr",
 			"Ukrainian":"minecraft.fandom.com/uk",
-			"Aether Mod":"aether.fandom.com",
-			"Mo' Creatures Mod": "mocreatures.fandom.com"
+			"Aether Mod":"aether.fandom.com"
 		};
 		$interUses.append( $('<h3></h3>', {'text': msgNoUses, 'class':'no_foreign_uses'}) );
 		$.each(langs, function(key, value) {

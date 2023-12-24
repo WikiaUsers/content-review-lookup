@@ -1,7 +1,8 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
 /*删除速率*/
 window.batchDeleteDelay = 500;
-
+/*移动速率*/
+window.massRenameDelay = 3500;
 // 不活跃标签
 InactiveUsers = { 
     months: 2,
@@ -27,6 +28,7 @@ window.SpoilerAlertJS = {
 
 //侧边栏小块
 window.AddRailModule = [{prepend: true}];
+window.AddRailModule = [{maxage:86400}];
 
 // 导入Dev Wiki的脚本
 importArticles({
@@ -51,6 +53,9 @@ importArticles({
         'u:dev:MediaWiki:AjaxBatchDelete.js',
         'u:dev:MediaWiki:AddRailModule/code.js',
         'u:dev:MediaWiki:Digital Clock.js',
-        'u:dev:MediaWiki:ThemeToggler.js'
+        'u:dev:MediaWiki:ThemeToggler.js',
+        'u:dev:MediaWiki:NullEditButton/code.js',
+        'u:dev:MediaWiki:MassCategorization/code.js',
+        'u:dev:MediaWiki:CommunityPageRailModule.js'
     ]
 });

@@ -23,6 +23,19 @@ setInterval(function () {
     } 
 }, 500)
 
+/* Фикс рекламного блока */
+var adBGCleaner = setInterval(function () {
+    if (document.getElementsByClassName('popular-pages__image').length > 0) {
+        var adRail = document.getElementsByClassName('popular-pages__image')
+        Array.prototype.forEach.call(adRail,
+            function (image) {
+                image.src = image.src.replace(/(\/smart\/width\/[\d]*\/height\/[\d]*)/g, "")
+            }
+        )
+        clearInterval(adBGCleaner)    
+    } 
+}, 500)
+
 /* Фикс категорий */
 var catBGCleaner = setInterval(function () {
     if (document.getElementsByClassName('category-page__member-thumbnail').length > 0) {

@@ -19,6 +19,15 @@
 		eleList[2].innerHTML = '<b>' + msg("spritesheet width").plain() + '</b>: ' + ((Number(shared.imgWidth) + Number(spacingEle.getValue())) * Number(perRowEle.getValue()) - Number(spacingEle.getValue())) + 'px';
 	}
 	myData.requestChanges = function() {
+		if (!shared.loaded.full.length) return; // No changes needed;
+		var inputs = document.querySelectorAll("input.sprite-settings.wds-toggle__input");
+		inputs.forEach(function(e) {
+			if (shared.getEditPermission()) {
+				e.removeAttribute("disabled");
+			} else {
+				e.setAttribute("disabled", "");
+			}
+		});
 		perRowEle.setValue(shared.options.spritesPerRow);
 		spacingEle.setValue(shared.options.spacing);
 		eleList[0].innerHTML = '<b>' + msg("image-path").plain() + '</b>: ' + (shared.spriteData.settings.image || shared.loaded.name + '.png');
@@ -46,22 +55,24 @@
 		'</div>';
 	}
 	function formHtml2() {
+		const disabled = shared.getEditPermission && shared.getEditPermission() && "" || " disabled";
+		var opt = shared.options || {};
 		return '<div style="padding: 0 24px">' +
 			'<h2>' + msg("save-title").plain() + '</h2>' +
 			'<div>' +
-				'<input class="wds-toggle__input" id="se-section" type="checkbox" ' + (shared.options.cleanupSectionIDs && "checked" || "") + ' />' +
+				'<input class="sprite-settings wds-toggle__input" id="se-section" type="checkbox" ' + (opt.cleanupSectionIDs && "checked" || "") + disabled + ' />' +
 				'<label class="wds-toggle__label" for="se-section">' + msg("cleanup-ids").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input class="wds-toggle__input" id="se-unused" type="checkbox" ' + (shared.options.removeUnusedSprites && "checked" || "") + ' />' +
+				'<input class="sprite-settings wds-toggle__input" id="se-unused" type="checkbox" ' + (opt.removeUnusedSprites && "checked" || "") + disabled + ' />' +
 				'<label class="wds-toggle__label" for="se-unused">' + msg("remove-unused").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input class="wds-toggle__input" id="se-whitespace" type="checkbox" ' + (shared.options.removeWhitespace && "checked" || "") + ' />' +
+				'<input class="sprite-settings wds-toggle__input" id="se-whitespace" type="checkbox" ' + (opt.removeWhitespace && "checked" || "") + disabled + ' />' +
 				'<label class="wds-toggle__label" for="se-whitespace">' + msg("remove-whitespace").plain() + '</label>' +
 			'</div>' +
 			'<div>' +
-				'<input class="wds-toggle__input" id="se-deprecated" type="checkbox" ' + (shared.options.removeDeprecatedNames && "checked" || "") + ' />' +
+				'<input class="sprite-settings wds-toggle__input" id="se-deprecated" type="checkbox" ' + (opt.removeDeprecatedNames && "checked" || "") + disabled + ' />' +
 				'<label class="wds-toggle__label" for="se-deprecated">' + msg("remove-deprecated").plain() + '</label>' +
 			'</div>' +
 		'</div>';

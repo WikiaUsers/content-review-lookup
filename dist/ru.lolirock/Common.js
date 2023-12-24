@@ -3,7 +3,7 @@
 //Неактивные пользователи
 window.InactiveUsers = { 
     months: 1,
-    text: 'Неактивный'
+    text: 'Неактивен'
 };
 importScriptPage('InactiveUsers/code.js', 'dev');
 

@@ -9,9 +9,9 @@ window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
         'zh-tw': tw || hant || hk || mo,
         'zh-hk': hk || hant || mo || tw,
         'zh-mo': mo || hant || hk || tw
-    }
+    };
     return ret[wg] || zh || hant || hans || tw || cn || hk || sg || mo || my; //保證每一語言有值
-}
+};
 
 window.wgULS = function (hans, hant, cn, tw, hk, sg, zh, mo, my) {
     return wgUXS(mw.config.get('wgUserLanguage'), hans, hant, cn, tw, hk, sg, zh, mo, my);
@@ -69,9 +69,6 @@ UserTagsJS.modules.metafilter = {
 */
 // But again, we've got PVT-ZH!
 UserTagsJS.modules.custom = {
-    '机智的小鱼君': ['pvt', 'pvt-zh'],
-    'Winston Sung': ['pvt', 'pvt-zh'],
-    'MysticNebula70': ['pvt', 'pvt-zh'],
     '铁桶': ['pvt', 'pvt-zh'],
     'Lakejason0': ['pvt', 'pvt-zh'],
     'Dianliang233': ['pvt', 'pvt-zh'],
@@ -112,28 +109,6 @@ $(".analytics_table").each(function() {
 (function ($, mw) {
 ////////////////////////////////
 // MEDIAWIKI JQUERY FUNCTION
-/* Opens chat in a new window for homepage */
-/* Guided Tours */
-if (mw.config.get('wgCanonicalNamespace') == 'User_blog') {
-	setTimeout(function() {
-		$('.guidedtours-header').each(function() {
-			var headerWidth = $(this).find('.text').width();
-			var leftMargin = parseInt(headerWidth) + 15 + 'px';
-			$(this).next().css('margin-left',leftMargin);
-		});
-	},250);
-}
-
-/* Wikia University */
-$('.wu-content .box .next').on('click', function() {
-	var currentBox = $(this).parent();
-	var nextBox = currentBox.next();
-	if (nextBox.length !== 0) {
-		$('html, body').animate({
-			scrollTop: $(nextBox).offset().top
-		}, 500);
-	}
-});
 
 /** FANDOM SVG logo **/
 $('.wds-community-header__wordmark').html(
@@ -152,8 +127,8 @@ $('.wds-community-header__wordmark').html(
 );
 
 /* Discussion Icon */
-$('nav > ul > li:nth-child(3) > div > ul > li:nth-child(1) > a > span').prepend('<svg class="wds-icon-tiny wds-icon navigation-item-icon" id="wds-icons-discussions-tiny" viewBox="0 0 12 12"><path d="M1,12c-0.13,0-0.26-0.02-0.38-0.08C0.24,11.77,0,11.4,0,11V4c0-0.55,0.45-1,1-1s1,0.45,1,1v4.59l0.29-0.29 C2.48,8.11,2.73,8,3,8h4c0.55,0,1,0.45,1,1s-0.45,1-1,1H3.41l-1.71,1.71C1.52,11.9,1.26,12,1,12z M11.38,8.92 C11.76,8.77,12,8.4,12,8V2c0-1.1-0.9-2-2-2H5C3.9,0,3,0.9,3,2v3c0,1.1,0.9,2,2,2h3.59l1.71,1.71C10.48,8.9,10.74,9,11,9 C11.13,9,11.26,8.98,11.38,8.92z M10,2v3.59L9.71,5.29C9.52,5.11,9.27,5,9,5H5V2H10z"></path></svg> ') // too lazy to jQuery-ize this
+$('nav > ul > li:nth-child(3) > div > ul > li:nth-child(1) > a > span').prepend('<svg class="wds-icon-tiny wds-icon navigation-item-icon" id="wds-icons-discussions-tiny" viewBox="0 0 12 12"><path d="M1,12c-0.13,0-0.26-0.02-0.38-0.08C0.24,11.77,0,11.4,0,11V4c0-0.55,0.45-1,1-1s1,0.45,1,1v4.59l0.29-0.29 C2.48,8.11,2.73,8,3,8h4c0.55,0,1,0.45,1,1s-0.45,1-1,1H3.41l-1.71,1.71C1.52,11.9,1.26,12,1,12z M11.38,8.92 C11.76,8.77,12,8.4,12,8V2c0-1.1-0.9-2-2-2H5C3.9,0,3,0.9,3,2v3c0,1.1,0.9,2,2,2h3.59l1.71,1.71C10.48,8.9,10.74,9,11,9 C11.13,9,11.26,8.98,11.38,8.92z M10,2v3.59L9.71,5.29C9.52,5.11,9.27,5,9,5H5V2H10z"></path></svg> '); // too lazy to jQuery-ize this
 
 ////////////////////////////////
 // END
-}(jQuery, mediaWiki));
+} (jQuery, mediaWiki) );

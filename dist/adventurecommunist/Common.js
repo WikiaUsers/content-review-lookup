@@ -4,11 +4,14 @@ window.UserTagsJS = {
 	tags: {
 		hyper: {u: 'HyperHippo Staff', order: -1/0, link:'https://hyperhippogames.com/studio/' },//Must prove they are staff somehow only here just incase they ever decide to edit.
 		templates:{ u: 'Templates Guru', link: 'Category:Templates' },//ONLY for people who have advanced template knowledge.
-		newuser:{ u: 'New Comrade', },
+		newuser:{ u: 'Comrade', },
+		bot:{ u: 'Automated Comrade', },
+		'content-moderator':{ u: 'Senior Officer', },
+		threadmoderator:{ u: 'Senior Officer', },
 		inactive: { u: 'Has not edited recently' }, //Inactive tag
 		blocked:{ u: 'Capitalist', }, //Who needs blocked people
 		sysop: { u:'Supreme Officer', link:'Project:Administrators' }, // Change "Administrator" to "Supreme Officer"
-		bureaucrat: { u:'Supreme Leader', }, // Change "Bureaucrat" to "Supreme Leader"
+		bureaucrat: { u:'Supreme Leader', link:'Project:Administrators' }, // Change "Bureaucrat" to "Supreme Leader"
 		
 	}
 };
@@ -24,7 +27,7 @@ UserTagsJS.modules.metafilter = {
 	'sysop': ['bureaucrat','bot'], // Remove "Admin" tag from bureaucrats
 	'chatmoderator': ['bot'], //Remove "Chat Moderator" tag from bots as they should only display bot tag.
 	'content-moderator': ['bot'], //Remove "Content Moderator" tag from bots as they should only display bot tag.
-	'theadmoderator': ['bot']//Remove "Discussions Moderator" tag from bots as they should only display bot tag.
+	'threadmoderator': ['bot']//Remove "Discussions Moderator" tag from bots as they should only display bot tag.
 };
 
 // Add custom groups to several users
@@ -35,4 +38,4 @@ UserTagsJS.modules.custom = {
 };
 
 // Disable users using dev.fandom.com/Rollback as per instructions on that page.
-window.RollbackWikiDisable = true
+window.RollbackWikiDisable = true;

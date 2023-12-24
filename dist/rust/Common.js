@@ -161,10 +161,3 @@ importArticles({ type: 'script', articles: [
     'w:c:dev:AntiUnicruft/code.js' /* AntiUnicruft Fix invisible characters for .css files */
     ]
 });
-
-var dateCheck = new Date();
-var cMonth = dateCheck.getMonth()+1;
-var cDay = dateCheck.getDate();
-if (cMonth === 12 && cDay >= 17 && cDay <= 25) { //From the 17 till Christmas day
-    importArticle({ type: 'script', article: 'MediaWiki:Snow.js'}); //Let it snow
-};
