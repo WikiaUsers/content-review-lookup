@@ -135,68 +135,65 @@
 		'</div>';
 	}
 
-	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
-		OO = require('oojs');
+	// create window
+	myData.createWindow = function() {
+		OO = window.SpriteEditorModules.main.OO;
+		msg = window.SpriteEditorModules.main.msg;
+		function SpriteEditorDialog(config) {
+			SpriteEditorDialog.super.call(this, config);
+		}
+		OO.inheritClass(SpriteEditorDialog, OO.ui.MessageDialog);
+		SpriteEditorDialog.static.name = 'SpriteEditor';
+		SpriteEditorDialog.static.title = msg("dialog-button-new").plain();
+		SpriteEditorDialog.static.actions = [
+			{action: 'reject', label: msg("dialog-button-cancel").plain(), flags: [ 'safe', 'close' ]},
+			{action: 'accept', label: msg("dialog-button-create").plain, flags: [ 'primary', 'progressive' ]}
+		];
 
-		// create window
-		myData.createWindow = function() {
-			msg = window.SpriteEditorModules.main.msg;
-			function SpriteEditorDialog(config) {
-				SpriteEditorDialog.super.call(this, config);
-			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.MessageDialog);
-			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = msg("dialog-button-new").plain();
-			SpriteEditorDialog.static.actions = [
-				{action: 'reject', label: msg("dialog-button-cancel").plain(), flags: [ 'safe', 'close' ]},
-				{action: 'accept', label: msg("dialog-button-create").plain, flags: [ 'primary', 'progressive' ]}
-			];
-
-			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
-				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				var b = this.$body.get(0);
-				// Adjusting styling
-				var mdText = b.querySelector(".oo-ui-messageDialog-text");
-				mdText.style.paddingLeft = 0;
-				mdText.style.paddingRight = 0;
-				b.querySelector(".oo-ui-messageDialog-message").innerHTML = formHtml();
-				this.$content.addClass('spriteedit-ui-Dialog');
-				root = document.getElementById("newRoot");
-			};
-
-			// Handle actions
-			SpriteEditorDialog.prototype.getActionProcess = function (action) {
-				if (action === 'accept') {
-					var mD = window.SpriteEditorModules.open;
-					mD.isNew = true;
-					mD.spriteSizeW = sizeFieldW.getValue();
-					mD.spriteSizeH = sizeFieldH.getValue();
-					mD.spacing = spacingField.getValue();
-					mD.loadSprite2(completeName(nameField.getValue()));
-					modal.seDialog.close();
-				}
-				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
-			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager();
-			$('body').append(modal.windowManager.$element);
-
-			// Create a new dialog window.
-			modal.seDialog = new SpriteEditorDialog({
-				size: 'medium'
-			});
-
-			// Add window and open
-			modal.windowManager.addWindows([modal.seDialog]);
-			myData.openWindow();
-			// Close dialog when clicked outside the dialog
-			modal.seDialog.$frame.parent().on('click', function (e) {
-				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
-					modal.seDialog.close();
-				}
-			});
+		// initialise dialog, append content
+		SpriteEditorDialog.prototype.initialize = function () {
+			SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+			var b = this.$body.get(0);
+			// Adjusting styling
+			var mdText = b.querySelector(".oo-ui-messageDialog-text");
+			mdText.style.paddingLeft = 0;
+			mdText.style.paddingRight = 0;
+			b.querySelector(".oo-ui-messageDialog-message").innerHTML = formHtml();
+			this.$content.addClass('spriteedit-ui-Dialog');
+			root = document.getElementById("newRoot");
 		};
-	});
+
+		// Handle actions
+		SpriteEditorDialog.prototype.getActionProcess = function (action) {
+			if (action === 'accept') {
+				var mD = window.SpriteEditorModules.open;
+				mD.isNew = true;
+				mD.spriteSizeW = sizeFieldW.getValue();
+				mD.spriteSizeH = sizeFieldH.getValue();
+				mD.spacing = spacingField.getValue();
+				mD.loadSprite2(completeName(nameField.getValue()));
+				modal.seDialog.close();
+			}
+			return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
+		};
+
+		// Create the Dialog and add the window manager.
+		modal.windowManager = new OO.ui.WindowManager();
+		$('body').append(modal.windowManager.$element);
+
+		// Create a new dialog window.
+		modal.seDialog = new SpriteEditorDialog({
+			size: 'medium'
+		});
+
+		// Add window and open
+		modal.windowManager.addWindows([modal.seDialog]);
+		myData.openWindow();
+		// Close dialog when clicked outside the dialog
+		modal.seDialog.$frame.parent().on('click', function (e) {
+			if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
+				modal.seDialog.close();
+			}
+		});
+	};
 })(window.jQuery, window.mediaWiki);

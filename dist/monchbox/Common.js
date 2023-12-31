@@ -1,2 +1,7 @@
-importScript('MediaWiki:Torus.js');
-importScript('MediaWiki:B3.js');
+importArticles({
+	type: 'script',
+	articles: [
+		'MediaWiki:Torus.js',
+		'MediaWiki:B3.js'
+	]
+});

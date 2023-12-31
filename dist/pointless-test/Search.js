@@ -1,51 +1,69 @@
 var catList = []; //declare 'catList'
 var allCats = new Map([
-  ['Male','Gender:Male'],
-  ['Female','Gender:Female'],
-  ['Other','Gender:Other'],
+	['Male','Gender:Male'],
+	['Female','Gender:Female'],
+	['Other','Gender:Other'],
 ]);
 var outString = ""; //declare 'outString'
-var catPlus = "|category=";
+var jsonString = "";
+var txt = "";
 
 function ddC(cat) {
-  var index = catList.indexOf(cat); //sets 'index' to the first instance of the param 'cat'
-  if (index == -1) {
+	var index = catList.indexOf(cat); //sets 'index' to the first instance of the param 'cat'
+	if (index == -1) {
     //if 'cat' is not in array
     catList.push(cat); //add 'cat' to the end
     document.getElementById(cat).innerHTML = "<b>" + cat + "</b>";
     document.getElementById(cat).className = 'select';
     //bold
-  } else {
-    //if 'cat' is in array
-    catList.splice(index, 1); //remove it from the array
-    document.getElementById(cat).innerHTML = cat;
-    document.getElementById(cat).className = 'deselect';
-  }
+	} else {
+    	//if 'cat' is in array
+    	catList.splice(index, 1); //remove it from the array
+    	document.getElementById(cat).innerHTML = cat;
+    	document.getElementById(cat).className = 'deselect';
+	}
 }
 
 function catg(value) {
-  outString += catPlus + allCats.get(value);
-  //set output to "Catagory:" + the value of the array element + newline
+	outString += "|category=" + allCats.get(value);
+	//set output to "Catagory:" + the value of the array element + newline
 }
 
 function output() {
-  catList.forEach(catg); //run catg for every array element
-  document.getElementById("output").innerHTML = '{{#dpl:'+outString+'}}';
-  //output outString into DPL params
-  outString = ""; //empty outString to allow next run
+	catList.forEach(catg); //run catg for every array element
+	outString = '{{#dpl:'+outString+'}}';
+	//output outString into DPL params
+	mw.loader.using('mediawiki.api', function() {
+		var api = new mw.Api();
+		api.get( {
+			"action": "parse",
+			"format": "json",
+			"text": outString,
+			"contentmodel": "wikitext"
+		} ).done( function ( data ) {
+			jsonString = JSON.parse(JSON.stringify( data ));
+			jsonString = jsonString.parse.text;
+			txt = JSON.stringify(jsonString['*']);
+			txt = txt.replace(/"+/g, '');
+			txt = txt.replace(/\\n/gm,'');
+			txt = txt.replace(/\\/g, '');
+			document.getElementById('output').innerHTML = txt;
+	} );
+	} );
+	outString = ""; //empty outString to allow next run
 }
 
 function cB(cat, row) {
-  var button = document.createElement('button');
-  button.innerHTML = cat;
-  if (cat == 'Submit') {
-    button.onclick = function () { output(); };
-  } else {
-    button.onclick = function () { ddC(cat); };
-  }
-  button.id = cat;
-  button.className = 'deselect';
-  document.getElementById(row).appendChild(button);
+	var button = document.createElement('button');
+	button.innerHTML = cat;
+	if (cat == 'Submit') {
+		button.onclick = function () { output(); };
+	} else {
+		button.onclick = function () { ddC(cat); };
+	}
+	button.id = cat;
+	button.className = 'deselect';
+	document.getElementById(row).appendChild(button);
 }
 
 if (window.location.pathname == '/wiki/DPL_Testing') {

@@ -3,6 +3,9 @@ window.dev.profileTags = {
   noHideTags: true
 };
 
+window.discussEmbedLimit = 10;
+window.discussEmbedForum = "2529343771246594580";
+
 $('.fandom-community-header__community-name-wrapper').append(
         $('<a/>').css('font-size', '1px').attr('href', 'https://community.fandom.com/wiki/Fandom_Compass').append(
         $('<img/>').addClass('hover-community-header-wrapper').css('height', '20px')

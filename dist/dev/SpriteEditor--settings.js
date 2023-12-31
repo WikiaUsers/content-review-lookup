@@ -77,9 +77,9 @@
 			'</div>' +
 		'</div>';
 	}
-	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
-		var OO = require('oojs');
-
+	// create window
+	myData.createWindow = function() {
+		var OO = window.SpriteEditorModules.main.OO;
 		perRowEle = new OO.ui.NumberInputWidget({min: 1, step: 1});
 		perRowEle.on("change", function() {
 			updateSheetWidth();
@@ -88,107 +88,101 @@
 		spacingEle.on("change", function() {
 			updateSheetWidth();
 		});
+		msg = window.SpriteEditorModules.main.msg;
+		function SpriteEditorDialog(config) {
+			SpriteEditorDialog.super.call(this, config);
+		}
+		OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
+		SpriteEditorDialog.static.name = 'settings';
+		SpriteEditorDialog.static.title = msg("settings-label").plain();
+		SpriteEditorDialog.static.actions = [
+			{ label: msg("dialog-button-close").plain(), flags: ['safe', 'close'] },
+			{ label: msg("save-label").plain(), action: 'saveSettings', flags: ['primary'] }
+		];
 
-		// create window
-		myData.createWindow = function() {
-			msg = window.SpriteEditorModules.main.msg;
-			function SpriteEditorDialog(config) {
-				SpriteEditorDialog.super.call(this, config);
+		// initialise dialog, append content
+		SpriteEditorDialog.prototype.initialize = function () {
+			SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+			function PageOneLayout( name, config ) {
+			    PageOneLayout.super.call( this, name, config );
+			    this.$element.append( formHtml() );
 			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
-			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = msg("settings-label").plain();
-			SpriteEditorDialog.static.actions = [
-				{ label: msg("dialog-button-close").plain(), flags: ['safe', 'close'] },
-				{ label: msg("save-label").plain(), action: 'saveSettings', flags: ['primary'] }
-			];
-
-			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
-				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				function PageOneLayout( name, config ) {
-				    PageOneLayout.super.call( this, name, config );
-				    this.$element.append( formHtml() );
-				}
-				OO.inheritClass( PageOneLayout, OO.ui.PageLayout );
-				PageOneLayout.prototype.setupOutlineItem = function () {
-				    this.outlineItem.setLabel( msg("spritesheet-info").plain() );
-				};
-				
-				function PageTwoLayout( name, config ) {
-				    PageTwoLayout.super.call( this, name, config );
-				    this.$element.append( formHtml2() );
-				}
-				OO.inheritClass( PageTwoLayout, OO.ui.PageLayout );
-				PageTwoLayout.prototype.setupOutlineItem = function () {
-				    this.outlineItem.setLabel( msg("save-title").plain() );
-				};
-				
-				function PageThreeLayout( name, config ) {
-				    PageTwoLayout.super.call( this, name, config );
-				    this.$element.append( '<div style="padding: 0 24px"><h2>' + msg("about-label").plain() + '</h2><br />© Magiczocker 2023<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a></div>' );
-				}
-				OO.inheritClass( PageThreeLayout, OO.ui.PageLayout );
-				PageThreeLayout.prototype.setupOutlineItem = function () {
-				    this.outlineItem.setLabel( msg("about-label").plain() );
-				};
-				
-				var page1 = new PageOneLayout( 'one' ),
-				    page2 = new PageTwoLayout( 'two' ),
-				    page3 = new PageThreeLayout( 'three' );
-				var booklet = new OO.ui.BookletLayout( {
-				    outlined: true
-				} );
-				this.content = booklet;
-				booklet.addPages( [ page1, page2, page3 ] );
-				this.$body.append(this.content.$element);
-				booklet.$element.get(0).style.height = "500px";
-				this.$content.addClass('spriteedit-ui-Dialog');
-				var sdEle = document.getElementById("se-unused");
-				sdEle.addEventListener('click', function() {
-					document.getElementById("se-whitespace").disabled = !this.checked;	
-				});
-				document.getElementById("se-whitespace").disabled = !sdEle.checked;
-				eleList = document.getElementsByClassName("settingsInfoline");
-				// Hide empty action bar
-				var ele = this.$content.get(0);
-				ele.children[2].children[0].style.height = 0;
-				ele.children[2].style.minHeight = 0;
-				ele.children[2].style.display = "none";
+			OO.inheritClass( PageOneLayout, OO.ui.PageLayout );
+			PageOneLayout.prototype.setupOutlineItem = function () {
+			    this.outlineItem.setLabel( msg("spritesheet-info").plain() );
+			    this.outlineItem.setIcon( 'info' );
 			};
-
-			// Handle actions
-			SpriteEditorDialog.prototype.getActionProcess = function (action) {
-				if (action === 'saveSettings') {
-					shared.options.cleanupSectionIDs = document.getElementById("se-section").checked;
-					shared.options.removeUnusedSprites = document.getElementById("se-unused").checked;
-					shared.options.removeDeprecatedNames = document.getElementById("se-deprecated").checked;
-					shared.options.removeWhitespace = document.getElementById("se-whitespace").checked;
-					shared.options.spritesPerRow = Number(perRowEle.getValue());
-					shared.options.spacing = Number(spacingEle.getValue());
-					modal.seDialog.close();
-				}
-				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
+			
+			function PageTwoLayout( name, config ) {
+			    PageTwoLayout.super.call( this, name, config );
+			    this.$element.append( formHtml2() );
+			}
+			OO.inheritClass( PageTwoLayout, OO.ui.PageLayout );
+			PageTwoLayout.prototype.setupOutlineItem = function () {
+			    this.outlineItem.setLabel( msg("save-title").plain() );
+			    this.outlineItem.setIcon( 'pageSettings' );
 			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager();
-			$('body').append(modal.windowManager.$element);
-
-			// Create a new dialog window.
-			modal.seDialog = new SpriteEditorDialog({
-				size: 'large'
+			
+			function PageThreeLayout( name, config ) {
+			    PageTwoLayout.super.call( this, name, config );
+			    this.$element.append( '<div style="padding: 0 24px"><h2>' + msg("about-label").plain() + '</h2><br />© Magiczocker 2023<br /><br />Tester:&nbsp;Kingcat<br />Helper:&nbsp;MarkusRost<br /><br />Inspired by:&nbsp;<a href="https://help.fandom.com/wiki/User:Majr/Sprite_editor">Sprite Editor</a></div>' );
+			}
+			OO.inheritClass( PageThreeLayout, OO.ui.PageLayout );
+			PageThreeLayout.prototype.setupOutlineItem = function () {
+			    this.outlineItem.setLabel( msg("about-label").plain() );
+			    this.outlineItem.setIcon( 'helpNotice' );
+			};
+			
+			var page1 = new PageOneLayout( 'one' ),
+			    page2 = new PageTwoLayout( 'two' ),
+			    page3 = new PageThreeLayout( 'three' );
+			var booklet = new OO.ui.BookletLayout( {
+			    outlined: true
+			} );
+			this.content = booklet;
+			booklet.addPages( [ page1, page2, page3 ] );
+			this.$body.append(this.content.$element);
+			booklet.$element.get(0).style.height = "500px";
+			this.$content.addClass('spriteedit-ui-Dialog');
+			var sdEle = document.getElementById("se-unused");
+			sdEle.addEventListener('click', function() {
+				document.getElementById("se-whitespace").disabled = !this.checked;	
 			});
-
-			// Add window and open
-			modal.windowManager.addWindows([modal.seDialog]);
-			modal.windowManager.openWindow(modal.seDialog);
-			// Close dialog when clicked outside the dialog
-			modal.seDialog.$frame.parent().on('click', function (e) {
-				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
-					modal.seDialog.close();
-				}
-			});
+			document.getElementById("se-whitespace").disabled = !sdEle.checked;
+			eleList = document.getElementsByClassName("settingsInfoline");
 		};
-	});
+
+		// Handle actions
+		SpriteEditorDialog.prototype.getActionProcess = function (action) {
+			if (action === 'saveSettings' && shared.getEditPermission && shared.getEditPermission()) {
+				shared.options.cleanupSectionIDs = document.getElementById("se-section").checked;
+				shared.options.removeUnusedSprites = document.getElementById("se-unused").checked;
+				shared.options.removeDeprecatedNames = document.getElementById("se-deprecated").checked;
+				shared.options.removeWhitespace = document.getElementById("se-whitespace").checked;
+				shared.options.spritesPerRow = Number(perRowEle.getValue());
+				shared.options.spacing = Number(spacingEle.getValue());
+				modal.seDialog.close();
+			}
+			return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
+		};
+
+		// Create the Dialog and add the window manager.
+		modal.windowManager = new OO.ui.WindowManager();
+		$('body').append(modal.windowManager.$element);
+
+		// Create a new dialog window.
+		modal.seDialog = new SpriteEditorDialog({
+			size: 'large'
+		});
+
+		// Add window and open
+		modal.windowManager.addWindows([modal.seDialog]);
+		modal.windowManager.openWindow(modal.seDialog);
+		// Close dialog when clicked outside the dialog
+		modal.seDialog.$frame.parent().on('click', function (e) {
+			if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
+				modal.seDialog.close();
+			}
+		});
+	};
 })(window.jQuery, window.mediaWiki);

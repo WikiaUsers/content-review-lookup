@@ -1,6 +1,6 @@
 (function(mw) {
 	'use strict';
-	var imageUrl = "https://vignette.wikia.nocookie.net/civilization/images/";
+	var imageUrl = "https://static.wikia.nocookie.net/civilization/images/";
 	var buttons = [
 		{
 			id: 'Engine',

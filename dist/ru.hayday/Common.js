@@ -28,7 +28,7 @@ importArticles({
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/hayday/images/e/ed/Загрузка.gif/revision/latest?cb=20231127121344&format=original&path-prefix=ru';
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/hayday/images/e/ed/Загрузка.gif/revision/latest?cb=20231127121344&format=original&path-prefix=ru';
-window.pPreview.RegExp.noinclude = ['.ignor', '.portable-infobox'];
-window.pPreview.delay = 1;
+window.pPreview.RegExp.noinclude = ['.ignor', '.portable-infobox', '.sobytie .item p'];
+window.pPreview.delay = 1000;
 window.pPreview.tlen = 200;
 window.pPreview.RegExp.iimages = [new RegExp('.*')];

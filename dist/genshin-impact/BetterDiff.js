@@ -257,7 +257,7 @@ $(function() {
 			if (!document.querySelector('#userPatrol') && can.patrol) {
 				var wrapper = $(
 					'<div class="userPatrolWrapper" style="display: flex; width: 100%">'+
-						'<span id="userPatrolDetails" style="margin-right: 3px;"></span>'+
+						'<span id="userPatrolDetails" style="margin-right: 3px; white-space: nowrap;"></span>'+
 						'<input name="userPatrol" id="userPatrol" placeholder="User to mass patrol" />'+
 						'<span class="wds-button" id="submitUserPatrol" style="white-space: nowrap; padding: 1px 3px; position: relative;">Patrol User</span>'+
 					'</div>'

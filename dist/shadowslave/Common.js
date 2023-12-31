@@ -34,7 +34,7 @@ window.questions = [
     ["______ are people who have passed the first trial of the Spell and established a connection to the Dream Realm.",
     "Awakened",	
     "Aspirants",
-    "Dormant",
+    "Dormants",
     "Dreamers"],
     
     ["What serves as both an anchor and exit point for Awakened to enter and exit Dream Realm?",

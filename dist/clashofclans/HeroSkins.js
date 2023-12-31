@@ -16,35 +16,74 @@
 --------------
  INFORMATION
 --------------
-- For the old Hero Skin Wardrobes (pre June 2023 update)
+- Used for the Skin Menus (Template:Wardrobe-BK etc)
+- Post June 2023 Hero Skin Wardrobes
 
 */
 $(document).ready(function() {
-	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
-
-	//Define an undefined active model div and mode 
-	$('.HeroSkinMenu:not([data-mode])').each(function () {
-		$(this).attr('data-mode', 'Preview');
-		$(this).find('.Models > div:first-child').addClass('active');
-	});
-	//Set GWM for GW wardrobe
-	$('.HeroSkinMenu[data-hero="GW"]').attr('data-gwm', 'Ground');
+	if ( !$( '.HSM-Container').length ) return;
 	
-	$('.HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
-		var Wardrobe = $(this).parents('.HeroSkinMenu');
+	var location = 'https://static.wikia.nocookie.net/clashofclans/images/';
+	
+	//Global Wardrobe Sound on/off
+	$('.HSM-Container .HSM-Sound').click(function () {
+		$('.HSM-Container').toggleClass('muted');
+		if (!$(this).parents('.HSM-Container').hasClass('muted')) {
+			new Audio(location + 'e/e6/Button_Click.ogg').play();
+		}
+	});
+	
+	//Function for scrolling buttons
+	$('.HSM-Scroll-Right').click(function() {
+		var element = $(this).parents('.HSM-Container').find('.HSM-Icons');
+		var width = Math.floor( element.width() - 30); //Less than full width helps user recognise how far it scrolled
+		event.preventDefault();
+		$(element).animate({
+			scrollLeft: "+=" + width + "px"
+		}, "slow");
+	});
+	$('.HSM-Scroll-Left').click(function() {
+		var element = $(this).parents('.HSM-Container').find('.HSM-Icons');
+		var width = Math.floor( element.width() - 30);
+		event.preventDefault();
+		$(element).animate({
+			scrollLeft: "-=" + width + "px"
+		}, "slow");
+	});
+	
+	//Function to show all skins
+	$('.HSM-Container .HSM-Author').click(function () {
+		$(this).parents('.HSM-Container').addClass('all-skins');
+	});
+	
+	//Define an undefined active model div and mode 
+	$('.HSM-Container:not([data-mode])').each(function () {
+		$(this).attr('data-mode', 'Preview');
+		$(this).find('.HSM-Models > div:first-child').addClass('active');
+	});
+	
+	//Set GWM for GW wardrobe
+	$('.HSM-Container[data-hero="GW"]').attr('data-gwm', 'Ground');
+	
+	//If finished loading JS
+	$('.HSM-Container').addClass('loaded');
+	
+	//Clicking toggle or GWM
+	$('.HSM-Container .HSM-Toggle, .HSM-Container .HSM-GWM').click(function () {
+		var Wardrobe = $(this).parents('.HSM-Container');
 		var Hero = $(Wardrobe).attr('data-hero');
-		var Skin = $(this).siblings('.Title').text();
+		var Skin = $(this).siblings('.HSM-Title').text();
 		var Mode = $(Wardrobe).attr('data-mode');
 		var GWM = $(Wardrobe).attr('data-gwm');
 		
 		//Toggle through the different models
-		if ($(this).hasClass('Toggle')) {
-			$(Wardrobe).find('.Models > div').removeClass('active');
+		if ($(this).hasClass('HSM-Toggle')) {
+			$(Wardrobe).find('.HSM-Models > div').removeClass('active');
 			if (Mode == 'Preview') {
 				Mode = 'Idle';
 			}else if (Mode == 'Idle') {
-				//Check if poses exist
-				if ( $(Wardrobe).find('.Models .Poses').length ) {
+				//Only set mode to poses if it exists
+				if ( $(Wardrobe).find('.HSM-Models-Pose').length ) {
 					Mode = 'Pose';
 				}else {
 					Mode = 'KO';
@@ -53,19 +92,27 @@ $(document).ready(function() {
 				Mode = 'KO';
 			}else if (Mode == 'KO') {
 				Mode = 'Downed';
-			}else {
+			}else if (Mode == 'Downed') {
+				if ( $(Wardrobe).find('.HSM-Models-Ability').length ) {
+					//Only set mode to ability if it exists
+					Mode = 'Ability';
+				}else {
+					Mode = 'Preview';
+				}
+			}else if (Mode == 'Ability') {
 				Mode = 'Preview';
 			}
+			
 			//When clicking the Mode toggle, we want to only add active to a single model mode. 
 			if (Mode == 'Preview') {
 				//First, if we are on preview, there is only one
-				$(Wardrobe).find('.Models .' + Mode + 's').addClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode).addClass('active');
 			}else if (GWM == 'Air') {
 				//If in GW wardrobe and set to air, we need to activate only the air ones. Does not apply to preview
-				$(Wardrobe).find('.Models .' + Mode + 's.Air').addClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + '.Air').addClass('active');
 			}else {
 				//If we are on ground or in another wardrobe
-				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air)').addClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + ':not(.Air)').addClass('active');
 			}
 			$(Wardrobe).attr('data-mode', Mode);
 		}else { //Then GWM button must have be clicked instead
@@ -74,24 +121,24 @@ $(document).ready(function() {
 			if (GWM == 'Ground') {
 				GWM = 'Air';
 				//If Mode is Preview we don't want to remove active as Preview is unique
-				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air):not(.Previews)').removeClass('active'); 
-				$(Wardrobe).find('.Models .' + Mode + 's.Air').addClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + ':not(.Air):not(.Previews)').removeClass('active'); 
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + '.Air').addClass('active');
 			}else {
 				GWM = 'Ground';
-				$(Wardrobe).find('.Models .' + Mode + 's.Air').removeClass('active');
-				$(Wardrobe).find('.Models .' + Mode + 's:not(.Air)').addClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + '.Air').removeClass('active');
+				$(Wardrobe).find('.HSM-Models .HSM-Models-' + Mode + ':not(.Air)').addClass('active');
 			}
 			//Replace wardrobe value with new value
 			$(Wardrobe).attr('data-gwm', GWM);
 		}
 	});
 	
-	$(".HeroSkinMenu .SkinIcon").click(function () {
+	$(".HSM-Container .SkinIcon").click(function () {
 		if (!$(this).hasClass('active')) {
 			//Get Skin
 			var Skin = $(this).attr("data-name");
 			// Get Wardrobe
-			var Wardrobe = $(this).parents('.HeroSkinMenu');
+			var Wardrobe = $(this).parents('.HSM-Container');
 			//Get Hero
 			var Hero = Wardrobe.attr('data-hero');
 			//Get Tier (e.g. Gold, Legendary)
@@ -115,7 +162,7 @@ $(document).ready(function() {
 			}
 			
 			//Hide the last active skin for the hero
-			$(Wardrobe).find('.SkinIcon, .Load, .Theme, .Preview, .Idle, .Pose, .KO, .Downed').removeClass("active");
+			$(Wardrobe).find('.SkinIcon, .HSM-Load, .HSM-Ability-Text, .Theme, .Preview, .Idle, .Pose, .KO, .Downed, .Ability').removeClass("active");
 			$(Wardrobe).find('.SkinIcon').removeClass('played');
 	
 			//Make all things associated with the skin active (so they are visible)
@@ -124,43 +171,50 @@ $(document).ready(function() {
 			$(Wardrobe).find('.Pose[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.KO[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Downed[data-name="' + Skin + '"]').addClass("active");
+			$(Wardrobe).find('.Ability[data-name="' + Skin + '"]').addClass("active");
 			$(Wardrobe).find('.Theme[data-name="' + Skin + '"]').addClass("active");
 			$(this).addClass("active");
 			
 			//Add Tier to preview
 			if ($(this).attr('data-type')) {
-				$(Wardrobe).find('.SkinPreview').attr('data-type', Tier);
-				$(Wardrobe).find('.Subtitle').text(Tier);
+				$(Wardrobe).attr('data-type', Tier);
+				$(Wardrobe).find('.HSM-Subtitle').text(Tier);
 			}else {
-				$(Wardrobe).find('.SkinPreview').removeAttr('data-type');
-				$(Wardrobe).find('.Subtitle').text('');
+				$(Wardrobe).removeAttr('data-type');
+				$(Wardrobe).find('.HSM-Subtitle').text('');
 			}
 			
 			//Add theme to preview
 			if (Theme !== '') {
-				$(Wardrobe).find('.SkinPreview').attr('data-theme', Theme);
+				$(Wardrobe).attr('data-theme', Theme);
 			}else {
-				$(Wardrobe).find('.SkinPreview').removeAttr('data-theme');
+				$(Wardrobe).removeAttr('data-theme');
+			}
+			
+			//Check for custom spawns
+			if ( $(Wardrobe).find('.Ability[data-name="' + Skin + '"]').hasClass('custom-troop') ) {
+				$('.HSM-Ability-Text').addClass('active');
 			}
 			
 			//Change Skin Title
-			$(Wardrobe).find('.Title').text(Skin);
+			$(Wardrobe).find('.HSM-Title').text(Skin);
 		}
 	});
 	
-	$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
-		var Wardrobe = $(this).parents('.HeroSkinMenu');
+	$('.HSM-Container .SkinIcon, .HSM-Container .HSM-Toggle, .HSM-Container .HSM-GWM, .HSM-Container .HSM-Sound').click(function () {
+		var Wardrobe = $(this).parents('.HSM-Container');
 		var Hero = $(Wardrobe).attr('data-hero');
-		var Skin = $(Wardrobe).find('.Title').text();
+		var Skin = $(Wardrobe).find('.HSM-Title').text();
 		var Mode = $(Wardrobe).attr('data-mode');
 		
 		//Lazyloading loading icon
-		if ($(Wardrobe).find('.Models > div.active > div.active img').hasClass('lazyload') ) {
-				$(Wardrobe).find('.Load').addClass('active');
+		//If an image is in the process of loading, the loading icon shows up
+		if ($(Wardrobe).find('.HSM-Models > div.active > div.active img').hasClass('lazyload') ) {
+				$(Wardrobe).find('.HSM-Load').addClass('active');
 				var interval = setInterval(function () {
-					if ( $(Wardrobe).find('.Models > div.active > div.active img').hasClass('lazyloaded') ) {
+					if ( $(Wardrobe).find('.HSM-Models > div.active > div.active img').hasClass('lazyloaded') ) {
 						clearInterval(interval);
-						$(Wardrobe).find('.Load').removeClass('active');
+						$(Wardrobe).find('.HSM-Load').removeClass('active');
 					}
 			}, 10 );
 		}
@@ -176,17 +230,21 @@ $(document).ready(function() {
 		then an exception needs to be outlined here. 
 		*/
 		
-		//Play the "click" sound
-		new Audio(location + 'e/e6/Button_Click.ogg').play();
+		//Play the "click" sfx
+		if (!$(this).hasClass('played') && !$(this).hasClass('HSM-Sound') && !$(Wardrobe).hasClass('muted')) {
+			new Audio(location + 'e/e6/Button_Click.ogg').play();
+		}
 				
 		if (Mode !== 'Downed') {
-			if ($(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx')) {
-				sfx = new Audio(location + $(Wardrobe).find('.Models > div.active > div.active').attr('data-sfx'));
+			if ($(Wardrobe).find('.HSM-Models > div.active > div.active').attr('data-sfx')) {
+				sfx = new Audio(location + $(Wardrobe).find('.HSM-Models > div.active > div.active').attr('data-sfx'));
 			}else if (Hero == 'BK') {
 				if (Mode == 'KO') {
 					sfx = new Audio(location + 'b/b0/Barbarian_King_Death.ogg');
 				}else if (Mode == 'Idle') {
 					sfx = new Audio(location + 'f/fd/Barbarian_King_Deploy.ogg');
+				}else if (Mode == 'Ability') {
+					sfx = new Audio(location + '3/3e/Barbarian_King_Ability.ogg');
 				}else if (randomnumber == 1) {
 					sfx = new Audio(location + '7/72/Barbarian_King_Pose.ogg');
 				}else {
@@ -197,6 +255,8 @@ $(document).ready(function() {
 					sfx = new Audio(location + '1/11/Archer_Queen_Deploy.ogg'); 
 				}else if (Mode == 'KO') {
 						sfx = new Audio(location + '0/09/Archer_Queen_Death.ogg'); 
+				}else if (Mode == 'Ability') {
+					sfx = new Audio(location + 'b/bc/Archer_Queen_Ability.ogg'); 
 				}else if (randomnumber == 1) {
 					sfx = new Audio(location + '5/54/Archer_Queen_Pose.ogg');
 				}else {
@@ -256,14 +316,24 @@ $(document).ready(function() {
 				}
 			}
 			
-			//Play the sfx on click
-			if (!$(this).hasClass('played')) {
+			//Play the sfx on click unless it has already been played or the wardrobe is muted or we are clicking the sound button
+			if (!$(this).hasClass('played') && !$(this).hasClass('HSM-Sound') && !$(Wardrobe).hasClass('muted')) {
 				sfx.play();
 			}
+			
+			//Muting part way through playing sound
+			$('.HSM-Container .HSM-Sound').click(function () {
+				if ( $(Wardrobe).hasClass('muted')) {
+					sfx.volume = 0;
+				}else {
+					sfx.volume = 1;
+				}
+			});
 		}
+		
 		//Stop any existing skin sfx when another one is played
 		if (Mode !== 'Downed') {
-			$('.HeroSkinMenu .SkinIcon, .HeroSkinMenu .Toggle, .HeroSkinMenu .GWM').click(function () {
+			$('.HSM-Container .SkinIcon, .HSM-Container .HSM-Toggle, .HSM-Container .HSM-GWM').click(function () {
 					if (Skin !== $(this).attr('data-name')) {
 						sfx.pause();
 						sfx.currentTime = 0;

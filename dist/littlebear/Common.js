@@ -1,5 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Fix reference popups on iPads */
+
+mw.loader.load('https://en.wikipedia.org/wiki/MediaWiki:Gadget-ReferenceTooltips.js?oldid=1006234032&action=raw&ctype=text/javascript');
+mw.loader.load('https://en.wikipedia.org/wiki/MediaWiki:Gadget-ReferenceTooltips.css?oldid=1162041707&action=raw&ctype=text/css');
+
 /* Format list sections */
 
 $('h2:contains("Appearances and references")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list"/>');

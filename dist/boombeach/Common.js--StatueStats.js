@@ -59,9 +59,9 @@ $(document).ready(function() {
       });
       $(".TD").each(function() {
          var cellValueTD = $(this).attr("title") * 1;
-         var calcNewTD = roundNum(2, cellValueTD * (1 + (getInputTD / 100)));
+         var calcNewTD = roundNum(3, cellValueTD * (1 + (getInputTD / 100)));
          $(this).text(calcNewTD.format("#,##0[.]###"));
-        if (calcNewTD === cellValueTD) {
+        if ((roundNum(3, calcNewTD)) === (roundNum(3, cellValueTD))) {
             $(".TD").removeClass("StatModified");
         } else {
             $(".TD").addClass("StatModified");

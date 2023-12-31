@@ -1286,6 +1286,7 @@
 			'oojs-ui',
 			'oojs-ui-core',
 			'oojs-ui-widgets',
+			'oojs-ui-windows',
 			// Icons
 			'oojs-ui.styles.icons-content', // download, folderPlaceholder
 			'oojs-ui.styles.icons-editing-advanced', // tableAddRowAfter
@@ -1295,10 +1296,11 @@
 			'oojs-ui.styles.icons-interactions', // checkall, close, settings, subtract
 			'oojs-ui.styles.icons-media', // imageAdd, imageGallery
 			'oojs-ui.styles.icons-moderation', // flag, star, trash, unStar
-			'oojs-ui.styles.icons-movement', // move, next, previous
+			'oojs-ui.styles.icons-movement', // draggable, move, next, previous
 	] ).then( function( require ) {
 		OO = require('oojs');
 		api = new mw.Api();
+		myData.OO = OO;
 		function createButton(icon, lbl, tooltip) {
 			return new OO.ui.ButtonWidget( {
 				framed: false,
@@ -1402,31 +1404,30 @@
 
 			// Toolbar sections
 			toolbarSections = {
-				fileItems: new OO.ui.ButtonGroupWidget({items: [
-					buttons.open
-				]}),
-				editItems: new OO.ui.ButtonGroupWidget({items: [
-					buttons.undo,
-					buttons.redo
-				]}),
-				mainItems: new OO.ui.ButtonGroupWidget({items: [
-					buttons.newSection,
-					buttons.sortSections,
-					buttons.reorder,
-					buttons.deprecated,
-					buttons.deprecated2
-				]}),
-				toolItems: new OO.ui.ButtonGroupWidget({items: [
-					buttons.settings,
-					buttons.changes,
-					buttons.save
-				]}),
-				moveItems: new OO.ui.ButtonGroupWidget({items: [
-					buttons.cancelMove
-				]}),
-				arrowItem: new OO.ui.ButtonGroupWidget({items: [
-					buttons.descriptionToggle
-				]})
+				fileItems: new OO.ui.ButtonGroupWidget({
+					items: [buttons.open],
+					classes: ["SpriteEditor-TBGroup"]
+				}),
+				editItems: new OO.ui.ButtonGroupWidget({
+					items: [buttons.undo,buttons.redo],
+					classes: ["SpriteEditor-TBGroup"]
+				}),
+				mainItems: new OO.ui.ButtonGroupWidget({
+					items: [buttons.newSection,buttons.sortSections,buttons.reorder,buttons.deprecated,buttons.deprecated2],
+					classes: ["SpriteEditor-TBGroup"]
+				}),
+				toolItems: new OO.ui.ButtonGroupWidget({
+					items: [buttons.settings,buttons.changes,buttons.save],
+					classes: ["SpriteEditor-TBGroup"]
+				}),
+				moveItems: new OO.ui.ButtonGroupWidget({
+					items: [buttons.cancelMove],
+					classes: ["SpriteEditor-TBGroup"]
+				}),
+				arrowItem: new OO.ui.ButtonGroupWidget({
+					items: [buttons.descriptionToggle],
+					classes: ["SpriteEditor-TBGroup"]
+				})
 			};
 			var frame = new OO.ui.PanelLayout({
 				classes: [ 'spriteedit-toolbar' ],
@@ -1530,14 +1531,17 @@
 			if (!window.SpriteEditorModules[win]) {
 				alert(err);
 				return false;
-			} else if (!window.SpriteEditorModules[win].modal.windowManager) {
+			} else if (!window.SpriteEditorModules[win].modal.seDialog) {
 				window.SpriteEditorModules[win].createWindow();
 				return true;
-			} else if (win === "new" && window.SpriteEditorModules[win].modal.windowManager) {
+			} else if (win === "new" && window.SpriteEditorModules[win].modal.seDialog) {
 				window.SpriteEditorModules["new"].openWindow();
 				return true;
-			} else if (window.SpriteEditorModules[win].modal.windowManager) {
-				window.SpriteEditorModules[win].modal.windowManager.openWindow(window.SpriteEditorModules[win].modal.seDialog);
+			} else if (win === "settings" && window.SpriteEditorModules[win].modal.seDialog) {
+				window.SpriteEditorModules.settings.modal.windowManager.openWindow("settings");
+				return true;
+			} else if (window.SpriteEditorModules[win].modal.seDialog) {
+				window.SpriteEditorModules.helper.windowManager.openWindow(window.SpriteEditorModules[win].modal.seDialog);
 				return true;
 			}
 		}

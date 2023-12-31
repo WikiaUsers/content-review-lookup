@@ -1,3 +1,7 @@
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;
+
 const urlParams = new URLSearchParams(window.location.search);
 
 //Forums lock (after 30 days)

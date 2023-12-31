@@ -10,7 +10,7 @@
 	var Demo = {};
 	var oldOrder;
 	var newOrder;
-	var msg;
+	var helper = window.SpriteEditorModules.helper;
     function updateRoot(order) {
         var tmp = shared.root.children[0];
         var a = document.createElement("span");
@@ -32,7 +32,7 @@
 		for (var i = 0; i < order.length; i++) {
 			items[items.length] = new Demo.DraggableItemWidget( {
 				data: 'item' + i,
-				icon: 'tag',
+				icon: 'draggable',
 				label: order[i].querySelector(".mw-headline").textContent
 			} );
 			items[items.length - 1].$element.get(0).dataset.sectionId = order[i].dataset.sectionId;
@@ -59,10 +59,7 @@
 		}
 		shared.root.removeChild(a);
 	}
-
-	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
-		var OO = require('oojs');
-
+	function setup_draggable_widget(OO) {
 		// Setting up Draggable objects (Copied from gerrit)
 		Demo.SimpleWidget = function DemoSimpleWidget( config ) {
 			// Configuration initialization
@@ -81,7 +78,7 @@
 		OO.inheritClass( Demo.SimpleWidget, OO.ui.Widget );
 		OO.mixinClass( Demo.SimpleWidget, OO.ui.mixin.IconElement );
 		OO.mixinClass( Demo.SimpleWidget, OO.ui.mixin.LabelElement );
-
+	
 		Demo.DraggableGroupWidget = function DemoDraggableGroupWidget( config ) {
 			// Configuration initialization
 			config = config || {};
@@ -95,7 +92,7 @@
 		/* Setup */
 		OO.inheritClass( Demo.DraggableGroupWidget, OO.ui.Widget );
 		OO.mixinClass( Demo.DraggableGroupWidget, OO.ui.mixin.DraggableGroupElement );
-
+	
 		Demo.DraggableItemWidget = function DemoDraggableItemWidget( config ) {
 			// Configuration initialization
 			config = config || {};
@@ -108,42 +105,21 @@
 		OO.inheritClass( Demo.DraggableItemWidget, Demo.SimpleWidget );
 		OO.mixinClass( Demo.DraggableItemWidget, OO.ui.mixin.DraggableElement );
 		// Copy end
-
-		// create window
-		myData.createWindow = function() {
-			msg = window.SpriteEditorModules.main.msg;
-			function SpriteEditorDialog(config) {
-				SpriteEditorDialog.super.call(this, config);
-			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
-
-			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = msg("sort-section-label").plain();
-			SpriteEditorDialog.static.actions = [
+	}
+	// create window
+	myData.createWindow = function() {
+		var msg = window.SpriteEditorModules.main.msg;
+		setup_draggable_widget(window.SpriteEditorModules.main.OO);
+		modal = helper.processDialog({
+			title: msg("sort-section-label").plain(),
+			name: "sorting",
+			actions: [
 				{ label: msg("dialog-button-close").plain(), modes: 'edit', flags: ['safe', 'close'] },
-				{ label: msg("save-label").plain(), action: 'saveSorting', flags: ['primary'] }
-			];
-
-			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
-
-				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				this.content = new OO.ui.PanelLayout({
-					expanded: false
-				});
-				this.content.$element.append(formHtml());
-				this.$body.append(this.content.$element);
-				this.$content.addClass('spriteedit-ui-Dialog');
-				// Hide empty action bar
-				var ele = this.$content.get(0);
-				ele.children[2].children[0].style.height = 0;
-				ele.children[2].style.minHeight = 0;
-				ele.children[2].style.display = "none";
-			};
-
-			// Handle actions
-			SpriteEditorDialog.prototype.getActionProcess = function (action) {
-				if (action === 'saveSorting') {
+				{ label: msg("save-label").plain(), action: 'close', flags: ['primary'] }
+			],
+			content: formHtml,
+			action: function (action) {
+				if (action === 'close') {
                     moveSectionElements();
                     newOrder = shared.root.querySelectorAll('div.spritedoc-section');
                     const _oldOrder = oldOrder;
@@ -156,29 +132,10 @@
 							updateRoot(_newOrder);
 						}
 					]);
-                    modal.seDialog.close();
 				}
-				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
-			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager();
-			$('body').append(modal.windowManager.$element);
-
-			// Create a new dialog window.
-			modal.seDialog = new SpriteEditorDialog({
-				size: 'medium'
-			});
-
-			// Add window and open
-			modal.windowManager.addWindows([modal.seDialog]);
-			modal.windowManager.openWindow(modal.seDialog);
-			// Close dialog when clicked outside the dialog
-			modal.seDialog.$frame.parent().on('click', function (e) {
-				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
-					modal.seDialog.close();
-				}
-			});
-		};
-	});
+			},
+			size: "medium"
+		});
+		myData.modal = modal;
+	};
 })(window.jQuery, window.mediaWiki);

@@ -1,5 +1,5 @@
-let count = 0;
-const interv = setInterval(() => {
+var count = 0;
+const interv = setInterval(function() {
     count++;
     if ($("#WikiaAdInContentPlaceHolder .rail-module__header").length != 0) {
         $("#WikiaAdInContentPlaceHolder .rail-module__header").text("熱門頁面");

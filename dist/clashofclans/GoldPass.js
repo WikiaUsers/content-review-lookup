@@ -134,15 +134,15 @@ $(document).ready(function() {
         	// Disable defense-only items
         	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
             // Enable all disabled items (except for hero gear inputs and hero ability toggle)
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #normalAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #offenseModsOnly").css("display","block");
             // Re-initialize hero gear options
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
             $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
-        	$("#poisonTowerBoost, #normalAbliityBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
+        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
         	// Disable offense-only items
-            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #normalAbilityHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
+            $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
             $("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","block");
         }
@@ -1284,6 +1284,9 @@ $(document).ready(function() {
 			if (isNaN(frostPotency) === true) {
 		    	frostPotency = 0;
 		    }
+		    if (frostPotency > 0) {
+		    	freezeUsed = true;
+		    }
 		    var poisonTowerUsed = false;
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			if (poisonTowerCheckBox != null) {
@@ -1292,7 +1295,7 @@ $(document).ready(function() {
 				}
 			}
 			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
-			freezeUsed = (freezeCheckBox.checked === true || frostPotency > 0) && ($(this).hasClass("Building") === false);
+			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed) {
 				$(this).addClass("StatPoisoned");
 			} else {
@@ -1346,6 +1349,9 @@ $(document).ready(function() {
 			if (isNaN(frostPotency) === true) {
 		    	frostPotency = 0;
 		    }
+			if (frostPotency > 0) {
+		    	freezeUsed = true;
+		    }
 		    var poisonTowerUsed = false;
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
 			if (poisonTowerCheckBox != null) {
@@ -1354,7 +1360,7 @@ $(document).ready(function() {
 				}
 			}
 			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
-			freezeUsed = (freezeCheckBox.checked === true || frostPotency > 0) && ($(this).hasClass("Building") === false);
+			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
 			if (poisonUsed) {
 				$(this).addClass("StatPoisoned");
 			} else {

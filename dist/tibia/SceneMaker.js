@@ -6,9 +6,9 @@ brush_on_grid = {
 effect : [1,"Poof_Effect"],
 caster : [2,"Mage_Outfit_Male_White"],
 target : [3,"Target_Dummy_(Object)"],
-sprite_1 : [4,"The Cobra Amulet Carpet"],
-sprite_2 : [5,"The Idol of Tukh Carpet"],
-sprite_3 : [6,"The Supreme Cube Carpet"]
+sprite_1 : [4,"Fireworks in Shape of '1'"],
+sprite_2 : [5,"Fireworks in Shape of '2'"],
+sprite_3 : [6,"Fireworks in Shape of '3'"]
 };
 //arrays for storing selected cells to decide the area size
 field_rows = []; 

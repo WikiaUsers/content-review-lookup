@@ -141,66 +141,26 @@
 			function() {_func(false);}
 		]);
 	}
-	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
-		var OO = require('oojs');
-		setup_draggable_group(OO);
-		// create window
-		myData.createWindow = function() {
-			msg = window.SpriteEditorModules.main.msg;
-			function SpriteEditorDialog(config) {
-				SpriteEditorDialog.super.call(this, config);
-			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
-			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = msg("reorder-sprites-label").plain();
-			SpriteEditorDialog.static.actions = [
+	
+	// create window
+	myData.createWindow = function() {
+		var msg = window.SpriteEditorModules.main.msg;
+		setup_draggable_group(window.SpriteEditorModules.main.OO);
+		modal = window.SpriteEditorModules.helper.processDialog({
+			title: msg("reorder-sprites-label").plain(),
+			name: "reorder",
+			actions: [
 				{ label: msg("dialog-button-close").plain(), flags: ['safe', 'close'] },
-				{ label: msg("save-label").plain(), action: 'saveOrder', flags: ['primary'] }
-			];
-
-			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
-				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				this.content = new OO.ui.PanelLayout({
-					expanded: false
-				});
-				this.content.$element.append(formHtml());
-				this.$body.append(this.content.$element);
-				this.$content.addClass('spriteedit-ui-Dialog');
-				// Hide empty action bar
-				var ele = this.$content.get(0);
-				ele.children[2].children[0].style.height = 0;
-				ele.children[2].style.minHeight = 0;
-				ele.children[2].style.display = "none";
-			};
-
-			// Handle actions
-			SpriteEditorDialog.prototype.getActionProcess = function (action) {
-				if (action === 'saveOrder') {
-					saveSpriteOrder();
-					modal.seDialog.close();
+				{ label: msg("save-label").plain(), action: 'close', flags: ['primary'] }
+			],
+			content: formHtml,
+			action: function (action) {
+				if (action === 'close') {
+                	saveSpriteOrder();
 				}
-				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
-			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager();
-			$('body').append(modal.windowManager.$element);
-
-			// Create a new dialog window.
-			modal.seDialog = new SpriteEditorDialog({
-				size: 'large'
-			});
-
-			// Add window and open
-			modal.windowManager.addWindows([modal.seDialog]);
-			modal.windowManager.openWindow(modal.seDialog);
-			// Close dialog when clicked outside the dialog
-			modal.seDialog.$frame.parent().on('click', function (e) {
-				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
-					modal.seDialog.close();
-				}
-			});
-		};
-	});
+			},
+			size: "large"
+		});
+		myData.modal = modal;
+	};
 })(window.jQuery, window.mediaWiki);

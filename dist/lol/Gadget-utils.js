@@ -37,10 +37,14 @@ window.endSpinner = function() {
 window.displayOutputText = function(str, highlight) {
 	var el = document.createElement('textarea');
 	el.value = str;
-	$(el).css('height', '200px')
+	$(el).css({
+		'height': '200px',
+		'margin': '20px 0px',
+		'width': '600px',
+	})
 		.attr('readonly', '')
 		.attr('id', 'gadget-output-display');
-	$(el).insertAfter('#contentSub');
+	$(el).insertAfter('#content');
 	if (highlight) {
 		el.select();
 	}

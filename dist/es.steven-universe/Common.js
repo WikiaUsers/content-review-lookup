@@ -38,18 +38,3 @@
 $('.norc').bind('contextmenu', function(e) {
     return false;
 });
-
-/** Load CssVars.js on IE **/
-if (/Trident|MSIE/.test(navigator.userAgent)) {
-    $.ajax({
-        cache: true,
-        dataType: "script",
-        url: '/es/load.php?mode=articles&only=scripts&articles=MediaWiki:CssVars.js'
-    }).done(function() {
-        cssVars({
-            include: 'style,link[href*="/load.php"]',
-            onlyLegacy    : true,
-            watch         : true
-        });        
-    });    
-}

@@ -1,7 +1,6 @@
 $(function() {
 	(window.dev = window.dev || {}).BetterUpload = window.dev.BetterUpload || {
-		'default': '==Licensing==\n{{Fairuse}}',
-		_PRIORITY: 0
+		'default': '==Licensing==\n{{Fairuse}}'
 	};
 	
 	// Double load protection
@@ -10,43 +9,50 @@ $(function() {
 	
     // Load dependencies and cache
 	var api = new mw.Api();
-	var PRELOAD_BY_NAME = [
-			{ name: 'Screenshots', preload: '==Licensing==\n{{Fairuse}}', description: 'Any miscellaneous screenshot' },
-			{ name: 'Promotional Artwork', preload: '==Summary==\n{{File\n|category      = Official Media;Promotional Artwork\n|characters    = \n|caption       = \n|sourcelink1   = \n|sourcelabel1  = \n|date          = \n}}\n\n==Licensing==\n{{Fairuse}}', description: 'Official character promotional artworks' },
-			{ name: 'Social Media Artwork', preload: '==Summary==\n{{File\n|category      = Official Media;Social Media Artwork\n|characters    = \n|caption       = \n|sourcelink1   = \n|sourcelabel1  = \n|date          = \n}}\n\n==Licensing==\n{{Fairuse}}', description: 'Official character social media artworks' }
-			/*/Examples:
-			/ /	{ name: 'Screenshots', preload: '==Licensing==\n{{Fairuse}}', description: 'Any miscelaneous screenshot' } // Preload option
-			/ /	{ name: 'Quests', header: true } // Header for sectioning preload types
-			/*/
-	];
+	var PRELOAD_BY_NAME = { None: '' };
 	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName']);
-	importScriptPage('MediaWiki:Gadget-BetterUpload.js/settings.js', 'genshin-impact'); // load settings
 	
 	// Main class
 	var betterUpload = {
-		init: function() {
+		init: function(curr) {
 			// Add custom form submit
 			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
 			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
 			  event.preventDefault();
+			  betterUpload.saveEdit();
 			  betterUpload.attemptUpload();
 			});
+			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) { // Special render for reupload
+				document.querySelector('label[for="wpUploadDescription"]').innerHTML = 'Upload summary:';
+				document.querySelector('label[for="wpUploadDescription"]').setAttribute('for', 'wpUploadSummary');
+				document.querySelector('input#wpUploadDescription').setAttribute('name', 'wpUploadSummary');
+				document.querySelector('input#wpUploadDescription').setAttribute('id', 'wpUploadSummary');
+				var tar = document.querySelector('.mw-htmlform-field-HTMLTextField + .mw-htmlform-field-HTMLTextField');
+				var ren = document.createElement('tr');
+				ren.classList.add('mw-htmlform-field-HTMLTextAreaField');
+				ren.innerHTML =
+				'<td class="mw-label">'+
+					'<label for="wpUploadDescription">Page content:</label>'+
+				'</td>'+
+				'<td class="mw-input">'+
+					'<textarea id="wpUploadDescription" cols="80" rows="8" name="wpUploadDescription" style="font-family: Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace;"></textarea>'+
+				'</td>';
+				tar.parentNode.insertBefore(
+					ren,
+					tar.nextSibling
+				);
+			}
 			
 			// Page default changes
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label').innerHTML = 'Page content:';
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-input > textarea').addEventListener('change', betterUpload.renderPreview);
+			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Page content:';
+			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
 			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
-			document.querySelector('textarea#wpUploadDescription').value = window.dev.BetterUpload.default || '';
-			document.querySelector('tr.mw-htmlform-field-Licenses').remove();
+			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (window.dev.BetterUpload.default || '');
+			if (document.querySelector('tr.mw-htmlform-field-Licenses')) { document.querySelector('tr.mw-htmlform-field-Licenses').remove(); }
 			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
 			
 			betterUpload.renderPreview();
-			mw.hook('dev.BetterUpload').add(function(sett){
-				if (!window.dev.BetterUpload._PRIORITY || !sett._PRIORITY || window.dev.BetterUpload._PRIORITY < sett._PRIORITY) {
-					window.dev.BetterUpload = sett;
-					betterUpload.genPreloads();
-				}
-			});
+			betterUpload.genPreloads();
 		},
 		genPreloads: function() {
 			console.log(window.dev.BetterUpload);
@@ -119,41 +125,41 @@ $(function() {
 								option.setAttribute('numref', index);
 								fillin_list.append(option);
 							});
-						}
-						document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
-							var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
-							var preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
-							var valnum = document.querySelector('#mw-htmlform-description tbody select#wpFillin').selectedOptions[0].getAttribute('numref');
-							var valsettings = preloadSettings.fillin[valnum];
-							var newpreload = preloadSettings.preload;
-							valsettings.values.forEach(function(rep, ind){
-								var regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
-								if (regex.test(newpreload)) {
-									newpreload = newpreload.replace(regex, rep);
-								}
-							});
-							if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview')) {
-								document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
-							}
-							if (valsettings.reference) {
-								var refPreview =  document.createElement('div');
-								refPreview.classList.add('refPreview');
-								api.get({
-									action: 'parse',
-									text: valsettings.reference,
-									prop: 'text',
-									disablelimitreport: true,
-									contentmodel: 'wikitext'
-								}).then(function(data){
-									if (data && data.parse && data.parse.text && data.parse.text['*']) {
-										refPreview.innerHTML = data.parse.text['*'];
-										document.querySelector('tr.wpFillinRow .mw-input').append(refPreview);
+							document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
+								var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');
+								var preloadSettings = window.dev.BetterUpload.preloads[preloadNum];
+								var valnum = document.querySelector('#mw-htmlform-description tbody select#wpFillin').selectedOptions[0].getAttribute('numref');
+								var valsettings = preloadSettings.fillin[valnum];
+								var newpreload = preloadSettings.preload;
+								valsettings.values.forEach(function(rep, ind){
+									var regex = new RegExp(/\$\(/.source+(ind+1)+/\)\$/.source, 'g');
+									if (regex.test(newpreload)) {
+										newpreload = newpreload.replace(regex, rep);
 									}
 								});
-							}
-							document.querySelector('textarea#wpUploadDescription').value = newpreload;
-							betterUpload.renderPreview();
-						});
+								if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview')) {
+									document.querySelector('#mw-htmlform-description tbody .wpFillinRow .mw-input .refPreview').remove();
+								}
+								if (valsettings.reference) {
+									var refPreview =  document.createElement('div');
+									refPreview.classList.add('refPreview');
+									api.get({
+										action: 'parse',
+										text: valsettings.reference,
+										prop: 'text',
+										disablelimitreport: true,
+										contentmodel: 'wikitext'
+									}).then(function(data){
+										if (data && data.parse && data.parse.text && data.parse.text['*']) {
+											refPreview.innerHTML = data.parse.text['*'];
+											document.querySelector('tr.wpFillinRow .mw-input').append(refPreview);
+										}
+									});
+								}
+								document.querySelector('textarea#wpUploadDescription').value = newpreload;
+								betterUpload.renderPreview();
+							});
+						}
 						document.querySelector('textarea#wpUploadDescription').value = preload;
 						betterUpload.renderPreview();
 					} else { alert('Invalid option.'); }
@@ -185,9 +191,31 @@ $(function() {
 				}).fail(console.log);
 			}
 		},
+		saveEdit: function() {
+			if (document.querySelector('input#wpUploadSummary')) {
+				var filename = document.querySelector('#wpDestFile').value;
+				var summary = document.querySelector('input#wpUploadSummary');
+				var params = {
+					action: 'edit',
+					title: 'File:'+filename,
+					ignorewarnings: '1',
+					format: 'json',
+					text: document.querySelector('#wpUploadDescription').value,
+					recreate: 1,
+					token: mw.user.tokens.get('csrfToken')
+				};
+				if (summary && summary.value.length>0) {
+					params.summary = summary.value;
+				}
+				if (filename && filename.length>0) {
+					api.post(params);
+				} else { alert('Missing file or file name. Could not save page content.'); }
+			} else {return;}
+		},
 		attemptUpload: function() {
 			var filename = document.querySelector('#wpDestFile').value;
 			var file = document.querySelector('#wpUploadFile').files[0];
+			var comment = document.querySelector('input#wpUploadSummary');
 			var params = {
                 token: mw.user.tokens.get('csrfToken'),
                 filename: filename,
@@ -195,17 +223,18 @@ $(function() {
                 format: 'json',
                 text: document.querySelector('#wpUploadDescription').value
             };
+            if (comment && comment.value.length>0) {
+            	params.comment = comment.value;
+            }
 			if (file && filename && filename.length>0) {
-				api.upload(file, params).done(loadFilePage).fail(loadFilePage);
 				var loadFilePage = function() {
 					window.open(
-						window.location.href.replace(/^(.+\/wiki\/).+$/, '$1')+
-						'File:'+
-						encodeURIComponent(filename), // URI encoding required
+						mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
 						'_self' // load in current tab
 					);
 				};
-			} else { alert('Missing file or file name.'); }
+				api.upload(file, params).then(loadFilePage, loadFilePage);
+			} else { alert('Missing file or file name. Could not upload file.'); }
 		},
 	};
 	
@@ -213,26 +242,62 @@ $(function() {
 	mw.loader.using('mediawiki.api').then(function(){
 		// Check we're in Special:Upload
 		if (config.wgCanonicalSpecialPageName == 'Upload') {
-			if (document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label')) {
-				setTimeout(betterUpload.init);
-			} else {
-				// set up the mutation observer
-				var observer = new MutationObserver(function (mutations, me) {
-					// mutations is an array of mutations that occurred
-					// me is the MutationObserver instance
-					var targetNode = document.querySelector('.mw-htmlform-field-HTMLTextAreaField > .mw-label > label');
-					if (targetNode) {
-						setTimeout(betterUpload.init);
-						me.disconnect(); // stop observing
-						return;
+			var titles = [
+				'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
+				'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
+			];
+			if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
+				titles.push('File:'+document.querySelector('#wpDestFile').value);
+			}
+			api.get({
+				action: 'query',
+				prop: 'revisions',
+				titles: titles,
+				rvprop: 'content',
+				rvslots: '*'
+			}).then(function(data){
+				var page = {user: -1, site: -1, curr: null};
+				Object.keys(data.query.pages).forEach(function(id){
+					if (data.query.pages[id].ns == 8) {
+						page.site = id;
+					} else if (data.query.pages[id].ns == 2 && data.query.pages[id].missing!=="") {
+						page.user = id;
+					} else if (data.query.pages[id].ns == 6 && data.query.pages[id].missing!=="") {
+						page.curr = data.query.pages[id].revisions[0].slots.main['*'];
 					}
 				});
-				// start observing
-				observer.observe(document, {
-				  childList: true,
-				  subtree: true
-				});
-			}
+				if (page.user == -1) {
+					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
+				} else {
+					window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
+				}
+				var setInit = function() {
+					if (/wpForReUpload/.test(window.location.href)) { // Special:Upload?wpForReUpload=1
+						betterUpload.init(page.curr);
+					} else { // Special:Upload
+						betterUpload.init();
+					}
+				};
+				if (document.querySelector('#wpUploadDescription')) {
+					setInit();
+				} else {
+					// set up the mutation observer
+					var observer = new MutationObserver(function (mutations, me) {
+						// mutations is an array of mutations that occurred
+						// me is the MutationObserver instance
+						var targetNode = document.querySelector('#wpUploadDescription');
+						if (targetNode) {
+							me.disconnect(); // stop observing
+							betterUpload.init();
+						}
+					});
+					// start observing
+					observer.observe(document, {
+					  childList: true,
+					  subtree: true
+					});
+				}
+			});
 		}
 	});
 });

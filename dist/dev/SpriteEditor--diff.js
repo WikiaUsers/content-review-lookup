@@ -8,11 +8,11 @@
 	var modal = {};
 	myData.modal = modal;
 	var shared;
-	var msg;
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
 	myData.requestChanges = function() {
+		modal.seDialog.pushPending();
 		var gIVars = shared.generateImage();
 		var ele = document.getElementsByClassName("spriteedit-sheet-diff")[0];
 		ele.innerHTML = "";
@@ -53,6 +53,8 @@
 			if (ele) {
 				ele.tBodies[0].innerHTML = d.compare.body;
 				modal.windowManager.updateWindowSize(modal.seDialog);
+				while (modal.seDialog.isPending())
+					modal.seDialog.popPending();
 			}
 		});
 	};
@@ -76,62 +78,19 @@
 		'</table>';
 	}
 
-	mw.loader.using('oojs-ui', 'oojs-ui-core', 'oojs-ui-windows').then( function( require ) {
-		var OO = require('oojs');
-
-		// create window
-		myData.createWindow = function() {
-			msg = window.SpriteEditorModules.main.msg;
-			function SpriteEditorDialog(config) {
-				SpriteEditorDialog.super.call(this, config);
-			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
-
-			SpriteEditorDialog.static.name = 'SpriteEditor';
-			SpriteEditorDialog.static.title = msg("changes-title").plain();
-			SpriteEditorDialog.static.actions = [
-				{ label: msg("dialog-button-close").plain(), modes: 'edit', flags: ['safe', 'close'] }
-			];
-
-			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
-				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
-				this.content = new OO.ui.PanelLayout({
-					expanded: false
-				});
-				this.content.$element.append(formHtml());
-				this.$body.append(this.content.$element);
-				this.$content.addClass('spriteedit-ui-Dialog');
-				// Hide empty action bar
-				var ele = this.$content.get(0);
-				ele.children[2].children[0].style.height = 0;
-				ele.children[2].style.minHeight = 0;
-				ele.children[2].style.display = "none";
-			};
-
-			// Handle actions
-			SpriteEditorDialog.prototype.getActionProcess = function (action) {
-				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
-			};
-
-			// Create the Dialog and add the window manager.
-			modal.windowManager = new OO.ui.WindowManager();
-			$('body').append(modal.windowManager.$element);
-
-			// Create a new dialog window.
-			modal.seDialog = new SpriteEditorDialog({
-				size: 'larger'
-			});
-
-			// Add window and open
-			modal.windowManager.addWindows([modal.seDialog]);
-			modal.windowManager.openWindow(modal.seDialog);
-			// Close dialog when clicked outside the dialog
-			modal.seDialog.$frame.parent().on('click', function (e) {
-				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
-					modal.seDialog.close();
-				}
-			});
-		};
-	});
+	// create window
+	myData.createWindow = function() {
+		var msg = window.SpriteEditorModules.main.msg;
+		modal = window.SpriteEditorModules.helper.processDialog({
+			title: msg("changes-title").plain(),
+			name: "diff",
+			actions: [
+				{ label: msg("dialog-button-close").plain(), action: 'close', modes: 'edit', flags: ['safe', 'close'] }
+			],
+			content: formHtml,
+			action: function (action) {},
+			size: "larger"
+		});
+		myData.modal = modal;
+	};
 })(window.jQuery, window.mediaWiki);

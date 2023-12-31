@@ -124,9 +124,9 @@
                 } else {
                     check404(dev, true);
                 }
-                /*dev.forEach(function (item) {
+                dev.forEach(function (item) {
                     checkStatus(item);
-                });*/
+                });
             }
         }
     }

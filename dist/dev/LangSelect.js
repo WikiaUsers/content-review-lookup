@@ -170,17 +170,17 @@ mw.loader.using('mediawiki.util').then(function () {
         label.textContent = this.langName;
         // Add preload link if user language is missing.
         if (!this.userlangExists) {
-            var userPath = this.parent + '/' + conf.wgUserLanguage,
+            var userPath = this.parent + '/' + (this.userlangTranslatable ? this.userlangTranslatable : conf.wgUserLanguage),
                 userUri = this._preloadUri(userPath);
             this._addInterwikiLink({
                 'id': 'i18ndoc-preload',
                 'path': decodeURIComponent(userUri),
-                'lang': conf.wgUserLanguage,
+                'lang': (this.userlangTranslatable ? this.userlangTranslatable : conf.wgUserLanguage),
                 'text': this.userlangName
             });
         }
         // Move languages to the top by order of precedence.
-        [conf.wgContentLanguage, this.lang, conf.wgUserLanguage]
+        [conf.wgContentLanguage, this.lang, (this.userlangTranslatable ? this.userlangTranslatable : conf.wgUserLanguage)]
             .forEach(this._prefixInterwikiLink, this);
     };
     /**

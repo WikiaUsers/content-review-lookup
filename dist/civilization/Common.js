@@ -59,5 +59,5 @@ $(function() {
 
 /* Changing red image links to placeholder icons */
 $(function ApplyPlaceholderImages() {
-    $(".testtable a.new[href*='/wiki/Special:Upload?wpDestFile=20x'][href*='BE.png']").html("<img src=\"https://vignette.wikia.nocookie.net/civilization/images/2/2f/20xMissingBE.png/revision/latest?cb=20151017234631\" alt=\"Missing image\"/>");
+    $(".testtable a.new[href*='/wiki/Special:Upload?wpDestFile=20x'][href*='BE.png']").html("<img src=\"https://static.wikia.nocookie.net/civilization/images/2/2f/20xMissingBE.png\" alt=\"Missing image\"/>");
 });

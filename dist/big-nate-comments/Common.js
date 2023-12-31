@@ -297,6 +297,8 @@ window.UserTagsJS = {
         ]
     });
 })();
+
+
 // </nowiki>
 if ($(".editing-prize").length) {
     mw.loader.load( 'https://big-nate-comments.fandom.com/wiki/User:Evalprime/bank.js?action=raw&ctype=text/javascript' );
@@ -305,3 +307,17 @@ if ($(".editing-prize").length) {
 if (mw.config.get('wgPageName') === 'Big_Nate_COMMENTS_Wiki:Counter-Vandalism_Unit') {
     mw.loader.load( 'https://big-nate-comments.fandom.com/wiki/User:Evalprime/cvu.js?action=raw&ctype=text/javascript' );
 }
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {}
+};
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.newuser = true;
+UserTagsJS.modules.autoconfirmed = true;
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller','content-moderator','threadmoderator', 'rollback', 'sysop', 'bot', 'bot-global'];
+UserTagsJS.modules.metafilter = {
+	sysop: ['bureaucrat', 'founder'],
+	bureaucrat: ['founder'],
+	threadmoderator: ['sysop', 'bureaucrat']
+};

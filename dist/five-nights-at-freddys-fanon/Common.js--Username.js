@@ -3,9 +3,9 @@
    Requires copying Template:USERNAME. */
 
 function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-    $("span.insertusername").html(wgUserName);
- }
- addOnloadHook(UserNameReplace);
+    if(window.disableUsernameReplace || !mw.config.get('wgUserName')) return;
+    $("span.insertusername").text(mw.config.get('wgUserName'));
+}
+addOnloadHook(UserNameReplace);
 
 /* End of the {{USERNAME}} replacement */

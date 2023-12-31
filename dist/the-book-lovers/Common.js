@@ -166,4 +166,10 @@ UserTagsJS.modules.implode = {
 };
 
 
-//Making a custom tag that is added to users after 360 days on the Wiki
+if (mw.config.get('wgPageName') === 'User:Moonwatcher_x_Qibli') {
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:SnowStorm.js',
+    ]
+});}

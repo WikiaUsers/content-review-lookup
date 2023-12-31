@@ -33,7 +33,6 @@
         'MediaWiki:Toggle.js',
         'MediaWiki:WikiNotification.js',
         'MediaWiki:ClanHouseGenerator.js',
-        'MediaWiki:HeroSkins2.js',
     	]
     });
 	

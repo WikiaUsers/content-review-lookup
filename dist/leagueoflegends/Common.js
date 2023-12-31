@@ -252,7 +252,11 @@ window.tooltips_list = [
     {   classname: 'lor-tooltip', 
         parse: '{'+'{Tooltip/LOR|<#param#>}}'},
     {   classname: 'challenge-tooltip', 
-        parse: '{'+'{Tooltip/Challenge|<#param#>|challenge=<#challenge#>}}'}
+        parse: '{'+'{Tooltip/Challenge|<#param#>|challenge=<#challenge#>}}'},
+    {
+    classname: 'profile-icons-v1',
+    parse: '{{Tooltip/Profile-Icons/V1|<#id#>}}'
+}
 ];
  
 window.tooltips_config = {

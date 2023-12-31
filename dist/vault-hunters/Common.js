@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* Config for [[w:c:dev:PreloadFileDescription]] */
-PFD_template = '{'+'{Information\n| description = \n| source = \n| date = \n| author = \n| permission = \n| other versions = \n}}';
+PFD_templates = '{'+'{Information\n| description = \n| source = \n| date = \n| author = \n| permission = \n| other versions = \n}}';
 PFD_license = 'License';
 PFD_discourageEditorFileUpload = true
 

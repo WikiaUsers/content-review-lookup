@@ -56,6 +56,7 @@ importArticles({
         'u:dev:MediaWiki:ThemeToggler.js',
         'u:dev:MediaWiki:NullEditButton/code.js',
         'u:dev:MediaWiki:MassCategorization/code.js',
-        'u:dev:MediaWiki:CommunityPageRailModule.js'
+        'u:dev:MediaWiki:CommunityPageRailModule.js',
+        'MediaWiki:CombatCard.js'
     ]
 });

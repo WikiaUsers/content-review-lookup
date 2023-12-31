@@ -8,7 +8,7 @@
 	var ubLevel, minHp, maxHp, minStr, maxStr, ele;
 
 	function radio(id, icon) {
-		return '<input type="radio" value=' + id + ' name="unbind" checked=1><label for="adv-unbind-' + id + '-input"><img src="https://images.wikia.com/dragalialost_gamepedia_en/images/' + icon + '" style="width:35px; position:relative; bottom:4px;"/></label>';
+		return '<input type="radio" value=' + id + ' name="unbind" checked=1><label for="adv-unbind-' + id + '-input"><img src="https://static.wikia.nocookie.net/dragalialost_gamepedia_en/images/' + icon + '" style="width:35px; position:relative; bottom:4px;"/></label>';
 	}
 
 	// Check if level is a number we can calculate with

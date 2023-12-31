@@ -11,7 +11,7 @@ var SocialMediaButtons = {
 /* Community Choice Awards */
 if (mw.config.get('wgPageName') === 'User_blog:TheBlueRogue/Beyond_Earth_Community_Choice_Awards') {
 	var challengers = {};
-	var imageUrl = 'https://vignette.wikia.nocookie.net/civilization/images/';
+	var imageUrl = 'https://static.wikia.nocookie.net/civilization/images/';
 	var wikiUrl = 'https://civilization.fandom.com/wiki/';
 
  	//Destiny CCA Images
@@ -19,7 +19,7 @@ if (mw.config.get('wgPageName') === 'User_blog:TheBlueRogue/Beyond_Earth_Communi
 	challengers['Purity'] = imageUrl + 'e/ee/Puritycca.jpg';
 	challengers['Harmony'] = imageUrl + '5/53/HarmonyCCA.jpg';
 	challengers['Domination'] = imageUrl + '7/7a/DominationCCA.jpg';
-	challengers['Contact'] = 'https://vignette.wikia.nocookie.net/dinos-vs-robots/images/e/ef/ContactIcon.png';
+	challengers['Contact'] = 'https://static.wikia.nocookie.net/dinos-vs-robots/images/e/ef/ContactIcon.png';
 	challengers['Promised Land (Purity)'] = imageUrl + '6/6c/PromisedlandCCA.jpg';
 	challengers['Transcendence (Harmony)'] = imageUrl + 'b/b1/ContactCCA.jpg';	
 	challengers['Emancipation (Supremacy)'] = imageUrl + '9/92/EmancipationCCA.jpg';		

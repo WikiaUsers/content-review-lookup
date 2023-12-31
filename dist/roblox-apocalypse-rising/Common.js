@@ -51,4 +51,12 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
-dev:MassProtect/code.js
+/* Christmas header */
+$('.fandom-community-header__community-name-wrapper').append(
+    $('<a/>').addClass('hover-community-header-wrapper')
+        .append($('<div/>')
+            .addClass('message')
+            .text('Christmas!')
+        )
+        .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Christmas_(2023)')
+);

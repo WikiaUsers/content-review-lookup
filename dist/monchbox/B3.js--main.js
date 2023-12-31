@@ -4,10 +4,10 @@
  *    Written and maintained by Monchoman45    *
  *      https://github.com/Monchoman45/B3      *
  ***********************************************/
-
+// <nowiki>
 if(window.B3) {throw new Error('B3 already loaded');}
 
-window.B3 = {
+var B3 = {
 	version: 103,
 	pretty_version: '1.0.3',
 
@@ -53,26 +53,12 @@ window.B3 = {
 };
 
 //Set apipath and indexpath
-if(window.wgScriptPath != undefined) { //on wikia wgScriptPath is '' which is false
-	B3.settings.apipath = wgScriptPath + '/api.php';
-	B3.settings.indexpath = wgScriptPath + '/index.php';
-}
-else if(window.mw && mw.config && mw.config.values && mw.config.values.wgScriptPath) {
-	B3.settings.apipath = mw.config.values.wgScriptPath + '/api.php';
-	B3.settings.indexpath = mw.config.values.wgScriptPath + '/index.php';
-}
-else {
-	B3.settings.apipath = '/w/api.php';
-	B3.settings.indexpath = '/w/index.php';
-	console.log('B3 warning: wgScriptPath is not defined, so the default api path was set to /w/api.php. If this is incorrect, please manually set B3.settings.apipath to the wiki\'s api.php location, and B3.settings.indexpath to the wiki\'s index.php location.');
-}
+B3.settings.apipath = mw.config.get('wgScriptPath') + '/api.php';
+B3.settings.indexpath = mw.config.get('wgScriptPath') + '/index.php';
+B3.token = mw.user.tokens.get('csrfToken');
 
-if(window.mw && mw.user && mw.user.tokens && mw.user.tokens.values && mw.user.tokens.values.editToken) {
-	B3.token = mw.user.tokens.values.editToken;
-}
-
-B3.util.debug = function() {console.log.apply(console, arguments);}
-B3.util.null = function() {}
+B3.util.debug = function() {console.log.apply(console, arguments);};
+B3.util.null = function() {};
 
 B3.util.add_listener = function(listener, func) {
 	if(Array.isArray(func)) {
@@ -85,7 +71,7 @@ B3.util.add_listener = function(listener, func) {
 		return true;
 	}
 	return false;
-}
+};
 B3.util.remove_listener = function(listener, func) {
 	if(Array.isArray(func)) {
 		for(var i = 0; i < func.length; i++) {this.remove_listener(listener, func[i]);}
@@ -102,7 +88,7 @@ B3.util.remove_listener = function(listener, func) {
 	}
 
 	return false;
-}
+};
 B3.util.call_listeners = function(listener) {
 	if(this.listeners[listener]) {
 		var args = Array.prototype.slice.call(arguments, 1);
@@ -111,7 +97,7 @@ B3.util.call_listeners = function(listener) {
 		return ret;
 	}
 	else {return false;}
-}
+};
 
 B3.add_listener = B3.util.add_listener;
 B3.remove_listener = B3.util.remove_listener;
@@ -133,9 +119,9 @@ B3.util.flatten = function(params) {
 		ret.push(p);
 	}
 	return ret;
-}
+};
 
-B3.util.cap = function(str) {return str.charAt(0).toUpperCase() + str.substring(1);}
+B3.util.cap = function(str) {return str.charAt(0).toUpperCase() + str.substring(1);};
 B3.util.normalize_pagename = function(page) {
 	if(page.indexOf(':') != -1) { //Namespace:Title
 		var namespace = page.substring(0, page.indexOf(':'));
@@ -145,14 +131,14 @@ B3.util.normalize_pagename = function(page) {
 	else {page = B3.util.cap(page);} //Title (mainspace)
 	while(page.indexOf('_') != -1) {page = page.replace('_', ' ');}
 	return page;
-}
+};
 
 B3.util.find = function(arr, prop, val) {
 	for(var i = 0; i < arr.length; i++) {
 		if(arr[i][prop] == val) {return arr[i];}
 	}
 	return false;
-}
+};
 
 B3.util.copy = function(obj) {
 	if(Array.isArray(obj)) {
@@ -161,12 +147,16 @@ B3.util.copy = function(obj) {
 		return copy;
 	}
 	else if(typeof obj == 'object') {
-		var copy = {};
-		for(var i in obj) {copy[i] = obj[i];}
-		return copy;
+		var copy2 = {};
+		for(var j in obj) {
+			if (obj.hasOwnProperty(j)) {
+				copy2[j] = obj[j];
+			}
+		}
+		return copy2;
 	}
 	else {return obj;}
-}
+};
 B3.util.deepcopy = function(obj) {
 	if(Array.isArray(obj)) {
 		var copy = [];
@@ -174,25 +164,35 @@ B3.util.deepcopy = function(obj) {
 		return copy;
 	}
 	else if(typeof obj == 'object') {
-		var copy = {};
-		for(var i in obj) {copy[i] = B3.util.deepcopy(obj[i]);}
-		return copy;
+		var copy2 = {};
+		for(var j in obj) {
+			if (obj.hasOwnProperty(j)) {
+				copy2[j] = B3.util.deepcopy(obj[j]);
+			}
+		}
+		return copy2;
 	}
 	else {return obj;}
-}
+};
 
 B3.util.softmerge = function(dest, source, prefix) {
 	if(!prefix) {prefix = '';}
 
 	for(var i in source) {
-		if(!dest[prefix + i]) {dest[prefix + i] = source[i];}
+		if (source.hasOwnProperty(i)) {
+			if(!dest[prefix + i]) {dest[prefix + i] = source[i];}
+		}
 	}
-}
+};
 B3.util.hardmerge = function(dest, source, prefix) {
 	if(!prefix) {prefix = '';}
 
-	for(var i in source) {dest[prefix + i] = source[i];}
-}
+	for(var i in source) {
+		if (source.hasOwnProperty(i)) {
+			dest[prefix + i] = source[i];
+		}
+	}
+};
 
 B3.util.driver_merge = function(params, modules) {
 	if(params.prop) {params.prop = [params.prop];}
@@ -219,7 +219,7 @@ B3.util.driver_merge = function(params, modules) {
 	else {delete params.meta;}
 
 	return params;
-}
+};
 
 B3.util.message = function(message) {
 	if(!message) {return '';} //FIXME: complain?
@@ -228,25 +228,25 @@ B3.util.message = function(message) {
 		while(message.indexOf('$' + i) != -1) {message = message.replace('$' + i, arguments[i]);}
 	}
 	return message;
-}
+};
 
 B3.util.pagelist = function(pages) {
 	var list = new B3.classes.List();
 	for(var i = 0; i < pages.length; i++) {list.pages[pages[i]] = {title: pages[i]};}
 	return list;
-}
+};
 B3.util.userlist = function(users) {
 	var list = new B3.classes.List();
 	for(var i = 0; i < users.length; i++) {list.users[users[i]] = {name: users[i]};}
 	return list;
-}
+};
 
-B3.util.output_join = function() {this.output_list.join(this.input_list);}
-B3.util.output_intersect = function() {this.output_list.intersect(this.input_list);}
-B3.util.output_subtract = function() {this.output_list.subtract(this.input_list);}
-B3.util.output_xor = function() {this.output_list.xor(this.input_list);}
-B3.util.output_cull = function() {this.output_list.cull(this.input_list);}
-B3.util.output_empty = function() {this.output_list.empty();}
+B3.util.output_join = function() {this.output_list.join(this.input_list);};
+B3.util.output_intersect = function() {this.output_list.intersect(this.input_list);};
+B3.util.output_subtract = function() {this.output_list.subtract(this.input_list);};
+B3.util.output_xor = function() {this.output_list.xor(this.input_list);};
+B3.util.output_cull = function() {this.output_list.cull(this.input_list);};
+B3.util.output_empty = function() {this.output_list.empty();};
 
 B3.util.load_js = function(url) {
 	var js = document.createElement('script');
@@ -255,7 +255,7 @@ B3.util.load_js = function(url) {
 		js.type = 'text/javascript';
 	document.head.appendChild(js);
 	return js;
-}
+};
 
 B3.util.load_css = function(url) {
 	var css = document.createElement('link');
@@ -266,7 +266,7 @@ B3.util.load_css = function(url) {
 		css.media = 'screen';
 	document.head.appendChild(css);
 	return css;
-}
+};
 
 /*
  * Run waiting requests
@@ -279,11 +279,12 @@ B3.queue.flush = function() {
 
 	var first_empty = false; //this is used to check if the entire queue is out of runnable tasks
 	while(B3.queue.active.length < B3.settings.maxactive || B3.settings.maxactive == 0) {
+		var request;
 		if(!B3.settings.wpmode) {
 			var task = B3.queue.tasks.shift();
 			B3.queue.tasks.push(task);
 
-			var request = task.next_request();
+			request = task.next_request();
 			if(!request) {
 				if(first_empty == task) {return true;} //entire queue is working, we have nothing to run
 				else if(!first_empty) {first_empty = task;}
@@ -292,7 +293,7 @@ B3.queue.flush = function() {
 			else {first_empty = false;} //someone has a task, and they may have more, even if everyone else has none
 		}
 		else {
-			var request = B3.queue.tasks[0].next_request();
+			request = B3.queue.tasks[0].next_request();
 			if(!request) {return false;}
 		}
 
@@ -303,7 +304,7 @@ B3.queue.flush = function() {
 	}
 
 	return true;
-}
+};
 
 B3.queue.push = function(task) {
 	if(B3.queue.tasks.indexOf(task) != -1) {return false;}
@@ -312,7 +313,7 @@ B3.queue.push = function(task) {
 	B3.queue.flush();
 	B3.queue.call_listeners('push');
 	return true;
-}
+};
 
 B3.queue.remove = function(task) {
 	var index = B3.queue.tasks.indexOf(task);
@@ -321,7 +322,7 @@ B3.queue.remove = function(task) {
 	B3.queue.tasks.splice(index, 1);
 	B3.queue.call_listeners('remove');
 	return true;
-}
+};
 
 B3.queue.req_complete = function(xhr) {
 	this.remove_listener('complete', B3.queue.req_complete);
@@ -330,7 +331,7 @@ B3.queue.req_complete = function(xhr) {
 	B3.queue.call_listeners('complete', this);
 	if(!B3.settings.wpmode) {B3.queue.flush();}
 	else {setTimeout(B3.queue.flush, B3.settings.wpdelay);}
-}
+};
 
 B3.queue.add_listener = B3.util.add_listener;
 B3.queue.remove_listener = B3.util.remove_listener;
@@ -354,7 +355,7 @@ B3.classes.Request = function(method, url, params, options, callback) {
 	this.xhr = new XMLHttpRequest();
 	this.xhr.request = this;
 	this.xhr.addEventListener('loadend', B3.classes.Request.loadend);
-}
+};
 
 B3.classes.Request.prototype.send = function() {
 	if(this.sending) {return false;}
@@ -366,8 +367,8 @@ B3.classes.Request.prototype.send = function() {
 
 		var upload = this.options.upload; //B3.settings.longpost may set this to true just for this one particular call
 		if(!upload && B3.settings.longpost > 0) {
-			for(var i in this.params) {
-				if(this.params[i].length > B3.settings.longpost) {upload = true; break;}
+			for(var j in this.params) {
+				if(this.params[j].length > B3.settings.longpost) {upload = true; break;}
 			}
 		}
 		if(upload) {
@@ -375,19 +376,31 @@ B3.classes.Request.prototype.send = function() {
 			var boundary = String.fromCharCode(Math.floor(Math.random() * 128 + 128)) + String.fromCharCode(Math.floor(Math.random() * 128 + 128)) + Math.floor(Math.random() * 65536).toString(16) + Math.floor(Math.random() * 65536).toString(16);
 			this.xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
 			var data = '--' + boundary;
-			for(var i in this.params) {data += '\nContent-Disposition: form-data; name="' + i + '"\n\n' + this.params[i] + '\n--' + boundary;}
+			for(var i in this.params) {
+				if (this.params.hasOwnProperty(i)) {
+					data += '\nContent-Disposition: form-data; name="' + i + '"\n\n' + this.params[i] + '\n--' + boundary;
+				}
+			}
 			this.xhr.send(data + '--');
 		}
 		else {
 			this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			var query = '';
-			for(var i in this.params) {query += i + '=' + encodeURIComponent(this.params[i]) + '&';}
+			for(var k in this.params) {
+				if (this.params.hasOwnProperty(k)) {
+					query += k + '=' + encodeURIComponent(this.params[k]) + '&';
+				}
+			}
 			this.xhr.send(query.substring(0, query.length - 1));
 		}
 	}
 	else {
 		var url = this.url + '?';
-		for(var i in this.params) {url += i + '=' + encodeURIComponent(this.params[i]) + '&';}
+		for(var i in this.params) {
+			if (this.params.hasOwnProperty(i)) {
+				url += i + '=' + encodeURIComponent(this.params[i]) + '&';
+			}
+		}
 		this.xhr.open(this.method, url.substring(0, url.length - 1), true);
 		this.xhr.setRequestHeader('Api-User-Agent', 'B3/' + B3.version);
 		this.xhr.send();
@@ -396,17 +409,17 @@ B3.classes.Request.prototype.send = function() {
 	this.sending = true;
 	this.call_listeners('send');
 	return true;
-}
+};
 
 B3.classes.Request.prototype.abort = function() {
 	if(this.sending) {this.xhr.abort();}
-}
+};
 
 B3.classes.Request.loadend = function(event) {
 	this.request.sending = false;
 	this.request.complete = true;
 	this.request.call_listeners('complete', this);
-}
+};
 
 B3.classes.Request.prototype.add_listener = B3.util.add_listener;
 B3.classes.Request.prototype.remove_listener = B3.util.remove_listener;
@@ -418,60 +431,91 @@ B3.classes.List = function() {
 	this.pages = {};
 	this.users = {};
 	this.ext = {};
-}
+};
 B3.classes.List.prototype.join = function(list) {
 	for(var i in list) {
-		for(var j in list[i]) {
-			if(!this[i][j]) {this[i][j] = list[i][j];}
-			else {B3.util.softmerge(this[i][j], list[i][j]);}
+		if (list.hasOwnProperty(i)) {
+			for(var j in list[i]) {
+				if (list[i].hasOwnProperty(j)) {
+					if(!this[i][j]) {
+						this[i][j] = list[i][j];
+					} else {
+						B3.util.softmerge(this[i][j], list[i][j]);
+					}
+				}
+			}
 		}
 	}
 	return this;
-}
+};
 B3.classes.List.prototype.intersect = function(list) {
 	for(var i in this) {
-		for(var j in this[i]) {
-			if(!list[i][j]) {delete this[i][j];}
-			else {B3.util.softmerge(this[i][j], list[i][j]);}
+		if (this.hasOwnProperty(i)) {
+			for(var j in this[i]) {
+				if (this[i].hasOwnProperty(j)) {
+					if(!list[i][j]) {delete this[i][j];}
+					else {B3.util.softmerge(this[i][j], list[i][j]);}
+				}
+			}
 		}
 	}
 	return this;
-}
+};
 B3.classes.List.prototype.subtract = function(list) {
 	for(var i in this) {
-		for(var j in this[i]) {
-			if(list[i][j]) {delete this[i][j];}
-			else {B3.util.softmerge(this[i][j], list[i][j]);}
+		if (this.hasOwnProperty(i)) {
+			for(var j in this[i]) {
+				if (this[i].hasOwnProperty(j)) {
+					if(list[i][j]) {
+						delete this[i][j];
+					} else {
+						B3.util.softmerge(this[i][j], list[i][j]);
+					}
+				}
+			}
 		}
 	}
 	return this;
-}
+};
 B3.classes.List.prototype.xor = function(list) {
 	for(var i in list) {
-		for(var j in list[i]) {
-			if(this[i][j]) {delete this[i][j];}
-			else {this[i][j] = list[i][j];}
+		if (list.hasOwnProperty(i)) {
+			for(var j in list[i]) {
+				if (list[i].hasOwnProperty(j)) {
+					if(this[i][j]) {
+						delete this[i][j];
+					} else {
+						this[i][j] = list[i][j];
+					}
+				}
+			}
 		}
 	}
 	return this;
-}
+};
 B3.classes.List.prototype.cull = function(list) {
 	return this.xor(list).intersect(list);
-}
+};
 B3.classes.List.prototype.empty = function() {
 	for(var i in this) {
-		for(var j in this[i]) {delete this[i][j];}
+		if (this.hasOwnProperty(i)) {
+			for(var j in this[i]) {
+				if (this[i].hasOwnProperty(j)) {
+					delete this[i][j];
+				}
+			}
+		}
 	}
 	return this;
-}
+};
 
 B3.classes.Scheduleable = function() {
 	this.working = false;
 	this.complete = false;
 	this.listeners = {};
-}
-B3.classes.Scheduleable.prototype.next_request = function() {throw new Error('B3: Default function Scheduleable.next_request was called');}
-B3.classes.Scheduleable.prototype.cancel = function() {throw new Error('B3: Default function Scheduleable.cancel was called');}
+};
+B3.classes.Scheduleable.prototype.next_request = function() {throw new Error('B3: Default function Scheduleable.next_request was called');};
+B3.classes.Scheduleable.prototype.cancel = function() {throw new Error('B3: Default function Scheduleable.cancel was called');};
 B3.classes.Scheduleable.prototype.run = function() {
 	if(!this.working && !this.complete) {
 		this.working = true;
@@ -480,7 +524,7 @@ B3.classes.Scheduleable.prototype.run = function() {
 		this.call_listeners('run');
 	}
 	return this;
-}
+};
 
 B3.classes.Scheduleable.prototype.add_listener = B3.util.add_listener;
 B3.classes.Scheduleable.prototype.remove_listener = B3.util.remove_listener;
@@ -540,10 +584,14 @@ B3.classes.Task = function(method, url, params, options, complete, success, fail
 	var module = B3.modules.action[params.module];
 	if(!module) {throw new Error('B3 Task: tried to create task with invalid module `' + params.module + '`');}
 
-	for(var i in module.param_generators) {this.add_listener('generate_' + i, module.param_generators[i]);}
+	for(var i in module.param_generators) {
+		if (module.param_generators.hasOwnProperty(i)) {
+			this.add_listener('generate_' + i, module.param_generators[i]);
+		}
+	}
 
 	this.compiled = false;
-}
+};
 B3.classes.Task.prototype = Object.create(B3.classes.Scheduleable.prototype);
 
 B3.classes.Task.prototype.req_callback = function(xhr) {
@@ -581,7 +629,7 @@ B3.classes.Task.prototype.req_callback = function(xhr) {
 
 	//failure
 	this.task.req_failure(this, code, info);
-}
+};
 
 B3.classes.Task.prototype.req_success = function(request, response) {
 	this.merge_data(response);
@@ -596,7 +644,7 @@ B3.classes.Task.prototype.req_success = function(request, response) {
 
 	this.succeeded.push(request);
 	if(this.waiting.length == 0 && this.active.length == 0) {this.done();}
-}
+};
 
 B3.classes.Task.prototype.req_failure = function(request, code, info) {
 	if(code == 'internal_api_error_DBQueryError') {
@@ -618,31 +666,35 @@ B3.classes.Task.prototype.req_failure = function(request, code, info) {
 
 	this.failed.push(request);
 	if(this.waiting.length == 0 && this.active.length == 0) {this.done();}
-}
+};
 
 B3.classes.Task.prototype.compile = function() {
 	if(this.compiled) {return false;}
 
 	for(var i in this.input_list) {
-		if(!this.listeners['generate_' + i] || this.listeners['generate_' + i].length == 0) {continue;}
+		if (this.input_list.hasOwnProperty(i)) {
+			if(!this.listeners['generate_' + i] || this.listeners['generate_' + i].length == 0) {continue;}
 
-		for(var j in this.input_list[i]) {
-			var params = {};
-			this.call_listeners('generate_' + i, params, this.input_list[i][j]);
-			if(Object.getOwnPropertyNames(params).length > 0) {
-				if(this.url == B3.settings.apipath) { //FIXME: do we need this
-					params.format = 'json';
-					params.bot = '1';
+				for(var j in this.input_list[i]) {
+					if (this.input_list[i].hasOwnProperty(j)) {
+						var params = {};
+						this.call_listeners('generate_' + i, params, this.input_list[i][j]);
+						if(Object.getOwnPropertyNames(params).length > 0) {
+						if(this.url == B3.settings.apipath) { //FIXME: do we need this
+							params.format = 'json';
+							params.bot = '1';
+						}
+
+						this.add(params);
+					}
 				}
-
-				this.add(params);
 			}
 		}
 	}
 	this.call_listeners('compile');
 	this.compiled = true;
 	return true;
-}
+};
 
 B3.classes.Task.prototype.add = function(params) {
 	var reqs = B3.util.flatten(params);
@@ -652,7 +704,7 @@ B3.classes.Task.prototype.add = function(params) {
 		this.waiting.push(request);
 		this.length++;
 	}
-}
+};
 
 B3.classes.Task.prototype.next_request = function() {
 	if(!this.compiled) {this.compile();}
@@ -662,13 +714,13 @@ B3.classes.Task.prototype.next_request = function() {
 	this.active.push(request);
 	this.call_listeners('next', request);
 	return request;
-}
+};
 
 B3.classes.Task.prototype.done = function() {
 	this.working = false;
 	this.complete = true;
 	this.call_listeners('complete', this.output_list);
-}
+};
 
 B3.classes.Task.prototype.cancel = function() {
 	//fail everything waiting first, then abort all active requests
@@ -682,22 +734,24 @@ B3.classes.Task.prototype.cancel = function() {
 		for(var i = 0; i < this.active.length; i++) {this.active[i].abort();}
 	}
 	else {this.done();} //nothing was running, so everything is definitely dead
-}
+};
 
 B3.classes.Task.prototype.merge_data = function(query) {
 	for(var i in query) {
-		if(i == 'query') {
-			for(var j in query[i]) {
-				if(B3.modules.query_mergers[j]) {
-					for(var k = 0; k < B3.modules.query_mergers[j].length; k++) {B3.modules.query_mergers[j][k].call(this, query[i][j], j);}
+		if (query.hasOwnProperty(i)) {
+			if(i == 'query') {
+				for(var j in query[i]) {
+					if(B3.modules.query_mergers[j]) {
+						for(var k = 0; k < B3.modules.query_mergers[j].length; k++) {B3.modules.query_mergers[j][k].call(this, query[i][j], j);}
+					}
 				}
 			}
-		}
-		if(B3.modules.data_mergers[i]) {
-			for(var j = 0; j < B3.modules.data_mergers[i].length; j++) {B3.modules.data_mergers[i][j].call(this, query[i], i);}
+			if(B3.modules.data_mergers[i]) {
+				for(var j = 0; j < B3.modules.data_mergers[i].length; j++) {B3.modules.data_mergers[i][j].call(this, query[i], i);}
+			}
 		}
 	}
-}
+};
 
 /* Job, for scheduling Tasks
  * each task is run and completed in order
@@ -714,7 +768,7 @@ B3.classes.Job = function(tasks, complete, success, failure) {
 	this.add_listener('failure', failure);
 
 	this.add(tasks);
-}
+};
 B3.classes.Job.prototype = Object.create(B3.classes.Scheduleable.prototype);
 
 B3.classes.Job.prototype.add = function(tasks) {
@@ -726,25 +780,25 @@ B3.classes.Job.prototype.add = function(tasks) {
 		this.tasks.push(tasks[i]);
 	}
 	return tasks.length;
-}
+};
 
-B3.classes.Job.prototype.next_request = function() {return this.tasks[this.index].next_request();}
+B3.classes.Job.prototype.next_request = function() {return this.tasks[this.index].next_request();};
 B3.classes.Job.prototype.task_complete = function() {
 	this.job.index++;
 	if(this.job.index == this.job.tasks.length) {this.job.done();}
 	else {this.job.tasks[this.job.index].input_list = this.ouput_list;}
-}
+};
 B3.classes.Job.prototype.done = function() {
 	this.working = false;
 	this.complete = true;
 	this.call_listeners('complete', this.tasks[this.tasks.length - 1].output_list);
-}
+};
 B3.classes.Job.prototype.cancel = function() {
 	//keep this.index where it is
 	for(var i = this.index; i < this.tasks.length; i++) {this.tasks[i].remove_listener('complete', this.task_complete);}
 	this.tasks[this.index].cancel();
 	//TODO: what do we do with tasks that were never run?
-}
+};
 
 /* AsyncJob, for running multiple Scheduleables at the same time
  * mostly, this allows you to bind listeners to a group of Tasks or Jobs that can be run at the same time
@@ -763,7 +817,7 @@ B3.classes.AsyncJob = function(list, tasks, complete, success, failure) {
 	this.add_listener('failure', failure);
 
 	this.add(tasks);
-}
+};
 B3.classes.AsyncJob.prototype = Object.create(B3.classes.Scheduleable.prototype);
 
 B3.classes.AsyncJob.prototype.add = function(tasks) {
@@ -776,13 +830,13 @@ B3.classes.AsyncJob.prototype.add = function(tasks) {
 		this.queue.push(tasks[i]);
 	}
 	return tasks.length;
-}
+};
 
 B3.classes.AsyncJob.prototype.task_complete = function() {
 	this.job.queue.splice(this.job.queue.indexOf(this), 1);
 	this.job.completed.push(this);
 	if(this.job.queue.length == 0) {this.job.done();}
-}
+};
 
 B3.classes.AsyncJob.prototype.next_request = function() {
 	var request = false;
@@ -790,7 +844,7 @@ B3.classes.AsyncJob.prototype.next_request = function() {
 		var task = this.queue.shift();
 		this.queue.push(task);
 
-		var request = task.next_request();
+		request = task.next_request();
 		if(!request) {
 			if(first_empty == task) {return false;} //entire queue is working, we have nothing to run
 			else if(!first_empty) {first_empty = task;}
@@ -799,17 +853,17 @@ B3.classes.AsyncJob.prototype.next_request = function() {
 	}
 
 	return request;
-}
+};
 B3.classes.AsyncJob.prototype.done = function() {
 	this.working = false;
 	this.complete = true;
 	var lists = [];
 	for(var i = 0; i < this.tasks.length; i++) {lists.push(this.tasks[i].output_list);}
 	this.call_listeners('complete', lists);
-}
+};
 B3.classes.AsyncJob.prototype.cancel = function() {
 	for(var i = 0; i < this.tasks.length; i++) {this.tasks[i].cancel();}
-}
+};
 
 B3.modules.register_action = function(name, module) {
 	if(typeof module.task_generator != 'function') {throw new Error('B3: tried to register a bad action module `' + name + '`: typeof task_generator != \'function\'');}
@@ -820,13 +874,15 @@ B3.modules.register_action = function(name, module) {
 	B3.action[name] = module.task_generator;
 
 	for(var i in module.data_mergers) {
-		if(!B3.modules.data_mergers[i]) {B3.modules.data_mergers[i] = [];}
-		B3.modules.data_mergers[i].push(module.data_mergers[i]);
+		if (module.data_mergers.hasOwnProperty(i)) {
+			if(!B3.modules.data_mergers[i]) {B3.modules.data_mergers[i] = [];}
+			B3.modules.data_mergers[i].push(module.data_mergers[i]);
+		}
 	}
 
 
 	B3.call_listeners('action_module', name, module);
-}
+};
 
 B3.modules.register_query = function(name, module) {
 	if((!module.type || (module.type != 'prop' && module.type != 'list' && module.type != 'meta')) && name != '') {
@@ -836,15 +892,21 @@ B3.modules.register_query = function(name, module) {
 	//TODO: other validating things
 
 	B3.modules.query[name] = module;
-	for(var i in module.query_generators) {B3[module.type][i] = module.query_generators[i];}
+	for(var i in module.query_generators) {
+		if (module.query_generators.hasOwnProperty(i)) {
+			B3[module.type][i] = module.query_generators[i];
+		}
+  }
 
 	for(var i in module.query_mergers) {
-		if(!B3.modules.query_mergers[i]) {B3.modules.query_mergers[i] = [];}
-		B3.modules.query_mergers[i].push(module.query_mergers[i]);
+		if (module.query_mergers.hasOwnProperty(i)) {
+			if(!B3.modules.query_mergers[i]) {B3.modules.query_mergers[i] = [];}
+			B3.modules.query_mergers[i].push(module.query_mergers[i]);
+		}
 	}
 
 	B3.call_listeners('query_module', name, module);
-}
+};
 
 B3.modules.page_querymerger = function(query) {
 	for(var i = 0; i < query.length; i++) {
@@ -852,14 +914,14 @@ B3.modules.page_querymerger = function(query) {
 		if(this.output_list.pages[title]) {B3.util.hardmerge(this.output_list.pages[title], query[i]);}
 		else {this.output_list.pages[title] = query[i];}
 	}
-}
+};
 B3.modules.user_querymerger = function(query) {
 	for(var i = 0; i < query.length; i++) {
 		var user = query[i].name;
 		if(this.output_list.users[user]) {B3.util.hardmerge(this.output_list.users[user], query[i]);}
 		else {this.output_list.users[user] = query[i];}
 	}
-}
+};
 
 B3.modules.register_action('', {
 	task_generator: function() {throw new Error('B3: task generator was called for null action');},
@@ -893,9 +955,11 @@ B3.modules.register_query('', {
 	query_mergers: {
 		pages: function(query) { //?action=query&titles=anything
 			for(var i in query) {
-				var title = query[i].title;
-				if(this.output_list.pages[title]) {B3.util.hardmerge(this.output_list.pages[title], query[i]);}
-				else {this.output_list.pages[title] = query[i];}
+				if (query.hasOwnProperty(i)) {
+					var title = query[i].title;
+					if(this.output_list.pages[title]) {B3.util.hardmerge(this.output_list.pages[title], query[i]);}
+					else {this.output_list.pages[title] = query[i];}
+				}
 			}
 		},
 	},
@@ -939,16 +1003,18 @@ B3.modules.register_action('query', {
 			for(var i = 0; i < params.qmodule.length; i++) {
 				var pgens = B3.modules.query[params.qmodule[i]].param_generators;
 				for(var j in pgens) {
-					if(!seen[j]) {
-						task.add_listener('generate_' + j, function(params) {
-							var p = B3.util.copy(this.params);
-							delete p.module;
-							delete p.qmodule;
-							B3.util.hardmerge(params, p);
-						});
-						seen[j] = true;
+					if (pgens.hasOwnProperty(j)) {
+						if(!seen[j]) {
+							task.add_listener('generate_' + j, function(params) {
+								var p = B3.util.copy(this.params);
+								delete p.module;
+								delete p.qmodule;
+								B3.util.hardmerge(params, p);
+							});
+							seen[j] = true;
+						}
+						task.add_listener('generate_' + j, pgens[j]);
 					}
-					task.add_listener('generate_' + j, pgens[j]);
 				}
 			}
 		}
@@ -992,16 +1058,18 @@ B3.modules.register_action('generator', {
 			for(var i = 0; i < params.qmodule.length; i++) {
 				var pgens = B3.modules.query[params.qmodule[i]].param_generators;
 				for(var j in pgens) {
-					if(!seen[j]) {
-						task.add_listener('generate_' + j, function(params) {
-							var p = B3.util.copy(this.params);
-							delete p.module;
-							delete p.qmodule;
-							B3.util.hardmerge(params, p);
-						});
-						seen[j] = true;
+					if (pgens.hasOwnProperty(j)) {
+						if(!seen[j]) {
+							task.add_listener('generate_' + j, function(params) {
+								var p = B3.util.copy(this.params);
+								delete p.module;
+								delete p.qmodule;
+								B3.util.hardmerge(params, p);
+							});
+							seen[j] = true;
+						}
+						task.add_listener('generate_' + j, pgens[j]);
 					}
-					task.add_listener('generate_' + j, pgens[j]);
 				}
 			}
 		}
@@ -1026,7 +1094,7 @@ B3.api.token_regen = function(success, failure) {
 	B3.action.query('#', [B3.api.token('edit')], success, function(request, response) {
 		B3.token = response.query.pages[-1].edittoken;
 	}, failure).run();
-}
+};
 
 B3.api.token = function(token) {
 	switch(token) {
@@ -1078,7 +1146,7 @@ B3.api.token = function(token) {
 				intoken: 'edit',
 			};
 	}
-}
+};
 
 
 
@@ -1535,7 +1603,7 @@ B3.modules.register_action('move', {
 				};
 				this.output_list.pages[query.talkto] = {
 					title: query.talkto,
-				}
+				};
 			}
 			else {
 				var page = this.input_list.pages[query.from];
@@ -1573,7 +1641,11 @@ B3.modules.register_action('protect', {
 		if(!options) {options = {};}
 		if(typeof protections != 'string') {
 			var str = '';
-			for(var i in protections) {str += i + '=' + protections[i] + '|';}
+			for(var i in protections) {
+				if (protections.hasOwnProperty(i)) {
+					str += i + '=' + protections[i] + '|';
+				}
+			}
 			if(str) {protections = str.substring(0, str.length - 1);}
 			else {protections = '';}
 		}
@@ -2042,7 +2114,7 @@ B3.modules.register_query('info', {
 B3.modules.linklist_pgen = function(module, short, limit, options) {
 	var params = {
 		prop: module,
-	}
+	};
 	if(limit) {params[short + 'limit'] = limit;}
 	B3.util.softmerge(params, options, short);
 	return params;
@@ -2646,7 +2718,7 @@ B3.modules.includes_pgen = function(titles, module, short, limit, options) {
 
 	var params = {
 		list: module,
-	}
+	};
 	params[short + 'title'] = titles;
 	if(limit) {params[short + 'limit'] = limit;}
 	B3.util.softmerge(params, options, short);
@@ -3046,15 +3118,18 @@ B3.modules.register_query('usercontribs', {
   ------------------------------------------------------------------------------------------------*/
 
 //FIXME: hack for making these visible when we register metainfo
-window.dm_set = function(query, module) {B3.m[module] = query;}
-window.dm_name_map = function(query, module) {
+var dm_set = function(query, module) {B3.m[module] = query;};
+var dm_name_map = function(query, module) {
 	B3.m[module] = {};
 	for(var i = 0; i < query.length; i++) {B3.m[module][query[i].name] = query[i];}
-},
-window.dm_code_all = function(query, module) {
+};
+var dm_code_all = function(query, module) {
 	B3.m[module] = {};
 	for(var i = 0; i < query.length; i++) {B3.m[module][query[i].code] = query[i]['*'];}
-}
+};
+window.dm_set = dm_set;
+window.dm_name_map = dm_name_map;
+window.dm_code_all = dm_code_all;
 
 B3.modules.metainfo_pgen = function(module, short, props, options) {
 	if(typeof props != 'string') {props = props.join('|');}
@@ -3174,7 +3249,7 @@ B3.onload = function() {
 
 	B3.call_listeners('init');
 	B3.init = true;
-}
+};
 
 if(document.readyState == 'complete') {B3.onload();}
 else {window.addEventListener('load', B3.onload);}
@@ -3194,7 +3269,7 @@ B3.settings.maxwidth = 500;
 B3.settings.minqueueheight = 150;
 B3.settings.maxqueueheight = 500;
 
-B3.util.load_css('http://monchbox.wikia.com/wiki/MediaWiki:B3.js/ui/main.css?action=raw&ctype=text/css');
+B3.util.load_css('https://monchbox.fandom.com/load.php?mode=articles&articles=MediaWiki:B3.js/ui/main.css&only=styles');
 
 /*------------------------------------------------------------------------------------------------
      UI modules
@@ -3220,9 +3295,9 @@ B3.ui.modules.doubleredirects = {
 	label: 'Resolve double redirects',
 	notargets: true,
 	params:
-	  '<div><label for="b3-doubleredirects-summary">Summary:</label> <input id="b3-doubleredirects-summary" type="text" name="summary" /></div>'
-	+ '<div><label for="b3-doubleredirects-batch">Batch size:</label> <input id="b3-doubleredirects-batch" type="number" name="batch" value="50" /></div>'
-	+ '<div><label for="b3-doubleredirects-poly">Resolve poly redirects</label><input type="checkbox" id="b3-doubleredirects-poly" name="poly" /></div>'
+		'<div><label for="b3-doubleredirects-summary">Summary:</label> <input id="b3-doubleredirects-summary" type="text" name="summary" /></div>' +
+		'<div><label for="b3-doubleredirects-batch">Batch size:</label> <input id="b3-doubleredirects-batch" type="number" name="batch" value="50" /></div>' +
+		'<div><label for="b3-doubleredirects-poly">Resolve poly redirects</label><input type="checkbox" id="b3-doubleredirects-poly" name="poly" /></div>',
 	/*+ '<p>A poly redirect is any double redirect that, when resolved, is still a double redirect. This makes them triple, quadruple, quintuple, etc redirects. Consider this case:</p>'
 	+ '<pre>Redir 3 -> Redir 2 -> Redir 1 -> Page</pre>'
 	+ '<p>Both <code>Redir 2</code> and <code>Redir 3</code> are listed as double redirects, because they redirect to a redirect. However, when resolved, the result will be:</p>'
@@ -3231,7 +3306,7 @@ B3.ui.modules.doubleredirects = {
 		+ '           Redir 2 -> Page'
 	+ '</pre>'
 	+ '<p><code>Redir 2</code> is fixed, but <code>Redir 3</code> is still a double redirect. <a href="/wiki/Special:DoubleRedirects" title="Special:DoubleRedirects">Special:DoubleRedirects</a> will list <code>Redir 3</code> as fixed, and will not detect that it is still a double redirect until the page is cached again.</p>'
-	+ '<p>Poly redirects are rare, and most of the poly redirects that do exist are likely triple redirects. Resolving them directly is processor intensive, and particularly for large batch sizes, can result in your browser flagging the page as unresponsive (you can safely dismiss the message, but the script may take a long time to finish). In most cases, you can resolve double redirects faster without checking for poly redirects, and not have to worry about leaving anything behind. Particularly if you have a large number of double redirects to resolve, it\'ll be easier on your computer to ignore poly redirects, and simply check the list again the next day.</p>'*/,
+	+ '<p>Poly redirects are rare, and most of the poly redirects that do exist are likely triple redirects. Resolving them directly is processor intensive, and particularly for large batch sizes, can result in your browser flagging the page as unresponsive (you can safely dismiss the message, but the script may take a long time to finish). In most cases, you can resolve double redirects faster without checking for poly redirects, and not have to worry about leaving anything behind. Particularly if you have a large number of double redirects to resolve, it\'ll be easier on your computer to ignore poly redirects, and simply check the list again the next day.</p>'*/
 	prepare: function(params) {return params;},
 	run: function(titles, params) {
 		//do stuff and things
@@ -3276,7 +3351,7 @@ B3.ui.targets.titles = {
 				var colon = titles[i].indexOf(':');
 				var namespace = titles[i].substring(0, colon).toLowerCase();
 				while(namespace.indexOf(' ') != -1) {namespace = namespace.replace(' ', '_');}
-				if(wgNamespaceIds[namespace]) {titles[i] = wgFormattedNamespaces[wgNamespaceIds[namespace]] + ':' + titles[i].charAt(colon + 1).toUpperCase() + titles[i].substring(colon + 2);}
+				if(mw.config.get('wgNamespaceIds')[namespace]) {titles[i] = mw.config.get('wgFormattedNamespaces')[mw.config.get('wgNamespaceIds')[namespace]] + ':' + titles[i].charAt(colon + 1).toUpperCase() + titles[i].substring(colon + 2);}
 				else {titles[i] = titles[i].charAt(0).toUpperCase() + titles[i].substring(1);} //mainspace
 				while(titles[i].indexOf('_') != -1) {titles[i] = titles[i].replace('_', ' ');}
 			}
@@ -3368,11 +3443,11 @@ B3.ui.animation.show = function(wind, render) {
 	B3.ui.animation.in = B3.ui.ids['controls-windows-' + wind];
 	B3.ui.animation.in.style.left = B3.ui.ids['controls-windows'].offsetWidth + 'px';
 	B3.ui.animation.in.style.display = 'block';
-	B3.ui.animation.frames = Math.floor(B3.settings.framerate * .3);
+	B3.ui.animation.frames = Math.floor(B3.settings.framerate * 0.3);
 	B3.ui.animation.interval = setInterval(B3.ui.animation.frame, 1000 / B3.settings.framerate);
 
 	return true;
-}
+};
 
 B3.ui.animation.frame = function() {
 	if(B3.ui.animation.frames <= 0) { //last frame
@@ -3390,7 +3465,7 @@ B3.ui.animation.frame = function() {
 		B3.ui.animation.in.style.left = B3.ui.animation.in.offsetLeft - (B3.ui.animation.in.offsetLeft / B3.ui.animation.frames) + 'px';
 		B3.ui.animation.frames--;
 	}
-}
+};
 /*------------------------------------------------------------------------------------------------
      Selection functions
   ------------------------------------------------------------------------------------------------*/
@@ -3411,7 +3486,7 @@ B3.ui.selection.run = function(targets) {
 		B3.ui.selection.targets = null;
 		B3.ui.selection.params = null;
 	}
-}
+};
 
 /*------------------------------------------------------------------------------------------------
      Render functions
@@ -3424,24 +3499,30 @@ B3.ui.render.actions = function() {
 
 	var groups = {};
 	for(var i in B3.ui.modules) {
-		if(!groups[B3.ui.modules[i].group]) {
-			var fieldset = document.createElement('fieldset');
+		if (B3.ui.modules.hasOwnProperty(i)) {
+			if(!groups[B3.ui.modules[i].group]) {
+				var fieldset = document.createElement('fieldset');
 				fieldset.id = 'b3-module-' + i;
 				var legend = document.createElement('legend');
-					legend.textContent = B3.ui.modules[i].group;
+				legend.textContent = B3.ui.modules[i].group;
 				fieldset.appendChild(legend);
-			groups[B3.ui.modules[i].group] = fieldset;
-		}
-		var a = document.createElement('a');
+				groups[B3.ui.modules[i].group] = fieldset;
+			}
+			var a = document.createElement('a');
 			a.id = 'b3-module-' + encodeURIComponent(B3.ui.modules[i].group) + '-' + encodeURIComponent(B3.ui.modules[i].label);
 			a.setAttribute('data-module', i);
 			a.addEventListener('click', B3.ui.listeners.windows.moduleclick);
 			a.textContent = B3.ui.modules[i].label;
-		groups[B3.ui.modules[i].group].appendChild(a);
+			groups[B3.ui.modules[i].group].appendChild(a);
+		}
 	}
 
-	for(var i in groups) {form.appendChild(groups[i]);}
-}
+	for(var i in groups) {
+		if (groups.hasOwnProperty(i)) {
+			form.appendChild(groups[i]);
+		}
+	}
+};
 
 B3.ui.render.targets = function() {
 	if(B3.ui.selection.targets) {return;}
@@ -3450,7 +3531,8 @@ B3.ui.render.targets = function() {
 	while(form.children.length > 0) {form.removeChild(form.children[0]);}
 
 	for(var i in B3.ui.targets) {
-		var div = document.createElement('div');
+		if (B3.ui.targets.hasOwnProperty(i)) {
+			var div = document.createElement('div');
 			var radio = document.createElement('input');
 				radio.type = 'radio';
 				radio.id = 'b3-targets-' + i + '-select';
@@ -3458,14 +3540,15 @@ B3.ui.render.targets = function() {
 				radio.value = i;
 			div.appendChild(radio);
 
-			var html = B3.ui.targets[i].html
+			var html = B3.ui.targets[i].html;
 			if(typeof html == 'function') {html = html();}
 			if(typeof html == 'string') {div.innerHTML += html;}
 			else if(html.length > 0) { //array of DOM elements
 				for(var j = 0; j < html.length; j++) {div.appendChild(html[j]);}
 			}
 			else {div.appendChild(html);}
-		form.appendChild(div);
+			form.appendChild(div);
+		}
 	}
 	form.elements['module'][0].checked = true;
 
@@ -3474,7 +3557,7 @@ B3.ui.render.targets = function() {
 		next.addEventListener('click', B3.ui.listeners.windows.nextclick);
 		next.textContent = 'Next';
 	form.appendChild(next);
-}
+};
 
 B3.ui.render.params = function() {
 	if(B3.ui.selection.params) {return;}
@@ -3482,7 +3565,7 @@ B3.ui.render.params = function() {
 	var form = B3.ui.ids['controls-windows-params-form'];
 	while(form.children.length > 0) {form.removeChild(form.children[0]);}
 
-	params = B3.ui.modules[B3.ui.selection.module].params;
+	var params = B3.ui.modules[B3.ui.selection.module].params;
 	if(typeof params == 'function') {params = params();}
 	if(typeof params == 'string') {form.innerHTML = params;}
 	else if(params.length > 0) { //array of DOM elements
@@ -3495,7 +3578,7 @@ B3.ui.render.params = function() {
 		ready.textContent = 'Ready';
 		ready.addEventListener('click', B3.ui.listeners.windows.readyclick);
 	form.appendChild(ready);
-}
+};
 
 B3.ui.render.run = function() {
 	var form = B3.ui.ids['controls-windows-run-form'];
@@ -3551,15 +3634,15 @@ B3.ui.render.run = function() {
 			run.textContent = 'Run';
 		confirm.appendChild(run);
 	form.appendChild(confirm);
-}
+};
 
 B3.ui.render.jobs = function() {
 	
-}
+};
 
 B3.ui.render.settings = function() {
 	
-}
+};
 
 /*------------------------------------------------------------------------------------------------
      Listener functions
@@ -3581,15 +3664,15 @@ B3.ui.listeners.window.resize = function(event) {
 
 	B3.ui.ids['controls-titlebar'].style.bottom = B3.ui.ids['controls'].offsetHeight - B3.ui.ids['controls-titlebar'].offsetHeight + 'px';
 	B3.ui.ids['controls-windows'].style.top = B3.ui.ids['controls-titlebar'].offsetHeight + 'px';
-}
+};
 
 B3.ui.listeners.resize.mousedown = function(event) {
 	event.preventDefault(); //try to avoid hilighting
 	B3.ui.window.addEventListener('mousemove', B3.ui.listeners.resize.mousemove);
-}
+};
 B3.ui.listeners.resize.mouseup = function(event) {
 	B3.ui.window.removeEventListener('mousemove', B3.ui.listeners.resize.mousemove);
-}
+};
 B3.ui.listeners.resize.mousemove = function(event) {
 	var el = event.target;
 	var x = event.offsetX;
@@ -3603,15 +3686,15 @@ B3.ui.listeners.resize.mousemove = function(event) {
 	B3.ui.ids['controls'].style.right = (B3.ui.window.offsetWidth - (x - 2)) / B3.ui.window.offsetWidth * 100 + '%';
 	B3.ui.ids['resize'].style.right = (B3.ui.window.offsetWidth - (x + 3)) / B3.ui.window.offsetWidth * 100 + '%';
 	B3.ui.ids['queue'].style.left = (x + 3) / B3.ui.window.offsetWidth * 100 + '%';
-}
+};
 
 B3.ui.listeners.queueresize.mousedown = function(event) {
 	event.preventDefault();
 	B3.ui.ids['queue'].addEventListener('mousemove', B3.ui.listeners.queueresize.mousemove);
-}
+};
 B3.ui.listeners.queueresize.mouseup = function(event) {
 	B3.ui.ids['queue'].removeEventListener('mousemove', B3.ui.listeners.queueresize.mousemove);
-}
+};
 B3.ui.listeners.queueresize.mousemove = function(event) {
 	var el = event.target;
 	var y = event.offsetY;
@@ -3625,7 +3708,7 @@ B3.ui.listeners.queueresize.mousemove = function(event) {
 	B3.ui.ids['queue-active'].style.bottom = (B3.ui.ids['queue'].offsetHeight - (y - 2)) / B3.ui.ids['queue'].offsetHeight * 100 + '%';
 	B3.ui.ids['queue-resize'].style.top = (y - 2) / B3.ui.ids['queue'].offsetHeight * 100 + '%';
 	B3.ui.ids['queue-waiting'].style.top = (y + 3) / B3.ui.ids['queue'].offsetHeight * 100 + '%';
-}
+};
 
 B3.ui.listeners.windows.moduleclick = function(event) {
 	var module = this.getAttribute('data-module');
@@ -3635,7 +3718,7 @@ B3.ui.listeners.windows.moduleclick = function(event) {
 
 	if(!B3.ui.modules[module].notargets) {B3.ui.animation.show('targets');}
 	else {B3.ui.animation.show('params');}
-}
+};
 
 B3.ui.listeners.windows.nextclick = function(event) {
 	var radios = B3.ui.ids['controls-windows-targets-form'].elements['module'];
@@ -3647,13 +3730,13 @@ B3.ui.listeners.windows.nextclick = function(event) {
 			B3.ui.selection.targets = {
 				module: radios[i].value,
 				params: params
-			}
+			};
 			break;
 		}
 	}
 
 	B3.ui.animation.show('params');
-}
+};
 
 B3.ui.listeners.windows.readyclick = function(event) {
 	var params = B3.util.formharvest(B3.ui.ids['controls-windows-params-form']);
@@ -3662,17 +3745,17 @@ B3.ui.listeners.windows.readyclick = function(event) {
 	else {B3.ui.selection.params = params;}
 
 	B3.ui.animation.show('run');
-}
+};
 
 B3.ui.listeners.windows.backclick = function(event) {
 	B3.ui.animation.show('params');
-}
+};
 
 B3.ui.listeners.windows.runclick = function(event) {
 	B3.ui.selection.run();
 
 	B3.ui.animation.show('jobs');
-}
+};
 
 B3.ui.listeners.titlebar.click = function(event) {
 	var classes = this.className.split(' ');
@@ -3680,28 +3763,29 @@ B3.ui.listeners.titlebar.click = function(event) {
 		if(classes[i] == 'disabled') {return;}
 	}
 	B3.ui.animation.show(this.getAttribute('data-window'));
-}
+};
 
 B3.ui.listeners.links.click = function(event) {
 	event.preventDefault();
 	window.open(this.href, 'B3');
-}
+};
 /*------------------------------------------------------------------------------------------------
      Onload listener / HTML
   ------------------------------------------------------------------------------------------------*/
 
 B3.ui.onload = function(event) {
-	if(wgCanonicalNamespace == 'Special' && wgTitle == 'B3') {
-		document.title = 'B3 - ' + wgSiteName;
-		if(skin == 'oasis') {
-			var body = document.getElementById('WikiaArticle');
+	if(mw.config.get('wgCanonicalNamespace') == 'Special' && mw.config.get('wgTitle') == 'B3') {
+		var body;
+		document.title = 'B3 - ' + mw.config.get('wgSiteName');
+		if(mw.config.get('skin') == 'oasis') {
+			body = document.getElementById('WikiaArticle');
 			if(document.getElementById('WikiaPageHeader')) {
 				document.getElementById('WikiaPageHeader').getElementsByTagName('h1')[0].textContent = 'B3';
 				document.getElementById('WikiaPageHeader').getElementsByTagName('h2')[0].textContent = 'Browser-based bot framework';
 			}
 		}
 		else {
-			var body = document.getElementById('bodyContent');
+			body = document.getElementById('bodyContent');
 			document.getElementById('firstHeading').textContent = 'B3';
 		}
 
@@ -3885,7 +3969,7 @@ B3.ui.onload = function(event) {
 
 		B3.ui.init = true;
 	}
-}
+};
 
 if(B3.init) {B3.ui.onload();}
 else {B3.add_listener('init', B3.ui.onload);}
@@ -3950,30 +4034,31 @@ B3.util.formharvest = function(form) {
 		else {params[name] = selects[i].options[selects[i].selectedIndex].value;}
 	}
 	return params;
-}
+};
 
 B3.util.paramlist = function(params) {
 	if(params instanceof Array) {
 		var ol = document.createElement('ol');
 		ol.start = 0;
 		for(var i = 0; i < params.length; i++) {
+			var li2;
 			switch(typeof params[i]) {
 				case 'number':
 				case 'string':
-					var li = document.createElement('li');
-						li.textContent = params[i];
-					ol.appendChild(li);
+					li2 = document.createElement('li');
+					li2.textContent = params[i];
+					ol.appendChild(li2);
 					break;
 				case 'undefined':
-					var li = document.createElement('li');
-						li.textContent = 'None';
-					ol.appendChild(li);
+					li2 = document.createElement('li');
+					li2.textContent = 'None';
+					ol.appendChild(li2);
 					break;
 				case 'boolean':
-					var li = document.createElement('li');
-						if(params[i]) {li.textContent = 'Yes';}
-						else {li.textContent = 'No';}
-					ol.appendChild(li);
+					li2 = document.createElement('li');
+					if(params[i]) {li2.textContent = 'Yes';}
+					else {li2.textContent = 'No';}
+					ol.appendChild(li2);
 					break;
 				case 'object':
 					ol.appendChild(B3.util.paramlist(params[i]));
@@ -3984,42 +4069,45 @@ B3.util.paramlist = function(params) {
 	}
 	else {
 		var ul = document.createElement('ul');
-		for(var i in params) {
-			switch(typeof params[i]) {
-				case 'number':
-				case 'string':
-					var li = document.createElement('li');
-						li.textContent = i + ': ' + params[i];
-					ul.appendChild(li);
-					break;
-				case 'undefined':
-					var li = document.createElement('li');
-						li.textContent = i + ': None';
-					ul.appendChild(li);
-					break;
-				case 'boolean':
-					var li = document.createElement('li');
-						if(params[i]) {li.textContent = i + ': Yes';}
-						else {li.textContent = i + ': No';}
-					ul.appendChild(li);
-					break;
-				case 'object':
-					ul.appendChild(B3.util.paramlist(params[i]));
-					break;
+		for(var j in params) {
+			if (params.hasOwnProperty(j)) {
+				var li;
+				switch(typeof params[j]) {
+					case 'number':
+					case 'string':
+						li = document.createElement('li');
+						li.textContent = j + ': ' + params[j];
+						ul.appendChild(li);
+						break;
+					case 'undefined':
+						li = document.createElement('li');
+						li.textContent = j + ': None';
+						ul.appendChild(li);
+						break;
+					case 'boolean':
+						li = document.createElement('li');
+						if(params[j]) {li.textContent = j + ': Yes';}
+						else {li.textContent = j + ': No';}
+						ul.appendChild(li);
+						break;
+					case 'object':
+						ul.appendChild(B3.util.paramlist(params[j]));
+						break;
+				}
 			}
 		}
 		return ul;
 	}
-}
+};
 
 B3.util.page_url = function(page) {
 	if(!page) {return '/wiki/';} //FIXME: complain?
-
+	var url;
 	page = encodeURIComponent(B3.util.normalize_pagename(page));
-	if(B3.m.general) {var url = B3.util.message(B3.m.general['articlepath'], page);} //articlepath from meta
+	if(B3.m.general) {url = B3.util.message(B3.m.general.articlepath, page);} //articlepath from meta
 	else { //no meta (for some probably bad reason), guess /wiki/
 		console.log('B3: util.page_url found no metadata: B3.m.general = ', B3.m.general);
-		var url = '/wiki/' + page;
+		url = '/wiki/' + page;
 	}
 
 	while(url.indexOf('%20') != -1) {url = url.replace('%20', '_');}
@@ -4027,4 +4115,7 @@ B3.util.page_url = function(page) {
 	while(url.indexOf('%3A') != -1) {url = url.replace('%3A', ':');}
 
 	return url;
-}
+};
+
+window.B3 = B3;
+// </nowiki>

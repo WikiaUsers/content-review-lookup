@@ -54,6 +54,64 @@
 			} else {
 				return '';
 			}
+		},
+		processDialog: function(data) {
+			var modal = {};
+			var OO = window.SpriteEditorModules.main.OO;
+			var wm = window.SpriteEditorModules.helper.windowManager;
+			if (!wm) {
+				wm = new OO.ui.WindowManager();
+				window.SpriteEditorModules.helper.windowManager = wm;
+				$('body').append(wm.$element);
+			}
+			function SpriteEditorDialog(config) {
+				SpriteEditorDialog.super.call(this, config);
+			}
+			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
+
+			SpriteEditorDialog.static.name = data.name;
+			SpriteEditorDialog.static.title = data.title;
+			SpriteEditorDialog.static.actions = data.actions;
+
+			// initialise dialog, append content
+			SpriteEditorDialog.prototype.initialize = function () {
+				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+				this.content = new OO.ui.PanelLayout({
+					expanded: false
+				});
+				this.content.$element.append(data.content());
+				this.$body.append(this.content.$element);
+				this.$content.addClass('spriteedit-ui-Dialog spriteedit-ui-hiddenFooter');
+			};
+
+			// Handle actions
+			SpriteEditorDialog.prototype.getActionProcess = function (action) {
+				data.action(action);
+				if (action === "close")
+					return new OO.ui.Process( function () {
+			            modal.seDialog.close( { action: action } );
+			        } );
+				return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
+			};
+
+			// Create a new dialog window.
+			modal.seDialog = new SpriteEditorDialog({
+				size: data.size
+			});
+			
+			// Add window and open
+			wm.addWindows([modal.seDialog]);
+			wm.openWindow(modal.seDialog);
+			modal.windowManager = wm;
+			// Close dialog when clicked outside the dialog
+			modal.seDialog.$frame.parent().on('click', function (e) {
+				if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
+					if (data.onclose)
+						data.onclose();
+					modal.seDialog.close();
+				}
+			});
+			return modal;
 		}
 	};
 })(window.jQuery, window.mediaWiki);

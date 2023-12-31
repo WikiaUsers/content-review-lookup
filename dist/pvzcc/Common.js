@@ -65,7 +65,7 @@ window.UserTagsJS = {
         electrofire: { u: 'ELECTROFIRE FEST 🎪', title:'Electrofire Fest Contest Winner'},
         rockandghoul: { u: 'ROCK & GHOUL 🎸', title:'Rock & Ghoul Contest Winner'},
         starfruitstation: { u: 'STARFRUIT’S STATION 🤩', title:'Starfruit’s Station Contest Winner'},
-        december23: { u: '???', title:'??? Contest Winner'},
+        invaders: { u: 'THE INVASION🪖', title:'The Invasion Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
@@ -91,7 +91,7 @@ UserTagsJS.modules.custom = {
     'AsterWasTaken': ['lawnofdoom', 'winterworld'],
     'Baryonyx138': ['worldcontest'],
     'BobertTheBoss': ['valen', 'foodfight', 'starrycontest', 'discmod', 'lawnofdoom2'],
-    'Dartichoke Enjoyer': ['discmod','electrofire','rockandghoul'],
+    'Dartichoke Enjoyer': ['electrofire','rockandghoul'],
     'DigoBlaze12': ['zombiecontest'],
     'DolphiGaming': ['discmod'],
     'DrAhxelYT12': ['worldcontest'],
@@ -116,16 +116,18 @@ UserTagsJS.modules.custom = {
     'Creepes': ['log','forgottenpast','resort'],
     'Rocky105': ['chompersdream','shroomdynasty'],
     'Partyfanboy8': ['forgottenpast'],
+    'Somebody407MUGEN': ['starfruitstation'],
+    'WiLdCaRd2048': ['discmod']
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];
-UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.inactive = 14;
 UserTagsJS.modules.metafilter = {
     rollback: ['content-moderator', 'sysop', 'bureaucrat'],
     'content-moderator': ['sysop', 'bureaucrat'],
     sysop: ['bureaucrat'],
 };
 
-var wiki_name_texts=["Deck the halls!", "It's jolly!", "Festive festivities!", "Ho ho ho!", "Let it go!", "The icing on the ice!", "Brrr!", "Frigid!", "It's... so... cold!", "Frozen solid!", "Jingle bells ringing!", "Ring-a-ling-ling!", "Jingle jangle!", "Welcome to Jolly Fest!", "All together now!", "Open your gifts!", "So cold, too brisk!", "Let's build a snowman!", "You got coal!", "Naughty or nice?", "Naughty or ice?", "I can't feel my legs!", "Help, help!"];
+var wiki_name_texts=["Create your own characters!", "Find your own path!", "Make what you want to make!", "Where will you wander?", "Find solace in absurdity!", "Smells like Durians..", "Fan-made ideas since 2011!", "Hop on PvZCC!", "Don’t forget to join the Discord Server!", "What?!", "Plants vs. Zombies Cucumber Cutting Wiki!", "Come on down to PvZCC!", "I am a splash text. Notice me!", "Insert splash text here", "We have a Discord Server!", "BREAK IT LIKE YOU MEAN IT, HARVEY!", "Defend your shins!", "Because I'm CRAAAZY!!!!!", "You have to hit him in the pancreas!", "I burped in my helmet!", "The perfect crime!", "This is not the splash text you're looking for!", "Look ma, I'm on a splash text!", "11 herbs and spices!", "The zombies are coming!", "The plants are growing!", "Historically inaccurate!", "Lo-fi beets to study to!", "Contains nuts!", "Hours of fun! Days, even!", "Outhouse compatible!", "Closed Captions: ON!", "A brand-new splash text, just for you!", "Contains infinite splash texts!", "Noooooooooo!", "Send us a postcard!", "What did you just say?", "Time to bring out the eggs!", "You are valid!", "You are welcome here!", "I'm glad you're here!", "Vengeful and savage!", "Dressed up in fancy clothes!", "We've been waiting for you!", "Morally ambiguous!", "PvZCC Presents: Quality Content", "ಠ_ಠ", "Abnormal and wacky!", "Album coming soon!", "You've goat mail!", "Plenty more where that came from!", "Can you dig it?", "Can't stop, won't stop!", "Same day shipping!", "Don't feed Chomper after midnight!", "Scroll down and start reading!", "Wow, that's crazy!"];
 
 var chosen_index = Math.floor(Math.random() * wiki_name_texts.length);
 

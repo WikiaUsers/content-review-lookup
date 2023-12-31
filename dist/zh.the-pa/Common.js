@@ -58,14 +58,3 @@ $.getJSON(mw.util.wikiScript("index"), {
         importArticles({ type: "script", articles: scripts });
     }
 });
-_funcSetScore(score_) {
-let _s = score_.toString();
-for (let i = 0; i < 3 - _s.length; i++) {
-_s = '0' + _s;
-}
-let _array = _s.split('').reverse();
-for (let i in _array) {
-this.arrayLabelScore[i].string = _array[i];
-}
-return
-},

@@ -214,10 +214,15 @@ function zselector( $content ) {
     zselector( mw.util.$content );
 });
 /* Таблица Идентичностей Лимбуса*/
-function Filt(arr, clas){
+function Filt(Icons, clas, req){
 	All = [];
-	o = '.'+clas;
-	arr.forEach(function(Icon){al = Icon.querySelectorAll(o); if(al.length > 0 || Icon.classList.contains(clas)) All.push(Icon); });
+	FullClass = '.'+clas;
+	Icons.forEach(function(Icon){
+	al = Icon.querySelectorAll(FullClass); 
+	reque = Icon.querySelectorAll('.'+req); 
+	if((!Icon.classList.contains(req) || reque<=0) || (al.length > 0 || Icon.classList.contains(clas)))
+		All.push(Icon); 
+	});
 	
 	return All;
 }
@@ -247,19 +252,28 @@ function Filter(AllIcons, Table, FilterClass){
 		return AllIcons;
 	AllIconsnext = [];
 	Selected = [];
+	// Get all enabled filters from row:
 	SelectedBlocks = Table.querySelectorAll('.IdTable .IdTRow.'+FilterClass+' .IdTBl.IdTBl1 i');
+	
+	//Push their values to Selected
 	SelectedBlocks.forEach(function(Ra){Selected.push(Ra.textContent);});
 	
+	
 	if(Selected.length > 0){
-		Selected.forEach(function(Ra){AllIconsnext = AllIconsnext.concat(Filt(AllIcons,FilterClass+Ra));});
 		/*Is selected any block in Row*/
                 Row = Table.querySelector('.IdTRow.'+FilterClass);
+                RequeresTag = "IdTIc";
+                if (Row.classList.length >= 2 && Row.classList[1].includes("IdTRequire")) 
+                      RequeresTag = Row.classList[1].replace("IdTRequire","")
+                //Mark as enabled
 		Row.classList.add('IdTRow1');
+		//Filter
+		Selected.forEach(function(Ra){AllIconsnext = AllIconsnext.concat(Filt(AllIcons,FilterClass+Ra,RequeresTag));});
                 if (Row.closest('.IdTMain') != null)
 		    Row.closest('.IdTMain').classList.add('IdTMain1');
 		return Array.from(new Set(AllIconsnext));
 	}
-	/*Is selected any block in Row*/
+	/*If there is not any block in Row mark him as unabled*/
 	Table.querySelector('.IdTRow.'+FilterClass).classList.remove('IdTRow1');
 	return AllIcons;
 }
@@ -282,7 +296,12 @@ function ClickButtonFilter(){
                 if(this.classList.contains("IdTCross"))
                     this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
                 else
+                {
+                    row = this.closest('.IdTRow')
+                    if(row.classList.contains("IdTUnique"))
+                           row.querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
                     this.classList.toggle("IdTBl1");
+                }
                 UpdateTable();
        }
 function ClickButtonSort(){
