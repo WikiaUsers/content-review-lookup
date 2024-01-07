@@ -90,17 +90,7 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
-/*Main Page NOtifications*/
-$(document).ready(function() {
-    mw.hook('dev.toasts').add(function(Toasts) {
-        var mainPageToasts = $('.MainPageToasts');
-        if (mainPageToasts.length) {
-            Toasts.info("We've recently updated the Signalling Guide page. Check it out!", { icon: 'info', timeout: 5000 });
-             Toasts.warning("Dovedale has recently updated to V1.0. During this time, some pages may be out of date as we work on editing. Thank you for your patience.", { icon: 'warning', timeout: 5000 });
 
-        }
-    });
-});
 /*Signalling Guide Notifications*/
 $(document).ready(function() {
     mw.hook('dev.toasts').add(function(Toasts) {

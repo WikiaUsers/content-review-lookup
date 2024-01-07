@@ -24,24 +24,6 @@ importArticles({
     ]
 });
 
-/*Remove Edit Wall Greeting button unless it's your own or if you're staff*/
-$(function() {
-	var config = mw.config.get([
-    'wgCanonicalNamespace',
-    'wgUserName',
-    'wgTitle',
-    'wgUserGroups'
-	]);
-	if (config.wgCanonicalNamespace == "Message_Wall" && config.wgTitle != config.wgUserName && !config.wgUserGroups.includes("sysop", "bureaucrat", "content-moderator", "threadmoderator", "rollback")) {
-	    var interval = setInterval(function() {
-			if ($('.MessageWallButtons').length) {
-    			clearInterval(interval);
-				$(this).remove();
-			}
-		}, 10);
-    }
-});
-
 /*User Tags*/
 window.UserTagsJS = {
         modules: {},
@@ -52,14 +34,16 @@ window.UserTagsJS = {
             formerstaff: { u: 'Former Staff', title: 'This user was formerly a Wiki Staff member.' },
             inactive: { u: 'Inactive', title: 'This user hasn\'t edited in the last 30 days.' },
             blocked: { title: 'This user is currently blocked.' },
-            newuser: { u: 'New Editor', title: 'This user is new to the wiki.' },
-            notautoconfirmed: { u: 'New User', title: 'This user is new to FANDOM.'}
+            newuser: { u: 'New Editor', title: 'This user is new to the Where\'s My Water? Wiki.' },
+            notautoconfirmed: { u: 'New User', title: 'This user is not an autoconfirmed user.'}
         }
     };
     
     UserTagsJS.modules.inactive = 30;
 	UserTagsJS.modules.newuser = {
 		computation: function(days, edits) {
+			/*newuser is removed when the user gets 30 edits OR 
+			  when they have been present for 7 days*/
 			return days < 7 && edits < 30;
 		}
 	};
@@ -82,7 +66,8 @@ window.UserTagsJS = {
     ];
     
     UserTagsJS.modules.metafilter = {
-        sysop:           ['bureaucrat', 'bot'],
+    	inactive: ['bureaucrat', 'sysop', 'bot'], //Remove inactive tag from users with certain groups
+        sysop:           ['bureaucrat', 'bot'], //Bot has sysop rights so it can edit protected pages
         'content-moderator': ['bureaucrat', 'sysop'],
         threadmoderator: ['bureaucrat', 'sysop'],
         rollback:        ['bureaucrat', 'sysop', 'moderator', 'content-moderator', 'threadmoderator'],
@@ -101,4 +86,5 @@ window.UserTagsJS = {
         'Sboy13': ['formerstaff'],
     };
 
+/*Lock old comments time limit*/
 window.lockOldComments.limit = 90;

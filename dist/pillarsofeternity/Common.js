@@ -155,12 +155,12 @@ if (document.querySelector(".loot-container-table") != null)
 	tooltips.forEach(function(t)
 	{
 	   var title = t.getAttribute("title");
-	   t.setAttribute("title", title.replaceAll("\\n", "\n"));
+	   if (title) t.setAttribute("title", title.replaceAll("\\n", "\n"));
 	});
 	
 	// ======
 	/*
-	    Create an IntersectionObserver which sets "isSticky on the .fandom-community-header__background
+	    Create an IntersectionObserver which sets "isSticky" on the .fandom-community-header__background
 	    when it starts being sticky. That way we can conditionally style it.
 	*/
 	
@@ -171,122 +171,61 @@ if (document.querySelector(".loot-container-table") != null)
 	    
 	}, { threshold: 1.0 }).observe(document.querySelector(".fandom-community-header__background"));
 
+	
+	// ======
+	/*
+	    The "n more" dropdown to the right of the categories at the top of the page will overflow if
+	    positioned too far to the right. This script will check whether it is likely to do so when
+	    the page is resized, and invert the dropdown layout if needed.
+	*/
+
+	var categoriesDropdown = document.querySelector(".page-header__categories-dropdown");
+	var categoriesDropdownContent = categoriesDropdown && categoriesDropdown.querySelector(".page-header__categories-dropdown-content");
+	
+	if (categoriesDropdown && categoriesDropdownContent)
+	{
+	    function invertCategoriesDropdown()
+	    {
+	        var rect = categoriesDropdown.getBoundingClientRect();
+	        var isOverflowing = (rect.left + 320 > document.body.clientWidth);
+	        
+	        categoriesDropdownContent.classList.toggle("wds-is-left-aligned", !isOverflowing);
+	        categoriesDropdownContent.classList.toggle("wds-is-right-aligned", isOverflowing);
+	    }
+	    
+	    window.addEventListener("resize", mw.util.debounce(invertCategoriesDropdown, 150));
+	    invertCategoriesDropdown();
+	}
+	
+	// ======
+	/*
+		Makes the right rail toggle sticky (a la Dr.Bryan's StickyRailToggler on
+		dev wiki, but JQuery-less + with modified styles set in CSS)
+	*/
+	
+	var rightRailToggle = document.querySelector(".right-rail-toggle");
+	
+	if (rightRailToggle)
+	{
+		var sideToolsRight = document.createElement("div");
+		sideToolsRight.className = "page-side-tools__right";
+		
+		var sideToolsWrapperRight = document.createElement("div");
+		sideToolsWrapperRight.className = "page-side-tools__wrapper__right";
+		sideToolsWrapperRight.append(sideToolsRight);
+		
+		rightRailToggle.before(sideToolsWrapperRight);
+		sideToolsRight.append(rightRailToggle);
+	}
+	
+	// =====
+	/*
+		Ensure empty captions don't get created (which are very difficult to style
+		away with CSS alone), by resetting the module state of ImageGalleryIconApp.
+		Could just as easily remove them after creation, but it's way less effort
+		to prevent them from being created in the first place.
+	*/
+	var igap = "ImageGalleryIconApp-6yMQaox8.js";
+	if (mw.loader.moduleRegistry[igap]) mw.loader.moduleRegistry[igap].state = null;
+	
 })();
-
-// ======
-
-/*****************************************
-/* Front Page 3-column height equalization *
-/*****************************************/
-// Author:  Shawn Bruckner
-// Date:    2013-Sept-21
-// License: CC-BY 3.0
-// Version: beta
-
-var fp = fp || {
-  equalizeColumns : function() {
-    $( '.fpmain' ).each( function () {
-      fp.resetSectionBoxHeights( $( this ).find( '.fpsection1, .fpsection2, .fpsection3, .fpsection4' ) );
-    } );
-    if ( $( window ).width() > 789 && $( window ).width() < 1390 ) {
-      $( '.fpmain' ).each( function (index) {
-        var leftHeight = $( this ).find( '.fpsection1' ).height() + $( this ).find( '.fpsection4' ).height();
-        var rightHeight = $( this ).find( '.fpsection2' ).height() + $( this ).find( '.fpsection3' ).height();
-        var difference = Math.abs( rightHeight - leftHeight );
-        
-        if ( leftHeight < rightHeight ) {
-          fp.adjustSectionBoxHeights( difference, $( this ).find( '.fpsection1, .fpsection4' ) );
-        } else if ( rightHeight < leftHeight ) {
-          fp.adjustSectionBoxHeights( difference, $( this ).find( '.fpsection2, .fpsection3' ) );
-        }
-      } );
-    } else if ( $( window ).width() > 1389 ) {
-      $( '.fpmain' ).each( function (index) {
-        var leftHeight = $( this ).find( '.fpsection1' ).height() + $( this ).find( '.fpsection4' ).height();
-        var middleHeight = $( this ).find( '.fpsection2' ).height();
-        var rightHeight = $( this ).find( '.fpsection3' ).height();
-        var maxHeight = Math.max( leftHeight, middleHeight, rightHeight );
-        
-        if ( leftHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - leftHeight, $( this ).find( '.fpsection1, .fpsection4' ) );
-        }
-        if ( middleHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - middleHeight, $( this ).find( '.fpsection2' ) );
-        }
-        if ( rightHeight < maxHeight ) {
-          fp.adjustSectionBoxHeights( maxHeight - rightHeight, $( this ).find( '.fpsection3' ) );
-        }
-      } );
-    }
-  },
-
-  findAdjustableSectionBoxes : function ( sections ) {
-    var boxes = sections.find( '.fpbox.fpgreedy' );
-
-    if ( boxes.length === 0 ) {
-      return sections.find( '.fpbox' ).not( '.fpnoresize' );
-    } else {
-      return boxes;
-    }
-  },
-
-  resetSectionBoxHeights : function ( sections ) {
-    fp.findAdjustableSectionBoxes( sections ).each( function () {
-      $( this ).height( 'auto' );
-    } );
-  },
-
-  adjustSectionBoxHeights : function ( heightToAdd, sections ) {
-    var boxes, lastBox, remainingHeightToAdd, boxHeightToAdd;
-    boxes = fp.findAdjustableSectionBoxes( sections );
-    lastBox = boxes.last();
-    remainingHeightToAdd = heightToAdd;
-    boxHeightToAdd = Math.floor( heightToAdd / boxes.length );
-
-    boxes.each( function() {
-      if ( this === lastBox.get( 0 ) ) {
-        $( this ).height( $( this ).height() + remainingHeightToAdd );
-      } else {
-        $( this ).height( $( this ).height() + boxHeightToAdd );
-        remainingHeightToAdd -= boxHeightToAdd;
-      }
-    } );
-  }
-};
-
-$( document ).ready( fp.equalizeColumns );
-$( window ).resize( fp.equalizeColumns );
-/*********************************************
-/* End Front Page column height equalization *
-/*********************************************/
-
-
-
-/****************************************************************
-/* Front Page 2-column height equalization from The Witcher Wiki*
-/****************************************************************/
-
-function fixWidthEvent(event) {
-    var mainright = document.getElementById('mp-right');
-    var mpmain = document.getElementById('mp-main');
-    if (mainright && mpmain) {
-       if (document.body.clientWidth<1340) {
-          mpmain.setAttribute('style','margin-right:0px');
-          mainright.setAttribute('style','float:none;margin-left:0px;width:auto;padding:0.5em;clear:both;');
-       } else if (document.body.clientWidth>=1340) {
-          mpmain.removeAttribute('style');
-          mainright.removeAttribute('style');
-       }
-   }
-}
-
-function fixWidths() {
-    if (document.getElementById('mp-main')) {
-        fixWidthEvent();
-        window.addEventListener('resize',fixWidthEvent);
-    }
-}
-fixWidths();
-/*********************************************
-/* End Front Page column height equalization *
-/*********************************************/

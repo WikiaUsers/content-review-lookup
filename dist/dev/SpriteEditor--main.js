@@ -167,7 +167,7 @@
 			var eleList = indexNames(names[i]);
 			var length = eleList.length;
 			for (var j = 0; j < length; j++) {
-				eleList[j].classList[length > 1 ? "add" : "remove"]("spriteedit-dupe");
+				eleList[j].classList.toggle("spriteedit-dupe", length > 1);
 			}
 		}
 		var disable = root.querySelectorAll(".spriteedit-dupe").length ? true : false;
@@ -305,10 +305,10 @@
 		var sPR = useOrg && options.spritesPerRowOrg || options.spritesPerRow;
 		var s = useOrg && imgSpacingOrg || options.spacing;
 		var cordY = Math.ceil(pos / sPR);
-		var cordX = pos - (cordY - 1) * sPR;
-		cordY = (cordY - 1) * (imgHeight + s);
-		cordX = (cordX - 1) * (imgWidth + s);
-		return {x: cordX, y: cordY};
+		return {
+			x: (pos - (cordY - 1) * sPR - 1) * (imgWidth + s),
+			y: (cordY - 1) * (imgHeight + s)
+		};
 	}
 	function generateImage() {
 		var c = helper.newCanvas();
@@ -394,13 +394,13 @@
 			action: "edit",
 			contentformat: "text/plain",
 			contentmodel: "Scribunto",
+			formatversion: 2,
 			notminor: true,
 			recreate: true,
 			summary: summary,
 			tags: tagActive && tagExists && hasTagPermission && "spriteeditor" || undefined,
 			text: "return " + data,
-			title: 'Module:' + loadedSpriteName.full,
-			formatversion: 2
+			title: 'Module:' + loadedSpriteName.full
 		}).always(function(d) {
 			toggleTBButtons(hasEditPermission);
 			buttons.open.setDisabled(false);
@@ -426,8 +426,8 @@
 				format: "json",
 				formatversion: "2",
 				operation: "create",
-				tag: "spriteeditor",
-				reason: "Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]"
+				reason: "Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]",
+				tag: "spriteeditor"
 			}).always(function(e) {
 				if (!e.error) {
 					tagExists = true;
@@ -452,8 +452,8 @@
 		}
 		gIVars[0].toBlob(function(blob) {
 			api.upload(blob, {
-				filename: output.settings.image || loadedSpriteName.name + '.png',
 				comment: s,
+				filename: output.settings.image || loadedSpriteName.name + '.png',
 				formatversion: 2,
 				ignorewarnings: true
 			}).always(function(d) {
@@ -496,6 +496,10 @@
 		if (typeof(c[d]) === "function") {
 			c[d]();
 		} else if (c[d] === "sprite-added") {
+			toShare.highestPos = c[5 + offset];
+			helper.removeSprite(c[3], true);
+			delete backgroundSprites[c[3]];
+		} else if (c[d] === "sprite-added2") {
 			toShare.highestPos = c[5 + offset];
 			helper.removeSprite(c[3], true);
 		} else if (c[d] === "sprite-removed") {
@@ -639,35 +643,35 @@
 				boxCode.removeAttribute("data-placeholder");
 				sortSpriteNames(posId);
 				sortSection(secId);
-			} else {
-				var isRemoved = false;
-				var cl = boxCode.closest('.spritedoc-names');
-				if (cl.children.length === 1) {
-					boxCode.innerText = orgT;
-					helper.removeSprite(posId);
-					isRemoved = true;
-				} else if (cl.children.length > 1) {
-					if (orgT.length)
-						addHistory([
-							"sprite-name-removed",
-							"sprite-name-added",
-							posId,
-							boxCode.closest(".spritedoc-names"),
-							boxCode.parentElement,
-							orgT
-						]);
-					cl.removeChild(boxCode.parentElement);
-				}
-				markDuplicateNames(list);
-				list = {};
-				if (!orgT.length) return;
-				list[orgT] = true;
-				markDuplicateNames(list);
-				if (cl.children.length > 0) {
-					sortSpriteNames(posId);
-					if (!isRemoved)
-						sortSection(secId);
-				}
+				return;
+			}
+			var isRemoved = false;
+			var cl = boxCode.closest('.spritedoc-names');
+			if (cl.children.length === 1) {
+				boxCode.innerText = orgT;
+				helper.removeSprite(posId);
+				isRemoved = true;
+			} else if (cl.children.length > 1) {
+				if (orgT.length)
+					addHistory([
+						"sprite-name-removed",
+						"sprite-name-added",
+						posId,
+						boxCode.closest(".spritedoc-names"),
+						boxCode.parentElement,
+						orgT
+					]);
+				cl.removeChild(boxCode.parentElement);
+			}
+			markDuplicateNames(list);
+			list = {};
+			if (!orgT.length) return;
+			list[orgT] = true;
+			markDuplicateNames(list);
+			if (cl.children.length) {
+				sortSpriteNames(posId);
+				if (!isRemoved)
+					sortSection(secId);
 			}
 		});
 
@@ -680,15 +684,15 @@
 	}
 	function createContextButton(icon, lbl, tooltip) {
 		return new OO.ui.ButtonInputWidget( {
-			framed: false,
-			icon: icon,
-			label: lbl,
-			invisibleLabel: false,
-			title: tooltip,
 			flags: [
 				'primary',
 				'progressive'
-			]
+			],
+			framed: false,
+			icon: icon,
+			invisibleLabel: false,
+			label: lbl,
+			title: tooltip
 		} );
 	}
 	function addFile(f, ele) {
@@ -723,11 +727,14 @@
 		};
 		reader.readAsDataURL(f);
 	}
+	function closeTooltip() {
+		var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
+		if (!menu) return;
+		document.body.removeChild(menu);
+	}
 	function ttFunction(event) {
 		skipClose = true;
-		var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-		if (menu)
-			document.body.removeChild(menu);
+		closeTooltip();
 		selectedEle = event.target.closest(".spritedoc-box");
 		selectedPos = selectedEle.dataset.pos;
 		if (selectedPos === "null") {
@@ -747,10 +754,9 @@
 		ele.className = "spriteedit-tooltip spriteedit-tooltip-controls spriteedit-tooltip-horizontal";
 		var ele2 = document.createElement("div");
 		ele2.className = "spriteedit-tooltip-text";
-		ele.appendChild(ele2);
 		var ele3 = document.createElement("div");
 		ele3.className = "spriteedit-tooltip-arrow";
-		ele.appendChild(ele3);
+		ele.append(ele2, ele3);
 
 		var buttons = {
 			changeSprite: createContextButton(
@@ -824,10 +830,14 @@
 		ele.style.opacity = "1";
 		ele.style.transform = "scale(1)";
 		ele.style.zIndex = "299";
-
+		
+		Object.keys(buttons).forEach(function(a) {
+			buttons[a].on("click", function() {
+				closeTooltip();
+			});
+		});
+		
 		buttons.deleteSprite.on("click", function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			helper.removeSprite(selectedPos);
 		});
 		function rotate(additionalRotation, skipHistory, altCanvas) {
@@ -849,32 +859,17 @@
 			]);
 		}
 		buttons.rotateSpriteLeft.on("click", function() {
-			// Close menu
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
-			// Rotate sprite
 			rotate(2);
 		});
 		buttons.rotateSpriteRight.on("click", function() {
-			// Close menu
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
-			// Rotate sprite
 			rotate(0);
 		});
 		buttons.mirrorSpriteHorizontal.on("click", function() {
-			// Close menu
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
-			// Rotate
 			var spr = mirrorSprite(false, canvasCollection[selectedPos]);
 			// Rotate back (To apply the new image)
 			rotate(0, false, spr);
 		});
 		buttons.mirrorSpriteVertical.on("click", function() {
-			// Close menu
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			// Mirror
 			var spr = mirrorSprite(true, canvasCollection[selectedPos]);
 			// Rotate back (To apply the new image)
@@ -907,8 +902,6 @@
 			if (newDefault) newDefault.dataset.default = ".";
 		}
 		buttons.defaultSprite.on("click", function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			var oldDefault = document.querySelector('li[data-default]');
 			if (oldDefault) {
 				delete oldDefault.dataset.default;
@@ -930,26 +923,21 @@
 			]);
 		});
 		buttons.moveSprite.on("click", function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			selectedEle.setAttribute("ghost", "true");
 			var sections = root.querySelectorAll(".spritedoc-section");
 			var ele = document.createElement("div");
 			ele.textContent = "Click to move.";
 			ele.classList.add("section-move-overlay");
 			for (var i = 0; i < sections.length; i++) {
-				var box = sections[i].querySelector(".spritedoc-boxes");
 				var ele2 = ele.cloneNode(true);
 				ele2.dataset.section = sections[i].dataset.sectionId;
 				ele2.addEventListener("click", moveSpriteClick);
-				box.append(ele2);
+				sections[i].querySelector(".spritedoc-boxes").append(ele2);
 			}
 			updateToolbar();
 		});
 
 		buttons.downloadSprite.on("click", function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			var fileName = document.querySelector('li[data-pos="' + selectedPos + '"]').dataset.sortKey;
 			var element = document.createElement('a');
 			element.crossOrigin = '*';
@@ -958,8 +946,6 @@
 			element.click();
 		});
 		buttons.changeSprite.on("click", function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			document.body.removeChild(menu);
 			var input = document.createElement('input');
 			input.type = 'file';
 			input.setAttribute("accept", "image/*");
@@ -1178,9 +1164,9 @@
 		if (!perm) return spriteSection;
 		sectionH3Span.onpaste = function(e) {
 			e.preventDefault();
-		    var paste = (e.clipboardData || window.clipboardData).getData('text');
-		    paste = paste.replace( /\n/g, ' ' ).trim();
-		    window.document.execCommand( 'insertText', false, paste );
+			var paste = (e.clipboardData || window.clipboardData).getData('text');
+			paste = paste.replace( /\n/g, ' ' ).trim();
+			window.document.execCommand( 'insertText', false, paste );
 		};
 		sectionH3Span.onkeypress = function(e) {
 			if ( e.keyCode === 13 ) {
@@ -1317,9 +1303,9 @@
 			for (var i = 0; i < flags.length; i++) {
 				flag_items.push(
 					new OO.ui.MenuOptionWidget( {
-		                data: flags[i][0],
-		                label: flags[i][1]
-		            } )
+						data: flags[i][0],
+						label: flags[i][1]
+					} )
 				);
 			}
 			// Toolbar buttons
@@ -1373,11 +1359,11 @@
 				}),
 				deprecated2: new OO.ui.DropdownWidget( {
 					classes: [ 'spriteedit-deprecated-dropdown' ],
-				    label: '',
-				    disabled: true,
-				    menu: {
-				        items: flag_items
-				    }
+					label: '',
+					disabled: true,
+					menu: {
+						items: flag_items
+					}
 				} ),
 				cancelMove: createButton(
 					'previous',
@@ -1480,19 +1466,13 @@
 				textField.focus();
 			});
 			buttons.changes.on('click', function() {
-				if (openWindow("diff", msg("diff-module-missing").plain())) {
-					window.SpriteEditorModules.diff.requestChanges();
-				}
+				openWindow("diff", msg("diff-module-missing").plain());
 			});
 			buttons.settings.on('click', function() {
-				if (openWindow("settings", msg("settings-module-missing").plain())) {
-					window.SpriteEditorModules.settings.requestChanges();
-				}
+				openWindow("settings", msg("settings-module-missing").plain());
 			});
 			buttons.reorder.on('click', function() {
-				if (openWindow("reorder", msg("reorder-module-missing").plain())) {
-					window.SpriteEditorModules.reorder.requestChanges();
-				}
+				openWindow("reorder", msg("reorder-module-missing").plain());
 			});
 			buttons.sortSections.on('click', function(){
 				if (openWindow("sorting", msg("sorting-module-missing").plain())) {
@@ -1508,9 +1488,7 @@
 			});
 			oclick = function(ignoreWarning) {
 				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm(msg("unsaved-changes").plain())) return;
-				if (openWindow("open", msg("open-module-missing").plain())) {
-					window.SpriteEditorModules.open.requestChanges();
-				}
+				openWindow("open", msg("open-module-missing").plain());
 			};
 			buttons.open.on('click', oclick);
 		}
@@ -1531,19 +1509,14 @@
 			if (!window.SpriteEditorModules[win]) {
 				alert(err);
 				return false;
-			} else if (!window.SpriteEditorModules[win].modal.seDialog) {
-				window.SpriteEditorModules[win].createWindow();
-				return true;
-			} else if (win === "new" && window.SpriteEditorModules[win].modal.seDialog) {
-				window.SpriteEditorModules["new"].openWindow();
-				return true;
-			} else if (win === "settings" && window.SpriteEditorModules[win].modal.seDialog) {
-				window.SpriteEditorModules.settings.modal.windowManager.openWindow("settings");
-				return true;
-			} else if (window.SpriteEditorModules[win].modal.seDialog) {
-				window.SpriteEditorModules.helper.windowManager.openWindow(window.SpriteEditorModules[win].modal.seDialog);
-				return true;
 			}
+			var m = window.SpriteEditorModules[win];
+			if (!m.modal || !m.modal.seDialog)
+				window.SpriteEditorModules[win].createWindow();
+			m.modal.windowManager.openWindow(m.modal.seDialog).opening.then(function(){
+				m.requestChanges();
+			});
+			return true;
 		}
 		function resetEditor() {
 			var orgTB = root.children[0];
@@ -1566,18 +1539,16 @@
 			tagExists = false;
 			tagActive = false;
 
-			// Disable toolbar buttons; reactive if data is loaded
+			// Disable toolbar buttons; reactivate if data is loaded
 			toggleTBButtons(false);
 		}
 		function checkProtection(allperms, name) {
 			var lvl = name && name.level || "";
-			if (lvl === "autoconfirmed") {
+			if (lvl === "autoconfirmed")
 				return allperms.includes("editsemiprotected");
-			} else if (lvl === "sysop") {
+			if (lvl === "sysop")
 				return allperms.includes("editprotected");
-			} else {
-				return true;
-			}
+			return true;
 		}
 		function loadSprite3() {
 			setupOldCanvas(imgEle);
@@ -1704,14 +1675,13 @@
 					loadSprite3();
 					return;
 				}
-				if (data.query.pages && data.query.pages.length) {
-					for (var j = 0; j < 2; j++) {
-						for (i = 0; i < data.query.pages[j].protection.length; i++) {
-							if (!hasEditPermission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
-								hasEditPermission = false;
-								loadSprite3();
-								return;
-							}
+				for (var j = 0; j < 2; j++) {
+					if (!data.query.pages || !data.query.pages[j]) continue;
+					for (i = 0; i < data.query.pages[j].protection.length; i++) {
+						if (!hasEditPermission || !checkProtection(data.query.userinfo.rights || [], data.query.pages[j].protection[i])) {
+							hasEditPermission = false;
+							loadSprite3();
+							return;
 						}
 					}
 				}
@@ -1855,16 +1825,14 @@
 			Promise.allSettled([md5JS, i18nJS, getImageURL]).then(myData.preload);
 		};
 		$( document ).on( 'click.spriteEdit', function() {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			if (!skipClose && menu) {
-				document.body.removeChild(menu);
+			if (!skipClose) {
+				closeTooltip();
 			}
 			skipClose = false;
 		} );
 		$( document ).on( 'keydown.spriteEdit', function( e ) {
-			var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
-			if (menu && e.keyCode === 27) {
-				document.body.removeChild(menu);
+			if (e.keyCode === 27) {
+				closeTooltip();
 			}
 		} );
 	});

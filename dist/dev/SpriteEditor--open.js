@@ -9,11 +9,7 @@
 	var modal = {};
 	myData.modal = modal;
 	var shared;
-	var imagesLoaded = false;
-	var modulesLoaded = false;
-	var allImages = [];
 	var allPages = [];
-	var windowClosed = false;
 	function createList() { // Compares images with lists; creates html
 		var root = document.getElementsByClassName("spriteeditor-items")[0];
 		function loadSprite2(toOpen) {
@@ -22,7 +18,6 @@
 			historyUrl.searchParams.set('sprite', toOpen.full);
 			window.history.pushState({}, '', historyUrl);
 			shared.loadSprite(toOpen, myData.isNew, myData.spriteSizeW, myData.spriteSizeH, myData.spacing);
-			windowClosed = true;
 			modal.seDialog.close();
 		}
 		myData.loadSprite2 = loadSprite2;
@@ -41,7 +36,7 @@
 				'return type(a) == "table" and a.settings and mw.text.jsonEncode(a) or "{}"'
 			}).always(function(a) {
 				var output;
-				if (windowClosed) return;
+				if (!modal.seDialog.isOpened()) return;
 				if (a.return) {
 					output = JSON.parse(a.return);
 					output.settings = output.settings || {};
@@ -67,7 +62,7 @@
 						modal.seDialog.popPending();
 				}
 				var newSize = modal.seDialog.getBodyHeight();
-				if (oldSize !== newSize && !windowClosed)
+				if (oldSize !== newSize && modal.seDialog.isOpened())
 					modal.windowManager.updateWindowSize(modal.seDialog);
 			});
 		}
@@ -81,18 +76,18 @@
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
+	var base = {
+		action: "query",
+		apfilterredir: "nonredirects",
+		apfrom: "",
+		aplimit: "500",
+		apnamespace: "828",
+		format: "json",
+		formatversion: "2",
+		list: "allpages"
+	};
 	function loadModules(c) {
-		var base = {
-			action: "query",
-			apfilterredir: "nonredirects",
-			apfrom: "",
-			aplimit: "500",
-			apnamespace: "828",
-			format: "json",
-			formatversion: "2",
-			list: "allpages"
-		};
-		api.get(Object.assign(base, c || {})).done(function(data) {
+		api.get(Object.assign(Object.assign({}, base), c || {})).done(function(data) {
 			var pages = data.query.allpages;
 			for (var i = 0; i < pages.length; i++) {
 				var names = helper.seperatePath(pages[i].title);
@@ -104,7 +99,7 @@
 					});
 				}
 			}
-			if (windowClosed)
+			if (!modal.seDialog.isOpened())
 				return;
 			if (data.continue) {
 				loadModules(data.continue);
@@ -121,11 +116,7 @@
 		myData.isNew = false;
 		myData.spriteSizeW = 0;
 		myData.spriteSizeH = 0;
-		imagesLoaded = false;
-		modulesLoaded = false;
-		allImages = [];
 		allPages = [];
-		windowClosed = false;
 		// Load lists
 		loadModules();
 	};
@@ -147,15 +138,8 @@
 			content: formHtml,
 			action: function (action) {
 				if (action === "new") {
-					if (shared.openWindow("new", msg("new-module-missing").plain())) {
-						window.SpriteEditorModules.new.requestChanges();
-					}
-				} else if (action === "close") {
-					windowClosed = true;
+					shared.openWindow("new", msg("new-module-missing").plain());
 				}
-			},
-			onclose: function() {
-				windowClosed = true;
 			},
 			size: "larger"
 		});

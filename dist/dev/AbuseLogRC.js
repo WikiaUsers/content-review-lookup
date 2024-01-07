@@ -317,7 +317,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
                         i18n.msg('changeNumber').escape() +
                         '&nbsp;<input type="text" name="abEntriesNumber" id="abEntriesNumber" style="width:50px;">&nbsp;' +
                         '<input type="button" id="abSetEntriesButton" value="' + i18n.msg('changeButton').escape() + '">' +
-                        '<div class="abDocumentation" style="float:right; font-size:10px;"><a href="' + mw.util.getUrl('Special:AbuseLog') + '" target="_blank">' + mw.msg('abusefilter-log') + '</a> &bull; <a href="//dev.fandom.com/wiki/AbuseLogRC" target="_blank">' + i18n.msg('devLink').escape() + '</a></div>' +
+                        '<div class="abDocumentation" style="float:right; font-size:10px;"><a href="' + mw.util.getUrl('Special:AbuseLog') + '" target="_blank">' + mw.msg('abusefilter-topnav-log') + '</a> &bull; <a href="//dev.fandom.com/wiki/AbuseLogRC" target="_blank">' + i18n.msg('devLink').escape() + '</a></div>' +
                     '</div>' +
                 '</form>' +
                 '<div id="abErrorsLog" style="display:block;"><ul></ul></div>' +
@@ -329,7 +329,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
             '<table id="abData" class="wikitable mw-collapsible" style="width:100%; font-size:14px;">' +
                 '<tr id="abHeader">' +
                     '<th style="cursor:pointer;"><span id="abSorting"></span>&nbsp;' + mw.msg('abusefilter-history-timestamp') + '</th>' +
-                    '<th>' + mw.msg('abusefilter-examine-title').replace(':' , '') + '</th>' +
+                    '<th>' + mw.msg('listfiles_name') + '</th>' +
                     '<th>' + mw.msg('abusefilter-history-user') + '</th>' +
                 '</tr>' +
             '</table>'
@@ -594,16 +594,15 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
             'abusefilter-action-warn',
             'abusefilter-edit-builder-vars-user-age',
             'abusefilter-edit-warn-actions',
-            'abusefilter-examine-title',
+            'listfiles_name',
             'abusefilter-history-public',
             'abusefilter-history-timestamp',
             'abusefilter-history-user',
-            'abusefilter-log',
+            'abusefilter-topnav-log',
             'abusefilter-log-detailslink',
             'abusefilter-log-linkoncontribs',
             'abusefilter-log-linkoncontribs-text',
             'abusefilter-log-summary',
-            'activityindicator-message',
             'blocklink',
             'contribslink',
             'talkpagelinktext',

@@ -31,6 +31,10 @@ function catg(value) {
 
 function output() {
 	catList.forEach(catg); //run catg for every array element
+	if (outString == '') {
+		document.getElementById('output').innerHTML = 'Oops! Please make a selection using the buttons before clicking submit.';
+		return;
+	}
 	outString = '{{#dpl:'+outString+'}}';
 	//output outString into DPL params
 	mw.loader.using('mediawiki.api', function() {

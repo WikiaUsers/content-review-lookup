@@ -1,7 +1,7 @@
 // Set the target day and time
 var targetDay = 2; // Wednesday (0=Sunday, 1=Monday, ..., 6=Saturday)
 var targetHour = 4; // 4:00 am
-var targetOffset = 0; // UTC+2 for European clock mode
+var targetOffset = 1; // UTC+2 for European clock mode, currectly airing at 3 am / set to 0 for 4 am
 
 var now = new Date();
 var targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), targetHour, 0, 0, 0);
@@ -41,16 +41,4 @@ function updateCountdown() {
         var returnString = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
         document.getElementById("countdown").innerHTML = returnString;
     }
-}
-
-// Spoiler text
-var spoiler = document.querySelector(".spoiler");
-
-spoiler.addEventListener("click", function (event) {
-    if (event.target.tagName === 'A') { // check if clicked element is an <a> tag
-        event.preventDefault(); // prevent default link behavior
-        window.location.href = event.target.href; // navigate to the link immediately
-    } else {
-        spoiler.classList.toggle("active");
-    }
-});
+};

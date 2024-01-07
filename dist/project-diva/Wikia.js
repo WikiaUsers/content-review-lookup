@@ -1,15 +1,17 @@
-// Random Page Background
-function randomBg() {
-    var imgs = [
-    	'https://static.wikia.nocookie.net/project-diva/images/b/b4/Miku-megamix-plus.jpg/revision/latest?cb=20230830211117',
-    	'https://static.wikia.nocookie.net/project-diva/images/f/f0/Rin-megamix-plus.jpg/revision/latest?cb=20230830210555',
-    	'https://static.wikia.nocookie.net/project-diva/images/e/ef/Len-megamix-plus.jpg/revision/latest?cb=20230830210606',
-    	'https://static.wikia.nocookie.net/project-diva/images/d/dd/Luka-megamix-plus.jpg/revision/latest?cb=20230830210628',
-    	'https://static.wikia.nocookie.net/project-diva/images/a/a7/Kaito-megamix-plus.jpg/revision/latest?cb=20230830210640',
-    	'https://static.wikia.nocookie.net/project-diva/images/6/63/Meiko-megamix-plus.jpg/revision/latest?cb=20230830210650'
-    	];
- $('body').css('background-size', 'fix', 'cover'); 
-    $('body').css('background-image', 'url(' + imgs[Math.floor((imgs.length) * Math.random())] + ')');
-}
+/* Random Wordmark */
+$(function() {
+	var images = [
+		'https://images.wikia.nocookie.net/project-diva/images/f/fe/PjDWiki_Wordmark_Miku.png',
+		'https://images.wikia.nocookie.net/project-diva/images/0/06/PjDWiki_Wordmark_Rin.png',
+		'https://images.wikia.nocookie.net/project-diva/images/e/e4/PjDWiki_Wordmark_Len.png',
+		'https://images.wikia.nocookie.net/project-diva/images/c/c7/PjDWiki_Wordmark_Luka.png',
+		'https://images.wikia.nocookie.net/project-diva/images/f/f7/PjDWiki_Wordmark_KAITO.png',
+		'https://images.wikia.nocookie.net/project-diva/images/0/0a/PjDWiki_Wordmark_MEIKO.png',
+		'https://images.wikia.nocookie.net/project-diva/images/e/e2/PjDWiki_Wordmark_Neru.png',
+		'https://images.wikia.nocookie.net/project-diva/images/8/81/PjDWiki_Wordmark_Haku.png',
+		'https://images.wikia.nocookie.net/project-diva/images/7/75/PjDWiki_Wordmark_Sakine.png',
+		'https://images.wikia.nocookie.net/project-diva/images/1/12/PjDWiki_Wordmark_Teto.png'
+		];
 
-randomBg();
+	$('.wds-community-header__wordmark img').attr('src', images[Math.floor(Math.random() * images.length)]);
+});

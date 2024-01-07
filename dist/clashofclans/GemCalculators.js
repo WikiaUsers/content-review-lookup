@@ -6,7 +6,7 @@ function timeStamp_GemCalculators_js() {
 function doCalcDarkElixirToGems(resources) {
    var ranges = [1,10,100,1000,10000,100000];
    var gems = [1,5,25,125,600,3000];
-   var storagemax = 370000;
+   var storagemax = 380000;
  
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -28,7 +28,7 @@ function doCalcDarkElixirToGems(resources) {
 function doCalcResourceToGems(resources) {
    var ranges = [100,1000,10000,100000,1000000,10000000];
    var gems = [1,5,25,125,600,3000];
-   var storagemax = 22000000;
+   var storagemax = 23000000;
 
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");

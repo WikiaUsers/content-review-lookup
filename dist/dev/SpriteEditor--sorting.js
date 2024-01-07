@@ -11,6 +11,7 @@
 	var oldOrder;
 	var newOrder;
 	var helper = window.SpriteEditorModules.helper;
+	myData.requestChanges = function() {};
     function updateRoot(order) {
         var tmp = shared.root.children[0];
         var a = document.createElement("span");

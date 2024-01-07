@@ -48,7 +48,7 @@ window.setCookie = function(c_name, value, expiredays) {
 		var FairUseUpload = {
 			preload: function() {
 				this.api = new mw.Api();
-			this.getContent(3125).then(this.init.bind(this));//mw.config.get('wgArticleId')
+				this.getContent(3125).then(this.init.bind(this));//mw.config.get('wgArticleId')
 			},
 			init: function(content) {
 				this.api = new mw.Api();
@@ -109,10 +109,10 @@ window.setCookie = function(c_name, value, expiredays) {
 								// To real DOM
 								$customRows = $(customRows);
 								$description.closest('tr').hide().after($customRows);
-					
+
 								// Bind submit to verify function
 								$description.closest('form').submit(this.verifySummary);
-					
+
 								// Autocomplete links
 								$.getScript(mw.util.wikiScript('load') + 
 									'?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {

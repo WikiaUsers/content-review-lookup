@@ -315,9 +315,9 @@ window.UserTagsJS = {
 UserTagsJS.modules.inactive = 30;
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller','content-moderator','threadmoderator', 'rollback', 'sysop', 'bot', 'bot-global'];
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'threadmoderator', 'patroller','content-moderator','threadmoderator', 'rollback', 'administrator', 'bot', 'bot-global'];
 UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat', 'founder'],
-	bureaucrat: ['founder'],
+	administrator: ['bureaucrat'],
 	threadmoderator: ['sysop', 'bureaucrat']
+	
 };

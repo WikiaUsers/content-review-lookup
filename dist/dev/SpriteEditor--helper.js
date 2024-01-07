@@ -28,7 +28,7 @@
 			}
 			var secID = cl.closest('.spritedoc-section').dataset.sectionId;
 			if (!skipHistory) {
-				shared.addHistory(["sprite-removed", "sprite-added", secID, id, cl, shared.toShare.highestPos, shared.toShare.highestPos]);
+				shared.addHistory(["sprite-removed", "sprite-added2", secID, id, cl, shared.toShare.highestPos, shared.toShare.highestPos]);
 			}
 			var clBoxes = cl.closest('.spritedoc-boxes');
 			clBoxes.removeChild(cl.closest('.spritedoc-box'));
@@ -55,11 +55,14 @@
 				return '';
 			}
 		},
-		processDialog: function(data) {
+		processDialog: function(data) { // also creates MessageDialog
 			var modal = {};
 			var OO = window.SpriteEditorModules.main.OO;
 			var wm = window.SpriteEditorModules.helper.windowManager;
-			if (!wm) {
+			if (data.isSubdialog) {
+				wm = new OO.ui.WindowManager();
+				$('body').append(wm.$element);
+			} else if (!wm) {
 				wm = new OO.ui.WindowManager();
 				window.SpriteEditorModules.helper.windowManager = wm;
 				$('body').append(wm.$element);
@@ -67,14 +70,14 @@
 			function SpriteEditorDialog(config) {
 				SpriteEditorDialog.super.call(this, config);
 			}
-			OO.inheritClass(SpriteEditorDialog, OO.ui.ProcessDialog);
+			OO.inheritClass(SpriteEditorDialog, data.messageDialog && OO.ui.MessageDialog || OO.ui.ProcessDialog);
 
 			SpriteEditorDialog.static.name = data.name;
 			SpriteEditorDialog.static.title = data.title;
 			SpriteEditorDialog.static.actions = data.actions;
 
 			// initialise dialog, append content
-			SpriteEditorDialog.prototype.initialize = function () {
+			var pInitialize = function () { // ProcessDialog
 				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
 				this.content = new OO.ui.PanelLayout({
 					expanded: false
@@ -83,6 +86,18 @@
 				this.$body.append(this.content.$element);
 				this.$content.addClass('spriteedit-ui-Dialog spriteedit-ui-hiddenFooter');
 			};
+			var mInitialize = function () { // MessageDialog
+				SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+				var b = this.$body.get(0);
+				// Adjusting styling
+				var mdText = b.querySelector(".oo-ui-messageDialog-text");
+				mdText.style.paddingLeft = 0;
+				mdText.style.paddingRight = 0;
+				b.querySelector(".oo-ui-messageDialog-message").innerHTML = data.content();
+				this.$content.addClass('spriteedit-ui-Dialog');
+			};
+			
+			SpriteEditorDialog.prototype.initialize = data.messageDialog && mInitialize || pInitialize;
 
 			// Handle actions
 			SpriteEditorDialog.prototype.getActionProcess = function (action) {
@@ -99,9 +114,8 @@
 				size: data.size
 			});
 			
-			// Add window and open
+			// Add window
 			wm.addWindows([modal.seDialog]);
-			wm.openWindow(modal.seDialog);
 			modal.windowManager = wm;
 			// Close dialog when clicked outside the dialog
 			modal.seDialog.$frame.parent().on('click', function (e) {

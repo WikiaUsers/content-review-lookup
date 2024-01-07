@@ -177,7 +177,6 @@
 
 		// Add window and open
 		modal.windowManager.addWindows([modal.seDialog]);
-		modal.windowManager.openWindow(modal.seDialog);
 		// Close dialog when clicked outside the dialog
 		modal.seDialog.$frame.parent().on('click', function (e) {
 			if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {

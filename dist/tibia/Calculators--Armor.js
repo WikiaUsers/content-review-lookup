@@ -158,20 +158,20 @@ $(function() {
             '</td><td class="text_align_left" style="width:180px;">' +
             '  </div><div style="min-width:180px;"><table>' +
             '  <tr><th colspan="2">Sort by:</th></tr>' +
-            '  <tr><td colspan="2"><input type="radio" value="name" name="calculator_armor_items_sort" />Name <input type="radio" value="oz" name="calculator_armor_items_sort" />Oz <input type="radio" value="arm" name="calculator_armor_items_sort" />Armor' +
+            '  <tr><td colspan="2"><input type="radio" id="ac_name" value="name" name="calculator_armor_items_sort" /><label for="ac_name">Name</label><input type="radio" id="ac_oz" value="oz" name="calculator_armor_items_sort" /><label for="ac_oz">Oz</label><input type="radio" id="ac_arm" value="arm" name="calculator_armor_items_sort" /><label for="ac_arm">Armor</label>' +
             '  </td></tr><tr><th colspan="2">Protection:</th></tr>' +
-            '  <tr><td><input type="radio" value="physical" name="calculator_armor_items_sort" checked="checked" />Physical</td><td><input type="radio" value="fire" name="calculator_armor_items_sort" />Fire</td></tr>' +
-            '  <tr><td><input type="radio" value="earth" name="calculator_armor_items_sort" />Earth</td><td><input type="radio" value="energy" name="calculator_armor_items_sort" />Energy</td></tr>' +
-            '  <tr><td><input type="radio" value="ice" name="calculator_armor_items_sort" />Ice</td><td><input type="radio" value="holy" name="calculator_armor_items_sort" />Holy</td></tr>' +
-            '  <tr><td><input type="radio" value="death" name="calculator_armor_items_sort" />Death</td><td><input type="radio" value="manadrain" name="calculator_armor_items_sort" />Mana Drain</td></tr>' +
-            '  <tr><td></td><td><input type="radio" value="lifedrain" name="calculator_armor_items_sort" />Life Drain</td></tr></table>' +
+            '  <tr><td><input type="radio" id="ac_phys" value="physical" name="calculator_armor_items_sort" checked="checked" /><label for="ac_phys">Physical</label></td><td><input type="radio" id="ac_fire" value="fire" name="calculator_armor_items_sort" /><label for="ac_fire">Fire</label></td></tr>' +
+            '  <tr><td><input type="radio" id="ac_earth" value="earth" name="calculator_armor_items_sort" /><label for="ac_earth">Earth</label></td><td><input type="radio" id="ac_energy" value="energy" name="calculator_armor_items_sort" /><label for="ac_energy">Energy</label></td></tr>' +
+            '  <tr><td><input type="radio" id="ac_ice" value="ice" name="calculator_armor_items_sort" /><label for="ac_ice">Ice</label></td><td><input type="radio" id="ac_holy" value="holy" name="calculator_armor_items_sort" /><label for="ac_holy">Holy</label></td></tr>' +
+            '  <tr><td><input type="radio" id="ac_death" value="death" name="calculator_armor_items_sort" /><label for="ac_death">Death</label></td><td><input type="radio" id="ac_mdrain" value="manadrain" name="calculator_armor_items_sort" /><label for="ac_mdrain">Mana Drain</label></td></tr>' +
+            '  <tr><td></td><td><input type="radio" id="ac_ldrain" value="lifedrain" name="calculator_armor_items_sort" /><label for="ac_ldrain">Life Drain</label></td></tr></table>' +
             '</div><div>' +
             '  <b>Damage type:</b><br /><select id="calculator_armor_damage_type" size="1"><option value="physical" selected="selected">Physical</option><option value="fire">Fire</option><option value="earth">Earth</option><option value="energy">Energy</option><option value="ice">Ice</option><option value="holy">Holy</option><option value="death">Death</option><option value="manadrain">Mana Drain</option><option value="lifedrain">Life Drain</option></select>' +
             '  <br /><br />' +
             '  <b>Show items for:</b><br />' +
             '  <select id="calculator_armor_voc" size="1"><option value="0">All</option><option value="1" selected="selected">Druid</option><option value="2">Knight</option>  <option value="4">Paladin</option><option value="8">Sorcerer</option></select>' +
             '  <br /><br />' +
-            '  <input type="checkbox" value="1" id="calculator_armor_np" /> Show non <br />protective items' +
+            '  <input type="checkbox" value="1" id="calculator_armor_np" /><label for="calculator_armor_np">Show non <br />protective items</label> ' +
 
             '</div><div">' +
             '  <b>Defensive Imbuements:</b><br/>' +

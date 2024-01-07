@@ -17,6 +17,7 @@
 		var bv = data.bv;
 		var page = data.page || data.param || 1; // data-param is typo made by the author in the old version
 		var size = data.size || data.width || '80%';
+        var autoplay = data.autoplay == false ? 0 : 1;
 
 		// Verify data
 		// Video ID must be set
@@ -44,7 +45,7 @@
 		var $iframe = $('<iframe>', {
 			class: 'bili-show bilibili-iframe',
 			id: bv ? 'bv-' + bv : 'av-' + av,
-			src: 'https://player.bilibili.com/player.html?' + videoId + '&page=' + page,
+			src: 'https://player.bilibili.com/player.html?' + videoId + '&page=' + page + '&autoplay=' + autoplay,
 			scrolling: 'no',
 			border: 0,
 			frameborder: 'no',

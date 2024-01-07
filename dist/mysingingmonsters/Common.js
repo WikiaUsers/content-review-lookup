@@ -8,6 +8,8 @@ window.dev.fastFileDelete.groups = 'content\-moderator';
 importArticles({
     type: "script",
     articles: [
-        "w:c:dev:Countdown/code.js"
+        'u:dev:Countdown/code.js',
+        'u:dev:MediaWiki:WallGreeting.js'
+
     ]
 });

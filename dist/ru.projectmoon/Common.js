@@ -108,17 +108,18 @@ function getpar(object)
 	}
 	return null;
 }
+        
 mw.loader.using('mediawiki.util').then(function() {
-var IndexClick = 0;
 function zselector( $content ) {
-    $(function () {
-        $('[class|="cc"]').click(function () {
+function CCClick() {
             var cn = $(this).attr('class');
-			IndexClick = IndexClick+1;
-            if (typeof cn !== 'undefined' && IndexClick%2 == 0) {
+            if (typeof cn !== 'undefined') 
                 ZContent(cn, '0', $(this));
-            }
-        });
+            
+        }
+    $(function () {
+                $('[class|="cc"]:not(.ccLoad)').click(CCClick);
+                $('[class|="cc"]').addClass("ccLoad");
         $('[class|="hh"]').mouseenter(function () {
             var cn = $(this).attr('class');
             if (typeof cn !== 'undefined') {
