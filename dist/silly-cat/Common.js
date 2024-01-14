@@ -49,3 +49,15 @@ nkch_gst_gadgets = [{
     title: "Better Layout",
     description: "Makes page wider and change GlobalNav color to match the wiki theme."
 }];
+
+// Credit: Sky: Children of the Light Wiki
+$('.fandom-community-header__community-name-wrapper').append(
+    /* Adds A+ Wiki Badge to Title */
+    $('<img/>').addClass('hover-community-header-wrapper')
+        .css({
+            'height': '30px',
+            'user-select': 'none',
+            'pointer-events': 'none'
+        })
+        .attr('src', 'https://static.wikia.nocookie.net/silly-cat/images/2/2c/A%2B_Badge.png')
+);

@@ -11,7 +11,7 @@ window.interwikiInternational = {
 };
 
 // Adoption & such requests in these languages will *not* work 
-window.communityRequestsUnsupportedLangs = ['de', 'es', 'fr', 'it', 'pl', 'pt', 'pt-br', 'ru'];
+window.communityRequestsUnsupportedLangs = [];
 
 // Configuration for extend permissions form
 window.adoptRetainInternational = {

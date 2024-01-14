@@ -40,8 +40,17 @@ importArticles({
 window.MassCategorizationGroups = ['sysop'];
 
 
-// Special:Upload pre-load config
+// Image hover
+$(document).ready(function() {
+    $(".linkhover").hover(function() {
+        $(".imagehover").css("display","table");
+    },function() {
+        $(".imagehover").css("display","none");
+    });
+});
 
+
+// Special:Upload pre-load config
 PFD_templates = [
     {
         label:   'Images',

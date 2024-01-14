@@ -1,23 +1,20 @@
 window.BackToTopModern = true;
 
-
 importArticles({
     type: "script",
     articles: [
 		"u:dev:MediaWiki:BackToTopButton/code.js",
-		"u:dev:MediaWiki:AjaxRC.js",
 		"MediaWiki:Usernames.js",
 		"MediaWiki:HeroSkins.js",
-		"MediaWiki:HeroSkins2.js",
 		"MediaWiki:Toggle.js",
 		"MediaWiki:Protection.js",
 		"MediaWiki:AOTM.js",
 		"MediaWiki:Walkthrough.js",
 		"MediaWiki:WikiNotification.js",
-		"MediaWiki:WallGreetingTweak.js",
 		'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
 		"MediaWiki:Modifiers.js",
 		"MediaWiki:ClanHouseGenerator.js",
+		"MediaWiki:GemCalculators.js",
 		"MediaWiki:Sandbox.js", //JS testing area for small things
     ]
 });

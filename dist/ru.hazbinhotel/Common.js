@@ -32,37 +32,6 @@ setInterval(function (user) {
 	})
 }, 500)
 
-/* Настройка гаджетов */
-nkch_gst_gadgets = [{
-    name: "RWA", 
-    title: "Недавняя вики-деятельность", 
-    description: "Недавняя вики-деятельность"
-},  {
-    name: "RemoveCatSpoiler",
-    title: "Прежние Категории",
-    description: "Прежние Категории"
-}, {
-    name: "UCXSearch",
-    title: "Быстрый поиск",
-    description: "Поисковая строка в локальном меню без модального окна"
-}, {
-    name: "NkchToggler",
-    title: "Быстрая смена темы",
-    description: "Меню в правой верхней части страницы для быстрой смены темы"
-}, {
-	name: "Font",
-    title: "Тематический шрифт",
-    description: "Заменяет шрифт на сайте"
-}, {
-    name: "Cursor",
-    title: "Тематический курсор",
-    description: "Добавляет тематический курсор"
-}, {
-    name: "Weather",
-    title: "Погода",
-    description: "Атмосферные осадки для аутентичности"
-}];
-
 /* Конфигурация для dev:DiscussionTemplates */
 window.DiscussionTemplates = {
     templates: {

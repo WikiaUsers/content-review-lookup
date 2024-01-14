@@ -573,6 +573,7 @@ function ShowRecentChangesWindow()
         // Время от 0:00 до 5:59
         s = [
         'https://static.wikia.nocookie.net/ru.starwars/images/2/27/Background_dromund.jpg',
+        'https://static.wikia.nocookie.net/ru.starwars/images/d/d7/Backgroung_narshaddaa_night.jpg',
          'https://static.wikia.nocookie.net/ru.starwars/images/1/14/Background_night.jpg',
          'https://static.wikia.nocookie.net/ru.starwars/images/c/c5/Background_Starkiller_1.jpg',
          'https://static.wikia.nocookie.net/ru.starwars/images/6/66/Background_ice_4.jpg',
@@ -582,7 +583,8 @@ function ShowRecentChangesWindow()
     } else if (h > 5 && h <= 6) {
         // Время от 6:00 до 6:59
         s = [
-            'https://static.wikia.nocookie.net/ru.starwars/images/a/ae/Background_Naboo_morning.jpg'
+            'https://static.wikia.nocookie.net/ru.starwars/images/a/ae/Background_Naboo_morning.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/b/b2/Green_background_3.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/3/3c/Green_background_11.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/0/07/Background_early_morning.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/c/c7/Background_new_10.jpg'
@@ -591,6 +593,7 @@ function ShowRecentChangesWindow()
         // Время от 7:00 до 8:59
         s = [
             'https://static.wikia.nocookie.net/ru.starwars/images/6/6d/Background_8.jpg',
+            'https://static.wikia.nocookie.net/ru.starwars/images/3/38/Background_morning.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/c/ca/Background_Alderaan_1.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/a/a0/Background_Hoth_9.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/9/99/Background_new_5.jpg'
@@ -600,6 +603,9 @@ function ShowRecentChangesWindow()
         s = [
             'https://static.wikia.nocookie.net/ru.starwars/images/9/90/Background_ice_1.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/b/b2/Art_Challenge_2016,_Andrew_Bosley_1.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/3/37/Green_background_4.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/6/69/Green_background_6.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/8/81/Background_new_4.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/6/65/Background_new_9.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/7/78/Background_Hoth_2.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/d/d9/Background_day_2.jpg'
@@ -609,6 +615,7 @@ function ShowRecentChangesWindow()
         s = [
             'https://static.wikia.nocookie.net/ru.starwars/images/7/78/Background_Hoth_2.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/e/ee/Background_ice_5.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/d/dc/Green_background_9.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/e/e9/Background_new_12.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/d/dc/Background_new_16.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/d/d9/Background_day_2.jpg',
@@ -641,14 +648,24 @@ function ShowRecentChangesWindow()
             'https://static.wikia.nocookie.net/ru.starwars/images/f/f6/Background_Alderaan_2.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/d/d2/Background_Hoth_6.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/a/ad/Background_Hoth_8.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/6/6b/Background_new_3.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/a/a1/Background_new_17.jpg'
         ];
     } else if (h > 17 && h <= 19) {
         // Время от 18:00 до 19:59
         s = [
             'https://static.wikia.nocookie.net/ru.starwars/images/1/15/Background_evening_transport.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/6/66/Art_Challenge_2016,_Daniel_Kyle_1.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/d/dc/Background_5.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/a/a8/Background_6.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/f/f9/Background_7.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/a/a4/Background_evening.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/4/42/Background_new_1.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/4/49/Background_new_2.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/8/81/Background_new_6.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/7/77/Background_new_7.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/c/c2/Background_new_8.jpg',
+            'https://static.wikia.nocookie.net/rustarwars/images/a/a5/Background_new_11.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/e/e3/Background_new_15.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/6/6b/Background_new_3.jpg'
         ];
@@ -657,6 +674,7 @@ function ShowRecentChangesWindow()
         s = [
             'https://static.wikia.nocookie.net/ru.starwars/images/4/4c/Background_late.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/6/6c/Background_tor_1.jpg',
+            'https://static.wikia.nocookie.net/ru.starwars/images/f/f6/Background_cantina_1.jpg',
             'https://static.wikia.nocookie.net/ru.starwars/images/6/6b/Background_Hoth_10.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/e/e0/Background_Hoth_7.jpg',
             'https://static.wikia.nocookie.net/rustarwars/images/6/6a/Background_new_14.jpg',

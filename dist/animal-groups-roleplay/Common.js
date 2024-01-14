@@ -43,5 +43,6 @@ importArticles({
     articles: [
         'u:dev:MediaWiki:WHAM/code.2.js',
         'u:dev:MediaWiki:Nuke/code.js',
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
     ]
 });

@@ -77,7 +77,10 @@ $(function() {
 					'<div id="TemplateManager" rel="">'+
 						'<img id="templateImage" width="100%" src="" rel="" />'+
 					'</div>'+
-					'<span class="wds-button" id="MapGenerator">Generate Map</span>'+
+					'<div>'+
+						'<span class="wds-button" id="MapGenerator">Generate Map</span> '+
+						'<span class="wds-button" id="WikitextGenerator">Copy Wikitext</span>'+
+					'</div>'+
 				'</center>'));
 			mapGenerator.loadTemplates(mapRefs[REGION].templates);
 			document.querySelector('#mapImage').onload = function() { mapGenerator.updateZoom(); };
@@ -122,9 +125,13 @@ $(function() {
 					'text-align: center;\n'+
 					'width: 200px;\n'+
 				'}\n'+
+				'#TemplateManagerNote {\n'+
+					'font-weight: bold;\n'+
+				'}\n'+
 				'#TemplateManager {\n'+
 					'width: 600px;\n'+
 					'position: relative;\n'+
+					'padding-bottom: 5px;\n'+
 				'}\n'+
 				'#quickMapGenerator {\n'+
 					'bottom: 5px;\n'+
@@ -259,6 +266,7 @@ $(function() {
 					
 					// Reset template selection
 					document.querySelector('#TemplateManagerNote').innerHTML = 'No template selected.';
+					document.querySelector('#TemplateManagerNote').removeAttribute('rel');
 					document.querySelector('#templateImage').setAttribute('src', '');
 					document.querySelector('#templateImage').setAttribute('rel', '');
 					
@@ -282,6 +290,9 @@ $(function() {
 				} else if (event.target && event.target.id == 'MapGenerator') {
 					closeMarkerSettings();
 					mapGenerator.processPreciseMarkers();
+				} else if (event.target && event.target.id == 'WikitextGenerator') {
+					closeMarkerSettings();
+					navigator.clipboard.writeText(mapGenerator.genFilePage(REGION, document.querySelector('#TemplateManagerNote').getAttribute('rel')));
 				} else if (event.target && event.target.closest('.mapTemplate')) {
 					closeMarkerSettings();
 					var template = event.target.closest('.mapTemplate').getAttribute('rel');
@@ -294,12 +305,9 @@ $(function() {
 						});
 						manager.setAttribute('rel', template);
 						manager.setAttribute('src', loadedImages[template].src);
-						document.querySelector('#TemplateManagerNote').innerHTML = 
-							'<strong>'+
-								template
-									.replace(/^File:/, '')
-									.replace(/ Map Template\.png$/, '')+
-							'</strong>';
+						var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
+						document.querySelector('#TemplateManagerNote').innerHTML = name;
+						document.querySelector('#TemplateManagerNote').setAttribute('rel', name);
 					}
 					window.scrollTo(0, document.getElementById('TemplateManagerNote').offsetTop);
 				} else {
@@ -513,9 +521,17 @@ $(function() {
 				marker.style.setProperty('left', ((markers[marker.id].x-(marker.naturalWidth/2)))*zoom+'px');
 				marker.style.setProperty('top', ((markers[marker.id].y-(marker.naturalHeight/2)))*zoom+'px');
 			});
+		},
+		genFilePage: function(region, location) {
+			if (region && location && region.length>0 && location.length>0) {
+				var redirects = {
+					'The Chasm: Underground Mines': 'The Chasm',
+					'Golden Apple Archipelago 1.6': 'Golden Apple Archipelago'
+				};
+				return'==Summary==\n{{Map Image\n|region   = '+(redirects[region]||region)+'\n|location = '+location+'\n|type     = \n}}\n\n==Licensing==\n{{Fairuse}}';
+			} else { return ''; }
 		}
 	};
-	
 	if (config.wgPageName == 'Special:Map' && config.wgAction == 'view') {
 		// Uses user page to store JSON for now as mediawiki namespace is unusable unless Wiki Rep
 		api.get({action: 'query', prop: 'revisions', titles: 'MediaWiki:Custom-MapGenerator.json', rvprop: 'content', rvslots: '*'}).then(function(data){

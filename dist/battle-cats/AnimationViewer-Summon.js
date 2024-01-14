@@ -13,7 +13,7 @@ var interval = {};
 	if (defaultBg != '') bg = defaultBg;
 	// insert UI elements
 	$("#summon-input-bg-div").append('<input type="text" id="summon-input-bg" placeholder="Enter file name" value="' + bg + '" style="width: 118px; background-color: #eef;">');
-	$("#summon-input-frame-div").append('<input class="summon-input-element" type="number" id="summon-input-frame" value="0" min="0" title="Input the frame to show">');
+	$("#summon-input-frame-div").append('<input class="summon-input-element" type="number" id="summon-input-frame" value="65" min="0" title="Input the frame to show">');
 	$("#animation-summon-button-div").append('<button id="animation-button-summon" type="button" title="Summon the spirit">Summon</button>');
 	$("#summon-hide-elements").append('<input type="checkbox">');
 	$("#summon-unit-name").text(unit);
@@ -206,7 +206,7 @@ function renderModel(type, reset, inputDefault) {
 		showFrame($('#summon-input-frame').val(), maanim, imgcutData, maxValues);
 	}
 	// set input elements to default values
-	if (inputDefault) $("#summon-input-frame").val(0);
+	if (inputDefault) $("#summon-input-frame").val(65);
 	// event handling
 	$('#summon-input-frame').off('input');
 	$('#summon-input-frame').on('input', function () {

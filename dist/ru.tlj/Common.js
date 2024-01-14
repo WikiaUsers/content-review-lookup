@@ -107,6 +107,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 });
 
 /* Еще один моднявый слайдер (проверка) */
+/* Слайдер (начало) */
 // ==UserScript==
 // @name           Javascript Slider
 // @namespace      http://community.wikia.com/wiki/User:T3CHNOCIDE
@@ -441,3 +442,5 @@ $('#sliderframe').on("mouseenter",function(){
 }).on("mouseleave",function(){
 	scrolltimer = window.setInterval(autoScroll, 6000);
 });
+
+/* Слайдер (конец) */

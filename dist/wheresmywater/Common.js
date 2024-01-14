@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Automated User Pages*/ 
+//Automated User Pages
 window.AutoCreateUserPagesConfig = {
     content: {
         2:'{{sub'+'st:MediaWiki:Welcome-user-page}}',
@@ -10,21 +10,26 @@ window.AutoCreateUserPagesConfig = {
     summary:'Automatic Creation'
 };
 
+//Back to top JS import style setting
+window.BackToTopModern = true;
+
+//Imports
 importArticles({
     type: 'script',
     articles: [
-        'MediaWiki:Common.js/Protection.js',
-		'MediaWiki:Common.js/AOTM.js',
-		'MediaWiki:Common.js/Walkthrough.js',
-		'MediaWiki:Common.js/Usernames.js',
-		'MediaWiki:Common.js/WikiNotification.js',
-		'MediaWiki:Toggle.js',
 		'u:dev:MediaWiki:AutoCreateUserPages.js',
+		"u:dev:MediaWiki:BackToTopButton/code.js",
 		'u:dev:UserTags/code.js',
+        'MediaWiki:Protection.js',
+		'MediaWiki:AOTM.js',
+		'MediaWiki:Walkthrough.js',
+		'MediaWiki:Usernames.js',
+		'MediaWiki:WikiNotification.js',
+		'MediaWiki:Toggle.js',
     ]
 });
 
-/*User Tags*/
+//User Tags
 window.UserTagsJS = {
         modules: {},
         tags: {
@@ -85,6 +90,6 @@ window.UserTagsJS = {
         'Pinkgalaxy': ['formerstaff'],
         'Sboy13': ['formerstaff'],
     };
-
-/*Lock old comments time limit*/
+    
+//Lock old comments time limit
 window.lockOldComments.limit = 90;

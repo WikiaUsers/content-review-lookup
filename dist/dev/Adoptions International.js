@@ -15,15 +15,15 @@ mw.loader.using( [
 
 	// Wikis in those languages will *error* when user tries to adopt them
 	window.adoptInternational.unsupportedLanguages = ( window.adoptInternational.unsupportedLanguages || [
-		'de',
-		'en',
-		'es',
-		'fr',
-		'it',
-		'pl',
-		'pt',
-		'pt-br',
-		'ru',
+		//'de',
+		//'en',
+		//'es',
+		//'fr',
+		//'it',
+		//'pl',
+		//'pt',
+		//'pt-br',
+		//'ru',
 		// Waiting IWR-zh onboarding
 		// 'zh',
 		// 'zh-tw',

@@ -11,7 +11,6 @@
  * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
 **/
  
-
 /**
  * Gets the cookie
  * @param c_name string Cookie name
@@ -75,7 +74,7 @@ window.setCookie = function(c_name, value, expiredays) {
 							'| origine = \n' +
 							'| jeu = \n' +
 							'| année = \n' +
-							'| univers =\n' +
+							'| univers = \n' +
 							'| cible2 = \n' +
 							'| cible3 = \n' +
 							'| cible4 = \n' +
@@ -106,8 +105,8 @@ window.setCookie = function(c_name, value, expiredays) {
 
 								customRows += this.fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
 								customRows += this.fromListboxTemplate('Jeu', 'jeuBox');
-								customRows += this.fromListboxTemplate('Univers', 'universBox');
 								customRows += this.fromListboxTemplate('Année', 'anneeBox');
+								customRows += this.fromListboxTemplate('Univers', 'universBox');
 								customRows += this.fromListboxTemplate('Quoi', 'quoiBox');
 								customRows += this.fromListboxTemplate('Type', 'typeBox');
 
@@ -117,7 +116,7 @@ window.setCookie = function(c_name, value, expiredays) {
 
 								// Bind submit to verify function
 								$description.closest('form').submit(this.verifySummary);
-					
+
 								// Autocomplete links
 								$.getScript(mw.util.wikiScript('load') + 
 									'?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
@@ -157,9 +156,9 @@ window.setCookie = function(c_name, value, expiredays) {
 				strBuilder += '| jeu = ' + $.trim($('#jeuBox').val()) + '\n';
 				strBuilder += '| année = ' + $.trim($('#anneeBox').val()) + '\n';
 				strBuilder += '| univers = ' + $.trim($('#universBox').val()) + '\n';
-				strBuilder += '| cible2 = \n';
-				strBuilder += '| cible3 = \n';
-				strBuilder += '| cible4 = \n';
+				strBuilder += '| cible2 = ' + '\n';
+				strBuilder += '| cible3 = ' + '\n';
+				strBuilder += '| cible4 = ' + '\n';
 				strBuilder += '| quoi = ' + $.trim($('#quoiBox').val()) + '\n';
 				strBuilder += '| type = ' + $.trim($('#typeBox').val()) + '\n';
 				strBuilder += '}}\n';

@@ -220,12 +220,25 @@ if (document.querySelector(".loot-container-table") != null)
 	
 	// =====
 	/*
-		Ensure empty captions don't get created (which are very difficult to style
-		away with CSS alone), by resetting the module state of ImageGalleryIconApp.
-		Could just as easily remove them after creation, but it's way less effort
-		to prevent them from being created in the first place.
+		Reset state of specific modules in ResourceLoader
 	*/
-	var igap = "ImageGalleryIconApp-6yMQaox8.js";
-	if (mw.loader.moduleRegistry[igap]) mw.loader.moduleRegistry[igap].state = null;
+	var modules =
+	[
+		// "View image" under images
+		// Ensure empty captions don't get created (which are very difficult to
+		// style away with CSS alone). Could just as easily remove them after
+		// creation, but it's way less effort to prevent them from being created
+		// in the first place.
+		"ImageGalleryIconApp-6yMQaox8.js",
+		
+		// Highlight search
+		"ext.fandom.HighlightToAction.js"
+	];
+	
+	for (var i = 0; i < modules.length; i++)
+	{
+		if (mw.loader.moduleRegistry[modules[i]])
+			mw.loader.moduleRegistry[modules[i]].state = null;
+	}
 	
 })();

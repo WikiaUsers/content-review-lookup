@@ -120,7 +120,7 @@ UserTagsJS.modules.custom = {
     'WiLdCaRd2048': ['discmod']
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];
-UserTagsJS.modules.inactive = 14;
+UserTagsJS.modules.inactive = 21;
 UserTagsJS.modules.metafilter = {
     rollback: ['content-moderator', 'sysop', 'bureaucrat'],
     'content-moderator': ['sysop', 'bureaucrat'],

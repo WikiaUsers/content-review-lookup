@@ -158,3 +158,6 @@
                 'following JavaScript files:\n   ' + articles.join('\n   '));
 
 }(jQuery, mediaWiki, window.localStorage));
+
+//Lock old comments time limit
+window.lockOldComments.limit = 100;
