@@ -217,7 +217,7 @@
 		} ),
 		// Stylesheets
 		stylesheets: Object.freeze( [ 
-			"u:carnage-test:MediaWiki:WikiActivity.css"
+			"u:dev:MediaWiki:ListGroupMembers.css"
 		] ),
 		// MediaWiki dependencies
 		dependencies: Object.freeze( [ 

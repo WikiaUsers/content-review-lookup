@@ -94,6 +94,7 @@
 	{
 		var switch_tabber = create_switch_tabber();
 		var topbar_switch_tabber = create_switch_tabber();
+		var editor_switch_tabber = create_switch_tabber();
 		
 		$(".page-header__title-wrapper").css("display", "flex")
 		.css("align-content", "center")
@@ -102,6 +103,10 @@
 		
 		// Add tabber to sticky top navigation
 		$(topbar_switch_tabber).insertAfter(".fandom-sticky-header > :first-child");
+		
+		// Add topbar to editor preview header bar
+		$(".oo-ui-processDialog-actions-safe").css("flex-direction", "row-reverse")
+		.append(editor_switch_tabber);
 	};
 	
 	mw.hook("wikipage.content").add(add_switch_tabber);

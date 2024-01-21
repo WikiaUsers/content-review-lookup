@@ -8,12 +8,13 @@ mw.loader.using('mediawiki.util').then(function() {
         vkRegex = $vkPlayer.hasClass('vk-playlist') ?
         	/^https?:\/\/vk\.com\/\music\/\playlist\// :
         	/^https?:\/\/vk\.com\/\audio\//;
+        var codes = vkSource.match(/playlist\/(.+)_(.+)_(.+)/);
         return vkRegex.test(vkSource) ? $('<iframe>', {
                 'frameborder': '0',
                 'style': 'border: none;',
                 'width': $vkPlayer.data('width'),
                 'height': $vkPlayer.data('height'),
-                'src': vkSource
+                'src': codes ? ('https://vk.com/widget_playlist.php?app=0&width=100%25&_ver=1&oid=' + codes[1] + '&pid=' + codes[2] + '&hash=' + codes[3]) : vkSource
             })
             : null;
     }

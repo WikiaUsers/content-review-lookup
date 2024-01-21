@@ -16,16 +16,17 @@
 */
 
 var config = mw.config.get([
+    'wgCanonicalSpecialPageName',
     'wgCanonicalNamespace',
     'wgPageName',
-    'wgCanonicalSpecialPageName',
-    'profileUserName',
     'wgUserName',
-    'wgServer'
+    'wgServer',
+    'profileUserName'
 ]);
 
-function customizeUserProfileApp() {
-	if ( !$('#userProfileApp').length ) return; //On User blog it only exists if not a subpage
+function customiseUserProfileApp() {
+	//User Profile App doesn't load on subpages of User and User blog
+	if ( !$('#userProfileApp').length ) return;
 	var month = new Date().getMonth();
 	var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 	var username = config.profileUserName;
@@ -33,8 +34,7 @@ function customizeUserProfileApp() {
 		$('#userProfileApp').attr({
 				'data-user': username,
 				'data-month': months[month]
-		}).find(
-			$('.user-identity-avatar__image')).attr({
+		}).find($('.user-identity-avatar__image')).attr({
 			alt: username,
 			title: username
 		});
@@ -43,48 +43,39 @@ function customizeUserProfileApp() {
 		subtree: true
     });
 }
-function customizeComments() {
-	var site = config.wgServer;
-	var user = config.wgUserName;
+function customiseComments() {
+	if ( !$('#articleComments, #MessageWall').length ) return;
 	new MutationObserver(function() {
-		//Comments
-		$('.Reply, .Message, .Comment_body__Dw-zH, .Reply_body__PM9kM').each(function () {
-			var username = $(this).find('a[class^="EntityHeader_name__"]').text();
-			$(this).attr('data-user', username);
-			$(this).find('.wds-avatar').attr({
-				alt: username,
-				title: username
-			}).find('.wds-avatar__image').attr({
-				alt: username,
-				title: username
+		$('#articleComments, #MessageWall').each(function () {
+			//Customise comments
+			$(this).find('.Reply, .Message, [class^="Comment_body__"], [class^="Reply_body__"]').each(function () {
+				var username = $(this).find('a[class^="EntityHeader_name__"]').text();
+				$(this).attr('data-user', username).addClass('user-comment');
+			}).find('a[href*="%20"]').each(function(){
+		    	this.href = this.href.replace(/%20/g, '_').replace(config.wgServer, '');
 			});
-			$(this).find('a[class^="EntityHeader_name__"][href*="%20"]').each(function(){
-		    	this.href = this.href.replace(/%20/g, '_').replace(site, '');
+			//Customise avatars
+			$(this).find('.wds-avatar').each(function () {
+			    var attribute = $(this).children('a').length ?
+			        $(this).siblings('a').text() :
+			        config.wgUserName;
+			    $(this).attr('title', attribute).find('.wds-avatar__image').attr({
+		            alt: attribute,
+		            title: attribute
+		        });
 			});
-			$(this).addClass('user-comment');
-		});
-		//Reply box avatars
-		$('#MessageWall .InlineEntityFormWrapper_inline-entity-form-wrapper__z2Uf9 .wds-avatar, #articleComments .InlineEntityFormWrapper_inline-entity-form-wrapper__z2Uf9 .wds-avatar').attr({
-			alt: user,
-			title: user
-		}).find('.wds-avatar__image').attr({
-			alt: user,
-			title: user
 		});
     }).observe(document.querySelector('#articleComments, #MessageWall'), {
 		childList: true,
 		subtree: true
     });
 }
-function customizeContribsTools() {
+function customiseContribsTools() {
 	$('.mw-contributions-user-tools a[href*="User%3A"], .UserProfileActivityModeration__links a[href*="User%3A"]').each(function(){
     	 this.href = this.href.replace(/\+/g, '_').replace("User%3A", 'User:');
 	 });
-	$('.mw-contributions-user-tools a[href*="Special:AbuseLog"], .UserProfileActivityModeration__links a[href*="Special:AbuseLog"]').each(function(){
-	     this.href = this.href.replace(/\+/g, '_');
-	 });
 }
-function customizeUserList() {
+function customiseUserList() {
 	new MutationObserver(function() {
 		$('.listusers-result-table-rows td:first-child a').each(function(){
 			if ($(this).text() === 'Wall') {
@@ -99,10 +90,11 @@ function customizeUserList() {
 		subtree: true
     });
 }
-function customizeLeaderboardAvatars() {
+function customiseLeaderboardAvatars() {
 	$('.wds-avatar__image').each(function() {
-		var username = $(this).parents('.wds-avatar').attr('title');
-		var link = $(this).parents('.wds-avatar').siblings('a').attr('href');
+		var parent = $(this).parents('.wds-avatar');
+		var username = parent.attr('title');
+		var link = parent.siblings('a').attr('href');
 		if (this.tagName == 'svg') {
 			$(this).attr({
 				alt: username,
@@ -113,21 +105,16 @@ function customizeLeaderboardAvatars() {
 	});
 }
 function customizeCommunityPageAvatars() {
-	new MutationObserver(function() {
-		$('svg.wds-avatar__image').not('[alt]').each(function () {
-			var username = $(this).parents('.wds-avatar').attr('title');
-			$(this).attr({
-				alt: username,
-				title: username
-			});
+	$('svg.wds-avatar__image').each(function () {
+		var username = $(this).parents('.wds-avatar').attr('title');
+		$(this).attr({
+			alt: username,
+			title: username
 		});
-	}).observe(document.querySelector('#mw-content-text, .community-page__contributors-modal-curtain, body:not(.community-page__contributors-modal-curtain)'), {
-		childList: true,
-		subtree: true
-    });
+	});
 }
-function customizeAnnouncementPageAvatars() {
-	$('.wds-avatar__image').not('[title]').each(function () {
+function customiseAnnouncementPageAvatars() {
+	$('.wds-avatar__image').each(function () {
 		var username = $(this).parents('.wds-avatar').attr('title');
 		$(this).attr({
 			alt: username,
@@ -140,28 +127,28 @@ $(function() {
 	if (config.wgCanonicalNamespace == "User" ||
         config.wgCanonicalNamespace == "Message_Wall" ||
         config.wgCanonicalNamespace == "User_blog" ) {
-    	customizeUserProfileApp();
+    	customiseUserProfileApp();
         }
     if (config.wgCanonicalNamespace == "Message_Wall" ||
 		config.wgCanonicalNamespace == "User_blog" ||
         config.wgCanonicalNamespace == "" ) {
-    	customizeComments();
+    	customiseComments();
         }
 	if (config.wgCanonicalSpecialPageName == "Contributions" ||
     	config.wgCanonicalSpecialPageName == "UserProfileActivity") {
-    	customizeUserProfileApp();
-    	customizeContribsTools();
+    	customiseUserProfileApp();
+    	customiseContribsTools();
     	}
     if (config.wgPageName == "Special:ListUsers") {
-    	customizeUserList();
+    	customiseUserList();
     	}
     if (config.wgPageName == "Special:Leaderboard") {
-    	customizeLeaderboardAvatars();
+    	customiseLeaderboardAvatars();
     	}
     if (config.wgPageName == "Special:Community") {
     	customizeCommunityPageAvatars();
     	}
     if (config.wgPageName == "Special:Announcements") {
-    	customizeAnnouncementPageAvatars();
+    	customiseAnnouncementPageAvatars();
     	}
 });

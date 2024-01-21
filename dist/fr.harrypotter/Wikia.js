@@ -13,7 +13,7 @@ if ((wgAction == 'submit' || wgAction == 'edit') && mwCustomEditButtons) {
 		"imageFile": "https://images.wikia.nocookie.net/harrypotter/fr/images/7/7c/Outils-Personnage.png",
 		"speedTip": "Insérer le modèle {{Infobox Personnage}}",
 		"tagOpen": "\{\{Infobox Personnage\r|Nom=",
-		"tagClose": "\r|Image= \r|Genre= \r|Yeux= \r|Cheveux= \r|Naissance= \r|Mort= \r|Famille= \r|Sang= \r|Surnom(s)= \r|Baguette= \r|Epouvantard= \r|Patronus= \r|Animagus= \r|Métier= \r|Affiliation= \r|Première= \r|Dernière= \r|Interprète= \r|Galerie= \r\}\}",
+		"tagClose": "\r|Image= \r|Genre= \r|Yeux= \r|Cheveux= \r|Naissance= \r|Mort= \r|Famille= \r|Sang= \r|Alias= \r|Baguette= \r|Epouvantard= \r|Patronus= \r|Animagus= \r|Métier= \r|Affiliation= \r|Première= \r|Dernière= \r|Interprète= \r|Galerie= \r\}\}",
 		"sampleText": ""};
  
 	mwCustomEditButtons[mwCustomEditButtons.length] = {

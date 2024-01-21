@@ -15,7 +15,6 @@ importArticles({
 		"MediaWiki:Modifiers.js",
 		"MediaWiki:ClanHouseGenerator.js",
 		"MediaWiki:GemCalculators.js",
-		"MediaWiki:Sandbox.js", //JS testing area for small things
     ]
 });
 

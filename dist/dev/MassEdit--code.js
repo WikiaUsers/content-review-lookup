@@ -209,7 +209,6 @@
           "bot-global",
           "staff",
           "soap",
-          "helper",
           "wiki-representative",
           "wiki-specialist",
           "content-volunteer",
@@ -3228,8 +3227,18 @@
         $match.value === "regex");
 
       // Define regex, etc. only once per submission operation using closure
-      replaceOccurrences = this.replaceOccurrences(isCaseSensitive,
-        isUserRegex, $target, $content, indices);
+      try {
+        replaceOccurrences = this.replaceOccurrences(isCaseSensitive,
+          isUserRegex, $target, $content, indices);
+      } catch (paramError) {
+        // Catch malformed regex in target field
+        this.resetModal("logErrorSecurity");
+
+        if (this.flags.debug) {
+          window.console.error(paramError);
+        }
+        return;
+      }
 
       // Check closure scope's variables under [[Scopes]]
       if (this.flags.debug) {

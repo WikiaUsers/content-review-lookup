@@ -24,7 +24,6 @@
 	if (!commentArea) return;
 
 	var buttonInput;
-	var preloads = 2;
 
 	/**
 	 * Toggle comment protection.
@@ -80,7 +79,9 @@
 		buttonInput.id = 'commentToggle';
 		buttonInput.checked = true;
 		buttonInput.className = 'wds-toggle__input';
-		buttonInput.addEventListener('change', protect);
+		buttonInput.addEventListener('change', function() {
+			mw.loader.using('mediawiki.api').then(protect);
+		});
 
 		var buttonLabel = document.createElement('label');
 		buttonLabel.htmlFor = 'commentToggle';
@@ -92,18 +93,11 @@
 		commentArea.before(buttonInput, buttonLabel);
 	}
 
-	/**
-	 * Load translations.
-	 */
-	function preload() {
-		if (--preloads > 0) return;
-		window.dev.i18n.loadMessages('CommentsToggle').done(init);
-	}
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('CommentsToggle').done(init);
+	});
 
-	mw.hook('dev.i18n').add(preload);
-	mw.loader.using('mediawiki.api').then(preload);
-
-	importArticle({
+	window.importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});

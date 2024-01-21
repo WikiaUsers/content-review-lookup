@@ -4,7 +4,7 @@
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Sky Seasonal Candle Calculator
 // Author: Ray808080
-// Version: 0.1.5
+// Version: 0.1.6
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Instructions: To use, place the following:
 /*  <div id="sky-seasonal-candle-calculator-wrapper">
@@ -44,7 +44,7 @@ Date.prototype.toDateInputValue = (function() {
         return false;
     } 
     window.SkySeasonalCandleCalculator = {
-    	version: '0.1.5',
+    	version: '0.1.6',
         init: importArticles({
 				type: 'script',
 				articles: [
@@ -91,7 +91,7 @@ Date.prototype.toDateInputValue = (function() {
                 var translation_a_second = "Um segundo"; // Referring to "Double Seasonal Candle Event"
                 var translation_a = "Um"; // Referring to "Double Seasonal Candle Event"
                 var translation_double_sce = "Evento de Velas Sazonais em Dobro";
-                var translation_not_announced = "não foi anunciada";
+                var translation_not_announced = "não foi anunciado";
                 var translation_to_buy_everything_youll_need = "Para comprar todos os cosméticos da Temporada, você precisará de";
                 var translation_sc_wo_pass = "Velas Sazonais SEM o Passe da Temporada";
                 var translation_sc_w_pass = "Velas Sazonais COM o Passe da Temporada";
@@ -151,23 +151,29 @@ Date.prototype.toDateInputValue = (function() {
 
                 // Fills in the info for the Season
                 document.getElementById("sscc_season_name").innerHTML = SEASON_NAME;
-                document.getElementById("sscc_season_start").innerHTML = SEASON_START.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
-                document.getElementById("sscc_season_end").innerHTML = SEASON_END.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
+                var season_start_string = SEASON_START.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + SEASON_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                document.getElementById("sscc_season_start").innerHTML = season_start_string;
+                var season_end_string = SEASON_END.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + SEASON_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                document.getElementById("sscc_season_end").innerHTML = season_end_string;
                 document.getElementById("sscc_season_days").innerHTML = SEASON_DAYS;
                 
                 // Fills in the info for a Double Event if it exists
                 if (DOUBLE_EVENT) {
-                    document.getElementById("sscc_double_start").innerHTML = DOUBLE_START.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
-                    document.getElementById("sscc_double_end").innerHTML = DOUBLE_END.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
+                	var double_start_string = DOUBLE_START.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    document.getElementById("sscc_double_start").innerHTML = double_start_string;
+                    var double_end_string = DOUBLE_END.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + DOUBLE_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    document.getElementById("sscc_double_end").innerHTML = double_end_string;
                     document.getElementById("sscc_double_days").innerHTML = DOUBLE_DAYS;
                 } else {
-                    document.getElementById("sscc_double_event").innerHTML = translation_a + " " + translation_double_sce + " " + translation_not_announced + ".";
+                    document.getElementById("sscc_double_event").innerHTML = translation_a + " <b>" + translation_double_sce + "</b> " + translation_not_announced + ".";
                 }
 
                 // Fills in the info for a Second Double Event if it exists
                 if (DOUBLE_2_EVENT) {
-                    document.getElementById("sscc_double_2_start").innerHTML = DOUBLE_2_START.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
-                    document.getElementById("sscc_double_2_end").innerHTML = DOUBLE_2_END.toLocaleString(translation_language, { dayle: "medium", timeStyle: "short" });
+            		var double_2_start_string = DOUBLE_2_START.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    document.getElementById("sscc_double_2_start").innerHTML = double_2_start_string;
+                    var double_2_end_string = DOUBLE_2_END.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    document.getElementById("sscc_double_2_end").innerHTML = double_2_end_string;
                     document.getElementById("sscc_double_2_days").innerHTML = DOUBLE_2_DAYS;
                 } else {
                     // The second Event is a very rare case so nothing will be shown if it is not announced
@@ -518,7 +524,7 @@ Date.prototype.toDateInputValue = (function() {
             var translation_and_more = "<b>...E MAIS?</b>";
             var translation_you_would_need = "Você precisará de";
             var translation_to_buy_everything = "para comprar todos os cosméticos desta Temporada"
-            var translation_if_you_dont_miss = "Você deve conseguir comprar todos os cosméticos se não perder se não perder"
+            var translation_if_you_dont_miss = "Você deve conseguir comprar todos os cosméticos se não perder"
             var translation_out_of = "do(s)"
             var translation_days_remaining = "dia(s) restante(s)"
             var translation_you_can_buy_everything = "Você pode comprar todos os cosméticos desta Temporada!";
@@ -566,7 +572,7 @@ Date.prototype.toDateInputValue = (function() {
                 }
             // Responses for people without Season Pass
             } else {
-                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_wo_pass + ".";
+                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_sc + " " + translation_wo_pass + ".";
                 
                 // 1. No-SP Commentary: How many SC you missed
                 missing_candles = no_pass_before - candle_count;

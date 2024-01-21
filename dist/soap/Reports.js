@@ -1,3 +1,5 @@
+// jshint jquery:false, browser:true, devel:true, camelcase:true, curly:false, eqeqeq:true, esversion: 5, forin:true, freeze:true, immed:true, latedef:true, leanswitch:true, newcap:true, noarg:true, regexp:true, strict:true, trailing:false, undef:true, unused:true
+
 /** <nowiki>
  * Flexible form script for SOAP Wiki reports
  *
@@ -14,16 +16,18 @@
  * @license: CC-BY-NC-SA
  */
 
-;(function($, mw) {
+(function($, mw) {
 	'use strict';
-	var wgUserName = mw.config.values.wgUserName;
-	var options = {};
-	var reportDropdown;
-	var msg;
-	var preloads = 2;
-	var modal = {};
-	var type;
-	var opts;
+
+	if (window.SOAPReportsLoaded) return;
+	window.SOAPReportsLoaded = true;
+
+	var wgUserName = mw.config.get('wgUserName'),
+		options = {},
+		modal = {},
+		reportDropdown,
+		msg,
+		opts;
 
 	/**
 	 * Return header html code for UI generation
@@ -494,20 +498,20 @@
 				}
 				var re, domain;
 				// default wikiname
-				if($input.attr('id') == "wikiurl") {
+				if ($input.attr('id') === "wikiurl") {
 					re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
 					domain = re.exec(text);
-					if(domain != null) {
+					if(domain !== null) {
 						params[x] = domain[1];
 						continue;
 					}
-				} else if($input.attr('id') === "wikiname") {
+				} else if ($input.attr('id') === "wikiname") {
 					if (!text) {
 						text = $inputs.filter('#wikiurl').val();
 					}
 					re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
 					domain = re.exec(text);
-					if(domain != null) {
+					if (domain !== null) {
 						params[x] = domain[1].charAt(0).toUpperCase() + domain[1].slice(1) + " Wiki";
 
 						continue;
@@ -515,7 +519,7 @@
 				}
 				
 				// handle multiple users
-				if($input.attr('id') == "user" && text.indexOf('\n') !== -1) {
+				if ($input.attr('id') === "user" && text.indexOf('\n') !== -1) {
 					if (x === '$5') {
 						text = (text.match(/(?:\r\n|\r|\n)/g) || []).length + 1 + ' users';
 					} else {
@@ -525,7 +529,7 @@
 				}
 
 				// handle checkboxes
-				if ($input.attr('id') == "crosswiki") {
+				if ($input.attr('id') === "crosswiki") {
 					if (text) {
 						text = "\\crosswiki=yes\n";
 						keyedValueCount++;
@@ -533,7 +537,7 @@
 						text = "";
 					}
 				}
-				if ($input.attr('id') == "socks") {
+				if ($input.attr('id') === "socks") {
 					if (text) {
 						sockCount = 1;
 						keyedValueCount++;
@@ -542,7 +546,7 @@
 				}
 
 				// handle socks
-				if ($input.attr('id') == "sockusers") {
+				if ($input.attr('id') === "sockusers") {
 					if (text === "" && sockCount) {
 						alert('One or more required fields are missing. Please check your submission and try again.');
 						$button.attr('disabled', false);
@@ -555,7 +559,7 @@
 				}
 
 				// patch | in reason
-				if ($input.attr('id') == "comment") {
+				if ($input.attr('id') === "comment") {
 					text = text.replace(/\|/g, '\\\\');
 				}
 
@@ -574,9 +578,9 @@
 		}
 
 		// Fix when template thinks = is a key
-		if (opts.submitText.match(/=/g) != null && opts.submitText.match(/=/g).length > keyedValueCount) {
+		if (opts.submitText.match(/=/g) !== null && opts.submitText.match(/=/g).length > keyedValueCount) {
 			var templateParam = 0;
-			opts.submitText = opts.submitText.replace(/\|/g, function (match, i, original) {
+			opts.submitText = opts.submitText.replace(/\|/g, function() { // match, i, original
 				templateParam++;
 				return '|' + templateParam + '=';
 			});
@@ -594,7 +598,7 @@
 				title: opts.page,
 				appendtext: '\n' + opts.submitText,
 				summary: opts.summary
-			}).done(function (res) {
+			}).done(function() {
 				location.replace('https://soap.fandom.com/wiki/' + opts.page);
 			});
 		} else {
@@ -605,7 +609,7 @@
 				sectiontitle: opts.sectionTitle,
 				text: opts.submitText,
 				summary: opts.summary
-			}).done(function (res) {
+			}).done(function() {
 				location.replace('https://soap.fandom.com/wiki/' + opts.page);
 			});
 		}
@@ -615,6 +619,13 @@
 	 * Create modal.
 	 */
 	function createWindow() {
+		mw.loader.using([
+			'mediawiki.api',
+			'mediawiki.notification',
+			'oojs-ui-windows'
+		]).then(function(require) {
+		var OO = require('oojs');
+
 		function ReportDialog(config) {
 			ReportDialog.super.call(this, config);
 		}
@@ -675,9 +686,9 @@
 		});
 
 		// Expand dialog when socks is clicked
-		$('#socks, label[for=socks]').on('click', function (e) {
+		$('#socks, label[for=socks]').on('click', function() {
 			setTimeout(function(){
-				reportDialog.updateSize();
+				modal.reportDialog.updateSize();
 			}, 600);
 		});
 
@@ -727,6 +738,7 @@
 				}
 			});
 		});
+		});
 	}
 
 	/**
@@ -735,7 +747,7 @@
 	 */
 	function loadButton(type) {
 		opts = options[type];
-		var $newButton = $('<span>', {
+		var $newButton = $('<button>', {
 			'class': 'wds-button',
 			id: 'soap-report-' + type,
 			text: opts.buttonText
@@ -745,9 +757,7 @@
 				type = this.id.split('-')[2];
 				opts = options[type];
 				modal.windowManager.openWindow(modal.reportDialog);
-			} else {
-				createWindow();
-			}
+			} else createWindow();
 		});
 
 		$('.rb-' + type)
@@ -755,9 +765,9 @@
 			.append($newButton);
 		// Fire hook for scripts that use the button 
 		mw.hook('soap.reports').fire($newButton);
-		if (mw.util.getParamValue('openmodal')) {
-			$newButton.click();
-		}
+		mw.loader.using('mediawiki.util').then(function() {
+			if (mw.util.getParamValue('openmodal')) $newButton.click();
+		});
 	}
 
 	/**
@@ -770,15 +780,17 @@
 
 		var x;
 		for (x in options) {
-			var opts = options[x];
 			if (options.hasOwnProperty(x)) {
-				$('#rf-dropdown-list').append(
-					$('<li>')
-						.attr('id', 'soap-report-' + x)
-						.attr('class', 'wds-global-navigation__dropdown-link')
-						.on('click',loadForm)
-						.text(opts.buttonText)
-				);
+				var opts = options[x];
+				if (options.hasOwnProperty(x)) {
+					$('#rf-dropdown-list').append(
+						$('<li>')
+							.attr('id', 'soap-report-' + x)
+							.attr('class', 'wds-global-navigation__dropdown-link')
+							.on('click', createWindow)
+							.text(opts.buttonText)
+					);
+				}
 			}
 		}
 	}
@@ -787,42 +799,30 @@
 	 * Initializes the script.
 	 */
 	function init() {
+		setOptions();
 		for (var x in options) {
 			if ($('.rb-' + x).length > 0) {
-				importArticle({
-					type: 'script',
-					article: 'u:soap:MediaWiki:Reports.css'
-				});
 				loadButton(x);
 			}
 		}
 		if ($('.rf-dropdown').length > 0) {
-			importArticle({
-				type: 'script',
-				article: 'u:soap:MediaWiki:Reports.css'
-			});
 			loadDropdown(x);
 		}
 	}
 
-	/**
-	 * Load translations.
-	 */
-	function preload() {
-		if (--preloads > 0) return;
-		window.dev.i18n.loadMessages('u:soap:MediaWiki:Custom-Reports/i18n.json').done(function(i18no) {
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('u:soap:MediaWiki:Custom-Reports/i18n.json').done(function(i18no) {
 			msg = i18no.msg;
-			setOptions();
 			init();
 		});
-	}
+	});
 
-	mw.hook('dev.i18n').add(preload);
-	mw.loader.using(['mediawiki.api', 'mediawiki.util', 'mediawiki.notification', 'oojs-ui-windows']).then(preload);
-
-	importArticle({
+	window.importArticles({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
+	}, {
+		type: 'style',
+		article: 'u:soap:MediaWiki:Reports.css'
 	});
 })(window.jQuery, window.mediaWiki);
 // </nowiki>

@@ -36,6 +36,10 @@ window.AutoCreateUserPagesConfig = {
   notify: '<a href="/wiki/User_talk:$2">Welcome to the Little Bear Wiki!</a>'
 };
 
+/* Addition to the copyright footer */
+
+$('.license-description').append('For more information, see the <a href="/wiki/Copyright_Policy">Copyright Policy</a>.');
+
 /* KayleighMJ avatar */
 
 $('#KayleighMJ-image img').wrap('<a href="/wiki/User:KayleighMJ">');

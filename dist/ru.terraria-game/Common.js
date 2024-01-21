@@ -6,12 +6,6 @@
  * Required template: https://runescape.wikia.com/wiki/Template:Switch_infobox
  * Required stylesheet: https://runescape.wikia.com/wiki/User:Matthew2602/SwitchInfobox.css
  */
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:RemoveLegacyThreads.js',
-    ]
-});
 
 // Fixes a weird bug with the MW parser that adds lots of empty parapgraphs
 $( '.switch-infobox > p, .switch-infobox-triggers > p' ).each( function() {

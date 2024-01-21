@@ -3,7 +3,7 @@
  * Creates the "Special:UserInfo" page, which allows you to view a little information about the user
  */
 
-;(function($, mw) {
+(function($, mw) {
 	'use strict';
 	var config = mw.config.get([
 		'wgTitle',
@@ -16,7 +16,6 @@
 		(config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') ||
 		(config.wgNamespaceNumber === 2 && config.wgRelevantUserName))) return;
 	var input, info, msg;
-	var preloads = 2;
 
 	function addEntry(data, label, value, join) {
 		var text = '';
@@ -27,6 +26,7 @@
 		document.getElementById('PUI-' + value).textContent = text;
 	}
 	function getUserInfo() {
+		mw.loader.using('mediawiki.api').then(function() {
 		var username = input.value;
 		info.innerHTML = '';
 		new mw.Api().get({
@@ -54,6 +54,7 @@
 				addEntry(data, msg('groups').escape(), 'groups', true);
 			}
 		});
+		});
 	}
 	function init() {
 		var header = document.getElementById('firstHeading');
@@ -79,25 +80,23 @@
 		}
 	}
 	function addTool() {
-		var urlWithHash = './Special:UserInfo#' + mw.html.escape(config.wgRelevantUserName);
-		$('<li>', { id: 'userinfo' })
-		.html('<a href="' + urlWithHash + '">' + msg('userInfo').escape() + '</a>')
-		.prependTo('.toolbar .tools');
+		mw.loader.using('mediawiki.util').then(function() {
+			var urlWithHash = './Special:UserInfo#' + mw.util.wikiUrlencode(config.wgRelevantUserName);
+			$('<li>', { id: 'userinfo' })
+			.html('<a href="' + urlWithHash + '">' + msg('userInfo').escape() + '</a>')
+			.prependTo('.toolbar .tools');
+		});
 	}
 
-	function preload() {
-		if (--preloads > 0) return;
-		window.dev.i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
 			msg = i18no.msg;
 			if (config.wgNamespaceNumber === -1) init();
 			if (config.wgNamespaceNumber === 2) addTool();
 		});
-	}
+	});
 
-	mw.hook('dev.i18n').add(preload);
-	mw.loader.using(['mediawiki.api']).then(preload);
-
-	importArticle({
+	window.importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});

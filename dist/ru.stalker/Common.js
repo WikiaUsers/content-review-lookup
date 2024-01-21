@@ -168,4 +168,13 @@ mw.hook( 'wikipage.collapsibleContent' ).add( function ($nodes) {
 	}
 });
 
+// Автоматически заменить ссылки на редактирование визуальным редактором на исходный код.
+var editElement = document.querySelector(".wds-button#ca-ve-edit");
+if (editElement)
+	editElement.setAttribute("href", editElement.getAttribute("href").replace("veaction", "action"));
+    
+var editSectionElements = document.querySelectorAll(".mw-editsection-visualeditor");
+for (var i = 0; i < editSectionElements.length; i++)
+	editSectionElements[i].setAttribute("href", editSectionElements[i].getAttribute("href").replace("veaction", "action"));
+    
 // </nowiki>

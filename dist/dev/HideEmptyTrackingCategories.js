@@ -7,7 +7,7 @@
  * @author Magiczocker
  */
 
-;(function (mw) {
+(function (mw) {
 	'use strict';
 
 	if (window.HideEmptyTrackingCategoriesLoaded ||
@@ -18,6 +18,7 @@
 	if (!table) return;
 
 	var msg;
+	var preloads = 2;
 
 	/**
 	 * Update button text and category visibility.
@@ -32,10 +33,9 @@
 
 	/**
 	 * Initializes the script.
-	 * @param {object} i18n - Messages from I18n-js dev script.
 	 */
-	function init(i18n) {
-		msg = i18n.msg;
+	function init() {
+		if (--preloads > 0) return;
 		const emptyText = mw.msg('categorytree-member-num', 0, 0, 0, 0, mw.msg('categorytree-num-empty')), // "(empty)"
 		disabledText = mw.msg('trackingcategories-disabled'), // "Category is disabled"
 		rows = table.querySelectorAll('.mw-trackingcategories-name');
@@ -60,18 +60,20 @@
 		mw.util.addCSS('.categories-hidden .empty-category{display:none;}');
 	}
 
-	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
-		return new mw.Api().loadMessagesIfMissing([
+	mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
+		new mw.Api().loadMessagesIfMissing([
 			'categorytree-member-num',
 			'categorytree-num-empty',
 			'trackingcategories-disabled'
-		]);
-	}).then(function () {
-		mw.hook('dev.i18n').add(function(i18n) {
-			i18n.loadMessages('HideEmptyTrackingCategories').done(init);
+		]).then(init);
+	});
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('HideEmptyTrackingCategories').done(function(i18no) {
+			msg = i18no.msg;
+			init();
 		});
 	});
-	importArticle({
+	window.importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});

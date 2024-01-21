@@ -6,7 +6,7 @@
 -----------------------
  COMPLEMENTARY SCRIPTS
 -----------------------
-- HeroSkins2.css
+- HeroSkins.css
 
 -----------------------
  AUTHORS & MAINTAINERS
@@ -16,7 +16,7 @@
 --------------
  INFORMATION
 --------------
-- For the new Hero Skin Wardrobes ("Template:Barbarian King Skins" etc)
+- For the Hero Skin Wardrobes ("Template:Wardrobe-BK" etc)
 
 */
 $(document).ready(function() {

@@ -318,7 +318,7 @@
                 '</section>'
             );
 
-            if (MedalSettings.dataUser[user].length > 128) {
+            if (MedalSettings.dataUser[user].length > 200) {
                 medalModal = true;
                 
                 medalModalForm.append('<div class="ModalMedalCollection"><div class="in" style="text-align:center;"></div></div>');

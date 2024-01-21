@@ -49,7 +49,7 @@ $(function () {
 				text : '{{' + '#invoke:PickBanScore|main|page=' + overviewPage + '}}',
 				prop : 'text'
 			}).then(function(data) {
-				var str = data.parse.text['*'];
+				var str = window.processParserOutput(data.parse.text['*']);
 				if (str.includes('Lua error')) {
 					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule! Perhaps you need to add a |notab=yes? We will now print the error that was detected.");
 					window.reportError(str);
@@ -98,6 +98,12 @@ $(function () {
 					template = template.replace(/\|team1score=\s*\|/, '|team1score=' + thisgame.score1 + ' |')
 					template = template.replace(/\|team2score=\s*\|/, '|team2score=' + thisgame.score2 + ' |')
 					template = template.replace(/\|winner=(\s*)\|/,'|winner=' + thisgame.winner + ' $1|');
+					
+					if (thisgame.reorderTeams === true ) {
+						// grab a full template arg ([^\|] won't match the next template arg separator)
+						template = template.replace(/\|blueteam=([^\|]+)\|redteam=([^\|\r\n]+)/, "|blueteam=$2|redteam=$1");
+					}
+					
 					listOfTemplates[thisgame.N] = template;
 					if (thisgame.bestof && thisgame.serieswinner) {
 						deleteExtraGames(listOfTemplates, thisgame, template);
@@ -114,7 +120,9 @@ $(function () {
 					tags: 'refresh_overview'
 				}).then(function(data) {
 					if (tbl.length == 0) {
-						return window.purgeTitle(overviewPage + '/Picks and Bans');
+						var pbPagesToPurge = $dataDiv.attr('data-extra-pb-overviews') ? $dataDiv.attr('data-extra-pb-overviews').split(',') : [];
+						pbPagesToPurge.unshift(overviewPage + '/Picks and Bans');
+						return window.purgeAll(pbPagesToPurge);
 					}
 					return updatePB(tbl);
 				}, raiseError);
@@ -138,6 +146,9 @@ $(function () {
 				serieswinner : parseInt(game[6]),
 				team1name: game[7], // only for debugging purposes
 				team2name: game[8], // only for debugging purposes
+				blue: game[9], // only for debugging
+				blue: game[10], // only for debugging
+				reorderTeams: game[11] === 'yes', // if the teams were ordered backwards in pb
 			}
 		}
 		
@@ -275,8 +286,8 @@ $(function () {
 		.then(function() {
 			window.purgeAll([mw.config.get('wgMainPageTitle')]);
 		})
-		.then(getPBData)
-		.then(updatePB)
+		//.then(getPBData)
+		//.then(updatePB)
 		.then(updateTimeline)
 		.then(logAction)
 		.then(function() {
@@ -319,6 +330,33 @@ $(function() {
 		return buttonList.join('<br>') + '<br>';
 	}
 	
+	function getPlayerRedirects(pageListTouch) {
+		if (pageListTouch.length === 0) {
+			return Promise.resolve([]);
+		}
+		
+		var wherePageList = pageListTouch.map(function(e) {
+			return '"' + e + '"';
+		});
+		
+		return new mw.Api().get({
+			action : 'cargoquery',
+			tables : 'PlayerRedirects',
+			where : 'AllName IN (' + wherePageList.join(", ") + ')',
+			fields : 'OverviewPage',
+			group_by : 'OverviewPage'
+		}).then(function(data) {
+			var redirects = [];
+			data.cargoquery.forEach(function(page){
+				var title = page.title.OverviewPage;
+				if (!pageListTouch.includes(title) && !pageListTouch.includes(title.charAt(0).toLowerCase() + title.slice(1))) {
+					redirects.push(title);
+				};
+			});
+			return redirects;
+		});
+	}
+	
 	function refreshNewsDataPages(e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -328,10 +366,9 @@ $(function() {
 		// get list of pages to touch
 		var pageListTouch = [];
 		if ($container.attr('data-to-touch')) {
-			pageListTouch = $container.attr('data-to-touch').split(',')
+			pageListTouch = $container.attr('data-to-touch').split(',');
 		}
-		var touches = pageListTouch.map(window.blankEdit);
-		
+
 		// construct full list of pages to purge
 		var pageListPurge = $container.attr('data-to-refresh').split(',');
 		$container.find('input').each(function() {
@@ -340,25 +377,35 @@ $(function() {
 				pageListPurge.push($(this).attr('name') + '/Current Rosters');
 			}
 		});
-		var purges = pageListPurge.map(window.purgeTitle);
-		
-		
-		return Promise.all(touches).then(function() {
-			return Promise.all(purges);
-		}).then(function() {
-			return new mw.Api().postWithToken('csrf', {
-				action: 'customlogswrite',
-				logtype: 'ro-news',
-				title: mw.config.get('wgPageName'),
-				publish: 1,
-				'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
-				'custom2': $container.attr('data-ro-team')
+
+		return getPlayerRedirects(pageListTouch)
+		.then(function(redirects) {
+			redirects.forEach(function(e) {
+				pageListTouch.push(e);
+				pageListPurge.push(e);
 			});
-		}).then(function() {
-			console.log(pageListTouch);
-			console.log(pageListPurge);
-			console.log('done!');
-			displayResultStatus('gadget-action-success', $inner);
+	
+			var touches = pageListTouch.map(window.blankEdit);
+	
+			var purges = pageListPurge.map(window.purgeTitle);
+	
+			return Promise.all(touches).then(function() {
+				return Promise.all(purges);
+			}).then(function() {
+				return new mw.Api().postWithToken('csrf', {
+					action: 'customlogswrite',
+					logtype: 'ro-news',
+					title: mw.config.get('wgPageName'),
+					publish: 1,
+					'custom1': $inner.closest('.news-data-sentence-div').find('.news-data-sentence-wrapper').text(),
+					'custom2': $container.attr('data-ro-team')
+				});
+			}).then(function() {
+				console.log(pageListTouch);
+				console.log(pageListPurge);
+				console.log('done!');
+				displayResultStatus('gadget-action-success', $inner);
+			});
 		});
 	}
 	

@@ -20,6 +20,7 @@ importArticles({
 	]
 });
 
+//Has to be reworked as most of the admins/moderators listed here aren't active anymore
 window.MessageWallUserTags = {
     tagColor: 'white',
     glow: true,
@@ -47,6 +48,6 @@ window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 importScriptPage('AjaxRC/code.js', 'dev');
 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 365; //Number of days before comment gets locked - Default: 100 days
+window.lockOldComments.addNoteAbove = true; //Adds note that comment was locked

@@ -1,140 +1,179 @@
-var page = document.getElementsByClassName('mw-parser-output')[0];
-//var combatcards = document.getElementsByClassName('combatcard-main');
-combatcards = document.getElementsByClassName('test-combatpage-main');
-
-//const
-var defaultTop = -140;		//tooltip的默认top属性值
-var extraBottomDistance;	//tooltip在底部的额外距离
-if (document.getElementsByClassName('mw-references-wrap').length != 0) {
-	extraBottomDistance = 30;	//页面有注释时在底部额外空出30px距离
-}
-else {
-	extraBottomDistance = 10;	//没有注释时也应空出10px
-}
-var effectMaxHeight = [178, 130, 82, 34];	//战斗书页使用时效果的最大高度
-
-function adjustEffectHeight() {	//调整tooltip中战斗书页描述部分高度
-	var elements = document.getElementsByClassName('test-combatpage-tooltip-right-content');
-	for (var index = 0; index < elements.length; index++) {
-		var element = elements[index];
-		var maxHeight = effectMaxHeight[element.childElementCount - 2];
-		var effect = element.children[0];
-		if (effect.scrollHeight > maxHeight){
-			effect.style.height = maxHeight + 'px';
-		}
-	}
-}
-function adjustTextSize() {	//Powered by ChatGPT
-	var maxSize = 14; // 最大字体大小
-	//var minSize = 10; // 最小字体大小
-	var step = 1; // 调整的步长
-
-	var elements = document.getElementsByClassName('test-combatpage-text');
-	for (var index = 0; index < elements.length; index++) {
-		var element = elements[index];
-		if (element.classList.contains("test-combatpage-tooltip-right-content-dice-num")) {
-			maxSize = 17;
-		}
-		else {
-			maxSize = 14;
-		}
-		element.style.fontSize = maxSize + "px";
-		var fontSize = maxSize;
-		while (element.scrollHeight > element.clientHeight) {
-			fontSize = fontSize - step;
-			element.style.fontSize = fontSize + "px";
-		}
-	}
-}
-function fixTooltipPosition(main) {
-	var tooltip = main.children[1];
-	var tooltipHeight = 277;	//tooltip高度
-	var tooltipWidth;		//tooltip宽度
-	var leftExtra = 0;
-	if (tooltip.childElementCount == 1) {	//无详情信息
-		tooltipWidth = 204;
-	}
-	else if (tooltip.childElementCount == 2) {	//有详情信息
-		tooltipWidth = 369;
-	}
-	else if (tooltip.childElementCount == 3) {	//有详情信息和关键字
-		tooltipWidth = 573;
-		leftExtra = 204;
-		var keywordCount = tooltip.children[2].childElementCount;	//关键字数量
-		if (keywordCount >= 4) {
-			tooltipHeight = 68 * keywordCount + 20;
-		}
-		else {
-			tooltipHeight = 235;	//227 + 8
-		}
-	}
-
-	//获取parser-output的位置
-	var pagePosition = page.getBoundingClientRect();
-	var pageLeft = pagePosition.left;
-	var pageRight = pagePosition.right;
-	var pageTop = pagePosition.top;
-	var pageBottom = pagePosition.bottom;
-
-	var combatcardPosition = main.getBoundingClientRect();
-	var mainWidth = main.getBoundingClientRect().width;
-	var distance;	//相对位置
-	//左
-	distance = (combatcardPosition.left - tooltipWidth + leftExtra) - pageLeft;
-	if (distance < 0) {
-		tooltip.style.left = mainWidth + 'px';
-		distance = (combatcardPosition.left + mainWidth + tooltipWidth) - pageRight;
-		if (distance > 0) {
-			tooltip.style.left = (mainWidth - distance) + 'px';
-		}
+$(function () {
+	//consts
+	//tooltip整体
+	var tooltipDefaultTop = -140;	//tooltip的默认top属性值
+	var tooltipExtraBottomDistance;	//tooltip在底部的额外距离，有注释时空出30px
+	if ($(".mw-references-wrap").length != 0) {
+		tooltipExtraBottomDistance = 30;	//页面有注释时在底部额外空出30px距离
 	}
 	else {
-		tooltip.style.left = (- tooltipWidth + leftExtra) + 'px';
-		distance = (combatcardPosition.left + leftExtra) - pageRight;
-		if (distance > 0) {
-			tooltip.style.left = (- tooltipWidth + leftExtra - distance) + 'px';
-		}
+		tooltipExtraBottomDistance = 0;
 	}
-	var flag = true;	//标记其没有触及上下边界
-	//上
-	distance = (combatcardPosition.top + defaultTop) - pageTop;
-	if (distance < 0) {
-		flag = false;
-		tooltip.style.top = (defaultTop - distance) + 'px';
-	}
-	//下
-	distance = (combatcardPosition.top + tooltipHeight + defaultTop + extraBottomDistance) - pageBottom;
-	if (distance > 0) {
-		flag = false;
-		tooltip.style.top = (defaultTop - distance) + 'px';
-	}
-	//不触及边界
-	if (flag) {
-		tooltip.style.top = defaultTop + 'px';
-	}
-}
-function fixAllTooltipsPosition() {
-	for (var index = 0; index < combatcards.length; index++) {
-		if (combatcards[index].top != 0) {	//只修改可见的元素
-			fixTooltipPosition(combatcards[index]);
-		}
-	}
-}
 
-//监测元素是否可见
-var observer = new IntersectionObserver(function (entries, observe) {
-	entries.forEach(function (entry) {
-		if (entry.isIntersecting) {
-			fixTooltipPosition(entry.target);
-		}
+	//tooltip-left和tooltip-right
+	var tooltipLeftWidth = 204;
+	var tooltipLeftHeight = 277;
+	var tooltipRightWidth = 204;
+	//var tooltipRightHeight = 277;	//tooltip-left和tooltip-right的高度和宽度（一样，为可读性分离）
+	var tooltipLeftRightDistance = -39;	//tooltip-left和tooltip-right之间的间距（为负）
+	var tooltipRightExtraHeight = 5;	//因tooltip-right的top属性值（5px）额外添加的高度
+
+	//tooltip-right-content
+	var tooltipRightContentRowMax = 5;	//战斗书页右侧content内的最大行数
+	var tooltipRightContentRowHeight = 48;	//战斗书页右侧content内每一行的高度
+
+	//tooltip-keywords
+	var tooltipKeywordsWidth = 260;	//tooltip-keywords宽度
+	var tooltipRightKeywordsDistance = -12;	//tooltip-right和tooltip-keywords之间的间距（为负）
+	var tooltipKeywordsExtraTopHeight = 10;	//因tooltip-keywords额外在顶部添加的高度
+	var tooltipKeywordsKeywordHeight = 88;	//tooltip-keywords-keyword的高度
+	var tooltipKeywordsKeywordDistance = -20;	//tooltip-keywords-keyword之间的间距
+
+	//main start
+	var page = $(".mw-parser-output");		//页面主元素
+	var mains = $(".combatpage-main");	//战斗书页主元素
+	mains.mouseenter(function () {
+		var main = $(this);
+		adjustTooltipPosition(main);
+		adjustEffectHeight(main);
+		adjustTextSize(main);
 	});
-}, { threshold: 0 });	//即一旦元素可见就触发
-for (var index = 0; index < combatcards.length; index++) {
-	observer.observe(combatcards[index]);
-}
+	//main end
 
-//窗口变化时重新调整所有可见元素
-window.addEventListener('resize', fixAllTooltipsPosition);
+	//functions
+	//调整combatpage-main内的tooltip位置使其不超出边界显示
+	//main是combatpage-main的jQuery对象
+	function adjustTooltipPosition(main) {
+		var tooltipMain = main.children().eq(1);	//tooltip主元素
+		var keywords = tooltipMain.children().eq(2);
 
-adjustEffectHeight();
-adjustTextSize();
+		var width;	//tooltip宽度
+		var height;	//tooltip高度
+		var extraTopHeight;		//tooltip上方额外高度
+		var extraBottomHeight;	//tooltip下方额外高度
+		var extraLeft;	//left属性补正
+		switch (tooltipMain.children().length) {
+			case 1:	//只有tooltip-left
+				width = tooltipLeftWidth;
+				height = tooltipLeftHeight;
+				extraTopHeight = 0;
+				extraBottomHeight = 0;
+				extraLeft = 0;
+				break;
+			case 2:	//有tooltip-left和tooltip-right
+				width = tooltipLeftWidth + tooltipLeftRightDistance + tooltipRightWidth;
+				height = tooltipLeftHeight + tooltipRightExtraHeight;
+				extraTopHeight = 0;
+				extraBottomHeight = tooltipRightExtraHeight;
+				extraLeft = 0;
+				break;
+			case 3:	//有tooltip-left、tooltip-left和tooltip-keywords
+				width = tooltipLeftWidth + tooltipLeftRightDistance + tooltipRightWidth + tooltipRightKeywordsDistance + tooltipKeywordsWidth;
+				var keywordNum = tooltipMain.children().eq(2).children().length;	//关键字数量
+				if (keywordNum < 4) {
+					height = tooltipLeftHeight + tooltipRightExtraHeight + tooltipKeywordsExtraTopHeight;
+					extraTopHeight = tooltipKeywordsExtraTopHeight;
+					extraBottomHeight = tooltipRightExtraHeight;
+				}
+				else {
+					height = tooltipKeywordsKeywordHeight * keywordNum + tooltipKeywordsKeywordDistance * (keywordNum - 1);
+					extraTopHeight = tooltipKeywordsExtraTopHeight;
+					extraBottomHeight = height - extraTopHeight - tooltipLeftHeight;
+				}
+				extraLeft = tooltipRightKeywordsDistance + tooltipKeywordsWidth;
+				break;
+			default:
+				break;
+		}
+		if (page.outerWidth() < width || page.outerHeight() < height) {
+			tooltipMain.css("display", "none");
+			return;
+		}
+
+		var pagePosition = page.offset();	//获取parser-output的位置
+		var mainPosition = main.offset();	//main的位置
+
+		var pageLeft = pagePosition.left;
+		var pageRight = pageLeft + page.outerWidth();
+		var pageTop = pagePosition.top;
+		var pageBottom = pageTop + page.outerHeight();
+
+		var mainLeft = mainPosition.left;
+		var mainRight = mainLeft + main.outerWidth();
+		var mainTop = mainPosition.top;
+		//var mainBottom = mainTop + main.outerHeight();
+
+		//正常显示时tooltip各边界相对page各边界的相对距离
+		//按惯例，这里的right和bottom不是到页面右和下边界的距离，而是到左和上边界距离加上宽度和高度
+		var leftDistance = (mainLeft - width + extraLeft) - pageLeft;												//在边界内时 > 0
+		var rightDistance = (mainLeft + extraLeft) - pageRight;														//在边界内时 < 0
+		var topDistance = (mainTop + tooltipDefaultTop - extraTopHeight) - pageTop;									//在边界内时 > 0
+		var bottomDistance = (mainTop + tooltipLeftHeight + extraBottomHeight + tooltipDefaultTop) - pageBottom;	//在边界内时 < 0
+
+		//左右
+		if (leftDistance > 0) {	//左侧空间足够
+			if (rightDistance < 0) {	//右侧空间足够
+				tooltipMain.css("left", (- width + extraLeft) + "px");	//正常显示在左侧
+			}
+			else {	//右侧空间不足
+				tooltipMain.css("left", ((- width + extraLeft) - rightDistance) + "px");
+			}
+		}
+		else {	//左侧空间不足，准备显示在右侧
+			rightDistance = (mainRight + width) - pageRight;
+			if (rightDistance < 0) {	//右侧空间足够
+				tooltipMain.css("left", "initial");	//显示在右侧
+			}
+			else {	//右侧空间亦不足
+				tooltipMain.css("left", ((- width + extraLeft) - leftDistance) + "px");
+			}
+		}
+		//上下
+		tooltipMain.css("top", tooltipDefaultTop + "px");
+		//上
+		if (topDistance < 0) {
+			tooltipMain.css("top", (tooltipDefaultTop - topDistance) + "px");
+		}
+		//下
+		if (bottomDistance > 0) {
+			tooltipMain.css("top", (tooltipDefaultTop - bottomDistance) + "px");
+		}
+	}
+
+	//调整一个combatpage-main内combatpage-right-content-effect的高度
+	//main是combatpage-main的jQuery对象
+	function adjustEffectHeight(main) {
+		var content = main.children().eq(1).children().eq(1).children().eq(0);
+		var effect = content.children().eq(0);
+
+		var diceNum = content.children().length - 1;	//骰子总数
+		var effectRowNum = Math.ceil(effect.prop("scrollHeight") / tooltipRightContentRowHeight);	//在以正常大小显示时，effect所占行数
+
+		if (diceNum + effectRowNum > tooltipRightContentRowMax) {
+			effectRowNum = Math.max(tooltipRightContentRowMax - diceNum, 1);	//压缩描述文字所用的行数，最小为一行
+		}
+		effect.css("height", effectRowNum * tooltipRightContentRowHeight + "px");
+	}
+
+	//调整一个combatpage-main内的所有combatpage-text文字大小，使其不超出特定大小的元素
+	//main是combatpage-main的jQuery对象
+	function adjustTextSize(main) {
+		var texts = main.find(".combatpage-text");
+		texts.each(function () {
+			var text = $(this);
+			var maxSize;	//最大font-size大小
+			if (text.hasClass("combatpage-tooltip-right-content-dice-num")) {
+				maxSize = 17;
+			}
+			else {
+				maxSize = 13.5;
+			}
+			var step = 1;	//步长
+			var fontSize = maxSize;	//当前文字大小
+			do {
+				text.css("font-size", fontSize + "px");
+				fontSize = fontSize - step;
+			} while (text.prop("scrollHeight") > text.prop("clientHeight"));
+		});
+	}
+});
