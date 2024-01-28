@@ -25,6 +25,10 @@ $(function() {
 		e.stopPropagation();
 		$('.global-navigation .notifications .global-navigation__icon').click();
 	});
+	/*On mobile, relying on css :hover will not bring up the menu, but adding the wds-is-active class will*/
+	$('.user-navigation-moved .wds-dropdown').hover(function () {
+		$(this).toggleClass('wds-is-active');
+	});
 	
 	/* Propagate unread notification count to cloned counters */
 	var counter = $('.global-navigation .notifications__counter');

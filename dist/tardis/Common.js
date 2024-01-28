@@ -183,7 +183,7 @@ $(document).ready(function(){
 	    var citeIDNum = citeID.slice(23); //get number at end of ID
 	    var toggle = $(".mw-customtoggle-cs" + citeIDNum);
 	    $(toggle).attr("aria-controls",citeID);
-		$(toggle).attr("title","Show " + $(toggle).attr("title").slice(10));
+		$(toggle).attr("title","Show " + $(toggle).attr("title").slice(7));
 		$(toggle).attr("aria-label",$(toggle).attr("title"));
 	});
 }); 
@@ -236,7 +236,7 @@ $(".pullout-content").on("afterCollapse.mw-collapsible", function() {
    {{nwlh}}
    ================ */
 $(document).ready(function(){
-	$('.non-wlh-link').children("a").each(function(i, obj) {
+	$('NWLH').children("a").each(function(i, obj) {
 		$(obj).removeAttr("target");
 	});
 });

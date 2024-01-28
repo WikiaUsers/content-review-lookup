@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Configuration for [[w:c:dev:AddRailModule]] */
 window.AddRailModule = [{
-    // {{DiscordRailModule}}
+    // DiscordRailModule
     page: 'Template:RailModule',
     prepend: true,
     maxAge: 86400,

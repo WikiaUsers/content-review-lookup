@@ -58,3 +58,9 @@ $.getJSON(mw.util.wikiScript("index"), {
         importArticles({ type: "script", articles: scripts });
     }
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WallGreeting.js',
+    ]
+});

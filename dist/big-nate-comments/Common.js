@@ -321,3 +321,14 @@ UserTagsJS.modules.metafilter = {
 	threadmoderator: ['sysop', 'bureaucrat']
 	
 };
+ window.UserTagsJS = {
+	modules: {},
+	tags: {
+		EditLeague: { u:'Champion' },
+	}
+};
+UserTagsJS.modules.custom = {
+	'Beanos is me lol': ['EditLeague'], 
+	'Canttouchthis5555': ['EditLeague'], 
+	'DrippiestSigmaNate': ['EditLeague'], 
+};

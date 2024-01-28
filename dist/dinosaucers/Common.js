@@ -21,6 +21,9 @@ UserTagsJS.modules.inactive = 60;
 /* The disable ReferencesPopups' animation by default, and why it doesn't affect? */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false }; /* ? */
 
+// Back to Top Button
+window.BackToTopModern = true;
+
 // Recover style on TOC that's removed by a Fandom script. Found on dev.fandom.com then check on kingdomthegame.fandom.com/wiki/MediaWiki:Common.js.
 // And do you know that you can use italic or bold header in TOC? In current day, Offical Fandom Wikia straight up remove this TOC's style in their script. If want to taken back like Wikipedia's choice of style, you must use JS for justice...
 // See details of the problem, and the solution by HumansCanWinElves here: dev.fandom.com/f/p/4400000000000019632/

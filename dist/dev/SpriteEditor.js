@@ -15,23 +15,23 @@
 		shared: {},
 		main: {
 			blacklist: [
-				"animatesprite",
-				"sprite"
+				'animatesprite',
+				'sprite'
 			],
 			flags: [ // [tag-name, display title]
-				["deprecated", "Deprecated"],
-				["black", "Black"],
-				["dark", "Dark"],
-				["nolink", "No link"]
+				['deprecated', 'Deprecated'],
+				['black', 'Black'],
+				['dark', 'Dark'],
+				['nolink', 'No link']
 			]
 		},
 		seperatePath: function(path) {
-			var a = path.split("/");
+			var a = path.split('/');
 			if (a.length === 1)
-				a[1] = a[0].substring(a[0].indexOf(":") + 1);
+				a[1] = a[0].substring(a[0].indexOf(':') + 1);
 			return {
-				full: path.substring(path.indexOf(":") + 1),
-				module: a[0].substring(a[0].indexOf(":") + 1),
+				full: path.substring(path.indexOf(':') + 1),
+				module: a[0].substring(a[0].indexOf(':') + 1),
 				name: a[a.length - 1],
 				all: a
 			};
@@ -43,14 +43,14 @@
 
 	var loadPHP = 'https://dev.fandom.com/load.php';
 	var jsFiles = [
-		'MediaWiki:SpriteEditor/helper.js',
+		'MediaWiki:SpriteEditor/spriteutils.js',
 		'MediaWiki:SpriteEditor/main.js'
 	];
 	var files = [];
 	var sP = new URL(document.location).searchParams;
-	if (config.wgAction === "view" && !sP.has("oldid") && !sP.has("curid") && (config.wgCanonicalNamespace === "Module" || config.wgCanonicalNamespace === "Template") && config.wgTitle.split("/")[0].endsWith("Sprite")) {
+	if (config.wgAction === 'view' && !sP.has('oldid') && !sP.has('curid') && (config.wgCanonicalNamespace === 'Module' || config.wgCanonicalNamespace === 'Template') && config.wgTitle.split('/')[0].endsWith('Sprite')) {
 		var names = window.SpriteEditorModules.seperatePath(config.wgPageName);
-		if (!names.module.endsWith("Sprite") || window.SpriteEditorModules.main.blacklist.includes(names.module.toLowerCase())) return;
+		if (!names.module.endsWith('Sprite') || window.SpriteEditorModules.main.blacklist.includes(names.module.toLowerCase())) return;
 		files = jsFiles.concat(['MediaWiki:SpriteEditor/openButton.js']);
 	}
 	if (config.wgCanonicalSpecialPageName === 'Blankpage' && config.wgTitle.endsWith('/SpriteEditor')) {
@@ -59,16 +59,15 @@
 			'MediaWiki:SpriteEditor/new.js',
 			'MediaWiki:SpriteEditor/open.js',
 			'MediaWiki:SpriteEditor/sprite_reorder.js',
-			'MediaWiki:SpriteEditor/settings.js',
-			'MediaWiki:SpriteEditor/sorting.js'
+			'MediaWiki:SpriteEditor/settings.js'
 		]);
 	}
 	if (files.length > 2) {
 		var a;
 		if (config.wgIsTestModeEnabled) {
-			a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI(files.join("|test:")) + '&*');
+			a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=test:' + encodeURI(files.join('|test:')) + '&*');
 		} else {
-			a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=' + encodeURI(files.join("|")) + '&*');
+			a = mw.loader.load(loadPHP + '?mode=articles&only=scripts&articles=' + encodeURI(files.join('|')) + '&*');
 		}
 		Promise.allSettled([a]).then(function () {
 			var checkExist = setInterval(function () {

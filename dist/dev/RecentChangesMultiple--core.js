@@ -53,10 +53,10 @@ var Global =  (function () {
     };
     Global.showUpdateMessage = function (pMessageCont) {
         Global._addUpdateMessage(pMessageCont, {
-            messageID: "rcm-news-V2-14-i18n-rework",
+            messageID: "rcm-news-no-external",
             messageColor: "gold",
-            endDate: "Sep 28 2020 00:00:00 GMT",
-            message: "\n\t\t\tScript translation now uses the I18n-js system, and can easily be edited <a href=\"https://dev.fandom.com/wiki/Special:BlankPage/I18nEdit/RecentChangesMultiple\">here</a> (must be logged in)!\n\t\t\tAdding a new language is simple as well, by visiting the same link.\n\t\t\t",
+            endDate: "Feb 16 2024 00:00:00 GMT",
+            message: "\n\t\t\tDue to security concerns, external non-fandom wikis can no longer be loaded via this script. Thank you for your understanding.\n\t\t\t",
         });
     };
     ;
@@ -77,8 +77,8 @@ var Global =  (function () {
             tButton.style.cssText = "float:right;";
         }
     };
-    Global.version = "2.16c";
-    Global.lastVersionDateString = "Oct 4 2021 00:00:00 GMT";
+    Global.version = "2.17";
+    Global.lastVersionDateString = "Jan 26 2024 00:00:00 GMT";
     Global.config = mw.config.get([
         "skin",
         "debug",
@@ -484,9 +484,9 @@ var Main =  (function () {
             if (Global_1["default"].debug) {
                 mw.log = console.log;
             }
-            $(document).ready(_this._ready.bind(_this));
+            $(_this._ready.bind(_this)); 
             $(document).on("unload", _this._unload.bind(_this));
-            $(window).focus(_this._onFocus.bind(_this));
+            $(window).on('focus', _this._onFocus.bind(_this));
         });
     };
     Main.prototype._ready = function () {
@@ -968,6 +968,11 @@ var RCMManager =  (function () {
         this.extraLoadingEnabled = tDataset.extraLoadingEnabled == "false" ? false : true;
         this.makeLinksAjax = tDataset.ajaxlinks == "true" ? true : false;
         this.chosenWikis = $(this.resultCont).find(">ul>li").toArray().map(function (pNode) { return new WikiData_1["default"](_this).initListData(pNode); });
+        var externalWikis = this.chosenWikis.filter(function (w) { return !w.isWikiaWiki; });
+        this.chosenWikis = this.chosenWikis.filter(function (w) { return w.isWikiaWiki; });
+        if (externalWikis.length > 0) {
+            this.wikisNotAllowedToLoad = externalWikis.map(function (w) { return mw.html.escape(w.servername); });
+        }
         this.chosenWikis = Utils_1["default"].uniq_fast_key(this.chosenWikis, "scriptpath"); 
         this.resultCont.innerHTML = "";
     };
@@ -978,6 +983,10 @@ var RCMManager =  (function () {
         this.rcData = [];
         this.recentChangesEntries = [];
         this.optionsNode = new RCMOptions_1["default"](this, Utils_1["default"].newElement("div", { className: "rcm-options" }, this.resultCont));
+        if (this.wikisNotAllowedToLoad) {
+            var errorCont = $("<div>").appendTo(this.resultCont);
+            errorCont.html("<div class='rcm-error'>" + i18n_1["default"]('error-external-wiki', "[" + this.wikisNotAllowedToLoad.join(', ') + "]") + "</div>");
+        }
         this.statusNode = Utils_1["default"].newElement("div", { className: "rcm-status" }, this.resultCont);
         this.wikisNode = new RCMWikiPanel_1["default"](this).init(Utils_1["default"].newElement("div", { className: "rcm-wikis" }, this.resultCont));
         Global_1["default"].showUpdateMessage(this.resultCont);
@@ -1000,7 +1009,7 @@ var RCMManager =  (function () {
             pHandleErrorCallback(pWikiData, pTries, pID, tMessage, RCMManager.LOADING_ERROR_RETRY_NUM_INC);
         }
         else {
-            this.statusNode.querySelector(".errored-wiki").innerHTML += ", " + pWikiData.servername;
+            this.statusNode.querySelector(".errored-wiki").innerHTML += ", " + mw.html.escape(pWikiData.servername);
         }
     };
     RCMManager.prototype.setupStatusLoadingMode = function (loadingText) {
@@ -1059,7 +1068,7 @@ var RCMManager =  (function () {
                         break;
                     }
                     case "unknown": {
-                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + mw.html.escape(wikiData.servername) + "</div>" + JSON.stringify(info.error) + "</div>";
                         throw "Wiki returned error";
                         break;
                     }
@@ -1194,7 +1203,7 @@ var RCMManager =  (function () {
                         break;
                     }
                     case "unknown": {
-                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + mw.html.escape(wikiData.servername) + "</div>" + JSON.stringify(info.error) + "</div>";
                         throw "Wiki returned error";
                         break;
                     }
@@ -1277,7 +1286,7 @@ var RCMManager =  (function () {
                         break;
                     }
                     case "unknown": {
-                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + wikiData.servername + "</div>" + JSON.stringify(info.error) + "</div>";
+                        _this.statusNode.innerHTML = "<div class='rcm-error'><div>ERROR: " + mw.html.escape(wikiData.servername) + "</div>" + JSON.stringify(info.error) + "</div>";
                         throw "Wiki returned error";
                         break;
                     }
@@ -2742,6 +2751,9 @@ var WikiData =  (function () {
         this.firstSeperator = "?";
         this.htmlName = this.servername.replace(/([\.\/])/g, "-");
         this.isWikiaWiki = (this.servername.indexOf(".wikia.") > -1) || (this.servername.indexOf(".fandom.") > -1) || (this.servername.indexOf(".gamepedia.") > -1);
+        var urlParts = this.servername.split('/')[0].split('.'); 
+        var tld = urlParts[urlParts.length - 1], dmn = urlParts[urlParts.length - 2];
+        this.isWikiaWiki = this.isWikiaWiki && ['wikia', 'fandom', 'gamepedia'].indexOf(dmn) > -1 && tld == 'com';
         var tWikiDataSplit, tKey, tVal; 
         for (var i = 0; i < tWikiDataRaw.length; i++) {
             tWikiDataSplit = tWikiDataRaw[i].split("=");

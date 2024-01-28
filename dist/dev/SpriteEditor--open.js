@@ -4,16 +4,16 @@
 	if (window.SpriteEditorModules.open && window.SpriteEditorModules.open.loaded) return;
 	window.SpriteEditorModules.open = {loaded: true};
 	var api = new mw.Api();
-	var helper = window.SpriteEditorModules.helper;
+	var main = window.SpriteEditorModules.main;
 	var myData = window.SpriteEditorModules.open;
 	var modal = {};
 	myData.modal = modal;
 	var shared;
 	var allPages = [];
 	function createList() { // Compares images with lists; creates html
-		var root = document.getElementsByClassName("spriteeditor-items")[0];
+		var root = document.getElementsByClassName('spriteeditor-items')[0];
 		function loadSprite2(toOpen) {
-			toOpen = helper.seperatePath(toOpen);
+			toOpen = window.SpriteEditorModules.seperatePath(toOpen);
 			var historyUrl = new URL(window.location);
 			historyUrl.searchParams.set('sprite', toOpen.full);
 			window.history.pushState({}, '', historyUrl);
@@ -22,7 +22,7 @@
 		}
 		myData.loadSprite2 = loadSprite2;
 		function loadSprite(event) {
-			loadSprite2(event.target.closest(".previewBox").dataset.sprite);
+			loadSprite2(event.target.closest('.previewBox').dataset.sprite);
 		}
 		function addSprite(i) {
 			var n = allPages[i];
@@ -43,11 +43,11 @@
 					output.ids = output.ids || {};
 					output.sections = output.sections || [];
 					var ele = document.createElement('div');
-					ele.dataset.sprite = "Module:" + n.full;
+					ele.dataset.sprite = 'Module:' + n.full;
 					ele.className = 'previewBox';
 					var ele2 = document.createElement('a');
-					var u = helper.filepath(output.settings.image || n.name + ".png");
-					ele2.style.backgroundImage = "url(" + u + ")";
+					var u = main.filepath(output.settings.image || n.name + '.png');
+					ele2.style.backgroundImage = 'url(' + u + ')';
 					ele2.onclick = loadSprite;
 					var ele3 = document.createElement('a');
 					ele3.textContent = n.name;
@@ -77,21 +77,21 @@
 		shared = d;
 	};
 	var base = {
-		action: "query",
-		apfilterredir: "nonredirects",
-		apfrom: "",
-		aplimit: "500",
-		apnamespace: "828",
-		format: "json",
-		formatversion: "2",
-		list: "allpages"
+		action: 'query',
+		apfilterredir: 'nonredirects',
+		apfrom: '',
+		aplimit: '500',
+		apnamespace: '828',
+		format: 'json',
+		formatversion: '2',
+		list: 'allpages'
 	};
 	function loadModules(c) {
-		api.get(Object.assign(Object.assign({}, base), c || {})).done(function(data) {
+		api.get(Object.assign({}, base, c || {})).done(function(data) {
 			var pages = data.query.allpages;
 			for (var i = 0; i < pages.length; i++) {
-				var names = helper.seperatePath(pages[i].title);
-				if (names.module.endsWith("Sprite") && !window.SpriteEditorModules.main.blacklist.includes(names.module.toLowerCase())) {
+				var names = window.SpriteEditorModules.seperatePath(pages[i].title);
+				if (names.module.endsWith('Sprite') && !main.blacklist.includes(names.module.toLowerCase())) {
 					allPages.push({
 						full: names.full,
 						module: names.module,
@@ -109,8 +109,8 @@
 		});
 	}
 	myData.requestChanges = function() {
-		var root = document.getElementsByClassName("spriteeditor-items")[0];
-		root.innerHTML = "";
+		var root = document.getElementsByClassName('spriteeditor-items')[0];
+		root.innerHTML = '';
 		modal.windowManager.updateWindowSize(modal.seDialog);
 		modal.seDialog.pushPending();
 		myData.isNew = false;
@@ -127,21 +127,21 @@
 
 	// create window
 	myData.createWindow = function() {
-		var msg = window.SpriteEditorModules.main.msg;
-		modal = helper.processDialog({
-			title: msg("open-label").plain(),
-			name: "open",
+		var msg = main.msg;
+		modal = main.processDialog({
+			title: msg('open-label').plain(),
+			name: 'open',
 			actions: [
-				{ label: msg("dialog-button-new").plain(), action: 'new', flags: ['primary'] },
-				{ label: msg("dialog-button-close").plain(), action: 'close', modes: 'edit', flags: ['safe', 'close'] }
+				{ label: msg('dialog-button-new').plain(), action: 'new', flags: ['primary'] },
+				{ label: msg('dialog-button-close').plain(), action: 'close', modes: 'edit', flags: ['safe', 'close'] }
 			],
 			content: formHtml,
 			action: function (action) {
-				if (action === "new") {
-					shared.openWindow("new", msg("new-module-missing").plain());
+				if (action === 'new') {
+					shared.openWindow('new', msg('new-module-missing').plain());
 				}
 			},
-			size: "larger"
+			size: 'larger'
 		});
 		myData.modal = modal;
 	};

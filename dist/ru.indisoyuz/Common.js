@@ -138,11 +138,15 @@ $('.wikicard').css({
 });
 
 /*Фафиконы отдельно для Шаблон:Вики*/
-$('.indi-favicon').each(function(){
-var wiki = $(this).attr('data-url');
+switch (mw.config.get('wgPageName')) {
+    case 'Инди-союз':
+        $('.indi-favicon').each(function() {
+            var wiki = $(this).attr('data-url');
 
-$("<img>").attr("src", 'https://' + wiki + '.fandom.com/ru/wiki/Special:Filepath/Site-favicon.ico').appendTo(this);
-});
+            $("<img>").attr("src", 'https://' + wiki + '.fandom.com/ru/wiki/Special:Filepath/Site-favicon.ico').appendTo(this);
+        });
+        break;
+}
 
 /*Слайдер*/
 $('.sldr-btn-left').click(function(){

@@ -1,4 +1,4 @@
-;(function($, mw) {
+;(function($) {
 	'use strict';
 
 	if (window.SpriteEditorModules.reorder && window.SpriteEditorModules.reorder.loaded) return;
@@ -7,21 +7,17 @@
 	var modal = {};
 	var shared = {};
 	var Demo = {};
-	var eleList;
-	var msg;
 	var sprites = [];
 	myData.modal = modal;
 	
 	myData.setSharedData = function(d) {
 		shared = d;
 	};
-	var perRowEle;
-	var spacingEle;
 	myData.requestChanges = function() {
 		sprites = [];
-		var ele = document.getElementsByClassName("spriteedit-reorder")[0];
-		ele.style.width = String(shared.options.spritesPerRow * 32) + "px";
-		ele.innerHTML = "";
+		var ele = document.getElementsByClassName('spriteedit-reorder')[0];
+		ele.style.width = String(shared.options.spritesPerRow * 32) + 'px';
+		ele.innerHTML = '';
 		var item_list = [];
 		for (var i = 1; i <= shared.toShare.highestPos; i++) {
 			item_list[item_list.length] = new Demo.DraggableItemWidget( {
@@ -42,10 +38,10 @@
 			// Parent constructor
 			Demo.SimpleWidget.super.call( this, config );
 			// Initialization
-			var c = document.createElement("canvas");
+			var c = document.createElement('canvas');
 			c.width = shared.imgWidth;
 			c.height = shared.imgHeight;
-			c.style.width="32px";
+			c.style.width='32px';
 			var s = shared.root.querySelector('li[class="spritedoc-box"][data-pos="' + this.data.substr(6) + '"]');
 			var ctxOld = c.getContext('2d');
 			var p = this.data.substr(6);
@@ -54,7 +50,7 @@
 				c.style.opacity = 0.2;
 			} else {
 				sprites[Number(this.data.substr(6))] = s;
-				ctxOld.drawImage(s.querySelector("canvas"), 0, 0);
+				ctxOld.drawImage(s.querySelector('canvas'), 0, 0);
 			}
 			this.$element
 				.addClass( 'demo-simpleWidget' )
@@ -77,7 +73,7 @@
 			OO.ui.mixin.DraggableGroupElement.call( this, $.extend( {
 				$group: this.$element
 			}, config ) );
-			this.$element.css("line-height", "0");
+			this.$element.css('line-height', '0');
 		};
 		/* Setup */
 		OO.inheritClass( Demo.DraggableGroupWidget, OO.ui.Widget );
@@ -101,14 +97,13 @@
 			'</div>';
 	}
 	function saveSpriteOrder() {
-		var tmp = shared.root.children[0];
 		var eleList = document.querySelectorAll('div.spriteedit-reorder .oo-ui-draggableElement');
 		const changes = [];
 		const changesBackground = [];
 		for (var i = 0; i < eleList.length; i++) {
 			var old = eleList[i].dataset.spriteid;
 			if ((shared.spriteData.settings.pos || -1) === Number(old))
-				changes.push(["pos", Number(old), i + 1]);
+				changes.push(['pos', Number(old), i + 1]);
 			if (Number(old) === i + 1) continue;
 			if (!shared.root.querySelector('li[class="spritedoc-box"][data-pos="' + old + '"]')) { // Moved background
 				changesBackground.push([shared.backgroundSprites[Number(old)], old, String(i + 1)]);
@@ -120,7 +115,7 @@
 			var settings = shared.spriteData.settings;
 			var i;
 			for (i = 0; i < changes.length; i++) {
-				if (changes[i][0] === "pos") {
+				if (changes[i][0] === 'pos') {
 					settings.pos = changes[i][is_undo ? 1 : 2];
 					continue;
 				}
@@ -144,23 +139,23 @@
 	
 	// create window
 	myData.createWindow = function() {
-		var msg = window.SpriteEditorModules.main.msg;
-		setup_draggable_group(window.SpriteEditorModules.main.OO);
-		modal = window.SpriteEditorModules.helper.processDialog({
-			title: msg("reorder-sprites-label").plain(),
-			name: "reorder",
+		var main = window.SpriteEditorModules.main;
+		setup_draggable_group(main.OO);
+		modal = main.processDialog({
+			title: main.msg('reorder-sprites-label').plain(),
+			name: 'reorder',
 			actions: [
-				{ label: msg("dialog-button-close").plain(), flags: ['safe', 'close'] },
-				{ label: msg("save-label").plain(), action: 'close', flags: ['primary'] }
+				{ label: main.msg('dialog-button-close').plain(), flags: ['safe', 'close'] },
+				{ label: main.msg('save-label').plain(), action: 'close', flags: ['primary'] }
 			],
 			content: formHtml,
 			action: function (action) {
 				if (action === 'close') {
-                	saveSpriteOrder();
+					saveSpriteOrder();
 				}
 			},
-			size: "large"
+			size: 'large'
 		});
 		myData.modal = modal;
 	};
-})(window.jQuery, window.mediaWiki);
+})(window.jQuery);

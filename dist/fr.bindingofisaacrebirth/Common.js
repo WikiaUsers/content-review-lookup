@@ -214,4 +214,10 @@ $(function(){
             $(a).css("transform", "rotate(" + rngRotate + "deg)")
     	})
 	})
+	
+	// Teleport
+    $("[data-image-name='Collectible Teleport! icon.png'").addClass("teleportation")
+    $(".teleportation").click(function(){
+	    location.href = "https://bindingofisaacrebirth.fandom.com/fr/wiki/Spécial:Random";
+	})
 });

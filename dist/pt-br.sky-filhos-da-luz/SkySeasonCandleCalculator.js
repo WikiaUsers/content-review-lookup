@@ -4,7 +4,7 @@
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Sky Seasonal Candle Calculator
 // Author: Ray808080
-// Version: 0.1.6
+// Version: 0.1.7
 // Description: Gives you information about your Seasonal Candles count for the Season
 // Instructions: To use, place the following:
 /*  <div id="sky-seasonal-candle-calculator-wrapper">
@@ -27,7 +27,9 @@
     <div id="sky-seasonal-candle-calculator-output"></div>
     </div>
 */
-// Translation Instructions: There are 3 sections with strings that need to be translated.
+// Translation Instructions:
+// First, change the language string labeled TRANSLATION SECTION 0.
+// There are 3 additional sections with strings that need to be translated.
 // They will be labeled TRANSLATION SECTION 1 and so on.
 // All the strings that need to be translated are variables that start with "translation_".
 
@@ -44,7 +46,9 @@ Date.prototype.toDateInputValue = (function() {
         return false;
     } 
     window.SkySeasonalCandleCalculator = {
-    	version: '0.1.6',
+    	version: '0.1.7',
+    	// TRANSLATION SECTION 0
+    	language: 'pt', // Use the correct subtag from https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags
         init: importArticles({
 				type: 'script',
 				articles: [
@@ -54,11 +58,11 @@ Date.prototype.toDateInputValue = (function() {
 			}).then(function () {
 
             if ($('#sky-seasonal-candle-calculator-wrapper').length) {
-                console.log('Loaded!');
+                console.log('Loaded Sky Seasonal Candle Calculator v.' + SkySeasonalCandleCalculator.version + ' by Ray808080');
                 TODAY = new Date();
                 TGC_ZONE = 'America/Los_Angeles';
                 LOCALE_ZONE = moment.tz.guess(true);
-                LOCALE_TZ = moment.tz(LOCALE_ZONE).zoneAbbr();
+                LOCALE_TZ = TODAY.toLocaleTimeString(SkySeasonalCandleCalculator.language, { timeStyle: "long" }).split(' ').pop();
                 NOW = moment().format("HH:mm:ss");
 
                 // Get the initial constants from HTML
@@ -81,7 +85,6 @@ Date.prototype.toDateInputValue = (function() {
                 }
 
                 // TRANSLATION SECTION 1
-                var translation_language = "pt"; // Use the correct subtag from https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags
                 var translation_the_season = "A"; // Referring to "Season"
                 var translation_lasts = "dura";
                 var translation_days_long = "dias";
@@ -151,17 +154,17 @@ Date.prototype.toDateInputValue = (function() {
 
                 // Fills in the info for the Season
                 document.getElementById("sscc_season_name").innerHTML = SEASON_NAME;
-                var season_start_string = SEASON_START.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + SEASON_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                var season_start_string = SEASON_START.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium" }) + ' (' + SEASON_START.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                 document.getElementById("sscc_season_start").innerHTML = season_start_string;
-                var season_end_string = SEASON_END.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + SEASON_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                var season_end_string = SEASON_END.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium" }) + ' (' + SEASON_END.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                 document.getElementById("sscc_season_end").innerHTML = season_end_string;
                 document.getElementById("sscc_season_days").innerHTML = SEASON_DAYS;
                 
                 // Fills in the info for a Double Event if it exists
                 if (DOUBLE_EVENT) {
-                	var double_start_string = DOUBLE_START.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                	var double_start_string = DOUBLE_START.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium"}) + ' (' + DOUBLE_START.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                     document.getElementById("sscc_double_start").innerHTML = double_start_string;
-                    var double_end_string = DOUBLE_END.toLocaleString(translation_language, { dateStyle: "medium" }) + ' (' + DOUBLE_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    var double_end_string = DOUBLE_END.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium" }) + ' (' + DOUBLE_END.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                     document.getElementById("sscc_double_end").innerHTML = double_end_string;
                     document.getElementById("sscc_double_days").innerHTML = DOUBLE_DAYS;
                 } else {
@@ -170,9 +173,9 @@ Date.prototype.toDateInputValue = (function() {
 
                 // Fills in the info for a Second Double Event if it exists
                 if (DOUBLE_2_EVENT) {
-            		var double_2_start_string = DOUBLE_2_START.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_START.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+            		var double_2_start_string = DOUBLE_2_START.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_START.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                     document.getElementById("sscc_double_2_start").innerHTML = double_2_start_string;
-                    var double_2_end_string = DOUBLE_2_END.toLocaleString(translation_language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_END.toLocaleString(translation_language, { timeStyle: "short" }) + ')';
+                    var double_2_end_string = DOUBLE_2_END.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium"}) + ' (' + DOUBLE_2_END.toLocaleString(SkySeasonalCandleCalculator.language, { timeStyle: "short" }) + ')';
                     document.getElementById("sscc_double_2_end").innerHTML = double_2_end_string;
                     document.getElementById("sscc_double_2_days").innerHTML = DOUBLE_2_DAYS;
                 } else {
@@ -326,7 +329,7 @@ Date.prototype.toDateInputValue = (function() {
             var date_value = document.getElementById("sscc_date_picker").value;
             var time_value = document.getElementById("sscc_time_picker").value;
             var locale_lookup = moment.tz(date_value + " " + time_value, LOCALE_ZONE);
-            var locale_tz = locale_lookup.zoneAbbr();
+            var locale_tz = new Date().toLocaleTimeString(SkySeasonalCandleCalculator.language, { timeStyle: "long" }).split(' ').pop();
             
             document.getElementById("sscc_locale_tz").innerHTML = locale_tz;
         },
@@ -422,9 +425,13 @@ Date.prototype.toDateInputValue = (function() {
             // Selected date is in Date object so that diff() can be used
             var selected_date = new Date(Date.UTC(gmt_date[0], gmt_date[1]-1, gmt_date[2], gmt_time[0], gmt_time[1], 1));
             // Pretty version of the Selected Date
-            var selected_date_pretty = moment.tz(datetime_value, LOCALE_ZONE).format('MMM DD, YYYY');
-            var selected_time_pretty = moment.tz(datetime_value, LOCALE_ZONE).format('LT');
-            var selected_time_tz = moment.tz(datetime_value, LOCALE_ZONE).format('z');
+            var selected_pretty = new Date(String(moment.tz(datetime_value, LOCALE_ZONE).format("MMMM DD, YYYY kk:mm z")));
+            var selected_date_pretty = selected_pretty.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium" });
+            var full_pretty_time = selected_pretty.toLocaleTimeString(SkySeasonalCandleCalculator.language, { timeStyle: "long" }).split(' ');
+            var selected_tz_pretty = full_pretty_time.pop();
+            full_pretty_time[0] = full_pretty_time[0].slice(0,-3);
+            var selected_time_pretty = full_pretty_time.join(' ');
+
 
             // ---------- LIST CONSTRUCTOR ----------------------------------------------
             NO_PASS_LIST = [0];
@@ -618,13 +625,13 @@ Date.prototype.toDateInputValue = (function() {
             }
             
             // Constructs the comment message
-            var title_message = "<b>" + translation_commentary + " " + selected_date_pretty + " " + translation_at + " " + selected_time_pretty + " (" + selected_time_tz + "):</b>";
+            var title_message = "<b>" + translation_commentary + " " + selected_date_pretty + " " + translation_at + " " + selected_time_pretty + " (" + selected_tz_pretty + "):</b>";
 
             var message = title_message + "<br>" + summary_message + "<br>" + missing_message + "<br>" + progress_message + " " + conclusion_message;
 
             // Fill in the table
             document.getElementById("sscc_custom_comment").innerHTML = message;
-            document.getElementById("sscc_table_header").innerHTML = selected_date_pretty + " " + translation_at + " " + selected_time_pretty + " (" + selected_time_tz + ")";
+            document.getElementById("sscc_table_header").innerHTML = selected_date_pretty + " " + translation_at + " " + selected_time_pretty + " (" + selected_tz_pretty + ")";
             document.getElementById("sscc_table_A1").innerHTML = total_collected_days;
             document.getElementById("sscc_table_B1").innerHTML = total_remaining_days;
             document.getElementById("sscc_table_A2").innerHTML = no_pass_before;

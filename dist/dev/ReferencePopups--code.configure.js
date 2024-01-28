@@ -469,12 +469,12 @@ dev.ReferencePopups = dev.ReferencePopups || {};
             confCancelButton: '取消'
         },
         'zh-hk': {
-            confTitle: '設置參考資料彈窗',
-            confReenableHelp: '如果您停用了彈窗，可以在頁面底部靠近分類的「設置參考資料彈窗」連結重新啟用彈窗。',
+            confTitle: '設定參考資料彈窗',
+            confReenableHelp: '如果您停用了彈窗，可以在頁面底部靠近分類的「設定參考資料彈窗」連結重新啟用彈窗。',
             confDisable: '停用參考資料彈窗',
             confEnable: '啟用參考資料彈窗',
             confLockdown: '[鎖定]',
-            confLockdownMsg: '這個wiki已被設置為始終啟用參考資料彈窗。',
+            confLockdownMsg: '這個wiki已被設定為始終啟用參考資料彈窗。',
             confActivateDelay: '彈窗顯示延遲：',
             confMilliseconds: '毫秒',
             confHoverSticky: '彈窗持續顯示直到滑鼠再次觸碰',

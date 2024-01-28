@@ -50,6 +50,13 @@ nkch_gst_gadgets = [{
     description: "Makes page wider and change GlobalNav color to match the wiki theme."
 }];
 
+// For [[Module:CSS]]; [[T:CSS]] dependency
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		mw.util.addCSS($(this).attr("data-css"));
+	});
+});
+
 // Credit: Sky: Children of the Light Wiki
 $('.fandom-community-header__community-name-wrapper').append(
     /* Adds A+ Wiki Badge to Title */

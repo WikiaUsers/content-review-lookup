@@ -74,10 +74,10 @@
 			action: 'query',
 			format: 'json',
 			formatversion: 2,
-			maxage: 600,
+			maxage: 1200,
 			prop: 'revisions',
 			rvprop: 'content',
-			smaxage: 600,
+			smaxage: 1200,
 			titles: 'MediaWiki:Custom-ThankYou.json'
 		} ).then( function ( result ) {
 			var page = result.query.pages[ 0 ];
@@ -105,11 +105,11 @@
 			action: 'query',
 			format: 'json',
 			formatversion: 2,
-			maxage: 300,
+			maxage: 1100,
 			prop: 'revisions',
 			rvlimit: 100,
 			rvprop: [ 'ids', 'user', 'userid', 'size', 'timestamp' ].join( '|' ),
-			smaxage: 300,
+			smaxage: 1100,
 			titles: config.wgPageName,
 		} ).then( function ( result ) {
 			var revisions = result.query.pages[ 0 ].revisions;

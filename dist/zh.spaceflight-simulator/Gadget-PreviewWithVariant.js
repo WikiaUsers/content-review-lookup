@@ -1,20 +1,30 @@
 /**
- * @在编辑页面添加“预览字词转换”选项。
- * @作者[[wikipedia:zh:User:Diskdance]]
- * @作者[[wikipedia:zh:User:Lt2818]]
- * @MIT许可协议
+ * @file Add a "Preview with variant" option to the edit form.
+ * @author [[wikipedia:zh:User:Diskdance]]
+ * @author [[wikipedia:zh:User:Lt2818]]
+ * @license MIT
  */
 // <nowiki>
 ( function () {
+	var conv = require( 'ext.gadget.HanAssist' ).conv;
 	var initialized = false;
+	// This is initialized by ext.WikiEditor.realtimepreview.enable hook below
+	// which is always called when Realtime Preview is enabled
+	var realtimePreviewClass;
+	mw.hook( 'ext.WikiEditor.realtimepreview.enable' ).add( function ( realtimePreview ) {
+		if ( !realtimePreviewClass ) {
+			realtimePreviewClass = realtimePreview;
+		}
+	} );
+
 	mw.hook( 'wikipage.editform' ).add( function ( $editForm ) {
 		if ( initialized ) {
 			return;
 		}
 
 		var $templateSandboxPreview = $editForm.find( 'input[name="wpTemplateSandboxPreview"]' );
-		// 用户可能想要预览带有非wikitext类型的页面。
-		// 在这种情况下不要返回
+		// It is possible that a user want to preview a page with a non-wikitext module
+		// Do not return in this case
 		if (
 			mw.config.get( 'wgPageContentModel' ) !== 'wikitext' &&
 			!$templateSandboxPreview.length
@@ -29,7 +39,7 @@
 		initialized = true;
 
 		var VARIANTS = [
-			{ data: 'zh', label: wgULS( '不转换', '不轉換' ) },
+			{ data: 'zh', label: conv( { hans: '不转换', hant: '不轉換' } ) },
 			{ data: 'zh-hans', label: '简体' },
 			{ data: 'zh-hant', label: '繁體' },
 			{ data: 'zh-cn', label: '大陆简体' },
@@ -40,69 +50,60 @@
 			{ data: 'zh-tw', label: '臺灣正體' }
 		];
 		var uriVariant = new mw.Uri().query.variant;
+
+		/**
+		 * @param {string|null} variant null for default variant
+		 */
+		function setVariant( variant ) {
+			// Normal Preview
+			var originalAction = $editForm.attr( 'action' );
+			if ( originalAction ) {
+				var uri = new mw.Uri( originalAction );
+				if ( variant === null ) {
+					delete uri.query.variant;
+				} else {
+					uri.query.variant = variant;
+				}
+				$editForm.attr( 'action', uri.getRelativePath() );
+			}
+			// Live Preview
+			mw.config.set( 'wgUserVariant', variant || uriVariant || mw.user.options.get( 'variant' ) );
+			// Realtime Preview
+			if ( realtimePreviewClass ) {
+				realtimePreviewClass.doRealtimePreview( true );
+			}
+		}
+
 		var checkbox = new OO.ui.CheckboxInputWidget( {
-			selected: uriVariant
+			selected: !!uriVariant
 		} );
-		var dropdown = new OO.ui.DropdownWidget( {
+		var dropdown = new OO.ui.DropdownInputWidget( {
 			$overlay: true,
 			disabled: !checkbox.isSelected(),
-			menu: {
-				items: VARIANTS.map( function ( item ) {
-					return new OO.ui.MenuOptionWidget( { data: item.data, label: item.label } );
-				} )
-			}
+			options: VARIANTS,
+			value: mw.config.get( 'wgUserVariant' ) || uriVariant || mw.user.options.get( 'variant' )
 		} );
-		dropdown.getMenu().selectItemByData( mw.config.get( 'wgUserVariant' ) || uriVariant || mw.user.options.get( 'variant' ) );
+
 		checkbox.on( 'change', function ( selected ) {
 			dropdown.setDisabled( !selected );
+			setVariant( selected ? dropdown.getValue() : null );
 		} );
-
-		function getSelectedVariant() {
-			if ( !checkbox.isSelected() ) {
-				return null;
-			}
-			var selectedItem = dropdown.getMenu().findSelectedItem();
-			return selectedItem ? selectedItem.getData() : null;
-		}
-
-		function manipulateActionUrl() {
-			var selectedVariant = getSelectedVariant(),
-				originalAction = $editForm.attr( 'action' );
-			if ( selectedVariant && originalAction ) {
-				$editForm.attr(
-					'action',
-					new mw.Uri( originalAction )
-						.extend( { variant: selectedVariant } )
-						.getRelativePath()
-				);
-			}
-		}
-
-		function manipulateVariantConfig() {
-			mw.config.set( 'wgUserVariant', getSelectedVariant() || mw.user.options.get( 'variant' ) );
-		}
-
-		$editForm.find( '#wpPreview' ).on(
-			'click',
-			!mw.user.options.get( 'uselivepreview' ) ? manipulateActionUrl : manipulateVariantConfig
-		);
-		$templateSandboxPreview.on( 'click', manipulateActionUrl );
+		dropdown.on( 'change', setVariant );
 
 		var checkboxField = new OO.ui.FieldLayout( checkbox, {
 			align: 'inline',
-			label: wgULS( '预览字词转换', '預覽字詞轉換' )
+			label: conv( { hans: '预览字词转换', hant: '預覽字詞轉換' } )
 		} );
 		var dropdownField = new OO.ui.FieldLayout( dropdown, {
 			align: 'top',
-			label: wgULS( '使用该语言变体显示预览：', '使用該語言變體顯示預覽：' ),
+			label: conv( { hans: '使用该语言变体显示预览：', hant: '使用該語言變體顯示預覽：' } ),
 			invisibleLabel: true
 		} );
 		$layout.append( checkboxField.$element, dropdownField.$element );
 	} );
 
-	// 注册2017年wikitext编辑器到VE
+	// Register 2017 wikitext editor version to VE
 	mw.loader.using( 'ext.visualEditor.desktopArticleTarget.init' ).then( function () {
 		mw.libs.ve.addPlugin( 'ext.gadget.PreviewWithVariant2017' );
 	} );
 }() );
-// </nowiki>

@@ -40,6 +40,42 @@ window.AutoCreateUserPagesConfig = {
 
 $('.license-description').append('For more information, see the <a href="/wiki/Copyright_Policy">Copyright Policy</a>.');
 
-/* KayleighMJ avatar */
+/* For [[Template:Administration]] */
 
-$('#KayleighMJ-image img').wrap('<a href="/wiki/User:KayleighMJ">');
+$.getJSON("/api.php?action=listuserssearchuser&groups=sysop&contributed=0&limit=10&order=ts_edit&sort=desc&offset=0&format=json", function(json){
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const currentDate = new Date().getDate();
+
+  var usernameOne = json['listuserssearchuser']['0']['username'];
+  var rolesOne = json['listuserssearchuser']['0']['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
+  var numberOfEditsOne = json['listuserssearchuser']['0']['edit_count'];
+  var lastEditOne = json['listuserssearchuser']['0']['last_edit_date'];
+  var lastEditDateOne = new Date(lastEditOne.split(', ')[1]);
+  var lastEditDiffOne = json['listuserssearchuser']['0']['diff_edit_url'];
+
+  var usernameTwo = json['listuserssearchuser']['1']['username'];
+  var rolesTwo = json['listuserssearchuser']['1']['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
+  var numberOfEditsTwo = json['listuserssearchuser']['1']['edit_count'];
+  var lastEditTwo = json['listuserssearchuser']['1']['last_edit_date'];
+  var lastEditDateTwo = new Date(lastEditOne.split(', ')[1]);
+  var lastEditDiffTwo = json['listuserssearchuser']['1']['diff_edit_url'];
+
+  $('.administration').append('<tr><td><a href="/wiki/User:'+usernameOne+'">'+usernameOne+'</a></td><td>'+rolesOne+'</td><td>'+numberOfEditsOne+'</td><td><a href="'+lastEditDiffOne+'">'+lastEditOne+'</a></td><td class="statusOne"></td></tr><tr><td><a href="/wiki/User:'+usernameTwo+'">'+usernameTwo+'</a></td><td>'+rolesTwo+'</td><td>'+numberOfEditsTwo+'</td><td><a href="'+lastEditDiffTwo+'">'+lastEditTwo+'</a></td><td class="statusTwo"></td></tr>');
+
+  if (lastEditDateOne.getFullYear() < currentYear && lastEditDateOne.getMonth() < currentMonth && lastEditDateOne.getDate() < currentDate){
+    $('.statusOne').attr('id', 'inactive').html('Inactive');
+  } else if (lastEditDateOne.getMonth() < currentMonth){
+    $('.statusOne').attr('id', 'semi-active').html('Semi-active');
+  } else {
+    $('.statusOne').attr('id', 'active').html('Active');
+  }
+
+  if (lastEditDateTwo.getFullYear() < currentYear && lastEditDateTwo.getMonth() < currentMonth && lastEditDateTwo.getDate() < currentDate){
+    $('.statusTwo').attr('id', 'inactive').html('Inactive');
+  } else if (lastEditDateTwo.getMonth() < currentMonth){
+    $('.statusTwo').attr('id', 'semi-active').html('Semi-active');
+  } else {
+    $('.statusTwo').attr('id', 'active').html('Active');
+  }
+});

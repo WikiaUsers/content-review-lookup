@@ -12,6 +12,9 @@
  * @param {import('types-mediawiki')} mw
  */
 ;(function($, mw) {
+  if (window.MobilePreviewLoaded) return;
+  window.MobilePreviewLoaded = true;
+
   var conf = mw.config.get(['wgNamespaceNumber', 'wgPageName']);
 
   function init(ctx) {

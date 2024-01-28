@@ -136,8 +136,8 @@ dev.ReferencePopups.unload = dev.ReferencePopups.unload || function () {
             coreConfigureHover: '變更參考資料彈窗設定'
         },
         'zh-hk': {
-            coreConfigureText: '設置參考資料彈窗',
-            coreConfigureHover: '更改參考資料彈窗設置'
+            coreConfigureText: '設定參考資料彈窗',
+            coreConfigureHover: '更改參考資料彈窗設定'
         },
         'zh-tw': {
             coreConfigureText: '設定參考資料彈窗',

@@ -1,9 +1,11 @@
 $(function() {
-    if (wgPageName !== "Special:PatrolPanel") {
+    if (mw.config.get( 'wgPageName' ) !== "Special:PatrolPanel") {
         return;
     }
     var lis;
-    var intro = "Howdy " + wgUserGroups[0] + "! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style=\"color: yellow; font-weight: bold;\">administrator/content moderator</span>. This feed doesn't show edits by any of the afformentioned groups; and only shows edits within the main namespace.";
+    const groups = mw.config.get( 'wgUserGroups' );
+    const firstGroup = groups[0];
+    var intro = "Howdy " + firstGroup + "! Welcome to the hub for managing unpatrolled edits. Here, you can see all edits that have not been patrolled by an <span style=\"color: yellow; font-weight: bold;\">administrator/content moderator</span>. This feed doesn't show edits by any of the aforementioned groups; and only shows edits within the main namespace.";
     $('title').text("Patrol Panel");
     $('.page-header__title').text("Patrol Panel!");
     var api = new mw.Uri({

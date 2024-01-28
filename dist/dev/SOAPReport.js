@@ -56,12 +56,17 @@
             mw.hook('soap.reports').add(this.reporting.bind(this));
         },
         reporting: function($button) {
+            var reason = this.reasons[$button.attr('id').substr(12)];
+            mw.hook('soap.reportsform').add(this.fillInForm.bind(this, reason));
             $button.click();
-            $('#requestWindow #submit').click(this.setCachebuster.bind(this));
+        },
+        fillInForm: function(reason) {
+            $('.soap-reports .oo-ui-window-foot .oo-ui-buttonElement-button')
+                .click(this.setCachebuster.bind(this));
             $('#wikiname').val(mw.util.getParamValue('name'));
             $('#wikiurl').val(mw.util.getParamValue('url'));
             $('#user').val(mw.util.getParamValue('user'));
-            $('#comment').val(this.reasons[$button.attr('id').substr(12)]);
+            $('#comment').val(reason);
         },
         setCachebuster: function() {
             window.localStorage.setItem('SOAPReported', mw.util.getParamValue('cb'));

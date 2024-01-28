@@ -3,8 +3,12 @@
 
 	if (window.SpriteEditorModules.main && window.SpriteEditorModules.main.loaded) return;
 	window.SpriteEditorModules.main = window.SpriteEditorModules.main || {};
-	window.SpriteEditorModules.main.loaded = true;
 	var myData = window.SpriteEditorModules.main;
+	myData.loaded = true;
+	var spriteutils = window.SpriteEditorModules.spriteutils;
+	var contextMenuTemplate = document.createElement('div');
+	contextMenuTemplate.className = 'spriteedit-tooltip spriteedit-tooltip-controls spriteedit-tooltip-horizontal';
+	contextMenuTemplate.innerHTML = '<div class="spriteedit-tooltip-text"></div><div class="spriteedit-tooltip-arrow"></div>';
 	const config = mw.config.get([
 		'wgArticleId',
 		'wgArticlePath',
@@ -15,14 +19,12 @@
 	var preloads = 2;
 	var oclick;
 	var root = document.getElementById('sprite-root') || document.getElementById('mw-content-text');
-	var sections = [];
+	spriteutils.setRootElement(root);
 	var highestID = 0;
 	var loadedSpriteName = {full: ''};
-	var sprites = [];
 	var backgroundSprites = [];
 	var buttons;
 	var imgEle;
-	var canvasCollection = [];
 	var hasEditPermission = true;
 	var hasTagPermission = false;
 	var hasNewTagPermission = false;
@@ -30,17 +32,10 @@
 	var tagActive = false;
 	var lastSaved;
 	var tbExpanded = false;
-	var history = [
-		// [event-go backward, event-go forward, data ...];
-	];
+	var history = [];
 	var historyPos = 0;
 	var output;
-	var selectedPos;
-	var selectedEle;
 	var OO;
-	var helper;
-	var updateToolbar;
-	var toolbarSections;
 	var skipClose = false;
 	var api;
 	var options = {
@@ -58,7 +53,7 @@
 		sections: [],
 		ids: {}
 	};
-	var toShare = { // Helper
+	var toShare = {
 		highestPos: 0
 	};
 	var oldImageAsCanvas;
@@ -78,7 +73,7 @@
 			isPopstate = false;
 			return;
 		}
-		if (lastSaved !== history[historyPos - 1] && !window.confirm(msg("unsaved-changes").plain())) {
+		if (lastSaved !== history[historyPos - 1] && !window.confirm(msg('unsaved-changes').plain())) {
 			e.preventDefault();
 			isPopstate = true;
 			window.history.forward();
@@ -87,19 +82,94 @@
 		if (document.getElementById('sprite-root')) return; // Don't recreate the view if the editor is used as a previewer.
 		myData.run();
 	});
+	myData.filepath = function(name) {
+		if (window.hex_md5) {
+			if (myData.noMD5) {
+				return myData.imageURL + '/' + encodeURIComponent(name) + '?format=original&version=' + Date.now();
+			}
+			var hash = window.hex_md5(name);
+			return myData.imageURL + '/' + hash.substring(0,1) + '/' + hash.substring(0,2) + '/' + encodeURIComponent(name) + '?format=original&version=' + Date.now();
+		}
+		return '';
+	};
+	myData.processDialog = function(data) { // also creates MessageDialog
+		var modal = {};
+		var OO = myData.OO;
+		var wm = myData.windowManager;
+		if (data.isSubdialog) {
+			wm = new OO.ui.WindowManager();
+			$('body').append(wm.$element);
+		} else if (!wm) {
+			wm = new OO.ui.WindowManager();
+			myData.windowManager = wm;
+			$('body').append(wm.$element);
+		}
+		function SpriteEditorDialog(config) {
+			SpriteEditorDialog.super.call(this, config);
+		}
+		OO.inheritClass(SpriteEditorDialog, data.messageDialog && OO.ui.MessageDialog || OO.ui.ProcessDialog);
 
+		SpriteEditorDialog.static.name = data.name;
+		SpriteEditorDialog.static.title = data.title;
+		SpriteEditorDialog.static.actions = data.actions;
+
+		// initialise dialog, append content
+		var pInitialize = function () { // ProcessDialog
+			SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+			this.content = new OO.ui.PanelLayout({
+				expanded: false
+			});
+			this.content.$element.append(data.content());
+			this.$body.append(this.content.$element);
+			this.$content.addClass('spriteedit-ui-Dialog spriteedit-ui-hiddenFooter');
+		};
+		var mInitialize = function () { // MessageDialog
+			SpriteEditorDialog.super.prototype.initialize.apply(this, arguments);
+			var b = this.$body.get(0);
+			// Adjusting styling
+			var mdText = b.querySelector('.oo-ui-messageDialog-text');
+			mdText.style.paddingLeft = 0;
+			mdText.style.paddingRight = 0;
+			b.querySelector('.oo-ui-messageDialog-message').innerHTML = data.content();
+			this.$content.addClass('spriteedit-ui-Dialog');
+		};
+		
+		SpriteEditorDialog.prototype.initialize = data.messageDialog && mInitialize || pInitialize;
+
+		// Handle actions
+		SpriteEditorDialog.prototype.getActionProcess = function (action) {
+			data.action(action);
+			if (action === 'close')
+				return new OO.ui.Process( function () {
+					modal.seDialog.close( { action: action } );
+				} );
+			return SpriteEditorDialog.super.prototype.getActionProcess.call(this, action);
+		};
+
+		// Create a new dialog window.
+		modal.seDialog = new SpriteEditorDialog({
+			size: data.size
+		});
+		
+		// Add window
+		wm.addWindows([modal.seDialog]);
+		modal.windowManager = wm;
+		// Close dialog when clicked outside the dialog
+		modal.seDialog.$frame.parent().on('click', function (e) {
+			if (!$(e.target).closest('.spriteedit-ui-Dialog').length) {
+				if (data.onclose)
+					data.onclose();
+				modal.seDialog.close();
+			}
+		});
+		return modal;
+	};
 	function sortSection(id) {
 		// https://stackoverflow.com/questions/32199368/sorting-a-list-by-data-attribute
 		Array.prototype.slice.call(root.querySelectorAll('div[data-section-id="' + id + '"] .spritedoc-box')).sort(function(a, b) {
-			if (!a.dataset.sortKey || !b.dataset.sortKey) {
-				if (!a.dataset.sortKey) return 1;
-				if (!b.dataset.sortKey) return -1;
-				return 0;
-			}
-			a = a.dataset.sortKey;
-			b = b.dataset.sortKey;
-
-			return a.localeCompare(b);
+			if (!a.dataset.sortKey) return 1;
+			if (!b.dataset.sortKey) return -1;
+			return a.dataset.sortKey.localeCompare(b.dataset.sortKey);
 		}).forEach(function(node) {
 			node.parentNode.appendChild(node);
 		});
@@ -110,9 +180,9 @@
 			var a_ = a.children[0].textContent;
 			var b_ = b.children[0].textContent;
 
-			if (a.children[0].getAttribute("data-placeholder") && !b.children[0].getAttribute("data-placeholder"))
+			if (a.children[0].getAttribute('data-placeholder') && !b.children[0].getAttribute('data-placeholder'))
 				return 1;
-			if (!a.children[0].getAttribute("data-placeholder") && b.children[0].getAttribute("data-placeholder"))
+			if (!a.children[0].getAttribute('data-placeholder') && b.children[0].getAttribute('data-placeholder'))
 				return -1;
 
 			return a_.localeCompare(b_);
@@ -123,8 +193,16 @@
 		if (codes.length)
 			root.querySelector('li[data-pos="' + id + '"]').setAttribute('data-sort-key', codes[0].textContent);
 	}
+	function newCanvas() {
+		var c = document.createElement('canvas');
+		c.width = imgWidth;
+		c.height = imgHeight;
+		var ctx = c.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		return c;
+	}
 	function rotateSprite(sprite) {
-		var c = helper.newCanvas();
+		var c = newCanvas();
 		var ctx = c.getContext('2d');
 		for (var i = 0; i < imgHeight; i++) {
 			for (var j = 0; j < imgHeight; j++) {
@@ -137,7 +215,7 @@
 		return c;
 	}
 	function mirrorSprite(vertical, sprite) {
-		var c = helper.newCanvas();
+		var c = newCanvas();
 		var ctx = c.getContext('2d');
 		for (var i = 0; i < imgHeight; i++) {
 			for (var j = 0; j < imgWidth; j++) {
@@ -157,33 +235,32 @@
 		return c;
 	}
 	function indexNames(name) {
-		return Array.from(document.querySelectorAll("code[isSprite]")).filter(function(ele) {
+		return Array.from(document.querySelectorAll('code[isSprite]')).filter(function(ele) {
 			return ele.innerText === name;
 		});
 	}
 	function markDuplicateNames(list) {
-		var names = Object.keys(list);
+		var names = list.length && list || Object.keys(list);
 		for (var i = 0; i < names.length; i++) {
 			var eleList = indexNames(names[i]);
 			var length = eleList.length;
 			for (var j = 0; j < length; j++) {
-				eleList[j].classList.toggle("spriteedit-dupe", length > 1);
+				eleList[j].classList.toggle('spriteedit-dupe', length > 1);
 			}
 		}
-		var disable = root.querySelectorAll(".spriteedit-dupe").length ? true : false;
+		var disable = root.querySelectorAll('.spriteedit-dupe').length ? true : false;
 		buttons.changes.setDisabled(disable);
 		buttons.save.setDisabled(disable);
 	}
 	function generateJSON() {
-		var a = Object.assign(blankJSON);
+		var a = Object.assign({}, blankJSON, {ids: {}, sections: []});
 		a.settings = Object.assign({}, output.settings);
-		a.sections = [];
-		a.ids = {};
+		if (a.settings.pos) {a.settings.pos = Number(a.settings.pos);}
 		delete a.settings.spacing;
 		if (a.settings.version) {
-			a.settings.version = "version=" + Date.now();
+			a.settings.version = 'version=' + Date.now();
 		} else if (a.settings.url || options.isNew) {
-			a.settings.url = "require( [[" + config.wgFormattedNamespaces[828] + ":Sprite]] ).getUrl( '" + (a.settings.image || loadedSpriteName.name + ".png") + "', 'format=original&version=" + Date.now() + "', '" + loadedSpriteName.module.toLowerCase().substring(0, loadedSpriteName.module.length - 6) + "-sprite' ),";
+			a.settings.url = 'require( [[' + config.wgFormattedNamespaces[828] + ':Sprite]] ).getUrl( \'' + (a.settings.image || loadedSpriteName.name + '.png') + '\', \'format=original&version=' + Date.now() + '\', \'' + loadedSpriteName.module.toLowerCase().substring(0, loadedSpriteName.module.length - 6) + '-sprite\' ),';
 		}
 		a.settings.sheetsize = options.spritesPerRow * (imgWidth + options.spacing) - options.spacing;
 		if (options.spacing > 0)
@@ -192,24 +269,24 @@
 		for (var i = 0; i < sections.length; i++) {
 			var secId = options.cleanupSectionIDs ? String(i) : sections[i].dataset.sectionId;
 			a.sections.push( {
-				name: sections[i].querySelector("span").textContent,
-				id: secId
+				name: sections[i].querySelector('code').textContent,
+				id: Number(secId)
 			} );
-			var names = sections[i].querySelectorAll(".spritedoc-name");
+			var names = sections[i].querySelectorAll('.spritedoc-name');
 			for (var k = 0; k < names.length; k++) {
-				var dataset = names[k].closest(".spritedoc-box").dataset;
+				var dataset = names[k].closest('.spritedoc-box').dataset;
 				var name = names[k].children[0];
-				if (options.removeDeprecatedNames && name.classList.contains("spritedoc-deprecated")) continue;
-				if (dataset.pos === "null") continue;
+				if (options.removeDeprecatedNames && name.classList.contains('spritedoc-deprecated')) continue;
+				if (!dataset.pos) continue;
 				var p = options.removeUnusedSprites && options.removeWhitespace && dataset.posTmp || dataset.pos;
 				a.ids[name.textContent] = {
-					pos: p,
-					section: secId
+					pos: Number(p),
+					section: Number(secId)
 				};
 				
-				var flags = window.SpriteEditorModules.main.flags;
+				var flags = myData.flags;
 				for (var l = 0; l < flags.length; l++) {
-					if (name.classList.contains("spritedoc-" + flags[l][0])) {
+					if (name.classList.contains('spritedoc-' + flags[l][0])) {
 						a.ids[name.textContent][flags[l][0]] = true;
 					}
 				}
@@ -218,75 +295,75 @@
 		return a;
 	}
 	// Serialize JSON
-	function getNames(data, ident) {
-		var toReturn = [];
-		var names = Object.keys(data);
-		if (ident === 2) {
-			names.sort();
-		}
-		for (var i = 0; i < names.length; i++) {
-			var d = data[names[i]];
-			var t = isNaN(d);
-			var u = ((typeof(d) === "string" && !d.length) || t) && "\'" || "";
-			if (String(d).substring(0,7) === "require") {
-				u = "";
-			}
-			toReturn.push( names[i] + " = " + u + d + u );
-		}
-		var id = ("\t").repeat(ident);
-		var joinVar = ident === 2 && ",\n" + id || ", ";
-		return "{" + (ident === 2 && "\n" + id || " ") + toReturn.join(joinVar) + (ident === 2 && "\n" + ("\t").repeat(ident - 1) || " ") + "},";
+	function _needQuotes(a) {
+		return a !== (a.match(/(\d|\w)+/gm) || [])[0];
 	}
-	function processData(data, tr, ident, sortNames) {
-		var toReturn = tr || [
-			"{"
-		];
-		ident = ident || 1;
-		var names = Object.keys(data);
-		if (sortNames && ident > 1) {
-			var useName = data[names[0]] && data[names[0]].name || 0;
-			var dataA;
-			var dataB;
-			names = names.sort(function(a, b) {
-				if (useName) {
-					dataA = data[a].name.toLowerCase();
-					dataB = data[b].name.toLowerCase();
-				} else {
-					dataA = a.toLowerCase();
-					dataB = b.toLowerCase();
-				}
+	function _serialize(data) { // Without linebreaks
+		var keys = Object.keys(data);
+		var a = ['{'];
+		var l = keys.length - 1;
+		for (var i = 0; i <= l; i++) {
+			var q = _needQuotes(keys[i]) && '\'' || '';
+			var u = !['boolean', 'number'].includes(typeof(data[keys[i]])) && '\'' || '';
+			a.push(' ' + q + keys[i] + q + ' = ' + u + data[keys[i]] + u + (i < l && ',' || ''));
+		}
+		a.push(' }');
+		return a.join('');
+	}
+	function processData(data, indent) {
+		if (!indent) {indent = 0;}
+		var indent_ = ('\t').repeat(indent + 1);
+		var output = ['{'];
+		var visited = {};
+		if (indent === 1) {
+			for (var j = 0; j < data.length; j++) {
+				output.push(indent_ + _serialize(data[j]) + ',');
+				visited[data[j]] = true;
+			}
+		}
+		var keys = Object.keys(data);
+		if (indent > 0) {
+			keys = keys.sort(function(a, b) {
+				var dataA = a.toLowerCase();
+				var dataB = b.toLowerCase();
 				if (dataA > dataB) return 1;
 				if (dataA < dataB) return -1;
 				return 0;
 			});
 		}
-		for (var i = 0; i < names.length; i++) {
-			var id = ("\t").repeat(ident);
-			if (!data[names[i]]) continue;
-			var needQuotes = names[i] !== (names[i].match(/(\d|\w)+/gm) || [])[0];
-			if (data[names[i]].pos || data[names[i]].id || data[names[i]].sheetsize || data[names[i]].classname || data[names[i]].stylesheet) {
-				if (!isNaN(names[i])) {
-					toReturn.push( id + getNames(data[names[i]], ident + 1) );
-				} else {
-					toReturn.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + ' = ' + getNames(data[names[i]], ident + 1) );
+		for (var i = 0; i < keys.length; i++) {
+			var entry = data[keys[i]];
+			var q = _needQuotes(keys[i]) && '\'' || '';
+			var quotes = q && ['[\'', '\']'] || ['', ''];
+			if (indent === 0 && keys[i] === 'settings') {
+				output.push(indent_ + keys[i] + ' = {');
+				var names = Object.keys(entry);
+				names = names.sort();
+				for (var k = 0; k < names.length; k++) {
+					var u = !['boolean', 'number'].includes(typeof(entry[names[k]])) && '\'' || '';
+					var is_require = names[k] === 'url' && String(entry[names[k]]).substring(0,7) === 'require';
+					if (is_require) {u = '';}
+					output.push(indent_ + '\t' + quotes[0] + names[k] + quotes[1] + ' = ' + u + entry[names[k]] + u + (!is_require && ',' || ''));
 				}
-			} else if (typeof(data[names[i]]) === "object") {
-				toReturn.push( id + (needQuotes && "['" || "") + names[i] + (needQuotes && "']" || "") + " = {" );
-				processData(data[names[i]], toReturn, ident + 1, names[i] !== "sections");
-				toReturn.push( id + "}," );
+				output.push(indent_ + '},');
+			} else if (indent === 0) {
+				var b = processData(entry, indent + 1);
+				b[0] = indent_ + keys[i] + ' = ' + b[0];
+				output = output.concat(b);
+			} else {
+				if (visited[entry]) continue;
+				output.push(indent_ + quotes[0] + keys[i] + quotes[1] + ' = ' + _serialize(entry) + ',');
 			}
 		}
-		if (ident === 1) {
-			toReturn.push( "}" );
-			return toReturn.join("\n");
-		}
+		output.push(indent === 0 && '}' || ('\t').repeat(indent) + '},');
+		return indent == 0 && output.join('\n') || output;
 	}
 	function addDummyPos() {
 		var allPos = [];
 		var allSprites = root.querySelectorAll('li[class="spritedoc-box"]');
 		for (var i = 0; i < allSprites.length; i++) {
-			if (allSprites[i].dataset.pos === "null") continue;
-			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll("code").length) {
+			if (allSprites[i].dataset.pos === 'null') continue;
+			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll('code').length) {
 				continue;
 			}
 			allPos.push(Number(allSprites[i].dataset.pos));
@@ -296,9 +373,9 @@
 		});
 		var extraIncrement = 0;
 		allPos.forEach(function(item, index) {
-			if (!extraIncrement && (!output.settings.pos || ((index + 1) === Number(output.settings.pos) && !document.querySelector("li[data-pos='" + (index + 1) + '"]')) ) ) // If no defaultSprite exists, the pos 1 shouldn't be blocked.
+			if (!extraIncrement && (!output.settings.pos || ((index + 1) === Number(output.settings.pos) && !document.querySelector('li[data-pos=\'' + (index + 1) + '"]')) ) ) // If no defaultSprite exists, the pos 1 shouldn't be blocked.
 				extraIncrement++;
-			document.querySelector("li[data-pos='" + item + "']").dataset.posTmp = index + 1 + extraIncrement;
+			document.querySelector('li[data-pos=\'' + item + '\']').dataset.posTmp = index + 1 + extraIncrement;
 		});
 	}
 	function getPosCoords(pos, useOrg) {
@@ -311,16 +388,17 @@
 		};
 	}
 	function generateImage() {
-		var c = helper.newCanvas();
+		var c = newCanvas();
 		var ctx = c.getContext('2d');
 		var keepOldSprites = !options.removeUnusedSprites && !options.isNew && !options.removeWhitespace;
 		var needDummy = options.removeUnusedSprites && options.removeWhitespace;
 		if (needDummy) {
 			addDummyPos();
 		}
-		var defaultSprite = document.querySelector("li[data-default]");
+		var defaultSprite = document.querySelector('li[data-default]');
 		if (defaultSprite) {
 			output.settings.pos = needDummy && defaultSprite.dataset.posTmp || defaultSprite.dataset.pos;
+			spriteutils.setPosSprite(output.settings.pos);
 		}
 		var spritesPerRow = options.spritesPerRow;
 		c.width = (imgWidth + options.spacing) * spritesPerRow - options.spacing;
@@ -334,14 +412,14 @@
 		var coords;
 		var allSprites = root.querySelectorAll('li[class="spritedoc-box"]');
 		for (i = 0; i < allSprites.length; i++) {
-			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll("code").length) {
+			if (options.removeUnusedSprites && options.removeDeprecatedNames && allSprites[i].querySelectorAll('code[class="spritedoc-deprecated"]').length === allSprites[i].querySelectorAll('code').length) {
 				continue;
 			}
 			sID = options.removeUnusedSprites && options.removeWhitespace && allSprites[i].dataset.posTmp || allSprites[i].dataset.pos;
-			if (sID === "null") continue;
+			if (sID === 'null') continue;
 			coords = getPosCoords(sID, false);
 			drawn[sID] = true;
-			ctx.drawImage(allSprites[i].querySelector("canvas"),
+			ctx.drawImage(allSprites[i].querySelector('canvas'),
 				0, 0, imgWidth, imgHeight, // Source coords.
 				coords.x, coords.y, imgWidth, imgHeight // Canvas coords.
 			);
@@ -367,17 +445,16 @@
 		return [c, oldImageAsCanvas, oldImageAsCanvas.toDataURL() !== c.toDataURL()];
 	}
 	function setupOldCanvas(imgData) {
-		oldImageAsCanvas = document.createElement("canvas");
+		oldImageAsCanvas = document.createElement('canvas');
 		oldImageAsCanvas.width = imgData.width || imgData.naturalWidth;
 		oldImageAsCanvas.height = imgData.height || imgData.naturalHeight;
 		if (options.isNew) return;
-		var ctxOld = oldImageAsCanvas.getContext('2d');
-		ctxOld.drawImage(imgData, 0, 0);
+		oldImageAsCanvas.getContext('2d').drawImage(imgData, 0, 0);
 	}
 	function updateTitle(changesMade) {
 		if (window.SpriteEditorModules.openButton) return;
-		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && "*" || "") + " – ") || "") + msg("title").plain() + ' – ' + config.wgSiteName;
-		document.getElementById('firstHeading').textContent = msg("title").plain() + (loadedSpriteName.full.length && (" – " + loadedSpriteName.name + (options.isNew && " (" + msg("dialog-button-new").plain() + ")" || "") + (changesMade && "*" || "")) || "");
+		document.title = (loadedSpriteName.full.length && (loadedSpriteName.name + (changesMade && '*' || '') + ' – ') || '') + msg('title').plain() + ' – ' + config.wgSiteName;
+		document.getElementById('firstHeading').textContent = msg('title').plain() + (loadedSpriteName.full.length && (' – ' + loadedSpriteName.name + (options.isNew && ' (' + msg('dialog-button-new').plain() + ')' || '') + (changesMade && '*' || '')) || '');
 	}
 	function toggleTBButtons(active) {
 		buttons.changes.setDisabled(!active);
@@ -391,26 +468,26 @@
 	}
 	function saveJSON(summary, data, generatedJSON) {
 		api.postWithEditToken({
-			action: "edit",
-			contentformat: "text/plain",
-			contentmodel: "Scribunto",
+			action: 'edit',
+			contentformat: 'text/plain',
+			contentmodel: 'Scribunto',
 			formatversion: 2,
 			notminor: true,
 			recreate: true,
 			summary: summary,
-			tags: tagActive && tagExists && hasTagPermission && "spriteeditor" || undefined,
-			text: "return " + data,
+			tags: tagActive && tagExists && hasTagPermission && 'spriteeditor' || undefined,
+			text: 'return ' + data,
 			title: 'Module:' + loadedSpriteName.full
 		}).always(function(d) {
 			toggleTBButtons(hasEditPermission);
 			buttons.open.setDisabled(false);
 			buttons.undo.setDisabled(historyPos === 0);
 			buttons.redo.setDisabled(historyPos === history.length);
-			if (d.edit.result !== "Success") {
-				alert(msg("json-error").plain());
+			if (d.edit.result !== 'Success') {
+				alert(msg('json-error').plain());
 				return;
 			}
-			alert(msg("json-success").plain());
+			alert(msg('json-success').plain());
 			if (options.isNew) {
 				options.isNew = false;
 				output = generatedJSON;
@@ -422,12 +499,12 @@
 	function addMissingTag(summary, data, generatedJSON) {
 		if (!tagExists && hasNewTagPermission) {
 			api.postWithEditToken({
-				action: "managetags",
-				format: "json",
-				formatversion: "2",
-				operation: "create",
-				reason: "Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]",
-				tag: "spriteeditor"
+				action: 'managetags',
+				format: 'json',
+				formatversion: '2',
+				operation: 'create',
+				reason: 'Add missing tag for [[w:c:dev:SpriteEditor|SpriteEditor]]',
+				tag: 'spriteeditor'
 			}).always(function(e) {
 				if (!e.error) {
 					tagExists = true;
@@ -459,7 +536,7 @@
 			}).always(function(d) {
 				if (!d) {
 					toggleTBButtons(hasEditPermission);
-					alert(msg("image-error").plain());
+					alert(msg('image-error').plain());
 					return;
 				}
 				setupOldCanvas(gIVars[0]);
@@ -476,211 +553,13 @@
 		buttons.redo.setDisabled(true);
 		updateTitle(true);
 	}
-	function removeOverlays() {
-		selectedEle.removeAttribute("ghost");
-		var overlays = root.querySelectorAll('.section-move-overlay');
-		for (var i = 0; i < overlays.length; i++) {
-			overlays[i].parentElement.removeChild(overlays[i]);
-		}
-		selectedPos = null;
-	}
 	function moveHistory(dir) { // !dir = Backwards; dir = Forwards
 		historyPos += dir;
 		var offset = Number(dir > 0);
-		var c = history[historyPos - offset]; // Current
-		var d = offset;
-		var names;
-		var i;
-		var sprites;
-		var n = {};
-		if (typeof(c[d]) === "function") {
-			c[d]();
-		} else if (c[d] === "sprite-added") {
-			toShare.highestPos = c[5 + offset];
-			helper.removeSprite(c[3], true);
-			delete backgroundSprites[c[3]];
-		} else if (c[d] === "sprite-added2") {
-			toShare.highestPos = c[5 + offset];
-			helper.removeSprite(c[3], true);
-		} else if (c[d] === "sprite-removed") {
-			toShare.highestPos = c[5 + offset];
-			root.querySelector('div[data-section-id="' + c[2] + '"] .spritedoc-boxes').appendChild(c[4]);
-			var list = c[4].querySelectorAll(".spritedoc-name code[isSprite]");
-			for (i = 0; i < list.length; i++) {
-				n[list[i].textContent] = true;
-			}
-			if (backgroundSprites[c[3]]) {
-				delete backgroundSprites[c[3]];
-			}
-			sortSection(c[2]);
-			markDuplicateNames(n);
-		} else if (c[d] === "sprite-replace") {
-			var oldSprite = c[4 - offset];
-			var newSprite = c[3 + offset];
-			canvasCollection[c[2]].parentElement.replaceChild(newSprite, oldSprite);
-			canvasCollection[c[2]] = newSprite;
-		} else if (c[d] === "sprite-rename") { // c[5] = code-element
-			var oldName = c[3 + offset];
-			var newName = c[4 - offset];
-			c[5].textContent = oldName;
-			n[oldName] = true;
-			n[newName] = true;
-			markDuplicateNames(n);
-			sortSpriteNames(c[2]);
-			sortSection(c[5].closest('.spritedoc-section').dataset.sectionId);
-		} else if (c[d] === "sprite-name-removed") { // c[3] = spritedoc-names
-			c[3].appendChild(c[4]);
-			c[4].children[0].textContent = c[5];
-			n[c[5]] = true;
-			markDuplicateNames(n);
-			sortSpriteNames(c[2]);
-			sortSection(c[3].closest('.spritedoc-section').dataset.sectionId);
-		} else if (c[d] === "sprite-name-added") {
-			n[c[5]] = true;
-			var secID = c[4].closest('.spritedoc-section').dataset.sectionId;
-			c[4].parentElement.removeChild(c[4]);
-			markDuplicateNames(n);
-			sortSpriteNames(c[2]);
-			sortSection(secID);
-		} else if (c[d] === "section-rename") {
-			root.querySelector('div[data-section-id="' + c[2] + '"] span').textContent = c[3 + offset];
-		} else if (c[d] === "section-added") {
-			sprites = c[3].querySelectorAll(".spritedoc-box");
-			for (i = 0; i < sprites.length; i++) {
-				if (!sprites[i].draggable) continue;
-				backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
-			}
-			names = c[3].querySelectorAll("code[isSprite]");
-			root.removeChild(c[3]);
-			for (i = 0; i < names.length; i++) {
-				n[names[i].textContent] = true;
-			}
-			markDuplicateNames(n);
-		} else if (c[d] === "section-removed") {
-			if (root.children.length < c[5]) {
-				root.appendChild(c[3]);
-			} else {
-				root.insertBefore(c[3], Array.from(root.children)[c[5]]);
-			}
-			sprites = c[3].querySelectorAll(".spritedoc-box");
-			for (i = 0; i < sprites.length; i++) {
-				delete backgroundSprites[Number(sprites[i].dataset.pos)];
-			}
-			names = c[3].querySelectorAll("code[isSprite]");
-			for (i = 0; i < names.length; i++) {
-				n[names[i].textContent] = true;
-			}
-			markDuplicateNames(n);
-			c[3].querySelector("span").textContent = c[4];
-		}
+		history[historyPos - offset][offset]();
 		buttons.undo.setDisabled(historyPos === 0);
 		buttons.redo.setDisabled(historyPos === history.length);
 		updateTitle(lastSaved !== history[historyPos - 1]);
-	}
-	function getCodeField(name) {
-		var boxCode = document.createElement('code');
-		boxCode.contentEditable = hasEditPermission;
-		boxCode.textContent = name;
-
-		boxCode.onpaste = function(e) {
-			e.preventDefault();
-			var paste = (e.clipboardData || window.clipboardData).getData('text');
-			paste = paste.replace( /\n/g, ' ' ).trim();
-			window.document.execCommand( 'insertText', false, paste );
-		};
-		boxCode.onkeypress = function(e) {
-			if ( e.keyCode !== 13 ) return;
-			e.preventDefault();
-			e.target.blur();
-		};
-		boxCode.addEventListener('focus', function() {
-			if (buttons.deprecated.getValue()) {
-				const _boxCode = boxCode;
-				const btnValue = buttons.deprecated2.getMenu().findSelectedItem().getData();
-				const _func = function() {
-					_boxCode.classList.toggle("spritedoc-" + btnValue);
-				};
-				addHistory([_func, _func]);
-				_func();
-				boxCode.blur();
-			} else {
-				boxCode.setAttribute("data-original-text", boxCode.textContent);
-			}
-		});
-		boxCode.addEventListener('blur', function() {
-			if (buttons.deprecated.getValue()) return;
-			var posId = boxCode.closest('.spritedoc-box').dataset.pos;
-			var list = {};
-			boxCode.textContent = boxCode.textContent.trim();
-			var secId = boxCode.closest('.spritedoc-section').dataset.sectionId;
-			var orgT = boxCode.getAttribute("data-original-text") || "";
-			if (boxCode.textContent.length) {
-				boxCode.removeAttribute("data-original-text");
-				if (orgT === boxCode.textContent) return;
-				if (orgT.length) {
-					list[orgT] = true;
-					addHistory([
-						"sprite-rename",
-						"sprite-rename",
-						posId,
-						orgT,
-						boxCode.textContent,
-						boxCode
-					]);
-				} else {
-					addHistory([
-						"sprite-name-added",
-						"sprite-name-removed",
-						posId,
-						boxCode.closest(".spritedoc-names"),
-						boxCode.parentElement,
-						boxCode.textContent
-					]);
-				}
-				list[boxCode.textContent] = true;
-				markDuplicateNames(list);
-				boxCode.classList.remove("spriteedit-new");
-				boxCode.removeAttribute("data-placeholder");
-				sortSpriteNames(posId);
-				sortSection(secId);
-				return;
-			}
-			var isRemoved = false;
-			var cl = boxCode.closest('.spritedoc-names');
-			if (cl.children.length === 1) {
-				boxCode.innerText = orgT;
-				helper.removeSprite(posId);
-				isRemoved = true;
-			} else if (cl.children.length > 1) {
-				if (orgT.length)
-					addHistory([
-						"sprite-name-removed",
-						"sprite-name-added",
-						posId,
-						boxCode.closest(".spritedoc-names"),
-						boxCode.parentElement,
-						orgT
-					]);
-				cl.removeChild(boxCode.parentElement);
-			}
-			markDuplicateNames(list);
-			list = {};
-			if (!orgT.length) return;
-			list[orgT] = true;
-			markDuplicateNames(list);
-			if (cl.children.length) {
-				sortSpriteNames(posId);
-				if (!isRemoved)
-					sortSection(secId);
-			}
-		});
-
-		if (!(name || '').length) {
-			boxCode.className = "spriteedit-new";
-			boxCode.setAttribute("isSprite", "");
-			boxCode.setAttribute('data-placeholder', msg("new-placeholder").plain());
-		}
-		return boxCode;
 	}
 	function createContextButton(icon, lbl, tooltip) {
 		return new OO.ui.ButtonInputWidget( {
@@ -695,577 +574,355 @@
 			title: tooltip
 		} );
 	}
-	function addFile(f, ele) {
-		var reader = new FileReader();
-		reader.onloadend = function(readerEvent) {
-			var imgEle = document.createElement("img");
-			imgEle.style.width = "0";
-			imgEle.style.height = "0";
-			imgEle.src = readerEvent.target.result;
-			imgEle.addEventListener("load", function() {
-				// From original Sprite-Editor
-				var fname = f.name.trim().replace( /\.[^\.]+$/, '' ).replace( /_/g, ' ' );
-				if (!fname.length) return;
-				toShare.highestPos++;
-				if (toShare.highestPos === Number(output.settings.pos)) // Prevent replacing default image.
-					toShare.highestPos++;
-				var posID = toShare.highestPos;
-				var secID = ele.closest(".spritedoc-section").dataset.sectionId;
-				helper.addSprite(posID, imgEle);
-				addHistory([
-					"sprite-added",
-					"sprite-removed",
-					String(secID),
-					String(posID),
-					getSpriteBox(posID, [[fname, false]]),
-					posID - 1,
-					posID
-				]);
-				historyPos--;
-				moveHistory(1);
-			});
-		};
-		reader.readAsDataURL(f);
-	}
 	function closeTooltip() {
-		var menu = document.getElementsByClassName("spriteedit-tooltip")[0];
+		var menu = document.getElementsByClassName('spriteedit-tooltip')[0];
 		if (!menu) return;
 		document.body.removeChild(menu);
-	}
-	function ttFunction(event) {
-		skipClose = true;
-		closeTooltip();
-		selectedEle = event.target.closest(".spritedoc-box");
-		selectedPos = selectedEle.dataset.pos;
-		if (selectedPos === "null") {
-			var input = document.createElement('input');
-			input.type = 'file';
-			input.setAttribute("multiple", "");
-			input.setAttribute("accept", "image/*");
-			input.onchange = function(e) {
-				Array.prototype.forEach.call(e.target.files, function(file) {
-					addFile(file, selectedEle);
-				});
-			};
-			$(input).click();
-			return;
-		}
-		var ele = document.createElement("div");
-		ele.className = "spriteedit-tooltip spriteedit-tooltip-controls spriteedit-tooltip-horizontal";
-		var ele2 = document.createElement("div");
-		ele2.className = "spriteedit-tooltip-text";
-		var ele3 = document.createElement("div");
-		ele3.className = "spriteedit-tooltip-arrow";
-		ele.append(ele2, ele3);
-
-		var buttons = {
-			changeSprite: createContextButton(
-				"imageGallery",
-				msg("replace-sprite-label").plain(),
-				msg("replace-sprite-hover").plain()
-			),
-			deleteSprite: createContextButton(
-				"trash",
-				msg("delete-sprite-label").plain(),
-				msg("delete-sprite-hover").plain()
-			),
-			defaultSprite: createContextButton(
-				selectedEle.dataset.default && "unStar" || "star",
-				msg((selectedEle.dataset.default && "unmark" || "mark") + "-default-sprite-label").plain(),
-				msg("default-sprite-label").plain()
-			),
-			downloadSprite: createContextButton(
-				"download",
-				msg("download-sprite-label").plain(),
-				msg("download-sprite-hover").plain()
-			),
-			moveSprite: createContextButton(
-				"move",
-				msg("move-sprite-label").plain(),
-				msg("move-sprite-hover").plain()
-			),
-			rotateSpriteLeft: createContextButton(
-				"undo",
-				msg("rotate-left-label").plain(),
-				msg("rotate-left-hover").plain()
-			),
-			rotateSpriteRight: createContextButton(
-				"redo",
-				msg("rotate-right-label").plain(),
-				msg("rotate-right-hover").plain()
-			),
-			mirrorSpriteHorizontal: createContextButton(
-				"subtract",
-				msg("flip-h-label").plain(),
-				msg("flip-h-hover").plain()
-			),
-			mirrorSpriteVertical: createContextButton(
-				"subtract",
-				msg("flip-v-label").plain(),
-				msg("flip-v-hover").plain()
-			),
-		};
-		buttons.deleteSprite.setFlags(['primary', 'destructive']);
-		buttons.mirrorSpriteVertical.$icon.get(0).style.transform = "rotate(90deg)";
-		if (hasEditPermission) {
-			$(ele2).append(buttons.changeSprite.$element);
-			$(ele2).append(buttons.defaultSprite.$element);
-		}
-		$(ele2).append(buttons.downloadSprite.$element);
-		if (hasEditPermission) {
-			if (Number(imgWidth) === Number(imgHeight)) {
-				$(ele2).append(buttons.rotateSpriteLeft.$element);
-				$(ele2).append(buttons.rotateSpriteRight.$element);
-			}
-			$(ele2).append(buttons.mirrorSpriteHorizontal.$element);
-			$(ele2).append(buttons.mirrorSpriteVertical.$element);
-			$(ele2).append(buttons.moveSprite.$element);
-			$(ele2).append(buttons.deleteSprite.$element);
-		}
-
-		document.body.append(ele);
-
-		ele.style.left = ($(event.srcElement).offset().left - $(ele).outerWidth()) + "px";
-		ele.style.top = $(event.srcElement).offset().top + event.target.clientHeight * 0.5 + "px";
-		ele.style.opacity = "1";
-		ele.style.transform = "scale(1)";
-		ele.style.zIndex = "299";
-		
-		Object.keys(buttons).forEach(function(a) {
-			buttons[a].on("click", function() {
-				closeTooltip();
-			});
-		});
-		
-		buttons.deleteSprite.on("click", function() {
-			helper.removeSprite(selectedPos);
-		});
-		function rotate(additionalRotation, skipHistory, altCanvas) {
-			var orgCanvas = canvasCollection[selectedPos];
-			var newImg = additionalRotation > 0 && rotateSprite(altCanvas || orgCanvas) || altCanvas || orgCanvas;
-			for (var i = 0; i < additionalRotation; i++) {
-				newImg = rotateSprite(newImg);
-			}
-			if (skipHistory === true)
-				return newImg;
-			helper.addSprite(selectedPos, newImg);
-			orgCanvas.parentElement.replaceChild(canvasCollection[selectedPos], orgCanvas); // Replacing old with new.
-			addHistory([
-				"sprite-replace",
-				"sprite-replace",
-				selectedPos,
-				orgCanvas, // Old canvas
-				canvasCollection[selectedPos] // New canvas
-			]);
-		}
-		buttons.rotateSpriteLeft.on("click", function() {
-			rotate(2);
-		});
-		buttons.rotateSpriteRight.on("click", function() {
-			rotate(0);
-		});
-		buttons.mirrorSpriteHorizontal.on("click", function() {
-			var spr = mirrorSprite(false, canvasCollection[selectedPos]);
-			// Rotate back (To apply the new image)
-			rotate(0, false, spr);
-		});
-		buttons.mirrorSpriteVertical.on("click", function() {
-			// Mirror
-			var spr = mirrorSprite(true, canvasCollection[selectedPos]);
-			// Rotate back (To apply the new image)
-			rotate(0, false, spr);
-		});
-
-		function moveSpriteClick(event) {
-			const sec = event.target.dataset.section;
-			const oldSec = selectedEle.closest(".spritedoc-section").dataset.sectionId;
-			const eleSelected = selectedEle;
-			if (sec === oldSec) {
-				removeOverlays();
-				updateToolbar();
-				return;
-			}
-			const _func = function(ele) {
-				root.querySelector('div[data-section-id="' + ele + '"] .spritedoc-boxes').appendChild(eleSelected);
-				sortSection(ele);
-			};
-			addHistory([
-				function() {_func(oldSec);},
-				function() {_func(sec);}
-			]);
-			removeOverlays();
-			_func(sec);
-			updateToolbar();
-		}
-		function setDefaultSprite(oldDefault, newDefault) {
-			if (oldDefault) delete oldDefault.dataset.default;
-			if (newDefault) newDefault.dataset.default = ".";
-		}
-		buttons.defaultSprite.on("click", function() {
-			var oldDefault = document.querySelector('li[data-default]');
-			if (oldDefault) {
-				delete oldDefault.dataset.default;
-				delete output.settings.pos;
-			}
-
-			if (oldDefault !== selectedEle)
-				selectedEle.dataset.default = ".";
-
-			const _oldDefault = oldDefault;
-			const _newDefault = document.querySelector('li[data-default]');
-			addHistory([
-				function() {
-					setDefaultSprite(_newDefault, _oldDefault);
-				},
-				function() {
-					setDefaultSprite(_oldDefault, _newDefault);
-				}
-			]);
-		});
-		buttons.moveSprite.on("click", function() {
-			selectedEle.setAttribute("ghost", "true");
-			var sections = root.querySelectorAll(".spritedoc-section");
-			var ele = document.createElement("div");
-			ele.textContent = "Click to move.";
-			ele.classList.add("section-move-overlay");
-			for (var i = 0; i < sections.length; i++) {
-				var ele2 = ele.cloneNode(true);
-				ele2.dataset.section = sections[i].dataset.sectionId;
-				ele2.addEventListener("click", moveSpriteClick);
-				sections[i].querySelector(".spritedoc-boxes").append(ele2);
-			}
-			updateToolbar();
-		});
-
-		buttons.downloadSprite.on("click", function() {
-			var fileName = document.querySelector('li[data-pos="' + selectedPos + '"]').dataset.sortKey;
-			var element = document.createElement('a');
-			element.crossOrigin = '*';
-			element.setAttribute('href', canvasCollection[selectedPos].toDataURL("image/png"));
-			element.setAttribute('download', fileName + ".png");
-			element.click();
-		});
-		buttons.changeSprite.on("click", function() {
-			var input = document.createElement('input');
-			input.type = 'file';
-			input.setAttribute("accept", "image/*");
-			input.onchange = function(e) {
-				var file = e.target.files[0];
-				var reader = new FileReader();
-				reader.onloadend = function(readerEvent) {
-					var imgEle = document.createElement("img");
-					imgEle.style.width = "0";
-					imgEle.style.height = "0";
-					imgEle.src = readerEvent.target.result;
-					imgEle.addEventListener("load", function() {
-						var oldCanvas = canvasCollection[selectedPos];
-						helper.addSprite(selectedPos, imgEle);
-						oldCanvas.parentElement.replaceChild(canvasCollection[selectedPos], oldCanvas); // Replacing old with new.
-						addHistory([
-							"sprite-replace",
-							"sprite-replace",
-							selectedPos,
-							oldCanvas, // Old canvas
-							canvasCollection[selectedPos] // New canvas
-						]);
-					});
-				};
-				reader.readAsDataURL(file);
-			};
-			$(input).click();
-		});
-	}
-
-	function getNewBoxFunction(a) {
-		return function() {
-			var boxCode = getCodeField();
-			var spriteName = document.createElement('li');
-			spriteName.classList = 'spritedoc-name';
-			spriteName.append(boxCode);
-			a.append(spriteName);
-			var orgVar = buttons.deprecated.getValue();
-			buttons.deprecated.setValue(false);
-			boxCode.focus();
-			buttons.deprecated.setValue(orgVar);
-		};
-	}
-	function getSpriteBox(pos, data) {
-		var spriteBox = document.createElement('li');
-		spriteBox.classList = 'spritedoc-box';
-		spriteBox.setAttribute('data-pos', pos);
-		if (pos && hasEditPermission) {
-			spriteBox.setAttribute("draggable","true");
-			spriteBox.ondragstart = function(event) {
-				event.dataTransfer.setData("Text", event.target.dataset.pos);
-			};
-		}
-		// sprite image
-		var spriteImage = document.createElement('div');
-		spriteImage.className = 'spritedoc-image';
-		var image = document.createElement('span');
-		image.className = 'sprite';
-		if (!pos) {
-			image = new OO.ui.IconWidget( {
-				icon: 'imageAdd',
-				label: msg("new-images-hover").plain(),
-				title: msg("new-images-label").plain(),
-				classes: [ "spriteeditor-newImagesBtn" ]
-			} ).$element.get(0);
-		} else if (canvasCollection[pos]) {
-			image.appendChild(canvasCollection[pos]);
-		} else {
-			var posCoords = getPosCoords(pos, true);
-			var canvas = helper.newCanvas();
-			canvas.getContext('2d').drawImage(imgEle,
-				posCoords.x, posCoords.y, imgWidth, imgHeight, // Source coords.
-				0, 0, imgWidth, imgHeight // Canvas coords.
-			);
-			canvasCollection[pos] = canvas;
-			image.appendChild(canvas);
-		}
-		spriteImage.append(image);
-		spriteImage.addEventListener("click", ttFunction);
-
-		const spriteNames = document.createElement('ul');
-		spriteNames.classList = 'spritedoc-names';
-		data.sort(function(a) {return a[0] < a[1];});
-		for (var name = 0; name < data.length; name++) {
-			if (name === 0 && pos)
-				spriteBox.setAttribute('data-sort-key', data[name][0]);
-
-			// sprite names
-			var boxCode = getCodeField(data[name][0]);
-			
-			var flags = window.SpriteEditorModules.main.flags;
-			if (data[name][2]) {
-				for (var l = 0; l < flags.length; l++) {
-					if (data[name][2][flags[l][0]])
-						boxCode.classList.add("spritedoc-" + flags[l][0]);
-				}
-			}
-			if (pos)
-				boxCode.setAttribute("isSprite", "");
-
-			var spriteName = document.createElement('li');
-			spriteName.classList = 'spritedoc-name';
-			spriteName.append(boxCode);
-			spriteNames.append(spriteName);
-		}
-		if (hasEditPermission) {
-			var addNameBtn = new OO.ui.ButtonInputWidget( {
-				classes: [ 'spriteedit-add-name' ],
-				framed: false,
-				icon: 'add',
-				title: msg("add-name-label").plain(),
-			} );
-			addNameBtn.on("click", getNewBoxFunction(spriteNames));
-			spriteBox.append(addNameBtn.$element.get(0));
-		}
-		spriteBox.append(spriteImage);
-		spriteBox.append(spriteNames);
-		return spriteBox;
-	}
-	function generateSpriteView(id) {
-		var spriteBoxes = document.createElement('ul');
-		spriteBoxes.classList = 'spritedoc-boxes';
-		if (sections[id].children.length > 1)
-			sections[id].removeChild(sections[id].children[1]);
-
-		var dropZone = document.createElement("div");
-		dropZone.classList = "section-drag-overlay sprite-drop-area";
-		dropZone.style.display = "none";
-		dropZone.style.top = 0;
-		dropZone.style.left = 0;
-		dropZone.style.zIndex = 99;
-
-		sections[id].append(spriteBoxes);
-		
-		spriteBoxes.append(dropZone);
-		if (sprites[id]) {
-			for (var pos = 0; pos < sprites[id].length; pos++) {
-				if (!sprites[id][pos]) continue;
-				// sprite box
-				var sb = getSpriteBox(pos, sprites[id][pos]);
-				spriteBoxes.append(sb);
-				sortSpriteNames(pos);
-			}
-		}
-		
-		if (!hasEditPermission) return;
-		// Handle drag'n'drop
-		spriteBoxes.addEventListener("dragenter", function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			e.dataTransfer.dropEffect = 'copy';
-			dropZone.style.display = "unset";
-		});
-		dropZone.addEventListener("dragenter", function(e) {
-			e.preventDefault();
-		});
-		dropZone.addEventListener("dragover", function(e) {
-			e.preventDefault();
-		});
-		dropZone.addEventListener("dragleave", function(e) {
-			e.preventDefault();
-			dropZone.style.display = "none";
-		});
-		dropZone.addEventListener("drop", function(e) {
-			e.preventDefault();
-			dropZone.style.display = "none";
-			var ele = e.dataTransfer.getData("Text");
-			var files = e.dataTransfer.files;
-			if (files.length > 0) {
-				var sec = e.srcElement.closest(".spritedoc-section").dataset.sectionId;
-				if (!sec) return;
-				var boxes = root.querySelector('div[data-section-id="' + sec + '"] .spritedoc-boxes');
-				for (var i = 0; i < files.length; i++) {
-					if (files[i].type.match(/image.*/))
-						addFile(files[i], boxes.lastChild);
-				}
-				return;
-			}
-			if (!ele) return;
-			const selEle = document.querySelector('li[data-pos="' + ele + '"]');
-			if (!selEle) return;
-			const oldSec = selEle.closest(".spritedoc-section").dataset.sectionId;
-			const newSec = e.target.closest(".spritedoc-section").dataset.sectionId;
-			if (newSec === oldSec) return;
-			const _func = function(ele) {
-				root.querySelector('div[data-section-id="' + ele + '"] .spritedoc-boxes').appendChild(selEle);
-				sortSection(ele);
-			};
-			addHistory([
-				function() {_func(oldSec);},
-				function() {_func(newSec);}
-			]);
-			_func(newSec);
-		});
-
-		// Add images to section-button
-		var permOrg = hasEditPermission;
-		hasEditPermission = false;
-		spriteBoxes.append( getSpriteBox(null, [[msg("new-images-label").plain()]]) );
-		hasEditPermission = permOrg;
-	}
-	function newSection2(s, perm) {
-		// section header
-		var sectionH3Span = document.createElement('span');
-		var sectionH3 = document.createElement('h3');
-		var spriteSection = document.createElement('div');
-		sectionH3.append(sectionH3Span);
-		sectionH3Span.id = s.name || undefined;
-		sectionH3Span.contentEditable = perm;
-		sectionH3Span.textContent = s.name;
-		sectionH3Span.className = 'mw-headline';
-		// section body
-		spriteSection.classList = 'spritedoc-section';
-		spriteSection.setAttribute('data-section-id',s.id);
-		spriteSection.append(sectionH3);
-		if (!perm) return spriteSection;
-		sectionH3Span.onpaste = function(e) {
-			e.preventDefault();
-			var paste = (e.clipboardData || window.clipboardData).getData('text');
-			paste = paste.replace( /\n/g, ' ' ).trim();
-			window.document.execCommand( 'insertText', false, paste );
-		};
-		sectionH3Span.onkeypress = function(e) {
-			if ( e.keyCode === 13 ) {
-				e.preventDefault();
-				e.target.blur();
-			}
-		};
-		sectionH3Span.addEventListener("focus", function() {
-			if (!sectionH3Span.getAttribute("data-placeholder")) {
-				sectionH3Span.setAttribute("data-original-text", sectionH3Span.textContent);
-			}
-		});
-		sectionH3Span.addEventListener("blur", function() {
-			var orgName = sectionH3Span.getAttribute("data-original-text") || "";
-			sectionH3Span.textContent = sectionH3Span.textContent.trim();
-			if (orgName.length === 0 && sectionH3Span.textContent.length ) {
-				addHistory([
-					"section-added",
-					"section-removed",
-					s.id,
-					spriteSection,
-					sectionH3Span.textContent,
-					Array.from(root.children).indexOf(spriteSection)
-				]);
-			} else if (sectionH3Span.textContent.length && orgName !== sectionH3Span.textContent) {
-				addHistory([
-					"section-rename",
-					"section-rename",
-					s.id,
-					orgName,
-					sectionH3Span.textContent
-				]);
-			}
-			sectionH3Span.removeAttribute("data-original-text");
-			sectionH3Span.removeAttribute('data-placeholder');
-			if (!sectionH3Span.textContent.length) {
-				var names = spriteSection.querySelectorAll("code[isSprite]");
-				var n = {};
-				var i;
-				for (i = 0; i < names.length; i++) {
-					n[names[i].textContent] = true;
-				}
-				var sprites = spriteSection.querySelectorAll(".spritedoc-box");
-				for (i = 0; i < sprites.length; i++) {
-					if (!sprites[i].draggable) continue;
-					backgroundSprites[Number(sprites[i].dataset.pos)] = {sprite: sprites[i].querySelector("canvas")};
-				}
-				if (orgName.length) {
-					addHistory([
-						"section-removed",
-						"section-added",
-						s.id,
-						spriteSection,
-						orgName,
-						Array.from(root.children).indexOf(spriteSection)
-					]);
-				}
-				root.removeChild(spriteSection);
-				markDuplicateNames(n);
-			}
-		});
-		return spriteSection;
-	}
-	function newSection(s) {
-		var spriteSection = newSection2(s, hasEditPermission);
-		root.append(spriteSection);
-		highestID = Math.max(highestID, s.id);
-		sections[s.id] = spriteSection;
-		generateSpriteView(s.id);
-		sortSection(s.id);
-		return spriteSection;
 	}
 	function getEditPermission() {
 		return hasEditPermission;
 	}
-	updateToolbar = function() {
-		var toolbar = root.querySelector('.spriteedit-toolbar');
-		root.removeChild(toolbar);
-		var frame = new OO.ui.PanelLayout({
-			classes: [ 'spriteedit-toolbar' ],
-			expanded: false,
-			framed: true
-		});
-		if (root.querySelectorAll('.section-move-overlay').length) {
-			frame.$element.append(
-				toolbarSections.moveItems.$element,
-				toolbarSections.arrowItem.$element
-			);
-		} else {
-			frame.$element.append(
-				toolbarSections.fileItems.$element,
-				toolbarSections.editItems.$element,
-				toolbarSections.mainItems.$element,
-				toolbarSections.toolItems.$element,
-				toolbarSections.arrowItem.$element
-			);
+	spriteutils.addNotifier(function(name, data) {
+		console.log(name, data);
+		var names = [];
+		if (name === 'spritename-click') { // setting flags
+			if (!hasEditPermission) return;
+			const btnValue = buttons.deprecated2.getMenu().findSelectedItem().getData();
+			const _func = function() {
+				data.element.classList.toggle('spritedoc-' + btnValue);
+			};
+			_func();
+			addHistory([_func, _func]);
+		} else if (name === 'files-added') {
+			data.sprites.forEach(function(s) {
+				var names_ = s.getNames();
+				names_.forEach(function(n) {
+					names.push(n.innerText);
+				});
+			});
+			addHistory([
+				function() { // undo
+					data.sprites.forEach(function(sprite) {
+						spriteutils.deleteSprite(sprite.getPosId());
+					});
+					markDuplicateNames(names);
+					toShare.highestPos = toShare.highestPos - data.sprites.length;
+					spriteutils.overrideHighestId(toShare.highestPos);
+				},
+				function() { // redo
+					data.sprites.forEach(function(sprite) {
+						data.section.addSprite(sprite.element);
+					});
+					sortSection(data.section.id);
+					markDuplicateNames(names);
+					toShare.highestPos = toShare.highestPos + data.sprites.length;
+					spriteutils.overrideHighestId(toShare.highestPos);
+				},
+			]);
+			// Sync with SpriteUtils
+			toShare.highestPos = data.highestID;
+			markDuplicateNames(names);
+			sortSection(data.section.id);
+		} else if (name === 'sprite-moved') {
+			const _1 = function() {
+				spriteutils.getSection(data.origin).addSprite(data.sprite.element);
+				sortSection(data.origin);
+			};
+			const _2 = function() {
+				spriteutils.getSection(data.destination).addSprite(data.sprite.element);
+				sortSection(data.destination);
+			};
+			addHistory([_1, _2]);
+			_2();
+		} else if (name === 'boxcode-content-changed') {
+			if (data.element.hasAttribute('issprite')) { // Sprite-Name
+				const sprite = spriteutils.getSprite(Number(data.element.closest('.spritedoc-box').dataset.pos));
+				const section = spriteutils.getSection(Number(sprite.element.closest('.spritedoc-section').dataset.sectionId));
+				if (!data.newContent.length && sprite.getNames().length === 1) { // Remove sprite
+					data.element.textContent = data.oldContent;
+					const _1 = function() {
+						section.addSprite(sprite.element);
+						delete backgroundSprites[sprite.getPosId()];
+						markDuplicateNames([data.oldContent]);
+						sortSection(section.id);
+					};
+					const _2 = function() {
+						backgroundSprites[sprite.getPosId()] = {sprite: sprite.getImage()};
+						spriteutils.deleteSprite(sprite.getPosId());
+						markDuplicateNames([data.oldContent]);
+					};
+					addHistory([_1,_2]);
+					_2();
+				} else if (!data.oldContent.length || !data.newContent.length) { // New textfield added, just remove / readd it
+					const names = data.element.closest('.spritedoc-names');
+					const name = data.element.parentElement;
+					const _sort = function() {
+						markDuplicateNames([data.element.textContent]);
+						sortSpriteNames(names.closest('.spritedoc-box').dataset.pos);
+						sortSection(section.id);
+					};
+					const _1 = function() {
+						names.removeChild(name);
+						_sort();
+					};
+					const _2 = function() {
+						names.appendChild(name);
+						_sort();
+					};
+					if (!data.oldContent.length && !data.newContent.length) {
+						names.removeChild(name);
+					} else if (!data.oldContent.length) {
+						addHistory([_1, _2]);
+						_sort();
+					} else { // !data.newContent.length
+						data.element.textContent = data.oldContent;
+						addHistory([_2, _1]);
+						_1();
+					}
+				} else { // change name of contentbox
+					addHistory([
+						function() {
+							data.element.textContent = data.oldContent;
+							markDuplicateNames([data.oldContent, data.newContent]);
+						},
+						function() {
+							data.element.textContent = data.newContent;
+							markDuplicateNames([data.oldContent, data.newContent]);
+						}
+					]);
+					markDuplicateNames([data.oldContent, data.newContent]);
+				}
+				return;
+			} // else: Section
+			if (data.oldContent.length && data.newContent.length) {
+				addHistory([
+					function() {data.element.textContent = data.oldContent;},
+					function() {data.element.textContent = data.newContent;}
+				]);
+				return;
+			}
+			var sec = spriteutils.getSection(data.element.closest('.spritedoc-section').dataset.sectionId);
+			sec.getSprites().forEach(function(s) {
+				s.getNames().forEach(function(n) {
+					names.push(n.textContent);
+				});
+			});
+			var sibling = sec.element.nextSibling;
+			var parent = sec.element.parentElement;
+			const _1 = function() {
+				sec.getSprites().forEach(function(s) {
+					backgroundSprites[s.getPosId()] = {sprite: s.getImage()};
+				});
+				parent.removeChild(sec.element);
+				markDuplicateNames(names);
+			};
+			const _2 = function() {
+				if (sibling) {
+					parent.insertBefore(sec.element, sibling);
+				} else {
+					parent.append(sec.element);
+				}
+				sec.getSprites().forEach(function(s) {
+					delete backgroundSprites[s.getPosId()];
+				});
+				markDuplicateNames(names);
+			};
+			if (!data.oldContent.length && !data.newContent.length) {
+				highestID--;
+				parent.removeChild(sec.element);
+			} else if (!data.oldContent.length) {
+				addHistory([
+					function() {_1(); highestID--;},
+					function() {_2(); highestID++;}
+				]);
+			} else { // !data.newContent.length
+				addHistory([_2, _1]);
+				data.element.textContent = data.oldContent;
+				_1();
+			}
+		} else if (name === 'image-click') {
+			skipClose = true;
+			closeTooltip();
+			var ele = contextMenuTemplate.cloneNode(true);
+			document.body.append(ele);
+			var btnList = {
+				changeSprite: createContextButton(
+					'imageGallery',
+					msg('replace-sprite-label').plain(),
+					msg('replace-sprite-hover').plain()
+				),
+				deleteSprite: createContextButton(
+					'trash',
+					msg('delete-sprite-label').plain(),
+					msg('delete-sprite-hover').plain()
+				),
+				defaultSprite: createContextButton(
+					data.sprite.element.dataset.default && 'unStar' || 'star',
+					msg((data.sprite.element.dataset.default && 'unmark' || 'mark') + '-default-sprite-label').plain(),
+					msg('default-sprite-label').plain()
+				),
+				downloadSprite: createContextButton(
+					'download',
+					msg('download-sprite-label').plain(),
+					msg('download-sprite-hover').plain()
+				),
+				rotateSpriteLeft: createContextButton(
+					'undo',
+					msg('rotate-left-label').plain(),
+					msg('rotate-left-hover').plain()
+				),
+				rotateSpriteRight: createContextButton(
+					'redo',
+					msg('rotate-right-label').plain(),
+					msg('rotate-right-hover').plain()
+				),
+				mirrorSpriteHorizontal: createContextButton(
+					'subtract',
+					msg('flip-h-label').plain(),
+					msg('flip-h-hover').plain()
+				),
+				mirrorSpriteVertical: createContextButton(
+					'subtract',
+					msg('flip-v-label').plain(),
+					msg('flip-v-hover').plain()
+				),
+			};
+			btnList.deleteSprite.setFlags(['primary', 'destructive']);
+			btnList.mirrorSpriteVertical.$icon.get(0).style.transform = 'rotate(90deg)';
+			btnList.rotateSpriteRight.on('click', function() {
+				var img = data.sprite.getImage();
+				var rotated = rotateSprite(img);
+				data.sprite.setImage(rotated);
+				addHistory([
+					function() {data.sprite.setImage(img);},
+					function() {data.sprite.setImage(rotated);}
+				]);
+			});
+			btnList.rotateSpriteLeft.on('click', function() {
+				var img = data.sprite.getImage();
+				var rotated = rotateSprite(img);
+				rotated = rotateSprite(rotated);
+				rotated = rotateSprite(rotated);
+				data.sprite.setImage(rotated);
+				addHistory([
+					function() {data.sprite.setImage(img);},
+					function() {data.sprite.setImage(rotated);}
+				]);
+			});
+			btnList.deleteSprite.on('click', function() {
+				backgroundSprites[data.sprite.getPosId()] = {sprite: data.sprite.getImage()};
+				const sec = spriteutils.getSection(data.sprite.element.closest('.spritedoc-section').dataset.sectionId);
+				var names = [];
+				var names_ = data.sprite.getNames();
+				names_.forEach(function(a) {
+					names.push(a.innerText);	
+				});
+				const _1 = function() { // redo
+					sec.addSprite(data.sprite.element);
+					delete backgroundSprites[data.sprite.getPosId()];
+					sortSection(sec.id);
+					markDuplicateNames(names);
+				};
+				const _2 = function() { // undo
+					backgroundSprites[data.sprite.getPosId()] = {
+						sprite: data.sprite.getImage()
+					};
+					spriteutils.deleteSprite(data.sprite.getPosId());
+					markDuplicateNames(names);
+				};
+				addHistory([_1, _2]);
+				_2();
+			});
+			btnList.mirrorSpriteHorizontal.on('click', function() {
+				var img = data.sprite.getImage();
+				var mirrored = mirrorSprite(true, img);
+				data.sprite.setImage(mirrored);
+				addHistory([
+					function() {data.sprite.setImage(img);},
+					function() {data.sprite.setImage(mirrored);}
+				]);
+			});
+			btnList.mirrorSpriteVertical.on('click', function() {
+				var img = data.sprite.getImage();
+				var mirrored = mirrorSprite(false, img);
+				data.sprite.setImage(mirrored);
+				addHistory([
+					function() {data.sprite.setImage(img);},
+					function() {data.sprite.setImage(mirrored);}
+				]);
+			});
+			btnList.downloadSprite.on('click', function() {
+				var element = document.createElement('a');
+				element.crossOrigin = '*';
+				element.setAttribute('href', data.sprite.getImage().toDataURL('image/png'));
+				element.setAttribute('download', data.sprite.getNames()[0].innerText + '.png');
+				element.click();
+			});
+			btnList.changeSprite.on('click', function() {
+				var input = document.createElement('input');
+				input.type = 'file';
+				input.setAttribute('accept', 'image/*');
+				input.onchange = function(f) {
+					const imgOld = data.sprite.getImage();
+					spriteutils.setImage(f.target.files[0], data.sprite);
+					setTimeout(function() {
+						const imgNew = data.sprite.getImage();
+						addHistory([
+							function() {data.sprite.setImage(imgOld);},
+							function() {data.sprite.setImage(imgNew);}
+						]);
+					}, 10);
+				};
+				input.click();
+			});
+			btnList.defaultSprite.on('click', function() {
+				var a = data.sprite.element.dataset.default;
+				var ele = data.sprite.element;
+				var old = root.querySelector('li[data-default]');
+				const _1 = function() {
+					delete ele.dataset.default;
+					spriteutils.setPosSprite(1);
+					if (old)
+						old.dataset.default = true;
+						spriteutils.setPosSprite(old.dataset.pos);
+				};
+				const _2 = function() {
+					if (old)
+						delete old.dataset.default;
+						spriteutils.setPosSprite(1);
+					if (!a)
+						ele.dataset.default = true;
+						spriteutils.setPosSprite(ele.dataset.pos);
+				};
+				addHistory([_1, _2]);
+				_2();
+			});
+			var ele2 = ele.querySelector('.spriteedit-tooltip-text');
+			if (hasEditPermission) {
+				ele2.append(btnList.changeSprite.$element.get(0));
+				ele2.append(btnList.defaultSprite.$element.get(0));
+			}
+			ele2.append(btnList.downloadSprite.$element.get(0));
+			if (hasEditPermission) {
+				if (Number(imgWidth) === Number(imgHeight)) {
+					ele2.append(btnList.rotateSpriteLeft.$element.get(0));
+					ele2.append(btnList.rotateSpriteRight.$element.get(0));
+				}
+				ele2.append(btnList.mirrorSpriteHorizontal.$element.get(0));
+				ele2.append(btnList.mirrorSpriteVertical.$element.get(0));
+				ele2.append(btnList.deleteSprite.$element.get(0));
+			}
+			var pos = data.sprite.element.getBoundingClientRect();
+			ele.style.left = (pos.left + window.pageXOffset - ele.clientWidth) + 'px';
+			ele.style.top = pos.top + window.pageYOffset + data.sprite.element.clientHeight * 0.5 + 'px';
+			ele.style.opacity = '1';
+			ele.style.transform = 'scale(1)';
+			ele.style.zIndex = '299';
+			Object.keys(btnList).forEach(function(a) {
+				btnList[a].on('click', closeTooltip);
+			});
 		}
-		root.insertBefore(frame.$element.get(0), root.firstChild);
-	};
+	});
 	mw.loader.using( [
 			'mediawiki.api',
 			'jquery',
@@ -1279,10 +936,10 @@
 			'oojs-ui.styles.icons-editing-core', // undo, redo
 			'oojs-ui.styles.icons-editing-list', // listBullet
 			'oojs-ui.styles.icons-layout', // viewCompact
-			'oojs-ui.styles.icons-interactions', // checkall, close, settings, subtract
+			'oojs-ui.styles.icons-interactions', // add, checkall, close, settings, subtract
 			'oojs-ui.styles.icons-media', // imageAdd, imageGallery
 			'oojs-ui.styles.icons-moderation', // flag, star, trash, unStar
-			'oojs-ui.styles.icons-movement', // draggable, move, next, previous
+			'oojs-ui.styles.icons-movement', // next, previous
 	] ).then( function( require ) {
 		OO = require('oojs');
 		api = new mw.Api();
@@ -1296,12 +953,24 @@
 				title: tooltip
 			} );
 		}
-
+		function openWindow(win, err) {
+			var m = window.SpriteEditorModules[win];
+			if (!m) {
+				alert(err);
+				return false;
+			}
+			if (!m.modal || !m.modal.seDialog)
+				window.SpriteEditorModules[win].createWindow();
+			m.modal.windowManager.openWindow(m.modal.seDialog).opening.then(function() {
+				m.requestChanges();
+			});
+			return true;
+		}
 		function createToolbar() {
-			var flag_items = [];
-			var flags = window.SpriteEditorModules.main.flags;
+			var flagItems = [];
+			var flags = myData.flags;
 			for (var i = 0; i < flags.length; i++) {
-				flag_items.push(
+				flagItems.push(
 					new OO.ui.MenuOptionWidget( {
 						data: flags[i][0],
 						label: flags[i][1]
@@ -1312,73 +981,70 @@
 			buttons = {
 				open: createButton(
 					'folderPlaceholder',
-					msg("open-label").plain(),
-					msg("open-hover").plain()
+					msg('open-label').plain(),
+					msg('open-hover').plain()
 				),
 				undo: createButton(
 					'undo',
-					msg("undo-label").plain(),
-					msg("undo-hover").plain()
+					msg('undo-label').plain(),
+					msg('undo-hover').plain()
 				),
 				redo: createButton(
 					'redo',
-					msg("redo-label").plain(),
-					msg("redo-hover").plain()
+					msg('redo-label').plain(),
+					msg('redo-hover').plain()
 				),
 				newSection: createButton(
 					'tableAddRowAfter',
-					msg("new-section-label").plain(),
-					msg("new-section-hover").plain()
+					msg('new-section-label').plain(),
+					msg('new-section-hover').plain()
 				),
 				settings: createButton(
 					'settings',
-					msg("settings-label").plain(),
-					msg("settings-hover").plain()
+					msg('settings-label').plain(),
+					msg('settings-hover').plain()
 				),
-				sortSections: createButton(
-					'listBullet',
-					msg("sort-section-label").plain(),
-					msg("sort-section-hover").plain()
-				),
+				sortSections: new OO.ui.ToggleButtonWidget({
+					framed: false,
+					icon: 'listBullet',
+					label: msg('sort-section-label').plain(),
+					invisibleLabel: !tbExpanded,
+					title: msg('sort-section-hover').plain()
+				}),
 				changes: createButton(
 					'checkAll',
-					msg("show-changes-label").plain(),
-					msg("show-changes-hover").plain()
+					msg('show-changes-label').plain(),
+					msg('show-changes-hover').plain()
 					),
 				save: createButton(
 					'download',
-					msg("save-label").plain(),
-					msg("save-hover").plain()
+					msg('save-label').plain(),
+					msg('save-hover').plain()
 				),
 				deprecated: new OO.ui.ToggleButtonWidget({
 					framed: false,
-					icon: "flag",
-					label: msg("mark-deprecated-label").plain(),
+					icon: 'flag',
+					label: msg('mark-deprecated-label').plain(),
 					invisibleLabel: !tbExpanded,
-					title: msg("mark-deprecated-hover").plain()
+					title: msg('mark-deprecated-hover').plain()
 				}),
 				deprecated2: new OO.ui.DropdownWidget( {
 					classes: [ 'spriteedit-deprecated-dropdown' ],
 					label: '',
 					disabled: true,
 					menu: {
-						items: flag_items
+						items: flagItems
 					}
 				} ),
-				cancelMove: createButton(
-					'previous',
-					msg("cancel-move-label").plain(),
-					msg("cancel-move-hover").plain()
-				),
 				descriptionToggle: createButton(
-					tbExpanded && "previous" || "next",
-					"",
-					msg("description-toggle-hover").plain()
+					tbExpanded && 'previous' || 'next',
+					'',
+					msg('description-toggle-hover').plain()
 				),
 				reorder: createButton(
-					"viewCompact",
-					msg("reorder-sprites-label").plain(),
-					msg("reorder-sprites-hover").plain()
+					'viewCompact',
+					msg('reorder-sprites-label').plain(),
+					msg('reorder-sprites-hover').plain()
 				)
 			};
 			// Selecting default
@@ -1389,30 +1055,26 @@
 			buttons.redo.setDisabled(true);
 
 			// Toolbar sections
-			toolbarSections = {
+			var toolbarSections = {
 				fileItems: new OO.ui.ButtonGroupWidget({
 					items: [buttons.open],
-					classes: ["SpriteEditor-TBGroup"]
+					classes: ['SpriteEditor-TBGroup']
 				}),
 				editItems: new OO.ui.ButtonGroupWidget({
 					items: [buttons.undo,buttons.redo],
-					classes: ["SpriteEditor-TBGroup"]
+					classes: ['SpriteEditor-TBGroup']
 				}),
 				mainItems: new OO.ui.ButtonGroupWidget({
 					items: [buttons.newSection,buttons.sortSections,buttons.reorder,buttons.deprecated,buttons.deprecated2],
-					classes: ["SpriteEditor-TBGroup"]
+					classes: ['SpriteEditor-TBGroup']
 				}),
 				toolItems: new OO.ui.ButtonGroupWidget({
 					items: [buttons.settings,buttons.changes,buttons.save],
-					classes: ["SpriteEditor-TBGroup"]
-				}),
-				moveItems: new OO.ui.ButtonGroupWidget({
-					items: [buttons.cancelMove],
-					classes: ["SpriteEditor-TBGroup"]
+					classes: ['SpriteEditor-TBGroup']
 				}),
 				arrowItem: new OO.ui.ButtonGroupWidget({
 					items: [buttons.descriptionToggle],
-					classes: ["SpriteEditor-TBGroup"]
+					classes: ['SpriteEditor-TBGroup']
 				})
 			};
 			var frame = new OO.ui.PanelLayout({
@@ -1429,21 +1091,18 @@
 			);
 			root.append( frame.$element.get(0) );
 			if (window.SpriteEditorModules.openButton)
-				root.getElementsByClassName("spriteedit-toolbar")[0].style.display = "none";
+				root.getElementsByClassName('spriteedit-toolbar')[0].style.display = 'none';
 			// Setup click-functions
 			buttons.deprecated.on('click', function() {
+				spriteutils.setEditMode(!buttons.deprecated.getValue());
 				buttons.deprecated2.setDisabled(!buttons.deprecated.getValue());	
-			});
-			buttons.cancelMove.on('click', function() {
-				removeOverlays();
-				updateToolbar();
 			});
 			buttons.descriptionToggle.on('click', function() {
 				tbExpanded = !tbExpanded;
-				buttons.descriptionToggle.setIcon(tbExpanded && "previous" || "next");
+				buttons.descriptionToggle.setIcon(tbExpanded && 'previous' || 'next');
 				var buttonNames = Object.keys(buttons);
 				for (var i = 0; i < buttonNames.length; i++) {
-					if (buttonNames[i] === "deprecated2") continue;
+					if (buttonNames[i] === 'deprecated2') continue;
 					buttons[buttonNames[i]].setInvisibleLabel(!tbExpanded);
 				}
 			});
@@ -1455,40 +1114,31 @@
 			});
 			buttons.newSection.on('click', function() {
 				highestID = highestID + 1;
-				var tmp = {
-					name: '',
-					id: highestID
-				};
-				var ns = newSection(tmp);
-				ns.scrollIntoView({behavior: "smooth"});
-				var textField = ns.children[0].children[0];
-				textField.setAttribute( 'data-placeholder', msg("section-placeholder").plain() );
-				textField.focus();
+				var sec = spriteutils.createSection('', highestID, {withSampleSprite: false});
+				sec.element.scrollIntoView({behavior: 'smooth'});
 			});
 			buttons.changes.on('click', function() {
-				openWindow("diff", msg("diff-module-missing").plain());
+				openWindow('diff', msg('diff-module-missing').plain());
 			});
 			buttons.settings.on('click', function() {
-				openWindow("settings", msg("settings-module-missing").plain());
+				openWindow('settings', msg('settings-module-missing').plain());
 			});
 			buttons.reorder.on('click', function() {
-				openWindow("reorder", msg("reorder-module-missing").plain());
+				openWindow('reorder', msg('reorder-module-missing').plain());
 			});
-			buttons.sortSections.on('click', function(){
-				if (openWindow("sorting", msg("sorting-module-missing").plain())) {
-					window.SpriteEditorModules.sorting.setSections(root.querySelectorAll('div.spritedoc-section'));
-				}
+			buttons.sortSections.on('click', function() {
+				spriteutils.enableSectionDragging(buttons.sortSections.getValue());
 			});
 			buttons.save.on('click', function() {
-				OO.ui.prompt( msg("edit-summary-title").plain(), { textInput: { placeholder: msg("edit-summary-placeholder").plain() } } ).done( function ( result ) {
+				OO.ui.prompt( msg('edit-summary-title').plain(), { textInput: { placeholder: msg('edit-summary-placeholder').plain() } } ).done( function ( result ) {
 					if ( result !== null ) {
 						saveToFile(result);
 					}
 				});
 			});
 			oclick = function(ignoreWarning) {
-				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm(msg("unsaved-changes").plain())) return;
-				openWindow("open", msg("open-module-missing").plain());
+				if (!ignoreWarning && lastSaved !== history[historyPos - 1] && !window.confirm(msg('unsaved-changes').plain())) return;
+				openWindow('open', msg('open-module-missing').plain());
 			};
 			buttons.open.on('click', oclick);
 		}
@@ -1505,34 +1155,22 @@
 				getEditPermission: getEditPermission
 			});
 		}
-		function openWindow(win, err) {
-			if (!window.SpriteEditorModules[win]) {
-				alert(err);
-				return false;
-			}
-			var m = window.SpriteEditorModules[win];
-			if (!m.modal || !m.modal.seDialog)
-				window.SpriteEditorModules[win].createWindow();
-			m.modal.windowManager.openWindow(m.modal.seDialog).opening.then(function(){
-				m.requestChanges();
-			});
-			return true;
-		}
 		function resetEditor() {
 			var orgTB = root.children[0];
-			root.innerHTML = "";
+			root.innerHTML = '';
 			root.appendChild(orgTB);
-			sections = [];
 			highestID = 0;
 			toShare.highestPos = 0;
-			sprites = [];
-			canvasCollection = [];
+			spriteutils.overrideHighestId(toShare.highestPos);
+			spriteutils.setPosSprite(1);
 			history = [];
 			historyPos = 0;
 			updateTitle(false);
 			buttons.undo.setDisabled(true);
 			buttons.redo.setDisabled(true);
 			buttons.deprecated.setValue(false);
+			buttons.sortSections.setValue(false);
+			spriteutils.enableSectionDragging(false);
 			hasEditPermission = true;
 			hasTagPermission = false;
 			hasNewTagPermission = false;
@@ -1543,30 +1181,22 @@
 			toggleTBButtons(false);
 		}
 		function checkProtection(allperms, name) {
-			var lvl = name && name.level || "";
-			if (lvl === "autoconfirmed")
-				return allperms.includes("editsemiprotected");
-			if (lvl === "sysop")
-				return allperms.includes("editprotected");
+			var lvl = name && name.level || '';
+			if (lvl === 'autoconfirmed')
+				return allperms.includes('editsemiprotected');
+			if (lvl === 'sysop')
+				return allperms.includes('editprotected');
 			return true;
 		}
 		function loadSprite3() {
+			console.log('loadSprite3');
 			setupOldCanvas(imgEle);
 			var imgSize = Number(output.settings.size || options.defaultSpriteSize);
 			imgWidth = Number(output.settings.width) || imgSize;
 			imgHeight = Number(output.settings.height) || imgSize;
+			spriteutils.setSpriteDimension(imgWidth, imgHeight);
 			options.spacing = output.settings.spacing || 0;
 			imgSpacingOrg = options.spacing;
-			helper.setSharedData({
-				imgWidth: imgWidth,
-				imgHeight: imgHeight,
-				toShare: toShare,
-				markDuplicateNames: markDuplicateNames,
-				canvasCollection: canvasCollection,
-				addHistory: addHistory,
-				root: root,
-				backgroundSprites: backgroundSprites
-			});
 			if (window.SpriteEditorModules.reorder) {
 				window.SpriteEditorModules.reorder.setSharedData({
 					options: options,
@@ -1588,12 +1218,6 @@
 					loaded: loadedSpriteName
 				});
 			}
-			if (window.SpriteEditorModules.sorting) {
-				window.SpriteEditorModules.sorting.setSharedData({
-					addHistory: addHistory,
-					root: root
-				});
-			}
 			if (window.SpriteEditorModules.settings) {
 				window.SpriteEditorModules.settings.setSharedData({
 					imgWidth: imgWidth,
@@ -1608,27 +1232,72 @@
 			}
 			options.spritesPerRow = options.isNew && 10 || Math.floor(((output.settings.sheetsize || imgEle.naturalWidth) + options.spacing) / (imgWidth + options.spacing));
 			options.spritesPerRowOrg = options.isNew && 1 || options.spritesPerRow;
-			for (var name in output.ids) {
-				if (output.ids.hasOwnProperty(name)) {
-					const secID = output.ids[name].section;
-					const posID = output.ids[name].pos;
-					toShare.highestPos = Math.max(toShare.highestPos, posID);
-					sprites[secID] = sprites[secID] || [];
-					sprites[secID][posID] = sprites[secID][posID] || [];
-					sprites[secID][posID].push( [name, output.ids[name].deprecated, output.ids[name]] );
-				}
-			}
+			
 			for (var i = 0; i < output.sections.length; i++) {
-				newSection(output.sections[i]);
+				highestID = Math.max(highestID, output.sections[i].id);
+				spriteutils.createSection(output.sections[i].name, output.sections[i].id, {withSampleSprite: false});
 			}
+			var sections = spriteutils.getSections();
+			var ids = Object.keys(output.ids);
+			var sprites = [];
+			var names = {};
+			var flags;
+			var l;
+			ids.forEach(function(name) {
+				names[name] = true;
+				if (sprites[output.ids[name].pos]) {
+					var code = sprites[output.ids[name].pos].addName(name);
+					flags = myData.flags;
+					for (l = 0; l < flags.length; l++) {
+						if (output.ids[name][flags[l][0]]) {
+							code.classList.toggle('spritedoc-' + flags[l][0], true);
+						}
+					}
+					return;
+				}
+				toShare.highestPos = Math.max(toShare.highestPos, output.ids[name].pos);
+				var sprite = spriteutils.createSprite(name, output.ids[name].pos);
+				var canvas = document.createElement('canvas');
+				canvas.width = imgWidth;
+				canvas.height = imgHeight;
+				const ctx = canvas.getContext('2d');
+				ctx.imageSmoothingEnabled = false;
+				var coords = getPosCoords(output.ids[name].pos, true);
+				ctx.drawImage(imgEle,
+					coords.x, coords.y, imgWidth, imgHeight, // source coords
+					0, 0, imgWidth, imgHeight // canvas coords
+				);
+				sprite.setImage(canvas);
+				var sEle = sprite.element.querySelector("code");
+				flags = myData.flags;
+				for (l = 0; l < flags.length; l++) {
+					if (output.ids[name][flags[l][0]]) {
+						sEle.classList.toggle('spritedoc-' + flags[l][0], true);
+					}
+				}
+				sprites[output.ids[name].pos] = sprite;
+				sections[output.ids[name].section].addSprite(sprite.element);
+			});
+			markDuplicateNames(names);
+			Object.keys(sprites).forEach(function(a) {
+				sortSpriteNames(a);
+			});
+			Object.keys(sections).forEach(function(a) {
+				sortSection(a);
+			});
+			if (output.settings.pos) {
+				var s = spriteutils.getSprite(Number(output.settings.pos));
+				if (s)
+					s.element.dataset.default = true;
+			}
+			spriteutils.overrideHighestId(toShare.highestPos);
 			for (var k = 0; k < toShare.highestPos; k++) {
-				if (root.querySelector('li[class="spritedoc-box"][data-pos="' + k + '"]')) continue;
-				var c = document.createElement("canvas");
+				if (sprites[k]) continue;
+				var c = document.createElement('canvas');
 				c.width = imgWidth;
 				c.height = imgHeight;
-				var ctxOld = c.getContext('2d');
 				var coords = getPosCoords(k, true);
-				ctxOld.drawImage(imgEle,
+				c.getContext('2d').drawImage(imgEle,
 					coords.x, coords.y, imgWidth, imgHeight, // source coords
 					0, 0, c.width, c.height // canvas coords
 				);
@@ -1636,35 +1305,31 @@
 					sprite: c
 				};
 			}
-			
 			if (options.isNew && options.createSampleSection) {
-				newSection({
-					id: 1,
-					name: msg("first-section").plain()
-				});
-			}
-			var d = document.querySelector('li[data-pos="' + output.settings.pos + '"]');
-			if (d) {
-				d.dataset.default = ".";
+				spriteutils.createSection(msg('first-section').plain(), 1, {withSampleSprite: true});
+				highestID = 1;
 			}
 			toggleTBButtons(hasEditPermission);
+			console.log('loadSprite3 End');
 		}
 		function loadSprite2(c) {
+			console.log('loadSprite2');
 			var requestData = {
-				action: "query",
-				format: "json",
-				formatversion: "2",
-				inprop: "protection",
-				list: "tags",
-				meta: "userinfo",
-				prop: "info",
-				tgprop: "active",
-				uiprop: "rights|blockinfo"
+				action: 'query',
+				format: 'json',
+				formatversion: '2',
+				inprop: 'protection',
+				list: 'tags',
+				meta: 'userinfo',
+				prop: 'info',
+				tgprop: 'active',
+				uiprop: 'rights|blockinfo'
 			};
 			if (!options.isNew)
-				requestData.titles = "Module:" + loadedSpriteName.full + "|File:" + (output.settings.image || loadedSpriteName.name + ".png");
+				requestData.titles = 'Module:' + loadedSpriteName.full + '|File:' + (output.settings.image || loadedSpriteName.name + '.png');
 			if (window.SpriteEditorModules.openButton) {
 				hasEditPermission = false;
+				spriteutils.setEditMode(false);
 				loadSprite3();
 				return;
 			}
@@ -1686,8 +1351,8 @@
 					}
 				}
 				if (!tagExists && data.query.tags && data.query.tags.length) {
-					var entry = data.query.tags.find(function(a) {return a.name === "spriteeditor";});
-					if (typeof(entry) === "object") {
+					var entry = data.query.tags.find(function(a) {return a.name === 'spriteeditor';});
+					if (typeof(entry) === 'object') {
 						tagExists = true;
 						tagActive = entry.active;
 					}
@@ -1700,17 +1365,15 @@
 					loadSprite2(data.continue);
 					return;
 				}
+				if (spriteutils.isEditMode() !== hasEditPermission)
+					spriteutils.setEditMode(hasEditPermission);
 				loadSprite3();
 			});
 		}
 		function loadNew(sizeW, sizeH, spacing) {
-			sizeW = typeof(sizeW) === "undefined" && options.defaultSpriteSize || sizeW;
-			sizeH = typeof(sizeH) === "undefined" && options.defaultSpriteSize || sizeH;
-			output = Object.assign(blankJSON);
-			output.settings = {};
-			output.sections = [];
-			output.ids = {};
-			delete output.settings.pos;
+			sizeW = typeof(sizeW) === 'undefined' && options.defaultSpriteSize || sizeW;
+			sizeH = typeof(sizeH) === 'undefined' && options.defaultSpriteSize || sizeH;
+			output = Object.assign({}, blankJSON);
 			if (spacing > 0)
 				output.settings.spacing = spacing;
 			if (sizeW !== sizeH) {
@@ -1725,17 +1388,18 @@
 			loadSprite2();
 		}
 		function loadSprite(name, isNew, spriteSizeW, spriteSizeH, spacing) {
-			helper = window.SpriteEditorModules.helper;
+			console.log('loadSprite');
 			if (name === undefined) return;
 			// Reset
 			options.isNew = isNew;
 			loadedSpriteName = name;
 			resetEditor();
+			spriteutils.setEditMode(true);
 
 			// Load Sprite
-			imgEle = document.createElement("img");
-			imgEle.style.width = "0";
-			imgEle.style.height = "0";
+			imgEle = document.createElement('img');
+			imgEle.style.width = '0';
+			imgEle.style.height = '0';
 			imgEle.crossOrigin = '*';
 			if (isNew) {
 				loadNew(spriteSizeW, spriteSizeH, spacing);
@@ -1757,11 +1421,12 @@
 				output.settings = output.settings || {};
 				output.ids = output.ids || {};
 				output.sections = output.sections || [];
-				imgEle.src = helper.filepath(output.settings.image || name.name + ".png");
-				imgEle.addEventListener("error", function() {
+				imgEle.src = myData.filepath(output.settings.image || name.name + '.png');
+				spriteutils.setPosSprite(output.settings.pos || 1);
+				imgEle.addEventListener('error', function() {
 					loadNew();
 				});
-				imgEle.addEventListener("load", function() {
+				imgEle.addEventListener('load', function() {
 					loadSprite2();
 				});
 				document.body.append(imgEle);
@@ -1771,35 +1436,34 @@
 			if (--preloads > 0) return;
 			if (args) {
 				var logoURL = args[2].value.query.general.logo;
-				window.SpriteEditorModules.helper.imageURL = logoURL.substring(0,logoURL.search("/images/")) + "/images/";
+				myData.imageURL = logoURL.substring(0,logoURL.search('/images/')) + '/images/';
 				var reg = /\/images\/[a-f0-9]{1}\/[a-f0-9]{2}\//gm;
-				if (!reg.exec(logoURL)) window.SpriteEditorModules.helper.no_md5 = true;
+				if (!reg.exec(logoURL)) myData.noMD5 = true;
 			}
 			window.dev.i18n.loadMessages('SpriteEditor').done(function (i18no) {
 				myData.msg = i18no.msg;
 				msg = myData.msg;
 				if (!window.SpriteEditorModules.openButton)
-					document.getElementById('firstHeading').textContent = msg("title").plain();
+					document.getElementById('firstHeading').textContent = msg('title').plain();
 				updateTitle(false);
 				createToolbar();
 				var openDialog = window.SpriteEditorModules.open;
 				if (openDialog) {
 					openDialog.setSharedData({
 						loadSprite: loadSprite,
-						openWindow: openWindow,
-						options: options
+						openWindow: openWindow
 					});
 				}
 				var toOpen;
 				if (window.SpriteEditorModules.openButton) {
-					toOpen = typeof(config.wgArticleId) === "number" && config.wgPageName || "";
+					toOpen = typeof(config.wgArticleId) === 'number' && config.wgPageName || '';
 				} else {
-					toOpen = new URL(document.location.href).searchParams.get("sprite");
+					toOpen = new URL(document.location.href).searchParams.get('sprite');
 				}
-				var names = toOpen && window.SpriteEditorModules.helper.seperatePath(toOpen);
-				if (toOpen && (!names.module.endsWith("Sprite") || myData.blacklist.includes(names.module.toLowerCase()))) {
+				var names = toOpen && window.SpriteEditorModules.seperatePath(toOpen);
+				if (toOpen && (!names.module.endsWith('Sprite') || myData.blacklist.includes(names.module.toLowerCase()))) {
 					var historyUrl = new URL(window.location);
-					historyUrl.searchParams.delete("sprite");
+					historyUrl.searchParams.delete('sprite');
 					window.history.pushState({}, '', historyUrl);
 					toOpen = undefined;
 				}
@@ -1814,11 +1478,11 @@
 			root.innerHTML = '';
 			mw.hook('dev.i18n').add(myData.preload);
 			var getImageURL = api.get({
-				action: "query",
-				format: "json",
-				meta: "siteinfo",
-				formatversion: "2",
-				siprop: "general"
+				action: 'query',
+				format: 'json',
+				meta: 'siteinfo',
+				formatversion: '2',
+				siprop: 'general'
 			});
 			var md5JS = mw.loader.load('https://commons.wikimedia.org/w/index.php?title=MediaWiki:MD5.js&action=raw&ctype=text/javascript');
 			var i18nJS = mw.loader.load('https://dev.fandom.com/load.php?mode=articles&only=scripts&articles=MediaWiki:I18n-js/code.js&*');
