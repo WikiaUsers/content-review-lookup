@@ -24,7 +24,9 @@ var body = document.getElementsByTagName("body")[0]
     else if ($('.theme-fc2').length > 0) { // Far Cry 2
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/1/1a/FC2_BG.jpg/revision/latest?cb=20180315084258&format=original&path-prefix=ru)')}
     else if ($('.theme-fc').length > 0) { // Far Cry
-		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/4/4c/FCI_BG.jpg/revision/latest?cb=20180315084303&format=original&path-prefix=ru)')}
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/7/79/FC_BG.jpg/revision/latest?cb=20180315084303&format=original&path-prefix=ru)')}
+	else if ($('.theme-fci').length > 0) { // Far Cry Instincts, Far Cry Instincts: Predator
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/4/4c/FCI_BG.jpg/revision/latest?cb=20240201155731&format=original&path-prefix=ru)')}
     else { // Если нет тега, то Far Cry 6
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/5/50/Wiki-background/revision/latest?cb=20201102155050&format=original&path-prefix=ru)')}
 }

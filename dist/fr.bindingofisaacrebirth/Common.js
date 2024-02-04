@@ -220,4 +220,9 @@ $(function(){
     $(".teleportation").click(function(){
 	    location.href = "https://bindingofisaacrebirth.fandom.com/fr/wiki/Spécial:Random";
 	})
+	
+	$("[data-image-name='FaceCard.png'").addClass("georges")
+    $(".georges").click(function(){
+	    location.href = "https://bindingofisaacrebirth.fandom.com/fr/wiki/Georges";
+	})
 });

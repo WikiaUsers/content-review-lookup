@@ -18,6 +18,8 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+//
+'Iks Yapunac': '13.33.14565',
 // Archfoe bosses that now drop gems introduced with the Winter Update 2023
 'Utua Stone Sting': '13.30.14423',
 'Kusuma' : '13.30.14423',

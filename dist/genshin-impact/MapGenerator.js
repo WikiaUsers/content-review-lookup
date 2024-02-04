@@ -14,58 +14,66 @@ $(function() {
 	var zoom = 1;
 	var mapGenerator = {
 		init: function() {
+			// Initialize localStorage if any
+			['MapGenerator-DT', 'MapGenerator-QGD'].forEach(function(sett){if(localStorage.getItem(sett)==null){localStorage.setItem(sett, 'checked');}});
+			
 			// Clean page
 			document.querySelectorAll('#mw-content-text.mw-body-content > p').forEach(function(p){ p.remove(); });
 			document.querySelector('h1.page-header__title').innerHTML = 'Map Generator';
 			document.title = 'Map Generator';
-			var container = $(
-				'<div id="quickMapSection">'+
-					'<div id="mapContainer">'+
-						'<img id="mapImage" src="'+mapRefs[REGION].map+'" />'+
-					'</div>'+
-					'<span class="wds-button" id="quickMapGenerator">Generate Maps</span>'+
-					'<span class="wds-button" id="ZoomIn">'+
-						'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
-							'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />'+
-							'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z" />'+
-							'<path fill-rule="evenodd" d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z" />'+
-						'</svg>'+
-					'</span>'+
-					'<span class="wds-button" id="ZoomOut">'+
-						'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
-							'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>'+
-							'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>'+
-							'<path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>'+
-						'</svg>'+
-					'</span>'+
-				'</div>');
 			var tabs = '';
 			Object.keys(mapRefs).forEach(function(region){
 				if (region == REGION) {
 					tabs += '<span class="active-tab"	id="'+region+'"	> '+region+' </span>';
-				} else {
+				} else if (region !== 'QuickGen') {
 					tabs += '<span class="inactive-tab"	id="'+region+'"	> '+region+' </span>';
 				}
 			});
-			var regionSelector = $(
-				'<div id="regionSelect" class="custom-tabs-default custom-tabs">'+
-					tabs+
-				'</div>'
-			);
 			var body = $('#mw-content-text.mw-body-content');
-			body.append(regionSelector);
 			body.append($(
-				'<input class="giw-checkbox" type="checkbox" id="mapDownload" checked>'+
-				'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">Download generated maps directly</label>'+
-				'<h2>'+
-					'<span class="mw-headline" id="Quick_Generator">Quick Generator</span>'+
-				'</h2>'));
-			body.append(container);
-			body.append($(''));
-			body.append($(
+				// Download toggle
+				'<div class="sett-item">'+
+					'<input class="giw-checkbox" type="checkbox" id="mapDownload" rel="MapGenerator-DT" '+localStorage.getItem('MapGenerator-DT')+'>'+
+					'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">Download generated maps directly</label>'+
+				'</div>'+
+				
+				// Quick Gen display
+				'<div class="sett-item">'+
+					'<input class="giw-checkbox" type="checkbox" id="quickGenDisplay" rel="MapGenerator-QGD" '+localStorage.getItem('MapGenerator-QGD')+'>'+
+					'<label class="giw-checkbox-label" type="checkbox" for="quickGenDisplay">Display quick map generation section</label>'+
+				'</div>'+
+				
+				'<section id="quickGenSection" style="display:'+(localStorage.getItem('MapGenerator-QGD')=='checked' ? '' : 'none')+'">'+
+					'<h2>'+
+						'<span class="mw-headline" id="Quick_Generator">Quick Generator</span>'+
+					'</h2>'+
+					'<div id="quickMapSection">'+
+						'<div id="mapContainer">'+
+							'<img id="mapImage" src="'+mapRefs.QuickGen.map+'" />'+
+						'</div>'+
+						'<span class="wds-button" id="quickMapGenerator">Generate Maps</span>'+
+						'<span class="wds-button" id="ZoomIn">'+
+							'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
+								'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />'+
+								'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z" />'+
+								'<path fill-rule="evenodd" d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z" />'+
+							'</svg>'+
+						'</span>'+
+						'<span class="wds-button" id="ZoomOut">'+
+							'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
+								'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>'+
+								'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>'+
+								'<path fill-rule="evenodd" d="M3 6.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>'+
+							'</svg>'+
+						'</span>'+
+					'</div>'+
+				'</section>'+
 				'<h2>'+
 					'<span class="mw-headline" id="Templates">Templates</span>'+
 				'</h2>'+
+				'<div id="regionSelect" class="custom-tabs-default custom-tabs">'+
+					tabs+
+				'</div>'+
 				'<div id="TemplatesLoading">'+
 					'<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="25px" style="vertical-align: baseline;" border="0" /> '+
 					'Loading...'+
@@ -82,10 +90,10 @@ $(function() {
 						'<span class="wds-button" id="WikitextGenerator">Copy Wikitext</span>'+
 					'</div>'+
 				'</center>'));
-			mapGenerator.loadTemplates(mapRefs[REGION].templates);
+			mapGenerator.loadTemplates(mapRefs[REGION]);
 			document.querySelector('#mapImage').onload = function() { mapGenerator.updateZoom(); };
-			document.querySelector('#mapContainer').style.setProperty('left', mapRefs[REGION].offset.left);	// Default map offset
-			document.querySelector('#mapContainer').style.setProperty('top', mapRefs[REGION].offset.top);	// Default map offset
+			document.querySelector('#mapContainer').style.setProperty('left', mapRefs.QuickGen.offset.left);	// Default map offset
+			document.querySelector('#mapContainer').style.setProperty('top', mapRefs.QuickGen.offset.top);	// Default map offset
 			$('#mapContainer').draggable();
 			$('#mapContainer').css('height', (screen.height-250)+'px'); // Limit container so no scrolling is required
 			mw.util.addCSS(
@@ -200,6 +208,14 @@ $(function() {
 					event.target.remove();
 				}
 			});
+			document.addEventListener('change', function(event) {
+				closeMarkerSettings();
+				if (event.target && event.target.classList.contains('giw-checkbox')) {
+					var rel = event.target.getAttribute('rel');
+					localStorage.setItem(rel, event.target.checked ? 'checked' : '');
+					if (rel == 'MapGenerator-QGD') {document.querySelector('section#quickGenSection').style.setProperty('display', event.target.checked ? '' : 'none');}
+				}
+			});
 			document.addEventListener('contextmenu', function(event) {
 				closeMarkerSettings();
 				if (event.target && /^marker\d+/.test(event.target.id)) {
@@ -241,17 +257,8 @@ $(function() {
 					
 					// Looad new region
 					REGION = event.target.id;
-					mapGenerator.loadImages(mapRefs[REGION].templates);
-					mapGenerator.loadTemplates(mapRefs[REGION].templates);
-					if (mapRefs[REGION].offset.zoom) { zoom = mapRefs[REGION].offset.zoom; }
-					
-					// Update quick generator
-					var map = document.querySelector('img#mapImage');
-					map.setAttribute('src', mapRefs[REGION].map);
-					
-					var container = document.querySelector('#mapContainer');
-					container.style.setProperty('top', mapRefs[REGION].offset.top);
-					container.style.setProperty('left', mapRefs[REGION].offset.left);
+					mapGenerator.loadImages(mapRefs[REGION]);
+					mapGenerator.loadTemplates(mapRefs[REGION]);
 					
 					// Update tabs
 					var curr = document.querySelector('#regionSelect > .active-tab');
@@ -259,10 +266,6 @@ $(function() {
 					curr.classList.add('inactive-tab');
 					event.target.classList.add('active-tab');
 					event.target.classList.remove('inactive-tab');
-					
-					// Clean markers
-					markers = {count:0};
-					document.querySelectorAll('.mapMarker').forEach(function(marker){marker.remove();});
 					
 					// Reset template selection
 					document.querySelector('#TemplateManagerNote').innerHTML = 'No template selected.';
@@ -274,19 +277,11 @@ $(function() {
 					closeMarkerSettings();
 					mapGenerator.processQuickMarkers();
 				} else if (event.target && event.target.id == 'ZoomIn') {
-					if (zoom < 8) {
-						zoom = zoom * 2;
-						mapGenerator.updateZoom();
-					} else {
-						alert('Max zoom reached!');
-					}
+					zoom = zoom * 2;
+					mapGenerator.updateZoom();
 				} else if (event.target && event.target.id == 'ZoomOut') {
-					if (zoom > 0.0125) {
-						zoom = zoom / 2;
-						mapGenerator.updateZoom();
-					} else {
-						alert('Max zoom reached!');
-					}
+					zoom = zoom / 2;
+					mapGenerator.updateZoom();
 				} else if (event.target && event.target.id == 'MapGenerator') {
 					closeMarkerSettings();
 					mapGenerator.processPreciseMarkers();
@@ -363,21 +358,22 @@ $(function() {
 							attemptLoad = false;
 							window.setTimeout(waitForImages, 100);
 						} else if (loadedImages._BADIMAGE[markers[id].src] || loadedImages._BADIMAGE[mapInfo.src]) {
-							// end loop
+							// end loop with bad result
 						} else {
 							window.setTimeout(waitForImages, 100);
 						}
 					};
+					// start loop
 					waitForImages();
 				}
 			});
 			if (!valid) {alert('No valid marker to generate map off.');}
 		},
 		selectMap: function(marker) {
-			var refx = marker.x - mapRefs[REGION].origin.x;
-			var refy = marker.y - mapRefs[REGION].origin.y;
+			var refx = marker.x - mapRefs.QuickGen.origin.x;
+			var refy = marker.y - mapRefs.QuickGen.origin.y;
 			var valid;
-			mapRefs[REGION].quickGen.forEach(function(template) {
+			mapRefs.QuickGen.templates.forEach(function(template) {
 				if (refx>template.x && refy>template.y && refx<(template.x+template.reach) && refy<(template.y+template.reach)) {
 					if (valid) {
 						if (
@@ -398,14 +394,14 @@ $(function() {
 			} else { alert ('No map available for the marker'); }
 		},
 		loadTemplates: function(templates) {
-			var container = document.querySelector('#TemplatesList');
+			var container = $('#TemplatesList');
 			var loading = document.querySelector('#TemplatesLoading');
 			if (loadedTemplates[REGION]) {
 				loading.style.setProperty('display', 'none');
-				container.innerHTML = loadedTemplates[REGION];
+				container.html(loadedTemplates[REGION]);
 			} else {
 				loading.style.setProperty('display', '');
-				container.innerHTML = '';
+				container.html('');
 				mapGenerator.loadImages(templates);
 				var waitForTemplates = function() {
 					var finished = true;
@@ -429,7 +425,7 @@ $(function() {
 						});
 						loadedTemplates[REGION] = gallery;
 						loading.style.setProperty('display', 'none');
-						container.innerHTML = gallery;
+						container.html(gallery);
 					} else {
 						window.setTimeout(waitForTemplates, 500);
 					}
@@ -497,11 +493,24 @@ $(function() {
 					var newTab = window.open();
 					newTab.document.write(
 						'<!DOCTYPE html>'+
-						'<body>'+
+						'<body><center>'+
 							'<img src="'+src+'" />'+
-						'</body>'+
+							'<pre>'+mapGenerator.genFilePage(null, name.replace(/^File:/, '').replace(/ Map Template\.png$/, ''))+'</pre>'+
+						'</center></body>'+
 						'<style>'+
-							'body { background: #1a1d23; text-align: center;}'+
+							'body { background: #1a1d23;}'+
+							'pre {'+
+								'width: 600px;'+
+								'text-align: left;'+
+								'background-color: #20242C;'+
+								'border: 1px solid #4C5067;'+
+								'color: #FFFFFF;'+
+								'line-height: 1;'+
+								'overflow: auto;'+
+								'padding: 12px;'+
+								'word-wrap: normal;'+
+								'white-space: pre-wrap;'+
+							'}'+
 						'</style>'
 					);
 					newTab.document.close();
@@ -523,6 +532,13 @@ $(function() {
 			});
 		},
 		genFilePage: function(region, location) {
+			if (region == null && location && location.length>0) {
+				Object.keys(mapRefs).forEach(function(re){
+					if (!region && re !== 'QuickGen' && mapRefs[re].indexOf('File:'+location+' Map Template.png') !== -1) {
+						region = re;
+					}
+				});
+			}
 			if (region && location && region.length>0 && location.length>0) {
 				var redirects = {
 					'The Chasm: Underground Mines': 'The Chasm',

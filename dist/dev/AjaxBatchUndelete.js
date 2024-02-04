@@ -104,7 +104,7 @@ mw.loader.using('mediawiki.api', function() {
                     id: 'text-batch-undelete'
                 }),
                 $('<p>', {
-                    text: i18n.msg('errorsForm').plain() + ':'
+                    text: i18n.msg('errorsForm').plain()
                 }),
                 $('<div>', {
                     id: 'text-error-output'

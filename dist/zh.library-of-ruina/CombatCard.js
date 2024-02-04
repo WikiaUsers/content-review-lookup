@@ -59,7 +59,7 @@ $(function () {
 			url: "/zh/api.php",
 			data: {
 				action: 'parse',
-				text: "{{#invoke:Sandbox|combatPageTooltip|ID=" + ID + "}}",
+				text: "{{#invoke:CombatPage|combatPageTooltip|ID=" + ID + "}}",
 				format: 'json'
 			},
 			dataType: 'jsonp',

@@ -36,6 +36,27 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
+/*DTRS Integration*/
+mw.hook('wikipage.content').add(function($content) {
+    if (!$content) {
+        return;
+    }
+    $content.find('.dtrs').each(function() {
+        var $this = $(this),
+            id = $this.attr('data-url-id'),
+            css = {
+                width: 'inherit',
+                height: 'inherit',
+                border: 0
+            };
+        $this.html(
+            $('<iframe>', {
+                src: 'https://watchy.online/dovedale/' + id ,
+                css: css
+            })
+        );
+    });
+});
 /*Wikisite hookup embed*/
 mw.hook('wikipage.content').add(function($content) {
     if (!$content) {

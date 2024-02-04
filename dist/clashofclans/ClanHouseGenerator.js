@@ -76,6 +76,7 @@ $(document).ready(function() {
     	['d/d1/CHG_Ground_Chess_Floor.png', 'Chess Floor'],
     	['1/16/CHG_Ground_Greenhouse_Floor.png', 'Greenhouse Ground'],
     	['9/99/CHG_Ground_Clashmas.png', 'Bakery Ground'],
+    	['2/2c/CHG_Ground_Lunar_Ground.png', 'Lunar Ground'],
     ];
     
     var walls = [
@@ -96,6 +97,7 @@ $(document).ready(function() {
     	['b/bc/CHG_Walls_Greenhouse_Walls.png', 'Greenhouse Walls'],
     	['c/c4/CHG_Walls_Summer_Walls.png', 'Summer Walls'],
     	['3/36/CHG_Walls_Clashmas.png', 'Bakery Walls'],
+    	['7/71/CHG_Walls_Lunar_Walls.png', 'Lunar Walls'],
     ];
     
     var roof = [
@@ -149,6 +151,7 @@ $(document).ready(function() {
     	['7/79/CHG_Roof_Summer_Roof.png', 'Summer Roof'],
     	['f/f6/CHG_Roof_Halloween_Roof.png', 'Halloween Roof'],
     	['f/f1/CHG_Roof_Clashmas.png', 'Bakery Roof'],
+    	['7/7e/CHG_Roof_Lunar_Roof.png', 'Lunar Roof'],
     ];
     
     var decoration = [
@@ -183,6 +186,7 @@ $(document).ready(function() {
     	['c/cd/CHG_Decoration_Log.png', 'Log'],
     	['1/1c/CHG_Decoration_Dinosaur.png', 'Dinosaur'],
     	['1/19/CHG_Decoration_Clashmas.png', 'Bakery Decoration'],
+    	['b/b6/CHG_Decoration_Lunar_Decoration.png', 'Lunar Decoration'],
     ];
     
     //Add containers

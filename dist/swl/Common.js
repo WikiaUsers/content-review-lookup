@@ -638,13 +638,13 @@ $( function () {
 		}
 		cats = cats.getElementsByTagName( 'a' );
 		for ( var i = 0; i < cats.length; i++ ) {
-			if ( cats[i].title === 'Category:Wookieepedia Featured articles' ) {
+			if ( cats[i].title === 'Category:Legacy Wiki Featured articles' ) {
 				addEditIntro( 'Template:Featured_editintro' );
 				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Good articles' ) {
+			} else if ( cats[i].title === 'Category:Legacy Wiki Good articles' ) {
 				addEditIntro( 'Template:Good_editintro' );
 				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Comprehensive articles' ) {
+			} else if ( cats[i].title === 'Category:Legacy Wiki Comprehensive articles' ) {
 				addEditIntro( 'Template:Comprehensive_editintro' );
 				break;
 			} else if ( cats[i].title === 'Category:Articles undergoing major edits' || cats[i].title === 'Category:Works in progress' ) {

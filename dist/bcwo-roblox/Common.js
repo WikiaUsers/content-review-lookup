@@ -22,8 +22,8 @@ $(document).ready(function() {
     var myNumberCriticalDamage = $('.myNumber.critical-damage');
     var myNumberSummonDamage = $('.myNumber.summon-damage');
     var myNumberLuckDamage = $('.myNumber.luck-damage');
-    var myNumberProjectile = $('.myNumber.projectile');
     var myNumberLuckProjectile = $('.myNumber.luck-projectile');
+    var myNumberProjectile = $('.myNumber.projectile');
     var myNumberMagicEffect = $('.myNumber.magic-effect');
     var myNumberCastingSpeed = $('.myNumber.casting-speed');
     var myNumberSummonHealth = $('.myNumber.summon-health');
@@ -89,8 +89,8 @@ $(document).ready(function() {
         var criticaldamagePercentage = $box.data('critical-damage') ? parseFloat($box.data('critical-damage')) : 0;
         var summondamagePercentage = $box.data('summon-damage') ? parseFloat($box.data('summon-damage')) : 0;
         var luckdamagePercentage = $box.data('luck-damage') ? parseFloat($box.data('luck-damage')) : 0;
-        var projectilePercentage = $box.data('projectile') ? parseFloat($box.data('projectile')) : 0;
         var luckprojectilePercentage = $box.data('luck-projectile') ? parseFloat($box.data('luck-projectile')) : 0;
+        var projectilePercentage = $box.data('projectile') ? parseFloat($box.data('projectile')) : 0;
         var magiceffectPercentage = $box.data('magic-effect') ? parseFloat($box.data('magic-effect')) : 0;
         var castingspeedPercentage = $box.data('casting-speed') ? parseFloat($box.data('casting-speed')) : 0;
         var summonhealthPercentage = $box.data('summon-health') ? parseFloat($box.data('summon-health')) : 0;
@@ -120,8 +120,8 @@ $(document).ready(function() {
             criticaldamagePercentage: criticaldamagePercentage,
             summondamagePercentage: summondamagePercentage,
             luckdamagePercentage: luckdamagePercentage,
-            projectilePercentage: projectilePercentage,
             luckprojectilePercentage: luckprojectilePercentage,
+            projectilePercentage: projectilePercentage,
             magiceffectPercentage: magiceffectPercentage,
 			castingspeedPercentage: castingspeedPercentage,
 			summonhealthPercentage: summonhealthPercentage,
@@ -148,47 +148,48 @@ $(document).ready(function() {
         var $this = $(this);
         var originalNumber = $this.data('original-number');
         var newValue = originalNumber;
+        var accumulator = 0; // New variable to accumulate changes
 
         newValues.forEach(function(values) {
             // Perform different operations based on the class of the element
             if ($this.hasClass('magic-damage')) {
-                newValue += newValue * values.magicPercentage;
+                accumulator += newValue * values.magicPercentage;
             }
             if ($this.hasClass('melee-damage')) {
-                newValue += newValue * values.meleePercentage;
+                accumulator += newValue * values.meleePercentage;
             }
             if ($this.hasClass('ranged-damage')) {
-                newValue += newValue * values.rangedPercentage;
+                accumulator += newValue * values.rangedPercentage;
             }
             if ($this.hasClass('swing-speed')) {
-                newValue *= 1 - values.swingPercentage;
+                accumulator += values.swingPercentage;
             }
             if ($this.hasClass('critical')) {
                 newValue += values.criticalPercentage;
             }
             if ($this.hasClass('critical-damage')) {
                 newValue += values.criticaldamagePercentage;
-			}
+            }
             if ($this.hasClass('summon-damage')) {
-                newValue += newValue * values.summondamagePercentage;
+                accumulator += newValue * values.summondamagePercentage;
             }
             if ($this.hasClass('luck-damage')) {
-                newValue += newValue * values.luckdamagePercentage;
-            }
-            if ($this.hasClass('projectile')) {
-                newValue += values.projectilePercentage;	
+                accumulator += newValue * values.luckdamagePercentage;
             }
             if ($this.hasClass('luck-projectile')) {
                 newValue += values.luckprojectilePercentage;	
             }
+            if ($this.hasClass('projectile')) {
+                newValue += values.projectilePercentage;	
+            }
             if ($this.hasClass('magic-effect')) {
-                newValue += newValue * values.magiceffectPercentage;
+                accumulator += newValue * values.magiceffectPercentage;
             }
             if ($this.hasClass('casting-speed')) {
-                newValue *= 1 - values.castingspeedPercentage;
+                accumulator += values.castingspeedPercentage;
             }
             if ($this.hasClass('summon-health')) {
-                newValue += newValue * values.summonhealthPercentage;
+                accumulator += newValue * values.summonhealthPercentage;
             }
             if ($this.hasClass('summon-count')) {
                 newValue += values.summoncountPercentage;
@@ -212,7 +213,7 @@ $(document).ready(function() {
                 newValue += values.healthPercentage;
             }
             if ($this.hasClass('health-percent')) {
-                newValue += values.healthPercentagepercent;
+                newValue += newValue * values.healthPercentagepercent;
             }
             if ($this.hasClass('speed')) {
                 newValue += values.speedPercentage;
@@ -223,7 +224,7 @@ $(document).ready(function() {
             if ($this.hasClass('jump')) {
                 newValue += values.jumpPercentage;
             }
-            if ($this.hasClass('dr')) {
+            if ($this.hasClass('DR')) {
                 newValue += values.DR;
             }
             if ($this.hasClass('regen')) {
@@ -236,7 +237,14 @@ $(document).ready(function() {
                 newValue += values.cashPercent;
             }
         });
-
+        if ($this.hasClass('positive')) {
+    	newValue += newValue * accumulator;
+		} else if ($this.hasClass('swing-speed') || $this.hasClass('casting-speed')) {
+        newValue *= 1 - accumulator;
+		} else {
+		 // Otherwise, just add the accumulator to newValue
+    	newValue += accumulator;
+		}
         // Update the HTML with the new value
         $this.text((newValue % 1 === 0 ? newValue : Number.parseFloat(($this.hasClass('swing-speed') || $this.hasClass('casting-speed') ? newValue.toFixed(2) : newValue.toFixed(0))).toLocaleString('en-US')));
     });

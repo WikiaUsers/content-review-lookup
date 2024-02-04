@@ -1,1 +1,4 @@
-/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/MediaWiki:UserStatus.js?action=raw\u0026ctype=text/javascript");
+importArticle({
+	type: 'script',
+	article: 'u:dev:MediaWiki:UserStatus.js'
+});

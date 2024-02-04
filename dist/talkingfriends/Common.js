@@ -2,3 +2,4 @@
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 20;
 window.lockOldComments.addNoteAbove = true;
+InactiveUsers = { months: 1 };

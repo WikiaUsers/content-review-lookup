@@ -39,3 +39,37 @@ window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
 
 /* End of LockOldComments */
+
+/* Event Code */
+mw.loader.using('mediawiki.api').then(function () {
+	api = new mw.Api();
+	api.get({
+		action: 'query',
+		prop: 'revisions',
+		titles: 'MediaWiki:Custom-Pages.json',
+		rvprop: 'content',
+		rvslots: 'main',
+		formatversion: '2'
+	}).done(function (data) {
+		var content = data.query.pages[0].revisions[0].slots.main.content;
+		var map = new Map(Object.entries(JSON.parse(content)));
+		var pages = map.get('pages');
+		var currentPage = $('.mw-page-title-main').html();
+		api = new mw.Api();
+		api.get({
+			action: 'query',
+			prop: 'pageprops',
+			titles: currentPage,
+			format: 'json'
+		}).done(function (data) {
+			var id = Object.keys(data.query.pages)[0];
+			console.log(id);
+			if (!pages.includes(id)) return;
+			var image = map.get('image');
+			var width = map.get('size')[0];
+			var height = map.get('size')[1];
+			$('.mw-parser-output').append('<img class="hidden-temp" src="/Special:Redirect/file/' + image + '" width="' + width + 'px" height="' + height + 'px" style="position: fixed; right: -' + (width / 2) + 'px; bottom: -' + (height / 2) + 'px; rotate: -30deg;">');
+		});
+	});
+});
+/* End of Event Code*/

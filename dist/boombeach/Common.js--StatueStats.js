@@ -51,7 +51,7 @@ $(document).ready(function() {
          var cellValueTH = $(this).attr("title") * 1;
          var calcNewTH = Math.round(cellValueTH * (1 + (getInputTH / 100)));
          $(this).text(calcNewTH.format("#,##0[.]###"));
-        if (calcNewTH === cellValueTH) {
+        if ((roundNum(3, calcNewTH)) === (roundNum(3, cellValueTH))) {
             $(".TH").removeClass("StatModified");
         } else {
             $(".TH").addClass("StatModified");

@@ -20,7 +20,8 @@ $(document).ready(function() { // on document ready
 	var DAY_LENGTH_MS = 24 * HOUR_LENGTH_MS;
 	var WEEK_LENGTH_MS = 7 * DAY_LENGTH_MS;
 	// determines how early events are shown
-	var MARGIN_PRE_MS = 3 * DAY_LENGTH_MS;
+	var margin = $('.current-events').attr('data-margin-days');
+	var MARGIN_PRE_MS = Number(margin) * DAY_LENGTH_MS;
 
 	/**
 	 * Runs all the code necessary to display the current events template content

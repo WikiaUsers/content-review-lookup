@@ -111,37 +111,33 @@
         {
             // helper function searches through the document stylesheets looking for @selectorString
             // will also recurse through sub-rules (such as rules inside media queries)
-            function recurse(node, selectorString)
+            function recurse(node, selectorString, rules)
             {
+                rules = rules || [];
+
                 if (node.cssRules)
                 {
-                    var rules = [];
-                    
                     for (var i = 0; i < node.cssRules.length; i++)
                     {
-                        if (node.cssRules[i].selectorText == selectorString)
+                        var rule = node.cssRules[i];
+
+                        if (rule.selectorText == selectorString)
                         {
-                            rules.push(node.cssRules[i]);
-                            if (firstOnly) return [ node.cssRules[i] ];
+                            rules.push(rule);
+                            if (firstOnly) return [ rule ];
                         }
 
                         // If this rule has sub-rules (via media queries, recurse them too)
-                        if (node.cssRules[i].cssRules && node.cssRules[i].cssRules.length > 0)
-                        {
-                            var childRules = recurse(node.cssRules[i], selectorString);
-                            if (childRules.length > 0)
-                            {
-                                if (firstOnly) return [ childRules[0] ];
-                                for (var r = 0; r < childRules.length; r++)
-                                    rules.push(childRules[r]);
-                            }
-                        }
+                        if (rule.cssRules && rule.cssRules.length > 0)
+                            recurse(rule, selectorString, rules);
+
+                        // If this rule is an import, traverse its stylesheet
+                        if (rule instanceof CSSImportRule && rule.styleSheet != null)
+                            recurse(rule.styleSheet, selectorString, rules)
                     }
-    
-                    return rules;
                 }
                 
-                return [];
+                return rules;
             }
     
     
@@ -161,15 +157,7 @@
                     var sheet = document.styleSheets[i];
                     try
                     {
-                        if (sheet.cssRules)
-                        {
-                            var foundRules = recurse(sheet, selectorString);
-                            if (foundRules.length > 0)
-                            {
-                                for (var r = 0; r < foundRules.length; r++)
-                                    rules.push(foundRules[r]);
-                            }
-                        }
+                        recurse(sheet, selectorString, rules);
                     }
                     catch(e)
                     {
@@ -370,9 +358,6 @@
                 }
             }
         });
-
-        fetchConfig();
-        applyConfig();
         
         var imports =
         [
@@ -389,6 +374,8 @@
         .then(function(){ return Promise.all([ loadMessages(), loadStyles() ] ); })
         .then(function()
         {
+            fetchConfig();
+            applyConfig();
             applyConfigStrings();
             applySpoilerTags();
             createSideToolsButton();

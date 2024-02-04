@@ -80,11 +80,16 @@ $(function() {
 		}, 1000);
 	}
 
-	mw.hook('dev.i18n').add(function() {
-		window.dev.i18n.loadMessages('CopyTitle').then(init);
-	});
+	function waitForI18n() {
+		var $promise = $.Deferred();
+		mw.hook('dev.i18n').add(function(i18n) {
+			i18n.loadMessages('CopyTitle').done($promise.resolve);
+		});
+		return $promise;
+	}
+	$.when( waitForI18n(), mw.loader.using('mediawiki.util') ).then(init);
 
-	importArticles({
+	importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});

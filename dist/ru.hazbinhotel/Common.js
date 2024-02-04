@@ -16,21 +16,35 @@ const staff = [
     {name: 'Lich night', className: 'threadMod'},
     {name: 'IamNotFreddy', className: 'discordAdmin'},
     {name: 'KykS911', className: 'discordAdmin'},
-    {name: 'Merzlyak', className: 'discordMod'},
+    {name: 'Haruko4711', className: 'discordAdmin'},
+    {name: 'Lubitel obnimashek', className: 'discordAdmin'},
     {name: 'Kostinger', className: 'discordMod'},
     {name: 'TimurKhan', className: 'discordMod'},
     {name: 'LeraBE', className: 'discordMod'},
     {name: 'Om3gaZT', className: 'discordMod'},
-    {name: 'Lubitel obnimashek', className: 'intern'},
+    {name: 'Fleshka5856', className: 'rollback'},
+    {name: 'Hwjeei', className: 'rollback'},
     {name: 'JustAccount', className: 'intern'},
-    {name: 'Fleshka5856', className: 'intern'},
+    {name: 'Fadri Gold', className: 'intern'},
+    {name: 'Popolzen', className: 'intern'},
+    {name: 'Fasiliti', className: 'intern'},
+    {name: 'EsmeCakes', className: 'intern'},
+    {name: 'Орешко Ричард', className: 'intern'},
+    {name: 'Сырослав 3000', className: 'bot'},
 ];
 
-setInterval(function (user) {
-	staff.forEach(function (user) {
-	  $('.wds-avatar a[href$="' + window.encodeURIComponent(user.name) + '"]').closest('.Reply, .Reply_body__PM9kM').addClass('Reply--role-' + user.className)
-	})
-}, 500)
+setInterval(function () {
+  staff.forEach(function (user) {
+    document.querySelectorAll(user.name.split(' ').reduce(function (query, href) {
+      return query += "[href*=\"".concat(window.encodeURIComponent(href), "\"]");
+    }, '')).forEach(function (element) {
+      element.classList.add(user.className);
+    });
+    document.querySelectorAll("body[class*=\"_".concat(user.name.split(' ').join('_'), "\"] .page")).forEach(function (element) {
+      element.classList.add(user.className);
+    });
+  });
+}, 500);
 
 /* Конфигурация для dev:DiscussionTemplates */
 window.DiscussionTemplates = {

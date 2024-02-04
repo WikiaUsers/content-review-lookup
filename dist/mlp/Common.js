@@ -234,23 +234,16 @@ if (mw.config.get('wgAction') === 'protect') {
 }
 
 // Auto-insert link from anchor on [[Help:Red links]]
-// Please report anything that still doesn't work right, it may need more exceptions
+// Please report anything that doesn't work correctly
 $(document).ready(function(){
     var redlink = window.location.hash;
     if (mw.config.get('wgPageName') === 'Help:Red_links' && redlink !== '') {
         redlink = redlink.slice(1);
         if (redlink.charAt(0) === ':') { redlink = redlink.substring(1); }
-        if (redlink.substr(0, 5) !== 'File:') {
-            redlink = redlink.replace(/\./g, '%');
-        } else {
-            var head = redlink.substring(0, redlink.lastIndexOf('.'));
-            var tail = redlink.substring(redlink.lastIndexOf('.'));
-            redlink = head.replace(/\./g, '%') + tail;
-        }
+        redlink = redlink.replace(/\.(?!png|jpg|gif|svg|webp|ico|js|css|ogg|pdf)/gi, '%');
         $("#insertredlink a").attr(
             "href", "/wiki/" + decodeURIComponent(redlink).replace(/\?/g, '%3F') + "?action=history"
-        );
-        $("#insertredlink a").css("font-weight", "bold");
+        ).css("font-weight", "bold");
     }
 });
 
@@ -380,7 +373,7 @@ $(function() {
         var s, e;
         s = search.toLowerCase().split('e')[0].substr(1);
         e = search.toLowerCase().split('e')[1];
-        $.getJSON('/api.php?action=edit&action=parse&text={{nameconvert|' + 
+        $.getJSON('/api.php?action=edit&action=parse&text={' + '{nameconvert|' + 
           s + '|' + e + '}}&format=json', function(data) {
             var episode = (data.parse.text['*'].match(/\>(.*)\n\</) || [0, 0])[1];
             if (episode && episode !== 'TBA' && episode.indexOf('<span class="error">') === -1) {
@@ -540,7 +533,7 @@ $(function() {
         } else if (eptest.test(name)) { //episodes
             var match = name.match(eptest)[0].split(/e/i);
 
-            $.getJSON('/api.php?action=parse&text={{nameconvert|' + 
+            $.getJSON('/api.php?action=parse&text={' + '{nameconvert|' + 
               match[0].substr(1) + '|' + match[1] + '}}&format=json', function(data) {
                 var episode = (data.parse.text['*'].match(/>(.*)\n</) || [0, 0])[1];
                 if (episode &&
@@ -757,7 +750,7 @@ $(function() {
 
             $html = $('#mw-content-text table.listofponies');
 
-            $.getJSON('/api.php?action=parse&text={{lop legend}}&format=json&prop=text&disablepp=true', function(stuff) {
+            $.getJSON('/api.php?action=parse&text={' + '{lop legend}' + '}&format=json&prop=text&disablepp=true', function(stuff) {
                 $html.before($('<div>' + stuff.parse.text['*'] + '</div>').children('table'));
             });
 

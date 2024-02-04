@@ -6,12 +6,11 @@ console.log("Running MediaWiki:Common.js...");
 
 // Loading MathJax.
 //
-// MathJax will be loaded in the following three cases:
+// MathJax will be loaded in the following cases:
 //
 // * The namespace is not Special.
 // * The namespace is not MediaWiki.
-// * The displayed page is an article in the current version, which is not a difference page or a history page.
-if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgCanonicalNamespace') !== "MediaWiki") && mw.config.get('wgIsArticle')) {
+if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgCanonicalNamespace') !== "MediaWiki")) {
   // Output a log for debugging.
   console.log("Applying MathJax...");
 

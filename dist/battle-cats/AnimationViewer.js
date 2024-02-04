@@ -310,9 +310,24 @@ function renderModel(type, reset, inputDefault) {
 		var frame = $('#input-frame').val();
 		if (!frame) frame = 0;
 		frame %= maxF;
+		// recreate sprites
+		canvas.html('<div class="animation-background-color" style="position: absolute; left: -5000000px; z-index: -100; background-color: var(--bg-color-gray); user-select: none; pointer-events: none;"></div><div class="animation-background" style="position: absolute; left: -5000000px; height: 512px; width: 10000000px; z-index: -100; background-color: var(--bg-color-gray); user-select: none; pointer-events: none; scale: 1.25;"></div>');
+		sprites = [];
+		spritesNow = [];
+		spriteNodes = [];
+		length = mamodelData.length;
+		for (var j = 0; j < length; j++) {
+			var row = mamodelData[j];
+			var data = createSprite(j, imgcutData[row[2]], mamodelData, url, maxValues);
+			sprites.push(data);
+			if (row[1] == -1) $("#sprite-inner-" + j).hide();
+		}
+		spritesNow = JSON.parse(JSON.stringify(sprites));
+		// go through all frames from 0 to wanted frame to not miss one-time changes
 		for (var f = 0; f <= frame; f++) {
 			showFrame(f, anim, imgcutData, maxValues);
 		}
+		setBackground();
 	});
 	// reposition image
 	if (reset) {

@@ -21,6 +21,7 @@ if (wgNamespaceNumber == 6) {
 		var langs = {
 			"German": "de",
 			"Spanish": "es",
+			"Polish": "pl",
 			"Russian": "ru"
 		};
 		$interUses.append( $('<h3></h3>', {'text': msgNoUses, 'class':'no_foreign_uses'}) );

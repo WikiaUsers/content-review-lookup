@@ -1,4 +1,77 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+// Фильтр для таблицы Бонусы знака
+$(".insignia-bonuses-table").before('<fieldset id=""><legend>Параметры:</legend><span>Возможно за: </span><select id="mountFilter"><option value="any">Любой скакун</option></select><span> Содержащие знак: </span><div class="table-filters" style="display: inline-block !important; padding: 5px !important; display: flex; justify-content: center; align-items: center; flex-wrap: wrap;"><button class="btn" type="button Crescent" value="Ячейка серповидных знаков"><img src="https://static.wikia.nocookie.net/neverwinter_ru_gamepedia/images/6/61/Серповидный_знак.png" style="width: 32px;"></button><button class="btn" type="button Enlightened" value="Ячейка просвещенных знаков"><img src="https://static.wikia.nocookie.net/neverwinter_ru_gamepedia/images/3/3c/Просвещенный_знак.png" style="width: 32px;"></button><button class="btn" type="button Illuminated" value="Ячейка украшенных знаков"><img src="https://static.wikia.nocookie.net/neverwinter_ru_gamepedia/images/c/c9/Украшенный_знак.png" style="width: 32px;"></button><button class="btn" type="button Regal" value="Ячейка царственных знаков"><img src="https://static.wikia.nocookie.net/neverwinter_ru_gamepedia/images/1/1a/Царственный_знак.png" style="width: 32px;"></button><button class="btn" type="button Barbed" value="Ячейка шипастых знаков"><img src="https://static.wikia.nocookie.net/neverwinter_ru_gamepedia/images/5/52/Шипастый_знак.png" style="width: 32px;"></button></div></fieldset>');
+
+$(function(){
+	var thead = document.querySelector(".insignia-bonuses-table thead tr");
+	var uniqueMounts = []; // Массив уникальных значений маунтов
+
+    // Проходим по каждой строке в таблице
+    $('.insignia-bonuses-table tbody tr').each(function() {
+        // Получаем маунты из текущей строки и разделяем их
+        var mountsData = $(this).data('mounts');
+		var mounts = mountsData ? mountsData.split(', ') : [];
+
+        // Добавляем уникальные маунты в массив
+        mounts.forEach(function(mount) {
+            if (!uniqueMounts.includes(mount)) {
+                uniqueMounts.push(mount);
+            }
+        });
+    });
+
+    // Сортируем массив уникальных маунтов по алфавиту
+    uniqueMounts.sort();
+
+    // Заполняем выпадающий список отсортированными значениями
+    uniqueMounts.forEach(function(mount) {
+        $('#mountFilter').append($('<option>', {
+            value: mount,
+            text: mount
+        }));
+    });
+
+    // Обработчики событий для выпадающего списка и кнопок
+    $('#mountFilter, .btn').on('change click', updateFilters);
+
+    // Функция обновления фильтров
+    function updateFilters() {
+        // Получаем выбранный маунт и активные кнопки
+        var selectedMount = $('#mountFilter').val();
+        var selectedButtons = $('.btn.active').map(function() {
+            return $(this).val();
+        }).get();
+
+        // Отключаем кнопки, если выбрано 4 и более
+        $('.btn:not(.active)').prop('disabled', selectedButtons.length >= 4);
+
+        // Скрываем все строки таблицы
+        $('.insignia-bonuses-table tbody tr').hide();
+
+        // Строка для фильтрации
+        var filterString = selectedMount !== 'any' ? '[data-mounts*="' + selectedMount + '"]' : '';
+        filterString += selectedButtons.map(function(buttonValue) {
+            return '[data-filter*="' + buttonValue + '"]';
+        }).join('');
+
+        // Выбираем отфильтрованные строки
+        var $filteredRows = $('.insignia-bonuses-table tbody tr' + filterString);
+
+        // Показываем результаты или добавляем сообщение "Не найдено"
+        if ($filteredRows.length === 0) {
+			$('.insignia-bonuses-table tbody').append('<tr><td colspan="2" style="text-align: center;font-weight: bold;">Не найдено</td></tr>');
+		} else {
+			$filteredRows.show();
+		}
+    }
+
+    // Обработчик клика по кнопкам
+    $('.btn').click(function() {
+        $(this).toggleClass('active');
+        updateFilters();
+    });
+});
+
 $("#artifacts-table").prepend('<fieldset><legend>Параметры фильтра таблицы:</legend><p style="margin-bottom: 0.5em;">Нижеследующие таблицы можно отфильтровать. Несколько фильтров могут быть применены сразу, выбрав несколько параметров.</p><div class="table-filters-hide-option" id="table-filters"><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select><select class="stats"><option>Выбрать...</option></select></div></fieldset>');
 
 $("#equipment-table").wrap($('<div id="fieldset-equipment-table" />"'));

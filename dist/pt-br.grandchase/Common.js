@@ -15,3 +15,9 @@ tooltips_config = {
     offsetX: 10,
     offsetY: 10,
 }
+
+// Discord Banner
+window.DiscordBannerSettings = {
+    bannerStyle: '2',
+    inviteLink: 'aMzUyqt', //  invite Link GC Wiki BR server
+};

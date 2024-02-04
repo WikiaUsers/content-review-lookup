@@ -56,6 +56,11 @@
 			info: '[<a href="../Category:Mythic_Heroes" target=_blank>?</a>]',
 		},
 		{
+			data: 'emblem',
+			label: '<img alt="" src="' + imageUrl + '5/59/Icon_Hero_Type_Emblem.png/revision/latest/scale-to-width-down/20?cb=20240130060159" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Emblem.png" data-image-key="Icon_Hero_Type_Emblem.png" data-src="' + imageUrl + '5/59/Icon_Hero_Type_Emblem.png/revision/latest/scale-to-width-down/20?cb=20240130060159" class=" lazyloaded"> Emblem',
+			info: '[<a href="../Category:Emblem_Heroes" target=_blank>?</a>]',
+		},
+		{
 			data: 'duo',
 			label: '<img alt="" src="' + imageUrl + 'd/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" decoding="async" width="20" height="20" data-image-name="Icon Hero Type Duo.png" data-image-key="Icon_Hero_Type_Duo.png" data-src="' + imageUrl + 'd/de/Icon_Hero_Type_Duo.png/revision/latest/scale-to-width-down/20?cb=20220410030228" class=" lazyloaded"> Duo',
 			info: '[<a href="../Category:Duo_Heroes" target=_blank>?</a>]',

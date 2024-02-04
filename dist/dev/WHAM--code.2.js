@@ -53,19 +53,15 @@
             title: page,
             reason: reason
         }).done(function(d) {
-            if (d.error) {
-                console.log(
-                    i18n.msg('do-delete-fail', page, d.error.code).plain()
-                );
-            } else {
-                console.log(i18n.msg('do-delete-success', page).plain());
-            }
-        }).fail(function() {
+            console.log(i18n.msg('do-delete-success', page).plain());
+        }).fail(function(code) {
             console.log(
                 i18n.msg(
                     'do-delete-fail',
                     page,
-                    i18n.msg('ajax-error').plain()
+                    code === 'http' ?
+                        i18n.msg('ajax-error').plain() :
+                        code
                 ).plain()
             );
         });
@@ -193,19 +189,15 @@
             autoblock: 0,
             reason: blockReason
         }).done(function(d) {
-            if (d.error) {
-                alert(
-                    i18n.msg('do-block-fail', username, d.error.code).plain()
-                );
-            } else {
-                alert(i18n.msg('do-block-success', username).plain());
-            }
-        }).fail(function() {
+            alert(i18n.msg('do-block-success', username).plain());
+        }).fail(function(code) {
             alert(
                 i18n.msg(
                     'do-block-fail',
                     username,
-                    i18n.msg('ajax-error').plain()
+                    code === 'http' ?
+                        i18n.msg('ajax-error').plain() :
+                        code
                 ).plain()
             );
         });
@@ -234,22 +226,20 @@
                     'remove'
             ] = 'bot';
             Api.postWithToken('userrights', params).done(function(d) {
-                if (d.error) {
-                    alert(i18n.msg('bot-me-fail', d.error.code).plain());
-                } else {
-                    alert(i18n.msg('bot-me-done').plain());
+                alert(i18n.msg('bot-me-done').plain());
 
-                    // Change button label
-                    if (params.hasOwnProperty('add')) {
-                        $('#wham-bot').text(
-                            i18n.msg('unbot-me').plain()
-                        );
-                    } else {
-                        $('#wham-bot').text(
-                            i18n.msg('bot-me').plain()
-                        );
-                    }
+                // Change button label
+                if (params.hasOwnProperty('add')) {
+                    $('#wham-bot').text(
+                        i18n.msg('unbot-me').plain()
+                    );
+                } else {
+                    $('#wham-bot').text(
+                        i18n.msg('bot-me').plain()
+                    );
                 }
+            }).fail(function(code) {
+                alert(i18n.msg('bot-me-fail', code).plain());
             });
         });
     }
@@ -314,22 +304,19 @@
             'class': 'selectiveDel',
             'type': 'checkbox'
         });
-        $('#mw-content-text')
-            .find('ul')
-            .last()
-            .before(
-                $('<button>', {
-                    'class': 'button',
-                    'id': 'btn-wham-del',
-                    'text': i18n.msg('start-selective-delete').plain()
-                }),
-                ' ',
-                $('<button>', {
-                    'class': 'button',
-                    'id': 'btn-wham-check',
-                    'text': i18n.msg('selective-delete-check').plain()
-                })
-            );
+        $('.mw-pager-body').before(
+            $('<button>', {
+                'class': 'button',
+                'id': 'btn-wham-del',
+                'text': i18n.msg('start-selective-delete').plain()
+            }),
+            ' ',
+            $('<button>', {
+                'class': 'button',
+                'id': 'btn-wham-check',
+                'text': i18n.msg('selective-delete-check').plain()
+            })
+        );
 
         $('li .newpage ~ a').each(function() {
             if (!$(this).parent().find('input').length) {
