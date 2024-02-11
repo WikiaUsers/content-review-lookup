@@ -17,6 +17,9 @@ window.tooltips_list = [
     {	classname: 'prefab-tooltip',
         parse: '{'+'{Tooltip/Prefab|<#param#>|<#param2#>}}',
     },
+    {	classname: 'set-tooltip',
+        parse: '{'+'{Tooltip/Set|<#param#>|<#param2#>}}',
+    },
 ];
 
 window.tooltips_config = {

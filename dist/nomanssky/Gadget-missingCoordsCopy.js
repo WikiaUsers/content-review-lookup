@@ -25,7 +25,7 @@ $(function() {
 		}, 1000);
 	});
 	
-	var dateCalc = '#time: d F Y | now + 1 month';
+	var dateCalc = '#time: d F Y | now + 3 month';
 	div.id = 'MissingCoordsMacro';
 	div.innerText = '{{Missing' + 'Coords|{{subst:' + dateCalc + '}}}}';
 	div.style.marginLeft = 'auto';

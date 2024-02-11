@@ -13,15 +13,15 @@ $(document).ready(function() {
 		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
 			'<option value="0">0</option>'+
 			'<option value="30">30</option>'+
-			// '<option value="35">35</option>'+
-			// '<option value="40">40</option>'+
-			// '<option value="45">45</option>'+
+			'<option value="35">35</option>'+
+			'<option value="40">40</option>'+
+			'<option value="45">45</option>'+
 			'<option value="50">50</option>'+
-			// '<option value="55">55</option>'+
-			// '<option value="60">60</option>'+
-			// '<option value="65">65</option>'+
-			// '<option value="70">70</option>'+
-			// '<option value="75">75</option>'+
+			'<option value="55">55</option>'+
+			'<option value="60">60</option>'+
+			'<option value="65">65</option>'+
+			'<option value="70">70</option>'+
+			'<option value="75">75</option>'+
 		'</select> %</div>');
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
@@ -182,7 +182,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet"];
     		break;
     	case ("Archer Queen"):
-    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet"];
+    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome"];
@@ -859,7 +859,8 @@ $(document).ready(function() {
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
-			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105]
+			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105],
+			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
 		};
 		var dictHPBonus = {
 			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],

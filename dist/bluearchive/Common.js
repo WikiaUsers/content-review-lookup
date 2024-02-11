@@ -33,7 +33,7 @@ function expandAll_Buttons($el) {
             .on('click', function(e) { expandAllHandler(e, $el); })
             .on('keypress', function(e) { expandAllHandler(e, $el); });
         $this.addClass('mw-expandall-handled');
-    })
+    });
 }
 
 mw.loader.using('mediawiki.util').then(function () {
@@ -62,7 +62,7 @@ window.lastEdited = {
 		method: 'prepend'
 	},    
 
-}
+};
 
 /*******************/
 /* Tooltip     */
@@ -195,7 +195,7 @@ function setUpButtonBehaviour(girls, girlsIcons, girlRank, welfare, possibleLimi
 	var amountRolled = {1: 0, 2: 0,3: 0};
 
 	return setTimeout(function () {
-		console.log(possibleLimitedGirl, welfare)
+		console.log(possibleLimitedGirl, welfare);
 		var optionsString = '<label for="limited-select">Select Limited Gacha: </label><select id="limited-select"><option value="none"></option>';
 		possibleLimitedGirl.forEach(function(girl) {
 			optionsString += '<option value="' + girl + '">' + girl + '</option>';
@@ -314,3 +314,26 @@ $(function() {
 	        break;
 	}
 });
+
+/*******************/
+/* User Tags     */
+/*******************/
+
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		firearmguy: { u: 'Firearms Guy', order: 100 },
+		loreguy: { u: 'Lore Guy', order: 101 },
+		mediaguy: { u: 'Media Guy', order: 102 },
+		commentguy: { u: 'Commentator', order: 103 },
+	}
+};
+UserTagsJS.modules.custom = {
+	'JoshuaGreatXD': ['loreguy', 'mediaguy'],
+	'Kirbylittle': ['loreguy'],
+	'Venti007': ['mediaguy'],
+	'Maraticon': ['mediaguy'],
+	'Kyona Kansou': ['loreguy'],
+	'IJNyura': ['firearmguy'],
+};
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop'];

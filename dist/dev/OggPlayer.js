@@ -108,7 +108,7 @@
 				url = url.replace(/\?.*$/, '');
 				if(url.search(/(?:https?:)?(?:\/\/)(?:images|img|static|vignette)\d*\.wikia\.(?:nocookie\.)?(?:net|com)/) < 0 && url.search(/(?:https?:)?(?:\/\/)upload\.wikimedia\.org/) < 0) return false; // Wikia and Wikimedia only
 				url = url.replace(/(vignette.*?)(\/revision.*$)/, '$1');
-				if(url.search(/\.(ogg|oga|ogv|mp3)/) < 0) return false; //Removed the ending tag ($) from previous author's vesion since regex strip didn't work too well
+				if(url.search(/\.(ogg|oga|ogv|mp3|wav)/) < 0) return false; //Removed the ending tag ($) from previous author's vesion since regex strip didn't work too well
 				return true;
 			}
 		};

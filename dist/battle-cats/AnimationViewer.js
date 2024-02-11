@@ -385,8 +385,7 @@ function createSprite(id, imgcutRow, mamodel, url, maxValues) {
 	canvas.append('<div class="sprite-outer" id="sprite-outer-' + id + '" style="position: absolute; z-index: ' + z + '; top: ' + y + 'px; left: ' + x + 'px; rotate: ' + angle + 'deg; scale: ' + scaleX + ' ' + scaleY + '; opacity: ' + opacity + ';"><div class="sprite-inner" id="sprite-inner-' + id + '" style="top: ' + -pivotY + 'px; left: ' + -pivotX + 'px; width: ' + spriteWidth + 'px; height: ' + spriteHeight + 'px; background-image: url(\'' + url + '\'); background-position: ' + (-spriteX) + 'px ' + (-spriteY) + 'px;"></div></div>');
 	spriteNodes.push({'outer': $('#sprite-outer-' + id), 'inner': $('#sprite-inner-' + id)});
 	if (glow != 0) {
-		$('#sprite-outer-' + id).css({'mix-blend-mode': 'screen', 'transform': 'translate3d(0, 0, 0)'});
-		opacity = 1;
+		$('#sprite-outer-' + id).css({'mix-blend-mode': 'plus-lighter', 'transform': 'translate3d(0, 0, 0)'});
 	}
 	// return sprite data for animation
 	var data = {

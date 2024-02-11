@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision: 12/18/2023 16:17
+// Current revision: 16:29, 5 February 2024
 
 $(function() {
 
@@ -38,7 +38,7 @@ $(function() {
 				betterDiff.waitFor('.mw-changeslist div', function(){
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
-					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.userPatrol);
+					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targetedPatrol);
 					
 					// start observing
 					betterDiff.RecentChangesReload(betterDiff.newDiffLink);
@@ -133,7 +133,7 @@ $(function() {
 						if (target.nodeType == 3) {
 							var split = /^([^\d\w]*)([\d\w\s]+)([^\d\w]*)$/.exec(target.textContent);
 							var paren = target.parentNode;
-							console.log(target.textContent, 'newdiff split');
+							// console.log(target.textContent, 'newdiff split');
 							link.innerHTML = split[2] || 'diff';
 							target.remove();
 							paren.prepend(
@@ -257,43 +257,66 @@ $(function() {
 			
 		},
 		
-		// Mass patrol recent edits from specific user
-		userPatrol: function() {
-			if (!document.querySelector('#userPatrol') && can.patrol) {
+		// Mass patrol recent edits from specific user and/or namespace
+		targetedPatrol: function() {
+			if (!document.querySelector('#targetedPatrol') && can.patrol) {
 				var wrapper = $(
-					'<div class="userPatrolWrapper" style="display: flex; width: 100%">'+
-						'<span id="userPatrolDetails" style="margin-right: 3px;"></span>'+
-						'<input name="userPatrol" id="userPatrol" placeholder="User to mass patrol" />'+
-						'<span class="wds-button" id="submitUserPatrol" style="white-space: nowrap; padding: 1px 3px; position: relative;">Patrol User</span>'+
+					'<div class="targetedPatrolWrapper" style="display: flex; width: 100%">'+
+						'<span id="targetedPatrolDetails" style="margin-right: 3px; white-space: nowrap;"></span>'+
+						'<select name="targetedPatrolNS" id="targetedPatrolNS"'+
+							'style="background-color: transparent; color: var(--theme-page-text-color); border-radius: 5px; background-color: #93090900; border: 1px solid var(--theme-link-color);" '+
+						'/>'+
+							'<optgroup label="Namespace to patrol:">'+
+								'<option value="-99">All</option>'+
+								'<option value="0">Main</option>'+
+								'<option value="2">User</option>'+
+								'<option value="6">File</option>'+
+								'<option value="10">Template</option>'+
+								'<option value="14">Category</option>'+
+								'<option value="828">Module</option>'+
+							'</optgroup>'+
+						'</select>'+
+						'<input name="targetedPatrolUser" id="targetedPatrolUser" placeholder="User to mass patrol" />'+
+						'<span class="wds-button" id="submitTargetedPatrol" style="white-space: nowrap; padding: 1px 3px; position: relative;">Patrol</span>'+
 					'</div>'
 				);
 				var cell = $('.mw-rcfilters-ui-table-placeholder');
 				cell.append(wrapper);
 				cell.css('vertical-align', 'middle');
-				document.querySelector('#submitUserPatrol').addEventListener('click', function(event) {
-					var user = document.querySelector('#userPatrol').value; // Username without the "User:" prefix
-					if (user.length>0) {
-						api.get({
-							action: 'query',
-							list: 'recentchanges',
-							rcshow: '!patrolled',
-							rcprop: 'ids',
-							rcuser: user,
-							format: 'json',
-							formatversion: '2',
-							rclimit: 'max'
-						}).then(function(data){
+				document.querySelector('#submitTargetedPatrol').addEventListener('click', function(event) {
+					var api_sett = {
+						action: 'query',
+						list: 'recentchanges',
+						rcshow: '!patrolled',
+						rcprop: 'ids',
+						rcuser: user,
+						format: 'json',
+						formatversion: '2',
+						rclimit: 'max'
+					};
+					
+					// User filter
+					var user = document.querySelector('#targetedPatrolUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
+					if (user.length>0) {api_sett.rcuser = user;}
+					
+					// Namespace filter
+					var ns = document.querySelector('#targetedPatrolNS').selectedOptions[0].value;
+					if (ns !== "-99") {api_sett.rcnamespace = ns;}
+					
+					// Attempt patrol
+					if (user.length>0 || ns !== "-99") {
+						api.get(api_sett).then(function(data){
 							if (data.query.recentchanges.length>0) {
-								document.querySelector('#userPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
+								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
 								data.query.recentchanges.forEach(function(page) {
 									betterDiff.patrolRevision(page.revid, page.rcid);
 								});
-								document.querySelector('#userPatrolDetails').innerHTML = 'Patrolled '+data.query.recentchanges.length+' edits!';
+								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolled '+data.query.recentchanges.length+' edits!';
 							} else {
-								document.querySelector('#userPatrolDetails').innerHTML = 'User has no edits to patrol!';
+								document.querySelector('#targetedPatrolDetails').innerHTML = (user.length>0 ? 'User' : 'Namespace')+' has no edits to patrol!';
 							}
 						});
-					} else { document.querySelector('#userPatrolDetails').innerHTML = 'No user specified.'; }
+					} else { document.querySelector('#targetedPatrolDetails').innerHTML = 'No user or namespace specified.'; }
 				});
 			} else { console.log('User does not have patrolling rights.'); }
 		},
@@ -680,7 +703,7 @@ $(function() {
 				}).catch(function(log) {
 					if (rcid && log && log == 'nosuchrevid') {
 						alert('Revision from deleted page detected, opening patrolling page.');
-						window.open('https://honkai-star-rail.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+						window.open('https://genshin-impact.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
 					} else {
 						console.log('tokens', tokens);
 						console.log('error msg:', log);

@@ -5,6 +5,7 @@ importArticles({
         'w:c:ru.sword-art-online:MediaWiki:RepeatableTimer.js',/* Таймер с Sword Art Online Wiki */
         'u:dev:ReferencePopups/code.js',
         'u:dev:MediaWiki:RailWAM/code.js',
+        'u:dev:MediaWiki:TopEditors/code.js',
         "w:c:dev:MediaWiki:Countdown/code.js",
         "w:c:dev:MediaWiki:ProfileTags.js",
         "MediaWiki:OggPlayer.js"

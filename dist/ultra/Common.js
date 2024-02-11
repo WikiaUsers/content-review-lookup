@@ -51,3 +51,13 @@ blazarSpan.onclick = function() {
 	blazarAudio.load();
 }
 /* BLAZAR STONE EASTER EGG ENDS HERE */
+
+// Removes reference numbers from the table of contents
+$(function() {
+	var regex = /\[[0-9]*?\]/;
+	var toctexts = document.querySelectorAll(".toctext");
+	for (var i = 0; i < toctexts.length; i++) {
+		var withoutRef = toctexts[i].innerHTML.replace(regex,"");
+	    toctexts[i].innerHTML = withoutRef;
+	}
+});

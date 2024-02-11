@@ -104,18 +104,18 @@
 	// main script
 	
 	// Load Protection
-	if (window.LoopOgvLoaded) {
+	if (window.LoopPreviewLoaded) {
 		return;
 	}
-	window.LoopOgvLoaded = true;
+	window.LoopPreviewLoaded = true;
 
 	// Initialize options
-	if (typeof window.LoopOgvOpts !== 'object')
-		window.LoopOgvOpts = {};
+	if (typeof window.LoopPreviewOpts !== 'object')
+		window.LoopPreviewOpts = {};
 	const opts = {
 		mode: 'autoplay',
 	};
-	Object.assign(opts, window.LoopOgvOpts);
+	Object.assign(opts, window.LoopPreviewOpts);
 	
 	const autoplay = opts.mode === 'autoplay';
 
@@ -123,8 +123,8 @@
 		const vid_master = document.createElement('video');
 
 		// Test if this code should run
-		const cantPlayOgv = vid_master.canPlayType('video/ogg') === '';
-		if (cantPlayOgv || opts.mode === 'off') return;
+		const cantPlayMp4 = vid_master.canPlayType('video/mp4') === '';
+		if (cantPlayMp4 || opts.mode === 'off') return;
 
 		// Prep master components for cloneNode (more optimal than createElement)
 		vid_master.loop = true;
@@ -134,7 +134,7 @@
 		vid_master.playsInline = true;
 		vid_master.style.display = 'none';
 		const source_master = document.createElement('source');
-		source_master.type = 'video/ogg';
+		source_master.type = 'video/mp4';
 		
 		// Set up lazy loading for autoplay mode
 		var loadManager, loadManagerConfig;
@@ -169,7 +169,7 @@
 		}
 
 		// Add videos
-		const searchClass = 'loopOgv';
+		const searchClass = 'looppreview';
 		const all = document.getElementsByClassName(searchClass);
 		while (0 < all.length) {
 			// Ingest values

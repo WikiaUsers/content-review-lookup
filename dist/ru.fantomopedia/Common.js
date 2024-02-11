@@ -125,3 +125,31 @@ if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/a/a1/FnafslxfSLBack.png/revision/latest?cb=20221218115136&path-prefix=ru)"});
         var name = "Фан Игры"
 }
+var cat = mw.config.get('wgCategories')
+var name = "Флаг Скретча (СТ)"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/a/a1/FnafslxfSLBack.png/revision/latest?cb=20221218115136&path-prefix=ru)"});
+        var name = "Флаг Скретча"
+}
+var cat = mw.config.get('wgCategories')
+var name = "Старая Земля2 (СТ)"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/f/f2/Earth2Back.png/revision/latest?cb=20240209131157&path-prefix=ru)"});
+        var name = "Старая Земля2"
+}
+var cat = mw.config.get('wgCategories')
+var name = "GoldenWar (СТ)"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/a/a1/FnafslxfSLBack.png/revision/latest?cb=20221218115136&path-prefix=ru)"});
+        var name = "GoldenWar"
+}
+var cat = mw.config.get('wgCategories')
+var name = "Земля2 (СТ)"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/a/a1/Earth2New_Back.png/revision/latest?cb=20240209151526&path-prefix=ru)"});
+        var name = "Земля2"
+}

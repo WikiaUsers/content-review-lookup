@@ -8,8 +8,8 @@ PFD_templates = [
     },
     'Specyficzne',
     {
-        label:   'Rozkład jazdy',
-        desc:    'Rozkład jazdy linii [[]] z przystanku \'\'{{przystanek||}} \'\'.\n[[Kategoria:Rozkłady jazdy]]',
+        label:   'Rozkłady jazdy',
+        desc:    '{{Plik\n| Opis        = Rozkład jazdy linii [[]] z przystanku \'\'{{przystanek||}} \'\'.\n| Data        = \n| Źródło      = \n| Autor       = Zarząd Transportu Miejskiego w Warszawie\n| Inne wersje = \n}}\n[[Kategoria:Rozkłady jazdy]]',
         license: 'PD',
     },
     {

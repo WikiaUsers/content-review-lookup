@@ -49,6 +49,8 @@ $(document).ready(function() {
     });
 });
 
+// Header sections //
+$('button.chevron-wrapper').prev().attr("aria-expanded","false");
 
 // Special:Upload pre-load config
 PFD_templates = [

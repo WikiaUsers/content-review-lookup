@@ -220,6 +220,7 @@ $(function() {
 				closeMarkerSettings();
 				if (event.target && /^marker\d+/.test(event.target.id)) {
 					event.preventDefault();
+					var localZoom = (event.target.closest('#TemplateManager') ? 1 : zoom); // ignore zoom setting if not quickGen
 					var menu = $(
 						'<div class="markerSettings" style="z-index:99999; position:absolute;">'+
 							'<ul>'+
@@ -232,8 +233,8 @@ $(function() {
 						'</div>'
 					);
 					$('#'+(event.target.closest('#TemplateManager') ? 'TemplateManager' : 'mapContainer')).append(menu);
-					document.querySelector('.markerSettings').style.setProperty('top', markers[event.target.id].y+(document.querySelector('.markerSettings').clientHeight/2)+'px');
-					document.querySelector('.markerSettings').style.setProperty('left', markers[event.target.id].x-(document.querySelector('.markerSettings').clientWidth/2)+'px');
+					document.querySelector('.markerSettings').style.setProperty('top', markers[event.target.id].y*localZoom+(document.querySelector('.markerSettings').clientHeight/2)+'px');
+					document.querySelector('.markerSettings').style.setProperty('left', markers[event.target.id].x*localZoom-(document.querySelector('.markerSettings').clientWidth/2)+'px');
 				}
 			});
 			document.addEventListener('click', function(event) {

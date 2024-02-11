@@ -1240,11 +1240,9 @@
 			var sections = spriteutils.getSections();
 			var ids = Object.keys(output.ids);
 			var sprites = [];
-			var names = {};
 			var flags;
 			var l;
 			ids.forEach(function(name) {
-				names[name] = true;
 				if (sprites[output.ids[name].pos]) {
 					var code = sprites[output.ids[name].pos].addName(name);
 					flags = myData.flags;
@@ -1278,7 +1276,6 @@
 				sprites[output.ids[name].pos] = sprite;
 				sections[output.ids[name].section].addSprite(sprite.element);
 			});
-			markDuplicateNames(names);
 			Object.keys(sprites).forEach(function(a) {
 				sortSpriteNames(a);
 			});
@@ -1322,6 +1319,7 @@
 				list: 'tags',
 				meta: 'userinfo',
 				prop: 'info',
+				tglimit: '500',
 				tgprop: 'active',
 				uiprop: 'rights|blockinfo'
 			};

@@ -57,6 +57,9 @@ importArticles({
         'u:dev:MediaWiki:NullEditButton/code.js',
         'u:dev:MediaWiki:MassCategorization/code.js',
         'u:dev:MediaWiki:CommunityPageRailModule.js',
-        'MediaWiki:CombatCard.js'
+        'u:dev:MediaWiki:OggPlayer.js',
+        'MediaWiki:CombatCard.js',
+        'MediaWiki:AbnormalityPage.js',
+        'MediaWiki:AdminDashboardImportJS.js'
     ]
 });

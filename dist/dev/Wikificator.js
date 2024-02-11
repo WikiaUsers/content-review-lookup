@@ -2276,7 +2276,9 @@
             if ( p.isVeActive() ) {
                 text = p.surface.model.documentModel.data.getSourceText().trim();
             } else if ( p.isOldVeActive() ) {
-                text = $input.val();
+            	$input = $.wikiEditor.instances[0];
+            	text = $input.textSelection( 'getContents' );
+                // text = $input.val();
             } else {                
                 text = $input.val();
             }
@@ -2472,13 +2474,11 @@
                     fragment.insertContent( txt );
                 } else {
                     // old ve
-                    $input = $( '#wpTextbox1' );
-                    if ( $input.selectionStart !== undefined ) {
-                        start = $input.selectionStart;
-                        end = $input.selectionEnd;
-                        $input.val( $input.val().slice( 0, start ) + txt + $input.val().slice( end ) );
+                    $input = $.wikiEditor.instances[0];// $( '#wpTextbox1' );
+                    if ( $input.textSelection && $input.textSelection( 'getSelection' ) ) {
+                    	$input.textSelection( 'replaceSelection', txt );
                     } else {
-                        $input.val( txt );
+                    	$input.textSelection( 'setContents', txt );
                     }
                 }
             } else {
@@ -2498,7 +2498,7 @@
                 txt = text;
                 // old ve
                 if ( p.isOldVeActive() ) {//(ve && ve.init && !ve.init.target) {
-                    $input = $( '#wpTextbox1' );
+                    $input = $.wikiEditor.instances[0]; //$( '#wpTextbox1' );
                     txt = $input.length ?
                         $input.textSelection( 'getContents' ) ||
                         $input.val() :
@@ -2526,17 +2526,6 @@
             }
             if ( $input && $input.length ) {
                 p.log( 'input&input.len', p.isVeActive(), p.isOldVeActive() );
-                //txt = $input.text();
-                /*
-                if ( p.isVeActive() ) {
-                    // 2017 wikitext editor adds an empty line to the end with every text replacement
-                    // Remove the .trim when [[phab:T198010]] is fixed.
-                    txt = p.surface.mode.documentModel.data.getSourceText().trim();
-                }
-                // here is no "else" intentionally. might be fixed later, when ucp will work
-                if ( p.isOldVeActive ) {
-                    txt = $input.val();
-                }*/
                 r( /^[\n\r]+/, '' );
                 // 2017 wikitext editor adds an empty line to the end with every text replacement
                 // Remove the following block when [[phab:T198010]] is fixed.
@@ -2727,7 +2716,7 @@
         if ( p.isUcp ) {
             // is old ve
             if ( p.isOldVeActive() ) {
-                var t = p.wikify( $( '#wpTextbox1' ) );
+                var t = p.wikify( $.wikiEditor.instances[0] ); // p.wikify( $( '#wpTextbox1' ) );
                 //setContents( t );
             } else {
                 if ( !p.isVeActive() ) return;

@@ -16,7 +16,7 @@ var interval = {};
 	$("#summon-input-frame-div").append('<input class="summon-input-element" type="number" id="summon-input-frame" value="65" min="0" title="Input the frame to show">');
 	$("#animation-summon-button-div").append('<button id="animation-button-summon" type="button" title="Conjure the Spirit">Conjure</button>');
 	$("#summon-hide-elements").append('<input type="checkbox">');
-	$("#summon-unit-name").text('Spirit');
+	$("#summon-unit-name").append('<svg width="20" height="20"><ellipse cx="10" cy="8" rx="4.5" ry="3.5" style="fill: #fff; stroke-width: 0;" /><polygon points="7,2 9,4.588 6.5,5.8" style="fill: #fff; stroke-width: 0;" /><polygon points="13,2 11,4.588 13.5,5.8" style="fill: #fff; stroke-width: 0;" /><path d="M7 10.609 C7 10.609 8 19 14 17.5 C14 17.5 12.75 17.5 12.5 16.5 C12.5 16.5 12 15 13 10.609 Z" style="fill: #fff; stroke-width: 0;" /><circle cx="8" cy="7.75" r="0.7" style="fill: #000; stroke-width: 0;" /><circle cx="12" cy="7.75" r="0.7" style="fill: #000; stroke-width: 0;" /><line x1="7" y1="10.609" x2="6" y2="12" style="stroke: #fff; stroke-width: 0.75; stroke-linecap: round;" /><line x1="13" y1="10.609" x2="14" y2="12" style="stroke: #fff; stroke-width: 0.75; stroke-linecap: round;" /></svg>');
 	// read animation data
 	var map, urls;
 	api = new mw.Api();

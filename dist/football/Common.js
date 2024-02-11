@@ -1,169 +1,257 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 // ============================================================
-// displayTimer
-// ============================================================
- 
-var refreshDate;
- 
-function addDate() {
-    var UTCDate = ((new Date()).toUTCString()).replace("GMT", "(UTC)");
-    $('#showdate').empty().append('<span style="font-weight: bold; text-transform: none;"><a title="Purge the server cache and update the contents of this page." href="' + wgArticlePath.replace('$1', wgPageName.replace(/ /g, '_')) + '?action=purge">' + UTCDate.substring(5) + '</a></span>');
-    window.clearTimeout(refreshDate);
-    refreshDate = window.setTimeout(addDate, 1000);
-}
+// BEGIN Dynamic Navigation Bars (experimantal)
+// This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 
-/* Auto Refresh */
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
 
-function onloadhookcustom() {
-    var replace = document.getElementById("OnlineChat");
-    if (replace !== null) {
-        var getvalue = replace.getAttribute("class");
-    }
-}
+/* Test if an element has a certain class **************************************
+ *
+ * Description: Uses regular expressions and caching for better performance.
+ * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
+ */
 
-/* Ping mods in the chat with the command "!mods" */
-//Message Wall Posts Tags
-var messageWallUserTags = {
-    'Dean27': 'Admin'
-};
-window.messageWallTagColor = '#034400';
+var hasClass = (function () {
+    var reCache = {};
+    return function (element, className) {
+        return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
+    };
+})();
+
+ /** Collapsible tables *********************************************************
+  *
+  *  Description: Allows tables to be collapsed, showing only the header. See
+  *               [[Wikipedia:NavFrame]].
+  *  Maintainers: [[User:R. Koot]]
+  */
  
-var messageWallTagColor = window.messageWallTagColor || '#034400';
+ var autoCollapse = 2;
+ var collapseCaption = "hide";
+ var expandCaption = "show";
  
-$(function() {
-    for (var name in messageWallUserTags) {
-        $('a.subtle[href$="Message_Wall:' + name + '"]').after('<span style="color:' + messageWallTagColor + ';margin-left:-2px;font-size:10px;vertical-align:top;">(' + messageWallUserTags[name] + ')</span>');
-    }
-});
+ function collapseTable( tableIndex )
+ {
+     var Button = document.getElementById( "collapseButton" + tableIndex );
+     var Table = document.getElementById( "collapsibleTable" + tableIndex );
+ 
+     if ( !Table || !Button ) {
+         return false;
+     }
+ 
+     var Rows = Table.getElementsByTagName( "tr" ); 
+ 
+     if ( Button.firstChild.data == collapseCaption ) {
+         for ( var i = 1; i < Rows.length; i++ ) {
+             Rows[i].style.display = "none";
+         }
+         Button.firstChild.data = expandCaption;
+     } else {
+         for ( var i = 1; i < Rows.length; i++ ) {
+             Rows[i].style.display = Rows[0].style.display;
+         }
+         Button.firstChild.data = collapseCaption;
+     }
+ }
+ 
+ function createCollapseButtons()
+ {
+     var tableIndex = 0;
+     var NavigationBoxes = new Object();
+     var Tables = document.getElementsByTagName( "table" );
+ 
+     for ( var i = 0; i < Tables.length; i++ ) {
+         if ( hasClass( Tables[i], "collapsible" ) ) {
+             NavigationBoxes[ tableIndex ] = Tables[i];
+             Tables[i].setAttribute( "id", "collapsibleTable" + tableIndex );
+ 
+             var Button     = document.createElement( "span" );
+             var ButtonLink = document.createElement( "a" );
+             var ButtonText = document.createTextNode( collapseCaption );
+ 
+             Button.style.styleFloat = "right";
+             Button.style.cssFloat = "right";
+             Button.style.fontWeight = "normal";
+             Button.style.textAlign = "right";
+             Button.style.width = "6em";
+ 
+             ButtonLink.setAttribute( "id", "collapseButton" + tableIndex );
+             ButtonLink.setAttribute( "href", "javascript:collapseTable(" + tableIndex + ");" );
+             ButtonLink.appendChild( ButtonText );
+ 
+             Button.appendChild( document.createTextNode( "[" ) );
+             Button.appendChild( ButtonLink );
+             Button.appendChild( document.createTextNode( "]" ) );
+ 
+             var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
+             /* only add button and increment count if there is a header row to work with */
+             if (Header) {
+                 Header.insertBefore( Button, Header.childNodes[0] );
+                 tableIndex++;
+             }
+         }
+     }
+ 
+     for ( var i = 0;  i < tableIndex; i++ ) {
+         if ( hasClass( NavigationBoxes[i], "collapsed" ) || ( tableIndex >= autoCollapse && hasClass( NavigationBoxes[i], "autocollapse" ) ) ) {
+             collapseTable( i );
+         }
+     }
+ }
+ addOnloadHook( createCollapseButtons );
 
-/* Wiki Notification 
+ /** Dynamic Navigation Bars (experimental) *************************************
+  *
+  *  Description: See [[Wikipedia:NavFrame]].
+  *  Maintainers: UNMAINTAINED
+  */
+ 
+  // set up the words in your language
+  var NavigationBarHide = '[' + collapseCaption + ']';
+  var NavigationBarShow = '[' + expandCaption + ']';
+  
+  // set up max count of Navigation Bars on page,
+  // if there are more, all will be hidden
+  // NavigationBarShowDefault = 0; // all bars will be hidden
+  // NavigationBarShowDefault = 1; // on pages with more than 1 bar all bars will be hidden
+  var NavigationBarShowDefault = autoCollapse;
+  
+  
+  // shows and hides content and picture (if available) of navigation bars
+  // Parameters:
+  //     indexNavigationBar: the index of navigation bar to be toggled
+  function toggleNavigationBar(indexNavigationBar)
+  {
+     var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
+     var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
+  
+     if (!NavFrame || !NavToggle) {
+         return false;
+     }
+  
+     // if shown now
+     if (NavToggle.firstChild.data == NavigationBarHide) {
+         for (
+                 var NavChild = NavFrame.firstChild;
+                 NavChild != null;
+                 NavChild = NavChild.nextSibling
+             ) {
+             if ( hasClass( NavChild, 'NavPic' ) ) {
+                 NavChild.style.display = 'none';
+             }
+             if ( hasClass( NavChild, 'NavContent') ) {
+                 NavChild.style.display = 'none';
+             }
+         }
+     NavToggle.firstChild.data = NavigationBarShow;
+  
+     // if hidden now
+     } else if (NavToggle.firstChild.data == NavigationBarShow) {
+         for (
+                 var NavChild = NavFrame.firstChild;
+                 NavChild != null;
+                 NavChild = NavChild.nextSibling
+             ) {
+             if (hasClass(NavChild, 'NavPic')) {
+                 NavChild.style.display = 'block';
+             }
+             if (hasClass(NavChild, 'NavContent')) {
+                 NavChild.style.display = 'block';
+             }
+         }
+     NavToggle.firstChild.data = NavigationBarHide;
+     }
+  }
+  
+  // adds show/hide-button to navigation bars
+  function createNavigationBarToggleButton()
+  {
+     var indexNavigationBar = 0;
+     // iterate over all < div >-elements 
+     var divs = document.getElementsByTagName("div");
+     for(
+             var i=0; 
+             NavFrame = divs[i]; 
+             i++
+         ) {
+         // if found a navigation bar
+         if (hasClass(NavFrame, "NavFrame")) {
+  
+             indexNavigationBar++;
+             var NavToggle = document.createElement("a");
+             NavToggle.className = 'NavToggle';
+             NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
+             NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
+             
+             var NavToggleText = document.createTextNode(NavigationBarHide);
+             NavToggle.appendChild(NavToggleText);
+             // Find the NavHead and attach the toggle link (Must be this complicated because Moz's firstChild handling is borked)
+             for(
+               var j=0; 
+               j < NavFrame.childNodes.length; 
+               j++
+             ) {
+               if (hasClass(NavFrame.childNodes[j], "NavHead")) {
+                 NavFrame.childNodes[j].appendChild(NavToggle);
+               }
+             }
+             NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
+         }
+     }
+     // if more Navigation Bars found than Default: hide all
+     if (NavigationBarShowDefault < indexNavigationBar) {
+         for(
+                 var i=1; 
+                 i<=indexNavigationBar; 
+                 i++
+         ) {
+             toggleNavigationBar(i);
+         }
+     }
    
-   This is actually a ToU violation as it's outside the 
-   page content area.  It's also not really that necessary
-   since the wiki has been revamped to include the World
-   Cup more prominently.
+  } 
+  addOnloadHook( createNavigationBarToggleButton );
 
-function addPageBottom() {
-        $("#WikiaRail").append('<div class="Actimv" style="position:fixed; bottom:2.5em; right:0.5em; z-index:999; width:130px; border-radius: 4px; box-shadow: 0px 0px 5px black; background-color: #0FB200; text-align:left; padding:10px; font-family: standard; font-size: 118%; color: white;"><b><a href="/wiki/2014 FIFA World Cup" style="color: yellow;">The 2014 FIFA World<br />Cup</a> is this year! <a href="/wiki/User_blog:2Actimv/2014_FIFA_World_Cup:_An_Introduction_and_Analyse_of_the_Teams" style="color: yellow;">Want<br />to learn more about it?</a></b></div>');
-}
- 
-$(addPageBottom);
-
-
-   Conversely, the following kind of notification system
-   is allowed by the ToU because it happens wholly within
-   the content area. It's a simple little idea that 
-   traces back to at least an idea by [[User:Cqm]], if 
-   not earlier. */
-
-var newElement = [
- '<section class="UEFA Euro 2024Gradient module">',
- '   <h1><a href="https://football.fandom.com/wiki/UEFA_Euro_2024">UEFA Euro 2024</a></h1>',
- '   <div id=features style="margin-top: -16px; padding: 0; width: 100%;">',
- '         <tr style="line-height: 15px; text-align: center; font-size: 14px;">',
- '            <td>',
- '                 This is the place to be for all the news about UEFA Euro 2024. From the qualification to the final in Berlin. You can view all the teams and groups, the topscorers, the players with the most assists, players who are inform, all the stadiums and a lot more.<br><a href="UEFA Euro 2024">Go to the page</a><br>Go to the <a href="http://football.wikia.com/wiki/Match_Center">Match Center</a> for upcoming matches. ',
- '            </td>',
- '         </tr>',
- '   </div>',
- '</section>'
- ].join('');
- 
-$('#WikiaRail').append(newElement);
-
-/*
-* Mark for NoInfobox
-* Adds a button to the toolbar that automatically adds {{NoInfobox}} to the top of a page
-* so that users can quickly mark pages which doesn't have an infobox
-* @author Ozuzanna
-*/
-
-if (mediaWiki.config.get("wgAction") === "view" && 
-    mediaWiki.config.get("wgNamespaceNumber") !== -1 && 
-    mediaWiki.config.get("wgUserName") !== null) {
-
-    $('.tools').append('<li><a id="NoInfobox-link" style="cursor: pointer;">NoInfobox</a></li><li><a id="NoContentInInfobox-link" style="cursor: pointer;">NoContentInInfobox</a></li>');
-    $('#NoInfobox-link').click(function() {
-        new mw.Api().post({
-            format: 'json',
-            action: 'edit',
-            title: mw.config.get('wgPageName'),
-            token: mw.user.tokens.get('editToken'),
-            summary: 'Adding {{NoInfobox}} because of missing infobox',
-            nocreate: '',
-            prependtext: '{{NoInfobox}}'
-        }).done(function(d) { 
-            if (!d.error) {
-                console.log('Adding template successful!');
-                location.reload();
-            } else {
-                console.log('Failed to add template: '+d.error.code);
+function fixGallery() {
+    var maxD=120;
+    var spans=document.evaluate('//span[@class="wikia-gallery-item"]',document,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null);
+    for (var i=0;i<spans.snapshotLength;i++) {
+        var s = spans.snapshotItem(i);
+        var d1 = s.firstChild;
+        if (d1) {
+            var d2 = d1.firstChild;
+            if (d2) {
+                var a = d2.firstChild;
+                if (a) {
+                    var curH = a.style.height.replace(/[^0-9]*/g,'');
+                    var curW = a.style.width.replace(/[^0-9]*/g,'');
+                    if (curH && curW) {
+                        var ratio = curH/curW;
+                        if(curW >= maxD && ratio <= 1){
+                            curW = maxD;
+                        } else if(curH >= maxD) {
+                            curW = Math.floor(maxD / ratio);
+                        }
+                        s.style.width = maxD+'px';
+                        d1.style.height = maxD+'px';
+                        d2.style.height = maxD+'px';
+                        d2.style.width = maxD+'px';
+                        d2.style.top = '';
+                        if (a.style.backgroundImage.match(/\/[0-9]*px-/i))
+                            a.style.backgroundImage = a.style.backgroundImage.replace(/\/[0-9]*px-/i,'/'+curW+'px-');
+                        else {
+                            a.style.backgroundImage = a.style.backgroundImage.replace(/\"?\)$/,'/'+curW+'px-'+a.style.backgroundImage.match(/\/([^\/]*\"?\)$)/i)[1]);
+                            if (!a.style.backgroundImage.match(/\/thumb\//)) {
+                                a.style.backgroundImage = a.style.backgroundImage.replace('/images/','/images/thumb/');
+                            }
+                        }
+                        a.style.height = maxD+'px';
+                        a.style.width = maxD+'px';
+                        var capt = d1.nextSibling;
+                        if (capt) {
+                            capt.style.width = maxD+'px';
+                        }
+                    }
+                }
             }
-        }).fail(function() {
-            console.log('Failed to add template!');
-        });
-    });
+        }
+    }
 }
-
-/*
-* Mark for NoContentInInfobox
-* Adds a button to the toolbar that automatically adds {{NoContentInInfobox}} to the top of a page
-* so that users can quickly mark pages which have an empty infobox
-* @author Ozuzanna
-* Changed to this template by 2Actimv
-*/
-
-if (mediaWiki.config.get("wgAction") === "view" && 
-    mediaWiki.config.get("wgNamespaceNumber") !== -1 &&
-    mediaWiki.config.get("wgUserName") !== null) {
-
-    $('#NoContentInInfobox-link').click(function() {
-        new mw.Api().post({
-            format: 'json',
-            action: 'edit',
-            title: mw.config.get('wgPageName'),
-            token: mw.user.tokens.get('editToken'),
-            summary: 'Adding {{NoContentInInfobox}} because of empty infobox',
-            nocreate: '',
-            prependtext: '{{NoContentInInfobox}}'
-        }).done(function(d) { 
-            if (!d.error) {
-                console.log('Adding template successful!');
-                location.reload();
-            } else {
-                console.log('Failed to add template: '+d.error.code);
-            }
-        }).fail(function() {
-            console.log('Failed to add template!');
-        });
-    });
-}
-
-/* Imports */
-importArticles({
-	type: 'script',
-	articles: [
-        'u:dev:!mods/code.js',
-        'u:dev:AjaxRC/code.js',             // AjaxRC
-        'u:dev:BackToTopButton/code.js',    // Back to top button
-        'u:dev:Countdown/code.js',          // Countdown long dates
-        'u:dev:LastEdited/code.js',         // Last Edit Information
-        'u:dev:SearchSuggest/code.js',      // SearchSuggest
-        'u:zh.pad:MediaWiki:CountDown.js'   // Countdown
-	]
-}, {
-	type: 'style',
-	article: 'u:zh.pad.wikia.com:MediaWiki:CountDown.css'
-});
-
-window.lastEdited = {
-    avatar: false,
-    position: 'top',
-    size: false,
-    diff: true,
-    comment: false,
-    time: true
-};

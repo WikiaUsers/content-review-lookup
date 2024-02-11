@@ -12,7 +12,8 @@ window.UserTagsJS = {
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
-	'ThomasGang1948': ['founder']
+	'ThomasGang1948': ['founder'],
+	'Mr. TheTrueOne': ['retiredmember']
 };
 
 UserTagsJS.modules.inactive = {
