@@ -1,4 +1,42 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/*******************/
+/* UserTags     */
+/*******************/
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		activeguy: { u: 'Active Editor', order: 100 }, //for active editor
+		grindguy: { u: 'Wiki Grindfest', order: 101 }, //for super active editors who grinds almost daily
+		ogguy: { u: 'The OG Editor', order: 102 }, //for editors who used to edit in the past
+		translatorguy: { u: 'Translator', order: 103 }, //for PlatFleece
+		bureaucrat: { order: 1 },
+		sysop: { order: 2 },
+		'content-moderator': { order: 3 },
+		threadmoderator: { order: 4 },
+		rollback: { order: 5 },
+	}
+};
+
+UserTagsJS.modules.custom = {
+	'Ruby00w00': ['activeguy', 'grindguy'],
+	'Blitzsparkz': ['ogguy'],
+	'PlatFleece': ['ogguy', 'translatorguy'],
+	'Killerofangel': ['ogguy'],
+	'Macho44': ['ogguy'],
+	'Postarie': ['ogguy'],
+	'Nii Kun': ['ogguy'],
+	'Sonia Bean': ['ogguy'],
+	'Cette': ['ogguy'],
+	'Just some random Wikia contributor': ['activeguy', 'ogguy'],
+	'Primal Groudon 156': ['ogguy'],
+	'AliceGoneMad': ['activeguy', 'ogguy'],
+	'Soraminakano': ['ogguy'],
+	'N. Harmonik': ['ogguy'],
+};
+
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop', 'rollback'];
+
 /****************************/
 /* Gacha Simulator */
 /****************************/

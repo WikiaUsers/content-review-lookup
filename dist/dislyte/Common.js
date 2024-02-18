@@ -3,7 +3,7 @@
 /* No use for these atm: {{4=<#element#>|5=<#role#>|link=<#link#>}}' */
 window.tooltips_list = [
         {
-        classname: 'status-effect-tooltip',
+        classname: 'glossary',
         parse: '{' + '{Template:Status effect tip|1=<#name#>|2=<#type#>|3=<#color#>|4=<#desc#>|title=<#title#>|tipname=<#tipname#>|boxwidth=<#boxwidth#>}}',
     },  {
         classname: 'item-tooltip',

@@ -60,6 +60,10 @@ importArticles({
         'u:dev:MediaWiki:OggPlayer.js',
         'MediaWiki:CombatCard.js',
         'MediaWiki:AbnormalityPage.js',
-        'MediaWiki:AdminDashboardImportJS.js'
+        'MediaWiki:AdminDashboardImportJS.js',
+        'u:dev:MediaWiki:ReferencePopups/code.js'
     ]
 });
+
+//注释弹窗的设定。这段必须放在这不然会出bug
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };

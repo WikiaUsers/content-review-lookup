@@ -1,169 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/*
-//////////////////////////////////////////////////////////
-// Auto-fill the Blog title with sub page name in the URL
-//////////////////////////////////////////////////////////
-*/
-
-function blogTitle(){
-  if (wgCanonicalSpecialPageName == "CreateBlogPage"){
-    var sel = document.getElementById('blogPostTitle');
-    if (sel !== null & sel.value === ''){
-      sel.value = "Replace this text with the title of the comic (from the URL)";
-    }
-
-    var template = "\{\{Review\}\}\n\n\Replace this text with your review";
-    var textBlock1 = document.getElementById('wpTextbox1');
-    if (textBlock1 !== null){
-      textBlock1.value = template;
-    }
-
-  }
-}
-
-addOnloadHook(blogTitle)
-
-/* 
-////////////////////////////////////////////////////////////////////
-// Twitter Follow Button
-////////////////////////////////////////////////////////////////////
-*/
-
-function addTwitterButton() {
-   $('#twitter-button').append('<a href="http://twitter.com/dcdatabase" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false">Follow @DCDatabase</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
-}
-$(addTwitterButton);
-
-
-/* 
-////////////////////////////////////////////////////////////////////
-// Facebook box
-////////////////////////////////////////////////////////////////////
-*/
- 
-function fBox() {
-    $('#fbox').append('<iframe scrolling="no" height="550" frameborder="0" align="top" width="330" src="http://www.facebook.com/connect/connect.php?id=245359441616&amp;connections=30" marginwidth="0" marginheight="0"></iframe>');
-}
- 
-$(fBox);
-
-/*
-////////////////////////////////////////////////////////////////////////////////////
-// Rewrites the title of a given page.
-////////////////////////////////////////////////////////////////////////////////////
-*/
-function rewriteTitle(){
-    if(typeof(window.SKIP_TITLE_REWRITE) != 'undefined' && window.SKIP_TITLE_REWRITE)
-        return;
-
-    var titleDiv = document.getElementById('title-meta');
-
-    if(titleDiv === null)
-        return;
-
-    var cloneNode = titleDiv.cloneNode(true);
-    var firstHeading = getFirstHeading();
-    var node = firstHeading.childNodes[0];
-
-    // new, then old!
-    firstHeading.replaceChild(cloneNode, node);
-    cloneNode.style.display = "inline";
-
-    var titleAlign = document.getElementById('title-align');
-    firstHeading.style.textAlign = titleAlign.childNodes[0].nodeValue;
-}
-
-/*
-    Stores the (unmodified) page title.
-*/
-function storePageName(){
-    window.pageName = getFirstHeading().childNodes[0].nodeValue.trim();
-}
-/*
-    Returns h1.firstHeading (the page title element).
-*/
-function getFirstHeading()
-{
-    var elements = getElementsByClass('firstHeading', document.getElementById('content'), 'h1');
-    return (elements !== null && elements.length > 0) ? elements[0] : null;
-}
-
-
-addOnloadHook(rewriteTitle)
-
-
-function getElementsByClass(searchClass,node,tag) {
-	var classElements = new Array();
-	if ( node === null )
-		node = document;
-	if ( tag === null )
-		tag = '*';
-	var els = node.getElementsByTagName(tag);
-	var elsLen = els.length;
-	var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
-	for (i = 0, j = 0; i < elsLen; i++) {
-		if ( pattern.test(els[i].className) ) {
-			classElements[j] = els[i];
-			j++;
-		}
-	}
-	return classElements;
-}
-
-/*
-////////////////////////////////////////////////////////////////////////////////////
-// Edit page enhancements
-////////////////////////////////////////////////////////////////////////////////////
-*/
-function editTitle(){
-  headingElements = getElementsByClass("firstHeading");
-  mwElements = getElementsByClass("mw-newarticletext");
-  previewElements = getElementsByClass("previewnote");
-  usermessageElements = getElementsByClass("usermessage");
-
-  if (wgAction != "view"){
-    if (headingElements[0] !== null) headingElements[0].className = "firstEditHeading";
-
-    var siteNotice = document.getElementById("siteNotice");
-    if (siteNotice !== null) siteNotice.style.display = 'none';
-    var siteSub = document.getElementById("siteSub");
-    if (siteSub !== null) siteSub.style.display = 'none';
-    var contentSub = document.getElementById("contentSub");
-    if (contentSub !== null) contentSub.style.display = 'none';
-    var anonWarning = document.getElementById("mw-anon-edit-warning");
-    if (anonWarning !== null) anonWarning.style.display = 'none';
-    var userMasthead = document.getElementById("user_masthead");
-    if (userMasthead !== null) userMasthead.style.display = 'none';
-
-    if (mwElements[0] !== null) mwElements[0].style.display = 'none';
-    if (previewElements[0] !== null) previewElements[0].style.display = 'none';
-    if (usermessageElements[0] !== null) usermessageElements[0].style.display = 'none';
-
-  }
-
-}
-
-function getElementsByClass(searchClass,node,tag) {
-	var classElements = new Array();
-	if ( node === null )
-		node = document;
-	if ( tag === null )
-		tag = '*';
-	var els = node.getElementsByTagName(tag);
-	var elsLen = els.length;
-	var pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)");
-	for (i = 0, j = 0; i < elsLen; i++) {
-		if ( pattern.test(els[i].className) ) {
-			classElements[j] = els[i];
-			j++;
-		}
-	}
-	return classElements;
-}
-
-addOnloadHook(editTitle)
-
 /* 
 ////////////////////////////////////////////////////////////////
 // THE BELOW CODE HELPS MAKE THE NAVIGATION TEMPLATE COLLAPSABLE
@@ -171,7 +7,7 @@ addOnloadHook(editTitle)
 */
 
  // ============================================================
-// BEGIN Dynamic Navigation Bars (experimental)
+// BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 
 
@@ -302,7 +138,7 @@ var hasClass = (function () {
      if (NavToggle.firstChild.data == NavigationBarHide) {
          for (
                  var NavChild = NavFrame.firstChild;
-                 NavChild !== null;
+                 NavChild != null;
                  NavChild = NavChild.nextSibling
              ) {
              if ( hasClass( NavChild, 'NavPic' ) ) {
@@ -318,7 +154,7 @@ var hasClass = (function () {
      } else if (NavToggle.firstChild.data == NavigationBarShow) {
          for (
                  var NavChild = NavFrame.firstChild;
-                 NavChild !== null;
+                 NavChild != null;
                  NavChild = NavChild.nextSibling
              ) {
              if (hasClass(NavChild, 'NavPic')) {
@@ -597,35 +433,35 @@ addLoadEvent(customizeWiki);
 
 if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
+     "imageFile": "http://images.wikia.com/central/images/c/c8/Button_redirect.png",
      "speedTip": "Redirect",
      "tagOpen": "#REDIRECT [[",
      "tagClose": "]]",
      "sampleText": "Insert text"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/3/3e/Small_Button.png",
+     "imageFile": "http://images.wikia.com/marvel_dc/images/3/3e/Small_Button.png",
      "speedTip": "Small",
      "tagOpen": "<small>",
      "tagClose": "</small>",
      "sampleText": "Insert text"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png",
+     "imageFile": "http://images.wikia.com/central/images/c/c9/Button_strike.png",
      "speedTip": "Strike",
      "tagOpen": "<s>",
      "tagClose": "</s>",
      "sampleText": "Strike-through text"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/central/images/1/13/Button_enter.png",
+     "imageFile": "http://images.wikia.com/central/images/1/13/Button_enter.png",
      "speedTip": "Line break",
      "tagOpen": "<br />",
      "tagClose": "",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/central/images/7/74/Button_comment.png",
+     "imageFile": "http://images.wikia.com/central/images/7/74/Button_comment.png",
      "speedTip": "Comment visible only for editors",
      "tagOpen": "<!-- ",
      "tagClose": " -->",
@@ -634,148 +470,86 @@ if (mwCustomEditButtons) {
 
 if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/29/Character_Button.png",
+     "imageFile": "http://images.wikia.com/marveldatabase/images/2/29/Character_Button.png",
      "speedTip": "Insert character template",
-     "tagOpen": "{{DC Database:Character Template\r| Image                   = ",
-     "tagClose": "\r| RealName                = \r| MainAlias               = \r| Aliases                 = \r| Identity                = \r| Alignment               = \r| Affiliation             = \r| Relatives               = \r| Universe                = \r| BaseOfOperations        = \r\r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Citizenship             = \r| MaritalStatus           = \r| Occupation              = \r\r| Creators                = \r| First                   = \r\r| Quotation               = \r| Speaker                 = \r| QuoteSource             = \r\r| Overview                = \r| HistoryText             = \r\r| Powers                = \r| Abilities                 = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Recommended             = \r| Links                     = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Character Template\r| Image                   = ",
+     "tagClose": "\r| ImageText               = \r| RealName                = \r| CurrentAlias            = \r| Distinguish1            = \r| Distinguish2            = \r| Aliases                 = \r| Identity                = \r| Alignment               = \r| Affiliation             = \r| Relatives               = \r| Universe                = \r| BaseOfOperations        = \r\r| Gender                  = \r| Height                  = \r| Weight                  = \r| Eyes                    = \r| Hair                    = \r| UnusualFeatures         = \r\r| Citizenship             = \r| MaritalStatus           = \r| Occupation              = \r| Education               = \r\r| Origin                  = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Powers                  = \r| Abilities               = \r| Strength                = \r| Weaknesses              = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| WildStorm                      = \r| Wikipedia               = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/3/3a/Comic_Button.png",
-     "speedTip": "Insert comic Template",
-     "tagOpen": "{{DC Database:Comic Template\r| Title               = \r| Image               = ",
-     "tagClose": "\r| Volume              = \r| Issue               = \r| Day                 = \r| Month               = \r| Year                = \r| Rating              = \r\r| Executive Editor    = \r| CoverArtist1        = \r| CoverArtist2        = \r| CoverArtist3        = \r\r| Writer1_1           = \r| Penciler1_1         = \r| Inker1_1            = \r| Colorist1_1        = \r| Letterer1_1         = \r| Editor1_1           = \r| Editor1_2           = \r| Editor1_3           = \r\r| Quotation           = \r| Speaker             = \r\r| StoryTitle1         = \r| Synopsis1           = \r\r| Appearing1 = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Antagonists:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r}}",
+     "imageFile": "http://images2.wikia.nocookie.net/marveldatabase/images/a/a5/Minor_Button_2.png",
+     "speedTip": "Insert minor character template",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Minor Character\r| Name                    = ",
+     "tagClose": "\r| Image                   = \r| Universe                = \r| Alias                   = \r\r| First                   = \r| Last                    = \r\r| History                 = \r\r| Appearances             = \r\r\}\}",
+     "sampleText": ""};
+
+   mwCustomEditButtons[mwCustomEditButtons.length] = {
+     "imageFile": "http://images.wikia.com/marveldatabase/images/3/3a/Comic_Button.png",
+     "speedTip": "Insert comic template",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Comic Template\r| Title               = \r| Image               = ",
+     "tagClose": "\r| Volume              = \r| Issue               = \r| Month               = \r| Year                = \r\r| Executive Editor    = \r| CoverArtist1        = \r\r| Editor1_1           = \r| Writer1_1           = \r| Penciler1_1         = \r| Inker1_1            = \r| Colourist1_1        = \r| Letterer1_1         = \r\r| PreviousIssue       = \r| NextIssue           = \r\r| Quotation           = \r| Speaker             = \r\r| StoryTitle1         = \r| Synopsis1           = \r\r| Appearing1 = \r'''Featured Characters:'''\r* <br/>\r'''Supporting Characters:'''\r* <br/>\r'''Villains:'''\r* <br/>\r'''Other Characters:'''\r* <br/>\r'''Locations:'''\r* <br/>\r'''Items:'''\r* <br/>\r'''Vehicles:'''\r* <br/>\r\r| Cast1               = \r| Cast2               = \r| Location1           = \r| Location2           = \r| Item1               = \r| Item2               = \r| Vehicle1            = \r| Vehicle2            = \r\r| Notes               = \r| Trivia              = \r| Recommended         = \r| Links               = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/5/5d/Team_Button.png",
+     "imageFile": "http://images.wikia.com/marveldatabase/images/5/5d/Team_Button.png",
      "speedTip": "Insert team template",
-     "tagOpen": "{{DC Database:Team Template\r| Image                   = ",
-     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Alignment               = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| Overview              = \r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "tagOpen": "{{Wildstorm Productions Wiki:Team Template\r| Image                   = ",
+     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Status                  = \r| Identity                = \r| Universe                = \r| BaseOfOperations        = \r\r| TeamLeaders             = \r| CurrentMembers          = \r| FormerMembers           = \r| Allies                  = \r| Enemies                 = \r\r| Origin                  = \r| PlaceOfFormation        = \r| PlaceOfDefunction       = \r| Creators                = \r| First                   = \r| Last                    = \r\r| HistoryText             = \r\r| Equipment               = \r| Transportation          = \r| Weapons                 = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/f/f2/Location_Button.png",
+     "imageFile": "http://images.wikia.com/marveldatabase/images/f/f2/Location_Button.png",
      "speedTip": "Insert location template",
-     "tagOpen": "{{DC Database:Location Template\r| Image                   = ",
-     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Universe                = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Country                 = \r| City                    = \r| State                   = \r| Province                = \r| Locale                  = \r\r| Dimensions              = \r| Population              = \r| First                   = \r\r| Overview              = \r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Location Template\r| Image                   = ",
+     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r\r| Universe                = \r| Galaxy                  = \r| StarSystem              = \r| Planet                  = \r| Country                 = \r| City                    = \r| State                   = \r| Province                = \r| Locale                  = \r\r| Dimensions              = \r| Population              = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/20/Vehicle_Button.png",
+     "imageFile": "http://images3.wikia.nocookie.net/marveldatabase/images/2/20/Vehicle_Button.png",
      "speedTip": "Insert vehicle template",
-     "tagOpen": "{{DC Database: Vehicle Template\r| Image                   = ",
-     "tagClose": "\r| OfficialName            = \r| Title                   = \r| Nicknames               = \r\r| VehicleType             = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| Overview              = \r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki: Vehicle Template\r| Image                   = ",
+     "tagClose": "\r| OfficialName            = \r| Title                   = \r| Nicknames               = \r| Universe                = \r| Status                  = \r| CurrentModel            = \r| CurrentOwner            = \r| TransportMethod         = \r| Dimensions              = \r| Creators                = \r| Origin                  = \r| First                   = \r\r| HistoryText             = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": " https://images.wikia.nocookie.net/marveldatabase/images/0/02/Eyetem_Button.png",
+     "imageFile": " http://images1.wikia.nocookie.net/marveldatabase/images/0/02/Eyetem_Button.png",
      "speedTip": "Insert item template",
-     "tagOpen": "{{DC Database:Item Template\r| Image                   = ",
-     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| Creators                = \r| First                   = \r\r| Overview              = \r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Item Template\r| Image                   = ",
+     "tagClose": "\r| OfficialName            = \r| Aliases                 = \r| Model                   = \r| Version                 = \r\r| Universe                = \r| LeadDesigner            = \r| AdditionalDesigners     = \r| PlaceOfCreation         = \r| PlaceOfDestruction      = \r| Origin                  = \r\r| Dimensions              = \r| Weight                  = \r| First                   = \r\r| HistoryText             = \r\r| CurrentOwner            = \r| PreviousOwners          = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/5/5a/Images_Button.png",
+     "imageFile": "http://images.wikia.com/marveldatabase/images/5/5a/Images_Button.png",
      "speedTip": "Insert gallery template",
-     "tagOpen": "{{DC Database:Gallery Template\r| GalleryType             = \r| GalleryData             = \r<gallery widths=120 captionalign=center>\r",
-     "tagClose": "\r</gallery>\r| SeeAlso                 = \r}}",
-     "sampleText": ""};
-
-   mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/d/dc/Image_Button.png",
-     "speedTip": "Insert image template",
-     "tagOpen": "{{DC Database:Image Template\r| License                 = ",
-     "tagClose": "\r| ImageType               = \r| ImageType2              = \r| Description             = \r\r| PreviousCover           = \r| NextCover               = \r\r| Source                  = \r| Issue                   = \r\r| Universe                = \r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| CoverArtist1            = \r| Penciler1               = \r| Inker1                  = \r| Colorist1              = \r| Letterer1               = \r\r| Notes                   = \r| Trivia                  = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Gallery Template\r| GalleryType             = ",
+     "tagClose": "\r| CurrentLetter           = \r| GalleryName             = \r| GalleryData             = \r<gallery> \r\r</gallery>\r| SeeAlso                 = \r\}\}",
      "sampleText": ""}
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.png",
-     "speedTip": "Insert Volume template",
-     "tagOpen": "{{DC Database:Volume Template\r| LogoImage               = ",
-     "tagClose": "\r| IssueImage              = \r| Publisher               = \r| Type                    = \r| TotalIssues             = \r| StartMonth              = \r| StartYear               = \r| EndMonth                = \r| EndYear                 = \r\r| Creators                = \r| Featured                = \r| StoryArcs               = \r| Crossovers              = \r\r| History                 = \r\r| IssueList               = \r\r| AnnualName1             = \r| AnnualYear1             = \r\r| SpecialName1            = \r| SpecialYear1            = \r\r| TradePaperbackName1     = \r| TradePaperbackYear1     = \r| TradePaperbackISBN1     = \r\r| SeeAlso                 =  \r}}",
-     "sampleText": ""};
+     "imageFile": "http://images.wikia.com/marveldatabase/images/d/dc/Image_Button.png",
+     "speedTip": "Insert image template",
+     "tagOpen": "{{Wildstorm Productions Wiki:Image Template\r| License                 = ",
+     "tagClose": "\r| ImageType               = \r| ImageQuality            = \r| Description             = \r| GalleryDescription      = \r\r| Source                  = \r| Permission              = \r| Universe                = \r\r| Subject1                = \r| Subject2                = \r| Subject3                = \r| Subject4                = \r| Subject5                = \r\r| Medium                  = \r| Photographer            = \r| Colourist1              = \r| CoverArtist1            = \r| Inker1                  = \r| Letterer1               = \r| Penciler1               = \r\r| Notes                   = \r| Trivia                  = \r\}\}",
+     "sampleText": ""}
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/2/2c/Race_Button.png",
+     "imageFile": "http://images2.wikia.nocookie.net/marveldatabase/images/2/2c/Race_Button.png",
      "speedTip": "Insert race template",
-     "tagOpen": "{{DC Database:Race Template\r| Image                   = ",
-     "tagClose": "\r| Name                    = \r| Aliases                 = \r| Identity                = \r| Affiliation             = \r| Universe                = \r| BaseOfOperations        = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| Overview              = \r| HistoryText             = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Race Template\r| Image                   = ",
+     "tagClose": "\r| Name                    = \r| Aliases                 = \r| Identity                = \r| Affiliation             = \r| Universe                = \r| BaseOfOperations        = \r\r| BodyType                = \r| AvgHeight               = \r| AvgWeight               = \r| Eyes                    = \r| Hair                    = \r| Skin                    = \r| NumberOfLimbs           = \r| NumberOfFingers         = \r| NumberOfToes            = \r| SpecialAdaptations      = \r| UnusualFeatures         = \r\r| Origin                  = \r| GalaxyOfOrigin          = \r| StarSystemOfOrigin      = \r| HomePlanet              = \r| PlaceOfBirth            = \r| Creators                = \r| First                   = \r\r| HistoryText             = \r\r| Habitat                 = \r| Gravity                 = \r| Atmosphere              = \r| Population              = \r\r| Powers                  = \r| Abilities               = \r| AvgStrength             = \r| Weaknesses              = \r\r| GovernmentType          = \r| TechnologyLevel         = \r| CulturalTraits          = \r| Representatives         = \r\r| Notes                   = \r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/1/12/Reality_Button.png",
-     "speedTip": "Insert Reality Template",
-     "tagOpen": "{{DC Database:Reality Template\r| Image                   = ",
-     "tagClose": "\r| EarthNumber             = \r| Title                   = \r| Aliases                 = \r| Status                  = \r\r| Creators                = \r| First                   = \r| Last                    = \r\r| History                 = \r\r| Residents               = \r| Notes                   = \r| Trivia                  = \r| Links                   = \r}}",
+     "imageFile": "http://images1.wikia.nocookie.net/marveldatabase/images/1/12/Reality_Button.png",
+     "speedTip": "Insert Roygbiv66/Earth Template",
+     "tagOpen": "\{\{Distinguish|Earth\}\}\r\r\{\{Wildstorm Productions Wiki:Location Template\r| Image                   = ",
+     "tagClose": "\r| OfficialName            = Earth-\r| Aliases                 = Earth\r\r| Universe                = Earth-\r| Galaxy                  = Milky Way\r| Sector                  = 2814 <!--remove if not applicable-->\r| StarSystem              = Sol\r| Planet                  = Earth\r| Country                 = \r| City                    = \r| State                   = \r| Province                = \r| Locale                  = \r\r| Dimensions              = \r'''Diameter:''' <br>\r:Equatorial 12,756.270 km <br>\r:Polar 12,713.500 km <br>\r:Mean 12,745.591 km <br>\r\r'''Circumference:''' <br>\r:Equatorial: 40,075.004 km <br>\r:Meridional: 40,007.849 km <br>\r:Mean: 40,041.455 km <br>\r\r'''Surface area:''' <br>\r:Land: 148,939,063.133 km² (29.2 %) <br>\r:Water: 361,126,221.569 km² (70.8 %) <br>\r:Volume: 1.0832×1012 km<br>\r:Mass: 5.9736×1024 kg<br>\r:Density:5,515 kg/m³<br>\r:Equatorial surface: 9.7801 m/s²<br>\r:Gravity: (0.997 32 g)<br>\r\r| Population              = \r| First                   = \r\r| HistoryText             = \r\r| PointsOfInterest        = \r| Residents               = \r\r| Notes                   = \r* Part of the Post-[[Infinite Crisis]] [[Multiverse#52 Multiverse|Multiverse]].\r| Trivia                  = \r| Links                   = \r\}\}",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png",
-     "speedTip": "Insert DC staff template",
-     "tagOpen": "{{DC Database:Staff Template\r| Image                   = ",
-     "tagClose": "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| YearOfDeath             = \r| MonthOfDeath            = \r| DayOfDeath              = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}",
+     "imageFile": "http://images.wikia.com/marveldatabase/images/3/3e/Staff_Button.png",
+     "speedTip": "Insert WildStorm staff template",
+     "tagOpen": "\{\{Wildstorm Productions Wiki:Staff Template\r| Image                   = ",
+     "tagClose": "\r| RealName                = \r| Pseudonyms              = \r| Employers               = \r| Titles                  = \r\r| Gender                  = \r| YearOfBirth             = \r| MonthOfBirth            = \r| DayOfBirth              = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          = \r| Creations               = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r\}\}",
      "sampleText": ""};
 }
-
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
-importArticles({
-    type: 'script',
-    articles: [
-        // ...
-        'w:c:dev:ReferencePopups/code.js',
-        // ...
-    ]
-});
-
-/* lock blog comments for blogs that haven't been commented on for more than 30 days.
-   by: [[User:Joeyaa|Joey Ahmadi]]
-*/
-
-$(function() {
-if (wgNamespaceNumber == 500 && $('#article-comments-ul li').size() > 1) {
-var then = $('#article-comments-ul > .SpeechBubble:first .permalink').attr('href');
-then = new String(then.match(/\d{8}/));
-var monthnames = ['January','February','March','April','May','June','July',
-'August','September','October','November','December'];
-var year = then.match(/^\d{4}/);
-var month = then.substring(4,6); 
-month--;
-month= monthnames[month];
-var day = then.match(/\d{2}$/);
-then = new Date(month+''+day+', '+year); 
-var old = parseInt(now - then);
-old = Math.floor(old/(1000*60*60*24));
-if (old > 30) {
-$('#article-comm').attr('disabled','disabled').text('This blog post hasn\'t been commented on for over 30 days. There is no need to comment.');
-$('#article-comm-submit').attr('disabled','disabled');
-$('.article-comm-reply').remove();
-}
-}
-});
-
-
-/* made by Sophiedp */ 
-mw.loader.using('mediawiki.util').then(function () {
-	if (!$('.activity-tabs').length) {
-	    return;
-	}
-
-    function buildTab (text, page) {
-		return $('<li>', {
-			class: 'wds-tabs__tab',
-			append: $('<div>', {
-				class: 'wds-tabs__tab-label',
-				append: $('<a>', {
-					text: text,
-					href: mw.util.getUrl(page),
-				})
-			})
-		});
-	}
-	
-	$('.activity-tabs').append([
-		buildTab('AbuseLog', 'Special:AbuseLog'),
-		buildTab('Discussions', 'Special:DiscussionsRC')
-	]);
-});

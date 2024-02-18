@@ -80,7 +80,7 @@ $(function() {
 					const api = new mw.Api();
 					const params = {
 						action: "parse",
-						text: "{{#invoke:Прайм-відродження|nextResurgence|M P V Banshee Mirage Prime Dual Pack}}",
+						text: "{{#invoke:Прайм-відродження|nextResurgence|"(+lastResurgence.item || "")+"}}",
 						format: "json"
 					};
 					api.get(params).done( function (data) {

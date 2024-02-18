@@ -97,13 +97,13 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 		},
 	}));
 	
-	if (!$('.mw-history-editchangetags-button').length) $('#pagehistory > li').each(function() {
+	if (!$('.mw-history-editchangetags-button').length) $('#pagehistory .mw-contributions-list > li').each(function() {
 		$(this).prepend($('<input>', {
 			class: "revdel-checkbox",
 			type: "checkbox",
 		}));
 	});
-	else $('#pagehistory > li > input[type="checkbox"]').addClass('revdel-checkbox');
+	else $('#pagehistory .mw-contributions-list > li > input[type="checkbox"]').addClass('revdel-checkbox');
 	
 	function updateButton() {
 		var $checkboxes = $('.revdel-checkbox');
@@ -124,7 +124,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				class: "revdel-checkbox-control",
 				click: function() {
 					updateButton();
-					$('#pagehistory > li > input[type="checkbox"]').prop('checked', true);
+					$('#pagehistory .mw-contributions-list > li > input[type="checkbox"]').prop('checked', true);
 				},
 			}),
 			', ',
@@ -133,7 +133,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				class: mw.msg('checkbox-none'),
 				click: function() {
 					updateButton();
-					$('#pagehistory > li > input[type="checkbox"]').prop('checked', false);
+					$('#pagehistory .mw-contributions-list > li > input[type="checkbox"]').prop('checked', false);
 				},
 			}),
 			', ',
@@ -142,7 +142,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 				class: "revdel-checkbox-control",
 				click: function() {
 					updateButton();
-					$('#pagehistory > li > input[type="checkbox"]').each(function() {
+					$('#pagehistory .mw-contributions-list > li > input[type="checkbox"]').each(function() {
 						$(this).prop('checked', !this.checked);
 					});
 				},
@@ -156,7 +156,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
 	var selected = new Set();
 	var anchor;
 	
-	$('#mw-content-text').on('click', '#pagehistory > li > input[type="checkbox"]', function(e) {
+	$('#mw-content-text').on('click', '#pagehistory .mw-contributions-list > li > input[type="checkbox"]', function(e) {
 		var $input = $(this);
 	
 		if (e.target.children.length === 0 && e.target !== $input[0]) return;

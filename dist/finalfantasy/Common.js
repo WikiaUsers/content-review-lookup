@@ -64,12 +64,9 @@ function createTHead(table) {
  * Creates a generator for Mixes in X-2 for use on "Mix (Final Fantasy X-2)"
  * Written by JBed of FFWiki
  ****************************************************************************/
-/* TODO - wgArticleId doesn't appear to currently be supported and it's causing code below this to fail
- * need to figure out how to reenable
-if (wgArticleId === 41081 || wgArticleId === 334755) {
+if (mw.config.get("wgArticleId") === 41081 || mw.config.get("wgArticleId") === 334755) {
   importScriptPage("MediaWiki:X2mix.js");
 }
-*/
 
 /*** Special:Upload template preload *************************************
  * Automatically fills Special:Upload with {{infobox file}}
@@ -122,12 +119,12 @@ $(".table th .attach, .table td .attach").each(function (_, $element) {
 /*** Etymology **************************************************************
  * Create list of pages using etymology
  ****************************************************************************/
-if (wgNamespaceNumber === 114) {
+if (mw.config.get("wgNamespaceNumber") === 114) {
     mw.loader.using("mediawiki.api", function () {
         var query = {
             action: "query",
             list: "embeddedin",
-            eititle: wgPageName,
+            eititle: mw.config.get("wgPageName"),
             einamespace: 0,
             eilimit: 500
         };

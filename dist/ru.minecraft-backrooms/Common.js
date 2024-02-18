@@ -1,26 +1,32 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-/* Для [[Шаблон:CSS]] */
+// Для [[Шаблон:CSS]]
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
     	mw.util.addCSS($(this).attr("data-css"));
     });
 });
 
-/* Шаблон оценки и прочие штукенции */
+// Кастомные лого и заголовок вики
 ;(function ($,mw) {
 	
 	var customCommunityName = document.getElementById('customCommunityName');
 	var customCommunityLogo = document.getElementById('customCommunityLogo');
-	if (!(customCommunityName === undefined && customCommunityName === null)) {
+	if (customCommunityName != null) {
 		$('.fandom-community-header__community-name').html(customCommunityName.innerHTML);
 	}
-	if (!(customCommunityLogo === undefined && customCommunityLogo === null)) {
-		var imgToSet = customCommunityLogo.firstElementChild.getAttribute('src');
-		var img = document.getElementsByClassName('fandom-community-header__image')[0].firstElementChild;
-		img.setAttribute("src",imgToSet);
+	if (customCommunityLogo != null && customCommunityLogo.firstElementChild != null) {
+		var e = document.getElementsByClassName('fandom-community-header__image');
+		if (e[0] != null && e[0].hasChildNodes()) {
+			var imgToSet = customCommunityLogo.firstElementChild.getAttribute('src');
+			var img = document.getElementsByClassName('fandom-community-header__image')[0].firstElementChild;
+			img.setAttribute("src",imgToSet);
+		}
 	}
-	
-	if (!($('.pageRate').length > 0)) {return;}
+})(this.jQuery,this.mediaWiki);
+
+// Шаблон оценки
+;(function ($,mw) {
+	if ($('.pageRate')[0] == null || $('.pageRate')[0] == undefined) {return;}
 	var section = document.createElement('section');
 	var header = document.createElement('h2');
 	

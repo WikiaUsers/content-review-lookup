@@ -20,6 +20,8 @@ window.loot_parser_data = {
       'changed': {
 //
 'Iks Yapunac': '13.33.14565',
+// New tutorial for beginners
+'Mountain Troll': '13.32.14520',
 // Archfoe bosses that now drop gems introduced with the Winter Update 2023
 'Utua Stone Sting': '13.30.14423',
 'Kusuma' : '13.30.14423',
@@ -626,7 +628,7 @@ window.loot_parser_data = {
 'Skeleton': '11.02',
 'Troll': '11.02',
 // Changes to Dawnport: no longer dropping creature products.
-'Mountain Troll': '10.93',
+//'Mountain Troll': '10.93',
 'Troll-Trained Salamander': '10.93',
 'Minotaur Bruiser': '10.93',
 'Muglex Clan Footman': '10.93',
@@ -886,7 +888,7 @@ window.loot_parser_data = {
 'Minotaur Bruiser': '10.55',
 'Minotaur Occultist': '10.55',
 'Minotaur Poacher': '10.55',
-'Mountain Troll': '10.55',
+//'Mountain Troll': '10.55',
 'Muglex Clan Assassin': '10.55',
 'Muglex Clan Footman': '10.55',
 'Muglex Clan Scavenger': '10.55',

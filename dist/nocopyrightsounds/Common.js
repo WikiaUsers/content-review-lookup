@@ -7,8 +7,6 @@ importArticles({
     ]
 });
 
-/* LockOldComments */
-
-window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 90;
-window.lockOldComments.addNoteAbove = true;
+/* LinkPreview */
+window.pPreview.defimage = 'https://static.wikia.nocookie.net/nocopyrightsounds/images/e/e6/Site-logo.png';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/nocopyrightsounds/images/e/e6/Site-logo.png';

@@ -139,3 +139,16 @@ $(function () {
 });
 
 $('a:contains(An Anonymous user)').append(function(){return ' (' + this.href.match(/(\d{1,3}\.){3}\d{1,3}/)[0] + ')'})
+
+/*A tabber redirect to allow linking to a tabber*/
+
+(function ($) {
+    var hash = window.location.hash.replace('#', '').replace(/_/g, ' ');
+    if (hash === '') return;
+    $(function() {
+        setTimeout(function() {
+            var currentTabber = $('.tabbernav > li > a[title^="' + hash + '"]');
+            if (currentTabber.length) currentTabber.click();
+        }, 100);
+    });    
+})(jQuery);

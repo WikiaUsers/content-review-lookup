@@ -316,24 +316,49 @@ $(function() {
 });
 
 /*******************/
-/* User Tags     */
+/* UserTags     */
 /*******************/
 
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		firearmguy: { u: 'Firearms Guy', order: 100 },
-		loreguy: { u: 'Lore Guy', order: 101 },
-		mediaguy: { u: 'Media Guy', order: 102 },
-		commentguy: { u: 'Commentator', order: 103 },
+		jpguy: { u: 'JP Server', order: 100 },
+		globalguy: { u: 'Global Server', order: 101 },
+		cnguy: { u: 'Chinese Server', order: 102 },
+		codeguy: { u: 'Programmer', order: 103 },
+		templateguy: { u: 'Template Tinkerer', order: 104 },
+		firearmguy: { u: 'Firearm Expert', order: 105 },
+		loreguy: { u: 'Lore Writer', order: 106 },
+		mediaguy: { u: 'Media Maker', order: 107 },
+		photoshopguy: { u: 'Photoshop Service', order: 108 },
+		grammarguy: { u: 'Grammar Intern', order: 109 },
+		editorguy: { u: 'Simple Editor', order: 110 },
+		bureaucrat: { order: 1 },
+		sysop: { order: 2 },
+		'content-moderator': { order: 3 },
+		threadmoderator: { order: 4 },
+		rollback: { order: 5 },
 	}
 };
+
 UserTagsJS.modules.custom = {
-	'JoshuaGreatXD': ['loreguy', 'mediaguy'],
-	'Kirbylittle': ['loreguy'],
-	'Venti007': ['mediaguy'],
-	'Maraticon': ['mediaguy'],
-	'Kyona Kansou': ['loreguy'],
-	'IJNyura': ['firearmguy'],
+	'Blitzsparkz': ['jpguy', 'globalguy', 'codeguy', 'templateguy', 'mediaguy', 'editorguy'],
+	'JoshuaGreatXD': ['globalguy', 'templateguy', 'loreguy', 'mediaguy', 'grammarguy', 'editorguy'],
+	'Kirbylittle': ['jpguy', 'loreguy', 'grammarguy', 'editorguy'],
+	'Venti007': ['jpguy', 'grammarguy', 'editorguy'],
+	'Maraticon': ['jpguy', 'mediaguy', 'editorguy'],
+	'Kyona Kansou': ['jpguy', 'mediaguy', 'photoshopguy'],
+	'IJNyura': ['jpguy', 'firearmguy', 'editorguy'],
+	'ДантеПискулин': ['globalguy', 'firearmguy', 'mediaguy', 'editorguy'],
+	'MillionWonder': ['jpguy', 'mediaguy', 'editorguy'],
+	'JuiceForyou': ['globalguy', 'grammarguy', 'editorguy'],
+	'Kazuma9631': ['jpguy', 'templateguy', 'mediaguy', 'editorguy'],
+	'SMB99thx': ['templateguy', 'editorguy'],
+	'Dandan550': ['jpguy', 'loreguy', 'editorguy'],
+	'Blitz21': ['jpguy', 'editorguy'],
+	'Century Orion': ['globalguy', 'editorguy'],
+	'LDDCAT': ['codeguy', 'templateguy', 'editorguy'],
+	'Tsukiakari2216': ['jpguy', 'globalguy', 'cnguy', 'mediaguy', 'editorguy'],
 };
+
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop'];

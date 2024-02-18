@@ -1,2 +1,11 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+/* AddRailModule */
 window.AddRailModule = [{prepend: true}];
+
+/* Полная ширина страницы */
+$(function(){   
+    switch ( mw.config.get('wgPageName') ) {
+      case 'Достижения':
+            $('body').addClass('is-content-expanded')
+        break;
+    }
+});

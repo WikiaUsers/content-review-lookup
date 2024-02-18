@@ -286,7 +286,7 @@ $(function () {
         '<td>Current Skill (Base + Loyalty)</td><td>% left</td>' +
         '</tr><tr>' +
         '<td><input id="calculator_ew_skill_level" type="number" value="0" min="0" max="200" style="width:50px;"></td>' +
-        '<td><input id="calculator_ew_left" type="number" value="100" min="0.01" max="100" style="width:55px;"><br/>' +
+        '<td><input id="calculator_ew_left" type="number" value="100" min="0.01" max="100" step="0.01" style="width:55px;"><br/>' +
         '<div style="width: 136px; border:1px #000000 solid;">' +
         '<span id="calculator_ew_skill_bar1" style="text-align: right; height: 2px; width: 100%;background-color: #11B711;display: table;"></span>' +
         '<span id="calculator_ew_skill_bar2" style="text-align: left; width: 50%; background-color: #444444"></span>' +
@@ -523,7 +523,7 @@ $(function () {
           '" min="0" max="200" style="width:40px;"></td>' +
           '<td><input id="calculator_rs_' +
           type +
-          '_left" type="number" value="100" min="1" max="100" style="width:40px;"><br/>' +
+          '_left" type="number" value="100" min="1" max="100" step="1" style="width:40px;"><br/>' +
           '<div style="width: 136px; border:1px #000000 solid;">' +
           '<span id="calculator_rs_' +
           type +

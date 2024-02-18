@@ -47,35 +47,22 @@ $.getJSON("/api.php?action=listuserssearchuser&groups=sysop&contributed=0&limit=
   const currentMonth = new Date().getMonth();
   const currentDate = new Date().getDate();
 
-  var usernameOne = json['listuserssearchuser']['0']['username'];
-  var rolesOne = json['listuserssearchuser']['0']['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
-  var numberOfEditsOne = json['listuserssearchuser']['0']['edit_count'];
-  var lastEditOne = json['listuserssearchuser']['0']['last_edit_date'];
-  var lastEditDateOne = new Date(lastEditOne.split(', ')[1]);
-  var lastEditDiffOne = json['listuserssearchuser']['0']['diff_edit_url'];
+  for (var i = 0; i < json['listuserssearchuser']['result_count']; i++){
+    const username = json['listuserssearchuser'][i]['username'];
+    const roles = json['listuserssearchuser'][i]['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
+    const numberOfEdits = json['listuserssearchuser'][i]['edit_count'];
+    const lastEdit = json['listuserssearchuser'][i]['last_edit_date'];
+    const lastEditDate = new Date(lastEdit.split(', ')[1]);
+    const lastEditDiff = json['listuserssearchuser'][i]['diff_edit_url'];
 
-  var usernameTwo = json['listuserssearchuser']['1']['username'];
-  var rolesTwo = json['listuserssearchuser']['1']['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
-  var numberOfEditsTwo = json['listuserssearchuser']['1']['edit_count'];
-  var lastEditTwo = json['listuserssearchuser']['1']['last_edit_date'];
-  var lastEditDateTwo = new Date(lastEditOne.split(', ')[1]);
-  var lastEditDiffTwo = json['listuserssearchuser']['1']['diff_edit_url'];
+    $('.administration').append('<tr><td><a href="/wiki/User:'+username+'">'+username+'</a></td><td>'+roles+'</td><td>'+numberOfEdits+'</td><td><a href="'+lastEditDiff+'">'+lastEdit+'</a></td><td class="status"></td></tr>');
 
-  $('.administration').append('<tr><td><a href="/wiki/User:'+usernameOne+'">'+usernameOne+'</a></td><td>'+rolesOne+'</td><td>'+numberOfEditsOne+'</td><td><a href="'+lastEditDiffOne+'">'+lastEditOne+'</a></td><td class="statusOne"></td></tr><tr><td><a href="/wiki/User:'+usernameTwo+'">'+usernameTwo+'</a></td><td>'+rolesTwo+'</td><td>'+numberOfEditsTwo+'</td><td><a href="'+lastEditDiffTwo+'">'+lastEditTwo+'</a></td><td class="statusTwo"></td></tr>');
-
-  if (lastEditDateOne.getFullYear() < currentYear && lastEditDateOne.getMonth() < currentMonth && lastEditDateOne.getDate() < currentDate){
-    $('.statusOne').attr('id', 'inactive').html('Inactive');
-  } else if (lastEditDateOne.getMonth() < currentMonth){
-    $('.statusOne').attr('id', 'semi-active').html('Semi-active');
-  } else {
-    $('.statusOne').attr('id', 'active').html('Active');
-  }
-
-  if (lastEditDateTwo.getFullYear() < currentYear && lastEditDateTwo.getMonth() < currentMonth && lastEditDateTwo.getDate() < currentDate){
-    $('.statusTwo').attr('id', 'inactive').html('Inactive');
-  } else if (lastEditDateTwo.getMonth() < currentMonth){
-    $('.statusTwo').attr('id', 'semi-active').html('Semi-active');
-  } else {
-    $('.statusTwo').attr('id', 'active').html('Active');
+    if (lastEditDate.getFullYear() < currentYear && lastEditDate.getMonth() < currentMonth && lastEditDate.getDate() < currentDate){
+      $('.status:last').addClass('inactive').html('Inactive');
+    } else if (lastEditDate.getMonth() < currentMonth){
+      $('.status:last').addClass('semi-active').html('Semi-active');
+    } else {
+      $('.status:last').addClass('active').html('Active');
+    }
   }
 });

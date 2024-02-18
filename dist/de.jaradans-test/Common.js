@@ -6,25 +6,10 @@ importArticles({
     ]
 });
 
-function ändereText() {
-  var element = document.getElementById('dynamischer-text2');
-  var text = element.innerHTML;
-  var aktuellesZeichen = text.charAt(textIndex);
-  var nächstesZeichenIndex = (textIndex + 1) % wechselndeZeichen.length;
-  var nächstesZeichen = wechselndeZeichen.charAt(nächstesZeichenIndex);
+div = document.getElementById('LINKA');
 
-  text = text.replace(aktuellesZeichen, nächstesZeichen);
-  element.innerHTML = text;
-  textIndex = nächstesZeichenIndex;
+if (div) {
+  div.addEventListener('click', function() {
+    window.location.href = 'https://pikmin.fandom.com/de/wiki/Hauptseite';
+  });
 }
-
-setInterval(ändereText, 500);
-
-document.addEventListener('DOMContentLoaded', function() {
-  var container = document.getElementById('linkZ');
-  var link = document.createElement('a');
-  link.href = 'https://docs.google.com/';
-  link.textContent = 'Viele Bunte Samarties';
-  container.innerHTML = '';
-  container.appendChild(link);
-});

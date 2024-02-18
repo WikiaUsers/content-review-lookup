@@ -21,3 +21,25 @@ importArticles({
         'w:c:dev:TopEditors/code.js'
     ]
 });
+
+/* Шаблон:AnimationViewer */
+var lpj_api;
+
+function log_page_json(name) {
+    lpj_api.get({
+        action: 'query',
+        prop: 'revisions',
+        titles: name,
+        rvprop: 'content',
+        rvslots: 'main',
+        formatversion: '2'
+    }).done(function (data) {
+        var content = data.query.pages[0].revisions[0].slots.main.content
+        var unspaced_content = JSON.stringify(JSON.parse(content))
+        console.log(unspaced_content)
+    })
+}
+
+mw.loader.using('mediawiki.api').then(function () {
+    lpj_api = new mw.Api();
+})

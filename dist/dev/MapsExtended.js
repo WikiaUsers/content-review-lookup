@@ -4622,7 +4622,7 @@
 
                 var sidebar = {};
                 sidebar.elements = {};
-                sidebar.isShowing = true;
+                sidebar.isShowing = false;
                 this.sidebar = sidebar;
 
                 // Enable or disable automatically showing or hiding the sidebar
@@ -5181,6 +5181,9 @@
             {
                 // If value isn't passed, just invert sidebar.isShowing
                 value = value != undefined ? value : !this.sidebar.isShowing;
+                
+                // Save the previous value
+            	var lastValue = this.sidebar.isShowing;
 
                 // Set sidebar.isShowing to the new value
                 this.sidebar.isShowing = value;
@@ -5291,7 +5294,8 @@
     
                     // Offsets the map pan transform while the map width is changing (as a result of the sidebar growing)
                     // This is done so that the transform doesn't snap after the fact, which can be distracting
-                    leafletMapPane.style.transform = "translate3d(" + endPos[0] + "px, " + endPos[1] + "px, 0px)";
+                    // Only do this when the value actually changes do avoid moving the map pane without any change to the sidebar
+                    if (lastValue != value) leafletMapPane.style.transform = "translate3d(" + endPos[0] + "px, " + endPos[1] + "px, 0px)";
                 });
 
                 // Only set the following if we're not animating

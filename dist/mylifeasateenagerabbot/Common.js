@@ -11,3 +11,8 @@ window.DiscordBannerSettings = {
     inviteLink: 'vnTk6ZthHP', // My Life as a Teenage Rabbot Wiki Discord server link (does not expire)
     prependToRail: true
 };
+
+/*** Preload templates ***/
+preloadTemplates_list = "MediaWiki:Custom-PreloadTemplates";
+preloadTemplates_subpage = "case-by-case";
+preloadTemplates_namespace = "Template";

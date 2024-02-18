@@ -74,7 +74,7 @@
                     formatversion: 2
                 }).done(function(data) {
                     if (data.query.allmessages[0].missing) return;
-                    var texts = data.query.allmessages[0]['*'].split('|');
+                    var texts = data.query.allmessages[0].content.split('|');
                     for (var i=0; i<3; i++) {
                     	msg[i] = texts[i].length>0 ? mw.html.escape(texts[i]) : msg[i];
                     }

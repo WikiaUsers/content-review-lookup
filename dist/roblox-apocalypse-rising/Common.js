@@ -52,11 +52,11 @@ importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 /* Christmas header - Inactive */
-/* $('.fandom-community-header__community-name-wrapper').append(
+$('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Christmas!')
+            .text('Valetines Day!')
         )
-        .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Christmas_(2023)')
-); */
+        .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Valentine%27s_Day_(2024)')
+);

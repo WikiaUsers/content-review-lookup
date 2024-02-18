@@ -19,6 +19,14 @@ if (
     impart('MediaWiki:Common.js/LinkImagePopup.js');
 }
 
+var toolbarLabel = '中国全明星玩游戏联盟相关';
+var toolbarLinks = [
+    {link: 'https://space.bilibili.com/3546377892137707/', label: '凯尔·布罗夫洛夫斯基的Bilibili主页'},
+    {link: 'https://space.bilibili.com/13015033', label: 'AngelDust_齐光（Wiki工程师）的Bilibili主页'},
+    {link: 'https://space.bilibili.com/267690094/', label: 'Bilign16802的Bilibili主页'},
+    {link: 'https://space.bilibili.com/41768545', label: '小鱼大人帅帅帅ii的Bilibili主页'},
+];
+
 // Auto-redirect on Special:Search for SXXEXX by Bobogoobo
 $(function() {
     var search = getParamValue('query');

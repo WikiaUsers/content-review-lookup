@@ -1,3 +1,9 @@
+//MarkForDeletion Config
+window.MarkForDeletion = {
+    promptedDeleteReason: "This page is not needed/is vandalistic and/or spam",
+    replace: true,
+};
+
 // Animation snow
 if (mw.config.get('wgPageName') === 'User:Moonwatcher_x_Qibli' && mw.config.get('wgAction') !== 'edit') {
     importArticles({

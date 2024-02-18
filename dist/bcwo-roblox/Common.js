@@ -246,7 +246,7 @@ $(document).ready(function() {
     	newValue += accumulator;
 		}
         // Update the HTML with the new value
-        $this.text((newValue % 1 === 0 ? newValue : Number.parseFloat(($this.hasClass('swing-speed') || $this.hasClass('casting-speed') ? newValue.toFixed(2) : newValue.toFixed(0))).toLocaleString('en-US')));
+        $this.text((newValue % 1 === 0 ? newValue : Number.parseFloat(($this.hasClass('swing-speed') || $this.hasClass('casting-speed') || $this.hasClass('magic-effect')  ? newValue.toFixed(2) : newValue.toFixed(0))).toLocaleString('en-US')));
     });
 });
 $(document).on('change', '#category', function() {

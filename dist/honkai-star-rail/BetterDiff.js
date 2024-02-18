@@ -703,7 +703,7 @@ $(function() {
 				}).catch(function(log) {
 					if (rcid && log && log == 'nosuchrevid') {
 						alert('Revision from deleted page detected, opening patrolling page.');
-						window.open('https://genshin-impact.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+						window.open('https://honkai-star-rail.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
 					} else {
 						console.log('tokens', tokens);
 						console.log('error msg:', log);
