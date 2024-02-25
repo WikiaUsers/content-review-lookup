@@ -75,15 +75,15 @@ $(function() {
 window.UserTagsJS = {
     tags: {
         'bureaucrat': {
-            u: 'Demon Lord',
+            u: 'True Dragon',
             link: 'Project:Bureaucrats'
         },
         'sysop': {
-            u: 'True Dragon',
-            link: 'Project:Sysops'
+            u: 'Manas',
+            link: 'Project:Administrators'
         },
         'content-moderator': {
-            u: 'Paladin',
+            u: 'Dryad',
             link: 'Project:Content moderator'
         },
         'poweruser': {
@@ -91,7 +91,7 @@ window.UserTagsJS = {
             link: 'Project:Autoconfirmed users'
         },
         'autoconfirmed-user': {
-            u: 'Fair Oni',
+            u: 'Kijin',
             link: 'Project:Autoconfirmed users'
         },
         'user': {
@@ -102,11 +102,11 @@ window.UserTagsJS = {
             u: 'Slime'
         },
         inactive: {
-            u: 'Deceased',
+            u: 'Fallen',
             title: 'The user hasn\'t edited for last 30 days'
         },
         blocked: {
-            u: 'Dark Oni',
+            u: 'Cryptid',
             link: 'Project:Blocking policy'
         },
     },

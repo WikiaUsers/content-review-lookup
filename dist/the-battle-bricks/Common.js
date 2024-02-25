@@ -1,0 +1,1 @@
+window.AddRailModule = ['Template:RailModule'];

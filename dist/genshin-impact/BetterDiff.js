@@ -281,7 +281,7 @@ $(function() {
 				var cell = $('.mw-rcfilters-ui-table-placeholder');
 				cell.append(wrapper);
 				cell.css('vertical-align', 'middle');
-				document.querySelector('#submitTargetedPatrol').addEventListener('click', function(event) {
+				var submitPatrol = function () {
 					var api_sett = {
 						action: 'query',
 						list: 'recentchanges',
@@ -315,7 +315,9 @@ $(function() {
 							}
 						});
 					} else { document.querySelector('#targetedPatrolDetails').innerHTML = 'No user or namespace specified.'; }
-				});
+				};
+				document.querySelector('#submitTargetedPatrol').addEventListener('click', submitPatrol);
+				document.querySelector('#targetedPatrolUser').addEventListener('keypress', function(event){ if (event.key === 'Enter') {submitPatrol();} });
 			} else { console.log('User does not have patrolling rights.'); }
 		},
 		

@@ -298,6 +298,11 @@
     var attachPoint = document.querySelector(
       "form.create-page-dialog__wrapper .wds-dialog__content"
     );
+    if (attachPoint === null)  {
+      console.log("Le formulaire de création a-t-il été fermé ? Impossible "+
+                  "d'afficher les choix de type d'article à créer.");
+      return;
+    }
     attachPoint.appendChild(divPageTypes);
     
     // Attend la réponse du serveur après un clic sur "Suivant"

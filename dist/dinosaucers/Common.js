@@ -1,5 +1,24 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* DO YOU THING - signed by, GrimPapuff */
+/* MAKE SPECIAL:WHATLINKHERE AS ALPHABETICALLY */
+(function($) {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') return;
+    var sorted_list,
+        $list = $('#mw-whatlinkshere-list');
+    sorted_list = $list.children('li').sort(function (a, b) {
+        return ($(a).find('a:first').attr('title') > $(b).find('a:first').attr('title')) ? 1 : -1;
+    });
+    $list.children('li').remove();
+    $list.append(sorted_list);
+})(jQuery);
+
+/* EDIT SECTION */
+$('.mw-editsection-visualeditor').append('Visual <svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-pencil-tiny"><symbol id="wds-icons-pencil-tiny" viewBox="0 0 12 12"><use xlink:href="#pencil-tiny" fill-rule="evenodd"><path id="pencil-tiny" d="M8.5 6.086L5.914 3.5 7 2.414 9.586 5 8.5 6.086zM4.586 10H2V7.414l2.5-2.5L7.086 7.5l-2.5 2.5zm7.121-5.707l-4-4a.999.999 0 0 0-1.414 0l-6 6A1 1 0 0 0 0 7v4a1 1 0 0 0 1 1h4c.265 0 .52-.105.707-.293l6-6a.999.999 0 0 0 0-1.414z"></path></use></symbol></use></svg>');
+
+/* MORE ADD IN LICENS-DESCRIPTION */
+$('.license-description').append('For more information, see the <a href="/wiki/Dinosaucers_Wiki:Copyright_Policy">Copyright Policy</a>.');
+
 // UserTags
 window.UserTagsJS = {
 	modules: {},

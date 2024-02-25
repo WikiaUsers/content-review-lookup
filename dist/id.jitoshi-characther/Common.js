@@ -1,9 +1,6 @@
-/* LockOldComments */
-
-window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 100;
-window.lockOldComments.addNoteAbove = true;
-
-/* Loading style */
-
-window.enableReadProgressBarOnArticles = true
+$('.portable-infobox').each(function () {
+    var cls = $(this).attr('class').match(/pi-theme-_(\S+)/);
+    if (cls) {
+        $(this).css('border-color', '#' + cls[1]);
+    }
+});

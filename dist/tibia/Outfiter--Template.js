@@ -99,8 +99,9 @@ $(function () {
       //215
       'Winterstride', 'Icebreacher', 'Boisterous_Bull', 'Obstinate_Ox', 'Surly_Steer',
       //220
-      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer', 'Mystic_Jaguar_(Mount)','Gorgon_Hydra'
+      'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer', 'Mystic_Jaguar_(Mount)','Gorgon_Hydra',
       //225
+      'Dawnbringer_Pegasus', 'Wrathfire_Pegasus', 'Skybreaker_Pegasus'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -190,7 +191,7 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald'
+      'Draccoon_Herald', 'Celestial_Avenger'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -221,7 +222,8 @@ $(function () {
       Armoured_Archer: 8,
       Decaying_Defender: 8,
       Darklight_Evoker: 8,
-      Frost_Tracer: 8
+      Frost_Tracer: 8,
+      Celestial_Avenger: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -313,7 +315,10 @@ $(function () {
       Brass_Speckled_Koi: 8,
       Ink_Spotted_Koi: 8,
       Tangerine_Flecked_Koi: 8,
-      Gorgon_Hydra: 8
+      Gorgon_Hydra: 8,
+      Dawnbringer_Pegasus: 8,
+      Wrathfire_Pegasus: 8,
+      Skybreaker_Pegasus: 8
     },
     outfiter_sprites_mount_walking = {
     },

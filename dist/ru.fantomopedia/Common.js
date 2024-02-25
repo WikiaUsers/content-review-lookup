@@ -14,11 +14,11 @@ if(cat.indexOf(name) !== -1){
     var name = "Пять ночей с фредди супер мир"
 }
 var cat = mw.config.get('wgCategories')
-var name = "Зомби против растений ультиматив (СТ)"
+var name = "Plants vs. Zombies Ultimative (СТ)"
 if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__community-name').text(name)
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/b/b0/PvZUBack.png/revision/latest?cb=20221202131201&path-prefix=ru)"});
-        var name = "Зомби против растений ультиматив"
+        var name = "Plants vs. Zombies Ultimative"
 }
 var cat = mw.config.get('wgCategories')
 var name = "Статьи Одинарных (СТ)"

@@ -1,9 +1,11 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
+/*jshint sub:true*/
 function customusertags() {
   var usertags = {}, userstars = {}; userstars["Check"] = {}; //variables
 
 /* Adding icons */
-    userstars["Check"]["JohnnyHarden"] = ["King."];
+	userstars["Check"]["JohnnyHarden"] = ["King."];
 /* Icon definitions */
   var stars = {};
   stars = ["Check"];  //Defining available stars, for later.
@@ -19,8 +21,8 @@ function customusertags() {
 
     if (typeof usertags[currentuser] != "undefined") {
       $('.UserProfileMasthead .masthead-info span.tag').remove();  // remove old tags
-      for( var i=0, len=usertags[currentuser].length; i < len; i++)
-        $('<span class="tag">' + usertags[currentuser][i] + '</span>').appendTo('.masthead-info hgroup');
+      for( var a=0, len=usertags[currentuser].length; a < len; a++)
+        $('<span class="tag">' + usertags[currentuser][a] + '</span>').appendTo('.masthead-info hgroup');
     }
 
     for( var i=0, lena=stars.length; i < lena; i++)
@@ -30,10 +32,10 @@ function customusertags() {
 
   }
 }
+
 addOnloadHook(customusertags);
 
 // "Logs" tab
-
 $(function() {
     var olds = $(".tabs-container > ul.tabs").html();
     var address = "/wiki/Special:Log/" + wgTitle;

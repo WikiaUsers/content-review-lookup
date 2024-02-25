@@ -30,7 +30,7 @@
         );
       }
       else {
-        if (badges[i].dataset.ghBranch) { ghBadge.src = ghBadge.src.concat("?branch=" + badges[i].dataset.ghBranch); continue; }
+        if (badges[i].dataset.ghBranch) { ghBadge.src = ghBadge.src.concat("?branch=" + badges[i].dataset.ghBranch); }
         if (badges[i].dataset.ghEvent) { ghBadge.src = ghBadge.src.concat("?event=" + badges[i].dataset.ghEvent); }
       }
 

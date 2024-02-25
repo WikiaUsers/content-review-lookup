@@ -192,6 +192,11 @@ mw.loader.using('mediawiki.api').then(function () {
 	modeSelect.on('change', function () {
 		renderModel(0, false, false);
 		$("#input-frame").val(0);
+		if (modeSelect.val() == '03') {
+			$('#input-frame').prop('disabled', true);
+		} else {
+			$('#input-frame').prop('disabled', false);
+		}
 	});
 	atkButton.click(function () { renderModel(1, false, false); });
 	kbButton.click(function () { renderModel(2, false, false); });
@@ -277,7 +282,7 @@ function renderModel(type, reset, inputDefault) {
 		var row = mamodelData[j];
 		var data = createSprite(j, imgcutData[row[2]], mamodelData, url, maxValues);
 		sprites.push(data);
-		if (row[1] == -1) $("#sprite-inner-" + j).hide();
+		if (row[1] == -1) $("#sprite-outer-" + j).hide();
 	}
 	spritesNow = JSON.parse(JSON.stringify(sprites));
 	// find animation length
@@ -320,7 +325,7 @@ function renderModel(type, reset, inputDefault) {
 			var row = mamodelData[j];
 			var data = createSprite(j, imgcutData[row[2]], mamodelData, url, maxValues);
 			sprites.push(data);
-			if (row[1] == -1) $("#sprite-inner-" + j).hide();
+			if (row[1] == -1) $("#sprite-outer-" + j).hide();
 		}
 		spritesNow = JSON.parse(JSON.stringify(sprites));
 		// go through all frames from 0 to wanted frame to not miss one-time changes
@@ -338,7 +343,7 @@ function renderModel(type, reset, inputDefault) {
 		if (!scale) scale = 1;
 		length = sprites.length;
 		for (var m = 0; m < length; m++) {
-			var inner = spriteNodes[m].inner;
+			var inner = spriteNodes[m];
 			if (getOpacity(m) != 1 || inner.height() * inner.width() <= 16 || inner.css('display') == 'none') continue;
 			temp = inner.offset().top + inner.height() * getScaleY(m) * Math.cos(getAngle(m) * degToRad) * scale - base;
 			if (temp > max && temp > 0) max = temp;
@@ -382,8 +387,8 @@ function createSprite(id, imgcutRow, mamodel, url, maxValues) {
 	var opacity = mamodelRow[11] / maxOpacity;
 	var glow = mamodelRow[12];
 	// make sprite
-	canvas.append('<div class="sprite-outer" id="sprite-outer-' + id + '" style="position: absolute; z-index: ' + z + '; top: ' + y + 'px; left: ' + x + 'px; rotate: ' + angle + 'deg; scale: ' + scaleX + ' ' + scaleY + '; opacity: ' + opacity + ';"><div class="sprite-inner" id="sprite-inner-' + id + '" style="top: ' + -pivotY + 'px; left: ' + -pivotX + 'px; width: ' + spriteWidth + 'px; height: ' + spriteHeight + 'px; background-image: url(\'' + url + '\'); background-position: ' + (-spriteX) + 'px ' + (-spriteY) + 'px;"></div></div>');
-	spriteNodes.push({'outer': $('#sprite-outer-' + id), 'inner': $('#sprite-inner-' + id)});
+	canvas.append('<div class="sprite-outer" id="sprite-outer-' + id + '" style="position: absolute; z-index: ' + z + '; translate: ' + (x - pivotX) + 'px ' + (y - pivotY) + 'px; rotate: ' + angle + 'deg; scale: ' + scaleX + ' ' + scaleY + '; opacity: ' + opacity + '; width: ' + spriteWidth + 'px; height: ' + spriteHeight + 'px; background-image: url(\'' + url + '\'); background-position: ' + -spriteX + 'px ' + -spriteY + 'px;"></div>');
+	spriteNodes.push($('#sprite-outer-' + id));
 	if (glow != 0) {
 		$('#sprite-outer-' + id).css({'mix-blend-mode': 'plus-lighter', 'transform': 'translate3d(0, 0, 0)'});
 	}
@@ -562,7 +567,7 @@ function modify(partID, imgcut, mod, change, maxValues) {
 		sprite.parent = change;
 	} else if (mod == 2) { // sprite
 		var row = imgcut[change];
-		spriteNodes[partID].inner.css({'width': row[2], 'height': row[3], 'background-position': -row[0] + 'px ' + -row[1] + 'px'});
+		spriteNodes[partID].css({'width': row[2], 'height': row[3], 'background-position': -row[0] + 'px ' + -row[1] + 'px'});
 	} else if (mod == 3) { // z depth
 		sprite.z = change;
 	} else if (mod == 4) { // x
@@ -570,9 +575,9 @@ function modify(partID, imgcut, mod, change, maxValues) {
 	} else if (mod == 5) { // y
 		sprite.y = spriteData.y + change;
 	} else if (mod == 6) { // pivot x
-		spriteNodes[partID].inner.css('left', -spriteData.pivotX - change);
+		sprite.pivotX = spriteData.pivotX + change;
 	} else if (mod == 7) { // pivot y
-		spriteNodes[partID].inner.css('top', -spriteData.pivotY - change);
+		sprite.pivotY = spriteData.pivotY + change;
 	} else if (mod == 8) { // scale
 		change = change / maxValues[0];
 		sprite.scaleX = change * spriteData.scaleX;
@@ -626,7 +631,8 @@ function updateSprites() {
 			}
 			pos = addVectors(pos, row[0]);
 		}
-		spriteNodes[i].outer.css({'z-index': spritesNow[i].z, 'left': pos[0][0], 'top': -pos[1][0], 'scale': (getScaleX(i) * getFlipX(i)) + ' ' + (getScaleY(i) * getFlipY(i)), 'rotate': getAngle(i) + 'deg', 'opacity': getOpacity(i)});
+		sprite = spritesNow[i];
+		spriteNodes[i].css({'z-index': sprite.z, 'translate': (pos[0][0] - sprite.pivotX) + 'px ' + -(pos[1][0] + sprite.pivotY) + 'px', 'scale': (getScaleX(i) * getFlipX(i)) + ' ' + (getScaleY(i) * getFlipY(i)), 'rotate': getAngle(i) + 'deg', 'opacity': getOpacity(i), 'transform-origin': sprite.pivotX + 'px ' + sprite.pivotY + 'px'});
 	}
 	
 	function addVectors(v, u) {

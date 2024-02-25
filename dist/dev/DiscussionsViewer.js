@@ -140,14 +140,43 @@
     'discussions': 'FORUM',
     'wall-posts': 'WALL'
   };
+  
+  dpv.getArticleTitle = function(forumId) {
+    //return "???" as to not break the rest of the JS
+    return '???';
+    var cache = {};
+    if (Object.keys(cache).length && cache[forumId]) {
+      return cache[forumId];
+    }
+    //TODO: needs to be fixed to not be a mass of callbacks, doesn't work as is
+    $.get(mw.util.wikiScript('wikia.php'), {
+      controller: 'ArticleComments',
+      method: 'getArticleTitle',
+      stablePageId: forumId
+    }).done(function (data) {
+      //needed due to wikia.php not including the namespace, so we have to find out if it's an article comment or blog comment ourselves
+      $.get(mw.util.wikiScript('api.php'), {
+        action: 'query',
+        formatversion: 2,
+        format: 'json',
+        titles: (data.title + '|User Blog:' + data.title)
+      }).done(function (response) {
+        //will result in nothing if both pages have been deleted, maybe check the deletion log too?
+        var page = response.query.pages[0].filter(function (item) {
+          return !item.missing;
+        });
+        cache[forumId] = page.title;
+        //return the page var here too
+      });
+    });
+  };
 
   dpv.getBoardName = function(post, other) {
     switch (dpv.type) {
       case 'discussions': return post.forumName;
       // TODO: This is not right (may not work on non-English wikis)
       case 'wall-posts': return dpv.i18n.msg('message-wall', post.forumName.replace(/ Message Wall$/, '')).plain();
-      // TODO: Comments
-      case 'comments': return '???';
+      case 'comments': return dpv.getArticleTitle(post.forumId);
     }
   };
 
@@ -156,8 +185,7 @@
       case 'discussions': return config.wgScriptPath + '/f?catId=' + post.forumId;
       // TODO: This is not right (may not work on non-English wikis)
       case 'wall-posts': return mw.util.getUrl('Message Wall:' + post.forumName.replace(/ Message Wall$/, ''));
-      // TODO: Comments
-      case 'comments': return '#';
+      case 'comments': return mw.util.getUrl(dpv.getArticleTitle(post.forumId));
     }
   };
 
@@ -179,8 +207,14 @@
           return url + '#' + post.id;
         }
         return url;
-      // TODO: Comments
-      case 'comments': return '#';
+      case 'comments':
+        url = mw.util.getUrl(dpv.getArticleTitle(post.forumId), {
+          commentId: post.threadId
+        });
+        if (post.isReply) {
+          return url + '&replyId=' + post.id;
+        }
+        return url;
     }
   };
 

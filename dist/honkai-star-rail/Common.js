@@ -15,3 +15,17 @@ window.listUsers = {
     customgroups: ['autopatrol','content-moderator','threadmoderator'],
     limit: 50
 };
+
+/* overrides certain i18n strings for MapsExtended */
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
+
+/* 
+   for certain marker types like Billboards, 
+   using the word "collected" makes little sense.
+   instead, we can use "found"
+*/
+window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 found";
+window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You found all &lt;b&gt;$1&lt;/b&gt; of &lt;b&gt;$2&lt;/b&gt; \"$3\" markers on $4.";

@@ -274,6 +274,7 @@ $(function() {
 								'<option value="10">Template</option>'+
 								'<option value="14">Category</option>'+
 								'<option value="828">Module</option>'+
+								'<option value="2900">Map</option>'+
 							'</optgroup>'+
 						'</select>'+
 						'<input name="targetedPatrolUser" id="targetedPatrolUser" placeholder="User to mass patrol" />'+

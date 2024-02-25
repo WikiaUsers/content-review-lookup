@@ -469,3 +469,21 @@ importScriptPage('MediaWiki:Common.js/custombuttons.js');
 $(document).ready(function() {
  $('.WikiHeaderRestyle > nav > ul > li:first-child > ul').append('<li><a class="subnav-2a" href="/wiki/刺客信条III">刺客信条III</a></li><li><a class="subnav-2a" href="/wiki/刺客信条_维基:导航">界面导航</a></li><li><a class="subnav-2a" href="/wiki/刺客信条_维基:欢迎">新编辑导航</a></li><li><a class="subnav-2a" href="/wiki/刺客信条_维基:进阶编辑指南">进阶编辑</a></li>');
 });
+/*将页面背景的十六进制颜色转换为rgb格式*/
+function hexToRgb(hex) {
+    // 去除开头的 '#' 符号
+    hex = hex.replace(/^#/, '');
+    
+    // 将十六进制颜色值分割成 R、G、B 三个部分
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+
+    // 返回 RGB 颜色值
+    return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+}
+
+// 示例用法
+var hexColor = '#FFFFFF'; // 你的十六进制颜色值
+var rgbColor = hexToRgb(hexColor);
+document.documentElement.style.setProperty('--theme-page-background-color-rgba', rgbColor); // 设置 CSS 变量

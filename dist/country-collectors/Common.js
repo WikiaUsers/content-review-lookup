@@ -6,6 +6,11 @@ window.NoLicenseWarning = {
     ]
 };
 
+//LockOldComments
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 60;
+window.lockOldComments.addNoteAbove = true;
+
 // ProfileTags config
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 

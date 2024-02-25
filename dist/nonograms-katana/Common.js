@@ -418,9 +418,9 @@ var boost_list = {
                     'Armor':        { '0':{}, '1': {'def':2}, '2': {'def':4}, '3': {'def':6}, '4': {'def':8,'dmg':1,'ep':10} },
                     'Shield':       { '0':{}, '1': {'def':1}, '2': {'def':2}, '3': {'def':3}, '4': {'def':4,'c2r':10} },
                     'Ring':         { '0':{}, '1': {'dmg':1}, '2': {'dmg':2}, '3': {'dmg':3}, '4': {'dmg':4}, '4+': {'dmg':4,'ep':5} },
-                    'Martial Arts': { '0':{}, '1': {'dmg':1}, '2': {'dmg':2}, '3': {'dmg':3} },
+                    'Martial arts': { '0':{}, '1': {'dmg':1}, '2': {'dmg':2}, '3': {'dmg':3} },
                     'Hardening':    { '0':{}, '1': {'def':1}, '2': {'def':2} },
-                    'E. preparation':{ '0':{}, '1': {'sck':1}, '2': {'sck':2} },
+                    'Equipment preparation':{ '0':{}, '1': {'sck':1}, '2': {'sck':2} },
                     'Agility':      { '0':{}, '1': {'ap':1} },
                     'Smashing blow':{ '0':{}, '1': {}, '2': {} },
                     'Helmet':       { '0':{}, '1':{'hp':5} },
@@ -428,61 +428,61 @@ var boost_list = {
                 };
 
 var presets = {
-                     1: {Sword: 0, Armor: 0, Shield: 0, Ring: 0, 'Martial Arts': 0, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':0 },
-                     3: {Sword: 0, Armor: 0, Shield: 0, Ring: 0, 'Martial Arts': 0, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':1 },
-                     5: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial Arts': 0, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':1 },
-                     6: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial Arts': 0, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
-                     9: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial Arts': 1, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
-                    10: {Sword: 2, Armor: 2, Shield: 2, Ring: 2, 'Martial Arts': 1, 'E. preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
-                    12: {Sword: 2, Armor: 2, Shield: 2, Ring: 2, 'Martial Arts': 1, 'E. preparation': 1, Hardening: 1, Agility: 0, 'Smashing blow':2 },
-                    15: {Sword: 3, Armor: 3, Shield: 3, Ring: 3, 'Martial Arts': 2, 'E. preparation': 1, Hardening: 1, Agility: 1, 'Smashing blow':2 },
-                    18: {Sword: 3, Armor: 3, Shield: 3, Ring: 3, 'Martial Arts': 2, 'E. preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
-                    20: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial Arts': 2, 'E. preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
-                    21: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial Arts': 3, 'E. preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
-                    26: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial Arts': 3, 'E. preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 }
+                     1: {Sword: 0, Armor: 0, Shield: 0, Ring: 0, 'Martial arts': 0, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':0 },
+                     3: {Sword: 0, Armor: 0, Shield: 0, Ring: 0, 'Martial arts': 0, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':1 },
+                     5: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial arts': 0, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':1 },
+                     6: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial arts': 0, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
+                     9: {Sword: 1, Armor: 1, Shield: 1, Ring: 1, 'Martial arts': 1, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
+                    10: {Sword: 2, Armor: 2, Shield: 2, Ring: 2, 'Martial arts': 1, 'Equipment preparation': 0, Hardening: 0, Agility: 0, 'Smashing blow':2 },
+                    12: {Sword: 2, Armor: 2, Shield: 2, Ring: 2, 'Martial arts': 1, 'Equipment preparation': 1, Hardening: 1, Agility: 0, 'Smashing blow':2 },
+                    15: {Sword: 3, Armor: 3, Shield: 3, Ring: 3, 'Martial arts': 2, 'Equipment preparation': 1, Hardening: 1, Agility: 1, 'Smashing blow':2 },
+                    18: {Sword: 3, Armor: 3, Shield: 3, Ring: 3, 'Martial arts': 2, 'Equipment preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
+                    20: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial arts': 2, 'Equipment preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
+                    21: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial arts': 3, 'Equipment preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 },
+                    26: {Sword: 4, Armor: 4, Shield: 4, Ring: 4, 'Martial arts': 3, 'Equipment preparation': 2, Hardening: 2, Agility: 1, 'Smashing blow':2 }
                 };
 
 var enemy_list = [
-                    {name: 'Shapeshifter 3A-3C',      hp: 27,  dmg: 8,  def: 5,  ap: 6},
+                    {name: 'Shapeshifter 3A-3C',      hp: 27,  dmg: 8,  def: 5,  ap: 6, skills: '*Shapeshifter*'},
                     {name: 'Orc chieftain (3A boss)', hp: 55,  dmg: 9,  def: 5,  ap: 4},
                     {name: 'Orc warlord (3B boss)',   hp: 65,  dmg: 9,  def: 5,  ap: 4},
                     {name: 'Bone dragon (3C boss)',   hp: 85,  dmg: 9,  def: 5,  ap: 4},
-                    {name: 'Shapeshifter 4A-4C',      hp: 36,  dmg: 12, def: 9,  ap: 6},
+                    {name: 'Shapeshifter 4A-4C',      hp: 36,  dmg: 12, def: 9,  ap: 6, skills: '*Shapeshifter*'},
                     {name: 'Leviathan (4A boss)',     hp: 84,  dmg: 14, def: 9,  ap: 4},
                     {name: 'Mynd flyer (4B boss)',    hp: 104, dmg: 14, def: 9,  ap: 6},
                     {name: 'Eye tyrant (4C boss)',    hp: 124, dmg: 15, def: 9,  ap: 4},
                     {name: 'Demon kingpin (5A boss)', hp: 130, dmg: 18, def: 12, ap: 4},
                     {name: 'Demon lord (5B boss)',    hp: 170, dmg: 19, def: 13, ap: 4},
-                    {name: 'Bone dragon (5C quest)',  hp: 230, dmg: 19, def: 13, ap: 4},
-                    {name: 'The dragon (5C boss)',    hp: 230, dmg: 21, def: 14, ap: 4}
+                    {name: 'Bone dragon (5C quest)',  hp: 230, dmg: 19, def: 13, ap: 4, image: 'a/a5/Foe-Bone_Dragon.png'},
+                    {name: 'The dragon (5C boss)',    hp: 230, dmg: 21, def: 14, ap: 4, image: '9/92/Foe-Evil_dragon%28boss5C%29.png'}
                 ];
 
 var icons = {
-                'Sword-1':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a4/Sword_for_a_hero_lvl._1.png">',
-                'Sword-2':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/b/bc/Sword_for_a_hero_lvl._2.png">',
-                'Sword-3':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/36/Sword_for_a_hero_lvl._3.png">',
-                'Sword-4':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/0/09/Sword_for_a_hero_lvl._4.png">',
-                'Armor-1':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/f/f3/Armor_for_a_hero_lvl._1.png">',
-                'Armor-2':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a6/Armor_for_a_hero_lvl._2.png">',
-                'Armor-3':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/0/05/Armor_for_a_hero_lvl._3.png">',
-                'Armor-4':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a3/Armor_for_a_hero_lvl._4.png">',
-                'Shield-1': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/6/6c/Shield_for_a_hero_lvl._1.png">',
-                'Shield-2': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/9/9f/Shield_for_a_hero_lvl._2.png">',
-                'Shield-3': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/c/ca/Shield_for_a_hero_lvl._3.png">',
-                'Shield-4': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/8/80/Shield_for_a_hero_lvl._4.png">',
-                'Ring-1':   ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/e/eb/Ring_for_a_hero_lvl._1.png">',
-                'Ring-2':   ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/18/Ring_for_a_hero_lvl._2.png">',
-                'Ring-3':   ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/b/bb/Ring_for_a_hero_lvl._3.png">',
-                'Ring-4':   ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/10/Ring_for_a_hero_lvl._4.png">',
-                'Ring-4+':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Ring_for_a_hero_lvl._4%2B.png">',
-                'Dagger-1': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/4/45/Dagger.png">',
-                'Helmet-1': ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/37/Helmet.png">',
-                'HP':       ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/31/Dungeon_-_Health.png">',
-                'EP':       ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/1e/Dungeon_-_Energy.png">',
-                'AP':       ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/8/84/Dungeon_-_Action_points.png">',
-                'Def':      ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Dungeon_-_Defense.png">',
-                'Dmg':      ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/5/59/Dungeon_-_Damage.png">',
-                'sck':      ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/6/61/Sack.png">',
+                'Sword-1':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a4/Sword_for_a_hero_lvl._1.png">',
+                'Sword-2':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/b/bc/Sword_for_a_hero_lvl._2.png">',
+                'Sword-3':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/36/Sword_for_a_hero_lvl._3.png">',
+                'Sword-4':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/0/09/Sword_for_a_hero_lvl._4.png">',
+                'Armor-1':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/f/f3/Armor_for_a_hero_lvl._1.png">',
+                'Armor-2':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a6/Armor_for_a_hero_lvl._2.png">',
+                'Armor-3':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/0/05/Armor_for_a_hero_lvl._3.png">',
+                'Armor-4':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/a3/Armor_for_a_hero_lvl._4.png">',
+                'Shield-1': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/6/6c/Shield_for_a_hero_lvl._1.png">',
+                'Shield-2': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/9/9f/Shield_for_a_hero_lvl._2.png">',
+                'Shield-3': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/c/ca/Shield_for_a_hero_lvl._3.png">',
+                'Shield-4': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/8/80/Shield_for_a_hero_lvl._4.png">',
+                'Ring-1':   '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/e/eb/Ring_for_a_hero_lvl._1.png">',
+                'Ring-2':   '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/18/Ring_for_a_hero_lvl._2.png">',
+                'Ring-3':   '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/b/bb/Ring_for_a_hero_lvl._3.png">',
+                'Ring-4':   '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/10/Ring_for_a_hero_lvl._4.png">',
+                'Ring-4+':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Ring_for_a_hero_lvl._4%2B.png">',
+                'Dagger-1': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/4/45/Dagger.png">',
+                'Helmet-1': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/37/Helmet.png">',
+                'HP':       '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/3/31/Dungeon_-_Health.png">',
+                'EP':       '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/1/1e/Dungeon_-_Energy.png">',
+                'AP':       '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/8/84/Dungeon_-_Action_points.png">',
+                'DEF':      '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/a/ac/Dungeon_-_Defense.png">',
+                'DMG':      '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/5/59/Dungeon_-_Damage.png">',
+                'sck':      '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/6/61/Sack.png">',
                 'Ambrosia': '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/e/e9/Potion_Ambrosia.png">',
                 'Onigiri':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/f/f3/Onigiri.png">',
                 'Flatbread':'<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/4/4f/Flatbread.png">',
@@ -498,20 +498,20 @@ var icons = {
                 'fortified':    '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/2/27/Poke.png">',
                 'frenzied':     '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/d/d2/Potion_Berserker_rage.png">',
                 'demoralized':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/8/8e/Demoralization.png">',
-                'Smashing blow-1':  ' <img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/d/d4/Smashing_blow.png">',
+                'Smashing blow-1':  '<img align="top" height="20" src="https://static.wikia.nocookie.net/nonograms-katana/images/d/d4/Smashing_blow.png">',
                 'c2c':      '',
                 'c2r':      ''
             };
 
 icons['Agility-1'] = icons['AP'];
-icons['Hardening-1'] = icons['Def'];
-icons['Hardening-2'] = icons['Hardening-1']+icons['Hardening-1'].trim();
-icons['Martial Arts-1'] = icons['Dmg'];
-icons['Martial Arts-2'] = icons['Martial Arts-1']+icons['Martial Arts-1'].trim();
-icons['Martial Arts-3'] = icons['Martial Arts-2']+icons['Martial Arts-1'].trim();
-icons['E.Preparation-1'] = icons['sck'];
-icons['E.Preparation-2'] = icons['E.Preparation-1']+icons['E.Preparation-1'].trim();
-icons['Smashing blow-2'] = icons['Smashing blow-1']+icons['Smashing blow-1'].trim();
+icons['Hardening-1'] = icons['DEF'];
+icons['Hardening-2'] = icons['DEF']+icons['DEF'];
+icons['Martial arts-1'] = icons['DMG'];
+icons['Martial arts-2'] = icons['DMG']+icons['DMG'];
+icons['Martial arts-3'] = icons['DMG']+icons['DMG']+icons['DMG'];
+icons['Equipment preparation-1'] = icons['sck'];
+icons['Equipment preparation-2'] =icons['sck']+icons['sck'];
+icons['Smashing blow-2'] = icons['Smashing blow-1']+icons['Smashing blow-1'];
 
 function fillHeroFromPreset(event) {
     var id = event.srcElement.innerHTML;
@@ -537,7 +537,7 @@ function fillHeroStats() {
         //show boost's icon
         var icon_ph = document.getElementById(boost_name+'-pic');
         var icon_tag = boost_name+'-'+boost_value
-        icon_ph.innerHTML = ( icons[icon_tag] ? icons[icon_tag] : '' );
+        icon_ph.innerHTML = ' '+( icons[icon_tag] ? icons[icon_tag] : '' );
         //add boost's value to the appropriate hero's stats
         var targets = boost_list[boost_name][boost_value];
         for (var t in targets) {
@@ -545,27 +545,66 @@ function fillHeroStats() {
             field.value = parseInt(field.value) + targets[t];
         }
     }
+    //clear previous results
+    document.getElementById('h_calc');
+    document.getElementById('e_calc');
+}
+
+function filterEnemyList(event) {
+    var level = event.srcElement.value;
+    var elist = document.getElementById("enemylist").options;
+    var lastshown = null;
+    var beforelastshown = null;
+    for (option in elist) {
+        if (elist[option].innerHTML) {
+            var show = (level=="" || elist[option].innerHTML.indexOf(" - "+level)>0);
+            elist[option].style.display = show ? "" : "none";
+            elist[option].selected = "";
+            if (show) {
+                beforelastshown = lastshown; 
+                lastshown = elist[option];
+            }
+        }
+    }
+    //adjust selection to include only visible ones
+    if (lastshown) {
+        if (beforelastshown && (level=='1C' || level=='F2' || level=='F3' || level=='5C' || level=='')) {
+            lastshown = beforelastshown;
+        }
+        lastshown.selected = "selected"
+        lastshown.click();
+    }
+}
+
+function fillEnemyStats(event) {
+    var index = event.srcElement.value;
+    var attr = ['hp','dmg','def','ap'];
+    for (var a in attr) {
+        document.getElementById('e'+attr[a]).value = enemy_list[index][attr[a]];
+    }
+    document.getElementById('hdemo').checked = enemy_list[index].skills && (enemy_list[index].skills.indexOf('*Shapeshifter*')>=0 || enemy_list[index].skills.indexOf('*Demoralization*')>=0);
+    document.getElementById('epoke').checked = enemy_list[index].skills && (enemy_list[index].skills.indexOf('*Shielding*')>=0);
+    //remove enemy's portrait
+    if (document.getElementById('eimage')) {
+        document.getElementById('eimage').remove();
+    }
+    //... and attach it again, if possible
+    if (enemy_list[index].image) {
+        var eimage = document.createElement('img');
+        eimage.src = 'https://static.wikia.nocookie.net/nonograms-katana/images/'+enemy_list[index].image;
+        eimage.style = 'width:150px;height:auto';
+        eimage.id = 'eimage';
+        document.getElementById('e_defi').appendChild(eimage);
+    }
+}
+
+function calculateCombat() {
     //prepare food selection
     var es = parseInt(document.getElementById('hsck').value);
     var foodlist = { Onigiri:7+es, Flatbread:7+es, Bun:5+es, Muffin:5+es, Bento:5+es, Pasta:5+es, Baklava:7+es, Eggs:5+es, PoHP1:5+es, PoHP2:5+es, PoEP1:5+es, Ambrosia:1+es };
     for (var food in foodlist) {
         document.getElementById(food).setAttribute('data-limit', foodlist[food]);
     }
-    //clear previous results
-    document.getElementById('h_calc');
-    document.getElementById('e_calc');
-}
-
-function fillEnemyStats(event) {
-    var index = event.srcElement.getAttribute('data_index');
-    var attr = ['hp','dmg','def','ap'];
-    for (var a in attr) {
-        document.getElementById('e'+attr[a]).value = enemy_list[index][attr[a]];
-    }
-    document.getElementById('hdemo').checked = (enemy_list[index].name.indexOf('shapeshifter')>=0);
-}
-
-function calculateCombat() {
     var h_out = document.getElementById('h_calc');
     var e_out = document.getElementById('e_calc');
     //get hero stats and apply effects
@@ -596,6 +635,9 @@ function calculateCombat() {
     enemy.apmax = parseInt(document.getElementById('eap').value);
     enemy.dmg = parseInt(document.getElementById('edmg').value);
     enemy.def = parseInt(document.getElementById('edef').value);
+    if (document.getElementById('epoke').checked) {
+        enemy.def+= 4;
+    }
     if (document.getElementById('edemo').checked) {
         enemy.def = Math.floor(enemy.def * 0.4);
     }
@@ -604,7 +646,7 @@ function calculateCombat() {
     enemy.critdmgratio = 1.5;
     enemy.log = document.getElementById('e_simlog');
     //output calculations for the hero
-    h_out.innerHTML = '<div><small>Effective AP: ' + hero.apmax + ', Def: ' + hero.def + ', Dmg: ' + hero.dmg + ' &#177;'+hero.spread+'</small></div>';
+    h_out.innerHTML = '<div><small>Effective AP: ' + hero.apmax + ', DEF: ' + hero.def + ', DMG: ' + hero.dmg + ' &#177;'+hero.spread+'</small></div>';
     var ddmgmin = Math.max( hero.dmg-hero.spread , 1);
     var ddmgmax = hero.dmg+hero.spread;
     var ddmgminc = hero.critdmgratio*ddmgmin;
@@ -618,7 +660,7 @@ function calculateCombat() {
     h_out.innerHTML+= '<div><b>Hits to kill the enemy: ' + Math.ceil(enemy.hpmax/rdmgmax) + '-' + Math.ceil(enemy.hpmax/rdmgmin) + '</b></div>';
     h_out.innerHTML+= '<div>(absolute minimum: ' + Math.ceil(enemy.hpmax/rdmgmaxc) + ')</div>';
     //output calculations for the enemy
-    e_out.innerHTML = '<div><small>Effective AP: ' + enemy.apmax + ', Def: ' + enemy.def + ', Dmg: ' + enemy.dmg + ' &#177;'+enemy.spread+'</small></div>';
+    e_out.innerHTML = '<div><small>Effective AP: ' + enemy.apmax + ', DEF: ' + enemy.def + ', DMG: ' + enemy.dmg + ' &#177;'+enemy.spread+'</small></div>';
     ddmgmin = Math.max( enemy.dmg-enemy.spread , 1);
     ddmgmax = enemy.dmg+enemy.spread;
     ddmgminc = Math.floor(enemy.critdmgratio*ddmgmin);
@@ -657,13 +699,15 @@ function calculateCombat() {
     defender.log.innerHTML = '';
     //healing info
     if (attacker.healing) {
-        attacker.log.innerHTML+= 'food: ';
+        var out = '<nobr>Food:'
         for (var food in attacker.food) {
             if (attacker.food[food]) {
-                attacker.log.innerHTML+= ' '+attacker.food[food]+'x'+(icons[food]?icons[food]:food);
+                out+= ' '+attacker.food[food]+'x'+(icons[food]?icons[food]:food);
             }
         }
-        defender.log.innerHTML+= '(unlimited '+icons['EP']+' and no food)';
+        out+= '</nobr><hr>';
+        attacker.log.innerHTML+= out;
+        defender.log.innerHTML+= 'unlimited '+icons['EP']+' and no food<hr>';
     }        
     //main loop
     var watchdog = 0;
@@ -767,17 +811,19 @@ function calculateCombat() {
     }
     //end of main loop
     if (hero.healing) {
-        hero.log.innerHTML+= 'Left: ';
+        var out = '<hr><nobr>Left:';
         var anyleft = 0;
         for (var food in hero.food) {
             if (hero.food[food]) {
                 anyleft+= 1;
-                hero.log.innerHTML+= ' '+hero.food[food]+'x '+(icons[food]?icons[food]:food);
+                out+= ' '+hero.food[food]+'x'+(icons[food]?icons[food]:food);
             }
         }
         if (anyleft==0) {
-            hero.log.innerHTML+= ' NOTHING ';
+            out+= ' NOTHING ';
         }
+        out+= '</nobr>';
+        hero.log.innerHTML+= out;
     }
 }
 
@@ -794,45 +840,50 @@ function togglefood() {
 function setupCombatForm(placeholderId) {
     var target = document.getElementById(placeholderId);
     //general form structure
+    var tipstyle = 'color:gray; margin:3px; font-style:italic; font-size: smaller; line-height:1';
     var table = document.createElement('table');
     table.border = 1;
     table.cellSpacing = 0;
     table.cellPadding = 2;
     table.innerHTML = '<tr valign="top"><td id="h_defi">Hero configuration:</td><td id="e_defi">Enemy selection:</td></tr>';
     table.innerHTML+= '<tr valign="top"><td id="h_stat"></td><td id="e_stat"></td></tr>';
-    table.innerHTML+= '<tr><td id="h_buff"></td><td id="e_buff"></td></tr>';
+    table.innerHTML+= '<tr valign="top"><td id="h_buff"></td><td id="e_buff"></td></tr>';
     var foodsack = '';
     for (var food in food_effects) {
         foodsack+= ' <input type="checkbox" id="'+food+'" data-limit="0" checked="checked">'+(icons[food]?icons[food]:food);
     }
-    table.innerHTML+= '<tr><td colspan="2" align="left"><input type="checkbox" id="heal" />Allow healing<span id="foodsack" style="display:none">: '+foodsack+'</span><br><input type="checkbox" id="sbuse" />Use Smashing blow whenever possible.</td></tr>';
-    table.innerHTML+= '<tr valign="top"><td id="h_calc"></td><td id="e_calc"></td></tr>';
+    table.innerHTML+= '<tr><td colspan="2" align="left"><div style="'+tipstyle+'">Special algorithms may be applied to simulate using consumables/skills permitted, e.g. to replenish HP/EP.<br>This is not a part of the game engine, it acts as user would do and may be not optimal.</div><input type="checkbox" id="heal" />Allow using food<span id="foodsack" style="display:none">: '+foodsack+'</span><br><input type="checkbox" id="sbuse" />Use Smashing blow whenever possible</td></tr>';
     table.innerHTML+= '<tr><td colspan="2" align="center"><button id="emu_run">CALCULATE</button></td></tr>';
+    table.innerHTML+= '<tr valign="top"><td id="h_calc"></td><td id="e_calc"></td></tr>';
     table.innerHTML+= '<tr valign="top" style="font-size: 66%"><td id="h_simlog"></td><td id="e_simlog"></td></tr>';
 	target.appendChild(table);
     document.getElementById('heal').addEventListener('click', togglefood);    
     document.getElementById('emu_run').addEventListener('click', calculateCombat);    
     //stats forms
-    document.getElementById('h_stat').innerHTML = '<input size="1" id="hhp" data-init="19"/>'+icons['HP']+' HP &nbsp; &nbsp; &nbsp; <input size="1" id="hep" data-init="29"/>'+icons['EP']+' EP<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hdmg" data-init="5"/>'+icons['Dmg']+' Dmg<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hdef" data-init="2"/>'+icons['Def']+' Def<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hap" data-init="4"/>'+icons['AP']+' AP<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hc2c" data-init="5"/>'+icons['c2c']+' % chance to crit<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hc2r" data-init="0"/>'+icons['c2r']+' % chance to retaliate<br>';
-    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hsck" data-init="0"/>'+icons['sck']+' extra space';
-    document.getElementById('e_stat').innerHTML = '<input size="1" id="ehp"/>'+icons['HP']+' HP<br>';
-    document.getElementById('e_stat').innerHTML+= '<input size="1" id="edmg"/>'+icons['Dmg']+' Dmg<br>';
-    document.getElementById('e_stat').innerHTML+= '<input size="1" id="edef"/>'+icons['Def']+' Def<br>';
-    document.getElementById('e_stat').innerHTML+= '<input size="1" id="eap"/>'+icons['AP']+' AP<br>';
-    document.getElementById('e_stat').innerHTML+= '<input size="1" id="ec2c" value="5"/>'+icons['c2c']+' % chance to crit';
+    document.getElementById('h_stat').innerHTML = '<div style="'+tipstyle+'">Enter/verify attributes of the hero.<br>These values are updated when gear/skils are selected above.</div>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hhp" data-init="19"/> '+icons['HP']+' HP &nbsp; &nbsp; &nbsp; <input size="1" id="hep" data-init="29"/> '+icons['EP']+' EP<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hdmg" data-init="5"/> '+icons['DMG']+' DMG<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hdef" data-init="2"/> '+icons['DEF']+' DEF<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hap" data-init="4"/> '+icons['AP']+' AP<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hc2c" data-init="5"/> '+icons['c2c']+' % chance to crit<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hc2r" data-init="0" /> '+icons['c2r']+' % chance to reflect damage<br>';
+    document.getElementById('h_stat').innerHTML+= '<input size="1" id="hsck" data-init="0" /> '+icons['sck']+' extra space';
+    document.getElementById('e_stat').innerHTML = '<div style="'+tipstyle+'">Enter/verify attributes of the enemy.<br>These values are updated when enemy is selected above.</div>';
+    document.getElementById('e_stat').innerHTML+= '<input size="1" id="ehp"/> '+icons['HP']+' HP<br>';
+    document.getElementById('e_stat').innerHTML+= '<input size="1" id="edmg"/> '+icons['DMG']+' DMG<br>';
+    document.getElementById('e_stat').innerHTML+= '<input size="1" id="edef"/> '+icons['DEF']+' DEF<br>';
+    document.getElementById('e_stat').innerHTML+= '<input size="1" id="eap"/> '+icons['AP']+' AP<br>';
+    document.getElementById('e_stat').innerHTML+= '<input size="1" id="ec2c" value="5"/> '+icons['c2c']+' % chance to crit';
     //buffs forms
-    document.getElementById('h_buff').innerHTML = '<input type="checkbox" id="hpoke"/>'+(icons['fortified']?icons['fortified']+' ':'')+'fortified (Poke)<br><input type="checkbox" id="hberserk"/>'+(icons['frenzied']?icons['frenzied']+' ':'')+'frenzied (Potion "Berserker rage")<br><input type="checkbox" id="hdemo"/>'+(icons['demoralized']?icons['demoralized']+' ':'')+'demoralized';
-    document.getElementById('e_buff').innerHTML = '<input type="checkbox" id="edemo"/>'+(icons['demoralized']?icons['demoralized']+' ':'')+'demoralized';
+    document.getElementById('h_buff').innerHTML = '<div style="'+tipstyle+'">Declare special status of the hero - buffs and debuffs.<br>Some values may change when selecting an enemy.</div>';
+    document.getElementById('h_buff').innerHTML+= '<input type="checkbox" id="hpoke"/>'+(icons['fortified']?icons['fortified']+' ':'')+'Hero used "Poke"<br><input type="checkbox" id="hberserk"/>'+(icons['frenzied']?icons['frenzied']+' ':'')+'Hero used "Berserker rage"<br><input type="checkbox" id="hdemo"/>'+(icons['demoralized']?icons['demoralized']+' ':'')+'Has been demoralized by enemy';
+    document.getElementById('e_buff').innerHTML = '<div style="'+tipstyle+'">Declare special status of the enemy - buffs and debuffs.<br>Some values may change when selecting an enemy.</div>';
+    document.getElementById('e_buff').innerHTML+= '<input type="checkbox" id="edemo"/>'+(icons['demoralized']?icons['demoralized']+' ':'')+'Has been demoralized by hero<br><input type="checkbox" id="epoke"/>'+(icons['DEF']?icons['DEF']+' ':'')+'Used/received defence boost';
     //hero setup form
     var hero_setup = document.getElementById('h_defi');
     //... first preset buttons...
     var preset_bar = document.createElement('div');
-    preset_bar.innerHTML = '<small>Presets: </small>';
+    preset_bar.innerHTML = '<div style="'+tipstyle+'">Pick a preset reflecting hero\'s level to quickly fill the form<br>with the best gear and skills available for that level.</div><small>Presets: </small>';
     for (var p in presets) {
         var p_btn = document.createElement('button');
         p_btn.innerHTML = p;
@@ -842,6 +893,10 @@ function setupCombatForm(placeholderId) {
     }
     hero_setup.appendChild(preset_bar);
     hero_setup.appendChild(document.createElement('hr'));
+    var info2 = document.createElement('div');
+    info2.style = tipstyle;
+    info2.innerHTML = "Select/verify gear and skills your hero possesses.<br>These values are updated when preset is selected above.";
+    hero_setup.appendChild(info2);
     //... then individual gear/skill entries
     for (var boostname in boost_list) {
         //first, unpack a short definition
@@ -856,7 +911,7 @@ function setupCombatForm(placeholderId) {
             delete boost_list[boostname]['*'];
         }
         //process the form
-        if (boostname=='Helmet') {
+        if (boostname=='Helmet' || boostname=='Martial arts') {
             hero_setup.appendChild(document.createElement('hr'));
         }
         var attr_row = document.createElement('div');
@@ -879,18 +934,74 @@ function setupCombatForm(placeholderId) {
         //atribute ready
         hero_setup.appendChild(attr_row);
     }
+    //check if extended enemy data is available (replaces hardcoded table)
+    var levels = [];
+    if (document.getElementById('foestats')) {
+        var entries = document.getElementById('foestats').innerHTML.split('~');
+        enemy_list = [];
+        for (e in entries) {
+            if (entries[e]) {
+                var fields = entries[e].split("|");
+                var ename = fields[0].split(' - ');
+                levels[ename[0]] = 1;
+                var enemy = {name: ename[1]+' - '+ename[0], hp: fields[1], dmg: fields[2], def: fields[3], ap: fields[4], skills: fields[5], image: fields[6]};
+                enemy_list.push(enemy);
+            }
+        }
+    }
     //enemy selection form
     var enemy_selection = document.getElementById('e_defi');
-    for (var f in enemy_list) {
-        var btn = document.createElement('button');
-        btn.setAttribute('data_index', f);
-        btn.innerHTML = enemy_list[f].name;
-        btn.addEventListener('click', fillEnemyStats);
-        enemy_selection.appendChild(document.createElement('br'));
-        enemy_selection.appendChild(btn);
+    enemy_selection.innerHTML+= '<div style="'+tipstyle+'">Pick an opponent from the list of known enemies.<br>List may be filtered by selecting dungeon level.</div>';
+    //level selection dropdown (optional)
+    if (levels) {
+        var levelselect = document.createElement('select');
+        var opt = document.createElement('option');
+        opt.value = "";
+        opt.innerHTML = "- any -";
+        levelselect.appendChild(opt);
+        for (l in levels) {
+            var opt = document.createElement('option');
+            opt.value = l;
+            opt.innerHTML = l;
+            levelselect.appendChild(opt);
+        }
+        levelselect.addEventListener('change', filterEnemyList);
+        levelselect.addEventListener('click', filterEnemyList);
+        enemy_selection.appendChild(levelselect);
     }
+    //enemy selection dropdown
+    var enemyselect = document.createElement('select');
+    enemyselect.id = "enemylist";
+    for (var f in enemy_list) {
+        var opt = document.createElement('option');
+        opt.value = f;
+        opt.innerHTML = enemy_list[f].name;
+        enemyselect.appendChild(opt);
+    }
+    enemyselect.addEventListener('click', fillEnemyStats);
+    enemyselect.addEventListener('change', fillEnemyStats);
+    enemy_selection.appendChild(enemyselect);
+    enemy_selection.appendChild(document.createElement('br'));
+    enemy_selection.appendChild(document.createElement('br'));
     //quick fill
-    btn.click();
+    opt.setAttribute("selected","selected");
+    levelselect.click();
+    if (window.location.search) {
+        var autoenemy = decodeURI(window.location.search.split('=')[1]).replaceAll('+',' ');
+        var elist = document.getElementById("enemylist").options;
+        var lastshown = null;
+        for (option in elist) {
+            elist[option].selected = '';
+            if (elist[option].innerHTML==autoenemy) {
+                lastshown = elist[option];
+                break;
+            }
+        }
+        if (lastshown) {
+            lastshown.selected = "selected"
+            lastshown.click();
+        }
+    }    
     fillHeroStats();
 }
 
