@@ -1,1 +1,0 @@
-console.log ('MediaWiki:Gadget-legacyToolbar-log.js — loaded');

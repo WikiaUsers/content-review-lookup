@@ -69,7 +69,7 @@
 				target.click(OggPlayer.clickButton).append(audioObj).attr('title',i18n.msg(OggPlayer.constRef.play).plain());
 				
 				if (target.hasClass(OggPlayer.constRef.focusable)) {
-					target.attr("tabindex", 0)
+					target.attr("tabindex", 0);
 					target.on("keypress", function(e) {
 						// enter key pressed
 						if (e.which === 13) {
@@ -112,8 +112,8 @@
 				return true;
 			}
 		};
-
 		OggPlayer.init();
+		mw.hook('dev.OggPlayer').fire(OggPlayer);
 	}
 
 	mw.hook('dev.i18n').add(function(i18n) {

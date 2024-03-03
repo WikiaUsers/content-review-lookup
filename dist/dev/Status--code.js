@@ -8,7 +8,7 @@ $(function() {
 		inUserNamespace = $.inArray(config.wgNamespaceNumber, [2, 3, 1200]) !== -1,
 		i18n,
 		date = new Date();
-	if (!inUserNamespace || window.StatusLoaded) {
+	if (window.StatusLoaded) {
 		return;
 	}
 	window.StatusLoaded = true;

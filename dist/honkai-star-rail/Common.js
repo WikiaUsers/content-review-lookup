@@ -28,4 +28,4 @@ window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExten
    instead, we can use "found"
 */
 window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 found";
-window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You found all &lt;b&gt;$1&lt;/b&gt; of &lt;b&gt;$2&lt;/b&gt; \"$3\" markers on $4.";
+window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You found all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";

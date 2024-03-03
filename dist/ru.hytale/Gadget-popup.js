@@ -1,1 +1,0 @@
-mw.loader.load('//en.wikipedia.org/w/load.php?modules=ext.gadget.Navigation_popups');

@@ -1,1 +1,0 @@
-@import url(https://terraria.gamepedia.com/index.php?title=MediaWiki:Common.js/Jquery.cookie.js&action=raw&ctype=text/javascript);

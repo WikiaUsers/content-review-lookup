@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("//angrybirdsevolution.gamepedia.com/index.php?title=MediaWiki:Common.js\u0026action=raw\u0026ctype=text/javascript");

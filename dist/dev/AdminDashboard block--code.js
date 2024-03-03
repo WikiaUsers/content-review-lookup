@@ -29,8 +29,8 @@
                     i18n.msg('block').escape()
                 )
             ).hover(this.hover.bind(this), this.unhover.bind(this));
-            $('section.wiki ul.controls').append(this.$control);
-            this.$tooltip = $('.control-section.wiki > header > .dashboard-tooltip');
+            $('section.community ul.controls').append(this.$control);
+            this.$tooltip = $('.control-section.community > header > .dashboard-tooltip');
         },
         hover: function(e) {
             this.$tooltip.text(this.$control.data('tooltip'));

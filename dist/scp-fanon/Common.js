@@ -42,3 +42,5 @@ UserTagsJS.modules.inactive = {
 UserTagsJS.modules.custom = {
 	'CJDakotaraptor': ['founder'],
 };
+
+window.enableReadProgressBarOnArticles = true;

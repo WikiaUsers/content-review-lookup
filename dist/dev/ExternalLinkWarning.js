@@ -87,12 +87,16 @@
     mw.hook('dev.i18n').add(preload);
     mw.hook('dev.showCustomModal').add(preload);
 
-    importArticles({
-        type: 'script',
-        articles: [
+    importArticles(
+        {
+            type: 'script',
+            articles: [
             'u:dev:MediaWiki:ShowCustomModal.js',
             'u:dev:MediaWiki:I18n-js/code.js'
-        ]
-    });
-
+        ]},
+        {
+            type: 'style',
+            article: 'u:dev:MediaWiki:ExternalLinkWarning.css'
+        }
+    );
 }(window.jQuery, window.mediaWiki));

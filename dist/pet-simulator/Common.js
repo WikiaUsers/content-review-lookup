@@ -2,7 +2,15 @@ window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;
 
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+threadmoderator: { u:'Discussions Moderator', link:'Project:Threadmoderator' }
+}​;
 
+UserTagsJS.modules.custom = {
+	'NoobyLord33': ['Discussions Moderator']​
+}​;
 
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };

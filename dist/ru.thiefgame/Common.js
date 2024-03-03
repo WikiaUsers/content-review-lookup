@@ -277,16 +277,19 @@ function setupModule(data) {
                 '<tr>' +
                     '<td style="vertical-align:middle; width:auto;">' +
                         '<p class="chat-name">' +
-                            'Хромой Буррик — чат нашей вики в мессенджере <a href="https://ru.wikipedia.org/wiki/Discord" target="_blank">Discord</a>' +
-                        '</p>' +
-                    '</td>' +
-                      '<td style="vertical-align:middle; width:100px;">' +
-                        '<center>' +
-                            '<img alt="thiefgame4-wiki" src="https://vignette.wikia.nocookie.net/thiefgame/images/5/55/G02.png/revision/latest?cb=20190217230734&format=original&path-prefix=ru" class="discord-server-icon">' +
-                            '<span>В сети: <span id="discord-counter">?</span></span>' +
-                            '<button class="discord-joined">Войти в чат</button>' +
-                        '</center>' +
-                      '</td>' +
+                            '<span>ХРОМОЙ БУРРИК</span>' +
+                            '<span>сервер Башни</span>' +
+                            '<a href="https://thiefgame.fandom.com/ru/wiki/Thief_Game_Wiki:Свиток_Бассо#Участники">[верификация]</a>' +
+							'<a href="https://thiefgame.fandom.com/ru/wiki/Thief_Game_Wiki:Discord">[faq]</a>' +
+						'</p>' +
+					'</td>' +
+                        '<td style="vertical-align:middle; width:100px;">' +
+                            '<center>' +
+                                '<img alt="thiefgame4-wiki" src="https://vignette.wikia.nocookie.net/thiefgame/images/5/55/G02.png/revision/latest?cb=20190217230734&format=original&path-prefix=ru" class="discord-server-icon">' +
+                                '<span>В сети: <span id="discord-counter">?</span></span>' +
+                                '<button class="discord-joined">Войти в чат</button>' +
+                            '</center>' +
+                        '</td>' +
                 '</tr>' +
                 '<tr>' +
                     '<td colspan="2">' +

@@ -189,20 +189,20 @@ $(function () {
 							rvprop: 'content',
 						})
 						.then(function (data) {
-							if (data?.query?.pages && Object.keys(data.query.pages).length > 0) {
+							if (data && data.query && data.query.pages && Object.keys(data.query.pages).length > 0) {
 								Object.keys(data.query.pages).forEach(function (id) {
-									if (data.query.pages?.[id]?.revisions?.[0]?.slots?.main?.['*']) {
+									if (data.query.pages[id] && data.query.pages[id].revisions && data.query.pages[id].revisions[0].slots.main['*']) {
 										var pageName = data.query.pages[id].title;
 										var split = refRevision.splitSections(data.query.pages[id].revisions[0].slots.main['*'], pageName);
 										console.log(refs._pages[pageName], 'refs._pages[pageName]')
 										console.log(split, 'split')
 										refs._pages[pageName].sections.forEach(function (name) {
-											if (split.sections?.[name]?.length > 0) {
+											if (split.sections && split.sections[name] && split.sections[name].length > 0) {
 												refRevision.parseReferences(split.sections[name], pageName);
 											}
 										});
 										refs._pages[pageName]['tags'].forEach(function (name) {
-											if (split['tags']?.[name]?.length > 0) {
+											if (split['tags'] && split['tags'][name] && split['tags'][name].length > 0) {
 												refRevision.parseReferences(split['tags'][name], pageName);
 											}
 										});
@@ -296,7 +296,7 @@ $(function () {
 			if (/<section/.test(str)) {
 				str.match(/<section.*?begin=".*?".*?\/\s*>[\s\S]*?<section.*?end=".*?".*?\/\s*>/g).forEach(function(group){
 					var _a = /<section.*?begin="(.*?)".*?\/\s*>([\s\S]*?)<section.*?end=".*?".*?\/\s*>/.exec(group);
-					if (_a[1]?.length>0 && _a[2]?.length>0) {
+					if (_a[1] && _a[2] && _a[1].length>0 && _a[2].length>0) {
 						sorted['tags'][_a[1]] = _a[2];
 					}
 				});
@@ -322,7 +322,7 @@ $(function () {
 		},
 		findUndefined: function () {
 			refs._callbacks.forEach(function (callback) {
-				if (!refs?.[callback.group]?.[callback.name]) {
+				if (!(refs[callback.group] || refs[callback.group][callback.name])) {
 					refs._undefined[callback.group] = refs._undefined[callback.group] || {};
 					refs._undefined[callback.group][callback.name] = refs._undefined[callback.group][callback.name] || [];
 					if (refs._undefined[callback.group][callback.name].indexOf(callback.page) == -1) {

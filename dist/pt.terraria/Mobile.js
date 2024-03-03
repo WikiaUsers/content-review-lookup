@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://terraria.fandom.com/pt/wiki/MediaWiki:FandomMobile.js?action=raw\u0026ctype=text/javascript");

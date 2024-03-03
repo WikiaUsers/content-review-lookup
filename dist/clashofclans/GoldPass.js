@@ -153,9 +153,7 @@ $(document).ready(function() {
     	refreshSecondGearChoices();
     }
    /* Initialize the choices
-   We first start by writing down level caps corresponding to each choice 
-   NOTE: Frozen Arrow is included because its max level is known (it's an epic)
-   but currently no stats have been added to the following dictionaries. */
+   We first start by writing down level caps corresponding to each choice */
     var dictLevelCaps = {
     	"Barbarian Puppet": 18,
         "Rage Vial": 18,
@@ -173,6 +171,8 @@ $(document).ready(function() {
     	"Healing Tome": 18,
     	"Royal Gem": 18,
     	"Seeking Shield": 18,
+    	"Hog Rider Puppet": 18,
+    	"Haste Vial": 18,
     };
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
@@ -188,10 +188,10 @@ $(document).ready(function() {
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome"];
     		break;
     	case ("Royal Champion"):
-    		heroGearOptions = ["Royal Gem", "Seeking Shield"];
+    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Royal Gem", "Seeking Shield"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -289,6 +289,10 @@ $(document).ready(function() {
    $(".ModifierPercent").each(function () {
    		var percentDamage = $(this).text();
    		$(this).attr("title", percentDamage);
+   });
+   $(".HPDecay").each(function () {
+   		var HPDecay = $(this).text().replace(/,/g,"") * 1;
+   		$(this).attr("title", HPDecay);
    });
    // New implementation as of December 2021: creating general functions for the Gold Pass modifier
    // here, cost is in units (not thousands or millions of units)
@@ -824,6 +828,8 @@ $(document).ready(function() {
 	  var attackFreqArray = [];
 	  // We also need a DPH array to calculate DPS
 	  var DPHArray = [];
+	  // A HP array is also useful to keep track of HP where other things depend on it
+	  var HPArray = [];
 	  // Add an array for Wall damage
 	  var wallDamageArray = [];
 	  // Two lookup arrays for the GW's life aura ability
@@ -846,6 +852,7 @@ $(document).ready(function() {
 			6. Ability DPH increase
 			7. Ability movement speed
 			8. Ability attack type (simply a string to replace another)
+			9. TODO: Ability AS increase (%)
 		What is not given a dictionary:
 			1. Self-heal per second
 			2. Other ability aspects e.g. duration, projectile damage, etc.
@@ -860,7 +867,8 @@ $(document).ready(function() {
 			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105],
-			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
+			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
+			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88]
 		};
 		var dictHPBonus = {
 			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],
@@ -871,28 +879,35 @@ $(document).ready(function() {
 			"Life Gem": [150,163,172,181,192,203,225,249,275,304,336,351,366,381,396,411,426,441],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
-			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380]
+			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
+			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570]
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],
 			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
 			"Archer Puppet": [160,175,190,205,220,235,250,265,280,295,310,325,340,360,380,400,420,440],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
-			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400]
+			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
+			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
-			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+			"Haste Vial": [5,6,6,7,8,8,9,10,11,12,13,13,14,15,15,16,17,18]
 		};
-		var dictAbilityDIBonus = {
+		var dictAbilityDIBonus = { //Written in percent
 			"Rage Vial": [120,120,130,130,130,135,135,135,140,140,140,145,145,145,150,150,150,155]
 		};
 		var dictAbilityDPHBonus = {
 			"Invisibility Vial": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740]
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
-			"Rage Vial": [340,340,383,383,383,415,415,415,447,447,447,480,480,480,511,511,511,543]
+			"Rage Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
+			"Haste Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383]
 		};
+		var dictAbilityASBonus = { //Written in percent
+			"Haste Vial": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
+		}
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
 			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)")
 		};
@@ -934,6 +949,8 @@ $(document).ready(function() {
 			
 			var firstGearASBoost = 0;
 			var secondGearASBoost = 0;
+			var firstGearAASBoost = 0;
+			var secondGearAASBoost = 0;
 			
 			var firstGearASArray = dictASBonus[firstHeroGearName];
 			if (firstGearASArray != undefined) {
@@ -947,6 +964,20 @@ $(document).ready(function() {
     			secondGearASBoost = secondGearASArray[secondHeroGearLvl];
         		if (isNaN(secondGearASBoost)) {
         			secondGearASBoost = 0;
+        		}
+    		}
+  			var firstGearAASArray = dictAbilityASBonus[firstHeroGearName];
+			if (firstGearAASArray != undefined) {
+    			firstGearAASBoost = firstGearAASArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAASBoost)) {
+        			firstGearAASBoost = 0;
+        		}
+    		}
+			var secondGearAASArray = dictAbilityASBonus[secondHeroGearName];
+			if (secondGearAASArray != undefined) {
+    			secondGearAASBoost = secondGearAASArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAASBoost)) {
+        			secondGearAASBoost = 0;
         		}
     		}
 			
@@ -1006,9 +1037,22 @@ $(document).ready(function() {
 					}
 				}
 			}
+			// Obtain hero ability attack speed+ from dictionaries
+			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
+			var heroAbilityAS = 0;
+			if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					heroAbilityAS = firstGearAASBoost + secondGearAASBoost;
+					if (isNaN(heroAbilityAS) === true) {
+						heroAbilityAS = 0;
+					}
+				}
+			}
 			// Stack all of the positive multipliers together additively
-			var positiveAbilityMultiplier = (100 + normalAbilityAS + firstGearASBoost + secondGearASBoost) / 100;
+			var positiveAbilityMultiplier = (100 + firstGearASBoost + secondGearASBoost) / 100;
 			attackFreq *= positiveAbilityMultiplier;
+			// Add ability AS boost (stacks multiplicatively, I think)
+			attackFreq *= (100 + Math.max(normalAbilityAS, heroAbilityAS)) / 100;
 			
 			attackFreqArray.push(attackFreq);
 			// Now display the new attack speed:
@@ -1116,6 +1160,23 @@ $(document).ready(function() {
         			secondGearAbilityDI = 0;
         		}
     		}
+    		// Do the same for hero ability flat damage increase
+    		var firstGearAbilityDPH = 0;
+			var secondGearAbilityDPH = 0;
+    		firstGearArray = dictAbilityDPHBonus[firstHeroGearName];
+    		if (firstGearArray != undefined) {
+    			firstGearAbilityDPH = firstGearArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAbilityDPH)) {
+        			firstGearAbilityDPH = 0;
+        		}
+    		}
+      		secondGearArray = dictAbilityDPHBonus[secondHeroGearName];
+    		if (secondGearArray != undefined) {
+    			secondGearAbilityDPH = secondGearArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAbilityDPH)) {
+        			secondGearAbilityDPH = 0;
+        		}
+    		}	
     		
     		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var heroAbilityMultiplier = 1;
@@ -1135,12 +1196,20 @@ $(document).ready(function() {
 					if (isNaN(normalAbilityDI) === true) {
 						normalAbilityDI = 0;
 					}
-					var normalAbilityMultiplier = (100 + normalAbilityDI) / 100;
+					normalAbilityMultiplier = (100 + normalAbilityDI) / 100;
 				}
 			}
 			var normalAbilityDamage = initialDPH * normalAbilityMultiplier;
+			// Calculate also the damage from flat damage increases, if hero ability check box is turned on
+			var heroAbilityDPH = initialDPH;
+			if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					// Assuming that DI increases are additive. If they're not, I'll have to tweak it to use max
+                	heroAbilityDPH = initialDPH + firstGearAbilityDPH + secondGearAbilityDPH;
+				}
+			}
 			
-			calcNewDPH = Math.max(rageDamage,heroAbilityDamage,normalAbilityDamage);
+			calcNewDPH = Math.max(rageDamage,heroAbilityDamage,normalAbilityDamage,heroAbilityDPH);
 			return calcNewDPH;
 		}
 		$(".DPH").each(function() {
@@ -1174,7 +1243,10 @@ $(document).ready(function() {
     		}
     		// Add this to initial DPH
     		baseDPH = initialDPH + ((firstGearDPS + secondGearDPS) * attackSpeed / 1000);
+    		
     		// Then ability damage (if hero ability checkbox is turned on)
+    		/* Note: For February update onwards, superseded by balance change which makes the DPH bonus a separate buff,
+    		and not a direct modifier to DPH
     		firstGearArray = dictAbilityDPHBonus[firstHeroGearName];
     		if (firstGearArray != undefined) {
     			firstGearAbilityDPH = firstGearArray[firstHeroGearLvl];
@@ -1194,7 +1266,7 @@ $(document).ready(function() {
 				if (heroAbilityCheckBox.checked === true) {
 					baseDPH += (firstGearAbilityDPH + secondGearAbilityDPH);
 				}
-			}
+			} */
 			
 			// Now begin work on the base DPH
 			if ($(this).hasClass("Hero") === true) {
@@ -1546,6 +1618,8 @@ $(document).ready(function() {
 			// This acts on attack frequency, but can be directly multiplied in (see reasoning below for debuffs)
 			var firstGearASBoost = 0;
 			var secondGearASBoost = 0;
+			var firstGearAASBoost = 0;
+			var secondGearAASBoost = 0;
 			
 			var firstGearASArray = dictASBonus[firstHeroGearName];
 			if (firstGearASArray != undefined) {
@@ -1561,7 +1635,28 @@ $(document).ready(function() {
         			secondGearASBoost = 0;
         		}
     		}
+			var firstGearAASArray = dictAbilityASBonus[firstHeroGearName];
+			if (firstGearAASArray != undefined) {
+    			firstGearAASBoost = firstGearAASArray[firstHeroGearLvl];
+        		if (isNaN(firstGearAASBoost)) {
+        			firstGearAASBoost = 0;
+        		}
+    		}
+			var secondGearAASArray = dictAbilityASBonus[secondHeroGearName];
+			if (secondGearAASArray != undefined) {
+    			secondGearAASBoost = secondGearAASArray[secondHeroGearLvl];
+        		if (isNaN(secondGearAASBoost)) {
+        			secondGearAASBoost = 0;
+        		}
+    		}
     		buffedDPS *= (100 + firstGearASBoost + secondGearASBoost) / 100;
+    		// If hero ability is checked on, further buff the DPS by the ability AS boost
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					// Assuming that ability AS increases are additive. If they're not, I'll have to tweak it to use max
+					buffedDPS *= (100 + firstGearAASBoost + secondGearAASBoost) / 100;
+				}
+			}
 			// Now poison and freeze work on attack frequency but since DPS is proportional to attack frequency, they can be applied here all the same
 			var poisonMultiplier = (100 - poisonASMultiplier[poisonSpellLevel])/100;
 			var THpoisonMultiplier = 1;
@@ -1656,6 +1751,10 @@ $(document).ready(function() {
 			var calcApprenticeHP = baseHP * (1000 + apprenticePercent)/1000;
 			var calcNewHP = Math.max(calcWardenHP,calcApprenticeHP);
 			var roundedHP = Math.floor(calcNewHP * 100)/100; //Use floor function to round down to 2 d.p., since the game does this
+			// Add the final value to HP array if required
+			if ($(this).hasClass("Decay")) {
+				HPArray.push(roundedHP);
+			}
 			$(this).text(roundedHP.format("#,##0[.]###"));
 			if (initialHP === roundedHP) {
                 $(this).removeClass("StatModifiedGP");
@@ -1702,6 +1801,8 @@ $(document).ready(function() {
 			var firstGearAbilitySpeed = 0;
 			var secondGearAbilitySpeed = 0;
 			// Set the base speed via hero equipment (currently only supports the use in ability)
+			/* Note: Since the February update, it will be treated as a separate buff,
+			and no longer acts on base stats */
 			var firstGearArray = dictAbilitySpeedBonus[firstHeroGearName];
     		if (firstGearArray != undefined) {
     			firstGearAbilitySpeed = firstGearArray[firstHeroGearLvl] / 10;
@@ -1716,15 +1817,6 @@ $(document).ready(function() {
         			secondGearAbilitySpeed = 0;
         		}
     		}
-    		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
-    		if (heroAbilityCheckBox != null) {
-				if (heroAbilityCheckBox.checked === true) {
-					/* Unlike other buffs, ability speed sets the base movement speed
-					 I am assuming that they do not stack and that the best one is used instead
-					 And if neither gear gives speed, then use the initial speed */
-					baseSpeed = Math.max(firstGearAbilitySpeed, secondGearAbilitySpeed, initialSpeed);
-				}
-			}
 			
 			var rageSpellLevel = $("#rageSpellLevel").val() * 1;
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
@@ -1770,14 +1862,15 @@ $(document).ready(function() {
 		    if (isNaN(frostPotency) === true) {
 		    	frostPotency = 0;
 		    }
-		    // Hero ability check box is already defined and used above
 			var normalAbilityCheckBox = document.getElementById("normalAbilityBoost");
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
 			var rageBoost = 0;
 			var hasteBoost = 0;
 			var towerRageBoost = 0;
+			var heroAbilityBoost = 0;
 			if (rageSpellLevel > 0) {
 				if ($(this).hasClass("Building") === true) {
 					rageBoost = 0;
@@ -1809,10 +1902,18 @@ $(document).ready(function() {
             } else if (capitalHasteSpellLevel > 0) {
             	hasteBoost = capitalHasteSpellLevel + 6;
             }
+    		if (heroAbilityCheckBox != null) {
+				if (heroAbilityCheckBox.checked === true) {
+					/* Since the February update, this no longer acts on base speed,
+					and additionally is written as a speed increase instead of a fixed speed*/
+					heroAbilityBoost = Math.max(firstGearAbilitySpeed, secondGearAbilitySpeed);
+				}
+			}
             /* We will need to multiply and divide by 10 since ability speed is written in tenths,
             	to avoid floating-point errors */
             var rageSpeed = (baseSpeed * 10 + Math.max(rageBoost,towerRageBoost) * 10) / 10;
 			var hasteSpeed = (baseSpeed * 10 + hasteBoost * 10) / 10;
+			var heroAbilitySpeed = (baseSpeed * 10 + heroAbilityBoost * 10) / 10;
 			
 			var abilityBoost = $(".AbilitySpeed").attr("title") * 1;
 			if (isNaN(abilityBoost) === true) {
@@ -1825,7 +1926,7 @@ $(document).ready(function() {
 					abilitySpeed = (baseSpeed * 10 + abilityBoost * 10) / 10;
 				}
 			}
-			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, abilitySpeed);
+			var buffedSpeed = Math.max(rageSpeed, hasteSpeed, abilitySpeed, heroAbilitySpeed);
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
@@ -1978,6 +2079,28 @@ $(document).ready(function() {
 					$(this).removeClass("StatMonolith-2");
 					$(this).removeClass("StatMonolith-3");					
 				}
+			}
+		});
+		$(".Lifetime").each(function() {
+			var initLifetime = $(this).attr("title"); //Is a string
+			var unitHP = HPArray[0];
+			if (isNaN(unitHP)) {
+				unitHP = 0;
+			}
+			var HPDecay = $(".HPDecay").attr("title") * 1;
+			if (isNaN(HPDecay) || HPDecay <= 0) { // Failsafe (should not be used)
+				HPDecay = 1;
+			}
+			// Calculate new lifetime to 2 decimal places (round down)
+			var newLifetime = Math.floor((unitHP * 100) / HPDecay) / 100;
+			var newLifetimeStr = newLifetime.toFixed(2) + 's';
+			$(this).text(newLifetimeStr);
+			// Remove the first entry of HP array to use the next entry
+			HPArray.shift();
+			if (newLifetimeStr.trim() === initLifetime.trim()) {
+				$(this).removeClass("StatModifiedGP");
+			} else {
+				$(this).addClass("StatModifiedGP");
 			}
 		});
     });

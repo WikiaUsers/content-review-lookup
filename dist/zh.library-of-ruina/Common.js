@@ -61,7 +61,8 @@ importArticles({
         'MediaWiki:CombatCard.js',
         'MediaWiki:AbnormalityPage.js',
         'MediaWiki:AdminDashboardImportJS.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js'
+        'u:dev:MediaWiki:ReferencePopups/code.js',
+        'u:dev:MediaWiki:DivEditor/code.js'
     ]
 });
 

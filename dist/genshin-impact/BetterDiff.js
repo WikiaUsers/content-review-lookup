@@ -477,7 +477,11 @@ $(function() {
 							var num = 0;
 							var patrol = false;
 							
-							while ( check.query.recentchanges[num] && can.patrol && patrol == false ) {
+							while (
+								!document.querySelector('#mw-diff-ntitle4 > .patrollink') &&
+								check.query.recentchanges[num] &&
+								can.patrol && patrol == false
+							) {
 								// Add patrol button if any revision to patrol
 								if (check.query.recentchanges[num].unpatrolled && (
 									(data.compare.torevid && data.compare.fromrevid &&

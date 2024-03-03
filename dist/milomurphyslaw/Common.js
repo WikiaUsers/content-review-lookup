@@ -3,7 +3,7 @@ window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
 
-/* Replaces {{USERNAME}} with the name of the user browsing the page; requires copying Template:USERNAME */
+/* Replaces Template:USERNAME with the name of the user browsing the page; requires copying Template:USERNAME */
 $(function UserNameReplace() {
    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
    $("span.insertusername").text(wgUserName);

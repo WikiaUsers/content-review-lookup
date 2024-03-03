@@ -37,9 +37,9 @@ window.mapsExtendedConfig = {
 
 // GadgetsStateToggler Config
 nkch_gst_gadgets = [{
-    name: "Performance",
-    title: "Performance Mode",
-    description: "Disable background, icon, and discord widget gif animation."
+    name: "Animated",
+    title: "Animated Background",
+    description: "Makes background, icon, and discord widget animated."
 }, {
     name: "adBlock",
     title: "AdBlock",

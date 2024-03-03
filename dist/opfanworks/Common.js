@@ -186,3 +186,6 @@ addOnloadHook(checktimers);
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
+
+// RAIL MODULE ADDITIONS //
+window.AddRailModule = [{prepend: true}];

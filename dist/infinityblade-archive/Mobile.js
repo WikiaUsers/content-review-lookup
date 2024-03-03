@@ -1,1 +1,0 @@
-window.onload=function(){var e=document.getElementsByTagName("h2"),t;for(var n=0;n<e.length;n++){t=e[n];t.className="section_heading show";t.onclick=function(){wm_toggle_section(1);this.className=this.className=="section_heading show"?"section_heading hide":"section_heading show"}}}

@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("//hytale-ru.gamepedia.com/index.php?title=MediaWiki:Gadget-Tabs.js\u0026action=raw\u0026ctype=text/javascript");

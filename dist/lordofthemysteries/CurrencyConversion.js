@@ -22,6 +22,10 @@ window.convertCurrency = function convertCurrency() {
             var coppetToPound = 1 / 2400;
             var verlToLouis = 1 / 20;
             var verlToCoppet = 1 / 100;
+            var risotToVerl = 2;
+		    var risotToPound = 1 / 12;
+		    var settaToRisot = 10;
+		    var deganToRisot = 100;
 
             var result;
 
@@ -91,9 +95,25 @@ window.convertCurrency = function convertCurrency() {
                 result = amount * louisToCoppet;
             } else if (fromCurrency === "Coppet" && toCurrency === "Louis d'or") {
                 result = amount * coppetToLouis;
-            } else {
-                result = "Invalid conversion";
-            }
+            } else if (fromCurrency === "Risot" && toCurrency === "Verl d'or") {
+			    result = amount * risotToVerl;
+			} else if (fromCurrency === "Verl d'or" && toCurrency === "Risot") {
+			    result = amount / risotToVerl;
+			} else if (fromCurrency === "Risot" && toCurrency === "Pound") {
+			    result = amount * risotToPound;
+			} else if (fromCurrency === "Pound" && toCurrency === "Risot") {
+			    result = amount / risotToPound;
+			} else if (fromCurrency === "Setta" && toCurrency === "Risot") {
+			    result = amount * settaToRisot;
+			} else if (fromCurrency === "Risot" && toCurrency === "Setta") {
+			    result = amount / settaToRisot;
+			} else if (fromCurrency === "Degan" && toCurrency === "Risot") {
+			    result = amount * deganToRisot;
+			} else if (fromCurrency === "Risot" && toCurrency === "Degan") {
+			    result = amount / deganToRisot;
+			} else {
+			    result = "Invalid conversion";
+			}
 
     document.getElementById("result").value = result === "-" ? result : result.toFixed(2);
 };
@@ -123,6 +143,11 @@ document.getElementById("currency-converter").innerHTML =
   '<option value="Lick"> -- Lick(s)</option>' +
   '<option value="Louis d\'or"> -- Louis d\'or</option>' +
   "</optgroup>" +
+  '<optgroup label="Feynapotter Kingdom">' +
+  '<option value="Risot">Risot</option>' +
+  '<option value="Setta">Setta</option>' +
+  '<option value="Degan">Degan</option>' +
+  "</optgroup>" +
   "</select>" +
   "<br>" +
   '<input type="number" id="result" readonly placeholder="Result" size="6">' +
@@ -137,6 +162,11 @@ document.getElementById("currency-converter").innerHTML =
   '<option value="Coppet">Coppet(s)</option>' +
   '<option value="Lick"> -- Lick(s)</option>' +
   '<option value="Louis d\'or"> -- Louis d\'or</option>' +
+  "</optgroup>" +
+  '<optgroup label="Feynapotter Kingdom">' +
+  '<option value="Risot">Risot</option>' +
+  '<option value="Setta">Setta</option>' +
+  '<option value="Degan">Degan</option>' +
   "</optgroup>" +
   "</select>" +
   "<br>" +

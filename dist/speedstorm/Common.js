@@ -115,3 +115,22 @@ $('.fandom-community-header__community-name-wrapper').append(
 	$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('padding-left', '5px').css('position', 'absolute').css('left', '100%').css('top', '-20px')
 	.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009')
 );
+
+/* Adding the list of the last new page creations */
+$.ajax({
+    url: "https://speedstorm.fandom.com/api.php?action=query&format=json&list=logevents&formatversion=2&leprop=title&letype=create&lenamespace=0&lelimit=5",
+    type: 'GET',
+    dataType: 'json',
+    success: function(res) {
+        var newPageList = '<ul>';
+        if (res && res.query && res.query.logevents) {
+    		res.query.logevents.forEach(function(e) {
+        if (e.title) {
+            newPageList += '<li><a href="/wiki/' + e.title + '">' + e.title + '</a></li>';
+        	}
+			 });
+			}
+        newPageList += '</ul>';
+        $( '#recent-changes-api' ).html(newPageList);
+    }
+});

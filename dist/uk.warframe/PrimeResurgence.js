@@ -75,12 +75,15 @@ $(function() {
 					});
 				});
 				// передає в модуль рядок з назвою майбутнього прайм-відродження та вставляє отриманий результат
-				var lastResurgence = vaultTrader.schedule[vaultTrader.schedule.length-1];
-				if (new Date(vaultTrader.expiry).getTime() < new Date(lastResurgence.expiry).getTime()) {
+				var lastResurgence = vaultTrader.schedule.filter(function(item) {
+					if (item.expiry > vaultTrader.expiry)
+					return true;
+				});
+				if (new Date(vaultTrader.expiry).getTime() < new Date(lastResurgence[0].expiry).getTime()) {
 					const api = new mw.Api();
 					const params = {
 						action: "parse",
-						text: "{{#invoke:Прайм-відродження|nextResurgence|"(+lastResurgence.item || "")+"}}",
+						text: "{{#invoke:Прайм-відродження|nextResurgence|"+(lastResurgence[0].item || "")+"}}",
 						format: "json"
 					};
 					api.get(params).done( function (data) {

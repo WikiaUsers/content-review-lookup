@@ -1,1 +1,0 @@
-mw.loader.load("https://terraria.fandom.com/wiki/MediaWiki:Common.js?action=raw\u0026ctype=text/javascript");

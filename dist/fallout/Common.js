@@ -230,20 +230,20 @@ window.globalFileUsageConfig = {
 /* ### Auto-hide empty weapon mod table columns                                      ### */
 /* ### ----------------------------------------------------------------------------  ### */
 /* ### Description: Hides empty columns in Fallout 4 & 76 weapon mod tables          ### */
-/* ### Credit:   Scratchy1024                                                        ### */
+/* ### Credit:      User:Scratchy1024                                                ### */
 /* ##################################################################################### */
 (function hideEmptyModTableColumns() {
   var tableArray = document.getElementsByClassName("weaponmod-fallout76"); //get all tables with the weaponmod-fallout76 class
   for (var ta = 0, tableFo76; tableFo76 = tableArray[ta]; ta++ ){ //for each mod table
-	  for (var ia = 0; ia < tableFo76.rows[2].cells.length; ia++) { //for each column
+	  for (var ia = 0; ia < tableFo76.rows[1].cells.length; ia++) { //for every cell in the header row (row index 1)
 	    var isHiddenA = true; //Assume there's no data in the column
-	    for (var ja = 3; ja < tableFo76.rows.length; ja++) { //iterate down the rows (skip first 3 rows, mod slot, headers, and a hidden <td>)
+	    for (var ja = 2; ja < tableFo76.rows.length; ja++) { //iterate down the rows (skip first 2 indicies, mod slot, headers)
 	      if (tableFo76.rows[ja].cells[ia].innerText != "–") { //Once we hit data, i.e. a non "-" value, don't hide the column
-	        isHiddenA = false; //we found data in the column, don't hide
+	        isHiddenA = false; //we found data in the column, don't hide it
 	      }
 	    }
 	    if (isHiddenA) {
-	      for (var ka = 2; ka < tableFo76.rows.length; ka++) { //iterate down the current column (start at 2 to hide headers)
+	      for (var ka = 1; ka < tableFo76.rows.length; ka++) { //iterate down the current column (index 1 to hide headers)
 	        tableFo76.rows[ka].cells[ia].style.display = 'none'; //hide it
 	      }
 	    }
@@ -253,7 +253,7 @@ window.globalFileUsageConfig = {
   for (var tb = 0, tableFo4; tableFo4 = tableArray[tb]; tb++ ){
 	  for (var ib = 0; ib < tableFo4.rows[2].cells.length; ib++) {
 	    var isHiddenB = true;
-	    for (var jb = 1; jb < tableFo4.rows.length; jb++) { //iterate down the rows (skip first row, headers)
+	    for (var jb = 1; jb < tableFo4.rows.length; jb++) { //iterate down the rows (skip index 0, mod slot)
 	      if (tableFo4.rows[jb].cells[ib].innerText != "–") {
 	        isHiddenB = false;
 	      }
@@ -266,3 +266,83 @@ window.globalFileUsageConfig = {
 	  }
   }
 })();
+
+/* ##################################################################################### */
+/* ### Mod table column toggles                                                      ### */
+/* ### ----------------------------------------------------------------------------  ### */
+/* ### Description: Hides/unhides Resources & Form ID cols when a div is clicked     ### */
+/* ### Credit:      User:Scratchy1024                                                ### */
+/* ##################################################################################### */
+var toggleResourcesArray = document.getElementsByClassName("resourcesToggle"); //get array of resource toggle spans
+for (var ac = 0, resourceSpan; (resourceSpan = toggleResourcesArray[ac]); ac++) { //for each span
+  resourceSpan.addEventListener("click", function () { //add an event listener, execure the following code on event
+    var tableArray = document.getElementsByClassName("weaponmod-fallout76"); //get all mod tables
+    for (var tc = 0, table; (table = tableArray[tc]); tc++) { //for each mod table
+      for (var hc = 0; hc < table.rows[2].cells.length; hc++) { //for every header
+        if (table.rows[1].cells[hc].classList.contains("resourcesHeader")) { //check if resource header
+          var resCol1 = hc; //assign column number to var
+        }
+      }
+      for (var jc = 1; jc < table.rows.length; jc++) { //for every row in the column (start at index 1 to hide headers)
+        if (table.rows[jc].cells[resCol1].style.display === "none") { //if not visible
+          table.rows[jc].cells[resCol1].style.display = ""; //make visible
+        } else { //else visible
+          table.rows[jc].cells[resCol1].style.display = "none"; //make not visible
+        }
+      }
+    }
+    for (var bc = 0, resourceSpan; (resourceSpan = toggleResourcesArray[bc]); bc++) { //get array of resource toggle spans
+      if (resourceSpan.innerHTML === "show resources") {
+        resourceSpan.innerHTML = "hide resources"; //update display text
+      } else {
+        resourceSpan.innerHTML = "show resources"; //update display text
+      }
+    }
+  });
+}
+
+var toggleFormIDArray = document.getElementsByClassName("formIDToggle");
+for (var ad = 0, formIDSpan; (formIDSpan = toggleFormIDArray[ad]); ad++) {
+  formIDSpan.addEventListener("click", function () {
+    var tableArray = document.getElementsByClassName("weaponmod-fallout76"); //get all mod tables
+    for (var td = 0, table; (table = tableArray[td]); td++) {
+      for (var hd = 0; hd < table.rows[2].cells.length; hd++) {
+        if (table.rows[1].cells[hd].classList.contains("formIDHeader")) {
+          var IDCol1 = hd;
+        }
+      }
+      for (var jd = 1; jd < table.rows.length; jd++) {
+        if (table.rows[jd].cells[IDCol1].style.display === "none") {
+          table.rows[jd].cells[IDCol1].style.display = "";
+        } else {
+          table.rows[jd].cells[IDCol1].style.display = "none";
+        }
+      }
+    }
+    for (var bd = 0, formIDSpan; (formIDSpan = toggleFormIDArray[bd]); bd++) {
+      if (formIDSpan.innerHTML === "show IDs") {
+        formIDSpan.innerHTML = "hide IDs";
+      } else {
+        formIDSpan.innerHTML = "show IDs";
+      }
+    }
+  });
+}
+
+$(function() { //hide resources and Form ID rows on load
+var tableArray = document.getElementsByClassName("weaponmod-fallout76"); //get all mod tables
+for (var tb = 0, table; (table = tableArray[tb]); tb++) { //for each mod table
+  for (var hb = 0; hb < table.rows[1].cells.length; hb++) { //for every cell in the header row (row 1)
+    if (table.rows[1].cells[hb].classList.contains("resourcesHeader")) { //if the cell has this class
+      var resCol = hb; //save that class in a variable
+    }
+    if (table.rows[1].cells[hb].classList.contains("formIDHeader")) { //if the cell has this class)
+      var IDCol = hb; //save that class in a variable
+    }
+  }
+  for (var jb = 1; jb < table.rows.length; jb++) {//for every row (start at 1 to hide headers)
+    table.rows[jb].cells[resCol].style.display = "none"; //make resources not visible
+    table.rows[jb].cells[IDCol].style.display = "none"; //make Form ID not visible
+  }
+}
+});

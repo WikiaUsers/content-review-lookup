@@ -1,1 +1,0 @@
-mw.loader.load('//ru.wikipedia.org/w/index.php?title=MediaWiki:Gadget-articleStats.js&action=raw&ctype=text/javascript');

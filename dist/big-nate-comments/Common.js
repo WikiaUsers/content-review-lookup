@@ -307,7 +307,7 @@ if ($(".editing-prize").length) {
 if (mw.config.get('wgPageName') === 'Big_Nate_COMMENTS_Wiki:Counter-Vandalism_Unit') {
     mw.loader.load( 'https://big-nate-comments.fandom.com/wiki/User:Evalprime/cvu.js?action=raw&ctype=text/javascript' );
 }
-
+// Usertags should be added here:
 window.UserTagsJS = {
 	modules: {},
 	tags: {}

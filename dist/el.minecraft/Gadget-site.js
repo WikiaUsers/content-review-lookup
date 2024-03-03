@@ -1,1 +1,0 @@
-mw.loader.load('https://minecraft.fandom.com/index.php?title=MediaWiki:Gadget-site.js&action=raw&ctype=text/javascript');

@@ -1,1 +1,0 @@
-mw.loader.load("//help.gamepedia.com/MediaWiki:Gadget-fontmanager.js?action=raw&ctype=text/javascript","text/javascript");

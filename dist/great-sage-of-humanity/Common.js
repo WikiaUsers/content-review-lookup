@@ -38,7 +38,7 @@ $(document).on("submit", function (e) {
  * ================================================================================*/
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.dock = '#mw-content-text';
-window.pPreview.RegExp.noinclude = ['.nolinkpreview', '#toc', '.mw-headline', '.reference', '.mw-references-wrap', 'li', 'pre'];
+window.pPreview.RegExp.noinclude = ['.nolinkpreview', '#toc', '.mw-headline', '.reference', '.mw-references-wrap', 'li', 'pre', '.mbox'];
 /**================================================================================
  *                         No License Warning Configuration
  *                   https://dev.fandom.com/wiki/NoLicenseWarning
