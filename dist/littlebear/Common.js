@@ -47,15 +47,14 @@ $.getJSON("/api.php?action=listuserssearchuser&groups=sysop&contributed=0&limit=
   const currentMonth = new Date().getMonth();
   const currentDate = new Date().getDate();
 
-  for (var i = 0; i < json['listuserssearchuser']['result_count']; i++){
+  for (var i = 0; i < json.listuserssearchuser.result_count; i++){
     const username = json['listuserssearchuser'][i]['username'];
     const roles = json['listuserssearchuser'][i]['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
     const numberOfEdits = json['listuserssearchuser'][i]['edit_count'];
     const lastEdit = json['listuserssearchuser'][i]['last_edit_date'];
     const lastEditDate = new Date(lastEdit.split(', ')[1]);
-    const lastEditDiff = json['listuserssearchuser'][i]['diff_edit_url'];
 
-    $('.administration').append('<tr><td><a href="/wiki/User:'+username+'">'+username+'</a></td><td>'+roles+'</td><td>'+numberOfEdits+'</td><td><a href="'+lastEditDiff+'">'+lastEdit+'</a></td><td class="status"></td></tr>');
+    $('.administration').append('<tr><td><a href="/wiki/User:'+username+'">'+username+'</a></td><td>'+roles+'</td><td>'+numberOfEdits+'</td><td><a href="/wiki/Special:Contributions/'+username+'">'+lastEdit+'</a></td><td class="status"></td></tr>');
 
     if (lastEditDate.getFullYear() < currentYear && lastEditDate.getMonth() < currentMonth && lastEditDate.getDate() < currentDate){
       $('.status:last').addClass('inactive').html('Inactive');

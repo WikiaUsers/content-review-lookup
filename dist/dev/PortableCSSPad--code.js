@@ -133,7 +133,73 @@
 		$(document.head).append('<script id="PortableCSSPad-pretty-diff-script" type="text/javascript" src="' + options.prettyDiffURL + '"></script><link rel="stylesheet" type="text/css" href="' + options.stylesheetURL + '" /><style id="PortableCSSPad-live-style" type="text/css"></style>');
 
 		// HTML base for the whole pad
-		var padHTML = '<div id="PortableCSSPad-container" class="PortableCSSPad-pad-disabled"><div id="PortableCSSPad-menu"><a id="PortableCSSPad-title" title="w:c:dev:PortableCSSPad" href="https://dev.fandom.com/wiki/PortableCSSPad">PortableCSSPad</a><div id="PortableCSSPad-buttons"><div id="PortableCSSPad-important-button" class="PortableCSSPad-button" title="Adds !important to all CSS properties"></div><div id="PortableCSSPad-unimportant-button" class="PortableCSSPad-button" title="Removes !important from all CSS properties"></div><div id="PortableCSSPad-beautify-button" class="PortableCSSPad-button" title="Beautifies (nicely formats) all CSS in the textarea"></div><div id="PortableCSSPad-minify-button" class="PortableCSSPad-button" title="Minifies (removes comments and whitespace) CSS to reduce file size"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-validate-button" class="PortableCSSPad-button" title="Opens the W3C CSS3 validation service in a new tab, you can copy/paste the contents of the textarea into the new tab to validate the CSS"></div><div class="PortableCSSPad-vertical-bar"></div><div id="PortableCSSPad-onoff-button" class="PortableCSSPad-button" title="Toggles the live-update feature on and off. While off, CSS rules in the pad are ignored"></div><div id="PortableCSSPad-close-button" class="PortableCSSPad-button" title="Closes the pad"></div></div></div><textarea id="PortableCSSPad-textarea" placeholder="Type or copy/paste CSS into this box to test it out on this page"></textarea></div>';
+		var padHTML = $('<div>', {
+            id: 'PortableCSSPad-container',
+            class: 'PortableCSSPad-pad-disabled',
+            append: [
+                $('<div>', {
+                    id: 'PortableCSSPad-menu',
+                    append: [
+                        $('<a>', {
+                            id: 'PortableCSSPad-title',
+                            title: 'w:c:dev:PortableCSSPad',
+                            href: 'https://dev.fandom.com/wiki/PortableCSSPad',
+                            text: 'PortableCSSPad'
+                        }),
+                        $('<div>', {
+                            id: 'PortableCSSPad-buttons',
+                            append: [
+                                $('<div>', {
+                                    id: 'PortableCSSPad-important-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Adds !important to all CSS properties'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-unimportant-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Removes !important from all CSS properties'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-beautify-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Beautifies (nicely formats) all CSS in the textarea'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-minify-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Minifies (removes comments and whitespace) CSS to reduce file size'
+                                }),
+                                $('<div>', {
+                                    class: 'PortableCSSPad-vertical-bar'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-validate-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Opens the W3C CSS3 validation service in a new tab, you can copy/paste the contents of the textarea into the new tab to validate the CSS'
+                                }),
+                                $('<div>', {
+                                    class: 'PortableCSSPad-vertical-bar'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-onoff-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Toggles the live-update feature on and off. While off, CSS rules in the pad are ignored'
+                                }),
+                                $('<div>', {
+                                    id: 'PortableCSSPad-close-button',
+                                    class: 'PortableCSSPad-button',
+                                    title: 'Closes the pad'
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                $('<textarea>', {
+                    id: 'PortableCSSPad-textarea',
+                    placeholder: 'Type or copy/paste CSS into this box to test it out on this page'
+                })
+            ]
+        });
 
 		// insert HTML base into document
 		$('#PortableCSSPad-container').remove();
@@ -349,17 +415,16 @@
 
 		$('#PortableCSSPad-wikialoader-link').parent().remove();
 
-			// add link to toolbar
-			$('#WikiaBar .toolbar .tools').append($listItem);
+		// add link to toolbar
+		$('#WikiaBar .toolbar .tools').append($listItem);
 
 		// attach init handler to $link
 		$link = $('#PortableCSSPad-wikialoader-link');
 		$link.one('click', function (event) {
 			event.stopPropagation();
 
-			var is137Wiki = mw.config.get('wgVersion') !== '1.33.3';
 			// install draggable and resizable from MediaWiki's version of jQuery UI
-			mw.loader.using(is137Wiki ? ['jquery.ui'] : ['jquery.ui.draggable', 'jquery.ui.resizable'], function () {
+			mw.loader.using('jquery.ui', function () {
 				var $window = $(window);
 
 				// initialize the pad

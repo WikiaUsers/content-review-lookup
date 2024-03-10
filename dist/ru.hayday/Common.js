@@ -30,6 +30,7 @@ function addClickTaskEvent(elem) {
 		}
 	});
 }
+// украшения
 function addClickDecos(elem, list) {
 	var btn = elem.querySelector('button');
 	var imgTypes = ['для заповедника', 'для фермы', 'за алмазы', 'заборы дорожки', 'за ваучеры', 'за монеты', 'награды', 'природа', 'сезонные', 'статуи'];
@@ -53,35 +54,83 @@ function addClickDecos(elem, list) {
 			}
 		});
 	});
-	
 }
 
+//сортировка заданий скачек 320
+function derbyAutoSort(input) {
+	//console.log(input);
+	input.addEventListener("input", function(){
+		//console.log("input");
+		var level = +(input.value);
+		if (level) {
+			var tables = document.querySelectorAll(".derby-grid");
+			//console.log(level);
+			tables.forEach(function(table){
+				var tasks = table.querySelectorAll('.derby-task');
+				tasks.forEach(function(task){
+					//console.log(task);
+					var localLevel = +task.lastChild.lastChild.textContent;
+					if (localLevel > level) {
+						task.style.display = "none";
+					} else {
+						task.style.display = "flex";
+					}
+				});
+			});
+		}
+		
+	});
+}
+
+// добавление кнопок
 if (document.body.className.includes('page-События_с_заданиями')) {
-	var inputLevel = document.querySelector("#inputlevel");
-	inputLevel.innerHTML = '<input type=number min=1 max=1000 style="width: 50px;" /><button class="game-button">Показать</button>';
-	addClickTaskEvent(inputLevel);
+	var eventsInputLevel = document.querySelector("#inputlevel");
+	eventsInputLevel.innerHTML = '<input type=number min=1 max=1000 style="width: 50px;" /><button class="game-button">Показать</button>';
+	addClickTaskEvent(eventsInputLevel);
 }
 
 if (document.body.className.includes('page-Украшения')) {
-	var imgActive = [false, false, false, false, false, false, false, false, false, false];
+	var decoImgActive = [false, false, false, false, false, false, false, false, false, false];
 	
 	var typesDecos = document.querySelectorAll('#deco-changer span.click-box');
 	typesDecos.forEach(function(span, i) {
 		span.addEventListener('click', function() {
 			//alert(link.innerHTML);
-			if (imgActive[i]) {
-				imgActive[i] = false;
+			if (decoImgActive[i]) {
+				decoImgActive[i] = false;
 				span.style.background = 'transparent';
 			} else {
-				imgActive[i] = true;
+				decoImgActive[i] = true;
 				span.style.background = '#88888830';
 			}
 		});
 	});
-	var submit = document.querySelector('#deco-changer #deco-button');
-	submit.innerHTML = '<button class="game-button">Показать</button>';
-	addClickDecos(submit, imgActive);
+	var decoSubmit = document.querySelector('#deco-changer #deco-button');
+	decoSubmit.innerHTML = '<button class="game-button">Показать</button>';
+	addClickDecos(decoSubmit, decoImgActive);
 }
+
+if (document.body.className.includes('page-Скачки')) {
+	var derbySortSpan = document.createElement("span");
+	derbySortSpan.id = "derby-sort";
+	derbySortSpan.style = "float: right;";
+	var derbySortTxt = document.createTextNode("Введите ваш уровень: ");
+	var derbyInput = document.createElement("input");
+	derbyInput.type = "number";
+	derbyInput.min = 1;
+	derbyInput.max = 1000;
+	derbyInput.style.width = "50px";
+	derbySortSpan.append(derbySortTxt, derbyInput);
+	
+	var derbyPlace = document.querySelectorAll(".derby-grid")[0];
+	derbyPlace.before(derbySortSpan);
+	derbyPlace.style.clear = "right";
+	
+	//console.log(derbyPlace, derbySortSpan);
+	
+	derbyAutoSort(derbyInput);
+}
+
 //noimage
 var linksToNewImg = document.querySelectorAll('.mw-parser-output a');
 //console.log(linksToNewImg);

@@ -204,15 +204,15 @@ function staminaSlider(){
     $('#staminaSlider .sliderText').eq(0).append(
         $('<span>').attr({id:'staminaSliderSwitch'}).text('現有'),
         document.createTextNode('體力: '),
-        $('<input type="text">').addClass('input').val(50),
-        $('<input type="hidden">').val(50),
+        $('<input type="text">').addClass('input').val(80),
+        $('<input type="hidden">').val(80),
         $('<br>'),
         document.createTextNode('現在是 '),
         $('<span>').attr({id:'staminaSliderNow'})
     ).end().eq(1).append(
         document.createTextNode('目標體力: '),
-        $('<input type="text">').addClass('input').val(80),
-        $('<input type="hidden">').val(80),
+        $('<input type="text">').addClass('input').val(110),
+        $('<input type="hidden">').val(110),
         $('<br>'),
         $('<span>').attr({id:'staminaSliderSwitch2'}).text('大約'),
         document.createTextNode('於 '),

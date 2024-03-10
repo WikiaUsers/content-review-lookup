@@ -3,8 +3,6 @@
 /********************************************************************************/
 
 
-/* BackToTopButton */
-window.BackToTopModern = true;
  
 /* CustomButton */
 if (mwCustomEditButtons) {

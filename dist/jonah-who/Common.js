@@ -13,3 +13,10 @@ UserTagsJS.modules.metafilter = {
 	bureaucrat: ['founder'],
 	threadmoderator: ['sysop', 'bureaucrat']
 };
+
+window.SpoilerAlertJS = {
+    question: 'This area contains spoilers. Read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 870
+};

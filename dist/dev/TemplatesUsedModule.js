@@ -16,6 +16,7 @@ function getAll(start) {
 		format: "json",
 		formatversion: 2
 	}).done(function(data){
+		if (!Object.hasOwn(data.query.pages[0], 'templates')) return;
 		data.query.pages[0].templates.forEach(function(tem){
 			if ((tem.ns === 10) || (tem.ns === 828)) tu.push(tem.title);
 			else tu2.push(tem.title);

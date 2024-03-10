@@ -1,11 +1,4 @@
-// ============================================================
-//                       Imports
-// ============================================================
-// Check ImportJS for imports
-
-// ==================================================
-//  Folding Multi Wiki Tabs (experimental)
-// ==================================================
+mw.config.set('UMFBypassLicenseCheck', true);
 
 function foldingTabsMulti() {
     var len = 0;

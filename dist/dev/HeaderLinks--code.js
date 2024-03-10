@@ -58,32 +58,28 @@
             // easier than importing such a small amount of code
             function init(i18n) {
                 mw.util.addCSS(
-                    'h1:hover .mw-header-link,h2:hover .mw-header-link,h3:hover .mw-header-link,h4:hover .mw-header-link,h5:hover .mw-header-link,h6:hover .mw-header-link{opacity:0.5 !important;}' +
-                    '.mw-headline .mw-header-link:hover{opacity:1 !important;}'
+					'.mw-header-link {float:right; opacity:0; transition:opacity .3s;}' +
+                    'h1:hover .mw-header-link,h2:hover .mw-header-link,h3:hover .mw-header-link,h4:hover .mw-header-link,h5:hover .mw-header-link,h6:hover .mw-header-link{opacity:.5;}' +
+                    '.mw-headline .mw-header-link:hover{opacity:1;}'
                 );
 
                 headers.each(function() {
 
-                    var $a = $('<a>')
-                        .attr('title', i18n.msg('text').plain())
+                    var $svg = $('<svg>')
+                        .attr('class', 'wds-icon wds-icon-small')
                         .append(
-                            $('<img>')
-                            .attr({
-                            	height: '20',
-                                width: '20',
-                                src: '//upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Ambox_padlock_gray.svg/20px-Ambox_padlock_gray.svg.png'
-                            })
+                            $('<use>')
+                            .attr('href', '#wds-icons-link-small')
                         ),
+						$a = $('<a>')
+                        .attr('title', i18n.msg('text').plain())
+                        .append($svg),
                         $span = $('<span>')
                         .attr('class', 'mw-header-link')
-                        .append($a)
-                        .css({
-                            'float': 'right',
-                            'opacity': '0',
-                            'transition': 'opacity 0.3s linear'
-                        }),
+                        .append($a),
                         $h = $(this);
 
+					$a[0].innerHTML = $a[0].innerHTML;
                     $a.attr('href', '#' + $h.attr('id'));
                     $h.append($span);
 

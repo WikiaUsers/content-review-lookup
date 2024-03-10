@@ -73,8 +73,15 @@ $(function() {
 					'</td>';
 				document.querySelector('#mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField').after(preloads_row);
 				var preloads_list = document.querySelector('#mw-htmlform-description tbody select#wpPreload');
+				var preloadOpts = preloads_list;
 				window.dev.BetterUpload.preloads.forEach(function(setting, num){
-					if (setting.name && (setting.preload || setting.header)) {
+					if (setting._group==='0') {
+						preloadOpts = preloads_list;
+					} else if (setting._group) {
+						preloadOpts = document.createElement('optgroup');
+						preloadOpts.setAttribute('label', setting._group);
+						preloads_list.append(preloadOpts);
+					} else if (setting.name && (setting.preload || setting.header)) {
 						var option = document.createElement('option');
 						if (setting.header) {
 							option.setAttribute('disabled', 'disabled');
@@ -85,7 +92,7 @@ $(function() {
 						}
 						option.innerHTML = setting.description || setting.name;
 						option.setAttribute('numref', num);
-						preloads_list.append(option);
+						preloadOpts.append(option);
 					}
 				});
 				document.querySelector('#mw-htmlform-description tbody select#wpPreload').addEventListener('change', function(event){
@@ -111,19 +118,28 @@ $(function() {
 								'</td>';
 							document.querySelector('#mw-htmlform-description tbody .wpPreloadRow').after(fillin_row);
 							var fillin_list = document.querySelector('#mw-htmlform-description tbody select#wpFillin');
+							var options = fillin_list;
 							settings.fillin.forEach(function(fillin, index){
-								var option = document.createElement('option');
-								var name = fillin.name || fillin.values.join(', ');
-								if (fillin.header) {
-										option.setAttribute('disabled', 'disabled');
-										option.style.color = 'GrayText';
-								} else if (fillin.preload) {
-									option.setAttribute('value', name);
-									option.setAttribute('title', name);
+								if (fillin._group==='0') {
+									options = fillin_list;
+								} else if (fillin._group) {
+									options = document.createElement('optgroup');
+									options.setAttribute('label', fillin._group);
+									fillin_list.append(options);
+								} else {
+									var option = document.createElement('option');
+									var name = fillin.name || fillin.values.join(', ');
+									if (fillin.header) {
+											option.setAttribute('disabled', 'disabled');
+											option.style.color = 'GrayText';
+									} else if (fillin.preload) {
+										option.setAttribute('value', name);
+										option.setAttribute('title', name);
+									}
+									option.innerHTML = name;
+									option.setAttribute('numref', index);
+									options.append(option);
 								}
-								option.innerHTML = name;
-								option.setAttribute('numref', index);
-								fillin_list.append(option);
 							});
 							document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
 								var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');

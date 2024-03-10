@@ -51,12 +51,12 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
-/* Christmas header - Inactive */
-$('.fandom-community-header__community-name-wrapper').append(
+/* Event header - Inactive */
+/*$('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
             .text('Valetines Day!')
         )
         .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Valentine%27s_Day_(2024)')
-);
+); */

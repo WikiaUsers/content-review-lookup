@@ -1,4 +1,19 @@
 /**================================================================================
+ *    Changing styling for 1st, 2nd, 3rd, 4th and more to sup tag automatically
+ *                                  @Author : Zarenth
+ * ================================================================================*/
+$(document).ready(function() {
+    $('table').each(function() {
+        $(this).find('td').each(function() {
+            var cellText = $(this).html();
+            cellText = cellText.replace(/(\d+)(st|nd|rd|th)/g, function(match, p1, p2) {
+                return p1 + "<sup>" + p2 + "</sup>";
+            });
+            $(this).html(cellText);
+        });
+    });
+});
+/**================================================================================
  *                 Display None For Reference Headline Without Ref
  *                                  @Author : Zarenth
  * ================================================================================*/
