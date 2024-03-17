@@ -59,6 +59,18 @@ window.AddRailModule = [{page: 'Template:RailModuleMain', prepend: true}, 'Ша�
     }
 }( jQuery, mediaWiki );
 
+//Добавление стилей для категории "Просмотр"
+!function( $, mw ) {
+    var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
+ 
+    if ( a.indexOf( 'Watch' ) !== -1 || p == 'Категория:Watch' ) {
+        importArticle({
+            type: 'style',
+            article: 'MediaWiki:Watch.css'
+        });
+    }
+}( jQuery, mediaWiki );
+
 //Отображение/скрытие элементов
 $(".button-toggle").click(function () {
 	var id = document.getElementById(this.id);
@@ -72,6 +84,7 @@ $(".button-toggle").click(function () {
 		toggle.classList.add("display-none");
 	}
 });
+
 
 	//Переключение элементов
 	$(function() {

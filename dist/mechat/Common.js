@@ -1,0 +1,1 @@
+window.AddRailModule = [{page: 'Template:RailModule', prepend: true, params: {user: window.wgUserName}}];

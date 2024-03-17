@@ -45,7 +45,7 @@
 			'					<li><label><input class="overlaySelect" type="checkbox" name="ArcherT4">T4 Archer</label></li>' +
 			'					<li><label style="font-weight: bold;">T4 Profession Thrall</label>' +
 			'						<ul id="crafterT4sub">' +
-			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Alchemist">Alchemist</label></li>					' +
+			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Alchemist">Alchemist</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Armorer">Armorer</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Bearer">Bearer</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Blacksmith">Blacksmith</label></li>' +
@@ -54,11 +54,12 @@
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Performer">Performer</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Priest">Priest</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Smelter">Smelter</label></li>' +
+			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Sorcerer">Sorcerer</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Tanner">Tanner</label></li>' +
 			'							<li><label><input class="overlaySelect" type="checkbox" name="ProfessionT4Taskmaster">Taskmaster</label></li>' +
 			'						</ul>' +
 			'					</li>' +
-			'				</ul>					' +
+			'				</ul>' +
 			'			</li>' +
 			'			<li class="options-group"><label class="options-group-label" onclickx="toggleGroups(\'options-group-pets\')" group="options-group-pets">Pets</label>' +
 			'				<ul id="options-group-pets" class="options-group-content" style="display: none;">' +
@@ -67,6 +68,7 @@
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterCrocodile">Crocodile</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterElephant">Elephant</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterFawn">Fawn</label></li>' +
+			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterFoal">Foal</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterDireWolfPup">Frostwolf</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterHyenaPuppy">Hyena</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterJaguarCub">Jaguar</label></li>' +
@@ -76,10 +78,9 @@
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterRhino">Rhino</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterSabretoothCub">Sabretooth</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterKappa">Shaleback</label></li>' +
-			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterSpottedHyenaPuppy">Spotted Hyena</label></li>' +
-			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterStripedHyenaPuppy">Striped Hyena</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterTigerCub">Tiger</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterWolfPup">Wolf</label></li>' +
+			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterPiglet">TEST</label></li>' +
 			'				</ul>' +
 			'			</li>' +
 			'			<li class="options-group"><label class="options-group-label" onclickx="toggleGroups(\'options-group-misc\')" group="options-group-misc">Misc</label>' +
@@ -176,6 +177,7 @@
 			"ProfessionT4Performer":		new MapIcon({iconUrl: imgBaseUrl + '/5/59/MapMarker_performerT4.png/20px-MapMarker_performerT4.png'}), 
 			"ProfessionT4Priest": 			new MapIcon({iconUrl: imgBaseUrl + '/3/3f/MapMarker_priestT4.png/20px-MapMarker_priestT4.png?version=f43e22fff326a283789ab946a113ae2e'}), 
 			"ProfessionT4Smelter": 			new MapIcon({iconUrl: imgBaseUrl + '/b/b1/MapMarker_smelterT4.png/20px-MapMarker_smelterT4.png?version=f6b02e702ffc57490eb2dc18a6fb3e1c'}), 
+			"ProfessionT4Sorcerer": 		new MapIcon({iconUrl: imgBaseUrl + '/8/87/MapMarker_proft4.png/20px-MapMarker_proft4.png?version=ce7d3e0850cf7be4cc6e83ee0eb3fbbc'}), 
 			"ProfessionT4Tanner": 			new MapIcon({iconUrl: imgBaseUrl + '/1/12/MapMarker_tannerT4.png/20px-MapMarker_tannerT4.png?version=c3f3dd9f7cdbff04dfc049a664c332c7'}), 
 			"ProfessionT4Taskmaster": 		new MapIcon({iconUrl: imgBaseUrl + '/4/45/MapMarker_taskmasterT4.png/20px-MapMarker_taskmasterT4.png'}), 
 			"DialogNPC":					new MapIcon({iconUrl: imgBaseUrl + '/3/3a/MapMarker_dialog_npc.png/20px-MapMarker_dialog_npc.png?version=de44993072c8eafb45fe13c8d2ad7582'}), 
@@ -193,8 +195,9 @@
 			"CritterWildBoarPiglet":		new MapIcon({iconUrl: imgBaseUrl + '/5/56/MapMarker_petBoarShoat.png/20px-MapMarker_petBoarShoat.png'}), 
 			"CritterKappa":					new MapIcon({iconUrl: imgBaseUrl + '/c/ca/MapMarker_petKappa.png/20px-MapMarker_petKappa.png'}), 
 			"CritterFawn":					new MapIcon({iconUrl: imgBaseUrl + '/5/56/MapMarker_petFawn.png/20px-MapMarker_petFawn.png'}), 
-			"CritterStripedHyenaPuppy":		new MapIcon({iconUrl: imgBaseUrl + '/c/cf/MapMarker_petStripedHyena.png/20px-MapMarker_petStripedHyena.png'}), 
-			"CritterSpottedHyenaPuppy":		new MapIcon({iconUrl: imgBaseUrl + '/3/34/MapMarker_petSpottedHyena.png/20px-MapMarker_petSpottedHyena.png'}), 
+			"CritterFoal":					new MapIcon({iconUrl: imgBaseUrl + '/0/08/MapMarker_pet.png/20px-MapMarker_pet.png'}), 
+			//"CritterStripedHyenaPuppy":		new MapIcon({iconUrl: imgBaseUrl + '/c/cf/MapMarker_petStripedHyena.png/20px-MapMarker_petStripedHyena.png'}), 
+			//"CritterSpottedHyenaPuppy":		new MapIcon({iconUrl: imgBaseUrl + '/3/34/MapMarker_petSpottedHyena.png/20px-MapMarker_petSpottedHyena.png'}), 
 			"CritterSabretoothCub":			new MapIcon({iconUrl: imgBaseUrl + '/a/a8/MapMarker_petSabretooth.png/20px-MapMarker_petSabretooth.png'}), 
 			"CritterJaguarCub":				new MapIcon({iconUrl: imgBaseUrl + '/3/33/MapMarker_petJaguar.png/20px-MapMarker_petJaguar.png'}), 
 			"CritterRhino":					new MapIcon({iconUrl: imgBaseUrl + '/5/5f/MapMarker_petRhino.png/20px-MapMarker_petRhino.png'}), 
@@ -231,9 +234,10 @@
 			// poi obelisk
 			"T_Map_Icon_generic_stamp_5":	new MapIcon({iconUrl: imgBaseUrl + '/a/a3/T_Map_Icon_generic_stamp_5.png/20px-T_Map_Icon_generic_stamp_5.png?version=2c5a8a8e164f40c40228180401ea6049'}),
 			// misc data
-			"misc_feat":	new MapIcon({iconUrl: imgBaseUrl + '/4/47/T_Map_Icon_stamp_loreObject.png/20px-T_Map_Icon_stamp_loreObject.png?version=7aa38882f221f04273f4e97e03f5d1cc'}),
-			"misc_emote":	new MapIcon({iconUrl: imgBaseUrl + '/2/20/T_Map_avatarIcon.png/20px-T_Map_avatarIcon.png?version=5b372fc04ab5324eaf0f3b2c75926aaa'}),
-			"misc_lore":	new MapIcon({iconUrl: imgBaseUrl + '/0/0f/T_Map_Icon_generic_stamp_1.png/20px-T_Map_Icon_generic_stamp_1.png?version=d0509c2b58c54d41b4b3254c5774a7d6'}),
+			"misc_feat":		new MapIcon({iconUrl: imgBaseUrl + '/4/47/T_Map_Icon_stamp_loreObject.png/20px-T_Map_Icon_stamp_loreObject.png?version=7aa38882f221f04273f4e97e03f5d1cc'}),
+			"misc_emote":		new MapIcon({iconUrl: imgBaseUrl + '/2/20/T_Map_avatarIcon.png/20px-T_Map_avatarIcon.png?version=5b372fc04ab5324eaf0f3b2c75926aaa'}),
+			"misc_lore":		new MapIcon({iconUrl: imgBaseUrl + '/0/0f/T_Map_Icon_generic_stamp_1.png/20px-T_Map_Icon_generic_stamp_1.png?version=d0509c2b58c54d41b4b3254c5774a7d6'}),
+			"misc_dungeonarea":	new MapIcon({iconUrl: imgBaseUrl + '/b/b4/T_Map_dungeonIcon.png/20px-T_Map_dungeonIcon.png?version=fa70bd002ec55a146d74a4a2415bc8c2'}), 
 		}
 	
 		// Define overlay layers for the different types of locations
@@ -255,6 +259,7 @@
 			"ProfessionT4Performer":	L.layerGroup(), // T4 Entertainer
 			"ProfessionT4Priest":		L.layerGroup(), // T4 Priest
 			"ProfessionT4Smelter":		L.layerGroup(), // T4 Smelter
+			"ProfessionT4Sorcerer":		L.layerGroup(), // T4 Sorcerer
 			"ProfessionT4Tanner":		L.layerGroup(), // T4 Tanner
 			"ProfessionT4Taskmaster":	L.layerGroup(), // T4 Taskmaster
 			"ProfDefault":				L.layerGroup(),
@@ -275,15 +280,19 @@
 			"CritterWildBoarPiglet":	L.layerGroup(),
 			"CritterKappa":				L.layerGroup(),
 			"CritterFawn":				L.layerGroup(),
-			"CritterStripedHyenaPuppy":	L.layerGroup(),
-			"CritterSpottedHyenaPuppy":	L.layerGroup(),
+			"CritterFoal":				L.layerGroup(),
+			//"CritterSpringyFoal":		L.layerGroup(),
+			//"CritterSturdyFoal":		L.layerGroup(),
 			"CritterSabretoothCub":		L.layerGroup(),
 			"CritterJaguarCub":			L.layerGroup(),
 			"CritterRhino":				L.layerGroup(),
+			//"CritterCalf":				L.layerGroup(),
 			"CritterElephant":			L.layerGroup(),
 			"CritterBrownBear":			L.layerGroup(),
 			"CritterBlackBearCub":		L.layerGroup(),
 			"CritterHyenaPuppy":		L.layerGroup(),
+			//"CritterStripedHyenaPuppy":	L.layerGroup(),
+			//"CritterSpottedHyenaPuppy":	L.layerGroup(),
 			// point of interest
 			"poifix":					L.layerGroup(),
 			"T_Map_caveIcon":			L.layerGroup(),
@@ -308,7 +317,16 @@
 			"misc_feat":	L.layerGroup(),
 			"misc_emote":	L.layerGroup(),
 			"misc_lore":	L.layerGroup(),
-	
+			// TODO: neue OVerlays
+			"CritterGazelle":			L.layerGroup(),
+			"CritterWhiteRabbit":		L.layerGroup(),
+			"CritterRabbit":			L.layerGroup(),
+			"CritterDeer":				L.layerGroup(),
+			"CritterAntilope":			L.layerGroup(),
+			"CritterSalamanderHatchling":	L.layerGroup(),
+			"CritterKomodoHatchling":	L.layerGroup(),
+			"CritterHouseCat":			L.layerGroup(),
+			"CritterPiglet":			L.layerGroup(),
 		}
 	
 		// Define the map and options for it.
@@ -344,7 +362,6 @@
 				var purge = data[i]
 				//console.log(purge);
 	
-				//var isAlchemistT4 = false;
 				var keys = new Array()
 	
 				// prepare popup content
@@ -398,6 +415,8 @@
 					}
 	
 					popup += prepareSpawnRow(name, type, id, chance, fm) // name;
+					
+					//console.log("name: " + name + " (" + id + ")")
 	
 					if(type != undefined) {
 						// DIalog NPC
@@ -420,7 +439,18 @@
 						else if(type == "Critter") {
 							keys.push("Critter")
 							// prepare pet specific key
-							keys.push("Critter" + name.replace(/ /g, ""))
+							var cleanName = "Critter" + name.replace(/ /g, "")
+							
+							// CritterSpringyFoal and CritterSturdyFoal => CritterFoal
+							if(cleanName == "CritterSpringyFoal" || cleanName == "CritterSturdyFoal" ) {
+								cleanName = "CritterFoal"
+							} else if(cleanName == "CritterStripedHyenaPuppy" || cleanName == "CritterSpottedHyenaPuppy") {
+								cleanName = "CritterHyenaPuppy"
+							} else if(cleanName == "CritterCalf") {
+								cleanName = "CritterRhino"
+							}
+							
+							keys.push(cleanName)
 						}
 						// T4
 						else if(type == "Archer") { // T4 Archer
@@ -444,6 +474,8 @@
 						}
 					}
 				}
+				
+				//console.log("  keys: " + keys)
 	
 				// add coords to popup
 				popup += "<br/>" + prepareTeleportPlayerRow(purge["marker"])
@@ -458,15 +490,16 @@
 					var overlay = namedOverlays[key]
 					if(overlay == undefined) {
 						console.log("overlay not found: " + key)
-						// overlay = namedOverlays["ProfessionT4"]
+						//overlay = namedOverlays["debug"]
 					} else {
+						//console.log("  add popup to: " + key + " : " + popup)
 						L.marker(prepareMarker(purge["marker"]), {icon: icon}).addTo(overlay).bindPopup(popup)
 						markerCount = markerCount + 1
 					}
 				});
 			}
 			
-			//console.log(markerCount + " markers added")
+			console.log(markerCount + " markers added")
 	
 			prepareFocusDetails()
 		})
@@ -624,18 +657,21 @@
 			var name = event.target.name
 			var checked = event.target.checked
 			var overlay = namedOverlays[name]
+			console.log("event toggleOverlay: name = " + name + ", checked = " + checked)
+			console.log(overlay)
 			if(overlay == undefined) {
 				console.log("no overlay for name '" + name + "' found")
 				return;
 			}
 	
 			if(checked) {	
-				map.addLayer(overlay)
+				var result = map.addLayer(overlay)
+				console.log(result)
 			} else {
 				map.removeLayer(overlay)
 			}
 	
-			console.log(event)
+			//console.log(event)
 		}
 	
 		function prepareBounds(bounds) {

@@ -28,10 +28,18 @@ mw.hook('wikipage.content').add(function($content) {
 
 	var articles = [];
 
+	articles.push('MediaWiki:ChangeVisibleText.js');
 	if ($content.find('.fehwiki-tabber')[0]) articles.push('MediaWiki:Universal.js');
 	if ($content.find('#DropdownSelects')[0]) articles.push('MediaWiki:DropdownSelects.js');
 	if ($content.find('#buildFilter')[0]) articles.push('MediaWiki:BuildDropdownFilter.js');
 	if (mw.config.get('wgPageName') === 'Stats_calculator') articles.push('MediaWiki:Stats_Calculator.js');
+
+	//Gamepedia/FANDOM-specific code to add format=original parameter to file URLs on File pages
+	if (mw.config.get("wgNamespaceNumber") === 6) {
+		$( ".fullImageLink > a, .fullMedia > p > a, .filehistory tr td:nth-child(3) > a, .filehistory tr td:nth-child(4) > a" ).attr( "href", function( _, val) {
+			return (new mw.Uri(val)).extend({format: "original"}).toString();
+		});
+	}
 
 	if (articles.length) importArticles({type: "script", articles: articles});
 });

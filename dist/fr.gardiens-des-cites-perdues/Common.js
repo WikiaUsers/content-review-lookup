@@ -186,3 +186,25 @@ setTimeout(function () {
       '%, #FFF 0%); border: 3px solid #3A3A3A"></div></center>';
   });
 }, 5000);
+
+/*** Discord ***/
+mw.hook('wikipage.content').add(function($content) {
+    if (!mw.util.$content) {
+        return;
+    }
+    mw.util.$content.find('.dchat').each(function() {
+        var $this = $(this),
+            widget = true,
+            css = {
+                width: '100%',
+                height: '800',
+                border: 0
+            };
+        $this.html(
+            $('<iframe>', {
+                src: 'https://e.widgetbot.io/channels/719085354514251877/719215577994100766',
+                css: css
+            })
+        );
+    });
+});

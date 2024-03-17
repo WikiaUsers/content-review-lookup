@@ -130,3 +130,8 @@ UserTagsJS.modules.inactive = {
 	namespaces: [0, 'Talk', 'User talk', 'Forum']
 	}
 };
+
+	// Locking comments (6 months or older), might be broken code
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 182;
+window.lockOldComments.addNoteAbove = true;

@@ -13,3 +13,31 @@ $(function() {
         });
     }
 });
+
+// И для ГВ
+$(function() {
+    var cat = mw.config.get('wgCategories')
+
+    if (cat.indexOf('Голос Времени') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:GVStyles.css",
+            ]
+        });
+    }
+});
+
+// Не забудем про ИМ
+$(function() {
+    var cat = mw.config.get('wgCategories')
+
+    if (cat.indexOf('Идеальный МИР') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:IMStyles.css",
+            ]
+        });
+    }
+});

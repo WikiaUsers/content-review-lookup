@@ -1,4 +1,4 @@
- // Usertags
+/* // Usertags
 // Core configuration. We add 2 custom tags and change what the built-in sysop tag says.
 window.UserTagsJS = {
 	modules: {},
@@ -89,4 +89,4 @@ rollback: ['bureaucrat'],
 chatmoderator: ['bureaucrat']
 };
  
-impart('u:dev:MediaWiki:UserTags/code.js');
+impart('u:dev:MediaWiki:UserTags/code.js'); */

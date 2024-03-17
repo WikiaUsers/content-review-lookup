@@ -22,6 +22,7 @@ function loadScript(url, callback) {
 loadScript('https://cdn.jsdelivr.net/npm/@widgetbot/crate@3', function() {
   new Crate({
     server: '719085354514251877', 
-    channel: '719215577994100766' // #tchat
+    channel: '719215577994100766',
+    notifications: false
   });
 });

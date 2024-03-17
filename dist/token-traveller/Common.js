@@ -1,5 +1,5 @@
-function idfsgsInit() {
-	var idfsgsdialogues = document.querySelectorAll('.idfsgsdialogue');
+function ttInit() {
+	var ttdialogues = document.querySelectorAll('.ttdialogue');
 	var options = {};
 	var dialogueNPCName = {};
 	var dialogueText = {};
@@ -520,10 +520,10 @@ function idfsgsInit() {
 	
 	function append_button(v, dialoguename) {
 		var btn = document.createElement('div');
-		btn.classList.add('idfsgsdialogueoption');
-		btn.innerHTML = '<div class="idfsgsdialogueoptiontext">' + getKeywordsFor(v.option) + '</div>';
+		btn.classList.add('ttdialogueoption');
+		btn.innerHTML = '<div class="ttdialogueoptiontext">' + getKeywordsFor(v.option) + '</div>';
 		if (v.btnstyle) {
-		    var btnText = btn.querySelector('.idfsgsdialogueoptiontext');
+		    var btnText = btn.querySelector('.ttdialogueoptiontext');
 		    for (var name in v.btnstyle) {
 		        var value = v.btnstyle[name];
 		        btnText.style[name] = value;
@@ -640,28 +640,28 @@ function idfsgsInit() {
 		}, waittime)
 	}
 	
-	function create_dialogue(idfsgsdialogue, dialoguename) {
-		dialogues[dialoguename] = idfsgsdialogue;
-		dialogueNPCName[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguenpcname');
-		dialogueText[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguetext');
-		optionsList[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialogueoptionscontainer');
-		restartMessage[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguerestart');
+	function create_dialogue(ttdialogue, dialoguename) {
+		dialogues[dialoguename] = ttdialogue;
+		dialogueNPCName[dialoguename] = ttdialogue.querySelector('.ttdialoguenpcname');
+		dialogueText[dialoguename] = ttdialogue.querySelector('.ttdialoguetext');
+		optionsList[dialoguename] = ttdialogue.querySelector('.ttdialogueoptionscontainer');
+		restartMessage[dialoguename] = ttdialogue.querySelector('.ttdialoguerestart');
 		
 		var textSound = document.createElement('audio');
 		textSound.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/f/ff/Message.mp3';
 		textSound.style.display = 'none';
-		idfsgsdialogue.appendChild(textSound)
+		ttdialogue.appendChild(textSound)
 		textSounds[dialoguename] = textSound;
 		
 		var endSound = document.createElement('audio');
 		endSound.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/9/9e/DialogEnd.mp3';
 		endSound.style.display = 'none';
-		idfsgsdialogue.appendChild(endSound)
+		ttdialogue.appendChild(endSound)
 		endSounds[dialoguename] = endSound;
 		
 		var startSound = document.createElement('audio');
 		startSound.style.display = 'none';
-		idfsgsdialogue.appendChild(startSound)
+		ttdialogue.appendChild(startSound)
 		startSounds[dialoguename] = startSound;
 		
 		dialogue_path[dialoguename] = JSON.parse(dialogueNPCName[dialoguename].innerHTML.replace(/<.+>/g, '').replace(/\{quot\}/g, '\\"').replace(/\{break\}/g, '<br/>'));
@@ -679,13 +679,13 @@ function idfsgsInit() {
 		next_dialogue(dialogue_path[dialoguename], dialoguename);
 	}
 	
-	if (idfsgsdialogues.length) {
-		for (var i = 0; i < idfsgsdialogues.length; i++) {
-			var idfsgsdialogue = idfsgsdialogues.item(i);
+	if (ttdialogues.length) {
+		for (var i = 0; i < ttdialogues.length; i++) {
+			var ttdialogue = ttdialogues.item(i);
 			try {
-				create_dialogue(idfsgsdialogue, 'dialogue' + i)
+				create_dialogue(ttdialogue, 'dialogue' + i)
 			} catch (error) {
-				idfsgsdialogue.querySelector('.idfsgsdialoguetext').innerHTML = error.stack;
+				ttdialogue.querySelector('.ttdialoguetext').innerHTML = error.stack;
 			}
 		}
 	}

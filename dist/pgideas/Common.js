@@ -2,7 +2,7 @@
 
 //Configuration for AjaxRC
 window.ajaxPages = ["Some Frequently Updated Page"];
-window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
+window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log"];
 window.ajaxIndicator = 'https://images.wikia.nocookie.net/software/images/a/a9/Indicator.gif';
 window.ajaxRefresh = 30000;
 $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {

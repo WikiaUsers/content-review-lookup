@@ -13,7 +13,7 @@ $('h2:contains("Credits")+ul').wrap('<div class="mw-collapsible" id="mw-customco
 
 $('h2:contains("Contents")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list">');
 
-var listItems = $('div#mw-customcollapsible-list > ul > li > ul > li');
+const listItems = $('div#mw-customcollapsible-list > ul > li > ul > li');
 
 if (listItems.length > 10){
   $('div#mw-customcollapsible-list').addClass('mw-collapsed');
@@ -42,26 +42,37 @@ $('.license-description').append('For more information, see the <a href="/wiki/C
 
 /* For [[Template:Administration]] */
 
-$.getJSON("/api.php?action=listuserssearchuser&groups=sysop&contributed=0&limit=10&order=ts_edit&sort=desc&offset=0&format=json", function(json){
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
-  const currentDate = new Date().getDate();
+$.getJSON("/api.php?action=listuserssearchuser&groups=bot,rollback,threadmoderator,content-moderator,sysop&contributed=1&limit=100&order=ts_edit&sort=desc&offset=0&format=json", function(json){
+  const now = new Date().getTime();
 
   for (var i = 0; i < json.listuserssearchuser.result_count; i++){
     const username = json['listuserssearchuser'][i]['username'];
     const roles = json['listuserssearchuser'][i]['groups'].replace('*, autoconfirmed, ', '').replace('emailconfirmed, ', '').replace('map-tester, ', '').replace(', user', '').replace('sysop', 'admin');
     const numberOfEdits = json['listuserssearchuser'][i]['edit_count'];
     const lastEdit = json['listuserssearchuser'][i]['last_edit_date'];
-    const lastEditDate = new Date(lastEdit.split(', ')[1]);
+    const lastEditComp = lastEdit.split(', ');
+    const lastEditDate = new Date(lastEditComp[1]+' '+lastEditComp[0]+' UTC').getTime();
 
     $('.administration').append('<tr><td><a href="/wiki/User:'+username+'">'+username+'</a></td><td>'+roles+'</td><td>'+numberOfEdits+'</td><td><a href="/wiki/Special:Contributions/'+username+'">'+lastEdit+'</a></td><td class="status"></td></tr>');
 
-    if (lastEditDate.getFullYear() < currentYear && lastEditDate.getMonth() < currentMonth && lastEditDate.getDate() < currentDate){
+    if (now - lastEditDate > 31556952000){
       $('.status:last').addClass('inactive').html('Inactive');
-    } else if (lastEditDate.getMonth() < currentMonth){
+    } else if (now - lastEditDate > 2629746000){
       $('.status:last').addClass('semi-active').html('Semi-active');
     } else {
       $('.status:last').addClass('active').html('Active');
     }
   }
 });
+
+/* For [[Little Bear Wiki:FCC]] */
+
+if ($(location.hash).attr('class') === 'FCC-link'){
+  for (var i = 0; i < 5; i++){
+    setTimeout(function(){
+      $(window).scrollTop(0);
+    }, i * 1000);
+  }
+
+  $(location.hash).css('font-weight', 'bold');
+}

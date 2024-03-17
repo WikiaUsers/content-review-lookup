@@ -275,7 +275,7 @@ function setupModule(data) {
         '<table>' +
             '<tbody>' +
                 '<tr>' +
-                    '<td style="vertical-align:middle; width:auto;">' +
+                    '<td>' +
                         '<p class="chat-name">' +
                             '<span>ХРОМОЙ БУРРИК</span>' +
                             '<span>сервер Башни</span>' +
@@ -283,7 +283,7 @@ function setupModule(data) {
 							'<a href="https://thiefgame.fandom.com/ru/wiki/Thief_Game_Wiki:Discord">[faq]</a>' +
 						'</p>' +
 					'</td>' +
-                        '<td style="vertical-align:middle; width:100px;">' +
+                        '<td>' +
                             '<center>' +
                                 '<img alt="thiefgame4-wiki" src="https://vignette.wikia.nocookie.net/thiefgame/images/5/55/G02.png/revision/latest?cb=20190217230734&format=original&path-prefix=ru" class="discord-server-icon">' +
                                 '<span>В сети: <span id="discord-counter">?</span></span>' +

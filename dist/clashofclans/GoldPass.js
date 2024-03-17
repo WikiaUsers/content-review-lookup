@@ -42,9 +42,22 @@ $(document).ready(function() {
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
 	/* Event boosts: change the options as appropriate for the event
 	Last event: Cookie Rumble */
-	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
-	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput" style="display:none;">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost"> <option value="0">0</option> <option value="5">5</option> <option value="10">10</option></select> %</div>');
-	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost"> <option value="0">0</option> <option value="15">15</option> <option value="30">30</option></select> %</div>');
+	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
+		'<option value="0">0</option>' +
+		'<option value="5">5</option>' +
+		'<option value="10">10</option>' +
+		'</select> %</div>');
+	$("span#eventResearchBoostHarness").html('<div id="eventResearchBoostInput" style="display:none;">Research Boost: <select name="eventResearchBoost" id="eventResearchBoost">' +
+		'<option value="0">0</option>' +
+		'<option value="5">5</option>' +
+		'<option value="10">10</option>' +
+		'</select> %</div>');
+	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
+		'<option value="0">0</option>' + 
+		//'<option value="15">15</option>' +
+		'<option value="30">30</option>' +
+		'</select> %</div>');
+	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Toggle Showcase Boost? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');
 	$("span#modifierModeHarness").html('<div id="modifierModeToggle">Modifier Mode: '+
 		'<select name="modifierMode" id="modifierMode">'+
    			'<option value="Attack">Attack</option>'+
@@ -169,6 +182,7 @@ $(document).ready(function() {
     	"Life Gem": 18,
     	"Rage Gem": 18,
     	"Healing Tome": 18,
+    	"Fireball": 27,
     	"Royal Gem": 18,
     	"Seeking Shield": 18,
     	"Hog Rider Puppet": 18,
@@ -185,13 +199,13 @@ $(document).ready(function() {
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"];
     		break;
      	case ("Grand Warden"):
-    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome"];
+    		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball"];
     		break;
     	case ("Royal Champion"):
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -598,8 +612,19 @@ $(document).ready(function() {
 		if (isNaN(eventReducePercent) === true) {
 		    eventReducePercent = 0;
 		}
+		var eventShowcaseCheckBox = document.getElementById("eventShowcaseBoost");
 		var baseTrainTime = readTime(str);
-		var newTrainTime = discountTrainTime(baseTrainTime,reducePercent+eventReducePercent);
+		var newTrainTime;
+		if (eventShowcaseCheckBox != null) {
+			if (eventShowcaseCheckBox.checked === true) {
+				var showcaseTrainTime = discountTrainTime(baseTrainTime,50);
+				newTrainTime = discountTrainTime(showcaseTrainTime,reducePercent+eventReducePercent);
+			} else {
+				newTrainTime = discountTrainTime(baseTrainTime,reducePercent+eventReducePercent);
+			}
+		} else {
+			newTrainTime = discountTrainTime(baseTrainTime,reducePercent+eventReducePercent);
+		}
 		
 		// Obtain new training times for 2, 3, 4 barracks
 		// Following barracks changes in October 2022, 3 and 4 barracks are obsoleted. Effectively, a working barracks is worth two barracks, as though there's a invisible (always functional) barracks in the background
@@ -866,6 +891,7 @@ $(document).ready(function() {
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
+			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88]
@@ -2108,7 +2134,7 @@ $(document).ready(function() {
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost").prop("checked",false);
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page

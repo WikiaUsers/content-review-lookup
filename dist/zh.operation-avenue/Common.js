@@ -5,38 +5,8 @@
 /* 下列源代码中含有控制网页行为的语句，其可能会对网络安全造成影响。依据本站站规第四部分第8条与第十部分第6条，未经授权人员以任何方式对于本页面信息进行编辑与渗透均不被允许。 */
 /* 下列原代碼中含有控制網頁行為的語句，其可能會對網路安全造成影響。依據本站站規第四部分第8條與第十部分第6條，未經授權人員以任何方式對於本頁面信息進行編輯與滲透均不被允許。*/
 
-/* JavaSctipt of Operation Avenue Wiki */
-/* March 2024 (Version:1.0) */
-
-/* Adjust Point from End to Start, by Apple Inc. */
-/* while(True)
-{
- points[current_point] = new_value;
- flags[current_point] |= MOVED;
- 
- if (current_point > start_point)
-   curremt_point--;
- else
-   current_point = end_point;
-
- value = points[current_point];
- 
- if (value >= limit_start && value <= limit_end)
-   if (count == 0)
-     break;
- else
-   break;
-
- count--;
-} */
-
-/* Import CSS Into Wiki Pages, by Heaven Detective Agency */
-/* mw.loader.load(["mediawiki.util", "mediawiki.Title"]);
-mw.hook("wikipage.content").add(function () {
-    $("span.import-css").each(function () {
-    	mw.util.addCSS($(this).attr("data-css"));
-    });
-}); */
+/* JavaScript of Operation Avenue Wiki */
+/* March 2024 (Version:1.2.0) */
 
 /* Basic JavaScript Feature, by M.E.G.CN & C.H.P.*/
 (function () {
@@ -100,8 +70,17 @@ $.getJSON(mw.util.wikiScript("index"), {
     }
 });
 
+/* Back To Top Button, by WikiMedia Inc. & Fandom Developers Wiki */
+window.BackToTopSpeed = 100;
+window.BackToTopText = "Back To Top";
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ModernBackToTopButton/code.js',
+    ]
+});
 
-/* Wallgreeting, by WikiMedia Inc.*/
+/* Wallgreeting, by WikiMedia Inc. & Fandom Developers Wiki */
 importArticles({
     type: 'script',
     articles: [

@@ -30,7 +30,7 @@ if (mw.config.get('wgUserGroups').includes('rollback') ||
         type: 'script',
         articles: [
             'u:dev:MediaWiki:MarkForDeletion/code.js',
-            'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
+            //'u:dev:MediaWiki:CategoryRenameAuto-update/code.js',
         ]
     });
 }

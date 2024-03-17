@@ -1,6 +1,6 @@
-$(document).ready(function(){
-  var namespaceNumber = mw.config.get('wgNamespaceNumber');
-  var isCorrectNamespace = namespaceNumber === 0 || namespaceNumber === 2 || namespaceNumber === 4 || namespaceNumber === 14;
+$(function(){
+  const namespaceNumber = mw.config.get('wgNamespaceNumber');
+  const isCorrectNamespace = namespaceNumber === 0 || namespaceNumber === 2 || namespaceNumber === 4 || namespaceNumber === 14;
 
   if (isCorrectNamespace){
     $('div#content div.mw-parser-output').prepend('<div id="lede-start">');
@@ -9,32 +9,30 @@ $(document).ready(function(){
     $('div#lede').after('<div id="body-start">');
     $('div#body-start').nextAll().wrapAll('<div id="body">');
 
-    var findDuplicateLinksLede = function(){
-      var href = $(this).attr('href');
-      if (href != undefined && href.indexOf('#') != 0){
-        if (seenLede[href]){
-          $(this).addClass('duplicate-link');
-        } else {
-          seenLede[href] = true;
-        }
+    function findDuplicateLinksLede(){
+      const href = $(this).attr('href');
+
+      if (seenLede[href]){
+        $(this).addClass('duplicate-link');
+      } else {
+        seenLede[href] = true;
       }
     };
 
-    var findDuplicateLinksBody = function(){
-      var href = $(this).attr('href');
-      if (href != undefined && href.indexOf('#') != 0){
-        if (seenBody[href]){
-          $(this).addClass('duplicate-link');
-        } else {
-          seenBody[href] = true;
-        }
+    function findDuplicateLinksBody(){
+      const href = $(this).attr('href');
+
+      if (seenBody[href]){
+        $(this).addClass('duplicate-link');
+      } else {
+        seenBody[href] = true;
       }
     };
 
-    var seenLede = [];
-    $('div#content div.mw-parser-output').find('div#lede p a').each(findDuplicateLinksLede);
+    const seenLede = {};
+    const seenBody = {};
 
-    var seenBody = [];
-    $('div#content div.mw-parser-output').find('div#body p a').each(findDuplicateLinksBody);
+    $('#content div.mw-parser-output').find('#lede p a').each(findDuplicateLinksLede);
+    $('#content div.mw-parser-output').find('#body p a').each(findDuplicateLinksBody);
   }
 });

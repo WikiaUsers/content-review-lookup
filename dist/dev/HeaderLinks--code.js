@@ -58,9 +58,10 @@
             // easier than importing such a small amount of code
             function init(i18n) {
                 mw.util.addCSS(
-					'.mw-header-link {float:right; opacity:0; transition:opacity .3s;}' +
-                    'h1:hover .mw-header-link,h2:hover .mw-header-link,h3:hover .mw-header-link,h4:hover .mw-header-link,h5:hover .mw-header-link,h6:hover .mw-header-link{opacity:.5;}' +
-                    '.mw-headline .mw-header-link:hover{opacity:1;}'
+                    '.mw-header-link { float: right; }' +
+                    '.mw-header-link a { opacity: 0; transition: opacity .3s; }' +
+                    ':is(h1,h2,h3,h4,h5,h6):hover .mw-header-link a { opacity: .5; }' +
+                    '.mw-headline .mw-header-link a:is(:hover,:focus) { opacity: 1; }'
                 );
 
                 headers.each(function() {
