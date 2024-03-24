@@ -1,3 +1,5 @@
+{ // block-scoping
+
 // append '&format=original' to the url source of specified images
 const allImages = document.querySelectorAll('.mw-parser-output img');
 if (allImages) {
@@ -23,12 +25,14 @@ if (!window.lastEdited) {
 }
 
 // loop the video inside class="videoloop"
-const videoLoop = document.querySelectorAll('.videoloop video');
-if (videoLoop) {
-	videoLoop.forEach(function(video) {
-		video.loop = true;
-	});
-}
+mw.hook('wikipage.content').add(function($content) {
+	const videoLoop = $content[0].querySelectorAll('.videoloop video');
+	if (videoLoop) {
+		videoLoop.forEach(function(video) {
+			video.loop = true;
+		});
+	}
+});
 
 // add default aspect-ratio to hero illustrations to animate `aspect-ratio` states in [[Template:HeroGallery]]
 const heroCard = document.querySelectorAll('.card__hero');
@@ -39,6 +43,12 @@ if (heroCard) {
 		const height = image.getAttribute('height');
 		image.style.setProperty('--illust-aspect-ratio', width + ' \/ ' + height);
 	});
+}
+
+// replace img src in imagemaps to avoid downscaled image blur
+const imageMap = document.querySelector('.imagemap');
+if (imageMap) {
+	imageMap.src = imageMap.src.replace(/scale-to-width-down.*/, '');
 }
 
 // use original image on map-edit page for lossless quality and accuracy
@@ -88,3 +98,5 @@ if (window.location.search === "?action=mapedit") {
 		return ace;
 	}
 })();
+
+}

@@ -26,3 +26,10 @@ $('#showMap').on('click', function(e){ //отображает карту при 
     $('#forMap').attr({"style":"display:block"});
 });
 }
+
+importArticles({
+    тип: 'скрипт',
+    статьи: [
+        'u:dev:MediaWiki:WikiActivity.js',
+    ]
+    });

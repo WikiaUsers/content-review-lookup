@@ -117,7 +117,7 @@
 		
 		var imgBaseUrl = 'https://gamepedia.cursecdn.com/conanexiles_gamepedia/thumb'
 		var mapImgUrl = 'https://gamepedia.cursecdn.com/conanexiles_gamepedia/f/fb/MiniMapFull.jpg?version=0374b20f055202d5f4b995ea9d50f261'
-		var dataUrl = 'https://raw.githubusercontent.com/Juijang/wikidata/master/spawns2.json'
+		var dataUrl = 'https://raw.githubusercontent.com/Juijang/wikidata/master/spawns.json'
 	
 		// focus: ID
 		var focusID = getURLParameter("id")

@@ -114,9 +114,8 @@
                 id: 'lastEdited',
                 'class': 'lastEdited'
             }).append(
-                $('<span>', {
-                    'class': 'mw-ajax-loader',
-                    'id': 'lastEdited-loading'
+                $.createSpinner({
+                    id: 'lastEdited-loading'
                 })
             );
             var pos = this.options.position;
@@ -460,6 +459,7 @@
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.util',
+        'jquery.spinner',
         (mw.config.get('isGamepedia') ? 'jquery.timeago' : 'jquery')
     ]).then(function() {
         if (lastEdited.shouldRun()) {

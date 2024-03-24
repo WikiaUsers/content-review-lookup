@@ -139,6 +139,38 @@ if (document.body.className.includes('page-Скачки')) {
 	derbyAutoSort(derbyInput);
 }
 
+//интересные факты заглавная
+function hideFact(fact) {
+	fact.style.display="none";
+	fact.style.left="0";
+	fact.style.zIndex="1";
+}
+function updateFact(facts, oldIndx){
+	facts[oldIndx].style.left="300px";
+	facts[oldIndx].style.zIndex="100";
+	randIndx = Math.floor(Math.random()*facts.length);
+	console.log(randIndx);
+	while (randIndx === oldIndx) {
+		randIndx = Math.floor(Math.random()*facts.length);
+		console.log(randIndx);
+	}
+	facts[randIndx].style.display="block";
+	setTimeout(hideFact, 1000, facts[oldIndx]);
+	setTimeout(updateFact, 10000, facts, randIndx);
+}
+
+var facts = document.querySelectorAll(".mainpage-fact");
+
+if (facts) {
+	var factError = document.querySelector(".mainpage-fact-error");
+	factError.style.display = "none";
+	var randIndx=Math.floor(Math.random()*facts.length);
+	console.log(randIndx);
+	facts[randIndx].style.display="block";
+	setTimeout(updateFact, 1500, facts, randIndx);
+}
+
+
 //noimage
 var linksToNewImg = document.querySelectorAll('.mw-parser-output a');
 //console.log(linksToNewImg);

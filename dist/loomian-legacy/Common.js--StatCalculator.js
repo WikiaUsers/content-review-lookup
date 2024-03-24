@@ -60,7 +60,7 @@ $(document).ready(function() {
     
 		$("span#EnergyUPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="EnergyUP oo-ui-inputWidget-input"></input>');
 		$("span#EnergyTPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="EnergyTP oo-ui-inputWidget-input"></input>');
-		$("span#EnergyPersonalityBox-"+i).html('<select class="EnergyPersonality oo-ui-dropdownWidget-handle"><option value="1">No effect</option><option value="0.9">Dull</option><option value="1.1">Hyper</option></select>');
+		$("span#EnergyPersonalityBox-"+i).html('<select class="EnergyPersonality oo-ui-dropdownWidget-handle"><option value="1">No effect</option><option value="0.8">Very Dull</option><option value="0.9">Dull</option><option value="1.1">Hyper</option><option value="1.2">Very Hyper</option></select>');
     
 		$("span#MAtkUPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="MAtkUP oo-ui-inputWidget-input"></input>');
 		$("span#MAtkTPBox-"+i).html('<input onClick="this.select();" type="number" value="0" class="MAtkTP oo-ui-inputWidget-input"></input>');

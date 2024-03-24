@@ -5,17 +5,9 @@ window.SpoilerAlertJS = {
     no: 'Não, ainda não',
     fadeDelay: 1600
 };
-importScriptPage('SpoilerAlert/code.js', 'dev');
- 
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
- 
-// Pop-ups em Referências
-importScriptPage('ReferencePopups/code.js', 'dev');
  
 /* Auto Refresh */
-window.AjaxRCRefreshText = 'Carregamento Automático';
+window.AjaxRCRefreshText = 'Carregamento automático';
 window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
 window.ajaxPages = [
     "Especial:Mudanças_recentes",

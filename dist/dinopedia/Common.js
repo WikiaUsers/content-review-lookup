@@ -3,4 +3,5 @@ window.MessageBlock = {
 	title: 'Blocked',
 	message: 'You have been blocked, check your profile activity for more information'
 };
-dev:Discord.js
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.RegExp.noinclude = ['.infobox'];

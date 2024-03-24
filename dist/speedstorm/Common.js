@@ -25,6 +25,7 @@ $('#content img').attr('draggable', false).on({
 window.AddRailModule = [
     {page: 'Template:WikiRules', prepend: true},
     'Template:ExtraDiscord',
+    'Template:Calculator'
 ];
 
 

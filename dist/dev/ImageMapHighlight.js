@@ -83,7 +83,8 @@ $(document).ready(function() {
 		// Extend area highlighting with data attributes
 		var areaHighlight = $.extend({}, defaultAreaHighlight, {
 			fillStyle: parentMarker.data('fill'), // data-fill
-			strokeStyle: parentMarker.data('stroke') // data-stroke
+			strokeStyle: parentMarker.data('stroke'), // data-stroke
+			lineWidth: parentMarker.data('line-width') // data-line-width
 		});
 
 		var context = $.extend(jcanvas[0].getContext('2d'), areaHighlight);
@@ -140,12 +141,17 @@ $(document).ready(function() {
 		i18n = i18no;
 
 		mw.util.addCSS(
-			'ol.' + artifactClass + ' { columns: 2; margin: 0; list-style: none; z-index: 500; }' +
-			'li.' + artifactClass + ' { white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }' + // css for li element
-			'li.' + artifactClass + '.liHighlighting { background-color: var(--imagemaphighlight-legend-highlight, rgba(var(--theme-link-color--rgb, 255,255,0), 0.1)); }' // css for highlighted li element.
+			'ol.' + artifactClass + ' { columns: 2; margin: 0; list-style: none; z-index: 500; }' + // css for main ol element
+			'li.' + artifactClass + ' { white-space: nowrap; border: solid 1px transparent; border-radius: 6px; }' + // css for li elements
+			'li.' + artifactClass + '.liHighlighting { background-color: var(--imagemaphighlight-legend-highlight, rgba(var(--theme-link-color--rgb, 255,255,0), 0.1)); }' + // css for highlighted li element
+
+			// hack for centering Legend toggle
+			'#content ' +
+			'ol.' + artifactClass + ' { position: relative; margin-top: 1.5em; margin-left: unset; }' +
+			'ol.' + artifactClass + ' li.mw-collapsible-toggle-li { position: absolute; inset: -1.5em 0 auto; }'
 		);
 
-		var selector = '.imageMapHighlighter:not(.highlighted) img';
+		var selector = '.imageMapHighlighter img:not(.highlighted)';
 		$(selector).each(handleOneMap);
 
 		// Highlight maps added later on

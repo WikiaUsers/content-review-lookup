@@ -69,6 +69,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/7/7c/Wiki-wordmark-Xuan-Yu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/1f/Wiki-wordmark-yamine-renri.png',
 	    'https://images.wikia.nocookie.net/synthv/images/1/fc/Wiki-wordmark-renri-svs.png',
+	    'https://images.wikia.nocookie.net/synthv/images/4/45/Wiki-wordmark-Yi-Xi.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/fc/Wiki-wordmark-yuma.png',
 	    'https://images.wikia.nocookie.net/synthv/images/3/3a/Wiki-wordmark-Yun-Quan.png',
 	];

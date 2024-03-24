@@ -12,8 +12,8 @@ importArticles({
 const staff = [
     {name: 'Swit4er', className: 'bur'},
     {name: 'Voidan Dether', className: 'bur'},
-    {name: 'P4kaidu', className: 'admin'},
     {name: 'Creepy Owl', className: 'admin'},
+    {name: 'Hwjeei', className: 'contMod'},
     {name: 'Lich night', className: 'threadMod'},
     {name: 'IamNotFreddy', className: 'discordAdmin'},
     {name: 'KykS911', className: 'discordAdmin'},
@@ -24,9 +24,7 @@ const staff = [
     {name: 'LeraBE', className: 'discordMod'},
     {name: 'Om3gaZT', className: 'discordMod'},
     {name: 'Fleshka5856', className: 'rollback'},
-    {name: 'Hwjeei', className: 'rollback'},
     {name: 'JustAccount', className: 'intern'},
-    {name: 'Fadri Gold', className: 'intern'},
     {name: 'Popolzen', className: 'intern'},
     {name: 'Fasiliti', className: 'intern'},
     {name: 'EsmeCakes', className: 'intern'},
@@ -46,30 +44,6 @@ setInterval(function () {
     });
   });
 }, 500);
-
-/* Конфигурация для dev:DiscussionTemplates */
-window.DiscussionTemplates = {
-    templates: {
-        'Предупреждение (1 уровень)': {
-            name: 'Шаблон:Предупреждение_1',
-            title: 'Предупреждение'
-        },
-        'Предупреждение (2 уровень)': {
-            name: 'Шаблон:Предупреждение_2',
-            title: 'Предупреждение'
-        },
-        'Блокировка (1 уровень)': {
-            name: 'Шаблон:Блокировка_1',
-            title: 'Блокировка'
-        },
-        'Блокировка (Смертный грех)': {
-            name: 'Шаблон:Блокировка_2',
-            title: 'Блокировка'
-        },
-    },
-    allowedGroups: ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator', 'rollback']
-};
-
 
 /* Конфигурация для dev:AddRailModule */
  window.AddRailModule = [

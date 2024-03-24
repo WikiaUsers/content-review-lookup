@@ -3485,6 +3485,7 @@
 				old_dragon_armor: { wiki: "Old Dragon Armor" },
 				perfect_armor: { wiki: "Perfect Armor" },
 				power_wither_armor: { wiki: "Necron's Armor" },
+				primal_dragon_armor: { wiki: "Primal Dragon Armor" },
 				protector_dragon_armor: { wiki: "Protector Dragon Armor" },
 				pumpkin_armor: { wiki: "Pumpkin Armor" },
 				rabbit_armor: { wiki: "Rabbit Armor" },

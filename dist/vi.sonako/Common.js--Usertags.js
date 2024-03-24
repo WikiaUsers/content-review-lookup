@@ -1,92 +1,103 @@
-/* // Usertags
-// Core configuration. We add 2 custom tags and change what the built-in sysop tag says.
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		Member: 'Member of Sonako',
-		SuperMem: 'S-Rank Member',
-        Legend: 'Legendary Member',
-        Editor: 'Editor of Sonako',
-        FBEditor: 'Facebook Editor',
-		Techadmin: 'Tech Admin',
-		Legion: 'Legion of Honour',
-        newuser: 'Novice',
+var userList = [
+    { name: ["The F Factor", "KaelSilence", "Kuroneko6558"], class: "tag-userTag-FBAdmin", textContent: "Admin Facebook" },
+    {
+        name: [
+            ".Kuno",
+            "A.Homura",
+            "Aria132",
+            "Aria0214",
+            "Avianhope",
+            "Brisingr22",
+            "Chio Miyamo",
+            "Danielhopper1806",
+            "Datvippq",
+            "DeHooker",
+            "Dorevsdore02",
+            "Dqt1995",
+            "Kiv x Monster",
+            "Hibiki3190",
+            "Hewki98",
+            "Hika2310",
+            "HiKiTaNi",
+            "Himemaouyuki",
+            "Ispassingby",
+            "Kaizuka Satomi",
+            "Kagamine Rukato",
+            "Kirito96",
+            "Kurogane Ikki",
+            "Leaf snivy",
+            "Lolicon-er",
+            "Minhtun",
+            "Mistykd",
+            "MurakamiAvianHope",
+            "Mysakuradying",
+            "NoHag",
+            "Pikeman1",
+            "Phạm Thanh Hà",
+            "Ryugamine Mikado",
+            "ScarletGold",
+            "Shiratori Kanae",
+            "Sweec1890",
+            "Tran Duc Anh",
+            "Trung Khệnh",
+            "Turtle-kun",
+            "VaSu.Takei",
+            "Vnsharing135",
+            "Wasabikiller",
+            "W.H.H.H.",
+            "Yamitohikari136",
+            "Zecro",
+        ],
+        class: "tag-userTag-Member",
+        textContent: "Member of Sonako",
+    },
+    { name: ["Duong0810", "HamanoAkira", "Krt Shu", "Kurosame Yato", "Ngubathong", "Silver Eyes", "Tnguyen2511", "Yuseifudo1994"], class: "tag-userTag-SuperMem", textContent: "S-Rank Member" },
+    { name: ["GVN.Chaos", "Medassin", "PrinzEugenz", "QDuyPFIEV", "XDarKraDx", "YUGI-OH510", "ZzZMineIsMyLifeZzZ"], class: "tag-userTag-Legend", textContent: "Legendary Member" },
+    { name: ["Perfectstrong"], class: "tag-userTag-Editor", textContent: "Editor of Sonako" },
+    { name: ["Perfectstrong", "A.Homura"], class: "tag-userTag-Legion", textContent: "Legion of Honour" },
+];
+
+var userNameElement = document.querySelector('h1[itemprop="name"]');
+var userName = userNameElement.textContent;
+
+for (var user of userList) {
+    if (user.name.includes(userName)) {
+        var newSpan = document.createElement("span");
+        newSpan.classList.add("user-identity-header__tag", user.class);
+        newSpan.textContent = user.textContent;
+        userNameElement.parentNode.insertBefore(newSpan, userNameElement.parentElement.querySelector(".user-identity-header__actions"));
+    }
 }
-}; 
-// Add custom groups to several users
-UserTagsJS.modules.custom = {
-	'Aria132': ['Member'],
-	'Aria0214': ['Member'],
-	'Avianhope': ['Member'],
-	'A.Homura': ['Member', 'Legion'],
-	'Brisingr22': ['Member'],
-	'Chio Miyamo': ['Member'],
-	'Dai ca superman': ['Techadmin', 'SuperMem'],
-	'Danielhopper1806': ['Member'],
-	'Datvippq': ['Member'],
-	'DeHooker': ['Member'],
-	'Dorevsdore02': ['Member'],
-	'Duong0810': ['SuperMem'],
-	'GVN.Chaos': ['Legend'],
-	'HamanoAkira': ['SuperMem'],
-	'Hewki98': ['Member'],
-	'Hibiki3190': ['Member'],
-	'Hika2310': ['Member'],
-	'HiKiTaNi': ['Member'],
-	'Himemaouyuki': ['Member'],
-	'Hyddty': ['Member'],
-	'Ispassingby': ['Member'],
-	'Kaizuka Satomi': ['Member'],
-	'Kagamine Rukato': ['Member'],
-	'Kirito96': ['Member'],
-	'Kiv x Monster': ['Member'],
-	'Krt Shu': ['SuperMem'],
-	'Kuroneko6558': ['Member'],
- 	'Kurosame Yato': ['SuperMem'],
-	'Leaf snivy': ['Member'],
-	'Lolicon-er': ['Member'],
-	'Maththunder': ['SuperMem'],
-	'Medassin': ['Legend'],
-	'Minhtun': ['Member'],
-	'Mistykd': ['Member'],
-	'MurakamiAvianHope': ['Member'],
-	'Mysakuradying': ['Member'],
-	'Ngubathong': ['SuperMem'],
-	'NoHag': ['Member'],
-	'Perfectstrong': ['Editor', 'Legion', 'SuperMem'],
-	'Pikeman1': ['Member'],
-	'Phạm Thanh Hà': ['Member'],
-	'PrinzEugenz': ['Legend'],
-	'QDuyPFIEV': ['Legend'],
-	'Ryugamine Mikado': ['Member'],
-	'ScarletGold': ['Member'],
-	'Shiratori Kanae': ['Member'],
-	'Silver Eyes': ['SuperMem'],
-	'Sweec1890': ['Member'],
-	'The F Factor': ['FBEditor'],
-	'Tnguyen2511': ['SuperMem'],	
-	'Tran Duc Anh': ['Member'],
-	'Trung Khệnh': ['Member'],
-	'Turtle-kun': ['Member'],
-	'VaSu.Takei': ['Member'],
-	'Vnsharing135': ['Member'],
-	'Vnsnas': ['Member'],
-	'Wasabikiller': ['Member'],
-	'W.H.H.H.': ['Member'],
-	'XDarKraDx': ['Legend'],
-	'Yamitohikari136': ['Member'],
-	'YUGI-OH510': ['Legend'],
-	'Yuseifudo1994': ['SuperMem'],
-	'Zecro': ['Member'],
-	'ZzZMineIsMyLifeZzZ': ['Legend']
-};
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.inactive = 30; // Inactive if no edits in 30 days
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'rollback']; // Add bureaucrat group to bureaucrats
-UserTagsJS.modules.metafilter = { sysop: ['bureaucrat'],
-rollback: ['bureaucrat'],
-chatmoderator: ['bureaucrat']
-};
- 
-impart('u:dev:MediaWiki:UserTags/code.js'); */
+
+if (userName === "Dai ca superman") {
+    var firstSpan = userNameElement.nextElementSibling;
+
+
+    firstSpan.classList.add("tag-userTag-bureaucrat");
+
+
+    var adminSpan = firstSpan.nextElementSibling;
+    adminSpan.textContent = "Admin";
+    adminSpan.classList.add("tag-userTag-Admin");
+}
+if (userName === "Vnsnas") {
+    var firstSpan = userNameElement.nextElementSibling;
+    firstSpan.textContent = "Admin";
+    firstSpan.classList.add("tag-userTag-Admin");
+} else if (userName === "Sonako.Sozuoka") {
+    var firstSpan = userNameElement.nextElementSibling;
+    firstSpan.textContent = "Admin";
+    firstSpan.classList.add("tag-userTag-Admin");
+} else if (userName === "Maththunder") {
+    var firstSpan = userNameElement.nextElementSibling;
+    firstSpan.textContent = "Admin";
+    firstSpan.classList.add("tag-userTag-Admin");
+} else if (userName === "XDarKraDx") {
+    var firstSpan = userNameElement.nextElementSibling;
+    firstSpan.textContent = "Admin";
+    firstSpan.classList.add("tag-userTag-Admin");
+} else if (userName === "You got Fio") {
+    var firstSpan = userNameElement.nextElementSibling;
+    firstSpan.textContent = "Admin";
+    firstSpan.classList.add("tag-userTag-Admin");
+}

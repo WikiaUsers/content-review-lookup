@@ -70,7 +70,7 @@
 					c = 'coords';
 
 				// The ImageMap MediaWiki extension uses the same map name for
-				// identical maps on different images (probably the resulf of
+				// identical maps on different images (probably the result of
 				// a hash function). As such, the manipulation must be limited
 				// not only by the map name but also to only sibling map
 				$that.siblings('map[name="' + map + '"]').find('area').each(function() {

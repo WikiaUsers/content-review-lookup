@@ -3,7 +3,6 @@
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:AjaxRename/code.js',
         'u:dev:MediaWiki:SpoilerAlert/code.js',
     ]
 });

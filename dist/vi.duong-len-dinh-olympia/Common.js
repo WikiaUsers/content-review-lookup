@@ -1,6 +1,6 @@
-/* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
+/* Any JavaScript here will be loaded for all users on every page load. */
 
-// Thẻ thành viên (UserTags)
+// UserTags
 window.UserTagsJS = {
 	modules: {},
 	tags: {}
@@ -8,7 +8,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.inactive = 90;
 UserTagsJS.modules.newuser = true;
 UserTagsJS.modules.autoconfirmed = true;
-// CHÚ Ý:Cấm hiển thị trò chuyện trong Oasis nhưng không phải là một nhóm người sử dụng danh tính vì vậy phải được kiểm tra thủ công (NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually)
+// NOTE: bannedfromchat displays in Oasis but is not a user-identity group so must be checked manually
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'threadmoderator', 'patroller', 'content-moderator', 'rollback', 'sysop', 'bannedfromchat', 'blocked', 'bot', 'bot-global', 'staff', 'vstf', 'helper'];
 UserTagsJS.modules.metafilter = {
 	sysop: ['bureaucrat', 'founder', 'bot'],
@@ -25,10 +25,10 @@ AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Làm mới trang một các tự động khi các sửa đổi mới xảy ra.';
 ajaxPages = ["Special:RecentChanges", "Special:WikiActivity", "Special:Log", "Special:Images", "Special:Videos", "Special:Contributions", "Special:AbuseLog"];
  
-// Xóa hang loạt bằng Ajax (AjaxBatchDelete)
+// AjaxBatchDelete
 batchDeleteDelay = 1000;
  
-// Xóa nhanh (FastDelete)
+// FastDelete
 var fdButtons = [];
  
 fdButtons[fdButtons.length] = {
@@ -36,22 +36,22 @@ fdButtons[fdButtons.length] = {
         'label': 'one-click delete'
 };
  
-// Hình động (DynamicImages)
+// DynamicImages
 DynamicImages = {
     gifImages: true,
     gifGalleryImages: false
 };
  
-// Hiển thị đồng hồ (DisplayClock)
-// Hiển thị thời gian 12 giờ theo ngày, tháng (tiếng Việt, tên đầy đủ) (Display 12 hour time followed by day, month (Tiếng Việt, full name))
-// và năm với "(GMT)" ở cuối (and year with "(GMT)" at the end)
+// DisplayClock
+// Display 12 hour time followed by day, month (Vietnamese, full name)
+// and year with "(GMT)" at the end
 window.DisplayClockJS = '%2d %{Tháng Một;Tháng Hai;Tháng Ba;Tháng Tư;Tháng Năm;Tháng Sáu;Tháng Bảy;Tháng Tám;Tháng Chín;Tháng Mười;Tháng Mười Một;Tháng Mười Hai}m năm %Y %2H:%2M:%2S (UTC)';
  
 // BackToTopButton default settings
 var Speed = 600;
 var Start = 800;
  
-// Địa chỉ IP không rõ tiết lộ (RevealAnonIP)
+// RevealAnonIP
 window.RevealAnonIP = {
     permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
 };
@@ -63,19 +63,19 @@ function updatetimer(i) {
     var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
     var count = diff;
  
-    // bắt chuỗi ngày xấu (catch bad date strings)
+    // catch bad date strings
     if (isNaN(diff)) {
         timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **';
         return;
     }
  
-    // xác định cộng / trừ (determine plus/minus)
+    // determine plus/minus
     if (diff < 0) {
         diff = -diff;
     }
         var tpm = ' ';
  
-    // tính toán khác (calcuate the diff)
+    // calcuate the diff
     var left = (diff % 60) + ' seconds';
     diff = Math.floor(diff / 60);
     if (diff > 0) left = (diff % 60) + ' minutes ' + left;
@@ -85,19 +85,19 @@ function updatetimer(i) {
     if (diff > 0) left = diff + ' days ' + left;
     timers[i].firstChild.nodeValue = tpm + left;
  
-    // một hàm setInterval() là hiệu quả hơn, nhưng gọi là setTimeout() (a setInterval() is more efficient, but calling setTimeout())
-    // làm cho lỗi phá vỡ kịch bản chứ không phải là nguyền lại vô hạn (makes errors break the script rather than infinitely recurse)
+    // a setInterval() is more efficient, but calling setTimeout()
+    // makes errors break the script rather than infinitely recurse
     timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
 }
  
 $(function checktimers() {
-    //ẩn "không đếm ngược" và hiện 'đếm ngược' (hide 'nocountdown' and show 'countdown')
+    // hide 'nocountdown' and show 'countdown'
     var nocountdowns = document.getElementsByClassName('nocountdown');
     for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
     var countdowns = document.getElementsByClassName('countdown');
     for (var j in countdowns) countdowns[j].style.display = 'inline';
  
-    //thiết lập đối tượng tính giờ và hết giờ toàn cầu. (set up global objects timers and timeouts.)
+    // set up global objects timers and timeouts
     timers = document.getElementsByClassName('countdowndate'); //global
     timeouts = new Array(); // generic holder for the timeouts, global
     if (timers.length === 0) return;
@@ -108,17 +108,18 @@ $(function checktimers() {
 });
  
  
-/* Thay thế {{USERNAME}} với tên của người dùng duyệt trang. (Replaces {{USERNAME}} with the name of the user browsing the page.)
-   Yêu cầu sao chép Template:USERNAME. (Requires copying Template:USERNAME.) */
+/* Replaces {{USERNAME}} with the name of the user browsing the page.
+   Requires copying Template:USERNAME. */
  
 $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
     $('span.insertusername').html(mw.config.get('wgUserName'));
 });
  
-/* Kết thúc {{USERNAME}} thủ tục thay thế */
+/* End of the {{USERNAME}} replacement */
 
-/* AutoCreateUserPages */
+/* AutoCreateUserPages, using form MediaWiki:Welcome-user-page
+	Require dev script AutoCreateUserPages.js */
 window.AutoCreateUserPagesConfig = {
     content: {
         2: '{{sub'+'st:MediaWiki:Welcome-user-page}}',
@@ -134,4 +135,18 @@ importArticles({
     articles: [
         'u:dev:MediaWiki:AutoCreateUserPages.js',
     ]
+});
+
+
+/* Only loading LastEdited for registered users except anonymous
+	Install PageEditInfo in MediaWiki:ImportJS */
+$(function(){
+	if (mw.config.get('wgUserName')) {
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:LastEdited/code.js',
+			]
+    });
+}
 });

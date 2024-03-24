@@ -22,3 +22,10 @@ nkch_gst_gadgets = [{
     title: "Недавняя вики-деятельность",
     description: "Недавняя вики-деятельность"
 }];
+
+importArticles({
+    type: "script",
+    articles: [
+        "u:dev:MediaWiki:Medals/code.js"
+    ]
+});

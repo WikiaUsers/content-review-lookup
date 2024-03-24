@@ -102,7 +102,7 @@ UserTagsJS.modules.custom = {
     'Krayleb': ['discmod','foodfight2'],
     'KyaOBeans': ['ox'],
     "Nuttin' to see here": ['zombiecontest2','faroutfestival','blastfest','matd'],
-    'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest', 'discmod'],
+    'PunjiChocoBerry': ['feastivus', 'winterworld', 'warpedcontest'],
     'Reapeageddon': ['plantcontest'],
     'Shiverpeace': ['summernights'],
     'TheFrozenAngel': ['bonvoyage'],

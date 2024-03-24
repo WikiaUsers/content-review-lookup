@@ -11,18 +11,6 @@ var imageBGCleaner = setInterval(function () {
     } 
 }, 500)
 
-/* Фикс свежих изображений */
-setInterval(function () {
-    if (document.getElementsByClassName('rail-recentImages-module')[0].getElementsByClassName('recentImage__image').length > 0) {
-        var recentImagesRail = document.getElementsByClassName('rail-recentImages-module')[0].getElementsByClassName('recentImage__image')
-        Array.prototype.forEach.call(recentImagesRail,
-            function (image) {
-                image.getElementsByTagName('img')[0].src = image.getElementsByTagName('img')[0].src.replace(/(\/smart\/width\/[\d]*\/height\/[\d]*)/g, "")
-            }
-        )
-    } 
-}, 500)
-
 /* Фикс рекламного блока */
 var adBGCleaner = setInterval(function () {
     if (document.getElementsByClassName('popular-pages__image').length > 0) {

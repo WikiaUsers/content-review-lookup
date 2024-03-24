@@ -1,3 +1,0 @@
-window.customUserAccountAge = {
-	showFullDate: true
-};

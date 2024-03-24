@@ -1,51 +1,4 @@
 // <nowiki>
-/* Pride toolbar advertisement
-var toolbarLabel = 'Pride';
-var toolbarLinks = [
-	{link: 'https://bit.ly/FandomDragRaceTournament', label: 'June 29: Drag Race Bracket Tournament'},
-    {link: 'https://bit.ly/PrideEditorStory-Kurt', label: 'June 28: Pride Highlight: Meet Kurt'},
-    {link: 'https://bit.ly/PrideEditorStory-Vinny', label: 'June 27: Pride Highlight: Meet Vinny'},
-    {link: 'https://bit.ly/PrideEditorStory-Sam', label: 'June 23: Pride Highlight: Meet Sam/Lemon Skweezy'},
-    {link: 'https://bit.ly/PrideEditorStory-Allyship', label: 'June 20: How to Strengthen LGBTQIA+ Allyship'},
-    {link: 'https://bit.ly/PrideEditorStory-Bart', label: 'June 15: Pride Stories: Celebrate with Bart'},
-    {link: 'https://americanhorrorstory.fandom.com/f/p/4400000000003741403', label: 'June 6: Discussions post'},
-    {link: 'https://bit.ly/FandomPrideBlog-toolbar', label: 'June 6: Pride blog with Drag Queens interview'},
-    {link: 'https://bit.ly/FandomPridePlaylist', label: 'June 1: Pride spotify playlist'},
-    {link: 'https://memory-alpha.fandom.com/f/p/4400000000003739278', label: 'May 30 - Pride logo announcement'}
-];
-var toolbarElement = document.createElement( 'li' );
-var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );
-toolbarElement.classList.add( 'custom' );
-toolbarElement.classList.add( 'menu' );
-toolbarElement.classList.add( 'wds-dropdown' );
-toolbarElement.classList.add( 'wikiabar-button' );
-toolbarElement.classList.add( 'wds-is-flipped' );
-toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' + 
-    '<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg><a href="#">' + toolbarLabel + '</a>' + 
-'</span>' + 
-'<div class="wds-dropdown__content">' + 
-    '<h2 style="margin-left: 16px">Pride Month</h2>' +
-    '<ul class="wds-list wds-is-linked">' + 
-        toolbarLinks.map(function(link) {
-            return '<li class="custom"><a href="' + link.link + '">' + link.label + '</a></li>';
-        }).join('') + 
-    '</ul>' + 
-'</div>';
-
-toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
-
-/* Disability Pride logo link
-$('.fandom-community-header__community-name-wrapper').append(
-    $('<a/>').addClass('hover-community-header-wrapper')
-        .append($('<div/>')
-            .addClass('message')
-            .text('Celebrating Disability Pride Month')
-        )
-        .attr('href', 'https://bit.ly/DisabilityPrideMonth-Chris')
-);
-
-/** Disability Pride end **/
-
 
 $().ready( function() {
 	
@@ -591,5 +544,50 @@ $('.ns-15 .page-header__title').prepend('Category ');
     });
  
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
+
+/* Display audio files in categories */
+
+const soundFile = $('.ns-14 [data-image-key$=".ogg"]');
+
+soundFile.each(correctAudioFiles);
+
+function correctAudioFiles(){
+  $(this).after('<audio src="/wiki/Special:Redirect/file/'+$(this).attr('data-image-key')+'" controls>');
+  $(this).remove();
+}
+
+/* Display PDFs on PDF file pages */
+
+const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
+
+adobeIcon.parent().prepend('<embed src="/wiki/Special:Redirect/file/'+mw.config.get("wgTitle")+'" width="250" height="auto">');
+adobeIcon.remove();
+
+/* Display PDFs in categories */
+
+const adobeCatIcon = $('.ns-14 [data-image-key$=".pdf"]');
+
+adobeCatIcon.each(removeAdobeIcon);
+
+function removeAdobeIcon(){
+  const fileName = $(this).attr('data-image-key');
+  $(this).after('<embed src="/wiki/Special:Redirect/file/'+fileName+'" width="185" height="185"><div class="thumbcaption pdf-thumbcaption"><a href="/wiki/File:'+fileName+'" class="info-icon pdf-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a></div>');
+  $(this).parent().addClass('thumb show-info-icon');
+  $(this).remove();
+}
+
+/* Embed PDF widgets into pages */
+
+const widget = $('.pdf-widget');
+
+widget.each(embedPDFs);
+
+function embedPDFs(){
+  const specifiedFile = $(this).attr('data-file');
+  const float = $(this).attr('data-float') ? $(this).attr('data-float') : 'right';
+  const caption = $(this).attr('data-caption') ? $(this).attr('data-caption').replace(/'''(.+?)'''/g, '<b>$1</b>').replace(/''(.+?)''/g, '<i>$1</i>').replace(/\[\[(.+?)\|(.+?)\]\]/g, '<a href="/wiki/$1">$2</a>').replace(/\[\[(.+?)\]\]/g, '<a href="/wiki/$1">$1</a>') : '';
+
+  $(this).html('<figure class="thumb t'+float+' show-info-icon"><embed src="/wiki/Special:Redirect/file/'+specifiedFile+'" width="174.028" height="auto"><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
+}
 
 // </nowiki>

@@ -359,6 +359,7 @@ UserTagsJS.modules.custom = {
 	'Century Orion': ['globalguy', 'editorguy'],
 	'LDDCAT': ['codeguy', 'templateguy', 'editorguy'],
 	'Tsukiakari2216': ['jpguy', 'globalguy', 'cnguy', 'mediaguy', 'editorguy'],
+	'JellyBSD': ['jpguy', 'editorguy'],
 };
 
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop'];

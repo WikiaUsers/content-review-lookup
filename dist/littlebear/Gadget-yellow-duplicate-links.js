@@ -12,20 +12,24 @@ $(function(){
     function findDuplicateLinksLede(){
       const href = $(this).attr('href');
 
-      if (seenLede[href]){
-        $(this).addClass('duplicate-link');
-      } else {
-        seenLede[href] = true;
+      if (href !== undefined && href.indexOf('#') != 0){
+        if (seenLede[href]){
+          $(this).addClass('duplicate-link');
+        } else {
+          seenLede[href] = true;
+        }
       }
     };
 
     function findDuplicateLinksBody(){
       const href = $(this).attr('href');
 
-      if (seenBody[href]){
-        $(this).addClass('duplicate-link');
-      } else {
-        seenBody[href] = true;
+      if (href !== undefined && href.indexOf('#') != 0){
+        if (seenBody[href]){
+          $(this).addClass('duplicate-link');
+        } else {
+          seenBody[href] = true;
+        }
       }
     };
 

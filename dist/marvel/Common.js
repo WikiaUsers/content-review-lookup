@@ -192,7 +192,7 @@ $(function () { if ($("#mw-dupimages").length) findDupImages(); });
 $(function() {
     if (!(
         mw.config.get('wgCanonicalNamespace') === 'Category' &&
-        ['Appearances', 'Handbook Appearances', 'Minor Appearances', 'Mentions', 'Handbook Mentions', 'Invocations'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
+        ['Appearances', 'Handbook Appearances', 'Minor Appearances', 'Mentions', 'Handbook Mentions', 'Invocations', 'Writer', 'Penciler', 'Inker', 'Cover Artist', 'Editor'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
     )) {
         return;
     } 
@@ -217,14 +217,61 @@ $(function() {
                     var title = data[val].title;
                     var cover_date = sort.match(/^&nbsp;\d{4}\-\d{2}/);
                     var release_date = sort.match(/^&nbsp;\d{4}\-\d{2}  \d{8}/);
+                    var release_date_film_tv = sort.match(/^&nbsp;\d{8}/);
                     var date_tag = ''
-                    if (release_date) {
-                    	release_date = release_date[0].match(/\d{8}/)
-                    	date_tag = ', release: ' + release_date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+                    if (release_date_film_tv) {
+                    	date_tag = ' (release:' + release_date_film_tv[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') + ')'
+                    	$links.filter('[title="' + title + '"]').after(date_tag);
+                    } else {
+	                    if (release_date) {
+	                    	release_date = release_date[0].match(/\d{8}/)
+	                    	date_tag = ', release: ' + release_date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+	                    }
+	                    if (cover_date) {
+	                    	date_tag = ' (cover: ' + cover_date[0].replace('&nbsp;', '') + date_tag + ')'
+	                        $links.filter('[title="' + title + '"]').after(date_tag);
+	                    }
                     }
-                    if (cover_date) {
-                    	date_tag = ' (cover: ' + cover_date[0].replace('&nbsp;', '') + date_tag + ')'
-                        $links.filter('[title="' + title + '"]').after(date_tag);
+                });
+            }
+        );
+    });
+});
+
+/* 
+////////////////////////////////////////////////////////////////////
+// display legacy numbers in categories for Legacy Numbers
+//////////////////////////////////////////////////////////////////// */
+$(function() {
+    if (!(
+        mw.config.get('wgCanonicalNamespace') === 'Category' &&
+        ['Legacy Numbers'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
+    )) {
+        return;
+    } 
+
+    // API requires titles 50 at a time, will be 200 titles per category page
+    var requests,
+        $links = $('.mw-category-generated').find('a');
+        pages = $links.toArray().map(function(value) {
+            return encodeURIComponent($(value).attr('title'));
+        });
+    requests = [pages.slice(0, 50), pages.slice(50, 100), pages.slice(100, 150), pages.slice(150)];
+    $.each(requests, function(index, value) {
+        $.getJSON(
+            '/api.php?action=query&prop=pageprops&ppprop=defaultsort&format=json&titles=' + value.join('|'),
+            function(data) {
+                data = data.query.pages;
+                $.each(Object.keys(data), function(idx, val) {
+                    if (!data[val].pageprops) {
+                        return true;// continue
+                    }
+                    var sort = data[val].pageprops.defaultsort;
+                    var title = data[val].title;
+                    var lgy = sort.match(/LGY:(.+);/);
+                    if (lgy) {
+                    	lgy = ' (' + lgy[1] + ')'
+                        $links.filter('[title="' + title + '"]').after(lgy);
                     }
                 });
             }

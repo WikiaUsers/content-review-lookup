@@ -120,3 +120,10 @@ jQuery.when(window.mw.loader.using('mediawiki.util'), $.ready).then(function () 
     window.mw.util.addPortletLink(isMinerva ? 'p-tb' : 'p-views', scheme + "://" + extensionID + actionPath + "?" + new URLSearchParams(args).toString(), displayInfo['text'], 'wikitext-extension-gadget', displayInfo['tooltip'], undefined, isMinerva ? undefined : '#ca-history');
 });
 /* VScode конец */
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:VK.js',
+    ]
+});
