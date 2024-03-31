@@ -71,19 +71,25 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
     itemGridFilters = {
         'pesquisar': 'pesquisar',
         'modos' : ['- Modos de Jogo - ',
-            ['Clássico 5v5', '• Clássico 5v5'],
-            ['ARAM', '• ARAM'],
-            ['MJR', '• Exclusivo de MJR']
+            ['sr clássico 5v5', '• SR Clássico 5v5'],
+            ['aram', '• ARAM'],
+            ['MJR', '• MJR']
         ]
     };
     
-    /* Config para [[MediaWiki:Common.js/writemGridfiltering.js]] */
+    /* Config for [[MediaWiki:Common.js/writemGridfiltering.js]] */
     writemGridContainer = '#writem-grid';
     writemGridFilters = {
-        'pesquisar': 'pesquisar'
-    };
-    
-    /* Config para [[MediaWiki:Common.js/avatarGridfiltering.js]] */
+        'search': 'pesquisar',
+        'modes' : ['- Modos de Jogo - ',
+            ['sr clássico 5v5', '• SR Clássico 5v5'],
+            ['aram', '• ARAM'],
+            ['duelo', '• Duelo'],
+            ['MJR', '• MJR']
+        ]
+	};
+
+    /* Config for [[MediaWiki:Common.js/avatarGridfiltering.js]] */
     avatarGridContainer = '#avatar-grid';
     avatarGridFilters = {
         'pesquisar': 'pesquisar',
@@ -246,7 +252,11 @@ window.tooltips_list = [
     {   classname: 'lor-tooltip', 
         parse: '{'+'{Tooltip/LOR|<#param#>}}'},
     {   classname: 'challenge-tooltip', 
-        parse: '{'+'{Tooltip/Desafio|<#param#>|desafio=<#desafio#>}}'}
+        parse: '{'+'{Tooltip/Desafio|<#param#>|desafio=<#desafio#>}}'},
+    {
+    classname: 'profile-icons-v1',
+    parse: '{{Tooltip/Ícones-de-Invocador/V1|<#id#>}}'
+    }
 ];
  
 window.tooltips_config = {
@@ -298,5 +308,35 @@ mw.hook('wikipage.content').add(function(elem) {
         });
     });
 });
+
+/* ItemComparisonForm */
+window.itemComparisonFormPages = [
+	'League_of_Legends_Wiki:Lane_Lookup',
+];
+
+// Custom context menu to allow downloading of ext-audiobutton files.
+
+var menu = document.createElement("div");
+
+menu.setAttribute("id", "context-menu");
+menu.innerHTML = '<ul><li><a href="#">Download</a></li></ul>';
+document.getElementsByTagName('body')[0].appendChild(menu);
+
+document.onclick = function(e){
+    menu.style.display = 'none';
+}
+
+var buttons = document.querySelectorAll('a.ext-audiobutton');
+for (var i = 0; i < buttons.length; i++) {
+	buttons[i].oncontextmenu = function(e){
+		e.preventDefault();
+		var y = e.pageY - 30;
+		menu.style.left = e.pageX + 'px';
+		menu.style.top = y + 'px';
+		menu.style.display = 'block';
+		menu.getElementsByTagName("a")[0].href = this.previousElementSibling.getElementsByTagName("source")[0].src;
+		menu.getElementsByTagName("a")[0].download = "";
+ }
+}
 
 /* NÃO ADICIONE CÓDIGO ABAIXO DESSA LINHA */

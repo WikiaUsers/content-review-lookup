@@ -10,7 +10,7 @@ $('h2, h3').each(function () {
 });
 
 // Attach the click event to h2, h3 headers
-$('body').on('click', 'h2, h3', function (event) {
+$('body').on('click', 'h2 button.ntoggler, h3 button.ntoggler', function (event) {
   // Check if the heading is created by ==text==
   if ($(this).find('.mw-headline').length > 0) {
     // Check if the click target is the text

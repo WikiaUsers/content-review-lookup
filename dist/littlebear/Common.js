@@ -1,9 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Fix reference popups on iPads */
+/* Prevent default for reference popups */
 
-mw.loader.load('//en.wikipedia.org/wiki/MediaWiki:Gadget-ReferenceTooltips.js?oldid=1006234032&action=raw&ctype=text/javascript');
-mw.loader.load('//en.wikipedia.org/wiki/MediaWiki:Gadget-ReferenceTooltips.css?oldid=1162041707&action=raw&ctype=text/css');
+$('[href^="#cite_note"]').click(function(event){
+  event.preventDefault();
+});
 
 /* Format list sections */
 

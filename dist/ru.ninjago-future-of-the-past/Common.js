@@ -13,16 +13,6 @@ window.SpoilerAlertJS = {
     fadeDelay: 1600
 };
 
-nkch_gst_gadgets = [{
-    name: "ModernProfile", // название гаджета с MediaWiki:Gadgets-definition; обязательно
-    title: "Современный профиль", // Название в меню
-    description: "Современный профиль" // Описание гаджета в меню при наведении
-}, {
-    name: "RCM",
-    title: "Недавняя вики-деятельность",
-    description: "Недавняя вики-деятельность"
-}];
-
 importArticles({
     type: "script",
     articles: [

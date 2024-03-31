@@ -31,26 +31,20 @@ $('body').on('click', 'h2, h3', function (event) {
       window.location.href = $(event.target).closest('.mw-editsection').find('a').attr('href');
       return;
     }
-
-    // Toggle the visibility of the content
-    $(this).nextAll('h2, h3').each(function () {
-      if ($(this).data('isExpanded') === false) {
-        $(this).nextUntil(this.tagName).slideToggle('fast');
-        $(this).data('isExpanded', true);
-        $(this).find('.ntoggler').text('Collapse');
-      }
-    });
-
-    var $contentToToggle = $(this).nextUntil(this.tagName);
-
-    // Toggle the visibility of the content
-    $contentToToggle.slideToggle('fast');
-
-    // Toggle the text of the button (Collapse / Expand)
-    var buttonText = $(this).data('isExpanded') ? 'Expand' : 'Collapse';
-    $(this).find('.ntoggler').text(buttonText);
-
-    // Toggle the state
-    $(this).data('isExpanded', !$(this).data('isExpanded'));
   }
+});
+
+// Attach the click event only to .ntoggler buttons
+$('body').on('click', '.ntoggler', function () {
+  var $header = $(this).closest('h2, h3');
+
+  // Toggle the visibility of the content
+  $header.nextUntil($header.nextAll('h2, h3')).slideToggle('fast');
+
+  // Toggle the text of the button (Collapse / Expand)
+  var buttonText = $header.data('isExpanded') ? 'Expand' : 'Collapse';
+  $(this).text(buttonText);
+
+  // Toggle the state
+  $header.data('isExpanded', !$header.data('isExpanded'));
 });

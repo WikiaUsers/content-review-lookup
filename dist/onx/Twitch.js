@@ -5,7 +5,7 @@
 **/
 (function() {
 	'use strict';
-	if(!mw.config.get("wgCategories").includes("Characters")) return;
+	if(!mw.config.get("wgCategories").includes("Characters") && !mw.config.get("wgCategories").includes("Players")) return;
 	if(mw.config.get("wgCategories").includes("Inactive")) return;
 	
 	var playedBy = document.querySelector('#live_notif_username').innerText;

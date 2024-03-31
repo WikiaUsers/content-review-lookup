@@ -44,3 +44,10 @@ UserTagsJS.modules.custom = {
 };
 
 window.enableReadProgressBarOnArticles = true;
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});

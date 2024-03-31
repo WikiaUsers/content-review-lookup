@@ -142,3 +142,17 @@ importArticles({
         'u:dev:MediaWiki:AutoCreateUserPages.js',
     ]
 });
+
+
+/* Only loading LastEdited for registered users except anonymous
+	Install PageEditInfo in MediaWiki:ImportJS */
+$(function(){
+	if (mw.config.get('wgUserName')) {
+	importArticles({
+		type: 'script',
+		articles: [
+			'u:dev:MediaWiki:LastEdited/code.js',
+			]
+    });
+}
+});

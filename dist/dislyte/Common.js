@@ -13,3 +13,10 @@ window.tooltips_list = [
         parse: '{' + '{Template:Esper tip|1=<#name#>|2=<#god#>|3=<#star#>}}',
     }
 ];
+
+$( document ).ready(function() {
+  $(".flipText2").hide();
+  $(".flipText1, .flipText2").click(function() {
+        $(".flipText1, .flipText2").toggle()
+  });
+});

@@ -6,14 +6,12 @@ $(document).ready(function() {
 		artifactClass = 'imageMapHighlighterArtifact',
 
 		// Default "2d context" attributes used for highlighting
-		// Some can be overridden by data properties, see handleOneMap()
-		// Set from either global CSS variable, JS property, or default
-		cssProps = window.getComputedStyle(document.body),
+		// Some can be overridden by data or CSS attributes, see handleOneMap(), which will always take precedence
 		defaultAreaHighlight = {
-			fillStyle: cssProps.getPropertyValue('--imagemaphighlight-fill') || window.imagemap.hightlightfill || 'rgba(0, 0, 0, 0.35)',
-			strokeStyle: cssProps.getPropertyValue('--imagemaphighlight-stroke') || window.imagemap.hightlightcolor || '#FFC500',
+			fillStyle: window.imagemap.hightlightfill || 'rgba(0, 0, 0, 0.35)',
+			strokeStyle: window.imagemap.hightlightcolor || '#FFC500',
 			lineJoin: 'round',
-			lineWidth: cssProps.getPropertyValue('--imagemaphighlight-stroke-width') || window.imagemap.hightlightstrokewidth || 2
+			lineWidth: window.imagemap.hightlightstrokewidth || 2
 		};
 
 	// Convert ImageMap area(s) to highlights on the canvas
@@ -66,13 +64,22 @@ $(document).ready(function() {
 		var img = $(this),
 			w = img.width(),
 			h = img.height(),
-			map = img.siblings('map:first'),
 			dims = { position: 'absolute', width: w + 'px', height: h + 'px', border: 0, top: 0, left: 0 },
 			parentMarker = img.closest('.imageMapHighlighter'),
-			liClasses = parentMarker.data('list-classes');
+			liClasses = parentMarker.data('list-classes'),
+			
+			map = img.siblings('map:first'),
+			defaultLink = false;
+		if (!map.length) { // for maps with "default" link, img is inside <a>
+			map = img.parent().siblings('map:first');
+			defaultLink = true;
+		}
 
-		if (!('area', map).length) return; // not an ImageMap
+		if (!$('area', map).length) return; // not an ImageMap, or map with 0 areas
 		img.addClass('highlighted');
+
+		// remove hardcoded height/width that makes legend overflow (might break something?)
+		$(img).closest('div.noresize').css({ height: '', width: '' });
 
 		var jcanvas = $('<canvas>', { 'class': artifactClass })
 			.css(dims)
@@ -82,9 +89,9 @@ $(document).ready(function() {
 
 		// Extend area highlighting with data attributes
 		var areaHighlight = $.extend({}, defaultAreaHighlight, {
-			fillStyle: parentMarker.data('fill'), // data-fill
-			strokeStyle: parentMarker.data('stroke'), // data-stroke
-			lineWidth: parentMarker.data('line-width') // data-line-width
+			fillStyle: parentMarker.data('fill') || parentMarker.css('--imagemaphighlight-fill'),
+			strokeStyle: parentMarker.data('stroke') || parentMarker.css('--imagemaphighlight-stroke'),
+			lineWidth: parentMarker.data('line-width') || parentMarker.css('--imagemaphighlight-stroke-width')
 		});
 
 		var context = $.extend(jcanvas[0].getContext('2d'), areaHighlight);
@@ -95,10 +102,10 @@ $(document).ready(function() {
 		// Pack them all TIGHTLY in a newly minted "relative" div, so when page changes
 		// (other scripts adding elements, window resize etc.), canvas and imagese remain aligned.
 		var div = $('<div>').css({ position: 'relative', width: w + 'px', height: h + 'px' });
-		img.before(div); // put the div just above the image
+		(defaultLink ? img.parent() : img).before(div); // put the div just above the image
 		div.append(bgimg) // place the background image in the div
 			.append(jcanvas) // and the canvas. both are "absolute", so they don't occupy space in the div
-			.append(img); // now yank the original image from the window and place it on the div.
+			.append(defaultLink ? img.parent() : img); // now yank the original image from the window and place it on the div.
 		img.fadeTo(1, 0); // make the image transparent - we see canvas and bgimg through it, but it still creates the mouse events
 
 		var ol = $('<ol>', { 'class': artifactClass })
@@ -120,11 +127,11 @@ $(document).ready(function() {
 		var someli; // select arbitrary one
 		$('area', map).each(function() {
 			var text = this.title;
-			var li = lis[text];	// title already met? use the same li
-			if (!li) {			// no? create a new one.
+			var li = lis[text]; // title already met? use the same li
+			if (!li) { // no? create a new one.
 				var href = this.href;
 				lis[text] = li = $('<li>', { 'class': artifactClass })
-					.append($('<a>', { href: href, text: text }))
+					.append($('<a>', { href: href }).html(mw.html.escape(this.title)))
 					.on('mouseover mouseout', mouseAction)
 					.data('areas', [])
 					.addClass(liClasses && (liClasses[text] || liClasses['default']))
@@ -132,7 +139,9 @@ $(document).ready(function() {
 			}
 			li.data('areas').push(this); // add the area to the li
 			someli = li; // whichever - we just want one...
-			$(this).on('mouseover mouseout', function(e) { li.trigger(e.type); });
+			$(this).on('mouseover mouseout', function(e) {
+				li.trigger(e.type);
+			});
 		});
 		if (someli) someli.trigger('mouseout');
 	}
@@ -146,12 +155,11 @@ $(document).ready(function() {
 			'li.' + artifactClass + '.liHighlighting { background-color: var(--imagemaphighlight-legend-highlight, rgba(var(--theme-link-color--rgb, 255,255,0), 0.1)); }' + // css for highlighted li element
 
 			// hack for centering Legend toggle
-			'#content ' +
-			'ol.' + artifactClass + ' { position: relative; margin-top: 1.5em; margin-left: unset; }' +
-			'ol.' + artifactClass + ' li.mw-collapsible-toggle-li { position: absolute; inset: -1.5em 0 auto; }'
+			'#content ol.' + artifactClass + ' { position: relative; margin-top: 1.5em; margin-left: unset; }' +
+			'#content ol.' + artifactClass + ' li.mw-collapsible-toggle-li { position: absolute; inset: -1.5em 0 auto; }'
 		);
 
-		var selector = '.imageMapHighlighter img:not(.highlighted)';
+		var selector = '.imageMapHighlighter img[usemap]:not(.highlighted)';
 		$(selector).each(handleOneMap);
 
 		// Highlight maps added later on

@@ -1073,6 +1073,18 @@ $(document).ready(function()
 	{
 		try
 		{
+			if($('#firstHeading').text().trim()=='Καθημερινές Αποστολές')
+			{
+				$('dl a[href^="#"]').each(function(k,a)
+				{
+					$(a).on('click',function(e)
+					{
+						e.preventDefault();
+						var pos = $($(a).attr('href')).offset().top;
+						window.scrollTo({top:pos-130,behavior:'smooth'});
+					});
+				});
+			}
 			FaithTableGenerator();
 			var txt = '';
 			var div = $content.find('#jsjson').html();

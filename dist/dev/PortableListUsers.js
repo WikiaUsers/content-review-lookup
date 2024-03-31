@@ -45,7 +45,7 @@
         //'restricted-login': {},
         //'restricted-login-exempt': {},
         'rollback': {},
-        //'sensitive-tool-access': {},        
+        //'sensitive-tool-access': {},
         //'soap': {},
         //'staff': {},
         'sysop': {},

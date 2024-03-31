@@ -1675,18 +1675,21 @@
                 return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
             },
 
-            getMapLink: function(name, htmlElement)
+            getMapLink: function(name, returns)
             {
                 name = name || this.name;
+                returns = returns || "string";
                 
-                if (htmlElement)
+                if (returns == "element")
                 {
                     var a = document.createElement(a);
                     a.href = "/wiki/" + encodeURIComponent(name);
                     a.textContent = "Map:" + name;
                     return a;
                 }
-                else
+                else if (returns == "wikitext")
+                	return "[[Map:" + name + "]]";
+                else if (returns == "string")
                     return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
             },
 
@@ -5458,7 +5461,7 @@
                         {
                             if (confirmed)
                             {
-                                var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
+                                var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink(null, "wikitext")).parse();
                                 new BannerNotification(bannerMsg, "notify", null, 5000).show();
                                 map.clearCollectedStates();
                             }
@@ -6912,7 +6915,7 @@
                     // Show a banner informing the user that they've collected all markers
                     if (numCollected == numTotal)
                     {
-                        var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, this.category.name, this.map.getMapLink()).plain();
+                        var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, mw.html.escape(this.category.name), this.map.getMapLink(null, "wikitext")).parse();
                         this.map.elements.collectedMessageBanner.setContent(msg);
                         this.map.elements.collectedMessageBanner.show();
                     }
@@ -7180,11 +7183,11 @@
 
                     navigator.clipboard.writeText(markerUrl).then(function()
                     {
-                        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").plain(), "confirm", null, 5000).show();
+                        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").escape(), "confirm", null, 5000).show();
                     })
                     .catch(function()
                     {
-                        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-failure").plain(), "confirm", null, 5000).show();
+                        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-failure").escape(), "confirm", null, 5000).show();
                     });
                 }.bind(this));
             },
@@ -8551,7 +8554,7 @@
                     table.style.marginBottom = "1em";
                     
                     var scopeStr = capitalizeFirstLetter(results.scope) + " config";
-                    var mapLink = ExtendedMap.prototype.getMapLink(results.name, true);
+                    var mapLink = ExtendedMap.prototype.getMapLink(results.name, "element");
                     var sourceStr = " - Defined as ";
                     var sourceLink = document.createElement("a");
     

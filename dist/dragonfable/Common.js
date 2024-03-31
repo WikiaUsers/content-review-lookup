@@ -5,3 +5,8 @@ $('tr.collapsibletr').each(function(){
 }).click(function(){
      $(this).toggleClass('collapsed').nextUntil('.collapsibletr, .uncollapsible').toggle();
 });
+
+//Preload Template config
+preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
+preloadTemplates_subpage = "case-by-case";
+preloadTemplates_namespace = "Template";

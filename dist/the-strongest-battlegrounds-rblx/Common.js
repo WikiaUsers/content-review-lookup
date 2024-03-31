@@ -21,10 +21,14 @@ mw.hook('dev.addSideTool').add(function (addSideTool) {
   $tooltip.text("Your Sandbox");
   $button.on('click', function() 
   {
+  	
+ 	var USER = mw.config.get('wgUserName');
 
-  	USER = mw.config.get('wgUserName');
-
+	if (USER == null) {
+	  alert('You do not have a Fandom account, create one to access your sandbox.');
+	} else {
 	window.open('/wiki/User:' + USER + '/Sandbox');
+	}
   	
   });
 });

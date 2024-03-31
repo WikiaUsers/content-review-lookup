@@ -43,10 +43,13 @@ window.tooltips_list = [{
 {
     classname: 'tooltip-ref',
     parse: '{{#invoke:getdata2|div|<#article#>|Отсылка}}'
+},
+
+{
+	classname: 'tooltip-room',
+	parse: '{{#invoke:Rooms|GetRoomContent|<#stage#>|<#id#>}}'
 }
-
 ];
-
 
 //Интерактивная таблица
 if (mw.config.get('wgPageName') === 'Интерактивная_таблица') {

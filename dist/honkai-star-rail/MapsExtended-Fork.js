@@ -17,7 +17,7 @@
 	function mx() {
 		var urlParams = new URLSearchParams(window.location.search);
 		var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
-		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.2.2-3eef07a7';
+		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.2.4';
 		
 		if (isDebug) {
 		    var log = console.log.bind(window.console);
@@ -31,7 +31,7 @@
 		if (isDisabled) // @ts-ignore: this will be output into a function body
 		    return;
 		
-		console.log("Loaded MapsExtended.js (version 0.2.2-3eef07a7" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
+		console.log("Loaded MapsExtended.js (version 0.2.4" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
 		
 		// Do not run on pages without interactive maps
 		var test = document.querySelector(".interactive-maps-container");
@@ -773,7 +773,7 @@
 		            table.style.marginBottom = "1em";
 		            
 		            var scopeStr = capitalizeFirstLetter(results.scope) + " config";
-		            var mapLink = ExtendedMap.prototype.getMapLink(results.name, true);
+		            var mapLink = ExtendedMap.prototype.getMapLink(results.name, 'element');
 		            var sourceStr = " - Defined as ";
 		            var sourceLink = document.createElement("a");
 		            
@@ -2897,6 +2897,11 @@
 		            
 		            // Set up marker disambiguations
 		            this.initMarkerDisambiguations();
+		            
+		            // Start fullscreen
+		            if (urlParams.get('startMapFullscreen') == '1') {
+		                this.setWindowedFullscreen(true);
+		            }
 		        }
 		        else {
 		            // Changing the size of the leafet container causes it to be remade (and the fullscreen button control destroyed)
@@ -3342,17 +3347,21 @@
 		        return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
 		    };
 		    
-		    ExtendedMap.prototype.getMapLink = function (name, htmlElement) {
+		    ExtendedMap.prototype.getMapLink = function (name, linkType) {
 		        name = name || this.name;
 		        
-		        if (htmlElement) {
+		        if (linkType == 'element') {
 		            var a = document.createElement(a);
 		            a.href = "/wiki/" + encodeURIComponent(name);
 		            a.textContent = "Map:" + name;
 		            return a;
 		        }
-		        else
+		        else if (linkType == 'wikitext') {
+		            return '[[Map:' + name + ']]';
+		        }
+		        else {
 		            return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
+		        }
 		    };
 		    
 		    ExtendedMap.prototype.togglePopupObserver = function (state) {
@@ -4530,7 +4539,7 @@
 		                // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
 		                OO.ui.confirm(confirmMsg).done(function (confirmed) {
 		                    if (confirmed) {
-		                        var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink()).plain();
+		                        var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink(null, 'wikitext')).parse();
 		                        new BannerNotification(bannerMsg, "notify", null, 5000).show();
 		                        map.clearCollectedStates();
 		                    }
@@ -5538,7 +5547,7 @@
 		            
 		            // Show a banner informing the user that they've collected all markers
 		            if (numCollected == numTotal) {
-		                var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, mw.html.escape(this.category.name), this.map.getMapLink()).plain();
+		                var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, mw.html.escape(this.category.name), this.map.getMapLink(null, 'wikitext')).parse();
 		                this.map.elements.collectedMessageBanner.setContent(msg);
 		                this.map.elements.collectedMessageBanner.show();
 		            }
@@ -6427,9 +6436,15 @@
 		        return customPopup;
 		    };
 		    
-		    ExtendedPopup.prototype.createDropdownButton = function (icon, text) {
+		    ExtendedPopup.prototype.createDropdownButton = function (icon, text, id) {
+		        // Prevent duplicate entries in rare cases
+		        var existingElement = this.elements.popupCopyLinkButton.parentElement.querySelector('.mapsExtended_popupAction_' + id);
+		        if (existingElement != null) {
+		            existingElement.remove();
+		        }
+		        
 		        var button = document.createElement('li');
-		        button.classList.add('MarkerPopupActions-module_action__xeKO9');
+		        button.classList.add('MarkerPopupActions-module_action__xeKO9', 'mapsExtended_popupAction_' + id);
 		        
 		        var iconSpan = document.createElement('span');
 		        iconSpan.classList.add('MarkerPopupActions-module_actionIcon__VyVPj');
@@ -6449,12 +6464,12 @@
 		    };
 		    
 		    ExtendedPopup.prototype.showCopySuccess = function () {
-		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").plain(), "confirm", null, 5000).show();
+		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").escape(), "confirm", null, 5000).show();
 		        this.hide();
 		    };
 		    
 		    ExtendedPopup.prototype.showCopyFailed = function () {
-		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-failure").plain(), "error", null, 5000).show();
+		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-failure").escape(), "error", null, 5000).show();
 		    };
 		    
 		    ExtendedPopup.prototype.createCustomDropdownEntries = function () {
@@ -6464,7 +6479,7 @@
 		            // Stop observing popup changes while we change the subtree of the popup
 		            this.map.togglePopupObserver(false);
 		            
-		            this.elements.popupCopyIdButton = this.createDropdownButton('pages-small', 'Copy ID');
+		            this.elements.popupCopyIdButton = this.createDropdownButton('pages-small', 'Copy ID', 'copyId');
 		            
 		            // Functionality for "copy id" button
 		            this.elements.popupCopyIdButton.addEventListener("click", function (_e) {
@@ -6473,7 +6488,7 @@
 		                    .catch(this.showCopyFailed.bind(this));
 		            }.bind(this));
 		            
-		            this.elements.popupCopyEmbedButton = this.createDropdownButton('preformat-small', 'Copy Embed');
+		            this.elements.popupCopyEmbedButton = this.createDropdownButton('preformat-small', 'Copy Embed', 'copyEmbed');
 		            
 		            // Functionality for "copy embed" button
 		            this.elements.popupCopyEmbedButton.addEventListener("click", function (_e) {

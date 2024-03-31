@@ -135,8 +135,10 @@ $(document).ready(function() {
 	function init() {
 		mw.util.addCSS('li.' + myClassName + '{white-space:nowrap;}\n' + //css for li element
 					'li.' + liHighlightClass + '{background-color:yellow;}\n' + //css for highlighted li element.
-					'.rtl li.' + myClassName + '{float: right; margin-left: 3em;}\n' +
-					'.ltr li.' + myClassName + '{float: left; margin-right: 3em;}');
+//					'.rtl li.' + myClassName + '{float: right; margin-left: 3em;}\n' +
+//					'.ltr li.' + myClassName + '{float: left; margin-right: 3em;}');
+					'.rtl li.' + myClassName + '{margin-left: 3em;}\n' +
+					'.ltr li.' + myClassName + '{margin-right: 3em;}');
 		$(hilightDivMarker+ ' img').each(function() {
 			var img = $(this), map = img.siblings('map:first');
 			if (!('area', map).length)

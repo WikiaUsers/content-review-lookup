@@ -1,4 +1,4 @@
-// События с заданиями: Список заданий
+//События с заданиями: Список заданий
 function addClickTaskEvent(elem) {
 	var btn = elem.querySelector('button');
 	btn.addEventListener("click", function() {
@@ -161,7 +161,7 @@ function updateFact(facts, oldIndx){
 
 var facts = document.querySelectorAll(".mainpage-fact");
 
-if (facts) {
+if (facts.length>0) {
 	var factError = document.querySelector(".mainpage-fact-error");
 	factError.style.display = "none";
 	var randIndx=Math.floor(Math.random()*facts.length);
@@ -174,7 +174,7 @@ if (facts) {
 //noimage
 var linksToNewImg = document.querySelectorAll('.mw-parser-output a');
 //console.log(linksToNewImg);
-if (linksToNewImg) {
+if (linksToNewImg.length>0) {
 for (var i = 0; i < linksToNewImg.length; i++) {
 	//var title = linksToNewImg[i].title;
 	var href = linksToNewImg[i].href;

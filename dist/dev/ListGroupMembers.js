@@ -1,12 +1,13 @@
 /**
  * ListGroupMembers
- * 
+ *
  * A script that loads a list of all users in
  * canonical (and custom) user groups.
  * 
  * @author  Ultimate Dark Carnage
  * @version 1.7
  **/
+
 ( function( window, $, mw ){
 	"use strict";
 	if ( window._LGMLoaded ) return;

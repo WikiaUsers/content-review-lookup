@@ -7,6 +7,7 @@
  * @author Thundercraft5 <https://dev.fandom.com/wiki/User:Thundercraft5>
  */
 /* jshint esversion: 5 */
+
 (function($, mw) {
 	var userGroups = mw.config.get("wgUserGroups"),
 		specialPage = mw.config.get("wgCanonicalSpecialPageName"),

@@ -533,6 +533,18 @@ $(document).ready(function()
 					translate(lang);
 				});
 			}
+			if($('#firstHeading').text().trim()=='Daily Tasks')
+			{
+				$('dl a[href^="#"]').each(function(k,a)
+				{
+					$(a).on('click',function(e)
+					{
+						e.preventDefault();
+						var pos = $($(a).attr('href')).offset().top;
+						window.scrollTo({top:pos-105,behavior:'smooth'});
+					});
+				});
+			}
 		}
 		catch(e)
 		{

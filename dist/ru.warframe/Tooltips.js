@@ -24,6 +24,9 @@ window.tooltips_list = [
     {	classname: 'text-tooltip',
         parse: '{'+'{Тултип/Текст|<#param#>}}',
     },
+    {	classname: 'focus-tooltip',
+        parse: '{'+'{Тултип/Фокус|<#param#>|<#param#2>}}',
+    },
 ];
 
 window.tooltips_config = {

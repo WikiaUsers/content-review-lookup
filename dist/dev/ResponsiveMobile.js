@@ -3,7 +3,6 @@
  * The JS version of the script
  * @author SuperDragonXD1
  */
-
 /* global mw, $ */
 /*jshint esversion: 5, esnext: false */
 

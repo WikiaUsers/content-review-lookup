@@ -961,13 +961,13 @@ $(function() {
     });
 });
 
-// Combines all of the tables on [[Media animasi Friendship is Magic]]
+// Combines all of the tables on [[Media animasi Keajaiban Persahabatan]]
 //   into a single table for easy sorting.
 // Adds a button in the header to show the table.
 // Script by Bobogoobo
 $(function () {
     if (
-        mw.config.get('wgPageName') !== 'Media_animasi_Friendship_is_Magic' ||
+        mw.config.get('wgPageName') !== 'Media_animasi_Keajaiban_Persahataban' ||
         mw.util.getParamValue('diff') ||
         mw.util.getParamValue('action')
     ) {

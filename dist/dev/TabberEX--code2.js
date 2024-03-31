@@ -2,7 +2,7 @@
 /**
  * TabberEX
  *
- * @version 2.2
+ * @version 2.3
  *
  * @author Jono99 <https://phigros.fandom.com/wiki/User:Jono99>
  *
@@ -57,7 +57,7 @@
 		.css("cursor", "pointer");
 				
 		$(".tabberex-body" + base_selector).children().css("display", "none");
-	}
+	};
 	
 	var tabberex_buildTabHead = function(host_div, tabber_id, tab_headers, tab_ex_headers, tab_locations)
 	{
@@ -67,6 +67,7 @@
 		.attr("data-tabber-id", tabber_id);
 		for (var i = 0; i < tab_headers.length; i++)
 		{
+			console.log("Building tab " + tabber_id + " " + String(i));
 			var tab = document.createElement("div");
 			$(tab).addClass("oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget oo-ui-tabOptionWidget")
 			.css("cursor", "pointer");
@@ -79,9 +80,15 @@
 			if (tab_ex_headers[i] === undefined)
 				$(tab_span).text(tab_headers[i]);
 			else
-				$(tab_span).html(tab_ex_headers[i]);
+			{
+				console.log("EX Header present");
+				for (var attr in tab_ex_headers[i][1])
+					tab_span.setAttribute(attr, tab_ex_headers[i][1][attr]);
+				$(tab_span).html(tab_ex_headers[i][0]);
+			}
 			tab.appendChild(tab_span);
 			tabber_head.appendChild(tab);
+			console.log("Successfully built tab");
 		}
 		return tabber_head.outerHTML;
 	};
@@ -95,7 +102,12 @@
 		// Get ex header
 		var ex_header;
 		function get_ex_header(_) {
-			ex_header = $(this).html();
+			console.log('EX Header found');
+			var attributes = {};
+			var attrs = this.getAttributeNames();
+			for (var i in attrs)
+				attributes[attrs[i]] = this.getAttribute(attrs[i]);
+			ex_header = [$(this).html(), attributes];
 			$(this).remove();
 		}
 		$(tab_element).children("p").children("span.tabberex-tab-header").each(get_ex_header);
@@ -114,6 +126,7 @@
 	
 	var process_tabbers = function()
 	{
+		console.log('TabberEX started');
 		var tabber_i = 0;
 		var default_tabs = {};
 		var tabber_ids = [];
@@ -128,7 +141,9 @@
 			if (tabber_id === undefined) tabber_id = String(tabber_i);
 				
 			$(this).children(".tabberex-tab").each(function(i) {
+				console.log('Processing head tab ' + tabber_id + ' ' + String(i));
 				var tab_details = process_tabber_head_tab(this, i);
+				console.log('Processing complete');
 				tab_headers[i] = tab_details.header;
 				tab_ex_headers[i] = tab_details.ex_header;
 				if (tab_details.default)
@@ -165,7 +180,9 @@
             $(this).removeClass("tabberex").addClass("tabberex-body");
 			
 			$(this).children(".tabberex-tab").each(function(i) {
+				console.log('Processing head tab ' + tabber_id + ' ' + String(i));
 				var tab_details = process_tabber_head_tab(this, i);
+				console.log('Processing complete');
 				tab_headers[i] = tab_details.header;
 				tab_ex_headers[i] = tab_details.ex_header;
 				if (tab_details.default)
@@ -186,7 +203,7 @@
 		});
 		
 		// Select default tabs
-		for (i in tabber_ids)
+		for (var i in tabber_ids)
 		{
 			tabberex_showTab(tabber_ids[i], default_tabs[tabber_ids[i]] + 1);
 		}

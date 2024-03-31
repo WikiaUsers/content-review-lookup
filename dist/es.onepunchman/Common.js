@@ -8,10 +8,8 @@ importArticles({
         'u:dev:MediaWiki:YouTubeModal/code.js',
     ]
 });
-
-/* Cambio de título */
-$(function(){
-  var newTitle = $("#title-meta").html();
-  if (!newTitle) return;
-  $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
+  
+// LinkPreview
+window.pPreview = $.extend(true, window.pPreview, {
+    noimage: 'https://static.wikia.nocookie.net/onepunchman/images/e/e6/Site-logo.png/revision/latest?cb=20210910233155&path-prefix=es'
 });

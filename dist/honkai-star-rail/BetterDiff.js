@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision: 16:29, 5 February 2024
+// Current revision: 14:55, 28 March 2024
 
 $(function() {
 
@@ -33,6 +33,12 @@ $(function() {
 			// Get tokens
 			betterDiff.fetchTokens();
 			
+			// Add css
+			importArticle({
+				type: 'style',
+				article: 'MediaWiki:BetterDiff.css'
+			});
+			
 			// Check we're in Special:RecentChanges
 			if (config.wgCanonicalSpecialPageName == 'Recentchanges') {
 				betterDiff.waitFor('.mw-changeslist div', function(){
@@ -43,7 +49,6 @@ $(function() {
 					// start observing
 					betterDiff.RecentChangesReload(betterDiff.newDiffLink);
 				});
-				
 			}
 			
 			// Check we're in Special:Contributions
@@ -261,11 +266,9 @@ $(function() {
 		targetedPatrol: function() {
 			if (!document.querySelector('#targetedPatrol') && can.patrol) {
 				var wrapper = $(
-					'<div class="targetedPatrolWrapper" style="display: flex; width: 100%">'+
-						'<span id="targetedPatrolDetails" style="margin-right: 3px; white-space: nowrap;"></span>'+
-						'<select name="targetedPatrolNS" id="targetedPatrolNS"'+
-							'style="background-color: transparent; color: var(--theme-page-text-color); border-radius: 5px; background-color: #93090900; border: 1px solid var(--theme-link-color);" '+
-						'/>'+
+					'<div class="targetedPatrolWrapper">'+
+						'<span id="targetedPatrolDetails"></span>'+
+						'<select name="targetedPatrolNS" id="targetedPatrolNS">'+
 							'<optgroup label="Namespace to patrol:">'+
 								'<option value="-99">All</option>'+
 								'<option value="0">Main</option>'+
@@ -274,17 +277,16 @@ $(function() {
 								'<option value="10">Template</option>'+
 								'<option value="14">Category</option>'+
 								'<option value="828">Module</option>'+
-								'<option value="2900">Map</option>'+
 							'</optgroup>'+
 						'</select>'+
 						'<input name="targetedPatrolUser" id="targetedPatrolUser" placeholder="User to mass patrol" />'+
-						'<span class="wds-button" id="submitTargetedPatrol" style="white-space: nowrap; padding: 1px 3px; position: relative;">Patrol</span>'+
+						'<span class="wds-button" id="submitTargetedPatrol">Patrol</span>'+
 					'</div>'
 				);
 				var cell = $('.mw-rcfilters-ui-table-placeholder');
 				cell.append(wrapper);
 				cell.css('vertical-align', 'middle');
-				document.querySelector('#submitTargetedPatrol').addEventListener('click', function(event) {
+				var submitPatrol = function () {
 					var api_sett = {
 						action: 'query',
 						list: 'recentchanges',
@@ -318,7 +320,9 @@ $(function() {
 							}
 						});
 					} else { document.querySelector('#targetedPatrolDetails').innerHTML = 'No user or namespace specified.'; }
-				});
+				};
+				document.querySelector('#submitTargetedPatrol').addEventListener('click', submitPatrol);
+				document.querySelector('#targetedPatrolUser').addEventListener('keypress', function(event){ if (event.key === 'Enter') {submitPatrol();} });
 			} else { console.log('User does not have patrolling rights.'); }
 		},
 		
@@ -478,7 +482,11 @@ $(function() {
 							var num = 0;
 							var patrol = false;
 							
-							while ( check.query.recentchanges[num] && can.patrol && patrol == false ) {
+							while (
+								!document.querySelector('#mw-diff-ntitle4 > .patrollink') &&
+								check.query.recentchanges[num] &&
+								can.patrol && patrol == false
+							) {
 								// Add patrol button if any revision to patrol
 								if (check.query.recentchanges[num].unpatrolled && (
 									(data.compare.torevid && data.compare.fromrevid &&
@@ -598,7 +606,7 @@ $(function() {
 						var link = document.querySelector('.patrollink a');
 						var wrapper = document.querySelector('.patrollink');
 						wrapper.innerHTML = 
-						'[<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="16px" style="vertical-align: middle;" border="0" />]';
+						'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
 						var torevid = link.getAttribute('torevid');
 						var fromrevid = link.getAttribute('fromrevid');
 						api.get({
@@ -677,7 +685,6 @@ $(function() {
 					link.setAttribute('oldid', oldid);
 					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute	('title'));
 					link.innerHTML = 'view';
-					link.style.cursor = 'pointer';
 					link.classList.add('quickDiff');
 					diff.classList.add('quickDiffLoaded');
 					if (diff.parentElement.nodeName == 'SPAN') {
@@ -703,8 +710,8 @@ $(function() {
 					token: tokens.patrol
 				}).catch(function(log) {
 					if (rcid && log && log == 'nosuchrevid') {
-						alert('Revision from deleted page detected, opening patrolling page.');
 						window.open('https://honkai-star-rail.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+						window.focus();
 					} else {
 						console.log('tokens', tokens);
 						console.log('error msg:', log);

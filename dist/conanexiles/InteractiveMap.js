@@ -80,7 +80,6 @@
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterKappa">Shaleback</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterTigerCub">Tiger</label></li>' +
 			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterWolfPup">Wolf</label></li>' +
-			'					<li><label><input class="overlaySelect" type="checkbox" name="CritterPiglet">TEST</label></li>' +
 			'				</ul>' +
 			'			</li>' +
 			'			<li class="options-group"><label class="options-group-label" onclickx="toggleGroups(\'options-group-misc\')" group="options-group-misc">Misc</label>' +

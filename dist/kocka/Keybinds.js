@@ -15,6 +15,11 @@
                 action: 'history'
             });
         });
+        m.bind('r', function() {
+            window.location.href = mw.util.getUrl(page, {
+                action: 'raw'
+            });
+        });
         m.bind('p', function() {
             window.location.href = mw.util.getUrl(page, {
                 action: 'protect'

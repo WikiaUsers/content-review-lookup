@@ -165,7 +165,7 @@ function initForm() {
 	var attackArr = ["single", "area", "long", "omni"];
 	var targetArr = ["red", "floating", "black", "metal", "angel", "alien", "zombie", "aku", "relic", "traitless"];
 	var traitSpecificArr = ["weaken", "freeze", "slow", "attacks-only", "strong", "resistant", "insanely-tough", "massive-damage", "insane-damage", "knockback", "warp", "curse", "dodge"];
-	var neutralArr = ["strengthen", "survive", "base-destroyer", "critical", "zombie-killer", "soulstrike", "barrier-breaker", "shield-piercing", "savage-blow", "extra-money", "metal-ability", "mini-wave", "wave", "mini-surge", "surge", "wave-shield", "counter-surge", "conjure", "colossus-slayer", "behemoth-slayer", "sage-slayer",
+	var neutralArr = ["strengthen", "survive", "base-destroyer", "critical", "metal-killer", "zombie-killer", "soulstrike", "barrier-breaker", "shield-piercing", "savage-blow", "extra-money", "metal-ability", "mini-wave", "wave", "mini-surge", "surge", "wave-shield", "counter-surge", "conjure", "colossus-slayer", "behemoth-slayer", "sage-slayer",
 		"immune-weaken", "immune-freeze", "immune-slow", "immune-knockback", "immune-waves", "immune-surge", "immune-warp", "immune-curse", "immune-toxic"];
 	var collabArr = ["witch-killer", "eva-angel-killer"];
 	var talentArr = ["resist-weaken", "resist-freeze", "resist-slow", "resist-knockback", "resist-wave", "resist-warp", "resist-curse", "resist-surge", "resist-toxic", "defense-up", "attack-up", "move-speed-up", "improved-knockback", "cost-down", "recover-speed-up", "attack-freq-up"];

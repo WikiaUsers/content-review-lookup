@@ -865,7 +865,7 @@ $(document).ready(function() {
 	  // Lookup arrays for the apprentice's aura ability
 	  // Styled in thousandths for ease of comparison
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
-	  var apprenticeAuraPercentIncrease = [0,240,260,280,300];
+	  var apprenticeAuraPercentIncrease = [0,200,220,240,260];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
 	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72];
 	  /* Hero Equipment stat dictionaries. We include one for each of the following:

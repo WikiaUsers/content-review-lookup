@@ -12,7 +12,8 @@ window.UserTagsJS = {
 
 UserTagsJS.modules.custom = {
     'The_Smarter,_Wiser_King_Dedede': ['assistant'],
-    'PinkPugPrincess': ['assistant']
+    'PinkPugPrincess': ['assistant'],
+    'WoofWoofGam3r': ['discord']
 };
 
 UserTagsJS.modules.inactive = 30;
@@ -346,7 +347,6 @@ window.MessageWallUserTags = {
         'BSpongeSM02':  'Bureaucrat • Administrator',
         'Anthony2306':  'Bureaucrat • Administrator',
         
-        'Kandy_Katie': 'Administrator',
         'Koolkitty108': 'Administrator',
         'Thelxinoe': 'Administrator',
         'FireMatch': 'Administrator',

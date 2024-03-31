@@ -22,7 +22,12 @@
 	if (window.SOAPReportsLoaded) return;
 	window.SOAPReportsLoaded = true;
 
-	var wgUserName = mw.config.get('wgUserName'),
+	var csrfToken = mw.user.tokens.get('csrfToken'),
+		config = mw.config.get([
+			'wgArticlePath',
+			'wgScriptPath',
+			'wgUserName'
+		]),
 		options = {},
 		modal = {},
 		reportDropdown,
@@ -190,7 +195,7 @@
 					'|$4\n' +
 					'|$3\n' +
 					'$7$8' +
-					'|' + wgUserName + '|' + '~~' + '~~' + '~}}',
+					'|' + config.wgUserName + '|' + '~~' + '~~' + '~}}',
 				summary: 'New profile report ($2, $5)',
 				sectionTitle: '$2'
 			},
@@ -266,7 +271,7 @@
 					'|$4\n' +
 					'|$3\n' +
 					'$6$7$8' +
-					'|' + wgUserName + '|' + '~~' + '~~' + '~}}',
+					'|' + config.wgUserName + '|' + '~~' + '~~' + '~}}',
 				summary: 'New vandalism report ($1, $5)',
 				sectionTitle: '$5 at $2'
 			},
@@ -326,7 +331,7 @@
 					'|$4\n' +
 					'|$3\n' +
 					'$6' +
-					'|' + wgUserName + '|' + '~~' + '~~' + '~}}',
+					'|' + config.wgUserName + '|' + '~~' + '~~' + '~}}',
 				summary: 'New spam report ($1, $5)',
 				sectionTitle: '$5 at $2'
 			},
@@ -388,7 +393,7 @@
 					'|$5\n' +
 					'|$3\n' + 
 					'|$4\n' + 
-					'|' + wgUserName + '|' + '~~' + '~~' + '~}}',
+					'|' + config.wgUserName + '|' + '~~' + '~~' + '~}}',
 				summary: 'New filter report ($2, #$3)',
 				sectionTitle: 'Block #$3 on $2'
 			},
@@ -592,27 +597,27 @@
 
 		console.log(opts.submitText, opts.summary);
 
+		var urlparams = {
+			action: 'edit',
+			format: 'json',
+			title: opts.page,
+			summary: opts.summary,
+			token: csrfToken
+		};
 		if (opts.page === "Report:Wiki") {
-			return new mw.Api().postWithEditToken({
-				action: 'edit',
-				title: opts.page,
-				appendtext: '\n' + opts.submitText,
-				summary: opts.summary
-			}).done(function() {
-				location.replace('https://soap.fandom.com/wiki/' + opts.page);
-			});
+			urlparams.appendtext = '\n' + opts.submitText;
 		} else {
-			return new mw.Api().postWithEditToken({
-				action: 'edit',
-				title: opts.page,
-				section: 'new',
-				sectiontitle: opts.sectionTitle,
-				text: opts.submitText,
-				summary: opts.summary
-			}).done(function() {
-				location.replace('https://soap.fandom.com/wiki/' + opts.page);
-			});
+			urlparams.section = 'new';
+			urlparams.sectiontitle = opts.sectionTitle;
+			urlparams.text = opts.submitText;
 		}
+		return fetch(config.wgScriptPath + '/api.php', {
+			body: new URLSearchParams(urlparams),
+			method: 'POST',
+			credentials: 'include'
+		}).then(function() {
+			window.location.href = config.wgArticlePath.replace('$1', opts.page);
+		});
 	}
 
 	/**
@@ -620,7 +625,6 @@
 	 */
 	function createWindow() {
 		mw.loader.using([
-			'mediawiki.api',
 			'mediawiki.notification',
 			'oojs-ui-windows'
 		]).then(function(require) {
@@ -694,7 +698,7 @@
 
 		mw.hook('soap.reportsform').fire();
 		
-		if (!wgUserName) {
+		if (!config.wgUserName) {
 			document.getElementById('formAnon').style.display = '';
 		}
 		var socks = document.getElementById('socks');
@@ -719,20 +723,18 @@
 
 				return;
 			}
-			$.ajax({
-				url: 'https://' + url + '/api.php',
-				crossDomain: true,
-				method: 'GET',
-				data: {
-					action: 'query',
-					meta: 'siteinfo',
-					siprop: 'general',
-					formatversion: 2,
-					format: 'json',
-					origin: '*'
-				},
-				dataType: 'json'
-			}).done(function(data) {
+			fetch('https://' + url + '/api.php?' + new URLSearchParams({
+				action: 'query',
+				meta: 'siteinfo',
+				siprop: 'general',
+				formatversion: 2,
+				format: 'json',
+				origin: '*'
+			}), {
+				method: 'GET'
+			}).then(function(response) {
+				return response.json();
+			}).then(function(data) {
 				if (data.query && data.query.general) {
 					document.getElementById('wikiname').value = data.query.general.sitename;
 				}
@@ -765,9 +767,7 @@
 			.append($newButton);
 		// Fire hook for scripts that use the button 
 		mw.hook('soap.reports').fire($newButton);
-		mw.loader.using('mediawiki.util').then(function() {
-			if (mw.util.getParamValue('openmodal')) $newButton.click();
-		});
+		if (window.location.search.includes('openmodal')) $newButton.click();
 	}
 
 	/**

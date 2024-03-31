@@ -580,7 +580,7 @@ action: {
 type: 'encapsulate',
 options: {
 pre: "{{Marvel Database:Staff Template\r| Image                   = ",
-post: "\r| Name                    = \r| Pseudonyms              = \r\r| Gender                 = \r| DateOfBirth             = \r| PlaceOfBirth            = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          =\r| ContinentOfBirth        = \r| DateOfDeath             = \r| PlaceOfDeath            = \r\r| Employers               = \r| Titles                 =\r| NotableCreations        = \r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                 = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
+post: "\r| Name                    = \r| Pseudonyms              = \r\r| Gender                  = \r| DateOfBirth             = \r| PlaceOfBirth            = \r| CityOfBirth             = \r| StateOfBirth            = \r| CountryOfBirth          =\r| ContinentOfBirth        = \r| DateOfDeath             = \r| PlaceOfDeath            = \r\r| First                   = \r\r| PersonalHistory         = \r| ProfessionalHistory     = \r\r| Notes                   = \r| Trivia                  = \r| OfficialWebsite         = \r| Links                   = \r}}"
 				}
 			}
 		}

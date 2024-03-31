@@ -17,7 +17,7 @@
         });
         var elem = d.createElement('div');
         elem.classList.add('ysnp');
-        elem.innerHTML = i18n.msg('text').plain();
+        elem.innerHTML = i18n.msg('text').escape();
         $s.innerHTML = '';
         $s.insertBefore(elem, $s.firstChild);
     }

@@ -34,35 +34,32 @@ window.AddRailModule = [{maxage:86400}];
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:MediaWiki:HTML5AudioPlayer/code.js',
-        'u:dev:MediaWiki:BackToTopButton/code.js',
-        'u:dev:MediaWiki:UserUnusedFiles/code.js',
-        'u:dev:MediaWiki:dev:SpoilerTags.js',
-        'u:dev:MediaWiki:SpoilerAlert/code.js',
-        'u:dev:MediaWiki:MassProtect/code.js',
-        'u:dev:MediaWiki:AddAnnouncement/code.js',
-        'u:dev:MediaWiki:MassRename/code.js',
-        'u:dev:MediaWiki:TemplateTypeButtons/code.js',
-        'u:dev:MediaWiki:WikiActivity.js',
-        'u:dev:MediaWiki:MassPatrol/code.js',
-        'u:dev:MediaWiki:AdminDashboard_block/code.js',
-        'u:dev:MediaWiki:WikiStatistics/code.js',
-        'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js',
-        'u:dev:MediaWiki:AddUserRightsTag/code.js',
-        'u:dev:MediaWiki:AddBlockUserTag/code.js',
-        'u:dev:MediaWiki:AjaxBatchDelete.js',
-        'u:dev:MediaWiki:AddRailModule/code.js',
-        'u:dev:MediaWiki:Digital Clock.js',
-        'u:dev:MediaWiki:ThemeToggler.js',
-        'u:dev:MediaWiki:NullEditButton/code.js',
-        'u:dev:MediaWiki:MassCategorization/code.js',
-        'u:dev:MediaWiki:CommunityPageRailModule.js',
-        'u:dev:MediaWiki:OggPlayer.js',
-        'MediaWiki:CombatCard.js',
-        'MediaWiki:AbnormalityPage.js',
-        'MediaWiki:AdminDashboardImportJS.js',
-        'u:dev:MediaWiki:ReferencePopups/code.js',
-        'u:dev:MediaWiki:DivEditor/code.js'
+        'u:dev:MediaWiki:HTML5AudioPlayer/code.js',//html5播放器，功能较多
+        'u:dev:MediaWiki:BackToTopButton/code.js',//在页面右下角添加一个返回顶端的按钮
+        'u:dev:MediaWiki:UserUnusedFiles/code.js',//可在Special:UserUnusedFiles中获取一个用户上传的从未使用过的文件
+        'u:dev:MediaWiki:MassProtect/code.js',//添加一个批量保护工具
+	    'u:dev:MediaWiki:AddAnnouncement/code.js',//使用户可以直接从博客命名空间添加公告
+        'u:dev:MediaWiki:WikiActivity.js',//在右下角添加“wiki活动”选项
+        'u:dev:MediaWiki:MassRename/code.js',//添加一个批量移动工具
+        'u:dev:MediaWiki:TemplateTypeButtons/code.js',//在模板页添加模板类型按钮，可以直接点击以切换模板类型
+        'u:dev:MediaWiki:MassPatrol/code.js',//在页面差异页能够批量回退
+        'u:dev:MediaWiki:AdminDashboard_block/code.js',//在管理员面板添加封禁用户的入口
+        'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js',//添加一个common.js入口于管理员面板
+        'u:dev:MediaWiki:AddUserRightsTag/code.js',//在用户个人档案添加按钮以便管理员编辑
+        'u:dev:MediaWiki:AddBlockUserTag/code.js',//为被封禁的用户添加“已封禁”标签
+        'u:dev:MediaWiki:AjaxBatchDelete.js',//添加批量删除工具
+        'u:dev:MediaWiki:AddRailModule/code.js',//为右侧轨添加一个内容公告
+        'u:dev:MediaWiki:ThemeToggler.js',//添加一个临时切换主题的按钮在左上角
+        'u:dev:MediaWiki:NullEditButton/code.js',//在页面选项中添加一个空编辑选项，用于刷新
+        'u:dev:MediaWiki:MassCategorization/code.js',//添加一个批量分类管理工具
+        'u:dev:MediaWiki:CommunityPageRailModule.js',//为右侧轨添加社区模块
+        'u:dev:MediaWiki:OggPlayer.js',//ogg播放器，可自定义播放按钮
+        'MediaWiki:CombatCard.js',//战斗书页js
+        'MediaWiki:AbnormalityPage.js',//异想体书页js
+        'MediaWiki:AdminDashboardImportJS.js',//在管理员面板添加一个importjs的快捷入口
+        'u:dev:MediaWiki:ReferencePopups/code.js',//注释提示框
+        'u:dev:MediaWiki:DivEditor/code.js',//div编辑器
+       // 'u:dev:MediaWiki:GadgetsStateToggler.js'//启用小工具快速切换，但是不小心被fandom毙了
     ]
 });
 

@@ -31,10 +31,10 @@
             article: 'u:dev:MediaWiki:GlobalFileUsage.css'
         });
 
-        var langs    = config.lang;
-        var format   = '&format=json';
-        var siteUrl  = mw.config.values.wgServer + '/';
-        var fileName = mw.config.values.wgTitle;
+        var fullLangs		= config.lang;
+        var format  		= '&format=json';
+        var defaultSiteUrl  = mw.config.values.wgServer + '/';
+        var fileName		= mw.config.values.wgTitle;
 
         if (action == 'move')
             fileName = fileName.replace('MovePage/File:', '');
@@ -57,10 +57,11 @@
             $('#global-usage-list').remove();
             $('#global-usage-container').append('<table id="global-usage-list" class="wikitable" style="width:100%"><tbody><tr><th>' + i18n.msg('lang').plain() + '</th><th>' + i18n.msg('page').plain() + '</th></tr></tbody></table>');
 
-            langs.forEach(function(lang) {
-                if (lang == mw.config.values.wgContentLanguage) return;
-                $('#global-usage-list').append('<tbody data-lang="' + lang + '"></tbody>');
-                checkFile(siteUrl, baseParams, lang, i18n);
+            fullLangs.forEach(function(fullLang) {
+            	var simpleLang = fullLang.split(':')[0];
+                if (simpleLang == mw.config.values.wgContentLanguage) return;
+                $('#global-usage-list').append('<tbody data-lang="' + simpleLang + '"></tbody>');
+                checkFile(defaultSiteUrl, baseParams, fullLang, i18n);
             });
 
             $('#show-global-usage-btn').text(i18n.msg('button-update').plain()).prop('disabled', true);
@@ -108,10 +109,18 @@
                 break;
         }
 
-        function checkFile(siteUrl, baseParams, lang, i18n) {
+        function checkFile(defaultSiteUrl, baseParams, fullLang, i18n) {
 
-			var infoParams = baseParams + '&prop=imageinfo' + format;
-			var langUrl = siteUrl + lang;
+			var infoParams = baseParams + '&prop=imageinfo' + format + '&origin=*';
+			
+			var langUrl;
+			var simpleLang = fullLang.split(':')[0];
+			var langSubDomain = fullLang.split(':')[1];
+			if (langSubDomain == undefined) {
+				langUrl = defaultSiteUrl + simpleLang;
+			} else {
+				langUrl = 'https://' + langSubDomain + '.fandom.com/' + simpleLang;
+			}
 			var infoUrl = langUrl + infoParams;
 	
 			fetch(infoUrl)
@@ -125,8 +134,8 @@
 					
 					if (repo == 'shared') {
 
-                        var usageParams = baseParams + '&prop=fileusage' + format;
-                        usageQuery(siteUrl, usageParams, lang, i18n);
+                        var usageParams = baseParams + '&prop=fileusage' + format + '&origin=*';
+                        usageQuery(defaultSiteUrl, usageParams, fullLang, i18n);
 
 					} else if (repo != 'local') {
 
@@ -138,10 +147,22 @@
 
         }
 
-        function usageQuery(siteUrl, params, lang, i18n) {
+        function usageQuery(defaultSiteUrl, params, fullLang, i18n) {
+        	
+        	var usageUrl;
+			var fullUrl;
+			var simpleLang = fullLang.split(':')[0];
+        	var langSubDomain = fullLang.split(':')[1];
+			
+        	if (langSubDomain == undefined) {
+        		fullUrl = defaultSiteUrl + simpleLang;
+				usageUrl = defaultSiteUrl + simpleLang + params;
+			} else {
+				fullUrl = 'https://' + langSubDomain + '.fandom.com/' + simpleLang;
+				usageUrl = 'https://' + langSubDomain + '.fandom.com/' + simpleLang + params;
+			}
 
-            var usageUrl = siteUrl + lang + params;
-            var $langRow =  $('#global-usage-list [data-lang="' + lang + '"]');
+            var $langRow =  $('#global-usage-list [data-lang="' + simpleLang + '"]');
 
             config.showDeleteWarning = false;
             $('#global-usage-delete-warning').hide();
@@ -149,8 +170,7 @@
             fetch(usageUrl)
                 .then(function(response){
                     if (!response.ok) {
-                        var fullUrl = siteUrl + lang;
-                        $langRow.append('<tr class="global-usage-error"><td>' + lang + '</td><td colspan="2">' + i18n.msg('connection-error', fullUrl).plain() + '</td></tr>');
+                        $langRow.append('<tr class="global-usage-error"><td>' + simpleLang + '</td><td colspan="2">' + i18n.msg('connection-error', fullUrl).plain() + '</td></tr>');
                     }
                     return response.json();
                 })
@@ -169,12 +189,10 @@
                     var list = '';
 
                     usageInfo.forEach(function(item) {
-                        var fileLink = siteUrl + lang + '/wiki/' + item.title;
-                        list += '<tr><td>' + lang + '</td><td><a href="' + fileLink + '" target="_blank">' + item.title + '</a></td></tr>';
+                        var fileLink = fullUrl + '/wiki/' + item.title;
+                        list += '<tr><td>' + simpleLang + '</td><td><a href="' + fileLink + '" target="_blank">' + item.title + '</a></td></tr>';
                     });
-
                     $langRow.append(list);
-
                  });
 
         }

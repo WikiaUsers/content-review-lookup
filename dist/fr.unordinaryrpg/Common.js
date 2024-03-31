@@ -3,5 +3,4 @@
 window.DiscordBannerSettings = {
     bannerStyle: '3',
     inviteLink: 'KPKnmz42HN'
-    prependToRail: false
 };
