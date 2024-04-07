@@ -1,49 +1,13 @@
-importScriptPage('Time.js', 'dev');
+// User Account Age tag 
+window.customUserAccountAge = {
+  showFullDate: true
+};
 
-// adds show/hide-button to navigation bars
-function createDivToggleButton(){
-    var indexNavigationBar = 0;
-    // iterate over all < div >-elements 
-    var divs = document.getElementsByTagName("div");
-    for (var i = 0; NavFrame = divs[i]; i++) {
-        // if found a navigation bar
-        if (hasClass(NavFrame, "DivFrame")) {
- 
-            indexNavigationBar++;
-            var NavToggle = document.createElement("a");
-            NavToggle.className = 'DivToggle';
-            NavToggle.setAttribute('id', 'DivToggle' + indexNavigationBar);
-            NavToggle.setAttribute('href', 'javascript:toggleDiv(' + indexNavigationBar + ');');
- 
-            var isCollapsed = hasClass( NavFrame, "collapsed" );
- 
-            if (isCollapsed) {
-                for (var NavChild = NavFrame.firstChild; NavChild != null; NavChild = NavChild.nextSibling) {
-                    if ( hasClass( NavChild, 'NavPic' ) || hasClass( NavChild, 'DivContent' ) ) {
-                        NavChild.style.display = 'none';
-                    }
-                }
-            }
- 
- 
-            var NavToggleText = document.createTextNode(isCollapsed ? DivShowTxt : DivHideTxt);
-            NavToggle.appendChild(NavToggleText);
- 
-            // Find the NavHead and attach the toggle link
-            for(var j=0; j < NavFrame.childNodes.length; j++) {
-                if (hasClass(NavFrame.childNodes[j], "DivHead")) {
-                    NavToggle.style.color = NavFrame.childNodes[j].style.color;
-                    NavFrame.childNodes[j].appendChild(NavToggle);
-                }
-            }
-            NavFrame.setAttribute('id', 'DivFrame' + indexNavigationBar);
-        }
-    }
-}
- 
-$( createDivToggleButton );
-
-
+//AbuseLogRC 
+abuseLogRC_entries = 5;
+abuseLogRC_showTo = [ 'content-moderator' ];
+//abuseLogRC_users = [ 'USER' , 'USER' ];
+abuseLogRC_userInfo = true;
 
 //automatic daily purge
 
@@ -102,15 +66,6 @@ window.UserTagsJS = {
 	}
 };
 
-//tagging Moderators to never be tagged as "usergroup-inactive" except inactive Moderators
-UserTagsJS.modules.userfilter = {
-	'Moonwatcher x Qibli': ['inactive'],
-};
-
-
-UserTagsJS.modules.implode = {
-	'Half-Admin | Content+Thread': ['threadmoderator', 'content-moderator'], // Adds 'Half-Admin | Content+Thread' BUT also removes Thread Moderator and Content Moderator
-
 window.DisplayClockJS = {
     format: '%2I:%2M:%2S %p %2d %{January;Febuary;March;April;May;June;July;August;September;October;November;December}m %Y (UTC)',
     interval: 600, /* How often the timer updates in milliseconds (1000=1 second) */
@@ -119,45 +74,20 @@ window.DisplayClockJS = {
 };
 importArticle({type:'script', article:'u:dev:MediaWiki:UTCClock/code.js'});
 
-//default to classic categories
+// UserTags thingamajigs
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		inactive: { order: -2 },
+		bot: { link:'Help:Bots', order: -1 },
+		bureaucrat: { order: 0 }, // <- lower order value = will be placed before other tags (in space, not as of which loads first)
+		sysop: { order: 1 },
+		'content-moderator': { order: 2 },
+		threadmoderator: { order: 3 }
+	}
+};
 
-// Get all elements with the class "category-layout-selector__item"
-var items = document.querySelectorAll('li.category-layout-selector__item');
-
-// Loop through each item and add the "is-active" class
-items.forEach(function(item) {
-  item.classList.add('is-active');
-});
-
-
-$(function() {
-    // Check if we're on the page where you want to enable chat
-    if (mw.config.get('wgPageName') === 'LiveChatTest') {
-        // Create a div for the chat and append it to the page
-        var chatContainer = $('<div id="chat-container"></div>').appendTo('body');
-        chatContainer.css({
-            'position': 'fixed',
-            'bottom': '0',
-            'right': '10px',
-            'background': 'white',
-            'border': '1px solid #ccc',
-            'padding': '10px',
-            'max-height': '300px',
-            'overflow-y': 'auto'
-        });
-
-        // Create an input field for users to type messages
-        var inputField = $('<input type="text" id="chat-input" placeholder="Type your message"/>').appendTo(chatContainer);
-
-        // Listen for Enter key press to send messages
-        inputField.keypress(function(e) {
-            if (e.which === 13) { // Enter key
-                var message = inputField.val();
-                inputField.val('');
-
-                // Append the message to the chat container
-                $('<div class="chat-message"></div>').text(message).appendTo(chatContainer);
-            }
-        });
-    }
-});
+UserTagsJS.modules.inactive = { days: 60, zeroIsInactive: true }; // no edits for 60 days and/or no edits at all = inactive
+UserTagsJS.modules.autoconfirmed = false;
+UserTagsJS.modules.newuser = false;
+UserTagsJS.modules.metafilter = false;

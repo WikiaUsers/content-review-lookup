@@ -545,38 +545,38 @@ $('.ns-15 .page-header__title').prepend('Category ');
  
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
 
-/* Display audio files in categories */
+/* Display Ogg files in galleries */
 
-const soundFile = $('.ns-14 [data-image-key$=".ogg"]');
+const oggFile = $('.wikia-gallery-item [data-image-key$=".ogg"]');
 
-soundFile.each(correctAudioFiles);
+oggFile.each(correctOggFiles);
 
-function correctAudioFiles(){
+function correctOggFiles(){
   $(this).after('<audio src="/wiki/Special:Redirect/file/'+$(this).attr('data-image-key')+'" controls>');
   $(this).remove();
 }
 
-/* Display PDFs on PDF file pages */
+/* Display PDF files in galleries */
 
-const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
+const adobeGalleryIcon = $('.wikia-gallery-item [data-image-key$=".pdf"]');
 
-adobeIcon.parent().prepend('<embed src="/wiki/Special:Redirect/file/'+mw.config.get("wgTitle")+'" width="250" height="auto">');
-adobeIcon.remove();
-
-/* Display PDFs in categories */
-
-const adobeCatIcon = $('.ns-14 [data-image-key$=".pdf"]');
-
-adobeCatIcon.each(removeAdobeIcon);
+adobeGalleryIcon.each(removeAdobeIcon);
 
 function removeAdobeIcon(){
   const fileName = $(this).attr('data-image-key');
-  $(this).after('<embed src="/wiki/Special:Redirect/file/'+fileName+'" width="185" height="185"><div class="thumbcaption pdf-thumbcaption"><a href="/wiki/File:'+fileName+'" class="info-icon pdf-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a></div>');
+  $(this).after('<iframe src="/wiki/Special:Redirect/file/'+fileName+'" width="185" height="185" title="'+fileName+'"></iframe><div class="thumbcaption pdf-thumbcaption"><a href="/wiki/File:'+fileName+'" class="info-icon pdf-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a></div>');
   $(this).parent().addClass('thumb show-info-icon');
   $(this).remove();
 }
 
-/* Embed PDF widgets into pages */
+/* Display PDF files on PDF file pages */
+
+const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
+
+adobeIcon.parent().prepend('<iframe src="/wiki/Special:Redirect/file/'+mw.config.get("wgTitle")+'" width="250" height="auto" title="'+mw.config.get("wgTitle")+'"></iframe>');
+adobeIcon.remove();
+
+/* Embed PDF file widgets into pages */
 
 const widget = $('.pdf-widget');
 
@@ -584,10 +584,9 @@ widget.each(embedPDFs);
 
 function embedPDFs(){
   const specifiedFile = $(this).attr('data-file');
-  const float = $(this).attr('data-float') ? $(this).attr('data-float') : 'right';
+  const floatDir = $(this).attr('data-float') ? $(this).attr('data-float') : 'right';
   const caption = $(this).attr('data-caption') ? $(this).attr('data-caption').replace(/'''(.+?)'''/g, '<b>$1</b>').replace(/''(.+?)''/g, '<i>$1</i>').replace(/\[\[(.+?)\|(.+?)\]\]/g, '<a href="/wiki/$1">$2</a>').replace(/\[\[(.+?)\]\]/g, '<a href="/wiki/$1">$1</a>') : '';
 
-  $(this).html('<figure class="thumb t'+float+' show-info-icon"><embed src="/wiki/Special:Redirect/file/'+specifiedFile+'" width="174.028" height="auto"><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
+  $(this).html('<figure class="thumb t'+floatDir+' show-info-icon"><iframe src="/wiki/Special:Redirect/file/'+specifiedFile+'" width="174.028" height="auto" title="'+specifiedFile+'"></iframe><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
 }
-
 // </nowiki>

@@ -25,7 +25,7 @@ mw.hook('dev.addSideTool').add(function (addSideTool) {
  	var USER = mw.config.get('wgUserName');
 
 	if (USER == null) {
-	  alert('You do not have a Fandom account, create one to access your sandbox.');
+	  alert('You are not logged into Fandom, login or create one to access your sandbox.');
 	} else {
 	window.open('/wiki/User:' + USER + '/Sandbox');
 	}

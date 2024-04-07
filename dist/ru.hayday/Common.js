@@ -156,7 +156,7 @@ function updateFact(facts, oldIndx){
 	}
 	facts[randIndx].style.display="block";
 	setTimeout(hideFact, 1000, facts[oldIndx]);
-	setTimeout(updateFact, 10000, facts, randIndx);
+	setTimeout(updateFact, 15000, facts, randIndx);
 }
 
 var facts = document.querySelectorAll(".mainpage-fact");
@@ -167,7 +167,7 @@ if (facts.length>0) {
 	var randIndx=Math.floor(Math.random()*facts.length);
 	console.log(randIndx);
 	facts[randIndx].style.display="block";
-	setTimeout(updateFact, 1500, facts, randIndx);
+	setTimeout(updateFact, 15000, facts, randIndx);
 }
 
 
@@ -189,6 +189,47 @@ for (var i = 0; i < linksToNewImg.length; i++) {
 	}
 }}
 
+// События с заданиями: эффект мыши
+if (document.body.className.includes('page-События_с_заданиями')) {
+	var sobytieRoads = document.querySelectorAll(".sobytie .road");
+	sobytieRoads.forEach(function(road){
+		var roadPolosa = road.querySelector(".polosa");
+		var points = road.querySelectorAll(".points");
+		
+		var nowPoint = document.createElement("div");
+		nowPoint.className = "now-point hayday";
+		nowPoint.style.left="-50px";
+		nowPoint.innerHTML = '<svg width="20px" height="13px"><polygon points="0,13 10,0 20,13" fill="white"/></svg>';
+		var nowPointText = document.createTextNode("0");
+		nowPoint.append(nowPointText);
+		road.append(nowPoint);
+		
+		var numPoint = 0;
+		road.addEventListener("pointermove", function(){
+			var rect = road.getBoundingClientRect();
+			var mouseX = event.pageX-rect.left+road.scrollLeft;
+			roadPolosa.style.width=mouseX+"px";
+			nowPoint.style.left = (Math.floor(mouseX)-25)+"px";
+			
+			if (mouseX<150){
+				numPoint = Math.floor((points[0].textContent / 150)*mouseX);
+			} else if (mouseX > (points.length-1)*300+150) {
+				numPoint = points[points.length-1].textContent;
+			} else {
+				var i = Math.floor((mouseX-150)/300);
+				numPoint = Math.floor(((+points[i+1].textContent-Number(points[i].textContent))/300)*(mouseX-i*300-150)+Number(points[i].textContent));
+			}
+			//console.log(numPoint, points[0].textContent, mouseX);
+			nowPointText.textContent = String(numPoint);
+		});
+		
+		road.addEventListener("pointerout", function(){
+			roadPolosa.style.width="100%";
+			nowPointText.textContent = "0";
+			nowPoint.style.left = "-50px";
+		});
+	});
+}
 
 
 // linkJs 
@@ -199,9 +240,10 @@ importArticles({
     ]
 });
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.noimage = 'https://static.wikia.nocookie.net/hayday/images/e/ed/Загрузка.gif/revision/latest?cb=20231127121344&format=original&path-prefix=ru';
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/hayday/images/7/7d/Нет_картинки.gif/revision/latest?cb=20231204095429&format=original&path-prefix=ru';
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/hayday/images/e/ed/Загрузка.gif/revision/latest?cb=20231127121344&format=original&path-prefix=ru';
 window.pPreview.RegExp.noinclude = ['.ignor', '.portable-infobox', '.sobytie .item p'];
 window.pPreview.delay = 1000;
 window.pPreview.tlen = 200;
-window.pPreview.RegExp.iimages = [new RegExp('.*')];
+window.pPreview.apid = false;
+window.pPreview.RegExp.iimages = ['Xp.png', 'Монета.png', 'Алмаз.png', 'Ваучеры.png', 'Часы.png', 'Репутация.png', 'Помогите.gif'];

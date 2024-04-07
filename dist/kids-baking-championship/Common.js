@@ -6,3 +6,4 @@ importArticles({
         'u:dev:MediaWiki:SnowStorm.js',
     ]
 });}
+dev:ProfileTags.js

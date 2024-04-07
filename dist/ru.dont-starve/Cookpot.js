@@ -279,9 +279,11 @@ window.cookpotAdd = function(title, src) { //Добавляет ингридие
 			var api = new mw.Api();
 			clearInterval(cookpotTimer);
 			api.get({
-				action: 'expandtemplates',
-				text: '{{#invoke:Cookpot|cookpotCalculate|' + dlc + '|' + warly + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}'
-			}).done(function(data) {
+                action: 'expandtemplates',
+                text: '{{#invoke:Cookpot|cookpotCalculate|' + dlc + '|' + warly + '|' + cookpot[0] + '|' + cookpot[1] + '|' + cookpot[2] + '|' + cookpot[3] + '}}',
+                smaxage: 600,
+                maxage: 600
+            }).done(function(data) {
 				cookpotResult = data.expandtemplates['*'];
 				return cookpotResult;
 			});

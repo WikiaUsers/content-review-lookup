@@ -691,7 +691,7 @@ UserTagsJS.modules.explode = {
  
 
  
- 
+ var playButtons = document.querySelectorAll(".thumbnail-play-icon");playButtons.forEach(function(puskKnopka){puskKnopka.replaceWith("https://static.wikia.nocookie.net/unbreakable-machine-doll/images/9/9f/Play_Button.png/revision/latest?cb=20240401164043")});
 
  
  

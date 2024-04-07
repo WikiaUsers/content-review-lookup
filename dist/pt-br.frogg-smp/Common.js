@@ -25,7 +25,7 @@ function recenter($slider) {
       $item.className = classesTemplate[i];
     
       if (i === 2) {
-      	$slider.find('.skins-carousel__name.--active').removeClass('--active')
+      	$slider.find('.skins-carousel__name.--active').removeClass('--active');
         $slider.find('.skins-carousel__name[data-index="' + $($item).data("index") + '"]').addClass("--active");
         
         $slider.find('.skins-carousel__description.--active').removeClass('--active');
@@ -73,4 +73,26 @@ $(".skins-carousel__prev-button").on("click", function(event) {
 });
 $(".skins-carousel__next-button").on("click", function(event) {
   next($(event.target.closest(".skins-carousel")));
+});
+
+// PAGINATED BOOK by feyli
+
+function navPage($book, mod) {
+  var newPage = Number($book.attr("data-actual-page")) + mod;
+  var contents = $book.find(".paginated-book__content").length;
+  
+  if (newPage <= 0 || newPage > contents) return;
+  
+  $book.attr("data-actual-page", newPage);
+  $book.find(".paginated-book__content.--active").removeClass("--active");
+  $book.find(".paginated-book__content-container .paginated-book__content:nth-child(" +  newPage + ")").addClass("--active");
+  $book.find(".paginated-book__page-indicator").text("Página " + newPage + " de " + contents);
+}
+
+$(".paginated-book__prev").on("click", function(event) {
+  navPage($(event.target.closest(".paginated-book")), -1);
+});
+
+$(".paginated-book__next").on("click", function(event) {
+  navPage($(event.target.closest(".paginated-book")), 1);
 });

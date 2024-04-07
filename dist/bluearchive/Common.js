@@ -363,3 +363,13 @@ UserTagsJS.modules.custom = {
 };
 
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop'];
+
+/*********************/
+/* MassCategorization */
+/*********************/
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});

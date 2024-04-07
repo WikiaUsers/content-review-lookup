@@ -42,3 +42,21 @@ function updateCountdown() {
         document.getElementById("countdown").innerHTML = returnString;
     }
 };
+
+// Find all elements with class "tally"
+var elements = document.querySelectorAll('.LeaderboardTable .tally > em');
+
+// Loop through each element
+elements.forEach(function(element) {
+    // Get the number inside the <em> tag and remove commas
+    var number = parseInt(element.innerText.replace(/,/g, ''));
+
+    // Change the color based on the number
+    if (number >= 100) {
+        element.style.color = 'var(--achievement-gold)';
+    } else if (number >= 50) {
+        element.style.color = 'var(--achievement-silver)';
+    } else if (number >= 10) {
+        element.style.color = 'var(--achievement-bronze)';
+    }
+});

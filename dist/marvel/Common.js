@@ -200,7 +200,7 @@ $(function() {
 
     // API requires titles 50 at a time, will be 200 titles per category page
     var requests,
-        $links = $('.mw-category-generated').find('a');
+        $links = $('.mw-category').find('a');
         pages = $links.toArray().map(function(value) {
             return encodeURIComponent($(value).attr('title'));
         });

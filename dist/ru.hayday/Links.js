@@ -498,6 +498,7 @@
             apipage.extend({titles: nuri.truepath, abstract: Math.min(Settings.tlen, 500)});
             log('gp apid', apipage);
             $.getJSON(apipage).done(function(data) {
+                log('gp apid.data', nuri, data);
                 if (!data || data.error) {
                     log('gp apid.error', nuri, data);
                     Settings.RegExp.ilinks.push(nuri.truepath); // and ignore it
@@ -548,13 +549,11 @@
                 pp.stop(nuri.truepath);
                 return this;
             }
-            var img = data.parse.images.map(function(value, index) {
-                if (nignoreImage(value)) {
-                    return false;
-                } else {
-                    return value;
-                }
-            }).filter(Boolean)[0];
+            var allImages = data.parse.images;
+            var mappedImages = allImages.map(function(value, index) {if (nignoreImage(value)) {return false;} else {return value;}});
+            var filtredImages = mappedImages.filter(Boolean);
+            log('gp apip data allImages:', allImages, 'mappedImages:', mappedImages, 'filtredImages:', filtredImages);
+            var img = filtredImages[filtredImages.length-1];
             // img = $(img);
             var text = data.parse.text['*'];
             log('gp apip img:', img, 'text:', {text: text});

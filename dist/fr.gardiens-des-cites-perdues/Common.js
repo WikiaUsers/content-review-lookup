@@ -208,3 +208,175 @@ mw.hook('wikipage.content').add(function($content) {
         );
     });
 });
+
+/*** Discuter avec Messenger sur Messeger ([[Spécial:ShannonMessenger]]) ***/
+;(function($, mw){
+    if (mw.config.get('wgPageName') != "Spécial:ShannonMessenger" && mw.config.get('wgPageName') != "Special:ShannonMessenger") {
+        return;
+    }
+
+    var data = {
+  "RANDOM1": {
+  	"initial": "Oh, bonjour chers lecteurs ! Sachez que je vous Keefe ! (Keefe, Kiffe... bon je retourne écrire moi.)",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM2": {
+  	"initial": "Pourquoi l'impératrice Pernille ne joue pas aux jeux vidéos ? Parce qu'elle n'arrête pas de troller tout le monde !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM3": {
+  	"initial": "Saviez-vous que Sandor avait été viré de son travail de cuisinier ? En effet, à chaque fois qu'il sortait un ingrédient du placard, il le gob-elin-ait !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM4": {
+  	"initial": "Saviez-vous que Sandor avait été viré de son travail de cuisinier ? En effet, à chaque fois qu'il sortait un ingrédient du placard, il le gob-elin-ait !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM5": {
+  	"initial": "Pourquoi dit-on que les elfes sont suisses ? Parce qu'ils font partie de la confédération elf-étique !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM6": {
+  	"initial": "Que fait Verdi quand il n'arrive pas à choisir ce qu'il va manger ? Un tirajosaure",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM7": {
+  	"initial": "Oh non, la porte du sanctuaire est cassée ! Comment la réparer ? Ah, je sais : utilisons une argenta-visse !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM8": {
+  	"initial": "Arrêter d'écrire les Gardiens des Cités Perdues ?! Ah sha non !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM9": {
+  	"initial": "Quelle chanson de Dalida les lutins adorent-ils par dessus tout ? Iggy l'amoroso !",
+  	"options": [],
+  	"response": []
+  },
+  "RANDOM10": {
+    "initial": "Je vis avec plein de chats chez moi. En même temps, c’est logique, il y a « Sha » dans mon prénom !",
+    "options": [],
+    "response": []
+  },
+  "RANDOM11": {
+    "initial": "Voulez-vous que je vous apprenne à écrire un article ?",
+    "options": [
+      "Oui ! ",
+      "Non."
+    ],
+    "response": [
+      "Alors demandez à l’équipe administrative, ou lisez <a href='https://gdcp.fandom.com/fr/Aide:Contribuer_sur_le_wiki'>ce truc</a> Pour savoir comment faire ! Attendez, vous croyiez vraiment que j’allais vous l’expliquer moi-même ?",
+      "Bon ben au revoir alors !"
+    ]
+  },
+  "RANDOM12": {
+    "initial": "Avez-vous entendu parler du tome 11, qui sort l’année prochaine ?",
+    "options": [
+      "Bien sûr !"
+    ],
+    "response": [
+      "Incroyable, parce que je suis la dame qui écrit cette série, et je n’en ai jamais entendu parler !",
+    ]
+  },
+  "RANDOM13": {
+    "initial": "Saviez-vous que le tome 10 sort en automne prochain ?",
+    "options": [
+      "J’ai hâte !"
+    ],
+    "response": [
+      "Poisson d’avril haha, il sort en 2039 !",
+    ]
+  },
+  "RANDOM14": {
+    "initial": "Saviez-vous qu’il y a trois emojis à mon effigie sur le <a href='https://dsc.gg/wikigdcp'>Discord du wiki</a> ? Ils doivent vraiment m’adorer ! ",
+    "options": [],
+    "response": []
+  },
+  "RANDOM15": {
+    "initial": "Dis, tu me trouves sympa ?",
+    "options": [
+    	"T’es ma BFF, Shannon"
+    ],
+    "response": [
+    	"Wow, merci beaucoup ! Tiens, <a href='https://gdcp.fandom.com/fr/Spécial:Ma_page?action=edit&preload=Modèle:Cadeau_Shannon&section=new'>voici un cadeau</a> pour te remercier !"
+    ]
+  },
+  "RANDOM16": {
+  	"initial": "Toc toc",
+  	"options": [
+  		"Qui est là ?"
+  	],
+  	"response": [
+  		"Pas le tome 10 en tout cas !"
+  	]
+  },
+  "RANDOM17": {
+  	"initial": "Connais-tu l'histoire de l'elfe qui faisait un saut lumineux ?",
+  	"options": [
+  		"Non"
+  	],
+  	"response": [
+  		"Trop tard, il est parti !"
+  	]
+  },
+  "RANDOM18": {
+  	"initial": "Tu aimes les paillettes ?",
+  	"options": [
+  		"Oui",
+  		"Non"
+  	],
+  	"response": [
+  		"Oh moi aussi, j'adore ! Faisons un club !",
+  		"Tu as tort, les paillettes c'est la vie !"
+  	]
+  },
+  "RANDOM19": {
+  	"initial": "Toc toc",
+  	"options": [
+  		"Qui est là ?"
+  	],
+  	"response": [
+  		"Encore un nouveau tome dans 18 mois !"
+  	]
+  }
+}
+    var pagename = mw.config.get('wgTitle');
+    var namespace = mw.config.get('wgCanonicalNamespace');
+    var categories = mw.config.get('wgCategories');
+    var conversation = null;
+        var key = "RANDOM" + (Math.floor(Math.random() * 19) + 1);
+        conversation = data[key];
+    
+    var $div = $("<div id=\"full-shannon\"><div id=\"shannon-speech\"><div id=\"message-container-pos\"><div id=\"commencer-bas\"><div id=\"full-message-container\"><div id=\"shannon-speech-texte\"></div></div></div></div></div><div id=\"shannon-image-pos\"><div id=\"shannon-image-container\"><div id=\"shannon-image\"></div></div></div></div>");
+    var $buttons = $("<div id=\"shannon-speech-boutons\" style=\"font-family: Rubik;font-size: 14px;position: relative;text-align: center;border-top: 1px solid #C2C2C2;bottom: 0;margin: 7px 7px 10px 7px\"></div>");
+    var $button = $("<button class=\"shannon-bouton\" style=\"background-color: #fff;border: 1px solid #C2C2C2;border-radius: 3px;padding: 5px 12px;margin: 10px 5px 0 5px\">No</button>");
+    mw.log(conversation.initial);
+    var $contentContainer = $('#content'),
+	$pageTitle = $('.page-header__title');
+	$contentContainer.empty();
+	$pageTitle.text("Discuter avec Messenger sur Messenger");
+	$contentContainer.append($div);
+    $("#shannon-speech-texte").html(conversation.initial);
+    if (conversation.options.length > 0) {
+        $("#shannon-speech-texte").after($buttons);
+    }
+    var onClick = function(event) {
+        $("#shannon-speech-texte").html($(event.target).attr('data-response'));
+        $("#shannon-speech-boutons").remove();
+    }
+    for (var i = 0; i < conversation.options.length; i++) {
+        var butt = $button.clone();
+        butt.text(conversation.options[i]);
+        butt.attr("data-response", conversation.response[i]);
+        butt.click(onClick);
+        $("#shannon-speech-boutons").append(butt);
+    }
+})(jQuery, mw);

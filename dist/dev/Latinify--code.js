@@ -6,16 +6,13 @@
  */
 (function() {
 
-    // Variables, double-run protection
-    var config = mw.config.get([
-        'wgContentLanguage'
-    ]);
-    var $buttons = $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list'),
-        cache = {},
-        i18n = {},
-        maps, map,
-        // [[MediaWiki:Custom-transliteration]]
-        transliterationPageId = 15528;
+    var $buttons = $('.page-header__actions .wds-list');
+    var cache = {};
+    var i18n = {};
+    var maps;
+    var map;
+    // [[MediaWiki:Custom-transliteration.json]]
+    var transliterationPageId = 15528;
     if ($buttons.length === 0) {
         return;
     }
@@ -26,21 +23,19 @@
      */
     function init(i18nd) {
         $.extend(i18n, i18nd);
-        $.ajax({
-            type: 'GET',
-            url: 'https://dev.fandom.com/api.php',
-            data: {
-                action: 'query',
-                format: 'json',
-                pageids: transliterationPageId,
-                prop: 'revisions',
-                rvprop: 'content'
-            },
-            dataType: 'jsonp'
+        $.get('https://dev.fandom.com/api.php', {
+            action: 'query',
+            format: 'json',
+            pageids: transliterationPageId,
+            prop: 'revisions',
+            rvprop: 'content',
+            origin: '*',
+            smaxage: 300,
+            maxage: 300
         }).then(function(data) {
             var d = data.query.pages[transliterationPageId].revisions[0]['*'];
             maps = JSON.parse(d.replace(/\/\*.+\*\//g, ''));
-            map = maps[config.wgContentLanguage];
+            map = maps[mw.config.get('wgContentLanguage')];
             if (!map) {
                 return;
             }
@@ -66,8 +61,9 @@
             NodeFilter.SHOW_TEXT,
             null,
             false
-        ), n;
-        while (n = walker.nextNode()) {
+        );
+        var n;
+        while ((n = walker.nextNode())) {
             cb(n);
         }
     }
@@ -85,8 +81,8 @@
                     i.length === 1 &&
                     val === val.toUpperCase()
                 ) {
-                    var index = text.indexOf(i),
-                        limit = 10;
+                    var index = text.indexOf(i);
+                    var limit = 10;
                     if (index !== -1) {
                         console.log(text, i, val);
                     }

@@ -5,3 +5,5 @@ $('.portable-infobox').each(function () {
         $(this).css('border-color', '#' + cls[1]);
     }
 });
+// Preload file description //
+PFD_templates = '{{Notice\n| header = \n| text = \n}}';

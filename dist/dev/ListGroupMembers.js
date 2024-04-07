@@ -81,7 +81,6 @@
 		// The current user group order
 		order: Object.freeze( [ 
 			"staff",
-			"wiki-representative",
 			"wiki-specialist",
 			"soap",
 			"global-discussions-moderator",
@@ -97,7 +96,6 @@
 		registry: Object.freeze( { 
 			GLOBAL: Object.freeze( [ 
 				"staff",
-				"wiki-representative",
 				"wiki-specialist",
 				"soap",
 				"global-discussions-moderator",
@@ -115,7 +113,6 @@
 		// Creates the user group aliases
 		aliases: Object.freeze( { 
 			"staff": [ "fandom-staff" ],
-			"wiki-representative": [ "wiki-manager" ],
 			"wiki-specialist": [ "content-team-member" ],
 			"soap": [ "grasp", "vstf" ],
 			"bureaucrat": [ "bcrat", "crat" ],

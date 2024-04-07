@@ -11,6 +11,7 @@ $(function() {
 	var api = new mw.Api();
 	var PRELOAD_BY_NAME = { None: '' };
 	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName']);
+	var urlParams = new URLSearchParams(window.location.search);
 	
 	// Main class
 	var betterUpload = {
@@ -47,12 +48,25 @@ $(function() {
 			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Page content:';
 			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
 			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
-			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (window.dev.BetterUpload.default || '');
+			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (betterUpload.detectFromDest() || window.dev.BetterUpload.default || '');
 			if (document.querySelector('tr.mw-htmlform-field-Licenses')) { document.querySelector('tr.mw-htmlform-field-Licenses').remove(); }
 			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
 			
 			betterUpload.renderPreview();
 			betterUpload.genPreloads();
+		},
+		// if this file is being uploaded to a specific destination specified in the URL,
+		// iterate through preloads with a specified "pattern" field to attempt to detect one
+		detectFromDest: function() {
+			if (!Array.isArray(window.dev.BetterUpload.preloads) || !urlParams.has('wpDestFile')) return;
+			var matched = window.dev.BetterUpload.preloads.find(function(preload) {
+				if (preload.pattern != null && new RegExp(preload.pattern).test(urlParams.get('wpDestFile').replace(/_/g, ' '))) {
+					return true;
+				}
+			});
+			if (matched != null) {
+				return matched.preload;
+			}
 		},
 		genPreloads: function() {
 			console.log(window.dev.BetterUpload);
@@ -73,8 +87,15 @@ $(function() {
 					'</td>';
 				document.querySelector('#mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField').after(preloads_row);
 				var preloads_list = document.querySelector('#mw-htmlform-description tbody select#wpPreload');
+				var preloadOpts = preloads_list;
 				window.dev.BetterUpload.preloads.forEach(function(setting, num){
-					if (setting.name && (setting.preload || setting.header)) {
+					if (setting._group==='0') {
+						preloadOpts = preloads_list;
+					} else if (setting._group) {
+						preloadOpts = document.createElement('optgroup');
+						preloadOpts.setAttribute('label', setting._group);
+						preloads_list.append(preloadOpts);
+					} else if (setting.name && (setting.preload || setting.header)) {
 						var option = document.createElement('option');
 						if (setting.header) {
 							option.setAttribute('disabled', 'disabled');
@@ -85,7 +106,7 @@ $(function() {
 						}
 						option.innerHTML = setting.description || setting.name;
 						option.setAttribute('numref', num);
-						preloads_list.append(option);
+						preloadOpts.append(option);
 					}
 				});
 				document.querySelector('#mw-htmlform-description tbody select#wpPreload').addEventListener('change', function(event){
@@ -111,19 +132,28 @@ $(function() {
 								'</td>';
 							document.querySelector('#mw-htmlform-description tbody .wpPreloadRow').after(fillin_row);
 							var fillin_list = document.querySelector('#mw-htmlform-description tbody select#wpFillin');
+							var options = fillin_list;
 							settings.fillin.forEach(function(fillin, index){
-								var option = document.createElement('option');
-								var name = fillin.name || fillin.values.join(', ');
-								if (fillin.header) {
-										option.setAttribute('disabled', 'disabled');
-										option.style.color = 'GrayText';
-								} else if (fillin.preload) {
-									option.setAttribute('value', name);
-									option.setAttribute('title', name);
+								if (fillin._group==='0') {
+									options = fillin_list;
+								} else if (fillin._group) {
+									options = document.createElement('optgroup');
+									options.setAttribute('label', fillin._group);
+									fillin_list.append(options);
+								} else {
+									var option = document.createElement('option');
+									var name = fillin.name || fillin.values.join(', ');
+									if (fillin.header) {
+											option.setAttribute('disabled', 'disabled');
+											option.style.color = 'GrayText';
+									} else if (fillin.preload) {
+										option.setAttribute('value', name);
+										option.setAttribute('title', name);
+									}
+									option.innerHTML = name;
+									option.setAttribute('numref', index);
+									options.append(option);
 								}
-								option.innerHTML = name;
-								option.setAttribute('numref', index);
-								fillin_list.append(option);
 							});
 							document.querySelector('#mw-htmlform-description tbody select#wpFillin').addEventListener('change', function(event2){
 								var preloadNum = document.querySelector('#mw-htmlform-description tbody select#wpPreload').selectedOptions[0].getAttribute('numref');

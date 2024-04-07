@@ -1,11 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Prevent default for reference popups */
-
-$('[href^="#cite_note"]').click(function(event){
-  event.preventDefault();
-});
-
 /* Format list sections */
 
 $('h2:contains("Appearances and references")+ul').wrap('<div class="mw-collapsible" id="mw-customcollapsible-list">');
@@ -77,3 +71,22 @@ if ($(location.hash).attr('class') === 'FCC-link'){
 
   $(location.hash).css('font-weight', 'bold');
 }
+
+/* Signature */
+
+$.getJSON("/api.php?action=query&meta=userinfo&format=json", function(json){
+  const username = json.query.userinfo.name;
+  const signature = (json.query.userinfo.id === 0) ? '<a href="/wiki/Special:Contributions/'+username+'">'+username+'</a>' : '<a href="/wiki/User:'+username+'">'+username+'</a> (<a href="/wiki/User talk:'+username+'">talk</a>)';
+
+  $('.signature').html(signature);
+});
+
+/* Prevent default */
+
+$('[href="#"]').click(function(event){
+  event.preventDefault();
+});
+
+$('[href^="#cite_note"]').click(function(event){
+  event.preventDefault();
+});

@@ -11,13 +11,21 @@
     }
 
     function clockHook($content, original) {
-        if ($content === mw.util.$content && !original) {
+        if (
+            !$content ||
+            (
+                $content === mw.util.$content &&
+                !original
+            )
+        ) {
             return;
         }
+
         $content.find('.Clock').text(Clock);
     }
 
     clockHook(mw.util.$content, true);
-    mw.hook('wikipage.content').add(clockHook);
- 
+    mw.loader.using('mediawiki.util').then(function () {
+        mw.hook('wikipage.content').add(clockHook);
+    });
 }(this, jQuery, mediaWiki));

@@ -133,14 +133,23 @@ $(function() {
 						if (target.nodeType == 3) {
 							var split = /^([^\d\w]*)([\d\w\s]+)([^\d\w]*)$/.exec(target.textContent);
 							var paren = target.parentNode;
-							// console.log(target.textContent, 'newdiff split');
 							link.innerHTML = split[2] || 'diff';
 							target.remove();
-							paren.prepend(
-								split[1].length>0 ? split[1] : "",
-								link,
-								split[3].length>0 ? split[3] : ""
-							);
+							
+							if (paren.querySelector('.mw-changeslist-diff-cur + .mw-changeslist-separator')) {
+								paren.querySelector('.mw-changeslist-diff-cur').after(
+									split[1].length>0 ? split[1] : "",
+									link,
+									split[3].length>0 ? split[3] : ""
+								);
+							} else {
+								paren.prepend(
+									split[1].length>0 ? split[1] : "",
+									link,
+									split[3].length>0 ? split[3] : ""
+								);
+							}
+							
 							return;
 						} else {
 							link.innerHTML = options.label;
@@ -441,8 +450,14 @@ $(function() {
 					api_opt.fromrev = event.target.getAttribute('revid');
 					api_opt.torelative = 'prev';
 				} else if (event.target.id == 'differences-prevlink') {
-					api_opt.fromrev = event.target.getAttribute('revid');
-					api_opt.torelative = 'next';
+					if (event.target.getAttribute('revid') == '0') {
+						api_opt.torev = event.target.getAttribute('currid');
+						api_opt.fromslots = 'main';
+						api_opt['fromtext-main'] = '';
+					} else {
+						api_opt.fromrev = event.target.getAttribute('revid');
+						api_opt.torelative = 'next';
+					}
 				}
 				
 				api.get(api_opt).then(function(data) {
@@ -533,12 +548,16 @@ $(function() {
 						if (prev == false && num == revs.length && data.compare.torevid > revs[num-1].revid) {
 							prev = revs[num-1].parentid;
 						}
+						if (next == false && num == revs.length && revs[num-1].parentid == 0) {
+							next = revs[num-1].revid;
+						}
 						
 						// Build left side
-						if (prev !== false && !isNaN(prev)) {
+						if (prev !== false && !isNaN(prev) && document.querySelector('#mw-diff-otitle4')) {
 							document.querySelector('#mw-diff-otitle4').innerHTML = 
 							'<a '+
 								'revid="'+prev+'" '+
+								'currid="'+data.compare.torevid+'" '+
 								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
 								'id="differences-prevlink"'+
 							'>'+
@@ -547,10 +566,11 @@ $(function() {
 						}
 						
 						// Build right side
-						if (next !== false && !isNaN(next)) {
+						if (next !== false && !isNaN(next) && document.querySelector('#mw-diff-ntitle4')) {
 							document.querySelector('#mw-diff-ntitle4').innerHTML = 
 							'<a '+
 								'revid="'+next+'" '+
+								'currid="'+data.compare.fromrevid+'" '+
 								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
 								'id="differences-nextlink"'+
 							'>'+
@@ -678,10 +698,11 @@ $(function() {
 					var link = document.createElement('a');
 					link.setAttribute('newid', newid);
 					link.setAttribute('oldid', oldid);
-					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute	('title'));
+					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute('title'));
 					link.innerHTML = 'view';
 					link.classList.add('quickDiff');
 					diff.classList.add('quickDiffLoaded');
+					
 					if (diff.parentElement.nodeName == 'SPAN') {
 						var span = document.createElement('span');
 						span.appendChild(link);
