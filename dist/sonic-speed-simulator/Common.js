@@ -2,9 +2,15 @@
 importArticles({
      type: 'script',
      articles: [
-        'MediaWiki:Common.js/FormulaCalculator.js'
+        'MediaWiki:Common.js/FormulaCalculator.js',
+        'MediaWiki:Common.js/FastFriendRSRCalculator'
     ]
 });
-
+/*
+switch (mw.config.get('wgPageName')) {
+    case 'Fast Friend RSR Calculator':
+        break;
+}
+*/
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;

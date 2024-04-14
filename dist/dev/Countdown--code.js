@@ -30,11 +30,17 @@
 	var i18n;
 
 	function getUnitMessage(unit, delta, isShort) {
-		var msg = isShort ?
-			(unit + '-short') :
-			(delta === 1) ?
-				unit :
-				(unit + 's');
+		//var msg;
+		/*if (isShort){
+			msg = unit+'-short';
+		} else if(delta % 10 === 1 && delta % 100 !== 11){
+			msg = unit;
+		} else if((delta%10 === 2 || delta%10 === 3 || delta%10 === 4) && delta%100 !== 12 && delta%100 !== 13 && delta%100 !== 14){
+			msg = unit + 's';
+		} else {
+			msg = unit + 's2';
+		}*/
+		var msg = isShort ? (unit + '-short') :  mw.language.convertPlural(delta, [unit, unit+'s',unit+'s2']);
 		var msgText = i18n.msg(msg).plain();
 		if (isShort) {
 		    return msgText;

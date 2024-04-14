@@ -75,7 +75,6 @@
                     "sysop",
                     "staff",
                     "soap",
-                    "wiki-representative",
                     "wiki-specialist"
                 ] );
                 const isAllowed = allowedGroups.some( function( g ) { 

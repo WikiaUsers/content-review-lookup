@@ -4,13 +4,6 @@ $(function() {
 	const blockID = 'fissures-list';
 	const tableID = 'fissure-table';
 	const IMG_PREFIX = '/revision/latest?path-prefix=uk';
-	const TIER_ORDER = {
-		'Реквієм': 5,
-		'Літ': 1,
-		'Мезо': 2,
-		'Нео': 3,
-		'Аксі': 4,
-	};
 	const Icons = {
 		'railjack': '9/9f/Рейкоджек_іконка_uk.png',
 		'steelPath': 'd/d6/Шлях_сталі_іконка_uk.svg',
@@ -18,12 +11,14 @@ $(function() {
 		'Ґрінери': '9/97/Ґрінери_іконка_uk.png',
 		'Уярмлені': 'c/c6/Орокіни_іконка_uk.png',
 		'Заражені': '8/8a/Заражені_іконка_uk.svg',
+		'Шепіт': '9/9d/Шепіт_uk.png',
 		'Сутичка': '5/57/Ґрінери_або_Корпус_іконка_uk.png',
 		'Реквієм': 'd/d9/Прорив_Реквієм_uk.svg',
 		'Літ': '6/64/Прорив_Літ_uk.svg',
 		'Мезо': 'a/a8/Прорив_Мезо_uk.svg',
 		'Нео': '8/8d/Прорив_Нео_uk.svg',
 		'Аксі': 'b/b1/Прорив_Аксі_uk.svg',
+		'Омні': 'a/a5/Прорив_Омні_uk.gif',
 	};
 	const IMG_URL = 'https://static.wikia.nocookie.net/warframe/images/';
 	const WIKI_URL = 'https://warframe.fandom.com/uk/wiki/';
@@ -49,8 +44,8 @@ $(function() {
 	if (WHITELIST_FISSURES_PAGES.includes(NW_PAGE_NAME)) {
 		$.when($.get( 'https://api.warframestat.us/pc/fissures?language=uk', "json" )).done(function(data) {
 			data.sort(function(a,b){
-				if (TIER_ORDER[a.tier] > TIER_ORDER[b.tier]) return 1;
-				if (TIER_ORDER[a.tier] < TIER_ORDER[b.tier]) return -1;
+				if (a.tierNum > b.tierNum) return 1;
+				if (a.tierNum < b.tierNum) return -1;
 				return 0;
 			});
 			if ($('#' + blockID).find("#" + tableID).length === 0) {

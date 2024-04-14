@@ -35,7 +35,6 @@
         'util',
         'content-volunteer',
         'wiki-specialist',
-        'wiki-representative',
         'bot-global',
         'soap'
     ];

@@ -51,8 +51,12 @@ elements.forEach(function(element) {
     // Get the number inside the <em> tag and remove commas
     var number = parseInt(element.innerText.replace(/,/g, ''));
 
-    // Change the color based on the number
-    if (number >= 100) {
+    // Change the color based on the number 
+    if (number >= 10000) {
+    	element.style.color = '#00FFFF';
+    } else if (number >= 5000) {
+        element.style.color = '#E0115F';
+    } else if (number >= 100) {
         element.style.color = 'var(--achievement-gold)';
     } else if (number >= 50) {
         element.style.color = 'var(--achievement-silver)';

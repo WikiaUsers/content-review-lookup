@@ -10,3 +10,12 @@
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
+
+/* BackToTopButton */
+window.BackToTopModern = true;
+window.BackToTopArrow = true;
+/*window.BackToTopText = "Back to Top";*/
+window.BackToTopSpeed = 550;
+
+/* Add Rail */
+window.AddRailModule = ['Template:DiscordRailModule'];

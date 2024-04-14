@@ -1,5 +1,5 @@
 $(function() {
-    $('.skin-container:not([data-mode])').attr('data-mode', 'preview').find('.models > div:first-child').addClass('active').end().attr('data-mode', 'description').find('.skin-description > div:first-child').addClass('active');
+    $('.skin-container:not([data-mode])').find('.models > div:first-child').addClass('active').end().find('.skin-description > div:first-child').addClass('active');
     
     $('.skin-icon').click(function() {
         var skin = $(this).attr('data-name');

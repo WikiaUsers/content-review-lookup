@@ -82,10 +82,6 @@
 					link:  msg('user-tag-voldev-link').plain(),
 					title: msg('user-tag-voldev-tooltip').plain()
 				},
-				'wiki-representative': {
-					link:  msg('user-tag-wiki-representative-link').plain(),
-					title: msg('user-tag-wiki-representative-tooltip').plain()
-				},
 				'wiki-specialist': {
 					link:  msg('user-tag-wiki-specialist-link').plain(),
 					title: msg('user-tag-wiki-specialist-tooltip').plain()

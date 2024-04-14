@@ -48,7 +48,6 @@
     var unblock_groups = [
         "soap",
         "staff",
-        "wiki-representative",        
         "wiki-specialist"
     ];
     var unblock_def = jQuery.Deferred();

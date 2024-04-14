@@ -9,7 +9,7 @@
     ]);
     var ui;
     if (
-        !/sysop|bot|soap|staff|bot-global|wiki-representative|wiki-specialist|util/.test(config.wgUserGroups.join('\n')) ||
+        !/sysop|bot|soap|staff|bot-global|wiki-specialist|util/.test(config.wgUserGroups.join('\n')) ||
         window.RemoveLegacyThreads && window.RemoveLegacyThreads.init
     ) {
         return;

@@ -10,7 +10,7 @@ $(function() {
         articles: [ 'u:dev:MediaWiki:Modal.js' ]
     });
 	var api = new mw.Api();
-	var config = mw.config.get(['wgDiffNewId', 'wgAction', 'wgCanonicalSpecialPageName']);
+	var config = mw.config.get(['wgDiffNewId', 'wgAction', 'wgCanonicalSpecialPageName', 'wgServer']);
 	var tokens = {
 		patrol: '',
 		rollback: ''
@@ -29,10 +29,35 @@ $(function() {
 			betterDiff.fetchTokens();
 			
 			// Add css
-			importArticle({
-				type: 'style',
-				article: 'MediaWiki:BetterDiff.css'
-			});
+			mw.util.addCSS(
+				'.targetedPatrolWrapper {'+
+					'display: flex;'+
+					'width: 100%;'+
+				'}'+
+				'#targetedPatrolDetails {'+
+					'margin-right: 3px;'+
+					'white-space: nowrap;'+
+				'}'+
+				'#targetedPatrolNS, #targetedPatrolNS optgroup {'+
+					'color: var(--theme-page-text-color);'+
+					'border-radius: 5px;'+
+					'background: var(--theme-page-background-color);'+
+					'border: 1px solid var(--theme-link-color);'+
+				'}'+
+				'#submitTargetedPatrol {'+
+					'white-space: nowrap;'+
+					'padding: 1px 3px;'+
+					'position: relative;'+
+				'}'+
+				'.loading-gif {'+
+					'width: 16px;'+
+					'vertical-align: middle;'+
+					'border: 0;'+
+				'}'+
+				'.quickDiff {'+
+					'cursor: pointer;'+
+				'}'
+			);
 			
 			// Check we're in Special:RecentChanges
 			if (config.wgCanonicalSpecialPageName == 'Recentchanges') {
@@ -440,18 +465,18 @@ $(function() {
 				
 				if (event.target.classList.contains('quickDiff')) {
 					api_opt.torev = event.target.getAttribute('newid');
-					if (event.target.getAttribute('oldid') !== '0') {
-						api_opt.fromrev = event.target.getAttribute('oldid');
-					} else {
+					if (event.target.getAttribute('newdiff') == 'yes'||event.target.getAttribute('oldid') == '0') {
 						api_opt.fromslots = 'main';
 						api_opt['fromtext-main'] = '';
+					} else {
+						api_opt.fromrev = event.target.getAttribute('oldid');
 					}
 				} else if (event.target.id == 'differences-nextlink') {
 					api_opt.fromrev = event.target.getAttribute('revid');
 					api_opt.torelative = 'prev';
 				} else if (event.target.id == 'differences-prevlink') {
-					if (event.target.getAttribute('revid') == '0') {
-						api_opt.torev = event.target.getAttribute('currid');
+					if (event.target.getAttribute('newdiff') == 'yes'||event.target.getAttribute('oldid') == '0') {
+						api_opt.torev = event.target.getAttribute('revid');
 						api_opt.fromslots = 'main';
 						api_opt['fromtext-main'] = '';
 					} else {
@@ -548,7 +573,7 @@ $(function() {
 						if (prev == false && num == revs.length && data.compare.torevid > revs[num-1].revid) {
 							prev = revs[num-1].parentid;
 						}
-						if (next == false && num == revs.length && revs[num-1].parentid == 0) {
+						if (next == false && num == revs.length && revs[num-1].parentid == 0 && data.compare.torevid == undefined) {
 							next = revs[num-1].revid;
 						}
 						
@@ -556,10 +581,11 @@ $(function() {
 						if (prev !== false && !isNaN(prev) && document.querySelector('#mw-diff-otitle4')) {
 							document.querySelector('#mw-diff-otitle4').innerHTML = 
 							'<a '+
-								'revid="'+prev+'" '+
+								'revid="'+(prev==0 ? revs[num-1].revid : prev)+'" '+
 								'currid="'+data.compare.torevid+'" '+
 								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
-								'id="differences-prevlink"'+
+								'id="differences-prevlink" '+
+								(prev==0 ? 'newdiff="yes" ' : '')+
 							'>'+
 								'← Older edit'+
 							'</a>'; //prepend to existing content
@@ -570,7 +596,7 @@ $(function() {
 							document.querySelector('#mw-diff-ntitle4').innerHTML = 
 							'<a '+
 								'revid="'+next+'" '+
-								'currid="'+data.compare.fromrevid+'" '+
+								'currid="'+(data.compare.torevid ? data.compare.fromrevid : next)+'" '+
 								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
 								'id="differences-nextlink"'+
 							'>'+
@@ -726,7 +752,7 @@ $(function() {
 					token: tokens.patrol
 				}).catch(function(log) {
 					if (rcid && log && log == 'nosuchrevid') {
-						window.open('https://genshin-impact.fandom.com/wiki/?action=markpatrolled&rcid='+rcid);
+						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+rcid);
 						window.focus();
 					} else {
 						console.log('tokens', tokens);

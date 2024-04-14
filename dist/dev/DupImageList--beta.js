@@ -58,8 +58,6 @@
     // Checks whether the user can delete
     const canDelete = isMember( [ 
         "staff",
-        "wiki-specialist",
-        "wiki-representative",
         "soap",
         "sysop",
         "content-moderator"

@@ -1,7 +1,6 @@
-/* Code that makes twitter work with the siderail */
-mw.loader.load('ext.fandom.TwitterTag.js');
+     //side rail module 
+window.AddRailModule = [{prepend: true, maxAge: 0}];
 
-mw.loader.using('mw.Api', function() {
     //Requesting the Required Information
     var params = {
             action: 'query',

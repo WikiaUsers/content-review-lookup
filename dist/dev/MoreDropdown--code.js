@@ -27,8 +27,8 @@
     api.post(query).done(function(data) {
     	
     //constants
-    const CAN_DELETE = /sysop|content-moderator|soap|staff|wiki-specialist|wiki-representative/.test(usergroups.join()),
-         CAN_BLOCK = /sysop|soap|staff|global-discussions-moderator|wiki-specialist|wiki-representative/.test(usergroups.join()),
+    const CAN_DELETE = /sysop|content-moderator|soap|staff|wiki-specialist/.test(usergroups.join()),
+         CAN_BLOCK = /sysop|soap|staff|global-discussions-moderator|wiki-specialist/.test(usergroups.join()),
          IS_BLOCKED = $('.tag').text() === data.query.allmessages[0]["*"],
          PAGE_PATHNAME = mw.config.get('wgArticlePath').replace('$1', '');
     

@@ -27,8 +27,6 @@
     // global
     staff:
       'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
-    'wiki-representative':
-      'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
     'wiki-specialist':
       'https://vignette.wikia.nocookie.net/central/images/0/06/Badge-Staff.svg',
     soap: 'https://vignette.wikia.nocookie.net/central/images/9/9a/Badge-SOAP.svg',

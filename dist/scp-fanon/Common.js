@@ -51,3 +51,10 @@ importArticles({
         'u:dev:MediaWiki:MassCategorization/code.js',
     ]
 });
+
+// For [[Module:CSS]]; [[T:CSS]] dependency
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		mw.util.addCSS($(this).attr("data-css"));
+	});
+});

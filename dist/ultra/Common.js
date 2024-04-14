@@ -53,7 +53,7 @@ blazarSpan.onclick = function() {
 /* BLAZAR STONE EASTER EGG ENDS HERE */
 
 // Removes reference numbers from the table of contents
-$(function() {
+mw.hook("wikipage.content").add(function($content) {
 	var regex = /\[[0-9]*?\]/;
 	var toctexts = document.querySelectorAll(".toctext");
 	for (var i = 0; i < toctexts.length; i++) {

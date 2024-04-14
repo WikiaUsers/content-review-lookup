@@ -25,7 +25,6 @@ window.tooltips_list = [
 /* end of tooltip */
 
 /*Add sidebar rail module*/
-
 window.AddRailModule = [
     {page: 'Template:TopAddRail', prepend: true, maxAge: 60},
     {page: 'Template:BottomAddRail', maxAge: 60},
@@ -33,12 +32,16 @@ window.AddRailModule = [
 /* End of sidebar rail module */
 
 /* LockOldComments */
-
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;
 window.lockOldComments.addNoteAbove = true;
-
 /* End of LockOldComments */
+
+/* Change UTCClock link from ?action=purge to main page */
+$( document ).ready(function () {
+	$('#UTCClock').attr('href', 'https://battle-cats.fandom.com/wiki/Battle_Cats_Wiki');
+});
+/* End of UTCClock link change */
 
 /* Event Code */
 mw.loader.using('mediawiki.api').then(function () {

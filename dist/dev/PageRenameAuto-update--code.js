@@ -11,7 +11,7 @@
  */
 (function() {
     'use strict';
-    if (window.PRA || !/content-moderator|staff|sysop|content-volunteer|wiki-representative|wiki-specialist/g.test(mw.config.get('wgUserGroups').join('|'))) {
+    if (window.PRA || !/content-moderator|staff|sysop|content-volunteer|wiki-specialist/g.test(mw.config.get('wgUserGroups').join('|'))) {
         return;
     }
     var PRA = {

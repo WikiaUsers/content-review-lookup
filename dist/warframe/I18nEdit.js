@@ -226,7 +226,7 @@
             'function p.main()                                      ',
             '    local frame = mw.getCurrentFrame()                 ',
             '    local list = frame:preprocess(table.concat({       ',
-            '        \'{{#dpl:\',                                   ',
+            '        \'{'+'{#dpl:\',                                   ',
             '        \'| namespace = Module\',                      ',
             '        \'| titleregexp = .*\\/i18n$\',                ',
             '        \'| nottitleregexp = ^Sandbox\',               ',

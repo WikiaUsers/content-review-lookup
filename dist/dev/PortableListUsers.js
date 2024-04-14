@@ -53,7 +53,6 @@
         //'translator': {},
         //'util': {},
         //'voldev': {},
-        //'wiki-representative': {},
         //'wiki-specialist': {}
     };
     /**

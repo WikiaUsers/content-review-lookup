@@ -247,3 +247,4 @@ window.pPreview.delay = 1000;
 window.pPreview.tlen = 200;
 window.pPreview.apid = false;
 window.pPreview.RegExp.iimages = ['Xp.png', 'Монета.png', 'Алмаз.png', 'Ваучеры.png', 'Часы.png', 'Репутация.png', 'Помогите.gif'];
+window.pPreview.RegExp.ilinks = [/.*HayDay[_ ]вики.*/];

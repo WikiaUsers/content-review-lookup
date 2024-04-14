@@ -19,7 +19,6 @@
             'staff',
             'soap',
             'global-discussions-moderator',
-            'wiki-representative',            
             'wiki-specialist'
         ].join('|')).test(config.wgUserGroups.join()) ||
         // DO NOT run for anonymous users. This will delete ALL posts and replies

@@ -3691,6 +3691,11 @@
             // Creates a fullscreen button for the map, sets up various events to control fullscreen
             initFullscreen: function(isNew)
             {
+            	var fandomFullscreenToggleExists = Boolean(document.querySelector('.leaflet-container .map-fullscreen-control'));
+            	if (fandomFullscreenToggleExists) {
+            		return;
+            	}
+            	
                 this.isFullscreen = this.isWindowedFullscreen = false;
                 
                 // Modify and set up some styles - this is only executed once

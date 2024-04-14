@@ -1,13 +1,13 @@
 /**
  * Mass Block
  * Block listed users
- * @author Ozank
+ * @author KnazO
  * @author KockaAdmiralac
  */
 (function($, mw) {
     'use strict';
     if (
-        !/(sysop|staff|soap|global-discussions-moderator|wiki-representative|wiki-specialist)/.test(mw.config.get('wgUserGroups')) ||
+        !/(sysop|staff|soap|global-discussions-moderator|wiki-specialist)/.test(mw.config.get('wgUserGroups')) ||
         window.MassBlockLoaded
     ) {
         return;

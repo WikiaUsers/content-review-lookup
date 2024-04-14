@@ -20,3 +20,11 @@ $( document ).ready(function() {
         $(".flipText1, .flipText2").toggle()
   });
 });
+
+window.MassEditConfig = {
+  interval: 500,
+  placement: {
+    element: "toolbar",
+    type: "append"
+  }
+};

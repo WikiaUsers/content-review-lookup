@@ -38,7 +38,6 @@ mw.loader.using('mediawiki.api').then(function() {
         "user-identity-box-group-content-moderator",
         "user-identity-box-group-threadmoderator",
         "user-identity-box-group-staff",
-        "user-identity-box-group-wiki-representative",
         "user-identity-box-group-wiki-specialist",
         "user-identity-box-group-soap",
         "user-identity-box-group-global-discussions-moderator",
@@ -49,7 +48,6 @@ mw.loader.using('mediawiki.api').then(function() {
             'content-moderator': m["user-identity-box-group-content-moderator"],
             'threadmoderator': m["user-identity-box-group-threadmoderator"],
             'staff': m["user-identity-box-group-staff"],
-            'wiki-representative': m["user-identity-box-group-wiki-representative"],
             'wiki-specialist': m["user-identity-box-group-wiki-specialist"],
             'soap': m["user-identity-box-group-soap"],
             'global-discussions-moderator': m["user-identity-box-group-global-discussions-moderator"]
@@ -60,7 +58,6 @@ mw.loader.using('mediawiki.api').then(function() {
             'content-moderator',
             'threadmoderator',
             'staff',
-            'wiki-representative',
             'wiki-specialist',
             'soap',
             'global-discussions-moderator'
@@ -80,7 +77,6 @@ mw.loader.using('mediawiki.api').then(function() {
                 'content-moderator': 'content-moderator',
                 'threadmoderator': 'discussion-moderator',
                 'staff': 'staff',
-                'wiki-representative': 'staff',
                 'wiki-specialist': 'staff',
                 'soap': 'soap',
                 'global-discussions-moderator': 'global-discussions-moderator',

@@ -70,7 +70,6 @@ mw.loader.using('mediawiki.util').then(function() {
                 'staff',
                 'global-discussions-moderator',
                 'wiki-specialist',
-                'wiki-representative',
                 'soap'
             ]);
         },
@@ -78,7 +77,7 @@ mw.loader.using('mediawiki.util').then(function() {
         canViewDeletedRevs: function() {
             return this.isAdmin() || this.hasRights(['content-moderator']);
         },
-        /// Returns whether the user has any roles that could be self-removed, or a wiki-representative/wiki-specialist/staff/soap
+        /// Returns whether the user has any roles that could be self-removed, or a wiki-specialist/staff/soap
         hasNotableRoles: function() {
             return this.hasRights([
                 'bureaucrat',
@@ -87,7 +86,6 @@ mw.loader.using('mediawiki.util').then(function() {
                 'threadmoderator',
                 'rollback',
                 'bot',
-                'wiki-representative',
                 'util',
                 'staff',
                 'soap',

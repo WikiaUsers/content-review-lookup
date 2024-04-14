@@ -1,5 +1,12 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-/*Credit goes to Dev.wikia.com for the code*/
+/*Credit goes to Dev.fandom.com for the code*/
+// dev:AutoCreateUserPages.js
+window.AutoCreateUserPagesConfig = {
+            content: {
+             2: '{{sub'+'st:welcome-user-page}}'
+},
+            summary: 'Welcome to the Michael Rosen Wiki!'
+};
 /*User Tags 1*/
 window.UserTagsJS = {
 	modules: {},

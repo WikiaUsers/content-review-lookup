@@ -19,7 +19,7 @@ UserTagsJS.modules.custom = {
 	'DropPT': ['cpjstaff'],
 	'Pifflez': ['cpjstaff'],
 	'Hermbeurg': ['wikifounder'],
-	'Tuna_Takoyaki': ['topmonth'],
+	'DataMagicDev': ['topmonth'],
 	'Tenny407': ['trialmoderator'], // need to check if they're still here tbh
 };
 UserTagsJS.modules.mwGroups = ['content-moderator', 'threadmoderator'];

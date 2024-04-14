@@ -582,7 +582,11 @@
             text = text.text();
             // text clean up
             text = text ? text.replace(Settings.RegExp.dtag, '') : '';
-            text = text.trim().substr(0, Settings.tlen);
+            if (text.length > Settings.tlen) {
+            	text = text.substr(0, Settings.tlen).trim();
+            	text += '…';
+            }
+            //text = text.trim().substr(0, Settings.tlen);
             if (Settings.debug) {
                 Settings.pptext = text;
                 Settings.ppdata = data;

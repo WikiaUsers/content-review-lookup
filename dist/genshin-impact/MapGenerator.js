@@ -3,7 +3,7 @@ $(function() {
 	if (window.dev && window.dev.MapGenerator) {return;}
 	(window.dev = window.dev || {}).MapGenerator = true;
 	
-    // Load dependencies and cache
+	// Load dependencies and cache
 	var config = mw.config.get(['wgAction', 'wgPageName']);
 	var markers = { count:0 };
 	var REGION = 'Mondstadt';
@@ -16,6 +16,7 @@ $(function() {
 		init: function() {
 			// Initialize localStorage if any
 			['MapGenerator-DT', 'MapGenerator-QGD'].forEach(function(sett){if(localStorage.getItem(sett)==null){localStorage.setItem(sett, 'checked');}});
+			if(localStorage.getItem('MapGenerator-UT')==null){localStorage.setItem('MapGenerator-UT', 'Item');} // default type for [[T:Map Image]] direct upload
 			
 			// Clean page
 			document.querySelectorAll('#mw-content-text.mw-body-content > p').forEach(function(p){ p.remove(); });
@@ -88,6 +89,13 @@ $(function() {
 					'<div>'+
 						'<span class="wds-button" id="MapGenerator">Generate Map</span> '+
 						'<span class="wds-button" id="WikitextGenerator">Copy Wikitext</span>'+
+					'</div>'+
+					'<div style="display: inline-flex;gap: 5px;margin-top: 5px;">'+
+						'<span class="wds-button" id="MapUploader">Upload Map</span> '+
+						'<div style="display:flex;flex-direction:column;gap:3px;">'+
+							'<label for="MapUploader-name">Filename: <input type="text" id="MapUploader-name" /></label>'+
+							'<label for="MapUploader-type">Map type: <input type="text" id="MapUploader-type" placeholder="'+localStorage.getItem('MapGenerator-UT')+'" /></label>'+
+						'</div>'+
 					'</div>'+
 				'</center>'));
 			mapGenerator.loadTemplates(mapRefs[REGION]);
@@ -214,6 +222,8 @@ $(function() {
 					var rel = event.target.getAttribute('rel');
 					localStorage.setItem(rel, event.target.checked ? 'checked' : '');
 					if (rel == 'MapGenerator-QGD') {document.querySelector('section#quickGenSection').style.setProperty('display', event.target.checked ? '' : 'none');}
+				} else if (event.target && event.target.id == 'MapUploader-type') {
+					localStorage.setItem('MapGenerator-UT', event.target.value);
 				}
 			});
 			document.addEventListener('contextmenu', function(event) {
@@ -289,6 +299,11 @@ $(function() {
 				} else if (event.target && event.target.id == 'WikitextGenerator') {
 					closeMarkerSettings();
 					navigator.clipboard.writeText(mapGenerator.genFilePage(REGION, document.querySelector('#TemplateManagerNote').getAttribute('rel')));
+				} else if (event.target && event.target.id == 'MapUploader') {
+					mapGenerator.getFileObject(
+						mapGenerator.processPreciseMarkers(true),
+						mapGenerator.genFilePage(REGION, document.querySelector('#TemplateManagerNote').getAttribute('rel'))
+					);
 				} else if (event.target && event.target.closest('.mapTemplate')) {
 					closeMarkerSettings();
 					var template = event.target.closest('.mapTemplate').getAttribute('rel');
@@ -311,7 +326,7 @@ $(function() {
 				}
 			});
 		},
-		processPreciseMarkers: function() {
+		processPreciseMarkers: function(urlOnly) {
 			var valid = false;
 			var template = document.querySelector('#templateImage').getAttribute('rel');
 			if (!template || template.length==0) {alert('Select a map template.'); return;}
@@ -331,6 +346,7 @@ $(function() {
 				}
 			});
 			if (!valid) {alert('No valid marker to generate map off.');}
+			else if (urlOnly) {return canvas.toDataURL();}
 			else {mapGenerator.openImage(canvas.toDataURL(), template); canvas.remove();}
 		},
 		processQuickMarkers: function() {
@@ -545,8 +561,45 @@ $(function() {
 					'The Chasm: Underground Mines': 'The Chasm',
 					'Golden Apple Archipelago 1.6': 'Golden Apple Archipelago'
 				};
-				return'==Summary==\n{{Map Image\n|region   = '+(redirects[region]||region)+'\n|location = '+location+'\n|type     = \n}}\n\n==Licensing==\n{{Fairuse}}';
+				return'==Summary==\n{{Map Image\n|region   = '+(redirects[region]||region)+'\n|location = '+location+'\n|type	 = '+localStorage.getItem('MapGenerator-UT')+'\n}}\n\n==Licensing==\n{{Fairuse}}';
 			} else { return ''; }
+		},
+		getFileObject: function(url, text) {
+			if (url && url.length>0 && text && text.length>0) {
+				var arr = url.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[arr.length - 1]), 
+					n = bstr.length, 
+					u8arr = new Uint8Array(n);
+				while(n--){
+					u8arr[n] = bstr.charCodeAt(n);
+				}
+				var file = new File([u8arr], 'dummy', {type:mime || 'image'});
+				return Promise.resolve(file).then(function(file){
+					mapGenerator.uploadFile(file, text);
+				});
+			} else {alert('No map to upload, contact [[User:Mikevoir]] if you believe this to be an error!');}
+		},
+		uploadFile: function(file, text) {
+			if (file && text && text.length>0) {
+				var filename = document.querySelector('#MapUploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '')+'.png';
+				api.post({
+					action: 'edit',
+					title: 'File:'+filename,
+					ignorewarnings: '1',
+					format: 'json',
+					text: text,
+					recreate: 1,
+					token: mw.user.tokens.get('csrfToken')
+				});
+				api.upload(file, {
+					token: mw.user.tokens.get('csrfToken'),
+					filename: filename,
+					ignorewarnings: '1',
+					format: 'json'
+				});
+				alert('File uploaded and page edited!');
+			}
 		}
 	};
 	if (config.wgPageName == 'Special:Map' && config.wgAction == 'view') {

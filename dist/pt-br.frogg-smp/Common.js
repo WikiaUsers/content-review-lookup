@@ -1,6 +1,5 @@
 // SKIN CAROUSEL by feyli
 
-var middle = Math.floor($(".skins-carousel__slider li").length / 2);
 var classesTemplate = [
   "slider__item--pos-prev",
   "slider__item--prev",
@@ -19,6 +18,7 @@ function setDelay() {
 }
 
 function recenter($slider) {
+    var middle = Math.floor($slider.find("li").length / 2);
   Array.from($slider.find("li"))
     .slice(middle - 2, middle + 3)
     .forEach(function($item, i) {

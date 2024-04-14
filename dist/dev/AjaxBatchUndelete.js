@@ -1,7 +1,7 @@
 /*
 * Ajax Batch Undelete
 * @description unDelete listed multiple pages
-* @author Ozuzanna of AjaxBatchDelete
+* @author KnazO of AjaxBatchDelete
 * modified by Noreplyz & Nerfmaster8
 */
  
@@ -10,7 +10,7 @@ mw.loader.using('mediawiki.api', function() {
  
   if (
     window.AjaxBatchUndeleteLoaded ||
-    !/sysop|content-moderator|staff|wiki-representative|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join())
+    !/sysop|content-moderator|staff|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
   }

@@ -17,7 +17,7 @@
 	function mx() {
 		var urlParams = new URLSearchParams(window.location.search);
 		var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
-		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.2.4';
+		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.2.5';
 		
 		if (isDebug) {
 		    var log = console.log.bind(window.console);
@@ -31,7 +31,7 @@
 		if (isDisabled) // @ts-ignore: this will be output into a function body
 		    return;
 		
-		console.log("Loaded MapsExtended.js (version 0.2.4" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
+		console.log("Loaded MapsExtended.js (version 0.2.5" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
 		
 		// Do not run on pages without interactive maps
 		var test = document.querySelector(".interactive-maps-container");
@@ -6465,7 +6465,7 @@
 		    
 		    ExtendedPopup.prototype.showCopySuccess = function () {
 		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").escape(), "confirm", null, 5000).show();
-		        this.hide();
+		        // this.hide()
 		    };
 		    
 		    ExtendedPopup.prototype.showCopyFailed = function () {
@@ -8299,12 +8299,14 @@
 		            }.bind(this));
 		        }
 		        else {
-		            var categoryHeader = document.createElement("div");
-		            categoryHeader.textContent = 'Other';
-		            categoryHeader.className = "mapsExtended_sidebarCategory_header";
-		            categoryHeader.style.cursor = 'default';
-		            this.elements.categoryHeader = categoryHeader;
-		            categoryContainer.append(categoryHeader);
+		            if (categoryGroup.categories.length > 0) {
+		                var categoryHeader = document.createElement("div");
+		                categoryHeader.textContent = 'Other';
+		                categoryHeader.className = "mapsExtended_sidebarCategory_header";
+		                categoryHeader.style.cursor = 'default';
+		                this.elements.categoryHeader = categoryHeader;
+		                categoryContainer.append(categoryHeader);
+		            }
 		        }
 		        
 		        // Create a list to hold each of the categories

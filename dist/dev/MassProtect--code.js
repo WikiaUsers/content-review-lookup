@@ -10,7 +10,7 @@ mw.loader.using([
     'mediawiki.user'
 ], function () {
     if (
-        !/sysop|content-moderator|staff|wiki-representative|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join()) ||
+        !/sysop|content-moderator|staff|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join()) ||
         window.MassProtectLoaded
     ) {
       return;

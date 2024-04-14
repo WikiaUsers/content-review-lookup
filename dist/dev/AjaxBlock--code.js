@@ -92,7 +92,6 @@
                 'sysop',
                 'staff',
                 'global-discussions-moderator',
-                'wiki-representative',
                 'wiki-specialist',
                 'soap'
             ]);

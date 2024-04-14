@@ -41,7 +41,7 @@
                    p.indexOf('MediaWiki:Gadget-') !== 0 &&
                    // and the user isn't in a whitelisted user group.
                    !this.config.wgUserGroups.join().match(
-                       /content-moderator|sysop|wiki-specialist|soap|staff|wiki-representative/
+                       /content-moderator|sysop|wiki-specialist|soap|staff/
                    );
         },
         init: function() {

@@ -581,13 +581,17 @@
             text = text.text();
             // text clean up
             text = text ? text.replace(Settings.RegExp.dtag, '') : '';
-            text = text.trim().substr(0, Settings.tlen);
+            if (text.length > Settings.tlen) {
+            	text = text.substr(0, Settings.tlen).trim();
+            	text += '…';
+            }
             if (Settings.debug) {
                 Settings.pptext = text;
                 Settings.ppdata = data;
                 log('gp img: ', img, ' text: ', {text: text});
             }
             if (text.length > 0) {
+            	
                 twrap.text(text);
                 div.append(twrap);
             } // if text

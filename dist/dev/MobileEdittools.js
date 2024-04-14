@@ -31,7 +31,7 @@ $.each(user_groups, function( index, group ) {
 		local_staff = 1;
 		local_admin = 1;
 	}
-	else if ((group == 'content-volunteer') || (group == 'soap') || (group == 'staff') || (group == 'wiki-representative') || (group == 'wiki-specialist')) global_staff = 1;
+	else if ((group == 'content-volunteer') || (group == 'soap') || (group == 'staff') || (group == 'wiki-specialist')) global_staff = 1;
 });
 
 if (!$('body').hasClass('ns-special')) {
