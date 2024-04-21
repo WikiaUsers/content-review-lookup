@@ -207,7 +207,6 @@
 		_canPhalanx: function() {
 			return this._isMember([
 				"staff", 
-				"wiki-representative", 
 				"wiki-specialist",
 				"soap"
 			]);

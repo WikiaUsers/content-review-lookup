@@ -32,7 +32,7 @@ importScript('MediaWiki:Common.js/masthead.js');
 // SVG images: adds links to rendered PNG images in different resolutions
 function SVGThumbs() {
 	var file = document.getElementById("file"); // might fail if MediaWiki can't render the SVG
-	if (file && wgIsArticle && wgTitle.match(/\.svg$/i)) {
+	if (file && mw.config.get('wgIsArticle') && mw.config.get('wgTitle').match(/\.svg$/i)) {
 		var thumbu = file.getElementsByTagName('IMG')[0].src;
 		if(!thumbu) {return;}
  
@@ -69,10 +69,10 @@ addOnloadHook( SVGThumbs );
 ////////////////////////////////////////////////////////////////////////////////////////////
  
  function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) {return;}
+    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || mw.config.get('wgUserName') === null) {return;}
     var n = document.getElementsByClassName('insertusername');
     for ( var x in n ) {
-       n[x].innerHTML = wgUserName;
+       n[x].innerHTML = mw.config.get('wgUserName');
     }
  }
  addOnloadHook(UserNameReplace);
@@ -100,7 +100,7 @@ addOnloadHook( SVGThumbs );
 var complete=1;
 if(!document.body.innerHTML.match('titledisplay')) { var complete=0; }
 
-if((complete == 1) && (wgPageName != "MediaWiki:Common.js")) {
+if((complete == 1) && (mw.config.get('wgPageName') != "MediaWiki:Common.js")) {
  addOnloadHook(TitleReplace);
  }
 
@@ -352,18 +352,18 @@ s = 1;
 } else {
 s = 0;
 }
-ajaxRCCookie = (getCookie("ajaxload-"+wgPageName)=="on") ? true:false;
+ajaxRCCookie = (getCookie("ajaxload-"+mw.config.get('wgPageName'))=="on") ? true:false;
 document.getElementsByTagName("h1")[0].innerHTML += ' <span style="font-size: xx-small; border-bottom: 1px dotted; cursor:help;" title="Enable auto-refreshing page loads">Automatically refresh:</span><input type="checkbox" id="ajaxRCtoggle" onClick="toggleRC();">';
 document.getElementById("ajaxRCtoggle").checked = ajaxRCCookie;
-if (getCookie("ajaxload-"+wgPageName)=="on") loadRCData();
+if (getCookie("ajaxload-"+mw.config.get('wgPageName'))=="on") loadRCData();
 }
 
 function toggleRC() {
 if (document.getElementById("ajaxRCtoggle").checked == true) {
-setCookie("ajaxload-"+wgPageName, "on", 30);
+setCookie("ajaxload-"+mw.config.get('wgPageName'), "on", 30);
 loadRCData();
 } else {
-setCookie("ajaxload-"+wgPageName, "off", 30);
+setCookie("ajaxload-"+mw.config.get('wgPageName'), "off", 30);
 clearTimeout(rcTimer);
 }
 }
@@ -371,9 +371,9 @@ clearTimeout(rcTimer);
 function loadRCData() {
 if (getRCDataRO.readyState == 4 || getRCDataRO.readyState == 0) {
 if (location.href.indexOf("/wiki/")) {
-rcURL = "http://" + location.hostname + "/wiki/" + wgPageName + location.search;
+rcURL = "http://" + location.hostname + "/wiki/" + mw.config.get('wgPageName') + location.search;
 } else {
-rcURL = "http://" + location.hostname + "/" + wgPageName + location.search;
+rcURL = "http://" + location.hostname + "/" + mw.config.get('wgPageName') + location.search;
 }
 getRCDataRO.open("GET", rcURL, true);
 getRCDataRO.onreadystatechange = parseRCdata;
@@ -393,7 +393,7 @@ rcTimer = setTimeout("loadRCData();", rcRefresh);
 }
 
 for (x in ajaxPages) {
-if (wgPageName == ajaxPages[x]) addOnloadHook(preloadAJAXRC);
+if (mw.config.get('wgPageName') == ajaxPages[x]) addOnloadHook(preloadAJAXRC);
 }
 
 
@@ -425,7 +425,7 @@ function mainPageRenameNamespaceTab() {
 	}
 }
 
-if ( wgTitle == 'Main Page' && ( wgNamespaceNumber == 0 || wgNamespaceNumber == 1 ) ) {
+if ( mw.config.get('wgTitle') == 'Main Page' && ( mw.config.get('wgNamespaceNumber') == 0 || mw.config.get('wgNamespaceNumber') == 1 ) ) {
 	addOnloadHook( mainPageRenameNamespaceTab );
 } 
 // *******************************************************************************************************
@@ -466,17 +466,15 @@ function searchtab() {
 addOnloadHook(searchtab);
 ****/
 
-function watchlist() {
- var us = wgCanonicalNamespace;
+$(function() {
+ var us = mw.config.get('wgCanonicalNamespace');
  if((us == "User") || (us == "User_talk") || (us == "User_blog")) {
-  if (wgTitle.indexOf(wgUserName) != -1) {
+  if (mw.config.get('wgTitle').indexOf(mw.config.get('wgUserName')) != -1) {
    document.getElementById('user_masthead_tab_following').getElementsByTagName('a')[0].innerHTML = 'Watchlist';
    document.getElementById('user_masthead_tab_following').getElementsByTagName('a')[0].setAttribute('href', '/wiki/Special:Watchlist');
   }
  }
-}
-
-YAHOO.util.Event.onContentReady('user_masthead_tab_following', watchlist);
+});
 
 // Automatically fix Wikipedia links that are appearing as external links
 $('a[href*="wikipedia.org/wiki/"].external.exitstitial').removeClass('external exitstitial').addClass('text');

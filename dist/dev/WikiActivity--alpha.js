@@ -111,7 +111,6 @@
 		const adminGroups = Object.freeze( [ 
 			"staff",
 			"soap",
-			"wiki-representative",
 			"wiki-specialist",
 			"bureaucrat",
 			"sysop"

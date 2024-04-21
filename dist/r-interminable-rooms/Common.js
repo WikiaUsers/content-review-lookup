@@ -14,3 +14,4 @@ window.UserTagsJS = {
 /* LockOldComments thing */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.limit = 35;

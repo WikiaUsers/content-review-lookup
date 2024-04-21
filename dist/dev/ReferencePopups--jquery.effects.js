@@ -1,12 +1,12 @@
 /*!
  * jQuery UI Effects Fold v1.9.2
- * http://jqueryui.com
+ * https://jqueryui.com
  *
  * Copyright 2012 jQuery Foundation and other contributors
  * Released under the MIT license.
- * http://jquery.org/license
+ * https://jquery.org/license
  *
- * http://api.jqueryui.com/fold-effect/
+ * https://api.jqueryui.com/fold-effect/
  */
 
 $.effects.effect.fold = function( o, done ) {

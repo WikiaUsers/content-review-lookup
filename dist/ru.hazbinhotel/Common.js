@@ -35,13 +35,19 @@ const staff = [
 setInterval(function () {
   staff.forEach(function (user) {
     document.querySelectorAll(user.name.split(' ').reduce(function (query, href) {
-      return query += "[href*=\"".concat(window.encodeURIComponent(href), "\"]");
+      return query += "[href*=\"".concat(window.encodeURIComponent(href), "\"]:not(.highlighted)");
     }, '')).forEach(function (element) {
-      element.classList.add(user.className);
+      element.classList.add("highlighted", user.className);
     });
-    document.querySelectorAll("body[class*=\"_".concat(user.name.split(' ').join('_'), "\"] .page")).forEach(function (element) {
-      element.classList.add(user.className);
-    });
+  });
+}, 500);
+
+var highlightStaffPage = setInterval(function () {
+  staff.forEach(function (user) {
+  	if (document.querySelector("body[class*=\"_".concat(user.name.split(' ').join('_'), "\"] .page"))) {
+  	  document.querySelector("body[class*=\"_".concat(user.name.split(' ').join('_'), "\"] .page")).classList.add(user.className);
+  	  clearInterval(highlightStaffPage);
+  	}
   });
 }, 500);
 

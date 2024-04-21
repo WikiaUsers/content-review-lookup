@@ -5,6 +5,11 @@
 ;(function() {
     var $bar = document.getElementById('WikiaBarWrapper');
     if (!$bar.classList.contains('hidden')) return;
+    
+    // Anonymous users have a different bar and can't have MW preferences
+    if (mw.config.get('wgUserName') === null) {
+    	return;
+    }
 
     mw.loader.using(['mediawiki.user', 'mediawiki.storage'], function () {
 

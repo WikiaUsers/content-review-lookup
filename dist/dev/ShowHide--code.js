@@ -232,11 +232,13 @@
 
 	// i18n function
 	function msg( name ) {
-		if ( config.userLang && wgUserLanguage in config && name in config[wgUserLanguage] ) {
-			return config[wgUserLanguage][name];
+		var userLanguage = mw.config.get('wgUserLanguage');
+		var contentLanguage = mw.config.get('wgContentLanguage');
+		if ( config.userLang && userLanguage in config && name in config[userLanguage] ) {
+			return config[userLanguage][name];
 		}
-		if ( wgContentLanguage in config && name in config[wgContentLanguage] ) {
-			return config[wgContentLanguage][name];
+		if ( contentLanguage in config && name in config[contentLanguage] ) {
+			return config[contentLanguage][name];
 		}
 		return config.en[name];
 	}

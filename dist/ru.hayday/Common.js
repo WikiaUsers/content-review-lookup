@@ -139,6 +139,10 @@ if (document.body.className.includes('page-Скачки')) {
 	derbyAutoSort(derbyInput);
 }
 
+if (document.body.className.includes('page-Список_продуктов')) {
+	//setTimeout(productListAddScroll, 2000);
+}
+
 //интересные факты заглавная
 function hideFact(fact) {
 	fact.style.display="none";

@@ -598,7 +598,7 @@ $(function() {
 					ignorewarnings: '1',
 					format: 'json'
 				});
-				alert('File uploaded and page edited!');
+				mw.notify('Please leave this page open for at least a few seconds for API to finish. Thank you!', {title: 'Wait right there!'});
 			}
 		}
 	};

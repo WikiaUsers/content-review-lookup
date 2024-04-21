@@ -112,7 +112,6 @@ UserTagsJS.modules.custom = {
 	'Blueberry Bot': ['bot'],
 	'Ntdll32': ['cw'],
 	'Dan7935': ['gf'],
-	'CarsonTheGamer0205': ['ra'],
 	'Khaibeltra1291991': ['manager', 'sysop', 'bureaucrat'],
 	'Underscrach': ['ra'],
 	'KeelerWeeler': ['ra']

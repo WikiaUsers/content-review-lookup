@@ -209,7 +209,6 @@
           "bot-global",
           "staff",
           "soap",
-          "wiki-representative",
           "wiki-specialist",
           "content-volunteer",
         ]),

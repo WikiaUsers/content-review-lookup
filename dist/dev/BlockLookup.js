@@ -133,14 +133,12 @@
 			"global": Object.freeze([
 				'staff',
 				'global-discussions-moderator',
-				'wiki-representative',
 				'soap',
 			]),
 
 			"checkuser": Object.freeze([
 				'soap',
 				'staff',
-				'wiki-representative',
 				'wiki-specialist',
 				'checkuser',
 				'util',
@@ -152,7 +150,6 @@
 				'staff',
 				'bureaucrat',
 				'global-discussions-moderator',
-				'wiki-representative',
 				'soap',
 				'wiki-specialist',
 			]),
@@ -162,7 +159,6 @@
 				'sysop',
 				'soap',
 				'staff',
-				'wiki-representative',
 				'wiki-specialist',
 			]),
 

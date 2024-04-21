@@ -264,7 +264,6 @@ mw.loader.using('mediawiki.api').then(function() {
 			"global": Object.freeze([
 				'staff',
 				'global-discussions-moderator',
-				'wiki-representative',
 				'wiki-specialist',				
 				'soap',	
 			]),
@@ -273,7 +272,6 @@ mw.loader.using('mediawiki.api').then(function() {
 				'soap',
 				'staff',
 				'global-discussions-moderator',				
-				'wiki-representative',
 				'wiki-specialist',
 				'checkuser',
 				'util',
@@ -284,7 +282,6 @@ mw.loader.using('mediawiki.api').then(function() {
 				'staff',
 				'bureaucrat',
 				'global-discussions-moderator',
-				'wiki-representative',
 				'wiki-specialist',				
 				'soap',
 			]),
@@ -294,7 +291,6 @@ mw.loader.using('mediawiki.api').then(function() {
 				'sysop',
 				'soap',
 				'staff',
-				'wiki-representative',
 				'wiki-specialist',
 			]),
 

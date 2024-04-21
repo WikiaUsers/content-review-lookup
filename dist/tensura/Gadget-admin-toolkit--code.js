@@ -3,6 +3,7 @@ mw.loader.using(['ext.fandom.ContentReview.legacyLoaders.js'], function() {
 		type: 'script',
 		articles: [
 			'u:dev:MediaWiki:AddBlockUserTag/code.js',
+			'u:dev:MediaWiki:AjaxBatchDelete.js',
 			'u:dev:MediaWiki:FileUsageAuto-update/code.js',
 			'u:dev:MediaWiki:ImportJS-Plus.js',
 			'u:dev:MediaWiki:MassCategorization/code.js',

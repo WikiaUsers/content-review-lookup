@@ -5,7 +5,7 @@
  *
  * This script uses a modified version of less.js
  * @link <https://github.com/less/less.js> less.js source (original)
- * @link <http://lesscss.org/> less.js documentation
+ * @link <https://lesscss.org/> less.js documentation
  * @link <https://dev.fandom.com/wiki/Less/less.js> less.js source (modified)
  *
  * @author Cqm
@@ -166,7 +166,7 @@
                 var profile = $.client.profile(),
                     run = false,
                     // usergroups that can edit mediawiki pages
-                    allowed = ['sysop', 'soap', 'wiki-specialist', 'wiki-representative', 'staff']
+                    allowed = ['sysop', 'soap', 'wiki-specialist', 'staff']
                     .concat(config.allowed),
                     mwi,
                     i;

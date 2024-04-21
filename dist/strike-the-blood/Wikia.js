@@ -1,5 +1,5 @@
 /* Configuration for AddRailModule */
-window.AddRailModule = [{
+/*window.AddRailModule = [{
     page: 'Template:DiscordRailModule',
     prepend: true,
     maxAge: 86400,
@@ -9,7 +9,7 @@ mw.hook('wikipage.content').add(function ($elem) {
          .find('span.wds-button>a:only-child')
          .attr('class', 'wds-button')
          .unwrap();
-});
+});*/
 
 /* NoLicenseWarning custom message */
 window.dev = window.dev || {};

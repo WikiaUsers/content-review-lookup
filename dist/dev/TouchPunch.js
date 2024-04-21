@@ -1,6 +1,6 @@
 /*!
  * jQuery UI Touch Punch 0.2.3
- * http://touchpunch.furf.com/
+ * https://touchpunch.furf.com/
  *
  * Copyright 2011–2014, Dave Furfero
  * Dual licensed under the MIT or GPL Version 2 licenses.

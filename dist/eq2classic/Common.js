@@ -57,13 +57,16 @@ $(document).ready(function() {
         console.error('Failed to fetch the verified pages.');
     });
 });
-// Intercept click events on all red links
+
 $(document).on('click', 'a.new, a.mw-newpages-none', function(e) {
     // Prevent the default link behavior
     e.preventDefault();
 
-    // Get the page title from the href attribute of the link
-    var pageTitle = $(this).attr('href').split('/wiki/')[1];
+    // Get the href attribute from the link and decode it
+    var href = $(this).attr('href');
+
+    // Extract the page title, remove the leading '/wiki/' and any URL query parameters
+    var pageTitle = decodeURIComponent(href.split('/wiki/')[1].split('?')[0]);
 
     // Redirect to the edit page with the preload parameter
     window.location.href = mw.util.getUrl(pageTitle, {

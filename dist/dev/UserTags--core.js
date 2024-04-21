@@ -1423,7 +1423,6 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
     UserTags.OasisTagsModule = {
         _blacklist: [
             'staff',
-            'wiki-representative',
             'wiki-specialist',
             'soap',
             'global-discussions-moderator',

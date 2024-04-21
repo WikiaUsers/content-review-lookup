@@ -554,7 +554,7 @@ mw.loader.using(['jquery.makeCollapsible'], function() {
         console.log('[AbuseLogRC]: version 1.07 - 26/10/2020.');
 
         // Check whether the user is permitted to view AbuseLogRC
-        showToGroups = ['sysop', 'staff', 'wiki-representative', 'wiki-specialist', 'soap'];
+        showToGroups = ['sysop', 'staff', 'wiki-specialist', 'soap'];
         $.each($.isArray(window.abuseLogRC_showTo) ? window.abuseLogRC_showTo : [
             (window.abuseLogRC_showTo === 'all') ? 'user' : window.abuseLogRC_showTo
         ], function (i, group) {

@@ -25,7 +25,7 @@ RETF.load();
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * http://www.gnu.org/copyleft/gpl.html
+ * https://www.gnu.org/copyleft/gpl.html
  * @version 1.1
  * @author Joeytje50
  */
@@ -69,7 +69,7 @@ RETF.replace = function(text) {
 		if (wikiLinkTarget.test(text)) {
 			continue; //ignore this rule
 		}
-		//Regex based on http://stackoverflow.com/a/23589204/1256925.
+		//Regex based on https://stackoverflow.com/a/23589204/1256925.
 		//Rules to skip based on https://en.wikipedia.org/wiki/Wikipedia:AutoWikiBrowser/Typos#AutoWikiBrowser_.28AWB.29
 		//Rules are: File:links | templates | "quotes" | text after : or *
 		var exclude = new RegExp('\\[\\[File:[^\\|\\]]+\\|?|{{.+?}}|"[^"]+"|[:\\*].*|('+RETF.list[i][0]+')', 'ig');

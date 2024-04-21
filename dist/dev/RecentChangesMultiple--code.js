@@ -86,13 +86,13 @@
 			
 			gUtils.newElement("link", { rel:"stylesheet", type:"text/css", href:"/load.php?mode=articles&articles=u:dev:Mediawiki:RecentChangesMultiple.css&only=styles" }, document.head);
 			
-			gApp.footerNode.innerHTML = "[<a href='http://dev.wikia.com/wiki/RecentChangesMultiple'>RecentChangesMultiple</a>] " + gUtils.formatString(i18n.TEXT.footer, module.version, "<a href='http://fewfre.wikia.com/wiki/Fewfre_Wiki'>Fewfre</a>");
+			gApp.footerNode.innerHTML = "[<a href='https://dev.fandom.com/wiki/RecentChangesMultiple'>RecentChangesMultiple</a>] " + gUtils.formatString(i18n.TEXT.footer, module.version, "<a href='https://fewfre.fandom.com/wiki/Fewfre_Wiki'>Fewfre</a>");
 		},
 		
 		_showUpdateMessage: function() {
 			var tMessage = gUtils.newElement("div", { className:"rcm-update-message", innerHTML:""
 				+"RecentChangesMultiple has gone through a major rewrite."
-				+" See changes <a href='http://dev.wikia.com/wiki/RecentChangesMultiple#26_July_2015_-_MediaWiki_API_rewrite_-_V1.1.0'>here</a>."
+				+" See changes <a href='https://dev.fandom.com/wiki/RecentChangesMultiple#26_July_2015_-_MediaWiki_API_rewrite_-_V1.1.0'>here</a>."
 				+"<br />To use the updated version, modify your JS import to use code.2.js."
 				+"<br />All Wikia wikis should work with update, although other wikis may require the use of '&scriptdir'."
 				+"<br />This version (code.js) of the script no longer works at all due to YQL support being dropped."
@@ -105,7 +105,7 @@
 	// General Helper Methods
 	//######################################
 	var gUtils = {
-		// http://stackoverflow.com/a/4673436/1411473
+		// https://stackoverflow.com/a/4673436/1411473
 		formatString: function(format) {
 			var args = Array.prototype.slice.call(arguments, 1);
 			return format.replace(/{(\d+)}/g, function(match, number) { 

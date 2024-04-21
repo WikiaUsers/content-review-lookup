@@ -8,6 +8,10 @@ window.MessageBlock = {
 
 TBL_GROUP = "roblox-en";
 
+/* Default NewCommentIndicator config */
+window.newCommentIndicator = {
+    newThreshold: 259200,
+    hideViewed: true
 
 window.ajaxPages = ["Some Frequently Updated Page"];
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Wantedpages", "Log", "Contributions"];

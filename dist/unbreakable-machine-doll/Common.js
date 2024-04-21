@@ -173,16 +173,6 @@ window.LIRoptions = {
 };
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-
-
-
-
-
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-//＝＝＝＝＝＝＝＝＝＝＝＝＝【Freenode IRC】＝＝＝＝＝＝＝＝＝＝＝＝＝//
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-
-
  
 
 
@@ -242,17 +232,6 @@ window.MessageWallUserTags = {
     }
 };
 
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-
-
-
-
-
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-//＝＝＝＝＝＝＝＝＝＝＝＝＝【Purge Button】＝＝＝＝＝＝＝＝＝＝＝＝＝//
-//――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
-
- 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
@@ -669,52 +648,4 @@ UserTagsJS.modules.explode = {
 
 
 
-
-
-
- 
-
-
- 
-
-
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
- 
- var playButtons = document.querySelectorAll(".thumbnail-play-icon");playButtons.forEach(function(puskKnopka){puskKnopka.replaceWith("https://static.wikia.nocookie.net/unbreakable-machine-doll/images/9/9f/Play_Button.png/revision/latest?cb=20240401164043")});
-
- 
- 
-
- 
-
- 
- 
-
- 
- 
- 
-
-
- 
- 
-
-
-
-
-
-
-
-
-
-$('#WallNotifications .bubbles').append('<img class="envelope" src="https://images.wikia.nocookie.net/unbreakable-machine-doll/images/8/83/Envelope-pink.png">');
+var playButtons = document.querySelectorAll(".thumbnail-play-icon");playButtons.forEach(function(puskKnopka){puskKnopka.replaceWith("https://static.wikia.nocookie.net/unbreakable-machine-doll/images/9/9f/Play_Button.png/revision/latest?cb=20240401164043")});

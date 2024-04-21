@@ -202,7 +202,6 @@
         "soap": true,
         "staff": true,
         "sysop": true,
-        "wiki-representative": true,
         "wiki-specialist": true,
       };
 

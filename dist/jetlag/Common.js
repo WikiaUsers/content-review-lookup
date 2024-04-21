@@ -1,17 +1,14 @@
-// ES5 JavaScript script to display the current hour according to the user's timezone, in 12 hour format.
-var date = new Date();
-var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-var userTimezoneDate = new Date(date.toLocaleString("en-US", { timeZone: timezone }));
-var hour = userTimezoneDate.getHours();
+function displayCurrentTime() {
+  var clockElement = document.getElementById("clock");
+  var now = new Date();
+  var hours = now.getHours();
 
-// Convert the hour to 12 hour format.
-if (hour > 12) {
-  hour -= 12;
-  ampm = " PM";
-} else {
-  ampm = " AM";
+  // Convert to 12-hour format
+  var amPm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;  // Convert 0 to 12 and handle hours between 12-23
+
+  clockElement.textContent = hours + " " + amPm;
 }
 
-// Display the hour and AM/PM indicator.
-var clock = document.getElementById("clock");
-clock.innerHTML = hour + ampm;
+// Call the function to display the time initially
+displayCurrentTime();

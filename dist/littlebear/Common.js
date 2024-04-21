@@ -13,7 +13,7 @@ $('.collapsible-list').each(function(index, currentTree){
   const currentButtonID = 'mainButton-'+index;
   const numberOfSubLists = $(this).find('ul li ul').length;
   const total = $(this).find('ul li').length - numberOfSubLists;
-  const buttonLabel = (total < smallTreeCount) ? 'hide all' : 'show all';
+  const buttonLabel = (total > smallTreeCount) ? 'show all' : 'hide all';
   const button = (numberOfSubLists === 0) ? '' : ' <small>(<a id="'+currentButtonID+'" class="show-hide-button">'+buttonLabel+'</a>)</small>';
   const desc = $('<div>This list includes '+total+' items'+button+'.</div>');
 

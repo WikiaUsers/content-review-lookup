@@ -77,7 +77,7 @@
             msg: 'article_preview_delete',
             show: function(){
                 return this.groups.some(function(group){
-                    var adminGroups = ['content-moderator', 'sysop', 'soap', 'wiki-specialist', 'wiki-representative', 'staff'];
+                    var adminGroups = ['content-moderator', 'sysop', 'soap', 'wiki-specialist', 'staff'];
                     return adminGroups.indexOf(group) > -1;
                 });
             }

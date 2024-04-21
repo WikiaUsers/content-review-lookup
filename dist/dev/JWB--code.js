@@ -120,7 +120,7 @@ window.JWB = JWB;
 				users = false; //fallback when page doesn't exist
 			}
 			JWB.bot = groups.indexOf('bot') !== -1 && (users === false || bots.indexOf(JWB.username) !== -1);
-			JWB.sysop = /sysop|staff|wiki-representative|wiki-specialist|soap/.test(groups.join());
+			JWB.sysop = /sysop|staff|wiki-specialist|soap/.test(groups.join());
 			if (JWB.username === "Joeytje50" && response.query.userinfo.id === 13299994) {//TEMP: Dev full access to entire interface.
 				JWB.bot = true;
 				users.push("Joeytje50");

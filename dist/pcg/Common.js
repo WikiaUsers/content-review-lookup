@@ -196,39 +196,3 @@ document.addEventListener('DOMContentLoaded', function() {
         link.href = link.href.replace(/_/g, '-');
     });
 });
-
-//Create a box when hovering over reference tags! 
-document.addEventListener('DOMContentLoaded', function() {
-    // Select all <sup> elements with class 'reference'
-    const refs = document.querySelectorAll('sup.reference');
-
-    refs.forEach(ref => {
-        ref.addEventListener('mouseenter', function() {
-            // Get the reference id
-            const refId = this.id;
-
-            // Find the corresponding content element by looking for an element with an id that starts with 'cite_note-'
-            const refContentId = refId.replace('cite_ref', 'cite_note');
-            const refContentElement = document.getElementById(refContentId);
-
-            if (refContentElement) {
-                const refContent = refContentElement.innerHTML;
-
-                // Create and show the tooltip
-                const tooltip = document.createElement('div');
-                tooltip.className = 'ref-tooltip';
-                tooltip.innerHTML = refContent;
-                this.appendChild(tooltip);
-                tooltip.style.opacity = 1;
-            }
-        });
-
-        ref.addEventListener('mouseleave', function() {
-            // Remove the tooltip on mouse leave
-            const tooltip = this.querySelector('.ref-tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
-        });
-    });
-});

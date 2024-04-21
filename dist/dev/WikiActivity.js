@@ -173,7 +173,6 @@ window.rwaOptions = window.rwaOptions || { };
     const CAN_BLOCK = Object.freeze( [
         "sysop",
         "staff",
-        "wiki-representative",
         "wiki-specialist",
         "soap",
         "global-discussions-moderator"

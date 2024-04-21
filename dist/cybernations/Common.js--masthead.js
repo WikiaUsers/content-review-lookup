@@ -41,16 +41,16 @@ $(function() {
  rights["RogalBot"]                    = ["Bot"];
  rights["Lyra Botstrings"]             = ["Bot"];
  
-  if (typeof rights[wgTitle] != "undefined") {
+  if (typeof rights[mw.config.get('wgTitle')] != "undefined") {
  
       // remove old rights
         $('.UserProfileMasthead .masthead-info span.tag').remove();
         $('.masthead-info hgroup span.tag').remove();
 
-      for( var i=0, len=rights[wgTitle].length; i < len; i++) {
+      for( var i=0, len=rights[mw.config.get('wgTitle')].length; i < len; i++) {
  
       // add new rights
-        $('<span class="tag">' + rights[wgTitle][i] +
+        $('<span class="tag">' + rights[mw.config.get('wgTitle')][i] +
           '</span>').appendTo('.masthead-info hgroup');
       }
     }

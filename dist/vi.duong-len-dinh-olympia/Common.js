@@ -32,14 +32,14 @@ batchDeleteDelay = 1000;
 var fdButtons = [];
  
 fdButtons[fdButtons.length] = {
-    'summary': 'one-click delete',
-        'label': 'one-click delete'
+	'summary': 'one-click delete',
+		'label': 'one-click delete'
 };
  
 // DynamicImages
 DynamicImages = {
-    gifImages: true,
-    gifGalleryImages: false
+	gifImages: true,
+	gifGalleryImages: false
 };
  
 // DisplayClock
@@ -53,58 +53,58 @@ var Start = 800;
  
 // RevealAnonIP
 window.RevealAnonIP = {
-    permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
+	permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
 };
  
  
 function updatetimer(i) {
-    var now = new Date();
-    var then = timers[i].eventdate;
-    var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
-    var count = diff;
+	var now = new Date();
+	var then = timers[i].eventdate;
+	var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
+	var count = diff;
  
-    // catch bad date strings
-    if (isNaN(diff)) {
-        timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **';
-        return;
-    }
+	// catch bad date strings
+	if (isNaN(diff)) {
+		timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **';
+		return;
+	}
  
-    // determine plus/minus
-    if (diff < 0) {
-        diff = -diff;
-    }
-        var tpm = ' ';
+	// determine plus/minus
+	if (diff < 0) {
+		diff = -diff;
+	}
+		var tpm = ' ';
  
-    // calcuate the diff
-    var left = (diff % 60) + ' seconds';
-    diff = Math.floor(diff / 60);
-    if (diff > 0) left = (diff % 60) + ' minutes ' + left;
-    diff = Math.floor(diff / 60);
-    if (diff > 0) left = (diff % 24) + ' hours ' + left;
-    diff = Math.floor(diff / 24);
-    if (diff > 0) left = diff + ' days ' + left;
-    timers[i].firstChild.nodeValue = tpm + left;
+	// calcuate the diff
+	var left = (diff % 60) + ' seconds';
+	diff = Math.floor(diff / 60);
+	if (diff > 0) left = (diff % 60) + ' minutes ' + left;
+	diff = Math.floor(diff / 60);
+	if (diff > 0) left = (diff % 24) + ' hours ' + left;
+	diff = Math.floor(diff / 24);
+	if (diff > 0) left = diff + ' days ' + left;
+	timers[i].firstChild.nodeValue = tpm + left;
  
-    // a setInterval() is more efficient, but calling setTimeout()
-    // makes errors break the script rather than infinitely recurse
-    timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
+	// a setInterval() is more efficient, but calling setTimeout()
+	// makes errors break the script rather than infinitely recurse
+	timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
 }
  
 $(function checktimers() {
-    // hide 'nocountdown' and show 'countdown'
-    var nocountdowns = document.getElementsByClassName('nocountdown');
-    for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
-    var countdowns = document.getElementsByClassName('countdown');
-    for (var j in countdowns) countdowns[j].style.display = 'inline';
+	// hide 'nocountdown' and show 'countdown'
+	var nocountdowns = document.getElementsByClassName('nocountdown');
+	for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
+	var countdowns = document.getElementsByClassName('countdown');
+	for (var j in countdowns) countdowns[j].style.display = 'inline';
  
-    // set up global objects timers and timeouts
-    timers = document.getElementsByClassName('countdowndate'); //global
-    timeouts = new Array(); // generic holder for the timeouts, global
-    if (timers.length === 0) return;
-    for (var k in timers) {
-        timers[k].eventdate = new Date(timers[k].firstChild.nodeValue);
-        updatetimer(k); //start it up
-    }
+	// set up global objects timers and timeouts
+	timers = document.getElementsByClassName('countdowndate'); //global
+	timeouts = new Array(); // generic holder for the timeouts, global
+	if (timers.length === 0) return;
+	for (var k in timers) {
+		timers[k].eventdate = new Date(timers[k].firstChild.nodeValue);
+		updatetimer(k); //start it up
+	}
 });
  
  
@@ -112,8 +112,8 @@ $(function checktimers() {
    Requires copying Template:USERNAME. */
  
 $(function() {
-    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
-    $('span.insertusername').html(mw.config.get('wgUserName'));
+	if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
+	$('span.insertusername').html(mw.config.get('wgUserName'));
 });
  
 /* End of the {{USERNAME}} replacement */
@@ -121,20 +121,20 @@ $(function() {
 /* AutoCreateUserPages, using form MediaWiki:Welcome-user-page
 	Require dev script AutoCreateUserPages.js */
 window.AutoCreateUserPagesConfig = {
-    content: {
-        2: '{{sub'+'st:MediaWiki:Welcome-user-page}}',
-        3: '{{autowelcome}}',
-    1202: false
+	content: {
+		2: '{{sub'+'st:MediaWiki:Welcome-user-page}}',
+		3: '{{autowelcome}}',
+	1202: false
 },
-    summary: 'Auto creating user page',
-    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+	summary: 'Auto creating user page',
+	notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
 };
 
 importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AutoCreateUserPages.js',
-    ]
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:AutoCreateUserPages.js',
+	]
 });
 
 
@@ -142,11 +142,25 @@ importArticles({
 	Install PageEditInfo in MediaWiki:ImportJS */
 $(function(){
 	if (mw.config.get('wgUserName')) {
-	importArticles({
-		type: 'script',
-		articles: [
-			'u:dev:MediaWiki:LastEdited/code.js',
+		importArticles({
+			type: 'script',
+			articles: [
+				'u:dev:MediaWiki:LastEdited/code.js',
 			]
-    });
-}
+		});
+	}
+});
+
+
+/* Display "NEW" in latest comments, replies, message walls
+	Set up display time for 7 days */
+window.newCommentIndicator = {
+	newThreshold: 604800
+};
+
+importArticles({
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:NewCommentIndicator.js'
+	]
 });

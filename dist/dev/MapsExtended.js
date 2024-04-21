@@ -25,7 +25,8 @@
 
     */
 
-    function EventHandler() {
+    function EventHandler()
+    {
         this._listeners = [];
         this._listenersOnce = [];
     }
@@ -203,7 +204,7 @@
     {
         // This prevents any overhead from creating the object each time
         var element = document.createElement("div");
-      
+        
         function decodeHTMLEntities(str)
         {
             if (str && typeof str === "string")
@@ -218,7 +219,7 @@
 
             return str;
         }
-      
+        
         return decodeHTMLEntities;
 
     })();
@@ -405,6 +406,37 @@
         return rule;
     }
 
+    // Create a WDS checkbox
+    // id: The ID to assign to the input
+    // label: A string or HTML element to append to the label
+    // Returns an object containing { root, input, label }
+    function createWdsCheckbox(id, label)
+    {
+        var checkboxRoot = document.createElement("div");
+        checkboxRoot.className = "wds-checkbox";
+
+        var checkboxInput = document.createElement("input");
+        checkboxInput.setAttribute("type", "checkbox");
+        checkboxInput.setAttribute("name", id);
+        checkboxInput.setAttribute("id", id);
+
+        var checkboxLabel = document.createElement("label");
+        checkboxLabel.setAttribute("for", id);
+
+        if (label)
+        {
+            if (typeof label == "string")
+                checkboxLabel.textContent = label;
+            else if (label instanceof Node)
+                checkboxLabel.append(label);
+        }
+
+        checkboxRoot.append(checkboxInput, checkboxLabel);
+        checkboxInput.checked = true;
+
+        return { root: checkboxRoot, input: checkboxInput, label: checkboxLabel };
+    }
+
 
 // MapsExtended
 
@@ -429,7 +461,7 @@
         if (isDisabled)
             return;
         
-        console.log("Loaded MapsExtended.js!" + (isDebug ? " (DEBUG MODE)" : "") + " (location is " + window.location + ")");
+        console.log("Loaded MapsExtended.js!" + (isDebug ? " (DEBUG MODE)" : ""));
 
         // Do not run on pages without interactive maps
         var test = document.querySelector(".interactive-maps-container");
@@ -452,6 +484,8 @@
         // the class interactive-maps-container, with an unique id like "interactive-map-xxxxxxxx")
         function ExtendedMap(root)
         {
+            this.markerCompareFunctions();
+            
             this.creationTime = performance.now();
 
             // ID is unique to each instance
@@ -487,7 +521,7 @@
 
             // Unscaled size / bounds
             this.size = { width: Math.abs(this.bounds[1][0] - this.bounds[0][0]),
-                         height: Math.abs(this.bounds[1][1] - this.bounds[0][1]) };
+                            height: Math.abs(this.bounds[1][1] - this.bounds[0][1]) };
 
             var hasGlobalConfig = mapsExtended.isGlobalConfigLoaded;
             var hasLocalConfig = mapsExtended.localConfigs[this.name] != undefined && !isEmptyObject(mapsExtended.localConfigs[this.name]);
@@ -507,8 +541,8 @@
 
             // Use the config based on precedence embed -> local -> global -> default
             this.config = hasEmbedConfig ? embedConfig :
-                          hasLocalConfig ? localConfig : 
-                          hasGlobalConfig ? mapsExtended.globalConfig :
+                            hasLocalConfig ? localConfig : 
+                            hasGlobalConfig ? mapsExtended.globalConfig :
                                             mapsExtended.defaultConfig;
 
             // Short circuit if the config says this map should be disabled
@@ -603,6 +637,11 @@
                     sourceEvent.subscribe(function(args){ targetEvent.invoke(args); });
                 
             }.bind(this));
+
+            // Bind certain prototype functions so that they're unique to each instance
+            this.onMouseMove = this.onMouseMove.bind(this);
+            this.onMouseDown = this.onMouseDown.bind(this);
+            this.onMouseUp = this.onMouseUp.bind(this);
 
             // Infer iconAnchor from iconPosition
             if (this.config["iconPosition"] != undefined)
@@ -795,16 +834,7 @@
                                 this[config.booleanName] = value;
 
                                 if (config.eventName == "onMapZoomed")
-                                {
-                                    this.events[config.eventName].invoke({
-                                        map: this,
-                                        value: value,
-                                        center: this.zoomCenter,
-                                        type: this.zoomType,
-                                        scaleDelta: this.getElementTransformScale(this.elements.leafletBaseImageLayer, true),
-                                        scale: this.getElementTransformScale(this.elements.leafletProxy, true) * 2
-                                    });
-                                }
+                                    this.onMapZoomed(value);
                                 else
                                     this.events[config.eventName].invoke({ map: this, value: value });
                             }
@@ -897,7 +927,7 @@
                         var removedPopupMarker = removedPopup.marker;
                         var removedPopupMarkerId = removedPopupElement.id;
                     }
-                    else if (removedPopupElement.id.startsWith("popup_"))
+                    else if (removedPopupElement && removedPopupElement.id.startsWith("popup_"))
                     {
                         var removedPopupMarkerId = mutationList[0].removedNodes[0].id.replace("popup_", "");
                         var removedPopupMarker = mutationList[0].removedNodes[0].marker || this.markerLookup.get(removedPopupMarkerId);
@@ -910,6 +940,7 @@
                     }
                     
                     log("Popup removed: " + removedPopupMarkerId);
+                    removedPopup.events.onPopupHidden.invoke();
                     this.events.onPopupHidden.invoke({ map: this, marker: removedPopupMarker });
                 }
 
@@ -928,7 +959,7 @@
                         return;
 
                     // Rescope to root popup on addition of content in subtree
-                    else if (popupElement.classList.contains("MarkerPopup-module_popup__eNi--"))
+                    else if (!popupElement.classList.contains("leaflet-popup"))
                         popupElement = popupElement.closest(".leaflet-popup");
 
                     // If we can't get an element, return
@@ -1021,7 +1052,8 @@
                         }
                     
                         // Fire onPopupShown
-                        this.events.onPopupShown.invoke({ map: this, marker: marker });
+                        marker.popup.events.onPopupShown.invoke();
+                        this.events.onPopupShown.invoke({ map: this, marker: marker, popup: marker.popup });
                     }
                 }
 
@@ -1136,10 +1168,14 @@
                 this.elements.zoomButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom");
                 this.elements.zoomInButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-in");
                 this.elements.zoomOutButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-out");
+                this.elements.fullscreenButton = this.elements.leafletControlContainer.querySelector(".leaflet-control:has(.map-fullscreen-control)");
                 
                 // List of all marker elements
                 var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
 
+                // Get the initial zoomScale
+                this.zoomScale = this.getElementTransformScale(this.elements.leafletProxy, true) * 2
+                
                 // Things to do only once (pre-match)
                 if (isNew)
                 {
@@ -1163,6 +1199,9 @@
 
                     // Create fullscreen button
                     this.initFullscreen();
+
+                    // Create filters
+                    this.initFilters();
                     
                     // Create category groups
                     this.initCategoryGroups();
@@ -1188,9 +1227,15 @@
 
                     // Set up collectibles
                     this.initCollectibles();
+
+                    // Set up zoom layers
+                    this.initZoomLayers();
                 }
                 else
                 {
+                    if (this.elements.fullscreenButton)
+                        this.elements.fullscreenButton.remove();
+                    
                     // Changing the size of the leafet container causes it to be remade (and the fullscreen button control destroyed)
                     // Re-add the fullscreen button to the DOM
                     if (this.config.enableFullscreen == true && this.controlAssociations["fullscreen"].isPresent)
@@ -1211,6 +1256,8 @@
                     
                     // Check to see if the category of the marker is hidden, if so the marker won't be in the DOM
                     // and we shouldn't bother trying to associate the category
+
+                    /*
                     if (marker.category && marker.category.visible == false)
                     {
                         if (!skipAssociationForCategories.includes(marker.category.id))
@@ -1221,6 +1268,7 @@
         
                         continue;
                     }
+                    */
         
                     // Associate markers in the JSON definition with the marker elements in the DOM                
         
@@ -1304,7 +1352,11 @@
                         this.updateSearchList(this.search.lastSearch);
                     if (this.search.selectedMarker)
                         this.toggleMarkerHighlight(this.search.selectedMarker, true);
+                    if (this.zoomLayers.length > 0)
+                        this.updateZoomLayers();
                 }
+
+                this.updateFilter();
 
                 // Set initialized when we've done everything
                 this.initialized = true;
@@ -1328,174 +1380,42 @@
 
             initMapEvents: function()
             {
-                var mouseDownPos, mouseMoveStopTimer;
-                
-                // Is called on mousemove after mousedown, and for subsequent mousemove events until dragging more than 2px
-                var onMouseMove = function(e)
-                {
-                    // Don't consider this a drag if shift was held on mouse down
-                    if (this.isBoxZoomDragging) return;
-                    
-                    if (!this.isDragging)
-                    {
-                        // If the position of the move is 2px away from the mousedown position
-                        if (Math.abs(e.pageX - this.mouseDownPos[0]) > 2 ||
-                            Math.abs(e.pageY - this.mouseDownPos[1]) > 2)
-                        {
-                            log("Started drag at x: " + this.mouseDownPos[0] + ", y: " + this.mouseDownPos[1] + " (" + this.mouseDownMapPos + ")");
-                            
-                            // This is a drag
-                            this.isDragging = true;
-                            //this.elements.leafletContainer.removeEventListener("mousemove", onMouseMove);
-                            this.events.onMapDragged.invoke({value: true});
-                        }
-                    }
-                    else
-                    {
-                        // Determine whether we're resuming a drag
-                        if (!this.isDraggingMove)
-                        {
-                            log("Resuming drag");
-                            this.isDraggingMove = true;
-                            this.events.onMapDraggedMove.invoke(true);
-                        }
-    
-                        // Cancel the timeout which in 300ms will indicate we've paused dragging
-                        clearTimeout(mouseMoveStopTimer);
-                        mouseMoveStopTimer = setTimeout(function()
-                        {
-                            log("Pausing drag");
-                            this.isDraggingMove = false;
-                            this.events.onMapDraggedMove.invoke(false);
-                        }.bind(this), 100);
-                    }
-                    
-                }.bind(this);
+                // Mouse down event (remove first to ensure this only gets added once)
+                this.elements.leafletContainer.removeEventListener("mousedown", this.onMouseDown);
+                this.elements.leafletContainer.addEventListener("mousedown", this.onMouseDown);
 
-                // Mouse down event on leaflet container
-                // Set up an event to cache the element that was last clicked, regardless of if it's actually a associated marker or not
-                this.elements.leafletContainer.addEventListener("mousedown", function(e)
-                {
-                    // Ignore right clicks
-                    if (e.button == 2) return;
-
-                    // Determine whether this is a box zoom
-                    if (e.shiftKey) this.isBoxZoomDragging = true;
-
-                    // Save the position of the event
-                    this.mouseDownPos = [ e.pageX, e.pageY ];
-                    this.mouseDownMapPos = [ e.offsetX, e.offsetY ];
-                    this.pageToMapOffset = [ e.offsetX - e.pageX, e.offsetY - e.pageY ];
-
-                    // Subscribe to the mousemove event so that the movement is tracked
-                    this.elements.leafletContainer.addEventListener("mousemove", onMouseMove);
-                    this._invalidateLastClickEvent = false;
-
-                    // Traverse up the click element until we find the marker or hit the root of the map
-                    // This is because markers may have sub-elements that may be the target of the click
-                    var elem = e.target;
-                    while (true)
-                    {
-                        // No more parent elements
-                        if (!elem || elem == e.currentTarget)
-                            break;
-                        
-                        if (elem.classList.contains("leaflet-marker-icon"))
-                        {
-                            this.lastMarkerClicked = elem.marker;
-                            this.lastMarkerElementClicked = elem;
-                            
-                            break;
-                        }
-
-                        elem = elem.parentElement;
-                    }
-                }.bind(this));
-
-                // Mouse up event on <s>leaflet container</s> window
-                // (mouseup won't trigger if the mouse is released outside the leaflet window)
-                window.addEventListener("mouseup", function(e)
-                {
-                    // If the mouse was released on the map container or any item within it, the map was clicked
-                    if (this.elements.leafletContainer.contains(e.target))
-                    {
-                        var isOnBackground = e.target == this.elements.leafletContainer || e.target == this.elements.leafletBaseImageLayer; 
-                        
-                        this.events.onMapClicked.invoke(
-                        {
-                            map: this, event: e,
-                            
-                            // Clicked on map background
-                            isOnBackground: isOnBackground,
-    
-                            // Clicked on marker,
-                            isMarker: this.lastMarkerHovered != undefined,
-                            marker: this.lastMarkerHovered,
-    
-                            // Was the end of the drag
-                            wasDragging: this.isDragging,
-                        });
-
-                        // Custom popups - If mousing up on the map background, not the end of a drag, and there is a popup showing
-                        if (this.config.useCustomPopups == true && isOnBackground && !this.isDragging && this.lastPopupShown)
-                        {
-                            // Hide the last popup shown
-                            this.lastPopupShown.hide();
-                        }
-                    }
-                    
-                    this.elements.leafletContainer.removeEventListener("mousemove", onMouseMove);
-
-                    // If mousing up after dragging, regardless of if it ended within the window
-                    if (this.isDragging == true)
-                    {
-                        this.mouseUpPos = [ e.pageX, e.pageY ];
-                        this.mouseUpMapPos = [ e.pageX + this.pageToMapOffset[0], e.pageY + this.pageToMapOffset[1] ];
-                        
-                        log("Ended drag at x: " + e.pageX + ", y: " + e.pageY + " (" + this.mouseUpMapPos.toString() + ")");
-                        
-                        // No longer dragging
-                        this.isDragging = false;
-                        this.events.onMapDragged.invoke({value: false});
-
-                        // Invalidate click event on whatever marker is hovered
-                        if (this.lastMarkerHovered)
-                            this._invalidateLastClickEvent = true;
-                    }
-
-                    // If mousing up after starting a box zoom, record this zoom as a box zoom
-                    if (this.isBoxZoomDragging == true)
-                    {
-                        this.isBoxZoomDragging = false;
-                        this.zoomType = "box";
-                        this.zoomCenter = [ this.mouseUpMapPos[0] - this.mouseDownMapPos[0],
-                                            this.mouseUpMapPos[1] - this.mouseDownMapPos[1] ];
-                        this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
-                        this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
-                        this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
-                    }
-                    
-                }.bind(this));
-
-                /*
-                this.elements.leafletContainer.addEventListener("mousemove", function(e)
-                {
-                    console.log("x: " + e.clientX + ", y: " + e.clientY);
-                    console.log(this.clientToTransformPosition([e.clientX, e.clientY]).toString());
-                    console.log(this.clientToScaledPosition([e.clientX, e.clientY]).toString());
-                    console.log(this.clientToUnscaledPosition([e.clientX, e.clientY]).toString());
-
-                }.bind(this));
-                */
+                // Mouse up event (remove first to ensure this only gets added once)
+                window.removeEventListener("mouseup", this.onMouseUp);
+                window.addEventListener("mouseup", this.onMouseUp);
                 
                 // Remove non-navigating hrefs, which show a '#' in the navbar, and a link in the bottom-left
                 this.elements.zoomInButton.removeAttribute("href");
                 this.elements.zoomOutButton.removeAttribute("href");
+                this.elements.zoomInButton.setAttribute("tabindex", "0");
+                this.elements.zoomOutButton.setAttribute("tabindex", "0");
                 this.elements.zoomInButton.style.cursor = this.elements.zoomOutButton.style.cursor = "pointer";
                 this.elements.zoomInButton.addEventListener("click", zoomButtonClick.bind(this));
                 this.elements.zoomOutButton.addEventListener("click", zoomButtonClick.bind(this));
                 function zoomButtonClick(e)
                 {
+                    // If this was from a keydown event with the enter key, click the button
+                    if (e instanceof KeyboardEvent && e.key == "Enter")
+                    {
+                        var clickEvent = new PointerEvent("click",
+                        {
+                            view: window,
+                            bubbles: true,
+                            cancelable: false,
+
+                            // This is important to handle "big" zooms
+                            shiftKey: e.shiftKey
+                        });
+
+                        e.currentTarget.dispatchEvent(clickEvent);
+                    }
+                    else if (e instanceof PointerEvent)
+                        e.preventDefault();
+
                     this.zoomType = "button";
                     this.zoomCenter = [ this.elements.leafletContainer.clientWidth / 2, this.elements.leafletContainer.clientHeight / 2 ];
                     this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
@@ -1552,6 +1472,175 @@
                     
                 }.bind(this));
             },
+                
+            // Is called on mousemove after mousedown, and for subsequent mousemove events until dragging more than 2px
+            onMouseMove: function(e)
+            {
+                // Don't consider this a drag if shift was held on mouse down
+                if (this.isBoxZoomDragging) return;
+                
+                if (!this.isDragging)
+                {
+                    // If the position of the move is 2px away from the mousedown position
+                    if (Math.abs(e.pageX - this.mouseDownPos[0]) > 2 ||
+                        Math.abs(e.pageY - this.mouseDownPos[1]) > 2)
+                    {
+                        log("Started drag at x: " + this.mouseDownPos[0] + ", y: " + this.mouseDownPos[1] + " (" + this.mouseDownMapPos + ")");
+                        
+                        // This is a drag
+                        this.isDragging = true;
+                        //this.elements.leafletContainer.removeEventListener("mousemove", onMouseMove);
+                        this.events.onMapDragged.invoke({value: true});
+                    }
+                }
+                else
+                {
+                    // Determine whether we're resuming a drag
+                    if (!this.isDraggingMove)
+                    {
+                        log("Resuming drag");
+                        this.isDraggingMove = true;
+                        this.events.onMapDraggedMove.invoke(true);
+                    }
+
+                    // Cancel the timeout which in 300ms will indicate we've paused dragging
+                    clearTimeout(this.mouseMoveStopTimer);
+                    this.mouseMoveStopTimer = setTimeout(function()
+                    {
+                        log("Pausing drag");
+                        this.isDraggingMove = false;
+                        this.events.onMapDraggedMove.invoke(false);
+                    }.bind(this), 100);
+                }
+                
+            },
+
+            // Mouse down event (should be added as an event listener on the leaflet container)
+            // Set up an event to cache the element that was last clicked, regardless of if it's actually a associated marker or not
+            onMouseDown: function(e)
+            {
+                // Ignore right clicks
+                if (e.button == 2) return;
+
+                // Determine whether this is a box zoom
+                if (e.shiftKey) this.isBoxZoomDragging = true;
+
+                // Save the position of the event
+                this.mouseDownPos = [ e.pageX, e.pageY ];
+                this.mouseDownMapPos = [ e.offsetX, e.offsetY ];
+                this.pageToMapOffset = [ e.offsetX - e.pageX, e.offsetY - e.pageY ];
+
+                // Subscribe to the mousemove event so that the movement is tracked
+                this.elements.leafletContainer.addEventListener("mousemove", this.onMouseMove);
+                this._invalidateLastClickEvent = false;
+
+                // Traverse up the click element until we find the marker or hit the root of the map
+                // This is because markers may have sub-elements that may be the target of the click
+                var elem = e.target;
+                while (true)
+                {
+                    // No more parent elements
+                    if (!elem || elem == e.currentTarget)
+                        break;
+                    
+                    if (elem.classList.contains("leaflet-marker-icon"))
+                    {
+                        this.lastMarkerClicked = elem.marker;
+                        this.lastMarkerElementClicked = elem;
+                        
+                        break;
+                    }
+
+                    elem = elem.parentElement;
+                }
+            
+            },
+
+            // Mouse up event. Should be added as an event listener to the window, as mouseup
+            // won't trigger if on the leafletContainer and the mouse is released outside the leaflet window
+            onMouseUp: function(e)
+            {
+                // If the mouse was released on the map container or any item within it, the map was clicked
+                if (this.elements.leafletContainer.contains(e.target))
+                {
+                    var isOnBackground = e.target == this.elements.leafletContainer || e.target == this.elements.leafletBaseImageLayer; 
+                    
+                    this.events.onMapClicked.invoke(
+                    {
+                        map: this, event: e,
+                        
+                        // Clicked on map background
+                        isOnBackground: isOnBackground,
+
+                        // Clicked on marker,
+                        isMarker: this.lastMarkerHovered != undefined,
+                        marker: this.lastMarkerHovered,
+
+                        // Was the end of the drag
+                        wasDragging: this.isDragging,
+                    });
+
+                    // Custom popups - If mousing up on the map background, not the end of a drag, and there is a popup showing
+                    if (this.config.useCustomPopups == true && isOnBackground && !this.isDragging && this.lastPopupShown)
+                    {
+                        // Hide the last popup shown
+                        this.lastPopupShown.hide();
+                    }
+                }
+                
+                this.elements.leafletContainer.removeEventListener("mousemove", this.onMouseMove);
+
+                // If mousing up after dragging, regardless of if it ended within the window
+                if (this.isDragging == true)
+                {
+                    this.mouseUpPos = [ e.pageX, e.pageY ];
+                    this.mouseUpMapPos = [ e.pageX + this.pageToMapOffset[0], e.pageY + this.pageToMapOffset[1] ];
+                    
+                    log("Ended drag at x: " + e.pageX + ", y: " + e.pageY + " (" + this.mouseUpMapPos.toString() + ")");
+                    
+                    // No longer dragging
+                    this.isDragging = false;
+                    this.events.onMapDragged.invoke({value: false});
+
+                    // Invalidate click event on whatever marker is hovered
+                    if (this.lastMarkerHovered)
+                        this._invalidateLastClickEvent = true;
+                }
+
+                // If mousing up after starting a box zoom, record this zoom as a box zoom
+                if (this.isBoxZoomDragging == true)
+                {
+                    this.isBoxZoomDragging = false;
+                    this.zoomType = "box";
+                    this.zoomCenter = [ this.mouseUpMapPos[0] - this.mouseDownMapPos[0],
+                                        this.mouseUpMapPos[1] - this.mouseDownMapPos[1] ];
+                    this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                    this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                    this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
+                }
+                
+            },
+
+            onMapZoomed: function(value)
+            {
+                this.zoomScaleDelta = value ? this.getElementTransformScale(this.elements.leafletBaseImageLayer, true) : this.zoomScaleDelta;
+                this.zoomScale = this.getElementTransformScale(this.elements.leafletProxy, true) * 2;
+                this.zoomState = value ? "zoomStart" : "zoomEnd";
+                
+                var args = 
+                {
+                    map: this,
+                    value: value,
+                    state: this.zoomState,
+                    direction: this.zoomScaleDelta >= 1 ? "in" : "out",
+                    center: this.zoomCenter,
+                    type: this.zoomType,
+                    scaleDelta: this.zoomScaleDelta,
+                    scale: this.zoomScale
+                };
+                
+                this.events.onMapZoomed.invoke(args);
+            },
             
             // Deinit effectively disconnects the map from any elements that may have been removed in the DOM (with the exception of filter elements)
             // After a map is deinitialized, it should not be used until it is reinitialized with init
@@ -1571,6 +1660,10 @@
 
                 this.isDragging = this.isZooming = false;
                 this._isScaledMapImageSizeDirty = true;
+
+                window.removeEventListener("mouseup", this.onMouseUp);
+                this.elements.leafletContainer.removeEventListener("mousedown", this.onMouseDown);
+                this.elements.leafletContainer.removeEventListener("mousemove", this.onMouseMove);
                 
                 this.initialized = false;
 
@@ -1688,7 +1781,7 @@
                     return a;
                 }
                 else if (returns == "wikitext")
-                	return "[[Map:" + name + "]]";
+                    return "[[Map:" + name + "]]";
                 else if (returns == "string")
                     return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
             },
@@ -1736,27 +1829,38 @@
                 return markerJson.compareMarkerAndJsonElement(markerElem);
             },
 
+            markerCompareFunctions: function()
+            {
+                var collator = new Intl.Collator();
+                this.markerCompareFunctions =
+                {
+                    "latitude-asc":   function(a, b) { return Math.sign(a.position[1] - b.position[1]); },
+                    "latitude-desc":  function(a, b) { return Math.sign(b.position[1] - a.position[1]); },
+                    "longitude-asc":  function(a, b) { return Math.sign(a.position[0] - b.position[0]); },
+                    "longitude-desc": function(a, b) { return Math.sign(b.position[0] - a.position[0]); },
+                    "category-asc":   function(a, b) { return (b.map.categories.indexOf(b.category) - a.map.categories.indexOf(a.category)) || (a.position[1] - b.position[1]); },
+                    "category-desc":  function(a, b) { return (a.map.categories.indexOf(a.category) - b.map.categories.indexOf(b.category)) || (a.position[1] - b.position[1]); },
+                    "name-asc":       function(a, b) { return collator.compare(a.popup.title, b.popup.title); }
+                };
+            },
+
             // Returns a function that can be used to compare markers
             markerCompareFunction: function(sortType)
             {
+                sortType = sortType || this.config.sortMarkers;
                 sortType = sortType.toLowerCase();
 
-                if (sortType == "latitude" || sortType == "latitude-asc")
-                    return function(a, b) { return a.position[1] - b.position[1]; };
-                else if (sortType == "latitude-desc")
-                    return function(a, b) { return b.position[1] - a.position[1]; };
-                else if (sortType == "longitude" || sortType == "longitude-asc")
-                    return function(a, b) { return a.position[0] - b.position[0]; };
-                else if (sortType == "longitude-desc")
-                    return function(a, b) { return b.position[0] - a.position[0]; };
-                else if (sortType == "category"  || sortType == "category-asc")
-                    return function(a, b){ return (b.map.categories.indexOf(b.category) - a.map.categories.indexOf(a.category)) || (a.position[1] - b.position[1]); };
-                else if (sortType == "category-desc")
-                    return function(a, b) { return (a.map.categories.indexOf(a.category) - b.map.categories.indexOf(b.category)) || (a.position[1] - b.position[1]); };
-                else if (sortType == "name" || sortType == "name-asc")
+                if (!sortType.endsWith("desc") && !sortType.endsWith("asc"))
+                    sortType += "-asc";
+                
+                // Return a cached version of the compare function
+                // This prevents a new function from being created every time this is called
+                if (this.markerCompareFunctions[sortType])
+                    return this.markerCompareFunctions[sortType];
+                else
                 {
-                    var compare = new Intl.Collator().compare;
-                    return function(a, b) { return compare(a.popup.title, b.popup.title); };
+                    console.log("A compare function with the name " + sortType + " does not exist!");
+                    return this.markerCompareFunctions["latitude-asc"];
                 }
             },
 
@@ -1882,7 +1986,7 @@
 
                 // Add the position of the base layer to the scaled position to get the transform position
                 return [ scaledPos[0] + baseLayerPos[0],
-                         scaledPos[1] + baseLayerPos[1] ];
+                            scaledPos[1] + baseLayerPos[1] ];
             },
 
             // Converts a transform position to a scaled position which is accurate to the current zoom level
@@ -1892,7 +1996,7 @@
                 var baseLayerPos = this.getElementTransformPos(this.elements.leafletBaseImageLayer);
 
                 return [ transformPos[0] - baseLayerPos[0],
-                         transformPos[1] - baseLayerPos[1] ];
+                            transformPos[1] - baseLayerPos[1] ];
             },
 
             // Converts a viewport position to a transform position that is relative to the map pane
@@ -1902,7 +2006,7 @@
                 var mapPaneViewportPos = this.getElemMapViewportPos(this.elements.leafletMapPane);
 
                 return [ viewportPos[0] - mapPaneViewportPos[0],
-                         viewportPos[1] - mapPaneViewportPos[1] ];
+                            viewportPos[1] - mapPaneViewportPos[1] ];
             },
 
             // Converts a transform position relative to the map pane to a viewport pos
@@ -1912,7 +2016,7 @@
                 var mapPaneViewportPos = this.getElemMapViewportPos(this.elements.leafletMapPane);
 
                 return [ transformPos[0] + mapPaneViewportPos[0],
-                         transformPos[1] + mapPaneViewportPos[1] ];
+                            transformPos[1] + mapPaneViewportPos[1] ];
             },
 
             // Converts a client position to a transform position on the map, relative to the map pane
@@ -1933,7 +2037,7 @@
                 //var mapPaneViewportPos = this.getElementTransformPos(this.elements.leafletMapPane);
 
                 var mouseTransformPos = [ mouseViewportPos[0] - mapPaneViewportPos[0],
-                                          mouseViewportPos[1] - mapPaneViewportPos[1] ];
+                                            mouseViewportPos[1] - mapPaneViewportPos[1] ];
                 */
 
                 // The transform is just the offset from the mapPane's position
@@ -2041,10 +2145,10 @@
                     // since the user may have implemented custom offsets
                     var computedStyle = window.getComputedStyle(element);
                     var elemOffset = [ parseFloat(computedStyle.marginLeft) + parseFloat(computedStyle.marginRight),
-                                       parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom) ];
+                                        parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom) ];
 
                     return [ (elemRect.x - mapRect.x) - elemOffset[0],
-                             (elemRect.y - mapRect.y) - elemOffset[1] ];
+                                (elemRect.y - mapRect.y) - elemOffset[1] ];
                 }
                 
                 if (element._leaflet_pos)
@@ -2089,7 +2193,7 @@
                     // Calculate the scale factor using the transform matrix
                     var matrix = new DOMMatrixReadOnly(style.transform);
                     return [ Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
-                             Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d) ]
+                                Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d) ]
 
                     /*
                     // Get the transform property value
@@ -2470,7 +2574,7 @@
                         dy = (points[0].y + 4 * points[1].y + points[2].y) / 6;
 
                         splinePoints.push([ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx,
-                                           ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy]);
+                                            ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy]);
                     }
 
                     return splinePoints;
@@ -2485,7 +2589,7 @@
                     var smooth = arr.map(function(c,i)
                     {
                         return[[0.75*c[0] + 0.25*arr[(i + 1)%l][0],0.75*c[1] + 0.25*arr[(i + 1)%l][1]],
-                               [0.25*c[0] + 0.75*arr[(i + 1)%l][0],0.25*c[1] + 0.75*arr[(i + 1)%l][1]]];
+                                [0.25*c[0] + 0.75*arr[(i + 1)%l][0],0.25*c[1] + 0.75*arr[(i + 1)%l][1]]];
                     }).flat();
                     return num === 1 ? smooth : chaikin(smooth, num - 1);
                 }
@@ -2916,9 +3020,9 @@
                         // Scale the points so they operate at the current scale
                         // Round the pixels so that we're drawing across whole pixels (and not fractional pixels)
                         ctx.drawImage(icon.bitmap, Math.round(points[i].x - (icon.scaledWidth / ratio / 2)),
-                                                   Math.round(points[i].y - (icon.scaledHeight / ratio / 2)),
-                                                   Math.round(icon.scaledWidth / ratio),
-                                                   Math.round(icon.scaledHeight / ratio));
+                                                    Math.round(points[i].y - (icon.scaledHeight / ratio / 2)),
+                                                    Math.round(icon.scaledWidth / ratio),
+                                                    Math.round(icon.scaledHeight / ratio));
                     }
                     */
 
@@ -3116,7 +3220,7 @@
                         // Means we don't need to use any tricks when we want an initial state that differs from the current
                         canvas.animate(
                         [{ transform: canvas.style.transform + " scale(" + startScale + ")" },
-                         { transform: canvas.style.transform + " scale(" + endScale + ")" } ],
+                            { transform: canvas.style.transform + " scale(" + endScale + ")" } ],
                         {
                             easing: "cubic-bezier(0, 0, 0.25, 1)",
                             duration: 250
@@ -3194,10 +3298,10 @@
                 {
                     if (this.categories[i].icon && !icons.includes(this.categories[i].icon))
                         icons.push( { url: this.categories[i].icon.url,
-                                      width: this.categories[i].icon.width,
-                                      height: this.categories[i].icon.height,
-                                      scaledWidth: this.categories[i].icon.scaledWidth,
-                                      scaledHeight: this.categories[i].icon.scaledHeight });
+                                        width: this.categories[i].icon.width,
+                                        height: this.categories[i].icon.height,
+                                        scaledWidth: this.categories[i].icon.scaledWidth,
+                                        scaledHeight: this.categories[i].icon.scaledHeight });
                 }
                 
                 for (var i = 0; i < 1000; i++)
@@ -3260,7 +3364,7 @@
                 // function onBeginRender()
                 // {
                 //    if (!initialized) return;
-                   
+                    
                 //    renderStartTime = performance.now();
                     
                 //    // Cancel the last requested render
@@ -3534,7 +3638,7 @@
                                 // Scale the pixel position back up to the scaled range and add the position
                                 // of the base layer to the scaled position to get the transform position
                                 var transformPos = [ ((pixelPos[0] / this.size.width) * imageSize[0]) + baseLayerPos[0],
-                                                     ((pixelPos[1] / this.size.width) * imageSize[0]) + baseLayerPos[1] ];
+                                                        ((pixelPos[1] / this.size.width) * imageSize[0]) + baseLayerPos[1] ];
 
                                 // Set the transform position of the element back to the _leaflet_pos (for caching)
                                 elem._leaflet_pos.x = transformPos[0];
@@ -3598,6 +3702,49 @@
             },
 
             // Fullscreen
+            
+            // This is called by the click and keydown event on the fullscreen button
+            onFullscreenButton: function(e)
+            {
+                // If this is a keyboard event, only continue if it's a enter keypress
+                if (e instanceof KeyboardEvent && e.key != "Enter")
+                    return;
+                else if (e instanceof PointerEvent)
+                    e.stopPropagation();
+                
+                // Remove marker query parameter from URL so that when the map goes fullscreen, it isn't zoomed into the marker again
+                var url = window.location;
+                if (urlParams.has("marker"))
+                {
+                    urlParams.delete("marker");
+                    window.history.replaceState({}, document.title, url.origin + url.pathname + (urlParams != "" ? "?" : "") + urlParams.toString() + url.hash);
+                }
+                
+                // Always exit fullscreen if in either mode
+                if (this.isFullscreen || this.isWindowedFullscreen)
+                {
+                    if (this.isFullscreen)         this.setFullscreen(false);
+                    if (this.isWindowedFullscreen) this.setWindowedFullscreen(false);
+                }
+
+                // If control key is pressed, use the opposite mode
+                else if (e.ctrlKey || e.metaKey)
+                {
+                    if (this.config.fullscreenMode == "screen")
+                        this.setWindowedFullscreen(true);
+                    else if (this.config.fullscreenMode == "window")
+                        this.setFullscreen(true);
+                }
+
+                // Otherwise use the default mode
+                else
+                {
+                    if (this.config.fullscreenMode == "screen")
+                        this.setFullscreen(true);
+                    else if (this.config.fullscreenMode == "window")
+                        this.setWindowedFullscreen(true);
+                }
+            },
 
             // Transition the map to and from fullscreen
             setFullscreen: function(value)
@@ -3691,15 +3838,13 @@
             // Creates a fullscreen button for the map, sets up various events to control fullscreen
             initFullscreen: function(isNew)
             {
-            	var fandomFullscreenToggleExists = Boolean(document.querySelector('.leaflet-container .map-fullscreen-control'));
-            	if (fandomFullscreenToggleExists) {
-            		return;
-            	}
-            	
                 this.isFullscreen = this.isWindowedFullscreen = false;
                 
                 // Modify and set up some styles - this is only executed once
                 this.initFullscreenStyles();
+
+                // Remove built-in fullscreen button
+                if (this.elements.fullscreenButton) this.elements.fullscreenButton.remove();
 
                 // Don't continue if fullscreen is disabled
                 if (this.config.enableFullscreen == false)
@@ -3711,6 +3856,7 @@
 
                 var fullscreenControlButton = document.createElement("a");
                 fullscreenControlButton.className = "leaflet-control-fullscreen-button leaflet-control-fullscreen-button-zoom-in";
+                fullscreenControlButton.setAttribute("tabindex", "0");
                 fullscreenControlButton.setAttribute("title", mapsExtended.i18n.msg("fullscreen-enter-tooltip").plain());
 
                 mw.hook("dev.wds").add(function(wds)
@@ -3728,44 +3874,8 @@
                 this.elements.fullscreenControlButton = fullscreenControlButton;
 
                 // Click event on fullscreen button
-                fullscreenControlButton.addEventListener("click", function(e)
-                {
-                    // Remove marker query parameter from URL so that when the map goes fullscreen, it isn't zoomed into the marker again
-                    var url = window.location;
-                    if (urlParams.has("marker"))
-                    {
-                        urlParams.delete("marker");
-                        window.history.replaceState({}, document.title, url.origin + url.pathname + (urlParams != "" ? "?" : "") + urlParams.toString() + url.hash);
-                    }
-                    
-                    // Always exit fullscreen if in either mode
-                    if (this.isFullscreen || this.isWindowedFullscreen)
-                    {
-                        if (this.isFullscreen)         this.setFullscreen(false);
-                        if (this.isWindowedFullscreen) this.setWindowedFullscreen(false);
-                    }
-
-                    // If control key is pressed, use the opposite mode
-                    else if (e.ctrlKey || e.metaKey)
-                    {
-                        if (this.config.fullscreenMode == "screen")
-                            this.setWindowedFullscreen(true);
-                        else if (this.config.fullscreenMode == "window")
-                            this.setFullscreen(true);
-                    }
-
-                    // Otherwise use the default mode
-                    else
-                    {
-                        if (this.config.fullscreenMode == "screen")
-                            this.setFullscreen(true);
-                        else if (this.config.fullscreenMode == "window")
-                            this.setWindowedFullscreen(true);
-                    }
-                    
-                    e.stopPropagation();
-                    
-                }.bind(this));
+                fullscreenControlButton.addEventListener("click", this.onFullscreenButton.bind(this));
+                fullscreenControlButton.addEventListener("keydown", this.onFullscreenButton.bind(this));
                 
                 fullscreenControlButton.addEventListener("dblclick", stopPropagation);
                 fullscreenControlButton.addEventListener("mousedown", stopPropagation);
@@ -4352,13 +4462,27 @@
                     category.elements.searchResultsHeaderCount.textContent = "(" + (search.counts[category.id] || 0) + ")";
                 }
 
+                // We're starting a search if the last search was empty and this search was not
+                var isStartingSearch = (!this.search.lastSearch || this.search.lastSearch.isEmptySearch) && !search.isEmptySearch;
+
+                // We're ending a search if the last search was not empty and this search is
+                var isEndingSearch = (this.search.lastSearch && !this.search.lastSearch.isEmptySearch) && search.isEmptySearch;
+                
+                this.search.isSearching = !search.isEmptySearch;
                 this.search.lastSearch = search;
                 this.updateSearchSubtitle();
                 
                 var t1 = performance.now();
                 log("Updating search elements took " + Math.round(t1 - t0) + " ms.");
 
-                this.events.onSearchPerformed.invoke({ map: this, search: search });
+                this.events.onSearchPerformed.invoke(
+                {
+                    map: this,
+                    search: search,
+                    isSearching: this.search.isSearching,
+                    isStartingSearch: isStartingSearch,
+                    isEndingSearch: isEndingSearch
+                });
             },
 
             highlightTextWithSearchTerm: function(element, text, textNormalized, searchTerm)
@@ -4767,7 +4891,7 @@
                 var searchBoxInput = this.search.elements.searchBoxInput;
                 var searchBoxHintContainer = this.search.elements.searchBoxHintContainer;
                 var searchResultsList = this.search.elements.searchResultsList;
- 
+    
                 searchDropdownButton.addEventListener("click", function(e)
                 {
                     // Invert expanded state
@@ -4958,6 +5082,9 @@
                 {
                     for (var i = 0; i < this.categories.length; i++)
                         this.categories[i].toggle(true);
+
+                    this.updateFilter();
+                    
                 }.bind(this));
                 categoryToggleButtons.append(showAllButton);
 
@@ -4968,6 +5095,9 @@
                 {
                     for (var i = 0; i < this.categories.length; i++)
                         this.categories[i].toggle(false);
+
+                    this.updateFilter();
+                    
                 }.bind(this));
                 categoryToggleButtons.append(hideAllButton);
                 sidebarContent.append(categoryToggleButtons);
@@ -5038,6 +5168,7 @@
                     sidebarCategoryGroup.label = categoryGroup.label;
                     sidebarCategoryGroup.categories = categoryGroup.categories;
                     sidebarCategoryGroup.categoryToggles = [];
+                    sidebarCategoryGroup.categoryGroup = categoryGroup;
                     
                     sidebar.categoryGroups = sidebar.categoryGroups || [];
                     sidebar.categoryGroups.push(sidebarCategoryGroup);
@@ -5082,6 +5213,9 @@
                             for (var i = 0; i < this.categories.length; i++)
                                 this.categories[i].toggle(!anyShown)
 
+                            this.categoryGroup.updateCheckedVisualState();
+                            this.categoryGroup.map.updateFilter();
+
                         }.bind(sidebarCategoryGroup));
                     }
                     else
@@ -5118,9 +5252,10 @@
                         // Toggle specific category by clicking on item
                         categoryListItem.addEventListener("click", function(e)
                         {
-                            var item = e.currentTarget;
-                            item.category.toggle();
-                        });
+                            this.toggle();
+                            this.map.updateFilter();
+                            
+                        }.bind(category));
 
                         // Update the visual toggle state whenever the actual category visibility changes
                         category.onCategoryToggled.subscribe(function(value){ this.classList.toggle("hidden", !value); }.bind(categoryListItem));
@@ -5191,7 +5326,7 @@
                 value = value != undefined ? value : !this.sidebar.isShowing;
                 
                 // Save the previous value
-            	var lastValue = this.sidebar.isShowing;
+                var lastValue = this.sidebar.isShowing;
 
                 // Set sidebar.isShowing to the new value
                 this.sidebar.isShowing = value;
@@ -5394,6 +5529,155 @@
                 }
             },
 
+            // Zoom layers
+
+            initZoomLayers: function()
+            {
+                this.zoomLayers = [];
+                this.zoomLayersAllEmpty = true;
+
+                // Separate regexes from category and marker IDs
+                function regexFilterFn(s){ return typeof s == "string" && s.charAt(0) == '/' && s.charAt(s.length) == '/' && s.length > 2; };
+                function splitIntoIdsAndRegexes(strings)
+                {
+                    var ids = [];
+                    var regexes = [];
+
+                    if (Array.isArray(strings))
+                    {
+                        for (var s = 0; s < strings.length; s++)
+                        {
+                            if (regexFilterFn(strings[s]))
+                            {
+                                try 
+                                {
+                                    var regex = new RegEx(strings[s].slice(1, -1))
+                                    regexes.push(regex);
+                                }
+                                catch (e)
+                                {
+                                    console.error("The regex pattern \"" + strings[s] + "\" for zoom layer " + layer.id + " could not be parsed. It will be ignored");
+                                }
+                            }
+                            else
+                            {
+                                ids.push(strings[s]);
+                            }
+                        }
+                    }
+
+                    return { ids: ids, regexes: regexes };
+                };
+                
+                // Collect the markers for each zoom layer
+                for (var i = 0; i < this.config.zoomLayers.length; i++)
+                {
+                    var layer = this.config.zoomLayers[i];
+                    layer.visible = true;
+                    
+                    var cir = splitIntoIdsAndRegexes(layer.categories);
+                    var categoryIds = cir.ids;
+                    var categoryRegexes = cir.regexes;
+
+                    var mir = splitIntoIdsAndRegexes(layer.markers);
+                    var markerIds = mir.ids;
+                    var markerRegexes = mir.regexes;
+
+                    // Add categoryIds based on categoryRegexes
+                    var categoryIds = Object.assign(categoryIds, this.categories.filter(function(c)
+                    {
+                        // Exclude categories already in IDs
+                        return !categoryIds.includes(c.id) &&
+
+                        // Include those match one of the regex patterns
+                        categoryRegexes.some(function(r){ r.test(c.id); })
+                    }));
+
+                    // Next, filter the markers, building an array of markers that belong to this layer
+                    layer.markers = this.markers.filter(function(m)
+                    {
+                        var isInZoomLayer = markerIds.includes(m.id) ||
+                            categoryIds.includes(m.categoryId) ||
+                            markerRegexes.some(function(r){ r.test(m.id); });
+
+                        // Add a reference to the zoomLayer to each marker
+                        if (isInZoomLayer) m.zoomLayer = layer;
+
+                        return isInZoomLayer;
+                    });
+
+                    // We no longer need these properties (the rest of the above will be GC'd)
+                    layer.categories = null;
+
+                    if (layer.markers.length > 0)
+                        this.zoomLayersAllEmpty = false;
+
+                    this.zoomLayers.push(layer);
+                }
+
+                if (this.zoomLayers.length > 0)
+                {
+                    // While searching, this re-adds any markers that have been removed from the map so that they may appear in the search
+                    this.events.onSearchPerformed.subscribe(function(search)
+                    {
+                        if (search.isStartingSearch || search.isEndingSearch)
+                            this.updateFilter();
+                        
+                    }.bind(this));
+                    
+                    this.filterFunctions.push(function(marker)
+                    {
+                        // Ignore the zoomLayer visibility when searching
+                        if (marker.map.search.isSearching) return true;
+                        
+                        return marker.zoomLayer != null ? marker.zoomLayer.visible : true;
+                    });
+                    
+                    this.events.onMapZoomed.subscribe(function(e)
+                    {
+                        if ((e.state == "zoomStart" && e.direction == "out") ||
+                            (e.state == "zoomEnd" && e.direction == "in"))
+                            this.updateZoomLayers(e);
+                        
+                    }.bind(this));
+
+                    // Do the first update
+                    this.updateZoomLayers();
+                }
+            },
+
+            // Sets the visibility property on each zoom layer depending on the current scale. This a callback of the onMapZoomed event
+            updateZoomLayers: function()
+            {
+                var zoomLayersChanged = false;
+                
+                for (var i = 0; i < this.zoomLayers.length; i++)
+                {
+                    var layer = this.zoomLayers[i];
+                    var visible = this.zoomScale >= layer.minZoom &&
+                                    this.zoomScale < layer.maxZoom;
+
+                    // Layer visibility changed, show or hide the markers
+                    if (layer.visible != visible)
+                    {
+                        layer.visible = visible;
+                        zoomLayersChanged = true;
+
+                        // When hiding, always just remove
+                        if (visible)
+                            log("Zoom layer " + layer.id + " became visible (zoomScale is: " + this.zoomScale + ", which is >= " + layer.minZoom + " and < " + layer.maxZoom + ")");
+                        else
+                                log("Zoom layer " + layer.id + " is no longer visible (zoomScale is: " + this.zoomScale + ", which is " + (this.zoomScale < layer.minZoom ? "< " + layer.minZoom : ">= " + layer.maxZoom) + ")");
+                    }
+                }
+
+                // Only update the filter if the zoom layers changed
+                // Don't do so via a zoom if we're currently searching,
+                // or if there aren't any markers to exclude to begin with (this can happen if the user doesn't define any markers)
+                if (zoomLayersChanged && !this.search.isSearching && !this.zoomLayersAllEmpty)
+                    this.updateFilter();
+            },
+
             // Collectibles
 
             hasCollectibles: false,
@@ -5422,6 +5706,7 @@
 
                     if (category.elements && category.elements.filter)
                     {
+                        // Ctrl-Clicking on the category filter should mark all as collected, or clear all as collected
                         category.elements.filter.addEventListener("click", function(e)
                         {
                             if (e.ctrlKey == true || e.metaKey == true)
@@ -5431,6 +5716,8 @@
                                 else
                                     this.markAllCollected();
 
+                                this.map.updateFilter();
+
                                 e.preventDefault();
                                 e.stopPropagation();
                             }
@@ -5438,44 +5725,58 @@
                     }
                 }
 
-                // Skip this map if there are no collectibles
-                if (this.hasCollectibles == false) return;
+                // Remove the built-in "your progress" foldout if it should be disabled, or if we have no collectibles
+                if (!this.config.enableYourProgressFilter || this.hasCollectibles == false)
+                {
+                    this.elements.filterProgressSection.remove();
+                }
 
-                this.elements.filtersDropdownList.style.paddingBottom = "0";
+                // Skip this map if there are no collectibles
+                if (this.hasCollectibles == false)
+                    return;
+
                 this.elements.filtersDropdownList.style.maxHeight = "none";
 
-                // Add a "Clear collected" button to the filter box
-                var clearButton = document.createElement("a");
-                clearButton.className = "mapsExtended_collectibleClearButton";
-                clearButton.textContent = mapsExtended.i18n.msg("clear-collected-button").plain();
-                this.elements.clearCollectedButton = clearButton;
-                this.elements.filtersDropdownList.after(clearButton);
-                
-                // When BannerNotifications is loaded, 
-                mw.hook("dev.banners").add(function(banners)
+                // Add a "Clear collected" button to the filters
+                if (this.config.enableClearCollectedButton)
                 {
-                    map.elements.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
+                    var clearButton = document.createElement("a");
+                    clearButton.className = "mapsExtended_collectibleClearButton";
+                    clearButton.textContent = mapsExtended.i18n.msg("clear-collected-button").plain();
+                    this.elements.clearCollectedButton = clearButton;
 
-                    // When the "Clear collected" button is clicked in the filters dropdown
-                    map.elements.clearCollectedButton.addEventListener("click", function()
+                    if (this.config.enableYourProgressFilter)
+                        this.elements.filterProgressSectionContent.append(clearButton);
+                    else
+                        this.elements.filterCategoriesSectionContent.append(clearButton);
+                    
+                    // When BannerNotifications is loaded, 
+                    mw.hook("dev.banners").add(function(banners)
                     {
-                        var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
-
-                        // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
-                        OO.ui.confirm(confirmMsg).done(function(confirmed)
+                        map.elements.collectedMessageBanner = new BannerNotification("", "confirm", null, 5000);
+    
+                        // When the "Clear collected" button is clicked in the filters dropdown
+                        map.elements.clearCollectedButton.addEventListener("click", function()
                         {
-                            if (confirmed)
+                            var confirmMsg = mapsExtended.i18n.msg("clear-collected-confirm").plain();
+    
+                            // Create a simple OOUI modal asking the user if they really want to clear the collected state on all markers
+                            OO.ui.confirm(confirmMsg).done(function(confirmed)
                             {
-                                var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink(null, "wikitext")).parse();
-                                new BannerNotification(bannerMsg, "notify", null, 5000).show();
-                                map.clearCollectedStates();
-                            }
-                            else
-                                return;
+                                if (confirmed)
+                                {
+                                    var bannerMsg = mapsExtended.i18n.msg("clear-collected-banner", map.getNumCollected(), map.getMapLink(null, "wikitext")).parse();
+                                    new BannerNotification(bannerMsg, "notify", null, 5000).show();
+                                    map.clearCollectedStates();
+                                    map.updateFilter();
+                                }
+                                else
+                                    return;
+                            });
                         });
+    
                     });
-
-                });
+                }
                 
                 // Load collected states from localStorage
                 this.loadCollectedStates();
@@ -5489,11 +5790,13 @@
                 this.events.onMapInit.subscribe(function(args)
                 {
                     // Nudge collected states
-                    args.map.nudgeCollectedStates();
+                    this.nudgeCollectedStates();
 
                     // Update labels
-                    args.map.categories.forEach(function(c) { c.updateCollectedLabel(); });
-                });
+                    this.categories.forEach(function(c) { c.updateCollectedLabel(); });
+                    this.updateCollectedFilterLabels();
+                    
+                }.bind(this));
 
                 // New marker shown - Set it's collected state to itself update the marker opacity
                 this.events.onMarkerShown.subscribe(function(args)
@@ -5501,69 +5804,9 @@
                     args.marker.setMarkerCollected(args.marker.collected, true);
                 });
 
-                // New popup created
-                this.events.onPopupCreated.subscribe(function(args)
+                this.events.onPopupShown.subscribe(function(args)
                 {
-                    var marker = args.marker;
-                    var map = args.map;
-                    var category = map.categoryLookup.get(marker.categoryId);
-                    
-                    // Check if the marker that triggered this popup is a collectible one
-                    if (category.collectible == true)
-                    {
-                        // Stop observing popup changes while we change the subtree of the popup
-                        map.togglePopupObserver(false);
-
-                        // Remove any old checkboxes (this can happen with live preview)
-                        var oldCheckbox = marker.popup.elements.popupTitle.querySelector(".wds-checkbox");
-                        if (oldCheckbox) oldCheckbox.remove();
-                        
-                        // Create checkbox container
-                        var popupCollectedCheckbox = document.createElement("div");
-                        popupCollectedCheckbox.className = "wds-checkbox";
-                
-                        // Create the checkbox itself
-                        var popupCollectedCheckboxInput = document.createElement("input");
-                        popupCollectedCheckboxInput.setAttribute("type", "checkbox");
-                        popupCollectedCheckboxInput.id = "checkbox_" + map.id + "_" + marker.id;
-                        popupCollectedCheckboxInput.marker = marker; // <- Store reference to marker on checkbox so we don't have to manually look it up
-                        popupCollectedCheckboxInput.checked = marker.collected;
-                        marker.popup.elements.popupCollectedCheckbox = popupCollectedCheckboxInput;
-                
-                        // Create label adjacent to checkbox
-                        var popupCollectedCheckboxLabel = document.createElement("label");
-                        popupCollectedCheckboxLabel.setAttribute("for", popupCollectedCheckboxInput.id);
-
-                        // Add checkbox input and label to checkbox container
-                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxInput);
-                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxLabel);
-
-                        // Add checkbox container after title element
-                        marker.popup.elements.popupTitle.after(popupCollectedCheckbox);
-
-                        // Checked changed event
-                        popupCollectedCheckboxInput.addEventListener("change", function(e)
-                        {
-                            if (e.currentTarget.marker)
-                                e.currentTarget.marker.setMarkerCollected(e.currentTarget.checked, false, true, true);
-                        });
-                
-                        map.togglePopupObserver(true);
-                    }
-                });
-
-                // Marker clicked - Toggle collected state on control-click
-                this.events.onMarkerClicked.subscribe(function(args)
-                {
-                    // Check if click was control-click
-                    if (args.event.ctrlKey == true || args.event.metaKey == true)
-                    {
-                        // Invert collected state on marker
-                        args.marker.setMarkerCollected(!args.marker.collected, true, true, true);
-
-                        // Don't open the popup with a control-click
-                        args.event.stopPropagation();
-                    }
+                    args.popup.updateCollectibleElements();
                 });
 
                 // Save collected states when the tab loses focus
@@ -5577,15 +5820,27 @@
                 });
             },
 
+            updateCollectedFilterLabels: function()
+            {
+                // Number collected, subtract the counts for
+                var collected = this.getNumCollected(true, true);
+                var notCollected = this.getNumCollected(false, true);
+                
+                this.elements.filterCompleteLabel.textContent = collected.toString();
+                this.elements.filterIncompleteLabel.textContent = notCollected.toString();
+            },
+
             // Get the amount of markers that have been collected in total
-            getNumCollected: function()
+            getNumCollected: function(state, excludeFiltered)
             {
                 var count = 0;
-                for (var i = 0; i < this.categories.length; i++)
-                {
-                    count = count + this.categories[i].getNumCollected();
-                }
 
+                if (state == null) state = true;
+                if (excludeFiltered == null) excludeFiltered = false;
+                
+                for (var i = 0; i < this.categories.length; i++)
+                    count += this.categories[i].getNumCollected(state, excludeFiltered);
+                
                 return count;
             },
             
@@ -5680,6 +5935,147 @@
             },
             
 
+            // General filtering
+            
+
+            initFilters: function()
+            {
+                this.collectedVisible = true;
+                this.nonCollectedVisible = true;
+
+                this.createFilterSections();
+                
+                // Add default filter functions, which determine how the markers are filtered when the filter is updated
+                
+                // Only show visible categories
+                this.filterFunctions.push(function(m){ return m.category.visible; });
+
+                // When we have collectibles, only show the collectibles if the current "incomplete/complete" filter allows for its collected state
+                this.filterFunctions.push(function(m){return m.map.hasCollectibles && m.category.collectible ? m.collected ? m.map.collectedVisible : m.map.nonCollectedVisible : true; })
+            },
+
+            createFilterSections: function()
+            {
+                // Remove existing filter sections
+                var filterSections = this.elements.filtersDropdownList.querySelectorAll(".interactive-maps__section");
+                if (filterSections.length > 0) Array.from(filterSections).forEach(function(s){ s.remove(); });
+            
+                var sectionHtml = "<div class=\"interactive-maps__section-label\"><!-- Section label --><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\" class=\"interactive-maps__section-label-icon\"><path fill-rule=\"evenodd\" d=\"M11.707 3.293a.999.999 0 00-1.414 0L6 7.586 1.707 3.293A.999.999 0 10.293 4.707l5 5a.997.997 0 001.414 0l5-5a.999.999 0 000-1.414\"></path></svg></div><div class=\"interactive-maps__section-content\"><!-- Section content --></div></div>";
+                
+                // Create "Categories" section
+                this.elements.filterCategoriesSection = document.createElement("div");
+                this.elements.filterCategoriesSection.className = "interactive-maps__section interactive-maps__categories-section";
+                this.elements.filterCategoriesSection.innerHTML = sectionHtml;
+                this.elements.filterCategoriesSectionContent = this.elements.filterCategoriesSection.querySelector(".interactive-maps__section-content");
+                this.elements.filterCategoriesSectionLabel = this.elements.filterCategoriesSection.querySelector(".interactive-maps__section-label");
+                this.elements.filterCategoriesSectionLabel.prepend(mapsExtended.i18n.msg("filter-section-categories").plain());
+
+                // Create "Your Progress" section
+                this.elements.filterProgressSection = document.createElement("div");
+                this.elements.filterProgressSection.className = "interactive-maps__section interactive-maps__progress-section";
+                this.elements.filterProgressSection.innerHTML = sectionHtml;
+                this.elements.filterProgressSectionContent = this.elements.filterProgressSection.querySelector(".interactive-maps__section-content");
+                this.elements.filterProgressSectionLabel = this.elements.filterProgressSection.querySelector(".interactive-maps__section-label");
+                this.elements.filterProgressSectionLabel.prepend(mapsExtended.i18n.msg("filter-section-collectibles").plain());
+                
+                // Create "incomplete" and "complete" filters (Fandom terminology)
+                var completeFilter = document.createElement("div");
+                var incompleteFilter = document.createElement("div");
+                var completeFilterText = document.createElement("span");
+                var incompleteFilterText = document.createElement("span");
+                var completeFilterCheckbox = createWdsCheckbox(this.id + "__checkbox-" + "complete", mapsExtended.i18n.msg("filter-collectibles-collected").plain());
+                var incompleteFilterCheckbox = createWdsCheckbox(this.id + "__checkbox-" + "incomplete", mapsExtended.i18n.msg("filter-collectibles-not-collected").plain());
+                completeFilter.className = "interactive-maps__filter";
+                incompleteFilter.className = "interactive-maps__filter";
+                completeFilterText.className = "interactive-maps__filter-value";
+                incompleteFilterText.className = "interactive-maps__filter-value";
+                completeFilter.append(completeFilterCheckbox.root, completeFilterText);
+                incompleteFilter.append(incompleteFilterCheckbox.root, incompleteFilterText);
+                this.elements.filterProgressSectionContent.append(completeFilter, incompleteFilter);
+
+                this.elements.filtersDropdownList.append(this.elements.filterProgressSection, this.elements.filterCategoriesSection);
+                
+                // Save checkbox input references
+                this.elements.filterComplete = completeFilter;
+                this.elements.filterIncomplete = incompleteFilter;
+                this.elements.filterCompleteCheckbox = completeFilterCheckbox.input;
+                this.elements.filterIncompleteCheckbox = incompleteFilterCheckbox.input;
+                this.elements.filterCompleteLabel = completeFilter.querySelector(".interactive-maps__filter-value");
+                this.elements.filterIncompleteLabel = incompleteFilter.querySelector(".interactive-maps__filter-value");
+                
+                this.elements.filterCompleteCheckbox.addEventListener("change", function(e)
+                {
+                    this.collectedVisible = e.target.checked;
+                    this.updateFilter();
+                    
+                }.bind(this));
+
+                this.elements.filterIncompleteCheckbox.addEventListener("change", function(e)
+                {
+                    this.nonCollectedVisible = e.target.checked;
+                    this.updateFilter();
+                    
+                }.bind(this));
+                
+                // Set up filter groups (right now, "Your Progress" and "Collectibles")
+                var progressLabel = this.elements.filterProgressSection.querySelector(".interactive-maps__section-label");
+                var categoriesLabel = this.elements.filterCategoriesSection.querySelector(".interactive-maps__section-label");
+                
+                var toggleSection = function(e)
+                {
+                    var section = e.target.closest(".interactive-maps__section");
+                    section.classList.toggle("interactive-maps__section--hidden");
+                };
+                progressLabel.addEventListener("click", toggleSection);
+                categoriesLabel.addEventListener("click", toggleSection);
+            },
+
+            markersFiltered: [],
+            markersFilteredInverse: [],
+
+            // This is an array of functions that take a marker, and should return true or false
+            // depending on whether they should be displayed on the map at any given time.
+            // A marker is only shown if every function returns true
+            filterFunctions: [],
+
+            updateFilter: function()
+            {
+                this.filteredMarkers = [];
+                this.unfilteredMarkers = [];
+
+                for (var i = 0; i < this.markers.length; i++)
+                {
+                    if (!this.markers[i].markerElement) continue;
+                    
+                    // By default the marker is shown
+                    if (this.markers[i].passesFilter())
+                        this.filteredMarkers.push(this.markers[i]);
+                    else
+                        this.unfilteredMarkers.push(this.markers[i]);
+                }
+
+                // Remove unfilteredMarkers
+                for (var i = 0; i < this.unfilteredMarkers.length; i++)
+                    this.unfilteredMarkers[i].markerElement.remove();
+
+                // Add filteredMarkers (if they're not already present)
+                var fragment = document.createDocumentFragment();
+                for (var i = 0; i < this.filteredMarkers.length; i++)
+                {
+                    if (this.filteredMarkers[i].markerElement.parentElement == null)
+                        fragment.append(this.filteredMarkers[i].markerElement);
+                }
+
+                this.elements.leafletMarkerPane.append(fragment);
+
+                // Hide the currently-showing popup if it belongs to a hidden marker
+                if (this.lastPopupShown && this.lastPopupShown.marker && !this.lastPopupShown.marker.passesFilter())
+                    this.lastPopupShown.hide();
+                
+                // Update the counts of the collectible filters
+                this.updateCollectedFilterLabels();
+            },
+
             // Category groups
 
             
@@ -5688,7 +6084,7 @@
                 // Change selectors that are rooted to interactive-maps__filters-dropdown to instead be rooted to interactive-maps__filters-list
                 // so that they apply to all dropdowns within interactive-maps__filters-list
                 changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown::after, .interactive-maps__filters-dropdown .wds-dropdown::before",
-                                   ".interactive-maps__filters-list .wds-dropdown::after, .interactive-maps__filters-list .wds-dropdown::before");
+                                    ".interactive-maps__filters-list .wds-dropdown::after, .interactive-maps__filters-list .wds-dropdown::before");
                 changeCSSRuleSelector(".interactive-maps__filters-dropdown .wds-dropdown__content", ".interactive-maps__filters-list .wds-dropdown__content");
                 
                 // Change some of the scroll up/down shadows
@@ -5718,7 +6114,11 @@
                 // If there are no category groups, or if the object is not an array
                 // just map the categories directly so that all categories are at the root
                 if (!this.config.categoryGroups || !Array.isArray(this.config.categoryGroups))
-                    this.config.categoryGroups = this.categories.map(function(c){ return c.id; });
+                {
+                    this.config.categoryGroups = this.categories
+                        .filter(function(c){ return !c.startDisabled; })
+                        .map(function(c){ return c.id; });
+                }
 
                 // Move categoryGroups from config to this
                 
@@ -5853,8 +6253,10 @@
                     });
 
                     // Update the checked visual state
-                    rootGroup.updateCheckedVisualState();
+                    //rootGroup.updateCheckedVisualState();
                 }
+
+                rootGroup.updateCheckedVisualState();
 
                 // Resize the searchRoot to be a bit less than the height of the root map container
                 this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
@@ -5898,13 +6300,21 @@
             this.flattenedGroups = {};
             this.checkboxes = [];
             this.elements = this.elements || {};
+
+            this.onCategoryGroupToggled = new EventHandler();
+
+            this.updateCheckedVisualStateThis = this.updateCheckedVisualState.bind(this);
             
             if (this.isRoot)
             {
                 // Set the initial maxHeight on all collapsible elements as soon as the filters dropdown is opened
                 // This is because the elements are created when the dropdown is hidden, and so the heights aren't
                 // calculated/valid isn't set until the element is first displayed and its height is determined
-                this.map.elements.filtersDropdownButton.addEventListener("mouseenter", function(e){ this.setInitialHeight(); }.bind(this), { once: true });
+                this.map.elements.filtersDropdownButton.addEventListener("mouseenter", function(e)
+                {
+                    this.setInitialHeight();
+                    
+                }.bind(this), { once: true });
             }
             
             var groupElem = document.createElement("div");
@@ -5917,17 +6327,6 @@
             // Create the checkbox elements
             var checkboxId = this.map.id + "__checkbox-categoryGroup-" + this.path;
 
-            var checkboxRoot = document.createElement("div");
-            checkboxRoot.className = "wds-checkbox";
-
-            var checkboxInput = document.createElement("input");
-            checkboxInput.setAttribute("type", "checkbox");
-            checkboxInput.setAttribute("name", checkboxId);
-            checkboxInput.setAttribute("id", checkboxId);
-
-            var checkboxLabel = document.createElement("label");
-            checkboxLabel.setAttribute("for", checkboxId);
-
             // Create a header label element
             var headerLabel = document.createElement("div");
             headerLabel.className = "mapsExtended_categoryGroupHeaderLabel";
@@ -5935,21 +6334,22 @@
 
             // Create header dropdown arrow element (to indicate collapsed state)
             var headerArrow = document.createElement("div");
+            headerArrow.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 12 12\"><path fill=\"currentColor\" fill-rule=\"evenodd\" d=\"M11.707 3.293a.999.999 0 00-1.414 0L6 7.586 1.707 3.293A.999.999 0 10.293 4.707l5 5a.997.997 0 001.414 0l5-5a.999.999 0 000-1.414\"></path></svg>";
             headerArrow.className = "mapsExtended_categoryGroupHeaderArrow";
-            headerArrow.textContent = this.collapsed == true ? "▲" : "▼";
+            headerArrow.classList.toggle("mapsExtended_categoryGroupHeaderArrow--collapsed", this.collapsed);
+            //headerArrow.textContent = this.collapsed == true ? "▲" : "▼";
             headerArrow.style.display = this.collapsible == false ? "none" : "";
+
+            var checkbox = createWdsCheckbox(checkboxId);
+            checkbox.label.appendChild(headerLabel);
+            checkbox.root.appendChild(headerArrow);
+            headerElem.appendChild(checkbox.root);
 
             this.elements.root = groupElem;
             this.elements.header = headerElem;
             this.elements.headerLabel = headerLabel;
-            this.elements.checkbox = checkboxInput;
+            this.elements.checkbox = checkbox.input;
             this.elements.headerArrow = headerArrow;
-
-            checkboxRoot.appendChild(checkboxInput);
-            checkboxRoot.appendChild(checkboxLabel);
-            checkboxLabel.appendChild(headerLabel);
-            checkboxRoot.appendChild(headerArrow);
-            headerElem.appendChild(checkboxRoot);
 
             // Create a container element
             var containerElem = document.createElement("div");
@@ -5963,7 +6363,10 @@
 
             // Append the group as a child of its parent
             if (this.isRoot)
-                this.map.elements.filtersDropdownList.appendChild(groupElem);
+            {
+                var rootContainer = this.map.elements.filterCategoriesSectionContent || this.map.elements.filtersDropdownList;
+                rootContainer.appendChild(groupElem);
+            }
             else
                 parentGroup.elements.container.appendChild(groupElem);
 
@@ -5985,43 +6388,16 @@
             // Events
             
             // Click event on "parent" group checkbox
-            this.elements.checkbox.addEventListener("click", function(e)
+            this.elements.checkbox.addEventListener("change", function(e)
             {
-                this.visible = e.currentTarget.checked;
-
-                for (var i = 0; i < this.checkboxes.length; i++)
-                {
-                    // Don't bother propegating click to disabled categories
-                    if (!(this.children[i] instanceof CategoryGroup))
-                    {
-                        if (this.children[i].disabled == true)
-                            continue;
-                    }
-
-                    // Remove child listener to prevent stack overflow
-                    this.checkboxes[i].removeEventListener("click", this.checkboxes[i].clickHandler);
-                    
-                    // Can't set checked unfortunately, have to simulate a click to toggle it
-                    // this also means we have to prevent the above event from being fired
-                    // (hence the removeEventListener above and addEventListener below)
-                    if (this.checkboxes[i].checked != this.elements.checkbox.checked)
-                        this.checkboxes[i].click();
-
-                    // Re-add child listener
-                    this.checkboxes[i].addEventListener("click", this.checkboxes[i].clickHandler);
-                }
+                this.visible = e.target.checked;
+                this.map.updateFilter();
                 
             }.bind(this));
 
             // If this category group should be hidden, hide it (click all checkboxes if they are checked)
             if (this.hidden == true)
-            {
-                for (var i = 0; i < this.checkboxes.length; i++)
-                {
-                    if (this.checkboxes[i].checked)
-                        this.checkboxes[i].click();
-                }
-            }
+                this.visible = false;
 
             // Update the visual checked state of the group checkbox
             this.updateCheckedVisualState();
@@ -6032,21 +6408,23 @@
                 var collapsed = !this.collapsed;
                 this.collapsed = collapsed;
 
+                headerArrow.classList.toggle("mapsExtended_categoryGroupHeaderArrow--collapsed", this.collapsed);
+
                 if (collapsed == false)
                 {
                     containerElem.style.width = "";
                     containerElem.style.maxHeight = this.expandedHeight + "px";
-                    headerArrow.textContent = "▼";
+                    //headerArrow.textContent = "▼";
                 }
                 else
                 {
                     containerElem.style.maxHeight = "0px";
-                    headerArrow.textContent = "▲";
+                    //headerArrow.textContent = "▲";
 
                     containerElem.addEventListener("transitionend", function(e)
                     {
                         if (e.propertyName != "max-height") return;
-                        containerElem.style.width = collapsed ? "0" : "";
+                        //containerElem.style.width = collapsed ? "0" : "";
                     }, { once: true });
                 }
             }.bind(this));
@@ -6077,10 +6455,39 @@
                 container.style.maxHeight = "0px";
             });
             */
+
+            this.map.elements.filtersDropdownButton.addEventListener("mouseover", function(e)
+            {
+                this.elements.container.style.width = this.collapsed ? "0" : "";
+                
+            }.bind(this));
         }
 
         CategoryGroup.prototype = 
         {
+            get visible()
+            {
+                return this.elements.checkbox.checked;
+            },
+
+            // Set visible state on the category
+            // This doesn't filter the markers, for this you need to call ExtendedMap.updateFilter
+            set visible(value)
+            {
+                // Set checked state on checkbox (it's used as a backing field for ExtendedCategory.visible)
+                // This does not fire the "change" event
+                this.elements.checkbox.checked = value;
+                this.elements.checkbox.indeterminate = false;
+
+                // Check all child categories and CategoryGroups
+                for (var i = 0; i < this.categories.length; i++)
+                    this.categories[i].visible = value;
+                for (var i = 0; i < this.subgroups.length; i++)
+                    this.subgroups[i].visible = value;
+
+                this.onCategoryGroupToggled.invoke({ group: this, map: this.map, value: value });
+            },
+            
             // Adds an ExtendedCategory to this group
             addCategoryToGroup: function(category)
             {
@@ -6088,7 +6495,9 @@
                 if (!this.allCategories.includes(category)) this.allCategories.push(category);
                 
                 this.elements.container.appendChild(category.elements.filter);
-                this.registerCheckbox(category.elements.checkboxInput);
+                
+                this.checkboxes.push(category.elements.checkboxInput);
+                category.onCategoryToggled.subscribe(this.updateCheckedVisualStateThis);
 
                 return category;
             },
@@ -6113,25 +6522,14 @@
             {
                 var childGroup = new CategoryGroup(group, this);
                 this.subgroups.push(childGroup);
-                this.registerCheckbox(childGroup.elements.checkbox);
+                this.checkboxes.push(childGroup.elements.checkbox);
+                childGroup.onCategoryGroupToggled.subscribe(this.updateCheckedVisualStateThis);
                 this.flattenedGroups[this.id + "/" + childGroup.id] = childGroup;
 
                 for (var key in childGroup.flattenedGroups)
                     this.flattenedGroups[this.id + "/" + key] = childGroup.flattenedGroups[key];
 
                 return childGroup;
-            },
-
-            // Assigns a checkbox to this CategoryGroup, setting up some events so that it
-            // is properly updated when the category group checkbox changes, and vice versa
-            registerCheckbox: function(checkbox)
-            {
-                this.checkboxes.push(checkbox);
-
-                // Updated the checked visual state when the child checkbox is clicked
-                // For each checkbox in the group, add a click event listener
-                checkbox.clickHandler = this.updateCheckedVisualState.bind(this);
-                checkbox.addEventListener("click", checkbox.clickHandler);
             },
 
             // Updates the checked and indeterminate state of a group, based on its children
@@ -6207,9 +6605,6 @@
             // Determine whether the category should be disabled
             this.startDisabled = this.hints.includes("disabled") || (Array.isArray(map.config.disabledCategories) && map.config.disabledCategories.includes(this.id));
 
-            // Categories always start visible, because we have not yet connected them to the DOM
-            this.visible = true;
-
             // Categories always start enabled, for the same reason
             this.disabled = false;
 
@@ -6221,25 +6616,40 @@
 
         ExtendedCategory.prototype =
         {
+            get visible()
+            {
+                return this.elements.checkboxInput.checked;
+            },
+
+            // Set visible state on the category
+            // This doesn't filter the markers, for this you need to call ExtendedMap.updateFilter
+            set visible(value)
+            {
+                // Set checked state on checkbox (it's used as a backing field for ExtendedCategory.visible)
+                // This does not fire the "change" event
+                this.elements.checkboxInput.checked = value;
+                this.elements.checkboxInput.indeterminate = false;
+
+                // Fire events
+                this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: value });
+                this.onCategoryToggled.invoke(value);
+            },
+                    
             toggle: function(value)
             {
-                value = value != undefined ? value : !this.visible;
-
-                if (this.elements && this.elements.checkboxInput)
-                {
-                    // Toggle by simulating click (can't set checked directly unfortunately)
-                    if (this.elements.checkboxInput.checked != value)
-                        this.elements.checkboxInput.click();
-                }
-                    
+                value = value != null ? value : !this.visible;
                 this.visible = value;
             },
 
             init: function(filterElement)
             {
+                // Clone filter element and all its children to remove all event listeners
+                // This is easier than reconstructing the hierarchy, and more bulletproof than using hacks to remove listeners
+                this.elements.filter = filterElement.cloneNode(true);
+                filterElement.replaceWith(this.elements.filter);
+                
                 // Fetch all elements from root filter
-                this.elements.filter = filterElement
-                this.elements.checkboxInput = this.elements.filter.querySelector("input");
+                                this.elements.checkboxInput = this.elements.filter.querySelector("input");
                 this.elements.checkboxLabel = this.elements.filter.querySelector("label");
                 this.elements.categoryIcon = this.elements.checkboxLabel.querySelector(".interactive-maps__filters-marker-icon");
                 this.elements.categoryIconImg = this.elements.categoryIcon.querySelector("img");
@@ -6255,8 +6665,7 @@
                 this.elements.checkboxInput.addEventListener("change", function(e)
                 {
                     this.visible = e.target.checked;
-                    this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: e.target.checked });
-                    this.onCategoryToggled.invoke(e.target.checked);
+                    this.map.updateFilter();
                     
                 }.bind(this));
 
@@ -6311,14 +6720,22 @@
                 return this.collectible ? this.markers.some(function(m) { return m.collected == true; }) : false;
             },
 
-            getNumCollected: function()
+            getNumCollected: function(state, excludeFiltered)
             {
-                var count = 0;
-                if (!this.collectible) return count;
+                // Number collected is 0 for categories that aren't collectible
+                // or if we're filtering excluded, and this category is excluded
+                if (!this.collectible || excludeFiltered == true && this.visible == false)
+                    return 0;
 
+                // Default the collected state to count to true
+                if (state == null)
+                    state = true;
+                
+                var count = 0;
+                
                 for (var i = 0; i < this.markers.length; i++)
                 {
-                    if (this.markers[i].collected)
+                    if (this.markers[i].collected == state)
                         count++;
                 }
 
@@ -6511,6 +6928,19 @@
                 this.popup.deinitPopup();
             },
 
+            passesFilter: function(e)
+            {
+                // Call all filter functions for this marker, until one return false
+                // Only markers that return true for all filter functions will be shown
+                for (var i = 0; i < this.map.filterFunctions.length; i++)
+                {
+                    if (this.map.filterFunctions[i](this) == false)
+                        return false;
+                }
+
+                return true;
+            },
+
             // Click event on marker
             onMarkerActivated: function(e)
             {
@@ -6608,7 +7038,7 @@
                 // The actual comparison is almost always position-based, since it's by far the most accurate
                 // We have 1px of error here
                 return Math.abs(markerElemPos[0] - markerJsonPos[0]) <= 1 &&
-                       Math.abs(markerElemPos[1] - markerJsonPos[1]) <= 1;
+                        Math.abs(markerElemPos[1] - markerJsonPos[1]) <= 1;
             },
 
             // Returns the ID of the marker element or JSON definition.
@@ -6832,7 +7262,7 @@
                 else
                 {
                     pos = this.map.unscaledToScaledPosition([ marker.position[0],
-                                                              marker.position[1] ]);
+                                                                marker.position[1] ]);
                 }
 
                 return pos;
@@ -6901,14 +7331,15 @@
 
                 // Set the collected state on the connected popup (if shown)
                 // This does not trigger the checked change event
-                if (updatePopup && this.popup.isPopupShown())
-                {
-                    var checkbox = this.popup.elements.popupCollectedCheckbox;
-                    checkbox.checked = state;
-                }
+                if (this.popup.isPopupShown() && updatePopup)
+                    this.popup.updateCollectibleElements();
 
                 // Update the collected label
-                if (updateLabel) this.category.updateCollectedLabel();
+                if (updateLabel)
+                {
+                    this.category.updateCollectedLabel();
+                    this.map.updateCollectedFilterLabels();
+                }
 
                 // Show a congratulatory banner if all collectibles were collected
                 if (canShowBanner && this.map.config.enableCollectedAllNotification && state == true)
@@ -6923,6 +7354,17 @@
                         var msg = mapsExtended.i18n.msg("collected-all-banner", numCollected, numTotal, mw.html.escape(this.category.name), this.map.getMapLink(null, "wikitext")).parse();
                         this.map.elements.collectedMessageBanner.setContent(msg);
                         this.map.elements.collectedMessageBanner.show();
+                    }
+                }
+
+                // If the marker is now in a state where it would be filtered out, hide it
+                if ((state == true && this.map.collectedVisible == false) ||
+                    (state == false && this.map.nonCollectedVisible == false))
+                {
+                    // If the popup for the marker is shown, hide it when it's hidden
+                    if (this.popup.isPopupShown())
+                    {
+                        this.popup.events.onPopupHidden.subscribeOnce(function(){ this.updateFilter(); }.bind(this.map));
                     }
                 }
             }
@@ -6946,6 +7388,13 @@
             // Store references to map and marker
             this.marker = marker;
             this.map = marker.map;
+
+            this.events = 
+            {
+                onPopupShown: new EventHandler(),
+                onPopupHidden: new EventHandler(),
+                onPopupCreated: new EventHandler()
+            };
 
             // Sanitize descriptionHtml)
             if (this.description) this.descriptionHtml = this.descriptionHtml.replace(/<!--[\s\S]*?-->/g, "");
@@ -6974,6 +7423,7 @@
                 this.elements = this.elements || this.fetchPopupElements(popupElement);
 
                 this.wrapPopupImages();
+                this.createCollectibleElements();
                 
                 // Process any popup changes that are pending
                 this.processPendingChanges();
@@ -7028,6 +7478,10 @@
                         popupElement.style.marginLeft = ((this.marker.width * -0.5) + 2) + "px";
                 }
 
+                // If the marker category is NOT collectible, remove the progress button
+                if ((!this.map.hasCollectibles || !this.marker.category.collectible) && this.elements.progressButton)
+                    this.elements.progressButton.remove();
+
                 if (this.marker.map.config.openPopupsOnHover == true)
                 {
                     popupElement.addEventListener("mouseenter", function(e){ this.stopPopupHideDelay();}.bind(this));
@@ -7036,6 +7490,7 @@
 
                 // Invoke onPopupCreated
                 log("Popup created: " + this.marker.id);
+                this.events.onPopupCreated.invoke();
                 this.map.events.onPopupCreated.invoke({ map: this.map, marker: this.marker, popup: this });
             },
 
@@ -7076,7 +7531,7 @@
                 customPopup.style.cssText = "opacity: 1; bottom: 0; left: -150px;";
 
                 // This is the maximum required HTML for a popup
-                customPopup.innerHTML = "<div class=\"leaflet-popup-content-wrapper\"><div class=\"leaflet-popup-content\" style=\"width: 301px;\"><div class=\"MarkerPopup-module_popup__eNi--\"><div class=\"MarkerPopup-module_content__9zoQq\"><div class=\"MarkerPopup-module_contentTopContainer__qgen9\"><div class=\"MarkerPopup-module_title__7ziRt\"><!-- Title --></div><div class=\"MarkerPopup-module_actionsContainer__q-GB8\"><div class=\"wds-dropdown MarkerPopupActions-module_actionsDropdown__Aq3A2\"><div class=\"wds-dropdown__toggle MarkerPopupActions-module_actionsDropdownToggle__R5KYk\" role=\"button\"><span></span><svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 18 18\" width=\"1em\" height=\"1em\" class=\"wds-icon wds-icon-small wds-dropdown__toggle-chevron\"><defs><path id=\"prefix__more-small\" d=\"M9 5c1.103 0 2-.896 2-2s-.897-2-2-2-2 .896-2 2 .897 2 2 2m0 8c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2m0-6c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2\"></path></defs><use fill-rule=\"evenodd\" xlink:href=\"#prefix__more-small\"></use></svg></div><div class=\"wds-dropdown__content wds-is-not-scrollable\"><ul class=\"MarkerPopupActions-module_dropdownContent__GYl-7\"><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"copy-link-marker-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-link-small\"></use></svg></span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Copy link</span></li><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"marker-report-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-alert-small\"></use></svg></span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Report Marker</span></li></ul></div></div></div></div><div class=\"MarkerPopup-module_scrollableContent__0N5PS\"><div class=\"MarkerPopup-module_description__fKuSE\"><div class=\"page-content MarkerPopup-module_descriptionContent__-ypRG\"><!-- Description --></div></div><div class=\"MarkerPopup-module_imageWrapper__HuaF2\"><img class=\"MarkerPopup-module_image__7I5s4\"></div></div><div class=\"MarkerPopup-module_link__f59Lh\"><svg class=\"wds-icon wds-icon-tiny MarkerPopup-module_linkIcon__q3Rbd\"><use xlink:href=\"#wds-icons-link-tiny\"></use></svg><a href=\"<!-- Link url -->\" target=\"_blank\" rel=\"noopener noreferrer\"><!-- Link label --></a></div></div></div></div></div><div class=\"leaflet-popup-tip-container\"><div class=\"leaflet-popup-tip\"></div></div>";
+                customPopup.innerHTML = "<div class=\"leaflet-popup-content-wrapper\"><div class=\"leaflet-popup-content\" style=\"width: 301px;\"><div class=\"MarkerPopup-module_popup__eNi--\"><div class=\"MarkerPopup-module_content__9zoQq\"><div class=\"MarkerPopup-module_contentTopContainer__qgen9\"><div class=\"MarkerPopup-module_title__7ziRt\"><\/div><div class=\"MarkerPopup-module_actionsContainer__q-GB8\"><div class=\"wds-dropdown MarkerPopupActions-module_actionsDropdown__Aq3A2\"><div class=\"wds-dropdown__toggle MarkerPopupActions-module_actionsDropdownToggle__R5KYk\" role=\"button\"><span><\/span><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" viewBox=\"0 0 18 18\" width=\"1em\" height=\"1em\" class=\"wds-icon wds-icon-small wds-dropdown__toggle-chevron\"><defs><path id=\"prefix__more-small\" d=\"M9 5c1.103 0 2-.896 2-2s-.897-2-2-2-2 .896-2 2 .897 2 2 2m0 8c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2m0-6c-1.103 0-2 .896-2 2s.897 2 2 2 2-.896 2-2-.897-2-2-2\"><\/path><\/defs><use fill-rule=\"evenodd\" xlink:href=\"#prefix__more-small\"><\/use><\/svg><\/div><div class=\"wds-dropdown__content wds-is-not-scrollable\"><ul class=\"MarkerPopupActions-module_dropdownContent__GYl-7\"><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"copy-link-marker-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-link-small\"><\/use><\/svg><\/span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Copy link<\/span><\/li><li class=\"MarkerPopupActions-module_action__xeKO9\" data-testid=\"marker-report-action\"><span class=\"MarkerPopupActions-module_actionIcon__VyVPj\"><svg class=\"wds-icon wds-icon-small\"><use xlink:href=\"#wds-icons-alert-small\"><\/use><\/svg><\/span><span class=\"MarkerPopupActions-module_actionLabel__yEa0-\">Report Marker<\/span><\/li><\/ul><\/div><\/div><\/div><\/div><div class=\"MarkerPopup-module_scrollableContent__0N5PS\"><div class=\"MarkerPopup-module_description__fKuSE\"><div class=\"page-content MarkerPopup-module_descriptionContent__-ypRG\"><\/div><\/div><div class=\"MarkerPopup-module_imageWrapper__HuaF2\"><img class=\"MarkerPopup-module_image__7I5s4\"><\/div><\/div><div class=\"MarkerPopup-module_link__f59Lh\"><svg class=\"wds-icon wds-icon-tiny MarkerPopup-module_linkIcon__q3Rbd\"><use xlink:href=\"#wds-icons-link-tiny\"><\/use><\/svg><a href=\"\" target=\"_blank\" rel=\"noopener noreferrer\"><\/a><\/div><\/div><\/div><\/div><\/div><div class=\"leaflet-popup-tip-container\"><div class=\"leaflet-popup-tip\"><\/div><\/div>";
                 if (this.marker.markerElement) customPopup.style.transform = this.marker.markerElement.style.transform;
                 this.elements = this.fetchPopupElements(customPopup);
 
@@ -7261,9 +7716,15 @@
                 e.popupCloseButton = e.popupElement.querySelector(".leaflet-popup-close-button");
                 if (e.popupCloseButton) e.popupCloseButton.addEventListener("click", preventDefault);
 
+                // Collectible "progress" button
+                e.progressButton = e.popupContent.querySelector(".MarkerPopup-module_progressMarkerButton__mEkXG");
+                e.progressButtonLabel = e.popupContent.querySelector(".mapsExtended_collectibleButtonLabel");
+
+                // Popup actions
                 e.popupCopyLinkButton = e.popupElement.querySelector(".MarkerPopupActions-module_action__xeKO9[data-testid=\"copy-link-marker-action\"]");
                 e.popupReportMarkerButton = e.popupElement.querySelector(".MarkerPopupActions-module_action__xeKO9[data-testid=\"marker-report-action\"]");
 
+                // Popup tip (arrow coming off popup)
                 e.popupTipContainer = e.popupElement.querySelector(".leaflet-popup-tip-container");
                 
                 return e;
@@ -7323,7 +7784,7 @@
                 // Don't show if already shown
                 // Don't show if we're dragging
                 if (this.map.config.enablePopups == false ||
-                   (this.isPopupShown() && !force) ||
+                    (this.isPopupShown() && !force) ||
                     this.map.isDragging == true) return;
 
                 log("Showing popup " + this.marker.id);
@@ -7511,7 +7972,7 @@
             stopPopupShowDelay: function() { this.stopPopupDelay("show"); },
             startPopupHideDelay: function() { this.startPopupDelay("hide"); },
             stopPopupHideDelay: function() { this.stopPopupDelay("hide"); },
-       
+        
             validPopupTextElementTypes: [ "title", "description", "link-label", "link-url" ],
 
             // Get the text of a specific element type from the JSON definition, or if fromElement is true, from the HTML of a specific popup element
@@ -7525,16 +7986,16 @@
                 {
                     case "title":
                         return fromElement ? this.elements.popupTitle && this.elements.popupTitle.textContent
-                                           : this.title;
+                                            : this.title;
                     case "description":
                         return fromElement ? this.elements.popupDescription && this.elements.popupDescription.textContent
-                                           : this.description;
+                                            : this.description;
                     case "link-label":
                         return fromElement ? this.elements.popupLinkLabel && this.elements.popupLink.textContent
-                                           : this.link && this.link.label;
+                                            : this.link && this.link.label;
                     case "link-url":
                         return fromElement ? this.elements.popupLinkUrl && this.elements.popupLink.getAttribute("href")
-                                           : this.link && this.link.url;
+                                            : this.link && this.link.url;
                 }
             },
 
@@ -7716,6 +8177,94 @@
                 }
 
                 return this.elements.popupLink;
+            },
+
+            createCollectibleElements: function()
+            {
+                // Stop observing popup changes while we change the subtree of the popup
+                this.map.togglePopupObserver(false);
+
+                // Remove any collectible elements that may already exist
+                if (this.elements.progressButton) this.elements.progressButton.remove();
+
+                // Check if the marker that triggered this popup is a collectible one
+                if (this.map.hasCollectibles && this.marker.category.collectible)
+                {
+                    if (this.map.config.collectibleCheckboxStyle == "fandom")
+                    {
+                        var elem = document.createElement("div");
+                        elem.innerHTML = "<button class=\"wds-button wds-button mapsExtended_collectibleButton MarkerPopup-module_progressMarkerButton__mEkXG\" type=\"button\" ><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill-rule=\"evenodd\"><path id=\"IconCheckboxEmpty__a\" d=\"M3 21h18V3H3v18zM22 1H2a1 1 0 00-1 1v20a1 1 0 001 1h20a1 1 0 001-1V2a1 1 0 00-1-1z\"><\/path><path id=\"IconCheckbox__a\" d=\"M9.293 15.707a.997.997 0 001.414 0l7-7a.999.999 0 10-1.414-1.414L10 13.586l-2.293-2.293a.999.999 0 10-1.414 1.414l3 3zM3 21h18V3H3v18zM22 1H2a1 1 0 00-1 1v20a1 1 0 001 1h20a1 1 0 001-1V2a1 1 0 00-1-1z\"><\/path><\/svg><span class=\"mapsExtended_collectibleButtonLabel\"><\/span><\/button>";
+                        this.elements.popupContent.appendChild(elem.firstElementChild);
+                        
+                        // Save some references
+                        this.elements.progressButton = this.elements.popupContent.querySelector(".MarkerPopup-module_progressMarkerButton__mEkXG");
+                        this.elements.progressButtonLabel = this.elements.popupContent.querySelector(".mapsExtended_collectibleButtonLabel");
+
+                        // Set a class on the button if it is collected
+                        this.elements.progressButton.classList.toggle("MarkerPopup-module_progressMarkerButtonCompleted__KQRMh", this.marker.collected);
+
+                        // Progress button click event
+                        this.elements.progressButton.addEventListener("click", function(e)
+                        {
+                            var state = !this.marker.collected;
+                            this.marker.setMarkerCollected(state, true, true, true);
+
+                        }.bind(this));
+                    }
+                    else
+                    {
+                        // Remove any old checkboxes (this can happen with live preview)
+                        var oldCheckbox = this.elements.popupTitle.querySelector(".wds-checkbox");
+                        if (oldCheckbox) oldCheckbox.remove();
+        
+                        // Create checkbox container
+                        var popupCollectedCheckbox = document.createElement("div");
+                        popupCollectedCheckbox.className = "wds-checkbox";
+        
+                        // Create the checkbox itself
+                        var popupCollectedCheckboxInput = document.createElement("input");
+                        popupCollectedCheckboxInput.setAttribute("type", "checkbox");
+                        popupCollectedCheckboxInput.id = "checkbox_" + this.map.id + "_" + this.marker.id;
+                        //popupCollectedCheckboxInput.marker = this.marker; // <- Store reference to marker on checkbox so we don't have to manually look it up
+                        popupCollectedCheckboxInput.checked = this.marker.collected;
+                        this.elements.popupCollectedCheckbox = popupCollectedCheckboxInput;
+        
+                        // Create label adjacent to checkbox
+                        var popupCollectedCheckboxLabel = document.createElement("label");
+                        popupCollectedCheckboxLabel.setAttribute("for", popupCollectedCheckboxInput.id);
+        
+                        // Add checkbox input and label to checkbox container
+                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxInput);
+                        popupCollectedCheckbox.appendChild(popupCollectedCheckboxLabel);
+        
+                        // Add checkbox container after title element
+                        this.elements.popupTitle.after(popupCollectedCheckbox);
+        
+                        // Checked changed event
+                        popupCollectedCheckboxInput.addEventListener("change", function(e)
+                        {
+                            this.setMarkerCollected(e.currentTarget.checked, true, true, true);
+
+                        }.bind(this.marker));
+                    }
+                }
+
+                this.map.togglePopupObserver(true);
+            },
+
+            updateCollectibleElements: function()
+            {
+                var state = this.marker.collected;
+
+                if (this.elements.popupCollectedCheckbox)
+                {
+                    this.elements.popupCollectedCheckbox.checked = state;
+                }
+                if (this.elements.progressButton)
+                {
+                    this.elements.progressButton.classList.toggle("MarkerPopup-module_progressMarkerButtonCompleted__KQRMh", state);
+                    this.elements.progressButtonLabel.textContent = mapsExtended.i18n.msg("collect-" + (state ? "unmark" : "mark") + "-button").plain();
+                }
             },
 
             // Processes all the unapplied changes that were set prior to having a popup associated with this marker
@@ -8513,7 +9062,7 @@
                 // Warn the editor if they have any raw boolean values in the map definition configuration
                 // Only do this on the map page, in edit mode, and for logged in users
                 if (metadata._configScope == "local" && metadata._configSource == "JSON (in map definition)" && mapsExtended.isOnMapPage && (mapsExtended.isInEditMode || mapsExtended.isDebug) && !mw.user.isAnon() &&
-                   this.findValidationMatchingPredicate(function(r) { return r.initialValueType == "boolean"; }, validation.childrenSelf) != null)
+                    this.findValidationMatchingPredicate(function(r) { return r.initialValueType == "boolean"; }, validation.childrenSelf) != null)
                 {
                     var errorBox = document.createElement("div")
                     errorBox.className = "mw-message-box mw-message-box-warning";
@@ -8609,11 +9158,11 @@
                         
                         var popup = new OO.ui.PopupWidget(
                         {
-                    		$content: $("<span>This table is a validated output of a MapsExtended config. It is only shown in edit mode, or while debug mode for MapsExtended is enabled</span>"),
-                    		width: 250,
+                            $content: $("<span>This table is a validated output of a MapsExtended config. It is only shown in edit mode, or while debug mode for MapsExtended is enabled</span>"),
+                            width: 250,
                             align: "force-right",
                             position: "above"
-                    	});
+                        });
 
                         var popupElement = popup.$element[0];
                         var popupContent = popupElement.querySelector(".oo-ui-popupWidget-popup");
@@ -9033,6 +9582,58 @@
                 default: "auto",
                 type: "string",
                 validValues: [ "auto", "show", "hide" ]
+            },
+
+            // Zoom layers
+            {
+                name: "zoomLayers",
+                presence: false,
+                default: [],
+                type: "array",
+                arrayType: "object",
+                children:
+                [
+                    {
+                        name: "zoomLayer",
+                        presence: false,
+                        default: undefined,
+                        type: "object",
+                        children: 
+                        [
+                            {
+                                name: "id",
+                                presence: true,
+                                type: [ "string", "number" ]
+                            },
+                            {
+                                name: "minZoom",
+                                presence: false,
+                                default: 0,
+                                type: "number"
+                            },
+                            {
+                                name: "maxZoom",
+                                presence: false,
+                                default: Number.POSITIVE_INFINITY,
+                                type: "number"
+                            },
+                            {
+                                name: "categories",
+                                presence: false,
+                                default: [],
+                                type: "array",
+                                arrayType: [ "string", "number" ],
+                            },
+                            {
+                                markers: "markers",
+                                presence: false,
+                                default: [],
+                                type: "array",
+                                arrayType: [ "string", "number" ],
+                            }
+                        ]
+                    }
+                ]
             },
 
             // Other features
@@ -9480,6 +10081,12 @@
 
             // Collectibles
 
+{
+                name: "enableFandomCollectibles",
+                presence: false,
+                default: false,
+                type: "boolean"
+            },
             {
                 name: "collectibleCategories",
                 presence: true,
@@ -9498,6 +10105,25 @@
                 presence: false,
                 default: 2629743,
                 type: "number"
+            },
+            {
+                name: "collectibleCheckboxStyle",
+                presence: false,
+                default: "mx",
+                type: "string",
+                validValues: [ "mx", "fandom" ]
+            },
+            {
+                name: "enableYourProgressFilter",
+                presence: false,
+                default: true,
+                type: "boolean"
+            },
+            {
+                name: "enableClearCollectedButton",
+                presence: false,
+                default: true,
+                type: "boolean"
             }
         ];
 
@@ -9610,11 +10236,11 @@
                 .then(this.initMaps.bind(this))
 
                 .finally(function()
-                 {
-                     this.initialized = true;
-                     mw.hook("dev.mapsExtended").fire(this);
-                     
-                 }.bind(this));
+                    {
+                        this.initialized = true;
+                        mw.hook("dev.mapsExtended").fire(this);
+                        
+                    }.bind(this));
             },
 
             deinit: function()
@@ -10172,25 +10798,6 @@
                 window.dev.i18n = window.dev.i18n || {};
                 window.dev.i18n.overrides = window.dev.i18n.overrides || {};
                 var overrides = window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
-                overrides["category-collected-label"] = "$1 of $2 collected";
-                overrides["clear-collected-button"] = "Clear collected";
-                overrides["clear-collected-confirm"] = "Clear collected markers?";
-                overrides["clear-collected-banner"] = "Cleared $1 collected markers on $2.";
-                overrides["collected-all-banner"] = "Congratulations! You collected all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
-                overrides["search-placeholder"] = "Search";
-                overrides["search-hint-noresults"] = "No results found for \"$1\"";
-                overrides["search-hint-results"] = "$1 markers in $2 categories";
-                overrides["search-hint-resultsfiltered"] = "$1 markers in $2 categories ($3 filtered)";
-                overrides["fullscreen-enter-tooltip"] = "Enter fullscreen";
-                overrides["fullscreen-exit-tooltip"] = "Exit fullscreen";
-                overrides["copy-link-banner-success"] = "Copied to clipboard";
-                overrides["copy-link-banner-failure"] = "There was a problem copying the link to the clipboard";
-                overrides["sidebar-header"] = "$1 - Interactive Map";
-                overrides["sidebar-categories-header"] = "Categories";
-                overrides["sidebar-show-all-button"] = "Show All";
-                overrides["sidebar-hide-all-button"] = "Hide All";
-                overrides["sidebar-hide-tooltip"] = "Hide sidebar";
-                overrides["sidebar-show-tooltip"] = "Show sidebar";
                 console.log("i18n messages are being overridden!");
                 */
                 
@@ -10263,6 +10870,10 @@
         // This hook ensures that we init again on live preview
         mw.hook("wikipage.content").add(function(content)
         {
+            // Ignore non-page content (includes marker popups)
+            if (!content[0].matches("#mw-content-text"))
+                return;
+                
             // prevObject will not be undefined if this is a live preview.
             // The issue with live preview however, is that there is no hook that fires when the content is fully loaded
             // The content object is also detached from the page, so we can't observe it
@@ -10356,11 +10967,11 @@
         Initialization
         
         Sometimes the document is still loading even when this script is executed
-	    (this often occurs when the page is opened in a new tab or window).
-	    
-	    In order to prevent a situation where the script is run but the page has not
-	    been fully loaded, check the readyState and listen to a readystatechange
-	    event if the readystate is loading
+        (this often occurs when the page is opened in a new tab or window).
+        
+        In order to prevent a situation where the script is run but the page has not
+        been fully loaded, check the readyState and listen to a readystatechange
+        event if the readystate is loading
 
     */
 
