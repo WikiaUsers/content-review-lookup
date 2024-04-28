@@ -643,9 +643,23 @@ UserTagsJS.modules.explode = {
 
 
 
+// Test
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the table of contents element by its ID
+    var tableOfContents = document.getElementById('toc');
 
+    // Check if the table of contents element exists
+    if (tableOfContents) {
+        // Get the height of the table of contents
+        var tocHeight = tableOfContents.offsetHeight;
 
+        // Set the padding based on the height
+        // You can adjust the padding calculation as needed
+        var paddingTop = tocHeight * 0.1;
+        var paddingBottom = tocHeight * 2.3;
 
-
-
-var playButtons = document.querySelectorAll(".thumbnail-play-icon");playButtons.forEach(function(puskKnopka){puskKnopka.replaceWith("https://static.wikia.nocookie.net/unbreakable-machine-doll/images/9/9f/Play_Button.png/revision/latest?cb=20240401164043")});
+        // Apply the padding to the table of contents
+        tableOfContents.style.paddingTop = paddingTop + 'px';
+        tableOfContents.style.paddingBottom = paddingBottom + 'px';
+    }
+});

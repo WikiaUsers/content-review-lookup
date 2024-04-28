@@ -1,3 +1,6 @@
+console.log(document.body);
+//функции
+
 //События с заданиями: Список заданий
 function addClickTaskEvent(elem) {
 	var btn = elem.querySelector('button');
@@ -81,6 +84,82 @@ function derbyAutoSort(input) {
 	});
 }
 
+// интересные факты заглавная
+function hideFact(fact) {
+	fact.style.display="none";
+	fact.style.left="0";
+	fact.style.zIndex="1";
+}
+function updateFact(facts, oldIndx){
+	facts[oldIndx].style.left="300px";
+	facts[oldIndx].style.zIndex="100";
+	randIndx = Math.floor(Math.random()*facts.length);
+	console.log(randIndx);
+	while (randIndx === oldIndx) {
+		randIndx = Math.floor(Math.random()*facts.length);
+		console.log(randIndx);
+	}
+	facts[randIndx].style.display="block";
+	setTimeout(hideFact, 1000, facts[oldIndx]);
+	setTimeout(updateFact, 15000, facts, randIndx);
+}
+
+// список продуктов
+function plCheckBuilds(value, zd, rows) {
+	rows.forEach(function(row, i) {
+		if (i) {
+			var tds = row.querySelectorAll('td');
+			var build = tds[2].innerText.trim().replace(/\n/g, ' ');
+			if (build == zd) {
+				if (value) {
+					row.style.display='table-row';
+				} else {
+					row.style.display='none';
+			}}
+		}
+	});
+}
+function plCheckStar(value, zd, rows) {
+	rows.forEach(function(row, i) {
+		if (i) {
+			var tds = row.querySelectorAll('td');
+			var build = tds[2].innerText.trim().replace(/\n/g, ' ');
+			if (build == zd) {
+				var standardTime = row.querySelector('.standard-time');
+				var starTime = row.querySelector('.star-time');
+				var standardVigoda = row.querySelector('.standard-vigoda');
+				var starVigoda = row.querySelector('.star-vigoda');
+				if (value) {
+					starTime.style.display = 'table-cell';
+					standardTime.style.display = 'none';
+					row.insertBefore(starTime, standardTime);
+					row.append(standardTime);
+					starVigoda.style.display = 'table-cell';
+					standardVigoda.style.display = 'none';
+					row.insertBefore(starVigoda, standardVigoda);
+					row.append(standardVigoda);
+				} else {
+					starTime.style.display = 'none';
+					standardTime.style.display = 'table-cell';
+					row.insertBefore(standardTime, starTime);
+					row.append(starTime);
+					starVigoda.style.display = 'none';
+					standardVigoda.style.display = 'table-cell';
+					row.insertBefore(standardVigoda, starVigoda);
+					row.append(starVigoda);
+				}
+			}
+		}
+	});
+}
+
+
+//проверка body
+var intervaleditCount = setInterval(editcountcalc, 500);
+
+function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
+
+
 // добавление кнопок
 if (document.body.className.includes('page-События_с_заданиями')) {
 	var taskTable = document.querySelector("#hidelevels");
@@ -139,30 +218,103 @@ if (document.body.className.includes('page-Скачки')) {
 	derbyAutoSort(derbyInput);
 }
 
+// список продуктов
 if (document.body.className.includes('page-Список_продуктов')) {
 	//setTimeout(productListAddScroll, 2000);
+	//pl — productsList, список продуктов
+	var plTable = document.querySelector("#products-list");
+	var plRows = plTable.querySelectorAll('tr');
+	var plParams = document.querySelector('#products-list-settings');
+	var plLevel = plParams.querySelector('#products-list-level');
+	var plBuild = plParams.querySelector('#products-list-buildings');
+	var plStar = plParams.querySelector('#products-list-star');
+	var plClear = plParams.querySelector('#products-list-clear');
+	
+	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
+	var plLevelInp = plLevel.querySelector('input');
+	
+	plClear.innerHTML = '<button class="game-button">Сбросить</button>';
+	var plClearBtn = plClear.querySelector('button');
+	
+	var plBuildNames = [];
+	var plBuildList = [];
+	var plBuildAll = plBuild.querySelectorAll('.click-box');
+	
+	
+	plBuildAll.forEach(function(span, i) {
+		img = span.querySelector('img');
+		build = img.title;
+		plBuildNames.push(img.title);
+		plBuildList.push(true);
+		span.style.background = '#88888830';
+		span.addEventListener('click', function() {
+			if (plBuildList[i]) {
+				plBuildList[i] = false;
+				span.style.background = 'transparent';
+				plStarAll[i].style.display='none';
+			} else {
+				plBuildList[i] = true;
+				span.style.background = '#88888830';
+				plStarAll[i].style.display='inline-block';
+			}
+			plCheckBuilds(plBuildList[i], plBuildNames[i], plRows);
+		});
+	});
+	
+	var plStarList = [];
+	var plStarAll = plStar.querySelectorAll('.click-box');
+	plStarAll.forEach(function(span, i) {
+		img = span.querySelector('img');
+		plStarList.push(false);
+		//span.style.display='none';
+		span.addEventListener('click', function() {
+			if (plStarList[i]) {
+				plStarList[i] = false;
+				span.style.background = 'transparent';
+			} else {
+				plStarList[i] = true;
+				span.style.background = '#88888830';
+			}
+			plCheckStar(plStarList[i], plBuildNames[i], plRows);
+		});
+	});
+	
+	//сброс
+	plClearBtn.addEventListener('click', function(){
+		plBuildAll.forEach(function(span, i){span.style.background = '#88888830';});
+		plStarAll.forEach(function(span, i){span.style.background = 'transparent';span.style.display='inline-block';});
+		plLevelInp.value='';
+		plRows.forEach(function(row, i){
+			if (i){
+				row.style.display='table-row';
+				var tds = row.querySelectorAll('td');
+				var build = tds[2].innerText.trim().replace(/\n/g, ' ');
+				var j = plBuildNames.indexOf(build);
+				console.log('build '+build, 'index '+j, 'value '+plStarList[j]);
+				var standardTime = row.querySelector('.standard-time');
+				var starTime = row.querySelector('.star-time');
+				var standardVigoda = row.querySelector('.standard-vigoda');
+				var starVigoda = row.querySelector('.star-vigoda');
+				if (plStarList[j]){
+					starTime.style.display = 'none';
+					standardTime.style.display = 'table-cell';
+					row.insertBefore(standardTime, starTime);
+					row.append(starTime);
+					starVigoda.style.display = 'none';
+					standardVigoda.style.display = 'table-cell';
+					row.insertBefore(standardVigoda, starVigoda);
+					row.append(starVigoda);
+				}
+			}
+		});
+		plStarList.map(function(){return false;});
+		plBuildList.map(function(){return true;});
+	});
+	
+	console.log(plBuildList, plStarList, plBuildNames);
 }
 
 //интересные факты заглавная
-function hideFact(fact) {
-	fact.style.display="none";
-	fact.style.left="0";
-	fact.style.zIndex="1";
-}
-function updateFact(facts, oldIndx){
-	facts[oldIndx].style.left="300px";
-	facts[oldIndx].style.zIndex="100";
-	randIndx = Math.floor(Math.random()*facts.length);
-	console.log(randIndx);
-	while (randIndx === oldIndx) {
-		randIndx = Math.floor(Math.random()*facts.length);
-		console.log(randIndx);
-	}
-	facts[randIndx].style.display="block";
-	setTimeout(hideFact, 1000, facts[oldIndx]);
-	setTimeout(updateFact, 15000, facts, randIndx);
-}
-
 var facts = document.querySelectorAll(".mainpage-fact");
 
 if (facts.length>0) {
@@ -235,6 +387,8 @@ if (document.body.className.includes('page-События_с_заданиями'
 	});
 }
 
+//код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать
+}}
 
 // linkJs 
 importArticles({
@@ -250,5 +404,6 @@ window.pPreview.RegExp.noinclude = ['.ignor', '.portable-infobox', '.sobytie .it
 window.pPreview.delay = 1000;
 window.pPreview.tlen = 200;
 window.pPreview.apid = false;
-window.pPreview.RegExp.iimages = ['Xp.png', 'Монета.png', 'Алмаз.png', 'Ваучеры.png', 'Часы.png', 'Репутация.png', 'Помогите.gif'];
+window.pPreview.RegExp.iimages = ['Часы.png', 'Помогите.gif'];
 window.pPreview.RegExp.ilinks = [/.*HayDay[_ ]вики.*/];
+window.pPreview.nonstandard = {'Уровни': 'Текущий уровень.png', 'Продукты':'Хлеб.png', 'Список товаров': 'Товары.png', 'Валюты': 'Монета.png', 'Список продуктов': 'Хлеб.png', 'Список культур': 'Пшеница.png'};

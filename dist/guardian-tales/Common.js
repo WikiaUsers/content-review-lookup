@@ -2,7 +2,7 @@
 
 // append '&format=original' to the url source of specified images
 const allImages = document.querySelectorAll('.mw-parser-output img');
-if (allImages) {
+if (allImages.length) {
 	allImages.forEach(function(image) {
 		const imageName = image.getAttribute('data-image-name');
 		const imageSrc = image.getAttribute('data-src');
@@ -27,7 +27,7 @@ if (!window.lastEdited) {
 // loop the video inside class="videoloop"
 mw.hook('wikipage.content').add(function($content) {
 	const videoLoop = $content[0].querySelectorAll('.videoloop video');
-	if (videoLoop) {
+	if (videoLoop.length) {
 		videoLoop.forEach(function(video) {
 			video.loop = true;
 		});
@@ -36,7 +36,7 @@ mw.hook('wikipage.content').add(function($content) {
 
 // add default aspect-ratio to hero illustrations to animate `aspect-ratio` states in [[Template:HeroGallery]]
 const heroCard = document.querySelectorAll('.card__hero');
-if (heroCard) {
+if (heroCard.length) {
 	heroCard.forEach(function(illust) {
 		const image = illust.querySelector('img, video');
 		const width = image.getAttribute('width');
@@ -44,6 +44,18 @@ if (heroCard) {
 		image.style.setProperty('--illust-aspect-ratio', width + ' \/ ' + height);
 	});
 }
+
+// update url hash along with toggling the description cell
+setTimeout(function() {
+	const kmzCollapsibles = document.querySelectorAll('.kamazone-table .mw-customtoggle');
+	if (kmzCollapsibles.length) {
+		kmzCollapsibles.forEach(function(toggle) {
+			toggle.addEventListener('click', function() {
+				history.replaceState(true, '', window.location.origin + window.location.pathname + '#' + this.id);
+			});
+		});
+	}
+}, 1000);
 
 // replace img src in imagemaps to avoid downscaled image blur
 const imageMap = document.querySelector('.imagemap');

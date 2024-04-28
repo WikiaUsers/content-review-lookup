@@ -52,11 +52,12 @@ importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 /* Event header - Inactive */
-$('.fandom-community-header__community-name-wrapper').append(
-    $('<a/>').addClass('hover-community-header-wrapper')
+/* $('.fandom-community-header__community-name-wrapper').append(
+/*    $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
             .text('Easter!')
         )
-        .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Easter_(2024)')
+        .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Easter_(2024)') 
 );
+*/

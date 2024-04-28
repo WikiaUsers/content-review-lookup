@@ -7,7 +7,7 @@
 /* jshint esversion: 9 */
 
 (() => {
-	const BASE = 'https://hsbwrp.fewfre.com/Hypixel+_0_19_12/assets';
+	const BASE = 'https://hsbwrp.fewfre.com/Hypixel+_0_20_0/assets';
 	
 	// needed so parser knows whether an object is a file or folder
 	class Folder { constructor(obj){ this._contents = obj; this.isFolder = true; } }
@@ -16,6 +16,7 @@
 	const s_minetipTitle = str => `.invslot-item-image[data-minetip-title="${str}"] img`;
 	const s_iboxThumbnail_alt = str => `img.pi-image-thumbnail[alt="${str}"]`;
 	const s_minetipTitleAndText = (title,text,textAttrType='') => `.invslot-item-image[data-minetip-title="${title}"][data-minetip-text${textAttrType}="${text}"] img`;
+	const s_potion_alt = str => `img[alt^="${str} "][alt$=" Potion"]`; // Check if an alt start with potion name and ends in " Potion" - this works like a wilkcard for thier potion's tier (and also lets it work if no tier in the name at all)
 	
 	const resourcepack = new Folder({
 		'/minecraft/mcpatcher/cit/skyblock': new Folder({
@@ -849,6 +850,9 @@
 				"unstable_dragon/unstable_dragon_boots": { wiki: "Unstable Dragon Boots" },
 				"unstable_dragon/unstable_dragon_chestplate": { wiki: "Unstable Dragon Chestplate" },
 				"unstable_dragon/unstable_dragon_leggings": { wiki: "Unstable Dragon Leggings" },
+				"vanguard/vanguard_boots": { wiki: "Vanguard Boots" },
+				"vanguard/vanguard_chestplate": { wiki: "Vanguard Chestplate" },
+				"vanguard/vanguard_leggings": { wiki: "Vanguard Leggings" },
 				"werewolf/werewolf_boots": { wiki: "Werewolf Boots" },
 				"werewolf/werewolf_chestplate": { wiki: "Werewolf Chestplate" },
 				"werewolf/werewolf_leggings": { wiki: "Werewolf Leggings" },
@@ -916,6 +920,7 @@
 				"chumming_talisman": { wiki: "Chumming Talisman" },
 				"coin_talisman": { wiki: "Talisman of Coins" },
 				"devour_ring": { wiki: "Devour Ring" },
+				"dwarven_metal": { wiki: "Dwarven Metal Talisman" },
 				"emerald_ring": { wiki: "Emerald Ring" },
 				"experience_artifact": { wiki: "Experience Artifact" },
 				"farming_talisman": { wiki: "Farming Talisman" },
@@ -1015,6 +1020,12 @@
 				"candy/candy_ring": { wiki: "Candy Ring" },
 				"candy/candy_artifact": { wiki: "Candy Artifact" },
 				"candy/candy_relic": { wiki: "Candy Relic" },
+				
+				"chocolate_bar/nibble_chocolate_stick": { wiki: "Nibble Chocolate Stick" },
+				"chocolate_bar/smooth_chocolate_bar": { wiki: "Smooth Chocolate Bar" },
+				"chocolate_bar/rich_chocolate_chunk": { wiki: "Rich Chocolate Chunk" },
+				"chocolate_bar/ganache_chocolate_slab": { wiki: "Ganache Chocolate Slab" },
+				"chocolate_bar/prestige_chocolate_realm": { wiki: "Prestige Chocolate Realm" },
 				
 				"cropie/cropie_talisman": { wiki: "Cropie Talisman" },
 				"cropie/squash_ring": { wiki: "Squash Ring" },
@@ -1136,6 +1147,7 @@
 				"power/power_talisman": { wiki: "Talisman of Power" },
 				"power/power_ring": { wiki: "Ring of Power" },
 				"power/power_artifact": { wiki: "Artifact of Power" },
+				"power/power_relic": { wiki: "Power Relic" },
 				
 				'/pulse_ring': new Folder({
 					"pulse_ring": { wiki: ["Pulse Ring", "Pulse Ring (Uncommon)"] },
@@ -1239,6 +1251,8 @@
 			'/equipment': new Folder({
 				// Singles
 				"ancient_cloak": { wiki: "Ancient Cloak" },
+				"divan_pendant": { wiki: "Divan's Pendant" },
+				"dwarven_handwarmers": { wiki: "Dwarven Handwarmers" },
 				"flaming_fist": { wiki: "Flaming Fist" },
 				"gauntlet_of_contagion": { wiki: "Gauntlet of Contagion" },
 				"implosion_belt": { wiki: "Implosion Belt", imgName: "Implosion Belt" }, // imgName needed for front page
@@ -1344,6 +1358,8 @@
 				
 				"rift/rift_necklace_inside": { selectors:[ `.invslot-item[data-minetip-title="&dRift Necklace"][data-minetip-text*="&d&lMYTHIC NECKLACE"] img` ] },
 				"rift/rift_necklace_outside": { wiki: "Rift Necklace" },
+				
+				"zorros_cape": { wiki: "Zorro's Cape" },
 				
 				/* _1st isn't used on the wiki:
 					skyblock/equipment/great_spook_belt_1st.png
@@ -1512,6 +1528,7 @@
 						"titanium_fuel_tank": { wiki: "Titanium-Infused Fuel Tank" },
 						"gemstone_fuel_tank": { wiki: "Gemstone Fuel Tank" },
 						"perfectly_cut_fuel_tank": { wiki: "Perfectly-Cut Fuel Tank" },
+						"tungsten_keychain": { wiki: "Tungsten Keychain" },
 					}),
 					
 					/* Drill variants - only default one matters for the wiki
@@ -1633,18 +1650,22 @@
 					"bandaged_mithril_pickaxe": { wiki: "Bandaged Mithril Pickaxe" },
 					"bingonimbus_2000": { wiki: "Bingonimbus 2000" },
 					"bob_omb": { wiki: "Bob-omb" },
+					"chisel": { wiki: "Chisel" },
 					"dwarven_metal_detector": { wiki: "Metal Detector" },
 					"fallen_star_tracker": { wiki: "Fallen Star Lozenge" },
 					"flint_shovel": { wiki: "Flint Shovel" },
 					"fractured_mithril_pickaxe": { wiki: "Fractured Mithril Pickaxe" },
+					"glacite_chisel": { wiki: "Glacite Chisel" },
 					"jungle_pickaxe": { wiki: "Jungle Pickaxe" },
 					"lapis_pickaxe": { wiki: "Lapis Pickaxe" },
 					"mithril_pickaxe": { wiki: "Mithril Pickaxe" },
+					"perfect_chisel": { wiki: "Perfect Chisel" },
 					"pickonimbus": { wiki: "Pickonimbus 2000" },
 					"promising_pickaxe": { wiki: "Promising Pickaxe" },
 					"promising_spade": { wiki: "Promising Shovel" },
 					"refined_mithril_pickaxe": { wiki: "Refined Mithril Pickaxe" },
 					"refined_titanium_pickaxe": { wiki: "Refined Titanium Pickaxe" },
+					"reinforced_chisel": { wiki: "Reinforced Chisel" },
 					"rookie_pickaxe": { wiki: "Rookie Pickaxe" },
 					"rookie_spade": { wiki: "Rookie Shovel" },
 					"snow_shovel": { wiki: "Snow Shovel" },
@@ -2090,65 +2111,128 @@
 				}),
 				
 				'/dwarven_mines': new Folder({
-					"ascension_rope": { wiki: "Ascension Rope" },
 					"bejeweled_handle": { wiki: "Bejeweled Handle" },
 					"biofuel": { wiki: "Biofuel" },
-					"concentrated_stone": { wiki: "Concentrated Stone" },
-					"control_switch": { wiki: "Control Switch" },
-					"corleonite": { wiki: "Corleonite" },
-					"divan_alloy": { wiki: "Divan\'s Alloy" },
-					"divan_fragment": { wiki: "Divan Fragment" },
-					"dwarven_diamond_axe": { wiki: "Scavenged Diamond Axe" },
-					"dwarven_emerald_hammer": { wiki: "Scavenged Emerald Hammer" },
-					"dwarven_gold_hammer": { wiki: "Scavenged Golden Hammer" },
-					"dwarven_lapis_sword": { wiki: "Scavenged Lapis Sword" },
-					"electron_transmitter": { wiki: "Electron Transmitter" },
-					"eternal_flame_ring": { wiki: "Eternal Flame Ring" },
-					"ftx_3070": { wiki: "FTX 3070" },
 					"glacite_jewel": { wiki: "Glacite Jewel" },
-					"goblin_egg_blue": { wiki: "Blue Goblin Egg" },
-					"goblin_egg_green": { wiki: "Green Goblin Egg" },
-					"goblin_egg_red": { wiki: "Red Goblin Egg" },
-					"goblin_egg_yellow": { wiki: "Yellow Goblin Egg" },
 					"goblin_egg": { wiki: "Goblin Egg" },
-					"goblin_omelette_blue_cheese": { wiki: "Blue Cheese Goblin Omelette" },
-					"goblin_omelette_pesto": { wiki: "Pesto Goblin Omelette" },
-					"goblin_omelette_spicy": { wiki: "Spicy Goblin Omelette" },
-					"goblin_omelette_sunny_side": { wiki: "Sunny Side Goblin Omelette" },
 					"goblin_omelette": { wiki: "Goblin Omelette" },
 					"golden_plate": { wiki: "Golden Plate" },
-					"hard_stone": { wiki: ["Hard Stone", "Enchanted Hard Stone"] },
-					"helix": { wiki: "Helix" },
-					"jungle_heart": { wiki: "Jungle Heart" },
-					"jungle_key": { wiki: "Jungle Key" },
-					"lantern": { wiki: "Lantern" },
-					"magma_core": { wiki: "Magma Core" },
 					"mining_pumpkin": { wiki: "Mining Pumpkin" },
 					"mining_raffle_ticket": { wiki: "Raffle Ticket" },
 					"mithril_gourmand": { wiki: "Tasty Mithril" },
 					"mithril_ore": { wiki: ["Mithril", "Enchanted Mithril"] },
 					"mithril_plate": { wiki: "Mithril Plate" },
 					"mithril_powder": { wiki: "Mithril Powder", imgKey: "Mithril Powder" },
-					"perfectly_cut_diamond": { wiki: "Perfectly Cut Diamond" },
-					"power_crystal": { wiki: "Power Crystal" },
 					"refined_diamond": { wiki: "Refined Diamond" },
 					"refined_mineral": { wiki: "Refined Mineral" },
 					"refined_mithril": { wiki: "Refined Mithril" },
 					"refined_titanium": { wiki: "Refined Titanium" },
-					"robotron_reflector": { wiki: "Robotron Reflector" },
 					"royal_pigeon": { wiki: "Royal Pigeon" },
-					"silex": { wiki: "Sharp Rock" },
-					"sludge_juice": { wiki: "Sludge Juice" },
 					"sorrow": { wiki: "Sorrow" },
 					"starfall": { wiki: "Starfall" },
-					"superlite_motor": { wiki: "Superlite Motor" },
-					"synthetic_heart": { wiki: "Synthetic Heart" },
 					"titanium_ore": { wiki: ["Titanium", "Enchanted Titanium"] },
 					"titanium_alloy": { wiki: "Titanium Alloy" },
 					"treasurite": { wiki: "Treasurite" },
-					"wishing_compass": { wiki: "Wishing Compass" }, // Also has unused _1/_2 variants
-					"worm_membrane": { wiki: "Worm Membrane" },
-					"yoggie": { wiki: "Yoggie" },
+					
+					'/crystal_hollows': new Folder({
+						"ascension_rope": { wiki: "Ascension Rope" },
+						"concentrated_stone": { wiki: "Concentrated Stone" },
+						"control_switch": { wiki: "Control Switch" },
+						"corleonite": { wiki: "Corleonite" },
+						"divan_alloy": { wiki: "Divan\'s Alloy" },
+						"divan_fragment": { wiki: "Divan Fragment" },
+						"dwarven_diamond_axe": { wiki: "Scavenged Diamond Axe" },
+						"dwarven_emerald_hammer": { wiki: "Scavenged Emerald Hammer" },
+						"dwarven_gold_hammer": { wiki: "Scavenged Golden Hammer" },
+						"dwarven_lapis_sword": { wiki: "Scavenged Lapis Sword" },
+						"electron_transmitter": { wiki: "Electron Transmitter" },
+						"eternal_flame_ring": { wiki: "Eternal Flame Ring" },
+						"ftx_3070": { wiki: "FTX 3070" },
+						"goblin_egg_blue": { wiki: "Blue Goblin Egg" },
+						"goblin_egg_green": { wiki: "Green Goblin Egg" },
+						"goblin_egg_red": { wiki: "Red Goblin Egg" },
+						"goblin_egg_yellow": { wiki: "Yellow Goblin Egg" },
+						"goblin_omelette_blue_cheese": { wiki: "Blue Cheese Goblin Omelette" },
+						"goblin_omelette_pesto": { wiki: "Pesto Goblin Omelette" },
+						"goblin_omelette_spicy": { wiki: "Spicy Goblin Omelette" },
+						"goblin_omelette_sunny_side": { wiki: "Sunny Side Goblin Omelette" },
+						"hard_stone": { wiki: ["Hard Stone", "Enchanted Hard Stone"] },
+						"helix": { wiki: "Helix" },
+						"jungle_heart": { wiki: "Jungle Heart" },
+						"jungle_key": { wiki: "Jungle Key" },
+						"lantern": { wiki: "Lantern" },
+						"magma_core": { wiki: "Magma Core" },
+						"perfectly_cut_diamond": { wiki: "Perfectly Cut Diamond" },
+						"power_crystal": { wiki: "Power Crystal" },
+						"prehistoric_egg": { wiki:"Prehistoric Egg" }, // Has unused (on wiki) "_uncommon"-"_legendary" variants
+						"robotron_reflector": { wiki: "Robotron Reflector" },
+						"silex": { wiki: "Sharp Rock" },
+						"sludge_juice": { wiki: "Sludge Juice" },
+						"superlite_motor": { wiki: "Superlite Motor" },
+						"synthetic_heart": { wiki: "Synthetic Heart" },
+						"wishing_compass": { wiki: "Wishing Compass" }, // Also has unused (on wiki) _1/_2 variants
+						"worm_membrane": { wiki: "Worm Membrane" },
+						"yoggie": { wiki: "Yoggie" },
+					}),
+					
+					'/glacite_tunnels': new Folder({
+						"claw_fossil": { wiki: "Claw Fossil" },
+						"clubbed_fossil": { wiki: "Clubbed Fossil" },
+						"footprint_fossil": { wiki: "Footprint Fossil" },
+						"glacite_amalgamation": { wiki: "Glacite Amalgamation" },
+						"glacite_powder": { wiki: "Glacite Powder" },
+						"glacite": { wiki: ["Glacite", "Enchanted Glacite"] },
+						"perfect_plate": { wiki: "Perfect Plate" },
+						"refined_tungsten": { wiki: "Refined Tungsten" },
+						"refined_umber": { wiki: "Refined Umber" },
+						"secret_railroad_pass": { wiki: "Secret Railroad Pass" },
+						"shattered_pendant": { wiki: "Shattered Locket" },
+						"skeleton_key": { wiki: "Skeleton Key" },
+						"spine_fossil": { wiki: "Spine Fossil" },
+						"suspicious_scrap": { wiki: "Suspicious Scrap" },
+						"tungsten_key": { wiki: "Tungsten Key" },
+						"tungsten_plate": { wiki: "Tungsten Plate" },
+						"tungsten": { wiki: ["Tungsten", "Enchanted Tungsten"] },
+						"tusk_fossil": { wiki: "Tusk Fossil" },
+						"ugly_fossil": { wiki: "Ugly Fossil" },
+						"umber_key": { wiki: "Umber Key" },
+						"umber_plate": { wiki: "Umber Plate" },
+						"umber": { wiki: ["Umber", "Enchanted Umber"] },
+						"webbed_fossil": { wiki: "Webbed Fossil" },
+					}),
+					
+					'/gemstones': new Folder({
+						"gemstone_mixture": { wiki: "Gemstone Mixture" },
+						"gemstone_powder": { wiki: "Gemstone Powder", selectors:[`img[data-image-key="Gemstone Powder.png"]`] },
+						// Build rules for all normal gemstone types
+						...(()=>{
+							// only real difference is the `$=` on first image selector due to issues with tooltips adding icons in front of name in alt text
+							const getGemstoneSelector = (w) => [`img[alt$="${w}"]`, s_alt(`${w}.png`)];
+							
+							const obj = Object.fromEntries(['Amber', 'Amethyst', 'Aquamarine', 'Citrine', 'Jade', 'Jasper', 'Onyx', 'Opal', 'Peridot', 'Ruby', 'Sapphire', 'Topaz']
+							.flatMap(type=>
+								['Rough', 'Flawed', 'Fine', 'Flawless', 'Perfect'].map(grade => [
+									`${grade.toLowerCase()}_${type.toLowerCase()}_gem`,
+									{ selectors: getGemstoneSelector(`${grade} ${type} Gemstone`) },
+								])
+							));
+							obj['flawless_ruby_gem'].wiki = "Gemstone"; // we want unspecified gemstone to use ruby asset
+							return obj;
+						})(),
+						// Crystals get treated like normal items
+						"amber_crystal": { wiki: "Amber Crystal" },
+						"amethyst_crystal": { wiki: "Amethyst Crystal" },
+						"aquamarine_crystal": { wiki: "Aquamarine Crystal" },
+						"citrine_crystal": { wiki: "Citrine Crystal" },
+						"jade_crystal": { wiki: "Jade Crystal" },
+						"jasper_crystal": { wiki: "Jasper Crystal" },
+						"onyx_crystal": { wiki: "Onyx Crystal" },
+						"opal_crystal": { wiki: "Opal Crystal" },
+						"peridot_crystal": { wiki: "Peridot Crystal" },
+						"ruby_crystal": { wiki: "Ruby Crystal" },
+						"sapphire_crystal": { wiki: "Sapphire Crystal" },
+						"topaz_crystal": { wiki: "Topaz Crystal" },
+					}),
 				}),
 				
 				'/dyes': new Folder({
@@ -2234,6 +2318,13 @@
 						"sweet_flesh": { wiki: "Sweet Flesh" },
 						"the_soup_painting": { wiki: "The Soup" },
 						"wet_pumpkin": { wiki: "Wet Pumpkin" },
+					}),
+					
+					'/hoppity': new Folder({
+						"egglocator": { wiki: "Egglocator" },
+						"supreme_chocolate_bar": { wiki: "Supreme Chocolate Bar" },
+						"dark_cacao_truffle": { wiki: "Dark Cacao Truffle" },
+						"refined_dark_cacao_truffle": { wiki: "Refined Dark Cacao Truffle" },
 					}),
 					
 					'/jerry': new Folder({
@@ -2350,35 +2441,6 @@
 					"whale_bait": { wiki: "Whale Bait" },
 					"worm_bait": { wiki: "Worm Bait" },
 					"winter_water_orb": { wiki: "Winter Water Orb" },
-				}),
-				
-				'/gemstones': new Folder({
-					"gemstone_mixture": { wiki: "Gemstone Mixture" },
-					"gemstone_powder": { wiki: "Gemstone Powder", selectors:[`img[data-image-key="Gemstone Powder.png"]`] },
-					// Build rules for all normal gemstone types
-					...(()=>{
-						// only real difference is the `$=` on first image selector due to issues with tooltips adding icons in front of name in alt text
-						const getGemstoneSelector = (w) => [`img[alt$="${w}"]`, s_alt(`${w}.png`)];
-						
-						const obj = Object.fromEntries(['Amber', 'Amethyst', 'Jade', 'Jasper', 'Opal', 'Ruby', 'Sapphire', 'Topaz']
-						.flatMap(type=>
-							['Rough', 'Flawed', 'Fine', 'Flawless', 'Perfect'].map(grade => [
-								`${grade.toLowerCase()}_${type.toLowerCase()}_gem`,
-								{ selectors: getGemstoneSelector(`${grade} ${type} Gemstone`) },
-							])
-						));
-						obj['flawless_ruby_gem'].wiki = "Gemstone"; // we want unspecified gemstone to use ruby asset
-						return obj;
-					})(),
-					// Crystals get treated like normal items
-					"amber_crystal": { wiki: "Amber Crystal" },
-					"amethyst_crystal": { wiki: "Amethyst Crystal" },
-					"jade_crystal": { wiki: "Jade Crystal" },
-					"jasper_crystal": { wiki: "Jasper Crystal" },
-					"opal_crystal": { wiki: "Opal Crystal" },
-					"ruby_crystal": { wiki: "Ruby Crystal" },
-					"sapphire_crystal": { wiki: "Sapphire Crystal" },
-					"topaz_crystal": { wiki: "Topaz Crystal" },
 				}),
 				
 				'/misc': new Folder({
@@ -2585,6 +2647,7 @@
 						"scarleton_travel_scroll": { wiki: "Travel Scroll to Scarleton" },
 						"dragontail_travel_scroll": { wiki: "Travel Scroll to Dragontail" },
 						"wasteland_travel_scroll": { wiki: "Travel Scroll to The Wasteland" },
+						"base_camp_travel_scroll": { wiki: "Travel Scroll to the Dwarven Base Camp" },
 					}),
 				}),
 				
@@ -2676,6 +2739,7 @@
 					"pet_item_combat_skill_boost_legendary": { selectors: [s_minetipTitle`&6Combat Exp Boost`, s_alt`Combat Exp Boost (Legendary)`] },
 					"pet_item_combat_skill_boost_rare": { selectors: [s_minetipTitle`&9Combat Exp Boost`, s_alt`Combat Exp Boost (Rare)`] },
 					"pet_item_combat_skill_boost_uncommon": { selectors: [s_minetipTitle`&aCombat Exp Boost`, s_alt`Combat Exp Boost (Uncommon)`] },
+					"pet_item_chocolate_syringe": { wiki: "Chocolate Syringe" },
 					"pet_item_exp_share_drop": { wiki: "Exp Share Core" },
 					"pet_item_exp_share": { wiki: "Exp Share" },
 					"pet_item_farming_skill_boost_common": { wiki: ["Farming Exp Boost", "Farming Exp Boost (Common)"] },
@@ -2732,47 +2796,47 @@
 				
 				'/potions': new Folder({
 					"god_potion": { wiki: "God Potion" },
-					"great_spook_potion": { wiki: ["Great Spook Potion", "Great Spook I Potion"] },
-					"magic_find_potion": { wiki: ["Magic Find Potion", "Magic Find I Potion"] },
+					"great_spook_potion": { selectors: [s_potion_alt`Great Spook`] },
+					"magic_find_potion": { selectors: [s_potion_alt`Magic Find`] },
 					"poisoned_candy_potion": { wiki: ["Poisoned Candy", "Poisoned I Candy"] },
-					"secrets_potion": { wiki: ["Secret Potion", "Secret I Potion"] },
-					"spirit_potion": { wiki: ["Spirit Potion", "Spirit I Potion"] },
+					"secrets_potion": { selectors: [s_potion_alt`Secret`] },
+					"spirit_potion": { selectors: [s_potion_alt`Spirit`] },
 					"wisp_ice_potion": { wiki: ["Wisp's Ice-Flavored Water", "Wisp's Ice-Flavored Water Potion", "Wisp's Ice-Flavored Water I Potion", "Wisp's Ice-Flavored Water I Splash Potion"] },
 					
-					// XP Boost
-					"alchemy_xp_boost_potion": { wiki: "Alchemy XP Boost I Potion" },
-					"combat_xp_boost_potion": { wiki: "Combat XP Boost I Potion" },
-					"enchanting_xp_boost_potion": { wiki: "Enchanting XP Boost I Potion" },
-					"farming_xp_boost_potion": { wiki: "Farming XP Boost I Potion" },
-					"fishing_xp_boost_potion": { wiki: "Fishing XP Boost I Potion" },
-					"foraging_xp_boost_potion": { wiki: "Foraging XP Boost I Potion" },
-					"mining_xp_boost_potion": { wiki: "Mining XP Boost I Potion" },
+					"absorption_potion": { selectors: [s_potion_alt`Absorption`] },
+					"adrenaline_potion": { selectors: [s_potion_alt`Adrenaline`] },
+					"agility_potion": { selectors: [s_potion_alt`Agility`] },
+					"archery_potion": { selectors: [s_potion_alt`Archery`] },
+					"blindness_potion": { selectors: [s_potion_alt`Blindness`] },
+					"burning_potion": { selectors: [s_potion_alt`Burning`] },
+					"cold_resistance_potion": { s_potion_alt: [s_alt`Cold Resistance`] },
+					"critical_potion": { selectors: [s_potion_alt`Critical`] },
+					"dodge_potion": { selectors: [s_potion_alt`Dodge`] },
+					"dungeon_potion": { selectors: [s_potion_alt`Dungeon`] },
+					"experience_potion": { selectors: [s_potion_alt`Experience`] },
+					"haste_potion": { selectors: [s_potion_alt`Haste`] },
+					"knockback_potion": { selectors: [s_potion_alt`Knockback`] },
+					"mana_potion": { selectors: [s_potion_alt`Mana`] },
+					"mushed_glowy_tonic_potion": { selectors: [s_potion_alt`Mushed Glowy Tonic`] },
+					"obsidian_skin_potion": { selectors: [s_potion_alt`Obsidian Skin`] },
+					"pet_luck_potion": { selectors: [s_potion_alt`Pet Luck`] },
+					"rabbit_potion": { selectors: [s_potion_alt`Rabbit`] },
+					"resistance_potion": { selectors: [s_potion_alt`Resistance`] },
+					"spelunker_potion": { selectors: [s_potion_alt`Spelunker`] },
+					"stamina_potion": { selectors: [s_potion_alt`Stamina`] },
+					"stun_potion": { selectors: [s_potion_alt`Stun`] },
+					"true_defense_potion": { selectors: [s_potion_alt`True Resistance`] },
+					"venomous_potion": { selectors: [s_potion_alt`Venomous`] },
+					"wounded_potion": { selectors: [s_potion_alt`Wounded`] },
 					
-					// No need for these to check for `.png` variant
-					"absorption_potion": { selectors: [s_alt`Absorption I Potion`] },
-					"adrenaline_potion": { selectors: [s_alt`Adrenaline I Potion`] },
-					"agility_potion": { selectors: [s_alt`Agility I Potion`] },
-					"archery_potion": { selectors: [s_alt`Archery I Potion`] },
-					"blindness_potion": { selectors: [s_alt`Blindness I Potion`] },
-					"burning_potion": { selectors: [s_alt`Burning I Potion`] },
-					"critical_potion": { selectors: [s_alt`Critical I Potion`] },
-					"dodge_potion": { selectors: [s_alt`Dodge I Potion`] },
-					"dungeon_potion": { selectors: [s_alt`Dungeon I Potion`] },
-					"experience_potion": { selectors: [s_alt`Experience I Potion`] },
-					"haste_potion": { selectors: [s_alt`Haste I Potion`] },
-					"knockback_potion": { selectors: [s_alt`Knockback I Potion`] },
-					"mana_potion": { selectors: [s_alt`Mana I Potion`] },
-					"mushed_glowy_tonic_potion": { selectors: [s_alt`Mushed Glowy Tonic`] },
-					"obsidian_skin_potion": { selectors: [s_alt`Obsidian Skin I Potion`] },
-					"pet_luck_potion": { selectors: [s_alt`Pet Luck I Potion`] },
-					"rabbit_potion": { selectors: [s_alt`Rabbit I Potion`] },
-					"resistance_potion": { selectors: [s_alt`Resistance I Potion`] },
-					"spelunker_potion": { selectors: [s_alt`Spelunker I Potion`] },
-					"stamina_potion": { selectors: [s_alt`Stamina I Potion`] },
-					"stun_potion": { selectors: [s_alt`Stun I Potion`] },
-					"true_defense_potion": { selectors: [s_alt`True Defense I Potion`] },
-					"venomous_potion": { selectors: [s_alt`Venomous I Potion`] },
-					"wounded_potion": { selectors: [s_alt`Wounded I Potion`] },
+					// XP Boost
+					"alchemy_xp_boost_potion": { selectors: [s_potion_alt`Alchemy XP Boost`] },
+					"combat_xp_boost_potion": { selectors: [s_potion_alt`Combat XP Boost`] },
+					"enchanting_xp_boost_potion": { selectors: [s_potion_alt`Enchanting XP Boost`] },
+					"farming_xp_boost_potion": { selectors: [s_potion_alt`Farming XP Boost`] },
+					"fishing_xp_boost_potion": { selectors: [s_potion_alt`Fishing XP Boost`] },
+					"foraging_xp_boost_potion": { selectors: [s_potion_alt`Foraging XP Boost`] },
+					"mining_xp_boost_potion": { selectors: [s_potion_alt`Mining XP Boost`] },
 
 					'/brews': new Folder({
 						"bitter_ice_tea": { wiki: "Bitter Iced Tea" },
@@ -2973,10 +3037,12 @@
 					"ender_monocle": { wiki: "Ender Monocle" },
 					"entropy_suppressor": { wiki: "Entropy Suppressor" },
 					"flowering_bouquet": { wiki: "Flowering Bouquet" },
+					"frigid_husk": { wiki: "Frigid Husk" },
 					"frozen_bauble": { wiki: "Frozen Bauble" },
 					"full_jaw_fanging_kit": { wiki: "Full-Jaw Fanging Kit" },
 					"furball": { wiki: "Furball" },
 					"giant_tooth": { wiki: "Giant Tooth" },
+					"glacite_shard": { wiki: "Glacite Shard" },
 					"golden_ball": { wiki: "Golden Ball" },
 					"hardened_wood": { wiki: "Hardened Wood" },
 					"hazmat_enderman": { wiki: "Hazmat Enderman" },
@@ -3357,6 +3423,7 @@
 						"dust_the_fish": { wiki: "Dust the Fish" },
 						"egg_the_fish": { wiki: "Egg the Fish" },
 						"experiment_the_fish": { wiki: "Experiment the Fish" },
+						"fossil_the_fish": { wiki: "Fossil the Fish" },
 						"gabagool_the_fish": { wiki: "Gabagool the Fish" },
 						"giant_the_fish": { wiki: "Giant the Fish" },
 						"gift_the_fish": { wiki: "Gift the Fish" },
@@ -3529,6 +3596,7 @@
 				thunder_armor: { wiki: "Thunder Armor" },
 				titan_armor: { wiki: "Titan's Armor" },
 				unstable_dragon_armor: { wiki: "Unstable Dragon Armor" },
+				vanguard_armor: { wiki: "Vanguard Armor" },
 				werewolf_armor: { wiki: "Werewolf Armor" },
 				wise_dragon_armor: { wiki: "Wise Dragon Armor" },
 				wise_wither_armor: { wiki: "Storm's Armor" },

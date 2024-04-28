@@ -146,6 +146,8 @@
         if (Settings.apid) {
             Settings.tlen = (Settings.tlen > 500) ? 500 : Settings.tlen;
         }
+        Settings.nonstandard = Settings.nonstandard || {};
+        // для этой вики, так как проще указать файлы для страниц через js
         // ensure #mw-content-text is processed
         Settings.fixContentHook = Settings.fixContentHook !== undefined ? Settings.fixContentHook : true;
         window.pPreview = Settings;
@@ -326,7 +328,7 @@
                 var $v = $s.find(v);
                 if ($v.length) {
                     $s.find(v).remove();
-                    return $v.map(function() {return this.outerHTML}).toArray().join();
+                    return $v.map(function() {return this.outerHTML;}).toArray().join();
                 } else {
                     return false;
                 }
@@ -553,7 +555,7 @@
             var mappedImages = allImages.map(function(value, index) {if (nignoreImage(value)) {return false;} else {return value;}});
             var filtredImages = mappedImages.filter(Boolean);
             log('gp apip data allImages:', allImages, 'mappedImages:', mappedImages, 'filtredImages:', filtredImages);
-            var img = filtredImages[filtredImages.length-1];
+            var img = Settings.nonstandard[nuri.truepath] || nuri.truepath+'.png';
             // img = $(img);
             var text = data.parse.text['*'];
             log('gp apip img:', img, 'text:', {text: text});
@@ -598,6 +600,7 @@
             div.prepend(iwrap);
             if (img) {
                 // action=query&titles=file:.jpg&iiprop=url&prop=imageinfo&format=xml
+                
                 var im = 'file:' + img.trim();
                 var apiimage = new mw.Uri({path: nuri.interwiki + '/api.php'});
                 apiimage.extend({action: 'query', redirects: '',
@@ -636,8 +639,36 @@
                         if (im.length > 0) {
                             im = im[0];
                         } else {
-                            im = false;
-                        }
+                            //im = false;
+                            log('gp standard');
+                            /*var allImages = gData.parse.images;
+            				var mappedImages = allImages.map(function(value, index) {if (nignoreImage(value)) {return false;} else {return value;}});
+            				var filtredImages = mappedImages.filter(Boolean);
+            				//log('gp apip data allImages:', allImages, 'mappedImages:', mappedImages, 'filtredImages:', filtredImages);*/
+            				var img = filtredImages[0];
+            				log('gp standard img: ', img);
+            				if (img) {
+            					im  = 'file:' + img.trim();
+            					apiimage = new mw.Uri({path: nuri.interwiki + '/api.php'});
+                				apiimage.extend({action: 'query', redirects: '', titles: im, iiprop: 'url', prop: 'imageinfo', format: 'json'});
+                				log('gp standard apii: ', apiimage.toString());
+                				$.getJSON(apiimage.toString()).done(function(data) {
+                					var im, d1;
+                					d1 = data.query;
+                					im = getVal(getObj(d1, 'imageinfo'), 'url');
+                					if (im.length > 0) {
+                            			im = im[0];
+                					} else {
+                						im = false;
+                					}
+                					hlpPreview(nuri, div, im, forcepath ? true : false);
+                					return this;
+                				});
+            				} else {
+            					log('gp standard noimage');
+            					im = false;
+            				}
+                        } // картинка стандартным методом, если нету по названию
                         hlpPreview(nuri, div, im, forcepath ? true : false);
                     } // if redirects
                     return this; // should be promise. but well

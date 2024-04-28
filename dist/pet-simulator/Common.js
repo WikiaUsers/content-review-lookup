@@ -1,5 +1,5 @@
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 30;
+window.lockOldComments.limit = 60;
 window.lockOldComments.addNoteAbove = true;
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.

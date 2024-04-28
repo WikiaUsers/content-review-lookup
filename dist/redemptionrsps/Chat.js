@@ -1,1 +1,0 @@
-u:dev:MediaWiki:CustomModIcons.js

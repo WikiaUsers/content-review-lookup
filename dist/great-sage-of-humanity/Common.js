@@ -51,9 +51,9 @@ $(document).on("submit", function (e) {
  *                             Link Preview Configuration.
  *                      https://dev.fandom.com/wiki/LinkPreview
  * ================================================================================*/
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.dock = '#mw-content-text';
-window.pPreview.RegExp.noinclude = ['.nolinkpreview', '#toc', '.mw-headline', '.reference', '.mw-references-wrap', 'li', 'pre', '.mbox'];
+// window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+// window.pPreview.dock = '#mw-content-text';
+// window.pPreview.RegExp.noinclude = ['.nolinkpreview', '#toc', '.mw-headline', '.reference', '.mw-references-wrap', 'li', 'pre', '.mbox'];
 /**================================================================================
  *                         No License Warning Configuration
  *                   https://dev.fandom.com/wiki/NoLicenseWarning
@@ -142,7 +142,7 @@ importArticles({
         'u:dev:MediaWiki:ImportJSPage/code.js',
         'u:dev:MediaWiki:UserTags/code.js',
         'u:dev:MediaWiki:SeeMoreActivityButton/code.js',
-    	'u:dev:MediaWiki:LinkPreview/code.js',
+    	// 'u:dev:MediaWiki:LinkPreview/code.js',
         'u:dev:MediaWiki:QuickDiff/code.js',
         'u:dev:MediaWiki:NoLicenseWarning.js',
         'u:dev:MediaWiki:AutoCreateUserPages.js',

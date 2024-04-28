@@ -42,3 +42,5 @@ $('.fandom-community-header__community-name-wrapper').append(
 		$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('position', 'relative').css('top', '10px')
 		.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009').attr('title', 'This wiki is part of Fandom Compass')
 ));
+
+window.AddRailModule = [{prepend: true}];

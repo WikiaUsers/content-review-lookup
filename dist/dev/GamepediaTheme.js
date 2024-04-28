@@ -31,7 +31,7 @@ mw.loader.using(["mediawiki.api"]).then(function() {
         // -- Global Navigation Icons/Logos -- //
         /// "Fandom.com" to "Curse.com"
         $(".is-gamepedia h2.global-footer__header a")
-            .attr("href", "http://www.curse.com/")
+            .attr("href", "http://curse.com/")
             .attr("title", (footer_link_curse))
             .attr("aria-label", (footer_link_curse));
         /// "Fandom.com" to "Gamepedia.com"
@@ -64,7 +64,7 @@ mw.loader.using(["mediawiki.api"]).then(function() {
             .attr("aria-label", (footer_gpwikis_minecraft))
             .text(footer_gpwikis_minecraft);
         var gpWikisListItem2 = $("<a>")
-            .attr("href","https://terraria.gamepedia.com/wiki/Terraria Wiki")
+            .attr("href","https://terraria.gamepedia.com/wiki/Terraria_Wiki")
             .addClass("global-footer__link")
             .attr("data-tracking-label","gampedia-wikis.terraria")
             .attr("aria-label", (footer_gpwikis_terraria))

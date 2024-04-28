@@ -329,3 +329,13 @@ if (wgUserName !== null) $('span.insertusername').text(wgUserName);
     if ($('#wpGroup-bureaucrat').attr('checked') && !confirm('Do you truly want to appoint a bureaucrat?')) $('#wpGroup-bureaucrat').attr('checked', null);
     });
 }();
+
+
+( function () {
+	var categories = document.querySelector( '#articleCategories .categories' );
+	if ( categories ) {
+		Array.from( categories.querySelectorAll( '.category' ) )
+			.sort( function ( a, b ) { return a.innerText.localeCompare( b.innerText ); } )
+			.map( function ( e ) { categories.appendChild( e ) } );
+	}
+} )();

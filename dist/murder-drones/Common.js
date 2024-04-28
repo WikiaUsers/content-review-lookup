@@ -6,10 +6,10 @@
 var toolbarLabel = 'GLITCH Resources';
 var toolbarLinks = [
     {link: 'https://twitter.com/glitch_prod', label: 'GLITCH Prod.\'s Twitter'},
-    {link: 'https://www.youtube.com/channel/UCn_FAXem2-e3HQvmK-mOH4g', label: 'GLITCH Prod.\'s YouTube Channel'},
+    {link: 'https://www.youtube.com/@GLITCH', label: 'GLITCH Prod.\'s YouTube Channel'},
     {link: 'https://glitchproductions.store/', label: 'Official GLITCH Store'},
     {link: 'https://www.glitchprod.com/', label: 'Official GLITCH Website'},
-    {link: 'https://m.youtube.com/c/LiamVickersAnimation', label: 'Liam Vicker\'s YouTube Channel'},
+    {link: 'https://www.youtube.com/@LiamVickersAnimation', label: 'Liam Vicker\'s YouTube Channel'},
 ];
 var toolbarElement = document.createElement( 'li' );
 var toolbarWrapper = document.querySelector( '#WikiaBar .tools, #WikiaBar .wikia-bar-anon' );

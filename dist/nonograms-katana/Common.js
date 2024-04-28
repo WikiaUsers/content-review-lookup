@@ -319,14 +319,14 @@ function delete_table_m(){
 
 //Calculates how many fragments are still needed to complete a mosaic, plus some other useful information.
 function mosaic_calculator_f(){
-	var mosaic_sizes = [368, 640, 640, 640, 1280, 2560, 2560, 2560, 2560, 2560];
+	var mosaic_sizes = [368, 640, 640, 640, 1280, 2560, 2560, 2560, 2560, 2560, 2560, 2560];
 	var mosaics_f = [0];
 	var fragment_counter = 0;
 	for (i = 0; i < mosaic_sizes.length; i++){
 		fragment_counter = fragment_counter + mosaic_sizes[i];
 		mosaics_f.push(fragment_counter);
 	}
-	//var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808, 16368];
+	//var mosaics_f = [0, 368, 1008, 1648, 2288, 3568, 6128, 8688, 11248, 13808, 16368, 18928, 21488];
 	
 	var max_fragments = mosaics_f[mosaics_f.length - 1];
 	var fragments = document.getElementById("fragments").value;
@@ -410,7 +410,7 @@ if (mw.config.get("wgPageName") === "Mosaic") {
 
 /* the code below is needed for combat simulation */
 
-var food_effects = { Ambrosia: {hp:30}, Onigiri:{hp:10}, Flatbread:{ep:10}, Bun:{hp:15,ep:5}, Muffin:{hp:15,ep:7}, Bento:{hp:5,ep:15}, Pasta:{hp:7,ep:20}, Baklava:{hp:12,ep:12}, Eggs:{hp:17,ep:5}, PoHP1:{hp:20}, PoHP2:{hp:25}, PoEP1:{ep:20} }
+var food_effects = { Ambrosia: {hp:30}, Onigiri:{hp:10}, Flatbread:{ep:10}, Bun:{hp:15,ep:5}, Muffin:{hp:15,ep:7}, Bento:{hp:5,ep:15}, Pasta:{hp:7,ep:20}, Baklava:{hp:12,ep:12}, Eggs:{hp:17,ep:5}, PoHP1:{hp:20}, PoHP2:{hp:25}, PoEP1:{ep:20} };
 
 var boost_list = {
                     'Level':        { 'repl':26, '*':{'hp':'*','ep':'*'} },

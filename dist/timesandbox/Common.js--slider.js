@@ -4,7 +4,7 @@
  */
 
 $(function() {
-  if ( mw.config.get('wgPageName') == "Avatar_Wiki") {
+  if ( mw.config.get('wgPageName') == "TimeSandbox_Wikia") {
     mw.loader.using( ['jquery.ui'], function() {
       var $tabs = $("#portal_slider").tabs({ fx: [{opacity:'toggle', duration:200},{height:'toggle', duration:'normal'}, ] } );
       $("[class^=portal_sliderlink]").click(function() { // bind click event to link

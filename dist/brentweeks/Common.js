@@ -110,3 +110,21 @@ mw.loader.using('mediawiki.Uri').then(function() {
         }
     });   
 });
+
+//Message wall greeting for [[Mesage wall:Moonwatcher_x_Qibli]], uses [[User:Moonwatcher_x_Qibli/MWG]]
+//Coded by User:Sophiedp
+if (mw.config.get('profileUserName') === 'Moonwatcher_x_Qibli' && mw.config.get('profileIsMessageWallPage')) {
+    mw.loader.using('mediawiki.api').then(function () {
+        new mw.Api().get({
+            action: 'parse',
+            format: 'json',
+            page: 'User:Moonwatcher_x_Qibli/MWG',
+            prop: 'text',
+            wrapoutputclass: 'greeting',
+            disablelimitreport: 1,
+            formatversion: '2'
+        }).done(function (data) {
+            $('#MessageWall').prepend(data.parse.text).find('.greeting').css('margin-bottom', '20px');
+        });
+    });
+}

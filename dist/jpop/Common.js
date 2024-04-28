@@ -1,6 +1,9 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 var Start = 0;
 
+/* Configuration for dev:PreloadTemplates.js */
+window.preloadTemplates_subpage = "case-by-case";
+
 /* Configuration for dev:WikiActivity.js */
 window.rwaOptions = {
 	limit: 50,

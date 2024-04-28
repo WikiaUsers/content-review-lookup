@@ -1,11 +1,11 @@
 // Skyシーズンキャンドル計算機
 // Author: Ray808080
 // 
-// 概要: 季節開催中のシーズンキャンドルの数に関する情報を提供します。
+// 概要: 季節開催中のシーズンキャンドルの数に関する情報を提供します
 // Skyシーズンキャンドル計算機
 // Author: Ray808080
 // Version: 0.1.7
-// 概要: 季節開催中のシーズンキャンドルの数に関する情報を提供します。
+// 概要: 季節開催中のシーズンキャンドルの数に関する情報を提供します
 // 説明: 使用するには、次のものを配置します：
 /*  <div id="sky-seasonal-candle-calculator-wrapper">
     <div style="display:none;" id="sky-seasonal-candle-calculator-input">
@@ -28,13 +28,13 @@
     </div>
 */
 // 翻訳手順:
-// まず、TRANSLATION SECTION 0 というラベルの付いた言語文字列を変更します。
-// 翻訳する必要がある文字列を含む追加のセクションが 3 つあります。
-// これらには、TRANSLATION SECTION 1 などのラベルが付けられています。
-// 翻訳する必要があるすべての文字列は、「translation_」で始まる変数です。
+// まず、TRANSLATION SECTION 0 というラベルの付いた言語文字列を変更します
+// 翻訳する必要がある文字列を含む追加のセクションが 3 つあります
+// これらには、TRANSLATION SECTION 1 などのラベルが付けられています
+// 翻訳する必要があるすべての文字列は、「translation_」で始まる変数です
 
-// これにより、Date オブジェクトに toDateInputValue() が追加され、変換できるようになります。
-// 日付入力が「値」として取り込める形式に変換されます。
+// これにより、Date オブジェクトに toDateInputValue() が追加され、変換できるようになります
+// 日付入力が「値」として取り込める形式に変換されます
 Date.prototype.toDateInputValue = (function() {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -73,7 +73,7 @@ Date.prototype.toDateInputValue = (function() {
                 END_TIME_BUFFER = 1000;
                 SEASON_DAYS = SkySeasonalCandleCalculator.diff(SEASON_START, SEASON_END, END_TIME_BUFFER);
 
-                // 二重通貨日は存在せず、その期間のみを更新すると仮定します。
+                // 二重通貨日は存在せず、その期間のみを更新すると仮定します
                 // 存在確認後
                 DOUBLE_DAYS = 0;
                 DOUBLE_2_DAYS = 0;
@@ -85,42 +85,42 @@ Date.prototype.toDateInputValue = (function() {
                 }
 
                 // TRANSLATION SECTION 1
-                var translation_the_season = "季節"; // 「季節」について
-                var translation_lasts = "最終";
-                var translation_days_long = "日々イベント";
-                var translation_from = "から";
-                var translation_to = "まで";
-                var translation_the_dsce = "シーズナルキャンドル2倍キャンペーン"; // 「シーズナルキャンドル2倍キャンペーン」について
+                var translation_the_season = "季節名「"; // 「季節」について
+                var translation_lasts = "」";
+                var translation_days_long = "日間開催予定";
+                var translation_from = "<br>開始日時：";
+                var translation_to = "<br>終了日時：";
+                var translation_the_dsce = "イベント：「"; // 「シーズナルキャンドル2倍キャンペーン」について
                 var translation_a_second = "2回目"; // 「シーズンキャンドル2倍キャンペーン」について
-                var translation_a = "？"; // 「シーズナルキャンドル2倍キャンペーン」について
-                var translation_double_sce = "シーズナルキャンドル2倍キャンペーン";
+                var translation_a = "イベント"; // 「シーズナルキャンドル2倍キャンペーン」について
+                var translation_double_sce = "シーズンキャンドル2倍キャンペーン";
                 var translation_not_announced = "公式発表なし";
-                var translation_to_buy_everything_youll_need = "全てのドレスアップアイテムを交換するためには、次のものが必要です";
-                var translation_sc_wo_pass = "シーズンパスなし";
-                var translation_sc_w_pass = "シーズンパスあり";
-                var translation_takes_approximately = "およそかかります";
-                var translation_standard_days = "1日標準5本"; // これは 1 日あたり 5 SC を意味します
-                var translation_note = "注: シーズン パスの購入にプレッシャーを感じるべきではないことに注意してください。";
+                var translation_to_buy_everything_youll_need = "全てのドレスアップアイテムを交換するために必要なキャンドル数";
+                var translation_sc_wo_pass = "本（シーズンパスなしの場合：5本/日）";
+                var translation_sc_w_pass = "本（シーズンパスありの場合：6本/日）";
+                var translation_takes_approximately = "<br>約";
+                var translation_standard_days = "日必要です"; // これは 1 日あたり 5 SC を意味します
+                var translation_note = "注: シーズン パスの購入にプレッシャーを感じるべきではないことに注意してください<br>";
                 var translation_choose_date = "日付を選択";
                 var translation_today = "今日";
-                var translation_season_start = "季節開始";
+                var translation_season_start = "季節開始日";
                 var translation_choose_time = "時間を選択";
-                var translation_now = "今";
+                var translation_now = "現在時刻";
                 var translation_reset = "リセット";
-                var translation_your_current_sc = "現在所有しているシーズンキャンドル数";
+                var translation_your_current_sc = "シーズンキャンドル所持数";
                 var translation_do_you_have_a_pass = "シーズンパスをお持ちですか？";
                 var translation_calculate = "計算する";
                 var translation_clear = "クリア";
 
                 // HTMLを最初に設定します
                 document.getElementById('sky-seasonal-candle-calculator-output').innerHTML = /*
-                */'<p>' + translation_the_season + ' <b><span id="sscc_season_name"></span></b> ' + translation_lasts + ' <span id="sscc_season_days"></span> ' + translation_days_long + ', ' + translation_from + ' <span id="sscc_season_start"></span> ' + translation_to + ' <span id="sscc_season_end"></span>.</p>' + /*
-                */'<p id="sscc_double_event">' + translation_the_dsce + ' <b>' + translation_double_sce + '</b> ' + translation_lasts + ' <span id="sscc_double_days"></span> ' + translation_days_long + ', ' + translation_from + ' <span id="sscc_double_start"></span> ' + translation_to + ' <span id="sscc_double_end"></span>.</p>' + /*
-                */'<p id="sscc_double_2_event">' + translation_a_second + '<b>' + translation_double_sce + '</b> ' + translation_lasts + ' <span id="sscc_double_2_days"></span> ' + translation_days_long + ', ' + translation_from + ' <span id="sscc_double_2_start"></span> ' + translation_to + ' <span id="sscc_double_2_end"></span>.</p>' + /*
+                */'<p>' + translation_the_season + ' <b><span id="sscc_season_name"></span></b> ' + translation_lasts + ' <span id="sscc_season_days"></span> ' + translation_days_long + ' ' + translation_from + ' <span id="sscc_season_start"></span> ' + translation_to + ' <span id="sscc_season_end"></span></p>' + /*
+                */'<p id="sscc_double_event">' + translation_the_dsce + ' <b>' + translation_double_sce + '</b> ' + translation_lasts + ' <span id="sscc_double_days"></span> ' + translation_days_long + ' ' + translation_from + ' <span id="sscc_double_start"></span> ' + translation_to + ' <span id="sscc_double_end"></span></p>' + /*
+                */'<p id="sscc_double_2_event">' + translation_a_second + '<b>' + translation_double_sce + '</b> ' + translation_lasts + ' <span id="sscc_double_2_days"></span> ' + translation_days_long + ' ' + translation_from + ' <span id="sscc_double_2_start"></span> ' + translation_to + ' <span id="sscc_double_2_end"></span></p>' + /*
 
                 */'<p>' + translation_to_buy_everything_youll_need + ':<br>' + /*
-                */'- <span id="sscc_need_no_pass"></span> ' + translation_sc_wo_pass + '. <span id="sscc_skippable_message"></span> ' + translation_takes_approximately + ' <span id="sscc_need_no_pass_days"></span> ' + translation_standard_days + '.<br>' + /*
-                */'- <span id="sscc_need_with_pass"></span> ' + translation_sc_w_pass + '. ' + translation_takes_approximately + ' <span id="sscc_need_with_pass_days"></span> ' + translation_standard_days + '.</p>' + /*
+                */'- <span id="sscc_need_no_pass"></span> ' + translation_sc_wo_pass + ' <span id="sscc_skippable_message"></span> ' + translation_takes_approximately + ' <span id="sscc_need_no_pass_days"></span> ' + translation_standard_days + '<br>' + /*
+                */'- <span id="sscc_need_with_pass"></span> ' + translation_sc_w_pass + ' ' + translation_takes_approximately + ' <span id="sscc_need_with_pass_days"></span> ' + translation_standard_days + '</p>' + /*
 
 				*/'<p>' + /*
                 */'<i>' + translation_note + '</i>' + /*
@@ -193,21 +193,21 @@ Date.prototype.toDateInputValue = (function() {
                 // 入力された日付をデフォルトで今日の日付として設定します
                 document.getElementById("sscc_date_picker").value = TODAY.toDateInputValue();
 
-                // 入力された時刻を現在の時刻としてデフォルトに設定します。
+                // 入力された時刻を現在の時刻としてデフォルトに設定します
                 document.getElementById("sscc_locale_tz").innerHTML = LOCALE_TZ;
                 document.getElementById("sscc_time_picker").value = SkySeasonalCandleCalculator.time_to_input_value(NOW);
             }
         }),
 
-        // ヘルパー機能: ページ上の HTML から情報を取得します。
+        // ヘルパー機能: ページ上の HTML から情報を取得します
         get_data: function () {
             var raw_data = document.getElementById('sky-seasonal-candle-calculator-input').innerHTML;
             // すべての定数の配列を与え、空の文字列を除外します
             var raw_data_split = raw_data.trim().replace(/\r?\n|\r/g, '').split('|').filter(Boolean);
-            // 前後のスペースがトリミングされたすべての行の配列を返します。
+            // 前後のスペースがトリミングされたすべての行の配列を返します
             var data = raw_data_split.map(function(x) { return x.trim() });
 
-            // キー、値の配列を交互に取得し、トリミングします。
+            // キー、値の配列を交互に取得し、トリミングします
             var data_split = data.join('=').split('=').map(function(x) { return x.trim() });
 
             // すべての定数とその値のオブジェクトを作成します
@@ -232,15 +232,15 @@ Date.prototype.toDateInputValue = (function() {
 
         // ---------- 日付関数 ----------------------------------------------------
 
-        //ヘルパー関数: 日時とゾーンを指定して、GMT/UTC からのオフセットを返します。
+        //ヘルパー関数: 日時とゾーンを指定して、GMT/UTC からのオフセットを返します
         // 9 これにより、PT が PST または PDT のどちらであるかがわかります)
         get_offset: function (datetime, zone) {
             return -moment(datetime).tz(zone).utcOffset();
         },
 
-        // ヘルパー関数: 開始日オブジェクトと終了日オブジェクトの間の日の差を計算します。
-        // SEASON_END または DOUBLE_END が使用されている場合は、最も近い整数の日数に丸められます。
-        // それ以外の場合は、次の整数日数に切り上げられます。
+        // ヘルパー関数: 開始日オブジェクトと終了日オブジェクトの間の日の差を計算します
+        // SEASON_END または DOUBLE_END が使用されている場合は、最も近い整数の日数に丸められます
+        // それ以外の場合は、次の整数日数に切り上げられます
         // バッファは追加の 1 が必要な終了日付に使用されますが、それ以外の場合はデフォルトで 0 に設定されます
         diff: function (start, end, buffer) {
             const ONE_DAY_IN_MS = 86400000;
@@ -258,7 +258,7 @@ Date.prototype.toDateInputValue = (function() {
             SkySeasonalCandleCalculator.update_timezone();
         },
 
-        // ボタン機能: シーズンの開始日を日付入力に合わせて再計算します。
+        // ボタン機能: シーズンの開始日を日付入力に合わせて再計算します
         start_date: function () {
             document.getElementById("sscc_date_picker").value = SEASON_START.toDateInputValue();
             SkySeasonalCandleCalculator.calculate();
@@ -351,12 +351,12 @@ Date.prototype.toDateInputValue = (function() {
         insert_table: function () {
 
             // TRANSLATION SECTION 2
-            var translation_A1 = "季節の日数";
+            var translation_A1 = "季節の経過日数";
             var translation_B1 = "季節の残り日数";
             var translation_C2 = "シーズンパスなし";
             var translation_C3 = "シーズンパスあり";
-            var translation_A2 = "これまでの最大数";
-            var translation_B2 = "今後の最大数";
+            var translation_A2 = "これまでの本数";
+            var translation_B2 = "これからの本数";
             
 
             document.getElementById("sscc_general_table").innerHTML = '<div class="article-table-wrapper">' + /*
@@ -520,28 +520,28 @@ Date.prototype.toDateInputValue = (function() {
 
             
             // TRANSLATION SECTION 3
-            var translation_commentary = "あなたのステータス";
-            var translation_at = "に";
-            var translation_you_have_collected = "あなたが集めた";
-            var translation_you_missed = "可能性を失ってしまいました";
-            var translation_sc = "季節限定販売";
-            var translation_w_pass = "シーズンパスあり";
-            var translation_wo_pass = "シーズンパスなし";
-            var translation_all_the_sc = "これまでの<b>すべての</b>シーズンキャンドル";
-            var translation_and_more = "<b>...もっと？</b>";
-            var translation_you_would_need = "必要になるだろう";
-            var translation_to_buy_everything = "開催中の季節のドレスアップアイテムをすべて入手するには"
-            var translation_if_you_dont_miss = "ドレスアップアイテムはハズレなければ全部入手できるはず"
-            var translation_out_of = "の"
-            var translation_days_remaining = "残り日数"
-            var translation_you_can_buy_everything = "開催中の季節のドレスアップアイテムをすべて入手できます！";
-            var translation_you_cannot_buy_everything = "残念ながら 季節終了までに <b>すべてのドレスアップアイテムを入手することはできません</b>。"
-            var translation_conditional = "残念ながら シーズンパスを購入してボーナスの季節キャンドル 30本と追加のシーズンキャンドル 1日あたり 1個を獲得しない限り、季節終了までに <b>すべてのドレスアップアイテムを入手することはできません</b>。 シーズンパスがない場合、交換できるのは究極の贈り物以外のドレスアップアイテムのみですので、お見逃しなく";
+            var translation_commentary = "あなたの状況";
+            var translation_at = "/";
+            var translation_you_have_collected = "取得済キャンドル数：";
+            var translation_you_missed = "逃したキャンドル数：";
+            var translation_sc = "本";
+            var translation_w_pass = "（シーズンパスあり）";
+            var translation_wo_pass = "（シーズンパスなし）";
+            var translation_all_the_sc = "<b>全</b>キャンドル";
+            var translation_and_more = "<b>...より多い？</b>";
+            var translation_you_would_need = "必要なキャンドル数：";
+            var translation_to_buy_everything = "（全てのドレスアップアイテムを入手する場合）"
+            var translation_if_you_dont_miss = "<br>全て入手する場合の 必要日数/残り日数："
+            var translation_out_of = "/"
+            var translation_days_remaining = "日"
+            var translation_you_can_buy_everything = "<br>開催中の季節のドレスアップアイテムをすべて入手できます！";
+            var translation_you_cannot_buy_everything = "<br>残念ながら 季節終了までに <b>すべてのドレスアップアイテムの入手を達成できそうにありません</b>"
+            var translation_conditional = "<br>残念ながら、 シーズンパスを購入してボーナスのシーズンキャンドル 30本と 1本/日 の追加のシーズンキャンドルを獲得しない限り、季節終了までに <b>すべてのドレスアップアイテムの入手を達成できそうにありません</b> <br>シーズンパスがない場合、交換できるのは究極の贈り物以外のドレスアップアイテムのみとなりますお見逃しなく！<br>全て入手する場合の 必要日数/残り日数：";
 
 
             // Responses for people with Season Pass
             if (has_pass) {
-                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_sc + " " + translation_w_pass + ".";
+                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_sc + " " + translation_w_pass + "";
                                 
                 // 1. SP Commentary: How many SC you missed
                 missing_candles = with_pass_before - candle_count;
@@ -553,7 +553,7 @@ Date.prototype.toDateInputValue = (function() {
                     missing_message = translation_you_have_collected + " " + translation_all_the_sc + " " + translation_and_more;
                 // Default response for reasonable numbers
                 } else {
-                    missing_message = translation_you_missed + " " + missing_candles + " " + translation_sc + ".";
+                    missing_message = translation_you_missed + " " + missing_candles + " " + translation_sc + "";
                 }
 
                 // 2. SP Commentary: If you are able to buy all the cosmetics with the time remaining
@@ -564,14 +564,14 @@ Date.prototype.toDateInputValue = (function() {
                     conclusion_message = "";
                 // If someone can/cannot reach the goal by the Season end
                 } else {
-                    progress_message = translation_you_would_need + " <b>" + candle_goal_with_pass + " " + translation_sc + "</b> " + translation_to_buy_everything + ".";
+                    progress_message = translation_you_would_need + " <b>" + candle_goal_with_pass + " " + translation_sc + "</b> " + translation_to_buy_everything + "";
                     
                     // If it is a possible goal
                     if (candle_goal_with_pass <= with_pass_after) {
                         var remaining_with_pass_list = WITH_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
                         var required_days_with_pass = SkySeasonalCandleCalculator.min_days_required(remaining_with_pass_list, candle_goal_with_pass);
 
-                        conclusion_message = translation_if_you_dont_miss + " <b>" + required_days_with_pass + " " + translation_out_of + " " + total_remaining_days + " " + translation_days_remaining + "</b>.";
+                        conclusion_message = translation_if_you_dont_miss + " <b>" + required_days_with_pass + " " + translation_out_of + " " + total_remaining_days + " " + translation_days_remaining + "</b>";
                     // If it is an impossible goal
                     } else {
                         conclusion_message = translation_you_cannot_buy_everything;
@@ -579,7 +579,7 @@ Date.prototype.toDateInputValue = (function() {
                 }
             // Responses for people without Season Pass
             } else {
-                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_sc + " " + translation_wo_pass + ".";
+                summary_message = translation_you_have_collected + " " + candle_count + " " + translation_sc + " " + translation_wo_pass + "";
                 
                 // 1. No-SP Commentary: How many SC you missed
                 missing_candles = no_pass_before - candle_count;
@@ -591,7 +591,7 @@ Date.prototype.toDateInputValue = (function() {
                     missing_message = translation_you_have_collected + " " + translation_all_the_sc + translation_and_more;
                 // Default response for reasonable numbers
                 } else {
-                    missing_message = translation_you_missed + " " + missing_candles + " " + translation_sc + ".";
+                    missing_message = translation_you_missed + " " + missing_candles + " " + translation_sc + "";
                 }
 
                 // 2. No-SP Commentary: If you are able to buy all the cosmetics with the time remaining
@@ -602,7 +602,7 @@ Date.prototype.toDateInputValue = (function() {
                     conclusion_message = "";
                 // If someone can/cannot reach the goal by the Season end
                 } else {
-                    progress_message = translation_you_would_need + " <b>" + candle_goal_no_pass + " " + translation_sc + "</b> " + translation_to_buy_everything + ".";
+                    progress_message = translation_you_would_need + " <b>" + candle_goal_no_pass + " " + translation_sc + "</b> " + translation_to_buy_everything + "";
 
                     var required_days_no_pass;
                     // If it is a possible goal
@@ -610,13 +610,13 @@ Date.prototype.toDateInputValue = (function() {
                         var remaining_no_pass_list = NO_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
                         var required_days_no_pass = SkySeasonalCandleCalculator.min_days_required(remaining_no_pass_list, candle_goal_no_pass);
                        
-                        conclusion_message = translation_if_you_dont_miss + " <b>" + required_days_no_pass + " " + translation_out_of + " " +  total_remaining_days + " " + translation_days_remaining + "</b>.";
+                        conclusion_message = translation_if_you_dont_miss + " <b>" + required_days_no_pass + " " + translation_out_of + " " +  total_remaining_days + " " + translation_days_remaining + "</b>";
                     // If it is possible ONLY if they buy the Season Pass
                     } else if (candle_goal_no_pass <= with_pass_after + 30) {
                         var remaining_with_pass_list = WITH_PASS_LIST.slice(SEASON_DAYS - total_remaining_days + 1);
                         var required_days_with_pass = SkySeasonalCandleCalculator.min_days_required(remaining_with_pass_list, candle_goal_no_pass - 30);
                         
-                        conclusion_message = translation_conditional + " <b>" + required_days_with_pass + " " + translation_out_of + " " + total_remaining_days + " " + translation_days_remaining + "</b>.";
+                        conclusion_message = translation_conditional + " <b>" + required_days_with_pass + " " + translation_out_of + " " + total_remaining_days + " " + translation_days_remaining + "</b>";
                     // If it is an impossible goal
                     } else {
                         conclusion_message = translation_you_cannot_buy_everything;

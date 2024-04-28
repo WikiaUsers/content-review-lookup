@@ -1,5 +1,14 @@
 // *This was written by Copilot. I have minimal programming knowledge.
 mw.loader.using(['jquery'], function() {
+    // Check if the cookies exist
+    var isStatic = document.cookie.indexOf('staticToc=true') !== -1;
+    var hideToc = document.cookie.indexOf('hideToc=true') !== -1;
+
+    // If hideToc cookie is true, do not execute the rest of the script
+    if (hideToc) {
+        return;
+    }
+
     // Extracted constants
     var SCROLL_AMOUNT = 250;
 
@@ -28,6 +37,9 @@ mw.loader.using(['jquery'], function() {
         toc.find('.tocnumber').remove();
         toc.children('ul').prepend(newListItem);
         toc.wrap($('<div class="toc-container"></div>'));
+        if (isStatic) {
+            $('.toc-container').addClass('static');
+        }
     }
 
     function setupScrollArrows() {
@@ -60,16 +72,6 @@ mw.loader.using(['jquery'], function() {
                 $(this).remove();
             }
         });
-    }
-
-    function setupHideLink() {
-        var hideLink = $('<a class="hide-link" href="#">открепить</a>');
-        hideLink.on('click', function(e) {
-            e.preventDefault();
-            $('.toc-container').addClass('static');
-            $(window).off('scroll', handleScrollClass);
-        });
-        $('.toc-container').append(hideLink);
     }
 
     function handleScroll() {
@@ -136,5 +138,29 @@ mw.loader.using(['jquery'], function() {
                 $(this).addClass('active');
             }
         });
+    }
+
+
+    function setupHideLink() {
+        var linkContainer = $('<div class="link-container"></div>');
+        var hideLink = $('<a class="hide-link" href="#">' + (isStatic ? 'закрепить' : 'открепить') + '</a>');
+        var removeLink = $('<a class="remove-link" href="#" title="Убрать этот блок навсегда">убрать</a>');
+
+        hideLink.on('click', function(e) {
+            e.preventDefault();
+            $('.toc-container').toggleClass('static');
+            isStatic = !isStatic;
+            document.cookie = 'staticToc=' + isStatic + '; path=/';
+            $(this).text(isStatic ? 'закрепить' : 'открепить');
+        });
+
+        removeLink.on('click', function(e) {
+            e.preventDefault();
+            $('.toc-container').remove();
+            document.cookie = 'hideToc=true; path=/';
+        });
+
+        linkContainer.append(hideLink).append(removeLink);
+        $('.toc-container').append(linkContainer);
     }
 });
