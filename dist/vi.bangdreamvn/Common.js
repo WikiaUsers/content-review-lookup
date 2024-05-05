@@ -14,7 +14,7 @@ function jstzConvertAll() {
     var l = document.querySelectorAll("[data-jstz]");
     for (var i=0; i<l.length;i++) {
         var date = new Date(l[i].dataset.jstz);
-        var format = l[i].dataset.jstzformat ? l[i].dataset.jstzformat : "Y/m/d h:i A";
+        var format = l[i].dataset.jstzformat ? l[i].dataset.jstzformat : "d/m/Y G:i:s";
         var utc = l[i].dataset.jstzutc;
         utc = utc && utc.toLowerCase() === "true";
         if(format && (date instanceof Date)) {
@@ -41,7 +41,7 @@ function jstzFormatDate(date, format, utc) {
     format = format.replace(/(^|[^\\])y/g, "$1" + y.toString().substr(2, 2));
     var M = (utc ? date.getUTCMonth() : date.getMonth()) + 1;
     format = format.replace(/(^|[^\\])F+/g, "$1" + MMMM[0]);
-    format = format.replace(/(^|[^\\])M/g, "$1" + MMM[0]);
+    //format = format.replace(/(^|[^\\])M/g, "$1" + MMM[0]);
     format = format.replace(/(^|[^\\])m/g, "$1" + ii(M));
     format = format.replace(/(^|[^\\])n/g, "$1" + M);
     var d = utc ? date.getUTCDate() : date.getDate();
@@ -76,10 +76,10 @@ function jstzFormatDate(date, format, utc) {
     var t = T.toLowerCase();
     format = format.replace(/(^|[^\\])a+/g, "$1" + t);
     var day = (utc ? date.getUTCDay() : date.getDay()) + 1;
-    format = format.replace(new RegExp(dddd[0], "g"), dddd[day]);
-    format = format.replace(new RegExp(ddd[0], "g"), ddd[day]);
-    format = format.replace(new RegExp(MMMM[0], "g"), MMMM[M]);
-    format = format.replace(new RegExp(MMM[0], "g"), MMM[M]);
+    format = format.replace(new RegExp(dddd[0], "G"), dddd[day]);
+    format = format.replace(new RegExp(ddd[0], "G"), ddd[day]);
+    format = format.replace(new RegExp(MMMM[0], "G"), MMMM[M]);
+    format = format.replace(new RegExp(MMM[0], "G"), MMM[M]);
     format = format.replace(/\\(.)/g, "$1");
     return format;
 }

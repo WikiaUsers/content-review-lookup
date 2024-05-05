@@ -1,4 +1,10 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+/* For CSS modules and Template: CSS */
+mw.hook("wikipage.content").add(function () {
+	$("span.import-css").each(function () {
+		mw.util.addCSS($(this).attr("data-css"));
+	});
+});
+
 window.DiscussionTemplates = {
     templates: {
         'item-1': {

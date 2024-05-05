@@ -11,8 +11,8 @@ window.UserTagsJS = {
 };
 
 UserTagsJS.modules.custom = {
-    'The_Smarter,_Wiser_King_Dedede': ['assistant'],
     'PinkPugPrincess': ['assistant'],
+    'The_Aura_Warrior_of_Something_from_Whatever': ['assistant'],
     'WoofWoofGam3r': ['discord']
 };
 
@@ -350,8 +350,8 @@ window.MessageWallUserTags = {
         'Koolkitty108': 'Administrator',
         'Thelxinoe': 'Administrator',
         'FireMatch': 'Administrator',
+        'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
-        'The_Smarter,_Wiser_King_Dedede': 'Assistant',
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',

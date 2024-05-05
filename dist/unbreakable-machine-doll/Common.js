@@ -26,7 +26,14 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
+let loadingscreen = document.querySelector(".loadingscreen");
 
+window.addEventListener("scroll", () => {
+  loadingscreen.classList.add("scrolled");
+}, {
+    once: true
+}
+);
 
 
 

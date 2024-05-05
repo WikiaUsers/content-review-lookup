@@ -356,6 +356,108 @@ function addDigg() {
 
 addLoadEvent(addDigg);
 
+/*
+////////////////////////////////////////////////////////////////////
+// Release date sortkey display script by User:Bobogoobo (from https://community.wikia.com/wiki/Thread:918005)
+// fixed and modified by User:Harasar on 21/04/2022 to work again
+// further modified by User:Harasar on 27/03/2024 to display legacy numbers in categories for Legacy Numbers and to change colors of links depending on the medium type (comics, tv episodes, movies, games, novels)
+////////////////////////////////////////////////////////////////////
+*/
+$(function() {
+    if (!(
+        mw.config.get('wgCanonicalNamespace') === 'Category' &&
+        ['Legacy Numbers', 'Appearances', 'Handbook Appearances', 'Minor Appearances', 'Mentions', 'Handbook Mentions', 'Invocations', 'Writer', 'Penciler', 'Inker', 'Cover Artist', 'Editor'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
+    )) {
+        return;
+    } 
+
+    // API requires titles 50 at a time, will be 200 titles per category page
+    var requests,
+        $links = $('.mw-category').find('a');
+        pages = $links.toArray().map(function(value) {
+            return encodeURIComponent($(value).attr('title'));
+        });
+    requests = [pages.slice(0, 50), pages.slice(50, 100), pages.slice(100, 150), pages.slice(150)];
+    $.each(requests, function(index, value) {
+        $.getJSON(
+            '/api.php?action=query&prop=pageprops&ppprop=defaultsort&format=json&titles=' + value.join('|'),
+            function(data) {
+                data = data.query.pages;
+                $.each(Object.keys(data), function(idx, val) {
+                    if (!data[val].pageprops) {
+                        return true;// continue
+                    }
+                    var sort = data[val].pageprops.defaultsort;
+                    var title = data[val].title;
+                    // medium types
+                    var media_type = sort.match(/MEDIA:(.+);/);
+                    if (media_type) {
+                    	var media_type_class
+                    	if (media_type[1] == 'Episode') {
+                    		media_type_class = 'category-link-media-tv'
+                    	} else if (media_type[1] == 'Film') {
+                    		media_type_class = 'category-link-media-film'
+                    	} else if (media_type[1] == 'Video Game') {
+                    		media_type_class = 'category-link-media-game'
+                    	} else if (media_type[1] == 'Novel') {
+                    		media_type_class = 'category-link-media-novel'
+                    	}
+                    	document.querySelector('[title="' + title + '"]').classList.add(media_type_class);
+                    }
+                    
+                    var tooltip = '';
+                    // legacy numbers
+                    var lgy_category = mw.config.get('wgTitle').indexOf('Legacy Numbers');
+                    if (lgy_category !== -1) {
+	                    var lgy = sort.match(/LGY:(.+);/);
+	                    if (lgy) {
+	                    	tooltip = ' (' + lgy[1] + ')';
+	                    }
+                    }
+                    // dates
+                    var cover_date = sort.match(/^&nbsp;\d{4}\-\d{2}/);
+                    var release_date = sort.match(/^&nbsp;\d{4}\-\d{2}  \d{8}/);
+                    var release_date_film_tv = sort.match(/^&nbsp;\d{8}/);
+                    var date_tag = ''
+                    if (release_date_film_tv) {
+                    	release_date_film_tv = release_date_film_tv[0].replace('&nbsp;', '');
+                    	var release_date_film_tv_year = release_date_film_tv.substr(0, 4);
+                    	var release_date_film_tv_month = release_date_film_tv.substr(4, 2);
+                    	var release_date_film_tv_day = release_date_film_tv.substr(6, 2);
+                    	if (release_date_film_tv_day === '00') {
+                    		if (release_date_film_tv_month === '00') {
+                    			date_tag = ' (release: ' + release_date_film_tv_year + ')';
+                    		} else {
+                    			date_tag = ' (release: ' + release_date_film_tv_year + '-' + release_date_film_tv_month + ')';
+                    		}
+                    	} else {
+                    		date_tag = ' (release: ' + release_date_film_tv_year + '-' + release_date_film_tv_month + '-' + release_date_film_tv_day + ')';
+                    	}
+                    } else {
+	                    if (release_date) {
+	                    	release_date = release_date[0].match(/\d{8}/)
+	                    	date_tag = ', release: ' + release_date[0].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3')
+	                    }
+	                    if (cover_date) {
+	                    	date_tag = ' (cover: ' + cover_date[0] + date_tag + ')'
+	                    }
+                    }
+                    if (date_tag != '') {
+                    	tooltip = tooltip + date_tag
+                    }
+                    if (tooltip != '') {
+                    	tooltip = tooltip.replace('&nbsp;', '');
+                    	var tooltip_element = document.createElement("span");
+                    	tooltip_element.classList.add('category-link-tooltip');
+                    	tooltip_element.textContent = tooltip;
+                    	$links.filter('[title="' + title + '"]').after(tooltip_element); 
+                    }
+                 });
+            }
+        );
+    });
+});
+
 
 /*
 ////////////////////////////////////////////////////////////////////

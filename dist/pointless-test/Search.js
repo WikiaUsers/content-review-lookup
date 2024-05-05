@@ -44,16 +44,10 @@ function output() {
 			"format": "json",
 			"text": outString,
 			"contentmodel": "wikitext"
-		} ).done( function ( data ) {
-			jsonString = JSON.parse(JSON.stringify( data ));
-			jsonString = jsonString.parse.text;
-			txt = JSON.stringify(jsonString['*']);
-			txt = txt.replace(/"+/g, '');
-			txt = txt.replace(/\\n/gm,'');
-			txt = txt.replace(/\\/g, '');
-			document.getElementById('output').innerHTML = txt;
-	} );
-	} );
+		} ).then(function (data) {
+            document.getElementById("output").innerHTML = data.parse.text["*"];
+    	} );
+	});
 	outString = ""; //empty outString to allow next run
 }
 

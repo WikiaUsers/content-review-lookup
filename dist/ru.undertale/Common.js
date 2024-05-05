@@ -131,3 +131,37 @@ document.addEventListener('DOMContentLoaded', function() {
     for ( var i = 0; i < apperanceBlocks.length; i++ )//var i -> let
         new ApperanceBlock( apperanceBlocks[ i ] );
 });
+
+/**
+ * Прочий код
+ */
+(function() {
+    // Конфигурация AddRailModule
+    var ns = mw.config.get('wgNamespaceNumber');
+    window.AddRailModule = (
+        !localStorage.getItem('spoiler-warning') &&
+        [0, 6, 14].indexOf(mw.config.get('wgNamespaceNumber')) !== -1
+    ) ? [
+        {
+            page: 'int:custom-spoiler-warning',
+            prepend: true
+        }
+    ] : [];
+
+    // Переместите предупреждение о спойлере вверх, но под рекламу
+    // Установите прослушиватель для удаления модуля при его завершении
+    mw.hook('AddRailModule.module').add(function(module) {
+        if (module === 'int:custom-spoiler-warning') {
+            var $module = $('.railModule');
+            $module.find('#spoiler-warning-button').click(function() {
+                localStorage.setItem('spoiler-warning', '1');
+                $module.slideToggle();
+            });
+        }
+    });
+
+    mw.hook('DiscordIntegrator.added').add(function() {
+        var $content = $('.railModule');
+        $content.insertBefore('.DiscordIntegratorModule');
+    });
+})();

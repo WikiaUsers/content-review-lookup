@@ -3,11 +3,14 @@
  */
 function getCatUser() {
      //Récupération du nom d'utilisateur
-     var username = mw.config.get('wgUserName');
+     var config = mw.config.get([
+            'wgArticlePath',
+            'wgUserName'
+        ]);
      //On ne créé le lien que si l'utilisateur est connecté
-     if(username !== null) {
+     if(config.wgUserName !== null) {
        //Création du lien
-       return '♦ <a href="http://fr.fairytailfanon.wikia.com/wiki/Catégorie:' + username+ '"> <span class="liensidebarnouvelle">Mes pages</span></a>';
+       return '♦ <a href="' + config.wgArticlePath.replace('$1', 'Catégorie:' + config.wgUserName) + '"> <span class="liensidebarnouvelle">Mes pages</span></a>';
        //Ajout du lien à la balise span qui a l'id mypages
      }
      return ' ';

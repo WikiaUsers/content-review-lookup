@@ -117,7 +117,7 @@ $(document).ready(function() {
         }
         var calcNewDBD = roundNum(2, (cellValueDBD * (1 + (getInputDBD / 100))) + ampBonusAmount);
         $(this).text(calcNewDBD.format("#,##0[.]###"));
-        if (calcNewDBD === cellValueDBD) {
+        if (roundNum(3, calcNewDBD) === roundNum(3, cellValueDBD)) {
             $(".DBD").removeClass("StatModified");
         } else {
             $(".DBD").addClass("StatModified");

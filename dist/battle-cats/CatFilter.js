@@ -160,44 +160,58 @@ function isIncludedOr(rarities, traits, catRarity, catTraits) {
  * @return void
  */
 function initForm() {
-	// arrays with checkbox data
-	var rarityArr = ["nn", "ex", "rr", "sr", "ur", "lr"];
-	var attackArr = ["single", "area", "long", "omni"];
-	var targetArr = ["red", "floating", "black", "metal", "angel", "alien", "zombie", "aku", "relic", "traitless"];
-	var traitSpecificArr = ["weaken", "freeze", "slow", "attacks-only", "strong", "resistant", "insanely-tough", "massive-damage", "insane-damage", "knockback", "warp", "curse", "dodge"];
-	var neutralArr = ["strengthen", "survive", "base-destroyer", "critical", "metal-killer", "zombie-killer", "soulstrike", "barrier-breaker", "shield-piercing", "savage-blow", "extra-money", "metal-ability", "mini-wave", "wave", "mini-surge", "surge", "wave-shield", "counter-surge", "conjure", "colossus-slayer", "behemoth-slayer", "sage-slayer",
-		"immune-weaken", "immune-freeze", "immune-slow", "immune-knockback", "immune-waves", "immune-surge", "immune-warp", "immune-curse", "immune-toxic"];
-	var collabArr = ["witch-killer", "eva-angel-killer"];
-	var talentArr = ["resist-weaken", "resist-freeze", "resist-slow", "resist-knockback", "resist-wave", "resist-warp", "resist-curse", "resist-surge", "resist-toxic", "defense-up", "attack-up", "move-speed-up", "improved-knockback", "cost-down", "recover-speed-up", "attack-freq-up"];
+	// load data for buttons
+	api = new mw.Api();
+	api.get({
+		action: 'query',
+		prop: 'revisions',
+		titles: 'Template:FilterIconInfo/Options.json',
+		rvprop: 'content',
+		rvslots: 'main',
+		formatversion: '2',
+		format: 'json'
+	}).done(function (data) {
+		var content = data.query.pages[0].revisions[0].slots.main.content;
+		var map = new Map(Object.entries(JSON.parse(content)));
+		// arrays with checkbox data
+		var rarityArr = map.get('rarity');
+		var attackArr = map.get('attack');
+		var targetArr = map.get('target');
+		var traitSpecificArr = map.get('ability-trait');
+		var neutralArr = map.get('ability-neutral');
+		var collabArr = map.get('ability-collab');
+		var talentArr = map.get('ability-talent');
+	
+		// rarities
+		rarityArr.forEach(function(item) {
+			$('#filter-rarity-' + item).prepend('<input type="checkbox" class="rarity" value="' + item + '">');
+		});
+		// attack types
+		attackArr.forEach(function(item) {
+			$('#filter-attack-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+		// targets
+		targetArr.forEach(function(item) {
+			$('#filter-target-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+		// trait specific
+		traitSpecificArr.forEach(function(item) {
+			$('#filter-trait-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+		// neutral + immunities
+		neutralArr.forEach(function(item) {
+			$('#filter-neutral-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+		// collabs
+		collabArr.forEach(function(item) {
+			$('#filter-collab-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+		// talents
+		talentArr.forEach(function(item) {
+			$('#filter-talent-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
+		});
+	});
 
-	// rarities
-	rarityArr.forEach(function(item) {
-		$('#filter-rarity-' + item).prepend('<input type="checkbox" class="rarity" value="' + item + '">');
-	});
-	// attack types
-	attackArr.forEach(function(item) {
-		$('#filter-attack-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
-	// targets
-	targetArr.forEach(function(item) {
-		$('#filter-target-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
-	// trait specific
-	traitSpecificArr.forEach(function(item) {
-		$('#filter-trait-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
-	// neutral + immunities
-	neutralArr.forEach(function(item) {
-		$('#filter-neutral-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
-	// collabs
-	collabArr.forEach(function(item) {
-		$('#filter-collab-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
-	// talents
-	talentArr.forEach(function(item) {
-		$('#filter-talent-' + item).prepend('<input type="checkbox" class="trait" value="' + item + '">');
-	});
 	// AND/OR toggle
 	$('#filter-toggle-andor').append('<label class="switch"><input type="checkbox" id="filter-toggle"><span class="toggle"><span class="on">AND</span><span class="off">OR</span></span></label>');
 	// talent toggle

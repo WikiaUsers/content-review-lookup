@@ -7,11 +7,9 @@ importArticles({
 	    ]
 	});
 	
-	/* Кастомизация */
+/* Кастомизация */
 const staff = [
-    {name: 'Swit4er', className: 'bur'},
-    {name: 'Creepy Owl', className: 'bur'},
-    {name: 'Voidan Dether', className: 'admin'},
+    {name: 'Сырослав 3000', className: 'bot'},
 ];
 
 setInterval(function () {

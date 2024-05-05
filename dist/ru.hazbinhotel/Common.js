@@ -10,10 +10,6 @@ importArticles({
 
 /* Кастомизация */
 const staff = [
-    {name: 'Voidan Dether', className: 'bur'},
-    {name: 'Creepy Owl', className: 'admin'},
-    {name: 'Lich night', className: 'threadMod'},
-    {name: 'Lubitel obnimashek', className: 'discordAdmin'},
     {name: 'Орешко Ричард', className: 'intern'},
     {name: 'Сырослав 3000', className: 'bot'},
 ];

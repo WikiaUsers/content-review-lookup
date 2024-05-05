@@ -22,7 +22,12 @@ if (leaderboardElem)
 	});
 }
 
-
-
 // Rail Module
 window.AddRailModule = [{prepend: true}];
+mw.hook('wikipage.content').add(function(){
+	document.querySelectorAll('.page__right-rail .sticky-modules-wrapper > section:not(:last-child)').forEach(function(section){
+		var sep = document.createElement('div')
+		sep.classList.add('right-rail-separator');
+		if (section.nextElementSibling && !section.nextElementSibling.classList.contains('right-rail-separator')) { section.after(sep); }
+	});
+});

@@ -28,24 +28,34 @@ $(document).ready(function() { // on document ready
 	 * @return void
 	 */
 	function runCurrentEvents() {
-		var params = {
+		api = new mw.Api();
+		api.get({
 			action: 'query',
 			prop: 'revisions',
-			titles: 'Template:CurrentEvents/EventImages.json',
+			titles: 'Template:CurrentEvents/Images.json',
 			rvprop: 'content',
 			rvslots: 'main',
 			formatversion: '2',
 			format: 'json'
-		};
-
-		api = new mw.Api();
-		api.get(params).done(function (data) {
+		}).done(function (data) {
 			var content = data.query.pages[0].revisions[0].slots.main.content;
 			var images = new Map(Object.entries(JSON.parse(content)));
-			var gachaData = images.get('Gacha Schedule');
-			var eventData = images.get('Event Schedule');
-			var recurData = images.get('Recurring Schedule');
-			displayEvents(gachaData, eventData, recurData, images);
+			api.get({
+				action: 'query',
+				prop: 'revisions',
+				titles: 'Template:CurrentEvents/Schedule.json',
+				rvprop: 'content',
+				rvslots: 'main',
+				formatversion: '2',
+				format: 'json'
+			}).done(function (data) {
+				var content = data.query.pages[0].revisions[0].slots.main.content;
+				var schedule = new Map(Object.entries(JSON.parse(content)));
+				var gachaData = schedule.get('Gacha Schedule');
+				var eventData = schedule.get('Event Schedule');
+				var recurData = schedule.get('Recurring Schedule');
+				displayEvents(gachaData, eventData, recurData, images);
+			});
 		});
 	}
 
@@ -141,7 +151,7 @@ $(document).ready(function() { // on document ready
 		var imageParams = {
 			action: 'query',
 			prop: 'revisions',
-			titles: 'Template:CurrentEvents/EventImages.json',
+			titles: 'Template:CurrentEvents/Images.json',
 			rvprop: 'content',
 			rvslots: 'main',
 			formatversion: '2',

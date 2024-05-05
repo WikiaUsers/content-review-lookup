@@ -232,7 +232,7 @@ window.tooltips_list = [
     {   classname: 'skinloading-icon', 
         parse: '{'+'{Tooltip/Skin/Loading|champion=<#champion#>|skin=<#skin#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'chroma-icon', 
-        parse: '{'+'{Tooltip/Chroma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>|game=<#game#>}}'},
+        parse: '{'+'{Tooltip/Chroma|champion=<#champion#>|skin=<#skin#>|chromas=<#chromas#>|variant=<#variant#>|game=<#game#>}}'},
     {   classname: 'avatar-icon', 
         parse: '{'+'{Tooltip/Icon|<#param#>|icon=<#icon#>}}'},
     {   classname: 'esports-icon', 

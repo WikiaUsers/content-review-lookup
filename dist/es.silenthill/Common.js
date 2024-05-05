@@ -1,50 +1,46 @@
-/* <pre><nowiki> */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+ 
+// Importes
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:AddRailModule/code.js',
+    ]
+});
 
-function loadFunc() {
-	showEras('title-eraicons');
-	showEras('title-atajo');
-}
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
-function showEras(className) {
-	if( skin == 'oasis' ) {
-		return;
-	}
+// Etiquetas de Usuarios
+ 
+window.UserTagsJS = {
+	modules: {
+        inactive: { // Edits must be to content namespaces
+            days: 60,
+            namespaces: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+            zeroIsInactive: false
+        },
+	},
+	mwGroups: [
+        'bureaucrat',
+        'contentmoderator',
+        'chatmoderator',
+        'rollback',
+        'sysop',
+        'bot',
+    ],
+	tags: {
+        threadmoderator: { u: 'Moderador de discusiones', f: 'Moderadora de discusiones', link:'Silent Hill Wiki en español:Administradores#Moderadores_de_Discusiones'},
+        contentmoderator: {u: 'Moderador de contenido', f: 'Moderadora de contenido', link: 'Silent Hill Wiki en español:Administradores#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'Silent Hill Wiki en español:Administradores#Administradores' },
+        bureaucrat: { u:'Burócrata', f: 'Burócrata', link:'Silent Hill Wiki en español:Administradores#Bur.C3.B3cratas' },
+    }
+};
+ 
+UserTagsJS.modules.inactive = 30;
 
-	if( typeof( SKIP_ERAS ) != 'undefined' && SKIP_ERAS )
-		return;
-
-	var titleDiv = document.getElementById( className );
-
-	if( titleDiv == null || titleDiv == undefined )
-		return;
-
-	var cloneNode = titleDiv.cloneNode(true);
-	var firstHeading = getFirstHeading();
-	firstHeading.insertBefore(cloneNode, firstHeading.childNodes[0]);
-	cloneNode.style.display = "block";
-}
-
-// BEGIN Dynamic Navigation Bars (experimantal)
-// This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
-
-// ============================================================
-// BEGIN Dynamic Navigation Bars (experimantal)
-// This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
-
-
-/* Test if an element has a certain class **************************************
- *
- * Description: Uses regular expressions and caching for better performance.
- * Maintainers: User:Mike Dillon, User:R. Koot, User:SG
- */
-
-var hasClass = (function () {
-    var reCache = {};
-    return function (element, className) {
-        return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
-    };
-})();
-
-/* Para desplegable */
-var ShowHideConfig = { linkBefore:true };
-importScriptPage('ShowHide/code.js', 'dev');
+/* Cambio de título */
+$(function(){
+  var newTitle = $("#title-meta").html();
+  if (!newTitle) return;
+  $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
+});

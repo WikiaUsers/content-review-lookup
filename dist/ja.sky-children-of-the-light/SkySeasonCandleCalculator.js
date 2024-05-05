@@ -48,7 +48,7 @@ Date.prototype.toDateInputValue = (function() {
     window.SkySeasonalCandleCalculator = {
     	version: '0.1.7',
     	// TRANSLATION SECTION 0
-    	language: 'ja', // https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags から正しいサブタグを確認してください
+    	language: 'ja-JP', // https://en.wikipedia.org/wiki/IETF_language_tag#List_of_common_primary_language_subtags から正しいサブタグを確認してください
         init: importArticles({
 				type: 'script',
 				articles: [
@@ -426,8 +426,8 @@ Date.prototype.toDateInputValue = (function() {
             var selected_date = new Date(Date.UTC(gmt_date[0], gmt_date[1]-1, gmt_date[2], gmt_time[0], gmt_time[1], 1));
             // Pretty version of the Selected Date
             var selected_pretty = new Date(String(moment.tz(datetime_value, LOCALE_ZONE).format("MMMM DD, YYYY kk:mm z")));
-            var selected_date_pretty = selected_pretty.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium" });
-            var full_pretty_time = selected_pretty.toLocaleTimeString(SkySeasonalCandleCalculator.language, { timeStyle: "long" }).split(' ');
+            var selected_date_pretty = selected_pretty.toLocaleString(SkySeasonalCandleCalculator.language, { dateStyle: "medium", timeZone: "Asia/Tokyo", });
+            var full_pretty_time = selected_pretty.toLocaleTimeString(SkySeasonalCandleCalculator.language, { timeStyle: "long", timeZone: "Asia/Tokyo", }).split(' ');
             var selected_tz_pretty = full_pretty_time.pop();
             full_pretty_time[0] = full_pretty_time[0].slice(0,-3);
             var selected_time_pretty = full_pretty_time.join(' ');

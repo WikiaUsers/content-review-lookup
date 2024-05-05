@@ -173,6 +173,7 @@ $(document).ready(function() {
         "Earthquake Boots": 18,
         "Vampstache": 18,
         "Giant Gauntlet": 27,
+        "Spiky Ball": 27,
     	"Archer Puppet": 18,
     	"Invisibility Vial": 18,
     	"Giant Arrow": 18,
@@ -193,7 +194,7 @@ $(document).ready(function() {
     var heroGearOptions = [];
     switch (pageName) {
     	case ("Barbarian King"):
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball"];
     		break;
     	case ("Archer Queen"):
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"];
@@ -205,7 +206,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -887,6 +888,7 @@ $(document).ready(function() {
 			"Earthquake Boots": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
 			"Vampstache": [9,10,12,13,15,16,18,19,22,27,32,37,42,48,53,58,63,68],
 			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,140,145,150,155,160,165,170,175,180],
+			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Archer Puppet": [26,34,42,49,55,62,71,80,90,100,109,115,122,127,132,136,140,144],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
@@ -899,6 +901,7 @@ $(document).ready(function() {
 		var dictHPBonus = {
 			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],
 			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1140,1295,1449,1604,1758,1913],
+			"Spiky Ball": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
 			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],

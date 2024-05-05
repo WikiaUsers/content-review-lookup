@@ -689,8 +689,11 @@
 
                     // Remove elements from DOM
                     var filterInputElement = document.getElementById(this.mapId + "__checkbox-" + this.categories[i].id);
-                    var filterElement = filterInputElement.closest(".interactive-maps__filter");
-                    filterElement.remove();
+                    if (filterInputElement)
+                    {
+                        var filterElement = filterInputElement.closest(".interactive-maps__filter");
+                        if (filterElement) filterElement.remove();
+                    }
 
                     // Delete instance
                     delete this.categories[i];
@@ -6645,11 +6648,11 @@
             {
                 // Clone filter element and all its children to remove all event listeners
                 // This is easier than reconstructing the hierarchy, and more bulletproof than using hacks to remove listeners
-                this.elements.filter = filterElement.cloneNode(true);
+                filterElement = this.elements.filter = filterElement.cloneNode(true);
                 filterElement.replaceWith(this.elements.filter);
                 
                 // Fetch all elements from root filter
-                                this.elements.checkboxInput = this.elements.filter.querySelector("input");
+                this.elements.checkboxInput = this.elements.filter.querySelector("input");
                 this.elements.checkboxLabel = this.elements.filter.querySelector("label");
                 this.elements.categoryIcon = this.elements.checkboxLabel.querySelector(".interactive-maps__filters-marker-icon");
                 this.elements.categoryIconImg = this.elements.categoryIcon.querySelector("img");

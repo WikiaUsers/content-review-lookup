@@ -153,3 +153,10 @@ if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/a/a1/Earth2New_Back.png/revision/latest?cb=20240209151526&path-prefix=ru)"});
         var name = "Земля2"
 }
+var cat = mw.config.get('wgCategories')
+var name = "Five Nights at Вики (СТ)"
+if(cat.indexOf(name) !== -1){
+    $('.fandom-community-header__community-name').text(name)
+    $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/6/61/FNaWw_Back.png/revision/latest?cb=20240501171301&path-prefix=ru)"});
+        var name = "Five Nights at Вики"
+}

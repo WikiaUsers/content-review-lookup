@@ -187,7 +187,6 @@ $(function(){
 				
 				case ("Cargo Unit"):
 					this.mainStatVals.eq(0).html("+" + Math.round(this.calc(this.baseMStats[0], 1.036)));
-					this.detailedStatVals.eq(0).html("+" + this.calc(this.baseDStats[0], 1.05) + "%");
 					break;
 			} //end of equipment type switch block
 			
@@ -204,11 +203,12 @@ $(function(){
 		// Returns hidden level value based on selected grade & rarity.
 		// Also updates the color theme of the infobox, the sell value, and calls updatePlatings()
 		scaler.getHiddenLevel = function(level){		
+			var hiddenLevel = 0;
+			
 			if ($(infobox).hasClass("pi-theme-legend")) {
-				return 7; //legendaries have 7 more item levels than common & cannot have grades
+				hiddenLevel = 6; //legendaries have 7 more item levels than common
 			}
 			
-			var hiddenLevel = 0;
 			var rarity = $("input[name='rarityGroup']:checked").val();
 			var grade = $("input[name='gradeGroup']:checked").val();
 			
@@ -257,6 +257,10 @@ $(function(){
 				case "starforged":
 					hiddenLevel += 2;
 					break;
+					
+				case "radiant":
+					hiddenLevel += 1;
+					break;
 			}
 			return hiddenLevel;
 		};
@@ -300,10 +304,13 @@ $(function(){
 		//create input range element (slider) with display of min level (1) on the left and max level (30) on the right
 		slider.html("<div>1</div><div><input type='range' min='1' max='30' value='1' name ='equiplevelslider' id='equip-level-slider' /></div><div>30</div>");
 		
-		if (!$(infobox).hasClass("pi-theme-legend")){ //legendary items shouldn't get grade/rarity options
+		if (!$(infobox).hasClass("pi-theme-legend")){ //legendary items shouldn't get standard grade/rarity options
 			rarityDiv.html("<div><input type='radio' name='rarityGroup' id='com' value='com' checked/><label for='com'><span class='text-com'>Common</span></label><input type='radio' name='rarityGroup' id='unc' value='unc'/><label for='unc'><span class='text-unc tooltip' title='+1.4 item level'>Uncommon</span></label><input type='radio' name='rarityGroup' id='rare' value='rare'/><label for='rare'><span class='text-rare tooltip' title='+2.2 item level'>Rare</span></label><input type='radio' name='rarityGroup' id='sup' value='sup'/><label for='sup'><span class='text-sup tooltip' title='+3.8 item level'>Superior</span></label></div>");
 			
 			gradeDiv.html("<div><input type='radio' name='gradeGroup' id='normal' value='normal' checked/><label for='normal'>Normal</label><input type='radio' name='gradeGroup' id='prototype' value='prototype'/><label for='prototype' class='text-rare tooltip' title='+1 item level'>Prototype</label><input type='radio' name='gradeGroup' id='starforged' value='starforged'/><label for='starforged' class='text-sup tooltip' title='+2 item level'>Starforged</label></div>");	
+		} 
+		else { //radiant grade for legendaries only
+			gradeDiv.html("<div><input type='radio' name='gradeGroup' id='normal' value='normal' checked/><label for='normal'>Normal</label><input type='radio' name='gradeGroup' id='radiant' value='radiant'/><label for='radiant' class='tooltip' title='+1 item level'><b>Radiant</b></label>");
 		}
 		
 		$("#equip-level-slider").on('input', function (){

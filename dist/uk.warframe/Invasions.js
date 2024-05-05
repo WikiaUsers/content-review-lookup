@@ -152,7 +152,8 @@ $(function() {
 
 	function insertImage(data, attack) {
 		[itemName, itemPart] = 
-			data[attack ? 'attackerReward' : 'defenderReward'].countedItems[0] ? data[attack ? 'attackerReward' : 'defenderReward'].countedItems[0].type.split(': ') : [];
+			data[attack ? 'attacker' : 'defender'].reward? data[attack 
+			? 'attacker' : 'defender'].reward.countedItems[0].type.split(': ') : [];
 		itemName = itemName ? itemName.replace(' (креслення)', '') : null;
 		
 		var img = itemName ? $("<a>", {
@@ -165,10 +166,10 @@ $(function() {
 					src: 'https://static.wikia.nocookie.net/warframe/images/'
 						+ ICONS_MAP[itemPart || itemName]
 						+ '/revision/latest?path-prefix=uk',
-					alt: data[attack ? 'attackerReward' : 'defenderReward'].asString,
-					title: data[attack ? 'attackerReward' : 'defenderReward'].countedItems[0].type
-						+ (data[attack ? 'attackerReward' : 'defenderReward'].countedItems[0].count > 1
-							? ' (' + data[attack ? 'attackerReward' : 'defenderReward'].countedItems[0].count + 'шт.)' : ''),
+					alt: data[attack ? 'attacker' : 'defender'].reward.asString,
+					title: data[attack ? 'attacker' : 'defender'].reward.countedItems[0].type
+						+ (data[attack ? 'attacker' : 'defender'].reward.countedItems[0].count > 1
+							? ' (' + data[attack ? 'attacker' : 'defender'].reward.countedItems[0].count + 'шт.)' : ''),
 				})
 			]
 		}) : '';

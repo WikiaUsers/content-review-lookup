@@ -319,16 +319,18 @@ UserTagsJS.modules.metafilter = {
 
 // Username script // 
 (function () { 
-if (wgUserName !== null) $('span.insertusername').text(wgUserName);
+	var wgUserName = mw.config.get('wgUserName');
+    if (wgUserName !== null) $('span.insertusername').text(wgUserName);
 })();
 
 // Bureaucrat promotion warning message //
-!function() {
+(function() {
+	var wgCanonicalSpecialPageName = mw.config.get('wgCanonicalSpecialPageName');
     if (wgCanonicalSpecialPageName !== 'Userrights') return;
     $('#mw-content-text').on('change', '#wpGroup-bureaucrat', function() {
     if ($('#wpGroup-bureaucrat').attr('checked') && !confirm('Do you truly want to appoint a bureaucrat?')) $('#wpGroup-bureaucrat').attr('checked', null);
     });
-}();
+})();
 
 
 ( function () {
@@ -336,6 +338,6 @@ if (wgUserName !== null) $('span.insertusername').text(wgUserName);
 	if ( categories ) {
 		Array.from( categories.querySelectorAll( '.category' ) )
 			.sort( function ( a, b ) { return a.innerText.localeCompare( b.innerText ); } )
-			.map( function ( e ) { categories.appendChild( e ) } );
+			.map( function ( e ) { categories.appendChild( e ); } );
 	}
 } )();

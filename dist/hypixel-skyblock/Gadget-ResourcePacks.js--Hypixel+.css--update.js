@@ -14,6 +14,7 @@
 	
 	const s_alt = str => `img[alt="${str}"]`;
 	const s_minetipTitle = str => `.invslot-item-image[data-minetip-title="${str}"] img`;
+	const s_invslot_alt = str => `.invslot-item img[alt="${str}"]`;
 	const s_iboxThumbnail_alt = str => `img.pi-image-thumbnail[alt="${str}"]`;
 	const s_minetipTitleAndText = (title,text,textAttrType='') => `.invslot-item-image[data-minetip-title="${title}"][data-minetip-text${textAttrType}="${text}"] img`;
 	const s_potion_alt = str => `img[alt^="${str} "][alt$=" Potion"]`; // Check if an alt start with potion name and ends in " Potion" - this works like a wilkcard for thier potion's tier (and also lets it work if no tier in the name at all)
@@ -1043,6 +1044,7 @@
 				
 				"dark_auction/shady_ring": { wiki: "Shady Ring" },
 				"dark_auction/crooked_artifact": { wiki: "Crooked Artifact" },
+				"dark_auction/magic_8_ball": { wiki: "Magic 8 Ball" },
 				"dark_auction/seal_of_the_family": { wiki: "Seal of the Family" },
 				"dark_auction/hegemony_artifact": { wiki: "Hegemony Artifact", imgName: "Hegemony Artifact" }, // imgName needed for front page
 				"dark_auction/hocus_pocus_cipher": { wiki: "Hocus-Pocus Cipher" },
@@ -1889,15 +1891,49 @@
 					}),
 					
 					'/skins': new Folder({
-						"gift_white_backpack": { wiki: "White Gift Backpack Skin" },
-						"gift_gold_backpack": { wiki: "Gold Gift Backpack Skin" },
-						"gift_green_backpack": { wiki: "Green Gift Backpack Skin" },
-						"gift_black_backpack": { wiki: "Black Gift Backpack Skin" },
-						"gift_blue_backpack": { wiki: "Blue Gift Backpack Skin" },
-						"gift_purple_backpack": { wiki: "Purple Gift Backpack Skin" },
-						"north_star_backpack": { wiki: "North Star Backpack Skin" },
-						"christmas_stocking_backpack": { wiki: "Christmas Stocking Backpack Skin" },
-						"bag_of_coal_backpack": { wiki: "Bag of Coal Backpack Skin" },
+						// Fire Sale
+						"dragon_egg_backpack_applied": { wiki: "Dragon Egg Backpack Skin" },
+						"dragon_egg_backpack": { selectors: [s_invslot_alt`Dragon Egg Backpack Skin`] },
+						
+						"babyseal_backpack_applied": { wiki: "Baby Seal Backpack Skin" },
+						"babyseal_backpack": { selectors: [s_invslot_alt`Baby Seal Backpack Skin`] },
+						"penguin_backpack_applied": { wiki: "Penguin Backpack Skin" },
+						"penguin_backpack": { selectors: [s_invslot_alt`Penguin Backpack Skin`] },
+						"reindeer_backpack_applied": { wiki: "Reindeer Backpack Skin" },
+						"reindeer_backpack": { selectors: [s_invslot_alt`Reindeer Backpack Skin`] },
+						
+						"blue_egg_applied": { wiki: "Blue Egged Skin" },
+						"blue_egg": { selectors: [s_invslot_alt`Blue Egged Skin`] },
+						"green_egg_applied": { wiki: "Green Egged Skin" },
+						"green_egg": { selectors: [s_invslot_alt`Green Egged Skin`] },
+						"purple_egg_applied": { wiki: "Purple Egged Skin" },
+						"purple_egg": { selectors: [s_invslot_alt`Purple Egged Skin`] },
+						"enderpack_applied": { wiki: "Enderpack Skin" },
+						"enderpack": { selectors: [s_invslot_alt`Enderpack Skin`] },
+						
+						// Non-Fire Sale
+						"awakened_eye_backpack_applied": { wiki: "Awakened Eye Backpack Skin" },
+						"awakened_eye_backpack": { selectors: [s_invslot_alt`Awakened Eye Backpack Skin`] },
+						"christmas_stocking_backpack_applied": { wiki: "Christmas Stocking Backpack Skin" },
+						"christmas_stocking_backpack": { selectors: [s_invslot_alt`Christmas Stocking Backpack Skin`] },
+						"bag_of_coal_backpack_applied": { wiki: "Bag of Coal Backpack Skin" },
+						"bag_of_coal_backpack": { selectors: [s_invslot_alt`Bag of Coal Backpack Skin`] },
+						
+						"gift_white_backpack_applied": { wiki: "White Gift Backpack Skin" },
+						"gift_white_backpack": { selectors: [s_invslot_alt`White Gift Backpack Skin`] },
+						"gift_gold_backpack_applied": { wiki: "Gold Gift Backpack Skin" },
+						"gift_gold_backpack": { selectors: [s_invslot_alt`Gold Gift Backpack Skin`] },
+						"gift_green_backpack_applied": { wiki: "Green Gift Backpack Skin" },
+						"gift_green_backpack": { selectors: [s_invslot_alt`Green Gift Backpack Skin`] },
+						"gift_blue_backpack_applied": { wiki: "Blue Gift Backpack Skin" },
+						"gift_blue_backpack": { selectors: [s_invslot_alt`Blue Gift Backpack Skin`] },
+						"gift_purple_backpack_applied": { wiki: "Purple Gift Backpack Skin" },
+						"gift_purple_backpack": { selectors: [s_invslot_alt`Purple Gift Backpack Skin`] },
+						
+						"gift_black_backpack_applied": { wiki: "Black Gift Backpack Skin" },
+						"gift_black_backpack": { selectors: [s_invslot_alt`Black Gift Backpack Skin`] },
+						"north_star_backpack_applied": { wiki: "North Star Backpack Skin" },
+						"north_star_backpack": { selectors: [s_invslot_alt`North Star Backpack Skin`] },
 					}),
 				}),
 				
@@ -2969,6 +3005,7 @@
 					"metal_heart": { wiki: "Living Metal Heart" },
 					"exportable_carrots": { wiki: "Exportable Carrots" },
 					"metaphoric_egg": { wiki: "Metaphoric Egg" },
+					"placeable_fairy_soul_rift": { wiki: "Placeable Fairy Soul" },
 					"dead_cat_food": { wiki: "Dead Cat Food" },
 					"tasty_cat_food": { wiki: "Tasty Cat Food" },
 					"larva_silk": { wiki: "Larva Silk" },
