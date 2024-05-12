@@ -1,44 +1,52 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-$(".spoiler").click(function (){
- $(".spoiler").addClass("appSpoiler");
- $(".spoiler").removeClass("preSpoiler");
- $(".preSpoilerA").removeClass("preSpoilerA");
-});
+function abbreviate(number) {
+	const affixes = ["k", "M", "B", "T", "qd", "Qn", "Sx"];
+	let output = number;
+	for (let a = 0; a < (affixes.length * 3); a++) {
+    	  if (number >= (1000 * (10 ** a)) && number < (10000 * (10 ** a))) {
+    	      output = ((Math.floor(number / (10 * (10 ** a)))) / (100 / (10 ** (a % 3)))) + affixes[Math.floor(a/3)];
+    	      break;
+    	  }
+  }
+	return output;
+}
 
-/* for refinery thing */
-
-$(document).ready(function() {
-	$("#box").html('<input type="text" value="1" id="start"></input>');
-});
-
-$("#apply").click(function() {
-	var refineryMultiply = document.getElementById("start").value;
-	//1
-	var refineryInput1 = document.getElementById("input1").textContent;
-	var refineryOutput1 = document.getElementById("output1").textContent;
-	//2
-	var refineryInput2 = document.getElementById("input2").textContent;
-	var refineryOutput2 = document.getElementById("output2").textContent;
-	//3
-	var refineryInput3 = document.getElementById("input3").textContent;
-	//4
-	var refineryInput4 = document.getElementById("input4").textContent;
-	//5
-	var refineryInput5 = document.getElementById("input5").textContent;
-
-///// outputs
-	//1
-	document.getElementById("inputFinal1").innerHTML = Math.abs(refineryInput1 * refineryMultiply);
-	document.getElementById("outputFinal1").innerHTML = Math.abs(refineryOutput1 * refineryMultiply);
-	//2
-	document.getElementById("inputFinal2").innerHTML = Math.abs(refineryInput2 * refineryMultiply);
-	document.getElementById("outputFinal2").innerHTML = Math.abs(refineryOutput2 * refineryMultiply);
-	//3
-	document.getElementById("inputFinal3").innerHTML = Math.abs(refineryInput3 * refineryMultiply);
-	//4
-	document.getElementById("inputFinal4").innerHTML = Math.abs(refineryInput4 * refineryMultiply);
-	//5
-	document.getElementById("inputFinal5").innerHTML = Math.abs(refineryInput5 * refineryMultiply);
-});
-
-//Math.abs(refineryInput1 * refineryMultiply1);
+function generateTable(multi) {
+	if (multi == undefined) {
+  	multi = 1;
+  }
+	const titlerowtext = ["Rank", "XP", "XP (analyzer)", "XP (particlizer)"]
+	const ranks = ["Newbie", "Beginner", "Average", "Venturer", "Experienced", "Professional", "Expert", "Legend", "Master", "Grand Master", "Overlord", "Dedicated", "Nolife", "Soulless", "Enlightened", "Divine", "Almighty", "Ascendant", "Transcendent", "Reverent", "Omnipotent", "Voxel Venturer", "Supreme Voxel Venturer", "True Voxel Venturer"]
+  const xp = [1e+5, 1e+5, 1e+5, 1e+5, 12e+4, 15e+4, 2e+5, 75e+4, 25e+5, 1e+7, 5e+7, 2e+8, 1e+9, 5e+9, 25e+9, 175e+9, 125e+10, 15e+12, 80e+12, 5e+14, 3e+15, 125e+14, 50e+15, 256e+15]
+	const tbl = document.createElement("table");
+  const titlerow = document.createElement("tr")
+  for (let t = 0; t < titlerowtext.length; t++) {
+    const title = document.createElement("th")
+    const titletext = document.createTextNode(titlerowtext[t])
+    title.appendChild(titletext);
+    titlerow.appendChild(title);
+    tbl.appendChild(titlerow);
+  }
+  for (let i = 0; i < ranks.length; i++) {
+  	const row = document.createElement("tr");
+  		const cella = document.createElement("td");
+  		const texta = document.createTextNode(ranks[i]);
+      const cellb = document.createElement("td");
+  		const textb = document.createTextNode(abbreviate(xp[i] * multi));
+      const cellc = document.createElement("td");
+  		const textc = document.createTextNode(abbreviate((xp[i] * multi) * 1.35));
+      const celld = document.createElement("td");
+  		const textd = document.createTextNode(abbreviate((xp[i] * multi) / 2));
+    	cella.appendChild(texta);
+      cellb.appendChild(textb);
+      cellc.appendChild(textc);
+      celld.appendChild(textd);
+  		row.appendChild(cella);
+      row.appendChild(cellb);
+      row.appendChild(cellc);
+      row.appendChild(celld);
+  tbl.appendChild(row);
+  }
+  document.body.appendChild(tbl);
+  tbl.setAttribute("border", "2");
+  console.log("XP multiplier: x" + multi);
+}

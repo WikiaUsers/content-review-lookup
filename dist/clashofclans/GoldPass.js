@@ -54,7 +54,7 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
-		//'<option value="15">15</option>' +
+		'<option value="15">15</option>' +
 		'<option value="30">30</option>' +
 		'</select> %</div>');
 	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Toggle Showcase Boost? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');

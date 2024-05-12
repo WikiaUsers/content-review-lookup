@@ -227,6 +227,11 @@ if (document.body.className.includes('page-Скачки')) {
 
 // список продуктов
 if (document.body.className.includes('page-Список_продуктов')) {
+	var plURL = new URL(window.location.href);
+	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
+	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
+	var plURLLevel = +(plURL.searchParams.get('level')||0);
+	//console.log(plURLBuild);
 	//setTimeout(productListAddScroll, 2000);
 	//pl — productsList, список продуктов
 	//элементы
@@ -239,6 +244,12 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plStar = plParams.querySelector('#products-list-star');
 	var plStarSelect = plStar.querySelector('.select-all');
 	var plClear = plParams.querySelector('#products-list-clear');
+	var plSave = plParams.querySelector('#products-list-save');
+	plSave.innerHTML = '<input type="checkbox"/>';
+	plIsSave = false;
+	var plSaveInp = plSave.querySelector('input');
+	plSaveInp.checked = false;
+	
 	//кнопки/ввод
 	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
 	var plLevelInp = plLevel.querySelector('input');
@@ -257,15 +268,30 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plBuildNames = [];
 	var plBuildList = [];
 	var plBuildAll = plBuild.querySelectorAll('.click-box');
+	if(plURLBuild){while(plURLBuild.length<plBuildAll.length){plURLBuild='0'+plURLBuild}plURLBuild=plURLBuild.split('')}else{plURLBuild=[]}
 	plBuildAll.forEach(function(span, i) {
 		img = span.querySelector('img');
+		img.ondragstart = function() { return false; };
 		build = img.title;
 		plBuildNames.push(img.title);
-		plBuildList.push(true);
-		span.style.background = '#88888830';
+		
+		if(plURLBuild.length){
+			if(+plURLBuild[i]){
+				plBuildList.push(true);
+				span.style.background = '#88888830';
+			} else {
+				plBuildList.push(false);
+				span.style.background = 'transparent';
+			}
+		} else {
+			plBuildList.push(true);
+			plBuildList.push(1);
+			span.style.background = '#88888830';
+		}
 		span.addEventListener('click', function() {
 			var x;
 			var level = +plLevelInp.value;
+			if(!level){level=1000;}
 			if (plBuildList[i]) {
 				plBuildList[i] = false;
 				span.style.background = 'transparent';
@@ -292,6 +318,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plStarAll = plStar.querySelectorAll('.click-box');
 	plStarAll.forEach(function(span, i) {
 		img = span.querySelector('img');
+		img.ondragstart = function() { return false; };
 		plStarList.push(false);
 		//span.style.display='none';
 		span.addEventListener('click', function() {
@@ -306,9 +333,31 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		});
 	});
 	
+	//сохранение настроек
+	plSaveInp.addEventListener('change', function(e){
+		plIsSave = e.target.checked;
+		if (plIsSave){
+			/*plURL = new URL(window.location.href);
+	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
+	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
+	var plURLLevel
+			*/
+			plURL.searchParams.set('build', parseInt(plURLBuild.join(''), 2).toString(36));
+			plURL.searchParams.set('star', parseInt(plURLStar.join(''), 2).toString(36));
+			plURL.searchParams.set('level', plURLLevel);
+			history.replaceState({},'',plURL);
+		} else {
+			plURL.searchParams.delete('build');
+			plURL.searchParams.delete('star');
+			plURL.searchParams.delete('level');
+			history.replaceState({},'',plURL);
+		}
+	});
+	
 	//кнопки
 	plBuildBtn.addEventListener('click', function(){
 		var level = +plLevelInp.value;
+		if (!level){level=1000;}
 		if(plBuildIsAll){
 			plBuildIsAll = false;
 			plBuildBtn.textContent = 'Выбрать всё';

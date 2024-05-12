@@ -360,6 +360,7 @@ UserTagsJS.modules.custom = {
 	'LDDCAT': ['codeguy', 'templateguy', 'editorguy'],
 	'Tsukiakari2216': ['jpguy', 'globalguy', 'cnguy', 'mediaguy', 'editorguy'],
 	'JellyBSD': ['jpguy', 'editorguy'],
+	'DavidRGD': ['globalguy', 'loreguy', 'editorguy'],
 };
 
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'administrator', 'sysop'];

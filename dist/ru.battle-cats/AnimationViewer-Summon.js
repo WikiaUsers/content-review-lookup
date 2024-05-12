@@ -13,7 +13,7 @@ var interval = {};
 	if (defaultBg != '') bg = defaultBg;
 	// insert UI elements
 	$("#summon-input-bg-div").append('<input type="text" id="summon-input-bg" placeholder="Введите название файла" value="' + bg + '" style="width: 118px; background-color: #eef;">');
-	$("#summon-input-frame-div").append('<input class="summon-input-element" type="number" id="summon-input-frame" value="65" min="0" title="Input the frame to show">');
+	$("#summon-input-frame-div").append('<input class="summon-input-element" type="number" id="summon-input-frame" value="65" min="0" title="Введите фрейм, чтобы показать">');
 	$("#animation-summon-button-div").append('<button id="animation-button-summon" type="button" title="Summon the spirit">Дух</button>');
 	$("#summon-hide-elements").append('<input type="checkbox">');
 	$("#summon-unit-name").text(unit);

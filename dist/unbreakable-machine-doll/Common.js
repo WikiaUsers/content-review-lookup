@@ -26,14 +26,33 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
-let loadingscreen = document.querySelector(".loadingscreen");
 
-window.addEventListener("scroll", () => {
-  loadingscreen.classList.add("scrolled");
-}, {
-    once: true
-}
-);
+const elementToAnimate = document.querySelector('.character-illustration');
+
+
+const options = {
+  threshold: 0.5 // Percentage of the target element that needs to be visible to trigger the animation
+};
+
+
+const callback = (entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // If the target element is intersecting with the viewport
+      // Add a CSS class to apply the opacity animation
+      elementToAnimate.classList.add('animate-opacity');
+      // Stop observing once the animation is triggered
+      observer.unobserve(entry.target);
+    }
+  });
+};
+
+// Create an IntersectionObserver instance with the callback function and options
+const observer = new IntersectionObserver(callback, options);
+
+// Start observing the target element
+observer.observe(elementToAnimate);
+
 
 
 

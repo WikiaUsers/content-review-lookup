@@ -16,8 +16,11 @@ window.UserTagsJS = {
 	}
 };
 
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
+
 UserTagsJS.modules.custom = {
-	'TaNk8k': ['founder']
+	'TaNk8k': ['founder'],
+	'TarasKhan475': ['bureaucrat']
 };
 
 UserTagsJS.modules.newuser = {

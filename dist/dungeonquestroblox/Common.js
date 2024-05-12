@@ -19,6 +19,7 @@ UserTagsJS.modules.custom = {
     'Noobyrblx011': ['former_staff'],
     'TotallyNotJullian': ['former_staff'],
     'TheTreasureHunter': ['former_staff'],
+    'NinjaDogDB': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],
@@ -433,7 +434,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
     function removeChildren(parent){
         while (parent.lastChild){
-            parent.removeChild(parent.lastChild)
+            parent.removeChild(parent.lastChild);
         }
     }
     function truncate(num) {

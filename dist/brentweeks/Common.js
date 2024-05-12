@@ -128,3 +128,44 @@ if (mw.config.get('profileUserName') === 'Moonwatcher_x_Qibli' && mw.config.get(
         });
     });
 }
+
+/*************
+Title        :   	UserBlockNotification
+Description  :		Whenever a user gets blocked, users will have notification alert. It will prsist, making them inable to interact with the page.
+Author       :   	Vastmine1029
+Version      :   	1.0
+*************/
+mw.loader.using('mediawiki.api', function() {
+	var api = new mw.Api(), block_data;
+	var user = mw.config.get('wgUserName');
+	
+	// If no user is logged in, abort JS.
+	if (!user) {
+		console.error("No user is currently logged in. \'BlockUserNotification\' JS aborted!");
+		return;
+	}
+	
+	function checkBlockStatus() {
+		api.get({
+			action: 'query',
+			list: 'blocks',
+			bkusers: user
+		}).then(function(d) {
+			block_data = d.query.blocks;
+			
+			// If user is not blocked, do not continue with the script. Abort JS.
+			if (block_data.length < 1) {
+				console.error(user + " is not blocked. \'BlockUserNotification\' JS aborted!");
+				return;
+			}
+			
+			alert("You are currently blocked. More information about your block here: Special:MyContributions");
+			
+			// Call the function recursively to keep checking the block status
+			checkBlockStatus();
+		});
+	}
+	
+	// Initial call to check block status
+	checkBlockStatus();
+});

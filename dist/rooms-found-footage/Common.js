@@ -3,8 +3,12 @@
 InactiveUsers = { months: 2 };
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
-//Rightrail customize
+// Adding objects to RightRail
 window.AddRailModule = [
     {page: 'Template:RailModuleTop', prepend: true},
     'Template:RailModule',
-]
+];
+// Lock old comments customization
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;

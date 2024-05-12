@@ -7,7 +7,7 @@ $(function () {
 		if (elements.length == 0) return;
 		elements.each(function(i) {
 			var element = $(this),
-				data = element.data('id').split(':'),
+				data = element.attr('data-id').split(':'),
 				iframe = document.createElement('iframe'),
 				defaultWidth, defaultHeight;
 

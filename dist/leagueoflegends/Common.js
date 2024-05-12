@@ -73,6 +73,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'modes' : ['- Game Modes - ',
             ['classic sr 5v5', '• Classic SR 5v5'],
             ['aram', '• ARAM'],
+            ['arena', '• Arena'],
             ['FGM', '• FGM']
         ]
     };

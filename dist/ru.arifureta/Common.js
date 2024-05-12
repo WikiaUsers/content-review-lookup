@@ -29,18 +29,20 @@ window.allowMultiUpload = true;
 window.ajaxPages = ["Некоторые часто обновляемые страницы"];
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Watchlist", "Log", "Contributions"];
 window.ajaxRefresh = 30000;
-window.AjaxRCRefreshText = 'Автоматическое обновление';
-window.AjaxRCRefreshHoverText = 'Автоматически обновлять страницу';
+window.AjaxRCRefreshText = 'Auto-refresh';
+window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
 window.BackToTopModern = true;
  
 window.topLevelCat = 'Browse';
+window.cacheSkip = [];
+window.cacheSkipLimit = 1000;
+window.CacheCheckRemove = false;
+ 
 window.cacheSkip = ['Specialpages', 'Deadendpages', 'Lonelypages',
     'Uncategorizedcategories', 'Uncategorizedpages', 'UncategorizediSynergists', 'Uncategorizedtemplates',
     'Unusedcategories', 'UnusediSynergists', 'Unusedtemplates', 'UnusedVideos',
     'Wantedcategories', 'Wantedpages', 'Wantedfiles', 'Wantedtemplates'];
-window.cacheSkipLimit = 1000;
-window.CacheCheckRemove = false;
  
  
 if (mw.config.get('wgUserGroups').indexOf('sysop') > -1) {

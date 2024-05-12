@@ -1,9 +1,4 @@
 /* Dev Wiki */
-// AddRailModule
-window.AddRailModule = [
-    { page: 'Template:Discord', prepend: true }
-];
-
 // BackToTopButton
 window.BackToTopModern = true;
 

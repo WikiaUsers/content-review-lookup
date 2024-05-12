@@ -133,11 +133,11 @@ if(cat.indexOf(name) !== -1){
         var name = "Флаг Скретча"
 }
 var cat = mw.config.get('wgCategories')
-var name = "Старая Земля2 (СТ)"
+var name = "UNI-Земля2 (СТ)"
 if(cat.indexOf(name) !== -1){
     $('.fandom-community-header__community-name').text(name)
     $('.fandom-community-header__background').css({"background": "url(https://static.wikia.nocookie.net/fnaf-fanon-animatronics/images/f/f2/Earth2Back.png/revision/latest?cb=20240209131157&path-prefix=ru)"});
-        var name = "Старая Земля2"
+        var name = "UNI-Земля2"
 }
 var cat = mw.config.get('wgCategories')
 var name = "GoldenWar (СТ)"

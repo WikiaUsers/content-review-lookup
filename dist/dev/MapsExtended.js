@@ -2391,8 +2391,7 @@
                     return;
 
                 var tooltipElement = document.createElement("div");
-                tooltipElement.className = "leaflet-tooltip leaflet-zoom-animated leaflet-tooltip-left";
-                tooltipElement.style.opacity = "0.9";
+                tooltipElement.className = "leaflet-tooltip leaflet-zoom-animated";
                 this.elements.tooltipElement = tooltipElement;
 
                 // This function is called by requestAnimationFrame and will update the transform of the tooltip
@@ -2466,35 +2465,97 @@
                 // Set the content of the tooltip
                 tooltipElement.textContent = marker.popup.title;
                 tooltipElement.style.display = marker.popup.isPopupShown() ? "none" : "";
+                
+                // Remove last margin offset
+                tooltipElement.style.marginLeft = tooltipElement.style.marginTop = "";
 
+                // Remove last left/right/top/bottom/center classes
+                tooltipElement.classList.remove("leaflet-tooltip-left", "leaflet-tooltip-right", "leaflet-tooltip-top", "leaflet-tooltip-bottom", "leaflet-tooltip-center");
+
+                var offset = [ this.config["tooltipOffset"][0], this.config["tooltipOffset"][1] ];
+                var direction = this.config["tooltipDirection"];
+                var localTransform;
+
+                // Handle "auto"
                 // Change whether the tooltip is shown on the left or right side of the marker depending
                 // on the marker's position relative to the viewport.
                 // Markers on the right side of the viewport will show a tooltip on the left and vice versa
-                var isShownOnLeftSide =  marker.getViewportMarkerPosition()[0] > this.getViewportSize()[0] / 2;
+                if (direction == "auto")
+                {
+                    var isShownOnLeftSide =  marker.getViewportMarkerPosition()[0] > this.getViewportSize()[0] / 2;
+                    direction = isShownOnLeftSide ? "left" : "right";
 
-                tooltipElement.classList.toggle("leaflet-tooltip-left", isShownOnLeftSide);
-                tooltipElement.classList.toggle("leaflet-tooltip-right", !isShownOnLeftSide);
+                    // Invert the X offset if shown on right
+                    if (!isShownOnLeftSide) offset[0] = -offset[0];
+                }
+
+                switch (direction)
+                {
+                    case "left":
+                    {
+                        tooltipElement.classList.add("leaflet-tooltip-left");
+                        localTransform = "translate(-100%, -50%)";
+                        break;
+                    }
+                    case "right":
+                    {
+                        tooltipElement.classList.add("leaflet-tooltip-right");
+                        localTransform = "translate(0, -50%)";
+                        break;
+                    }
+                    case "top":
+                    {
+                        tooltipElement.classList.add("leaflet-tooltip-top");
+                        localTransform = "translate(-50%, -100%)";
+                        break;
+                    }
+                    case "bottom":
+                    {
+                        tooltipElement.classList.add("leaflet-tooltip-bottom");
+                        localTransform = "translate(-50%, 0)";
+                        break;
+                    }
+                    case "center":
+                    {
+                        localTransform = "translate(-50%, -50%)";
+                        tooltipElement.classList.add("leaflet-tooltip-center"); // Isn't actually a built-in class
+                        break;
+                    }
+                }
                 
-                var localTransform = "translate(" + (isShownOnLeftSide ? "-100%" : "0") + ", -50%)";
-                
-                // Offset the tooltip based on the iconAnchor
+                // Offset the tooltip based on the iconAnchor and the marker size
                 if (marker.iconAnchor.startsWith("top"))
-                    tooltipElement.style.marginTop = (marker.height * 0.5) + "px";
+                    offset[1] += marker.height * 0.5;
                 else if (marker.iconAnchor.startsWith("bottom"))
-                    tooltipElement.style.marginTop = (marker.height * -0.5) + "px";
-                else
-                    tooltipElement.style.marginTop = "";
-
+                    offset[1] += marker.height * -0.5;
                 if (marker.iconAnchor.endsWith("left"))
-                    tooltipElement.style.marginLeft = (marker.width * 0.5) + (isShownOnLeftSide ? -6 : 6) + "px"; // (50% of icon width) + 6 (tooltip tip on left) or - 6 (tooltip tip on right)
+                    offset[0] += marker.width * 0.5;
                 else if (marker.iconAnchor.endsWith("right"))
-                    tooltipElement.style.marginLeft = (marker.width * -0.5) + (isShownOnLeftSide ? -6 : 6) + "px";
-                else
-                    tooltipElement.style.marginLeft = "";
+                    offset[0] += marker.width * -0.5;
+
+                // Add the tooltip tip
+                if (marker.iconAnchor.endsWith("left") || marker.iconAnchor.endsWith("right"))
+                {
+                    // - 6 (tooltip tip on right) 
+                    if (direction == "left") offset[0] += -6;
+                    // + 6 (tooltip tip on left)
+                    if (direction == "right") offset[0] += 6;
+                }
+                if (marker.iconAnchor.startsWith("top") || marker.iconAnchor.startsWith("bottom"))
+                {
+                    // - 6 (tooltip tip on bottom) 
+                    if (direction == "top") offset[1] += -6;
+                    // + 6 (tooltip tip on top)
+                    if (direction == "bottom") offset[1] += 6;
+                }
                 
                 // We use two transforms, the transform of the marker and a local one which shifts the tooltip
                 tooltipElement.localTransform = localTransform;
                 tooltipElement.style.transform = marker.markerElement.style.transform + " " + localTransform;
+
+                // Then, the pixel offset is applied using margins
+                if (offset[0] != 0) tooltipElement.style.marginLeft = offset[0] + "px";
+                if (offset[1] != 0) tooltipElement.style.marginTop = offset[1] + "px";
 
                 // Finally, add the tooltip to the DOM
                 this.elements.leafletTooltipPane.appendChild(tooltipElement);
@@ -9648,12 +9709,28 @@
                 default: true,
                 type: "boolean"
             },
+
+            // Tooltips
             {
                 name: "enableTooltips",
                 alias: "allowTooltips",
                 presence: false,
                 default: true,
                 type: "boolean"
+            },
+            {
+                name: "tooltipDirection",
+                presence: false,
+                default: "auto",
+                type: "string",
+                validValues: [ "top", "bottom", "left", "right", "center", "auto" ]
+            },
+            {
+                name: "tooltipOffset",
+                presence: false,
+                default: [ 0, 0 ],
+                type: "array",
+                arrayType: "number"
             },
 
             // Custom features

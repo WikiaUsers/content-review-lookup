@@ -20,7 +20,7 @@
 			'    <input type="checkbox" value="Medium" id="armor-search-armortype-medium"><label for="armor-search-armortype-medium" style="display: inline-block; width: 100px;">Medium</label>' +
 			'    <input type="checkbox" value="Heavy" id="armor-search-armortype-heavy"><label for="armor-search-armortype-heavy" style="display: inline-block; width: 100px;">Heavy</label>' +
 			'  </fieldset>' +
-			'  <fieldset style="width: 300px; float: left;">' +
+			'  <fieldset style="width: 200px; float: left;">' +
 			'    <legend>Bonus</legend>' +
 			'    <input type="checkbox" value="Agility Weapon Damage" id="armor-search-bonus-agility"><label for="armor-search-bonus-agility">Agility Weapon Damage</label><br>' +
 			'    <input type="checkbox" value="Strength Weapon Damage" id="armor-search-bonus-strength"><label for="armor-search-bonus-strength">Strength Weapon Damage</label><br>' +
@@ -30,7 +30,15 @@
 			'    <input type="checkbox" value="Stamina" id="armor-search-bonus-stamina"><label for="armor-search-bonus-stamina">Stamina</label><br>' +
 			'    <input type="checkbox" value="Carrying Capacity" id="armor-search-bonus-carrying"><label for="armor-search-bonus-carrying">Carrying Capacity</label><br>' +
 			'  </fieldset>' +
-			'  <fieldset style="width: 300px; float: right;">' +
+			'  <fieldset style="width: 200px; float: right;">' +
+			'    <legend>Source</legend>' +
+			'    <input type="checkbox" value="Base Game" id="armor-search-source-basegame"><label for="armor-search-source-basegame">Base Game</label><br>' +
+			'    <input type="checkbox" value="DLCs" id="armor-search-source-dlc"><label for="armor-search-source-dlc">DLCs</label><br>' +
+			'    <input type="checkbox" value="Black Lotus Bazaar" id="armor-search-source-bazaar"><label for="armor-search-source-bazaar">Black Lotus Bazaar</label><br>' +
+			'    <input type="checkbox" value="Battle Pass" id="armor-search-source-battlepass"><label for="armor-search-source-battlepass">Battle Pass</label><br>' +
+			'    <input type="checkbox" value="Twitch Drop" id="armor-search-source-twitchdrop"><label for="armor-search-source-twitchdrop">Twitch Drop</label><br>' +
+			'  </fieldset>' +
+			'  <fieldset style="width: 200px; float: right; margin-left: 5px; margin-right: 5px;">' +
 			'    <legend>Effect</legend>' +
 			'    <input type="checkbox" value="Cursed" id="armor-search-effect-cursed"><label for="armor-search-effect-cursed">Cursed</label><br>' +
 			'    <input type="checkbox" value="Durable" id="armor-search-effect-durable"><label for="armor-search-effect-durable">Durable</label><br>' +
@@ -199,6 +207,23 @@
 			
 			if(effects != '') {
 				params += '|effects=' + effects
+			}
+
+			var sources = ''
+			var sourceKeys = Array('basegame', 'dlc', 'bazaar', 'battlepass', 'twitchdrop')
+			for(var j in sourceKeys) {
+				var key = sourceKeys[j]
+				var element = document.getElementById('armor-search-source-' + key)
+				if(element != null && element.checked) {
+					if(sources != '') {
+						sources += ','
+					}
+					sources += key
+				}
+			}
+			
+			if(sources != '') {
+				params += '|sources=' + sources
 			}
 			
 			console.log("armor search: params = " + params)

@@ -352,6 +352,8 @@ window.MessageWallUserTags = {
         'FireMatch': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
+        'BookFandumb': 'Discussion Moderator',
+    
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',

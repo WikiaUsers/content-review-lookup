@@ -152,3 +152,9 @@ $('a:contains(An Anonymous user)').append(function(){return ' (' + this.href.mat
         }, 100);
     });    
 })(jQuery);
+
+/* MapsExtended global config */
+window.mapsExtendedConfig = {
+    "minimalLayout": true,
+    "enableSidebar": true,
+};

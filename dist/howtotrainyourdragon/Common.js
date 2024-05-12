@@ -95,8 +95,7 @@ window.MessageWallUserTags = {
     glowSize: '15px',
     glowColor: '#8B0000',
     users: {
-        'Spongebob456': 'Representative',
-        'Annabeth_and_Percy': 'Bureaucrat',
+        'Barneymiller123abc': 'Representative',
         'DublynT': 'Bureaucrat',
         'HiccstridFan92': 'Admin',
         'Tauriel_the_Elf': 'Admin',

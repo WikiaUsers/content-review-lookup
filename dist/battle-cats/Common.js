@@ -33,7 +33,7 @@ window.AddRailModule = [
 
 /* LockOldComments */
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 90;
+window.lockOldComments.limit = 120;
 window.lockOldComments.addNoteAbove = true;
 /* End of LockOldComments */
 

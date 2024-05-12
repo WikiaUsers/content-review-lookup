@@ -1,6 +1,6 @@
 // Any JavaScript here will be loaded for all users on every page load.
 
-// Collapsible lists
+// Interactive Tree Script
 
 $('h2:contains("Appearances and references")+ul').wrap('<div class="collapsible-list">');
 $('h2:contains("Bibliography")+ul').wrap('<div class="collapsible-list">');
@@ -19,10 +19,6 @@ $('.collapsible-list').each(function(index, currentTree){
 
   $(this).prepend(desc);
 
-  if (total > smallTreeCount){
-    $(this).find('ul li ul').hide();
-  }
-
   $('#'+currentButtonID).click(function(){
     if ($(this).text() === "show all"){
       $(currentTree).find('ul li ul').show();
@@ -36,8 +32,12 @@ $('.collapsible-list').each(function(index, currentTree){
 
 $('.collapsible-list li ul').each(function(index, currentTree){
   const currentButtonID = 'pane-'+index++;
-  const total = $(this).find('li').length - $(this).find('ul').length;
+  const total = $(this).find('li').length - $(this).find('ul li').length;
   const button = '<a id="'+currentButtonID+'" class="show-hide-button">'+total+'</a>';
+
+  if (total > smallTreeCount){
+    $(currentTree).hide();
+  }
 
   $(this).before('<small>('+button+')</small>');
 

@@ -464,7 +464,7 @@ function showFrame(frame, maanim, imgcut, maxValues) {
 					continue;
 				}
 			}
-			if (row[2] == -1) {
+			if (row[2] != 1) {
 				var fMin = maanim[i + 2][0];
 				var fMax = maanim[i + modCount + 1][0];
 				frameNow = (frame - fMin) % (fMax - fMin) + fMin;

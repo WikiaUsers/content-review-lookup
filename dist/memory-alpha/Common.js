@@ -545,7 +545,7 @@ $('.ns-15 .page-header__title').prepend('Category ');
  
 }(window.countdownTimer = window.countdownTimer || {}, mediaWiki, jQuery));
 
-/* Display Ogg files in galleries */
+// Display Ogg files in galleries
 
 const oggFile = $('.wikia-gallery-item [data-image-key$=".ogg"]');
 
@@ -556,7 +556,7 @@ function correctOggFiles(){
   $(this).remove();
 }
 
-/* Display PDF files in galleries */
+// Display PDF files in galleries
 
 const adobeGalleryIcon = $('.wikia-gallery-item [data-image-key$=".pdf"]');
 
@@ -564,19 +564,19 @@ adobeGalleryIcon.each(removeAdobeIcon);
 
 function removeAdobeIcon(){
   const fileName = $(this).attr('data-image-key');
-  $(this).after('<iframe src="/wiki/Special:Redirect/file/'+fileName+'" width="185" height="185" title="'+fileName+'"></iframe><div class="thumbcaption pdf-thumbcaption"><a href="/wiki/File:'+fileName+'" class="info-icon pdf-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a></div>');
+  $(this).after('<a href="/wiki/Special:Redirect/file/'+fileName+'" class="directLinkToPDF"></a><iframe src="/wiki/Special:Redirect/file/'+fileName+'" loading="lazy" width="185" height="185" title="'+fileName+'"></iframe><div class="thumbcaption pdf-thumbcaption"><a href="/wiki/File:'+fileName+'" class="info-icon pdf-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a></div>');
   $(this).parent().addClass('thumb show-info-icon');
   $(this).remove();
 }
 
-/* Display PDF files on PDF file pages */
+// Display PDF files on PDF file pages
 
 const adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
 
-adobeIcon.parent().prepend('<iframe src="/wiki/Special:Redirect/file/'+mw.config.get("wgTitle")+'" width="250" height="auto" title="'+mw.config.get("wgTitle")+'"></iframe>');
+adobeIcon.parent().prepend('<iframe src="/wiki/Special:Redirect/file/'+mw.config.get("wgTitle")+'" loading="lazy" width="250" height="auto" title="'+mw.config.get("wgTitle")+'"></iframe>');
 adobeIcon.remove();
 
-/* Embed PDF file widgets into pages */
+// Embed PDF file widgets into pages
 
 const widget = $('.pdf-widget');
 
@@ -587,6 +587,6 @@ function embedPDFs(){
   const floatDir = $(this).attr('data-float') ? $(this).attr('data-float') : 'right';
   const caption = $(this).attr('data-caption') ? $(this).attr('data-caption').replace(/'''(.+?)'''/g, '<b>$1</b>').replace(/''(.+?)''/g, '<i>$1</i>').replace(/\[\[(.+?)\|(.+?)\]\]/g, '<a href="/wiki/$1">$2</a>').replace(/\[\[(.+?)\]\]/g, '<a href="/wiki/$1">$1</a>') : '';
 
-  $(this).html('<figure class="thumb t'+floatDir+' show-info-icon"><iframe src="/wiki/Special:Redirect/file/'+specifiedFile+'" width="174.028" height="auto" title="'+specifiedFile+'"></iframe><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
+  $(this).html('<figure class="thumb t'+floatDir+' show-info-icon"><a href="/wiki/Special:Redirect/file/'+specifiedFile+'" class="directLinkToPDF"></a><iframe src="/wiki/Special:Redirect/file/'+specifiedFile+'" loading="lazy" width="174.028" height="auto" title="'+specifiedFile+'"></iframe><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
 }
 // </nowiki>

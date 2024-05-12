@@ -15,7 +15,7 @@ $(function() {
 	// Main class
 	var betterUpload = {
 		init: function(curr) {
-			// Add custom form submit
+			// Add custom form submitapi
 			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
 			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
 			  event.preventDefault();
@@ -44,6 +44,7 @@ $(function() {
 			}
 			
 			// Page default changes
+			document.querySelector('#wpWatchthis').closest('fieldset').remove();
 			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Page content:';
 			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
 			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
@@ -243,15 +244,31 @@ $(function() {
             	params.comment = comment.value;
             }
 			if (file && filename && filename.length>0) {
-				var loadFilePage = function() {
-					window.open(
-						mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
-						'_self' // load in current tab
-					);
+				var handleResponse = function(msg, data) {
+					if (data.error) {
+						console.log('msg', msg);
+						console.log('data', data);
+						var cont = document.querySelector('.mw-message-box-error');
+						if (!cont) {
+							var _temp = $('<h2 class="mw-message-box-error-header">Upload Warning</h2><div class="mw-message-box-error mw-message-box"></div>');
+							$('#uploadtext').after(_temp);
+							cont = _temp[1];
+						}
+						cont.innerHTML = (data.error.info && data.error.info.length>0) ? data.error.info : 'Unknown error during upload.';
+					} else if (data.upload && data.upload.result == 'Success') {
+						window.open(
+							mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
+							'_self' // load in current tab
+						);
+					} else {
+						console.log('msg', msg);
+						console.log('data', data);
+						alert('Unknown error on upload!');
+					}
 				};
-				api.upload(file, params).then(loadFilePage, loadFilePage);
+				api.upload(file, params).then(handleResponse, handleResponse);
 			} else { alert('Missing file or file name. Could not upload file.'); }
-		},
+		}
 	};
 	
 	// Start when API and LIB are loaded

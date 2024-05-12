@@ -1,0 +1,1 @@
+mw.loader.load( 'https://tools.wmflabs.org/imagemapedit/ime.js' );
