@@ -8,3 +8,9 @@ importArticles({
         'u:dev:ExtendedNavigation/code.js'
     ]
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MultiUpload.js',
+    ]
+});

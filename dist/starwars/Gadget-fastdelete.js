@@ -1,7 +1,7 @@
 mw.loader.using('ext.fandom.ContentReview.legacyLoaders.js').then(function() {
 	window.fdButtons = [
 	    {
-	        summary: '-- 1.3 [[Wookieepedia:Vandalism|Vandalism]]',
+	        summary: '-- 1.3 [[Wookieepedia:User conduct policy#Vandalism|Vandalism]]',
 	        label: 'V'
 	    },
 	    {

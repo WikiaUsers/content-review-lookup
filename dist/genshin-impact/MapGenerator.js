@@ -4,7 +4,7 @@ $(function() {
 	(window.dev = window.dev || {}).MapGenerator = true;
 	
 	// Load dependencies and cache
-	var config = mw.config.get(['wgAction', 'wgPageName']);
+	var config = mw.config.get(['wgAction', 'wgPageName', 'wgServer']);
 	var markers = { count:0 };
 	var REGION = 'Mondstadt';
 	var api = new mw.Api();
@@ -75,15 +75,15 @@ $(function() {
 				'<div id="regionSelect" class="custom-tabs-default custom-tabs">'+
 					tabs+
 				'</div>'+
-				'<div id="TemplatesLoading">'+
+				'<div id="Templates-loading">'+
 					'<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="25px" style="vertical-align: baseline;" border="0" /> '+
 					'Loading...'+
 				'</div>'+
-				'<div id="TemplatesList"></div>'+
+				'<div id="Templates-list"></div>'+
 				'<hr />'+
 				'<center>'+
-					'<span id="TemplateManagerNote">No template selected.</span>'+
-					'<div id="TemplateManager" rel="">'+
+					'<span id="Templates-generator-note">No template selected.</span>'+
+					'<div id="Templates-generator" rel="">'+
 						'<img id="templateImage" width="100%" src="" rel="" />'+
 					'</div>'+
 					'<div>'+
@@ -91,11 +91,15 @@ $(function() {
 						'<span class="wds-button" id="WikitextGenerator">Copy Wikitext</span>'+
 					'</div>'+
 					'<div style="display: inline-flex;gap: 5px;margin-top: 5px;">'+
-						'<span class="wds-button" id="MapUploader">Upload Map</span> '+
-						'<div style="display:flex;flex-direction:column;gap:3px;">'+
-							'<label for="MapUploader-name">Filename: <input type="text" id="MapUploader-name" /></label>'+
-							'<label for="MapUploader-type">Map type: <input type="text" id="MapUploader-type" placeholder="'+localStorage.getItem('MapGenerator-UT')+'" /></label>'+
+						'<span class="wds-button" id="Templates-uploader">Upload Map</span> '+
+						'<div id="Templates-uploader-settings">'+
+							'<label for="Templates-uploader-name">Filename: <input type="text" id="Templates-uploader-name" /></label>'+
+							'<label for="Templates-uploader-type">Map type: <input type="text" id="Templates-uploader-type" placeholder="'+localStorage.getItem('MapGenerator-UT')+'" /></label>'+
 						'</div>'+
+					'</div>'+
+					'<div id="Templates-uploader-render">'+
+						'<span id="Templates-uploader-render-note"></span>'+
+						'<img id="Templates-uploader-render-image" width="100%" src="" />'+
 					'</div>'+
 				'</center>'));
 			mapGenerator.loadTemplates(mapRefs[REGION]);
@@ -128,23 +132,23 @@ $(function() {
 				'.custom-tabs > .inactive-tab:hover {\n'+
 					'color: var(--inactive-tab-hover-color)\n'+
 				'}\n'+
-				'#TemplatesList {\n'+
+				'#Templates-list {\n'+
 					'display: flex;\n'+
 					'gap: 20px;\n'+
 					'flex-wrap: wrap;\n'+
 					'justify-content: center;\n'+
 				'}\n'+
-				'#TemplatesList > .mapTemplate {\n'+
+				'#Templates-list > .mapTemplate {\n'+
 					'display: flex;\n'+
 					'flex-direction: column;\n'+
 					'gap: 2px;\n'+
 					'text-align: center;\n'+
 					'width: 200px;\n'+
 				'}\n'+
-				'#TemplateManagerNote {\n'+
+				'#Templates-generator-note {\n'+
 					'font-weight: bold;\n'+
 				'}\n'+
-				'#TemplateManager {\n'+
+				'#Templates-generator {\n'+
 					'width: 600px;\n'+
 					'position: relative;\n'+
 					'padding-bottom: 5px;\n'+
@@ -174,6 +178,30 @@ $(function() {
 					'position: relative;\n'+
 					'border: 1px solid rgba(var(--theme-accent-color--rgba),0.5);\n'+
 					'border-radius: 5px;'+
+				'}\n'+
+				'#Templates-uploader-settings {\n'+
+					'display: flex;\n'+
+					'flex-direction: column;\n'+
+					'gap: 3px;\n'+
+					'text-align: left;\n'+
+				'}\n'+
+				'#Templates-uploader-settings > label {\n'+
+					'display: inline-flex;\n'+
+					'align-items: center;\n'+
+					'gap: 3px;\n'+
+				'}\n'+
+				'#Templates-uploader-render-note {\n'+
+					'display: inline-flex;\n'+
+					'align-items: center;\n'+
+					'gap: 3px;\n'+
+				'}\n'+
+				'#Templates-uploader-render-image {\n'+
+					'width: 600px;\n'+
+					'display: block;\n'+
+				'}\n'+
+				'.Templates-uploader-render-reload:hover {\n'+
+					'transition: .5s ease-in-out;\n'+
+					'rotate: 360deg;\n'+
 				'}\n'
 			);
 			var closeMarkerSettings = function() {if (document.querySelector('.markerSettings')) {document.querySelector('.markerSettings').remove();}};
@@ -206,7 +234,7 @@ $(function() {
 					};
 					markers['marker'+markers.count] = newMarker;
 					if (event.target.id == 'templateImage')  {
-						$('#TemplateManager').append(img);
+						$('#Templates-generator').append(img);
 					} else {
 						$('#mapContainer').append(img);
 					}
@@ -222,15 +250,17 @@ $(function() {
 					var rel = event.target.getAttribute('rel');
 					localStorage.setItem(rel, event.target.checked ? 'checked' : '');
 					if (rel == 'MapGenerator-QGD') {document.querySelector('section#quickGenSection').style.setProperty('display', event.target.checked ? '' : 'none');}
-				} else if (event.target && event.target.id == 'MapUploader-type') {
+				} else if (event.target && event.target.id == 'Templates-uploader-type') {
 					localStorage.setItem('MapGenerator-UT', event.target.value);
+				} else if (event.target && event.target.id == 'Templates-uploader-name') {
+					mapGenerator.renderImagePreview();
 				}
 			});
 			document.addEventListener('contextmenu', function(event) {
 				closeMarkerSettings();
 				if (event.target && /^marker\d+/.test(event.target.id)) {
 					event.preventDefault();
-					var localZoom = (event.target.closest('#TemplateManager') ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.closest('#Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
 					var menu = $(
 						'<div class="markerSettings" style="z-index:99999; position:absolute;">'+
 							'<ul>'+
@@ -242,7 +272,7 @@ $(function() {
 							'</ul>'+
 						'</div>'
 					);
-					$('#'+(event.target.closest('#TemplateManager') ? 'TemplateManager' : 'mapContainer')).append(menu);
+					$('#'+(event.target.closest('#Templates-generator') ? 'Templates-generator' : 'mapContainer')).append(menu);
 					document.querySelector('.markerSettings').style.setProperty('top', markers[event.target.id].y*localZoom+(document.querySelector('.markerSettings').clientHeight/2)+'px');
 					document.querySelector('.markerSettings').style.setProperty('left', markers[event.target.id].x*localZoom-(document.querySelector('.markerSettings').clientWidth/2)+'px');
 				}
@@ -254,7 +284,7 @@ $(function() {
 					var markerID = event.target.getAttribute('rel');
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
-					var localZoom = (event.target.closest('#TemplateManager') ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.closest('#Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
 					marker.onload = function() {
 						marker.setAttribute('width', (marker.naturalWidth*localZoom)+'px');
 						marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*localZoom+ 'px');
@@ -279,8 +309,8 @@ $(function() {
 					event.target.classList.remove('inactive-tab');
 					
 					// Reset template selection
-					document.querySelector('#TemplateManagerNote').innerHTML = 'No template selected.';
-					document.querySelector('#TemplateManagerNote').removeAttribute('rel');
+					document.querySelector('#Templates-generator-note').innerHTML = 'No template selected.';
+					document.querySelector('#Templates-generator-note').removeAttribute('rel');
 					document.querySelector('#templateImage').setAttribute('src', '');
 					document.querySelector('#templateImage').setAttribute('rel', '');
 					
@@ -298,18 +328,18 @@ $(function() {
 					mapGenerator.processPreciseMarkers();
 				} else if (event.target && event.target.id == 'WikitextGenerator') {
 					closeMarkerSettings();
-					navigator.clipboard.writeText(mapGenerator.genFilePage(REGION, document.querySelector('#TemplateManagerNote').getAttribute('rel')));
-				} else if (event.target && event.target.id == 'MapUploader') {
+					navigator.clipboard.writeText(mapGenerator.genFilePage(REGION, document.querySelector('#Templates-generator-note').getAttribute('rel')));
+				} else if (event.target && event.target.id == 'Templates-uploader') {
 					mapGenerator.getFileObject(
 						mapGenerator.processPreciseMarkers(true),
-						mapGenerator.genFilePage(REGION, document.querySelector('#TemplateManagerNote').getAttribute('rel'))
+						mapGenerator.genFilePage(REGION, document.querySelector('#Templates-generator-note').getAttribute('rel'))
 					);
 				} else if (event.target && event.target.closest('.mapTemplate')) {
 					closeMarkerSettings();
 					var template = event.target.closest('.mapTemplate').getAttribute('rel');
 					var manager = document.querySelector('#templateImage');
 					if (manager.getAttribute('rel') !== template) {
-						document.querySelectorAll('#TemplateManager > .mapMarker').forEach(function(marker){
+						document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
 							markers.count--;
 							delete markers[marker.id];
 							marker.remove();
@@ -317,10 +347,10 @@ $(function() {
 						manager.setAttribute('rel', template);
 						manager.setAttribute('src', loadedImages[template].src);
 						var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
-						document.querySelector('#TemplateManagerNote').innerHTML = name;
-						document.querySelector('#TemplateManagerNote').setAttribute('rel', name);
+						document.querySelector('#Templates-generator-note').innerHTML = name;
+						document.querySelector('#Templates-generator-note').setAttribute('rel', name);
 					}
-					window.scrollTo(0, document.getElementById('TemplateManagerNote').offsetTop);
+					window.scrollTo(0, document.getElementById('Templates-generator-note').offsetTop);
 				} else {
 					closeMarkerSettings();
 				}
@@ -411,8 +441,8 @@ $(function() {
 			} else { alert ('No map available for the marker'); }
 		},
 		loadTemplates: function(templates) {
-			var container = $('#TemplatesList');
-			var loading = document.querySelector('#TemplatesLoading');
+			var container = $('#Templates-list');
+			var loading = document.querySelector('#Templates-loading');
 			if (loadedTemplates[REGION]) {
 				loading.style.setProperty('display', 'none');
 				container.html(loadedTemplates[REGION]);
@@ -582,7 +612,7 @@ $(function() {
 		},
 		uploadFile: function(file, text) {
 			if (file && text && text.length>0) {
-				var filename = document.querySelector('#MapUploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '')+'.png';
+				var filename = document.querySelector('#Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '')+'.png';
 				api.post({
 					action: 'edit',
 					title: 'File:'+filename,
@@ -599,6 +629,34 @@ $(function() {
 					format: 'json'
 				});
 				mw.notify('Please leave this page open for at least a few seconds for API to finish. Thank you!', {title: 'Wait right there!'});
+			}
+		},
+		renderImagePreview: function() {
+			var filename = document.querySelector('#Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '');
+			var image = document.querySelector('#Templates-uploader-render-image');
+			var note = document.querySelector('#Templates-uploader-render-note');
+			image.setAttribute('src', 'https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif');
+			if (filename.length>0) {
+				api.get({
+					action: 'query',
+					titles: 'File:'+filename+'.png',
+					prop: 'imageinfo',
+					iiprop: 'url'
+				}).then(function(data) {
+					console.log(data);
+					var filedata = Object.entries(data.query.pages)[0][1];
+					if (filedata && filedata.imageinfo && filedata.imageinfo[0].url) {
+						image.removeAttribute('src');
+						image.setAttribute('src', filedata.imageinfo[0].url.replace(/\?cb=.+$/, ''));
+						note.innerHTML = 'Pre-upload version of <a href="'+config.wgServer+mw.util.getUrl('File:'+filename+'.png')+'">File:'+filename+'.png</a>' ;
+					} else {
+						note.innerHTML = 'No image by that name.';
+						image.removeAttribute('src');
+					}
+				});
+			} else {
+				note.innerHTML = '';
+				image.removeAttribute('src');
 			}
 		}
 	};

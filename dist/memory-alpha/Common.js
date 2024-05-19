@@ -1,5 +1,47 @@
 // <nowiki>
 
+// Interactive Tree Script
+
+var smallTreeCount = 3;
+
+$('.appear').each(function(index, currentTree){
+  const currentButtonID = 'mainButton-'+index;
+  const numberOfSubLists = $(this).find('ul li ul, ol li ol, ul li ol, ol li ul').length;
+  const total = $(this).find('ul li, ol li').length - numberOfSubLists;
+  const buttonLabel = (total > smallTreeCount) ? 'show all' : 'hide all';
+  const button = (numberOfSubLists === 0) ? '' : ' (<a id="'+currentButtonID+'" class="show-hide-button">'+buttonLabel+'</a>)';
+  const desc = $('<div>This list includes '+total+' items'+button+'.</div>');
+
+  $(this).prepend(desc);
+
+  $('#'+currentButtonID).click(function(){
+    if ($(this).text() === "show all"){
+      $(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').show();
+    } else {
+      $(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').hide();
+    }
+
+    $(this).text(($(this).text() === "show all") ? "hide all" : "show all");
+  });
+});
+
+$('.appear li ul, .appear li ol').each(function(index, currentTree){
+  const currentButtonID = 'pane-'+index++;
+  const total = $(this).find('li').length - $(this).find('ul li, ol li').length;
+  const button = '<a id="'+currentButtonID+'" class="show-hide-button">'+total+'</a>';
+
+  if (total > smallTreeCount){
+    $(currentTree).hide();
+  }
+
+  $(this).before('('+button+')');
+
+  $('#'+currentButtonID).click(function(){
+    $(currentTree).toggle();
+  });
+});
+
+/**********************************************************************************************************************
 $().ready( function() {
 	
 	//********************************************************************************
@@ -110,8 +152,8 @@ $().ready( function() {
 	}
 	
 	$(doAppearancesTrees);
+	*********************************************************************************************/
 
-	
 	/*******************************************************************************
 	** "Interactive quotes" script; by [[User:Bp]]
 	*******************************************************************************/
@@ -180,9 +222,10 @@ $().ready( function() {
 	
 	$(doQuotes);
 	
-	/*******************************************************************************
-	** tooltips and access keys
-	*******************************************************************************/
+	/*************************************************************************************
+	//*******************************************************************************
+	//** tooltips and access keys
+	//*******************************************************************************
 	
 	ta = new Object();
 	ta['pt-userpage'] = new Array('.','My user page'); 
@@ -236,8 +279,8 @@ $().ready( function() {
 	ta['ca-nstab-template'] = new Array('c','View the template'); 
 	ta['ca-nstab-help'] = new Array('c','View the help page'); 
 	ta['ca-nstab-category'] = new Array('c','View the category page');
-
 });
+*******************************************************************************************/
 
 /*******************************************************************************
 **					To replace the now dead "welcome bot				      **
@@ -252,7 +295,7 @@ window.AutoCreateUserPagesConfig = {
 };
 
 /*******************************************************************************
-**					Personalised MA copyright notice				      **
+**					Personalized MA copyright notice				      **
 *******************************************************************************/
 $(function(){
 	$('.license-description').append('See <a href="https://memory-alpha.fandom.com/wiki/Memory_Alpha:Copyrights">Memory Alpha\'s Copyright</a> information for full details.');
@@ -587,6 +630,27 @@ function embedPDFs(){
   const floatDir = $(this).attr('data-float') ? $(this).attr('data-float') : 'right';
   const caption = $(this).attr('data-caption') ? $(this).attr('data-caption').replace(/'''(.+?)'''/g, '<b>$1</b>').replace(/''(.+?)''/g, '<i>$1</i>').replace(/\[\[(.+?)\|(.+?)\]\]/g, '<a href="/wiki/$1">$2</a>').replace(/\[\[(.+?)\]\]/g, '<a href="/wiki/$1">$1</a>') : '';
 
-  $(this).html('<figure class="thumb t'+floatDir+' show-info-icon"><a href="/wiki/Special:Redirect/file/'+specifiedFile+'" class="directLinkToPDF"></a><iframe src="/wiki/Special:Redirect/file/'+specifiedFile+'" loading="lazy" width="174.028" height="auto" title="'+specifiedFile+'"></iframe><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
+  $(this).html('<figure class="thumb t'+floatDir+' show-info-icon"><a href="/wiki/Special:Redirect/file/'+specifiedFile+'" class="directLinkToPDF" target="_blank"></a><iframe src="/wiki/Special:Redirect/file/'+specifiedFile+'" loading="lazy" width="174.028" height="auto" scrolling="no" title="'+specifiedFile+'"></iframe><figcaption class="thumbcaption"><a href="/wiki/File:'+specifiedFile+'" class="info-icon pdf-widget-info-icon"><svg><use xlink:href="#wds-icons-info-small"></use></svg></a><p class="caption">'+caption+'</p></figcaption></figure>');
 }
+
+// Tabs in sidebars
+
+var localImageHeights = [];
+
+$('.pi-item.wds-tabber').each(function(){
+  const localImages = $(this).find('.pi-image-thumbnail');
+
+  localImages.each(function(){
+    localImageHeights.push($(this).attr('height'));
+  });
+
+  const height = Math.min.apply(this, localImageHeights);
+
+  localImages.each(function(){
+    $(this).css({'height':height, 'width':'auto'});
+  });
+
+  localImageHeights = [];
+});
+
 // </nowiki>

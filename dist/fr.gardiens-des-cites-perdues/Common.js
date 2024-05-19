@@ -69,18 +69,16 @@ $(function () {
     );
     headTitle.appendChild(setFavicon);
   });
-  //headTitle.appendChild(setFavicon);
 })();
 
 /***** Modèles *****/
 
 /*** USERNAME ***/
-
 function substUsername() {
   $(".insertusername").text(
     '<a href="/wiki/Modèle:USERNAME" style="color: #d5d4d4">' +
-      mw.config.get("wgUserName") +
-      "</a>"
+    mw.config.get("wgUserName") +
+    "</a>"
   );
   $(".insertusername:hover").css("text-decoration", "none");
 }
@@ -105,15 +103,12 @@ $(function () {
 });
 
 /*** Slider ***/
-
 mw.loader.using(["jquery.cookie"]);
-
 mw.loader.using(["jquery.ui.tabs"], function () {
   $(".portal_vtab").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
   $(".portal_vtab > ul > li")
     .removeClass("ui-corner-top")
     .addClass("ui-corner-left");
-
   var $tabs = $("#portal_slider").tabs({
     fx: {
       opacity: "toggle",
@@ -140,12 +135,24 @@ mw.loader.using(["jquery.ui.tabs"], function () {
   });
 });
 
-// Retrait des [GDCP] dans les sommaires
+// DiscordWidget sur Wiki Gardiens des Cités Perdues:Discord/Portail
+function loadScript(url) {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.async = true;
+  script.src = url;
+  document.getElementsByTagName("head")[0].appendChild(script);
+}
+var portal = document.getElementById('discord-portal');
+if (portal) {
+  var widgetBot = document.createElement('div');
+  widgetBot.innerHTML = '<widgetbot server="719085354514251877" channel="719215577994100766" width="800" height="600"></widgetbot>';
+  portal.appendChild(widgetBot);
+  loadScript('https://cdn.jsdelivr.net/npm/@widgetbot/html-embed');
+}
 
+// Retrait des [GDCP] dans les sommaires
 $(function () {
-  /**
-   * @type {HTMLElement}
-   */
   var LISTE = document.getElementById("toc");
   var content = String(LISTE.innerHTML);
   content = content
@@ -161,12 +168,17 @@ $(function () {
 });
 
 /*** Module de progression ***/
-var username = mw.config
-  .get("wgPageName")
-  .split("/")[0]
-  .split(":")
-  .slice(1)
-  .join(":");
+var username;
+if (!mw.config.get("wgPageName").includes("Utilisateur") && !mw.config.get("wgPageName").includes("Utilisatrice") && !mw.config.get("wgPageName").includes("User")) { username = mw.config.get("wgUserName"); }
+else {
+  username = mw.config
+    .get("wgPageName")
+    .split("/")[0]
+    .split(":")
+    .slice(1)
+    .join(":");
+}
+
 // Texte et image de présentation
 function FoxfireTexte(text, imageUrl, imageAlt) {
   var imageWrapper = document.createElement("div");
@@ -191,7 +203,6 @@ function FoxfireTexte(text, imageUrl, imageAlt) {
   textElement.innerHTML = "<b>" + text + "</b>";
 
   imageWrapper.appendChild(textElement);
-
   return imageWrapper;
 }
 
@@ -361,12 +372,12 @@ function trouverNiveau(element, nombre) {
   }
   // Remplacer valeur par niveau
   if (replacementElement) {
-    console.log(replacementElement);
     element.innerHTML = "";
     element.appendChild(replacementElement);
   }
 }
 
+// Ajout d'un timeout pour laisser le temps au RailModule de se charger
 setTimeout(function () {
   $.ajax({
     url: mw.util.wikiScript("api"),
@@ -426,9 +437,7 @@ setTimeout(function () {
       document.querySelectorAll(".progressmodifs").forEach(function (item) {
         var newItem = document.createElement("div");
         newItem.innerHTML =
-          "<center>Voici la progression de l'utilisateur " +
-          username +
-          " :\n" +
+          "<center>" +
           "<center>" +
           Math.round(calc) +
           "% de " +
@@ -450,7 +459,10 @@ setTimeout(function () {
             mainmodifs.innerText
               .replace("Vous avez", username + " a")
               .replace("des", compteurDeModifications.toString())
-              .split(".")[0] + ".";
+              .split(".")[0] +
+            ". Plus que " +
+            (palier - modifs).toString() +
+            " modifications des articles avant le niveau suivant !";
         } else {
           mainmodifs.innerText = mainmodifs.innerText.replace(
             "des",
@@ -487,10 +499,7 @@ mw.hook("wikipage.content").add(function ($content) {
 
 /*** Discuter avec Messenger sur Messeger ([[Spécial:ShannonMessenger]]) ***/
 (function ($, mw) {
-  if (
-    mw.config.get("wgPageName") != "Spécial:ShannonMessenger" &&
-    mw.config.get("wgPageName") != "Special:ShannonMessenger"
-  ) {
+  if (mw.config.get("wgPageName") != "Spécial:ShannonMessenger" && mw.config.get("wgPageName") != "Special:ShannonMessenger") {
     return;
   }
 
@@ -613,9 +622,6 @@ mw.hook("wikipage.content").add(function ($content) {
       response: ["Encore un nouveau tome dans 18 mois !"],
     },
   };
-  var pagename = mw.config.get("wgTitle");
-  var namespace = mw.config.get("wgCanonicalNamespace");
-  var categories = mw.config.get("wgCategories");
   var conversation = null;
   var key = "RANDOM" + (Math.floor(Math.random() * 19) + 1);
   conversation = data[key];

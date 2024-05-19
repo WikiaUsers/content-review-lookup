@@ -113,7 +113,7 @@ mw.loader.using('mediawiki.util').then(function() {
 function zselector( $content ) {
 function CCClick() {
             var cn = $(this).attr('class');
-            if (typeof cn !== 'undefined') 
+            if (typeof cn !== 'undefined' && (!getpar($(this)).classList.contains('CCStrict') || !this.classList.contains('sy')) )
                 ZContent(cn, '0', $(this));
             
         }
@@ -130,11 +130,6 @@ function CCClick() {
             var cn = $(this).attr('class');
             if (typeof cn !== 'undefined') {
                 ZContent(cn, '2', $(this));
-            }
-        });
-        $('[class|="zz"]').each(function (i, elem) {
-            if ($(this).css('display') == 'none') {
-                $(this).css('opacity', 0);
             }
         });
     });
@@ -176,20 +171,13 @@ function CCClick() {
         	if(par1 == par)
         	{
             if ($(this).hasClass('zz-' + ID)) {
-                $(this).css('display', 'block');
+
+                this.classList.add('zzSel');
+                this.classList.remove('zzNosel');
                 $(window).trigger('scroll');
-                $(this).stop();
-                $(this).animate({
-                    opacity: 1,
-                    queue: false
-                }, 10);
             } else {
-                $(this).css('display', 'none');
-                $(this).stop();
-                $(this).animate({
-                    opacity: 0,
-                    queue: false
-                }, 0);
+                this.classList.add('zzNosel');
+                this.classList.remove('zzSel');
             }
         	}
         });
@@ -227,7 +215,7 @@ function Filt(Icons, clas, req){
 	
 	return All;
 }
-function Sort(Table, Par){
+function Sort(Table, Par, inverse){
 	AllIcons = Table.querySelectorAll(".IdTable .IdTIc");
 	AllIcons.forEach(function(Mini){
 		clas = '';
@@ -236,7 +224,7 @@ function Sort(Table, Par){
 				clas = Class;
 		});
 		if (clas != '')
-			Mini.style.order = -clas.substring(Par.length);
+			Mini.style.order = inverse ? clas.substring(Par.length) : -clas.substring(Par.length);
 		else
 			Mini.style.order = 1;
 	});
@@ -295,27 +283,31 @@ function UpdateTable() {
 }
 function ClickButtonFilter(){
                 if(this.classList.contains("IdTCross"))
-                    this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
+                    this.closest('.IdTable').querySelectorAll(".IdTBl").forEach(function(button){
+                    button.classList.remove("IdTBl1"); });
                 else
                 {
                     row = this.closest('.IdTRow')
                     if(row.classList.contains("IdTUnique"))
-                           row.querySelectorAll(".IdTBl").forEach(function(button){button.classList.remove("IdTBl1");});
+                           row.querySelectorAll(".IdTBl").forEach(function(button){
+                             button.classList.remove("IdTBl1"); });
                     this.classList.toggle("IdTBl1");
                 }
                 UpdateTable();
        }
 function ClickButtonSort(){
-			if(this.classList.contains("IdTSo1"))
+			if(this.classList.contains("IdTSo2"))
 			{
 				Sort(this.closest('.IdTable'),'INVALID');
-				this.classList.remove("IdTSo1");
+                                    this.classList.remove("IdTSo2");
 			}
 			else
 			{
-			Sort(this.closest('.IdTable'),this.classList[0]);
-			this.closest('.IdTable').querySelectorAll(".IdTSo1").forEach(function(button){button.classList.remove("IdTSo1");});
-			this.classList.add("IdTSo1");
+			Sort(this.closest('.IdTable'),this.classList[0], this.classList.contains("IdTSo1"));
+                        const k = this.classList.contains("IdTSo1") ? 2 : 1;
+			this.closest('.IdTable').querySelectorAll(".IdTSo1,.IdTSo2").forEach(function(button){button.classList.remove("IdTSo1");
+                        button.classList.remove("IdTSo2");});
+			    this.classList.add("IdTSo"+k);
 			}
        }
 

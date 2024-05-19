@@ -1,421 +1,151 @@
-$(document).ready(function(){
-                var traits = [
-                                'À l’écoute',
-                                'Absorbé',
-                                'Accueillant',
-                                'Adorable',
-                                'Adroit',
-                                'Affectueux',
-                                'Agressif',
-                                'Aimable',
-                                'Aimant',
-                                'Aimant commander',
-                                'Aimant la compétition',
-                                'Aimant les contacts humains',
-                                'Aimant rendre service',
-                                'Altruiste',
-                                'Ambigu',
-                                'Ambitieux',
-                                'Amical',
-                                'Amusant',
-                                'Angélique',
-                                'Anxieux',
-                                'Apaisant',
-                                'Apathique',
-                                'Appliqué',
-                                'Arrogant',
-                                'Artiste',
-                                'Asocial',
-                                'Attendrissant',
-                                'Attentif',
-                                'Attentionné',
-                                'Audacieux',
-                                'Autonome',
-                                'Autoritaire',
-                                'Avare',
-                                'Averti',
-                                'Bavard ',
-                                'Beau parleur',
-                                'Belliqueux',
-                                'Bête',
-                                'Bienveillant',
-                                'Blasé',
-                                'Bourru',
-                                'Bout-en-train',
-                                'Brave',
-                                'Brillant',
-                                'Bruyant',
-                                'Brutal',
-                                'Buté',
-                                'Cafardeux',
-                                'Calme',
-                                'Capable de mémoriser',
-                                'Capable de s’adapter facilement',
-                                'Capable de se concentrer',
-                                'Capricieux',
-                                'Caractériel',
-                                'Cérébral',
-                                'Chaleureux',
-                                'Chanceux',
-                                'Charismatique',
-                                'Cherchant à oublier ses difficultés',
-                                'Chieur',
-                                'Cinglé',
-                                'Cleptomane',
-                                'Coléreux',
-                                'Combatif',
-                                'Comique',
-                                'Communicatif',
-                                'Compétiteur',
-                                'Compréhensif',
-                                'Concentré',
-                                'Conciliant',
-                                'Concret (esprit pratique)',
-                                'Confiant',
-                                'Confiant en soi',
-                                'Conformiste',
-                                'Consciencieux',
-                                'Contemplatif',
-                                'Coopératif',
-                                'Coquet',
-                                'Courageux',
-                                'Courtois',
-                                'Créatif',
-                                'Crédule',
-                                'Critique',
-                                'Cultivé',
-                                'Cupide',
-                                'Curieux',
-                                'Comère',
-                                'Cynique',
-                                'Débauché',
-                                'Débrouillard',
-                                'Décent',
-                                'Découragé',
-                                'Dédaigneux',
-                                'Délicat',
-                                'Dépendant',
-                                'Déplaisant',
-                                'Dépressif',
-                                'Désabusé',
-                                'Désenchanté',
-                                'Désintéressé',
-                                'Désordonné',
-                                'Détendu',
-                                'Détestable',
-                                'Dévoué',
-                                'Diabolique',
-                                'Digne',
-                                'Diplomate',
-                                'Directe',
-                                'Discipliné',
-                                'Discret',
-                                'Disponible',
-                                'Distingué',
-                                'Distrait',
-                                'Docile',
-                                'Doucereux',
-                                'Douteux',
-                                'Doux',
-                                'Dur',
-                                'Dynamique',
-                                'Économe',
-                                'Égal d’humeur',
-                                'Égoïste',
-                                'Élégant',
-                                'Émotif',
-                                'Énergique',
-                                'Énervant',
-                                'Énigmatique',
-                                'Effacé',
-                                'Efficace',
-                                'Enthousiaste',
-                                'Envieux',
-                                'Escroc',
-                                'Évitant les contacts avec les autres',
-                                'Excentrique',
-                                'Excessif',
-                                'Expansif',
-                                'Explorateur',
-                                'Expressif',
-                                'Extraverti',
-                                'Exubérant',
-                                'Fainéant',
-                                'Fantasque',
-                                'Fantaisiste',
-                                'Fatiguant',
-                                'Faux',
-                                'Féminin',
-                                'Fêtard',
-                                'Ferme',
-                                'Fidèle',
-                                'Fier',
-                                'Flatteur',
-                                'Flegmatique',
-                                'Flexible',
-                                'Fonceur',
-                                'Fou',
-                                'Fougueux',
-                                'Fouinard',
-                                'Fouineur',
-                                'Fourbe',
-                                'Franc',
-                                'Froid',
-                                'Gaffeur',
-                                'Gai',
-                                'Galant',
-                                'Geignard',
-                                'Généreux',
-                                'Gentil',
-                                'Glacial',
-                                'Gourmand',
-                                'Gracieux',
-                                'Habile',
-                                'Hautain',
-                                'Hésitant',
-                                'Honnête',
-                                'Honorable',
-                                'Humble',
-                                'Hypocrite',
-                                'Hystérique',
-                                'Idiot',
-                                'Imaginatif',
-                                'Immature',
-                                'Impatient',
-                                'Impliqué',
-                                'Impudent',
-                                'Impulsif',
-                                'Inébranlable',
-                                'Incertain',
-                                'Indépendant',
-                                'Indifférent',
-                                'Influençable',
-                                'Influent',
-                                'Ingénieux',
-                                'Inquiet',
-                                'Insolent',
-                                'Intellectuel',
-                                'Intelligent',
-                                'Intolérant',
-                                'Intrépide',
-                                'Intuitif',
-                                'Ironique',
-                                'Irrésistible',
-                                'Irritant',
-                                'Jaloux',
-                                'Jeune',
-                                'Joueur',
-                                'Jovial',
-                                'Joyeux',
-                                'Juste',
-                                'Lâche',
-                                'Leader',
-                                'Lent',
-                                'Logique',
-                                'Loyal',
-                                'Lunatique',
-                                'Lymphatique',
-                                'M’as-tu-vu',
-                                'Machiavélique',
-                                'Maître de soi',
-                                'Maladroit',
-                                'Malhonnête',
-                                'Malicieux',
-                                'Malin',
-                                'Malsain',
-                                'Maniaque',
-                                'Manichéen',
-                                'Manifestant sa joie ou sa peine',
-                                'Manipulateur',
-                                'Manuel',
-                                'Mature',
-                                'Mauvais',
-                                'Méchant',
-                                'Méfiant',
-                                'Mégalomane',
-                                'Mélomane',
-                                'Meneur',
-                                'Menteur',
-                                'Méthodique',
-                                'Méticuleux',
-                                'Minutieux',
-                                'Modeste',
-                                'Montrant peu sa joie ou sa peine',
-                                'Mou',
-                                'Mystérieux',
-                                'Mythomane',
-                                'N’aimant pas être seul',
-                                'N’aimant pas le travail en équipe',
-                                'Naïf',
-                                'Narcissique',
-                                'Naturel',
-                                'Négatif',
-                                'Négligent',
-                                'Nerveux',
-                                'Nihiliste',
-                                'Nonchalant',
-                                'Obéissant',
-                                'Objectif',
-                                'Observateur',
-                                'Occupé',
-                                'Opportuniste',
-                                'Optimiste',
-                                'Ordonné',
-                                'Organisé',
-                                'Orgueilleux',
-                                'Orienté solution',
-                                'Original',
-                                'Ouvert',
-                                'Pacifique',
-                                'Paisible',
-                                'Paresseux',
-                                'Passionné',
-                                'Passionnel',
-                                'Patient',
-                                'Pensif',
-                                'Persévérant',
-                                'Perspicace',
-                                'Persuasif',
-                                'Pervers',
-                                'Pessimiste',
-                                'Pétillant',
-                                'Peureux',
-                                'Pimbêche',
-                                'Ponctuel',
-                                'Posé',
-                                'Possessif',
-                                'Précieux',
-                                'Prétentieux',
-                                'Précis',
-                                'Prévoyant',
-                                'Pragmatique',
-                                'Protecteur',
-                                'Prudent',
-                                'Puéril',
-                                'Pudique',
-                                'Qui a le contact facile',
-                                'Qui s’exprime facilement',
-                                'Râleur',
-                                'Réaliste',
-                                'Réfléchi',
-                                'Régulier',
-                                'Réservé',
-                                'Résistant',
-                                'Rêveur',
-                                'Rabat-joie',
-                                'Rancunier',
-                                'Rapide',
-                                'Rassurant',
-                                'Rationnel',
-                                'Rebelle',
-                                'Reconnaissant',
-                                'Remuant',
-                                'Renfermé',
-                                'Renfrogné',
-                                'Responsable',
-                                'Rigide',
-                                'Romantique',
-                                'Rouspéteur',
-                                'Rusé',
-                                'Sadique',
-                                'Sage',
-                                'Sanguin',
-                                'Sans pitié',
-                                'Sceptique',
-                                'Secret',
-                                'Sécurisant',
-                                'Sensible',
-                                'Sensuel',
-                                'Sentimental',
-                                'Serein',
-                                'Sérieux',
-                                'Serviable',
-                                'Seul',
-                                'Sévère',
-                                'Silencieux',
-                                'Simple',
-                                'Snob',
-                                'Sociable',
-                                'Soigné',
-                                'Soigneux',
-                                'Solidaire',
-                                'Solitaire',
-                                'Sordide',
-                                'Soucieux',
-                                'Soumis',
-                                'Souriant',
-                                'Spontané',
-                                'Sportif',
-                                'Stable',
-                                'Strict',
-                                'Suiveur',
-                                'Sûr de soi',
-                                'Surprenant',
-                                'Survolté',
-                                'Susceptible',
-                                'Taquin',
-                                'Téméraire',
-                                'Tenace',
-                                'Tendre',
-                                'Têtu',
-                                'Timide',
-                                'Tolérant',
-                                'Torturé',
-                                'Traître',
-                                'Travailleur',
-                                'Tricheur',
-                                'Triste',
-                                'Utopiste',
-                                'Valeureux',
-                                'Vaniteux',
-                                'Vantard',
-                                'Vénale',
-                                'Vicieux',
-                                'Vif',
-                                'Violent',
-                                'Viril',
-                                'Virulent',
-                                'Vivant',
-                                'Volontaire',
-                                'Vrai'
-                ];
-                
-                var traitscopy = [];
-                
-                $( "#zone" ).append( 
-                    "<div><div>Nombre de traits disponibles : " + 
-                    traits.length  + 
-                    "</div><div class=\"containerlabel\">"+
-                    "<label for=\"traits\">Traits de caractères:</label></div>"+
-                    "<div class=\"containerinput\">"+
-                    "<textarea id=\"traits\" cols=80 rows=10></textarea>"+
-                    "</div></div>" + 
-                    "<div><div class=\"containerlabel\">"+
-                    "<label for=\"nb\">Nombre de traits à générer :</label></div>"+
-                    "<div class=\"containerinput\">"+
-                    "<input id=\"nb\" type=\"number\" value=\"3\" />"+
-                    "</div></div>"+
-                    "<a id=\"runtrait\" class=\"wds-button  wds-color-dark-blue\">Générer Caractère</a>");
-                    
-                $("#runtrait").click(function() {
-                    var max = $("#nb").val();
-                    
-                    if(max === undefined || max <= 0) {
-                        max = 3;
+(function () {
+    var contentZone = document.getElementById('FTFCharacterGenerator_zone');
+    // Double runs
+    if (contentZone === null || (window.FanonCharacterGenerator && FanonCharacterGenerator.loaded)) return;
+
+    var ui;
+
+    window.FanonCharacterGenerator = {
+        loaded: true,
+        personnalityTraits: [],
+        chosenTraits: [],
+
+        // List of dependencies
+        loading: [
+            'dorui'
+        ],
+
+        // Callback for each loaded dependency
+        onload: function (key, arg) {
+            switch (key) {
+                case 'dorui':
+                    ui = arg;
+                    break;
+            }
+
+            var index = this.loading.indexOf(key);
+            if (index === -1) throw new Error('Unregistered dependency loaded: ' + key);
+
+            this.loading.splice(index, 1);
+
+            if (this.loading.length !== 0) return;
+
+            this.loadTraits();
+        },
+
+        // Import dependencies and bind to their hooks
+        preload: function () {
+            importArticles({
+                type: 'script',
+                articles: [
+                    'u:dev:MediaWiki:Dorui.js'
+                ]
+            });
+            mw.hook('doru.ui').add(this.onload.bind(this, 'dorui'));
+        },
+
+        loadTraits: function () {
+            $.ajax({
+                url: mw.util.wikiScript(),
+                type: 'GET',
+                data: {
+                    action: 'raw',
+                    title: 'MediaWiki:Custom-Personality-Traits',
+                },
+                success: function (settings) {
+                    try {
+                        this.personnalityTraits = JSON.parse(settings);
+                    } catch (ex) {
+                        console.error('Can\'t parse json', {
+                            ex: ex,
+                            data: settings
+                        });
                     }
-                    
-                    if(traitscopy.length == 0) {
-                        traitscopy = traits.slice();
-                    }
-                    
-                    for (var i = 0; i < max; i++) {
-                        if(traitscopy.length == 0) {
-                            break;
-                        }
-                        
-                        var index = Math.floor(Math.random() * traitscopy.length);
-                        $("#traits").append(traitscopy[index] + "&#13;&#10;");
-                        traitscopy.splice(index, 1);
-                    }
-                });
-});
+                }
+            }).done(this.init);
+        },
+
+        // Function that will be called when all dependencies are loaded
+        init: function () {
+            var textarea = ui.textarea({
+                class: 'wds-input__field',
+                id: 'FTFCharacterGenerator__traits',
+                rows: '10'
+            });
+            var self = this;
+            contentZone.append(
+                ui.frag([
+                    ui.div({
+                        class: 'wds-pill',
+                        child: ui.span({
+                            class: 'wds-pill__label',
+                            text: 'Nombre de traits disponibles : ' + this.personnalityTraits.length
+                        })
+                    }),
+                    ui.div({
+                        class: 'wds-input',
+                        children: [
+                            ui.label({
+                                for: 'FTFCharacterGenerator__traits',
+                                class: 'wds-input__label',
+                                text: 'Traits de caractères:'
+                            }),
+                            textarea
+                        ]
+                    }),
+                    ui.div({
+                        classes: ['wds-input', 'has-hint'],
+                        children: [
+                            ui.label({
+                                for: 'FTFCharacterGenerator__input-quantity',
+                                class: 'wds-input__label',
+                                text: 'Nombre de traits à générer :'
+                            }),
+                            ui.input({
+                                id: 'FTFCharacterGenerator__input-quantity',
+                                class: 'wds-input__field',
+                                type: 'number',
+                                value: '3'
+                            }),
+                            ui.div({
+                                class: 'wds-input__hint-container',
+                                child: ui.div({
+                                    class: 'wds-input__hint',
+                                    text: 'Saisissez un nombre > 0'
+                                })
+                            })
+                        ]
+                    }),
+                    ui.div({
+                        classes: ['wds-input', 'has-hint'],
+                        child:
+                            ui.button({
+                                id: 'FTFCharacterGenerator__button',
+                                class: 'wds-button',
+                                text: 'Générer Caractère',
+                                events: {
+                                    click: function () {
+                                        var copy = self.personnalityTraits.slice(0);
+                                        var max = $("#FTFCharacterGenerator__input-quantity").val();
+                                        if (max === undefined || max <= 0) { max = 3; }
+                                        $("#FTFCharacterGenerator__traits").val('\n');
+
+                                        for (var i = 0; i < max; i++) {
+                                            if (copy.length < 1) { copy = self.personnalityTraits.slice(0); }
+                                            var index = Math.floor(Math.random() * copy.length);
+                                            var item = copy[index];
+                                            copy.splice(index, 1);
+                                            var textarea = $("#FTFCharacterGenerator__traits");
+                                            textarea.val(textarea.val() + item + '\n');
+                                        }
+                                    },
+                                }
+                            })
+                    })
+                ]
+                )
+            )
+        }
+    }
+    FanonCharacterGenerator.preload();
+})();

@@ -18,6 +18,13 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Balancing Project Changes Part VI - 2024
+'Deathstrike': '13.36.d8d851',
+'Gnomevil': '13.36.d8d851',
+'Abyssador': '13.36.d8d851',
+'Chasm Spawn': '13.36.d8d851',
+'Cave Devourer': '13.36.d8d851',
+'Tunnel Tyrant': '13.36.d8d851',
 //
 'Iks Yapunac': '13.33.14565',
 // New tutorial for beginners
@@ -467,8 +474,8 @@ window.loot_parser_data = {
 //'Cobra Vizier': '12.40.10043',
 // Changes made on March 24, 2020
 // Documented here: https://www.tibia.com/forum/?action=announcement&announcementid=98 (+ post #38897080)
-'Cave Devourer': '12.31.9618',
-'Tunnel Tyrant': '12.31.9618',
+//'Cave Devourer': '12.31.9618',
+//'Tunnel Tyrant': '12.31.9618',
 'Bellicose Orger': '12.31.9593',
 // Changes made on March 06, 2020
 'Hellflayer': '12.31.9580',
@@ -816,9 +823,9 @@ window.loot_parser_data = {
 'Maxxenius': '12.00',
 'Plagueroot': '12.00',
 //'The Nightmare Beast': '12.00',
-'Cave Devourer': '12.00',
-'Chasm Spawn': '12.00',
-'Tunnel Tyrant': '12.00',
+//'Cave Devourer': '12.00',
+//'Chasm Spawn': '12.00',
+//'Tunnel Tyrant': '12.00',
 //'Dawnfire Asura': '10.8',
 'Ekatrix': '10.8',
 'Elder Forest Fury': '10.8',
@@ -966,17 +973,17 @@ window.loot_parser_data = {
 'Salamander': '9.8',
 'Swampling': '9.8',
 'Water Buffalo': '9.8',
-'Abyssador': '9.6',
+//'Abyssador': '9.6',
 'Armadile': '9.6',
 //'Bibby Bloodbath': '9.6',
 'Cliff Strider': '9.6',
 'Crystalcrusher': '9.6',
 'Damaged Crystal Golem': '9.6',
-'Deathstrike': '9.6',
+//'Deathstrike': '9.6',
 'Dragonling': '9.6',
 'Enraged Crystal Golem': '9.6',
 'Enslaved Dwarf': '9.6',
-'Gnomevil': '9.6',
+//'Gnomevil': '9.6',
 'Hideous Fungus': '9.6',
 'Humongous Fungus': '9.6',
 'Humorless Fungus': '9.6',

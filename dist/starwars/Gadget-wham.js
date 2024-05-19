@@ -2,7 +2,7 @@ window.WHAMBotMe = true;
 window.WHAMBotReason = "Cleanup";
 window.WHAMDelay = 100;
 window.WHAMDeleteReason = "Cleanup";
-window.WHAMBlockReason = "Vandalism and/or general disruption ([[Wookieepedia:Vandalism|WP:VP]])";
+window.WHAMBlockReason = "Vandalism and/or general disruption ([[Wookieepedia:User conduct policy#Vandalism|WP:VP]])";
 importArticles({
     type: 'script',
     articles: [

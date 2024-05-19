@@ -2,9 +2,7 @@
 //inspired by 452's MaintenanceReport.js
 //mw.msg from https://dev.fandom.com/wiki/MediaWiki:InfoboxEditorPreview/ucp.js
 mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
-    if (window.StellaLoaded) {
-        return;
-    }
+    if (window.StellaLoaded) return;
     window.StellaLoaded = true;
     var list = {
         pages: [

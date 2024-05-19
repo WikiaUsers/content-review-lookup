@@ -154,7 +154,64 @@ $('a:contains(An Anonymous user)').append(function(){return ' (' + this.href.mat
 })(jQuery);
 
 /* MapsExtended global config */
-window.mapsExtendedConfig = {
+window.mapsExtendedConfig = 
+{
     "minimalLayout": true,
     "enableSidebar": true,
+};
+
+
+/* MapsExtended local config */
+window.mapsExtendedConfigs = 
+{
+	"ConfigTesting":
+    	{
+    		"minimalLayout": true,
+    		"enableSidebar": true,
+    		"sidebarBehaviour": "autoInitial",
+    		"sidebarInitialState": "show",
+    		"iconAnchor": "center",
+    		"enableSearch": true,
+    		"openPopupsOnHover": false,
+			"useCustomPopups": true,
+    		"enableTooltips": true,
+    		"enableFullscreen": true,
+    		"fullscreenMode": "window",
+    		"mapControls": [
+			                ["zoom", "fullscreen"],
+			                ["edit"]
+			               ],
+			"sortMarkers": "category",
+			"disabledCategories": ["settings"],
+			"categoryGroups": 
+			    [
+			    	{
+			        	"label": "Intel",
+			        	"children": 
+			            	[
+			                	"audio_deadbolt",
+			                	"audio_terminus",
+			                	"radio",
+			                	"documents"
+			            	]
+			    	},
+			    	{
+			    		"label": "Portals",
+			    		"children":
+			    			[
+			    				"portal",	
+			    				"portal_exit",
+			    			]
+			    	
+			    	},
+			    	{
+			    		"label": "Misc.",
+			    		"children":
+			    			[
+			    				"harvester",
+			    				"doghouse"
+			    			]
+			    	}
+			   	]
+		}
 };

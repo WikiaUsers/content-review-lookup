@@ -45,18 +45,6 @@ if (heroCard.length) {
 	});
 }
 
-// update url hash along with toggling the description cell
-setTimeout(function() {
-	const kmzCollapsibles = document.querySelectorAll('.kamazone-table .mw-customtoggle');
-	if (kmzCollapsibles.length) {
-		kmzCollapsibles.forEach(function(toggle) {
-			toggle.addEventListener('click', function() {
-				history.replaceState(true, '', window.location.origin + window.location.pathname + '#' + this.id);
-			});
-		});
-	}
-}, 1000);
-
 // replace img src in imagemaps to avoid downscaled image blur
 const imageMap = document.querySelector('.imagemap');
 if (imageMap) {
@@ -69,6 +57,25 @@ if (window.location.search === "?action=mapedit") {
 		const mapImage = document.querySelector(".leaflet-image-layer");
 		mapImage.src += "&format=original";
 	}, 5000);
+}
+
+const $kmzTable = $('.kamazone-table');
+if ($kmzTable.length) {
+	mw.hook('wikipage.collapsibleContent').add(function() {
+		$kmzTable.find('.mw-customtoggle').on('click keydown', function(e) {
+			if (e.type === 'click' || e.code === 'Enter' || e.code === 'Space') {
+				
+				// update url hash along with toggling the description cell
+				const newUrl = window.location.origin + window.location.pathname + window.location.search + '#' + this.id;
+				history.replaceState(true, '', newUrl);
+
+				// toggle aria-expanded on click
+				// this is a fix for mediawiki's bug with mw-customtoggles
+				const ariaState = $(this).attr('aria-expanded') === 'true';
+				$(this).attr('aria-expanded', !ariaState);
+			}
+		});
+	});
 }
 
 // preload [[MediaWiki:Custom-PreloadMap.json]] into editor when "Preload" button is clicked
