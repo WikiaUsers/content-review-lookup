@@ -156,7 +156,12 @@ function plCheckStar(value, zd, rows) {
 		}
 	});
 }
-
+function plSaveSet(params){
+	if(params.build){params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
+	if(params.star){params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
+	if(params.level){params.url.searchParams.set('level', params.level);}
+	history.replaceState({},'',params.url);
+}
 
 //проверка body
 var intervaleditCount = setInterval(editcountcalc, 500);
@@ -230,7 +235,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plURL = new URL(window.location.href);
 	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
 	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
-	var plURLLevel = +(plURL.searchParams.get('level')||0);
+	var plURLLevel = parseInt(plURL.searchParams.get('level')) ? parseInt(plURL.searchParams.get('level')) : 0;
 	//console.log(plURLBuild);
 	//setTimeout(productListAddScroll, 2000);
 	//pl — productsList, список продуктов
@@ -253,6 +258,22 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	//кнопки/ввод
 	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
 	var plLevelInp = plLevel.querySelector('input');
+	if(plURLLevel){
+		plLevelInp.value = plURLLevel;
+		plRows.forEach(function(row, i){
+			if(i){
+				var tds = row.querySelectorAll('td');
+				var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+				//console.log(level, rowLvl);
+				if (rowLvl>plURLLevel&&plURLLevel){
+					row.style.display='none';
+				} else {
+					row.style.display='table-row';
+				}
+			}
+		});
+	}
+	
 	
 	plClear.innerHTML = '<button class="game-button">Сбросить</button>';
 	var plClearBtn = plClear.querySelector('button');
@@ -268,24 +289,36 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plBuildNames = [];
 	var plBuildList = [];
 	var plBuildAll = plBuild.querySelectorAll('.click-box');
-	if(plURLBuild){while(plURLBuild.length<plBuildAll.length){plURLBuild='0'+plURLBuild}plURLBuild=plURLBuild.split('')}else{plURLBuild=[]}
+	
+	var plStarList = [];
+	var plStarAll = plStar.querySelectorAll('.click-box');
+	
+	var plURLUseBuild;
+	if(plURLBuild){
+		while(plURLBuild.length<plBuildAll.length){plURLBuild='0'+plURLBuild}
+		plURLBuild=plURLBuild.split('');
+		plURLUseBuild=true;
+	}else{plURLBuild=[];plURLUseBuild=false;}
+	
 	plBuildAll.forEach(function(span, i) {
 		img = span.querySelector('img');
 		img.ondragstart = function() { return false; };
 		build = img.title;
 		plBuildNames.push(img.title);
 		
-		if(plURLBuild.length){
+		if(plURLUseBuild){
 			if(+plURLBuild[i]){
 				plBuildList.push(true);
 				span.style.background = '#88888830';
 			} else {
 				plBuildList.push(false);
 				span.style.background = 'transparent';
+				plStarAll[i].style.display='none';
+				plCheckBuilds(false, plBuildNames[i], plRows, 1000);
 			}
 		} else {
 			plBuildList.push(true);
-			plBuildList.push(1);
+			plURLBuild.push(1);
 			span.style.background = '#88888830';
 		}
 		span.addEventListener('click', function() {
@@ -293,6 +326,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			var level = +plLevelInp.value;
 			if(!level){level=1000;}
 			if (plBuildList[i]) {
+				plURLBuild[i]=0;
 				plBuildList[i] = false;
 				span.style.background = 'transparent';
 				plStarAll[i].style.display='none';
@@ -300,6 +334,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				plBuildList.forEach(function(is, i){if(is){x*=0}else{x*=1}});
 				if(x){plBuildIsAll=false;plBuildBtn.textContent = 'Выбрать всё';}
 			} else {
+				plURLBuild[i]=1;
 				plBuildList[i] = true;
 				span.style.background = '#88888830';
 				plStarAll[i].style.display='inline-block';
@@ -311,25 +346,50 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				if(x){plBuildIsAll=true;plBuildBtn.textContent = 'Снять выбор';}
 			}
 			plCheckBuilds(plBuildList[i], plBuildNames[i], plRows, level);
+			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
 		});
 	});
 	
-	var plStarList = [];
-	var plStarAll = plStar.querySelectorAll('.click-box');
+	//время с мастерством
+	var plURLUseStar;
+	if(plURLStar){
+		while(plURLStar.length<plStarAll.length){plURLStar='0'+plURLStar}
+		plURLStar=plURLStar.split('');
+		plURLUseStar=true;
+	}else{plURLStar=[];plURLUseStar=false;}
+	
 	plStarAll.forEach(function(span, i) {
 		img = span.querySelector('img');
 		img.ondragstart = function() { return false; };
-		plStarList.push(false);
+		//plStarList.push(false);
+		
+		if(plURLUseStar){
+			if(+plURLStar[i]){
+				plStarList.push(true);
+				span.style.background = '#88888830';
+				plCheckStar(true, plBuildNames[i], plRows);
+			} else {
+				plStarList.push(false);
+				span.style.background = 'transparent';
+			}
+		} else {
+			plStarList.push(false);
+			plURLStar.push(0);
+			span.style.background = 'transparent';
+		}
 		//span.style.display='none';
 		span.addEventListener('click', function() {
 			if (plStarList[i]) {
 				plStarList[i] = false;
 				span.style.background = 'transparent';
+				plURLStar[i] = 0;
 			} else {
 				plStarList[i] = true;
 				span.style.background = '#88888830';
+				plURLStar[i] = 1;
 			}
 			plCheckStar(plStarList[i], plBuildNames[i], plRows);
+			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
 		});
 	});
 	
@@ -337,15 +397,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	plSaveInp.addEventListener('change', function(e){
 		plIsSave = e.target.checked;
 		if (plIsSave){
-			/*plURL = new URL(window.location.href);
-	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
-	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
-	var plURLLevel
-			*/
-			plURL.searchParams.set('build', parseInt(plURLBuild.join(''), 2).toString(36));
-			plURL.searchParams.set('star', parseInt(plURLStar.join(''), 2).toString(36));
-			plURL.searchParams.set('level', plURLLevel);
-			history.replaceState({},'',plURL);
+			plSaveSet({url: plURL, build: plURLBuild, star: plURLStar, level: plURLLevel});
 		} else {
 			plURL.searchParams.delete('build');
 			plURL.searchParams.delete('star');
@@ -369,6 +421,8 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 			plBuildList = plBuildList.map(function(){return false;});
+			plURLBuild = plURLBuild.map(function(){return 0;});
+			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
 		} else {
 			plBuildIsAll = true;
 			plBuildBtn.textContent = 'Снять выбор';
@@ -382,6 +436,8 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 			plBuildList = plBuildList.map(function(){return true;});
+			plURLBuild = plURLBuild.map(function(){return 1;});
+			if (plIsSave){plSaveSet({url: plURL, build: plURLBuild});}
 		}
 		//console.log(plBuildList);
 	});
@@ -414,6 +470,8 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 			plStarList = plStarList.map(function(){return false;});
+			plURLStar = plURLStar.map(function(){return 0;});
+			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
 		} else {
 			plStarIsAll = true;
 			plStarBtn.textContent = 'Снять выбор';
@@ -442,6 +500,8 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 			plStarList = plStarList.map(function(){return true;});
+			plURLStar = plURLStar.map(function(){return 1;});
+			if (plIsSave){plSaveSet({url: plURL, star: plURLStar});}
 		}
 	});
 	
@@ -480,12 +540,17 @@ if (document.body.className.includes('page-Список_продуктов')) {
 		});
 		plStarList = plStarList.map(function(){return false;});
 		plBuildList = plBuildList.map(function(){return true;});
+		plURLStar = plURLStar.map(function(){return 0;});
+		plURLBuild = plURLBuild.map(function(){return 1;});
+		plURLLevel = 0;
+		if (plIsSave){plSaveSet({url: plURL, star: plURLStar, build: plURLBuild, level: 0});}
 	});
 	
 	//уровень
 	plLevelInp.addEventListener('input', function(){
 		var level = +plLevelInp.value;
 		if(level){
+			plURLLevel = level;
 			plRows.forEach(function(row, i){
 				if(i){
 					var tds = row.querySelectorAll('td');
@@ -499,6 +564,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				}
 			});
 		}
+		if (plIsSave){plSaveSet({url: plURL, level: plURLLevel});}
 	});
 	
 	console.log(plBuildList, plStarList, plBuildNames);

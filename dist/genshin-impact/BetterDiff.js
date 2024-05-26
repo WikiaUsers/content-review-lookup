@@ -10,7 +10,7 @@ $(function() {
         articles: [ 'u:dev:MediaWiki:Modal.js' ]
     });
 	var api = new mw.Api();
-	var config = mw.config.get(['wgDiffNewId', 'wgAction', 'wgCanonicalSpecialPageName', 'wgServer']);
+	var config = mw.config.get(['wgDiffNewId', 'wgAction', 'wgCanonicalSpecialPageName', 'wgServer', 'wgNamespaceNumber']);
 	var tokens = {
 		patrol: '',
 		rollback: ''
@@ -87,6 +87,16 @@ $(function() {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
 			}
 			
+			// Check we're in the normal view of a file page
+			else if (config.wgAction == 'view' && config.wgNamespaceNumber == 6) {
+				betterDiff.waitFor('.patrollink > a', function(){
+					document.addEventListener('keydown', function(event) {
+						if (event.altKey && [80, 49].includes(event.keyCode)) {
+							document.querySelector('.patrollink > a').click();
+						}
+					});
+				});
+			}
 		},
 		
 		// Run callback every time Special:RecentChanges reloads results

@@ -1,4 +1,4 @@
-/*Code for Late-Loading*/
+/* Late-Loading */
 function loadLater(e, ms) {
     e.style.display = "none";
     setTimeout(function() {

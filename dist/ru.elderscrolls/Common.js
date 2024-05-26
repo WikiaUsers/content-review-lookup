@@ -56,6 +56,41 @@ window.wfPlugins.push(function (txt, r) {
 	r( /\{\{примечания\}\}/g, '<references />' );
 });
 
+// MapsExtended
+window.mapsExtendedConfig =
+{
+    sortMarkers: "unsorted",
+    openPopupsOnHover: true,
+    enableFullscreen: true,
+    fullscreenMode: "window",
+    enableSearch: true,
+    enableSidebar: true,
+    sidebarInitialState: "hide",
+    enableTooltips: false
+};
+
+window.mapsExtendedConfigs = 
+{
+    "Солстейм (Dragonborn)": {
+        zoomLayers:	[
+		    {
+		        "id": 1,
+		        "minZoom": 0.1,
+		        "categories": [ "2", "3", "6", "7", "9", "13", "15", "16", "21", "22" ]
+		    },
+		    {
+		        "id": 2,
+		        "minZoom": 0.2,
+		        "categories": [ "4", "5", "10", "11", "12", "14", "17", "18", "19", "20" ]
+		    },
+		    {
+		        "id": 3,
+		        "minZoom": 0.3,
+		        "categories": [ "20", "23" ]
+		    }
+		]
+    }
+}
 /*----------------------------- Блок "Новые страницы" ------------------------*/
 // Блок правой панели. Всзято с вики "Убежище"
 function addNewPages(){

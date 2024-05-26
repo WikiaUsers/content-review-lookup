@@ -121,6 +121,8 @@ $(function () {
 			if (!iframe.width) iframe.width = (element.data('width') || defaultWidth) + 'px';
 			if (!iframe.height) iframe.height = (element.data('height') || defaultHeight) + 'px';
 
+			iframe.style = element.attr("style");
+
 			element.after(iframe);
 			element.remove();
 		});

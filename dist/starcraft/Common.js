@@ -234,6 +234,22 @@ $(function() { // Restores the Special:Upload functionality. This does not block
 
 WikiaEnableNewCreatepage = false;
 
+document.addEventListener('DOMContentLoaded', function() {
+    var buttons = document.querySelectorAll('.audio-button');
+    var audioPlayer = new Audio();
+    audioPlayer.preload = 'none';
+
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var src = button.getAttribute('data-src');
+            if (src) {
+                audioPlayer.src = src;
+                audioPlayer.play();
+            }
+        });
+    });
+});
+
 /* Auto updating recent changes opt-in
  * See w:c:dev:AjaxRC for info & attribution 
  */

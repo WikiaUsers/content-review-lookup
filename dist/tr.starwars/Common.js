@@ -90,7 +90,7 @@ function fillEditSummaries() {
 		var	$summaryOptionsList,
 			$summaryLabel = $( '#wpSummaryLabel' ),
 			lines = data.split( '\n' ),
-			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standart özetler: ' );
 
 		$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
 			var editSummary = $( this ).val();
@@ -256,12 +256,12 @@ function toggleHidable(bypassStorage) {
 
 		if( content.style.display == 'none' ) {
 			content.style.display = content.oldDisplayStyle;
-			this.firstChild.nodeValue = '[Hide]';
+			this.firstChild.nodeValue = '[Gizle]';
 			nowShown = true;
 		} else {
 			content.oldDisplayStyle = content.style.display;
 			content.style.display = 'none';
-			this.firstChild.nodeValue = '[Show]';
+			this.firstChild.nodeValue = '[Göster]';
 			nowShown = false;
 		}
 
@@ -306,7 +306,7 @@ function substUsernameTOC() {
 	var username = $('#pt-userpage').children(':first-child').text();
 	$('span.toctext:not(:has(*)), span.toctext i', toc).each(function()
 	{
-		$(this).text($(this).text().replace('<insert name here>', username));
+		$(this).text($(this).text().replace('<isim girin>', username));
 	});
 }
 
@@ -334,7 +334,7 @@ function setupUploadForm(){
 	if ( wpLicense.length && window.location.search.indexOf('wpForReUpload=1') == -1){
 		if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)){
 			// Add link to basic form
-			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.wikia.com/index.php?title=Special:Upload&basic=true" onclick="javascript:localStorage.setItem(\'uploadform\', \'basic\')">Switch to basic upload form</a></div>');
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.fandom.com/tr/wiki/%C3%96zel:Y%C3%BCkle?basic=true" onclick="javascript:localStorage.setItem(\'uploadform\', \'basic\')">Basit yükleme formuna geç</a></div>');
 
 			// Stretch table to full width
 			$('#mw-htmlform-description').css('width', '100%');
@@ -350,28 +350,28 @@ function setupUploadForm(){
 			$('#mw-htmlform-description').addClass('hidable start-hidden');
 
 			// Add new required rows
-			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Source:</td><td class="mw-input"><textarea id="sourceBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Kaynak:</td><td class="mw-input"><textarea id="sourceBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			$('#mw-htmlform-description').append('<tbody class="hidable-content"></tbody>');
 			var tbody1 = $('#mw-htmlform-description').children('tbody').eq(0);
-			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Description:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody1.append('<tr><td colspan="2" style="text-align: center;">Optional fields <span class="hidable-button"></span></td></tr>');
+			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Açıklama:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody1.append('<tr><td colspan="2" style="text-align: center;">İsteğe bağlı alanlar <span class="hidable-button"></span></td></tr>');
 
 			// Add new optional rows
 			var tbody2 = $('#mw-htmlform-description').children('tbody').eq(1);
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Attention:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Original designer / artist:</td><td class="mw-input"><textarea id="artistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Conversion / editing / upload information:</td><td class="mw-input"><textarea id="filespecsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Other versions / source images:</td><td class="mw-input"><textarea id="versionsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Artist categories:</td><td class="mw-input"><textarea id="catartistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Licensee categories:</td><td class="mw-input"><textarea id="catlicenseeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Subject categories:</td><td class="mw-input"><textarea id="catsubjectBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Type categories:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Dikkat:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Orijinal tasarımcı / sanatçı:</td><td class="mw-input"><textarea id="artistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Değiştirme / düzenleme / yükleme bilgisi:</td><td class="mw-input"><textarea id="filespecsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Diğer versiyonlar / kaynak resimler:</td><td class="mw-input"><textarea id="versionsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Sanatçı kategorileri:</td><td class="mw-input"><textarea id="catartistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Lisans sahibi kategorileri:</td><td class="mw-input"><textarea id="catlicenseeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Konu kategorileri:</td><td class="mw-input"><textarea id="catsubjectBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Tür kategorileri:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 		} else {
 			// Old style form just needs Information template in the summary box
-			$('#wpUploadDescription').val('==Summary==\r\n{{Information\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
+			$('#wpUploadDescription').val('{{Bilgi\r\n|attention=\r\n|description=\r\n|source=\r\n|artist=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
 
 			// Add link to guided form
-			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.wikia.com/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Switch to guided upload form</a></div>');
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//starwars.fandom.com/tr/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Rehberli yükleme formuna geç</a></div>');
 			
 			$('#mw-upload-form').bind('submit', verifyName);
 		}
@@ -384,23 +384,23 @@ function verifySummary(){
 
 	// Check for licensing
 	if ( wpLicense.value == "" ){
-		alert('Licensing must be completed.');
+		alert('Lisanslama tamamlanmalı.');
 		return false;
 	}
 
 	// Check for source
 	if ( document.getElementById('sourceBox').value == "" ){
-		alert('Source must be completed.');
+		alert('Kaynak belirtilmeli.');
 		return false;
 	}
 
 	// Check for duplicated or capitalized file extensions
 	if ( wpDestFile.value.match(/(JPG|PNG|GIF|SVG|jpg\.jpg|png\.png|gif\.gif|svg\.svg)$/)) {
-		alert('Please do not use capitalized or duplicated file extensions in the filename.');
+		alert('Lütfen dosya isminde büyük veya çift dosya uzantıları kullanmayın.');
 		return false;
 	}
 
-	var strBuilder = '==Summary==\r\n{{Information\r\n';
+	var strBuilder = '{{Bilgi\r\n';
 	strBuilder += '|attention=' + document.getElementById('attentionBox').value + '\r\n';
 	strBuilder += '|description=' + document.getElementById('descriptionBox').value + '\r\n';
 	strBuilder += '|source=' + document.getElementById('sourceBox').value + '\r\n';
@@ -427,13 +427,13 @@ function verifyName(){
 	
 	// Check for duplicated or capitalized file extensions
 	if ( wpDestFile.value.match(/(JPG|PNG|GIF|SVG|jpg.jpg|png.png|gif.gif|svg.svg)$/)) {
-		alert('Please do not use capitalized or duplicated file extensions in the filename.');
+		alert('Lütfen dosya isminde büyük veya çift dosya uzantıları kullanmayın.');
 		return false;
 	}
 
 	// Check for annoying characters
 	if ( wpDestFile.value.match(/(\(|\)|!|\?|,|\+|\'|\’)/)) {
-		alert('Please do not use parantheses, slashes, punctuation marks, or other non-alphanumeric characters in your filename.');
+		alert('Lütfen dosya isminde parantez, eğik çizgi, noktalama işaretleri veya alfanümerik olmayan başka bir karakter kullanmayın.');
 		return false;
 	}
 	if ( wpLicense.value != '' ) {
@@ -582,8 +582,8 @@ $( loadFunc );
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif';
 window.ajaxPages = [ 'Special:RecentChanges', 'Special:Watchlist', 'Special:Log', 'Special:NewFiles', 'Special:AbuseLog' ];
 $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-	'ajaxrc-refresh-text': 'Automatically refresh',
-	'ajaxrc-refresh-hover': 'Enable auto-refreshing page loads',
+	'ajaxrc-refresh-text': 'Otomatik olarak yenile',
+	'ajaxrc-refresh-hover': 'Sayfa yüklemelerini otomatik yenilemeyi etkinleştir',
 }}}}});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -591,28 +591,6 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 // END OF AJAX AUTO-REFRESH SETTINGS
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//Link FA
-
-var FA_enabled  = true;
-
-function addfaicon() {
-	// if disabled
-	if (!FA_enabled) return;
-	var pLang = document.getElementById("p-lang");
-	if (!pLang) return;
-	var lis = pLang.getElementsByTagName("li");
-	for (var i = 0; i < lis.length; i++) {
-		var li = lis[i];
-		// only links with a corresponding Link_FA template are interesting
-		if (!document.getElementById(li.className + "-fa"))   continue;
-		// additional class so the template can be hidden with CSS
-		li.className += " FA";
-		// change title (mouse over)
-		li.title = "This article is rated as featured article.";
-	}
-}
-$(addfaicon);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * modified for use in both Monaco and Monobook skins by Sikon
@@ -636,31 +614,13 @@ $( function () {
 		}
 		cats = cats.getElementsByTagName( 'a' );
 		for ( var i = 0; i < cats.length; i++ ) {
-			if ( cats[i].title === 'Category:Wookieepedia Featured articles' ) {
-				addEditIntro( 'Template:Featured_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Good articles' ) {
-				addEditIntro( 'Template:Good_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Comprehensive articles' ) {
-				addEditIntro( 'Template:Comprehensive_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Articles undergoing major edits' || cats[i].title === 'Category:Works in progress' ) {
-				addEditIntro( 'Template:Inuse_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Legends articles with canon counterparts' ) {
-				addEditIntro( 'Template:Legends_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Canon articles with Legends counterparts' ) {
-				addEditIntro( 'Template:Canon_editintro' );
-				break;
-			} else if ( mw.config.get( 'wgPageName' ) === 'Template:DYK editintro' ) {
-				addEditIntro( 'Template:Good_editintro' );
+			if ( cats[i].title === 'Büyük düzenleme geçiren sayfalar' ) {
+				addEditIntro( 'Şablon:Kullanımda_giriş' );
 				break;
 			}
 		}
-	} else if ( mw.config.get( 'wgPageName' ) === 'Template:DidYouKnow' ) {
-		addEditIntro( 'Template:DYK_editintro' );
+	} else if ( mw.config.get( 'wgPageName' ) === 'Şablon:BiliyorMuydun' ) {
+		addEditIntro( 'Şablon:BM_giriş' );
 	}
 } );
  
@@ -684,13 +644,13 @@ function disableOldForumEdit() {
 	}
 
 	if ( $( '.page-header #ca-addsection' ).length ) {
-		$( '.page-header #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '.page-header #ca-addsection' ).html( 'Arşivlendi' ).removeAttr( 'href' );
 		$( '.page-header #ca-edit' ).remove();
 		$( '.page-side-tools #ca-addsection' ).remove();
 		$( 'span.mw-editsection' ).remove();
 		return;
 	} else {
-		$( '.page-header #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '.page-header #ca-edit' ).html( 'Arşivlendi' ).removeAttr( 'href' );
 		$( '.page-side-tools #ca-edit' ).remove();
 		$( 'span.mw-editsection' ).remove();
 		return;
@@ -718,11 +678,11 @@ $( function () {
 		if( !$hideContent.length ) {
 			return;
 		}
-		$hideContent.toggle($(this).text().includes('show'));
+		$hideContent.toggle($(this).text().includes('göster'));
 		if ( $( this ).text().indexOf( 'hide' ) >= 1 ) {
-			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
+			$( this ).text( $( this ).text().replace( 'gizle', 'göster' ) );
 		} else {
-			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
+			$( this ).text( $( this ).text().replace( 'göster', 'gizle' ) );
 		}
 	} );
 } );
@@ -730,7 +690,7 @@ $( function () {
 // Lazy load SWTOR article appearances list
 $( function lazyLoadTorApp() {
 	var	pageName = 'Star_Wars:_The_Old_Republic',
-		appPageName = encodeURIComponent( pageName + '/Appearances' ),
+		appPageName = encodeURIComponent( pageName + '/Görünümler' ),
 		$lazyLoadEl = $( '#WookTorLazyload' ),
 		includeHtml,
 		$editLink;
@@ -738,7 +698,7 @@ $( function lazyLoadTorApp() {
 		return;
 	}
 
-	$lazyLoadEl.html( '<img src="https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" alt="Loading..." />' );
+	$lazyLoadEl.html( '<img src="https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" alt="Yükleniyor..." />' );
 	$.getJSON( '/api.php?action=parse&page=' + appPageName + '&format=json' )
 		.done( function ( data ) {
 			if ( data.parse && data.parse.text ) {
@@ -777,7 +737,7 @@ function hideContentSub() {
  **/
 function addTalkheaderPreload() {
 	if (mw.config.get('wgNamespaceNumber') === 0) {
-		document.querySelector('#ca-talk.new').href += '&preload=Template:Talkheader/preload';
+		document.querySelector('#ca-talk.new').href += '&preload=Şablon:Tartışma/preload';
 	}
 }
 
@@ -863,12 +823,12 @@ window.RollbackWikiDisable = true;
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
 	if ( $( '#stdEditSummaries' ).length ) return;
-		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		$.get( mw.config.get( 'wgScript' ), { title: 'Şablon:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,
 				$summaryLabel = $( '.ve-ui-summaryPanel' ),
 				$summaryInput = $( '.ve-ui-summaryPanel-summaryInputField > input' ),
 				lines = data.split( '\n' ),
-				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standart özetler: ' );
 
 			$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
 				var editSummary = $( this ).val();
@@ -915,3 +875,10 @@ if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
         $header.appendChild($ent);
     }
 })();
+
+// Allowing easier downloading of files in their original format, to avoid webp files
+if ( mw.config.get( 'wgCanonicalNamespace' ) == 'Dosya' ) {
+	$( '#file a' ).attr( 'href', function( a, b ) {
+		return b + '&format=original';
+	} );
+}

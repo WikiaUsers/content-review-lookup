@@ -882,3 +882,10 @@ $( function eraIconsOasis() {
     	$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
     }
 } );
+
+// Allowing easier downloading of files in their original format, to avoid webp files
+if ( mw.config.get( 'wgCanonicalNamespace' ) == 'File' ) {
+	$( '#file a' ).attr( 'href', function( a, b ) {
+		return b + '&format=original';
+	} );
+}

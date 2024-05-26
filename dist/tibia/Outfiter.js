@@ -103,7 +103,17 @@ $(function () {
       //225
       'Doom_Skull', 'Mystic_Jaguar_(Mount)', 'Gorgon_Hydra', 'Dawnbringer_Pegasus', 'Wrathfire_Pegasus',
       //250
-      'Skybreaker_Pegasus'
+      'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang',
+      //255
+      
+      //260
+      
+      //265
+      
+      //270
+      
+      //275
+      
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -183,6 +193,12 @@ $(function () {
       'Naga_(C)', 'Naga_(D)', 'Gnome_Female', 'Scientist', 'Weretiger',
       //180
       'Werecrocodile', 'Werepanther'
+      //185
+      
+      //190
+      
+      //195
+      
     ],
     //outfits the array index is the id (starting at 200)
     //must also be added to Template:OutfiterLink
@@ -194,7 +210,12 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald', 'Celestial_Avenger'
+      'Draccoon_Herald', 'Celestial_Avenger','Blade_Dancer',
+      
+      //220
+      
+      //225
+      
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -228,7 +249,8 @@ $(function () {
       Darklight_Evoker: 8,
       Frost_Tracer: 8,
       Flamefury_Mage: 8,
-      Celestial_Avenger: 8
+      Celestial_Avenger: 8,
+      Blade_Dancer: 8
     },
     outfiter_sprites_walking = {
       CM: 2,
@@ -266,7 +288,10 @@ $(function () {
       Steel_Bee: [70, 70, 70, 70, 70, 70, 70, 70, 70, 70],
       //First frame of Special Delays must be adjusted so that all delays sum to 4000ms
       Jousting_Eagle: [3100, 100, 100, 200, 200, 100, 100, 100],
-      Cerberus_Champion: [2900, 100, 100, 100, 500, 100, 100, 100]
+      Cerberus_Champion: [2900, 100, 100, 100, 500, 100, 100, 100],
+      Dawnbringer_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
+      Wrathfire_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
+      Skybreaker_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100]
     },
     //outfits that use ping-pong animation. ping-pong animation means 5 unique sprites, middle ones repeat backwards (1-2-3-4-5-4-3-2)
     outfiter_pingpong_animation = {

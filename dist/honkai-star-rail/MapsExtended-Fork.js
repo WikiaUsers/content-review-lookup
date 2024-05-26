@@ -17,7 +17,7 @@
 	function mx() {
 		var urlParams = new URLSearchParams(window.location.search);
 		var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
-		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.0';
+		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.1';
 		
 		if (isDebug) {
 		    var log = console.log.bind(window.console);
@@ -31,7 +31,7 @@
 		if (isDisabled) // @ts-ignore: this will be output into a function body
 		    return;
 		
-		console.log("Loaded MapsExtended.js (version 0.3.0" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
+		console.log("Loaded MapsExtended.js (version 0.3.1" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
 		
 		// Do not run on pages without interactive maps
 		var test = document.querySelector(".interactive-maps-container");
@@ -2072,6 +2072,11 @@
 		            // Fire events
 		            this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: value });
 		            this.onCategoryToggled.invoke(value);
+		            
+		            if (this.map.initialized) {
+		                // save category states
+		                this.map.saveCategoryStates();
+		            }
 		        },
 		        enumerable: false,
 		        configurable: true
@@ -2106,11 +2111,6 @@
 		        this.elements.checkboxInput.addEventListener("change", function (e) {
 		            this.visible = e.target.checked;
 		            this.map.updateFilter();
-		            
-		            if (this.map.initialized) {
-		                // save category states
-		                this.map.saveCategoryStates();
-		            }
 		        }.bind(this));
 		        
 		        // Hide categories that should start hidden (this is done *before* matching markers)
@@ -2994,6 +2994,9 @@
 		            
 		            this.initMinimalLayout();
 		            
+		            // Set up marker disambiguations
+		            this.initMarkerDisambiguations();
+		            
 		            // Create fullscreen button
 		            this.initFullscreen();
 		            
@@ -3024,9 +3027,6 @@
 		            
 		            // Set up collectibles
 		            this.initCollectibles();
-		            
-		            // Set up marker disambiguations
-		            this.initMarkerDisambiguations();
 		            
 		            // Set up zoom layers
 		            this.initZoomLayers();
@@ -5372,9 +5372,11 @@
 		        disambigContainer.addEventListener('click', function (event) {
 		            var button = event.target.closest('button.mapsExtended_disambigChoice');
 		            if (button) {
+		                this.lastMarkerClicked = button.marker;
+		                this.lastMarkerHovered = button.marker;
 		                button.marker.markerElement.click();
 		                this.hideMarkerDisambiguation();
-		                event.stopPropagation();
+		                event.stopImmediatePropagation();
 		                event.preventDefault();
 		            }
 		        }.bind(this));
@@ -5382,9 +5384,10 @@
 		        disambigContainer.addEventListener('mouseover', function (event) {
 		            var button = event.target.closest('button.mapsExtended_disambigChoice');
 		            if (button) {
+		                this.lastMarkerHovered = button.marker;
 		                button.marker.map.showTooltipForMarker(button.marker, true);
 		            }
-		        });
+		        }.bind(this));
 		        
 		        disambigContainer.addEventListener('mouseout', function (event) {
 		            var button = event.target.closest('button.mapsExtended_disambigChoice');
@@ -6938,7 +6941,7 @@
 		    
 		    ExtendedPopup.prototype.showCopySuccess = function () {
 		        new BannerNotification(mapsExtended.i18n.msg("copy-link-banner-success").escape(), "confirm", null, 5000).show();
-		        // this.hide()
+		        this.hide();
 		    };
 		    
 		    ExtendedPopup.prototype.showCopyFailed = function () {

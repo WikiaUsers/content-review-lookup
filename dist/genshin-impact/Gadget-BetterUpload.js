@@ -244,9 +244,13 @@ $(function() {
             	params.comment = comment.value;
             }
 			if (file && filename && filename.length>0) {
-				var handleResponse = function(msg, data) {
+				var handleResponse = function(a, b) {
+					var data = (typeof b === 'object' && !Array.isArray(b) && b !== null && (b.error || b.upload)) ? b : a;
+					if (!data) {
+						console.log('a', a);
+						console.log('b', b);
+					}
 					if (data.error) {
-						console.log('msg', msg);
 						console.log('data', data);
 						var cont = document.querySelector('.mw-message-box-error');
 						if (!cont) {
@@ -261,7 +265,6 @@ $(function() {
 							'_self' // load in current tab
 						);
 					} else {
-						console.log('msg', msg);
 						console.log('data', data);
 						alert('Unknown error on upload!');
 					}

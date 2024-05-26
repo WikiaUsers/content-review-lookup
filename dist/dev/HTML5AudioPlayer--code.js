@@ -1,3 +1,4 @@
+
 /**
  * @name HTML5AudioPlayer
  * @author Manuel de la Fuente (https://manuelfte.com)
@@ -5,7 +6,7 @@
  * @version 1.5.1
  * @license CC-BY-SA-3.0
  * @description Play audio files with a native HTML5 player
- */
+*/
 
 (function (mw) {
   'use strict';
@@ -15,11 +16,66 @@
   function init(content) {
     content[0].querySelectorAll('.html5audio:not(.loaded)').forEach(function (div) {
       var data = div.dataset;
-      var file = data.file;
-      if (!file) {
-        return;
+      var files = [];
+      var sources = [];
+
+      // Find all data-file attributes
+      for (var attr in data) {
+          if (attr.startsWith("file")) {
+              // Get suffix, "file" for data-file, "-1" for data-file-1
+              var s = attr.substring(4);
+              // Get number, 0 for data-file, 1 for data-file-1, null for anything else
+              var n = parseInt(s.substring(1)) || (s === '' ? 0 : null);
+              if (n != null) files[n] = data[attr];
+          }
       }
-      var format = file.split('.').pop().substr(0, 3);
+
+      // Remove missing elements
+      files = files.filter(function(f){ return f; });
+
+      for (var n = 0; n < files.length; n++) {
+
+          var file = files[n];
+          var format;
+          
+          // Get type from attribute, if specified
+          format = data["fileType" + (n > 0 ? "-" + n : "")];
+
+          // Otherwise get type from extension of URL. This is prone to issues.
+          // (Might be better to do a HEAD request for each file in the future)
+          if (!format) {
+
+              var f = files[n];
+              
+              // Trim query string portion if it exists
+              var queryIndex = f.lastIndexOf('?');
+              if (queryIndex != -1)
+                  f = f.substring(0, queryIndex);
+
+              // Don't try to use extension when it doesn't exist, and don't try to use extensions
+              // that have more than 4 characters (as they're likely not a part of the file name)
+              var dotIndex = f.lastIndexOf('.');
+              if (dotIndex != -1 && f.length - (dotIndex + 1) <= 4)
+                  format = f.substring(dotIndex + 1);
+          }
+
+          if (format && format.length > 0) {
+              // Change mp3 to mpeg
+              if (format == "mp3")
+                  format = "mpeg";
+              // Add the audio MIME type prefix if it doesn't already exist
+              if (!format.startsWith("audio/"))
+                  format = "audio/" + format;
+          }
+
+          var source = document.createElement("source");
+          source.src = file;
+          if (format) source.type = format;
+          sources.push(source);
+      }
+
+      if (sources.length == 0) return;
+        
       var preload = data.preload;
       var download = data.download;
       var options = data.options;
@@ -29,10 +85,6 @@
       var end = parseFloat(data.end);
       var repeatStart = parseFloat(data.repeatStart);
       var repeatEnd = parseFloat(data.repeatEnd);
-
-      if (format === 'mp3') {
-        format = 'mpeg';
-      }
 
       if (preload !== 'auto' && preload !== 'metadata') {
         preload = 'none';
@@ -128,11 +180,8 @@
         audio.addEventListener('seeking', onSeeking);
       }
 
-      var source = document.createElement('source');
-      source.src = file;
-      source.type = 'audio/' + format;
-
-      audio.append(source, msg('text').escape());
+      Element.prototype.replaceChildren.apply(audio, sources);
+      audio.append(msg('text').escape());
 
       if (volume >= 0 && volume <= 1) {
         audio.volume = volume;

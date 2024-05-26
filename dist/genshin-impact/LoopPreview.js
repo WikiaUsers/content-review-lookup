@@ -19,36 +19,32 @@
 	 *  - height (number | null)
 	 */
 	function extractVideoData(item) {
-		const videoData = item.getElementsByClassName('video')[0];
-		const videoLink = videoData.getElementsByTagName('a')[0];
+		var videoData = item.getElementsByClassName('video')[0];
+		var videoLink = videoData.getElementsByTagName('a')[0];
 		
 		// Stop if video file does not exist.
 		if (videoLink.classList.contains('new')) {
 			return null;
 		}
 		
-		const videoUrl = videoLink.href;
-		const videoFileName = videoLink.innerText;
+		var videoUrl = videoLink.href;
+		var videoFileName = videoLink.innerText;
 		
-		const rawSize = videoData.dataset.size.toLowerCase();
+		var rawSize = videoData.dataset.size.toLowerCase();
 		// Size Logic https://www.mediawiki.org/wiki/Help:Images#Syntax
-		const parseArray = /(\d*x)?(\d+)px/.exec(rawSize);
-		const first = parseArray[0];
-		const second = parseArray[1];
-		const secondIsWidth = !first.includes('x');
-		const width = secondIsWidth
-			? second
-			: first.replace(/\D/g,'') || null;
-		const height = secondIsWidth
-			? null
-			: second;
+		var parseArray = /(\d*x)?(\d+)px/.exec(rawSize);
+		var first = parseArray[0];
+		var second = parseArray[1];
+		var secondIsWidth = !first.includes('x');
+		var width = secondIsWidth ? second : (first.replace(/\D/g,'') || null);
+		var height = secondIsWidth ? null : second;
 			
 		return {
 			url: videoUrl,
 			filename: videoFileName,
 			width: width,
 			height: height,
-		}
+		};
 	}
 	
 	/**
@@ -57,7 +53,7 @@
 	 */
 	function cloneVideo(videoData, vid_master, source_master) {
 		// Video Body
-		const vid_body = vid_master.cloneNode();
+		var vid_body = vid_master.cloneNode();
 		vid_body.muted = true; // cloning the element doesn't preserve muting, even when setting defaultMuted=true
 		if (videoData.width)
 			vid_body.width = videoData.width;
@@ -65,7 +61,7 @@
 			vid_body.height = videoData.height;
 
 		// Source Body (for Video)
-		const source = source_master.cloneNode();
+		var source = source_master.cloneNode();
 		source.dataset.src = videoData.url; // store source in data to load lazily later
 		vid_body.appendChild(source);
 		
@@ -77,11 +73,12 @@
 	 * (Used for autoplay mode.)
 	 */
 	function loadVideo(image, video) {
-		const sources = video.getElementsByTagName('source');
+		var sources = video.getElementsByTagName('source');
+		var i;
 		
 		// skip if loaded already
 		var loaded = true;
-		for (var i=0; i<sources.length; i++) {
+		for (i=0; i<sources.length; i++) {
 			if (!sources[i].src)
 				loaded = false;
 		}
@@ -89,8 +86,8 @@
 			return;
 		
 		// load video, then add listeners
-		for (var i=0; i<sources.length; i++) {
-			const source = sources[i];
+		for (i=0; i<sources.length; i++) {
+			var source = sources[i];
 			if (source.dataset.src)
 				source.src = source.dataset.src;
 		}
@@ -112,18 +109,16 @@
 	// Initialize options
 	if (typeof window.LoopPreviewOpts !== 'object')
 		window.LoopPreviewOpts = {};
-	const opts = {
+	var opts = {
 		mode: 'hover',
 	};
 	Object.assign(opts, window.LoopPreviewOpts);
-	
-	const autoplay = opts.mode === 'autoplay';
 
 	function init() {
-		const vid_master = document.createElement('video');
+		var vid_master = document.createElement('video');
 
 		// Test if this code should run
-		const cantPlayMp4 = vid_master.canPlayType('video/mp4') === '';
+		var cantPlayMp4 = vid_master.canPlayType('video/mp4') === '';
 		if (cantPlayMp4 || opts.mode === 'off') return;
 
 		// Prep master components for cloneNode (more optimal than createElement)
@@ -133,73 +128,104 @@
 		vid_master.disableRemotePlayback = true;
 		vid_master.playsInline = true;
 		vid_master.style.display = 'none';
-		const source_master = document.createElement('source');
+		var source_master = document.createElement('source');
 		source_master.type = 'video/mp4';
 		
 		// Set up lazy loading for autoplay mode
-		var loadManager, loadManagerConfig;
-		var playManager;
-		if (autoplay) {
-			loadManager = new MutationObserver(function loadVideos(mutationList) {
-				// Load video when its image gets loaded
-				for (var i=0; i<mutationList.length; i++) {
-					const image = mutationList[i].target;
-					// Skip if not loaded yet
-					if (image.classList.contains('lazyload'))
-						continue;
-					
-					const container = image.parentElement;
-					const video = container.getElementsByTagName('video')[0];
-					loadVideo(image, video);
-				}
-			});
-			loadManagerConfig = { attributes: true, attributeFilter: ['class'] };
-			
-			playManager = new IntersectionObserver(function playVideos(changes) {
-				// Play video when it scrolls into view; pause when it exits
-				for (var i=0; i<changes.length; i++) {
-					const curr = changes[i];
-					const video = curr.target;
-					if (curr.isIntersecting)
-						video.play();
-					else
-						video.pause();
-				}
-			});
-		}
+		var loadManager, loadManagerConfig, playManager;
 
 		// Add videos
-		const searchClass = 'looppreview';
-		const all = document.getElementsByClassName(searchClass);
+		var searchClass = 'looppreview';
+		var all = document.getElementsByClassName(searchClass);
 		while (0 < all.length) {
 			// Ingest values
-			const focus = all.item(0);
+			var focus = all.item(0);
 			focus.classList.remove(searchClass);
 			
 			// Create the video element
-			const videoData = extractVideoData(focus);
+			var videoData = extractVideoData(focus);
 			if (videoData === null) {
 				continue;
 			}
-			const container = focus.querySelector('a.image');
-			const out = cloneVideo(videoData, vid_master, source_master);
-			const vid_body = out[0];
-			const source = out[1];
+			var container = focus.querySelector('a.image');
+			var out = cloneVideo(videoData, vid_master, source_master);
+			var vid_body = out[0];
+			var source = out[1];
 			container.appendChild(vid_body);
 			
 			// Update links to point to video file/page
 			container.href = videoData.url;
-			const icon = focus.querySelector('figure figcaption a.info-icon');
+			var icon = focus.querySelector('figure figcaption a.info-icon');
 			if (icon)
 				icon.href = '/wiki/' + videoData.filename;
 			
-			const image = container.getElementsByTagName('img')[0];
+			var image = container.getElementsByTagName('img')[0];
 			
 			// Add logic to load videos based on loading mode in options
 			//  - Autoplay: replace gifs with videos as the gifs load
 			//  - Hover: add event listener that loads video and shows it
-			if (autoplay) {
-				// Autoplay mode
+			
+			// Hover mode
+			
+			// Wait for first mouseover before loading the video
+			$(container).on("mouseover.LoopPreview", function() {
+				source.src = source.dataset.src;
+				
+				// Wait until video loads before showing/playing it
+				$(vid_body).on('canplay.LoopPreview', function() {
+					function showVideo() {
+						image.style.display = 'none';
+						vid_body.style.display = 'block';
+						vid_body.play();
+					}
+					$(container).on("mouseover.LoopPreview", showVideo);
+					
+					// Immediately show/play if still hovering
+					if (container.matches(':hover')) {
+						showVideo();
+					}
+				}, { 'once':true });
+				vid_body.preload = 'auto';
+				vid_body.load();
+				
+				$(container).on("mouseout.LoopPreview", function () {
+					image.style.display = 'block';
+					vid_body.style.display = 'none';
+					vid_body.pause();
+				});
+			}, { once: true });
+			
+			// Autoplay mode
+			mw.hook('LoopPreview.autoplay').add(function(){
+				$(container).off("mouseover.LoopPreview");
+				if (!loadManager || !loadManagerConfig || !playManager) {
+					loadManager = new MutationObserver(function loadVideos(mutationList) {
+						// Load video when its image gets loaded
+						for (var i=0; i<mutationList.length; i++) {
+							var image = mutationList[i].target;
+							// Skip if not loaded yet
+							if (image.classList.contains('lazyload'))
+								continue;
+							
+							var container = image.parentElement;
+							var video = container.getElementsByTagName('video')[0];
+							loadVideo(image, video);
+						}
+					});
+					loadManagerConfig = { attributes: true, attributeFilter: ['class'] };
+					
+					playManager = new IntersectionObserver(function playVideos(changes) {
+						// Play video when it scrolls into view; pause when it exits
+						for (var i=0; i<changes.length; i++) {
+							var curr = changes[i];
+							var video = curr.target;
+							if (curr.isIntersecting)
+								video.play();
+							else
+								video.pause();
+						}
+					});
+				}
 				
 				// If image is marked for lazy loading, set loadManager to wait
 				// for the image to load before loading the video.
@@ -212,38 +238,7 @@
 					loadVideo(image, vid_body);
 				}
 				playManager.observe(vid_body);
-			} else {
-				// Hover mode
-				
-				// Wait for first mouseover before loading the video
-				container.addEventListener("mouseover", function() {
-					source.src = source.dataset.src;
-					
-					// Wait until video loads before showing/playing it
-					vid_body.addEventListener('canplay', function() {
-						function showVideo() {
-							image.style.display = 'none';
-							vid_body.style.display = 'block';
-							vid_body.play();
-						}
-						container.addEventListener("mouseover", showVideo);
-						
-						// Immediately show/play if still hovering
-						if (container.matches(':hover')) {
-							showVideo();
-						}
-					}, { 'once':true });
-					vid_body.preload = 'auto';
-					vid_body.load();
-					
-					container.addEventListener("mouseout", function () {
-						image.style.display = 'block';
-						vid_body.style.display = 'none';
-						vid_body.pause();
-					});
-				}, { once: true });
-			}
-
+			});
 		}
 	}
 	mw.hook('wikipage.content').add(init);

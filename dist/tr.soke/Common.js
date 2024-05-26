@@ -899,3 +899,19 @@ $( function eraIconsOasis() {
     	}
     }
 } );
+
+if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
+	$( '.page-header__actions' ).first().prepend( $( '.eraicons' ).first() );
+} else {
+	$( '.page-header__contribution > div:first-child' ).append($('.eraicons').first() );
+}
+
+/* EN title */
+(function() {
+    var $ent = document.querySelector('#enTitle'),
+        $header = document.querySelector('.page-header__title-wrapper');
+    if ($ent && $header && !mw.config.get('wgIsMainPage')) {
+        $ent.style.display = 'block';
+        $header.appendChild($ent);
+    }
+})();

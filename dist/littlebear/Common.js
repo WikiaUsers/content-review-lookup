@@ -46,10 +46,6 @@ $('.collapsible-list li ul').each(function(index, currentTree){
   });
 });
 
-// Fix red talk links
-
-$('a.new#ca-talk').attr('href', '/wiki/'+mw.config.get("wgCanonicalNamespace")+' talk:'+mw.config.get("wgTitle"));
-
 // Customizing text of auto-created user and user talk pages
 
 window.AutoCreateUserPagesConfig = {

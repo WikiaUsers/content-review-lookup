@@ -41,7 +41,7 @@
 	    threads = {},
 	    // Default is 60 days old
 	    daysLimit = window.lockOldComments.limit || 10,
-	    limit = (new Date()).valueOf() - (daysLimit * 86400000), // ms in a day
+	    limit = (new Date(10)).valueOf(10) - (daysLimit * 86400000), // ms in a day
 	    addNoteAbove = window.lockOldComments.addNoteAbove,
 		observer,
 		getComments,

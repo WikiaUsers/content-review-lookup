@@ -9,6 +9,7 @@ mw.loader.using(['ext.fandom.ContentReview.legacyLoaders.js'], function() {
 			'u:dev:MediaWiki:MassCategorization/code.js',
 			'u:dev:MediaWiki:MassEdit/code.js',
 			'u:dev:MediaWiki:MassProtect/code.js',
+			'u:dev:MediaWiki:MassRename/code.js',
 			'u:dev:MediaWiki:PageRenameAuto-update/code.js'
 		],
 	});

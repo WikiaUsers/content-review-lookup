@@ -1051,7 +1051,7 @@
     }
     else {
       creature = ucwords($.trim(tmp[1])).replace(/ /g, '_');
-      ta_multi_version_no_ok_wrong = 0; ta_version_ok = false; vdata = parser_text.match(/version\s*?=\s*?([.\d]{3,}(\s\(\d\))?)/i);
+      ta_multi_version_no_ok_wrong = 0; ta_version_ok = false; vdata = parser_text.match(/version\s*?=\s*?([.\da-f]{3,}(\s\(\d\))?)/i);
       if (vdata === null) { request_end('Version info couldn\'t be found, please verify in case you manually edited the statistics.'); }
       else {
         if (lootparser_tibia_versions.hasOwnProperty(vdata[1])) { ta_version_ok = true; }

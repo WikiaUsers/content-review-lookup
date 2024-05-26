@@ -28,6 +28,41 @@ UserTagsJS.modules.inactive = 90; // 90 days
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 $(function() {
+	var years_div = document.querySelector("div.tabber-years");
+    if (years_div) {
+        var CURRENT_YEAR = 2024;
+		var tabber = years_div.querySelector("div.tabber.wds-tabber");
+        console.log(tabber);
+		var tabs = tabber.querySelectorAll("div.wds-tabs__wrapper ul.wds-tabs li");
+        console.log(tabs);
+
+        var default_idx;
+        var desired_idx;
+
+        tabs.forEach(function(tab, idx) {
+            if ((tab.classList).length == 2 && tab.classList[1] == "wds-is-current") {
+                default_idx = idx;
+            }
+
+            if (parseInt(tab.innerText) == CURRENT_YEAR) {
+                desired_idx = idx;
+            }
+        });
+
+        tabs[default_idx].classList.remove('wds-is-current')
+        tabs[desired_idx].classList.add('wds-is-current')
+
+        if (default_idx != desired_idx) {
+            var tabber_divs = tabber.querySelectorAll(":scope > div") // Only direct children
+            console.log(tabber_divs)
+            var default_table = tabber_divs[default_idx+1].innerHTML;
+            var desired_table = tabber_divs[desired_idx+1].innerHTML;
+
+            tabber_divs[default_idx+1].innerHTML = desired_table;
+            tabber_divs[desired_idx+1].innerHTML = default_table
+        }
+    }
+    
 	if (mw.config.get('wgNamespaceNumber') === 2) {		// testing on userpage
 		mw.util.addCSS(
 			'.pc-generator p {\n' + 

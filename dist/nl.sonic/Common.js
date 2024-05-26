@@ -33,3 +33,12 @@ var wiki_name_text=["Gotta go fast!", "Aw, yeah! This is happenin'!", "What you 
 var elements=document.getElementsByClassName('fandom-community-header__community-name');
 var wiki_name=elements[0];
 wiki_name.textContent=wiki_name_text;
+
+/* Tussen haakjes hoofdingen */
+$(document).ready(function() {
+    $('h1').each(function() {
+        var html = $(this).html();
+        var newHtml = html.replace(/\(([^)]+)\)/g, '<span class="title-parentheses">($1)</span>');
+        $(this).html(newHtml);
+    });
+});

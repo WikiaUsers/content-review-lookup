@@ -621,7 +621,7 @@ mw.loader.using("jquery.client", function() {
         syntaxHighlighterConfig.sourceTags = syntaxHighlighterConfig.sourceTags || syntaxHighlighterSiteConfig.sourceTags || ["math", "syntaxhighlight", "source", "timeline", "hiero", "infobox", "templatedata"]; // @change – added infobox and templatedata tags
         syntaxHighlighterConfig.timeout = syntaxHighlighterConfig.timeout || syntaxHighlighterSiteConfig.timeout || 25;
         //voidTags is for people who really don't want to use a slash to close certain tags, although other empty tags require the slash
-        syntaxHighlighterConfig.voidTags = syntaxHighlighterConfig.voidTags || syntaxHighlighterSiteConfig.voidTags || ["br"]; // @change - inclue "br" as void tag by default
+        syntaxHighlighterConfig.voidTags = syntaxHighlighterConfig.voidTags || syntaxHighlighterSiteConfig.voidTags || ["br", "hr"]; // @change - inclue "br" and "hr" as void tag by default
 
         syntaxHighlighterConfig.nowikiTags.forEach(function(tagName) {
             nowikiTagBreakerRegexCache[tagName] = nowikiTagBreakerRegex(tagName);
