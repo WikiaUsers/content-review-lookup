@@ -17,7 +17,7 @@
 	function mx() {
 		var urlParams = new URLSearchParams(window.location.search);
 		var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
-		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.1';
+		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.2';
 		
 		if (isDebug) {
 		    var log = console.log.bind(window.console);
@@ -31,7 +31,7 @@
 		if (isDisabled) // @ts-ignore: this will be output into a function body
 		    return;
 		
-		console.log("Loaded MapsExtended.js (version 0.3.1" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
+		console.log("Loaded MapsExtended.js (version 0.3.2" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
 		
 		// Do not run on pages without interactive maps
 		var test = document.querySelector(".interactive-maps-container");
@@ -2226,6 +2226,10 @@
 		        var msg = mapsExtended.i18n.msg("category-collected-label", count, total, perc).plain();
 		        
 		        this.elements.collectedLabel.textContent = msg;
+		        
+		        if (this.elements.sidebarNumMarkers != null) {
+		            this.elements.sidebarNumMarkers.innerHTML = count > 0 ? ('<b>' + count + '</b>/' + total) : total.toString();
+		        }
 		    };
 		    
 		    ExtendedCategory.prototype.clearAllCollected = function () { this.setAllCollected(false); };
@@ -8905,13 +8909,21 @@
 		            var category = categoryGroup.categories[i];
 		            
 		            var categoryNumMarkers = document.createElement("span");
-		            categoryNumMarkers.textContent = category.markers.length.toString();
+		            
+		            var collectedCount = category.getNumCollected();
+		            var numContent = category.markers.length.toString();
+		            if (collectedCount) {
+		                numContent = '<b>' + collectedCount + '</b>/';
+		            }
+		            categoryNumMarkers.innerHTML = numContent;
 		            
 		            var categoryListItem = document.createElement("div");
 		            categoryListItem.category = category;
 		            categoryListItem.className = "mapsExtended_sidebarCategory_listItem";
 		            categoryListItem.classList.toggle("hidden", !category.visible);
 		            categoryListItem.append(category.elements.categoryIcon.cloneNode(true), category.elements.categoryLabel.cloneNode(true), categoryNumMarkers);
+		            
+		            category.elements.sidebarNumMarkers = categoryNumMarkers;
 		            
 		            // Toggle specific category by clicking on item
 		            categoryListItem.addEventListener("click", function (e) {

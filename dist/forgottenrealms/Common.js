@@ -231,3 +231,9 @@ window.AddRailModule = [
 	{page: 'Template:RailModule', prepend: true},
 	'Template:NewPagesModule'
 ];
+
+/* Configuring MapsExtended -- this applies to ALL maps */
+window.mapsExtendedConfig =
+{
+	iconAnchor: "bottom-center"
+};

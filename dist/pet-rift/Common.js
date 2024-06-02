@@ -3,3 +3,7 @@ $('.fandom-community-header__community-name-wrapper').append(
  	/* Adds A+ Wiki Badge to Title */
     $('<img/>').addClass('hover-community-header-wrapper').css('height', '30px')
 	.attr('src', 'https://static.wikia.nocookie.net/roblox-pet-rift/images/9/96/Fandom-A%2Bwiki-badge.png/revision/latest?cb=20230721210034'));
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 60;
+window.lockOldComments.addNoteAbove = true;

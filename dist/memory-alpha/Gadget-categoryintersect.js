@@ -1,5 +1,5 @@
 /**
- * Adds a category intersection page using DynamicPageList and links to category pages to intersect with Canon and Legends articles.
+ * Adds a category intersection page using DynamicPageList and links to find pages in any two categories specified by the user.
  * 
  * Uses OOUI and MediaWiki core JS, see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui and https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw for details.
  */
@@ -11,7 +11,7 @@ $(function () {
 		const intersectionPage = 'Special:BlankPage/CategoryIntersection';
 		const searchParams = new URLSearchParams(location.search);
 		const pageName = mw.config.get('wgPageName');
-		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Legends|Canon) articles$');
+		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category;
 		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
 			return param === 'category1' || param === 'category2';
 		}).length === 2;
@@ -21,24 +21,8 @@ $(function () {
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
 			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
-			const canonUrl = baseUrl + '&category2=Canon_articles';
-			const legendsUrl = baseUrl + '&category2=Legends_articles';
-			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">Category intersection</a>';
-			filters += '<ul>';
-			filters += '<li>';
-			filters += '<a href="' + canonUrl + '" title="View Canon articles only">';
-			filters += '<img alt="View Canon articles only" src="/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
-			filters += '</a>';
-			filters += '</li>';
-			filters += '<li>';
-			filters += '<a href="' + legendsUrl + '" title="View Legends articles only">';
-			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
-			filters += '</a>';
-			filters += '</li>';
-			filters += '</ul>';
-			filters += '</div>';
-			$('.mw-parser-output').append(filters);
+			var filters = '<li><a href="'+baseUrl+'">Category intersection</a></li>';
+			$('#p-cactions .wds-list').append(filters);
 		}
 		
 		// Results page

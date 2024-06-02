@@ -247,4 +247,7 @@
 		}
 	}
 	mw.hook('wikipage.content').add(init);
+	mw.hook('dev.mapsExtended').add(function(mapsExtended) {
+		mapsExtended.events.onPopupCreated.subscribe(init);
+	});
 })(window);

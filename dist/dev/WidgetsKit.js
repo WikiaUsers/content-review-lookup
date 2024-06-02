@@ -33,11 +33,19 @@ $(function () {
 					defaultHeight = 120;
 					break;
 
-				// Apple Podcasts
+				// Apple Podcasts: Show
 				case 'applepodcasts':
+				case 'applepodcasts:show':
 					iframe.src = 'https://embed.podcasts.apple.com/us/podcast/' + element.data('id');
 					defaultWidth = 300;
 					defaultHeight = 450;
+					break;
+
+				// Apple Podcasts: Episode
+				case 'applepodcasts:episode':
+					iframe.src = 'https://embed.podcasts.apple.com/us/podcast/' + data[0] + '/?i=' + data[1];
+					defaultWidth = 300;
+					defaultHeight = 175;
 					break;
 
 				// Google Forms

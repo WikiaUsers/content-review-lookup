@@ -61,28 +61,7 @@ if (document.querySelector(".leaderboard-placeholder")) {
 		loadLB();
 		mw.hook("AddRailModule.module").add(loadLB);
 	});
-};
-
-
-// Rail Module
-document.querySelectorAll(".rail-module:not(:last-child)").forEach(function(section){
-	if (!section.classList.contains("railModule") && section.nextElementSibling && !section.nextElementSibling.classList.contains("right-rail-separator")) {
-		var sep = document.createElement("div");
-		sep.classList.add("right-rail-separator");
-		section.after(sep);
-	};
-});
-mw.loader.using( 'jquery.makeCollapsible' ).then(function(){
-	waitFor(".sticky-modules-wrapper", function(){
-		document.querySelectorAll(".rail-module__list").forEach(function(el){
-			$(el.previousElementSibling).wrap('<div class="mw-customtoggle" aria-expanded="true" tabindex="0"></div>');
-			$(el).makeCollapsible({$customTogglers: el.previousElementSibling, collapsed: true});
-		});
-	});
-});
-waitFor('section.railModule ~ div.sticky-modules-wrapper', function(){
-	$(".sticky-modules-wrapper").prepend($('section.railModule'));
-});
+}
 
 
 // Copy Text Template
@@ -100,6 +79,98 @@ $('body').on("click.ct", "div.copy-text", function copyText(event) {
 			});
 		}
 	}
+});
+
+
+// Rail Module
+// Moves Sticky-Modules-Wrapper to prepend custom railModule, removes railModule, adds separators
+waitFor("section.railModule ~ div.sticky-modules-wrapper", function(){
+	$(".sticky-modules-wrapper").prepend($("section.railModule"));
+	$(".railModule .rail-module").unwrap();
+	document.querySelectorAll(".rail-module:not(:last-child)").forEach(function(section){
+		if (!section.nextElementSibling.classList.contains("right-rail-separator")) {
+			var sep = document.createElement("div");
+			sep.classList.add("right-rail-separator");
+			section.after(sep);
+		}
+	});
+});
+// Makes default rail-modules collapsible
+mw.loader.using("jquery.makeCollapsible").then(function(){
+	waitFor(".page-tools-module ~ .activity-module", function(){
+		document.querySelectorAll(".rail-module__list").forEach(function(el){
+			$(el.previousElementSibling).wrap('<div class="mw-customtoggle" aria-expanded="true" tabindex="0"></div>');
+			$(el).makeCollapsible({$customTogglers: el.previousElementSibling, collapsed: true});
+		});
+	});
+});
+// Sticky stuff
+waitFor(".sticky-modules-wrapper", function() {
+	var $sidebar = $(".sticky-modules-wrapper");
+	$('<div id="before-sidebar"></div>').insertBefore($sidebar);
+	var $before = $("#before-sidebar");
+	
+	var lastSD = "d";
+	var lastH = $sidebar.outerHeight();
+    var lastVH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    var lastST = $(window).scrollTop();
+    var lastT = $sidebar.offset().top;
+    var smaller = lastH <= lastVH ? true : false;
+    var stuck = false;
+
+    var sidebarFunction = function() {
+    	console.log("here");
+        var h = $sidebar.outerHeight();
+		var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+        if (h != lastH || vh != lastVH) {
+            if (h <= vh) {
+                $sidebar.css("top", 36);
+                $before.css("margin-top", 0);
+                smaller = true;
+            } else {
+                $sidebar.css("top", vh - h);
+                $sidebar.css("bottom", vh - h - 36);
+                if (smaller) {
+                    margin = $(window).scrollTop() > 160 ? $(window).scrollTop() - 124 : 0;
+				    $before.css("margin-top", margin);
+                    smaller = false;
+                }
+            }
+            lastH = h;
+            lastVH = vh;
+        }
+
+        var st = $(window).scrollTop();
+
+        if (st != lastST) {
+            if (!smaller) {
+                var t = $sidebar.offset().top;
+                if (st > lastST) {
+                    sd = "d";
+                } else {
+                    sd = "u";
+                }
+                if (sd != lastSD) {
+                    lastSD = sd;
+
+                    if (stuck) {
+                        margin = sd == "d" ? t - 124 : t - 160;
+                        margin = margin <= 0 ? 0 : margin;
+
+                        $before.css("margin-top", margin);
+                    }
+                }
+                stuck = t != lastT ? true : false;
+                lastT = t;
+            }
+            lastST = st;
+        }
+    };
+
+    $(".rail-module .mw-customtoggle").click(sidebarFunction);
+    $(window).on("resize.mikeLib scroll.bttmstick", sidebarFunction);
+    //$(window).on("DOMContentLoaded.bttmstick load.bttmstick")
 });
 
 

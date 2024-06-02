@@ -1,11 +1,11 @@
-importArticles({
+/*importArticles({
     type: "script",
     article: ["MediaWiki:Breadcrumbs.js"]
 },
 {
 	type: "style",
     article: [""]
-});
+});*/
 
 window.mapsExtendedConfig =
 {
@@ -13,7 +13,7 @@ window.mapsExtendedConfig =
     enableTooltips: true,
     tooltipDirection: "bottom",
     openPopupsOnHover: false,
-    enableFullscreen: true,
+    enableFullscreen: false,
     fullscreenMode: "window",
     enableSearch: true,
     zoomLayers:
@@ -49,7 +49,7 @@ window.rwaOptions = {
  * sliders using jquery
  * Credited author <dragonage.fandom.com/wiki/User:Tierrie
  */
-mw.loader.using( ['jquery.cookie']);
+/*mw.loader.using( ['jquery.cookie']);
 
 mw.loader.using( ['jquery.ui.tabs'], function() {
   $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
@@ -69,4 +69,4 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
     $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
     return false;
   });
-});
+});*/

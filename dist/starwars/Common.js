@@ -889,3 +889,10 @@ if ( mw.config.get( 'wgCanonicalNamespace' ) == 'File' ) {
 		return b + '&format=original';
 	} );
 }
+
+// Adding 'Random Page' for logged-out users in 'Explore' top navigation to make consistent with logged-in experience
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
+});

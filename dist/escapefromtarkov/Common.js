@@ -67,12 +67,9 @@ window.mapsExtendedConfig = {
                     []
                 ],
     "sortMarkers": "category",
-    "disabledCategories": [
-        "settings"
-    ],
     "categoryGroups": [
         {
-            "label": "Exfils",
+            "label": "Extractions",
             "children": [
                 "exfil_pmc",
                 "exfil_scav",
@@ -90,14 +87,13 @@ window.mapsExtendedConfig = {
                         "spawn_sniper",
                         "spawn_boss",
                         "spawn_rogueraider",
-                        "spawn_bloodhound",
                         "spawn_cultist"
                     ]
                 }
             ]
         },
         {
-            "label": "Misc",
+            "label": "Miscellaneous",
             "children": [
                 "lever",
                 "stationarygun",

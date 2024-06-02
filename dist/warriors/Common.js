@@ -254,3 +254,17 @@ var hasClass = (function() {
         return (reCache[className] ? reCache[className] : (reCache[className] = new RegExp("(?:\\s|^)" + className + "(?:\\s|$)"))).test(element.className);
     };
 })();
+
+// Allowing easier downloading of files in their original format, to avoid webp files
+if ( mw.config.get( 'wgCanonicalNamespace' ) == 'File' ) {
+	$( '#file a' ).attr( 'href', function( a, b ) {
+		return b + '&format=original';
+	} );
+}
+
+// Adding 'Random Page' for logged-out users in 'Explore' top navigation to make consistent with logged-in experience
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
+});

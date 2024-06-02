@@ -81,18 +81,13 @@ UserTagsJS.modules.custom = {
 	'GrayshaValor': ['ron-senior-administrator'],
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Helpers
-	'DaddyPapa': ['wiki-helper'],
 	'Dxrknrg': ['wiki-helper'],
 	'MP1Player': ['wiki-helper'],
 	'IFinishedDoingIt': ['wiki-helper'],
-	'WizardEngie432': ['wiki-helper'],
 	'ThyEpicusMenicus2': ['wiki-helper'],
 	'Eddy0725': ['wiki-helper'],
-	'Squadronsss': ['wiki-helper'],
 	'HaHaBlah': ['wiki-helper'],
 	'Bazyli123': ['wiki-helper'],
-	'Pushaco': ['wiki-helper'],
-	'Tricycle_dude': ['wiki-helper'],
 	'PanzerundLancer': ['wiki-helper'],
 }	
 //* END of UserTags *//

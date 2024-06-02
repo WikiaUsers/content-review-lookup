@@ -132,7 +132,7 @@ function createCollapseButtons( $content ) {
 			var Button     = document.createElement( 'span' );
 			var ButtonLink = document.createElement( 'a' );
 			var ButtonText = document.createTextNode( collapseCaption );
-			// Styles are declared in [[MediaWiki:Common.css]]
+			// Styles are declared in [[MediaWiki:fandomdesktop.css]]
 			Button.className = 'collapseButton';
 
 			ButtonLink.style.color = Header.style.color;

@@ -89,8 +89,30 @@ window.mapsExtendedConfigs =
 		        "categories": [ "20", "23" ]
 		    }
 		]
+    },
+    "Дрожащие острова": {
+        zoomLayers:	[
+		    {
+		        "id": 1,
+		        "minZoom": 0.1,
+		        "categories": [ "5", "7"]
+		    },
+		    {
+		        "id": 2,
+		        "minZoom": 0.2,
+		        "categories": [ "2", "4" ]
+		    },
+		    {
+		        "id": 3,
+		        "minZoom": 0.4,
+		        "categories": [ "8", "9" ]
+		    }
+		]
     }
 }
+/*---------------------------- Кнопка "Новая страница" -----------------------*/
+$(".wiki-tools__theme-switch").before('<a href="https://elderscrolls.fandom.com/ru/wiki/Служебная:CreatePage" class="wds-button wds-is-secondary" title="Новая страница"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-page-small"></use></svg></a>');
+
 /*----------------------------- Блок "Новые страницы" ------------------------*/
 // Блок правой панели. Всзято с вики "Убежище"
 function addNewPages(){

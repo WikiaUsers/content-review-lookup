@@ -34,22 +34,79 @@
 					var userID = data.query.users[0].userid;
 					var LIMIT = 100;
 
-					function undeleteSingle(ID, isThread) {
-						var requestUrl = mw.util.wikiScript("wikia") + "?controller=Discussion"+(isThread ? "Thread" : "Post")+"&method=undelete&"+(isThread ? "thread" : "post")+"Id="+ID;
+					function undeleteForum(ID) {
+						var requestUrl = mw.util.wikiScript("wikia") +
+							"?controller=DiscussionPost&method=undelete&postId=" + ID;
 						return fetch(requestUrl, {
 							"credentials": "include",
 							"method": "POST",
 						});
 					}
 
-					function loopThroughAllPosts(posts, i) {
+					function undeleteWall(post, wallOwners) {
+						var wallOwnerId;
+						for (var owner in wallOwners){
+							if (wallOwners[owner].wallContainerId == post.forumId) {
+								wallOwnerId = wallOwners[owner].userId
+							}
+						}
+						if (!wallOwnerId) {
+							// I don't really know what to do in this situation
+							return Promise.resolve()
+						}
+
+						return $.ajax({
+							method: "POST",
+							url: mw.util.wikiScript("wikia") + "?" + $.param({
+								controller: "Fandom\\MessageWall\\MessageWall",
+								method: "undeleteReply",
+								format: "json",
+							}),
+							data: $.extend(false, {
+								token: mw.user.tokens.get("csrfToken"),
+								wallOwnerId: wallOwnerId,
+								postId: post.id
+							}),
+						});
+					}
+
+					function undeleteComment(post) {
+						return $.ajax({
+							method: "POST",
+							url: mw.util.wikiScript("wikia") + "?" + $.param({
+								controller: "Fandom\\ArticleComments\\Api\\ArticleComments",
+								method: "undeletePost",
+								format: "json",
+							}),
+							data: $.extend(false, {
+								token: mw.user.tokens.get("csrfToken"),
+								postId: post.id
+							}),
+						});
+					}
+
+					function undeleteSingle(post, wallOwners) {
+						var containerType = post._embedded.thread[0].containerType;
+
+						if (containerType == "FORUM") {
+							return undeleteForum(post.id)
+						} else if (containerType == "WALL") {
+							return undeleteWall(post, wallOwners)
+						} else if (containerType == "ARTICLE_COMMENT") {
+							return undeleteComment(post)
+						} else {
+							return Promise.resolve()
+						}
+					}
+
+					function loopThroughAllPosts(posts, wallOwners, i) {
 						if (i < posts.length) {
-							if (posts[i].isDeleted && posts[i]._embedded.thread[0].containerType == "FORUM") {
-								return undeleteSingle(posts[i].id).catch(errorMessageNotification).finally(function() {
-									return loopThroughAllPosts(posts, i+1);
+							if (posts[i].isDeleted) {
+								return undeleteSingle(posts[i], wallOwners).catch(errorMessageNotification).then(function() {
+									return loopThroughAllPosts(posts, wallOwners, i+1);
 								});
 							} else {
-								return loopThroughAllPosts(posts, i+1);
+								return loopThroughAllPosts(posts, wallOwners, i+1);
 							}
 						} else {
 							return Promise.resolve();
@@ -65,8 +122,9 @@
 							}
 						}).then(function(resp) {
 							var posts = resp._embedded["doc:posts"];
+							var wallOwners = resp._embedded.wallOwners;
 
-							return loopThroughAllPosts(posts, 0).then(function() {
+							return loopThroughAllPosts(posts, wallOwners, 0).then(function() {
 								if (posts.length === LIMIT) {
 									return _undeleteAll(page+1);
 								}

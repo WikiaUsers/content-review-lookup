@@ -121,7 +121,15 @@ window.setCookie = function(c_name, value, expiredays) {
 									);
 								});
 						} else { // Old style form just needs Information template in the summary box
-							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| cible2 = \n| cible3 = \n| cible4 = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
+							$('#wpUploadDescription').val('{{Fichier\n' +
+							'| origine = \n' +
+							'| jeu = \n' +
+							'| cible2 = \n' +
+							'| cible3 = \n' +
+							'| cible4 = \n' +
+							'| quoi = \n' +
+							'| type = \n' +
+							'}}\n'); // Add link to guided form
 							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://lanoire.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}

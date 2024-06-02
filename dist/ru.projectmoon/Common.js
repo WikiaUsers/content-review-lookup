@@ -230,10 +230,6 @@ function Sort(Table, Par, inverse){
 	});
 	
 	
-    var list = $(AllIcons).get();
-    for (var i = 0; i < list.length; i++) {
-        list[i].parentNode.appendChild(list[i]);
-    }
 }
 
 function Filter(AllIcons, Table, FilterClass){
