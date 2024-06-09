@@ -45,9 +45,10 @@
 
 					function undeleteWall(post, wallOwners) {
 						var wallOwnerId;
-						for (var owner in wallOwners){
+						for (var owner in wallOwners) {
 							if (wallOwners[owner].wallContainerId == post.forumId) {
 								wallOwnerId = wallOwners[owner].userId
+								break
 							}
 						}
 						if (!wallOwnerId) {

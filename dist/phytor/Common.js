@@ -168,9 +168,8 @@ waitFor(".sticky-modules-wrapper", function() {
         }
     };
 
-    $(".rail-module .mw-customtoggle").click(sidebarFunction);
-    $(window).on("resize.mikeLib scroll.bttmstick", sidebarFunction);
-    //$(window).on("DOMContentLoaded.bttmstick load.bttmstick")
+    $(window).on("resize.mikeLib scroll.bttmstick DOMContentLoaded.bttmstick load.bttmstick", sidebarFunction);
+    $(".rail-module .mw-customtoggle").on("click",sidebarFunction);
 });
 
 

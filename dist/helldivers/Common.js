@@ -1,12 +1,25 @@
 /*importArticles({
     type: "script",
-    article: ["MediaWiki:Breadcrumbs.js"]
+    article: ["MediaWiki:StratagemOverview.js"]
 },
 {
 	type: "style",
     article: [""]
 });*/
 
+/* the following styles stratagem videos */
+var videos = document.getElementsByClassName("StratagemOverview");
+console.log("vieos: " + videos.length)
+for (var i = 0; i < videos.length; i++) {
+	console.log("i=" + i)
+	var video = videos.item(i).querySelector("video");
+	video.autoplay = video.loop = video.muted = true;
+	video.controls = false;
+	video.style.width = video.style.height = "auto";
+	video.play();
+}
+
+/*mapsExtended config*/
 window.mapsExtendedConfig =
 {
     sortMarkers: "longitude",
@@ -31,6 +44,7 @@ window.mapsExtendedConfig =
 	]
 };
 
+/*Wiki Activity config */
 window.rwaOptions = {
     limit : 50,
     namespaces : [ 0, 1, 2, 3, 4, 5, 6, 7, 110, 111, 500, 501, 828, 829 ],

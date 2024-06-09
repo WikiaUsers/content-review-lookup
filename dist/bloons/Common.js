@@ -301,6 +301,7 @@ window.convertDegreeToPower = function() {
 	var extraleaddamage = $("#paragon-extraleaddamage-input").val();
 	var extracamodamage = $("#paragon-extracamodamage-input").val();
 	var extrastunneddamage = $("#paragon-extrastunneddamage-input").val();
+	var extrastickieddamage = $("#paragon-extrastickieddamage-input").val();
 	
 	var bossdamage = $("#paragon-bossdamage-output").val();
 	var unshieldeddreadbloon = $("#paragon-unshielded-dreadbloon-output").val();
@@ -324,6 +325,7 @@ window.convertDegreeToPower = function() {
 	    	extraleaddamage = 2 * $("#paragon-extraleaddamage-input").val();
 	    	extracamodamage = 2 * $("#paragon-extracamodamage-input").val();
 	    	extrastunneddamage = 2 * $("#paragon-extrastunneddamage-input").val();
+	    	extrastickieddamage = 2 * $("#paragon-extrastickieddamage-input").val();
 		}
 		else {
 	    	paragonpower = (50 * (paragondegree * paragondegree * paragondegree) + 5025 * (paragondegree * paragondegree) + 168324 * paragondegree + 843000)/600;
@@ -336,6 +338,7 @@ window.convertDegreeToPower = function() {
 	    	extraleaddamage = $("#paragon-extraleaddamage-input").val() * (1 + 0.01 * (paragondegree - 1));
 	    	extracamodamage = $("#paragon-extracamodamage-input").val() * (1 + 0.01 * (paragondegree - 1));
 	    	extrastunneddamage = $("#paragon-extrastunneddamage-input").val() * (1 + 0.01 * (paragondegree - 1));
+	    	extrastickieddamage = $("#paragon-extrastickieddamage-input").val() * (1 + 0.01 * (paragondegree - 1));
 		}
 		$("#paragon-power-output").html(numberWithCommas(paragonpower.toFixed(0)));
 		$("#paragon-basedamage-output").html(numberWithCommas(basedamage.toFixed(0)));
@@ -347,6 +350,7 @@ window.convertDegreeToPower = function() {
 		$("#paragon-extraleaddamage-output").html(numberWithCommas(extraleaddamage.toFixed(0)));
 		$("#paragon-extracamodamage-output").html(numberWithCommas(extracamodamage.toFixed(0)));
 		$("#paragon-extrastunneddamage-output").html(numberWithCommas(extrastunneddamage.toFixed(0)));
+		$("#paragon-extrastickieddamage-output").html(numberWithCommas(extrastickieddamage.toFixed(0)));
 	}
 	else if (paragondegree == 1) {
     	paragonpower = 0;
@@ -359,6 +363,7 @@ window.convertDegreeToPower = function() {
     	extraleaddamage = $("#paragon-extraleaddamage-input").val();
     	extracamodamage = $("#paragon-extracamodamage-input").val();
     	extrastunneddamage = $("#paragon-extrastunneddamage-input").val();
+    	extrastickieddamage = $("#paragon-extrastickieddamage-input").val();
     	
     	$("#paragon-power-output").html(numberWithCommas(paragonpower.toFixed(0)));
 		$("#paragon-basedamage-output").html(numberWithCommas(basedamage));
@@ -372,6 +377,7 @@ window.convertDegreeToPower = function() {
 		$("#paragon-extraleaddamage-output").html(numberWithCommas(extraleaddamage));
 		$("#paragon-extracamodamage-output").html(numberWithCommas(extracamodamage));
 		$("#paragon-extrastunneddamage-output").html(numberWithCommas(extrastunneddamage));
+		$("#paragon-extrastickieddamage-output").html(numberWithCommas(extrastickieddamage));
 	}
 	
 	attackcooldown = $("#paragon-attackcooldown-input").val() / (1 + 0.01 * Math.round(Math.sqrt(50 * paragondegree - 50), 1));
@@ -414,6 +420,7 @@ $("#convert-degree-to-power-loader").html('   \
 <tr><td>Original Extra Lead Damage</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="100" id="paragon-extraleaddamage-input"></td></tr>   \
 <tr><td>Original Extra Camo Damage</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="100" id="paragon-extracamodamage-input"></td></tr>   \
 <tr><td>Original Extra Stunned Damage</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="100" id="paragon-extrastunneddamage-input"></td></tr>   \
+<tr><td>Original Extra Stickied Damage</td><td style="text-align: right;"><input style="width: 100px;" type="number" value="100" id="paragon-extrastickieddamage-input"></td></tr>   \
 <tr><td colspan="2" style="text-align:center; padding: 5px;"><button id="convert-degree-to-power-button" onClick="convertDegreeToPower();">Convert Degree to Power</button></td></tr>   \
 </table> \
 <span style="font-size: 20px"><b>Basic Statistics</b></span><br /> \
@@ -431,6 +438,7 @@ $("#convert-degree-to-power-loader").html('   \
 <tr> <td>New Extra Lead Damage</td><td style="text-align: right; color:#404040;"><b><span id="paragon-extraleaddamage-output">[no output]</span></b></td></tr></tr>   \
 <tr> <td>New Extra Camo Damage</td><td style="text-align: right; color:#33512E;"><b><span id="paragon-extracamodamage-output">[no output]</span></b></td></tr></tr>   \
 <tr> <td>New Extra Stunned Damage</td><td style="text-align: right; color:#D6D999;"><b><span id="paragon-extrastunneddamage-output">[no output]</span></b></td></tr></tr>   \
+<tr> <td>New Extra Stickied Damage</td><td style="text-align: right; color:#E30B5C;"><b><span id="paragon-extrastickieddamage-output">[no output]</span></b></td></tr></tr>   \
 </table> \
 <span style="font-size: 20px"><b>Total Normal Boss Damage</b></span><br /> \
 <table style="width:100%;">   \

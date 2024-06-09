@@ -1,10 +1,10 @@
 /**!
- *  _________________________________________________________________________________
- * |                                                                                 |
- * |                      === WARNING: GLOBAL GADGET FILE ===                        |
- * |                    Changes to this page affect many users.                      |
- * |  Please discuss changes on the talk page, [[wikipedia:zh:WP:VPT]] or GitHub before editing.  |
- * |_________________________________________________________________________________|
+ *  __________________________________________________________________________________________
+ * |                                                                                          |
+ * |                           === WARNING: GLOBAL GADGET FILE ===                            |
+ * |                         Changes to this page affect many users.                          |
+ * |Please discuss changes on the talk page, [[wikipedia:zh:WP:VPT]] or GitHub before editing.|
+ * |__________________________________________________________________________________________|
  *
  * Built from source code at HanAssist GitHub repository [https://github.com/diskdance/HanAssist].
  * All changes should be made in the repository, otherwise they will be lost.

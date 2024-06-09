@@ -8,7 +8,7 @@
 	if (displayTitle === null) {
 		displayTitle = document.getElementById('firstHeading');
 	}
-	document.querySelectorAll('.getDisplayTitle').forEach(function (e) {
-		e.innerText = displayTitle.innerText.replace(/\n\r\t/g, '');
+	document.querySelectorAll('.get-display-title').forEach(function (e) {
+		e.innerText = displayTitle.innerText.replace(/[\n\r\t]/g, '');
 	});
 })();

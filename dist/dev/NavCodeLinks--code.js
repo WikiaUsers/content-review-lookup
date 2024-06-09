@@ -9,10 +9,10 @@
     }
     window.NavCodeLinksLoaded = true;
     $('.wds-global-navigation__user-menu .wds-list, .wiki-tools .wds-dropdown__content .wds-list').append(
-        ['css', 'js'].map(function(ext) {
+        ['Common.css', 'Common.js', 'FandomMobile.css'].map(function(ext) {
             return $('<li>', {
                 append: $('<a>', {
-                    'href': mw.util.getUrl('MediaWiki:Common.' + ext),
+                    'href': mw.util.getUrl('MediaWiki:' + ext),
                     text: 'Common ' + ext.toUpperCase()
                 })
             });

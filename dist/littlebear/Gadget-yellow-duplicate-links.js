@@ -1,42 +1,50 @@
 $(function(){
   const namespaceNumber = mw.config.get('wgNamespaceNumber');
-  const isCorrectNamespace = namespaceNumber === 0 || namespaceNumber === 2 || namespaceNumber === 4 || namespaceNumber === 14;
 
-  if (isCorrectNamespace){
-    $('div#content div.mw-parser-output').prepend('<div id="lede-start">');
-    $('div#lede-start').nextUntil('h2').wrapAll('<div id="lede">');
+  if ($('.ns-talk').length === 0){
+    const highlightDuplicateLinks = $('<li><a href="#">Highlight duplicate links</a></li>');
+    $('#my-tools-menu').prepend(highlightDuplicateLinks);
 
-    $('div#lede').after('<div id="body-start">');
-    $('div#body-start').nextAll().wrapAll('<div id="body">');
+    highlightDuplicateLinks.click(function(e){
+      e.preventDefault();
 
-    function findDuplicateLinksLede(){
-      const href = $(this).attr('href');
+      const content = ($('.ve-ce-rootNode').length === 0) ? $('#content .mw-parser-output') : $('.ve-ce-rootNode');
 
-      if (href !== undefined && href.indexOf('#') != 0){
-        if (seenLede[href]){
-          $(this).addClass('duplicate-link');
-        } else {
-          seenLede[href] = true;
+      content.prepend('<div id="lede-start">');
+      $('#lede-start').nextUntil('h2').wrapAll('<div id="lede">');
+
+      $('#lede').after('<div id="body-start">');
+      $('#body-start').nextAll().wrapAll('<div id="body">');
+
+      function findDuplicateLinksLede(){
+        const href = $(this).attr('href');
+
+        if (href !== undefined && href.indexOf('#') != 0){
+          if (seenLede[href]){
+            $(this).addClass('duplicate-link');
+          } else {
+            seenLede[href] = true;
+          }
         }
       }
-    };
 
-    function findDuplicateLinksBody(){
-      const href = $(this).attr('href');
+      function findDuplicateLinksBody(){
+        const href = $(this).attr('href');
 
-      if (href !== undefined && href.indexOf('#') != 0){
-        if (seenBody[href]){
-          $(this).addClass('duplicate-link');
-        } else {
-          seenBody[href] = true;
+        if (href !== undefined && href.indexOf('#') != 0){
+          if (seenBody[href]){
+            $(this).addClass('duplicate-link');
+          } else {
+            seenBody[href] = true;
+          }
         }
       }
-    };
 
-    const seenLede = {};
-    const seenBody = {};
+      const seenLede = {};
+      const seenBody = {};
 
-    $('#content div.mw-parser-output').find('#lede p a').each(findDuplicateLinksLede);
-    $('#content div.mw-parser-output').find('#body p a').each(findDuplicateLinksBody);
+      content.find('#lede p a').each(findDuplicateLinksLede);
+      content.find('#body p a').each(findDuplicateLinksBody);
+    });
   }
 });

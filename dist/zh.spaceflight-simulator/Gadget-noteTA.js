@@ -1,6 +1,6 @@
 // <nowiki>
 noteTAViewer = ( function() { $( function() {
-	var HanAssist = require( 'ext.gadget.HanAssist' );
+	var conv = require( 'ext.gadget.HanAssist' ).conv;
 	var api = null;
 	var init = function( hash ) {
 		var $dialog = $( '<div class="noteTA-dialog" />' );

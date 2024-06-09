@@ -1,14 +1,50 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 // Для [[Шаблон:CSS]]
+
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
     	mw.util.addCSS($(this).attr("data-css"));
     });
 });
 
+// Функции
+
+function post_article(pagename,content,summar) {
+	$.ajax({
+            url: mw.util.wikiScript('api'),
+            type: 'POST',
+            data: {
+                action: 'edit',
+                title: pagename,
+                summary: summar,
+                text: content,
+                bot: 1,
+                token: mw.user.tokens.get('csrfToken'),
+                format: 'json'
+            },
+            success: function() {
+                window.location.reload();
+            }
+        });
+}
+function get_article(pagename) {
+	return $.ajax({
+                url: mw.util.wikiScript(),
+                type: 'GET',
+                data: {
+                    title: pagename,
+                    action: 'raw',
+                    cb: Math.ceil(new Date().getTime() / 1000),
+                    dataType:'text'
+                },
+                error: function () {
+                	return 0;
+                }
+	});
+}
+
 // Кастомные лого и заголовок вики
 ;(function ($,mw) {
-	
 	var customCommunityName = document.getElementById('customCommunityName');
 	var customCommunityLogo = document.getElementById('customCommunityLogo');
 	if (customCommunityName != null) {
@@ -18,7 +54,7 @@ mw.hook("wikipage.content").add(function () {
 		var e = document.getElementsByClassName('fandom-community-header__image');
 		if (e[0] != null && e[0].hasChildNodes()) {
 			var imgToSet = customCommunityLogo.firstElementChild.getAttribute('src');
-			var img = document.getElementsByClassName('fandom-community-header__image')[0].firstElementChild;
+			var img = e[0].firstElementChild;
 			img.setAttribute("src",imgToSet);
 		}
 	}
@@ -26,7 +62,8 @@ mw.hook("wikipage.content").add(function () {
 
 // Шаблон оценки
 ;(function ($,mw) {
-	if ($('.pageRate')[0] == null || $('.pageRate')[0] == undefined) {return;}
+	if ($('.pageRate')[0] == null) {return;}
+	
 	var section = document.createElement('section');
 	var header = document.createElement('h2');
 	
@@ -41,79 +78,42 @@ mw.hook("wikipage.content").add(function () {
 	section.style.setProperty("padding-bottom","250px");
 	$('.pageRate').appendTo($(".PageRatingModule"));
 	
-	var ratingFunctions = {
-	
-	saveRating: function (rates) {
-		// запись оценок на страницу сохранения для дальнейшего использования
-            $.ajax({
-                url: mw.util.wikiScript('api'),
-                type: 'POST',
-                data: {
-                    action: 'edit',
-                    title: 'User:ViolStar/Песочница/Тесты',
-                    summary: 'Поставлена оценка для ' + mw.config.get('wgPageName'),
-                    text: rates,
-                    bot: 1,
-                    token: mw.user.tokens.get('csrfToken'),
-                    format: 'json'
-                },
-                success: function(d) {
-                	if (d.error && d.error.info) {
-                		alert(d.error.info);
-                	} else if (d.edit && d.edit.result == 'Success') {
-                        window.location.reload();
-                    }
-                },
-                error: function() {
-                	mw.lod.warn("АШИПКА");
-                }
-            });
-        },
+	document.getElementById("pageRate").style.setProperty("display","");
     
-	init: function () {
+	function init() {
 		var minEdits = 10;
 			// получаем текущие оценки всех статей
-		$.ajax({
-                url: mw.util.wikiScript(),
-                type: 'GET',
-                data: {
-                    title: 'User:ViolStar/Песочница/Тесты',
-                    action: 'raw',
-                    cb: Math.ceil(new Date().getTime() / 1000),
-                    dataType:'text'
-                },
-                success: function(data) {
+		get_article('Закулисье_Майнкрафта_вики:Оценки_статей').done(function(data) {
                 	var userName = mw.config.get('wgUserName');
                     var allRates = JSON.parse(data);
                     // mw.log.warn(allRates);
                     var myRate;
                     // проверяем есть ли данные о текущей статье, если нет, то создаём пустой шаблон для заполнения
-                    if (allRates.articles[mw.config.get('wgPageName')] !== undefined) {
+                    if (allRates.articles[mw.config.get('wgPageName')] != undefined) {
                     	myRate = allRates.articles[mw.config.get('wgPageName')];
                     } else {
                     	myRate = [{"plus":[]},{"minus":[]}];
                     }
-                    if (myRate !== undefined) {
+                    if (myRate != undefined) {
                     	// mw.log.warn(myRate);
                     	// вычисляем рейтинг по формуле: положительные_голоса - негативные_голоса
                     	var calculatedRating = myRate[0].plus.length - myRate[1].minus.length;
                     	// процент положительных голосов
-                    	if (document.getElementById("pageRatingPercentage") !== null) document.getElementById("pageRatingPercentage").innerHTML = Math.round((myRate[0].plus.length * 100) / (myRate[0].plus.length + myRate[1].minus.length)).toString();
+                    	if (document.getElementById("pageRatingPercentage") != null) document.getElementById("pageRatingPercentage").innerHTML = Math.round((myRate[0].plus.length * 100) / (myRate[0].plus.length + myRate[1].minus.length)).toString();
                     	// всего голосов
-                    	if (document.getElementById("pageRatingTotalVotes") !== null) document.getElementById("pageRatingTotalVotes").innerHTML = (myRate[0].plus.length + myRate[1].minus.length).toString();
-                    	// отдельная записать количества положительных и отрицательных голосов
-                    	if (document.getElementById("get_plus_rating") !== null) document.getElementById("get_plus_rating").innerHTML = (myRate[0].plus.length).toString();
-                    	if (document.getElementById("get_minus_rating") !== null) document.getElementById("get_minus_rating").innerHTML = (myRate[1].minus.length).toString();
+                    	if (document.getElementById("pageRatingTotalVotes") != null) document.getElementById("pageRatingTotalVotes").innerHTML = (myRate[0].plus.length + myRate[1].minus.length).toString();
+                    	// отдельная запись количества положительных и отрицательных голосов
+                    	if (document.getElementById("get_plus_rating") != null) document.getElementById("get_plus_rating").innerHTML = (myRate[0].plus.length).toString();
+                    	if (document.getElementById("get_minus_rating") != null) document.getElementById("get_minus_rating").innerHTML = (myRate[1].minus.length).toString();
                     	// записываем полученный рейтинг в элемент
                     	// устанавливаем цвет текста в зависимости от числа
-                    	if (calculatedRating > 0) {
-                    		if (document.getElementById("pageRating") !== null) document.getElementById("pageRating").innerHTML = '+' + calculatedRating.toString();
-                    		if (document.getElementById("pageRating") !== null) document.getElementById("pageRating").setAttribute("style","color:lime;font-size:30px");
+                    
+                 	if (calculatedRating > 0) {   		if (document.getElementById("pageRating") != null) { document.getElementById("pageRating").innerHTML = '+' + calculatedRating.toString(); document.getElementById("pageRating").setAttribute("style","color:lime;font-size:30px"); }
                     	} else {
-                    		if (document.getElementById("pageRating") !== null) document.getElementById("pageRating").innerHTML = calculatedRating.toString();
-                    		if (document.getElementById("pageRating") !== null) document.getElementById("pageRating").setAttribute("style","font-size:30px");
-                    		if (calculatedRating < 0) {
-                    			if (document.getElementById("pageRating") !== null) document.getElementById("pageRating").setAttribute("style","color:red;font-size:30px");
+                    		if (document.getElementById("pageRating") != null) {
+	                    	document.getElementById("pageRating").innerHTML = calculatedRating.toString();
+                    		document.getElementById("pageRating").setAttribute("style","font-size:30px");
+                    		if (calculatedRating < 0) document.getElementById("pageRating").setAttribute("style","color:red;font-size:30px");
                     		}
                     	}
                     }
@@ -125,7 +125,7 @@ mw.hook("wikipage.content").add(function () {
                     
                     // удаление элемента из массива
                     function resetVote(arr, elem) {
-                    	if (arr !== undefined) {
+                    	if (arr != undefined) {
                     		for (var i = 0; i < arr.length; i++) {
                     		if (arr[i] === elem) {
                     			arr.splice(i,1);
@@ -136,7 +136,7 @@ mw.hook("wikipage.content").add(function () {
                     // положительная оценка статьи
                     $('#rate_page_plus').click(function () {
                     	// если у чела меньше десяти правок, то он не может ставить оценку
-                    		if (!(mw.config.get("wgUserEditCount") >= minEdits)) {
+                    		if (mw.config.get("wgUserEditCount") < minEdits) {
 								alert("Меньше " + minEdits + " правок");
 								return;
 							}
@@ -149,12 +149,12 @@ mw.hook("wikipage.content").add(function () {
                     	allRates.articles[mw.config.get('wgPageName')] = myRate;
                     	var to_save = JSON.stringify(allRates);
                     	
-                    	ratingFunctions.saveRating(to_save);
+                    	post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Поставлена оценка (+) для ' + mw.config.get('wgPageName'));
                     });
                     // отрицательная оценка статьи
                     $('#rate_page_minus').click(function () {
                     	// если у чела меньше десяти правок, то он не может ставить оценку
-                    		if (!(mw.config.get("wgUserEditCount") >= minEdits)) {
+                    		if (mw.config.get("wgUserEditCount") < minEdits) {
 								alert("Меньше " + minEdits + " правок");
 								return;
 							}
@@ -168,12 +168,12 @@ mw.hook("wikipage.content").add(function () {
                     	allRates.articles[mw.config.get('wgPageName')] = myRate;
                     	var to_save = JSON.stringify(allRates);
                     	
-                    	ratingFunctions.saveRating(to_save);
+                    	post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Поставлена оценка (-) для ' + mw.config.get('wgPageName'));
                     });
                     // удаление оценки
                     $('#remove_rate').click(function () {
                     	// если у чела меньше десяти правок, то он не может ставить оценку
-                    		if (!(mw.config.get("wgUserEditCount") >= minEdits)) {
+                    		if (mw.config.get("wgUserEditCount") < minEdits) {
 								alert("Меньше " + minEdits + " правок");
 								return;
 							}
@@ -183,20 +183,67 @@ mw.hook("wikipage.content").add(function () {
                     	allRates.articles[mw.config.get('wgPageName')] = myRate;
                     	var to_save = JSON.stringify(allRates);
                     	
-                    	ratingFunctions.saveRating(to_save);
+                    	post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Убрана оценка для ' + mw.config.get('wgPageName'));
                     });
-                },
-                error: function() {
-                    mw.lod.warn("АШИПКА");
-                }
             });
-        },
-        // namespaceCheck: function () {
-        // 	var ns = mw.config.get('wgNamespaceNumber');
-        // 	if (ns !== 2 && ns !== 5 && ns !== 6 && ns !== -1 && ns !== -2 && ns !== 6 && ns !== 7 && ns !== 8 && ns !== 9 && ns !== 10 && ns !== 11 && ns !== 13 && ns !== 14 && ns !== 15) return true;
-        // 	else return false;
-        // }
-	};
-	// запуск чудо-механизма
-	ratingFunctions.init();
-})(this.jQuery,this.mediaWiki); // какая-то цыганская магия
+	}
+    init();
+})(this.jQuery,this.mediaWiki);
+
+// Список страниц по их оценкам
+;(function ($,mw) {
+	var conf = mw.config.values;
+	if (conf.wgPageName !== 'Служебная:Список_страниц_по_оценкам') {return;}
+	$(document.getElementsByTagName('title')[0]).html('Служебная:Список страниц по оценкам | Закулисье Майнкрафта вики | Fandom');
+	$('.mw-body-content').html('');
+	$('.page-header__title').html('Служебная:Список страниц по оценкам');
+	var rates;
+	
+	get_article('Закулисье_Майнкрафта_вики:Оценки_статей')
+                .done(function (data) {
+            		rates = JSON.parse(data);
+					var clRates = [];
+					Object.keys(rates.articles).forEach(function (key) {
+						var p = rates.articles[key][0].plus.length;
+						var n = rates.articles[key][1].minus.length;
+						var to_add = [key, parseInt(p) - parseInt(n)];
+						clRates.push(to_add);
+					});
+					
+					clRates.sort(function (a,b) {
+						if (a[1] < b[1]) return 1;
+						if (a[1] > b[1]) return -1;
+						return 0;
+					});
+					
+					var ul = document.createElement('ul');
+					
+					Object.keys(clRates).forEach(function (index) {
+						var self = clRates[index];
+						var pageName = self[0];
+						var pageRate = self[1];
+						var rateColor = 'white';
+						
+						if (pageRate > 0) {rateColor = 'lime';} else if (pageRate == 0) {rateColor = 'white';} else {rateColor = 'red';}
+						
+						var str = '<a href="/ru/wiki/' + pageName + '">' + pageName.replaceAll('_',' ') + '</a>' + ' — ' + '<span style="color:' + rateColor + ';">' + pageRate.toString() + '</span>';
+						
+						var li = document.createElement('li');
+						$(li).html(str);
+						$(li).appendTo(ul);
+					});
+					$(ul).appendTo($('.mw-body-content'));
+            	})
+            	.fail(function () {
+            		var e = document.createElement('p');
+            		$(e).html('<big class="error">Не удалось создать список</big> <span style="display:none">я честно хз почему</span>');
+            		$(e).appendTo($('.mw-body-content'));
+            	});
+	
+})(this.jQuery,this.mediaWiki);
+
+// ;(function ($,mw) {
+	
+// })(this.jQuery,this.mediaWiki);
+
+// ууупс это было не лекарство

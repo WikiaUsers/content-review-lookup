@@ -4,5 +4,3 @@ window.DiscordBannerSettings = {
     inviteLink: 'ARRzHcD',
     prependToRail: true
 };
-
-window.BackToTopModern = true;

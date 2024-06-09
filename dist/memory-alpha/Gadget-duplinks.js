@@ -1,58 +1,50 @@
-/**
- * Originally from https:////en.wikipedia.org/wiki/User:Ucucha/duplinks.js
- *
- * Modified to work in both the Wikia and Monobook skins
- */
-$( function($) {
-    if((mw.config.get( 'wgNamespaceNumber' ) != 0) && (mw.config.get( 'wgNamespaceNumber' ) != 2)) {
-        // only check links in mainspace and userspace (for userspace drafts)
-        return;
-    }
-    var portletlink;
-    if ( mw.config.get( 'skin' ) === 'monobook' ) {
-        portletlink = mw.util.addPortletLink('p-tb', '#', 'Highlight duplicate links', 'ca-findduplicatelinks');
-    } else {
-        portletlink = $( '<li>' ).append( $( '<a>' ).attr( 'href', '#' ).text( 'Highlight duplicate links' ) );
-        $( '#WikiaBarWrapper' ).find( '#my-tools-menu' ).prepend( portletlink );
-    }
-    $(portletlink).click( function(e) {
-        e.preventDefault();
-        // create a separate div surrounding the lead
-        // first get the element immediately surrounding the article text. Unfortunately, MW doesn't seem to provide a non-fragile way for that.
-        var content = $('.mw-parser-output');
-        if ($('#lead', content).length === 0) {
-	        content.prepend(document.createElement('div'));
-	        var lead = content.children().eq(0);
-	        lead.attr('id', 'lead');
-	        content.contents().each( function() {
-	            if(this.nodeName.toLowerCase() == 'h2') {
-	                return false;
-	            }
-	            if($(this).attr('id') != 'lead') {
-	                lead.append(this);
-	            }
-	            return true;
-	        });
-	       
-	        // detect duplicate links
-	        mw.util.addCSS(".duplicate-link { border: 1px solid red; }");
-	        var finddups = function() {
-	            var href = $(this).attr('href');
-	            if(href != undefined && href.indexOf('#') != 0) {
-	                if(seen[href]) {
-	                    $(this).addClass("duplicate-link");
-	                }
-	                else {
-	                    seen[href] = true;
-	                }
-	            }
-	            return true;
-	        };
-	        // array to keep track of whether we've seen a link before
-	        var seen = [];
-	        mw.util.$content.find('p a').not('#lead *, .infobox *, .navbox *').each(finddups);
-	        var seen = [];
-	        mw.util.$content.find('#lead p a').not('.infobox *, .navbox *').each(finddups);
+$(function(){
+  const namespaceNumber = mw.config.get('wgNamespaceNumber');
+
+  if ($('.ns-talk').length === 0){
+    const highlightDuplicateLinks = $('<li><a href="#">Highlight duplicate links</a></li>');
+    $('#my-tools-menu').prepend(highlightDuplicateLinks);
+
+    highlightDuplicateLinks.click(function(e){
+      e.preventDefault();
+
+      const content = ($('.ve-ce-rootNode').length === 0) ? $('#content .mw-parser-output') : $('.ve-ce-rootNode');
+
+      content.prepend('<div id="lede-start">');
+      $('#lede-start').nextUntil('h2').wrapAll('<div id="lede">');
+
+      $('#lede').after('<div id="body-start">');
+      $('#body-start').nextAll().wrapAll('<div id="body">');
+
+      function findDuplicateLinksLede(){
+        const href = $(this).attr('href');
+
+        if (href !== undefined && href.indexOf('#') != 0){
+          if (seenLede[href]){
+            $(this).addClass('duplicate-link');
+          } else {
+            seenLede[href] = true;
+          }
         }
+      }
+
+      function findDuplicateLinksBody(){
+        const href = $(this).attr('href');
+
+        if (href !== undefined && href.indexOf('#') != 0){
+          if (seenBody[href]){
+            $(this).addClass('duplicate-link');
+          } else {
+            seenBody[href] = true;
+          }
+        }
+      }
+
+      const seenLede = {};
+      const seenBody = {};
+
+      content.find('#lede p a').each(findDuplicateLinksLede);
+      content.find('#body p a').each(findDuplicateLinksBody);
     });
-} );
+  }
+});

@@ -43,6 +43,14 @@ $(document).ready(function() {
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
 });
 
+/* Interactive maps: Collectible markers button text  */
+window.dev = window.dev || {};
+window.dev.i18n = window.dev.i18n || {};
+window.dev.i18n.overrides = window.dev.i18n.overrides || {};
+var mxoverrides = window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExtended"] || {};
+
+mxoverrides["collect-mark-button"] = "Mark as completed";
+mxoverrides["collect-unmark-button"] = "Completed";
 
 /* MapsExtended global config */
 window.mapsExtendedConfig = {
@@ -66,6 +74,8 @@ window.mapsExtendedConfig = {
                     ],
                     []
                 ],
+    "collectibleCategories": ["quest"],
+    "collectibleCheckboxStyle": "fandom",
     "sortMarkers": "category",
     "categoryGroups": [
         {

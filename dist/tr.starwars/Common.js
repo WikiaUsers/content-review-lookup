@@ -37,20 +37,8 @@ function loadFunc() {
 
 	substUsername();
 	substUsernameTOC();
-	rewriteTitle();
-	rewriteHover();
-	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
-	fixSearch();
 	hideContentSub();
 	addTalkheaderPreload();
-
-	var body = document.getElementsByTagName('body')[0];
-	var bodyClass = body.className;
-
-	if( !bodyClass || (bodyClass.indexOf('page-') === -1) ) {
-		var page = window.pageName.replace(/\W/g, '_');
-		body.className += ' page-' + page;
-	}
 
 	if( typeof(onPageLoad) != "undefined" ) {
 		onPageLoad();
@@ -164,24 +152,6 @@ function doCustomPreload() {
 		insertAtCursor( document.getElementById( 'wpTextbox1' ), data );
 	} );
 }
-
-// ============================================================
-// BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
-
-function rewriteTitle() {
-	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {
-		return;
-	}
-
-	if( $('#title-meta').length == 0 ) {
-		return;
-	}
-
-	var newTitle = $('#title-meta').html();
-	$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-	$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
-}
-// END JavaScript title rewrite
 
 function initVisibility() {
 	var page = window.pageName.replace(/\W/g,'_');
@@ -308,13 +278,6 @@ function substUsernameTOC() {
 	{
 		$(this).text($(this).text().replace('<isim girin>', username));
 	});
-}
-
-function fixSearch() {
-	var button = document.getElementById('searchSubmit');
-
-	if( button )
-		button.name = 'go';
 }
 
 /**
@@ -545,27 +508,6 @@ function getParentByClass(className, element) {
 	return null;
 }
 
-/*
-    Performs dynamic hover class rewriting to work around the IE6 :hover bug
-    (needs CSS changes as well)
-*/
-function rewriteHover() {
-	var gbl = document.getElementById("hover-global");
-
-	if(gbl == null)
-		return;
-
-	var nodes = getElementsByClass("hoverable", gbl);
-
-	for (var i = 0; i < nodes.length; i++) {
-		nodes[i].onmouseover = function() {
-			this.className += " over";
-		}
-		nodes[i].onmouseout = function() {
-			this.className = this.className.replace(new RegExp(" over\\b"), "");
-		}
-	}
-}
 /************************************************************
  * End old Functions.js stuff
  * Deprecated, most of these functions will be removed slowly
@@ -643,27 +585,18 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if ( $( '.page-header #ca-addsection' ).length ) {
-		$( '.page-header #ca-addsection' ).html( 'Arşivlendi' ).removeAttr( 'href' );
-		$( '.page-header #ca-edit' ).remove();
-		$( '.page-side-tools #ca-addsection' ).remove();
+	if ( $( '#ca-addsection' ).length ) {
+		$( '#ca-addsection' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '#ca-edit' ).remove();
+		$( '#ca-addsection-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
-		return;
 	} else {
-		$( '.page-header #ca-edit' ).html( 'Arşivlendi' ).removeAttr( 'href' );
-		$( '.page-side-tools #ca-edit' ).remove();
+		$( '#ca-edit' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '#ca-edit-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
-		return;
 	}
 }
 $( disableOldForumEdit );
-
-//Removes the "Featured on:" line on File pages -- By Grunny
-$( function (){
-	if ( mw.config.get('wgNamespaceNumber') == 6 && $('#file').length != 0 ) {
-		$('#file').html($('#file').html().replace(/Featured on\:(.*?)\<br\>/, ''));
-	}
-} );
 
 /**
  * Show/hide for media timeline -- Grunny
@@ -717,26 +650,17 @@ $( function lazyLoadTorApp() {
  * Hides the link to parent pages from subpages if {{HideContentSub}} is included
  **/
 function hideContentSub() {
-	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
-		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
-            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
-                $backToPageLink;
-            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
-                // ugly hack to only leave back to page link on talk pages
-                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
-                $wikiaHeader.html( '' ).append( $backToPageLink );
-            } else {
-                $wikiaHeader.hide();
-            }
-        }
-	}
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {
+		$( '.page-header__page-subtitle .subpages' ).remove();
+		$( '.page-header__page-subtitle' ).text( function(a,b) { return b.replace(' |', ''); });
+    }
 }
 
 /**
  * Adds {{Talkheader}} template to preload parameter on new talk page links
  **/
 function addTalkheaderPreload() {
-	if (mw.config.get('wgNamespaceNumber') === 0) {
+	if (mw.config.get('wgNamespaceNumber') === 0 && document.querySelector('#ca-talk.new')) {
 		document.querySelector('#ca-talk.new').href += '&preload=Şablon:Tartışma/preload';
 	}
 }

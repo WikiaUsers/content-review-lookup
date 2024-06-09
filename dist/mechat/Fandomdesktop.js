@@ -1,55 +1,54 @@
-// Set initial state (expanded) and create [Collapse] button
-$('h2, h3').each(function () {
-  // Check if the heading is created by ==text==
-  if ($(this).find('.mw-headline').length > 0) {
-    $(this).data('isExpanded', true);
-
-    var toggleButton = $('<button class="ntoggler">Collapse</button>');
-    $(this).append(toggleButton);
-  }
-});
-
-// Attach the click event to h2, h3 headers
-$('body').on('click', 'h2 button.ntoggler, h3 button.ntoggler', function (event) {
-  // Check if the heading is created by ==text==
-  if ($(this).find('.mw-headline').length > 0) {
-    // Check if the click target is the text
-    if ($(event.target).hasClass('mw-headline')) {
-      // If so, proceed with editing
-      return;
+$(document).ready(function () {
+  // Set initial state (expanded) and create [Collapse] button for headers with .mw-headline
+  $('h2, h3, h4').each(function () {
+    if ($(this).find('.mw-headline').length > 0) {
+      $(this).data('isExpanded', true); // Initialize as expanded
+      var toggleButton = $('<button class="ntoggler">Collapse</button>');
+      $(this).append(toggleButton); // Add the toggle button
     }
+  });
 
-    // Check if the click target is the editing symbol
-    if ($(event.target).closest('.mw-editsection').length > 0) {
-      // If the header is expanded, proceed with editing
-      if ($(this).data('isExpanded')) {
-        return;
-      }
-      // If the header is collapsed, navigate to the edit page
-      event.preventDefault();
-      window.location.href = $(event.target).closest('.mw-editsection').find('a').attr('href');
-      return;
-    }
+  // Attach the click event to the ntoggler button inside headers
+  $('body').on('click', 'button.ntoggler', function (event) {
+    event.stopPropagation(); // Prevent event propagation
 
-    // Toggle the visibility of the content
-    $(this).nextAll('h2, h3').each(function () {
-      if ($(this).data('isExpanded') === false) {
-        $(this).nextUntil(this.tagName).slideToggle('fast');
-        $(this).data('isExpanded', true);
-        $(this).find('.ntoggler').text('Collapse');
-      }
-    });
+    var $header = $(this).closest('h2, h3, h4'); // Get the parent header
+    var headerTag = $header.prop('tagName'); // Get the header tag name (e.g., 'H2')
+    var level = parseInt(headerTag.charAt(1)); // Extract level (e.g., 2 for 'H2')
+    var isExpanded = $header.data('isExpanded');
+    var buttonText = isExpanded ? 'Expand' : 'Collapse'; // Determine the new button text
 
-    var $contentToToggle = $(this).nextUntil(this.tagName);
-
-    // Toggle the visibility of the content
-    $contentToToggle.slideToggle('fast');
-
-    // Toggle the text of the button (Collapse / Expand)
-    var buttonText = $(this).data('isExpanded') ? 'Expand' : 'Collapse';
-    $(this).find('.ntoggler').text(buttonText);
+    // Update the button text
+    $(this).text(buttonText);
 
     // Toggle the state
-    $(this).data('isExpanded', !$(this).data('isExpanded'));
-  }
+    $header.data('isExpanded', !isExpanded);
+
+    // Collapse or expand all subsequent headers of a lower level
+    $header.nextAll().each(function () {
+      var nextHeaderTag = $(this).prop('tagName');
+      var nextLevel = parseInt(nextHeaderTag.charAt(1));
+
+      if (nextLevel <= level) {
+        return false; // Stop if encountering a header of the same or higher level
+      }
+
+      if (isExpanded) {
+        // Collapse
+        $(this).slideUp('fast');
+        $(this).find('button.ntoggler').text('Expand');
+        $(this).data('isExpanded', false);
+      } else {
+        // Expand
+        $(this).slideDown('fast');
+        $(this).find('button.ntoggler').text('Collapse');
+        $(this).data('isExpanded', true);
+      }
+    });
+  });
+
+  // Prevent collapse on .mw-headline or .mw-editsection clicks
+  $('body').on('click', '.mw-headline, .mw-editsection', function (event) {
+    event.stopPropagation(); // Prevent triggering collapse
+  });
 });

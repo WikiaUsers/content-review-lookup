@@ -9,18 +9,18 @@ function changingBackground() {
 var body = document.getElementsByTagName("body")[0]
 	if ($('.theme-fc6').length > 0) { // Far Cry 6
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/5/50/Wiki-background/revision/latest?cb=20201102155050&format=original&path-prefix=ru)')}
-    else if ($('.theme-fcnd').length > 0) { // Far Cry New Dawn
-		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/4/44/FCND_BG.jpg/revision/latest?cb=20190125210416&format=original&path-prefix=ru)')}
     else if ($('.theme-fc5').length > 0) { // Far Cry 5
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/a/a5/FC5_BG.jpg/revision/latest?cb=20180315084300&format=original&path-prefix=ru)')}
-    else if ($('.theme-fcp').length > 0) { // Far Cry Primal
-		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/3/33/FCP_BG.jpg/revision/latest?cb=20180315084303&format=original&path-prefix=ru)')}
+    else if ($('.theme-fcnd').length > 0) { // Far Cry New Dawn
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/4/44/FCND_BG.jpg/revision/latest?cb=20190125210416&format=original&path-prefix=ru)')}
     else if ($('.theme-fc4').length > 0) { // Far Cry 4
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/6/6d/FC4_BG.jpg/revision/latest?cb=20180315084259&format=original&path-prefix=ru)')}
-    else if ($('.theme-fc3bd').length > 0) { // Far Cry 3: BD
-		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/6/68/FCBD_BG.jpg/revision/latest?cb=20180315084302&format=original&path-prefix=ru)')}
+    else if ($('.theme-fcp').length > 0) { // Far Cry Primal
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/3/33/FCP_BG.jpg/revision/latest?cb=20180315084303&format=original&path-prefix=ru)')}
     else if ($('.theme-fc3').length > 0) { // Far Cry 3
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/d/d1/FC3_BG.jpg/revision/latest?cb=20180315084259&format=original&path-prefix=ru)')}
+    else if ($('.theme-fc3bd').length > 0) { // Far Cry 3: BD
+		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/6/68/FCBD_BG.jpg/revision/latest?cb=20180315084302&format=original&path-prefix=ru)')}
     else if ($('.theme-fc2').length > 0) { // Far Cry 2
 		body.setAttribute("style", 'background-image:url(https://static.wikia.nocookie.net/farcry/images/1/1a/FC2_BG.jpg/revision/latest?cb=20180315084258&format=original&path-prefix=ru)')}
     else if ($('.theme-fc').length > 0) { // Far Cry

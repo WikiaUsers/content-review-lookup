@@ -679,14 +679,14 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if ( $( '.page-header #ca-addsection' ).length ) {
-		$( '.page-header #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-header #ca-edit' ).remove();
-		$( '.page-side-tools #ca-addsection' ).remove();
+	if ( $( '#ca-addsection' ).length ) {
+		$( '#ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '#ca-edit' ).remove();
+		$( '#ca-addsection-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
 	} else {
-		$( '.page-header #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-side-tools #ca-edit' ).remove();
+		$( '#ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
+		$( '#ca-edit-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
 	}
 }
@@ -744,19 +744,10 @@ $( function lazyLoadTorApp() {
  * Hides the link to parent pages from subpages if {{HideContentSub}} is included
  **/
 function hideContentSub() {
-	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
-		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
-            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
-                $backToPageLink;
-            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
-                // ugly hack to only leave back to page link on talk pages
-                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
-                $wikiaHeader.html( '' ).append( $backToPageLink );
-            } else {
-                $wikiaHeader.hide();
-            }
-        }
-	}
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {
+		$( '.page-header__page-subtitle .subpages' ).remove();
+		$( '.page-header__page-subtitle' ).text( function(a,b) { return b.replace(' |', ''); });
+    }
 }
 
 /**

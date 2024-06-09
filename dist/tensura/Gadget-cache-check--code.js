@@ -1,5 +1,5 @@
 mw.loader.using(['ext.fandom.ContentReview.legacyLoaders.js'], function() {
-	window.topLevelCat = 'Tensei Shitara Slime Datta Ken Wiki';
+	window.topLevelCat = 'Browse';
 	window.cacheSkipLimit = 1000;
 	window.CacheCheckRemove = true;
 	importArticles({

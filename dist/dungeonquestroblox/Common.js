@@ -316,6 +316,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         var helmField = createField("helm", "HELMET power");
         var armorField = createField("armor", "ARMOR power");
         var weaponField = createField("weapon", "WEAPON power");
+        var ring1Field = createField("ring1", "Ring 1 power");
+        var ring2Field = createField("ring2", "Ring 2 power");
         var skillField = createField("skill", "Damage Skill Points");
         var submit = document.createElement("button");
         submit.append("Calculate");
@@ -327,6 +329,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             helmField.label, helmField.input, createBr(),
             armorField.label, armorField.input, createBr(),
             weaponField.label, weaponField.input, createBr(),
+            ring1Field.label, ring1Field.input, createBr(),
+            ring2Field.label, ring2Field.input, createBr(),
             skillField.label, skillField.input, createBr(),
             submit, createBr()
         );
@@ -340,12 +344,26 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
                 }
             });
 
-            var weapon = parseInt(weaponField.input.value);
-            var armor = parseInt(armorField.input.value);
-            var helm = parseInt(helmField.input.value);
-            var skill = parseInt(skillField.input.value);
+            var weapon = (function() {
+                        return weaponField.input.value !== '' ? parseInt(weaponField.input.value) : 0;
+            }());
+            var armor = (function() {
+                        return armorField.input.value !== '' ? parseInt(armorField.input.value) : 0;
+            }());
+            var helm = (function() {
+                        return helmField.input.value !== '' ? parseInt(helmField.input.value) : 0;
+            }());
+            var ring1 = (function() {
+                        return ring1Field.input.value !== '' ? parseInt(ring1Field.input.value) : 0;
+            }());
+            var ring2 = (function() {
+                        return ring2Field.input.value !== '' ? parseInt(ring2Field.input.value) : 0;
+            }());
+            var skill = (function() {
+                        return skillField.input.value !== '' ? parseInt(skillField.input.value) : 1;
+            }());
 
-            var dmg = calculateDMG(weapon, armor, helm, skill, ability);
+            var dmg = calculateDMG(weapon, armor, helm, ring1, ring2, skill, ability);
             var low = dmg * 0.95;
             var high = dmg * 1.05;
 
@@ -533,8 +551,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         return xp;
     }
 
-    function calculateDMG(wep, arm, helm, skill, ability) {
-        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm) * 0.0028 * ability);
+    function calculateDMG(wep, arm, helm, ring1, ring2, skill, ability) {
+        return Math.floor(wep * (0.6597 + 0.013202 * skill) * (arm + helm + ring1 + ring2) * 0.0028 * ability);
     }
 
     function removeChildren(parent){

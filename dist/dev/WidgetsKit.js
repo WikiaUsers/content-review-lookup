@@ -12,6 +12,28 @@ $(function () {
 				defaultWidth, defaultHeight;
 
 			switch (element.data('type')) {
+				// AllMyLinks
+				case 'allmylinks':
+					iframe.src = 'https://allmylinks.com/widget/profile/' + data[0] + '.html';
+					defaultWidth = 395;
+					defaultHeight = 163;
+					iframe.scrolling = 'no';
+					
+					// Skip dark theme if light theme is specified
+					if (data[1] === 'light') {}
+					// Apply dark theme if specified or the wiki uses dark theme
+					else if (data[1] === 'dark' || isDark) {
+						iframe.src += '?dark=1';
+					}
+					
+					// Skip small size if small size is specified
+					if (data[2] === 'small') {}
+					// Apply dark theme if specified or the wiki uses dark theme
+					else if (data[2] === 'big' || data[2] === 'large') {
+						iframe.src += '&big=1';
+						iframe.height = '324px';
+					}
+					break;
 				// Amazon Music
 				case 'amazonmusic':
 					iframe.src = 'https://music.amazon.com/embed/' + element.data('id');

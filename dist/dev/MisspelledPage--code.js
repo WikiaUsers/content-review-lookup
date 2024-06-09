@@ -1,7 +1,7 @@
-/* Created in Wikia by Gguigui1 https://dev.fandom.com/wiki/User:Gguigui1
+/* Created in Wikia by Gguigui1, revised by Moonwatcher x Qibli
 Under CC-BY-SA licence */
 ;(function($, mw) {
-	'use strict';
+    'use strict';
     const wgPageName = mw.config.get('wgPageName');
 
     var similitude = similitude || 60;
@@ -30,43 +30,52 @@ Under CC-BY-SA licence */
     }
 
     function searchforpages(i18n) {
-        new mw.Api().get( {
+        new mw.Api().get({
             action: 'query',
             list: 'allpages',
             apfilterredir: 'nonredirects',
             apprefix: wgPageName.substring(0, 1),
             aplimit: 'max'
-        } ).done( function( data ) {
+        }).done(function(data) {
             for (var p in data.query.allpages) {
+                var looppage = data.query.allpages[p].title; // For easier code
+                var wgPageNameNormalized = wgPageName.replace(/_/g, ' ').toLowerCase();
+                var looppageNormalized = looppage.toLowerCase();
+                
                 var similar_characters_count = 0;
-                var looppage = data.query.allpages[p].title; //For easier code
-                var limit = looppage.length < wgPageName.length ? looppage.length : wgPageName.length;
-                for (var i = 0; i < limit; i++) {
-                    if (looppage.charAt(i).toLowerCase() == wgPageName.replace(/_/g, ' ').charAt(i).toLowerCase()) {
+                var minLength = Math.min(wgPageNameNormalized.length, looppageNormalized.length);
+                for (var i = 0; i < minLength; i++) {
+                    if (looppageNormalized.charAt(i) == wgPageNameNormalized.charAt(i)) {
                         similar_characters_count += 1;
                     }
                 }
-                similar_characters_count = Math.round(similar_characters_count / limit * 100);
-                if (similar_characters_count >= similitude) {
+
+                // Calculate similarity based on character match and penalize length difference
+                var similarity = (similar_characters_count / minLength) * 100;
+                var lengthDifferencePenalty = Math.abs(wgPageNameNormalized.length - looppageNormalized.length) / Math.max(wgPageNameNormalized.length, looppageNormalized.length) * 100;
+                similarity -= lengthDifferencePenalty;
+
+                if (similarity >= similitude) {
                     if (!$('.noarticletext ul').length) {
                         $('.noarticletext p:last').remove();
                         $('.noarticletext').append('<p style="font-size:130%; text-align:center;">' + i18n.msg('otherpages').escape() + '</p><ul style="list-style-type:circle;"></ul><p></p>');
                     }
-                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + i18n.msg('similitude', similar_characters_count).escape() + ')</a></li>');
+                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + i18n.msg('similitude', Math.round(similarity)).escape() + '%)</a></li>');
                 }
             }
             sortbysimilitudeandcolor();
         });
     }
+
     if (!$('.noarticletext').length || $('.mw-warning-with-logexcerpt').length) {
         return; //No need to check for potential searched pages
     } else {
-    	mw.hook('dev.i18n').add(function(i18n) {
-			i18n.loadMessages('MisspelledPage').done(searchforpages);
-		});
-		importArticle({
-			type: 'script',
-			article: 'u:dev:MediaWiki:I18n-js/code.js'
-		});
+        mw.hook('dev.i18n').add(function(i18n) {
+            i18n.loadMessages('MisspelledPage').done(searchforpages);
+        });
+        importArticle({
+            type: 'script',
+            article: 'u:dev:MediaWiki:I18n-js/code.js'
+        });
     }
 })(window.jQuery, window.mediaWiki);

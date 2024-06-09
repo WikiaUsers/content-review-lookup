@@ -47,3 +47,25 @@ window.UserTagsJS = {
 	tags: {},
 	oasisPlaceBefore: '> h2' // Place tags before the H2
 };
+/* 底部模块 */
+// 1. AjaxRC configuration option
+window.ajaxRefresh = 30000;
+
+// 2. AjaxRC import statement
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxRC.js'
+    ]
+});
+/* 账号创建时间 */
+window.customUserAccountAge = {
+	showFullDate: true
+};
+/* 大量分类 */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:MassCategorization/code.js',
+    ]
+});

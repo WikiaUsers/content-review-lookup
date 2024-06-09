@@ -6,7 +6,7 @@ $(function() {
 	// Load dependencies and cache
 	var config = mw.config.get(['wgAction', 'wgPageName', 'wgServer']);
 	var markers = { count:0 };
-	var REGION = 'Mondstadt';
+	var sett;
 	var api = new mw.Api();
 	var loadedImages = { _BADIMAGE:{} };
 	var loadedTemplates = {};
@@ -18,13 +18,14 @@ $(function() {
 			['MapGenerator-DT', 'MapGenerator-QGD'].forEach(function(sett){if(localStorage.getItem(sett)==null){localStorage.setItem(sett, 'checked');}});
 			if(localStorage.getItem('MapGenerator-UT')==null){localStorage.setItem('MapGenerator-UT', 'Item');} // default type for [[T:Map Image]] direct upload
 			
+			
 			// Clean page
-			document.querySelectorAll('#mw-content-text.mw-body-content > p').forEach(function(p){ p.remove(); });
+			$('#mw-content-text.mw-body-content').empty();
 			document.querySelector('h1.page-header__title').innerHTML = 'Map Generator';
 			document.title = 'Map Generator';
 			var tabs = '';
 			Object.keys(mapRefs).forEach(function(region){
-				if (region == REGION) {
+				if (region == sett.r) {
 					tabs += '<span class="active-tab"	id="'+region+'"	> '+region+' </span>';
 				} else if (region !== 'QuickGen') {
 					tabs += '<span class="inactive-tab"	id="'+region+'"	> '+region+' </span>';
@@ -102,7 +103,7 @@ $(function() {
 						'<img id="Templates-uploader-render-image" width="100%" src="" />'+
 					'</div>'+
 				'</center>'));
-			mapGenerator.loadTemplates(mapRefs[REGION]);
+			mapGenerator.loadTemplates(mapRefs[sett.r]);
 			document.querySelector('#mapImage').onload = function() { mapGenerator.updateZoom(); };
 			document.querySelector('#mapContainer').style.setProperty('left', mapRefs.QuickGen.offset.left);	// Default map offset
 			document.querySelector('#mapContainer').style.setProperty('top', mapRefs.QuickGen.offset.top);	// Default map offset
@@ -293,13 +294,13 @@ $(function() {
 					};
 					marker.setAttribute('src', loadedImages[type].src);
 					markers[markerID].src = type;
-				} else if (event.target && event.target.closest('#regionSelect') && REGION !== event.target.id) {
+				} else if (event.target && event.target.closest('#regionSelect')) {
 					closeMarkerSettings();
+					mapGenerator.urlQuery(event.target.id);
 					
 					// Looad new region
-					REGION = event.target.id;
-					mapGenerator.loadImages(mapRefs[REGION]);
-					mapGenerator.loadTemplates(mapRefs[REGION]);
+					mapGenerator.loadImages(mapRefs[sett.r]);
+					mapGenerator.loadTemplates(mapRefs[sett.r]);
 					
 					// Update tabs
 					var curr = document.querySelector('#regionSelect > .active-tab');
@@ -313,6 +314,11 @@ $(function() {
 					document.querySelector('#Templates-generator-note').removeAttribute('rel');
 					document.querySelector('#templateImage').setAttribute('src', '');
 					document.querySelector('#templateImage').setAttribute('rel', '');
+					document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
+						markers.count--;
+						delete markers[marker.id];
+						marker.remove();
+					});
 					
 				} else if (event.target && event.target.id == 'quickMapGenerator') {
 					closeMarkerSettings();
@@ -328,29 +334,15 @@ $(function() {
 					mapGenerator.processPreciseMarkers();
 				} else if (event.target && event.target.id == 'WikitextGenerator') {
 					closeMarkerSettings();
-					navigator.clipboard.writeText(mapGenerator.genFilePage(REGION, document.querySelector('#Templates-generator-note').getAttribute('rel')));
+					navigator.clipboard.writeText(mapGenerator.genFilePage(sett.r, document.querySelector('#Templates-generator-note').getAttribute('rel')));
 				} else if (event.target && event.target.id == 'Templates-uploader') {
 					mapGenerator.getFileObject(
 						mapGenerator.processPreciseMarkers(true),
-						mapGenerator.genFilePage(REGION, document.querySelector('#Templates-generator-note').getAttribute('rel'))
+						mapGenerator.genFilePage(sett.r, document.querySelector('#Templates-generator-note').getAttribute('rel'))
 					);
 				} else if (event.target && event.target.closest('.mapTemplate')) {
 					closeMarkerSettings();
-					var template = event.target.closest('.mapTemplate').getAttribute('rel');
-					var manager = document.querySelector('#templateImage');
-					if (manager.getAttribute('rel') !== template) {
-						document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
-							markers.count--;
-							delete markers[marker.id];
-							marker.remove();
-						});
-						manager.setAttribute('rel', template);
-						manager.setAttribute('src', loadedImages[template].src);
-						var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
-						document.querySelector('#Templates-generator-note').innerHTML = name;
-						document.querySelector('#Templates-generator-note').setAttribute('rel', name);
-					}
-					window.scrollTo(0, document.getElementById('Templates-generator-note').offsetTop);
+					mapGenerator.selectTemplate(event.target.closest('.mapTemplate').getAttribute('rel'));
 				} else {
 					closeMarkerSettings();
 				}
@@ -443,9 +435,9 @@ $(function() {
 		loadTemplates: function(templates) {
 			var container = $('#Templates-list');
 			var loading = document.querySelector('#Templates-loading');
-			if (loadedTemplates[REGION]) {
+			if (loadedTemplates[sett.r]) {
 				loading.style.setProperty('display', 'none');
-				container.html(loadedTemplates[REGION]);
+				container.html(loadedTemplates[sett.r]);
 			} else {
 				loading.style.setProperty('display', '');
 				container.html('');
@@ -464,13 +456,17 @@ $(function() {
 					if (finished) {
 						var gallery = '';
 						templates.forEach(function(template){
+							var cleanT = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
 							gallery += 
 								'<div class="mapTemplate" rel="'+template+'">'+
 									'<img class="mapTemplate-image" width="200px" src="'+loadedImages[template].src+'"/>'+
-									'<span class="mapTemplate-caption">'+template.replace(/^File:/, '').replace(/ Map Template\.png$/, '')+'</span>'+
+									'<span class="mapTemplate-caption">'+cleanT+'</span>'+
 								'</div>';
+							if (sett.m && sett.m == cleanT) {
+								mapGenerator.selectTemplate(template);
+							}
 						});
-						loadedTemplates[REGION] = gallery;
+						loadedTemplates[sett.r] = gallery;
 						loading.style.setProperty('display', 'none');
 						container.html(gallery);
 					} else {
@@ -643,7 +639,6 @@ $(function() {
 					prop: 'imageinfo',
 					iiprop: 'url'
 				}).then(function(data) {
-					console.log(data);
 					var filedata = Object.entries(data.query.pages)[0][1];
 					if (filedata && filedata.imageinfo && filedata.imageinfo[0].url) {
 						image.removeAttribute('src');
@@ -658,12 +653,59 @@ $(function() {
 				note.innerHTML = '';
 				image.removeAttribute('src');
 			}
+		},
+		selectTemplate: function(template) {
+			var manager = document.querySelector('#templateImage');
+			if (manager.getAttribute('rel') !== template) {
+				document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
+					markers.count--;
+					delete markers[marker.id];
+					marker.remove();
+				});
+				manager.setAttribute('rel', template);
+				manager.setAttribute('src', loadedImages[template].src);
+				var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
+				document.querySelector('#Templates-generator-note').innerHTML = name;
+				document.querySelector('#Templates-generator-note').setAttribute('rel', name);
+				mapGenerator.urlQuery(sett.r, name);
+			}
+			window.scrollTo(0, document.getElementById('Templates-generator-note').offsetTop);
+		},
+		urlQuery: function(r, m) {
+			var query = {
+				r: r,
+				m: m
+			};
+			if (!r || !m) {
+				(new URL(window.location.href)).searchParams.forEach(function(v, k){
+					if (['r', 'm'].includes(k) && !query[k]) {query[k] = v;}
+				});
+			}
+			if (query.m && !query.r) {
+				var map = 'File:'+decodeURIComponent(query.m.replace(/_/g, ' '))+' Map Template.png';
+				Object.keys(mapRefs).forEach(function(reg){
+					if (reg !== 'QuickGen' && mapRefs[reg].includes(map)) {
+						query.r = reg;
+					}
+				});
+				if (!query.r) {query.m = null;}
+			}
+			var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname +
+			'?r=' + encodeURIComponent(mw.util.escapeIdForLink(query.r || 'Mondstadt')) +
+			(query.m ? ('&m=' + encodeURIComponent(mw.util.escapeIdForLink(query.m))) : '');
+			
+			window.history.pushState({path:newurl},'',newurl);
+			sett = {
+				r: decodeURIComponent((query.r || 'Mondstadt').replace(/_/g, ' ')),
+				m: (query.m ? decodeURIComponent(query.m.replace(/_/g, ' ')) : null)
+			};
 		}
 	};
-	if (config.wgPageName == 'Special:Map' && config.wgAction == 'view') {
+	if (['Genshin_Impact_Wiki:Map_Generator', 'Special:Map'].includes(config.wgPageName) && config.wgAction == 'view') {
 		// Uses user page to store JSON for now as mediawiki namespace is unusable unless Wiki Rep
 		api.get({action: 'query', prop: 'revisions', titles: 'MediaWiki:Custom-MapGenerator.json', rvprop: 'content', rvslots: '*'}).then(function(data){
 			mapRefs = JSON.parse(data.query.pages[Object.keys(data.query.pages)[0]].revisions[0].slots.main['*']);
+			mapGenerator.urlQuery();
 			mapGenerator.loadImages([
 				'File:Map-guide-marker-32.png',
 				'File:Map-guide-marker-53.png',
