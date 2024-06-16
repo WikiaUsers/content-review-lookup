@@ -764,7 +764,7 @@ function addTalkheaderPreload() {
 // Related Categories
 $(document).ready( function () {
 	if( document.getElementById("related-catlinks") ) {
-		document.getElementById("catlinks").appendChild(document.getElementById("related-catlinks"));
+		document.getElementById("articleCategories").appendChild(document.getElementById("related-catlinks"));
 	}
 } );
 

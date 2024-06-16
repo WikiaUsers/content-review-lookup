@@ -1,4 +1,3 @@
-/* Buraya konulacak JavaScript kodu sitedeki her kullanıcı için her sayfa yüklendiğinde çalışacaktır */
 // onload stuff
 var firstRun = true;
 
@@ -14,7 +13,7 @@ function loadFunc() {
 
 	// DEPRECATED
 	if( document.getElementById('infoboxinternal') != null && document.getElementById('infoboxend') != null ) {
-		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Hide]</a>';
+		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Gizle]</a>';
 	}
 
 	// Upload form - need to run before adding hide buttons
@@ -38,20 +37,8 @@ function loadFunc() {
 
 	substUsername();
 	substUsernameTOC();
-	rewriteTitle();
-	rewriteHover();
-	// replaceSearchIcon(); this is now called from MediaWiki:Monobook.js
-	fixSearch();
 	hideContentSub();
 	addTalkheaderPreload();
-
-	var body = document.getElementsByTagName('body')[0];
-	var bodyClass = body.className;
-
-	if( !bodyClass || (bodyClass.indexOf('page-') === -1) ) {
-		var page = window.pageName.replace(/\W/g, '_');
-		body.className += ' page-' + page;
-	}
 
 	if( typeof(onPageLoad) != "undefined" ) {
 		onPageLoad();
@@ -91,7 +78,7 @@ function fillEditSummaries() {
 		var	$summaryOptionsList,
 			$summaryLabel = $( '#wpSummaryLabel' ),
 			lines = data.split( '\n' ),
-			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+			$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standart özetler: ' );
 
 		$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
 			var editSummary = $( this ).val();
@@ -166,24 +153,6 @@ function doCustomPreload() {
 	} );
 }
 
-// ============================================================
-// BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
-
-function rewriteTitle() {
-	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {
-		return;
-	}
-
-	if( $('#title-meta').length == 0 ) {
-		return;
-	}
-
-	var newTitle = $('#title-meta').html();
-	$('header.WikiaPageHeader > h1').html('<div id="title-meta" style="display: inline;">' + newTitle + '</div>');
-	$('header.WikiaPageHeader > h1').attr('style','text-align:' + $('#title-align').html() + ';');
-}
-// END JavaScript title rewrite
-
 function initVisibility() {
 	var page = window.pageName.replace(/\W/g,'_');
 	var show = localStorage.getItem('infoboxshow-' + page);
@@ -239,7 +208,7 @@ function addHideButtons() {
 			button = button[0];
 
 			button.onclick = toggleHidable;
-			button.appendChild( document.createTextNode('[Hide]') );
+			button.appendChild( document.createTextNode('[Gizle]') );
 
 			if( new ClassTester('start-hidden').isMatch(box) )
 				button.onclick('bypass');
@@ -307,15 +276,137 @@ function substUsernameTOC() {
 	var username = $('#pt-userpage').children(':first-child').text();
 	$('span.toctext:not(:has(*)), span.toctext i', toc).each(function()
 	{
-		$(this).text($(this).text().replace('<insert name here>', username));
+		$(this).text($(this).text().replace('<isim girin>', username));
 	});
 }
 
-function fixSearch() {
-	var button = document.getElementById('searchSubmit');
+/**
+ * Start upload form customisations
+ * @author Green tentacle
+ */
 
-	if( button )
-		button.name = 'go';
+function setupUploadForm(){
+	// Check if cookie has been set for form style. Overrides URL parameter if set.
+	var formstyle = localStorage.getItem("uploadform");
+
+	$("#uploadBasicLinkJS").show();
+	$("#uploadTemplateNoJS").hide();
+
+	var wpLicense = $('#wpLicense');
+
+	if ( wpLicense.length && window.location.search.indexOf('wpForReUpload=1') == -1){
+		if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)){
+			// Add link to basic form
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//kurtlarvadisi.fandom.com/tr/wiki/%C3%96zel:Y%C3%BCkle?basic=true" onclick="javascript:localStorage.setItem(\'uploadform\', \'basic\')">Basit yükleme formuna geç</a></div>');
+
+			// Stretch table to full width
+			$('#mw-htmlform-description').css('width', '100%');
+
+			// Bind upload button to verify function
+			$('#mw-upload-form').bind('submit', verifySummary);
+
+			// Hide existing rows
+			var rows = $('#mw-htmlform-description').find('tr');
+			$('tr.mw-htmlform-field-HTMLTextAreaField').hide();
+			$('tr.mw-htmlform-field-HTMLTextAreaField').next().detach();
+
+			$('#mw-htmlform-description').addClass('hidable start-hidden');
+
+			// Add new required rows
+			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Kaynak:</td><td class="mw-input"><textarea id="sourceBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			$('#mw-htmlform-description').append('<tbody class="hidable-content"></tbody>');
+			var tbody1 = $('#mw-htmlform-description').children('tbody').eq(0);
+			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Açıklama:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody1.append('<tr><td colspan="2" style="text-align: center;">İsteğe bağlı alanlar <span class="hidable-button"></span></td></tr>');
+
+			// Add new optional rows
+			var tbody2 = $('#mw-htmlform-description').children('tbody').eq(1);
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Dikkat:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Orijinal tasarımcı / sanatçı:</td><td class="mw-input"><textarea id="artistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Değiştirme / düzenleme / yükleme bilgisi:</td><td class="mw-input"><textarea id="filespecsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Diğer versiyonlar / kaynak resimler:</td><td class="mw-input"><textarea id="versionsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Sanatçı kategorileri:</td><td class="mw-input"><textarea id="catartistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Lisans sahibi kategorileri:</td><td class="mw-input"><textarea id="catlicenseeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Konu kategorileri:</td><td class="mw-input"><textarea id="catsubjectBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Tür kategorileri:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+		} else {
+			// Old style form just needs Information template in the summary box
+			$('#wpUploadDescription').val('{{Bilgi\r\n|dikkat=\r\n|açıklama=\r\n|kaynak=\r\n|sanatçı=\r\n|dosya özellikleri=\r\n|lisanslama=\r\n|diğer versiyonlar=\r\n|kat sanatçı=\r\n|kat lisans sahibi=\r\n|kat konu=\r\n|kat tür=\r\n}}');
+
+			// Add link to guided form
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="//kurtlarvadisi.fandom.com/tr/index.php?title=Special:Upload" onclick="javascript:localStorage.setItem(\'uploadform\', \'guided\')">Rehberli yükleme formuna geç</a></div>');
+			
+			$('#mw-upload-form').bind('submit', verifyName);
+		}
+	}
+}
+
+function verifySummary(){
+	var wpLicense = document.getElementById('wpLicense');
+	var wpDestFile = document.getElementById('wpDestFile');
+
+	// Check for licensing
+	if ( wpLicense.value == "" ){
+		alert('Lisanslama tamamlanmalı.');
+		return false;
+	}
+
+	// Check for source
+	if ( document.getElementById('sourceBox').value == "" ){
+		alert('Kaynak belirtilmeli.');
+		return false;
+	}
+
+	// Check for duplicated or capitalized file extensions
+	if ( wpDestFile.value.match(/(JPG|PNG|GIF|SVG|jpg\.jpg|png\.png|gif\.gif|svg\.svg)$/)) {
+		alert('Lütfen dosya isminde büyük veya çift dosya uzantıları kullanmayın.');
+		return false;
+	}
+
+	var strBuilder = '{{Bilgi\r\n';
+	strBuilder += '|dikkat=' + document.getElementById('attentionBox').value + '\r\n';
+	strBuilder += '|açıklama=' + document.getElementById('descriptionBox').value + '\r\n';
+	strBuilder += '|kaynak=' + document.getElementById('sourceBox').value + '\r\n';
+	strBuilder += '|sanatçı=' + document.getElementById('artistBox').value + '\r\n';
+	strBuilder += '|dosya özellikleri=' + document.getElementById('filespecsBox').value + '\r\n';
+	strBuilder += '|lisanslama=' + wpLicense.options[wpLicense.selectedIndex].title + '\r\n';
+	strBuilder += '|diğer versiyonlar=' + document.getElementById('versionsBox').value + '\r\n';
+	strBuilder += '|kat sanatçı=' + document.getElementById('catartistBox').value + '\r\n';
+	strBuilder += '|kat lisans sahibi=' + document.getElementById('catlicenseeBox').value + '\r\n';
+	strBuilder += '|kat konu=' + document.getElementById('catsubjectBox').value + '\r\n';
+	strBuilder += '|kat tür=' + document.getElementById('cattypeBox').value + '\r\n';
+	strBuilder += '}}';
+
+	document.getElementById('wpUploadDescription').value = strBuilder;
+
+	wpLicense.selectedIndex = 0;
+
+	return true;
+}
+
+function verifyName(){
+	var wpDestFile = document.getElementById('wpDestFile');
+	var wpLicense = document.getElementById( 'wpLicense' );
+	
+	// Check for duplicated or capitalized file extensions
+	if ( wpDestFile.value.match(/(JPG|PNG|GIF|SVG|jpg.jpg|png.png|gif.gif|svg.svg)$/)) {
+		alert('Lütfen dosya isminde büyük veya çift dosya uzantıları kullanmayın.');
+		return false;
+	}
+
+	// Check for annoying characters
+	if ( wpDestFile.value.match(/(\(|\)|!|\?|,|\+|\'|\’)/)) {
+		alert('Lütfen dosya isminde parantez, eğik çizgi, noktalama işaretleri veya alfanümerik olmayan başka bir karakter kullanmayın.');
+		return false;
+	}
+	if ( wpLicense.value != '' ) {
+		$( '#wpUploadDescription' ).val(
+			$( '#wpUploadDescription' ).val().replace( '|lisanslama=', '|lisanslama=' + wpLicense.options[wpLicense.selectedIndex].title )
+		);
+
+		wpLicense.selectedIndex = 0;
+	}
+	return true;
 }
 
 /**
@@ -371,6 +462,28 @@ ClassTester.prototype.isMatch = function(element)
     end getElementsByClass
 */
 
+//Link FA
+
+var FA_enabled  = true;
+
+function addfaicon() {
+	// if disabled
+	if (!FA_enabled) return;
+	var pLang = document.getElementById("p-lang");
+	if (!pLang) return;
+	var lis = pLang.getElementsByTagName("li");
+	for (var i = 0; i < lis.length; i++) {
+		var li = lis[i];
+		// only links with a corresponding Link_FA template are interesting
+		if (!document.getElementById(li.className + "-fa"))   continue;
+		// additional class so the template can be hidden with CSS
+		li.className += " FA";
+		// change title (mouse over)
+		li.title = "Bu bir seçkin makaledir.";
+	}
+}
+$(addfaicon);
+
 window.insertAtCursor = function(myField, myValue) {
 	//IE support
 	if (document.selection)
@@ -417,27 +530,6 @@ function getParentByClass(className, element) {
 	return null;
 }
 
-/*
-    Performs dynamic hover class rewriting to work around the IE6 :hover bug
-    (needs CSS changes as well)
-*/
-function rewriteHover() {
-	var gbl = document.getElementById("hover-global");
-
-	if(gbl == null)
-		return;
-
-	var nodes = getElementsByClass("hoverable", gbl);
-
-	for (var i = 0; i < nodes.length; i++) {
-		nodes[i].onmouseover = function() {
-			this.className += " over";
-		}
-		nodes[i].onmouseout = function() {
-			this.className = this.className.replace(new RegExp(" over\\b"), "");
-		}
-	}
-}
 /************************************************************
  * End old Functions.js stuff
  * Deprecated, most of these functions will be removed slowly
@@ -454,8 +546,8 @@ $( loadFunc );
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif';
 window.ajaxPages = [ 'Special:RecentChanges', 'Special:Watchlist', 'Special:Log', 'Special:NewFiles', 'Special:AbuseLog' ];
 $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-	'ajaxrc-refresh-text': 'Automatically refresh',
-	'ajaxrc-refresh-hover': 'Enable auto-refreshing page loads',
+	'ajaxrc-refresh-text': 'Otomatik olarak yenile',
+	'ajaxrc-refresh-hover': 'Sayfa yüklemelerini otomatik yenilemeyi etkinleştir',
 }}}}});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -463,28 +555,6 @@ $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
 // END OF AJAX AUTO-REFRESH SETTINGS
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//Link FA
-
-var FA_enabled  = true;
-
-function addfaicon() {
-	// if disabled
-	if (!FA_enabled) return;
-	var pLang = document.getElementById("p-lang");
-	if (!pLang) return;
-	var lis = pLang.getElementsByTagName("li");
-	for (var i = 0; i < lis.length; i++) {
-		var li = lis[i];
-		// only links with a corresponding Link_FA template are interesting
-		if (!document.getElementById(li.className + "-fa"))   continue;
-		// additional class so the template can be hidden with CSS
-		li.className += " FA";
-		// change title (mouse over)
-		li.title = "This article is rated as featured article.";
-	}
-}
-$(addfaicon);
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * modified for use in both Monaco and Monobook skins by Sikon
@@ -508,31 +578,22 @@ $( function () {
 		}
 		cats = cats.getElementsByTagName( 'a' );
 		for ( var i = 0; i < cats.length; i++ ) {
-			if ( cats[i].title === 'Category:Wookieepedia Featured articles' ) {
-				addEditIntro( 'Template:Featured_editintro' );
+			if ( cats[i].title === 'Kategori:Seçkin makaleler' ) {
+				addEditIntro( 'Şablon:Seçkin_giriş' );
 				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Good articles' ) {
-				addEditIntro( 'Template:Good_editintro' );
+			} else if ( cats[i].title === 'Kategori:Kaliteli makaleler' ) {
+				addEditIntro( 'Şablon:Kaliteli_giriş' );
 				break;
-			} else if ( cats[i].title === 'Category:Wookieepedia Comprehensive articles' ) {
-				addEditIntro( 'Template:Comprehensive_editintro' );
+			} else if ( cats[i].title === 'Kategori:Kapsamlı makaleler' ) {
+				addEditIntro( 'Şablon:Kapsamlı_giriş' );
 				break;
-			} else if ( cats[i].title === 'Category:Articles undergoing major edits' || cats[i].title === 'Category:Works in progress' ) {
-				addEditIntro( 'Template:Inuse_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Legends articles with canon counterparts' ) {
-				addEditIntro( 'Template:Legends_editintro' );
-				break;
-			} else if ( cats[i].title === 'Category:Canon articles with Legends counterparts' ) {
-				addEditIntro( 'Template:Canon_editintro' );
-				break;
-			} else if ( mw.config.get( 'wgPageName' ) === 'Template:DYK editintro' ) {
-				addEditIntro( 'Template:Good_editintro' );
+			} else if ( cats[i].title === 'Kategori:Büyük düzenleme geçiren sayfalar' ) {
+				addEditIntro( 'Şablon:Kullanımda_giriş' );
 				break;
 			}
 		}
-	} else if ( mw.config.get( 'wgPageName' ) === 'Template:DidYouKnow' ) {
-		addEditIntro( 'Template:DYK_editintro' );
+	} else if ( mw.config.get( 'wgPageName' ) === 'Şablon:BiliyorMuydun' ) {
+		addEditIntro( 'Şablon:BM_giriş' );
 	}
 } );
  
@@ -555,17 +616,15 @@ function disableOldForumEdit() {
 		return;
 	}
 
-	if ( $( '.page-header #ca-addsection' ).length ) {
-		$( '.page-header #ca-addsection' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-header #ca-edit' ).remove();
-		$( '.page-side-tools #ca-addsection' ).remove();
+	if ( $( '#ca-addsection' ).length ) {
+		$( '#ca-addsection' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '#ca-edit' ).remove();
+		$( '#ca-addsection-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
-		return;
 	} else {
-		$( '.page-header #ca-edit' ).html( 'Archived' ).removeAttr( 'href' );
-		$( '.page-side-tools #ca-edit' ).remove();
+		$( '#ca-edit' ).html( 'Arşivlendi' ).removeAttr( 'href' );
+		$( '#ca-edit-side-tool' ).remove();
 		$( 'span.mw-editsection' ).remove();
-		return;
 	}
 }
 $( disableOldForumEdit );
@@ -583,11 +642,11 @@ $( function () {
 		if( !$hideContent.length ) {
 			return;
 		}
-		$hideContent.toggle($(this).text().includes('show'));
+		$hideContent.toggle($(this).text().includes('göster'));
 		if ( $( this ).text().indexOf( 'hide' ) >= 1 ) {
-			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
+			$( this ).text( $( this ).text().replace( 'gizle', 'göster' ) );
 		} else {
-			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
+			$( this ).text( $( this ).text().replace( 'göster', 'gizle' ) );
 		}
 	} );
 } );
@@ -596,27 +655,18 @@ $( function () {
  * Hides the link to parent pages from subpages if {{HideContentSub}} is included
  **/
 function hideContentSub() {
-	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {	
-		if ($( '.page-header__page-subtitle' ).text().substring(0, 1) === "<") {
-            var	$wikiaHeader = $( '.page-header__page-subtitle' ),
-                $backToPageLink;
-            if ( mw.config.get( 'wgNamespaceNumber' ) % 2 === 1 ) {
-                // ugly hack to only leave back to page link on talk pages
-                $backToPageLink = $wikiaHeader.find( 'a[accesskey="c"]' );
-                $wikiaHeader.html( '' ).append( $backToPageLink );
-            } else {
-                $wikiaHeader.hide();
-            }
-        }
-	}
+	if ( mw.config.get( 'wgNamespaceNumber' ) === 0 || $( '#hideContentSub' ).length > 0 ) {
+		$( '.page-header__page-subtitle .subpages' ).remove();
+		$( '.page-header__page-subtitle' ).text( function(a,b) { return b.replace(' |', ''); });
+    }
 }
 
 /**
  * Adds {{Talkheader}} template to preload parameter on new talk page links
  **/
 function addTalkheaderPreload() {
-	if (mw.config.get('wgNamespaceNumber') === 0) {
-		document.querySelector('#ca-talk.new').href += '&preload=Template:Talkheader/preload';
+	if (mw.config.get('wgNamespaceNumber') === 0 && document.querySelector('#ca-talk.new')) {
+		document.querySelector('#ca-talk.new').href += '&preload=Şablon:Tartışma/preload';
 	}
 }
 
@@ -625,7 +675,7 @@ function addTalkheaderPreload() {
 // Related Categories
 $(document).ready( function () {
 	if( document.getElementById("related-catlinks") ) {
-		document.getElementById("catlinks").appendChild(document.getElementById("related-catlinks"));
+		document.getElementById("articleCategories").appendChild(document.getElementById("related-catlinks"));
 	}
 } );
 
@@ -640,12 +690,12 @@ window.RollbackWikiDisable = true;
 function fillEditSummariesVisualEditor() {
 	mw.hook( 've.activationComplete' ).add(function () {
 	if ( $( '#stdEditSummaries' ).length ) return;
-		$.get( mw.config.get( 'wgScript' ), { title: 'Template:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
+		$.get( mw.config.get( 'wgScript' ), { title: 'Şablon:Stdsummaries', action: 'raw', ctype: 'text/plain' } ).done( function( data ) {
 			var	$summaryOptionsList,
 				$summaryLabel = $( '.ve-ui-summaryPanel' ),
 				$summaryInput = $( '.ve-ui-summaryPanel-summaryInputField > input' ),
 				lines = data.split( '\n' ),
-				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standard summaries: ' );
+				$wrapper = $( '<div>').addClass( 'edit-widemode-hide' ).text( 'Standart özetler: ' );
 
 			$summaryOptionsList = $( '<select />' ).attr( 'id', 'stdEditSummaries' ).change( function() {
 				var editSummary = $( this ).val();
@@ -683,12 +733,9 @@ if ( mw.config.get( 'skin' ) == 'fandomdesktop' ) {
 	$( '.page-header__contribution > div:first-child' ).append($('.eraicons').first() );
 }
 
-/* EN title */
-(function() {
-    var $ent = document.querySelector('#enTitle'),
-        $header = document.querySelector('.page-header__title-wrapper');
-    if ($ent && $header && !mw.config.get('wgIsMainPage')) {
-        $ent.style.display = 'block';
-        $header.appendChild($ent);
-    }
-})();
+// Allowing easier downloading of files in their original format, to avoid webp files
+if ( mw.config.get( 'wgCanonicalNamespace' ) == 'Dosya' ) {
+	$( '#file a' ).attr( 'href', function( a, b ) {
+		return b + '&format=original';
+	} );
+}

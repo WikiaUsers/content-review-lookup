@@ -1,3 +1,47 @@
+if (document.getElementById('NKdiscordWidget')) {
+	//fetch guild data
+	var xmlhttp;
+	if (window.XMLHttpRequest) {
+		xmlhttp = new XMLHttpRequest();
+	}
+	xmlhttp.open('GET', 'https://discord.com/api/guilds/1238437678974898196/widget.json', false);
+	xmlhttp.send();
+	var widgetData = JSON.parse(xmlhttp.responseText);
+	//injecting some fake/missing data here?
+	widgetData.channels = [
+    	{id:0, name:'#discord-tavern', info:'Like in-game, but with pictures and gifs.'},
+    	{id:0, name:'#nonograms-katana-wiki', info:'Share ideas, ask questions, give feedback.'},
+    	{id:0, name:'#memes', info:'Fun with pictures and gifs.'}
+    ];
+	//widget template
+	var outHeader = '<a href="https://discord.com/?utm_source=Discord%20Widget&amp;utm_medium=Logo" target="_blank"></a><div class="dwName">' + widgetData.name + '</div>' + '<div class="dwCount"><strong>' + (widgetData.presence_count) + '</strong> Users Online</div>';
+	var outBody = '';
+    for (var cid in widgetData.channels) {
+    	outBody+= '<div>' + widgetData.channels[cid]['name'] + '</div>';
+    	if (widgetData.channels[cid]['info']) {
+    		outBody+= '<small>' + widgetData.channels[cid]['info'] + '</small>';
+    	}
+    }	
+	var outFooter = '<a href="' + widgetData.instant_invite + '" target="_blank">Join Now!</a>';
+	//output widget
+	var output = '<div class="dwHeader">' + outHeader + '</div><div class="dwBody">' + outBody + '</div><div class="dwFooter">' + outFooter+ '</div>';
+	document.getElementById('NKdiscordWidget').innerHTML = '<div class="dwPanel">' + output + '</div>';
+	//fake styles - probably to be placed somewhere in CSS
+	var styleSheet = document.createElement("style");
+	styleSheet.textContent = '#NKdiscordWidget {width:280px; border-radius: 5px}';
+	styleSheet.textContent+= '#NKdiscordWidget div {line-height: 1}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwPanel {border: solid 1px gray; border-radius: 5px; overflow: hidden}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwHeader {background-color: #5865f2; padding: 20px; color: #fff}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwHeader a {background-image: url(https://images.wikia.com/clock-work-planet/images/8/81/Discord_new_logo.svg); height: 34px; width: 124px; display: inline-block; background-size: contain}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwCount {font-size: 80%; line-height: 2}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwBody {padding: 10px}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwBody div {margin: 6px 0 2px 0}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwBody small {font-style: italic; margin-left: 20px}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwFooter {padding: 5px; display: flex}';
+	styleSheet.textContent+= '#NKdiscordWidget .dwFooter a {align-items: center; border-radius: 4px; font-size: 12px; font-weight: 650; height: 33px; justify-content: center; min-width: 120px; margin-left: auto; padding: 12px; text-decoration: none; display: flex; flex-shrink: 0; border: solid 1px gray}';
+	document.head.appendChild(styleSheet);
+}
+
 /**
  * @version 3.0.0
  * This code is based on: https://dev.fandom.com/wiki/Discord
@@ -29,7 +73,7 @@
                 case 'api':
                     this.api = new mw.Api();
                     this.getMessages();
-                    break;
+                    break;                    
                 case 'dorui':
                     ui = arg;
                     break;
@@ -75,7 +119,6 @@
             allpages = data.query.allpages.map(function(page) {
                 return page.title.slice(index);
             });
-
             return this.api.get({
                 action: 'query',
                 meta: 'allmessages',
@@ -91,20 +134,16 @@
             dev.i18n = dev.i18n || {};
             dev.i18n.overrides = dev.i18n.overrides || {};
             dev.i18n.overrides.Discord = dev.i18n.overrides.Discord || {};
-
             if (data.query) {
                 for (var i in data.query.allmessages) {
                     var message = data.query.allmessages[i],
                     title = message.name.slice('Custom-Discord-'.length),
                     content = message['*'];
-
                     if (message.missing === '') continue;
-
                     if (title.indexOf('-') != -1) {
                         var split = title.split('-'),
                         key = split.pop();
                         title = split[0];
-
                         this.messages[title] = this.messages[title] || {};
                         this.messages[title][key] = content;
                     } else {
@@ -125,7 +164,7 @@
                 }
             }
             this.onload('messages');
-        },
+        },        
         fetchWidgetData: function(id) {
             if (this.requests[id]) return this.requests[id];
             var widgetResource = '/api/guilds/' + id + '/widget.json';
@@ -144,27 +183,13 @@
                 });
             } else {
                 this.requests[id] = $.getJSON('https://discord.com' + widgetResource);
-console.log('request',widgetResource,id,this.requests[id]);                
             }
             return this.requests[id];
         },
         handleWidgetData: function(data) {
             this.railWidgetData = data;
-console.log('hWD', data);            
             // this.onload();
             this.addToRail();
-        },
-        // Called on init to turn the role ID lists into arrays
-        mapMessages: function() {
-            for (var key in this.messages.roles) {
-                var value = this.messages.roles[key];
-                // Regex notes:
-                //   - Why word boundaries? If editors choose to add usernames to help identify snowflakes, then the chances of a username being just 17+ digits should be pretty low.
-                //   - Why no leading zero(es)? Because that's silly.
-                //   - Why 17+ digits? Because that's how many digits there'd need to be for snowflakes created after 2015-01-28T14:16:25.791Z (which is about a month after Discord's epoch and a few months before Discord's public launch).
-                //   - Why 20- digits? Because that's how many digits it takes to represent the biggest uint64.
-                this.messages.roles[key] = value.match(/\b[1-9]\d{16,19}\b/g);
-            }
         },
         logo: function(data) {
         	var path = 'm20.6644 20s-0.863-1.0238-1.5822-1.9286c3.1404-0.8809 4.339-2.8333 4.339-2.8333-0.9828 0.6429-1.9178 1.0953-2.7568 1.4048-1.1986 0.5-2.3493 0.8333-3.476 1.0238-2.3014 0.4286-4.411 0.3095-6.2089-0.0238-1.36649-0.2619-2.54114-0.6429-3.52402-1.0238-0.55137-0.2143-1.15069-0.4762-1.75-0.8095-0.07192-0.0477-0.14384-0.0715-0.21575-0.1191-0.04795-0.0238-0.07192-0.0476-0.09589-0.0714-0.43151-0.2381-0.67124-0.4048-0.67124-0.4048s1.15069 1.9048 4.19521 2.8095c-0.71918 0.9048-1.60617 1.9762-1.60617 1.9762-5.29794-0.1667-7.31164-3.619-7.31164-3.619 0-7.6666 3.45205-13.8808 3.45205-13.8808 3.45206-2.5714 6.73635-2.49997 6.73635-2.49997l0.2397 0.285711c-4.31509 1.23808-6.30481 3.11902-6.30481 3.11902s0.52739-0.28572 1.41438-0.69047c2.56507-1.11904 4.60273-1.42856 5.44183-1.49999 0.1438-0.02381 0.2637-0.04762 0.4075-0.04762 1.4623-0.190471 3.1164-0.23809 4.8425-0.04762 2.2773 0.26191 4.7226 0.92857 7.2157 2.2857 0 0-1.8938-1.7857-5.9692-3.02378l0.3356-0.380948s3.2843-0.0714279 6.7363 2.49997c0 0 3.4521 6.21423 3.4521 13.8808 0 0-2.0377 3.4523-7.3356 3.619zm-11.1473-11.1189c-1.36644 0-2.4452 1.19044-2.4452 2.64284s1.10274 2.6428 2.4452 2.6428c1.36648 0 2.44518-1.1904 2.44518-2.6428 0.024-1.4524-1.0787-2.64284-2.44518-2.64284zm8.74998 0c-1.3664 0-2.4452 1.19044-2.4452 2.64284s1.1028 2.6428 2.4452 2.6428c1.3665 0 2.4452-1.1904 2.4452-2.6428s-1.0787-2.64284-2.4452-2.64284z';
@@ -185,14 +210,6 @@ console.log('hWD', data);
                 })
             });
         },
-        avatar: function(member, ext, size) {
-            // For `widget.json`s returned by the API proxy, we have an obfuscated URL that returns a (limited) resizable image.
-            if (member.alt_avatar_url) return member.alt_avatar_url + '?size=' + size;
-            // For `widget.json`s returned by Discord proper, we have an obfuscated URL that returns a non-resizable image.
-            if (!member.avatar) return member.avatar_url;
-            // This is a fossil from a bygone era. We no longer expect to hit this case. Someday, these two lines will be lost to the sands of time.
-            return 'https://cdn.discordapp.com/avatars/' + member.id + '/' + member.avatar + '.' + ext + '?size=' + size;
-        },
         getRandomId: function(prefix, i) {
             var charset = '1234567890abcdef',
             len = charset.length;
@@ -202,12 +219,19 @@ console.log('hWD', data);
             return prefix;
         },
         buildWidget: function(data) {
+console.log(data);
+			//injecting some fake/missing data here?
+        	data.channels = [
+            	{id:0, name:'#discord-tavern', info:'Like in-game, but with pictures and gifs.'},
+            	{id:0, name:'#nonograms-katana-wiki', info:'Share ideas, ask questions, give feedback.'},
+            	{id:0, name:'#memes', info:'Fun with pictures and gifs.'}
+            ];
+        	//core
         	var classes = ['discord-widget'];
         	var branding = data.branding || this.messages.branding;
         	if (branding === 'new') {
         		classes.push('new-branding');
         	}
-
             var widget = ui.frag([
                 this.buildTitle(data),
                 ui.div({
@@ -281,108 +305,28 @@ console.log('hWD', data);
                         classes: ['widget-header-count'],
                         html: this.i18n.msg('online',
                             data.presence_count || data.members && data.members.length
-                        ).parse() + ' (test)'
+                        ).parse()
                     })
                 ]
             });
         },
+        
         buildBody: function(data) {
-            /* TODO: Channels? 
-            DOCS: https://discord.com/developers/docs/resources/channel
-            var channel = {
-			  "id": "1238456873234071618", //This is actually the ID of #memes.
-			  "name": "memes",
-			  "type": 0,
-			};
-            */
-            var roles = data.members
-                ? this.groupMemberRoles(data.members)
-                : null;
-
+            var blocks = [];
+            for (var cid in data.channels) {
+            	blocks.push(ui.div({ html: data.channels[cid]['name'] }));
+            	if (data.channels[cid]['info']) {
+            		blocks.push(ui.small({ html: data.channels[cid]['info'] }));
+            	}
+            }
+            //ready
             return ui.div({
                 classes: {
                     'widget-body': true,
-                    'body-loading': !data.members
+                    'page': true, 
                 },
-                children: data.members
-                    ? roles.map(this.buildRoleContainer.bind(this, data))
-                    : []
-            });
-        },
-        buildRoleContainer: function(data, role) {
-            var name = role[0],
-            members = role[1],
-            defaultRole = role[2];
-
-            return members.length && ui.div({
-                classes: ['widget-role-container'],
-                'data-name': name,
-                children: [
-                    ui.div({
-                        classes: ['widget-role-name'],
-                        attrs: {
-                            'data-name': name,
-                            'data-default': defaultRole
-                                ? 'true'
-                                : false
-                        },
-                        html: name
-                    })
-                ].concat(members.map(this.buildUserChip.bind(this, data)))
-            });
-        },
-        buildUserChip: function(data, member) {
-            // TODO: GIF avatars
-            var avatarAttrs = {
-                // TODO: Caculate appropriate ceilings based on effective dimensions of loaded stylesheet(s); for now we're assuming the default of 28. The [docs](https://github.com/discordapp/discord-api-docs/blob/24f892b7de66c102c0c199e41a1bbe8577eddb9f/docs/Reference.md) say this "can be any power of two between 16 and 2048" though empirically other resolutions like 20 also work.
-                src: this.avatar(member, 'png', 32)
-            };
-            // This rephrases predicates from `Discord.avatar`.
-            if (member.alt_avatar_url || member.avatar) {
-                avatarAttrs.srcset = this.avatar(member, 'png', 64) + ' 2x';
-            }
-
-            if (canNativelyLazyLoadImages) {
-                avatarAttrs.loading = 'lazy';
-            } else if (shouldPolyfillLazyLoadImages) {
-                avatarAttrsSrcset = avatarAttrs.srcset;
-                avatarAttrs = {
-                    'src': blankImgUrl,
-                    'data-src': avatarAttrs.src
-                };
-
-                if (avatarAttrsSrcset) {
-                    avatarAttrs['data-srcset'] = avatarAttrsSrcset;
-                }
-            }
-
-            return ui.div({
-                classes: ['widget-member'],
-                children: [
-                    ui.div({
-                        classes: ['widget-member-avatar'],
-                        children: [
-                            ui.img({
-                                classes: ['widget-member-avatar-img'],
-                                attrs: avatarAttrs
-                            }),
-                            ui.span({
-                                classes: [
-                                    'widget-member-status',
-                                    'widget-member-status-' + member.status
-                                ]
-                            })
-                        ]
-                    }),
-                    ui.span({
-                        classes: ['widget-member-name'],
-                        text: (member.nick || member.username).substring(0,3) + '...' // member.nick || member.username
-                    })
-                ],
-                events: {
-                    click: this.showMemberModal.bind(this, data, member)
-                }
-            });
+                children: blocks
+            });            
         },
         buildFooter: function(data) {
             var invite = data.invite || this.messages.invite || data.instant_invite
@@ -456,69 +400,6 @@ console.log('hWD', data);
 
             return grouped;
         },
-        showMemberModal: function(data, member) {
-            var game = member.game || {};
-            dev.showCustomModal(mw.html.escape(member.nick || member.username),
-                ui.div({
-                    classes: ['discord-member-modal-content'],
-                    children: [
-                        ui.div({
-                            classes: ['avatar-container', 'loading'],
-                            child: ui.a({
-                                classes: ['avatar-link'],
-                                href: this.avatar(member, 'png', 2048),
-                                target: '_blank',
-                                child: ui.img({
-                                    classes: ['avatar'],
-                                    src: this.avatar(member, 'png', 256),
-                                    events: {
-                                        load: function() {
-                                            this.parentElement.parentElement.classList.remove('loading');
-                                        }
-                                    }
-                                })
-                            })
-                        }),
-                        ui.div({
-                            classes: ['details'],
-                            children: [
-                                // Why 17+ digits? Because that's how many digits there'd need to be for snowflakes created after 2015-01-28T14:16:25.791Z (which is about a month after its epoch and a few months before its public launch).
-                                // The remaining anonymized users will get faux IDs starting at zero.
-                                // Guilds have a default max presence count of 5000, so we usually won't be returning more than that many members.
-                                // Even _if_ we're serving for a guild with a bumped max presence count, it's unlikely we'll be returning 10,000,000,000,000,000 (ten quadrillion) members such that the faux IDs would collide with genuine snowflakes (that we support).
-                                member.id.length >= 17 && ui.div({
-                                    classes: ['username'],
-                                    children: [
-                                        ui.span({
-                                            classes: ['name'],
-                                            text: member.username
-                                        }),
-                                        ui.span({
-                                            classes: ['discriminator'],
-                                            text: '#' + member.discriminator
-                                        })
-                                    ]
-                                }),
-                                game.name && ui.div({
-                                    classes: ['playing'],
-                                    html: this.i18n.msg(
-                                        game.name == 'Spotify'
-                                            ? 'listening'
-                                            : 'playing',
-                                        game.name
-                                    ).parse()
-                                })
-                            ]
-                        })
-                    ]
-                }),
-                {
-                    id: 'discord-member-modal',
-                    width: 'invalid so that the CSS can take over lol',
-                    className: 'discord-member-modal-theme-' + (data.theme || this.messages.theme)
-                }
-            );
-        },
         addToRail: function() {
             if (this.$rail.length === 0) return;
 
@@ -578,7 +459,10 @@ console.log('hWD', data);
                     data.header = header;
                 }
                 var widget = this.buildWidget(data);
-                $(elem).empty().append(widget);
+                var stylehack = '.widget-body.page div {font-size:120%; margin: 6px 0 2px 0}';
+                stylehack+= '.widget-body.page small {font-style: italic; margin-left: 20px}';
+                
+                $(elem).html('<style>'+stylehack+'</style>').append(widget);
 
                 this.onRenderedWidget(elem);
             }.bind(this));
@@ -693,8 +577,6 @@ console.log('hWD', data);
                 });
         },
         init: function() {
-            this.mapMessages();
-
             if (this.messages.id) {
                 this.addToRail();
             }

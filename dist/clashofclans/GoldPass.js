@@ -54,7 +54,7 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
-		'<option value="15">15</option>' +
+		// '<option value="15">15</option>' +
 		'<option value="30">30</option>' +
 		'</select> %</div>');
 	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Toggle Showcase Boost? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');
@@ -188,6 +188,7 @@ $(document).ready(function() {
     	"Seeking Shield": 18,
     	"Hog Rider Puppet": 18,
     	"Haste Vial": 18,
+    	"Rocket Spear": 27,
     };
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
@@ -203,10 +204,10 @@ $(document).ready(function() {
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball"];
     		break;
     	case ("Royal Champion"):
-    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
+    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -896,7 +897,8 @@ $(document).ready(function() {
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
-			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88]
+			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
+			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
 		};
 		var dictHPBonus = {
 			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],
@@ -909,7 +911,8 @@ $(document).ready(function() {
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
-			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570]
+			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
+			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],
@@ -928,7 +931,8 @@ $(document).ready(function() {
 			"Rage Vial": [120,120,130,130,130,135,135,135,140,140,140,145,145,145,150,150,150,155]
 		};
 		var dictAbilityDPHBonus = {
-			"Invisibility Vial": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740]
+			"Invisibility Vial": [340,440,540,640,730,820,920,1020,1120,1220,1310,1370,1430,1490,1560,1620,1680,1740],
+			"Rocket Spear": [350,350,420,420,420,490,490,490,560,560,560,630,630,630,700,700,700,770,770,770,840,840,840,910,910,910,980]
 		};
 		var dictAbilitySpeedBonus = { //Written in number of tenths
 			"Rage Vial": [180,180,223,223,223,255,255,255,287,287,287,320,320,320,351,351,351,383],
@@ -938,7 +942,8 @@ $(document).ready(function() {
 			"Haste Vial": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
 		}
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
-			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)")
+			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)"),
+			"Rocket Spear": Array(27).fill("Area Splash (0.8 tile Radius)")
 		};
 		// Read the equipment and level
 		// Note: The levels are zero-indexed, so e.g. level 2 equipment outputs level 1

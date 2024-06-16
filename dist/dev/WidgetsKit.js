@@ -19,10 +19,11 @@ $(function () {
 					defaultHeight = 163;
 					iframe.scrolling = 'no';
 					
-					// Skip dark theme if light theme is specified
-					if (data[1] === 'light') {}
+					// Return zero for dark theme if light theme is specified
+					if (data[1] === 'light') {
+						iframe.src += '?dark=0';
 					// Apply dark theme if specified or the wiki uses dark theme
-					else if (data[1] === 'dark' || isDark) {
+					} else if (data[1] === 'dark' || isDark) {
 						iframe.src += '?dark=1';
 					}
 					

@@ -2,15 +2,15 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		'cpjstaff': { u:'CPJ Staff', order: 0 },
-		'wikifounder': { u:'Wiki Founder', order: 1 },
-		bureaucrat: { order: 11 },
-		sysop: { order: 12 },
-		contentmoderator: { order: 13 },
-		threadmoderator: { order: 14 },
-		rollback: { order: 15 },
-		'trialmoderator': { u:'Trial Moderator', order: 16 },
-		'topmonth': { u:'Top Monthly Editor', order: 17 },
+		'cpjstaff': { u:'CPJ Staff', order: -1/0 },
+		'wikifounder': { u:'Wiki Founder', order: (-1/0)+1 },
+		'topmonth': { u:'Top Monthly Editor', order: (-1/0)+2 },
+		bureaucrat: { order: 0 },
+		sysop: { order: 1 },
+		contentmoderator: { order: 2 },
+		threadmoderator: { order: 3 },
+		rollback: { order: 4 },
+		'trialmoderator': { u:'Trial Moderator', order: 5 },
 	},
 	oasisPlaceBefore: ''
 };
@@ -19,7 +19,7 @@ UserTagsJS.modules.custom = {
 	'DropPT': ['cpjstaff'],
 	'Pifflez': ['cpjstaff'],
 	'Hermbeurg': ['wikifounder'],
-	'DataMagicDev': ['topmonth'],
+	'Tuna Takoyaki': ['topmonth'],
 	'Tenny407': ['trialmoderator'], // need to check if they're still here tbh
 };
 UserTagsJS.modules.mwGroups = ['content-moderator', 'threadmoderator'];
@@ -28,40 +28,41 @@ UserTagsJS.modules.inactive = 90; // 90 days
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
 
 $(function() {
-	var years_div = document.querySelector("div.tabber-years");
-    if (years_div) {
-        var CURRENT_YEAR = 2024;
-		var tabber = years_div.querySelector("div.tabber.wds-tabber");
-        console.log(tabber);
-		var tabs = tabber.querySelectorAll("div.wds-tabs__wrapper ul.wds-tabs li");
-        console.log(tabs);
-
-        var default_idx;
-        var desired_idx;
-
-        tabs.forEach(function(tab, idx) {
-            if ((tab.classList).length == 2 && tab.classList[1] == "wds-is-current") {
-                default_idx = idx;
-            }
-
-            if (parseInt(tab.innerText) == CURRENT_YEAR) {
-                desired_idx = idx;
-            }
-        });
-
-        tabs[default_idx].classList.remove('wds-is-current')
-        tabs[desired_idx].classList.add('wds-is-current')
-
-        if (default_idx != desired_idx) {
-            var tabber_divs = tabber.querySelectorAll(":scope > div") // Only direct children
-            console.log(tabber_divs)
-            var default_table = tabber_divs[default_idx+1].innerHTML;
-            var desired_table = tabber_divs[desired_idx+1].innerHTML;
-
-            tabber_divs[default_idx+1].innerHTML = desired_table;
-            tabber_divs[desired_idx+1].innerHTML = default_table
-        }
-    }
+	var years_div = document.querySelectorAll("div.tabber-years");
+	for (var i=0; i < years_div.length; i++) {
+	    if (years_div[i]) {
+	        var CURRENT_YEAR = 2024;
+			var tabber = years_div[i].querySelector("div.tabber.wds-tabber"); //tabber
+			var tabs = tabber.querySelectorAll("div.wds-tabs__wrapper ul.wds-tabs li"); //tabs
+	
+	        var default_idx;
+	        var desired_idx;
+	
+	        tabs.forEach(function(tab, idx) {
+	            if ((tab.classList).length == 2 && tab.classList[1] == "wds-is-current") {
+	                default_idx = idx;
+	                console.log("Default data hash: ", tab.dataset.hash);
+	            }
+	            
+	            if (tab.dataset.hash === CURRENT_YEAR.toString()) {
+	            	desired_idx = idx;
+					console.log("Desired data hash: ", tab.dataset.hash);
+	            }
+	        });
+	
+	        tabs[default_idx].classList.remove('wds-is-current');
+	        tabs[desired_idx].classList.add('wds-is-current');
+	
+	        if (default_idx != desired_idx) {
+	            var tabber_divs = tabber.querySelectorAll(":scope > div") // Only direct children
+	            var default_table = tabber_divs[default_idx+1].innerHTML;
+	            var desired_table = tabber_divs[desired_idx+1].innerHTML;
+	
+	            tabber_divs[default_idx+1].classList.remove('wds-is-current')
+	        	tabber_divs[desired_idx+1].classList.add('wds-is-current')
+	        }
+	    }
+	}
     
 	if (mw.config.get('wgNamespaceNumber') === 2) {		// testing on userpage
 		mw.util.addCSS(

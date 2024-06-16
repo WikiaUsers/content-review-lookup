@@ -6,6 +6,7 @@ window.SpoilerAlertJS = {
     fadeDelay: 500
 };
 
+
 importArticles({
     type: 'script',
     articles: [
@@ -30,36 +31,6 @@ window.pPreview.defimage = 'https://static.wikia.nocookie.net/paperpedia/images/
 //ignore templates in preview
 window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".noprint", ".disambigua", ".vedi_anche", ".p-nav", ".caption"];
 //ignore links to non-article namespaces
-window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*'), new RegExp('Bacheca\:.*') ];
+window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*'), new RegExp('Bacheca\:.*'), new RegExp('Blog_utente\:.*') ];
 //text length
 window.pPreview.tlen = 500;
-
-
-  // Funzione per aggiungere l'iframe dinamicamente
-function addInstagramEmbed() {
-  var div = document.querySelector('.instagramembed');
-  if (div) {
-    div.style.display = 'block'; // Mostra il div
-    var iframe = document.createElement('iframe');
-    iframe.src = 'https://www.instagram.com/paperpediawikiofficial/embed';
-    iframe.width = '200';
-    iframe.height = '400';
-    iframe.frameBorder = '0';
-    iframe.style.overflow = 'auto'; // Abilita lo scrolling
-    div.appendChild(iframe); // Aggiungi l'iframe al div
-  }
-}
-
-// Funzione per inizializzare l'embed di Instagram
-function initializeInstagramEmbed() {
-  var div = document.querySelector('.instagramembed');
-  if (div) {
-    div.classList.add('instagramembed');
-    addInstagramEmbed();
-  }
-}
-
-// Chiamata alla funzione di inizializzazione quando il DOM è completamente carico
-document.addEventListener('DOMContentLoaded', function() {
-  initializeInstagramEmbed();
-});

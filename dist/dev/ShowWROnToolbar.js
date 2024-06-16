@@ -132,7 +132,7 @@ mw.loader.using( [
         const toolbarWrapper = document.querySelector( '#WikiaBar .tools' );
 
         const wrLabel = ( conf.wgContentLanguage === 'en'
-            ? 'WR'
+            ? 'CM'
             : 'ARC'
         );
 

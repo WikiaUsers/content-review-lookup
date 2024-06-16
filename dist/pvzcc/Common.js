@@ -147,3 +147,8 @@ window.rwaOptions = {
     refreshDelay : 5 * 60 * 1000,
     timeout : 10 * 1000
 };
+
+/* Call the page counter label on the top as "creations" instead */
+var elements = document.getElementsByClassName('page-counter__label');
+var wikiName = elements[0];
+wikiName.textContent = "creations";

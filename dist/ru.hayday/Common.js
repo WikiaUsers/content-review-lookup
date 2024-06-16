@@ -611,51 +611,53 @@ if (document.body.className.includes('page-Список_продуктов')) {
 }
 
 //каталог события с валютой
-var eventCatalog = document.querySelector('.event-catalog');
-if (eventCatalog) {
+var eventCatalogs = document.querySelectorAll('.event-catalog');
+if (eventCatalogs.length) {
+	eventCatalogs.forEach(function(eventCatalog, index){
 	//console.log(eventCatalog);
-	var allPages = eventCatalog.children;
-	var activeSide = eventCatalog.lastElementChild;
-	allPages = Array.from(allPages);
-	allPages.splice(-1, 1);
-	var page = 0;
-	var catalogIsMouse = false;
+		var allPages = eventCatalog.children;
+		var activeSide = eventCatalog.lastElementChild;
+		allPages = Array.from(allPages);
+		allPages.splice(-1, 1);
+		var page = 0;
+		var catalogIsMouse = false;
 	
-	activeSide.append(allPages[0].firstElementChild);
-	activeSide.append(allPages[1].firstElementChild);
+		activeSide.append(allPages[0].firstElementChild);
+		activeSide.append(allPages[1].firstElementChild);
 	
-	eventCatalog.addEventListener('mouseenter', function(){catalogIsMouse = true;});
-	eventCatalog.addEventListener('mouseleave', function(){catalogIsMouse = false;});
+		eventCatalog.addEventListener('mouseenter', function(){catalogIsMouse = true;});
+		eventCatalog.addEventListener('mouseleave', function(){catalogIsMouse = false;});
 	
 	
-	document.addEventListener('keydown', function(event){
-		console.log('pressed', event.key, page, allPages.length, catalogIsMouse);
+		document.addEventListener('keydown', function(event){
+			console.log('pressed', event.key, page, allPages.length, catalogIsMouse);
 		if (event.key=='ArrowRight' && page*2+2 < allPages.length && catalogIsMouse && !catalogRotatesLeft) {
-			allPages[page*2+1].append(activeSide.lastElementChild);
-			activeSide.append(allPages[(page+1)*2+1].firstElementChild);
-			
-			allPages[page*2+1].style.transform='rotateY(-90deg)';
-			allPages[page*2+1].style.zIndex=100-page;
-			allPages[(page+1)*2].style.visibility='hidden';
-			allPages[(page+1)*2].style.transform='rotateY(90deg)';
-			page++;
-			catalogRotatesRight++;
-			
-			setTimeout(closeRightPage, 500, allPages, page, activeSide);
-		}
-		if (event.key=='ArrowLeft' && page > 0 && catalogIsMouse && !catalogRotatesRight) {
-			allPages[page*2].append(activeSide.firstElementChild);
-			activeSide.prepend(allPages[(page-1)*2].firstElementChild);
-			
-			allPages[page*2].style.transform='rotateY(90deg)';
-			allPages[page*2].style.zIndex=2+page;
-			allPages[(page-1)*2+1].style.visibility='hidden';
-			allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
-			page--;
-			catalogRotatesLeft++;
-			
-			setTimeout(closeLeftPage, 500, allPages, page, activeSide);
-		}
+				allPages[page*2+1].append(activeSide.lastElementChild);
+				activeSide.append(allPages[(page+1)*2+1].firstElementChild);
+				
+				allPages[page*2+1].style.transform='rotateY(-90deg)';
+				allPages[page*2+1].style.zIndex=100-page;
+				allPages[(page+1)*2].style.visibility='hidden';
+				allPages[(page+1)*2].style.transform='rotateY(90deg)';
+				page++;
+				catalogRotatesRight++;
+				
+				setTimeout(closeRightPage, 500, allPages, page, activeSide);
+			}
+			if (event.key=='ArrowLeft' && page > 0 && catalogIsMouse && !catalogRotatesRight) {
+				allPages[page*2].append(activeSide.firstElementChild);
+				activeSide.prepend(allPages[(page-1)*2].firstElementChild);
+				
+				allPages[page*2].style.transform='rotateY(90deg)';
+				allPages[page*2].style.zIndex=2+page;
+				allPages[(page-1)*2+1].style.visibility='hidden';
+				allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+				page--;
+				catalogRotatesLeft++;
+				
+				setTimeout(closeLeftPage, 500, allPages, page, activeSide);
+			}
+		});
 	});
 }
 

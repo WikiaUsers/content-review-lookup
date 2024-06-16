@@ -171,7 +171,23 @@ $(document).ready(function()
         var memo ;
         // шаблон выбранной лицензии 
         var selection;
-            
+		
+		$('#mw-htmlform-source').before
+		(
+		  '<div id="UploadFileURLContainer" >'+
+		'<input id="btn_OpenURLContainer" value="Указать URL файла" onclick="OpenURLContainer()" type="button" style=" cursor: pointer;" class="wds-button">'+
+		  '<table style="display: none;" id="tbl_UploadFileURL">'+
+			'<tr><td width="100%">'+
+			  '<label id="lbl_UploadFileURL">URL файла, расположенного на Wookieepedia <small>(типы PNG, GIF, JPG, JPEG, WEBP, ICO, SVG)</small>:</label>'+
+			  '<input id="edit_UploadFileURL" name="edit_UploadFileURL" size="60" class="NewStyleMemo" placeholder="Вставьте сюда URL файла и нажмите кнопку Загрузить" aria-disabled="false">'+
+			  '</td>'+
+			  '<td><div class="mw-toolbar-editbutton-big" title="Загрузить файл по URL" id="btn_UploadFileURL" onclick="UploadFileURL()">Загрузить</div></td>'+
+			'</tr>'+
+		  '</table>'+
+		  '</div>'+
+		'<label><small>или загрузите исходный файл непосредственно со своего устройства</small></label>'
+		);
+
         // добавление шаблона в поле краткого описания для загружаемого изображения
         $('#wpUploadDescription').val('{{Информация\n|внимание=\n|описание=\n|источник=\n|автор=\n|спецификация=\n|лицензирование={{Fairuse}}\n|другие версии=\n|кат художник=\n|кат лицензиат=\n|кат субъект=\n|кат тип=\n}}').css('height', '250px');
         // перемещение выпадающего списка лицензий и блока для шаблона выбранной лицензии 
@@ -234,7 +250,7 @@ $(document).ready(function()
     }
 
     // если на странице есть шаблон {inuse}
-    if (CheckINUSE()== -1)
+    if (CheckINUSE())
     {
        $('#ca-edit, #ca-ve-edit, #wpSave').before('<span class="wds-button wds-button-dissabled" title="Статья недоступна для редактирования, т.к. была зарезервирована другим участником!">Правка недоступна</span>').detach();
        $('span.editsection').detach();
@@ -486,24 +502,31 @@ function SetToolbar()
 	
 }
 
+// проверка на наличие в статье шаблона {Inuse} и имени уастника
 function CheckINUSE() 
 {
-    if (RLCONF.wgCategories.includes('Активно редактирующиеся статьи') == true 
-        && ( 
-            ($('#iduser').text()!== RLCONF.wgCategorieswgUserName || RLCONF.wgCategorieswgUserName=== undefined) 
-            &&
-            ($('#iduser').text()!== undefined)
-            &&
-      		(['sysop', 'content-moderator' ].indexOf( mw.config.get( 'wgUserGroups' ) ) !== -1)
-           )
-       )
-    {
-       return -1;
-    }
-	else
-	{
-		return 1;
+	// если статья не входит в категорию активно редактирующихся -- выход
+	if (RLCONF.wgCategories.includes('Активно редактирующиеся статьи') == false)
+	{ 
+		return false;
 	}
+	// если статью просматривает модератор или админ -- выход
+	if (['sysop', 'content-moderator' ].indexOf( mw.config.get( 'wgUserGroups' ) ) == 1) 
+	{ 
+		return false;
+	}	
+	// если статью никто не зарезервировал -- выход
+	if ( $('#iduser').text() === undefined ) 
+	{ 
+		return false;
+	}	
+	// если статью просматривает участник, не зарезервировавший её, или участник-аноним 
+    if ( $('#iduser').text()!== RLCONF.wgUserName || RLCONF.wgUserName === undefined )
+    {
+       return true;
+    }
+	
+	return false;
 }
 
 function ShowRecentChangesWindow()

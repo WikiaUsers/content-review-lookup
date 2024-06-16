@@ -1,3 +1,13 @@
+// Configuration for [[MediaWiki:ImportJS]]
+
+window.AutoCreateUserPagesConfig = {
+  content: {
+    2: '{{sub'+'st:newuser}}',
+    3: '{{sub'+'st:welcome}}',
+  },
+  summary: 'Script: Creating user+talkpage on first edit'
+};
+
 // Interactive Tree Script
 
 var smallTreeCount = 3;
@@ -164,27 +174,11 @@ ta['ca-nstab-category'] = new Array('c','View the category page');
 
 */
 
-// To replace the now dead "welcome bot"
-
-window.AutoCreateUserPagesConfig = {
-  content: {
-    2: '{{sub'+'st:newuser}}',
-    3: '{{sub'+'st:welcome}}',
-  },
-  summary: 'Script: Creating user+talkpage on first edit'
-};
-
 // Personalized MA copyright notice
 
 $(function(){
   $('.license-description').append('See <a href="/wiki/Memory_Alpha:Copyrights">Memory Alpha\'s Copyright</a> information for full details.');
 });
-
-// MA rail module
-
-window.AddRailModule = [
-  'Template:RailModule'
-];
 
 // Re-add proper namespace prefix to titles where it has been removed "by design"
 
@@ -521,11 +515,23 @@ $('.pi-item.wds-tabber').each(function(){
 
 // Correcting link behavior
 
-const queryStrings = $('[href^="https://memory-alpha.fandom.com/wiki/"].text')
-  .filter('[href$="?action=raw"], [href$="?useskin=fandommobile"], [href$="?useskin=fandomdesktop"], [href$="?uselang=qqx"], [href$="?safemode=1"], [href*="Special:RecentChanges?"]');
+function correctLinkBehavior(){
+  const queryStrings = $('[href^="https://memory-alpha.fandom.com/wiki/"].text').filter('[href$="?action=raw"], [href$="?useskin=fandommobile"], [href$="?useskin=fandomdesktop"], [href$="?uselang=qqx"], [href$="?safemode=1"], [href*="Special:RecentChanges?"]');
 
-const otherDirectories = $('.text')
-  .filter('[href="https://memory-alpha.fandom.com/f"], [href^="https://memory-alpha.fandom.com/f/"], [href^="https://memory-alpha.fandom.com/api.php"]');
+  const otherDirectories = $('.text').filter('[href="https://memory-alpha.fandom.com/f"], [href^="https://memory-alpha.fandom.com/f/"], [href^="https://memory-alpha.fandom.com/api.php"]');
 
-queryStrings.removeAttr('target rel class');
-otherDirectories.removeAttr('target rel class');
+  queryStrings.removeAttr('target rel class');
+  otherDirectories.removeAttr('target rel class');
+}
+
+correctLinkBehavior();
+
+setTimeout(correctLinkBehavior, 5000);
+
+/* Remove "talk" link from forums */
+
+const talkLink = $('.ns-110 #ca-talk');
+
+if (talkLink){
+  talkLink.parent().remove();
+}

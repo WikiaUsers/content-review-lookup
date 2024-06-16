@@ -40,3 +40,23 @@ mw.loader.using( ['jquery.ui'], function() {
     return false;
   });
 });
+
+// Configuration for MapsExtended - This applies to ALL maps
+window.mapsExtendedConfig =
+{
+    sortMarkers: "unsorted",
+    openPopupsOnHover: true,
+    enableFullscreen: true,
+    fullscreenMode: "window",
+    enableSearch: true,
+    hiddenCategories: [],
+    disabledCategories: [],
+    collectibleCategories: [],
+    categoryGroups:
+    [
+        {
+            label: "Planetary Bodies",
+            children: [ "Planet", "Moon" ],
+        }
+    ]
+};

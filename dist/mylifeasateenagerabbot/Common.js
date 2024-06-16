@@ -31,3 +31,19 @@ window.dev.editSummaries = {
 importArticles({ type: 'script', articles: [ 
 	'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
+
+/*** Configuration for ImprovedProseMirror (customized to fit the wiki) ***/
+window.dev = window.dev || {};                               // Create Window.dev if it doesn't exist already
+window.dev.IPM = {                                           // Create configuration
+	insert: [
+		{
+			button: 'Knock, knock!',                               // Name of preset, shown in the dropdown
+			insert: 'Hey! You are being warned for REASON HERE.', // Preset content
+			replaceAll: true                                 // Set to true to overwrite existing content in the editor with this preset
+		},
+		{
+			button: 'From',
+			insert: 'a fellow Rabbotpedian and yours truly,\n[[Special:MyPage|UserName]] ([[Special:MyTalk|talk]]).'
+		}
+	]
+};

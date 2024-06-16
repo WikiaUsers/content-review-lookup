@@ -9,7 +9,7 @@
         'wgRelevantUserName'
 	]);
 
-    if (!/sysop|staff|helper|global-discussions-moderator|wiki-representative|wiki-specialist|soap/.test(config.wgUserGroups)) { return; }
+    if (!/sysop|staff|helper|global-discussions-moderator|wiki-specialist|soap/.test(config.wgUserGroups)) { return; }
     if ((config.isGamepedia && config.wgNamespaceNumber != 202) || (!config.isGamepedia && !config.profileUserName)) { return; }
 
     var user = config.profileUserName;

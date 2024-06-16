@@ -1,3 +1,6 @@
+/* Добавляет сообщение на правый Рельс */
+window.AddRailModule = [{prepend: true}];
+
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 window.ImprovedTabbers = {
         HideHeaderTitle: true,

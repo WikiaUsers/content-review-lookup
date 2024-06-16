@@ -2,7 +2,11 @@
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/donutsandnostalgiaultra/images/a/aa/Site logo.png/revision/latest?cb=20210607205725&path-prefix=en';
 window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/donutsandnostalgiaultra/images/a/aa/Site logo.png/revision/latest?cb=20210607205725&path-prefix=en';
-window.pPreview.tlen = 450;
+window.pPreview.dock = '#mw-content-text';
+window.pPreview.pibox = true;
+window.pPreview.piboxkeepprev = true;
+window.pPreview.tlen = 75;
+window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];
 /* CAUTION: Any JavaScript here will be loaded for all users on every page load. */
 
 /* 

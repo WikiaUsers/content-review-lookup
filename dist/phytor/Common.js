@@ -105,7 +105,7 @@ mw.loader.using("jquery.makeCollapsible").then(function(){
 	});
 });
 // Sticky stuff
-waitFor(".sticky-modules-wrapper", function() {
+waitFor(".sticky-modules-wrapper .rail-module .mw-customtoggle-rail-links", function() {
 	var $sidebar = $(".sticky-modules-wrapper");
 	$('<div id="before-sidebar"></div>').insertBefore($sidebar);
 	var $before = $("#before-sidebar");

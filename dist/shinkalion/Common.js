@@ -5,7 +5,7 @@ window.quizLang = "en";
 window.resultsTextArray = [ 
     "You won't make a great Shinkalion Driver, considering your poor knowledge!",
     "Some Shinkalion Drivers know less than you, but there are still others who know more than you!",
-    "Congrats! Your knowledge is exactly what S.U.E.I. looks after!" 
+    "Congrats! Your knowledge is exactly what ERDA looks after!" 
 ];
 window.questions = [
     ["Who of those characters existed for real in history?",
@@ -21,8 +21,23 @@ window.questions = [
     ["Who of those doesn't have siblings?",
     "Akita Oga",
     "Hayato Hayasugi",
-    "Shin Arata"]
-    ];
+    "Shin Arata"],
+
+    ["Who of those isn't a staff member of ERDA?",
+    "Chiguko Nabeshima",
+    "Kadomichi Takanawa",
+    "Asahi Folden"],
+
+    ["Who of those currently doesn't study at Shinkai Academy?",
+    "Akane Folden",
+    "Ryota Kuzuryu",
+    "Ina Onari"],
+
+    ["Who of those ERDA staff members isn't from Tokyo?",
+    "Kadomichi Takanawa",
+    "Agano Tsugawa",
+    "Hidaka Toma"],
+];
 
 window.MessageBlock = {
   title : 'Block',

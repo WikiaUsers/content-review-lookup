@@ -7,3 +7,10 @@ importArticles({
     ]
 });}
 dev:ProfileTags.js
+
+window.SpoilerAlertJS = {
+    question: 'This page contains a spoiler. Are you sure you want to read it?',
+    yes: 'Yes',
+    no: 'No',
+    fadeDelay: 1600
+};

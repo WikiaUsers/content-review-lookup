@@ -64,11 +64,24 @@ function CopyEngImgInfo()
   $.get( 'https://starwars.fandom.com/index.php', { title: 'file:'+sArticle, action: 'raw', ctype: 'text/plain' } )
   .then( 
         function( data )			
-        {			
+        {	
+			// хамена переноса строк
 			$('#wpUploadDescriptionEng').html(data.replace(/\n/g, '<br />'));
-			
-			$('#wpUploadDescription').val(
-			data.replace(/\|attention=/g, '|внимание=').replace(/\|description=/g, '|описание=').replace(/\|source=/g, '|источник=').replace(/\|artist=/g, '|автор=').replace(/\|filespecs=/g, '|спецификация=').replace(/\|licensing=/g, '|лицензирование=').replace(/\|other versions=/g, '|другие версии=').replace(/\|cat artist=/g, '|кат художник=').replace(/\|cat licensee=/g, '|кат лицензиат=').replace(/\|cat subject=/g, '|кат субъект=').replace(/\|cat type=/g, '|кат тип=').replace(/\==.*\n/g, '').replace(/\{\{Information/g, '{{Информация')
+			// замена атрибутов и названия шаблона на русские
+			$('#wpUploadDescription').val(data
+				.replace(/\|attention=/g, '|внимание=')
+				.replace(/\|description=/g, '|описание=')
+				.replace(/\|source=/g, '|источник=')
+				.replace(/\|artist=/g, '|автор=')
+				.replace(/\|filespecs=/g, '|спецификация=')
+				.replace(/\|licensing=/g, '|лицензирование=')
+				.replace(/\|other versions=/g, '|другие версии=')
+				.replace(/\|cat artist=/g, '|кат художник=')
+				.replace(/\|cat licensee=/g, '|кат лицензиат=')
+				.replace(/\|cat subject=/g, '|кат субъект=')
+				.replace(/\|cat type=/g, '|кат тип=')
+				.replace(/\==.*\n/g, '')
+				.replace(/\{\{Information/g, '{{Информация')
 			);
 			
 			mw.notify( 'Описание файла удачно скопировано!' );
@@ -80,16 +93,29 @@ function CopyEngImgInfo()
   );
 }
 
+// отображение окна "Вставка вики-текста"
 function ShowEditTools()
 {
   $('div.mw-editTools, #BlockScreenBG').fadeIn();
 }
 
-function InsertText( sPre, sPost){
-  $.wikiEditor.modules.toolbar.fn.doAction($('span.tool').data('context'), 
-	{type: 'encapsulate', options: {pre: sPre, post: sPost} });
+// вставка символов с текстовое поле Редактора 2010
+function InsertText( sPre, sPost)
+{
+	$.wikiEditor.modules.toolbar.fn.doAction(
+		$('span.tool').data('context'),	// элемент-носитель ставляемых символов
+		{
+			type: 'encapsulate', // тип операции операции
+			options: 
+			{
+				pre: sPre, // текст, вставляемый ДО курсора
+				post: sPost // текст, вставляемый ПОСЛЕ курсора
+			} 
+		}
+	);
 }
 
+// викифицирование текста
 function Wikify()
 {
     startPos= 0;     // начальная позиция выделенного текста
@@ -468,6 +494,11 @@ function ShowInfoboxInsertWindow()
 	ShowGlassWindow(0,4) ;
 }
 
+/*
+Отображение на экране окна сообщения для ввода текста 
+- SenderID -- ID элемента, запустившего функцию
+- CaptionID -- ID заголовка в зависимости от ситуации
+*/
 function ShowGlassWindow(SenderID, CaptionID) 
 {
 
@@ -488,7 +519,6 @@ function ShowGlassWindow(SenderID, CaptionID)
 		$.get(mw.config.values.wgScript, {title: sTemplateSource, action: 'raw', ctype: 'text/plain'})
 			.then(function(data) // данные, полученные при чтении
 			{
-
 				// подстановка заголовка окна в HTML-разметку
 				sMessageWindow = $(data).find('#temple_GlassWindow').html();
 
@@ -536,15 +566,25 @@ function CloseHideable()
 	$('.BlockHideable').fadeOut(0);
 }
 
+/*
+Загрузка содержимого, нужного для формирования окна сообщения на страцинах старого форума (Форум:Index)
+- data -- HTML-разметка их страницы-хранилища для окна сообщения 
+- SenderID -- ID элемента, запустившего функцию
+*/
 function LoadForumMessageElements(data, SenderID) 
 {
+	// поиск HTML-разметки для окна на форуме
 	let sElements = $(data).find('#temple_ForumMessageElements').html();
 
-	// если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
-	if (CheckLoadedElements(sElements, '#temple_ForumMessageElements', sTemplateSource) == 0) { return; }
-
+	// если на странице-хранилище не обнаружилось нужной разметки -- выход с предупреждением
+	if (CheckLoadedElements(sElements, '#temple_ForumMessageElements', sTemplateSource) == 0) 
+	{ 
+		return; 
+	}
+	
+	// вставка HTML-разметки в окно сообщения  
 	sMessageWindow = sMessageWindow.replace(/\{Content}/g, sElements);
-
+	// добавление окна сообщения в HTML страницы
 	ApplyLoadedElements(sMessageWindow);
 	
 	// при создании новой темы в окне сообщения показывать поле для ввода заголовка
@@ -576,31 +616,45 @@ function LoadForumMessageElements(data, SenderID)
 	$('#btn_quote').click(function (){InsertText('{{Цитата|','||}}');});
 }
 
+/*
+Загрузка содержимого, нужного для формирования окна со списком инфобоксов, чей код нужно вставить в код статьи
+- data -- HTML-разметка их страницы-хранилища для окна сообщения 
+*/
 function LoadInsertInfoboxElements(data) 
 {
+	// поиск HTML-разметки для окна со списком инфобоксов
 	let sElements = $(data).find('#temple_InfoboxList').html();
 	let api = new mw.Api();
 
 	api.get({action: 'query', format: 'json', list: 'categorymembers', cmtitle: 'Категория:Инфобоксы_с_описанием', cmlimit: '200', cmnamespace: '10' })
 	.done(function(data) 
 	{
+		// список страниц в категории "Инфобоксы_с_описанием", из которого сформируется список инфобоксов
 		let pages = data.query.categorymembers;
+		// 
 		let p, s = '';
+		
+		// цикл по списку страниц для формирования HTML-разметки списка инфобоксов
 		for (p in pages) 
 		{
 			s = s + '<p class="BlockRounded btn_Charinsert" onclick="InsertInfobox(\'' + pages[p].title + '\')">' + (pages[p].title).replace(/Шаблон:/, '') + '</p>';
 		}
-
+		
+		// вставка HTML-разметки списка инфобоксов в общий контейнер
 		sElements = sElements.replace(/\{Content}/g, s);
+		// вставка общего контейнера в окно сообщения  
 		sMessageWindow = sMessageWindow.replace(/\{Content}/g, sElements);
-
+		// добавление окна сообщения в HTML страницы
 		ApplyLoadedElements(sMessageWindow);
-
-    // добавление событий кнопкам
+		// добавление событий кнопкам
 		$('#btn_CancelMessage').click(CloseHideable);
 	});
 }
 
+/*
+добавление окна сообщения в HTML страницы
+- MessageWindow -- HTML-разметка полностью сформированного окна сообщения
+*/
 function ApplyLoadedElements(MessageWindow) 
 {
   $('body').append(MessageWindow);
@@ -653,8 +707,8 @@ function LoadCell(i, sPage, data)
 	// поиск ячейки в скопе данных "data"
 	sMessage= $(data).find( sCell[i] ).html();
 
-  // если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
-  if (CheckLoadedElements(sMessage, sCell[i], sTemplateSource) == 0) { return; }
+	// если на странице-хранилище не обнаружилось нужной разметки - выход с предупреждением
+	if (CheckLoadedElements(sMessage, sCell[i], sTemplateSource) == 0) { return; }
 	
 	return sMessage;
 }
@@ -712,7 +766,7 @@ function SaveForumMessage(sMessageText, sPage)
 			// подстановка id. имения автора сообщения, текста сообщения и пр. в HTML-разметку ячейки
 			sMessage= sMessage.replace(/\{MessageID}/g, sMessageID).replace(/\{UserName}/g, '[[Участник:'+mw.config.values.wgUserName+'|'+mw.config.values.wgUserName+']]').replace(/\{DateTime}/g, sMessageDateTime).replace(/\{MessageText}/g, sMessageText).replace(/<tbody>|<\/tbody>/g,'');
      
-      // вывод сообщения о записи
+			// вывод сообщения о записи
 			mw.notify( 'Обновите страницу.', { title: 'Сообщение успешно добавлено!', type: 'info' } ); 
 			
 			let api = new mw.Api();
@@ -760,8 +814,6 @@ function SaveForumMessage(sMessageText, sPage)
 			// поиск номера раздела (сообщения, на которое нужно ответить) в атрибуте id после ключевого слова "section" и до границы слова
 			sSection= oLast.prev('h6').find('.mw-editsection a').attr('href').replace(/.*section=(\d*)\b.*/, '$1');
       
-  console.log( sSection, sMessage);
-  //return;
 			// вывод сообщения о записи
 			mw.notify( 'Обновите страницу.', { title: 'Ответ успешно добавлен!', type: 'info' } );
 			
@@ -827,6 +879,7 @@ function CheckLoadedElements(sElement, sID, sSource)
   return 1;
 }
 
+// вставка исходного кода выбранного инфобокса
 function InsertInfobox(sSource) 
 {
 	let api = new mw.Api();
@@ -839,13 +892,85 @@ function InsertInfobox(sSource)
 
 		let s = $('#div_PureCode').html(data.parse.text).find('.BlockPseudoPre:first').text();
 		s = s.replace(/\|/g, '\n|').replace(/\}\}/g, '\n}}');
-		
-		console.log(s);
 
 		InsertText(s, '');
 
 		$('.BlockHideable').fadeOut(0);
-    $('#div_PureCode').detach();
+		$('#div_PureCode').detach();
 	});
 
+}
+
+// открыть панель для ввода URL
+function OpenURLContainer()
+{
+	// появление панели
+	$('#tbl_UploadFileURL').fadeIn('fast'); 
+	// разблокировка текстового поля
+	$('#edit_UploadFileURL').removeAttr('disabled');
+}
+
+// загрузка файла с анг. вики через URL на странице Служебная:Загрузка
+async function UploadFileURL()
+{
+	// путь к файлу из текстового поля
+	sPath = $('#edit_UploadFileURL').val();
+	//формирование объекта URL 
+	u = new URL(sPath);  
+
+	// если в текстовом поле была указана страница файла -- домен starwars.fandom.com
+	if (u.hostname === 'starwars.fandom.com')
+	{
+		// запрос на сервер
+		response = await fetch(sPath);
+		// извлечение HTML страница файла
+		data = await response.text();
+		// извлечение URL файла из HTML страницы
+		sPath = $(data).find('#file img').attr('src') || 'файл не найден';
+	}
+
+	// отсечение лишней части после расширения файла
+	sPath = sPath.replace(/\/revision.*/, '');
+
+	// запрос на сервер
+	response = await fetch(sPath);
+	blob = await response.blob();
+
+	// список поддерживаемых типов файлов
+	arrFileTypes = ['PNG', 'GIF', 'JPG', 'JPEG', 'WEBP', 'ICO', 'SVG'];
+	// разбиение пути к файлу через каждую дробь и перенос в массив
+	arrSplitPath = sPath.split('/');
+
+	// если разбить не удалось
+	if (arrSplitPath.length == 1)
+	{
+		mw.notify( 'Укажите корректный путь к файлу!', { title: 'Ошибка!', type: 'error' } );
+		return;
+	}
+
+	// кол-во жлементов в массиве разбивки
+	i = arrSplitPath.length-1;
+	// имя файла хранится в последнем элементе массива разбивки
+	sFileName = arrSplitPath[i];
+	// разбиение пути через точку и перенос в массив
+	arrSplitFilename = sFileName.split('.');
+	// расширение файла 
+	sType = arrSplitFilename[1];
+
+	// если расширение файла не входит в список поддерживаемый типов файлов
+	if (arrFileTypes.indexOf( sType.toUpperCase() ) < 0)
+	{
+		mw.notify( 'В пути указан неподдерживаемый тип файла ('+ sType + ')!', { title: 'Ошибка!', type: 'error' } );
+		return;
+	}
+
+	// витруальный список для хранения файлов
+	dt  = new DataTransfer();
+	// добавление нового файла в витруальный список
+	dt.items.add(new File([blob], sFileName, {type: blob.type} ));
+	// добавление файлов из витруального списка в спискок текстоового поля
+	document.getElementById('wpUploadFile').files = dt.files;
+
+	// копировние описания файла с анг. вики 
+	CopyEngImgInfo(); 
 }

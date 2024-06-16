@@ -41,6 +41,13 @@ window.monoBookText = "Switch to Monobook";//End SS*/
 /* Reference Popups */
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;//End RP*/
 
+/* Default NewCommentIndicator config */
+window.newCommentIndicator = {
+    newThreshold: 432000,
+    hideViewed: false
+};
+//End NCI*/
+
 /* BackToTop */
 window.BackToTopStart = 400;
 window.BackToTopSpeed = 1500;//End BTT*/

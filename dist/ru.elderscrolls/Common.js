@@ -124,6 +124,7 @@ window.mapsExtendedConfigs =
 		]
     }
 }
+
 /*---------------------------- Кнопка "Новая страница" -----------------------*/
 $(".wiki-tools__theme-switch").before('<a href="https://elderscrolls.fandom.com/ru/wiki/Служебная:CreatePage" class="wds-button wds-is-secondary" title="Новая страница"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-page-small"></use></svg></a>');
 

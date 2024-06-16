@@ -87,14 +87,19 @@ $(function() {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
 			}
 			
-			// Check we're in the normal view of a file page
-			else if (config.wgAction == 'view' && config.wgNamespaceNumber == 6) {
-				betterDiff.waitFor('.patrollink > a', function(){
-					document.addEventListener('keydown', function(event) {
-						if (event.altKey && [80, 49].includes(event.keyCode)) {
+			// Check we're in the normal view of a file page or in a diff page
+			else if (
+				config.wgAction == 'view' && config.wgNamespaceNumber == 6 ||
+				config.wgDiffNewId
+			) {
+				document.addEventListener('keydown', function(event) {
+					if (event.altKey && [80, 49].includes(event.keyCode)) {
+						if (document.querySelector('.massPatrol > a')) {
+							document.querySelector('.massPatrol > a').click();
+						} else if (document.querySelector('.patrollink > a')) {
 							document.querySelector('.patrollink > a').click();
 						}
-					});
+					}
 				});
 			}
 		},
@@ -197,8 +202,8 @@ $(function() {
 				getTitle: function(row) {
 					var title;
 					var queries = [
-						'.mw-changeslist-title', // Normal Special:RecentChanges
-						'.mw-changeslist-date', // Nested Special:RecentChanges
+						'.mw-changeslist-title',   // Normal Special:RecentChanges
+						'.mw-changeslist-date',    // Nested Special:RecentChanges
 						'.mw-enhanced-rc-time > a' // Special:Contributions
 					];
 					queries.forEach(function(query) {
@@ -241,7 +246,6 @@ $(function() {
 					document.querySelectorAll('.mw-changeslist-src-mw-new').forEach(function(node){
 						if (node) { newDiffLink.searchRevid(node); }
 					});
-					betterDiff.quickDiffLoad();
 				}
 			}
 			
@@ -369,9 +373,7 @@ $(function() {
 		quickDiff: function() {
 			// Diff link string's storage for modal button
 			var href = '';
-			
 			betterDiff.quickDiffLoad();
-			betterDiff.RecentChangesReload(betterDiff.quickDiffLoad);
 			
 			var generateModal = function(modal, event) {
 				betterDiff.fetchTokens();
@@ -748,8 +750,10 @@ $(function() {
 					}
 				}
 			};
-			document.querySelectorAll('.mw-changeslist-groupdiff:not(.quickDiffLoaded)').forEach(addLink);
-			document.querySelectorAll('.mw-changeslist-diff:not(.quickDiffLoaded)').forEach(addLink);
+			betterDiff.whenInView(
+				'.mw-changeslist-diff:not(.quickDiffLoaded), .mw-changeslist-groupdiff:not(.quickDiffLoaded)',
+				addLink
+			);
 		},
 		
 		// Patrol inputted revid if user can patrol
@@ -828,11 +832,33 @@ $(function() {
 					});
 				}
 			}
-		}
+		},
+		
+		// Run function when given element enters viewport
+		whenInView: function(query, callback) {
+			var handler = function(_i, el) {
+				var rect = el.getBoundingClientRect();
+				if (
+					rect.top >= 0 &&
+					rect.left >= 0 &&
+					rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+					rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+				) {
+					callback(el);
+				}
+			};
+			// initial load
+			$(query).each(handler);
+			
+			// lazy load
+			$(window).on('DOMContentLoaded.mikeLib load.mikeLib resize.mikeLib scroll.mikeLib', function(){
+				$(query).each(handler);
+			});
+		},
+
 	};
 	
 	// Load styles and start when API is loaded
-	mw.loader.using('mediawiki.diff.styles');
-	mw.loader.using('mediawiki.api').then(betterDiff.init);
+	mw.loader.using(['mediawiki.api', 'mediawiki.diff.styles']).then(betterDiff.init);
 	
 });

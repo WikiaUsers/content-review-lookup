@@ -52,7 +52,6 @@ if (mw.config.get("wgUserGroups").includes("content-moderator") || mw.config.get
             "u:dev:MediaWiki:MassCategorization/code.js",
             "u:dev:MediaWiki:PowerDelete.js",
             "u:dev:MediaWiki:Stella.js",
-            "u:dev:MediaWiki:AdminDashboard_block/code.js",
             "u:dev:MediaWiki:DiscussionsRestoreAll.js",
             "u:dev:MediaWiki:AddAnnouncement/code.js",
             "u:dev:MediaWiki:DiscussionsAFLog.js",
@@ -94,7 +93,9 @@ if (mw.config.get("wgUserGroups").includes("sysop")) {
     });
 }
 
-// Stylish scripts
+/* 
+***** Stylish scripts
+*/
 // Moonwatcher x Qibli background
 if (mw.config.get('wgPageName') === 'User:Moonwatcher_x_Qibli' && mw.config.get('wgAction') !== 'edit') {
     importArticles({
@@ -170,7 +171,6 @@ mw.loader.using('mediawiki.Uri').then(function() {
 // Title        : UserBlockNotification modded 
 // Description  : Whenever a user gets blocked, users will have notification alert. It will persist, making them unable to interact with the page.
 // Author       : Vastmine1029/Moonwatcher x Qibli
-// Version      : 1.0
 mw.loader.using('mediawiki.api', function() {
     var api = new mw.Api(), block_data;
     var user = mw.config.get('wgUserName');
@@ -205,6 +205,13 @@ mw.loader.using('mediawiki.api', function() {
 ********** ImportJS Config
 *****
 */
+// LinkPreview
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.piboxkeepprev = true;
+window.pPreview.RegExp.iclasses = ['nolp'];
+window.pPreview.defimage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAQAAACwAAAAAAQABAAACAkQBADs=';
+window.pPreview.delay = 10;
+
 // AbuseLogRC 
 window.abuseLogRC_entries = 5;
 window.abuseLogRC_showTo = [ 'content-moderator' ];

@@ -13,7 +13,7 @@ function loadFunc() {
 
 	// DEPRECATED
 	if( document.getElementById('infoboxinternal') != null && document.getElementById('infoboxend') != null ) {
-		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Hide]</a>';
+		document.getElementById('infoboxend').innerHTML = '<a id="infoboxtoggle" href="javascript:infoboxToggle()">[Gizle]</a>';
 	}
 
 	// Upload form - need to run before adding hide buttons
@@ -49,13 +49,13 @@ function infoboxToggle() {
 	var page = window.pageName.replace(/\W/g, '_');
 	var nowShown;
 
-	if(document.getElementById('infoboxtoggle').innerHTML == '[Hide]') {
+	if(document.getElementById('infoboxtoggle').innerHTML == '[Gizle]') {
 		document.getElementById('infoboxinternal').style.display = 'none';
-		document.getElementById('infoboxtoggle').innerHTML = '[Show]';
+		document.getElementById('infoboxtoggle').innerHTML = '[Göster]';
 		nowShown = false;
 	} else {
 		document.getElementById('infoboxinternal').style.display = 'block';
-		document.getElementById('infoboxtoggle').innerHTML = '[Hide]';
+		document.getElementById('infoboxtoggle').innerHTML = '[Gizle]';
 		nowShown = true;
 	}
 
@@ -208,7 +208,7 @@ function addHideButtons() {
 			button = button[0];
 
 			button.onclick = toggleHidable;
-			button.appendChild( document.createTextNode('[Hide]') );
+			button.appendChild( document.createTextNode('[Gizle]') );
 
 			if( new ClassTester('start-hidden').isMatch(box) )
 				button.onclick('bypass');
@@ -670,7 +670,7 @@ function addTalkheaderPreload() {
 // Related Categories
 $(document).ready( function () {
 	if( document.getElementById("related-catlinks") ) {
-		document.getElementById("catlinks").appendChild(document.getElementById("related-catlinks"));
+		document.getElementById("articleCategories").appendChild(document.getElementById("related-catlinks"));
 	}
 } );
 

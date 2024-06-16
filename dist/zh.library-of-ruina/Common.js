@@ -57,6 +57,7 @@ importArticles({
         'MediaWiki:CombatCard.js',//战斗书页js
         'MediaWiki:AbnormalityPage.js',//异想体书页js
         'MediaWiki:Story.js',//配音切换js
+        'MediaWiki:CombatPageInputBox.js',//战斗书页数据查找
         'MediaWiki:AdminDashboardImportJS.js',//在管理员面板添加一个importjs的快捷入口
         'u:dev:MediaWiki:ReferencePopups/code.js',//注释提示框
         'u:dev:MediaWiki:DivEditor/code.js',//div编辑器

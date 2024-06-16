@@ -38,7 +38,7 @@ $(document).ready(function()
 });
 
 window.SpoilerAlertJS = {
-    question: 'HOLD!! This section contains spoilers. Are you sure you want to read it?',
+    question: 'This section contains spoilers. Are you sure you want to read it?',
     yes: 'Yes',
     no: 'No',
     fadeDelay: 500

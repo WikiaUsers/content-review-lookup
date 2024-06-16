@@ -7,17 +7,69 @@
     article: [""]
 });*/
 
+/* namespace improvements */
+var check112 = document.querySelector(".ns-112");
+var check113 = document.querySelector(".ns-113");
+if (check112 != undefined || check113 != undefined) {
+	var html = document.querySelector(".client-js");
+	html.style.scrollbarColor = '#e7b780 #1b1b1b';
+}
+
+
+/* the following makes up gameList class tabbers*/
+function getUrl(url, number) {
+	$.getJSON(url, function(data) {
+				var rawPath = data.url.split('/revision')[0]
+				
+				oldHTML = tabsList[number].innerHTML
+				tabsList[number].innerHTML = '<img src="'+ rawPath +'"/>' + oldHTML
+			});
+}
+
+tabbersList = document.getElementsByClassName('gameList withIcons')
+for (var i = 0; i < tabbersList.length; i++) {
+	tabsList = tabbersList[i].getElementsByClassName('wds-tabs__tab')
+	for (var k = 0; k < tabsList.length; k++) {
+		
+		frameIndex = Math.floor(Math.random() * 4) + 1;
+		tabsList[k].classList.add('gameListFrame' + frameIndex);
+		
+		name = tabsList[k].querySelector('a').innerHTML
+		url = '/wikia.php?controller=CuratedContent&method=getImage&title=File:' + name + '_Icon.png';
+		
+		getUrl(url, k)
+	}
+}
+
+
 /* the following styles stratagem videos */
 var videos = document.getElementsByClassName("StratagemOverview");
-console.log("vieos: " + videos.length)
 for (var i = 0; i < videos.length; i++) {
-	console.log("i=" + i)
 	var video = videos.item(i).querySelector("video");
+	if (video != undefined) {
 	video.autoplay = video.loop = video.muted = true;
 	video.controls = false;
 	video.style.width = video.style.height = "auto";
 	video.play();
+		
+	}
 }
+
+/* the following makes a cut on overview infobox border */
+var infoboxList = document.getElementsByClassName("gameOverviewInfobox")
+for (var i = 0;i<infoboxList.length;i++) {
+	var infobox = infoboxList[i]
+	var infoboxHeader = infoboxList[i].querySelector(".gameInfoboxHeader")
+	var infoboxBody = infoboxList[i].querySelector(".gameInfoboxBody")
+	var headerStyle = infoboxHeader.currentStyle || window.getComputedStyle(infoboxHeader);
+	var clipStart = headerStyle.marginLeft.toString().split("px")[0] - 2;
+	var clipEnd = clipStart + infoboxHeader.innerHTML.length*12 - 6;
+	infoboxBody.style.clipPath = 'polygon(0 0, ' + clipStart + 'px 0, ' + clipStart + 'px 5px, ' + clipEnd + 'px 5px, ' + clipEnd + 'px 0, 100% 0, 100% 100%, 0 100%)';
+}
+
+
+
+
 
 /*mapsExtended config*/
 window.mapsExtendedConfig =

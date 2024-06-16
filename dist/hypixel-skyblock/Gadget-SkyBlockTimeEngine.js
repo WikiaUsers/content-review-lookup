@@ -168,8 +168,8 @@
         SKYBLOCK_TS_SBST: 0
     };
     h.ALPHA_SKYBLOCK_EPOCH = {
-        UNIX_TS_UTC: 1560275700 - 211680,
-        UNIX_TS_SBST: (1560275700 - 211680) * h.RATIOS.magic,
+        UNIX_TS_UTC: 1560275700,
+        UNIX_TS_SBST: 1560275700 * h.RATIOS.magic,
         SKYBLOCK_TS_UTC: 0,
         SKYBLOCK_TS_SBST: 0
     };

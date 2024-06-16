@@ -26,11 +26,9 @@ if (!window.lastEdited) {
 
 // loop the video inside class="videoloop"
 mw.hook('wikipage.content').add(function($content) {
-	const videoLoop = $content[0].querySelectorAll('.videoloop video');
+	const videoLoop = $content.find('.videoloop');
 	if (videoLoop.length) {
-		videoLoop.forEach(function(video) {
-			video.loop = true;
-		});
+		videoLoop.prop('loop', true);
 	}
 });
 
@@ -41,7 +39,7 @@ if (heroCard.length) {
 		const image = illust.querySelector('img, video');
 		const width = image.getAttribute('width');
 		const height = image.getAttribute('height');
-		image.style.setProperty('--illust-aspect-ratio', width + ' \/ ' + height);
+		image.style.setProperty('--illust-aspect-ratio', width + ' / ' + height);
 	});
 }
 

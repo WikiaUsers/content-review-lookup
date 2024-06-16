@@ -22,13 +22,19 @@
 	/* Insert sizing buttons */
 	setTimeout(function() {
 		if (document.getElementsByClassName("CodeMirror").length > 0) {
+			window.dev.resizableCM.mode = "OLD";
+			document.getElementById("wikiEditor-section-secondary").innerHTML = html + "</div>";
+		} else if (document.getElementsByClassName("cm-scroller").length > 0) {
+			window.dev.resizableCM.mode = "NEW";
 			document.getElementById("wikiEditor-section-secondary").innerHTML = html + "</div>";
 		}
 	}, 2000); // Hack - Wait until CM loads
 
 	/* Resizable Code Mirror */
 	window.resizeCM = function(size){
-		document.getElementsByClassName("CodeMirror")[0].style.height = window.dev.resizableCM[size] || "525px"; // Default is M which is the UI default
+		var cm = window.dev.resizableCM.mode == "OLD" ? "CodeMirror" : "cm-scroller";
+		
+		document.getElementsByClassName(cm)[0].style.height = window.dev.resizableCM[size] || "525px"; // UI default
 		window.location.hash = "#random-nonexistent-crap-to-actually-reset-the-location-of-the-window-in-case-it-was-already-set"; 
 		window.location.hash = "#wikiEditor-ui-toolbar";
 	};
