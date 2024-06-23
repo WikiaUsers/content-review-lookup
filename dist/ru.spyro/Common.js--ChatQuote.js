@@ -1,1 +1,0 @@
-importScriptPage('User:Wildream/ChatQuote/code.js', 'ru.community');

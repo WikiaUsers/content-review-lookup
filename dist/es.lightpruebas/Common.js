@@ -1,6 +1,19 @@
 /* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+ 
+// Importes
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:AddRailModule/code.js',
+        'u:dev:MediaWiki:YouTubeModal/code.js',
+        'u:dev:AjaxRC/code.js',
+    ]
+});
+
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
 // Etiquetas de Usuarios
+ 
 window.UserTagsJS = {
 	modules: {
         inactive: { // Edits must be to content namespaces
@@ -15,28 +28,26 @@ window.UserTagsJS = {
         'chatmoderator',
         'rollback',
         'sysop',
-        'bannedfromchat',
         'bot',
-        'bot-global'
     ],
-	newuser: true,
-	metafilter: {
-		bot: ['bot-global'],
-		sysop: ['bureaucrat']
-	},
 	tags: {
         rollback: { u: 'Reversor', f: 'Reversora' },
-        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'The Loud House Fanon Wiki:Administración#Moderadores_del_Chat' },
-        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'The Loud House Fanon Wiki:Administración#Moderadores_de_Discusiones'},
-        contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'The Loud House Fanon Wiki:Administración#Moderadores_de_Contenido'},
-        sysop: { u: 'Administrador', f: 'Administradora', link:'The Loud House Fanon Wiki:Administración#Administradores' },
-        bureaucrat: { u:'Burócrata', f: 'Burócrata', link:'The Loud House Fanon Wiki:Administración#Bur.C3.B3cratas' },
+        threadmoderator: { u: 'Moderador de discusiones', f: 'Moderadora de discusiones', link:'Hora de aventura Wiki:Administración#Moderadores_de_Discusiones'},
+        contentmoderator: {u: 'Moderador de contenido', f: 'Moderadora de contenido', link: 'Hora_de_aventura_Wiki:Administración#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'Hora de aventura Wiki:Administración#Administradores' },
+        bureaucrat: { u:'Burócrata', f: 'Burócrata', link:'Hora de aventura Wiki:Administración#Bur.C3.B3cratas' },
     }
 };
  
 UserTagsJS.modules.inactive = 30;
 
-    
+/***** Actualizar los cambios recientes de la wikiactividad *****/
+AjaxRCRefreshText = 'Act. automát.';
+AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
+importScriptPage('AjaxRC/code.js', 'dev');
+;
+ 
 /* Cambio de título */
 $(function(){
   var newTitle = $("#title-meta").html();
@@ -44,25 +55,15 @@ $(function(){
   $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
 });
 
-window.ajaxPages = [
-    "Especial:WikiActivity",
-    "Especial:CambiosRecientes"
-];
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/ltesting/images/0/0b/Spinner.svg/revision/latest?cb=20170924143857';
-window.ajaxRefresh = 20000;
-window.AjaxRCRefreshText = 'Refrescar actividad';
-window.AjaxRCRefreshHoverText = 'Los cambios más recientes serán vistos sin la necesidad de refrescar la página manualmente';
-
-// Importes
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:LastEdited/code.js',
-        'u:dev:MediaWiki:YouTubeModal/code.js',
-        'u:dev:DisplayClock/code.js',
-        'u:dev:AjaxRC/code.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:AddRailModule/code.js',
-        'u:dev:dev:UserTags/code.js'
-    ]
-});
+// MessageWallUserTags config
+window.MessageWallUserTags = {
+    tagColor: '#000',  //Tag color – The color of the tag's text
+    glow: true,           //Glow effect toggle – Value of 'true' turns on the glow effect, 'false' turns it off
+    glowSize: '15px',     //Glow size – The default radius of the text-shadow glow effect
+    glowColor: '#47fcf0', //Glow color
+    users: {
+        'VoltaikSurgeon': 'Burócrata',
+        'Putus_uwu': 'Administrador',
+        'Letorro': 'Administrador',
+    }
+};

@@ -73,6 +73,7 @@ mw.loader.using( ['mediawiki.util', 'jquery.client'], function () {
         'modos' : ['- Modos de Jogo - ',
             ['sr clássico 5v5', '• SR Clássico 5v5'],
             ['aram', '• ARAM'],
+            ['arena', '• Arena'],
             ['MJR', '• MJR']
         ]
     };
@@ -232,7 +233,7 @@ window.tooltips_list = [
     {   classname: 'skinloading-icon', 
         parse: '{'+'{Tooltip/Skin/Carregamento|champion=<#champion#>|skin=<#skin#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'chroma-icon', 
-        parse: '{'+'{Tooltip/Croma|champion=<#champion#>|skin=<#skin#>|cromas=<#cromas#>|jogo=<#jogo#>}}'},
+        parse: '{'+'{Tooltip/Croma|champion=<#champion#>|skin=<#skin#>|cromas=<#cromas#>|variante=<#variante#>|jogo=<#jogo#>}}'},
     {   classname: 'avatar-icon', 
         parse: '{'+'{Tooltip/Ícone|<#param#>|ícone=<#ícone#>}}'},
     {   classname: 'esports-icon', 

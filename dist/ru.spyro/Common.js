@@ -1,200 +1,3 @@
-/*Викификатор*/
-/*
-$(function() {
-    if (wgAction == 'edit' || wgAction == 'submit') {
-        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript');
-        var toolbar = document.getElementById('toolbar');
-        if (!toolbar) return;
-        var i = document.createElement('img');
-        i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png';
-        i.alt = i.title = 'Викификатор';
-        i.onclick = Wikify;
-        i.style.cursor = 'pointer';
-        toolbar.appendChild(i);
-    }
-});
-
-if (mwCustomEditButtons) {
-    //Перенаправление
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "http://upload.wikimedia.org/wikipedia/ru/1/1d/Button_redirect_rus.png",
-        "speedTip": "Перенаправление",
-        "tagOpen": "#перенаправление [[",
-        "tagClose": "]]",
-        "sampleText": "название страницы"
-    };
-
-    //Шаблон
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-        "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/3b/Button_template_alt.png",
-        "speedTip": "Шаблон",
-        "tagOpen": "{{",
-        "tagClose": "}}",
-        "sampleText": "Название шаблона"
-    };
-//Категория
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/3c/Button_cat_ru.png",
-    "speedTip": "Категория",
-    "tagOpen": "[[Категория:",
-    "tagClose": "|{{PAGENAME}}]]",
-    "sampleText": "Название категории"}
-//Подчёркивание
-mwCustomEditButtons[mwCustomEditButtons.length] = { 
-   "imageFile": "http://images.uncyc.org/uk/6/64/Button_underline_ukr.png", 
-    "speedTip": "Подчёркивание", 
-    "tagOpen": "<u>", 
-    "tagClose": "</u>", 
-    "sampleText": "Подчёркнутый текст"}
-//Зачёркивание
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/4/45/Button_strike_ukr.png",
-    "speedTip": "Зачёркнутый текст",
-    "tagOpen": "<s>",
-    "tagClose": "</s>",
-    "sampleText": "Зачёркнутый текст"}
-//Неразрывный пробел
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/4/4b/Button_nbsp.png",
-    "speedTip": "Неразрывный пробел",
-    "tagOpen": "&nbsp;",
-    "tagClose": "",
-    "sampleText": ""}
-//Разрыв
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png",
-    "speedTip": "Разрыв",
-    "tagOpen": "<br />",
-    "tagClose": "",
-    "sampleText": ""}
-//Ударение
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/0e/Button_acute_accent.png",
-    "speedTip": "Ударение",
-    "tagOpen": "́",
-    "tagClose": "",
-    "sampleText": ""}
-//Цитата
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/05/Button_Anführung.png",
-    "speedTip": "Вставка цитаты",
-    "tagOpen": "{" + "{Цитата|",
-    "tagClose": "||}}",
-    "sampleText": "Цитата"}
-//Верхний индекс
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/8/80/Button_upper_letter.png",
-    "speedTip": "Верхний индекс",
-    "tagOpen": "<sup>",
-    "tagClose": "</sup>",
-    "sampleText": "Верхний индекс"}
-//Нижний индекс
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/7/70/Button_lower_letter.png",
-    "speedTip": "Нижний индекс",
-    "tagOpen": "<sub>",
-    "tagClose": "</sub>",
-    "sampleText": "Нижний индекс"}
-//Выравнивание текста по левому краю
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/e/ea/Button_align_left.png",
-    "speedTip": "Выровнять по левому краю",
-    "tagOpen": "<div style='text-align: left; direction: ltr; margin-left: 1em;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Выровненный влево текст"}
-//Выравнивание текста по центру
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/5/5f/Button_center.png",
-    "speedTip": "Выровнять по центру",
-    "tagOpen": "<div style='text-align: center;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Выровненный по центру текст"}
-//Выравнивание текста по правому краю
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/a/a5/Button_align_right.png",
-    "speedTip": "Выровнять по правому краю",
-    "tagOpen": "<div style='text-align: right;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Выровненный вправо текст"}
-//Скрытый комментарий
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/3/34/Button_hide_comment.png",
-    "speedTip": "Скрытый комментарий",
-    "tagOpen": "<!-- ",
-    "tagClose": " -->",
-    "sampleText": "Коментарий"}
-//Заголовок при наведении курсора
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/74/Button_comment.png",
-    "speedTip": "Заголовок при наведении курсора",
-    "tagOpen": "<span title=\"\"\>",
-    "tagClose": "</span>",
-    "sampleText": "Текст"}
-//Большой текст
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/cb/Button_big_2.png",
-    "speedTip": "Большой шрифт",
-    "tagOpen": "<big>",
-    "tagClose": "</big>",
-    "sampleText": "Текст большим шрифтом"}
-//Маленький текст
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/4/4c/Button_small_ukr.png",
-    "speedTip": "Маленький шрифт",
-    "tagOpen": "<small>",
-    "tagClose": "</small>",
-    "sampleText": "Текст маленьким шрифтом"}
-//Галерея
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/9/9e/Btn_toolbar_gallery.png",
-    "speedTip": "Галерея",
-    "tagOpen": "\n<gallery>\n",
-    "tagClose": "\n</gallery>",
-    "sampleText": "Файл:Название_изображения1.jpg|Описание_изображения1\n\Файл:Название_изображения2.jpg|Описание_изображения2"}
-//Видео
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/12/Button_gallery.png",
-    "speedTip": "Видео с YouTube",
-    "tagOpen": "\n<nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><youtube>\n",
-    "tagClose": "\n</youtube></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki>",
-    "sampleText": "title=\n\movie_url=http://www.youtube.com/watch?v=\n\embed_source_url=http://www.youtube.com/v/&fs=1\n\wrap=yes\n\width=400\n\height=300"}
-//Сноска
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/c4/Button_ref.png",
-    "speedTip": "Сноска",
-    "tagOpen": "<ref>",
-    "tagClose": "</ref>",
-    "sampleText": "Ссылка"}
-//Список сносок
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/64/Buttonrefvs8.png",
-    "speedTip": "Список сносок",
-    "tagOpen": "\n== Примечания ==\n<references/>",
-    "tagClose": "",
-    "sampleText": ""}
-//Цвет
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/1/1e/Button_font_color.png",
-    "speedTip": "Цветной текст",
-    "tagOpen": "<span style='color: ColorName'>",
-    "tagClose": "</span>",
-    "sampleText": "Цветной текст"}
-//Код
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/2/23/Button_code.png",
-    "speedTip": "Вставка кода",
-    "tagOpen": "<code>",
-    "tagClose": "</code>",
-    "sampleText": "Код"}
-//Моноширинный шрифт
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/30/Tt_icon.png",
-    "speedTip": "Моноширинный шрифт",
-    "tagOpen": "<tt>",
-    "tagClose": "</tt>",
-    "sampleText": "Моноширинный шрифт"}
-}
-*/
 /*
  * Автоматическое обновление
  */
@@ -383,16 +186,47 @@ $(function rewriteTitle() {
 });
 
 
-$(function () {
-    if ($('.infobox-gender').length || $('.infobox-registration-date').length) {
+mw.hook('wikipage.content').add(function ($content) {
+    var msg = {
+        nodata: '<span class="udu-nodata">Нет данных</span>',
+        reqfailed: 'Error: Request failed.',
+        cantavatar: 'Error: Cannot obtain user avatar.',
+        usernotfound: 'Пользователь не найден',
+        delimiter: '<span class="udu-delim">, </span>',
+    };
+    var requestMax = 6,
+        requestThreshold = 300,
+        requestCount = 0,
+        requests = [],
+        rejected = 0,
+        names = $content.find('.infobox-nicknames').text()
+            .split('/')
+            .map(function(v){return (v||'').trim()})
+            .filter(Boolean),
+        nickname = mw.config.get('wgTitle').replace( /^[^/]+\//, '' );
+    if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length || $content.find('.infobox-editcount')) {
+        if ( mw.config.get( 'wgNamespaceNumber' ) !== 0 ) {
+            $content.find( '.pi-title .user-link' ).html(
+                $( '<a />', {
+                    href: '/wiki/User:' + (names[0] || nickname),
+                    target: '_blank'
+                }).append(
+                    $('<span>', {
+                        class: 'udu-nickname',
+                        text: names[0] || nickname
+                    })
+                )
+            );
+        }
+ 
         $.ajax({
             url: mw.util.wikiScript('api'),
             data: {
                 format: 'json',
                 action: 'query',
                 list: 'users',
-                ususers: mw.config.get('wgPageName'),
-                usprop: 'registration|gender'
+                ususers: names[0] || nickname,
+                usprop: 'registration|gender|editcount'
             },
             dataType: 'json',
             type: 'POST',
@@ -400,70 +234,62 @@ $(function () {
                 if (data) {
                     switch (data.query.users[0].gender) {
                     case 'male':
-                        $('.infobox-gender').append('<img src="https://vignette.wikia.nocookie.net/wikies/images/c/c1/Male.svg/revision/latest/scale-to-width/25?cb=20150302060331&amp;path-prefix=ru" alt="Male.svg" class="" data-image-key="Male.svg" data-image-name="Male.svg" width="25" height="25">');
+                        $content.find('.infobox-gender').append('<span class="fa fa-mars udu-fa"></span>');
                         break;
                     case 'female':
-                        $('.infobox-gender').append('<img src="https://vignette.wikia.nocookie.net/wikies/images/2/23/Female.svg/revision/latest/scale-to-width/25?cb=20150302060307&amp;path-prefix=ru" alt="Female.svg" class="" data-image-key="Female.svg" data-image-name="Female.svg" width="25" height="25">');
+                        $content.find('.infobox-gender').append('<span class="fa fa-venus udu-fa"></span>');
                         break;
                     case 'unknown':
                         break;
                     default:
-                        // nothing atm
+                        break;
                     }
-                    $('.infobox-registration-date').text(data.query.users[0].registration.replace('T', ' ').replace('Z', ''));
+                    try {
+                        if (data.query.users[0].registration) {
+                            $content.find('.infobox-registration-date').empty().text(data.query.users[0].registration.replace('T', ' ').replace('Z', ''));
+                        } else {
+                            $content.find('.infobox-registration-date').html(msg.nodata);
+                        }
+
+                        if (data.query.users[0].editcount) {
+                            $content.find('.infobox-editcount').html(data.query.users[0].editcount);
+                        } else {
+                            $content.find('.infobox-editcount').html(msg.nodata);
+                        }
+                    } catch (e) {
+                        $content.find('.infobox-registration-date').html(msg.nodata);
+                        $content.find('.infobox-editcount').html(msg.nodata);
+                    }
                 }
             },
             error: function () {
-                console.log('Error: Request failed.');
+                console.log(msg.reqfailed);
+                $content.find('.infobox-registration-date').html(msg.nodata);
+                $content.find('.infobox-editcount').html(msg.nodata)
             }
         });
-    }
+    }// if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length)
  
-    if ($('.infobox-editcount').length) {
-        // Special:EditCount gives more precise data than MW API
+    if ($content.find('.infobox-avatar').length) {
         $.ajax({
-            url: '/wiki/Special:EditCount/' + mw.config.get('wgPageName'),
+            url: '/api/v1/User/Details?size=150&ids=' + nickname,
             type: 'GET',
             success: function (data) {
                 if (data) {
-                    //TODO: normal selector instead of this
-                    $('.infobox-editcount').text($(data).find('.ecrowright:eq(5)').text());
+                    $content.find('.infobox-avatar').html(
+                        $('<img>', {
+                           src: (data.items[0] || {}).avatar,
+                           class: 'avatar'
+                        })
+                    );
                 }
             },
             error: function () {
-                console.log('Error: Request failed.');
+                console.log(msg.cantavatar);
+                $content.find('.infobox-avatar').html(msg.nodata);
             }
         });
-    }
+    }// if ($content.find('.infobox-avatar').length)
  
-    if ($('.infobox-avatar').length) {
-        $.ajax({
-            url: '/wiki/Special:Contributions/' + nickname,
-            type: 'GET',
-            success: function (data) {
-                if (data) {
-                    $('.infobox-avatar').text($(data).find('.masthead-avatar').children('img'));
-                }
-            },
-            error: function () {
-                console.log('Error: Cannot obtain user avatar.');
-                $('.infobox-avatar').html('<span style="color: gray;">Нет данных</span>');
-            }
-        });
-    }
+    // if ($content.find('.infobox-editcount').length)
 });
-
-/* ################################################## */
-/* ### Вставка пользовательского имени            ### */
-/* ################################################## */
-
-$(function() {
-    if (wgUserName != 'null') {
-        $('.insertusername').text(wgUserName);
-    }
-});
-
-/* ################################################## */
-/* ### ReportErrors                               ### */
-/* ################################################## */
-importScriptPage('MediaWiki:ReportErrors.js');

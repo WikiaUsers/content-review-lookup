@@ -18,6 +18,7 @@ importArticles({
      articles: [
         'MediaWiki:Common.js/StatCalculator.js',
         'MediaWiki:Common.js/ExpYieldCalculator.js',
-        'MediaWiki:Common.js/TypePlayer.js'
+        'MediaWiki:Common.js/TypePlayer.js',
+        'MediaWiki:Common.js/OddsCalculator.js'
     ]
 });

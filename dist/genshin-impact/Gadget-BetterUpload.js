@@ -5,12 +5,10 @@ $(function() {
 	
 	// Double load protection
 	if (window.dev.BetterUpload._LOADED) { return; }
-	else { window.dev.BetterUpload._LOADED = true; }
 	
     // Load dependencies and cache
 	var api = new mw.Api();
-	var PRELOAD_BY_NAME = { None: '' };
-	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName']);
+	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName', 'wgUserName']);
 	
 	// Main class
 	var betterUpload = {
@@ -56,7 +54,7 @@ $(function() {
 			betterUpload.genPreloads();
 		},
 		genPreloads: function() {
-			console.log(window.dev.BetterUpload);
+			// console.log(window.dev.BetterUpload); // debug
 			if (Array.isArray(window.dev.BetterUpload.preloads) && window.dev.BetterUpload.preloads.length>0) {
 				if (document.querySelector('#mw-htmlform-description tbody tr.mw-htmlform-field-HTMLTextAreaField + .wpPreloadRow')) {
 					document.querySelector('#mw-htmlform-description tbody tr.mw-htmlform-field-HTMLTextAreaField + .wpPreloadRow').remove();
@@ -280,7 +278,7 @@ $(function() {
 		if (config.wgCanonicalSpecialPageName == 'Upload') {
 			var titles = [
 				'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
-				'User:'+mw.user.getName()+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
+				'User:'+config.wgUserName+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
 			];
 			if (document.querySelector('#wpDestFile') && document.querySelector('#wpDestFile').value.length>0) {
 				titles.push('File:'+document.querySelector('#wpDestFile').value);
@@ -294,7 +292,7 @@ $(function() {
 			}).then(function(data){
 				var page = {user: -1, site: -1, curr: null};
 				Object.keys(data.query.pages).forEach(function(id){
-					if (data.query.pages[id].ns == 8) {
+					if (data.query.pages[id].ns == 8 && data.query.pages[id].missing!=="") {
 						page.site = id;
 					} else if (data.query.pages[id].ns == 2 && data.query.pages[id].missing!=="") {
 						page.user = id;
@@ -302,11 +300,12 @@ $(function() {
 						page.curr = data.query.pages[id].revisions[0].slots.main['*'];
 					}
 				});
-				if (page.user == -1) {
-					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
-				} else {
+				if (page.user !== -1) {
 					window.dev.BetterUpload = JSON.parse(data.query.pages[page.user].revisions[0].slots.main['*']);
+				} else if (page.site !== -1) {
+					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
 				}
+				window.dev.BetterUpload._LOADED = true;
 				var setInit = function() {
 					if (/wpForReUpload/.test(window.location.href)) { // Special:Upload?wpForReUpload=1
 						betterUpload.init(page.curr);

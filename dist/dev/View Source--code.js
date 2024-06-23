@@ -29,7 +29,7 @@
         'wgUserLanguage',
         'wgVersion'
     ]),
-    
+
 
     parserFunctions = {
         '#expr': 'Help:Extension:ParserFunctions#.23expr',
@@ -428,6 +428,9 @@
         // remove <!--.*--> from template name. otherwise .match will failed
         name = name.replace(/&lt;\!\-\-[\s\S]*\-\-&gt;/, '');
         m = name.match(/^(\s*)(.+)(\s*)$/);
+        if (m === null) {
+            return all;
+        }
         if (m[2][0] === ':') {
             href = m[2].substring(1);
         } else if(m[2].indexOf('w:') === 0) {

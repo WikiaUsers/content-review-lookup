@@ -24,19 +24,19 @@ window.questions = [
     "Shin Arata"],
 
     ["Who of those isn't a staff member of ERDA?",
-    "Chiguko Nabeshima",
+    "Asahi Folden",
     "Kadomichi Takanawa",
-    "Asahi Folden"],
+    "Chiguko Nabeshima"],
 
     ["Who of those currently doesn't study at Shinkai Academy?",
-    "Akane Folden",
+    "Ina Onari",
     "Ryota Kuzuryu",
-    "Ina Onari"],
+    "Akane Folden"],
 
     ["Who of those ERDA staff members isn't from Tokyo?",
-    "Kadomichi Takanawa",
+    "Hidaka Toma",
     "Agano Tsugawa",
-    "Hidaka Toma"],
+    "Kadomichi Takanawa"],
 ];
 
 window.MessageBlock = {

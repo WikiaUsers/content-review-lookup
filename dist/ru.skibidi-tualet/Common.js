@@ -11,3 +11,12 @@ window.dev.editSummaries = {
 importArticles({ type: 'script', articles: [ 
 	'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
+
+// тест
+const user1EditsElement = document.querySelector('li.has-ripple a strong');
+const user1Edits = user1EditsElement ? parseInt(user1EditsElement.textContent) : 0;
+if (user1Edits === 376) {
+  console.log('Количество правок user1 равно 376');
+} else {
+  console.log('Количество правок user1 не равно 376');
+}

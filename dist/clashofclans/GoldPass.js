@@ -39,6 +39,7 @@ $(document).ready(function() {
 	$("span#lifeAuraHarness").html('<div id="lifeAuraInput">Life Gem Level: <select name="lifeAuraLevel" id="lifeAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#rageAuraHarness").html('<div id="rageAuraInput">Rage Gem Level: <select name="rageAuraLevel" id="rageAuraLevel"> <option value="0">0</option> <option value="1">1-2</option> <option value="2">3-5</option> <option value="3">6-8</option> <option value="4">9-11</option> <option value="5">12-14</option> <option value="6">15-17</option> <option value="7">18</option> </select></div>');
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
+	$("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
 	/* Event boosts: change the options as appropriate for the event
 	Last event: Cookie Rumble */
@@ -56,6 +57,22 @@ $(document).ready(function() {
 		'<option value="0">0</option>' + 
 		// '<option value="15">15</option>' +
 		'<option value="30">30</option>' +
+		'</select> %</div>');
+	$("span#starBonusHarness").html('<div id="starBonusInput"">Star Bonus Multiplier: <select name="starBonusBoost" id="starBonusBoost">' +
+		'<option value="1">1</option>' +
+		'<option value="2">2</option>' +
+		'<option value="3">3</option>' +
+		'<option value="4">4</option>' +
+		'<option value="5">5</option>' +
+		'</select> x</div>');
+	$("span#leagueBonusHarness").html('<div id="leagueBonusInput"">League Bonus Boost: <select name="leagueBonusBoost" id="leagueBonusBoost">' +
+		'<option value="0">0</option>' +
+		'<option value="10">10</option>' +
+		'<option value="20">20</option>' +
+		'<option value="35">35</option>' +
+		'<option value="50">50</option>' +
+		'<option value="70">70</option>' +
+		'<option value="100">100</option>' +
 		'</select> %</div>');
 	$("span#eventShowcaseBoostHarness").html('<div id="eventShowcaseInput">Toggle Showcase Boost? <input type="checkbox" name="eventShowcaseBoost" id="eventShowcaseBoost"></input></div>');
 	$("span#modifierModeHarness").html('<div id="modifierModeToggle">Modifier Mode: '+
@@ -142,7 +159,8 @@ $(document).ready(function() {
         var mode = $("select#modifierMode").val();
         if (mode == "Attack") {
         	// Reset the values of defense-only items
-            $("#rageTowerBoost, #valkRageBoost").prop("checked",false);
+        	// Reset also hard mode (to guarantee it stays off on changing mode)
+            $("#rageTowerBoost, #valkRageBoost, #hardModeBoost").prop("checked",false);
             $("#poisonSpellLevel, #frostPotencyLevel").val("0").change();
         	// Disable defense-only items
         	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
@@ -152,8 +170,9 @@ $(document).ready(function() {
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
+        	// Reset also hard mode (to guarantee it stays off on changing mode)
             $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
-        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
+        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle, #hardModeBoost").prop("checked",false);
         	// Disable offense-only items
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
@@ -1124,6 +1143,13 @@ $(document).ready(function() {
 			var rageAuraLevel = $("#rageAuraLevel").val() * 1;
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var valkRageCheckBox = document.getElementById("valkRageBoost");
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var modifierMode = "";
+			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
+			// If there is no modifier mode, ignore this
+			if ($("select#modifierMode").val() != undefined) {
+				modifierMode = $("select#modifierMode").val();
+			}
 			if (isNaN(rageSpellLevel) === true) {
 		    	rageSpellLevel = 0;
 		    }
@@ -1244,12 +1270,33 @@ $(document).ready(function() {
 			}
 			
 			calcNewDPH = Math.max(rageDamage,heroAbilityDamage,normalAbilityDamage,heroAbilityDPH);
+			// Finally, modify for hard mode as necessary, using "isBuilding" and "isHero" as needed
+			// First, check the modifier mode, which will override other checks
+			if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true) {
+					if (modifierMode == "Attack") { // Hero in attack mode gets 15% less damage
+						calcNewDPH *= 85/100;
+					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage
+					// however the hard mode toggle will be disabled for all Heroes except GW
+					// (since hard mode bonuses do not apply to live defending heroes)
+						calcNewDPH *= 105/100;
+					} else {
+						if (isHero === true) { // For heroes when modifier mode is ignored
+							calcNewDPH *= 85/100;
+						} else if (isBuilding === true || isStatue === true) { // For buildings or "statues"
+							calcNewDPH *= 105/100;
+						}
+					}
+				}
+			}
 			return calcNewDPH;
 		}
 		$(".DPH").each(function() {
 			var initialDPH = $(this).attr("title") * 1;
 			var baseDPH = initialDPH;
 			var calcNewDPH = initialDPH;
+			// For CSS styling purposes
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
 			// First, alter the initial DPH by passive DPS-increasing equipment
 			// We'll write our attack speed in milliseconds
 			var attackSpeed = $(".AttackSpeed").attr("title") * 1000;
@@ -1321,34 +1368,68 @@ $(document).ready(function() {
 			if ($(this).hasClass("Wall") === true) {
 				wallDamageArray.push(calcNewDPH);
 			}
-			$(this).text(calcNewDPH.format("#,##0[.]###"));
+			// Keep the original DPH for DPS calculations and comparison, but display only 2 d.p.
+			var displayedDPH = calcNewDPH.toFixed(2) * 1;
+			$(this).text(displayedDPH.format("#,##0[.]###"));
 			if (initialDPH === calcNewDPH) {
                 $(this).removeClass("StatModified");
             } else {
                 $(this).addClass("StatModified");
             }
+            if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
 		});
 		$(".DPHRange").each(function() {
 			var initRange = $(this).attr("title");
+			// For CSS styling purposes
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
 			// Initial range but formatted - used to compare with the final output
 			var initFormat = "";
 			var initArray = readRange(initRange);
+			var initFormatArray = [];
 			for (x in initArray) {
 				initArray[x] = initArray[x] * 1;
+				initFormatArray.push(initArray[x].toFixed(2) * 1);
 			}
-			initFormat = initArray[0].format("#,##0[.]###") + "-" + initArray[1].format("#,##0[.]###");
+			initFormat = initFormatArray[0].format("#,##0[.]###") + "-" + initFormatArray[1].format("#,##0[.]###");
 			var moddedArray = [];
 			var outputRange = "";
-			for (x in initArray) {
-				moddedArray.push(calcDPH(initArray[x],false));
+			var moddedFormatArray = [];
+			for (x in initArray) { //Use calcDPH with parameters depending on the class
+				if ($(this).hasClass("Hero") === true) {
+					if ($(this).hasClass("Statue") === true) {
+						moddedArray.push(calcDPH(initArray[x],true,false,true));
+					} else {
+						moddedArray.push(calcDPH(initArray[x],true,false,false));
+					}
+				} else if ($(this).hasClass("Building") === true) {
+					moddedArray.push(calcDPH(initArray[x],false,true,true));
+				} else {
+					moddedArray.push(calcDPH(initArray[x],false,false,false));
+				}
 			}
-			outputRange = moddedArray[0].format("#,##0[.]###") + "-" + moddedArray[1].format("#,##0[.]###");
+			for (x in moddedArray) {
+				moddedFormatArray.push(moddedArray[x].toFixed(2) * 1);
+			}
+			outputRange = moddedFormatArray[0].format("#,##0[.]###") + "-" + moddedFormatArray[1].format("#,##0[.]###");
 			$(this).text(outputRange.trim());
 			if (initFormat.trim() === outputRange.trim()) {
                 $(this).removeClass("StatModified");
             } else {
                 $(this).addClass("StatModified");
             }
+            if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+					$(this).addClass("StatPoisoned");
+				} else {
+					$(this).removeClass("StatPoisoned");
+				}
+			}
 		});
 		$(".DPS").each(function() {
 			// Flags for CSS styling
@@ -1401,9 +1482,17 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			// Hard mode toggle overrides all other CSS
+			var hardModeUsed = false;
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+					hardModeUsed = true;
+				}
+			}
 			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
-			if (poisonUsed) {
+			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
@@ -1466,9 +1555,17 @@ $(document).ready(function() {
 					poisonTowerUsed = true;
 				}
 			}
+			// Hard mode toggle overrides all other CSS
+			var hardModeUsed = false;
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true && $(this).hasClass("Builder") === false) {
+					hardModeUsed = true;
+				}
+			}
 			poisonUsed = ((poisonSpellLevel + THpoisonSpellLevel + HHpoisonSpellLevel > 0) || poisonTowerUsed) && ($(this).hasClass("Building") === false);
 			freezeUsed = freezeUsed && ($(this).hasClass("Building") === false);
-			if (poisonUsed) {
+			if (poisonUsed || hardModeUsed) {
 				$(this).addClass("StatPoisoned");
 			} else {
 				$(this).removeClass("StatPoisoned");
@@ -1581,6 +1678,13 @@ $(document).ready(function() {
 			var freezeCheckBox = document.getElementById("freezeBoost");
 			var rageTowerCheckBox = document.getElementById("rageTowerBoost");
 			var poisonTowerCheckBox = document.getElementById("poisonTowerBoost");
+			var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var modifierMode = "";
+			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
+			// If there is no modifier mode, ignore this
+			if ($("select#modifierMode").val() != undefined) {
+				modifierMode = $("select#modifierMode").val();
+			}
 			// First calculate buffed DPS by rage
 			
 			var rageMultiplier = 1;
@@ -1723,6 +1827,28 @@ $(document).ready(function() {
 				frostUsed = true;
 			}
 			buffedDPS *= Math.min(frostMultiplier, freezeMultiplier);
+			
+			// Finally, modify for hard mode as necessary, using classes as needed
+			// First, check the modifier mode, which will override other checks
+			var hardModeUsed = false;
+			if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true) {
+					hardModeUsed = true;
+					if (modifierMode == "Attack") { // Hero in attack mode gets 15% less damage
+						buffedDPS *= 85/100;
+					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage,
+					// however the hard mode toggle will be disabled for all Heroes except GW
+					// (since hard mode bonuses do not apply to live defending heroes)
+						buffedDPS *= 105/100;
+					} else {
+						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored
+							buffedDPS *= 85/100;
+						} else if ($(this).hasClass("Building") === true || $(this).hasClass("Statue") === true) { // For buildings or "statues"
+							buffedDPS *= 105/100;
+						}
+					}
+				}
+			}
 			var finalDPS = buffedDPS.toFixed(3) * 1;
 			$(this).text(finalDPS.format("#,##0[.]###"));
 			if (initialDPS === finalDPS) {
@@ -1730,7 +1856,7 @@ $(document).ready(function() {
             } else {
                 $(this).addClass("StatModified");
 			}
-			if (poisonUsed && $(this).hasClass("Building") === false) {
+			if ((poisonUsed && $(this).hasClass("Building") === false) || hardModeUsed && $(this).hasClass("Builder") === false) {
                 $(this).addClass("StatPoisoned");
             } else {
                 $(this).removeClass("StatPoisoned");
@@ -1763,7 +1889,27 @@ $(document).ready(function() {
         			secondGearHP = 0;
         		}
     		}
+    		
     		baseHP = initialHP + firstGearHP + secondGearHP;
+    		// Add also hard mode modifiers. HP modifiers in hard mode apply at this point
+    		var hardModeCheckBox = document.getElementById("hardModeBoost");
+			var modifierMode = "";
+			var hardModeUsed = false;
+			// Take also the modifier mode to distinguish between Attack and Defense for hard mode
+			// If there is no modifier mode, ignore this
+			if ($("select#modifierMode").val() != undefined) {
+				modifierMode = $("select#modifierMode").val();
+			}
+			// Hard mode modifiers only apply to Heroes, and only in Attack mode
+			// The Hero class check is redundant currently but useful if troops get modified in hard mode
+			if (hardModeCheckBox != null) {
+				if (hardModeCheckBox.checked === true && $(this).hasClass("Hero") === true) {
+					if (modifierMode == "" || modifierMode == "Attack") {
+						hardModeUsed = true;
+						baseHP *= 9/10; // 10% nerf to base HP
+					}
+				}
+			}
 			
 			var auraLevel = $("#lifeAuraLevel").val() * 1;
 			var apprenticeLevel = $("#apprenticeAuraLevel").val() * 1;
@@ -1794,6 +1940,11 @@ $(document).ready(function() {
                 $(this).removeClass("StatModifiedGP");
             } else {
                 $(this).addClass("StatModifiedGP");
+            }
+            if (hardModeUsed) {
+            	$(this).addClass("StatPoisoned");
+            } else {
+            	$(this).removeClass("StatPoisoned");
             }
 		});
 		$(".HPRecovery").each(function() {
@@ -2029,7 +2180,8 @@ $(document).ready(function() {
         			secondGearAttackType = "";
         		}
     		}
-    		/* Since there's only one gear that modifies attack type, I will not consider what happens when both try to stack (for now)
+    		/* Since there's only one gear equippable at a time that modifies attack type,
+    		I will not consider what happens when both try to stack (for now)
     		Additionally, this attack type only appears during hero ability */
     		var heroAbilityCheckBox = document.getElementById("heroAbilityBoost");
     		if (heroAbilityCheckBox != null) {
@@ -2137,12 +2289,43 @@ $(document).ready(function() {
 				$(this).addClass("StatModifiedGP");
 			}
 		});
+		$(".StarBonus").each(function() {
+			// A relatively straightforward modifier to implement. Modifies the star bonus
+			var baseBonus = $(this).attr("title") * 1;
+		    var starBonusMult = $("#starBonusBoost").val() * 1;
+			if (isNaN(starBonusMult) === true) {
+		    	starBonusMult = 1;
+		    }
+		    var newBonus = baseBonus * starBonusMult;
+		    $(this).text(newBonus.format("#,##0[.]###"));
+		    if (baseBonus === newBonus) {
+				$(this).removeClass("StatGemBoosted");
+			} else {
+				$(this).addClass("StatGemBoosted");
+			}
+		});
+		$(".LeagueBonus").each(function() {
+			// A relatively straightforward modifier to implement. Modifies the league bonus
+			var baseBonus = $(this).attr("title") * 1;
+		    var leagueBonusBoost = $("#leagueBonusBoost").val() * 1;
+			if (isNaN(leagueBonusBoost) === true) {
+		    	leagueBonusBoost = 0;
+		    }
+		    var newBonus = Math.floor(baseBonus * (100 + leagueBonusBoost) / 100);
+		    $(this).text(newBonus.format("#,##0[.]###"));
+		    if (baseBonus === newBonus) {
+				$(this).removeClass("StatModifiedGP");
+			} else {
+				$(this).addClass("StatModifiedGP");
+			}
+		});
     });
     // Reset form when Reset button is clicked
     $("#resetBonusButton").click(function() {
         $("#changeBonusButton").text("Apply");
-		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost").val("0").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost").prop("checked",false);
+		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
+		$("#starBonusBoost").val("1").change();
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page

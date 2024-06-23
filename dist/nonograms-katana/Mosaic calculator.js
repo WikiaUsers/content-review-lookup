@@ -80,5 +80,5 @@ if (mw.config.get("wgPageName") === "Mosaic") {
 			document.getElementById("myBtn").click();
 		}
 	});
-	document.getElementById("mosaic_calculator1").appendChild(inputBox); 
+	document.getElementById("mosaic_calculator").appendChild(inputBox); 
 }

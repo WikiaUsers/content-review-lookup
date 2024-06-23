@@ -1,7 +1,7 @@
 //Verified-Badge (modified from https://clashofclans.fandom.com/wiki/MediaWiki:Common.js/Lugia.js/Verify.js)
-function checkVerif(){
+/*function checkVerif(){
 	var users=[
-	    	'Stefan - Clash of Clans CM'
+	    	//'Stefan - Clash of Clans CM'
 	    ];
 	
 	if (!users.includes(mw.config.get('wgTitle'))) return;
@@ -25,7 +25,7 @@ function checkVerif(){
 		}
 	}
 }
-$(checkVerif);
+$(checkVerif);*/
 
 /*AbuseLogRC*/
 abuseLogRC_showTo = [ 'content-moderator' ];

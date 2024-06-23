@@ -1,3 +1,11 @@
+/*
+	This code is used to generate levelling rewards from the
+	level inputed from the user. It also displays the XP
+	needed to reach that level; skills, classes, ship 
+	mission types and buildings/building levels that are 
+	unlocked with that level.
+*/
+
 //Calculates rewards for levels on page "Levelling".
 function calculate() {
 	var level = document.getElementById("level").value;
@@ -206,7 +214,7 @@ function delete_table(){
 }
 
 //Creates the input box and button on page "Levelling".
-if (mw.config.get("wgPageName") === "Sandbox_page" || mw.config.get("wgPageName") === "Levelling") {
+if (mw.config.get("wgPageName") === "Levelling") {
 	var inputBox = document.createElement("div");
 	var input = document.createElement("input");
 	input.id = "level";
@@ -222,5 +230,5 @@ if (mw.config.get("wgPageName") === "Sandbox_page" || mw.config.get("wgPageName"
 			document.getElementById("myBtn").click();
 		}
 	});
-	document.getElementById("reward_calculator1").appendChild(inputBox); 
+	document.getElementById("reward_calculator").appendChild(inputBox); 
 }

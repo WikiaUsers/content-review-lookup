@@ -41,22 +41,85 @@ mw.loader.using( ['jquery.ui'], function() {
   });
 });
 
-// Configuration for MapsExtended - This applies to ALL maps
-window.mapsExtendedConfig =
-{
-    sortMarkers: "unsorted",
-    openPopupsOnHover: true,
-    enableFullscreen: true,
-    fullscreenMode: "window",
-    enableSearch: true,
-    hiddenCategories: [],
-    disabledCategories: [],
-    collectibleCategories: [],
-    categoryGroups:
-    [
+/* MapsExtended global config */
+window.mapsExtendedConfig = {
+    "minimalLayout": true,
+    "enableSidebar": true,
+    "iconAnchor": "center",
+    "enableSearch": true,
+    "openPopupsOnHover": false,
+    "useCustomPopups": true,
+    "enableTooltips": true,
+    "enableFullscreen": true,
+    "fullscreenMode": "window",
+    "mapControls": [
+                    [],
+                    [
+                        "zoom",
+                        "fullscreen"
+                    ],
+                    [
+                        "edit"
+                    ],
+                    []
+                ],
+    "collectibleCategories": [""],
+    "collectibleCheckboxStyle": "fandom",
+    "sortMarkers": "category",
+    "categoryGroups": [
         {
-            label: "Planetary Bodies",
-            children: [ "Planet", "Moon" ],
+            "label": "The Interior",
+            "children": [
+                "interior_planets",
+                "interior_moons",
+                "interior_asteroids"
+            ]
+        },
+        {
+            "label": "Trailing Sectors",
+            "children": [
+                "trailing_sectors_planets",
+                "trailing_sectors_moons",
+                "trailing_sectors_asteroids"
+            ]
+        },
+        {
+            "label": "The Slice",
+            "children": [
+                "slice_planets",
+                "slice_moons",
+                "slice_asteroids"
+            ]
+        },
+        {
+            "label": "New Territories",
+            "children": [
+                "territories_planets",
+                "territories_moons",
+                "territories_asteroids"
+            ]
+        },
+        {
+            "label": "Western Reaches",
+            "children": [
+                "western_reaches_planets",
+                "western_reaches_moons",
+                "western_reaches_asteroids"
+            ]
+        },
+        {
+            "label": "Unknown Regions",
+            "children": [
+                "unknown_regions_planets",
+                "unknown_regions_moons",
+                "unknown_regions_asteroids"
+            ]
+        },
+        {
+            "label": "Others",
+            "children": [
+                "space_stations"
+            ]
         }
     ]
 };

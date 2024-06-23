@@ -106,6 +106,7 @@ mw.loader.using("jquery.makeCollapsible").then(function(){
 });
 // Sticky stuff
 waitFor(".sticky-modules-wrapper .rail-module .mw-customtoggle-rail-links", function() {
+	if (document.querySelector('#before-sidebar')) { return; }
 	var $sidebar = $(".sticky-modules-wrapper");
 	$('<div id="before-sidebar"></div>').insertBefore($sidebar);
 	var $before = $("#before-sidebar");
@@ -117,59 +118,58 @@ waitFor(".sticky-modules-wrapper .rail-module .mw-customtoggle-rail-links", func
     var lastT = $sidebar.offset().top;
     var smaller = lastH <= lastVH ? true : false;
     var stuck = false;
-
-    var sidebarFunction = function() {
-    	console.log("here");
-        var h = $sidebar.outerHeight();
+	
+	var sidebarFunction = function() {
+		var h = $sidebar.outerHeight();
 		var vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-
-        if (h != lastH || vh != lastVH) {
-            if (h <= vh) {
-                $sidebar.css("top", 36);
-                $before.css("margin-top", 0);
-                smaller = true;
-            } else {
-                $sidebar.css("top", vh - h);
-                $sidebar.css("bottom", vh - h - 36);
-                if (smaller) {
-                    margin = $(window).scrollTop() > 160 ? $(window).scrollTop() - 124 : 0;
-				    $before.css("margin-top", margin);
-                    smaller = false;
-                }
-            }
-            lastH = h;
-            lastVH = vh;
-        }
-
-        var st = $(window).scrollTop();
-
-        if (st != lastST) {
-            if (!smaller) {
-                var t = $sidebar.offset().top;
-                if (st > lastST) {
-                    sd = "d";
-                } else {
-                    sd = "u";
-                }
-                if (sd != lastSD) {
-                    lastSD = sd;
-
-                    if (stuck) {
-                        margin = sd == "d" ? t - 124 : t - 160;
-                        margin = margin <= 0 ? 0 : margin;
-
-                        $before.css("margin-top", margin);
-                    }
-                }
-                stuck = t != lastT ? true : false;
-                lastT = t;
-            }
-            lastST = st;
-        }
-    };
-
-    $(window).on("resize.mikeLib scroll.bttmstick DOMContentLoaded.bttmstick load.bttmstick", sidebarFunction);
-    $(".rail-module .mw-customtoggle").on("click",sidebarFunction);
+		
+		if (h != lastH || vh != lastVH) {
+			if (h <= vh) {
+				$sidebar.css("top", 36);
+				$before.css("margin-top", 0);
+				smaller = true;
+			} else {
+				$sidebar.css("top", vh - h);
+				$sidebar.css("bottom", vh - h - 36);
+				if (smaller) {
+					margin = $(window).scrollTop() > 160 ? $(window).scrollTop() - 124 : 0;
+					$before.css("margin-top", margin);
+					smaller = false;
+				}
+			}
+			lastH = h;
+			lastVH = vh;
+		}
+		
+		var st = $(window).scrollTop();
+		
+		if (st != lastST) {
+			if (!smaller) {
+				var t = $sidebar.offset().top;
+				if (st > lastST) {
+					sd = "d";
+				} else {
+					sd = "u";
+				}
+				if (sd != lastSD) {
+					lastSD = sd;
+					
+					if (stuck) {
+						margin = sd == "d" ? t - 124 : t - 160;
+						margin = margin <= 0 ? 0 : margin;
+						
+						$before.css("margin-top", margin);
+					}
+				}
+				stuck = t != lastT ? true : false;
+				lastT = t;
+			}
+			lastST = st;
+		}
+	};
+	
+	$(window).on("resize.mikeLib scroll.bttmstick DOMContentLoaded.bttmstick load.bttmstick", sidebarFunction);
+	$(".rail-module .mw-customtoggle").on("click",sidebarFunction);
 });
 
 

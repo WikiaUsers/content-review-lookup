@@ -10,15 +10,23 @@ $(function() {
         articles: [ 'u:dev:MediaWiki:Modal.js' ]
     });
 	var api = new mw.Api();
-	var config = mw.config.get(['wgDiffNewId', 'wgAction', 'wgCanonicalSpecialPageName', 'wgServer', 'wgNamespaceNumber']);
+	var config = mw.config.get([
+		'wgDiffNewId',
+		'wgAction',
+		'wgCanonicalSpecialPageName',
+		'wgServer',
+		'wgNamespaceNumber',
+		'wgPageName',
+		'wgUserGroups'
+	]);
 	var tokens = {
 		patrol: '',
 		rollback: ''
 	};
 	var can = {
-		block: mw.config.get('wgUserGroups').some(function(group){return ['sysop', 'wiki-representative', 'soap'].includes(group);}),
-		patrol: mw.config.get('wgUserGroups').some(function(group){return ['sysop', 'content-moderator'].includes(group);}),
-		rollback: mw.config.get('wgUserGroups').some(function(group){return ['sysop', 'content-moderator', 'rollback'].includes(group);})
+		block: config.wgUserGroups.some(function(group){return ['sysop', 'soap'].includes(group);}),
+		patrol: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator'].includes(group);}),
+		rollback: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 	};
 	
 	// Main class
@@ -71,15 +79,15 @@ $(function() {
 				});
 			}
 			
-			// Check we're in Special:Contributions
-			else if (config.wgCanonicalSpecialPageName == 'Contributions') {
-				betterDiff.waitFor('ul.mw-contributions-list li', betterDiff.newDiffLink);
-				
-			}
-			
-			// Check we're in a history page
-			else if (config.wgAction == 'history') {
-				betterDiff.waitFor('.mw-history-histlinks', betterDiff.newDiffLink);
+			// Check we're in Special:Contributions or in a history page
+			else if (
+				config.wgCanonicalSpecialPageName == 'Contributions' ||
+				config.wgAction == 'history'
+			) {
+				betterDiff.waitFor('ul.mw-contributions-list li', function(){
+					betterDiff.newDiffLink();
+					betterDiff.quickDiff();
+				});
 			}
 			
 			// Check we're in a diff page
@@ -353,11 +361,15 @@ $(function() {
 					if (user.length>0 || ns !== "-99") {
 						api.get(api_sett).then(function(data){
 							if (data.query.recentchanges.length>0) {
-								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
-								data.query.recentchanges.forEach(function(page) {
-									betterDiff.patrolRevision(page.revid, page.rcid);
-								});
-								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolled '+data.query.recentchanges.length+' edits!';
+								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling...';
+								betterDiff.patrolRevisions(
+									data.query.recentchanges,
+									document.querySelector('#targetedPatrolDetails'),
+									{
+										patrolled: 'Patrolled %patrolled% edits!',
+										open: '%open% deleted edits opened!'
+									}
+								);
 							} else {
 								document.querySelector('#targetedPatrolDetails').innerHTML = (user.length>0 ? 'User' : 'Namespace')+' has no edits to patrol!';
 							}
@@ -476,7 +488,7 @@ $(function() {
 				};
 				
 				if (event.target.classList.contains('quickDiff')) {
-					api_opt.torev = event.target.getAttribute('newid');
+					api_opt[event.target.getAttribute('newid')=='prev'? 'torelative' : 'torev'] = event.target.getAttribute('newid');
 					if (event.target.getAttribute('newdiff') == 'yes'||event.target.getAttribute('oldid') == '0') {
 						api_opt.fromslots = 'main';
 						api_opt['fromtext-main'] = '';
@@ -689,8 +701,7 @@ $(function() {
 								num++;
 							}
 							if (revids.length>0) {
-								revids.forEach(betterDiff.patrolRevision);
-								wrapper.innerHTML = '[Edits patrolled: '+revids.length+']';
+								betterDiff.patrolRevisions(revids, wrapper, {patrolled:'[Edits patrolled: %patrolled%]'});
 							} else {
 								wrapper.innerHTML = '[Error, no valid revisions found!]';
 								console.log('api result:',data);
@@ -731,12 +742,12 @@ $(function() {
 			var addLink = function(diff) {
 				if (diff && diff.getAttribute('href')) {
 					var href = diff.getAttribute('href');
-					var newid = /diff=(\d+)/.exec(href)[1];
+					var newid = /diff=(\d+|prev)/.exec(href)[1];
 					var oldid = /oldid=\d+/.test(href) ? /oldid=(\d+)/.exec(href)[1] : '0';
 					var link = document.createElement('a');
 					link.setAttribute('newid', newid);
 					link.setAttribute('oldid', oldid);
-					link.setAttribute('data-target-page', diff.closest('table').querySelector('a.mw-changeslist-title').getAttribute('title'));
+					link.setAttribute('data-target-page', diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title') ? diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title').getAttribute('title') : config.wgPageName);
 					link.innerHTML = 'view';
 					link.classList.add('quickDiff');
 					diff.classList.add('quickDiffLoaded');
@@ -751,28 +762,48 @@ $(function() {
 				}
 			};
 			betterDiff.whenInView(
-				'.mw-changeslist-diff:not(.quickDiffLoaded), .mw-changeslist-groupdiff:not(.quickDiffLoaded)',
+				'.mw-changeslist-diff:not(.quickDiffLoaded), .mw-changeslist-groupdiff:not(.quickDiffLoaded), .mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)',
 				addLink
 			);
 		},
 		
 		// Patrol inputted revid if user can patrol
-		patrolRevision: function(revid, rcid) {
-			if (can.patrol && revid && tokens.patrol.length>2) {
-				api.post({
-					action: 'patrol',
-					format: 'json',
-					revid: revid,
-					token: tokens.patrol
-				}).catch(function(log) {
-					if (rcid && log && log == 'nosuchrevid') {
-						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+rcid);
+		patrolRevisions: function(revisions, el, ret) {
+			if (can.patrol && revisions.length>0 && revisions[0].revid && tokens.patrol.length>2) {
+				var r = structuredClone(revisions);
+				var types = {
+					patrolled: 0,
+					open: 0
+				};
+				var patrol = function(log) {
+					if (r.length === 0) {
+						if (el && ret) {
+							el.innerHTML = (
+								((ret.patrolled && types.patrolled>0) ? ret.patrolled.replace(/\%patrolled\%/, types.patrolled) : '')+
+								((ret.patrolled && types.patrolled>0 && ret.open && types.open>0) ? '; ' : '')+
+								((ret.open && types.open>0) ? ret.open.replace(/\%open\%/, types.open) : '')
+							);
+						}
+						return;
+					}
+					var cr = r.shift();
+					if (cr.rcid && log && log == 'nosuchrevid') {
+						types.open++;
+						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid);
 						window.focus();
 					} else {
+						types.patrolled++;
 						console.log('tokens', tokens);
 						console.log('error msg:', log);
 					}
-				});
+					api.post({
+						action: 'patrol',
+						format: 'json',
+						revid: cr.revid,
+						token: tokens.patrol
+					}).then(patrol);
+				};
+				patrol();
 			}
 		},
 		

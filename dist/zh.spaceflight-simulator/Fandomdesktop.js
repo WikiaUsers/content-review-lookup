@@ -23,6 +23,7 @@
 			$( fileThumbs[ i ] ).after( '<div class="lightbox-caption"><a href="' + fileHref + '" class="galleryfilename galleryfilename-truncate" title="' + fullFileName + '">' + fileName + '</a></div>' );
 		}
 		files.removeAttr( 'href title style' );
+		$( '.wikia-gallery .gallery-image-wrapper a img' ).removeAttr( 'title' );
 	}
 	
 	/* 扩展 */

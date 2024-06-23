@@ -322,26 +322,34 @@
 						button.on('mousedown', function(event){
 							event.preventDefault();
 							var parsedInsert = 
-								'<p>'+
 								insert.insert
-									.replace(/%subst%/gi, 'subst:')
-									.replace(/\n\n|<br ?\/?><br ?\/?>|<br ?\/?>\n|\n<br ?\/?>/g, '</p><p><br /></p><p>')
-									.replace(/\n|<br ?\/?>/g, '</p><p>')
+									.replace(/%(\w+)%/gi, function(str, type){
+										var ret = '';
+										ret = (insert[type] && insert[type].length>0) ? 
+											insert[type] : 
+											prompt('What value to replace "'+type+'" with?');
+										return ret;
+									})
 									.replace(/\[\[([^\]\[\|]+)\|?([^\]\[\|]*)\]\]/g, function(str, page, label) {
 										return '<a href="'+config.wgServer+mw.util.getUrl(page)+'">'+(label && label.length>0 ? label : page)+'</a>';
 									})
-									.replace(/\[([\S]+) ([^\]]+)\]/g, '<a href="$1">$2</a>')+
-								'</p>';
-							if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = parsedInsert;}
+									.replace(/\[([\S]+) ([^\]]+)\]/g, '<a href="$1">$2</a>')
+									.replace(/\n\n|<br ?\/?><br ?\/?>|<br ?\/?>\n|\n<br ?\/?>/g, '</p><p><br /></p><p>')
+									.replace(/\n|<br ?\/?>/g, '</p><p>');
+									
+							if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = '<p>'+parsedInsert+'</p>';}
 							else {
-								if (!sel.data) {updateSel();}
-								$(sel.node).replaceWith(
-									$(
-										sel.data.slice(0, sel.offset)+
-										parsedInsert+
-										sel.data.slice(sel.offset)
-									)
-								);
+								$(
+									sel.node.nodeType === 3 ? 
+									sel.node.parentNode : 
+									sel.node
+								).replaceWith($(
+									'<p>'+
+									sel.data.slice(0, sel.offset)+
+									parsedInsert+
+									sel.data.slice(sel.offset)+
+									'</p>'
+								));
 							}
 						});
 						list.append(button);

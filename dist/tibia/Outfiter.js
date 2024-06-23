@@ -103,7 +103,7 @@ $(function () {
       //225
       'Doom_Skull', 'Mystic_Jaguar_(Mount)', 'Gorgon_Hydra', 'Dawnbringer_Pegasus', 'Wrathfire_Pegasus',
       //250
-      'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang',
+      'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang', 'Pegasus'
       //255
       
       //260
@@ -210,7 +210,7 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald', 'Celestial_Avenger','Blade_Dancer',
+      'Draccoon_Herald', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
       
       //220
       
@@ -253,7 +253,6 @@ $(function () {
       Blade_Dancer: 8
     },
     outfiter_sprites_walking = {
-      CM: 2,
       //None: 2,
       Gnome_Female: 2,
       'Corym_(C)': 2,
@@ -291,7 +290,8 @@ $(function () {
       Cerberus_Champion: [2900, 100, 100, 100, 500, 100, 100, 100],
       Dawnbringer_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
       Wrathfire_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
-      Skybreaker_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100]
+      Skybreaker_Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100],
+      Pegasus: [3300, 100, 100, 100, 100, 100, 100, 100]
     },
     //outfits that use ping-pong animation. ping-pong animation means 5 unique sprites, middle ones repeat backwards (1-2-3-4-5-4-3-2)
     outfiter_pingpong_animation = {
@@ -353,7 +353,8 @@ $(function () {
       Gorgon_Hydra: 8,
       Dawnbringer_Pegasus: 8,
       Wrathfire_Pegasus: 8,
-      Skybreaker_Pegasus: 8
+      Skybreaker_Pegasus: 8,
+      Pegasus: 8
     },
     outfiter_sprites_mount_walking = {
     },
@@ -449,7 +450,6 @@ $(function () {
       'Barbarian_(B)': true,
       'Barbarian_(C)': true,
       'Barbarian_(D)': true,
-      CM: true,
       'Corym_(A)': true,
       'Corym_(B)': true,
       'Corym_(C)': true,
@@ -571,7 +571,6 @@ $(function () {
       'Barbarian_(B)': true,
       'Barbarian_(C)': true,
       'Barbarian_(D)': true,
-      CM: true,
       'Corym_(A)': true,
       'Corym_(B)': true,
       'Corym_(C)': true,

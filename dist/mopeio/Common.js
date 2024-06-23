@@ -28,6 +28,15 @@ window.SignatureCheckJS = {
     ]
 };//End SC*/
 
+/* AutoCreateUserPages */
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{User}}'
+    },
+    summary: 'Welcome to the Mope.io Wiki!',
+    notify: '<a href="/wiki/User:$2">Here is a link to your userpage, $1!</a>'
+};// End AutoCreateUserPages */
+
 /* LockOldComments Config */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 90;

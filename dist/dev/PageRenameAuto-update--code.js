@@ -19,6 +19,7 @@
         options: window.PRAoptions || {},
         wg: mw.config.get([
             'wgCanonicalSpecialPageName',
+            'wgNamespaceIds',
             'wgNamespaceNumber',
             'wgPageName'
         ]),
@@ -74,7 +75,8 @@
                 var transUsage = result.query.embeddedin;
                 var pageLinks = result.query.backlinks;
                 var catMembers = result.query.categorymembers || [];
-                var pageUsage = transUsage.concat(pageLinks).concat(catMembers);
+                var imageUsages = result.query.imageusage || [];
+                var pageUsage = transUsage.concat(pageLinks).concat(catMembers).concat(imageUsages);
                 console.log('Usage successfully retrieved');
                 if (pageUsage.length > 0) {
                     PRA.queueData = pageUsage.map(function(page) {
@@ -110,6 +112,10 @@
                 options.list += '|categorymembers';
                 options.cmtitle = page;
                 options.cmlimit = 'max';
+            } else if (mw.util.getParamValue('namespace') === '6') {
+                options.list += '|imageusage';
+                options.iutitle = page;
+                options.iulimit = 'max';
             }
             return PRA.api.get(options);
         },
@@ -169,9 +175,28 @@
                 // Replacing image name on each page
                 var escapeRegExp = mw.RegExp.escape || mw.util.escapeRegExp;
                 var escapedName = escapeRegExp(PRA.oldName).replace(/( |_)/g, '[ _]*?');
-                if (escapedName.substr(0, 1).match(/[A-Za-z]/i)) {
-                    escapedName = '[' + escapedName.substr(0, 1).toUpperCase() +
-                                  escapedName.substr(0, 1).toLowerCase() + ']' + escapedName.substr(1);
+                if (escapedName.slice(0, 1).match(/[A-Za-z]/i)) {
+                    escapedName = '[' + escapedName.slice(0, 1).toUpperCase() +
+                                  escapedName.slice(0, 1).toLowerCase() + ']' + escapedName.slice(1);
+                }
+                // Support variations (i.e. canonical, localized, image alias) for file namespace
+                var escapedFileNamespaceNames = Object.entries(PRA.wg.wgNamespaceIds).flatMap(function (entry) {
+                    if (entry[1] !== 6) return [];
+                    var escapedFileNamespaceName = escapeRegExp(entry[0]) + ':';
+                    // TODO: Confirm naive capitalisation works on all supported localisations
+                    escapedFileNamespaceName = '[' + escapedFileNamespaceName.slice(0, 1).toUpperCase() +
+                                               escapedFileNamespaceName.slice(0, 1).toLowerCase() + ']' +
+                                               escapedFileNamespaceName.slice(1);
+                    return [escapedFileNamespaceName];
+                });
+                var isFile = false;
+                if (escapedFileNamespaceNames.some(function (escapedFileNamespaceName) { return escapedName.startsWith(escapedFileNamespaceName); })) {
+                    // Optionally match file namespace (as portable infoboxes and galleries
+                    // typically reference files without the namespace prefix)
+                    var escapedName = '(' + escapedFileNamespaceNames.join('|') + ')?' +
+                                      escapedName.slice(escapedName.indexOf(':') + 1);
+                    isFile = true;
+                    PRA.newNameWithoutNamespace = PRA.newName.slice(PRA.newName.indexOf(':') + 1);
                 }
                 var pageReplacement = new RegExp(
                     '(:?|=[ ]*?|\\||\\[|\\{)' + escapedName + '(.*?\\n|[ ]*?\\||\\]|\\})',
@@ -186,9 +211,10 @@
                         console.log(PRA.oldName, 'replaced on page', data.title);
                         var regExec;
                         while ((regExec = pageReplacement.exec(data.content)) !== null) {
-                            var replaced = regExec[0].replace(replacementReg, PRA.newName);
+                            var newName = (isFile && !regExec[2]) ? PRA.newNameWithoutNamespace : PRA.newName;
+                            var replaced = regExec[0].replace(replacementReg, newName);
                             data.content = data.content.replace(regExec[0], replaced);
-                            pageReplacement.lastIndex += replaced.length - regExec[0].length - regExec[2].length;
+                            pageReplacement.lastIndex += replaced.length - regExec[0].length;
                         }
                     }
                 });

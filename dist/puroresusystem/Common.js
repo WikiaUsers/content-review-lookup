@@ -265,3 +265,4 @@ $(function() {
 
 /* CropTool
 mw.loader.load('//commons.wikimedia.org/w/load.php?modules=ext.gadget.CropTool');
+*/

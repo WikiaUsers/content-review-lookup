@@ -3,8 +3,11 @@ var l10n = (function(){
 		'edit': {
 			'en': 'edit',
 			'de': 'Intro bearbeiten',
+			'es': 'editar',
 			'fr': 'modifier',
+			'ja': '編集',
 			'pt': 'editar',
+			'pt-br': 'editar',
 			'ru': 'править',
 			'zh': '编辑',
 			'zh-cn': '编辑'
@@ -12,8 +15,11 @@ var l10n = (function(){
 		'edit_source': {
 			'en': 'edit source',
 			'de': 'Intro-Quelltext bearbeiten',
+			'es': 'ediar con \"Source Editing\"',
 			'fr': 'modifier le wikicode',
+			'ja': 'ソースを編集',
 			'pt': 'editar fonte',
+			'pt-br': 'editar fonte',
 			'ru': 'править код',
 			'zh': '编辑源代码',
 			'zh-cn': '编辑源代码'
@@ -21,8 +27,11 @@ var l10n = (function(){
 		'title': {
 			'en': 'Edit \"intro\" section',
 			'de': 'Bearbeite den einführenden „Intro“-Abschnitt dieser Seite',
+			'es': 'Editar \"Intro\" Sección',
 			'fr': 'Modifier la section d\'« introduction »',
+			'ja': 'イントロセクションを編集',
 			'pt': 'editar a \"introdução\" desta página',
+			'pt-br': 'Editar seção \"introdução\"',
 			'ru': 'Править «введение» этой страницы',
 			'zh': '编辑“导言”章节',
 			'zh-cn': '编辑“导言”章节'

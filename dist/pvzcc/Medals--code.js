@@ -71,7 +71,7 @@
             $('.MedalList').append(
                 '<div class="MedalForm CustomForm" style="padding-bottom:5px; border-bottom:1px solid grey;">' +
                     '<div class="MedalImagePreview" style="display:inline-block; width:80px; text-align:center;">' +
-                        '<img height="70" style="margin:0 5px -3px 0; cursor:help;"/>' +
+                        '<img height="100" style="margin:0 5px -3px 0; cursor:help;"/>' +
                     '</div>' +
                     '<div style="display:inline-block; width:475px;">' +
                         '<div style="margin-top:5px;">' + 
@@ -318,7 +318,7 @@
                 '</section>'
             );
 
-            if (MedalSettings.dataUser[user].length > 200) {
+            if (MedalSettings.dataUser[user].length > 511) {
                 medalModal = true;
                 
                 medalModalForm.append('<div class="ModalMedalCollection"><div class="in" style="text-align:center;"></div></div>');
@@ -356,12 +356,12 @@
                     return;
                 }
                 
-                imgBody += $('<img style="cursor:help; vertical-align:middle;" width="50" onmouseover="medalFunctions.tooltip(this);" />').attr('src', MedalSettings.dataMedal[v].image_url).attr('data-title', MedalSettings.dataMedal[v].title).attr('data-name', v).prop('outerHTML');
+                imgBody += $('<img style="cursor:help; vertical-align:middle;" width="48" onmouseover="medalFunctions.tooltip(this);" />').attr('src', MedalSettings.dataMedal[v].image_url).attr('data-title', MedalSettings.dataMedal[v].title).attr('data-name', v).prop('outerHTML');
      
                 if (medalModal) {
                     medalModalForm.find('.ModalMedalCollection .in').append('<div class="RewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');
  
-                    if (i > 127) return;
+                    if (i > 512) return;
                 }
  
                 $('.RewardSection .in').append('<div class="RewardImage" style="display:inline-block; position:relative; margin:2px 5px;">' + imgBody + '</div>');

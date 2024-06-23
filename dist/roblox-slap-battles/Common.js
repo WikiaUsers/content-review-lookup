@@ -26,3 +26,4 @@ window.mbIndefStyle = 'opacity: 0.4; font-style: italic; text-decoration: line-t
 /* LockOldComments configurations */
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.addNoteAbove = true;
+window.lockOldComments.limit = 30;

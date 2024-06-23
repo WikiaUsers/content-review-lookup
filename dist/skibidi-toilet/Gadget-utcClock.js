@@ -5,10 +5,19 @@ var i18n = {
 	de: {
 		linkTitle: 'Klicke hier, um den Server-Cache der aktuellen Seite zu leeren'
 	},
+	es: {
+		linkTitle: 'Da click para limpiar el cache del server para la actual pagina de la wiki'
+	},
 	fr: {
 		linkTitle: 'Cliquez pour purger le cache du serveur de la page actuelle du wiki'
 	},
+	ja: {
+		linkTitle: 'クリックすると現在のwikiページのサーバーキャッシュが削除されます'
+	},
 	pt: {
+		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
+	},
+	pt-br: {
 		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
 	},
 	ru: {

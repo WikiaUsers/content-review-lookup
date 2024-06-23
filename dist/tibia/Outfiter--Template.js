@@ -191,7 +191,7 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald', 'Celestial_Avenger'
+      'Draccoon_Herald', 'Celestial_Avenger', 'Rootwalker'
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -226,7 +226,6 @@ $(function () {
       Celestial_Avenger: 8
     },
     outfiter_sprites_walking = {
-      CM: 2,
       //None: 2,
       Gnome_Female: 2,
       'Corym_(C)': 2,
@@ -414,7 +413,6 @@ $(function () {
       'Barbarian_(B)': true,
       'Barbarian_(C)': true,
       'Barbarian_(D)': true,
-      CM: true,
       'Corym_(A)': true,
       'Corym_(B)': true,
       'Corym_(C)': true,
@@ -536,7 +534,6 @@ $(function () {
       'Barbarian_(B)': true,
       'Barbarian_(C)': true,
       'Barbarian_(D)': true,
-      CM: true,
       'Corym_(A)': true,
       'Corym_(B)': true,
       'Corym_(C)': true,

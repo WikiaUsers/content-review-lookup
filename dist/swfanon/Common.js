@@ -30,7 +30,7 @@
    * @author Sebolto <swf.wikia.com/w/User talk:Sebolto>
    *
    * @param {string} template - <code>string</code> template name
-   * @param {object} - <code>$.Deferred</code> object
+   * @returns {object} - <code>$.Deferred</code> object
    */
   this.getTemplate = function (template) {
     var config, prefix;
@@ -111,6 +111,83 @@
 
     $(".insertusername").text(userName);
     document.title = document.title.replace(defaultText, userName);
+  };
+
+  /**
+   * @description This function is used to permit certain on-page content (i.e.
+   * <code><nowiki>[[Template:App]]</nowiki></code>) to be manually collapsed
+   * and toggled by the user by means of a series of "Show/Hide" buttons. The
+   * use of JS to modify element CSS is pretty reprehensible; maybe refactor to
+   * use classes at some point?
+   *
+   * @author Sebolto <swf.wikia.com/w/User talk:Sebolto>
+   *
+   * @returns {undefined}
+   */
+  this.permitCollapsibleContent = function () {
+    var textOptions, displayOptions;
+
+    // Possible toggle values (i18n?)
+    textOptions = Object.freeze(["[Hide]", "[Show]"]);
+
+    // Possible display options
+    displayOptions = Object.freeze(["block", "none"]);
+
+    // Iterate over all extact collapsible objects
+    $(".hidable").each(function () {
+      var $content, $buttons, startHidden, startText;
+
+      // Grab document node sets for this collapsible
+      $content = $(this).find(".hidable-content");
+      $buttons = $(this).find(".hidable-button");
+
+      // Presence of ".start-hidden" class used as flag
+      startHidden = $(this).hasClass("start-hidden");
+
+      //Starting text depends on present of ".start-hidden" class
+      startText = textOptions[+startHidden];
+
+      // Ensure all buttons have corresponding collapsible section
+      if (!$content.length || !$buttons.length ||
+          $content.length !== $buttons.length) {
+        return;
+      }
+
+      // Set initial hidden/visible values for collapsible sections
+      $content.each(function (i) {
+        if (!$($content[i]).length) {
+          return;
+        }
+
+        $(this).css("display", displayOptions[+startHidden]);
+      });
+
+      // Set handler and behavior for each button
+      $buttons.each(function (i) {
+        if (!$($buttons[i]).length) {
+          return;
+        }
+
+        // Define function-scoped, button-specific internal toggle flag
+        var isHidden;
+
+        // Apply initial starting text to each hidden button
+        $(this).append(startText);
+
+        // Set initial flag value
+        isHidden = startHidden;
+
+        // Click handler for visibility toggle
+        $(this).on("click", function () {
+
+          // Toggle display (and re-set flag value via bitwise xor)
+          $($content[i]).css("display", displayOptions[+(isHidden ^= 1)]);
+
+          // Alter original text to the correct display text depending on collapse
+          $(this).text(textOptions[+isHidden]);
+        });
+      });
+    });
   };
 
   /**
@@ -384,6 +461,11 @@
     // Replace instances of <nowiki>{{USERNAME}}</nowiki> with viewer's username
     if ($(".insertusername").length) {
       this.replaceWithUsername();
+    }
+
+    // Permit certain on-page content to be manually collapsed via a toggle
+    if ($(".hidable").length) {
+      this.permitCollapsibleContent();
     }
 
     // Apply custom infobox colors if custom colors are detected
