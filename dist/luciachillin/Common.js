@@ -5,7 +5,12 @@ importArticles({
         'u:dev:MediaWiki:MultipleFileDelete/code.js',
     ]
 });
-
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:RestoreRevButton.js',
+    ]
+});
 var bot = require('nodemw');
 var download = require('download-file');
 // Pass configuration object

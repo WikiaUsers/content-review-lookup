@@ -2,15 +2,15 @@
   "use strict";
 
   // Double run protection originally by andrewds1021
-  if (window.headquarter8302 && window.headquarter8302.ghBadges && window.headquarter8302.ghBadges.has_run) { console.log("GitHubBadges already ran!"); return; }
-  if (!window.headquarter8302) {
-    window.headquarter8302 = {
+  if (window.dev && window.dev.ghBadges && window.dev.ghBadges.hasRan) { console.log("GitHubBadges already ran!"); return; }
+  if (!window.dev) {
+    window.dev = {
       ghBadges: {}
     };
-  } else if (!window.headquarter8302.ghBadges) {
+  } else if (!window.dev.ghBadges) {
     window.headquarter8302.ghBadges = {};
   }
-  window.headquarter8302.ghBadges.has_run = true;
+  window.headquarter8302.ghBadges.hasRan = true;
 
   var badges = document.querySelectorAll("div.gh-badge");
 

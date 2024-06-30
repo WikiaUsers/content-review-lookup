@@ -31,6 +31,7 @@ window.pPreview.defimage = 'https://static.wikia.nocookie.net/paperpedia/images/
 //ignore templates in preview
 window.pPreview.RegExp.noinclude = ['.quote', ".notice", ".noprint", ".disambigua", ".vedi_anche", ".p-nav", ".caption"];
 //ignore links to non-article namespaces
-window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*'), new RegExp('Bacheca\:.*'), new RegExp('Blog.*'),];
+window.pPreview.RegExp.ilinks = [ new RegExp('Template\:.*'), new RegExp('File\:.*'), new RegExp('Categoria\:.*'), new RegExp('Map\:.*'), new RegExp('Utente\:.*'), new RegExp('MediaWiki\:.*'), new RegExp('Bacheca\:.*'), new RegExp('Blog\_utente\:.*'),];
 //text length
+window.pPreview.tlen = 500;
 window.pPreview.tlen = 500;

@@ -23,7 +23,9 @@
                     '[',
                     $('<a>', {
                         click: click,
-                        style: 'cursor: pointer;',
+                        css: {
+                            'cursor': 'pointer'
+                        },
                         text: i18n.msg('show').escape()
                     }),
                     ']'

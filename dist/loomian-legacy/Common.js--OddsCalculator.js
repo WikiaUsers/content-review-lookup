@@ -149,11 +149,15 @@ function applySpecials(key, special, numden) {
 			Object.entries(special).forEach(function (keyval) {
 				var key = keyval[0];
 				var val = keyval[1];
+				if (change) { return; }
 				change = applySpecials(key, val, numden) ? true : change;
 			});
 			if (!change) {
-				numden.numerator *= special.numerator || 1;
-				numden.denominator *= special.denominator || 1;
+				if (special.numerator && special.denominator) {
+					numden.numerator *= special.numerator;
+					numden.denominator *= special.denominator;
+					change = true;
+				}
 			}
 			return change;
 		} else {

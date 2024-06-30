@@ -696,6 +696,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 	var sobytieRoads = document.querySelectorAll(".sobytie .road");
 	sobytieRoads.forEach(function(road){
 		var roadPolosa = road.querySelector(".polosa");
+		var roadPolosaBorder = road.querySelector(".polosa-border");
 		var points = road.querySelectorAll(".points");
 		
 		var nowPoint = document.createElement("div");
@@ -711,6 +712,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 			var rect = road.getBoundingClientRect();
 			var mouseX = event.pageX-rect.left+road.scrollLeft;
 			roadPolosa.style.width=mouseX+"px";
+			roadPolosaBorder.style.width=(mouseX-3)+"px";
 			nowPoint.style.left = (Math.floor(mouseX)-25)+"px";
 			
 			if (mouseX<150){
@@ -727,6 +729,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 		
 		road.addEventListener("pointerout", function(){
 			roadPolosa.style.width="100%";
+			roadPolosaBorder.style.width="calc(100% - 3px)";
 			nowPointText.textContent = "0";
 			nowPoint.style.left = "-50px";
 		});

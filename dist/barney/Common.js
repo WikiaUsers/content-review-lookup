@@ -2,7 +2,7 @@
 
 
 window.AddRailModule = [{
-    page: 'Template:DiscordRailModule',
+    page: 'Template:RailModule',
     appendAfter: '.DiscordIntegratorModule .rail-module',
 }];
 

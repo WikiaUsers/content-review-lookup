@@ -4,7 +4,7 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		founder: { m:'Founder of the Wiki', order:1000 },
+		founder: 'Founder of the Wiki',
 		retiredmember: 'Retired Member',
 		bureaucrat: { link:'Special:ListUsers/bureaucrat' },
 		sysop: { link:'Special:ListUsers/sysop' }
@@ -12,8 +12,9 @@ window.UserTagsJS = {
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
-	'ThomasGang1948': ['founder'],
-	'Mr. TheTrueOne': ['retiredmember']
+	'TheObliviousQuailOfficial': ['founder'],
+	'Mr. TheTrueOne': ['retiredmember'],
+	'JacksonALT': ['retiredmember']
 };
 
 window.lockOldComments = (window.lockOldComments || {});

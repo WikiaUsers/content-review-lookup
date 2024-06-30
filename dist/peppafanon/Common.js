@@ -42,7 +42,7 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'ScribbledEggs': ['uoty'] 
+	'Ladisepic25': ['uoty'] 
 };
 
 // Tabber

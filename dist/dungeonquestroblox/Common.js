@@ -26,6 +26,7 @@ UserTagsJS.modules.custom = {
     'SaltyNoobz': ['impactful'],
     'Airpodes': ['impactful'],
     'Jack1o7': ['impactful'],
+    'VoidDrin': ['impactful'],
 };
 
 UserTagsJS.modules.autoconfirmed = false;
@@ -316,8 +317,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         var helmField = createField("helm", "HELMET power");
         var armorField = createField("armor", "ARMOR power");
         var weaponField = createField("weapon", "WEAPON power");
-        var ring1Field = createField("ring1", "Ring 1 power");
-        var ring2Field = createField("ring2", "Ring 2 power");
+        var ring1Field = createField("ring1", "RING 1 power");
+        var ring2Field = createField("ring2", "RING 2 power");
         var skillField = createField("skill", "Damage Skill Points");
         var submit = document.createElement("button");
         submit.append("Calculate");

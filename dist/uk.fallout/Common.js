@@ -1,287 +1,3 @@
-/*mw.loader.load('//en.wikipedia.org/w/index.php?title=User:Joeytje50/JWB.js/load.js&action=raw&ctype=text/javascript');
-*/
-/*Вікіфікатор
- 
-function addWikifButton() {
-        var toolbar = document.getElementById('toolbar')
-        if (!toolbar) return
-        var i = document.createElement('img')
-        i.src = 'http://upload.wikimedia.org/wikisource/ru/d/d1/Button-wikifikator.png'
-        i.alt = i.title = 'Вікіфікатор'
-        i.onclick = Wikify
-        i.style.cursor = 'pointer'
-        toolbar.appendChild(i)
-}
-if (wgAction == 'edit' || wgAction == 'submit') {
-        importScriptURI('http://ru.wikipedia.org/w/index.php?title=MediaWiki:Wikificator.js&action=raw&ctype=text/javascript')
-        addOnloadHook(addWikifButton)
-}
-
-if (document.URL.indexOf("action=edit") > 0 || document.URL.indexOf("action=submit") > 0)
-{
-        if (wgCanonicalNamespace != "Special")
-        {
-              document.write('<script type="text/javascript" src="' 
-              + 'http://uk.vijskpens.wikia.com/index.php?title=MediaWiki:Onlyifediting.js' 
-              + '&action=raw&ctype=text/javascript&dontcountme=s"></script>'); 
-              addOnloadHook(function(){
-              if (mwEditButtons.length < 3) return;
-              mwEditButtons[0].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/f/fa/Button_bold_ukr.png';
-              mwEditButtons[1].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_italic_ukr.png';
-              mwEditButtons[2].imageFile = 'http://upload.wikimedia.org/wikipedia/commons/0/03/Button_internal_link_ukr.png';
-              })
-        }
-}
- if (mwCustomEditButtons) {
-//Перенаправлення 
-mwCustomEditButtons[mwCustomEditButtons.length] = { 
-   "imageFile": "http://upload.wikimedia.org/wikipedia/ru/1/1d/Button_redirect_rus.png", 
-    "speedTip": "Перенаправлення", 
-    "tagOpen": "#Перенаправлення [[", 
-    "tagClose": "]]", 
-    "sampleText": "назва сторінки"};
-//Template button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/3b/Button_template_alt.png",
-    "speedTip": "Шаблон",
-    "tagOpen": "{{",
-    "tagClose": "}}",
-    "sampleText": "Назва шаблону"};
-//Category button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/3c/Button_cat_ru.png",
-    "speedTip": "Категорія",
-    "tagOpen": "[[Категорія:",
-    "tagClose": "|{{PAGENAME}}]]",
-    "sampleText": "Назва категорії"};
-//Underline 
-mwCustomEditButtons[mwCustomEditButtons.length] = { 
-   "imageFile": "http://images.uncyc.org/uk/6/64/Button_underline_ukr.png", 
-    "speedTip": "Підкреслення", 
-    "tagOpen": "<u>", 
-    "tagClose": "</u>", 
-    "sampleText": "Підкреслений текст"};
-//Strike-Out Button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/4/45/Button_strike_ukr.png",
-    "speedTip": "Закреслений текст",
-    "tagOpen": "<s>",
-    "tagClose": "</s>",
-    "sampleText": "Закреслений текст"};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/8/88/Btn_toolbar_enum.png/revision/latest?cb=20070329064320",
-    "speedTip": "Нумерація",
-    "tagOpen": "#",
-    "tagClose": "",
-    "sampleText": ""
-};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/1/11/Btn_toolbar_liste.png/revision/latest?cb=20070329064826",
-    "speedTip": "Список",
-    "tagOpen": "*",
-    "tagClose": "",
-    "sampleText": ""
-};
-//Нерозривний пробіл
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/4/4b/Button_nbsp.png",
-    "speedTip": "Нерозривний пробіл",
-    "tagOpen": "&nbsp;",
-    "tagClose": "",
-    "sampleText": ""};
-//Line break button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png",
-    "speedTip": "Розрив",
-    "tagOpen": "<br/>",
-    "tagClose": "",
-    "sampleText": ""};
-//Наголос
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/0e/Button_acute_accent.png",
-    "speedTip": "Наголос",
-    "tagOpen": "́",
-    "tagClose": "",
-    "sampleText": ""};
-//Цитата
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/0/05/Button_Anführung.png",
-    "speedTip": "Вставка цитати",
-    "tagOpen": "{{Ц|",
-    "tagClose": "||}}",
-    "sampleText": "Цитата"};
-//Superscript
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/8/80/Button_upper_letter.png",
-    "speedTip": "Верхній індекс",
-    "tagOpen": "<sup>",
-    "tagClose": "</sup>",
-    "sampleText": "Верхній індекс"};
-//Subscript
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/7/70/Button_lower_letter.png",
-    "speedTip": "Нижній індекс",
-    "tagOpen": "<sub>",
-    "tagClose": "</sub>",
-    "sampleText": "Нижній індекс"};
-//Left-Text Button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Button_align_left.png",
-    "speedTip": "Вирівняти по лівому краю",
-    "tagOpen": "<div style='text-align: left; direction: ltr; margin-left: 1em;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Вирівняний ліворуч текст"};
-//Center-Text Button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/5/5f/Button_center.png",
-    "speedTip": "Вирівняти по центру",
-    "tagOpen": "<div style='text-align: center;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Вирівняний по центру текст"};
-//Right-Text Button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/a/a5/Button_align_right.png",
-    "speedTip": "Вирівняти по правому краю",
-    "tagOpen": "<div style='text-align: right;'>\n",
-    "tagClose": "\n</div>",
-    "sampleText": "Вирівняний праворуч текст"};
-//Прихований коментар
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/3/34/Button_hide_comment.png",
-    "speedTip": "Прихований коментар",
-    "tagOpen": "<!-- ",
-    "tagClose": " -->",
-    "sampleText": "Коментар"};
-//Заголовок при наведенні курсору
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/74/Button_comment.png",
-    "speedTip": "Курсорний заголовок",
-    "tagOpen": "<span title=\"\"\>",
-    "tagClose": "</span>",
-    "sampleText": "Текст"};
-//Великий текст
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/cb/Button_big_2.png",
-    "speedTip": "Великий шрифт",
-    "tagOpen": "<big>",
-    "tagClose": "</big>",
-    "sampleText": "Текст великим шрифтом"};
-//Малий текст
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://images.uncyc.org/uk/4/4c/Button_small_ukr.png",
-    "speedTip": "Малий шрифт",
-    "tagOpen": "<small>",
-    "tagClose": "</small>",
-    "sampleText": "Текст малим шрифтом"};
-//Gallery
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/9/9e/Btn_toolbar_gallery.png",
-    "speedTip": "Галерея",
-    "tagOpen": "\n<gallery>\n",
-    "tagClose": "\n</gallery>",
-    "sampleText": "Файл:Назва_зображення1.jpg|Опис_зображення1\n\Файл:Назва_зображення2.jpg|Опис_зображення2"}
-//Video
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/12/Button_gallery.png",
-    "speedTip": "Відео з YouTube",
-    "tagOpen": "\n<nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><nowiki><youtube>\n",
-    "tagClose": "\n</youtube></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki></nowiki>",
-    "sampleText": "title=\n\movie_url=http://www.youtube.com/watch?v=\n\embed_source_url=http://www.youtube.com/v/&fs=1\n\wrap=yes\n\width=400\n\height=300"}
-//Reference link button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/c4/Button_ref.png",
-    "speedTip": "Виноска",
-    "tagOpen": "<ref>",
-    "tagClose": "</ref>",
-    "sampleText": "Посилання"};
-    
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://vignette.wikia.nocookie.net/central/images/c/cb/Button_wikipedia.png/revision/latest?cb=20081020115941",
-    "speedTip": "Посилання на статтю Вікіпедії",
-    "tagOpen": "[[wikipedia:uk:|",
-    "tagClose": "]]",
-    "sampleText": ""
-};
-//Reference button
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/64/Buttonrefvs8.png",
-    "speedTip": "Список виносок",
-    "tagOpen": "\n== Виноски ==\n<references/>",
-    "tagClose": "",
-    "sampleText": ""};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/e/eb/EN.png",
-		"speedTip": "Англійська інтервікі",
-		"tagOpen": "[[en:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://upload.wikimedia.org/wikipedia/commons/b/bf/PL.png",
-		"speedTip": "Польська інтервікі",
-		"tagOpen": "[[pl:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/mixgerder/images/6/60/RU.png/revision/latest?cb=20180619061136&path-prefix=ru",
-		"speedTip": "Російська інтервікі",
-		"tagOpen": "[[ru:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/mixgerder/images/8/81/ES.png/revision/latest?cb=20180619061037&path-prefix=ru",
-		"speedTip": "Іспанська інтервікі",
-		"tagOpen": "[[es:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/mixgerder/images/9/9d/PT.png/revision/latest?cb=20180619061145&path-prefix=ru",
-		"speedTip": "Португальська інтервікі",
-		"tagOpen": "[[pt:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/mixgerder/images/b/b3/DE.png/revision/latest?cb=20180619061153&path-prefix=ru",
-		"speedTip": "Німецька інтервікі",
-		"tagOpen": "[[de:",
-		"tagClose": "]]",
-		"sampleText": ""
-	};
-//Colour
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/he/1/1e/Button_font_color.png",
-    "speedTip": "Кольоровий текст",
-    "tagOpen": "<span style='color: ColorName'>",
-    "tagClose": "</span>",
-    "sampleText": "Кольоровий текст"}
-//Code
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Code-button-bg.png",
-    "speedTip": "Вставка коду",
-    "tagOpen": "<code>",
-    "tagClose": "</code>",
-    "sampleText": "Код"}
-//Моноширинний шрифт
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/30/Tt_icon.png",
-    "speedTip": "Моноширинний шрифт",
-    "tagOpen": "<tt>",
-    "tagClose": "</tt>",
-    "sampleText": "Моноширинний шрифт"}
-//Посилання на шаблон
-mwCustomEditButtons[mwCustomEditButtons.length] = {
-    "imageFile": "http://upload.wikimedia.org/wikipedia/commons/3/37/Button_tl_template.png",
-    "speedTip": "Посилання на шаблон",
-    "tagOpen": "{{Ш|",
-    "tagClose": "}}",
-    "sampleText": "Назва шаблону"}
-  }
-*/
-
 /**
  *
  * English: Open a popup with parameters to generate an array. 
@@ -305,7 +21,7 @@ function popupTable()
   javaCode += 'var align = document.paramForm.inputAlign.value; '
   javaCode += 'var padding = false; '
   javaCode += 'window.opener.generateTableau(col,row,bord,styleHeader,styleLine,exfield,align,padding); '
-  javaCode += "alert('Таблиця створена!'); "
+  javaCode += "alert('Таблицю створено!'); "
   javaCode += 'window.close(); '
   javaCode += '}<\/script>';
  
@@ -326,19 +42,6 @@ function popupTable()
   popup.document.close();
 }
  
-/* Маленьке корегування кнопки підпису */
-appendCSS('#mw-editbutton-signature { display: none; }');
-if (mwCustomEditButtons) {
-	mwCustomEditButtons.push({
-		'imageFile': 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Button_sig.png',
-		'speedTip': 'Ваш підпис з часовою міткою',
-		'tagOpen': '— ~~\~~',
-		'tagClose': '',
-		'sampleText': '',
-		'imageId': 'editbutton-customsig'
-	});
-}
-
 /** Test if an element has a certain class **************************************
  *
  * Description: Uses regular expressions and caching for better performance.
@@ -362,147 +65,48 @@ function onPageInit()
     noLogo();
 }
 
-/**
- * Ajoute un menu déroulant permettant de choisir un jeu de caractères spéciaux
- * Les caractères spéciaux sont définis dans Mediawiki:Edittools
- */
-function addCharSubsetMenu() {
-  var specialchars = document.getElementById('specialcharsets');
-  if (!specialchars) return;
+/* Додаткова статистика для користувачів */
+mw.hook('wikipage.content').add(function ($content) {
+    var msg = {
+        nodata: '<span class="udu-nodata">Немає даних</span>',
+        reqfailed: 'Error: Request failed.',
+        cantavatar: 'Error: Cannot obtain user avatar.',
+        usernotfound: 'Користувача не знайдено',
+        delimiter: '<span class="udu-delim">, </span>',
+    };
+    var requestMax = 6,
+        requestThreshold = 300,
+        requestCount = 0,
+        requests = [],
+        rejected = 0,
+        names = $content.find('.infobox-nicknames').text()
+            .split('/')
+            .map(function(v){return (v||'').trim()})
+            .filter(Boolean),
+        nickname = mw.config.get('wgTitle').replace( /^[^/]+\//, '' );
+    if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length || $content.find('.infobox-editcount')) {
+        if ( mw.config.get( 'wgNamespaceNumber' ) !== 0 ) {
+            $content.find( '.pi-title .user-link' ).html(
+                $( '<a />', {
+                    href: '/wiki/User:' + (names[0] || nickname),
+                    target: '_blank'
+                }).append(
+                    $('<span>', {
+                        class: 'udu-nickname',
+                        text: names[0] || nickname
+                    })
+                )
+            );
+        }
  
-  // Construction du menu de selection
-  var charSubsetSelect = document.createElement("select");
-  charSubsetSelect.setAttribute("style", "display:inline");
-  charSubsetSelect.onchange = function () { chooseCharSubset(this.selectedIndex); };
- 
-  // Ajout des options au menu
-  var p = document.getElementById('specialcharsets').getElementsByTagName('p');
-  for (var i = 0; i < p.length ; i++) {
-    var opt = document.createElement("option");
-    var txt = document.createTextNode(p[i].title);
-    opt.appendChild(txt);
-    charSubsetSelect.appendChild(opt);
-  }
- 
-  specialchars.insertBefore(charSubsetSelect, specialchars.childNodes[0]);
- 
-  /* default subset - try to use a cookie some day */
-  chooseCharSubset(0);
-}
- 
-/**
- * Affichage du jeu de caractères sélectionné
- */
-function chooseCharSubset(index) {
-  var p = document.getElementById('specialcharsets').getElementsByTagName('p');
-  for (var i = 0; i < p.length ; i++) {
-    // Initialisation du jeu de caractères sélectionné
-    if (i == index) {
-    	initializeCharSubset(p[i]);
-    }
-    // Affichage du jeu sélectionné, masquage des autres
-    p[i].style.display = i == index ? 'inline' : 'none';
-    p[i].style.visibility = i == index ? 'visible' : 'hidden';
-  }
-}
- 
-/**
- * Initialisation du jeu de caractères sélectionné
- * Paramètre : paragraphe contenant le jeu à initialiser. Initialise tous les
- * caractères contenus dans les sous-spans du paragraphe
- */
-function initializeCharSubset(p) {
-  // recherche des sous-elements de type span à traiter
-  var spans = p.getElementsByTagName("span");
-  if (!spans) return;
- 
-  // regexp pour echapper les caractères JS spéciaux : \ et '
-  var re = new RegExp("(\\\\|')", "g");
-  // gestion du caractère d'échappement '\'
-  var escapeRe = new RegExp("[^\\\\](\\\\\\\\)*\\\\$", "g");
-  var unescapeRe = new RegExp("\\\\\\\\", "g");
- 
-  // traitement des spans du paragraphe
-  for (var j = 0; j < spans.length; j++) {
-    // span deja traité
-    if (spans[j].childNodes.length == 0 || spans[j].childNodes[0].nodeType != 3) continue;
- 
-    // On parse le contenu du span
-    var chars = spans[j].childNodes[0].nodeValue.split(" ");
-    for (var k = 0; k < chars.length; k++) {
-      var a = document.createElement("a");
-      var tags = chars[k];
- 
-      // regroupement des mots se terminant par un espace protégé par un \
-      while (k < chars.length && chars[k].match(escapeRe)) {
-      	k++;
-	tags = tags.substr(0, tags.length - 1) + " " + chars[k];
-      }
- 
-      // création du lien insertTag(tagBegin, tagEnd, defaultValue) en protegeant les caractères JS \ et '
-      tags = (tags.replace(unescapeRe, "\\")).split("+");
-      var tagBegin = tags[0].replace(re, "\\$1");
-      var tagEnd = tags.length > 1 ? tags[1].replace(re, "\\$1") : "";
-      var defaultValue = tags.length > 2 ? tags[2].replace(re, "\\$1") : "";
-      a.href = "javascript:insertTags('" + tagBegin + "','" + tagEnd + "', '" + defaultValue + "')";
-      //a.href="#";
-      //eval("a.onclick = function() { insertTags('" + tagBegin + "','" + tagEnd + "', '" + defaultValue + "'); return false; }");
- 
-      a.appendChild(document.createTextNode((tagBegin + tagEnd).replace(unescapeRe, "\\")));
-      spans[j].appendChild(a);
-      spans[j].appendChild(document.createTextNode(" "));
-    }
-    // suppression de l'ancien contenu
-    spans[j].removeChild(spans[j].firstChild);
-  }
-}
- 
-addOnloadHook(addCharSubsetMenu);
- 
-/**
- * Permet d'ajouter d'un jeu de caractères spéciaux dans le menu déroulant
- * paramètres :
- * - nom du jeu de caractères
- * - contenu HTML. Les caractères spéciaux doivent être dans des spans
- *   exemple : "caractères : <span>â ê î ô û</span>"
- */
-function addSpecialCharsetHTML(title, charsHTML) {
-  var specialchars = document.getElementById('specialcharsets');
-  if (!specialchars) return;
- 
-  // Ajout d'un nouvel item au menu déroulant
-  var select = specialchars.getElementsByTagName("select")[0];
-  var opt = document.createElement("option");
-  opt.appendChild(document.createTextNode(title));
-  select.appendChild(opt);
- 
-  // Ajout des caractères spéciaux. Les liens seront initialisé par initializeCharSubset()
-  // lors de la sélection
-  var specialcharsets = document.getElementById('specialcharsets');
-  var p = document.createElement("p");
-  p.style.display = "none";
-  p.innerHTML = charsHTML;
-  specialcharsets.appendChild(p);
-}
-
-importArticles({
-	type: 'script',
-	articles: [
-		'MediaWiki:Collapsible tables.js',
-	]
-});
-
-/* Додаткова статистика для вікі-проектів */
-$(function () {
-    if ($('.infobox-gender').length || $('.infobox-registration-date').length) {
         $.ajax({
             url: mw.util.wikiScript('api'),
             data: {
                 format: 'json',
                 action: 'query',
                 list: 'users',
-                ususers: mw.config.get('wgPageName'),
-                usprop: 'registration|gender'
+                ususers: names[0] || nickname,
+                usprop: 'registration|gender|editcount'
             },
             dataType: 'json',
             type: 'POST',
@@ -510,54 +114,62 @@ $(function () {
                 if (data) {
                     switch (data.query.users[0].gender) {
                     case 'male':
-                        $('.infobox-gender').append('<img src="https://vignette.wikia.nocookie.net/wikies/images/c/c1/Male.svg/revision/latest/scale-to-width/25?cb=20150302060331&amp;path-prefix=ru" alt="Male.svg" class="" data-image-key="Male.svg" data-image-name="Male.svg" width="25" height="25">');
+                        $content.find('.infobox-gender').append('<span class="fa fa-mars udu-fa"></span>');
                         break;
                     case 'female':
-                        $('.infobox-gender').append('<img src="https://vignette.wikia.nocookie.net/wikies/images/2/23/Female.svg/revision/latest/scale-to-width/25?cb=20150302060307&amp;path-prefix=ru" alt="Female.svg" class="" data-image-key="Female.svg" data-image-name="Female.svg" width="25" height="25">');
+                        $content.find('.infobox-gender').append('<span class="fa fa-venus udu-fa"></span>');
                         break;
                     case 'unknown':
                         break;
                     default:
-                        // nothing atm
+                        break;
                     }
-                    $('.infobox-registration-date').text(data.query.users[0].registration.replace('T', ' ').replace('Z', ''));
+                    try {
+                        if (data.query.users[0].registration) {
+                            $content.find('.infobox-registration-date').empty().text(data.query.users[0].registration.replace('T', ' ').replace('Z', ''));
+                        } else {
+                            $content.find('.infobox-registration-date').html(msg.nodata);
+                        }
+
+                        if (data.query.users[0].editcount) {
+                            $content.find('.infobox-editcount').html(data.query.users[0].editcount);
+                        } else {
+                            $content.find('.infobox-editcount').html(msg.nodata);
+                        }
+                    } catch (e) {
+                        $content.find('.infobox-registration-date').html(msg.nodata);
+                        $content.find('.infobox-editcount').html(msg.nodata);
+                    }
                 }
             },
             error: function () {
-                console.log('Error: Request failed.');
+                console.log(msg.reqfailed);
+                $content.find('.infobox-registration-date').html(msg.nodata);
+                $content.find('.infobox-editcount').html(msg.nodata)
             }
         });
-    }
+    }// if ($content.find('.infobox-gender').length || $content.find('.infobox-registration-date').length)
  
-    if ($('.infobox-editcount').length) {
-        // Special:EditCount gives more precise data than MW API
+    if ($content.find('.infobox-avatar').length) {
         $.ajax({
-            url: '/wiki/Special:EditCount/' + mw.config.get('wgPageName'),
+            url: '/api/v1/User/Details?size=150&ids=' + nickname,
             type: 'GET',
             success: function (data) {
                 if (data) {
-                    //TODO: normal selector instead of this
-                    $('.infobox-editcount').text($(data).find('.ecrowright:eq(5)').text());
+                    $content.find('.infobox-avatar').html(
+                        $('<img>', {
+                           src: (data.items[0] || {}).avatar,
+                           class: 'avatar'
+                        })
+                    );
                 }
             },
             error: function () {
-                console.log('Error: Request failed.');
+                console.log(msg.cantavatar);
+                $content.find('.infobox-avatar').html(msg.nodata);
             }
         });
-    }
+    }// if ($content.find('.infobox-avatar').length)
  
-    if ($('.infobox-avatar').length) {
-        $.ajax({
-            url: '/wiki/Special:Contributions/' + mw.config.get('wgPageName'),
-            type: 'GET',
-            success: function (data) {
-                if (data) {
-                    $('.infobox-avatar').empty().append($(data).find('.masthead-avatar').children('img'));
-                }
-            },
-            error: function () {
-                console.log('Error: Cannot obtain user avatar.');
-            }
-        });
-    }
+    // if ($content.find('.infobox-editcount').length)
 });

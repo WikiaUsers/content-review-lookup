@@ -1,5 +1,11 @@
 window.AddRailModule = [{ prepend: true }];
 
+window.DiscordBannerSettings = {
+
+   bannerStyle: '3',
+   inviteLink: 'YXPECP9hs5',
+   prependToRail: true
+};
 
 // **************************************************
  //  Викификатор

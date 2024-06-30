@@ -102,18 +102,10 @@ $(function () {
       'Foxmouse_(Mount)', 'Spirit_of_Purity', 'Darkfire_Devourer', 'Corpsefire_Skull', 'Magma_Skull',
       //225
       'Doom_Skull', 'Mystic_Jaguar_(Mount)', 'Gorgon_Hydra', 'Dawnbringer_Pegasus', 'Wrathfire_Pegasus',
-      //250
-      'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang', 'Pegasus'
-      //255
-      
-      //260
-      
-      //265
-      
-      //270
-      
-      //275
-      
+      //230
+      'Skybreaker_Pegasus', 'Glacier_Wyrm', 'Bog_Tyrant', 'Crimson_Fang', 'Pegasus',
+      //235
+      'Bumblebee'
     ],
     //outfits the array index is the id(from 0 to 99)
     //must also be added to Template:OutfiterLink
@@ -210,12 +202,10 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
-      
+      'Draccoon_Herald','Doom_Knight', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
       //220
-      
+      'Beekeeper'
       //225
-      
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking
     outfiter_sprites_standing = {
@@ -250,7 +240,8 @@ $(function () {
       Frost_Tracer: 8,
       Flamefury_Mage: 8,
       Celestial_Avenger: 8,
-      Blade_Dancer: 8
+      Blade_Dancer: 8,
+      Beekeeper: 8
     },
     outfiter_sprites_walking = {
       //None: 2,

@@ -56,7 +56,7 @@ for (var i = 0; i < videos.length; i++) {
 }
 
 /* the following makes a cut on overview infobox border */
-var infoboxList = document.getElementsByClassName("gameOverviewInfobox")
+/*var infoboxList = document.getElementsByClassName("gameOverviewInfobox")
 for (var i = 0;i<infoboxList.length;i++) {
 	var infobox = infoboxList[i]
 	var infoboxHeader = infoboxList[i].querySelector(".gameInfoboxHeader")
@@ -65,7 +65,7 @@ for (var i = 0;i<infoboxList.length;i++) {
 	var clipStart = headerStyle.marginLeft.toString().split("px")[0] - 2;
 	var clipEnd = clipStart + infoboxHeader.innerHTML.length*12 - 6;
 	infoboxBody.style.clipPath = 'polygon(0 0, ' + clipStart + 'px 0, ' + clipStart + 'px 5px, ' + clipEnd + 'px 5px, ' + clipEnd + 'px 0, 100% 0, 100% 100%, 0 100%)';
-}
+}*/
 
 
 

@@ -6,11 +6,13 @@
 	window.dev.IPM._loaded = true;
 	
 	var config = mw.config.get(['wgAction', 'wgNamespaceNumber', 'wgServer']);
+	var api;
 	var betterLinkSuggest = {
 		
 		init: function() {
 			// Check we're in MessageWall or Main namespace
 			if (config.wgNamespaceNumber == 1200 || (config.wgNamespaceNumber == 0 && config.wgAction == 'view')) {
+				api = new mw.Api();
 				// Add necessary styles that dont load outside editor screen and custom ones
     			importArticle({
     			    type: 'style',
@@ -25,7 +27,6 @@
 		
 		// Adds link suggest functionality to message walls and comment section text editors
 		wikiLinks: function() {
-			var api = new mw.Api();
 			var ooui = 0;
 			var SEARCH = {};
 			
@@ -321,36 +322,41 @@
 						var button = $('<a class="option" rel="custom-insert-'+count+'" tabindex="0" role="menuitem">'+(insert.button)+'</a>');
 						button.on('mousedown', function(event){
 							event.preventDefault();
+							var temp = {};
 							var parsedInsert = 
 								insert.insert
-									.replace(/%(\w+)%/gi, function(str, type){
+									.replace(/%([\w\s]+)%/gi, function(str, type){
 										var ret = '';
 										ret = (insert[type] && insert[type].length>0) ? 
 											insert[type] : 
-											prompt('What value to replace "'+type+'" with?');
+											(
+												(temp[type] && temp[type].length>0) ? 
+												temp[type] : 
+												prompt('What value to replace "'+type+'" with?')
+											);
+										temp[type] = ret; // avoid asking again in the same insert
 										return ret;
-									})
-									.replace(/\[\[([^\]\[\|]+)\|?([^\]\[\|]*)\]\]/g, function(str, page, label) {
-										return '<a href="'+config.wgServer+mw.util.getUrl(page)+'">'+(label && label.length>0 ? label : page)+'</a>';
-									})
-									.replace(/\[([\S]+) ([^\]]+)\]/g, '<a href="$1">$2</a>')
-									.replace(/\n\n|<br ?\/?><br ?\/?>|<br ?\/?>\n|\n<br ?\/?>/g, '</p><p><br /></p><p>')
-									.replace(/\n|<br ?\/?>/g, '</p><p>');
+									});
+							// template expand only works with plain text returns, but thats up to user to use properly
+							api.parse(parsedInsert, {disablelimitreport:true, pst:true}).then(function(txt){
+								var e = $(txt);
+								txt = e.is('.mw-parser-output') ?  e.html() : e.find('.mw-parser-output').html();
+								if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = txt;}
+								else {
+									$(
+										sel.node.nodeType === 3 ? 
+										sel.node.parentNode : 
+										sel.node
+									).replaceWith($(
+										'<p>'+
+										sel.data.slice(0, sel.offset)+
+										txt.replace(/^<p>/, '').replace(/<\/p>$/, '')+
+										sel.data.slice(sel.offset)+
+										'</p>'
+									));
+								}
+							});
 									
-							if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = '<p>'+parsedInsert+'</p>';}
-							else {
-								$(
-									sel.node.nodeType === 3 ? 
-									sel.node.parentNode : 
-									sel.node
-								).replaceWith($(
-									'<p>'+
-									sel.data.slice(0, sel.offset)+
-									parsedInsert+
-									sel.data.slice(sel.offset)+
-									'</p>'
-								));
-							}
 						});
 						list.append(button);
 					} 

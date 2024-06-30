@@ -41,6 +41,15 @@ $(function() {
 				'.targetedPatrolWrapper {'+
 					'display: flex;'+
 					'width: 100%;'+
+					'gap: 3px;'+
+					'align-items: center;'+
+				'}'+
+				'#targetedPatrolUser {'+
+					'background: var(--theme-color-6);'+
+					'color: var(--theme-page-text-color);'+
+					'border: 0;'+
+					'border-radius: 4px;'+
+					'padding: 4px;'+
 				'}'+
 				'#targetedPatrolDetails {'+
 					'margin-right: 3px;'+
@@ -95,21 +104,12 @@ $(function() {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
 			}
 			
-			// Check we're in the normal view of a file page or in a diff page
-			else if (
-				config.wgAction == 'view' && config.wgNamespaceNumber == 6 ||
-				config.wgDiffNewId
-			) {
-				document.addEventListener('keydown', function(event) {
-					if (event.altKey && [80, 49].includes(event.keyCode)) {
-						if (document.querySelector('.massPatrol > a')) {
-							document.querySelector('.massPatrol > a').click();
-						} else if (document.querySelector('.patrollink > a')) {
-							document.querySelector('.patrollink > a').click();
-						}
-					}
-				});
-			}
+			// Mouseless patrolling
+			document.addEventListener('keydown', function(event) {
+				if (event.altKey && [80, 49].includes(event.keyCode)) {
+					betterDiff.massPatrol();
+				}
+			});
 		},
 		
 		// Run callback every time Special:RecentChanges reloads results
@@ -361,14 +361,15 @@ $(function() {
 					if (user.length>0 || ns !== "-99") {
 						api.get(api_sett).then(function(data){
 							if (data.query.recentchanges.length>0) {
-								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling...';
+								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
 								betterDiff.patrolRevisions(
 									data.query.recentchanges,
 									document.querySelector('#targetedPatrolDetails'),
 									{
 										patrolled: 'Patrolled %patrolled% edits!',
 										open: '%open% deleted edits opened!'
-									}
+									},
+									'Patrolling %tot% edits, %curr% left...'
 								);
 							} else {
 								document.querySelector('#targetedPatrolDetails').innerHTML = (user.length>0 ? 'User' : 'Namespace')+' has no edits to patrol!';
@@ -390,7 +391,7 @@ $(function() {
 			var generateModal = function(modal, event) {
 				betterDiff.fetchTokens();
 				var generateHeader = function(data) {
-					href = mw.config.get('wgServer')+'/wiki/'+betterDiff.urlEncode(data.totitle)+'?diff='+data.torevid;
+					href = config.wgServer+mw.util.getUrl(data.totitle)+'?diff='+data.torevid;
 					var header = '';
 					var todate = new Date(data.totimestamp);
 					
@@ -403,7 +404,7 @@ $(function() {
 						'<td class="diff-otitle diff-side-deleted" colspan="2">'+
 							'<div id="mw-diff-otitle1">'+
 								'<strong>'+
-									'<a href="/wiki/'+betterDiff.urlEncode(data.fromtitle)+'?oldid='+data.fromrevid+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">'+
+									'<a href="'+config.wgServer+mw.util.getUrl(data.fromtitle)+'?oldid='+data.fromrevid+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">'+
 										'Revision as of '+
 										fromdate.getHours()+':'+fromdate.getMinutes()+
 										', '+fromdate.getDate()+' '+
@@ -411,7 +412,7 @@ $(function() {
 										fromdate.getFullYear()+
 									'</a> '+
 									'<span class="mw-diff-edit">('+
-										'<a href="/wiki/'+betterDiff.urlEncode(data.fromtitle)+'?action=edit&oldid='+data.fromrevid+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">edit</a>'+
+										'<a href="'+config.wgServer+mw.util.getUrl(data.fromtitle)+'?action=edit&oldid='+data.fromrevid+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">edit</a>'+
 									')</span>'+
 								'</strong>'+
 							'</div>'+
@@ -436,7 +437,7 @@ $(function() {
 					'<td class="diff-ntitle" colspan="'+(data.fromtimestamp ? '2' : '4')+'">'+
 						'<div id="mw-diff-ntitle1">'+
 							'<strong>'+
-								'<a href="/wiki/'+betterDiff.urlEncode(data.totitle)+'?oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">'+
+								'<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">'+
 									'Revision as of '+
 									todate.getHours()+':'+todate.getMinutes()+
 									', '+todate.getDate()+' '+
@@ -444,10 +445,10 @@ $(function() {
 									todate.getFullYear()+
 								'</a> '+
 								'<span class="mw-diff-edit">('+
-									'<a href="/wiki/'+betterDiff.urlEncode(data.totitle)+'?action=edit&oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">edit</a>'+
+									'<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?action=edit&oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">edit</a>'+
 								')</span> '+
 								'<span class="mw-diff-undo">('+
-									'<a href="/wiki/'+betterDiff.urlEncode(data.totitle)+'?action=edit&undoafter='+data.fromrevid+'&undo='+data.torevid+'" title="&quot;Undo&quot; reverts this edit and opens the edit form in preview mode. It allows adding a reason in the summary.">undo</a>'+
+									'<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?action=edit&undoafter='+data.fromrevid+'&undo='+data.torevid+'" title="&quot;Undo&quot; reverts this edit and opens the edit form in preview mode. It allows adding a reason in the summary.">undo</a>'+
 								')</span>'+
 							'</strong>'+
 						'</div>'+
@@ -460,7 +461,7 @@ $(function() {
 							(tokens.rollback.length>2 ? (
 								'<span class="mw-rollback-link">'+
 									'<a href="'+
-										'/wiki/'+betterDiff.urlEncode(data.fromtitle)+
+										config.wgServer+mw.util.getUrl(data.fromtitle)+
 										'?action=rollback&from='+data.touser+
 										'&token='+tokens.rollback+'" '+
 										'title="&quot;Rollback&quot; reverts the last contributor\'s edit(s) to this page in one click"'+
@@ -665,53 +666,6 @@ $(function() {
 						}
 					});
 				popup.create();
-				var massPatrol = function() {
-					if (!document.querySelector('.patrollink a')) {alert('Nothing to mass patrol.\nIf you believe this to be an error, please contact [[User:Mikevoir]]!');}
-					else {
-						var link = document.querySelector('.patrollink a');
-						var wrapper = document.querySelector('.patrollink');
-						wrapper.innerHTML = 
-						'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
-						var torevid = link.getAttribute('torevid');
-						var fromrevid = link.getAttribute('fromrevid');
-						api.get({
-							action: 'query',
-							list: 'recentchanges',
-							rcshow: '!patrolled',
-							rcprop: 'ids',
-							format: 'json',
-							rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
-							formatversion: '2',
-							rclimit: 'max'
-						}).then(function(data) {
-							var num = 0;
-							var revids = [];
-							while (data.query.recentchanges[num]) {
-								if (
-									(
-										torevid && fromrevid &&
-										data.query.recentchanges[num].revid >= fromrevid &&
-										data.query.recentchanges[num].revid <= torevid
-									) ||
-									(
-										torevid && !fromrevid &&
-										data.query.recentchanges[num].revid == torevid
-									)
-								) {revids.push(data.query.recentchanges[num].revid);}
-								num++;
-							}
-							if (revids.length>0) {
-								betterDiff.patrolRevisions(revids, wrapper, {patrolled:'[Edits patrolled: %patrolled%]'});
-							} else {
-								wrapper.innerHTML = '[Error, no valid revisions found!]';
-								console.log('api result:',data);
-							}
-						}).catch(function(err){
-							wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
-							console.log('api result:', err);
-						});
-					}
-				};
 				document.addEventListener('click', function(event) {
 					// Load diff modal
 					if (event.target && (
@@ -726,12 +680,7 @@ $(function() {
 						generateModal(popup, event);
 					// Patrol revisions shown in modal if user has perms and there's any to patrol
 					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
-						massPatrol();
-					}
-				});
-				document.addEventListener('keydown', function(event) {
-					if (event.altKey && [80, 49].includes(event.keyCode)) {
-						massPatrol();
+						betterDiff.massPatrol();
 					}
 				});
 			});
@@ -768,7 +717,8 @@ $(function() {
 		},
 		
 		// Patrol inputted revid if user can patrol
-		patrolRevisions: function(revisions, el, ret) {
+		patrolRevisions: function(revisions, el, ret, dur) {
+			console.log(revisions, 'revisions to patrol');
 			if (can.patrol && revisions.length>0 && revisions[0].revid && tokens.patrol.length>2) {
 				var r = structuredClone(revisions);
 				var types = {
@@ -785,6 +735,10 @@ $(function() {
 							);
 						}
 						return;
+					} else {
+						if (el && dur) {
+							el.innerHTML = dur.replace(/\%curr\%/, r.length).replace(/\%tot\%/, revisions.length);
+						}
 					}
 					var cr = r.shift();
 					if (cr.rcid && log && log == 'nosuchrevid') {
@@ -826,15 +780,67 @@ $(function() {
 			}
 		},
 		
-		// Encode url with MediaWiki sensitive characters only
-		urlEncode: function(url) {
-			url = url || '';
-			url = url
-				.replace(/ /g, '_')
-				.replace(/\?/g, '%3F')
-				.replace(/\&/g, '%26')
-				.replace(/\"/g, '%22');
-			return url;
+		massPatrol: function() {
+			if (document.querySelector('.patrollink > a')) {
+				// move on to rest of code 
+			}
+			else if (document.querySelector('#massPatrol > a')) {
+				document.querySelector('#massPatrol > a').click();
+			}
+			else if (document.querySelector('#patrollink[data-mw="interface"] > a')) {
+				document.querySelector('#patrollink[data-mw="interface"] > a').click();
+			}
+			else if (!document.querySelector('.patrollink > a')) {
+				alert('Nothing to mass patrol.\nIf you believe this to be an error, please contact [[User:Mikevoir]]!');
+				return;
+			}
+			var link = document.querySelector('.patrollink > a');
+			var wrapper = document.querySelector(':is(.massPatrol, .patrollink)');
+			wrapper.innerHTML = 
+			'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
+			var torevid = link.getAttribute('torevid');
+			var fromrevid = link.getAttribute('fromrevid');
+			api.get({
+				action: 'query',
+				list: 'recentchanges',
+				rcshow: '!patrolled',
+				rcprop: 'ids',
+				format: 'json',
+				rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
+				formatversion: '2',
+				rclimit: 'max'
+			}).then(function(data) {
+				var num = 0;
+				var revids = [];
+				while (data.query.recentchanges[num]) {
+					if (
+						(
+							torevid && fromrevid &&
+							data.query.recentchanges[num].revid >= fromrevid &&
+							data.query.recentchanges[num].revid <= torevid
+						) ||
+						(
+							torevid && !fromrevid &&
+							data.query.recentchanges[num].revid == torevid
+						)
+					) {revids.push(data.query.recentchanges[num]);}
+					num++;
+				}
+				if (revids.length>0) {
+					betterDiff.patrolRevisions(
+						revids,
+						wrapper,
+						{patrolled:'[Edits patrolled: %patrolled%]'},
+						'[Patrolling %tot% edits, %curr% left...]'
+					);
+				} else {
+					wrapper.innerHTML = '[Error, no valid revisions found!]';
+					console.log('api result:',data);
+				}
+			}).catch(function(err){
+				wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+				console.log('api result:', err);
+			});
 		},
 		
 		// Delay until element exists to run function

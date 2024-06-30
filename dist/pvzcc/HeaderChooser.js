@@ -8,7 +8,7 @@
 */
 
 var possibleTexts = [
-    // Common - Weight 50000
+    // Common - Weight 51000
     {
         texts: [
             "Create your own characters!",
@@ -87,7 +87,7 @@ var possibleTexts = [
             "Under the light of a thousand stars!",
             "Food fight!",
             "The exclamation mark ran away",
-            "It’s a wild world out there!",
+            "It's a wild world out there!",
             "Say cheese!",
             "It's giving botany!",
             "Get shuffled into my deck!",
@@ -119,12 +119,39 @@ var possibleTexts = [
             "Aloha Fridays!",
             "Noooooooooo!",
             "ಠ_ಠ",
-            "PvZCC Presents: Greg!",
-            "Then It Go Fart Fart Fart!"
+            "PvZCC Presents: Greg",
+            "Then It Go Fart Fart Fart!",
+            "My eyes are up here!",
+            "Rustling my jimmies!",
+            "Contains way too much syrup!",
+            "Reasonable difficulty progression!",
+            "Check out the Creative Hub!",
+            "Tell us your stories!",
+            "Snorkel gear not included!",
+            "Ungh! Ungh! Ungh! Aaaah!",
+            "I'm a gnome! I'm a garden gnome!",
+            "OddLy PlaCed CaPitAL leTTerS!",
+            "Why is it so quiet?",
+            "Keep calm and plant on!",
+            "Plantastic adventures await!",
+            "Zomb-tastic fun!",
+            "Spread your roots!",
+            "Sprout your ideas!",
+            "OK Bloomer!",
+            "Embrace the Church of Flag!",
+            "Your days are numbered!",
+            "The root of all evil!",
+            "Reap what you sow!",
+            "A garden of possibilities!",
+            "The grass is greener, as am I!",
+            "Planting seeds of change!",
+            "Did someone turn off the lights?",
+            "What's going on out there?",
+            "It's a bird, it's a plane, it's Snapdragon!"
         ],
-        weight: 50000
+        weight: 51000
     },
-    // Rare - Weight 2000
+    // Rare - Weight 1500
     {
         texts: [
             "💚 DsFanboy!",
@@ -137,14 +164,14 @@ var possibleTexts = [
             "💜 Creepes.",
             "💜 DolphiGaming!"
         ],
-        weight: 2000
+        weight: 1500
     },
-    // Legendary - Weight 125
+    // Legendary - Weight 69
     {
         texts: [
             "Skibidi bibidi!"
         ],
-        weight: 125
+        weight: 69
     },
     // Rainbow - Weight 1
     {

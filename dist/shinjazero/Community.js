@@ -1,1 +1,0 @@
-$(`p:contains("mobile user")`).remove()
