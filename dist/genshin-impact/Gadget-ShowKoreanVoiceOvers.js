@@ -1,14 +1,5 @@
 /* Add show Korean class to body */
-function runWhenDOMContentLoaded(runnable) {
-	if (/comp|inter|loaded/.test(document.readyState)) {
-		runnable();
-	} else {
-		document.addEventListener('DOMContentLoaded', function() {
-			runnable();
-		});
-	}
-}
-runWhenDOMContentLoaded(function() {
+mw.hook('wikipage.content').add(function() {
 	var body = document.querySelector('body');
 	body.classList.add('show-ko-vo');
 });

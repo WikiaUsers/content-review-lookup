@@ -5,7 +5,7 @@
 	if (window.dev.IPM._loaded == true) { return; }
 	window.dev.IPM._loaded = true;
 	
-	var config = mw.config.get(['wgAction', 'wgNamespaceNumber', 'wgServer']);
+	var config = mw.config.get(['wgAction', 'wgNamespaceNumber', 'wgServer', 'wgArticlePath']);
 	var api;
 	var betterLinkSuggest = {
 		
@@ -14,10 +14,10 @@
 			if (config.wgNamespaceNumber == 1200 || (config.wgNamespaceNumber == 0 && config.wgAction == 'view')) {
 				api = new mw.Api();
 				// Add necessary styles that dont load outside editor screen and custom ones
-    			importArticle({
-    			    type: 'style',
-    			    article: 'u:dev:MediaWiki:ImprovedProseMirror.css'
-    			});
+				importArticle({
+					type: 'style',
+					article: 'u:dev:MediaWiki:ImprovedProseMirror.css'
+				});
 				betterLinkSuggest.waitFor('#MessageWall, #articleComments', function() {
 					betterLinkSuggest.wikiLinks();
 					betterLinkSuggest.customInsert();
@@ -105,7 +105,7 @@
 						} else if (event.key == 'Enter' && document.querySelector('.IPM-list > div') && suggestBox.attr('aria-activedescendant')) {
 							event.preventDefault();
 							methods.dispatchLink();
-						} 
+						}
 					});
 				},
 				
@@ -176,6 +176,7 @@
 					var caret;
 					var link_regex = /^.*(\[\[)([^\[\]]+)(\]\]|$)/;
 					var ext_link_regex = /^.*(\[)([^\[\]]+)(\])$/;
+					var ext_url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from https://dev.fandom.com/load.php?modules=DeleteCommentModal-voLa7ynP.js
 					var raw_str = '';
 					var link_str = '';
 					var matches;
@@ -197,11 +198,11 @@
 							methods.SEARCH.node = caret.data.focusNode;
 							if (caret.data.type == 'Caret' && caret.position > 0 && link_str.length > 0 && raw_str.length > link_str.length) {
 								methods.getPages(link_str);
-								document.querySelector('.wikiEditor-ui-linkSuggest').style.top  = (event.pageY) + 'px';
+								document.querySelector('.wikiEditor-ui-linkSuggest').style.top = (event.pageY) + 'px';
 								document.querySelector('.wikiEditor-ui-linkSuggest').style.left = (event.pageX-12) + 'px';
 							} else if (caret.data.type == 'Range') {
 								methods.getPages(link_str);
-								document.querySelector('.wikiEditor-ui-linkSuggest').style.top  = (event.pageY) + 'px';
+								document.querySelector('.wikiEditor-ui-linkSuggest').style.top = (event.pageY) + 'px';
 								document.querySelector('.wikiEditor-ui-linkSuggest').style.left = (event.pageX-12) + 'px';
 							}
 						} else if (ext_link_regex.test(caret.data.focusNode.nodeValue.slice(0, caret.position))) {
@@ -211,8 +212,10 @@
 							methods.SEARCH.offset = raw_str.indexOf(methods.SEARCH.str);
 							methods.SEARCH.node = caret.data.focusNode;
 							var url = prompt('Insert external URL to link to');
-							if (url && url.length>0) {
+							if (ext_url_regex.test(url)) {
 								methods.dispatchLink(matches[2], url);
+							} else if (url) {
+								alert('Invalid URL!');
 							}
 						}
 					}
@@ -267,7 +270,7 @@
 						function(page){
 							var link = $(
 								'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget wikiEditor-ui-linkSuggest-suggestion" role="option" tabindex="-1" link-to="'+
-									(page.linkto || (mw.util.getUrl(page.title)))+
+									(page.linkto || (config.wgServer + mw.util.getUrl(page.title)))+
 								'">'+
 									'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
 								'</div>'
@@ -323,15 +326,15 @@
 						button.on('mousedown', function(event){
 							event.preventDefault();
 							var temp = {};
-							var parsedInsert = 
+							var parsedInsert =
 								insert.insert
 									.replace(/%([\w\s]+)%/gi, function(str, type){
 										var ret = '';
-										ret = (insert[type] && insert[type].length>0) ? 
-											insert[type] : 
+										ret = (insert[type] && insert[type].length>0) ?
+											insert[type] :
 											(
-												(temp[type] && temp[type].length>0) ? 
-												temp[type] : 
+												(temp[type] && temp[type].length>0) ?
+												temp[type] :
 												prompt('What value to replace "'+type+'" with?')
 											);
 										temp[type] = ret; // avoid asking again in the same insert
@@ -340,12 +343,14 @@
 							// template expand only works with plain text returns, but thats up to user to use properly
 							api.parse(parsedInsert, {disablelimitreport:true, pst:true}).then(function(txt){
 								var e = $(txt);
-								txt = e.is('.mw-parser-output') ?  e.html() : e.find('.mw-parser-output').html();
+								txt = e.is('.mw-parser-output') ? e.html() : e.find('.mw-parser-output').html();
+								var anchor_regex = new RegExp('(?<=\\<a .*href\\=\\")' + config.wgArticlePath.replace('$1', '(.+?)') + '(?=\\".*\\>)', 'gi');
+								txt = txt.replace(anchor_regex, config.wgServer + config.wgArticlePath); // make relative urls absolute so they don't get removed after posting message
 								if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = txt;}
 								else {
 									$(
-										sel.node.nodeType === 3 ? 
-										sel.node.parentNode : 
+										sel.node.nodeType === 3 ?
+										sel.node.parentNode :
 										sel.node
 									).replaceWith($(
 										'<p>'+
@@ -359,7 +364,7 @@
 									
 						});
 						list.append(button);
-					} 
+					}
 					else if (
 						insert.nested && insert.button &&
 						insert.nested.length>0 && insert.button.length>0
@@ -412,8 +417,8 @@
 					
 					// start observing
 					observer.observe(document, {
-					  childList: true,
-					  subtree: true
+						childList: true,
+						subtree: true
 					});
 				}
 			}

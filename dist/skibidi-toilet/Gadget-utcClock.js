@@ -2,6 +2,9 @@ var i18n = {
 	en: {
 		linkTitle: 'Click to purge the server cache for the current wiki page'
 	},
+	ar: {
+		linkTitle: 'انقر لمسح ذاكرة التخزين المؤقت للخادم لصفحة الويكي الحالية'
+	},
 	de: {
 		linkTitle: 'Klicke hier, um den Server-Cache der aktuellen Seite zu leeren'
 	},
@@ -17,7 +20,7 @@ var i18n = {
 	pt: {
 		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
 	},
-	pt-br: {
+	"pt-br": {
 		linkTitle: 'Clique para limpar o cache do servidor para a página da wiki atual'
 	},
 	ru: {

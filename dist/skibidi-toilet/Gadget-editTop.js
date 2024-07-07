@@ -2,6 +2,7 @@ var l10n = (function(){
 	var $text = {
 		'edit': {
 			'en': 'edit',
+                        'ar': 'يحرر',
 			'de': 'Intro bearbeiten',
 			'es': 'editar',
 			'fr': 'modifier',
@@ -14,6 +15,7 @@ var l10n = (function(){
 		},
 		'edit_source': {
 			'en': 'edit source',
+                        'ar': 'تحرير المصدر',
 			'de': 'Intro-Quelltext bearbeiten',
 			'es': 'ediar con \"Source Editing\"',
 			'fr': 'modifier le wikicode',
@@ -26,6 +28,7 @@ var l10n = (function(){
 		},
 		'title': {
 			'en': 'Edit \"intro\" section',
+                        'ar': 'تحرير قسم "\المقدمة\"',
 			'de': 'Bearbeite den einführenden „Intro“-Abschnitt dieser Seite',
 			'es': 'Editar \"Intro\" Sección',
 			'fr': 'Modifier la section d\'« introduction »',

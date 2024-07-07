@@ -14,10 +14,6 @@ if ((mw.config.get('wgCanonicalNamespace') !== "Special") && (mw.config.get('wgC
   // Output a log for debugging.
   console.log("Applying MathJax...");
 
-  var script_1 = document.createElement('script');
-  script_1.src = "https://polyfill.io/v3/polyfill.min.js?features=es6";
-  document.head.appendChild(script_1);
-
   var script_2 = document.createElement('script');
   script_2.id = "MathJax-script";
   script_2.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";

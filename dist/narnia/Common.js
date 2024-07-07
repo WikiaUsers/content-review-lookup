@@ -59,6 +59,7 @@ function checktimers() {
 }
 addOnloadHook(checktimers)
 
+TBL_WIKIS = [ "narnia", "cs lewis", "chronicles of narnia", "literature", "books", "childrens books" ];
 
 // **************************************************
 //  - end -  Experimental javascript countdown timer

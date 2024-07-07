@@ -13,9 +13,12 @@ mw.hook('wikipage.content').add(function () {
 		'.fl-filter-wrapper {display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;align-items: center;}'+
 		'.fl-filter-group {display:flex;gap:5px;flex-wrap:wrap;background:var(--theme-page-background-color);padding:5px;border-radius:3px;border:2px solid var(--theme-border-color);align-items: center;min-height: 44px;}'+
 		'.fl-checkbox {display:none;}'+
-		'.fl-checkbox-label {display:inline; border-radius: 8px; padding: 3px; cursor: pointer;user-select: none}'+
+		'.fl-toggle-qa-all, .fl-toggle-qa-none {cursor: pointer;}'+
+		'.fl-checkbox-label {display:inline; border-radius: 8px; padding: 3px; cursor: pointer;user-select: none;}'+
 		'.fl-checkbox-label:has(.fl-checkbox:checked) {background: rgba(var(--theme-link-color--rgb),0.2); }'+
 		'.fl-checkbox-label:hover {outline: solid 1px #E9E5DC;}'+
+		'.fl-toggle-label {line-height: 1.2;}'+
+		'.fl-toggle-qa {font-size:0.6em;}'+
 		'.fl-search {background: var(--theme-color-6); color: var(--theme-page-text-color); border: 0; border-radius: 4px; height: 30px; padding: 4px;}'
 	);
 	document.querySelectorAll('.fl-wrapper:not(.fl-loaded)').forEach(function(wrapper){
@@ -59,7 +62,18 @@ mw.hook('wikipage.content').add(function () {
 		}, 500);
 		settings.forEach(function(curr) {
 			if (curr.toggles) {
-				var togglewrap = $('<div class="fl-filter-group '+(curr.class||'')+'">'+(curr.label ? ('<div class="fl-toggle-label" title="Click to reset toggles">'+curr.label+':</div> ') :'')+'</div>');
+				var togglewrap = $(
+					'<div class="fl-filter-group '+(curr.class||'')+'">'+
+						'<div class="fl-toggle-label">'+
+							(curr.label ? (curr.label+':') :'')+
+							'<div class="fl-toggle-qa">'+
+								'<a class="fl-toggle-qa-all">ALL</a>'+
+								' &mdash; '+
+								'<a class="fl-toggle-qa-none">NONE</a>'+
+							'</div>'+
+						'</div>'+
+					'</div>'
+				);
 				curr.toggles.forEach(function(toggle){
 					flc++;
 					var opt = $('<label for="fl-toggle-'+flc+'" class="fl-checkbox-label">');
@@ -90,9 +104,9 @@ mw.hook('wikipage.content').add(function () {
 					togglewrap.append(opt);
 				});
 				// reset toggles in group when clicking label
-				togglewrap.children('.fl-toggle-label').on('click.fls', function() {
+				togglewrap.find('.fl-toggle-qa-all, .fl-toggle-qa-none').on('click.fls', function(e) {
 					var checks = togglewrap.find('.fl-checkbox');
-					checks.prop('checked', togglewrap.is(':not(:checked)'));
+					checks.prop('checked', e.currentTarget.classList.contains('fl-toggle-qa-all'));
 					checks.trigger('change');
 				});
 				filters.append(togglewrap);

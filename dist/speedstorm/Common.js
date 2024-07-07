@@ -55,30 +55,6 @@ if (welcomeCustom) {
     addLanguageLinks();
 }
 /*----------------------------------------*/
-/**********************Add pic to the top bar*********************************
-const communityHeaderWrapper = document.querySelector('.community-header-wrapper');
-const newPicOnTop = '<div class="pic-on-top"><img alt="MegHercCars.png" src="https://static.wikia.nocookie.net/speedstorm/images/0/0c/MegHercCars.png/revision/latest/scale-to-width-down/300?cb=20220819085733" decoding="async" width="300" height="163" data-image-name="MegHercCars.png" data-image-key="MegHercCars.png" data-src="https://static.wikia.nocookie.net/speedstorm/images/0/0c/MegHercCars.png/revision/latest/scale-to-width-down/300?cb=20220819085733" class=" lazyloaded" draggable="false"></div>';
-const putThePicOnTop = function () {
-    communityHeaderWrapper.insertAdjacentHTML('afterbegin', newPicOnTop);
-};
-
-if (communityHeaderWrapper) {
-    putThePicOnTop();
-}*/
-/***************************************/
-/***************************************/
-/*Social media buttons add links*/
-// const checkSocialMediaClass = document.querySelector('.socialMedia');
-// const steamButton = document.querySelector('#steam');
-// const container = document.querySelector('.sci');
-// const addLinks = function () {
-// const links = '<li data-text="Steam"><div class="SMbutton steam"><a href="https://store.steampowered.com/app/1537830/Disney_Speedstorm"><i class="fa fa-steam" aria-hidden="true"></i></a></div></li><li data-text="Youtube"><div class="SMbutton yt"><a href="https://www.youtube.com/c/DisneySpeedstorm/"><i class="fa fa-youtube" aria-hidden="true"></i></a></div></li><li data-text="Facebook"><div class="SMbutton facebook"><a href="https://www.facebook.com/disneyspeedstorm/"><i class="fa fa-facebook" aria-hidden="true"></i></a></div></li><li data-text="Twitter"><div class="SMbutton twitter"><a href="https://twitter.com/speedstormgame"><i class="fa fa-twitter" aria-hidden="true"></i></a></div></li>';
-// container.insertAdjacentHTML('afterbegin', links); 
-// };
-
-// if(checkSocialMediaClass) {
-//     addLinks();
-// }
 
 /***************************************/
 /***************************************/
@@ -106,16 +82,6 @@ if (checkPageRacers) {
 /***************************************/
 /***************************************/
 /***************************************/
-/* Taken from https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:common.js */
-$('.fandom-community-header__community-name-wrapper').append(
-	/* Adds A+ Wiki Badge to Title */
-    $('<img/>').addClass('hover-community-header-wrapper').css('height', '30px')
-	.attr('src', 'https://static.wikia.nocookie.net/sky-children-of-the-light/images/9/96/Fandom-A%2Bwiki-badge.png'),
-	
-	/* Adds Fandom Compass Badge to Title */
-	$('<img/>').addClass('hover-community-header-wrapper').css('height', '60px').css('padding-left', '5px').css('position', 'absolute').css('left', '100%').css('top', '-20px')
-	.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009')
-);
 
 /* Adding the list of the last new page creations */
 $.ajax({

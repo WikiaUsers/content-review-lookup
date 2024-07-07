@@ -1,6 +1,3 @@
-/* Добавляет сообщение на правый Рельс */
-window.AddRailModule = [{prepend: true}];
-
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 window.ImprovedTabbers = {
         HideHeaderTitle: true,
@@ -9,6 +6,9 @@ window.ImprovedTabbers = {
         SynchroInfoboxes: false,
         SynchroTabbers: false,
 };
+
+/* Добавляет сообщение на правый Рельс */
+window.AddRailModule = [{prepend: true}];
 
 /* LockOldComments */
     window.lockOldComments = (window.lockOldComments || {});

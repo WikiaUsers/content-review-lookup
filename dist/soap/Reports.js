@@ -28,6 +28,7 @@
 			'wgScriptPath',
 			'wgUserName'
 		]),
+		params = new URLSearchParams(window.location.search),
 		options = {},
 		modal = {},
 		reportDropdown,
@@ -53,7 +54,7 @@
 	function addLabel(data) {
 		return '<div class="sectionContent">' +
 			(data.label ? '<label for="' + data.id + '">' + data.label + '</label>' : '') +
-			'<input id="' + data.id + '" name="' + data.id + '" type="text" placeholder="' + data.placeholder + '" class="formInput" ' + (data.disabled ? 'disabled' : '') + '></input>' +
+			'<input value="' + (typeof(data.content) === 'string' ? mw.html.escape(data.content) : '') + '" id="' + data.id + '" name="' + data.id + '" type="text" placeholder="' + data.placeholder + '" class="formInput" ' + (data.disabled ? 'disabled' : '') + '>' +
 		'</div>';
 	}
 
@@ -65,7 +66,7 @@
 	function addTextarea(data) {
 		return '<div class="sectionContent">' +
 			(data.label ? '<label for="' + data.id + '">' + data.label + '</label>' : '') +
-			'<textarea id="' + data.id + '" name="' + data.id + '" placeholder="' + data.placeholder + '" class="formInput ' + (data.optional ? 'optional' : '') + '"></textarea>' +
+			'<textarea id="' + data.id + '" name="' + data.id + '" placeholder="' + data.placeholder + '" class="formInput ' + (data.optional ? 'optional' : '') + '">' + (typeof(data.content) === 'string' ? mw.html.escape(data.content) : '') + '</textarea>' +
 		'</div>';
 	}
 
@@ -209,7 +210,8 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape()
+								placeholder: msg("wikiurl-placeholder").escape(),
+								content: params.get('url')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -217,7 +219,8 @@
 							addLabel({
 								id: 'wikiname',
 								placeholder: msg("wikiname-placeholder").escape(),
-								disabled: true
+								disabled: true,
+								content: params.get('name')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -225,7 +228,8 @@
 							addTextarea({
 								id: 'user',
 								label: msg("user-label").escape(),
-								placeholder: msg("user-placeholder").escape()
+								placeholder: msg("user-placeholder").escape(),
+								content: params.get('user')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -285,7 +289,8 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape()
+								placeholder: msg("wikiurl-placeholder").escape(),
+								content: params.get('url')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -293,7 +298,8 @@
 							addLabel({
 								id: 'wikiname',
 								placeholder: msg("wikiname-placeholder").escape(),
-								disabled: true
+								disabled: true,
+								content: params.get('name')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -301,7 +307,8 @@
 							addTextarea({
 								id: 'user',
 								label: msg("user-label").escape(),
-								placeholder: msg("user-placeholder").escape()
+								placeholder: msg("user-placeholder").escape(),
+								content: params.get('user')
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -767,7 +774,7 @@
 			.append($newButton);
 		// Fire hook for scripts that use the button 
 		mw.hook('soap.reports').fire($newButton);
-		if (window.location.search.includes('openmodal')) $newButton.click();
+		if (params.get('openmodal') === '1') $newButton.click();
 	}
 
 	/**

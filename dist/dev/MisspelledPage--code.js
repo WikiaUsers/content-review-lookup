@@ -60,7 +60,7 @@ Under CC-BY-SA licence */
                         $('.noarticletext p:last').remove();
                         $('.noarticletext').append('<p style="font-size:130%; text-align:center;">' + i18n.msg('otherpages').escape() + '</p><ul style="list-style-type:circle;"></ul><p></p>');
                     }
-                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + i18n.msg('similitude', Math.round(similarity)).escape() + '%)</a></li>');
+                    $('.noarticletext ul').append('<li><a href="' + mw.util.getUrl(looppage) + '">' + looppage + ' (' + i18n.msg('similitude', Math.round(similarity)).escape() + ')</a></li>');
                 }
             }
             sortbysimilitudeandcolor();

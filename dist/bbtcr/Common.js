@@ -2,10 +2,8 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-        
         blocked: { u:'Juice Bottled', title:'nuh uh' },
         helper: { u:'Gotta Help', title:'gotta help help help' },
         inactive: { u:'NULL', title:'No title available' },
-        
 	}
 };

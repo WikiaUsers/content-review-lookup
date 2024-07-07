@@ -4,7 +4,7 @@
 //     Append article's topic to the header
 // ============================================
 
-var TOPIC_ARTICLES = ['Outsiders SMP', 'Rats SMP', 'A Wild Pig\'s Chase', 'Pirates SMP', 'Rat Hunt'];
+var TOPIC_ARTICLES = ['Outsiders SMP', 'Rats SMP', 'A Wild Pig\'s Chase', 'Pirates SMP', 'Rat Hunt', 'Rats: In Paris'];
 
 // Articles which are a part of the topic, but aren't "in" the topic, such as TwitchCon panels. "in XYZ" should therefore not be appended to the title.
 var BLACKLISTED_ARTICLES = ['Rats SMP: A Minecraft Tail', 'Pirates SMP: A Voyage to the Past!']

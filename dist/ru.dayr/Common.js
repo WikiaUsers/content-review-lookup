@@ -7,3 +7,10 @@ importArticles({
 		"u:nkch:MediaWiki:Snippet/SpecificLinksInNewWindow.js"
 	]
 });
+
+importArticles({
+    type: "script",
+    articles: [
+        "MediaWiki:AdaptiveImgToMobileDevice.js"
+    ]
+});

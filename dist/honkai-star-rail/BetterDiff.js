@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision:  07:11, 28 June 2024‎
+// Current revision:  20:07, 2 July 2024‎
 $(function() {
 
 	// Double load protection
@@ -108,21 +108,12 @@ $(function() {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
 			}
 			
-			// Check we're in the normal view of a file page or in a diff page
-			else if (
-				config.wgAction == 'view' && config.wgNamespaceNumber == 6 ||
-				config.wgDiffNewId
-			) {
-				document.addEventListener('keydown', function(event) {
-					if (event.altKey && [80, 49].includes(event.keyCode)) {
-						if (document.querySelector('.massPatrol > a')) {
-							document.querySelector('.massPatrol > a').click();
-						} else if (document.querySelector('.patrollink > a')) {
-							document.querySelector('.patrollink > a').click();
-						}
-					}
-				});
-			}
+			// Mouseless patrolling
+			document.addEventListener('keydown', function(event) {
+				if (event.altKey && ['1', 'p'].includes(event.key) && config.wgAction=='view') {
+					betterDiff.massPatrol();
+				}
+			});
 		},
 		
 		// Run callback every time Special:RecentChanges reloads results
@@ -374,14 +365,15 @@ $(function() {
 					if (user.length>0 || ns !== "-99") {
 						api.get(api_sett).then(function(data){
 							if (data.query.recentchanges.length>0) {
-								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling...';
+								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
 								betterDiff.patrolRevisions(
 									data.query.recentchanges,
 									document.querySelector('#targetedPatrolDetails'),
 									{
 										patrolled: 'Patrolled %patrolled% edits!',
 										open: '%open% deleted edits opened!'
-									}
+									},
+									'Patrolling %tot% edits, %curr% left...'
 								);
 							} else {
 								document.querySelector('#targetedPatrolDetails').innerHTML = (user.length>0 ? 'User' : 'Namespace')+' has no edits to patrol!';
@@ -678,53 +670,6 @@ $(function() {
 						}
 					});
 				popup.create();
-				var massPatrol = function() {
-					if (!document.querySelector('.patrollink a')) {alert('Nothing to mass patrol.\nIf you believe this to be an error, please contact [[User:Mikevoir]]!');}
-					else {
-						var link = document.querySelector('.patrollink a');
-						var wrapper = document.querySelector('.patrollink');
-						wrapper.innerHTML = 
-						'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
-						var torevid = link.getAttribute('torevid');
-						var fromrevid = link.getAttribute('fromrevid');
-						api.get({
-							action: 'query',
-							list: 'recentchanges',
-							rcshow: '!patrolled',
-							rcprop: 'ids',
-							format: 'json',
-							rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
-							formatversion: '2',
-							rclimit: 'max'
-						}).then(function(data) {
-							var num = 0;
-							var revids = [];
-							while (data.query.recentchanges[num]) {
-								if (
-									(
-										torevid && fromrevid &&
-										data.query.recentchanges[num].revid >= fromrevid &&
-										data.query.recentchanges[num].revid <= torevid
-									) ||
-									(
-										torevid && !fromrevid &&
-										data.query.recentchanges[num].revid == torevid
-									)
-								) {revids.push(data.query.recentchanges[num].revid);}
-								num++;
-							}
-							if (revids.length>0) {
-								betterDiff.patrolRevisions(revids, wrapper, {patrolled:'[Edits patrolled: %patrolled%]'});
-							} else {
-								wrapper.innerHTML = '[Error, no valid revisions found!]';
-								console.log('api result:',data);
-							}
-						}).catch(function(err){
-							wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
-							console.log('api result:', err);
-						});
-					}
-				};
 				document.addEventListener('click', function(event) {
 					// Load diff modal
 					if (event.target && (
@@ -739,12 +684,7 @@ $(function() {
 						generateModal(popup, event);
 					// Patrol revisions shown in modal if user has perms and there's any to patrol
 					} else if (event.target && event.target.nodeName == 'A' && event.target.closest('.patrollink') && event.target.getAttribute('torevid')) {
-						massPatrol();
-					}
-				});
-				document.addEventListener('keydown', function(event) {
-					if (event.altKey && [80, 49].includes(event.keyCode)) {
-						massPatrol();
+						betterDiff.massPatrol();
 					}
 				});
 			});
@@ -781,7 +721,8 @@ $(function() {
 		},
 		
 		// Patrol inputted revid if user can patrol
-		patrolRevisions: function(revisions, el, ret) {
+		patrolRevisions: function(revisions, el, ret, dur) {
+			console.log(revisions, 'revisions to patrol');
 			if (can.patrol && revisions.length>0 && revisions[0].revid && tokens.patrol.length>2) {
 				var r = structuredClone(revisions);
 				var types = {
@@ -798,6 +739,10 @@ $(function() {
 							);
 						}
 						return;
+					} else {
+						if (el && dur) {
+							el.innerHTML = dur.replace(/\%curr\%/, r.length).replace(/\%tot\%/, revisions.length);
+						}
 					}
 					var cr = r.shift();
 					if (cr.rcid && log && log == 'nosuchrevid') {
@@ -837,6 +782,71 @@ $(function() {
 					}
 				});
 			}
+		},
+		
+		massPatrol: function() {
+			if (document.querySelector('#quickDiff-popup.oo-ui-window-active')) {
+				// continue to custom mass patrolling
+			}
+			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
+				document.querySelector('#mw-diff-ntitle4 #massPatrol > a').click();
+				return;
+			}
+			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a')) {
+				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a').click();
+				return;
+			}
+			else if (!document.querySelector('.patrollink > a')) {
+				// no target, do nothing and end
+				return;
+			}
+			var link = document.querySelector('.patrollink > a');
+			var wrapper = document.querySelector('.patrollink');
+			wrapper.innerHTML = 
+			'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
+			var torevid = link.getAttribute('torevid');
+			var fromrevid = link.getAttribute('fromrevid');
+			api.get({
+				action: 'query',
+				list: 'recentchanges',
+				rcshow: '!patrolled',
+				rcprop: 'ids',
+				format: 'json',
+				rctitle: link.getAttribute('title').replace(/\&quot;/g, '"'),
+				formatversion: '2',
+				rclimit: 'max'
+			}).then(function(data) {
+				var num = 0;
+				var revids = [];
+				while (data.query.recentchanges[num]) {
+					if (
+						(
+							torevid && fromrevid &&
+							data.query.recentchanges[num].revid >= fromrevid &&
+							data.query.recentchanges[num].revid <= torevid
+						) ||
+						(
+							torevid && !fromrevid &&
+							data.query.recentchanges[num].revid == torevid
+						)
+					) {revids.push(data.query.recentchanges[num]);}
+					num++;
+				}
+				if (revids.length>0) {
+					betterDiff.patrolRevisions(
+						revids,
+						wrapper,
+						{patrolled:'[Edits patrolled: %patrolled%]'},
+						'[Patrolling %tot% edits, %curr% left...]'
+					);
+				} else {
+					wrapper.innerHTML = '[Error, no valid revisions found!]';
+					console.log('api result:',data);
+				}
+			}).catch(function(err){
+				wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+				console.log('api result:', err);
+			});
 		},
 		
 		// Delay until element exists to run function

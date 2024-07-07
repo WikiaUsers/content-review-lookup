@@ -13,8 +13,7 @@ window.UserTagsJS = {
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
 	'TheObliviousQuailOfficial': ['founder'],
-	'Mr. TheTrueOne': ['retiredmember'],
-	'JacksonALT': ['retiredmember']
+	'Mr. TheTrueOne': ['retiredmember']
 };
 
 window.lockOldComments = (window.lockOldComments || {});

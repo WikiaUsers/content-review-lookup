@@ -17,7 +17,7 @@ $(function () {
 		console.log('MathJaxRunner: Polyfill の読み込みを開始します。');
 		
 		var element_script_polyfill = document.createElement('script');
-		element_script_polyfill.src = 'https://polyfill.io/v3/polyfill.min.js?features=es6';
+		element_script_polyfill.src = 'https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6';
 		document.head.appendChild(element_script_polyfill);
 		
 		console.log('MathJaxRunner: Polyfill の読み込みを終了しました。');

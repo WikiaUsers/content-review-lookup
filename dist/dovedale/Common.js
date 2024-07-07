@@ -103,31 +103,14 @@ $(document).ready(function() {
 });
 
 /* New Popup */
-document.addEventListener("DOMContentLoaded", function() {
-    var popupHtml = `
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <span class="close" onclick="closePopup()">&times;</span>
-                <h2>Welcome!</h2>
-                <p>We have launched a new website. Check it out!</p>
-                <button id="visitButton">Visit New Site</button>
-            </div>
-        </div>
-    `;
-
-    // Append the popup HTML to the body
-    document.body.insertAdjacentHTML('beforeend', popupHtml);
-
-    var popup = document.getElementById("popup");
-    popup.style.display = "block";
-
-    var visitButton = document.getElementById("visitButton");
-    visitButton.addEventListener("click", function() {
-        window.location.href = "https://dovedale.wiki";
-    });
+document.addEventListener('DOMContentLoaded', function() {
+  // Show the popup
+  var popup = document.getElementById('custom-popup');
+  popup.style.display = 'block';
+  
+  // Add an event listener to the button to close the popup
+  var button = document.querySelector('.wds-button');
+  button.addEventListener('click', function() {
+    popup.style.display = 'none';
+  });
 });
-
-function closePopup() {
-    var popup = document.getElementById("popup");
-    popup.style.display = "none";
-}

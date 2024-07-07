@@ -28,14 +28,6 @@ $(function () {
 	if (flag_is_non_special_namespace && flag_is_non_interface_namespace) {
 		console.log('MathJaxRunner: MathJax の実行が可能です。');
 		
-		console.log('MathJaxRunner: Polyfill の読み込みを開始します。');
-		
-		var element_script_polyfill = document.createElement('script');
-		element_script_polyfill.src = 'https://polyfill.io/v3/polyfill.min.js?features=es6';
-		document.head.appendChild(element_script_polyfill);
-		
-		console.log('MathJaxRunner: Polyfill の読み込みを終了しました。');
-		
 		console.log('MathJaxRunner: MathJax の設定を開始します。');
 		
 		// メインコンテンツを含むページの場合、そのメインコンテンツおよびコメントだけに MathJax を適用する。

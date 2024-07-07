@@ -81,6 +81,7 @@
                             cb: Date.now(),
                             name: config.wgSiteName,
                             report: '1',
+                            openmodal: '1',
                             url: config.wgServer
                                 .replace(/^https?:\/\//, '') +
                                 config.wgScriptPath,

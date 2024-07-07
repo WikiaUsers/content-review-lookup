@@ -31,6 +31,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
             stdmsgs = ['filedesc', 'license-header', 'fileexists-no-change', 'fileexists-duplicate-version', 'verification-error', 'fileexists-shared-forbidden', 'permissiondenied', 'watchthisupload', 'ignorewarnings', 'filewasdeleted'].join('|'),
             limit = (window.MultiUploadoption && window.MultiUploadoption.max) ? window.MultiUploadoption.max : -1,
             defaultlicense = (window.MultiUploadoption && window.MultiUploadoption.defaultlicense) ? window.MultiUploadoption.defaultlicense : '',
+            defaultdescription = (window.MultiUploadoption && window.MultiUploadoption.defaultdescription) ? window.MultiUploadoption.defaultdescription : '',
             curFile = 0;
 
         function preload() {
@@ -94,7 +95,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextField > td.mw-label > label").attr("for", "wpDestFile" + index);
                     filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextAreaField > td.mw-label > label").attr("for", "wpUploadDescription" + index);
                     filedesc.find("#wpDestFile").attr("name", "wpDestFile" + index).attr("id", "wpDestFile" + index).val(element.name);
-                    filedesc.find("#wpUploadDescription").attr("name", "wpUploadDescription" + index).attr("id", "wpUploadDescription" + index);
+                    filedesc.find("#wpUploadDescription").attr("name", "wpUploadDescription" + index).attr("id", "wpUploadDescription" + index).val(defaultdescription);
                     filedesc.find("#wpLicense").attr("name", "wpLicense" + index).attr("id", "wpLicense" + index).val(defaultlicense);
                     filedesc.append("<hr />");
                     filedesc.append("<td class=\"mw-input\"><input name=\"wpWatchthis" + index + "\" type=\"checkbox\" value=\"1\" " + watchuploads + " id=\"wpWatchthis" + index + "\">&nbsp;<label for=\"wpWatchthis" + index + "\">" + i18n.msg('watchthisupload').escape() + "</label></td>");

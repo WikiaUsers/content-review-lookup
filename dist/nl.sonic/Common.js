@@ -42,3 +42,11 @@ $(document).ready(function() {
         $(this).html(newHtml);
     });
 });
+
+document.querySelectorAll('.form .quote').forEach(function(element) {
+        element.style.backgroundColor = 'rgba(191, 152, 18, 0.5)';
+});
+
+document.querySelectorAll('.form .quotemark').forEach(function(element) {
+        element.style.color = 'rgba(191, 152, 18, 0.5)';
+});

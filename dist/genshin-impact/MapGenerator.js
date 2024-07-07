@@ -12,56 +12,58 @@ $(function() {
 	var loadedTemplates = {};
 	var mapRefs;
 	var zoom = 1;
+	var mode;
 	var mapGenerator = {
 		init: function() {
-			// Initialize localStorage if any
-			['MapGenerator-DT', 'MapGenerator-QGD'].forEach(function(sett){if(localStorage.getItem(sett)==null){localStorage.setItem(sett, 'checked');}});
-			if(localStorage.getItem('MapGenerator-UT')==null){localStorage.setItem('MapGenerator-UT', 'Item');} // default type for [[T:Map Image]] direct upload
 			
-			
-			// Clean page
-			$('#mw-content-text.mw-body-content').empty();
-			document.querySelector('h1.page-header__title').innerHTML = 'Map Generator';
-			document.title = 'Map Generator';
-			var tabs = '';
-			Object.keys(mapRefs).forEach(function(region){
-				if (region == sett.r) {
-					tabs += '<span class="active-tab"	id="'+region+'"	> '+region+' </span>';
-				} else if (region !== 'QuickGen') {
-					tabs += '<span class="inactive-tab"	id="'+region+'"	> '+region+' </span>';
-				}
-			});
-			var body = $('#mw-content-text.mw-body-content');
-			body.append($(
-				// Download toggle
-				'<div class="sett-item">'+
-					'<input class="giw-checkbox" type="checkbox" id="mapDownload" rel="MapGenerator-DT" '+localStorage.getItem('MapGenerator-DT')+'>'+
-					'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">Download generated maps directly</label>'+
+			if (mode=='full') {
+				// Clean page
+				$('#mw-content-text.mw-body-content').empty();
+				document.querySelector('h1.page-header__title').innerHTML = 'Map Generator';
+				document.title = 'Map Generator';
+				var tabs = '';
+				Object.keys(mapRefs).forEach(function(region){
+					if (region == sett.r) {
+						tabs += '<span class="active-tab"	id="'+region+'"	> '+region+' </span>';
+					} else if (region !== 'QuickGen') {
+						tabs += '<span class="inactive-tab"	id="'+region+'"	> '+region+' </span>';
+					}
+				});
+			}
+			var build = $(
+				// Download toggle, fullMode only
+				(mode=='full' ? ('<div class="sett-item">'+
+					'<label class="giw-checkbox-label" type="checkbox" for="mapDownload">'+
+						'<input class="giw-checkbox mapDownload" type="checkbox" rel="MapGenerator-DT" '+localStorage.getItem('MapGenerator-DT')+'>'+
+						'Download generated maps directly'+
+					'</label>'+
+				'</div>') : '')+
+				
+				// Quick Gen display, fullMode only
+				(mode=='full' ? ('<div class="sett-item">'+
+					'<label class="giw-checkbox-label" type="checkbox" for="quickGenDisplay">'+
+						'<input class="giw-checkbox quickGenDisplay" type="checkbox" rel="MapGenerator-QGD" '+localStorage.getItem('MapGenerator-QGD')+'>'+
+						'Display quick map generation section'+
+					'</label>'+
 				'</div>'+
 				
-				// Quick Gen display
-				'<div class="sett-item">'+
-					'<input class="giw-checkbox" type="checkbox" id="quickGenDisplay" rel="MapGenerator-QGD" '+localStorage.getItem('MapGenerator-QGD')+'>'+
-					'<label class="giw-checkbox-label" type="checkbox" for="quickGenDisplay">Display quick map generation section</label>'+
-				'</div>'+
-				
-				'<section id="quickGenSection" style="display:'+(localStorage.getItem('MapGenerator-QGD')=='checked' ? '' : 'none')+'">'+
+				'<section class="quickGenSection" style="display:'+(localStorage.getItem('MapGenerator-QGD')=='checked' ? '' : 'none')+'">'+
 					'<h2>'+
-						'<span class="mw-headline" id="Quick_Generator">Quick Generator</span>'+
+						'<span class="mw-headline Quick_Generator">Quick Generator</span>'+
 					'</h2>'+
-					'<div id="quickMapSection">'+
-						'<div id="mapContainer">'+
-							'<img id="mapImage" src="'+mapRefs.QuickGen.map+'" />'+
+					'<div class="quickMapSection">'+
+						'<div class="mapContainer">'+
+							'<img class="mapImage" src="'+mapRefs.QuickGen.map+'" />'+
 						'</div>'+
-						'<span class="wds-button" id="quickMapGenerator">Generate Maps</span>'+
-						'<span class="wds-button" id="ZoomIn">'+
+						'<span class="wds-button quickMapGenerator">Generate Maps</span>'+
+						'<span class="wds-button ZoomIn">'+
 							'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
 								'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z" />'+
 								'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z" />'+
 								'<path fill-rule="evenodd" d="M6.5 3a.5.5 0 0 1 .5.5V6h2.5a.5.5 0 0 1 0 1H7v2.5a.5.5 0 0 1-1 0V7H3.5a.5.5 0 0 1 0-1H6V3.5a.5.5 0 0 1 .5-.5z" />'+
 							'</svg>'+
 						'</span>'+
-						'<span class="wds-button" id="ZoomOut">'+
+						'<span class="wds-button ZoomOut">'+
 							'<svg height="16" fill="currentColor" viewBox="0 0 16 16" width="16">'+
 								'<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>'+
 								'<path d="M10.344 11.742c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1 6.538 6.538 0 0 1-1.398 1.4z"/>'+
@@ -69,150 +71,63 @@ $(function() {
 							'</svg>'+
 						'</span>'+
 					'</div>'+
-				'</section>'+
-				'<h2>'+
-					'<span class="mw-headline" id="Templates">Templates</span>'+
+				'</section>') : '')+
+				
+				// Template list, fullMode only
+				(mode=='full' ? ('<h2>'+
+					'<span class="mw-headline Templates">Templates</span>'+
 				'</h2>'+
-				'<div id="regionSelect" class="custom-tabs-default custom-tabs">'+
+				'<div class="regionSelect custom-tabs-default custom-tabs" class="custom-tabs-default custom-tabs">'+
 					tabs+
 				'</div>'+
-				'<div id="Templates-loading">'+
+				'<div class="Templates-loading">'+
 					'<img src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="25px" style="vertical-align: baseline;" border="0" /> '+
 					'Loading...'+
 				'</div>'+
-				'<div id="Templates-list"></div>'+
-				'<hr />'+
-				'<center>'+
-					'<span id="Templates-generator-note">No template selected.</span>'+
-					'<div id="Templates-generator" rel="">'+
-						'<img id="templateImage" width="100%" src="" rel="" />'+
+				'<div class="Templates-list"></div>'+
+				'<hr />') : '')+
+				
+				// Template generator, fullMode and quickMode
+				'<div class="Templates-generator-popup">'+
+					'<span class="Templates-generator-note">No template selected.</span>'+
+					'<div class="Templates-generator" rel="">'+
+						'<img class="templateImage" width="100%" src="" rel="" />'+
 					'</div>'+
 					'<div>'+
-						'<span class="wds-button" id="MapGenerator">Generate Map</span> '+
-						'<span class="wds-button" id="WikitextGenerator">Copy Wikitext</span>'+
+						'<span class="wds-button MapGenerator">Generate Map</span> '+
+						'<span class="wds-button WikitextGenerator">Copy Wikitext</span>'+
 					'</div>'+
 					'<div style="display: inline-flex;gap: 5px;margin-top: 5px;">'+
-						'<span class="wds-button" id="Templates-uploader">Upload Map</span> '+
-						'<div id="Templates-uploader-settings">'+
-							'<label for="Templates-uploader-name">Filename: <input type="text" id="Templates-uploader-name" /></label>'+
-							'<label for="Templates-uploader-type">Map type: <input type="text" id="Templates-uploader-type" placeholder="'+localStorage.getItem('MapGenerator-UT')+'" /></label>'+
+						'<span class="wds-button Templates-uploader">Upload Map</span> '+
+						'<div class="Templates-uploader-settings">'+
+							'<label for="Templates-uploader-name">Filename: <input type="text" class="Templates-uploader-name" /></label>'+
+							'<label for="Templates-uploader-type">Map type: <input type="text" class="Templates-uploader-type" placeholder="'+localStorage.getItem('MapGenerator-UT')+'" /></label>'+
 						'</div>'+
 					'</div>'+
-					'<div id="Templates-uploader-render">'+
-						'<span id="Templates-uploader-render-note"></span>'+
-						'<img id="Templates-uploader-render-image" width="100%" src="" />'+
+					'<div class="Templates-uploader-render">'+
+						'<span class="Templates-uploader-render-note"></span>'+
+						'<img class="Templates-uploader-render-image" width="100%" src="" />'+
 					'</div>'+
-				'</center>'));
-			mapGenerator.loadTemplates(mapRefs[sett.r]);
-			document.querySelector('#mapImage').onload = function() { mapGenerator.updateZoom(); };
-			document.querySelector('#mapContainer').style.setProperty('left', mapRefs.QuickGen.offset.left);	// Default map offset
-			document.querySelector('#mapContainer').style.setProperty('top', mapRefs.QuickGen.offset.top);	// Default map offset
-			$('#mapContainer').draggable();
-			$('#mapContainer').css('height', (screen.height-250)+'px'); // Limit container so no scrolling is required
-			mw.util.addCSS(
-				'.custom-tabs > span {flex: 1 0 20%;}'+
-				'.markerSettings > ul {\n'+
-					'display: flex;\n'+
-					'list-style-type: none;\n'+
-					'white-space: nowrap;\n'+
-					'margin: 0;\n'+
-					'padding: 5px 8px;\n'+
-					'background: rgb(26, 29, 35);\n'+
-					'border-radius: 3px;\n'+
-				'}\n'+
-				'.markerSettings > ul > li:not(:first-child):before {\n'+
-					'content: " | ";\n'+
-					'white-space: pre;\n'+
-				'}\n'+
-				'.markerSettings > ul > li, #regionSelect > :is(.active-tab, .inactive-tab) {\n'+
-					'cursor: pointer;\n'+
-				'}\n'+
-				'.custom-tabs > .active-tab {\n'+
-					'color: var(--active-tab-color);\n'+
-				'}\n'+
-				'.custom-tabs > .inactive-tab:hover {\n'+
-					'color: var(--inactive-tab-hover-color)\n'+
-				'}\n'+
-				'#Templates-list {\n'+
-					'display: flex;\n'+
-					'gap: 20px;\n'+
-					'flex-wrap: wrap;\n'+
-					'justify-content: center;\n'+
-				'}\n'+
-				'#Templates-list > .mapTemplate {\n'+
-					'display: flex;\n'+
-					'flex-direction: column;\n'+
-					'gap: 2px;\n'+
-					'text-align: center;\n'+
-					'width: 200px;\n'+
-				'}\n'+
-				'#Templates-generator-note {\n'+
-					'font-weight: bold;\n'+
-				'}\n'+
-				'#Templates-generator {\n'+
-					'width: 600px;\n'+
-					'position: relative;\n'+
-					'padding-bottom: 5px;\n'+
-				'}\n'+
-				'#quickMapGenerator {\n'+
-					'bottom: 5px;\n'+
-					'left: 5px;\n'+
-					'position: absolute;\n'+
-					'z-index: 999;\n'+
-				'}\n'+
-				'#ZoomIn {\n'+
-					'bottom: 37px;\n'+
-					'right: 5px;\n'+
-					'position: absolute;\n'+
-					'z-index: 999;\n'+
-					'border-radius: 3px 3px 0 0;\n'+
-				'}\n'+
-				'#ZoomOut {\n'+
-					'bottom: 5px;\n'+
-					'right: 5px;\n'+
-					'position: absolute;\n'+
-					'z-index: 999;\n'+
-					'border-radius: 0 0 3px 3px;\n'+
-				'}\n'+
-				'#quickMapSection {\n'+
-					'overflow: hidden;\n'+
-					'position: relative;\n'+
-					'border: 1px solid rgba(var(--theme-accent-color--rgba),0.5);\n'+
-					'border-radius: 5px;'+
-				'}\n'+
-				'#Templates-uploader-settings {\n'+
-					'display: flex;\n'+
-					'flex-direction: column;\n'+
-					'gap: 3px;\n'+
-					'text-align: left;\n'+
-				'}\n'+
-				'#Templates-uploader-settings > label {\n'+
-					'display: inline-flex;\n'+
-					'align-items: center;\n'+
-					'gap: 3px;\n'+
-				'}\n'+
-				'#Templates-uploader-render-note {\n'+
-					'display: inline-flex;\n'+
-					'align-items: center;\n'+
-					'gap: 3px;\n'+
-				'}\n'+
-				'#Templates-uploader-render-image {\n'+
-					'width: 600px;\n'+
-					'display: block;\n'+
-				'}\n'+
-				'.Templates-uploader-render-reload:hover {\n'+
-					'transition: .5s ease-in-out;\n'+
-					'rotate: 360deg;\n'+
-				'}\n'
-			);
+					'<span class="Templates-generator-close">X</span>'+
+				'</div>');
+			$('#mw-content-text.mw-body-content').append(build);
+			if (mode=='full') {
+				mapGenerator.loadTemplates(mapRefs[sett.r]);
+				document.querySelector('.mapImage').onload = function() { mapGenerator.updateZoom(); };
+				document.querySelector('.mapContainer').style.setProperty('left', mapRefs.QuickGen.offset.left);	// Default map offset
+				document.querySelector('.mapContainer').style.setProperty('top', mapRefs.QuickGen.offset.top);	// Default map offset
+				$('.mapContainer').draggable();
+				$('.mapContainer').css('height', (screen.height-250)+'px'); // Limit container so no scrolling is required
+			}
 			var closeMarkerSettings = function() {if (document.querySelector('.markerSettings')) {document.querySelector('.markerSettings').remove();}};
 			document.addEventListener('dblclick', function(event) {
 				closeMarkerSettings();
-				if (event.target && (event.target.id == 'mapImage' || event.target.id == 'templateImage')) {
+				if (event.target && (event.target.classList.contains('mapImage') || event.target.classList.contains('templateImage'))) {
 					event.preventDefault();
 					markers.count++;
-					var localZoom = (event.target.id == 'templateImage' ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.classList.contains('templateImage') ? 1 : zoom); // ignore zoom setting if not quickGen
 					var img = new Image();
+					img.setAttribute('style', 'display: none;'); // hide until position to avoid weird nyooms
 					img.onload = function () {
 						img.setAttribute('width', (loadedImages['File:Map-guide-marker-53.png'].size*localZoom)+'px');
 						img.setAttribute('style', 
@@ -230,14 +145,14 @@ $(function() {
 						src: 'File:Map-guide-marker-53.png',
 						x: event.layerX/localZoom,
 						y: event.layerY/localZoom,
-						type: (event.target.id == 'templateImage' ? 'Precise' : 'Quick'),
+						type: (event.target.classList.contains('templateImage') ? 'Precise' : 'Quick'),
 						elem: img
 					};
 					markers['marker'+markers.count] = newMarker;
-					if (event.target.id == 'templateImage')  {
-						$('#Templates-generator').append(img);
+					if (event.target.classList.contains('templateImage'))  {
+						$('.Templates-generator').append(img);
 					} else {
-						$('#mapContainer').append(img);
+						$('.mapContainer').append(img);
 					}
 				} else if (event.target && /^marker\d+/.test(event.target.id)) {
 					markers.count--;
@@ -247,13 +162,13 @@ $(function() {
 			});
 			document.addEventListener('change', function(event) {
 				closeMarkerSettings();
-				if (event.target && event.target.classList.contains('giw-checkbox')) {
+				if (mode=='full' && event.target && event.target.classList.contains('giw-checkbox')) {
 					var rel = event.target.getAttribute('rel');
 					localStorage.setItem(rel, event.target.checked ? 'checked' : '');
-					if (rel == 'MapGenerator-QGD') {document.querySelector('section#quickGenSection').style.setProperty('display', event.target.checked ? '' : 'none');}
-				} else if (event.target && event.target.id == 'Templates-uploader-type') {
+					if (rel == 'MapGenerator-QGD') {document.querySelector('section.quickGenSection').style.setProperty('display', event.target.checked ? '' : 'none');}
+				} else if (event.target && event.target.classList.contains('Templates-uploader-type')) {
 					localStorage.setItem('MapGenerator-UT', event.target.value);
-				} else if (event.target && event.target.id == 'Templates-uploader-name') {
+				} else if (event.target && event.target.classList.contains('Templates-uploader-name')) {
 					mapGenerator.renderImagePreview();
 				}
 			});
@@ -261,7 +176,7 @@ $(function() {
 				closeMarkerSettings();
 				if (event.target && /^marker\d+/.test(event.target.id)) {
 					event.preventDefault();
-					var localZoom = (event.target.closest('#Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.closest('.Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
 					var menu = $(
 						'<div class="markerSettings" style="z-index:99999; position:absolute;">'+
 							'<ul>'+
@@ -273,19 +188,17 @@ $(function() {
 							'</ul>'+
 						'</div>'
 					);
-					$('#'+(event.target.closest('#Templates-generator') ? 'Templates-generator' : 'mapContainer')).append(menu);
+					$('.'+(event.target.closest('.Templates-generator') ? 'Templates-generator' : 'mapContainer')).append(menu);
 					document.querySelector('.markerSettings').style.setProperty('top', markers[event.target.id].y*localZoom+(document.querySelector('.markerSettings').clientHeight/2)+'px');
 					document.querySelector('.markerSettings').style.setProperty('left', markers[event.target.id].x*localZoom-(document.querySelector('.markerSettings').clientWidth/2)+'px');
 				}
 			});
 			document.addEventListener('click', function(event) {
-				if (event.target && event.target.classList.contains('markerSettings-Close')) {
-					closeMarkerSettings();
-				} else if (event.target && event.target.classList.item(0) && /^markerSettings-\d\d/.test(event.target.classList.item(0))) {
+				if (event.target && event.target.classList.item(0) && /^markerSettings-\d\d/.test(event.target.classList.item(0))) {
 					var markerID = event.target.getAttribute('rel');
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
-					var localZoom = (event.target.closest('#Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
+					var localZoom = (event.target.closest('.Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
 					marker.onload = function() {
 						marker.setAttribute('width', (marker.naturalWidth*localZoom)+'px');
 						marker.style.setProperty('top', (markers[markerID].y - (marker.naturalHeight/2))*localZoom+ 'px');
@@ -294,8 +207,7 @@ $(function() {
 					};
 					marker.setAttribute('src', loadedImages[type].src);
 					markers[markerID].src = type;
-				} else if (event.target && event.target.closest('#regionSelect')) {
-					closeMarkerSettings();
+				} else if (mode=='full' && event.target && event.target.closest('.regionSelect')) {
 					mapGenerator.urlQuery(event.target.id);
 					
 					// Looad new region
@@ -303,54 +215,59 @@ $(function() {
 					mapGenerator.loadTemplates(mapRefs[sett.r]);
 					
 					// Update tabs
-					var curr = document.querySelector('#regionSelect > .active-tab');
+					var curr = document.querySelector('.regionSelect > .active-tab');
 					curr.classList.remove('active-tab');
 					curr.classList.add('inactive-tab');
 					event.target.classList.add('active-tab');
 					event.target.classList.remove('inactive-tab');
 					
 					// Reset template selection
-					document.querySelector('#Templates-generator-note').innerHTML = 'No template selected.';
-					document.querySelector('#Templates-generator-note').removeAttribute('rel');
-					document.querySelector('#templateImage').setAttribute('src', '');
-					document.querySelector('#templateImage').setAttribute('rel', '');
-					document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
+					document.querySelector('.Templates-generator-note').innerHTML = 'No template selected.';
+					document.querySelector('.Templates-generator-note').removeAttribute('rel');
+					document.querySelector('.templateImage').setAttribute('src', '');
+					document.querySelector('.templateImage').setAttribute('rel', '');
+					document.querySelectorAll('.Templates-generator > .mapMarker').forEach(function(marker){
 						markers.count--;
 						delete markers[marker.id];
 						marker.remove();
 					});
 					
-				} else if (event.target && event.target.id == 'quickMapGenerator') {
-					closeMarkerSettings();
+				} else if (mode=='full' && event.target && event.target.classList.contains('quickMapGenerator')) {
 					mapGenerator.processQuickMarkers();
-				} else if (event.target && event.target.id == 'ZoomIn') {
+				} else if (mode=='full' && event.target && event.target.classList.contains('ZoomIn')) {
 					zoom = zoom * 2;
 					mapGenerator.updateZoom();
-				} else if (event.target && event.target.id == 'ZoomOut') {
+				} else if (mode=='full' && event.target && event.target.classList.contains('ZoomOut')) {
 					zoom = zoom / 2;
 					mapGenerator.updateZoom();
-				} else if (event.target && event.target.id == 'MapGenerator') {
-					closeMarkerSettings();
+				} else if (event.target && event.target.classList.contains('MapGenerator')) {
 					mapGenerator.processPreciseMarkers();
-				} else if (event.target && event.target.id == 'WikitextGenerator') {
-					closeMarkerSettings();
-					navigator.clipboard.writeText(mapGenerator.genFilePage(sett.r, document.querySelector('#Templates-generator-note').getAttribute('rel')));
-				} else if (event.target && event.target.id == 'Templates-uploader') {
+				} else if (event.target && event.target.classList.contains('WikitextGenerator')) {
+					navigator.clipboard.writeText(mapGenerator.genFilePage(sett.r, document.querySelector('.Templates-generator-note').getAttribute('rel')));
+				} else if (event.target && event.target.classList.contains('Templates-uploader')) {
 					mapGenerator.getFileObject(
 						mapGenerator.processPreciseMarkers(true),
-						mapGenerator.genFilePage(sett.r, document.querySelector('#Templates-generator-note').getAttribute('rel'))
+						mapGenerator.genFilePage(sett.r, document.querySelector('.Templates-generator-note').getAttribute('rel'))
 					);
 				} else if (event.target && event.target.closest('.mapTemplate')) {
-					closeMarkerSettings();
+					event.preventDefault();
+					if (mode=='quick'){
+						document.querySelector('.Templates-generator-popup').classList.add('Templates-generator-popup-active');
+					}
 					mapGenerator.selectTemplate(event.target.closest('.mapTemplate').getAttribute('rel'));
-				} else {
+				} else if (mode=='quick' && event.target && event.target.closest('.Templates-generator-close')) {
+					document.querySelector('.Templates-generator-popup').classList.remove('Templates-generator-popup-active');
+				}
+				
+				// generic close settings if any
+				if (event.target && (!event.target.closest('.markerSettings')||event.target.classList.contains('markerSettings-Close')) && $('.markerSettings').length>0) {
 					closeMarkerSettings();
 				}
 			});
 		},
 		processPreciseMarkers: function(urlOnly) {
 			var valid = false;
-			var template = document.querySelector('#templateImage').getAttribute('rel');
+			var template = document.querySelector('.templateImage').getAttribute('rel');
 			if (!template || template.length==0) {alert('Select a map template.'); return;}
 			var canvas = document.createElement('canvas');
 			canvas.height = '600';
@@ -433,8 +350,8 @@ $(function() {
 			} else { alert ('No map available for the marker'); }
 		},
 		loadTemplates: function(templates) {
-			var container = $('#Templates-list');
-			var loading = document.querySelector('#Templates-loading');
+			var container = $('.Templates-list');
+			var loading = document.querySelector('.Templates-loading');
 			if (loadedTemplates[sett.r]) {
 				loading.style.setProperty('display', 'none');
 				container.html(loadedTemplates[sett.r]);
@@ -525,7 +442,7 @@ $(function() {
 		},
 		openImage: function(src, name) {
 			if (src && src.length>0 && name && name.length>0) {
-				if (document.querySelector('#mapDownload').checked) {
+				if (document.querySelector('.mapDownload').checked) {
 					var link = document.createElement('a');
 					link.download = name.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
 					link.href = src;
@@ -561,14 +478,14 @@ $(function() {
 			}
 		},
 		updateZoom: function() {
-			var map = document.querySelector('img#mapImage');
-			var container = document.querySelector('#mapContainer');
-			var section = document.querySelector('#quickMapSection');
+			var map = document.querySelector('img.mapImage');
+			var container = document.querySelector('.mapContainer');
+			var section = document.querySelector('.quickMapSection');
 			map.setAttribute('width', map.naturalWidth*zoom+'px');
 			container.style.setProperty('left', section.clientWidth/2-map.clientWidth/2+'px');
 			container.style.setProperty('top', section.clientHeight/2-map.clientHeight/2+'px');
 			container.setAttribute('zoom', zoom);
-			document.querySelectorAll('#mapContainer > .mapMarker').forEach(function(marker){
+			document.querySelectorAll('.mapContainer > .mapMarker').forEach(function(marker){
 				marker.setAttribute('width', (marker.naturalWidth*zoom)+'px');
 				marker.style.setProperty('left', ((markers[marker.id].x-(marker.naturalWidth/2)))*zoom+'px');
 				marker.style.setProperty('top', ((markers[marker.id].y-(marker.naturalHeight/2)))*zoom+'px');
@@ -608,7 +525,7 @@ $(function() {
 		},
 		uploadFile: function(file, text) {
 			if (file && text && text.length>0) {
-				var filename = document.querySelector('#Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '')+'.png';
+				var filename = document.querySelector('.Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '')+'.png';
 				api.post({
 					action: 'edit',
 					title: 'File:'+filename,
@@ -628,9 +545,9 @@ $(function() {
 			}
 		},
 		renderImagePreview: function() {
-			var filename = document.querySelector('#Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '');
-			var image = document.querySelector('#Templates-uploader-render-image');
-			var note = document.querySelector('#Templates-uploader-render-note');
+			var filename = document.querySelector('.Templates-uploader-name').value.trim().replace(/^File:/, '').replace(/\.png$/, '');
+			var image = document.querySelector('.Templates-uploader-render-image');
+			var note = document.querySelector('.Templates-uploader-render-note');
 			image.setAttribute('src', 'https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif');
 			if (filename.length>0) {
 				api.get({
@@ -655,9 +572,9 @@ $(function() {
 			}
 		},
 		selectTemplate: function(template) {
-			var manager = document.querySelector('#templateImage');
+			var manager = document.querySelector('.templateImage');
 			if (manager.getAttribute('rel') !== template) {
-				document.querySelectorAll('#Templates-generator > .mapMarker').forEach(function(marker){
+				document.querySelectorAll('.Templates-generator > .mapMarker').forEach(function(marker){
 					markers.count--;
 					delete markers[marker.id];
 					marker.remove();
@@ -665,11 +582,11 @@ $(function() {
 				manager.setAttribute('rel', template);
 				manager.setAttribute('src', loadedImages[template].src);
 				var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
-				document.querySelector('#Templates-generator-note').innerHTML = name;
-				document.querySelector('#Templates-generator-note').setAttribute('rel', name);
-				mapGenerator.urlQuery(sett.r, name);
+				document.querySelector('.Templates-generator-note').innerHTML = name;
+				document.querySelector('.Templates-generator-note').setAttribute('rel', name);
+				mapGenerator.urlQuery(name);
 			}
-			window.scrollTo(0, document.getElementById('Templates-generator-note').offsetTop);
+			window.scrollTo(0, document.querySelector('.Templates-generator-note').offsetTop);
 		},
 		urlQuery: function(r, m) {
 			var query = {
@@ -690,28 +607,68 @@ $(function() {
 				});
 				if (!query.r) {query.m = null;}
 			}
-			var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname +
-			'?r=' + encodeURIComponent(mw.util.escapeIdForLink(query.r || 'Mondstadt')) +
-			(query.m ? ('&m=' + encodeURIComponent(mw.util.escapeIdForLink(query.m))) : '');
-			
-			window.history.pushState({path:newurl},'',newurl);
+			if (mode == 'full') {
+				var newurl = 
+					window.location.protocol + "//" + window.location.host + window.location.pathname +
+					'?r=' + encodeURIComponent(mw.util.escapeIdForLink(query.r || 'Mondstadt')) +
+					(query.m ? ('&m=' + encodeURIComponent(mw.util.escapeIdForLink(query.m))) : '');
+				window.history.pushState({path:newurl},'',newurl);
+			}
+			if (query.m) {
+				mapGenerator.loadImages(['File:'+decodeURIComponent(query.m.replace(/_/g, ' '))+' Map Template.png']);
+			}
 			sett = {
 				r: decodeURIComponent((query.r || 'Mondstadt').replace(/_/g, ' ')),
 				m: (query.m ? decodeURIComponent(query.m.replace(/_/g, ' ')) : null)
 			};
-		}
+		},
 	};
-	if (['Genshin_Impact_Wiki:Map_Generator', 'Special:Map'].includes(config.wgPageName) && config.wgAction == 'view') {
+	var pages = ['Genshin_Impact_Wiki:Map_Generator', 'Special:Map'];
+	var links = $('a:has(.quickMap)');
+	if (
+		(
+			pages.includes(config.wgPageName)||
+			links.length>0
+		) && config.wgAction == 'view'
+	) {
+		// Import styles and define load mode
+		importArticle({
+				type: 'style',
+				article: 'MediaWiki:MapGenerator.css'
+		});
+		mode = pages.includes(config.wgPageName) ? 'full' : 'quick';
+		
+		// Initialize localStorage if any
+		['MapGenerator-DT', 'MapGenerator-QGD'].forEach(function(sett){if(localStorage.getItem(sett)==null){localStorage.setItem(sett, 'checked');}});
+		if(localStorage.getItem('MapGenerator-UT')==null){localStorage.setItem('MapGenerator-UT', 'Item');} // default type for [[T:Map Image]] direct upload
+		
 		// Uses user page to store JSON for now as mediawiki namespace is unusable unless Wiki Rep
 		api.get({action: 'query', prop: 'revisions', titles: 'MediaWiki:Custom-MapGenerator.json', rvprop: 'content', rvslots: '*'}).then(function(data){
 			mapRefs = JSON.parse(data.query.pages[Object.keys(data.query.pages)[0]].revisions[0].slots.main['*']);
-			mapGenerator.urlQuery();
 			mapGenerator.loadImages([
 				'File:Map-guide-marker-32.png',
 				'File:Map-guide-marker-53.png',
 				'File:Map-guide-marker-75.png',
 				'File:Map-guide-marker-96.png'
 			]);
+			if (mode=='full') {
+				document.body.classList.add('MapGenerator-fullMode');
+				mapGenerator.urlQuery();
+			} else if (mode=='quick') {
+				document.body.classList.add('MapGenerator-quickMode');
+				var maps = [];
+				links.each(function(_, link){
+					var map = 'File:'+((new URL(link.getAttribute('href'))).searchParams.get('m') || '')+' Map Template.png';
+					if (map && Object.keys(mapRefs).some(function(reg){return (reg !== 'QuickGen' && mapRefs[reg].includes(map));})) {
+						maps.push(map);
+						link.setAttribute('rel', map);
+						link.removeAttribute('href');
+						link.style.cursor = 'pointer';
+						link.classList.add('mapTemplate');
+					}
+				});
+				mapGenerator.loadImages(maps);
+			}
 			mapGenerator.init();
 		});
 	}

@@ -162,6 +162,7 @@ function plSaveSet(params){
 	if(params.build){params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
 	if(params.star){params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
 	if(params.level){params.url.searchParams.set('level', params.level);}
+	params.url.searchParams.set('save', 1);
 	history.replaceState({},'',params.url);
 }
 
@@ -276,6 +277,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plURLBuild = plURL.searchParams.get('build') ? parseInt(plURL.searchParams.get('build'), 36).toString(2) : null;
 	var plURLStar = plURL.searchParams.get('star') ? parseInt(plURL.searchParams.get('star'), 36).toString(2) : null;
 	var plURLLevel = parseInt(plURL.searchParams.get('level')) ? parseInt(plURL.searchParams.get('level')) : 0;
+	var plURLSave = plURL.searchParams.get('save') ? 1 : 0;
 	//console.log(plURLBuild);
 	//setTimeout(productListAddScroll, 2000);
 	//pl — productsList, список продуктов
@@ -291,9 +293,15 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	var plClear = plParams.querySelector('#products-list-clear');
 	var plSave = plParams.querySelector('#products-list-save');
 	plSave.innerHTML = '<input type="checkbox"/>';
-	plIsSave = false;
 	var plSaveInp = plSave.querySelector('input');
-	plSaveInp.checked = false;
+	var plIsSave;
+	if (plURLSave){
+		plIsSave = true;
+		plSaveInp.checked = true;
+	} else {
+		plIsSave = false;
+		plSaveInp.checked = false;
+	}
 	
 	//кнопки/ввод
 	plLevel.innerHTML = '<input type="number" min="1" max="1000" style="width: 50px;" />';
@@ -442,6 +450,7 @@ if (document.body.className.includes('page-Список_продуктов')) {
 			plURL.searchParams.delete('build');
 			plURL.searchParams.delete('star');
 			plURL.searchParams.delete('level');
+			plURL.searchParams.delete('save');
 			history.replaceState({},'',plURL);
 		}
 	});
@@ -595,8 +604,10 @@ if (document.body.className.includes('page-Список_продуктов')) {
 				if(i){
 					var tds = row.querySelectorAll('td');
 					var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+					var build = tds[2].firstChild.title;
+					var j = plBuildNames.indexOf(build);
 					//console.log(level, rowLvl);
-					if (rowLvl>level&&level){
+					if ((rowLvl>level&&level)||!plBuildList[j]){
 						row.style.display='none';
 					} else {
 						row.style.display='table-row';

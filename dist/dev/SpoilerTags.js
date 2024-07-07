@@ -115,28 +115,35 @@
             {
                 rules = rules || [];
 
-                if (node.cssRules)
+				// This try-catch is used to avoid throwing errors when trying to
+				// access rules whose access is restricted by the current CORS
+				// policy, so that we can continue to iterate.
+                try
                 {
-                    for (var i = 0; i < node.cssRules.length; i++)
+                    if (node.cssRules)
                     {
-                        var rule = node.cssRules[i];
-
-                        if (rule.selectorText == selectorString)
+                        for (var i = 0; i < node.cssRules.length; i++)
                         {
-                            rules.push(rule);
-                            if (firstOnly) return [ rule ];
+                            var rule = node.cssRules[i];
+    
+                            if (rule.selectorText == selectorString)
+                            {
+                                rules.push(rule);
+                                if (firstOnly) return [ rule ];
+                            }
+    
+                            // If this rule has sub-rules (via media queries, recurse them too)
+                            if (rule.cssRules && rule.cssRules.length > 0)
+                                recurse(rule, selectorString, rules);
+    
+                            // If this rule is an import, traverse its stylesheet
+                            if (rule instanceof CSSImportRule && rule.styleSheet != null)
+                                recurse(rule.styleSheet, selectorString, rules)
                         }
-
-                        // If this rule has sub-rules (via media queries, recurse them too)
-                        if (rule.cssRules && rule.cssRules.length > 0)
-                            recurse(rule, selectorString, rules);
-
-                        // If this rule is an import, traverse its stylesheet
-                        if (rule instanceof CSSImportRule && rule.styleSheet != null)
-                            recurse(rule.styleSheet, selectorString, rules)
                     }
                 }
-                
+                catch (error){}
+                    
                 return rules;
             }
     
@@ -155,15 +162,7 @@
                 for (var i = 0; i < document.styleSheets.length; i++)
                 {
                     var sheet = document.styleSheets[i];
-                    try
-                    {
-                        recurse(sheet, selectorString, rules);
-                    }
-                    catch(e)
-                    {
-                        continue;
-                    }
-                    
+                    recurse(sheet, selectorString, rules);
                 }
 
                 if (firstOnly)
@@ -315,6 +314,9 @@
 
         st.elements = {};
 
+        preprocessMultilineSpoilers();
+        preprocessGallerySpoilers();
+
         // Collection of spoiler elements
         st.spoilerElems = document.querySelectorAll(SPOILER_SELECTOR);
 
@@ -348,13 +350,13 @@
                 {
                     st.spoilAllButton.classList.toggle("spoiled", true);
                     st.spoilAllButton.dataset.wdsTooltip = util.msg("unspoil-all-tooltip");
-					st.spoilAllButton.setAttribute('aria-label', util.msg("unspoil-all-tooltip"));
+                    st.spoilAllButton.setAttribute('aria-label', util.msg("unspoil-all-tooltip"));
                 }
                 else
                 {
                     st.spoilAllButton.classList.toggle("spoiled", false);
                     st.spoilAllButton.dataset.wdsTooltip = util.msg("spoil-all-tooltip");
-					st.spoilAllButton.setAttribute('aria-label', util.msg("spoil-all-tooltip"));
+                    st.spoilAllButton.setAttribute('aria-label', util.msg("spoil-all-tooltip"));
                 }
             }
         });
@@ -415,8 +417,14 @@
     
             function fetchLoop()
             {
-                st.spoilerCSS = util.findCSSRules(":root").find(function(r){ return r.cssText.includes("--spoiler-tags-loaded"); });
-    
+                var pageStyles = getComputedStyle(document.body);
+
+                // Before trying to find the sheet, just look at the computed styles. This saves some processing time
+                if (pageStyles.getPropertyValue("--spoiler-tags-loaded") == "1")
+                {
+                    st.spoilerCSS = util.findCSSRules(":root").find(function(r){ return r.cssText.includes("--spoiler-tags-loaded"); });
+                }
+
                 // If the style sheet is loaded via importArticles or style injection, the rules that are
                 // fetched above may not exist, and we will need to wait for it to finish loading.
                 // This is because the application of the config relies on the existance of these styles.
@@ -437,9 +445,7 @@
                 }
                 else
                 {
-                    if (tryLoadStyleTime > 0)
-                        console.log("SpoilerTags : Found SpoilerTags.css!");
-    
+                    console.log("SpoilerTags : Found SpoilerTags.css!");
                     resolve();
                 }
             }
@@ -554,8 +560,8 @@
     // Pass this function null to clear the config
     function saveConfig(config)
     {
-    	var bitmaskStr = null;
-    	
+        var bitmaskStr = null;
+        
         if (config != null)
         {
             bitmaskStr = userConfigToBitmask(config).toString();
@@ -658,10 +664,10 @@
         if (!st.config.spoilAllButton || st.spoilerElems.length == 0) return;
 
         var spoilAllButton = document.createElement("button");
-		var spoilAllButtonAriaLabel =  st.isAllSpoiled() ? util.msg("unspoil-all-tooltip") : util.msg("spoil-all-tooltip");
+        var spoilAllButtonAriaLabel =  st.isAllSpoiled() ? util.msg("unspoil-all-tooltip") : util.msg("spoil-all-tooltip");
         spoilAllButton.className = "page-side-tool spoil-all-button";
         spoilAllButton.style.display = "none";
-		spoilAllButton.setAttribute('aria-label', spoilAllButtonAriaLabel);
+        spoilAllButton.setAttribute('aria-label', spoilAllButtonAriaLabel);
 
         var crossIcon = document.createElement("div");
         crossIcon.className = "spoil-cross-icon";
@@ -673,7 +679,7 @@
         // Create spoil settings button
         var spoilSettingsButton = document.createElement("button");
         spoilSettingsButton.className = "spoil-settings-button";
-		spoilSettingsButton.setAttribute('aria-label', util.msg("settings-title"));
+        spoilSettingsButton.setAttribute('aria-label', util.msg("settings-title"));
 
         var gearIcon = util.wdsTemp("gear-tiny", { class: "spoil-settings-icon" });
         //var gearIcon = window.dev.wds.icon("gear-tiny", { class: "spoil-settings-icon" });
@@ -732,7 +738,7 @@
         spoilSettingsButton.addEventListener("click", function(e)
         {
             spoilAllButton.blur();
-			spoilSettingsButton.blur();
+            spoilSettingsButton.blur();
             showSpoilerSettings();
             e.stopPropagation();
         });
@@ -983,8 +989,8 @@
             
             mw.hook("dev.wds").add(function(wds)
             {
-            	wds.render(toggleSpan);
-            	myTools.style.display = "";
+                wds.render(toggleSpan);
+                myTools.style.display = "";
             });
         }
 
@@ -1018,12 +1024,96 @@
         st.initialized = true;
     }
 
+    function getInlineAdjacentNodes(element) 
+    {
+        var result = [];
+    
+        function traverse(node) 
+        {
+            var currentGroup = [];
+            for (var i = 0; i < node.childNodes.length; i++) 
+            {
+                var child = node.childNodes[i];
+                var isText = child.nodeType == Node.TEXT_NODE && child.textContent.trim() != "";
+                var isInline = child.nodeType == Node.ELEMENT_NODE && isInlineElement(child);
+                
+                if (isText || isInline) 
+                    currentGroup.push(child);
+                else 
+                {
+                    if (currentGroup.length > 0) 
+                    {
+                        result.push(currentGroup);
+                        currentGroup = [];
+                    }
+                }
+                if (child.nodeType === Node.ELEMENT_NODE && !isInline) 
+                {
+                    traverse(child);
+                }
+            }
+            if (currentGroup.length > 0) 
+            {
+                result.push(currentGroup);
+            }
+        }
+    
+        function isInlineElement(element) 
+        {
+            var computedStyle = window.getComputedStyle(element);
+            return computedStyle.display == "inline" || computedStyle.display === "inline-block";
+        }
+    
+        traverse(element);
+        return result;
+    }
+
+    function preprocessMultilineSpoilers()
+    {
+        var multilineSpoilers = document.querySelectorAll("div.spoiler");
+        for (var i = 0; i < multilineSpoilers.length; i++)
+        {
+            var spoiler = multilineSpoilers[i];
+            spoiler.classList.remove("spoiler");
+            spoiler.classList.add("spoiler-group");
+
+            var adjacentNodes = getInlineAdjacentNodes(spoiler);
+
+            for (var t = 0; t < adjacentNodes.length; t++)
+            {
+                var span = document.createElement("span");
+                span.className = "spoiler";
+
+                for (var n = 0; n < adjacentNodes[t].length; n++)
+                {
+                    if (n == 0) adjacentNodes[t][n].before(span);
+                    span.append(adjacentNodes[t][n]);
+                }
+            }
+        }
+    }
+
+    function preprocessGallerySpoilers()
+    {
+        var gallerySpoilers = document.querySelectorAll(".spoiler-gallery");
+        for (var g = 0; g < gallerySpoilers.length; g++)
+        {
+            var spoiler = gallerySpoilers[g];
+            spoiler.classList.remove("spoiler-gallery");
+
+            var images = spoiler.querySelectorAll(".gallery-image-wrapper");
+
+            for (var i = 0; i < images.length; i++)
+                images[i].classList.add("spoiler-image");
+        }
+    }
+
     // A spoiler represents either a single span.spoiler element
     // or a collection of span.spoiler elements whose contents can
     // be blanked out in order to avoid spoilers
     function Spoiler(elem)
     {
-        if (elem == null) return;
+        if (elem == null || elem.parentNode == null) return;
 
         this.element = elem;
         this.element.spoiler = this;
@@ -1114,8 +1204,9 @@
                 this.element.dataset.group.split(",").forEach(function(id){ this.tryAddToGroup(id); }.bind(this));
         
             // Spoiler should be grouped because it is parented
+            // But don't group if this spoiler is nested!
             var groupElem = this.element.closest(".spoiler-group");
-            if (groupElem != null)
+            if (groupElem != null && this.parent == null)
                 this.tryAddToGroup(groupElem);
         },
     

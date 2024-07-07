@@ -1304,7 +1304,7 @@ var RCMManager =  (function () {
         pWikiData.updateLastChangeDate(Utils_1["default"].getFirstItemFromObject(pData));
         var tNewRC;
         pData.forEach(function (pRCData) {
-            var userEdited = pData.user != "" && pData.anon != "";
+            var userEdited = pRCData.user != "" && pRCData.anon != "";
             if (_this._changeShouldBePrunedBasedOnOptions(pRCData.user, userEdited, pWikiData)) {
                 return;
             }

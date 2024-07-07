@@ -559,6 +559,9 @@ $( function () {
 			if ( cats[i].title === 'Büyük düzenleme geçiren sayfalar' ) {
 				addEditIntro( 'Şablon:Kullanımda_giriş' );
 				break;
+			} else if ( cats[i].title === 'Kategori:Viki çaplı proje dâhilindeki sayfalar' ) {
+				addEditIntro( 'Şablon:Proje_giriş' );
+				break;
 			}
 		}
 	} else if ( mw.config.get( 'wgPageName' ) === 'Şablon:BiliyorMuydun' ) {

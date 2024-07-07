@@ -1,17 +1,20 @@
 ;(function() {
     var grid = document.querySelector("table#island-grid.placeable");
-    var maxBoxSize = 9;
     var boxSelector = document.createElement("div");
     boxSelector.id = "island-grid-box-selector";
     boxSelector.classList.add("island-grid-box-selector");
 
-    for (var size = 1; size <= maxBoxSize; ++size) {
-        var box = document.createElement("div");
-        box.classList.add("island-grid-box");
-        box.dataset.size = size + "x" + size;
-        box.textContent = size + "x" + size;
-        boxSelector.appendChild(box);
-    }
+    var boxSizes = [
+        "1x1", "2x2", "3x3", "4x4", "5x5", "6x6", "7x7", "8x8", "9x9", "15x15"
+    ];
+
+    boxSizes.forEach(function (size) {
+		var box = document.createElement("div");
+		box.classList.add("island-grid-box");
+		box.dataset.size = size;
+		box.textContent = size;
+		boxSelector.appendChild(box);
+	});
 
     grid.parentNode.insertBefore(boxSelector, grid.nextSibling);
 
@@ -24,6 +27,11 @@
     var isMovingExisting = false;
     var objects = new Map();
     var clickOffset = { row: 0, col: 0 };
+    var isDragging = false;
+    
+    var objectColor = 'lightblue';
+    var placeableColor = 'lightgreen';
+    var collisionColor = 'lightcoral';
 
     boxSelector.addEventListener("mousedown", function (e) {
         if (e.target.classList.contains("island-grid-box")) {
@@ -37,7 +45,7 @@
 
     grid.addEventListener("mousemove", function (e) {
         if (!draggedElement) return;
-
+        isDragging = true;
         clearHoverClasses();
 
         var cell = e.target;
@@ -51,6 +59,9 @@
             }
 
             var canPlace = checkCanPlace(startRow, startCol, selectedSize[0], selectedSize[1]);
+            
+            if(!canPlace)
+                e.target.style.cursor = "no-drop";
 
             applyHoverClasses(startRow, startCol, selectedSize[0], selectedSize[1], canPlace);
         }
@@ -58,7 +69,7 @@
     
     grid.addEventListener("mouseup", function (e) {
         if (!draggedElement) return;
-
+        isDragging = false;
         var cell = e.target;
         if (cell.tagName === "TD") {
             var startRow = cell.parentNode.rowIndex;
@@ -88,7 +99,7 @@
         isMovingExisting = false;
     });
 
-    grid.addEventListener("mousedown", function (e) {
+    grid.addEventListener("click", function (e) {
         var cell = e.target.closest("td");
         if (e.target.classList.contains("delete-btn")) {
             e.stopPropagation();
@@ -97,7 +108,17 @@
             removeObject(startRow, startCol);
             return;
         }
+        isDragging = false;
+    });
 
+    grid.addEventListener("mousedown", function (e) {
+        var cell = e.target.closest("td");
+        
+        if (e.target.classList.contains("delete-btn")) {
+            e.stopPropagation();
+            return;
+        }
+        
         if (cell && cell.classList.contains("occupied")) {
             var objectId = cell.dataset.objectId;
             if (objectId) {
@@ -122,9 +143,9 @@
         var cell = e.target.closest("td");
         if (e.target.classList.contains("delete-btn")) {
             e.target.style.cursor = "pointer";
-        } else if (cell && cell.classList.contains("occupied")) {
+        } else if (isDragging) {
             cell.style.cursor = "move";
-        } else if (cell) {
+        } else {
             cell.style.cursor = "default";
         }
     });
@@ -147,7 +168,7 @@
     }
 
     function applyHoverClasses(startRow, startCol, width, height, canPlace) {
-        var color = canPlace ? "lightgreen" : "lightcoral";
+        var color = canPlace ? placeableColor : collisionColor;
         for (var r = startRow; r < startRow + height; r++) {
             for (var c = startCol; c < startCol + width; c++) {
                 if (r < grid.rows.length && c < grid.rows[0].cells.length) {
@@ -167,7 +188,7 @@
             if (!cell.classList.contains("occupied")) {
                 cell.style.backgroundColor = originalColors.get(cell);
             } else {
-                cell.style.backgroundColor = "gray";
+                cell.style.backgroundColor = objectColor;
             }
         });
         currentColors.clear();
@@ -175,16 +196,20 @@
 
     function placeObject(startRow, startCol, width, height) {
         var objectId = generateObjectId();
+        var objectCells = [];
+        
         for (var r = startRow; r < startRow + height; r++) {
             for (var c = startCol; c < startCol + width; c++) {
                 var cell = grid.rows[r].cells[c];
                 cell.classList.add("occupied");
-                cell.style.backgroundColor = "gray";
+                cell.style.backgroundColor = objectColor;
                 cell.dataset.objectId = objectId;
-                currentColors.set(cell, "gray");
-                cell.style.border = getBorderStyle(r, c, startRow, startCol, width, height);
+                currentColors.set(cell, objectColor);
+                objectCells.push(cell);
             }
         }
+        
+        applyBorders(objectCells, startRow, startCol, width, height);
 
         var deleteBtn = document.createElement("div");
         deleteBtn.classList.add("delete-btn");
@@ -196,7 +221,12 @@
 
         grid.rows[startRow].cells[startCol].appendChild(deleteBtn);
 
-        objects.set(objectId, { startRow, startCol, width, height });
+        objects.set(objectId, {
+		  startRow: startRow,
+		  startCol: startCol,
+		  width: width,
+		  height: height
+		});
     }
 
     function removeObject(startRow, startCol) {
@@ -227,17 +257,32 @@
     function generateObjectId() {
         return 'object-' + Math.random().toString(36).substr(2, 9);
     }
+    
+    function applyBorders(objectCells, startRow, startCol, width, height) {
+        for (var cellidx in objectCells) {
+            var cell = objectCells[cellidx];
+            var r = cell.parentNode.rowIndex;
+            var c = cell.cellIndex;
 
-    function getBorderStyle(r, c, startRow, startCol, width, height) {
-        var borderStyle = "";
-        if (r === startRow) borderStyle += "2px solid black "; // top
-        else borderStyle += "0px none ";
-        if (c === startCol + width - 1) borderStyle += "2px solid black "; // right
-        else borderStyle += "0px none ";
-        if (r === startRow + height - 1) borderStyle += "2px solid black "; // bottom
-        else borderStyle += "0px none ";
-        if (c === startCol) borderStyle += "2px solid black"; // left
-        else borderStyle += "0px none";
-        return borderStyle;
+            // Reset borders first
+            cell.style.border = "none";
+
+            // Apply top border
+            if (r === startRow) {
+                cell.style.borderTop = "2px solid black";
+            }
+            // Apply bottom border
+            if (r === startRow + height - 1) {
+                cell.style.borderBottom = "2px solid black";
+            }
+            // Apply left border
+            if (c === startCol) {
+                cell.style.borderLeft = "2px solid black";
+            }
+            // Apply right border
+            if (c === startCol + width - 1) {
+                cell.style.borderRight = "2px solid black";
+            }
+        }
     }
 })();

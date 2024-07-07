@@ -25,3 +25,8 @@ function showSelectedImage() {
         toggleButton.setAttribute('aria-expanded', 'true'); // 更新 ARIA 属性
       }
     });
+
+
+
+
+/* 翻页笔记本js代码操作有效，炸了一趟css。2024年7月7日03:58:19已登记，css因js操作不当爆炸一次。 */

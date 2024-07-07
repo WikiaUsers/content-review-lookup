@@ -38,7 +38,7 @@ mw.loader.using([
                     if ($('#QuickTitleField').length > 0) {
                         return;
                     }
-                    var title = $(this)[0].firstChild.textContent.trim();
+                    var title = $(this).text().trim();
                     $(this).append(
                         $('<br/>'),
                         $('<input>', {

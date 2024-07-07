@@ -3,27 +3,29 @@
  * 在每次页面加载时加载的JavaScript参见[[MediaWiki:Common.js]]
  */
 
-( function () {
+mw.hook( 'wikipage.content' ).add( function ( $content ) {
 	/* 链接 */
-	$( '.external' ).attr( 'target', '_self' );
-	$( 'a.text[ href^="https://spaceflight-simulator.fandom.com/zh/" ]' ).attr( 'target', '_self' );
-	$( '.mw-parser-output a:has( img )[ target="_blank" ]' ).attr( 'target', '_self' );
+	$( '.external, a.text[ href^="https://spaceflight-simulator.fandom.com/zh/" ], .mw-parser-output a:has( img )[ target="_blank" ]' ).attr( 'target', '_self' );
 	
 	/* 图像 */
 	/** 图库 */
 	$( '.wikia-gallery-item:not( :last-child )' ).after( '\n' );
 	
 	if ( $( 'body' ).hasClass( 'ns--1' ) || $( 'body' ).hasClass( 'ns-14' ) ) {
-		var fileThumbs = $( '.wikia-gallery .thumb' );
-		var files = $( '.wikia-gallery .gallery-image-wrapper a' );
-		for ( var i = 0; i < files.length; i++ ) {
-			var fileHref = $( files[ i ] ).attr( 'href' );
+		$( '.wikia-gallery .thumb' ).each( function () {
+			var $thumb = $( this );
+			var $file = $thumb.find( 'a.image' );
+			var fileHref = $file.attr( 'href' );
 			var fullFileName = fileHref.replace( '/zh/wiki/', '' );
 			var fileName = fullFileName.replace( 'File:', '' );
-			$( fileThumbs[ i ] ).after( '<div class="lightbox-caption"><a href="' + fileHref + '" class="galleryfilename galleryfilename-truncate" title="' + fullFileName + '">' + fileName + '</a></div>' );
-		}
-		files.removeAttr( 'href title style' );
-		$( '.wikia-gallery .gallery-image-wrapper a img' ).removeAttr( 'title' );
+			var $caption = $thumb.next( 'div.lightbox-caption' );
+			if ( $caption.length === 0 ) {
+				$caption = $( '<div class="lightbox-caption"></div>' ).insertAfter( $thumb );
+			}
+			$caption.prepend( '<a href="' + fileHref + '" class="galleryfilename galleryfilename-truncate" title="' + fullFileName + '">' + fileName + '</a>' );
+			$file.removeAttr( 'href title style' );
+			$file.children( 'img' ).removeAttr( 'title' );
+		} );
 	}
 	
 	/* 扩展 */
