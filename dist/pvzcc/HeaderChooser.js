@@ -8,7 +8,7 @@
 */
 
 var possibleTexts = [
-    // Common - Weight 51000
+    // Common - Weight 500000
     {
         texts: [
             "Create your own characters!",
@@ -147,11 +147,12 @@ var possibleTexts = [
             "Planting seeds of change!",
             "Did someone turn off the lights?",
             "What's going on out there?",
-            "It's a bird, it's a plane, it's Snapdragon!"
+            "It's a bird, it's a plane, it's Snapdragon!",
+            "Secret Sundays!"
         ],
-        weight: 51000
+        weight: 500000
     },
-    // Rare - Weight 1500
+    // Rare - Weight 9000
     {
         texts: [
             "💚 DsFanboy!",
@@ -161,10 +162,17 @@ var possibleTexts = [
             "🩵 Dartichoke Enjoyer!",
             "🩵 Fun Animator!",
             "💜 AsterWasTaken!",
-            "💜 Creepes.",
-            "💜 DolphiGaming!"
+            "💜 DolphiGaming!",
+            "💜 Miss Pembroke!"
         ],
-        weight: 1500
+        weight: 9000
+    },
+    // Super Rare - Weight 1000
+    {
+        texts: [
+            "💜 Creepes."
+        ],
+        weight: 1000
     },
     // Legendary - Weight 69
     {

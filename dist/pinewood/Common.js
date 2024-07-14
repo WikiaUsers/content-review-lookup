@@ -76,19 +76,18 @@ var MessageBlock = {
 };
 mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(function() {
 	// Custom code config
-	var PermGroupCSSClassBlacklist = /(?:\*|\(all\):)/;
+	var PermGroupCSSClassBlacklist = /^(\*|all|user|autoconfirmed|emailconfirmed)$/;
 	
 	// Custom code for PB Wiki
 	var api = new mw.Api();
 	var userNamesToLinks = {};
 	var userNamesToRights = {};
 	var everyLinkOnPage = document.querySelectorAll('a[href]');
-	var userPageLinkRegex = RegExp("\/wiki\/(?:User:)(.*)");
+	var userPageLinkRegex = RegExp("\/wiki\/(?:User:)([a-zA-Z0-9_]*)");
 	
-	// Fetch user links on pag
-	$(function(){
-    console.log('test');
-		for (var i = 0; i < everyLinkOnPage.length; i++) {
+		
+	// Fetch user links on page
+	for (var i = 0; i < everyLinkOnPage.length; i++) {
 		  var linkMatchResults = everyLinkOnPage[i].getAttribute("href").match(userPageLinkRegex);
 			if (linkMatchResults != null) {
 			  if (!userNamesToLinks[linkMatchResults[1]]) {
@@ -96,12 +95,10 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 			  }
 			  userNamesToLinks[linkMatchResults[1]].push(everyLinkOnPage[i]);
 		  }
-		}
-	});
+	}
 	
 	// Fetch user groups for users linked on page
 	// (MediaWiki's API, and therefore Fandom's, has a cap of 50 members per API requests by default, I wouldn't expect to find more than usually, but in some cases you may if you clicked on list 500 results in page history, for example, so this splits up the requests to handle that correctly.)
-	
 
 	function QueryUserGroupsFromVar(userNameQueryList) {
 		var params = {
@@ -112,7 +109,6 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 			format: 'json'
 		};
 		api.get( params ).done(UserGroupsQueryDone);
-		userNameQueryList = [];
 	}
 	
 	function UserGroupsQueryDone(data) {
@@ -134,14 +130,17 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'mediawiki.user']).then(func
 			}
 		}
 	}
-	var userNameQueryListA = [];
+	var userNameQueryList = [];
+	i = 0;
 	for (var user in userNamesToLinks) {
-		userNameQueryListA.push(user);
+		userNameQueryList.push(user);
 		
 		if (i == 50) {
-			QueryUserGroupsFromVar(userNameQueryListA);
+			QueryUserGroupsFromVar(userNameQueryList);
+			i = 0;
+			userNameQueryList = [];
 		}
 	}
 	
-	QueryUserGroupsFromVar(userNameQueryListA);
+	QueryUserGroupsFromVar(userNameQueryList);
 });

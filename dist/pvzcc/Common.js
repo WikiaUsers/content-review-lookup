@@ -50,7 +50,7 @@ window.UserTagsJS = {
         luckozombie: { u: 'LUCKY 🍀', title:'Luck o’ the Zombie 2022 Contest Winner'},
         pv3: { u: '3D 🪅', title:'Pv3 Contest Winner'},
         summernights2: { u: 'SIZZLING 🌭', title:'Summer Nights 2022 Contest Winner'},
-        shoktoberfest: { u: 'ELECTRIC ⚡', title:'Shoktoberfest Contest Winner'},
+        shoktoberfest: { u: 'SHOKTOBERFEST ⚡', title:'Shoktoberfest Contest Winner'},
         log: { u: 'LAWN OF GLOOM 🌙', title:'Lawn of Gloom Contest Winner'},
         faroutfestival: { u: 'FAR OUT FESTIVAL 🚀', title:'Far Out Festival Contest Winner'},
         greatfieryfeast: { u: 'GREAT FIERY FEAST 🔥', title:'Great Fiery Feast Contest Winner'},
@@ -66,16 +66,19 @@ window.UserTagsJS = {
         electrofire: { u: 'ELECTROFIRE FEST 🎪', title:'Electrofire Fest Contest Winner'},
         rockandghoul: { u: 'ROCK & GHOUL 🎸', title:'Rock & Ghoul Contest Winner'},
         starfruitstation: { u: 'STARFRUIT’S STATION 🤩', title:'Starfruit’s Station Contest Winner'},
-        invaders: { u: 'THE INVASION🪖', title:'The Invasion Contest Winner'},
-        glamfest: { u: 'GLAM FEST✨', title:'Glam Fest Contest Winner'},
-        zontest: { u: 'ZONTEST🀄', title:'Zontest Contest Winner'},
-        sandsofthyme: { u: 'SANDS OF THYME🌵', title:'Sands of Thyme Contest Winner'},
-        ominous: { u: 'PERFECT CONTEST🧌', title:'Perfect Contest Winner'},
+        invaders: { u: 'THE INVASION 🪖', title:'The Invasion Contest Winner'},
+        jollyfest: { u: 'JOLLY FEST 🎄️', title:'Jolly Fest Contest Winner'},
+        glamfest: { u: 'GLAM FEST ✨', title:'Glam Fest Contest Winner'},
+        zontest: { u: 'ZONTEST 🀄', title:'Zontest Contest Winner'},
+        sandsofthyme: { u: 'SANDS OF THYME 🌵', title:'Sands of Thyme Contest Winner'},
+        deviousduo: { u: 'DEVIOUS DUO 👺', title:'Devious Duo Contest Winner'},
+        summernights2024: { u: 'SUMMER NIGHTS 🦐', title:'Summer Nights 2024 Winner'},
+        wackyworlds: { u: 'WACKY WORDLS 🤩', title:'Wacky Worlds Contest Winner'},
         //group: { staff }
         rollback: { u:'ROLLBACK 🍊' },
         'content-moderator': { u:' MODERATOR 🍇' },
-        sysop: { u:'ADMINISTRATOR 🧊' },
-        bureaucrat: { u:'BUREAUCRAT 🥦' },
+        sysop: { u:'ADMINISTRATOR 🐟' },
+        bureaucrat: { u:'BUREAUCRAT 🍏' },
         representative: { u:'REPRESENTATIVE 🌸' },
         
         //group: { negative }
@@ -115,14 +118,18 @@ UserTagsJS.modules.custom = {
     'Flag zombie': ['lawnofdoom3','feastivus3'],
     'Fun Animator': ['feastivus2','shoktoberfest'],
     'Rugby Zombie': ['lawnofdoom3'],
-    'NotComet': ['pv3'],
+    'Qcomet': ['pv3','sandsofthyme'],
     'Wynaut821': ['summernights2'],
     'CongruentSausage803': ['greatfieryfeast'],
     'Creepes': ['hansybo','log','forgottenpast','resort'],
     'Rocky105': ['chompersdream','shroomdynasty'],
     'Partyfanboy8': ['forgottenpast'],
     'Somebody407MUGEN': ['starfruitstation'],
-    'WiLdCaRd2048': ['discmod']
+    'WiLdCaRd2048': ['zontest','discmod'],
+    'Miss Pembroke': ['jollyfest','deviousduo'],
+    'Stella Animation Files': ['deviousduo'],
+    'FILIPN0F1SHSTICKF4ILURE': ['invaders']
+	
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];
 UserTagsJS.modules.inactive = 21;

@@ -10,6 +10,7 @@ var l10n = (function(){
 			'pt': 'editar',
 			'pt-br': 'editar',
 			'ru': 'править',
+			'vi': 'sửa',
 			'zh': '编辑',
 			'zh-cn': '编辑'
 		},
@@ -23,6 +24,7 @@ var l10n = (function(){
 			'pt': 'editar fonte',
 			'pt-br': 'editar fonte',
 			'ru': 'править код',
+			'vi': 'sửa nguồn',
 			'zh': '编辑源代码',
 			'zh-cn': '编辑源代码'
 		},
@@ -36,6 +38,7 @@ var l10n = (function(){
 			'pt': 'editar a \"introdução\" desta página',
 			'pt-br': 'Editar seção \"introdução\"',
 			'ru': 'Править «введение» этой страницы',
+			'vi': 'Sửa phần \"mở đầu\"',
 			'zh': '编辑“导言”章节',
 			'zh-cn': '编辑“导言”章节'
 		}

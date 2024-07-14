@@ -23,7 +23,6 @@ function append_link(source) {
 append_link('type');
 append_link('status');
 append_link('vital_status');
-append_link('race');
 append_link('gender');
 append_link('genre');
 
@@ -38,7 +37,7 @@ var abbreviations = [
     'IOTG', 'JTTN', 'JTTS', 'JTTE', 'JTTW',
     'JTTWA', 'ACO', 'BOT', 'DBSS', 'BTTH',
     'MU', 'TGR', 'HSR', 'VY', 'AR',
-    'SD', 'DXD', 'SSSM'
+    'SD', 'DXD', 'SSSM', 'TRREG', 'RPS'
 ];
 
 var pattern = new RegExp('\\s*\\(\\s*(' + abbreviations.join('|') + ')\\s*\\)\\s*', 'g');

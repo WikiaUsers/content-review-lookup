@@ -93,8 +93,11 @@ UserTagsJS.modules.custom = {
 	/* Chat Mods */
 	'GhoulGirls90': ['chatmoderator', 'head'],
 	/* Helpers and Intern */
-	'Littleslinky': ['helpers'],
-	'PLACEHOLDER': ['intern'],
+	'Littleslinky': ['helpers', 'head'],
+	'Vividstardust': ['helpers'],
+	'Tuxedoshlyukha': ['helpers'],
+	'AmaiOdayakaYansim123': ['helpers'],
+	'VACANT': ['intern'],
 	
 	//Former Staff
 	/* Former Bureaucrats */
@@ -230,7 +233,10 @@ window.MessageWallUserTags = {
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GhoulGirls90': 'Head Chat Mod',
         'Littleslinky': 'Head Helper',
-        'Placeholder': 'Intern',
+        'Vividstardust': 'Helper',
+        'Tuxedoshlyukha': 'Helper',
+        'AmaiOdayakaYansim123': 'Helper',
+        'VACANT': 'Intern',
     }
 };
 
@@ -271,8 +277,10 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
 }
 //Import for all Staff
 if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ || 
+    mw.config.get('wgUserName').includes('Vividstardust') || 
+    mw.config.get('wgUserName').includes('Tuxedoshlyukha') || 
+    mw.config.get('wgUserName').includes('AmaiOdayakaYansim123') || 
     mw.config.get('wgUserName').includes('Littleslinky') || 
-    mw.config.get('wgUserName').includes('GhoulGirls90') || 
     mw.config.get('wgUserGroups').includes('rollback') ||
     mw.config.get('wgUserGroups').includes('chatmoderator') || 
     mw.config.get('wgUserGroups').includes('content-moderator') ||

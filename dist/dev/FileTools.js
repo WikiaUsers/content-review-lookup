@@ -8,16 +8,18 @@
  * @author magiczocker
  */
 
-;(function(mw) {
+(function(mw) {
 	'use strict';
 
-	const config = mw.config.get([
-		'wgCanonicalNamespace',
-		'wgArticlePath',
-		'wgUserGroups',
-		'wgPageName',
-		'wgTitle'
-	]);
+	const token = mw.user.tokens.get('csrfToken'),
+		config = mw.config.get([
+			'wgCanonicalNamespace',
+			'wgArticlePath',
+			'wgScriptPath',
+			'wgUserGroups',
+			'wgPageName',
+			'wgTitle'
+		]);
 
 	if (
 		config.wgCanonicalNamespace !== 'File' ||
@@ -27,10 +29,9 @@
 	) return;
 	window.FileToolsLoaded = true;
 
-	var preloads = 2;
-	var msg, api;
-	var events = {};
-	var summaries = {};
+	var msg,
+		events = {},
+		summaries = {};
 
 	/**
 	 * Summary promt.
@@ -50,13 +51,19 @@
 	events.protect = function(element) {
 		const sum = summary('protect');
 		if (!sum) return;
-		api.postWithEditToken({
-			action: 'protect',
-			title: config.wgPageName,
-			protections: 'upload=sysop', 
-			reason: sum,
-			expiry: '2 weeks'
-		}).done(function() {
+		fetch(config.wgScriptPath + '/api.php?', {
+			body: new URLSearchParams({
+				action: 'protect',
+				format: 'json',
+				title: config.wgPageName,
+				protections: 'upload=sysop',
+				expiry: '2 weeks',
+				reason: sum,
+				token: token
+			}),
+			method: 'POST',
+			credentials: 'include'
+		}).then(function() {
 			element.target.textContent = msg('protected').plain();
 		});
 	};
@@ -88,12 +95,18 @@
 		if (!sum) return;
 		const images = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
 		images.forEach(function(ele) {
-			api.postWithEditToken({
-				action: 'delete',
-				title: config.wgPageName,
-				oldimage: new URL(ele.href).searchParams.get('oldimage'), 
-				reason: sum
-			}).done(function() {
+			fetch(config.wgScriptPath + '/api.php?', {
+				body: new URLSearchParams({
+					action: 'delete',
+					format: 'json',
+					title: config.wgPageName,
+					reason: sum,
+					oldimage: new URL(ele.href).searchParams.get('oldimage'),
+					token: token
+				}),
+				method: 'POST',
+				credentials: 'include'
+			}).then(function() {
 				ele.parentElement.parentElement.style.opacity = 0.2;
 			});
 		});
@@ -104,15 +117,21 @@
 	 * @param {object} element - Button data.
 	 */
 	events.delete = function(element) {
-		const sum = summary('delete');
+		const sum = summary('delete'),
+			ele = element.target;
 		if (!sum) return;
-		const ele = element.target;
-		api.postWithEditToken({
-			action: 'delete',
-			title: config.wgPageName,
-			oldimage: ele.dataset.filepath, 
-			reason: sum
-		}).done(function() {
+		fetch(config.wgScriptPath + '/api.php?', {
+			body: new URLSearchParams({
+				action: 'delete',
+				format: 'json',
+				title: config.wgPageName,
+				reason: sum,
+				oldimage: ele.getAttribute('data-filepath'),
+				token: token
+			}),
+			method: 'POST',
+			credentials: 'include'
+		}).then(function() {
 			ele.parentElement.parentElement.style.opacity = 0.2;
 		});
 	};
@@ -124,12 +143,18 @@
 	events.revert = function(element) {
 		const sum = summary('revert');
 		if (!sum) return;
-		api.postWithEditToken({
-			action: 'filerevert',
-			filename: config.wgTitle, 
-			archivename: element.target.dataset.filepath, 
-			comment: sum
-		}).done(function() {
+		fetch(config.wgScriptPath + '/api.php?', {
+			body: new URLSearchParams({
+				action: 'filerevert',
+				format: 'json',
+				filename: config.wgTitle,
+				comment: sum,
+				archivename: element.target.getAttribute('data-filepath'),
+				token: token
+			}),
+			method: 'POST',
+			credentials: 'include'
+		}).then(function() {
 			events.refresh();
 		});
 	};
@@ -148,7 +173,7 @@
 			btn.style.display = 'block';
 			btn.dataset.filepath = data;
 		}
-		btn.addEventListener('click', events[label]);
+		btn.addEventListener('click', events[label], false);
 		return btn;
 	}
 
@@ -166,8 +191,8 @@
 		);
 
 		// Inside table
-		const firstColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a');
-		const secondColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(2) > a');
+		const firstColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(1) > a'),
+			secondColumn = document.querySelectorAll('.filehistory tr:nth-of-type(n + 3) > td:nth-child(2) > a');
 
 		firstColumn.forEach(function(ele) {
 			const btn = createButton('delete', new URL(ele.href).searchParams.get('oldimage'));
@@ -180,22 +205,14 @@
 		});
 	}
 
-	/**
-	 * Load translations.
-	 */
-	function preload() {
-		if (--preloads > 0) return;
-		api = new mw.Api();
-		window.dev.i18n.loadMessages('FileTools').done(function(i18n) {
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('FileTools').done(function(i18n) {
 			msg = i18n.msg;
 			addButtons();
 		});
-	}
+	});
 
-	mw.hook('dev.i18n').add(preload);
-	mw.loader.using('mediawiki.api').then(preload);
-
-	importArticle({
+	window.importArticle({
 		type: 'script',
 		article: 'u:dev:MediaWiki:I18n-js/code.js'
 	});

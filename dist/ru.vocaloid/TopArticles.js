@@ -9,7 +9,7 @@
     var results, i18n;
 
     function searchMap(article) {
-        return $('<div>', {
+        var $topArticle = $('<div>', {
             attr: {
                 'data-title': article.title,
                 'data-id': article.id
@@ -17,26 +17,46 @@
             'class': 'toparticle'
         }).append(
             $('<div>', {
-                'class': 'toparticle__thumbnail'
+                'class': 'toparticle__thumbnail',
+                css: {
+                    'background-image': 'url(' + article.thumbnail + ')',
+                    'background-size': 'cover'
+                }
             }).append(
                 $('<a>', {
                     href: article.url,
                     title: article.title
-                }).append(
-                    $('<img>', {
-                        src: article.thumbnail
-                    })
-                )
+                })
             ),
             $('<div>', {
                 'class': 'toparticle__text'
             }).append(
                 $('<a>', {
                     href: article.url,
-                    text: article.title
+                    text: article.title,
+                    'class': 'article-link'
+                }),
+                $('<div>', {
+                    'class': 'toparticle__abstract',
+                    text: article.abstract
                 })
             )
         );
+
+        var hoverTimer;
+        $topArticle.hover(
+            function() {
+                hoverTimer = setTimeout(function() {
+                    $topArticle.addClass('show-abstract');
+                }, 1000);
+            },
+            function() {
+                clearTimeout(hoverTimer);
+                $topArticle.removeClass('show-abstract');
+            }
+        );
+
+        return $topArticle;
     }
 
     function each(_, el) {
@@ -49,6 +69,7 @@
 
         $.get(mw.config.get('wgScriptPath') + '/api/v1/Articles/Top', {
             expand: 1,
+            abstract: 200,
             category: category
         }).done(function(data) {
             results = data.items;

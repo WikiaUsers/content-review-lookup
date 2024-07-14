@@ -20,6 +20,7 @@ UserTagsJS.modules.custom = {
     'TotallyNotJullian': ['former_staff'],
     'TheTreasureHunter': ['former_staff'],
     'NinjaDogDB': ['former_staff'],
+    'Trashh': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],

@@ -19,7 +19,6 @@
         'Присутствие древнегреческих легенд в кунских мифах',
         'Рь Разумный',
         'ССОЯС',
-        'Супик',
         'Хрямбихский договор о неедении 2135 года',
         'Яррисимчу',
         'Яррись и Ряский архипелаг',
@@ -32,6 +31,24 @@
         importArticle({
             type: 'style',
             article: 'MediaWiki:Kungra.css'
+        });
+    }
+}( jQuery, mediaWiki );
+
+!function( $, mw ) {
+    var q = mw.config.get( 'wgTitle' ), b;
+ 
+    b = [
+    	'Летняя закваска',
+    	'Печенье "Зуб ярриха"',
+        'Супик',
+        'Чёрная мука',
+    ];
+ 
+    if ( b.indexOf( q ) !== -1 ) {
+        importArticle({
+            type: 'style',
+            article: 'MediaWiki:Food.css'
         });
     }
 }( jQuery, mediaWiki );

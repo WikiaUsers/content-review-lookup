@@ -25,6 +25,9 @@ var i18n = {
 	},
 	ru: {
 		linkTitle: 'Щёлкните здесь, чтобы очистить кэш сервера на текущей вики-странице'
+	},
+	vi: {
+		linkTitle: 'Bấm để xóa bộ đệm máy chủ cho trang wiki hiện tại'
 	}
 };
 

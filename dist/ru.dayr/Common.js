@@ -8,9 +8,7 @@ importArticles({
 	]
 });
 
-importArticles({
+importArticle({
     type: "script",
-    articles: [
-        "MediaWiki:AdaptiveImgToMobileDevice.js"
-    ]
+    article: "u:nkch:MediaWiki:Tiles.js"
 });

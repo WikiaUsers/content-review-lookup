@@ -59,7 +59,7 @@
             // Those subdomains can have number after it - images2
             // Links SHOULD have wikia's server - .wikia.nocookie.net
             */
-            if (url.match(/https?:\/\/(images?|static|vignette)\d?\.wikia\.nocookie\.net\//)) {
+            if (url.match(/^https?:\/\/(images?|static|vignette)\d?\.wikia\.nocookie\.net\//)) {
                 return true;
             }
             

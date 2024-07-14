@@ -5,7 +5,7 @@
 	if (window.dev.IPM._loaded == true) { return; }
 	window.dev.IPM._loaded = true;
 	
-	var config = mw.config.get(['wgAction', 'wgNamespaceNumber', 'wgServer', 'wgArticlePath']);
+	var config = mw.config.get(['wgServer', 'wgArticlePath', 'wgNamespaceNumber', 'wgPageName', 'wgAction']);
 	var api;
 	var betterLinkSuggest = {
 		
@@ -36,7 +36,7 @@
 					'<div class="oo-ui-popupWidget-anchor" style="left: 7px;"></div>'+
 					'<div class="oo-ui-popupWidget-popup wikiEditor-ui-linkSuggest-popup" style="padding:0;">'+
 						'<div class="oo-ui-clippableElement-clippable oo-ui-popupWidget-body IPM-body">'+
-							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget oo-ui-selectWidget-unpressed IPM-list" role="list" aria-multiselectable="false"></div>'+
+							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget oo-ui-selectWidget-unpressed IPM-list" role="listbox" aria-multiselectable="false"></div>'+
 						'</div>'+
 					'</div>'+
 				'</div>'
@@ -52,59 +52,48 @@
 					// Hide and empty out when unfocusing list
 					document.addEventListener('click', function(event) {
 						if (!event.target.closest('.wikiEditor-ui-linkSuggest')) {
-							suggestBox.removeAttr('aria-activedescendant');
 							wrapper.hide();
 							suggestBox.empty();
+							suggestBox.removeAttr('aria-activedescendant');
 						}
 					});
 					
 					// Suggestion list hovering logic
-					suggestBox.on('mouseover.IPM', function(event){
-						if (
-							event.target.classList.contains('oo-ui-labelElement-label') &&
-							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion')
-						) {
-							methods.handleOOUI(event);
-							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').classList.add('oo-ui-optionWidget-highlighted');
-						}
+					suggestBox.on('mouseover.IPM', function(event) {
+						if (event.target.closest('.wikiEditor-ui-linkSuggest-suggestion')) {methods.handleOOUI(event);}
 					});
-					suggestBox.on('mouseout.IPM', function(event){
-						if (
-							event.target.classList.contains('oo-ui-labelElement-label') &&
-							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion') &&
-							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').classList.contains('oo-ui-optionWidget-highlighted')
-						) {
+					suggestBox.on('mouseout.IPM', function(event) {
+						if (event.target.closest('.wikiEditor-ui-linkSuggest-suggestion')) {
 							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').classList.remove('oo-ui-optionWidget-highlighted');
+							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').setAttribute('aria-selected', false);
 						}
 					});
 					
 					// Start looking
-					document.addEventListener('mouseup', function(event){
-						if (
-							event.target.classList.contains('oo-ui-labelElement-label') ||
-							(
-								event.target.parentNode &&
-								event.target.parentNode.classList.contains('wikiEditor-ui-linkSuggest-suggestion')
-							)
-						) {methods.dispatchLink();}
+					document.addEventListener('mouseup', function(event) {
+						if (event.target.closest('.wikiEditor-ui-linkSuggest-suggestion')) {methods.dispatchLink();}
 						else if (event.target.closest('.ProseMirror')) {methods.suggestLink(event);}
 					});
-					document.addEventListener('keydown', function(event){
-						if (['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key) && document.querySelector('.IPM-list > div')) {
+					document.addEventListener('keydown', function(event) {
+						if (['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key) && document.querySelector('.IPM-list > div')) {
 							if (wrapper.css('display') == 'none') {
 								methods.suggestLink(event);
 							} else if (wrapper.css('display') !== 'none' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
 								wrapper.hide();
-								suggestBox.removeAttr('aria-activedescendant');
 								suggestBox.empty();
+								suggestBox.removeAttr('aria-activedescendant');
 								methods.suggestLink(event);
-							} else if (wrapper.css('display') !== 'none' && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
+							} else if (wrapper.css('display') !== 'none' && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
 								event.preventDefault();
 								methods.handleOOUI(event);
 							}
 						} else if (event.key == 'Enter' && document.querySelector('.IPM-list > div') && suggestBox.attr('aria-activedescendant')) {
 							event.preventDefault();
 							methods.dispatchLink();
+						} else if (event.key == 'Escape' && document.querySelector('.IPM-list > div')) {
+							wrapper.hide();
+							suggestBox.empty();
+							suggestBox.removeAttr('aria-activedescendant');
 						}
 					});
 				},
@@ -128,47 +117,45 @@
 					newNode.remove(); // Remove original link text used for search
 					
 					// Close suggestion list
-					suggestBox.removeAttr('aria-activedescendant');
 					wrapper.hide();
 					suggestBox.empty();
+					suggestBox.removeAttr('aria-activedescendant');
 				},
 			
 				handleOOUI: function(event) {
-					if (!suggestBox.attr('aria-activedescendant')) {
-						var firstOpt = suggestBox.find('.oo-ui-labelElement')[0];
-						if (!firstOpt.id) {
-							ooui = ooui + 1;
-							firstOpt.id = 'ooui-' + ooui;
-						}
-						firstOpt.classList.add('oo-ui-optionWidget-highlighted');
-						suggestBox.attr('aria-activedescendant', firstOpt.id);
-					} else if (suggestBox.attr('aria-activedescendant')) {
-						var Tooui = suggestBox.attr('aria-activedescendant');
-						var currentNode = suggestBox.find('#'+Tooui)[0];
-						var newNode;
-						var scrollChange = 0;
-						if (event.type == 'keydown' && event.key == 'ArrowUp' && currentNode && currentNode.previousSibling) {
-							newNode = currentNode.previousSibling;
-						}
-						else if (event.type == 'keydown' && event.key == 'ArrowDown' && currentNode && currentNode.nextSibling) {
-							newNode = currentNode.nextSibling;
-						} else if (event.type == 'mouseover' && currentNode && event.target.closest('.wikiEditor-ui-linkSuggest-popup .oo-ui-selectWidget')){
-							newNode = event.target;
-							if (newNode.classList.contains('oo-ui-labelElement-label')) { newNode = event.target.parentNode; }
-						}
-						if (newNode) {
-							var box = wrapper.find('.IPM-body')[0];
-							if (box.clientHeight < (newNode.offsetTop+newNode.clientHeight)) {scrollChange = newNode.clientHeight;}
-							else if (box.scrollTop > newNode.offsetTop) {scrollChange = -currentNode.clientHeight;}
+					var currentNode = suggestBox.find('#' + suggestBox.attr('aria-activedescendant'))[0];
+					var newNode;
+					if (event.type == 'mouseover') {
+						newNode = event.target.closest('.wikiEditor-ui-linkSuggest-suggestion');
+						if (currentNode) {
 							currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-							newNode.classList.add('oo-ui-optionWidget-highlighted');
-							if (!newNode.id) {
-								ooui = ooui + 1;
-								newNode.id = 'ooui-' + ooui;
-							}
-							box.scrollTop = box.scrollTop + scrollChange;
-							suggestBox.attr('aria-activedescendant', newNode.id);
+							currentNode.setAttribute('aria-selected', false);
 						}
+						newNode.classList.add('oo-ui-optionWidget-highlighted');
+						newNode.setAttribute('aria-selected', true);
+						suggestBox.attr('aria-activedescendant', newNode.id);
+					} else if (event.type == 'keydown') {
+						if (event.key == 'ArrowDown') {
+							newNode = currentNode ? currentNode.nextSibling ? currentNode.nextSibling : suggestBox[0].firstChild : suggestBox[0].firstChild;
+						} else if (event.key == 'ArrowUp') {
+							newNode = currentNode ? currentNode.previousSibling ? currentNode.previousSibling : suggestBox[0].lastChild : suggestBox[0].lastChild;
+						} else if (event.key == 'Home') {
+							newNode = suggestBox[0].firstChild;
+						} else if (event.key == 'End') {
+							newNode = suggestBox[0].lastChild;
+						}
+						if (currentNode) {
+							currentNode.classList.remove('oo-ui-optionWidget-highlighted');
+							currentNode.setAttribute('aria-selected', false);
+						}
+						newNode.classList.add('oo-ui-optionWidget-highlighted');
+						newNode.setAttribute('aria-selected', true);
+						suggestBox.attr('aria-activedescendant', newNode.id);
+						var box = wrapper.find('.IPM-body')[0];
+						var scrollChange = 0;
+						if (box.clientHeight < (newNode.offsetTop + newNode.clientHeight)) {scrollChange = newNode.clientHeight;}
+						else if (box.scrollTop > newNode.offsetTop) {scrollChange = -currentNode.clientHeight;}
+						box.scrollTop += scrollChange;
 					}
 				},
 				
@@ -176,7 +163,7 @@
 					var caret;
 					var link_regex = /^.*(\[\[)([^\[\]]+)(\]\]|$)/;
 					var ext_link_regex = /^.*(\[)([^\[\]]+)(\])$/;
-					var ext_url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from https://dev.fandom.com/load.php?modules=DeleteCommentModal-voLa7ynP.js
+					var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from https://dev.fandom.com/load.php?modules=DeleteCommentModal-voLa7ynP.js
 					var raw_str = '';
 					var link_str = '';
 					var matches;
@@ -212,9 +199,9 @@
 							methods.SEARCH.offset = raw_str.indexOf(methods.SEARCH.str);
 							methods.SEARCH.node = caret.data.focusNode;
 							var url = prompt('Insert external URL to link to');
-							if (ext_url_regex.test(url)) {
+							if (url_regex.test(url)) {
 								methods.dispatchLink(matches[2], url);
-							} else if (url) {
+							} else if (url && url.length>0) {
 								alert('Invalid URL!');
 							}
 						}
@@ -258,8 +245,6 @@
 						if (data && data.query && data.query.prefixsearch.length > 0) {
 							console.log(data.query.prefixsearch);
 							methods.buildSuggestions(data.query.prefixsearch);
-						} else {
-							return;
 						}
 					});
 				},
@@ -268,10 +253,9 @@
 					// Build list
 					pages.forEach(
 						function(page){
+							ooui++;
 							var link = $(
-								'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget wikiEditor-ui-linkSuggest-suggestion" role="option" tabindex="-1" link-to="'+
-									(page.linkto || (config.wgServer + mw.util.getUrl(page.title)))+
-								'">'+
+								'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget wikiEditor-ui-linkSuggest-suggestion" aria-selected="false" tabindex="-1" role="option" id="ooui-'+ooui+'" link-to="'+config.wgServer+mw.util.getUrl(page.title)+'">'+
 									'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
 								'</div>'
 							);
@@ -304,12 +288,18 @@
 			var sel;
 			var updateSel = function() {
 				var a = window.getSelection();
-				sel = {
-					node: a.focusNode,
-					data: a.focusNode.data || '',
-					offset: a.focusOffset || 0
-				};
+				if (a.focusNode && (a.focusNode.closest('.ProseMirror')||a.focusNode.classList.contains('ProseMirror'))) {
+					sel = {
+						node: a.focusNode,
+						data: a.focusNode.data || '',
+						offset: a.focusOffset || 0
+					};
+				}
 			};
+			$('body').on('click', function(e){
+				$('.IPM-open').removeClass('IPM-open');
+				$(e.target).next('.menu').addClass('IPM-open');
+			});
 			$('body').on('mouseover', '.rich-text-editor__toolbar', updateSel);
 			mw.hook('dev.IPM').add(function(_i) {
 				if (!_i || !(Array.isArray(_i) || typeof _i == 'object')) {return;}
@@ -326,9 +316,9 @@
 						button.on('mousedown', function(event){
 							event.preventDefault();
 							var temp = {};
-							var parsedInsert =
+							var preparsedInsert =
 								insert.insert
-									.replace(/%([\w\s]+)%/gi, function(str, type){
+									.replace(/%([\w\s]+)%/g, function(str, type){
 										var ret = '';
 										ret = (insert[type] && insert[type].length>0) ?
 											insert[type] :
@@ -339,15 +329,30 @@
 											);
 										temp[type] = ret; // avoid asking again in the same insert
 										return ret;
-									});
+									})
+									.replace(/[\n]+\n\n/g, '\n\n') // max 2 line breaks
+									.replace(/(?<!\n[\*\#][^\n]*)\n(?![\*\# ])/g, '<br />'); // transform \n to <br/> for ease of parse
+									
 							// template expand only works with plain text returns, but thats up to user to use properly
-							api.parse(parsedInsert, {disablelimitreport:true, pst:true}).then(function(txt){
+							api.parse(preparsedInsert, {
+								title:config.wgPageName, // allow page name variables to work as expected
+								contentmodel:'wikitext',
+								disablelimitreport:true,
+								pst:true
+							}).then(function(txt){
+								console.log(txt, 'init');
 								var e = $(txt);
 								txt = e.is('.mw-parser-output') ? e.html() : e.find('.mw-parser-output').html();
-								var anchor_regex = new RegExp('(?<=\\<a .*href\\=\\")' + config.wgArticlePath.replace('$1', '(.+?)') + '(?=\\".*\\>)', 'gi');
-								txt = txt.replace(anchor_regex, config.wgServer + config.wgArticlePath); // make relative urls absolute so they don't get removed after posting message
-								if (insert.replaceAll) {document.querySelector('.ProseMirror-focused').innerHTML = txt;}
-								else {
+								var anchor_regex = new RegExp('(?<=<a [^<>]*href=")' + config.wgArticlePath.replace('$1', '(.+?)') + '(?="[^<>]*>)', 'g');
+								txt = txt
+									// make relative urls absolute so they don't get removed after posting message
+									.replace(anchor_regex, config.wgServer + config.wgArticlePath)
+									.replace(/<br ?\/?><br ?\/?>/g, '</p><p><br /></p><p>')
+									.replace(/<br ?\/?>(?!\s*<\/p>)/g, '</p><p>');
+								console.log(txt, 'final');
+								if (insert.replaceAll) {
+									$(sel.node).closest('.ProseMirror').html(txt);
+								} else {
 									$(
 										sel.node.nodeType === 3 ?
 										sel.node.parentNode :
@@ -355,7 +360,7 @@
 									).replaceWith($(
 										'<p>'+
 										sel.data.slice(0, sel.offset)+
-										txt.replace(/^<p>/, '').replace(/<\/p>$/, '')+
+										txt.replace(/^<p>|<\/p>$/, '')+
 										sel.data.slice(sel.offset)+
 										'</p>'
 									));
@@ -383,6 +388,11 @@
 				if (count>0) {
 					$('.IPM-loaded .custom-insert').replaceWith(wrapper.clone(true, true));
 					betterLinkSuggest.waitFor('.rich-text-editor__wrapper:not(.IPM-loaded)', function() {
+						sel = {
+							node: $('.rich-text-editor__wrapper:not(.IPM-loaded) .ProseMirror')[0],
+							data: '',
+							offset: 0
+						};
 						$('.rich-text-editor__wrapper:not(.IPM-loaded) .rich-text-editor__toolbar__icons-container').prepend(
 							wrapper.clone(true, true),
 							$('<div class="custom-separator" />')
@@ -392,7 +402,6 @@
 				}
 			});
 		},
-
 		
 		// Delay until element exists to run function
 		waitFor: function(query, callback, repeat) {

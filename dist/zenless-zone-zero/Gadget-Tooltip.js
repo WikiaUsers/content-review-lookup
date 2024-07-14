@@ -10,13 +10,12 @@ mw.hook('wikipage.content').add(function() {
 	var res = document.querySelector('body > .main-container > .resizable-container');
 	function updatePos(el) {
 		el = $(el);
-		if (el.length==0){return;} 
-		el.css('positon', 'relative');
+		if (el.length==0){return;}
 		if(!el.hasClass('mw-collapsed')) {
 			var togl = el.children('.mw-collapsible-toggle')[0];
 			var cont = el.children('.mw-collapsible-content');
-			el.css({position: 'unset'});
-			cont.css({top: '', right: '', 'max-width': ''});
+			el.css({position: 'unset'}); // make tooltip offset to page not toggle
+			cont.css({top: '', right: '', 'max-width': ''}); // remove any prev values for proper positioning and resizing
 			var parenPos = togl.offsetParent.getBoundingClientRect();
 			var pos = togl.getBoundingClientRect();
 			var w = Math.floor(el.outerWidth());

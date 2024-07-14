@@ -218,7 +218,7 @@ $(function () {
 
         $('#calculator_ew_skill_left_trained').html(final_pct_left);
 
-        $('#calculator_ew_weapcost_gold').val(Math.round((nweapons * weapon_type * 262500) / 1000));
+        $('#calculator_ew_weapcost_gold').val(Math.round((nweapons * weapon_type * 347222) / 1000));
         $('#calculator_ew_weapcost_coins').val(nweapons * weapon_type * 25);
 
         /* update summary of calculation */

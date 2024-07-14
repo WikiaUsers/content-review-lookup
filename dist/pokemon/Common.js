@@ -207,6 +207,9 @@ function poke_type(element_class){
         case "Steel":
             color = "#D1D1E0"; break;
 
+        case "Stellar":
+            color = "#30C0F0"; break;
+
         case "Water":
             color = "#9BB8FE"; break;
 

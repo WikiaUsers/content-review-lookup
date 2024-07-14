@@ -1,3 +1,11 @@
+// js导入
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:AbnormalitySearch.js',//异想体搜索
+    ]
+});
+
 //Abn_Infobox Work_preference 数据形式切换
 var workPreferenceButtonCount = 0;
 

@@ -285,6 +285,48 @@ $(function() {
     });
 });
 
+/* displays sortkey in General Tasks categories */
+$(function() {
+    if (
+        mw.config.get('wgCanonicalNamespace') === 'Category' &&
+        ['Move', 'Move Reality', 'Move Comic', 'Move Comic Volume', 'Move Image', 'To Be Deleted', 'Merge', 'Split', 'Plagiarism'].indexOf(mw.config.get('wgTitle').split('/').slice(-1)[0]) !== -1
+    ) {
+	    // API requires titles 50 at a time, will be 200 titles per category page
+	    var requests,
+	        $links = $('.mw-category-generated').find('a');
+	        pages = $links.toArray().map(function(value) {
+	            return encodeURIComponent($(value).attr('title'));
+	        });
+	    requests = [pages.slice(0, 50), pages.slice(50, 100), pages.slice(100, 150), pages.slice(150)];
+	    $.each(requests, function(index, value) {
+	        $.getJSON(
+	            '/api.php?action=query&prop=pageprops&ppprop=defaultsort&format=json&titles=' + value.join('|'),
+	            function(data) {
+	                data = data.query.pages;
+	                $.each(Object.keys(data), function(idx, val) {
+	                    if (!data[val].pageprops) {
+	                        return true;// continue
+	                    }
+	                    var sort = data[val].pageprops.defaultsort;
+	                    var title = data[val].title;
+	                    var tooltip = '';
+	                    var task_date = sort.match(/TASKDATE:(.+);/);
+		                if (task_date) {
+		                   tooltip = ' (' + task_date[1].replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1-$2-$3 $4:$5:$6') + ')'
+		                }
+	                    if (tooltip != '') {
+	                    	var tooltip_element = document.createElement("span");
+	                    	tooltip_element.classList.add('category-link-tooltip');
+	                    	tooltip_element.textContent = tooltip;
+	                    	$links.filter('[title="' + title + '"]').after(tooltip_element); 
+	                    }
+	                 });
+	            }
+	        );
+	    });
+    }
+});
+
 
 /* 
 ////////////////////////////////////////////////////////////////////
@@ -323,14 +365,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 					post: "</s>"
 				}
 			}
-		}
-	}
-} );
-/* Comment */
-$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-	section: 'main',
-	group: 'format',
-	tools: {
+		},
 		"comment": {
 			label: 'Comment',
 			type: 'button',
@@ -342,29 +377,10 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 					post: " -->"
 				}
 			}
-		}
+		},
 	}
 } );
-/* disambiguation */
-$( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-	section: 'main',
-	group: 'insert',
-	tools: {
-		"disambiguation": {
-			label: 'Disambiguation',
-			type: 'button',
-			icon: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png',
-			action: {
-				type: 'encapsulate',
-				options: {
-					pre: "{{Disambiguation",
-					post: "\n|main         = \n|main_name    = \n|main_title   = \n|main_image   = \n|noimage      = \n\n|alternative1 = \n|include1     = \n|exclude1     = \n}}"
-				}
-			}
-		}
-	}
-} );
-/* subst:Cat */
+/* Comment */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 	section: 'main',
 	group: 'insert',
@@ -378,6 +394,102 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				options: {
 					pre: "{{subst:Cat",
 					post: "}}"
+				}
+			}
+		},
+		"disambiguation": {
+			label: 'Main Disambiguation',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/f/f4/Disambiguation_Icon_1.svg/30px-Disambiguation_Icon_1.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Disambiguation",
+					post: "\n|main         = \n|main_name    = \n|main_title   = \n|main_image   = \n|noimage      = \n\n|alternative1 = \n|include1     = \n|exclude1     = \n}}"
+				}
+			}
+		},
+		"disambiguation2": {
+			label: 'Disambiguation by group',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/9/95/Disambiguation_Icon_2.svg/30px-Disambiguation_Icon_2.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{Disambiguation",
+					post: "\n|group1_header= \n|group1       = \n\n|group2_header= \n|group2       = \n}}"
+				}
+			}
+		},
+		"move": {
+			label: 'Move page',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/e/e4/Move_Task_Icon.svg/30px-Move_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Move\n|page_name     = ",
+					post: "\n|reason        = \n|move_variants = Yes\n}}"
+				}
+			}
+		},
+		"delete": {
+			label: 'Delete page',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/1/16/Delete_Task_Icon.svg/30px-Delete_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Delete\n|reason        = ",
+					post: "\n}}"
+				}
+			}
+		},
+		"merge_to": {
+			label: 'Merge To',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/3/37/Merge_To_Task_Icon.svg/30px-Merge_To_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Merge To\n|page_name     = ",
+					post: "\n|reason        =\n|section       = \n}}"
+				}
+			}
+		},
+		"merge_from": {
+			label: 'Merge From',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/d/df/Merge_From_Task_Icon.svg/30px-Merge_From_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Merge From\n|page_name     = ",
+					post: "\n|reason        =\n|section       = \n}}"
+				}
+			}
+		},
+		"split": {
+			label: 'Split into page(s)',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/9/9a/Split_Task_Icon.svg/30px-Split_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Split\n|page_name     = ",
+					post: "\n|page_name2    = \n|reason        = \n|section       = \n}}"
+				}
+			}
+		},
+		"plagiarism": {
+			label: 'Plagiarism',
+			type: 'button',
+			icon: 'https://static.wikia.nocookie.net/marveldatabase/images/thumb/2/2b/Plagiarism_Task_Icon.svg/30px-Plagiarism_Task_Icon.svg.png',
+			action: {
+				type: 'encapsulate',
+				options: {
+					pre: "{{subst:Plagiarism\n|reason        = ",
+					post: "\n|section       = \n}}"
 				}
 			}
 		}

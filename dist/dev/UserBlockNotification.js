@@ -5,9 +5,9 @@ Author       :   	Vastmine1029
 Version      :   	1.0
 *************/
 // <nowiki>
-mw.loader.using('mediawiki.api', function() {
-	var api = new mw.Api(), block_data;
-	var user = mw.config.get('wgUserName');
+mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
+	var api = new mw.Api(),
+		user = mw.config.get('wgUserName');
 	
 	// If no user is logged in, abort JS.
 	if (!user) {
@@ -19,11 +19,11 @@ mw.loader.using('mediawiki.api', function() {
 	mw.util.addCSS(".notifications-placeholder-custom .wds-banner-notification__container{bottom:50px;right:18px;font-family:rubik,helvetica,arial,sans-serif;position:fixed;z-index:200}");
 	
 	api.get({
-	action: 'query',
-	list: 'blocks',
-	bkusers: user
+		action: 'query',
+		list: 'blocks',
+		bkusers: user
 	}).then(function(d) {
-		block_data = d.query.blocks;
+		var block_data = d.query.blocks;
 		
 		// If user is not blocked, do not continue with the script. Abort JS.
 		if (block_data.length < 1) {

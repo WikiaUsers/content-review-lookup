@@ -37,7 +37,7 @@ $(function() {
 			// Get tokens
 			betterDiff.fetchTokens();
 			
-			// Add css
+			// Add CSS
 			mw.util.addCSS(
 				'.targetedPatrolWrapper {'+
 					'display: flex;'+
@@ -85,7 +85,10 @@ $(function() {
 					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targetedPatrol);
 					
 					// start observing
-					betterDiff.RecentChangesReload(betterDiff.newDiffLink);
+					betterDiff.RecentChangesReload(function() {
+						betterDiff.newDiffLink();
+						betterDiff.quickDiffLoad();
+					});
 				});
 			}
 			
@@ -400,7 +403,7 @@ $(function() {
 			betterDiff.quickDiffLoad();
 			
 			var generateModal = function(event) {
-				betterDiff.fetchTokens();
+				betterDiff.fetchTokens(); // fetch tokens again just in case
 				var generateHeader = function(data) {
 					href = config.wgServer+mw.util.getUrl(data.totitle)+'?diff='+data.torevid;
 					var header = '';
@@ -417,7 +420,7 @@ $(function() {
 								'<strong>'+
 									'<a href="'+config.wgServer+mw.util.getUrl(data.fromtitle)+'?oldid='+data.fromrevid+'" title="'+data.fromtitle.replace(/"/g, '&quot;')+'">'+
 										'Revision as of '+
-										fromdate.getHours()+':'+fromdate.getMinutes()+
+										fromdate.getHours().toString().padStart(2, '0')+':'+fromdate.getMinutes().toString().padStart(2, '0')+
 										', '+fromdate.getDate()+' '+
 										(new Intl.DateTimeFormat('en-US', {month: 'long'}).format(fromdate))+' '+
 										fromdate.getFullYear()+
@@ -450,7 +453,7 @@ $(function() {
 							'<strong>'+
 								'<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?oldid='+data.torevid+'" title="'+data.totitle.replace(/"/g, '&quot;')+'">'+
 									'Revision as of '+
-									todate.getHours()+':'+todate.getMinutes()+
+									todate.getHours().toString().padStart(2, '0')+':'+todate.getMinutes().toString().padStart(2, '0')+
 									', '+todate.getDate()+' '+
 									(new Intl.DateTimeFormat('en-US', {month: 'long'}).format(todate))+' '+
 									todate.getFullYear()+
@@ -658,26 +661,26 @@ $(function() {
 						content: '',
 						buttons: [
 							{
+								// Open Diff
 								text:'Open',
-								title:'Open Diff',
 								id:'quickDiff-OpenLink',
 								event: 'OpenLink'
 							},
 							{
+								// Copy Diff Link
 								text:'Copy',
-								title:'Copy Diff Link',
 								id:'quickDiff-CopyLink',
 								event: 'CopyLink'
 							},
 							{
-								text:'Prev',
-								title:'Open previous quick diff in the list (ALT+2)',
+								// Open previous quick diff (up the list) (Keybind: ALT+2)
+								text:'Up',
 								id:'quickDiff-OpenPrev',
 								event: 'OpenPrev'
 							},
 							{
-								text:'Next',
-								title:'Open next quick diff in the list (ALT+3)',
+								// Open next quick diff (down the list) (ALT+3)
+								text:'Down',
 								id:'quickDiff-OpenNext',
 								event: 'OpenNext'
 							}
@@ -706,7 +709,7 @@ $(function() {
 							event.target.id == 'differences-prevlink'
 						)) {
 							if (event.target.closest('.quickDiff')) {
-								if (document.querySelector('.link-focused')) {document.querySelector('.link-focused').classList.remove('link-focused');}
+								$('.quickDiff.link-focused').removeClass('link-focused');
 								event.target.closest('.quickDiff').classList.add('link-focused');
 							}
 							generateModal(event);
@@ -808,7 +811,7 @@ $(function() {
 		
 		fetchTokens: function() {
 			// Fetch rollback token, the one from API is invalid for URL use
-			if (tokens.rollback=='' && document.querySelector('.mw-rollback-link a')) {
+			if (can.rollback && tokens.rollback=='' && document.querySelector('.mw-rollback-link a')) {
 				tokens.rollback = document.querySelector('.mw-rollback-link a').href.replace(/^.+token=/, '');
 			}
 			
@@ -885,7 +888,7 @@ $(function() {
 					console.log('api result:',data);
 				}
 			}).catch(function(err){
-				wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+				wrapper.innerHTML = '[API error!]';
 				console.log('api result:', err);
 			});
 		},
@@ -894,54 +897,70 @@ $(function() {
 		openNext: function() {
 			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
 			if (curr.length==0){return;}
-			var next = curr.next('table, li');
-			// Last diff in group
-			if (next.length==0) {
-				next = curr.is('table') ?
-					curr.closest('.mw-changeslist > div').next('.mw-changeslist > h4').next('.mw-changeslist > div').has('table') :
-					curr.closest('ul.mw-contributions-list').next('h4').next('ul.mw-contributions-list').has('li');
+			var next = null;
+			function getNext(ref) {
+				next = ref.next('table, li');
+				// Get last of next group
 				if (next.length==0) {
-					// No next group, end early
-					alert('There is no next diff, good job!');
-					return;
-				} else {
-					// Get first of next group
-					next = next.children(':first-child');
+					next = (ref.is('table') ?
+						ref.closest('.mw-changeslist > div').next('.mw-changeslist > h4').next('.mw-changeslist > div').has('table') :
+						ref.closest('ul.mw-contributions-list').next('h4').next('ul.mw-contributions-list').has('li')
+					).children(':first-child');
+					
+					// No next group
+					if (next.length==0) { next = null; }
+					
+				// Upload logs, Delete logs, Protect logs, etc...
+				} else if (next.is('[class*="mw-changeslist-log-"]')) {
+					getNext(next);
 				}
 			}
-			
-			// Attempt to load quickDiff just in case
-			betterDiff.quickDiffLoad(next);
-			
-			// Load next diff
-			next.find('.quickDiff')[0].click();
+			getNext(curr);
+			if (next && next.has('.quickDiff')) {
+				// Attempt to load quickDiff just in case
+				betterDiff.quickDiffLoad(next);
+				
+				// Load next diff
+				curr.removeClass('link-focused');
+				next.find('.quickDiff')[0].click();
+			} else {
+				alert('There is no next diff, good job!');
+			}
 		},
 		
 		// Open next diff in RC or user contribs list
 		openPrev: function() {
 			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
 			if (curr.length==0){return;}
-			var prev = curr.prev('table, li');
-			// Last diff in group
-			if (prev.length==0) {
-				prev = curr.is('table') ?
-					curr.closest('.mw-changeslist > div').prev('.mw-changeslist > h4').prev('.mw-changeslist > div').has('table') :
-					curr.closest('ul.mw-contributions-list').prev('h4').prev('ul.mw-contributions-list').has('li');
+			var prev = null;
+			function getPrev(ref) {
+				prev = ref.prev('table, li');
+				// Get last of prev group
 				if (prev.length==0) {
-					// No prev group, end early
-					alert('There is no prev diff, good job!');
-					return;
-				} else {
-					// Get last of prev group
-					prev = prev.children(':last-child');
+					prev = (ref.is('table') ?
+						ref.closest('.mw-changeslist > div').prev('.mw-changeslist > h4').prev('.mw-changeslist > div').has('table') :
+						ref.closest('ul.mw-contributions-list').prev('h4').prev('ul.mw-contributions-list').has('li')
+					).children(':last-child');
+					
+					// No prev group
+					if (prev.length==0) { prev = null; }
+					
+				// Upload logs, Delete logs, Protect logs, etc...
+				} else if (prev.is('[class*="mw-changeslist-log-"]')) {
+					getPrev(prev);
 				}
 			}
-			
-			// Attempt to load quickDiff just in case
-			betterDiff.quickDiffLoad(prev);
-			
-			// Load prev diff
-			prev.find('.quickDiff')[0].click();
+			getPrev(curr);
+			if (prev && prev.has('.quickDiff')) {
+				// Attempt to load quickDiff just in case
+				betterDiff.quickDiffLoad(prev);
+				
+				// Load prev diff
+				curr.removeClass('link-focused');
+				prev.find('.quickDiff')[0].click();
+			} else {
+				alert('There is no prev diff, good job!');
+			}
 		},
 		
 		// Delay until element exists to run function
@@ -989,10 +1008,11 @@ $(function() {
 			$(query).each(handler);
 			
 			// lazy load
-			$(window).on('DOMContentLoaded.mikeLib load.mikeLib resize.mikeLib scroll.mikeLib', function(){
+			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff', function(){
 				$(query).each(handler);
 			});
 		},
+
 
 	};
 	
