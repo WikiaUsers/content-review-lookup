@@ -1,6 +1,6 @@
 /*Display first post date and first edit date on user profiles*/
 /*By @Luma.dash*/
-mw.loader.using( "mediawiki.api" ).then(function(){
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function(){
     var $newul,
     drivingObj = {
         callForumInfo: function(id){
@@ -10,7 +10,12 @@ mw.loader.using( "mediawiki.api" ).then(function(){
                     userId: id,
                     format: "json"
             }).then(function (data) {
-                        drivingObj.getFirstPost(data._links.last[0].href).then(function (data) { //getFirstpost on discussions
+                            if (data._links.last === undefined) {
+                            }
+                            if (data._links.first === undefined){
+                                return;
+                            }
+                            drivingObj.getFirstPost(data._links.last === undefined ? data._links.first[0].href : data._links.last[0].href).then(function (data) { //getFirstpost on discussions
                             var postsLength = data._embedded["doc:posts"].length;
                             var post = data._embedded["doc:posts"][postsLength - 1]; //get last post (first in date)
                             postDate = drivingObj.getPostDate(post.creationDate.epochSecond);
@@ -37,6 +42,8 @@ mw.loader.using( "mediawiki.api" ).then(function(){
                 api = new mw.Api();      
             api.get(params).then(function (data) {
                 var firstEdit = data.query.usercontribs[0];
+                if (firstEdit ===  undefined )
+                    return
                 drivingObj.populateProfileEditor(firstEdit);
             })
             .catch(function (e){
@@ -45,14 +52,11 @@ mw.loader.using( "mediawiki.api" ).then(function(){
         },
         populateProfileEditor: function(data) {
             var $liEdit,
-                $anchorEdit,
-                $identityBox = $('.user-identity-box__info');
-            $newul = $('<ul class = "moreInfo">');
+                $anchorEdit;
             $anchorEdit = $('<a href ="/wiki/' + data.title + '?diff=' + data.revid + '">' + data.timestamp.split('T')[0] + '</a>')
             $liEdit = $('<li class = "editDate"><p>Joined Wiki since: </p>' + '</li>');
             $liEdit.find('p').append($anchorEdit);
             $newul.append($liEdit);
-            $identityBox.append($newul);
         },
         populateProfileCommentor: function(date, href) {
             var $liComment,
@@ -86,18 +90,13 @@ mw.loader.using( "mediawiki.api" ).then(function(){
             return (mw.config.get("wgCanonicalNamespace") !== "Special" || mw.config.get("wgTitle").includes("UserProfileActivity/") === false)
         },
         getUserName: function(){
-            if (drivingObj.isNotUserPage() === false)
-                return mw.config.get("wgTitle");
-            else if (drivingObj.isNotMessageWall() === false) 
-                return mw.config.get("wgTitle");
-            else if (drivingObj.isNotUserBlog() === false)
-                return mw.config.get("wgTitle");
-            else if (drivingObj.isNotContributions() === false)
-                return mw.config.get("wgTitle").split("/")[1];
-            else if (drivingObj.isNotProfileActivity() === false)
-                return mw.config.get("wgTitle").split("/")[1];
+            return mw.config.get('profileUserName');
         },
         run: function (){
+                window.editorPostInfo = true;
+                var $identityBox = $('.user-identity-box__info');
+                $newul = $('<ul class = "moreInfo">');
+                $identityBox.append($newul);
                 new mw.Api().get({ //get id to run the functions
                 action : "query",
                 list: 'users',
@@ -116,10 +115,10 @@ mw.loader.using( "mediawiki.api" ).then(function(){
     if (window.editorPostInfo === true)
     		return;
     else {
-    	window.editorPostInfo = false;
         var checkProfileShowed = function (){
-            if (!$('#userProfileApp').length)
+            if (!$('.user-identity-box').length) {
                 setTimeout(checkProfileShowed, 500);
+            }
             else 
                 drivingObj.run();
         }

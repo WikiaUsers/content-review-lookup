@@ -1,10 +1,11 @@
 /* jshint maxerr: 1000 */
 /* jshint multistr: true */
-$(".type-enemyBox").each(
+$(".type-enemyBox, .enemy-horiz-box").each(
 	function(count, enemyVar) {
 		var slider = $(enemyVar).find("#slider_div")[0];
 		if(slider == null) return;
 
+		var IsHoriz = $(enemyVar)[0].className == "enemy-horiz-box";
 		var ehp_input_id = "ehp_input_" + count;
 		var ehp_slider_id = "ehp_slider_" + count;
 		var reset_id = "reset_" + count;
@@ -15,7 +16,7 @@ $(".type-enemyBox").each(
 		var scaler = slider.enemyVarInfoboxScaler;
 
 		scaler.init = function() {
-			this.faction = $(enemyVar).find(".pi-item[data-source=Faction]").find(".pi-data-value").text() || "Не визначено";
+			this.faction = IsHoriz ? $(enemyVar).find(".data-row[data-source=Faction]").find(".data-value").text() : $(enemyVar).find(".pi-item[data-source=Faction]").find(".pi-data-value").text();
 			this.overguard_v = 0;
 			if (shield !== null) { this.shield_v = parseInt($(enemyVar).find("#shield")[0].innerHTML, 10); } else { this.shield_v = 0; }
 			if (health !== null) { this.health_v = parseInt($(enemyVar).find("#health")[0].innerHTML, 10); } else { this.health_v = 0; }
@@ -29,8 +30,8 @@ $(".type-enemyBox").each(
 
 			if (this.spawn_lvl_v === 0) this.spawn_lvl_v = this.base_lvl_v;
 			
-			$(enemyVar).find(".pi-item[data-source=EHP]").after(
-				'<div class="pi-item pi-data pi-item-spacing pi-border-color"><div class="pi-data-value pi-font">\
+			$(enemyVar).find((IsHoriz ? ".data-row" : ".pi-item") + "[data-source=EHP]").after(
+				'<div class="'+ (IsHoriz ? ".data-row" : "pi-item pi-data pi-item-spacing pi-border-color")+'"><div class="pi-data-value pi-font">\
 				<div style="text-align: center;">\
 				<input type="checkbox" name="sp" id="'+ enemy_steelpath_id +'"></input>\
 				<label for="'+ enemy_steelpath_id +'">Шлях сталі</label>\
@@ -152,19 +153,29 @@ $(".type-enemyBox").each(
 					shield_multi = (4.5 + 0.03 * (curr_lvl - 50)) * (old_shield * (1 - this.trans(70, 80, curr_lvl, this.base_lvl_v)) + new_shield * this.trans(70, 80, curr_lvl, this.base_lvl_v));
 				else shield_multi = 6 * new_shield;
 				
-				if (!$(enemyVar).find(".pi-item[data-source=Overguard]").length) {
+				if (!$(enemyVar).find( (IsHoriz ? ".data-row" : ".pi-item") + "[data-source=Overguard]").length) {
 					// додає поле з надзахистом перед рядком зменшення шкоди, якщо його нема, то перед рядком з вразливостями/опорами
-					var $block = $(enemyVar).find(".pi-item[data-source=DmgReduction]").length ? $(enemyVar).find(".pi-item[data-source=DmgReduction]") : $(enemyVar).find(".pi-item[data-source=Resists]");
-					$block.before(
-						'<div class="pi-item pi-data pi-item-spacing pi-border-color" data-source="Overguard">\
+					
+					var $block;
+					if (IsHoriz) {
+						$block = $(enemyVar).find(".data-row[data-source=DmgReduction]").length ? $(enemyVar).find(".data-row[data-source=DmgReduction]") : $(enemyVar).find(".data-row[data-source=Resists]");
+						$block.before(
+						'<div class="data-row" data-source="Overguard">\
+						<h3 class="data-label">Надзахист</h3>\
+						<div class="data-value"><span id="overguard">'+ overg +'</span></div>\
+						</div>');
+					} else {
+						$block = $(enemyVar).find(".pi-item[data-source=DmgReduction]").length ? $(enemyVar).find(".pi-item[data-source=DmgReduction]") : $(enemyVar).find(".pi-item[data-source=Resists]");
+						$block.before(
+						'<div class="pi-item pi-data pi-item-spacing pi-border-color"" data-source="Overguard">\
 						<h3 class="pi-data-label pi-secondary-font">Надзахист</h3>\
 						<div class="pi-data-value pi-font"><span id="overguard">'+ overg +'</span></div>\
-						</div>'
-					);
+						</div>');
+					}
 				}
 				$(enemyVar).find("#overguard")[0].innerHTML = Math.round((overg * 100) / 100).toLocaleString();
 			} else {
-				$(enemyVar).find(".pi-item[data-source=Overguard]").remove();
+				$(enemyVar).find((IsHoriz ? ".data-row" : ".pi-item") + "[data-source=Overguard]").remove();
 			}
 
 			var affinity = this.affinity_v * (1 + Math.sqrt(curr_lvl) * 0.1425);
@@ -181,7 +192,7 @@ $(".type-enemyBox").each(
 			$(enemyVar).find("#damage_redux").text((Math.round((DR * 10000)) / 100).toLocaleString());
 
 			if (curr_lvl < this.spawn_lvl_v) {
-				$(enemyVar).find("#out_ehp").text("&ndash;&ndash;");
+				$(enemyVar).find("#out_ehp").html("&ndash;&ndash;");
 			} else {
 				$(enemyVar).find("#out_ehp").text((Math.round(eHP* 100) / 100).toLocaleString());
 			}

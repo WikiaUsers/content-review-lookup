@@ -54,13 +54,10 @@ window.UserTagsJS = {
 		//Chairmen
 		'hc-sc': { u:'Historical Cmte (Sr Chmn)', order:2 },
 		'hc-jc': { u:'Historical Cmte (Jr Chmn)', order:2 },
-		'vc-sc': { u:'Training Cmte (Sr Chmn)', order:2 },
-		'vc-jc': { u:'Training Cmte (Jr Chmn)', order:2 },
 		'ec-sc': { u:'Activities Cmte (Sr Chmn)', order:2 },
 		'ec-jc': { u:'Activities Cmte (Jr Chmn)', order:2 },
 		//Committees
 		'hc-member': { u:'Historical Cmte', order:3 },
-		'vc-member': { u:'Training Cmte', order:3 },
 		'ec-member': { u:'Activities Cmte', order:3 },
 		//Former
 		'former-intern': { u:'Former Intern', order:-1/0 },
@@ -93,9 +90,9 @@ UserTagsJS.modules.custom = {
 	/* Chat Mods */
 	'GhoulGirls90': ['chatmoderator', 'head'],
 	/* Helpers and Intern */
-	'Littleslinky': ['helpers', 'head'],
+	'Littleslinky': ['helpers',],
 	'Vividstardust': ['helpers'],
-	'Tuxedoshlyukha': ['helpers'],
+	'Tuxedoshlyukha': ['helpers', 'head'],
 	'AmaiOdayakaYansim123': ['helpers'],
 	'VACANT': ['intern'],
 	
@@ -232,9 +229,9 @@ window.MessageWallUserTags = {
         'Ŝenezala': 'Head Mini-Admin',
         'Tsuzuro_Yamazaki': 'Head Content Mod',
         'GhoulGirls90': 'Head Chat Mod',
-        'Littleslinky': 'Head Helper',
+        'Tuxedoshlyukha': 'Head Helper',
+        'Littleslinky': 'Helper',
         'Vividstardust': 'Helper',
-        'Tuxedoshlyukha': 'Helper',
         'AmaiOdayakaYansim123': 'Helper',
         'VACANT': 'Intern',
     }

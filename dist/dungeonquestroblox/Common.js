@@ -129,7 +129,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     function addLevelCalculator(div) {
         createSpan(div).update("DQ Wiki Level Calculator");
         var eventCheckBox = createCheckBox("event", "2x EXP Event");
-        var boosterCheckBox = createCheckBox("booster", "Booster activated");
+        var boosterCheckBox = createCheckBox("booster", "EXP Potion activated");
         var dungeonField = createSelectField("dungeon", "Pick Dungeon (optional)", dungeonsNames);
         var difficultyField = createSelectField("difficulty", "Pick Difficulty (optional)", difficulties);
         var currentField = createField("current", "Your current level");

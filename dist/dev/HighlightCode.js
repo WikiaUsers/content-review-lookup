@@ -13,7 +13,7 @@ mw.loader.using('mediawiki.util').then(function () {
     //DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
     $('<link>', {
         rel: 'stylesheet',
-        href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-' + (isDarkTheme ? 'dark' : 'light') + '.min.css',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/atom-one-' + (isDarkTheme ? 'dark' : 'light') + '.min.css',
         integrity: (isDarkTheme ? 'sha512-Jk4AqjWsdSzSWCSuQTfYRIF84Rq/eV0G2+tu07byYwHcbTGfdmLrHjUSwvzp5HvbiqK4ibmNwdcG49Y5RGYPTg==' : 'sha512-o5v54Kh5PH0dgnf9ei0L+vMRsbm5fvIvnR/XkrZZjN4mqdaeH7PW66tumBoQVIaKNVrLCZiBEfHzRY4JJSMK/Q=='),
         crossorigin: 'anonymous',
         appendTo: $('head')
@@ -42,11 +42,11 @@ mw.loader.using('mediawiki.util').then(function () {
     //Import JS from https://cdnjs.com/libraries/highlight.js (via a well known CDN, using SRI, and locking to a version)
     //DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING
     var js = $.ajax({
-        url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js',
+        url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/highlight.min.js',
         dataType: 'script',
         method: 'GET',
         scriptAttrs: {
-            integrity: 'sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==',
+            integrity: 'sha512-6yoqbrcLAHDWAdQmiRlHG4+m0g/CT/V9AGyxabG8j7Jk8j3r3K6due7oqpiRMZqcYe9WM2gPcaNNxnl2ux+3tA==',
             crossorigin: 'anonymous'
         }
     });

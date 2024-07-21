@@ -1,10 +1,5 @@
 /* Bất kỳ mã JavaScript ở đây sẽ được tải cho tất cả các thành viên khi tải một trang nào đó lên. */
 
-importArticles({
-    type: "style",
-    article: "MediaWiki:Customizing.css"
-});
-
 /* Sửa kết xuất phông chữ Windows */
 if ($.client.profile().platform == 'win') {
     mw.util.addCSS('.IPA, .Unicode { font-family: "Arial Unicode MS", "Lucida Sans Unicode"; }');
@@ -91,3 +86,5 @@ function createCollapseButtons() {
 }
 
 mw.hook("wikipage.content").add(createCollapseButtons);
+
+InactiveUsers = { months: 1 };

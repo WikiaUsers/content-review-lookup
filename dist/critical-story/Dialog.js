@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://critical-story.fandom.com/wiki/MediaWiki:Dialogue.js?action=raw\u0026ctype=text/javascript");

@@ -1,38 +1,6 @@
-/* CustomHeaderDropdown
- *
- * Lets you customize the dropdown on the community header next to the wiki activity
- * 
- * @author Dorumin
- */
-
-(function() {
-    if (
-        window.CustomHeaderDropdown && CustomHeaderDropdown.init
-    ) return;
-
-    window.CustomHeaderDropdown = $.extend({
-        links: window.CustomHeaderLinks,
-        $buttons: $('.wds-community-header__wiki-buttons, .wiki-tools'),
-        buildDropdown: function(links) {
-            var $dropdown = $('<ul>', {
-                'class': 'wds-list wds-is-linked'
-            });
-            links.forEach(function(link) {
-                $('<li>', {
-                    append: $('<a>', link)
-                }).appendTo($dropdown);
-            });
-            return $dropdown;
-        },
-        replaceDropdown: function($new) {
-            this.$buttons.find('ul').replaceWith($new);
-        },
-        init: function() {
-            if (!this.links) return;
-
-            this.replaceDropdown(this.buildDropdown(this.links));
-        }
-    }, window.CustomHeaderDropdown);
-
-    CustomHeaderDropdown.init();
-})();
+// add compass image
+$('.fandom-community-header__community-name-wrapper').append(
+        $('<a/>').css('font-size', '1px').attr('href', 'https://community.fandom.com/wiki/Fandom_Compass').append(
+        $('<img/>').addClass('hover-community-header-wrapper').css('height', '20px')
+        .attr('src', 'https://static.wikia.nocookie.net/freddy-fazbears-pizza/images/8/82/FandomCompassBadge.png/revision/latest?path-prefix=es').attr('title', 'A Fandom Compass Wiki')
+    ));

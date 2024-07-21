@@ -50,3 +50,39 @@ document.querySelectorAll('.form .quote').forEach(function(element) {
 document.querySelectorAll('.form .quotemark').forEach(function(element) {
         element.style.color = 'rgba(191, 152, 18, 0.5)';
 });
+
+/* Galerij-klapbaar */
+$(function() {
+    // Add collapse buttons to all <gallery> elements
+    $('gallery').each(function() {
+        var $gallery = $(this);
+        var $button = $('<button class="collapsible-gallery-button">+/-</button>');
+        $button.click(function() {
+            $gallery.toggleClass('collapsed');
+        });
+        $gallery.before($button);
+    });
+});
+
+
+$(function() {
+    // Add collapse buttons to all galleries with IDs starting with 'gallery-'
+    $('div[id^="gallery-"]').each(function() {
+        var $gallery = $(this);
+        var $button = $('<button class="collapsible-gallery-button">+/-</button>');
+        
+        $button.on('click', function() {
+            $gallery.toggleClass('collapsed');
+        });
+
+        $gallery.before($button);
+    });
+});
+
+/* SpoilerAlert */
+window.SpoilerAlertJS = {
+    question: '<b>Deze sectie bevat enkele spoilers (plotinformatie, einddetails, ...). Wil je doorgaan?</b>',
+    yes: 'Ja',
+    no: 'Nee',
+    fadeDelay: 500
+};

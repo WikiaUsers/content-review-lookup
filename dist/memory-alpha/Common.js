@@ -1,9 +1,11 @@
+// <pre>
+
 // Configuration for [[MediaWiki:ImportJS]]
 
 window.AutoCreateUserPagesConfig = {
   content: {
-    2: '{{sub'+'st:newuser}}',
-    3: '{{sub'+'st:welcome}}',
+    2: '{{subst:newuser}}',
+    3: '{{subst:welcome}}',
   },
   summary: 'Script: Creating user+talkpage on first edit'
 };
@@ -183,13 +185,12 @@ $(function(){
 // Re-add proper namespace prefix to titles where it has been removed "by design"
 
 $.getJSON('/api.php?action=query&prop=info&titles='+mw.config.get('wgPageName')+'&inprop=displaytitle&format=json', function(json){
-  $('#firstHeading').html(json['query']['pages'][mw.config.get('wgArticleId')]['displaytitle']);
+  $('#firstHeading').html(json.query.pages[mw.config.get('wgArticleId')].displaytitle);
 });
 
 // Countdown: Version: 2.0 Rewrite by Pecoes; original script by Splarka + Eladkse
 
-;(function (module, mw, $) {
-
+(function(module, mw, $){
   'use strict';
 
   var translations = $.extend(true, {
@@ -354,7 +355,7 @@ $.getJSON('/api.php?action=query&prop=info&titles='+mw.config.get('wgPageName')+
       }
     }
     if (parts.length) {
-      result = parts.join(', ') + ' ' + i18n.and + ' ' + result;
+      result = parts.join(', ') + ', ' + i18n.and + ' ' + result;
     }
     countdowns[i].node.text(result);
   }
@@ -525,13 +526,18 @@ function correctLinkBehavior(){
 }
 
 correctLinkBehavior();
-
 setTimeout(correctLinkBehavior, 5000);
 
 /* Remove "talk" link from forums */
 
-const talkLink = $('.ns-110 #ca-talk');
+$(function(){
+  const talkLink = $('.ns-110 #ca-talk');
 
-if (talkLink){
+  if (talkLink.length === 0){
+    return;
+  }
+
   talkLink.parent().remove();
-}
+});
+
+// </pre>

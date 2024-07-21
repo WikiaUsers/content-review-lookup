@@ -18,7 +18,7 @@
 
 	function getImageThumbnailURL(name, store, size) {
 		const encodedName = mw.util.wikiUrlencode(name);
-		return 'https://static.wikia.nocookie.net/minecraft-bedrock-server-idea/images/' +
+		return 'https://static.wikia.nocookie.net/spoicys/images/' +
 			store +
 			'/' +
 			encodedName +

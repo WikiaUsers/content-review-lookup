@@ -42,9 +42,10 @@
 				'</div>'
 			);
 			var suggestBox = wrapper.find('.IPM-list');
+			var scrollBox = wrapper.find('.IPM-body');
 			
 			// Append wrapper to area
-			$('body').prepend(wrapper);
+			$('body').append(wrapper);
 			
 			var methods = {
 				SEARCH: {},
@@ -52,9 +53,10 @@
 					// Hide and empty out when unfocusing list
 					document.addEventListener('click', function(event) {
 						if (!event.target.closest('.wikiEditor-ui-linkSuggest')) {
-							wrapper.hide();
 							suggestBox.empty();
 							suggestBox.removeAttr('aria-activedescendant');
+							scrollBox.scrollTop(0);
+							wrapper.hide();
 						}
 					});
 					
@@ -65,7 +67,6 @@
 					suggestBox.on('mouseout.IPM', function(event) {
 						if (event.target.closest('.wikiEditor-ui-linkSuggest-suggestion')) {
 							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').classList.remove('oo-ui-optionWidget-highlighted');
-							event.target.closest('.wikiEditor-ui-linkSuggest-suggestion').setAttribute('aria-selected', false);
 						}
 					});
 					
@@ -79,9 +80,10 @@
 							if (wrapper.css('display') == 'none') {
 								methods.suggestLink(event);
 							} else if (wrapper.css('display') !== 'none' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
-								wrapper.hide();
 								suggestBox.empty();
 								suggestBox.removeAttr('aria-activedescendant');
+								scrollBox.scrollTop(0);
+								wrapper.hide();
 								methods.suggestLink(event);
 							} else if (wrapper.css('display') !== 'none' && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
 								event.preventDefault();
@@ -91,9 +93,10 @@
 							event.preventDefault();
 							methods.dispatchLink();
 						} else if (event.key == 'Escape' && document.querySelector('.IPM-list > div')) {
-							wrapper.hide();
 							suggestBox.empty();
 							suggestBox.removeAttr('aria-activedescendant');
+							scrollBox.scrollTop(0);
+							wrapper.hide();
 						}
 					});
 				},
@@ -117,9 +120,10 @@
 					newNode.remove(); // Remove original link text used for search
 					
 					// Close suggestion list
-					wrapper.hide();
 					suggestBox.empty();
 					suggestBox.removeAttr('aria-activedescendant');
+					scrollBox.scrollTop(0);
+					wrapper.hide();
 				},
 			
 				handleOOUI: function(event) {
@@ -151,11 +155,17 @@
 						newNode.classList.add('oo-ui-optionWidget-highlighted');
 						newNode.setAttribute('aria-selected', true);
 						suggestBox.attr('aria-activedescendant', newNode.id);
-						var box = wrapper.find('.IPM-body')[0];
-						var scrollChange = 0;
-						if (box.clientHeight < (newNode.offsetTop + newNode.clientHeight)) {scrollChange = newNode.clientHeight;}
-						else if (box.scrollTop > newNode.offsetTop) {scrollChange = -currentNode.clientHeight;}
-						box.scrollTop += scrollChange;
+						
+						// Scroll selected option into view
+						var box = scrollBox[0];
+						// Don't scroll if new node is already fully visible
+						if (newNode.offsetTop < box.scrollTop || newNode.offsetTop + newNode.clientHeight > box.scrollTop + box.clientHeight) {
+							if (newNode.offsetTop < (currentNode ? currentNode.offsetTop : 0)) {
+								box.scrollTop = newNode.offsetTop;
+							} else if (newNode.offsetTop > (currentNode ? currentNode.offsetTop : 0)) {
+								box.scrollTop = newNode.offsetTop + newNode.clientHeight - box.clientHeight;
+							}
+						}
 					}
 				},
 				
@@ -434,5 +444,5 @@
 		}
 	};
 	
-	mw.loader.using('mediawiki.api').then(betterLinkSuggest.init);
+	mw.loader.using(['mediawiki.api', 'oojs-ui-core.styles']).then(betterLinkSuggest.init);
 })();

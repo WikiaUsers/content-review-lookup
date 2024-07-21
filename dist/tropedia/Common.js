@@ -1,3 +1,11 @@
+// LinkPreview //
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+	window.pPreview.tlen = 200;
+	window.pPreview.csize = 100;
+	window.pPreview.apid = false;
+	window.pPreview.RegExp.noinclude = ['.work', '.trope', '.quote', '.Useful_Notes'];
+	window.pPreview.delay = 200;
+
 //Customization for imported scripts
 //PreloadFileDescription, source: https://dev.fandom.com/wiki/PreloadFileDescription
 
@@ -9,7 +17,6 @@ PFD_discourageEditorFileUpload = true;
 
 
 /* Any JavaScript here will be loaded for all users on every page load. */
-
 
 
 /* Section Hide folder functionality */

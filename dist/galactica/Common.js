@@ -14,3 +14,6 @@ window.ajaxPages = [
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');
     }
+
+// prevents existing tags from being hidden
+(window.dev = window.dev || {}).profileTags = { noHideTags: true };

@@ -162,3 +162,15 @@ $(function() {
 		generateImageLink();
 	}
 });
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:ListFiles/code.js',
+    ]
+});
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AjaxBatchDelete.js',
+    ]
+});

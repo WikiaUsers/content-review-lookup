@@ -9,32 +9,25 @@
     var results, i18n;
 
     function searchMap(article) {
-        var $topArticle = $('<div>', {
+        var $topArticle = $('<a>', {
             attr: {
                 'data-title': article.title,
-                'data-id': article.id
+                'data-id': article.id,
+                href: article.url
             },
-            'class': 'toparticle'
+            'class': 'toparticle',
+            css: {
+                'background-image': 'url(' + article.thumbnail + ')',
+                'background-size': 'cover',
+                'background-position': 'center'
+            }
         }).append(
-            $('<div>', {
-                'class': 'toparticle__thumbnail',
-                css: {
-                    'background-image': 'url(' + article.thumbnail + ')',
-                    'background-size': 'cover'
-                }
-            }).append(
-                $('<a>', {
-                    href: article.url,
-                    title: article.title
-                })
-            ),
             $('<div>', {
                 'class': 'toparticle__text'
             }).append(
-                $('<a>', {
-                    href: article.url,
+                $('<div>', {
                     text: article.title,
-                    'class': 'article-link'
+                    'class': 'article-title'
                 }),
                 $('<div>', {
                     'class': 'toparticle__abstract',

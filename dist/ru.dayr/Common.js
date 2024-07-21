@@ -10,5 +10,5 @@ importArticles({
 
 importArticle({
     type: "script",
-    article: "u:nkch:MediaWiki:Tiles.js"
+    article: "MediaWiki:Tiles.js"
 });

@@ -32,7 +32,7 @@ mw.loader.using(['mediawiki.api', 'mediawiki.util'], function() {
 		}
 		
 		var block_display = document.createElement("div");
-		text_to_parse = "<div class=\"notifications-placeholder-custom\"><div class=\"wds-banner-notification__container\"><div class=\"wds-banner-notification wds-alert\"><div class=\"wds-banner-notification__icon\">[[File:Feather-core-x-octagon-white.svg|20px]]</div><div class=\"wds-banner-notification__text\"><b>You are currently blocked.</b> <i>More information about your block [[Special:MyContributions|here]].</i></div></div></div></div>";
+		text_to_parse = "<div class=\"notifications-placeholder-custom\"><div class=\"wds-banner-notification__container\"><div class=\"wds-banner-notification wds-alert\"><div class=\"wds-banner-notification__icon\">[[File:Ambox banner content.svg|20px]]</div><div class=\"wds-banner-notification__text\"><b>You are currently blocked.</b> <i>More information about your block [[Special:MyContributions|here]].</i></div></div></div></div>";
 		api.parse(text_to_parse).done(function(text_output) {
 			var textParagraph = document.createElement("div");
 			textParagraph.innerHTML = text_output;

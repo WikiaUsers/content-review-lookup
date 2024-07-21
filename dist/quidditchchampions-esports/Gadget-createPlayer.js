@@ -101,13 +101,11 @@ $( function () {
 			var makeStats = document.getElementById('create-team-makestats').checked;
 			titles = [
 				thistitle + '/Tournament Results',
-				thistitle + '/Pick-Ban History',
 				thistitle + '/Schedule History',
 				'Tooltip:' + thistitle
 			];
 			texts = [
 				"{{TeamTabsHeader}}\n{{TeamResults|show=everything}}",
-				"{{TeamTabsHeader}}\n{{PBHistoryTeam}}",
 				"{{TeamTabsHeader}}\n{{TeamScheduleHistory}}",
 				"{{RosterTooltip}}"
 			]
@@ -153,12 +151,10 @@ $( function () {
 	function createTournament() {
 		a = new mw.Api();
 		var form = document.createElement('form');
-		$(form).html('If the Tournament Name says [Loading] you may need to edit CCMT first and/or create a redirect. Otherwise type the CCMT-style unique name for this event. If you aren\'t sure what this means join our Discord (linked in the sidebar).<br><input id="create-tournament-makestats" type="checkbox" checked> <label for="create-tournament-makestats">Make Stats?</label><br><input id="create-tournament-makerunes" type="checkbox" checked> <label for="create-tournament-makerunes">Make Runes?</label><br><input id="create-tournament-makepickbans" type="checkbox" checked> <label for="create-tournament-makepickbans ">Make Pick-Bans?</label><br>Tabs Text: <input id="create-tournament-tabsname" value="[Loading]"> Tabs Template<br>Tabs Text: <input id="create-tournament-tournamentname" value="[Loading]"> Tournament Name<br><textarea id="create-tournament-sbtext" style="height:100px;width:300px;">{{TOCFlat}}</textarea> Scoreboard Text<br><input type="submit" id="create-tournament-submit" value="Create">');
+		$(form).html('If the Tournament Name says [Loading] you may need to edit CCMT first and/or create a redirect. Otherwise type the CCMT-style unique name for this event. If you aren\'t sure what this means join our Discord (linked in the sidebar).<br><input id="create-tournament-makestats" type="checkbox" checked> <label for="create-tournament-makestats">Make Stats?</label><br>Tabs Text: <input id="create-tournament-tabsname" value="[Loading]"> Tabs Template<br>Tabs Text: <input id="create-tournament-tournamentname" value="[Loading]"> Tournament Name<br><textarea id="create-tournament-sbtext" style="height:100px;width:300px;">{{TOCFlat}}</textarea> Scoreboard Text<br><input type="submit" id="create-tournament-submit" value="Create">');
 		$(form).insertAfter('#firstHeading');
 		thistitle = mw.config.get("wgTitle");
 		var statsCheck = document.getElementById('create-tournament-makestats');
-		var runesCheck = document.getElementById('create-tournament-makerunes');
-		var pbCheck = document.getElementById('create-tournament-makepickbans');
 		var tabsField = document.getElementById('create-tournament-tabsname');
 		var nameField = document.getElementById('create-tournament-tournamentname');
 		getTabsTemplate(tabsField).then(function() {
@@ -213,12 +209,10 @@ $( function () {
 				console.log('making stats pages');
 				var titles = [
 					thistitle + '/Match History',
-					thistitle + '/Champion Statistics',
 					thistitle + '/Player Statistics'
 				];
 				var texts = [
 					tabs + '\n{{MatchHistoryTournament}}',
-					tabs + '\n{{OverallChampionStats}}',
 					tabs + '\n{{OverallPlayerStats}}'
 				];
 				var scoreboardExtraText = $('#create-tournament-sbtext').val();
@@ -229,49 +223,12 @@ $( function () {
 				}
 				return makePages(titles, texts);
 			}
-			
-			function makeRunesPages(tabs) {
-				console.log('making runes pages');
-				var numRunePages = $('datapage-info').attr('data-datapages');
-				if (! numRunePages) { // it could be undefined, don't do === 0
-					numRunePages = 1;
-					window.reportError('No data pages exist yet for this league, so we are just making one rune page. Please remember to make additional rune pages, one per data page, if necessary!');
-				}
-				console.log(numRunePages);
-				var titles = [];
-				var texts = [];
-				for (i = 0; i < numRunePages; i++) {
-					displayNumber = i + 1;
-					titles.push(thistitle + '/Runes' + (i ? '/' + displayNumber.toString() : ''));
-					texts.push(tabs + '\n{{RunesQueryTournament}}');
-				}
-				console.log(titles);
-				console.log(texts);
-				return makePages(titles, texts);
-			}
-			
-			function makePBPages(title, tabs) {
-				console.log('making pick-ban pages');
-				var titles = [
-					title + '/Picks and Bans'
-				];
-				var texts = [
-					tabs + "\n\{\{PBHistoryTournament\}\}",
-				];
-				return makePages(titles, texts);
-			}
-			
+
 			statuscolor = "gadget-action-success";
 			tag = "create_tournament";
 			return getSBPages(thistitle, statsCheck, tabsText).then(function(sbPageList) {
 				if (!statsCheck.checked) return $.Deferred().resolve();
 				return makeStatsPages(thistitle, tabsText, nameText, sbPageList);
-			}).then(function() {
-				if (!runesCheck.checked) return $.Deferred().resolve();
-				return makeRunesPages(tabsText);
-			}).then(function() {
-				if (!pbCheck.checked) return $.Deferred().resolve();
-				return makePBPages(thistitle, tabsText);
 			}).then(printSuccess);
 		});
 	}

@@ -495,6 +495,7 @@
 				if ($input.is(':checkbox')) {
 					text = $input.prop("checked");
 				}
+				text = text ? text.trim() : "";
 
 				if (!text && !$input.hasClass('optional')) {
 					console.log($input);

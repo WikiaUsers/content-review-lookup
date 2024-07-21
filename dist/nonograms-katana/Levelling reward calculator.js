@@ -105,7 +105,7 @@ function calculate() {
 		[40,"Dungeon lvl. 4","Airship lvl. 1"],
 		[44,"Skill: Aeronaut lvl. 1"],
 		[49,"Skill: Aeronaut lvl. 2"],
-		[50,"Dungeon lvl. 5"],
+		[50,"Dungeon lvl. 5", "Train Station lvl. 1", "Train lvl. 1"],
 		[80,"Class: Zen Master"]
 		];
 

@@ -39,158 +39,14 @@ $(function () {
 				console.log('saved wikitext to ' + thisFlPage);
 			}, raiseError);
 		}
-		
-		// update pickban
-		function getPBData() {
-			if (! $dataDiv.attr('data-pickban')) return $.Deferred().resolve();
-			console.log('Fetching Pick/Ban Data...');
-			return a.get({
-				action : 'parse',
-				text : '{{' + '#invoke:PickBanScore|main|page=' + overviewPage + '}}',
-				prop : 'text'
-			}).then(function(data) {
-				var str = window.processParserOutput(data.parse.text['*']);
-				if (str.includes('Lua error')) {
-					window.reportError("Error updating pick-ban, it's likely that the order doesn't match the MatchSchedule! Perhaps you need to add a |notab=yes? We will now print the error that was detected.");
-					window.reportError(str);
-					return $.Deferred().reject();
-				}
-				console.log(str);
-				var tbl1 = str.split('*****');
-				str = tbl1[1];
-				console.log(str);
-				var tbl = str.split(';');
-				for (game in tbl) {
-					tbl[game] = tbl[game].split(',');
-				}
-				return tbl;
-			});
-		}
-		
-		function updatePB(tbl) {
-			console.log('updatepb');
-			if (! tbl || tbl.length == 0 || tbl[0] == '') {
-				console.log('No PB to update');
-				return $.Deferred().resolve();
-			}
-			var game = tbl.shift();
-			var page = game[0];
-			var templatesToChange = [ makeGameDict(game) ];
-			while (tbl.length > 0 && tbl[0][0] == page) {
-				templatesToChange.push(makeGameDict(tbl.shift()));
-			}
-			console.log(templatesToChange);
-			return a.get({
-				action : 'query',
-				prop : 'revisions',
-				titles : page,
-				rvprop : 'content'
-			}).then(function(data) {
-				var content;
-				for (p in data.query.pages) {
-					content = data.query.pages[p].revisions[0]["*"];
-				}
-				var listOfTemplates = content.split(/\{\{PicksAndBans(?!\/)/);
-				for (i in templatesToChange) {
-					var thisgame = templatesToChange[i];
-					// don't have to offset by 1 because the first one (0) is before any template
-					var template = listOfTemplates[thisgame.N];
-					template = template.replace(/\|team1score=\s*\|/, '|team1score=' + thisgame.score1 + ' |')
-					template = template.replace(/\|team2score=\s*\|/, '|team2score=' + thisgame.score2 + ' |')
-					template = template.replace(/\|winner=(\s*)\|/,'|winner=' + thisgame.winner + ' $1|');
-					
-					if (thisgame.reorderTeams === true ) {
-						// grab a full template arg ([^\|] won't match the next template arg separator)
-						template = template.replace(/\|blueteam=([^\|]+)\|redteam=([^\|\r\n]+)/, "|blueteam=$2|redteam=$1");
-					}
-					
-					listOfTemplates[thisgame.N] = template;
-					if (thisgame.bestof && thisgame.serieswinner) {
-						deleteExtraGames(listOfTemplates, thisgame, template);
-					}
-				}
-				
-				var text = listOfTemplates.join('{{PicksAndBans');
-				text = text.replace(/\{\{PicksAndBansDELETE/g,'<!-- -->');
-				return a.postWithToken('csrf', {
-					action : 'edit',
-					title : page,
-					text : text,
-					summary : 'Updating pick-ban results via RefreshOverview',
-					tags: 'refresh_overview'
-				}).then(function(data) {
-					if (tbl.length == 0) {
-						var pbPagesToPurge = $dataDiv.attr('data-extra-pb-overviews') ? $dataDiv.attr('data-extra-pb-overviews').split(',') : [];
-						pbPagesToPurge.unshift(overviewPage + '/Picks and Bans');
-						return window.purgeAll(pbPagesToPurge);
-					}
-					return updatePB(tbl);
-				}, raiseError);
-			}, raiseError);
-		}
-		
+
 		function raiseError(code, data) {
 			console.log(data);
 			statuscolor = 'gadget-action-fail';
 			$('body').css('cursor', '');
 			return $.Deferred().reject(code);
 		}
-		
-		function makeGameDict(game) {
-			return {
-				N : parseInt(game[1]),
-				score1 : game[2],
-				score2 : game[3],
-				winner : game[4],
-				bestof : parseInt(game[5]),
-				serieswinner : parseInt(game[6]),
-				team1name: game[7], // only for debugging purposes
-				team2name: game[8], // only for debugging purposes
-				blue: game[9], // only for debugging
-				blue: game[10], // only for debugging
-				reorderTeams: game[11] === 'yes', // if the teams were ordered backwards in pb
-			}
-		}
-		
-		function deleteExtraGames(listOfTemplates, thisgame, template) {
-			var score1 = parseInt(thisgame.score1);
-			var score2 = parseInt(thisgame.score2);
-			score1 = score1 ? score1 : 0;
-			score2 = score2 ? score2 : 0;
-			var largerScore = Math.max(score1, score2);
-			if (largerScore > thisgame.bestof / 2) {
-				// console.log('Game to delete found!');
-				// console.log(template);
-				// console.log(thisgame);
-				if (template.toLowerCase().search('box') !== -1) {
-					// this means that there's a box|break or box|end immediately after the last pick-ban game
-					// this occurs if someone manually prunes some games not using RO
-					console.log('It appears deletion has already occurred for this series.');
-					return;
-				}
-				for (j = 1; j <= thisgame.bestof - score1 - score2; j++) {
-					var indexToDelete = thisgame.N + j;
-					var templateToDelete = listOfTemplates[indexToDelete];
-					if (templateToDelete && templateToDelete.match(/game1\s*=\s*Yes/i)) {
-						// I'm pretty sure this condition will never occur anymore because the
-						// deletion already occurred for this series check is actually the correct
-						// check for whether we should be skipping or not, and it supercedes
-						// but I'm not about to delete a check that was previously needed when there's
-						// no unit tests in place so this is staying here forever lol
-						console.log("Won't delete " + indexToDelete + " because it contains a game 1. Score: " + largerScore + ', bestof: ' + thisgame.bestof);
-					}
-					else if (templateToDelete) {
-						console.log('Will delete ' + indexToDelete + ', score: ' + largerScore + ', bestof: ' + thisgame.bestof);
-						templateToDelete = templateToDelete.replace(/[^\}]*\}\}/,'DELETE');
-						listOfTemplates[indexToDelete] = templateToDelete;
-					}
-					else {
-						console.log('Extra games were already deleted');
-					}
-				}
-			}
-		}
-		
+
 		// timeline update
 		function updateTimeline() {
 			if (! $dataDiv.attr('data-timeline')) return $.Deferred().resolve();
@@ -286,8 +142,6 @@ $(function () {
 		.then(function() {
 			window.purgeAll([mw.config.get('wgMainPageTitle')]);
 		})
-		.then(getPBData)
-		.then(updatePB)
 		.then(updateTimeline)
 		.then(logAction)
 		.then(function() {

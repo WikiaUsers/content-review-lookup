@@ -9,7 +9,6 @@
 
 // Uncomment everything below down to the end of the file to activate it.
 
-/*
 var possibleImages = [
 	{
         images: [
@@ -62,4 +61,3 @@ var chosenImage = selectedImageList[chosenIndex];
 
 var imgElement = document.querySelector('.fandom-community-header__image img');
 imgElement.src = chosenImage;
-*/

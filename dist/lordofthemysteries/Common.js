@@ -1,6 +1,3 @@
-/* ================
-   Other imports
-   ================ */
 importArticle({
     type: 'script',
     article: 'u:dev:MediaWiki:BannerNotification.js'
@@ -29,3 +26,8 @@ window.tooltips_list = [
 /*LockOldComments*/
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 120;
+
+/*Custom Preload*/
+window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
+window.preloadTemplates_subpage = "case-by-case";
+window.preloadTemplates_namespace = "Template";
