@@ -9,7 +9,7 @@ window.BackToTopModern = true;
 
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 // window.pPreview.tlen = 200;
-window.pPreview.RegExp.noinclude = [".LinkPreview-ignore", ".quote", ".mw-ext-cite-error", ".error", ".reference", ".sup.reference"];
+window.pPreview.RegExp.noinclude = [".LinkPreview-ignore", ".quote", ".mw-ext-cite-error", ".error", ".references", ".reference", ".sup.reference"];
 // window.pPreview.RegExp.iparents = ['.quote', '.mainpage-gallery', '#icons', '.LinkPreview-ignore', '#LinkPreview-ignore', 'big', 'pre', 'blockquote', '.mbox'];
 
 // Link Preview

@@ -43,7 +43,7 @@
             );
             $el.append(
                 $('<img>', {
-                    src: mw.config.get('stylepath') + '/common/images/ajax.gif'
+                    src: '/resources-ucp/mw139/resources/src/mediawiki.skinning/images/ajax-loader.gif'
                 })
             );
             $el.addClass('loaded');

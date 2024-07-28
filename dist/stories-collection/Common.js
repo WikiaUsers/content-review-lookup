@@ -1,6 +1,5 @@
 function append_link(source) {
     var elements = document.querySelectorAll('div[data-source="' + source + '"] .pi-data-value');
-
     elements.forEach(function(element) {
         var text = element.innerHTML;
         if (text) {
@@ -8,13 +7,28 @@ function append_link(source) {
             element.innerHTML = '';
             values.forEach(function(value, index) {
                 var trimmed_value = value.trim();
+                var linkText = trimmed_value;
+                var extraText = '';
+
+                var parenIndex = trimmed_value.indexOf('(');
+                if (parenIndex !== -1) {
+                    linkText = trimmed_value.substring(0, parenIndex).trim();
+                    extraText = ' ' + trimmed_value.substring(parenIndex);
+                }
+                
                 var category_link = document.createElement('a');
-                category_link.href = '/wiki/Category:' + encodeURIComponent(trimmed_value);
-                category_link.textContent = trimmed_value;
+                category_link.href = '/wiki/Category:' + encodeURIComponent(linkText);
+                category_link.textContent = linkText;
+                
                 if (index > 0) {
                     element.appendChild(document.createElement('br'));
                 }
+                
                 element.appendChild(category_link);
+                
+                if (extraText) {
+                    element.appendChild(document.createTextNode(extraText));
+                }
             });
         }
     });

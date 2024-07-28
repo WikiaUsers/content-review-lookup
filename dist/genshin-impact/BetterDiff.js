@@ -790,20 +790,20 @@ $(function() {
 					}
 					var cr = r.shift();
 					if (cr.rcid && log && log == 'nosuchrevid') {
+						console.log('deleted rcid:', cr.rcid);
 						types.open++;
 						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid);
 						window.focus();
 					} else {
 						types.patrolled++;
-						console.log('tokens', tokens);
-						console.log('error msg:', log);
+						if (log) {console.log('error msg:', log);}
 					}
 					api.post({
 						action: 'patrol',
 						format: 'json',
 						revid: cr.revid,
 						token: tokens.patrol
-					}).then(patrol);
+					}).then(patrol, patrol);
 				};
 				patrol();
 			}

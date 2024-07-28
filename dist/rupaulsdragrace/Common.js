@@ -23,7 +23,7 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 */
 
-/* Fandom partnership discount code */
+/* Fandom partnership discount code 
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')

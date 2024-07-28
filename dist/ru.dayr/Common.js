@@ -8,7 +8,12 @@ importArticles({
 	]
 });
 
-importArticle({
-    type: "script",
-    article: "MediaWiki:Tiles.js"
+importArticles({
+	type: "script",
+	articles: [
+		"MediaWiki:TabberTiles.js",
+		"MediaWiki:Tabber.js",
+		"MediaWiki:ExpansiveInteractionTable.js",
+		"MediaWiki:HideRowsTable.js"
+	]
 });

@@ -3,7 +3,8 @@ $(function() {
     var urlVars = new URLSearchParams(location.search);
     var mwc = mw.config.get(['wgUserLanguage', 'wgFormattedNamespaces', 'wgCanonicalSpecialPageName']);
     if (mwc.wgCanonicalSpecialPageName !== 'Wantedpages' || $('.wp-filter').length) return;
-    var r = /^([^:]+):/;
+    var r = /^([^:]+):/,
+    	r2 = /\d*/;
     var activeFilter = [];
     var strings = {
         // language list - start
@@ -102,7 +103,11 @@ $(function() {
     $('.special li').each(function() {
         var $this = $(this);
         var $link = $this.find('a, span.new').first();// non-existing cats will be de-linked by the engine; use .new to detect a cat
+        var $link2 = $this.find('a').last();
+        var links = r2.exec($link2.text()) || '';
         var ns = r.exec($link.text().trim()) || '';
+        // add link count
+        $this.closest('li').attr('data-links', links);
         if (ns instanceof Array) ns = ns[1];
         if (Object.values(mwc.wgFormattedNamespaces).indexOf(ns) > -1) {
             $this.closest('li').attr('data-ns', ns);

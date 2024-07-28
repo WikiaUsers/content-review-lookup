@@ -35,7 +35,7 @@ function tabsDraw(EditedArray) {
         for(var j = 0; KeysArray[i][j];j++){
             var toggleButton = document.createElement('li');
             toggleButton.className = 'tabs-toggleButton';
-            toggleButton.setAttribute('style','border: 1px solid;margin: 0px;padding: 4px;cursor: pointer;');
+            toggleButton.setAttribute('style','border: 0;margin: 0;padding: 0;cursor: pointer;');
             toggleButton.setAttribute('onclick',"var buttonArray = this.parentNode.getElementsByClassName('tabs-toggleButton');for(var i = 0; buttonArray[i]; i++){buttonArray[i].className='tabs-toggleButton';document.getElementById(buttonArray[i].innerHTML).className='tabs-content';};this.className='tabs-toggleButton tabs-selected';document.getElementById(this.innerHTML).className='tabs-content tabs-show'");
             toggleButton.innerHTML = KeysArray[i][j];
             toggleBar.appendChild(toggleButton);

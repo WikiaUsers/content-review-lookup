@@ -1,0 +1,2 @@
+var searchInput = $('<input type="text" autocomplete="off" id="searchInput" placeholder="Search" style="width: 100%;margin-bottom: 5px">'); // Append the input field to the search div 
+$('#search').append(searchInput); var dropdown = $('<select id="category"><option value="all">All</option><option value="natural">Natural</option><option value="beast">Beast</option><option value="elemental">Elemental</option></select>'); $('#filter').append(dropdown);

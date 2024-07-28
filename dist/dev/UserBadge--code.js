@@ -131,6 +131,8 @@
           })
         })
       })
+    }, function (code, data) {
+      console.warn('UserBadge failed to get user groups. Error code: ' + code + '. Response:', data)
     })
   })
 })(window.jQuery)

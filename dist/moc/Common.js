@@ -2,7 +2,7 @@
 // Configuration for MapsExtended - This applies to specific maps
 window.mapsExtendedConfigs = 
 {
-    "World Map": {
+    "World_Map": {
         categoryGroups:
 	[
         {

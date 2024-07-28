@@ -1,49 +1,52 @@
 /* [[DedicatedTalkButton]] - move talk page link from dropdown to beside edit button */
 
 $(function () {
-    "use strict";
+    'use strict';
 
     // search for talk link only within actions dropdown to avoid unexpected results if layout is not as we expect
     var $actionsDropdown = $('.page-header__actions .wds-list');
-    var $editButton = $('.page-header__actions #ca-edit');
     var $talkLink = $actionsDropdown.find('#ca-talk');
-    var editCountBrackets = /[(（].*?[\d ,.]+.*?[)）]/;
+    var editCountBrackets = /^(.+?)([(（].*?[\d ,.]+.*?[)）])$/;
 
-    if (!$talkLink.length || !$editButton.length) {
+    if (!$talkLink.length) {
         return;
     }
 
     // link is extracted from a list, so remove its parent <li> element
     $talkLink.parent().remove();
 
-    // remove the talk edit count from button text and add it as a tooltip instead
-    var oldLabel = $talkLink.text().trim();
-    var newLabel = oldLabel.replace(editCountBrackets, '');
-    $talkLink.text(newLabel);
-    $talkLink.attr('title', oldLabel);
+    // separate the talk edit count and hide it by default
+    var labelParts = $talkLink.text().trim().match(editCountBrackets);
+    var $editCount = $('<span class="dedicated-talk-button_edit-count">');
+    mw.util.addCSS('.dedicated-talk-button_edit-count { display: none; padding-inline-start: 0.5ch; }');
+    if (labelParts) {
+        $talkLink.text(labelParts[1]);
+        $editCount.text(labelParts[2]);
+        $talkLink.append($editCount);
+    }
 
     // add an icon for consistency with edit button and adjust classes for proper styling
     $talkLink
-        .prepend('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-bubble-small"></use></svg>')
-        .addClass('wds-button wds-is-text page-header__action-button has-label');
+        .prepend('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-discussions-small"></use></svg>')
+        .addClass('dedicated-talk-button wds-button wds-is-text page-header__action-button has-label');
 
-    $editButton.before($talkLink);
+    // add as first button so the edit button doesn’t shift positon
+    $actionsDropdown.parents('.page-header__actions').prepend($talkLink);
 
     // support for editor views
     function initEditorView() {
-        var $editorHeader = $('.ve-fd-header__actions');
         var $editorActionsDropdown = $('.ve-fd-header__actions > .ve-ui-pageActionsPopupButtonWidget');
-        var $currentTalkLink =  $('.ve-fd-header__actions > #ca-talk');
+        var $ourTalkLink =  $('.ve-fd-header__actions > .dedicated-talk-button');
 
-        // no dropdown or talk link already exists
-        if (!$editorHeader.length || !$editorActionsDropdown.length || $currentTalkLink.length ) {
+        // no dropdown or talk link already added
+        if (!$editorActionsDropdown.length || $ourTalkLink.length ) {
             return;
         }
 
         $editorActionsDropdown.find('#ca-talk').hide();
-        $editorHeader.prepend($talkLink.clone(true));
-        // hide the unnecessary separator pseudo-element
-        mw.util.addCSS( '#ca-talk:before { display: none }' );
+        $editorActionsDropdown.parents('.ve-fd-header__actions').prepend(
+            $talkLink.clone(true).addClass('ve-header-action-item')
+        );
     }
     initEditorView();
     mw.hook('wikiEditor.toolbarReady').add(initEditorView);

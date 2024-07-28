@@ -86,3 +86,10 @@ window.SpoilerAlertJS = {
     no: 'Nee',
     fadeDelay: 500
 };
+
+/* Ripple */
+window.ripplesConfig = {
+  'normalRipples': document.querySelectorAll('.elements-1, .elements-2'),
+  'recenteredRipples': document.querySelectorAll('.foo .bar'),
+  'unboundedRipples': document.querySelectorAll('.lorem .ipsum')
+};

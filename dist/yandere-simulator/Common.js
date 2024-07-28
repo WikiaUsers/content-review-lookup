@@ -91,7 +91,7 @@ UserTagsJS.modules.custom = {
 	'GhoulGirls90': ['chatmoderator', 'head'],
 	/* Helpers and Intern */
 	'Littleslinky': ['helpers',],
-	'Vividstardust': ['helpers'],
+	'Vividstardust': ['helpers', 'deputy'],
 	'Tuxedoshlyukha': ['helpers', 'head'],
 	'AmaiOdayakaYansim123': ['helpers'],
 	'VACANT': ['intern'],
@@ -131,8 +131,11 @@ UserTagsJS.modules.custom = {
 	'Shadow Bonnie202': ['former-helper'],
 	'ThatNerdyGamerGirl': ['former-helper'],
 	'MrCheeseTiger1234': ['former-helper', 'ec-member'],
-	'RedLightningStrike': ['former-helpers', 'ec-member'],
-	'S0ul245Official': ['former-helpers'],
+	'RedLightningStrike': ['former-helper', 'ec-member'],
+	'SoulPetrov': ['former-helper'], //S0ul245Official
+	'UltimateGamer899': ['former-helper'],
+	'WakeTheDead17': ['former-helper'],
+	'PM.S.K.D': ['former-helper'], //Keter
 	/* Former Interns */
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
@@ -231,7 +234,7 @@ window.MessageWallUserTags = {
         'GhoulGirls90': 'Head Chat Mod',
         'Tuxedoshlyukha': 'Head Helper',
         'Littleslinky': 'Helper',
-        'Vividstardust': 'Helper',
+        'Vividstardust': 'Deputy Helper',
         'AmaiOdayakaYansim123': 'Helper',
         'VACANT': 'Intern',
     }

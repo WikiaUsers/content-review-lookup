@@ -488,12 +488,16 @@
             
             this.creationTime = performance.now();
 
-            // ID is unique to each instance
-            this.id = root.id;
+            // Instance ID is unique to each instance
+            this.instanceId = root.id;
 
             // Map ID is unique to the map definition on this page, but not unique to each instance on the page
             // It has the ID equivalency of the name of the map
             this.mapId = root.className;
+
+            // Map Page ID is the wiki page ID of the Map namespace page, it is included as part of the processed JSON
+            // It is equivalent to mapId
+            this.mapPageId = "";
 
             // This element is permanently part of the parser output, as it is transcluded from the Map: page
             this.rootElement = root;
@@ -514,6 +518,8 @@
             // jQuery's extend is the fastest deep copy we have on hand
             jQuery.extend(true, this, mw.config.get("interactiveMaps")[this.mapId]);
 
+            this.mapPageId = this.id;
+
             // Lookup tables (iterating interactiveMap.markers is slow when the map has a lot of markers)
             // markerLookup may contain markers that do not yet have an associated element!
             this.markerLookup = new Map();
@@ -525,7 +531,7 @@
 
             var hasGlobalConfig = mapsExtended.isGlobalConfigLoaded;
             var hasLocalConfig = mapsExtended.localConfigs[this.name] != undefined && !isEmptyObject(mapsExtended.localConfigs[this.name]);
-            var hasEmbedConfig = mapsExtended.embedConfigs[this.id] != undefined && !isEmptyObject(mapsExtended.embedConfigs[this.id]);
+            var hasEmbedConfig = mapsExtended.embedConfigs[this.instanceId] != undefined && !isEmptyObject(mapsExtended.embedConfigs[this.instanceId]);
 
             // Check whether a local config is present
             if (hasLocalConfig)
@@ -536,7 +542,7 @@
             // Check whether an embedded config is present
             if (hasEmbedConfig)
             {
-                var embedConfig = mapsExtended.embedConfigs[this.id];
+                var embedConfig = mapsExtended.embedConfigs[this.instanceId];
             }
 
             // Use the config based on precedence embed -> local -> global -> default
@@ -1108,7 +1114,7 @@
             if (this.isMapCreated() == false)
             {
                 // Leaflet not finished initializing
-                console.log(this.id + " (" + this.name + ") - Leaflet not yet initialized for map. Init will be deferred");
+                console.log(this.instanceId + " (" + this.name + ") - Leaflet not yet initialized for map. Init will be deferred");
                 this.rootObserver.observe(this.elements.rootElement, { subtree: true, childList: true });
             }
             else
@@ -1127,7 +1133,7 @@
             {
                 if (this.initialized)
                 {
-                    log(this.id + " (" + this.name + ") - Tried to initialize map when it was already initialized");
+                    log(this.instanceId + " (" + this.name + ") - Tried to initialize map when it was already initialized");
                     return;
                 }
 
@@ -1375,7 +1381,7 @@
                 this.resizeObserver.observe(this.elements.mapModuleContainer);
                 
                 var associatedCount = this.markers.filter(function(x) { return x.markerElement; }).length;
-                console.log(this.id + " (" + this.name + ") - Initialized, associated " + associatedCount + " of " + this.markers.length + " markers (using " + markerElements.length + " elements), isNew: " + isNew);
+                console.log(this.instanceId + " (" + this.name + ") - Initialized, associated " + associatedCount + " of " + this.markers.length + " markers (using " + markerElements.length + " elements), isNew: " + isNew);
 
                 // Invoke init event
                 this.events.onMapInit.invoke({ map: this, isNew: isNew });
@@ -1651,7 +1657,7 @@
             {
                 if (!this.initialized)
                 {
-                    console.error(this.id + " (" + this.name + ") Tried to de-initialize map when it wasn't initialized");
+                    console.error(this.instanceId + " (" + this.name + ") Tried to de-initialize map when it wasn't initialized");
                     return;
                 }
 
@@ -1676,7 +1682,7 @@
                 for (var i = 0; i < this.categories.length; i++)
                     this.categories[i].deinit();
 
-                console.log(this.id + " (" + this.name + ") - Deinitialized");
+                console.log(this.instanceId + " (" + this.name + ") - Deinitialized");
 
                 // Invoke deinit event
                 this.events.onMapDeinit.invoke({map: this});
@@ -1688,7 +1694,7 @@
             {
                 if (this.initialized)
                 {
-                    return Promise.resolve(this.id + " (" + this.name + ") - The map was initialized immediately (took " + Math.round(performance.now() - this.creationTime) + "ms)");
+                    return Promise.resolve(this.instanceId + " (" + this.name + ") - The map was initialized immediately (took " + Math.round(performance.now() - this.creationTime) + "ms)");
                 }
                 
                 return new Promise(function(resolve, reject)
@@ -1696,11 +1702,11 @@
                     // Store resolve function (it will be called by selfObserver above)
                     this._waitForPresenceResolve = function()
                     {
-                        resolve(this.id + " (" + this.name + ") - Successfully deferred until Leaflet fully initialized (took " + Math.round(performance.now() - this.creationTime) + "ms)");
+                        resolve(this.instanceId + " (" + this.name + ") - Successfully deferred until Leaflet fully initialized (took " + Math.round(performance.now() - this.creationTime) + "ms)");
                     };
                     
                     // Alternatively timeout after 10000ms
-                    setTimeout(function(){ reject(this.id + " (" + this.name + ") - Timed out after 10 sec while waiting for the map to appear."); }.bind(this), 10000);
+                    setTimeout(function(){ reject(this.instanceId + " (" + this.name + ") - Timed out after 10 sec while waiting for the map to appear."); }.bind(this), 10000);
                 }.bind(this));
             },
 
@@ -4172,7 +4178,7 @@
                         if (control.position.endsWith("left"))       cornerSelector += ".leaflet-left";
                         else if (control.position.endsWith("right")) cornerSelector += ".leaflet-right";
 
-                        var selector = "." + this.mapId + "[id='" + this.id + "'] .leaflet-control-container > *:not(" + cornerSelector + ") ." + control.class;
+                        var selector = "." + this.mapId + "[id='" + this.instanceId + "'] .leaflet-control-container > *:not(" + cornerSelector + ") ." + control.class;
                         mapsExtended.stylesheet.insertRule(selector + " { display: none; }");
                     }
 
@@ -6047,8 +6053,8 @@
                 var incompleteFilter = document.createElement("div");
                 var completeFilterText = document.createElement("span");
                 var incompleteFilterText = document.createElement("span");
-                var completeFilterCheckbox = createWdsCheckbox(this.id + "__checkbox-" + "complete", mapsExtended.i18n.msg("filter-collectibles-collected").plain());
-                var incompleteFilterCheckbox = createWdsCheckbox(this.id + "__checkbox-" + "incomplete", mapsExtended.i18n.msg("filter-collectibles-not-collected").plain());
+                var completeFilterCheckbox = createWdsCheckbox(this.instanceId + "__checkbox-" + "complete", mapsExtended.i18n.msg("filter-collectibles-collected").plain());
+                var incompleteFilterCheckbox = createWdsCheckbox(this.instanceId + "__checkbox-" + "incomplete", mapsExtended.i18n.msg("filter-collectibles-not-collected").plain());
                 completeFilter.className = "interactive-maps__filter";
                 incompleteFilter.className = "interactive-maps__filter";
                 completeFilterText.className = "interactive-maps__filter-value";
@@ -6389,7 +6395,7 @@
             headerElem.className = "mapsExtended_categoryGroupHeader interactive-maps__filter";
             
             // Create the checkbox elements
-            var checkboxId = this.map.id + "__checkbox-categoryGroup-" + this.path;
+            var checkboxId = this.map.instanceId + "__checkbox-categoryGroup-" + this.path;
 
             // Create a header label element
             var headerLabel = document.createElement("div");
@@ -8288,7 +8294,7 @@
                         // Create the checkbox itself
                         var popupCollectedCheckboxInput = document.createElement("input");
                         popupCollectedCheckboxInput.setAttribute("type", "checkbox");
-                        popupCollectedCheckboxInput.id = "checkbox_" + this.map.id + "_" + this.marker.id;
+                        popupCollectedCheckboxInput.id = "checkbox_" + this.map.instanceId + "_" + this.marker.id;
                         //popupCollectedCheckboxInput.marker = this.marker; // <- Store reference to marker on checkbox so we don't have to manually look it up
                         popupCollectedCheckboxInput.checked = this.marker.collected;
                         this.elements.popupCollectedCheckbox = popupCollectedCheckboxInput;
@@ -10257,7 +10263,7 @@
                 // interactive-map-xxx elements from the DOM
                 this.mapElements = document.querySelectorAll(".interactive-maps-container > [class^=\"interactive-map-\"]");
 
-                // The interactive-map-xxxxxx className is only unique to the Map definition, not the map instance, so give each map a unique ID
+                // The interactive-map-xxxxxx className is only unique to the Map definition, not the map instance, so give each map a unique instance ID
                 for (var i = 0; i < this.mapElements.length; i++)
                     this.mapElements[i].id = generateRandomString(16);
                 

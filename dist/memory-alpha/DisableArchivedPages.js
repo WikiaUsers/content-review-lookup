@@ -5,9 +5,11 @@ $(function(){
 
   $('#ca-edit').html('Archived').removeAttr('href');
   $('#ca-addsection').html('Archived').removeAttr('href');
+  $('#log-in-edit').html('Archived').removeAttr('href');
 
   $('#ca-edit-side-tool').remove();
   $('#ca-addsection-side-tool').remove();
+  $('#log-in-edit-side-tool').remove();
 
   $('.mw-editsection').remove();
   $('#ca-move').parent().remove();

@@ -1,4 +1,2 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-
-// PreloadTemplates configuration options
-preloadTemplates_namespace = 4;
+InactiveUsers = { months: 3 };

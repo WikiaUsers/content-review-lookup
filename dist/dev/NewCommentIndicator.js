@@ -240,14 +240,32 @@
                 this.initComment(children[i]);
         }
     }
+    
+    // Find the ResourceLoader module with the Timeago export (we can't rely on the module name since it changes)
+    var timeagoModule = Object.entries(mw.loader.moduleRegistry).find(function(obj)
+    {
+        if (obj[0].startsWith("index-"))
+        {
+            var m = obj[1];
+            return m.module && m.module.exports && m.module.exports.Timeago;
+        }
+    });
+
+    if (timeagoModule == null)
+    {
+        console.error("NewCommentIndicator failed to find Timeago module!");
+        return;
+    }
+    else
+        timeagoModule = timeagoModule[0];
 
     // This overrides Timeago to use a correctly-formatted ISO string.
     // Fandom is using Date.toLocaleString, which isn't a valid value for datetime,
     // so if we try to use the <time>.dateTime interface, it's likely to be incorrect
     // Remove all this when it gets fixed!
-    mw.loader.using(['index-BhFE9Wap.js']).then(function(require)
+    mw.loader.using(timeagoModule).then(function(require)
     {
-        var exports = require("index-BhFE9Wap.js")
+        var exports = require(timeagoModule)
         
         var Timeago = exports.Timeago;
         var TimeagoNew = function(e)

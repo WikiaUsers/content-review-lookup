@@ -1,55 +1,6 @@
-/*$(document).ready(function() {
-    function activateTab(tab) {
-        var tabId = tab.data('tab');
-
-        $('.tile-link').removeClass('active');
-        $('.tab-content').removeClass('active');
-
-        tab.addClass('active');
-        $('#' + tabId).addClass('active');
-    }
-
-    $('.tile-link').on('click', function(e) {
-        e.preventDefault();
-        activateTab($(this));
-    });
-
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    if (isMobile) {
-        $('.tile-link').on('touchstart', function(e) {
-            e.preventDefault();
-            var tab = $(this);
-            activateTab(tab);
-        });
-
-        $('.tile-link').on('touchmove', function(e) {
-            e.preventDefault();
-            var tab = $(this);
-            activateTab(tab);
-        });
-    }
-});
-*/
-/*$(function() {
-    const tabs = $('.tile-link');
-    const contents = $('.tab-content');
-
-    tabs.each(function() {
-        $(this).on('click', function() {
-            tabs.removeClass('active');
-            contents.removeClass('active');
-
-            $(this).addClass('active');
-            const tabId = $(this).data('tab');
-            $('#' + tabId).addClass('active');
-        });
-    });
-});*/
-
 $(document).ready(function() {
     function activateTab(hash) {
-        var tabElement = $('[id="' + hash + '"], [data-original-label="' + hash + '"]');
+        var tabElement = $('[data-tab="' + hash + '"], [data-original-label="' + hash + '"]');
         if (tabElement.length) {
             var parent = tabElement.closest('.wds-tabber');
             var tabs = parent.find('.wds-tabs__tab');
@@ -84,7 +35,7 @@ $(document).ready(function() {
     function checkHash() {
         if (window.location.hash) {
             var hash = decodeURIComponent(window.location.hash.substring(1)).replace(/ /g, "_");
-            var translitHash = transliterate(hash).toLowerCase();
+            var translitHash = transliterate(hash).replace(/%20/g, '_').replace(/ /g, '_');
             activateTab(translitHash);
         }
     }

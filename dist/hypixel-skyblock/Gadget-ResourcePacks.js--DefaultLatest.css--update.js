@@ -194,9 +194,9 @@
 			{ name: 'Arrow', mcName: 'Arrow (item)' }
 		],
 		Armor: [
-			{ name: 'Leather Cap', mcName: 'Leather Cap (item)' },
-			{ name: 'Leather Tunic', mcName: 'Leather Tunic (item)' },
-			{ name: 'Leather Pants', mcName: 'Leather Pants (item)' },
+			{ name: 'Leather Helmet', mcName: 'Leather Cap (item)' },
+			{ name: 'Leather Chestplate', mcName: 'Leather Tunic (item)' },
+			{ name: 'Leather Leggings', mcName: 'Leather Pants (item)' },
 			{ name: 'Leather Boots', mcName: 'Leather Boots (item)' },
 			{ name: 'Chainmail Helmet', mcName: 'Chainmail Helmet (item)' },
 			{ name: 'Chainmail Chestplate', mcName: 'Chainmail Chestplate (item)' },
@@ -625,8 +625,10 @@
 		{ name:"Celeste", h:true, c:true, l:true, b:true },
 		{ name:"Cheap Tuxedo", c:"Cheap Tuxedo Jacket", l:"Cheap Tuxedo Pants", b:"Cheap Tuxedo Oxfords" },
 		{ l:"Chicken Leggs" },
+		{ l:"Leggings of the Coven" },
 		{ l:"Creeper Pants" },
 		{ name:"Crimson", c:true, l:true, b:true },
+		{ name:"Cropie", c:true, l:true, b:true },
 		{ name:"Crypt Witherlord", h:true, c:true, l:true, b:true },
 		{ name:"Crystal", h:true, c:true, l:true, b:true },
 		{ name:"Elegant Tuxedo", c:"Elegant Tuxedo Jacket", l:"Elegant Tuxedo Pants", b:"Elegant Tuxedo Oxfords" },
@@ -638,16 +640,19 @@
 		{ name:"Farm Suit", h:true, c:true, l:true, b:true },
 		{ b:"Farmer Boots" },
 		{ l:"Femurgrowth Leggings" },
+		{ name:"Fermento", c:true, l:true, b:true },
 		{ name:"Fervor", c:true, l:true, b:true },
 		{ name:"Final Destination", c:true, l:true, b:true },
 		{ c:"Flaming Chestplate" },
 		{ name:"Frozen Blaze", c:true, l:true, b:true },
 		{ name:"Glacite", c:true, l:true, b:true },
+		{ name:"Glossy Mineral", c:true, l:true, b:true },
 		{ name:"Goblin", c:true, l:true, b:true },
 		{ name:"Goldor's", c:true, l:true, b:true },
 		{ name:"Great Spook", h:true, c:true, l:true, b:true },
 		{ name:"Growth", h:"Helmet of Growth", c:"Chestplate of Growth", l:"Leggings of Growth", b:"Boots of Growth" },
 		{ c:"Guardian Chestplate" },
+		{ b:"Gunther's Sneakers" },
 		{ name:"Heat", h:true, c:true, l:true, b:true },
 		{ name:"Heavy", h:true, c:true, l:true, b:true },
 		{ name:"Hollow", c:true, l:true, b:true },
@@ -657,6 +662,7 @@
 		{ name:"Leaflet", c:"Leaflet Tunic", l:"Leaflet Pants", b:"Leaflet Sandals" },
 		{ name:"Magma Lord", c:true, l:true, b:true },
 		{ name:"Maxor's", c:true, l:true, b:true },
+		{ name:"Melon", c:true, l:true, b:true },
 		{ name:"Mercenary", b:true }, // rest of pieces aren't leather
 		{ c:"Metal Chestplate" },
 		{ name:"Miner's Outfit", h:true, c:true, l:true, b:true },
@@ -669,9 +675,12 @@
 		{ name:"Nutcracker", c:true, l:true, b:true },
 		{ c:"Obsidian Chestplate" },
 		{ name:"Old Dragon", c:true, l:true, b:true },
+		{ c:"Orange Chestplate" },
+		{ name:"Primal Dragon", c:true, l:true }, // boots aren't leather
 		{ name:"Pack", h:"Helmet of the Pack", c:"Chestplate of the Pack" }, // legs/boots aren't leather
 		{ name:"Protector Dragon", c:true, l:true, b:true },
 		{ name:"Pumpkin", h:true, c:true, l:true, b:true },
+		{ name:"Rabbit", h:true, c:true, l:true, b:true },
 		{ name:"Rampart", c:true, l:true, b:true },
 		{ name:"Reaper", c:true, l:true, b:true },
 		{ name:"Rising Sun", l:"Leggings of the Rising Sun", b:"Boots of the Rising Sun" }, // chestplate isn't leather
@@ -685,11 +694,13 @@
 		{ name:"Skeleton Master", h:true, c:true, l:true, b:true },
 		{ name:"Skeleton Soldier", h:true, c:true, l:true, b:true },
 		{ b:"Slug Boots" },
+		{ b:"Snake-in-a-Boot" },
 		{ name:"Snow Suit", c:true, l:true, b:true },
 		{ name:"Speedster", h:true, c:true, l:true, b:true },
 		{ b:"Spirit Boots" },
 		{ name:"Sponge", c:true, l:true, b:true },
 		{ name:"Spooky", c:true, l:true, b:true },
+		{ name:"Squash", c:true, l:true, b:true },
 		{ b:"Squid Boots" },
 		{ b:"Squire Boots" },
 		{ name:"Starlight", c:true, b:true }, // helmet/leggings aren't leather
@@ -707,6 +718,7 @@
 		{ name:"Water Hydra", h:true, c:true, l:true, b:true },
 		{ name:"Wise Dragon", c:true, l:true, b:true },
 		{ name:"Wither", c:true, l:true, b:true },
+		{ name:"Wyld", l:true, b:true }, // helmet/chestplate aren't leather
 		{ name:"Yog", h:true, c:true, l:true, b:true },
 		{ name:"Young Dragon", c:true, l:true, b:true },
 		{ name:"Zombie Commander", h:true, c:true, l:true, b:true },
@@ -767,7 +779,7 @@
 			action: 'query',
 			format: 'json',
 			prop: 'imageinfo',
-			iiprop: 'url',
+			iiprop: 'url', // |canonicaltitle
 			titles: files.join('|')
 		})}`;
 

@@ -1,10 +1,10 @@
 /* AddRailModule */
 window.AddRailModule = [{prepend: true}];
 
-/* Стили для категории "Контент модификаций" */
+/* Стили для категории "Контент модов" */
 !function( $, mw ) {
     var a = mw.config.get( 'wgCategories' ), p = mw.config.get( 'wgTitle' );
-    if ( a.indexOf( 'Контент модификаций' ) !== -1 ) {
+    if ( a.indexOf( 'Контент модов' ) !== -1 ) {
         importArticle({
             type: 'style',
             article: 'MediaWiki:Mods.css'

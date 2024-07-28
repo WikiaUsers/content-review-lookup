@@ -82,11 +82,14 @@ $(function() {
 			
 			var content = '<span class="minetip-title">' + escape(title) + '&r</span>';
 			
+			// Add border
+			var border = (escape(title).match(/&([0-9a-f])/) || [])[1] || 'f';
+			
 			var description = $.trim($elem.attr('data-minetip-text'));
 			if (description) {
 				// Apply normal escaping plus "/"
 				description = escape(description).replace(/\\\//g, '&#47;');
-				content += '<span class="minetip-description">' + description.replace(/\//g, '<br>') + '&r</span>';
+				content += '<span class="minetip-description format-' + border + '">' + description.replace(/\//g, '<br>') + '&r</span>';
 			}
 			
 			// Add classes for minecraft formatting codes
@@ -96,7 +99,13 @@ $(function() {
 			// Remove reset formatting
 			content = content.replace(/&r/g, '');
 			
-			$tooltip = $('<div id="minetip-tooltip">');
+			// Add classes for outer border
+			var attr = {id: 'minetip-tooltip'};
+			if (escape(title).match(/&[0-9a-f]/)) {
+				attr.class='border-'+ border;
+			}
+			$tooltip = $('<div>', attr);
+			
 			$tooltip.html(content).appendTo('body');
 			
 			// Cache current window and tooltip size
