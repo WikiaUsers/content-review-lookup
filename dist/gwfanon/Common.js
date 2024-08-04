@@ -25,3 +25,15 @@ $(document.body).addClass('tlo-' + cl);
 }
 }
 });
+
+// Add border if exceed 300px
+$(document).ready(function() {
+    var maxHeight = 299; // Height threshold here
+
+    // For elements with class "scrollBorder"
+    $('.scrollBorder').each(function() {
+        if ($(this).height() > maxHeight) {
+            $(this).addClass('scrollBordered');
+        }
+    });
+});

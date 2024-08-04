@@ -176,67 +176,67 @@
 					'.cm-mw-template3-ground.cm-mw-template'
 				],
 				'template-param' : [
-					'.CodeMirror-line .cm-mw-template-argument-name'
+					'.cm-line .cm-mw-template-argument-name'
 				],
 				'parameter' : [
-					'.CodeMirror-line .cm-mw-templatevariable-bracket',
-					'.CodeMirror-line .cm-mw-templatevariable-name',
-					'.CodeMirror-line .cm-mw-templatevariable-delimiter',
-					'.CodeMirror-line .cm-mw-templatevariable'
+					'.cm-line .cm-mw-templatevariable-bracket',
+					'.cm-line .cm-mw-templatevariable-name',
+					'.cm-line .cm-mw-templatevariable-delimiter',
+					'.cm-line .cm-mw-templatevariable'
 				],
 				'link' : [
-					'.CodeMirror-line .cm-mw-extlink-bracket',
-					'.CodeMirror-line .cm-mw-link-bracket',
-					'.CodeMirror-line .cm-mw-link-delimiter'
+					'.cm-line .cm-mw-extlink-bracket',
+					'.cm-line .cm-mw-link-bracket',
+					'.cm-line .cm-mw-link-delimiter'
 				],
 				'link-target' : [
-					'.CodeMirror-line .cm-mw-extlink-protocol',
-					'.CodeMirror-line .cm-mw-extlink',
-					'.CodeMirror-line .cm-mw-free-extlink-protocol',
-					'.CodeMirror-line .cm-mw-free-extlink',
-					'.CodeMirror-line .cm-mw-link-pagename',
-					'.CodeMirror-line .cm-mw-link',
-					'.CodeMirror-line .cm-mw-link-tosection'
+					'.cm-line .cm-mw-extlink-protocol',
+					'.cm-line .cm-mw-extlink',
+					'.cm-line .cm-mw-free-extlink-protocol',
+					'.cm-line .cm-mw-free-extlink',
+					'.cm-line .cm-mw-link-pagename',
+					'.cm-line .cm-mw-link',
+					'.cm-line .cm-mw-link-tosection'
 				],
 				'link-text' : [
-					'.CodeMirror-line .cm-mw-extlink-text',
-					'.CodeMirror-line .cm-mw-link-text'
+					'.cm-line .cm-mw-extlink-text',
+					'.cm-line .cm-mw-link-text'
 				],
 				'parser-func' : [
-					'.CodeMirror-line .cm-mw-parserfunction-bracket',
-					'.CodeMirror-line .cm-mw-parserfunction-name',
-					'.CodeMirror-line .cm-mw-parserfunction-delimiter'
+					'.cm-line .cm-mw-parserfunction-bracket',
+					'.cm-line .cm-mw-parserfunction-name',
+					'.cm-line .cm-mw-parserfunction-delimiter'
 				],
 				'tag' : [
-					'.CodeMirror-line .cm-mw-htmltag-bracket',
-					'.CodeMirror-line .cm-mw-htmltag-name',
-					'.CodeMirror-line .cm-mw-exttag-bracket',
-					'.CodeMirror-line .cm-mw-exttag-name'
+					'.cm-line .cm-mw-htmltag-bracket',
+					'.cm-line .cm-mw-htmltag-name',
+					'.cm-line .cm-mw-exttag-bracket',
+					'.cm-line .cm-mw-exttag-name'
 				],
 				'tag-attr' : [
-					'.CodeMirror-line .cm-mw-htmltag-attribute',
-					'.CodeMirror-line .cm-mw-exttag-attribute'
+					'.cm-line .cm-mw-htmltag-attribute',
+					'.cm-line .cm-mw-exttag-attribute'
 				],
 				'entity' : [
-					'.CodeMirror-line .cm-mw-mnemonic'
+					'.cm-line .cm-mw-mnemonic'
 				],
 				'comment' : [
-					'.CodeMirror-line .cm-mw-comment'
+					'.cm-line .cm-mw-comment'
 				],
 				'markup' : [
-					'.CodeMirror-line .cm-mw-apostrophes-bold',
-					'.CodeMirror-line .cm-mw-apostrophes-italic',
-					'.CodeMirror-line .cm-mw-section-header',
-					'.CodeMirror-line .cm-mw-hr',
-					'.CodeMirror-line .cm-mw-signature',
-					'.CodeMirror-line .cm-mw-list',
-					'.CodeMirror-line .cm-mw-indenting',
-					'.CodeMirror-line .cm-mw-doubleUnderscore'
+					'.cm-line .cm-mw-apostrophes-bold',
+					'.cm-line .cm-mw-apostrophes-italic',
+					'.cm-line .cm-mw-section-header',
+					'.cm-line .cm-mw-hr',
+					'.cm-line .cm-mw-signature',
+					'.cm-line .cm-mw-list',
+					'.cm-line .cm-mw-indenting',
+					'.cm-line .cm-mw-doubleUnderscore'
 					],
 				'table' : [
-					'.CodeMirror-line .cm-mw-table-bracket',
-					'.CodeMirror-line .cm-mw-table-definition',
-					'.CodeMirror-line .cm-mw-table-delimiter'
+					'.cm-line .cm-mw-table-bracket',
+					'.cm-line .cm-mw-table-definition',
+					'.cm-line .cm-mw-table-delimiter'
 				],
 			};
 			var cssText = '';

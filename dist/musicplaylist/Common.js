@@ -66,3 +66,61 @@ function charLength(s){
 	return s.length+(encodeURI(s).split(/%..|./).length-1-s.length)/2;
 }
 filterTable();
+
+/* Transparent invert */
+document.addEventListener("DOMContentLoaded", function() {
+    function checkTransparency(img) {
+        const testImage = new Image();
+        testImage.crossOrigin = "anonymous";
+        testImage.src = img.src;
+        testImage.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = testImage.width;
+            canvas.height = testImage.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(testImage, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            let hasTransparency = false;
+            for (let i = 3; i < data.length; i += 4) {
+                if (data[i] < 255) {
+                    hasTransparency = true;
+                    break;
+                }
+            }
+
+            if (hasTransparency) {
+                img.classList.add('pi-theme-transparent-logo');
+            }
+        };
+    }
+
+    function applyLogoClass(img) {
+        // Check if the image source contains 'logo'
+        if (img.src.includes('logo')) {
+            img.classList.add('pi-theme-logo');
+        }
+    }
+
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.matches('.pi-theme img')) {
+                        applyLogoClass(node);
+                        checkTransparency(node);
+                    }
+                });
+            }
+        });
+    });
+
+    const config = { childList: true, subtree: true };
+    observer.observe(document.body, config);
+
+    document.querySelectorAll('.pi-theme img').forEach(function(img) {
+        applyLogoClass(img);
+        checkTransparency(img);
+    });
+});

@@ -100,11 +100,9 @@
                     p[2].status + ' ' + m[2].status + ' ' + c[2].status);
             } else if (
                 d[0].query.usercontribs.length ||
-                (
-                    p[0].indexOf('<div class="Message">') != -1 ||
-                    m[0].indexOf('<div class="Message">') != -1 ||
-                    c[0].indexOf('<div class="Message">') != -1
-                )
+                this.hasPosts(p[0]) ||
+                this.hasPosts(m[0]) ||
+                this.hasPosts(c[0])
             ) {
                 this.api.get({
                     action: 'query',
@@ -114,6 +112,19 @@
             } else {
                 console.info('[AutoCreateUserPages] Zero edit count and social activity, returning...');
             }
+        },
+        hasPosts: function(postsHtml) {
+            if (postsHtml.indexOf('<div class="Message">') === -1) {
+                return false;
+            }
+            // This is safe because postsHtml is coming from Fandom.
+            var $posts = $(postsHtml);
+            // There is a ridiculous bug in which Fandom returns a single post
+            // in your activity which has no post name and no board name set.
+            // This happens completely randomly and it used to make
+            // AutoCreateUserPages think that the user has social activity when
+            // they don't, so this hack is here to prevent such situations.
+            return $posts.find('a').text().trim() !== '';
         },
         cbFetchFail: function (d) {
             if (typeof d === 'string') {

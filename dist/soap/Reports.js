@@ -482,112 +482,110 @@
 			sockCount = 0;
 
 		for (x in opts.formParams) {
-			if (opts.formParams.hasOwnProperty(x)) {
-				$input = $inputs.filter('#' + opts.formParams[x]);
+			if (!opts.formParams.hasOwnProperty(x)) continue;
+			$input = $inputs.filter('#' + opts.formParams[x]);
 
-				if (!$input.length) {
-					console.log('An error has been found in the form config. Please check the formParams and input ids');
-					$button.attr('disabled', false);
-					return $.Deferred().resolve();
+			if (!$input.length) {
+				console.log('An error has been found in the form config. Please check the formParams and input ids');
+				$button.attr('disabled', false);
+				return $.Deferred().resolve();
+			}
+
+			text = $input.val();
+			if ($input.is(':checkbox')) {
+				text = $input.prop("checked");
+			}
+			text = text ? text.trim() : "";
+
+			if (!text && !$input.hasClass('optional')) {
+				console.log($input);
+				alert('One or more required fields are missing. Please check your submission and try again.');
+				$button.attr('disabled', false);
+				return $.Deferred().resolve();
+			}
+
+			/* Specific customisations for each form output */
+
+			if ($input.attr('data-encode') === 'true') {
+				text = encodeURIComponent(text);
+			}
+			var re, domain;
+			// default wikiname
+			if ($input.attr('id') === "wikiurl") {
+				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
+				domain = re.exec(text);
+				if(domain !== null) {
+					params[x] = domain[1];
+					continue;
 				}
-
-				text = $input.val();
-				if ($input.is(':checkbox')) {
-					text = $input.prop("checked");
+			} else if ($input.attr('id') === "wikiname") {
+				if (!text) {
+					text = $inputs.filter('#wikiurl').val();
 				}
-				text = text ? text.trim() : "";
+				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
+				domain = re.exec(text);
+				if (domain !== null) {
+					params[x] = domain[1].charAt(0).toUpperCase() + domain[1].slice(1) + " Wiki";
 
-				if (!text && !$input.hasClass('optional')) {
-					console.log($input);
+					continue;
+				}
+			}
+			
+			// handle multiple users
+			if ($input.attr('id') === "user" && text.indexOf('\n') !== -1) {
+				if (x === '$5') {
+					text = (text.match(/(?:\r\n|\r|\n)/g) || []).length + 1 + ' users';
+				} else {
+					text = text.replace(/\n$/g, ''); // fix blank last user
+					text = text.replace(/(?:\r\n|\r|\n)/g,'\n|');
+				}
+			}
+
+			// handle checkboxes
+			if ($input.attr('id') === "crosswiki") {
+				if (text) {
+					text = "\\crosswiki=yes\n";
+					keyedValueCount++;
+				} else {
+					text = "";
+				}
+			}
+			if ($input.attr('id') === "socks") {
+				if (text) {
+					sockCount = 1;
+					keyedValueCount++;
+				}
+				text = "";
+			}
+
+			// handle socks
+			if ($input.attr('id') === "sockusers") {
+				if (text === "" && sockCount) {
 					alert('One or more required fields are missing. Please check your submission and try again.');
 					$button.attr('disabled', false);
 					return $.Deferred().resolve();
-				}
-
-				/* Specific customisations for each form output */
-
-				if ($input.attr('data-encode') === 'true') {
-					text = encodeURIComponent(text);
-				}
-				var re, domain;
-				// default wikiname
-				if ($input.attr('id') === "wikiurl") {
-					re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
-					domain = re.exec(text);
-					if(domain !== null) {
-						params[x] = domain[1];
-						continue;
-					}
-				} else if ($input.attr('id') === "wikiname") {
-					if (!text) {
-						text = $inputs.filter('#wikiurl').val();
-					}
-					re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
-					domain = re.exec(text);
-					if (domain !== null) {
-						params[x] = domain[1].charAt(0).toUpperCase() + domain[1].slice(1) + " Wiki";
-
-						continue;
-					}
-				}
-				
-				// handle multiple users
-				if ($input.attr('id') === "user" && text.indexOf('\n') !== -1) {
-					if (x === '$5') {
-						text = (text.match(/(?:\r\n|\r|\n)/g) || []).length + 1 + ' users';
-					} else {
-						text = text.replace(/\n$/g, ''); // fix blank last user
-						text = text.replace(/(?:\r\n|\r|\n)/g,'\n|');
-					}
-				}
-
-				// handle checkboxes
-				if ($input.attr('id') === "crosswiki") {
-					if (text) {
-						text = "\\crosswiki=yes\n";
-						keyedValueCount++;
-					} else {
-						text = "";
-					}
-				}
-				if ($input.attr('id') === "socks") {
-					if (text) {
-						sockCount = 1;
-						keyedValueCount++;
-					}
+				} else if (sockCount) {
+					text = "\\socks=" + text + '\n';
+				} else {
 					text = "";
 				}
-
-				// handle socks
-				if ($input.attr('id') === "sockusers") {
-					if (text === "" && sockCount) {
-						alert('One or more required fields are missing. Please check your submission and try again.');
-						$button.attr('disabled', false);
-						return $.Deferred().resolve();
-					} else if (sockCount) {
-						text = "\\socks=" + text + '\n';
-					} else {
-						text = "";
-					}
-				}
-
-				// patch | in reason
-				if ($input.attr('id') === "comment") {
-					text = text.replace(/\|/g, '\\\\');
-				}
-
-				params[x] = text;
 			}
+
+			// patch | in reason
+			if ($input.attr('id') === "comment") {
+				text = text.replace(/\|/g, '\\\\');
+			}
+
+			params[x] = text;
 		}
 
 		for (x in params) {
-			if (params.hasOwnProperty(x)) {
-				// convert to regex so the same parameter can be used multiple times in each string
-				y = new RegExp(x.replace(/\$/, '\\$'), 'g');
-				opts.submitText = opts.submitText.replace(y, params[x]);
-				opts.summary = opts.summary.replace(y, params[x]);
-				opts.sectionTitle = opts.sectionTitle.replace(y, params[x]);
-			}
+			if (!params.hasOwnProperty(x)) continue;
+			// convert to regex so the same parameter can be used multiple times in each string
+			y = new RegExp(x.replace(/\$/, '\\$'), 'g');
+			opts.submitText = opts.submitText.replace(y, params[x]);
+			opts.summary = opts.summary.replace(y, params[x]);
+			opts.sectionTitle = opts.sectionTitle.replace(y, params[x]);
 		}
 
 		// Fix when template thinks = is a key
@@ -757,12 +755,10 @@
 	 */
 	function loadButton(type) {
 		opts = options[type];
-		var $newButton = $('<button>', {
-			'class': 'wds-button',
-			id: 'soap-report-' + type,
-			text: opts.buttonText
-		});
-		$newButton.on('click', function() {
+		const newButton = document.createElement('button');
+		newButton.className = 'wds-button';
+		newButton.textContent = opts.buttonText;
+		newButton.addEventListener('click', function() {
 			if (modal.windowManager) {
 				type = this.id.split('-')[2];
 				opts = options[type];
@@ -772,10 +768,10 @@
 
 		$('.rb-' + type)
 			.empty()
-			.append($newButton);
+			.append(newButton);
 		// Fire hook for scripts that use the button 
-		mw.hook('soap.reports').fire($newButton);
-		if (params.get('openmodal') === '1') $newButton.click();
+		mw.hook('soap.reports').fire(newButton);
+		if (params.get('openmodal') === '1') newButton.click();
 	}
 
 	/**
@@ -788,18 +784,15 @@
 
 		var x;
 		for (x in options) {
-			if (options.hasOwnProperty(x)) {
-				var opts = options[x];
-				if (options.hasOwnProperty(x)) {
-					$('#rf-dropdown-list').append(
-						$('<li>')
-							.attr('id', 'soap-report-' + x)
-							.attr('class', 'wds-global-navigation__dropdown-link')
-							.on('click', createWindow)
-							.text(opts.buttonText)
-					);
-				}
-			}
+			if (!options.hasOwnProperty(x)) continue;
+			var opts = options[x];
+			$('#rf-dropdown-list').append(
+				$('<li>')
+					.attr('id', 'soap-report-' + x)
+					.attr('class', 'wds-global-navigation__dropdown-link')
+					.on('click', createWindow)
+					.text(opts.buttonText)
+			);
 		}
 	}
 
@@ -809,13 +802,10 @@
 	function init() {
 		setOptions();
 		for (var x in options) {
-			if ($('.rb-' + x).length > 0) {
-				loadButton(x);
-			}
+			if (!options.hasOwnProperty(x)) continue;
+			if ($('.rb-' + x).length > 0) loadButton(x);
 		}
-		if ($('.rf-dropdown').length > 0) {
-			loadDropdown(x);
-		}
+		if ($('.rf-dropdown').length > 0) loadDropdown(x);
 	}
 
 	mw.hook('dev.i18n').add(function(i18n) {

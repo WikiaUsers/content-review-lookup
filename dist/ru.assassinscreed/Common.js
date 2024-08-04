@@ -332,25 +332,3 @@ importArticles({
         'u:dev:AutoEditDropdown/code.js'
     ]
 });
-
- 
-/* Автоматическая выдача плашек по числу правок участника */
-!function( $ ) {
-    if ($(".tally > a > em").length && $('#UserProfileMasthead').length && mw.config.get('wgAction') === 'view') {
-        var editCount = +($( '.masthead-info-lower .tally:first-child > a > em' ).text().replace( /[^\d]/g, '')) || 0;
-            title = '';
-        if (editCount <= 100) {
-            title = "Ребёнок";
-        } else if (editCount > 100 && editCount <= 500) {
-            title = "Подросток";
-        } else if (editCount > 500 && editCount <= 1000) {
-            title = "Мирный житель";
-        } else {
-            title = "Советник";
-        }
-        $('<span />', {
-            class: 'tag',
-            text: title
-        }).appendTo('.masthead-info hgroup');
-    }
-}( this.jQuery );

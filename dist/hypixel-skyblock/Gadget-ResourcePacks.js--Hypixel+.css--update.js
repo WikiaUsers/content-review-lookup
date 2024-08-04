@@ -7,7 +7,7 @@
 /* jshint esversion: 9 */
 
 (() => {
-	const BASE = 'https://hsbwrp.fewfre.com/Hypixel+_0_20_0/assets';
+	const BASE = 'https://hsbwrp.fewfre.com/Hypixel+_0_20_4/assets';
 	
 	// needed so parser knows whether an object is a file or folder
 	class Folder { constructor(obj){ this._contents = obj; this.isFolder = true; } }
@@ -46,7 +46,7 @@
 					"machine_gun_bow": { wiki: "Machine Gun Shortbow" },
 					"magma_bow": { wiki: "Magma Bow" },
 					"mosquito_bow": { wiki: "Mosquito Bow" },
-					"prismarine_bow": { wiki: "Prismarine Bow" },
+					"prismarine_bow": { mineral_talismanwiki: "Prismarine Bow" },
 					"runaans_bow": { wiki: "Runaan's Bow" },
 					"savana_bow": { wiki: "Savanna Bow" },
 					"scorpion_bow": { wiki: "Scorpion Bow" },
@@ -120,6 +120,8 @@
 					"jerry_staff_hand": { selectors: [ s_iboxThumbnail_alt`Jerry-chine Gun` ] },
 					"midas_staff": { wiki: "Midas Staff" },
 					"midas_staff_hand": { selectors: [ s_iboxThumbnail_alt`Midas Staff` ] },
+					"starred_midas_staff": { wiki: "⚚ Midas Staff" },
+					"starred_midas_staff_hand": { selectors: [ s_iboxThumbnail_alt`⚚ Midas Staff` ] },
 					"runic_staff": { wiki: "Aurora Staff" },
 					"runic_staff_hand": { selectors: [ s_iboxThumbnail_alt`Aurora Staff` ] },
 					"staff_of_the_volcano": { wiki: "Staff of the Volcano" },
@@ -155,6 +157,7 @@
 					"crypt_dreadlord_sword": { wiki: "Dreadlord Sword" },
 					"crypt_witherlord_sword": { wiki: "Crypt Witherlord Sword" },
 					"daedalus_axe": { wiki: "Daedalus Axe" },
+					"starred_daedalus_axe": { wiki: "⚚ Daedalus Axe" },
 					"dungeon_hammer": { wiki: "Hammer" },
 					"earth_shard": { wiki: "Earth Shard" },
 					"edible_mace": { wiki: "Edible Mace" },
@@ -187,6 +190,7 @@
 					"mawdust_dagger_spirit": { wiki: "Twilight Dagger" },
 					"mercenary_axe": { wiki: "Mercenary Axe" },
 					"midas_sword": { wiki: "Midas' Sword" },
+					"starred_midas_sword": { wiki: "⚚ Midas' Sword" },
 					"mushroom_cow_axe": { wiki: "Mushroom Cow Axe" },
 					"necromancer_sword": { wiki: "Necromancer Sword" },
 					"necron_blade": { wiki:[ "Necron's Blade (Unrefined)", "Necron's Blade" ] },
@@ -272,41 +276,72 @@
 			// Armor
 			///////////////////////////
 			'/armor': new Folder({
-				// Solo pieces
-				"masks/bonzo_mask": { wiki: "Bonzo Mask" },
-				"masks/starred_bonzo_mask": { wiki: "⚚ Bonzo Mask" },
-				"masks/enderman_mask": { wiki: "Enderman Mask" },
-				"masks/happy_mask": { wiki: "Happy Mask" },
-				"masks/kalhuiki_mask": { wiki: "Kalhuiki Mask" },
-				"masks/pig_mask": { wiki: "Pig Mask" },
-				"masks/spirit_mask": { wiki: "Spirit Mask" },
-				"masks/starred_spirit_mask": { wiki: "⚚ Spirit Mask" },
-				"masks/vampire_mask": { wiki: "Vampire Mask" },
-				"masks/vampire_witch_mask": { wiki: "Vampire Witch Mask" },
-				"masks/witch_mask": { wiki: "Witch Mask" },
-				"masks/detransfigured_mask": { wiki: "Used Detransfigured Face" },
-				"masks/not_deadgehog_mask": { wiki: "Not-Dead-Gehog Mask" },
-				"/rift/gunther_sneakers": { wiki: "Gunther's Sneakers" },
-				"/rift/exceedingly_comfy_sneakers": { wiki: "Exceedingly Comfy Sneakers" },
-				"/rift/orange_chestplate": { wiki: "Orange Chestplate" },
-				"/rift/etalptsehc_nori": { wiki: ["etalptsehC norI", "EtalptsehC norI"] },
-				"/rift/chicken_leggs": { wiki: "Chicken Leggs" },
-				"/rift/lively_sepulture_chestplate": { wiki: "Lively Sepulture Chestplate" },
-				"/rift/leggings_of_the_coven_red": { wiki: "Leggings of the Coven" }, // Red is default
-				"/rift/snake_in_a_boot": { wiki: "Snake-in-a-Boot" },
-				"/rift/femurgrowth_leggings": { wiki: "Femurgrowth Leggings" },
-				"/rift/anti_bite_scarf/anti_bite_scarf": { wiki: "Anti-Bite Scarf" },
-				// Mythic version - wiki only shows default (red)
-				"/rift/anti_bite_scarf/anti_bite_scarf_2_red": { selectors:[s_minetipTitle`&dAnti-Bite Scarf`] },
+				// Unused: null/null_boots -- null/null_chestplate -- null/null_helmet -- null/null_leggings
 				
-				/* Unused:
-					null/null_boots
-					null/null_chestplate
-					null/null_helmet
-					null/null_leggings
-				*/
+				// Solo pieces
+				
+				'/masks': new Folder({
+					"armadillo_mask": { wiki: "Armadillo Mask" },
+					"bee_mask": { wiki: "Bee Mask" },
+					"bonzo_mask": { wiki: "Bonzo Mask" },
+					"starred_bonzo_mask": { wiki: "⚚ Bonzo Mask" },
+					"enderman_mask": { wiki: "Enderman Mask" },
+					"frog_mask": { wiki: "Frog Mask" },
+					"happy_mask": { wiki: "Happy Mask" },
+					"kalhuiki_mask": { wiki: "Kalhuiki Mask" },
+					"parrot_mask": { wiki: "Parrot Mask" },
+					"pig_mask": { wiki: "Pig Mask" },
+					"salmon_mask": { wiki: "Salmon Mask" },
+					"snowman_mask": { wiki: "Snowman Mask" },
+					"spirit_mask": { wiki: "Spirit Mask" },
+					"starred_spirit_mask": { wiki: "⚚ Spirit Mask" },
+					"vampire_mask": { wiki: "Vampire Mask" },
+					"vampire_witch_mask": { wiki: "Vampire Witch Mask" },
+					"witch_mask": { wiki: "Witch Mask" },
+					"detransfigured_mask": { wiki: "Used Detransfigured Face" },
+					"not_deadgehog_mask": { wiki: "Not-Dead-Gehog Mask" },
+					"zombie_mask": { wiki: "Zombie Mask" },
+				}),
+				
+				'/misc': new Folder({
+					"big_spring_boots": { wiki: "Big Spring Boots" },
+					"bigger_spring_boots": { wiki: "Bigger Spring Boots" },
+					"crown_of_greed": { wiki: "Crown of Greed" },
+					"dctr_space_helm": { wiki: "Dctr\'s Space Helmet" },
+					"farmer_boots": { wiki: "Farmer Boots" },
+					"ghost_boots": { wiki: "Ghostly Boots" },
+					"metal_chestplate": { wiki: "Metal Chestplate" },
+					"mithril_coat": { wiki: "Mithril Coat" },
+					"music_pants": { wiki: "Stereo Pants" },
+					"party_top_hat": { wiki: "Party Top Hat" },
+					"potato_crown": { wiki: "Potato Crown" },
+					"ranchers_boots": { wiki: "Rancher\'s Boots" },
+					"shimmersparkle_chestplate": { wiki: "Shimmersparkle Chestplate" },
+					"spring_boots": { wiki: "Spring Boots" },
+					"squid_boots": { wiki: "Squid Boots" },
+					"steel_chestplate": { wiki: "Steel Chestplate" },
+					"stone_chestplate": { wiki: "Stone Chestplate" },
+					"thorns_boots": { wiki: "Spirit Boots" },
+					"starred_thorns_boots": { wiki: "⚚ Spirit Boots" },
+				}),
+				
+				'/rift': new Folder({
+					"gunther_sneakers": { wiki: "Gunther's Sneakers" },
+					"exceedingly_comfy_sneakers": { wiki: "Exceedingly Comfy Sneakers" },
+					"orange_chestplate": { wiki: "Orange Chestplate" },
+					"etalptsehc_nori": { wiki: ["etalptsehC norI", "EtalptsehC norI"] },
+					"chicken_leggs": { wiki: "Chicken Leggs" },
+					"lively_sepulture_chestplate": { wiki: "Lively Sepulture Chestplate" },
+					"leggings_of_the_coven_red": { wiki: "Leggings of the Coven" }, // Red is default
+					"snake_in_a_boot": { wiki: "Snake-in-a-Boot" },
+					"femurgrowth_leggings": { wiki: "Femurgrowth Leggings" },
+					"anti_bite_scarf/anti_bite_scarf": { wiki: "Anti-Bite Scarf" },
+					// Mythic version - wiki only shows default (red)
+					"anti_bite_scarf/anti_bite_scarf_2_red": { selectors:[s_minetipTitle`&dAnti-Bite Scarf`] },
+				}),
 				
 				// Sets
+				
 				'/adaptive': new Folder({
 					"adaptive_boots_archer": { wiki: "Adaptive Boots (Archer)", selectors:[ s_alt`⚚ Adaptive Boots (Archer)` ] },
 					"adaptive_boots_berserker": { wiki: "Adaptive Boots (Berserk)", selectors:[ s_alt`⚚ Adaptive Boots (Berserk)` ] },
@@ -493,6 +528,9 @@
 				"glacite/glacite_chestplate": { wiki: "Glacite Chestplate" },
 				"glacite/glacite_helmet": { wiki: "Glacite Helmet" },
 				"glacite/glacite_leggings": { wiki: "Glacite Leggings" },
+				"glossy_mineral/glossy_mineral_boots": { wiki: "Glossy Mineral Boots" },
+				"glossy_mineral/glossy_mineral_chestplate": { wiki: "Glossy Mineral Chestplate" },
+				"glossy_mineral/glossy_mineral_leggings": { wiki: "Glossy Mineral Leggings" },
 				"goblin/goblin_boots": { wiki: "Goblin Boots" },
 				"goblin/goblin_chestplate": { wiki: "Goblin Chestplate" },
 				"goblin/goblin_leggings": { wiki: "Goblin Leggings" },
@@ -589,25 +627,6 @@
 				"mineral/mineral_boots": { wiki: "Mineral Boots" },
 				"mineral/mineral_chestplate": { wiki: "Mineral Chestplate" },
 				"mineral/mineral_leggings": { wiki: "Mineral Leggings" },
-				'/misc': new Folder({
-					"big_spring_boots": { wiki: "Big Spring Boots" },
-					"bigger_spring_boots": { wiki: "Bigger Spring Boots" },
-					"crown_of_greed": { wiki: "Crown of Greed" },
-					"dctr_space_helm": { wiki: "Dctr\'s Space Helmet" },
-					"farmer_boots": { wiki: "Farmer Boots" },
-					"ghost_boots": { wiki: "Ghostly Boots" },
-					"metal_chestplate": { wiki: "Metal Chestplate" },
-					"mithril_coat": { wiki: "Mithril Coat" },
-					"music_pants": { wiki: "Stereo Pants" },
-					"potato_crown": { wiki: "Potato Crown" },
-					"ranchers_boots": { wiki: "Rancher\'s Boots" },
-					"spring_boots": { wiki: "Spring Boots" },
-					"squid_boots": { wiki: "Squid Boots" },
-					"steel_chestplate": { wiki: "Steel Chestplate" },
-					"stone_chestplate": { wiki: "Stone Chestplate" },
-					"thorns_boots": { wiki: "Spirit Boots" },
-					"starred_thorns_boots": { wiki: "⚚ Spirit Boots" },
-				}),
 				"monster_hunter/creeper_leggings": { wiki: "Creeper Pants" },
 				"monster_hunter/guardian_chestplate": { wiki: "Guardian Chestplate" },
 				"monster_hunter/skeleton_helmet": { wiki: "Skeleton\'s Helmet" },
@@ -922,10 +941,8 @@
 				"catacombs_expert_ring": { wiki: "Catacombs Expert Ring" },
 				"century_talisman": { wiki: "Talisman of the Century" },
 				"chumming_talisman": { wiki: "Chumming Talisman" },
-				"coin_talisman": { wiki: "Talisman of Coins" },
 				"devour_ring": { wiki: "Devour Ring" },
 				"dwarven_metal": { wiki: "Dwarven Metal Talisman" },
-				"emerald_ring": { wiki: "Emerald Ring" },
 				"experience_artifact": { wiki: "Experience Artifact" },
 				"farming_talisman": { wiki: "Farming Talisman" },
 				"fire_talisman": { wiki: "Fire Talisman" },
@@ -943,12 +960,10 @@
 				"magnetic_talisman": { wiki: "Magnetic Talisman" },
 				"melody_hair": { wiki: "Melody\'s Hair" },
 				"mine_talisman": { wiki: "Mine Affinity Talisman" },
-				"mineral_talisman": { wiki: "Mineral Talisman" },
 				"netherrack_looking_sunshade": { wiki: "Netherrack-Looking Sunshade" },
 				"night_vision_charm": { wiki: "Night Vision Charm" },
 				"pocket_espresso_machine": { wiki: "Pocket Espresso Machine" },
 				"reaper_orb": { wiki: "Reaper Orb" },
-				"scavenger_talisman": { wiki: "Scavenger Talisman" },
 				"skeleton_talisman": { wiki: "Skeleton Talisman" },
 				"tarantula_talisman": { wiki: "Tarantula Talisman" },
 				"village_talisman": { wiki: "Village Affinity Talisman" },
@@ -1025,11 +1040,18 @@
 				"candy/candy_artifact": { wiki: "Candy Artifact" },
 				"candy/candy_relic": { wiki: "Candy Relic" },
 				
+				"carnival_mask_bag/carnival_mask_bag": { wiki: "Carnival Mask Bag" }, // carnival_mask_bag_empty
+				
 				"chocolate_bar/nibble_chocolate_stick": { wiki: "Nibble Chocolate Stick" },
 				"chocolate_bar/smooth_chocolate_bar": { wiki: "Smooth Chocolate Bar" },
 				"chocolate_bar/rich_chocolate_chunk": { wiki: "Rich Chocolate Chunk" },
 				"chocolate_bar/ganache_chocolate_slab": { wiki: "Ganache Chocolate Slab" },
 				"chocolate_bar/prestige_chocolate_realm": { wiki: "Prestige Chocolate Realm" },
+				
+				"coin/coin_talisman": { wiki: "Talisman of Coins" },
+				"coin/ring_of_coins": { wiki: "Ring of Coins" },
+				"coin/artifact_of_coins": { wiki: "Artifact of Coins" },
+				"coin/relic_of_coins": { wiki: "Relic of Coins" },
 				
 				"cropie/cropie_talisman": { wiki: "Cropie Talisman" },
 				"cropie/squash_ring": { wiki: "Squash Ring" },
@@ -1059,6 +1081,9 @@
 				"draconic/draconic_talisman": { wiki: "Draconic Talisman" },
 				"draconic/draconic_ring": { wiki: "Draconic Ring" },
 				"draconic/draconic_artifact": { wiki: "Draconic Artifact" },
+				
+				"emerald/emerald_artifact": { wiki: "Emerald Artifact" },
+				"emerald/emerald_ring": { wiki: "Emerald Ring" },
 				
 				"feather/feather_talisman": { wiki: "Feather Talisman" },
 				"feather/feather_ring": { wiki: "Feather Ring" },
@@ -1120,6 +1145,9 @@
 				"master_skull/master_skull_tier_8": { wiki: "Master Skull - Tier 8" },
 				"master_skull/master_skull_tier_9": { wiki: "Master Skull - Tier 9" },
 				"master_skull/master_skull_tier_10": { wiki: "Master Skull - Tier 10" },
+				
+				"mineral/mineral_talisman": { wiki: "Mineral Talisman" },
+				"mineral/glossy_mineral_talisman": { wiki: "Glossy Mineral Talisman" },
 				
 				"new_year_cake_bag/new_year_cake_bag": { wiki: "New Year Cake Bag" },
 				
@@ -1183,6 +1211,10 @@
 				"rift/tiny_dancer": { wiki: "Tiny Dancer" },
 				"rift/vampire_dentist_relic": { wiki: "Vampire Dentist Relic" },
 				"rift/warding_trinket": { wiki: "Warding Trinket" },
+				
+				"scavenger/scavenger_artifact": { wiki: "Scavenger Artifact" },
+				"scavenger/scavenger_ring": { wiki: "Scavenger Ring" },
+				"scavenger/scavenger_talisman": { wiki: "Scavenger Talisman" },
 				
 				"sea_creature/sea_creature_talisman": { wiki: "Sea Creature Talisman" },
 				"sea_creature/sea_creature_ring": { wiki: "Sea Creature Ring" },
@@ -1265,6 +1297,7 @@
 				"luminous_bracelet": { wiki: "Luminous Bracelet" },
 				"magma_lord_gauntlet": { wiki: "Magma Lord Gauntlet" },
 				"pelt_belt": { wiki: "Pelt Belt" },
+				"pest_vest": { wiki: "Pest Vest" },
 				"thunderbolt_necklace": { wiki: "Thunderbolt Necklace" },
 				
 				// Sets
@@ -1318,6 +1351,11 @@
 				"fisherman/prismarine_necklace": { wiki: "Prismarine Necklace" },
 				"fisherman/sponge_belt": { wiki: "Sponge Belt" },
 				
+				"gemstone/sapphire_cloak": { wiki: "Sapphire Cloak" },
+				"gemstone/jade_belt": { wiki: "Jade Belt" },
+				"gemstone/amber_necklace": { wiki: "Amber Necklace" },
+				"gemstone/amethyst_gauntlet": { wiki: "Amethyst Gauntlet" },
+				
 				"gillsplash/gillsplash_belt": { wiki: "Gillsplash Belt" },
 				"gillsplash/gillsplash_cloak": { wiki: "Gillsplash Cloak" },
 				"gillsplash/gillsplash_gloves": { wiki: "Gillsplash Gloves" },
@@ -1336,10 +1374,20 @@
 				"lotus/lotus_cloak": { wiki: "Lotus Cloak" },
 				"lotus/lotus_necklace": { wiki: "Lotus Necklace" },
 				
+				"mithril/mithril_cloak": { wiki: "Mithril Cloak" },
+				"mithril/mithril_belt": { wiki: "Mithril Belt" },
+				"mithril/mithril_necklace": { wiki: "Mithril Necklace" },
+				"mithril/mithril_gauntlet": { wiki: "Mithril Gauntlet" },
+				
 				"molten/molten_belt": { wiki: "Molten Belt" },
 				"molten/molten_bracelet": { wiki: "Molten Bracelet" },
 				"molten/molten_cloak": { wiki: "Molten Cloak" },
 				"molten/molten_necklace": { wiki: "Molten Necklace" },
+				
+				"party/party_cloak": { wiki: "Party Cloak" },
+				"party/party_belt": { wiki: "Party Belt" },
+				"party/party_necklace": { wiki: "Party Necklace" },
+				"party/party_gloves": { wiki: "Party Gloves" },
 				
 				"rift/disinfestor_gloves": { wiki: "Disinfestor Gloves" },
 				"rift/enigma_cloak": { wiki: "Enigma Cloak" },
@@ -1355,6 +1403,11 @@
 				"synthesizer/synthesizer_v1": { wiki: "Synthesizer v1" },
 				"synthesizer/synthesizer_v2": { wiki: "Synthesizer v2" },
 				"synthesizer/synthesizer_v3": { wiki: "Synthesizer v3" },
+				
+				"titanium/titanium_cloak": { wiki: "Titanium Cloak" },
+				"titanium/titanium_belt": { wiki: "Titanium Belt" },
+				"titanium/titanium_necklace": { wiki: "Titanium Necklace" },
+				"titanium/titanium_gauntlet": { wiki: "Titanium Gauntlet" },
 				
 				"vanquisher/vanquished_blaze_belt": { wiki: "Vanquished Blaze Belt" },
 				"vanquisher/vanquished_ghast_cloak": { wiki: "Vanquished Ghast Cloak" },
@@ -1380,6 +1433,7 @@
 			'/fishing_rods': new Folder({
 				"auger_rod": { wiki: "Auger Rod" },
 				"bingo_lava_rod": { wiki: "Bingo Lava Rod" },
+				"carnival_fishing_rod": { wiki: "Carnival Fishing Rod" },
 				"challenge_rod": { wiki: "Challenging Rod" },
 				"champ_rod": { wiki: "Rod of Champions" },
 				"chum_rod": { wiki: "Chum Rod" },
@@ -1486,6 +1540,7 @@
 					"alert_flare": { wiki: "Alert Flare" },
 					"ancestral_spade": { wiki: "Ancestral Spade" },
 					"blazetekk_ham_radio": { wiki: "Blazetekk™ Ham Radio" },
+					"carnival_dart_tube": { wiki: "Carnival Dart Tube" },
 					"charminizer": { wiki: "Charminizer" },
 					"holy_ice": { wiki: "Holy Ice" },
 					"jingle_bells": { wiki: "Jingle Bells" },
@@ -1655,6 +1710,7 @@
 					"bandaged_mithril_pickaxe": { wiki: "Bandaged Mithril Pickaxe" },
 					"bingonimbus_2000": { wiki: "Bingonimbus 2000" },
 					"bob_omb": { wiki: "Bob-omb" },
+					"carnival_shovel": { wiki: "Carnival Shovel" }, // Unused variations: carnival_shovel_treasure / carnival_shovel_anchor
 					"chisel": { wiki: "Chisel" },
 					"dwarven_metal_detector": { wiki: "Metal Detector" },
 					"fallen_star_tracker": { wiki: "Fallen Star Lozenge" },
@@ -1921,6 +1977,8 @@
 						"christmas_stocking_backpack": { selectors: [s_invslot_alt`Christmas Stocking Backpack Skin`] },
 						"bag_of_coal_backpack_applied": { wiki: "Bag of Coal Backpack Skin" },
 						"bag_of_coal_backpack": { selectors: [s_invslot_alt`Bag of Coal Backpack Skin`] },
+						"hambagger_backpack_applied": { wiki: "Hambagger Backpack Skin" },
+						"hambagger_backpack": { selectors: [s_invslot_alt`Hambagger Backpack Skin`] },
 						
 						"gift_white_backpack_applied": { wiki: "White Gift Backpack Skin" },
 						"gift_white_backpack": { selectors: [s_invslot_alt`White Gift Backpack Skin`] },
@@ -2152,7 +2210,9 @@
 				'/dwarven_mines': new Folder({
 					"bejeweled_handle": { wiki: "Bejeweled Handle" },
 					"biofuel": { wiki: "Biofuel" },
+					"divan_powder_coating": { wiki: "Divan's Powder Coating" },
 					"glacite_jewel": { wiki: "Glacite Jewel" },
+					"glossy_gemstone": { wiki: "Glossy Gemstone" },
 					"goblin_egg": { wiki: "Goblin Egg" },
 					"goblin_omelette": { wiki: "Goblin Omelette" },
 					"golden_plate": { wiki: "Golden Plate" },
@@ -2187,6 +2247,7 @@
 						"electron_transmitter": { wiki: "Electron Transmitter" },
 						"eternal_flame_ring": { wiki: "Eternal Flame Ring" },
 						"ftx_3070": { wiki: "FTX 3070" },
+						"gemstone_chamber": { wiki: "Gemstone Chamber" },
 						"goblin_egg_blue": { wiki: "Blue Goblin Egg" },
 						"goblin_egg_green": { wiki: "Green Goblin Egg" },
 						"goblin_egg_red": { wiki: "Red Goblin Egg" },
@@ -2381,15 +2442,22 @@
 						"glacial_fragment": { wiki: "Glacial Fragment" },
 						"hilt_of_true_ice": { wiki: "Hilt of True Ice" },
 						"ice_hunk": { wiki: "Hunk of Ice" },
+						"jerry_candy": { wiki: "Jerry Candy" },
+						"volcanic_rock": { wiki: "Volcanic Rock" },
+						"walnut": { wiki: "Walnut" },
+						"winter_fragment": { wiki: "Winter Fragment" },
+						// Jerry Box
 						"jerry_box_blue": { wiki: "Blue Jerry Box" },
 						"jerry_box_golden": { wiki: "Golden Jerry Box" },
 						"jerry_box_green": { wiki: "Green Jerry Box" },
 						"jerry_box_mega": { wiki: "Mega Jerry Box" },
 						"jerry_box_purple": { wiki: "Purple Jerry Box" },
-						"jerry_candy": { wiki: "Jerry Candy" },
-						"volcanic_rock": { wiki: "Volcanic Rock" },
-						"walnut": { wiki: "Walnut" },
-						"winter_fragment": { wiki: "Winter Fragment" },
+						// Gifts
+						"white_gift": { wiki: "White Gift" },
+						"green_gift": { wiki: "Green Gift" },
+						"red_gift": { wiki: "Red Gift" },
+						"party_gift": { wiki: "Party Gift" },
+						"gold_gift": { wiki: "Golden Gift" },
 					}),
 					
 					'/mythology': new Folder({
@@ -2423,6 +2491,7 @@
 					"dung": { wiki: "Dung" },
 					"enchanted_compost": { wiki: "Compost Bundle" },
 					"fermento": { wiki: "Fermento" },
+					"fine_flour": { wiki: "Fine Flour" },
 					"honey_jar": { wiki: "Honey Jar" },
 					"jacobs_ticket": { wiki: "Jacob\'s Ticket" },
 					"mutant_nether_stalk": { wiki: "Mutant Nether Wart" },
@@ -2497,6 +2566,7 @@
 					"bridge_egg": { wiki: "Bridge Egg" },
 					"cancel_parkour_item": { wiki: "Cancel Parkour" },
 					// "cancel_race_item": { wiki: "Cancel Race" },
+					"carnival_ticket": { wiki: "Carnival Ticket" },
 					"collection_display": { wiki: "Collection Display" },
 					"colossal_exp_bottle_upgrade": { wiki: "Colossal Experience Bottle Upgrade" },
 					"colossal_exp_bottle": { wiki: "Colossal Experience Bottle" },
@@ -2506,7 +2576,6 @@
 					"ditto_skin": { wiki: "Ditto Skin" },
 					"ditto_skull": { wiki: "Ditto Skull" },
 					"enchanted_bone_block": { wiki: "Enchanted Bone Block" },
-					"flower_maelstrom": { wiki: "Flower Maelstrom" },
 					"fruit_bowl": { wiki: "Fruit Bowl" },
 					"grand_exp_bottle": { wiki: "Grand Experience Bottle" },
 					"hard_glass": { wiki: "Hard Glass" },
@@ -2536,12 +2605,9 @@
 					"personal_bank_item": { wiki: "Personal Bank Item" },
 					"plasma_nucleus": { wiki: "Plasma Nucleus" },
 					"plumber_sponge": { wiki: "Plumber\'s Sponge" },
-					"poem_of_infinite_love": { wiki: "Poem of True Love" },
 					"poison_sample": { wiki: "Poison Sample" },
-					"poorly_wrapped_rock": { wiki: "Poorly Wrapped Rock" },
 					"portalizer": { wiki: "Portalizer" },
 					"rock_paper_shears": { wiki: "Rock Paper Shears" },
-					"rose_bouquet": { wiki: "Rose Bouquet" },
 					"saving_grace": { wiki: "Saving Grace" },
 					"shiny_orb": { wiki: "Shiny Orb" },
 					"shiny_shard": { wiki: "Shiny Shard" },
@@ -2552,7 +2618,6 @@
 					"social_display": { wiki: "Social Display" },
 					"solved_prism": { wiki: "Solved Rubix Prism" },
 					"spray_can": { wiki: "Spray Can" },
-					"stock_of_stonks": { wiki: "Stock of Stonks" },
 					"stone_bridge": { wiki: "Stone Platform" },
 					"super_magic_mushroom_soup": { wiki: "Mystical Mushroom Soup" },
 					"swappable_preview": { wiki: "Swappable Preview" },
@@ -2561,12 +2626,20 @@
 					"toy": { wiki: "Toy" },
 					"trio_contacts_addon": { wiki: "Abiphone Contacts Trio" },
 					"unknown_item": { wiki: "Unknown Item" },
-					"very_official_yellow_rock": { wiki: "Very Official Yellow Rock of Love!" },
-					"warts_stew": { wiki: "Mushroom & Warts Stew" },
 					"wet_napkin": { wiki: "Wet Napkin" },
 					"wheel_of_fate": { wiki: "Wheel of Fate" },
-					"yellow_rock": { wiki: "Yellow Rock" },
 				
+					'/romero': new Folder({
+						"flower_maelstrom": { wiki: "Flower Maelstrom" },
+						"poem_of_infinite_love": { wiki: "Poem of True Love" },
+						"poorly_wrapped_rock": { wiki: "Poorly Wrapped Rock" },
+						"rose_bouquet": { wiki: "Rose Bouquet" },
+						"very_official_yellow_rock": { wiki: "Very Official Yellow Rock of Love!" },
+						"warts_stew": { wiki: "Mushroom & Warts Stew" },
+						"wrapped_gift_for_juliette": { wiki: "Secret Gift for Juliette" },
+						"yellow_rock": { wiki: "Yellow Rock" },
+					}),
+					
 					'/discs': new Folder({
 						"battle_disc": { wiki: "Battle Disc" },
 						"dungeon_disc_1": { wiki: "Dungeon Disc" },
@@ -2659,6 +2732,15 @@
 						"repelling_candle_purple": { wiki: "Purple Repelling Candle" },
 						"repelling_candle_white": { wiki: "White Repelling Candle" },
 						"repelling_candle_yellow": { wiki: "Yellow Repelling Candle" },
+					}),
+					
+					'/stonk_market': new Folder({
+						"avaricious_chalice": { wiki: "Avaricious Chalice" },
+						"blood_soaked_coins": { wiki: "Blood-soaked Coins" },
+						"blood_stained_coins": { wiki: "Blood-stained Coins" },
+						"freshly_minted_coins": { wiki: "Freshly-minted Coins" },
+						"golden_fragment": { wiki: "Golden Fragment" },
+						"stock_of_stonks": { wiki: "Stock of Stonks" },
 					}),
 					
 					'/travel_scrolls': new Folder({
@@ -2760,6 +2842,7 @@
 					"bigger_teeth": { wiki: "Bigger Teeth" },
 					"bingo_booster": { wiki: "Bingo Booster" },
 					"black_woolen_yarn": { wiki: "Black Woolen Yarn" },
+					"brown_bandana": { wiki: "Brown Bandana" },
 					"dwarf_turtle_shelmet": { wiki: "Dwarf Turtle Shelmet" },
 					"eerie_treat": { wiki: "Eerie Treat" },
 					"fake_neuroscience_degree": { wiki: "Fake Neuroscience Degree" },
@@ -3090,6 +3173,7 @@
 					"furball": { wiki: "Furball" },
 					"giant_tooth": { wiki: "Giant Tooth" },
 					"glacite_shard": { wiki: "Glacite Shard" },
+					"gleaming_crystal": { wiki: "Gleaming Crystal" },
 					"golden_ball": { wiki: "Golden Ball" },
 					"hardened_wood": { wiki: "Hardened Wood" },
 					"hazmat_enderman": { wiki: "Hazmat Enderman" },
@@ -3144,58 +3228,62 @@
 				
 				// NOTE: Wiki only ever displays tier 1 runes, so `_2`/`_3` images not used here
 				'/runes': new Folder({
-					bark_tunes_rune: { imgName: "Bark Tunes Rune" },
-					bite_rune: { imgName: "Bite Rune" },
-					blood_rune: { imgName: "Blood Rune" },
-					clouds_rune: { imgName: "Clouds Rune" },
-					couture_rune: { imgName: "Couture Rune" },
-					darkness_within_rune: { imgName: "Darkness Within Rune" },
 					rune: { imgName: "Empty Rune" },
-					enchant_rune: { imgName: "Enchant Rune" },
-					end_rune: { imgName: "End Rune" },
-					endersnake_rune: { imgName: "Endersnake Rune" },
-					fiery_burst_rune: { imgName: "Fiery Burst Rune" },
-					fire_spiral_rune: { imgName: "Fire Spiral Rune" },
-					gem_rune: { imgName: "Gem Rune" },
-					golden_rune: { imgName: "Golden Rune" },
-					grand_freezing_rune: { imgName: ["Grand Freezing Rune", "Grand Freezing Rune I"] },
-					grand_freezing_rune_2: { imgName: "Grand Freezing Rune II" },
-					grand_freezing_rune_3: { imgName: "Grand Freezing Rune III" },
-					grand_searing_rune: { imgName: ["Grand Searing Rune", "Grand Searing Rune III"] }, // this one rune for some reason is listed as III
-					hearts_rune: { imgName: "Hearts Rune" },
-					hot_rune: { imgName: "Hot Rune" },
-					ice_rune: { imgName: "Ice Rune" },
-					ice_skates_rune: { imgName: "Ice Skates Rune" },
-					jerry_rune: { imgName: "Jerry Rune" },
-					lava_rune: { imgName: "Lava Rune" },
-					lavatears_rune: { imgName: "Lavatears Rune" },
-					lightning_rune: { imgName: "Lightning Rune" },
-					magical_rune: { imgName: "Magical Rune" },
-					meow_music_rune: { imgName: "Meow Music Rune" },
-					music_rune: { imgName: "Music Rune" },
-					pestilence_rune: { imgName: "Pestilence Rune" },
-					primal_fear_rune: { imgName: "Primal Fear Rune" },
-					rainbow_rune: { imgName: "Rainbow Rune" },
-					redstone_rune: { imgName: "Redstone Rune" },
-					slimy_rune: { imgName: "Slimy Rune" },
-					smitten_rune: { imgName: "Smitten Rune" },
-					smokey_rune: { imgName: "Smokey Rune" },
-					snake_rune: { imgName: "Snake Rune" },
-					snow_rune: { imgName: "Snow Rune" },
-					soultwist_rune: { imgName: ["Soultwist Rune", "Soultwist Rune I"] },
-					soultwist_rune_2: { imgName: "Soultwist Rune II" },
-					soultwist_rune_3: { imgName: "Soultwist Rune III" },
-					sparkling_rune: { imgName: "Sparkling Rune" },
-					spellbound_rune: { imgName: ["Spellbound Rune", "Spellbound Rune I"] },
-					spellbound_rune_2: { imgName: "Spellbound Rune II" },
-					spellbound_rune_3: { imgName: "Spellbound Rune III" },
-					spirit_rune: { imgName: "Spirit Rune" },
-					tidal_rune: { imgName: "Tidal Rune" },
 					unique_rune: { imgName: "Unique Rune" },
-					wake_rune: { imgName: "Wake Rune" },
-					// wet_rune: { imgName: "Wet Rune" }, // not yet in pack
-					white_spiral_rune: { imgName: "White Spiral Rune" },
-					zap_rune: { imgName: "Zap Rune" },
+					
+					// Build rules for all I/II/III rune variations
+					...Object.entries({
+						bark_tunes_rune: "Bark Tunes Rune",
+						bite_rune: "Bite Rune",
+						blood_rune: "Blood Rune",
+						clouds_rune: "Clouds Rune",
+						couture_rune: "Couture Rune",
+						darkness_within_rune: "Darkness Within Rune",
+						enchant_rune: "Enchant Rune",
+						end_rune: "End Rune",
+						endersnake_rune: "Endersnake Rune",
+						fiery_burst_rune: "Fiery Burst Rune",
+						fire_spiral_rune: "Fire Spiral Rune",
+						gem_rune: "Gem Rune",
+						golden_carpet_rune: "Golden Carpet Rune",
+						golden_rune: "Golden Rune",
+						grand_freezing_rune: "Grand Freezing Rune",
+						grand_searing_rune: "Grand Searing Rune",
+						hearts_rune: "Hearts Rune",
+						hot_rune: "Hot Rune",
+						ice_rune: "Ice Rune",
+						ice_skates_rune: "Ice Skates Rune",
+						jerry_rune: "Jerry Rune",
+						lava_rune: "Lava Rune",
+						lavatears_rune: "Lavatears Rune",
+						lightning_rune: "Lightning Rune",
+						magical_rune: "Magical Rune",
+						meow_music_rune: "Meow Music Rune",
+						music_rune: "Music Rune",
+						pestilence_rune: "Pestilence Rune",
+						primal_fear_rune: "Primal Fear Rune",
+						rainbow_rune: "Rainbow Rune",
+						rainy_day_rune: "Rainy Day Rune",
+						redstone_rune: "Redstone Rune",
+						slimy_rune: "Slimy Rune",
+						smitten_rune: "Smitten Rune",
+						smokey_rune: "Smokey Rune",
+						snake_rune: "Snake Rune",
+						snow_rune: "Snow Rune",
+						soultwist_rune: "Soultwist Rune",
+						sparkling_rune: "Sparkling Rune",
+						spellbound_rune: "Spellbound Rune",
+						spirit_rune: "Spirit Rune",
+						tidal_rune: "Tidal Rune",
+						wake_rune: "Wake Rune",
+						white_spiral_rune: "White Spiral Rune",
+						zap_rune: "Zap Rune",
+					}).reduce((map, [id,name])=>{
+						map[`${id}`] = { imgName: [name, `${name} I`] };
+						map[`${id}_2`] = { imgName: `${name} II` };
+						map[`${id}_3`] = { imgName: `${name} III` };
+						return map;
+					}, {}),
 				}),
 				
 				'/sacks': new Folder({
@@ -3249,6 +3337,7 @@
 					"garden_sack": { wiki: "Garden Sack" },
 					"large_candy_sack": { wiki: "Spooky Sack" },
 					"large_dungeon_sack": { wiki: "Dungeon Sack" },
+					"large_events_sack": { wiki: "Events Sack" },
 					"large_winter_sack": { wiki: "Winter Sack" },
 					"rune_sack": { wiki: "Rune Sack" },
 					"bronze_trophy_fishing_sack": { wiki: "Bronze Trophy Fishing Sack" },
@@ -3380,17 +3469,23 @@
 				
 				'/special': new Folder({
 					"alpha_pick": { wiki: "Pioneer Pickaxe" },
+					"archery_cube": { wiki: "Archery Cube" },
 					"bingo_card": { wiki: ["Bingo Card", "Bingo Card (Item)"], selectors:[s_alt`Bingo Card (Bingo #[N])`, s_alt`Bingo Card (Bingo #[number])`] },
 					"creative_mind": { wiki: "Creative Mind" },
 					"dead_bush_of_love": { wiki: "Dead Bush of Love" },
 					"editor_pencil": { wiki: "Editor's Pencil" },
 					"extreme_bingo_card": { wiki: "Extreme Bingo Card" },
 					"game_annihilator": { wiki: "Game Annihilator" },
+					"jar_of_sand": { wiki: "Jar of Sand" },
 					"kloonboat": { wiki: "Kloonboat" },
+					"lantern_of_the_dead": { wiki: "Lantern of the Dead" },
+					"mini_fish_bowl": { wiki: "Mini Fish Bowl" },
 					"new_year_cake": { wiki: ["New Year Cake", "New Year Cake (Year [year])"] },
+					"plastic_shovel": { wiki: "Plastic Shovel" },
 					"quality_map": { wiki: "Quality Map" },
 					"secret_bingo_card": { wiki: "Secret Bingo Card" },
 					"shiny_relic": { wiki: "Shiny Relic" },
+					"singing_fish": { wiki: "Singing Fish" },
 					"spooky_pie": { wiki: ["Spooky Pie", "Spooky Pie (Year [year])"] },
 					"the_cake": { wiki: "The Cake" },
 					"wiki_journal": { wiki: "Wiki Journal" },
@@ -3455,6 +3550,7 @@
 						"century_memento_pink": { wiki:"Cake Slice of the Century (Pink)", imgName:"Cake Slice of the Century (Pink)" },
 						"expensive_toy": { wiki: "Expensive Toy" },
 						"golden_collar": { wiki: "Golden Collar" },
+						"painters_palette": { wiki: "Painter's Palette" }, // painters_palette_1st
 						"secret_bingo_memento": { wiki: "Bingo's Secrets" },
 						"wizard_portal_memento": { wiki:"Piece of Wizard Portal" },
 					}),
@@ -3479,6 +3575,7 @@
 						"maxor_the_fish": { wiki: "Maxor the Fish" },
 						"nope_the_fish": { wiki: "Nope the Fish" },
 						"oops_the_fish": { wiki: "Oops the Fish" },
+						"party_the_fish": { wiki: "Party the Fish" },
 						"priceless_the_fish": { wiki: "Priceless the Fish" },
 						"rabbit_the_fish": { wiki: "Rabbit the Fish" },
 						"rock_the_fish": { wiki: "Rock the Fish" },
@@ -3565,6 +3662,7 @@
 				flamebreaker_armor: { wiki: "Ember Ash Armor" },
 				frozen_blaze_armor: { wiki: "Frozen Blaze Armor" },
 				glacite_armor: { wiki: "Glacite Armor" },
+				glossy_mineral_armor: { wiki: "Glossy Mineral Armor" },
 				goblin_armor: { wiki: "Goblin Armor" },
 				golem_armor: { wiki: "Golem Armor" },
 				great_spook_armor: { wiki: "Great Spook Armor" },

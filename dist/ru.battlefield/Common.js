@@ -492,7 +492,7 @@ importScriptPage('Standard_Edit_Summary/code.js', 'dev');
 
 
 /* Иконки социальных сетей */
-$('.WikiaRail').append('<div style="right:-1px; top:108px; position: absolute;"><div style="position: absolute;" class="SocialIcon"><div style="float:right;"><a href="https://vk.com/splintercell5"><img src="https://vignette.wikia.nocookie.net/battlefield/images/f/fc/VK.png/revision/latest?cb=20180311171552&path-prefix=ru"></a></div></div><div style="position: absolute; margin-top:42px" class="SocialIcon"><div style="float:right;"><a href="http://www.youtube.com/user/S25SC5"><img src="https://vignette.wikia.nocookie.net/battlefield/images/a/af/Youtube.png/revision/latest?cb=20180311171221&path-prefix=ru"></a></div></div><div style="position: absolute; margin-top:84px" class="SocialIcon"><div style="float:right;"><a href="http://www.battlefield.com/ru-ru"><img src="https://vignette.wikia.nocookie.net/battlefield/images/7/77/Battlefield_3_Ico.png/revision/latest?cb=20180219090323&path-prefix=ru"></a></div></div>');
+$('.WikiaRail').append('<div style="right:-1px; top:108px; position: absolute;"><div style="position: absolute;" class="SocialIcon"><div style="float:right;"><a href="//vk.com/splintercell5"><img src="//vignette.wikia.nocookie.net/battlefield/images/f/fc/VK.png/revision/latest?cb=20180311171552&path-prefix=ru"></a></div></div><div style="position: absolute; margin-top:42px" class="SocialIcon"><div style="float:right;"><a href="//youtube.com/user/S25SC5"><img src="//vignette.wikia.nocookie.net/battlefield/images/a/af/Youtube.png/revision/latest?cb=20180311171221&path-prefix=ru"></a></div></div>');
  
  
 function initVisibility() {

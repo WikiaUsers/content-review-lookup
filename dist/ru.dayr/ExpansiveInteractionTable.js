@@ -1,10 +1,10 @@
 $(document).ready(function() {
     function applyClassesFromDataAttributes() {
-        $('th').each(function() {
-            var $header = $(this);
-            var columnIndex = $header.index() + 1;
-
-            $.each($header[0].attributes, function() {
+        $('th, td').each(function() {
+            var $cell = $(this);
+            var columnIndex = calculateColumnIndex($cell);
+            
+            $.each($cell[0].attributes, function() {
                 if (this.name.startsWith('data-')) {
                     var className = '';
                     
@@ -33,29 +33,84 @@ $(document).ready(function() {
                     }
 
                     if (className) {
-                        $header.closest('table').find('tr').each(function() {
-                            $(this).find('td:nth-child(' + columnIndex + ')').addClass(className);
-                        });
+                        applyClassToColumn(columnIndex, className, $cell);
+                    }
+
+                    if (this.name.startsWith('data-width-')) {
+                        var width = this.name.substring('data-width-'.length);
+                        setImageWidth(columnIndex, width);
                     }
                 }
             });
         });
     }
 
-    function calculateColumnIndex(header) {
-        var $header = $(header);
+    function calculateColumnIndex(cell) {
+        var $cell = $(cell);
         var columnIndex = 0;
-        var $row = $header.closest('tr');
+        var $row = $cell.closest('tr');
 
         $row.children('th, td').each(function(index) {
             var colspan = $(this).attr('colspan') ? parseInt($(this).attr('colspan')) : 1;
-            if (this === $header[0]) {
+            if (this === $cell[0]) {
                 return false;
             }
             columnIndex += colspan;
         });
 
         return columnIndex + 1;
+    }
+
+    function applyClassToColumn(columnIndex, className, $cell) {
+        $('table').each(function() {
+            var $table = $(this);
+            var rows = $table.find('tr');
+
+            rows.each(function() {
+                var $row = $(this);
+                var cellIndex = 0;
+
+                $row.children('th, td').each(function() {
+                    var $cellInRow = $(this);
+                    var colspan = $cellInRow.attr('colspan') ? parseInt($cellInRow.attr('colspan')) : 1;
+
+                    if (cellIndex < columnIndex && cellIndex + colspan >= columnIndex) {
+                        if ($cellInRow.is('td')) {
+                            $cellInRow.addClass(className);
+                        }
+                    }
+
+                    cellIndex += colspan;
+                });
+            });
+        });
+    }
+
+    function setImageWidth(columnIndex, width) {
+        $('table').each(function() {
+            var $table = $(this);
+            var rows = $table.find('tr');
+
+            rows.each(function() {
+                var $row = $(this);
+                var cellIndex = 0;
+
+                $row.children('th, td').each(function() {
+                    var $cellInRow = $(this);
+                    var colspan = $cellInRow.attr('colspan') ? parseInt($cellInRow.attr('colspan')) : 1;
+
+                    if (cellIndex < columnIndex && cellIndex + colspan >= columnIndex) {
+                        if ($cellInRow.is('td')) {
+                            $cellInRow.find('img').each(function() {
+                                $(this).attr('style', 'width: ' + width + '; height: auto;');
+                            });
+                        }
+                    }
+
+                    cellIndex += colspan;
+                });
+            });
+        });
     }
 
     function hideColumn(columnIndex) {

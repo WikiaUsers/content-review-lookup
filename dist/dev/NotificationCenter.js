@@ -39,7 +39,7 @@
                 "article-comment-reply-at-mention",
                 "talk-page-message",
                 "marketing-notification",
-                "thanks-created"
+                "thanks-created",
             ],
 
             Discussions: [
@@ -47,19 +47,19 @@
                 "discussion-post",
                 "discussion-report",
                 "post-at-mention",
-                "thread-at-mention"
+                "thread-at-mention",
             ],
 
             "Article Comments": [
                 "article-comment-reply",
                 "article-comment-at-mention",
-                "article-comment-reply-at-mention"
+                "article-comment-reply-at-mention",
             ],
 
             "Message Wall and Talk Page": [
                 "message-wall-thread",
                 "message-wall-post",
-                "talk-page-message"
+                "talk-page-message",
             ],
 
             Upvotes: [
@@ -70,25 +70,25 @@
                 "post-at-mention",
                 "thread-at-mention",
                 "article-comment-at-mention",
-                "article-comment-reply-at-mention"
+                "article-comment-reply-at-mention",
             ],
 
             Announcements: [
-                "announcement-target"
+                "announcement-target",
             ],
 
             Thanks: [
-                "thanks-created"
+                "thanks-created",
             ],
 
             Reports: [
-                "discussion-report"
+                "discussion-report",
             ],
 
             Marketing: [
-                "marketing-notification"
+                "marketing-notification",
             ]
-        };
+        }
     }
 
     function isTargetPage() {
@@ -104,7 +104,8 @@
             "#notification-center .notification-center-controls { display: flex; width: 100%; justify-content: space-between; }" +
             "#notification-center .notification-center-table { width: 100%; }" +
             "#notification-center .notification-center-table tr.unread { font-weight: bold; }" +
-            "#notification-center .notification-center-table td > * { display: inline-block; max-width: 20em; text-wrap: nowrap; overflow: hidden; text-overflow: ellipsis; }"
+            "#notification-center .notification-center-table td { overflow: hidden; text-overflow: ellipsis; }" +
+            "#notification-center .notification-center-table .notification-center-user-badge { display: flex; gap: 0.5em; align-items: center }"
         );
     }
 
@@ -126,7 +127,7 @@
         return $.getJSON({
             url: apiUrl,
             xhrFields: {
-                withCredentials: true
+                withCredentials: true,
             },
         })
             .then(function (response) {
@@ -183,6 +184,9 @@
                             apiUrl = notificationsUrl();
                             fetchNotifications().then(render);
                         }),
+                    $("<button>")
+                        .text("refresh")
+                        .on("click", function() { fetchNotifications().then(render) }),
                     $("<span>")
                         .text("Page " + pageNumber),
                     $("<button>")
@@ -199,7 +203,7 @@
     function table() {
         return (
             $("<table>")
-                .addClass("notification-center-table", "fandom-table")
+                .addClass("notification-center-table fandom-table")
                 .append(tableHead(), tableBody(data.notifications))
         );
     }
@@ -230,27 +234,23 @@
                                 .attr("href", info.targetUrl)
                                 .attr("target", "_blank")
                                 .attr("title", info.snippet)
-                                .text(info.snippet)
+                                .append(
+                                    info.snippet
+                                        ? info.title && info.title !== info.snippet
+                                            ? [
+                                                $("<u>").text(info.title),
+                                                $("<br>"),
+                                                $("<span>").text(info.snippet)
+                                            ]
+                                        : info.snippet
+                                    : info.targetUrl
+                                )
                         ),
                         $("<td>").text(info.type),
                         $("<td>").append(
-                            $("<div>")
-                                .css({ display: "flex", gap: "0.5em", alignItems: "center" })
-                                .append(
-                                    $("<div>")
-                                        .addClass("wds-avatar")
-                                        .append(
-                                            $("<img>")
-                                                .addClass("wds-avatar__image")
-                                                .attr("src", info.userAvatarUrl)
-                                                .attr("alt", info.userName)
-                                        ),
-                                    $("<a>")
-                                        .attr("href", info.userUrl)
-                                        .attr("target", "_blank")
-                                        .attr("title", info.userName)
-                                        .text(info.userName)
-                                )
+                            info.users.map(function (userInfo) {
+                                return userBadge(userInfo, info.communityUrl)
+                            })
                         ),
                         $("<td>").append(
                             $("<a>")
@@ -266,58 +266,111 @@
     }
 
     function buildNextUrl(url) {
-        // this provided "next" URL does not contain the selected content types, breaking the correct pagination
+        // the provided "next" URL does not contain the selected content types, breaking the correct pagination
         // here we combine the provided page number and timestamp with the selected content types
         return notificationsUrl() + "&" + url.split("?")[1];
+    }
+
+    function userBadge(userInfo, communityUrl) {
+
+        const userUrl = communityUrl + "/wiki/User:" + userInfo.name;
+
+        return $("<div>")
+            .addClass('notification-center-user-badge')
+            .append(
+                $("<div>")
+                    .addClass("wds-avatar")
+                    .append(
+                        $("<img>")
+                            .addClass("wds-avatar__image")
+                            .attr("src", userInfo.avatarUrl + "/thumbnail/width/26/height/26")
+                            .attr("alt", userInfo.name)
+                    ),
+                $("<a>")
+                    .attr("href", userUrl)
+                    .attr("target", "_blank")
+                    .attr("title", userInfo.name)
+                    .text(userInfo.name)
+            )
+
     }
 
     function extractNotificationInfo(item) {
         const refersTo = item.refersTo || {};
         const events = item.events || {};
+        const latestActors = events.latestActors || {};
         const latestEvent = events.latestEvent || {};
         const causedBy = latestEvent.causedBy || {};
 
+        const targetUrl = latestEvent.uri || refersTo.uri;
+        const title = refersTo.title;
         const snippet =
             item.type === "message-wall-post-notification"
-                ? refersTo.title + " - " + latestEvent.snippet
+                ? latestEvent.snippet
                 : item.type === "message-wall-reply-notification"
+                    // on message wall replies use the thread title which is more relevant than the provided snippet of the original first message
                     ? refersTo.title
-                    : latestEvent.snippet || refersTo.title || refersTo.snippet;
-        const targetUrl = latestEvent.uri || refersTo.uri;
-        const type = niceNotificationType(item.type);
-        const communityName = item.community.name;
-        const communityUrl = new URL(targetUrl).origin;
-        const userName = causedBy.name || refersTo.createByName;
-        const userId = causedBy.id || refersTo.createBy;
-        const userUrl = communityUrl + "/wiki/User:" + userName;
-        const userAvatarUrl = causedBy.avatarUrl ? causedBy.avatarUrl + "/thumbnail/width/26/height/26" : "";
+                    : latestEvent.snippet
+                        || refersTo.snippet
+                        || refersTo.title
+                        || targetUrl;
+        const communityName =
+            item.type === "marketing-notification"
+                ? ""
+                : item.community.name;
+        const communityUrl = targetUrl.replace(/\/(f|wiki|index.php).*$/, "");
+        const eventsCount = events.total || 1;
+        const usersCount = events.totalUniqueActors || 1;
+        const users = latestActors;
+        const type = niceNotificationType(item.type, eventsCount, usersCount);
         const read = item.read;
 
         return {
+            title: title,
             snippet: snippet,
             targetUrl: targetUrl,
             type: type,
             communityName: communityName,
             communityUrl: communityUrl,
-            userName: userName,
-            userId: userId,
-            userUrl: userUrl,
-            userAvatarUrl: userAvatarUrl,
-            read: read
+            eventsCount: eventsCount,
+            usersCount: usersCount,
+            users: users,
+            read: read,
         };
     }
 
-    function niceNotificationType(type) {
-        return (
-            {
-                "announcement-notification": "Announcement",
-                "post-at-mention-notification": "@Mention",
-                "replies-notification": "Reply",
-                "upvote-notification": "Upvote",
-                "message-wall-post-notification": "New Wall Message",
-                "message-wall-reply-notification": "Message Wall Reply",
-                "marketing-notification": "Marketing"
-            }[type] || type
-        );
+    function niceNotificationType(type, eventsCount, usersCount) {
+        const mapping = {
+            "announcement-notification": "announcement",
+            "post-at-mention-notification": "@mention on a post",
+            "replies-notification": "reply to a post",
+            "upvote-notification": "upvote",
+            "article-comment-at-mention-notification": "@mention on an article comment",
+            "article-comment-reply-notification": "article comment reply",
+            "message-wall-post-notification": "new message on wall",
+            "message-wall-reply-notification": "reply on message wall",
+            "thanks-created-notification": "thanks for your edit",
+            "marketing-notification": "fandom marketing",
+        }
+
+        const mappingMultiple = {
+            "post-at-mention-notification": "%1 @mentions on a post",
+            "replies-notification": "%1 replies to a post",
+            "upvote-notification": "%1 upvotes",
+            "article-comment-at-mention-notification": "%1 @mentions on an article comment",
+            "article-comment-reply-notification": "%1 replies to an article comment",
+            "message-wall-post-notification": "%1 new messages on wall",
+            "message-wall-reply-notification": "%1 replies on message wall",
+            "thanks-created-notification": "%1 thanks for your edits",
+        }
+
+        if (eventsCount > 1 && type in mappingMultiple) {
+            return mappingMultiple[type].replace("%1", eventsCount) + " by " +
+                (usersCount > 1
+                    ? "" + usersCount + " users"
+                    : "1 user"
+                )
+        }
+        return mapping[type] || type;
     }
 })(this, jQuery, mediaWiki);

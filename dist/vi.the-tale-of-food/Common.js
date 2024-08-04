@@ -88,3 +88,5 @@ function createCollapseButtons() {
 mw.hook("wikipage.content").add(createCollapseButtons);
 
 InactiveUsers = { months: 1 };
+
+window.BackToTopModern = true;

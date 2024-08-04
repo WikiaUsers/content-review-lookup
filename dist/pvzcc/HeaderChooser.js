@@ -8,7 +8,7 @@
 */
 
 var possibleTexts = [
-    // Common - Weight 500000
+    // Common - Weight 75000000
     {
         texts: [
 			"Create your own characters!",
@@ -219,9 +219,9 @@ var possibleTexts = [
 			"Picturesque Nature 1400 and 1!",
 			"Have you tried thinking?"
         ],
-        weight: 500000
+        weight: 75000000
     },
-    // Staff Member 1 Star - Weight 4500
+    // Staff Member 1 Star - Weight 450000
     {
         texts: [
             "💚 DsFanboy!",
@@ -233,9 +233,9 @@ var possibleTexts = [
             "💜 DolphiGaming!",
             "💜 Miss Pembroke!"
         ],
-        weight: 4500
+        weight: 450000
     },
-        // Staff Member 2 Star - Weight 3000
+        // Staff Member 2 Star - Weight 300000
     {
         texts: [
             "💚💚 DsFanboy!",
@@ -247,9 +247,9 @@ var possibleTexts = [
             "💜💜 DolphiGaming!",
             "💜💜 Miss Pembroke!"
         ],
-        weight: 3000
+        weight: 300000
     },
-        // Staff Member 3 Star - Weight 1500
+        // Staff Member 3 Star - Weight 150000
     {
         texts: [
             "💚💚💚 DsFanboy!",
@@ -261,9 +261,9 @@ var possibleTexts = [
             "💜💜💜 DolphiGaming!",
             "💜💜💜 Miss Pembroke!"
         ],
-        weight: 1500
+        weight: 150000
     },
-        // Featured Article 1 Star - Weight 3500
+        // Featured Article 1 Star - Weight 350000
     {
         texts: [
             "🏆 Stoplight Zombie!",
@@ -304,11 +304,12 @@ var possibleTexts = [
             "🏆 Deserted Canyon!",
             "🏆 Arrowwood!",
             "🏆 Scarecrop!",
-            "🏆 Calamity Cone Zombie!"
+            "🏆 Calamity Cone Zombie!",
+            "🏆 Pulpverizer!"
         ],
-        weight: 3500
+        weight: 350000
     },
-        // Featured Article 2 Stars - Weight 2000
+        // Featured Article 2 Stars - Weight 200000
     {
         texts: [
             "🏆🏆 Stoplight Zombie!",
@@ -349,11 +350,12 @@ var possibleTexts = [
             "🏆🏆 Deserted Canyon!",
             "🏆🏆 Arrowwood!",
             "🏆🏆 Scarecrop!",
-            "🏆🏆 Calamity Cone Zombie!"
+            "🏆🏆 Calamity Cone Zombie!",
+            "🏆🏆 Pulpverizer!"
         ],
-        weight: 2000
+        weight: 200000
     },
-        // Featured Article 3 Stars - Weight 500
+        // Featured Article 3 Stars - Weight 50000
     {
         texts: [
             "🏆🏆🏆 Stoplight Zombie!",
@@ -394,54 +396,55 @@ var possibleTexts = [
             "🏆🏆🏆 Deserted Canyon!",
             "🏆🏆🏆 Arrowwood!",
             "🏆🏆🏆 Scarecrop!",
-            "🏆🏆🏆 Calamity Cone Zombie!"
+            "🏆🏆🏆 Calamity Cone Zombie!",
+            "🏆🏆🏆 Pulpverizer!"
         ],
-        weight: 500
+        weight: 50000
     },
-    // Former Staff Member 1 Star - Weight 450
+    // Former Staff Member 1 Star - Weight 45000
     {
         texts: [
             "👻💚 PunjiChocoBerry!",
             "👻💜 Creepes."
         ],
-        weight: 450
+        weight: 45000
     },
-    // Former Staff Member 2 Stars - Weight 300
+    // Former Staff Member 2 Stars - Weight 30000
     {
         texts: [
             "👻💚💚 PunjiChocoBerry!",
             "👻💜💜 Creepes."
         ],
-        weight: 300
+        weight: 30000
     },
-    // Former Staff Member 3 Stars - Weight 150
+    // Former Staff Member 3 Stars - Weight 15000
     {
         texts: [
             "👻💚💚💚 PunjiChocoBerry!",
             "👻💜💜💜 Creepes."
         ],
-        weight: 150
+        weight: 15000
     },
-    // Legendary 1 Star - Weight 35
+    // Legendary 1 Star - Weight 350
     {
         texts: [
             "🤪 Skibidi bibidi!"
         ],
-        weight: 35
+        weight: 350
     },
-    // Legendary 2 Stars - Weight 20
+    // Legendary 2 Stars - Weight 200
     {
         texts: [
             "🤪🤪 Skibidi bibidi!"
         ],
-        weight: 20
+        weight: 200
     },
-    // Legendary 3 Stars - Weight 5
+    // Legendary 3 Stars - Weight 50
     {
         texts: [
             "🤪🤪🤪 Skibidi bibidi!"
         ],
-        weight: 5
+        weight: 50
     },
     // Rainbow - Weight 1
     {

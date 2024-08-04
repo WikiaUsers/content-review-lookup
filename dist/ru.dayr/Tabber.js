@@ -1,4 +1,4 @@
-$(document).ready(function() {
+/*$(document).ready(function() {
     function activateTab(hash) {
         var tabElement = $('[data-tab="' + hash + '"], [data-original-label="' + hash + '"]');
         if (tabElement.length) {
@@ -55,3 +55,4 @@ $(document).ready(function() {
         e.preventDefault();
     });
 });
+*/

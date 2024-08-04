@@ -12,7 +12,7 @@ importArticles({
 	type: "script",
 	articles: [
 		"MediaWiki:TabberTiles.js",
-		"MediaWiki:Tabber.js",
+		"MediaWiki:Tabber2.js",
 		"MediaWiki:ExpansiveInteractionTable.js",
 		"MediaWiki:HideRowsTable.js"
 	]

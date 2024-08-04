@@ -10,6 +10,8 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
+window.AddRailModule = [{prepend: false,maxAge: 1}];
+
 window.BackToTopModern = true;
 
 window.lockOldComments = (window.lockOldComments || {});

@@ -38,6 +38,3 @@
 $('.norc').bind('contextmenu', function(e) {
     return false;
 });
-
-/* Tag de InactiveUsers */
-InactiveUsers = { text: 'Inactivo/a' };

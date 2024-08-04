@@ -1,33 +1,22 @@
 $(document).ready(function() {
-    $('tr[data-row-hide]').addClass('hidden-row');
+    $('td[data-row-hide]').closest('tr').hide();
 
-    $(document).on('click', '.toggle-details', function() {
-        var $toggleDetails = $(this);
-        var $toggleHide = $toggleDetails.next('.toggle-hide');
-        var $hiddenRows = $('tr[data-row-hide]');
+    $('[data-open-rows]').on('click', function() {
+        var $toggleDetails = $(this).find('.toggle-details');
+        var $toggleHide = $(this).find('.toggle-hide');
+        var $hiddenRows = $(this).closest('tr').nextAll('tr:has(td[data-row-hide])');
 
-        if ($hiddenRows.hasClass('hidden-row')) {
-            $hiddenRows.removeClass('hidden-row');
+        if ($hiddenRows.is(':visible')) {
+            $hiddenRows.stop(true, true).slideUp(400, function() {
+                $hiddenRows.addClass('hidden-row');
+                $toggleDetails.show();
+                $toggleHide.hide();
+            });
         } else {
-            $hiddenRows.addClass('hidden-row');
+            $hiddenRows.stop(true, true).hide().removeClass('hidden-row').slideDown(400, function() {
+                $toggleDetails.hide();
+                $toggleHide.show();
+            });
         }
-
-        $toggleDetails.toggle();
-        $toggleHide.toggle();
-    });
-
-    $(document).on('click', '.toggle-hide', function() {
-        var $toggleHide = $(this);
-        var $toggleDetails = $toggleHide.prev('.toggle-details');
-        var $hiddenRows = $('tr[data-row-hide]');
-
-        if ($hiddenRows.hasClass('hidden-row')) {
-            $hiddenRows.removeClass('hidden-row');
-        } else {
-            $hiddenRows.addClass('hidden-row');
-        }
-
-        $toggleDetails.toggle();
-        $toggleHide.toggle();
     });
 });

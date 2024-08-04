@@ -40,7 +40,6 @@ mw.loader.using('mediawiki.util').done(function() {
             'Unusedcategories',
             'Unusedimages',
             'Unusedtemplates',
-            'UnusedVideos', 
             'Wantedcategories',
             'Wantedpages',
             'Wantedfiles',

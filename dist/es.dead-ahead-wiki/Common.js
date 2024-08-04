@@ -1,22 +1,37 @@
-document.addEventListener("DOMContentLoaded", function() {
-  var tabContainers = document.querySelectorAll('.tab-container');
-  
-  tabContainers.forEach(function(container) {
-    var buttons = container.querySelectorAll('.tab-buttons div');
-    var contents = container.querySelectorAll('.tab-content');
-    
-    buttons.forEach(function(button, index) {
-      button.addEventListener('click', function() {
-        buttons.forEach(function(btn) {
-          btn.classList.remove('active');
+//Zombipedia
+document.addEventListener('DOMContentLoaded', function() {
+    var currentPage = 1;
+    var pages = document.querySelectorAll('.book-page');
+    var totalPages = pages.length;
+
+    function showPage(pageNumber) {
+        // Hide all pages
+        pages.forEach(function(page) {
+            page.classList.remove('active-page');
         });
-        contents.forEach(function(content) {
-          content.classList.remove('active');
-        });
-        
-        button.classList.add('active');
-        contents[index].classList.add('active');
-      });
+
+        // Show the specified page
+        var pageToShow = document.getElementById('page' + pageNumber);
+        if (pageToShow) {
+            pageToShow.classList.add('active-page');
+        }
+    }
+
+    // Show the first page initially
+    showPage(currentPage);
+
+    // Event listeners for buttons
+    document.getElementById('prevPage').addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
     });
-  });
+
+    document.getElementById('nextPage').addEventListener('click', function() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    });
 });

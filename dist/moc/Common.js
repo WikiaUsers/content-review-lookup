@@ -1,4 +1,10 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:WHAM/code.2.js',
+    ]
+});
 // Configuration for MapsExtended - This applies to specific maps
 window.mapsExtendedConfigs = 
 {
