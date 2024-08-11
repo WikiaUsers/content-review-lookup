@@ -179,6 +179,7 @@
     'The Many': {'Egg of the Many': 'Egg of The Many'},
     'The Pale Worm': {'Amber': 'Amber (Item)'},
     'The Percht Queen': {'Icicle': 'Icicle (Percht)', 'Fly Agaric': 'Fly Agaric (Item)'},
+    'The Rootkraken': {'Amber': 'Amber (Item)'},
     'The Sandking': {'Heart of the Mountain': 'Heart of the Mountain (Item)'},
     'The Scourge of Oblivion': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'The Time Guardian': {'Part of a Rune': 'Part of a Rune (Three)'},

@@ -7,8 +7,10 @@ var userSet;
 var userSetTips = {
 	'A' : 'administrator',
 	'B' : 'bureaucrat',
-	'M' : 'moderator',
+	'CU' : 'checkuser admin',
+	'CM' : 'content moderator',
 	'R' : 'rollbacker',
+	'TM' : 'thread moderator',
 };
 
 function addCSS(css) {
@@ -50,15 +52,15 @@ function markadmins($content) {
 	new mw.Api().get({
 		action: 'query',
 		list: 'allusers',
-		augroup: 'sysop|bureaucrat|thread-moderator|rollback',
+		augroup: 'sysop|bureaucrat|checkuser|content-moderator|rollback|threadmoderator',
 		auprop: 'groups',
 		aulimit: 500,
 		format: 'json',
 		formatversion: 2
 	}).done(function(ans) {
 		var list = ans.query.allusers,
-			groups = ['sysop', 'bureaucrat', 'thread-moderator', 'rollback'],
-			key = ['A', 'B', 'M', 'R'],
+			groups = ['sysop', 'bureaucrat', 'checkuser', 'content-moderator', 'rollback', 'threadmoderator'],
+			key = ['A', 'B', 'CU', 'CM', 'R', 'TM'],
 			userSet = {};
 			
 		for (var i = 0; i < key.length; i++) {

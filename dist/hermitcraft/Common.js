@@ -1,13 +1,6 @@
 /* Articles are interwiki links so that other wikis can use them. */
-importArticles({
-    type: 'script',
-    articles: [
-        'w:c:clashofclans:MediaWiki:Common.js/Sliders.js'
-    ]
-});
-
 /* Config for [[w:c:dev:PreloadFileDescription]] */
-PFD_templates = '{'+'{Information\n| description = \n| source = \n| date = \n| author = \n| permission = \n| other versions = \n}}';
+PFD_templates = '{'+'{Information\n|description=\n|source=\n|date=\n|author=\n|permission=\n|other_versions=\n}}';
 PFD_license = 'License';
 PFD_discourageEditorFileUpload = true
 

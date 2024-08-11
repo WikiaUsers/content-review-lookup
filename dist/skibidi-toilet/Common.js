@@ -18,11 +18,3 @@ mw.hook("wikipage.content").add(function () {
 		$(css.ownerNode).addClass("import-css").attr("data-css-hash", $("span.import-css").attr("data-css-hash")).attr("data-from", $("span.import-css").attr("data-from"));
 	});
 });
-
-// A+ Wiki Badge
-// Credits to https://backrooms.fandom.com/wiki/MediaWiki:Common.js
-$('.fandom-community-header__community-name-wrapper').append(
-	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Admin_Plus').append(
-		$('<img/>').css('height', '60px').css('position', 'relative').css('top', '10px')
-		.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/2/26/Admin_wiki_1A.png/revision/latest/scale-to-width-down/60?cb=20230728141822&format=original').attr('title', 'This wiki is an A+ Wiki')
-));

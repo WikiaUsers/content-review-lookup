@@ -6,53 +6,54 @@
  * @license       CC-BY-SA 3.0
  */
 
-;(function($, mw) {
-	const title = 'This $1 is deprecated. To learn more about replacing deprecated $2, visit https://dev.fandom.com/wiki/HighlightDeprecatedElements.';
+(function($, mw) {
+	'use strict';
+	var title = 'This $1 is deprecated. To learn more about replacing deprecated $2, visit https://dev.fandom.com/wiki/HighlightDeprecatedElements.',
+		deprecatedTags = ['big', 'center', 'font', 'rb', 'rtc', 'strike', 'tt'],
+		deprecatedAttributes = ['abbr', 'align', 'axis', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'clear', 'color', 'face', 'frame', 'height', 'rules', 'scope', 'size', 'summary', 'type', 'valign', 'width'];
 
-	function handleDeprecatedThings() {
-	    var deprecatedTags = ['big', 'center', 'font', 'rb', 'rtc', 'strike', 'tt'];
-	    var deprecatedAttributes = ['abbr', 'align', 'axis', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'clear', 'color', 'face', 'frame', 'height', 'rules', 'scope', 'size', 'summary', 'type', 'valign', 'width',];
-	    document.querySelectorAll('.CodeMirror-code .cm-mw-htmltag-name:not(.deprecated)').forEach(function (span) {
-	        var tagName = span.textContent.trim().toLowerCase();
-	        if (!deprecatedTags.includes(tagName)) return;
-	        span.classList.add('deprecated');
-	        span.title = title.replace('$1', 'tag').replace('$2', 'tags');
-	    });
-	    document.querySelectorAll('.CodeMirror-code .cm-mw-htmltag-attribute:not(.deprecated)').forEach(function (span) {
-	        var attributeName = span.textContent.split('=')[0].trim().toLowerCase();
-	        if (!deprecatedAttributes.includes(attributeName)) return;
-	        span.classList.add('deprecated');
-	        span.title = title.replace('$1', 'attribute').replace('$2', 'attributes');
+	mw.loader.addStyleTag('.cm-line .deprecated:is(.cm-mw-htmltag-name, .cm-mw-htmltag-attribute) { color: orange; border-bottom: red solid thick; }');
 
-	    });
+	function handleDeprecatedThings(e) {
+		setTimeout(function() {
+			e.find('.cm-mw-htmltag-name').each(function(index, span) {
+				if (!span.classList.contains('deprecated')) {
+					var tagName = span.textContent.trim().toLowerCase();
+					if (!deprecatedTags.includes(tagName)) return;
+					span.classList.add('deprecated');
+					span.title = title.replace('$1', 'tag').replace('$2', 'tags');
+				}
+			});
+			e.find('.cm-mw-htmltag-attribute').each(function(index, attribute) {
+				if (!attribute.classList.contains('deprecated')) {
+					var attributeName = attribute.textContent.split('=')[0].trim().toLowerCase();
+					if (!deprecatedAttributes.includes(attributeName)) return;
+					attribute.classList.add('deprecated');
+					attribute.title = title.replace('$1', 'attribute').replace('$2', 'attributes');
+				}
+			});
+		}, 30);
 	}
-	function addEvent(ele) {
-		var cm = ele[0].CodeMirror;
-	    cm.on('update', handleDeprecatedThings);
-	    handleDeprecatedThings();
-	}
-	function init() {
-	    var deprecatedStyles = mw.util.addCSS('.CodeMirror-code .deprecated:is(.cm-mw-htmltag-name, .cm-mw-htmltag-attribute) { color: orange; border-bottom: red solid thick; }');
-	
-	    // source editor
-	    mw.hook('ext.CodeMirror.switch').add(function (isShown, editors) {
-	        if (!isShown) return;
-	        addEvent(editors);
-	    });
-	
-	    // visual source editor
-	    if (window.ve && ve.init) {
-	        var checkExist = setInterval(function () {
-	            if ($('.CodeMirror').length) {
-	                addEvent($('.CodeMirror'));
-	                clearInterval(checkExist);
-	            }
-	        }, 300);
-	    }
-	}
-	
-	mw.loader.using('mediawiki.util').then(function() {
-		mw.hook('ve.activationComplete').add(init); // visual source editor
-		mw.hook('wikipage.editform').add(init); // source editor
+
+	mw.hook('ve.activationComplete').add(function() { // visual source editor
+		handleDeprecatedThings($('.cm-editor'));
+		window.ve.init.target.$element.on('keydown', function(e) {
+			handleDeprecatedThings($('.cm-editor'));
+		});
+		window.ve.init.target.$element.on('click', function(e) {
+			handleDeprecatedThings($('.cm-editor'));
+		});
+	});
+	mw.hook('wikipage.editform').add(function() { // source editor
+		mw.hook('ext.CodeMirror.switch').add(function(isShown, editor) {
+			if (!isShown) return;
+			handleDeprecatedThings(editor);
+			editor.on('keydown', function(e) {
+				handleDeprecatedThings($(e.target));
+			});
+			editor.on('click', function(e) {
+				 handleDeprecatedThings($(e.target));
+			});
+		});
 	});
 })(window.jQuery, window.mediaWiki);

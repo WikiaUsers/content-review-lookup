@@ -42,7 +42,7 @@ $(document).ready(function() {
 	$("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
 	/* Event boosts: change the options as appropriate for the event
-	Last event: Cookie Rumble */
+	Last event: Anime Clash */
 	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
 		'<option value="0">0</option>' +
 		'<option value="5">5</option>' +
@@ -55,7 +55,7 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
-		// '<option value="15">15</option>' +
+		'<option value="15">15</option>' +
 		'<option value="30">30</option>' +
 		'</select> %</div>');
 	$("span#starBonusHarness").html('<div id="starBonusInput"">Star Bonus Multiplier: <select name="starBonusBoost" id="starBonusBoost">' +
@@ -198,6 +198,7 @@ $(document).ready(function() {
     	"Giant Arrow": 18,
     	"Healer Puppet": 18,
     	"Frozen Arrow": 27,
+    	"Magic Mirror": 27,
     	"Eternal Tome": 1, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": 18,
     	"Rage Gem": 18,
@@ -217,7 +218,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball"];
     		break;
     	case ("Archer Queen"):
-    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow"];
+    		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball"];
@@ -226,7 +227,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -898,7 +899,7 @@ $(document).ready(function() {
 			6. Ability DPH increase
 			7. Ability movement speed
 			8. Ability attack type (simply a string to replace another)
-			9. TODO: Ability AS increase (%)
+			9. Ability AS increase (%)
 		What is not given a dictionary:
 			1. Self-heal per second
 			2. Other ability aspects e.g. duration, projectile damage, etc.
@@ -926,6 +927,7 @@ $(document).ready(function() {
 			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
+			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
 			"Life Gem": [150,163,172,181,192,203,225,249,275,304,336,351,366,381,396,411,426,441],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
@@ -937,6 +939,7 @@ $(document).ready(function() {
 			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],
 			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
 			"Archer Puppet": [160,175,190,205,220,235,250,265,280,295,310,325,340,360,380,400,420,440],
+			"Magic Mirror": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]

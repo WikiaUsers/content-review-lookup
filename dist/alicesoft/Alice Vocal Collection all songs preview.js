@@ -1,1 +1,0 @@
-<script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/1289480392"></script><noscript><a href="http://www.nicovideo.jp/watch/1289480392">【ニコニコ動画】【アリスボーカルコレクション】全曲試聴ムービー</a></noscript>

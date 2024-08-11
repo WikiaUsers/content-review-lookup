@@ -1,6 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 
-
 var autoCollapse = 2;
 var collapseCaption = "скрыть";
 var expandCaption = "показать";
@@ -89,100 +88,8 @@ var hasClass = (function () {
 	};
 })();
 
-
- // *****************************************************
- // * Experimental javascript countdown timer (Splarka) *
- // * Version 0.0.3                                     *
- // *****************************************************
- //   Вторая часть страницы, которая содержит каунтаун
- // Usage example:
- //  <span class="countdown" style="display:none;">
- //  Only <span class="countdowndate">January 01 2007 00:00:00 PST</span> until New years.
- //  </span>
- //  <span class="nocountdown">Javascript disabled.</span>
- 
- function updatetimer(i) {
-   var now = new Date();
-   var then = timers[i].eventdate;
-   var diff = count=Math.floor((then.getTime()-now.getTime())/1000);
- 
-   // catch bad date strings
-   if(isNaN(diff)) { 
-     timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-     return;
-   }
- 
-   // determine plus/minus
-   if(diff<0) {
-     diff = -diff;
-     var tpm = '';''
-   } else {
-     var tpm = '';''
-   }
- 
-   // Calculate the diff - Modified by Eladkse
-  if ((diff%60) == 1) {
-    left = (diff%60) + ' секунды';
-  } else {
-    left = (diff%60) + ' секунда';
-  }
-    diff=Math.floor(diff/60);
-  if(diff > 0) {
-    if ((diff%60) == 1) {
-      left = (diff%60) + ' минута, и ' + left;
-    } else {
-      left = (diff%60) + ' минут, и ' + left;
-    }
-  }
-    diff=Math.floor(diff/60);
-  if(diff > 0) {
-    if ((diff%24) == 1) {
-      left = (diff%24) + ' час, ' + left;
-    } else {
-      left = (diff%24) + ' часов, ' + left;
-    }
-  }
-    diff=Math.floor(diff/24);
-  if(diff > 0) {
-    if (diff == 1) {
-      left = diff + ' день, ' + left;
-    } else {
-      left = diff + ' дней, ' + left;
-    }
-  }
-  timers[i].firstChild.nodeValue = tpm + left;
- 
-   // a setInterval() is more efficient, but calling setTimeout()
-   // makes errors break the script rather than infinitely recurse
-   timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
- }
- 
- function checktimers() {
-   //hide 'nocountdown' and show 'countdown'
-   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-   for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-   var countdowns = getElementsByClassName(document, 'span', 'countdown');
-   for(var i in countdowns) countdowns[i].style.display = 'inline'
- 
-   //set up global objects timers and timeouts.
-   timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
-   timeouts = new Array(); // generic holder for the timeouts, global
-   if(timers.length == 0) return;
-   for(var i in timers) {
-     timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-     updatetimer(i);  //start it up
-   }
- }
- addOnloadHook(checktimers);
- 
- // **************************************************
- //  - end -  Experimental javascript countdown timer
- // **************************************************
-
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
 //I don't like scrolling back to top on long pages neither do you :)
-//
- 
  
 function hideFade () {
 	// hide #backtotop first
@@ -200,7 +107,7 @@ function hideFade () {
 }
  
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
-//Created by Noemon from Dead Space Wiki, translate from ru.elderscrolls.wikia
+//Created by Noemon from Dead Space Wiki, translate from elderscrolls
  
 function hideFade () {
 	// hide #backtotop first
@@ -260,7 +167,6 @@ if (wgAction == 'edit' || wgAction == 'submit') {
 
 /* ######################################################################## */
 /* ### СПИСОК ЗАДУБЛИРОВАННЫХ ФАЙЛОВ ТЕСТОВАЯ ВЕРСИЯ                    ### */
-/* ### ---------------------------------------------------------------- ### */
 /* ### Описание: Находит дубликаты файлов на вики.                      ### */
 /* ### Автор:      User:pcj (http://www.wowpedia.org)                   ### */
 /* ######################################################################## */
@@ -473,11 +379,7 @@ $(function() {
  
 /*Неактивные пользователи*/
 //Inactive users
-InactiveUsers = { 
-    months: 3,
-    text: 'НЕАКТИВЕН'
-};
- 
+InactiveUsers = {months: 3, text: 'НЕАКТИВЕН'};
 importScriptPage('InactiveUsers/code.js', 'dev');
  
 /*автообновление свежих правок */
@@ -488,12 +390,6 @@ var AjaxRCRefreshHoverText = 'Автоматически обновлять ст
 
 /* Описания правок */
 importScriptPage('Standard_Edit_Summary/code.js', 'dev');
-
-
-
-/* Иконки социальных сетей */
-$('.WikiaRail').append('<div style="right:-1px; top:108px; position: absolute;"><div style="position: absolute;" class="SocialIcon"><div style="float:right;"><a href="//vk.com/splintercell5"><img src="//vignette.wikia.nocookie.net/battlefield/images/f/fc/VK.png/revision/latest?cb=20180311171552&path-prefix=ru"></a></div></div><div style="position: absolute; margin-top:42px" class="SocialIcon"><div style="float:right;"><a href="//youtube.com/user/S25SC5"><img src="//vignette.wikia.nocookie.net/battlefield/images/a/af/Youtube.png/revision/latest?cb=20180311171221&path-prefix=ru"></a></div></div>');
- 
  
 function initVisibility() {
 	var storage = globalStorage[window.location.hostname];

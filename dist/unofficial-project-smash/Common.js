@@ -4,5 +4,5 @@ window.lockOldComments.limit = 10;
 window.lockOldComments.addNoteAbove = true;
 window.AddRailModule = [
     {page: 'Template:DYKBox', prepend: true},
-    {page: 'Template:Statistics', prepend: true},
+    {page: 'Template:MainWikiStaff', prepend: true},
 ];

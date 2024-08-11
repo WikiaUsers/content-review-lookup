@@ -14,6 +14,7 @@ importArticles({
 		"MediaWiki:TabberTiles.js",
 		"MediaWiki:Tabber2.js",
 		"MediaWiki:ExpansiveInteractionTable.js",
+		"MediaWiki:ImgSize.js",
 		"MediaWiki:HideRowsTable.js"
 	]
 });

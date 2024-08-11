@@ -1,1 +1,0 @@
-<script type="text/javascript" src="http://ext.nicovideo.jp/thumb_watch/1293436605"></script><noscript><a href="http://www.nicovideo.jp/watch/1293436605">【ニコニコ動画】【アリスソフト】大帝国 店頭用ムービー</a></noscript>

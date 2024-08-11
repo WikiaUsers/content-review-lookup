@@ -120,14 +120,14 @@
         this.history = [];
         this.timeLit = 0;
         this.active = false;
-        // set time to now - 2h
+        // set time to now - 3h
         this.setTime(+new Date() - Basin.TIME_FILL);
     }
     // Statics used for calculations
     Basin.TIME_SEC = 1000;
     Basin.TIME_MIN = 60 * Basin.TIME_SEC;
     Basin.TIME_HR = 60 * Basin.TIME_MIN;
-    Basin.TIME_FILL = 2 * Basin.TIME_HR;
+    Basin.TIME_FILL = 3 * Basin.TIME_HR;
     Basin.pad = function (subj, str, len) {
         subj = String(subj);
         str = String(str);

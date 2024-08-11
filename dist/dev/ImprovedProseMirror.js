@@ -8,10 +8,9 @@
 	var config = mw.config.get(['wgServer', 'wgArticlePath', 'wgNamespaceNumber', 'wgPageName', 'wgAction']);
 	var api;
 	var IPM = {
-		
 		init: function() {
 			// Check we're in MessageWall, UserBlog or Main namespace; Check we're in normal view
-			if ([1200, 500, 0].includes(config.wgNamespaceNumber) && config.wgAction == 'view') {
+			if ([1200, 500, 0].includes(config.wgNamespaceNumber) && config.wgAction === 'view') {
 				api = new mw.Api();
 				// Add necessary styles that dont load outside editor screen and custom ones
 				importArticle({
@@ -21,7 +20,7 @@
 				IPM.waitFor('#MessageWall, #articleComments', function() {
 					$('#MessageWall, #articleComments').on('mouseout click keyup', '.ProseMirror', IPM.updateSel);
 					IPM.wikiLinks();
-					IPM.wikiTemplate();
+					// IPM.wikiTemplate();
 					IPM.customInsert();
 				});
 			}
@@ -31,7 +30,6 @@
 		wikiLinks: function() {
 			var ooui = 0;
 			var SEARCH = {};
-			var linkSuggestOpen = false;
 			
 			// Hidden by default
 			var wrapper = $(
@@ -54,76 +52,68 @@
 				initEvents: function() {
 					var limitSuggest = mw.util.debounce(methods.suggestLink, 200);
 					
-					// Hide and empty out when unfocusing list
-					document.addEventListener('click', function(event) {
-						if (!event.target.closest('.IPM-ui-linkSuggest')) {
-							suggestBox.empty();
-							suggestBox.removeAttr('aria-activedescendant');
-							scrollBox.scrollTop(0);
-							wrapper.hide();
-							linkSuggestOpen = false;
-						}
-					});
+					var observer = new MutationObserver(function() {limitSuggest();});
 					
 					// Suggestion list hovering logic
-					suggestBox.on('mouseover.IPM', function(event) {
+					suggestBox.on('mousemove.IPM mouseout.IPM', function(event) {
 						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event);}
 					});
 					
-					// Start looking
-					document.addEventListener('mouseup', function(event) {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.dispatchLink();}
-						else if (event.target.closest('.ProseMirror')) {limitSuggest();}
+					document.addEventListener('click', function(event) {
+						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {
+							methods.handleOOUI(event);
+							methods.dispatchLink();
+						} else if (event.target.closest('.rich-text-editor__content')) {
+							limitSuggest();
+						} else {
+							methods.closeSuggestions();
+							$('.ProseMirror').each(function(_, element) {
+								observer.observe(element, {
+									subtree: true,
+									childList: true,
+									characterData: true
+								});
+							});
+						}
 					});
 					
 					document.addEventListener('keydown', function(event) {
-						if (linkSuggestOpen) {
-							switch (event.key) {
-								case 'Enter':
-									if (suggestBox.attr('aria-activedescendant')) {
-										event.preventDefault();
-										methods.dispatchLink();
-									} else {
-										suggestBox.empty();
-										suggestBox.removeAttr('aria-activedescendant');
-										scrollBox.scrollTop(0);
-										wrapper.hide();
-										linkSuggestOpen = false;
-									}
-									break;
-								case 'Escape':
-									suggestBox.empty();
-									suggestBox.removeAttr('aria-activedescendant');
-									scrollBox.scrollTop(0);
-									wrapper.hide();
-									linkSuggestOpen = false;
-									break;
-								case 'ArrowDown':
-								case 'ArrowUp':
-								case 'Home':
-								case 'End':
+						switch (event.key) {
+							case 'Enter':
+								if (suggestBox.attr('aria-activedescendant')) {
+									event.preventDefault();
+									methods.dispatchLink();
+								} else {
+									methods.closeSuggestions();
+								}
+								break;
+							case 'Escape':
+								methods.closeSuggestions();
+								break;
+							case 'ArrowDown':
+							case 'ArrowUp':
+								if (wrapper.css('display') !== 'none') {
 									event.preventDefault();
 									methods.handleOOUI(event);
-									break;
-								case 'ArrowLeft':
-								case 'ArrowRight':
+								} else {
 									limitSuggest();
 								}
-						} else {
-							switch (event.key) {
-								case 'ArrowLeft':
-								case 'ArrowRight':
-									limitSuggest();
-							}
+								break;
+							case 'Home':
+							case 'End':
+								if (wrapper.css('display') !== 'none') {
+									event.preventDefault();
+									methods.handleOOUI(event);
+								}
+								break;
+							case 'ArrowLeft':
+							case 'ArrowRight':
+								limitSuggest();
 						}
 					}, true);
 					
-					$('#MessageWall, #articleComments').on('input.IPM', '.ProseMirror', function(event) {
-						limitSuggest();
-					});
-					
-					window.addEventListener('resize', function(event) {
-						if (linkSuggestOpen) {
+					$(window).on('resize.IPM', function(event) {
+						if (wrapper.css('display') !== 'none') {
 							var caret = IPM.getCaret();
 							// TODO: account for @media styles messing with page layout after caret coordinates are recalculated
 							wrapper.css({
@@ -134,95 +124,22 @@
 					});
 				},
 				
-				dispatchLink: function(label, url) {
-					var clickedNode = suggestBox.find('#'+(suggestBox.attr('aria-activedescendant')||'NOTHINGNESS'))[0];
-					var linkNode = document.createElement('a');
-					var newNode = SEARCH.node.splitText(SEARCH.offset);
-					var parentNode = SEARCH.node.parentNode;
-					newNode.splitText(SEARCH.str.length);
-					if (label && url) {
-						linkNode.href = url;
-						linkNode.append(label);
-					} else if (clickedNode) {
-						linkNode.href = clickedNode.getAttribute('link-to');
-						label = /^[^\|]*\|([\s\S]+?)(\]\]|$)/.exec(SEARCH.str);
-						linkNode.append((label && label[1]) || document.createTextNode(clickedNode.children[0].innerHTML));
-					}
-					parentNode.append(' '); // need to add some text so that the link doesnt get stripped bc prosemirror is cancer to modify
-					parentNode.insertBefore(linkNode, SEARCH.node.nextSibling);
-					newNode.remove(); // Remove original link text used for search
-					
-					// Close suggestion list
-					suggestBox.empty();
-					suggestBox.removeAttr('aria-activedescendant');
-					scrollBox.scrollTop(0);
-					wrapper.hide();
-					linkSuggestOpen = false;
-				},
-				
-				handleOOUI: function(event) {
-					var currentNode = suggestBox.find('#' + suggestBox.attr('aria-activedescendant'))[0];
-					var newNode;
-					if (event.type == 'mouseover') {
-						newNode = event.target.closest('.IPM-ui-linkSuggest-suggestion');
-						if (currentNode) {
-							currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-							currentNode.setAttribute('aria-selected', false);
-						}
-						newNode.classList.add('oo-ui-optionWidget-highlighted');
-						newNode.setAttribute('aria-selected', true);
-						suggestBox.attr('aria-activedescendant', newNode.id);
-					} else if (event.type == 'keydown') {
-						switch (event.key) {
-							case 'ArrowDown':
-								newNode = currentNode && currentNode.nextSibling || suggestBox[0].firstChild;
-								break;
-							case 'ArrowUp':
-								newNode = currentNode && currentNode.previousSibling || suggestBox[0].lastChild;
-								break;
-							case 'Home':
-								newNode = suggestBox[0].firstChild;
-								break;
-							case 'End':
-								newNode = suggestBox[0].lastChild;
-								break;
-							default:
-								return;
-						}
-						if (currentNode) {
-							currentNode.classList.remove('oo-ui-optionWidget-highlighted');
-							currentNode.setAttribute('aria-selected', false);
-						}
-						newNode.classList.add('oo-ui-optionWidget-highlighted');
-						newNode.setAttribute('aria-selected', true);
-						suggestBox.attr('aria-activedescendant', newNode.id);
-						
-						// Scroll selected option into view
-						var box = scrollBox[0];
-						// Don't scroll if new node is already fully visible
-						if (newNode.offsetTop < box.scrollTop || newNode.offsetTop + newNode.clientHeight > box.scrollTop + box.clientHeight) {
-							box.scrollTop = newNode.offsetTop < (currentNode ? currentNode.offsetTop : 0) ? newNode.offsetTop : newNode.offsetTop + newNode.clientHeight - box.clientHeight;
-						}
-					}
-				},
-				
 				suggestLink: function() {
 					var caret;
-					var matches;
+					var match;
 					var raw_str = '';
 					var link_str = '';
-					var link_regex = /^.*(\[\[)([^\[\]]*)(\]{0,2})$/;
-					var ext_link_regex = /^.*(\[)([^\[\]]+)(\])$/;
-					var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from /load.php?modules=DeleteCommentModal-xxxxxxxx.js
+					var link_regex = /\[\[([^\[\]]*)\]{0,2}$/;
+					var ext_link_regex = /\[([^\[\]]+)\]$/;
 					caret = IPM.getCaret();
-					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue) {
+					methods.closeSuggestions();
+					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue && !caret.data.focusNode.parentNode.closest('a, pre')) {
 						raw_str = caret.data.focusNode.nodeValue.slice(0, caret.position);
 						if (link_regex.test(raw_str)) {
-							matches = link_regex.exec(raw_str);
-							matches.shift();
-							link_str = matches[1].replace(/\|.*/, '');
-							SEARCH.str = matches.join('');
-							SEARCH.offset = raw_str.indexOf(SEARCH.str);
+							match = link_regex.exec(raw_str);
+							link_str = match[1].replace(/^\||\|[^\[\]]*/, '');
+							SEARCH.string = match[0];
+							SEARCH.offset = match.index;
 							SEARCH.node = caret.data.focusNode;
 							methods.getPages(link_str);
 							wrapper.css({
@@ -230,31 +147,19 @@
 								left: caret.x
 							});
 						} else if (ext_link_regex.test(raw_str)) {
-							matches = ext_link_regex.exec(raw_str);
-							matches.shift();
-							link_str = matches[1];
-							SEARCH.str = matches.join('');
-							SEARCH.offset = raw_str.indexOf(SEARCH.str);
+							match = ext_link_regex.exec(raw_str);
+							link_str = match[1];
+							SEARCH.string = match[0];
+							SEARCH.offset = match.index;
 							SEARCH.node = caret.data.focusNode;
 							var url = prompt('Enter URL to create a link to');
+							var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from module DeleteCommentModal.js
 							if (url_regex.test(url)) {
 								methods.dispatchLink(link_str, url);
 							} else if (url) {
 								alert('Invalid URL!');
 							}
-						} else if (linkSuggestOpen) {
-							suggestBox.empty();
-							suggestBox.removeAttr('aria-activedescendant');
-							scrollBox.scrollTop(0);
-							wrapper.hide();
-							linkSuggestOpen = false;
 						}
-					} else if (linkSuggestOpen) {
-						suggestBox.empty();
-						suggestBox.removeAttr('aria-activedescendant');
-						scrollBox.scrollTop(0);
-						wrapper.hide();
-						linkSuggestOpen = false;
 					}
 				},
 				
@@ -266,7 +171,8 @@
 					api.get({
 						action: 'query',
 						list: 'prefixsearch',
-						pssearch: prefix
+						pssearch: prefix,
+						pslimit: '6'
 					}).then(function(data) {
 						if (data && data.query && data.query.prefixsearch && data.query.prefixsearch.length > 0) {
 							methods.buildSuggestions(data.query.prefixsearch);
@@ -279,13 +185,6 @@
 				},
 				
 				buildSuggestions: function(pages) {
-					if (linkSuggestOpen) {
-						suggestBox.empty();
-						suggestBox.removeAttr('aria-activedescendant');
-						scrollBox.scrollTop(0);
-						wrapper.hide();
-					}
-					
 					// Build list
 					pages.forEach(
 						function(page){
@@ -300,17 +199,9 @@
 					);
 					document.querySelector('.ProseMirror-focused').focus();
 					wrapper.show();
-					linkSuggestOpen = true;
 				},
 				
 				appendMessage: function(message) {
-					if (linkSuggestOpen) {
-						suggestBox.empty();
-						suggestBox.removeAttr('aria-activedescendant');
-						scrollBox.scrollTop(0);
-						wrapper.hide();
-					}
-					
 					// Add message
 					var msg = $(
 						'<div class="oo-ui-widget oo-ui-labelElement oo-ui-optionWidget" tabindex="-1">'+
@@ -320,7 +211,114 @@
 					suggestBox.append(msg);
 					document.querySelector('.ProseMirror-focused').focus();
 					wrapper.show();
-					linkSuggestOpen = true;
+				},
+				
+				handleOOUI: function(event) {
+					var currentNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#' + suggestBox.attr('aria-activedescendant'))[0] || null;
+					var newNode;
+					switch (event.type) {
+						case 'mousemove':
+						case 'click':
+							newNode = event.target.closest('.IPM-ui-linkSuggest-suggestion');
+							if (currentNode) {
+								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
+								currentNode.setAttribute('aria-selected', 'false');
+							}
+							newNode.classList.add('oo-ui-optionWidget-highlighted');
+							newNode.setAttribute('aria-selected', 'true');
+							suggestBox.attr('aria-activedescendant', newNode.id);
+							break;
+						case 'mouseout':
+							if (currentNode) {
+								currentNode.classList.remove('oo-ui-optionWidget-highlighted');
+								currentNode.setAttribute('aria-selected', 'false');
+							}
+							suggestBox.removeAttr('aria-activedescendant');
+							break;
+						case 'keydown':
+							switch (event.key) {
+								case 'ArrowDown':
+									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion')[0] || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									break;
+								case 'ArrowUp':
+									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-suggestion')[0] || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
+									break;
+								case 'Home':
+									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									break;
+								case 'End':
+									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
+							}
+							if (newNode) {
+								if (currentNode) {
+									currentNode.classList.remove('oo-ui-optionWidget-highlighted');
+									currentNode.setAttribute('aria-selected', 'false');
+								}
+								newNode.classList.add('oo-ui-optionWidget-highlighted');
+								newNode.setAttribute('aria-selected', 'true');
+								suggestBox.attr('aria-activedescendant', newNode.id);
+							}
+					}
+				},
+				
+				dispatchLink: function(label, url) {
+					var optionNode = suggestBox.attr('aria-activedescendant') && suggestBox.children('#' + suggestBox.attr('aria-activedescendant'))[0] || null;
+					var parentNode = SEARCH.node.parentNode;
+					var searchNode = SEARCH.node.splitText(SEARCH.offset);
+					searchNode.splitText(SEARCH.string.length);
+					var linkNode = document.createElement('a');
+					if (optionNode) {
+						url = optionNode.getAttribute('link-to');
+						label = /\[\[[^\[\]]*?\|([^\[\]]*)\]{0,2}$/.exec(SEARCH.string);
+						if (!label) {
+							label = optionNode.firstChild.innerHTML;
+						} else if (label && !label[1]) {
+							// pipe trick
+							// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_39/includes/parser/Parser.php$4655
+							
+							// <nowiki>[[ns:page (context)|]]</nowiki>
+							var p1 = /(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
+							// <nowiki>[[ns:page (context), context|]]</nowiki>
+							var p2 = /(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
+							
+							// <nowiki>try p1 first, to turn "[[A, B (C)|]]" into "[[A, B (C)|A, B]]"</nowiki>
+							label = optionNode.firstChild.innerHTML.replace(p1, '$1');
+							if (label === optionNode.firstChild.innerHTML) {
+								label = optionNode.firstChild.innerHTML.replace(p2, '$1');
+							}
+						} else {
+							label = label[1];
+						}
+					}
+					linkNode.href = url;
+					linkNode.append(label);
+					parentNode.replaceChild(linkNode, searchNode);
+					parentNode.append('\ufeff'); // add invisible character so prosemirror doesn't strip the link
+					parentNode.normalize(); // remove empty text nodes
+					var nodeIndex = Array.prototype.indexOf.call(parentNode.childNodes, linkNode); // index of the link node in its parent's child list
+					methods.closeSuggestions();
+					
+					setTimeout(function() {
+						// let prosemirror do stuff
+						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove invisible character
+						setTimeout(function() {
+							// let prosemirror do things again
+							window.getSelection().setPosition(parentNode, nodeIndex + 1); // move caret to after the new link node
+						});
+					});
+				},
+				
+				closeSuggestions: function() {
+					// Close suggestion list
+					suggestBox.empty();
+					suggestBox.removeAttr('aria-activedescendant');
+					scrollBox.scrollTop(0);
+					wrapper.css({
+						top: '',
+						left: ''
+					});
+					wrapper.hide();
+					SEARCH = {};
 				}
 			};
 			
@@ -331,6 +329,7 @@
 		/// usage in lists?
 		/// avoid unwanted line break upon insert?
 		/// allow images?
+		/* currently too unstable
 		wikiTemplate: function() {
 			var SEARCH = {};
 			var methods = {
@@ -346,7 +345,7 @@
 					var parentNode = SEARCH.node.parentNode;
 					var keepText = newNode.splitText(SEARCH.str.length) || '';
 					parentNode.append(' '); // need to add some text so that the link doesnt get stripped bc prosemirror is cancer to modify
-					IPM.parsedInsert(SEARCH.str);
+					IPM.parseInsert(SEARCH.str);
 					newNode.replaceWith(keepText);
 				},
 				
@@ -382,6 +381,7 @@
 			
 			methods.initEvents();
 		},
+		*/
 		
 		customInsert: function() {
 			// Initialize wrapper
@@ -432,7 +432,7 @@
 									return ret;
 								});
 								
-							IPM.parsedInsert(preparsedInsert, insert.replaceAll);
+							IPM.parseInsert(preparsedInsert, insert.replaceAll);
 						});
 						list.append(button);
 					}
@@ -471,24 +471,32 @@
 		
 		getCaret: function(element) {
 			var cSel = window.getSelection();
-					var caretRect;
-					var caretOffset = 0;
-					if (cSel && cSel.rangeCount > 0) {
-						var range = cSel.getRangeAt(0);
-						caretRect = range.getBoundingClientRect();
-						var preCaretRange = range.cloneRange();
-						preCaretRange.setStart(range.startContainer, 0);
-						caretOffset = preCaretRange.toString().length;
-					}
-					return {
-						data: cSel,
-						x: parseInt(caretRect.x + window.scrollX - 8),
-						y: parseInt(caretRect.y + window.scrollY + 8),
-						position: caretOffset
-					};
+			var caretRect;
+			var caretOffset = 0;
+			if (cSel && cSel.rangeCount > 0) {
+				var range = cSel.getRangeAt(0);
+				if (range.collapsed && range.endContainer.nodeType !== 3 && range.endContainer.lastChild && range.endContainer.lastChild.length) {
+					// fandom workaround - if you make a selection within a node
+					// and then move the caret to be right after the last character in that node,
+					// prosemirror tries to set the container to the parent element node,
+					// rather than the text node.
+					range.setEnd(range.endContainer.lastChild, range.endContainer.lastChild.length);
+					range.collapse();
+				}
+				caretRect = range.getBoundingClientRect();
+				var preCaretRange = range.cloneRange();
+				preCaretRange.setStart(range.startContainer, 0);
+				caretOffset = preCaretRange.toString().length;
+			}
+			return {
+				data: cSel,
+				x: parseInt(caretRect.x + window.scrollX - 8),
+				y: parseInt(caretRect.y + window.scrollY + 8),
+				position: caretOffset
+			};
 		},
 		
-		parsedInsert: function(str, replaceAll) {
+		parseInsert: function(str, replaceAll) {
 			str = str
 				.replace(/[\n]+\n\n/g, '\n\n') // max 2 line breaks
 				.replace(/(?<!\n[\*\#][^\n]*)\n(?![\*\# ])/g, '<br />'); // transform \n to <br/> for ease of parse

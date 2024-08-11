@@ -22,5 +22,9 @@ importArticles({
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
+//page/link previews
+window.pPreview=window.pPreview||{};
+window.pPreview.RegExp=window.pPreview.RegExp||{};
+window.pPreview.RegExp.iclasses = ['image'];
 //—————————————————————————————— ! ! ! ———————————————————————————————//
 /* Import scripts. NOTE: Place scripts configurations above this line */

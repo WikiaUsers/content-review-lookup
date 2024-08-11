@@ -441,7 +441,7 @@ $(function () {
 
 /* Achievements toggle spoilers start */
 $(function () {
-	if (mw.config.get('wgPageName') === 'Achievements') {
+	if (mw.config.get('wgPageName') === 'Achievements/List') {
 	    $(function () {
 	        var
 	        $table = $('#achievements_title_table'),
@@ -463,6 +463,25 @@ $(function () {
 	    });
 	}
 });
+$(function () {
+	if (mw.config.get('wgPageName') === 'Achievements') {
+	    $(function () {
+		function hide_achievements_spoiler() {
+		var spoilers = document.querySelectorAll(".achievements_spoilers");
+			for (var i=0, max=spoilers.length; i<max; i++) { 
+				spoilers[i].classList.toggle('hide_spoiler');
+			}
+		}
+		var caption = document.querySelector(".achievements_title_table > caption");
+		var button = document.createElement("button");
+		button.innerHTML = "show/hide spoilers";
+		button.onclick = hide_achievements_spoiler;
+    button.style.float= "right";
+		caption.appendChild(button);
+	    });
+	}
+});
+
 /* Achievements toggle spoilers end */
 
 (function () {

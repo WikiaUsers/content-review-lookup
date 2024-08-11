@@ -48,14 +48,14 @@ window.dev.IPM = {                                           // Create configura
 	]
 };
 
-// Copied from https://avatar.wikia.com/wiki/MediaWiki:Common.js/icons.js
+// Copied from https://avatar.fandom.com/wiki/MediaWiki:Common.js/icons.js
 $( function eraIconsOasis() {
     if ( $( '#title-eraicons' ).length && $( '.page-header__actions' ).length ) {
     	$( '.page-header__actions' ).first().prepend( $( '#title-eraicons' ).show() );
     }
 } );
 
-// Allowing easier downloading of files in their original format, to avoid webp files
+// Allowing easier downloading of files in their original format, to avoid downloading .WEBP files
 if ( mw.config.get( 'wgCanonicalNamespace' ) == 'File' ) {
 	$( '#file a' ).attr( 'href', function( a, b ) {
 		return b + '&format=original';
@@ -68,3 +68,8 @@ $(document).ready(function() {
 
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>Random Page</span></a></li>');
 });
+
+// Prevent the tooltip from appearing in gallery images/gallery subpages
+window.pPreview=window.pPreview||{};
+window.pPreview.RegExp=window.pPreview.RegExp||{};
+window.pPreview.RegExp.iclasses = ['image'];

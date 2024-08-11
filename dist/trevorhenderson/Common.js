@@ -1,4 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
+
 window.MessageBlock = {
   title : 'Block',
   message : 'You have been blocked for not following our local rules or continueing to break our rules, to appeal, please contact us on Community Central or reply to this message.'
@@ -10,10 +11,38 @@ window.RevealAnonIP = {
     permissions: ['rollback', 'sysop', 'bureaucrat']
 };
 
-/ Rail Module
+// Delay until element exists to run function
+function waitFor(query, callback, extraDelay) {
+	if ("function" == typeof callback && "string" == typeof query) {
+		extraDelay = extraDelay || 0;
+		if (document.querySelector(query)) {
+			setTimeout(callback, extraDelay);
+		} else {
+			// set up the mutation observer
+			var observer = new MutationObserver(function (mutations, me) {
+				// mutations is an array of mutations that occurred
+				// me is the MutationObserver instance
+				var targetNode = document.querySelector(query);
+				if (targetNode) {
+					setTimeout(callback, extraDelay);
+					me.disconnect(); // stop observing
+					return;
+				}
+			});
+            
+			// start observing
+			observer.observe(document, {
+			childList: true,
+			subtree: true
+			});
+		}
+	}
+}
+
+// Rail Module
 window.AddRailModule = [{prepend: true}];
 
-// Moves Sticky-Modules-Wrapper to prepend custom railModule, removes railModule, adds separators
+// Moves sticky-modules-wrapper to prepend custom railmodule, removes railmodule, adds separators
 waitFor("section.railModule ~ div.sticky-modules-wrapper", function(){
 	$(".sticky-modules-wrapper").prepend($("section.railModule"));
 	$(".railModule .rail-module").unwrap();
@@ -113,7 +142,7 @@ document.querySelectorAll(".wiki-tools__add-new-page").forEach(function(link){
 });
 
 
-/* collapsible rows in a table without making the whole table collapse */
+// collapsible rows in a table without making the whole table collapse
 
 $(function() {
     $('table.fandom-table.mw-collapsible').each(function(){

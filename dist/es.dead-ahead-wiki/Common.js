@@ -1,37 +1,30 @@
-//Zombipedia
-document.addEventListener('DOMContentLoaded', function() {
-    var currentPage = 1;
-    var pages = document.querySelectorAll('.book-page');
-    var totalPages = pages.length;
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var imageContainer = document.querySelector('.image-container');
+    var images = document.querySelectorAll('.book-image');
+    var nextPageButton = document.querySelector('.next-page');
+    var prevPageButton = document.querySelector('.prev-page');
+    var currentPage = 0;
 
-    function showPage(pageNumber) {
-        // Hide all pages
-        pages.forEach(function(page) {
-            page.classList.remove('active-page');
-        });
-
-        // Show the specified page
-        var pageToShow = document.getElementById('page' + pageNumber);
-        if (pageToShow) {
-            pageToShow.classList.add('active-page');
-        }
+    function updateGallery() {
+      var offset = -(currentPage * 2 * 300); // 2 images per page, each 300px wide
+      imageContainer.style.transform = 'translateX(' + offset + 'px)';
     }
 
-    // Show the first page initially
-    showPage(currentPage);
-
-    // Event listeners for buttons
-    document.getElementById('prevPage').addEventListener('click', function() {
-        if (currentPage > 1) {
-            currentPage--;
-            showPage(currentPage);
-        }
+    nextPageButton.addEventListener('click', function() {
+      if (currentPage < (images.length / 2) - 1) {
+        currentPage++;
+        updateGallery();
+      }
     });
 
-    document.getElementById('nextPage').addEventListener('click', function() {
-        if (currentPage < totalPages) {
-            currentPage++;
-            showPage(currentPage);
-        }
+    prevPageButton.addEventListener('click', function() {
+      if (currentPage > 0) {
+        currentPage--;
+        updateGallery();
+      }
     });
-});
+
+    updateGallery(); // Initialize position
+  });
+</script>

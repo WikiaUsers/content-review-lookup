@@ -620,7 +620,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 // Add a notice to the Reverse and God Pots (ID 37764) article.
 (function() {
 	if (mw.config.get('wgArticleId') == 37764 && mw.config.get('wgAction') == 'view') {
-		const text = "<div class='theme-bg2 sticky' style='padding:0.5em;text-align:center;font-size:150%'><span style='font-weight:bold;font-size:130%'><span style='color:#FFA500'>⚠</span> Unofficial Content <span style='color:#FFA500'>⚠</span></span><br>" + 'This article contains numbers that can be manipulated by any user for malicious purposes or in-game financial gains. Wiki staff do not endorse any of these numbers. It is heavily recommended to carefully consider any trades involving numbers listed here.<br><p>All edits are saved in the article\'s <a href="' + mw.config.get('wgServer') + '/wiki/' + mw.config.get('wgPageName') + '?action=history">' + 'revision history</a>, including recent edits.</p></div><br/>';
+		const text = "<div class='theme-bg2 sticky' style='padding:0.5em;text-align:center;font-size:120%'><span style='font-weight:bold;font-size:130%'><span style='color:#FFA500'>⚠</span> Unofficial Content <span style='color:#FFA500'>⚠</span></span><br>" + 'This article contains numbers that can be manipulated by any user for malicious purposes or in-game financial gains. Wiki staff do not endorse any of these numbers. It is heavily recommended to carefully consider any trades involving numbers listed here.<br><p>All edits are saved in the article\'s <a href="' + mw.config.get('wgServer') + '/wiki/' + mw.config.get('wgPageName') + '?action=history">' + 'revision history</a>, including recent edits.</p></div><br/>';
 		document.getElementById('content').insertAdjacentHTML('beforebegin', text);
 	}
 }());

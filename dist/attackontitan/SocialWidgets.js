@@ -1,7 +1,7 @@
 /**
  * @name SocialWidgets
  * @author Manuel de la Fuente (https://manuelfte.com)
- * @version 1.2.7
+ * @version 1.2.8
  * @license CC-BY-SA-3.0
  * @description Inserts widgets for social networks at the top of the sidebar
  */
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  console.log('SocialWidgets v1.2.7');
+  console.log('SocialWidgets v1.2.8');
 
   var cfg = window.mw.config.get([
     'wgIsMainPage',
@@ -46,9 +46,6 @@
     }
     /* Builds sidebar module */
     var sidebarModule =
-      '<section class="module" id="discord-widget">' +
-        '<a href="https://discord.gg/xPcSRt7" title="Join the Attack on Titan Wiki Discord server!">Join the Attack on Titan/Shingeki no Kyojin Discord server!</a>' +
-      '</section>' +
       '<section class="rail-module" id="social-widgets">' +
         '<h2>Follow us!</h2>' +
         '<div>' +

@@ -584,7 +584,7 @@ $(function() {
 				var name = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
 				document.querySelector('.Templates-generator-note').innerHTML = name;
 				document.querySelector('.Templates-generator-note').setAttribute('rel', name);
-				mapGenerator.urlQuery(name);
+				mapGenerator.urlQuery(null, name);
 			}
 			window.scrollTo(0, document.querySelector('.Templates-generator-note').offsetTop);
 		},
@@ -593,7 +593,7 @@ $(function() {
 				r: r,
 				m: m
 			};
-			if (!r || !m) {
+			if (!r && !m) {
 				(new URL(window.location.href)).searchParams.forEach(function(v, k){
 					if (['r', 'm'].includes(k) && !query[k]) {query[k] = v;}
 				});
