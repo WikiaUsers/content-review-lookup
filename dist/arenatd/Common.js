@@ -12,8 +12,9 @@ window.SpoilerAlertJS = {
     no: 'No',
     fadeDelay: 1000
 };
-/*Twitter*/
+/*Load Libs*/
 mw.loader.load('ext.fandom.TwitterTag.js');
+mw.loader.load('https://cdn.jsdelivr.net/npm/chart.js');
 
 /*UserPages Autocreate*/
 window.AutoCreateUserPagesConfig = {
@@ -88,4 +89,79 @@ $(function() {
 /*right rail module*/
 window.AddRailModule = [{prepend: true}];
 
-/* Input placeholer text*/
+/* Arenaversary Badge Charts*/
+
+mw.loader.using('jquery', function() {
+    $(document).ready(function() {
+        // Select the span with the specific ID ArenaversaryBadgeChart
+        $('span#ArenaversaryBadgeChart').each(function() {
+            // Create a new canvas element
+            var canvas = $('<canvas width="400" height="200"></canvas>');
+            // Replace the span with the canvas
+            $(this).replaceWith(canvas);
+            // Get the context of the canvas
+            var ctx = canvas[0].getContext('2d');
+            // Create the chart
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2022', '2023', '2024'], // Years on the X-axis
+                    datasets: [
+                        {
+                            label: 'Obtainments',
+                            data: [9119, 6224, 1207, // Obtainments data points
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color under the line
+                            borderColor: 'rgba(75, 192, 192, 1)', // Line color
+                            borderWidth: 2, // Line thickness
+                            fill: true, // Fill under the line
+                            yAxisID: 'y', // Attach to the default y-axis
+                        },
+                        {
+                            label: 'Win Rates',
+                            data: [41.9, 24.25, 16.15], // Win Rates data points (in percentages)
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)', // Fill color for the second line
+                            borderColor: 'rgba(255, 159, 64, 1)', // Line color for the second line
+                            borderWidth: 2, // Line thickness
+                            fill: true, // Fill under the line
+                            yAxisID: 'y1', // Attach to a secondary y-axis
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left', 
+                            title: {
+                                display: true,
+                                text: 'Obtainments',
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right', 
+                            title: {
+                                display: true,
+                                text: 'Win Rates (%)',
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%'; 
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Arenaversary Badge Statistics', 
+                            font: {
+                                size: 18 
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+});

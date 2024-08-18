@@ -162,3 +162,7 @@ $(function(){
 		.appendTo('#WikiaRail')
 		.load('/ru/index.php?title=Template:RailModuleNewPages&action=render');
 });
+
+window.AddRailModule = [
+    { page: 'Template:RailModule', prepend: true },
+];

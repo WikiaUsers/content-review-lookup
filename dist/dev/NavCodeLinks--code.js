@@ -13,7 +13,7 @@
             return $('<li>', {
                 append: $('<a>', {
                     'href': mw.util.getUrl('MediaWiki:' + ext),
-                    text: 'Common ' + ext.toUpperCase()
+                    text: ext
                 })
             });
         })

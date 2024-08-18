@@ -1,5 +1,9 @@
 mw.loader.using('mediawiki.api').then(
 	$(function(){
+		// load protection
+		if (window.CategoryRedLinksLoaded) return;
+		window.CategoryRedLinksLoaded = true;
+
 		// only logged-in users
 		if(!mw.config.get("wgUserName")) return;
 		
@@ -29,9 +33,11 @@ mw.loader.using('mediawiki.api').then(
 				var i = -1;
 				// non-existent pages return as negative numbers in order
 				while(d.query.pages[i]){
-					var missingCatLink = $("#articleCategories a[title=\""+d.query.pages[i].title+"\"]");
-					missingCatLink.addClass("new");
-					missingCatLink.attr("href", missingCatLink.attr("href")+"?action=edit&redlink=1");
+					var missingCatLink = $("#articleCategories, .page-header__categories").find("a[title=\""+d.query.pages[i].title+"\"]");
+					missingCatLink.each(function(){
+						$(this).addClass("new");
+						$(this).attr("href", $(this).attr("href")+"?action=edit&redlink=1");
+					});
 					anyCats = true;
 					i--;
 				}

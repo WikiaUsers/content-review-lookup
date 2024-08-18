@@ -28,10 +28,10 @@ function jstzConvertAll() {
 // revisa https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time
 // no todas las opciones son compatibles
 function jstzFormatDate(date, format, utc) {
-    var MMMM = ["\x00", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var MMM = ["\x01", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var dddd = ["\x02", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var ddd = ["\x03", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var MMMM = ["\x00", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    var MMM = ["\x01", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    var dddd = ["\x02", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    var ddd = ["\x03", "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sáb"];
     function ii(i, len) {
         var s = i + "";
         len = len || 2;

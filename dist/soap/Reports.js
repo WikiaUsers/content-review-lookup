@@ -512,10 +512,11 @@
 			var re, domain;
 			// default wikiname
 			if ($input.attr('id') === "wikiurl") {
-				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\./;
+				re = /\/\/(.*)\.(wikia|fandom|gamepedia)\.com\/?(.*)\/?/;
 				domain = re.exec(text);
 				if(domain !== null) {
-					params[x] = domain[1];
+					//for non-EN wikis, add the lang code (es.community)
+					params[x] = domain[3] + (domain[3] ? "." : "") + domain[1];
 					continue;
 				}
 			} else if ($input.attr('id') === "wikiname") {
@@ -606,6 +607,7 @@
 		var urlparams = {
 			action: 'edit',
 			format: 'json',
+			tags: 'report-form',
 			title: opts.page,
 			summary: opts.summary,
 			token: csrfToken

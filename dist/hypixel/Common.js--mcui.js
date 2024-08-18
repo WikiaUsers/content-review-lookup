@@ -72,8 +72,9 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
             // Make pagination, and make first click
             pSection.find(".mcui-tabber").each(function () {
                 var tabber = $(this);
+                var tabContents = tabber.find(".mcui-tab-content");
                 var tabs = [];
-                tabber.find(".mcui-tab-content").each(function () {
+                tabContents.each(function () {
                     var elementId = $(this).attr("id");
                     if (!elementId) return;
                     var id = elementId.replace("ui-", "");
@@ -81,6 +82,7 @@ mw.loader.using(["mediawiki.api", "mediawiki.util", "mediawiki.Uri"]).then(funct
                 });
                 if (tabs.length > 0) {
                     var pagination = $("<div>", { class: "mcui-pagination", html: tabs });
+                    pagination.height(tabContents.eq(0).height());
                     tabber.addClass("jsready").prepend(pagination);
                     clickTab.call(tabs[0], tabs[0].data("tab"));
                 }

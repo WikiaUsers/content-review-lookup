@@ -7,7 +7,3 @@
  }
  addOnloadHook(UserNameReplace);
 //END OF {{USERNAME}} REPLACEMENT
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};

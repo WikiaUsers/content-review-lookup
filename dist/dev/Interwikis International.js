@@ -109,6 +109,67 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 											{
 												type: 'h3',
 												classes: ['sectionHeader'],
+												text: i18n.msg( 'questionLabel' ).plain()
+											}
+										]
+									},
+									{
+										type: 'div',
+										classes: ['sectionContent'],
+										children: [
+											{
+												type: 'input',
+												classes: ['radioInput'],
+												attr: {
+													id: 'few',
+													checked: '',
+													type: 'radio',
+													name: 'radiogroup'
+												}
+											},
+											{
+												type: 'label',
+												classes: ['radioInputLabel'],
+												attr: {
+													for: 'few'
+												},
+												text: i18n.msg('fewOption').plain()
+											},
+											{
+												type: 'br'
+											},
+											{
+												type: 'input',
+												classes: ['radioInput'],
+												attr: {
+													id: 'more',
+													type: 'radio',
+													name: 'radiogroup'
+												}
+											},
+											{
+												type: 'label',
+												classes: ['radioInputLabel'],
+												attr: {
+													for: 'more'
+												},
+												text: i18n.msg('moreOption').plain()
+											}
+										]
+									}
+								]
+							},
+							{
+								type: 'div',
+								classes: ['formSection'],
+								children: [
+									{
+										type: 'div',
+										classes: ['sectionHeaderWrapper'],
+										children: [
+											{
+												type: 'h3',
+												classes: ['sectionHeader'],
 												text: i18n.msg( 'interwikisLabel' ).plain()
 											}
 										]
@@ -130,8 +191,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										]
 									}
 								]
-							},
-							
+							}
 						]
 					}
 				]
@@ -146,7 +206,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						wikiName: getVal( 'wikiname' ),
 						lines: getVal( 'interwikisLines' )
 					};
-					
+
 					if ( formValues.wikiName === '' ) {
 						return mw.notify( i18n.msg( 'noNameError' ).plain(), {
 							tag: 'interwiki',
@@ -169,13 +229,13 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 							return;
 						}
 						var sUrl = '';
-				
+
 						// Delete protocol and not main community url
 						url = url.replace( /https?:\/{2}/g, '' ).replace( /\/wiki\/(.*)/g, '' );
-				
+
 						// Find parts: community name + language code
 						var linkParts = /([\w.-]*)\.(?:wikia|fandom)?(?:\.(?:com|org)\/?)([\w-]{0,})/g.exec( url );
-				
+
 						// No parts found, maybe already short form, e.g. "fr.community"
 						if ( !linkParts ) {
 							linkParts = /([\w.-]*)/.exec(url);
@@ -183,23 +243,36 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 						if ( linkParts[2] ) {
 							sUrl = linkParts[2] + '.';
 						}
-				
+
 						sUrl += linkParts[1];
-				
+
 						return sUrl;
 					}
 
+					const isFew = $( '#interwikiForm #few:checked' ).length;
+
 					for ( var i = 0; i < splitLines.length; i++ ) {
 						const line = splitLines[i];
-						const items = line.trim().split( ' ' );
-						const first = shortUrl( items.shift() );
-						const last = shortUrl( items.pop() );
+						if ( isFew ) {
+							const items = line.trim().split( ' ' );
+							const first = shortUrl( items.shift() );
+							const last = shortUrl( items.pop() );
 
-						if ( !first || !last ) {
-							continue;
+							if ( !first || !last ) {
+								continue;
+							}
+
+							interwikis.push( [first, last] );
+						} else {
+							const items = line.trim();
+							const item = shortUrl( items );
+
+							if ( !item ) {
+								continue;
+							}
+
+							interwikis.push( item );
 						}
-
-						interwikis.push( [first, last] );
 					}
 
 					const linesCount = formValues.lines.split( '\n' ).length;
@@ -215,12 +288,12 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 					const interwikiLines = [];
 					for ( var i = 0; i < interwikis.length; i++ ) {
 						const interwiki = interwikis[i];
-						const line = Mustache.render( conf.interwikiSchema, {
+						const line = ( isFew ? Mustache.render( conf.interwikiSchema, {
 							bStart: '{{',
 							bEnd: '}}',
 							from: interwiki[0],
 							to: interwiki[1]
-						} );
+						} ) : '* ' + interwiki ); //TODO: maybe add schema for "more" option by turning `interwikiSchema` into an object?
 
 						interwikiLines.push( line );
 					}
@@ -305,7 +378,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 		} );
 
 		modal.create();
-		
+
 		$( '#interwiki-form' )
 			.attr( 'class', 'wds-button btn-large' )
 			.text( i18n.msg( 'buttonLabel' ).plain() )

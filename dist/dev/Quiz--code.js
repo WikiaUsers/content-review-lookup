@@ -48,7 +48,7 @@
                         }
                     });
                     $('#quizQ #questionCounter').text(currentQuestion + 1 + '/' + questionsAmount);
-                    $('#quizQ #nxtBtn').text(i18n.msg( 'nxtBtn' ));
+                    $('#quizQ #nxtBtn').text(i18n.msg( 'nxtBtn' ).plain());
                     createform();
                     $('#quizQ #questionBlock').on('click', function() {
                         if ($('#quizQ #questionForm input:checked').length > 0) {
@@ -56,7 +56,7 @@
                         }
                     });
                 } else {
-                    $('#quizQ #question').html('<div id="resultsHeader" style="text-align: center;">' + mw.html.escape(i18n.msg('noQuestionsHeader')) + '</div>');
+                    $('#quizQ #question').html('<div id="resultsHeader" style="text-align: center;">' + mw.html.escape(i18n.msg('noQuestionsHeader').plain()) + '</div>');
                 }
             }
         });
@@ -98,7 +98,7 @@
                 clearTimeout(startCounterVar);
                 $('#quizQ #questionForm').empty();
                 $('#quizQ #questionCounter').text('');
-                $('#quizQ #question').html('<div id="resultsHeader">' + mw.html.escape(i18n.msg('resultsHeader')) + ':<br />' + Math.round(score / questionsAmount * 100) + '% (' + score + '/' + questionsAmount + ')</div>');
+                $('#quizQ #question').html('<div id="resultsHeader">' + mw.html.escape(i18n.msg('resultsHeader').plain()) + ':<br />' + Math.round(score / questionsAmount * 100) + '% (' + score + '/' + questionsAmount + ')</div>');
                 var finalScore = score / questionsAmount,
                     resultsFraction = 1 / resultsTextArray.length,
                     resultsText;
@@ -108,7 +108,7 @@
                     }
                 });
                 $('#quizQ #questionBlock').append('<div id="resultsText">' + mw.html.escape(resultsText) + '</div>');
-                $('#quizQ #nxtBtn').text(i18n.msg('rplBtn')).addClass('nxtBtnActive');
+                $('#quizQ #nxtBtn').text(i18n.msg('rplBtn').plain()).addClass('nxtBtnActive');
             }
             if (currentQuestion === 0) {
                 secondsSince = 0;

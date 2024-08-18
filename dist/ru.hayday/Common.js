@@ -1,208 +1,4 @@
 console.log(document.body);
-var catalogRotatesRight = 0;
-var catalogRotatesLeft = 0;
-//функции
-
-//События с заданиями: Список заданий
-function addClickTaskEvent(elem) {
-	var btn = elem.querySelector('button');
-	btn.addEventListener("click", function() {
-		var level = Number(elem.querySelector("input").value);
-		if (level > 0) {
-			var rows = document.querySelectorAll('#hidelevels tbody tr');
-			for (var i = 0; i < rows.length; i++) {
-				var minTxt = rows[i].querySelector("td:nth-child(3)").textContent.trim();
-				//console.log(minTxt)
-				var min;
-				if (minTxt.includes('(')) {
-					min = 36;
-				} else {
-					min = Number(minTxt);
-				}
-				var maxTxt = rows[i].querySelector("td:nth-child(4)").textContent.trim();
-				var max = Number(maxTxt);
-				if (max == 0) {
-					max = 1000;
-				}
-			
-				//console.log('min:' + min + ', max:' + max)
-				if (level >= min && level <= max) {
-					rows[i].style="display: table-row;";
-				} else {
-					rows[i].style="display: none;";
-				}
-			}
-		}
-	});
-}
-// украшения
-function addClickDecos(elem, list) {
-	var imgTypes = ['для заповедника', 'для фермы', 'за алмазы', 'заборы дорожки', 'за ваучеры', 'за монеты', 'награды', 'природа', 'сезонные', 'статуи'];
-	elem.addEventListener('click', function(){
-		var rows = document.querySelectorAll('#deco-changed tbody tr');
-		rows.forEach(function(row){
-			var cell = row.querySelector("td:nth-child(7)");
-			var typesOfDeco = cell.querySelectorAll('a');
-			var z = 1;
-			typesOfDeco.forEach(function(link){
-				var type = link.title.slice(10);
-				var index = imgTypes.indexOf(type);
-				if (list[index]) {
-					z *= 0;
-				}
-			});
-			if (z === 0 || !list.includes(true)) {
-				row.style='display: table-row;';
-			} else {
-				row.style='display: none;';
-			}
-		});
-	});
-}
-
-//сортировка заданий скачек 320
-function derbyAutoSort(input) {
-	//console.log(input);
-	input.addEventListener("input", function(){
-		//console.log("input");
-		var level = +(input.value);
-		if (level) {
-			var tables = document.querySelectorAll(".derby-grid");
-			//console.log(level);
-			tables.forEach(function(table){
-				var tasks = table.querySelectorAll('.derby-task');
-				tasks.forEach(function(task){
-					//console.log(task);
-					var localLevel = +task.lastChild.lastChild.firstChild.textContent;
-					if (localLevel > level) {
-						task.style.display = "none";
-					} else {
-						task.style.display = "flex";
-					}
-				});
-			});
-		}
-		
-	});
-}
-
-// интересные факты заглавная
-function hideFact(fact) {
-	fact.style.display="none";
-	fact.style.left="0";
-	fact.style.zIndex="1";
-}
-function updateFact(facts, oldIndx){
-	facts[oldIndx].style.left="300px";
-	facts[oldIndx].style.zIndex="100";
-	randIndx = Math.floor(Math.random()*facts.length);
-	console.log(randIndx);
-	while (randIndx === oldIndx) {
-		randIndx = Math.floor(Math.random()*facts.length);
-		console.log(randIndx);
-	}
-	facts[randIndx].style.display="block";
-	setTimeout(hideFact, 1000, facts[oldIndx]);
-	setTimeout(updateFact, 15000, facts, randIndx);
-}
-
-// список продуктов
-function plCheckBuilds(value, zd, rows, lvl) {
-	rows.forEach(function(row, i) {
-		if (i) {
-			var tds = row.querySelectorAll('td');
-			var build = tds[2].firstChild.title;//.innerText.trim().replace(/\n/g, ' ');
-			var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
-
-			//console.log(value, tds[2], tds[2].firstChild, build, zd);
-			if (build == zd) {
-				if (value) {
-					if(rowLvl<=lvl||!level){row.style.display='table-row';}
-				} else {
-					row.style.display='none';
-				}
-			}
-		}
-	});
-}
-function plCheckStar(value, zd, rows) {
-	rows.forEach(function(row, i) {
-		if (i) {
-			var tds = row.querySelectorAll('td');
-			var build = tds[2].firstChild.title;
-			if (build == zd) {
-				var standardTime = row.querySelector('.standard-time');
-				var starTime = row.querySelector('.star-time');
-				var standardVigoda = row.querySelector('.standard-vigoda');
-				var starVigoda = row.querySelector('.star-vigoda');
-				if (value) {
-					starTime.style.display = 'table-cell';
-					standardTime.style.display = 'none';
-					row.insertBefore(starTime, standardTime);
-					row.append(standardTime);
-					starVigoda.style.display = 'table-cell';
-					standardVigoda.style.display = 'none';
-					row.insertBefore(starVigoda, standardVigoda);
-					row.append(standardVigoda);
-				} else {
-					starTime.style.display = 'none';
-					standardTime.style.display = 'table-cell';
-					row.insertBefore(standardTime, starTime);
-					row.append(starTime);
-					starVigoda.style.display = 'none';
-					standardVigoda.style.display = 'table-cell';
-					row.insertBefore(standardVigoda, starVigoda);
-					row.append(starVigoda);
-				}
-			}
-		}
-	});
-}
-function plSaveSet(params){
-	if(params.build){params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
-	if(params.star){params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
-	if(params.level){params.url.searchParams.set('level', params.level);}
-	params.url.searchParams.set('save', 1);
-	history.replaceState({},'',params.url);
-}
-
-// каталог события
-function closeRightPage(pages, page, activeSide){
-	pages[(page-1)*2+1].style.zIndex=0;
-	pages[(page-1)*2+1].style.transform='rotateY(0deg)';
-	pages[(page-1)*2+1].style.visibility='hidden';
-	pages[page*2].style.visibility='visible';
-	pages[page*2].style.transform='rotateY(0deg)';
-	pages[page*2].style.zIndex=1+page;
-	setTimeout(endRightPage, 500, pages, page, activeSide);
-}
-function closeLeftPage(pages, page, activeSide){
-	pages[(page+1)*2].style.zIndex=0;
-	pages[(page+1)*2].style.transform='rotateY(0deg)';
-	pages[(page+1)*2].style.visibility='hidden';
-	pages[page*2+1].style.visibility='visible';
-	pages[page*2+1].style.transform='rotateY(0deg)';
-	pages[page*2+1].style.zIndex=100-page;
-	setTimeout(endLeftPage, 500, pages, page, activeSide);
-}
-function endRightPage(pages, page, activeSide){
-	pages[(page-1)*2+1].style.visibility='visible';
-	pages[page*2].style.zIndex=0;
-	
-	pages[(page-1)*2].append(activeSide.firstElementChild);
-	activeSide.prepend(pages[page*2].firstElementChild);
-	
-	catalogRotatesRight--;
-}
-function endLeftPage(pages, page, activeSide){
-	pages[(page+1)*2].style.visibility='visible';
-	pages[page*2+1].style.zIndex=0;
-	
-	pages[(page+1)*2+1].append(activeSide.lastElementChild);
-	activeSide.append(pages[page*2+1].firstElementChild);
-	
-	catalogRotatesLeft--;
-}
 
 //проверка body
 var intervaleditCount = setInterval(editcountcalc, 500);
@@ -219,6 +15,40 @@ if (document.body.className.includes('page-События_с_заданиями'
 	btnCon.innerHTML = 'Введите ваш текущий уровень: <input type="number" min="1" max="1000" style="width: 50px;"><button class="game-button">Показать</button>';
 	taskTable.before(btnCon);
 	addClickTaskEvent(btnCon);
+	
+	/* функции */
+	function addClickTaskEvent(elem) {
+		var btn = elem.querySelector('button');
+		btn.addEventListener("click", function() {
+			var level = Number(elem.querySelector("input").value);
+			if (level > 0) {
+				var rows = document.querySelectorAll('#hidelevels tbody tr');
+				for (var i = 0; i < rows.length; i++) {
+					var minTxt = rows[i].querySelector("td:nth-child(3)").textContent.trim();
+					//console.log(minTxt)
+					var min;
+					if (minTxt.includes('(')) {
+						min = 36;
+					} else {
+						min = Number(minTxt);
+					}
+					var maxTxt = rows[i].querySelector("td:nth-child(4)").textContent.trim();
+					var max = Number(maxTxt);
+					if (max == 0) {
+						max = 1000;
+					}
+				
+					//console.log('min:' + min + ', max:' + max)
+					if (level >= min && level <= max) {
+						rows[i].style="display: table-row;";
+					} else {
+						rows[i].style="display: none;";
+					}
+				}
+			}
+		});
+	}
+
 }
 
 //украшения
@@ -247,9 +77,35 @@ if (document.body.className.includes('page-Украшения')) {
 	var decoSubmit = decoChanger.querySelector('#deco-button button');
 	//decoSubmit.innerHTML = '<button class="game-button">Показать</button>';
 	addClickDecos(decoSubmit, decoImgActive);
+	
+	/* функции */
+	function addClickDecos(elem, list) {
+		var imgTypes = ['для заповедника', 'для фермы', 'за алмазы', 'заборы дорожки', 'за ваучеры', 'за монеты', 'награды', 'природа', 'сезонные', 'статуи'];
+		elem.addEventListener('click', function(){
+			var rows = document.querySelectorAll('#deco-changed tbody tr');
+			rows.forEach(function(row){
+				var cell = row.querySelector("td:nth-child(7)");
+				var typesOfDeco = cell.querySelectorAll('a');
+				var z = 1;
+				typesOfDeco.forEach(function(link){
+					var type = link.title.slice(10);
+					var index = imgTypes.indexOf(type);
+					if (list[index]) {
+						z *= 0;
+					}
+				});
+				if (z === 0 || !list.includes(true)) {
+					row.style='display: table-row;';
+				} else {
+					row.style='display: none;';
+				}
+			});
+		});
+	}
+
 }
 
-//скачки
+//скачки 320
 if (document.body.className.includes('page-Скачки')) {
 	var derbySortSpan = document.createElement("span");
 	derbySortSpan.id = "derby-sort";
@@ -269,6 +125,33 @@ if (document.body.className.includes('page-Скачки')) {
 	//console.log(derbyPlace, derbySortSpan);
 	
 	derbyAutoSort(derbyInput);
+	
+	/* функции */
+	function derbyAutoSort(input) {
+		//console.log(input);
+		input.addEventListener("input", function(){
+			//console.log("input");
+			var level = +(input.value);
+			if (level) {
+				var tables = document.querySelectorAll(".derby-grid");
+				//console.log(level);
+				tables.forEach(function(table){
+					var tasks = table.querySelectorAll('.derby-task');
+					tasks.forEach(function(task){
+						//console.log(task);
+						var localLevel = +task.lastChild.lastChild.firstChild.textContent;
+						if (localLevel > level) {
+							task.style.display = "none";
+						} else {
+							task.style.display = "flex";
+						}
+					});
+				});
+			}
+			
+		});
+	}
+
 }
 
 // список продуктов
@@ -619,6 +502,66 @@ if (document.body.className.includes('page-Список_продуктов')) {
 	});
 	
 	console.log(plBuildList, plStarList, plBuildNames);
+	
+	/* функции */
+	function plCheckBuilds(value, zd, rows, lvl) {
+		rows.forEach(function(row, i) {
+			if (i) {
+				var tds = row.querySelectorAll('td');
+				var build = tds[2].firstChild.title;//.innerText.trim().replace(/\n/g, ' ');
+				var rowLvl = tds[1].innerText.includes(')') ? 34.3 : +tds[1].innerText.trim();
+				//console.log(value, tds[2], tds[2].firstChild, build, zd);
+				if (build == zd) {
+					if (value) {
+						if(rowLvl<=lvl||!level){row.style.display='table-row';}
+					} else {
+						row.style.display='none';
+					}
+				}
+			}
+		});
+	}
+	function plCheckStar(value, zd, rows) {
+		rows.forEach(function(row, i) {
+			if (i) {
+				var tds = row.querySelectorAll('td');
+				var build = tds[2].firstChild.title;
+				if (build == zd) {
+					var standardTime = row.querySelector('.standard-time');
+					var starTime = row.querySelector('.star-time');
+					var standardVigoda = row.querySelector('.standard-vigoda');
+					var starVigoda = row.querySelector('.star-vigoda');
+					if (value) {
+						starTime.style.display = 'table-cell';
+						standardTime.style.display = 'none';
+						row.insertBefore(starTime, standardTime);
+						row.append(standardTime);
+						starVigoda.style.display = 'table-cell';
+						standardVigoda.style.display = 'none';
+						row.insertBefore(starVigoda, standardVigoda);
+						row.append(standardVigoda);
+					} else {
+						starTime.style.display = 'none';
+						standardTime.style.display = 'table-cell';
+						row.insertBefore(standardTime, starTime);
+						row.append(starTime);
+						starVigoda.style.display = 'none';
+						standardVigoda.style.display = 'table-cell';
+						row.insertBefore(standardVigoda, starVigoda);
+						row.append(starVigoda);
+					}
+				}
+			}
+		});
+	}
+	function plSaveSet(params){
+		if(params.build){params.url.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
+		if(params.star){params.url.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
+		if(params.level){params.url.searchParams.set('level', params.level);}
+		params.url.searchParams.set('save', 1);
+		history.replaceState({},'',params.url);
+	}
+
 }
 
 //каталог события с валютой
@@ -626,50 +569,315 @@ var eventCatalogs = document.querySelectorAll('.event-catalog');
 if (eventCatalogs.length) {
 	eventCatalogs.forEach(function(eventCatalog, index){
 	//console.log(eventCatalog);
+		var rotatesRight = 0;
+		var rotatesLeft = 0;
+		var movesRight = 0;
+		var movesLeft = 0;
+		var isMoved = false;
+	
 		var allPages = eventCatalog.children;
 		var activeSide = eventCatalog.lastElementChild;
+		
+		var strlLeft = eventCatalog.querySelector('.catalog-toleft');
+		strlLeft.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/9/97/Стрелка_влево.png/revision/latest/scale-to-width-down/40?cb=20240815141934&path-prefix=ru"/>';
+		strlLeft.querySelector('img').ondragstart = function() { return false; };
+		
+		var strlRight = eventCatalog.querySelector('.catalog-toright');
+		strlRight.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/b/b7/Стрелка_вправо.png/revision/latest/scale-to-width-down/40?cb=20240815141954&path-prefix=ru"/>';
+		strlRight.querySelector('img').ondragstart = function() { return false; };
+		
 		allPages = Array.from(allPages);
-		allPages.splice(-1, 1);
-		var page = 0;
-		var catalogIsMouse = false;
+		allPages.splice(-3, 3);
+		var page = 1;
+		var maxPage = Math.floor(allPages.length / 2) - 1;
+		var isMouse = false;
+		
+		allPages.forEach(function(elem,i){
+			elem.style.visibility = 'hidden';
+		});
+		
+		activeSide.append(allPages[2].firstElementChild);
+		activeSide.append(allPages[3].firstElementChild);
 	
-		activeSide.append(allPages[0].firstElementChild);
-		activeSide.append(allPages[1].firstElementChild);
+		eventCatalog.addEventListener('mouseenter', function(){isMouse = true;});
+		eventCatalog.addEventListener('mouseleave', function(){isMouse = false;});
 	
-		eventCatalog.addEventListener('mouseenter', function(){catalogIsMouse = true;});
-		eventCatalog.addEventListener('mouseleave', function(){catalogIsMouse = false;});
-	
+		eventCatalog.onpointerdown = function(event){
+			eventCatalog.setPointerCapture(event.pointerId);
+			var rect = eventCatalog.getBoundingClientRect();
+			isMoved = true;
+			var clickX = event.pageX-rect.left;
+			//console.log(clickX, event);
+			if (clickX < 420 && !rotatesRight&&!rotatesLeft && page > 0 && !movesRight && event.isPrimary) {
+				// схвачена левая страница
+				allPages[page*2].style.transition = 'transform 0s linear';
+				allPages[page*2].style.visibility = 'visible';
+				allPages[page*2].append(activeSide.firstElementChild);
+				allPages[(page-1)*2+1].style.transition = 'transform 0s linear';
+				allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+				
+				activeSide.prepend(allPages[(page-1)*2].firstElementChild);
+				allPages[page*2].style.zIndex=2;
+				
+				eventCatalog.onpointercancel = function(event) {
+					//console.log(event);
+					eventCatalog.onpointermove = null;
+					eventCatalog.onpointerup = null;
+					eventCatalog.onpointercancel = null;
+					
+					rotatesLeft++;
+					
+					
+					allPages[page*2].style.transition = 'transform 1ms linear';
+					allPages[page*2].style.transform='rotateY(0deg)';
+					allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
+					
+					setTimeout(endLeftMove, 1);
+				};
+				
+				eventCatalog.onpointermove = function(event) {
+					
+					var mouseX = event.pageX-rect.left;
+					var deg = Math.floor((mouseX-clickX)*(90/420));
+					if (deg < 0) {deg = 0;}
+					//console.log(mouseX, deg);
+					
+					if (deg > 90) {
+						eventCatalog.onpointermove = null;
+						eventCatalog.onpointerup = null;
+						eventCatalog.onpointercancel = null;
+						isMoved = false;
+						
+						allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
+						
+						movesLeft++;
+						page--;
+						
+						if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
+						strlRight.style.filter = 'grayscale(0)';
+						
+						closeLeftPage(allPages, page, activeSide, true);
+					} else {
+					
+						allPages[page*2].style.transform='rotateY('+deg+'deg)';
+					}
+					
+					//
+					//
+					
+					//setTimeout(closeLeftPage, 500, allPages, page, activeSide);
+					
+					
+				};
+				
+				eventCatalog.onpointerup = function(event) {
+					var ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/420));
+					eventCatalog.onpointermove = null;
+					eventCatalog.onpointerup = null;
+					eventCatalog.onpointercancel = null;
+					rotatesLeft++;
+					
+					
+					allPages[page*2].style.transition = 'transform '+ms+'ms linear';
+					allPages[page*2].style.transform='rotateY(0deg)';
+					allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
+					
+					setTimeout(endLeftMove, ms);
+				};
+			} else if (!rotatesRight&&!rotatesLeft && page < maxPage && !movesLeft && event.isPrimary) {
+				// схвачена правая страница
+				allPages[page*2+1].style.transition = 'transform 0s linear';
+				allPages[page*2+1].style.visibility = 'visible';
+				allPages[page*2+1].append(activeSide.lastElementChild);
+				allPages[(page+1)*2].style.transition = 'transform 0s linear';
+				allPages[(page+1)*2].style.transform='rotateY(90deg)';
+				
+				activeSide.append(allPages[(page+1)*2+1].firstElementChild);
+				allPages[page*2+1].style.zIndex=2;
+				
+				eventCatalog.onpointercancel = function(event) {
+					//console.log(event);
+					eventCatalog.onpointermove = null;
+					eventCatalog.onpointerup = null;
+					eventCatalog.onpointercancel = null;
+					
+					rotatesRight++;
+					
+					
+					allPages[page*2+1].style.transition = 'transform 1ms linear';
+					allPages[page*2+1].style.transform='rotateY(0deg)';
+					allPages[(page+1)*2].style.transform='rotateY(0deg)';
+					
+					setTimeout(endRightMove, 1);
+				};
+				
+				eventCatalog.onpointermove = function(event) {
+					
+					var mouseX = event.pageX-rect.left;
+					var deg = -Math.floor((clickX-mouseX)*(90/420));
+					if (deg > 0) {deg = 0;}
+					//console.log(mouseX, deg);
+					
+					if (deg < -90) {
+						eventCatalog.onpointermove = null;
+						eventCatalog.onpointerup = null;
+						eventCatalog.onpointercancel = null;
+						isMoved = false;
+						
+						allPages[(page+1)*2].style.transition = 'transform .5s linear';
+						
+						movesRight++;
+						page++;
+						
+						strlLeft.style.filter = 'grayscale(0)';
+						if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
+						
+						closeRightPage(allPages, page, activeSide, true);
+					} else {
+					
+						allPages[page*2+1].style.transform='rotateY('+deg+'deg)';
+					}
+					
+					//
+					//
+					
+					//setTimeout(closeLeftPage, 500, allPages, page, activeSide);
+					
+					
+				};
+				
+				eventCatalog.onpointerup = function(event) {
+					var ms = Math.floor((clickX-(event.pageX-rect.left))*(500/420));
+					eventCatalog.onpointermove = null;
+					eventCatalog.onpointerup = null;
+					eventCatalog.onpointercancel = null;
+					rotatesRight++;
+					
+					
+					allPages[page*2+1].style.transition = 'transform '+ms+'ms linear';
+					allPages[page*2+1].style.transform='rotateY(0deg)';
+					allPages[(page+1)*2].style.transform='rotateY(0deg)';
+					
+					setTimeout(endRightMove, ms);
+				};
+			}
+			
+		};
 	
 		document.addEventListener('keydown', function(event){
-			console.log('pressed', event.key, page, allPages.length, catalogIsMouse);
-		if (event.key=='ArrowRight' && page*2+2 < allPages.length && catalogIsMouse && !catalogRotatesLeft) {
-				allPages[page*2+1].append(activeSide.lastElementChild);
-				activeSide.append(allPages[(page+1)*2+1].firstElementChild);
-				
-				allPages[page*2+1].style.transform='rotateY(-90deg)';
-				allPages[page*2+1].style.zIndex=100-page;
-				allPages[(page+1)*2].style.visibility='hidden';
-				allPages[(page+1)*2].style.transform='rotateY(90deg)';
-				page++;
-				catalogRotatesRight++;
-				
-				setTimeout(closeRightPage, 500, allPages, page, activeSide);
+			//console.log('pressed', event.key, page, allPages.length, isMouse);
+			if (event.key=='ArrowRight' && page < maxPage && isMouse && !rotatesLeft && !isMoved) {
+				startRightPage();
 			}
-			if (event.key=='ArrowLeft' && page > 0 && catalogIsMouse && !catalogRotatesRight) {
-				allPages[page*2].append(activeSide.firstElementChild);
-				activeSide.prepend(allPages[(page-1)*2].firstElementChild);
-				
-				allPages[page*2].style.transform='rotateY(90deg)';
-				allPages[page*2].style.zIndex=2+page;
-				allPages[(page-1)*2+1].style.visibility='hidden';
-				allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
-				page--;
-				catalogRotatesLeft++;
-				
-				setTimeout(closeLeftPage, 500, allPages, page, activeSide);
+			if (event.key=='ArrowLeft' && page > 0 && isMouse && !rotatesRight && !isMoved) {
+				startLeftPage();
 			}
 		});
+		
+		strlLeft.addEventListener("click", function(){
+			if (page > 0 && !rotatesRight && !isMoved) {
+				startLeftPage();
+			}
+		});
+		strlRight.addEventListener("click", function(){
+			if (page < maxPage && !rotatesLeft && !isMoved) {
+				startRightPage();
+			}
+		});
+		
+		/* функции */
+		function startRightPage(){
+			allPages[page*2+1].style.visibility = 'visible';
+			
+			allPages[page*2+1].append(activeSide.lastElementChild);
+			activeSide.append(allPages[(page+1)*2+1].firstElementChild);
+			
+			allPages[page*2+1].style.transform='rotateY(-90deg)';
+			allPages[page*2+1].style.zIndex=100-page;
+			allPages[(page+1)*2].style.transform='rotateY(90deg)';
+			page++;
+			rotatesRight++;
+			
+			strlLeft.style.filter = 'grayscale(0)';
+			if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
+			
+			
+			setTimeout(closeRightPage, 500, allPages, page, activeSide, false);
+		}
+		function startLeftPage(){
+			allPages[page*2].style.visibility = 'visible';
+			
+			allPages[page*2].append(activeSide.firstElementChild);
+			activeSide.prepend(allPages[(page-1)*2].firstElementChild);
+			
+			allPages[page*2].style.transform='rotateY(90deg)';
+			allPages[page*2].style.zIndex=2+page;
+			allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+			page--;
+			rotatesLeft++;
+			
+			if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
+			strlRight.style.filter = 'grayscale(0)';
+			
+			setTimeout(closeLeftPage, 500, allPages, page, activeSide, false);
+		}
+		function closeRightPage(pages, page, activeSide, moved){
+			pages[(page-1)*2+1].style.zIndex=0;
+			pages[(page-1)*2+1].style.transform='rotateY(0deg)';
+			pages[(page-1)*2+1].style.visibility='hidden';
+			pages[page*2].style.visibility='visible';
+			pages[page*2].style.transform='rotateY(0deg)';
+			pages[page*2].style.zIndex=1+page;
+			setTimeout(endRightPage, 500, pages, page, activeSide, moved);
+		}
+		function closeLeftPage(pages, page, activeSide, moved){
+			pages[(page+1)*2].style.zIndex=0;
+			pages[(page+1)*2].style.transform='rotateY(0deg)';
+			pages[(page+1)*2].style.visibility='hidden';
+			pages[page*2+1].style.visibility='visible';
+			pages[page*2+1].style.transform='rotateY(0deg)';
+			pages[page*2+1].style.zIndex=100-page;
+			setTimeout(endLeftPage, 500, pages, page, activeSide, moved);
+		}
+		function endRightPage(pages, page, activeSide, moved){
+			pages[page*2].style.zIndex=0;
+			
+			pages[(page-1)*2].append(activeSide.firstElementChild);
+			activeSide.prepend(pages[page*2].firstElementChild);
+			
+			pages[page*2].style.visibility='hidden';
+			if (!moved) {rotatesRight--;} else {movesRight--;allPages[(page-1)*2+1].style.transition = 'transform .5s linear';}
+		}
+		function endLeftPage(pages, page, activeSide, moved){
+			pages[page*2+1].style.zIndex=0;
+			
+			pages[(page+1)*2+1].append(activeSide.lastElementChild);
+			activeSide.append(pages[page*2+1].firstElementChild);
+			
+			pages[page*2+1].style.visibility='hidden';
+			if (!moved) {rotatesLeft--;} else {movesLeft--;allPages[(page+1)*2].style.transition = 'transform .5s linear';}}
+		function endRightMove(){
+			isMoved = false;
+			rotatesRight--;
+			allPages[page*2+1].style.visibility = 'hidden';
+			allPages[(page+1)*2].style.transition = 'transform .5s linear';
+			allPages[page*2+1].style.transition = 'transform .5s linear';
+			allPages[(page+1)*2+1].append(activeSide.lastElementChild);
+			activeSide.append(allPages[page*2+1].firstElementChild);
+			allPages[page*2+1].style.zIndex=0;
+		}
+		function endLeftMove(){
+			isMoved = false;
+			rotatesLeft--;
+			allPages[page*2].style.visibility = 'hidden';
+			allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
+			allPages[page*2].style.transition = 'transform .5s linear';
+			allPages[(page-1)*2].append(activeSide.firstElementChild);
+			activeSide.prepend(allPages[page*2].firstElementChild);
+			allPages[page*2].style.zIndex=0;
+		}
 	});
+
 }
 
 //интересные факты заглавная
@@ -681,6 +889,27 @@ if (facts.length>0) {
 	console.log(randIndx);
 	facts[randIndx].style.display="block";
 	setTimeout(updateFact, 15000, facts, randIndx);
+	
+	/* функции */
+	function hideFact(fact) {
+		fact.style.display="none";
+		fact.style.left="0";
+		fact.style.zIndex="1";
+	}
+	function updateFact(facts, oldIndx){
+		facts[oldIndx].style.left="300px";
+		facts[oldIndx].style.zIndex="100";
+		randIndx = Math.floor(Math.random()*facts.length);
+		console.log(randIndx);
+		while (randIndx === oldIndx) {
+			randIndx = Math.floor(Math.random()*facts.length);
+			console.log(randIndx);
+		}
+		facts[randIndx].style.display="block";
+		setTimeout(hideFact, 1000, facts[oldIndx]);
+		setTimeout(updateFact, 15000, facts, randIndx);
+	}
+
 }
 
 

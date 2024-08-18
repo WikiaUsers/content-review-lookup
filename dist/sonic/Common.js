@@ -77,3 +77,15 @@ var option = {
 observer.observe(Comm, option);
 }
 });
+
+/*************Handling Template:FA***************/
+mw.loader.using('mediawiki.util',function (){
+    if (mw.config.get("wgCanonicalNamespace") === "" && $('.faImage').length > 0){
+        var copyFA = $('.faImage').clone();
+        copyFA.css('left', '0%')
+        $('.faImage').remove();
+        $('#p-views').before(copyFA);
+    }
+    else
+        return;
+});

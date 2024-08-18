@@ -287,8 +287,8 @@ $("li[id*='ca-viewsource']").addClass('collapsible');
 			var gotContent;
 			$( '.pageloader-contentloaded' ).each( function() {
 				var $fLoader = $( this );
-				if ( $fLoader.data( 'page' ) === page && $fLoader.data( 'pageloader-content' ) ) {
-					$contentContainer.html( $fLoader.data( 'pageloader-content' ) ).removeClass( 'noscript' );
+				if ( $fLoader.data( 'page' ) === page && $fLoader.data( 'mw-pageloader-content' ) ) {
+					$contentContainer.html( $fLoader.data( 'mw-pageloader-content' ) ).removeClass( 'noscript' );
 					mw.hook( 'wikipage.content' ).fire( $contentContainer );
 					
 					if ( treeview ) {
@@ -344,7 +344,7 @@ $("li[id*='ca-viewsource']").addClass('collapsible');
 					html = $contentContainer.html();
 				}
 				
-				$body.data( 'pageloader-content', html );
+				$body.data( 'mw-pageloader-content', html );
 				
 				// Fire content hook on the new content, running all this stuff again and more :)
 				mw.hook( 'wikipage.content' ).fire( $contentContainer );
