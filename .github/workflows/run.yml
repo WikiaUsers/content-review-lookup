@@ -19,10 +19,14 @@ jobs:
         run: npm install
       - name: Update wiki list
         run: node wikis.js
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Remove old scripts
         run: rm -rf dist
       - name: Update scripts
         run: node main.js
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"

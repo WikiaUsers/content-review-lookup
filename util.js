@@ -71,3 +71,17 @@ export async function readJSON(filename) {
 export async function writeJSON(filename, data) {
     await writeFile(filename, JSON.stringify(data));
 }
+
+/**
+ * Posts to a Discord webhook, if any is specified through environment
+ * variables.
+ * @param {string} content Content to post
+ */
+export async function notify(content) {
+    const webhookUrl = process.env.DISCORD_WEBHOOK;
+    if (webhookUrl) {
+        await http.post(webhookUrl, {
+            json: {content}
+        });
+    }
+}

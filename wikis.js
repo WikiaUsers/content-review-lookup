@@ -3,8 +3,8 @@
  *
  * Fetches a list of all wikis on Fandom.
  */
+import {notify, writeJSON} from './util.js';
 import got from 'got';
-import {writeJSON} from './util.js';
 
 const WIKI_REQUEST_LIMIT = 20000;
 
@@ -135,9 +135,11 @@ function filterWikis(wikis) {
  * Asynchronous entry point.
  */
 async function main() {
+    await notify('Started fetching the wiki list.');
     const allWikis = await fetchAllWikis();
     await writeJSON('wikis.json', allWikis);
     await writeJSON('urls.json', filterWikis(allWikis));
+    await notify('Finished fetching the wiki list.');
 }
 
 main();

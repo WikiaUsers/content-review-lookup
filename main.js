@@ -4,7 +4,7 @@
  * Looks up content in JavaScript pages globally.
  */
 import {WriteStream, createWriteStream} from 'fs';
-import {apiQuery, readJSON} from './util.js';
+import {apiQuery, notify, readJSON} from './util.js';
 import {dirname, join} from 'path';
 import {mkdir, writeFile} from 'fs/promises';
 import {Bar} from 'cli-progress';
@@ -172,6 +172,7 @@ async function runInParallel(wikiUrls, errorStream, bar) {
  * Main function.
  */
 async function run() {
+    await notify('Started fetching sitewide JavaScript pages.');
     const urls = await readJSON('urls.json');
     const allUrls = urls.length;
     const bar = new Bar({
@@ -190,6 +191,7 @@ async function run() {
     );
     bar.stop();
     errorStream.close();
+    await notify('Finished fetching sitewide JavaScript pages.');
 }
 
 run();
