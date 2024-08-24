@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]]
 
@@ -11,8 +11,8 @@ window.UserTagsJS = {
  'tech': { u: 'Techniker', link:'Dragonvale Wiki:Techniker',},
  'semiaktiv': { u: 'Sporadisch aktiv',},
  'bannedfromchat': { u: 'Aus dem Chat verbannt',},
- 'founder': { u: 'Wiki-GrÃ¼nder', link:'Admins',},
- 'bureaucrat': { u: 'BÃ¼rokrat', m: 'BÃ¼rokrat', f: 'BÃ¼rokratin', order: 1 , link:'Admins',},
+ 'founder': { u: 'Wiki-Gründer', link:'Admins',},
+ 'bureaucrat': { u: 'Bürokrat', m: 'Bürokrat', f: 'Bürokratin', order: 1 , link:'Admins',},
  'sysop': { u: 'Administrator', m: 'Administrator', f: 'Administratorin', order: 2 , link:'Admins',},
  'moderator': { u: 'Wiki-Moderator', m: 'Wiki-Moderator', f: 'Wiki-Moderatorin', order: 3 , link:'Admins',},
  'chatmoderator': { u: 'Chat-Moderator', m: 'Chat-Moderator', f: 'Chat-Moderatorin', order: 4 , link:'Admins',},
@@ -38,7 +38,7 @@ importArticles({
         'u:dev:UserTags/code.js'                                                                                                                             ]
 });
 
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  

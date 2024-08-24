@@ -8,7 +8,7 @@
 importScript('MediaWiki:Common.js/masthead.js');
 
 /**
-  * LÃ¤dt die Informationsvorlage beim Hochladen direkt im Beschreibungsfeld
+  * Lädt die Informationsvorlage beim Hochladen direkt im Beschreibungsfeld
   * wird in [[MediaWiki:Common.js]] eingebunden
   */
  $(function() {

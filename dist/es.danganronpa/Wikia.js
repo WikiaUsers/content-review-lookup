@@ -2,7 +2,7 @@
     (function () {
         "use strict";
         var userRightsList = {
-            "Bardock RPGManiac": ["BurÃ³crata"],
+            "Bardock RPGManiac": ["Burócrata"],
  
         };
  

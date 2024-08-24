@@ -1,24 +1,24 @@
-/*Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina.*/
+/*Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página.*/
 /*Importaciones de Wikia Developers*/
-/**ConfiguraciÃ³n para resÃºmenes de ediciÃ³n predefinidos**/
+/**Configuración para resúmenes de edición predefinidos**/
 window.dev = window.dev || {};
 window.dev.editSummaries = {
     css: '#stdSummaries { width: 264px }',
     select: 'MediaWiki:Standard Edit Summary'
 };
-/**CÃ³digos**/
+/**Códigos**/
 importArticles({
   type: 'script',
   articles: [
-/***ResÃºmenes de ediciÃ³n predefinidos***/
+/***Resúmenes de edición predefinidos***/
     'u:dev:Standard_Edit_Summary/code.js',
-/***BotÃ³n para editar la bienvenida del muro***/
+/***Botón para editar la bienvenida del muro***/
     'u:dev:WallGreetingButton/code.js',
 /***Ventanas emergentes de referencias***/
     'u:dev:ReferencePopups/code.js',
-/***GeneraciÃ³n de enlaces para encabezados**/
+/***Generación de enlaces para encabezados**/
     'u:dev:HeaderLinks/code.js',
-/***BotÃ³n de suscripciÃ³n para canal de YouTube***/
+/***Botón de suscripción para canal de YouTube***/
     'u:dev:YouTubeButton/code.js',
 /***Desactivar muro de mensajes para bots***/
     'u:dev:DisableBotMessageWalls/code.js'
@@ -60,7 +60,7 @@ function updatetimer(i) {
   diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
   diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÃ­as ' + left
+  if(diff > 0) left = diff + ' días ' + left
     timers[i].firstChild.nodeValue = tpm + left;
   timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
 }

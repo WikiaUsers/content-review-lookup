@@ -101,7 +101,7 @@ $('.jcConfig').each(function() {
 		code += '}}';
  
 		if (formError) {
-			showError('Yhdess√§ tai useammassa kohdassa on virhe.');
+			showError('Yhdess‰ tai useammassa kohdassa on virhe.');
 		} else {
 			$('#' + formId + ' .jcSubmit input').val('Loading...').attr('disabled', 'disabled');
  

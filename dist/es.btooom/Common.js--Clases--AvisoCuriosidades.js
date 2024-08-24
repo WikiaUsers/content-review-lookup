@@ -1,6 +1,6 @@
 /* v2.2 <pre>
- * AvisoCuriosidades: Muestra un aviso al aÃ±adir curiosidades
- * Copyright (c) 2011 - 2012 JesÃºs MartÃ­nez (User:Ciencia_Al_Poder)
+ * AvisoCuriosidades: Muestra un aviso al añadir curiosidades
+ * Copyright (c) 2011 - 2012 Jesús Martínez (User:Ciencia_Al_Poder)
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -18,9 +18,9 @@
 			_re_hcuriosidades = new RegExp('==\\s*[Cc]uriosidades\\s*==');
 			_re_emptyline = new RegExp('^\\s*$');
 			_pID = mw.config.get('wgArticleId', 0).toString();
-			// Obtenemos nÃºmero inicial desde storage
+			// Obtenemos número inicial desde storage
 			_getPSData();
-			// Si no hay nada, obtenemos de pÃ¡gina
+			// Si no hay nada, obtenemos de página
 			if (_initialItems == -1) {
 				_initialItems = _countItems();
 			}
@@ -39,7 +39,7 @@
 					if (aLines[i].length > 2 && aLines[i].substr(0, 2) == '==') {
 						break;
 					}
-					// Saltamos lÃ­neas en blanco
+					// Saltamos líneas en blanco
 					if (!_re_emptyline.test(aLines[i])) {
 						nItems++;
 					}
@@ -89,7 +89,7 @@
 				// Establecer actuales
 				_initialItems = nItems;
 				_setPSData();
-				// Prevenir ediciÃ³n
+				// Prevenir edición
 				$('#wpSave').attr('disabled', 'disabled');
 				params = {
 					action: 'parse',
@@ -109,7 +109,7 @@
 			}
 			$('<div></div>').html(data.parse.text['*']).dialog({
 				modal: true,
-				title: 'AtenciÃ³n',
+				title: 'Atención',
 				width: $(document).width()*0.75,
 				close: _end
 			});

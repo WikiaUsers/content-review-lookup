@@ -1,4 +1,4 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
 importArticle({
     type: 'script',
@@ -12,9 +12,9 @@ importArticle({
 
 /*AutoRefreshing Special Pages by Pcj y Grunny */ 
  
-AjaxRCRefreshText = 'ActualizaciÃ³n automatica'; 
-AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente'; 
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:NuevasImÃ¡genes"]; importScriptURI('http://vegadark.wikia.com/index.php?title=MediaWiki:RapiTareas.js&action=raw&ctype=text/javascript'); 
+AjaxRCRefreshText = 'Actualización automatica'; 
+AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente'; 
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:NuevasImágenes"]; importScriptURI('http://vegadark.wikia.com/index.php?title=MediaWiki:RapiTareas.js&action=raw&ctype=text/javascript'); 
 importScriptPage('AjaxRC/code.js', 'dev');
 
 
@@ -192,7 +192,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÃ­as ' + left
+  if(diff > 0) left = diff + ' días ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

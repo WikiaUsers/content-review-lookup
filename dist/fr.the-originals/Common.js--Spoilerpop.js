@@ -6,7 +6,7 @@ $(function () {
     window.SpoilerAlert = (function (my, console, Math) {
  
         my = $.extend({
-            question: 'Cette page traite d'Ã©lÃ©ments Ã  venir, et par consÃ©quent contient des ''spoilers''. Voulez-vous continuer ?',
+            question: 'Cette page traite d'éléments à venir, et par conséquent contient des ''spoilers''. Voulez-vous continuer ?',
             yes: 'Oui',
             no: 'Non',
             isSpoiler: function () {

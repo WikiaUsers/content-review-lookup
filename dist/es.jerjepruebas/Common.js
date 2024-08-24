@@ -1,8 +1,8 @@
-// EN CONSTRUCCIÃ“N (PRUEBAS)
+// EN CONSTRUCCIÓN (PRUEBAS)
 /*********************************************************************/
-// Refrescar la pÃ¡gina de la Actividad Reciente y de los cambios recientes.
-var AjaxRCRefreshText = 'Act. automÃ¡tica';
-var AjaxRCRefreshHoverText = 'Refrescar automÃ¡ticamente los cambios de la pÃ¡gina.';
+// Refrescar la página de la Actividad Reciente y de los cambios recientes.
+var AjaxRCRefreshText = 'Act. automática';
+var AjaxRCRefreshHoverText = 'Refrescar automáticamente los cambios de la página.';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 var ajaxRefresh = 20000;
 importScriptPage('AjaxRC/code.js', 'dev');

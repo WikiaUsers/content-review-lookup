@@ -22,7 +22,7 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
 
  
 /** Bouton DEFAULTSORT **/
-addCustomButton('https://images.wikia.nocookie.net/sims/fr/images/1/14/Bouton_Defaultsort.png','Simbio-fin','{{','}}','DEFAULTSORT:nom de famille, prÃ©nom','');
+addCustomButton('https://images.wikia.nocookie.net/sims/fr/images/1/14/Bouton_Defaultsort.png','Simbio-fin','{{','}}','DEFAULTSORT:nom de famille, prénom','');
  
 /* Test if an element has a certain class **************************************
   *
@@ -44,17 +44,17 @@ window.UserTagsJS = {
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop', 'bannedfromchat', 'rollback', 'chatmoderator', 'bot'];
 
-/* Scripts importÃ©s */
+/* Scripts importés */
 EditIntroButtonText = 'Intro bewerken'; /* Tekst voor intro bewerken */
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:ShowHide/code.js', /* Collapsible tables (dÃ©sormais inutile, prÃ©sent par dÃ©faut avec "mw-collapsible") */
-        'u:dev:Countdown/code.js', /* Compte Ã  rebours */
-        'u:dev:ExternalImageLoader/code.js', /* ModÃ¨le ImageExterne */
-        'u:dev:ReferencePopups/code.js', /* RÃ©fÃ©rences en pop-up */
-        'MediaWiki:Common.js/HeaderLinks.js', /* Lien ancrÃ© pour les titres de section */
-        'MediaWiki:Common.js/StandardEditSummary.js', /* RÃ©sumÃ©s de modifications prÃ©dÃ©finis */
+        'u:dev:ShowHide/code.js', /* Collapsible tables (désormais inutile, présent par défaut avec "mw-collapsible") */
+        'u:dev:Countdown/code.js', /* Compte à rebours */
+        'u:dev:ExternalImageLoader/code.js', /* Modèle ImageExterne */
+        'u:dev:ReferencePopups/code.js', /* Références en pop-up */
+        'MediaWiki:Common.js/HeaderLinks.js', /* Lien ancré pour les titres de section */
+        'MediaWiki:Common.js/StandardEditSummary.js', /* Résumés de modifications prédéfinis */
         'u:dev:EditIntroButton/code.js', /* Bouton Modifier l'intro */
         'u:dev:WallGreetingButton/code.js', /* Bouton Modifier accueil mur */
         'u:dev:UserTags/code.js' /* UserTags */

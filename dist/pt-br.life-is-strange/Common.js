@@ -1,8 +1,8 @@
-/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
 
 window.SpoilerAlertJS = {
-    question: 'Alerta! Estas imagens possuem conte√∫do sens√≠vel. Deseja prosseguir?',
+    question: 'Alerta! Estas imagens possuem conte˙do sensÌvel. Deseja prosseguir?',
     yes: 'Sim',
-    no: 'N√£o',
+    no: 'N„o',
     fadeDelay: 1600
 };

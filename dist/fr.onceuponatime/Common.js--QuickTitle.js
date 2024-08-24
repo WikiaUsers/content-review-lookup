@@ -16,10 +16,10 @@ $(function() {
             error: "An error occurred while changing title"
         },
         "es": {
-            defaultSummary: "Cambiado el tÃ­tulo mostrado",
-            changeTitle: "Cambiar tÃ­tulo",
+            defaultSummary: "Cambiado el título mostrado",
+            changeTitle: "Cambiar título",
             cancel: 'Cancelar',
-            error: 'Un error ha ocurrido mientras se cambiaba el tÃ­tulo'
+            error: 'Un error ha ocurrido mientras se cambiaba el título'
         }
     };
     i18n = i18n[i18n[mw.config.get('wgUserLanguage')] ? mw.config.get('wgUserLanguage') : "en"];

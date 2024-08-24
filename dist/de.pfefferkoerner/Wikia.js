@@ -1,15 +1,15 @@
-// Die JavaScript-Ã„nderungen an dieser Stelle wirken sich 
+// Die JavaScript-Änderungen an dieser Stelle wirken sich 
 // nur auf den neuen Wikia "Oasis"-Skin aus. 
 // Siehe auch: [[MediaWiki:Common.js]] und [[MediaWiki:Monobook.js]] //
 
 // ================================================================== //
-// ZusÃ¤tzliche Titel bei den Benutzerrechten
+// Zusätzliche Titel bei den Benutzerrechten
 // ================================================================== //
  
 $(function() {
     var rights = {
         'Einevontausend' : ['Administratorin'],
-        'Hedi-Hilli' : ['Administrator', 'Inhaltlicher Ansprechpartner', 'MÃ¤dchen fÃ¼r Alles'],
+        'Hedi-Hilli' : ['Administrator', 'Inhaltlicher Ansprechpartner', 'Mädchen für Alles'],
         'Agent Zuri' : ['Administrator', 'Technischer Ansprechpartner'],
     };
     var newrights = rights[wg.config.get('wgTitle')];

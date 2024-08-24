@@ -2,19 +2,19 @@
 window.UserTagsJS = {
     tags: {
         bureaucrat: {
-            link: 'Project:AdministraÃ§Ã£o#Burocratas'
+            link: 'Project:Administração#Burocratas'
         },
         bot: {
-           link: 'Project:AdministraÃ§Ã£o#Bots'
+           link: 'Project:Administração#Bots'
         },
         chatmoderator: {
-            link: 'Project:AdministraÃ§Ã£o#Moderadores_do_chat'
+            link: 'Project:Administração#Moderadores_do_chat'
         },
         assistente: {
-            link: 'Project:AdministraÃ§Ã£o#Assistentes'
+            link: 'Project:Administração#Assistentes'
         },
         rollback: {
-            link: 'Project:AdministraÃ§Ã£o#Rollbacks'
+            link: 'Project:Administração#Rollbacks'
         },
         vstf: {
             link: 'Special:ListUsers/vstf'
@@ -26,7 +26,7 @@ window.UserTagsJS = {
             link: 'Special:ListUsers/staff'
         },
         sysop: {
-            link: 'Project:AdministraÃ§Ã£o#Administradores'
+            link: 'Project:Administração#Administradores'
         }
     },
     modules: {

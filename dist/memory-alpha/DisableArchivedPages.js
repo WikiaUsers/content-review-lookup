@@ -1,5 +1,5 @@
 $(function(){
-  if ($('#ma-page-archived').length === 0){
+  if ($(':is(.ns-talk, .ns-4, .ns-110) #ma-page-archived').length !== 1){
     return;
   }
 
@@ -14,4 +14,8 @@ $(function(){
   $('.mw-editsection').remove();
   $('#ca-move').parent().remove();
   $('#ca-edit[data-tracking-label="ca-edit-dropdown"]').parent().remove();
+
+  if ($('.page-header__page-subtitle .new').length === 1){
+    $('.page-header__page-subtitle').html($('.subpages'));
+  }
 });

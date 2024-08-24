@@ -2,17 +2,17 @@
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */
 /*jshint curly:false jquery:true browser:true */
-Â 
+ 
 $(function () {
     "use strict";
-Â 
+ 
     window.SpoilerAlert = (function (my, console, Math) {
-Â 
+ 
         my = $.extend({
             question: 'This article contains heavy SPOILERS. Do you want to read it?',
             yes: 'Yes, please',
@@ -22,9 +22,9 @@ $(function () {
             },
             back: false
         }, my); // If my is undefined/null/not-object then jQuery will ignore it
-Â 
+ 
         var wgArticleId = (window.mediaWiki && window.mediaWiki.config && window.mediaWiki.config.get('wgArticleId')) || window.wgArticleId;
-Â 
+ 
         var dialog =
         '<table id="dialog" border="0" cellpadding="20" style="background-color: white; border-radius: 4px; border: 2px solid black;">' +
             '<tr>' +
@@ -41,7 +41,7 @@ $(function () {
                 '</td>' +
             '</tr>' +
         '</table>';
-Â 
+ 
         function getBackgroundColor () {
             var color = $('#WikiaPageBackground').css('background-color');
             if ('transparent' !== color) return color;
@@ -52,7 +52,7 @@ $(function () {
             console.log('SpoilerAlert: Cannot determine color');
             return color;
         }
-Â 
+ 
         // Use LocalStorage, it doesn't get sent to the server every HTTP request
         var ids = $.storage.get('SpoilerAlertJS');
         // Backwards compatibility. This block can be removed after a week or so
@@ -115,9 +115,9 @@ $(function () {
                 $.storage.set('SpoilerAlertJS', ids);
             });
         }
-Â 
+ 
         return my;
-Â 
+ 
     }) (window.SpoilerAlert, window.console || { log: $.noop }, Math);
  });
 //</source>

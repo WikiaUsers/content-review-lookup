@@ -112,7 +112,7 @@ $(function() {
 			for (i==0;i<Object.keys(opt.load).length;i++) {
 				var rewardsAlias = Object.keys(opt.load)[i];
 				if (rewardsAlias == "missionRewards") allRewards = arguments[i][0].missionRewards;
-				else allRewards[rewardsAlias] = arguments[i][0][rewardsAlias];
+				else allRewards[rewardsAlias] = arguments[i][0][rewardsAlias] || arguments[i][0];
 			}
 
 			// цикл в якому з allRewards видаляються непотрібні дані

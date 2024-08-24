@@ -2,8 +2,8 @@
 
 var wgNamespaceNumber = mw.config.get( 'wgNamespaceNumber' );
 
-var qqxLinkText = "RÃ©vÃ©ler l'interface";
-var qqxLinkTip = "RÃ©vÃ©ler les noms des messages de l'interface MediaWiki";
+var qqxLinkText = "Révéler l'interface";
+var qqxLinkTip = "Révéler les noms des messages de l'interface MediaWiki";
 var qqxRemLinkText = 'Vue normale';
 var qqxRemLinkTip = "Recharger cette page en vue normale (masquer les noms des messages de l'interface MediaWiki)";
 var currHref = window.location.href;

@@ -21,10 +21,10 @@ InactiveUsers = { text: 'Inactiu' };
 importScriptPage('InactiveUsers/code.js', 'dev');
 
 // **************************************************
-//                    Not√≠cies
+//                    NotÌcies
 // **************************************************
-/* Afegeix en les not√≠cies un header especial - prova */
-$('body.ns-116 .WikiHeader .wordmark.graphic ').bind('click.cap√ßalera', function(){ window.location.href = 'http://ca.detectiuconan.wikia.com/wiki/Noticia:√çndex'; return false; });
+/* Afegeix en les notÌcies un header especial - prova */
+$('body.ns-116 .WikiHeader .wordmark.graphic ').bind('click.capÁalera', function(){ window.location.href = 'http://ca.detectiuconan.wikia.com/wiki/Noticia:Õndex'; return false; });
  
 $(function(){
   if ( window.wgAction == 'edit' ) {

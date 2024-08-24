@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript colocados aqui ser„o carregados por todos que acessarem alguma p·gina desta wiki */
 
 window.AddRailModule = [{prepend: true}];
 

@@ -1,9 +1,9 @@
-/* T√§m√§n sivun JavaScript-koodi liitet√§√§n jokaiseen sivulataukseen */
+/* T‰m‰n sivun JavaScript-koodi liitet‰‰n jokaiseen sivulataukseen */
 
-/* √Ñ√§kk√∂sten oikea tulkinta */
-mw.config.set('tableSorterCollation', {'√§':'ae', '√∂' : 'oe', '√ü': 'ss', '√º':'ue'});
+/* ƒ‰kkˆsten oikea tulkinta */
+mw.config.set('tableSorterCollation', {'‰':'ae', 'ˆ' : 'oe', 'ﬂ': 'ss', '¸':'ue'});
 
-/* Korvaa mallinekutsun {{USERNAME}} sivua selaavan k√§ytt√§j√§n nimell√§. */
+/* Korvaa mallinekutsun {{USERNAME}} sivua selaavan k‰ytt‰j‰n nimell‰. */
 $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
     $('span.insertusername').html(mw.config.get('wgUserName'));

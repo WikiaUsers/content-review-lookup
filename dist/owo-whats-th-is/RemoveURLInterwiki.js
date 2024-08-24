@@ -12,6 +12,6 @@ if (wgAction == 'edit' && $.getUrlVar( 'removeurl' ) === 'yes') {
     if (protocolo in editor && serverpage_end in editor) {
         this.delete();
     } else {
-        new BannerNotification('No se ha detectado ningÃºn URL de la red Fandom.', 'warn').show();
+        new BannerNotification('No se ha detectado ningún URL de la red Fandom.', 'warn').show();
     }
 }

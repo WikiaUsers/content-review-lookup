@@ -41,8 +41,8 @@ $(function () {
         },
         plegas: {
             localization: '#dungeon2-localization',
-            href: '/pt-br/wiki/Torre_das_Ilus√µes',
-            img: '/pt-br/wiki/Arquivo:Torre_das_Ilus√µes_newicon.png'
+            href: '/pt-br/wiki/Torre_das_Ilusıes',
+            img: '/pt-br/wiki/Arquivo:Torre_das_Ilusıes_newicon.png'
         }
     }
 

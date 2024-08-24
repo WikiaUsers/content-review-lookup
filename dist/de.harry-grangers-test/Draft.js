@@ -29,7 +29,7 @@ if(/(.*)\/(draft|published)/.test(wgPageName) && !!$('.draft').length + !!$('.pu
         $('a#ca-edit').closest('.wikia-menu-button').detach();        
         $('.draft').html(
             $('<i />').append('Dieser Artikel befindet sich im Entwurfsmodus. Du kannst dir nur ').append(
-                $('<a />').attr('href','/wiki/' + article).text('die verÃ¶ffentliche Version')
+                $('<a />').attr('href','/wiki/' + article).text('die veröffentliche Version')
             ).after(' ansehen!')
         );
     }

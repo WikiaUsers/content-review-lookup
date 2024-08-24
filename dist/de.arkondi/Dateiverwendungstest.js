@@ -1,2 +1,2 @@
-// Test, ob ein hier eingefÃ¼gter Link auf eine Datei auch auf der entsprechenden Dateibeschreibungsseite erfasst wird
+// Test, ob ein hier eingefügter Link auf eine Datei auch auf der entsprechenden Dateibeschreibungsseite erfasst wird
 // [[Datei:Slider blau.png]]

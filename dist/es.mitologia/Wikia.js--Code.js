@@ -1,8 +1,8 @@
 {{:MediaWiki:Common.js/Code.js}}
 /*<pre> MediaWiki:Wikia.js v1.11 */
-/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
 window.SkinNotification = {
-	article: 'Wiki Mitolog√≠a:Acerca del cambio de apariencia de Wiki Mitolog√≠a',
+	article: 'Wiki MitologÌa:Acerca del cambio de apariencia de Wiki MitologÌa',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -19,7 +19,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a la Wiki de Final Fantasy en espa√±ol. Descubre <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">c√≥mo volver a verla como antes</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a la Wiki de Final Fantasy en espaÒol. Descubre <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">cÛmo volver a verla como antes</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(SkinNotification.dismiss);
 	},
@@ -34,10 +34,10 @@ function agregarEnlaceSkin() {
 	var url = SkinPropagation.parseURL(window.location.href);
 	url.query.useskin = 'monobook';
 	var surl = SkinPropagation.getURL(url);
-	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver la wiki de Final Fantasy en espa√±ol con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
+	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver la wiki de Final Fantasy en espaÒol con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
  
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que sale en el navegador');
+		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que sale en el navegador');
 	});
 }
  
@@ -46,9 +46,9 @@ function agregarEnlaceSkinMenu() {
 	var url = SkinPropagation.parseURL(window.location.href);
 	url.query.useskin = 'monobook';
 	var surl = SkinPropagation.getURL(url);
-	$('#WikiHeader').children('nav').children('ul').append('<li><a href="'+surl+'" id="mn-changeskin" title="Ver la wiki de Final Fantasy en espa√±ol con la piel Monobook">Usar Monobook</a></li>');
+	$('#WikiHeader').children('nav').children('ul').append('<li><a href="'+surl+'" id="mn-changeskin" title="Ver la wiki de Final Fantasy en espaÒol con la piel Monobook">Usar Monobook</a></li>');
 	$('#mn-changeskin').click(function(){
-		return confirm('La apariencia cambiar√° temporalmente a Monobook, el estilo anterior, pero con muchas m√°s funcionalidades y m√°s accesible. Si quieres volverlo a ver como ahora tendr√°s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
+		return confirm('La apariencia cambiar· temporalmente a Monobook, el estilo anterior, pero con muchas m·s funcionalidades y m·s accesible. Si quieres volverlo a ver como ahora tendr·s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
 	});
 }
  
@@ -76,8 +76,8 @@ function Final Fantasy Wiki_WikiaSkinLoad() {
 				$('a.wikia-button.upphotos').unbind('click',UploadPhotos.showDialog);
 			}
 		});
-		$(function() { // Reescribe el enlace de crear art√≠culo para que apunte a la ayuda. This does not block core functionality
-			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_art√≠culo'));
+		$(function() { // Reescribe el enlace de crear artÌculo para que apunte a la ayuda. This does not block core functionality
+			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_artÌculo'));
 		});
 	}
 }

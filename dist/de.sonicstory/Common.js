@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
  
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -38,11 +38,11 @@ var ShowHideConfig = {
 window.UserBadgesJS = {
 custom: {
 /* Overrap: ['Rollback'],
-ShadowTheHedgehog: ['GrÃ¼nder'] */
+ShadowTheHedgehog: ['Gründer'] */
 }
 };
 
-/* CountdownzÃ¤hler
+/* Countdownzähler
 ----------------------------------------------------
 */
 importArticles({

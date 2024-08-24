@@ -397,7 +397,7 @@ function addHideButtons() {
 		var box = hidables[i];
 		var button = getElementsByClass('hidable-button', box, 'span');
 
-		if( buttonÂ != null && button.length > 0 ) {
+		if( button != null && button.length > 0 ) {
 			button = button[0];
 
 			button.onclick = toggleHidable;
@@ -414,7 +414,7 @@ function toggleHidable(bypassStorage) {
 	var content = getElementsByClass('hidable-content', parent);
 	var nowShown;
 
-	if( contentÂ != null && content.length > 0 ) {
+	if( content != null && content.length > 0 ) {
 		content = content[0];
 
 		if( content.style.display == 'none' ) {
@@ -428,7 +428,7 @@ function toggleHidable(bypassStorage) {
 			nowShown = false;
 		}
 
-		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorageÂ != 'bypass' ) ) {
+		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
 			var page = window.pageName.replace(/\W/g, '_');
 			var items = getElementsByClass('hidable');
 			var item = -1;

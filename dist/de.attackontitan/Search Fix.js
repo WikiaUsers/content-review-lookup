@@ -99,7 +99,7 @@
               'top': (loc === 1 ? 83 : (loc === 3 ? 38 : (loc === 2 ? 85 : 0))) + 'px'
             })
             .append(
-              'Beim DrÃ¼cken von Enter:',
+              'Beim Drücken von Enter:',
               $('<br />'),
               $('<input />', {'type': 'radio', 'id': 'search_fix_opt_search', 'value': '0', 'name': 'search_fix_default_button', 'checked': 'checked'}),
               'Nach Begriff suchen',
@@ -109,10 +109,10 @@
               $('<br />'),
               $('<br />'),
               $('<input />', {'type': 'checkbox', 'value': '1', 'id': 'search_fix_opt_new_window', 'name': 'search_fix_new_window'}),
-              'Alle Suchanfragen in einem neuen Fenster Ã¶ffnen',
+              'Alle Suchanfragen in einem neuen Fenster öffnen',
               $('<br />'),
               $('<input />', {'type': 'checkbox', 'value': '1', 'id': 'search_fix_opt_acomplete', 'name': 'search_fix_acomplete'}),
-              'Wikia AutovervollstÃ¤ndigung deaktivieren (fÃ¼r zukÃ¼nftige Seiten)',
+              'Wikia Autovervollständigung deaktivieren (für zukünftige Seiten)',
               $('<button />', {'id': 'search_fix_options_save', 'value': '1', 'name': 'search_fix_new_window'})
                 .text('Speichern')
                 .css({'top': '30%', 'right': '18px', 'position': 'absolute'})

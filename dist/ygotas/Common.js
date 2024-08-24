@@ -15,9 +15,9 @@ if ( $.client.profile().name == 'msie' ) {
         hlists.find( 'dt:not(:last-child)' )
             .append( ': ' );
         hlists.find( 'dd:not(:last-child)' )
-            .append( '<b>Â·</b> ' );
+            .append( '<b>·</b> ' );
         hlists.find( 'li:not(:last-child)' )
-            .append( '<b>Â·</b> ' );
+            .append( '<b>·</b> ' );
         hlists.find( 'dl dl, ol ol, ul ul' )
             .prepend( '( ' ).append( ') ' );
     }

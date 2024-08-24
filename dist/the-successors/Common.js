@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-Â 
-Â SpoilerAlert = {
+ 
+ SpoilerAlert = {
   categories: "Proleans",
 }
 importArticles({
@@ -9,4 +9,4 @@ importArticles({
         "w:c:dev:SpoilerAlert/code.2.js"
     ]
 });
-Â 
+ 

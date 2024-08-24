@@ -1,4 +1,4 @@
-/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 /*insert Username */
 
@@ -10,7 +10,7 @@ $(function UserNameReplace() {
 
 window.SpoilerAlert = {
     pages: ["Jon Schnee", "Petyr Baelish"],
-    question: 'Diese Seite enthÃ¤lt Spoiler. MÃ¶chten Sie sie trotzdem ansehen?',
+    question: 'Diese Seite enthält Spoiler. Möchten Sie sie trotzdem ansehen?',
     yes: 'Aber ja doch',
     no: 'Nein, noch nicht',
     isSpoiler: function () {
@@ -27,7 +27,7 @@ if(mw.config.get('wgUserName')) {
     };
 }
 SpoilerAlert = {
-    question: 'Diese Seite enthÃ¤lt aktuelle Spoiler der 7. Staffel. MÃ¶chtest Du sie trotzdem ansehen?',
+    question: 'Diese Seite enthält aktuelle Spoiler der 7. Staffel. Möchtest Du sie trotzdem ansehen?',
     yes: 'Aber ja doch',
     no: 'Nein, noch nicht',
     isSpoiler: function () {

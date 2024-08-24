@@ -12,14 +12,14 @@ $(function() {
  var RollBack = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#Rollback'><span style='color:white'>Rollback</span>";
  var VSTF = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#VSTF'><span style='color:white'>VSTF</span>";
  var STAFF = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#STAFF'><span style='color:white'>Staff</span>";
- var ImageControl = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#Control_de_Im.C3.A1genes'><span style='color:white'>Control de ImÃ¡genes</span>";
+ var ImageControl = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#Control_de_Im.C3.A1genes'><span style='color:white'>Control de Imágenes</span>";
  var CommentControl = "<a href='http://es.mlp.wikia.com/wiki/Ayuda:Permisos_de_usuarios#Control_de_Comentarios'><span style='color:white'>Control de Comentarios</span>";
  var Founder = "<span style='color:white'>Fundador</span>";
 
 
  // Comienza lista de cuentas con iconos de Permisos de Usuarios
  //
- // AsegÃºrate que la ultima linea de permisos estÃ© seguida de un punto y coma, en vez de una coma.
+ // Asegúrate que la ultima linea de permisos esté seguida de un punto y coma, en vez de una coma.
  
     //Rollback
 rights["666magic"]                    = [RollBack, ChatMod],
@@ -27,7 +27,7 @@ rights["666magic"]                    = [RollBack, ChatMod],
     //Burocrata
 rights["Pramirez351"]                    = [Admin, bureaucrat],
 
-// TÃ©rmino de la lista de usuarios con iconos de permisos
+// Término de la lista de usuarios con iconos de permisos
 if (wgPageName.indexOf("Especial:Contribuciones") != -1){
 newTitle = fbReturnToTitle.replace("Especial:Contribuciones/", "");
 unfinishedTitle = newTitle;

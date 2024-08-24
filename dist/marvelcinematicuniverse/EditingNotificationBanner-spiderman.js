@@ -1,6 +1,6 @@
 /* EditingNotificationBanner - edit more pages like this
 
-v1.2 by MtaÃ„ and Luqgreg
+v1.2 by MtaÄ and Luqgreg
 */
 require( [
     'wikia.window',

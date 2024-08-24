@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 // Custom User Tags, including Inactive
 window.UserTagsJS = {
@@ -45,7 +45,7 @@ window.UserTagsJS = {
 	},
 	tags: {
 		'month-editor': { u:'Editor(a) del Mes', m: 'Editor del Mes', f: 'Editora del Mes', },
-		'ortography-corrector': { u:'Corrector(a) ortogr√°fico/a', m: 'Corrector ortogr√°fico', f: 'Correctora ortogr√°fica', },
+		'ortography-corrector': { u:'Corrector(a) ortogr·fico/a', m: 'Corrector ortogr·fico', f: 'Correctora ortogr·fica', },
 		'english-wiki-staff': { u:'Staff de la wiki inglesa', },
 		'wiki-staff-member': { u:'Miembro del Staff', },
 		'former-wiki-staff': { u:'Antiguo/a Miembro del Staff', m: 'Antiguo Miembro del Staff', f: 'Antigua Miembro del Staff', },

@@ -1,16 +1,16 @@
 /*-----------------------------------------------------------------*\
-||   Automatische Aktualisierung der Letzten Ã„nderungen mit AJAX   ||
+||   Automatische Aktualisierung der Letzten Änderungen mit AJAX   ||
 ||                                                                 ||
 || Funktionsliste:                                                 ||
 || ajaxRC.init()         Initialisiert das Skript                  ||
-|| ajaxRC.toggle();      Wenn das KÃ¤stchen angeklickt wird         ||
+|| ajaxRC.toggle();      Wenn das Kästchen angeklickt wird         ||
 || ajaxRC.load();        Lade den Code der Seite neu               ||
 || ajaxRC.parse();       Aktualisiere die Anzeige der Seite        ||
-|| ajaxRC.disable();     Skript wird bei InaktivitÃ¤t ausgeschaltet ||
-|| ajaxRC.disableCheck();Skript wird bei InaktivitÃ¤t ausgeschaltet ||
+|| ajaxRC.disable();     Skript wird bei Inaktivität ausgeschaltet ||
+|| ajaxRC.disableCheck();Skript wird bei Inaktivität ausgeschaltet ||
 \*-----------------------------------------------------------------*/
 
-//Setze Cookie, damit das KÃ¤stchen in Zukunft automatisch aktiviert ist
+//Setze Cookie, damit das Kästchen in Zukunft automatisch aktiviert ist
 function setCookie(c_name,value,expiredays) {
 	var exdate=new Date();
 	exdate.setDate(exdate.getDate()+expiredays);
@@ -31,10 +31,10 @@ function getCookie(c_name) {
 
 var ajaxRC=new Object();
 // CONFIG //
-ajaxRC.ajaxPages=new Array("Special:RecentChanges", "Spezial:Letzte_Ã„nderungen", "Spezial:Letzte Ã„nderungen",
+ajaxRC.ajaxPages=new Array("Special:RecentChanges", "Spezial:Letzte_Änderungen", "Spezial:Letzte Änderungen",
 	"Special:Watchlist", "Spezial:Beobachtungsliste",
 	"Special:Log", "Spezial:Logbuch",
-	"Special:Contributions", "Spezial:BeitrÃ¤ge",
+	"Special:Contributions", "Spezial:Beiträge",
 	"Special:Statistics", "Spezial:Statistik");//Seiten, die aktualisiert werden sollen
 ajaxRC.refresh=30*1000;//Nach wie vielen Millisekunden die Seite erneut geladen werden soll
 ajaxRC.regexp_crlf=new RegExp('\r|\n', "gm");
@@ -49,7 +49,7 @@ ajaxRC.disableTimeout=null;
 ajaxRC.checkbox=null;
 ajaxRC.spinner=null;
 // FUNCTIONS //
-ajaxRC.init=function() {//FÃ¼gt das AnkreuzkÃ¤stchen am Anfang der Seite hinzu
+ajaxRC.init=function() {//Fügt das Ankreuzkästchen am Anfang der Seite hinzu
 	document.getElementById("firstHeading").innerHTML+='<div style="float:right;"><span id="ajaxspinner" style="visibility: hidden; vertical-align: -30%;"><sup><img src="/wiki/images/Ajax-loader.gif" alt="Inhalt wird aktualisiert..."></sup></span>&nbsp;<span style="font-size: xx-small; vertical-align: 12%;">Automatische Aktualisierung:</span> <input type="checkbox" id="ajaxRCtoggle" onClick="ajaxRC.toggle();"></div>';
 	ajaxRC.checkbox=document.getElementById("ajaxRCtoggle");
 	ajaxRC.spinner=document.getElementById("ajaxspinner");
@@ -58,7 +58,7 @@ ajaxRC.init=function() {//FÃ¼gt das AnkreuzkÃ¤stchen am Anfang der Seite hinzu
 		ajaxRC.toggle();
 	}
 }
-ajaxRC.toggle=function() {//KÃ¤stchen wurde angeklickt (sowohl Aktivierung wie auch Deaktivierung)
+ajaxRC.toggle=function() {//Kästchen wurde angeklickt (sowohl Aktivierung wie auch Deaktivierung)
 	ajaxRC.activated=ajaxRC.checkbox.checked;
 	if (ajaxRC.activated==true) {//Aktivierung
 		setCookie("ajaxload-"+wgPageName, "on", 30);
@@ -102,7 +102,7 @@ ajaxRC.disableCheck=function() {//Wenn die Maus
 	}
 }
 
-for (var j=0; j<ajaxRC.ajaxPages.length; j++) {//PrÃ¼ft, ob aktuelle Seite AJAX-Aktualisierung enthalten soll, und fÃ¼gt, falls ja, ein KÃ¤stchen ein
+for (var j=0; j<ajaxRC.ajaxPages.length; j++) {//Prüft, ob aktuelle Seite AJAX-Aktualisierung enthalten soll, und fügt, falls ja, ein Kästchen ein
 	if (wgPageName == ajaxRC.ajaxPages[j]) {
 		addOnloadHook(ajaxRC.init);
 		window.onmousemove=ajaxRC.disableCheck();

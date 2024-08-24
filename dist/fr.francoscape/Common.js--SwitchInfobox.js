@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/* Trascription intÃ©grale du wiki http://runescape.wikia.com/wiki/RuneScape_Wiki  * AdaptÃ© pour la version franÃ§aise.
+/* Trascription intégrale du wiki http://runescape.wikia.com/wiki/RuneScape_Wiki  * Adapté pour la version française.
  */
 
 

@@ -11,7 +11,7 @@
 ---------
  AUTORES 
 ---------
-- E12Dragon: versiÃ³n actual y original compatible con UCP
+- E12Dragon: versión actual y original compatible con UCP
 */
 
 var config = mw.config.get([

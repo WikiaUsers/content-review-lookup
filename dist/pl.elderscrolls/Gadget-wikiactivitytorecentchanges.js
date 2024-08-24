@@ -10,10 +10,10 @@ function WikiActivityToRecentChanges()
 {
   var config = 
   {
-    de: { recentChanges: "Letzte Ã„nd." },         // Deutsch
+    de: { recentChanges: "Letzte Änd." },         // Deutsch
     en: { recentChanges: "Recent Changes" },      // English
-    es: { recentChanges: "Cambios rec." },        // EspaÃ±ol
-    fr: { recentChanges: "Mod. rÃ©centes" },       // FranÃ§ais
+    es: { recentChanges: "Cambios rec." },        // Español
+    fr: { recentChanges: "Mod. récentes" },       // Français
     nl: { recentChanges: "Recente Wijzigingen" }  // Dutch
     pl: { recentChanges: "Ostatnie zmiany" }      // Polish
   };

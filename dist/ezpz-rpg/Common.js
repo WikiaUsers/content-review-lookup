@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -19,14 +19,14 @@ var ShowHideConfig = {
     }
 };
 
-/** VerzichtserklÃ¤rung *********************************************************
+/** Verzichtserklärung *********************************************************
  *
- *  Beschreibung: VerzichtserklÃ¤rung
+ *  Beschreibung: Verzichtserklärung
  */
 var t = '<div id="EZPZRPGwiki_legal">This EZPZ RPG Wiki is not owned and operated by R2Games. All pictures are owned by R2Games. All information has been taken from the game.</div>';
 document.getElementById("WikiaArticleBottomAd").innerHTML += t;
 
-/*Javascript fÃ¼r Mouseover Effekt */
+/*Javascript für Mouseover Effekt */
 function FP_preloadImgs() {
     var d = document,
         a = arguments;

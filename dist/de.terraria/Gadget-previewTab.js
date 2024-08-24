@@ -16,11 +16,11 @@ $(document).ready(function (){
 	}
 	var $text_changes = {
 		'en': 'Changes',
-		'de': 'Ã„nderungen'
+		'de': 'Änderungen'
 	}
 	var $text_nochanges = {
 		'en': 'No change',
-		'de': 'Keine Ã„nderungen'
+		'de': 'Keine Änderungen'
 	}
 
 	$('#editform').before('<div id="wiki-editor-tabs"><div class="wikitext">'+($text_wikitext[mw.config.get( 'wgUserLanguage' )]||'Wikitext')+'</div><div class="preview">'+($text_preview[mw.config.get( 'wgUserLanguage' )]||'Preview')+'</div><div class="changes">'+($text_changes[mw.config.get( 'wgUserLanguage' )]||'Changes')+'</div></div>');

@@ -1,4 +1,4 @@
-/* Aqu√≠ se encuentran todos los c√≥digos java script de la wiki */
-/** √çNDICE **/
-/* 1. Bot√≥n para volver arriba */
+/* AquÌ se encuentran todos los cÛdigos java script de la wiki */
+/** ÕNDICE **/
+/* 1. BotÛn para volver arriba */
 importScriptPage('BackToTopButton/code.js', 'dev');

@@ -1,5 +1,5 @@
 /* Common.js <pre>
-Cualquier JavaScript que est√© aqu√≠ ser√° cargado para todos los usuarios en todas las p√°ginas cargadas del wiki. */
+Cualquier JavaScript que estÈ aquÌ ser· cargado para todos los usuarios en todas las p·ginas cargadas del wiki. */
 
 
 /* Show/Hide Config */
@@ -35,7 +35,7 @@ $(document).ready(function() {
 
 
 // ==============================
-// Botones de edici√≥n
+// Botones de ediciÛn
 // ==============================
 
 if (mwCustomEditButtons) {
@@ -47,7 +47,7 @@ if (mwCustomEditButtons) {
      "sampleText": "! encabezado 1\n! encabezado 2\n! encabezado 3\n|-\n| fila 1, celda 1\n| fila 1, celda 2\n| fila 1, celda 3\n|-\n| fila 2, celda 1\n| fila 2, celda 2\n| fila 2, celda 3"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
-     "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot√≥n_plantilla.png",
+     "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/BotÛn_plantilla.png",
      "speedTip": "Plantilla",
      "tagOpen": "{{",
      "tagClose": "}}",
@@ -56,9 +56,9 @@ if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
      "speedTip": "Redirigir",
-     "tagOpen": "#REDIRECCI√ìN [[",
+     "tagOpen": "#REDIRECCI”N [[",
      "tagClose": "]]",
-     "sampleText": "Nombre del art√≠culo"};
+     "sampleText": "Nombre del artÌculo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/43/Enlace_a_usuario.png",
@@ -85,5 +85,5 @@ if (mwCustomEditButtons) {
 }
 
 // ==================================================
-//  Fin - Botones de edici√≥n
+//  Fin - Botones de ediciÛn
 // ==================================================

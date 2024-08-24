@@ -1,5 +1,5 @@
 /*
-BOÃŽTES DÃ‰ROULANTES
+BOÎTES DÉROULANTES
 */
 
 /** Collapsible tables *********************************************************
@@ -11,7 +11,7 @@ BOÃŽTES DÃ‰ROULANTES
  
 var autoCollapse = 2;
 var collapseCaption = "Enrouler";
-var expandCaption = "DÃ©rouler";
+var expandCaption = "Dérouler";
  
 function collapseTable( tableIndex ) {
         var Button = document.getElementById( "collapseButton" + tableIndex );

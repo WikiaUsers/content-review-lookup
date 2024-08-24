@@ -1,6 +1,6 @@
 if (wgUserName == "20M61" && false) 
 {
-alert("Namespace: >"+wgCanonicalNamespace+"<"); //Pers√∂nliche Testausgabe
+alert("Namespace: >"+wgCanonicalNamespace+"<"); //Persˆnliche Testausgabe
 }
 /*********************************************************\
     Allgemeine Variablen (Hier ist nur eine Kopiervorlage. Dieser Code ist daher nicht aktiv)
@@ -14,19 +14,19 @@ var ZuletztGesehenTWDGameFolge = 0; // TWD: The Game (Telltale)
 var ZuletztGesehenFBGameFolge  = 0; // TWD: Facebook
 var ZuletztGesehenDixonFolge   = 0; // TWD: The Game (Activision - Dixon)
 var ZuletztGesehenComic        = 0; // Comic
-var ZuletztGesehenBuch         = 0; // B√ºcher
-var ZuletztMaster              = 0; // Master (0=Ich wei√ü nicht alles - bitte Spoilerschutz gew√§hren)
+var ZuletztGesehenBuch         = 0; // B¸cher
+var ZuletztMaster              = 0; // Master (0=Ich weiﬂ nicht alles - bitte Spoilerschutz gew‰hren)
 var UserFSK                    = '3 Versuche';
  
-var BG_TV                      = 1; //'1¬ß1¬ß1¬ß1'; (TV ¬ß COMIC ¬ß SPIELE ¬ß BUCH)
+var BG_TV                      = 1; //'1ß1ß1ß1'; (TV ß COMIC ß SPIELE ß BUCH)
 var BG_COMIC                   = 1;
 var BG_SPIELE                  = 1;
 var BG_BUCH                    = 1;
 var MithelfenBoxen             = false;
  
-var n                          = 1; // Z√§hlvariable
+var n                          = 1; // Z‰hlvariable
  
-// ----- Variablen f√ºr Spoilerfarb√§nderungen -----
+// ----- Variablen f¸r Spoilerfarb‰nderungen -----
 var Spoiler_WalkerColor = "#992010";
 var Spoiler_LurkerColor = "#a9a9C9";
  
@@ -53,19 +53,19 @@ var sME_unbekannt_d = "rgba(017, 068, 119, "+FarbDurchsichtigkeit+")";
 var sME_NAN_d       = "rgba(221, 068, 000, "+FarbDurchsichtigkeit+")";
  
 /*********************************************************\
-    Spoiler-Auswahl Routine (w√§hlt gesehene Folge)
+    Spoiler-Auswahl Routine (w‰hlt gesehene Folge)
 \*********************************************************/
 function ausklapp( element )
 {
-  // Erh√§lt Show (Show*10000 + Staffel * 100 + Folge *1)
+  // Erh‰lt Show (Show*10000 + Staffel * 100 + Folge *1)
   var MyElementID   = (element.id - element.id%10000)/10000;  
  
-  // Wird sp√§ter ben√∂tigt um herauszufinden was das f√ºr ein Element ist
+  // Wird sp‰ter benˆtigt um herauszufinden was das f¸r ein Element ist
   var ThisElementID = 0; 
  
   var MasterSpoilerButton = document.getElementById("MasterSpoiler");
  
-  // MASTER-Knopf wurde gedr√ºckt
+  // MASTER-Knopf wurde gedr¸ckt
   if (element.id == "MasterSpoiler" && MasterSpoilerButton.className == "spoilerON")
   {
     MasterSpoilerButton.className = "spoilerOFF";
@@ -79,11 +79,11 @@ function ausklapp( element )
     ZuletztGesehenFBGameFolge     =  99; // TWD: Facebook
     ZuletztGesehenDixonFolge      =  99; // TWD: The Game (Activision - Dixon)
     ZuletztGesehenComic           = 999; // Comic
-    ZuletztGesehenBuch            = 999; // B√ºcher
-    ZuletztMaster                 =   1; // Master: 1= Ich kenn alles (0= Ich hab L√ºcken)
+    ZuletztGesehenBuch            = 999; // B¸cher
+    ZuletztMaster                 =   1; // Master: 1= Ich kenn alles (0= Ich hab L¸cken)
     MasterSpoilerButton.firstChild.nodeValue  = "Spoiler System deaktiviert";
   }
-  //Nur Einstellungselemente d√ºrfen Master beeinflussen
+  //Nur Einstellungselemente d¸rfen Master beeinflussen
   else if (element.className== "spoilerON" || element.className == "spoilerOFF") 
   {
     ZuletztMaster                 = 0;
@@ -113,7 +113,7 @@ function ausklapp( element )
   // MasterSpoiler = ON bedeutet, dass NICHT alles bekannt ist -> einige Felder aus
   else
   {
-    // Alle Buttons f√ºr Spoiler sind "SPAN" Elemente
+    // Alle Buttons f¸r Spoiler sind "SPAN" Elemente
     var s = document.getElementsByTagName("span"); 
  
     // Alle Span Elemente durchsuchen
@@ -149,7 +149,7 @@ function ausklapp( element )
       }
     }
  
-    // Ermitteln, welche Variable ge√§ndert wurde
+    // Ermitteln, welche Variable ge‰ndert wurde
     switch(MyElementID)
     {
       case 0: // TV-Show
@@ -191,7 +191,7 @@ function ausklapp( element )
  
 /*********************************************************\
  Erwartet den zu untersuchenden Spoiler (Klassennamen)
- -> Gibt die dazu passende Spoilernummer, die der User gew√§hlt hat zur√ºck
+ -> Gibt die dazu passende Spoilernummer, die der User gew‰hlt hat zur¸ck
 \*********************************************************/
 function GetMYSpoiler(DivSpanObjekt)
 {
@@ -253,8 +253,8 @@ function SetSpoiler( )
   {
     if (SpoilerMinArtikel.className > GetMYSpoiler(SpoilerMinArtikel.className))
     {
-      SpoilerMain("Diese Seite enth√§lt Informationen, die erst in sp√§teren Folgen gezeigt werden. "
-                  +"Falls du den Inhalt dennoch sehen m√∂chtest, so √§ndere bitte deine Spoiler-Einstellungen", 
+      SpoilerMain("Diese Seite enth‰lt Informationen, die erst in sp‰teren Folgen gezeigt werden. "
+                  +"Falls du den Inhalt dennoch sehen mˆchtest, so ‰ndere bitte deine Spoiler-Einstellungen", 
                   SpoilerMinArtikel.className);
       return false; 
     }
@@ -302,7 +302,7 @@ function SetSpoiler( )
     var AnzeigenAB  = s[div].className.split("~")[0]*1;
     var AnzeigenBIS = s[div].className.split("~")[1]*1;
     if (isNaN(AnzeigenAB) && s[div].className != "spoiler_info") continue;        //Nur Zahlen-Klassen analysieren
-                                                                                  //spoiler_info darf nicht √ºbersprungen werden
+                                                                                  //spoiler_info darf nicht ¸bersprungen werden
     if (AnzeigenAB > GetMYSpoiler(AnzeigenAB) || s[div].className == "spoiler_info") //spoiler_info aber nicht anzeigen
       s[div].style.display = "none"; 
     else 
@@ -351,7 +351,7 @@ function SetSpoiler( )
             break;
         }
  
-        // Farbliche und Textliche Ver√§nderung
+        // Farbliche und Textliche Ver‰nderung
         for (i=1; i<spoilerMiniElement.length; i++)
         {
           if(spoilerMiniElement[i] == "background")
@@ -366,10 +366,10 @@ function SetSpoiler( )
               case "untot":     s[div].parentNode.style.backgroundColor = sME_untot;     break;
               case "na":
               case "nicht definierbar": s[div].parentNode.style.backgroundColor = sME_NAN; break;
-              case "aufgel√∂st":
+              case "aufgelˆst":
               case "aufgegeben":
-              case "zur√ºck gelassen":
-              case "zerst√∂rt":
+              case "zur¸ck gelassen":
+              case "zerstˆrt":
               case "tot":       s[div].parentNode.style.backgroundColor = sME_tot;       break;
               default:          s[div].parentNode.style.backgroundColor = sME_spezial;   break;
             }
@@ -387,9 +387,9 @@ function SetSpoiler( )
               case "na":
               case "nicht definierbar": s[div].parentNode.style.backgroundColor = sME_NAN_d; break;
               case "aufgegeben":
-              case "zur√ºck gelassen":
-              case "aufgel√∂st":
-              case "zerst√∂rt":
+              case "zur¸ck gelassen":
+              case "aufgelˆst":
+              case "zerstˆrt":
               case "tot":       s[div].parentNode.style.backgroundColor = sME_tot_d;       break;
               default:          s[div].parentNode.style.backgroundColor = sME_spezial_d;   break;
             }
@@ -439,9 +439,9 @@ function schreibCookie() {
    neuerKeks += ZuletztGesehenBuch         + "&";
    neuerKeks += ZuletztMaster              + "&";
    neuerKeks += UserFSK                    + "&";
-   neuerKeks += BG_TV + "¬ß"+ 
-                BG_COMIC + "¬ß"+ 
-                BG_SPIELE + "¬ß"+ 
+   neuerKeks += BG_TV + "ß"+ 
+                BG_COMIC + "ß"+ 
+                BG_SPIELE + "ß"+ 
                 BG_BUCH                    + "&";
    neuerKeks += MithelfenBoxen             + "&";
    neuerKeks += "~";
@@ -455,7 +455,7 @@ function schreibCookie() {
 }
  
 /*********************************************************\
-    Funktion liest Cookie aus und gibt Ergebnis zur√ºck
+    Funktion liest Cookie aus und gibt Ergebnis zur¸ck
 \*********************************************************/
 function liesCookie() {
    var keks = document.cookie;
@@ -467,7 +467,7 @@ function liesCookie() {
      {
         // vielleicht war's der erste Name in der Liste?
         if (keks.indexOf("TWDSpoiler=") == 0) posName = 0;
-        // nein? dann abbrechen mit R√ºckgabewert false
+        // nein? dann abbrechen mit R¸ckgabewert false
         else 
         { 
           ChangeHintergrund();
@@ -476,12 +476,12 @@ function liesCookie() {
         }
      }
  
-     // Anfangs- und Endposition des Kr√ºmelwerts suchen
+     // Anfangs- und Endposition des Kr¸melwerts suchen
      var wertAnfang = keks.indexOf("=", posName)+1;
      var wertEnde = keks.indexOf(";", posName+1);
      if (wertEnde == -1) wertEnde = keks.length;
  
-     // Kr√ºmelwert auslesen und zur√ºckgeben
+     // Kr¸melwert auslesen und zur¸ckgeben
      var wert = keks.substring(wertAnfang, wertEnde);
      var keksinhalt = wert .split("&");
      ZuletztGesehenTVStaffel    = keksinhalt[0]  * 1; // TV-Serie
@@ -493,10 +493,10 @@ function liesCookie() {
      ZuletztGesehenFBGameFolge  = keksinhalt[6]  * 1; // TWD: Facebook
      ZuletztGesehenDixonFolge   = keksinhalt[7]  * 1; // TWD: The Game (Activision - Dixon)
      ZuletztGesehenComic        = keksinhalt[8]  * 1; // Comic
-     ZuletztGesehenBuch         = keksinhalt[9]  * 1; // B√ºcher
-     ZuletztMaster              = keksinhalt[10] * 1; // Master (0=Ich wei√ü nicht alles - bitte Spoilerschutz gew√§hren)
+     ZuletztGesehenBuch         = keksinhalt[9]  * 1; // B¸cher
+     ZuletztMaster              = keksinhalt[10] * 1; // Master (0=Ich weiﬂ nicht alles - bitte Spoilerschutz gew‰hren)
      UserFSK                    = keksinhalt[11];     // User hat Alterstest bestanden (oder nicht)
-     var BG_Bild                = keksinhalt[12].split("¬ß"); // Hintergrundbild (Zombie-M√§dels, Staffel 3 oder Neutral)
+     var BG_Bild                = keksinhalt[12].split("ß"); // Hintergrundbild (Zombie-M‰dels, Staffel 3 oder Neutral)
        BG_TV     = BG_Bild[0]; 
        BG_COMIC  = BG_Bild[1];
        BG_SPIELE = BG_Bild[2];
@@ -525,7 +525,7 @@ function HideHelpingBoxes(NeueBoxenEigenschaft)
 }
  
 /*********************************************************\
-    Funktion √§ndert Hintergrundbild
+    Funktion ‰ndert Hintergrundbild
 \*********************************************************/ 
 function ChangeHintergrund(NeuerHintergrund)
 {
@@ -644,4 +644,4 @@ function ChangeHintergrund(NeuerHintergrund)
  
  
  
-// Ende: SpoilerFunktion nur f√ºr ausgew√§hlte Seiten
+// Ende: SpoilerFunktion nur f¸r ausgew‰hlte Seiten

@@ -1,5 +1,5 @@
 
-// Feuille de script permettant de gÃ©rer l'Ã©chelle des niveaux du Module:Ennemi/infobox (level scaling)
+// Feuille de script permettant de gérer l'échelle des niveaux du Module:Ennemi/infobox (level scaling)
 $(".type-enemyBox").each(
 	function(count, enemyVar) {
 		var slider = $(enemyVar).find("#slider_div")[0];
@@ -94,7 +94,7 @@ $(".type-enemyBox").each(
 				slider.enemyVarInfoboxScaler.update();
 			};
 
-			$(enemyVar).find("#reset_btn")[0].innerHTML = "<button id='" + reset_id + "' type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyVarInfoboxScaler.update();' style='float:right;'>RÃ©initialiser</button>";
+			$(enemyVar).find("#reset_btn")[0].innerHTML = "<button id='" + reset_id + "' type='button' onclick='ehp_slider.value = " + scaler.spawn_lvl_v + "; ehp_input.value = " + scaler.spawn_lvl_v + "; slider_div.enemyVarInfoboxScaler.update();' style='float:right;'>Réinitialiser</button>";
 			$($(enemyVar).find("#reset_btn")[0]).find("#" + reset_id)[0].onclick = function () {
 				$("#" + ehp_slider_id)[0].value = scaler.spawn_lvl_v ;
 				$("#" + ehp_input_id)[0].value  = scaler.spawn_lvl_v ;

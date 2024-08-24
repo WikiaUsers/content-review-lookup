@@ -11,14 +11,14 @@ importArticles({
         
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "√âmotic√¥nes",
+        emoticons: "…moticÙnes",
         close: "Fermer"
     },
-    help: "S√©lectionnez un √©motic√¥ne en cliquant dessus."
+    help: "SÈlectionnez un ÈmoticÙne en cliquant dessus."
 };
  
-//Ajoute un lien vers les √©motic√¥nes et les r√®gles du tchat
-var link = '<a class="chatlink" href="http://fr.naruto.wikia.com/wiki/project:R√®gles_du_tchat" target="_blank">R√®gles du tchat</a>';
+//Ajoute un lien vers les ÈmoticÙnes et les rËgles du tchat
+var link = '<a class="chatlink" href="http://fr.naruto.wikia.com/wiki/project:RËgles_du_tchat" target="_blank">RËgles du tchat</a>';
 $('.public.wordmark').first().append(link);
  
 // Notifications de tchat
@@ -36,8 +36,8 @@ if (($.inArray("sysop",wgUserGroups) + $.inArray("chatmoderator",wgUserGroups)) 
 window.ChatStatus = {
 	statuses: {
 		afk: "Je suis absent(e)",
-		busy: "Je suis occup√©(e)",
-		edit: "Je ne suis pas l√†",
+		busy: "Je suis occupÈ(e)",
+		edit: "Je ne suis pas l‡",
 		food: "Je mange",
 		game: "Je joue",
 		tv: "Je regarde la TV"

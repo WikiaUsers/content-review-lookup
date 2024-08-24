@@ -4,7 +4,7 @@ importScriptPage('ChatTags/code.js', 'dev');
 
 /* Reglas del chat */
 function ReglasChat() {
-    $.showCustomModal( 'Normas del chat', '<h3>Reglas Generales</h3><ul><li>No se toleran los insultos entre usuarios o p√°ginas.</li><li>Las ediciones realizadas en Ben 10 Wiki se toman como buena fe siempre que no se demuestre lo contrario. No se toleran las ediciones vand√°licas o abusivas.</li><li>No se permiten en p√°ginas o im√°genes cosas como pornograf√≠a, hentai, satanismo, etc.</li><li>No est√° permitido el spam ni tampoco el flood.</li><li>No se permite abusar de ediciones y categor√≠as s√≥lo para ganar logros.</li><li>En caso de pasar un archivo descargable, obligatoriamente se debe adjuntar un enlace hacia virustotal.com en donde se muestra que el archivo no contiene virus ni ning√∫n tipo de software esp√≠a.</li></ul><h3>Chat</h3><ul><li>No revelar datos personales tales como contrase√±as, direcciones, tel√©fonos, n√∫meros de tarjetas de cr√©dito, etc.</li><li>Est√° permitido hablar en may√∫sculas siempre y cuando no se exagere, ya que el abuso de estas se considera flood.</li><li>Molestar a los usuarios del chat continuamente puede ser considerado raz√≥n para un baneo.</li>', {
+    $.showCustomModal( 'Normas del chat', '<h3>Reglas Generales</h3><ul><li>No se toleran los insultos entre usuarios o p·ginas.</li><li>Las ediciones realizadas en Ben 10 Wiki se toman como buena fe siempre que no se demuestre lo contrario. No se toleran las ediciones vand·licas o abusivas.</li><li>No se permiten en p·ginas o im·genes cosas como pornografÌa, hentai, satanismo, etc.</li><li>No est· permitido el spam ni tampoco el flood.</li><li>No se permite abusar de ediciones y categorÌas sÛlo para ganar logros.</li><li>En caso de pasar un archivo descargable, obligatoriamente se debe adjuntar un enlace hacia virustotal.com en donde se muestra que el archivo no contiene virus ni ning˙n tipo de software espÌa.</li></ul><h3>Chat</h3><ul><li>No revelar datos personales tales como contraseÒas, direcciones, telÈfonos, n˙meros de tarjetas de crÈdito, etc.</li><li>Est· permitido hablar en may˙sculas siempre y cuando no se exagere, ya que el abuso de estas se considera flood.</li><li>Molestar a los usuarios del chat continuamente puede ser considerado razÛn para un baneo.</li>', {
 	    id: "normasChat",
 	    width: 600,
 	    buttons: [
@@ -75,7 +75,7 @@ $(function(){
 });
 
 function ChatTags(){
-    $.showCustomModal( 'C√≥digos de formato', '<a target="_blank" href="/wiki/w:c:dev:ChatTags">ChatTags</a> creado por el usuario <a target="_blank" href="/wiki/w:c:dev:User:AnimatedCartoons">AnimatedCartoons</a><br /><b>AVISO</b>: Los c√≥digos siempre deben ser cerrados. <table border="1" bordercolor="#A3A3A3" style="margin:10px 0; background-color:#FAFAFA; border-collapse:collapse;" width="100%" cellpadding="3" cellspacing="3"><tr style="background:#F2F2F2"><th>C√≥digo</th><th>Resultado</th></tr><tr><td>[b]Texto en negrita[/b]</td><td><span style="font-weight:bold;">Texto en negrita</span></td></tr><tr><td>[i]Texto en it√°lica[/b]</td><td><span style="font-style:italic;">Texto en it√°lica</span></td></tr><tr><td>[s]Texto tachado[/s]</td><td><span style="text-decoration: line-through">Texto tachado</span></td></tr><tr><td>[u]Texto subrayado[/u]</td><td><span style="text-decoration:underline;">Texto subrayado</span></td></tr><tr><td>[c blue]Texto color azul[/c]</td><td><span style="color:blue;">Texto color azul</span></td></tr><tr><td>[f Comic Sans MS]Texto Comic Sans MS[/f]</td><td><span style="font-family:\'Comic Sans MS\'">Texto Comic Sans MS</span></td></tr><tr><td>[bg red]Texto con fondo rojo[/bg]</td><td><span style="background:red;">Texto con fondo rojo</span></td></tr><tr><td>[p]Texto preformateado[/p]</td><td><code>Texto preformateado</code></td></tr><tr><td>[sup]Super√≠ndice[/sup]</td><td><sup>Super√≠ndice</sup></td></tr><tr><td>[sub]Sub√≠ndice[/sub]</td><td><sub>Sub√≠ndice</sub></td></tr></table>', {
+    $.showCustomModal( 'CÛdigos de formato', '<a target="_blank" href="/wiki/w:c:dev:ChatTags">ChatTags</a> creado por el usuario <a target="_blank" href="/wiki/w:c:dev:User:AnimatedCartoons">AnimatedCartoons</a><br /><b>AVISO</b>: Los cÛdigos siempre deben ser cerrados. <table border="1" bordercolor="#A3A3A3" style="margin:10px 0; background-color:#FAFAFA; border-collapse:collapse;" width="100%" cellpadding="3" cellspacing="3"><tr style="background:#F2F2F2"><th>CÛdigo</th><th>Resultado</th></tr><tr><td>[b]Texto en negrita[/b]</td><td><span style="font-weight:bold;">Texto en negrita</span></td></tr><tr><td>[i]Texto en it·lica[/b]</td><td><span style="font-style:italic;">Texto en it·lica</span></td></tr><tr><td>[s]Texto tachado[/s]</td><td><span style="text-decoration: line-through">Texto tachado</span></td></tr><tr><td>[u]Texto subrayado[/u]</td><td><span style="text-decoration:underline;">Texto subrayado</span></td></tr><tr><td>[c blue]Texto color azul[/c]</td><td><span style="color:blue;">Texto color azul</span></td></tr><tr><td>[f Comic Sans MS]Texto Comic Sans MS[/f]</td><td><span style="font-family:\'Comic Sans MS\'">Texto Comic Sans MS</span></td></tr><tr><td>[bg red]Texto con fondo rojo[/bg]</td><td><span style="background:red;">Texto con fondo rojo</span></td></tr><tr><td>[p]Texto preformateado[/p]</td><td><code>Texto preformateado</code></td></tr><tr><td>[sup]SuperÌndice[/sup]</td><td><sup>SuperÌndice</sup></td></tr><tr><td>[sub]SubÌndice[/sub]</td><td><sub>SubÌndice</sub></td></tr></table>', {
 	    id: "ChatTags",
 	    width: 600,
             height: 490,
@@ -93,18 +93,18 @@ function ChatTags(){
 }
 
 $(function() {
-// Sonidos de notificaci√≥n
+// Sonidos de notificaciÛn
         $('.sonidonotificacion a').append(' <span style="color:red;">[OFF]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="https://images.wikia.nocookie.net/pruebasbf10/es/images/0/01/Notification.ogg"></source></audio>');
     $('.sonidonotificacion').click(function() {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci√≥n [OFF]") {
-            $('.sonidonotificacion a').html('Sonidos de notificaci√≥n <span style="color:lime;">[ON]</span>');
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaciÛn [OFF]") {
+            $('.sonidonotificacion a').html('Sonidos de notificaciÛn <span style="color:lime;">[ON]</span>');
         } else {
-            $('.sonidonotificacion a').html('Sonidos de notificaci√≥n <span style="color:red;">[OFF]</span>');
+            $('.sonidonotificacion a').html('Sonidos de notificaciÛn <span style="color:red;">[OFF]</span>');
         }
     });
     $('.Chat ul').bind('DOMNodeInserted', function(event) {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci√≥n [ON]") {
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaciÛn [ON]") {
 			$("#notificacion")[0].play();
 		}
     });

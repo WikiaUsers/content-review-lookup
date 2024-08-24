@@ -1,7 +1,7 @@
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
 window.SkinNotification = {
-	article: 'Especial:P√°ginasRequeridas',
+	article: 'Especial:P·ginasRequeridas',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -18,7 +18,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Ayuda a la Uncharted Pedia a completar todo sobre la saga Uncharted<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">, ay√∫danos a crear o mejorar los art√≠culos</a>.</div>');
+		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Ayuda a la Uncharted Pedia a completar todo sobre la saga Uncharted<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">, ay˙danos a crear o mejorar los artÌculos</a>.</div>');
 		nf.children().eq(0).append(sn);
 		sn.children().eq(0).click(SkinNotification.dismiss);
 	},
@@ -36,7 +36,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver Wiki Uncharted con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
  
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que aparece en el navegador. Es recomendable que s√≥lo uses esta herramienta en los art√≠culos de cartas.');
+		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que aparece en el navegador. Es recomendable que sÛlo uses esta herramienta en los artÌculos de cartas.');
 	});
 }
  

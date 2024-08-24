@@ -82,7 +82,7 @@
                 this.log('Anon user detected', 'warn');
                 frm.append($('<div>', {
                     class: 'ff-anon',
-                    text: 'Para acceder a este formulario tienes que iniciar sesi√≥n con una cuenta de FANDOM.'
+                    text: 'Para acceder a este formulario tienes que iniciar sesiÛn con una cuenta de FANDOM.'
                 }));
                 return false;
             }
@@ -125,13 +125,13 @@
                     // Title of the feedback
                     this.newInput({
                         name: 'title',
-                        label: 'T√≠tulo'
+                        label: 'TÌtulo'
                     }),
                     
                     $('<div>', { class: 'ff-col ff-description-container' }).append([
                         $('<label>', {
                             class: 'ff-description-label',
-                            text: 'Descripci√≥n',
+                            text: 'DescripciÛn',
                             'for': 'ff-description'
                         }),
                         
@@ -140,7 +140,7 @@
                             class: 'ff-description',
                             id: 'ff-description',
                             name: 'description',
-                            placeholder: 'Descripci√≥n y cuerpo del asunto',
+                            placeholder: 'DescripciÛn y cuerpo del asunto',
                             required: true
                         })
                     ]),
@@ -156,7 +156,7 @@
                     $('<div>', {
                         class: 'ff-notice',
                         id: 'ff-notice1',
-                        html: 'Por favor intente no insertar datos personales dentro de este formulario. Una vez que haya enviado este formulario usted est√° cumpliendo con los <a href="https://www.fandom.com/es/terms-of-use-es">T√©rminos de Uso de FANDOM</a> y los requisitos previamente mencionados en esta p√°gina.'
+                        html: 'Por favor intente no insertar datos personales dentro de este formulario. Una vez que haya enviado este formulario usted est· cumpliendo con los <a href="https://www.fandom.com/es/terms-of-use-es">TÈrminos de Uso de FANDOM</a> y los requisitos previamente mencionados en esta p·gina.'
                     })
                 ])
             ].forEach(function(el) {
@@ -193,8 +193,8 @@
                     '|wiki='+feedbackObj.interwiki,
                     '|comunidad='+feedbackObj.community,
                     '|estado=nueva',
-                    '|t√≠tulo='+feedbackObj.title,
-                    '|descripci√≥n='+feedbackObj.description,
+                    '|tÌtulo='+feedbackObj.title,
+                    '|descripciÛn='+feedbackObj.description,
                     '|autor='+self.username+'}}'
                 ].join('\n');
                 

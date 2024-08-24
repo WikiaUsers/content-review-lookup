@@ -42,7 +42,7 @@ function calculateToARewards()
         
         var cols = 0;
         var result = "<table class='article-table'>\
-                          <tr><th style='font-size: 110%; padding: 3px 0; text-align: center;' colspan='2'>RÃ©compenses</th></tr>";
+                          <tr><th style='font-size: 110%; padding: 3px 0; text-align: center;' colspan='2'>Récompenses</th></tr>";
         for (var reward in rewards)
         {
             result += "<tr>";
@@ -72,19 +72,19 @@ function calculateToARewards()
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/a/a3/Energy_Icon.png'>\
                                    </td>\
-                                   <td>Ã‰nergie x" + rewards[reward] + "</td>";
+                                   <td>Énergie x" + rewards[reward] + "</td>";
                         break;
                     case "rm3": 
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/2/25/Arcenmon_%28Lumi%C3%A8re%29_Icon.png'>\
                                    </td>\
-                                   <td>Arcenmon (3 Ã‰toiles) x" + rewards[reward] + "</td>";
+                                   <td>Arcenmon (3 Étoiles) x" + rewards[reward] + "</td>";
                         break;
                     case "rm4": 
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/2/25/Arcenmon_%28Lumi%C3%A8re%29_Icon.png'>\
                                    </td>\
-                                   <td>Arcenmon (4 Ã‰toiles) x" + rewards[reward] + "</td>";
+                                   <td>Arcenmon (4 Étoiles) x" + rewards[reward] + "</td>";
                         break;
                     case "dm": 
                         result += "<td>\
@@ -96,19 +96,19 @@ function calculateToARewards()
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/a/ab/Mystical_Scroll.png'>\
                                    </td>\
-                                   <td>VÃ©lin Mystique x" + rewards[reward] + "</td>";
+                                   <td>Vélin Mystique x" + rewards[reward] + "</td>";
                         break;
                     case "ld": 
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/e/e2/Scroll_of_Light_%26_Darkness.png'>\
                                    </td>\
-                                   <td>VÃ©lin de LumiÃ¨re et TÃ©nÃ¨bres x" + rewards[reward] + "</td>";
+                                   <td>Vélin de Lumière et Ténèbres x" + rewards[reward] + "</td>";
                         break;
                     case "ls": 
                         result += "<td>\
                                        <img  height='45px' width='45px' src='https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/d/d1/Legendary_Scroll.png'>\
                                    </td>\
-                                   <td>VÃ©lin LÃ©gendaire x" + rewards[reward] + "</td>";
+                                   <td>Vélin Légendaire x" + rewards[reward] + "</td>";
                         break;
                 }
             }
@@ -119,21 +119,21 @@ function calculateToARewards()
     }
     else
     {
-        toaRewards.html("<br/><div style='color: red; font-size: 120%;'>Merci d'entrer un nombre de 1 Ã  100!</div> ");
+        toaRewards.html("<br/><div style='color: red; font-size: 120%;'>Merci d'entrer un nombre de 1 à 100!</div> ");
     }
     
 }
 
-if (window.location.href.indexOf("fr.summonerswar.wikia.com/wiki/User:Koakuh/Calculateur_de_rÃ©compenses_ToA") != -1)
+if (window.location.href.indexOf("fr.summonerswar.wikia.com/wiki/User:Koakuh/Calculateur_de_récompenses_ToA") != -1)
 {
     $(document).ready(function()
     {
         var toaCalc = $("#toa-calculator");
         
         toaCalc.html("\
-                <span style='font-size: 120%; font-weight: bold;'>Ã‰tage :</span>\
+                <span style='font-size: 120%; font-weight: bold;'>Étage :</span>\
                 <form style='display: inline;' onsubmit='return false;'>\
-                    <input autofocus type='number' min='1' max='100' placeholder='Plus haut Ã©tage rÃ©ussi' id='toa-floor' style='font-size: 110%; width: 175px;'></input>\
+                    <input autofocus type='number' min='1' max='100' placeholder='Plus haut étage réussi' id='toa-floor' style='font-size: 110%; width: 175px;'></input>\
                     <input  type='submit' value='Envoyer' class='wikia-menu-button' style='padding: 1px 8px;' onclick='calculateToARewards()'>\
                 </form>\
                 <div id='toa-rewards'></div>");

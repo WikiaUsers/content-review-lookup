@@ -1,23 +1,23 @@
-/* MERCI DE DÃ‰CRIRE Ã€ QUOI SERT CHAQUE LIGNE DE CE CODE ! */
+/* MERCI DE DÉCRIRE À QUOI SERT CHAQUE LIGNE DE CE CODE ! */
 
-/* Ceci sert au modÃ¨le {{USERNAME}}. */
+/* Ceci sert au modèle {{USERNAME}}. */
 $('.username').text(mw.config.get('wgUserName'));
 
-$('#wpUploadDescription').text("[[CatÃ©gorie:Galerie");
+$('#wpUploadDescription').text("[[Catégorie:Galerie");
 
-/*Ceci sert Ã  la barre d'outils de l'Ã©diteur source*/
+/*Ceci sert à la barre d'outils de l'éditeur source*/
 if ((wgAction == 'submit' || wgAction == 'edit') && mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://vignette.wikia.nocookie.net/la-casa-de-papel/fr/images/b/b0/Infobox_Personnage.png",
-		"speedTip": "InsÃ©rer le modÃ¨le {{Infobox Personnage}}",
+		"speedTip": "Insérer le modèle {{Infobox Personnage}}",
 		"tagOpen": "\{\{Infobox Personnage\r|Nom=",
-		"tagClose": "\r|Image= \r|Caption= \r|Surnom(s)= \r|Sexe= \r|Naissance= \r|Mort= \r|Famille= \r|Occupation= \r|Affiliation= \r|PremiÃ¨re= \r|DerniÃ¨re= \r|InterprÃ¨te= \r|Doubleur VF= \r|Galerie= \r\}\}",
+		"tagClose": "\r|Image= \r|Caption= \r|Surnom(s)= \r|Sexe= \r|Naissance= \r|Mort= \r|Famille= \r|Occupation= \r|Affiliation= \r|Première= \r|Dernière= \r|Interprète= \r|Doubleur VF= \r|Galerie= \r\}\}",
 		"sampleText": ""
 	};
 		
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://vignette.wikia.nocookie.net/la-casa-de-papel/fr/images/1/1c/Button-gallery.png",
-		"speedTip": "InsÃ©rer une galerie d'images",
+		"speedTip": "Insérer une galerie d'images",
 		"tagOpen": "\<gallery>\r",
 		"tagClose": "\r</gallery>",
 		"sampleText": ""
@@ -35,7 +35,7 @@ window.UserTagsJS = {
     }
 };
 
-/*ModÃ¨le Countdown*/
+/*Modèle Countdown*/
 $(function(){
 	importArticles({
 		type: 'script',
@@ -46,13 +46,13 @@ $(function(){
 	});
 });
 
-/* BOÃŽTES DÃ‰ROULANTES */
+/* BOÎTES DÉROULANTES */
 
-// Pour [[ModÃ¨le:MÃ©ta palette de navigation]]
+// Pour [[Modèle:Méta palette de navigation]]
 
 var autoCollapse = 2;
 var collapseCaption = '[masquer]';
-var expandCaption = '[dÃ©rouler]';
+var expandCaption = '[dérouler]';
  
 function collapseTable( tableIndex ) {
   var Button = document.getElementById( "collapseButton" + tableIndex );

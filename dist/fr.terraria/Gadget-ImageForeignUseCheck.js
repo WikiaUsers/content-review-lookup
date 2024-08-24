@@ -7,7 +7,7 @@ var wgTitle = mw.config.get( 'wgTitle' );
 if (wgNamespaceNumber == 6) {
 	$('#mw-imagepage-reupload-link').append(
 		$('<li></li>').append(
-			$('<a></a>', {'class':'foreignLink', 'href':'#ddd', 'text':'Liste des utilisations Ã©trangÃ¨res'})
+			$('<a></a>', {'class':'foreignLink', 'href':'#ddd', 'text':'Liste des utilisations étrangères'})
 		)
 	);
 	$('.foreignLink').click(function(){
@@ -16,9 +16,9 @@ if (wgNamespaceNumber == 6) {
 		var $interUses = $('.interUses');
 		var URLprefix = 'https://', 
 			URLsuffix = '.gamepedia.com/api.php?format=json&callback=?';
-		var msgForeignUses = 'Utilisations Ã©trangÃ¨res',
+		var msgForeignUses = 'Utilisations étrangères',
 			msgImageLink = 'page de fichier',
-			msgNoUses = 'Aucune utilisation Ã©trangÃ¨re de ce fichier n\'a Ã©tÃ© dÃ©tectÃ©e.';
+			msgNoUses = 'Aucune utilisation étrangère de ce fichier n\'a été détectée.';
 		$interUses.append( $('<h2></h2>', {'text':msgForeignUses, 'style':'margin-left:-22px;'}) );
 		var langs = {
 			"Russian":"terraria-ru",

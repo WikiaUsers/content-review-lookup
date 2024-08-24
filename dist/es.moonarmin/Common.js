@@ -1,10 +1,10 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 InactiveUsers = { text: 'Inactivo' };
 
 /*** Auto refrescado de la wiki actividad{{w:c:five-nights-at-treasure-island}} ***/
 window.AjaxRCRefreshText = 'Actividad automatizada';
-window.AjaxRCRefreshHoverText = 'Con la casilla marcada esta p√°gina se actualizar√° autom√°ticamente';
+window.AjaxRCRefreshHoverText = 'Con la casilla marcada esta p·gina se actualizar· autom·ticamente';
 window.AjaxRefresh = 10000;
 window.ajaxPages = [
     "Especial:CambiosRecientes",
@@ -14,7 +14,7 @@ window.ajaxPages = [
     "Especial:Contribuciones"
 ];
 
-// Mostrar IP de an√≥nimos para usuarios con ciertos permisos
+// Mostrar IP de anÛnimos para usuarios con ciertos permisos
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat', 'helper', 'util', 'staff']
 };
@@ -22,9 +22,9 @@ window.RevealAnonIP = {
 // **************************************************
 // NOMBRE DEL USUARIO
 // **************************************************
-// Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
 // o la [[Plantilla:Nombreusuario]]
-// Tra√≠da desde Creepypasta Wiki corregida
+// TraÌda desde Creepypasta Wiki corregida
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // **************************************************
  
@@ -39,7 +39,7 @@ $(function UserNameReplace(){
 });
  
 // *************************************************
-// Reescribir t√≠tulo, usada por Plantilla:Titulo (De MLP Wiki)
+// Reescribir tÌtulo, usada por Plantilla:Titulo (De MLP Wiki)
 // *************************************************
  
 $(function(){
@@ -64,9 +64,9 @@ if ($.inArray("Spoiler", wgCategories) > -1) {
                 '<tbody>' +
                     '<tr>' +
                         '<td rowspan="2" style="padding: 0px;">' +
-                            '<alt="¬°Spoilers!">' +
+                            '<alt="°Spoilers!">' +
                         '</td>' +
-                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">¬°Advertencia de spoilers!</strong><br>Este art√≠culo muestra contenido sobre un episodio aun no emitido en latinoamerica, ¬øseguro que quieres continuar?</td>' +
+                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">°Advertencia de spoilers!</strong><br>Este artÌculo muestra contenido sobre un episodio aun no emitido en latinoamerica, øseguro que quieres continuar?</td>' +
                     '</tr>' +
                     '<tr>' +
                         '<td style="border-style: none; padding: 5px; text-align: center;">' +

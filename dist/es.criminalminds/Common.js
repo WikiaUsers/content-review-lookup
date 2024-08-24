@@ -1,18 +1,18 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
  
- // 2. Borrado r√°pido
+ // 2. Borrado r·pido
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
   'summary': 'Vandalismo',
   'label': 'Vandalismo'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Art√≠culo/Archivo Duplicado',
+  'summary': 'ArtÌculo/Archivo Duplicado',
   'label': 'Duplicado'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Art√≠culo/Archivo Fanon',
+  'summary': 'ArtÌculo/Archivo Fanon',
   'label': 'Fanon'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Art√≠culo demasiado corto (Infraesbozo)',
+  'summary': 'ArtÌculo demasiado corto (Infraesbozo)',
   'label': 'InfEsb'};
 importScriptPage('MediaWiki:Common.js/BorradoRapido.js');
  
@@ -33,7 +33,7 @@ then = new Date(month+''+day+', '+year);
 var old = parseInt(now - then);
 old = Math.floor(old/(1000*60*60*24));
 if (old > 15) {
-$('#article-comm').attr('disabled','disabled').text('Este blog no ha sido comentado en 15 d√≠as y est√° prohibido comentar en ellos.');
+$('#article-comm').attr('disabled','disabled').text('Este blog no ha sido comentado en 15 dÌas y est· prohibido comentar en ellos.');
 $('#article-comm-submit').attr('disabled','disabled');
 $('.article-comm-reply').remove();
 }
@@ -42,8 +42,8 @@ $('.article-comm-reply').remove();
  
 /*** Auto-refreshing recent changes ***/
  
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev')
  

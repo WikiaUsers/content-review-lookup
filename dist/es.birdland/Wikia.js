@@ -1,4 +1,4 @@
-/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
 window.SkinNotification = {
 	article: 'BirdLand Wiki: Reglas',
 	key: 'NfSkin',
@@ -35,7 +35,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver Ben 10 Wiki con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
  
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que aparece en el navegador.');
+		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que aparece en el navegador.');
 	});
 }
  
@@ -52,7 +52,7 @@ function Ben10_WikiaSkinLoad() {
  
 Ben10_WikiaSkinLoad();
  
-/* Enlaces en el men√∫ de usuario */
+/* Enlaces en el men˙ de usuario */
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario_Blog:'+ encodeURIComponent(wgUserName) +'" title="Mis entradas de blog">Entradas de Blog</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario:'+ encodeURIComponent(wgUserName) +'/wikia.css" title="Tu apariencia personal">Mi apariencia</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);
  
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny

@@ -5,7 +5,7 @@
 
 $(function() {
 	var el = document.createElement('div')
-	$(el).attr('id', 'title-copy-outer').html('<div id="title-copy-content" title="Copiar somente tÃ­tulo (sem espaÃ§o nominal)"></div><div id="title-copy-all" title="Copiar tÃ­tulo completo (InclespaÃ§o nominal)"></div>');
+	$(el).attr('id', 'title-copy-outer').html('<div id="title-copy-content" title="Copiar somente título (sem espaço nominal)"></div><div id="title-copy-all" title="Copiar título completo (Inclespaço nominal)"></div>');
 	$('#firstHeading').wrapInner('<div id="first-heading-text"></div>');
 	$(el).insertAfter(document.getElementById('first-heading-text'));
 	$('#title-copy-content').click(function() {

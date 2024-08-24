@@ -1,6 +1,6 @@
 $(function() {
     var rights = {
-        'KrÃ¤hensee'       :['Alpha'],
+        'Krähensee'       :['Alpha'],
     },
         newrights = rights[wgTitle];
  
@@ -39,7 +39,7 @@ $(function() {
 });
 $(function() {
     var rights = {
-        'Fab-men'       :['RudelgrÃ¼nder'],
+        'Fab-men'       :['Rudelgründer'],
     },
         newrights = rights[wgTitle];
  

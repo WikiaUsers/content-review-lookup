@@ -1,7 +1,7 @@
 /*
 * Nuke
-* Extens√£o Nuke com engenharia reversa
-* https://www.mediawiki.org/wiki/Extension:Nuke √© a p√°gina da extens√£o oficial do MW
+* Extens„o Nuke com engenharia reversa
+* https://www.mediawiki.org/wiki/Extension:Nuke È a p·gina da extens„o oficial do MW
 * @author Ozank Cx
 * @todo - implementar a API do usercontribs se a Wikia atualizar para o MW 1.23+
 */
@@ -33,10 +33,10 @@ var self = {
  
 		if ($.getUrlVar('nukeuser')) {
 			var user = $.getUrlVar('nukeuser'),
-			deleteReason = window.nukeDeleteReason || "Remo√ß√£o em massa de p√°ginas criadas por " + user.replace(/_/g,' ');
+			deleteReason = window.nukeDeleteReason || "RemoÁ„o em massa de p·ginas criadas por " + user.replace(/_/g,' ');
  
-			$('#mw-content-text p').html('<a href="' + config.wgArticlePath + 'Special:Blankpage?blankspecial=nuke">Alternar para o formul√°rio principal do Nuke</a><br/>As seguintes p√°ginas foram criadas por <a href="' + config.wgArticlePath + 'Especial:Contribui\u00e7\u00f5es/' + user + '">' + user.replace(/_/g,' ') + '</a>; coloque um coment√°rio e aperte o bot√£o para exclu√≠-las.<br/>Raz√£o para a exclus√£o: <input style="width: 400px" type="text" id="nuke-delete-reason" value="' + deleteReason + '"/><br/><a class="wikia-button nuke-submit">Excluir</a><div id="nuke-status"/><ul id="nuke-query-results"></ul><a class="wikia-button nuke-submit">Excluir</a>');
-			$('#nuke-status').html('Obtendo p√°ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
+			$('#mw-content-text p').html('<a href="' + config.wgArticlePath + 'Special:Blankpage?blankspecial=nuke">Alternar para o formul·rio principal do Nuke</a><br/>As seguintes p·ginas foram criadas por <a href="' + config.wgArticlePath + 'Especial:Contribui\u00e7\u00f5es/' + user + '">' + user.replace(/_/g,' ') + '</a>; coloque um coment·rio e aperte o bot„o para excluÌ-las.<br/>Raz„o para a exclus„o: <input style="width: 400px" type="text" id="nuke-delete-reason" value="' + deleteReason + '"/><br/><a class="wikia-button nuke-submit">Excluir</a><div id="nuke-status"/><ul id="nuke-query-results"></ul><a class="wikia-button nuke-submit">Excluir</a>');
+			$('#nuke-status').html('Obtendo p·ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
  
 			API.get({
 			action: 'query',
@@ -67,22 +67,22 @@ var self = {
 						}
 					}
 					if (!$('.nuke-query-result').length)
-						self.outputError("Nenhuma contribui√ß√£o do usu√°rio encontrada");
+						self.outputError("Nenhuma contribuiÁ„o do usu·rio encontrada");
 					else {
 						if (images.length > 0)
 							self.displayImages(images);
 					}
 				}
 				else
-					self.outputError("Falha ao obter as contribui√ß√µes do usu√°rio: " + d.error.code);
+					self.outputError("Falha ao obter as contribuiÁıes do usu·rio: " + d.error.code);
 			})
 			.fail(function() {
-				self.outputError("Falha ao obter as contribui√ß√µes do usu√°rio");
+				self.outputError("Falha ao obter as contribuiÁıes do usu·rio");
 			});
 			$('#nuke-status').empty();
 		}
 		else {
-			$('#mw-content-text p').html('Esta ferramenta permite a exclus√£o em massa de p√°ginas recentemente adicionadas por um determinado usu√°rio ou endere√ßo de IP.<br/>Digite o nome de usu√°rio ou endere√ßo IP para obter uma lista de p√°ginas para excluir ou deixe em branco para todos os usu√°rios.<br/>Nome de usu√°rio, endere√ßo de IP ou em branco: <input type="text" id="nuke-username"/><br/>Padr√£o para o nome da p√°gina: <input type="text" id="nuke-match"/><br/>Limitar ao namespace: <select id="nuke-namespace"><option value="All">Todos</option><option value="Main" ns="0">Principal</option><option value="Project" ns="4">Project</option><option value="Project talk" ns="5">Project talk</option><option value="Talk" ns="1">Discuss√£o</option><option value="User" ns="2">Usu√°rio</option><option value="User talk" ns="3">Usu√°rio Discuss√£o</option><option value="File" ns="6">Arquivo</option><option value="File talk" ns="7">Arquivo Discuss√£o</option><option value="Template" ns="10">Predefini√ß√£o</option><option value="Template talk" ns="11">Predefini√ß√£o Discuss√£o</option><option value="Help" ns="12">Ajuda</option><option value="Help talk" ns="13">Ajuda Discuss√£o</option><option value="Category" ns="14">Categoria</option><option value="Category talk" ns="15">Categoria Discuss√£o</option></select><br/>N√∫mero m√°ximo de p√°ginas: <input type="text" id="nuke-max" value="500"/><br/><a class="wikia-button" id="nuke-rc">V√°</a><br/><div id="nuke-status"/><div id="nuke-query-results"/>');
+			$('#mw-content-text p').html('Esta ferramenta permite a exclus„o em massa de p·ginas recentemente adicionadas por um determinado usu·rio ou endereÁo de IP.<br/>Digite o nome de usu·rio ou endereÁo IP para obter uma lista de p·ginas para excluir ou deixe em branco para todos os usu·rios.<br/>Nome de usu·rio, endereÁo de IP ou em branco: <input type="text" id="nuke-username"/><br/>Padr„o para o nome da p·gina: <input type="text" id="nuke-match"/><br/>Limitar ao namespace: <select id="nuke-namespace"><option value="All">Todos</option><option value="Main" ns="0">Principal</option><option value="Project" ns="4">Project</option><option value="Project talk" ns="5">Project talk</option><option value="Talk" ns="1">Discuss„o</option><option value="User" ns="2">Usu·rio</option><option value="User talk" ns="3">Usu·rio Discuss„o</option><option value="File" ns="6">Arquivo</option><option value="File talk" ns="7">Arquivo Discuss„o</option><option value="Template" ns="10">PredefiniÁ„o</option><option value="Template talk" ns="11">PredefiniÁ„o Discuss„o</option><option value="Help" ns="12">Ajuda</option><option value="Help talk" ns="13">Ajuda Discuss„o</option><option value="Category" ns="14">Categoria</option><option value="Category talk" ns="15">Categoria Discuss„o</option></select><br/>N˙mero m·ximo de p·ginas: <input type="text" id="nuke-max" value="500"/><br/><a class="wikia-button" id="nuke-rc">V·</a><br/><div id="nuke-status"/><div id="nuke-query-results"/>');
 		
 			$('#nuke-rc').click(function() {
 				if ($(this).attr('disabled')) return;
@@ -112,7 +112,7 @@ var self = {
 					$('#mw-content-text > p:nth-child(1) > br:nth-child(14)').remove();
 				}
  
-				$('#nuke-status').html('Obtendo p√°ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
+				$('#nuke-status').html('Obtendo p·ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
  
 				API.get({	
 					action: 'query',
@@ -145,7 +145,7 @@ var self = {
 							}
 						}
 						if (!$('.nuke-query-result').length)
-							self.outputError("Nenhuma mudan√ßa recente encontrada");
+							self.outputError("Nenhuma mudanÁa recente encontrada");
 						else {
 							$('#nuke-query-results').before('<br/><a class="wikia-button nuke-submit">Delete</a>').after('<a class="wikia-button nuke-submit">Excluir</a>');					 
 							$('#nuke-status').empty();
@@ -154,10 +154,10 @@ var self = {
 						}
 					}
 					else
-						self.outputError("Falha ao obter as mudan√ßas recentes: " + d.error.code);
+						self.outputError("Falha ao obter as mudanÁas recentes: " + d.error.code);
 				})
 				.fail(function() {
-					self.outputError("Falha ao obter as mudan√ßas recentes");
+					self.outputError("Falha ao obter as mudanÁas recentes");
 				});
 				$('#nuke-status').empty();
 				$(this).removeAttr('disabled');
@@ -168,7 +168,7 @@ var self = {
 			if (!$('.nuke-query-result').length || $(this).attr('disabled')) return;
 		
 			$('.nuke-submit').attr('disabled','disabled');
-			$('#nuke-status').html('Excluindo p√°ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
+			$('#nuke-status').html('Excluindo p·ginas... por favor, aguarde <img src="' + config.stylepath + '/common/progress-wheel.gif"/>');
 			$('.nuke-title-check:checked').each(function(i) {
 				var title = $(this).parent().find('a').text();
 				setTimeout(function() {
@@ -181,7 +181,7 @@ var self = {
 					})
 					.done(function(d) { 
 						if (!d.error) {
-							console.log('Exclus√£o de ' + title + ' bem-sucedida!');
+							console.log('Exclus„o de ' + title + ' bem-sucedida!');
 						} 
 						else {
 							console.log('Falha ao excluir ' + title + ': '+ d.error.code);

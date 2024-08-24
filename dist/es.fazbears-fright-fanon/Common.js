@@ -1,9 +1,9 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /* AutoRefreshing RecentChanges and WikiActivity */
  
-var AjaxRCRefreshText = 'Act. autom√°t.';
-var AjaxRCRefreshHoverText = 'Refrescar autom√°ticamente';
+var AjaxRCRefreshText = 'Act. autom·t.';
+var AjaxRCRefreshHoverText = 'Refrescar autom·ticamente';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 var ajaxRefresh = 20000;
 importScriptPage('AjaxRC/code.js', 'dev');

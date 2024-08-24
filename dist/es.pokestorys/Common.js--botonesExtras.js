@@ -20,7 +20,7 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "Marcar el art铆culo en construcci贸n",
+     "speedTip": "Marcar el art韈ulo en construcci髇",
      "tagOpen": "\{\{Construccion|",
      "tagClose": "\}\}",
      "sampleText": "tu nombre de usuario"};
@@ -36,7 +36,7 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
      "speedTip": "Achicar",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto peque帽o"};
+     "sampleText": "Texto peque駉"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20101231031645/central/images/e/ed/B.sub.PNG",
@@ -70,7 +70,7 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
      "speedTip": "Encuesta",
      "tagOpen": "<Poll>",
      "tagClose": "\n</poll>",
-     "sampleText": "\nNombre de la encuesta\nOpci贸n 1\nOpci贸n 2\nOpci贸n 3"};
+     "sampleText": "\nNombre de la encuesta\nOpci髇 1\nOpci髇 2\nOpci髇 3"};
 
 
 }

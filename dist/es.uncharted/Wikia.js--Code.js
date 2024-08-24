@@ -1,6 +1,6 @@
 {{:MediaWiki:Common.js/Code.js}}
 /*<pre> MediaWiki:Wikia.js v1.12 */
-/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
 window.SkinNotification = {
 	article: 'WikiDex:Acerca del cambio de apariencia de WikiDex',
 	key: 'NfSkin',
@@ -19,7 +19,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a WikiDex. Descubre <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">c√≥mo volver a verla como antes</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Wikia ha forzado el cambio de apariencia a WikiDex. Descubre <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">cÛmo volver a verla como antes</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(SkinNotification.dismiss);
 	},
@@ -37,7 +37,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver WikiDex con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
  
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que sale en el navegador');
+		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que sale en el navegador');
 	});
 }
  
@@ -48,7 +48,7 @@ function agregarEnlaceSkinMenu() {
 	var surl = SkinPropagation.getURL(url);
 	$('#WikiHeader').children('nav').children('ul').append('<li><a href="'+surl+'" id="mn-changeskin" title="Ver WikiDex con la piel Monobook">Usar Monobook</a></li>');
 	$('#mn-changeskin').click(function(){
-		return confirm('La apariencia cambiar√° temporalmente a Monobook, el estilo anterior, pero con muchas m√°s funcionalidades y m√°s accesible. Si quieres volverlo a ver como ahora tendr√°s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
+		return confirm('La apariencia cambiar· temporalmente a Monobook, el estilo anterior, pero con muchas m·s funcionalidades y m·s accesible. Si quieres volverlo a ver como ahora tendr·s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
 	});
 }
  
@@ -76,13 +76,13 @@ function WikiDex_WikiaSkinLoad() {
 				$('a.wikia-button.upphotos').unbind('click',UploadPhotos.showDialog);
 			}
 		});
-		$(function() { // Reescribe el enlace de crear art√≠culo para que apunte a la ayuda. This does not block core functionality
-			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_art√≠culo'));
+		$(function() { // Reescribe el enlace de crear artÌculo para que apunte a la ayuda. This does not block core functionality
+			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_artÌculo'));
 		});
 	}
 }
  
-// Parche para la b√∫squeda
+// Parche para la b˙squeda
 $(function() {
 	var f = $('#WikiaSearch');
 	if (f.attr('action').indexOf('index.php') == 0) {

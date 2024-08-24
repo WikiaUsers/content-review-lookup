@@ -128,11 +128,11 @@ $("div.ImageStack").each( function () {
 	if ( !length ) return true;
     
 	$counter = $('<div class="ImageStackCounter">');
-	$leftLink  = $('<a>', { href: '#', text : '<Â ' }).click( function() {
+	$leftLink  = $('<a>', { href: '#', text : '< ' }).click( function() {
 		toggleImage ( -1, loop );
 		return false;
 	});
-	$rightLink = $('<a>', { href: '#', text : 'Â >' }).click( function() {
+	$rightLink = $('<a>', { href: '#', text : ' >' }).click( function() {
 		toggleImage ( 1, loop );
 		return false;
 	});

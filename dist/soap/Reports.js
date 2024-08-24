@@ -731,6 +731,10 @@
 
 				return;
 			}
+			
+			//remove stuff like .../wiki/User:Vandal, so the subsequent regex expressions that use the wikiurl field can safely ignore them
+			document.getElementById('wikiurl').value = 'https://' + url;
+
 			fetch('https://' + url + '/api.php?' + new URLSearchParams({
 				action: 'query',
 				meta: 'siteinfo',

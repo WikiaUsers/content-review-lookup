@@ -1,4 +1,4 @@
-//ThÃªm mÃ£ ngoÃ i
+//Thêm mã ngoài
 importArticles({
     type: "style",
     article: "MediaWiki:Customizing.css"

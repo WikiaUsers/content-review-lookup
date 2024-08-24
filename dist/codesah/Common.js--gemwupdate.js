@@ -1,6 +1,6 @@
 //<nowiki>
 
-//Parte de este script ha sido copiada de [[Usuario:Quarenon/gemwupdate.js]]. El crÃ©dito es de Quarenon por escribir dicho cÃ³digo.
+//Parte de este script ha sido copiada de [[Usuario:Quarenon/gemwupdate.js]]. El crédito es de Quarenon por escribir dicho código.
 
 var button;
 addOnloadHook(function() {
@@ -27,11 +27,11 @@ function millbill(n) {
 
 function GEReqsDone(failed) {
 	if (!failed) {
-		alert('Ha ocurrido un error mientras se guardaba la ediciÃ³n.');
+		alert('Ha ocurrido un error mientras se guardaba la edición.');
 		button.disabled = false;
 		button.innerHTML = 'Actualizar precio';
 	} else {
-		alert('Â¡Gracias por tu colaboraciÃ³n! La pÃ¡gina ahora se recargarÃ¡...');
+		alert('¡Gracias por tu colaboración! La página ahora se recargará...');
 		document.location.replace(wgScript + '?title=' + encodeURIComponent(wgPageName) + '&action=purge');
 	}
 }
@@ -49,7 +49,7 @@ function updateGEPrice() {
 		}
 		window.price = pricelist[unixnow+''];
 		if (price == 0) {
-			price = parseInt(prompt("La base de datos oficial del GM no tiene un precio archivado en este momento. Por favor revise el precio del objeto dentro del juego, e insÃ©rtelo en la pÃ¡gina."));
+			price = parseInt(prompt("La base de datos oficial del GM no tiene un precio archivado en este momento. Por favor revise el precio del objeto dentro del juego, e insértelo en la página."));
 			if (price%1 != 0) {
 				button.disabled = false;
 				button.innerHTML = 'Actualizar precio';
@@ -94,9 +94,9 @@ function submitUpdates(vol) {
 		}
 		var cDate = content.match(/\|Fecha\s*=\s*([^\|\n]+)/)[0].replace(/\|Fecha\s*=\s*/,'');
 		var updated = content.replace(/\|Precio\s*=\s*([\d,]+)/, '|Precio='+addCommas(price))
-			.replace(/\|Ãšltimo\s*=\s*([\d,]+)/, '|Ãšltimo='+cPrice)
+			.replace(/\|Último\s*=\s*([\d,]+)/, '|Último='+cPrice)
 			.replace(/\|Fecha\s*=\s*([^\|\n]+)/, '|Fecha={{subst:#time:H:i j "{{subst:#switch:{{subst:#time:M}}|ene=jan|abr=apr|ago=aug|dic=dec|#default={{#time:M}}}}" Y "(UTC)"}}')
-			.replace(/\|ÃšltimaFecha\s*=\s*([^\|\n]+)/, '|ÃšltimaFecha='+cDate);
+			.replace(/\|ÚltimaFecha\s*=\s*([^\|\n]+)/, '|ÚltimaFecha='+cDate);
 		if (vol) {
 			updated = updated.replace(/\|Volumen\s*=\s*([\d,\.]+)/,'|Volumen='+vol)
 				.replace(/\|FechaVolumen\s*=\s*([^\|\n]+)/, '|FechaVolumen={{subst:#time:H:i j "{{subst:#switch:{{subst:#time:M}}|ene=jan|abr=apr|ago=aug|dic=dec|#default={{#time:M}}}}" Y "(UTC)"}}');
@@ -104,7 +104,7 @@ function submitUpdates(vol) {
 		callAPI({
 			'minor': 'yes',
 			'bot': 'yes',
-			'summary': 'Data GEMW actualizada vÃ­a script en la pÃ¡gina Exchange:.',
+			'summary': 'Data GEMW actualizada vía script en la página Exchange:.',
 			'action': 'edit',
 			'title': wgPageName,
 			'basetimestamp': page.revisions[0].timestamp,
@@ -112,7 +112,7 @@ function submitUpdates(vol) {
 			'token': page.edittoken,
 			'text': updated
 		}, 'POST', function(response) {
-			if (response.edit.result == 'Ã‰xito') {
+			if (response.edit.result == 'Éxito') {
 				GEReqsDone()
 			} else {
 				GEReqsDone(true);

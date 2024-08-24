@@ -19,7 +19,7 @@
  
 		function notify(json) {
 			var messagesNumber = json.count;
-			var messageText = "VocÃª tem " + (messagesNumber) + " mensagens nÃ£o-lidas" + (messagesNumber > 1 || messagesNumber === 0 ? "s" : "") + ".";
+			var messageText = "Você tem " + (messagesNumber) + " mensagens não-lidas" + (messagesNumber > 1 || messagesNumber === 0 ? "s" : "") + ".";
 			$("#messages #count").html(messageText);
 		}
  

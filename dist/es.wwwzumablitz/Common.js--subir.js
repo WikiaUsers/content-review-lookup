@@ -1,5 +1,5 @@
 /*notificacio*/
-var WikiaNotificationMessage = "Mario party esta en proceso de fusiÃ³n con <a href='/wiki/c:es.mario'>Super Mario Wiki</a>, asÃ­ que se le pide a los usuarios que revisas dicha wiki antes de editar un articulo";
+var WikiaNotificationMessage = "Mario party esta en proceso de fusión con <a href='/wiki/c:es.mario'>Super Mario Wiki</a>, así que se le pide a los usuarios que revisas dicha wiki antes de editar un articulo";
 var expiry = 0;
 importArticles({
 	type: 'script',

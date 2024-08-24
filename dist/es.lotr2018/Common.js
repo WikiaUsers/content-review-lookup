@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 switch (mw.config.get('wgPageName')) {
     case 'Los_Adoradores_del_Fuego':
         $('head').append('<meta name="twitter:image" content="https://vignette.wikia.nocookie.net/lotr2018/images/d/d9/Splendor_of_moria_by_annewipf-dajgoq7.jpg/revision/latest?cb=20180326111855&path-prefix=es" />');

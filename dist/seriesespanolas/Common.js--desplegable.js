@@ -1,6 +1,6 @@
  * Tablas colapsibles (De Wikipedia - en)
  *
- *  Permite ver sÃ³lo el encabezado de las tablas, dejando el contenido oculto
+ *  Permite ver sólo el encabezado de las tablas, dejando el contenido oculto
  *               Ver [[wikipedia:Wikipedia:NavFrame]].
  */
  

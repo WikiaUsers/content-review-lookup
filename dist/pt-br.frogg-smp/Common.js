@@ -86,7 +86,7 @@ function navPage($book, mod) {
   $book.attr("data-actual-page", newPage);
   $book.find(".paginated-book__content.--active").removeClass("--active");
   $book.find(".paginated-book__content-container .paginated-book__content:nth-child(" +  newPage + ")").addClass("--active");
-  $book.find(".paginated-book__page-indicator").text("PÃ¡gina " + newPage + " de " + contents);
+  $book.find(".paginated-book__page-indicator").text("Página " + newPage + " de " + contents);
 }
 
 $(".paginated-book__prev").on("click", function(event) {

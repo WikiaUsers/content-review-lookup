@@ -45,7 +45,7 @@ window.UserTagsJS = {
 		chatmoderator2: { u: 'Moderadora del chat' },
 		sysop: { u: 'Administrador' },
 		sysop2: { u: 'Administradora' },
-		bureaucrat: { u: 'BurÃ³crata' },
+		bureaucrat: { u: 'Burócrata' },
 		founder: { u: 'Fundador' },
 		founder2: { u: 'Fundadora' },
 	}

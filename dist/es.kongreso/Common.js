@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 // -------------------------------------------------------------------------------
 //  Force Preview  JavaScript code - Start
@@ -51,7 +51,7 @@ function forcePreview()
   if( !saveButton )
     return;
   saveButton.disabled = true;
-  saveButton.value = "Grabar la p√°gina (¬°previsualiza antes!)";
+  saveButton.value = "Grabar la p·gina (°previsualiza antes!)";
   saveButton.style.fontWeight = "normal";
   document.getElementById("wpPreview").style.fontWeight = "bold";
 }
@@ -79,14 +79,14 @@ function UserNameReplace() {
 addOnloadHook( UserNameReplace );
 
 /** Funcion de expansion de el foro
- * A√±ade la opci√≥n "Dejar un mensaje" en p√°ginas de foro.
+ * AÒade la opciÛn "Dejar un mensaje" en p·ginas de foro.
  */
 function foroExtra() {
   if(wgNamespaceNumber != 110) return;
   var item = document.createElement("li");
   item.setAttribute("id", "control_addsection");
   item.setAttribute("class", "");
-  item.innerHTML = '<img src="https://images.wikia.nocookie.net/__cb21710/common/skins/common/blank.gif" class="sprite talk"><a rel="nofollow" id="ca-addsection" href="/index.php?title='+wgPageName+'&amp;action=edit&amp;section=new&amp;editintro=Template:Forumhelp&amp;preloadtitle=RE: '+wgTitle+'" title="Inicia una nueva secci√≥n [+]" accesskey="+">Dejar un mensaje</a>';
+  item.innerHTML = '<img src="https://images.wikia.nocookie.net/__cb21710/common/skins/common/blank.gif" class="sprite talk"><a rel="nofollow" id="ca-addsection" href="/index.php?title='+wgPageName+'&amp;action=edit&amp;section=new&amp;editintro=Template:Forumhelp&amp;preloadtitle=RE: '+wgTitle+'" title="Inicia una nueva secciÛn [+]" accesskey="+">Dejar un mensaje</a>';
   var controls = document.getElementById("page_controls");
   controls.insertBefore(item, controls.childNodes[1]);
 

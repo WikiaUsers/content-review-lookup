@@ -2,7 +2,7 @@ importScriptPage('ChatOptions/code.js', 'dev');
 importScriptPage('ChatTags/code.js', 'dev');
 var chatags = { images: true, videos: true };
 
-/***ColecciÃ³n de botones de usuarios***/
+/***Colección de botones de usuarios***/
 importArticles({
     type: 'script',
     articles: [

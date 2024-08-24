@@ -1,5 +1,5 @@
 /* WikiSyntax
- * VersiÃ³n		1.0.2
+ * Versión		1.0.2
  * Date			26/02/2014
  * Author		Jose Buelvas Santos
  * Licence		Creative Commons V4

@@ -334,7 +334,7 @@
 					
 					dispatcher = cases[ match[ 3 ] ];
 					if ( typeof dispatcher !== "function" ) { 
-						result += 'Â¿' + match[3] + '?';
+						result += '¿' + match[3] + '?';
 						continue;
 					}
 					

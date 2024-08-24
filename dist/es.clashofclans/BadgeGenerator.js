@@ -26,7 +26,7 @@
  
     o.tags = {
         'background': 'Fondo',
-        'pg': 'PatrÃ³n',
+        'pg': 'Patrón',
         'border': 'Borde'
     };
  

@@ -81,7 +81,7 @@ $(function() {
             name = result[0];
             hash = result[1];
         }
-        return escapeHtml(name) + ((hash !== null) ? " Â» " + escapeHtml(hash) : "");
+        return escapeHtml(name) + ((hash !== null) ? " » " + escapeHtml(hash) : "");
     }
     
     // Implementation of initializing grid items.

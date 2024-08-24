@@ -1,4 +1,4 @@
-// TraÃ­do desde [[:es.mcw:MediaWiki:Gadget-editor2010.js]]
+// Traído desde [[:es.mcw:MediaWiki:Gadget-editor2010.js]]
 // <nowiki>
 ;(function($, mw) {
 	'use strict';
@@ -28,10 +28,10 @@
 		],
 		[
 			'code',
-			'CÃ³digo',
+			'Código',
 			'<code>',
 			'</code>',
-			'Texto en formato de cÃ³digo',
+			'Texto en formato de código',
 			'.section-advanced > .group-insert'
 		],
 		[

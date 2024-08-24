@@ -1,5 +1,5 @@
 // <pre>
-/* * DisableFirstSubmit v2.4: Clase para deshabilitar el bot√≥n de guardar la primera vez que se edita un art√≠culo. * No lo deshabilita f√≠sicamente, pero en lugar de guardar avisar√° al usuario con un mensaje que obtiene de una p√°gina del wiki. * Copyright (C) 2009 - 2012 Jes√∫s Mart√≠nez Novo ([[User:Ciencia Al Poder]]) * This program is free software; you can redistribute it and/or modify *   it under the terms of the GNU General Public License as published by *   the Free Software Foundation; either version 2 of the License, or *   (at your option) any later version * @requires: jquery.ui.dialog, mediawiki.api */
+/* * DisableFirstSubmit v2.4: Clase para deshabilitar el botÛn de guardar la primera vez que se edita un artÌculo. * No lo deshabilita fÌsicamente, pero en lugar de guardar avisar· al usuario con un mensaje que obtiene de una p·gina del wiki. * Copyright (C) 2009 - 2012 Jes˙s MartÌnez Novo ([[User:Ciencia Al Poder]]) * This program is free software; you can redistribute it and/or modify *   it under the terms of the GNU General Public License as published by *   the Free Software Foundation; either version 2 of the License, or *   (at your option) any later version * @requires: jquery.ui.dialog, mediawiki.api */
 (function($) {
 	var _dlg = null,
 		_init = function() {
@@ -37,7 +37,7 @@
 			}
 			_dlg = $('<div></div>').html(data.parse.text['*']).dialog({
 				modal: true,
-				title: 'Atenci√≥n',
+				title: 'AtenciÛn',
 				width: $(document).width()*0.75,
 				close: _end
 			});

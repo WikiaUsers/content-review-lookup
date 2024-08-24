@@ -1,17 +1,17 @@
-// Variablen zum VerÃ¤ndern der Einstellungen
-var Listentiefe    = 4; // Variable bis zu welcher Ãœberschrift (z.B. 3 = h3) ins Inhaltsverzeichnis aufgenommen werden soll.
-var Anzahl_Zeichen = 0; // BeschrÃ¤nkt die angezeigten Zeichen (0 = unendlich lang, >0 = maximale Anz. Zeichen)
+// Variablen zum Verändern der Einstellungen
+var Listentiefe    = 4; // Variable bis zu welcher Überschrift (z.B. 3 = h3) ins Inhaltsverzeichnis aufgenommen werden soll.
+var Anzahl_Zeichen = 0; // Beschränkt die angezeigten Zeichen (0 = unendlich lang, >0 = maximale Anz. Zeichen)
 
 // Eigentlicher Code
-var h = document.getElementsByClassName("mw-headline"); // Liste anlegen mit allen Ãœberschriftselementen (von Wikia-Artikeln)
-for ( element=0; element<h.length; element++ )  // Alle gefundenen EintrÃ¤ge einzeln aus der Liste auswerten
+var h = document.getElementsByClassName("mw-headline"); // Liste anlegen mit allen Überschriftselementen (von Wikia-Artikeln)
+for ( element=0; element<h.length; element++ )  // Alle gefundenen Einträge einzeln aus der Liste auswerten
 {
   AddEntryToTOC(element);
   AddNavigationItems(element);
 }
 
 // Funktionen, die von der Hauptroutine verwendet werden 
-// (Ist Ã¼bersichtlicher sie auszulagern - und werden hÃ¤ufig gebraucht - zumindest auf dieser Seite)
+// (Ist übersichtlicher sie auszulagern - und werden häufig gebraucht - zumindest auf dieser Seite)
 
 function AddEntryToTOC(Element)
 {
@@ -29,12 +29,12 @@ function AddNavigationItems(Element)
   NavigationsObjekt.alt             = "TWD Hand";
   NavigationsObjekt.float           = "right";
 
-  // Link erstellen und mit Bild verknÃ¼pfen
+  // Link erstellen und mit Bild verknüpfen
   var NavigationsLink               = document.createElement("a");
   NavigationsLink.href              = document.URL + "#" + Element.id;
   NavigationsLink.appendChild(NavigationsObjekt);
 
-  // VerknÃ¼pftes Linkbild ans Ende der Ãœberschrift setzen (rechts)
+  // Verknüpftes Linkbild ans Ende der Überschrift setzen (rechts)
   Element.insertAfter(NavigationsLink, Element.lastChild);
 
   return true;

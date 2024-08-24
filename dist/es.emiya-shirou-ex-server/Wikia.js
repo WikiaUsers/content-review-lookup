@@ -8,10 +8,10 @@ UserTagsJS.modules.newuser = {
 	namespace: 0
 };
 
-/* Categorizar imÃ¡genes */
+/* Categorizar imágenes */
 
-if(wgPageName == 'Especial:SubirArchivo' || wgPageName == 'Especial:SubirMÃºltiplesArchivos') {
-    $('#wpUploadDescription').val('[[CategorÃ­a:ImÃ¡genes]]');
+if(wgPageName == 'Especial:SubirArchivo' || wgPageName == 'Especial:SubirMúltiplesArchivos') {
+    $('#wpUploadDescription').val('[[Categoría:Imágenes]]');
 }
 
 /* Scripts importados */

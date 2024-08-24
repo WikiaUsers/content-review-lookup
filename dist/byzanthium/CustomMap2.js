@@ -13,7 +13,7 @@ var modificator = 1;
 
 if(document.getElementById('custommap_content')){
   var local = document.getElementById('custommap_location').innerHTML;
-  var Woerter = local.split("Â°");
+  var Woerter = local.split("°");
   var kll = "";
   for (var i = 0; i < Woerter.length; i++){
 	var Woerters = Woerter[i].split(";");

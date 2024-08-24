@@ -1,1 +1,1 @@
-/* JavaScript som skrivs hÃ¤r kÃ¶rs varje gÃ¥ng en anvÃ¤ndare laddar en sida. */
+/* JavaScript som skrivs här körs varje gång en användare laddar en sida. */

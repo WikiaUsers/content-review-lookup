@@ -44,7 +44,7 @@ function showTip(e) {
     }
     $tfb.load(url,function () {
       if ($t != activeHoverLink) return;
-      if ($tfb.html() == "") $tfb.html('<div class="tooltip-content"><b>Error</b><br />Este objetivo no tiene ningÃºn tooltip<br />o no estaba destinado a tenerlo.</div>');
+      if ($tfb.html() == "") $tfb.html('<div class="tooltip-content"><b>Error</b><br />Este objetivo no tiene ningún tooltip<br />o no estaba destinado a tenerlo.</div>');
       $tfb.find(".tooltip-content").css("display","");
       tipCache[url] = $tfb.html();
       displayTip(e);
@@ -56,7 +56,7 @@ function bindTT() {
   $t=$(this);
   $p=$t.parent();
   if ($p.hasClass("selflink") == false) {
-    $t.data("tt", $p.attr("title").replace(" (la pÃ¡gina no existe)","").replace("?","%3F")).hover(showTip,hideTip).mousemove(moveTip);
+    $t.data("tt", $p.attr("title").replace(" (la página no existe)","").replace("?","%3F")).hover(showTip,hideTip).mousemove(moveTip);
   }
 }
 

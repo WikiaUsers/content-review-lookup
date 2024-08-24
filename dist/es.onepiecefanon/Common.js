@@ -1,8 +1,8 @@
 /* Mensaje (desde http://es.onepiecefanon.wikia.com/wiki/MediaWiki:Common.js) */
 
 // AutoRefreshing RecentChanges and WikiActivity
-window.AjaxRCRefreshText = 'Act. autom√°t.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+window.AjaxRCRefreshText = 'Act. autom·t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 
 /* Botones extras */
@@ -18,9 +18,9 @@ window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCI√ìN [[",
+		"tagOpen": "#REDIRECCI”N [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del art√≠culo"
+		"sampleText": "Nombre del artÌculo"
 	};
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {

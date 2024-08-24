@@ -69,7 +69,7 @@ window.UserTagsJS = {
             'Adventure Mangle': ['exburo'],
             'EpicNachos102': ['exburo'],
             'Wc383193': ['exburo'],
-            'RenÃ© Descartes': ['exburo'],
+            'René Descartes': ['exburo'],
             'SpiralFrost': ['exburo']
         }
     },

@@ -1,2 +1,2 @@
-/* Qualquer JavaScript aqui ser√° carregado para usu√°rios que usam o site m√≥vel */
+/* Qualquer JavaScript aqui ser· carregado para usu·rios que usam o site mÛvel */
 mw.loader.using('mobile.site.styles');

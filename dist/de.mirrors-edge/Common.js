@@ -1,10 +1,10 @@
-/* JavaScript an dieser Stelle wirkt sich auf alle Skins fÃ¼r jeden Benutzer aus. */
+/* JavaScript an dieser Stelle wirkt sich auf alle Skins für jeden Benutzer aus. */
 /* Siehe auch: [[MediaWiki:Wikia.js]] und [[MediaWiki:Monobook.js]] */
 /* <pre><nowiki> */
  
 // ================================================================
 // ANFANG - Spezial:Hochladen
-// EingefÃ¼hrt, um ein korrektes Lizenzieren zu fÃ¶rdern.
+// Eingeführt, um ein korrektes Lizenzieren zu fördern.
 // ================================================================
  
 // Automatisches Einbinden der Vorlage:Dateiinfo
@@ -22,7 +22,7 @@ $(function preloadUploadDesc() {
  
 // ================================================================
 // ANFANG - Collapsible tables
-// Dieses Skript von Wikipedia ermÃ¶glicht u.a. das Einklappen von Navboxen.
+// Dieses Skript von Wikipedia ermöglicht u.a. das Einklappen von Navboxen.
 // Autoren: http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 // ================================================================
  

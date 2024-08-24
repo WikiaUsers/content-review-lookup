@@ -1,17 +1,17 @@
-/* AÃ±adir botones extra de ediciÃ³n */
+/* Añadir botones extra de edición */
 if (mwCustomEditButtons) {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/aiura/es/images/f/fe/Personaje_mujer.png",
      "speedTip": "Insertar infobox de personaje femenino",
      "tagOpen": "{{Personaje infobox/F\n|Nombre= ",
-     "tagClose": "\n|Imagen= \n|Debut= \n|Pelo= \n|Ojos= \n|Familia= \n|OcupaciÃ³n= \n|Seiyu= \n}}",
+     "tagClose": "\n|Imagen= \n|Debut= \n|Pelo= \n|Ojos= \n|Familia= \n|Ocupación= \n|Seiyu= \n}}",
      "sampleText": ""};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
      "speedTip": "Insertar infobox de personaje masculino",
      "tagOpen": "{{Personaje infobox/M\n|Nombre= ",
-     "tagClose": "\n|Imagen= \n|Debut= \n|Pelo= \n|Ojos= \n|Familia= \n|OcupaciÃ³n= \n|Seiyu= \n}}",
+     "tagClose": "\n|Imagen= \n|Debut= \n|Pelo= \n|Ojos= \n|Familia= \n|Ocupación= \n|Seiyu= \n}}",
      "sampleText": ""};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {

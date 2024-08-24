@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird fÃ¼r alle Benutzer geladen. */
+/* Das folgende JavaScript wird für alle Benutzer geladen. */
 
 window.ARKCodeI18n = {
 	text: 'Eingabe',
@@ -9,7 +9,7 @@ window.ARKCodeI18n = {
 };
 
 window.CookingCalcI18n = {
-	drink: 'GetrÃ¤nk',
+	drink: 'Getränk',
 	food: 'Nahrung',
 	health: 'Leben',
 	ingredient: 'Zutat',
@@ -28,7 +28,7 @@ window.CookingStatsI18n = [
 	'Mejobeere',
 	'Narcobeere',
 	'Stimbeere',
-	'GemÃ¼se',
+	'Gemüse',
 	'Aggeravic Pilz',
 	'Aquatic Pilz',
 	'Ascerbic Pilz',
@@ -37,7 +37,7 @@ window.CookingStatsI18n = [
 	'Samen',
 	'Seltene Blume',
 	'Honig einer riesigen Biene',
-	'SÃ¼ÃŸer GemÃ¼sekuchen',
+	'Süßer Gemüsekuchen',
 	'Ei',
 	'Trockenfutter',
 	'Seife',
@@ -48,11 +48,11 @@ window.CookingStatsI18n = [
 	'Gekochter Fleisch/Fisch',
 	'Gekochtes Filet/Fischfilet/Hammel',
 	'Verdorbenes Fleisch',
-	'Menschliche FÃ¤kalien',
+	'Menschliche Fäkalien',
 	'Kleiner Kothaufen',
-	'MittelgroÃŸer Kothaufen',
-	'GroÃŸer/Riesiger Kothaufen',
-	'Snow Owl-GewÃ¼rge'
+	'Mittelgroßer Kothaufen',
+	'Großer/Riesiger Kothaufen',
+	'Snow Owl-Gewürge'
 ];
 
 window.CopyClipboardI18n = {
@@ -70,7 +70,7 @@ window.CloningCalculatorI18n = {
 
 window.ResourceMapsI18n = {
 	toggleAll: 'Alle ein- oder ausschalten',
-	toggleCaves: 'HÃ¶hlen ein- oder ausschalten',
+	toggleCaves: 'Höhlen ein- oder ausschalten',
 };
 
 importArticle({

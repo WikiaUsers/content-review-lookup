@@ -12,7 +12,7 @@ window.RevealAnonIP = {
 };
 importScriptPage('RevealAnonIP/usercode.js', 'dev');
  
-// Borrado r√°pido
+// Borrado r·pido
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
   'summary': 'Esbozo',
@@ -21,11 +21,11 @@ fdButtons[fdButtons.length] = {
   'summary': '[[Ayuda:Vandalismo|Vandalismo]]',
   'label': 'Vandalismo'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Aqu√≠ no pas√≥ nada',
+  'summary': 'AquÌ no pasÛ nada',
   'label': 'Yolo'};
 fdButtons[fdButtons.length] = {
-  'summary': 'A petici√≥n del mismo autor',
-  'label': 'A petici√≥n'};
+  'summary': 'A peticiÛn del mismo autor',
+  'label': 'A peticiÛn'};
 fdButtons[fdButtons.length] = {
   'summary': 'Duplicado',
   'label': 'duplicado'};

@@ -4,7 +4,7 @@
 
 var alertMessage;
 window.outputWarning = ''; //NSFW!!!
-window.badWords = (window.badWords || []).concat(["blocked-test", "bfd", "blumpkin", "pussy", "boner", "felch", "fuck", "shit", "bastard", "bitch", "faggot", "fag", "nigger", "cum", "fuq", "dafuq", "dick", "whore", "cunt", "stfu", "boob", "slut", "joder", "jodete", "jodido", "tetas", "pechos", "semen", "puta", "mierda", "coÃ±o", "nigga", "gilipollas", "cabrÃ³n", "fap", "fapear", "fapearse", "vagina", "penis", "rape", "bullock", "prick", "urbandictionary", "boku no pico", "horny", "fak", "fark", "faku", "porn", "asshole", "tits", "titties", "twat", "wank",]);
+window.badWords = (window.badWords || []).concat(["blocked-test", "bfd", "blumpkin", "pussy", "boner", "felch", "fuck", "shit", "bastard", "bitch", "faggot", "fag", "nigger", "cum", "fuq", "dafuq", "dick", "whore", "cunt", "stfu", "boob", "slut", "joder", "jodete", "jodido", "tetas", "pechos", "semen", "puta", "mierda", "coño", "nigga", "gilipollas", "cabrón", "fap", "fapear", "fapearse", "vagina", "penis", "rape", "bullock", "prick", "urbandictionary", "boku no pico", "horny", "fak", "fark", "faku", "porn", "asshole", "tits", "titties", "twat", "wank",]);
 
 $('#Write textarea').keydown(function(e) {
     if (e.keyCode == 13 && wordFilter() === true && mainRoom.active === true) {

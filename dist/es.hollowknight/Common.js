@@ -1,4 +1,4 @@
-/* Cualquier JavaScript aquÃ­ serÃ¡ cargado para todos los usuarios al cargar la pÃ¡gina. */
+/* Cualquier JavaScript aquí será cargado para todos los usuarios al cargar la página. */
 /* Importes (exclusivo para administradores) */
 if (mw.config.get("wgUserGroups").indexOf('sysop') > -1)
   importScriptPage('MediaWiki:AjaxRedirect/code.js', 'dev');

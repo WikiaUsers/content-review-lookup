@@ -1,1 +1,0 @@
-/* Custom Javascript for Special:Chat. */

@@ -13,18 +13,18 @@
  
 '''Extension de LiveRC'''
  
-Permet de rendre fonctionnels les caractÃ¨res spÃ©ciaux lors de l'Ã©dition + autres boutons dans la toolbar
+Permet de rendre fonctionnels les caractères spéciaux lors de l'édition + autres boutons dans la toolbar
  
 * Licence : ...?
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Dr Brains]]
-* DÃ©veloppement et maintenance :
+* Développement et maintenance :
  
  
-{{CatÃ©gorisation JS|LiveRC}}
+{{Catégorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
+if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
  
 if (wgPageName == LiveRC_PageTitle && (wgAction=="view"||wgAction=="purge")) {
     importScript("Mediawiki:Common.js/edit.js");

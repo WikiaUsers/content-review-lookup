@@ -317,7 +317,7 @@ if (!window.DisplayClockJS || typeof(window.DisplayClockJS.kill) !== 'function')
 
 				passFn = cases[m[3]];
 				if (typeof(passFn) !== 'function') {
-					result += 'Â¿' + m[3] + '?';
+					result += '¿' + m[3] + '?';
 					continue;
 				}
 				pass = passFn(date, yearstart);

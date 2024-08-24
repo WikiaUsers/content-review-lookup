@@ -29,7 +29,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' d√≠as ' + left
+  if(diff > 0) left = diff + ' dÌas ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -62,7 +62,7 @@ function checktimers() {
 }
 addOnloadHook(checktimers);
  
-/ * Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. * /
+/ * Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. * /
  
 // Rewrite of announcement display. (by Menidan)
 $ (function () {

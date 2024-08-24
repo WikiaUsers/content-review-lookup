@@ -12,16 +12,16 @@ $(function() {
  
     // ROLLBACK
  
- Â rights["Nightjoy"]    = ["Site Officer"],
- Â 
+  rights["Nightjoy"]    = ["Site Officer"],
+  
  
     // INACTIVE
 
- Â rights["EverBound"]      = ["Admin", "Inactive"];
+  rights["EverBound"]      = ["Admin", "Inactive"];
 
     // BUREAUCRAT
 
- Â rights["JustinDaOne"]      = ["Bureaucrat"];
+  rights["JustinDaOne"]      = ["Bureaucrat"];
  
   // END LIST OF ACCOUNTS GIVEN EXTRA USER RIGHTS ICONS
  

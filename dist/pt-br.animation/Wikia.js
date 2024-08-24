@@ -1,4 +1,4 @@
-/* NÃ£o modificar, galeria */
+/* Não modificar, galeria */
 $(function() {
 $('.wikinav2
 .WikiaPageHeader >

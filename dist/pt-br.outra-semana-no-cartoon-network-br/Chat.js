@@ -2,10 +2,10 @@ importArticles({
     type: 'script',
     articles: [
         'u:kocka:MediaWiki:Emoticons.js',
-        'u:dev:AjaxRC/code.js', // AtualizaÃ§Ã£o AutomÃ¡tica
+        'u:dev:AjaxRC/code.js', // Atualização Automática
         'u:dev:ChatHacks.js', // ChatHack
-        'u:dev:ChatPMs.js', // Chat MÃºltiplo
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // OpÃ§Ãµes MÃºltiplas
+        'u:dev:ChatPMs.js', // Chat Múltiplo
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // Opções Múltiplas
 
     ]
 });

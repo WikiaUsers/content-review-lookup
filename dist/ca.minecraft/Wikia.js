@@ -512,7 +512,7 @@ if (snowStorm.autoStart) {
 }
 FINAL de la neu */
 
-//// BotÃ³ "Block" del Xat ////
+//// Botó "Block" del Xat ////
 importArticles( {
     type: 'script',
     articles: [
@@ -520,7 +520,7 @@ importArticles( {
     ]
 } );
 
-//// Barra de navegaciÃ³ amb 5 nivells ////
+//// Barra de navegació amb 5 nivells ////
 importArticles({
     type: 'script',
     articles: [

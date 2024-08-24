@@ -1014,8 +1014,8 @@ function regexpEscape(s)
 	- Many thanks to Cedric Wartel for this fn
 =====================================================*/
 {
-	// traite les caractÃ¨res spÃ©ciaux [\^$.|?*+()
-	//remplace le carctÃ¨re c par \c
+	// traite les caractères spéciaux [\^$.|?*+()
+	//remplace le carctère c par \c
 	function escape(e)
 	{
 		a = new RegExp('\\'+e,'g');

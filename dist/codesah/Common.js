@@ -86,7 +86,7 @@ var expandCaption = "show";
 var maxHeight = 300;
  
 // Variables for Ajax Auto-Refresh (courtesy pcj)
-var ajaxPages = ["Especial:CambiosRecientes", "Especial:Seguimiento", "Especial:Registro", "Especial:Contribuciones", "Subforo:General", "CoDeSaH Wiki:Mantenimiento", "Especial:NuevasImÃ¡genes", "Especial:EstadÃ­sticas", "Especial:PÃ¡ginasNuevas", "Especial:ListaImÃ¡genes", "Especial:Registro/move", "CategorÃ­a:Speedy_deletion_candidates", "CategorÃ­a:Speedy_move_candidates"];
+var ajaxPages = ["Especial:CambiosRecientes", "Especial:Seguimiento", "Especial:Registro", "Especial:Contribuciones", "Subforo:General", "CoDeSaH Wiki:Mantenimiento", "Especial:NuevasImágenes", "Especial:Estadísticas", "Especial:PáginasNuevas", "Especial:ListaImágenes", "Especial:Registro/move", "Categoría:Speedy_deletion_candidates", "Categoría:Speedy_move_candidates"];
 var AjaxRCRefreshText = 'Auto-refresh';
  
 importArticles({
@@ -221,5 +221,5 @@ addOnloadHook(AnonMessage)
  * This adds some text below the spam block notice directing them to the template to be used instead
  */
 if ($('#spamprotected').text().search('podomatic') > -1) {
-	$('#spamprotected').append('<hr><p>Para agregar enlaces a comunicados de Jagex, por favor use <a href="/wiki/Plantilla:Atl_podcast">Plantilla:Atl podcast</a>. Si el tipo de comunicado que desea enviar no se encuentra en esta plantilla, por favor deje un mensaje <a href="/wiki/CoDeSaH Wiki:Ayuda">aquÃ­</a>.</p>');
+	$('#spamprotected').append('<hr><p>Para agregar enlaces a comunicados de Jagex, por favor use <a href="/wiki/Plantilla:Atl_podcast">Plantilla:Atl podcast</a>. Si el tipo de comunicado que desea enviar no se encuentra en esta plantilla, por favor deje un mensaje <a href="/wiki/CoDeSaH Wiki:Ayuda">aquí</a>.</p>');
 }

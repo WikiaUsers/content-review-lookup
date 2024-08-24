@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
  
 // 3. Custom User Tags, including Inactive
  
@@ -27,9 +27,9 @@ importArticle({ type:'script',  article:'w:c:dev:UserTags/code.js' });
 	};
 	scriptList.push('w:dev:UserTags/code.js');
  
-/* Actualizaci√≥n Autom√°tica */
-var AjaxRCRefreshText = 'Act. autom√°t.';
-var AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+/* ActualizaciÛn Autom·tica */
+var AjaxRCRefreshText = 'Act. autom·t.';
+var AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 var ajaxRefresh = 20000;
 importScriptPage('AjaxRC/code.js', 'dev');

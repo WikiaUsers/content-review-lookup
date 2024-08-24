@@ -119,7 +119,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' d√≠as ' + left
+  if(diff > 0) left = diff + ' dÌas ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -152,12 +152,12 @@ function checktimers() {
 }
 addOnloadHook(checktimers);
 
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 // 1. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
@@ -250,8 +250,8 @@ importArticles({
 });
 
 
-// BOTONES DE EDICI√ìN PERSONALIZADOS
-// Esto esta basado en el c√≥digo original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICI”N PERSONALIZADOS
+// Esto esta basado en el cÛdigo original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -277,8 +277,8 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucci√≥n",
-     "tagOpen": "{{En construcci√≥n|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÛn",
+     "tagOpen": "{{En construcciÛn|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -305,10 +305,10 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Peque√±o",
+     "speedTip": "Texto PequeÒo",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Peque√±o"};
+     "sampleText": "Texto PequeÒo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",

@@ -1,5 +1,5 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
-//cr√©ditos a la wiki de DDLC inglesa, yo solo cambi√© el fadeout- Mel
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+//crÈditos a la wiki de DDLC inglesa, yo solo cambiÈ el fadeout- Mel
 document.getElementById("spoilers_image").addEventListener("click", function() {
     $('#spoilers').fadeOut(330, function () {
         this.style.display = "none";
@@ -11,7 +11,7 @@ document.getElementById("spoilers_image").addEventListener("click", function() {
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u:'Bur√≥crata' },
+		bureaucrat: { u:'BurÛcrata' },
 		Administradora: { u: 'Administradora' },
 		sysop: { u:'Administrador' },
 		cofun: { u:'Co-fundadora' },

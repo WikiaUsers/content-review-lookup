@@ -9,7 +9,7 @@ $("#DateCountdown").TimeCircles({
     "circle_bg_color": "#60686F",
     "time": {
         "Days": {
-            "text": "DÃ­as",
+            "text": "Días",
             "color": "#FFCC66",
             "show": true
         },

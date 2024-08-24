@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 importArticles({
     type: 'style',
     articles: [
@@ -46,11 +46,11 @@ $('map area').mouseleave(function() {
 /* Automatisches Aktualisieren der Seite (Refresh) */
 window.AjaxRCRefreshText = 'Auto-Refresh';
 window.AjaxRCRefreshHoverText = 'automatisches Aktualisieren ohne Neuladen der kompletten Seite';
-window.ajaxPages = ["Spezial:Letzte_Ã„nderungen", "Spezial:WikiActivity", "Spezial:Beobachtungsliste"];
+window.ajaxPages = ["Spezial:Letzte_Änderungen", "Spezial:WikiActivity", "Spezial:Beobachtungsliste"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
-/* Fix fÃ¼r Stargate-Schrift */
-/*$('body > *:contains(Ã¤), body > *:contains(Ã¶), body > *:contains(Ã¼)').each(function(key,val) {
+/* Fix für Stargate-Schrift */
+/*$('body > *:contains(ä), body > *:contains(ö), body > *:contains(ü)').each(function(key,val) {
   console.log($(val).text());
-  $(val).text($(val).text().replace('Ã¤','ae').replace('Ã¼','ue').replace('Ã¶','oe'));
+  $(val).text($(val).text().replace('ä','ae').replace('ü','ue').replace('ö','oe'));
 });*/

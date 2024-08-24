@@ -1,10 +1,10 @@
 //============================================
-//     PersonalizaÃ§Ã£o da interface            
+//     Personalização da interface            
 //============================================
 importArticles({
     type: "script",
     articles: [
-        // PersonalizaÃ§Ã£o da interface
+        // Personalização da interface
         "MediaWiki:Wikia.js/snow.js"
     ]
 });

@@ -7,6 +7,6 @@ importArticles( {
     type: 'script',
     articles: [
         "MediaWiki:Chat.js/ChatTags.js",                     // ChatTags
-        "u:dev:MediaWiki:ChatAnnouncements/code.js"         // AnÃºncio
+        "u:dev:MediaWiki:ChatAnnouncements/code.js"         // Anúncio
     ]
 });

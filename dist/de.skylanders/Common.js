@@ -9,11 +9,11 @@ function UserNameReplace() {
 }
 $(UserNameReplace);
 /* WikiaNotification */
-var WikiaNotificationMessage = "GrÃ¼ÃŸe, Portalmeister! Bitte hilf uns Kaos aufzuhalten! Weitere Infos findest du auf der Hauptseite!";
+var WikiaNotificationMessage = "Grüße, Portalmeister! Bitte hilf uns Kaos aufzuhalten! Weitere Infos findest du auf der Hauptseite!";
 var WikiaNotificationexpiry = 14;
 importScriptPage('WikiaNotification/code.js', 'dev');
 
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
 
@@ -49,7 +49,7 @@ if ( wgUserGroups ) {
 }
 
 //================================================================================
-//*** Social Media-Share-Icons fÃ¼r facebook, twitter und Google+
+//*** Social Media-Share-Icons für facebook, twitter und Google+
  
 var SocialMediaButtons = { 
 	position: 'top',

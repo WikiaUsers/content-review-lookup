@@ -6,18 +6,18 @@ window.UserTagsJS = {
 	tags: {
 		hello: { m: 'Mies', f:'Nainen', u: 'No Gender Set', order: -1/0, link:'http://en.wikipedia.org/wiki/Gender' },
 		muckraker: 'Tonkija',
-		sysop: { u:'Yll√§pit√§j√§', link:'Project:Yll√§pit√§j√§t' }, // Change "Administrator" to "Yll√§pit√§j√§"
-		'mini-sysop': { u: 'Puoliksi Yll√§pit√§j√§', link:'Project:PuoliYll√§pit√§j√§t' },
+		sysop: { u:'Yll‰pit‰j‰', link:'Project:Yll‰pit‰j‰t' }, // Change "Administrator" to "Yll‰pit‰j‰"
+		'mini-sysop': { u: 'Puoliksi Yll‰pit‰j‰', link:'Project:PuoliYll‰pit‰j‰t' },
 		allstar: 'All-Star',
 		kunnia: 'Kunniamerkki',
-		ter√§v√§: 'Ter√§v√§n√§',
-		'vandal-patrol': { u: 'Kurinpit√§j√§', link:'Project:Janitors' }
+		ter‰v‰: 'Ter‰v‰n‰',
+		'vandal-patrol': { u: 'Kurinpit‰j‰', link:'Project:Janitors' }
 	}
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
 	'T95450': ['sysop', 'kunnia'],
-	'Juhoran': ['hello', 'ter√§v√§'],
+	'Juhoran': ['hello', 'ter‰v‰'],
 	'You': ['inactive'], // Force inactive group instead of relying on the inactive module
 	'Other User': ['hello', 'muckraker']
 };

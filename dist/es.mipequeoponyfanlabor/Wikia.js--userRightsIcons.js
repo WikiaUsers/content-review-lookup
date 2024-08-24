@@ -4,13 +4,13 @@
 $(function() {
   var rights = {};
  
-  // LISTA DE USUARIOS CON CARGOS EXTRA (BOTÃ“N)
+  // LISTA DE USUARIOS CON CARGOS EXTRA (BOTÓN)
  
-    // BURÃ“CRATA
+    // BURÓCRATA
  
-  rights["Peach_Asamiya"]      = ["BurÃ³crata","Admin"]
+  rights["Peach_Asamiya"]      = ["Burócrata","Admin"]
 
-  // FIN DE LA LISTA CON USUARIOS DE CARGO EXTRA (BOTÃ“N)
+  // FIN DE LA LISTA CON USUARIOS DE CARGO EXTRA (BOTÓN)
  
   if (typeof rights[wgTitle] != "undefined") {
     // remove old rights

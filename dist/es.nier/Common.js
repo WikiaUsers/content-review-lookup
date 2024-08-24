@@ -1,4 +1,4 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
 /* Spoiler Alert */
 // Based on SpoilerAlert by pecoes & Gguigui1: http://dev.wikia.com/wiki/SpoilerAlert
@@ -17,11 +17,11 @@ if ($.inArray("Spoilers NieR", wgCategories) > -1 || $.inArray("Spoilers NieR:Au
                         '<td rowspan="2" style="padding: 5px;">' +
                             '<img width="144" height="81" src="https://vignette.wikia.nocookie.net/nier/images/0/0e/Spoilers.png/revision/latest?cb=20191218195724&path-prefix=es" alt="Alerta, SPOILERS">' +
                         '</td>' +
-                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">Â¿QuÃ© camino escogerÃ¡s? La decisiÃ³n es tuya.</strong><br>Este artÃ­culo contiene SPOILERS, Â¿seguro que quieres continuar?</td>' +
+                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">¿Qué camino escogerás? La decisión es tuya.</strong><br>Este artículo contiene SPOILERS, ¿seguro que quieres continuar?</td>' +
                     '</tr>' +
                     '<tr>' +
                         '<td style="border-style: none; padding: 5px; text-align: center;">' +
-                            '<button id="yes">SÃ­</button>' +
+                            '<button id="yes">Sí</button>' +
                         '</td>' +
                         '<td style="border-style: none; padding: 5px; text-align: center;">' +
                             '<button id="no">No</button>' +

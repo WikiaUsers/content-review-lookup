@@ -5,12 +5,12 @@
  *
  * Auteur : ??
  * Contributeur : Tieno, Maloq
- * DerniÃ¨re rÃ©vision : 2 septembre 2008
+ * Dernière révision : 2 septembre 2008
  * {{:Projet:JavaScript/Script|AubergeDuJour}}
  */
 //<source lang=javascript>//<pre><nowiki>
 function TodayDate() {
-      var m = ["janvier", "fÃ©vrier", "mars", "avril", "mai", "juin", "juillet", "aoÃ»t", "septembre", "octobre", "novembre", "dÃ©cembre"];
+      var m = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
       var today = new Date();
       var day = today.getDate();
       var year = today.getYear();

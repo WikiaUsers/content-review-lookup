@@ -34,7 +34,7 @@ $(document).ready(function(){
                         case 'Road Knight':
                             $('.wds-community-header__wordmark img').attr('src', 'https://vignette.wikia.nocookie.net/fairy-tail/images/d/d5/Logo_Road_Knight.png/revision/latest?cb=20170416200201&path-prefix=fr');
                             break;
-                        case "L'Ã‰clair de la Grande Foudre":
+                        case "L'Éclair de la Grande Foudre":
                             $('.wds-community-header__wordmark img').attr('src', 'https://vignette.wikia.nocookie.net/fairy-tail/images/7/7f/Logo_Eclair_de_la_Grande_Foudre.png/revision/latest?cb=20160509083709&path-prefix=fr');
                             break;
                         case 'La Grande Aventure de Happy':

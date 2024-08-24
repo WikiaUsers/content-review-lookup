@@ -1,5 +1,5 @@
-/*Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina.*/
-/*ResÃºmenes de ediciÃ³n predefinidos*/
+/*Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página.*/
+/*Resúmenes de edición predefinidos*/
 window.dev = window.dev || {};
 window.dev.editSummaries = {
     css: '#stdSummaries { width: 264px }',

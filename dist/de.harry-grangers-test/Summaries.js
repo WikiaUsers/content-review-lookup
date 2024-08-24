@@ -103,7 +103,7 @@ mw.loader.using(lodash, function(require) {
 	
 	                        $label.after($combo);
 	                        $combo.prepend(
-	                            $('<option />').prop('disabled',true).text('(Zusammenfassung ausw√§hlen)')
+	                            $('<option />').prop('disabled',true).text('(Zusammenfassung ausw‰hlen)')
 	                        );
 	
 	                        var lines = data.split("\n");

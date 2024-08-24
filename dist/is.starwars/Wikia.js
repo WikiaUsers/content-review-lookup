@@ -1,5 +1,5 @@
 // INACTIVE USER
-InactiveUsers = { text: 'Ã³virkur' }; 
+InactiveUsers = { text: 'óvirkur' }; 
 importScriptPage('InactiveUsers/code.js', 'dev');
 
 /* numbers */

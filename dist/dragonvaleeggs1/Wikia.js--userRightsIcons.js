@@ -11,8 +11,8 @@ $(function() {
  
  rights["Werewolf333"]                               = ["<a href=\" http://dragonvaleeggs1.wikia.com/index.php?title=User:Werewolf333\"><span style=\" color:white;\">Bureaucrat</span></a>","<a href=\" http:/dragonvaleeggs1.wikia.com/index.php?title=User:Werewolf333\"><span style=\" color:white;\">Admin</span></a>"],
  rights["Masonrules9"]                               = ["<a href=\" http://dragonvaleeggs1.wikia.com/index.php?title=User:Masonrules9\"><span style=\" color:white;\">Our Very Own Founder :3</span></a>"],
- rights["AdithyÃ¦24"]                               = ["<a href=\" http://dragonvaleeggs1.wikia.com/index.php?title=User:AdithyÃ¦24\"><span style=\" color:white;\">Bureaucrat</span></a>","<a href=\" 
-http://dragonvaleeggs1.wikia.com/index.php?title=User:AdithyÃ¦24\"><span style=\" color:white;\">Admin</span></a>"];
+ rights["Adithyæ24"]                               = ["<a href=\" http://dragonvaleeggs1.wikia.com/index.php?title=User:Adithyæ24\"><span style=\" color:white;\">Bureaucrat</span></a>","<a href=\" 
+http://dragonvaleeggs1.wikia.com/index.php?title=User:Adithyæ24\"><span style=\" color:white;\">Admin</span></a>"];
 
 
  

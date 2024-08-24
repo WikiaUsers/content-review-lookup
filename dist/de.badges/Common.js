@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 /* <pre> */
  
@@ -27,8 +27,8 @@ $(function () {
 	$('a.wikia-button[data-id$="wikiactivity"]').replaceWith('<a data-id="recentchanges" class="wikia-button secondary" accesskey="g" title="Special:RecentChanges" href="/wiki/Special:RecentChanges"><img height="0" width="0" class="sprite activity" src="https://images.wikia.nocookie.net/common/skins/common/blank.gif">Recent Changes</a>');
 });
  
-/* Variablen fÃ¼r das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
-ajaxPages = ['Spezial:Letzte_Ã„nderungen', 'Spezial:WikiActivity'];
+/* Variablen für das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
+ajaxPages = ['Spezial:Letzte_Änderungen', 'Spezial:WikiActivity'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'automatische Aktualisierung ohne Neuladen der kompletten Seite';
 
@@ -63,6 +63,6 @@ importArticles({
     ]
 });
 
-/* Sachen, die nur Administratoren und Helfern angezeigt werden (sysop.js ist ausschlieÃŸlich den Administratoren vorbehalten) */
+/* Sachen, die nur Administratoren und Helfern angezeigt werden (sysop.js ist ausschließlich den Administratoren vorbehalten) */
 
 /* </pre> */

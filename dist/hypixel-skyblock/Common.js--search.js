@@ -248,7 +248,7 @@ window.hsbwiki = window.hsbwiki || {};
       if(on) {
         $button.html('<svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-magnifying-glass-small"></use></svg>');
       } else {
-        $button.html('<div style="width:18px; text-align:center; font-size:24px;">Â·Â·</div>');
+        $button.html('<div style="width:18px; text-align:center; font-size:24px;">··</div>');
       }
     }
   }

@@ -1,4 +1,4 @@
-/* Pop-upy przypisÃ³w */
+/* Pop-upy przypisów */
 /* Import z dev.wikia.com */
 importArticles({
     type: 'script',

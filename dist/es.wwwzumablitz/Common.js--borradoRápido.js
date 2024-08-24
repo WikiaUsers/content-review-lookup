@@ -26,7 +26,7 @@ function addFastDeleteButtons() {
 			}
 			for( var i = 0; i < fdButtons.length; i++ ) {
 				$('#qa_toolbox_advancedtools_wrapper').append('<div id="qa_toolbox_advancedtools_delete"></div>');
-				$('#qa_toolbox_advancedtools_delete').append('<span><img src="https://images.wikia.nocookie.net/common/skins/common/blank.gif" class="sprite delete fastdelete" /><a href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" rel="nofollow" title="Borrado rÃ¡pido ' + fdButtons[i].summary + '">'+ fdButtons[i].label + '</a></span>');
+				$('#qa_toolbox_advancedtools_delete').append('<span><img src="https://images.wikia.nocookie.net/common/skins/common/blank.gif" class="sprite delete fastdelete" /><a href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" rel="nofollow" title="Borrado rápido ' + fdButtons[i].summary + '">'+ fdButtons[i].label + '</a></span>');
 			}
 			break;
 
@@ -38,7 +38,7 @@ function addFastDeleteButtons() {
 				return;
 			}
 			for( var i = 0; i < fdButtons.length; i++ ) {
-				$('#page_controls').append('<li><img src="https://images.wikia.nocookie.net/common/skins/common/blank.gif" class="sprite delete fastdelete" /><a href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" rel="nofollow" title="Borrado rÃ¡pido: ' + fdButtons[i].summary + '">'+ fdButtons[i].label + '</a></li>');
+				$('#page_controls').append('<li><img src="https://images.wikia.nocookie.net/common/skins/common/blank.gif" class="sprite delete fastdelete" /><a href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" rel="nofollow" title="Borrado rápido: ' + fdButtons[i].summary + '">'+ fdButtons[i].label + '</a></li>');
 			}
 			break;
 
@@ -50,7 +50,7 @@ function addFastDeleteButtons() {
 			if( !document.getElementById( 'ca-delete' ) )
 				return;
 			for( var i = 0; i < fdButtons.length; i++ ) {
-				$('#p-cactions > .pBody > ul').append('<li id="ca-delete"><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" accesskey="'+ fdButtons[i].accesskey + '" title="Borrado rÃ¡pido: ' + fdButtons[i].summary+' ['+ fdButtons[i].accesskey + ']">'+ fdButtons[i].label + '</a></li>');
+				$('#p-cactions > .pBody > ul').append('<li id="ca-delete"><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" accesskey="'+ fdButtons[i].accesskey + '" title="Borrado rápido: ' + fdButtons[i].summary+' ['+ fdButtons[i].accesskey + ']">'+ fdButtons[i].label + '</a></li>');
 			}
 			break;
 		
@@ -60,7 +60,7 @@ function addFastDeleteButtons() {
 				return;
 			}
 			for( var i = 0; i < fdButtons.length; i++ ) {
-				afd = '<a class="wikia-button" href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" accesskey="'+ fdButtons[i].accesskey + '" title="Borrado rÃ¡pido: ' + fdButtons[i].summary+' ['+ fdButtons[i].accesskey + ']" data-id="delete">'+ fdButtons[i].label + '</a>';
+				afd = '<a class="wikia-button" href="/index.php?title=' + encodeURIComponent(wgPageName) + '&action=delete&submitdelete=true&wpReason=' + encodeURIComponent(fdButtons[i].summary) + '" accesskey="'+ fdButtons[i].accesskey + '" title="Borrado rápido: ' + fdButtons[i].summary+' ['+ fdButtons[i].accesskey + ']" data-id="delete">'+ fdButtons[i].label + '</a>';
 				switch( wgNamespaceNumber ) {
 					case 1:
 					case 5:

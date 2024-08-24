@@ -1,8 +1,8 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 
 /**********************************************************************/
-/*  PurgeButton (Bot√≥n Actualizar),                                   */
+/*  PurgeButton (BotÛn Actualizar),                                   */
 /*                                      proporcionado por [[w:c:dev]] */
 /**********************************************************************/
 
@@ -19,7 +19,7 @@ importScriptPage('ShowHide/code.js', 'dev');
 
 /**********************************************************************/
 /*  Tablero,                                                          */
-/*            extra√≠do de "Galaxia Wander Wiki" [[w:c:galaxiawander]] */
+/*            extraÌdo de "Galaxia Wander Wiki" [[w:c:galaxiawander]] */
 /**********************************************************************/
 
 var Tabs = {
@@ -259,7 +259,7 @@ Tabs.init();
 
 
 /**********************************************************************/
-/*  BackToTopButton (Bot√≥n Volver Arriba),                            */
+/*  BackToTopButton (BotÛn Volver Arriba),                            */
 /*                                      proporcionado por [[w:c:dev]] */
 /**********************************************************************/
  

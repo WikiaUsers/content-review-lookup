@@ -101,7 +101,7 @@ $(function() {
     select = presets.select || 'Vorlage:StdsummariesCode1';
  
     $textarea.attr('tabindex', '3'); //Zusammenfassungen
-    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Ã„nderungen
+    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Änderungen
     $('#wpSave').attr('tabindex', '5'); //Seite speichern
  
     var $summary = $('#wpSummaryEnhanced');

@@ -1,5 +1,5 @@
 // <pre>
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 // ================================================================================
 // ||===========|| //
 // ||Rollenboxen|| //
@@ -64,7 +64,7 @@ if(mw.config.get('wgUserName')) {
  // alles mit class='jstest' ist dragbar
  
  /***********************************************
- * Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
+ * Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
  * This notice MUST stay intact for legal use
  * Visit http://www.dynamicdrive.com/ for this script and 100s more.
  ***********************************************/
@@ -106,7 +106,7 @@ if(mw.config.get('wgUserName')) {
 
 // Ein- und Ausblenden per Javascript
 
-// mit den folgenden Funktionen lÃ¤sst sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
+// mit den folgenden Funktionen lässt sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
 //
 // Variante 1 (Klick irgendwo blendet ein oder aus):
 //	<div class="klapp">
@@ -168,7 +168,7 @@ function getKlappDiv( obj )
 	return obj;
 }
 
-// Event-Handler fÃ¼r alle class="klapp"-Objekte zuweisen
+// Event-Handler für alle class="klapp"-Objekte zuweisen
 function makeAusklapp()
 {
 	// klapp-div-Rahmen
@@ -198,7 +198,7 @@ function makeAusklapp()
 
 }
 
-// Nach dem Laden des Fensters folgendes AusfÃ¼hren:
+// Nach dem Laden des Fensters folgendes Ausführen:
 addOnloadHook(makeAusklapp);
 
 /* Test if an element has a certain class **************************************
@@ -390,7 +390,7 @@ function createNavigationBarToggleButton()
 addOnloadHook( createNavigationBarToggleButton );
 
  
-// Eigenes Script fÃ¼r Spoiler
+// Eigenes Script für Spoiler
 var SpoilerHide = "Spoiler verbergen";
 var SpoilerShow = "Spoiler anzeigen";
 		
@@ -456,7 +456,7 @@ function SearchSpoilerClasses(tag)
 
 addOnloadHook(createSpoilerLink);
 
-// FÃ¼r toggeln
+// Für toggeln
 function createToggle()
 {
 	var obj;
@@ -528,7 +528,7 @@ function ToggleClasses(tag, hideID)
 
 addOnloadHook(createToggle);
 
-// FÃ¼r wusstest du dass...
+// Für wusstest du dass...
 function DidYouKnow()
 {
 	var obj;
@@ -566,7 +566,7 @@ function DidYouKnow()
 }
 addOnloadHook(DidYouKnow);
 
-/* Logo Ã¤ndern (test) */
+/* Logo ändern (test) */
 function changeStart()
 {
 	var foo = document.getElementById('p-logo');

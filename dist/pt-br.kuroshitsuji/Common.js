@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
+/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
  
 importArticles({
     type: "script",
@@ -31,8 +31,8 @@ window.DisplayClockJS = {
 };
  
 AjaxRCRefreshText = 'Auto Refresh';
-AjaxRCRefreshHoverText = 'Atualiza os conte√∫dos da p√°gina automaticamente';
-ajaxPages = ["Especial:Mudan√ßas_recentes","Especial:WikiActivity"];
+AjaxRCRefreshHoverText = 'Atualiza os conte˙dos da p·gina automaticamente';
+ajaxPages = ["Especial:MudanÁas_recentes","Especial:WikiActivity"];
  
 var SocialMediaButtons = { 
   position: "top",

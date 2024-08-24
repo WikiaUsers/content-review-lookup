@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/************* Funzioni di utilit√† generale *************/
+/************* Funzioni di utilit‡ generale *************/
  
  /* Test if an element has a certain class **************************************
  *

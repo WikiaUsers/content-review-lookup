@@ -41,7 +41,7 @@ function clearChatText() {
 
  
 // Chat's topic. Remember to escape single quotes in the topic using \' to prevent this from breaking.
-var chatTopic = 'Welcome to the Fanon CafÃ©! <br>Please read  <a href="Project:Regulations_and_Policies" target="_blank">the rules</a> before chatting.';
+var chatTopic = 'Welcome to the Fanon Café! <br>Please read  <a href="Project:Regulations_and_Policies" target="_blank">the rules</a> before chatting.';
  
 $(function() { 
     $('#ChatHeader .public.wordmark')

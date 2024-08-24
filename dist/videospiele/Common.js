@@ -1,5 +1,5 @@
 // <pre>
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 // ================================================================================
 /** CSS einbinden */
  function addCSS(title) {
@@ -35,7 +35,7 @@ importScriptPage('BackToTopButton/code.js', 'dev');
  // alles mit class='jstest' ist dragbar
  
  /***********************************************
- * Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
+ * Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
  * This notice MUST stay intact for legal use
  * Visit http://www.dynamicdrive.com/ for this script and 100s more.
  ***********************************************/
@@ -77,7 +77,7 @@ importScriptPage('BackToTopButton/code.js', 'dev');
 
 // Ein- und Ausblenden per Javascript
 
-// mit den folgenden Funktionen lÃ¤sst sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
+// mit den folgenden Funktionen lässt sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
 //
 // Variante 1 (Klick irgendwo blendet ein oder aus):
 //	<div class="klapp">
@@ -139,7 +139,7 @@ function getKlappDiv( obj )
 	return obj;
 }
 
-// Event-Handler fÃ¼r alle class="klapp"-Objekte zuweisen
+// Event-Handler für alle class="klapp"-Objekte zuweisen
 function makeAusklapp()
 {
 	// klapp-div-Rahmen
@@ -169,7 +169,7 @@ function makeAusklapp()
 
 }
 
-// Nach dem Laden des Fensters folgendes AusfÃ¼hren:
+// Nach dem Laden des Fensters folgendes Ausführen:
 addOnloadHook(makeAusklapp);
 
 /* Test if an element has a certain class **************************************
@@ -361,7 +361,7 @@ function createNavigationBarToggleButton()
 addOnloadHook( createNavigationBarToggleButton );
 
 
-// FÃ¼r Toggeln
+// Für Toggeln
 // originally by [[Benutzer:TrunX]]
 function createToggle()
 {
@@ -404,7 +404,7 @@ function ToggleClasses(Toggle)
 	else
 		Toggle[0] = 'unToggle';
 	
-	// Funktionsaufruf um die Clicker zu Ã¤ndern
+	// Funktionsaufruf um die Clicker zu ändern
 	TogglerClicker(Toggle);
 }
 function ToogleTag(Toggle,Tag)
@@ -485,7 +485,7 @@ function TogglerClicker(Toggle)
 
 addOnloadHook(createToggle);
 
-/* Logo Ã¤ndern (test) */
+/* Logo ändern (test) */
 function changeStart()
 {
 	var foo = document.getElementById('p-logo');
@@ -564,8 +564,8 @@ addOnloadHook(checktimers);
 
 
 /* UploadTemplate */
-/** FÃ¼gt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen **/
-/** Ãœbernommen aus der MediaWiki:Common.js der http://www.jedipedia.net/wiki/ und leicht abgeÃ¤ndert  - by [[Benutzer:Pain88]] **/
+/** Fügt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen **/
+/** Übernommen aus der MediaWiki:Common.js der http://www.jedipedia.net/wiki/ und leicht abgeändert  - by [[Benutzer:Pain88]] **/
  
 function setSpecialUploadTemplate() {
   if (wgPageName=="Spezial:Hochladen") {

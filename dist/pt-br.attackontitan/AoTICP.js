@@ -1,6 +1,6 @@
 /* ************************************************************************
 ************************* Page Creation Interface *************************
-* Page Creation Interface (ICP) is a helping tool developed by Thales C√©sar for creating new articles in Star Wars Wiki em Portugu√™s.
+* Page Creation Interface (ICP) is a helping tool developed by Thales CÈsar for creating new articles in Star Wars Wiki em PortuguÍs.
 * It consists on a modal window that simplifies the article-creation process into a step-by-step procedure.
 * Through this feature, editors can insert default navigation templates, infobox and categories,
 * all in accord to our internal guidelines.
@@ -25,7 +25,7 @@ var SWWICP = (function($) {
       this.articleType = '';
       this.infoboxObj = {};
       this.isCanonNamespace = false;
-      this.infoboxesForTitle = ["Nave", "Filme", "Livro", "Livro de refer√™ncia", "Quadrinhos", "Revista", "S√©rie de quadrinhos", "Infobox TV", "Videogame"];
+      this.infoboxesForTitle = ["Nave", "Filme", "Livro", "Livro de referÍncia", "Quadrinhos", "Revista", "SÈrie de quadrinhos", "Infobox TV", "Videogame"];
       this.anonMessage = true;
       this.sendFeedbackEnabled = true;
       this.closeFeedbackEnabled = true;
@@ -87,10 +87,10 @@ var SWWICP = (function($) {
       var articleTypes = [
         {name: "Infobox personagem", class: "personagem", label: "Personagem"},
         {name: "Infobox lugar", class: "lugar", label: "Lugar"},
-        {name: "Infobox tit√£", class: "tit√£", label: "Tit√£"},
+        {name: "Infobox tit„", class: "tit„", label: "Tit„"},
         {name: "Infobox objeto", class: "objeto", label: "Objeto"},
         {name: "Infobox evento", class: "evento", label: "Evento"},
-        {name: "Infobox epis√≥dio", class: "epis√≥dio", label: "Epis√≥dio"},
+        {name: "Infobox episÛdio", class: "episÛdio", label: "EpisÛdio"},
       ];
       this.insertArticleTypeTable(articleTypes, {numColumns: 2, hasOther: true}).then(this.errorHandler(function(type) {
         instance.articleType = type;
@@ -117,7 +117,7 @@ var SWWICP = (function($) {
       var modalContent = "<p>Selecione uma infobox para seu artigo</p>"+
       '<select id="selecionarInfoboxCustom"><option value>Escolher infobox</option></select>';
       this.updateModalBody(modalContent);
-      this.apiGetPageContents("Star Wars Wiki:Predefini√ß√µes/Infobox").then(this.errorHandler(function(data) {
+      this.apiGetPageContents("Star Wars Wiki:PredefiniÁıes/Infobox").then(this.errorHandler(function(data) {
         var infoboxes = data.split("\n{{");
         for (var i=1; i<infoboxes.length; i++) {
           $("#selecionarInfoboxCustom").append('<option value="'+infoboxes[i].split("/preload")[0]+'">'+infoboxes[i].split("/preload")[0]+'</option>');
@@ -130,9 +130,9 @@ var SWWICP = (function($) {
           chooseInfoboxTypeController = true;
           instance.userActions.infoboxType = instance.infoboxName;
           instance.infoboxUrl = instance.infoboxName;
-          if (instance.infoboxName == "Batalha" || instance.infoboxName == "Guerra" || instance.infoboxName == "Miss√£o")
+          if (instance.infoboxName == "Batalha" || instance.infoboxName == "Guerra" || instance.infoboxName == "Miss„o")
           {
-            //Batalha, Miss√£o and Guerra infoboxes are special
+            //Batalha, Miss„o and Guerra infoboxes are special
             var numParticipants = '';
             while (numParticipants != '4' && numParticipants != '3' && numParticipants != '2')
               numParticipants = prompt("Quantos participantes? (2, 3 ou 4)");
@@ -150,7 +150,7 @@ var SWWICP = (function($) {
               instance.infoboxUrl += '400';
           }
           console.log('Obtendo "'+instance.infoboxName+'"');
-          var apiParams = {action: 'query', prop: 'categories', titles: 'Predefini√ß√£o:'+instance.infoboxUrl, format: 'json'};
+          var apiParams = {action: 'query', prop: 'categories', titles: 'PredefiniÁ„o:'+instance.infoboxUrl, format: 'json'};
           this.apiGet(apiParams, function(data) {
             //Figuring out whether this is an in-universe or out-of-universe article based on infobox category
             instance.outOfUniverse = false; //false means it's an in-universe article
@@ -159,7 +159,7 @@ var SWWICP = (function($) {
               var categoryName = data.query.pages[templateId].categories[0].title;
               console.log(categoryName);
               if (typeof(categoryName) != "undefined")
-                if (categoryName == "Categoria:Infoboxes de m√≠dia")
+                if (categoryName == "Categoria:Infoboxes de mÌdia")
                   instance.outOfUniverse = 1; //1 means out-of-universe article that needs Step1
                 else if (categoryName == "Categoria:Infoboxes fora do universo")
                   instance.outOfUniverse = 2; //2 means out-of-universe article that does not need Step1
@@ -198,9 +198,9 @@ var SWWICP = (function($) {
         }
         else
         {
-          modalContent = '<p style="font-size:14px">Esse √© um artigo fora-de-universo sobre uma m√≠dia. A que universo pertence sua hist√≥ria?</p>';
+          modalContent = '<p style="font-size:14px">Esse È um artigo fora-de-universo sobre uma mÌdia. A que universo pertence sua histÛria?</p>';
           this.updateModalBody(modalContent);
-          var canonButton = '<img src="https://vignette.wikia.nocookie.net/pt.starwars/images/0/07/Eras-canon-transp.png" style="height:19px" alt="C√¢non" />';
+          var canonButton = '<img src="https://vignette.wikia.nocookie.net/pt.starwars/images/0/07/Eras-canon-transp.png" style="height:19px" alt="C‚non" />';
           var legendsButton = '<img src="https://vignette.wikia.nocookie.net/pt.starwars/images/8/8d/Eras-legends.png" style="height:19px" alt="Legends" />';
           var solveEras = this.errorHandler(function(response) {
             wikitext.append("{{Eras|"+(response == "none" ? "real" : response + "|real")+"}}\n");
@@ -227,19 +227,19 @@ var SWWICP = (function($) {
         modalContent += '<p style="font-size:14px">Esse artigo existe no universo <span style="font-weight:bold">';
         if (this.isCanonNamespace)
         {
-          modalContent += 'C√¢non';
-          txtButtonYes = 'Sim, tamb√©m existe no <i>Legends</i>';
-          txtButtonNo = 'N√£o, existe somente no C√¢non';
+          modalContent += 'C‚non';
+          txtButtonYes = 'Sim, tambÈm existe no <i>Legends</i>';
+          txtButtonNo = 'N„o, existe somente no C‚non';
           wikitext.append("{{Eras|canon");
         }
         else
         {
           modalContent += '<i>Legends</i>';
-          txtButtonYes = 'Sim, tamb√©m existe no C√¢non';
-          txtButtonNo = 'N√£o, existe somente no <i>Legends</i>';
+          txtButtonYes = 'Sim, tambÈm existe no C‚non';
+          txtButtonNo = 'N„o, existe somente no <i>Legends</i>';
           wikitext.append("{{Eras|legends");
         }
-        modalContent += '</span>. Ele existe tamb√©m no outro universo?</p>';
+        modalContent += '</span>. Ele existe tambÈm no outro universo?</p>';
         this.updateModalBody(modalContent);
         this.appendButtonToModalBody(txtButtonYes).then(this.errorHandler(function(button) {
           wikitext.append((instance.isCanonNamespace) ? "|legends}}\n" : "|canon}}\n");
@@ -260,7 +260,7 @@ var SWWICP = (function($) {
       var dfd = $.Deferred();
       var instance = this;
       console.log("Obtendo infobox...");
-      this.apiGetPageContents("Predefini√ß√£o:"+this.infoboxUrl).then(this.errorHandler(function(data) {
+      this.apiGetPageContents("PredefiniÁ„o:"+this.infoboxUrl).then(this.errorHandler(function(data) {
         instance._infoboxParser(data, instance.infoboxName)
           .then(function() {
             dfd.resolve();
@@ -349,7 +349,7 @@ var SWWICP = (function($) {
         infoboxWikitext = instance._buildInfoboxWikitext(templateName, infoboxObj);
         wikitext.append(infoboxWikitext);
         if (instance.outOfUniverse)
-          wikitext.append("\n'''"+instance.articleTitle+"''' √© um...");
+          wikitext.append("\n'''"+instance.articleTitle+"''' È um...");
         else
           wikitext.append("\n'''"+instance.articleTitle+"''' foi um...");
         dfd.resolve();
@@ -425,8 +425,8 @@ var SWWICP = (function($) {
     //Step3: Insert interlang links
     StarWarsWiki.prototype.interwikiInsertion = function() {
       var dfd = $.Deferred();
-      this.updateModalTitle("Passo 4: Fontes e Apari√ß√µes");
-      var modalContent = "<p>Por favor, insira o nome da p√°gina correspondente em ingl√™s (nome da p√°gina na Wookieepedia):";
+      this.updateModalTitle("Passo 4: Fontes e ApariÁıes");
+      var modalContent = "<p>Por favor, insira o nome da p·gina correspondente em inglÍs (nome da p·gina na Wookieepedia):";
       modalContent += "<textarea id='wookieePage' name='wookieePage' >"
       +((this.articleType == "Personagem infobox" || this.articleType == "Planeta" || this.articleType == "Droide infobox") ? this.articleName.replace(/_/g, " ") : '')
       +"</textarea>";
@@ -444,16 +444,16 @@ var SWWICP = (function($) {
           })
           .fail(function() {
             $(button).removeAttr('disabled');
-            //TODO testar v√°rias tentativas de envio aqui
+            //TODO testar v·rias tentativas de envio aqui
           });
       })});
       this.appendButtonToModalBody("Visualizar", {callback: this.errorHandler(function() {
         window.open("https://starwars.wikia.com/wiki/"+instance.encodeURL($("#wookieePage").val()));
       })});
-      this.appendButtonToModalBody("N√£o sei / n√£o existe").then(this.errorHandler(function() {
+      this.appendButtonToModalBody("N„o sei / n„o existe").then(this.errorHandler(function() {
         var wikitext = new StepWikitext(instance, 2);
         instance.userActions.interlink = false;
-        wikitext.append("\n\n== Notas e refer√™ncias ==\n{{Reflist}}\n");
+        wikitext.append("\n\n== Notas e referÍncias ==\n{{Reflist}}\n");
         dfd.resolve();
       }));
       return dfd.promise();
@@ -477,7 +477,7 @@ var SWWICP = (function($) {
           });
       });
       var error = function(jqXHR, textStatus, error) {
-        alert("Erro ao obter p√°gina "+wookieePagename+" da Wookieepedia");
+        alert("Erro ao obter p·gina "+wookieePagename+" da Wookieepedia");
         console.warn(error);
         dfd.reject();
       };
@@ -492,7 +492,7 @@ var SWWICP = (function($) {
       var wikitext = new StepWikitext(this, 2);
       var wookieeWikitext = '';
       if (data === false) {
-        alert("P√°gina n√£o encontrada!");
+        alert("P·gina n„o encontrada!");
         dfd.reject();
         return dfd.promise();
       }
@@ -517,16 +517,16 @@ var SWWICP = (function($) {
       if (wookiee.cast !== '' && this.outOfUniverse == 1)
         wookieeWikitext += "== Elenco =="+wookiee.cast;
       if (wookiee.appearances !== '' && this.outOfUniverse === false)
-        wookieeWikitext += "== Apari√ß√µes =="+wookiee.appearances;
+        wookieeWikitext += "== ApariÁıes =="+wookiee.appearances;
       if (wookiee.sources !== '')
         wookieeWikitext += "== Fontes =="+wookiee.sources;
       if (wookiee.bibliography !== '' && this.outOfUniverse)
         wookieeWikitext += "== Bibliografia =="+wookiee.bibliography;
       wookieeWikitext = wookieeWikitext.trimEnd();
-      wookieeWikitext += "\n\n== Notas e refer√™ncias ==\n{{Reflist}}\n\n";
+      wookieeWikitext += "\n\n== Notas e referÍncias ==\n{{Reflist}}\n\n";
       wookieeWikitext += this._addInterlang(wookiee);
   
-      this.apiGetPageContents("Star Wars Wiki:Ap√™ndice de Tradu√ß√£o de obras/JSON").then(this.errorHandler(function(data) {
+      this.apiGetPageContents("Star Wars Wiki:ApÍndice de TraduÁ„o de obras/JSON").then(this.errorHandler(function(data) {
         var fixes = JSON.parse(data.replace("<pre>", '').replace("</pre>", ''));
         for (var i=0; i<fixes.replacements.length; i++) {
           var txtRegEx = new RegExp(fixes.replacements[i][0], "g");
@@ -549,7 +549,7 @@ var SWWICP = (function($) {
       };
       for (var i=0; i<wookiee.sections.length; i++) {
         if ($.trim(wookiee.sections[i]) == "Appearances") {
-          wookiee.appearances = wookiee.sections[i+1]; //TODO Verficar por apari√ß√µes n√£o can√¥nicas
+          wookiee.appearances = wookiee.sections[i+1]; //TODO Verficar por apariÁıes n„o canÙnicas
         } else if ($.trim(wookiee.sections[i]) == "Bibliography") {
           wookiee.bibliography = wookiee.sections[i+1];
         } else if ($.trim(wookiee.sections[i]) == "Cast") {
@@ -570,7 +570,7 @@ var SWWICP = (function($) {
       }
       var translationRegexs = [
         [/\{\{Start(_| )box\}\}/g, '{{Traduzir}}{{Caixa inicio}}'],
-        [/\{\{Succession(_| )box\s*\|/g, '{{Caixa de sucess√£o\n|'],
+        [/\{\{Succession(_| )box\s*\|/g, '{{Caixa de sucess„o\n|'],
         [/\|\s*title\s*\=\s*/g, '|titulo = '],
         [/\|\s*years\s*\=\s*/g, '|anos = '],
         [/\|\s*before\s*\=\s*/g, '|antes = '],
@@ -614,15 +614,15 @@ var SWWICP = (function($) {
       var dfd = $.Deferred();
       var instance = this;
       this.updateModalTitle("Passo 5: Categorias");
-      var modalContent = '<p>Para finalizar, categorize o artigo. Lembre-se de n√£o ser reduntante: se categorizar '+
-      'o artigo como "Mestre Jedi", por exemplo, <b>N√ÉO</b> o categorize como "Jedi".</p>';
+      var modalContent = '<p>Para finalizar, categorize o artigo. Lembre-se de n„o ser reduntante: se categorizar '+
+      'o artigo como "Mestre Jedi", por exemplo, <b>N√O</b> o categorize como "Jedi".</p>';
       this.userActions.categorias = true;
       if (this.VESurface.mode == "visual") {
         //For VE, we'll simply redirect user to VE's categories interface
         modalContent += '<p>Para isso, escreva as categorias na caixa "Adicionar uma categoria". '+
-        'Quando terminar, clique no bot√£o "Aplicar".</p>';
+        'Quando terminar, clique no bot„o "Aplicar".</p>';
         this.updateModalBody(modalContent);
-        this.appendButtonToModalBody("Ok, vamos l√°").then(function(button) {
+        this.appendButtonToModalBody("Ok, vamos l·").then(function(button) {
           instance._finish = function() {
             ICP.prototype._finish.call(instance);
             instance.VESurface.executeCommand("meta/categories");
@@ -638,7 +638,7 @@ var SWWICP = (function($) {
         modalContent += '<p>Para isso, escreva nos final do artigo as categorias da seguinte forma:</p>'+
         '<p><code>[['+'Categoria:Exemplo]]</code></p>';
         this.updateModalBody(modalContent);
-        this.appendButtonToModalBody("Ok, vamos l√°").then(function(button) {
+        this.appendButtonToModalBody("Ok, vamos l·").then(function(button) {
           dfd.resolve();
         });
       }

@@ -61,9 +61,9 @@ $(document).ready(function() {
         $('#hqrushinhqrushoutenemyhqlevel').val('1');
         // Hide Target Building Level input for Power Core
         if (this.value === "Kraftkern") {
-            $("#jcFormhqrushin th:contains('Zielgeb√§ude Level')").parent().hide();
+            $("#jcFormhqrushin th:contains('Zielgeb‰ude Level')").parent().hide();
         } else {
-            $("#jcFormhqrushin th:contains('Zielgeb√§ude Level')").parent().show();
+            $("#jcFormhqrushin th:contains('Zielgeb‰ude Level')").parent().show();
         }
     });
     $("#hqrushinhqrushouttarget").change();

@@ -14,11 +14,11 @@ addOnloadHook(UserNameReplace);
 
 // 10. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Mafia_Wiki"];
 importScriptPage('AjaxRC/code.js', 'dev');
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /****************************************/
 /* sliders using jquery by User:Tierrie */

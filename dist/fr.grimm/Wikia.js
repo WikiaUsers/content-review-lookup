@@ -16,7 +16,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
         sysop: { u: 'Grimm', },
-        bureaucrat: { u: 'RoyautÃ©' },
+        bureaucrat: { u: 'Royauté' },
         threadmoderator: { u: 'Hexenbiest' },
         moderator: { u: 'Fuchsbau' },
 	}
@@ -26,7 +26,7 @@ UserTagsJS.modules.inactive = 50
 
 ;
 
-/*Enlever le bouton "ajouter une image Ã  cette galerie"*/
+/*Enlever le bouton "ajouter une image à cette galerie"*/
 $( "li:last" ).removeClass(function() {
   return $( this ).prev().attr( "wikia-photogallery-add wikia-button noprint" );
 });

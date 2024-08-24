@@ -54,7 +54,7 @@ window.DisplayClockJS = {
 
 window.SpoilerAlertJS = {
     question: 'SPOILER ALERT!',
-    yes: 'YÃ©',
+    yes: 'Yé',
     no: 'Nay',
     fadeDelay: 1200
 };

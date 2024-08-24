@@ -1,4 +1,4 @@
-/*  Interface de usuario anaÃ±dida By: Dannyth92* gracias Danny/
+/*  Interface de usuario anañdida By: Dannyth92* gracias Danny/
 importArticles( {
     type: 'script',
     articles: [

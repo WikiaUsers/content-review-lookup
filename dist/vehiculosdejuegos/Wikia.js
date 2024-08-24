@@ -1,5 +1,5 @@
 // **************************************************
-// AÃ±ade el tagline de forma manual
+// Añade el tagline de forma manual
 // **************************************************
 $(function(){
      if ($('#WikiHeader').length ) {

@@ -1,8 +1,8 @@
 /*
-	Description : lib permettant d'Ã©diter facilement une page
-	DerniÃ¨re modification : 20 fÃ©vrier 2015
+	Description : lib permettant d'éditer facilement une page
+	Dernière modification : 20 février 2015
 	Source : [[Utilisateur:Gratus/PaStec real.js]]
-	AdaptÃ© par 0x010C
+	Adapté par 0x010C
 */
 
 function editlib_addTop(page, text, comment) {
@@ -15,7 +15,7 @@ function editlib_replace(page, text, comment) {
 	editlib_editPage(page, "*", text, comment);
 }
 
-/* Les fonctions qui suivent ne doivent pas Ãªtre utilisÃ©s directement */
+/* Les fonctions qui suivent ne doivent pas être utilisés directement */
 var editcount = 0;
 
 function editlib_editPage(page, pattern, replace, comment) {
@@ -71,7 +71,7 @@ function editlib_doEditPage(xmlreq, data) {
 			oldtext = lrev[0].textContent;
 			if(oldtext === undefined || oldtext == "undefined")
 			{
-				mw.notify("La rÃ©cupÃ©ration de la liste des modifications douteuses a Ã©chouÃ©, rechargez cette page et rÃ©essayez ;)");
+				mw.notify("La récupération de la liste des modifications douteuses a échoué, rechargez cette page et réessayez ;)");
 				return;
 			}
 			basetimestamp = '&basetimestamp=' + encodeURIComponent(lrev[0].getAttribute('timestamp'));
@@ -119,7 +119,7 @@ function editlib_confirm_executed(xmlreq, data) {
 		if( data.retry ){
 			data.retry--;
 			editlib_ajax.http(data);
-			document.title = "Â§"+document.title;
+			document.title = "§"+document.title;
 		} else {
 			alert("Erreur API : " + error.getAttribute('info'));
 		}
@@ -182,7 +182,7 @@ var editlib_ajax = {
 			if (bundle.retry) {
 				bundle.retry--;
 				editlib_ajax.http(bundle);
-				document.title = "Â§"+document.title;
+				document.title = "§"+document.title;
 			} else {
 				bundle.onFailure(xmlhttp, bundle);
 			}

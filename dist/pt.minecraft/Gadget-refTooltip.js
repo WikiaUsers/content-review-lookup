@@ -5,12 +5,12 @@
 $( function() {
 	var i18n = {
 		cancelButton: 'Cancelar',
-		doneButton: 'ConcluÃ­do',
-		enableLabel: 'Ativar as dicas de referÃªncia',
-		optionsButtonTitle: 'Alterar as opÃ§Ãµes das dicas de referÃªncia',
-        referencesSectionName: 'ReferÃªncias',
-		saveFailedStorageFull: "O localStorage do seu navegador estÃ¡ cheio?",
-		saveFailedTitle: 'Salvar opÃ§Ãµes falhou'
+		doneButton: 'Concluído',
+		enableLabel: 'Ativar as dicas de referência',
+		optionsButtonTitle: 'Alterar as opções das dicas de referência',
+        referencesSectionName: 'Referências',
+		saveFailedStorageFull: "O localStorage do seu navegador está cheio?",
+		saveFailedTitle: 'Salvar opções falhou'
 	};
 	
 	var $win = $( window );

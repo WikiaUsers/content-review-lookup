@@ -1,1 +1,0 @@
-importScriptPage('MediaWiki:Common.js/IRClogin.js');

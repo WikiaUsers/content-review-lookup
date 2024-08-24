@@ -1,7 +1,7 @@
-// Editar introducciÃ³n de los artÃ­culos
-EditIntroButtonText = 'Editar introducciÃ³n';
+// Editar introducción de los artículos
+EditIntroButtonText = 'Editar introducción';
 importScriptPage('EditIntroButton/code.js', 'dev');
-// MenÃºes desplegables con hover
+// Menúes desplegables con hover
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
     expandedAreaEdit: true
@@ -22,9 +22,9 @@ importArticles({
     ]
 });
 // No comentarios en entradas de blog antiguas
-   // 30 dÃ­as
+   // 30 días
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog ha sido archivado ya que lleva treinta dÃ­as inactivo. Por esto, no se permiten nuevos comentarios.",
+    expiryMessage: "Este blog ha sido archivado ya que lleva treinta días inactivo. Por esto, no se permiten nuevos comentarios.",
     nonexpiryCategory: "Blogs permanentes"
 };

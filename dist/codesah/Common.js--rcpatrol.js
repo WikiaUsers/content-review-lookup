@@ -37,8 +37,8 @@ for(var i = 1; i < 200; i++) {
  
 $('#namespace_s').append($select);
  
-$('#limit_s').empty().append('<label for="limit">N煤mero de ediciones a tomar: </label><input type="text" id="limit" maxlength="3" size="1" value="50" />');
-$('#anon_s').empty().append('<label for="anon">Solo mostrar usuarios an贸nimos: </label><input type="checkbox" id="anon" />');
+$('#limit_s').empty().append('<label for="limit">N鷐ero de ediciones a tomar: </label><input type="text" id="limit" maxlength="3" size="1" value="50" />');
+$('#anon_s').empty().append('<label for="anon">Solo mostrar usuarios an髇imos: </label><input type="checkbox" id="anon" />');
 $('#minor_s').empty().append('<label for="minor">Solo mostrar ediciones mayores: </label><input type="checkbox" id="minor" />');
 $('#since_s').empty().append('<label for="since">Mostrar ediciones desde: </label><input type="text" id="rcsince" />');
 $('#submit_s').empty().append('<button type="button" id="go">Cargar</button>');
@@ -78,7 +78,7 @@ function warn(user, i) {
 					'appendtext': '\n{{subst:' + $('#warn-templates').val() + '}} ~~~~',
 					'token': edittoken,
 					'minor': 'yes',
-					'summary': 'Aviso: a trav茅s de la [[Project:Patrulla de CR|]]',
+					'summary': 'Aviso: a trav閟 de la [[Project:Patrulla de CR|]]',
 					'basetimestamp': page.missing ? page.revisions[0].timestamp : '',
 					'starttimestamp': starttimestamp
 				},
@@ -127,7 +127,7 @@ function save(content, i) {
 			'action': 'edit',
 			'title': pages[i],
 			'text': content,
-			'summary': $('#summary').val() + ' (a trav茅s de la [[Project:Patrulla de CR|]])',
+			'summary': $('#summary').val() + ' (a trav閟 de la [[Project:Patrulla de CR|]])',
 			'basetimestamp': starttimestamp,
 			'startimestamp': starttimestamp,
 			'token': edittoken
@@ -252,12 +252,12 @@ function show_cur(i) {
  * @param: i, the index of the revision in the revIds array
  */
 function not_top(i) {
-	$('#cur-link').empty().append('<a id="cur-diff">comparar con revisi贸n actual</a>');
+	$('#cur-link').empty().append('<a id="cur-diff">comparar con revisi髇 actual</a>');
 	$('#cur-diff').click(function() { show_cur(i) });
 	$('#prev-diff').click(function() {
 		$('#compare-toggle').toggle();
 		$('#prev-diff').toggle();
-		$('#cur-diff').empty().append('comparar con revisi贸n actual');
+		$('#cur-diff').empty().append('comparar con revisi髇 actual');
 		$('#cur-diff').toggle();
 		$('#diff-options').toggle();
 		$('#rev-inner').toggle();
@@ -271,7 +271,7 @@ function not_top(i) {
  * @param: i, the index of the revision in the revIds array
  */
 function top(i) {
-	$('#cur-link').empty().append('<span style="font-weight:bold;">revisi贸n m谩s reciente</span>');
+	$('#cur-link').empty().append('<span style="font-weight:bold;">revisi髇 m醩 reciente</span>');
 	// show the rollback option if the user is a sysop or has rollback rights
 	if(is_rollback) {
 		$('#diff-options').append(' &bull; <span id="rollback-link">[<a>revertir</a>]</span>');
@@ -348,8 +348,8 @@ function append_diff_options(i) {
 		$('#diff-options').append(' &bull; <span id="block-form"><a id="block-link">bloquear</a>&nbsp;<span id="block-toggle" style="display: none;">' +
 					'<select id="block-duration">' +
 						'<option value="2 hours">2 horas</option>' +
-						'<option value="1 day">1 d铆a</option>' +
-						'<option value="3 days">3 d铆as</option>' +
+						'<option value="1 day">1 d韆</option>' +
+						'<option value="3 days">3 d韆s</option>' +
 						'<option value="1 week">1 semana</option>' +
 					'</select>&nbsp;' +
 					'Resumen: <input type="textbox" id="block-reason" />&nbsp;' +
@@ -453,7 +453,7 @@ function undo(summary, i) {
 			'action': 'edit',
 			'title': pages[i],
 			'undo': revIds[i],
-			'summary': 'Revisi贸n ' + revIds[i] + ' deshecha por [[Especial:Contribuciones/' + users[i] + '|' + users[i] + ']] ([[Muro:' + users[i] + '|muro]]) usando la [[Project:Patrulla de CR|]]' + summary,
+			'summary': 'Revisi髇 ' + revIds[i] + ' deshecha por [[Especial:Contribuciones/' + users[i] + '|' + users[i] + ']] ([[Muro:' + users[i] + '|muro]]) usando la [[Project:Patrulla de CR|]]' + summary,
 			'basetimestamp': starttimestamp,
 			'startimestamp': starttimestamp,
 			'token': edittoken
@@ -604,7 +604,7 @@ function go() {
 						'<span id="diff-options"></span>'+
 						'<div id="nav"></div>'+
 						'<span style="display:none; font-weight:bold;">Cargando...</span>'+
-						'<span style="font-weight:bold; display:none;" id="compare-toggle">Comparaci贸n con revisi贸n actual:</span><hr />'+
+						'<span style="font-weight:bold; display:none;" id="compare-toggle">Comparaci髇 con revisi髇 actual:</span><hr />'+
 						'<table class="diff">'+
 							'<div id="diff"></div>'+
 						'</table>');
@@ -620,7 +620,7 @@ function go() {
  
 		$('#revision').empty().append('Dif <input id="diff-num" type="text" maxlength="3" size="1" style="text-align:right;" /> de ' + revIds.length +
 					      '&nbsp;<button id="diff_go">Ir</button> <br />' +
-					      '<span id="rev-inner">Revisi贸n ' + revIds[i] + ' del ' + t + ' por el usuario: <a href="/wiki/Especial:Contribuciones/' + users[i] + '" target="_blank">' + users[i] + '</a> ' +
+					      '<span id="rev-inner">Revisi髇 ' + revIds[i] + ' del ' + t + ' por el usuario: <a href="/wiki/Especial:Contribuciones/' + users[i] + '" target="_blank">' + users[i] + '</a> ' +
 					      '(<a href="/wiki/Muro:' + users[i] + '" target="_blank">muro</a>)<br /></span>');
 		$('#diff-num').val(i + 1);
 		$('#diff_go').click(function() { show_diff( $('#diff-num').val() - 1 ); });

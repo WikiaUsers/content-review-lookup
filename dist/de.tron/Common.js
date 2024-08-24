@@ -25,8 +25,8 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/1/13/Button_delete.png",
-     "speedTip": "LÃ¶schantrag stellen",
-     "tagOpen": "{{lÃ¶schen|",
+     "speedTip": "Löschantrag stellen",
+     "tagOpen": "{{löschen|",
      "tagClose": "}}",
      "sampleText": "Grund"};
  
@@ -46,10 +46,10 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/1/12/Button_gallery.png",
-     "speedTip": "Gallerie einfÃ¼gen",
+     "speedTip": "Gallerie einfügen",
      "tagOpen": "<gallery>",
      "tagClose": "</gallery>",
-     "sampleText": "FÃ¼ge hier deine Bilder ein"};
+     "sampleText": "Füge hier deine Bilder ein"};
  
       mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/vereins/images/9/92/Anbeten.png",
@@ -81,7 +81,7 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/vereins/images/5/51/Help_me.png",
-     "speedTip": "Zu HÃ¼lf",
+     "speedTip": "Zu Hülf",
      "tagOpen": "https://images.wikia.nocookie.net/__cb20090812184630/vereins/images/a/ad/Help.gif",
      "tagClose": "",
      "sampleText": ""};
@@ -125,6 +125,6 @@ addOnloadHook(UserBeoMenuItem);
  
 /* add contribs to user menu - 2/1/11 */
 function UserContribsMenuItem() {
-$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Special:Contributions/'+ encodeURIComponent (wgUserName) +'">Eigene BeitrÃ¤ge</a></li>');
+$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Special:Contributions/'+ encodeURIComponent (wgUserName) +'">Eigene Beiträge</a></li>');
 } 
 addOnloadHook(UserContribsMenuItem);

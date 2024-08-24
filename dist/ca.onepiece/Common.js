@@ -11,15 +11,15 @@ InactiveUsers = { text: 'Inactiu' };
 window.BackToTopModern = true;
 
 // ===============================
-//  C√†rrega de fitxers
+//  C‡rrega de fitxers
 //  [[Especial:Carrega]]
 // ===============================
-// Afegeix una descripci√≥ predeterminada durant la c√†rrega de fitxers
+// Afegeix una descripciÛ predeterminada durant la c‡rrega de fitxers
 $(function preloadUploadDesc() {
   if ( wgCanonicalSpecialPageName != 'Upload' || $.getUrlVar('wpForReUpload') ) { return; }
  
   if ($('#wpUploadDescription').length) {
-    $('#wpUploadDescription').append('== Llic√®ncia ==\n' +
+    $('#wpUploadDescription').append('== LlicËncia ==\n' +
             '{{Fairuse'         +
             '}}');
   }

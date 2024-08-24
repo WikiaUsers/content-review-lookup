@@ -63,9 +63,9 @@ if(wgCanonicalSpecialPageName == 'Block' && /Spezial:Sperren\/(.*)/.test(wgPageN
 		$('<a />').text('Alle Bearbeitungen des Benutzers rollbacken').click(rollbackSpamUserContribs.bind(this,$('#mw-bi-target').val()))
 	);
 }
-else if(wgCanonicalSpecialPageName == 'Contributions' && /Spezial:Beitr√§ge\/(.*)/.test(wgPageName)) {
+else if(wgCanonicalSpecialPageName == 'Contributions' && /Spezial:Beitr‰ge\/(.*)/.test(wgPageName)) {
 	$('.chat-change-ban').after(
 		'|',
-		$('<a />').text(' Alle Bearbeitungen des Benutzers rollbacken ').click(rollbackSpamUserContribs.bind(this,/Spezial:Beitr√§ge\/(.*)/.exec(wgPageName)[1]))
+		$('<a />').text(' Alle Bearbeitungen des Benutzers rollbacken ').click(rollbackSpamUserContribs.bind(this,/Spezial:Beitr‰ge\/(.*)/.exec(wgPageName)[1]))
 	);
 }

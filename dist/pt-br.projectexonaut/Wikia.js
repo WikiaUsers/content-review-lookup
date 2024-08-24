@@ -1,5 +1,5 @@
-$('.WikiaRail').append('<section class="module"><h1>VotaÃ§Ã£o</h1><Poll>
-Qual a melhor facÃ§Ã£o?
+$('.WikiaRail').append('<section class="module"><h1>Votação</h1><Poll>
+Qual a melhor facção?
 Atlas Brigade
 Banzai Squadron
 </Poll>

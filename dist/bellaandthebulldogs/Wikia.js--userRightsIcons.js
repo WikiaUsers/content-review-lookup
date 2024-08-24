@@ -9,7 +9,7 @@ function addMastheadTags() {
  
    // BUREAUCRATS
  
-    rights["Love~Leigh GrandÃ©"]   = ["Bureaucrat","Administrator"
+    rights["Love~Leigh Grandé"]   = ["Bureaucrat","Administrator"
 ];
  
 // ADMINS

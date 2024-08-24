@@ -12,7 +12,7 @@
         {name: "Areades", color:"#81BEF7"},
         {name: "Aldan_Tanneo", color:"#387C44"},
         {name: "DelWindows", color:"#900000"},
-        {name: "EirienlaurÃ«", color:"#32cadb"}
+        {name: "Eirienlaurë", color:"#32cadb"}
     ];
  
     var border_mod = "2px solid ";//+color

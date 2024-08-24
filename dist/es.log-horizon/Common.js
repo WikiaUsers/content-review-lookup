@@ -13,8 +13,8 @@ var WikiaNotificationMessage = ;
 var WikiaNotificationexpiry = 0;
 
 // <source lang="JavaScript">
-// BOTONES DE EDICI脫N PERSONALIZADOS
-// Esto esta basado en el c贸digo original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICI覰 PERSONALIZADOS
+// Esto esta basado en el c骴igo original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -40,8 +40,8 @@ var WikiaNotificationexpiry = 0;
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucci贸n",
-     "tagOpen": "{{En construcci贸n|",
+     "speedTip": "Advertir de que este articulo esta en contrucci髇",
+     "tagOpen": "{{En construcci髇|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
 
@@ -68,10 +68,10 @@ var WikiaNotificationexpiry = 0;
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Peque帽o",
+     "speedTip": "Texto Peque駉",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Peque帽o"};
+     "sampleText": "Texto Peque駉"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -121,7 +121,7 @@ var WikiaNotificationexpiry = 0;
 
 /*Cambios recientes automaticos por Pcj y Grunny */ 
 
-AjaxRCRefreshText = 'Actualizaci贸n automatica'; 
-AjaxRCRefreshHoverText = 'Refrescar esta p谩gina autom谩ticamente'; 
+AjaxRCRefreshText = 'Actualizaci髇 automatica'; 
+AjaxRCRefreshHoverText = 'Refrescar esta p醙ina autom醫icamente'; 
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"]; importScriptURI('http://vegadark.wikia.com/index.php?title=MediaWiki:RapiTareas.js&action=raw&ctype=text/javascript'); 
 importScriptPage('AjaxRC/code.js', 'dev');

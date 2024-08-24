@@ -2,27 +2,27 @@
 
 /* 
 
-La fonction ci-dessous est appelÃ©e par HotCatsMulti juste avant d'effectuer l'Ã©dition. 
-Elle permet de gÃ©rer des difficultÃ©s d'Ã©dition liÃ©es uniquement au wiki sur lequel HotCatsMulti est installÃ©.
+La fonction ci-dessous est appelée par HotCatsMulti juste avant d'effectuer l'édition. 
+Elle permet de gérer des difficultés d'édition liées uniquement au wiki sur lequel HotCatsMulti est installé.
 
 */
 //<source lang=javascript>//<pre><nowiki>
 
 function hotcat_EditCustom(){
     var Text = document.getElementById('wpTextbox1').value;
-// Ajouter ci-dessous les opÃ©ration Ã  effectuer sur le contenu de la fenÃªtre de modification (variable "Text")
+// Ajouter ci-dessous les opération à effectuer sur le contenu de la fenêtre de modification (variable "Text")
 // ===========================================================================================================
 
-// EnlÃ¨ve la fausse catÃ©gorie en commentaire dans les images qui est prise pour un point de repÃ¨re 
+// Enlève la fausse catégorie en commentaire dans les images qui est prise pour un point de repère 
 //(http://fr.aigles-et-lys.wikia.com/wiki/Discussion_Projet:JavaScript/Rapport_de_bug&diff=56995134&oldid=56985376)
     if(wgNamespaceNumber==6){
-        Text = Text.split("[[CatÃ©gorie:Image sur Aigles et Lys]]-->").join("-->");
+        Text = Text.split("[[Catégorie:Image sur Aigles et Lys]]-->").join("-->");
     }
 
 
 
 // ===========================================================================================================
-// Fin des opÃ©rations spÃ©ciales
+// Fin des opérations spéciales
     document.getElementById('wpTextbox1').value = Text; 
 }
 

@@ -7,7 +7,7 @@ This template has to be use in parallel with toggling functions. It will only cr
 This template uses the following JavaScript codes:
 {{Hidden|1=
 <source lang="javascript">
-/************* Funzioni di utilit√† generale *************/
+/************* Funzioni di utilit‡ generale *************/
  
  /* Test if an element has a certain class **************************************
  *

@@ -1,8 +1,8 @@
 /*<pre>
-Aviso: Esto es cÃ³digo JavaScript. Si hay algÃºn tipo de error de sintaxis en este cÃ³digo el menÃº del sidebar dejarÃ¡ de funcionar. AsegÃºrate que no rompes nada.
-Cada elemento de wgSidebar es el texto (despuÃ©s del |) del elemento en [[MediaWiki:Sidebar]]
-Los menÃºs son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenÃº, donde la clave (antes de los : ) es el propio elemento y el valor (despuÃ©s de los : ) es una lista [ ... ] con el contenido del submenÃº.
-Para cada elemento, serÃ¡ tanto el enlace como el texto. Si se pone una barra | lo que haya antes serÃ¡ el enlace y lo de despuÃ©s el texto.
+Aviso: Esto es código JavaScript. Si hay algún tipo de error de sintaxis en este código el menú del sidebar dejará de funcionar. Asegúrate que no rompes nada.
+Cada elemento de wgSidebar es el texto (después del |) del elemento en [[MediaWiki:Sidebar]]
+Los menús son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenú, donde la clave (antes de los : ) es el propio elemento y el valor (después de los : ) es una lista [ ... ] con el contenido del submenú.
+Para cada elemento, será tanto el enlace como el texto. Si se pone una barra | lo que haya antes será el enlace y lo de después el texto.
 */
 wgSidebar['Manhunt Wiki'] = [
 	'w:c:manhunt.respuestas:Manhunt_Respuestas|Respuestas'
@@ -10,7 +10,7 @@ wgSidebar['Manhunt Wiki'] = [
 wgSidebar['GTA Revolution'] = [
 	'http://www.gtarevolution.net/index.php|Web',
 	'http://www.gtarevolution.net/public/index.php|Foro',
-	'http://www.gtarevolution.net/public/index.php?action=mgallery|GalerÃ­a',
+	'http://www.gtarevolution.net/public/index.php?action=mgallery|Galería',
 	'http://www.youtube.com/GTARevolutionChannel|YouTube',
 	'http://www.vimeo.com/gtarevolution|Vimeo',
 	'http://www.facebook.com/gtarevolution|Facebook',
@@ -18,8 +18,8 @@ wgSidebar['GTA Revolution'] = [
 ];
 
 wgSidebar['Comunidad'] = [
-	'Manhunt_Wiki:AdministraciÃ³n|AdministraciÃ³n',
-        'Manhunt_Wiki:PolÃ­ticas|PolÃ­ticas',
+	'Manhunt_Wiki:Administración|Administración',
+        'Manhunt_Wiki:Políticas|Políticas',
 	{'Foro:Portada|Foro': [
 		'Foro:Portada/Respuestas|Foro de Respuestas'
         ]},
@@ -32,14 +32,14 @@ wgSidebar['Comunidad'] = [
 wgSidebar['Saga Manhunt'] = [
 	{'Manhunt|Manhunt': [
 		'Personajes de Manhunt|Personajes',
-		'VehÃ­culos de Manhunt|VehÃ­culos',
+		'Vehículos de Manhunt|Vehículos',
 		'Misiones de Manhunt|Misiones',
 		'Bandas de Manhunt|Bandas',
 		'Armas de Manhunt|Armas'
         ]},
 	{'Manhunt 2|Manhunt 2': [
 		'Personajes de Manhunt 2|Personajes',
-		'VehÃ­culos de Manhunt 2|VehÃ­culos',
+		'Vehículos de Manhunt 2|Vehículos',
 		'Misiones de Manhunt 2|Misiones',
 		'Bandas de Manhunt 2|Bandas',
 		'Armas de Manhunt 2|Armas'
@@ -47,15 +47,15 @@ wgSidebar['Saga Manhunt'] = [
 ];
 
 wgSidebar['Participa'] = [
-	'CategorÃ­a:ArtÃ­culos_para_actualizar|Actualizar',
-	'CategorÃ­a:ArtÃ­culos_para_arreglar|Arreglar',
-	'CategorÃ­a:ArtÃ­culos_para_borrar|Borrar',
-	'Especial:PÃ¡ginasSinCategorizar|Categorizar',
-	'Especial:PÃ¡ginasRequeridas|Crear',
-	'CategorÃ­a:Esbozos|Esbozos',
-	'CategorÃ­a:ArtÃ­culos_con_errores_ortogrÃ¡ficos|Ortografiar',
-	'CategorÃ­a:ArtÃ­culos_sin_foto|Sin foto',
-	'CategorÃ­a:ArtÃ­culos_en_obras|Terminar'
+	'Categoría:Artículos_para_actualizar|Actualizar',
+	'Categoría:Artículos_para_arreglar|Arreglar',
+	'Categoría:Artículos_para_borrar|Borrar',
+	'Especial:PáginasSinCategorizar|Categorizar',
+	'Especial:PáginasRequeridas|Crear',
+	'Categoría:Esbozos|Esbozos',
+	'Categoría:Artículos_con_errores_ortográficos|Ortografiar',
+	'Categoría:Artículos_sin_foto|Sin foto',
+	'Categoría:Artículos_en_obras|Terminar'
 ];
 wgSidebar['Rockstar Games'] = [
 	'w:c:es.gta:Grand_Theft_Encyclopedia|Grand Theft Encyclopedia',
@@ -68,7 +68,7 @@ wgSidebar['Rockstar Games'] = [
 ];
 wgSidebar['Logros'];
 
-/* Llamada al cÃ³digo para inicializar esto */
+/* Llamada al código para inicializar esto */
 $(MonobookSidebar.init);
 
 /*</pre>*/

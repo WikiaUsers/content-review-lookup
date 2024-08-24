@@ -1,4 +1,4 @@
-$('<div class="WikiActivity-1"><span class="WikiActivity-1-text">Hola & Bienvenido, todos los cÃ³digos que puedes encontrar aqui puedes usarlos, se te agradeceria dar crÃ©ditos.</span></div>').insertBefore('#wikiactivity-main');
+$('<div class="WikiActivity-1"><span class="WikiActivity-1-text">Hola & Bienvenido, todos los códigos que puedes encontrar aqui puedes usarlos, se te agradeceria dar créditos.</span></div>').insertBefore('#wikiactivity-main');
 
 /*
 @ Created By Lil' Miss Rarity, customized by Joeytje50 (i18n compatibility upgrade and dropdown languages)
@@ -53,7 +53,7 @@ if(person.pagename === "Inicio:Solicitud") {
 // This opens the form for the users to fill out
  
 function openFormSolicitud() {
-    $.showCustomModal('Solicitud de portabilizaciÃ³n', '<form class="WikiaForm" method="" name="" id="vanguard"><fieldset><span style="font-family:Arial"><span style="font-weight:bold">Nombre de la comunidad</span><br><input id="wikiname" type="text" placeholder="Kirbipedia" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">Enlace</span><br><span style="color:gray">http://</span><input id="wikiurl" type="text" placeholder="es.kirby" style="width:364px"/><span style="color:gray">.wikia.com</span><br><span style="font-weight:bold">Usuario solicitante:</span><span style="" id="user"> ' + person.username + '</span><br><span id="br2" /><span style="font-weight:bold">RazÃ³n</span><br><textarea name="" id="comment" style="height: 100px; width: 100%;" placeholder="Razones para solicitar un mentor"></textarea><br><span id="br2" /></fieldset></form>', {
+    $.showCustomModal('Solicitud de portabilización', '<form class="WikiaForm" method="" name="" id="vanguard"><fieldset><span style="font-family:Arial"><span style="font-weight:bold">Nombre de la comunidad</span><br><input id="wikiname" type="text" placeholder="Kirbipedia" style="width:400px"/><br><span id="br2" /><span style="font-weight:bold">Enlace</span><br><span style="color:gray">http://</span><input id="wikiurl" type="text" placeholder="es.kirby" style="width:364px"/><span style="color:gray">.wikia.com</span><br><span style="font-weight:bold">Usuario solicitante:</span><span style="" id="user"> ' + person.username + '</span><br><span id="br2" /><span style="font-weight:bold">Razón</span><br><textarea name="" id="comment" style="height: 100px; width: 100%;" placeholder="Razones para solicitar un mentor"></textarea><br><span id="br2" /></fieldset></form>', {
         id: "requestWindow",
         width: 650,
         buttons: [{
@@ -88,25 +88,25 @@ console.log('Enviando...');
         url = $form.find('#wikiurl').val(),
         user = $form.find('#user').val(),
         comentarios = $form.find('#comment').val(),
-        page = '==' + wikiname + '==\n{{Solicitud vanguard\n|Estado  = <!-- NO EDITAR concedido/declinado/pendiente  -->\n|Vanguard  = <!-- NO EDITAR -->\n|Fecha  = ' + '~~'+ '~~' + '~' + '\n|Wiki    =' + wikiname + '\n|Enlace  =' + url + '\n|Solicitante =' + person.username + '\n|RazÃ³n =' + comentarios + ' ' + person.signature + '}}';
+        page = '==' + wikiname + '==\n{{Solicitud vanguard\n|Estado  = <!-- NO EDITAR concedido/declinado/pendiente  -->\n|Vanguard  = <!-- NO EDITAR -->\n|Fecha  = ' + '~~'+ '~~' + '~' + '\n|Wiki    =' + wikiname + '\n|Enlace  =' + url + '\n|Solicitante =' + person.username + '\n|Razón =' + comentarios + ' ' + person.signature + '}}';
     // If url or header is blank, return alerts
     if (!url) {
-        alert('Â¡Olvidaste poner el enlace a tu comunidad!');
+        alert('¡Olvidaste poner el enlace a tu comunidad!');
         return;
     }
     if (!wikiname) {
-        alert('Â¡Olvidaste poner el nombre de la comunidad!');
+        alert('¡Olvidaste poner el nombre de la comunidad!');
         return;
     }
 console.log('Comprobaciones realizadas...');
  
     // Ajax URL
     var url = person.server + '/api.php?action=edit&title=proyect_talk:Solicitud&section=new' + '&text=' + encodeURIComponent(page) + '&token=' + encodeURIComponent(person.edittoken);
-    alert('La solicitud ya estÃ¡ siendo enviada');
+    alert('La solicitud ya está siendo enviada');
     console.log('Obteniendo la URL: ',url);
  
     $.post(url, function (r) {
-console.log('Ya deberÃ­a estar hecho:',r);
+console.log('Ya debería estar hecho:',r);
     cancelform();
 window.location = person.server + '/wiki/' + 'proyect_talk:Solicitud#' + encodeURIComponent(wikiname);
     });
@@ -116,7 +116,7 @@ console.log('Enviando solicitud...');
 if (typeof(mwCustomEditButtons) != 'undefined') {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile" : "https://vignette.wikia.nocookie.net/eswikia/images/1/18/Propose-delete.png?1",
-        "speedTip" : "Proponer el artÃ­culo para ser borrado",
+        "speedTip" : "Proponer el artículo para ser borrado",
         "tagOpen" : "{{Borrar|",
         "tagClose" : "}}",
         "sampleText" : "Motivo",
@@ -124,17 +124,17 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
     
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile" : "https://vignette.wikia.nocookie.net/eswikia/images/5/52/Alert-icon.png?1",
-        "speedTip" : "Aviso de artÃ­culo/archivo/blog inadecuado",
+        "speedTip" : "Aviso de artículo/archivo/blog inadecuado",
         "tagOpen" : "{{Wikiacentral\n",
         "tagClose" : "\n}}",
-        "sampleText" : "|Nombre del artÃ­culo/archivo/blog que serÃ¡ borrado",
+        "sampleText" : "|Nombre del artículo/archivo/blog que será borrado",
     };
     
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://vignette.wikia.nocookie.net/eswikia/images/6/6a/Insert-icon.png?1",
         "speedTip": "Insertar Plantilla Wiki",
         "tagOpen": "{{Wiki\r| wiki = ",
-        "tagClose": "\r| logo = \r| descripciÃ³n = \r| fundado = \r| fundador = \r| nombre_solicitado = \r| estado = \r}}",
+        "tagClose": "\r| logo = \r| descripción = \r| fundado = \r| fundador = \r| nombre_solicitado = \r| estado = \r}}",
         "sampleText": "",
     };
 }

@@ -39,7 +39,7 @@ if (mediaWiki.config.get("wgAction") === "view" && mediaWiki.config.get("wgNames
 					promptedDeleteReason = window.MarkForDeletion.promptedDeleteReason;
 				}
  
-				var deleteReason = window.prompt("Anota el motiu pel qual aquesta pÃ gina ha de ser esborrada:", promptedDeleteReason);
+				var deleteReason = window.prompt("Anota el motiu pel qual aquesta pàgina ha de ser esborrada:", promptedDeleteReason);
  
 				if (typeof deleteReason === "string" && deleteReason.length > 0) {
 					setDeleteNotice(deleteReason);

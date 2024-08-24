@@ -4,7 +4,7 @@
  *
  * lists all admins on the wiki
  * documentation at: http://dev.wikia.com/wiki/ListAdmins
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  */
 /*jshint curly:false */

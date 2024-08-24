@@ -1,11 +1,11 @@
 /**
  * AddEditSection0
  *
- * Permet d'Ã©diter la premiÃ¨re section d'une page (en-tÃªte)
+ * Permet d'éditer la première section d'une page (en-tête)
  *
  * Auteur : ??
  * Contributeurs : Pabix, Zelda, IAlex
- * DerniÃ¨re rÃ©vision : 6 mars 2012
+ * Dernière révision : 6 mars 2012
  * {{:Projet:JavaScript/Script|EditZeroth}}
  */
 
@@ -21,9 +21,9 @@ $( document ).ready( function() {
         var portletLink = mw.util.addPortletLink(
             'p-cactions',
             mw.config.get( 'wgScript' ) + '?title=' + encodedPageName + '&action=edit&section=0',
-            'En-tÃªte',
+            'En-tête',
             'ca-edit-0',
-            "Modifier l'en-tÃªte de la page",
+            "Modifier l'en-tête de la page",
             '',
             '#ca-history'
         );

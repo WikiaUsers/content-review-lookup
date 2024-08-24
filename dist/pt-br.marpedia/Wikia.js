@@ -1,14 +1,14 @@
-/* Guia "depÃ³sito" na pÃ¡gina de usuÃ¡rio */
+/* Guia "depósito" na página de usuário */
 $(function() {
     var olds = $(".tabs-container > ul.tabs").html();
     $(".tabs-container > ul.tabs").html(news);
 });
  
-/* adiciona DepÃ³sito, minhas contribuiÃ§Ãµes e tal tal, na account Navigation */
+/* adiciona Depósito, minhas contribuições e tal tal, na account Navigation */
  
 function AddNavigationLinks() {
 
 addOnloadHook(AddNavigationLinks);
  
-/* tÃ­tulos no perfil */
+/* títulos no perfil */
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');

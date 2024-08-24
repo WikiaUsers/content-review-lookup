@@ -1,19 +1,19 @@
 // **************************************************
-//       Grand Theft Encyclopedia - VersiÃ³n 7.0
+//       Grand Theft Encyclopedia - Versión 7.0
 //          Creado por User:bola - CC-BY-SA
 //          Created by User:bola - CC-BY-SA
 // --------------------------------------------------
-// ATENCIÃ“N: La mayor parte de los cÃ³digos incluÃ­dos
-// aquÃ­ han sido creados especÃ­ficamente para es.gta
-// por user:bola, si estÃ¡s interesado en hacer alguna
-// modificaciÃ³n o usarlos en tu wiki, avisa al autor
-// para evitar aÃ±adir algo que pueda romper los TdU.
+// ATENCIÓN: La mayor parte de los códigos incluídos
+// aquí han sido creados específicamente para es.gta
+// por user:bola, si estás interesado en hacer alguna
+// modificación o usarlos en tu wiki, avisa al autor
+// para evitar añadir algo que pueda romper los TdU.
 //                                           Gracias,
 // **************************************************
 
 
 // **************************************************
-// Importa diferentes cÃ³digos extra
+// Importa diferentes códigos extra
 // **************************************************
 importArticles({
     type: 'script',
@@ -33,7 +33,7 @@ importScriptPage('SocialIcons/code.js','dev');
 
 
 // **************************************************
-// Primera parte - 4 backgrounds durante el dÃ­a
+// Primera parte - 4 backgrounds durante el día
 // **************************************************
 $(function () {
  var d = new Date();
@@ -61,7 +61,7 @@ $(function () {
 
 
 // **************************************************
-// Segunda parte - AÃ±ade un contenedor extra para background
+// Segunda parte - Añade un contenedor extra para background
 // **************************************************
 $('#WikiaPageBackground').append('<div class="WikiaPageBackgroundSub" id="WikiaPageBackgroundSub"></div>');
 
@@ -73,7 +73,7 @@ $('.thumb').append('<div class="plantilla-cinta-cinta" id="plantilla-cinta-cinta
 
 
 // **************************************************
-// AÃ±ade el tagline de forma manual
+// Añade el tagline de forma manual
 // **************************************************
 $(function(){
      if ($('#WikiaPageHeader').length ) {
@@ -83,12 +83,12 @@ $(function(){
 
 
 // **************************************************
-// AÃ±ade en las noticias un header especial - prueba
+// Añade en las noticias un header especial - prueba
 // **************************************************
-$('body.ns-116 .WikiHeader .wordmark.graphic ').bind('click.cabecera', function(){ window.location.href = 'http://es.gta.wikia.com/wiki/Noticias:Ãndice'; return false; });
+$('body.ns-116 .WikiHeader .wordmark.graphic ').bind('click.cabecera', function(){ window.location.href = 'http://es.gta.wikia.com/wiki/Noticias:Índice'; return false; });
 
 // **************************************************
-// AÃ±ade nuevas etiquetas en los perfiles de los usuarios
+// Añade nuevas etiquetas en los perfiles de los usuarios
 // **************************************************
 window.UserTagsJS = {
 	modules: { 
@@ -123,25 +123,25 @@ window.UserTagsJS = {
 			u:'Usuario del mes', f:'Usuaria del mes', link:'project:Usuario_del_mes' 
 		},
 		yearuser: { 
-			u:'Usuario del aÃ±o', f:'Usuaria del aÃ±o', link:'project:Usuario_del_aÃ±o' 
+			u:'Usuario del año', f:'Usuaria del año', link:'project:Usuario_del_año' 
 		},
 		patrulla: { 
-			u:'Patrulla', link:'project:AdministraciÃ³n#Patrulla' 
+			u:'Patrulla', link:'project:Administración#Patrulla' 
 		},
 		mantenimiento: { 
-			u:'Mantenimiento', link:'project:AdministraciÃ³n#Mantenimiento' 
+			u:'Mantenimiento', link:'project:Administración#Mantenimiento' 
 		},
 		bureaucrat: { 
-			title:'El Dictador Benevolente', link:'project:AdministraciÃ³n#BurÃ³cratas' 
+			title:'El Dictador Benevolente', link:'project:Administración#Burócratas' 
 		},
 		chatmoderator: { 
 			f:'Moderadora del chat' 
 		},
 		sysop: { 
-			f:'Administradora', link:'project:AdministraciÃ³n#Administradores' 
+			f:'Administradora', link:'project:Administración#Administradores' 
 		},
 		bot: { 
-			link:'project:AdministraciÃ³n#Bots' 
+			link:'project:Administración#Bots' 
 		}
         }
 };

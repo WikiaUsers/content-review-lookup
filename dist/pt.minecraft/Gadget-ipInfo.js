@@ -5,12 +5,12 @@ if (mw.config.get( 'wgCanonicalSpecialPageName' ) == 'Contributions') {
 	var wgRelevantUserName = mw.config.get( 'wgRelevantUserName' );
 
 	if (typeof wgRelevantUserName !== 'undefined' && !isNaN(wgRelevantUserName.substr(0,1))){
-		var torLinkTitle = 'Verifique se este IP Ã© um nÃ³ TOR';
+		var torLinkTitle = 'Verifique se este IP é um nó TOR';
 		var mapLinkTitle = 'Veja essas coordenadas no Google Maps';
 		var torLink = '<span class="ipInfoSubLink">(<a target="_blank" title="' + torLinkTitle +
-			'" href="https://ipduh.com/ip/tor-exit/?' + wgRelevantUserName + '">verificaÃ§Ã£o de tor</a>)</span>';
+			'" href="https://ipduh.com/ip/tor-exit/?' + wgRelevantUserName + '">verificação de tor</a>)</span>';
 		var ipInfoField = '<fieldset class="ipInfoField"' +
-			'><legend>InformaÃ§Ãµes de IP</legend><table class="ipInfo"></table></fieldset>';
+			'><legend>Informações de IP</legend><table class="ipInfo"></table></fieldset>';
 		var $contentSub = $('.mw-contributions-form');
 		$contentSub.after(ipInfoField);
 		var $ipInfo = $('.ipInfo');

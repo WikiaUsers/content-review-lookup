@@ -9,7 +9,7 @@ function addMastheadTags() {
  
    // ADMINS
  
-    rights["Gilben"]     = ["Administrador","BurÃ³crata"];
+    rights["Gilben"]     = ["Administrador","Burócrata"];
  
   // END List of Accounts Given Extra User Rights Icons
  

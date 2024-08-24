@@ -12,13 +12,13 @@
     var i18n = {
  
         "es": {
-            formTitle: "Crear una nueva p√°gina",
+            formTitle: "Crear una nueva p·gina",
             formStart: "Crear",
             formCancel: "Cerrar",
-            formPage: "Especial:Nueva_P√°gina",
+            formPage: "Especial:Nueva_P·gina",
             formMain: "Portada",
             formBlog: "Blog",
-            formCat: "Categor√≠a",
+            formCat: "CategorÌa",
             formMW: "MediaWiki",
             formTemp: "Plantilla",
             formCont: "Contenido",

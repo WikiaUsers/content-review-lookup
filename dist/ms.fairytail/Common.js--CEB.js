@@ -10,8 +10,8 @@
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/raulelistesting/images/7/71/Button_accent_o.png",
-     "speedTip": "Bubuh askara Ã³",
-     "tagOpen": "Ã³",
+     "speedTip": "Bubuh askara ó",
+     "tagOpen": "ó",
      "tagClose": "",
      "sampleText": ""};
 

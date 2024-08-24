@@ -71,19 +71,19 @@ function attackStrategyFilter() {
           currMinTrophies > maxTrophies ||
           currMaxTrophies < minTrophies)
          $(tr[i]).css({'display': 'none'});
-      else if (troops === true && filterType === 'EnthÃ¤lt')
+      else if (troops === true && filterType === 'Enthält')
          $(tr[i]).css({'display': ''});
       else if (troops === false && filterType === 'Ohne')
          $(tr[i]).css({'display': ''});
       else if (troops === true && filterType === 'Nur')
          $(tr[i]).css({'display': ''});
-      else if (troops === false && filterType === 'EnthÃ¤lt')
+      else if (troops === false && filterType === 'Enthält')
          $(tr[i]).css({'display': 'none'});
       else if (troops === true && filterType === 'Ohne')
          $(tr[i]).css({'display': 'none'});
       else if (troops === false && filterType === 'Nur')
          $(tr[i]).css({'display': 'none'});
-      else if (filterType === 'EnthÃ¤lt') {
+      else if (filterType === 'Enthält') {
          var include = false;
 
          for (var j = 0; j < troops.length; j ++) {
@@ -160,9 +160,9 @@ function attackStrategyReset() {
    document.getElementById("min-trophies").value = 0;
    document.getElementById("max-trophies").value = '';
    document.getElementById("troop-filter-text").innerHTML = 'Alle';
-   document.getElementById("troop-filter-type-text").innerHTML = 'EnthÃ¤lt';
+   document.getElementById("troop-filter-type-text").innerHTML = 'Enthält';
    document.getElementById("troop-filter-type-text").title =
-      'Alle Strategien anzeigen, die mindestens eine gewÃ¼nschte Truppe verwenden.';
+      'Alle Strategien anzeigen, die mindestens eine gewünschte Truppe verwenden.';
    attackStrategyFilter();
 }
 
@@ -201,17 +201,17 @@ function troopFilterExecute() {
    $('#troop-filter-type-text').html($('#troop-filter-type').val());
 
    switch ($('#troop-filter-type').val()) {
-      case 'EnthÃ¤lt':
+      case 'Enthält':
          $('#troop-filter-type-text').prop('title',
-            'Alle Strategien anzeigen, die mindestens eine gewÃ¼nschte Truppe verwenden.');
+            'Alle Strategien anzeigen, die mindestens eine gewünschte Truppe verwenden.');
          break;
       case 'Ohne':
          $('#troop-filter-type-text').prop('title',
-            'Alle Strategien ausblenden, die die ausgewÃ¤hlten Truppen verwenden.');
+            'Alle Strategien ausblenden, die die ausgewählten Truppen verwenden.');
          break;
       case 'Nur':
          $('#troop-filter-type-text').prop('title',
-            'Nur die ausgewÃ¤hlten Truppen zulassen.');
+            'Nur die ausgewählten Truppen zulassen.');
          break;
    }
 

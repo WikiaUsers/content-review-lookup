@@ -4,10 +4,10 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-                burocrata: { link:'Proyecto:Administraci贸n#Bur贸cratas y Admninistradores' },
-		admin: { link:'Proyecto:Administraci贸n#Bur贸cratas y Admninistradores' },
-		reversor: { link:'Proyecto:Administraci贸n#Reversores y Moderadores de Chat' },
-                moderadordechat: { link:'Proyecto:Administraci贸n#Reversores y Moderadores de Chat' }
+                burocrata: { link:'Proyecto:Administraci髇#Bur骳ratas y Admninistradores' },
+		admin: { link:'Proyecto:Administraci髇#Bur骳ratas y Admninistradores' },
+		reversor: { link:'Proyecto:Administraci髇#Reversores y Moderadores de Chat' },
+                moderadordechat: { link:'Proyecto:Administraci髇#Reversores y Moderadores de Chat' }
 	}
 };
 UserTagsJS.modules.inactive = 30;

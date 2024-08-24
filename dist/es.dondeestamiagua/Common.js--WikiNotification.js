@@ -14,10 +14,10 @@
 - E12Dragon: current and orginal version
 
 -----------------------
- EJEMPLO DE CONFIGURACIÃ“N
+ EJEMPLO DE CONFIGURACIÓN
 -----------------------
 <div class="wiki-notification">
-Su texto aquÃ­<span class="wiki-notification-sprite-close"></span>
+Su texto aquí<span class="wiki-notification-sprite-close"></span>
 </div>
 */
 

@@ -9,13 +9,13 @@ function WarnBarShow() {
    window.setTimeout("document.getElementById('WarnBar').setAttribute('style','top: "+(a-105)+"px; margin-bottom: "+(a-105)+"px;');",a*10);
   };
 };
-Â 
+ 
 function WarnBarHide() {
   for(a=1;a<=46;++a){
     window.setTimeout("document.getElementById('WarnBar').setAttribute('style','top: "+(-a)+"px; margin-bottom: "+(-a)+"px;');",a*10);
   };
 };
-Â 
+ 
 if(wgNamespaceNumber+wgArticleId==0){
   var FLUC="", ColAt=wgTitle.indexOf(":"), NewWord=true;
   for(CN=0;CN<wgTitle.length;++CN){

@@ -1,7 +1,7 @@
 /** 
  * Sine
  * documentation at: https://dev.wikia.com/wiki/Sine
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  * __NOWYSIWYG__
  */

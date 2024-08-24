@@ -4,7 +4,7 @@
  
 $(function() {
  var rights = {};
- var bot = "<a href=\"/wiki/Ajuda:RobÃ´\"><span style=\" color:white;\">RobÃ´</span></a>";
+ var bot = "<a href=\"/wiki/Ajuda:Robô\"><span style=\" color:white;\">Robô</span></a>";
  var rollback = "<span style=\" color:white;\">Rollback</span></a>";
  var chatMod = "<a href=\"/wiki/Especial:Chat\"><span style=\" color:white;\">Moderador do Chat</span></a>";
  var admin = "<a href=\"/wiki/Cartoon Network Wiki:Administradores\"><span style=\" color:white;\">Administrador</span></a>";
@@ -15,10 +15,10 @@ $(function() {
  //
 //Be sure that the last line listed for modified rights is proceeded by a semi-colon rather than a comma.
  
-   // RobÃ´
+   // Robô
  
  rights["Wikia"]               = [bot],
- rights["RobÃ´"] = [bot],
+ rights["Robô"] = [bot],
  rights["WikiaBot"]          = [bot]
  
    // Moderador do Chat

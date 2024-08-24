@@ -1,4 +1,4 @@
-/* Calificar artÃ­culos */
+/* Calificar artículos */
 importedScripts = {}; // object keeping track of included scripts, so a script ain't included twice
  function importScript( page ) {
      if( importedScripts[page] ) {

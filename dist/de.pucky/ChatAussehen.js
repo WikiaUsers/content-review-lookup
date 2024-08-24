@@ -17,14 +17,14 @@ cWelMsg = "";
     cWelMsg = JSON.parse(cWelMsg.slice(cWelMsg.indexOf("query")-2,-1)).query.pages["86269"].revisions[0]["*"];
 }
 catch(err) {
-    console.error("Es war nicht mÃ¶glich, die CWM zu laden.");
+    console.error("Es war nicht möglich, die CWM zu laden.");
     cWelMsg = "Willkommen im Chat der Community Deutschland!";
 }
  
 // Define the chat header items
 var chatTopicArray = [
     {url:wgServer+"/wiki/Community-Richtlinien",text:"Community-Richtlinien",imgUrl:"https://images.wikia.nocookie.net/__cb20140914153818/d97/images/9/91/Icon_rules.png"},
-    {url:wgServer+"/wiki/Special:RecentChanges",text:"Letzte Ã„nderungen",imgUrl:"https://images.wikia.nocookie.net/__cb20140914153816/d97/images/7/7c/Icon_recent_changes.png"},
+    {url:wgServer+"/wiki/Special:RecentChanges",text:"Letzte Änderungen",imgUrl:"https://images.wikia.nocookie.net/__cb20140914153816/d97/images/7/7c/Icon_recent_changes.png"},
     {url:wgServer+"/wiki/MediaWiki:Emoticons",text:"Emoticons",imgUrl:"https://images.wikia.nocookie.net/__cb20140914153814/d97/images/6/6c/Icon_emoticons.png"},
     /* {url:wgServer+"/wiki/Help:ChatTags",text:"chattags",imgUrl:"https://images.wikia.nocookie.net/__cb20140914153812/d97/images/3/3a/Icon_chattags.png"}, */
     {url:wgServer+"/wiki/Special:MyPage",text:"Profil",imgUrl:""+wgAvatarUrl},
@@ -40,7 +40,7 @@ var stylesheetsArray = [
     {name:"Winter",url:"http://d97.wikia.com/index.php?title=MediaWiki:Winter.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20130512211940/animalcrossing/images/thumb/8/89/Wiki-wordmark.png/115px-Wiki-wordmark.png"},
     {name:"Night",url:"http://d97.wikia.com/index.php?title=MediaWiki:Night.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20140730190803/animalcrossing/images/9/98/Wiki_wordmark_night.png"},
     {name:"Aurora",url:"http://d97.wikia.com/index.php?title=MediaWiki:SpaceAurora.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20140730190803/animalcrossing/images/9/98/Wiki_wordmark_night.png",clear:true},
-    {name:"PokÃ©mon ORAS",url:"http://d97.wikia.com/index.php?title=MediaWiki:Oras.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20140919191135/d97/images/f/f9/Wordmark_yellow.png",clear:true},
+    {name:"Pokémon ORAS",url:"http://d97.wikia.com/index.php?title=MediaWiki:Oras.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20140919191135/d97/images/f/f9/Wordmark_yellow.png",clear:true},
     {name:"Minimal",url:"http://d97.wikia.com/index.php?title=MediaWiki:Minimal.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20130512211940/animalcrossing/images/thumb/8/89/Wiki-wordmark.png/115px-Wiki-wordmark.png"},
     {name:"Twitch",url:"http://d97.wikia.com/index.php?title=MediaWiki:Twitch.css&action=raw&ctype=text/css",logo:"https://images.wikia.nocookie.net/__cb20141121230158/d97/images/b/b0/Wordmark_twitch_2.png"},
     {name:"DANK.CSS (joke)",url:"http://d97.wikia.com/index.php?title=MediaWiki:Dank.css&action=raw&ctype=text/css"},

@@ -1,4 +1,4 @@
-// ConfiguraciÃ³n de ChatStatus
+// Configuración de ChatStatus
 
 window.ChatStatus = {
 	statuses: {
@@ -7,7 +7,7 @@ window.ChatStatus = {
 		comiendo: "Comiendo",
 		tv: "Mirando TV",
 		juegos: "Jugando videojuegos",
-		baÃ±o: "En el baÃ±o",
+		baño: "En el baño",
 		social: "Revisando redes sociales"
 	},
 	debug: false

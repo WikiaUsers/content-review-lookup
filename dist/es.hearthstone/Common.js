@@ -1,7 +1,7 @@
 window.UserTagsJS = { 
 modules: {}, 
 tags: { 
-'bureaucrat': { u:'BurÃ³crata' }, 
+'bureaucrat': { u:'Burócrata' }, 
 'sysop': { u:'Administrador' }, 
 'inactive': { u:'Inactivo', f:'Inactiva' }, 
 } 

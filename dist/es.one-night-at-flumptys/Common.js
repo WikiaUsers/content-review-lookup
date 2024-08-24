@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 //Import Articles
 importArticles({
@@ -24,6 +24,6 @@ importArticles({
 });
  
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
-window.AjaxRCRefreshText = 'Act. autom√°t';
-window.AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+window.AjaxRCRefreshText = 'Act. autom·t';
+window.AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 importScriptPage('AjaxRC/code.js', 'dev');

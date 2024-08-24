@@ -90,7 +90,7 @@ $(document).ready(function() {
  
  
  
-			//Inicia el c√≥digo
+			//Inicia el cÛdigo
  
 			/* BORRAR TODO */
 			function delAll() {
@@ -122,7 +122,7 @@ $(document).ready(function() {
 				});
 			}
  
-			/* BLOQUEO R√ÅPIDO */
+			/* BLOQUEO R¡PIDO */
 			function blockFast() {
 				if( skin == 'monobook' || $('input[name="target"]').val() != '' ) {
 					var delAllUser = $('input[name="target"]').val();
@@ -133,7 +133,7 @@ $(document).ready(function() {
 						var delAllUser = $('#WikiaUserPagesHeader h1').text();
 					}
 				}
-				var blockExpiry = prompt('Duraci√≥n del bloqueo (en ingl√©s)','2 weeks');
+				var blockExpiry = prompt('DuraciÛn del bloqueo (en inglÈs)','2 weeks');
 				var blockReason = prompt('Motivo del bloqueo','vandalismo');
 				var url = wgServer+'/api.php?action=query&prop=info&intoken=block&titles=User:'+delAllUser+'&format=json';
 				$.getJSON(url, function(data) {

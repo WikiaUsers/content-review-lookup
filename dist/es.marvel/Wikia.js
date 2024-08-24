@@ -66,7 +66,7 @@ addOnloadHook(checktimers);
 // **************************************************
 
 
-/* Enlaces en el menÃº de usuario */
+/* Enlaces en el menú de usuario */
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario_Blog:'+ encodeURIComponent(wgUserName) +'" title="Mis entradas de blog">Entradas de Blog</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario:'+ encodeURIComponent(wgUserName) +'/wikia.css" title="Tu apariencia personal">Mi apariencia</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);
 
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny
@@ -110,7 +110,7 @@ function showEras(className) {
 
 /* Spoilers */
 SpoilerAlert = {
-    question: 'Este artÃ­culo contiene spoilers. Â¿Deseas continuar?',
+    question: 'Este artículo contiene spoilers. ¿Deseas continuar?',
     yes: 'Si, acepto',
     no: 'No, mejor no',
     isSpoiler: function () {
@@ -119,8 +119,8 @@ SpoilerAlert = {
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
 
-// Add click tracking to the Curso bÃ¡sico:Daredevil page
-if(mw.config.get('wgPageName') === "Curso_bÃ¡sico:Daredevil") {
+// Add click tracking to the Curso básico:Daredevil page
+if(mw.config.get('wgPageName') === "Curso_básico:Daredevil") {
 	var countryCode = Geo.getCountryCode(),
 		timestamp = Date.now(),
 		click_tracker,

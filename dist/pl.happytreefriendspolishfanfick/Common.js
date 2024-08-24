@@ -1,6 +1,6 @@
 window.UserTagsJS = {
 	tags: {
-		sysop:	{u:'DowÃ³dca'}
+		sysop:	{u:'Dowódca'}
 	},
 	modules: {
 		autoconfirmed: false,

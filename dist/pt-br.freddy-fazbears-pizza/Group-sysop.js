@@ -1,10 +1,10 @@
-/* Todos os c√≥digos Javascript adicionados aqui ser√£o carregados somente para usu√°rios dentro do grupo Sysop (Administradores e Burocratas) */
+/* Todos os cÛdigos Javascript adicionados aqui ser„o carregados somente para usu·rios dentro do grupo Sysop (Administradores e Burocratas) */
 
 
 
-/* Configura√ß√µes do Mass Rename */
+/* ConfiguraÁıes do Mass Rename */
 massRenameDelay = 1000;
-massRenameSummary = 'Processo Autom√°tico de Renomea√ß√£o';
+massRenameSummary = 'Processo Autom·tico de RenomeaÁ„o';
 
 
 

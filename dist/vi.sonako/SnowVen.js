@@ -769,7 +769,7 @@ THREE.extend = function ( obj, source ) {
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
-// requestAnimationFrame polyfill by Erik MÃ¶ller
+// requestAnimationFrame polyfill by Erik Möller
 // fixes from Paul Irish and Tino Zijdel
 // using 'self' instead of 'window' for compatibility with both NodeJS and IE10.
 ( function () {

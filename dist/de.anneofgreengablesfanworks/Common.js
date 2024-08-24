@@ -1,7 +1,7 @@
-/* Das folgende JavaScript wird fÃ¼r alle Benutzer geladen. */
+/* Das folgende JavaScript wird für alle Benutzer geladen. */
 $(function() {
     var rights = {
-        'Klap Trap'    : ['GrÃ¼nder', 'Admin', 'BÃ¼rokrat'],
+        'Klap Trap'    : ['Gründer', 'Admin', 'Bürokrat'],
  
     },
         newrights = rights[wgTitle];

@@ -2,13 +2,13 @@
 /**Chat-toolbox**/
 importScriptPage('MediaWiki:ChatToolboxCode.js');
 /**Developers Wiki**/
-/***CÃ³digos***/
+/***Códigos***/
 importArticles({
     type: 'script',
     articles: [
-/***BotÃ³n de enviar***/
+/***Botón de enviar***/
         'u:dev:ChatSendButton.js',
-/***Contador de mensajes no leÃ­dos al estar en otra pestaÃ±a***/
+/***Contador de mensajes no leídos al estar en otra pestaña***/
         'u:dev:NewMessageCount.js'
     ]
 });

@@ -9,20 +9,20 @@
    }
    return null;
  };
- Â 
+  
  function substitute(data,cmdBody) {
    // alert('sub\nfrom: '+cmdBody.from+'\nto: '+cmdBody.to+'\nflags: '+cmdBody.flags);
    var fromRe=RegExp(cmdBody.from, cmdBody.flags);
    return data.replace(fromRe, cmdBody.to);
  };
- Â 
+  
  function execCmds(data, cmdList) {
    for (var i=0; i<cmdList.length; ++i) {
      data=cmdList[i].action(data, cmdList[i]);
    }
    return data;
  }
- Â 
+  
  function parseCmd(str) {
    // returns a list of commands
    if (!str.length) return [];
@@ -40,86 +40,86 @@
    if (p) return [p].concat(parseCmd(p.remainder));
    return false;
  };
- Â 
+  
  function unEscape(str, sep) {
    return str.split('\\\\').join('\\')
          .split('\\'+sep).join(sep)
          .split('\\n').join('\n');
  };
- Â 
- Â 
+  
+  
  function runJavascript(data, argWrapper) {
    // flags aren't used (yet)
- Â 
+  
    // from the user's viewpoint,
    // data is a special variable may appear inside code
    // and gets assigned the text in the edit box
- Â 
+  
    // alert('eval-ing '+argWrapper.code);
- Â 
+  
    return eval(argWrapper.code);
  };
- Â 
+  
  function parseJavascript(str) {
    // takes a string like j/code/;othercmds and parses it
- Â 
+  
    var tmp,code,flags;
- Â 
+  
    if (str.length<3) return false;
    var sep=str.charAt(1);
    str=str.substring(2);
- Â 
+  
    tmp=skipOver(str,sep);
    if (tmp) { code=tmp.segment.split('\n').join('\\n'); str=tmp.remainder; }
    else return false;
- Â 
+  
    flags='';
    if (str.length) {
      tmp=skipOver(str,';') || skipToEnd(str, ';');
      if (tmp) {flags=tmp.segment; str=tmp.remainder; }
    }
- Â 
+  
    return { action: runJavascript, code: code, flags: flags, remainder: str };
  };
- Â 
+  
  function parseSubstitute(str) {
    // takes a string like s/a/b/flags;othercmds and parses it
- Â 
+  
    var from,to,flags,tmp;
- Â 
+  
    if (str.length<4) return false;
    var sep=str.charAt(1);
    str=str.substring(2);
- Â 
+  
    tmp=skipOver(str,sep);
    if (tmp) { from=tmp.segment; str=tmp.remainder; } 
    else return false;
- Â 
+  
    tmp=skipOver(str,sep);
    if (tmp) { to=tmp.segment; str=tmp.remainder; } 
    else return false;
- Â 
+  
    flags='';
    if (str.length) {
      tmp=skipOver(str,';') || skipToEnd(str, ';');
      if (tmp) {flags=tmp.segment; str=tmp.remainder; }
    }
- Â 
+  
    return {action: substitute, from: from, to: to, flags: flags, remainder: str};
- Â 
+  
  };
- Â 
+  
  function skipOver(str,sep) {
    var endSegment=findNext(str,sep);
    if (endSegment<0) return false;
    var segment=unEscape(str.substring(0,endSegment), sep);
    return {segment: segment, remainder: str.substring(endSegment+1)};
  }
- Â 
+  
  function skipToEnd(str,sep) {
    return {segment: str, remainder: ''};
  }
- Â 
+  
  function findNext(str, ch) {
    for (var i=0; i<str.length; ++i) {
      if (str.charAt(i)=='\\') i+=2;
@@ -127,7 +127,7 @@
    }
    return -1;
  };
- Â 
+  
  function runOnLoad(f) {
    if (window.addEventListener) {
      window.addEventListener("load",f,false);
@@ -143,7 +143,7 @@
      }
    }
  };
- Â 
+  
  window.autoEdit=function() {
    if (window.autoEdit.alreadyRan) return false;
    window.autoEdit.alreadyRan=true;
@@ -163,10 +163,10 @@
        }
      }
    }
- Â 
+  
    var summary=getParamValue('autosummary');
    if (summary) document.editform.wpSummary.value=summary;
- Â 
+  
    var minor=getParamValue('autominor');
    if (minor) {
      switch (minor) {
@@ -181,7 +181,7 @@
        document.editform.wpMinoredit.checked=false;
      }
    }
- Â 
+  
    var watch = getParamValue('autowatch');
    if (watch) {
      switch (watch) {
@@ -196,7 +196,7 @@
          document.editform.wpWatchthis.checked = false;
      }
    }
- Â 
+  
    var btn=getParamValue('autoclick');
    if (btn) {
      if (document.editform && document.editform[btn]) {
@@ -216,5 +216,5 @@
      }  
    }
  };
- Â 
+  
  runOnLoad(autoEdit);

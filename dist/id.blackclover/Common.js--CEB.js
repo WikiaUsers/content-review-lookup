@@ -10,8 +10,8 @@
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/raulelistesting/images/7/71/Button_accent_o.png",
-     "speedTip": "Tambah karakter Ã³",
-     "tagOpen": "Ã³",
+     "speedTip": "Tambah karakter ó",
+     "tagOpen": "ó",
      "tagClose": "",
      "sampleText": ""};
 

@@ -1,24 +1,24 @@
-/*C贸digos de Wikia Developers*/
+/*C骴igos de Wikia Developers*/
 /**Auto-refrescar**/
 window.ajaxPages = ["Especial:WikiActivity", "Especial:WikiActivity/watchlist", "Especial:WikiActivity/activity"];
 window.ajaxIndicator = 'https://images.wikia.nocookie.net/skullgirls-es/es/images/f/fd/GIF_Ajax-loader_(Skullgirls).gif';
 window.ajaxRefresh = 1000;
 window.AjaxRCRefreshText = 'Auto-refrescar';
-window.AjaxRCRefreshHoverText = 'Actualiza autom谩ticamente la p谩gina';
+window.AjaxRCRefreshHoverText = 'Actualiza autom醫icamente la p醙ina';
 importScriptPage('AjaxRC/code.js', 'dev');
-/**Modificado por 煤ltima vez**/
+/**Modificado por 鷏tima vez**/
 /**Ventanas emergentes de referencias**/
-/**Bot贸n para editar Bienvenida del Muro**/
-/**Bot贸n de edici贸n vac铆a**/
-/**C贸digo de cuenta hacia atr谩s**/
+/**Bot髇 para editar Bienvenida del Muro**/
+/**Bot髇 de edici髇 vac韆**/
+/**C骴igo de cuenta hacia atr醩**/
 importArticles({
     type: 'script',
     articles: [
         'w:c:dev:ReferencePopups/code.js',
         'u:dev:WallGreetingButton/code.js',
         'u:dev:NullEditButton/code.js'
-/*C贸digos dentro de Skullgirls Wiki*/
-/**C贸digo de nieve**/
+/*C骴igos dentro de Skullgirls Wiki*/
+/**C骴igo de nieve**/
         /*'MediaWiki:Nieve.js'*/
     ]
 });
@@ -30,7 +30,7 @@ importArticles({
 		'u:dev:DisplayClock/code.js'
 	]
 });
-/*Botones de flechas "Scroll", c贸digo original de Fire Emblem Wiki (Ingl茅s)*/
+/*Botones de flechas "Scroll", c骴igo original de Fire Emblem Wiki (Ingl閟)*/
 $('.left').click(function () {
     scroll = $('#scroll').scrollLeft();
     $('#scroll').animate({'scrollLeft': scroll-590},800);
@@ -39,7 +39,7 @@ $('.right').click(function () {
     scroll = $('#scroll').scrollLeft();
     $('#scroll').animate({'scrollLeft': scroll+590},800);
 });
-/*Los siguientes tres c贸digos son originados de la Wiki My Little Pony en ingl茅s*/
+/*Los siguientes tres c骴igos son originados de la Wiki My Little Pony en ingl閟*/
 /*Usado para la plantilla NOMBREUSUARIO */
 $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
@@ -47,7 +47,7 @@ $(function() {
 });
 
 
-/*Soporte para la Plantilla:Emoticon, c贸digo originado de MLP Wiki en Ingl茅s*/
+/*Soporte para la Plantilla:Emoticon, c骴igo originado de MLP Wiki en Ingl閟*/
 if ($('.emote-template').length || $('#WikiaArticleComments').length) {
     $(function() {
         function emotify($this) {

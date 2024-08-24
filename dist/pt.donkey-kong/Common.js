@@ -1,4 +1,4 @@
-/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
+/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
 
 
 
@@ -19,7 +19,7 @@ $(function() {
 });
  
 $(function() {
-  $('<span class="group">Fundador</span>').insertAfter('.page-Contribui√ß√µes/Ludgero1 .masthead-info hgroup h1');
+  $('<span class="group">Fundador</span>').insertAfter('.page-ContribuiÁıes/Ludgero1 .masthead-info hgroup h1');
 });
 
 
@@ -30,7 +30,7 @@ $(function() {
 window.UserTagsJS = { 
 modules: {}, 
 tags: { 
-bureaucrat: { u: 'Bur√≥crata', order: 1 } 
+bureaucrat: { u: 'BurÛcrata', order: 1 } 
 } 
 }; 
  

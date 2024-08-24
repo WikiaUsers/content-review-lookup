@@ -3,7 +3,7 @@ var fco = document.getElementById('WR-POfwr-vem-vid'),
 fco.replaceChild(fco_vid, fco.children[0]);
 fco_vid.contentWindow.location.replace('https://www.youtube.com/embed/jkU9U5BKlg4?hl=es&fs=0&rel=0');
 
-/* Slider en subsecciÃ³n Â«AnterioresÂ» (entradas destacadas) */
+/* Slider en subsección «Anteriores» (entradas destacadas) */
 /*
 $('.WR-PRent-ant').each(function() {
  var fls = this.getElementsByClassName('WR-PRent-ant-flc');

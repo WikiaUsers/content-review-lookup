@@ -5,9 +5,9 @@ $(function() {
  
   // BEGIN LIST OF ACCOUNTS GIVEN EXTRA USER RIGHTS ICONS
  
-    // BURÃ“CRATAS
+    // BURÓCRATAS
  
-  rights["DanielWW"]      = ["Presentador","Presentador de DTVW,"Kerorense","EspaÃ±ol","Leshawnero"]
+  rights["DanielWW"]      = ["Presentador","Presentador de DTVW,"Kerorense","Español","Leshawnero"]
   rights["6teen"] = ["Presentador","Concursante de DTVW"]
   rights["Fabianignacio1999"] = ["Presentador","Concursante de DTVW","Inactivo"]
   rights["Codex12"] = ["Presentador","Ganador de DTVW","Inactivo"] 
@@ -15,7 +15,7 @@ $(function() {
    //Administradores 
   rights["Disney22"] = ["Chef","Leshawnera"] 
     // Moderadores 
-  rights["Noahforever"] = ["Pasante","SarcÃ¡stico"] 
+  rights["Noahforever"] = ["Pasante","Sarcástico"] 
   rights["Marcos13Castillo"] = ["Pasante","Concursante de DTVW"]
 
  

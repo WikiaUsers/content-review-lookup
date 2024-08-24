@@ -35,8 +35,8 @@ function updatetimer(i) {
       minutes: "minutos",
       hour: "hora",
       hours: "horas",
-      day: "dÃ­a",
-      days: "dÃ­as"
+      day: "día",
+      days: "días"
     },
     'de': {
       and: "und",
@@ -72,13 +72,13 @@ function updatetimer(i) {
       days: "dni"
     },
     'hu': {
-      and: "Ã©s",
-      second: "mÃ¡sodperc",
-      seconds: "mÃ¡sodpercek",
+      and: "és",
+      second: "másodperc",
+      seconds: "másodpercek",
       minute: "perc",
       minutes: "percek",
-      hour: "Ã³ra",
-      hours: "Ã³rÃ¡k",
+      hour: "óra",
+      hours: "órák",
       day: "nap",
       days: "napok"
     }

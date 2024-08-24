@@ -1,11 +1,11 @@
 /*
- * RÃ©sumÃ© Deluxe
+ * Résumé Deluxe
  *
- * Ajoute des commentaires de modification prÃ©dÃ©finis
+ * Ajoute des commentaires de modification prédéfinis
  *
  * Auteur : Dake
  * Contributions : Pabix, Tieno
- * Date de derniÃ¨re rÃ©vision : 10 avril 2009
+ * Date de dernière révision : 10 avril 2009
  * {{:Projet:JavaScript/Script|ResumeDeluxe}}
  */
 
@@ -14,7 +14,7 @@ var resumedeluxeTitles = new Array();
 with (resumedeluxeTitles) {
         push("orthographe");
         push("- typographie");
-        push("- catÃ©gorisation");
+        push("- catégorisation");
         push("- interwiki");
         push("- wikification");
         push("- image");
@@ -23,21 +23,21 @@ with (resumedeluxeTitles) {
         push("- relecture");
         push("- style");
         push("- revert");
-        push("- rÃ©organisation");
-        push("- rÃ©ponse");
+        push("- réorganisation");
+        push("- réponse");
         push("- maintenance");
         push("- 1.0");
         push("- homonymie");
         push("- bandeau");
         push("- infobox");
-        push("- rÃ©fÃ©rences");
-        push("- retouche de la modification prÃ©cÃ©dente");
+        push("- références");
+        push("- retouche de la modification précédente");
 }
 var resumedeluxeInputs= new Array();
 with (resumedeluxeInputs) {
         push("orthographe");
         push("typographie");
-        push("catÃ©gorisation");
+        push("catégorisation");
         push("interwiki");
         push("wikification");
         push("image");
@@ -46,15 +46,15 @@ with (resumedeluxeInputs) {
         push("relecture");
         push("style");
         push("revert");
-        push("rÃ©organisation");
-        push("rÃ©ponse");
+        push("réorganisation");
+        push("réponse");
         push("maintenance");
-        push("Ã©valuation Aigles et Lys 1.0");
-        push("crÃ©ation homonymie");
+        push("évaluation Aigles et Lys 1.0");
+        push("création homonymie");
         push("ajout de bandeau");
         push("infobox");
-        push("rÃ©fÃ©rences");
-        push("retouche de la modification prÃ©cÃ©dente");
+        push("références");
+        push("retouche de la modification précédente");
 }
 /////////////////FIN DE LA ZONE PERSONNALISABLE/////////////////
 
@@ -79,11 +79,11 @@ function DeluxeSummary()
         if(sumLbl) {
                 var sumInput = document.getElementById("wpSummary");
                 sumInput.style.width = "95%";
-                var str = "Messages prÃ©dÃ©finis : ";
+                var str = "Messages prédéfinis : ";
                 for(var cpt = 0; cpt < resumedeluxeTitles.length; cpt ++) {
                         var tmp = resumedeluxeInputs[cpt];
                         str += "<a href=\"javascript:addToSummary('" + tmp.replace( /[']/g , "\\'") + "')\""
-                                + " class=\"sumLink\" title=\"Ajouter dans la boÃ®te de rÃ©sumÃ©\">"
+                                + " class=\"sumLink\" title=\"Ajouter dans la boîte de résumé\">"
                                 + resumedeluxeTitles[cpt]
                                 + "</a> ";
                 }

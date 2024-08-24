@@ -1,7 +1,7 @@
 codeLoad.definitions = {
     "AjaxBatchDelete": {
         "title": "Apagar Lote",
-        "description": "Permitir a exclus√£o de uma lista de p√°ginas em um formul√°rio e proteg√™-las, se necess√°rio. Esta ferramenta √© acess√≠vel atrav√©s de 'My Tools' na Wikia Toolbar.",
+        "description": "Permitir a exclus„o de uma lista de p·ginas em um formul·rio e protegÍ-las, se necess·rio. Esta ferramenta È acessÌvel atravÈs de 'My Tools' na Wikia Toolbar.",
         "group": "sysop",
         "articles": [
             "dev:AjaxBatchDelete.js"
@@ -14,7 +14,7 @@ codeLoad.definitions = {
     },
     "ajaxrc": {
     "title": "AjaxRC",
-    "description": "Atualiza√ß√£o autom√°tica avan√ßada para p√°ginas especiais ([[w:c:dev:AjaxRC|mais informa√ß√µes]]).",
+    "description": "AtualizaÁ„o autom·tica avanÁada para p·ginas especiais ([[w:c:dev:AjaxRC|mais informaÁıes]]).",
     "group": "extras",
     "articles": [
         "dev:AjaxRC/code.js"
@@ -36,8 +36,8 @@ codeLoad.definitions = {
 }
     },
    "clock": {
-        "title": "Rel√≥gio de cabe√ßalho de p√°gina",
-        "description": "Adiciona um rel√≥gio UTC ao cabe√ßalho da p√°gina.",
+        "title": "RelÛgio de cabeÁalho de p·gina",
+        "description": "Adiciona um relÛgio UTC ao cabeÁalho da p·gina.",
         "group": "extras",
         "articles": [
             "dev:UTCClock/code.js"
@@ -50,8 +50,8 @@ codeLoad.definitions = {
         }
     },
     "Toolbarclock": {
-        "title": "Rel√≥gio da barra de ferramentas",
-        "description": "Adiciona um rel√≥gio de exibi√ß√£o UTC com a fun√ß√£o de edi√ß√£o purgar + nulo na barra de ferramentas.",
+        "title": "RelÛgio da barra de ferramentas",
+        "description": "Adiciona um relÛgio de exibiÁ„o UTC com a funÁ„o de ediÁ„o purgar + nulo na barra de ferramentas.",
         "group": "extras",
         "articles": [
             "dev:DisplayTimer/code.js"
@@ -61,8 +61,8 @@ codeLoad.definitions = {
         }
     },
     "discussionsactivity": {
-        "title": "Atividade de Discuss√£o",
-        "description": "Cria um feed de 'Atividade recente da Wiki' para as √∫ltimas mensagens de discuss√£o. ",
+        "title": "Atividade de Discuss„o",
+        "description": "Cria um feed de 'Atividade recente da Wiki' para as ˙ltimas mensagens de discuss„o. ",
         "group": "extras",
         "articles": [
             "dev:DiscussionsActivity.js"
@@ -75,7 +75,7 @@ codeLoad.definitions = {
     },
     "ModernWikiActivity": {
         "title": "Atividade moderna de wiki",
-        "description": "Esta folha de estilo moderniza a apar√™ncia da p√°gina [[Especial:WikiActivity]]",
+        "description": "Esta folha de estilo moderniza a aparÍncia da p·gina [[Especial:WikiActivity]]",
         "group": "design",
         "articles": [
             "ModernWikiActivity.css"
@@ -85,7 +85,7 @@ codeLoad.definitions = {
         }
     },
     "refreshthreads": {
-        "title": "Atualizar t√≥picos",
+        "title": "Atualizar tÛpicos",
         "description": "Periodically checks for new thread replies on the 'Thread' namespace using AJAX. ",
         "group": "extras",
         "articles": [
@@ -118,8 +118,8 @@ codeLoad.definitions = {
         }
     },
     "SeeMoreActivityButton": {
-        "title": "Bot√£o Veja Mais Atividade",
-        "description": "Adiciona um link para a atividade recente do wiki ou altera√ß√µes recentes no Rail.",
+        "title": "Bot„o Veja Mais Atividade",
+        "description": "Adiciona um link para a atividade recente do wiki ou alteraÁıes recentes no Rail.",
         "group": "extras",
         "articles": [
             "dev:SeeMoreActivityButton/code.js"
@@ -132,7 +132,7 @@ codeLoad.definitions = {
     },
     "hiderail": {
         "title": "HideRail",
-        "description": "Expande os artigos para 100% de largura por meio do bot√£o da barra de ferramentas Expandir conte√∫do.",
+        "description": "Expande os artigos para 100% de largura por meio do bot„o da barra de ferramentas Expandir conte˙do.",
         "group": "extras",
         "articles": [
             "dev:HideRail/code.js"
@@ -154,7 +154,7 @@ codeLoad.definitions = {
     },
     "editorsourceminimal": {
         "title": "EditorSourceMinimal",
-        "description": "Um novo design para o editor de c√≥digo-fonte",
+        "description": "Um novo design para o editor de cÛdigo-fonte",
         "group": "design",
         "articles": [
             "dev:MediaWiki:EditorSourceMinimal/light.css"
@@ -164,8 +164,8 @@ codeLoad.definitions = {
         }
     },
     "lastedited": {
-        "title": "√öltima edi√ß√£o",
-        "description": "Adiciona detalhes sobre a √∫ltima edi√ß√£o da p√°gina atual.",
+        "title": "⁄ltima ediÁ„o",
+        "description": "Adiciona detalhes sobre a ˙ltima ediÁ„o da p·gina atual.",
         "group": "extras",
         "articles": [
             "dev:LastEdited/code.js"
@@ -176,7 +176,7 @@ codeLoad.definitions = {
     },
     "quickdiff": {
         "title": "QuickDiff",
-        "description": "Permite visualizar rapidamente qualquer link de compara√ß√£o em um wiki (al√©m de recursos extras para administradores).",
+        "description": "Permite visualizar rapidamente qualquer link de comparaÁ„o em um wiki (alÈm de recursos extras para administradores).",
         "group": "extras",
     "articles": [
             "dev:QuickDiff/code.js"
@@ -187,7 +187,7 @@ codeLoad.definitions = {
     },
     "noimagelightbox": {
         "title": "NoImageLightbox",
-        "description": "Mata o carregador Lightbox da Wikia para imagens, de forma que clicar em uma imagem leva voc√™ diretamente para a p√°gina 'Arquivo:'.",
+        "description": "Mata o carregador Lightbox da Wikia para imagens, de forma que clicar em uma imagem leva vocÍ diretamente para a p·gina 'Arquivo:'.",
         "group": "extras",
         "articles": [
             "dev:NoImageLightbox/code.js"
@@ -208,8 +208,8 @@ codeLoad.definitions = {
         }
     },
     "backtotopbutton": {
-        "title": "Bot√£o Voltar ao topo",
-        "description": "Adiciona um bot√£o no canto direito da barra de ferramentas que o leva de volta ao topo da p√°gina.",
+        "title": "Bot„o Voltar ao topo",
+        "description": "Adiciona um bot„o no canto direito da barra de ferramentas que o leva de volta ao topo da p·gina.",
         "group": "extras",
         "articles": [
             "dev:BackToTopButton/code.js"
@@ -224,7 +224,7 @@ codeLoad.definitions = {
     },
     "FileUsageAuto-update": {
         "title": "FileUsageAuto-update",
-        "description": "Atualiza automaticamente os links de arquivos em todo o wiki ao renomear uma imagem ou atualiza√ß√µes de link de arquivo de fila para executar atualiza√ß√µes em lote.",
+        "description": "Atualiza automaticamente os links de arquivos em todo o wiki ao renomear uma imagem ou atualizaÁıes de link de arquivo de fila para executar atualizaÁıes em lote.",
         "group": "sysop",
         "articles": [
             "dev:FileUsageAuto-update/code.js"
@@ -232,7 +232,7 @@ codeLoad.definitions = {
         "preferences": {
            "requiresGlobalPrefs": true,
            "enabled": true,
-           "editSummary": "Atualizando links de arquivos (autom√°tico)",
+           "editSummary": "Atualizando links de arquivos (autom·tico)",
            "delay": 5000
         },
         "requirements": {
@@ -241,7 +241,7 @@ codeLoad.definitions = {
     },
     "FileLogs": {
         "title": "Logs de arquivos",
-        "description": "Mostra extratos de log em p√°ginas de arquivo.",
+        "description": "Mostra extratos de log em p·ginas de arquivo.",
         "group": "extras",
         "articles": [
             "dev:FileLogs.js"
@@ -252,7 +252,7 @@ codeLoad.definitions = {
     },
     "WhatLinksHere": {
         "title": "O que liga aqui",
-        "description": "Adiciona um link para [[Especial:P√°ginas afluentes]] no menu suspenso do bot√£o 'Editar''.",
+        "description": "Adiciona um link para [[Especial:P·ginas afluentes]] no menu suspenso do bot„o 'Editar''.",
         "group": "extras",
         "articles": [
             "dev:WhatLinksHere/code.js"
@@ -262,8 +262,8 @@ codeLoad.definitions = {
         }
     },
     "NullEditButton": {
-        "title": "Edi√ß√£o Nula",
-        "description": "Adiciona a op√ß√£o de Edi√ß√£o Nula ao menu suspenso do bot√£o 'Editar'.",
+        "title": "EdiÁ„o Nula",
+        "description": "Adiciona a opÁ„o de EdiÁ„o Nula ao menu suspenso do bot„o 'Editar'.",
         "group": "extras",
         "articles": [
             "dev:NullEditButton/code.js"
@@ -273,21 +273,21 @@ codeLoad.definitions = {
         }
     },
     "ParentPageEdit": {
-        "title": "Editar P√°gina Parental",
-        "description": "Adiciona bot√µes para editar p√°ginas base e raiz em subp√°ginas.",
+        "title": "Editar P·gina Parental",
+        "description": "Adiciona botıes para editar p·ginas base e raiz em subp·ginas.",
         "articles": [
             "dev:ParentPageEdit.js"
         ],
         "preferences": {
            "requiresGlobalPrefs": true,
            "enabled": false,
-           "EditBasePageText": "Editar p√°gina de base",
-           "EditRootPageText": "Editar p√°gina raiz"
+           "EditBasePageText": "Editar p·gina de base",
+           "EditRootPageText": "Editar p·gina raiz"
         }
     },
      "ViewSource": {
         "title": "Ver Fonte",
-        "description": "Adiciona uma op√ß√£o 'Visualizar fonte' ao menu suspenso do bot√£o 'Editar'",
+        "description": "Adiciona uma opÁ„o 'Visualizar fonte' ao menu suspenso do bot„o 'Editar'",
         "group": "extras",
         "articles": [
             "dev:View Source/code.js"
@@ -303,25 +303,25 @@ codeLoad.groups = {
     "sysop": "Ferramentas apenas para moderadores",
 };
 codeLoad.prefDescriptions = {
-    "batchDeleteDelay": "Determina a taxa da exclus√£o. Por padr√£o, √© 1000 milissegundos (1 segundo) para excluir um artigo.",
-    "AjaxRCRefreshText": "Texto exibido ao lado da caixa de sele√ß√£o na p√°gina.",
-    "ajaxRefresh": "Intervalo no qual a p√°gina √© atualizada automaticamente (em milissegundos).",
+    "batchDeleteDelay": "Determina a taxa da exclus„o. Por padr„o, È 1000 milissegundos (1 segundo) para excluir um artigo.",
+    "AjaxRCRefreshText": "Texto exibido ao lado da caixa de seleÁ„o na p·gina.",
+    "ajaxRefresh": "Intervalo no qual a p·gina È atualizada automaticamente (em milissegundos).",
     "AjaxRCRefreshHoverText": "Texto exibido ao passar o mouse sobre o texto",
     "ajaxIndicator": "Imagem do indicador de progresso",
-    "format": "Exibir formata√ß√£o",
-    "rdaRefreshInterval": "Especifica o intervalo em milissegundos no qual as postagens ser√£o recarregadas.",
+    "format": "Exibir formataÁ„o",
+    "rdaRefreshInterval": "Especifica o intervalo em milissegundos no qual as postagens ser„o recarregadas.",
     "interval":"Tempo entre pedidos AJAX (em ms).",
-    "auto_add": "Se novas respostas devem ser adicionadas automaticamente ou manualmente usando um bot√£o solicitando que o usu√°rio atualize.",
+    "auto_add": "Se novas respostas devem ser adicionadas automaticamente ou manualmente usando um bot„o solicitando que o usu·rio atualize.",
     "flakesMax": "Faz flocos max",
     "flakesMaxActive": "Flocos max caindo",
     "followMouse": "A neve interage com o mouse",
     "useMeltEffect": "A neve derrete ao cair",
-    "useTwinkleEffect": "Cintila√ß√£o de neve",
+    "useTwinkleEffect": "CintilaÁ„o de neve",
     "usePositionFixed": "Neve fixa ao rolar",
-    "animationInterval": "Milissegundos te√≥ricos por medi√ß√£o de quadro.",
-    "SeeMoreActivityButtonRC": "Marque a caixa de sele√ß√£o para alterar o destino do link para [[Especial:Mudan√ßas recentes]] em vez disso.",
-    "BackToTopModern": "Seja para mostrar o bot√£o como um bot√£o de texto ou como um bot√£o de seta.",
-    "BackToTopText": "Se voc√™ escolher o bot√£o de texto, aqui voc√™ pode especificar seu texto.",
-    "BackToTopSpeed": "Isso determina a velocidade de rolagem do bot√£o.",
-    "editSummary": "Isso especifica o resumo de edi√ß√£o das p√°ginas nas quais os links s√£o atualizados."
+    "animationInterval": "Milissegundos teÛricos por mediÁ„o de quadro.",
+    "SeeMoreActivityButtonRC": "Marque a caixa de seleÁ„o para alterar o destino do link para [[Especial:MudanÁas recentes]] em vez disso.",
+    "BackToTopModern": "Seja para mostrar o bot„o como um bot„o de texto ou como um bot„o de seta.",
+    "BackToTopText": "Se vocÍ escolher o bot„o de texto, aqui vocÍ pode especificar seu texto.",
+    "BackToTopSpeed": "Isso determina a velocidade de rolagem do bot„o.",
+    "editSummary": "Isso especifica o resumo de ediÁ„o das p·ginas nas quais os links s„o atualizados."
 };

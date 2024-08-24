@@ -66,7 +66,7 @@ var countmembers = json.members.length; //online users number
                                         .appendTo(membContainer);
                         var userlist = document.createElement('div');
                         $(userlist).attr('id', 'userlist')
-                                   .text("Usu√°rios")
+                                   .text("Usu·rios")
                                    .appendTo(membContainer);
                 var widgFooter = document.createElement('div');
                 $(widgFooter).addClass('widget-footer')

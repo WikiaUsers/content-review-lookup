@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
-/* displayTimer (obtenido de Sim Wiki en ingl√©s)*/
+/* displayTimer (obtenido de Sim Wiki en inglÈs)*/
 importScript('MediaWiki:Common.js/displayTimer.js');

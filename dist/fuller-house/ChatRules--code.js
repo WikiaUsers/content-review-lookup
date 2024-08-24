@@ -2,54 +2,54 @@ $(function()
 
 {
 
-Â  var config = window.ChatRulesConfig || {};
+  var config = window.ChatRulesConfig || {};
 
-Â  config.vocab = config.vocab || {};
+  config.vocab = config.vocab || {};
 
-Â  $.get(location.origin + "/wiki/" + (config.page || "Project:Chat/Rules/short") + "?action=render", function(data)
+  $.get(location.origin + "/wiki/" + (config.page || "Project:Chat/Rules/short") + "?action=render", function(data)
 
-Â  {
+  {
 
-Â  Â  Â  mw.util.addCSS("#ChatRulesModalContent{height:400px;overflow-y:auto}.ChatRulesButton{float:right}#ChatRulesModalContent ul{list-style-type:square;margin-left:15px}");
+      mw.util.addCSS("#ChatRulesModalContent{height:400px;overflow-y:auto}.ChatRulesButton{float:right}#ChatRulesModalContent ul{list-style-type:square;margin-left:15px}");
 
-Â  Â  Â  var modalContent = '<div id="ChatRulesModalContent">' + data + '</div>',
+      var modalContent = '<div id="ChatRulesModalContent">' + data + '</div>',
 
-Â  Â  Â  button = document.createElement("button");
+      button = document.createElement("button");
 
-Â  Â  Â  button.innerHTML = config.vocab.rules || "Rules";
+      button.innerHTML = config.vocab.rules || "Rules";
 
-Â  Â  Â  button.className = "ChatRulesButton";
+      button.className = "ChatRulesButton";
 
-Â  Â  Â  button.onclick = function()
+      button.onclick = function()
 
-Â  Â  Â  {
+      {
 
-Â  Â  Â  Â  Â  $.showModal(config.vocab.rules || "Rules", modalContent,
+          $.showModal(config.vocab.rules || "Rules", modalContent,
 
-Â  Â  Â  Â  Â  {
+          {
 
-Â  Â  Â  Â  Â  Â  Â  id: "ChatRulesModal",
+              id: "ChatRulesModal",
 
-Â  Â  Â  Â  Â  Â  Â  width: config.modalWidth || 500,
+              width: config.modalWidth || 500,
 
-Â  Â  Â  Â  Â  Â  Â  buttons: [{
+              buttons: [{
 
-Â  Â  Â  Â  Â  Â  Â  Â  Â  id: "ChatRulesCloseButton",
+                  id: "ChatRulesCloseButton",
 
-Â  Â  Â  Â  Â  Â  Â  Â  Â  defaultButton: true,
+                  defaultButton: true,
 
-Â  Â  Â  Â  Â  Â  Â  Â  Â  message: config.vocab.close || "Close",
+                  message: config.vocab.close || "Close",
 
-Â  Â  Â  Â  Â  Â  Â  Â  Â  handler: function(){ $("#ChatRulesModal").closeModal(); }
+                  handler: function(){ $("#ChatRulesModal").closeModal(); }
 
-Â  Â  Â  Â  Â  Â  Â  }]
+              }]
 
-Â  Â  Â  Â  Â  });
+          });
 
-Â  Â  Â  };
+      };
 
-Â  Â  Â  $('.public.wordmark').first().append(button);
+      $('.public.wordmark').first().append(button);
 
-Â  });
+  });
 
 });

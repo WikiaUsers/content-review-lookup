@@ -62,12 +62,12 @@ var pathoschild = {
 			/* 'subpages' header */
 				container = this.BuildFormattedBox().append(
 					$(document.createElement('h2'))
-					.text('SubpÃ¡ginas')
+					.text('Subpáginas')
 
 			/* talk page */
 				).append(
 					$(document.createElement('h3'))
-					.text('pÃ¡gina de discusÃ£o')
+					.text('página de discusão')
 				).append(
 					$(document.createElement('ul'))
 					.attr('id', 'ajax-mediawiki-talk')
@@ -81,7 +81,7 @@ var pathoschild = {
 			/* main subpages */
 				).append(
 					$(document.createElement('h3'))
-					.text('subpÃ¡ginas principais')
+					.text('subpáginas principais')
 				).append(
 					$(document.createElement('ul'))
 					.attr('id', 'ajax-mediawiki-subpages-main')
@@ -95,7 +95,7 @@ var pathoschild = {
 			/* talk subpages */
 				).append(
 					$(document.createElement('h3'))
-					.text('subpÃ¡ginas de discusÃ£o')
+					.text('subpáginas de discusão')
 				).append(
 					$(document.createElement('ul'))
 					.attr('id', 'ajax-mediawiki-subpages-talk')

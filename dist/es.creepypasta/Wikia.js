@@ -1,4 +1,4 @@
-/* Bot√≥n (Red Social) Compartir */
+/* BotÛn (Red Social) Compartir */
 
 var SocialMediaButtonsNamespaces = [0, 6, 14, 500];
 var SocialMediaButtons = { 
@@ -10,7 +10,7 @@ var SocialMediaButtons = {
 
 importScriptPage('SocialIcons/code.js','dev');
 
-// Etiqueta para usuarios inactivos por m√°s de 3 meses
+// Etiqueta para usuarios inactivos por m·s de 3 meses
 
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');

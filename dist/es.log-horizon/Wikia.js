@@ -12,7 +12,7 @@ InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');
 importScriptPage('HideRail/code.js', 'dev');
 
-/*SkinNotification: Agrega una notificaciÃ³n para los que usen oasis. */
+/*SkinNotification: Agrega una notificación para los que usen oasis. */
 window.SkinNotification = {
 	article: 'Foro:Bot',
 	key: 'NfSkin',
@@ -31,7 +31,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Necesitamos mÃ¡s ayuda para editar errores en los artÃ­culos, vota por el nuevo bot en: <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">. Gracias por tu atenciÃ³n</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Necesitamos más ayuda para editar errores en los artículos, vota por el nuevo bot en: <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">. Gracias por tu atención</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(SkinNotification.dismiss);
 	},
@@ -60,4 +60,4 @@ window.SkinNotification = {
         }
     }());
 
-/* Algunos de los CÃ³digos de esta pÃ¡gina provienen de [[w:c:es.pokemon|WikiDex]] */
+/* Algunos de los Códigos de esta página provienen de [[w:c:es.pokemon|WikiDex]] */

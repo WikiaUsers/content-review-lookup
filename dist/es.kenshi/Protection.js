@@ -1,5 +1,5 @@
 /*
-	AÃ±ade el Ã­cono generado por {{Protection}} junto al botÃ³n de editar.
+	Añade el ícono generado por {{Protection}} junto al botón de editar.
 */
 
 function addProtectionBanner() {

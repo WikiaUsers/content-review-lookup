@@ -1,11 +1,11 @@
 {
     "0": {
-        "title": "Crash, Boom, BÃ¤ng",
+        "title": "Crash, Boom, Bäng",
         "pubDate": "",
         "description": ""
     },
     "1": {
-        "title": "BÃ¶rsenfieber",
+        "title": "Börsenfieber",
         "pubDate": "",
         "description": ""
     },
@@ -40,7 +40,7 @@
         "description": ""
     },
     "8": {
-        "title": "TÃ¶dlicher MÃ¼ll",
+        "title": "Tödlicher Müll",
         "pubDate": "",
         "description": ""
     },
@@ -50,7 +50,7 @@
         "description": ""
     },
     "10": {
-        "title": "WeiÃŸes Gold",
+        "title": "Weißes Gold",
         "pubDate": "",
         "description": ""
     },

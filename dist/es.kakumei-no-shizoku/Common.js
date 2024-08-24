@@ -1,5 +1,5 @@
 /***************************************************************************************************/
-/* AÃ±adir botÃ³n para editar el mensaje de bienvenida del muro (Tomado de Avatar Wiki por Miai Chan */
+/* Añadir botón para editar el mensaje de bienvenida del muro (Tomado de Avatar Wiki por Miai Chan */
 /***************************************************************************************************/
 
 importArticles({
@@ -10,7 +10,7 @@ importArticles({
 });
 
 /*************************************************/
-/* AÃ±adir botones extra de ediciÃ³n por Miai Chan */
+/* Añadir botones extra de edición por Miai Chan */
 /*************************************************/
 
 if (mwCustomEditButtons) {
@@ -51,7 +51,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "Insertar (en construcciÃ³n)",
+     "speedTip": "Insertar (en construcción)",
      "tagOpen": "{{En Obras|usuario",
      "tagClose": "}}",
      "sampleText": ""};

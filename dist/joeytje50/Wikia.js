@@ -1,1 +1,0 @@
-if (wgCanonicalSpecialPageName == 'Chat' && skin == 'oasis') alert('Wikia.js loaded.')

@@ -64,7 +64,7 @@ function key_date(date) {
 ==== convert_numeric(a) ====
 <pre> */
 function convert_numeric(a){
-	return a.replace(/Â¼/, ".25").replace(/Â½/, ".5").replace(/Â¾/, ".75").replace(/,/, "");
+	return a.replace(/¼/, ".25").replace(/½/, ".5").replace(/¾/, ".75").replace(/,/, "");
 }
 /* </pre>
 ==== key_numeric(a) ====
@@ -79,7 +79,7 @@ function key_numeric(a){
 ==== key_numeric_unit(a) ====
 <pre> */
 function key_numeric_unit(a) {
-	var aa_idx = a.search(/[^\d.Â¼Â½Â¾]/);
+	var aa_idx = a.search(/[^\d.¼½¾]/);
 	var aa_num = key_numeric(convert_numeric(a.substr(0,aa_idx)));
 	var aa_unit = key_unit(a.substr(aa_idx));
 	if (aa_num == 0){
@@ -93,7 +93,7 @@ function key_numeric_unit(a) {
 ==== key_unit_numeric(a) ====
 <pre> */
 function key_unit_numeric(a) {
-	var aa_idx = a.search(/[\d.Â¼Â½Â¾]/);
+	var aa_idx = a.search(/[\d.¼½¾]/);
 	var aa_unit = a.substr(0,aa_idx);
 	var aa_num = convert_numeric(a.substr(aa_idx));
 	return [key_unit(aa_unit), key_numeric(aa_num)];

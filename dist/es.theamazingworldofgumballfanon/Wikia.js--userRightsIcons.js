@@ -11,7 +11,7 @@ function addMastheadTags() {
  
     rights["Longyaven"]     = ["ESTUDIANTE","MODERADOR"],
     rights["MordecaiyRigby45"]     = ["FUNDADOR","DIRECTOR"], 
-    rights["Rom√°n tomas"]     = ["VISITANTE DE ELMORE"],
+    rights["Rom·n tomas"]     = ["VISITANTE DE ELMORE"],
     rights["AzuleBot"]     = ["BOT LOCAL"],
     rights["Wikia"]     = ["BOT GLOBAL"];
     

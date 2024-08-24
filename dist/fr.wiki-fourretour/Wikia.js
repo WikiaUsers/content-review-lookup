@@ -1,4 +1,4 @@
-//Code by Hulothe d'aprÃ¨s l'idÃ©e de Flo121297 pour One Piece EncyclopÃ©die
+//Code by Hulothe d'après l'idée de Flo121297 pour One Piece Encyclopédie
 
 function getDiffLink(url) {
     return $.ajax({

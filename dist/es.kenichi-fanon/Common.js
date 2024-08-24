@@ -2,8 +2,8 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		csshelper: { u: 'DiseÃ±ador de CSS', order: 101 },
-		shimpaku: { u: 'Miembro de la FederaciÃ³n Shimpaku', order: 102 },
+		csshelper: { u: 'Diseñador de CSS', order: 101 },
+		shimpaku: { u: 'Miembro de la Federación Shimpaku', order: 102 },
 	}
 };
 UserTagsJS.modules.custom = {

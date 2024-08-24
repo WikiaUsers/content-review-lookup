@@ -1,5 +1,5 @@
 
-/* Cambio de tÃ­tulo */
+/* Cambio de título */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

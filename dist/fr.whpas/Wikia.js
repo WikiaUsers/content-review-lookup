@@ -21,9 +21,9 @@ Avert.save = function() {
 		type: 'POST',
 		success: function( data ) {
 			if ( data && data.edit && data.edit.result == 'Success' ) {
-                                var conf = confirm("Fermer l'Ã©diteur ?");
+                                var conf = confirm("Fermer l'éditeur ?");
                                 if ( conf == true) {
-                                    var conf2 = confirm("Aller Ã  la page ?");
+                                    var conf2 = confirm("Aller à la page ?");
                                         if ( conf2 == true ) {
                                             window.location.href = wgServer + '/wiki/' + encodeURIComponent('A faire');;
                                         } else {
@@ -59,9 +59,9 @@ Avert.remplace = function() {
 		type: 'POST',
 		success: function( data ) {
 			if ( data && data.edit && data.edit.result == 'Success' ) {
-                                var confir = confirm("Fermer l'Ã©diteur ?");
+                                var confir = confirm("Fermer l'éditeur ?");
                                 if ( confir == true) {
-                                    var confir2 = confirm("Aller Ã  la page ?");
+                                    var confir2 = confirm("Aller à la page ?");
                                         if ( confir2 == true ) {
                                             window.location.href = wgServer + '/wiki/' + encodeURIComponent('A faire');;
                                         } else {
@@ -88,7 +88,7 @@ Avert.purge = function() {
 			format: 'json',
 			action: 'edit',
 			title: Avert.page,
-			text: ":\'\'Liste de choses Ã  faire\'\'",
+			text: ":\'\'Liste de choses à faire\'\'",
 			token: mw.user.tokens.get("editToken")
 		},		dataType: 'json',
 		type: 'POST',
@@ -138,13 +138,13 @@ Avert.select = function() {
 
 $("body").append(
 	'<nav id="avert-editeur" style="display: none;">\n' +
-		'\t<h2><a href="/wiki/A_faire">Ã€ faire</a>&nbsp;<small>(<a href="/wiki/A_faire?action=history"><small>hist.</small></a>)</small><input type="button" id="avert-editeur-vider" value="Vider l\'Ã©diteur"/><span id="avert-editeur-fermer"></span></h2>' +
+		'\t<h2><a href="/wiki/A_faire">À faire</a>&nbsp;<small>(<a href="/wiki/A_faire?action=history"><small>hist.</small></a>)</small><input type="button" id="avert-editeur-vider" value="Vider l\'éditeur"/><span id="avert-editeur-fermer"></span></h2>' +
 		'\t<textarea id="avert-editeur-textarea"></textarea>' +
-		'\t<input type="button" id="avert-editeur-save" value="Ajouter" /><input type="button" id="avert-editeur-select" value="SÃ©lectionner" /><input type="button" id="avert-editeur-load" value="Charger" /><input type="button" id="avert-editeur-remplace" value="Remplacer" disabled/><input type="button" id="avert-editeur-purge" value="Purger (?)" title="Vider la page"/>' +
+		'\t<input type="button" id="avert-editeur-save" value="Ajouter" /><input type="button" id="avert-editeur-select" value="Sélectionner" /><input type="button" id="avert-editeur-load" value="Charger" /><input type="button" id="avert-editeur-remplace" value="Remplacer" disabled/><input type="button" id="avert-editeur-purge" value="Purger (?)" title="Vider la page"/>' +
 	'</nav>'
 );
  
-$('.wikia-bar').last().find('.tools').append('<li><a href="#" title="Liste des Choses Ã  faire" id="avert-editeur-trigger">Ajouter</a></li>');
+$('.wikia-bar').last().find('.tools').append('<li><a href="#" title="Liste des Choses à faire" id="avert-editeur-trigger">Ajouter</a></li>');
  
 $("nav#avert-editeur #avert-editeur-save").click(function() {
 	Avert.save();
@@ -257,7 +257,7 @@ $("nav#avert-editeur").mouseup(function() {
 */
 
 $( document ).ready(function () {
-    $('.wikia-bar').last().find('.tools').append('<li><a href="#" title="Liste des Choses Ã  faire" id="avert-editeur-trigger">Ajouter</a></li>');
+    $('.wikia-bar').last().find('.tools').append('<li><a href="#" title="Liste des Choses à faire" id="avert-editeur-trigger">Ajouter</a></li>');
     $( '#avert-editeur-trigger' ).click(function() {
         getUtilisateur();
     });
@@ -267,7 +267,7 @@ $( document ).ready(function () {
         } else {
             $( '#globalNavigation, .WikiaBarWrapper' ).css('z-index', '999998');
             $( 'body' ).prepend('<style>.vert{color:green}.rouge{color:red}.aaa-actions div{clear:none;float:left}#crotz:hover, #publicar:hover{background-color:#271e1c;border-radius:15px!important;border:1px solid dimgrey!important}</style>');
-            $( 'body' ).append('<textarea id="aaatextarea" style="z-index: 999999; position: fixed; left: 0px; top: 0px; padding: 20px; font-family: monaco,monospace; color: #9ac; height: 99%; width: 100%; background-color: #1d1e1c"></textarea><div class="aaa-actions" style="z-index: 1000000; position: fixed; right: 30px; top: 20px;"><div id="estatut" class="vert" style=" height: 106px; transition: 0.2s; font-size: 14px; padding: 50px; align: center;">PubliÃ©</div><div id="publicar" style="padding: 5px;border: 1px solid transparent;border-radius: 15px;transition: 0.5s;cursor: pointer;font-size: 300%;font-family: fantasy;padding: 30px;margin-right: 20px;">Publier</div><div id="crotz" style="padding: 5px;border: 1px solid transparent;border-radius: 15px;transition: 1s;cursor: pointer;"><div style="background: url(\'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Noun_project_-_supprimer_round.svg/200px-Noun_project_-_supprimer_round.svg.png\'); height: 90px; width: 90px;background-size: contain;background-repeat: no-repeat;"></div></div></div><div class="successhehe" style="font-size: 230px; opacity: 0.1; font-weight: bold; position: fixed; color: green; display: none; z-index: 1000000">SuccÃ¨s !</div>');
+            $( 'body' ).append('<textarea id="aaatextarea" style="z-index: 999999; position: fixed; left: 0px; top: 0px; padding: 20px; font-family: monaco,monospace; color: #9ac; height: 99%; width: 100%; background-color: #1d1e1c"></textarea><div class="aaa-actions" style="z-index: 1000000; position: fixed; right: 30px; top: 20px;"><div id="estatut" class="vert" style=" height: 106px; transition: 0.2s; font-size: 14px; padding: 50px; align: center;">Publié</div><div id="publicar" style="padding: 5px;border: 1px solid transparent;border-radius: 15px;transition: 0.5s;cursor: pointer;font-size: 300%;font-family: fantasy;padding: 30px;margin-right: 20px;">Publier</div><div id="crotz" style="padding: 5px;border: 1px solid transparent;border-radius: 15px;transition: 1s;cursor: pointer;"><div style="background: url(\'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Noun_project_-_supprimer_round.svg/200px-Noun_project_-_supprimer_round.svg.png\'); height: 90px; width: 90px;background-size: contain;background-repeat: no-repeat;"></div></div></div><div class="successhehe" style="font-size: 230px; opacity: 0.1; font-weight: bold; position: fixed; color: green; display: none; z-index: 1000000">Succès !</div>');
             $.getJSON("/api.php?action=query&format=json&prop=revisions&titles=A_faire&rvprop=content&cb=" + new Date().getTime(), function(data) {
                 if(data.query.pages[-1] === undefined) {
                     var page_Data = data.query.pages,
@@ -305,15 +305,15 @@ $( document ).ready(function () {
                     })(jQuery);                        
                     $( '#aaatextarea' ).acabat(function() {
                         if($(this).val() == page_Content) {
-                            $('#estatut').text('Ã€ jour');
+                            $('#estatut').text('À jour');
                             $('#estatut').removeClass('rouge').addClass('vert');
                         } else {
-                            $('#estatut').text('Pas Ã  jour');
+                            $('#estatut').text('Pas à jour');
                             $('#estatut').removeClass('vert').addClass('rouge');
                         }
                     });
                 } else {
-                    alert('La page demandÃ©e n\'existe pas');
+                    alert('La page demandée n\'existe pas');
                 }
             });
             $( '#publicar' ).on('click', function() {
@@ -335,7 +335,7 @@ $( document ).ready(function () {
                                 $(".successhehe").fadeOut();
                             }, 800);
                             var page_Content = $( '#aaatextarea' ).val();
-                            $('#estatut').text('Ã€ jour');
+                            $('#estatut').text('À jour');
                             $('#estatut').removeClass('rouge').addClass('vert');
                         } else if ( data && data.error ) {
                             alert( 'Error: API returned error code "' + data.error.code + '": ' + data.error.info );
@@ -387,7 +387,7 @@ $( document ).ready(function () {
                         type: 'POST',
                         success: function( data ) {
                             if ( data && data.edit && data.edit.result == 'Success' ) {
-                                console.log('succÃ¨s');
+                                console.log('succès');
                             } else if ( data && data.error ) {
                                 alert( 'Error: API returned error code "' + data.error.code + '": ' + data.error.info );
                             } else {
@@ -399,7 +399,7 @@ $( document ).ready(function () {
                         }
                     });
                 } else {
-                    alert('La page demandÃ©e n\'existe pas');
+                    alert('La page demandée n\'existe pas');
                 }
             });
         });        
@@ -411,7 +411,7 @@ $( document ).ready(function () {
 var ug = wgUserGroups.join(' ');
 if (ug.indexOf('helper') + ug.indexOf('sysop') > -2) {
     $( document ).ready(function() {
-    $('.WikiaArticle').prepend('<li><input type="button" value="Nouvelle activitÃ©" id="modif-badges-avert"></li>');
+    $('.WikiaArticle').prepend('<li><input type="button" value="Nouvelle activité" id="modif-badges-avert"></li>');
             var nauser1;
             var nauser2;
             var wgun = mw.config.get( 'wgUserName' );
@@ -435,13 +435,13 @@ if (ug.indexOf('helper') + ug.indexOf('sysop') > -2) {
             var avertissement = '<p>Bonjour ' + nauser1 + ' ou ' + nauser2 + ' !</p>' +
 '<p>Il y a du nouveau sur le WHPAS !</p>';
 	    $('#modif-badges-avert').click(function() {
-                var succÃ¨s = "Message postÃ© avec succÃ¨s !";
+                var succès = "Message posté avec succès !";
 	        $.post(mw.util.wikiScript('wikia'), {
                     controller   : 'WallExternal',
                     method       : 'postNewMessage',
                     pagenamespace: '1200',
                     pagetitle    : nauser1,
-                    messagetitle : 'Nouvelle activitÃ©',
+                    messagetitle : 'Nouvelle activité',
                     body         : avertissement + '\n\n~~' + '~',
                     format       : 'json'
                 });
@@ -450,11 +450,11 @@ if (ug.indexOf('helper') + ug.indexOf('sysop') > -2) {
                     method       : 'postNewMessage',
                     pagenamespace: '1200',
                     pagetitle    : nauser2,
-                    messagetitle : 'Nouvelle activitÃ©',
+                    messagetitle : 'Nouvelle activité',
                     body         : avertissement + '\n\n~~' + '~',
                     format       : 'json'
                 });
-                alert(succÃ¨s);
+                alert(succès);
                 window.location.reload();			
         });
     });

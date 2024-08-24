@@ -46,7 +46,7 @@ function calcExperience(index) {
    var Level  = parseInt(document.getElementById("lev_input_" + index).value);
    var result = doExperience(Level);
  
-   document.getElementById("ex_result_" + index).innerHTML = " = " + result + " ExpÃ©rience";    
+   document.getElementById("ex_result_" + index).innerHTML = " = " + result + " Expérience";    
 }
  
 function createExperience() {
@@ -66,11 +66,11 @@ function createExperience() {
          input1.setAttribute("id", "lev_input_" + offset);
  
          input2.setAttribute("type", "button");
-         input2.setAttribute("value", "Calculer l\'expÃ©rience");
+         input2.setAttribute("value", "Calculer l\'expérience");
          input2.setAttribute("onclick", "javascript:calcExperience(" + offset + ");");
  
          span.setAttribute("id", "ex_result_" + offset);
-         span.innerHTML = " = 0 ExpÃ©rience";
+         span.innerHTML = " = 0 Expérience";
  
          form.appendChild(document.createTextNode("Niveau: "));
          form.appendChild(input1);
@@ -109,7 +109,7 @@ function calcExperience2 (index) {
    var Lev    = parseInt(document.getElementById("lev_input2_" + index).value);
    var result = doExperience2(Lev);
  
-   document.getElementById("ex_result2_" + index).innerHTML = " = " + result + " ExpÃ©rience";    
+   document.getElementById("ex_result2_" + index).innerHTML = " = " + result + " Expérience";    
 }
  
 function createExperience2() {
@@ -129,11 +129,11 @@ function createExperience2() {
          input1.setAttribute("id", "lev_input2_" + offset);
  
          input2.setAttribute("type", "button");
-         input2.setAttribute("value", "Calculer l\'expÃ©rience");
+         input2.setAttribute("value", "Calculer l\'expérience");
          input2.setAttribute("onclick", "javascript:calcExperience2(" + offset + ");");
  
          span.setAttribute("id", "ex_result2_" + offset);
-         span.innerHTML = " = 0 ExpÃ©rience";
+         span.innerHTML = " = 0 Expérience";
  
          form.appendChild(document.createTextNode("Niveau: "));
          form.appendChild(input1);

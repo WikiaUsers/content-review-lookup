@@ -1,8 +1,8 @@
 importScriptPage('MediaWiki:ChatAnnouncements/code.js','dev');
 importScriptPage('ChatImages/code.js', 'dev');
 
-/* CabeÃ§alho */
-var chatTopic = 'Bem-vindo(a) <br /><a href="/wiki/Animal_Jam_Wiki:PolÃ­tica_do_Chat" target="_blank" title="Animal Jam Wiki:PolÃ­tica do Chat" style="position:relative;text-decoration:underline;">PolÃ­tica do Chat</a>'
+/* Cabeçalho */
+var chatTopic = 'Bem-vindo(a) <br /><a href="/wiki/Animal_Jam_Wiki:Política_do_Chat" target="_blank" title="Animal Jam Wiki:Política do Chat" style="position:relative;text-decoration:underline;">Política do Chat</a>'
  
 $(function() {
         $('#ChatHeader .public.wordmark').prepend('<div class="chattopic" style="text-align:center;position:absolute;width:60%;z-index:0;font-size: 13px;color:whitesmoke;font-weight:bold;line-height:1.6;margin-left:210px;">'+chatTopic+'</div>')
@@ -10,10 +10,10 @@ $(function() {
 })
 $('#ChatHeader .public.wordmark div:not(:first-child)').remove()
 
-/* ConfiguraÃ§Ãµs do Private Message - CrÃ©ditos a Five Nights at Freddy's Wiki */
+/* Configuraçõs do Private Message - Créditos a Five Nights at Freddy's Wiki */
 var PrivateMessageAlert = {
     beepSound: 'http://soundbible.com/grab.php?id=1645&type=mp3',
-    message: 'VocÃª recebeu uma mensagem privada de $1!',
+    message: 'Você recebeu uma mensagem privada de $1!',
     notifications: true,
     alertWhileFocused: true
 };

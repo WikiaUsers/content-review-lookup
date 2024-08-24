@@ -54,7 +54,7 @@
 }
 .hlist dd:after,
 .hlist li:after {
-    content: " Â· ";
+    content: " · ";
     font-weight: bold;
 }
 .hlist dd:last-child:after,

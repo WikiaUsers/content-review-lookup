@@ -1,11 +1,11 @@
 window.quizName = "Wie gut kennt ihr euch mit die Abenteuer des Robin Hood aus?";
 window.quizLang = "de";
 window.resultsTextArray = [ 
-    "Wo haben wir dich denn ausgegraben? Keine einzige richtige Antwort. Na, da mÃ¼ssen wir dir ja noch viel zum Spiel erzÃ¤hlen!",
-    "Das ist wohl noch verbesserungswÃ¼rdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
-    "Das ist wohl noch verbesserungswÃ¼rdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
-    "Gar nicht mal so schlecht! Falls du noch besser abschneiden mÃ¶chtest, solltest du noch einmal die Wiki Seiten durchforsten!",
-    "Gar nicht mal so schlecht! MÃ¶chtest du noch besser informiert sein? Dann schau dir die Seiten dieses Wikis an.",
+    "Wo haben wir dich denn ausgegraben? Keine einzige richtige Antwort. Na, da müssen wir dir ja noch viel zum Spiel erzählen!",
+    "Das ist wohl noch verbesserungswürdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
+    "Das ist wohl noch verbesserungswürdig! Sieh dir die Seiten dieses Wikis noch einmal genau an!",
+    "Gar nicht mal so schlecht! Falls du noch besser abschneiden möchtest, solltest du noch einmal die Wiki Seiten durchforsten!",
+    "Gar nicht mal so schlecht! Möchtest du noch besser informiert sein? Dann schau dir die Seiten dieses Wikis an.",
     "Wow, du hast alle Fragen richtig beantwortet! Du kannst dich von nun an Robin Hood nennen!" 
 ];
 window.questions = [
@@ -15,27 +15,27 @@ window.questions = [
     "Inka Brand",
     "Markus Brand"], 
 
-    ["Was fÃ¼r eine Art von Spiel ist die Abenteuer des Robin Hood?",
+    ["Was für eine Art von Spiel ist die Abenteuer des Robin Hood?",
     "Brettspiel",
     "Kartenspiel",
-    "WÃ¼rfelspiel",
+    "Würfelspiel",
     "Pen and Paper"],
 
     ["Wann ist das Spiel rausgekommen?",
-    "MÃ¤rz 2021",
+    "März 2021",
     "Februar 2021",
     "April 2021",
     "Januar 2021"],
 
-    ["Was fÃ¼r ein besonderes Special gab es fÃ¼r Kunden die beim FachhÃ¤ndler das Spiel gekauft haben?",
-    "1 Zusatzabenteuer (OriginalqualitÃ¤t)",
-    "1 Mini-Erweiterung (OriginalqualitÃ¤t)",
-    "1 Solovariante (OriginalqualitÃ¤t)",
-    "3 Soloabenteuer (OriginalqualitÃ¤t)"],
+    ["Was für ein besonderes Special gab es für Kunden die beim Fachhändler das Spiel gekauft haben?",
+    "1 Zusatzabenteuer (Originalqualität)",
+    "1 Mini-Erweiterung (Originalqualität)",
+    "1 Solovariante (Originalqualität)",
+    "3 Soloabenteuer (Originalqualität)"],
     
-    ["FÃ¼r wie viele Spieler ist die Abenteuer des Robin Hood?",
-    "fÃ¼r 1-4",
-    "fÃ¼r 2-5",
-    "fÃ¼r 2-4",
-    "fÃ¼r 1-5"]
+    ["Für wie viele Spieler ist die Abenteuer des Robin Hood?",
+    "für 1-4",
+    "für 2-5",
+    "für 2-4",
+    "für 1-5"]
 ];

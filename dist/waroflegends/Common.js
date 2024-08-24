@@ -540,7 +540,7 @@ $(document).ready(function () {
 // =====================================================================
 // QuickPreview
 //
-// Original script: User:Sander_SÃ¤de/quickpreview.js
+// Original script: User:Sander_Säde/quickpreview.js
 // Ported to use jQuery and Monaco for Wikia
 // =====================================================================
 

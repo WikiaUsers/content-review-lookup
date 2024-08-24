@@ -1,5 +1,5 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
- * Page copiÃ©e sur le wiki Naruto fr
+ * Page copiée sur le wiki Naruto fr
 
 //This script organizes all categories by alphabetical order
 (function(window, $, mw){

@@ -1,5 +1,5 @@
 /* Let's go! */
-Â 
+ 
 /*Easier Message Wall Greeting Editor*/
 
 importArticles({
@@ -11,7 +11,7 @@ importArticles({
 /* End of Message Wall Greeting Editor */
 /*SexyUserPage
 check w:c:dev:SexyUserPage for more info*/
-Â 
+ 
 importArticles({
     type: 'script',
     articles: [

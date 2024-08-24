@@ -1,4 +1,4 @@
-/* Colores en las infobox port√°tiles (w:c:webarebears) */
+/* Colores en las infobox port·tiles (w:c:webarebears) */
 (function(){
     var infobox = $('.portable-infobox');
     if (infobox.length) {
@@ -38,15 +38,15 @@ importArticles({
  *Creado por JBed de FF Wiki
  *Editado por RikuNoctis de TM Wiki
  ****************************************************************************/
-//C√≥mo editar la Oasis SiteNotice:
-//Ingresa a una p√°gina en Monobook usando ?useskin=monobook en la URL,
-//haz click derecho y selecciona "Ver c√≥digo fuente de la p√°gina" en tu browser,
+//CÛmo editar la Oasis SiteNotice:
+//Ingresa a una p·gina en Monobook usando ?useskin=monobook en la URL,
+//haz click derecho y selecciona "Ver cÛdigo fuente de la p·gina" en tu browser,
 //Ctrl+F, teclea "siteNoticeID".
-//Aqu√≠ se encontraran 2 l√≠neas,
+//AquÌ se encontraran 2 lÌneas,
 //una empezando "var siteNoticeID", la otra "var siteNotice",
-//copia ambas l√≠neas y p√©galas en las l√≠neas respectivas aqu√≠ debajo. 
+//copia ambas lÌneas y pÈgalas en las lÌneas respectivas aquÌ debajo. 
 var siteNoticeID = "1.1";
-var siteNoticeValue = '¬°Bienvenido a Wiki Key!';
+var siteNoticeValue = '°Bienvenido a Wiki Key!';
 
 function dismissNotice() {
     var date = new Date();

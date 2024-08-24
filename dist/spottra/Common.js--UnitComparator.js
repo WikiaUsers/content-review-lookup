@@ -952,7 +952,7 @@ function updateTroopComparator() {
 
    if ($('#troop-select-2-denom').val() !== '<none>') {
       colhead.push($('#troop-select-2-denom').val());
-      colhead.push($('#troop-select-2-num').val() + 'Â«&nbsp;/&nbsp;' + $('#troop-select-2-denom').val() + 'Â»&nbsp;');
+      colhead.push($('#troop-select-2-num').val() + '«&nbsp;/&nbsp;' + $('#troop-select-2-denom').val() + '»&nbsp;');
    }
 
    switch (a1.value) {
@@ -1330,10 +1330,10 @@ function updateTroopComparator() {
 
    // Add units where necessary
    var replacestr = (numunit ? '&nbsp;(' + numunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â«', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('«', replacestr);
 
    var replacestr = (denomunit ? '&nbsp;(' + denomunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â»', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('»', replacestr);
 
    $('#troop-comparator-results-table tr td, #troop-comparator-results-table tr th').css({'padding' : '0px 20px'});
    mw.loader.using('jquery.tablesorter', function() { $(results).tablesorter(); });
@@ -1388,7 +1388,7 @@ function updateHeroComparator() {
 
    if ($('#hero-select-2-denom').val() !== '<none>') {
       colhead.push($('#hero-select-2-denom').val());
-      colhead.push($('#hero-select-2-num').val() + 'Â«&nbsp;/&nbsp;' + $('#hero-select-2-denom').val() + 'Â»&nbsp;');
+      colhead.push($('#hero-select-2-num').val() + '«&nbsp;/&nbsp;' + $('#hero-select-2-denom').val() + '»&nbsp;');
    }
 
    switch (a1.value) {
@@ -1760,10 +1760,10 @@ function updateHeroComparator() {
 
    // Add units where necessary
    var replacestr = (numunit ? '&nbsp;(' + numunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â«', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('«', replacestr);
 
    var replacestr = (denomunit ? '&nbsp;(' + denomunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â»', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('»', replacestr);
 
    // Fix headers
    if (cumdenom) {
@@ -1823,8 +1823,8 @@ function updateBuildingComparator() {
 
    if ($('#building-select-2-denom').val() !== '<none>') {
       colhead.push($('#building-select-2-denom').val());
-      colhead.push($('#building-select-2-num').val() + 'Â«&nbsp;/&nbsp;' +
-         $('#building-select-2-denom').val() + 'Â»&nbsp;');
+      colhead.push($('#building-select-2-num').val() + '«&nbsp;/&nbsp;' +
+         $('#building-select-2-denom').val() + '»&nbsp;');
    }
 
    switch (a1.value) {
@@ -2486,10 +2486,10 @@ function updateBuildingComparator() {
 
    // Add units where necessary
    var replacestr = (numunit ? '&nbsp;(' + (numimg ? '/' : '') + numunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â«', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('«', replacestr);
 
    var replacestr = (denomunit ? '&nbsp;(' + (denomimg ? '/' : '') + denomunit + ')' : '');
-   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('Â»', replacestr);
+   lastcolheader.innerHTML = lastcolheader.innerHTML.replace('»', replacestr);
 
    $('#building-comparator-results-table tr td, #building-comparator-results-table tr th').css({'padding' : '0px 20px'});
    mw.loader.using('jquery.tablesorter', function() { $(results).tablesorter(); });

@@ -1,12 +1,12 @@
-/* Fait par Houmgaor, pour utiliser le code, vous devez mettre un div avec l'id "redtrivia" sur la page "Trivia Monster Hunter". Il suffit de copiÃ©-collÃ© : <div id="redtrivia"></div> */
+/* Fait par Houmgaor, pour utiliser le code, vous devez mettre un div avec l'id "redtrivia" sur la page "Trivia Monster Hunter". Il suffit de copié-collé : <div id="redtrivia"></div> */
 if (mw.config.get('wgPageName') == 'Trivia_Monster_Hunter') {
     var redtrivia = {
         'init' : function () {
             // Creates the form
             $('#triviaform').html('<form name="triviaform" onsubmit="redtrivia.register();">\
             <span>Entrez votre question :</span><input type="text" name="question" maxlength="500" size="100" required/><br />\
-            <span>Entrez la premiÃ¨re rÃ©ponse : </span><input type="text" name="answer1" oninput="redtrivia.check()" maxlength="40" required/><br />\
-            <span>Si vous avez une remarque, ou autre chose Ã  signaler</span><br/><input type="text" name="other" maxlength="800"/><br />\
+            <span>Entrez la première réponse : </span><input type="text" name="answer1" oninput="redtrivia.check()" maxlength="40" required/><br />\
+            <span>Si vous avez une remarque, ou autre chose à signaler</span><br/><input type="text" name="other" maxlength="800"/><br />\
             <input type="submit" value="Envoyer" />\
 </form>');
         redtrivia.form = document.forms.triviaform;
@@ -26,7 +26,7 @@ if (mw.config.get('wgPageName') == 'Trivia_Monster_Hunter') {
                 // i is the number of the input we want to add, there two inputs which are not questions
              i = 1;
                 while (redtrivia.form['answer' + (++i)]);
-                $(redtrivia.form['answer' + (i - 1)]).after('<br /><span>RÃ©ponse nÂ°' + i + ' : </span><input type="text" name="answer' + i + '" oninput="redtrivia.check()" maxlength="40">');
+                $(redtrivia.form['answer' + (i - 1)]).after('<br /><span>Réponse n°' + i + ' : </span><input type="text" name="answer' + i + '" oninput="redtrivia.check()" maxlength="40">');
             } else {
                 // Then we remove supplementary lines
                 for (i = inputs.length - 1; i > 0; i--) {
@@ -68,7 +68,7 @@ if (mw.config.get('wgPageName') == 'Trivia_Monster_Hunter') {
                 format: 'json',
                 action: 'edit',
                 title: 'Trivia Monster Hunter/data',
-                summary: "Ajout automatique d'une nouvelle rÃ©ponse",
+                summary: "Ajout automatique d'une nouvelle réponse",
                 appendtext: content,
                 token: mw.user.tokens.values.editToken
             },
@@ -76,17 +76,17 @@ if (mw.config.get('wgPageName') == 'Trivia_Monster_Hunter') {
             type: 'POST',
             success: function( data ) {
                 if ( data && data.edit && data.edit.result == 'Success' ) {
-                    redtrivia.form.innerText = "Question enregistrÃ©e avec succÃ¨s ! La page va Ãªtre rechargÃ©e";
+                    redtrivia.form.innerText = "Question enregistrée avec succès ! La page va être rechargée";
                     setTimeout(function () {window.location.reload();}, 3000); // reload page if edit was successful
                     return;
                 } else if ( data && data.error ) {
                     alert( 'Erreur: code d\'erreur de l\'API "' + data.error.code + '": ' + data.error.info );
                 } else {
-                    alert( 'Erreur: rÃ©sultat inconnu de l\'API.' );
+                    alert( 'Erreur: résultat inconnu de l\'API.' );
                 }
             },
             error: function( xhr ) {
-                alert( 'Erreur: Ã©chec de la requÃªte.' );
+                alert( 'Erreur: échec de la requête.' );
             }
         });
             // Then we can show the button

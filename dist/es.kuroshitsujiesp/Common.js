@@ -23,10 +23,10 @@ addOnloadHook(UserNameReplace);
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde estÃ© "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
  
-TraÃ­da de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
+Traída de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */
  
 function UserNameReplace() {

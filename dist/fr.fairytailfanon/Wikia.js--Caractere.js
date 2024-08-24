@@ -88,7 +88,7 @@
                             ui.label({
                                 for: 'FTFCharacterGenerator__traits',
                                 class: 'wds-input__label',
-                                text: 'Traits de caractÃ¨res:'
+                                text: 'Traits de caractères:'
                             }),
                             textarea
                         ]
@@ -99,7 +99,7 @@
                             ui.label({
                                 for: 'FTFCharacterGenerator__input-quantity',
                                 class: 'wds-input__label',
-                                text: 'Nombre de traits Ã  gÃ©nÃ©rer :'
+                                text: 'Nombre de traits à générer :'
                             }),
                             ui.input({
                                 id: 'FTFCharacterGenerator__input-quantity',
@@ -122,7 +122,7 @@
                             ui.button({
                                 id: 'FTFCharacterGenerator__button',
                                 class: 'wds-button',
-                                text: 'GÃ©nÃ©rer CaractÃ¨re',
+                                text: 'Générer Caractère',
                                 events: {
                                     click: function () {
                                         var copy = self.personnalityTraits.slice(0);

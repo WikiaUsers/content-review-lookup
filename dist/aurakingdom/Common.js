@@ -88,6 +88,6 @@ $(document).ready(function() {
  
 // Remove dark gradient
 if(document.getElementsByClassName("image-window").length > 0) document.getElementsByClassName("image-window")[0].className = "";
-Â 
+ 
 /* Drop Down Lists */
 importScript('MediaWiki:Dropdown.js');

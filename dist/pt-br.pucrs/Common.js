@@ -1,4 +1,4 @@
-/* C√≥digos javascript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
+/* CÛdigos javascript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
 
 // =================================================
 //   O que se segue eh material para o NAVBOX retirado de Help:Dynamic navigation (Wikia)

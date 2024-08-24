@@ -85,7 +85,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
             '| owner      = ' + fileOwner + '\n' +
             '| source     = ' + fileSrc + '\n' +
             '| file_types = ' + fileTypes + '\n' +
-            '| resolution = ' + fileDetails.resWidth + 'Ã—' + fileDetails.resHeight + '\n' +
+            '| resolution = ' + fileDetails.resWidth + '×' + fileDetails.resHeight + '\n' +
             '| is big     = ' + fileDetails.isBig + '\n' +
             '| subjects   = ' + fileSubjs + '\n' +
             '}}';
@@ -152,7 +152,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
     };
 
     var getFileDetails = function () {
-        var fileThumbInfo = $('#mw-upload-thumbnail .fileinfo').text().split(/\sÃ—\s|\s|,\s/);
+        var fileThumbInfo = $('#mw-upload-thumbnail .fileinfo').text().split(/\s×\s|\s|,\s/);
         var fileIsBig = fileThumbInfo[3] === 'MB' ? 'yes' : 'no';
 
         var fileDetails = {

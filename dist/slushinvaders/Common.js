@@ -22,7 +22,7 @@ function substUsernameTOC() {
 }
 	$('.insertusername').html(wgUserName);
 
-/************* Funzioni di utilit√† generale *************/
+/************* Funzioni di utilit‡ generale *************/
  
  /* Test if an element has a certain class **************************************
  *

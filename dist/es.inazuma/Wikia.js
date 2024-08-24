@@ -1,9 +1,9 @@
 /*<pre> MediaWiki:Wikia.js v.4 */ 
-//BurÃ³crata/
+//Burócrata/
 (function () {
         "use strict";
         var userRightsList = {
-            "EÃ¸3": ["BurÃ³crata"]
+            "Eø3": ["Burócrata"]
         };
  
         if ($('.masthead-info hgroup').length) {
@@ -54,7 +54,7 @@
 (function () {
         "use strict";
         var userRightsList = {
-            "JÃ¸sevi BÃ¸t": ["Bot"]
+            "Jøsevi Bøt": ["Bot"]
         };
  
         if ($('.masthead-info hgroup').length) {

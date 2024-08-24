@@ -3,4 +3,4 @@ document.getElementById("spoilers_image").addEventListener("click", function() {
         this.style.display = "none";
     });
 });
-//crÃ©ditos a Doki Doki Literature Club Wiki en InglÃ©s
+//créditos a Doki Doki Literature Club Wiki en Inglés

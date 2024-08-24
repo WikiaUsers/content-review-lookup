@@ -1,12 +1,12 @@
-/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
 
-/*Predefini√ß√£o:USERNAME*/
+/*PredefiniÁ„o:USERNAME*/
 $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
 });
 
-/* √çcones No Cabe√ßalho da P√°gina*/
+/* Õcones No CabeÁalho da P·gina*/
 $(function() {
     if( $( '.wds-community-header' ).length ) {
         $( '#PageHeader' ).prepend(

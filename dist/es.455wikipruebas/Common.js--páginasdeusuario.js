@@ -1,4 +1,4 @@
-// Impedir el renombrado de p√°gina de usuario (Obtenido de [[w:c:es.pokemon:Wikidex]])
+// Impedir el renombrado de p·gina de usuario (Obtenido de [[w:c:es.pokemon:Wikidex]])
 function disableUserpageMove() {
 	var url = window.location.toString();
 	var pos = url.indexOf(window.wgPageName);
@@ -14,10 +14,10 @@ function disableUserpageMove() {
 	}
 	pos = page.indexOf('/');
 	if (pos != -1) {
-		// Si hay barra es que se est√° trasladando una subp√°gina. Ok, lo permitimos
+		// Si hay barra es que se est· trasladando una subp·gina. Ok, lo permitimos
 		return;
 	}
-	// Es p√°gina de usuario?
+	// Es p·gina de usuario?
 	var re_user = new RegExp('^(user|'+wgFormattedNamespaces['2']+'):', 'i');
 	if (re_user.test(page)) {
 		// Excluir administradores

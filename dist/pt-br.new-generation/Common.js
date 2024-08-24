@@ -4,7 +4,7 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
 
-/* ConfiguraÃ§Ã£o de Tags de UsuÃ¡rio */
+/* Configuração de Tags de Usuário */
 /* Tags existentes */
 window.UserTagsJS = {
 	modules: {},
@@ -14,18 +14,18 @@ window.UserTagsJS = {
         sysop: {u: 'Administrador'},
         rollback: {u: 'Rollbacker'},
         chatmoderator: {u: 'Moderador de Chat'},
-        contentmoderator: {u: 'Moderador de ConteÃºdo'},
-        threadmoderator: {u: 'Moderador de DiscussÃµes'},
+        contentmoderator: {u: 'Moderador de Conteúdo'},
+        threadmoderator: {u: 'Moderador de Discussões'},
         bot: {u: 'Bot'},
         designer: {u: 'Designer'},
         newuser: {u:'Novo Editor'},
         inactive: {u: 'Inativo'},
-        montheditor: {u: 'Editor do MÃªs'},
+        montheditor: {u: 'Editor do Mês'},
         geralsupervisor: {u: 'Supervisor Geral'},
         blogsupervisor: {u: 'Supervisor de Blog'},
-        forumsupervisor: {u: 'Supervisor de FÃ³rum'},
+        forumsupervisor: {u: 'Supervisor de Fórum'},
         chatsupervisor: {u: 'Supervisor de Chat'},
-        revisor: {u: 'Revisor de ConteÃºdo'},
+        revisor: {u: 'Revisor de Conteúdo'},
 	}
 };
  
@@ -35,7 +35,7 @@ UserTagsJS.modules.custom = {
 	'PandaLoko': ['revisor', 'chatsupervisor']
 };
  
-/* ForÃ§ar a Tag referente aos grupos abaixo */
+/* Forçar a Tag referente aos grupos abaixo */
 UserTagsJS.modules.mwGroups = [
     'bureaucrat',
     'chatmoderator',

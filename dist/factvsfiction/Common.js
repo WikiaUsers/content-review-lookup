@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 importArticles({
     type: 'script',
@@ -11,8 +11,8 @@ importArticles({
 
 /** Tablas Colapsables *********************************************************
  
-  Todo copiado de la p√°gina ''common.js'' de Wikipedia. Para m√°s detalles: http://en.wikipedia.org/wiki/Wikipedia:NavFrame
-  Funcionamiento depende tambi√©n de la p√°gina ''common.css''
+  Todo copiado de la p·gina ''common.js'' de Wikipedia. Para m·s detalles: http://en.wikipedia.org/wiki/Wikipedia:NavFrame
+  Funcionamiento depende tambiÈn de la p·gina ''common.css''
  
   */
  
@@ -61,7 +61,7 @@ importArticles({
      for ( var i = 0; i < Tables.length; i++ ) {
          if ( hasClass( Tables[i], "collapsible" ) ) {
  
-             /* S√≥lo agrega bot√≥n e incrementa contador si hay una fila de encabezado con la cual trabajar */
+             /* SÛlo agrega botÛn e incrementa contador si hay una fila de encabezado con la cual trabajar */
              var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
              if (!HeaderRow) continue;
              var Header = HeaderRow.getElementsByTagName( "th" )[0];
@@ -103,7 +103,7 @@ importArticles({
  
  addOnloadHook( createCollapseButtons );
  
- /** Barras de Navegaci√≥n Din√°micas (Experimental; pudiese provocar errores con las nuevas funciones de Wikia.com ~17/09/2013~ *************************************
+ /** Barras de NavegaciÛn Din·micas (Experimental; pudiese provocar errores con las nuevas funciones de Wikia.com ~17/09/2013~ *************************************
  
   */
  
@@ -111,9 +111,9 @@ importArticles({
   var NavigationBarHide = '[' + collapseCaption + ']';
   var NavigationBarShow = '[' + expandCaption + ']';
  
-  // muestra y oculta contenido e im√°genes (s√≠ est√°n disponibles) de las barras de navegaci√≥n
-  // Par√°metros:
-  //     indexNavigationBar: el √≠ndice de la barra de navegaci√≥n a ser conmutada (toggle)
+  // muestra y oculta contenido e im·genes (sÌ est·n disponibles) de las barras de navegaciÛn
+  // Par·metros:
+  //     indexNavigationBar: el Ìndice de la barra de navegaciÛn a ser conmutada (toggle)
   function toggleNavigationBar(indexNavigationBar)
   {
      var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
@@ -157,18 +157,18 @@ importArticles({
      }
   }
  
-  // agrega el boton mostrar/ocultar a las barras de navegaci√≥n
+  // agrega el boton mostrar/ocultar a las barras de navegaciÛn
   function createNavigationBarToggleButton()
   {
      var indexNavigationBar = 0;
-     // iteraci√≥n sobre todos los elementos < div > 
+     // iteraciÛn sobre todos los elementos < div > 
      var divs = document.getElementsByTagName("div");
      for(
              var i=0; 
              NavFrame = divs[i]; 
              i++
          ) {
-         // si se encuentra una barra de navegaci√≥n
+         // si se encuentra una barra de navegaciÛn
          if (hasClass(NavFrame, "NavFrame")) {
  
              indexNavigationBar++;
@@ -192,7 +192,7 @@ importArticles({
              }
  
              NavToggle.appendChild(NavToggleText);
-             // Encuentra NavHead y anexa el link toggle (Debe hacerse de √©sta manera, ya que el manejo del firstChild de la funci√≥n Moz est√° mal programado/hecho)
+             // Encuentra NavHead y anexa el link toggle (Debe hacerse de Èsta manera, ya que el manejo del firstChild de la funciÛn Moz est· mal programado/hecho)
              for(
                var j=0; 
                j < NavFrame.childNodes.length; 
@@ -211,8 +211,8 @@ importArticles({
  
  
 // arreglo indizado de ID's de toggler y arreglo de operaciones toggler asociadas
-// cada operaci√≥n es un arreglo de 2 elementos; el primero es el tipo, el segundo un nombre de clase o un arreglo de elementos
-// los tipos de operaci√≥n son ''strings'' como "_reset" √≥ "" para la operaci√≥n toggle por default
+// cada operaciÛn es un arreglo de 2 elementos; el primero es el tipo, el segundo un nombre de clase o un arreglo de elementos
+// los tipos de operaciÛn son ''strings'' como "_reset" Û "" para la operaciÛn toggle por default
 var togglers = new Array();     
 var allClasses = new Object(); // associative map of class names to page elements
  
@@ -222,7 +222,7 @@ function toggler(id)
     if (!toBeToggled)
         return;
  
-    // s√≠ alg√∫n elemento est√° en la lista m√°s de una vez, ser√° conmutado m√∫ltiples veces
+    // sÌ alg˙n elemento est· en la lista m·s de una vez, ser· conmutado m˙ltiples veces
     for (var i = 0; i < toBeToggled.length; i++)
     {
         // obtiene el arreglo de elementos sobre el que operar
@@ -242,7 +242,7 @@ function toggler(id)
         if (!toggles || !toggles.length)
             continue;
  
-        var op = toBeToggled[i][0]; // ind√≠ca que operaci√≥n ser√°
+        var op = toBeToggled[i][0]; // indÌca que operaciÛn ser·
  
         switch (op)
         {
@@ -285,7 +285,7 @@ function toggleInit()
     var togglerElems = new Array();
     var toggleGroup = new Array();
  
-    // inicializa/limpia informaci√≥n vieja
+    // inicializa/limpia informaciÛn vieja
     togglers = new Array();     
     allClasses = new Object();
  
@@ -338,7 +338,7 @@ function toggleInit()
  
                 // todas las clases son de la forma _toggler_op
                 // descubre que clases estamos conmutando
-                // s√≠ ninguno es especificado, entonces usamos el grupo de conmutaci√≥n actual
+                // sÌ ninguno es especificado, entonces usamos el grupo de conmutaciÛn actual
                 var toBeToggled;
                 var hyphen = elemClass.indexOf('-');
                 if (hyphen != -1)

@@ -45,7 +45,7 @@ addOnloadHook(function () {
                             createSidebarModule(data2.parse.text['*'],data.parse.text['*'],'about');
                         });
                     },function() {
-                        createSidebarModule('Ãœber uns',data.parse.text['*'],'about');
+                        createSidebarModule('Über uns',data.parse.text['*'],'about');
                     });
                 });
             },function() {
@@ -57,7 +57,7 @@ addOnloadHook(function () {
                             createSidebarModule(data.parse.text['*'],description,'about');
                         });
                     },function() {
-                        createSidebarModule('Ãœber uns',description,'about');
+                        createSidebarModule('Über uns',description,'about');
                     });
                 });
             });
@@ -66,11 +66,11 @@ addOnloadHook(function () {
             bdmNextMonth = wgMonthNames[(new Date()).getMonth() + 2];
             bdmYear = (new Date()).getMonth() == 11 ? (new Date()).getFullYear() + 1 : (new Date()).getFullYear();
             bdmDescription = $('<div />').addClass('description').append(
-                'WÃ¤hle das ',
+                'Wähle das ',
                 $('<b />').text('Buch des Monats'),
-                ' fÃ¼r ' + bdmNextMonth + '!'
+                ' für ' + bdmNextMonth + '!'
             );
-            bdmButton = $('<a />').addClass('button').text('Abstimmen').attr('href','/wiki/Top_10-Liste:Buch_des_Monats:_Abstimmung_fÃ¼r_' + bdmNextMonth + '_' + bdmYear);
+            bdmButton = $('<a />').addClass('button').text('Abstimmen').attr('href','/wiki/Top_10-Liste:Buch_des_Monats:_Abstimmung_für_' + bdmNextMonth + '_' + bdmYear);
             createSidebarModule('',bdmDescription.wrapAll('<div>').parent().html() + bdmButton.wrapAll('<div>').parent().html(),'BdM',true);
  
             //Latest Comments
@@ -123,7 +123,7 @@ addOnloadHook(function () {
                     Mustache.parse(tmpl,['{{','}}']);
                     $('.api-infobox').html(Mustache.render(tmpl,{
                         Benutzername: "Agent Zuri",
-                        Geschlecht: "mÃ¤nnlich",
+                        Geschlecht: "männlich",
                         Benutzergruppen: ['sysop','bureaucrat','codeadmin'],
                         "Registriert seit": '2012-05-13',
                         Bearbeitungen: 22589,
@@ -152,10 +152,10 @@ addOnloadHook(function () {
                     groups = [];
                     groups.user = 'Benutzer';
                     groups.autoconfirmed = 'Autoconfirmed';
-                    groups.emailconfirmed = 'bestÃ¤tigte E-Mail-Adresse';
+                    groups.emailconfirmed = 'bestätigte E-Mail-Adresse';
                     groups.codeadmin = 'Codeadmin';
                     groups.sysop = 'Admin';
-                    groups.bureaucrat = 'BÃ¼rokrat';
+                    groups.bureaucrat = 'Bürokrat';
                     groups.poweruser = 'Poweruser';
                     groups.staff = 'Wikia-Mitarbeiter';
                     groups.module_tester = 'Modultester';
@@ -250,12 +250,12 @@ addOnloadHook(function () {
             type: 'scripts',
             callback: function() {
                 //Add module to sidebar
-                createSidebarModule('Ãœber uns','Wir sind das Testwiki','about');//{{MediaWiki:Description}}
+                createSidebarModule('Über uns','Wir sind das Testwiki','about');//{{MediaWiki:Description}}
                 $.getJSON('/api.php?action=query&titles=Benutzer:Agent_Zuri/Aktuelles_Buch&format=json', function(page) {
                     content = page.query.pages[Object.keys(pages.query.pages)[0]].pageid;
                     $.getJSON('/api/v1/Articles/AsSimpleJson?id=5641&format=json', function(content) {
                         book_title = content.sections[0].text;
-                        createSidebarModule('Ãœber uns','Das lese ich gerade',book_title);
+                        createSidebarModule('Über uns','Das lese ich gerade',book_title);
                     });
                 });
             }
@@ -287,7 +287,7 @@ addOnloadHook(function () {
     ]);*/
     /*importArticleCallback('MediaWiki:Sidebar.js','scripts',function() {
         //Add module to sidebar
-        createSidebarModule('Ãœber uns','Wir sind das Testwiki','about');
+        createSidebarModule('Über uns','Wir sind das Testwiki','about');
     });
     importArticleCallback('MediaWiki:Notify.js','scripts',function() {
         //Test notify

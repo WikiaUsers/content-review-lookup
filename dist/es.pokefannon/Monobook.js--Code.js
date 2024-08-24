@@ -5,7 +5,7 @@ window.wgIRCUrl = '{{:MediaWiki:Irc-url}}';
 try {
 	if (window.CreaEnlacesDex) {
 		CreaEnlacesDex.registerRenderFn(function() {
-			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras Pok√©dex</h5><div class="pBody"><ul></ul></div></div>');
+			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras PokÈdex</h5><div class="pBody"><ul></ul></div></div>');
 		});
 		CreaEnlacesDex.registerLinkFn(function(url, text, caption) {
 			addPortletLink('p-dexlinks', url, text, false, caption);
@@ -39,10 +39,10 @@ window.wgSidebar = (window.wgSidebar||{});
 importScript('MediaWiki:Monobook.js/Sidebar.js');
 
 /*
-* MonobookSidebar v1.1: Permite definir submen√∫s para elementos del Sidebar de MonoBook, agregando clases
+* MonobookSidebar v1.1: Permite definir submen˙s para elementos del Sidebar de MonoBook, agregando clases
 * especiales al pasar con el puntero por encima para permitir el efecto en todos los navegadores.
 *
-* Copyright (C) 2010  Jes√∫s Mart√≠nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010  Jes˙s MartÌnez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -147,12 +147,12 @@ MonobookSidebar = {
 // Mueve cambios recientes a toolbox
 function PosicionaElementosToolbox() {
 	$('#p-tb').children().eq(1).children().eq(0)
-	// Opciones en p√°ginas de usuario
+	// Opciones en p·ginas de usuario
 	.prepend($('#t-emailuser'))
 	.prepend($('#t-blockip'))
 	.prepend($('#t-log'))
 	.prepend($('#t-contributions'))
-	// 'Enlace permanente' y 'Versi√≥n para imprimir'
+	// 'Enlace permanente' y 'VersiÛn para imprimir'
 	.prepend($('#t-permalink'))
 	.prepend($('#t-print'))
 	// Opciones principales
@@ -176,23 +176,23 @@ function PosicionaElementosToolbox() {
 	$('#t-whatlinkshere').before('<hr style="margin: 5px; margin-bottom: -1px; background-color: #E2A600;" />');
 
 	addPortletLink('p-tb', window.wgIRCUrl, 'Chat de soporte', 'n-irc', 'Accede al chat de WikiDex', false, $('#n-recentchanges').next().get(0));
-	addPortletLink('p-tb', 'https://www.google.com/cse/home?cx=012049278226999628206:45yxdtixipa', 'B√∫squeda Google', 't-googlesearch', 'Buscar en WikiDex usando el buscador de Google', false, $('#n-recentchanges').next().get(0));
+	addPortletLink('p-tb', 'https://www.google.com/cse/home?cx=012049278226999628206:45yxdtixipa', 'B˙squeda Google', 't-googlesearch', 'Buscar en WikiDex usando el buscador de Google', false, $('#n-recentchanges').next().get(0));
 }
 (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(PosicionaElementosToolbox);
 
-//Traduce los enlaces del pie de p√°gina y a√±ade 'disclaminer' sobre Pok√©mon
+//Traduce los enlaces del pie de p·gina y aÒade 'disclaminer' sobre PokÈmon
 function TraducirFooter() {
 	$('#about').children().eq(0).text('Sobre Wikia');
 	$('#contact').children().eq(0).text('Contactar con Wikia');
-	$('#disclaimer').children().eq(0).text('T√©rminos de uso');
+	$('#disclaimer').children().eq(0).text('TÈrminos de uso');
 	$('#privacy').children().eq(0).text('Privacidad');
-	$('#hosting').append('<br />Nintendo, Pok√©mon y el resto de nombres relacionados son propiedad de Nintendo, Creatures, Game Freak, TV Tokyo, ShoPro y JR Kikaku.<br />Im√°genes, audio y v√≠deo se utilizan de acuerdo a los t√©rminos del Fair Use.');
+	$('#hosting').append('<br />Nintendo, PokÈmon y el resto de nombres relacionados son propiedad de Nintendo, Creatures, Game Freak, TV Tokyo, ShoPro y JR Kikaku.<br />Im·genes, audio y vÌdeo se utilizan de acuerdo a los tÈrminos del Fair Use.');
 }
 if (window.wgUserLanguage == 'es') {
 	(typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(TraducirFooter);
 }
 
-//Cambia la pesta√±a 'Art√≠culo' por 'Portada' en la portada
+//Cambia la pestaÒa 'ArtÌculo' por 'Portada' en la portada
 function TabPortada() {
 	$('#ca-nstab-main').children().text('Portada');
 }
@@ -201,7 +201,7 @@ if (window.wgIsMainpage) {
 	(typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(TabPortada);
 }
 
-// Reescribe el enlace de login de Wikia para que no haga una redirecci√≥n y pierda el useskin=monobook, es muy molesto cuando se cierra la sesi√≥n
+// Reescribe el enlace de login de Wikia para que no haga una redirecciÛn y pierda el useskin=monobook, es muy molesto cuando se cierra la sesiÛn
 if (!window.wgUserName) {
 	(typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
 		var a = $('#pt-login').children('a').eq(0);
@@ -222,18 +222,18 @@ if ((window.wgNamespaceNumber == -1 && window.wgCanonicalSpecialPageName == 'Con
 if (window.wgAction == 'edit' || window.wgAction == 'submit') {
 	/*GLOBAL WMU VARS*/
 	window.wmu_back = "volver";
-	window.wmu_imagebutton = "Agregar im√°genes";
+	window.wmu_imagebutton = "Agregar im·genes";
 	window.wmu_close = "cerrar";
-	window.wmu_no_preview = "No se puede agregar im√°genes desde la p√°gina en modo de previsualizaci√≥n";
+	window.wmu_no_preview = "No se puede agregar im·genes desde la p·gina en modo de previsualizaciÛn";
 	window.wmu_warn1 = "Debes especificar el texto a buscar";
 	window.wmu_warn2 = "Selecciona primero el archivo a subir";
-	window.wmu_warn3 = "¬°Es necesario especificar el nombre del archivo primero!";
-	window.wmu_bad_extension = "El tipo de archivo que intentas subir no est√° permitido. Puedes consultar la lista de extensiones soportadas en [[Especial:Version]].";
+	window.wmu_warn3 = "°Es necesario especificar el nombre del archivo primero!";
+	window.wmu_bad_extension = "El tipo de archivo que intentas subir no est· permitido. Puedes consultar la lista de extensiones soportadas en [[Especial:Version]].";
 	window.wmu_show_message = "mostrar mensaje";
 	window.wmu_hide_message = "ocultar mensaje";
 	window.wmu_show_license_message = "mostrar licencia";
 	window.wmu_hide_license_message = "ocultar licencia";
-	window.wmu_max_thumb = "Se ha superado el tama√±o m√°ximo de la miniatura. Se devolver√° al tama√±o original.";
+	window.wmu_max_thumb = "Se ha superado el tamaÒo m·ximo de la miniatura. Se devolver· al tamaÒo original.";
 	importScript('MediaWiki:Common.js/Extra/WikiaWMU.js');
 	importStylesheetURI(wgExtensionsPath+'/wikia/WikiaMiniUpload/css/WMU.css?'+wgStyleVersion);
 }
@@ -254,7 +254,7 @@ if (window.wgAction == 'edit' || window.wgAction == 'submit') {
 	}
 });
 
-// A√±ade un 'span' que sirve para a√±adir una imagen de fondo a la barra de categor√≠as
+// AÒade un 'span' que sirve para aÒadir una imagen de fondo a la barra de categorÌas
 function ImagenCatlinks() {
 	$('#mw-normal-catlinks').before('<span id="catlinks-background-image">&nbsp;</span>');
 }

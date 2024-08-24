@@ -46,7 +46,7 @@ $( function () {
 		}
 		cats = cats.getElementsByTagName( 'a' );
 		for ( var i = 0; i < cats.length; i++ ) {
-			if ( cats[i].title === 'Category:Articles de QualitÃ©' ) {
+			if ( cats[i].title === 'Category:Articles de Qualité' ) {
 				addEditIntro( 'Template:Featured_editintro' );
 				break;
 			} else if ( cats[i].title === 'Category:Wookieepedia good articles' ) {

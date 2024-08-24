@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para los usuarios de la versi√≥n m√≥vil */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para los usuarios de la versiÛn mÛvil */
 /**************************************************
 /* Responsive Flex Passage Mobile Collapse Script *
 /**************************************************/

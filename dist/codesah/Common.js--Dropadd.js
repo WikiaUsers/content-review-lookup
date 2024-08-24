@@ -43,11 +43,11 @@ var submitTable = '<table class="wikitable" style="margin-left:25px;" id="charmL
 if (onPage && !wgPageName.match('/Registro_de_amuletos') && $('.charmtable').length) {
 	if (waterfiend) {
 		$(document).ready(function(){
-			$('#charmLogSubmit').attr('id','charmLogSubmit'+$('a[href$="action=edit&section=new&preload=Plantilla:Registro_de_amuletos/precarga&editintro=Plantilla:RegistroDeAmuletosGu√≠aDeActualizaci√≥n&useeditor=mediawiki"]').parents('.charmpage').attr('class').split(' ')[1])
+			$('#charmLogSubmit').attr('id','charmLogSubmit'+$('a[href$="action=edit&section=new&preload=Plantilla:Registro_de_amuletos/precarga&editintro=Plantilla:RegistroDeAmuletosGuÌaDeActualizaciÛn&useeditor=mediawiki"]').parents('.charmpage').attr('class').split(' ')[1])
 		})
 	}
 	$(function() {
-	$('a[href$="action=edit&section=new&preload=Plantilla:Registro_de_amuletos/precarga&editintro=Plantilla:RegistroDeAmuletosGu√≠aDeActualizaci√≥n&useeditor=mediawiki"]').attr('href', function(i, val) {
+	$('a[href$="action=edit&section=new&preload=Plantilla:Registro_de_amuletos/precarga&editintro=Plantilla:RegistroDeAmuletosGuÌaDeActualizaciÛn&useeditor=mediawiki"]').attr('href', function(i, val) {
 		return val.replace(/.*\/wiki\/([^\?\&]*).*/, '/wiki/$1')
 	}).click(function(e) {
 		e.preventDefault();
@@ -59,26 +59,26 @@ if (onPage && !wgPageName.match('/Registro_de_amuletos') && $('.charmtable').len
 		waterfiend?$(this).parent().next().attr('id', $(this).parent().next().attr('id')+'-'+wfiendadd):''
 		$('button#clSubmit').click(function() {
 			if (parseInt($('#chTotalKills').val())<50) {
-				alert('La cantidad total de asesinatos que ingresaste est√° por debajo de los 50 requeridos.Por favor, subir una data de amuletos para 50 asesinatos o m√°s.')
+				alert('La cantidad total de asesinatos que ingresaste est· por debajo de los 50 requeridos.Por favor, subir una data de amuletos para 50 asesinatos o m·s.')
 			} else if (parseInt($('#chTotalKills').val())>10000) {
-				alert('La cantidad total de asesinatos que ingresaste est√° por encima de los valores permitidos.Por favor, no intente subir resultados hechos/inventados.');
+				alert('La cantidad total de asesinatos que ingresaste est· por encima de los valores permitidos.Por favor, no intente subir resultados hechos/inventados.');
 			} else {
 				var total=$('#chTotalKills'), gold=$('#chGold'), green=$('#chGreen'), crimson=$('#chCrimson'), blue=$('#chBlue');
 				if (gold.val().length==0||green.val().length==0||crimson.val().length==0||blue.val().length==0) {
-					if (confirm('Las entradas que fueron dejadas vac√≠as ser√°n 0 por defecto. ¬øContinuar?')) {
+					if (confirm('Las entradas que fueron dejadas vacÌas ser·n 0 por defecto. øContinuar?')) {
 						gold.val()||gold.val('0');
 						green.val()||green.val('0');
 						crimson.val()||crimson.val('0');
 						blue.val()||blue.val('0');
 						if (parseInt(gold.val())+parseInt(green.val())+parseInt(crimson.val())+parseInt(blue.val()) == 0) {
-							alert('La cantidad total de amuletos que obtuviste fue 0. Por favor, solo actualiza el registro cuando hayas obtenido amuletos en tus asesinatos (incrementando el tama√±o de la muestra mediante m√°s asesinatos de monstruos).');
+							alert('La cantidad total de amuletos que obtuviste fue 0. Por favor, solo actualiza el registro cuando hayas obtenido amuletos en tus asesinatos (incrementando el tamaÒo de la muestra mediante m·s asesinatos de monstruos).');
 							return false;
 						}
-						$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaci√≥n</i>')
+						$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaciÛn</i>')
 						submitCharmLog(charmpage)
 					}
 				} else {
-					$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaci√≥n</i>')
+					$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaciÛn</i>')
 					submitCharmLog(charmpage)
 				}
 			}
@@ -92,20 +92,20 @@ if (onPage && !wgPageName.match('/Registro_de_amuletos') && $('.charmtable').len
 		var charmpage = wgPageName;
 		$('button#clSubmit').click(function() {
 			if (parseInt($('#chTotalKills').val())<50||$('#chTotalKills').val()=='') {
-				alert('TLa cantidad total de asesinatos que ingresaste est√° por debajo de los 50 requeridos.Por favor, subir una data de amuletos para 50 asesinatos o m√°s.')
+				alert('TLa cantidad total de asesinatos que ingresaste est· por debajo de los 50 requeridos.Por favor, subir una data de amuletos para 50 asesinatos o m·s.')
 			} else {
 				var total=$('#chTotalKills'), gold=$('#chGold'), green=$('#chGreen'), crimson=$('#chCrimson'), blue=$('#chBlue')
 				if (gold.val().length==0||green.val().length==0||crimson.val().length==0||blue.val().length==0) {
-					if (confirm('Las entradas que fueron dejadas vac√≠as ser√°n 0 por defecto. ¬øContinuar?')) {
+					if (confirm('Las entradas que fueron dejadas vacÌas ser·n 0 por defecto. øContinuar?')) {
 						gold.val().length==0?gold.val('0'):'';
 						green.val().length==0?green.val('0'):'';
 						crimson.val().length==0?crimson.val('0'):''
 						blue.val().length==0?blue.val('0'):'';
-						$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaci√≥n</i>')
+						$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaciÛn</i>')
 						submitCharmLog(charmpage)
 					}
 				} else {
-					$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaci√≥n</i>')
+					$(this).attr('disabled','disabled').html('Cargando...').after('<i id="loadmsg">Cargando data actual del registro de amuletos para comparaciÛn</i>')
 					submitCharmLog(charmpage)
 				}
 			}
@@ -133,27 +133,27 @@ console.log('test')
 		var total=parseInt(total), gold=parseInt(gold), green=parseInt(green), crimson=parseInt(crimson), blue=parseInt(blue)
 		var perkill = parseInt(curdata[0].replace('|charms=',''))
 		var ea = perkill;
-		var curtot=curdata[1].replace('|Asesinatos=',''), curgold=curdata[2].replace('|Oro=',''), curgreen=curdata[3].replace('|Verde=',''), curcrimson=curdata[4].replace('|Carmes√≠=',''), curblue=curdata[5].replace('|Azul=','')
+		var curtot=curdata[1].replace('|Asesinatos=',''), curgold=curdata[2].replace('|Oro=',''), curgreen=curdata[3].replace('|Verde=',''), curcrimson=curdata[4].replace('|CarmesÌ=',''), curblue=curdata[5].replace('|Azul=','')
 		curtot=parseInt(curtot), curgold=parseInt(curgold), curgreen=parseInt(curgreen), curcrimson=parseInt(curcrimson), curblue=parseInt(curblue)
 		if (!isInt(gold/perkill)||!isInt(green/perkill)||!isInt(crimson/perkill)||!isInt(blue/perkill)||(gold+green+crimson+blue)/perkill>total) {
-			alert('Es imposible obtener esa cantidad de amuletos. Usted '+((gold+green+crimson+blue)/perkill>total?'ha enviado m√°s amuletos que asesinatos':"ha subido una cantidad de amuletos que no es divisible entre "+perkill+', la cantidad de amuletos que obtuviste por asesinato'))
+			alert('Es imposible obtener esa cantidad de amuletos. Usted '+((gold+green+crimson+blue)/perkill>total?'ha enviado m·s amuletos que asesinatos':"ha subido una cantidad de amuletos que no es divisible entre "+perkill+', la cantidad de amuletos que obtuviste por asesinato'))
 			$('button#clSubmit').removeAttr('disabled').html('Submit').next().remove()
 		} else {
 			if (curtot>500&&(diff(curgold/curtot,gold/total,ea)>0.1 || diff(curgreen/curtot,green/total,ea)>0.1 || diff(curcrimson/curtot,crimson/total,ea)>0.1 || diff(curblue/curtot,blue/total,ea)>0.1)) {
 				if (curtot>500&&(diff(curgold/curtot,gold/total,ea)>0.25 || diff(curgreen/curtot,green/total,ea)>0.25 || diff(curcrimson/curtot,crimson/total,ea)>0.25 || diff(curblue/curtot,blue/total,ea)>0.25) || (gold+green+crimson+blue == 0)) {
-					alert('Por favor, no intente usar este script para vandalizar la Wiki. Si as√≠ lo hace, ser√° bloqueado.');
+					alert('Por favor, no intente usar este script para vandalizar la Wiki. Si asÌ lo hace, ser· bloqueado.');
 					return false;
 				} else {
 					summary += ' /*(Posible vandalismo/spamm)*/'
 				}
 			}
-			var template = '{{Registro de amuletos\n|Asesinatos='+total+'\n|Oro='+gold+'\n|Verde='+green+'\n|Carmes√≠='+crimson+'\n|Azul='+blue+'\n\}\}'
+			var template = '{{Registro de amuletos\n|Asesinatos='+total+'\n|Oro='+gold+'\n|Verde='+green+'\n|CarmesÌ='+crimson+'\n|Azul='+blue+'\n\}\}'
 			if (submitpage.revisions[0]['*'].match(new RegExp(template))) {
-				alert('Gracias por su contribuci√≥n. Esta p√°gina ahora se recargar√°.')
+				alert('Gracias por su contribuciÛn. Esta p·gina ahora se recargar·.')
 				document.location.replace(wgArticlePath.replace('$1', wgPageName))
 				return false;
 			}
-			$('#loadmsg').html('Enviando edici√≥n...')
+			$('#loadmsg').html('Enviando ediciÛn...')
 			callAPI({
 				'minor': 'yes',
 				'summary': summary,
@@ -164,7 +164,7 @@ console.log('test')
 				'token': submitpage.edittoken,
 				'appendtext': template
 			}, 'POST', function(response) {
-				alert('Gracias por su contribuci√≥n. Esta p√°gina ahora se recargar√°.')
+				alert('Gracias por su contribuciÛn. Esta p·gina ahora se recargar·.')
 				$('button#clSubmit').removeAttr('disabled').html('Submit').next().remove()
 				document.location.replace(wgArticlePath.replace('$1', wgPageName))
 			});

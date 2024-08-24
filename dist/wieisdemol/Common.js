@@ -13,7 +13,7 @@ function changename(name, change, theclass){
 if (document.title.toLowerCase().indexOf("seizoen 13") >= 0){
   console.log('Seizoen 13');
   changename('Carolien', 'Carolien Borgers', 'inhetspel');
-  changename('DaniÃ«l', 'DaniÃ«l Boissevain', 'inhetspel');
+  changename('Daniël', 'Daniël Boissevain', 'inhetspel');
   changename('Ewout', 'Ewout Genemans', 'afgevallen');
   changename('Janine', 'Janine Abbring', 'afgevallen');
   changename('Joep', 'Joep van Deudekom', 'afgevallen');

@@ -7,5 +7,5 @@ importArticles({
 
  
 /* Notificaciones */
-var WikiaNotificationMessage = "Â¡EntÃ©rate <a href='/wiki/Usuario_Blog:BlackQuimera08/Sagas'>aquÃ­</a> sobre como se realizarÃ¡n las historias!";
+var WikiaNotificationMessage = "¡Entérate <a href='/wiki/Usuario_Blog:BlackQuimera08/Sagas'>aquí</a> sobre como se realizarán las historias!";
 var WikiaNotificationexpiry = 6;

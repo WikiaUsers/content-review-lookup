@@ -1,4 +1,4 @@
-/* Import skryptÃ³w szablonÃ³w i dodatkowych funkcji */
+/* Import skryptów szablonów i dodatkowych funkcji */
  
 importArticles({
     type: "script",

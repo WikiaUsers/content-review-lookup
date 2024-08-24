@@ -11,21 +11,21 @@ if (
 		$.each( [
 			[
 				'//upload.wikimedia.org/wikipedia/commons/c/c8/Button_redirect.png',
-				'ÃtirÃ¡nyÃ­tÃ¡s',
+				'Átirányítás',
 				'#REDIRECT [[',
 				']]',
-				'CÃ©llap neve'
+				'Céllap neve'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/c/c9/Button_strike.png',
-				'ÃthÃºzÃ¡s',
+				'Áthúzás',
 				'<s>',
 				'</s>',
-				'SzÃ¶veg Ã¡thÃºzÃ¡sa'
+				'Szöveg áthúzása'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png',
-				'Ãšj sor',
+				'Új sor',
 				'<br>'
 			],
 			[
@@ -33,56 +33,56 @@ if (
 				'Szuperszkript',
 				'<sup>',
 				'</sup>',
-				'Szuperszkript szÃ¶veg'
+				'Szuperszkript szöveg'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/a/aa/Button_sub_letter.png',
 				'Subszkript',
 				'<sub>',
 				'</sub>',
-				'Subszkript szÃ¶veg'
+				'Subszkript szöveg'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/d/d5/Button_small_text.png',
 				'Kicsi',
 				'<small>',
 				'</small>',
-				'Kicsi szÃ¶veg'
+				'Kicsi szöveg'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/3/34/Button_hide_comment.png',
-				'Rejtett megjegyzÃ©s beillesztÃ©se',
+				'Rejtett megjegyzés beillesztése',
 				'<!-- ',
 				' -->',
-				'MegjegyzÃ©s'
+				'Megjegyzés'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/1/12/Button_gallery.png',
-				'KÃ©pgalÃ©ria beillesztÃ©se',
+				'Képgaléria beillesztése',
 				'\n<gallery>\n',
 				'\n</gallery>',
-				'FÃ¡jl:PÃ©lda.jpg|Felirat1\nFile:PÃ©lda.jpg|Felirat2'
+				'Fájl:Példa.jpg|Felirat1\nFile:Példa.jpg|Felirat2'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/f/fd/Button_blockquote.png',
-				'IdÃ©zett szÃ¶vegblokk beillesztÃ©se',
+				'Idézett szövegblokk beillesztése',
 				'<blockquote>\n',
 				'\n</blockquote>',
-				'IdÃ©zett szÃ¶vegblokk'
+				'Idézett szövegblokk'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/6/60/Button_insert_table.png',
-				'TÃ¡blÃ¡zat beillesztÃ©se',
+				'Táblázat beillesztése',
 				'{| class="wikitable"\n|',
 				'\n|}',
-				'-\n! fejlÃ©c 1\n! fejlÃ©c 2\n! fejlÃ©c 3\n|-\n| sor 1, nÃ©gyzet 1\n| sor 1, nÃ©gyzet 2\n| sor 1, nÃ©gyzet 3\n|-\n| sor 2, nÃ©gyzet 1\n| sor 2, nÃ©gyzet 2\n| sor 2, nÃ©gyzet 3'
+				'-\n! fejléc 1\n! fejléc 2\n! fejléc 3\n|-\n| sor 1, négyzet 1\n| sor 1, négyzet 2\n| sor 1, négyzet 3\n|-\n| sor 2, négyzet 1\n| sor 2, négyzet 2\n| sor 2, négyzet 3'
 			],
 			[
 				'//upload.wikimedia.org/wikipedia/commons/7/79/Button_reflink.png',
-				'HivatkozÃ¡s billesztÃ©se',
+				'Hivatkozás billesztése',
 				'<ref>',
 				'</ref>',
-				'LÃ¡bjegyzet beillesztÃ©se ide'
+				'Lábjegyzet beillesztése ide'
 			]
 		], function() {
 			mw.toolbar.addButton.apply( null, this );

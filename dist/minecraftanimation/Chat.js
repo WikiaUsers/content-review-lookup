@@ -25,10 +25,10 @@ importArticles({
     ]
 });
 
-//째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째
+//같같같같같같같같같같같같같같같같같같같같같
 // Multi-kick button
 // By Madnessfan34537 and Callofduty4
-//째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째째
+//같같같같같같같같같같같같같같같같같같같같같
  
 function showPopup() {
         $('body').append('<section style="left: 50%; top: 50px; width: 434px; z-index: 2000000002; margin-left: -222px;" class="modalWrapper" id="masskicker"><button class="close wikia-chiclet-button" onclick="cancelKick()"><img src="https://images.wikia.nocookie.net/common/skins/oasis/images/icon_close.png"></button><h1>Mass-kick</h1><section class="modalContent"><div><form method="" name="" class="WikiaForm "><fieldset><p>Enter usernames here, separated by a comma and a space. Tab insert works.</p><input type="text" name="multikickinput" id="multikickinput" /></fieldset></form><div style="float:right;"><a onclick="kickUsers()" class="wikia-button">Kick!</a>&nbsp;<a onclick="cancelKick()" id="cancel" class="wikia-button secondary">Cancel</a></div></section></section><div style="height: 100%; width: 100%; z-index: 2000000001; opacity: 0.65; display: block;" data-opacity="0.65" class="blackout"></div>');

@@ -18,13 +18,13 @@ function recargar()
   location.reload();
 }
 function ventanamodal(){
-    $.showCustomModal( 'T铆tulo', 'Contenido de la ventana (Insertar HTML sin presionar ENTER)', {
+    $.showCustomModal( 'T韙ulo', 'Contenido de la ventana (Insertar HTML sin presionar ENTER)', {
 	    id: "ventanaModal",
 	    width: 600,
 	    buttons: [
 		{
 			id: "cancel",
-		    message: "Bot贸n 1",
+		    message: "Bot髇 1",
 		    handler: function () {
                                 window.open('/wiki/','_blank');
 		    }
@@ -44,14 +44,14 @@ $(function() {
         $('.sonidonotificacion a').append(' <span style="color:red;">[OFF]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="https://vignette.wikia.nocookie.net/densetsu-no-monogatari/images/a/a7/Sonido_de_notificaci%C3%B3n.ogg/revision/latest?cb=20150606040115&path-prefix=es"></source></audio>');
     $('.sonidonotificacion').click(function() {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci贸n [OFF]") {
-            $('.sonidonotificacion a').html('Sonidos de notificaci贸n <span style="color:lime;">[ON]</span>');
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaci髇 [OFF]") {
+            $('.sonidonotificacion a').html('Sonidos de notificaci髇 <span style="color:lime;">[ON]</span>');
         } else {
-            $('.sonidonotificacion a').html('Sonidos de notificaci贸n <span style="color:red;">[OFF]</span>');
+            $('.sonidonotificacion a').html('Sonidos de notificaci髇 <span style="color:red;">[OFF]</span>');
         }
     });
     $('.Chat ul').bind('DOMNodeInserted', function(event) {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci贸n [ON]") {
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaci髇 [ON]") {
 			$("#notificacion")[0].play();
 		}
     });

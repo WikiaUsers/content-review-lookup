@@ -240,7 +240,7 @@ function getSortType(th, table){
 	  && i < table.tBodies[0].rows.length ; i++) {
 		var itm = ts_getInnerText(table.tBodies[0].rows[i].cells[SORT_COLUMN_INDEX]);
 		itm = trim(itm);
-		itm = itm.replace(/Â¼/, '.25').replace(/Â½/, '.5').replace(/Â¾/, '.75');
+		itm = itm.replace(/¼/, '.25').replace(/½/, '.5').replace(/¾/, '.75');
 	}
 
 	for (var j=0; j < autoDetectSortTypes.length; j++){
@@ -261,7 +261,7 @@ function parseKeyText(rowRecords, keyFn){
 		var itm = rr_getCellAbbr(curRowRecord);
 		if (!itm){
 			itm = rr_getCellText(curRowRecord);
-			itm = trim(itm).replace(/Â¼/, '.25').replace(/Â½/, '.50').replace(/Â¾/, '.75');
+			itm = trim(itm).replace(/¼/, '.25').replace(/½/, '.50').replace(/¾/, '.75');
 			if (!itm) itm=''
 		}
 		rr_setSortKey(curRowRecord, keyFn(itm));

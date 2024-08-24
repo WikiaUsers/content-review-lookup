@@ -1,17 +1,17 @@
-/* CÃ³digos JavaScript colocados aqui serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina desta wiki */
+/* Códigos JavaScript colocados aqui serão carregados por todos aqueles que acessarem alguma página desta wiki */
 
 /* Auto Refresh */
-window.AjaxRCRefreshText = 'Carregamento AutomÃ¡tico';
-window.AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
+window.AjaxRCRefreshText = 'Carregamento Automático';
+window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
 window.ajaxPages = [
-    "Especial:MudanÃ§as_recentes",
+    "Especial:Mudanças_recentes",
     "Especial:WikiActivity",
-    "Especial:PÃ¡ginas_vigiadas",
+    "Especial:Páginas_vigiadas",
     "Especial:Registro",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:PÃ¡ginas_novas",
-    "Especial:ContribuiÃ§Ãµes"
+    "Especial:Páginas_novas",
+    "Especial:Contribuições"
 ];
  
   /********************************/

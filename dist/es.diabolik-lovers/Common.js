@@ -1,9 +1,9 @@
 window.AjaxRCRefreshText = "Auto-Actualizar";
-window.AjaxRCRefreshHoverText = "Actualiza la pÃ¡gina automÃ¡ticamente";
+window.AjaxRCRefreshHoverText = "Actualiza la página automáticamente";
 window.ajaxPages = [
   "Especial:CambiosRecientes",
   "Especial:WikiActivity",
-  "Especial:PÃ¡ginasSinCategorizar",
+  "Especial:PáginasSinCategorizar",
   "Especial:Todas",
 ];
 
@@ -19,7 +19,7 @@ window.ajaxPages = [
 
 if ($.inArray("Spoiler", wgCategories) > -1) {
   window.SpoilerAlertJS = {
-    question: "Esta Ã¡rea contiene spoilers. Â¿Seguro que quieres leerlo?",
+    question: "Esta área contiene spoilers. ¿Seguro que quieres leerlo?",
     yes: "Si",
     no: "No",
     fadeDelay: 1600,

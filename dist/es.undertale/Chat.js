@@ -1,7 +1,7 @@
 /***Sonidito del MP***/ 
 var PrivateMessageAlert = {
     beepSound: 'https://vignette.wikia.nocookie.net/historiasdetugusto/images/4/4e/Msn.ogg/revision/latest?cb=20170316203021&path-prefix=es',
-    message: '$1 enviÃ³ un mensaje!',
+    message: '$1 envió un mensaje!',
     notifications: true,
     alertWhileFocused: true
 };
@@ -11,7 +11,7 @@ window.ModPing = "https://vignette.wikia.nocookie.net/undertale/images/b/b0/%21m
 /*************************/
 var chatags = { images: true, videos: true };
 // Chat's topic. Remember to escape single quotes in the topic using \' to prevent this from breaking.
-var chatTopic = 'Â¡Bienvenido al chat de Wiki Undertale!. Lee las <a href="Wikia_Undertale:Reglas" target="_blank">Reglas</a><br> para evitar problemas. Si ves a un usuario haciendo vandalismo, por favor, repÃ³rtalo a los <a href="Wikia_Undertale:MARB%27s" target="_blank">MARBs</a><br>.';
+var chatTopic = '¡Bienvenido al chat de Wiki Undertale!. Lee las <a href="Wikia_Undertale:Reglas" target="_blank">Reglas</a><br> para evitar problemas. Si ves a un usuario haciendo vandalismo, por favor, repórtalo a los <a href="Wikia_Undertale:MARB%27s" target="_blank">MARBs</a><br>.';
  
 $(function() { 
     $('#ChatHeader .public.wordmark')

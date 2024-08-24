@@ -83,7 +83,7 @@ window.mapsExtendedConfig = {
             "children": [
                 "exfil_pmc",
                 "exfil_scav",
-                "exfil_shared"
+                "exfil_transit"
             ]
         },
         {

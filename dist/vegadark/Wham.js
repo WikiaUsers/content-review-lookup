@@ -139,7 +139,7 @@ $(document).ready(function() {
 						var delAllUser = $('#WikiaUserPagesHeader h1').text();
 					}
 				}
-				var blockExpiry = prompt('DuraciÃ³n del bloqueo','2 weeks');
+				var blockExpiry = prompt('Duración del bloqueo','2 weeks');
 				var blockReason = prompt('Motivo del bloqueo','[[w:Help:Vandalism|vandalism]]');
 				var url = wgServer+'/api.php?action=query&prop=info&intoken=block&titles=User:'+delAllUser+'&format=json';
 				$.getJSON(url, function(data) {

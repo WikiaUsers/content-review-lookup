@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// Script etiquettes (aucune idÃ©e de la source rÃ©elle)
+// Script etiquettes (aucune idée de la source réelle)
 console.log('ok etiq');
 function addMastheadTags() 
 {

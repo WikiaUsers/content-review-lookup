@@ -20,7 +20,7 @@ window.clearNotificationFromWiki = function(wiki) {
 mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 	mw.trackSubscribe( 'timing.MediaWiki.echo.overlay.ooui',function() {
 		$(".mw-echo-ui-notificationsWidget-markAllReadButton").hide();
-	    $(".mw-echo-ui-notificationBadgeButtonPopupWidget-popup").find(".oo-ui-popupWidget-head").prepend('<span style="float:right;font-size: 1em;margin-top: 0.3em;" class="oo-ui-labelElement-label">Limpar todas as notificaÃ§Ãµes<img class="cgn-clear" src="/media/d/db/Icon_delete.png" style="cursor:pointer;height: 20px;width: 45px;"></span>'); 
+	    $(".mw-echo-ui-notificationBadgeButtonPopupWidget-popup").find(".oo-ui-popupWidget-head").prepend('<span style="float:right;font-size: 1em;margin-top: 0.3em;" class="oo-ui-labelElement-label">Limpar todas as notificações<img class="cgn-clear" src="/media/d/db/Icon_delete.png" style="cursor:pointer;height: 20px;width: 45px;"></span>'); 
 	    $("img.cgn-clear").click(function() {
 	    	$("img.cgn-clear").attr("src","/media/0/05/Ajax.gif").css({"cursor":"wait","width":"20px","padding":"0 12.5px"});
 	    	a = new mw.Api();

@@ -6,10 +6,10 @@ document.getElementsByTagName("head")[0].appendChild(s);
 })();
 
 // **************************************************
-// AÃ±ade el tagline de forma manual (De GTA wiki)
+// Añade el tagline de forma manual (De GTA wiki)
 // **************************************************
 $(function(){
      if ($('#WikiaPageHeader').length ) {
-            $('#WikiaPageHeader').append('<div id="siteSub"><img alt="Aviso.png" width="15" height="15" src="https://images.wikia.nocookie.net/__cb20100222212432/es.gta/images/e/e3/Aviso.png"> <span style="font-weight:bold;">Cuidado:</span> Los artÃ­culos pueden desvelar detalles importantes de la trama.</div>');
+            $('#WikiaPageHeader').append('<div id="siteSub"><img alt="Aviso.png" width="15" height="15" src="https://images.wikia.nocookie.net/__cb20100222212432/es.gta/images/e/e3/Aviso.png"> <span style="font-weight:bold;">Cuidado:</span> Los artículos pueden desvelar detalles importantes de la trama.</div>');
      }
 });

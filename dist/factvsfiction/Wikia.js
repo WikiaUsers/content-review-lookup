@@ -7,13 +7,13 @@
  *Creado por JBed de FF Wiki
  *Editado por RikuNoctis de TM Wiki
  ****************************************************************************/
-//C√≥mo editar la Oasis SiteNotice:
-//Ingresa a una p√°gina en Monobook usando ?useskin=monobook en la URL,
-//haz click derecho y selecciona "Ver c√≥digo fuente de la p√°gina" en tu browser,
+//CÛmo editar la Oasis SiteNotice:
+//Ingresa a una p·gina en Monobook usando ?useskin=monobook en la URL,
+//haz click derecho y selecciona "Ver cÛdigo fuente de la p·gina" en tu browser,
 //Ctrl+F, teclea "siteNoticeID".
-//Aqu√≠ se encontraran 2 l√≠neas,
+//AquÌ se encontraran 2 lÌneas,
 //una empezando "var siteNoticeID", la otra "var siteNotice",
-//copia ambas l√≠neas y p√©galas en las l√≠neas respectivas aqu√≠ debajo. 
+//copia ambas lÌneas y pÈgalas en las lÌneas respectivas aquÌ debajo. 
 var siteNoticeID = "1.0";
 var siteNoticeValue = "\x3cdiv id=\"localNotice\" lang=\"en\" dir=\"ltr\"\x3e\x3cp\x3eBadass versus thread...\n\x3c/p\x3e\x3c/div\x3e";
  

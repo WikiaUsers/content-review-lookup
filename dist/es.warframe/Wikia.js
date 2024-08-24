@@ -117,7 +117,7 @@ $(".nepeta").mouseover(function(){
   //based on our coordinates $('#leaf').css({'top':mouseY,'left':mouseX}).fadeIn('slow');
 });
 
-/************ AÃ‘ADIDO 09.03.2018  ***************/
+/************ AÑADIDO 09.03.2018  ***************/
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Please don't change without Admin's permission. That means another Admin, not just you. */
  

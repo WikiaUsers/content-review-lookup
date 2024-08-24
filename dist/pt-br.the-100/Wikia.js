@@ -1,16 +1,16 @@
 //****************
-//Auto-AtualizaÃ§Ã£o
+//Auto-Atualização
 //****************
  
-window.AjaxRCRefreshText = 'AtualizaÃ§Ã£o AutomÃ¡tica';
-window.AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
+window.AjaxRCRefreshText = 'Atualização Automática';
+window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
 window.ajaxPages = [
-    "Especial:MudanÃ§as_recentes",
+    "Especial:Mudanças_recentes",
     "Especial:WikiActivity",
-    "Especial:PÃ¡ginas_vigiadas",
+    "Especial:Páginas_vigiadas",
     "Especial:Registro",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:PÃ¡ginas_novas",
-    "Especial:ContribuiÃ§Ãµes"
+    "Especial:Páginas_novas",
+    "Especial:Contribuições"
 ];

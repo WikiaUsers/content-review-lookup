@@ -56,7 +56,7 @@ function createCountdownWidget() {
     var divTextBottom = $(w).find('div#events-text-bottom').get(0);
 
     // The start time is always the same day regardless
-    // It's either the start of the NÃ¤chstes Event or start of current event.
+    // It's either the start of the Nächstes Event or start of current event.
     var eventCycleStart = new Date(now.getFullYear(), now.getMonth(),
                                    now.getDate(), 6, 0, 0, 0);
 
@@ -143,29 +143,29 @@ function createCountdownWidget() {
 
     if (remaining) {
       if (nextEvent === 'gearheart') {
-        divTextBottom.innerHTML = 'NÃ¤chstes Event: KRIEGSFABRIK';
+        divTextBottom.innerHTML = 'Nächstes Event: KRIEGSFABRIK';
       }
       else if (nextEvent === 'hammerman') {
-        divTextBottom.innerHTML = 'NÃ¤chstes Event: HAMMERMAN AUF DER JAGD';
+        divTextBottom.innerHTML = 'Nächstes Event: HAMMERMAN AUF DER JAGD';
       }
       else if (nextEvent === 'terror') {
-        divTextBottom.innerHTML = 'NÃ¤chstes Event: TROPISCHER DR.T';
+        divTextBottom.innerHTML = 'Nächstes Event: TROPISCHER DR.T';
       }
       else if (nextEvent === 'volcano') {
-        divTextBottom.innerHTML = 'NÃ¤chstes Event: VULKAN DR. T';
+        divTextBottom.innerHTML = 'Nächstes Event: VULKAN DR. T';
       }
       else if (nextEvent === 'imitation') {
-        divTextBottom.innerHTML = 'NÃ¤chstes Event: IMITATIONSSPIEL';
+        divTextBottom.innerHTML = 'Nächstes Event: IMITATIONSSPIEL';
       }
-      divTextMiddle.innerHTML = remaining + ' NOCH ÃœBRIG';
+      divTextMiddle.innerHTML = remaining + ' NOCH ÜBRIG';
     }
     else {
       $(w).find("div#events-div-image").get(0).className = 'events-' +
                                                     nextEvent;
       $(w).find("img#events-image").get(0).className = 'events-' +
                                                     nextEvent;
-      divTextMiddle.innerHTML = tilNextEvent + ' NOCH ÃœBRIG';
-      divTextBottom.innerHTML = 'NÃ¤chstes Event: ' + nextEvent;
+      divTextMiddle.innerHTML = tilNextEvent + ' NOCH ÜBRIG';
+      divTextBottom.innerHTML = 'Nächstes Event: ' + nextEvent;
     }
   }
 
@@ -195,7 +195,7 @@ function createCountdownWidget() {
     // Time Left
     var divTextMiddle = document.createElement('div');
     divTextMiddle.id = 'events-text-middle';
-    // NÃ¤chstes Event
+    // Nächstes Event
     var divTextBottom = document.createElement('div');
     divTextBottom.id = 'events-text-bottom';
     // Change countdown

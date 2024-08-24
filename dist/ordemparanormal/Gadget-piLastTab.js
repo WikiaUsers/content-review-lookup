@@ -1,4 +1,4 @@
-/* pÃµe a Ãºltima aba como aberta por padrÃ£o em infoboxes especÃ­ficas */
+/* põe a última aba como aberta por padrão em infoboxes específicas */
 mw.hook('wikipage.content').add(function() {
   if (!$('.portable-infobox.type-last-tab').length) return;
   switch (mw.config.get('skin')) {

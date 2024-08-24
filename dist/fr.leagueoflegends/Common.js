@@ -19,7 +19,7 @@ importArticles({
  ]
 });
 
-/* Tout JavaScript ici sera chargÃ© avec chaque page accÃ©dÃ©e par n'importe quel utilisateur. */
+/* Tout JavaScript ici sera chargé avec chaque page accédée par n'importe quel utilisateur. */
 
 importScriptPage('AjaxRC/code.js', 'dev');
 

@@ -71,10 +71,10 @@ hito("C Common.js");
  })
 
 /*
-== B√∫squeda especial extendida (specialsearch) ==
-A√±ade a la p√°gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
+== B˙squeda especial extendida (specialsearch) ==
+AÒade a la p·gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
 
-Trabaja en conjunto con el m√≥dulo [[MediaWiki:SpecialSearch.js]] y est√° basado en [[w:fr:MediaWiki:Monobook.js]].
+Trabaja en conjunto con el mÛdulo [[MediaWiki:SpecialSearch.js]] y est· basado en [[w:fr:MediaWiki:Monobook.js]].
 */
 
 addOnloadHook( function() {
@@ -84,7 +84,7 @@ if ((wgCanonicalNamespace == "Special") && (wgCanonicalSpecialPageName == "Searc
 
 /*
 == Cerrar mensajes ==
-Ver ejemplo en [[Usuario:Chabacano/F√≠rmalo]], por [[Usuario:Platonides]].
+Ver ejemplo en [[Usuario:Chabacano/FÌrmalo]], por [[Usuario:Platonides]].
 */
 
 addOnloadHook( function() {
@@ -99,7 +99,7 @@ hito("F cerrar mensajes");
 });
 
 /*
-== Scripts s√≥lo para biblios ==
+== Scripts sÛlo para biblios ==
 */
 
 function userInGroup(group) {
@@ -111,7 +111,7 @@ if ( userInGroup('sysop') )
 
 /*
 == Wikimedia Player ==
-A√±ade reproductor en la misma p√°gina.
+AÒade reproductor en la misma p·gina.
 */
 
 document.write('<script type="text/javascript" src="' 
@@ -132,11 +132,11 @@ document.write('<script type="text/javascript" src="'
 + 'http://meta.wikimedia.org/w/index.php?title=MediaWiki:Wikiminiatlas.js' 
 + '&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400"></script>');
 
-// == Mejoras de dise√±o de la Portada ==
+// == Mejoras de diseÒo de la Portada ==
 
-/** Mejoras de dise√±o de la Portada *********************************************************
+/** Mejoras de diseÒo de la Portada *********************************************************
   *
-  *  Descripci√≥n:        Varias mejoras de dise√±o para la portada, incluyendo un
+  *  DescripciÛn:        Varias mejoras de diseÒo para la portada, incluyendo un
   *                      enlace adicional a la lista completa de idiomas disponibles.
   *  Adaptado de [[en:MediaWiki:Common.js]]
   */
@@ -167,8 +167,8 @@ document.write('<script type="text/javascript" src="'
         addOnloadHook( mainPageAppendCompleteListLink );
  }
 
-// == Redefinici√≥n de ordenaci√≥n de tablas "sortable" ==
-// Traido de la Inclopedia. Ordena nombres de meses en espa√±ol y cambia puntos por comas.
+// == RedefiniciÛn de ordenaciÛn de tablas "sortable" ==
+// Traido de la Inclopedia. Ordena nombres de meses en espaÒol y cambia puntos por comas.
 
 
 function ts_resortTable(lnk) {
@@ -348,7 +348,7 @@ function ts_sort_generic(a,b) {
 
 
 addOnloadHook ( function() {
-     hito("C funci√≥n extra√±a");
+     hito("C funciÛn extraÒa");
      var n = Math.round(Math.random() * 9); //10 opciones
 
        for (i=0; i < document.styleSheets.length; i++) {
@@ -357,13 +357,13 @@ addOnloadHook ( function() {
              if (document.styleSheets[0].cssRules) {
                 for (i=document.styleSheets.length-1; i >= 0; i--) {
                     try {
-                         //A√±adir al final (Gecko)
+                         //AÒadir al final (Gecko)
                          document.styleSheets[i].insertRule('.rotate_0 { display: none }', document.styleSheets[i].cssRules.length);
                          document.styleSheets[i].insertRule('.rotate_' + n + ' { display: block; }', document.styleSheets[i].cssRules.length);
                          break;
                      } catch(e) {
                          //Ignorar el error y probar con la hoja de estilos anterior.
-                         //As√≠, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
+                         //AsÌ, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
                      }
                  }
              } else if (document.styleSheets[0].rules) { //IE
@@ -373,7 +373,7 @@ addOnloadHook ( function() {
              break;
         }
   }
-  hito("F funci√≥n extra√±a");
+  hito("F funciÛn extraÒa");
 } );
 
 var wma_settings =
@@ -474,7 +474,7 @@ function createCollapseButtons()
 addOnloadHook( createCollapseButtons );
 
 
-// == C√≥digo del plegado/desplegado de plantillas ==
+// == CÛdigo del plegado/desplegado de plantillas ==
 
 var NavigationBarHide = 'Plegar';
 var NavigationBarShow = 'Desplegar';
@@ -486,7 +486,7 @@ document.write('<script type="text/javascript" ' +
   '&amp;action=raw&amp;smaxage=3600&amp;ctype=text/javascript&amp;dontcountme=s"></scr' +
   'ipt>');
 
-// == C√≥digo para art√≠culos destacados ==
+// == CÛdigo para artÌculos destacados ==
 		
 function LinkFA() 
 {
@@ -500,7 +500,7 @@ function LinkFA()
             // if found a FA link
             if (b.className == "interwiki-" + a.id) {
                b.className += " destacado";
-               b.title = "Este es un art√≠culo destacado en esta Wikipedia.";
+               b.title = "Este es un artÌculo destacado en esta Wikipedia.";
             }
          }
       }
@@ -521,7 +521,7 @@ function LinkAB()
             // if found a AB link
             if (b.className == "interwiki-" + a.id) {
                b.className += " bueno";
-               b.title = "Este es un art√≠culo bueno en esta Wikipedia.";
+               b.title = "Este es un artÌculo bueno en esta Wikipedia.";
             }
          }
       }
@@ -535,7 +535,7 @@ addOnloadHook(LinkAB);
 // == Interproyectos en un recuadro a la izquierda ==
  Modificado a partir de de:wikt:Mediawiki:monobook.js
  Funcionan con la plantilla {{tl|interproyecto}} y en breve con otras
- [[:Categor√≠a:Wikipedia:Plantillas_de_enlace_entre_proyectos|plantillas de enlace entre proyectos]]
+ [[:CategorÌa:Wikipedia:Plantillas_de_enlace_entre_proyectos|plantillas de enlace entre proyectos]]
 */
 
  document.write('<style type="text/css">#interProject {display: none; speak: none;} #p-tb .pBody {padding-right: 0;}<\/style>');

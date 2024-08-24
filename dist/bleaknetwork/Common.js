@@ -67,7 +67,7 @@ UserTagsJS.modules.newuser = {
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */

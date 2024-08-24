@@ -20,8 +20,8 @@ function checkUser() {
 	$("#gutThrobber").show();
 	a.get({action:"parse",text:"{{#points:"+gutUser+"|"+gutNum+"|all}}",contentmodel:"wikitext"}).done(function(data){
 		$d.html(data.parse.text["*"]);
-		if ($d.text().trim()=="Um usuÃ¡rio com esse nome nÃ£o foi encontrado.") {
-			$("#gutOutput").html("<br>Um usuÃ¡rio com esse nome nÃ£o foi encontrado. Se vocÃª sabe que existe, tente mudar o wiki inicial para um que eles visitaram.");
+		if ($d.text().trim()=="Um usuário com esse nome não foi encontrado.") {
+			$("#gutOutput").html("<br>Um usuário com esse nome não foi encontrado. Se você sabe que existe, tente mudar o wiki inicial para um que eles visitaram.");
 			$("#gutform input").prop("disabled",false);
 			$("#gutThrobber").hide();
 			return;
@@ -51,7 +51,7 @@ function checkLinks() {
 			return 0;
 		});
 		$("#gutThrobber").hide();
-		$("#gutOutput").html("<table class='wikitable sortable'><tr><th style='min-width:300px;'>Wiki</th><th style='min-width:200px;'>Ãšltima ediÃ§Ã£o</th><th style='min-width:100px;'>Pontos</th><th style='min-width:100px;'># ediÃ§Ãµes</th><th style='min-width:200px;'>Grupos</th></tr></table>");
+		$("#gutOutput").html("<table class='wikitable sortable'><tr><th style='min-width:300px;'>Wiki</th><th style='min-width:200px;'>Última edição</th><th style='min-width:100px;'>Pontos</th><th style='min-width:100px;'># edições</th><th style='min-width:200px;'>Grupos</th></tr></table>");
 		for (g in gutOutput) $("#gutOutput table").append(gutOutput[g].html);
 		mw.loader.using('jquery.tablesorter', function() {
 			$("#gutOutput table").tablesorter();
@@ -93,8 +93,8 @@ mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 	console.log(gutVer);
 	$("#no-gut").hide();
 	gh = '<form id="gutform" action="#" method="GET">' +
-						'<input id="gutUser" type="text" placeholder="Insira nome de usuÃ¡rio">' +
-						'<input type="submit" id="gutSubmit" value="Verificar usuÃ¡rio">' +
+						'<input id="gutUser" type="text" placeholder="Insira nome de usuário">' +
+						'<input type="submit" id="gutSubmit" value="Verificar usuário">' +
 						'&nbsp;&nbsp; <img src="/media/0/05/Ajax.gif" id="gutThrobber" style="display:none;">' +
 						'<div style="float:right; text-align:right;"><label>Verifique as principais # wikis: <input id="gutNum" type="number" value="100" min="1" max="100"></label><br>' +
 						'<label>Atualizar em # segundos: <input id="gutRefresh" type="number" value="60" min="30" max="600"></label><br>'+
@@ -104,7 +104,7 @@ mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 	$("#gut").html(gh);
 	$("#gutform").on("submit",function() {
 		if ($("#gutUser").val() === "") {
-			alert("Por favor, insira um nome de usuÃ¡rio primeiro.");
+			alert("Por favor, insira um nome de usuário primeiro.");
 			return false;
 		}
 		$("#gutform input").prop("disabled",true);

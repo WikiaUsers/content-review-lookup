@@ -2,7 +2,7 @@
 	'use strict';
 
 	var wgPageName = mw.config.get('wgPageName');
-	if (wgPageName !== 'MÃ³dulo:PokÃ©mon/datos') return;
+	if (wgPageName !== 'Módulo:Pokémon/datos') return;
 
 	function getAPI(args, result) {
     result = result || [];
@@ -56,7 +56,7 @@
         action: 'query',
         cmlimit: 'max',
         cmnamespace: namespace || 0,
-        cmtitle: 'Category:' + category.replace(/Categor(Ã­a|y):/i, ''),
+        cmtitle: 'Category:' + category.replace(/Categor(ía|y):/i, ''),
         format: 'json',
         formatversion: 2,
         list: 'categorymembers'
@@ -69,8 +69,8 @@
 	function update() {
 		var api = new mw.Api();
 
-		pagesInCategory(api, 'PokÃ©mon por regiones', 14)().then(function(regions) {
-				setTagline('Obteniendo PokÃ©mon de las siguientes regiones: ' + regions.join(', ').replace(/CategorÃ­a:PokÃ©mon de /g, ''));
+		pagesInCategory(api, 'Pokémon por regiones', 14)().then(function(regions) {
+				setTagline('Obteniendo Pokémon de las siguientes regiones: ' + regions.join(', ').replace(/Categoría:Pokémon de /g, ''));
 			var promises = [];
 			for ( var i = 0; i < regions.length; i++ ) {
 				var region = regions[i];
@@ -96,16 +96,16 @@
 							var content = item.revisions[0].slots.main.content;
 							var data = {
 								name: item.title,
-								number: content.match(/nÃºmero *= *#?(\d+)/),
-								type1: content.match(/tipo-primario *= *([a-zÃ¡Ã©Ã­Ã³Ãº]+)/i),
-								type2: content.match(/tipo-secundario *= *([a-zÃ¡Ã©Ã­Ã³Ãº]+)/i)
+								number: content.match(/número *= *#?(\d+)/),
+								type1: content.match(/tipo-primario *= *([a-záéíóú]+)/i),
+								type2: content.match(/tipo-secundario *= *([a-záéíóú]+)/i)
 							};
 							if (data.number) data.number = data.number.at(1);
 							if (data.type1) data.type1 = data.type1.at(1);
 							if (data.type2) data.type2 = data.type2.at(1);
 							data.name = data.name.replace( /'/g, '\\\'' );
 
-							var result = [ '\t[\'', data.name, '\'] = {\n\t\t[\'nÃºmero\'] = \'', data.number,
+							var result = [ '\t[\'', data.name, '\'] = {\n\t\t[\'número\'] = \'', data.number,
 								'\',\n\t\ttipos = {\n\t\t\t\'', data.type1, '\',\n\t\t\t', data.type2 ? '\'' + data.type2 + '\'' : 'nil',
 								'\n\t\t},\n\t},' ];
 							return result.join('');
@@ -116,16 +116,16 @@
 
 				return clearQueue(promises);
 			}).then(function(revs) {
-				setTagline('Obtenida la informaciÃ³n de todos los PokÃ©mon. Guardando...');
+				setTagline('Obtenida la información de todos los Pokémon. Guardando...');
 				var lua = 'return {\n' + revs.sort().join('\n') + '\n}';
 				api.postWithToken('csrf', {
 					action: 'edit',
-					summary: 'ActualizaciÃ³n automÃ¡tica de datos',
+					summary: 'Actualización automática de datos',
 					text: lua,
-					title: 'Module:PokÃ©mon/datos'
+					title: 'Module:Pokémon/datos'
 				}).then(function() {
 					setTagline('');
-					new window.dev.banners.BannerNotification('ActualizaciÃ³n de datos completada.', 'confirm').show();
+					new window.dev.banners.BannerNotification('Actualización de datos completada.', 'confirm').show();
 				});
 			});
 		});
@@ -138,7 +138,7 @@
 					click: update,
 					placement: 'page-actions-dropdown',
 					position: -1,
-					text: 'Actualizar mÃ³dulo'
+					text: 'Actualizar módulo'
 				});
 			});
 		});

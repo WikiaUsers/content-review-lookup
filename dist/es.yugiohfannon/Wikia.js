@@ -1,6 +1,6 @@
-/* Agregar una notificaciÃ³n en Oasis. */
+/* Agregar una notificación en Oasis. */
 window.SkinNotification = {
-	article: 'Especial:PÃ¡ginasRequeridas',
+	article: 'Especial:PáginasRequeridas',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length === 0) return;

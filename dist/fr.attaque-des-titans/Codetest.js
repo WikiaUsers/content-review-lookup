@@ -2,7 +2,7 @@
 
 /*var affichage = false;
 
-/* Fonction SetCookie qui crÃ©e un cookie pour une valeur et son attribut */
+/* Fonction SetCookie qui crée un cookie pour une valeur et son attribut */
 
 /*function SetCookie (name, value) {
 	var argv=SetCookie.arguments;
@@ -39,18 +39,18 @@ function GetCookie (name) {
 }*/
 
 
-/* On crÃ©e notre cookie pour l'affichage */
+/* On crée notre cookie pour l'affichage */
 
 /*var pathname=location.pathname;
 	var myDomain=pathname.substring(0,pathname.lastIndexOf('/')) +'/';
 	var date_exp = new Date();
 	date_exp.setTime(date_exp.getTime()+(365*24*3600*1000));
-	// Ici on dÃ©finit une durÃ©e de vie de 365 jours
+	// Ici on définit une durée de vie de 365 jours
 	SetCookie("affichage",true,date_exp,myDomain);*/
 
 /*var affichage=GetCookie(affichage);*/
 
-/* DÃ©but du script Ã  proprement dit : affichage d'un message Javascript une seule fois et seulement s'il a pas Ã©tÃ© deja affichÃ© autre part */
+/* Début du script à proprement dit : affichage d'un message Javascript une seule fois et seulement s'il a pas été deja affiché autre part */
 
 */
 
@@ -59,7 +59,7 @@ var flag = true;
 var modifie = function Modifie () {
 
     if(flag){
-    alert("Ceci est une encyclopÃ©die ouverte Ã  tous, n\'hÃ©sitez pas Ã  modifier une page !");
+    alert("Ceci est une encyclopédie ouverte à tous, n\'hésitez pas à modifier une page !");
     }
     flag = false;
     /*affichage = true;*/

@@ -2,7 +2,7 @@
 
 /* Adds an "inactive" tag to the user pages, user talk pages, message walls and blog pages of users who haven't made an edit of any sort for some time
  * See w:c:dev:InactiveUsers for info and attribution
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  */
 
 InactiveUsers = { 

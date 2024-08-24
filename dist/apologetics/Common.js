@@ -38,7 +38,7 @@ var hasClass = (function () {
          return false;
      }
  
-     var Rows = Table.getElementsByTagName( "tr" ); //Table.rows;   na Wikip√©dia
+     var Rows = Table.getElementsByTagName( "tr" ); //Table.rows;   na WikipÈdia
  
      if ( Button.firstChild.data == collapseCaption ) {
          for ( var i = 1; i < Rows.length; i++ ) {
@@ -63,7 +63,7 @@ var hasClass = (function () {
          if ( hasClass( Tables[i], "collapsible" ) ) {
 
 
-/* only add button and increment count if there is a header row to work with (segundo Wikip√©dia lus√≥fona; aparece diferente um pouco mais abaixo)
+/* only add button and increment count if there is a header row to work with (segundo WikipÈdia lusÛfona; aparece diferente um pouco mais abaixo)
 
 var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
 if (!HeaderRow) continue;
@@ -94,7 +94,7 @@ if (!Header) continue;
              Button.appendChild( ButtonLink );
              Button.appendChild( document.createTextNode( "]" ) );
 
-/* Trecho n√£o existente na Wikip√©dia lus√≥fona */
+/* Trecho n„o existente na WikipÈdia lusÛfona */
              var Header = Tables[i].getElementsByTagName( "tr" )[0].getElementsByTagName( "th" )[0];
 /* Fim desse trecho */
      
@@ -231,7 +231,7 @@ if (!Header) continue;
 
 
 /** Correlatos ******************************************************************************
-  *  Descri√ß√£o:Correlatos no menu lateral. C√≥digo copiado do de:wikt (Copiado de wikipedia lus√≥fona)
+  *  DescriÁ„o:Correlatos no menu lateral. CÛdigo copiado do de:wikt (Copiado de wikipedia lusÛfona)
   ********************************************************************************************/
  // InterProjekt-Links (vgl. [[MediaZilla:708]])
   document.write('<style type="text/css">#interProject, #sisterProjects {display: none; speak: none;} #p-tb .pBody {padding-right: 0;}<\/style>');
@@ -251,7 +251,7 @@ if (!Header) continue;
 
 
 /** ***************************************************************************
-  *  Descri√ß√£o: Adiciona a predefini√ß√£o {protegido} e {protegido-ip} autom√°ticos para artigos protegidos
+  *  DescriÁ„o: Adiciona a predefiniÁ„o {protegido} e {protegido-ip} autom·ticos para artigos protegidos
   *  Autor: [[:pt:User:Rei-artur]]
   ******************************************************************************/
  importScript('MediaWiki:Topicon.js')

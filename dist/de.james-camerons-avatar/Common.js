@@ -1,10 +1,10 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
-/* Variablen fÃ¼r das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
+/* Variablen für das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
 
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.AjaxRCRefreshHoverText = 'automatische Aktualisierung ohne Neuladen der kompletten Seite';
-window.ajaxPages = ["Spezial:Letzte_Ã„nderungen", "Spezial:WikiActivity", "Spezial:Beobachtungsliste"];
+window.ajaxPages = ["Spezial:Letzte_Änderungen", "Spezial:WikiActivity", "Spezial:Beobachtungsliste"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
 

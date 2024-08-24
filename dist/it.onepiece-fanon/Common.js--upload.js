@@ -35,7 +35,7 @@ $(function preloadUploadDesc() {
   if ( wgCanonicalSpecialPageName != 'Upload' || $.getUrlVar('wpForReUpload') ) { return; }
  
   if ($('#wpUploadDescription').length) {
-    $('#wpUploadDescription').append('{{Propriet√†' +
+    $('#wpUploadDescription').append('{{Propriet‡' +
       '}}\n'                                       +
       '{{Informazioni immagine\n'                  +
       '| descrizione  = \n'                        +

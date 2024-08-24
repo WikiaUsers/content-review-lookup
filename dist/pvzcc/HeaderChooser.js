@@ -8,7 +8,7 @@
 */
 
 var possibleTexts = [
-    // Common - Weight 75000000
+    // Common - Weight 1000000000
     {
         texts: [
 			"Create your own characters!",
@@ -135,7 +135,6 @@ var possibleTexts = [
 			"Keep calm and plant on!",
 			"Plantastic adventures await!",
 			"Zomb-tastic fun!",
-			"Spread your roots!",
 			"Sprout your ideas!",
 			"OK Bloomer!",
 			"Embrace the Church of Flag!",
@@ -257,9 +256,68 @@ var possibleTexts = [
 			"Enter a contest for bonus cool points!",
 			"Check out Page of Resources!",
 			"Check out Image Resources!",
-			"Is this the longest splash text you've ever seen show up here?"
+			"Is this the longest splash text you've ever seen show up here?",
+			"Sow the seeds!",
+			"Sponsored by ZCorp!",
+			"Double bogey!",
+			"Hey! Look at me!",
+			"You are reading this splash text!",
+			"Just a hop, skip, and a goat away!",
+			"Gender reveal: it's a goat!",
+			"Hey guys. George Lopez here. We bring you our newest and most favorite release, the PvZCC wiki, for the PlayStation 3. We hope you enjoy our feature presentation.",
+			"This splash text didn't show up for work. Reload the page!",
+			"The following page is extremely overpowered!",
+			"The following page is extremely underpowered!",
+			"It doesn't get any better than this!",
+			"This is the best we have to offer!",
+			"Activate your neurons!",
+			"This page is [insert adjective here]!",
+			"This page hates your guts!",
+			"You should probably stop reading here!",
+			"MediaWiki:HeaderChooser.js",
+			"This page is mediocre at best!",
+			"This page loves you very much!",
+			"Everybody get up! Everybody get down!",
+			"Pronouns: Character/Creator!",
+			"I'm tweaking!",
+			"Bruh.",
+			"Nuttin' to see here was... well, here!",
+			"Ha ha ha!",
+			"*giggles cutely*",
+			"<nowiki>It's just you and me now!</nowiki>",
+			"Make sure to add a strategies section!",
+			"Creepes is not a creative color!",
+			":bonkchoy:",
+			"Who let the pogs out?",
+			"You're in danger!",
+			"Look behind you!",
+			"Hello? Is anyone home?",
+			"I believe in you!",
+			"Holy cow, man!",
+			"That's no moon!",
+			"Sponsored by Angelo!",
+			"You can't handle the truth!",
+			"Is this real life?",
+			"This page is sus!",
+			"Loading... please wait!",
+			"Gaslight, gatekeep, girlboss!",
+			"Nothing to be afraid of!",
+			"No cap fr fr",
+			"The cake is a lie!",
+			"Where are your pants?",
+			"Remember to stay hydrated!",
+			"Insert coin to continue!",
+			"Buckle up, buttercup!",
+			"This page is under construction!",
+			"You're a Wizard, Zombie!",
+			"May the fish be with you!",
+			"Let's go to Tilted Towers!",
+			"Victory Royale!",
+			"Keep calm and carry on!",
+			"Winter is coming!",
+			"I am coming!"
         ],
-        weight: 75000000
+        weight: 50000000
     },
     // Staff Member 1 Star - Weight 450000
     {
@@ -289,7 +347,7 @@ var possibleTexts = [
         ],
         weight: 300000
     },
-        // Staff Member 3 Star - Weight 150000
+        // Staff Member 3 Star - Weight 15000
     {
         texts: [
             "💚💚💚 DsFanboy!",
@@ -301,7 +359,7 @@ var possibleTexts = [
             "💜💜💜 DolphiGaming!",
             "💜💜💜 Miss Pembroke!"
         ],
-        weight: 150000
+        weight: 15000
     },
         // Featured Article 1 Star - Weight 350000
     {
@@ -345,7 +403,8 @@ var possibleTexts = [
             "🏆 Arrowwood!",
             "🏆 Scarecrop!",
             "🏆 Calamity Cone Zombie!",
-            "🏆 Pulpverizer!"
+            "🏆 Pulpverizer!",
+            "🏆 The Sanctuary!"
         ],
         weight: 350000
     },
@@ -391,11 +450,12 @@ var possibleTexts = [
             "🏆🏆 Arrowwood!",
             "🏆🏆 Scarecrop!",
             "🏆🏆 Calamity Cone Zombie!",
-            "🏆🏆 Pulpverizer!"
+            "🏆🏆 Pulpverizer!",
+            "🏆🏆 The Sanctuary!"
         ],
         weight: 200000
     },
-        // Featured Article 3 Stars - Weight 50000
+        // Featured Article 3 Stars - Weight 5000
     {
         texts: [
             "🏆🏆🏆 Stoplight Zombie!",
@@ -437,9 +497,10 @@ var possibleTexts = [
             "🏆🏆🏆 Arrowwood!",
             "🏆🏆🏆 Scarecrop!",
             "🏆🏆🏆 Calamity Cone Zombie!",
-            "🏆🏆🏆 Pulpverizer!"
+            "🏆🏆🏆 Pulpverizer!",
+            "🏆🏆🏆 The Sanctuary!"
         ],
-        weight: 50000
+        weight: 5000
     },
     // Former Staff Member 1 Star - Weight 45000
     {
@@ -457,13 +518,13 @@ var possibleTexts = [
         ],
         weight: 30000
     },
-    // Former Staff Member 3 Stars - Weight 15000
+    // Former Staff Member 3 Stars - Weight 1500
     {
         texts: [
             "👻💚💚💚 PunjiChocoBerry!",
             "👻💜💜💜 Creepes."
         ],
-        weight: 15000
+        weight: 1500
     },
     // Legendary 1 Star - Weight 350
     {
@@ -479,12 +540,12 @@ var possibleTexts = [
         ],
         weight: 200
     },
-    // Legendary 3 Stars - Weight 50
+    // Legendary 3 Stars - Weight 5
     {
         texts: [
             "🤪🤪🤪 Skibidi bibidi!"
         ],
-        weight: 50
+        weight: 5
     },
     // Rainbow - Weight 1
     {

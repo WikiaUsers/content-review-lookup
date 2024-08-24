@@ -1,6 +1,6 @@
 window.SpoilerAlertJS = {
-    question: 'Esta pÃ¡gina puede contener spoilers. Â¿Quieres leerla?',
-    yes: 'SÃ­',
+    question: 'Esta página puede contener spoilers. ¿Quieres leerla?',
+    yes: 'Sí',
     no: 'No',
     fadeDelay: 1600
 };
@@ -12,11 +12,11 @@ window.UserTagsJS = {
 		templatehelper: { u: 'Plantillas', order: 102 }, 
 		rollbackers: { u: 'Reversor', order: 103 }, 
 		contentmod: { u: 'Moderador de contenido', order: 105 }, 
-        bureaucrat: { u: 'BurÃ³crata', order: 1 } 
+        bureaucrat: { u: 'Burócrata', order: 1 } 
 	}
 };
 UserTagsJS.modules.custom = {
-	'JosÃ© Dedede': ['csshelper'],
+	'José Dedede': ['csshelper'],
 	'JorgeyGari': ['rollbackers'],
 	'HumanoidPikachu': ['csshelper'],
 	'HumanoidPikachu': ['jshelper'],
@@ -33,7 +33,7 @@ window.ajaxPages = [
     "Especial:Contribuciones"
 ];
 window.AjaxRCRefreshText = 'Auto-refresh';
-window.AjaxRCRefreshHoverText = 'AutomÃ¡ticamente refresca la pÃ¡gina';
+window.AjaxRCRefreshHoverText = 'Automáticamente refresca la página';
 window.ajaxindicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
  
 /*  Replaces {{USERNAME}} with the name of the user browsing the page.
@@ -44,12 +44,12 @@ $(function() {
 });
 /* End of the {{USERNAME}} replacement */
  
-/* Borrado de artÃ­culos (crÃ©dito a Usuario:Benfutbol10) */
+/* Borrado de artículos (crédito a Usuario:Benfutbol10) */
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Mario Fanon:Reglas|Incumplimiento de reglas de artÃ­culos]]',
+  'summary': '[[Wiki Mario Fanon:Reglas|Incumplimiento de reglas de artículos]]',
   'accesskey': '1',
-  'label': 'Incump. artÃ­culos'};
+  'label': 'Incump. artículos'};
 fdButtons[fdButtons.length] = {
   'summary': '[[Wiki Mario Fanon:Reglas|Incumplimiento de reglas de archivos]]',
   'accesskey': '2',
@@ -59,9 +59,9 @@ fdButtons[fdButtons.length] = {
   'accesskey': '3',
   'label': 'Incump. general'};
 fdButtons[fdButtons.length] = {
-  'summary': 'A peticiÃ³n del mismo autor',
+  'summary': 'A petición del mismo autor',
   'accesskey': '4',
-  'label': 'A peticiÃ³n del autor'};
+  'label': 'A petición del autor'};
  
 /* Prueba 
 function destac() {

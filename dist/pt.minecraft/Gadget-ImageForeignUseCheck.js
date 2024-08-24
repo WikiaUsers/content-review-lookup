@@ -15,16 +15,16 @@ if (wgNamespaceNumber == 6) {
 		var URLprefix = 'https://', 
 			URLsuffix = '.gamepedia.com/api.php?format=json&callback=?';
 		var msgForeignUses = 'Usos estrangeiros',
-			msgFileLink = 'pÃ¡gina de imagem',
+			msgFileLink = 'página de imagem',
 			msgNoUses = 'Nenhum uso externo dessa imagem foi detectado.';
 		$interUses.append( $('<h2></h2>', {'text':msgForeignUses, 'style':'margin-left:-22px;'}) );
 		var langs = {
-			"InglÃªs":"minecraft",
+			"Inglês":"minecraft",
 			"Tcheco":"minecraft-cs",
-			"FrancÃªs":"minecraft-fr",
+			"Francês":"minecraft-fr",
 			"Grego":"minecraft-el",
 			"Italiano":"minecraft-it",
-			"TailandÃªs":"minecraft-th",
+			"Tailandês":"minecraft-th",
 			"Turco":"minecraft-tr",
 			"Ucraniano":"minecraft-uk",
 			"Aether Mod":"aether",

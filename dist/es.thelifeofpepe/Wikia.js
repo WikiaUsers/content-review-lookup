@@ -3,7 +3,7 @@ $(function() {
  
   // LISTA DE USUARIOS CON USER TAGS
  
-    // BURÃ“CRATAS
+    // BURÓCRATAS
  
   rights["WFlash"]         = ["Fundador"],
 

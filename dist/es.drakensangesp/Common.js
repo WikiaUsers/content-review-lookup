@@ -88,7 +88,7 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+     "speedTip": "Advertir de que este articulo esta en contrucción",
      "tagOpen": "{{Enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
@@ -116,10 +116,10 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto PequeÃ±o",
+     "speedTip": "Texto Pequeño",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto PequeÃ±o"};
+     "sampleText": "Texto Pequeño"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -164,7 +164,7 @@ if (mwCustomEditButtons) {
      "sampleText": "! header 1\n! header 2\n! header 3\n|-\n| row 1, cell 1\n| row 1, cell 2\n| row 1, cell 3\n|-\n| row 2, cell 1\n| row 2, cell 2\n| row 2, cell 3"}; 
  
 }
-/*BotÃ³n editar bienvenida del muro*/
+/*Botón editar bienvenida del muro*/
 importArticles({
     type: 'script',
     articles: [

@@ -1,61 +1,61 @@
-/* Cualquier JavaScript que est√© aqu√≠ ser√° cargado para todos los usuarios en todas las p√°ginas cargadas del wiki.
+/* Cualquier JavaScript que estÈ aquÌ ser· cargado para todos los usuarios en todas las p·ginas cargadas del wiki.
 
 Traido de [[w:c:Grand Theft Encyclopedia|Grand Theft Encyclopedia]].
 ==Ayudas emergentes y atajos de teclado==
-Esta secci√≥n contiene las traducciones de los mensejes emergentes en los links de los men√∫s.
+Esta secciÛn contiene las traducciones de los mensejes emergentes en los links de los men˙s.
 
-A su vez tambi√©n define la tecla que se debe usar junto con la tecla ALT para acceder a esas p√°ginas. (En algunos exploradores esta tecla puede cambiar, por ejemplo ALT+MAYS en SeaMonkey)
+A su vez tambiÈn define la tecla que se debe usar junto con la tecla ALT para acceder a esas p·ginas. (En algunos exploradores esta tecla puede cambiar, por ejemplo ALT+MAYS en SeaMonkey)
 <nowiki> */
 
 ta = new Object();
-ta['pt-userpage'] = new Array('.','Mi p√°gina de usuario');
-ta['pt-anonuserpage'] = new Array('.','La p√°gina de usuario de la IP desde la que editas');
-ta['pt-mytalk'] = new Array('n','Mi p√°gina de discusi√≥n');
-ta['pt-anontalk'] = new Array('n','Discusi√≥n sobre ediciones hechas desde esta direcci√≥n IP');
+ta['pt-userpage'] = new Array('.','Mi p·gina de usuario');
+ta['pt-anonuserpage'] = new Array('.','La p·gina de usuario de la IP desde la que editas');
+ta['pt-mytalk'] = new Array('n','Mi p·gina de discusiÛn');
+ta['pt-anontalk'] = new Array('n','DiscusiÛn sobre ediciones hechas desde esta direcciÛn IP');
 ta['pt-preferences'] = new Array('','Mis preferencias');
-ta['pt-watchlist'] = new Array('l','La lista de p√°ginas para las que est√°s vigilando los cambios');
+ta['pt-watchlist'] = new Array('l','La lista de p·ginas para las que est·s vigilando los cambios');
 ta['pt-mycontris'] = new Array('y','Lista de mis contribuciones');
 ta['pt-login'] = new Array('o','Te animamos a registrarte, aunque no es obligatorio');
 ta['pt-anonlogin'] = new Array('o','Te animamos a registrarte, aunque no es obligatorio');
-ta['pt-logout'] = new Array('o','Salir de la sesi√≥n');
-ta['ca-talk'] = new Array('t','Discusi√≥n acerca del art√≠culo');
-ta['ca-edit'] = new Array('e','Puedes editar esta p√°gina. Por favor, usa el bot√≥n de previsualizaci√≥n antes de grabar.');
-ta['ca-addsection'] = new Array('+','A√±ade un comentario a esta discusi√≥n');
-ta['ca-viewsource'] = new Array('e','Esta p√°gina est√° protegida, s√≥lo puedes ver su c√≥digo fuente');
-ta['ca-history'] = new Array('h','Versiones anteriores de esta p√°gina y sus autores');
-ta['ca-protect'] = new Array('=','Proteger esta p√°gina');
-ta['ca-delete'] = new Array('d','Borrar esta p√°gina');
-ta['ca-undelete'] = new Array('d','Restaurar las ediciones hechas a esta p√°gina antes de que fuese borrada');
-ta['ca-move'] = new Array('m','Trasladar (renombrar) esta p√°gina');
-ta['ca-watch'] = new Array('w','A√±adir esta p√°gina a tu lista de seguimiento');
-ta['ca-unwatch'] = new Array('w','Borrar esta p√°gina de tu lista de seguimiento');
+ta['pt-logout'] = new Array('o','Salir de la sesiÛn');
+ta['ca-talk'] = new Array('t','DiscusiÛn acerca del artÌculo');
+ta['ca-edit'] = new Array('e','Puedes editar esta p·gina. Por favor, usa el botÛn de previsualizaciÛn antes de grabar.');
+ta['ca-addsection'] = new Array('+','AÒade un comentario a esta discusiÛn');
+ta['ca-viewsource'] = new Array('e','Esta p·gina est· protegida, sÛlo puedes ver su cÛdigo fuente');
+ta['ca-history'] = new Array('h','Versiones anteriores de esta p·gina y sus autores');
+ta['ca-protect'] = new Array('=','Proteger esta p·gina');
+ta['ca-delete'] = new Array('d','Borrar esta p·gina');
+ta['ca-undelete'] = new Array('d','Restaurar las ediciones hechas a esta p·gina antes de que fuese borrada');
+ta['ca-move'] = new Array('m','Trasladar (renombrar) esta p·gina');
+ta['ca-watch'] = new Array('w','AÒadir esta p·gina a tu lista de seguimiento');
+ta['ca-unwatch'] = new Array('w','Borrar esta p·gina de tu lista de seguimiento');
 ta['search'] = new Array('f','Buscar en este wiki');
 ta['p-logo'] = new Array('','Portada');
 ta['n-mainpage'] = new Array('z','Visitar la Portada');
-ta['n-portal'] = new Array('','Acerca del proyecto, qu√© puedes hacer, d√≥nde encontrar informaci√≥n');
-ta['n-currentevents'] = new Array('','Informaci√≥n de contexto sobre acontecimientos actuales');
+ta['n-portal'] = new Array('','Acerca del proyecto, quÈ puedes hacer, dÛnde encontrar informaciÛn');
+ta['n-currentevents'] = new Array('','InformaciÛn de contexto sobre acontecimientos actuales');
 ta['n-recentchanges'] = new Array('r','La lista de cambios recientes en el wiki');
-ta['n-randompage'] = new Array('x','Cargar una p√°gina aleatoriamente');
-ta['n-help'] = new Array('','Aqu√≠ puedes guiarte por la Wiki');
-ta['n-sitesupport'] = new Array('','Resp√°ldanos');
-ta['t-whatlinkshere'] = new Array('j','Lista de todas las p√°ginas del wiki que enlazan con √©sta');
-ta['t-recentchangeslinked'] = new Array('k','Cambios recientes en las p√°ginas que enlazan con esta otra');
-ta['feed-rss'] = new Array('','Sindicaci√≥n RSS de esta p√°gina');
-ta['feed-atom'] = new Array('','Sindicaci√≥n Atom de esta p√°gina');
+ta['n-randompage'] = new Array('x','Cargar una p·gina aleatoriamente');
+ta['n-help'] = new Array('','AquÌ puedes guiarte por la Wiki');
+ta['n-sitesupport'] = new Array('','Resp·ldanos');
+ta['t-whatlinkshere'] = new Array('j','Lista de todas las p·ginas del wiki que enlazan con Èsta');
+ta['t-recentchangeslinked'] = new Array('k','Cambios recientes en las p·ginas que enlazan con esta otra');
+ta['feed-rss'] = new Array('','SindicaciÛn RSS de esta p·gina');
+ta['feed-atom'] = new Array('','SindicaciÛn Atom de esta p·gina');
 ta['t-contributions'] = new Array('','Ver la lista de contribuciones de este usuario');
 ta['t-emailuser'] = new Array('','Enviar un mensaje de correo a este usuario');
-ta['t-upload'] = new Array('u','Subir im√°genes o archivos multimedia');
-ta['t-specialpages'] = new Array('q','Lista de todas las p√°ginas especiales');
-ta['ca-nstab-main'] = new Array('c','Ver el art√≠culo');
-ta['ca-nstab-user'] = new Array('c','Ver la p√°gina de usuario');
-ta['ca-nstab-media'] = new Array('c','Ver la p√°gina de multimedia');
-ta['ca-nstab-special'] = new Array('','Esta es una p√°gina especial, no se puede editar la p√°gina en s√≠');
-ta['ca-nstab-wp'] = new Array('a','Ver la p√°gina de proyecto');
-ta['ca-nstab-image'] = new Array('c','Ver la p√°gina de la imagen');
+ta['t-upload'] = new Array('u','Subir im·genes o archivos multimedia');
+ta['t-specialpages'] = new Array('q','Lista de todas las p·ginas especiales');
+ta['ca-nstab-main'] = new Array('c','Ver el artÌculo');
+ta['ca-nstab-user'] = new Array('c','Ver la p·gina de usuario');
+ta['ca-nstab-media'] = new Array('c','Ver la p·gina de multimedia');
+ta['ca-nstab-special'] = new Array('','Esta es una p·gina especial, no se puede editar la p·gina en sÌ');
+ta['ca-nstab-wp'] = new Array('a','Ver la p·gina de proyecto');
+ta['ca-nstab-image'] = new Array('c','Ver la p·gina de la imagen');
 ta['ca-nstab-mediawiki'] = new Array('c','Ver el mensaje de sistema');
 ta['ca-nstab-template'] = new Array('c','Ver la plantilla');
-ta['ca-nstab-help'] = new Array('c','Ver la p√°gina de ayuda');
-ta['ca-nstab-category'] = new Array('c','Ver la p√°gina de categor√≠a');
+ta['ca-nstab-help'] = new Array('c','Ver la p·gina de ayuda');
+ta['ca-nstab-category'] = new Array('c','Ver la p·gina de categorÌa');
 /*</nowiki>
 
 */
@@ -74,31 +74,31 @@ addOnloadHook(UserNameReplace);
 
 /*
 
-== Cambio de CSS o JS en ciertas p√°ginas ==
+== Cambio de CSS o JS en ciertas p·ginas ==
 
-Instrucciones para a√±adir a una p√°gina un CSS o JS espec√≠fico: 
+Instrucciones para aÒadir a una p·gina un CSS o JS especÌfico: 
 
-A√±ade a la lista siguiente la p√°gina que hay que cambiar comillas incluidas:
-<code><nowiki>"<Nombre del espacio>:<Nombre p√°gina>": "<Nombre skin>",</nowiki></code>
+AÒade a la lista siguiente la p·gina que hay que cambiar comillas incluidas:
+<code><nowiki>"<Nombre del espacio>:<Nombre p·gina>": "<Nombre skin>",</nowiki></code>
 
-<big>'''Atenci√≥n:  LAS √öLTIMAS DE LA LISTAS NO TIENEN COMA AL FINAL'''</big>
+<big>'''AtenciÛn:  LAS ⁄LTIMAS DE LA LISTAS NO TIENEN COMA AL FINAL'''</big>
 
-*'''<Nombre del espacio>:<Nombre p√°gina>''': Es el nombre completo de la p√°gina SIN sustituir los espacios por caracteres de subrayado.
-*'''<Nombre skin>''': Se trata del nombre un archivo MediaWiki:Skin/<Nombre skin> que contiene es CSS o el JS dependiendo del arraycon las modificaciones. En caso de ser vacio ("") entonces <Nombre skin> = <Nombre del espacio>:<Nombre p√°gina>
-*No es para usar en las p√°ginas de usuario ni en cada p√°gina de la GTE. S√≥lo para casos excepcionales.
+*'''<Nombre del espacio>:<Nombre p·gina>''': Es el nombre completo de la p·gina SIN sustituir los espacios por caracteres de subrayado.
+*'''<Nombre skin>''': Se trata del nombre un archivo MediaWiki:Skin/<Nombre skin> que contiene es CSS o el JS dependiendo del arraycon las modificaciones. En caso de ser vacio ("") entonces <Nombre skin> = <Nombre del espacio>:<Nombre p·gina>
+*No es para usar en las p·ginas de usuario ni en cada p·gina de la GTE. SÛlo para casos excepcionales.
 
-Si no existe <code><nowiki>MediaWiki:Skin/<Nombre skin>.css</nowiki></code> (o js) simplemente creal√≥ y modif√≠calo.
+Si no existe <code><nowiki>MediaWiki:Skin/<Nombre skin>.css</nowiki></code> (o js) simplemente crealÛ y modifÌcalo.
 <nowiki>*/
 SkinPersonalidadas = {
     "Portada": "Portada.css"
 
-/*   EL √öLTIMO NO LLEVA COMA AL FINAL  */
+/*   EL ⁄LTIMO NO LLEVA COMA AL FINAL  */
 }
 
 JSPersonalidados = {
     "Portada": "",
 
-/*   EL √öLTIMO NO LLEVA COMA AL FINAL  */
+/*   EL ⁄LTIMO NO LLEVA COMA AL FINAL  */
 }
 
 var re = RegExp("(.*) - MANHUNT");
@@ -125,17 +125,17 @@ if (matches) {
 
 /*</nowiki>
 
-==C√≥digo para plegado/desplegado de bloques==
+==CÛdigo para plegado/desplegado de bloques==
 [[plantilla:Desplegable]]
 
 === Prerequisitos: ===
-'''NavigationBarShowDefault''' -> Si hay m√°s de este n√∫mero de desplegables ocultar todas autom√°ticamente.
+'''NavigationBarShowDefault''' -> Si hay m·s de este n˙mero de desplegables ocultar todas autom·ticamente.
 <nowiki>*/
   var NavigationBarHide = '[Ocultar]';
   var NavigationBarShow = '[Mostrar]';
 /*</nowiki>
 
-=== C√≥digo: ===
+=== CÛdigo: ===
 <nowiki>*/
 
 function toggleNavigationBar(indexNavigationBar)
@@ -240,24 +240,24 @@ Importado de [[w:c:inciclopedia|Inciclopedia]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/3/35/Bot%C3%B3n_Super%C3%ADndice.png",
-     "speedTip": "Super√≠ndice",
+     "speedTip": "SuperÌndice",
      "tagOpen": "<sup>",
      "tagClose": "</sup>",
-     "sampleText": "super√≠ndice"};
+     "sampleText": "superÌndice"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/b/bd/Bot%C3%B3n_Sub%C3%ADndice.png",
-     "speedTip": "Sub√≠ndice",
+     "speedTip": "SubÌndice",
      "tagOpen": "<sub>",
      "tagClose": "</sub>",
-     "sampleText": "sub√≠ndice"};
+     "sampleText": "subÌndice"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "C√≥digo fuente",
+     "speedTip": "CÛdigo fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "c√≥digo fuente"};
+     "sampleText": "cÛdigo fuente"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -275,10 +275,10 @@ Importado de [[w:c:inciclopedia|Inciclopedia]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categor√≠a",
+     "speedTip": "CategorÌa",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categor√≠a"};
+     "sampleText": "Nombre categorÌa"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -290,10 +290,10 @@ Importado de [[w:c:inciclopedia|Inciclopedia]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
-     "speedTip": "Redirecci√≥n",
+     "speedTip": "RedirecciÛn",
      "tagOpen": "#REDIRECT [[",
      "tagClose": "]]",
-     "sampleText": "Redirecci√≥n"};
+     "sampleText": "RedirecciÛn"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c9/Button_strike.png",
@@ -308,7 +308,7 @@ Importado de [[w:c:inciclopedia|Inciclopedia]]
 == Redefiniciones de Comportamiento ==
 De [[w:c:inciclopedia|Inciclopedia]]
 === Redefinicion de "Subir Imagen" ===
-Aqu√≠ hago una redifici√≥n de la funci√≥n llamada por el enlace subir imagen que hay en la barra de herramientas.
+AquÌ hago una redificiÛn de la funciÛn llamada por el enlace subir imagen que hay en la barra de herramientas.
 
 En vez de usar [[special:MiniUpload]] llama a [[special:upload]]
 <nowiki>*/
@@ -349,7 +349,7 @@ function specialImageUpload(tagOpen, tagClose, sampleText)
 
 /*</nowiki>
 
-== Funci√≥n de carga (no modificar) ==
+== FunciÛn de carga (no modificar) ==
 De [[w:c:inciclopedia|Inciclopedia]]
 <nowiki>*/
 
@@ -512,14 +512,14 @@ function onSearchIconsArrival()
 	li = document.createElement('li');
 	a = document.createElement('a');
 	a.href = '/index.php?title=Special:Search&adv=1';
-	a.appendChild(document.createTextNode('B√∫squeda avanzada'));
+	a.appendChild(document.createTextNode('B˙squeda avanzada'));
 	li.appendChild(a);
 	ul.appendChild(li);
 	
 	li = document.createElement('li');
 	a = document.createElement('a');
 	a.href = (pos == -1) ? 'javascript:emptySearchDesc()' : '/wiki/' + line.substring(pos + 1);
-	a.appendChild(document.createTextNode("¬øQui√©n es? (" + ((pos == -1) ? 'NO DESCRIPTION' : line.substring(pos + 1)) + ')'));
+	a.appendChild(document.createTextNode("øQuiÈn es? (" + ((pos == -1) ? 'NO DESCRIPTION' : line.substring(pos + 1)) + ')'));
 	li.appendChild(a);
 	ul.appendChild(li);
 
@@ -553,7 +553,7 @@ function closeSearchPopup()
 
 function emptySearchDesc()
 {
-	alert('No existe descripci√≥n para este √≠cono de b√∫squeda. Por favor contacta a los administradores para resolver este problema.');
+	alert('No existe descripciÛn para este Ìcono de b˙squeda. Por favor contacta a los administradores para resolver este problema.');
 }
 
 function ContentLoader()
@@ -563,11 +563,11 @@ function ContentLoader()
 
 
 /*
-	Pesta√±a creada para archivar cualquier tipo de p√°gina.
+	PestaÒa creada para archivar cualquier tipo de p·gina.
 */
 
 /*
- * Copyright ¬© 2009, Daniel Friesen
+ * Copyright © 2009, Daniel Friesen
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -641,7 +641,7 @@ if ( skin == "monaco" ) {
 				
 						var lines = content.split('\n');
 				
-						var table = $('<table><thead><tr><th>L√≠neas</th><th title="Secciones">Secci√≥n</th></tr></thead></table>').appendTo(bc);
+						var table = $('<table><thead><tr><th>LÌneas</th><th title="Secciones">SecciÛn</th></tr></thead></table>').appendTo(bc);
 						var ul = $('<tbody/>').appendTo(table);
 				
 						for ( var l = 0; l < lines.length; l++ ) {
@@ -755,7 +755,7 @@ if ( skin == "monaco" ) {
 										parseInt(q.query.allpages[0].title.substr(wgPageName.length+"/Archivo".length),10)+1 :
 										1;
 									archiveTitle = wgPageName+'/Archivo '+archiveNo;
-									m.append('hecho... (usando el n√∫mero '+archiveNo+')');
+									m.append('hecho... (usando el n˙mero '+archiveNo+')');
 							
 									saveArchive();
 								});
@@ -765,19 +765,19 @@ if ( skin == "monaco" ) {
 								var m = $('<p>Buscando '+archiveTitle+': </p>').appendTo(bc);
 								token(archiveTitle, function(p) {
 									m.append('hecho...');
-									m = $('<p>Guardando la p√°gina del archivo: </p>').appendTo(bc);
+									m = $('<p>Guardando la p·gina del archivo: </p>').appendTo(bc);
 									api({
 										action: 'edit',
 										title: archiveTitle,
 										text: archiveContent,
 										token: p.edittoken,
-										summary: "''Archivando a trav√©s de la herramienta de archivado desde [["+wgPageName+"]].''",
+										summary: "''Archivando a travÈs de la herramienta de archivado desde [["+wgPageName+"]].''",
 										minor: true,
 										createonly: true
 									}, function(q) {
 										if ( q.error && q.error.code === "articleexists" ) {
 											m.append('error...');
-											bc.append("<p>La p√°gina del archivo que intentamos crear ya existe.</p>");
+											bc.append("<p>La p·gina del archivo que intentamos crear ya existe.</p>");
 											return abort();
 										}
 										m.append('hecho...');
@@ -790,13 +790,13 @@ if ( skin == "monaco" ) {
 							function saveTalk() {
 								var m = $('<p>Buscando '+wgPageName+': </p>').appendTo(bc);
 								m.append('hecho..');
-								m = $('<p>Actualizando discusi√≥n: </p>').appendTo(bc);
+								m = $('<p>Actualizando discusiÛn: </p>').appendTo(bc);
 								api({
 									action: 'edit',
 									title: wgPageName,
 									text: talkContent,
 									token: talkToken,
-									summary: "''Archivando a trav√©s de la herramienta de archivado -> [["+archiveTitle+"]].''",
+									summary: "''Archivando a travÈs de la herramienta de archivado -> [["+archiveTitle+"]].''",
 									minor: true,
 									basetimestamp: time,
 									starttimestamp: tokenTime
@@ -807,7 +807,7 @@ if ( skin == "monaco" ) {
 										location = wgServer+wgScript+'?title='+encodeURI(wgPageName)+'&action=purge';
 									} else {
 										m.append('error...');
-										bc.append("<p>Fallo al actualizar la discusi√≥n, deber√≠as tener la subp√°gina del archivo que creamos borrada.</p>");
+										bc.append("<p>Fallo al actualizar la discusiÛn, deberÌas tener la subp·gina del archivo que creamos borrada.</p>");
 										return abort();
 									}
 							

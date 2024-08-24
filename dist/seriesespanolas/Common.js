@@ -1,4 +1,4 @@
-/* Importaci贸n del Chat a todas las pieles */
+/* Importaci髇 del Chat a todas las pieles */
 importScriptPage('MediaWiki:Chat.js', 'es.seriesspain');
 
 /* Para desplegable */
@@ -8,7 +8,7 @@ importScriptPage('ShowHide/code.js', 'dev');
 importScript('MediaWiki:Common.js/desplegable.js');
 
 /* Botones extras */
-/*bot贸n de personaje por [[User:Danke7|Danke7]]*/
+/*bot髇 de personaje por [[User:Danke7|Danke7]]*/
  if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -24,9 +24,9 @@ importScript('MediaWiki:Common.js/desplegable.js');
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCI脫N [[",
+		"tagOpen": "#REDIRECCI覰 [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del art铆culo"
+		"sampleText": "Nombre del art韈ulo"
 	};
 
 if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -35,7 +35,7 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
      "imageFile": "https://images.wikia.nocookie.net/seriesspain/es/images/6/6d/Bot%C3%B3n_personaje.png",
      "speedTip": "Insertar Plantilla de Personaje",
      "tagOpen": "\{\{Personaje\r| nombre = ",
-     "tagClose": "\r| imagen = \r| sexo = \r| serie = \r| frase = \r| ocupaci贸n = \r| familia = \r| primera aparici贸n = \r\}\}",
+     "tagClose": "\r| imagen = \r| sexo = \r| serie = \r| frase = \r| ocupaci髇 = \r| familia = \r| primera aparici髇 = \r\}\}",
      "sampleText": ""};
  }
 

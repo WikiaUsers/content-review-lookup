@@ -1,4 +1,4 @@
-/* Qualquer JavaScript aqui ser√° carregado para todos os usu√°rios em cada carregamento da p√°gina. */
+/* Qualquer JavaScript aqui ser· carregado para todos os usu·rios em cada carregamento da p·gina. */
 
 importScriptPage('DupImageList/code.js', 'dev');
 
@@ -12,7 +12,7 @@ fdButtons[fdButtons.length] = {
   'label': 'Vandalismo'};
 
 function emptyLicenseAlert(form) {
-	var msg = "O arquivo de licen√ßa n√£o foi selecionado."
+	var msg = "O arquivo de licenÁa n„o foi selecionado."
 	if(window.emptyLicenseWarningDelivered) return true;
 	if($('#wpLicense').val() == '') {
 		alert(msg);
@@ -41,9 +41,9 @@ importArticles({
 importScript('MediaWiki:Common.js/standardeditsummaries.js');
 // END of Standard Edit Summaries
  
-// As descri√ß√µes dos grupos de usu√°rios ativos no perfil do usu√°rio
+// As descriÁıes dos grupos de usu·rios ativos no perfil do usu·rio
 importScript('MediaWiki:Common.js/userRightsIcons.js');
-// FIM das descri√ß√µes dos grupos de usu√°rios ativos no novo perfil de usu√°rio
+// FIM das descriÁıes dos grupos de usu·rios ativos no novo perfil de usu·rio
  
 /** Collapsible tables *********************************************************
   *
@@ -508,7 +508,7 @@ var Tabs = {
 };
 Tabs.init();
 
-// Diminuir os dias para bloquear os coment√°rios 
+// Diminuir os dias para bloquear os coment·rios 
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;

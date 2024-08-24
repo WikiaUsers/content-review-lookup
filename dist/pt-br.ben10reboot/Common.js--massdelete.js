@@ -1,1 +1,1 @@
-/* Qualquer JavaScript aqui ser√° carregado para todos os usu√°rios em cada carregamento de p√°gina. */
+/* Qualquer JavaScript aqui ser· carregado para todos os usu·rios em cada carregamento de p·gina. */

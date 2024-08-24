@@ -6,8 +6,8 @@
  * Builds a form for easy uploading of images
  * and to ensure proper rationale and licensing
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
- * @author: CeldrÃ¸n (https://naruto.fandom.com/fr/wiki/User:CeldrÃ¸n)
- * @author: Thegamer1604 (https://reddead.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de CeldrÃ¸n])
+ * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
+ * @author: Thegamer1604 (https://reddead.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de Celdrøn])
  * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
 **/
  
@@ -74,7 +74,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					$desc.val('{{Fichier\n' +
 							'| origine = \n' +
 							'| jeu = \n' +
-							'| annÃ©e = \n' +
+							'| année = \n' +
 							'| cible2 = \n' +
 							'| cible3 = \n' +
 							'| cible4 = \n' +
@@ -94,7 +94,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					$("#uploadTemplateNoJS").hide();
 					if (!mw.util.getParamValue('wpForReUpload')) {
 						if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)) { // Add link to basic form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=SpÃ©cial:TÃ©lÃ©verser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width
 								var $description = $('#wpUploadDescription'),
 									$customRows,
 									customRows = '';
@@ -105,7 +105,7 @@ window.setCookie = function(c_name, value, expiredays) {
 
 								customRows += this.fromTemplate('Origine', 'origineBox', true, '[REQUIS] IG/URL source.');
 								customRows += this.fromListboxTemplate('Jeu', 'jeuBox');
-								customRows += this.fromListboxTemplate('AnnÃ©e', 'anneeBox');
+								customRows += this.fromListboxTemplate('Année', 'anneeBox');
 								customRows += this.fromListboxTemplate('Quoi', 'quoiBox');
 								customRows += this.fromListboxTemplate('Type', 'typeBox');
 
@@ -124,8 +124,8 @@ window.setCookie = function(c_name, value, expiredays) {
 									);
 								});
 						} else { // Old style form just needs Information template in the summary box
-							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| annÃ©e = \n| cible2 = \n| cible3 = \n| cible4 = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=SpÃ©cial:TÃ©lÃ©verser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancÃ©</a></div>');
+							$('#wpUploadDescription').val('{{Fichier\n| origine = \n| jeu = \n| année = \n| cible2 = \n| cible3 = \n| cible4 = \n| quoi = \n| type = \n}}\n'); // Add link to guided form
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://reddead.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
 						}
 					}
 				}
@@ -134,15 +134,15 @@ window.setCookie = function(c_name, value, expiredays) {
 				var $description = $('#wpUploadDescription');
 
 				if (!$('#wpLicense').val()) {
-					$.showModal('Licence IncomplÃ¨te', 'Choisir la bonne licence depuis la liste.');
+					$.showModal('Licence Incomplète', 'Choisir la bonne licence depuis la liste.');
 					return false;
 				}
 	
 				if (!$.trim($('#origineBox').val())) {
-					$.showModal('Origine IncomplÃ¨te', 'Merci de renseigner l\'origine correcte pour votre image.');
+					$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
 					return false;
 				} else if (/google/i.test($('#sourceBox').val())) {
-					$.showModal('Source Incorrecte', 'Google n\'est pas une source valide pour les images. Merci de saisir l\'origine concrÃ¨te du fichier.');
+					$.showModal('Source Incorrecte', 'Google n\'est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
 					$('#origineBox').val('');
 					return false;
 				}
@@ -153,7 +153,7 @@ window.setCookie = function(c_name, value, expiredays) {
 				strBuilder += '{{Fichier\n';
 				strBuilder += '| origine = ' + $.trim($('#origineBox').val()) + '\n';
 				strBuilder += '| jeu = ' + $.trim($('#jeuBox').val()) + '\n';
-				strBuilder += '| annÃ©e = ' + $.trim($('#anneeBox').val()) + '\n';
+				strBuilder += '| année = ' + $.trim($('#anneeBox').val()) + '\n';
 				strBuilder += '| cible2 = ' + '\n';
 				strBuilder += '| cible3 = ' + '\n';
 				strBuilder += '| cible4 = ' + '\n';

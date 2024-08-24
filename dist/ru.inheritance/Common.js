@@ -78,12 +78,12 @@ $(function UserNameReplace() {
 // Ciencia Al Poder's patch against 
 // toolbar duplication on 1.12a wikis
 // *****************************************************************
-// Deshabilitamos toolbar de wikibits. Est√° repetido
+// Deshabilitamos toolbar de wikibits. Est· repetido
 //if(window.mwSetupToolbar){
 //  if(window.removeEventListener) window.removeEventListener('load',mwSetupToolbar,false);
 //  else if(window.detachEvent) window.detachEvent('onload',mwSetupToolbar);
 //}
-// En caso de que el duplicado est√© solucionado, no habr√° toolbar. Si es as√≠, lo restauramos.
+// En caso de que el duplicado estÈ solucionado, no habr· toolbar. Si es asÌ, lo restauramos.
 //function setuptoolbardelayed(){
 //  var toolbar = document.getElementById('toolbar');
 //  if (toolbar.getElementsByTagName('img').length < 5 && window.mwSetupToolbar) mwSetupToolbar();

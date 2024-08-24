@@ -1,20 +1,20 @@
 // **************************************************
-// Importa el c√≥digo para plegado de bloques
+// Importa el cÛdigo para plegado de bloques
 // **************************************************
 importScriptPage('ShowHide/code.js', 'dev');
 
 // **************************************************
-// BOTONES ADICIONALES - Para p√°gina de edici√≥n
+// BOTONES ADICIONALES - Para p·gina de ediciÛn
 // **************************************************
 
  if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "C√≥digo fuente",
+     "speedTip": "CÛdigo fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "C√≥digo fuente"};
+     "sampleText": "CÛdigo fuente"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -32,10 +32,10 @@ importScriptPage('ShowHide/code.js', 'dev');
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categor√≠a",
+     "speedTip": "CategorÌa",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categor√≠a"};
+     "sampleText": "Nombre categorÌa"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -46,14 +46,14 @@ importScriptPage('ShowHide/code.js', 'dev');
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/70/Button_fusion.png",
-     "speedTip": "Pedir que se fusione el art√≠culo a otro",
+     "speedTip": "Pedir que se fusione el artÌculo a otro",
      "tagOpen": "{{fusionar|",
      "tagClose": "}}",
-     "sampleText": "Nombre del art√≠culo con el que se debe fusionar"};
+     "sampleText": "Nombre del artÌculo con el que se debe fusionar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png",
-     "speedTip": "P√°gina de desambiguaci√≥n",
+     "speedTip": "P·gina de desambiguaciÛn",
      "tagOpen": "{{desambiguacion}}",
      "tagClose": "",
      "sampleText": ""};
@@ -67,28 +67,28 @@ importScriptPage('ShowHide/code.js', 'dev');
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
-     "speedTip": "Proponer el art√≠culo para ser borrado",
+     "speedTip": "Proponer el artÌculo para ser borrado",
      "tagOpen": "{{borrar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se propone para borrar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_broom2.png",
-     "speedTip": "Pedir que se arregle el art√≠culo",
+     "speedTip": "Pedir que se arregle el artÌculo",
      "tagOpen": "{{arreglar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se pide el arreglo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162634/es.gta/images/d/d1/Sin_foto.png",
-     "speedTip": "Advertir de que el art√≠culo necesita im√°genes",
+     "speedTip": "Advertir de que el artÌculo necesita im·genes",
      "tagOpen": "{{sinfoto}}",
      "tagClose": "",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir de que se est√° trabajando en el art√≠culo",
+     "speedTip": "Advertir de que se est· trabajando en el artÌculo",
      "tagOpen": "{{enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
@@ -98,9 +98,9 @@ importScriptPage('ShowHide/code.js', 'dev');
 // **************************************************
 // NOMBRE DEL USUARIO
 // **************************************************
-// Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
 // o la [[Plantilla:NOMBREUSUARIO]]
-// Tra√≠da inicialmente de Uncyclopedia y corregida por 
+// TraÌda inicialmente de Uncyclopedia y corregida por 
 // uncyclopedia:es:user:Ciencia Al Poder ,
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // **************************************************
@@ -119,11 +119,11 @@ addOnloadHook(UserNameReplace);
 
 
 // **************************************************
-// REDEFINICI√ìN DE ORDENACI√ìN DE TABLAS "SORTABLE"
-// A√±adido por: [[uncyclopedia:es:user:Chixpy]]
+// REDEFINICI”N DE ORDENACI”N DE TABLAS "SORTABLE"
+// AÒadido por: [[uncyclopedia:es:user:Chixpy]]
 // Estos ingleses se creen el centro del universo y en las tablas que se
-// pueden ordenar reconocen el punto como s√≠mbolo decimal as√≠ que hago
-// Este apa√±o para que lo haga correctamente..
+// pueden ordenar reconocen el punto como sÌmbolo decimal asÌ que hago
+// Este apaÒo para que lo haga correctamente..
 // **************************************************
 
 function ts_dateToSortKey(date) {	
@@ -167,9 +167,9 @@ function ts_dateToSortKey(date) {
 	return "00000000";
 }
 
-// Modificado por Sanbec en WP-es aplicando la soluci√≥n de WP en sueco
+// Modificado por Sanbec en WP-es aplicando la soluciÛn de WP en sueco
 // (Anteriormente parece que solo cambiaba un punto)
-// EXPERIMENTAL: A√±adido adem√°s para que ordene los porcentajes.
+// EXPERIMENTAL: AÒadido adem·s para que ordene los porcentajes.
 function ts_parseFloat(num) {
         if (!num) return 0;
         num = num.replace("%", "");
@@ -179,8 +179,8 @@ function ts_parseFloat(num) {
         return (isNaN(num) ? 0 : num);
 }
 
-// Modificaci√≥n hecha por Sanbec en WP-es para que ordene alfab√©ticamente bien
-// ignorando acentos y no se limite a ordenarlo seg√∫n el c√≥digo ASCII.
+// ModificaciÛn hecha por Sanbec en WP-es para que ordene alfabÈticamente bien
+// ignorando acentos y no se limite a ordenarlo seg˙n el cÛdigo ASCII.
 function ts_sort_caseinsensitive(a,b) {
 var aa = a[1].toLowerCase();
 var bb = b[1].toLowerCase();
@@ -214,15 +214,15 @@ $(function(){
 
 
 // **************************************************
-// Desactivaci√≥n de pesta√±a de editar en foros 
-// Desactiva la pesta√±a de editar en los temas m√°s antiguos del foro, evitando 
+// DesactivaciÛn de pestaÒa de editar en foros 
+// Desactiva la pestaÒa de editar en los temas m·s antiguos del foro, evitando 
 // que la gente pueda reabrir temas antiguos. Las paginas pueden ser editadas 
-// igualmente desde la pesta√±a historial, etc, o escribiendo la direcci√≥n de 
+// igualmente desde la pestaÒa historial, etc, o escribiendo la direcciÛn de 
 // editar manualmente.
 // Por [[User:Spang|Spang]]
 // Soporte para Monaco [[User:Uberfuzzy|Uberfuzzy]]
 // Soporte para Oasis [[User:Uberfuzzy|Uberfuzzy]]
-// Traducci√≥n al espa√±ol [[User:Bola|Bola]]
+// TraducciÛn al espaÒol [[User:Bola|Bola]]
 // **************************************************
  
 if(wgNamespaceNumber == 110) {
@@ -273,9 +273,9 @@ addOnloadHook( disableOldForumEdit );
  
 // **************************************************
 // Bloqueo de comentarios para los blogs que no
-// hayan sido comentados en m√°s de 30 d√≠as
+// hayan sido comentados en m·s de 30 dÌas
 // Por: [[User:Joeyaa|Joey Ahmadi]]
-// Traducci√≥n al espa√±ol: [[User:Bola|Bola]]
+// TraducciÛn al espaÒol: [[User:Bola|Bola]]
 // **************************************************
  
 $(function() {
@@ -293,7 +293,7 @@ then = new Date(month+''+day+', '+year);
 var old = parseInt(now - then);
 old = Math.floor(old/(1000*60*60*24));
 if (old > 30) {
-$('#article-comm').attr('disabled','disabled').text('Esta entrada de blog no ha sido comentada en los √∫ltimos 30 d√≠as, por lo que no es necesario a√±adir nuevos comentarios.');
+$('#article-comm').attr('disabled','disabled').text('Esta entrada de blog no ha sido comentada en los ˙ltimos 30 dÌas, por lo que no es necesario aÒadir nuevos comentarios.');
 $('#article-comm-submit').attr('disabled','disabled');
 $('.article-comm-reply').remove();
 }
@@ -438,13 +438,13 @@ function updatetimer(i) {
       days: "dni"
     },
     'hu': {
-      and: "√©s",
-      second: "m√°sodperc",
-      seconds: "m√°sodpercek",
+      and: "Ès",
+      second: "m·sodperc",
+      seconds: "m·sodpercek",
       minute: "perc",
       minutes: "percek",
-      hour: "√≥ra",
-      hours: "√≥r√°k",
+      hour: "Ûra",
+      hours: "Ûr·k",
       day: "nap",
       days: "napok"
     }

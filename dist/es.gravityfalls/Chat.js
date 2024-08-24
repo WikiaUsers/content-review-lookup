@@ -1,8 +1,8 @@
-// GRAVITY FALLS: UN WIKI DE MISTERIOS (Versi√≥n 2.0 - Fase final)
-// C√≥digos JS- oficiales creados por  el [[Usuario:DeviantSalens]]
+// GRAVITY FALLS: UN WIKI DE MISTERIOS (VersiÛn 2.0 - Fase final)
+// CÛdigos JS- oficiales creados por  el [[Usuario:DeviantSalens]]
 // Adaptaciones oficiales realizadas por  [[Usuario:Deviantserpent]]
-// PROHIBIDO COPIAR EL C√ìDIGO, ESTO ES EXCLUSIVO PARA es.gravityfalls
-//  USO LEG√çTIMO PARA ESTE WIKI, EVITE SANCIONES POR LOS TDU DE WIKIA 
+// PROHIBIDO COPIAR EL C”DIGO, ESTO ES EXCLUSIVO PARA es.gravityfalls
+//  USO LEGÕTIMO PARA ESTE WIKI, EVITE SANCIONES POR LOS TDU DE WIKIA 
 
 // Importar scripts
 importArticles({
@@ -13,6 +13,6 @@ importArticles({
     ]
 });
 
-// GRAVITY FALLS: UN WIKI DE MISTERIOS (Versi√≥n 2.0 - Fase final)
-// PROHIBIDO COPIAR EL C√ìDIGO, ESTO ES EXCLUSIVO PARA es.gravityfalls
-//  USO LEG√çTIMO PARA ESTE WIKI, EVITE SANCIONES POR LOS TDU DE WIKIA
+// GRAVITY FALLS: UN WIKI DE MISTERIOS (VersiÛn 2.0 - Fase final)
+// PROHIBIDO COPIAR EL C”DIGO, ESTO ES EXCLUSIVO PARA es.gravityfalls
+//  USO LEGÕTIMO PARA ESTE WIKI, EVITE SANCIONES POR LOS TDU DE WIKIA

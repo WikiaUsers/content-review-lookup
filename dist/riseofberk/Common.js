@@ -4,3 +4,9 @@ $('.show_L2').click(function () {
 	}
 	$('.div_L2_' + ( $(this).attr('id') ) ).show();
 });
+
+window.DiscordBannerSettings = {
+    bannerStyle: '3',
+    inviteLink: 'DCqeNRj6Cg',
+    prependToRail: false
+};

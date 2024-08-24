@@ -1,4 +1,4 @@
-/* Cualquier JavaScript aqu√≠ se cargar√° para todos los usuarios en cada carga de la p√°gina. */
+/* Cualquier JavaScript aquÌ se cargar· para todos los usuarios en cada carga de la p·gina. */
 importArticles({
 	type: 'script',
 	articles: [
@@ -12,7 +12,7 @@ importArticles({
 		"u:dev:MediaWiki:BackToTopButton/code.js",
 		]
 });
-/* Eliminar el bot√≥n de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal 
+/* Eliminar el botÛn de Editar Saludo en el Muro a menos que sea el suyo propio o si es personal 
    --------------------------------------------------------------------------------------------- */
 $(function() {
 	var config = mw.config.get([
@@ -35,13 +35,13 @@ window.UserTagsJS = {
     modules: {},
     tags: {
         sysop: { u: 'Administrador' },
-        bureaucrat: { u: 'Bur√≥crata'},
+        bureaucrat: { u: 'BurÛcrata'},
      	threadmoderator: { u: 'Mod. de discusiones' },
     	'content-moderator': { u:'Mod. de contenido'},
     	rollback : { u:'Reversor'},
-    	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal est√° inactivo.' },
-        inactive: { u: 'Clasher Inactivo', title: 'Este usuario est√° inactivo.' },
-        imageeditor: {u: 'Editor de Im√°genes' }
+    	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal est· inactivo.' },
+        inactive: { u: 'Clasher Inactivo', title: 'Este usuario est· inactivo.' },
+        imageeditor: {u: 'Editor de Im·genes' }
     }
 };
     

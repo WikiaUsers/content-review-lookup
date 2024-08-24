@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 // Uhrendisplay
 
 window.DisplayClockJS = '%2H:%2M:%2S %2d. %B %Y (UTC)';
@@ -52,7 +52,7 @@ $(UserNameReplace);
 
 // Ein- und Ausblenden per Javascript
  
-// mit den folgenden Funktionen lÃ¤sst sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
+// mit den folgenden Funktionen lässt sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
 //
 // Variante 1 (Klick irgendwo blendet ein oder aus):
 //	<div class="klapp">
@@ -114,7 +114,7 @@ function getKlappDiv( obj )
 	return obj;
 }
  
-// Event-Handler fÃ¼r alle class="klapp"-Objekte zuweisen
+// Event-Handler für alle class="klapp"-Objekte zuweisen
 function makeAusklapp()
 {
 	// klapp-div-Rahmen
@@ -144,7 +144,7 @@ function makeAusklapp()
  
 }
  
-// Nach dem Laden des Fensters folgendes AusfÃ¼hren:
+// Nach dem Laden des Fensters folgendes Ausführen:
 addOnloadHook(makeAusklapp);
  
 /* Test if an element has a certain class **************************************

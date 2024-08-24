@@ -17,7 +17,7 @@ window.WikiNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>EntÃ©rate de todo sobre los nuevos  <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">TodoCine Fanon Wiki:Premios TodoCine</a> y aprontate para competir</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Entérate de todo sobre los nuevos  <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">TodoCine Fanon Wiki:Premios TodoCine</a> y aprontate para competir</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(WikiNotification.dismiss);
 	},

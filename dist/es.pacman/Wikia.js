@@ -1,2 +1,2 @@
-/* BotÃ³n extra en los artÃ­culos (Monobook) */
+/* Botón extra en los artículos (Monobook) */
 $(function() { $('.wikinav2 .WikiaPageHeader > .comments').before('<a class="button secondary" href="/wiki/'+ encodeURIComponent(wgPageName) +'?useskin=monobook">Ver en Monobook</a>'); });

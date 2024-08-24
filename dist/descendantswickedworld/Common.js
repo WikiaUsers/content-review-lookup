@@ -48,8 +48,8 @@ window.LockOldBlogs = {
     expiryMessage: "This blog hasn\'t been commented on for over <expiryDays> days. There is no need to comment.",
     nonexpiryCategory: "Blogs that won't expire"
 };
-Â 
-Â 
+ 
+ 
 importArticles({
     type: "script",
     articles: [

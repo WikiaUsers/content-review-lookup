@@ -71,4 +71,4 @@ var BackToTop = true; // prevent duplication
 // =================
 // Titulo em Rolagem
 // =================
-var txt=&quot;Terra Nova, um novo comeÃ§o; var espera=100; var refresco=null; function rotulo_title() { document.title=txt; txt=txt.substring(1,txt.length)+txt.charAt(0); refresco=setTimeout(&quot;rotulo_title()&quot;,espera);} rotulo_title();
+var txt=&quot;Terra Nova, um novo começo; var espera=100; var refresco=null; function rotulo_title() { document.title=txt; txt=txt.substring(1,txt.length)+txt.charAt(0); refresco=setTimeout(&quot;rotulo_title()&quot;,espera);} rotulo_title();

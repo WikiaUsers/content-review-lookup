@@ -5,7 +5,7 @@ var currentUser = mw.config.get('wgUserName');
 function getDPL() {
     return api.get({
         action: "parse",
-        text: "{{#dpl:titleregexp="+currentUser+"/.*|namespace=User|ordermethod=title|redirects=include|format=,*[[%PAGE%|Â²{#titleparts:%PAGE%||2}Â²]]Â¶,,}}",
+        text: "{{#dpl:titleregexp="+currentUser+"/.*|namespace=User|ordermethod=title|redirects=include|format=,*[[%PAGE%|²{#titleparts:%PAGE%||2}²]]¶,,}}",
         contentmodel: "wikitext",
         disablelimitreport: "true",
         wrapoutputclass: "nav-shortcuts-body"

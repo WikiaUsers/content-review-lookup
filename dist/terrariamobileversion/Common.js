@@ -46,14 +46,14 @@ window.MessageWallUserTags = {
     glowSize: '15px',
     glowColor: '#f77',
     users: {
-        'Adam9812': 'CoderÂ·Admin',
-        'Darthwikia': 'FounderÂ·Inactive',
+        'Adam9812': 'Coder·Admin',
+        'Darthwikia': 'Founder·Inactive',
         '652Graystripe': 'Moderator', 
         'Kerrawesome': 'Administrator',
         'SilverHexxitFights': 'Bureaucrat',
         'The Mysteryous User': 'Administrator',
         'Daniel.gormley.77': 'Chat Moderator',
-        'The Terraria Swag Beast': 'BureaucratÂ·Admin',
+        'The Terraria Swag Beast': 'Bureaucrat·Admin',
         'JustDanceIsTheBest': 'Chat Moderator'
     }
 };

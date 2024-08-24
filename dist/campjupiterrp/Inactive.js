@@ -4,7 +4,7 @@
  *
  * module (Info)Widgets
  * documentation at: http://dev.wikia.com/wiki/InactiveUsers
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  */
 

@@ -1,6 +1,6 @@
 function getMultiplierSp(typeSp, lvSp) {
     var allMultiplier = {
-        "l√©gers" : {
+        "lÈgers" : {
             1: 130,
             2: 140,
             3: 150,
@@ -41,7 +41,7 @@ function getMultiplierSp(typeSp, lvSp) {
             14: 330,
             15: 360
         },
-        "√©normes" : {
+        "Ènormes" : {
             1: 220,
             2: 235,
             3: 250,
@@ -202,7 +202,7 @@ function computedamage()
 	document.getElementById("outputKi").innerText = fullkiatk;
 }
 
-/* Fonction pour ajout√© cr√©er le formulaire du calculateur de d√©g√¢ts */
+/* Fonction pour ajoutÈ crÈer le formulaire du calculateur de dÈg‚ts */
 computeDamageButton = document.getElementById('ComputeDamage');
 if (computeDamageButton) {
 
@@ -214,14 +214,14 @@ if (computeDamageButton) {
     $('<input type="number" value="0"/>').appendTo(document.getElementById("fullki"));
     $(
         '<select>' +
-            '<option value="l√©gers">L√©gers d√©g√¢ts</option>' +
-            '<option value="moyens">D√©g√¢ts moyens </option>' +
-            '<option value="gros">Gros d√©g√¢ts </option>' +
-            '<option value="√©normes" selected="">√ânormes d√©g√¢ts</option>' +
-            '<option value="colossaux">D√©g√¢ts colossaux</option>' +
-            '<option value="immenses">D√©g√¢ts immenses</option>' +
-            '<option value="gigantesques">D√©g√¢ts gigantesques</option>' +
-            '<option value="titanesques">D√©g√¢ts titanesques</option>' +
+            '<option value="lÈgers">LÈgers dÈg‚ts</option>' +
+            '<option value="moyens">DÈg‚ts moyens </option>' +
+            '<option value="gros">Gros dÈg‚ts </option>' +
+            '<option value="Ènormes" selected="">…normes dÈg‚ts</option>' +
+            '<option value="colossaux">DÈg‚ts colossaux</option>' +
+            '<option value="immenses">DÈg‚ts immenses</option>' +
+            '<option value="gigantesques">DÈg‚ts gigantesques</option>' +
+            '<option value="titanesques">DÈg‚ts titanesques</option>' +
         '</select>'
     ).appendTo(document.getElementById("typesp")); //modify for select
     $('<input type="number" value="0"/>').appendTo(document.getElementById("lvsp"));

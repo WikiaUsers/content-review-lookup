@@ -17,7 +17,7 @@
                     .append(
                         $('<p>')
                             .append(
-                                'Le Wiki Heroes Fr. possÃ¨de un serveur Discord fondÃ© en 2020. Passez y faire un tour.'
+                                'Le Wiki Heroes Fr. possède un serveur Discord fondé en 2020. Passez y faire un tour.'
  ),
                         $('<a>')
                             .attr('href', 'https://discord.com/invite/Mvas27K')

@@ -14,15 +14,15 @@ importArticles({
  *Creado por JBed de FF Wiki
  *Editado por RikuNoctis de TM Wiki
  ****************************************************************************/
-//C√≥mo editar la Oasis SiteNotice:
-//Ingresa a una p√°gina en Monobook usando ?useskin=monobook en la URL,
-//haz click derecho y selecciona "Ver c√≥digo fuente de la p√°gina" en tu browser,
+//CÛmo editar la Oasis SiteNotice:
+//Ingresa a una p·gina en Monobook usando ?useskin=monobook en la URL,
+//haz click derecho y selecciona "Ver cÛdigo fuente de la p·gina" en tu browser,
 //Ctrl+F, teclea "siteNoticeID".
-//Aqu√≠ se encontraran 2 l√≠neas,
+//AquÌ se encontraran 2 lÌneas,
 //una empezando "var siteNoticeID", la otra "var siteNotice",
-//copia ambas l√≠neas y p√©galas en las l√≠neas respectivas aqu√≠ debajo. 
+//copia ambas lÌneas y pÈgalas en las lÌneas respectivas aquÌ debajo. 
 var siteNoticeID = "1.1";
-var siteNoticeValue = "\x3cdiv id=\"localNotice\" lang=\"es\" dir=\"ltr\"\x3e\x3cp\x3e¬°Bienvenido a TYPE-MOON Wiki en espa√±ol!\n\x3cbr /\x3e\nPuedes empezar a contribuir editando los temas en la categor√≠a de \x3ca href=\"/wiki/Categor%C3%ADa:Esbozos\" title=\"Categor√≠a:Esbozos\" class=\"newcategory\"\x3eEsbozos\x3c/a\x3e o en la secci√≥n de \x3ca href=\"/wiki/Especial:P%C3%A1ginasRequeridas\" title=\"Especial:P√°ginasRequeridas\"\x3eP√°ginas Requeridas\x3c/a\x3e.\nSi necesitas ayuda con la edici√≥n, puedes visitar \x3ca href=\"/wiki/Ayuda:Edici%C3%B3n\" title=\"Ayuda:Edici√≥n\"\x3eAyuda\x3c/a\x3e.\n\x3c/p\x3e\x3c/div\x3e";
+var siteNoticeValue = "\x3cdiv id=\"localNotice\" lang=\"es\" dir=\"ltr\"\x3e\x3cp\x3e°Bienvenido a TYPE-MOON Wiki en espaÒol!\n\x3cbr /\x3e\nPuedes empezar a contribuir editando los temas en la categorÌa de \x3ca href=\"/wiki/Categor%C3%ADa:Esbozos\" title=\"CategorÌa:Esbozos\" class=\"newcategory\"\x3eEsbozos\x3c/a\x3e o en la secciÛn de \x3ca href=\"/wiki/Especial:P%C3%A1ginasRequeridas\" title=\"Especial:P·ginasRequeridas\"\x3eP·ginas Requeridas\x3c/a\x3e.\nSi necesitas ayuda con la ediciÛn, puedes visitar \x3ca href=\"/wiki/Ayuda:Edici%C3%B3n\" title=\"Ayuda:EdiciÛn\"\x3eAyuda\x3c/a\x3e.\n\x3c/p\x3e\x3c/div\x3e";
  
 if(siteNoticeValue!="")
 {

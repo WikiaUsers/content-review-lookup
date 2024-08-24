@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
 
@@ -28,7 +28,7 @@ if (Spoiler()) {
 	$('<div id="blackout">' + '</div>').appendTo(article).css({
 		position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, backgroundColor: '#474646', opacity: 1
 	  });
-  var r = confirm("Auf der Seite befinden sich Spoiler. \nDrÃ¼cke OK um es dir anzuschauen. Abbruch bringt dich zur Startseite.");
+  var r = confirm("Auf der Seite befinden sich Spoiler. \nDrücke OK um es dir anzuschauen. Abbruch bringt dich zur Startseite.");
   if (r != true)
     window.location.href = "http://de.fma.wikia.com/";
   else 

@@ -52,7 +52,7 @@ var wst = wst || {
         }
 
         if ( result ) {
-            if ( decodeURIComponent( result[1] ).substring(0, 8) !== "SpÃ©cial:" ) {
+            if ( decodeURIComponent( result[1] ).substring(0, 8) !== "Spécial:" ) {
                 return decodeURIComponent( result[1] );
             } else {
                 return null;

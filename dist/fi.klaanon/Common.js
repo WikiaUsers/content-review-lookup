@@ -1,1 +1,1 @@
-/* T√§m√§n sivun JavaScript-koodi liitet√§√§n jokaiseen sivulataukseen */
+/* T‰m‰n sivun JavaScript-koodi liitet‰‰n jokaiseen sivulataukseen */

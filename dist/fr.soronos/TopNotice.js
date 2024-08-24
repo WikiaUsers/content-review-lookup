@@ -6,7 +6,7 @@
     }
     window.TopNoticeLoaded = true;
 
-    // RÃ©cupÃ©rer le contenu d'une page MediaWiki
+    // Récupérer le contenu d'une page MediaWiki
     function fetchPageContent(pageTitle, callback) {
         const api = new mw.Api();
         api.get({
@@ -20,7 +20,7 @@
         });
     }
 
-    // InsÃ©rer le contenu avant .page-header
+    // Insérer le contenu avant .page-header
     function insertContentAfterPageHeader(content) {
         if (content) {
             const $pageHeader = $('.page-header');
@@ -41,6 +41,6 @@
         fetchPageContent(pageTitle, insertContentAfterPageHeader);
     }
 
-    // ExÃ©cution
+    // Exécution
     $(document).ready(init);
 })(jQuery, mediaWiki);

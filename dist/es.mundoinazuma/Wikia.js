@@ -1,4 +1,4 @@
-//Notificaci√≥n/
+//NotificaciÛn/
 $('body').after('<ul class="WikiaNotifications" id="WikiaNotifications"><li style="font-family:Open Sans;font-size:13px;"><div data-type="2">Entra en nuestro nuevo Foro</div></li></ul>');
 
 //Reversor/
@@ -36,17 +36,17 @@ $('body').after('<ul class="WikiaNotifications" id="WikiaNotifications"><li styl
             }
         }
     }());
-// Enlaces en el men√∫ de usuario /
+// Enlaces en el men˙ de usuario /
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario_Blog:'+ encodeURIComponent(wgUserName) +'" title="Mis entradas de blog">Blogs</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);
-/* No modificar, galer√≠a  Obtenido junto con el bot√≥n volver de DC wiki*/
-// Bot√≥n galer√≠a
+/* No modificar, galerÌa  Obtenido junto con el botÛn volver de DC wiki*/
+// BotÛn galerÌa
 $(document).ready(function() { 
-  $('.wikinav2 .WikiaPageHeader > .comments').before('<a class="button secondary photogallery" href="/wiki/Galer√≠a:'+ encodeURIComponent(wgPageName) +'" title="Ver la galer√≠a de im√°genes"><img src="https://images.wikia.nocookie.net/ben10/es/images/e/e2/Photogallery.png" style="height:20px; vertical-align:middle;" /> Galer√≠a</a>');
+  $('.wikinav2 .WikiaPageHeader > .comments').before('<a class="button secondary photogallery" href="/wiki/GalerÌa:'+ encodeURIComponent(wgPageName) +'" title="Ver la galerÌa de im·genes"><img src="https://images.wikia.nocookie.net/ben10/es/images/e/e2/Photogallery.png" style="height:20px; vertical-align:middle;" /> GalerÌa</a>');
 });
  
-// Bot√≥n volver
+// BotÛn volver
 $(document).ready(function() { 
-  $('.wikinav2 .WikiaPageHeader > .comments').before('<a class="button secondary articlegallery" href="/wiki/'+ encodeURIComponent(wgTitle) +'" title="Volver al art√≠culo original"><img src="https://images.wikia.nocookie.net/ben10/es/images/4/4f/Volver.gif" style="height:20px; vertical-align:middle;" /> Volver</a>');
+  $('.wikinav2 .WikiaPageHeader > .comments').before('<a class="button secondary articlegallery" href="/wiki/'+ encodeURIComponent(wgTitle) +'" title="Volver al artÌculo original"><img src="https://images.wikia.nocookie.net/ben10/es/images/4/4f/Volver.gif" style="height:20px; vertical-align:middle;" /> Volver</a>');
 });
  
 // 23:19, January 5, 2012 (UTC)
@@ -56,6 +56,6 @@ importScript('MediaWiki:Wikia.js/userRightsIcons.js');
 // END Additional UserRights Icons in profile mastheads
 // </source>
 
-//Etiqueta para usuarios inactivos por m√°s de 3 meses
+//Etiqueta para usuarios inactivos por m·s de 3 meses
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');

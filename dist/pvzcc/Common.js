@@ -7,12 +7,45 @@ window.ajaxPages = [
     "Special:Contributions",
     "Special:WikiActivity"
 ];
+
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
-window.AddRailModule = [{prepend: false,maxAge: 1}];
+window.AddRailModule = [
+    {page: 'Template:RailModule', prepend: false,maxAge: 1},  // okay
+];
+
+var linkedDevs = document.getElementsByClassName("linkedDev");
+for (var i=0; i<linkedDevs.length; i++) {
+    var ele = linkedDevs[i];
+    if (ele.getAttribute("data-blank")) {
+        ele.addEventListener("click", window.open(ele.getAttribute("data-href")));
+    } else {
+        ele.addEventListener("click", function() {location.href = ele.getAttribute("data-href")})
+    }
+}
+
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:AddRailModule.js'
+    ]
+});
 
 window.BackToTopModern = true;
+
+// 1. AjaxRC configuration option
+window.ajaxRefresh = 1;
+window.discussEmbedLimit = 20;
+window.discussEmbedSortTrending = 0;
+
+// 2. AjaxRC import statement
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:DiscussionsEmbed.js'
+    ]
+});
 
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 1825;

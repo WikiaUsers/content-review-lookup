@@ -14,7 +14,7 @@ var ShowHideConfig = {
     }
 }
 /* Compatibilidad, al inicio del resto de carga de elementos. Necesario para que todas las utilidades que funcionan en Monobook y Monaco funcionen en oasis 
-* Wikia: Â¿QuiÃ©n tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
+* Wikia: ¿Quién tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
 function oasisCompatElements() {
 	$(document.body).append('<section id="positioned_elements"></section>');
 	var fb = $('#WikiaArticle').children('#fb-root').eq(0);

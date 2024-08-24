@@ -1,4 +1,4 @@
-/* Es carregar√† per a tots els usuaris, i per a qualsevol p√†gina, el codi JavaScript que hi haja despr√©s d'aquesta l√≠nia. */
+/* Es carregar‡ per a tots els usuaris, i per a qualsevol p‡gina, el codi JavaScript que hi haja desprÈs d'aquesta lÌnia. */
 
 /* Any JavaScript here will be loaded for all users on every page load. */
  

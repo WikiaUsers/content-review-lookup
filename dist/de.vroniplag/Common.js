@@ -1,11 +1,11 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 window.RevealAnonIP = { permissions : ['user'] };
 
 window.SignatureCheckJS = {
 	// Parts of the confirm prompt
-	preamble: 'Es gibt mÃ¶glicherweise Probleme mit deinem Beitrag:\n\n',
-	epilogue: '\nMÃ¶chtest Du den Beitrag trotzdem abschicken?',
+	preamble: 'Es gibt möglicherweise Probleme mit deinem Beitrag:\n\n',
+	epilogue: '\nMöchtest Du den Beitrag trotzdem abschicken?',
 	noForumheader: '!! Auf dieser Seite ist kein Forumheader. Seiten ohne den Header werden in der Forumliste nicht angezeigt.\n',
 	noSignature: '?? Es sieht so aus, als fehlt die Unterschrift unter deinem Beitrag. Benutze bitte <nowiki>~~~~</nowiki> zum Unterschreiben.\n',
  
@@ -16,7 +16,7 @@ window.SignatureCheckJS = {
 
 // This will refresh your RecentChanges automatically, for maximum stalking ability. http://dev.wikia.com/wiki/AjaxRC
 var ajaxRefresh = 30000;
-var ajaxPages = ["Special:RecentChanges","Spezial:Letzte_Ã„nderungen"];
+var ajaxPages = ["Special:RecentChanges","Spezial:Letzte_Änderungen"];
 
 var ShowHideConfig = { 
     autoCollapse: 3, 

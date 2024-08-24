@@ -1,6 +1,6 @@
 /*********** QUIZ-JavaScript ***********
 Dieses JavaScript wandelt eine POLL-Umfrage in ein Quiz
-Dabei mÃ¼ssen verschiedene Vorlagen und CSS verwendet werden,
+Dabei müssen verschiedene Vorlagen und CSS verwendet werden,
 damit das Quiz auch als solches erkannt wird.
 
 Verwendet wird:
@@ -15,7 +15,7 @@ function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-//Eine einfache Funktion, die aufgerufen werden soll, wenn der Button gedrÃ¼ckt wurde:
+//Eine einfache Funktion, die aufgerufen werden soll, wenn der Button gedrückt wurde:
 function QuizButtonFunktion()
 {
   //Nur URL - Falls irgendwelche Sondersachen aufgerufen sind, werden die abgeschnitten
@@ -34,7 +34,7 @@ if (Position != null && document.getElementById("QuizHiddenButton") != null)
       if (Position.childNodes[anz].className == "wikia-button comments secondary" ||
           Position.childNodes[anz].className == "wikia-button comments secondary talk"   )
       {
-        // Jetzt fÃ¼gen wir den eigentlichen Button ein:
+        // Jetzt fügen wir den eigentlichen Button ein:
         var ButtonElement    = document.createElement("span");
         var ButtonTxt        = document.createTextNode("Quiz"); 
         ButtonElement.appendChild(ButtonTxt); 
@@ -83,7 +83,7 @@ if (document.getElementById("Quiz-Start") != null)
     /*************************\
             Funktionen
     \*************************/
-    // Hintergrundbild Ã¤ndern
+    // Hintergrundbild ändern
     var Img_Nr = 0;
     function NextBackgroundPicture() 
     {
@@ -100,8 +100,8 @@ if (document.getElementById("Quiz-Start") != null)
         var Faktor = document.QuizBG.height / document.QuizBG.width;
         var FaktorBreite = document.getElementById("QuizRahmen").offsetWidth * Faktor;
         // 630 * Faktor < 408 -> Faktor reduziert Breite zu stark, sodass Rand entsteht 
-        // - Es muss sich an HÃ¶he orientiert werden
-        // HÃ¶he / Breite = Faktor ==> HÃ¶he = Breite * Faktor wenn Faktor = 1 | H < B fÃ¼r k<1 | H > B fÃ¼r k>1
+        // - Es muss sich an Höhe orientiert werden
+        // Höhe / Breite = Faktor ==> Höhe = Breite * Faktor wenn Faktor = 1 | H < B für k<1 | H > B für k>1
         if (FaktorBreite < document.getElementById("QuizRahmen").offsetHeight) 
         {
             document.QuizBG.style.height = "100%";
@@ -116,7 +116,7 @@ if (document.getElementById("Quiz-Start") != null)
         return true;
         }  // Ende NextBackgroundPicture
 
-        //NÃ¤chstes Poll heraus suchen und auslesen
+        //Nächstes Poll heraus suchen und auslesen
         function GetNextPoll() 
         {
             // Vor jedem Poll soll ein (neues) Hintergrundbild stehen
@@ -163,7 +163,7 @@ if (document.getElementById("Quiz-Start") != null)
         return false;  // Es gibt kein weiteres DIV - also abbrechen.
     }
  
-    //Die Funktion gibt die jeweiligen Antworten oder Votes zurÃ¼ck
+    //Die Funktion gibt die jeweiligen Antworten oder Votes zurück
     function GetAnswer(element, Erwartung, Nummer)
     {   
         switch (Erwartung) {
@@ -186,7 +186,7 @@ if (document.getElementById("Quiz-Start") != null)
         var QuizElement = GetNextPoll();
         if (! QuizElement) { return false; }
 
-        //Wenn Frage gefunden, dann ZÃ¤hler erhÃ¶hen
+        //Wenn Frage gefunden, dann Zähler erhöhen
         AnzFragen += 1; 
 
         var FormElement = null;
@@ -213,7 +213,7 @@ if (document.getElementById("Quiz-Start") != null)
                         "Vermutung, dass das Poll-Element defekt ist.\n"+
                         "Abbruch der Quizerstellung.\n"+
                         "\n"+
-                        "Nachricht nur fÃ¼r 20M61, anderen wird sie nicht angezeigt."); 
+                        "Nachricht nur für 20M61, anderen wird sie nicht angezeigt."); 
             }
             return false; 
         }
@@ -236,7 +236,7 @@ if (document.getElementById("Quiz-Start") != null)
         LeserPunkte[MaxAntwort]  = AntwortPunkte[ButtonNr*1];
         MaxAntwort += 1;
 
-        //Nur die richtigen Antworten einfÃ¤rben
+        //Nur die richtigen Antworten einfärben
         if (AntwortPunkte[1] > 0 || AntwortPunkte[1] == true || AntwortPunkte[1] == "wahr")
             document.getElementById("Antwort1").className = "AnswerCorrect";
         if (AntwortPunkte[2] > 0 || AntwortPunkte[2] == true || AntwortPunkte[2] == "wahr")
@@ -246,7 +246,7 @@ if (document.getElementById("Quiz-Start") != null)
         if (AntwortPunkte[4] > 0 || AntwortPunkte[4] == true || AntwortPunkte[4] == "wahr")
             document.getElementById("Antwort4").className = "AnswerCorrect";
 
-        //ÃœberprÃ¼fen, ob Antwort richtig oder falsch war
+        //Überprüfen, ob Antwort richtig oder falsch war
         if (AntwortPunkte[ButtonNr*1] > 0 || AntwortPunkte[ButtonNr*1] == true || AntwortPunkte[ButtonNr*1] == "wahr")
             document.getElementById("Antwort"+ButtonNr).className = "AnswerCorrect";
         else 
@@ -284,13 +284,13 @@ if (document.getElementById("Quiz-Start") != null)
             document.getElementById("QuizInteraktionsbox").style.display = "none";
 
             //Abschlussbild laden (sonst Standardbild)
-            //NextBackgroundPicture(); ReadPoll() liest bereits das nÃ¤chste Bild aus.
+            //NextBackgroundPicture(); ReadPoll() liest bereits das nächste Bild aus.
                 
             //DIV mit Abschluss-Darstellung einbinden
             var EndDIV = document.getElementById("EndDIV");
             document.getElementById("QuizRahmen").appendChild(EndDIV);
                 
-            //In dem AbschlussDIV sÃ¤mtliche Spezialelemente mit Variablen bestÃ¼cken
+            //In dem AbschlussDIV sämtliche Spezialelemente mit Variablen bestücken
             var Element_EndDIV = EndDIV.getElementsByTagName("span"); 
             for (i=0; i < Element_EndDIV.length; i++)
             {
@@ -367,7 +367,7 @@ if (document.getElementById("Quiz-Start") != null)
       }
       QuizBildDIV.appendChild(QuizBGBild);
 
-    //Ãœberschrift
+    //Überschrift
     QuizElement           = document.createElement("div");
     QuizElement.className = "QuizHeadline";
     QuizElement.id        = "QuizHeadline"; 
@@ -445,7 +445,7 @@ if (document.getElementById("Quiz-Start") != null)
         QuizVersionElement.appendChild(QuizElementTxt);
 
     /*************************\
-         AusfÃ¼hrbarer Code
+         Ausführbarer Code
     \*************************/
     NextBackgroundPicture(); // Setzt das erste Hintergrundbild ein.
 

@@ -1,5 +1,5 @@
-/* NavegaciÃ³n extendida 
-*AÃ±ade niveles 4 y 5 a la barra de navegacion
+/* Navegación extendida 
+*Añade niveles 4 y 5 a la barra de navegacion
 */
 importArticles({
     type: 'script',

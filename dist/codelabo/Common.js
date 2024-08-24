@@ -1,16 +1,16 @@
 /***************************************************
-ATRIBUCIÃ“N:
+ATRIBUCIÓN:
  * @autor - pecoes
- * @modificaciÃ³n - Pintor Kagamine
+ * @modificación - Pintor Kagamine
  * @comunidad - Code Labo
  * @interwiki - codelabo
 ***************************************************
- * por favor, no usÃ©is el cÃ³digo sin antes
+ * por favor, no uséis el código sin antes
  * contactar con Pintor Kagamine/Light of Cosmos para 
- * evitar posibles problemas con respecto al cÃ³digo.
+ * evitar posibles problemas con respecto al código.
 ***************************************************/
 // SexyUserPage modificado
-  // para usar CSS en prÃ¡cticamente cualquier artÃ­culo
+  // para usar CSS en prácticamente cualquier artículo
 ;(function (mw, $) {
  
     'use strict';
@@ -87,6 +87,6 @@ $('.sc-player').each(function() {
   if (soundid) {
     $(this).html('<iframe width="' + soundwidth + '" height="' + soundheight + '" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=http://api.soundcloud.com/tracks/' + soundid + ';auto_play=false;hide_related=false;show_comments=true;show_user=true;show_reposts=false;visual=true"></iframe>');
   } else {
-    window.GlobalNotification.show('Este artÃ­culo contiene un reproductor de Soundcloud, pero no se ha especificado el archivo.', 'error');
+    window.GlobalNotification.show('Este artículo contiene un reproductor de Soundcloud, pero no se ha especificado el archivo.', 'error');
   };
 });

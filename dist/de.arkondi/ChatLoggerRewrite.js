@@ -110,7 +110,7 @@ function getLog(exists,content) {
   var wikilinks = new RegExp('<a href="'+wgServer+'/wiki/([^"]*)">([^<]*)</a>','g')
   ChatLog = ChatLog.replace(/( |  ){2,}/g, ' ').replace(/<img src="[^"]+".*?alt="([^"]+)"[^>]*>/g, '$1').replace(wikilinks, function(match,page,title) {return '[['+page.replace(/_/g,' ')+'|'+title+']]'}).replace(/\[\[([^\]]*?) {2,}/g, '[[$1 ').replace(/\[\[([^|]*)\|\1]]/g, '[[$1]]').replace(/<a href="([^"]+)">[^<]*<\/a>/g, '$1').replace('[['+wgServer+'/wiki/]]', wgServer+'/wiki/') //HTML img and a tag fixes
   active().clearWindow()
-  var returnThis = exists ? content.replace('</pre>',ChatLog+'</pre>'):'<pre class="ChatLog">\n'+ChatLog+'</pre>\n[[Category:Wikia Chat logs|<strong class="error">Fehler: UngÃ¼ltige Zeitangabe</strong>]]'
+  var returnThis = exists ? content.replace('</pre>',ChatLog+'</pre>'):'<pre class="ChatLog">\n'+ChatLog+'</pre>\n[[Category:Wikia Chat logs|<strong class="error">Fehler: Ungültige Zeitangabe</strong>]]'
   return returnThis
 }
 

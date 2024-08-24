@@ -1,7 +1,7 @@
 /* De Wikidex*/
 
 /** WikiaShoutBox v1.4: Conector para el Widget ShoutBox de Wikia
- * (C) 2011 JesÃºs MartÃ­nez Novo [[User:Ciencia_Al_Poder]]
+ * (C) 2011 Jesús Martínez Novo [[User:Ciencia_Al_Poder]]
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -103,7 +103,7 @@ var WikiaShoutBox = {
 			actionType: atype,
 			id: WikiaShoutBox.wid,
 			skin: WikiaShoutBox.skin,
-			cbuser: encodeURIComponent(window.wgUserName) // un ID por usuario, por la cachÃ©
+			cbuser: encodeURIComponent(window.wgUserName) // un ID por usuario, por la caché
 		};
 		req = $.extend(req, params);
 		WikiaShoutBox.busy(true);

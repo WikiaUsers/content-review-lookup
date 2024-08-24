@@ -1,4 +1,4 @@
-/* Qualquer JavaScript aqui ser√° carregado com cada p√°gina acessada por qualquer usu√°rio. */
+/* Qualquer JavaScript aqui ser· carregado com cada p·gina acessada por qualquer usu·rio. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -8,8 +8,8 @@
  * See w:c:dev:AjaxRC for info & attribution 
  */
  
-AjaxRCRefreshText = 'Auto-atualiza√ß√£o';
-AjaxRCRefreshHoverText = 'Atualiza a p√°gina automaticamente';
+AjaxRCRefreshText = 'Auto-atualizaÁ„o';
+AjaxRCRefreshHoverText = 'Atualiza a p·gina automaticamente';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

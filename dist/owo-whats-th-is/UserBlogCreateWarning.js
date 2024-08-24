@@ -1,15 +1,15 @@
 /**
  * UserBlogCreateWarning
  * 
- * Muestra el aviso sobre la creaciÃ³n de blogs
+ * Muestra el aviso sobre la creación de blogs
  *
  * @version 1.0.1
  * @author HumanoidPikachu <deathsoulasriel@gmail.com>
 **/
  
-/**Y aquÃ­ comienza todo**/
+/**Y aquí comienza todo**/
 if (wgCanonicalSpecialPageName == 'CreateBlogPage') {
-    var userWelcomeCreateBlogBox = $.showCustomModal("Â¡Advertencia!", '<p>Recuerda que los blogs que se usan aquÃ­ son solo para avisar y solo pueden ser usados por el equipo Hispano de Fandom, continuar haciendo esto se le marcarÃ¡ este blog para ser borrado y en breve un administrador verÃ¡ el blog para ser borrado, te invitamos a <a href="http://www.wikia.com/Special:CreateNewWiki?uselang=es">crear un wiki</a> para mas comodidad.</p>', {
+    var userWelcomeCreateBlogBox = $.showCustomModal("¡Advertencia!", '<p>Recuerda que los blogs que se usan aquí son solo para avisar y solo pueden ser usados por el equipo Hispano de Fandom, continuar haciendo esto se le marcará este blog para ser borrado y en breve un administrador verá el blog para ser borrado, te invitamos a <a href="http://www.wikia.com/Special:CreateNewWiki?uselang=es">crear un wiki</a> para mas comodidad.</p>', {
     id: "userWelcomeCreateBlogBox",
     width: 550,
     buttons: [
@@ -25,7 +25,7 @@ if (wgCanonicalSpecialPageName == 'CreateBlogPage') {
     {
         id: "submit",
         defaultButton: true,
-        message: "Tengo autorizaciÃ³n y/o soy miembro del equipo",
+        message: "Tengo autorización y/o soy miembro del equipo",
         handler: function() {
             $('#userWelcomeCreateBlogBox').closeModal();
         }

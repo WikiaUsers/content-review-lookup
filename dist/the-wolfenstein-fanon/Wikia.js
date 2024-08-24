@@ -7,7 +7,7 @@ function addMastheadTags() {
 
   rights["MrDelirious"]      = ["Rising Star", "Color Sergeant"];
   rights["Techman129"]       = ["The Tech Guy"];
-  rights["Xeno Fighter 451"] = ["Gott FÃ¼hrer"];
+  rights["Xeno Fighter 451"] = ["Gott Führer"];
   rights["Nikki Lee 1999"]   = ["Minister of the Interior"];
   rights["XenoBot451"]       = ["Bot"]
   

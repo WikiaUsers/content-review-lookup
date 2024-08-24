@@ -1,5 +1,5 @@
 /* 
-El contenido aqu√≠ mostrado se aplicar√° en todos los skins, por favor, estas p√°ginas afectan de forma muy significativa al funcionamiento del wiki, no las alteres a menos que est√©s completamente seguro de lo que est√°s haciendo. Gran parte del texto ha sido extra√≠do de Inciclopedia y adaptado para Grand Theft Encyclopedia, por favor ten en cuenta al copiar el texto que es probable que no funcione correctamente en tu wiki. Gracias.
+El contenido aquÌ mostrado se aplicar· en todos los skins, por favor, estas p·ginas afectan de forma muy significativa al funcionamiento del wiki, no las alteres a menos que estÈs completamente seguro de lo que est·s haciendo. Gran parte del texto ha sido extraÌdo de Inciclopedia y adaptado para Grand Theft Encyclopedia, por favor ten en cuenta al copiar el texto que es probable que no funcione correctamente en tu wiki. Gracias.
 */
 
 /** Archive edit tab disabling *************************************
@@ -43,84 +43,84 @@ addOnloadHook( disableOldForumEdit );
 -------------------------------------
 AYUDAS EMERGENTES Y ATAJOS DE TECLADO
 -------------------------------------
-Esta secci√≥n contiene las traducciones de los mensajes emergentes en
-  los enlaces de los men√∫s.
+Esta secciÛn contiene las traducciones de los mensajes emergentes en
+  los enlaces de los men˙s.
 
-A su vez tambi√©n define la tecla que se debe usar junto con la
-  tecla ALT para acceder a esas p√°ginas.
+A su vez tambiÈn define la tecla que se debe usar junto con la
+  tecla ALT para acceder a esas p·ginas.
 
 En algunos exploradores usan otra tecla especial para ello:
   por ejemplo el SeaMonkey usa MAYS+ALT+la tecla correspondiente.
 */
 
 ta = new Object();
-ta['pt-userpage'] = new Array('.','Mi p√°gina de usuario');
-ta['pt-anonuserpage'] = new Array('.','La p√°gina de usuario de la IP desde la que editas');
-ta['pt-mytalk'] = new Array('n','Mi p√°gina de discusi√≥n');
-ta['pt-anontalk'] = new Array('n','Discusi√≥n sobre ediciones hechas desde esta direcci√≥n IP');
+ta['pt-userpage'] = new Array('.','Mi p·gina de usuario');
+ta['pt-anonuserpage'] = new Array('.','La p·gina de usuario de la IP desde la que editas');
+ta['pt-mytalk'] = new Array('n','Mi p·gina de discusiÛn');
+ta['pt-anontalk'] = new Array('n','DiscusiÛn sobre ediciones hechas desde esta direcciÛn IP');
 ta['pt-preferences'] = new Array('','Mis preferencias');
-ta['pt-watchlist'] = new Array('l','La lista de p√°ginas para las que est√°s vigilando los cambios');
+ta['pt-watchlist'] = new Array('l','La lista de p·ginas para las que est·s vigilando los cambios');
 ta['pt-mycontris'] = new Array('y','Lista de mis contribuciones');
 ta['pt-login'] = new Array('o','Te animamos a registrarte, aunque no es obligatorio');
 ta['pt-anonlogin'] = new Array('o','Te animamos a registrarte, aunque no es obligatorio');
-ta['pt-logout'] = new Array('o','Salir de la sesi√≥n');
-ta['ca-talk'] = new Array('t','Discusi√≥n acerca del art√≠culo');
-ta['ca-edit'] = new Array('e','Puedes editar esta p√°gina. Por favor, usa el bot√≥n de previsualizaci√≥n antes de grabar.');
-ta['ca-addsection'] = new Array('+','A√±ade un comentario a esta discusi√≥n');
-ta['ca-viewsource'] = new Array('e','Esta p√°gina est√° protegida, s√≥lo puedes ver su c√≥digo fuente');
-ta['ca-history'] = new Array('h','Versiones anteriores de esta p√°gina y sus autores');
-ta['ca-protect'] = new Array('=','Proteger esta p√°gina');
-ta['ca-delete'] = new Array('d','Borrar esta p√°gina');
-ta['ca-undelete'] = new Array('d','Restaurar las ediciones hechas a esta p√°gina antes de que fuese borrada');
-ta['ca-move'] = new Array('m','Trasladar (renombrar) esta p√°gina');
-ta['ca-watch'] = new Array('w','A√±adir esta p√°gina a tu lista de seguimiento');
-ta['ca-unwatch'] = new Array('w','Borrar esta p√°gina de tu lista de seguimiento');
+ta['pt-logout'] = new Array('o','Salir de la sesiÛn');
+ta['ca-talk'] = new Array('t','DiscusiÛn acerca del artÌculo');
+ta['ca-edit'] = new Array('e','Puedes editar esta p·gina. Por favor, usa el botÛn de previsualizaciÛn antes de grabar.');
+ta['ca-addsection'] = new Array('+','AÒade un comentario a esta discusiÛn');
+ta['ca-viewsource'] = new Array('e','Esta p·gina est· protegida, sÛlo puedes ver su cÛdigo fuente');
+ta['ca-history'] = new Array('h','Versiones anteriores de esta p·gina y sus autores');
+ta['ca-protect'] = new Array('=','Proteger esta p·gina');
+ta['ca-delete'] = new Array('d','Borrar esta p·gina');
+ta['ca-undelete'] = new Array('d','Restaurar las ediciones hechas a esta p·gina antes de que fuese borrada');
+ta['ca-move'] = new Array('m','Trasladar (renombrar) esta p·gina');
+ta['ca-watch'] = new Array('w','AÒadir esta p·gina a tu lista de seguimiento');
+ta['ca-unwatch'] = new Array('w','Borrar esta p·gina de tu lista de seguimiento');
 ta['search'] = new Array('f','Buscar en este wiki');
 ta['p-logo'] = new Array('','Portada');
 ta['n-mainpage'] = new Array('z','Visitar la Portada');
-ta['n-portal'] = new Array('','Acerca del proyecto, qu√© puedes hacer, d√≥nde encontrar informaci√≥n');
-ta['n-currentevents'] = new Array('','Informaci√≥n de contexto sobre acontecimientos actuales');
+ta['n-portal'] = new Array('','Acerca del proyecto, quÈ puedes hacer, dÛnde encontrar informaciÛn');
+ta['n-currentevents'] = new Array('','InformaciÛn de contexto sobre acontecimientos actuales');
 ta['n-recentchanges'] = new Array('r','La lista de cambios recientes en el wiki');
-ta['n-randompage'] = new Array('x','Cargar una p√°gina aleatoriamente');
+ta['n-randompage'] = new Array('x','Cargar una p·gina aleatoriamente');
 ta['n-help'] = new Array('','El lugar para aprender');
-ta['n-sitesupport'] = new Array('','Resp√°ldanos');
-ta['t-whatlinkshere'] = new Array('j','Lista de todas las p√°ginas del wiki que enlazan con √©sta');
-ta['t-recentchangeslinked'] = new Array('k','Cambios recientes en las p√°ginas que enlazan con esta otra');
-ta['feed-rss'] = new Array('','Sindicaci√≥n RSS de esta p√°gina');
-ta['feed-atom'] = new Array('','Sindicaci√≥n Atom de esta p√°gina');
+ta['n-sitesupport'] = new Array('','Resp·ldanos');
+ta['t-whatlinkshere'] = new Array('j','Lista de todas las p·ginas del wiki que enlazan con Èsta');
+ta['t-recentchangeslinked'] = new Array('k','Cambios recientes en las p·ginas que enlazan con esta otra');
+ta['feed-rss'] = new Array('','SindicaciÛn RSS de esta p·gina');
+ta['feed-atom'] = new Array('','SindicaciÛn Atom de esta p·gina');
 ta['t-contributions'] = new Array('','Ver la lista de contribuciones de este usuario');
 ta['t-emailuser'] = new Array('','Enviar un mensaje de correo a este usuario');
-ta['t-upload'] = new Array('u','Subir im√°genes o archivos multimedia');
-ta['t-specialpages'] = new Array('q','Lista de todas las p√°ginas especiales');
-ta['ca-nstab-main'] = new Array('c','Ver el art√≠culo');
-ta['ca-nstab-user'] = new Array('c','Ver la p√°gina de usuario');
-ta['ca-nstab-media'] = new Array('c','Ver la p√°gina de multimedia');
-ta['ca-nstab-special'] = new Array('','Esta es una p√°gina especial, no se puede editar la p√°gina en s√≠');
-ta['ca-nstab-wp'] = new Array('a','Ver la p√°gina de proyecto');
-ta['ca-nstab-image'] = new Array('c','Ver la p√°gina de la imagen');
+ta['t-upload'] = new Array('u','Subir im·genes o archivos multimedia');
+ta['t-specialpages'] = new Array('q','Lista de todas las p·ginas especiales');
+ta['ca-nstab-main'] = new Array('c','Ver el artÌculo');
+ta['ca-nstab-user'] = new Array('c','Ver la p·gina de usuario');
+ta['ca-nstab-media'] = new Array('c','Ver la p·gina de multimedia');
+ta['ca-nstab-special'] = new Array('','Esta es una p·gina especial, no se puede editar la p·gina en sÌ');
+ta['ca-nstab-wp'] = new Array('a','Ver la p·gina de proyecto');
+ta['ca-nstab-image'] = new Array('c','Ver la p·gina de la imagen');
 ta['ca-nstab-mediawiki'] = new Array('c','Ver el mensaje de sistema');
 ta['ca-nstab-template'] = new Array('c','Ver la plantilla');
-ta['ca-nstab-help'] = new Array('c','Ver la p√°gina de ayuda');
-ta['ca-nstab-category'] = new Array('c','Ver la p√°gina de categor√≠a');
-ta['ca-nstab-forum'] = new Array('c','Ver p√°gina del foro');
+ta['ca-nstab-help'] = new Array('c','Ver la p·gina de ayuda');
+ta['ca-nstab-category'] = new Array('c','Ver la p·gina de categorÌa');
+ta['ca-nstab-forum'] = new Array('c','Ver p·gina del foro');
 
 /*
 
 /* <pre>
  * Thickbox4MediaWiki v3.1 - Based on Thickbox 3.1 By Cody Lindley (http://www.codylindley.com)
- * Copyright (c) 2010 - 2011 Jes√∫s Mart√≠nez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
+ * Copyright (c) 2010 - 2011 Jes˙s MartÌnez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
 window.Thickbox = (function($) {
 	var _version = '3.1',
-	// Dimensiones m√≠nimas
+	// Dimensiones mÌnimas
 	_minWidth = 210,
 	// Margen entre la imagen y el borde de ThickBox
 	_imageMarginWidth = 15,
-	// Margen m√≠nimo hasta el borde de la ventana. Si se supera la imagen se reducir√°
+	// Margen mÌnimo hasta el borde de la ventana. Si se supera la imagen se reducir·
 	_minMarginWidth = 30,
 	_minMarginHeight = 15,
-	// Tiempo de espera para la aparici√≥n del loader en ms
+	// Tiempo de espera para la apariciÛn del loader en ms
 	_loaderWait = 500,
 	// Internos
 	_imgPreloader = null,
@@ -139,7 +139,7 @@ window.Thickbox = (function($) {
 	_loaded = false,
 	// Funciones privadas
 	_init = function() {
-		// Se podr√≠a haber puesto un evento directamente en cada 'a.image', pero esto es mucho m√°s r√°pido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
+		// Se podrÌa haber puesto un evento directamente en cada 'a.image', pero esto es mucho m·s r·pido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
 		$('#mw-content-text').unbind('click.thickbox').bind('click.thickbox', _triggerEvent).unbind('mouseover.thickbox_imgtip').bind('mouseover.thickbox_imgtip', _imgTipEvent);
 	},
 	_triggerEvent = function(e) {
@@ -153,7 +153,7 @@ window.Thickbox = (function($) {
 			if (!a || !_isTag(a,'a') || !_isClass(a,'image')) {
 				return true;
 			}
-			// Galer√≠a Wikia 2
+			// GalerÌa Wikia 2
 			if (_isClass(a,'lightbox')) {
 				target.blur();
 				_getCaption = _getCaptionWikia;
@@ -188,7 +188,7 @@ window.Thickbox = (function($) {
 					return false;
 				}
 			}
-			// Es thumb gen√©rico
+			// Es thumb genÈrico
 			a.blur();
 			_getCaption = _getCaptionEmpty;
 			_showImage(a);
@@ -265,7 +265,7 @@ window.Thickbox = (function($) {
 					descUrl = mw.util.wikiGetlink('File:' + descTitle);
 				}
 			}
-			TB_descLink = '<a id="TB_descLink" class="sprite details" href="' + descUrl + '" title="Ir a la p√°gina de descripci√≥n de la imagen"></a>';
+			TB_descLink = '<a id="TB_descLink" class="sprite details" href="' + descUrl + '" title="Ir a la p·gina de descripciÛn de la imagen"></a>';
 			// Se trata de un gallery?
 			if (_galleryIndex != -1) {
 				TB_secondLine = '<div id="TB_secondLine">'+
@@ -327,22 +327,22 @@ window.Thickbox = (function($) {
 				elOffset = tgEl.offset(),
 				lw = elOffset.left,
 				rw = $(document).width() - elOffset.left - tgEl.width(),
-				// Calculamos las dimensiones √≥ptimas. Calculamos el √°rea y determinamos que lo ideal es proporci√≥n 3/2
+				// Calculamos las dimensiones Ûptimas. Calculamos el ·rea y determinamos que lo ideal es proporciÛn 3/2
 				prefw = parseInt(Math.sqrt(wnd.width()*wnd.height()*3/2),10),
-				// Correcci√≥n de ancho m√≠nimo en caso de producirse scroll
+				// CorrecciÛn de ancho mÌnimo en caso de producirse scroll
 				cd = $('#TB_ajaxContent')[0];
 			prefw += cd.scrollWidth-cd.clientWidth;
-			// No se debe reducir el ancho m√≠nimo
+			// No se debe reducir el ancho mÌnimo
 			if (prefw < _minWidth) {
 				prefw = _minWidth;
 			}
-			// Posici√≥n. 5px de margen respecto el origen. Situaci√≥n ideal: a la derecha del elemento
+			// PosiciÛn. 5px de margen respecto el origen. SituaciÛn ideal: a la derecha del elemento
 			var margen = 5, left = $(document).width() - rw + margen;
 			if (rw > prefw + margen) {
 				// ya es correcto
 			} else if (lw > prefw + margen) {
 				left = lw - prefw - margen;
-			} else if (lw < 250 || rw < 250) { // No cabe en ninguno de los dos lados. Miramos si no puede usarse el ancho m√≠nimo (250). En ese caso el ancho lo forzamos y lo ponemos a la derecha
+			} else if (lw < 250 || rw < 250) { // No cabe en ninguno de los dos lados. Miramos si no puede usarse el ancho mÌnimo (250). En ese caso el ancho lo forzamos y lo ponemos a la derecha
 				prefw = 250;
 			} else if (rw > lw) { // Se usa el ancho disponible del lado mayor
 				prefw = rw - margen;
@@ -351,14 +351,14 @@ window.Thickbox = (function($) {
 				left = margen;
 			}
 			wnd.css({width: prefw, left: left});
-			// Ahora la posici√≥n vertical. necesita que hayamos asignado el width para que lo calcule bien
+			// Ahora la posiciÛn vertical. necesita que hayamos asignado el width para que lo calcule bien
 			var top = elOffset.top - parseInt(wnd.height(), 10) - margen;
 			// Si no cabe arriba lo colocamos debajo
 			if (top < margen) {
 				top = elOffset.top + tgEl.height() + margen;
 			}
 			wnd.css({top: top, visibility: 'visible'});
-			// Animaci√≥n si queda fuera del campo visual
+			// AnimaciÛn si queda fuera del campo visual
 			if (($('html')[0].scrollTop||$('body')[0].scrollTop) > top-margen) {
 				$('html,body').animate({scrollTop: top - margen}, 250, 'swing');
 			}
@@ -400,7 +400,7 @@ window.Thickbox = (function($) {
 		}
 	},
 	_position = function(anim) {
-		// Ancho m√≠nimo
+		// Ancho mÌnimo
 		var border = 4;
 		if (_width < _minWidth) {
 			_width = _minWidth;
@@ -448,12 +448,12 @@ window.Thickbox = (function($) {
 			wndH = $('#TB_window').height(),
 			// Resizing large images - orginal by Christian Montoya edited by me.
 			pagesize = _getPageSize(),
-			// Dimensiones m√°ximas
+			// Dimensiones m·ximas
 			x = pagesize[0] - _minMarginWidth * 2 - _imageMarginWidth * 2,
 			y = pagesize[1] - _minMarginHeight * 2 - wndH + img.height(),
 			imageWidth = _imgPreloader.width,
 			imageHeight = _imgPreloader.height;
-		// Puede entrar por una o por las dos. De hecho, con esta comprobaci√≥n basta, ya que si tiene que pasar por las dos da igual por qu√© lado se reduzca primero
+		// Puede entrar por una o por las dos. De hecho, con esta comprobaciÛn basta, ya que si tiene que pasar por las dos da igual por quÈ lado se reduzca primero
 		if (imageWidth > x) {
 			imageHeight = imageHeight * (x / imageWidth);
 			imageWidth = x;
@@ -468,7 +468,7 @@ window.Thickbox = (function($) {
  
 		// Dimensiones de la ventana Thickbox para posicionar
 		_width = imageWidth + _imageMarginWidth * 2; // 15px de espacio en cada lado
-		// La altura de la ventana la conocemos. Solo hay que reemplazar la imagen antigua y poner la nueva, esto es, sus dimensiones. El height se tiene que hacer diferente porque intervienen m√°s elementos que en el ancho
+		// La altura de la ventana la conocemos. Solo hay que reemplazar la imagen antigua y poner la nueva, esto es, sus dimensiones. El height se tiene que hacer diferente porque intervienen m·s elementos que en el ancho
 		_height = wndH - img.height() + imageHeight;
 		img.attr({
 			src: _imgPreloader.src,
@@ -476,7 +476,7 @@ window.Thickbox = (function($) {
 		});
  
 		var imgOpt = {width: imageWidth, height: imageHeight, opacity: 1};
-		// Miramos si se carga al abrir o despu√©s de navegar. Si viene de abrirse, sin animaci√≥n
+		// Miramos si se carga al abrir o despuÈs de navegar. Si viene de abrirse, sin animaciÛn
 		if (firstNav) {
 			img.css(imgOpt);
 		} else {
@@ -555,7 +555,7 @@ window.Thickbox = (function($) {
 				return _hideImgTip();
 			}
 			t = $(target);
-			// Mostramos solo si la imagen tiene un tama√±o m√≠nimo
+			// Mostramos solo si la imagen tiene un tamaÒo mÌnimo
 			if (t.width() < 40 || t.height() < 40) {
 				return;
 			}
@@ -570,7 +570,7 @@ window.Thickbox = (function($) {
 		}
 	},
 	_createImgTip = function() {
-		_imgTip = $('<div id="TB_imagetip" title="Clic sobre la imagen para ampliar. Ctrl, Alt o May√∫s. para acceder a la p√°gina de descripci√≥n de la imagen."></div>').appendTo(document.body);
+		_imgTip = $('<div id="TB_imagetip" title="Clic sobre la imagen para ampliar. Ctrl, Alt o May˙s. para acceder a la p·gina de descripciÛn de la imagen."></div>').appendTo(document.body);
 		_imgTip.bind('click',_imgTipClickEvent);
 	},
 	_showImgTip = function(target) {
@@ -613,17 +613,17 @@ if (mw.config.get('wgAction', '') != 'history' || !(mw.config.get('wgNamespaceNu
 -------------------
 BOTONES ADICIONALES
 -------------------
-A√±adido por: [[uncyclopedia:es:user:Chixpy]]
+AÒadido por: [[uncyclopedia:es:user:Chixpy]]
 */
 
  if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "C√≥digo fuente",
+     "speedTip": "CÛdigo fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "C√≥digo fuente"};
+     "sampleText": "CÛdigo fuente"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -641,10 +641,10 @@ A√±adido por: [[uncyclopedia:es:user:Chixpy]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categor√≠a",
+     "speedTip": "CategorÌa",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categor√≠a"};
+     "sampleText": "Nombre categorÌa"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -655,14 +655,14 @@ A√±adido por: [[uncyclopedia:es:user:Chixpy]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/70/Button_fusion.png",
-     "speedTip": "Pedir que se fusione el art√≠culo a otro",
+     "speedTip": "Pedir que se fusione el artÌculo a otro",
      "tagOpen": "{{fusionar|",
      "tagClose": "}}",
-     "sampleText": "Nombre del art√≠culo con el que se debe fusionar"};
+     "sampleText": "Nombre del artÌculo con el que se debe fusionar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png",
-     "speedTip": "P√°gina de desambiguaci√≥n",
+     "speedTip": "P·gina de desambiguaciÛn",
      "tagOpen": "{{desambiguacion}}",
      "tagClose": "",
      "sampleText": ""};
@@ -676,28 +676,28 @@ A√±adido por: [[uncyclopedia:es:user:Chixpy]]
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
-     "speedTip": "Proponer el art√≠culo para ser borrado",
+     "speedTip": "Proponer el artÌculo para ser borrado",
      "tagOpen": "{{borrar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se propone para borrar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_broom2.png",
-     "speedTip": "Pedir que se arregle el art√≠culo",
+     "speedTip": "Pedir que se arregle el artÌculo",
      "tagOpen": "{{arreglar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se pide el arreglo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162634/es.gta/images/d/d1/Sin_foto.png",
-     "speedTip": "Advertir de que el art√≠culo necesita im√°genes",
+     "speedTip": "Advertir de que el artÌculo necesita im·genes",
      "tagOpen": "{{sinfoto}}",
      "tagClose": "",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir de que se est√° trabajando en el art√≠culo",
+     "speedTip": "Advertir de que se est· trabajando en el artÌculo",
      "tagOpen": "{{enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
@@ -705,19 +705,19 @@ A√±adido por: [[uncyclopedia:es:user:Chixpy]]
 
 /*
 -----------------------------------------
-C√ìDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+C”DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este c√≥digo: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este cÛdigo: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay m√°s de este n√∫mero de desplegables
-  ocultar todas autom√°ticamente.
+NavigationBarShowDefault : Si hay m·s de este n˙mero de desplegables
+  ocultar todas autom·ticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';
@@ -819,7 +819,7 @@ addOnloadHook(createNavigationBarToggleButton);
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
 
 Traida inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder ,
@@ -845,11 +845,11 @@ addOnloadHook(UserNameReplace);
 -------------------------------------------------------------------------------
 
 -------------------------------------
-REDEFINICION DEL BOT√ìN "SUBIR IMAGEN"
+REDEFINICION DEL BOT”N "SUBIR IMAGEN"
 -------------------------------------
-A√±adido por: [[uncyclopedia:es:user:Chixpy]]
+AÒadido por: [[uncyclopedia:es:user:Chixpy]]
 
-Aqu√≠ hago una redifici√≥n de la funci√≥n llamada por el enlace subir imagen que hay en la barra de herramientas.
+AquÌ hago una redificiÛn de la funciÛn llamada por el enlace subir imagen que hay en la barra de herramientas.
 
 En vez de usar [[Special:MiniUpload]] llama a [[Special:Upload]]
 */
@@ -891,13 +891,13 @@ function specialImageUpload(tagOpen, tagClose, sampleText)
 
 /*
 -----------------------------------------------
-REDEFINICI√ìN DE ORDENACI√ìN DE TABLAS "SORTABLE"
+REDEFINICI”N DE ORDENACI”N DE TABLAS "SORTABLE"
 -----------------------------------------------
-A√±adido por: [[uncyclopedia:es:user:Chixpy]]
+AÒadido por: [[uncyclopedia:es:user:Chixpy]]
 
 Estos ingleses se creen el centro del universo y en las tablas que se
-  pueden ordenar reconocen el punto como s√≠mbolo decimal as√≠ que hago
-  este apa√±o para que lo haga correctamente..
+  pueden ordenar reconocen el punto como sÌmbolo decimal asÌ que hago
+  este apaÒo para que lo haga correctamente..
 */
 
 function ts_dateToSortKey(date) {	
@@ -941,9 +941,9 @@ function ts_dateToSortKey(date) {
 	return "00000000";
 }
 
-//Modificado por Sanbec en WP-es aplicando la soluci√≥n de WP en sueco
+//Modificado por Sanbec en WP-es aplicando la soluciÛn de WP en sueco
 //(Anteriormente parece que solo cambiaba un punto)
-//EXPERIMENTAL: A√±adido adem√°s para que ordene los porcentajes.
+//EXPERIMENTAL: AÒadido adem·s para que ordene los porcentajes.
 function ts_parseFloat(num) {
         if (!num) return 0;
         num = num.replace("%", "");
@@ -953,8 +953,8 @@ function ts_parseFloat(num) {
         return (isNaN(num) ? 0 : num);
 }
 
-//Modificaci√≥n hecha por Sanbec en WP-es para que ordene alfab√©ticamente bien
-// ignorando acentos y no se limite a ordenarlo seg√∫n el c√≥digo ASCII.
+//ModificaciÛn hecha por Sanbec en WP-es para que ordene alfabÈticamente bien
+// ignorando acentos y no se limite a ordenarlo seg˙n el cÛdigo ASCII.
 function ts_sort_caseinsensitive(a,b) {
 var aa = a[1].toLowerCase();
 var bb = b[1].toLowerCase();
@@ -1112,14 +1112,14 @@ function onSearchIconsArrival()
 	li = document.createElement('li');
 	a = document.createElement('a');
 	a.href = '/index.php?title=Special:Search&adv=1';
-	a.appendChild(document.createTextNode('B√∫squeda avanzada'));
+	a.appendChild(document.createTextNode('B˙squeda avanzada'));
 	li.appendChild(a);
 	ul.appendChild(li);
 	
 	li = document.createElement('li');
 	a = document.createElement('a');
 	a.href = (pos == -1) ? 'javascript:emptySearchDesc()' : '/wiki/' + line.substring(pos + 1);
-	a.appendChild(document.createTextNode("¬øQui√©n es? (" + ((pos == -1) ? 'NO DESCRIPTION' : line.substring(pos + 1)) + ')'));
+	a.appendChild(document.createTextNode("øQuiÈn es? (" + ((pos == -1) ? 'NO DESCRIPTION' : line.substring(pos + 1)) + ')'));
 	li.appendChild(a);
 	ul.appendChild(li);
 
@@ -1153,7 +1153,7 @@ function closeSearchPopup()
 
 function emptySearchDesc()
 {
-	alert('No existe descripci√≥n para este √≠cono de b√∫squeda. Por favor contacta a los administradores para resolver este problema.');
+	alert('No existe descripciÛn para este Ìcono de b˙squeda. Por favor contacta a los administradores para resolver este problema.');
 }
 
 function ContentLoader()

@@ -39,7 +39,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 			if (da.contribs > 10) bgColor = "#F3B679";
 			if (da.contribs > 20) bgColor = "#F39A48";
 			if (da.contribs > 30) bgColor = "#F37F20";
-			gridOutput += '<a title="'+date.toLocaleString('PT-BR', {year:'numeric',month:'short',day:'numeric'})+': '+da.contribs+' ediÃ§Ãµes" style="border:1px dashed '+(date.getMonth()%2?'green':'red')+';background-color:'+bgColor+'; grid-area:'+dayNum+' / '+weekNum+' / '+(dayNum+1)+' / '+(weekNum+1)+';" href="'+urlBase+da.date+'&end='+da.date+'"></a>';
+			gridOutput += '<a title="'+date.toLocaleString('PT-BR', {year:'numeric',month:'short',day:'numeric'})+': '+da.contribs+' edições" style="border:1px dashed '+(date.getMonth()%2?'green':'red')+';background-color:'+bgColor+'; grid-area:'+dayNum+' / '+weekNum+' / '+(dayNum+1)+' / '+(weekNum+1)+';" href="'+urlBase+da.date+'&end='+da.date+'"></a>';
 			numWeeks = weekNum;
 		}
 		$("#gridOutput").css({
@@ -50,7 +50,7 @@ mw.loader.using(['mediawiki.api']).then(function() {
 		$("#gridOutput").html(gridOutput);
 	}
 	function getData(uccontinue) {
-		if ($("#gridOutput").length == 0) $(".curseprofile .activity").after('<div class="contribution-grid section"><h3>Ãšltimas ediÃ§Ãµes</h3><div id="gridOutput" style="width:100%; height:120px;">Carregando...</div></div>');
+		if ($("#gridOutput").length == 0) $(".curseprofile .activity").after('<div class="contribution-grid section"><h3>Últimas edições</h3><div id="gridOutput" style="width:100%; height:120px;">Carregando...</div></div>');
 		var params = {action:"query",list:"usercontribs",ucuser:user,ucend:startDate,uclimit:"max"};
 		if (uccontinue !== "") params.uccontinue = uccontinue;
 		a.get(params).done(function (data) {

@@ -1,5 +1,5 @@
-// Revisa para que #c-cactions no se salga de la pantalla cuando est√° muy
-// cerca del l√≠mite de la ventana (osea, cuando no hay columna lateral).
+// Revisa para que #c-cactions no se salga de la pantalla cuando est· muy
+// cerca del lÌmite de la ventana (osea, cuando no hay columna lateral).
 $(function() {
   var interval = null;
   $(function(){
@@ -21,16 +21,16 @@ $(function() {
   };
 });
 
-// Haciendo elementos que deber√≠an ser interactivos pero no lo son, interactivos.
+// Haciendo elementos que deberÌan ser interactivos pero no lo son, interactivos.
 $(function() {
   'use strict';
   var hr = $('#pagehistory input[type="radio"]');
   // Debido a que los botones de radio en los historiales no son accesibles con
   // la tecla TAB, y agregarles tabindex="0" no funciona tampoco, vamos a hacer
-  // un elemento padre que s√≠ pueda ser enfocable y que, al oprimir enter,
-  // active el evento de clic al hijo (el bo√≥n de radio).
+  // un elemento padre que sÌ pueda ser enfocable y que, al oprimir enter,
+  // active el evento de clic al hijo (el boÛn de radio).
   hr.wrap('<div class="c-radio-button" role="radio" tabindex="0"></div>');
-  // Removemos tabindex de los botones de radio normales ya que causar√≠a doble
+  // Removemos tabindex de los botones de radio normales ya que causarÌa doble
   // enfoque con los radios ya activados.
   hr.attr({ tabindex: '-1' })
   $('input[type="radio"]').each(function() {
@@ -42,7 +42,7 @@ $(function() {
     }
   });
   $('#pagehistory').on("DOMSubtreeModified", function() {
-    // Es la misma funci√≥n de arriba, pero se ejecuta por cada cambio en el DOM.
+    // Es la misma funciÛn de arriba, pero se ejecuta por cada cambio en el DOM.
     $('input[type="radio"]').each(function() {
       if ($(this).css('visibility') == 'hidden') {
         $(this).parent().attr({ tabindex: '-1' })
@@ -57,19 +57,19 @@ $(function() {
     role: 'button',
     tabindex: '0'
   });
-  // Lo que se se deba seleccionar directamente van ac√°.
+  // Lo que se se deba seleccionar directamente van ac·.
   $('.wds-tabs__tab, .wds-tabs__arrow-left, .wds-tabs__arrow-right').keypress(function(event) { 
     if (event.keyCode === 13) {
       $(this).click();
     }
   });
-  // Lo que se deba seleccionar, pero cliquear al elemento hijo van ac√°.
+  // Lo que se deba seleccionar, pero cliquear al elemento hijo van ac·.
   $('.pi-collapse, .c-radio-button').keypress(function(event) { 
     if (event.keyCode === 13) {
       $(this).children().click();
     }
   });
-  // Elementos que reaccionen al :hover pero no al :focus van ac√°.
+  // Elementos que reaccionen al :hover pero no al :focus van ac·.
   
 });
 
@@ -77,7 +77,7 @@ $(function() {
 // EN: Button ripple effect, by Roko C. Buljan on Stack Overflow:
 // https://stackoverflow.com/a/37500979
 $(function($) {
-  // A√±ade el atributo data-riple a los elementos.
+  // AÒade el atributo data-riple a los elementos.
   $('.page .wds-button, .page .oo-ui-buttonElement-button, .page .wds-tabs__tab, .page button, .page__main .wds-dropdown__content .wds-list.wds-is-linked > li, input[type="submit"], .community-page-help-module .community-page-help-module-links a, :is(.bodySearch, .commentbox, .createbox, .mw-movebox, .searchbox) .mw-ui-button, .ripple-image, button[type="submit"], .oo-ui-menuOptionWidget:not(.oo-ui-optionWidget), .oo-ui-dropdownWidget-handle, .navcard').attr({ 'data-ripple': '' });
   var isUserPage = $('body').hasClass('ns-2') || $('body').hasClass('n2-1200') || $('body').hasClass('n2-500') || $('body').hasClass('mw-special-Contributions') || $('body').hasClass('mw-special-UserProfileActivity');
   (function(doc) {
@@ -117,7 +117,7 @@ $(function($) {
     railCheck.observe(doc, { childList: true, subtree: true });
   })(document, false);
 
-  // A√±ade el atributo data-riple a los elementos del perfil que cargan perezasamente.
+  // AÒade el atributo data-riple a los elementos del perfil que cargan perezasamente.
   $(function($) {
   $(document).on('mousedown', '[data-ripple]', function(e) {
     var $self = $(this);

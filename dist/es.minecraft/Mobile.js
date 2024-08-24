@@ -6,7 +6,7 @@
 var i18n = {
 	// Collapsible elements and page loader
 	hideText: 'ocultar',
-	showText: 'visualizaciÃ³n',
+	showText: 'visualización',
 	
 	// Page loader
 	loadErrorTitle: 'Se ha producido un error al cargar el contenido'

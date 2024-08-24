@@ -81,4 +81,4 @@ if (mwCustomEditButtons.length) {
 		"sampleText": "Put your comment here.  Comments can only be seen in edit mode."
 	};
 }
-Â 
+ 

@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 // ============================================================
 // BEGIN Dynamic Navigation Bars (experimantal)
@@ -238,7 +238,7 @@ function onloadhookcustom3() {
   var replace = document.getElementById("animgif");
 
   if (null != replace) {
-    replace.innerHTML='<a href="http://es.submachine.wikia.com/wiki/%C3%81reas"><img alt="√Åreas" width=100 height=100 src="https://images.wikia.nocookie.net/__cb20111127201537/submachine/es/images/7/73/LocationsBtn.png" onmouseover="this.src=dr2" onmouseout="this.src=dr1"></a>';
+    replace.innerHTML='<a href="http://es.submachine.wikia.com/wiki/%C3%81reas"><img alt="¡reas" width=100 height=100 src="https://images.wikia.nocookie.net/__cb20111127201537/submachine/es/images/7/73/LocationsBtn.png" onmouseover="this.src=dr2" onmouseout="this.src=dr1"></a>';
   }
 }
 

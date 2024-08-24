@@ -15,9 +15,9 @@
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCIÃ“N [[",
+		"tagOpen": "#REDIRECCIÓN [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del artÃ­culo"
+		"sampleText": "Nombre del artículo"
 	};
 
   mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -29,7 +29,7 @@
 
   mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "ArtÃ­culo en construcciÃ³n",
+     "speedTip": "Artículo en construcción",
      "tagOpen": "\{\{Enobras|",
      "tagClose": "\}\}",
      "sampleText": "Tu nombre de usuario"};
@@ -38,7 +38,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/8/8f/Button_parameter.png",
-     "speedTip": "Insertar parÃ¡metro",
+     "speedTip": "Insertar parámetro",
      "tagOpen": "\{\{\{",
      "tagClose": "\}\}\}",
      "sampleText": ""};

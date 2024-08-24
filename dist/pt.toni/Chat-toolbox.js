@@ -1,20 +1,20 @@
-/*Som de notifica√ß√£o*/
+/*Som de notificaÁ„o*/
 $(function() {
-        $('.som_notifica√ßao a').append(' <span style="color:red;">[Desligado]</span>');
+        $('.som_notificaÁao a').append(' <span style="color:red;">[Desligado]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="https://images.wikia.nocookie.net/pruebasbf10/es/images/0/01/Notification.ogg"></source></audio>');
-    $('.som_notifica√ßao').click(function() {
-        if($('.som_notifica√ßao a').text() == "Som de notifica√ß√£o [Desligado]") {
-            $('.som_notifica√ßao a').html('Som de notifica√ß√£o <span style="color:lime;">[Inflamado]</span>');
+    $('.som_notificaÁao').click(function() {
+        if($('.som_notificaÁao a').text() == "Som de notificaÁ„o [Desligado]") {
+            $('.som_notificaÁao a').html('Som de notificaÁ„o <span style="color:lime;">[Inflamado]</span>');
         } else {
-            $('.som_notifica√ßao a').html('Som de notifica√ß√£o <span style="color:red;">[Desligado]</span>');
+            $('.som_notificaÁao a').html('Som de notificaÁ„o <span style="color:red;">[Desligado]</span>');
         }
     });
     $('.Chat ul').bind('DOMNodeInserted', function(event) {
-        if($('.som_notifica√ßao a').text() == "Som de notifica√ß√£o [Inflamado]") {
+        if($('.som_notificaÁao a').text() == "Som de notificaÁ„o [Inflamado]") {
 			$("#notificacion")[0].play();
 		}
     });
-/*Defina o estado ausente, fa√ßa-o reiniciar ao escrever e n√£o ao mover o mouse ou ao mudar a janela.*/
+/*Defina o estado ausente, faÁa-o reiniciar ao escrever e n„o ao mover o mouse ou ao mudar a janela.*/
     $(window).unbind('mousemove').unbind('focus');
 });
 	function toggleAway(msg) {
@@ -26,10 +26,10 @@ $(function() {
 			mainRoom.setAway(msg);
 		}
 	}
-	toggleAway.back = function() { //For√ßar status de volta
+	toggleAway.back = function() { //ForÁar status de volta
 		if($('#ChatHeader .User').hasClass('away') == true) {mainRoom.setBack();}
 	}
-	toggleAway.away = function(msg) { //For√ßar status ausente
+	toggleAway.away = function(msg) { //ForÁar status ausente
 		if(!msg) {var msg = '';}
 		if($('#ChatHeader .User').hasClass('away') == false) {mainRoom.setAway(msg);}
 	}

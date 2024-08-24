@@ -7,13 +7,13 @@ importArticles({
 
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "Ã‰moticÃ´nes",
+        emoticons: "Émoticônes",
         close: "Fermer"
     },
-    help: "SÃ©lectionnez un Ã©moticÃ´ne en cliquant dessus."
+    help: "Sélectionnez un émoticône en cliquant dessus."
 };
 
 
 //adds link to Emoticons and Chat rules
-var link = '<a class="chatlink" href="http://communaute.wikia.com/wiki/project:RÃ¨gles_du_tchat" target="_blank">RÃ¨gles du tchat</a>'
+var link = '<a class="chatlink" href="http://communaute.wikia.com/wiki/project:Règles_du_tchat" target="_blank">Règles du tchat</a>'
 $('.public.wordmark').first().append(link);

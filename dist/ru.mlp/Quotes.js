@@ -6,7 +6,7 @@ var QuotesTransformer = function( elem ) {
     this._controlButton.classList.add( 'editButton_quotes' );
     if ( localStorage.getItem('editor_quotes_guillemets') ) {
         this._active = true;
-        this._controlButton.textContent = 'Â« Â»';
+        this._controlButton.textContent = '« »';
         this._controlButton.classList.add( 'editButton_quotes_active' );
     } else {
         this._active = false;
@@ -32,9 +32,9 @@ QuotesTransformer.prototype._quoteReplace = function( e ) {
     var cursor = area.selectionStart;
     var newQuote;
     if ( cursor === 1 || /\s/.test(val[cursor - 2]) ) {
-        newQuote = 'Â«';
+        newQuote = '«';
     } else {
-        newQuote = 'Â»';
+        newQuote = '»';
     }
     if ( cursor === 0 ){
         this.area.value = newQuote + val.slice( 0 );
@@ -53,7 +53,7 @@ QuotesTransformer.prototype._activeSwitch = function() {
         localStorage.removeItem( 'editor_quotes_guillemets' );
     } else {
         this._active = true;
-        this._controlButton.textContent = 'Â« Â»';
+        this._controlButton.textContent = '« »';
         this._controlButton.classList.remove( 'editButton_quotes_inactive' );
         this._controlButton.classList.add( 'editButton_quotes_active' );
         localStorage.setItem( 'editor_quotes_guillemets', 'true' );

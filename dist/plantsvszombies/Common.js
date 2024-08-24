@@ -13,6 +13,8 @@ window.ajaxPages = [
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 
+window.AddRailModule = [{prepend: false,maxAge: 1}];
+
 // Lock comments script settings
 
 window.lockOldComments = (window.lockOldComments || {});

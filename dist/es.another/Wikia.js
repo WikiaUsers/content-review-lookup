@@ -1,9 +1,9 @@
 /*<pre> MediaWiki:Wikia.js v.4 */ 
-//BurÃ³crata/
+//Burócrata/
 (function () {
         "use strict";
         var userRightsList = {
-            "Usui Uzumaki": ["BurÃ³crata"]
+            "Usui Uzumaki": ["Burócrata"]
  
         };
  

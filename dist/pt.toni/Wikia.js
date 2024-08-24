@@ -1,26 +1,26 @@
-/* Mensagem em v√≠deo em destaque */
-//Pelo Usu√°rio:Fngplg
+/* Mensagem em vÌdeo em destaque */
+//Pelo Usu·rio:Fngplg
 $(function(){
     if ($('.featured-video__wrapper').length === 0) return;
     var banner = new BannerNotification();
-    banner.setContent('O v√≠deo que voc√™ v√™ na parte superior deste artigo √© fornecido pelo host, n√£o pelos editores deste site. Seu conte√∫do pode n√£o representar com precis√£o o artigo.');
+    banner.setContent('O vÌdeo que vocÍ vÍ na parte superior deste artigo È fornecido pelo host, n„o pelos editores deste site. Seu conte˙do pode n„o representar com precis„o o artigo.');
     banner.show();
 });
 
-/**** Tags de usu√°rio customizadas ****/
+/**** Tags de usu·rio customizadas ****/
 window.UserTagsJS = {
     modules: {},
     tags: {
         rollback: 'Rollback',
 		designadmin: { u:'Designer de Interface' },
-		supervisor: { u:'Supervisor de Edi√ß√£o' }
+		supervisor: { u:'Supervisor de EdiÁ„o' }
     }
 };
 
-// Adicione grupos personalizados a v√°rios usu√°rios
+// Adicione grupos personalizados a v·rios usu·rios
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = true;
-UserTagsJS.modules.inactive = 35; // Inativo, se n√£o houver edi√ß√µes em 35 dias
+UserTagsJS.modules.inactive = 35; // Inativo, se n„o houver ediÁıes em 35 dias
 UserTagsJS.modules.mwGroups = ['rollback'];
 UserTagsJS.modules.custom = {
 };
@@ -29,24 +29,24 @@ UserTagsJS.modules.metafilter = {
 };
 
 /**** Termina aqui ****/
-/* Substitui {{USERNAME}} pelo nome do usu√°rio que est√° navegando na p√°gina. 
+/* Substitui {{USERNAME}} pelo nome do usu·rio que est· navegando na p·gina. 
    Requer copiar o modelo: USERNAME. */
 $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
 });
-/* Fim da substitui√ß√£o do(a) {{USERNAME}} */
+/* Fim da substituiÁ„o do(a) {{USERNAME}} */
 
 window.archiveListTemplate = 'Archive';
 
-//Pr√©via do coment√°rio
+//PrÈvia do coment·rio
 window.fng = $.extend(true, window.fng, {cp: (window.fng || {}).cp || {} });
 window.fng.cp.throbber = 'https://vignette.wikia.nocookie.net/sonic/images/7/7c/AjaxRC.gif/revision/latest?cb=20170917141821';
 
 /* Teste se um elemento tem uma determinada classe **************************************
  *
- * Descri√ß√£o: usa express√µes regulares e armazenamento em cache para melhor desempenho.
- * Extra√≠do do Common.js da Wikip√©dia.
+ * DescriÁ„o: usa expressıes regulares e armazenamento em cache para melhor desempenho.
+ * ExtraÌdo do Common.js da WikipÈdia.
  */
 
 var hasClass = (function() {
@@ -56,16 +56,16 @@ var hasClass = (function() {
     };
 })();
 
-//Verifica√ß√£o de assinatura
+//VerificaÁ„o de assinatura
 var el ='~~' + '~~';
 window.SignatureCheckJS = {
-    noSignature: '1. Parece que voc√™ esqueceu de assinar sua resposta. Use '+ el +' para assinar.\n',
-    epilogue: '2. Se voc√™ est√° apenas corrigindo sua postagem j√° assinada ou corrigindo um problema na p√°gina de discuss√£o, n√£o se preocupe com esta mensagem.'
+    noSignature: '1. Parece que vocÍ esqueceu de assinar sua resposta. Use '+ el +' para assinar.\n',
+    epilogue: '2. Se vocÍ est· apenas corrigindo sua postagem j· assinada ou corrigindo um problema na p·gina de discuss„o, n„o se preocupe com esta mensagem.'
 };
 
     
 // *********************************************
-// Corrigindo miniaturas GIF est√°ticas
+// Corrigindo miniaturas GIF est·ticas
 // *********************************************
 window.DynamicImages = {
     gifGaleryImages: true,
@@ -83,7 +83,7 @@ window.DynamicImages = {
     ]
 });
 
-/**** Bot√µes de categoria****/
+/**** Botıes de categoria****/
 if ($("#CategorySelectAdd").hasClass("wikia-button secondary add")) {
     $("#CategorySelectAdd").addClass("wds-is-squished wds-button");
     $("#CategorySelectCancel").addClass("wds-is-squished wds-button");

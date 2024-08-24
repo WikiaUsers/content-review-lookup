@@ -7,17 +7,17 @@ importArticles({
     ]
 });
 
-/* TÃ­tulos no Perfil */
+/* Títulos no Perfil */
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');
 
 //****************
-//Auto-AtualizaÃ§Ã£o
+//Auto-Atualização
 //****************
 
-var ajaxPages = ["Especial:MudanÃ§as_recentes", "Especial:Registro", "Especial:ContribuiÃ§Ãµes", "Especial:WikiActivity"];
-var AjaxRCRefreshText = 'Auto-atualizaÃ§Ã£o';
+var ajaxPages = ["Especial:Mudanças_recentes", "Especial:Registro", "Especial:Contribuições", "Especial:WikiActivity"];
+var AjaxRCRefreshText = 'Auto-atualização';
 importScriptPage('AjaxRC/code.js', 'dev');
  
 //********************
-//Fim Auto-AtualizaÃ§Ã£o
+//Fim Auto-Atualização
 //********************

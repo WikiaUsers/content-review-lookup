@@ -1,6 +1,6 @@
 /* SINTAXE:
 onNewMessage.push(function(el) {
-	//cÃ³digo aqui, el sendo o elemento li.
+	//código aqui, el sendo o elemento li.
 });
 */
  

@@ -12,8 +12,8 @@ importArticles({
  
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "Ã‰moticÃ´nes",
+        emoticons: "Émoticônes",
         close: "Fermer"
     },
-    helpText: "Choisissez un Ã©moticÃ´ne dans la liste !"
+    helpText: "Choisissez un émoticône dans la liste !"
 };

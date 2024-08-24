@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';
@@ -7,7 +7,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
  
 importScriptPage('ShowHide/code.js','dev');
 
-/* C√≥digo para cargar el Chat de IRC */
+/* CÛdigo para cargar el Chat de IRC */
 importScriptURI('http://es.maxsteel.wikia.com/index.php?title=MediaWiki:Chat.js&action=raw&ctype=text/javascript');
 
 // ============================================================
@@ -19,17 +19,17 @@ importScriptURI('http://es.maxsteel.wikia.com/index.php?title=MediaWiki:Chat.js&
 $(function() {
 	if(skin == "oasis") {
 		var $sidebar = $('.WikiaPagesOnWikiModule:first');
-		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE EL<br />1¬∫  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129657&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
+		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE EL<br />1∫  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129657&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
  
 		$sidebar.html($sidebar.html() + comboString);
 	} else if(skin == "monobook") {
 		var $sidebar = $('#p-wikicities-nav');
-		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE EL<br />1¬∫  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129657&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
+		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE EL<br />1∫  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129657&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
 		$sidebar.html($sidebar.html() + comboString);
 	}
 });
 /*
-A√±adir botones al editar art√≠culo en modo normal
+AÒadir botones al editar artÌculo en modo normal
 */
  
  if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -44,7 +44,7 @@ A√±adir botones al editar art√≠culo en modo normal
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
-     "speedTip": "Proponer el art√≠culo para ser borrado",
+     "speedTip": "Proponer el artÌculo para ser borrado",
      "tagOpen": "\{\{borrar|",
      "tagClose": "\}\}",
      "sampleText": "Motivo"};
@@ -58,10 +58,10 @@ A√±adir botones al editar art√≠culo en modo normal
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png",
-     "speedTip": "V√©ase tambi√©n",
+     "speedTip": "VÈase tambiÈn",
      "tagOpen": "\{\{VT|",
      "tagClose": "\}\}",
-     "sampleText": "art√≠culo"};
+     "sampleText": "artÌculo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/2/26/Button_Tongue.png",
@@ -79,21 +79,21 @@ A√±adir botones al editar art√≠culo en modo normal
  
   mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/6c/Button_see_also.png",
-     "speedTip": "V√©ase tambi√©n",
+     "speedTip": "VÈase tambiÈn",
      "tagOpen": "\{\{VT|",
      "tagClose": "\}\}",
-     "sampleText": "art√≠culo"};
+     "sampleText": "artÌculo"};
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/cb/Button_wikipedia.png",
-     "speedTip": "Art√≠culo existente en Wikipedia",
+     "speedTip": "ArtÌculo existente en Wikipedia",
      "tagOpen": "\{\{ArtWikipedia|",
      "tagClose": "\}\}",
-     "sampleText": "art√≠culo"};
+     "sampleText": "artÌculo"};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "Marcar el art√≠culo en construcci√≥n",
+     "speedTip": "Marcar el artÌculo en construcciÛn",
      "tagOpen": "\{\{Construccion|Usuario:",
      "tagClose": "\}\}",
      "sampleText": "tu nombre de usuario"};
@@ -104,10 +104,10 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
 
-Tra√≠da de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
+TraÌda de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */
 
 function UserNameReplace() {
@@ -129,8 +129,8 @@ importScript('MediaWiki:Common.js/Switch.js');
 /*** Autorefrescar los cambios recientes en la wikiactividad ***/
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 // Etiqueta Inactivo

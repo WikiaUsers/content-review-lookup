@@ -17,7 +17,7 @@ window.WikiNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Ayudanos a progresar en este Wiki, asi transferimos los articulos a <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ninjago Wiki</a> y la adoptaremos pronto. Â¡AYUDANOS!</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Ayudanos a progresar en este Wiki, asi transferimos los articulos a <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ninjago Wiki</a> y la adoptaremos pronto. ¡AYUDANOS!</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(WikiNotification.dismiss);
 	},

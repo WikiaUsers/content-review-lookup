@@ -18,7 +18,7 @@ $('div#community_news').load('http://dragoncity.wikia.com/wiki/Board:Dragon_City
 $('span.editsection a').contents(':not("img")').remove();
 
 /* Block Language boards for ip users */
-if ((mw.config.get("wgPageName") == 'Board:EspaÃ±ol' || mw.config.get("wgPageName") == 'Board:PortuguÃªs' || mw.config.get("wgPageName") == 'Board:Deutsch') && !mw.config.get("wgUserName")) {
+if ((mw.config.get("wgPageName") == 'Board:Español' || mw.config.get("wgPageName") == 'Board:Português' || mw.config.get("wgPageName") == 'Board:Deutsch') && !mw.config.get("wgUserName")) {
    $(".DiscussionBox, li.new-reply").hide();
 }
 

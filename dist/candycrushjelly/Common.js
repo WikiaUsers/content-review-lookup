@@ -1,5 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+
+/* ========== Legacy script, before UCP ========== */
+
 // UserTags
 window.UserTagsJS = {
 	modules: {},
@@ -58,11 +61,17 @@ window.DynamicImages = {
 	gifGalleryImages: false
 };
 
+
+/* ========== Reveal IP address ========== */
+
 // RevealAnonIP
 window.RevealAnonIP = {
 	permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
 };
- 
+
+
+/* ========== Countdown timer ========== */
+
 /*
 function updatetimer(i) {
 	var now = new Date();
@@ -114,16 +123,19 @@ $(function checktimers() {
 	}
 });
 */
- 
+
+
+/* ========== Display username when using {{USERNAME}} ========== */
+
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
 $(function() {
 	if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
 	$('span.insertusername').html(mw.config.get('wgUserName'));
 });
- 
-/* End of the {{USERNAME}} replacement */
 
+
+/* ========== Automatically create user page ========== */
 
 /* AutoCreateUserPages */
 window.AutoCreateUserPagesConfig = {
@@ -144,6 +156,8 @@ importArticles({
 });
 
 
+/* ========== Display LastEdited script for registered users ========== */
+
 /* Only loading LastEdited for registered users except anonymous
 	Install PageEditInfo in MediaWiki:ImportJS */
 $(function(){
@@ -158,6 +172,8 @@ $(function(){
 });
 
 
+/* ========== NEW Comment Indicator ========== */
+
 /* Display "NEW" in latest comments, replies, message walls
 	Set up display time for 7 days */
 window.newCommentIndicator = {
@@ -169,4 +185,74 @@ importArticles({
 	articles: [
 		'u:dev:MediaWiki:NewCommentIndicator.js'
 	]
+});
+
+
+/* ========== Display notice box in Article Comment and Message Wall ========== */
+
+/* Article Comment notice box */
+$(function() {
+	// Utilize CSS components
+	mw.util.addCSS(
+		'.comments-wrapper {position: relative; opacity: 1; transition: opacity .3s ease;}'+
+		'.comments-notice {border: 1px solid var(--theme-link-color); border-left: 5px solid var(--theme-link-color); border-radius: 3px; background-color: rgba(var(--theme-border-color--rgb),.2); color: var(--theme-link-color); margin-bottom: 10px; padding: 10px;}'+
+		'.comments-confirm {position: absolute; bottom: 0; right: 5px; margin-top: 5px; color: red; font-size: 12px; opacity: 1; transition: opacity 0.3s ease; cursor: pointer;}'
+	);
+	// Create a container div
+	var wrapper = $(
+		'<div class="comments-wrapper">'+
+			'<div class="comments-notice">'+
+				"Jellytastic! Don't forget to post your comment to join the jellylicious discussion. Please make sure to read the guidelines, and remember to confirm your email address before posting."+
+			'</div>'+
+			'<div class="comments-confirm">Got it!</div>'+
+		'</div>'
+	);
+	
+	// Add an event listener to the "Got it" text to remove the container on click
+	wrapper.on('click', '.comments-confirm', function() {
+		wrapper.fadeOut(300, function() {
+			wrapper.remove();
+		});
+	});
+	
+	// Find the existing div with id "articleComments"
+	var articleCommentsDiv = $('#articleComments');
+	
+	// Check if the element with id "articleComments" exists
+	if (articleCommentsDiv.length > 0) {
+		// Insert the container div at top of element
+		articleCommentsDiv.before(wrapper);
+	} else {
+		console.warn('Element with id "articleComments" not found.');
+	}
+});
+
+
+/* Message Wall notice box */
+mw.hook('messageWall.activated').add(function() {
+	// Utilize CSS components
+	mw.util.addCSS(
+		'.messageWall-wrapper {position: relative;}'+
+		'.messageWall-notice {border: 1px solid var(--theme-link-color); border-left: 5px solid var(--theme-link-color); border-radius: 3px; background-color: rgba(var(--theme-border-color--rgb),.2); color: var(--theme-link-color); text-align: center; margin-bottom: 10px; padding: 10px;}'
+	);
+
+	// Create a container div
+	var wrapper = $(
+		'<div class="messageWall-wrapper">'+
+			'<div class="messageWall-notice">'+
+				"Welcome to the Jellylicious Wall. Don't forget to leave a message here if you need help. Please make sure to read the guidelines and assume good faith when talking with someone."+
+			'</div>'+
+		'</div>'
+	);
+	
+	// Find the existing div with id "MessageWall"
+	var messageWallDiv = $('#MessageWall');
+	
+	// Check if the element with id "MessageWall" exists
+	if (messageWallDiv.length > 0) {
+		// Insert the container div at top of element
+		messageWallDiv.before(wrapper);
+	} else {
+		console.warn('Element with id "MessageWall" not found.');
+	}
 });

@@ -1,6 +1,6 @@
 /* Spoilers */
 SpoilerAlert = {
-    question: 'Este artÃ­culo contiene spoilers. Â¿Deseas continuar?',
+    question: 'Este artículo contiene spoilers. ¿Deseas continuar?',
     yes: 'Si, acepto',
     no: 'No, mejor no',
     isSpoiler: function () {

@@ -6,8 +6,8 @@ window.UserTagsJS = {
 		'sysop': { u:'Buque del pecado' },
 		'rollback': { u:'Pierrot' },
 		'chatmoderator': { u:'Maestro de la Corte', f:'Maestra de la Corte' },
-		'bot': { u:'NiÃ±o Ghoul' },
-		'bot-global': { u:'NiÃ±o Ghoul' },
+		'bot': { u:'Niño Ghoul' },
+		'bot-global': { u:'Niño Ghoul' },
 		'blocked': { u:'Intruso', f:'Intrusa' },
 	}
 };

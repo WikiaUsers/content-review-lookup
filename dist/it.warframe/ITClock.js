@@ -32,7 +32,7 @@ if (!window.DisplayClockJS || typeof(window.DisplayClockJS.kill) !== 'function')
 		monofonts: "Monaco, Consolas, 'Lucida Console', monospace",
 		hoverText: {
 			en: "Click here to make the server purge and regenerate (update) this page",
-			es: "Haga clic aquÃ­ para purgar el servidor y actualizar esta pÃ¡gina"
+			es: "Haga clic aquí para purgar el servidor y actualizar esta página"
 		},
 		offset: 0
 	};
@@ -322,7 +322,7 @@ if (!window.DisplayClockJS || typeof(window.DisplayClockJS.kill) !== 'function')
 
 				passFn = cases[m[3]];
 				if (typeof(passFn) !== 'function') {
-					result += 'Â¿' + m[3] + '?';
+					result += '¿' + m[3] + '?';
 					continue;
 				}
 				pass = passFn(date, yearstart);

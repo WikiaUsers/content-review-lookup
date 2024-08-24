@@ -1,2 +1,2 @@
 
-/* Comandos do Chat, cr√©ditos para BlackZetsu. */ importScriptPage('Usu√°rio:BlackZetsu/Comandos_do_Chat.js', 'pt-br.ben10'); importScriptPage('ChatOptions/code.js', 'dev');
+/* Comandos do Chat, crÈditos para BlackZetsu. */ importScriptPage('Usu·rio:BlackZetsu/Comandos_do_Chat.js', 'pt-br.ben10'); importScriptPage('ChatOptions/code.js', 'dev');

@@ -3,7 +3,7 @@
  * 
  * Status: Under construction
  *
- * by [[User:CÃ¥m]]
+ * by [[User:Cåm]]
  */
 
 (function ($, mw) {

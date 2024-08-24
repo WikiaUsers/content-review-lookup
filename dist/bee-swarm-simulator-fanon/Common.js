@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-// Time template
-//test
+
+// TIME TEMPLATE
 (function() {
 	function updateTime() {
 		var elements = document.querySelectorAll('.display-time');
@@ -25,9 +25,9 @@
 	}
 	setInterval(updateTime, 1000);
 })();
+// END TIME TEMPLATE
 
-// Edit count template
-
+// EDIT COUNT TEMPLATE
 (function() {
 	var elements = document.querySelectorAll('.editcount');
 	elements.forEach(function(i) {
@@ -48,9 +48,9 @@
 		}
 	});
 })();
+// END EDIT COUNT TEMPLATE
 
-// Active since template
-
+// ACTIVE SINCE TEMPLATE
 (function() {
 	var elements = document.querySelectorAll('.user-active-since');
 	elements.forEach(function(i) {
@@ -71,3 +71,8 @@
 		}
 	});
 })();
+// END ACTIVE SINCE TEMPLATE
+
+// MARKBLOCKED CUSTOMIZATION
+window.mbTooltip = 'blocked by $2 for $1 with the reason, \"$3\" ($4 ago)';
+// END MARKBLOCKED

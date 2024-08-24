@@ -1,15 +1,15 @@
-/* Qualquer JavaScript aqui ser√° carregado apenas para administradores */
+/* Qualquer JavaScript aqui ser· carregado apenas para administradores */
 /**
- * Deixe em branco o campo "Outro/motivo adicional" ao excluir p√°ginas,
- * e insira o motivo do modelo de exclus√£o
+ * Deixe em branco o campo "Outro/motivo adicional" ao excluir p·ginas,
+ * e insira o motivo do modelo de exclus„o
  * 
- * Isso √© para que n√£o recebamos vandalismo est√∫pido e spam e
- * tudo o que n√£o foi preservado para a posteridade no registro de exclus√£o
+ * Isso È para que n„o recebamos vandalismo est˙pido e spam e
+ * tudo o que n„o foi preservado para a posteridade no registro de exclus„o
  */
 $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 	'use strict';
 	/**
-	 * Parte 1: Adicione o motivo da exclus√£o do modelo de exclus√£o ao bot√£o Excluir
+	 * Parte 1: Adicione o motivo da exclus„o do modelo de exclus„o ao bot„o Excluir
 	 */
 	var $deleteReason = $( '.delete-reason' );
 	if ( $deleteReason.length ) {
@@ -38,17 +38,17 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		var reasonText = $reasonNodes.text();
 		if ( reasonText ) {
 			$( '#ca-delete a, a#ca-delete' ).prop( 'href', function() {
-				// Propositalmente n√£o usando o wpReason, o motivo gerado automaticamente ainda est√° l√° inicialmente
-				// para que o usu√°rio possa pressionar desfazer para recuper√°-lo, se desejar, em vez deste
+				// Propositalmente n„o usando o wpReason, o motivo gerado automaticamente ainda est· l· inicialmente
+				// para que o usu·rio possa pressionar desfazer para recuper·-lo, se desejar, em vez deste
 				return this.href += '&deleteReason=' + encodeURIComponent( reasonText );
 			} );
 		}
 	}
 	
 	/**
-     * Parte 2: obtenha o motivo adicionado anteriormente da URL ou tente extra√≠-lo do resumo "conte√∫do era".
-     * Em seguida, se corresponder parcialmente a um dos motivos de exclus√£o predefinidos, selecione-o e deixe em branco o resumo,
-     * caso contr√°rio, basta substituir o resumo por ele
+     * Parte 2: obtenha o motivo adicionado anteriormente da URL ou tente extraÌ-lo do resumo "conte˙do era".
+     * Em seguida, se corresponder parcialmente a um dos motivos de exclus„o predefinidos, selecione-o e deixe em branco o resumo,
+     * caso contr·rio, basta substituir o resumo por ele
 	 */
 	if ( mw.config.get( 'wgAction' ) === 'delete' && !mw.util.getParamValue( 'wpReason' ) ) {
 		var $reason = $( '#wpReason' ), autoReason = $reason.prop( 'value' );

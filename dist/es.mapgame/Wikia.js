@@ -23,24 +23,24 @@ $(function () {
 		window.chatwindow = window.open('/wiki/Special:Chat?useskin=wikia', 'chat');
  
 	}
-// Desactivar votaciones cuando el hilo estÃ© cerrado
+// Desactivar votaciones cuando el hilo esté cerrado
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','VotaciÃ³n finalizada');
+                                 .attr('value','Votación finalizada');
     }
 });
 
-/* MenÃº de usuarios */
+/* Menú de usuarios */
 function subeEnlacesUtiles(){
   $('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');
 }
 addOnloadHook(subeEnlacesUtiles);
 // No comentarios en entradas de blog antiguas
-   // 30 dÃ­as
+   // 30 días
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog no ha tenido actividad desde hace mÃ¡s de 30 dÃ­as, por lo cual no puedes dejar comentarios ya que serÃ­a inÃºtil.",
+    expiryMessage: "Este blog no ha tenido actividad desde hace más de 30 días, por lo cual no puedes dejar comentarios ya que sería inútil.",
     nonexpiryCategory: "Blogs permanentes"
 };
  
@@ -51,14 +51,14 @@ importArticles({
         "w:c:dev:LockOldBlogs/code.js"
     ]
 });
-// Actualizar pÃ¡gina
-PurgeButtonText = 'Actualizar pÃ¡gina';
+// Actualizar página
+PurgeButtonText = 'Actualizar página';
 importScriptPage('PurgeButton/code.js', 'dev');
 // Referencias pop-ups
 importScriptPage('ReferencePopups/code.js', 'dev');
-// IP de anÃ³nimos
+// IP de anónimos
 importScriptPage('RevealAnonIP/usercode.js', 'dev');
-// InspecciÃ³n de hilos
+// Inspección de hilos
 importScriptPage('Thread Inspection/code.js', 'dev');
 // Slider de tiempo
 importScriptPage('TimedSlider/code.js', 'dev');
@@ -66,15 +66,15 @@ importScriptPage('TimedSlider/code.js', 'dev');
    // <div class="topeditors" data-te-namespace="" data-te-type="edit|new" data-te-show="" data-te-user="" data-te-limit="25" data-te-offset="7">generando lista...</div>
       // data-te-namespace: espacio de nombres, separar con barras "|"
       // data-te-type: tipo de ediciones a considerar, separar con barras "|"
-         // Se pueden usar "edit" para ediciones, "new" para creaciÃ³n de artÃ­culos y "log" para registros
+         // Se pueden usar "edit" para ediciones, "new" para creación de artículos y "log" para registros
       // data-te-show: tipo de ediciones a ocultar, separar con barras "|"
-         // Se pueden usar "minor" para ocultar ediciones menores, "bot" para ocultar ediciones de bot, "anon" para ocultar ediciones de anÃ³nimos, "redirect" para ocultar redirecciones y "patrolled" para ocultar patrullajes
-         // Agregar un signo de interrogaciÃ³n "!" para ocultar opuestos, ejemplo: !minor
-      // data-te-user: usuario especÃ­fico. No poner el prefijo de usuario:
+         // Se pueden usar "minor" para ocultar ediciones menores, "bot" para ocultar ediciones de bot, "anon" para ocultar ediciones de anónimos, "redirect" para ocultar redirecciones y "patrolled" para ocultar patrullajes
+         // Agregar un signo de interrogación "!" para ocultar opuestos, ejemplo: !minor
+      // data-te-user: usuario específico. No poner el prefijo de usuario:
       // data-te-limit: usuarios a mostrar
-      // data-te-offser: dÃ­as a tomar en cuenta
+      // data-te-offser: días a tomar en cuenta
 importScriptPage('TopEditors/code.js', 'dev');
 
 // Etiqueta para consules
-User:Xalisco = { text: 'ConsÃºl' };
-User:Christian_Emperator = { text: 'ConsÃºl' };
+User:Xalisco = { text: 'Consúl' };
+User:Christian_Emperator = { text: 'Consúl' };

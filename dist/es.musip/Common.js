@@ -1,4 +1,4 @@
-/*** Botones de ediciÃ³n ***/
+/*** Botones de edición ***/
 if (mwCustomEditButtons.length) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://vignette.wikia.nocookie.net/musip/images/a/a4/Toolbar_Insert_newline.png/revision/latest?cb=20170519162832&path-prefix=es",
@@ -18,10 +18,10 @@ if (mwCustomEditButtons.length) {
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://upload.wikimedia.org/wikipedia/commons/7/76/Insert_redirect.png",
-        "speedTip": "RedirecciÃ³n",
-        "tagOpen": "#REDIRECCIÃ“N [[",
+        "speedTip": "Redirección",
+        "tagOpen": "#REDIRECCIÓN [[",
         "tagClose": "]]",
-        "sampleText": "Nombre de la pÃ¡gina destino"
+        "sampleText": "Nombre de la página destino"
     };
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -34,10 +34,10 @@ if (mwCustomEditButtons.length) {
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://upload.wikimedia.org/wikipedia/commons/6/62/Toolbar_code.png",
-        "speedTip": "CÃ³digo",
+        "speedTip": "Código",
         "tagOpen": "<code>",
         "tagClose": "</code>",
-        "sampleText": "CÃ³digo"
+        "sampleText": "Código"
     };
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -51,8 +51,8 @@ if (mwCustomEditButtons.length) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Norwegian_quote_sign.png",
         "speedTip": "Comillas angulares",
-        "tagOpen": "Â«",
-        "tagClose": "Â»",
+        "tagOpen": "«",
+        "tagClose": "»",
         "sampleText": ""
     };
     

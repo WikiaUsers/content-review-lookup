@@ -2,7 +2,7 @@
 importArticles({
     type: "script",
     articles: [
-	"u:pl.tes:MediaWiki:Change.js",			/* Switcher dla infoboksÃ³w */
-	"u:dev:DupImageList/code.js",			/* Lista duplikatÃ³w obrazkÃ³w */
+	"u:pl.tes:MediaWiki:Change.js",			/* Switcher dla infoboksów */
+	"u:dev:DupImageList/code.js",			/* Lista duplikatów obrazków */
     ],
 });

@@ -1,7 +1,7 @@
 /* jQuery para esconder e mostrar elementos
 Extremamente simples...mas eficiente 
-Retirado da Star Wars Wiki em PortuguÃªs
-Autor: Thales CÃ©sar
+Retirado da Star Wars Wiki em Português
+Autor: Thales César
 */
 
 $(document).ready(function(){

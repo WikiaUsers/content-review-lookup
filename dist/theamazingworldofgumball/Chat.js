@@ -4,7 +4,7 @@
 setInterval(function () {
     "use strict";
     $('.User.chat-mod .username').each(function () {
-        if (this.innerHTML.match(/Kaijusaurus-Rex|CsillagfÃ©ny|Avatar Raava/)) {
+        if (this.innerHTML.match(/Kaijusaurus-Rex|Csillagfény|Avatar Raava/)) {
             $(this).parent().addClass('admin').removeClass('chat-mod');
         }
         if (this.innerHTML.match(/InvaderrrZIM|PhoenixKenny|Klonoamiyumi/)) {

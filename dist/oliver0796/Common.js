@@ -1,10 +1,10 @@
-/* Importaci√≥n del Chat a todas las pieles */
+/* ImportaciÛn del Chat a todas las pieles */
 importScriptPage('MediaWiki:Chat.js', 'oliver0796');
 
 /* interlinker.js */
 importScript('MediaWiki:Common.js/interlinker.js');
 
-importScript('Common.js/p√°ginasdeusuario.js');
+importScript('Common.js/p·ginasdeusuario.js');
 
 /* botones.js */
 importScript('MediaWiki:Common.js/botones.js');

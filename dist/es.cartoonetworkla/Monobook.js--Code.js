@@ -7,7 +7,7 @@ window.wgIRCUrl = '{{:MediaWiki:Irc-url}}';
 try {
 	if (window.CreaEnlacesDex) {
 		CreaEnlacesDex.registerRenderFn(function() {
-			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras PokÃ©dex</h5><div class="pBody"><ul></ul></div></div>');
+			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras Pokédex</h5><div class="pBody"><ul></ul></div></div>');
 		});
 		CreaEnlacesDex.registerLinkFn(function(url, text, caption) {
 			addPortletLink('p-dexlinks', url, text, false, caption);
@@ -41,10 +41,10 @@ window.wgSidebar = (window.wgSidebar||{});
 importScript('MediaWiki:Monobook.js/Sidebar.js');
 
 /*
-* MonobookSidebar v1.1: Permite definir submenÃºs para elementos del Sidebar de MonoBook, agregando clases
+* MonobookSidebar v1.1: Permite definir submenús para elementos del Sidebar de MonoBook, agregando clases
 * especiales al pasar con el puntero por encima para permitir el efecto en todos los navegadores.
 *
-* Copyright (C) 2010  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 *
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -149,12 +149,12 @@ MonobookSidebar = {
 // Mueve cambios recientes a toolbox
 function PosicionaElementosToolbox() {
 	$('#p-tb').children().eq(1).children().eq(0)
-	// Opciones en pÃ¡ginas de usuario
+	// Opciones en páginas de usuario
 	.prepend($('#t-emailuser'))
 	.prepend($('#t-blockip'))
 	.prepend($('#t-log'))
 	.prepend($('#t-contributions'))
-	// 'Enlace permanente' y 'VersiÃ³n para imprimir'
+	// 'Enlace permanente' y 'Versión para imprimir'
 	.prepend($('#t-permalink'))
 	.prepend($('#t-print'))
 	// Opciones principales
@@ -177,7 +177,7 @@ function PosicionaElementosToolbox() {
 	$('#t-whatlinkshere').before('<hr style="margin: 5px; margin-bottom: -1px; background-color: #E2A600;" />');
 
 	addPortletLink('p-tb', window.wgIRCUrl, 'Chat de soporte', 'n-irc', 'Accede al chat de WikiDex', false, $('#n-recentchanges').next().get(0));
-	addPortletLink('p-tb', 'https://www.google.com/cse/home?cx=012049278226999628206:45yxdtixipa', 'BÃºsqueda Google', 't-googlesearch', 'Buscar en WikiDex usando el buscador de Google', false, $('#n-recentchanges').next().get(0));
+	addPortletLink('p-tb', 'https://www.google.com/cse/home?cx=012049278226999628206:45yxdtixipa', 'Búsqueda Google', 't-googlesearch', 'Buscar en WikiDex usando el buscador de Google', false, $('#n-recentchanges').next().get(0));
 
 	// wikicities
 	$('#p-wikicities-nav').children('div').eq(0).children('hr').eq(0).next('ul').eq(0).children('li').eq(0).attr('id','n-activityfeed');
@@ -204,30 +204,30 @@ if ((mw.config.get('wgNamespaceNumber', 0) == -1 && mw.config.get('wgCanonicalSp
 if (mw.config.get('wgAction', '') == 'edit' || mw.config.get('wgAction', '') == 'submit') {
 	/*GLOBAL WMU VARS*/
 	window.wmu_back = "volver";
-	window.wmu_imagebutton = "Agregar imÃ¡genes";
+	window.wmu_imagebutton = "Agregar imágenes";
 	window.wmu_close = "cerrar";
-	window.wmu_no_preview = "No se puede agregar imÃ¡genes desde la pÃ¡gina en modo de previsualizaciÃ³n";
+	window.wmu_no_preview = "No se puede agregar imágenes desde la página en modo de previsualización";
 	window.wmu_warn1 = "Debes especificar el texto a buscar";
 	window.wmu_warn2 = "Selecciona primero el archivo a subir";
-	window.wmu_warn3 = "Â¡Es necesario especificar el nombre del archivo primero!";
-	window.wmu_bad_extension = "El tipo de archivo que intentas subir no estÃ¡ permitido. Puedes consultar la lista de extensiones soportadas en [[Especial:Version]].";
+	window.wmu_warn3 = "¡Es necesario especificar el nombre del archivo primero!";
+	window.wmu_bad_extension = "El tipo de archivo que intentas subir no está permitido. Puedes consultar la lista de extensiones soportadas en [[Especial:Version]].";
 	window.wmu_show_message = "mostrar mensaje";
 	window.wmu_hide_message = "ocultar mensaje";
 	window.wmu_show_license_message = "mostrar licencia";
 	window.wmu_hide_license_message = "ocultar licencia";
-	window.wmu_max_thumb = "Se ha superado el tamaÃ±o mÃ¡ximo de la miniatura. Se devolverÃ¡ al tamaÃ±o original.";
+	window.wmu_max_thumb = "Se ha superado el tamaño máximo de la miniatura. Se devolverá al tamaño original.";
 	importScript('MediaWiki:Common.js/Extra/WikiaWMU.js');
 	importStylesheetURI(wgExtensionsPath+'/wikia/WikiaMiniUpload/css/WMU.css?'+wgStyleVersion);
 }
 /* fin WMU en Monobook */
 
-// Wikia ha cambiado el texto del tÃ­tulo de las imÃ¡genes. Restaurando...
+// Wikia ha cambiado el texto del título de las imágenes. Restaurando...
 if (mw.config.get('wgNamespaceNumber') == 6) {
 	(typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
 		$('#firstHeading').text(mw.config.get('wgPageName').replace(/_/g, ' '));
 	});
 }
-// AÃ±ade un 'span' que sirve para aÃ±adir una imagen de fondo a la barra de categorÃ­as
+// Añade un 'span' que sirve para añadir una imagen de fondo a la barra de categorías
 function ImagenCatlinks() {
 	$('#mw-normal-catlinks').before('<span id="catlinks-background-image">&nbsp;</span>');
 }
@@ -236,7 +236,7 @@ function ImagenCatlinks() {
 (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
 	if (!mw.config.get('wgNoWarnOnLogout', false)) {
 		$('#pt-logout').children().eq(0).bind('click', function() {
-			return confirm('Si continÃºas dejarÃ¡s de estar identificado. PodrÃ¡s volver a iniciar sesiÃ³n en cualquier momento. Â¿Deseas continuar?');
+			return confirm('Si continúas dejarás de estar identificado. Podrás volver a iniciar sesión en cualquier momento. ¿Deseas continuar?');
 		});
 	}
 });

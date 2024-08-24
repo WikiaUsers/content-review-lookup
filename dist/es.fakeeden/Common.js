@@ -1,6 +1,6 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
-/* CronÃ³metro Regresivo */
+/* Cronómetro Regresivo */
 function updatetimer(i) { 
 var now = new Date(); 
 var then = timers[i].eventdate; 
@@ -33,7 +33,7 @@ if(diff > 0) left = (diff%60) + ' minutos ' + left;
 diff=Math.floor(diff/60); 
 if(diff > 0) left = (diff%24) + ' horas ' + left; 
 diff=Math.floor(diff/24); 
-if(diff > 0) left = diff + ' dÃ­as ' + left 
+if(diff > 0) left = diff + ' días ' + left 
 timers[i].firstChild.nodeValue = tpm + left;  
 
 // a setInterval() is more efficient, but calling setTimeout() 

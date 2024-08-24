@@ -79,7 +79,7 @@ $(function() {
  rights["Daedalus7"]                            = [bot],
  rights["Holo the Wise Wolf"]                   = [bot,URL],
  rights["Icecreambot"]                          = [bot],
- rights["MBÃ¥t"]                                 = [bot],
+ rights["MBåt"]                                 = [bot],
  rights["Neo Metal Silver"]                     = [bot],
  rights["The Prog Opus"]                        = [bot],
  rights["TyBot"]                                = [bot],

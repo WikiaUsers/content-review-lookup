@@ -2,7 +2,7 @@
 /* Credits to Merlin Wiki,Sam & Cat Wiki, MarkvA and Minion stuart. Thanks! */
  
 /* 
- * ACHTUNG. Dieser Code wurde speziell fÃ¼r das Bob's Burgers Wiki angepasst. 
+ * ACHTUNG. Dieser Code wurde speziell für das Bob's Burgers Wiki angepasst. 
  * Copy & Paste funktioniert nur, wenn eine neue User ID erstellt wird.
  * Hilfe geben die admins des deutschen Bob's Burgers Wiki.
  */

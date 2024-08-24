@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------*/
-/*   ACHTUNG! Die JavaScript-Ã„nderungen an dieser Stelle wirken sich    */
+/*   ACHTUNG! Die JavaScript-Änderungen an dieser Stelle wirken sich    */
 /*   nur auf den neuen Wikia "Oasis"-Skin aus.                          */
-/*   Neue Ã„nderung dauern ein bisschen, bis sie sichtbar werden.        */
+/*   Neue Änderung dauern ein bisschen, bis sie sichtbar werden.        */
 /*----------------------------------------------------------------------*/
 
 // ==================================================================
@@ -10,7 +10,7 @@
 // AdvancedOasisUI
 // Dokumentation und Autoren siehe: http://dev.wikia.com/wiki/AdvancedOasisUI 
 // ==================================================================
-// "ZurÃ¼ck zum Anfang"-SchaltflÃ¤che
+// "Zurück zum Anfang"-Schaltfläche
 // Dokumentation und Autoren: http://dev.wikia.com/wiki/BackToTopButton
 // ==================================================================
 

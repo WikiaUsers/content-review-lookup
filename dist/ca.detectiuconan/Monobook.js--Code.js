@@ -5,10 +5,10 @@ window.wgSidebar = (window.wgSidebar||{});
 importScript('MediaWiki:Monobook.js/Sidebar.js');
 
 /*
-* MonobookSidebar v1.1: Permet definir submenÃºs par a elements del Sidebar de MonoBook, agregant classes
+* MonobookSidebar v1.1: Permet definir submenús par a elements del Sidebar de MonoBook, agregant classes
 * especials al passar amb el punter por sobre par permetre l'efecte en todts els navegadors.
 *
-* Copyright (C) 2010  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by

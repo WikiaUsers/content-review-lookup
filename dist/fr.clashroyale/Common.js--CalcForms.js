@@ -18,10 +18,10 @@ $(document).ready(function() {
         } else {
             $("#jcFormcardchancein th:contains('Nombre de Cartes')").parent().hide();
         }
-        if (((CChanceChest === "Clan" || CChanceChest === "Classique" || CChanceChest === "Super" || CChanceChest === "Tournoi") && (CChanceRarity !== "LÃ©gendaire")) || CChanceChest === "Tirage") {
-            $("#jcFormcardchancein th:contains('ArÃ¨ne')").parent().hide();
+        if (((CChanceChest === "Clan" || CChanceChest === "Classique" || CChanceChest === "Super" || CChanceChest === "Tournoi") && (CChanceRarity !== "Légendaire")) || CChanceChest === "Tirage") {
+            $("#jcFormcardchancein th:contains('Arène')").parent().hide();
         } else {
-            $("#jcFormcardchancein th:contains('ArÃ¨ne')").parent().show();
+            $("#jcFormcardchancein th:contains('Arène')").parent().show();
         }
         if (CChanceChest === "Clan") {
             $("#cardchanceincardchanceoutTier option:eq(0), #cardchanceincardchanceoutTier option:eq(11), #cardchanceincardchanceoutTier option:eq(12)").prop("disabled", true).hide();

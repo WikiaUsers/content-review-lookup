@@ -45,7 +45,7 @@ window.MessageWallUserTags = {
     glowSize: '12px',
     glowColor: '#20BD00',
     users: {
-        'ThePokÃ©monGamer': 'Founder',
+        'ThePokémonGamer': 'Founder',
         'PhinFerbFan5': 'Admin',
         'Arend': 'Admin',
         'Vozhan': 'Admin'

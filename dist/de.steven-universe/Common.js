@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede art von Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede art von Seite geladen. */
 
 var ShowHideConfig = { 
     autoCollapse: 3, 

@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 // Etiquetas de Usuarios
  
 importArticle({ type:'script',  article:'w:c:dev:UserTags/code.js' });
@@ -29,7 +29,7 @@ window.UserTagsJS = {
         chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'Escandalosos Wiki:Administradores#Moderadores_del_Chat' },
         threadmoderador: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'Escandalosos Wiki:Administradores#Moderadores_de_Discusiones'},
         sysop: { u: 'Administrador', f: 'Administradora', link:'Escandalosos Wiki:Administradores#Admins' },
-        bureaucrat: { u:'Bur√≥crata', f: 'Bur√≥crata', link:'Escandalosos Wiki:Administradores#Bcratas' },
+        bureaucrat: { u:'BurÛcrata', f: 'BurÛcrata', link:'Escandalosos Wiki:Administradores#Bcratas' },
         founder: { u:'Fundador', link:'Escandalosos Wiki:Administradores#Fundador' }
 	}
 };

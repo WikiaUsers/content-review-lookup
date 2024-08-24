@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -16,7 +16,7 @@ var ShowHideConfig = {
 	hideAll: "alle ausblenden"
     }
 };
-/* CÃ³digo Javascript colocado aqui serÃ¡ carregado para todos os utilizadores em cada carregamento de pÃ¡gina */
+/* Código Javascript colocado aqui será carregado para todos os utilizadores em cada carregamento de página */
 
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 

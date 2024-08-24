@@ -1,13 +1,13 @@
 //=========================================================================================
-// zusÃ¤tzliche nutzbare Funktionen im Wiki 
+// zusätzliche nutzbare Funktionen im Wiki 
 //=========================================================================================
 
 //----------------------------------------------------------------------------------------
 // sfHover                                                                                 
 //                                                                                         
 // Folgende Funktion dient der Funktion eines Drop-Down Menues                             
-// Richtet den Event-Handler ein wenn die Maus Ã¼ber ein <li>-Element gefÃ¼hrt wird          
-// FÃ¼r Informationen siehe z.B. auch                                                       
+// Richtet den Event-Handler ein wenn die Maus über ein <li>-Element geführt wird          
+// Für Informationen siehe z.B. auch                                                       
 // http://www.htmldog.com/articles/suckerfish/dropdowns/                                   
 // http://www.alistapart.com/articles/dropdowns/                                           
 // http://de.selfhtml.org/css/layouts/navigationsleisten.htm                                     

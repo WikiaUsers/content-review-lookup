@@ -1,5 +1,5 @@
 // **************************************************
-// AÃ±ade nuevas etiquetas en los perfiles de los usuarios
+// Añade nuevas etiquetas en los perfiles de los usuarios
 // **************************************************
 window.UserTagsJS = {
     modules: {
@@ -10,19 +10,19 @@ window.UserTagsJS = {
     },
     tags: {
         scientist: {
-            u: 'CientÃ­fico',
-            f: 'CientÃ­fica',
+            u: 'Científico',
+            f: 'Científica',
             link: 'project:Usuario_del_mes'
         },
         researcher: {
             u: 'Investigador',
             f: 'Investigadora',
-            link: 'project:Usuario_del_aÃ±o'
+            link: 'project:Usuario_del_año'
         }
     }
 };
 
 /*** Autorefrescar los cambios recientes en la wikiactividad ***/
-window.AjaxRCRefreshText = 'Act. automÃ¡t.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
+window.AjaxRCRefreshText = 'Act. automát.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
 window.ajaxPages = ["Especial:CambiosRecientes", "Especial:WikiActivity"];

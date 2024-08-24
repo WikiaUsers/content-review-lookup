@@ -2,84 +2,84 @@
 
 ===== Outil de constructeur de decks Clash Royale =====
   Par King Dragonhoff
-  Remerciements spÃ©ciaux Ã  Blaster Niceshot
+  Remerciements spéciaux à Blaster Niceshot
   
 Dependences
-  - La partie Statistiques d'une page carte doit avoir l'"ID" appropriÃ©.
-    - id="unit-statistics" doit Ãªtre appliquÃ© Ã  la balise div qui entoure la partie Statistiques.
-    - id="unit-statistics-table" doit Ãªtre appliquÃ© au tableau avec les variations des statistiques
+  - La partie Statistiques d'une page carte doit avoir l'"ID" approprié.
+    - id="unit-statistics" doit être appliqué à la balise div qui entoure la partie Statistiques.
+    - id="unit-statistics-table" doit être appliqué au tableau avec les variations des statistiques
       en fonction du niveau.
-    - id="unit-attributes-table" doit Ãªtre appliquÃ© au tableau avec les statistiques qui sont les 
-      mÃªmes pour tous les niveaux d'une carte.
-    - Gardez Ã  l'esprit qu'un ID ne doit jamais Ãªtre utilisÃ© plus d'une fois par page.
+    - id="unit-attributes-table" doit être appliqué au tableau avec les statistiques qui sont les 
+      mêmes pour tous les niveaux d'une carte.
+    - Gardez à l'esprit qu'un ID ne doit jamais être utilisé plus d'une fois par page.
   - Les cellules dans "unit statistics-table" doivent contenir un nombre. Si la statistique exacte 
-    est inconnue, entrez une approximation en ajoutant le ModÃ¨le:Incertitude.
+    est inconnue, entrez une approximation en ajoutant le Modèle:Incertitude.
   - Les tableaux sur les pages cartes ne doivent pas contenir des cellules qui utilisent les
     fonctions "rowspan" ou "colspan".
-  - L'en tÃªte des cellules (l'en tÃªte des colonnes) dans les tableaux de pages cartes doivent
-    rester les mÃªmes sur l'ensemble du site.
-    (ex: La cellule doit rester "DÃ©gÃ¢ts par seconde". Elle ne doit pas Ãªtre changÃ©e en "DPS" sur
+  - L'en tête des cellules (l'en tête des colonnes) dans les tableaux de pages cartes doivent
+    rester les mêmes sur l'ensemble du site.
+    (ex: La cellule doit rester "Dégâts par seconde". Elle ne doit pas être changée en "DPS" sur
     une page.)
-  - Le ModÃ¨le:Carte est utilitÃ© pour afficher les images des cartes.
-  - Le ModÃ¨le:MonDeck possÃ¨de du code qui autorise les utilisateurs Ã  copier un deck sur les
+  - Le Modèle:Carte est utilité pour afficher les images des cartes.
+  - Le Modèle:MonDeck possède du code qui autorise les utilisateurs à copier un deck sur les
     emplacements de decks de l'outil "Constructeur de decks".
   
 Maintainance
-  Puisque cet outil rÃ©cupÃ¨re les statistiques des cartes et leurs attributs depuis les articles de
-  ce wiki, ce script ne doit gÃ©nÃ©ralement Ãªtre modifiÃ© que quand de nouvelles cartes aparaissent
+  Puisque cet outil récupère les statistiques des cartes et leurs attributs depuis les articles de
+  ce wiki, ce script ne doit généralement être modifié que quand de nouvelles cartes aparaissent
   dans le jeu.
-  - Ajoutez les nouvelles cartes Ã  la fonction ccalcInputs (la premiÃ¨re fonction) et les rÃ´les des
-    cartes (les deux premiÃ¨res variables, allez voir Utilisateur:Lowyx/Card Roles).
-  - Ajoutez les nouvelles cartes qui font apparaitre des unitÃ©s Ã  leur mort aux opÃ©rations pour une
+  - Ajoutez les nouvelles cartes à la fonction ccalcInputs (la première fonction) et les rôles des
+    cartes (les deux premières variables, allez voir Utilisateur:Lowyx/Card Roles).
+  - Ajoutez les nouvelles cartes qui font apparaitre des unités à leur mort aux opérations pour une
     moyenne de points de vie et de DPS.
-  - Ajoutez les cartes avec un bouclier ou des choses comme le BÃ©lier de combat Ã  la section Spell      
+  - Ajoutez les cartes avec un bouclier ou des choses comme le Bélier de combat à la section Spell      
     Counters.
-  - Ajoutez les nouveaux sorts de dÃ©gÃ¢ts Ã  la section Damaging Spell Counters.
+  - Ajoutez les nouveaux sorts de dégâts à la section Damaging Spell Counters.
   - Si une carte a des exceptions (such as spawning units on death or scaling damage), have the
     calc check those.
-  - Les modÃ¨les suivants devront Ãªtre mis Ã  jour si de nouvelles cartes sont ajoutÃ©es au jeu.
+  - Les modèles suivants devront être mis à jour si de nouvelles cartes sont ajoutées au jeu.
     - Carte
     - LookupCardRarity
-    - LookupCardMaxLevel (si le niveau max des troupes est changÃ©)
-  - Si les seuils de niveaux maximums des cartes sont changÃ©s dans les tournois, modifiez la
+    - LookupCardMaxLevel (si le niveau max des troupes est changé)
+  - Si les seuils de niveaux maximums des cartes sont changés dans les tournois, modifiez la
     fonction maxCardLevel.
 */
 
 // *********************** Variables et fonctions *************************
-// RÃ´les des cartes (visualisation possible sur Utilisateur:Lowyx/Card_Roles)
+// Rôles des cartes (visualisation possible sur Utilisateur:Lowyx/Card_Roles)
 var cardRole = {
-    1:["GÃ©ant", "Squelette gÃ©ant", "Golem", "Molosse de lave", "P.E.K.K.A", "Golem de glace"],
-    2:["Bombardier", "Bouliste", "Prince tÃ©nÃ©breux", "Zappy", "Valkyrie" ],
-    3:["FÃ»t Ã  gobelins", "Gobelins", "Gardes", "ArmÃ©e de squelettes", "Squelettes", "SorciÃ¨re", "CimetiÃ¨re"],
-    4:["Barbares", "Barbares d'Ã©lite", "Chevalier", "BÃ»cheron", "Mineur", "Mini P.E.K.K.A", "Prince", "Voleuse"],
-    5:["BÃ©bÃ© dragon", "Esprits de feu", "Princesse", "Sorcier", "Bourreau"],
-    6:["Archers", "Mousquetaire", "Gobelins Ã  lances", "Gobelin Ã  sarbacane", "Trois mousquetaires", "Gang de gobelins", "SorciÃ¨re de la nuit"],
-    7:["MÃ©ga gargouille", "Horde de gargouilles", "Gargouilles", "Dragon de l'enfer", "Chauves-souris"],
-    8:["Tour Ã  bombes", "Canon", "Tour de l'enfer", "Mortier", "Tesla", "Arc-X"],
+    1:["Géant", "Squelette géant", "Golem", "Molosse de lave", "P.E.K.K.A", "Golem de glace"],
+    2:["Bombardier", "Bouliste", "Prince ténébreux", "Zappy", "Valkyrie" ],
+    3:["Fût à gobelins", "Gobelins", "Gardes", "Armée de squelettes", "Squelettes", "Sorcière", "Cimetière"],
+    4:["Barbares", "Barbares d'élite", "Chevalier", "Bûcheron", "Mineur", "Mini P.E.K.K.A", "Prince", "Voleuse"],
+    5:["Bébé dragon", "Esprits de feu", "Princesse", "Sorcier", "Bourreau"],
+    6:["Archers", "Mousquetaire", "Gobelins à lances", "Gobelin à sarbacane", "Trois mousquetaires", "Gang de gobelins", "Sorcière de la nuit"],
+    7:["Méga gargouille", "Horde de gargouilles", "Gargouilles", "Dragon de l'enfer", "Chauves-souris"],
+    8:["Tour à bombes", "Canon", "Tour de l'enfer", "Mortier", "Tesla", "Arc-X"],
     9:["Cabane de barbare", "Fournaise", "Cabane de gobelin", "Pierre tombale"],
-    10:["Ballon", "Chevaucheur de cochon", "GÃ©ant royal", "BÃ©lier de combat"],
-    11:["FlÃ¨ches", "Boule de feu", "Poison", "La BÃ»che", "Ã‰lectrocution"],
+    10:["Ballon", "Chevaucheur de cochon", "Géant royal", "Bélier de combat"],
+    11:["Flèches", "Boule de feu", "Poison", "La Bûche", "Électrocution"],
     12:["Foudre", "Roquette"],
-    13:["Gel", "Esprit de glace", "Sorcier de glace", "Ã‰lectro-sorcier"],
+    13:["Gel", "Esprit de glace", "Sorcier de glace", "Électro-sorcier"],
     14:["Rage"],
-    15:["Clonage","Extracteur d'Ã©lixir", "Miroir", "Tornade", "GuÃ©rison"]
+    15:["Clonage","Extracteur d'élixir", "Miroir", "Tornade", "Guérison"]
 };
 var subCards = {
-    1:["GÃ©ant", "Squelette gÃ©ant", "Golem", "Molosse de lave", "P.E.K.K.A", "Golem de glace"],
-    2:["Bombardier", "Bouliste", "Prince tÃ©nÃ©breux", "Zappy", "Valkyrie" ],
-    3:["FÃ»t Ã  gobelins", "Gobelins", "Gardes", "ArmÃ©e de squelettes", "Squelettes", "SorciÃ¨re", "CimetiÃ¨re"],
-    4:["Barbares", "Barbares d'Ã©lite", "Chevalier", "BÃ»cheron", "Mineur", "Mini P.E.K.K.A", "Prince", "Voleuse"],
-    5:["BÃ©bÃ© dragon", "Esprits de feu", "Princesse", "Sorcier", "Bourreau", "Sorcier de glace", "SorciÃ¨re", "SorciÃ¨re de la nuit"],
-    6:["Archers", "Mousquetaire", "Gobelins Ã  lances", "Gobelin Ã  sarbacane", "Trois mousquetaires", "Ã‰lectro-sorcier", "Gang de gobelins", "SorciÃ¨re de la nuit"],
-    7:["MÃ©ga gargouille", "Horde de gargouilles", "Gargouilles", "Dragon de l'enfer", "BÃ©bÃ© dragon", "Chauves-souris"],
-    8:["Tour Ã  bombes", "Canon", "Tour de l'enfer", "Mortier", "Tesla", "Arc-X"],
-    9:["Cabane de barbare", "Fournaise", "Cabane de gobelin", "Pierre tombale", "CimetiÃ¨re", "SorciÃ¨re"],
-    10:["Ballon", "Chevaucheur de cochon", "GÃ©ant royal", "BÃ©lier de combat"],
-    11:["FlÃ¨ches", "Boule de feu", "Poison", "La BÃ»che", "Ã‰lectrocution", "Esprits de feu"],
-    12:["Foudre", "Roquette", "Boule de feu", "Esprits de feu", "Ã‰lectrocution"],
-    13:["Gel", "Esprit de glace", "Sorcier de glace", "Ã‰lectro-sorcier", "Golem de glace", "Foudre", "Ã‰lectrocution"],
-    14:["BÃ»cheron", "Rage"],
-    15:["Clonage", "Extracteur d'Ã©lixir", "Miroir", "Tornade", "GuÃ©rison"]
+    1:["Géant", "Squelette géant", "Golem", "Molosse de lave", "P.E.K.K.A", "Golem de glace"],
+    2:["Bombardier", "Bouliste", "Prince ténébreux", "Zappy", "Valkyrie" ],
+    3:["Fût à gobelins", "Gobelins", "Gardes", "Armée de squelettes", "Squelettes", "Sorcière", "Cimetière"],
+    4:["Barbares", "Barbares d'élite", "Chevalier", "Bûcheron", "Mineur", "Mini P.E.K.K.A", "Prince", "Voleuse"],
+    5:["Bébé dragon", "Esprits de feu", "Princesse", "Sorcier", "Bourreau", "Sorcier de glace", "Sorcière", "Sorcière de la nuit"],
+    6:["Archers", "Mousquetaire", "Gobelins à lances", "Gobelin à sarbacane", "Trois mousquetaires", "Électro-sorcier", "Gang de gobelins", "Sorcière de la nuit"],
+    7:["Méga gargouille", "Horde de gargouilles", "Gargouilles", "Dragon de l'enfer", "Bébé dragon", "Chauves-souris"],
+    8:["Tour à bombes", "Canon", "Tour de l'enfer", "Mortier", "Tesla", "Arc-X"],
+    9:["Cabane de barbare", "Fournaise", "Cabane de gobelin", "Pierre tombale", "Cimetière", "Sorcière"],
+    10:["Ballon", "Chevaucheur de cochon", "Géant royal", "Bélier de combat"],
+    11:["Flèches", "Boule de feu", "Poison", "La Bûche", "Électrocution", "Esprits de feu"],
+    12:["Foudre", "Roquette", "Boule de feu", "Esprits de feu", "Électrocution"],
+    13:["Gel", "Esprit de glace", "Sorcier de glace", "Électro-sorcier", "Golem de glace", "Foudre", "Électrocution"],
+    14:["Bûcheron", "Rage"],
+    15:["Clonage", "Extracteur d'élixir", "Miroir", "Tornade", "Guérison"]
 };
 // Global Variables
 var lookupResult;
@@ -96,13 +96,13 @@ function ccalcInputs(type,number,loc) {
         location = String(loc); // For pages other than Deck Builder
     }
     if (type === "Commune") {
-        return $('<select id="' + location + '-rarity' + number + '" name="' + location +'-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune" selected>Commune</option><option value="Rare">Rare</option><option value="Ã‰pique">Ã‰pique</option><option value="LÃ©gendaire">LÃ©gendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Archers">Archers</option><option value="Barbares">Barbares</option><option value="Barbares d\'Ã©lite">Barbares d\'Ã©lite</option><option value="Bombardier">Bombardier</option><option value="Canon">Canon</option><option value="Chauves-souris">Chauves-souris</option><option value="Chevalier">Chevalier</option><option value="Ã‰lectrocution">Ã‰lectrocution</option><option value="Esprits de feu">Esprits de feu</option><option value="Esprit de glace">Esprit de glace</option><option value="FlÃ¨ches">FlÃ¨ches</option><option value="Gang de gobelins">Gang de gobelins</option><option value="Gargouilles">Gargouilles</option><option value="GÃ©ant royal">GÃ©ant royal</option><option value="Gobelins">Gobelins</option><option value="Gobelins Ã  lances">Gobelins Ã  lances</option><option value="Horde de gargouilles">Horde de gargouilles</option><option value="Mortier">Mortier</option><option value="Squelettes">Squelettes</option><option value="Tesla">Tesla</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9" selected>9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option></select>');
+        return $('<select id="' + location + '-rarity' + number + '" name="' + location +'-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune" selected>Commune</option><option value="Rare">Rare</option><option value="Épique">Épique</option><option value="Légendaire">Légendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Archers">Archers</option><option value="Barbares">Barbares</option><option value="Barbares d\'élite">Barbares d\'élite</option><option value="Bombardier">Bombardier</option><option value="Canon">Canon</option><option value="Chauves-souris">Chauves-souris</option><option value="Chevalier">Chevalier</option><option value="Électrocution">Électrocution</option><option value="Esprits de feu">Esprits de feu</option><option value="Esprit de glace">Esprit de glace</option><option value="Flèches">Flèches</option><option value="Gang de gobelins">Gang de gobelins</option><option value="Gargouilles">Gargouilles</option><option value="Géant royal">Géant royal</option><option value="Gobelins">Gobelins</option><option value="Gobelins à lances">Gobelins à lances</option><option value="Horde de gargouilles">Horde de gargouilles</option><option value="Mortier">Mortier</option><option value="Squelettes">Squelettes</option><option value="Tesla">Tesla</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9" selected>9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option></select>');
     } else if (type === "Rare") {
-        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare" selected>Rare</option><option value="Ã‰pique">Ã‰pique</option><option value="LÃ©gendaire">LÃ©gendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="BÃ©lier de combat">BÃ©lier de combat</option><option value="Boule de feu">Boule de feu</option><option value="Cabane de barbare">Cabane de barbare</option><option value="Cabane de gobelin">Cabane de gobelin</option><option value="Chevaucheur de cochon">Chevaucheur de cochon</option><option value="Extracteur d\'Ã©lixir">Extracteur d\'Ã©lixir</option><option value="Fournaise">Fournaise</option><option value="GÃ©ant">GÃ©ant</option><option value="Gobelin Ã  sarbacane">Gobelin Ã  sarbacane</option><option value="Golem de glace">Golem de glace</option><option value="GuÃ©rison">GuÃ©rison</option><option value="MÃ©ga gargouille">MÃ©ga gargouille</option><option value="Mini P.E.K.K.A">Mini P.E.K.K.A</option><option value="Mousquetaire">Mousquetaire</option><option value="Pierre tombale">Pierre tombale</option><option value="Roquette">Roquette</option><option value="Sorcier">Sorcier</option><option value="Tour Ã  bombes">Tour Ã  bombes</option><option value="Tour de l\'enfer">Tour de l\'enfer</option><option value="Trois mousquetaires">Trois mousquetaires</option><option value="Valkyrie">Valkyrie</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select>');
-    } else if (type === "Ã‰pique") {
-        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare">Rare</option><option value="Ã‰pique" selected>Ã‰pique</option><option value="LÃ©gendaire">LÃ©gendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Arc-X">Arc-X</option><option value="ArmÃ©e de squelettes">ArmÃ©e de squelettes</option><option value="Ballon">Ballon</option><option value="BÃ©bÃ© dragon">BÃ©bÃ© dragon</option><option value="Bouliste">Bouliste</option><option value="Bourreau">Bourreau</option><option value="Clonage">Clonage</option><option value="Foudre">Foudre</option><option value="FÃ»t Ã  gobelins">FÃ»t Ã  gobelins</option><option value="Gardes">Gardes</option><option value="Gel">Gel</option><option value="Golem">Golem</option><option value="Miroir">Miroir</option><option value="P.E.K.K.A">P.E.K.K.A</option><option value="Poison">Poison</option><option value="Prince">Prince</option><option value="Prince tÃ©nÃ©breux">Prince tÃ©nÃ©breux</option><option value="Rage">Rage</option><option value="Squelette gÃ©ant">Squelette gÃ©ant</option><option value="SorciÃ¨re">SorciÃ¨re</option><option value="Tornade">Tornade</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>');
-    } else if (type === "LÃ©gendaire") {
-        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare">Rare</option><option value="Ã‰pique">Ã‰pique</option><option value="LÃ©gendaire" selected>LÃ©gendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="BÃ»cheron">BÃ»cheron</option><option value="CimetiÃ¨re">CimetiÃ¨re</option><option value="Dragon de l\'enfer">Dragon de l\'enfer</option><option value="Ã‰lectro-sorcier">Ã‰lectro-sorcier</option><option value="La BÃ»che">La BÃ»che</option><option value="Mineur">Mineur</option><option value="Molosse de lave">Molosse de lave</option><option value="Princesse">Princesse</option><option value="Sorcier de glace">Sorcier de glace</option><option value="SorciÃ¨re de la nuit">SorciÃ¨re de la nuit</option><option value="Voleuse">Voleuse</option><option value="Zappy">Zappy</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>');
+        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare" selected>Rare</option><option value="Épique">Épique</option><option value="Légendaire">Légendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Bélier de combat">Bélier de combat</option><option value="Boule de feu">Boule de feu</option><option value="Cabane de barbare">Cabane de barbare</option><option value="Cabane de gobelin">Cabane de gobelin</option><option value="Chevaucheur de cochon">Chevaucheur de cochon</option><option value="Extracteur d\'élixir">Extracteur d\'élixir</option><option value="Fournaise">Fournaise</option><option value="Géant">Géant</option><option value="Gobelin à sarbacane">Gobelin à sarbacane</option><option value="Golem de glace">Golem de glace</option><option value="Guérison">Guérison</option><option value="Méga gargouille">Méga gargouille</option><option value="Mini P.E.K.K.A">Mini P.E.K.K.A</option><option value="Mousquetaire">Mousquetaire</option><option value="Pierre tombale">Pierre tombale</option><option value="Roquette">Roquette</option><option value="Sorcier">Sorcier</option><option value="Tour à bombes">Tour à bombes</option><option value="Tour de l\'enfer">Tour de l\'enfer</option><option value="Trois mousquetaires">Trois mousquetaires</option><option value="Valkyrie">Valkyrie</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected>7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select>');
+    } else if (type === "Épique") {
+        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare">Rare</option><option value="Épique" selected>Épique</option><option value="Légendaire">Légendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Arc-X">Arc-X</option><option value="Armée de squelettes">Armée de squelettes</option><option value="Ballon">Ballon</option><option value="Bébé dragon">Bébé dragon</option><option value="Bouliste">Bouliste</option><option value="Bourreau">Bourreau</option><option value="Clonage">Clonage</option><option value="Foudre">Foudre</option><option value="Fût à gobelins">Fût à gobelins</option><option value="Gardes">Gardes</option><option value="Gel">Gel</option><option value="Golem">Golem</option><option value="Miroir">Miroir</option><option value="P.E.K.K.A">P.E.K.K.A</option><option value="Poison">Poison</option><option value="Prince">Prince</option><option value="Prince ténébreux">Prince ténébreux</option><option value="Rage">Rage</option><option value="Squelette géant">Squelette géant</option><option value="Sorcière">Sorcière</option><option value="Tornade">Tornade</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>');
+    } else if (type === "Légendaire") {
+        return $('<select id="' + location + '-rarity' + number + '" name="' + location + '-rarity' + number + '"class="' + location + '-rarity-input"><option value="Commune">Commune</option><option value="Rare">Rare</option><option value="Épique">Épique</option><option value="Légendaire" selected>Légendaire</option></select><select id="' + location + '-card' + number + '" name="' + location + '-card' + number + '" class="' + location + '-card-input"><option value="Bûcheron">Bûcheron</option><option value="Cimetière">Cimetière</option><option value="Dragon de l\'enfer">Dragon de l\'enfer</option><option value="Électro-sorcier">Électro-sorcier</option><option value="La Bûche">La Bûche</option><option value="Mineur">Mineur</option><option value="Molosse de lave">Molosse de lave</option><option value="Princesse">Princesse</option><option value="Sorcier de glace">Sorcier de glace</option><option value="Sorcière de la nuit">Sorcière de la nuit</option><option value="Voleuse">Voleuse</option><option value="Zappy">Zappy</option></select><select id="' + location + '-level' + number + '" name="' + location + '-level' + number + '" class="' + location + '-level-input"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>');
     }
 }
 // Data Retrieval Function
@@ -112,7 +112,7 @@ function getPageData(page) {
     // Code that will execute while AJAX request is running
     clearTimeout(dataTimeout);
     dataTimeout = setTimeout(function() {
-        alert("RÃ©cupÃ©rer les statistiques des cartes prend un certain temps. Si la page n'affiche pas son contenu, vÃ©rifiez votre connexion internet et rafraÃ®chissez la page. Si cela ne semble pas Ãªtre le problÃ¨me, rendez-vous sur la page de la carte qui ne veut pas afficher ses statistiques pour vÃ©rifier qu'elle n'a pas Ã©tÃ© vandalisÃ©e. Si vous ne pouvez pas fixer ce problÃ¨me vous-mÃªme, contactez un membre du staff de ce wiki.");
+        alert("Récupérer les statistiques des cartes prend un certain temps. Si la page n'affiche pas son contenu, vérifiez votre connexion internet et rafraîchissez la page. Si cela ne semble pas être le problème, rendez-vous sur la page de la carte qui ne veut pas afficher ses statistiques pour vérifier qu'elle n'a pas été vandalisée. Si vous ne pouvez pas fixer ce problème vous-même, contactez un membre du staff de ce wiki.");
     }, 15000);
     $('#ccalc-submit').html('<span class="fa fa-spinner fa-pulse"></span>').prop("disabled", true);
     $('#ccalc-save').html('<span class="fa fa-spinner fa-pulse"></span>').prop("disabled", true);
@@ -121,7 +121,7 @@ function getPageData(page) {
     if (lookupResult[page]) { // data already exists
         clearTimeout(dataTimeout);
         $('#ccalc-submit').html('Soumettre').prop("disabled", false);
-        $('#ccalc-save').html('Sauvegarder Ã  l\'emplacement <span class="displaySelectedDeckNum">' + selectedDeck + '</span>').prop("disabled", false);
+        $('#ccalc-save').html('Sauvegarder à l\'emplacement <span class="displaySelectedDeckNum">' + selectedDeck + '</span>').prop("disabled", false);
         $(".ccalc-rarity-input, .ccalc-card-input").prop("disabled", false);
     } else { // data does not exist
         // AJAX Request
@@ -146,7 +146,7 @@ function getPageData(page) {
                                 // data has been added to lookupResult object
                                 clearTimeout(dataTimeout);
                                 $('#ccalc-submit').html('Soumettre').prop("disabled", false);
-                                $('#ccalc-save').html('Sauvegarder Ã  l\'emplacement <span class="displaySelectedDeckNum">' + selectedDeck + '</span>').prop("disabled", false);
+                                $('#ccalc-save').html('Sauvegarder à l\'emplacement <span class="displaySelectedDeckNum">' + selectedDeck + '</span>').prop("disabled", false);
                                 $(".ccalc-rarity-input, .ccalc-card-input").prop("disabled", false);
                                 localStorage.setItem("ccalcLookupData", JSON.stringify(lookupResult));
                             }
@@ -162,7 +162,7 @@ function getStatisticsSection(page, rowNum) {
     // Code that will execute while AJAX request is running
     clearTimeout(dataTimeout);
     dataTimeout = setTimeout(function() {
-        alert("RÃ©cupÃ©rer les statistiques des cartes prend un certain temps. Si la page n'affiche pas son contenu, vÃ©rifiez votre connexion internet et rafraÃ®chissez la page. Si cela ne semble pas Ãªtre le problÃ¨me, rendez-vous sur la page de la carte qui ne veut pas afficher ses statistiques pour vÃ©rifier qu'elle n'a pas Ã©tÃ© vandalisÃ©e. Si vous ne pouvez pas fixer ce problÃ¨me vous-mÃªme, contactez un membre du staff de ce wiki.");
+        alert("Récupérer les statistiques des cartes prend un certain temps. Si la page n'affiche pas son contenu, vérifiez votre connexion internet et rafraîchissez la page. Si cela ne semble pas être le problème, rendez-vous sur la page de la carte qui ne veut pas afficher ses statistiques pour vérifier qu'elle n'a pas été vandalisée. Si vous ne pouvez pas fixer ce problème vous-même, contactez un membre du staff de ce wiki.");
     }, 15000);
     $('#ccalc-individual-stats-result').html('<center class="fa fa-spinner fa-pulse" style="color: white; font-size: 24px;"></center>');
     // AJAX Request
@@ -238,13 +238,13 @@ function maxCardLevel(rarity, tournament) {
         } else {
             return 11;
         }
-    } else if (rarity === "Ã‰pique") {
+    } else if (rarity === "Épique") {
         if (tournament === true) {
             return 4;
         } else {
             return 8;
         }
-    } else if (rarity === "LÃ©gendaire") {
+    } else if (rarity === "Légendaire") {
         if (tournament === true) {
             return 1;
         } else {
@@ -257,7 +257,7 @@ function maxCardLevel(rarity, tournament) {
 // Error Message function
 function ccerrorMsg() {
     if (errorMsgSent !== "sent") {
-        alert("Le calculateur n'a pas Ã©tÃ© capable de rÃ©cupÃ©rer les statistiques d'une ou plusieurs cartes. VÃ©rifiez votre connexion internet et cliquez sur Soumettre encore une fois ou rafraÃ®chissez la page. Si cela ne semble pas Ãªtre le problÃ¨me, allez sur la page des cartes en question et vÃ©rfiez qu'elles n'ont pas Ã©tÃ© vandalisÃ©es. Si vous n'avez pas l'autorisation de fixer ce problÃ¨me, contactez un membre de l'Ã©quipe de ce wikia.");
+        alert("Le calculateur n'a pas été capable de récupérer les statistiques d'une ou plusieurs cartes. Vérifiez votre connexion internet et cliquez sur Soumettre encore une fois ou rafraîchissez la page. Si cela ne semble pas être le problème, allez sur la page des cartes en question et vérfiez qu'elles n'ont pas été vandalisées. Si vous n'avez pas l'autorisation de fixer ce problème, contactez un membre de l'équipe de ce wikia.");
     }
     errorMsgSent = "sent";
 }
@@ -290,9 +290,9 @@ $(document).ready(function() {
         lookupResult = {};
     }
     // Clear memory
-    $('#ccalc-clear-memory-harness').html('<button type="button" id="ccalc-clear-memory" title="Nettoyez la mÃ©moire des donnÃ©es de l\'outil pour lui permettre de rÃ©cupÃ©rer les derniÃ¨res donnÃ©es des cartes. Veuillez noter que ceci n\'effacera pas les decks enregistrÃ©s.">Nettoyer la mÃ©moire</button>');
+    $('#ccalc-clear-memory-harness').html('<button type="button" id="ccalc-clear-memory" title="Nettoyez la mémoire des données de l\'outil pour lui permettre de récupérer les dernières données des cartes. Veuillez noter que ceci n\'effacera pas les decks enregistrés.">Nettoyer la mémoire</button>');
     $("#ccalc-clear-memory").click(function() {
-        if (confirm("Cet outil enregistre les donnÃ©es des cartes prÃ©alablement rÃ©cupÃ©rÃ©es entre les chargements de page pour amÃ©liorer votre expÃ©rience. Effacez la mÃ©moire pour que l'outil rÃ©cupÃ¨re les derniÃ¨res donnÃ©es des cartes lorsqu'une nouvelle carte est ajoutÃ©e dans les entrÃ©es. Assurez-vous d'effacer la mÃ©moire aprÃ¨s les Ã©quilibrages ayant lieu en jeu. Veuillez noter que cela n'effacera pas les decks sauvegardÃ©es. Cliquez sur OK pour effacer la mÃ©moire de donnÃ©es et recharger la page.") === true) {
+        if (confirm("Cet outil enregistre les données des cartes préalablement récupérées entre les chargements de page pour améliorer votre expérience. Effacez la mémoire pour que l'outil récupère les dernières données des cartes lorsqu'une nouvelle carte est ajoutée dans les entrées. Assurez-vous d'effacer la mémoire après les équilibrages ayant lieu en jeu. Veuillez noter que cela n'effacera pas les decks sauvegardées. Cliquez sur OK pour effacer la mémoire de données et recharger la page.") === true) {
             localStorage.removeItem("ccalcLookupData");
             location.reload();
         } else {}
@@ -337,24 +337,24 @@ $(document).ready(function() {
         $('#ccalc-harness2').html(ccalcInputs("Commune","2"));
         $('#ccalc-harness3').html(ccalcInputs("Rare","3"));
         $('#ccalc-harness4').html(ccalcInputs("Rare","4"));
-        $('#ccalc-harness5').html(ccalcInputs("Ã‰pique","5"));
-        $('#ccalc-harness6').html(ccalcInputs("Ã‰pique","6"));
-        $('#ccalc-harness7').html(ccalcInputs("LÃ©gendaire","7"));
-        $('#ccalc-harness8').html(ccalcInputs("LÃ©gendaire","8"));
+        $('#ccalc-harness5').html(ccalcInputs("Épique","5"));
+        $('#ccalc-harness6').html(ccalcInputs("Épique","6"));
+        $('#ccalc-harness7').html(ccalcInputs("Légendaire","7"));
+        $('#ccalc-harness8').html(ccalcInputs("Légendaire","8"));
         $('#ccalc-card1').val("Archers").attr({"data-fallback-val": "Archers", "data-fallback-rarity": "Commune"});
         $('#ccalc-card2').val("Barbares").attr({"data-fallback-val": "Barbares", "data-fallback-rarity": "Commune"});
-        $('#ccalc-card3').val("BÃ©lier de combat").attr({"data-fallback-val": "BÃ©lier de combat", "data-fallback-rarity": "Rare"});
+        $('#ccalc-card3').val("Bélier de combat").attr({"data-fallback-val": "Bélier de combat", "data-fallback-rarity": "Rare"});
         $('#ccalc-card4').val("Boule de feu").attr({"data-fallback-val": "Boule de feu", "data-fallback-rarity": "Rare"});
-        $('#ccalc-card5').val("Arc-X").attr({"data-fallback-val": "Arc-X", "data-fallback-rarity": "Ã‰pique"});
-        $('#ccalc-card6').val("ArmÃ©e de squelettes").attr({"data-fallback-val": "ArmÃ©e de squelettes", "data-fallback-rarity": "Ã‰pique"});
-        $('#ccalc-card7').val("BÃ»cheron").attr({"data-fallback-val": "BÃ»cheron", "data-fallback-rarity": "LÃ©gendaire"});
-        $('#ccalc-card8').val("CimetiÃ¨re").attr({"data-fallback-val": "CimetiÃ¨re", "data-fallback-rarity": "LÃ©gendaire"});
+        $('#ccalc-card5').val("Arc-X").attr({"data-fallback-val": "Arc-X", "data-fallback-rarity": "Épique"});
+        $('#ccalc-card6').val("Armée de squelettes").attr({"data-fallback-val": "Armée de squelettes", "data-fallback-rarity": "Épique"});
+        $('#ccalc-card7').val("Bûcheron").attr({"data-fallback-val": "Bûcheron", "data-fallback-rarity": "Légendaire"});
+        $('#ccalc-card8').val("Cimetière").attr({"data-fallback-val": "Cimetière", "data-fallback-rarity": "Légendaire"});
         
     }
     $("#ccalcPermalink-Harness").html($('<textarea id="ccalcPermalink" style="width: 90%;" rows="5" readonly>Erreur</textarea>'));
     // Place form buttons
     $('#ccalc-submit-harness').html('<button type="submit" id="ccalc-submit">Soumettre</button>');
-    $('#ccalc-save-harness').html('<button type="button" id="ccalc-save" title="Sauvegardez ce deck pour une utilisation future.">Sauvegarder Ã  l\'emplacement <span class="displaySelectedDeckNum"></span></button>');
+    $('#ccalc-save-harness').html('<button type="button" id="ccalc-save" title="Sauvegardez ce deck pour une utilisation future.">Sauvegarder à l\'emplacement <span class="displaySelectedDeckNum"></span></button>');
     // Deck selection buttons
     $("#deck-selection .deck-select-button").click(function() {
         $(this).siblings().removeClass("selected-deck");
@@ -366,17 +366,17 @@ $(document).ready(function() {
     // Get needed card data as long as this page contains the calculator
     if ($("#cardCalculator").length) {
         getPageData("Archers");
-        getPageData("BÃ©lier de combat");
+        getPageData("Bélier de combat");
         getPageData("Arc-X");
-        getPageData("BÃ»cheron");
+        getPageData("Bûcheron");
         getPageData("Barbares");
         getPageData("Boule de feu");
-        getPageData("ArmÃ©e de squelettes");
-        getPageData("CimetiÃ¨re");
+        getPageData("Armée de squelettes");
+        getPageData("Cimetière");
         getPageData("Roquette");
-        getPageData("Ã‰lectrocution");
-        getPageData("FlÃ¨ches");
-        getPageData("La BÃ»che");
+        getPageData("Électrocution");
+        getPageData("Flèches");
+        getPageData("La Bûche");
         getPageData("Foudre");
     }
     // ****************************** Save Inputs... ****************************
@@ -407,7 +407,7 @@ $(document).ready(function() {
         if (userDeckData("rarity","1") == "invalid" || userDeckData("rarity","2") == "invalid" || userDeckData("rarity","3") == "invalid" || userDeckData("rarity","4") == "invalid" || userDeckData("rarity","5") == "invalid" || userDeckData("rarity","6") == "invalid" || userDeckData("rarity","7") == "invalid" || userDeckData("rarity","8") == "invalid") {
             alert("Impossible de sauvegarder! Une ou plusieurs cartes de ce deck sont invalides.");
         } else if (userDeckData("card","1") == userDeckData("card","2") || userDeckData("card","1") == userDeckData("card","3") || userDeckData("card","1") == userDeckData("card","4") || userDeckData("card","1") == userDeckData("card","5") || userDeckData("card","1") == userDeckData("card","6") || userDeckData("card","1") == userDeckData("card","7") || userDeckData("card","1") == userDeckData("card","8") || userDeckData("card","2") == userDeckData("card","3") || userDeckData("card","2") == userDeckData("card","4") || userDeckData("card","2") == userDeckData("card","5") || userDeckData("card","2") == userDeckData("card","6") || userDeckData("card","2") == userDeckData("card","7") || userDeckData("card","2") == userDeckData("card","8") || userDeckData("card","3") == userDeckData("card","4") || userDeckData("card","3") == userDeckData("card","5") || userDeckData("card","3") == userDeckData("card","6") || userDeckData("card","3") == userDeckData("card","7") || userDeckData("card","3") == userDeckData("card","8") || userDeckData("card","4") == userDeckData("card","5") || userDeckData("card","4") == userDeckData("card","6") || userDeckData("card","4") == userDeckData("card","7") || userDeckData("card","4") == userDeckData("card","8") || userDeckData("card","5") == userDeckData("card","6") || userDeckData("card","5") == userDeckData("card","7") || userDeckData("card","5") == userDeckData("card","8") || userDeckData("card","6") == userDeckData("card","7") || userDeckData("card","6") == userDeckData("card","8") || userDeckData("card","7") == userDeckData("card","8")) {
-            alert("Impossible de sauvegarder! Une ou plusieurs cartes de ce deck sont prÃ©sentes plusieurs fois.");
+            alert("Impossible de sauvegarder! Une ou plusieurs cartes de ce deck sont présentes plusieurs fois.");
         } else {
             selectedDeck = $(this).text();
             savedDeck = [
@@ -422,7 +422,7 @@ $(document).ready(function() {
                 {rarity: userDeckData("rarity","8"), card: userDeckData("card","8"), level: userDeckData("level","8")}
             ];
             localStorage.setItem("ccalcSavedDeck" + selectedDeck, JSON.stringify(savedDeck));
-            alert("Ce deck a Ã©tÃ© sauvegardÃ© Ã  l'emplacement " + selectedDeck + " du Deck Builder.");
+            alert("Ce deck a été sauvegardé à l'emplacement " + selectedDeck + " du Deck Builder.");
         }
     });
     // ************************* ...and restore them ****************************
@@ -440,7 +440,7 @@ $(document).ready(function() {
             }
         } else {
             if (saveDeckMsgSent !== "sent") {
-                alert("Vous n'avez actuellement rien sauvegardÃ© Ã  l'emplacement " + selectedDeck + ". Changez les donnÃ©es et cliquer sur le bouton de sauvegarde pour enregistrer un deck.");
+                alert("Vous n'avez actuellement rien sauvegardé à l'emplacement " + selectedDeck + ". Changez les données et cliquer sur le bouton de sauvegarde pour enregistrer un deck.");
                 saveDeckMsgSent = "sent";
             }
         }
@@ -542,7 +542,7 @@ $(document).ready(function() {
             getPageData(chosenCardName);
             refreshDeck(chosenCardName,deckCardIndex);
         } else {
-            alert("Cette carte est dÃ©jÃ  dans votre deck.");
+            alert("Cette carte est déjà dans votre deck.");
         }
     });
     // Close the result window for basic statisitcs
@@ -603,10 +603,10 @@ $(document).ready(function() {
             var elixirTotal, elixirAverage, elixirBar, elixirBarDiff;
             elixirTotal = 0;
             for (i = 1; i < 9; i++) { 
-                if (isNaN(lookupResult[cardName(i)].coÃ»t) === true) {
-                    lookupResult[cardName(i)].coÃ»t = 2;
+                if (isNaN(lookupResult[cardName(i)].coût) === true) {
+                    lookupResult[cardName(i)].coût = 2;
                 }
-                elixirTotal += Number(lookupResult[cardName(i)].coÃ»t);
+                elixirTotal += Number(lookupResult[cardName(i)].coût);
             }
             elixirAverage = elixirTotal / 8;
             elixirBar = (elixirAverage * 100) / 8; // 8 is the max capcity of the bar
@@ -617,7 +617,7 @@ $(document).ready(function() {
             // ************** Bar: Minimum Cycle Cost (in Elixir) ****************
             var deckElixir = [], cycleCost, cycleBar, cycleBarDiff;
             for (i = 1; i < 9; i++) {
-                cardCompareTable(i,"2","text",lookupResult[cardName(i)].coÃ»t);
+                cardCompareTable(i,"2","text",lookupResult[cardName(i)].coût);
                 deckElixir.push(cardCompareTable(i,"2","get"));
             }
             deckElixir.sort(function(a, b){return b-a});
@@ -643,7 +643,7 @@ $(document).ready(function() {
                     lookupResult[cardName(i)].nombre = Number(dCountNoX);
                 }
                 // Make sure the card can have hitpoints
-                if (lookupResult[cardName(i)].type == "Combattant" || lookupResult[cardName(i)].type == "BÃ¢timent") {
+                if (lookupResult[cardName(i)].type == "Combattant" || lookupResult[cardName(i)].type == "Bâtiment") {
                     // Check for a card that has more than one troop type then check for missing value
                     if (cardName(i) == "Golem") {
                         if (lookupResult[cardName(i)]["points de vie du golem"] !== undefined && lookupResult[cardName(i)]["points de vie des golemites"] !== undefined) {
@@ -662,10 +662,10 @@ $(document).ready(function() {
                             ccerrorMsg();
                         }
                     } else if (cardName(i) == "Gang de gobelins") {
-                        if (lookupResult[cardName(i)]['points de vie des gobelins'] !== undefined && lookupResult[cardName(i)]['points de vie des gobelins Ã  lances'] !== undefined) {
-                            hitpointsTotal += (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins Ã  lances'][cardLevel(i)]));
+                        if (lookupResult[cardName(i)]['points de vie des gobelins'] !== undefined && lookupResult[cardName(i)]['points de vie des gobelins à lances'] !== undefined) {
+                            hitpointsTotal += (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins à lances'][cardLevel(i)]));
                             lookupResult[cardName(i)]['points de vie'] = [];
-                            lookupResult[cardName(i)]['points de vie'][cardLevel(i)] = ((3 * Number(lookupResult[cardName(i)]['points de vie des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins Ã  lances'][cardLevel(i)]))) / 6;
+                            lookupResult[cardName(i)]['points de vie'][cardLevel(i)] = ((3 * Number(lookupResult[cardName(i)]['points de vie des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['points de vie des gobelins à lances'][cardLevel(i)]))) / 6;
                         } else {
                             ccerrorMsg();
                         }
@@ -694,76 +694,76 @@ $(document).ready(function() {
             for (i = 1; i < 9; i++) {
                 // (Count value was checked and saved to the object by the average hitpoints loop)
                 // Make sure the card can have DPS
-                if (lookupResult[cardName(i)].type == "Combattant" || lookupResult[cardName(i)].type == "BÃ¢timent") {
+                if (lookupResult[cardName(i)].type == "Combattant" || lookupResult[cardName(i)].type == "Bâtiment") {
                     // Check for an abnormal card then check for missing value
                     // Cards with multiple troop types
                     if (cardName(i) == "Golem") {
-                        if (lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde du golem"] !== undefined && lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde des golemites"] !== undefined) {
-                            dpsTotal += Number(lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde du golem"][cardLevel(i)]) + (2 * Number(lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde des golemites"][cardLevel(i)]));
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde du golem"][cardLevel(i)]) + (2 * Number(lookupResult[cardName(i)]["dÃ©gÃ¢ts par seconde des golemites"][cardLevel(i)]));
+                        if (lookupResult[cardName(i)]["dégâts par seconde du golem"] !== undefined && lookupResult[cardName(i)]["dégâts par seconde des golemites"] !== undefined) {
+                            dpsTotal += Number(lookupResult[cardName(i)]["dégâts par seconde du golem"][cardLevel(i)]) + (2 * Number(lookupResult[cardName(i)]["dégâts par seconde des golemites"][cardLevel(i)]));
+                            lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                            lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]["dégâts par seconde du golem"][cardLevel(i)]) + (2 * Number(lookupResult[cardName(i)]["dégâts par seconde des golemites"][cardLevel(i)]));
                         } else {
                             ccerrorMsg();
                         }
                     } else if (cardName(i) == "Molosse de lave") {
-                        if (lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde du molosse de lave'] !== undefined && lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des roquets de lave'] !== undefined) {
-                            dpsTotal += Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde du molosse de lave'][cardLevel(i)]) + (6 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des roquets de lave'][cardLevel(i)]));
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde du molosse de lave'][cardLevel(i)]) + (6 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des roquets de lave'][cardLevel(i)]));
+                        if (lookupResult[cardName(i)]['dégâts par seconde du molosse de lave'] !== undefined && lookupResult[cardName(i)]['dégâts par seconde des roquets de lave'] !== undefined) {
+                            dpsTotal += Number(lookupResult[cardName(i)]['dégâts par seconde du molosse de lave'][cardLevel(i)]) + (6 * Number(lookupResult[cardName(i)]['dégâts par seconde des roquets de lave'][cardLevel(i)]));
+                            lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                            lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]['dégâts par seconde du molosse de lave'][cardLevel(i)]) + (6 * Number(lookupResult[cardName(i)]['dégâts par seconde des roquets de lave'][cardLevel(i)]));
                         } else {
                             ccerrorMsg();
                         }
                     } else if (cardName(i) == "Gang de gobelins") {
-                        if (lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins'] !== undefined && lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins Ã  lances'] !== undefined) {
-                            dpsTotal += (3 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins Ã  lances'][cardLevel(i)]));
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = ((3 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde des gobelins Ã  lances'][cardLevel(i)]))) / 6;
+                        if (lookupResult[cardName(i)]['dégâts par seconde des gobelins'] !== undefined && lookupResult[cardName(i)]['dégâts par seconde des gobelins à lances'] !== undefined) {
+                            dpsTotal += (3 * Number(lookupResult[cardName(i)]['dégâts par seconde des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['dégâts par seconde des gobelins à lances'][cardLevel(i)]));
+                            lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                            lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = ((3 * Number(lookupResult[cardName(i)]['dégâts par seconde des gobelins'][cardLevel(i)])) + (3 * Number(lookupResult[cardName(i)]['dégâts par seconde des gobelins à lances'][cardLevel(i)]))) / 6;
                         } else {
                             ccerrorMsg();
                         }
                     // Inferno Tower damage charges
                     } else if (cardName(i) == "Tour de l'enfer") {
                         dpsTotal += 200 + (Number(cardLevel(i)) * 20);
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = 200 + (Number(cardLevel(i)) * 20);
+                        lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                        lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = 200 + (Number(cardLevel(i)) * 20);
                     // Inferno Dragon damage charges
                     } else if (cardName(i) == "Dragon de l'enfer") {
                         dpsTotal += 160 + (Number(cardLevel(i)) * 20);
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = 200 + (Number(cardLevel(i)) * 20);
+                        lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                        lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = 200 + (Number(cardLevel(i)) * 20);
                     // Spawner building DPS ignored, Elixir Collector does no damage
-                    } else if (cardName(i) == "Cabane de barbare" || cardName(i) == "Cabane de gobelin" || cardName(i) == "Extracteur d'Ã©lixir" || cardName(i) == "Fournaise" || cardName(i) == "Pierre tombale") {
+                    } else if (cardName(i) == "Cabane de barbare" || cardName(i) == "Cabane de gobelin" || cardName(i) == "Extracteur d'élixir" || cardName(i) == "Fournaise" || cardName(i) == "Pierre tombale") {
                         dpsTotal += 0;
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = 0;
+                        lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                        lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = 0;
                     // All other cards (normal success)
-                    } else if (lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] !== undefined) {
+                    } else if (lookupResult[cardName(i)]['dégâts par seconde'] !== undefined) {
                         // Deal with cards with "x2" in the DPS cell
-                        if (String(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)]).includes("x2") === true) {
-                            doubledDPSValue = String(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)]);
-                            lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = Number(doubledDPSValue.replace("x2", "").replace(/\s/g, "")) * 2;
+                        if (String(lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)]).includes("x2") === true) {
+                            doubledDPSValue = String(lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)]);
+                            lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = Number(doubledDPSValue.replace("x2", "").replace(/\s/g, "")) * 2;
                         // Most cards
                         } else {
-                            dpsTotal += Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
+                            dpsTotal += Number(lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
                         }
                     // Use Damage if DPS is not present
-                    } else if (lookupResult[cardName(i)].dÃ©gÃ¢ts !== undefined) {
-                        dpsTotal += Number(lookupResult[cardName(i)].dÃ©gÃ¢ts[cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)].dÃ©gÃ¢ts[cardLevel(i)]);
+                    } else if (lookupResult[cardName(i)].dégâts !== undefined) {
+                        dpsTotal += Number(lookupResult[cardName(i)].dégâts[cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
+                        lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                        lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)].dégâts[cardLevel(i)]);
                     // Use Area Damage if DPS and Damage are both not present
-                    } else if (lookupResult[cardName(i)]['dÃ©gÃ¢ts de zone'] !== undefined) {
-                        dpsTotal += Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts de zone'][cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                        lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]['dÃ©gÃ¢ts de zone'][cardLevel(i)]);
+                    } else if (lookupResult[cardName(i)]['dégâts de zone'] !== undefined) {
+                        dpsTotal += Number(lookupResult[cardName(i)]['dégâts de zone'][cardLevel(i)]) * Number(lookupResult[cardName(i)].nombre);
+                        lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                        lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = Number(lookupResult[cardName(i)]['dégâts de zone'][cardLevel(i)]);
                     // Throw error
                     } else {
                         ccerrorMsg();
                     }
                 } else {
                     // For spells
-                    lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'] = [];
-                    lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] = 0;
+                    lookupResult[cardName(i)]['dégâts par seconde'] = [];
+                    lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] = 0;
                 }
             }
             dpsAverage = dpsTotal / 8;
@@ -805,7 +805,7 @@ $(document).ready(function() {
                     targetsAny++;
                 } else if (lookupResult[cardName(i)].cibles === "Sol") {
                     targetsGround++;
-                } else if (lookupResult[cardName(i)].cibles === "BÃ¢timent" || lookupResult[cardName(i)].cibles === "BÃ¢timents") {
+                } else if (lookupResult[cardName(i)].cibles === "Bâtiment" || lookupResult[cardName(i)].cibles === "Bâtiments") {
                     targetsBuilding++;
                 } else {
                     targetsNone++;
@@ -826,9 +826,9 @@ $(document).ready(function() {
             dmgTypeNone = 0;
             // Count number of each damage type
             for (i = 1; i < 9; i++) {
-                if ($.isEmptyObject(lookupResult[cardName(i)]['dÃ©gÃ¢ts de zone']) === false || cardName(i) == "Tornade" || cardName(i) == "La BÃ»che") {
+                if ($.isEmptyObject(lookupResult[cardName(i)]['dégâts de zone']) === false || cardName(i) == "Tornade" || cardName(i) == "La Bûche") {
                     dmgTypeSplash++;
-                } else if ($.isEmptyObject(lookupResult[cardName(i)].dÃ©gÃ¢ts) === false || cardName(i) == "Golem" || cardName(i) == "Molosse de lave" || cardName(i) == "Gang de gobelins") {
+                } else if ($.isEmptyObject(lookupResult[cardName(i)].dégâts) === false || cardName(i) == "Golem" || cardName(i) == "Molosse de lave" || cardName(i) == "Gang de gobelins") {
                     dmgTypeSingle++;
                 } else {
                     dmgTypeNone++;
@@ -856,9 +856,9 @@ $(document).ready(function() {
                     $("#ccalc-cardComparison tr:nth-of-type(" + cardComparisonNameLoop + ") td:nth-of-type(1)").html('<span style="color: #404040; font-weight: bold;">' + cardName(i) + '</span>');
                 } else if (cardRarity(i) == "Rare") {
                     $("#ccalc-cardComparison tr:nth-of-type(" + cardComparisonNameLoop + ") td:nth-of-type(1)").html('<span style="color: #e68a00; font-weight: bold;">' + cardName(i) + '</span>');
-                } else if (cardRarity(i) == "Ã‰pique") {
+                } else if (cardRarity(i) == "Épique") {
                     $("#ccalc-cardComparison tr:nth-of-type(" + cardComparisonNameLoop + ") td:nth-of-type(1)").html('<span style="color: #b300b3; font-weight: bold;">' + cardName(i) + '</span>');
-                } else if (cardRarity(i) == "LÃ©gendaire") {
+                } else if (cardRarity(i) == "Légendaire") {
                     $("#ccalc-cardComparison tr:nth-of-type(" + cardComparisonNameLoop + ") td:nth-of-type(1)").html('<span class="text-legendary" style="font-weight: bold;">' + cardName(i) + '</span>');
                 }
             }
@@ -911,7 +911,7 @@ $(document).ready(function() {
             // DPS column
             var deckDPS = [];
             for (i = 1; i < 9; i++) {
-                cardCompareTable(i,"6","text",round(0,lookupResult[cardName(i)]['dÃ©gÃ¢ts par seconde'][cardLevel(i)] * Number(lookupResult[cardName(i)].nombre)));
+                cardCompareTable(i,"6","text",round(0,lookupResult[cardName(i)]['dégâts par seconde'][cardLevel(i)] * Number(lookupResult[cardName(i)].nombre)));
                 deckDPS.push(cardCompareTable(i,"6","get"));
             }
             deckDPS.sort(function(a, b){return a-b});
@@ -946,22 +946,22 @@ $(document).ready(function() {
             /* Remove non-numerical characters and assign range as 0 if it is undefined */
             var standardizedRange, stringRange;
             for (i = 1; i < 9; i++) {
-                stringRange = String(lookupResult[cardName(i)].portÃ©e);
+                stringRange = String(lookupResult[cardName(i)].portée);
                 /* Remove blind spot values from any cards with defined blind spots */
                 if (stringRange.includes("-") === true) {
                     stringRange = stringRange.slice(stringRange.indexOf("-") + 1);
                 }
                 standardizedRange = stringRange.replace(/[^0-9$.,]/g, "");
                 if (isNaN(standardizedRange) === true) {
-                    lookupResult[cardName(i)].portÃ©e = 0;
+                    lookupResult[cardName(i)].portée = 0;
                 } else {
-                    lookupResult[cardName(i)].portÃ©e = Number(standardizedRange);
+                    lookupResult[cardName(i)].portée = Number(standardizedRange);
                 }
             }
             /* Set the column */
             var deckRange = [];
             for (i = 1; i < 9; i++) {
-                cardCompareTable(i,"7","text",lookupResult[cardName(i)].portÃ©e);
+                cardCompareTable(i,"7","text",lookupResult[cardName(i)].portée);
                 deckRange.push(cardCompareTable(i,"7","get"));
             }
             deckRange.sort(function(a, b){return a-b});
@@ -1033,7 +1033,7 @@ $(document).ready(function() {
                 } else if (lookupResult[cardName(i)].cibles == "Sol") {
                     cardCompareTable(i,"10","html","<span class='ion-android-walk'></span>");
                     cardCompareTable(i,"10","color","#F6FF78");
-                } else if (lookupResult[cardName(i)].cibles == "BÃ¢timents" || lookupResult[cardName(i)].cibles == "BÃ¢timent") {
+                } else if (lookupResult[cardName(i)].cibles == "Bâtiments" || lookupResult[cardName(i)].cibles == "Bâtiment") {
                     cardCompareTable(i,"10","html","<span class='ion-home'></span>");
                     cardCompareTable(i,"10","color","#FFC054");
                 } else {
@@ -1043,10 +1043,10 @@ $(document).ready(function() {
             }
             // Damage Type column
             for (i = 1; i < 9; i++) {
-                if ($.isEmptyObject(lookupResult[cardName(i)]['dÃ©gÃ¢ts de zone']) === false || cardName(i) == "Tornade" || cardName(i) == "La BÃ»che") {
+                if ($.isEmptyObject(lookupResult[cardName(i)]['dégâts de zone']) === false || cardName(i) == "Tornade" || cardName(i) == "La Bûche") {
                     cardCompareTable(i,"11","html","<span class='ion-fireball'></span>");
                     cardCompareTable(i,"11","color","#45DE68");
-                } else if ($.isEmptyObject(lookupResult[cardName(i)].dÃ©gÃ¢ts) === false || cardName(i) == "Golem" || cardName(i) == "Molosse de lave" || cardName(i) == "Gang de gobelins") {
+                } else if ($.isEmptyObject(lookupResult[cardName(i)].dégâts) === false || cardName(i) == "Golem" || cardName(i) == "Molosse de lave" || cardName(i) == "Gang de gobelins") {
                     cardCompareTable(i,"11","html","<span class='fa fa-crosshairs'></span>");
                     cardCompareTable(i,"11","color","#F6FF78");
                 } else {
@@ -1122,56 +1122,56 @@ $(document).ready(function() {
             }
             // Add similar cards to the Substitutions table based on role number
             if (lookupResult[cardName("1")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards1").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards1").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("1")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("1")].role][i],"1");
                 }
             }
             if (lookupResult[cardName("2")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards2").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards2").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("2")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("2")].role][i],"2");
                 }
             }
             if (lookupResult[cardName("3")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards3").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards3").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("3")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("3")].role][i],"3");
                 }
             }
             if (lookupResult[cardName("4")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards4").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards4").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("4")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("4")].role][i],"4");
                 }
             }
             if (lookupResult[cardName("5")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards5").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards5").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("5")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("5")].role][i],"5");
                 }
             }
             if (lookupResult[cardName("6")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards6").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards6").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("6")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("6")].role][i],"6");
                 }
             }
             if (lookupResult[cardName("7")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards7").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards7").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("7")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("7")].role][i],"7");
                 }
             }
             if (lookupResult[cardName("8")].role == numOfCardRoles) {
-                $("#ccalc-substitutions td#similarCards8").append('<p class="ccalc-sub-unique">C\'est une carte tout Ã  fait unique.</p>');
+                $("#ccalc-substitutions td#similarCards8").append('<p class="ccalc-sub-unique">C\'est une carte tout à fait unique.</p>');
             } else {
                 for (i = 0; i < subCards[lookupResult[cardName("8")].role].length; i++) {
                     getSubstitutionImage(subCards[lookupResult[cardName("8")].role][i],"8");
@@ -1201,10 +1201,10 @@ $(document).ready(function() {
                 */
             // Arrows
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.FlÃ¨ches.coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult.FlÃ¨ches["dÃ©gÃ¢ts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.FlÃ¨ches["dÃ©gÃ¢ts de zone"][maxCardLevel("Commune")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Flèches.coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult.Flèches["dégâts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Flèches["dégâts de zone"][maxCardLevel("Commune")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
                     for (x = 1; x <= maxCardLevel("Commune", spellCounterCap); x++) {
-                        if (Number(lookupResult.FlÃ¨ches["dÃ©gÃ¢ts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
-                            displaySpellCounter('FlÃ¨ches',x,cardName(i),cardLevel(i));
+                        if (Number(lookupResult.Flèches["dégâts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                            displaySpellCounter('Flèches',x,cardName(i),cardLevel(i));
                             break;
                         }
                     }
@@ -1212,9 +1212,9 @@ $(document).ready(function() {
             }
             // Fireball
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult["Boule de feu"].coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult["Boule de feu"]["dÃ©gÃ¢ts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult["Boule de feu"]["dÃ©gÃ¢ts de zone"][maxCardLevel("Rare")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult["Boule de feu"].coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult["Boule de feu"]["dégâts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult["Boule de feu"]["dégâts de zone"][maxCardLevel("Rare")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
                     for (x = 1; x <= maxCardLevel("Rare", spellCounterCap); x++) {
-                        if (Number(lookupResult["Boule de feu"]["dÃ©gÃ¢ts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                        if (Number(lookupResult["Boule de feu"]["dégâts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
                             displaySpellCounter('Boule de feu',x,cardName(i),cardLevel(i));
                             break;
                         }
@@ -1223,9 +1223,9 @@ $(document).ready(function() {
             }
             // Lightning
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Foudre.coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult.Foudre.dÃ©gÃ¢ts[1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Foudre.dÃ©gÃ¢ts[maxCardLevel("Ã‰pique")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
-                    for (x = 1; x <= maxCardLevel("Ã‰pique", spellCounterCap); x++) {
-                        if (Number(lookupResult.Foudre.dÃ©gÃ¢ts[x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Foudre.coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult.Foudre.dégâts[1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Foudre.dégâts[maxCardLevel("Épique")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
+                    for (x = 1; x <= maxCardLevel("Épique", spellCounterCap); x++) {
+                        if (Number(lookupResult.Foudre.dégâts[x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
                             displaySpellCounter('Foudre',x,cardName(i),cardLevel(i));
                             break;
                         }
@@ -1234,9 +1234,9 @@ $(document).ready(function() {
             }
             // Rocket
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Roquette.coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult.Roquette["dÃ©gÃ¢ts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Roquette["dÃ©gÃ¢ts de zone"][maxCardLevel("Rare")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Roquette.coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult.Roquette["dégâts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Roquette["dégâts de zone"][maxCardLevel("Rare")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
                     for (x = 1; x <= maxCardLevel("Rare", spellCounterCap); x++) {
-                        if (Number(lookupResult.Roquette["dÃ©gÃ¢ts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                        if (Number(lookupResult.Roquette["dégâts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
                             displaySpellCounter('Roquette',x,cardName(i),cardLevel(i));
                             break;
                         }
@@ -1245,10 +1245,10 @@ $(document).ready(function() {
             }
             // Zap
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Ã‰lectrocution.coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult.Ã‰lectrocution["dÃ©gÃ¢ts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Ã‰lectrocution["dÃ©gÃ¢ts de zone"][maxCardLevel("Commune")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult.Électrocution.coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult.Électrocution["dégâts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult.Électrocution["dégâts de zone"][maxCardLevel("Commune")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
                     for (x = 1; x <= maxCardLevel("Commune", spellCounterCap); x++) {
-                        if (Number(lookupResult.Ã‰lectrocution["dÃ©gÃ¢ts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
-                            displaySpellCounter('Ã‰lectrocution',x,cardName(i),cardLevel(i));
+                        if (Number(lookupResult.Électrocution["dégâts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                            displaySpellCounter('Électrocution',x,cardName(i),cardLevel(i));
                             break;
                         }
                     }
@@ -1256,11 +1256,11 @@ $(document).ready(function() {
             }
             // The Log
             for (i = 1; i < 9; i++) {
-                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult["La BÃ»che"].coÃ»t) - Number(lookupResult[cardName(i)].coÃ»t) <= 2 && Number(lookupResult["La BÃ»che"]["dÃ©gÃ¢ts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult["La BÃ»che"]["dÃ©gÃ¢ts de zone"][maxCardLevel("LÃ©gendaire")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince tÃ©nÃ©breux" && cardName(i) !== "BÃ©lier de combat") {
-                    if (lookupResult[cardName(i)].type == "Combattant" && lookupResult[cardName(i)].dÃ©placement == "Air" || lookupResult[cardName(i)].dÃ©placement === "Airs") {} else {
-                        for (x = 1; x <= maxCardLevel("LÃ©gendaire", spellCounterCap); x++) {
-                            if (Number(lookupResult["La BÃ»che"]["dÃ©gÃ¢ts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
-                                displaySpellCounter('La BÃ»che',x,cardName(i),cardLevel(i));
+                if (lookupResult[cardName(i)].type !== "Sort" && Number(lookupResult["La Bûche"].coût) - Number(lookupResult[cardName(i)].coût) <= 2 && Number(lookupResult["La Bûche"]["dégâts de zone"][1]) < Number(lookupResult[cardName(i)]['points de vie'][maxCardLevel(cardRarity(i))]) && Number(lookupResult["La Bûche"]["dégâts de zone"][maxCardLevel("Légendaire")]) >= Number(lookupResult[cardName(i)]['points de vie'][1]) && cardName(i) !== "Gardes" && cardName(i) !== "Prince ténébreux" && cardName(i) !== "Bélier de combat") {
+                    if (lookupResult[cardName(i)].type == "Combattant" && lookupResult[cardName(i)].déplacement == "Air" || lookupResult[cardName(i)].déplacement === "Airs") {} else {
+                        for (x = 1; x <= maxCardLevel("Légendaire", spellCounterCap); x++) {
+                            if (Number(lookupResult["La Bûche"]["dégâts de zone"][x]) >= Number(lookupResult[cardName(i)]['points de vie'][cardLevel(i)])) {
+                                displaySpellCounter('La Bûche',x,cardName(i),cardLevel(i));
                                 break;
                             }
                         }

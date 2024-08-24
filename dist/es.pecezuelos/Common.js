@@ -1,7 +1,7 @@
 // 1. AutoRefreshing RecentChanges and WikiActivity -tomado de Ben10 wiki-
  
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

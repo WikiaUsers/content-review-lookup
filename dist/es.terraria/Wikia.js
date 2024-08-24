@@ -14,7 +14,7 @@
 				content: [
 					{
 						type: 'paragraph',
-						content: 'AquÃ­ puedes crear un artÃ­culo para un objeto del juego Terraria de un mod de Terraria.'
+						content: 'Aquí puedes crear un artículo para un objeto del juego Terraria de un mod de Terraria.'
 					}
 				]
 			}
@@ -49,7 +49,7 @@
         if (visionaryPage.canExec()) {
             $($.proxy(visionaryPage.init, visionaryPage));
         } else {
-        	console.log('No se puede iniciar VisionaryPage aquÃ­.');
+        	console.log('No se puede iniciar VisionaryPage aquí.');
         }
     });
 })();

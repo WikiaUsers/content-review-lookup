@@ -59,7 +59,7 @@ $(function() {
 			docLink,
 			"Silver Lock.png",
 			"7/78",
-			"Esta p√°gina est√° protegida contra edi√ß√£o por novos usu√°rios n√£o registrados."
+			"Esta p·gina est· protegida contra ediÁ„o por novos usu·rios n„o registrados."
 		).appendTo($(".mw-indicators"));
 	} else if (protectionLevel === "sysop") {
 		mimicIndicator(
@@ -67,7 +67,7 @@ $(function() {
 			docLink,
 			"Gold Lock.png",
 			"5/55",
-			"Esta p√°gina est√° totalmente protegida contra edi√ß√£o por usu√°rios regulares."
+			"Esta p·gina est· totalmente protegida contra ediÁ„o por usu·rios regulares."
 		).appendTo($(".mw-indicators"));
 	}
 	
@@ -77,7 +77,7 @@ $(function() {
 			docLink,
 			"Green Lock.png",
 			"a/ab",
-			"Esta p√°gina est√° totalmente protegida de ser movida por usu√°rios regulares."
+			"Esta p·gina est· totalmente protegida de ser movida por usu·rios regulares."
 		).appendTo($(".mw-indicators"));
 	}
 });

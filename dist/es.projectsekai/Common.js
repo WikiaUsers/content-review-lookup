@@ -1,17 +1,17 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
 
 window.BackToTopModern = true;
 
-/* Sustituye {{USERNAME}} por el nombre del usuario que navega por la p√°gina.
+/* Sustituye {{USERNAME}} por el nombre del usuario que navega por la p·gina.
    Requiere copiar Plantilla:USERNAME. */
 $(function() {
     if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) { return; }
     $('span.insertusername').text(mw.config.get('wgUserName'));
 });
  
-/* Fin de la sustituci√≥n de {{USERNAME}} */
+/* Fin de la sustituciÛn de {{USERNAME}} */
 
-/* para convertir una fecha/hora en una zona horaria a la hora local del usuario, c√≥digo copiado de u:valkyriecrusade:MediaWiki:Common.js */
+/* para convertir una fecha/hora en una zona horaria a la hora local del usuario, cÛdigo copiado de u:valkyriecrusade:MediaWiki:Common.js */
 function jstzConvertAll() {
     var l = document.querySelectorAll("[data-jstz]");
     for (var i=0; i<l.length;i++) {
@@ -24,14 +24,14 @@ function jstzConvertAll() {
         }
     }
 }
-// esta funci√≥n formatea la fecha de forma similar a la funci√≥n #time de wikis
+// esta funciÛn formatea la fecha de forma similar a la funciÛn #time de wikis
 // revisa https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions#.23time
 // no todas las opciones son compatibles
 function jstzFormatDate(date, format, utc) {
     var MMMM = ["\x00", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     var MMM = ["\x01", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-    var dddd = ["\x02", "Domingo", "Lunes", "Martes", "Mi√©rcoles", "Jueves", "Viernes", "S√°bado"];
-    var ddd = ["\x03", "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "S√°b"];
+    var dddd = ["\x02", "Domingo", "Lunes", "Martes", "MiÈrcoles", "Jueves", "Viernes", "S·bado"];
+    var ddd = ["\x03", "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "S·b"];
     function ii(i, len) {
         var s = i + "";
         len = len || 2;
@@ -87,7 +87,7 @@ function jstzFormatDate(date, format, utc) {
 }
 $(jstzConvertAll);
 
-/* Adaptado de YouTubePlayer & DraggableYouTubePlayer para previsualizaciones de v√≠deo. */
+/* Adaptado de YouTubePlayer & DraggableYouTubePlayer para previsualizaciones de vÌdeo. */
 mw.hook('wikipage.content').add(function($content) {
     $content.find('.episodepreview-video').each(function() {
         var $this = $(this),
@@ -141,11 +141,11 @@ window.tooltips_config = {
     offsetY: 10
 };
 
-/* Configuraci√≥n de las PreloadTemplate */
+/* ConfiguraciÛn de las PreloadTemplate */
 window.preloadTemplates_list = "MediaWiki:Custom-PreloadTemplatesList";
 window.preloadTemplates_subpage = "syntax";
 
-/* A√±ade iconos al borde inferior de la cabecera de la p√°gina
+/* AÒade iconos al borde inferior de la cabecera de la p·gina
  * por: [[User:The 888th Avatar]]
  */
  

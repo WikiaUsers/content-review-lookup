@@ -6,5 +6,5 @@ importArticles({
 });
  
 //Liens
-var link = '<a class="chatlink" href="https://a-la-croisee-des-mondes.fandom.com/fr/wiki/Project:RÃ¨gles_du_tchat" target="_blank">RÃ¨gles du tchat</a>'
+var link = '<a class="chatlink" href="https://a-la-croisee-des-mondes.fandom.com/fr/wiki/Project:Règles_du_tchat" target="_blank">Règles du tchat</a>'
 $('.public.wordmark').first().append(link);

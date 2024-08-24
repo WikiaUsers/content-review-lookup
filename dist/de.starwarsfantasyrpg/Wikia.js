@@ -1,5 +1,5 @@
 // <pre>
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 // ================================================================================
 /** CSS einbinden */
  function addCSS(title) {
@@ -17,7 +17,7 @@
 
  
 //-------------------------------------------------------------------------------------
-//FÃ¼gt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen
+//Fügt Vorlage:Dateiinfo auf Spezial:Hochladen ein....Zum Testen
  
 function setSpecialUploadTemplate() {
   if (wgPageName=="Spezial:Hochladen") {
@@ -27,7 +27,7 @@ function setSpecialUploadTemplate() {
                  + "|Beschreibung=\n"
                  + "|Lizenz=\n"
                  + "|Quelle=\n"
-                 + "|KÃ¼nstler=\n"
+                 + "|Künstler=\n"
                  + "|Kategorien=\n"
                  + "}"+"}";
     }

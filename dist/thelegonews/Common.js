@@ -20,7 +20,7 @@ if(window.wgUserName){$(function(){$(".insertusername").html(wgUserName);});}
  <script>if(google.j.b)document.body.style.visibility='hidden';</script>
  <iframe name=wgjf style=display:none src="" onload="google.j.l()" onerror="google.j.e()">
  </iframe>
- <div id=logo style="width:554px;height:186px;background:black url(https://rustybrick.s3.amazonaws.com/pacman10-hp.png) 0 0 no-repeat;position:relative;margin-bottom:9px" title="PAC-MAN's 30th Birthday! Doodle with PAC-MANÙ & É±980 NAMCO BANDAI Games Inc.">
+ <div id=logo style="width:554px;height:186px;background:black url(https://rustybrick.s3.amazonaws.com/pacman10-hp.png) 0 0 no-repeat;position:relative;margin-bottom:9px" title="PAC-MAN's 30th Birthday! Doodle with PAC-MAN� & ɱ980 NAMCO BANDAI Games Inc.">
  <div id="logo-l" style="width:200px;height:2px;left:177px;top:157px;background:#990;position:absolute;display:none;overflow:hidden">
  <div id="logo-b" style="position:absolute;left:0;background:#ff0;height:8px;width:0">
  </div>

@@ -3,8 +3,8 @@ importScriptPage('http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.
 
 $(function() {
     var rights = {
-        'Blaze fire12'     : ['GrÃ¼nder', 'Admin', 'BÃ¼rokrat'],
-        'Harry granger'    : ['Admin', 'BÃ¼rokratin']
+        'Blaze fire12'     : ['Gründer', 'Admin', 'Bürokrat'],
+        'Harry granger'    : ['Admin', 'Bürokratin']
     },
         newrights = rights[wgTitle];
  

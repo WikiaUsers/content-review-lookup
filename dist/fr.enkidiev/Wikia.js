@@ -1,6 +1,6 @@
 /* Spoiler alert */
 SpoilerAlert = {
-    question: 'Cette page contient des spoilers. La lire est Ã  vos risques et pÃ©rils. Souhaitez-vous vraiment la faire apparaÃ®tre ?',
+    question: 'Cette page contient des spoilers. La lire est à vos risques et périls. Souhaitez-vous vraiment la faire apparaître ?',
     yes: 'Oui',
     no: 'Non, pas maintenant',
     isSpoiler: function () {
@@ -9,7 +9,7 @@ SpoilerAlert = {
 };
 
 
-/* Scripts importÃ©s */
+/* Scripts importés */
 importArticles({
     type: 'script',
     articles: [

@@ -15,7 +15,7 @@ addOnloadHook(function()
  	 	var text = $('#cke_wpTextbox1 iframe').contents().find('#bodyContent').text() || $('#wpTextbox1').val();
     	    	if(enforceSign && !$('#wpMinoredit').is(':checked') && !text.replace(/(<nowiki>.*?<\/nowiki>)/g, '').match('~~~') && !window.location.search.match(/(?:\?|&)undo=/))
     	        {
-    	            if(!confirm('Tal parece que olvidaste firmar tu coemntario.\nÂ¿EstÃ¡s seguro de que deseas continuar?'))
+    	            if(!confirm('Tal parece que olvidaste firmar tu coemntario.\n¿Estás seguro de que deseas continuar?'))
     	            {
     	                e.preventDefault();
     	            }

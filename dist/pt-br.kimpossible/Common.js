@@ -1,4 +1,4 @@
-/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
+/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
 
 /*var kpw_data = document.getElementById('kpw_data').innerHTML;
 document.getElementById('kpw_display').innerHTML = kpw_data;*/
@@ -205,7 +205,7 @@ addOnloadHook(checktimers);
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-//Pop-ups de ReferÃªncia
+//Pop-ups de Referência
 
 importArticles({
     type: 'script',

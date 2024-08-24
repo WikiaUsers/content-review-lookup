@@ -1,7 +1,7 @@
 /*<pre><nowiki>*/
-// 2. ImportaciÃ³n de precargas
+// 2. Importación de precargas
 importScript('MediaWiki:Precargas.js');
-// 3. ImportaciÃ³n de botones extra de la barra de ediciÃ³n
+// 3. Importación de botones extra de la barra de edición
 importScript('MediaWiki:Common.js/botones.js');
 
 

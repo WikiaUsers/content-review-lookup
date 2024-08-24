@@ -1,5 +1,5 @@
 /* <pre> */
- Â 
+  
  $('.jcConfig').each(function() {
  	var lines = $(this).text().split(($(this).text().indexOf('\r') != -1) ? '\r' : '\n');
  	var template = '';
@@ -9,32 +9,32 @@
  	var tplParams = [];
  	var acInputs = [];
  	var suggestNs = [];
- Â 
+  
  	// Generate a globally unique ID for an input
  	function getGuid(inputId) {
  		return formId + resultId + inputId;
  	}
- Â 
+  
  	// Give an error in the results area
  	// TODO For errors on parsing a config, put the error after the config section
  	function showError(str) {
  		$('#' + resultId).empty().append($('<span />').addClass('jcError').text(str));
  	}
- Â 
+  
  	// Parse config
  	for (var i in lines) {
  		var temp = lines[i].split('=', 2);
- Â 
+  
  		if (temp.length != 2) {
  			continue;
  		}
- Â 
+  
  		var vals = temp[1].split('|');
- Â 
+  
  		for (var j in vals) {
  			vals[j] = $.trim(vals[j]);
  		}
- Â 
+  
  		switch ($.trim(temp[0])) {
  			case 'template':
  				template = vals[0];
@@ -53,14 +53,14 @@
  			break;
  		}
  	}
- Â 
+  
  	$form = $('<form />').attr({'action': '#', 'id': 'jcForm' + formId}).submit(function() {
  		function dispResult(response) {
  			$('#' + formId + ' .jcSubmit input').val('Submit').removeAttr('disabled');
  			$('#bodyContent #' + resultId + ',#WikiaArticle #' + resultId).empty().removeClass('jcError').html(response.parse.text['*']);
  			$( 'table.sortable' ).tablesorter()
  		}
- Â 
+  
  		function validRange(x, range) {
  			if (range == null) {
  				return true;
@@ -69,18 +69,18 @@
  			if (parts[0] != '' && x < parseInt(parts[0])) {
  				return false;
  			}
- Â 
+  
  			if (parts[1] != '' && x > parseInt(parts[1])) {
  				return false;
  			}
- Â 
+  
  			return true;
  		}
- Â 
+  
  		function loadTemplate() {
  			code += '}}';
  			$('#' + formId + ' .jcSubmit input').val('Loading...').attr('disabled', 'disabled');
- Â 
+  
  			$.ajax({
  				data: {
  					action: 'parse',
@@ -100,20 +100,20 @@
  				timeout: window.calcTimeoutLength||10000 // msec
  			});
  		}
- Â 
+  
  		var code = '{{' + template;
  		var formError = false;
- Â 
+  
  		for (var i in tplParams) {
  			var val = '';
- Â 
+  
  			if (tplParams[i].type == 'fixed' || tplParams[i].type == 'hidden') {
  				val = tplParams[i].def;
  			} else {
  				var $input = $('#' + getGuid(tplParams[i].name));
  				val = $input.val();
  				if (tplParams[i].type == 'int') val = val.split(',').join('')
- Â 
+  
  				if (	(tplParams[i].type == 'hs' && tplParams[i].range == 'yes' && val == '') || (tplParams[i].type == 'int' && (val.search(/^-?[0-9]+$/) || !validRange(val, tplParams[i].range))) ||
  					(tplParams[i].type == 'number' && (val.search(/^-?[.0-9]+$/) || !validRange(val, tplParams[i].range))) ) {
  					$input.addClass('jcInvalid');
@@ -121,15 +121,15 @@
  				} else {
  					$input.removeClass('jcInvalid');
  				}
- Â 
+  
  				if (tplParams[i].type == 'hs') {
  					hs.push(tplParams[i]);
  				}
  			}
- Â 
+  
  			code += '|' + tplParams[i].name + '=' + val;
  		}
- Â 
+  
  		if (formError) {
  			showError('One or more fields contains an invalid value.');
  		} else {
@@ -165,24 +165,24 @@
  				loadTemplate();
  			}
  		}
- Â 
+  
  		return false;
  	});
- Â 
+  
  	for (var i in suggestNs) {
  		var $input = $('<input />').attr({'type': 'hidden', 'name': 'ns' + suggestNs[i]}).val('1');
  		$form.append($input);
  	}
- Â 
+  
  	var $table = $('<table />').addClass('wikitable jcTable');
- Â 
+  
  	for (var i in tplParams) {
  		if (tplParams[i].type == 'hidden') {
  			continue;
  		}
- Â 
+  
  		var guid = getGuid(tplParams[i].name);
- Â 
+  
  		var $tr = $('<tr />');
  		$tr.append($('<th />').append($('<label />').attr('for', guid).text(tplParams[i].label)));
  		var $td = $('<td />');
@@ -203,7 +203,7 @@
  			} else {
  				$input = $('<input />').attr({type: 'text', name: guid, id: guid, value: tplParams[i].def});
  				$td.append($input);
- Â 
+  
  				if (tplParams[i].type == 'article') {
  					acInputs.push(guid);
  				}
@@ -212,16 +212,16 @@
  		$tr.append($td);
  		$table.append($tr);
  	}
- Â 
+  
  	var $tr = $('<tr />');
  	var $td = $('<td />').addClass('jcSubmit').attr({colSpan: '2'});
  	$td.append($('<input />').attr({type: 'submit', value: 'Submit'}));
  	$tr.append($td);
  	$table.append($tr);
- Â 
+  
  	$form.append($table);
  	$('#bodyContent #' + formId + ',#WikiaArticle #' + formId).empty().append($form);
- Â 
+  
  	// Enable suggest on article fields
  	for (var i in acInputs) {
  		os_enableSuggestionsOn(acInputs[i], 'jcForm' + formId);

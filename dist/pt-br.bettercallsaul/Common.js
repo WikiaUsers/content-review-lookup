@@ -1,5 +1,5 @@
-/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 

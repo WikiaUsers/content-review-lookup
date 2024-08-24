@@ -1,16 +1,16 @@
-// AtualizaÃ§Ã£o AutomÃ¡tica
-AjaxRCRefreshText = 'Automaticamente recarregar a pÃ¡gina a cada 60segs';
-AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
-ajaxPages = ["Especial:MudanÃ§as_recentes","Especial:WikiActivity", "Especial:PÃ¡ginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:PÃ¡ginas_novas", "Especial:ContribuiÃ§Ãµes"];
+// Atualização Automática
+AjaxRCRefreshText = 'Automaticamente recarregar a página a cada 60segs';
+AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
+ajaxPages = ["Especial:Mudanças_recentes","Especial:WikiActivity", "Especial:Páginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:Páginas_novas", "Especial:Contribuições"];
 
-// PersonalizaÃ§Ã£o de usuÃ¡rio
+// Personalização de usuário
 importArticles({
     type: 'script',
     articles: [
         'u:dev:MediaWiki:TopEditors/code.js',       // Editores
-        'u:dev:MediaWiki:InactiveUsers/code.js',    // Etiqueta em UsuÃ¡rios
-        'u:dev:MediaWiki:AjaxRC/code.js',           // AtualizaÃ§Ã£o AutomÃ¡tica
-        'MediaWiki:Wikia.js/userRightsIcons.js',    // IdentificaÃ§Ã£o
+        'u:dev:MediaWiki:InactiveUsers/code.js',    // Etiqueta em Usuários
+        'u:dev:MediaWiki:AjaxRC/code.js',           // Atualização Automática
+        'MediaWiki:Wikia.js/userRightsIcons.js',    // Identificação
         'u:dev:MediaWiki:Countdown/code.js'         // Contagem Regressiva
     ]
 });

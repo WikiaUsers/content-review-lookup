@@ -2,7 +2,7 @@
  * Reference Tooltips
  *
  * Based on original from [[mw:Reference Tooltips]]
- * @author CÃ¥m
+ * @author Cåm
  */
 
 /*jshint

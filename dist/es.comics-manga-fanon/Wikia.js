@@ -1,10 +1,10 @@
 // Refrescar Actividad reciente
  
 window.AjaxRCRefreshText = 'Auto-ref';
-window.AjaxRCRefreshHoverText = 'Refrescar la actividad autom√°ticamente.';
+window.AjaxRCRefreshHoverText = 'Refrescar la actividad autom·ticamente.';
 window.ajaxPages = ["Especial:WikiActivity","Especial:CambiosRecientes"];
  
-// Guardar art√≠culos mientras con CTRL+S
+// Guardar artÌculos mientras con CTRL+S
  
 importScriptPage('SaveKey/code.js', 'dev');
  

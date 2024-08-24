@@ -8,3 +8,6 @@ $(function () {
         haut.show();
     }
 });
+
+/* Pour la barre de progression horizontale */
+window.enableReadProgressBarOnArticles = true

@@ -18,8 +18,8 @@ if (mwCustomEditButtons) {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
      "speedTip": "Insertar plantilla de personaje",
-     "tagOpen": "{{Personaje infobox\n| naci贸n        = ",
-     "tagClose": "\n| image         = \n| nombre        = \n| etnia        = \n| nacionalidad  = \n| edad          = \n| g茅nero        = \n| cabello       = \n| aliados       = \n| enemigos      = \n| arma          = \n| estilodepelea = \n| profesi贸n     = \n| posici贸n      = \n| afiliaci贸n    = \n| aparici贸n     = \n| 煤ltimaapar    = \n| voz           = \n}}",
+     "tagOpen": "{{Personaje infobox\n| naci髇        = ",
+     "tagClose": "\n| image         = \n| nombre        = \n| etnia        = \n| nacionalidad  = \n| edad          = \n| g閚ero        = \n| cabello       = \n| aliados       = \n| enemigos      = \n| arma          = \n| estilodepelea = \n| profesi髇     = \n| posici髇      = \n| afiliaci髇    = \n| aparici髇     = \n| 鷏timaapar    = \n| voz           = \n}}",
      "sampleText": ""};
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -46,19 +46,19 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/avatar/images/d/dc/Image_Button.png",
 		"speedTip": "Insertar Plantilla:Imagebox",
-		"tagOpen": "\{\{Imagebox\r| descripci贸n = ",
-		"tagClose": "\r| pel铆cula    = \r| series      = \r| temporada   = \r| episodio    = \r| fuente      = \r| origen      = \r| cats        = \r| licencia    = \r\}\}",
+		"tagOpen": "\{\{Imagebox\r| descripci髇 = ",
+		"tagClose": "\r| pel韈ula    = \r| series      = \r| temporada   = \r| episodio    = \r| fuente      = \r| origen      = \r| cats        = \r| licencia    = \r\}\}",
 		"sampleText": ""};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/es.starwars/images/8/8c/Button_RedX.png",
-		"speedTip": "Proponer que el art铆culo sea borrado",
+		"speedTip": "Proponer que el art韈ulo sea borrado",
 		"tagOpen": "{{Borrar|Motivo}} ",
 		"tagClose": "",
 		"sampleText": ""};
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-		"speedTip": "Insertar aviso de en construcci贸n",
+		"speedTip": "Insertar aviso de en construcci髇",
 		"tagOpen": "{{Construyendo|Usuario}} ",
 		"tagClose": "",
 		"sampleText": ""};
@@ -68,7 +68,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 /*** Autorefrescar los cambios recientes en la wikiactividad ***/
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom谩t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p谩gina autom谩ticamente';
+AjaxRCRefreshText = 'Act. autom醫.';
+AjaxRCRefreshHoverText = 'Refrescar esta p醙ina autom醫icamente';
 ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');

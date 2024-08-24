@@ -1,19 +1,19 @@
-/* Qualquer JavaScript aqui ser√° carregado apenas para sysops */
+/* Qualquer JavaScript aqui ser· carregado apenas para sysops */
 /**
- * Em branco o campo "Outro/motivo adicional" ao excluir p√°ginas,
- * e insira o motivo da predefini√ß√£o de exclus√£o
+ * Em branco o campo "Outro/motivo adicional" ao excluir p·ginas,
+ * e insira o motivo da predefiniÁ„o de exclus„o
  * 
- * √â assim que n√£o temos vandalismo est√∫pido e spam e
- * O que n√£o preservado para a posteridade no registro de exclus√£o
+ * … assim que n„o temos vandalismo est˙pido e spam e
+ * O que n„o preservado para a posteridade no registro de exclus„o
  */
 $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 	'use strict';
 	/**
-	 * Parte 1: Parte 1: Adicionar o motivo da elimina√ß√£o a partir da predefini√ß√£o de exclus√£o para o bot√£o de Excluir 
+	 * Parte 1: Parte 1: Adicionar o motivo da eliminaÁ„o a partir da predefiniÁ„o de exclus„o para o bot„o de Excluir 
 	 */
 	var $deleteReason = $( '.delete-reason' );
 	if ( $deleteReason.length ) {
-		// Um n√≥ pai √© necess√°rio para $().replaceWith para funcionar 
+		// Um nÛ pai È necess·rio para $().replaceWith para funcionar 
 		var $reasonNodes = $( '<i>' ).append( $( '.delete-reason' ).contents().clone() );
 		$reasonNodes.find( 'a' ).each( function() {
 			var $link = $( this );
@@ -38,17 +38,17 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		var reasonText = $reasonNodes.text();
 		if ( reasonText ) {
 			$( '#ca-delete a' ).prop( 'href', function() {
-				// Propositadamente n√£o usando wpReason, ent√£o o motivo inicialmente √© gerado automaticamente
-				// ent√£o o usu√°rio pode pressionar desfazer para recuper√°-lo se eles quiserem em vez deste
+				// Propositadamente n„o usando wpReason, ent„o o motivo inicialmente È gerado automaticamente
+				// ent„o o usu·rio pode pressionar desfazer para recuper·-lo se eles quiserem em vez deste
 				return this.href += '&deleteReason=' + encodeURIComponent( reasonText );
 			} );
 		}
 	}
 	
 	/**
-	 * Parte 2: Obtenha o motivo previamente adicionado do URL ou tente extrai-lo do resumo do "conte√∫do".
-	 * Ent√£o, se parcialmente corresponder a uma dos motivos de exclus√£o pr√©-definidas, selecione isso e em branco o resumo,
-	 * caso contr√°rio, basta substituir o resumo por ele
+	 * Parte 2: Obtenha o motivo previamente adicionado do URL ou tente extrai-lo do resumo do "conte˙do".
+	 * Ent„o, se parcialmente corresponder a uma dos motivos de exclus„o prÈ-definidas, selecione isso e em branco o resumo,
+	 * caso contr·rio, basta substituir o resumo por ele
 	 */
 	if ( mw.config.get( 'wgAction' ) === 'delete' && !mw.util.getParamValue( 'wpReason' ) ) {
 		var $reason = $( '#wpReason' ), autoReason = $reason.prop( 'value' );

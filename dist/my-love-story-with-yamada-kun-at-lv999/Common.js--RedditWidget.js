@@ -2,7 +2,7 @@
 ** Any JavaScript here will be
 ** loaded for all users on every
 ** page load.
-Â© The Promise Neverland Wiki
+© The Promise Neverland Wiki
 ============================*/
 
 (function() {

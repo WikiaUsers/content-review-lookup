@@ -437,9 +437,9 @@ if (!window.$G){
 //<pre>
 /************************************/
 /* PlantillaPlegable: Principalmente para plantillas, aunque solo soporta tablas (no div)
- * AÃ±ade un botÃ³n para plegar/desplegar la plantilla, Ãºtil para plantillas que ocupan mucho.
+ * Añade un botón para plegar/desplegar la plantilla, útil para plantillas que ocupan mucho.
  *
- * Copyright (C) 2008  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2008  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -447,13 +447,13 @@ if (!window.$G){
  *
  * Funcionamiento:
  *  Se ocultan todas las filas excepto la primera.
- *  El control se muestra en la primera fila y se sitÃºa en la Ãºltima columna, como primer elemento (porque serÃ¡ float:right)
- *  Si se crea un span de clase "plegable-ctrl", se usarÃ¡ ese para ubicar el control
- *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer asÃ­, fuerza el ancho anterior.
+ *  El control se muestra en la primera fila y se sitúa en la última columna, como primer elemento (porque será float:right)
+ *  Si se crea un span de clase "plegable-ctrl", se usará ese para ubicar el control
+ *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer así, fuerza el ancho anterior.
  *
- * parÃ¡metros:
+ * parámetros:
  *  el: [HTMLTable] Tabla a plegar/desplegar
- *  iniPlegada: [bool] Opcional. Indica si debe plegarse automÃ¡ticamente tras usarlo
+ *  iniPlegada: [bool] Opcional. Indica si debe plegarse automáticamente tras usarlo
  */
 (function(){
  
@@ -481,7 +481,7 @@ PlantillaPlegable = function(el, iniPlegada){
  
 PlantillaPlegable.prototype = {
 	version:'1.2',
-	// InicializaciÃ³n. Por ahora solo soporte para tablas
+	// Inicialización. Por ahora solo soporte para tablas
 	init: function(){
 		if (this.oElem.tagName.toLowerCase() != 'table' || !this.oElem.rows.length) return;
 		var r0 = this.oElem.rows[0];
@@ -518,7 +518,7 @@ PlantillaPlegable.prototype = {
 		// Control
 		this.oCtrl.innerHTML='';
 		$UT.makeChildren([( plegar ? K_MOSTRAR : K_OCULTAR )], this.oCtrl);
-		// Almacenamos dimensiones antes y despuÃ©s de aplicar visibilidad
+		// Almacenamos dimensiones antes y después de aplicar visibilidad
 		var jqElem = $(this.oElem);
 		var oldWidth = jqElem.width();
 		for (var i = 1, rs = this.oElem.rows; i < rs.length && plegar != this.bPlegada; i++){
@@ -531,7 +531,7 @@ PlantillaPlegable.prototype = {
 		}
 		this.bPlegada = plegar;
 		var newWidth = jqElem.width();
-		// Si ha cambiado el ancho, forzamos el mismo que tenÃ­a, para evitar que se redimensione al plegar
+		// Si ha cambiado el ancho, forzamos el mismo que tenía, para evitar que se redimensione al plegar
 		if (plegar && newWidth !== oldWidth && this.oElem.style.width === ''){
 			this.bAjustado = true;
 			jqElem.width(oldWidth);
@@ -544,7 +544,7 @@ PlantillaPlegable.prototype = {
 //</pre>
  
 //<pre>
-// Cuantas plantillas plegables se muestran desplegadas, como mÃ¡ximo. Si se alcanza el lÃ­mite se pliegan todas.
+// Cuantas plantillas plegables se muestran desplegadas, como máximo. Si se alcanza el límite se pliegan todas.
 var MaxDesplegadas = 2;
  
 $(function() {
@@ -608,7 +608,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÃ­as ' + left
+  if(diff > 0) left = diff + ' días ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

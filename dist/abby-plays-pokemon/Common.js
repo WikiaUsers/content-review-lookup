@@ -16,10 +16,10 @@ importScriptPage('ShowHide/code.js', 'dev');
 // SORTING REPLACEMENTS
 mw.config.set(
   'tableSorterCollation', {
-    'Ã¤' : 'ae',
-    'Ã¶' : 'oe',
-    'ÃŸ' : 'ss',
-    'Ã¼' : 'ue',
+    'ä' : 'ae',
+    'ö' : 'oe',
+    'ß' : 'ss',
+    'ü' : 'ue',
     /* REMOVE ANY NONE ALPHA CHARACTERS */
     ' ' : '',
     ',' : '',

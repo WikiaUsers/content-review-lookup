@@ -1,39 +1,39 @@
 /* <pre style="overflow: scroll; height: 25em"><nowiki> */
- Â 
+  
  function setupUploadForm(){
  	// Check if cookie has been set for form style. Overrides URL parameter if set.
  	var formstyle = getCookie("uploadform");
- Â 
+  
  	$("#uploadBasicLinkJS").show();
  	$("#uploadTemplateNoJS").hide();
- Â 
+  
  	var wpLicense = $('#wpLicense');
- Â 
+  
  	if ( wpLicense.length && window.location.search.indexOf('wpForReUpload=1') == -1){
  		if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)){
  			// Add link to basic form
  			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="http://starwars.wikia.com/index.php?title=Special:Upload&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Switch to basic upload form</a></div>');
- Â 
+  
  			// Stretch table to full width
  			$('#mw-htmlform-description').css('width', '100%');
- Â 
+  
  			// Bind upload button to verify function
  			$('#mw-upload-form').bind('submit', verifySummary);
- Â 
+  
  			// Hide existing rows
  			var rows = $('#mw-htmlform-description').find('tr');
  			$('tr.mw-htmlform-field-HTMLTextAreaField').hide();
  			$('tr.mw-htmlform-field-HTMLTextAreaField').next().detach();
- Â 
+  
  			$('#mw-htmlform-description').addClass('hidable start-hidden');
- Â 
+  
  			// Add new required rows
  			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Source:</td><td class="mw-input"><textarea id="sourceBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
  			$('#mw-htmlform-description').append('<tbody class="hidable-content"></tbody>');
  			var tbody1 = $('#mw-htmlform-description').children('tbody').eq(0);
  			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Description:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
  			tbody1.append('<tr><td colspan="2" style="text-align: center;">Optional fields <span class="hidable-button"></span></td></tr>');
- Â 
+  
  			// Add new optional rows
  			var tbody2 = $('#mw-htmlform-description').children('tbody').eq(1);
  			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Attention:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
@@ -47,28 +47,28 @@
  		} else {
  			// Old style form just needs Information template in the summary box
  			$('#wpUploadDescription').val('==Summary==\r\n{{Information\r\n|attention=\r\n|description=\r\n|source=\r\n|author=\r\n|filespecs=\r\n|licensing=\r\n|other versions=\r\n|cat artist=\r\n|cat licensee=\r\n|cat subject=\r\n|cat type=\r\n}}');
- Â 
+  
  			// Add link to guided form
  			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="http://starwars.wikia.com/index.php?title=Special:Upload" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Switch to guided upload form</a></div>');
  		}
  	}
  }
- Â 
+  
  function verifySummary(){
  	var wpLicense = document.getElementById('wpLicense');
- Â 
+  
  	// Check for licensing
  	if ( wpLicense.value == "" ){
  		alert('Licensing must be completed.');
  		return false;
  	}
- Â 
+  
  	// Check for source
  	if ( document.getElementById('sourceBox').value == "" ){
  		alert('Source must be completed.');
  		return false;
  	}
- Â 
+  
  	var strBuilder = '==Summary==\r\n{{Information\r\n';
  	strBuilder += '|attention=' + document.getElementById('attentionBox').value + '\r\n';
  	strBuilder += '|description=' + document.getElementById('descriptionBox').value + '\r\n';
@@ -82,12 +82,12 @@
  	strBuilder += '|cat subject=' + document.getElementById('catsubjectBox').value + '\r\n';
  	strBuilder += '|cat type=' + document.getElementById('cattypeBox').value + '\r\n';
  	strBuilder += '}}';
- Â 
+  
  	document.getElementById('wpUploadDescription').value = strBuilder;
- Â 
+  
  	wpLicense.selectedIndex = 0;
- Â 
+  
  	return true;
  }
- Â 
+  
  /* </nowiki></pre> */

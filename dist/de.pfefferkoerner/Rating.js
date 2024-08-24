@@ -92,7 +92,7 @@ function renderRatingButton(container) {
 		if (typeof myRating === 'undefined') {
 			ratingLabel = Object.assign(document.createElement('p'), {
 				textContent: otherRatings.length
-					? 'Es haben bereits ' + otherRatings.length + ' Benutzer*innen eine Bewertung (Ã˜ ' + formatter.format(average) + ') abgegeben'
+					? 'Es haben bereits ' + otherRatings.length + ' Benutzer*innen eine Bewertung (Ø ' + formatter.format(average) + ') abgegeben'
 					: 'Es wurde noch keine Bewertung abgegeben. Sei die*der erste!',
 			});
 			ratingLabel.style.marginBottom = 0;
@@ -106,7 +106,7 @@ function renderRatingButton(container) {
 			container.append(btn);
 		} else {
 			ratingLabel = Object.assign(document.createElement('p'), {
-				textContent: 'Mit ' + myRating.rating + '/5 (Ã˜ ' + formatter.format(average) + ') bewertet',
+				textContent: 'Mit ' + myRating.rating + '/5 (Ø ' + formatter.format(average) + ') bewertet',
 			});
 			ratingLabel.style.marginBottom = 0;
 			container.append(ratingLabel);

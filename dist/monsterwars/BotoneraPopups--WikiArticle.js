@@ -1,7 +1,7 @@
 /*<source lang="javascript">*/
 /* WikiArticle - v2.0
  * Framework to easily generate urls to MediaWiki articles (actions, special pages) from an article name
- * (C) 2010-2012 JesÃºs MartÃ­nez Novo [[User:Ciencia_Al_Poder]]
+ * (C) 2010-2012 Jesús Martínez Novo [[User:Ciencia_Al_Poder]]
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or

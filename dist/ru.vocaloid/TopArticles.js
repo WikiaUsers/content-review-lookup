@@ -1,5 +1,5 @@
 /** Creates a Top 10 with the most viewed articles
-** Â© BlackZetsu, 2015
+** © BlackZetsu, 2015
 ** License: https://creativecommons.org/licenses/by-sa/3.0/
 * this is a simplified version made to suit the wiki's usage
 **/

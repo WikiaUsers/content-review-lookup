@@ -1,8 +1,8 @@
 $(function() {
     var rights = {};
 /*Quelle: http://candybox.wikia.com/wiki/MediaWiki:Wikia.js */ 
-    rights["Sonic775"]           = ["Fondateur", "PropriÃ©taire du parc et designer de manÃ¨ges"],
-    rights["SÃ©bastien M"]           = ["Administrateur"],
+    rights["Sonic775"]           = ["Fondateur", "Propriétaire du parc et designer de manèges"],
+    rights["Sébastien M"]           = ["Administrateur"],
     rights["Avoue72"]             = ["APBW Staff"];
  
      if (typeof rights[wgTitle] != "undefined") {
@@ -16,7 +16,7 @@ $(function() {
     }
 });
  
-/* IcÃ´nes sociales (Facebook, Twitter, Google+) */
+/* Icônes sociales (Facebook, Twitter, Google+) */
 var SocialMediaButtons = { 
 	position: 'top',
 	colorScheme: 'color',
@@ -24,21 +24,21 @@ var SocialMediaButtons = {
 };
 importScriptPage('SocialIcons/code.js','dev');
  
-/**** Plus de bouton "ajouter une image Ã  cette galerie" ****/
+/**** Plus de bouton "ajouter une image à cette galerie" ****/
  
 $( "li:last" ).removeClass(function() {
   return $( this ).prev().attr( "wikia-photogallery-add wikia-button noprint" );
 });
  
 /*===================
- * Scripts importÃ©s *
+ * Scripts importés *
  ===================*/
  
-/* Collapsible tables (dÃ©sormais inutile, prÃ©sent par dÃ©faut avec "mw-collapsible")
+/* Collapsible tables (désormais inutile, présent par défaut avec "mw-collapsible")
 ===================================================================================*/
 importScriptPage('ShowHide/code.js', 'dev');
  
-/* Compte Ã  rebours
+/* Compte à rebours
 =========================================*/
 importArticles({
     type: "script",
@@ -47,7 +47,7 @@ importArticles({
     ]
 });
  
-/* Lien ancrÃ© pour les titres de section
+/* Lien ancré pour les titres de section
 =========================================*/
 importArticles({
     type: "script",
@@ -57,9 +57,9 @@ importArticles({
 });
  
 /**
- * BoÃ®tes dÃ©roulantes
+ * Boîtes déroulantes
  *
- * Pour [[ModÃ¨le:MÃ©ta palette de navigation]]
+ * Pour [[Modèle:Méta palette de navigation]]
  */
  
 var Palette_Enrouler = '[masquer]';
@@ -109,7 +109,7 @@ function Palette(Element){
         ButtonLink.setAttribute( "href", "javascript:;" );
         $(ButtonLink).click(new Function( "evt", "Palette_toggle(" + Palette_index + " ); evt.preventDefault();") );
         ButtonLink.appendChild( ButtonText );
-        Button.appendChild( document.createTextNode("\u00a0"));  //ajout d'un espace insÃ©cable pour dÃ©coller ce bouton du texte de la celulle
+        Button.appendChild( document.createTextNode("\u00a0"));  //ajout d'un espace insécable pour décoller ce bouton du texte de la celulle
         Button.appendChild( ButtonLink );
         Header.insertBefore( Button, Header.childNodes[0] );
       }
@@ -125,7 +125,7 @@ addOnloadHook(Palette);
  
  
 /**
- * Pour [[ModÃ¨le:BoÃ®te dÃ©roulante]]
+ * Pour [[Modèle:Boîte déroulante]]
  */
  
 var BoiteDeroulante_Enrouler = '[masquer]';

@@ -16,7 +16,7 @@ importArticles({
 gridContainer = '#champion-grid';
 gridFilters = {
     'name': 'search',
-    'role': [ '- RÃ´le  -',
+    'role': [ '- Rôle  -',
         ['Soigneur', 'Soigneur'],
         ['DPS', 'DPS'],
         ['Tank', 'Tank'],
@@ -25,8 +25,8 @@ gridFilters = {
         ['Magique', 'Magique'],
         ['Physique', 'Physique'],
     ],
-    'range': [ '- PortÃ©e -',
-        ['Courte portÃ©e', 'Courte'],
-        ['Longue portÃ©e', 'Longue'],
+    'range': [ '- Portée -',
+        ['Courte portée', 'Courte'],
+        ['Longue portée', 'Longue'],
     ],
 };

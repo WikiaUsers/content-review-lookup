@@ -2,20 +2,20 @@
 var countDownDateUS = new Date("Jan 5, 2122 23:00:00").getTime();
 // Update the count down every 1 second
 var x = setInterval(function() {
- Â // Get today's date and time
- Â var now = new Date().getTime();
- Â // Find the distance between now and the count down date
-Â var distance = countDownDateUS - now;
+  // Get today's date and time
+  var now = new Date().getTime();
+  // Find the distance between now and the count down date
+ var distance = countDownDateUS - now;
  // Time calculations for days, hours, minutes and seconds
- Â var days = Math.floor(distance / (1000 * 60 * 60 * 24));
- Â var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
- Â var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
- Â var seconds = Math.floor((distance % (1000 * 60)) / 1000);
- Â // Display the result in the element with id="USHot"
-Â  document.getElementById("USHot").innerHTML = hours + "h "Â + minutes + "m " + seconds + "s ";
- Â // If the count down is finished, write some text
- Â if (distance < 0) {
- Â  Â clearInterval(x);
- Â Â  document.getElementById("USHot").innerHTML = "EXPIRED";
-Â  }
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  // Display the result in the element with id="USHot"
+  document.getElementById("USHot").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("USHot").innerHTML = "EXPIRED";
+  }
 }, 1000);

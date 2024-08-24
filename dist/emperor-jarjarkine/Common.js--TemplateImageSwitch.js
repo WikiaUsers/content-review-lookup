@@ -1,4 +1,4 @@
-/* Ajout rÃ©glage pour modÃ¨le SWITCH *******************************/
+/* Ajout réglage pour modèle SWITCH *******************************/
 var togglers = new Array();
 var allClasses = new Object(); // associative map of class names to page elements
  
@@ -133,4 +133,4 @@ addOnloadHook(toggleInit);
  
 // </syntax>
  
-/* FIN ajout pour modÃ¨le switch **************/
+/* FIN ajout pour modèle switch **************/

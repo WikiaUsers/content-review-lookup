@@ -4,7 +4,7 @@ function crearValoraciones( summary, user, editToken ) {
 	data: {
 		format: 'json',
 		action: 'edit',
-		title: 'WikivisiÃ³n:Valoraciones/' + user,
+		title: 'Wikivisión:Valoraciones/' + user,
 		summary: summary,
 		createonly: true,
 		appendtext: '<table class="wikitable" width="100%" style="text-align: center;"><tr><th>Serie</th><th>Opinion</th><th>Estado</th><th>Commentario</th></tr>',
@@ -15,15 +15,15 @@ function crearValoraciones( summary, user, editToken ) {
 	success: function( data ) {
 		if ( data && data.edit && data.edit.result == 'Success' ) {
 			window.location.reload(); // reload page if edit was successful
-			GlobalNotification.show('Tu pÃ¡gina de valoraciones ha sido creada.', 'confirm');
+			GlobalNotification.show('Tu página de valoraciones ha sido creada.', 'confirm');
 		} else if ( data && data.error ) {
-			GlobalNotification.show('Tu pÃ¡gina de valoraciones ya existe.', 'error');
+			GlobalNotification.show('Tu página de valoraciones ya existe.', 'error');
 		} else {
 			alert( 'Error: Unknown result from API.' );
 		}
 	},
 	error: function( xhr ) {
-	alert('Â¡No necesitas presionar tantas veces el botÃ³n!');
+	alert('¡No necesitas presionar tantas veces el botón!');
 		}
 	});
 }

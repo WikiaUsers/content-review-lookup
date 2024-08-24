@@ -4,11 +4,11 @@ window.UserTagsJS = {
 		jshelper: { u: 'JavaScript', order: 100 },
 		csshelper: { u: 'CSS', order: 101 },
 		templatehelper: { u: 'Plantillas', order: 102 },
-		bureaucrat: { u: 'Bur√≥crata', order: 1 }
+		bureaucrat: { u: 'BurÛcrata', order: 1 }
 	}
 };
 UserTagsJS.modules.custom = {
-	'Jos√© Dedede': ['csshelper', 'templatehelper', 'jshelper']
+	'JosÈ Dedede': ['csshelper', 'templatehelper', 'jshelper']
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
@@ -26,7 +26,7 @@ importArticles({
 // Ajax de dev wiki
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Seguimiento","Especial:Registro","Especial:Contribuciones"];
 AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Autom√°ticamente refresca la p√°gina';
+AjaxRCRefreshHoverText = 'Autom·ticamente refresca la p·gina';
 importScriptPage('AjaxRC/code.js', 'dev');
 var ajaxindicator = 'https://images.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 
@@ -39,12 +39,12 @@ $(function() {
 
  /* End of the {{USERNAME}} replacement */
 
-/* Borrado de art√≠culos (cr√©dito a Usuario:Benfutbol10) */
+/* Borrado de artÌculos (crÈdito a Usuario:Benfutbol10) */
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Kirby Fanon:Reglas|Incumplimiento de reglas de art√≠culos]]',
+  'summary': '[[Wiki Kirby Fanon:Reglas|Incumplimiento de reglas de artÌculos]]',
   'accesskey': '1',
-  'label': 'Incump. art√≠culos'};
+  'label': 'Incump. artÌculos'};
 fdButtons[fdButtons.length] = {
   'summary': '[[Wiki Kirby Fanon:Reglas|Incumplimiento de reglas de archivos]]',
   'accesskey': '2',
@@ -54,9 +54,9 @@ fdButtons[fdButtons.length] = {
   'accesskey': '3',
   'label': 'Incump. general'};
 fdButtons[fdButtons.length] = {
-  'summary': 'A petici√≥n del mismo autor',
+  'summary': 'A peticiÛn del mismo autor',
   'accesskey': '4',
-  'label': 'A petici√≥n del autor'};
+  'label': 'A peticiÛn del autor'};
 
 /* Prueba 
 function destac() {
@@ -74,6 +74,6 @@ if (mwCustomEditButtons) {
         "imageFile": "https://images.wikia.nocookie.net/__cb20110312135211/es.starwars/images/2/29/Button_user.png",
         "speedTip": "Plantilla Personaje",
         "tagOpen": "{{Infobox Personaje\n|imagen = \n|nombre = ",
-        "tagClose": "\n|comentario_imagen = \n|usuario = \n|aparece en = \n|raza = \n|g√©nero = \n|debut = (opcional)\n|edad = (opcional)\n|lugar = (opcional)\n|familia = (opcional)\n|japon√©s = (opcional)\n|ingl√©s = (opcional)\n}}",
+        "tagClose": "\n|comentario_imagen = \n|usuario = \n|aparece en = \n|raza = \n|gÈnero = \n|debut = (opcional)\n|edad = (opcional)\n|lugar = (opcional)\n|familia = (opcional)\n|japonÈs = (opcional)\n|inglÈs = (opcional)\n}}",
         "sampleText": ""};
 }

@@ -4,7 +4,7 @@ if (mw.config.get( 'wgCanonicalSpecialPageName' ) == 'RecentChanges') {
 		var $text = {
 			'delete': {
 				'en': 'delete',
-				'de': 'lÃ¶schen',
+				'de': 'löschen',
 				'fr': 'annuler',
 				'pt': 'Excluir',
 			},

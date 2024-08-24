@@ -8,16 +8,16 @@ window.pg || $(document).ready( function($) {
     // Make sure we are in article, project, or help namespace
     if ( $.inArray(mw.config.get('wgCanonicalNamespace'), [ "", "Project", "Help", "Draft" ]) !== -1 ) {
 		mw.messages.set( {
-			"RT-enable" : "Habilitar dicas de referÃªncia",
-			"RT-disable" : "Desativar dicas de referÃªncia",
-			"RT-disablenote" : "Depois de desativadas, as dicas de ferramentas de referÃªncia podem ser reativadas usando um link no rodapÃ© da pÃ¡gina.",
-			"RT-delay" : "Atraso antes que a dica de ferramenta apareÃ§a (em milissegundos): ",
-			"RT-activationmethod" : "Dica de ferramenta Ã© ativada por:",
+			"RT-enable" : "Habilitar dicas de referência",
+			"RT-disable" : "Desativar dicas de referência",
+			"RT-disablenote" : "Depois de desativadas, as dicas de ferramentas de referência podem ser reativadas usando um link no rodapé da página.",
+			"RT-delay" : "Atraso antes que a dica de ferramenta apareça (em milissegundos): ",
+			"RT-activationmethod" : "Dica de ferramenta é ativada por:",
 			"RT-hovering" : "pairando",
 			"RT-clicking" : "clicando",
-			"RT-options" : "OpÃ§Ãµes de dicas de ferramentas de referÃªncia",
-			"RT-options-save" : "Salvar configuraÃ§Ãµes",
-			"RT-settings" :"ConfiguraÃ§Ãµes de dicas de ferramenta"
+			"RT-options" : "Opções de dicas de ferramentas de referência",
+			"RT-options-save" : "Salvar configurações",
+			"RT-settings" :"Configurações de dicas de ferramenta"
 		} );
         function toggleRT(o){
             mw.loader.using("jquery.cookie",function(){

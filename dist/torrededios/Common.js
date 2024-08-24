@@ -1,10 +1,10 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /************* General functions *************/
  
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-/************* Funzioni di utilit√† generale *************/
+/************* Funzioni di utilit‡ generale *************/
  
  /* Test if an element has a certain class **************************************
  *

@@ -41,11 +41,11 @@ importArticles({
 
 //=================================================================================================
 //
-//                                        BOÃŽTES DÃ‰ROULANTES
+//                                        BOÎTES DÉROULANTES
 //
 //=================================================================================================
  
-// Pour [[ModÃ¨le:MÃ©ta palette de navigation]]
+// Pour [[Modèle:Méta palette de navigation]]
  
 var autoCollapse = 2;
 var collapseCaption = '[Masquer]';
@@ -114,7 +114,7 @@ addOnloadHook(createCollapseButtons);
  
 /* Substitute Template:Information into upload page */
 $(function() {
-	if (wgPageName != 'SpÃ©cial:TÃ©lÃ©verser') { return; }
+	if (wgPageName != 'Spécial:Téléverser') { return; }
 	$('#wpUploadDescription').text("==Description==\r\n{{Fichier\r\n|Description=\r\n|Date=\r\n|Auteur=\r\n|Source=\r\n|Licence=\r\n|Et plus=\r\n}}");
 });
 

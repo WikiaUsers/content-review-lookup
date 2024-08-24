@@ -23,7 +23,7 @@ var wikimediaplayer =
    es:'ocultar'
   },
   close : {
-   de:'schlie√üen',
+   de:'schlieﬂen',
    en:'close',
    eu:'itxi',
    es:'cerrar'

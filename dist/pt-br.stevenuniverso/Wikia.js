@@ -1,3 +1,3 @@
-/* tÃ­tulos no perfil */
+/* títulos no perfil */
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');
 importScriptPage('MediaWiki:Chat.js');

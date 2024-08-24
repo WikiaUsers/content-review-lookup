@@ -96,7 +96,7 @@ addOnloadHook(checktimers);
 
 // **************************************************
 // Infobox spoilers
-// Credit to User:IsdrakthÃ¼l of Zeldapedia
+// Credit to User:Isdrakthül of Zeldapedia
 // Credit to close feature to User:Monchoman45
 // **************************************************
  

@@ -8,7 +8,7 @@ importScriptPage('ChatTags/code.js', 'dev');
 /*
 	the following script blocks certain works in certain conditions
 */
-Â 
+ 
 ChatStringsBlocker = {"count": 0};
 $('textarea[name="message"]').on("keypress", function(e) {
 	if (e.keyCode == 13) {
@@ -69,74 +69,74 @@ $('textarea[name="message"]').on("keypress", function(e) {
 		}
 	}
 });
-Â 
+ 
 //
 //Switch to night button
 var night_button = 'Switch to Night Chat';
-Â 
+ 
 //Switch to day button
 var day_button = 'Switch to Day Chat';
-Â 
+ 
 //
 //Color scheme for NIGHT Chat
 //
   //Link color
     var linkColor = '#CCA346';
-Â 
+ 
   //All text Color
     var textColor = '#E0115F';
-Â 
+ 
   //Self text background color
     var selfTextColor = 'none';
-Â 
+ 
   //Chat background color
     var backgroundColor = 'none';
-Â 
+ 
   //Chat foreground color
     var foregroundColor = 'none';
-Â 
+ 
   //User stats foreground color
     var userStatsColor = 'none';
-Â 
+ 
 //END NIGHT Chat color scheme
-Â 
+ 
 //Day and night color schemes
 //Written by Foodbandlt
-Â 
-Â 
+ 
+ 
 function addNightStyle(){
 var styleElement = document.createElement('style');
-Â 
+ 
 styleElement.setAttribute("id", "night");
 styleElement.innerHTML='body{background-color: '+backgroundColor+';}.username, .message, div.chattopic, .info .edits, .UserStatsMenu .info .since, #ChatHeader h1.private, .Write [name="message"]{color: '+textColor+';}.WikiaPage, .UserStatsMenu, .ChatHeader, .Write [name="message"]{background-color: '+foregroundColor+';}.Chat .you{background: '+selfTextColor+';}a{color: '+linkColor+';}.UserStatsMenu .info{background-color:'+userStatsColor+';}';
 $('head').append(styleElement);
 } 
-Â 
-Â 
+ 
+ 
 function addDayNightButton(){
-Â 
+ 
 $('<div class="day-night-div" onclick="switch_view()" style="margin: 10px auto; text-align: center; cursor: pointer;"><a class="day-night-button wikia-button">'+night_button+'</a></div>').prependTo('.Rail');
 if ($('style#night').size() < 1 && $('style#nightUser').size() < 1){
 addDayStyle();
 }
 }
-Â 
+ 
 function day_night(which){
 if (which == "night"){
 $('style#day').remove();
 $('.Rail .day-night-div .day-night-button').text(day_button);
-Â 
+ 
 addNightStyle();
-Â 
+ 
 }else{
 $('style#night').remove();
 $('.Rail .day-night-div .day-night-button').text(night_button);
-Â 
+ 
 addDayStyle();
 }
 }
-Â 
-Â 
+ 
+ 
 function switch_view(){
 if ($('.Rail .day-night-div .day-night-button').text() == night_button){
 day_night("night");
@@ -144,11 +144,11 @@ day_night("night");
 day_night("day");
 }
 }
-Â 
-Â 
+ 
+ 
 if ($('.Rail .day-night-button').text() == ""){
 addDayNightButton();
 }
-Â 
+ 
 while ($('.Rail .day-night-div').size() > 1){
 $('.WikiaPage .Rail div:last-child').remove()

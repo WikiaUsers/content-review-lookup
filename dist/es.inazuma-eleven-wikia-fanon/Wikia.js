@@ -1,5 +1,5 @@
-AjaxRCRefreshText = 'ActualizaciÃ³n automatica';
-AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
+AjaxRCRefreshText = 'Actualización automatica';
+AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
 //Etiqueta para usuarios inactivos
@@ -8,8 +8,8 @@ InactiveUsers = { text: 'Retirado' };
 //Etiqueta para usuarios baneados del chat
 Bannedfromchat = { text: 'Lesionado' };
  
-// Actualizar pÃ¡gina
-PurgeButtonText = 'Actualizar pÃ¡gina';
+// Actualizar página
+PurgeButtonText = 'Actualizar página';
 
 importScript('MediaWiki:Medals/es.js');
 importScriptPage('AjaxRC/code.js', 'dev');

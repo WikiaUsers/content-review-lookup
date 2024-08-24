@@ -1,8 +1,8 @@
 /*Spoilers*/
 SpoilerAlert = {
-    question: 'Esta pÃ¡gina contiene Spoilers. Â¿EstÃ¡s seguro de que quieres leerla?',
-    yes: 'SÃ­ por favor',
-    no: 'No, todavÃ­a no',
+    question: 'Esta página contiene Spoilers. ¿Estás seguro de que quieres leerla?',
+    yes: 'Sí por favor',
+    no: 'No, todavía no',
     isSpoiler: function () {
         return -1 !== wgCategories.indexOf('Spoiler');
     }

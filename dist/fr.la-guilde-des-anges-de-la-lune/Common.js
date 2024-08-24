@@ -1,4 +1,4 @@
-/*Ã‰tiquettes*/
+/*Étiquettes*/
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
  
 window.UserTagsJS = {

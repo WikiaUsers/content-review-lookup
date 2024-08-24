@@ -1,4 +1,4 @@
-/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 //Portable infoboxes colors
 (function() {

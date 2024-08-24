@@ -275,7 +275,7 @@ addOnloadHook(checktimers);
 /*
 * LazyLoadVideo - Displays a button over youtube videos that use {{youtube}} to activate them, when the vide itself is hidden by CSS.
 * That improves load times, while still allowing users to view the vide inside the same page
-* Copyright (C) 2012  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2012  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -325,7 +325,7 @@ $(function() {
 })();
 
 // IRC code originally from Sactage
-if (wgPageName=='PokÃ©mon_Wiki:IRC') {
+if (wgPageName=='Pokémon_Wiki:IRC') {
 	$(function() {
 			var nick = (wgUserName == null) ? ('Wikian' + Math.floor(Math.random() * 10)) : wgUserName.replace(/ /g, '_');
 			$('#IRClogin').append('<iframe src="http://webchat.freenode.net/?nick=' + encodeURIComponent( nick ) + '&channels=wikia-pokemon&prompt=true&uio=OT10cnVlJjExPTE3NCYxMj10cnVld1" width="950" height="400" style="border:0;"></iframe>');
@@ -340,8 +340,8 @@ if (wgPageName=='PokÃ©mon_Wiki:IRC') {
 if ((wgAction == "edit" || wgAction == "submit") && mwCustomEditButtons) { 
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "http://images1.wikia.nocookie.net/pokemon/images/4/42/Accent_Button.png",
-		"speedTip": "Insert PokÃ©mon",
-		"tagOpen": "PokÃ©mon",
+		"speedTip": "Insert Pokémon",
+		"tagOpen": "Pokémon",
 		"tagClose": "",
 		"sampleText": ""};
 }

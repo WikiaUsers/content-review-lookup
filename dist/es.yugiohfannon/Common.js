@@ -1,4 +1,4 @@
-// 1. Contador de tiempo -CÃ³digo obtenido de Ben 10 wiki-
+// 1. Contador de tiempo -Código obtenido de Ben 10 wiki-
  
 function updatetimer(i) {
   var now = new Date();
@@ -31,7 +31,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÃ­as ' + left
+  if(diff > 0) left = diff + ' días ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

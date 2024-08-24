@@ -9,7 +9,7 @@ function addMastheadTags() {
   // BEGIN List of Accounts Given Extra User Rights Icons - Must list all tags
  
    // BEAURECRATS
-   rights["Csuarezllosa"] = ["BurÃ³crata y administrador"];
+   rights["Csuarezllosa"] = ["Burócrata y administrador"];
    
 
   // END List of Accounts Given Extra User Rights Icons

@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// CrÃ©ation de d'une liste des comptes concernÃ©s par une Ã©tiquette
+// Création de d'une liste des comptes concernés par une étiquette
 
 function addMastheadTags() {
   var rights = {};
@@ -11,31 +11,31 @@ function addMastheadTags() {
  
    //BUREAUCRATES
  
-    rights["Non0w"]              = ["MaÃ®tre de Guilde"];
+    rights["Non0w"]              = ["Maître de Guilde"];
  
    //ADMINS
  
-    rights["Shin-itchi"] = ["MaÃ®tre Chasseur"];
-    rights["Wrondral"] = ["MaÃ®tre Chasseur"];
-    rights["Cizalto"]  = ["MaÃ®tre Chasseur"];
-    rights["Badbart86"] = ["MaÃ®tre Chasseur"];
-    rights["Narzaal"] = ["MaÃ®tre Chasseur"];
+    rights["Shin-itchi"] = ["Maître Chasseur"];
+    rights["Wrondral"] = ["Maître Chasseur"];
+    rights["Cizalto"]  = ["Maître Chasseur"];
+    rights["Badbart86"] = ["Maître Chasseur"];
+    rights["Narzaal"] = ["Maître Chasseur"];
 
    //DISPARU(S/ES)
  
-    rights["Fandemanga62"]    = ["MaÃ®tre Chasseur (Inactif)"];
+    rights["Fandemanga62"]    = ["Maître Chasseur (Inactif)"];
  
-   //MODÃ‰RATEUR DU TCHAT
-    rights["Bllob"]         = ["Chasseur d'Ã©lite"];
-    rights["Dysmea"] = ["Chasseur d'Ã©lite"];
-    rights["Manipendeh"] = ["Chasseur d'Ã©lite"];
+   //MODÉRATEUR DU TCHAT
+    rights["Bllob"]         = ["Chasseur d'élite"];
+    rights["Dysmea"] = ["Chasseur d'élite"];
+    rights["Manipendeh"] = ["Chasseur d'élite"];
 
  
    //ROLLBACK
     
-  // Fin de la liste des comptes concernÃ©s
+  // Fin de la liste des comptes concernés
  
-  // DÃ©but du Script qui permet de changer les Ã©tiquettes
+  // Début du Script qui permet de changer les étiquettes
  
     if (wgCanonicalSpecialPageName == "Contributions") {
       var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");
@@ -54,7 +54,7 @@ function addMastheadTags() {
       }
     }
  
-  // Fin du Script qui retire les anciennes Ã©tiquettes et en met des nouvelles
+  // Fin du Script qui retire les anciennes étiquettes et en met des nouvelles
  
 };
  

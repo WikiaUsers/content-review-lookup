@@ -1,4 +1,4 @@
- // Optionen fÃ¼r das SonderzeichenmenÃ¼ in [[MediaWiki:Edittools]]
+ // Optionen für das Sonderzeichenmenü in [[MediaWiki:Edittools]]
  // wird in [[MediaWiki:Monobook.js]] ganz unten eingebunden
  
  function addCharSubsetMenu() {
@@ -17,11 +17,11 @@
    menu += "<option>DMG-Umschrift</option>";
    menu += "<option>Esperanto</option>";
    menu += "<option>Estnisch</option>";
-   menu += "<option>FranzÃ¶sisch</option>";
+   menu += "<option>Französisch</option>";
    menu += "<option>Galicisch</option>";
    menu += "<option>Griechisch</option>";
    menu += "<option>Hawaiianisch</option>";
-   menu += "<option>IslÃ¤ndisch</option>";
+   menu += "<option>Isländisch</option>";
    menu += "<option>Italienisch</option>";
    menu += "<option>Jiddisch</option>";
    menu += "<option>Katalanisch</option>";
@@ -34,13 +34,13 @@
    menu += "<option>Polnisch</option>";
    menu += "<option>Portugiesisch</option>";
    menu += "<option>Romanisch</option>";
-   menu += "<option>RumÃ¤nisch</option>";
+   menu += "<option>Rumänisch</option>";
    menu += "<option>Serbisch</option>";
    menu += "<option>Skandinavisch</option>";
    menu += "<option>Slowakisch</option>";
    menu += "<option>Spanisch</option>";
    menu += "<option>Tschechisch</option>";
-   menu += "<option>TÃ¼rkisch</option>";
+   menu += "<option>Türkisch</option>";
    menu += "<option>Ungarisch</option>";
    menu += "<option>Vietnamesisch</option>";
    menu += "</select>";
@@ -60,7 +60,7 @@
    }
  }
  
- // MenÃ¼-EinfÃ¼gung
+ // Menü-Einfügung
  function customizeJedipedia() {
   addCharSubsetMenu();
  }

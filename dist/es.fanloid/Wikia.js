@@ -18,11 +18,11 @@ importArticles({
    ]
 });
 function showAlert_notloggedin() {
-	alert('Inicia sesi√≥n o reg√≠strate para poder editar esta p√°gina.');
+	alert('Inicia sesiÛn o regÌstrate para poder editar esta p·gina.');
 }
  
 function showAlert() {
-	alert('Esta p√°gina est√° protegida, no puedes editarla.');
+	alert('Esta p·gina est· protegida, no puedes editarla.');
 }
 function isProtectedActions() {
 	$('#float-edit').removeAttr("href");
@@ -38,7 +38,7 @@ function setFloatEdit_locked() {
 if (wgNamespaceNumber != -1 && wgNamespaceNumber != 1201 && wgNamespaceNumber != 1200 && wgNamespaceNumber != 8) {
 	$("#WikiaPage").append('<a class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" id="float-edit"></a>');
 	var editpath = $('a[href*="?action=edit"]').attr('href');
-	var canEditProtectedPages = ($.inArray("sysop", wgUserGroups) > -1 || $.inArray("content-moderator", wgUserGroups) > -1 || $.inArray("dise√±ador", wgUserGroups) > -1 || $.inArray("helper", wgUserGroups) > -1 || $.inArray("staff", wgUserGroups) > -1 || $.inArray("vanguard", wgUserGroups) > -1 || $.inArray("vstf", wgUserGroups) > -1);
+	var canEditProtectedPages = ($.inArray("sysop", wgUserGroups) > -1 || $.inArray("content-moderator", wgUserGroups) > -1 || $.inArray("diseÒador", wgUserGroups) > -1 || $.inArray("helper", wgUserGroups) > -1 || $.inArray("staff", wgUserGroups) > -1 || $.inArray("vanguard", wgUserGroups) > -1 || $.inArray("vstf", wgUserGroups) > -1);
 	$("#float-edit").attr("href", editpath);
 	if ($.inArray("sysop", wgRestrictionEdit) > -1 && canEditProtectedPages === false) {
 		setFloatEdit_locked();
@@ -95,10 +95,10 @@ $(function() {
     var ThreadIndicator = $.extend({
          usepics: true,
          padlockImage: 'https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_lock_white_18px.svg',
-         padlockTitle: 'Este tema est√° cerrado',
+         padlockTitle: 'Este tema est· cerrado',
          padlockText: '(cerrado)',
          highlightImage: 'https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_star_white_18px.svg',
-         highlightTitle: 'Este tema est√° destacado',
+         highlightTitle: 'Este tema est· destacado',
          highlightText: '(destacado)'
     }, window.ThreadIndicator);
     if(ThreadIndicator.usepics === true) {
@@ -231,7 +231,7 @@ if (mediaWiki.config.get('wgAction') === 'view')(function() {
   });
 }());
  
-// Slider - Portada de administraci√≥n
+// Slider - Portada de administraciÛn
  
 $(document).ready(function() {
   $("#portada-administracion").each(function() {

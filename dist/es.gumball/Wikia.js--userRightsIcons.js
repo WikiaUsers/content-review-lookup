@@ -9,8 +9,8 @@ function addMastheadTags() {
  
    // BUREAUCRATS
  
-    rights["SKYNX"]     = ["CO-FUNDADOR","BURÃ“CRATA","ADMIN","MOD","REVERSOR"],
-    rights["MegaSonicX4"]     = ["CO-FUNDADOR","BURÃ“CRATA","ADMIN"],
+    rights["SKYNX"]     = ["CO-FUNDADOR","BURÓCRATA","ADMIN","MOD","REVERSOR"],
+    rights["MegaSonicX4"]     = ["CO-FUNDADOR","BURÓCRATA","ADMIN"],
     rights["PhineasJoka2011"]     = ["ADMIN"],
     rights["Bola"]               = ["WIKIA"],
     rights["Zeist_Antilles"]]      = ["WIKIA"];

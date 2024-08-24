@@ -1,5 +1,5 @@
 	function createevent() { //Create event form
-		$('.WikiaRail').prepend('<div style="background-color:purple; border-radius:5px; margin:5px; color:white; text-align:center;" class="event"><div style="float:left;" id="event-image"></div><div style="font-style:italic;">Aujourd\'hui :</div><div style="font-size:130%;" id="event-name">Aucun Ã©venement</div><div id="time-remaining">0h</div></div>');
+		$('.WikiaRail').prepend('<div style="background-color:purple; border-radius:5px; margin:5px; color:white; text-align:center;" class="event"><div style="float:left;" id="event-image"></div><div style="font-style:italic;">Aujourd\'hui :</div><div style="font-size:130%;" id="event-name">Aucun évenement</div><div id="time-remaining">0h</div></div>');
 	}
 	function getdate() { //Get the day, because of 6 day, see which event is today, based on a dr terror 1 date.
 		return Math.floor(($.now() - new Date('2015','04','15','06','00','00')) / (1000*60*60*24));

@@ -16,21 +16,21 @@ window.UserTagsJS = {
 	tags: {
 		// group: { associated tag data }*
 		// sysop: { u: 'Admin' },
-		// inactive: { u: 'Rien ModifiÃ© RÃ©cemment' },
+		// inactive: { u: 'Rien Modifié Récemment' },
 		bureaucrat: { order: 1 }, // Normal order is 0
 		inactive_bureaucrat: { u:'Bureaucrate inactif' },
 		inactive_sysop: { u:'Administrateur inactif' },
 		inactive_sysop_bureaucrat: { u:'Administrateur/Bureaucrate inactif' },
 		
-		templates: { u:'ModÃ¨les', title:'CrÃ©ateur de ModÃ¨les', order: 100 },
-		theme: { u:'ThÃ¨mes', title:'CrÃ©ateur de ThÃ¨mes', order: 101 },
+		templates: { u:'Modèles', title:'Créateur de Modèles', order: 100 },
+		theme: { u:'Thèmes', title:'Créateur de Thèmes', order: 101 },
 		Refmaker: { u:'Refmaker', order: 102 }
 	}
 };
 
 UserTagsJS.modules.metafilter = false;
 
-UserTagsJS.modules.inactive = 35; // inactif aprÃ¨s 35 days lour sans modification
+UserTagsJS.modules.inactive = 35; // inactif après 35 days lour sans modification
 
 UserTagsJS.modules.autoconfirmed = true; // Nouveau compte
 
@@ -47,8 +47,8 @@ UserTagsJS.modules.implode = {
 };
 
 UserTagsJS.modules.userfilter = {
-	'Ã‰cume des ailes de mer': ['inactive_sysop', 'inactive_bureaucrat'], // Remove the inactive_sysop and inactive_bureaucrat groups
-	'IntempÃ©rie': ['inactive_sysop', 'inactive_bureaucrat'], 
+	'Écume des ailes de mer': ['inactive_sysop', 'inactive_bureaucrat'], // Remove the inactive_sysop and inactive_bureaucrat groups
+	'Intempérie': ['inactive_sysop', 'inactive_bureaucrat'], 
 	'TFWolf': ['inactive_sysop', 'inactive_bureaucrat'], 
 };
 
@@ -76,7 +76,7 @@ setInterval(function(){
 
 //SpoilerAlert------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 window.SpoilerAlertJS = {
-   question: 'Cette zone contient des spoilers. ÃŠtes-vous sÃ»r de vouloir le lire ?',
+   question: 'Cette zone contient des spoilers. Êtes-vous sûr de vouloir le lire ?',
    yes: 'oui',
    no: 'non',
    fadeDelay: 500

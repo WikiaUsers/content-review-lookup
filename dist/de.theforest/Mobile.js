@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird fÃ¼r alle Nutzer der Mobilen Version geladen. */
+/* Das folgende JavaScript wird für alle Nutzer der Mobilen Version geladen. */
 
 $( document ).ready( function( ) {
     $( '.tree li' ).each( function() {

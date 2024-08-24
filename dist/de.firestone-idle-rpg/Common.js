@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird fÃ¼r alle Benutzer geladen. */
+/* Das folgende JavaScript wird für alle Benutzer geladen. */
 window.tooltips_config = {
     waitForImages: true,
     noCSS: true,

@@ -58,7 +58,7 @@ $(function() {
 			"Minecraft Wiki:Utenti autoconvalidati",
 			"Semi-protected page lock.png",
 			"9/9b",
-			"Questa pagina Ã¨ semi-protetta in modo che solo gli utenti registrati possono modificarla."
+			"Questa pagina è semi-protetta in modo che solo gli utenti registrati possono modificarla."
 		).appendTo($(".mw-indicators"));
 	} else if (protectionLevel === "directoreditprotected") {
 		mimicIndicator(
@@ -66,7 +66,7 @@ $(function() {
 			"Minecraft Wiki:Direttori",
 			"Director-protected page lock.png",
 			"8/85",
-			"Questa pagina Ã¨ protetta in modo che solo i direttori possono modificarla."
+			"Questa pagina è protetta in modo che solo i direttori possono modificarla."
 		).appendTo($(".mw-indicators"));
 	} else if (protectionLevel === "sysop") {
 		mimicIndicator(
@@ -74,7 +74,7 @@ $(function() {
 			"Minecraft Wiki:Amministratori",
 			"Fully-protected page lock.png",
 			"4/49",
-			"Questa pagina Ã¨ completamente protetta in modo che solo gli amministratori possono modificarla."
+			"Questa pagina è completamente protetta in modo che solo gli amministratori possono modificarla."
 		).appendTo($(".mw-indicators"));
 	}
 });

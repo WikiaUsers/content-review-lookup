@@ -5,8 +5,8 @@ importArticles({
     ]
 });
 /*** Auto refrescado de la wiki actividad ***/
-window.AjaxRCRefreshText = 'ActualizaciÃ³n AutomÃ¡tica';
-window.AjaxRCRefreshHoverText = 'Actualiza automÃ¡ticamente la pÃ¡gina';
+window.AjaxRCRefreshText = 'Actualización Automática';
+window.AjaxRCRefreshHoverText = 'Actualiza automáticamente la página';
 window.AjaxRefresh = 10000;
 window.ajaxPages = [
     "Especial:CambiosRecientes",
@@ -15,7 +15,7 @@ window.ajaxPages = [
     "Especial:Log",
     "Especial:Contribuciones"
 ];
-// Ultima ediciÃ³n - CONFIGURACIÃ“N.
+// Ultima edición - CONFIGURACIÓN.
 window.lastEdited = {
     avatar: false,
     size: true,

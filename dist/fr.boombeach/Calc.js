@@ -147,7 +147,7 @@ $(function () {
         for (i = 0; i < 8; i++) {
             troopsnumber.push(Math.floor($('#barque-level-' + (i + 1) + ' option:selected').val() / capacity[$('#barque-troops-' + (i + 1) + ' option:selected').val()]));
         }
-        var content = '<table class="wikitable army-result"><tr><td>NumÃ©ro de la barge</td><td>Troupes :</td><td>Nombre de troupes :</td><td>Temps : </td></tr>';
+        var content = '<table class="wikitable army-result"><tr><td>Numéro de la barge</td><td>Troupes :</td><td>Nombre de troupes :</td><td>Temps : </td></tr>';
         for (i = 0; i < troopsnumber.length; i++) {
             var time = formationtime[$('#barque-troops-' + (i + 1) + ' option:selected').val()] * troopsnumber[i];
             highers.push(time);
@@ -156,7 +156,7 @@ $(function () {
             } else {
                 time = time + 'm';
             }
-            content += '<tr><td>Barge nÂ°' + (i + 1) + '</td><td>' + $('#barque-troops-' + (i + 1) + ' option:selected').html() + '</td><td>' + troopsnumber[i] + '</td><td>' + time + '</td></tr>';
+            content += '<tr><td>Barge n°' + (i + 1) + '</td><td>' + $('#barque-troops-' + (i + 1) + ' option:selected').html() + '</td><td>' + troopsnumber[i] + '</td><td>' + time + '</td></tr>';
         }
         var high = highers[0];
         for (i = 1; i < highers.length; i++) {

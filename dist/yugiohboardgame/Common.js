@@ -1,9 +1,0 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-importArticles( {
-	type: 'script',
-	articles: [
-		'ShowHide/code.js',
-		'CollapsibleInfobox/code.js',
-		'DemoScripts.js'
-	]
-} );

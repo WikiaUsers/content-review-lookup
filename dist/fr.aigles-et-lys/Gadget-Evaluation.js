@@ -1,4 +1,4 @@
-/* adapt√© de [[MediaWiki:Gadget-Evaluation.js]] (version du 12 septembre 2008) par Chphe
+/* adaptÈ de [[MediaWiki:Gadget-Evaluation.js]] (version du 12 septembre 2008) par Chphe
 * {{:Projet:JavaScript/Script|Evaluation}}
 * rajouter l'onglet suivi des users
 * 
@@ -18,7 +18,7 @@ function ev_addEvalTab()
    list = list.childNodes[3].childNodes[1]
  
    var elt = document.createElement('li')
-   elt.innerHTML = "<a id='caa_evaluation' href='javascript:ev_launchEval()'>√âvaluer</a>"
+   elt.innerHTML = "<a id='caa_evaluation' href='javascript:ev_launchEval()'>…valuer</a>"
    list.appendChild(elt)
    removeClass(list, "emptyPortlet");
 
@@ -50,7 +50,7 @@ function ev_initVars()
 function ev_launchEval()
 {
    var req=new XMLHttpRequest()
-   var div = document.getElementById('bodyContent') // Monobook et affili√©s, Vector
+   var div = document.getElementById('bodyContent') // Monobook et affiliÈs, Vector
    if(!div) div = document.getElementById('mw_contentholder'); // Moderne
    if(!div) div = document.getElementById('article'); // Bleu de Cologne, Standard, Nostalgia
    if(!div) return;
@@ -144,10 +144,10 @@ function ev_addEvalLine(tab, project, av, im, state, n)
    ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="A", n, "avancement", "A"))
    ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="B", n, "avancement", "B"))
    ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="BD", n, "avancement", "BD"))
-   ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="√©bauche", n, "avancement", "√©bauche"))
+   ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="Èbauche", n, "avancement", "Èbauche"))
    ev_addCell(line, ev_getRadioboxHtml(n+"a", av=="?", n, "avancement", "?"))
    ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="maximum", n, "importance", "maximum"))
-   ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="√©lev√©e", n, "importance", "√©lev√©e"))
+   ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="ÈlevÈe", n, "importance", "ÈlevÈe"))
    ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="moyenne", n, "importance", "moyenne"))
    ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="faible", n, "importance", "faible"))
    ev_addCell(line, ev_getRadioboxHtml(n+"i", im=="?", n, "importance", "?"))
@@ -159,17 +159,17 @@ function ev_drawEvaluation()
    var line = tab.insertRow(-1)
  
    ev_addCell(line, "<b>Projet</b>", "F8F8F8")
-   ev_addCell(line, "<b>Bandeau pr√©sent</b>", "F8F8F8")
-   ev_addCell(line, "<b>Eval. par d√©f.</b>", "F8F8F8")
+   ev_addCell(line, "<b>Bandeau prÈsent</b>", "F8F8F8")
+   ev_addCell(line, "<b>Eval. par dÈf.</b>", "F8F8F8")
    ev_addCell(line, "<b>AdQ</b>", "6699FF")
    ev_addCell(line, "<b>BA</b>", "66FF66")
    ev_addCell(line, "<b>A</b>", "66FFFF")
    ev_addCell(line, "<b>B</b>", "FFFF66")
    ev_addCell(line, "<b>BD</b>", "FFAA66")
-   ev_addCell(line, "<b>√âbauche</b>", "FF6666")
+   ev_addCell(line, "<b>…bauche</b>", "FF6666")
    ev_addCell(line, "<b>?</b>", "F8F8F8")
    ev_addCell(line, "<b>Maximum</b>", "FF00FF")
-   ev_addCell(line, "<b>√âlev√©e</b>", "FF88FF")
+   ev_addCell(line, "<b>…levÈe</b>", "FF88FF")
    ev_addCell(line, "<b>Moyenne</b>", "FFCCFF")
    ev_addCell(line, "<b>Faible</b>", "FFEEFF")
    ev_addCell(line, "<b>?</b>", "F8F8F8")
@@ -182,7 +182,7 @@ function ev_drawEvaluation()
    ev_addCell(line, ev_getRadioboxHtml("ag", av=="A", null, "avancement_global", "A", true))
    ev_addCell(line, ev_getRadioboxHtml("ag", av=="B", null, "avancement_global", "B", true))
    ev_addCell(line, ev_getRadioboxHtml("ag", av=="BD", null, "avancement_global", "BD", true))
-   ev_addCell(line, ev_getRadioboxHtml("ag", av=="√©bauche", null, "avancement_global", "√©bauche", true))
+   ev_addCell(line, ev_getRadioboxHtml("ag", av=="Èbauche", null, "avancement_global", "Èbauche", true))
    ev_addCell(line, ev_getRadioboxHtml("ag", av=="?", null, "avancement_global", "?", true))
    ev_addCell(line, "", "F8F8F8", 5)
  
@@ -197,13 +197,13 @@ function ev_drawEvaluation()
    EvalDiv.appendChild(tab)
  
    var button  = document.createElement("button")
-   button.textContent = "Exporter cette √©valuation vers la page de discussion"
+   button.textContent = "Exporter cette Èvaluation vers la page de discussion"
    button.onclick = ev_setEvaluation
    button.id='EvalButton'
    EvalDiv.appendChild(button)
 }
  
-//d√©finition de la m√©thode indexOf et map pour les versions JavaScript inf√©rieures √† 1.6
+//dÈfinition de la mÈthode indexOf et map pour les versions JavaScript infÈrieures ‡ 1.6
 if (!Array.prototype.indexOf)
 {
    Array.prototype.indexOf = function(elt /*, from*/)
@@ -271,7 +271,7 @@ function ev_ExtractEvaluation(discussion)
    modeles = discussion.split(/\{\{[W|w]ikiprojet /)
    modeles.shift()
    
-   var reg_plus_consultes = /{{([lL]es plus consult√©s\s*\|[^}]*}})/;
+   var reg_plus_consultes = /{{([lL]es plus consultÈs\s*\|[^}]*}})/;
    var m = reg_plus_consultes.exec(discussion);
    if(m) { modeles.push(m[1]); }
    
@@ -297,7 +297,7 @@ function ev_ExtractEvaluation(discussion)
       catch(e){alert(e)}
    }
      
-   var reg_modele_multiprojet = /{{([wW]ikiprojet|[√©√â]valuation multiprojet)\s*\|([^}]*)}}/;
+   var reg_modele_multiprojet = /{{([wW]ikiprojet|[È…]valuation multiprojet)\s*\|([^}]*)}}/;
    var regAv = /avancement\s*((\s\S.*)?)$/;
    m = reg_modele_multiprojet.exec(discussion);
    if(m)
@@ -329,7 +329,7 @@ function ev_ExtractEvaluation(discussion)
             var _proj =tab[i].replace(/^\s+|\s+$/g, '');
             if(_proj in tab_anc_eval) { i+= 2 ; continue; }
             evaluation_multiprojets.project[ind] =_proj;
-            if(i==tab.length-1) alert("Erreur de lecture du mod√®le {{√©√âvaluation multiprojet}}");
+            if(i==tab.length-1) alert("Erreur de lecture du modËle {{È…valuation multiprojet}}");
             evaluation_multiprojets.importance[ind] = ev_cleanImportance(tab[i+1].replace(/^\s+|\s+$/g, ''));
             evaluation_multiprojets.avancement[ind] = null;
             evaluation_multiprojets.state[ind] = true;
@@ -354,7 +354,7 @@ function ev_cleanAvancement(val)
    if(val=="A") return "A"
    if(val=="B") return "B"
    if(val=="BD") return "BD"
-   if(val=="√©bauche" || val=="√âbauche") return "√©bauche"
+   if(val=="Èbauche" || val=="…bauche") return "Èbauche"
  
    return "?"
 }
@@ -363,7 +363,7 @@ function ev_cleanAvancement(val)
 function ev_cleanImportance(val)
 {
    if(val.toLowerCase()=="maximum" || val.toLowerCase()=="maximale") return "maximum"
-   if(val.toLowerCase()=="√©lev√©e") return "√©lev√©e"
+   if(val.toLowerCase()=="ÈlevÈe") return "ÈlevÈe"
    if(val.toLowerCase()=="moyenne") return "moyenne"
    if(val.toLowerCase()=="faible") return "faible"
  
@@ -386,7 +386,7 @@ function ev_setEvaluation()
  
 function ev_editFoo(text, summary, doc, data)
 {
-   summary = "[[MediaWiki:Gadget-Evaluation.js|√âvaluation]]: "+ev_getSummary_multiprojects();
+   summary = "[[MediaWiki:Gadget-Evaluation.js|…valuation]]: "+ev_getSummary_multiprojects();
    text = ev_suppr_anc_eval(text);
    text = ev_process_multiprojects(text);
    text = ev_remise_en_tete(text);
@@ -414,17 +414,17 @@ function ev_getSummary_multiprojects()
 }
 function ev_suppr_anc_eval(text)
 {
-   var regtxt =new RegExp("\\{\\{([W|w]ikiprojet [^\\}|]|[lL]es plus consult√©s)[^\\}]*\\}\\}", "g");
+   var regtxt =new RegExp("\\{\\{([W|w]ikiprojet [^\\}|]|[lL]es plus consultÈs)[^\\}]*\\}\\}", "g");
    // return eval("text.replace(" + regtxt + ",'')")
-   var regtext_b = new RegExp("\\{\\{[√©√â]valuations[ _]WP1[^\\}\\{]*\\}\\}", "g")
+   var regtext_b = new RegExp("\\{\\{[È…]valuations[ _]WP1[^\\}\\{]*\\}\\}", "g")
    return text.replace(regtxt, '').replace(regtext_b, '');
 }
  
 function ev_process_multiprojects(text)
 {
-   var regtxt = /\{\{([wW]ikiprojet|[√©√â]valuation multiprojet)\s*\|[^\}]*\}\}/
+   var regtxt = /\{\{([wW]ikiprojet|[È…]valuation multiprojet)\s*\|[^\}]*\}\}/
    var newtxt = "{{Wikiprojet";
-   var regtodo=/\{\{([tT]odo\|?\*?|[√†√Ä] faire\|?\*?)\}\}/
+   var regtodo=/\{\{([tT]odo\|?\*?|[‡¿] faire\|?\*?)\}\}/
    var ok = false
    for(var i=0; i<evaluation_multiprojets.project.length; i++)
    {

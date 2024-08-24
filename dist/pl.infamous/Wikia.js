@@ -1,4 +1,4 @@
-// Konfiguracja skryptÃ³w
+// Konfiguracja skryptów
 InactiveUsers = { 
     months: 2,
     text: 'nieaktywny'

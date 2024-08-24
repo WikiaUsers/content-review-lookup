@@ -17,7 +17,7 @@ function alertLink() {
  }
 }
 
-/* Carica uno o piÃ¹ alert al caricamento della pagina */
+/* Carica uno o più alert al caricamento della pagina */
 var disablealertLoad = 0;
 function alertLoad() {
  if (disablealertLoad) return;
@@ -30,7 +30,7 @@ function alertLoad() {
 }
 
 
-/* Carica uno o piÃ¹ alert all'uscita dalla pagina */
+/* Carica uno o più alert all'uscita dalla pagina */
 function alertUnload() {
  if (disablealertLoad) return;
  for(var i=0; Elem = document.getElementsByTagName("span")[i]; i++) {

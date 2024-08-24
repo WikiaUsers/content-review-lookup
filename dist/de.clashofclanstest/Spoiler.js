@@ -1,5 +1,5 @@
 /*********************************************************\
-    Funktion Ã¤ndert Hintergrundbild
+    Funktion ändert Hintergrundbild
 \*********************************************************/ 
 function ChangeHintergrund(NeuerHintergrund)
 {

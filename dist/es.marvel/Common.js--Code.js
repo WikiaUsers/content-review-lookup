@@ -12,7 +12,7 @@ if (!window.$G){
 window.bodyContentId = 'bodyContent';
  
 /* Compatibilidad, al inicio del resto de carga de elementos. Necesario para que todas las utilidades que funcionan en Monobook y Monaco funcionen en oasis 
-* Wikia: ¬øQui√©n tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
+* Wikia: øQuiÈn tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
 function oasisCompatElements() {
 	$(document.body).append('<div id="positioned_elements"></div>');
 }
@@ -23,7 +23,7 @@ if (window.skin == 'oasis') {
 }
  
 /* == Parches == */
-// Est√° obligando a hacer login para editar si no tiene cookies habilitadas
+// Est· obligando a hacer login para editar si no tiene cookies habilitadas
 if (document.cookie.length == 0) {
 	wgComboAjaxLogin = false;
 }
@@ -34,7 +34,7 @@ if (navigator.appVersion.indexOf('MSIE 6') != -1) {
 	$(function(){ document.body.className += ' ie6'; });
 }
 @*/
-// Impedir el renombrado de p√°gina de usuario
+// Impedir el renombrado de p·gina de usuario
 function disableUserpageMove() {
 	var url = window.location.toString();
 	var pos = url.indexOf(window.wgPageName);
@@ -50,10 +50,10 @@ function disableUserpageMove() {
 	}
 	pos = page.indexOf('/');
 	if (pos != -1) {
-		// Si hay barra es que se est√° trasladando una subp√°gina. Ok, lo permitimos
+		// Si hay barra es que se est· trasladando una subp·gina. Ok, lo permitimos
 		return;
 	}
-	// Es p√°gina de usuario?
+	// Es p·gina de usuario?
 	var re_user = new RegExp('^(user|'+wgFormattedNamespaces['2']+'):', 'i');
 	if (re_user.test(page)) {
 		// Excluir admin y otros

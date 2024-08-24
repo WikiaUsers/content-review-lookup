@@ -1,25 +1,25 @@
 importScript('MediaWiki:Chat.js'); 
 importScriptPage('ShowHide/code.js', 'dev');
-/* Carga del chat. Coloco la lÃ­nea al inicio para que no haya conflictos de carga. */ importScriptURI('http://es.bleach.wikia.com/index.php?title=MediaWiki:Chat.js&action=raw&ctype=text/javascript');
+/* Carga del chat. Coloco la línea al inicio para que no haya conflictos de carga. */ importScriptURI('http://es.bleach.wikia.com/index.php?title=MediaWiki:Chat.js&action=raw&ctype=text/javascript');
 
 /* switch.js */
 importScript('MediaWiki:Common.js/switch.js');
 
 /*
 -----------------------------------------
-CÃ“DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+CÓDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este cÃ³digo: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este código: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay mÃ¡s de este nÃºmero de desplegables
-  ocultar todas automÃ¡ticamente.
+NavigationBarShowDefault : Si hay más de este número de desplegables
+  ocultar todas automáticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';

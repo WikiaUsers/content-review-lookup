@@ -8,7 +8,7 @@ importArticles({
 window.SS = {
    skins: [
       'Dawne kolory = MediaWiki:Gadget-LegacyColors.css|MediaWiki:Gadget-LegacyFooter.css',
-      'Nawigacja u gÃ³ry = MediaWiki:Gadget-LegacyGloNav.css',
+      'Nawigacja u góry = MediaWiki:Gadget-LegacyGloNav.css',
       'Wszystko po staremu = MediaWiki:Gadget-LegacyColors.css|MediaWiki:Gadget-LegacyFooter.css|MediaWiki:Gadget-LegacyGloNav.css'
    ]
 }

@@ -1,4 +1,4 @@
-/* BoÃ®te Google+ */
+/* Boîte Google+ */
 
 <a href="https://plus.google.com/103971143228801035823" rel="publisher">Google+</a>
 

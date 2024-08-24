@@ -9,7 +9,7 @@ $(function() {
   var cssSkins = [
     'Bleach',
     'Dragon Ball',
-    'El IncreÃ­ble Mundo de Gumball',
+    'El Increíble Mundo de Gumball',
     'Hora de Aventura',
     'Mekakucity Actors',
     'Naruto',

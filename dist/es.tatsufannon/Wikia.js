@@ -1,8 +1,8 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
+/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
 window.SkinNotification = {
-	article: 'Categor√≠a:Destacados',
+	article: 'CategorÌa:Destacados',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -19,7 +19,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Elije a los Destacados de Este mes <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Vota Aqu√≠</a>.</div>');
+		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Elije a los Destacados de Este mes <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Vota AquÌ</a>.</div>');
 		nf.children().eq(0).append(sn);
 		sn.children().eq(0).click(SkinNotification.dismiss);
 	},

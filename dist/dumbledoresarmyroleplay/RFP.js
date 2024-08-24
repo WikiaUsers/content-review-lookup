@@ -1,5 +1,5 @@
 window.SpoilerAlert = {
-    question: 'Diese Seite enthÃ¤lt Spoiler. MÃ¶chten Sie sie trotzdem ansehen?',
+    question: 'Diese Seite enthält Spoiler. Möchten Sie sie trotzdem ansehen?',
     yes: 'Aber ja doch',
     no: 'Nein, noch nicht',
     isSpoiler: function () {

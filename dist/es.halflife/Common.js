@@ -1,12 +1,12 @@
-AjaxRCRefreshText = 'Act. automÃ¡t.';
-AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
+AjaxRCRefreshText = 'Act. automát.';
+AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 
 window.UserTagsJS = {
 	modules: {},
 	tags: {
         founder: {u: 'Director', order: -1/0 }, // siempre aparece al principio
-		bureaucrat: { u: 'BurÃ³crata', order: 0 },
+		bureaucrat: { u: 'Burócrata', order: 0 },
 		sysop: { m: 'Administrador', f: 'Administradora', u: 'Administrador/a', order: 1},
 		'content-moderator': { m: 'Moderador de contenido', f: 'Moderadora de contenido', u: 'Moderador/a de contenido', order: 2},
 		rollback: { m: 'Reversor', f: 'Reversora', u: 'Reversor/a', order: 3 },
@@ -20,15 +20,15 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global'];
 UserTagsJS.modules.metafilter = {
-	sysop: ['bureaucrat', 'founder'], // quitar tag de admin en burÃ³cratas y fundador
-	chatmoderator: ['sysop', 'bureaucrat'], // quitar tag mod.chat en admins y burÃ³cratas
+	sysop: ['bureaucrat', 'founder'], // quitar tag de admin en burócratas y fundador
+	chatmoderator: ['sysop', 'bureaucrat'], // quitar tag mod.chat en admins y burócratas
 	inactive: ['bot'] // quitar tag "inactivo" en bots
 };
 UserTagsJS.modules.userfilter = {
 	'Pokimon Bot': ['chatmoderator', 'content-moderator', 'threadmoderator', 'rollback', 'sysop'] // eliminar estos tags si existen
 };
 UserTagsJS.modules.custom = {
-	'Pokimon Bot': ['bot'] // aÃ±adir solamente tag de bot
+	'Pokimon Bot': ['bot'] // añadir solamente tag de bot
 };
 UserTagsJS.modules.inactive = 45;
 UserTagsJS.modules.newuser = true;

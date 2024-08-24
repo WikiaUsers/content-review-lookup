@@ -2,8 +2,8 @@
 importScript('MediaWiki:Common.js/displayTimer.js');
 
 /***** Actualizar los cambios recientes de la wikiactividad *****/
-AjaxRCRefreshText = 'Act. automÃ¡t.';
-AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
+AjaxRCRefreshText = 'Act. automát.';
+AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 ;
@@ -34,11 +34,11 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		BurÃ³crata: { u:'BurÃ³crata' }
+		Burócrata: { u:'Burócrata' }
 	}
 };
 UserTagsJS.modules.custom = {
-	'Arelys': ['BurÃ³crata']
+	'Arelys': ['Burócrata']
 };
 UserTagsJS.modules.inactive = {
 	days: 30,

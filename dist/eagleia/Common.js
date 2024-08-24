@@ -40,7 +40,7 @@ addOnloadHook( SVGThumbs );
 // Username replace function ([[template:USERNAME]])
 // Inserts user name into <span class="insertusername"></span>
 // Originally by [[User:Spang|Spang]] and[[User:Splarka|Splarka]]
-// CN Wiki version edited by [[User:Michael von Preu√üen|Michael von Preu√üen]]
+// CN Wiki version edited by [[User:Michael von Preuﬂen|Michael von Preuﬂen]]
 
 ////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -57,7 +57,7 @@ addOnloadHook( SVGThumbs );
 
 // Title replace function ([[Template:Title]])
 // Replaces page title
-// Created by [[User:Michael von Preu√üen|Michael von Preu√üen]]
+// Created by [[User:Michael von Preuﬂen|Michael von Preuﬂen]]
 // HIGHLY EXPERIMENTAL
 
 ////////////////////////////////////////////////////////////////////////////////////////////

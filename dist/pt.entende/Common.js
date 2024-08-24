@@ -1,9 +1,9 @@
 /****************************************/
-/* Etiqueta personalizada para usu√°rios */
+/* Etiqueta personalizada para usu·rios */
 function addMastheadTags() {
 var rights = {};
 
-rights["Evilbrine"] = ["L√≠der da Alian√ßa Entende"];
+rights["Evilbrine"] = ["LÌder da AlianÁa Entende"];
 
 if (wgCanonicalSpecialPageName == "Contributions") {
 var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");

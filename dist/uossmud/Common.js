@@ -2,7 +2,7 @@
 //Show and Hide stuff
 var ShowHideConfig = { autoCollapse: Infinity, userLang: true };
 importScriptPage('ShowHide/code.js', 'dev');
-mw.config.set('tableSorterCollation', {'Ã¤':'ae', 'Ã¶' : 'oe', 'ÃŸ': 'ss', 'Ã¼':'ue'});
+mw.config.set('tableSorterCollation', {'ä':'ae', 'ö' : 'oe', 'ß': 'ss', 'ü':'ue'});
 $(function(){
 	importArticles({
 		type: "script",

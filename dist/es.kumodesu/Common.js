@@ -1,7 +1,7 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
 window.SpoilerAlertJS = {
-    question: 'Esta secciÃ³n contiene spoilers. Â¿Estas seguro de querer leerla?',
+    question: 'Esta sección contiene spoilers. ¿Estas seguro de querer leerla?',
     yes: 'SI',
     no: 'NO',
     fadeDelay: 1600

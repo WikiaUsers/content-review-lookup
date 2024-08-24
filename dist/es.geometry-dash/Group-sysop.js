@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ ser√° cargado solamente para los administradores */
+/* Cualquier cÛdigo JavaScript escrito aquÌ ser· cargado solamente para los administradores */
 
 importArticles({
     type: 'script',

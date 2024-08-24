@@ -1,5 +1,5 @@
 /***********************************************************************
- * Script basÃ© sur celui de @Hulothe HP-fr wikia                  ******
+ * Script basé sur celui de @Hulothe HP-fr wikia                  ******
  * Auteur: @Think D. Solucer
  * Revue : @KockaAdmiralac                                         ******
  **********************************************************************/
@@ -20,33 +20,33 @@
         {
             title: 'Modifications pour les badges',
             body: '<p>Bonjour %USERNAME%,</p>' +
-                  '<p>Merci pour tes rÃ©centes contributions sur The Voice Wikia</p>' +
-                  '<p>Je dois cependant t\'informer que les modifications ayant pour but de gagner des badges sont interdites sur le wiki, et c\'est apparemment dans cette intention que tu as modifiÃ© des pages ou commentÃ© des billets. Ne t\'en fais pas, tu gagneras des badges en modifiant, mais il ne faut pas que Ã§a devienne un prÃ©texte et une source de mauvaises contributions.</p>' +
-                  '<p>Ce n\'est rien de grave, ne t\'inquiÃ¨te pas, mais je te demande de tenir compte de ces recommandations Ã  l\'avenir. Si tu as des questions, n\'hÃ©site pas Ã  m\'en faire part&nbsp;!</p>' +
-                  '<p>Ã€ bientÃ´t&nbsp;:)</p>',
+                  '<p>Merci pour tes récentes contributions sur The Voice Wikia</p>' +
+                  '<p>Je dois cependant t\'informer que les modifications ayant pour but de gagner des badges sont interdites sur le wiki, et c\'est apparemment dans cette intention que tu as modifié des pages ou commenté des billets. Ne t\'en fais pas, tu gagneras des badges en modifiant, mais il ne faut pas que ça devienne un prétexte et une source de mauvaises contributions.</p>' +
+                  '<p>Ce n\'est rien de grave, ne t\'inquiète pas, mais je te demande de tenir compte de ces recommandations à l\'avenir. Si tu as des questions, n\'hésite pas à m\'en faire part&nbsp;!</p>' +
+                  '<p>À bientôt&nbsp;:)</p>',
             reason: 'Pour modifications pour les badges'
         },
         {
             title: 'Vandalisme',
             body: '<p>Bonjour %USERNAME%,</p>' +
-                  '<p>Nous avons constatÃ© que vous avez rÃ©cemment effectuÃ© du vandalisme sur certaines pages du wiki.</p>' +
-                  '<p>Vous Ãªtes priÃ© de cesser ce comportement contre-productif et contre les principes d\'une encyclopÃ©die en ligne.</p>' +
+                  '<p>Nous avons constaté que vous avez récemment effectué du vandalisme sur certaines pages du wiki.</p>' +
+                  '<p>Vous êtes prié de cesser ce comportement contre-productif et contre les principes d\'une encyclopédie en ligne.</p>' +
                   '<p>Cordialement.</p>',
             reason: 'Pour vandalisme'
         },
         {
             title: 'Images Hors-Sujet',
             body: '<p>Bonjour %USERNAME%,</p>' +
-                  '<p>Nous avons constatÃ© que vous avez rÃ©cemment importÃ© une ou plusieurs images hors sujet sur le wiki.</p>' +
-                  '<p>Vous Ãªtes priÃ© de ne plus recommencer et de suivre les conseils de ce [[Fil:135016|tutoriel]].</p>' +
+                  '<p>Nous avons constaté que vous avez récemment importé une ou plusieurs images hors sujet sur le wiki.</p>' +
+                  '<p>Vous êtes prié de ne plus recommencer et de suivre les conseils de ce [[Fil:135016|tutoriel]].</p>' +
                   '<p>Cordialement.</p>',
             reason: 'Pour images HS'
         },
          {
             title: 'Mauvais Usage des Commentaires',
             body: '<p>Bonjour %USERNAME%,</p>' +
-                  '<p>Nous avons rÃ©cemment constatÃ© que vous avez eu un mauvais comportement dans les commentaires, ou avez postÃ© un commentaire inutile.</p>' +
-                  '<p>Vous Ãªtes priÃ© de ne plus recommencer.</p>' +
+                  '<p>Nous avons récemment constaté que vous avez eu un mauvais comportement dans les commentaires, ou avez posté un commentaire inutile.</p>' +
+                  '<p>Vous êtes prié de ne plus recommencer.</p>' +
                   '<p>Cordialement.</p>',
             reason: 'Pour mauvais usage des commentaires'
         },
@@ -55,7 +55,7 @@
         {
             title: 'Blocage Wiki',
             body: '<p>Bonjour %USERNAME%,</p>' +
-                  '<p>Suite Ã  votre comportement inadmissible, vous avez Ã©tÃ© banni du wiki.</p>' +
+                  '<p>Suite à votre comportement inadmissible, vous avez été banni du wiki.</p>' +
                   '<p>Cordialement.</p>',
             reason: 'Pour blocage sur le wikia'
         },
@@ -66,7 +66,7 @@
         $('.WallGreeting').prepend(
             $('<select>', {
                 id: 'user-warning-select'
-            }).append('<option>', { text: 'Avertir... (avec modÃ©ration)' })
+            }).append('<option>', { text: 'Avertir... (avec modération)' })
             .append(DATA.map(function(el, i) {
                 if (typeof el === 'string') {
                     return $('<option>', {

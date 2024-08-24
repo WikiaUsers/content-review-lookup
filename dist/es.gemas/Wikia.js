@@ -6,19 +6,19 @@ importArticles({
     ]
 });
 
-// Editar introducciÃ³n de los artÃ­culos
-EditIntroButtonText = 'Editar introducciÃ³n';
+// Editar introducción de los artículos
+EditIntroButtonText = 'Editar introducción';
 
-// MenÃºes desplegables con hover
+// Menúes desplegables con hover
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
     expandedAreaEdit: true
 };
 
-/*No comentarios en entradas de blog viejas(30 dÃ­as)*/
+/*No comentarios en entradas de blog viejas(30 días)*/
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog ha esto inactivo 30 dÃ­as, por lo cual ya no se puede comentar",
+    expiryMessage: "Este blog ha esto inactivo 30 días, por lo cual ya no se puede comentar",
     nonexpiryCategory: "Blogs permanentes"
 };
  

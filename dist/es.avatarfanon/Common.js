@@ -6,7 +6,7 @@ importArticles({
 	type: "script",
 	articles: [
 		"w:dev:ShowHide/code.js", /* Collapsible elements and tables */
-		"MediaWiki:Common.js/iconos.js", /* A帽ade 铆conos al header */
+		"MediaWiki:Common.js/iconos.js", /* A馻de 韈onos al header */
 		"MediaWiki:Common.js/insertusername.js", /* Nombre de usuario reemplazado por Plantilla:USERNAME */
  
 	]
@@ -31,7 +31,7 @@ $(function() {
 }
 });
 
-/* A帽adir botones extra de edici贸n */
+/* A馻dir botones extra de edici髇 */
 if (mwCustomEditButtons) {
 // <nowiki>
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -44,8 +44,8 @@ if (mwCustomEditButtons) {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
      "speedTip": "Insertar plantilla de personaje",
-     "tagOpen": "{{Personaje infobox\n| naci贸n        = ",
-     "tagClose": "\n| image         = \n| nombre        = \n| etnia        = \n| nacionalidad  = \n| edad          = \n| g茅nero        = \n| cabello       = \n| aliados       = \n| enemigos      = \n| arma          = \n| estilodepelea = \n| profesi贸n     = \n| posici贸n      = \n| afiliaci贸n    = \n| aparici贸n     = \n| 煤ltimaapar    = \n| voz           = \n}}",
+     "tagOpen": "{{Personaje infobox\n| naci髇        = ",
+     "tagClose": "\n| image         = \n| nombre        = \n| etnia        = \n| nacionalidad  = \n| edad          = \n| g閚ero        = \n| cabello       = \n| aliados       = \n| enemigos      = \n| arma          = \n| estilodepelea = \n| profesi髇     = \n| posici髇      = \n| afiliaci髇    = \n| aparici髇     = \n| 鷏timaapar    = \n| voz           = \n}}",
      "sampleText": ""};
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -71,21 +71,21 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
  
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/es.starwars/images/8/8c/Button_RedX.png",
-		"speedTip": "Proponer que el art铆culo sea borrado",
+		"speedTip": "Proponer que el art韈ulo sea borrado",
 		"tagOpen": "{{Borrar|Motivo}} ",
 		"tagClose": "",
 		"sampleText": ""};
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-		"speedTip": "Insertar aviso de en construcci贸n",
+		"speedTip": "Insertar aviso de en construcci髇",
 		"tagOpen": "{{Construyendo|Usuario}} ",
 		"tagClose": "",
 		"sampleText": ""};
 // </nowiki>
 }
  
-/*** A帽adir bot贸n para editar el mensaje de bienvenida del muro ***/
+/*** A馻dir bot髇 para editar el mensaje de bienvenida del muro ***/
  
 importArticles({
     type: 'script',
@@ -97,8 +97,8 @@ importArticles({
 /*** Autorefrescar los cambios recientes en la wikiactividad ***/
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom谩t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p谩gina autom谩ticamente';
+AjaxRCRefreshText = 'Act. autom醫.';
+AjaxRCRefreshHoverText = 'Refrescar esta p醙ina autom醫icamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
  

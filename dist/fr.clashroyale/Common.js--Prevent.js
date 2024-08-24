@@ -1,7 +1,7 @@
 /******************************************************************************
  * Auteur : Think D. Solucer                                                 **
- * Id√©e : Hommy <3<3                                                         **                                                           **               **
- * Script permettant aux utilisateurs de pr√©venir rapidement le staff.       **
+ * IdÈe : Hommy <3<3                                                         **                                                           **               **
+ * Script permettant aux utilisateurs de prÈvenir rapidement le staff.       **
  * Licence : CopyWrong @CopyWisely
 *******************************************************************************/
 console.log('fofo v5 OK');
@@ -33,7 +33,7 @@ function init()
           titre     = document.getElementById('titre-ope-prevent-snd').value;
           
       if (!message) {
-        alert('Merci de mettre un message √† envoyer !');
+        alert('Merci de mettre un message ‡ envoyer !');
         return;
       }
       document.getElementById('startButton').setAttribute('disabled','disabled');
@@ -73,12 +73,12 @@ function poster_message(personne,msg,titre)
         })
         .done(function(d) { 
       if (!d.error)
-          console.log('Envoi du message √† '+personne+' r√©ussi !');
+          console.log('Envoi du message ‡ '+personne+' rÈussi !');
       else
-          console.log('Echec d\'envoi du message √†  '+personne+': '+ d.error.code);
+          console.log('Echec d\'envoi du message ‡  '+personne+': '+ d.error.code);
         })
         .fail(function() {
-          console.log('Echec d\'envoi du message √†  '+personne+': unknownerror');
+          console.log('Echec d\'envoi du message ‡  '+personne+': unknownerror');
         });
   }
 function afficherCSS(cssArticle)
@@ -104,7 +104,7 @@ function afficher_popup()
         defaultButton: true,
         handler: function () {
           init();
-          afficherResultat('Merci !', 'Votre message a bien √©t√© envoy√©.');
+          afficherResultat('Merci !', 'Votre message a bien ÈtÈ envoyÈ.');
           $('#popup-ope-prevent-snd').closeModal();
         }
     }]
@@ -119,7 +119,7 @@ FormHTML    ='\
     <input type="text" id="titre-ope-prevent-snd" value="" /> \
     </p> \
     <br /> \
-    <p>Votre message (<b>sign√© avec 4 ~</b>): \
+    <p>Votre message (<b>signÈ avec 4 ~</b>): \
     <br /> \
     <textarea style="height: 20em; width: 60%;" id="form-ope-prevent-snd"/> \
     </p> \
@@ -128,21 +128,21 @@ FormHTML    ='\
 token       = mw.user.tokens.get('editToken');
 namespace   = wgTransactionContext.namespace;
   
-    // D√©but code
+    // DÈbut code
     {
         switch(namespace)
         {
           case 1201:
             groupe      ="threadmoderator";
-            li_envois   ='<a href="#" class="ope-prevent-snd wikia-button secondary">Pr√©venir un Garde</a>';
+            li_envois   ='<a href="#" class="ope-prevent-snd wikia-button secondary">PrÈvenir un Garde</a>';
             selecteur   ='.Wall .speech-bubble-message .buttons ul';
-            prevenirQUI ='Pr√©venir un Garde';
+            prevenirQUI ='PrÈvenir un Garde';
             break;
           case 0:
             groupe      ="rollback";
-            li_envois   ='<a href="#" class="ope-prevent-snd wikia-button secondary">Pr√©venir un Garde</a>';
+            li_envois   ='<a href="#" class="ope-prevent-snd wikia-button secondary">PrÈvenir un Garde</a>';
             selecteur   ='ul.WikiaMenuElement';
-            prevenirQUI ='Pr√©venir un Garde';
+            prevenirQUI ='PrÈvenir un Garde';
             break;
           default:
             return false;

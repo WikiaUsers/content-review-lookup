@@ -1,6 +1,6 @@
-/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
-// [[Vorlage:Dateiinfo]] in [[Spezial:Hochladen]] eingefÃ¼gt.
+// [[Vorlage:Dateiinfo]] in [[Spezial:Hochladen]] eingefügt.
 function setSpecialUploadTemplate() {
   if (window.location.href == "https://rainbow-six-siege.fandom.com/de/wiki/Spezial:Hochladen") {
   var editbox = document.getElementById('wpUploadDescription');
@@ -8,7 +8,7 @@ function setSpecialUploadTemplate() {
     editbox.value = "{"+"{Dateiinfo\n"
                  + "|Beschreibung=\n"
                  + "|Quelle=\n"
-                 + "|KÃ¼nstler=\n"
+                 + "|Künstler=\n"
                  + "|Kategorien=\n"
                  + "}"+"}";
     }

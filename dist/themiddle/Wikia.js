@@ -7,7 +7,7 @@ var SocialMediaButtons = {
 	colorScheme: "dark",
 	buttonSize: "20px"
 };
-Â 
+ 
 /* Sidebar Notice */
 $(document).ready(function() {
     var newSection = '<section id="notice" class="module"></section>';
@@ -17,4 +17,4 @@ $(document).ready(function() {
         $('section#notice').append(code);
     });
 });
-Â 
+ 

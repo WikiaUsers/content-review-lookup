@@ -284,5 +284,5 @@ $(document).ready(function () {
 	chatags.init();
 });
 } else {
-console.error('Esta versiÃ³n de Tags estÃ¡ diseÃ±ada para usarse solamente en Steven Universe Wiki.');
+console.error('Esta versión de Tags está diseñada para usarse solamente en Steven Universe Wiki.');
 }

@@ -440,7 +440,7 @@
 
 	  h = Math.round(h * 60);
 
-	  // Make negative hues positive behind 360Â°
+	  // Make negative hues positive behind 360°
 	  if (h < 0)
 		  h += 360;
 

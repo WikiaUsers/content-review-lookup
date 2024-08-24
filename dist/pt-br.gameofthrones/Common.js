@@ -1,4 +1,4 @@
-/** Gera uma lista das pÃ¡ginas mais visitadas da Wikia
+/** Gera uma lista das páginas mais visitadas da Wikia
 Exemplo de Uso:
 <div id="mais-visitadas"></div> 
 **/
@@ -15,7 +15,7 @@ $(function() {
 	}
 });
 
-/**** ImportaÃ§Ãµes ****/
+/**** Importações ****/
 importArticles({
     type: 'script',
     articles: [
@@ -77,7 +77,7 @@ $( function eraIconsOasis() {
     }
 } );
 
-//* Username, crÃ©ditos da Avatar Wiki *//
+//* Username, créditos da Avatar Wiki *//
 if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }

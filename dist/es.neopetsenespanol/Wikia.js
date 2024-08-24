@@ -12,15 +12,15 @@ importArticles({
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-        .attr('value','VotaciÃ³n finalizada');
+        .attr('value','Votación finalizada');
     }
 });
-/* NÃºmero de imÃ¡genes en la galerÃ­a */
+/* Número de imágenes en la galería */
 $(function(){
     $.ajax({
         'dataType': 'text',
         'data': {
-            'title': 'GalerÃ­a:' + wgPageName,
+            'title': 'Galería:' + wgPageName,
             'action': 'raw',
             'ctype': 'text/plain'
         },

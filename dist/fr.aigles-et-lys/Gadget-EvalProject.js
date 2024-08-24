@@ -1,20 +1,20 @@
 /**
  * EvaluationDeluxe
  *
- * La fonction EvalProject ajoute un ou plusieurs boutons qui ouvrent un popup d'Ã©valuation
- * sur un ou plusieurs projets donnÃ©. Le bouton n'est ajoutÃ© que sur les pages de discussion
+ * La fonction EvalProject ajoute un ou plusieurs boutons qui ouvrent un popup d'évaluation
+ * sur un ou plusieurs projets donné. Le bouton n'est ajouté que sur les pages de discussion
  * des articles.
  *
- * Un modÃ¨le d'Ã©valuation de projet sera mis Ã  jour ou ajoutÃ© sur la page de
- * discussion concernÃ©e.
+ * Un modèle d'évaluation de projet sera mis à jour ou ajouté sur la page de
+ * discussion concernée.
  *
  * Auteurs : Ugo14
- * Date de derniÃ¨re rÃ©vision : 28 aoÃ»t 2007 Ã  23:23
+ * Date de dernière révision : 28 août 2007 à 23:23
  * {{:Projet:JavaScript/Script|EvalProject}}
  */
 
 /********************************************************************************************************
-*  Exemple de personnalisation pour le projet "SÃ©curitÃ© informatique" (Ã  mettre dans votre monobook.js) :
+*  Exemple de personnalisation pour le projet "Sécurité informatique" (à mettre dans votre monobook.js) :
 *********************************************************************************************************
 * obtenir("EvalProject");
 * 
@@ -26,7 +26,7 @@
 *  }
 * 
 *  with (evalProjectNames) {
-*    push("SÃ©curitÃ© informatique");
+*    push("Sécurité informatique");
 *  }
 * }
 * addOnloadHook(ajoutEvalProject);
@@ -60,15 +60,15 @@ function popupEvalProject(project) {
                 } else if (found[0].match(/importance=moyenne/i)) {
                         ii="moyenne";
                         chki[1]="checked";
-                } else if (found[0].match(/importance=Ã©levÃ©e/i)) {
-                        ii="Ã©levÃ©e";
+                } else if (found[0].match(/importance=élevée/i)) {
+                        ii="élevée";
                         chki[2]="checked";
                 } else if (found[0].match(/importance=maximum/i)) {
                         ii="maximum";
                         chki[3]="checked";
                 }
-                if (found[0].match(/avancement=Ã©bauche/i)) {
-                        aa="Ã©bauche";
+                if (found[0].match(/avancement=ébauche/i)) {
+                        aa="ébauche";
                         chka[0]="checked";
                 } else if (found[0].match(/avancement=BD/i)) {
                         aa="BD";
@@ -99,15 +99,15 @@ function popupEvalProject(project) {
         javaCode += ' }else{ ';
         javaCode += 'window.opener.insertTags("","{{Wikiprojet '+project+'|avancement="+a+"|importance="+i+"}}",""); ';
         javaCode += ' } ';
-        javaCode += 'window.opener.document.editform.wpSummary.value ="Ã‰valuation wikiprojet '+project+' : importance="+i+", avancement="+a; ';
+        javaCode += 'window.opener.document.editform.wpSummary.value ="Évaluation wikiprojet '+project+' : importance="+i+", avancement="+a; ';
         javaCode += '} <\/script>';
  
-        popup.document.write('<html><head><title>Ã‰valuation de '+wgTitle+' pour le projet '+project+'</title>');
+        popup.document.write('<html><head><title>Évaluation de '+wgTitle+' pour le projet '+project+'</title>');
         popup.document.write('<script type="text\/javascript" src="\/skins-1.5\/common\/wikibits.js"><!-- wikibits js --><\/script>');
         popup.document.write('<style type="text\/css" media="screen projection">/*<![CDATA[*/ @import "\/skins-1.5\/monobook\/main.css?5"; /*]]>*/<\/style>');
         popup.document.write(javaCode);
         popup.document.write('</head><body>');
-        popup.document.write('<h1>Ã‰valuation de <b>'+wgTitle+'</b> dans le cadre du projet <b>'+project+'</b></h1>');
+        popup.document.write('<h1>Évaluation de <b>'+wgTitle+'</b> dans le cadre du projet <b>'+project+'</b></h1>');
         popup.document.write('<p><center><form name="paramForm">');
         popup.document.write('<table cellpading=1 cellspacing=0>');
         popup.document.write('<tr><th colspan=2>Avancement</th><th colspan=2>Importance</th></tr>');
@@ -117,8 +117,8 @@ function popupEvalProject(project) {
         popup.document.write('<td bgcolor="#ff00ff"><label for="maximum">maximum</label></td></tr>');
         popup.document.write('<tr><td bgcolor="#66ffff"><input type="radio" name="avancement" id="A" onClick="a=\'A\'" '+chka[4]+'></td>');
         popup.document.write('<td bgcolor="#66ffff"><label for="A">A</label></td>');
-        popup.document.write('<td bgcolor="#ff88ff"><input type="radio" name="importance" id="elevee" onClick="i=\'Ã©levÃ©e\'" '+chki[2]+'></td>');
-        popup.document.write('<td bgcolor="#ff88ff"><label for="elevee">Ã©levÃ©e</label></td></tr>');
+        popup.document.write('<td bgcolor="#ff88ff"><input type="radio" name="importance" id="elevee" onClick="i=\'élevée\'" '+chki[2]+'></td>');
+        popup.document.write('<td bgcolor="#ff88ff"><label for="elevee">élevée</label></td></tr>');
         popup.document.write('<tr><td bgcolor="#66ff66"><input type="radio" name="avancement" id="BA" onClick="a=\'BA\'" '+chka[3]+'></td>');
         popup.document.write('<td bgcolor="#66ff66"><label for="BA">BA</label></td>');
         popup.document.write('<td bgcolor="#ffccff"><input type="radio" name="importance" id="moyenne" onClick="i=\'moyenne\'" '+chki[1]+'></td>');
@@ -131,13 +131,13 @@ function popupEvalProject(project) {
         popup.document.write('<td bgcolor="#ffaa66"><label for="BD">BD</label></td>');
         popup.document.write('<td></td>');
         popup.document.write('<td></td></tr>');
-        popup.document.write('<tr><td bgcolor="#ff6666"><input type="radio" name="avancement" id="ebauche" onClick="a=\'Ã©bauche\'" '+chka[0]+'></td>');
-        popup.document.write('<td bgcolor="#ff6666"><label for="ebauche">Ã©bauche</label></td>');
+        popup.document.write('<tr><td bgcolor="#ff6666"><input type="radio" name="avancement" id="ebauche" onClick="a=\'ébauche\'" '+chka[0]+'></td>');
+        popup.document.write('<td bgcolor="#ff6666"><label for="ebauche">ébauche</label></td>');
         popup.document.write('<td></td>');
         popup.document.write('<td></td></tr>');
         popup.document.write('</table>');
         popup.document.write('<p>');
-        popup.document.write('<input type="submit" value="Ã‰valuer" onClick="javascript:insertCode();javascript:self.close()">');
+        popup.document.write('<input type="submit" value="Évaluer" onClick="javascript:insertCode();javascript:self.close()">');
         popup.document.write('<input type="submit" value="Annuler" onClick="javascript:self.close()">');
         popup.document.write('</form></center>');
         popup.document.write('<iframe id="article" src="//fr.wikipedia.org/wiki/'+wgTitle+'" width="100%" height="75%" align="bottom"></iframe>');
@@ -162,7 +162,7 @@ function EvalProject () {
                         }
                         var ref = document.createElement("a");
                         ref.setAttribute("href", "javascript:popupEvalProject('"+evalProjectNames[i]+"');");
-                        ref.setAttribute("title", "Ã‰valuation projet "+evalProjectNames[i]);
+                        ref.setAttribute("title", "Évaluation projet "+evalProjectNames[i]);
                         ref.appendChild(img);
  
                         toolbar.appendChild(ref);

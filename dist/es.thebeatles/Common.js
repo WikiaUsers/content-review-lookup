@@ -159,10 +159,10 @@ addOnloadHook( createCollapseButtons );
  })
 
 /*</pre>
-== B√∫squeda especial extendida (specialsearch) ==
-A√±ade a la p√°gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
+== B˙squeda especial extendida (specialsearch) ==
+AÒade a la p·gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
 
-Trabaja en conjunto con el m√≥dulo [[MediaWiki:SpecialSearch.js]] y est√° basado en [[w:fr:MediaWiki:Monobook.js]].
+Trabaja en conjunto con el mÛdulo [[MediaWiki:SpecialSearch.js]] y est· basado en [[w:fr:MediaWiki:Monobook.js]].
 <pre><nowiki> */
 
 addOnloadHook( function() {
@@ -172,7 +172,7 @@ if ((wgCanonicalNamespace == "Special") && (wgCanonicalSpecialPageName == "Searc
 
 /*</nowiki></pre>
 == Cerrar mensajes ==
-Ver ejemplo en [[Usuario:Chabacano/F√≠rmalo]], por [[Usuario:Platonides]].
+Ver ejemplo en [[Usuario:Chabacano/FÌrmalo]], por [[Usuario:Platonides]].
 <pre><nowiki> */
 
  addOnloadHook( function() {
@@ -188,7 +188,7 @@ Ver ejemplo en [[Usuario:Chabacano/F√≠rmalo]], por [[Usuario:Platonides]].
 
 
 /*</nowiki></pre>
-== Scripts s√≥lo para biblios ==
+== Scripts sÛlo para biblios ==
 <pre><nowiki> */
 
 function userInGroup(group) {
@@ -200,7 +200,7 @@ if ( userInGroup('sysop') )
 
 /*</pre>
 == Wikimedia Player ==
-A√±ade reproductor en la misma p√°gina.
+AÒade reproductor en la misma p·gina.
 <pre><nowiki> */
 
 document.write('<script type="text/javascript" src="' 
@@ -222,12 +222,12 @@ document.write('<script type="text/javascript" src="'
 + '&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400"></script>');
 
 /*</pre>
-== Mejoras de dise√±o de la Portada ==
+== Mejoras de diseÒo de la Portada ==
 <pre><nowiki> */
 
-/** Mejoras de dise√±o de la Portada *********************************************************
+/** Mejoras de diseÒo de la Portada *********************************************************
   *
-  *  Descripci√≥n:        Varias mejoras de dise√±o para la portada, incluyendo un
+  *  DescripciÛn:        Varias mejoras de diseÒo para la portada, incluyendo un
   *                      enlace adicional a la lista completa de idiomas disponibles.
   *  Adaptado de [[en:MediaWiki:Common.js]]
   */
@@ -259,9 +259,9 @@ document.write('<script type="text/javascript" src="'
  }
 /*</nowiki></pre>
 
-== Redefinici√≥n de ordenaci√≥n de tablas "sortable" ==
+== RedefiniciÛn de ordenaciÛn de tablas "sortable" ==
 
-Traido de la Inclopedia. Ordena nombres de meses en espa√±ol y cambia puntos por comas.
+Traido de la Inclopedia. Ordena nombres de meses en espaÒol y cambia puntos por comas.
 
 <pre><nowiki>*/
 
@@ -442,7 +442,7 @@ function ts_sort_generic(a,b) {
 
 
 addOnloadHook ( function() {
-     hito("C funci√≥n extra√±a");
+     hito("C funciÛn extraÒa");
      var n = Math.round(Math.random() * 9); //10 opciones
 
        for (i=0; i < document.styleSheets.length; i++) {
@@ -451,13 +451,13 @@ addOnloadHook ( function() {
              if (document.styleSheets[0].cssRules) {
                 for (i=document.styleSheets.length-1; i >= 0; i--) {
                     try {
-                         //A√±adir al final (Gecko)
+                         //AÒadir al final (Gecko)
                          document.styleSheets[i].insertRule('.rotate_0 { display: none }', document.styleSheets[i].cssRules.length);
                          document.styleSheets[i].insertRule('.rotate_' + n + ' { display: block; }', document.styleSheets[i].cssRules.length);
                          break;
                      } catch(e) {
                          //Ignorar el error y probar con la hoja de estilos anterior.
-                         //As√≠, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
+                         //AsÌ, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
                      }
                  }
              } else if (document.styleSheets[0].rules) { //IE
@@ -467,7 +467,7 @@ addOnloadHook ( function() {
              break;
         }
   }
-  hito("F funci√≥n extra√±a");
+  hito("F funciÛn extraÒa");
 } );
 
 var wma_settings =
@@ -481,7 +481,7 @@ buttonImage: "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Erioll_wo
 
 
 
-// == C√≥digo del plegado/desplegado de plantillas ==
+// == CÛdigo del plegado/desplegado de plantillas ==
 
 var NavigationBarHide = 'Plegar';
 var NavigationBarShow = 'Desplegar';
@@ -493,7 +493,7 @@ document.write('<script type="text/javascript" ' +
   '&amp;action=raw&amp;smaxage=3600&amp;ctype=text/javascript&amp;dontcountme=s"></scr' +
   'ipt>');
 
-// == C√≥digo para art√≠culos destacados ==
+// == CÛdigo para artÌculos destacados ==
 		
 function LinkFA() 
 {
@@ -507,7 +507,7 @@ function LinkFA()
             // if found a FA link
             if (b.className == "interwiki-" + a.id) {
                b.className += " destacado";
-               b.title = "Este es un art√≠culo destacado en esta Wikipedia.";
+               b.title = "Este es un artÌculo destacado en esta Wikipedia.";
             }
          }
       }
@@ -528,7 +528,7 @@ function LinkAB()
             // if found a AB link
             if (b.className == "interwiki-" + a.id) {
                b.className += " bueno";
-               b.title = "Este es un art√≠culo bueno en esta Wikipedia.";
+               b.title = "Este es un artÌculo bueno en esta Wikipedia.";
             }
          }
       }

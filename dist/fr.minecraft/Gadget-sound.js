@@ -5,7 +5,7 @@
 mw.hook( 'wikipage.content' ).add( function( $content ) {
 	var i18n = {
 		playTitle: 'Cliquer pour lire',
-		stopTitle: 'Cliquer pour arrÃªter',
+		stopTitle: 'Cliquer pour arrêter',
 	};
 	$content.find('.sound' ).prop( 'title', i18n.playTitle ).on( 'click', function( e ) {
 		// Ignore links

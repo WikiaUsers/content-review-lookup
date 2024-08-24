@@ -1,4 +1,4 @@
-/* Qualquer JavaScript aqui ser√° carregado para usu√°rios que usam o site m√≥vel */
+/* Qualquer JavaScript aqui ser· carregado para usu·rios que usam o site mÛvel */
 /**************************************************
 /* Responsive Flex Passage Mobile Collapse Script *
 /**************************************************/

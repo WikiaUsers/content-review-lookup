@@ -27,7 +27,7 @@ var rdfrom = mw.util.getParamValue('rdfrom');
 if (rdfrom) {
     loadMessages( [ 'redirectedfrom' ] ).then(function() {
         console.log(mw.messages)
-        var link = $('<div />').html($('<a />', {Â href: mw.util.getUrl(rdfrom, { redirect: 'no' }), text: rdfrom })).html()
+        var link = $('<div />').html($('<a />', { href: mw.util.getUrl(rdfrom, { redirect: 'no' }), text: rdfrom })).html()
         $('.page-header__subtitle').remove();
         $('.page-header__main').append($('<div />', { class: 'page-header__subtitle' }).html(mw.message( 'redirectedfrom', link ).text()));
     });

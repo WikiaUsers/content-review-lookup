@@ -6,7 +6,7 @@ $( document ).ready( function( $ ) {
 		var snapshot = data['snapshot'];
 		var color = data['color'];
 		
-		var noticestr = 'Ãšltima verificaÃ§Ã£o completa da linha do tempo ';
+		var noticestr = 'Última verificação completa da linha do tempo ';
 		if ( category == 'unbekannt' ) noticestr += 'desconhecido';
 		else {
 			noticestr += 'para ' + version;

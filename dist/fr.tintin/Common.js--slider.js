@@ -1,5 +1,5 @@
 /* Slider Jquery 
- * InspirÃ© du travail de Tierrie, adaptÃ© au Wiki Tintin par Soronos
+ * Inspiré du travail de Tierrie, adapté au Wiki Tintin par Soronos
  */
 
 $(function() {
@@ -23,7 +23,7 @@ $(function() {
         return false;
       });
     });
-    //data-src vers img-src pour attÃ©nuer le dÃ©calage sur certaines images
+    //data-src vers img-src pour atténuer le décalage sur certaines images
     $( "#portal_slider img" ).each(function(i,e) {
         dataSRC = $(e).attr("data-src");
         $(e).attr("src", dataSRC);

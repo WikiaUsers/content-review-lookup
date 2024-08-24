@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird fÃ¼r alle Nutzer der mobilen Ansicht geladen. */
+/* Das folgende JavaScript wird für alle Nutzer der mobilen Ansicht geladen. */
 
 /* MF broke the mobile styles loading in 1.31 */
 mw.loader.load( 'mobile.site.styles' );

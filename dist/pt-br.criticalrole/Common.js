@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
 //********************************************************************************
 // Start "Articletype positioning" script; by User:Bp - Installed for test by plkrtn 3/2/10 - Testing by Pyramidhead
 //********************************************************************************

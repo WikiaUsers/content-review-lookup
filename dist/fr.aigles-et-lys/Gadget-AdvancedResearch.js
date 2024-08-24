@@ -1,21 +1,21 @@
 /**
- * Recherche avancÃ©e
+ * Recherche avancée
  * 
- * Remplace la boÃ®te de recherche par une avec beaucoup plus de possibilitÃ©s
+ * Remplace la boîte de recherche par une avec beaucoup plus de possibilités
  * (raccourcis, recherche dans toutes les langues et projets, et quelques autres sites)
  * 
  * Auteur : Seb35
  * Version 3.5
- * Date de derniÃ¨re rÃ©vision : 2 janvier 2011
+ * Date de dernière révision : 2 janvier 2011
  * 
- * Documentation de la fonction Recherche avancÃ©e : voir [[:w:fr:Utilisateur:Seb35/Scripts]]
+ * Documentation de la fonction Recherche avancée : voir [[:w:fr:Utilisateur:Seb35/Scripts]]
  * {{:Projet:JavaScript/Script|AdvancedResearch}}
  */
 
 ////////////////////// ZONE PERSONNALISABLE //////////////////////
 // Voir aussi [[:w:fr:Utilisateur:Seb35/Scripts]]
 
-var adSearchProject;        // Projet par dÃ©faut, ex : wikipedia.org, meta.wikimedia.org | dÃ©faut : projet courant
+var adSearchProject;        // Projet par défaut, ex : wikipedia.org, meta.wikimedia.org | défaut : projet courant
 
 var adSearchLang;           // Tableau des projets wiki contenant des tableaux de 3 cases :
                             // * langue du projet, vide sinon (exemple : fr, zh-classical)
@@ -23,50 +23,50 @@ var adSearchLang;           // Tableau des projets wiki contenant des tableaux d
                             // * affichage                    (exemple : fr)
                             // * (optionel) dossier du script (exemple : /wiki/)
 
-var adSearchDefaultLang;    // Langue et projet utilisÃ©s par dÃ©faut | Array(adSearchLang0,adSearchLang0project)
-var adSearchInstantTitle;   // Afficher automatiquement le titre de la page en marquant '_' | activÃ©
-var adSearchSametab;        // Ouvrir dans le mÃªme onglet | dÃ©sactivÃ©
-var adSearchShowtab;        // Ouvrir l'onglet supplÃ©mentaire en avant-plan | activÃ©
+var adSearchDefaultLang;    // Langue et projet utilisés par défaut | Array(adSearchLang0,adSearchLang0project)
+var adSearchInstantTitle;   // Afficher automatiquement le titre de la page en marquant '_' | activé
+var adSearchSametab;        // Ouvrir dans le même onglet | désactivé
+var adSearchShowtab;        // Ouvrir l'onglet supplémentaire en avant-plan | activé
 var adSearchButtons;        // Boutons de recherche, voir le tableau adresses dans le code | Array('l','w','g','reset','c')
-var adSearchDefault;        // Recherche par dÃ©faut lorsqu'on appuie sur EntrÃ©e | 'l'
-var adSearchClear;          // Effacer aprÃ¨s x 1/10e secondes (x >= 0), -1 pour ne pas effacer | -1
-var adSearchHistoryLength;  // Nombre d'entrÃ©es Ã  conserver dans l'historique >= 0 | 5
+var adSearchDefault;        // Recherche par défaut lorsqu'on appuie sur Entrée | 'l'
+var adSearchClear;          // Effacer après x 1/10e secondes (x >= 0), -1 pour ne pas effacer | -1
+var adSearchHistoryLength;  // Nombre d'entrées à conserver dans l'historique >= 0 | 5
 var adSearchAdresses;       // Ajouter des adresses, voir le tableau adresses dans le code
-var adSearchOpenOptions;    // Options passÃ©es lors de l'ouverture d'une fenÃªtre | voir code
+var adSearchOpenOptions;    // Options passées lors de l'ouverture d'une fenêtre | voir code
 var adSearchShortcuts;      // Remplacer les raccourcis | rien
-var adSearchPanelView;      // Tableau permettant l'affichage de : langues - retour Ã  la ligne - autres langues -
-                            //  case mÃªme fenÃªtre - case arriÃ¨re-plan - retour Ã  la ligne - boutons | 1,1,1,1,1,1,1
-var adSearchCSS;            // CSS rÃ©gissant la prÃ©sentation de la boÃ®te de recherche | voir code
-var adSearchDisplayOnFocus; // Dans Vector, afficher la boÃ®te de recherche seulement lors du focus de la zone de texte | false
+var adSearchPanelView;      // Tableau permettant l'affichage de : langues - retour à la ligne - autres langues -
+                            //  case même fenêtre - case arrière-plan - retour à la ligne - boutons | 1,1,1,1,1,1,1
+var adSearchCSS;            // CSS régissant la présentation de la boîte de recherche | voir code
+var adSearchDisplayOnFocus; // Dans Vector, afficher la boîte de recherche seulement lors du focus de la zone de texte | false
 
 // Raccourcis sur les titres
 
 // Espaces de noms
-// une ligne = numÃ©ro_de_l'espace_de_nom, tableau_des_raccourcis, objet_contenant_l'espace_de_noms_en_fonction_de_la_langue
+// une ligne = numéro_de_l'espace_de_nom, tableau_des_raccourcis, objet_contenant_l'espace_de_noms_en_fonction_de_la_langue
 var adSearchNamespaces = [
-  -1, ['sp'],        { 'mul': 'Special:$1',        'fr': 'SpÃ©cial:$1'                },
+  -1, ['sp'],        { 'mul': 'Special:$1',        'fr': 'Spécial:$1'                },
    2, ['u'],         { 'mul': 'User:$1',           'fr': 'Utilisateur:$1'            },
-   4, ['w'],         { 'mul': 'Project:$1',        'fr': 'WikipÃ©dia:$1'              },
+   4, ['w'],         { 'mul': 'Project:$1',        'fr': 'Wikipédia:$1'              },
    6, ['f','i'],     { 'mul': 'File:$1',           'fr': 'Fichier:$1'                },
    8, ['mw'],        { 'mul': 'MediaWiki:$1',      'fr': 'MediaWiki:$1'              },
-  10, ['m'],         { 'mul': 'Template:$1',       'fr': 'ModÃ¨le:$1'                 },
+  10, ['m'],         { 'mul': 'Template:$1',       'fr': 'Modèle:$1'                 },
   12, ['a'],         { 'mul': 'Help:$1',           'fr': 'Aide:$1'                   },
-  14, ['c','cat'],   { 'mul': 'Category:$1',       'fr': 'CatÃ©gorie:$1'              },
+  14, ['c','cat'],   { 'mul': 'Category:$1',       'fr': 'Catégorie:$1'              },
    1, ['d'],         { 'mul': 'Talk:$1',           'fr': 'Discussion:$1'             },
    3, ['du'],        { 'mul': 'User talk:$1',      'fr': 'Discussion utilisateur:$1' },
-   5, ['dw'],        { 'mul': 'Project talk:$1',   'fr': 'Discussion WikipÃ©dia:$1'   },
+   5, ['dw'],        { 'mul': 'Project talk:$1',   'fr': 'Discussion Wikipédia:$1'   },
    7, ['df','di'],   { 'mul': 'File talk:$1',      'fr': 'Discussion fichier:$1'     },
    9, ['dmw'],       { 'mul': 'MediaWiki talk:$1', 'fr': 'Discussion MediaWiki:$1'   },
-  11, ['dm'],        { 'mul': 'Template talk:$1',  'fr': 'Discussion modÃ¨le:$1'      },
+  11, ['dm'],        { 'mul': 'Template talk:$1',  'fr': 'Discussion modèle:$1'      },
   13, ['da'],        { 'mul': 'Help talk:$1',      'fr': 'Discussion aide:$1'        },
-  15, ['dc','dcat'], { 'mul': 'Category talk:$1',  'fr': 'Discussion catÃ©gorie:$1'   },
+  15, ['dc','dcat'], { 'mul': 'Category talk:$1',  'fr': 'Discussion catégorie:$1'   },
  
  NaN, ['p'],         {                             'fr': 'Portail:$1',               'en': 'Portal:$1'      },
  NaN, ['pj'],        {                             'fr': 'Projet:$1'                                        },
- NaN, ['r'],         {                             'fr': 'RÃ©fÃ©rence:$1'                                     },
+ NaN, ['r'],         {                             'fr': 'Référence:$1'                                     },
  NaN, ['dp'],        {                             'fr': 'Discussion Portail:$1',    'en': 'Portal talk:$1' },
  NaN, ['dpj'],       {                             'fr': 'Discussion Projet:$1'                             },
- NaN, ['dr'],        {                             'fr': 'Discussion RÃ©fÃ©rence:$1'                          },
+ NaN, ['dr'],        {                             'fr': 'Discussion Référence:$1'                          },
 ];
 
 var adSearchLocalNamespaces = {
@@ -83,10 +83,10 @@ var adSearchDefaultShortcuts = [
  /(.*)\/c$/i,        { 'mul': 'Special:Contributions/$1'       },
  /(.*)\/u$/i,        { 'mul': 'Special:Undelete/$1'            },
  /(.*)\/(css|js)$/i, { 'mul': 'User:$1/monobook.$2'            },
- /(.*)\/i[aÃ ]s$/i,   { 'en': 'Wikipedia:Images and media for deletion', 'fr': 'WikipÃ©dia:Images Ã  supprimer/$1' },
- /(.*)\/lann$/i,     {                                                  'fr': '$1/NeutralitÃ©'                   },
- /(.*)\/p[aÃ ]s$/i,   { 'en': 'Wikipedia:Articles for deletion/$1',      'fr': '$1/Suppression'                  },
- /(.*)\/p[aÃ ]v$/i,   {                                                  'fr': 'WikipÃ©dia:Pages Ã  vÃ©rifier/$1'   },
+ /(.*)\/i[aà]s$/i,   { 'en': 'Wikipedia:Images and media for deletion', 'fr': 'Wikipédia:Images à supprimer/$1' },
+ /(.*)\/lann$/i,     {                                                  'fr': '$1/Neutralité'                   },
+ /(.*)\/p[aà]s$/i,   { 'en': 'Wikipedia:Articles for deletion/$1',      'fr': '$1/Suppression'                  },
+ /(.*)\/p[aà]v$/i,   {                                                  'fr': 'Wikipédia:Pages à vérifier/$1'   },
  /(.*)\/pcp$/i,      { 'en': 'Wikipedia:Copyright problems',            'fr': '$1/Droit d\'auteur'              },
 ];
 
@@ -98,7 +98,7 @@ var adSearchServeurs = [
  /^m(eta)?$/i,        '',   'meta.wikimedia.org',      '/wiki/', 'metawiki',
  /^(mw|mediawiki)$/i, '',   'www.mediawiki.org',       '/wiki/', 'mediawikiwiki',
  /^s(pecies)?$/i,     '',   'species.wikipedia.org',   '/wiki/', 'specieswiki',
- /^(wz|wiktionaryz|ow|omegawiki)$/i,'','www.omegawiki.org', '/', '', // non-WikimÃ©dia
+ /^(wz|wiktionaryz|ow|omegawiki)$/i,'','www.omegawiki.org', '/', '', // non-Wikimédia
  /^(.*)\.b$/i,        '$1', 'wikibooks.org',           '/wiki/', '$1wikibooks',
  /^(.*)\.n$/i,        '$1', 'wikinews.org',            '/wiki/', '$1wikinews',
  /^(.*)\.q$/i,        '$1', 'wikiquote.org',           '/wiki/', '$1wikiquote', 
@@ -130,7 +130,7 @@ if( skin == 'vector' )
  adSearchDefaultCSS = 'div#simpleSearch input#searchInput { width:24em; } #adsearchbuttons { position:relative; top:-3.1em; border:solid 1px #AAAAAA; background-color:white; text-align:center; vertical-align:middle; } #adsearchbuttons input { vertical-align:middle; padding-top:0; padding-bottom:0; margin-top:0; margin-bottom:0; font-size:0.8em; }';
 }
 
-// DÃ‰PRÃ‰CIÃ‰ : remplacÃ© par le tableau adSearchLang
+// DÉPRÉCIÉ : remplacé par le tableau adSearchLang
 var adSearchLang0;
 var adSearchLang0project;
 var adSearchLang0name;
@@ -144,7 +144,7 @@ var adSearchLang2name;
 ///////////////// FIN DE LA ZONE PERSONNALISABLE /////////////////
 
 /*********************************/
-/* Recherche avancÃ©e multilingue */
+/* Recherche avancée multilingue */
 /* Auteur : Seb35                */
 /*********************************/
 function adSearchIsset(va, dv) { if(va != undefined) return va; else return dv; }
@@ -192,7 +192,7 @@ function adSearch()
  var a, lab, el, i;
  if(adSearchCSS) appendCSS( adSearchCSS );
  a = document.getElementById('searchform');
- if(adSearchLang.length == 0 || adSearchButtons.length == 0) { document.getElementById('searchInput').value = 'erreur de config:aucune langue ou aucun bouton dÃ©finis'; return false; }
+ if(adSearchLang.length == 0 || adSearchButtons.length == 0) { document.getElementById('searchInput').value = 'erreur de config:aucune langue ou aucun bouton définis'; return false; }
  
  // Zone de texte
  addHandler( document.getElementById('searchInput'), 'focus', function(event){clearTimeout(adSearchDelete);} );
@@ -203,7 +203,7 @@ function adSearch()
   addHandler( document.getElementById('searchInput'), 'keyup', adSearchReplaceUnder );
  }
  
- // Insertion dans la boÃ®te de recherche
+ // Insertion dans la boîte de recherche
  if( skin != 'vector' )
  {
   document.getElementById('searchform').removeAttribute('action');
@@ -255,7 +255,7 @@ function adSearch()
   }
  }
  
- // Retour Ã  la ligne
+ // Retour à la ligne
  if(adSearchPanelView[1])
  {
   el = document.createElement('br');
@@ -263,7 +263,7 @@ function adSearch()
   a.appendChild(el);
  }
  
- // Langues supplÃ©mentaires
+ // Langues supplémentaires
  if(adSearchPanelView[2])
  {
   el = document.createElement('input');
@@ -284,7 +284,7 @@ function adSearch()
   addHandler( document.getElementById('adotherlang'), 'keypress', adSearchCheck );
  }
  
- // Case Ã  cocher pour ouvrir dans la mÃªme fenÃªtre
+ // Case à cocher pour ouvrir dans la même fenêtre
  if(adSearchPanelView[3])
  {
   el = document.createElement('input');
@@ -295,7 +295,7 @@ function adSearch()
   addHandler( document.getElementById('adsametab'), 'click', function(event){if(document.getElementById('adsametab').checked) document.getElementById('adshowtab').style.visibility = 'hidden'; else document.getElementById('adshowtab').style.visibility = 'visible';} );
  }
  
- // Case Ã  cocher pour ouvrir en arriÃ¨re-plan
+ // Case à cocher pour ouvrir en arrière-plan
  if(adSearchPanelView[4])
  {
   el = document.createElement('input');
@@ -306,7 +306,7 @@ function adSearch()
   a.appendChild(el);
  }
  
- // Retour Ã  la ligne
+ // Retour à la ligne
  if(adSearchPanelView[5])
  {
   el = document.createElement('br');
@@ -407,11 +407,11 @@ function adSearchExpand(mot, langue, projet, db)
 {
  var i, tmp;
  
- // PremiÃ¨re Ã©tape : remplacer les tirets bas s'il y en a
+ // Première étape : remplacer les tirets bas s'il y en a
  mot = mot.replace(/__/, adSearchTheTitle(false));
  mot = mot.replace(/_/, adSearchTheTitle(true));
  
- // DeuxiÃ¨me Ã©tape : remplacer l'espace de nom
+ // Deuxième étape : remplacer l'espace de nom
  for( i=0; i<adSearchNamespaces.length/3; i++ ) {
   tmp = new RegExp('^(?:'+adSearchNamespaces[3*i+1].join('|')+'):(.*)', 'i');
   if( tmp.test(mot) ) {
@@ -430,7 +430,7 @@ function adSearchExpand(mot, langue, projet, db)
    break;
  }}
  
- // TroisiÃ¨me Ã©tape : remplacer les postfixes
+ // Troisième étape : remplacer les postfixes
  for(i = 0; i<adSearchShortcuts.length/2; i++) {
   if(adSearchShortcuts[2*i].test(mot)) {
    if(adSearchShortcuts[2*i+1][langue] != undefined) mot = mot.replace(adSearchShortcuts[2*i], adSearchShortcuts[2*i+1][langue]);
@@ -455,8 +455,8 @@ function os_eventKeyup(e){
 		os_processKey(r,os_cur_keypressed,targ);
 	}
 	var query = targ.value;
-	adSearch_os_query_simple = query; // ajoutÃ©
-	query = adSearchExpand(query, wgContentLanguage, '', wgDBname); // ajoutÃ©
+	adSearch_os_query_simple = query; // ajouté
+	query = adSearchExpand(query, wgContentLanguage, '', wgDBname); // ajouté
 	os_fetchResults(r,query,os_search_timeout);
 }
 
@@ -466,7 +466,7 @@ function os_updateIfRelevant(r, query, text, cacheKey){
 		os_updateResults(r, query, text, cacheKey);
 	}
 	r.query = query;
-	r.original = adSearch_os_query_simple; // ajoutÃ©
+	r.original = adSearch_os_query_simple; // ajouté
 }
 }
 
@@ -548,10 +548,10 @@ function adSearchGo(event)
  if(urllanguage) urlprefix = urllanguage + '.' + urlserver;
  if(!urlnom && !urlmotor) urlmotor = 'http://' + urlprefix;
  
- // PrÃ©paration du moteur
+ // Préparation du moteur
  if(!urlmotor) urlmotor = adSearchAdresses[2*motor+1].replace(/\*prefix\*/gi, urlprefix).replace(/\*language\*/gi, urllanguage).replace(/\*server\*/gi, urlserver).replace(/\*script\*/gi, scripte);
  
- //RequÃªte
+ //Requête
  var mots = urlnom.split('|');
  for(u = 0; u < mots.length; u++)
  {
@@ -559,7 +559,7 @@ function adSearchGo(event)
   adSearchStoreHistory(mots[u]);
   mots[u] = adSearchExpand( mots[u], urllanguage, urlserver, dbname );
   
-  //PrÃ©paration de l'URL
+  //Préparation de l'URL
   sortie = urlmotor.replace(/\$1/gi, mots[u]);
   
   //Sortie

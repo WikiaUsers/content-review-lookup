@@ -1,4 +1,4 @@
-/* Bouton catÃ©gories */ 
+/* Bouton catégories */ 
  
 button#CategorySelectAdd {
 display:inline-block !important;

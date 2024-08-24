@@ -1,4 +1,4 @@
-var WikiaNotificationMessage = "Rejoignez la force spÃ©ciale du wiki Boom Beach ! Elle est ouverte pour tous les niveaux 35 et plus dÃ¨s 200 mÃ©dailles. Nom : Boom Beach Wiki Identifiant : #VQ0RLJJ<br>Pour ceux qui n'auraient le niveau requis, il y a la team Ã©cole qui vous accompagnent. Nom : BB Wiki Ecole Identifiant : #2PYUUPUJ";
+var WikiaNotificationMessage = "Rejoignez la force spéciale du wiki Boom Beach ! Elle est ouverte pour tous les niveaux 35 et plus dès 200 médailles. Nom : Boom Beach Wiki Identifiant : #VQ0RLJJ<br>Pour ceux qui n'auraient le niveau requis, il y a la team école qui vous accompagnent. Nom : BB Wiki Ecole Identifiant : #2PYUUPUJ";
 importScriptPage('WikiaNotification/code.js', 'dev');
 // By English Boom Beach Wiki
 $(function() {
@@ -31,7 +31,7 @@ window.UserTagsJS = {
 	tags: {
 		rollback: { u:'Patrouilleur' },
 		bureaucrat: { u:'Bureaucrate' },
-		montheditor: { u:'Ã‰diteur du mois', f:'Ã‰ditrice du mois' },
+		montheditor: { u:'Éditeur du mois', f:'Éditrice du mois' },
                 sysop: { u:'Admin', f:'Administratrice', m:'Administrateur' },
                 'Protecteur du wiki': { u:'Protecteur du wiki' },
                 'Administrateur inactif': { u:'Administrateur inactif' },
@@ -40,16 +40,16 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = {
-	days: 5, // est prÃ©sent depuis moins de 5 jours
-	edits: 15, // Ã  fait moins de 15 Ã©dits
-	namespace: 0 // Les Ã©dits doivent Ãªtre faits sur des articles
+	days: 5, // est présent depuis moins de 5 jours
+	edits: 15, // à fait moins de 15 édits
+	namespace: 0 // Les édits doivent être faits sur des articles
 };
 UserTagsJS.modules.inactive = 60; // Inactif au bout de 60 jours sans modifications 
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global', 'founder'];
 // Ajoute le groupe bureaucrat aux bureaucrates
 UserTagsJS.modules.metafilter = {
 	rollback: ['sysop'], // retire le groupe rollback aux admins
-	chatmoderator: ['sysop'], // retire le groupe modÃ©rateur du tchat aux admins
+	chatmoderator: ['sysop'], // retire le groupe modérateur du tchat aux admins
 	sysop: ['bureaucrat'], // retire le groupe admins aux bureaucrates
 	bureaucrat: ['founder'] // retire le groupe bureaucrates au fondateur
 };

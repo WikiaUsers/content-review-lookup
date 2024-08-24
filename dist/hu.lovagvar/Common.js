@@ -1,4 +1,4 @@
-/* Az ide elhelyezett JavaScript kÃ³d minden felhasznÃ¡lÃ³ szÃ¡mÃ¡ra lefut az oldalak betÃ¶ltÃ©sekor. */
+/* Az ide elhelyezett JavaScript kód minden felhasználó számára lefut az oldalak betöltésekor. */
 importArticles({
     type: "script",
     articles: [

@@ -1,4 +1,4 @@
-/*NavFrame (usado para colapsar cajas de navegaciÃ³n, importado de Comunidad Central, que a su vez lo importÃ³ de Wikipedia)*/
+/*NavFrame (usado para colapsar cajas de navegación, importado de Comunidad Central, que a su vez lo importó de Wikipedia)*/
 // BEGIN Dynamic Navigation Bars (experimantal)
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
  

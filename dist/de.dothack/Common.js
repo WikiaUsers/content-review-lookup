@@ -1,7 +1,7 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 //AjaxRC Settings
-var ajaxPages = ["Spezial:Letzte_Ã„nderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:BeitrÃ¤ge","Spezial:WikiActivity"];
+var ajaxPages = ["Spezial:Letzte_Änderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:Beiträge","Spezial:WikiActivity"];
 var AjaxRCRefreshText = 'Auto-Refresh';
 var AjaxRCRefreshHoverText = 'Automatisch Seite aktualisieren';
 var ajaxRefresh = 300000;

@@ -3,12 +3,12 @@
 ===== Battle Deck DPL Tableaux Filtres ====
     Par King Dragonhoff
     
-	Ce script fait marcher les filtres placÃ©s
-	sur la page Decks par le ModÃ¨le:BDFilters.
+	Ce script fait marcher les filtres placés
+	sur la page Decks par le Modèle:BDFilters.
     
-	La seule dÃ©pendence de ce script est le modÃ¨le
-	Carte et les modÃ¨les dont il dÃ©pend. Ce script
-	n'a pas besoin d'Ãªtre modifiÃ© aprÃ¨s une MÃ j du jeu.
+	La seule dépendence de ce script est le modèle
+	Carte et les modèles dont il dépend. Ce script
+	n'a pas besoin d'être modifié après une Màj du jeu.
 
 */
 
@@ -48,7 +48,7 @@ $(document).ready(function() {
             }
         });
     });
-    $("#BattleDeckNav #bd-filters-commune, #BattleDeckNav #bd-filters-rare, #BattleDeckNav #bd-filters-Ã©pique, #BattleDeckNav #bd-filters-lÃ©gendaire").change(function() {
+    $("#BattleDeckNav #bd-filters-commune, #BattleDeckNav #bd-filters-rare, #BattleDeckNav #bd-filters-épique, #BattleDeckNav #bd-filters-légendaire").change(function() {
         var checkboxRarity = this.value;
         var rarityChecked = $(this).prop("checked");
         $("#BattleDeckNav #bd-filters-cards .cr-display-card").each(function() {
@@ -99,8 +99,8 @@ $(document).ready(function() {
             //highestArenaFilter = $("#BattleDeckNav #bd-filters-arena").val(),
             //includeCommonFilter = $("#BattleDeckNav #bd-filters-commune").val(),
             //includeRareFilter = $("#BattleDeckNav #bd-filters-rare").val(),
-            //includeEpicFilter = $("#BattleDeckNav #bd-filters-Ã©pique").val(),
-            //includeLegendaryFilter = $("#BattleDeckNav #bd-filters-lÃ©gendaire").val(),
+            //includeEpicFilter = $("#BattleDeckNav #bd-filters-épique").val(),
+            //includeLegendaryFilter = $("#BattleDeckNav #bd-filters-légendaire").val(),
             minXPFilter = Number($("#BattleDeckNav #bd-filters-xp-min").val()),
             maxXPFilter = Number($("#BattleDeckNav #bd-filters-xp-max").val()),
             authorFilter = $("#BattleDeckNav #bd-filters-author").val().toLowerCase();
@@ -155,8 +155,8 @@ $(document).ready(function() {
         // Rarity checkboxes
         $("#BattleDeckNav #bd-filters-commune").prop("checked", true).change();
         $("#BattleDeckNav #bd-filters-rare").prop("checked", true).change();
-        $("#BattleDeckNav #bd-filters-Ã©pique").prop("checked", true).change();
-        $("#BattleDeckNav #bd-filters-lÃ©gendaire").prop("checked", true).change();
+        $("#BattleDeckNav #bd-filters-épique").prop("checked", true).change();
+        $("#BattleDeckNav #bd-filters-légendaire").prop("checked", true).change();
         // Card buttons
         $("#BattleDeckNav #bd-filters-cards .cr-display-card").removeClass("bd-card-filtered");
         // Show all rows

@@ -42,7 +42,7 @@ mw.loader.using('mediawiki.api').then(function() {
 		$("#gridOutput").html(gridOutput);
 	}
 	function getData(uccontinue) {
-		if ($("#gridOutput").length == 0) $(".curseprofile .activity").after('<div class="contribution-grid section"><h3>Grade de contribuiÃ§Ã£o</h3><div id="gridOutput" style="width:100%; height:120px;">Carregando...</div></div>');
+		if ($("#gridOutput").length == 0) $(".curseprofile .activity").after('<div class="contribution-grid section"><h3>Grade de contribuição</h3><div id="gridOutput" style="width:100%; height:120px;">Carregando...</div></div>');
 		params = {action:"query",list:"usercontribs",ucuser:user,ucend:startDate,uclimit:"max"};
 		if (uccontinue !== "") params.uccontinue = uccontinue;
 		a.get(params).done(function (data) {

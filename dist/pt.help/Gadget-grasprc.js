@@ -63,23 +63,23 @@ window.getNextWiki = function() {
 			if (change.type == "edit" || change.type == "new") {
 				diff = change.newlen - change.oldlen;
 				diffcolor = (Math.sign(diff)==-1)?'#8b0000;':(Math.sign(diff)==1)?'#006400':'#a2a9b1';
-				h+='<li>('+(change.type=="new"?'diff':'<a href="'+d+'/index.php?title='+t+'&diff='+change.revid+'&oldid='+change.old_revid+'" target="_blank">diff</a>')+' | <a href="'+d+'/index.php?title='+t+'&action=history" target="_blank">hist</a>) &nbsp;'+(change.type=="new"?'<b>N</b>':'')+(change.unpatrolled==undefined?'':'<span style="font-weight:bold; color:#f00;">!</span>')+' <a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a> &nbsp;'+grcDTF.format(da)+'&nbsp; <span style="color:'+diffcolor+';">('+diff+')</span> &nbsp;<a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;'+(comment==""?'':'('+comment+')')+(tags==""?'':' (Etiquetas: '+tags+')')+'</li>';
+				h+='<li>('+(change.type=="new"?'diff':'<a href="'+d+'/index.php?title='+t+'&diff='+change.revid+'&oldid='+change.old_revid+'" target="_blank">diff</a>')+' | <a href="'+d+'/index.php?title='+t+'&action=history" target="_blank">hist</a>) &nbsp;'+(change.type=="new"?'<b>N</b>':'')+(change.unpatrolled==undefined?'':'<span style="font-weight:bold; color:#f00;">!</span>')+' <a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a> &nbsp;'+grcDTF.format(da)+'&nbsp; <span style="color:'+diffcolor+';">('+diff+')</span> &nbsp;<a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;'+(comment==""?'':'('+comment+')')+(tags==""?'':' (Etiquetas: '+tags+')')+'</li>';
 			}
 			else if (change.type == "log") {
 				if (change.logaction=="delete") {
-					h+='<li>(<a href="'+d+'/Special:Log/delete" target="_blank">Registro de exclus√£o</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;p√°gina deletada <a class="new" href="'+d+'/'+t+'" target="_blank">'+change.title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
+					h+='<li>(<a href="'+d+'/Special:Log/delete" target="_blank">Registro de exclus„o</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;p·gina deletada <a class="new" href="'+d+'/'+t+'" target="_blank">'+change.title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
 				}
 				else if (change.logaction=="block") {
-					h+='<li>(<a href="'+d+'/Special:Log/block" target="_blank">Block log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;blocked <a href="'+d+'/'+t+'" target="_blank">'+change.title.replace("User:","")+'</a> (<a href="'+d+'/'+t.replace("User","User_talk")+'" target="_blank">discuss√£o</a>) with an expiration time of '+change.logparams.duration+'&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
+					h+='<li>(<a href="'+d+'/Special:Log/block" target="_blank">Block log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;blocked <a href="'+d+'/'+t+'" target="_blank">'+change.title.replace("User:","")+'</a> (<a href="'+d+'/'+t.replace("User","User_talk")+'" target="_blank">discuss„o</a>) with an expiration time of '+change.logparams.duration+'&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
 				}
 				else if (change.logaction=="upload" || change.logaction == "overwrite") {
-					h+='<li>(<a href="'+d+'/Special:Log/upload" target="_blank">Upload log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;uploaded '+(change.logaction=="overwrite"?'uma nova vers√£o de ':'')+'<a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
+					h+='<li>(<a href="'+d+'/Special:Log/upload" target="_blank">Upload log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;uploaded '+(change.logaction=="overwrite"?'uma nova vers„o de ':'')+'<a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
 				}
 				else if (change.logaction=="move") {
-					h+='<li>(<a href="'+d+'/Special:Log/move" target="_blank">Move log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;moved page <a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a> to <a href="'+d+'/'+change.logparams.target_title.replace(/ /g,"_")+'" target="_blank">'+change.logparams.target_title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
+					h+='<li>(<a href="'+d+'/Special:Log/move" target="_blank">Move log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) &nbsp;moved page <a href="'+d+'/'+t+'" target="_blank">'+change.title+'</a> to <a href="'+d+'/'+change.logparams.target_title.replace(/ /g,"_")+'" target="_blank">'+change.logparams.target_title+'</a>&nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
 				}
 				else if (change.logaction=="profile-edited") {
-					h+='<li>(<a href="'+d+'/Special:Log/curseprofile" target="_blank">Profile log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss√£o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) edited the '+change.logparams[(change.logparams[0]==undefined)?"4:section":0].replace("profile-","")+' on '+change.title.replace("UserProfile:","")+'\'s profile. &nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
+					h+='<li>(<a href="'+d+'/Special:Log/curseprofile" target="_blank">Profile log</a>)&nbsp;'+grcDTF.format(da)+' &nbsp; <a href="'+d+'/User:'+u+'" target="_blank">'+change.user+'</a> (<a href="'+d+'/User_talk:'+u+'" target="_blank">discuss„o</a> | <a href="'+d+'/Special:Contributions/'+u+'" target="_blank">contribs</a>) edited the '+change.logparams[(change.logparams[0]==undefined)?"4:section":0].replace("profile-","")+' on '+change.title.replace("UserProfile:","")+'\'s profile. &nbsp;'+(comment==""?'':'('+comment+')')+'</li>';
 				}
 				else ns++;
 
@@ -255,7 +255,7 @@ mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 	$("body,div#content.mw-body").unbind("dblclick");
 	if (localStorage.getItem("subscribedWikis")!= null) subscribedWikis = JSON.parse(localStorage["subscribedWikis"]);
 	if (localStorage.getItem("maxChanges")!= null) maxChanges = localStorage["maxChanges"];
-	$("#grc-options").append('<label for="maxChanges">N√∫mero m√°ximo de altera√ß√µes por wiki: </label> <input type="text" value="'+maxChanges+'" id="maxChanges" size="1" maxlength="3" />');
+	$("#grc-options").append('<label for="maxChanges">N˙mero m·ximo de alteraÁıes por wiki: </label> <input type="text" value="'+maxChanges+'" id="maxChanges" size="1" maxlength="3" />');
 	$("#maxChanges").change(function() {
 		maxChanges = this.value;	
 		localStorage.setItem("maxChanges",maxChanges);
@@ -276,7 +276,7 @@ mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 		$("#since").val(grcDTF.format(cleanDate(new Date()-3600000,0)));
 		reloadWikiList();
 	});
-	$("#grc-options").append('<br /><label for="until">At√©: </label> <input type="text" id="until" style="width:15em;" /> <input type="button" id="untilReset" value="Reiniciar" />');
+	$("#grc-options").append('<br /><label for="until">AtÈ: </label> <input type="text" id="until" style="width:15em;" /> <input type="button" id="untilReset" value="Reiniciar" />');
 	$("#untilReset").click(function() {
 		$("#until").val(grcDTF.format(cleanDate(new Date(),0)));
 		reloadWikiList();
@@ -286,7 +286,7 @@ mw.loader.using(['mediawiki.api','mediawiki.ForeignApi']).then(function() {
 	for (i=0;i<langs.length;i++) $("#grc-langs").append('<label for="lang-'+langs[i]+'">'+langs[i]+'</label>&nbsp;<input type="checkbox" id="lang-'+langs[i]+'" checked="true" onchange="toggleLangs();" /><br/>');
 	$("#grc-options").append('<input type="button" value="Todos" onclick="$(\'#grc-langs input\').prop(\'checked\',true); toggleLangs();" />&nbsp;');
 	$("#grc-options").append('<input type="button" value="Nenhum" onclick="$(\'#grc-langs input\').prop(\'checked\',false); toggleLangs();" />');
-	$("#grc-options").append('<br />Mostrar wikis com (na semana passada):<br /><input type="radio" name="grc-filter" id="grc-filter-all" value="all" checked="" /><label for="grc-filter-all">Todos</label> <input type="radio" name="grc-filter" id="grc-filter-lv" value="low_volume" /><label for="grc-filter-lv">Volume baixo</label> <input type="radio" name="grc-filter" id="grc-filter-ne" value="no_edits" /><label for="grc-filter-ne">Sem edi√ß√µes</label>');
+	$("#grc-options").append('<br />Mostrar wikis com (na semana passada):<br /><input type="radio" name="grc-filter" id="grc-filter-all" value="all" checked="" /><label for="grc-filter-all">Todos</label> <input type="radio" name="grc-filter" id="grc-filter-lv" value="low_volume" /><label for="grc-filter-lv">Volume baixo</label> <input type="radio" name="grc-filter" id="grc-filter-ne" value="no_edits" /><label for="grc-filter-ne">Sem ediÁıes</label>');
 	$("input[name='grc-filter']").change(function() {
 		$v = $("input[name='grc-filter']:checked").val();
 		if ($v == "all") {

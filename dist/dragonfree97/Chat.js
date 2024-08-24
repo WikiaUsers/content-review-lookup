@@ -1,1 +1,0 @@
-console.log('[CHAT.JS] Chat.js loaded.');

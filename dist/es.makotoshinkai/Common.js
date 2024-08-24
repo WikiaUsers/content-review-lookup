@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 // JS slider from dragonage.wikia.com. Removed console.logs because they shouldn't be in production
 mw.loader.using(['jquery.ui.tabs'], function() {
     $("[class^=portal_vtab]").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");

@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
 importArticles({
     type: 'script',
     articles: [
@@ -10,7 +10,7 @@ window.UserTagsJS = {
     modules: {},
     tags: {
         sysop: { u: 'Administrador' },
-        bureaucrat: { u: 'Bur√≥crata'},
+        bureaucrat: { u: 'BurÛcrata'},
      	threadmoderator: { u: 'Mod. de discusiones' },
     	'content-moderator': { u:'Mod. de contenido'},
     	rollback : { u:'Reversor'},

@@ -1,4 +1,4 @@
-// Importes de p谩ginas MediaWiki y de la Dev Wiki.
+// Importes de p醙inas MediaWiki y de la Dev Wiki.
 
 importArticles({
     type: 'script',
@@ -10,7 +10,7 @@ importArticles({
     ]
 });
 
-//  Ultima edici贸n
+//  Ultima edici髇
  
 importArticles({
     type: 'script',
@@ -22,7 +22,7 @@ importArticles({
     ]
 });
  
-// Ultima edici贸n - CONFIGURACI脫N.
+// Ultima edici髇 - CONFIGURACI覰.
  
 window.lastEdited = {
     avatar: false,
@@ -38,7 +38,7 @@ window.lastEdited = {
     pages: []
 };
 
-// Revelar ID de usuarios an贸nimos.
+// Revelar ID de usuarios an髇imos.
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat']
 };
@@ -46,8 +46,8 @@ window.RevealAnonIP = {
 /*** Auto refrescado de la wiki actividad{{w:c:five-nights-at-treasure-island}} ***/
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Actualizaci贸n Autom谩tica';
-AjaxRCRefreshHoverText = 'Actualiza autom谩ticamente la p谩gina';
+AjaxRCRefreshText = 'Actualizaci髇 Autom醫ica';
+AjaxRCRefreshHoverText = 'Actualiza autom醫icamente la p醙ina';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity","Especial:Watchlist","Especial:Log","Especial:Contribuciones"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

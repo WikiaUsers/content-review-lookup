@@ -1,7 +1,7 @@
 /**
  * SpoilerAlert
  * documentation at: https://dev.fandom.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  */
 /* jshint curly:false */
 (function ($, mw) {

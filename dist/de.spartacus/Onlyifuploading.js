@@ -1,6 +1,6 @@
 /*-----------------------------------------------------------------------*/
-/*  LÃ¤dt die Dateiinfo-Vorlage direkt beim Hochladen in das              */
-/*  Beschreibungsfeld. Ist Ã¼ber MediaWiki:Common.js eingebunden          */
+/*  Lädt die Dateiinfo-Vorlage direkt beim Hochladen in das              */
+/*  Beschreibungsfeld. Ist über MediaWiki:Common.js eingebunden          */
 /*-----------------------------------------------------------------------*/
 
  function setSpecialUploadTemplate() {

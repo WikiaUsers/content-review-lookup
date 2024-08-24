@@ -99,7 +99,7 @@ window.MessageWallUserTags = {
     glowColor: 'skyblue',
     users: {
         'username': 'usergroup',
-        'ThePokÃ©monGamer': 'Founder',
+        'ThePokémonGamer': 'Founder',
         'NeoplanDan': 'Bureaucrat',
         'User3': 'Admin',
         'User4': 'Rollback',

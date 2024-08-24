@@ -93,8 +93,8 @@ $(createCollapseButtons);
 if ((wgAction == "edit" || wgAction == "submit") && mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/pokemon/images/4/42/Accent_Button.png",
-		"speedTip": "Insert PokÃ©mon",
-		"tagOpen": "PokÃ©mon",
+		"speedTip": "Insert Pokémon",
+		"tagOpen": "Pokémon",
 		"tagClose": "",
 		"sampleText": ""
     };

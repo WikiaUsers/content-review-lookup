@@ -75,4 +75,4 @@ $( '.fade-trigger' ).click( function( e ) {
 } );
 
 mw.loader.load( 'https://brickinsights.com/widgets/js' );
-/* Javascript inkluderet her vil vÃ¦re aktivt for alle brugere. */
+/* Javascript inkluderet her vil være aktivt for alle brugere. */

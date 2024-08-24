@@ -1,5 +1,5 @@
-/* Anpassungen fÃ¼r AjaxRC */
-window.ajaxPages = ['Spezial:Letzte_Ã„nderungen','Spezial:WikiActivity'];
+/* Anpassungen für AjaxRC */
+window.ajaxPages = ['Spezial:Letzte_Änderungen','Spezial:WikiActivity'];
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';
 
@@ -13,7 +13,7 @@ window.UserTagsJS = {
             link:'My Hero Academia Wiki:Teams'
         },
         'ligaderboesen': { 
-            u: 'Liga der BÃ¶sen',
+            u: 'Liga der Bösen',
             order: 1e101,
             link:'My Hero Academia Wiki:Teams'
         },

@@ -1,7 +1,7 @@
 /* Il codice JavaScript inserito qui viene caricato da ciascuna pagina, per tutti gli utenti. */
 window.SpoilerAlertJS = {
     question: 'Questa parte contiene spoiler, vuoi continuare a leggere?',
-    yes: 'SÃ¬',
+    yes: 'Sì',
     no: 'No',
     fadeDelay: 500
 };

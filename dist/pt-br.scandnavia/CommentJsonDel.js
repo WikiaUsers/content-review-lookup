@@ -18,14 +18,14 @@
  *  - Brazillian Portuguese - Soul Wade
  */
 { /* Do not edit this line */
-    /* PortuguÃªs do Brasil */
+    /* Português do Brasil */
     "pt-br": {
-        "linkText"      : "Deletar ComentÃ¡rio",
-        "modalTitle"    : "Deletar comentÃ¡rio",
-        "selectReason"  : "Adicione abaixo um motivo para a exclusÃ£o do comentÃ¡rio.",
+        "linkText"      : "Deletar Comentário",
+        "modalTitle"    : "Deletar comentário",
+        "selectReason"  : "Adicione abaixo um motivo para a exclusão do comentário.",
         "deleteText"    : "Deletar",
         "close"         : "Fechar",
-        "fail"          : "Falha: o comentÃ¡rio nÃ£o pÃ´de ser deletado"
+        "fail"          : "Falha: o comentário não pôde ser deletado"
     }
     /* Add translations below this line*/
 } /* Do not edit this line and below </syntaxhighlight> */

@@ -2,7 +2,7 @@ importScriptPage('ChatOptions/code.js', 'dev');
 importScriptPage('ChatTags/code.js', 'dev');
 var chatags = { images: true, videos: true };
  
-/***ColecciÃ³n de botones de usuarios***/
+/***Colección de botones de usuarios***/
 importArticles({
     type: 'script',
     articles: [
@@ -22,7 +22,7 @@ importArticles({
 	]
 });
  
-// ActivaciÃ³n de los Tags //
+// Activación de los Tags //
 var chatags = { 
     images: true, 
     videos: true 
@@ -44,9 +44,9 @@ window.ChatStatus = {
 		anime: "Viendo anime",
 		looking: "Viendo nopor (l)",
 		boredom: "Bailando con Sanadios",
-		kawaii: "HaciÃ©ndose kawaii",
+		kawaii: "Haciéndose kawaii",
 		tacos: "Comiendo takos",
-		moerte: "muriendose de sueÃ±o",
+		moerte: "muriendose de sueño",
 		tutuz: "En la Yutuz",
 	},
 	debug: false

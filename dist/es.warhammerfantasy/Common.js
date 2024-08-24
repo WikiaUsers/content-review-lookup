@@ -29,7 +29,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÃ­as ' + left
+  if(diff > 0) left = diff + ' días ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -62,7 +62,7 @@ function checktimers() {
 }
 $(checktimers);
 
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
 /* Show/Hide Config */
 var ShowHideConfig = { 
@@ -88,8 +88,8 @@ $(UserNameReplace);
   
 importScriptPage('Countdown/code.js', 'dev');
 
-// BOTONES DE EDICIÃ“N PERSONALIZADOS
-// Esto esta basado en el cÃ³digo original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICIÓN PERSONALIZADOS
+// Esto esta basado en el código original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -115,8 +115,8 @@ importScriptPage('Countdown/code.js', 'dev');
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
-     "tagOpen": "{{En construcciÃ³n|",
+     "speedTip": "Advertir de que este articulo esta en contrucción",
+     "tagOpen": "{{En construcción|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -143,10 +143,10 @@ importScriptPage('Countdown/code.js', 'dev');
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto PequeÃ±o",
+     "speedTip": "Texto Pequeño",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto PequeÃ±o"};
+     "sampleText": "Texto Pequeño"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -196,7 +196,7 @@ importScriptPage('Countdown/code.js', 'dev');
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde estÃ© "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
  
 Traida inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder ,
@@ -212,7 +212,7 @@ function UserNameReplace() {
   };
 };
 
-// Para cambiar la descripciÃ³n del Chat
+// Para cambiar la descripción del Chat
 importScript('MediaWiki:Chat-headline');
  
 function changeChatDesc() {
@@ -262,9 +262,9 @@ $(document).ready(function() {
 	portraitHoverSetup();
 });
  
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 
-// Para notificaciÃ³n de alianza con otras wikias
-var WikiaNotificationMessage = "Â¡Nueva app de Fantasy para <a href='https://play.google.com/store/apps/details?id=com.wikia.singlewikia.warhammerfantasy&hl=es'>Android</a> y <a href='https://itunes.apple.com/es/app/fandom-community-for-warhammer/id1167494527?mt=8'>IPhone</a>! Â¡Con todas las reglas de <a href='http://whreforged.blogspot.com.es/p/manuales-de-warhammer-reforged.html'>Reforged</a>!";
+// Para notificación de alianza con otras wikias
+var WikiaNotificationMessage = "¡Nueva app de Fantasy para <a href='https://play.google.com/store/apps/details?id=com.wikia.singlewikia.warhammerfantasy&hl=es'>Android</a> y <a href='https://itunes.apple.com/es/app/fandom-community-for-warhammer/id1167494527?mt=8'>IPhone</a>! ¡Con todas las reglas de <a href='http://whreforged.blogspot.com.es/p/manuales-de-warhammer-reforged.html'>Reforged</a>!";
 var WikiaNotificationexpiry = 10;
 importScriptPage('WikiaNotification/code.js', 'dev');

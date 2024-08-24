@@ -1,5 +1,5 @@
 /********   tratto parzialmente da https://onepiece.fandom.com/it ********/
-UserTagsJS.modules.inactive = 28; // sei inattivo se non fai alcunchÃ© per 28 giorni
+UserTagsJS.modules.inactive = 28; // sei inattivo se non fai alcunché per 28 giorni
 UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.newuser = {
 	days: 14, // sei nuovo fino alla seconda settimana

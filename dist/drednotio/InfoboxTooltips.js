@@ -188,7 +188,7 @@ $(function() {
                                 $(this).remove();
                         });
                         infobox.find(".pi-title").text(
-                            infobox.find(".pi-title").text() + " Â» " + escapedAnchor
+                            infobox.find(".pi-title").text() + " » " + escapedAnchor
                         );
                     }
 

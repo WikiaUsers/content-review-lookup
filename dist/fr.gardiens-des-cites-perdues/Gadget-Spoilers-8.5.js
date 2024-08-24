@@ -1,12 +1,12 @@
 function hideSpoilers() {
-  // RÃ©cupÃ©ration de toutes les sections de niveau 2, 3 et 4 (== Titre ==, === Titre ===, ==== Titre ====)
+  // Récupération de toutes les sections de niveau 2, 3 et 4 (== Titre ==, === Titre ===, ==== Titre ====)
   const sections = document.querySelectorAll('h2, h3, h4');
 
   // Boucle sur chaque section
   for (let i = 0; i < sections.length; i++) {
-    const sectionTitle = sections[i].textContent.trim(); // RÃ©cupÃ©ration du texte du titre
+    const sectionTitle = sections[i].textContent.trim(); // Récupération du texte du titre
     
-    // VÃ©rification si le titre de la section contient "[GDCP8.5]"
+    // Vérification si le titre de la section contient "[GDCP8.5]"
     if (sectionTitle.includes('[GDCP8.5]')) {
       let sectionContent = sections[i].nextElementSibling; 
       while (sectionContent && !sectionContent.matches('h2, h3, h4')) {

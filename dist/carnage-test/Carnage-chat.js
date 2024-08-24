@@ -116,7 +116,7 @@ chat_nav.prototype.emoticons = function emoticons(){
             $('<a>')
                 .addClass('panel-close')
                 .attr('href', 'javascript:void(0);')
-                .text('Ã—')
+                .text('×')
                 .on('click', function close(ev){
                     $('.EmoticonPanel').hide();
                 })
@@ -228,7 +228,7 @@ chat_nav.prototype.insertLink = function insertLink(name, config){
  
 //
 chat_nav.prototype.load = function load(){
-    var $html = $('<aside class="ChatNavigation chat-nav" id="ChatNavigation"><header class="wordmark-wrapper"><h1 class="wordmark"><img /></h1><a href="javascript:void(0);" class="chat-nav-close">Ã—</a></header><nav class="ChatMenu menu"><ul class="menu-list" /></nav></aside>').addClass('hidden'),
+    var $html = $('<aside class="ChatNavigation chat-nav" id="ChatNavigation"><header class="wordmark-wrapper"><h1 class="wordmark"><img /></h1><a href="javascript:void(0);" class="chat-nav-close">×</a></header><nav class="ChatMenu menu"><ul class="menu-list" /></nav></aside>').addClass('hidden'),
         $wordmark = $('.ChatHeader').find('.wordmark img'),
         _src = $wordmark.attr('src');
     $html.find('> .wordmark-wrapper .wordmark img').attr('src', _src);

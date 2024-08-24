@@ -1,17 +1,17 @@
-// ImportaÃ§Ãµes
+// Importações
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:UserTags/code.js', // Etiquetas de UsuÃ¡rios
-        'u:dev:WallGreetingButton/code.js', // SaudaÃ§Ãµes de Murais
-        'u:dev:ReferencePopups/code.js', // ReferÃªncias
-        'u:dev:LockForums/code.js', // FÃ³runs
+        'u:dev:UserTags/code.js', // Etiquetas de Usuários
+        'u:dev:WallGreetingButton/code.js', // Saudações de Murais
+        'u:dev:ReferencePopups/code.js', // Referências
+        'u:dev:LockForums/code.js', // Fóruns
         'u:dev:Countdown/code.js', // Contador
-        'u:dev:LastEdited/code.js', // EdiÃ§Ãµes
-        'u:dev:AjaxRC/code.js', // AtualizaÃ§Ã£o AutomÃ¡tica
+        'u:dev:LastEdited/code.js', // Edições
+        'u:dev:AjaxRC/code.js', // Atualização Automática
         'u:dev:ChatHacks.js', // ChatHack
-        // 'u:c:User:Joeytje50/ChatPMs.js', // Chat MÃºltiplo
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // OpÃ§Ãµes MÃºltiplas
+        // 'u:c:User:Joeytje50/ChatPMs.js', // Chat Múltiplo
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // Opções Múltiplas
         'u:dev:MessageBlocker/code.js', // Bloqueio de Mensagens
         'u:dev:MediaWiki:DiscordIntegrator/code.js' /
         'u:dev:ShowHide/code.js' // Mostrar e Ocultar
@@ -19,7 +19,7 @@ importArticles({
 });
 
  
-/* AtualizaÃ§Ã£o AutomÃ¡tica */
+/* Atualização Automática */
 window.ajaxPages = [
     "Especial:RecentChanges",
     "Especial:Watchlist",
@@ -27,5 +27,5 @@ window.ajaxPages = [
     "Especial:Contributions",
     "Especial:WikiActivity"
 ];
-window.AjaxRCRefreshText = 'AtualizaÃ§Ã£o automÃ¡tica';
-window.AjaxRCRefreshHoverText = 'Atualizar a pÃ¡gina automaticamente';
+window.AjaxRCRefreshText = 'Atualização automática';
+window.AjaxRCRefreshHoverText = 'Atualizar a página automaticamente';

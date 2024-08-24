@@ -3,10 +3,10 @@ window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","S
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
  
-//configuraÃ§Ãµes do relÃ³gio
-// dispÃµe um relÃ³gio de 24h seguido de dia, mÃªs (pt-br)
+//configurações do relógio
+// dispõe um relógio de 24h seguido de dia, mês (pt-br)
 // e ano com "(UTC)" no final
-window.DisplayClockJS = '%2H:%2M:%2S - %2d %{Janeiro;Fevereiro;MarÃ§o;Abril;Maio;Junho;Julho;Agosto;Setembro;Outubro;Novembro;Dezembro}m %Y (UTC)';
+window.DisplayClockJS = '%2H:%2M:%2S - %2d %{Janeiro;Fevereiro;Março;Abril;Maio;Junho;Julho;Agosto;Setembro;Outubro;Novembro;Dezembro}m %Y (UTC)';
 importArticles({
 	type: 'script',
 	articles: [
@@ -31,7 +31,7 @@ importArticles({
 /* mensagem de bloqueio automatica */
 var MessageBlock = {
   title : 'Bloqueado',
-  message : 'VocÃª foi suspenso de Bullwort Academy por $2 pelo(s) seguinte(s) motivo(s): "$1"',
+  message : 'Você foi suspenso de Bullwort Academy por $2 pelo(s) seguinte(s) motivo(s): "$1"',
   autocheck : true
 };
  

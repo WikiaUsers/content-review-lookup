@@ -1,4 +1,4 @@
-/* T√§m√§n sivun koodi liitet√§√§n jokaiseen sivulataukseen */
+/* T‰m‰n sivun koodi liitet‰‰n jokaiseen sivulataukseen */
 /* <pre> */
 
 if (wgAction == "edit" || wgAction == "submit") {
@@ -36,10 +36,10 @@ if (wgAction == "edit" || wgAction == "submit") {
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/5/58/Button_small.png",
-         "speedTip": "Pienenn√§",
+         "speedTip": "Pienenn‰",
          "tagOpen": '\n<small>\n',
          "tagClose": "\n</small>",
-         "sampleText": "Pienenn√§"};   
+         "sampleText": "Pienenn‰"};   
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png",

@@ -85,7 +85,7 @@
         );
       if (value && value.name) {
         $li.append(
-          $('<span class="name">').text(' (' + (value.quantity ? value.quantity + 'Ã— ' : '') + value.name + (value.class ? ' - ' + value.class : '') + ') ')
+          $('<span class="name">').text(' (' + (value.quantity ? value.quantity + '× ' : '') + value.name + (value.class ? ' - ' + value.class : '') + ') ')
         );
       }
       $li.append(

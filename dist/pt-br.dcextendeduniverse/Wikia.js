@@ -1,8 +1,8 @@
-/* PersonalizaÃ§Ã£o da Wikia usando o JavaScript */
+/* Personalização da Wikia usando o JavaScript */
 
-/** Auto-atualizaÃ§Ã£o **/
-var ajaxPages = ["Especial:MudanÃ§as_recentes", "Especial:Registro", "Especial:ContribuiÃ§Ãµes", "Especial:WikiActivity"];
-var AjaxRCRefreshText = 'Auto-atualizaÃ§Ã£o';
+/** Auto-atualização **/
+var ajaxPages = ["Especial:Mudanças_recentes", "Especial:Registro", "Especial:Contribuições", "Especial:WikiActivity"];
+var AjaxRCRefreshText = 'Auto-atualização';
 importScriptPage('AjaxRC/code.js', 'dev');
 
-/* Fim da personalizaÃ§Ã£o */
+/* Fim da personalização */

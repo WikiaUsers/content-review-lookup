@@ -1,6 +1,6 @@
 {{:MediaWiki:Common.js/Code.js}}
 /*<pre> MediaWiki:Wikia.js v1.9 */
-/*SkinNotification: Agrega una notificaciÃ³n para los que usen oasis. */
+/*SkinNotification: Agrega una notificación para los que usen oasis. */
 window.SkinNotification = {
 	article: 'WikiDex:Acerca del cambio de apariencia de WikiDex',
 	key: 'NfSkin',
@@ -55,8 +55,8 @@ function WikiDex_WikiaSkinLoad() {
 				$('a.wikia-button.upphotos').unbind('click',UploadPhotos.showDialog);
 			}
 		});
-		$(function() { // Reescribe el enlace de crear artÃ­culo para que apunte a la ayuda. This does not block core functionality
-			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_artÃ­culo'));
+		$(function() { // Reescribe el enlace de crear artículo para que apunte a la ayuda. This does not block core functionality
+			$('#WikiaPage').find('a.createpage').unbind('click').attr('href', window.wgArticlePath.replace('$1', 'Ayuda:Crear_un_artículo'));
 		});
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * @auteur : http://fr.harrypotter.wikia.com/wiki/Utilisateur:Hulothe
  * Janvier 2014
- * Tous droits rÃ©servÃ©s
+ * Tous droits réservés
  */
  
 var text;

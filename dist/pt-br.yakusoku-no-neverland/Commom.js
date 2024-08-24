@@ -1,8 +1,8 @@
-/* Configura√ß√£o de Tags de Usu√°rio */
+/* ConfiguraÁ„o de Tags de Usu·rio */
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-        /* Grupos de Usu√°rios */
+        /* Grupos de Usu·rios */
         founder: {u:'[[Arquivo:Rei.png]]'},
         inactive: {u: 'Enviado'},
 	}

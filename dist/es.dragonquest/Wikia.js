@@ -4,11 +4,11 @@
 var ShowHideConfig = { linkBefore:true }; 
 importScriptPage('ShowHide/code.js', 'dev');
 
-//BurÃ³crata/
+//Burócrata/
 (function () {
         "use strict";
         var userRightsList = {
-            "Suicune R": ["BurÃ³crata"]
+            "Suicune R": ["Burócrata"]
  
         };
  

@@ -1,4 +1,4 @@
-Â /* Embedding youtube playlists
+ /* Embedding youtube playlists
  *
  * MPCs vestige
  */

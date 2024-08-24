@@ -507,10 +507,10 @@ var hasClass = (function () {
 
 importScriptPage('ShowHide/code.js', 'dev');
 
-// ----- CaractÃ¨res spÃ©ciaux , source : [http://fr.wiktionary.org/wiki/MediaWiki:Monobook.js]
+// ----- Caractères spéciaux , source : [http://fr.wiktionary.org/wiki/MediaWiki:Monobook.js]
 /**
- * Ajoute le menu pour choisir des sous-ensembles de caractÃ¨res spÃ©ciaux
- * @note :	L'ordre de cette liste doit correspondre Ã  celui de MediaWiki:Edittools !
+ * Ajoute le menu pour choisir des sous-ensembles de caractères spéciaux
+ * @note :	L'ordre de cette liste doit correspondre à celui de MediaWiki:Edittools !
  */
  
 function addCharSubsetMenu() {
@@ -528,7 +528,7 @@ function addCharSubsetMenu() {
     menu += "<option>Diacritiques</option>";
     menu += "<option>Allemand</option>";
     menu += "<option>Arabe</option>";
-    menu += "<option>BerbÃ¨re</option>";
+    menu += "<option>Berbère</option>";
     menu += "<option>Catalan</option>";
     menu += "<option>Croate</option>";
     menu += "<option>Espagnol</option>";
@@ -546,7 +546,7 @@ function addCharSubsetMenu() {
     menu += "<option>Letton</option>";
     menu += "<option>Lituanien</option>";
     menu += "<option>Maltais</option>";
-    menu += "<option>NÃ©erlandais</option>";
+    menu += "<option>Néerlandais</option>";
     menu += "<option>Pinyin</option>";
     menu += "<option>Polonais</option>";
     menu += "<option>Portugais</option>";

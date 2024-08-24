@@ -1,14 +1,14 @@
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  if (typeof(mwCustomEditButtons) != 'undefined') {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "C√≥digo fuente",
+     "speedTip": "CÛdigo fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "C√≥digo fuente"};
+     "sampleText": "CÛdigo fuente"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -26,10 +26,10 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categor√≠a",
+     "speedTip": "CategorÌa",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categor√≠a"};
+     "sampleText": "Nombre categorÌa"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -40,14 +40,14 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/70/Button_fusion.png",
-     "speedTip": "Pedir que se fusione el art√≠culo a otro",
+     "speedTip": "Pedir que se fusione el artÌculo a otro",
      "tagOpen": "{{fusionar|",
      "tagClose": "}}",
-     "sampleText": "Nombre del art√≠culo con el que se debe fusionar"};
+     "sampleText": "Nombre del artÌculo con el que se debe fusionar"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png",
-     "speedTip": "P√°gina de desambiguaci√≥n",
+     "speedTip": "P·gina de desambiguaciÛn",
      "tagOpen": "{{desambiguacion}}",
      "tagClose": "",
      "sampleText": ""};
@@ -61,28 +61,28 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
-     "speedTip": "Proponer el art√≠culo para ser borrado",
+     "speedTip": "Proponer el artÌculo para ser borrado",
      "tagOpen": "{{borrar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se propone para borrar"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_broom2.png",
-     "speedTip": "Pedir que se arregle el art√≠culo",
+     "speedTip": "Pedir que se arregle el artÌculo",
      "tagOpen": "{{arreglar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se pide el arreglo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162634/es.gta/images/d/d1/Sin_foto.png",
-     "speedTip": "Advertir de que el art√≠culo necesita im√°genes",
+     "speedTip": "Advertir de que el artÌculo necesita im·genes",
      "tagOpen": "{{sinfoto}}",
      "tagClose": "",
      "sampleText": ""};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir de que se est√° trabajando en el art√≠culo",
+     "speedTip": "Advertir de que se est· trabajando en el artÌculo",
      "tagOpen": "{{enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
@@ -91,18 +91,18 @@ if (wgUserName != 'null') {
 	$('.insertusername').html(wgUserName);
 }
 /***************************************************
-ATRIBUCI√ìN:
+ATRIBUCI”N:
  * @autor - pecoes
- * @modificaci√≥n - Pintor Kagamine
- * @comunidad - Pok√©polis
+ * @modificaciÛn - Pintor Kagamine
+ * @comunidad - PokÈpolis
  * @interwiki - es.pokepolis
 ***************************************************
- * por favor, no us√©is el c√≥digo sin antes
+ * por favor, no usÈis el cÛdigo sin antes
  * contactar con Pintor Kagamine para evitar
- * posibles problemas con respecto al c√≥digo.
+ * posibles problemas con respecto al cÛdigo.
 ***************************************************/
 // SexyUserPage modificado
-  // para usar CSS en pr√°cticamente cualquier art√≠culo
+  // para usar CSS en pr·cticamente cualquier artÌculo
 ;(function (mw, $) {
  
     'use strict';

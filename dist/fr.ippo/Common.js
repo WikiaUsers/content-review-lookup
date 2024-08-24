@@ -6,7 +6,7 @@ if (console) console.log("Common.js en marche 3!");
 $(function()
 {
 
-    /* DÃ©but JS */
+    /* Début JS */
 
 /* Imports */
  

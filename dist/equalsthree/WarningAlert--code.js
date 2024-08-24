@@ -1,4 +1,4 @@
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */

@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 window.UserTagsJS = {
 	modules: {},
@@ -62,7 +62,7 @@ UserTagsJS.modules.custom = {
 	'Lunarity': ['csshelper', 'templatehelper', 'jshelper'] // NOTE: order of list here does NOT matter
 };
 
-/* C√≥digo de es.c.wikia.com */
+/* CÛdigo de es.c.wikia.com */
  
 jQuery(document).ready(function($){
 $('#Parallax').mousemove(

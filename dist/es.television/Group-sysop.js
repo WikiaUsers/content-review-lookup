@@ -1,14 +1,14 @@
-// Enlace para pÃ¡ginas sin patrullar
+// Enlace para páginas sin patrullar
 $('.WikiHeader > nav li:first-child > .subnav-2 > li:last-child').after('<li><a href="/wiki/Special:NewPages?hidepatrolled=1" class="subnav-2a">Patrullaje</a></li>');
 
-// MÃ³dulo para habilitar valoraciones a los usuarios
+// Módulo para habilitar valoraciones a los usuarios
 function crearValoraciones( summary, user, editToken ) {
 	$.ajax({
 		url: mw.util.wikiScript( 'api' ),
 	data: {
 		format: 'json',
 		action: 'edit',
-		title: 'WikivisiÃ³n:Valoraciones/' + user,
+		title: 'Wikivisión:Valoraciones/' + user,
 		summary: summary,
 		createonly: true,
 		appendtext: '<table class="wikitable" width="100%" style="text-align: center;"><tr><th>Serie</th><th>Opinion</th><th>Estado</th><th>Commentario</th></tr>',
@@ -19,9 +19,9 @@ function crearValoraciones( summary, user, editToken ) {
 	success: function( data ) {
 		if ( data && data.edit && data.edit.result == 'Success' ) {
 			window.location.reload(); // reload page if edit was successful
-			GlobalNotification.show('La pÃ¡gina de valoraciones de ' + user + ' ha sido creada.', 'confirm');
+			GlobalNotification.show('La página de valoraciones de ' + user + ' ha sido creada.', 'confirm');
 		} else if ( data && data.error ) {
-			GlobalNotification.show('La pÃ¡gina de valoraciones de ' + user + ' ya existe.', 'error');
+			GlobalNotification.show('La página de valoraciones de ' + user + ' ya existe.', 'error');
 		} else {
 			alert( 'Error: Unknown result from API.' );
 		}

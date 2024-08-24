@@ -1,9 +1,9 @@
 function suggestCategory(text,callback) {
     //Dot would be added at the end of the word and
     //the word could not be recognized anymore
-	var words = text.split(" ").map(function(w) {Â return w.replace(/[.|,|?|!]$/,''); });
+	var words = text.split(" ").map(function(w) { return w.replace(/[.|,|?|!]$/,''); });
 	var records = [];
-    getCategories('BuchPortrÃ¤ts/nach Thema',function(categories) {
+    getCategories('BuchPorträts/nach Thema',function(categories) {
         for(var w = 0; w < words.length; w++) {
 			var word = words[w];
 			var match = _.findWhere(categories,{title: word});

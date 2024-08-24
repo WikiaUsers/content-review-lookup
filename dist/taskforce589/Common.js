@@ -1,7 +1,7 @@
 // Collapsible stuff
 /*<source lang=javascript>*/
 /*
- * Copyright Â© 2009, Daniel Friesen
+ * Copyright © 2009, Daniel Friesen
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

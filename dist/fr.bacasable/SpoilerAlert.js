@@ -1,7 +1,7 @@
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */
@@ -13,7 +13,7 @@ $(function () {
     window.SpoilerAlert = (function (my, console, Math) {
  
         my = $.extend({
-            question: 'Cette page contient des Spoilers. Voulez vous la lire tout de mÃªme ?',
+            question: 'Cette page contient des Spoilers. Voulez vous la lire tout de même ?',
             yes: 'Oui',
             no: 'Non, pas tout de suite.',
             isSpoiler: function () {

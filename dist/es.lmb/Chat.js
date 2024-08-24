@@ -16,7 +16,7 @@ window.ChatStatus = {
 		homo: "Ocupado",
 		edit: "Editando",
 		food: "Comiendo", 
-		tv: "Viendo BÃ©isbol",
+		tv: "Viendo Béisbol",
 		game: "En el Estadio",
 		cake: "Observando",
 		book: "Leyendo",

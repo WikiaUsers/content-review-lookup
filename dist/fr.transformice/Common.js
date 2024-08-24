@@ -18,7 +18,7 @@ importArticles({
     ]
 });
 
-//*GÃ©nÃ©rateur de pseudo pour l'Ã©nigme du nouvel an chinois 2016*//
+//*Générateur de pseudo pour l'énigme du nouvel an chinois 2016*//
 
 
 $("span.asciipseudo").replaceWith('<input type="text" id="asciipseudo"/> <div id="asciiresult">')

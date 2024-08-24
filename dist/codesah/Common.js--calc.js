@@ -131,7 +131,7 @@ $('.jcConfig').each(function() {
 		}
 
 		if (formError) {
-			showError('Uno o m√°s campos contienen valores inv√°lidos.');
+			showError('Uno o m·s campos contienen valores inv·lidos.');
 		} else {
 			if (hs.length > 0) {
 				i = 0;
@@ -146,9 +146,9 @@ $('.jcConfig').each(function() {
 					            loadTemplate();
 						    } else {
 						   		if (tplParams[i].range != 'yes') {
-						   	    	showError("El jugador '" + name + "' no existe, est√° banneado o es no miembro. Por favor, introduzca la data manualmente.");
+						   	    	showError("El jugador '" + name + "' no existe, est· banneado o es no miembro. Por favor, introduzca la data manualmente.");
 						   		} else {
-						   			showError("El jugador '" + name + "' no existe, est√° banneado o es no miembro. Por favor, introduzca un nombre de cuenta v√°lido.");
+						   			showError("El jugador '" + name + "' no existe, est· banneado o es no miembro. Por favor, introduzca un nombre de cuenta v·lido.");
 					    		}
 					    	}
 					    },

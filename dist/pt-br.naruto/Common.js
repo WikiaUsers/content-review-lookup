@@ -1,7 +1,7 @@
 window.BackToTopText = "Retornar";
 $(".tooltip").tooltip(); // Tooltips
 
-// Hor√°rio
+// Hor·rio
  // Thanks to KockaAdmiralac
 window.ajaxCallAgain = window.ajaxCallAgain || [];
 window.ajaxCallAgain.push(function() {

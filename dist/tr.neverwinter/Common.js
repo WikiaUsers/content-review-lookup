@@ -52,7 +52,7 @@ var wst = wst || {
         }
 
         if ( result ) {
-            if ( decodeURIComponent( result[1] ).substring(0, 5) !== "Ã–zel:" ) {
+            if ( decodeURIComponent( result[1] ).substring(0, 5) !== "Özel:" ) {
                 return decodeURIComponent( result[1] );
             } else {
                 return null;

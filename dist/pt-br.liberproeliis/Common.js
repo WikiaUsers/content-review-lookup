@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
+/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
 // AutoEditDropdown config - http://dev.wikia.com/wiki/AutoEditDropdown
 
 /* "Username" template - from PvZ Wiki */

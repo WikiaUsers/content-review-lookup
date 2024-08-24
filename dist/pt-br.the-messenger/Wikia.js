@@ -109,7 +109,7 @@ function calculate(){
 	var reviveCost;
 	var damage;
 	if($('#textboxname').val() === '' || parseCheck === 0 || parseCheck >= 9999 || parseCheck < 0 || !Number.isInteger(parseCheck)){
-		$('#artificerbutton').text('NÃºmero invÃ¡lido, tente de novo.');
+		$('#artificerbutton').text('Número inválido, tente de novo.');
 	}
 	else{
 		if(parseCheck === 1)

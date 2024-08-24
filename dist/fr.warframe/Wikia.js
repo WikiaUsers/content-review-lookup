@@ -57,9 +57,9 @@ $('.einfobox').click(function () {
     }
 });
 
-/*Section pour les fichiers inutilisÃ©s*/
-/*Permet de crÃ©er une liste pour les gÃ©rer par la suite*/
-/*Ce premier bout de script correspond aux images et fichiers sons intulisÃ©s */
+/*Section pour les fichiers inutilisés*/
+/*Permet de créer une liste pour les gérer par la suite*/
+/*Ce premier bout de script correspond aux images et fichiers sons intulisés */
 if (mediaWiki.config.get("wgPageName") === "Special:UnusedFiles") {
     $(function () {
         var str = "";
@@ -71,7 +71,7 @@ if (mediaWiki.config.get("wgPageName") === "Special:UnusedFiles") {
         $('.gallery').before($textarea);
     });
 }
-/*Celui-ci correspond fichiers video intulisÃ©s */
+/*Celui-ci correspond fichiers video intulisés */
 if (mediaWiki.config.get("wgPageName") === "Special:UnusedVideos") {
     $(function () {
         var str = "";
@@ -84,8 +84,8 @@ if (mediaWiki.config.get("wgPageName") === "Special:UnusedVideos") {
     });
 }
 /*This one is for category files */
-/*Celui-ci correspond catÃ©gories de fichiers */
-if (mediaWiki.config.get("wgPageName") === "CatÃ©gorie%3ADiorama_Photos") {
+/*Celui-ci correspond catégories de fichiers */
+if (mediaWiki.config.get("wgPageName") === "Catégorie%3ADiorama_Photos") {
     $(function () {
         var str = "";
         $('.gallerytext > a').each(function () {

@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 $(function UserNameReplace() {
     if (wgUserName) {
@@ -20,10 +20,10 @@ window.UserTagsJS = {
         cuarto: { m:'Cuarto Asiento', f:'Cuarto Asiento', u:'Cuarto Asiento' },
         quinto: { m:'Quinto Asiento', f:'Quinto Asiento', u:'Quinto Asiento' },
         sexto: { m:'Sexto Asiento', f:'Sexto Asiento', u:'Sexto Asiento' },
-        septimo: { m:'S√©ptimo Asiento', f:'S√©ptimo Asiento', u:'S√©ptimo Asiento' },
+        septimo: { m:'SÈptimo Asiento', f:'SÈptimo Asiento', u:'SÈptimo Asiento' },
         octavo: { m:'Octavo Asiento', f:'Octavo Asiento', u:'Octavo Asiento' },
         noveno: { m:'Noveno Asiento', f:'Noveno Asiento', u:'Noveno Asiento' },
-        decimo: { m:'D√©cimo Asiento', f:'D√©cimo Asiento', u:'D√©cimo Asiento' },
+        decimo: { m:'DÈcimo Asiento', f:'DÈcimo Asiento', u:'DÈcimo Asiento' },
     }
 };
 
@@ -37,6 +37,6 @@ UserTagsJS.modules.custom = {
 };
 
 // AutoRefreshing RecentChanges and WikiActivity
-window.AjaxRCRefreshText = 'Act. autom√°t.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+window.AjaxRCRefreshText = 'Act. autom·t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];

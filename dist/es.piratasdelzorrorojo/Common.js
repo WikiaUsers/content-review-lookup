@@ -1,9 +1,9 @@
 /* switch.js */
 importScript('MediaWiki:Common.js/switch.js');
 
-// Autoactualizaci√≥n Cambios recientes y Wikiactividad
-window.AjaxRCRefreshText = 'Act. autom√°t.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+// AutoactualizaciÛn Cambios recientes y Wikiactividad
+window.AjaxRCRefreshText = 'Act. autom·t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
 // =====================================
@@ -27,9 +27,9 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCI√ìN [[",
+		"tagOpen": "#REDIRECCI”N [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del art√≠culo"
+		"sampleText": "Nombre del artÌculo"
 	};
  
     mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -100,7 +100,7 @@ function getText (e) {
 function setText (e, t) {
 	if (e.textContent) e.textContent = t;
 	else if (e.innerText) e.innerText = t;
-	else { e.textContent = t; e.innerText = t; } // entrambi nulli, non si pu√≤ discriminare
+	else { e.textContent = t; e.innerText = t; } // entrambi nulli, non si puÚ discriminare
 	return;
 }
  

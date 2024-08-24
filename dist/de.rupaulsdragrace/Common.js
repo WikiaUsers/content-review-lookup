@@ -1,4 +1,4 @@
-/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Auto Refresh */

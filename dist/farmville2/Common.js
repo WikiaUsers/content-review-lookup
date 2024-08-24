@@ -62,9 +62,9 @@ if ( $.client.profile().name == 'msie' ) {
         hlists.find( 'dt:not(:last-child)' )
             .append( ': ' );
         hlists.find( 'dd:not(:last-child)' )
-            .append( '<b>Â·</b> ' );
+            .append( '<b>·</b> ' );
         hlists.find( 'li:not(:last-child)' )
-            .append( '<b>Â·</b> ' );
+            .append( '<b>·</b> ' );
         hlists.find( 'dl dl, dl ol, dl ul, ol dl, ol ol, ol ul, ul dl, ul ol, ul ul' )
             .prepend( '( ' ).append( ') ' );
     }
@@ -349,7 +349,7 @@ $("table").delegate('td','mouseover mouseleave', function(e) {
 /** 
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  * __NOWYSIWYG__
  */

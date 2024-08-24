@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
 window.MassCategorizationGroups = ['sysop', 'content-moderator', 'bot'];
 
 window.DiscordBannerSettings = {
@@ -7,11 +7,11 @@ window.DiscordBannerSettings = {
     prependToRail: true
 };
 
-// IN√çCIO: JavaScript para colocar a predefini√ß√£o de justificativa de uso justo dentro da caixa de resumo em [[Special:Upload]]. Criado e codificado por "[[wikipedia:User:Pinky49]]", especialmente para a [[wikia:c:cdnmilitary|Duty & Valour]].
+// INÕCIO: JavaScript para colocar a predefiniÁ„o de justificativa de uso justo dentro da caixa de resumo em [[Special:Upload]]. Criado e codificado por "[[wikipedia:User:Pinky49]]", especialmente para a [[wikia:c:cdnmilitary|Duty & Valour]].
  
 $(function FairUseRationale() {
 	if((wgPageName == 'Special:Upload' || wgPageName == 'Special:MultipleUpload') && document.getElementById('wpDestFile').value === '') {
-		document.getElementById('wpUploadDescription').value = '{{Raz√£o do uso justo \n|Descri√ß√£o        = \n |Fonte            = \n |Parte            = \n |Prop√≥sito        = \n |Resolu√ß√£o        = \n |Substitu√≠vel     = \n |Outros detalhes  = \n }}'
+		document.getElementById('wpUploadDescription').value = '{{Raz„o do uso justo \n|DescriÁ„o        = \n |Fonte            = \n |Parte            = \n |PropÛsito        = \n |ResoluÁ„o        = \n |SubstituÌvel     = \n |Outros detalhes  = \n }}'
 ;
 	}
 });

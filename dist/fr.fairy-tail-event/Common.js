@@ -1,12 +1,12 @@
 importArticles({
     type: "script",
     articles: [
-        'MediaWiki:Common.js/Reseau.js', // Barre RÃ©seau
+        'MediaWiki:Common.js/Reseau.js', // Barre Réseau
     ]
 });
 /* Spoiler */
 SpoilerAlert = {
-    question: 'Cette page contient les rÃ©ponses d\'un jeu. ÃŠtes-vous sÃ»r(e) de vouloir la consulter ?',
+    question: 'Cette page contient les réponses d\'un jeu. Êtes-vous sûr(e) de vouloir la consulter ?',
     yes: 'Oui',
     no: 'Finalement, non',
     isSpoiler: function () {

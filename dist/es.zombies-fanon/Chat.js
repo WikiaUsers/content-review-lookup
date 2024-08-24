@@ -29,7 +29,7 @@ window.Pings = {
 
 importArticles ( {
      type :  'script' ,
-     artÃ­culos :  [ 
+     artículos :  [ 
 'u: dev: MediaWiki: EmoticonsWindow / code.js' 
 ,
  ] } ) ;

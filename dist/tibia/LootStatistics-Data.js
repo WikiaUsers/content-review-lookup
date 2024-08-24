@@ -18,6 +18,8 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// 
+'Rootthing Amber Shaper': '13.40.e15431',
 // Balancing Project Changes Part VI - 2024
 'Deathstrike': '13.36.d8d851',
 'Gnomevil': '13.36.d8d851',

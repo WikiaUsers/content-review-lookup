@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /* <pre> v223 */
  
@@ -236,10 +236,10 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categor√≠a",
+     "speedTip": "CategorÌa",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categor√≠a"};
+     "sampleText": "Nombre categorÌa"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -250,14 +250,14 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
  mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
-     "speedTip": "Proponer el art√≠culo para ser borrado",
+     "speedTip": "Proponer el artÌculo para ser borrado",
      "tagOpen": "\{\{Borrar|",
      "tagClose": "\}\}",
      "sampleText": "Motivo"};
  
  }
  
-/* === Extensiones en min√∫scula al subir archivos === */
+/* === Extensiones en min˙scula al subir archivos === */
 function adaptUploadFilename(){
 	var ff = $G('mw-upload-form').wpDestFile;
 	var fn = ff.value;
@@ -283,9 +283,9 @@ if (mw.config.get('skin') != 'oasis' && mw.config.get('wgAction') == 'view' &&
 				$('#'+(window.bodyContentId||'bodyContent')).children('div.printfooter').after('<div id="catlinks" class="catlinks"></div>');
 			}
 			if ($('#mw-normal-catlinks').length == 0) {
-				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:Categor√≠as" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:Categor√≠as')+'">Categor√≠as</a></div>');
+				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:CategorÌas" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:CategorÌas')+'">CategorÌas</a></div>');
 			}
-			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categor√≠as"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
+			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorÌas"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
 				$(this).unbind().closest('span.noprint').eq(0).remove();
 				importScript('MediaWiki:Common.js/Gadget-HotCat.js');
 				return false;

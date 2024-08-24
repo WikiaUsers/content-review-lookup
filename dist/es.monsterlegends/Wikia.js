@@ -18,11 +18,11 @@ $(".image-resize").each(function() {
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','VotaciÃ³n finalizada');
+                                 .attr('value','Votación finalizada');
     }
 });
  
-// Boton para ver la pÃ¡gina en Monobook (w:c:es.clubpenguin)
+// Boton para ver la página en Monobook (w:c:es.clubpenguin)
  
 $(function() {
     $('.wikinav2 .WikiaPageHeader > .comments').before('&nbsp; <a class="wikia-menu-button primary" href="/wiki/'+ encodeURIComponent(wgPageName) +'?useskin=monobook">Ver en Monobook</a>');

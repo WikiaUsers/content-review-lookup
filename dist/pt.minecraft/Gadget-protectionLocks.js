@@ -49,10 +49,10 @@
 	if (protectionLevel === 'autoconfirmed') { // [[File:Semi-protected page lock.png]]
 		mimicIndicator(
 			'protection-semi',
-			'Minecraft Wiki:Usu√°rios autoconfirmados',
+			'Minecraft Wiki:Usu·rios autoconfirmados',
 			'Semi-protected page lock.png',
 			'9/9b',
-			'Esta p√°gina √© semi-protegida para que somente usu√°rios registrados possam edit√°-la.'
+			'Esta p·gina È semi-protegida para que somente usu·rios registrados possam edit·-la.'
 		).prependTo($('.page-header__actions'));
 	} else if (protectionLevel === 'directoreditprotected') { // [[File:Director-protected page lock.png]]
 		mimicIndicator(
@@ -60,7 +60,7 @@
 			'Minecraft Wiki:Diretores',
 			'Director-protected page lock.png',
 			'8/85',
-			'Esta p√°gina √© protegida apenas por diretores de modo que somente os diretores podem edit√°-la.'
+			'Esta p·gina È protegida apenas por diretores de modo que somente os diretores podem edit·-la.'
 		).prependTo($('.page-header__actions'));
 	} else if (protectionLevel === 'sysop') { // [[File:Fully-protected page lock.png]]
 		mimicIndicator(
@@ -68,7 +68,7 @@
 			'Minecraft Wiki:Administradores',
 			'Fully-protected page lock.png',
 			'4/49',
-			'Esta p√°gina est√° totalmente protegida para que apenas os administradores possam edit√°-la.'
+			'Esta p·gina est· totalmente protegida para que apenas os administradores possam edit·-la.'
 		).prependTo($('.page-header__actions'));
 	}
 })(window.jQuery, window.mediaWiki);

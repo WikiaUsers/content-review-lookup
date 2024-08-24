@@ -2,7 +2,7 @@
 // Huumori artikkeleille oma nimiavaruus
 //
 //  
-// LÃ¤hde: http://en.wikipedia.org/wiki/User:RockMFR/disambigeditintro.js
+// Lähde: http://en.wikipedia.org/wiki/User:RockMFR/disambigeditintro.js
 // Funktio: Adds EditIntro to all Exchange pages 
 //           when "edit this page" link is clicked
 // ============================================================

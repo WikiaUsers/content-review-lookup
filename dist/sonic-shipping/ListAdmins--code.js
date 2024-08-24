@@ -1,7 +1,7 @@
 /** 
  * lists all admins on the wiki
  * documentation at: https://dev.fandom.com/wiki/ListAdmins
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  */
 /*jshint curly:true, jquery:true */

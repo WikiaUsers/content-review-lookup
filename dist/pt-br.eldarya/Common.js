@@ -1,4 +1,4 @@
-/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
 
 // prevents existing tags from being hidden
 (window.dev = window.dev || {}).profileTags = { noHideTags: true };
@@ -21,16 +21,16 @@ var tooltips_config = {
 
 /* Alerta de Spoiler */
 window.SpoilerAlertJS = {
-    question: 'Essa √°rea cont√©m spoilers. Gostaria de visualizar mesmo assim?',
+    question: 'Essa ·rea contÈm spoilers. Gostaria de visualizar mesmo assim?',
     yes: 'Sim',
-    no: 'N√£o',
+    no: 'N„o',
     fadeDelay: 1600
 };
 
-/* Categoriza√ß√£o em massa */
+/* CategorizaÁ„o em massa */
 window.MassCategorizationGroups = ['sysop', 'content-moderator'];
 
-/* Identifica√ß√£o de usu√°rios espec√≠ficos */
+/* IdentificaÁ„o de usu·rios especÌficos */
 window.MessageWallUserTags = {
     tagColor: '#00aebb',
     txtSize: '10px',
@@ -65,6 +65,6 @@ if ($.inArray(wgNamespaceNumber, [ 0, 1, 4, 5, 6, 7, 14, 15, 110, 111, 400, 401,
             borderRadius: '8px',
             textAlign : 'center',
         }
-    }).text('Eldarya √© um jogo da empresa Beemoov. A Wiki Eldarya √© um site independente feito por f√£s e para f√£s, sem fins lucrativos. As imagens s√£o majoritamente provenientes do jogo.')
+    }).text('Eldarya È um jogo da empresa Beemoov. A Wiki Eldarya È um site independente feito por f„s e para f„s, sem fins lucrativos. As imagens s„o majoritamente provenientes do jogo.')
     .appendTo('.WikiaArticle');
 }

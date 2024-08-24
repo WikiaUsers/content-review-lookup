@@ -3,7 +3,7 @@
  * de subida de archivos, y modifica MultipleUpload para agregar descripciones
  * individualizadas en cada archivo.
  * 
- * Copyright (c) 2010 - 2014 Jes煤s Mart铆nez (User:Ciencia_Al_Poder)
+ * Copyright (c) 2010 - 2014 Jes鷖 Mart韓ez (User:Ciencia_Al_Poder)
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -51,7 +51,7 @@
         rslen = t.tBodies[0].rows.length - 2; // Excluir 2 filas del final (upload-permitted y max-size)
         $lblDesc = $('#wpUploadDescription').parent().prev().children('label');
         _calculateFieldHeight();
-        // Bucle hacia atr谩s, porque se van insertando rows. Cada archivo son 2 filas: file-input y nombre del archivo
+        // Bucle hacia atr醩, porque se van insertando rows. Cada archivo son 2 filas: file-input y nombre del archivo
         for (var fieldNum = ((rslen / 2) - 1), rowPos = (rslen - 1); rowPos >= 0; rowPos -= 2, fieldNum--) {
             tr = t.tBodies[0].insertRow(rowPos+1);
             desc = oStoredDescs[_normalizePageName( $('#wpDestFile'+fieldNum.toString()).val() || '' )];
@@ -64,7 +64,7 @@
             }
             $txtDesc.on({focus: _onMultiDescFocus, blur: _onMultiDescBlur});
         }
-        $lblDesc.append('<br /><small>(com煤n para todos los<br />archivos, adicional a cada<br />descripci贸n independiente)</small>');
+        $lblDesc.append('<br /><small>(com鷑 para todos los<br />archivos, adicional a cada<br />descripci髇 independiente)</small>');
         if (oStoredDescs['*']) {
             $('#wpUploadDescription').val(oStoredDescs['*']);
         }
@@ -75,7 +75,7 @@
             _fieldHeight = parseInt($('#wpDestFile0').height(), 10);
         }
     },
-    // Evento cuando la descripci贸n obtiene el foco
+    // Evento cuando la descripci髇 obtiene el foco
     _onMultiDescFocus = function() {
         var $field = $(this), h = _fieldHeight * 3;
         if ($field.height() < h) {
@@ -83,14 +83,14 @@
                 function() { $(this).css('overflow', 'auto'); });
         }
     },
-    // Evento cuando la descripci贸n pierde el foco
+    // Evento cuando la descripci髇 pierde el foco
     _onMultiDescBlur = function() {
         var $field = $(this);
         if ($field.height() > _fieldHeight && $.trim($field.val()).length === 0) {
             $field.css('overflow', 'hidden').queue('fx', []).stop().animate({height: _fieldHeight}, 750, 'swing');
         }
     },
-    // Obtiene el texto de la descripci贸n com煤n de Special:MultipleUpload y busca el #switch: que aporta la descripci贸n individualizada
+    // Obtiene el texto de la descripci髇 com鷑 de Special:MultipleUpload y busca el #switch: que aporta la descripci髇 individualizada
     _parseMultipleUploadFormHack = function() {
         var oRet = {},
             tmpl = $('#wpUploadDescription').val(),
@@ -125,11 +125,11 @@
                 oRet[prevname] = tmpl.substring(previdx, idx);
             }
         }
-        // Guardamos el texto com煤n
+        // Guardamos el texto com鷑
         oRet['*'] = comun;
         return oRet;
     },
-    // Convierte la primera letra en may煤scula y los guiones bajos en espacios
+    // Convierte la primera letra en may鷖cula y los guiones bajos en espacios
     _normalizePageName = function(page) {
         var ret = '';
         if (page.length > 0) {
@@ -157,7 +157,7 @@
         if (window.UploadValidator) {
             e.preventDefault();
             $('input[type=submit]', '#mw-upload-form').attr('disabled', 'disabled');
-            // Agregamos un peque帽o timeout para que salten otros eventos que modifiquen el texto.
+            // Agregamos un peque駉 timeout para que salten otros eventos que modifiquen el texto.
             window.setTimeout(_validateUpload, 100);
         }
     },
@@ -192,7 +192,7 @@
         if (window.UploadValidator) {
             e.preventDefault();
             $('input[type=submit]', '#mw-upload-form').attr('disabled', 'disabled');
-            // Agregamos un peque帽o timeout para que salten otros eventos que modifiquen el texto.
+            // Agregamos un peque駉 timeout para que salten otros eventos que modifiquen el texto.
             window.setTimeout(_validateMultiUpload, 100);
         } else {
             _preSubmitMultipleUploadForm();
@@ -226,7 +226,7 @@
             window.setTimeout(_submitBypassUpload, 100);
         }
     },
-    // Incluye cada descripci贸n individual en la descripci贸n com煤n, dentro de un #switch:
+    // Incluye cada descripci髇 individual en la descripci髇 com鷑, dentro de un #switch:
     _preSubmitMultipleUploadForm = function() {
         var txtdesc = '{{subst:#switch:{{subst:PAGENAME}}',
             comun = $.trim($('#wpUploadDescription').val()),

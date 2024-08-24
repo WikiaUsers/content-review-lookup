@@ -35,9 +35,9 @@ var BOXOFFSETY = 40;
 var TEXTOFFSETY = 4;
 var BOXCOLOR = '#ffffff';
 
-var TEXTA = 'Funde von FremdtextÃ¼bernahmen nach Seiten. Anzahl Seiten mit Funden in ';
+var TEXTA = 'Funde von Fremdtextübernahmen nach Seiten. Anzahl Seiten mit Funden in ';
 var TEXTB = 'nicht einberechnete Seiten'
-var TEXTC = 'Seite enthÃ¤lt FremdtextÃ¼bernahmen'
+var TEXTC = 'Seite enthält Fremdtextübernahmen'
 var TEXTD = 'mehr als 50 % der Seite betroffen'
 var TEXTE = 'mehr als 75 % der Seite betroffen'
  

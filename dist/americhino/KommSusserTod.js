@@ -1,6 +1,6 @@
 /**
  * 
- * @name: Komm, SÃ¼sser Tod
+ * @name: Komm, Süsser Tod
  * @description: Adds a button to play the End of Evangelion
  * @author: Americhino
  *
@@ -26,14 +26,14 @@
                                 KommSusserTod.tumblingDown();
                             }).prependTo('#Rail');
                     } else if (conf.wgTitle !== 'Chat') {
-                    $('<li>').addClass('overflow').css('cursor', 'pointer').append('<a>').text('Komm, SÃ¼sser Tod').appendTo($(window.WikiaBar.wikiaBarWrapperObj.find('.tools'))).click(function() {
+                    $('<li>').addClass('overflow').css('cursor', 'pointer').append('<a>').text('Komm, Süsser Tod').appendTo($(window.WikiaBar.wikiaBarWrapperObj.find('.tools'))).click(function() {
                                 KommSusserTod.tumblingDown();
                             });
                     }
                     break;
                 case "monobook":
                     var portletLink = mw.util.addPortletLink('p-tb', '#',
-                        'Komm, SÃ¼sser Tod', 'ca-harlem-shake', 'Click here if you are bored'
+                        'Komm, Süsser Tod', 'ca-harlem-shake', 'Click here if you are bored'
                     );
                     $(portletLink).click(function(e) {
                         e.preventDefault();

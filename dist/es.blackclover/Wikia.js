@@ -5,7 +5,7 @@ $(function() {
             adding a yellow-palette on pages from Golden Dawn/Amanecer Dorado members
     */
     if ($('.portable-infobox').length) {
-        var theme = $('.portable-infobox').attr('class').match(/pi-theme-([A-Za-z\-Γ‘Γ©Γ­Γ³ΓΊ]*)/)[1];
+        var theme = $('.portable-infobox').attr('class').match(/pi-theme-([A-Za-z\-αινσϊ]*)/)[1];
         if (theme !== 'wikia') $('.WikiaMainContent').addClass('theme-' + theme);
     }
 });

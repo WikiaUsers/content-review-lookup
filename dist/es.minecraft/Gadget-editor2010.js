@@ -1,4 +1,4 @@
-// TraÃ­do desde [[:en:MediaWiki:Gadget-classicToolbarButtons.js]]
+// Traído desde [[:en:MediaWiki:Gadget-classicToolbarButtons.js]]
 // <nowiki>
 ;(function($, mw) {
 	'use strict';
@@ -28,10 +28,10 @@
 		],
 		[
 			'code',
-			'CÃ³digo',
+			'Código',
 			'<code>',
 			'</code>',
-			'Texto en formato de cÃ³digo',
+			'Texto en formato de código',
 			'.section-advanced > .group-insert'
 		],
 		[

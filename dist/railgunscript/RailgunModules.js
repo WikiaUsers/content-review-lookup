@@ -6,7 +6,7 @@
  * Railgun Wiki:   http://railgunscript.wikia.com/wiki/Railgun_Wiki
  * Contact Author: http://community.wikia.com/wiki/Message_Wall:Mathmagician
  * 
- * @author Â© Jeff Bradford, 2012
+ * @author © Jeff Bradford, 2012
  * @version 2.2.1
  */
 console.log("[Railgun]: Loading modules package:", Railgun.Config.modulesJS);
@@ -341,7 +341,7 @@ console.log("[Railgun]: Loading modules package:", Railgun.Config.modulesJS);
                 + '<tr><td>' + w3schools + '</td><td>' + csstricks + '</td></tr></table>';
 
         // insert module into the siderail
-        Railgun.insert('railgun-quicksearch-module', html, 'QuickÂ² Search');
+        Railgun.insert('railgun-quicksearch-module', html, 'Quick² Search');
 
         // attach event handlers
         attachHandler('railgun-quicksearch-localwiki', 'Search ' + wgSiteName,
@@ -373,5 +373,5 @@ console.log("[Railgun]: Loading modules package:", Railgun.Config.modulesJS);
     }
 
     // register the quicksearch module with Railgun
-    Railgun.register('railgun-quicksearch-module', 'QuickÂ² Search', init_quicksearch);
+    Railgun.register('railgun-quicksearch-module', 'Quick² Search', init_quicksearch);
 }());

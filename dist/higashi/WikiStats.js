@@ -53,7 +53,7 @@ function getWikiStats(wiki, attrs, groups, dwiki) {
                     if (user.id !== '0') {
                         listuser.push('<a href="/wiki/User:'+encodeURIComponent(user.name)+'">'+user.name+'</a>');
                     } else {
-                        listuser.push('KhÃ´ng cÃ³');
+                        listuser.push('Không có');
                     }
                 });
                 $('.WikiStats[data-wiki="'+dwiki+'"] .outwikistats-list-'+group).append(listuser.join(', '));

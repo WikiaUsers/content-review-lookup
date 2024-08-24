@@ -7,7 +7,7 @@
  *
  * @author Cqm
  * @version 2.6.0
- * @copyright Â© Cqm 2019 <cqm.fwd@gmail.com>
+ * @copyright © Cqm 2019 <cqm.fwd@gmail.com>
  * @license GPLv3 <https://www.gnu.org/licenses/gpl-3.0.html>
  *
  * @notes <https://phabricator.wikimedia.org/T56864> native support for this

@@ -1,10 +1,10 @@
 /*
  * Magic_words
  * 
- * Ajoute les Magic Words Mediawiki dans la liste des caractÃ¨res spÃ©ciaux
+ * Ajoute les Magic Words Mediawiki dans la liste des caractères spéciaux
  * 
  * Auteur : ??
- * Date de derniÃ¨re rÃ©vision : 23 juin 2006
+ * Date de dernière révision : 23 juin 2006
  * {{Projet:JavaScript/Script|caracteres/magic}}
  */
 //<source lang=javascript>//<pre><nowiki>

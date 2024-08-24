@@ -70,7 +70,7 @@ if (mediaWiki.config.get("wgAction") == "edit" && mediaWiki.config.get("wgUserGr
  
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este Post de Blog n√£o pode ser comentado porque tem mais de um m√™s que foi criado.",
+    expiryMessage: "Este Post de Blog n„o pode ser comentado porque tem mais de um mÍs que foi criado.",
     expiryCategories : "Auto-arquivado"
 };
  
@@ -110,7 +110,7 @@ setInterval(function () {
     "use strict";
     $('.comments li.message blockquote .MiniEditorWrapper .edited-by a:not(.subtle)').each(function () {
         var $user = $(this).text();
-      if ($user.match(/Onmitrix 10|Pederix ou Pedro|TennysonXD|√Ålvaro 10|Cip√≥ Selvagem/g)) {
+      if ($user.match(/Onmitrix 10|Pederix ou Pedro|TennysonXD|¡lvaro 10|CipÛ Selvagem/g)) {
              $(this).addClass('admin');
         }
 if ($user.match(/Anodita Suprema|Entidade Sombria|AliciaSilva|Tomatendo|Gummyadventure/g)) {
@@ -126,23 +126,23 @@ addOnloadHook(toggleInit);
  
 // </syntax>
  
-/* Adiciona o label "inativo" nos perfis de quem n√£o edita h√° no m√°ximo 2 meses */
+/* Adiciona o label "inativo" nos perfis de quem n„o edita h· no m·ximo 2 meses */
 InactiveUsers = { 
 	months: 2,
         text: 'inativo'};
 importScriptPage('InactiveUsers/code.js', 'dev');
-/* Adiciona o bot√£o "atualizar" no menu de controle das p√°ginas */
+/* Adiciona o bot„o "atualizar" no menu de controle das p·ginas */
 PurgeButtonText = 'Atualizar';
 importScriptPage('PurgeButton/code.js', 'dev');
  
-/* Adiciona um bot√£o para ver o c√≥digo da p√°gina, apenas o c√≥digo */
+/* Adiciona um bot„o para ver o cÛdigo da p·gina, apenas o cÛdigo */
 importScriptPage('View_Source/code.js', 'dev'); 
  
-/* Adiciona sugest√£o de pesquisa na especial:busca */
+/* Adiciona sugest„o de pesquisa na especial:busca */
 importScriptPage('SearchSuggest/code.js', 'dev');
  
-/* Substitui o "Um contribuidor da Wikia" pelo IP do an√¥nimo */
+/* Substitui o "Um contribuidor da Wikia" pelo IP do anÙnimo */
 importScriptPage('RevealAnonIP/code.js', 'dev');
  
-/* Automaticamente abre o menu de contexto no bot√£o "editar" da pag */
+/* Automaticamente abre o menu de contexto no bot„o "editar" da pag */
 importScriptPage('AutoEditDropdown/code.js', 'dev');

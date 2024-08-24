@@ -1,8 +1,8 @@
 // <pre>
 /*
- * UserWikiInfo v4.1: Una colecci√≥n de enlaces √∫tiles relacionados con el usuario que aparece en contribuciones, p√°gina de usuario y discusi√≥n, con recuento de ediciones y avatar, para Monobook
+ * UserWikiInfo v4.1: Una colecciÛn de enlaces ˙tiles relacionados con el usuario que aparece en contribuciones, p·gina de usuario y discusiÛn, con recuento de ediciones y avatar, para Monobook
  *
- * Copyright (C) 2010-2016  Jes√∫s Mart√≠nez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2010-2016  Jes˙s MartÌnez Novo ([[User:Ciencia Al Poder]])
  *
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,21 +15,21 @@
 	'use strict';
 
 	var _tmpl = '<div class="useravatar"><a title="Avatar de {U}"><img src="https://images.wikia.nocookie.net/__cb20081128203240/messaging/images/thumb/1/19/Avatar.jpg/50px-Avatar.jpg" width="100" height="100" alt="Avatar" /></a></div>' +
-		'<span class="userlink"><a title="P√°gina de usuario">Usuario:{U}</a></span> &#124; <span class="talklink"><a title="P√°gina de discusi√≥n">Discusi√≥n</a> <a href="/index.php?title=Usuario_Discusi√≥n:{u}&amp;action=edit&amp;section=new" title="Dejar un nuevo mensaje en la p√°gina de discusi√≥n">[+]</a></span>{email} &#124; <span class="contribslink"><a title="Contribuciones de usuario">Contribuciones</a></span>{group}'+
+		'<span class="userlink"><a title="P·gina de usuario">Usuario:{U}</a></span> &#124; <span class="talklink"><a title="P·gina de discusiÛn">DiscusiÛn</a> <a href="/index.php?title=Usuario_DiscusiÛn:{u}&amp;action=edit&amp;section=new" title="Dejar un nuevo mensaje en la p·gina de discusiÛn">[+]</a></span>{email} &#124; <span class="contribslink"><a title="Contribuciones de usuario">Contribuciones</a></span>{group}'+
 		'<div class="contribdetails"></div>',
-	_emailtmpl = ' &#124; <span class="emaillink"><a href="/wiki/Especial:MandarEmailUsuario/{u}" title="Enviar correo electr√≥nico a usuario">Enviar correo</a></span>',
-	_contrtmpl = '{U} ha realizado {c} ediciones desde el {fe}<br /><span class="contenteditcount"><a href="/wiki/Especial:Editcount/{U}" title="{cu} ediciones (el {r}% del total) se han hecho en art√≠culos, categor√≠as, im√°genes y plantillas. Ver estad√≠sticas avanzadas."><span class="psmax"><span class="psact pslvl{l}" style="width:{r}%;"></span></span></a></span>',
+	_emailtmpl = ' &#124; <span class="emaillink"><a href="/wiki/Especial:MandarEmailUsuario/{u}" title="Enviar correo electrÛnico a usuario">Enviar correo</a></span>',
+	_contrtmpl = '{U} ha realizado {c} ediciones desde el {fe}<br /><span class="contenteditcount"><a href="/wiki/Especial:Editcount/{U}" title="{cu} ediciones (el {r}% del total) se han hecho en artÌculos, categorÌas, im·genes y plantillas. Ver estadÌsticas avanzadas."><span class="psmax"><span class="psact pslvl{l}" style="width:{r}%;"></span></span></a></span>',
 	_grouptmpl = ' &#124; <span class="usergroups" title="Grupos a los que pertenece el usuario">Grupos: {g}</span>',
 	_nosuchuser = 'El usuario no existe',
 	_editavatar = 'Cambiar avatar',
-	_editavatardescription = 'Selecciona una imagen desde tu PC para utilizar como tu avatar. Deber√≠a tener forma cuadrada (misma altura que anchura). Si la imagen es alargada se recortar√°, por lo que puede quedar deformada. Es recomendable que la edites primero en un programa de edici√≥n de im√°genes para que tenga estas dimensiones. El tama√±o √≥ptimo es 150x150px.',
-	_previewsaveavatar = 'Esta es la imagen que has subido y que se usar√° como avatar. Si est√°s de acuerdo, confirma el cambio. Ten en cuenta que podr√≠a seguir mostr√°ndose el anterior por un tiempo debido a que tu navegador ha guardado la versi√≥n antigua. Si al aceptar ves la imagen que acabas de subir es que todo ha ido bien.',
+	_editavatardescription = 'Selecciona una imagen desde tu PC para utilizar como tu avatar. DeberÌa tener forma cuadrada (misma altura que anchura). Si la imagen es alargada se recortar·, por lo que puede quedar deformada. Es recomendable que la edites primero en un programa de ediciÛn de im·genes para que tenga estas dimensiones. El tamaÒo Ûptimo es 150x150px.',
+	_previewsaveavatar = 'Esta es la imagen que has subido y que se usar· como avatar. Si est·s de acuerdo, confirma el cambio. Ten en cuenta que podrÌa seguir mostr·ndose el anterior por un tiempo debido a que tu navegador ha guardado la versiÛn antigua. Si al aceptar ves la imagen que acabas de subir es que todo ha ido bien.',
 	_saveavatar = 'Aplicar el nuevo avatar',
 	_datefm = '{d} de {m} de {y}',
 	_months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
 	_groupseparator = ', ',
 	_groups = {
-		bureaucrat: '<a href="/wiki/Doraenciclopedia:Administradores">bur√≥crata</a>',
+		bureaucrat: '<a href="/wiki/Doraenciclopedia:Administradores">burÛcrata</a>',
 		sysop: '<a href="/wiki/Doraenciclopedia:Administradores">administrador</a>',
 		rollback: '<a href="/wiki/Doraenciclopedia:Reversores">reversor</a>',
 		asistente: '<a href="/wiki/Doraenciclopedia:Asistentes">asistente</a>',
@@ -205,7 +205,7 @@
 				new RegExp('\\{r\\}', 'g'), rate).replace(
 				new RegExp('\\{fe\\}', 'g'), fe));
 	},
-	// M√©todo para mostrar el form de cambio de avatar. Si el argumento es string es por algun error
+	// MÈtodo para mostrar el form de cambio de avatar. Si el argumento es string es por algun error
 	_changeAvatar = function(o) {
 		var bFirstDialog = false;
 		if (!_dlg) {

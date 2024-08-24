@@ -9,9 +9,9 @@ var fields = {
 	topic: 'Thema',
 	gang: 'Bandennummer',
 	previous: 'vorherige',
-	next: 'n√§chste',
+	next: 'n‰chste',
 };
-//Optionale Parameter: "Arbeitstitel", "Bildunterschrift", "Drehbuchtitel", "Gastrolle", "Bildgr√∂√üe", "Orte", "Episodenhauptcharakter"
+//Optionale Parameter: "Arbeitstitel", "Bildunterschrift", "Drehbuchtitel", "Gastrolle", "Bildgrˆﬂe", "Orte", "Episodenhauptcharakter"
 
 function parseWikitext(text) {
 	return apiCall({
@@ -312,9 +312,17 @@ function renderAddButton() {
 	importArticle({ type: 'script', article: 'u:dev:MediaWiki:WDSIcons/code.js' });
 }
 
-//mw.hook("wikipage.content").add(function($content) {
-//document.addEventListener('DOMContentLoaded', function() {
-    if (document.body.classList.contains('page-MediaWiki_Custom-Episodes_json')) { // We are on MediaWiki:Custom-Episodes.json
+function init() {
+	if (document.body.classList.contains('page-MediaWiki_Custom-Episodes_json')) { // We are on MediaWiki:Custom-Episodes.json
     	renderAddButton();
+    } else {
+    	console.log('We are not on MediaWiki:Custom-Episodes.json');
     }
+}
+
+//mw.hook("wikipage.content").add(function($content) {
+mw.hook("wikipage.content").add(init);
+//document.addEventListener('DOMContentLoaded', init);
+//document.addEventListener('DOMContentLoaded', function() {
+    //init();
 //});

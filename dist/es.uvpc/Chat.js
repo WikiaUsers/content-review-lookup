@@ -4,13 +4,13 @@ window.ChatStatus = {
 		afk: "Ausente",
 		edit: "Editando",
 		food: "Comiendo",
-		tv: "Repartiendo c√°ncer",
+		tv: "Repartiendo c·ncer",
 		google: "Error 404 Not Found",
 		ufo: "U ar UFO?",
 		star: "Viendo Uvpc",
 		game: "Jugando",
 		program: "Programando",
-		bath: "En el ba√±o",
+		bath: "En el baÒo",
 		sleep: "Durmiendo",
 		see: "Vigilando",
 		eww: "Viendo R34",
@@ -32,7 +32,7 @@ window.kockaEmoticons = {
     help: "Haz clic en un emote."
 };
 
-// Implementaci√≥n de chat 3.2 -- by Sakuzyo and HumanoidPikachu
+// ImplementaciÛn de chat 3.2 -- by Sakuzyo and HumanoidPikachu
 $('.ChatWindow').after('<div class="dialog-initChat">Iniciando Chat...</div>');
 $('.ChatHeader').css('filter', 'blur(14px)'); // HEADER
 $('#WikiaPage').css('filter', 'blur(14px)'); // BODY CHAT

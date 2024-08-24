@@ -20,7 +20,7 @@ if (wgNamespaceNumber == 6) {
 		$interUses.append( $('<h2></h2>', {'text':msgForeignUses, 'style':'margin-left:-22px;'}) );
 		var langs = {
 			"Deutsch":"de",
-			"FranÃ§ais":"fr",
+			"Français":"fr",
 			"Nederlands":"nl",
 		};
 		$interUses.append( $('<h3></h3>', {'text': msgNoUses, 'class':'no_foreign_uses'}) );

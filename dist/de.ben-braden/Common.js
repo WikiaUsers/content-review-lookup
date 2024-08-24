@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 if (mw.config.get('wgPageName') == 'Hauptseite') { new BannerNotification('[[Schlacht von Umbara|Hier]] klicken', 'confirm'); }
 
 importArticles({

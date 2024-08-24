@@ -1,5 +1,5 @@
 /*
-	AÃ±ade el Ã­cono generado por {{Protection}} junto al botÃ³n de editar.
+	Añade el ícono generado por {{Protection}} junto al botón de editar.
 	Tomado de la comunidad inglesa de Clash of Clans [[w:c:clashofclans:MediaWiki:Common.js/Protection.js]]
 	----
 	Appends the icon created by {{Protection}} next to the edit button.

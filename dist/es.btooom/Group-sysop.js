@@ -52,7 +52,7 @@ var _RE_EMPTY = /^\s*$/,
 } )( jQuery );
  
 // <pre>
-// Botones para borrar el motivo al borrar una pÃ¡gina
+// Botones para borrar el motivo al borrar una página
 (function() {
 	var _$reason = null,
 		_actionDeleteButtons = function() {
@@ -60,11 +60,11 @@ var _RE_EMPTY = /^\s*$/,
 			mw.config.set('wikidex.actiondeletebuttons', true);
 			_$reason = $('#wpReason');
 			if (_$reason.length === 0) return;
-			$('<input type="button" value="Dejar sÃ³lo autor">').insertAfter(_$reason).click(function() {
+			$('<input type="button" value="Dejar sólo autor">').insertAfter(_$reason).click(function() {
 				var re = new RegExp('(\\[\\[E?special:(Contributions|Contribuciones)\\/.+\\|.+\\]\\])', 'i'),
 					ma = re.exec(_$reason.val());
 				if (ma !== null) {
-					_$reason.val('Ãšnico autor: '+ma[0]);
+					_$reason.val('Único autor: '+ma[0]);
 				}
 				_$reason.get(0).focus();
 			});
@@ -79,8 +79,8 @@ var _RE_EMPTY = /^\s*$/,
 })();
  
 /*
-* FileUsage: Muestra una lista de artÃ­culos donde se usa (como imagen o como enlace) un archivo al acceder a la pÃ¡gina para borrar o renombrar el archivo.
-* Copyright (C) 2010 - 2012 JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* FileUsage: Muestra una lista de artículos donde se usa (como imagen o como enlace) un archivo al acceder a la página para borrar o renombrar el archivo.
+* Copyright (C) 2010 - 2012 Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -166,4 +166,4 @@ var _RE_EMPTY = /^\s*$/,
  
 })();
  
-// </pre>JavaScript escrito aquÃ­ serÃ¡ cargado solamente para los administradores */
+// </pre>JavaScript escrito aquí será cargado solamente para los administradores */

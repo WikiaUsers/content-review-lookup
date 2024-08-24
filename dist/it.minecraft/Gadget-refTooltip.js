@@ -9,7 +9,7 @@ $( function() {
 		enableLabel: 'Abilita suggerimenti collegamenti',
 		optionsButtonTitle: 'Cambia opzioni suggerimenti collegamenti',
 		referencesSectionName: 'Collegamenti',
-		saveFailedStorageFull: 'La memoria locale del tuo browser Ã¨ piena?',
+		saveFailedStorageFull: 'La memoria locale del tuo browser è piena?',
 		saveFailedTitle: 'Salvataggio opzioni fallito'
 	};
 	

@@ -1,4 +1,4 @@
-/* RÃ©seaux sociaux */
+/* Réseaux sociaux */
  
 var SocialMediaButtons = { 
 	position: "top",

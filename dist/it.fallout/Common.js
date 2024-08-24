@@ -75,7 +75,7 @@ var hasClass = (function () {
 
 var autoCollapse = 1;
 var collapseCaption = "meno";
-var expandCaption = "piÃº";
+var expandCaption = "piú";
 
 function collapseTable( tableIndex )
 {

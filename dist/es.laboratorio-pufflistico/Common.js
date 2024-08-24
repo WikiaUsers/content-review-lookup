@@ -45,8 +45,8 @@ $('.norc').bind('contextmenu', function(e) {
 
 /* Auto-refrescar WikiActivitad */
 
-var AjaxRCRefreshText = 'Act. autom√°t.';
-var AjaxRCRefreshHoverText = 'Refrescar autom√°ticamente';
+var AjaxRCRefreshText = 'Act. autom·t.';
+var AjaxRCRefreshHoverText = 'Refrescar autom·ticamente';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 var ajaxIndicator = 'https://vignette.wikia.nocookie.net/clubpenguin/images/6/68/D_CP_MEM_Loader_34.gif/revision/latest?cb=20120915200111';
 var ajaxRefresh = 10000;

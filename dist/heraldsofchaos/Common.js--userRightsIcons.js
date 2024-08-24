@@ -12,7 +12,7 @@ $(function() {
  
     // COUNCILOR
 
- Â rights["Tatzelwyrm"]      = ["Admin", "Councilor"];
+  rights["Tatzelwyrm"]      = ["Admin", "Councilor"];
  
   // END LIST OF ACCOUNTS GIVEN EXTRA USER RIGHTS ICONS
  

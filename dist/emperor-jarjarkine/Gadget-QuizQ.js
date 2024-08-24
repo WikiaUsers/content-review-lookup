@@ -3,17 +3,17 @@ var quizLang = "en";
 var resultsTextArray = [
 	"Tu peux faire mieux que cela !!",
 	"Tu n'est pas un wikien adepte mais cela viendra  !",
-	"Tu est vraiment douÃ© ! Je paris que tu est un administrateur et que tu as ton propre wiki ! ",
+	"Tu est vraiment doué ! Je paris que tu est un administrateur et que tu as ton propre wiki ! ",
 	"Tu est un expert ! Tu connais pratiquement tout de ce qui est wikia !"
 	];
 var questions = [
 		
 	["Comment est-ce que tu modifie un article??",
 	"En utilisant le boutton modifier qui est au dessus de la page.",
-	"En utilisant le bouton qui est en haut Ã  droite de ton Ã©crant ",]
+	"En utilisant le bouton qui est en haut à droite de ton écrant ",]
 	
 	
-	["Comment commencer la crÃ©ation d'une table dans la syntaxe wiki?",
+	["Comment commencer la création d'une table dans la syntaxe wiki?",
 	"{|",
 	"&lt;table&gt;",
 	"{+",
@@ -23,18 +23,18 @@ var questions = [
 	["MediaWiki:Wikia.css permets aux  admins de",
 	"modifier la'apparence de \"Wikia\" skin",
 	"Modifier toutes les style de pages du wiki",
-	"Ajouter ou enlever certaine fonctionnalitÃ©e du wiki",
+	"Ajouter ou enlever certaine fonctionnalitée du wiki",
 	"Add custom JavaScript functionalities"],
 	
-	["Les bureaucrates ne peuvent pas Ãªtre bloquÃ©s",
+	["Les bureaucrates ne peuvent pas être bloqués",
 	"Faux",
 	"Vrai"],
 	
 	["Normallement, les bureaucrates peuvent",
-	"Bloquer d'autres utilisateurs, donner des droits Ã  d'autres utilisateurs, se retirer du groupe de bureaucrates",
-	"Bloquer d'autres utilisateurs, vÃ©rifier et comparer les adresses IP, donner des droits Ã  d'autres utilisateurs",
-	"AccÃ¨s spÃ©cial: promouvoir l'accÃ¨s spÃ©ciales: Wiki Features, attribuer un ''flag'' aux  bot",
-	"Tout les droits nommÃ©s dans les autres choix"],
+	"Bloquer d'autres utilisateurs, donner des droits à d'autres utilisateurs, se retirer du groupe de bureaucrates",
+	"Bloquer d'autres utilisateurs, vérifier et comparer les adresses IP, donner des droits à d'autres utilisateurs",
+	"Accès spécial: promouvoir l'accès spéciales: Wiki Features, attribuer un ''flag'' aux  bot",
+	"Tout les droits nommés dans les autres choix"],
 	
 	["Wikia is best described as a",
 	"Free wiki farm",
@@ -43,23 +43,23 @@ var questions = [
 	"Entertainment website focused on video games",
 	"Paid web hosting service"],
 	
-	["Pour ajouter ton Ã©criture en '''gras''' tu fais",
+	["Pour ajouter ton écriture en '''gras''' tu fais",
 	"'''texte'''",
 	"&lt;i&gt;texte&lt;/i&gt;",
 	"===text===",
-	"Aucune de ses rÃ©ponses"],
+	"Aucune de ses réponses"],
 	
-	["Si tu veux crÃ©er un modÃ¨le, tu dois crÃ©Ã©er une page modÃ¨le et puis",
-	"Rien d'autre, les modÃ¨les sont comme les autres pages et n'ont pas besoin d'Ãªtre Ã©tiquetÃ© d'une maniÃ¨re particuliÃ¨re",
+	["Si tu veux créer un modèle, tu dois crééer une page modèle et puis",
+	"Rien d'autre, les modèles sont comme les autres pages et n'ont pas besoin d'être étiqueté d'une manière particulière",
 	"Ajouter&lt;template&gt;&lt;/template&gt; tags around the content you want to be included in the template",
-	"Demander Ã  un administrateur de dÃ©finir l'Ã©tat de votre page Â«modÃ¨le'",
-	"Ajouter la nouvelle page a la catÃ©gorie \"Templates\" category"],
+	"Demander à un administrateur de définir l'état de votre page «modèle'",
+	"Ajouter la nouvelle page a la catégorie \"Templates\" category"],
 	
-	["Wikia hÃ©berge wikis dans plus de 200 langues",
+	["Wikia héberge wikis dans plus de 200 langues",
 	"Vrai",
 	"Faux"],
 	
-	["Quel mot avez-vous besoin d'ajouter un article Ã  dÃ©sactiver la table des matiÃ¨res?",
+	["Quel mot avez-vous besoin d'ajouter un article à désactiver la table des matières?",
 	"__NOTOC__",
 	"__TOC__",
 	"&lt;hidetoc /&gt;",

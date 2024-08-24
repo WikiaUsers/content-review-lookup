@@ -1,7 +1,7 @@
 //<pre>
 /**
 * SkinPropagation: Propaga el &useskin= de la URL (siempre que sea posible) por los enlaces y formularios
-* Copyright (C) 2010  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by

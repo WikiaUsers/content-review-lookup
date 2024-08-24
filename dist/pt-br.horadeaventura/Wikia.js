@@ -8,15 +8,15 @@ importArticles({
 });
 
  
-// Desactivar votaciones cuando el hilo estÃ© cerrado
+// Desactivar votaciones cuando el hilo esté cerrado
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','VotaciÃ³n finalizada');
+                                 .attr('value','Votación finalizada');
     }
 });
  
-/* NÃºmero de imÃ¡genes en la galeria
+/* Número de imágenes en la galeria
 $(function(){
     $.ajax({
         'dataType': 'text',

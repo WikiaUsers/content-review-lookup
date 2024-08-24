@@ -1,2 +1,2 @@
 importScript('MediaWiki:Chat.js/options.js');
-importScriptPage('ChatTags/code.js', 'dev'); /* PossibilitÃ© de formater les textes */
+importScriptPage('ChatTags/code.js', 'dev'); /* Possibilité de formater les textes */

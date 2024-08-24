@@ -18,13 +18,13 @@ Permet de n'afficher que les nouvelles pages
 * Licence : ...?
 * Documentation :
 * Auteur : [[wikipedia:fr:User:Dr Brains]]
-* DÃ©veloppement et maintenance :
+* Développement et maintenance :
  
  
-{{CatÃ©gorisation JS|LiveRC}}
+{{Catégorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
+if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
  
 if(typeof(lang_menu.ONLYNEWPAGES)=="undefined") 
  lang_menu.ONLYNEWPAGES = "Nouvelles pages";

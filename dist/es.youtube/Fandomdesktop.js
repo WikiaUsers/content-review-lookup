@@ -13,8 +13,8 @@ window.DiscussionTemplates = {
             name: 'Plantilla:Advertencia/nombre',
             title: 'Advertencia'
         },
-        'ArtÃ­culo muy corto o en blanco': {
-            name: 'Plantilla:Advertencia/artÃ­culo',
+        'Artículo muy corto o en blanco': {
+            name: 'Plantilla:Advertencia/artículo',
             title: 'Advertencia'
         },
     },

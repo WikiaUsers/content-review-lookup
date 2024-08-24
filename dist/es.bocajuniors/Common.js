@@ -1,20 +1,20 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /*
 -----------------------------------------
-C√ìDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+C”DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este c√≥digo: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este cÛdigo: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay m√°s de este n√∫mero de desplegables
-  ocultar todas autom√°ticamente.
+NavigationBarShowDefault : Si hay m·s de este n˙mero de desplegables
+  ocultar todas autom·ticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';
@@ -104,7 +104,7 @@ function createNavigationBarToggleButton() {
 addOnloadHook(createNavigationBarToggleButton);
 
 UserTagsJS.modules.inactive = {
-	days: 30, // Especifica a los cuantos d√≠as a los usuarios les aparecer√° el tag de "inactivo"
+	days: 30, // Especifica a los cuantos dÌas a los usuarios les aparecer· el tag de "inactivo"
 	namespaces: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 500, 501, 1201],
 	zeroIsInactive: false
 };

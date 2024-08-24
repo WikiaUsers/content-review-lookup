@@ -59,8 +59,8 @@ $(function() {
                 '== Licenza ==\n{{Copyright di EA}}': "Qualcos'altro dalla serie The Sims/altre immagini coperte da copyright di EA",
                 '== Licenza ==\n{{Copyright di Wikia}}': "Qualcosa parte dell'interfaccia di Wikia",
 		'== Licenza ==\n{{Uso equo}}': 'Uso equo',
-                '== Licenza ==\n{{cc-by-sa-3.0}}': 'Questo file Ã¨ sotto licenza Creative Commons Attribuzione 3.0 (licenza libera)',
-                '== Licenza ==\n{{GFDL}}': 'Questo file Ã¨ sotto licenza GFDL (licenza libera)',
+                '== Licenza ==\n{{cc-by-sa-3.0}}': 'Questo file è sotto licenza Creative Commons Attribuzione 3.0 (licenza libera)',
+                '== Licenza ==\n{{GFDL}}': 'Questo file è sotto licenza GFDL (licenza libera)',
                 '== Licenza ==\n{{PD}}': 'Pubblico dominio',
                 '== Licenza ==\n{{Nessuna licenza}}': 'Licenza sconosciuta'
     };

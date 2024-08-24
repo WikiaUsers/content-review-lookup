@@ -10,7 +10,7 @@ function insertSummary ( txt ) {
 	if ( vv.indexOf( txt ) !== -1 ) {
 		return;
 	}
-	if ( /[^,; \(\/]$/.test( vv ) && !/disc\.?\]\]\)$/.test(vv) && !/discusÃ£o\]\]\)$/.test(vv) ) {
+	if ( /[^,; \(\/]$/.test( vv ) && !/disc\.?\]\]\)$/.test(vv) && !/discusão\]\]\)$/.test(vv) ) {
 		vv += pointSummaryButtonsA;
 	}
 	if ( /[^ \(]$/.test( vv ) ) {
@@ -38,9 +38,9 @@ function sumButtons() {
 	$( '<div id="userSummaryButtonsA">' ).insertAfter( '#wpSummary' );
 	$.each(
 		[
-		'WikificaÃ§Ã£o', 'Guia de estilo', 'CorreÃ§Ã£o de pontuaÃ§Ã£o', 'Organizando', 'Atualizando',
-		'Problema', 'Categoria', 'PredefiniÃ§Ã£o', 'DocumentaÃ§Ã£o', 'EliminaÃ§Ã£o',
- 		'IlustraÃ§Ã£o', 'AdiÃ§Ã£o', 'Nova pÃ¡gina traduzida', 'Alterado traduÃ§Ã£o oficial', 'Unificando categorias', 'ReferÃªncias', 'CorreÃ§Ãµes', 'DocumentaÃ§Ã£o atualizada', 'Corrigindo traduÃ§Ã£o automatizada', 'Interwiki', 'Nova categoria', 'AdiÃ§Ã£o de nome para portuguÃªs europeu', 'AtualizaÃ§Ã£o para 1.17', 'RemoÃ§Ã£o de vandalismo'
+		'Wikificação', 'Guia de estilo', 'Correção de pontuação', 'Organizando', 'Atualizando',
+		'Problema', 'Categoria', 'Predefinição', 'Documentação', 'Eliminação',
+ 		'Ilustração', 'Adição', 'Nova página traduzida', 'Alterado tradução oficial', 'Unificando categorias', 'Referências', 'Correções', 'Documentação atualizada', 'Corrigindo tradução automatizada', 'Interwiki', 'Nova categoria', 'Adição de nome para português europeu', 'Atualização para 1.17', 'Remoção de vandalismo'
 		],
 		function ( i, s ) {
 			SumButton( s.replace( /\|.*/, '' ), s.replace( /\|/, '' ) );

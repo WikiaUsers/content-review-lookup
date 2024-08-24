@@ -1,4 +1,4 @@
-/* T√§m√§n sivun koodi liitet√§√§n jokaiseen sivulataukseen */
+/* T‰m‰n sivun koodi liitet‰‰n jokaiseen sivulataukseen */
 
 // ============================================================
  // BEGIN Enable multiple onload functions
@@ -26,7 +26,7 @@
  
  // set up the words in your language
  var NavigationBarHide = '[piilota]';
- var NavigationBarShow = '[n√§yt√§]';
+ var NavigationBarShow = '[n‰yt‰]';
  
  // set up max count of Navigation Bars on page,
  // if there are more, all will be hidden
@@ -162,7 +162,7 @@
  
  reskin = {
     "Etusivu": "Etusivu.css"
- //Kaikkien muiden paitsi viimeisen rivin lopussa pit√§isi olla pilkku!
+ //Kaikkien muiden paitsi viimeisen rivin lopussa pit‰isi olla pilkku!
  }
  var skinName;
 

@@ -81,7 +81,7 @@ function dataTemplateHandle(index) {
 		});
 	var savespan = $('<span id="te-save" style="display: none;">Edit&nbsp;summary:&nbsp;<input type="text" id="te-summary" /></span>')
 		.append([' ', save]);
-	var retry = $('<input type="button" class="button" id="te-retry-button" style="display: none;" value="SprÃ³buj ponownie" />')
+	var retry = $('<input type="button" class="button" id="te-retry-button" style="display: none;" value="Spróbuj ponownie" />')
 		.data('template', index)
 		.click(function() {
 			dataTemplateGetToken(wgArticleId);

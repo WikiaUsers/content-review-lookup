@@ -2,29 +2,29 @@
  * Opciones del Chat
  * Cambia como se ve Special:Chat y las funciones usando una interfaz
  * Emplea "cookies" para guardar los cambios personales
- * Una potencial soluciÃ³n a todos los problemas con el ChatHacks
+ * Una potencial solución a todos los problemas con el ChatHacks
  *
  * Muchas gracias al chat de Call of Duty Wiki,
- * el cual soportÃ³ y ayudo al buen funcionamiento y desarrollo de este cÃ³digo.
- * Apreciamos su colaboraciÃ³n. Â¡Gracias!
+ * el cual soportó y ayudo al buen funcionamiento y desarrollo de este código.
+ * Apreciamos su colaboración. ¡Gracias!
  *
  * ADVERTENCIA
  * No debe ser cargado en MediaWiki:Chat.js/load.js 
  * con MediaWiki:Chat-edit-count.
- * AÃ±Ã¡delo en MediaWiki:Chat-welcome-message, o
- * podrÃ­a causarse un mal funcionamiento.
+ * Añádelo en MediaWiki:Chat-welcome-message, o
+ * podría causarse un mal funcionamiento.
  * Generalizando: Improvisa la interfaz del usuario.
  *
- * @versiÃ³n: 1.3.1
+ * @versión: 1.3.1
  * @autor: Callofduty4
  * @autor: Madnessfan34537
  * @autor: Sactage <sactage@gmail.com>
- * @traducciÃ³n al espaÃ±ol: Pintor Smeargle
+ * @traducción al español: Pintor Smeargle
  */
  
  
 /**
- * FunciÃ³n para establecer cookies
+ * Función para establecer cookies
  * @param cookie_name Representando el nombre de las cookies
  * @param data El valor establecido
  */
@@ -37,9 +37,9 @@ function setCookie( cookie_name, data ) {
 }
  
 /**
- * FunciÃ³n para obtener el valor de la cookie
+ * Función para obtener el valor de la cookie
  * @param cookie_name Representando el nombre de las cookies
- * @param pos El Ã­ndice de valor obtenido de la cookie
+ * @param pos El índice de valor obtenido de la cookie
  * @return Valor de la cookie
  */
 function getCookie( cookie_name, pos ) {
@@ -56,10 +56,10 @@ function getCookie( cookie_name, pos ) {
 }
  
 /**
- * FunciÃ³n para comprobar si el mÃ³dulo de opciones del chat estÃ¡ habilitado
+ * Función para comprobar si el módulo de opciones del chat está habilitado
  * @desde 1.3.0
  * @autor Sactage
- * @param name Nombre del mÃ³dulo de opciones
+ * @param name Nombre del módulo de opciones
  * @return boolean
  */
 function isEnabled(module) {
@@ -92,7 +92,7 @@ function isEnabled(module) {
 	return (c === "true");
 }
  
-// Guarda las opciones de persoalizaciÃ³n del chat como un objeto
+// Guarda las opciones de persoalización del chat como un objeto
 var chatOptions = {
 	look: {
 		fontColor: getCookie("customisation", 1),
@@ -129,7 +129,7 @@ var chatOptions = {
 			loaded: false,
 			load: function () {
 				importScriptPage("User:Madnessfan34537/multikick.js","cod");
-				$('<a id="multiKickerButton" class="wikia-button" href="javascript:showPopup()" style="position:absolute; right:55px; top:22px;">Multikick</a>').appendTo('.Write'); // para prevenir que el botÃ³n no cargue
+				$('<a id="multiKickerButton" class="wikia-button" href="javascript:showPopup()" style="position:absolute; right:55px; top:22px;">Multikick</a>').appendTo('.Write'); // para prevenir que el botón no cargue
 				this.loaded = true;
 			}
 		},
@@ -201,8 +201,8 @@ function updateChatSkin() {
  * Deshabilita las opciones de la ventana
  */
 function openOptions() {
-	// GENERALIZANDO: Â¿Matar esto con fuego? Esa fue la mejor manera de hacer esto - pero usa $.showModal
-	var $optionsWindowHTML = $.showCustomModal( "Opciones", '<form method="" name="" class="WikiaForm "><fieldset><p style="font-size:120%; font-weight:bold; font-style:italic;">Cambios en el color</p><p style="font-size:80%;">Ingresa el <a href="http://www.w3schools.com/html/html_colornames.asp" target="_blank">nombre del color</a> o <a href="http://html-color-codes.info/" target="_blank">su cÃ³digo</a><p>Fondo del chat&nbsp;<input type="text" name="backgroundColourinput" id="backgroundColourinput" value="' + chatOptions.look.backgroundColor + '"/></p><br/><p>Fondo de tus propios mensajes&nbsp;<input type="text" name="selfPostColourinput" id="selfPostColourinput" value="' + chatOptions.look.selfPostColor + '"/></p><br/><p>Fondo&nbsp;<input type="text" name="surroundColourinput" id="surroundColourinput" value="' + chatOptions.look.surroundColor + '"/></p><br/><p>Color de la letra&nbsp;<input type="text" name="fontColourinput" id="fontColourinput" value="' + chatOptions.look.fontColor + '"/></p><br/><p style="font-size:120%; font-weight:bold; font-style:italic;">Font</p><p>Letra fuente <select id="fontList"><option value="arial" style="font-family:arial;">Arial</option><option value="courier new" style="font-family:courier new;">Courier new</option><option value="georgia" style="font-family:georgia;">Georgia</option><option value="palatino linotype" style="font-family:palatino linotype;">Palatino linotype</option><option value="Comic Sans MS" style="font-family:Comic Sans MS;">Comic sans</option><option value="tahoma" style="font-family:tahoma;">Tahoma</option><option value="Trebuchet MS" style="font-family:Trebuchet MS;">Trebuchet MS</option><option value="Verdana" style="font-family:Verdana;">Verdana</option><option value="Lucida Console" style="font-family:Lucida Console;">Lucida Console</option></select></p><br/><p style="font-size:120%; font-weight:bold; font-style:italic;">AÃ±adir funcionalidades</p><input type="checkbox" name="chatHacks" value="chatHacks" id="chatHacks"/> Habilitar <a href="http://c.wikia.com/wiki/User:Monchoman45/ChatHacks.js" target="_blank">ChatHacks</a>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="multiPM" value="multiPM" id="multiPM"/> Habilitar <a href="http://pintorsmeargle.wikia.com/wiki/MediaWiki%3APM-es.js" target="_blank">privado grupal</a><br/><input type="checkbox" name="tabComplete" value="tabComplete" id="tabComplete"/>Habilitar <a href="http://runescape.wikia.com/wiki/User:Joeytje50/tabinsert.js" target="_blank">tab complete</a>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="searchBar" value="searchBar" id="searchBar"/>Habilitar <a href="http://pintorkagamine.wikia.com/wiki/MediaWiki:Searchbar.js" target="_blank">barra de bÃºsqueda</a><br/><input type="checkbox" name="multiKick" value="multiKick" id="multiKick" />Habilitar <a href="http://callofduty.wikia.com/wiki/User:Madnessfan34537/multikick.js" target="_blank">multi expulsiÃ³n</a>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="messageBlocker" value="messageBlocker" id="messageBlocker"/>Habilitar <a href="http://dev.wikia.com/wiki/MessageBlocker" target="_blank">bloqueador de mensajes</a><br /><input type="checkbox" name="stopSideScroll" value="stopSideScroll" id="stopSideScroll"/>Detener el scroll lateral despuÃ©s de que alguien hace spam</fieldset></form>', {
+	// GENERALIZANDO: ¿Matar esto con fuego? Esa fue la mejor manera de hacer esto - pero usa $.showModal
+	var $optionsWindowHTML = $.showCustomModal( "Opciones", '<form method="" name="" class="WikiaForm "><fieldset><p style="font-size:120%; font-weight:bold; font-style:italic;">Cambios en el color</p><p style="font-size:80%;">Ingresa el <a href="http://www.w3schools.com/html/html_colornames.asp" target="_blank">nombre del color</a> o <a href="http://html-color-codes.info/" target="_blank">su código</a><p>Fondo del chat&nbsp;<input type="text" name="backgroundColourinput" id="backgroundColourinput" value="' + chatOptions.look.backgroundColor + '"/></p><br/><p>Fondo de tus propios mensajes&nbsp;<input type="text" name="selfPostColourinput" id="selfPostColourinput" value="' + chatOptions.look.selfPostColor + '"/></p><br/><p>Fondo&nbsp;<input type="text" name="surroundColourinput" id="surroundColourinput" value="' + chatOptions.look.surroundColor + '"/></p><br/><p>Color de la letra&nbsp;<input type="text" name="fontColourinput" id="fontColourinput" value="' + chatOptions.look.fontColor + '"/></p><br/><p style="font-size:120%; font-weight:bold; font-style:italic;">Font</p><p>Letra fuente <select id="fontList"><option value="arial" style="font-family:arial;">Arial</option><option value="courier new" style="font-family:courier new;">Courier new</option><option value="georgia" style="font-family:georgia;">Georgia</option><option value="palatino linotype" style="font-family:palatino linotype;">Palatino linotype</option><option value="Comic Sans MS" style="font-family:Comic Sans MS;">Comic sans</option><option value="tahoma" style="font-family:tahoma;">Tahoma</option><option value="Trebuchet MS" style="font-family:Trebuchet MS;">Trebuchet MS</option><option value="Verdana" style="font-family:Verdana;">Verdana</option><option value="Lucida Console" style="font-family:Lucida Console;">Lucida Console</option></select></p><br/><p style="font-size:120%; font-weight:bold; font-style:italic;">Añadir funcionalidades</p><input type="checkbox" name="chatHacks" value="chatHacks" id="chatHacks"/> Habilitar <a href="http://c.wikia.com/wiki/User:Monchoman45/ChatHacks.js" target="_blank">ChatHacks</a>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="multiPM" value="multiPM" id="multiPM"/> Habilitar <a href="http://pintorsmeargle.wikia.com/wiki/MediaWiki%3APM-es.js" target="_blank">privado grupal</a><br/><input type="checkbox" name="tabComplete" value="tabComplete" id="tabComplete"/>Habilitar <a href="http://runescape.wikia.com/wiki/User:Joeytje50/tabinsert.js" target="_blank">tab complete</a>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="searchBar" value="searchBar" id="searchBar"/>Habilitar <a href="http://pintorkagamine.wikia.com/wiki/MediaWiki:Searchbar.js" target="_blank">barra de búsqueda</a><br/><input type="checkbox" name="multiKick" value="multiKick" id="multiKick" />Habilitar <a href="http://callofduty.wikia.com/wiki/User:Madnessfan34537/multikick.js" target="_blank">multi expulsión</a>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="messageBlocker" value="messageBlocker" id="messageBlocker"/>Habilitar <a href="http://dev.wikia.com/wiki/MessageBlocker" target="_blank">bloqueador de mensajes</a><br /><input type="checkbox" name="stopSideScroll" value="stopSideScroll" id="stopSideScroll"/>Detener el scroll lateral después de que alguien hace spam</fieldset></form>', {
 		id: "optionsWindow",
 	    width: 600,
 	    buttons: [
@@ -216,7 +216,7 @@ function openOptions() {
 		{
 			id: "updateCookie",
 			defaultButton: true,
-			message: "Â¡Mejorado!",
+			message: "¡Mejorado!",
 			handler: function () {
 				updateCookie();
 		    }
@@ -224,7 +224,7 @@ function openOptions() {
 		]
 	});
 	$(".close").click(cancelChanges);
-	// Revisa si varios mÃ³dulos han sido habilitados por el usuario, y consulta si las funciones lo estÃ¡n
+	// Revisa si varios módulos han sido habilitados por el usuario, y consulta si las funciones lo están
 	if (chatOptions.modules.chatHacks.enabled)
 		$("#chatHacks").attr("checked",true);
 	if (chatOptions.modules.multiPM.enabled)
@@ -246,7 +246,7 @@ function openOptions() {
 			$("#fontList").append('<option value="' + font+ '" style="font-family:' + font + ';">' + font.slice(0,1).toUpperCase() + font.slice(1) + '</option>');
 		}
 	}
-	// Posiciona ciertos mÃ³dulos "checkboxes" para deshabilitar una condiciÃ³n especÃ­fica que no se reconoce
+	// Posiciona ciertos módulos "checkboxes" para deshabilitar una condición específica que no se reconoce
 	if (!wgUserGroups.indexOf("chatmoderator") && !wgUserGroups.indexOf("sysop") && !wgUserGroups.indexOf("staff") && !wgUserGroups.indexOf("helper") && !wgUserGroups.indexOf("vstf"))
 		$("#multiKick").attr("disabled",true);
  
@@ -254,7 +254,7 @@ function openOptions() {
 }
  
 /**
- * Cierra la ventanilla de opciones sin guardar ningÃºn cambioClose the options window without saving any changes
+ * Cierra la ventanilla de opciones sin guardar ningún cambioClose the options window without saving any changes
  */
 function cancelChanges() {
 	var dialog = $('#optionsWindow');
@@ -288,7 +288,7 @@ function updateCookie() {
 }
  
  
-// Agrega el botÃ³n de opciones
+// Agrega el botón de opciones
 if (!$("#chatOptionsButton").length) {
 	$('.Rail').prepend('<div id="chatOptionsButton" onclick="openOptions();" style="margin:auto; cursor: pointer; font-size:150%; bottom:4px; padding-bottom:2px; border-bottom: 1px solid #CCCCCC; width:90%;" align="center"><img src="' + chatOptions.look.modalIcon + '" width="18px"/>&nbsp;Opciones</div>'); // Previene que aparezcan muchos botones
 }

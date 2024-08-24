@@ -64,7 +64,7 @@ $('.api-fetch-wam').html(Wiki.wam);
 /*
 var date = new Date();
 var monthnames = [];
-monthnames['de'] = ['Januar','Februar','MÃ¤rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+monthnames['de'] = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 var monthname = monthnames['de'][date.getMonth()];
 $.get('https://de.wikipedia.org/w/api.php?action=query&prop=extracts&rvlimit=1&rvprop=content&format=json&titles=Wikipedia:Hauptseite/Jahrestage/' + monthname + '/' + date.getDate()).error(function(error) {
     console.log(error);

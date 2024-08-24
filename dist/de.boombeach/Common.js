@@ -14,13 +14,13 @@ window.UserTagsJS = {
         'vstf': { u: 'VSTF', link:'Hilfe:VSTF',},
         'bot': { u: 'Bot-Konto', link:'Hilfe:Bots',},
         'bannedfromchat': { u: 'Aus dem Chat verbannt',},
-        'founder': { u: 'Gr√ºnder', link:'Hilfe:Gr√ºnder',},
+        'founder': { u: 'Gr¸nder', link:'Hilfe:Gr¸nder',},
         'bureaucrat': { 
-            u: 'B√ºrokrat',
-            m: 'B√ºrokrat',
-            f: 'B√ºrokratin',
+            u: 'B¸rokrat',
+            m: 'B¸rokrat',
+            f: 'B¸rokratin',
             order: 1, 
-            link:'Boom Beach Wiki:B√ºrokraten'
+            link:'Boom Beach Wiki:B¸rokraten'
         },
         'sysop': { 
             u: 'Administrator',
@@ -48,7 +48,7 @@ window.UserTagsJS = {
             m: 'Rollback-Benutzer',
             f: 'Rollback-Benutzerin',
             order: 3,
-            link:'Hilfe:Zur√ºcksetzen'
+            link:'Hilfe:Zur¸cksetzen'
         },
         'chatmoderator': { 
             u: 'Chat-Moderator',
@@ -71,7 +71,7 @@ UserTagsJS.modules.mwGroups = [
    'vstf'
 ];
 
-window.ajaxPages = ['Spezial:Letzte_√Ñnderungen','Spezial:WikiActivity'];
+window.ajaxPages = ['Spezial:Letzte_ƒnderungen','Spezial:WikiActivity'];
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';
 
@@ -110,7 +110,7 @@ function Toggler(ToggleID) {
     // Nach SPAN-Togglern suchen (das sind die, die alles steuern)
     if (TogglerSPAN[i].className.search("Toggler") >= 0) {
       // Jetzt wird geguckt, ob der vorliegende Toggler der aktive Toggler ist
-      // Damit wird verhindert, dass zuf√§llig 2 Toggler aktiv sind. (Der letzte ist der dominante)
+      // Damit wird verhindert, dass zuf‰llig 2 Toggler aktiv sind. (Der letzte ist der dominante)
       if (TogglerSPAN[i].getAttribute('data-Toggle') == TogglerAktiv) 
         TogglerSPAN[i].className="Toggler aktiv";
       else
@@ -121,7 +121,7 @@ function Toggler(ToggleID) {
   for (i=0; i<TogglerDIV.length; i++) {
     // Nach DIV-Togglern suchen (das sind die, die versteckt / gezeigt werden)
     if (TogglerDIV[i].getAttribute('data-Toggle')) {
-      // Wenn TogglerDIV-ID mit der aktiven ID √ºberein stimmt, wird es angezeigt, sonst nicht
+      // Wenn TogglerDIV-ID mit der aktiven ID ¸berein stimmt, wird es angezeigt, sonst nicht
       if (TogglerDIV[i].getAttribute('data-Toggle') == TogglerAktiv) 
         TogglerDIV[i].style.display='';
       else
@@ -131,7 +131,7 @@ function Toggler(ToggleID) {
   return true;
 }
  
-//onclick-Funktion f√ºr SPAN-Toggler setzen (damit wird es gangbar gemacht)
+//onclick-Funktion f¸r SPAN-Toggler setzen (damit wird es gangbar gemacht)
 var TogglerObjekt = document.getElementById("WikiaArticle").getElementsByTagName('span');
 for (i=0; i<TogglerObjekt.length; i++) {
   // Nach SPAN-Togglern suchen (das sind die, die alles steuern)
@@ -146,7 +146,7 @@ for (i=0; i<TogglerObjekt.length; i++) {
 // Erster Funktionsaufruf, damit nach Laden der Seite die entsprechenden Toggler versteckt sind
 Toggler();
 
-// F√ºgt eine mache einen Account Notiz hinzu, wenn der Leser nicht registriert ist
+// F¸gt eine mache einen Account Notiz hinzu, wenn der Leser nicht registriert ist
 $(window).load(function() {
     if (wgUserName === null) {
         $('section#WikiaRecentActivity').before('<section class="module" id="sidebarReaderNotice"><h2>Hey, Leser!</h2><p>Magst du das Wiki und hasst aber Werbung? <a href="http://de.boombeach.wikia.com/wiki/Special:UserSignup">Account erstellen</a> es ist schnell und einfach, und es entfernt Werbung im gesamten Wikia!</p></section>');

@@ -64,7 +64,7 @@ var bInterval = setInterval(function() {
                 value.slice(5).split(/ for | because (.+)?/gi).filter(Boolean);
             $this.val('');
             if (t[0] == mw.config.get('wgUserName')) {
-                mainRoom.viewDiscussion.chatUL.append('<li class="inline-alert">VocÃª nÃ£o\'pode banir a si mesmo.</li>');
+                mainRoom.viewDiscussion.chatUL.append('<li class="inline-alert">Você não\'pode banir a si mesmo.</li>');
                 mainRoom.viewDiscussion.scrollToBottom();
             }
             if (!t[1]) t[1] = window.defCBanDuration || '';
@@ -75,7 +75,7 @@ var bInterval = setInterval(function() {
                 reason: t[2]
             }).xport());
             if (window.wasDefault) {
-                mainRoom.viewDiscussion.chatUL.append('<li class="inline-alert">Tempo de banimento invÃ¡lido.</li>');
+                mainRoom.viewDiscussion.chatUL.append('<li class="inline-alert">Tempo de banimento inválido.</li>');
                 mainRoom.viewDiscussion.scrollToBottom();
                 wasDefault = false;
             }

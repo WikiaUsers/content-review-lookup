@@ -1,6 +1,6 @@
 /* Auto Refresh */
-AjaxRCRefreshText = 'Actualizaci√≥n automatica'; 
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente'; 
+AjaxRCRefreshText = 'ActualizaciÛn automatica'; 
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente'; 
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"]; 
 
 /* User Tags */

@@ -8,7 +8,7 @@ window.UserTagsJS = {
 	}
 };
 UserTagsJS.modules.custom = {
-	'Jos√© Dedede': ['csshelper', 'templatehelper', 'jshelper']
+	'JosÈ Dedede': ['csshelper', 'templatehelper', 'jshelper']
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
@@ -28,7 +28,7 @@ importArticles({
 // Ajax de dev wiki
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Seguimiento","Especial:Registro","Especial:Contribuciones"];
 AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Autom√°ticamente refresca la p√°gina';
+AjaxRCRefreshHoverText = 'Autom·ticamente refresca la p·gina';
 importScriptPage('AjaxRC/code.js', 'dev');
 var ajaxindicator = 'http://images2.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 
@@ -41,12 +41,12 @@ $(function() {
 
  /* End of the {{USERNAME}} replacement */
 
-/* Borrado de art√≠culos (cr√©dito a Usuario:Benfutbol10) */
+/* Borrado de artÌculos (crÈdito a Usuario:Benfutbol10) */
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Ninjago:Reglas|Incumplimiento de reglas de art√≠culos]]',
+  'summary': '[[Wiki Ninjago:Reglas|Incumplimiento de reglas de artÌculos]]',
   'accesskey': '1',
-  'label': 'Incump. art√≠culos'};
+  'label': 'Incump. artÌculos'};
 fdButtons[fdButtons.length] = {
   'summary': '[[Wiki Ninjago:Reglas|Incumplimiento de reglas de archivos]]',
   'accesskey': '2',
@@ -56,9 +56,9 @@ fdButtons[fdButtons.length] = {
   'accesskey': '3',
   'label': 'Incump. general'};
 fdButtons[fdButtons.length] = {
-  'summary': 'A petici√≥n del mismo autor',
+  'summary': 'A peticiÛn del mismo autor',
   'accesskey': '4',
-  'label': 'A petici√≥n del autor'};
+  'label': 'A peticiÛn del autor'};
 
 /* Prueba 
 function destac() {

@@ -1,6 +1,6 @@
 /** <nowiki>
  * Originally a flexible form script for SOAP Wiki reports
- * Adapted to work for Community Central adoptions by CÃ¶rey
+ * Adapted to work for Community Central adoptions by Cörey
  *
  * @author Lil' Miss Rarity - original author
  * @author Joeytje50        - i18n fixes and dropdown
@@ -9,7 +9,7 @@
  * @author Cqm              - Major cleanup/rewrite
  * @author TK-999           - wds buttons
  * @author Noreplyz         - i18n fixes, template, design
- * @author CÃ¶rey            - Adapted to work for Community Central adoptions
+ * @author Cörey            - Adapted to work for Community Central adoptions
  *
  * TODO check if this script is needed before loading i18n
  * @license: CC-BY-NC-SA

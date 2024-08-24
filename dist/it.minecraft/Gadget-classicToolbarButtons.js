@@ -82,7 +82,7 @@ if (
 				'Inserisci un collegamento',
 				'<ref>',
 				'</ref>',
-				'Inserisci una nota a piÃ¨ di pagina qui'
+				'Inserisci una nota a piè di pagina qui'
 			]
 		], function() {
 			mw.toolbar.addButton.apply( null, this );

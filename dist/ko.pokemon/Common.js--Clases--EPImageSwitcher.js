@@ -1,7 +1,7 @@
 //<pre>
 /**
 * EPImageSwitcher: Al pasar el mouse sobre un enlace de un episodio, cambia la imagen mostrada en la plantilla
-* Copyright (C) 2009  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2009  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by

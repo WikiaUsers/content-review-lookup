@@ -1,16 +1,16 @@
-/*Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en la piel Wikia (oasis).*/
+/*Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en la piel Wikia (oasis).*/
 /*Importaciones de Developers Wiki*/
-/**CÃ³digos**/
+/**Códigos**/
 importArticles({
   type: 'script',
   articles: [
-/***Opciones extendidas para la barra de navegaciÃ³n***/
+/***Opciones extendidas para la barra de navegación***/
     'u:dev:ExtendedNavigation/code.js',
-/***BotÃ³n para editar la bienvenida del muro***/
+/***Botón para editar la bienvenida del muro***/
     'u:dev:Interlanguage Flags/code.js',
 /***Tabla de contenidos flotante***/
     'u:dev:FloatingToc/code.js',
-/***Sugerencias en bÃºsquedas de Especial:Buscar***/
+/***Sugerencias en búsquedas de Especial:Buscar***/
     'u:dev:SearchSuggest/code.js'
   ]
 });

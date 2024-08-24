@@ -9,7 +9,7 @@
  var ModeradorTag = "Moderador del Chat";
  var AdministradorTag = "Administrador";
  var AdministadoraTag = "Administradora";
- var BurÃ³crataTag = "BurÃ³crata";
+ var BurócrataTag = "Burócrata";
  var FundadorTag = "Fundador";
  // BEGIN list of accounts given extra user rights icons
  // Be sure that the last line listed for modified rights is proceeded by a semi-colon rather than a comma.
@@ -37,8 +37,8 @@
 
   rights["Speedmaster78"]                                     = [ AdministradorTag];
  
-   // BURÃ“CRATAS
-  rights["Mordesonicspeed"]                                     = [ BurÃ³crataTag];
+   // BURÓCRATAS
+  rights["Mordesonicspeed"]                                     = [ BurócrataTag];
  
  // END list of accounts given extra user rights icons
 if (mw.config.get('wgCanonicalSpecialPageName', '') == "Contributions" && wgPageName.indexOf('/') != -1) {''

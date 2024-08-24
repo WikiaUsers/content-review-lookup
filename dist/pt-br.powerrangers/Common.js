@@ -1,6 +1,6 @@
-/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
+/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
 
-/* Das folgende JavaScript wird f√ºr alle Benutzer geladen. */
+/* Das folgende JavaScript wird f¸r alle Benutzer geladen. */
 
 //================================================================================
 //*** import Onlyifuploading-functions

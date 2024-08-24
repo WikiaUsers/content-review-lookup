@@ -14,7 +14,7 @@ window.UserTagsJS = {
 };
 UserTagsJS.modules.inactive = {
 	days: 30,
-	namespaces: [0, 'DiscusiÃ³n', 'DiscusiÃ³n de usuario', 'Foro'] // Edits must be to articles or talk pages or user talk pages or the forum to count, others don't count
+	namespaces: [0, 'Discusión', 'Discusión de usuario', 'Foro'] // Edits must be to articles or talk pages or user talk pages or the forum to count, others don't count
 };
 UserTagsJS.modules.mwGroups = ['sysop', 'bannedfromchat'];
 UserTagsJS.modules.custom = {
@@ -72,7 +72,7 @@ function onloadhookcustom() {
   var replace = document.getElementById("OnlineChat");
 if (null != replace) {
     var getvalue = replace.getAttribute("class");
-    replace.innerHTML='<object width="600" height="650" id="obj_1334882127625"><param name="movie" value="http://beybladewiki.chatango.com/group"/><param name="wmode" value="transparent"/><param name="AllowScriptAccess" VALUE="always"/><param name="AllowNetworking" VALUE="all"/><param name="AllowFullScreen" VALUE="true"/><param name="flashvars" value="cid=1334882127625&v=0&w=0"/><embed id="emb_1334882127625" src="http://beybladewiki.chatango.com/group" width="600" height="650" wmode="transparent" allowScriptAccess="always" allowNetworking="all" type="application/x-shockwave-flash" allowFullScreen="true" flashvars="cid=1334882127625&v=0&w=0"></embed></object><br>[ <a href="http://beybladewiki.chatango.com/clonegroup?ts=1334882127625">Copiar esto</a> | <a href="http://chatango.com/creategroup?ts=1334882127625">Empezar nuevo</a> | <a href="http://beybladewiki.chatango.com">TamaÃ±o completo</a> ]';
+    replace.innerHTML='<object width="600" height="650" id="obj_1334882127625"><param name="movie" value="http://beybladewiki.chatango.com/group"/><param name="wmode" value="transparent"/><param name="AllowScriptAccess" VALUE="always"/><param name="AllowNetworking" VALUE="all"/><param name="AllowFullScreen" VALUE="true"/><param name="flashvars" value="cid=1334882127625&v=0&w=0"/><embed id="emb_1334882127625" src="http://beybladewiki.chatango.com/group" width="600" height="650" wmode="transparent" allowScriptAccess="always" allowNetworking="all" type="application/x-shockwave-flash" allowFullScreen="true" flashvars="cid=1334882127625&v=0&w=0"></embed></object><br>[ <a href="http://beybladewiki.chatango.com/clonegroup?ts=1334882127625">Copiar esto</a> | <a href="http://chatango.com/creategroup?ts=1334882127625">Empezar nuevo</a> | <a href="http://beybladewiki.chatango.com">Tamaño completo</a> ]';
   }
 }
  

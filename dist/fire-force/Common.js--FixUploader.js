@@ -5,7 +5,7 @@
  * Builds a form for easy uploading of images
  * and to ensure proper rationale and licensing
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
- * @author: CeldrÃ¸n (https://naruto.fandom.com/fr/wiki/User:CeldrÃ¸n)
+ * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
  * @License: CC-BY-SA - https://creativecommons.org/licenses/by-sa/3.0/
  */
 

@@ -35,7 +35,7 @@ $.ajax( { //http://stackoverflow.com/questions/6974684/how-to-send-formdata-obje
                           }
                         }
                         console.log("success!");
-                        alert('Fichier enregistrÃ©.');
+                        alert('Fichier enregistré.');
 		},
 		error:function(xhr,status, error){
 			console.log(error);
@@ -66,7 +66,7 @@ var troopHTML = '\
             <input type="text" size="25" maxlength="20" id="Username"/> \
         <p class="Image">Couverture de la Fanfic (optionnel) :</p> \
             <input type="file" id="Files" name="files[]" multiple /> \
-        <p>CatÃ©gorie de votre fanfic:</p> \
+        <p>Catégorie de votre fanfic:</p> \
             <select id="Category" name="Saison"> \
               <option value="Inazuma Eleven" selected>Inazuma Eleven</option> \
               <option value="Inazuma Eleven GO" selected>Inazuma Eleven GO</option> \

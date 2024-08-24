@@ -1,6 +1,6 @@
 /**
  * Agregated Icons V1.0.1 Wiki JPop Spanish
- * Iconos m√°s amigables en retina, Cargados con fuentes de licencia Cretive Commons,
+ * Iconos m·s amigables en retina, Cargados con fuentes de licencia Cretive Commons,
  * MIT, GPL, GNU, etc...
  */
 function faComments() {

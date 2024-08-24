@@ -2,7 +2,7 @@
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */
@@ -15,7 +15,7 @@ $(function () {
 
         my = $.extend({
             question: 'Cette page contient pas mal de spoilers. Voulez-vous toutefois continuer ?',
-            yes: 'Oui s\'il vous plaÃ®t',
+            yes: 'Oui s\'il vous plaît',
             no: 'Non, pas question',
             isSpoiler: function () {
                 return (/^Spoiler\:/.test(document.title));
@@ -123,7 +123,7 @@ $(function () {
 
 SpoilerAlert = {
     question: 'Cette page contient pas mal de spoilers. Voulez-vous toutefois continuer ?',
-    yes: 'Oui s\'il vous plaÃ®t',
+    yes: 'Oui s\'il vous plaît',
     no: 'Non, pas question',
     isSpoiler: function () {
         return Boolean($('#spoiler').length);

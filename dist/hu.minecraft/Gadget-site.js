@@ -13,7 +13,7 @@ var i18n = {
 	// Page loader
 	hideText: 'hide',
 	showText: 'show',
-	loadErrorTitle: 'Hiba tÃ¶rtÃ©nt a tartalom betÃ¶ltÃ©se sorÃ¡n'
+	loadErrorTitle: 'Hiba történt a tartalom betöltése során'
 };
 
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */

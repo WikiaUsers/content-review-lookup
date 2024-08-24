@@ -1,4 +1,4 @@
-/* TraÃ­do de bioshock.wikia.com */
+/* Traído de bioshock.wikia.com */
 // Wikia's own WikiaScriptLoader isn't automatically included in other skins such as monobook.
 // Presumably this is because they no longer support them. This checks to see if WikiaScriptLoader 
 // function reference has been declared, and if it has not, it creates it. Backwards compatibility

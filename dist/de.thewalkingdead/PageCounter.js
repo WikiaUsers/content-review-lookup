@@ -1,9 +1,9 @@
 /*********************************************************\
-  SeitenzÃ¤hler
-  Jedes Mal wenn eine Seite geladen wird, wird ein ZÃ¤hler auf VERWALTUNG:[[PAGENAME]] erhÃ¶ht.
-  AuÃŸerdem wird eine Historie erstellt, sodass man sehen kann wann und wer als letztes auf der Seite war
-  Es wird eine MÃ¶glichkeit geben per Vorlage eine Kategorie zu setzen, sodass man Artikel nach:
-  * am hÃ¤ufigsten besucht in 
+  Seitenzähler
+  Jedes Mal wenn eine Seite geladen wird, wird ein Zähler auf VERWALTUNG:[[PAGENAME]] erhöht.
+  Außerdem wird eine Historie erstellt, sodass man sehen kann wann und wer als letztes auf der Seite war
+  Es wird eine Möglichkeit geben per Vorlage eine Kategorie zu setzen, sodass man Artikel nach:
+  * am häufigsten besucht in 
     ~ heute
     ~ letzten 7 Tage
     ~ diesen Monat
@@ -15,11 +15,11 @@
   20M61
   
   ACHTUNG!!!
-  Leider fÃ¼hrt diese Funktion zu erheblichem Traffic.
-  Selbst wenn alles als "Bot" gekennzeichnet wird, werden beim Filtern dennoch die EintrÃ¤ge
-  Ã¼bersprungen, sodass tatsÃ¤chliche VerÃ¤nderungen an Artikeln nicht mehr angezeigt werden.
+  Leider führt diese Funktion zu erheblichem Traffic.
+  Selbst wenn alles als "Bot" gekennzeichnet wird, werden beim Filtern dennoch die Einträge
+  übersprungen, sodass tatsächliche Veränderungen an Artikeln nicht mehr angezeigt werden.
   
-  --> DIE ENTWICKLUNG AN DEM ZÃ„HLER WURDE DAHER EINGESTELLT
+  --> DIE ENTWICKLUNG AN DEM ZÄHLER WURDE DAHER EINGESTELLT
   
   (c) 2015-2018 - 20M61 (TWD-Wikia)
 \*********************************************************/

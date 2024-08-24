@@ -50,7 +50,7 @@ function getElementsByName (name, root) {
  function setText (e, t) {
 	 if (e.textContent) e.textContent = t;
 	  else if (e.innerText) e.innerText = t;
-	  else { e.textContent = t; e.innerText = t; } // entrambi nulli, non si puÃ² discriminare
+	  else { e.textContent = t; e.innerText = t; } // entrambi nulli, non si può discriminare
 	 return;
   }
  

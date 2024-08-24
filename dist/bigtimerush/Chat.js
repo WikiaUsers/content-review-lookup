@@ -1,7 +1,7 @@
 // Credit to Runescape and Call of Duty Wiki
  
 //Chat's topic. Remember to escape single quotes in the topic using \' to prevent this from breaking.
-var chatTopic = 'Welcome to RocquÃ© Records!'
+var chatTopic = 'Welcome to Rocqué Records!'
  
 //Switch to night button
 var night_button = 'night';

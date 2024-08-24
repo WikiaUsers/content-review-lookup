@@ -1,1 +1,1 @@
-/* PrÃ³ximamente */
+/* Próximamente */

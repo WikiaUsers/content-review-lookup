@@ -2,7 +2,7 @@
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * This is also a customised version for this script.
  * __NOWYSIWYG__
  */

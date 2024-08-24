@@ -1,4 +1,4 @@
-////**Discuss√µes**////
+////**Discussıes**////
 
 window.discussionsModuleEmbed = true;
 

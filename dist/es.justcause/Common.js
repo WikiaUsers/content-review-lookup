@@ -1,7 +1,7 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /* Portada */
-/** Animaci√≥n hover NavButton **/
+/** AnimaciÛn hover NavButton **/
 jQuery(document).ready(function($) {	
 	$(".NavButton").mouseleave(function(){
 		var item = $(this).find('#imove');

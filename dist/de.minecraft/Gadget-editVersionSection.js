@@ -11,7 +11,7 @@
 	var sections;
 
 	function updateLinks() {
-		// Ziellink der Bearbeitenschaltfl√§che √§ndern
+		// Ziellink der Bearbeitenschaltfl‰che ‰ndern
 		document.getElementById('ca-edit').href = config.wgScriptPath + '/index.php?title=' + editPage + '&action=edit&section=' + sections[value].index;
 		
 		// Abschnitts-ID und Artikelname ersetzen
@@ -27,10 +27,10 @@
 					return;
 				}
 
-				// Abschnitt ver√§ndern
+				// Abschnitt ver‰ndern
 				url.searchParams.set('section', sections[value + sec].index);
 
-				// URL ver√§ndern
+				// URL ver‰ndern
 				url.pathname = config.wgArticlePath.replace('$1', sections[value + sec].fromtitle);
 
 				// Linkdaten ersetzen
@@ -45,7 +45,7 @@
 		// Pfad zur eingebundenen Seite
 		editPage = btnData.innerHTML;
 		
-		// Quelltext bearbeiten Schaltfl√§che
+		// Quelltext bearbeiten Schaltfl‰che
 		const edittopHTML = document.createElement('a');
 		edittopHTML.classList = 'wds-button wds-is-text page-header__action-button has-label';
 		edittopHTML.href = config.wgScriptPath + '/index.php?title=' + config.wgPageName + '&action=edit';

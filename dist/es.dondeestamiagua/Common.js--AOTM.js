@@ -1,4 +1,4 @@
-// Basado en protecciÃ³n JS
+// Basado en protección JS
 	
 function addArticleMonthBanner() {
    var elem = $('div.aotm-image').get(0);

@@ -289,7 +289,7 @@ else if (window.attachEvent) window.attachEvent("onload",onloadhookcustom);
 
 
 /************* FOR TOGGLE STUFF *************/
-/************* Funzioni di utilit√† generale *************/
+/************* Funzioni di utilit‡ generale *************/
  
  /* Test if an element has a certain class **************************************
  *

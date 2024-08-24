@@ -1,4 +1,4 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
+/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
 /*
 
 // ============================================================
@@ -10,31 +10,31 @@
 $(function() {
 	if(skin == "oasis") {
 		var $sidebar = $('.WikiaPagesOnWikiModule:first');
-		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE EL<br />1Âº  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129677&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
+		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE EL<br />1º  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129677&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
  
 		$sidebar.html($sidebar.html() + comboString);
 	} else if(skin == "monobook") {
 		var $sidebar = $('#p-wikicities-nav');
-		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE EL<br />1Âº  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129677&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
+		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE EL<br />1º  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129677&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
 		$sidebar.html($sidebar.html() + comboString);
 	}
 });
 
 /*
 -----------------------------------------
-CÃ“DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+CÓDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este cÃ³digo: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este código: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay mÃ¡s de este nÃºmero de desplegables
-  ocultar todas automÃ¡ticamente.
+NavigationBarShowDefault : Si hay más de este número de desplegables
+  ocultar todas automáticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';
@@ -137,23 +137,23 @@ addOnloadHook(createNavigationBarToggleButton);
 -------------------
 BOTONES ADICIONALES
 -------------------
-AÃ±adido por: [[uncyclopedia:es:user:Chixpy]]
+Añadido por: [[uncyclopedia:es:user:Chixpy]]
 */ 
 if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
-     "speedTip": "Proponer el artÃ­culo para ser borrado",
+     "speedTip": "Proponer el artículo para ser borrado",
      "tagOpen": "\{\{borrar|",
      "tagClose": "\}\}",
      "sampleText": "Motivo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/e/ec/Button_aviso.png",
-     "speedTip": "Aviso a usuario de artÃ­culo inadecuado",
+     "speedTip": "Aviso a usuario de artículo inadecuado",
      "tagOpen": '{{Wikiacentral\n',
      "tagClose": "\n}}",
-     "sampleText": "|artÃ­culo= Nombre del artÃ­culo que creÃ³ y serÃ¡ borrado"};
+     "sampleText": "|artículo= Nombre del artículo que creó y será borrado"};
 
  }
 
@@ -162,24 +162,24 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/3/35/Bot%C3%B3n_Super%C3%ADndice.png",
-     "speedTip": "SuperÃ­ndice",
+     "speedTip": "Superíndice",
      "tagOpen": "<sup>",
      "tagClose": "</sup>",
-     "sampleText": "superÃ­ndice"};
+     "sampleText": "superíndice"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/b/bd/Bot%C3%B3n_Sub%C3%ADndice.png",
-     "speedTip": "SubÃ­ndice",
+     "speedTip": "Subíndice",
      "tagOpen": "<sub>",
      "tagClose": "</sub>",
-     "sampleText": "subÃ­ndice"};
+     "sampleText": "subíndice"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "CÃ³digo fuente",
+     "speedTip": "Código fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "cÃ³digo fuente"};
+     "sampleText": "código fuente"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -197,10 +197,10 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "CategorÃ­a",
+     "speedTip": "Categoría",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categorÃ­a"};
+     "sampleText": "Nombre categoría"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -212,10 +212,10 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
 }
 
 /**
- * Desactivar el botÃ³n guardar en la primera vez a los anÃ³nimos
+ * Desactivar el botón guardar en la primera vez a los anónimos
  * Copyright Marc Mongenet, 2006 (fr.wikipedia.org)
  * Plyd 05/2007: add "after preview" in the button to prevent misunderstanding from beginners
- * Platonides 5/2008: TraÃ­do a es.wikipedia
+ * Platonides 5/2008: Traído a es.wikipedia
  */
 function forcePreview() {
   if (wgUserName != null || wgAction != "edit") return;
@@ -240,10 +240,10 @@ buttonImage: "http://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Erioll_wo
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde estÃ© "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
 
-TraÃ­da de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
+Traída de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */
 
 function UserNameReplace() {

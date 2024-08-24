@@ -68,7 +68,7 @@ function updateExportList() {
 
 function startExportPages(pages) {
 	console.log('startExportPages',pages);
-	window.open('/wiki/Special:Export' + pages.reduce(function(url, page, idx) {Â return url + '&link' + (idx + 1) + '=' + page; },'?'));
+	window.open('/wiki/Special:Export' + pages.reduce(function(url, page, idx) { return url + '&link' + (idx + 1) + '=' + page; },'?'));
 }
 
 showExportList();

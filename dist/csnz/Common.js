@@ -7,8 +7,8 @@ window.MessageWallUserTags = {
     glowSize: '3px',
     glowColor: '#f77',
     users: {
-        'Lemoness': 'Wiki R√©volutionnaire',
-        'Athener': 'Wiki R√©volutionnaire',
+        'Lemoness': 'Wiki RÈvolutionnaire',
+        'Athener': 'Wiki RÈvolutionnaire',
     }
 };
  
@@ -118,7 +118,7 @@ window.UserTagsJS = {
 		tech: { u: 'Technician', order: 1 },
 		seni: { u: 'Senior', order: 5 },
 		forum: { u: 'Forum Management', order: 6 },
-                revolution: { u: 'Wiki R√©volutionnaire', order: 0 },
+                revolution: { u: 'Wiki RÈvolutionnaire', order: 0 },
 			}
 };
 UserTagsJS.modules.custom = {
@@ -243,8 +243,8 @@ function updatetimer(i) {
       minutes: "minutos",
       hour: "hora",
       hours: "horas",
-      day: "d√≠a",
-      days: "d√≠as"
+      day: "dÌa",
+      days: "dÌas"
     },
     'de': {
       and: "und",
@@ -280,13 +280,13 @@ function updatetimer(i) {
       days: "dni"
     },
     'hu': {
-      and: "√©s",
-      second: "m√°sodperc",
-      seconds: "m√°sodpercek",
+      and: "Ès",
+      second: "m·sodperc",
+      seconds: "m·sodpercek",
       minute: "perc",
       minutes: "percek",
-      hour: "√≥ra",
-      hours: "√≥r√°k",
+      hour: "Ûra",
+      hours: "Ûr·k",
       day: "nap",
       days: "napok"
     }

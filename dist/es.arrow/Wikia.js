@@ -2,19 +2,19 @@
 $(function() {
   var rights = {};
 
-  // WIKI INGLÃ‰S
-  rights["MakeShift"]                   = ["Contacto - Wiki inglÃ©s"];
-  rights["TimeShade"]                   = ["Contacto - Wiki inglÃ©s"];
-  rights["Wraiyf"]                      = ["Contacto - Wiki inglÃ©s"];
+  // WIKI INGLÉS
+  rights["MakeShift"]                   = ["Contacto - Wiki inglés"];
+  rights["TimeShade"]                   = ["Contacto - Wiki inglés"];
+  rights["Wraiyf"]                      = ["Contacto - Wiki inglés"];
   // WIKI POLACO
   rights["Szynka013"]                   = ["Contacto - Wiki polaco"];
   rights["DarknessEyes23"]              = ["Contacto - Wiki polaco"];
-  // WIKI FRANCÃ‰S
-  rights["Choupi"]                      = ["Contacto - Wiki francÃ©s"];
-  rights["Brochy"]                      = ["Contacto - Wiki francÃ©s"];
-  // WIKI BRASILEÃ‘O
-  rights["Fernando Marcos"]             = ["Contacto - Wiki brasileÃ±o"];
-  rights["NetoMonteiro"]                = ["Contacto - Wiki brasileÃ±o"];
+  // WIKI FRANCÉS
+  rights["Choupi"]                      = ["Contacto - Wiki francés"];
+  rights["Brochy"]                      = ["Contacto - Wiki francés"];
+  // WIKI BRASILEÑO
+  rights["Fernando Marcos"]             = ["Contacto - Wiki brasileño"];
+  rights["NetoMonteiro"]                = ["Contacto - Wiki brasileño"];
  
   if (typeof rights[wgTitle] != "undefined") {
     $('.UserProfileMasthead .masthead-info span.tag').remove();

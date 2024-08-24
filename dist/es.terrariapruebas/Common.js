@@ -1,6 +1,6 @@
-// Refrescar la pÃ¡gina de la Actividad Reciente y de los Cambios Recientes.
-var AjaxRCRefreshText = 'Act. automÃ¡tica';
-var AjaxRCRefreshHoverText = 'Refrescar automÃ¡ticamente los cambios de la pÃ¡gina.';
+// Refrescar la página de la Actividad Reciente y de los Cambios Recientes.
+var AjaxRCRefreshText = 'Act. automática';
+var AjaxRCRefreshHoverText = 'Refrescar automáticamente los cambios de la página.';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 var ajaxRefresh = 20000;
 
@@ -41,12 +41,12 @@ window.UserTagsJS = {
 		},
 	},
     tags: {
-        emw: { u: 'DiseÃ±ador', f: 'DiseÃ±adora' },
+        emw: { u: 'Diseñador', f: 'Diseñadora' },
         sysop: { u: 'Administrador', f: 'Administradora' },
         threadmoderator: { u: 'Moderador', f: 'Moderadora' },
         'content-moderator': { u: 'Asistente' },
         bot: { u: 'Bot' },
-        bureaucrat: { u: 'BurÃ³crata' },
+        bureaucrat: { u: 'Burócrata' },
         rollback: { u: 'Reversor', f: 'Reversora' },
     }
 };

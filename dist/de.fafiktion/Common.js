@@ -1,6 +1,6 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
-// Eigenes Script fÃ¼r Spoiler
+// Eigenes Script für Spoiler
 // http://de.naruto.wikia.com
 
 var SpoilerHide = "Spoiler verbergen";
@@ -69,7 +69,7 @@ function SearchSpoilerClasses(tag)
 
 addOnloadHook(createSpoilerLink);
 
-// FÃ¼r Toggeln
+// Für Toggeln
 // http://de.narutofantasyrpg.wikia.com - by [[Benutzer:Pain88]]
 function createToggle()
 {
@@ -111,7 +111,7 @@ function ToggleClasses(Toggle)
 	else
 		Toggle[0] = 'unToggle';
 	
-	// Funktionsaufruf um die Clicker zu Ã¤ndern
+	// Funktionsaufruf um die Clicker zu ändern
 	TogglerClicker(Toggle);
 }
 function ToogleTag(Toggle,Tag)

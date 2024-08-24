@@ -52,20 +52,20 @@ importArticles({
 }
 $( customPreloadTemplates );*/
 
-if($.inArray(wgNamespaceNumber, [2,1200,500]) != -1 || /Spezial:BeitrÃ¤ge\/[A-Za-z_].*/.test(wgPageName) || wgPageName == 'Spezial:Verfolgen') {
+if($.inArray(wgNamespaceNumber, [2,1200,500]) != -1 || /Spezial:Beiträge\/[A-Za-z_].*/.test(wgPageName) || wgPageName == 'Spezial:Verfolgen') {
     $(function() {
         if($.inArray(wgNamespaceNumber, [2,1200,500]) != -1) {
             var username = wgTitle;
         }
-        else if(/Spezial:BeitrÃ¤ge\/[A-Za-z_].*/.test(wgPageName)) {
-            var username = wgPageName.replace(/Spezial:BeitrÃ¤ge\/([A-Za-z_].*)/,'$1');
+        else if(/Spezial:Beiträge\/[A-Za-z_].*/.test(wgPageName)) {
+            var username = wgPageName.replace(/Spezial:Beiträge\/([A-Za-z_].*)/,'$1');
         }
         else if(wgPageName == 'Spezial:Verfolgen') {
             var username = wgUserName;
         }
         username = username.replace('_',' ');
         var rights = {
-            'Harry granger' : ['Administratorin','BÃ¼rokratin','Inhaltlicher Ansprechpartner', 'GrÃ¼nderin'],
+            'Harry granger' : ['Administratorin','Bürokratin','Inhaltlicher Ansprechpartner', 'Gründerin'],
             'Agent Zuri' : ['Administrator', 'Technischer Ansprechpartner']
         };
         if($.inArray("codeadmin", wgUserGroups) != -1) {

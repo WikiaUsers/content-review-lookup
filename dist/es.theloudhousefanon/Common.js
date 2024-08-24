@@ -1,8 +1,8 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 /* Lista
 1. Etiquetas de usuarios
-2. Cambio de t√≠tulo
+2. Cambio de tÌtulo
 */
 
 // Etiquetas de usuarios
@@ -31,18 +31,18 @@ window.UserTagsJS = {
 	},
 	tags: {
         rollback: { u: 'Reversor', f: 'Reversora' },
-        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'The Loud House Fanon Wiki:Administraci√≥n#Moderadores_del_Chat' },
-        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'The Loud House Fanon Wiki:Administraci√≥n#Moderadores_de_Discusiones'},
-        contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'The Loud House Fanon Wiki:Administraci√≥n#Moderadores_de_Contenido'},
-        sysop: { u: 'Administrador', f: 'Administradora', link:'The Loud House Fanon Wiki:Administraci√≥n#Administradores' },
-        bureaucrat: { u:'Bur√≥crata', f: 'Bur√≥crata', link:'The Loud House Fanon Wiki:Administraci√≥n#Bur.C3.B3cratas' },
+        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'The Loud House Fanon Wiki:AdministraciÛn#Moderadores_del_Chat' },
+        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'The Loud House Fanon Wiki:AdministraciÛn#Moderadores_de_Discusiones'},
+        contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'The Loud House Fanon Wiki:AdministraciÛn#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'The Loud House Fanon Wiki:AdministraciÛn#Administradores' },
+        bureaucrat: { u:'BurÛcrata', f: 'BurÛcrata', link:'The Loud House Fanon Wiki:AdministraciÛn#Bur.C3.B3cratas' },
     }
 };
  
 UserTagsJS.modules.inactive = 30;
 
     
-// Cambio de t√≠tulo
+// Cambio de tÌtulo
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

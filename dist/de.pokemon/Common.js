@@ -1,8 +1,8 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
 
-/* Skript fÃ¼r die USERNAME-Vorlage (ersetzt Inhalt der Vorlage durch den Namen des Lesers) */
+/* Skript für die USERNAME-Vorlage (ersetzt Inhalt der Vorlage durch den Namen des Lesers) */
  
 function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;

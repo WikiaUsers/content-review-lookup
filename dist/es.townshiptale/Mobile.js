@@ -1,4 +1,4 @@
-/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para los usuarios de la versiÃ³n mÃ³vil */
+/* Cualquier código JavaScript escrito aquí se cargará para los usuarios de la versión móvil */
 /************************************
 /* Main Page Mobile Collapse Script *
 /************************************/

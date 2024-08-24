@@ -12,7 +12,7 @@ $(document).ready(function() {
 	$("span.insertusername").text(mw.config.get('wgUserName') || wgUserNameAnon);
 });
 
-// Konfigurationen fÃ¼r importierte Skripte
+// Konfigurationen für importierte Skripte
 
 window.MessageBlock = {
   title : 'Block',

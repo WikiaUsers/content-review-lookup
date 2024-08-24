@@ -67,7 +67,7 @@ if(wgPageName == 'RuneScape:MassDelete') {
         $form.submit(delete_submit);
 	$form.append($('<h4 />').text("Elimina las contribuciones de un usuario:"));
  
-	var $p1 = $('<p />').append("Inserte un nombre de usuario o direcciÃ³n IP en la siguiente forma, y seleccione un espacio d enombre. Todas las pÃ¡ginas que este usuario haya creado en ese espacio de nombre especÃ­fico serÃ¡n eliminadas tras subir esta forma.");
+	var $p1 = $('<p />').append("Inserte un nombre de usuario o dirección IP en la siguiente forma, y seleccione un espacio d enombre. Todas las páginas que este usuario haya creado en ese espacio de nombre específico serán eliminadas tras subir esta forma.");
 	$form.append($p1);
  
 	var $p2 = $('<p />');

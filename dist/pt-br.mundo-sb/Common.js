@@ -1,4 +1,4 @@
- window.ajaxPages = ["Especial:WikiActivity","Especial:MudanÃ§as_recentes"];
+ window.ajaxPages = ["Especial:WikiActivity","Especial:Mudanças_recentes"];
 
  importArticles({
     type: 'script',

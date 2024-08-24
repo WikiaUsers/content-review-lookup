@@ -1,5 +1,5 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 ////////////////////////////////////////////////////////////////
 // ADVANCED AJAX AUTO-REFRESHING ARTICLES
 // Code courtesy of "pcj" of WoWWiki.
@@ -48,7 +48,7 @@ s = 1;
 s = 0;
 }
 ajaxRCCookie = (getCookie("ajaxload-"+wgPageName)=="on") ? true:false;
-document.getElementsByTagName("h1")[0].innerHTML += '&nbsp;<span style="font-size: xx-small; border-bottom: 1px dotted; cursor:help;" title="Activar auto-refrescante cargas de la p√°gina">AJAX:</span><input type="checkbox" id="ajaxRCtoggle" onClick="toggleRC();">';
+document.getElementsByTagName("h1")[0].innerHTML += '&nbsp;<span style="font-size: xx-small; border-bottom: 1px dotted; cursor:help;" title="Activar auto-refrescante cargas de la p·gina">AJAX:</span><input type="checkbox" id="ajaxRCtoggle" onClick="toggleRC();">';
 document.getElementById("ajaxRCtoggle").checked = ajaxRCCookie;
 if (getCookie("ajaxload-"+wgPageName)=="on") loadRCData();
 }
@@ -91,7 +91,7 @@ for (x in ajaxPages) {
 if (wgPageName == ajaxPages[x]) addOnloadHook(preloadAJAXRC);
 }
 
-// == C√≥digo para art√≠culos destacados ==
+// == CÛdigo para artÌculos destacados ==
  
 function Bueno()
 {
@@ -104,7 +104,7 @@ function Bueno()
             // if found a FA link
             if (b.className == "interwiki-" + a.id) {
                b.className += " destacado";
-               b.title = "Este es un art√≠culo destacado en esta Wikipedia.";
+               b.title = "Este es un artÌculo destacado en esta Wikipedia.";
             }
          }
       }
@@ -125,7 +125,7 @@ function LinkAB()
             // if found a AB link
             if (b.className == "interwiki-" + a.id) {
                b.className += " bueno";
-               b.title = "Este es un art√≠culo bueno en esta Wikipedia.";
+               b.title = "Este es un artÌculo bueno en esta Wikipedia.";
             }
          }
       }

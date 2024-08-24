@@ -1,4 +1,4 @@
-/* Az ide elhelyezett JavaScript k√≥d minden felhaszn√°l√≥ sz√°m√°ra lefut az oldalak bet√∂lt√©sekor. */
+/* Az ide elhelyezett JavaScript kÛd minden felhaszn·lÛ sz·m·ra lefut az oldalak betˆltÈsekor. */
 
 // **************************************************
 // Experimental javascript countdown timer (Splarka)
@@ -31,11 +31,11 @@ function updatetimer(i) {
   }
 
   // calcuate the diff
-  var left = (diff%60) + ' m√°sodperc';
+  var left = (diff%60) + ' m·sodperc';
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%60) + ' perc ' + left;
     diff=Math.floor(diff/60);
-  if(diff > 0) left = (diff%24) + ' √≥ra ' + left;
+  if(diff > 0) left = (diff%24) + ' Ûra ' + left;
     diff=Math.floor(diff/24);
   if(diff > 0) left = diff + ' nap ' + left
   timers[i].firstChild.nodeValue = tpm + left;
@@ -88,9 +88,9 @@ importScriptPage('SpoilerAlert/code.js', 'dev');
  */
  
 // ** Recent Wiki Activity and Recent changes auto refresh ** //
-AjaxRCRefreshText = 'Automatikus friss√≠t√©s';
-AjaxRCRefreshHoverText = 'Automatikusan friss√≠ti az oldalt';
-ajaxPages = ["Speci√°lis:RecentChanges","Speci√°lis:WikiActivity"];
+AjaxRCRefreshText = 'Automatikus frissÌtÈs';
+AjaxRCRefreshHoverText = 'Automatikusan frissÌti az oldalt';
+ajaxPages = ["Speci·lis:RecentChanges","Speci·lis:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
  
 // - end - Auto-refresh

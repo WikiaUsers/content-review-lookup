@@ -1,4 +1,4 @@
-/* C√≥digos javascript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
+/* CÛdigos javascript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
 
 /** Collapsible tables *********************************************************
   *

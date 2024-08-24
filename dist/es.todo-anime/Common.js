@@ -1,2 +1,2 @@
-/* CÃ³digo de Chat IRC */
+/* Código de Chat IRC */
 importScript('MediaWiki:Chat.js');

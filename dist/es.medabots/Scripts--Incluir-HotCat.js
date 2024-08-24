@@ -9,9 +9,9 @@ if (mw.config.get('skin') != 'oasis' && mw.config.get('wgAction') == 'view' &&
 				$('#'+(window.bodyContentId||'bodyContent')).children('div.printfooter').after('<div id="catlinks" class="catlinks"></div>');
 			}
 			if ($('#mw-normal-catlinks').length == 0) {
-				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:CategorÃ­as" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:CategorÃ­as')+'">CategorÃ­as</a></div>');
+				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:Categorías" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:Categorías')+'">Categorías</a></div>');
 			}
-			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorÃ­as"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
+			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorías"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
 				$(this).unbind().closest('span.noprint').eq(0).remove();
 				importScript('MediaWiki:Common.js/HotCat.js');
 				return false;

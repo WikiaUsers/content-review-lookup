@@ -1,6 +1,6 @@
 ;(function ($, mw) {
     'use strict';
-Â 
+ 
     // add module for the upcoming SpongeBob year
     function addNNModule() {
         $('<section>')
@@ -32,7 +32,7 @@
 // Add template to the upload page
 // @author: UltimateSupreme (http://c.wikia.com/wiki/User:UltimateSupreme)
 // @author: Golfpecks256 (http://spongebob.wikia.com/wiki/User:Golfpecks256)
-Â 
+ 
 if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload' || mw.config.get('wgCanonicalSpecialPageName') === 'Images' || mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
     if (!$.getUrlVar('wpForReUpload') && !$('#wpUploadDescription').val()) {
         jQuery(function ($) {

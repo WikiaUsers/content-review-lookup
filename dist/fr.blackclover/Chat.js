@@ -1,10 +1,10 @@
 //Plugin emoticones
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "Ã‰moticÃ´nes",
+        emoticons: "Émoticônes",
         close: "Fermer"
     },
-    helpText: "Choisissez un Ã©moticÃ´ne en cliquant dessus"
+    helpText: "Choisissez un émoticône en cliquant dessus"
 };
  
 //Importation scripts 
@@ -23,21 +23,21 @@ importArticles({
 window.ChatStatus = {
     statuses: {
 				"afkboy": "est absent",
-				"Appel": "est au tÃ©lÃ©phone",
+				"Appel": "est au téléphone",
 				"modif": "contribue",
 				"charmy": "mange",
 				"livre": "lit",
 				"manga" : "lit un manga",
 				"devoirs" : "fait ses devoirs",
-				"musique" : "Ã©coute de la musique",
+				"musique" : "écoute de la musique",
 				"anime" : "regarde un anime",
 				"youtube" : "se perd sur YouTube",
 				"laver": "est parti prendre une douche",
 				"dessin": "dessine",
-				"anniv" : "fÃªte son anniversaire",
-				"JeuvidÃ©o" : "joue Ã  un jeu vidÃ©o",
+				"anniv" : "fête son anniversaire",
+				"Jeuvidéo" : "joue à un jeu vidéo",
 				"sommeil": "dort",
 				"ennui" : "s'ennuie",
-				"nettoie" : "fait le mÃ©nage",
+				"nettoie" : "fait le ménage",
     },
 };

@@ -564,30 +564,35 @@ if (document.body.className.includes('page-Список_продуктов')) {
 
 }
 
-//каталог события с валютой
-var eventCatalogs = document.querySelectorAll('.event-catalog');
-if (eventCatalogs.length) {
-	eventCatalogs.forEach(function(eventCatalog, index){
-	//console.log(eventCatalog);
+//перелистывание
+var rotateds = document.querySelectorAll('.rotated-box');
+if (rotateds.length) {
+	rotateds.forEach(function(rotatedBox, index){
+		var pageWidth = (+getComputedStyle(rotatedBox).width.slice(0, -2)) / 2;
+		console.log(index, pageWidth);
+		
 		var rotatesRight = 0;
 		var rotatesLeft = 0;
 		var movesRight = 0;
 		var movesLeft = 0;
 		var isMoved = false;
-	
-		var allPages = eventCatalog.children;
-		var activeSide = eventCatalog.lastElementChild;
+		var isPicked = false;
 		
-		var strlLeft = eventCatalog.querySelector('.catalog-toleft');
+		var rotated = rotatedBox.firstElementChild;
+		
+		var allPages = rotated.children;
+		var activeSide = rotated.lastElementChild;
+		
+		var strlLeft = rotatedBox.querySelector('.to-left');
 		strlLeft.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/9/97/Стрелка_влево.png/revision/latest/scale-to-width-down/40?cb=20240815141934&path-prefix=ru"/>';
 		strlLeft.querySelector('img').ondragstart = function() { return false; };
 		
-		var strlRight = eventCatalog.querySelector('.catalog-toright');
+		var strlRight = rotatedBox.querySelector('.to-right');
 		strlRight.innerHTML = '<img src="https://static.wikia.nocookie.net/hayday/images/b/b7/Стрелка_вправо.png/revision/latest/scale-to-width-down/40?cb=20240815141954&path-prefix=ru"/>';
 		strlRight.querySelector('img').ondragstart = function() { return false; };
 		
 		allPages = Array.from(allPages);
-		allPages.splice(-3, 3);
+		allPages.splice(-1, 1);
 		var page = 1;
 		var maxPage = Math.floor(allPages.length / 2) - 1;
 		var isMouse = false;
@@ -599,188 +604,214 @@ if (eventCatalogs.length) {
 		activeSide.append(allPages[2].firstElementChild);
 		activeSide.append(allPages[3].firstElementChild);
 	
-		eventCatalog.addEventListener('mouseenter', function(){isMouse = true;});
-		eventCatalog.addEventListener('mouseleave', function(){isMouse = false;});
+		rotatedBox.addEventListener('mouseenter', function(){isMouse = true;});
+		rotatedBox.addEventListener('mouseleave', function(){isMouse = false;});
 	
-		eventCatalog.onpointerdown = function(event){
-			eventCatalog.setPointerCapture(event.pointerId);
-			var rect = eventCatalog.getBoundingClientRect();
-			isMoved = true;
-			var clickX = event.pageX-rect.left;
-			//console.log(clickX, event);
-			if (clickX < 420 && !rotatesRight&&!rotatesLeft && page > 0 && !movesRight && event.isPrimary) {
-				// схвачена левая страница
-				allPages[page*2].style.transition = 'transform 0s linear';
-				allPages[page*2].style.visibility = 'visible';
-				allPages[page*2].append(activeSide.firstElementChild);
-				allPages[(page-1)*2+1].style.transition = 'transform 0s linear';
-				allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+		rotated.onpointerdown = function(event){
+			if(event.target.localName != 'img'){
+				isPicked = true;
+				rotated.setPointerCapture(event.pointerId);
+				var rect = rotated.getBoundingClientRect();
 				
-				activeSide.prepend(allPages[(page-1)*2].firstElementChild);
-				allPages[page*2].style.zIndex=2;
-				
-				eventCatalog.onpointercancel = function(event) {
-					//console.log(event);
-					eventCatalog.onpointermove = null;
-					eventCatalog.onpointerup = null;
-					eventCatalog.onpointercancel = null;
+				var clickX = event.pageX-rect.left;
+				console.log(clickX, event);
+				if (clickX < pageWidth && !rotatesRight&&!rotatesLeft && page > 0 && !movesRight && event.isPrimary && event.button === 0) {
+					// схвачена левая страница
+					console.log('pick up left', isMoved, isPicked);	
 					
-					rotatesLeft++;
+					rotated.onpointermove = function(event) {
+						if (!isMoved){
+							isMoved = true;
+							isPicked = false;
+							
+							console.log('start move: ', isMoved,isPicked);
+							
+							allPages[page*2].style.transition = 'transform 0s linear';
+							allPages[page*2].style.visibility = 'visible';
+							allPages[page*2].append(activeSide.firstElementChild);
+							allPages[(page-1)*2+1].style.transition = 'transform 0s linear';
+							allPages[(page-1)*2+1].style.transform='rotateY(-90deg)';
+							
+							activeSide.prepend(allPages[(page-1)*2].firstElementChild);
+							allPages[page*2].style.zIndex=2;
+							
+							rotated.onpointercancel = function(event) {
+								//console.log(event);
+								rotated.onpointermove = null;
+								rotated.onpointerup = null;
+								rotated.onpointercancel = null;
+								
+								rotatesLeft++;
+								
+								console.log('move cancel in left', isMoved, isPicked);
+								
+								
+								allPages[page*2].style.transition = 'transform 1ms linear';
+								allPages[page*2].style.transform='rotateY(0deg)';
+								allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
+								
+								setTimeout(endLeftMove, 1);
+							};
+							rotated.onpointerup = function(event) {
+								var ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/pageWidth));
+								rotated.onpointermove = null;
+								rotated.onpointerup = null;
+								rotated.onpointercancel = null;
+								rotatesLeft++;
+								
+								console.log('mouse up in left', isMoved, isPicked);
+								
+								allPages[page*2].style.transition = 'transform '+ms+'ms linear';
+								allPages[page*2].style.transform='rotateY(0deg)';
+								allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
+								
+								setTimeout(endLeftMove, ms);
+							};
+						}
+						
+						var mouseX = event.pageX-rect.left;
+						var deg = Math.floor((mouseX-clickX)*(90/pageWidth));
+						if (deg < 0) {deg = 0;}
+						console.log('move',mouseX, deg);
+						
+						if (deg > 90) {
+							rotated.onpointermove = null;
+							rotated.onpointerup = null;
+							rotated.onpointercancel = null;
+							isMoved = false;
+							
+							allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
+							
+							movesLeft++;
+							page--;
+							
+							if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
+							strlRight.style.filter = 'grayscale(0)';
+							
+							closeLeftPage(allPages, page, activeSide, true);
+						} else {
+						
+							allPages[page*2].style.transform='rotateY('+deg+'deg)';
+						}
+					};
 					
 					
-					allPages[page*2].style.transition = 'transform 1ms linear';
-					allPages[page*2].style.transform='rotateY(0deg)';
-					allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
+				} else if (!rotatesRight&&!rotatesLeft && page < maxPage && !movesLeft && event.isPrimary && event.button === 0) {
+					// схвачена правая страница
+					console.log('pick up right', isMoved, isPicked);
+					rotated.onpointermove = function(event) {
+						if (!isMoved) {
+							isMoved = true;
+							isPicked = false;
+							console.log('start move');
+							
+							allPages[page*2+1].style.transition = 'transform 0s linear';
+							allPages[page*2+1].style.visibility = 'visible';
+							allPages[page*2+1].append(activeSide.lastElementChild);
+							allPages[(page+1)*2].style.transition = 'transform 0s linear';
+							allPages[(page+1)*2].style.transform='rotateY(90deg)';
+							
+							activeSide.append(allPages[(page+1)*2+1].firstElementChild);
+							allPages[page*2+1].style.zIndex=2;
+							
+							rotated.onpointercancel = function(event) {
+								//console.log(event);
+								rotated.onpointermove = null;
+								rotated.onpointerup = null;
+								rotated.onpointercancel = null;
+								
+								rotatesRight++;
+								
+								console.log('move cancel in right', isMoved, isPicked);
+								
+								allPages[page*2+1].style.transition = 'transform 1ms linear';
+								allPages[page*2+1].style.transform='rotateY(0deg)';
+								allPages[(page+1)*2].style.transform='rotateY(0deg)';
+								
+								setTimeout(endRightMove, 1);
+							};
+							
+							rotated.onpointerup = function(event) {
+								var ms = Math.floor((clickX-(event.pageX-rect.left))*(500/pageWidth));
+								rotated.onpointermove = null;
+								rotated.onpointerup = null;
+								rotated.onpointercancel = null;
+								rotatesRight++;
+								
+								console.log('mouse up in right', isMoved, isPicked);
+								
+								allPages[page*2+1].style.transition = 'transform '+ms+'ms linear';
+								allPages[page*2+1].style.transform='rotateY(0deg)';
+								allPages[(page+1)*2].style.transform='rotateY(0deg)';
+								
+								setTimeout(endRightMove, ms);
+							};
+						}
+						
+						var mouseX = event.pageX-rect.left;
+						var deg = -Math.floor((clickX-mouseX)*(90/pageWidth));
+						if (deg > 0) {deg = 0;}
+						//console.log(mouseX, deg);
+						
+						if (deg < -90) {
+							rotated.onpointermove = null;
+							rotated.onpointerup = null;
+							rotated.onpointercancel = null;
+							isMoved = false;
+							
+							allPages[(page+1)*2].style.transition = 'transform .5s linear';
+							
+							movesRight++;
+							page++;
+							
+							strlLeft.style.filter = 'grayscale(0)';
+							if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
+								
+							closeRightPage(allPages, page, activeSide, true);
+						} else {
+						
+							allPages[page*2+1].style.transform='rotateY('+deg+'deg)';
+						}
+					};
+				}
+				rotated.onpointerup = function(event){
+					rotated.onpointermove = null;
+					rotated.onpointerup = null;
+					rotated.onpointercancel = null;
 					
-					setTimeout(endLeftMove, 1);
+					isPicked = false;
+					
+					console.log('mouse up', isMoved, isPicked);
 				};
-				
-				eventCatalog.onpointermove = function(event) {
+				rotated.onpointercancel = function(event){
+					rotated.onpointermove = null;
+					rotated.onpointerup = null;
+					rotated.onpointercancel = null;
 					
-					var mouseX = event.pageX-rect.left;
-					var deg = Math.floor((mouseX-clickX)*(90/420));
-					if (deg < 0) {deg = 0;}
-					//console.log(mouseX, deg);
+					isPicked = false;
 					
-					if (deg > 90) {
-						eventCatalog.onpointermove = null;
-						eventCatalog.onpointerup = null;
-						eventCatalog.onpointercancel = null;
-						isMoved = false;
-						
-						allPages[(page-1)*2+1].style.transition = 'transform .5s linear';
-						
-						movesLeft++;
-						page--;
-						
-						if (page == 0) {strlLeft.style.filter = 'grayscale(1)';}
-						strlRight.style.filter = 'grayscale(0)';
-						
-						closeLeftPage(allPages, page, activeSide, true);
-					} else {
-					
-						allPages[page*2].style.transform='rotateY('+deg+'deg)';
-					}
-					
-					//
-					//
-					
-					//setTimeout(closeLeftPage, 500, allPages, page, activeSide);
-					
-					
-				};
-				
-				eventCatalog.onpointerup = function(event) {
-					var ms = Math.floor(((event.pageX-rect.left)-clickX)*(500/420));
-					eventCatalog.onpointermove = null;
-					eventCatalog.onpointerup = null;
-					eventCatalog.onpointercancel = null;
-					rotatesLeft++;
-					
-					
-					allPages[page*2].style.transition = 'transform '+ms+'ms linear';
-					allPages[page*2].style.transform='rotateY(0deg)';
-					allPages[(page-1)*2+1].style.transform='rotateY(0deg)';
-					
-					setTimeout(endLeftMove, ms);
-				};
-			} else if (!rotatesRight&&!rotatesLeft && page < maxPage && !movesLeft && event.isPrimary) {
-				// схвачена правая страница
-				allPages[page*2+1].style.transition = 'transform 0s linear';
-				allPages[page*2+1].style.visibility = 'visible';
-				allPages[page*2+1].append(activeSide.lastElementChild);
-				allPages[(page+1)*2].style.transition = 'transform 0s linear';
-				allPages[(page+1)*2].style.transform='rotateY(90deg)';
-				
-				activeSide.append(allPages[(page+1)*2+1].firstElementChild);
-				allPages[page*2+1].style.zIndex=2;
-				
-				eventCatalog.onpointercancel = function(event) {
-					//console.log(event);
-					eventCatalog.onpointermove = null;
-					eventCatalog.onpointerup = null;
-					eventCatalog.onpointercancel = null;
-					
-					rotatesRight++;
-					
-					
-					allPages[page*2+1].style.transition = 'transform 1ms linear';
-					allPages[page*2+1].style.transform='rotateY(0deg)';
-					allPages[(page+1)*2].style.transform='rotateY(0deg)';
-					
-					setTimeout(endRightMove, 1);
-				};
-				
-				eventCatalog.onpointermove = function(event) {
-					
-					var mouseX = event.pageX-rect.left;
-					var deg = -Math.floor((clickX-mouseX)*(90/420));
-					if (deg > 0) {deg = 0;}
-					//console.log(mouseX, deg);
-					
-					if (deg < -90) {
-						eventCatalog.onpointermove = null;
-						eventCatalog.onpointerup = null;
-						eventCatalog.onpointercancel = null;
-						isMoved = false;
-						
-						allPages[(page+1)*2].style.transition = 'transform .5s linear';
-						
-						movesRight++;
-						page++;
-						
-						strlLeft.style.filter = 'grayscale(0)';
-						if (page == maxPage) {strlRight.style.filter = 'grayscale(1)';}
-						
-						closeRightPage(allPages, page, activeSide, true);
-					} else {
-					
-						allPages[page*2+1].style.transform='rotateY('+deg+'deg)';
-					}
-					
-					//
-					//
-					
-					//setTimeout(closeLeftPage, 500, allPages, page, activeSide);
-					
-					
-				};
-				
-				eventCatalog.onpointerup = function(event) {
-					var ms = Math.floor((clickX-(event.pageX-rect.left))*(500/420));
-					eventCatalog.onpointermove = null;
-					eventCatalog.onpointerup = null;
-					eventCatalog.onpointercancel = null;
-					rotatesRight++;
-					
-					
-					allPages[page*2+1].style.transition = 'transform '+ms+'ms linear';
-					allPages[page*2+1].style.transform='rotateY(0deg)';
-					allPages[(page+1)*2].style.transform='rotateY(0deg)';
-					
-					setTimeout(endRightMove, ms);
+					console.log('pointer cancel', isMoved, isPicked);
 				};
 			}
-			
 		};
 	
 		document.addEventListener('keydown', function(event){
 			//console.log('pressed', event.key, page, allPages.length, isMouse);
-			if (event.key=='ArrowRight' && page < maxPage && isMouse && !rotatesLeft && !isMoved) {
+			if (event.key=='ArrowRight' && page < maxPage && isMouse && !rotatesLeft && !isMoved && !movesLeft && !isPicked) {
 				startRightPage();
 			}
-			if (event.key=='ArrowLeft' && page > 0 && isMouse && !rotatesRight && !isMoved) {
+			if (event.key=='ArrowLeft' && page > 0 && isMouse && !rotatesRight && !isMoved && !movesRight && !isPicked) {
 				startLeftPage();
 			}
 		});
 		
 		strlLeft.addEventListener("click", function(){
-			if (page > 0 && !rotatesRight && !isMoved) {
+			if (page > 0 && !rotatesRight && !isMoved && !movesRight && !isPicked) {
 				startLeftPage();
 			}
 		});
 		strlRight.addEventListener("click", function(){
-			if (page < maxPage && !rotatesLeft && !isMoved) {
+			if (page < maxPage && !rotatesLeft && !isMoved && !movesLeft && !isPicked) {
 				startRightPage();
 			}
 		});

@@ -1,4 +1,4 @@
-/*InstalaÃ§Ã£o do cÃ³digo !mods*/
+/*Instalação do código !mods*/
 importArticles( {     type: 'script',     articles: [         // ...         'u:dev:MediaWiki:!mods/code.js',         // ...     ] } );
 importArticles({
     type: 'script',
@@ -14,7 +14,7 @@ importArticles({
 /*Interface do ChatOptions*/
 importScriptPage('MediaWiki:ChatOptions/code.js', 'dev');
  
-/*InstalaÃ§Ã£o de arquivos de Ã¡udio (MP3, WAV e OGG)*/
+/*Instalação de arquivos de áudio (MP3, WAV e OGG)*/
 var textSound = $('#myText').val();
 $('ul.WikiChatList').prepend('<div>Type here the URL of the <abbr style="border-bottom:1px dotted black" title="MP3, OGG & WAV"> audio file</abbr> and press Enter<audio></audio></div><div><input type="text" /></div><a href="//www.google.com/search?q=mp3">Search MP3 files</a>');
 $('#playAudio').click(function() {
@@ -40,10 +40,10 @@ function loadAndPlay(src) {
  
 loadAndPlay(inputElement.value);
  
-/*InserÃ§Ã£o de imagens*/
+/*Inserção de imagens*/
 importScriptPage('ChatImages/code.js', 'dev');
  
-/*ModificaÃ§Ã£o da marca temporal*/
+/*Modificação da marca temporal*/
 importScriptPage('ChatTimestamps/code.js','dev');
 
 /*Janela de emoticons*/

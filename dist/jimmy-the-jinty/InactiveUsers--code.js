@@ -3,7 +3,7 @@
  * InactiveUsers
  *
  * documentation at: http://dev.wikia.com/wiki/InactiveUsers
- * Â© Peter Coester, 2012
+ * © Peter Coester, 2012
  * 
  * continued as UserTags: http://dev.wikia.com/wiki/UserTags
  */

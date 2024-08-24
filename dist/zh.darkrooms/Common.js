@@ -1,5 +1,6 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
-
+/* 使RailModule位于侧边栏的最上层 */
+window.AddRailModule = [{prepend: true}];
 /* From Backrooms Wiki: 页面内自定义CSS */
 (function () {
     const eles = document.querySelectorAll('.js-action-play');

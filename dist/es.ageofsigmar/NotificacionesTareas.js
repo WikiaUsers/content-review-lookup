@@ -37,8 +37,8 @@ function compressTasks(tasks) {
 
 /* Verifica cada 5 minutos si hay cambios con respecto */
 function verify(proyecto) {
-    /* Detecta si panelTareas estÃ¡ en la pÃ¡gina */
-    panelTareas = document.getElementById('panelTareas' + proyecto.replace('Ã³', 'o'));
+    /* Detecta si panelTareas está en la página */
+    panelTareas = document.getElementById('panelTareas' + proyecto.replace('ó', 'o'));
     if (!(typeof panelTareas == 'undefined' || panelTareas == null)) {
         /* Registra cambios en el proyecto */
         ajaxTasks(proyecto, true, false);
@@ -54,7 +54,7 @@ function verifyProject(proyecto) {
         checktime = 0;
     }
     var time = new Date();
-    /* Calcula el tiempo actual con el de la Ãºltima revisiÃ³n */
+    /* Calcula el tiempo actual con el de la última revisión */
     var seconds = checktime - time.getTime();
     if (seconds <= 0) {
         /* Si la diferencia de tiempo es menor o igual a cero, revisa */
@@ -71,12 +71,12 @@ function verifyChanges(proyecto, tasks) {
     if (parseInt(checktasks) !== parseInt(tasks)) {
         notification(proyecto);
     } else {
-        /* Revisar en otros 5 minutos mÃ¡s */
+        /* Revisar en otros 5 minutos más */
         setCookieTime(proyecto);
     }
 }
 
-/* Lee un artÃ­culo y devuelve los datos comprimidos para ser
+/* Lee un artículo y devuelve los datos comprimidos para ser
  * comparado con un cookie o almacenado en uno */
 function ajaxTasks(proyecto, registry, purge) {
     var e;
@@ -97,10 +97,10 @@ function ajaxTasks(proyecto, registry, purge) {
         if (e.readyState == 4) {
             if (e.status == 200) {
                 if (purge) {
-                    /* DespuÃ©s de purgar, vuelve a llamar a esta funciÃ³n */
+                    /* Después de purgar, vuelve a llamar a esta función */
                     ajaxTasks(proyecto, registry, false);
                 } else {
-                    /* La segunda vez, realiza la acciÃ³n */
+                    /* La segunda vez, realiza la acción */
                     response = e.responseText;
                     var tasks = compressTasks(response);
                     if (registry) {
@@ -120,7 +120,7 @@ function ajaxTasks(proyecto, registry, purge) {
 }
 
 /*
- * Configura el cookie para revisar cada 5 minutos y asÃ­ evitar revisar
+ * Configura el cookie para revisar cada 5 minutos y así evitar revisar
  * cada vez que se ejecuta el script
  */
 function setCookieTime(proyecto) {
@@ -148,24 +148,24 @@ function setCookieTasks(proyecto, tasks) {
             proyecto + '=' + tasks +
             '; expires=' + expire.toUTCString() +
             '; path=/';
-    /* Configura el reloj para que revise en 5 minutos mÃ¡s */
+    /* Configura el reloj para que revise en 5 minutos más */
     setCookieTime(proyecto);
 }
 
-/* Muestra notificaciÃ³n (con un desfase de 1 segundo) */
+/* Muestra notificación (con un desfase de 1 segundo) */
 function notification(proyecto) {
-    if (proyecto === 'TraducciÃ³n') {
+    if (proyecto === 'Traducción') {
         setTimeout(function() {
-            setNotification('TraducciÃ³n');
+            setNotification('Traducción');
         }, 1000);
-    } else if (proyecto === 'AmpliaciÃ³n') {
+    } else if (proyecto === 'Ampliación') {
         setTimeout(function() {
-            setNotification('AmpliaciÃ³n');
+            setNotification('Ampliación');
         }, 1000);
     }
 }
 
-/* Crea u obtiene WikiaNotifications para aÃ±adirle mensajes */
+/* Crea u obtiene WikiaNotifications para añadirle mensajes */
 function setNotification(proyecto) {
     li = document.createElement('li');
     div = document.createElement('div');
@@ -175,7 +175,7 @@ function setNotification(proyecto) {
     a_close.setAttribute('onclick', 'this.parentNode.parentNode.style.display = \'none\';');
     a_message = document.createElement('a');
     
-    /* Mensaje y referencia segÃºn proyecto */
+    /* Mensaje y referencia según proyecto */
     a_message.setAttribute('href', '/wiki/Plantilla:PanelTareas/' + proyecto + '?action=purge');
     a_message.innerHTML = 'El proyecto ' + proyecto + ' tiene modificaciones.';
         

@@ -15,7 +15,7 @@ $(function()
     mw.config.get('wgChatEmoticons').split("\n").forEach(function(el, index, arr) { if(el[0] === "*" && el[1] !== "*") obj.emoticons[arr[index + 1].substring(2).trim()] = el.substring(1).trim(); }, this);
  
     // Creating the element to display in the modal
-    var mainElement = $("<div id='EmoticonsWindowModalMain'><span class='kockaEmoticonsHelp EmoticonsWindowHelp'>" + (obj.help || 'Para insertar un emoticÃ³n, haz clic en Ã©l. <a href="/wiki/MediaWiki:Emoticons" target="_blank">Lista completa</a>') + "</span></div>");
+    var mainElement = $("<div id='EmoticonsWindowModalMain'><span class='kockaEmoticonsHelp EmoticonsWindowHelp'>" + (obj.help || 'Para insertar un emoticón, haz clic en él. <a href="/wiki/MediaWiki:Emoticons" target="_blank">Lista completa</a>') + "</span></div>");
     var emoticonsList = $("<div id='EmoticonsWindowList'></div>");
  
     /**

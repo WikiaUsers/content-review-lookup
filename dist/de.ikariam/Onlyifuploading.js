@@ -1,4 +1,4 @@
- // LÃ¤dt die [[Vorlage:Dateiinfo|Dateiinfovorlage]] beim Hochladen von Bildern direkt im Beschreibungsfeld.
+ // Lädt die [[Vorlage:Dateiinfo|Dateiinfovorlage]] beim Hochladen von Bildern direkt im Beschreibungsfeld.
  
  if(wgCanonicalSpecialPageName == "Upload") {
  	function setSpecialUploadTemplate() {

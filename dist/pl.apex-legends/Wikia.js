@@ -1,3 +1,3 @@
-// Konfiguracja skryptÃ³w
+// Konfiguracja skryptów
 window.SeeMoreActivityButtonOld = true;
 window.SeeMoreActivityButtonRC = true;

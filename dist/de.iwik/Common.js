@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
 
 /* Tags */
 
@@ -9,7 +9,7 @@ window.UserTagsJS = {
 		techpro: { u:'Technik-Profi'},
 		sysop: { m:'Administrator',f:'Administratorin'},
 		chatmod: { m:'Chat-Moderator',f:'Chat-Moderatorin'},
-		bureaucrat: { m:'BÃ¼rokrat', f:'BÃ¼rokratin' },
+		bureaucrat: { m:'Bürokrat', f:'Bürokratin' },
 		threadmod: { m:'Threadmoderator', f:'Threadmoderatorin'},
 		editor_month: { m:'Bearbeiter des Monats', f:'Bearbeiterin des Monats'},
 		iwik_month: { u:'Iwik des Monats'}
@@ -19,7 +19,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'Trollocool': ['techpro',],
 	'Roterhund07': ['techpro'],
-	'GrÃ¼nfell':['iwik_month']
+	'Grünfell':['iwik_month']
 };
 
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});

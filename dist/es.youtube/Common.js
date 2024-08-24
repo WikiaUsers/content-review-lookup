@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 /* Barra de carga de la portada - por User:SpacePucky y User:Trollocool de :w:c:de.youtube */
 var Barra1=document.createElement("div");
 Barra1.classList.add("BarraGris");

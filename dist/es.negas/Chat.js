@@ -13,10 +13,10 @@ importArticles({
 	]
 });
  
-//ActivaciÃ³n de los Announcements:
+//Activación de los Announcements:
 chatAnnouncementsAll = true;
  
-//ActivaciÃ³n de los Tags:
+//Activación de los Tags:
 var chatags = { 
     images: true, 
     videos: true 

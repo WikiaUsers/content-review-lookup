@@ -15,7 +15,7 @@ function addPurgeButton () {
 		case 'awesome': /* you really shouldnt even have this value... */
 		case 'monaco_old': /* really, where are you getting these skin settings from... */
 		case 'monaco':
-			$('#page_controls').append('<li id="control_purgebutton"><img src="/skins/common/blank.gif" class="sprite refresh" /><a id="ca-purge" href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" rel="nofollow" title="Actualizar pÃ¡gina">'+ theText + '</a></li>');
+			$('#page_controls').append('<li id="control_purgebutton"><img src="/skins/common/blank.gif" class="sprite refresh" /><a id="ca-purge" href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" rel="nofollow" title="Actualizar página">'+ theText + '</a></li>');
 			break;
 
 
@@ -23,12 +23,12 @@ function addPurgeButton () {
 		case 'wowwiki': /* monobook clone, pass to monobook */
 		case 'lostbook': /* monobook clone, pass to monobook */
 		case 'monobook':
-			$('#p-cactions > .pBody > ul').append('<li id="ca-purge"><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" title="Actualizar pÃ¡gina">'+ theText + '</a></li>');
+			$('#p-cactions > .pBody > ul').append('<li id="ca-purge"><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" title="Actualizar página">'+ theText + '</a></li>');
 			break;
 
 		case 'oasis':
 		case 'wikia':
-			$(((wgNamespaceNumber == 2 || wgNamespaceNumber == 3) ? '#WikiaUserPagesHeader' : '#WikiaPageHeader') + ' > ul.wikia-menu-button > li > ul').append('<li><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" title="Actualizar pÃ¡gina">'+ theText + '</a></li>');
+			$(((wgNamespaceNumber == 2 || wgNamespaceNumber == 3) ? '#WikiaUserPagesHeader' : '#WikiaPageHeader') + ' > ul.wikia-menu-button > li > ul').append('<li><a href="/index.php?title='+encodeURIComponent(wgPageName)+'&action=purge" title="Actualizar página">'+ theText + '</a></li>');
 			break;
 
 	}

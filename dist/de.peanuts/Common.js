@@ -1,4 +1,4 @@
-/* Jedes JavaScript-Skript wird hier fÃ¼r alle Nutzern und Besucher auf jeder Seite geladen. */
+/* Jedes JavaScript-Skript wird hier für alle Nutzern und Besucher auf jeder Seite geladen. */
 
 
 // ============================================================
@@ -9,7 +9,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data },
-		bureaucrat: { u:'BÃ¼rokrat', link:'Hilfe:BÃ¼rokrat', order: 1 }, // Normal order is 0
+		bureaucrat: { u:'Bürokrat', link:'Hilfe:Bürokrat', order: 1 }, // Normal order is 0
 		sysop: { u:'Admin', link:'Hilfe:Admin', order: 2 },
 		inactive: { u: 'Inaktiver Nutzer', link:'Hilfe:Inaktive Benutzerkonten', order: 100 },
 		'montheditor': { u:'Bearbeiter des Monats', order: 101 },
@@ -18,7 +18,7 @@ window.UserTagsJS = {
 		'peanuts-expert': { u:'Peanuts-Experte', order: 104 },
 		bot: { u:'Bot', link:'Hilfe:Bots', order: 105 },
 		voldev: { u:'Volunteer Developers', link:'http://dev.wikia.com/wiki/Volunteer_Developers', order: 106 },
-		autoconfirmed: { u:'Automatisch bestÃ¤tigte Benutzer', link:'Hilfe:Automatisch bestÃ¤tigte Benutzer', order: 107 },
+		autoconfirmed: { u:'Automatisch bestätigte Benutzer', link:'Hilfe:Automatisch bestätigte Benutzer', order: 107 },
 		'fan': { u:'Peanuts-Fan', link:'Spezial:Maps/9483', order: 108 },
 		'youtube': { u:'YouTuber', order: 109 }
 	}
@@ -161,15 +161,15 @@ importScriptPage('MediaWiki:Gadget-NavFrame.js');
 //                   Sonstige Einstellungen
 // ============================================================
 
-/* Variablen fÃ¼r das Skript LockOldBlogs (siehe http://dev.wikia.com/wiki/LockOldBlogs) */
+/* Variablen für das Skript LockOldBlogs (siehe http://dev.wikia.com/wiki/LockOldBlogs) */
 
 LockOldBlogs = {
   expiryDays: 30,
-  expiryMessage: "Die letzte AktivitÃ¤t liegt <expiryDays> Tage zurÃ¼ck. Dieser Blog wurde deshalb archiviert."
+  expiryMessage: "Die letzte Aktivität liegt <expiryDays> Tage zurück. Dieser Blog wurde deshalb archiviert."
 };
 
-/* Variablen fÃ¼r das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
-ajaxPages = ['Spezial:Letzte_Ã„nderungen'];
+/* Variablen für das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
+ajaxPages = ['Spezial:Letzte_Änderungen'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'automatische Aktualsierung ohne Neuladen der kompletten Seite';
 
@@ -182,7 +182,7 @@ if ( wgCanonicalSpecialPageName == "Upload" ) {
 
 
 /***********************************************
-* Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
+* Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
 * This notice MUST stay intact for legal use
 * Visit http://www.dynamicdrive.com/ for this script and 100s more.
 ***********************************************/

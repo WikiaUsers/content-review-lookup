@@ -2,8 +2,8 @@
 
     CORRECCION DE ERROR AL CREAR PAGINA NUEVA CON PRELOAD
 
-Corrige error al crear p√°gina nueva con preload. Para ello se asigna el atributo "section=1"
-al bot√≥n Crear. Cuando el usuario hace clic, el formulario se enviar√° con este atributo adicional, evitando que se sobrescrita el atributo "edit" por "veedit". */
+Corrige error al crear p·gina nueva con preload. Para ello se asigna el atributo "section=1"
+al botÛn Crear. Cuando el usuario hace clic, el formulario se enviar· con este atributo adicional, evitando que se sobrescrita el atributo "edit" por "veedit". */
 
 /* Busca el objeto con el id "newdeck" y luego busca el primer formulario */
 var f = document.getElementById('newdeck');
@@ -11,7 +11,7 @@ var f = document.getElementById('newdeck');
 if(f !== null) {
     f = f.getElementsByTagName('form');
     
-    /* Si hay resultados, procede a a√±adir un nuevo atributo*/
+    /* Si hay resultados, procede a aÒadir un nuevo atributo*/
     if(f.length > 0) {
       /* Reasigna la primera variable */
       f = f[0];
@@ -20,7 +20,7 @@ if(f !== null) {
       d.setAttribute('name', 'section');
       d.setAttribute('value', 1);
       d.setAttribute('type', 'hidden');
-      /* A√±ade el nuevo control al formulario existente*/
+      /* AÒade el nuevo control al formulario existente*/
       f.appendChild(d);
     }
 }
@@ -29,7 +29,7 @@ if(f !== null) {
 
     BOTON DE DESCARGA DE RECETAS EN FORMATO .ydk
 
-Crea un bot√≥n para permitir a los usuarios descargar las recetas de decks
+Crea un botÛn para permitir a los usuarios descargar las recetas de decks
 en formato .ydk, compatibles con el juego YGOPRO. Se crea un archivo mediante
 Javascript, que luego es descargado en el equipo del usuario. Se descarga tal
 como si se tratase de un archivo alojado en el servidor, pero sin pedirselo
@@ -54,32 +54,32 @@ function buttonYDK() {
 
 /* 
 
-    NORMALIZAR NOMBRES (necesario para el bot√≥n YDK)
+    NORMALIZAR NOMBRES (necesario para el botÛn YDK)
      
-Retira las tildes de los nombres, as√≠ como otros caracteres conflictivos
+Retira las tildes de los nombres, asÌ como otros caracteres conflictivos
 
 */
 function normalizeTitle(title) {
     letters = [
-        ['√Å', 'A'],
-        ['√°', 'a'],
-        ['√â', 'E'],
-        ['√©', 'e'],
-        ['√ç', 'I'],
-        ['√≠', 'i'],
-        ['√ì', 'O'],
-        ['√≥', 'o'],
-        ['√ö', 'U'],
-        ['√∫', 'u'],
-        ['√Ñ', 'A'],
-        ['√§', 'a'],
-        ['√ã', 'E'],
-        ['√´', 'e'],
-        ['√è', 'I'],
-        ['√Ø', 'i'],
-        ['√ñ', 'O'],
-        ['√∂', 'o'],
-        ['√ú', 'U'],
+        ['¡', 'A'],
+        ['·', 'a'],
+        ['…', 'E'],
+        ['È', 'e'],
+        ['Õ', 'I'],
+        ['Ì', 'i'],
+        ['”', 'O'],
+        ['Û', 'o'],
+        ['⁄', 'U'],
+        ['˙', 'u'],
+        ['ƒ', 'A'],
+        ['‰', 'a'],
+        ['À', 'E'],
+        ['Î', 'e'],
+        ['œ', 'I'],
+        ['Ô', 'i'],
+        ['÷', 'O'],
+        ['ˆ', 'o'],
+        ['‹', 'U'],
         ['&', 'y'],
         ['/', '']
     ];
@@ -95,7 +95,7 @@ function normalizeTitle(title) {
 buttonYDK();
 
 
-/* Programa un bot√≥n para mostrar u ocultar informaci√≥n no relevante */
+/* Programa un botÛn para mostrar u ocultar informaciÛn no relevante */
 function setToggleButtons() {
     
     /* Variables comunes */
@@ -106,7 +106,7 @@ function setToggleButtons() {
     for (i = 0; i < x.length; i++) {
         
         var x_id = x[i].getAttribute('id');
-        // Configura funci√≥n del bot√≥n
+        // Configura funciÛn del botÛn
         x[i].setAttribute("onclick", "onClickToggleButton('" + x_id + "')");
         
         // Oculta el contenedor objetivo
@@ -119,7 +119,7 @@ function setToggleButtons() {
     for (i = 0; i < x.length; i++) {
         
         var x_id = x[i].getAttribute('id');
-        // Configura funci√≥n del bot√≥n
+        // Configura funciÛn del botÛn
         x[i].setAttribute("onclick", "onClickToggleButton('" + x_id + "')");
         
         // Oculta el contenedor objetivo
@@ -128,7 +128,7 @@ function setToggleButtons() {
     } 
 }
 
-/* Activa la funci√≥n de mostrar/ocultar contenido */
+/* Activa la funciÛn de mostrar/ocultar contenido */
 function onClickToggleButton(id) {
     var o = document.getElementById(id + "_content");
     if(o.style.display == "none")
@@ -141,5 +141,5 @@ function onClickToggleButton(id) {
     }
 }
 
-/* Ejecuta la funci√≥n */
+/* Ejecuta la funciÛn */
 setToggleButtons()

@@ -1,10 +1,10 @@
 // Original: https://github.com/tingletech/moon-phase
 // Angepasst durch: [[Benutzer:Arkondi]]
 
-// benÃ¶tigte CSS-Regeln hinzufÃ¼gen
+// benötigte CSS-Regeln hinzufügen
 mw.util.addCSS('.moon{fill:#D6D5C0}.moonback{fill:black;stroke:#fff;stroke-width:1px}');
 
-// benÃ¶tigte Funktion ergÃ¤nzen
+// benötigte Funktion ergänzen
 Date.prototype.getJulian = function () {
   return ((this / 86400000) - (this.getTimezoneOffset() / 1440) + 2440587.5);
 };

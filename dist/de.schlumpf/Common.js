@@ -1,4 +1,4 @@
-// Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. 
+// Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. 
  
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -24,11 +24,11 @@ $(function() {
 //    return false;
 //  });
 
-  // Ablauf Button "Mitte" der Ansichten Vorder- & RÃ¼ckseite 
+  // Ablauf Button "Mitte" der Ansichten Vorder- & Rückseite 
   $('#portal_center').click(function() {
        switch($tabs.tabs('option', 'selected')) {
          case 0:
-           $tabs.tabs('select', 2); // RÃ¼ckseite anzeigen
+           $tabs.tabs('select', 2); // Rückseite anzeigen
          break;
          case 2:
            $tabs.tabs('select', 0); // Vorderseite anzeigen
@@ -40,14 +40,14 @@ $(function() {
     return false;
   });
 
-  // Ablauf Pfeil fÃ¼r Rotation der Ansichten nach oben
+  // Ablauf Pfeil für Rotation der Ansichten nach oben
   $('#portal_top').click(function() {
        switch($tabs.tabs('option', 'selected')) {
          case 0:
            $tabs.tabs('select', 5); // Draufsicht anzeigen
          break;
          case 5:
-           $tabs.tabs('select', 2); // RÃ¼ckseite anzeigen
+           $tabs.tabs('select', 2); // Rückseite anzeigen
          break;
          case 2:
            $tabs.tabs('select', 4); // Unteransicht anzeigen
@@ -62,14 +62,14 @@ $(function() {
     return false;
   });
   
-  // Ablauf Pfeil fÃ¼r Rotation der Ansichten nach rechts
+  // Ablauf Pfeil für Rotation der Ansichten nach rechts
   $('#portal_next').click(function() {
        switch($tabs.tabs('option', 'selected')) {
          case 0:
            $tabs.tabs('select', 1); // rechte Seitenansicht anzeigen  
          break;
          case 1:
-           $tabs.tabs('select', 2); // RÃ¼ckseite anzeigen
+           $tabs.tabs('select', 2); // Rückseite anzeigen
          break;
          case 2:
            $tabs.tabs('select', 3); // linke Seitenansicht anzeigen
@@ -84,14 +84,14 @@ $(function() {
     return false;
   });
 
-  // Ablauf Pfeil fÃ¼r Rotation der Ansichten nach links
+  // Ablauf Pfeil für Rotation der Ansichten nach links
   $('#portal_prev').click(function() {
        switch($tabs.tabs('option', 'selected')) {
          case 0:
            $tabs.tabs('select', 3); // linke Seitenansicht anzeigen  
          break;
          case 3:
-           $tabs.tabs('select', 2); // RÃ¼ckseite anzeigen
+           $tabs.tabs('select', 2); // Rückseite anzeigen
          break;
          case 2:
            $tabs.tabs('select', 1); // rechte Seitenansicht anzeigen 
@@ -106,14 +106,14 @@ $(function() {
     return false;
   });
  
-  // Ablauf Pfeil fÃ¼r Rotation der Ansichten nach unten
+  // Ablauf Pfeil für Rotation der Ansichten nach unten
   $('#portal_down').click(function() {
        switch($tabs.tabs('option', 'selected')) {
          case 0:
            $tabs.tabs('select', 4); // Unteransicht anzeigen 
          break;
          case 4:
-           $tabs.tabs('select', 2); // RÃ¼ckseite anzeigen
+           $tabs.tabs('select', 2); // Rückseite anzeigen
          break;
          case 2:
            $tabs.tabs('select', 5); // Draufsicht anzeigen

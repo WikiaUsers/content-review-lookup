@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
  
 
 // Nombre de usuario
@@ -13,10 +13,10 @@ function UserNameReplace(){
 } 
 addOnloadHook(UserNameReplace);
 // AjaxRC
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
-// Botones de edici√≥n adicionales 
+// Botones de ediciÛn adicionales 
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
@@ -41,8 +41,8 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucci√≥n",
-     "tagOpen": "{{En construcci√≥n|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÛn",
+     "tagOpen": "{{En construcciÛn|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -69,10 +69,10 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Peque√±o",
+     "speedTip": "Texto PequeÒo",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Peque√±o"};
+     "sampleText": "Texto PequeÒo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -118,18 +118,18 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
 } 
 /***************************************************
-ATRIBUCI√ìN:
+ATRIBUCI”N:
  * @autor - pecoes
- * @modificaci√≥n - Pintor Kagamine
- * @comunidad - Pok√©polis
+ * @modificaciÛn - Pintor Kagamine
+ * @comunidad - PokÈpolis
  * @interwiki - es.pokepolis
 ***************************************************
- * por favor, no us√©is el c√≥digo sin antes
+ * por favor, no usÈis el cÛdigo sin antes
  * contactar con Pintor Kagamine para evitar
- * posibles problemas con respecto al c√≥digo.
+ * posibles problemas con respecto al cÛdigo.
 ***************************************************/
 // SexyUserPage modificado
-  // para usar CSS en pr√°cticamente cualquier art√≠culo
+  // para usar CSS en pr·cticamente cualquier artÌculo
 ;(function (mw, $) {
  
     'use strict';

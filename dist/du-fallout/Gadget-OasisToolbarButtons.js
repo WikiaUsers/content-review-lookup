@@ -18,12 +18,12 @@ function addOasisToolbarButtons () {
       // Deutsch
       de: {
          addTopic: "Thema hinzuf.",
-         deleteThis: "LÃ¶schen",
+         deleteThis: "Löschen",
          edit: "Bearbeiten",
          editWithForm: "Form.",
          history: "Versionen",
          move: "Verschieben",
-         protect: "SchÃ¼tzen",
+         protect: "Schützen",
          purge: "Neu laden",
          undelete: "Wiederherst.",
          unprotect: "Freigeben",
@@ -45,9 +45,9 @@ function addOasisToolbarButtons () {
          viewSource: "View source",
          whatLinksHere: "What links here"
       },
-      // EspaÃ±ol
+      // Español
       es: {
-         addTopic: "AÃ±adir tema",
+         addTopic: "Añadir tema",
          deleteThis: "Borrar",
          edit: "Editar",
          editWithForm: "form.",
@@ -57,10 +57,10 @@ function addOasisToolbarButtons () {
          purge: "Purgar",
          undelete: "Restaurar",
          unprotect: "Desproteger",
-         viewSource: "CÃ³digo fuente",
-         whatLinksHere: "Lo que enlaza aquÃ­"
+         viewSource: "Código fuente",
+         whatLinksHere: "Lo que enlaza aquí"
       },
-      // FranÃ§ais
+      // Français
       fr: {
          addTopic: "Ajouter disc.",
          deleteThis: "Supprimer",
@@ -68,12 +68,12 @@ function addOasisToolbarButtons () {
          editWithForm: "form.",
          history: "Historique",
          move: "Renommer",
-         protect: "ProtÃ©ger",
+         protect: "Protéger",
          purge: "Purger",
          undelete: "Restaurer",
-         unprotect: "DÃ©protÃ©ger",
+         unprotect: "Déprotéger",
          viewSource: "Texte source",
-         whatLinksHere: "Pages liÃ©es"
+         whatLinksHere: "Pages liées"
       }
    }, userconfig);
 

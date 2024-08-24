@@ -1,4 +1,4 @@
-//Acrescentar o atributo de nome de usu√°rio alternativo ao perfil do mastro, de modo a fazer o highlight funcionar
+//Acrescentar o atributo de nome de usu·rio alternativo ao perfil do mastro, de modo a fazer o highlight funcionar
 $(function () {
     if (!mw.config.get('profileUserName')) {
         return;

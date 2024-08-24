@@ -1,4 +1,4 @@
-// CÃ³digo traduzido proveniente de [[:en:MediaWiki:Gadget-contribsrange.js]]
+// Código traduzido proveniente de [[:en:MediaWiki:Gadget-contribsrange.js]]
 //
 //  _________________________________________________________________________________________
 // |                                                                                         |
@@ -44,7 +44,7 @@ if(wgCanonicalSpecialPageName == 'Contributions' && wgEnableAPI) {
 
 function prefixContribsInit() {
   var show = document.getElementById('contentSub') || document.getElementById('topbar')
-  if(show) show.appendChild(document.createTextNode(' \u2022 Gadget Pesquisa de ContribuiÃ§Ãµes AvanÃ§ada 0.2 ativado. Pode introduzir uma gama CIDR ou adicionar um asterisco para pesquisas com prefixo.'));
+  if(show) show.appendChild(document.createTextNode(' \u2022 Gadget Pesquisa de Contribuições Avançada 0.2 ativado. Pode introduzir uma gama CIDR ou adicionar um asterisco para pesquisas com prefixo.'));
   var ucfrm = document.getElementsByTagName('form')[0];
   if(!ucfrm.target) return;
 
@@ -112,7 +112,7 @@ function prefixContribs(obj) {
   cidr = obj['query']['usercontribs'];
   var res = document.getElementById('results-from-CIDR');
   if(cidr.length == 0) {
-    res.appendChild(document.createTextNode(' NÃ£o foram encontradas ediÃ§Ãµes para a gama requisitada.'));
+    res.appendChild(document.createTextNode(' Não foram encontradas edições para a gama requisitada.'));
     removeSpinner('prefixcontribs-spin');
     return;
   }
@@ -136,9 +136,9 @@ function prefixContribs(obj) {
     ul.appendChild(document.createTextNode('\n'));
     var li = document.createElement('li');
      li.appendChild(document.createTextNode(cidr[i].timestamp.replace(/T[\d:]*Z/,' ')));
-     addlinkchild(li, wgScript + '?title=Especial:ContribuiÃ§Ãµes/' + cidr[i].user, cidr[i].user);
+     addlinkchild(li, wgScript + '?title=Especial:Contribuições/' + cidr[i].user, cidr[i].user);
      li.appendChild(document.createTextNode(' ('));
-     addlinkchild(li, wgScript + '?title=UsuÃ¡rio_DiscussÃ£o:' + cidr[i].user, 'discussÃ£o','','mw-mightexist');
+     addlinkchild(li, wgScript + '?title=Usuário_Discussão:' + cidr[i].user, 'discussão','','mw-mightexist');
      li.appendChild(document.createTextNode(') editou ('));
      addlinkchild(li, wgScript + '?title=-&curid=' + cidr[i].pageid + '&diff=' + cidr[i].revid , 'dif');
      li.appendChild(document.createTextNode(') '));
@@ -158,7 +158,7 @@ function prefixContribs(obj) {
   }
   var url = crContURI + '&uccontinue='+ obj['query-continue']['usercontribs']['uccontinue'];
   if(crMax <= 0 && queryString('crshowall') != 'true') {
-    prog.appendChild(document.createTextNode(' Eh lÃ¡! Foram encontrados demasiados resultados. Para os ver todos clique '));
+    prog.appendChild(document.createTextNode(' Eh lá! Foram encontrados demasiados resultados. Para os ver todos clique '));
     var ga = document.createElement('a');
      var gaurl = document.location.href;
      if(gaurl.indexOf('#') != -1) gaurl = gaurl.substr(0,gaurl.indexOf('#'))
@@ -180,7 +180,7 @@ function prefixContribsNumerate() {
   var lsts = getElementsByClassName(document,'ul','cr-list');
   for(var i=0;i<lsts.length;i++) {
     var dv = document.getElementById('d-' + lsts[i].getAttribute('id'));
-    dv.appendChild(document.createTextNode(' ' + lsts[i].getElementsByTagName('li').length + ' ediÃ§Ãµes'));
+    dv.appendChild(document.createTextNode(' ' + lsts[i].getElementsByTagName('li').length + ' edições'));
   }
   if(lsts.length == 1) prefixContribsToggleDiv(lsts[0].id)
 }

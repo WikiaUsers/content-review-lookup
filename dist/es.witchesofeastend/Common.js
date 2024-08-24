@@ -1,7 +1,7 @@
 SpoilerAlert = {
-    question: 'Esta pÃ¡gina contiene Spoilers. Â¿Seguro quieres leerla?',
+    question: 'Esta página contiene Spoilers. ¿Seguro quieres leerla?',
     Si: 'Si, Por Favor',
-    no: 'No, aÃºn no',
+    no: 'No, aún no',
     isSpoiler: function () {
         return Boolean($('#spoiler').length);
     }

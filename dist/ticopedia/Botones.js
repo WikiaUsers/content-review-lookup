@@ -2,14 +2,14 @@
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/b/b4/Button_category03.png?1",
-     "speedTip": "CategorÃ­a",
-     "tagOpen": "[[CategorÃ­a:",
+     "speedTip": "Categoría",
+     "tagOpen": "[[Categoría:",
      "tagClose": "]]",
      "sampleText": ""};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png?1",
-     "speedTip": "RedirecciÃ³n",
+     "speedTip": "Redirección",
      "tagOpen": "#REDIRECT [[",
      "tagClose": "]]",
      "sampleText": ""};
@@ -19,14 +19,14 @@
      "speedTip": "solicitar destruir",
      "tagOpen": "\{\{destruir|",
      "tagClose": "\}\}",
-     "sampleText": "su razÃ³n aquÃ­"};
+     "sampleText": "su razón aquí"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/7/70/Button_disambig.png?1",
      "speedTip": "fusionar",
      "tagOpen": "\{\{Fusionar|",
      "tagClose": "\}\}",
-     "sampleText": "nombre del otro artÃ­culo"};
+     "sampleText": "nombre del otro artículo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5e/Nuvola-inspired_Edit_Bar_for_MediaWik-button_sig.png?1",
@@ -58,8 +58,8 @@
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/ticospedia/es/images/0/00/Button_dicc.png?1",
-     "speedTip": "OrtografÃ­a",
-     "tagOpen": "\{\{OrtografÃ­a",
+     "speedTip": "Ortografía",
+     "tagOpen": "\{\{Ortografía",
      "tagClose": "\}\}",
      "sampleText": ""};
 

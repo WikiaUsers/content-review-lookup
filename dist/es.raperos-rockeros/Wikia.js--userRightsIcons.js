@@ -20,8 +20,8 @@ function addMastheadTags() {
 
   // ADMINS
 
-    rights["SealShyl"]               = ["SEXO DUDOSO","ASPIRANTE PA' DOBLAJE CON CLAUDIA URB√ÅN"];
-    rights["Temor-memes"]               = ["TUMOR","CAG√ìN"];
+    rights["SealShyl"]               = ["SEXO DUDOSO","ASPIRANTE PA' DOBLAJE CON CLAUDIA URB¡N"];
+    rights["Temor-memes"]               = ["TUMOR","CAG”N"];
 
  // END List of Accounts Given Extra User Rights Icons
  

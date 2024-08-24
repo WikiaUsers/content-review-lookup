@@ -1,5 +1,5 @@
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaciÃ³n para los que usen oasis. */
+/*SkinNotification: Agrega una notificación para los que usen oasis. */
 window.SkinNotification = {
 	article: 'Foro:Cambio de URL',
 	key: 'NfSkin',

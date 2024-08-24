@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. 
+/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. 
 
 if ( navigator.platform == "Nintendo 3DS" ) {
   document.cookie = "useskin=monobook; path=/; domain=de.mh3u.wikia.com;\

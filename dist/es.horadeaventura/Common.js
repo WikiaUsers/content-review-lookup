@@ -1,4 +1,4 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
  
 // Importes
 importArticles({
@@ -10,7 +10,7 @@ importArticles({
     ]
 });
 
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
 
 // Etiquetas de Usuarios
  
@@ -32,23 +32,23 @@ window.UserTagsJS = {
     ],
 	tags: {
         rollback: { u: 'Reversor', f: 'Reversora' },
-        threadmoderator: { u: 'Moderador de discusiones', f: 'Moderadora de discusiones', link:'Hora de aventura Wiki:Administraci√≥n#Moderadores_de_Discusiones'},
-        contentmoderator: {u: 'Moderador de contenido', f: 'Moderadora de contenido', link: 'Hora_de_aventura_Wiki:Administraci√≥n#Moderadores_de_Contenido'},
-        sysop: { u: 'Administrador', f: 'Administradora', link:'Hora de aventura Wiki:Administraci√≥n#Administradores' },
-        bureaucrat: { u:'Bur√≥crata', f: 'Bur√≥crata', link:'Hora de aventura Wiki:Administraci√≥n#Bur.C3.B3cratas' },
+        threadmoderator: { u: 'Moderador de discusiones', f: 'Moderadora de discusiones', link:'Hora de aventura Wiki:AdministraciÛn#Moderadores_de_Discusiones'},
+        contentmoderator: {u: 'Moderador de contenido', f: 'Moderadora de contenido', link: 'Hora_de_aventura_Wiki:AdministraciÛn#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'Hora de aventura Wiki:AdministraciÛn#Administradores' },
+        bureaucrat: { u:'BurÛcrata', f: 'BurÛcrata', link:'Hora de aventura Wiki:AdministraciÛn#Bur.C3.B3cratas' },
     }
 };
  
 UserTagsJS.modules.inactive = 30;
 
 /***** Actualizar los cambios recientes de la wikiactividad *****/
-AjaxRCRefreshText = 'Act. autom√°t.';
-AjaxRCRefreshHoverText = 'Los cambios m√°s recientes ser√°n vistos sin la necesidad de refrescar la p√°gina manualmente';
+AjaxRCRefreshText = 'Act. autom·t.';
+AjaxRCRefreshHoverText = 'Los cambios m·s recientes ser·n vistos sin la necesidad de refrescar la p·gina manualmente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 ;
  
-/* Cambio de t√≠tulo */
+/* Cambio de tÌtulo */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

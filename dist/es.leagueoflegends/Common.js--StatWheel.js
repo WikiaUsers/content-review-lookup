@@ -1,11 +1,11 @@
 window.statWheelStrings =  {
-        'damage-tooltip': 'Da帽o - La habilidad del campe贸n de infligir da帽o.',
-        'toughness-tooltip': 'Dureza - La habilidad del campe贸n de absorber da帽o.',
-        'control-tooltip': 'Control - La habilidad del campe贸n de deshabilitar o interrumpir enemigos.',
-        'mobility-tooltip': 'Movilidad - La habilidad del campe贸n de moverse r谩pidamente alrededor del mapa.',
-        'utility-tooltip': 'Utilidad - La habilidad del campe贸n de otorgar efectos beneficiosos a su aliado o proveer visi贸n.',
-        'center-tooltip': 'N贸tese que el cliente califica a los campeones en escalas de 1-3 y los campeones que cuentan con Nada y Bajo en una fortaleza particular son marcados por igual. Por el contrario, esta Wikia usa una escala de 0-3 para Dureza, Control, Movilidad y Utilidad. Oficialmente, cualquier campe贸n listado con un 0 puede ser considerado un 1.',
-        'compact-tooltip': 'Da帽o: %damage% / 3\nDureza: %toughness% / 3\nControl: %control% / 3\nMovilidad: %mobility% / 3\nUtilidad: %utility% / 3\n',
+        'damage-tooltip': 'Da駉 - La habilidad del campe髇 de infligir da駉.',
+        'toughness-tooltip': 'Dureza - La habilidad del campe髇 de absorber da駉.',
+        'control-tooltip': 'Control - La habilidad del campe髇 de deshabilitar o interrumpir enemigos.',
+        'mobility-tooltip': 'Movilidad - La habilidad del campe髇 de moverse r醦idamente alrededor del mapa.',
+        'utility-tooltip': 'Utilidad - La habilidad del campe髇 de otorgar efectos beneficiosos a su aliado o proveer visi髇.',
+        'center-tooltip': 'N髏ese que el cliente califica a los campeones en escalas de 1-3 y los campeones que cuentan con Nada y Bajo en una fortaleza particular son marcados por igual. Por el contrario, esta Wikia usa una escala de 0-3 para Dureza, Control, Movilidad y Utilidad. Oficialmente, cualquier campe髇 listado con un 0 puede ser considerado un 1.',
+        'compact-tooltip': 'Da駉: %damage% / 3\nDureza: %toughness% / 3\nControl: %control% / 3\nMovilidad: %mobility% / 3\nUtilidad: %utility% / 3\n',
     }; // Cadena de caracteres localizados para el StatWheel
 
 importArticles({

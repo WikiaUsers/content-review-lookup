@@ -175,7 +175,7 @@ case 77: return "<wiki>{{Item|Blast Suit}}, {{Item|Bombushka}}, {{Item|Demolitio
 case 78: return "<wiki>{{Item|Miniaturizer}}, {{Item|Spare Ordnance}}, {{Item|Recycler}}</wiki>";
 case 79: return "<wiki>{{Item|Bounty Contract}}, {{Item|Golden Popcorn}}, {{Item|Conductor}}, {{Item|Battle Standard}}</wiki>";
 case 80: return "<wiki>{{Item|Ursa Major}}, {{Item|Blade Mail}}, {{Item|Weakness}} x 5, {{Item|Imbalance}} x 5</wiki>";
-case 81: return "<wiki>{{Item|Guidance}}, {{Item|Bottled Lightning}}, {{Item|MjÃ¶lnir}}</wiki>";
+case 81: return "<wiki>{{Item|Guidance}}, {{Item|Bottled Lightning}}, {{Item|Mjölnir}}</wiki>";
 case 82: return "<wiki>{{Item|Blessed Blend}}, {{Item|Ambrosia}} x 3</wiki>";
 case 83: return "<wiki>{{Item|Ursa Major}}, {{Item|Orion's Sword}}, {{Item|Canis Major}}</wiki>";
 case 84: return "<wiki>{{Item|Brittleness}} x 20 <span style='color: return#F02121'>(Indestructible)</span>, {{Item|Blood Bomb}}, {{Item|Box of Holding}}</wiki>";

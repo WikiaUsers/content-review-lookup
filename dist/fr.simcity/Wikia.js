@@ -1,2 +1,2 @@
-/* Boutons rÃ©seaux sociaux */
+/* Boutons réseaux sociaux */
 importScriptPage('SocialIcons/code.js','dev');

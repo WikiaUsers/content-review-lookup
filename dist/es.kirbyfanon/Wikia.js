@@ -2,7 +2,7 @@
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');
 
-// Para las p√°ginas de usuario
+// Para las p·ginas de usuario
 importScriptPage('SexyUserPage/code.js', 'dev');
 
 // Primera parte - 10 backgrounds durante 1 hora

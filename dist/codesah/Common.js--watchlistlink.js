@@ -3,7 +3,7 @@ function addWatchlist(){
 	if (skin == 'monaco' && wgUserName != null){
 		var watchLink = document.createElement('a');
 		watchLink.setAttribute('href', wgServer+'/wiki/Especial:Seguimiento');
-		watchLink.setAttribute('title', 'La lista de p√°ginas que monitoreas en espera de cambios');
+		watchLink.setAttribute('title', 'La lista de p·ginas que monitoreas en espera de cambios');
 		watchLink.innerHTML = 'Mi lista de seguimiento';
 		
 		var awSpan = document.createElement('span');

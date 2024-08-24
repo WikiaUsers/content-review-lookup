@@ -1,5 +1,5 @@
 // **************************************************
-// AÃ±adir etiquetas en los perfiles
+// Añadir etiquetas en los perfiles
 // **************************************************
 window.UserTagsJS = {
 	modules: { 
@@ -8,7 +8,7 @@ window.UserTagsJS = {
 		autoconfirmed: true,
 		newuser: true,
 		custom: {
-			'HuellasDelSur': ['informÃ¡tico'],
+			'HuellasDelSur': ['informático'],
 			'BillyShears9426': ['vigilante'],
  			'GuidoM1995': ['vigilante'],
 			"Darax'Rax Vas Neema": ['monthuser'],
@@ -19,23 +19,23 @@ window.UserTagsJS = {
 				monthuser: { 
 			u:'Usuario del mes', f:'Usuaria del mes'
 		},
-		informÃ¡tico: { 
-			u:'InformÃ¡ticos', f:'InformÃ¡ticas' link:'project:AdministraciÃ³n#InformÃ¡ticos' 
+		informático: { 
+			u:'Informáticos', f:'Informáticas' link:'project:Administración#Informáticos' 
 		},
 		vigilante: { 
-			u:'Vigilante', link:'project:AdministraciÃ³n#Vigilantes' 
+			u:'Vigilante', link:'project:Administración#Vigilantes' 
 		},
 		hacker: { 
-			u:'Hacker', link:'project:AdministraciÃ³n#Hackers' 
+			u:'Hacker', link:'project:Administración#Hackers' 
 		},
 		chatmoderator: { 
 			f:'Moderadora del chat' 
 		},
 		sysop: { 
-			f:'Administradora', link:'project:AdministraciÃ³n#Administradores' 
+			f:'Administradora', link:'project:Administración#Administradores' 
 		},
 		bot: { 
-			link:'project:AdministraciÃ³n#Bots' 
+			link:'project:Administración#Bots' 
 		}
         }
 };

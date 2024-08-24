@@ -20,7 +20,7 @@ $(function() {
  
     // ACTIVE ADMINISTRATORS
  
-    rights["Jonas9809"]            = ["LÃ­der de Gimnasio","LÃ­der del Alto Mando","Maestro PokÃ©mon"],
+    rights["Jonas9809"]            = ["Líder de Gimnasio","Líder del Alto Mando","Maestro Pokémon"],
  
  
     // TEST ACCTS, BOTS, & AWB

@@ -5,10 +5,10 @@
  if (typeof(mwCustomEditButtons) != 'undefined') {
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
- 		'speedTip': "CÃ³digo fuente",
+ 		'speedTip': "Código fuente",
  		'tagOpen': "<code><nowiki>",
  		'tagClose': "</"+ "nowiki></code>",
- 		'sampleText': "CÃ³digo fuente"};
+ 		'sampleText': "Código fuente"};
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -26,10 +26,10 @@
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
- 		'speedTip': "CategorÃ­a",
- 		'tagOpen': "[[CategorÃ­a:",
+ 		'speedTip': "Categoría",
+ 		'tagOpen': "[[Categoría:",
  		'tagClose': "|{" + "{PAGENAME}}]]",
- 		'sampleText': "Nombre categorÃ­a"};
+ 		'sampleText': "Nombre categoría"};
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "http://upload.wikimedia.org/wikipedia/commons/e/ec/Button_aviso.png",
@@ -40,24 +40,24 @@
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
- 		'speedTip': "Proponer el artÃ­culo para ser borrado",
+ 		'speedTip': "Proponer el artículo para ser borrado",
  		'tagOpen': "{{borrar|",
  		'tagClose': "}}",
  		'sampleText': "Motivo por el que se propone para borrar"};
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
- 		'speedTip': "Advertir de que se estÃ¡ trabajando en el artÃ­culo",
+ 		'speedTip': "Advertir de que se está trabajando en el artículo",
  		'tagOpen': "{{enobras|",
  		'tagClose': "}}",
  		'sampleText': "Nick del usuario"};
  	
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/lossimpson/es/images/a/ad/Boton_redirect.png",
- 		'speedTip': "AÃ±adir redirecciÃ³n",
+ 		'speedTip': "Añadir redirección",
  		'tagOpen': "#REDIRECT [[",
  		'tagClose': "]]",
- 		'sampleText': "PÃ¡gina a enlazar"};
+ 		'sampleText': "Página a enlazar"};
  };
 
  /* **************************************************
@@ -104,7 +104,7 @@
  	diff=Math.floor(diff/60);
  	if(diff > 0) left = (diff%24) + ' horas ' + left;
  	diff=Math.floor(diff/24);
- 	if(diff > 0) left = diff + ' dÃ­as ' + left;
+ 	if(diff > 0) left = diff + ' días ' + left;
  	timers[i].firstChild.nodeValue = tpm + left;
  	
  	// a setInterval() is more efficient, but calling setTimeout()
@@ -280,10 +280,10 @@
  });
 
  /* **************************************************
-  * BÃºsqueda especial extendida (specialsearch)
+  * Búsqueda especial extendida (specialsearch)
   *
-  * AÃ±ade a la pÃ¡gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
-  * Trabaja en conjunto con el mÃ³dulo [[MediaWiki:SpecialSearch.js]] y estÃ¡ basado en [[w:fr:MediaWiki:Monobook.js]].
+  * Añade a la página [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
+  * Trabaja en conjunto con el módulo [[MediaWiki:SpecialSearch.js]] y está basado en [[w:fr:MediaWiki:Monobook.js]].
   */
  
  document.write('<script type="text/javascript" src="' 
@@ -292,7 +292,7 @@
 
  /* **************************************************
   * Cerrar mensajes
-  * Ver ejemplo en [[Usuario:Chabacano/FÃ­rmalo]], por [[Usuario:Platonides]].
+  * Ver ejemplo en [[Usuario:Chabacano/Fírmalo]], por [[Usuario:Platonides]].
   */
  
  addOnloadHook( function() {
@@ -306,7 +306,7 @@
  });
 
  /* **************************************************
-  * Texto sÃ³lo para biblios
+  * Texto sólo para biblios
   */
  
  function userInGroup(group) {
@@ -318,12 +318,12 @@
  		if (document.styleSheets[0].cssRules) {
  			for (i=document.styleSheets.length-1; i >= 0; i--) {
  				try {
- 					//AÃ±adir al final (Gecko)
+ 					//Añadir al final (Gecko)
  					document.styleSheets[i].insertRule('.para_biblios { display: inline; }', document.styleSheets[i].cssRules.length);
  					break;
  				} catch(e) {
  				//Ignorar el error y probar con la hoja de estilos anterior. 
- 				//AsÃ­, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
+ 				//Así, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
  				}
  			}
  		} else if (document.styleSheets[0].rules) { //IE
@@ -333,11 +333,11 @@
  });
 
  /* **************************************************
-  * Mejoras de diseÃ±o de la Portada
+  * Mejoras de diseño de la Portada
   *
-  *  DescripciÃ³n: Varias mejoras de diseÃ±o para la portada, incluyendo un
+  *  Descripción: Varias mejoras de diseño para la portada, incluyendo un
   *               enlace adicional a la lista completa de idiomas disponibles
-  *               y renombrar 'artÃ­culo' a 'portada'.
+  *               y renombrar 'artículo' a 'portada'.
   *  Adaptado de [[en:MediaWiki:Common.js]]
   */
  
@@ -361,15 +361,15 @@
  	}
  };
  
- if ( wgPageName == 'Simpson_Wiki_en_EspaÃ±ol:Portada' ) {
+ if ( wgPageName == 'Simpson_Wiki_en_Español:Portada' ) {
  		addOnloadHook( mainPageAppendCompleteListLink );
  };
 
  /* **************************************************
-  * Desactiva el botÃ³n "guardar" a los anÃ³nimos hasta que previsualicen
+  * Desactiva el botón "guardar" a los anónimos hasta que previsualicen
   * Copyright Marc Mongenet, 2006 (fr.wikipedia.org)
   * Plyd 05/2007: add "after preview" in the button to prevent misunderstanding from beginners
-  * Platonides 5/2008: TraÃ­do a es.wikipedia
+  * Platonides 5/2008: Traído a es.wikipedia
   */
  function forcePreview() {
  	if (wgUserName != null || wgAction != 'edit') return;

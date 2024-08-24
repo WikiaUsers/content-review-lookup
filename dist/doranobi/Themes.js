@@ -1,4 +1,4 @@
-/* Adds secondary themes to single-mode PokÃ©mon PIs with a secondary type */
+/* Adds secondary themes to single-mode Pokémon PIs with a secondary type */
 $('aside.portable-infobox.type-pokemon').has('.pi-item[data-source="type"] img').each(function() {
     var $second = $(this).find('.pi-item[data-source="type"] img').eq(1);
     var attr    = $second.attr("data-image-name");

@@ -4,7 +4,7 @@ importScriptPage('MediaWiki:YoutubePlayer/code.js', 'dev');
 importScriptPage('MediaWiki:PortalSlider.js');
 
 
-/* Atualizando automaticamente mudan√ßas recentes
+/* Atualizando automaticamente mudanÁas recentes
  * See w:c:dev:AjaxRC for info & attribution 
  */
  
@@ -28,23 +28,23 @@ importScriptPage('MediaWiki:Common.js/standardeditsummaries.js', 'runescape');
  "sampleText": sampleText}; 
  }
  
-/* Bot√£o Personagem */
-addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/b/b7/Icon_personagens_2.png','Personagem','{{','}}','Personagem\n|nome                            = \n|S√©rie1                          = \n|Imagem1                         = \n|S√©rie2                          = \n|Imagem2                         = \n|S√©rie3                          = \n|Imagem3                         = \n|S√©rie4                          = \n|Imagem4                         = \n|S√©rie5                          = \n|Imagem5                         = \n|esp√©cie                         = \n|planeta                         = \n|idade                           = \n|afilia√ß√£o                       = \n|ocupa√ß√£o                        = \n|originalmente                   = \n|amigo                           = \n|inimigo                         = \n|habilidades                     = \n|equipamento                     = \n|parentes                        = \n|apelidos                        = \n|linhas temporais alternativas   = \n|voz                             = \n|bra                             = \n|primeira                        = \n','');
+/* Bot„o Personagem */
+addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/b/b7/Icon_personagens_2.png','Personagem','{{','}}','Personagem\n|nome                            = \n|SÈrie1                          = \n|Imagem1                         = \n|SÈrie2                          = \n|Imagem2                         = \n|SÈrie3                          = \n|Imagem3                         = \n|SÈrie4                          = \n|Imagem4                         = \n|SÈrie5                          = \n|Imagem5                         = \n|espÈcie                         = \n|planeta                         = \n|idade                           = \n|afiliaÁ„o                       = \n|ocupaÁ„o                        = \n|originalmente                   = \n|amigo                           = \n|inimigo                         = \n|habilidades                     = \n|equipamento                     = \n|parentes                        = \n|apelidos                        = \n|linhas temporais alternativas   = \n|voz                             = \n|bra                             = \n|primeira                        = \n','');
 
-/* Bot√£o Alien√≠gena */
-addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/1/12/OXS6DJS.png','Alien','{{','}}','Alien\n|nome       = \n|S√©rie1    = \n|Imagem1         = \n|S√©rie2         = \n|Imagem2        = \n|S√©rie3      = \n|Imagem3         = \n|S√©rie4       = \n|Imagem4       = \n|S√©rie5       = \n|Imagem5       = \n|esp√©cie         = \n|planeta      = \n|corpo      = \n|predador      = \n|originalmente         = \n|tradu√ß√£o         = \n|poder       = \n|voz        = \n|dublagem        = \n|primeira     = \n|parentes = \n','');
+/* Bot„o AlienÌgena */
+addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/1/12/OXS6DJS.png','Alien','{{','}}','Alien\n|nome       = \n|SÈrie1    = \n|Imagem1         = \n|SÈrie2         = \n|Imagem2        = \n|SÈrie3      = \n|Imagem3         = \n|SÈrie4       = \n|Imagem4       = \n|SÈrie5       = \n|Imagem5       = \n|espÈcie         = \n|planeta      = \n|corpo      = \n|predador      = \n|originalmente         = \n|traduÁ„o         = \n|poder       = \n|voz        = \n|dublagem        = \n|primeira     = \n|parentes = \n','');
 
-/* Bot√£o Vil√£o */
-addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/3/35/Icon_vil%C3%B5es.png','Vil√£o','{{','}}','Vil√£o\n|nome                  = \n|S√©rie1                = \n|Imagem1               = \n|S√©rie2                = \n|Imagem2               = \n|S√©rie3                = \n|Imagem3               = \n|S√©rie4                = \n|Imagem4               = \n|S√©rie5                = \n|Imagem5               = \n|esp√©cie               = \n|idade                 = \n|afilia√ß√£o             = \n|ocupa√ß√£o              = \n|originalmente         = \n|habilidades           = \n|equipamento           = \n|voz                   = \n|bra                   = \n|primeira              = \n','');
+/* Bot„o Vil„o */
+addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/3/35/Icon_vil%C3%B5es.png','Vil„o','{{','}}','Vil„o\n|nome                  = \n|SÈrie1                = \n|Imagem1               = \n|SÈrie2                = \n|Imagem2               = \n|SÈrie3                = \n|Imagem3               = \n|SÈrie4                = \n|Imagem4               = \n|SÈrie5                = \n|Imagem5               = \n|espÈcie               = \n|idade                 = \n|afiliaÁ„o             = \n|ocupaÁ„o              = \n|originalmente         = \n|habilidades           = \n|equipamento           = \n|voz                   = \n|bra                   = \n|primeira              = \n','');
 
-/* Bot√£o Epis√≥dio */
-addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/8/81/Icon_epis√≥dios_2.png','Epis√≥dio','{{','}}','Epis√≥dio\n|nome       = \n|imagem       = \n|estreia         = \n|s√©rie         = \n|arco        = \n|temporada      = \n|nome original         = \n|literalmente       = \n|n√∫mero do epis√≥dio         = \n|n√∫mero geral         = \n|anterior         = \n|seguinte         = \n|escrito por         = \n|dirigido por         = \n','');
+/* Bot„o EpisÛdio */
+addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/8/81/Icon_episÛdios_2.png','EpisÛdio','{{','}}','EpisÛdio\n|nome       = \n|imagem       = \n|estreia         = \n|sÈrie         = \n|arco        = \n|temporada      = \n|nome original         = \n|literalmente       = \n|n˙mero do episÛdio         = \n|n˙mero geral         = \n|anterior         = \n|seguinte         = \n|escrito por         = \n|dirigido por         = \n','');
 
-/* Bot√£o Artefatos e Objetos */
+/* Bot„o Artefatos e Objetos */
 addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/c/ce/Icon_objetos_2.png','Artefatos/Objetos','{{','}}','Artefatos/Objetos\n|nome       = \n|imagem       = \n|planeta         = \n|uso         = \n|tipo        = \n|poder         = \n|primeira       = \n','');
 
-/* Bot√£o Local */
-addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/a/ae/Icon_lugares.png','Local','{{','}}','Local\n|nome                   = \n|imagem                 = \n|lugar                  = \n|tipo                   = \n|donos                  = \n|primeira_apari√ß√£o      = \n','');
+/* Bot„o Local */
+addCustomButton('https://images.wikia.nocookie.net/ichidaisy/pt-br/images/a/ae/Icon_lugares.png','Local','{{','}}','Local\n|nome                   = \n|imagem                 = \n|lugar                  = \n|tipo                   = \n|donos                  = \n|primeira_apariÁ„o      = \n','');
 
 
  
@@ -79,14 +79,14 @@ if (window.addEventListener) {window.addEventListener("load",onloadhookcustom,fa
 else if (window.attachEvent) {window.attachEvent("onload",onloadhookcustom);}
 
 
-/* Mensagem para usu√°rios n√£o registrados. Criado por: BlackZetsu */
+/* Mensagem para usu·rios n„o registrados. Criado por: BlackZetsu */
 if (wgUserName === null)
-    var WikiaNotificationMessage = "<a href='/wiki/Especial:UserSignup'>N√£o √© registrado? Se registre agora clicando aqui, √© gr√°tis!</a>"; 
+    var WikiaNotificationMessage = "<a href='/wiki/Especial:UserSignup'>N„o È registrado? Se registre agora clicando aqui, È gr·tis!</a>"; 
     // Mensagem
     importArticles({
         type: "script",
         articles: [
-            "w:dev:WikiaNotification/code.js", // Notifica√ß√£o Wikia
+            "w:dev:WikiaNotification/code.js", // NotificaÁ„o Wikia
         ]
     });
 

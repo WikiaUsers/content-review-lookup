@@ -1,8 +1,8 @@
 // Barre de navigation
 var chatTopicArray = [
-{url:wgServer+"/wiki/CatÃ©gorie:RÃ¨gles",text:"rÃ¨gles",imgUrl:"https://icon-icons.com/icons2/317/PNG/512/book-bookmark-icon_34486.png"},
-{url:wgServer+"/wiki/Special:WikiActivity",text:"activitÃ© du wiki",imgUrl:"http://www.icone-png.com/png/15/15166.png"},
-{url:wgServer+"/wiki/MediaWiki:Emoticons",text:"Ã©moticÃ´nes",imgUrl:"https://vignette.wikia.nocookie.net/sshadow/images/0/01/Ic%C3%B4ne_emoticons.png/revision/latest?cb=20170621094433&path-prefix=fr"},
+{url:wgServer+"/wiki/Catégorie:Règles",text:"règles",imgUrl:"https://icon-icons.com/icons2/317/PNG/512/book-bookmark-icon_34486.png"},
+{url:wgServer+"/wiki/Special:WikiActivity",text:"activité du wiki",imgUrl:"http://www.icone-png.com/png/15/15166.png"},
+{url:wgServer+"/wiki/MediaWiki:Emoticons",text:"émoticônes",imgUrl:"https://vignette.wikia.nocookie.net/sshadow/images/0/01/Ic%C3%B4ne_emoticons.png/revision/latest?cb=20170621094433&path-prefix=fr"},
 {url:wgServer+"/wiki/Special:MyPage",text:"profil",imgUrl:"https://vignette.wikia.nocookie.net/sshadow/images/9/96/Ic%C3%B4ne_profil.png/revision/latest?cb=20170621094451&path-prefix=fr"},
 {url:wgServer+"/wiki/Special:Chat?action=purge",text:"actualiser",imgUrl:"http://www.icone-png.com/png/23/22951.png"},
 {url:"https://discordapp.com",text:"discord",imgUrl:"https://vignette.wikia.nocookie.net/sshadow/images/8/86/Ic%C3%B4ne_Discord.png/revision/latest?cb=20170621094337&path-prefix=fr"}

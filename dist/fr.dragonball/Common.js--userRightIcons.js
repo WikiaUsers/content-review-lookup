@@ -14,7 +14,7 @@ function addMastheadTags() {
     rights["Wikia"]                 = ["Robot"],
     
     //V-JUMP
-    rights["V-Jump Wiki"]           = ['ACTUALITÃ‰']
+    rights["V-Jump Wiki"]           = ['ACTUALITÉ']
     
 // END List of Accounts Given Extra User Rights Icons
 

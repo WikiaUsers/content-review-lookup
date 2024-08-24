@@ -1,6 +1,6 @@
 /*<pre> */
 // Une las filas de varias tablas en una misma tabla.
-// (c) JesÃºs MartÃ­nez Novo (Ciencia Al Poder)
+// (c) Jesús Martínez Novo (Ciencia Al Poder)
 // Licencia/License: http://www.gnu.org/copyleft/gpl.html GNU General Public Licence 2.0 or later
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -8,7 +8,7 @@
 // of the License, or (at your option) any later version.
  
 MergeTables = {
-	btnTitle: 'Unir las tablas en una sola, Ãºtil para ordenar las filas de la tabla.',
+	btnTitle: 'Unir las tablas en una sola, útil para ordenar las filas de la tabla.',
 	timeoutToHide: 500,
 	tableClassName: 'mergetable',
 	mergeButton: null,
@@ -86,7 +86,7 @@ MergeTables = {
 				continue;
 			}
 			if (t.rows.length <= 1 || t.tBodies.lenght < 1) continue;
-			// Asumimos que sÃ³lo hay un tBody y saltamos la primera fila (se supone que es la cabecera del sorttable)
+			// Asumimos que sólo hay un tBody y saltamos la primera fila (se supone que es la cabecera del sorttable)
 			while (t.tBodies[0].rows.length > 1) {
 				parentTable.tBodies[0].appendChild(t.tBodies[0].rows[1]);
 			}

@@ -1,13 +1,13 @@
-// Adiciona a Predefini√ß√£o de Imagem √† p√°gina Especial:ImageUpload por meio da p√°gina [[MediaWiki:Common.js|Common.js]].
+// Adiciona a PredefiniÁ„o de Imagem ‡ p·gina Especial:ImageUpload por meio da p·gina [[MediaWiki:Common.js|Common.js]].
 
  function setSpecialUploadTemplate() {
      var editbox = document.getElementById('wpUploadDescription');
      if (!editbox)            return;
      if (editbox.value != '') return;
-     editbox.value = "{"+"{Marvel Wiki:Predefini√ß√£o de Imagem\n"
-                   + "| Licen√ßa                 = \n"
+     editbox.value = "{"+"{Marvel Wiki:PredefiniÁ„o de Imagem\n"
+                   + "| LicenÁa                 = \n"
                    + "| TipoDeImagem            = \n"
-                   + "| Descri√ß√£o               = \n\n"
+                   + "| DescriÁ„o               = \n\n"
                    + "| Fonte                   = \n\n"
                    + "| Universo                = \n"
                    + "| Sujeito1                = \n"

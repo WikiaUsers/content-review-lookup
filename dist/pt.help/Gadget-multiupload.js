@@ -1,13 +1,13 @@
 mw.loader.using(['site']).then(function() {
 	i18n = {
 		specialpage: "Especial:Carregar_imagem",
-		multiupload: "Enviar v√°rios arquivos:",
+		multiupload: "Enviar v·rios arquivos:",
 		yes: "Sim",
-		no: "N√£o",
+		no: "N„o",
 		sourcefiles: "Arquivos fonte:",
 		uploadfiles: "Enviar arquivo",
 		nofiles: "Por favor, selecione alguns arquivos primeiro.",
-		nolicense: "Por favor, selecione uma licen√ßa v√°lida primeiro.",
+		nolicense: "Por favor, selecione uma licenÁa v·lida primeiro.",
 		summary: "Summary",
 		license: "Licenciamento ",
 		uploading: "Enviando arquivos...",

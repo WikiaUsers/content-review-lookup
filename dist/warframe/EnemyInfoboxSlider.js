@@ -77,7 +77,7 @@ $(".type-enemyBox").each(
 			var armor_f1 = this.armor_f1_coef * Math.pow(curr_lvl - this.base_lvl_v, this.armor_f1_expo);
 			var armor_f2 = this.armor_f2_coef * Math.pow(curr_lvl - this.base_lvl_v, this.armor_f2_expo);
 			var armor_multi = 1 + armor_f1 + (armor_f2 - armor_f1) * trans;
-			var armor = Math.min(Math.round(this.armor_v * armor_multi * 100) / 100, 2700);
+			var armor = Math.min(Math.floor(this.armor_v * armor_multi), 2700);
 			var armor_redux = Math.round(Math.sqrt(3 * armor) * 100) / 10000;
 
 			var overguard_f1 = this.overguard_f1_coef * Math.pow(curr_lvl - this.base_lvl_v, this.overguard_f1_expo);
@@ -87,7 +87,7 @@ $(".type-enemyBox").each(
 
 			var affinity = Math.floor(this.affinity_v * (1 + Math.sqrt(curr_lvl) * 0.1425));
 
-			var ehp = Math.round((health / (1 - armor_redux) + shield + overguard) * 100) / 100;
+			var ehp = Math.round((health / (1 - armor_redux) + shield) * 100) / 100;
 
 			$(enemyVar).find("#health")[0].innerHTML       = health.toLocaleString();
 			$(enemyVar).find("#shield")[0].innerHTML       = shield.toLocaleString();
@@ -99,13 +99,13 @@ $(".type-enemyBox").each(
 			if (curr_lvl < this.spawn_lvl_v) {
 				$(enemyVar).find("#out_ehp")[0].innerHTML = "&ndash;&ndash;";
 			} else {
-				$(enemyVar).find("#out_ehp")[0].innerHTML = ehp.toLocaleString();
+				$(enemyVar).find("#out_ehp")[0].innerHTML = (ehp + overguard).toLocaleString();
 			}
 
 			if (curr_lvl < 100 + this.spawn_lvl_v) {
 				$(enemyVar).find("#out_sp_ehp")[0].innerHTML = "&ndash;&ndash;";
 			} else {
-				$(enemyVar).find("#out_sp_ehp")[0].innerHTML = (2.5 * ehp).toLocaleString();
+				$(enemyVar).find("#out_sp_ehp")[0].innerHTML = (2.5 * ehp + overguard).toLocaleString();
 			}
 		};
 

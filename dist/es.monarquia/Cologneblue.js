@@ -1,1 +1,1 @@
-/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios que usen la piel Colonia azul. */
+/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios que usen la piel Colonia azul. */

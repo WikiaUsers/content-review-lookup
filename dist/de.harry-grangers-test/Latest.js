@@ -2,8 +2,8 @@ function getLatest() {
     limit = arguments[1] || 10;
     switch(arguments[0]) {
         case 'comments':
-            $.getJSON('http://de.harry-grangers-test.wikia.com/api.php?action=expandtemplates&format=json&text={{%23dpl:|titlematch=%25@comment%25|count=' + limit + '|ordermethod=lastedit|order=descending|mode=userformat|format=,%PAGE%ยง,}}', function(data) {
-                pages = data.expandtemplates['*'].split('ยง');
+            $.getJSON('http://de.harry-grangers-test.wikia.com/api.php?action=expandtemplates&format=json&text={{%23dpl:|titlematch=%25@comment%25|count=' + limit + '|ordermethod=lastedit|order=descending|mode=userformat|format=,%PAGE%ง,}}', function(data) {
+                pages = data.expandtemplates['*'].split('ง');
                 for(i in pages) {
                     $('.Wall.Thread').append(pages[i] + '<br />');
                 }

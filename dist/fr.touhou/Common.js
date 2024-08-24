@@ -349,7 +349,7 @@ window.ts_getInnerText = function(el){
 	}
 	return str;
 };
-/* === Extensiones en minÃºscula al subir archivos === */
+/* === Extensiones en minúscula al subir archivos === */
 function adaptUploadFilename(){
 	var ff = $('mw-upload-form').wpDestFile;
 	var fn = ff.value;

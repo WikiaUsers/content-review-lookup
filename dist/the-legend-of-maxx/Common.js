@@ -120,4 +120,4 @@ if (browserok) {
 }
 
 </SCRIPT>
-<p><font face="arial" size="-2">Free JavaScript fromÂ </font><br><font face="arial, helvetica" size="-2"><a href="http://rainbow.arch.scriptmania.com/scripts/">Rainbow Arch</a></font></p>
+<p><font face="arial" size="-2">Free JavaScript from </font><br><font face="arial, helvetica" size="-2"><a href="http://rainbow.arch.scriptmania.com/scripts/">Rainbow Arch</a></font></p>

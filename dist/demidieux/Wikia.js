@@ -1,23 +1,23 @@
 //      SOMMAIRE : WIKIA.JS
-//  Tout ajout de code ou de fonctionnalitÃ© doit Ãªtre recensÃ© ici, dans l'ordre 
+//  Tout ajout de code ou de fonctionnalité doit être recensé ici, dans l'ordre 
 //  d'apparition
 //
-//      Â¤ SpoilerAlert : Configuration du script (l'appel a lieu dans 
+//      ¤ SpoilerAlert : Configuration du script (l'appel a lieu dans 
 //          Mediawiki:ImportJS)
-//      Â¤ Univers Riordan : 
-//      Â¤ SpÃ©cial:CommunautÃ© : crÃ©ation des modules Pages sans liens interwiki, 
+//      ¤ Univers Riordan : 
+//      ¤ Spécial:Communauté : création des modules Pages sans liens interwiki, 
 //          Pages sans images 
-//      Â¤ AddRailModule : Ajout d'un module dans la barre latÃ©rale (en bas).
-//          Repris du Wiki Dev pour voir le module intÃ©grer le bas de la barre
-//      Â¤ Imports de scripts (Ã  migrer vers Mediawiki:ImportJS)
+//      ¤ AddRailModule : Ajout d'un module dans la barre latérale (en bas).
+//          Repris du Wiki Dev pour voir le module intégrer le bas de la barre
+//      ¤ Imports de scripts (à migrer vers Mediawiki:ImportJS)
 
 /* Spoiler alert */
 SpoilerAlert = {
-    question: 'Cette page contient des spoilers. La lire est Ã  vos risques et pÃ©rils. Souhaitez-vous vraiment la faire apparaÃ®tre ?',
+    question: 'Cette page contient des spoilers. La lire est à vos risques et périls. Souhaitez-vous vraiment la faire apparaître ?',
     yes: 'Oui',
     no: 'Non, pas maintenant',
     isSpoiler: function () {
-        return -1 !== wgCategories.indexOf('HÃ©ros de l\'Olympe : Le Sang de l\'Olympe');
+        return -1 !== wgCategories.indexOf('Héros de l\'Olympe : Le Sang de l\'Olympe');
     }
 };
 
@@ -28,11 +28,11 @@ function cleantabbertitle() {
     var chaine = $('.boiteaccueilslidertabber .tabbernav').html();
     chaine = chaine.replace(/&nbsp;/g, '_');
     $('.boiteaccueilslidertabber .tabbernav').html(chaine)
-    console.log('Suppression des espaces insÃ©cables effectuÃ©e')
+    console.log('Suppression des espaces insécables effectuée')
 }
 //????????????????????????????????????????????????
 
-/*SpÃ©cial:CommunautÃ©*/
+/*Spécial:Communauté*/
 //Pages sans liens interwikis
 $('#SCWithoutLinks #SectionCommunauteModele_stock').load(
 	'/wiki/Special:WithoutInterwiki?limit=1000&offset=0 #mw-content-text',
@@ -63,7 +63,7 @@ $('#SCWithoutImages #SectionCommunauteModele_stock').load(
 )
 
 
-/* Scripts importÃ©s */
+/* Scripts importés */
 importArticles({
     type: 'script',
     articles: [

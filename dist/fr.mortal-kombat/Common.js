@@ -72,7 +72,7 @@ addOnloadHook(checktimers)
 // **************************************************
 
 /* AjaxRC Options */
-window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions", "Wiki Mortal Kombat","Wiki Mortal Kombat:Fichiers dupliquÃ©s"];
+window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions", "Wiki Mortal Kombat","Wiki Mortal Kombat:Fichiers dupliqués"];
 
 window.ajaxIndicator = 'http://www.std1.net/greybox/indicator.gif';
 
