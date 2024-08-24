@@ -112,7 +112,7 @@ async function getWiki(url, errors, attempt) {
         const {code, message, name, response} = error;
         if (code === 'ENOTFOUND' || name === 'ParseError') {
             errors.write(`Not a wiki: ${url}.\n`);
-        } else if (code === 'ETIMEDOUT' || name === 'TimeoutError') {
+        } else if (code === 'ETIMEDOUT' || code === 'ECONNRESET') {
             if (attempt === 10) {
                 errors.write(`Timeout on ${url}.\n`);
             } else {
