@@ -3,28 +3,24 @@
  *
  * Looks up content in JavaScript pages globally.
  */
+import {WriteStream, createWriteStream} from 'fs';
 import {apiQuery, readJSON} from './util.js';
 import {dirname, join} from 'path';
 import {mkdir, writeFile} from 'fs/promises';
 import {Bar} from 'cli-progress';
-import {createWriteStream} from 'fs';
 import sanitize from 'sanitize-filename';
 
-/**
- * Constants.
- */
-const errors = createWriteStream('errors.txt'),
-      WIKI_VALIDATION_REGEX = /^https?:\/\/([a-z0-9-.]+)\.(fandom\.com|wikia\.(?:com|org)|(?:wikia|fandom)-dev\.(?:com|us|pl)|gamepedia\.(?:com|io))\/?([a-z-]*)/u,
-      THREADS = 40;
+const WIKI_VALIDATION_REGEX = /^https?:\/\/([a-z0-9-.]+)\.fandom\.com\/?([a-z-]*)/u;
+const THREADS = 40;
 
 /**
  * Gets all JavaScript pages from a wiki's MediaWiki namespace.
  * @param {string} url Wiki URL
- * @param {Map<string, string>} pages Page name => content map to populate
  * @param {string} gapcontinue Parameter to continue with
  * @param {string} rvcontinue Parameter to continue listing revisions with
+ * @returns {AsyncGenerator<string[], never, void>} Titles and content
  */
-async function getJSPages(url, pages, gapcontinue, rvcontinue) {
+async function* getJSPages(url, gapcontinue, rvcontinue) {
     const response = await apiQuery(url, {
         gapcontinue,
         gapfilterredir: 'nonredirects',
@@ -43,7 +39,6 @@ async function getJSPages(url, pages, gapcontinue, rvcontinue) {
         throw new Error(error.code);
     }
     if (warnings && !truncated) {
-        console.warn();
         console.warn('API warning: ', warnings);
     }
     if (!query) {
@@ -54,22 +49,18 @@ async function getJSPages(url, pages, gapcontinue, rvcontinue) {
         if (title.endsWith('.js')) {
             if (!revisions || !revisions[0]) {
                 if (!truncated) {
-                    console.warn();
                     console.warn('No revisions:', title, revisions, url);
                 }
-            } else if (revisions[0]['*']) {
-                // Legacy wiki.
-                pages.set(title, revisions[0]['*']);
             } else if (revisions[0].slots) {
-                pages.set(title, revisions[0].slots.main['*']);
+                yield [title, revisions[0].slots.main['*']];
             } else {
-                // No content on page.
+                console.warn('No content on page:', title, url);
             }
         }
     }
     if (c) {
         const apcontinue = c.gapcontinue || gapcontinue;
-        await getJSPages(url, pages, apcontinue, c.rvcontinue);
+        yield * await getJSPages(url, apcontinue, c.rvcontinue);
     }
 }
 
@@ -78,24 +69,14 @@ async function getJSPages(url, pages, gapcontinue, rvcontinue) {
  * @param {string} url Wiki URL
  * @param {string} page Page title
  * @param {string} content Page content
+ * @param {WriteStream} errors Stream to write errors to
  */
-async function processContent(url, page, content) {
+async function processContent(url, page, content, errors) {
     const wikiRes = WIKI_VALIDATION_REGEX.exec(url);
     if (wikiRes) {
-        wikiRes.shift();
-        const subdomain = wikiRes.shift();
-        const domain = wikiRes.shift();
-        const language = wikiRes.shift();
-        const pagename = page
-            .replace(/^[^:]+:/u, '')
-            .replace(/\//gu, '--');
-        let folder = subdomain;
-        if (domain !== 'fandom.com') {
-            folder += `.${domain}`;
-        }
-        if (language) {
-            folder = `${language}.${folder}`;
-        }
+        const [, subdomain, language] = wikiRes;
+        const pagename = page.replace(/^[^:]+:/u, '').replace(/\//gu, '--');
+        const folder = language ? `${language}.${subdomain}` : subdomain;
         const file = join(`dist/${folder}`, sanitize(pagename, {
             replacement: '_'
         }));
@@ -119,49 +100,71 @@ async function processContent(url, page, content) {
 /**
  * Gets all JS pages from a wiki and processes them.
  * @param {string} url Wiki URL
+ * @param {WriteStream} errors Stream to write errors to
  * @param {number} attempt Current amount of attempts on server error
  */
-async function getWiki(url, attempt) {
+async function getWiki(url, errors, attempt) {
     try {
-        const pages = new Map();
-        await getJSPages(url, pages);
-        for (const [title, content] of pages.entries()) {
-            await processContent(url, title, content);
+        for await (const [title, content] of getJSPages(url)) {
+            await processContent(url, title, content, errors);
         }
     } catch (error) {
         const {code, message, name, response} = error;
         if (code === 'ENOTFOUND' || name === 'ParseError') {
-            // Nonexistent wiki.
-        } else if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
-            // One of old.something.fandom.com wikis.
-            errors.write(`SSL error: ${url}.\n`);
-        } else if (message === 'readapidenied') {
-            // Private wiki.
-            errors.write(`Private wiki: ${url}.\n`);
-        } else if (response && response.statusCode === 403) {
-            // Internal wiki.
-            errors.write(`Permission denied on ${url}.\n`);
-        } else if (response && response.statusCode === 404) {
-            // Nonexistent wiki.
-            errors.write(`Nonexistent wiki: ${url}.\n`);
-        } else if (response && response.statusCode === 410) {
-            // Closed wiki.
-        } else if (response && response.statusCode >= 500) {
-            // Fandom oof'd.
+            errors.write(`Not a wiki: ${url}.\n`);
+        } else if (code === 'ETIMEDOUT' || name === 'TimeoutError') {
             if (attempt === 10) {
-                console.error(url, error);
-                errors.write(`${response.statusCode} on ${url}: ${JSON.stringify(error)}\n`);
+                errors.write(`Timeout on ${url}.\n`);
             } else {
-                await getWiki(url, attempt + 1);
+                await getWiki(url, errors, attempt + 1);
             }
-        } else if (response && response.statusCode) {
-            // wat.
-            console.error(url, error);
-            errors.write(`Error code ${response.statusCode}: ${url}.\n`);
+        } else if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+            errors.write(`TLS error: ${url}.\n`);
+        } else if (message === 'readapidenied') {
+            errors.write(`Private wiki: ${url}.\n`);
+        } else if (response) {
+            switch (response.statusCode) {
+                case 403:
+                    errors.write(`Permission denied on ${url}.\n`);
+                    break;
+                case 404:
+                    errors.write(`Nonexistent wiki: ${url}.\n`);
+                    break;
+                case 410:
+                    // Closed wiki.
+                    break;
+                case 500:
+                case 502:
+                case 503:
+                case 504:
+                    if (attempt === 10) {
+                        errors.write(`${response.statusCode} on ${url}: ${JSON.stringify(error)}\n`);
+                    } else {
+                        await getWiki(url, errors, attempt + 1);
+                    }
+                    break;
+                default:
+                    errors.write(`Error code ${response.statusCode}: ${url}.\n`);
+            }
         } else {
             console.error('Unusual error on', url, error);
             errors.write(`Unusal error on ${url}: ${JSON.stringify(error)}\n`);
         }
+    }
+}
+
+/**
+ * Runs a separate branch of the event loop to fetch scripts from wikiss in
+ * parallel.
+ * @param {string[]} wikiUrls URLs of wikis to fetch
+ * @param {WriteStream} errorStream Stream to write errors to
+ * @param {Bar} bar Progress bar to update
+ */
+async function runInParallel(wikiUrls, errorStream, bar) {
+    while (wikiUrls.length > 0) {
+        const wikiUrl = wikiUrls.shift();
+        await getWiki(wikiUrl, errorStream, 1);
+        bar.increment();
     }
 }
 
@@ -178,14 +181,15 @@ async function run() {
         stopOnComplete: true,
         stream: process.stdout
     });
+    const errorStream = createWriteStream('errors.txt');
     bar.start(allUrls, 0);
-    while (urls.length) {
-        await Promise.all(urls.splice(0, THREADS)
-            .map(url => getWiki(url, 1)));
-        bar.update(allUrls - urls.length);
-    }
+    await Promise.all(
+        Array(THREADS)
+            .fill(0)
+            .map(() => runInParallel(urls, errorStream, bar))
+    );
     bar.stop();
-    errors.close();
+    errorStream.close();
 }
 
 run();
