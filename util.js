@@ -3,9 +3,9 @@
  *
  * Utilities shared by spam-finding scripts.
  */
+import {readFile, writeFile} from 'fs/promises';
 import {CookieJar} from 'tough-cookie';
 import got from 'got';
-import {readFile} from 'fs/promises';
 
 /**
  * HTTP client.
@@ -18,7 +18,12 @@ const http = got.extend({
                       'for specific information.'
     },
     resolveBodyOnly: true,
-    retry: 0
+    retry: {
+        limit: 0
+    },
+    timeout: {
+        request: 20 * 1000
+    }
 });
 
 /**
@@ -57,3 +62,12 @@ export async function readJSON(filename) {
     }));
 }
 
+/**
+ * Writes data to a JSON file.
+ * @param {string} filename File to read JSON from
+ * @param {object} data Data to write to the file
+ * @returns {Promise<void>} Promise to listen on for completion
+ */
+export async function writeJSON(filename, data) {
+    await writeFile(filename, JSON.stringify(data));
+}

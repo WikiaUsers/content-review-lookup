@@ -3,9 +3,6 @@
         "node": true,
         "es6": true
     },
-    "globals": {
-        "main": false
-    },
     "ignorePatterns": ["dist/**/*.js"],
     "parserOptions": {
         "ecmaVersion": 2018,
@@ -34,7 +31,13 @@
         "no-empty-character-class": "error",
         "no-ex-assign": "error",
         "no-extra-boolean-cast": "error",
-        "no-extra-parens": "error",
+        "no-extra-parens": [
+            "error",
+            "all",
+            {
+                "enforceForArrowConditionals": false
+            }
+        ],
         "no-extra-semi": "error",
         "no-func-assign": "error",
         "no-inner-declarations": "error",
