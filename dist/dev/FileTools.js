@@ -74,7 +74,7 @@
 	 */
 	events.refresh = function(element) {
 		if (element) element.target.textContent = '...';
-		const pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1';
+		const pathname = config.wgArticlePath.replace('$1', config.wgPageName) + '?safemode=1&useskin=apioutput';
 		fetch(pathname).then(function(response) {
 			return response.text();
 		}).then(function(data) {

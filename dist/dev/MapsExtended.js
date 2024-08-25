@@ -488,16 +488,17 @@
             
             this.creationTime = performance.now();
 
-            // Instance ID is unique to each instance
+            // This ID is contained in the mw.config, and is the page ID of the Map page
+            // It is unique to a map definition, but not an instance if there are multiple on the page
+            this.id;
+
+            // We generate this at random, and the map root element is assigned it as an ID
+            // It is unique to each instance
             this.instanceId = root.id;
 
             // Map ID is unique to the map definition on this page, but not unique to each instance on the page
-            // It has the ID equivalency of the name of the map
+            // It is the class name "interactive-map-xxxxxxxxxxxxxxxx", and has the ID equivalency of the name of the map
             this.mapId = root.className;
-
-            // Map Page ID is the wiki page ID of the Map namespace page, it is included as part of the processed JSON
-            // It is equivalent to mapId
-            this.mapPageId = "";
 
             // This element is permanently part of the parser output, as it is transcluded from the Map: page
             this.rootElement = root;
@@ -936,7 +937,7 @@
                         var removedPopupMarker = removedPopup.marker;
                         var removedPopupMarkerId = removedPopupElement.id;
                     }
-                    else if (removedPopupElement && removedPopupElement.id.startsWith("popup_"))
+                    else if (removedPopupElement && removedPopupElement instanceof Element && removedPopupElement.id.startsWith("popup_"))
                     {
                         var removedPopupMarkerId = mutationList[0].removedNodes[0].id.replace("popup_", "");
                         var removedPopupMarker = mutationList[0].removedNodes[0].marker || this.markerLookup.get(removedPopupMarkerId);
@@ -1252,6 +1253,9 @@
                     
                     this.initControls();
                 }
+                
+                // Ensure the fade-anim class is set on the container (this was removed at some point)
+                this.elements.leafletContainer.classList.add("leaflet-fade-anim");
                 
                 this.initMapEvents();
         
@@ -4054,7 +4058,7 @@
                     control.name = key;
                     control.element = this.elements.leafletControlContainer.querySelector("." + control.class);
                     control.isPresent = control.element != undefined;
-                    control.isPresentInConfig = this.config.hiddenCategories.includes(key) || this.config.mapControls.some(function(mc) { return mc.includes(key); });
+                    control.isPresentInConfig = this.config.hiddenControls.includes(key) || this.config.mapControls.some(function(mc) { return mc.includes(key); });
                     control.position = "";
 
                     if (control.isPresent)
@@ -7916,7 +7920,8 @@
                         window.cancelAnimationFrame(this._showDelay);
 
                         // Cancel any imminent hiding of the popup
-                        this.elements.popupElement.removeEventListener("transitionend", this._hideDelay);
+                        clearTimeout(this._hideTimout);
+                        //this.elements.popupElement.removeEventListener("transitionend", this._hideDelay);
                         
                         var currentOpacity = window.getComputedStyle(this.elements.popupElement).opacity;
 
@@ -7935,11 +7940,13 @@
                             // Remove the element from the DOM at the end of the transition
                             this._hideDelay = function(e)
                             {
-                                if (e.propertyName != "opacity") return;
+                                if (e && e.propertyName != "opacity") return;
                                 this.elements.popupElement.remove();
                                 
                             }.bind(this);
-                            this.elements.popupElement.addEventListener("transitionend", this._hideDelay, { once: true });
+                            // Use timeout instead because some browsers do not reliably fire the transitionend event
+                            //this.elements.popupElement.addEventListener("transitionend", this._hideDelay, { once: true });
+                            this._hideTimeout = setTimeout(this._hideDelay, 250);
                         }
                     }
                     else
