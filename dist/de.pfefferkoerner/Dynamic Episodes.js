@@ -1,15 +1,59 @@
 var fields = {
-	title: 'Episodentitel',
-	sequential_number: 'Episodennummer',
-	season: 'Staffel',
+	title: {
+		label: 'Episodentitel',
+		type: 'text',
+		multiple: false,
+		//default: '',
+	},
+	sequential_number: {
+		label: 'Episodennummer',
+		type: 'number',
+		min: 1,
+		multiple: false,
+	},
+	season: {
+		label: 'Staffel',
+		type: 'number',
+		min: 1,
+		multiple: false,
+	},
 	//premiere: 'Erstausstrahlung',
-	image: 'Bild',
-	writer: 'Drehbuch',
-	director: 'Regie',
-	topic: 'Thema',
-	gang: 'Bandennummer',
-	previous: 'vorherige',
-	next: 'nächste',
+	image: {
+		label: 'Bild',
+		type: 'text',
+		multiple: false,
+	},
+	writer: {
+		label: 'Drehbuch',
+		type: 'text',
+		multiple: true,
+	},
+	director: {
+		label: 'Regie',
+		type: 'text',
+		multiple: true,
+	},
+	topic: {
+		label: 'Thema',
+		type: 'text',
+		multiple: false,
+	},
+	gang: {
+		label: 'Bandennummer',
+		type: 'number',
+		min: 1,
+		multiple: false,
+	},
+	previous: {
+		label: 'vorherige',
+		type: 'text',
+		multiple: false,
+	},
+	next: {
+		label: 'nächste',
+		type: 'text',
+		multiple: false,
+	},
 };
 //Optionale Parameter: "Arbeitstitel", "Bildunterschrift", "Drehbuchtitel", "Gastrolle", "Bildgröße", "Orte", "Episodenhauptcharakter"
 
@@ -20,7 +64,7 @@ function parseWikitext(text) {
 		text: text,
 		formatversion: 2,
 		contentmodel: 'wikitext',
-		disablelimitreport: 1
+		disablelimitreport: 1,
 	}, function(res) {
 		return res.parse.text;
 	});
@@ -64,20 +108,87 @@ function postPage(page, text, summary) {
 }
 
 function loadEpisodeArticle(input, fieldset) {
-	var parser = new DOMParser();
-	Promise.all(Object.entries(fields).map(function(field) {
-		return parseWikitext('{{#dpl:title=' + input.value + '|include={Infobox Episode}:' + field[1] + '}}').then(function(res) {
-			var htmlDoc = parser.parseFromString(res, 'text/html');
-			var el = htmlDoc.querySelector('.mw-parser-output > p');
-			var value = null;
-			if (el !== null) {
-				value = el.textContent.trim();
+	parsePage('MediaWiki:Custom-Episodes.json', 'wikitext', 'json').then(function(json) { return JSON.parse(json); }).then(function(episodes) {
+		var episodeIndex = episodes.findIndex(function(episode) { return episode.title === input.value; });
+		var episodeData = episodes[episodeIndex];
+
+		var parser = new DOMParser();
+		Promise.all(Object.entries(fields).map(function(field) {
+			var key = field[0];
+			return parseWikitext('{{#dpl:title=' + input.value + '|include={Infobox Episode}:' + field[1].label + '}}').then(function(res) {
+				var htmlDoc = parser.parseFromString(res, 'text/html');
+				var el = htmlDoc.querySelector('.mw-parser-output > p');
+				var value = null;
+				if (el !== null) {
+					value = el.textContent.trim();
+				}
+				if (typeof episodeData !== 'undefined' && typeof episodeData[key] !== 'undefined' && episodeData[key] !== null) {
+					value = episodeData[key];
+				}
+				return [ key, value ];
+			});
+		})).then(function(res) {
+			var from, submitButton;
+			var entries = Object.fromEntries(res);
+			if (entries.title === 'API') {
+				entries.title = input.value;
 			}
-			return [ field[0], value ];
+			fieldset.after(form = document.createElement('form')); 
+			for(var key in entries) {
+				var fieldWrapper;
+				var value = entries[key];
+				var field = fields[key];
+				form.append(fieldWrapper = document.createElement('div'));
+				fieldWrapper.append(Object.assign(document.createElement('label'), {
+					htmlFor: key,
+					textContent: field.label,
+				}));
+				fieldWrapper.append(Object.assign(document.createElement('input'), {
+					name: key,
+					type: field.type,
+					placeholder: field.label,
+					min: field.type === 'number' && typeof field.min !== 'undefined' ? field.min : null,
+					value: value,
+				}));
+			}
+			form.append(submitButton = Object.assign(document.createElement('button'), {
+				textContent: 'Submit',
+				className: 'wds-button',
+			}));
+			submitButton.addEventListener('click', function(evt) {
+				evt.preventDefault();
+				var entries = Array.from((new FormData(form)).entries()).reduce(function(carry, entry) {
+					var key = entry[0];
+					var value = entry[1];
+					
+					if (value === '') {
+						carry[key] = null;
+					} else if (fields[key].type === 'number') {
+						carry[key] = parseInt(value);
+					} else {
+						carry[key] = value;
+					}
+					return carry;
+				}, {});
+
+				if (episodeIndex === -1) {
+					episodeData = { broadcasts: [] };
+					for(var key in fields) {
+						episodeData[key] = typeof entries[key] !== 'undefined' ? entries[key] : null;
+					}
+					episodes.push(episodeData);
+				} else {
+					for(var key in episodeData) {
+						if (typeof entries[key] !== 'undefined') {
+							episodeData[key] = entries[key];
+						}
+					}
+				}
+				postPage('MediaWiki:Custom-Episodes.json', JSON.stringify(episodes, null, '\t'), '/* ' + input.value + ': Add episodes/change episode data */');
+			});
+			//fieldset.append(document.createTextNode(JSON.stringify(Object.fromEntries(res), null, '\t')));
+			console.log('done');
 		});
-	})).then(function(res) {
-		fieldset.append(document.createTextNode(JSON.stringify(Object.fromEntries(res), null, '\t')));
-		console.log('done');
 	});
 }
 

@@ -17,6 +17,19 @@ mw.hook('wikipage.content').add(function() {
         var anthologieVisible = true;
         var meiVisible = true;
 
+        // Fonction pour afficher uniquement les éléments d'une catégorie spécifique
+        function showCategory(category) {
+            var allItems = document.querySelectorAll('li');
+            for (var i = 0; i < allItems.length; i++) {
+                var item = allItems[i];
+                if (item.classList.contains(category)) {
+                    item.style.display = 'list-item';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        }
+
         // Fonction pour afficher/masquer les éléments par catégorie
         function toggleVisibility(className, visibilityState) {
             var items = document.querySelectorAll('li.' + className);
@@ -27,18 +40,15 @@ mw.hook('wikipage.content').add(function() {
 
         // Gestion des boutons
         btnFrancais.addEventListener('click', function() {
-            francaisVisible = !francaisVisible;
-            toggleVisibility('francais', francaisVisible);
+            showCategory('francais');
         });
 
         btnAnglais.addEventListener('click', function() {
-            anglaisVisible = !anglaisVisible;
-            toggleVisibility('anglais', anglaisVisible);
+            showCategory('anglais');
         });
 
         btnJaponais.addEventListener('click', function() {
-            japonaisVisible = !japonaisVisible;
-            toggleVisibility('japonais', japonaisVisible);
+            showCategory('japonais');
         });
 
         btnChapitre.addEventListener('click', function() {

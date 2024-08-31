@@ -1,4 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
+function getWeatherData() {
+    return {
+        'frost': {
+            style: 'frosty-style',
+            image: 'https://static.wikia.nocookie.net/dayr/images/0/0e/%D0%9C%D0%BE%D1%80%D0%BE%D0%B7.png/revision/latest?cb=20201031163748&path-prefix=ru'
+        }
+        // Добавьте другие типы погоды здесь
+    };
+}
+
+function generateCalendar() {
     var calendarContainer = document.getElementById('calendar-container');
 
     if (calendarContainer) {
@@ -17,75 +27,61 @@ document.addEventListener('DOMContentLoaded', function() {
             'Декабрь': 31
         };
 
-        var weatherData = [
-            { start: '31', end: '31', weather: 'frosty-style', month: 'Декабрь' },
-            { start: '1', end: '6', weather: 'frosty-style', month: 'Январь' }
-        ];
+        var weatherData = {
+            'Декабрь': { start: 31, end: 31, type: 'frost' }, 
+            'Январь': { start: 1, end: 6, type: 'frost' }
+        };
 
-        function applyWeatherStyles(table, weatherData) {
-            var days = table.querySelectorAll('td');
-            weatherData.forEach(function(range) {
-                var start = parseInt(range.start) - 1;
-                var end = parseInt(range.end) - 1;
+        var weatherInfo = getWeatherData();
 
-                for (var i = start; i <= end; i++) {
-                    var cell = days[i];
-                    if (cell) {
-                        cell.classList.add(range.weather);
-                        var img = document.createElement('img');
-                        img.src = 'Файл:Мороз.png'; 
-                        img.style.width = '5px';
-                        cell.appendChild(img);
-                    }
-                }
-            });
-        }
-
-        var row;
+        var html = '';
         var tableCount = 0;
 
         for (var month in monthsData) {
             if (tableCount % 3 === 0) {
-                row = document.createElement('div');
-                row.className = 'calendar-row';
-                calendarContainer.appendChild(row);
+                html += '<div class="calendar-row">';
             }
 
             var daysInMonth = monthsData[month];
 
-            var table = document.createElement('table');
-            table.className = 'calendar-table';
-
-            var headerRow = document.createElement('tr');
-            var headerCell = document.createElement('th');
-            headerCell.colSpan = 7;
-            headerCell.style.textAlign = 'center';
-            headerCell.textContent = month;
-            headerRow.appendChild(headerCell);
-            table.appendChild(headerRow);
+            html += '<table class="calendar-table">';
+            html += '<tr><th colspan="7" style="text-align: center;">' + month + '</th></tr>';
 
             var day = 1;
             while (day <= daysInMonth) {
-                var rowElement = document.createElement('tr');
+                html += '<tr>';
 
                 for (var i = 0; i < 7; i++) {
-                    var cell = document.createElement('td');
-                    cell.style.textAlign = 'center';
-                    cell.style.padding = '5px';
+                    var cellClass = '';
+                    var imgHTML = '';
+
                     if (day <= daysInMonth) {
-                        cell.textContent = day;
+                        if (weatherData[month] && day >= weatherData[month].start && day <= weatherData[month].end) {
+                            var weatherType = weatherData[month].type;
+                            cellClass = weatherInfo[weatherType].style;
+                            imgHTML = '<img src="' + weatherInfo[weatherType].image + '" class="weather-image" alt="Weather Image">';
+                        }
+
+                        html += '<td class="' + cellClass + '" style="text-align: center; padding: 5px;">' + imgHTML + day + '</td>';
                         day++;
+                    } else {
+                        html += '<td></td>';
                     }
-                    rowElement.appendChild(cell);
                 }
 
-                table.appendChild(rowElement);
+                html += '</tr>';
             }
 
-            applyWeatherStyles(table, weatherData.filter(data => data.month === month));
+            html += '</table>';
 
-            row.appendChild(table);
             tableCount++;
+            if (tableCount % 3 === 0) {
+                html += '</div>';
+            }
         }
+
+        calendarContainer.innerHTML = html;
     }
-});
+}
+
+generateCalendar();
