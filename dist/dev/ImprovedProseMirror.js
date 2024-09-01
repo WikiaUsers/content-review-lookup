@@ -12,6 +12,7 @@
 			// Check we're in MessageWall, UserBlog or Main namespace; Check we're in normal view
 			if ([1200, 500, 0].includes(config.wgNamespaceNumber) && config.wgAction === 'view') {
 				api = new mw.Api();
+				
 				// Add necessary styles that dont load outside editor screen and custom ones
 				importArticle({
 					type: 'style',
@@ -19,17 +20,17 @@
 				});
 				IPM.waitFor('#MessageWall, #articleComments', function() {
 					$('#MessageWall, #articleComments').on('mouseout click keyup', '.ProseMirror', IPM.updateSel);
-					IPM.wikiLinks();
-					// IPM.wikiTemplate();
+					IPM.linkSuggest();
 					IPM.customInsert();
 				});
 			}
 		},
 		
 		// Adds link suggest functionality to message walls and comment section text editors
-		wikiLinks: function() {
-			var ooui = 0;
+		linkSuggest: function() {
 			var SEARCH = {};
+			var requestCount = 0;
+			var resultCount = 0;
 			
 			// Hidden by default
 			var wrapper = $(
@@ -52,11 +53,15 @@
 				initEvents: function() {
 					var limitSuggest = mw.util.debounce(methods.suggestLink, 200);
 					
-					var observer = new MutationObserver(function() {limitSuggest();});
+					var observer = new MutationObserver(limitSuggest);
 					
-					// Suggestion list hovering logic
-					suggestBox.on('mousemove.IPM mouseout.IPM', function(event) {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event);}
+					$('body').on('focus.IPM', '.ProseMirror', function(event) {
+						observer.disconnect();
+						observer.observe(event.target, {
+							subtree: true,
+							childList: true,
+							characterData: true
+						});
 					});
 					
 					document.addEventListener('click', function(event) {
@@ -67,13 +72,6 @@
 							limitSuggest();
 						} else {
 							methods.closeSuggestions();
-							$('.ProseMirror').each(function(_, element) {
-								observer.observe(element, {
-									subtree: true,
-									childList: true,
-									characterData: true
-								});
-							});
 						}
 					});
 					
@@ -112,10 +110,13 @@
 						}
 					}, true);
 					
-					$(window).on('resize.IPM', function(event) {
+					suggestBox.on('mousemove.IPM mouseout.IPM', function(event) {
+						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event);}
+					});
+					
+					$(window).on('resize.IPM transitionend.IPM', function(event) {
 						if (wrapper.css('display') !== 'none') {
 							var caret = IPM.getCaret();
-							// TODO: account for @media styles messing with page layout after caret coordinates are recalculated
 							wrapper.css({
 								top: caret.y,
 								left: caret.x
@@ -129,14 +130,14 @@
 					var match;
 					var raw_str = '';
 					var link_str = '';
-					var link_regex = /\[\[([^\[\]]*)\]{0,2}$/;
+					var wikilink_regex = /\[\[([^\[\]]*)\]{0,2}$/;
 					var ext_link_regex = /\[([^\[\]]+)\]$/;
 					caret = IPM.getCaret();
 					methods.closeSuggestions();
-					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue && !caret.data.focusNode.parentNode.closest('a, pre')) {
+					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue && caret.data.focusNode.parentNode.closest('.ProseMirror') && !caret.data.focusNode.parentNode.closest('pre')) {
 						raw_str = caret.data.focusNode.nodeValue.slice(0, caret.position);
-						if (link_regex.test(raw_str)) {
-							match = link_regex.exec(raw_str);
+						if (wikilink_regex.test(raw_str)) {
+							match = wikilink_regex.exec(raw_str);
 							link_str = match[1].replace(/^\||\|[^\[\]]*/, '');
 							SEARCH.string = match[0];
 							SEARCH.offset = match.index;
@@ -168,49 +169,48 @@
 						methods.appendMessage('Search for a page...');
 						return;
 					}
+					var count = ++requestCount;
 					api.get({
 						action: 'query',
 						list: 'prefixsearch',
-						pssearch: prefix,
+						pssearch: prefix.toWellFormed(), // avoid URIError
 						pslimit: '6'
 					}).then(function(data) {
-						if (data && data.query && data.query.prefixsearch && data.query.prefixsearch.length > 0) {
+						if (count !== requestCount) {return;} // abort if another request was made since making this one
+						if (data.query.prefixsearch.length > 0) {
 							methods.buildSuggestions(data.query.prefixsearch);
-						} else if (data && data.query && data.query.prefixsearch) {
+						} else if (data.query.prefixsearch) {
 							methods.appendMessage('No results found for "'+prefix+'".');
 						}
-					}, function(data) {
-						methods.appendMessage('An error occurred: '+data);
+					}, function(code, data) {
+						methods.appendMessage(api.getErrorMessage(data)[0].innerText);
 					});
 				},
 				
 				buildSuggestions: function(pages) {
 					// Build list
-					pages.forEach(
-						function(page){
-							ooui++;
-							var option = $(
-								'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-suggestion" aria-selected="false" tabindex="-1" role="option" id="ooui-'+ooui+'" link-to="'+config.wgServer+mw.util.getUrl(page.title)+'">'+
-									'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
-								'</div>'
-							);
-							suggestBox.append(option);
-						}
-					);
-					document.querySelector('.ProseMirror-focused').focus();
+					pages.forEach(function(page) {
+						var option = $(
+							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-suggestion" aria-selected="false" tabindex="-1" role="option" id="IPM-linkSuggest-'+(++resultCount)+'" data-url="'+config.wgServer+mw.util.getUrl(page.title)+'">'+
+								'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
+							'</div>'
+						);
+						suggestBox.append(option);
+					});
 					wrapper.show();
+					document.querySelector('.ProseMirror-focused').focus();
 				},
 				
-				appendMessage: function(message) {
+				appendMessage: function(msg) {
 					// Add message
-					var msg = $(
+					var message = $(
 						'<div class="oo-ui-widget oo-ui-labelElement oo-ui-optionWidget" tabindex="-1">'+
-							'<span class="oo-ui-labelElement-label" style="white-space:pre-wrap;font-style:italic;">'+message+'</span>'+
+							'<span class="oo-ui-labelElement-label" style="white-space:pre-wrap;font-style:italic;">'+msg+'</span>'+
 						'</div>'
 					);
-					suggestBox.append(msg);
-					document.querySelector('.ProseMirror-focused').focus();
+					suggestBox.append(message);
 					wrapper.show();
+					document.querySelector('.ProseMirror-focused').focus();
 				},
 				
 				handleOOUI: function(event) {
@@ -238,10 +238,10 @@
 						case 'keydown':
 							switch (event.key) {
 								case 'ArrowDown':
-									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion')[0] || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
 									break;
 								case 'ArrowUp':
-									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-suggestion')[0] || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
+									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
 									break;
 								case 'Home':
 									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
@@ -268,10 +268,10 @@
 					searchNode.splitText(SEARCH.string.length);
 					var linkNode = document.createElement('a');
 					if (optionNode) {
-						url = optionNode.getAttribute('link-to');
+						url = optionNode.dataset.url;
 						label = /\[\[[^\[\]]*?\|([^\[\]]*)\]{0,2}$/.exec(SEARCH.string);
 						if (!label) {
-							label = optionNode.firstChild.innerHTML;
+							label = optionNode.innerText;
 						} else if (label && !label[1]) {
 							// pipe trick
 							// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_39/includes/parser/Parser.php$4655
@@ -282,9 +282,9 @@
 							var p2 = /(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
 							
 							// <nowiki>try p1 first, to turn "[[A, B (C)|]]" into "[[A, B (C)|A, B]]"</nowiki>
-							label = optionNode.firstChild.innerHTML.replace(p1, '$1');
-							if (label === optionNode.firstChild.innerHTML) {
-								label = optionNode.firstChild.innerHTML.replace(p2, '$1');
+							label = optionNode.innerText.replace(p1, '$1');
+							if (label === optionNode.innerText) {
+								label = optionNode.innerText.replace(p2, '$1');
 							}
 						} else {
 							label = label[1];
@@ -292,17 +292,31 @@
 					}
 					linkNode.href = url;
 					linkNode.append(label);
-					parentNode.replaceChild(linkNode, searchNode);
+					searchNode.replaceWith(linkNode);
+					parentNode.normalize();
+					var surroundWithParent = function(node) {
+						if (node === linkNode && parentNode.matches('a') || parentNode.matches('span')) {return;}
+						if (node === linkNode && parentNode.matches('em, strong')) {node = node.firstChild;}
+						node.parentNode.insertBefore(parentNode.cloneNode(), node).appendChild(node);
+					};
+					var oldNode;
+					while (parentNode.matches('a, em, strong, span')) {
+						parentNode.childNodes.forEach(surroundWithParent);
+						parentNode.before.apply(parentNode, parentNode.childNodes);
+						oldNode = parentNode;
+						parentNode = parentNode.parentNode;
+						oldNode.remove();
+					}
 					parentNode.append('\ufeff'); // add invisible character so prosemirror doesn't strip the link
-					parentNode.normalize(); // remove empty text nodes
+					parentNode.normalize();
 					var nodeIndex = Array.prototype.indexOf.call(parentNode.childNodes, linkNode); // index of the link node in its parent's child list
 					methods.closeSuggestions();
 					
 					setTimeout(function() {
-						// let prosemirror do stuff
+						// async to let prosemirror do stuff first
 						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove invisible character
 						setTimeout(function() {
-							// let prosemirror do things again
+							// wait and let prosemirror do stuff again
 							window.getSelection().setPosition(parentNode, nodeIndex + 1); // move caret to after the new link node
 						});
 					});
@@ -469,7 +483,7 @@
 			});
 		},
 		
-		getCaret: function(element) {
+		getCaret: function() {
 			var cSel = window.getSelection();
 			var caretRect;
 			var caretOffset = 0;
@@ -477,9 +491,9 @@
 				var range = cSel.getRangeAt(0);
 				if (range.collapsed && range.endContainer.nodeType !== 3 && range.endContainer.lastChild && range.endContainer.lastChild.length) {
 					// fandom workaround - if you make a selection within a node
-					// and then move the caret to be right after the last character in that node,
-					// prosemirror tries to set the container to the parent element node,
-					// rather than the text node.
+					// and then move the caret to after the last character in that node,
+					// prosemirror tries to set the container to the parent element
+					// rather than the text node. (we need focusNode to be Text)
 					range.setEnd(range.endContainer.lastChild, range.endContainer.lastChild.length);
 					range.collapse();
 				}

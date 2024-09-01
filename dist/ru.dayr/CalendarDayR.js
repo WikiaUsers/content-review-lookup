@@ -1,10 +1,13 @@
 function getWeatherData() {
     return {
-        'frost': {
+        'Заморозки': {
             style: 'frosty-style',
             image: 'https://static.wikia.nocookie.net/dayr/images/0/0e/%D0%9C%D0%BE%D1%80%D0%BE%D0%B7.png/revision/latest?cb=20201031163748&path-prefix=ru'
+        },
+        'Ясная зимняя погода': {
+            style: 'clear_winter_weather',
+            image: 'https://static.wikia.nocookie.net/dayr/images/b/bd/%D0%AF%D1%81%D0%BD%D0%BE.png/revision/latest/scale-to-width-down/50?cb=20180929035813&path-prefix=ru'
         }
-        // Добавьте другие типы погоды здесь
     };
 }
 
@@ -28,8 +31,14 @@ function generateCalendar() {
         };
 
         var weatherData = {
-            'Декабрь': { start: 31, end: 31, type: 'frost' }, 
-            'Январь': { start: 1, end: 6, type: 'frost' }
+            'Декабрь': [
+                { start: 31, end: 31, type: 'Заморозки' }
+            ],
+            'Январь': [
+                { start: 1, end: 6, type: 'Заморозки' },
+                { start: 7, end: 13, type: 'Заморозки' },
+                { start: 14, end: 20, type: 'Ясная зимняя погода' }
+            ]
         };
 
         var weatherInfo = getWeatherData();
@@ -56,10 +65,18 @@ function generateCalendar() {
                     var imgHTML = '';
 
                     if (day <= daysInMonth) {
-                        if (weatherData[month] && day >= weatherData[month].start && day <= weatherData[month].end) {
-                            var weatherType = weatherData[month].type;
-                            cellClass = weatherInfo[weatherType].style;
-                            imgHTML = '<img src="' + weatherInfo[weatherType].image + '" class="weather-image" alt="Weather Image">';
+                        var weatherType = '';
+                        var isWeatherApplied = false;
+
+                        if (weatherData[month]) {
+                            weatherData[month].forEach(function (weather) {
+                                if (day >= weather.start && day <= weather.end) {
+                                    weatherType = weather.type;
+                                    cellClass = weatherInfo[weatherType].style;
+                                    imgHTML = '<img src="' + weatherInfo[weatherType].image + '" class="weather-image" alt="Weather Image">';
+                                    isWeatherApplied = true;
+                                }
+                            });
                         }
 
                         html += '<td class="' + cellClass + '" style="text-align: center; padding: 5px;">' + imgHTML + day + '</td>';

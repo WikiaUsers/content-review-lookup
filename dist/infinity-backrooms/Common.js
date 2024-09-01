@@ -18,6 +18,8 @@ window.UserTagsJS = {
 		'content-moderator': { order: 2 },
 		threadmoderator: { order: 3 }
 	}
+	
+	
 };
 
 UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // no edits for 90 days and/or no edits at all = inactive
@@ -35,10 +37,7 @@ var fadeinclass = document.getElementsByClassName("fadeintext");
         fadeinclass[i].style.animationFillMode = "forwards";
 }
 
-// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
+// interwiki template 
+	$('.page-header__languages .wds-dropdown__toggle ').append('<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>');
 
-$('.fandom-community-header__community-name-wrapper').append(
-	$('<a/>').addClass('compass-wiki-badge').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(
-		$('<img/>').css('height', '60px').css('position', 'relative').css('top', '10px')
-		.attr('src', 'https://static.wikia.nocookie.net/speedstorm/images/a/a2/FandomCompass-Banner-Light.png/revision/latest/scale-to-width-down/100?cb=20230404145009').attr('title', 'This wiki is part of Fandom Compass')
-));
+// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js

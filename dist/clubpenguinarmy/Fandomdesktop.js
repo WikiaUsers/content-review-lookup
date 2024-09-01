@@ -189,3 +189,53 @@ window.dev.editSummaries = {
 importArticles({ type: 'script', articles: [ 
     'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
+
+/*======================================================================================*/
+
+function toggleContent(element) {
+    var content = element.parentNode.nextElementSibling;
+    if (content.style.display === "none") {
+        content.style.display = "block";
+    } else {
+        content.style.display = "none";
+    }
+}
+
+/*======================================================================================*/
+
+function sortList(criteria) {
+    const list = document.getElementById('nameList');
+    const items = Array.from(list.getElementsByTagName('li'));
+
+    items.sort((a, b) => {
+        let valueA = a.getAttribute(`data-${criteria}`);
+        let valueB = b.getAttribute(`data-${criteria}`);
+
+        if (criteria === 'name') {
+            return valueA.localeCompare(valueB);
+        } else {
+            return parseInt(valueA) - parseInt(valueB);
+        }
+    });
+
+    list.innerHTML = '';
+
+    if (criteria === 'induction' || criteria === 'peak') {
+        let currentHeader = '';
+        items.forEach(item => {
+            let value = item.getAttribute(`data-${criteria}`);
+
+            if (value !== currentHeader) {
+                currentHeader = value;
+                const header = document.createElement('li');
+                header.textContent = currentHeader;
+                header.className = 'categorization';
+                list.appendChild(header);
+            }
+
+            list.appendChild(item);
+        });
+    } else {
+        items.forEach(item => list.appendChild(item));
+    }
+}

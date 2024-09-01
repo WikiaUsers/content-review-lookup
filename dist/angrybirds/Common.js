@@ -19,12 +19,7 @@ window.DiscordBannerSettings = {
 };
 
 //UploadMultipleFiles config
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:UploadMultipleFiles.js',
-    ]
-});
+//removed temporarily due to spam/vandalism
 
 //LinkPreview config
 window.pPreview = $.extend(

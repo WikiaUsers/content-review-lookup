@@ -1,88 +1,105 @@
+
+// Les éléments li correspondent aux items.
+var items = document.querySelectorAll('li');
+
+// Les éléments h3 correspondent aux titres de mois.
+var months = document.querySelectorAll("div.mw-parser-output h3");
+
+// Les éléments h2 correspondent aux titres d'année.
+var years = document.querySelectorAll("div.mw-parser-output h2");
+
+
+// Affiche tous les items et titres, sauf ceux de classe '.mw-empty-elt'.
+function showAll () {    
+    for (var i = 0; i < items.length; i++) {
+        if (!items[i].classList.contains('mw-empty-elt')) {
+            items[i].style.display = 'list-item';
+        }
+    }
+    for (var i = 0; i < months.length; i++) months[i].style.display = '';
+    for (var i = 0; i < years.length; i++) years[i].style.display = '';
+}
+
+// Affiche uniquement les éléments d'une langue donnée.
+// Tous les autres éléments seront masqués.
+function showOnlyLanguage (language) {
+    for (var i = 0; i < months.length; i++) {
+        var month = months[i];
+        var items = month.nextElementSibling.children;
+        var willHide = true;
+        for (var j = 0; j < items.length; j++) {
+            var item = items[j];
+            if (item.classList.contains(language)) {
+                item.style.display = 'list-item';
+                willHide = false;
+            } else {
+                item.style.display = 'none';
+            }
+        }
+        month.style.display = willHide ? 'none' : '';
+    }
+}
+
+// Change la visibilité d'une catégorie donnée.
+// Les éléments n'appartenant pas à cette catégorie ne seront pas touchés.
+function toggleCategory (category) {
+  console.debug('toggleCategory', category);
+  try {
+    category.visible = !category.visible;
+
+    for (var i = 0; i < months.length; i++) {
+        var month = months[i];
+        var willHide = true;
+        var items = month.nextElementSibling.children;
+
+        for (var j = 0; j < items.length; j++) {
+            var item = items[j];
+            if (item.classList.contains(category.name)) {
+                item.style.display = category.visible ? 'list-item' : 'none';
+            }
+            if (item.style.display !== 'none') willHide = false;
+        }
+        month.style.display = willHide ? 'none' : '';
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 mw.hook('wikipage.content').add(function() {
     $(function() {
-        // Sélectionner les boutons
-        var btnFrancais = document.getElementById('toggle-francais');
-        var btnAnglais = document.getElementById('toggle-anglais');
-        var btnJaponais = document.getElementById('toggle-japonais');
-        var btnChapitre = document.getElementById('toggle-chapitre');
-        var btnAnthologie = document.getElementById('toggle-anthologie');
-        var btnMei = document.getElementById('toggle-mei');
-        var btnTous = document.getElementById('toggle-tous');
-
-        // Variables pour suivre l'état de visibilité
-        var francaisVisible = true;
-        var anglaisVisible = true;
-        var japonaisVisible = true;
-        var chapitreVisible = true;
-        var anthologieVisible = true;
-        var meiVisible = true;
-
-        // Fonction pour afficher uniquement les éléments d'une catégorie spécifique
-        function showCategory(category) {
-            var allItems = document.querySelectorAll('li');
-            for (var i = 0; i < allItems.length; i++) {
-                var item = allItems[i];
-                if (item.classList.contains(category)) {
-                    item.style.display = 'list-item';
-                } else {
-                    item.style.display = 'none';
-                }
-            }
-        }
-
-        // Fonction pour afficher/masquer les éléments par catégorie
-        function toggleVisibility(className, visibilityState) {
-            var items = document.querySelectorAll('li.' + className);
-            for (var i = 0; i < items.length; i++) {
-                items[i].style.display = visibilityState ? 'list-item' : 'none';
-            }
-        }
-
-        // Gestion des boutons
-        btnFrancais.addEventListener('click', function() {
-            showCategory('francais');
+        // Configure les boutons.
+        document.getElementById('toggle-japonais').addEventListener('click', function () {
+            showOnlyLanguage('japonais');
+        });
+        document.getElementById('toggle-anglais').addEventListener('click', function () {
+            showOnlyLanguage('anglais');
+        });
+        document.getElementById('toggle-francais').addEventListener('click', function () {
+            showOnlyLanguage('francais');
         });
 
-        btnAnglais.addEventListener('click', function() {
-            showCategory('anglais');
+        var categories = [
+            { name: 'chapitre', visible: true },
+            { name: 'anthologie', visible: true },
+            { name: 'mei', visible: true }
+        ];
+
+        document.getElementById('toggle-chapitre').addEventListener('click', function () {
+            toggleCategory(categories[0]);
+        });
+        document.getElementById('toggle-anthologie').addEventListener('click', function () {
+            toggleCategory(categories[1]);
+        });
+        document.getElementById('toggle-mei').addEventListener('click', function () {
+            toggleCategory(categories[2]);
         });
 
-        btnJaponais.addEventListener('click', function() {
-            showCategory('japonais');
+        document.getElementById('toggle-tous').addEventListener('click', function () {
+            showAll();
         });
 
-        btnChapitre.addEventListener('click', function() {
-            chapitreVisible = !chapitreVisible;
-            toggleVisibility('chapitre', chapitreVisible);
-        });
-
-        btnAnthologie.addEventListener('click', function() {
-            anthologieVisible = !anthologieVisible;
-            toggleVisibility('anthologie', anthologieVisible);
-        });
-
-        btnMei.addEventListener('click', function() {
-            meiVisible = !meiVisible;
-            toggleVisibility('mei', meiVisible);
-        });
-
-        btnTous.addEventListener('click', function() {
-            // Afficher ou masquer tout
-            var allVisible = francaisVisible && anglaisVisible && japonaisVisible && chapitreVisible && anthologieVisible && meiVisible;
-            francaisVisible = anglaisVisible = japonaisVisible = chapitreVisible = anthologieVisible = meiVisible = !allVisible;
-            
-            toggleVisibility('francais', francaisVisible);
-            toggleVisibility('anglais', anglaisVisible);
-            toggleVisibility('japonais', japonaisVisible);
-            toggleVisibility('chapitre', chapitreVisible);
-            toggleVisibility('anthologie', anthologieVisible);
-            toggleVisibility('mei', meiVisible);
-        });
-
-        // Assurer que tout est affiché par défaut
-        var allItems = document.querySelectorAll('li');
-        for (var i = 0; i < allItems.length; i++) {
-            allItems[i].style.display = 'list-item';
-        }
+	// Assure que tout soit affiché par défaut.
+        showAll();
     });
 });

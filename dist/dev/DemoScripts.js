@@ -703,6 +703,11 @@
             styles: 'MediaWiki:TopGlobalNav.css'
         },
 
+        TransparentGlobalNav: {
+            page: "TransparentGlobalNav",
+            styles: "MediaWiki:TransparentGlobalNav.css"
+        },
+
         TZclock: {
             page: 'TZclock',
             scripts: 'MediaWiki:TZclock.js',

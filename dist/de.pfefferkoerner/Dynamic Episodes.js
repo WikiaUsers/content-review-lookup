@@ -1,3 +1,4 @@
+var dataSource = 'Staffeln/Episodes.json';
 var fields = {
 	title: {
 		label: 'Episodentitel',
@@ -10,6 +11,13 @@ var fields = {
 		type: 'number',
 		min: 1,
 		multiple: false,
+		validate: function(value, data) {
+			if (data.seasonal_number > value) {
+				new Exception('Die staffelübergreifende Episodennummer kann nicht kleiner als die staffinterne Episodennummer sein!');
+			}
+			return true;
+		},
+		asyncValidation: false,
 	},
 	season: {
 		label: 'Staffel',
@@ -22,6 +30,14 @@ var fields = {
 		label: 'Bild',
 		type: 'text',
 		multiple: false,
+		validate: function(value, data) {
+			return checkExistence(value).then(function(exists) {
+				if (!exists) {
+					throw new Exception('File "' + value + '" doesn\'t exist!');
+				}
+			});
+		},
+		asyncValidation: true,
 	},
 	writer: {
 		label: 'Drehbuch',
@@ -44,12 +60,12 @@ var fields = {
 		min: 1,
 		multiple: false,
 	},
-	previous: {
+	previous: { // @todo not needed, can be calculated
 		label: 'vorherige',
 		type: 'text',
 		multiple: false,
 	},
-	next: {
+	next: { // @todo not needed, can be calculated
 		label: 'nächste',
 		type: 'text',
 		multiple: false,
@@ -70,30 +86,39 @@ function parseWikitext(text) {
 	});
 }
 
-function apiCall(options, callback, method) {
+function _apiCall(options, callback, method) {
 	return new Promise(function(resolve, reject) {
+		return (new mw.Api())
+			[typeof method === 'undefined' ? 'get' : method.toLowerCase()](options);
+	})
+		.then(callback)
+		.then(resolve)
+		.catch(reject);/*
+	return new Promise(function(resolve, reject) {
+		console.log('api req', (new mw.Api())
+			[typeof method === 'undefined' ? 'get' : method.toLowerCase()](options));
 		return (new mw.Api())
 			[typeof method === 'undefined' ? 'get' : method.toLowerCase()](options)
 			.then(callback)
 			.then(resolve)
 			.catch(reject);
-	});
+	});*/
 }
 
-function parsePage(page, prop, contentmodel) {
+function _parsePage(page, prop, contentmodel) {
 	return apiCall({
 		action: 'parse',
-		prop: typeof prop === 'undefined' ? 'text' : prop,
+		prop: [ typeof prop === 'undefined' ? 'text' : prop, 'revid' ],
 		page: page,
 		formatversion: 2,
 		contentmodel: typeof contentmodel === 'undefined' ? 'wikitext' : contentmodel,
 		disablelimitreport: 1
 	}, function(res) {
-		return res.parse[prop];
+		return [ res.parse[prop], res.parse.revid ];
 	});
 }
 
-function postPage(page, text, summary) {
+function _postPage(page, text, summary) {
 	return apiCall({
 		action: 'edit',
 		text: text,
@@ -103,12 +128,34 @@ function postPage(page, text, summary) {
 		//tags: 'apiedit',
 		nocreate: 1,
 	}, function(res) {
-		return res.parse[prop];
+		if (typeof res.error !== 'undefined') {
+			return [ false, 'error', res.edit.info ];
+		} else if (res.edit.result === 'Success' && typeof res.edit.nochange === 'undefined' && res.edit.oldrevid < res.edit.newrevid) {
+			return [ true, 'success', null ];
+		} else if (typeof res.edit.nochange !== 'undefined') {
+			return [ false, 'warning', 'nochange' ];
+		} else if (res.edit.oldrevid >= res.edit.newrevid) {
+			return [ false, 'alert', 'revision mismatch' ];
+		} 
 	}, 'post');
 }
 
-function loadEpisodeArticle(input, fieldset) {
-	parsePage('MediaWiki:Custom-Episodes.json', 'wikitext', 'json').then(function(json) { return JSON.parse(json); }).then(function(episodes) {
+function checkExistence(page) {
+	return apiCall({
+		action: 'query',
+		prop: 'revisions',
+		titles: page,
+		rvlimit: 1,
+		formatversion: 2,
+	}, function(results) {
+		return !results.query.pages[0].missing;
+	});
+}
+
+function loadEpisodeArticle(input, fieldset, messageDialog) {
+	_parsePage(dataSource, 'wikitext', 'json').then(function(res) { console.log('res?', res); return [ JSON.parse(res[0]), res[1] ]; }).then(function(parsed) {
+		var episodes = parsed[0];
+		var revId = parsed[1];
 		var episodeIndex = episodes.findIndex(function(episode) { return episode.title === input.value; });
 		var episodeData = episodes[episodeIndex];
 
@@ -128,7 +175,7 @@ function loadEpisodeArticle(input, fieldset) {
 				return [ key, value ];
 			});
 		})).then(function(res) {
-			var from, submitButton;
+			var from, submitButton, messageArea;
 			var entries = Object.fromEntries(res);
 			if (entries.title === 'API') {
 				entries.title = input.value;
@@ -138,7 +185,9 @@ function loadEpisodeArticle(input, fieldset) {
 				var fieldWrapper;
 				var value = entries[key];
 				var field = fields[key];
-				form.append(fieldWrapper = document.createElement('div'));
+				form.append(fieldWrapper = Object.assign(document.createElement('div'), {
+					className: 'form-field-wrapper',
+				}));
 				fieldWrapper.append(Object.assign(document.createElement('label'), {
 					htmlFor: key,
 					textContent: field.label,
@@ -155,39 +204,84 @@ function loadEpisodeArticle(input, fieldset) {
 				textContent: 'Submit',
 				className: 'wds-button',
 			}));
+			form.append(messageArea = document.createElement('div'));
 			submitButton.addEventListener('click', function(evt) {
 				evt.preventDefault();
-				var entries = Array.from((new FormData(form)).entries()).reduce(function(carry, entry) {
-					var key = entry[0];
-					var value = entry[1];
-					
-					if (value === '') {
-						carry[key] = null;
-					} else if (fields[key].type === 'number') {
-						carry[key] = parseInt(value);
+				_parsePage(dataSource, 'wikitext', 'json').then(function(res) { return [ JSON.parse(res[0]), res[1] ]; }).then(function(parsed) {
+					var key;
+					var newEpisodes = parsed[0];
+					var oldRev = revId;
+					var newRev = parsed[1];
+					var formEntries = (new FormData(form)).entries();
+					var formData = Object.fromEntries(formEntries);
+					var entries = Array.from(formEntries).reduce(function(carry, entry) {
+						var key = entry[0];
+						var value = entry[1];
+						
+						if (value === '') {
+							carry[key] = null;
+						} else if (fields[key].type === 'number') {
+							carry[key] = parseInt(value);
+						} else {
+							carry[key] = value;
+						}
+						
+						if (typeof fields[key].validate === 'function' && fields[key].asyncValidation === false) {
+							try {
+								fields[key].validate(value, formData);
+							} catch(error) {
+								console.error(error);
+								messageArea.style.color = 'var(--theme-alert-color)';
+								messageArea.textContent = error;
+							}
+						} else if (typeof fields[key].validate === 'function') {
+							fields[key]
+								.validate(value, formData)
+								.catch(function(error) {
+									console.error(error);
+									messageArea.style.color = 'var(--theme-alert-color)';
+									messageArea.textContent = error;
+								});
+						}
+						
+						return carry;
+					}, {});
+	
+					if (episodeIndex === -1) {
+						episodeData = { seasonal_number: -1, broadcasts: [] };
+						for(key in fields) {
+							episodeData[key] = typeof entries[key] !== 'undefined' ? entries[key] : null;
+						}
+						episodes.push(episodeData);
 					} else {
-						carry[key] = value;
-					}
-					return carry;
-				}, {});
-
-				if (episodeIndex === -1) {
-					episodeData = { broadcasts: [] };
-					for(var key in fields) {
-						episodeData[key] = typeof entries[key] !== 'undefined' ? entries[key] : null;
-					}
-					episodes.push(episodeData);
-				} else {
-					for(var key in episodeData) {
-						if (typeof entries[key] !== 'undefined') {
-							episodeData[key] = entries[key];
+						for(key in episodeData) {
+							if (typeof entries[key] !== 'undefined') {
+								episodeData[key] = entries[key];
+							}
 						}
 					}
-				}
-				postPage('MediaWiki:Custom-Episodes.json', JSON.stringify(episodes, null, '\t'), '/* ' + input.value + ': Add episodes/change episode data */');
+					_postPage(dataSource, JSON.stringify(episodes, null, '\t'), '/* ' + input.value + ': Add episodes/change episode data */').then(function(res) {
+						console.log('postPage', res);
+						var canClose = res[0];
+						var status = res[1];
+						var message = res[2];
+						console.log('postPage', { canClose: canClose, status: status, message: message });
+						
+						if (canClose) {
+							messageArea.textContent = '';
+							messageArea.style.color = 'initial';
+							messageDialog.close();
+							mw.notify( 'Saved successfully!' );
+						} else {
+							messageArea.style.color = 'var(--theme-' + status + '-color)';
+							messageArea.textContent = message;
+						}
+					});
+				});
 			});
 			//fieldset.append(document.createTextNode(JSON.stringify(Object.fromEntries(res), null, '\t')));
 			console.log('done');
+			messageDialog.updateSize();
 		});
 	});
 }
@@ -200,6 +294,8 @@ function renderDynamicEpisodeForm() {
 		var input = new OO.ui.TextInputWidget( {
 				placeholder: 'Article name'
 		} );
+		// Example: Creating and opening a message dialog window.
+		var messageDialog = new OO.ui.MessageDialog();
 		var btn = new OO.ui.ButtonWidget( {
 						label: 'Add',
 						flags: [
@@ -207,7 +303,7 @@ function renderDynamicEpisodeForm() {
 								'progressive'
 						]
 				} );
-		btn.on('click', loadEpisodeArticle.bind(window, input, fieldset.$element));
+		btn.on('click', loadEpisodeArticle.bind(window, input, fieldset.$element, messageDialog));
 	
 		// Add an action field layout: 
 		fieldset.addItems( [ 
@@ -220,8 +316,6 @@ function renderDynamicEpisodeForm() {
 				}
 			)
 		] );
-		// Example: Creating and opening a message dialog window.
-		var messageDialog = new OO.ui.MessageDialog();
 		
 		// Create and append a window manager.
 		var windowManager = new OO.ui.WindowManager();
@@ -253,7 +347,9 @@ function loadBroadcastDateTable(input, fieldset, messageDialog) {
 	table.append(tbody);
 	fieldset.append(table);
 	fieldset.append(table);
-	parsePage('MediaWiki:Custom-Episodes.json', 'wikitext', 'json').then(function(json) { return JSON.parse(json); }).then(function(episodes) {
+	_parsePage(dataSource, 'wikitext', 'json').then(function(res) { return [ JSON.parse(res[0]), res[1] ]; }).then(function(parsed) {
+		var episodes = parsed[0];
+		var revId = parsed[1];
 		var episodeIndex = episodes.findIndex(function(episode) { return episode.title === input.value; });
 		var episodeData = episodes[episodeIndex];
 		if (typeof episodeData !== 'undefined' && typeof episodeData.broadcasts !== 'undefined') {
@@ -271,26 +367,46 @@ function loadBroadcastDateTable(input, fieldset, messageDialog) {
 		var submitButton = Object.assign(document.createElement('button'), { textContent: 'Submit' });
 		submitButton.classList.add('wds-button');
 		submitButton.addEventListener('click', function() {
-			var broadcastData = Array.from(table.querySelector('tbody').children).slice(1).reduce(function(carry, row) {
-				var result = {
-					channel: row.querySelector('td:nth-child(2) input').value,
-					is_premiere: row.querySelector('td:nth-child(3) input').selected,
-					type: row.querySelector('td:nth-child(4) select').value
-				};
-				var dateSelectValue = row.querySelector('td:first-child input').value;
-				if (dateSelectValue === '' || result.channel === '') {
+			_parsePage(dataSource, 'wikitext', 'json').then(function(res) { return [ JSON.parse(res[0]), res[1] ]; }).then(function(parsed) {
+				var newEpisodes = parsed[0];
+				var oldRev = revId;
+				var newRev = parsed[1];
+				var broadcastData = Array.from(table.querySelector('tbody').children).slice(1).reduce(function(carry, row) {
+					var result = {
+						channel: row.querySelector('td:nth-child(2) input').value,
+						is_premiere: row.querySelector('td:nth-child(3) input').selected,
+						type: row.querySelector('td:nth-child(4) select').value
+					};
+					var dateSelectValue = row.querySelector('td:first-child input').value;
+					if (dateSelectValue === '' || result.channel === '') {
+						return carry;
+					}
+					result[result.type === 'live' ? 'datetime' : 'end_datetime'] = row.querySelector('td:first-child input').value + ':00+01:00';
+					carry.push(result);
 					return carry;
-				}
-				result[result.type === 'live' ? 'datetime' : 'end_datetime'] = row.querySelector('td:first-child input').value + ':00+01:00';
-				carry.push(result);
-				return carry;
-			}, []);
-			console.log('broadcastData', broadcastData);
-			episodeData.broadcasts = broadcastData;
-			episodes[episodeIndex] = episodeData;
-			console.log('send data', episodes);
-			postPage('MediaWiki:Custom-Episodes.json', JSON.stringify(episodes, null, '\t'), '/* ' + input.value + ': Add broadcast dates */');
-			messageDialog.close();
+				}, []);
+				console.log('broadcastData', broadcastData);
+				episodeData.broadcasts = broadcastData;
+				episodes[episodeIndex] = episodeData;
+				console.log('send data', episodes);
+				_postPage(dataSource, JSON.stringify(episodes, null, '\t'), '/* ' + input.value + ': Add broadcast dates */').then(function(res) {
+					var canClose = res[0];
+					var status = res[1];
+					var message = res[2];
+					
+					if (canClose) {
+						messageArea.textContent = '';
+						messageArea.style.color = 'initial';
+						messageDialog.close();
+						mw.notify( 'Saved successfully!' );
+					} else {
+						messageArea.style.color = 'var(--theme-' + status + '-color)';
+						messageArea.textContent = message;
+					}
+				});
+				messageDialog.close();
+				mw.notify( 'Saved successfully!' );
+			});
 		});
 		fieldset.append(submitButton);
 	});
@@ -424,10 +540,10 @@ function renderAddButton() {
 }
 
 function init() {
-	if (document.body.classList.contains('page-MediaWiki_Custom-Episodes_json')) { // We are on MediaWiki:Custom-Episodes.json
+	if (document.body.classList.contains('page-Staffeln_Episodes_json')) { // We are on Staffeln/Episodes.json
     	renderAddButton();
     } else {
-    	console.log('We are not on MediaWiki:Custom-Episodes.json');
+    	console.log('We are not on Staffeln/Episodes.json');
     }
 }
 

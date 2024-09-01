@@ -404,7 +404,8 @@ var possibleTexts = [
             "🏆 Scarecrop!",
             "🏆 Calamity Cone Zombie!",
             "🏆 Pulpverizer!",
-            "🏆 The Sanctuary!"
+            "🏆 The Sanctuary!",
+            "🏆 Cursed Cobelisk!"
         ],
         weight: 350000
     },
@@ -451,7 +452,8 @@ var possibleTexts = [
             "🏆🏆 Scarecrop!",
             "🏆🏆 Calamity Cone Zombie!",
             "🏆🏆 Pulpverizer!",
-            "🏆🏆 The Sanctuary!"
+            "🏆🏆 The Sanctuary!",
+            "🏆🏆 Cursed Cobelisk!"
         ],
         weight: 200000
     },
@@ -498,7 +500,8 @@ var possibleTexts = [
             "🏆🏆🏆 Scarecrop!",
             "🏆🏆🏆 Calamity Cone Zombie!",
             "🏆🏆🏆 Pulpverizer!",
-            "🏆🏆🏆 The Sanctuary!"
+            "🏆🏆🏆 The Sanctuary!",
+            "🏆🏆🏆 Cursed Cobelisk!"
         ],
         weight: 5000
     },

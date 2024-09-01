@@ -1,40 +1,26 @@
-(function () {
-  "use strict";
+(function (mw) {
+	"use strict";
 
-  // Double run protection originally by andrewds1021
-  if (window.dev && window.dev.ghBadges && window.dev.ghBadges.hasRan) { console.log("GitHubBadges already ran!"); return; }
-  if (!window.dev) {
-    window.dev = {
-      ghBadges: {}
-    };
-  } else if (!window.dev.ghBadges) {
-    window.headquarter8302.ghBadges = {};
-  }
-  window.headquarter8302.ghBadges.hasRan = true;
+	// Double run protection
+	window.dev = window.dev || {};
+	window.dev.ghBadges = window.dev.ghBadges || {
+		hasRan: false
+	};
 
-  var badges = document.querySelectorAll("div.gh-badge");
+	if (mw.config.get("wgNamespaceNumber") !== 0 || window.dev.ghBadges.hasRan) return;
+	window.dev.ghBadges.hasRan = true;
 
-  mw.hook('wikipage.content').add((function () {
-    for (var i = 0; i < badges.length; i++) {
-      var ghBadge = document.createElement("img");
+	mw.hook('wikipage.content').add(function($content) {
+		$content.find("div.gh-badge:not(.loaded)").each(function(_, badge) {
+			badge.classList.add('loaded');
+			var data = badge.dataset,
+				link = new URL('https://github.com/' + data.ghRepository + '/actions/workflows/' + data.ghWorkflow + '/badge.svg');
+			if (data.ghBranch) link.searchParams.append("branch", data.ghBranch);
+			if (data.ghEvent) link.searchParams.append("event", data.ghEvent);
 
-      ghBadge.src = 'https://github.com/' + badges[i].dataset.ghRepository + '/actions/workflows/' + badges[i].dataset.ghWorkflow + '/badge.svg';
-
-      if (
-        badges[i].dataset.ghBranch &&
-        badges[i].dataset.ghEvent
-      ) {
-        ghBadge.src = ghBadge.src.concat(
-          "?branch=" + badges[i].dataset.ghBranch +
-          "&event=" + badges[i].dataset.ghEvent
-        );
-      }
-      else {
-        if (badges[i].dataset.ghBranch) { ghBadge.src = ghBadge.src.concat("?branch=" + badges[i].dataset.ghBranch); }
-        if (badges[i].dataset.ghEvent) { ghBadge.src = ghBadge.src.concat("?event=" + badges[i].dataset.ghEvent); }
-      }
-
-      badges[i].append(ghBadge);
-    }
-  })());
-})();
+			var ghBadge = document.createElement("img");
+			ghBadge.src = link.href;
+			badge.appendChild(ghBadge);
+		});
+	});
+})(window.mediaWiki);

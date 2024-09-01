@@ -29,20 +29,13 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'WikiActivity' || mw.config.g
     }).html('<a href="/wiki/Special:DiscussionsFeed">Discussions Feed</a>')
     .prependTo('.toolbar .tools');
 }
- 
-/* Adds icons to page header
- * by: The 888th Avatar, adapted to new header by Thailog
- */
-$(function() {
-	if ( mw.config.get( 'wgVersion' ) !== '1.19.24' && $( '#title-eraicons' ).length ) {
-        $( '.page-header__contribution > div' ).first().append( $( '#title-eraicons' ).show() );
-    } else if( $( '.wds-community-header' ).length ) {
-        $( '#PageHeader' ).prepend(
-            $( '#icons' ).attr( 'style', 'position: absolute; right: 65px;' )
-        );
-    } else {
-        $( '.WikiaPageHeader' ).append( $( '#icons' ) );
-        $( '#icons' ).css( { 'position' : 'absolute', 'right' : '5.1em', 'bottom' : '-2em' } ).show();
+
+/* For [[Template:Icons]] */
+$(function () {
+	var icons = $('#icons');
+    if (icons.length) {
+        $('.page-header__meta').after(icons);
+        icons.show();
     }
 });
  

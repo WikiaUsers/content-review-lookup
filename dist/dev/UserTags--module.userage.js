@@ -51,11 +51,12 @@ UserTagsJS.extensions.userage = (function($) {
             if (months > 12 && months % 12) {
                 time = time.slice(0, -3) + mw.message('timeago-month', months % 12).text();
             }
-            tags[user.registration] = {
-                u: time
+            tags.userage = {
+                u: time,
+                title: user.registration
             };
             return {
-                groups: [user.registration],
+                groups: ['userage'],
                 tags: tags
             };
         }

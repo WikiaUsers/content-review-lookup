@@ -4,9 +4,9 @@ The CSS Page for staff colors stored at config.cssPage set below
 
 Methods/Properties loaded to the mw.util object
 - (#M1) mw.util.StaffUtil.fetchStaffList() : Adds/Updates data of the following properties:
-	- (#P1) mw.util.StaffUtil.jsonData : Stores data from the Config File
-	- (#P2) mw.util.StaffUtil.groupsList : Stores unprocessed data of users in each usergroup
-	- (#P3) mw.util.StaffUtil.membersList : Stores information about users of each staff rank
+    - (#P1) mw.util.StaffUtil.jsonData : Stores data from the Config File
+    - (#P2) mw.util.StaffUtil.groupsList : Stores unprocessed data of users in each usergroup
+    - (#P3) mw.util.StaffUtil.membersList : Stores information about users of each staff rank
 - (#M2) mw.util.StaffUtil.printStaffList() : Same as fetchStaffList but prints results to console
 - (#M3) mw.util.StaffUtil.updateStaffColors(cb, thisArg) : Same as fetchStaffList but also updates the CSS Page; Only loaded for CE+
 */
@@ -20,7 +20,16 @@ Methods/Properties loaded to the mw.util object
 */
 /* global mw, console, alert */
 
-mw.loader.using(["mediawiki.api"]).then(function () {
+$.when(
+    mw.loader.using([
+        "mediawiki.api"
+    ]),
+    $.Deferred(function (def) {
+        mw.hook("dev.banners").add(function (BannerNotification) {
+            def.resolve(BannerNotification);
+        });
+    })
+).then(function (_, BannerNotification) {
     "use strict";
 
     /** International Customization Standard Notice (ICC-NOTICE-V2)
@@ -66,7 +75,7 @@ mw.loader.using(["mediawiki.api"]).then(function () {
         cssPage: "Custom-common.less/staff-colors.less", // assumed to be on MediaWiki namespace
         scriptPage: "Gadget-StaffColorsUpdater.js", // assumed to be on MediaWiki namespace
         configPage: "Gadget-StaffColorsUpdater.json", // assumed to be on MediaWiki namespace
-        buttonDisplayedOnPages: ["Custom-common.less", "Common.css"] // list of pages on the MediaWiki namespace to display the update button
+        buttonDisplayedOnPages: ["Custom-common.less", "Common.css", "Custom-common.less/staff-colors.less"] // list of pages on the MediaWiki namespace to display the update button
     };
 
     function getMsg() {
@@ -116,6 +125,9 @@ mw.loader.using(["mediawiki.api"]).then(function () {
             getMsg("configUsed", config.configPage) + "\n\n" +
             getMsg("pleaseUpdateCSS")
         );
+        new BannerNotification($("<div>", {
+            html: "<div><b>Finished updating staff colors.</b></div>",
+        }).prop("outerHTML"), "confirm", undefined, 5000).show();
     }
 
     function parse() {
@@ -430,6 +442,9 @@ mw.loader.using(["mediawiki.api"]).then(function () {
                             $this.attr({
                                 disabled: true
                             });
+                            new BannerNotification($("<div>", {
+                                html: "<div><b>Processing, Please Wait.</b><br />Another pop-up should indicate completion.</div>",
+                            }).prop("outerHTML"), "confirm", undefined, 5000).show();
                             mw.util.StaffUtil.updateStaffColors(finalAlert.bind(null, $this));
                         }
                     },

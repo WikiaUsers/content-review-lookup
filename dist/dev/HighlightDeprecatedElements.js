@@ -44,16 +44,14 @@
 			handleDeprecatedThings($('.cm-editor'));
 		});
 	});
-	mw.hook('wikipage.editform').add(function() { // source editor
-		mw.hook('ext.CodeMirror.switch').add(function(isShown, editor) {
-			if (!isShown) return;
-			handleDeprecatedThings(editor);
-			editor.on('keydown', function(e) {
-				handleDeprecatedThings($(e.target));
-			});
-			editor.on('click', function(e) {
-				 handleDeprecatedThings($(e.target));
-			});
+	mw.hook('ext.CodeMirror.switch').add(function(isShown, editor) {
+		if (!isShown) return;
+		handleDeprecatedThings(editor);
+		editor.on('keydown', function(e) {
+			handleDeprecatedThings($(e.target));
+		});
+		editor.on('click', function(e) {
+			 handleDeprecatedThings($(e.target));
 		});
 	});
 })(window.jQuery, window.mediaWiki);

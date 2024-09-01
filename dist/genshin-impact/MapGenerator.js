@@ -504,7 +504,7 @@ $(function() {
 					'The Chasm: Underground Mines': 'The Chasm',
 					'Golden Apple Archipelago 1.6': 'Golden Apple Archipelago'
 				};
-				return'==Summary==\n{{Map Image\n|region   = '+(redirects[region]||region)+'\n|location = '+location+'\n|type	 = '+localStorage.getItem('MapGenerator-UT')+'\n}}\n\n==Licensing==\n{{Fairuse}}';
+				return'==Summary==\n{{Map Image\n|region   = '+(redirects[region]||region)+'\n|location = '+location+'\n|type     = '+localStorage.getItem('MapGenerator-UT')+'\n}}\n\n==Licensing==\n{{Fairuse}}';
 			} else { return ''; }
 		},
 		getFileObject: function(url, text) {
@@ -586,7 +586,9 @@ $(function() {
 				document.querySelector('.Templates-generator-note').setAttribute('rel', name);
 				mapGenerator.urlQuery(null, name);
 			}
-			window.scrollTo(0, document.querySelector('.Templates-generator-note').offsetTop);
+			if (mode == 'full') {
+				window.scrollTo(0, document.querySelector('.Templates-generator-note').offsetTop);
+			}
 		},
 		urlQuery: function(r, m) {
 			var query = {

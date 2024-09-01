@@ -670,7 +670,7 @@ if (rotateds.length) {
 						}
 						
 						var mouseX = event.pageX-rect.left;
-						var deg = Math.floor((mouseX-clickX)*(90/pageWidth));
+						var deg = (mouseX-clickX)*(90/pageWidth);
 						if (deg < 0) {deg = 0;}
 						console.log('move',mouseX, deg);
 						
@@ -749,7 +749,7 @@ if (rotateds.length) {
 						}
 						
 						var mouseX = event.pageX-rect.left;
-						var deg = -Math.floor((clickX-mouseX)*(90/pageWidth));
+						var deg = -((clickX-mouseX)*(90/pageWidth));
 						if (deg > 0) {deg = 0;}
 						//console.log(mouseX, deg);
 						

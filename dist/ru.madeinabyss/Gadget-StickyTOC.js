@@ -1,9 +1,12 @@
-// *This was written by Copilot. I have minimal programming knowledge.
 $(document).ready(function() {
     mw.loader.using(['jquery'], function() {
         var isStatic = document.cookie.indexOf('staticToc=true') !== -1;
         var hideToc = document.cookie.indexOf('hideToc=true') !== -1;
-        if (hideToc) return;
+
+        if (hideToc) {
+            addRestoreTocAction();
+            return;
+        }
 
         var SCROLL_AMOUNT = 250;
         var parserOutput = $('.mw-parser-output');
@@ -34,18 +37,32 @@ $(document).ready(function() {
             var rightArrow = $('<div class="scroll-arrow right-arrow"><i class="fas fa-chevron-right"></i></div>');
             var navbar = $('#navbartoc');
 
+            function updateArrows() {
+                var scrollWidth = navbar[0].scrollWidth;
+                var clientWidth = navbar.innerWidth();
+                var scrollLeft = navbar.scrollLeft();
+
+                leftArrow.toggle(scrollLeft > 0);
+                rightArrow.toggle(scrollLeft + clientWidth < scrollWidth);
+            }
+
             if (navbar[0].scrollWidth > navbar.innerWidth()) {
                 navbar.parent().append(leftArrow).append(rightArrow);
                 leftArrow.hide();
             }
 
-            leftArrow.on('click', function() { navbar.scrollLeft(navbar.scrollLeft() - SCROLL_AMOUNT); });
-            rightArrow.on('click', function() { navbar.scrollLeft(navbar.scrollLeft() + SCROLL_AMOUNT); });
-
-            navbar.on('scroll', function() {
-                leftArrow.toggle(navbar.scrollLeft() > 0);
-                rightArrow.toggle(navbar.scrollLeft() + navbar.innerWidth() < navbar[0].scrollWidth);
+            leftArrow.on('click', function() {
+                navbar.scrollLeft(navbar.scrollLeft() - SCROLL_AMOUNT);
             });
+
+            rightArrow.on('click', function() {
+                navbar.scrollLeft(navbar.scrollLeft() + SCROLL_AMOUNT);
+            });
+
+            navbar.on('scroll', updateArrows);
+
+            $(window).on('resize', updateArrows);
+            updateArrows();
         }
 
         function filterTocLevels() {
@@ -122,10 +139,24 @@ $(document).ready(function() {
                 e.preventDefault();
                 $('.toc-container').remove();
                 document.cookie = 'hideToc=true; path=/';
+                addRestoreTocAction();
             });
 
             linkContainer.append(hideLink).append(removeLink);
             $('.toc-container').append(linkContainer);
+        }
+
+        function addRestoreTocAction() {
+            var actionList = $('#p-cactions ul');
+            var restoreLink = $('<li><a href="#">Вернуть закрепленный блок</a></li>');
+
+            restoreLink.on('click', function(e) {
+                e.preventDefault();
+                document.cookie = 'hideToc=false; path=/';
+                location.reload();
+            });
+
+            actionList.append(restoreLink);
         }
     });
 });
