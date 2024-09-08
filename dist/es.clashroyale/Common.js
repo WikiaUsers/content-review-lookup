@@ -1,6 +1,6 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
-// Importes de p·ginas MediaWiki y de la Dev Wiki.
+// Importes de p√°ginas MediaWiki y de la Dev Wiki.
 importArticles({
     type: 'script',
     articles: [
@@ -20,7 +20,7 @@ importArticles({
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u: 'BurÛcrata' },
+		bureaucrat: { u: 'Bur√≥crata' },
 		sysop: { u: 'Administrador' },
 		rollback: { u: 'Reversor' },
 		contentmod: { u: 'Moderador de contenido' },
@@ -29,11 +29,11 @@ window.UserTagsJS = {
 	}
 };
  
-/* Para que el tag estÈ luego de los que est·n por default */
+/* Para que el tag est√© luego de los que est√°n por default */
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u: 'BurÛcrata', order: 1 },
+		bureaucrat: { u: 'Bur√≥crata', order: 1 },
 		sysop: { u: 'Administrador', order: 2 },
 		rollback: { u: 'Reversor', order: 3 },
 		contentmod: { u: 'Moderador de contenido', order: 4 },
@@ -46,7 +46,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 /* Bots y controladores (Bot de la wiki) */
     /*'Karma Akabane-bot': ['bot'],
-/* Bureucrats (BurÛcratas) */
+/* Bureucrats (Bur√≥cratas) */
     'Thelosted': ['bureaucrat','sysop'],
     'Suzaku 13': ['bureaucrat','sysop'],
 /* Sysops (Administradores) */

@@ -80,7 +80,7 @@ $(".userVote").each(function (a,element) {
 	loadVoteData(voteNRCur,txt);
 	$("<button/>",{text: "Abstimmen!"}).appendTo(element).on("click",function() {
 		if (wgUserName == null) {
-			alert("Du musst angemeldet sein, um abstimmen zu können!");
+			alert("Du musst angemeldet sein, um abstimmen zu kÃ¶nnen!");
 			return;
 		}
 		voteStatus.html(tmpLoad+" Frage ID ab...");
@@ -100,7 +100,7 @@ $(".userVote").each(function (a,element) {
 			voteID = response.id;
 			var verificationKey = response.verify;
 			
-			voteStatus.html(tmpLoad+" Schreibe Verifizierungsschlüssel...");
+			voteStatus.html(tmpLoad+" Schreibe VerifizierungsschlÃ¼ssel...");
 			$.post("/api.php", {
 				format: "json",
 				action: "query",
@@ -121,7 +121,7 @@ $(".userVote").each(function (a,element) {
 					token: edittoken
 				},function(response) {
 					if (response.edit.result == "Success") {
-						voteStatus.html(tmpLoad+" Überprüfe Verifizierung...");
+						voteStatus.html(tmpLoad+" ÃœberprÃ¼fe Verifizierung...");
 						$.ajax({
 							method: "GET",
 							url: voteURL,
@@ -148,7 +148,7 @@ $(".userVote").each(function (a,element) {
 								}).done(function(response) {
 									if (response.status == "OK") {
 										loadVoteData(voteNRCur,txt);
-										voteStatus.html(tmpOK+" Vielen Dank fürs Abstimmen!");
+										voteStatus.html(tmpOK+" Vielen Dank fÃ¼rs Abstimmen!");
 									} else {
 										voteStatus.html(tmpError+ "Fehler aufgetreten! (Remote: "+response.status+")");
 									}	

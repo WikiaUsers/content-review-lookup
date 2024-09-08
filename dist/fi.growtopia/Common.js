@@ -1,4 +1,4 @@
-// T‰m‰n sivun JavaScript-koodi liitet‰‰n jokaiseen sivulataukseen
+// T√§m√§n sivun JavaScript-koodi liitet√§√§n jokaiseen sivulataukseen
 
 // Scriptien tuonti
 importArticles({
@@ -14,10 +14,10 @@ importArticles({
 
 
 
-// Ep‰aktiivinen -tagi
+// Ep√§aktiivinen -tagi
 InactiveUsers = { 
     months: 2,
-    text: 'Ep‰aktiivinen'
+    text: 'Ep√§aktiivinen'
 };
 
 

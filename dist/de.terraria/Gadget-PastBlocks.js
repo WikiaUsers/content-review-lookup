@@ -2,11 +2,11 @@
 // *** Mark-Blocked portion imported from Wikipedia's Mark Blocked gadget, author unknown.
 
 var urlPre = 'https://terraria.gamepedia.com';
-var tip = "÷ffne das Sperr-Logbuch dieses Benutzerkontos";
+var tip = "√ñffne das Sperr-Logbuch dieses Benutzerkontos";
 
 $('#bodyContent a.mw-anonuserlink').each(function(){
   var $this = $(this);
-  var user = $this.attr('href').replace(/\/(Special:Contributions|Spezial:Beitr‰ge)\//, '');
+  var user = $this.attr('href').replace(/\/(Special:Contributions|Spezial:Beitr√§ge)\//, '');
   $.getJSON(urlPre + '/api.php?format=json&action=query&list=logevents&leaction=block/block&leprop=user&letitle=User:' + user, function(data){
     var blocks = data.query.logevents;
     var numBlocks = blocks.length;
@@ -43,7 +43,7 @@ function markBlocked( container ) {
 	}
 
 	//RegExp for all titles that are  User:| User_talk: | Special:Contributions/ (for userscripts)
-	var userTitleRX = new RegExp( '^(' + userNS.join( '|' ) + '|(Special:Contributions|Spezial:Beitr‰ge)\\/)([^\\/#]+)$', 'i' );
+	var userTitleRX = new RegExp( '^(' + userNS.join( '|' ) + '|(Special:Contributions|Spezial:Beitr√§ge)\\/)([^\\/#]+)$', 'i' );
 
 	//RegExp for links
 	var articleRX = new RegExp( '^' + mw.config.get( 'wgArticlePath' ).replace('$1', '') + '([^#]+)' );

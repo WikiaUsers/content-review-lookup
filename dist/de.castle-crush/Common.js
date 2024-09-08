@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
  
 importScriptPage('ShowHide/code.js', 'dev');
  
@@ -16,13 +16,13 @@ var ShowHideConfig = {
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-        'bureaucrat': { u: 'Bürokrat', m: 'Bürokrat', f: 'Bürokratin', order: 1 , },
+        'bureaucrat': { u: 'BÃ¼rokrat', m: 'BÃ¼rokrat', f: 'BÃ¼rokratin', order: 1 , },
         'sysop': { u: 'Administrator', m: 'Administrator', f: 'Administratorin', order: 2 ,},
         'vstf': { u: 'VSTF',},
         'bot': { u: 'Bot-Konto',},
         'semiaktiv': { u: 'Sporadisch aktiv',},
         'bannedfromchat': { u: 'Aus dem Chat verbannt',},
-        'founder': { u: 'Gründer', order: 1 ,},
+        'founder': { u: 'GrÃ¼nder', order: 1 ,},
         'threadmoderator': { 
             u: 'Moderator',
             m: 'Moderator',
@@ -72,7 +72,7 @@ UserTagsJS.modules.metafilter = {
 //UserTagsJS.modules.custom = {
 //};
  
-window.ajaxPages = ['Spezial:Letzte_Änderungen','Spezial:WikiActivity'];
+window.ajaxPages = ['Spezial:Letzte_Ã„nderungen','Spezial:WikiActivity'];
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';
  
@@ -92,7 +92,7 @@ $(function() {
     select = presets.select || 'Vorlage:StdsummariesCode1';
  
     $textarea.attr('tabindex', '3'); //Zusammenfassungen
-    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Änderungen
+    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Ã„nderungen
     $('#wpSave').attr('tabindex', '5'); //Seite speichern
  
     var $summary = $('#wpSummaryEnhanced');

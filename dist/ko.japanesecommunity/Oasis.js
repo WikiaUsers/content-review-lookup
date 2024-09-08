@@ -33,17 +33,17 @@ s.parentNode.insertBefore( ga, s );
 /* Non-namespace logos */
 //===================================================
 // faux-namespace fixes
-// (including hack for browsers with NO CSS3 support [IE6, etc])
-// - Bizzeebeever, 2011 (if this breaks shit, you know who to ban)
+//Â (including hack for browsers with NO CSS3 support [IE6, etc])
+//Â - Bizzeebeever, 2011 (if this breaks shit, you know who to ban)
 //===================================================
 //add faux namespaces to {namespaces} as follows:
-// "namespaceName" : { tabText : "Tab text goes here", className : "Logo CSS class name" }
-//  //tabText: [optional] default is namespaceName
-//  //className [optional] will be given prefix "ns-". default is "ns-[namespaceName]"
+//Â "namespaceName" : { tabText : "Tab text goes here", className : "Logo CSS class name" }
+//Â Â //tabText: [optional] default is namespaceName
+//Â Â //className [optional] will be given prefix "ns-". default is "ns-[namespaceName]"
 //make sure if you are adding more than one to use a comma after each line except the last.
 //<body> element for specified namespaces will be given the "ns-[className]" class.
 //create your new stylesheet selector + rule in MediaWiki:Common.css accordingly
-// i.e. "body.ns-why #p-logo > a { background-image:url( someimage.png ) };")
+//Â i.e. "body.ns-why #p-logo > a { background-image:url( someimage.png ) };")
 
 YAHOO.util.Event.onContentReady( 'p-logo', function() {
 var namespaces = {
@@ -82,9 +82,9 @@ document.getElementById( 'ca-nstab-main' ).firstChild.innerHTML = namespaces.$ta
 /** Reskin parser ***********************************************************
 * Instructions:
 * 1) Add the page title and namespace exactly ("Name_space:Page_name") as new skin, use
-* UNDERSCORES *NOT* SPACES: ("Main_Page": "", should be first line). The next parameter
-* is optionally an existing "MediaWiki:Skin/"-prefixed file (in which case you can skip
-* step 2).
+*Â UNDERSCORES *NOT* SPACES: ("Main_Page": "", should be first line). The next parameter
+*Â is optionally an existing "MediaWiki:Skin/"-prefixed file (in which case you can skip
+*Â step 2).
 * 2) Create MediaWiki:Skin/Name_Space:Page_Name.css and place reskin CSS content there.
 */
 reskin = {
@@ -247,7 +247,7 @@ document.getElementById( 'p-logo' ).innerHTML= '<a style="background-image: url(
 YAHOO.util.Event.onContentReady('p-logo', logotipo);
 
 // - addOnloadHook only fires after all content on the page has loaded, including images. Which is not very useful if you're trying to hide an image.
-//   It's especially bad if there's a large image(s) in the article. This YUI function will fire it as soon as the logo div is loaded. Which is better.
+//Â Â  It's especially bad if there's a large image(s) in the article. This YUI function will fire it as soon as the logo div is loaded. Which is better.
 
 /** Dismiss notice remover
 * (only removes if you have made a custom sitenotice designed to use its own close button)
@@ -337,7 +337,7 @@ var NavigationBarShowDefault = 1;
 
 // shows and hides content and picture (if available) of navigation bars
 // Parameters:
-// indexNavigationBar: the index of navigation bar to be toggled
+//Â indexNavigationBar: the index of navigation bar to be toggled
 function toggleNavigationBar( indexNavigationBar ) {
 var NavToggle = document.getElementById( 'NavToggle' + indexNavigationBar );
 var NavFrame = document.getElementById( 'NavFrame' + indexNavigationBar );

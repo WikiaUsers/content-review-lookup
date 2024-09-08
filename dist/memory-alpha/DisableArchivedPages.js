@@ -1,5 +1,5 @@
 $(function(){
-  if ($(':is(.ns-talk, .ns-4, .ns-110) #ma-page-archived').length !== 1){
+  if ($(':is(.ns-talk, .ns-4, .ns-110) #archivedPage').length !== 1){
     return;
   }
 

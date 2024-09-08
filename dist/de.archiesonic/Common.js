@@ -1,8 +1,8 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 SpoilerAlert = {
    'class': "Spoiler",
-    question: 'Diese Seite enthält Spoiler. Möchten Sie sie trotzdem ansehen?',
+    question: 'Diese Seite enthÃ¤lt Spoiler. MÃ¶chten Sie sie trotzdem ansehen?',
     yes: 'Na klar!',
     no: 'Nein, noch nicht.'
 };

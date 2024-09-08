@@ -870,12 +870,12 @@ mw.loader.using( [
 window.UserTagsJS = {
 		modules: {},
 		tags: {
-			/*sysop: { u: 'Professeur', link:'Catégorie:Administrateur du Wiki Harry Potter' },*/
-			/*bureaucrat: { u: 'AdminTest', link:'Catégorie:Test' },*/
-			bureaucrate: { u: 'test', link:'Catégorie:Test' },
-			sysop: { u: 'Admin', link:'Catégorie:Administrateur du Wiki Harry Potter' },
-			rollback: { m: 'Préfet', f: 'Préfète', u: 'Préfet' },
-			prefetenchef: { m: 'Préfet-en-chef', f: 'Préfète-en-chef', u: 'Préfet-en-chef', order:1 }
+			/*sysop: { u: 'Professeur', link:'CatÃ©gorie:Administrateur du Wiki Harry Potter' },*/
+			/*bureaucrat: { u: 'AdminTest', link:'CatÃ©gorie:Test' },*/
+			bureaucrate: { u: 'test', link:'CatÃ©gorie:Test' },
+			sysop: { u: 'Admin', link:'CatÃ©gorie:Administrateur du Wiki Harry Potter' },
+			rollback: { m: 'PrÃ©fet', f: 'PrÃ©fÃ¨te', u: 'PrÃ©fet' },
+			prefetenchef: { m: 'PrÃ©fet-en-chef', f: 'PrÃ©fÃ¨te-en-chef', u: 'PrÃ©fet-en-chef', order:1 }
 	},
 };
 UserTagsJS.modules.autoconfirmed = true;

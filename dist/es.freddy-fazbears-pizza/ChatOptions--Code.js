@@ -1,9 +1,9 @@
 /* <syntaxhighlight lang="javascript"> */
 /**
  * ChatOptions
- * Una modificación al script original
- * Nota de Carlos: Esta es una versión de chat options, en la que solo se incluye la personalización
- * del chat, más no los chat hacks y esas weas
+ * Una modificaciÃ³n al script original
+ * Nota de Carlos: Esta es una versiÃ³n de chat options, en la que solo se incluye la personalizaciÃ³n
+ * del chat, mÃ¡s no los chat hacks y esas weas
  * tomado de la version 1.3.1
  * @author Callofduty4
  * @author Madnessfan34537

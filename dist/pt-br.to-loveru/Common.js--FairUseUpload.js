@@ -6,7 +6,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'MultipleUpload') {
 		"use strict";
 		var $desc = $('#wpUploadDescription');
 		if ($desc.val()) return; // If not empty then don't do anything (i.e. error message confirm page)
-		$desc.val('{{Informações da Imagem\n' + '|Descrição   = \n' + '|Fonte   = \n' + '|Propósito   = \n' + '|Porção   = \n' + '|Substituível?   = \n' + '|Resolução   = \n' + '|Outra informação   = \n' + '}}');
+		$desc.val('{{InformaÃ§Ãµes da Imagem\n' + '|DescriÃ§Ã£o   = \n' + '|Fonte   = \n' + '|PropÃ³sito   = \n' + '|PorÃ§Ã£o   = \n' + '|SubstituÃ­vel?   = \n' + '|ResoluÃ§Ã£o   = \n' + '|Outra informaÃ§Ã£o   = \n' + '}}');
 	});
 }
 
@@ -25,18 +25,18 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 			$('tr.mw-htmlform-field-HTMLTextAreaField').hide();
 			$('tr.mw-htmlform-field-HTMLTextAreaField').next().detach();
 
-			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Fonte:</td><td class="mw-input"><textarea id="sourceBox" placeholder="De onde esta imagem é, o capítulo exato ou número do episódio." required="true" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Fonte:</td><td class="mw-input"><textarea id="sourceBox" placeholder="De onde esta imagem Ã©, o capÃ­tulo exato ou nÃºmero do episÃ³dio." required="true" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			$('#mw-htmlform-description').append('<tbody class="hidable-content"></tbody>');
 			var tbody1 = $('#mw-htmlform-description').children('tbody').eq(0);
-			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Descrição:</td><td class="mw-input"><textarea id="descriptionBox" placeholder="Descreva o que está acontecendo e por que é importante." required="true" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody1.append('<tr><td class="mw-label" style="width: 125px;">DescriÃ§Ã£o:</td><td class="mw-input"><textarea id="descriptionBox" placeholder="Descreva o que estÃ¡ acontecendo e por que Ã© importante." required="true" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 
 			// Add new optional rows
 			var tbody2 = $('#mw-htmlform-description').children('tbody').eq(1);
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Propósito:</td><td class="mw-input"><textarea id="purposeBox" placeholder="[OPCIONAL] Propósito desta imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Portion Used:</td><td class="mw-input"><textarea id="portionBox" placeholder="[OPCIONAL] Porção usada." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Substituível?:</td><td class="mw-input"><textarea id="replaceBox" placeholder="[OPCIONAL] Esta imagem é substituível?" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Resolução:</td><td class="mw-input"><textarea id="resolutionBox" placeholder="[OPCIONAL] Resolução da imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Outra informação:</td><td class="mw-input"><textarea id="otherinfoBox" placeholder="[OPCIONAL] Qualquer outra informação sobre a imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">PropÃ³sito:</td><td class="mw-input"><textarea id="purposeBox" placeholder="[OPCIONAL] PropÃ³sito desta imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Portion Used:</td><td class="mw-input"><textarea id="portionBox" placeholder="[OPCIONAL] PorÃ§Ã£o usada." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">SubstituÃ­vel?:</td><td class="mw-input"><textarea id="replaceBox" placeholder="[OPCIONAL] Esta imagem Ã© substituÃ­vel?" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">ResoluÃ§Ã£o:</td><td class="mw-input"><textarea id="resolutionBox" placeholder="[OPCIONAL] ResoluÃ§Ã£o da imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Outra informaÃ§Ã£o:</td><td class="mw-input"><textarea id="otherinfoBox" placeholder="[OPCIONAL] Qualquer outra informaÃ§Ã£o sobre a imagem." cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 		}
 
 
@@ -56,14 +56,14 @@ if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
 			}
 
 			var strBuilder = template + '\r\n';
-			strBuilder += '{{Informações da Imagem\r\n';
-			strBuilder += '|Descrição=' + $('#descriptionBox').val() + '\r\n';
+			strBuilder += '{{InformaÃ§Ãµes da Imagem\r\n';
+			strBuilder += '|DescriÃ§Ã£o=' + $('#descriptionBox').val() + '\r\n';
 			strBuilder += '|Fonte=' + $('#sourceBox').val() + '\r\n';
-			strBuilder += '|Propósito=' + $('#purposeBox').val() + '\r\n';
-			strBuilder += '|Porção=' + $('#portionBox').val() + '\r\n';
-			strBuilder += '|Substituível?=' + $('#replaceBox').val() + '\r\n';
-			strBuilder += '|Resolução=' + $('#resolutionBox').val() + '\r\n';
-			strBuilder += '|Outra informação=' + $('#otherinfoBox').val() + '\r\n';
+			strBuilder += '|PropÃ³sito=' + $('#purposeBox').val() + '\r\n';
+			strBuilder += '|PorÃ§Ã£o=' + $('#portionBox').val() + '\r\n';
+			strBuilder += '|SubstituÃ­vel?=' + $('#replaceBox').val() + '\r\n';
+			strBuilder += '|ResoluÃ§Ã£o=' + $('#resolutionBox').val() + '\r\n';
+			strBuilder += '|Outra informaÃ§Ã£o=' + $('#otherinfoBox').val() + '\r\n';
 			strBuilder += '}}';
 			$('#wpUploadDescription').val(strBuilder);
 			return true;

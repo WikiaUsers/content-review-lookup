@@ -3,7 +3,7 @@
 /*eslint-env browser*/
 /*global $*/
  /******************************************/
- /* Switch theme clair/sombre avec mémoire */
+ /* Switch theme clair/sombre avec mÃ©moire */
  /******************************************/
 if (typeof (localStorage) === 'undefined') {
  document.getElementById("result").innerHTML = 'Your browser does not support HTML5 localStorage. Try upgrading.';
@@ -37,7 +37,7 @@ $(document).ready(function () {
   }
  });
   /********************************/
- /*  Ancien switch sans mémoire  */
+ /*  Ancien switch sans mÃ©moire  */
  /********************************/
  $('.switcher').click(function () {
   $('.Infobox-Deco').toggleClass('boxshad2 Darkbk Darktx');
@@ -199,9 +199,9 @@ $(document).ready(function () {
  window.AddRailModule = [{prepend: true}];
  window.YoutubePlayerDisableAutoplay = true;
  window.SpoilerAlertJS = {
-  question: 'Je suis un fier rempart de Globtopia dont la mission est de te protéger des spoilers de cette zone. Veux-tu ouvrir la porte et les affronter courageusement? ',
+  question: 'Je suis un fier rempart de Globtopia dont la mission est de te protÃ©ger des spoilers de cette zone. Veux-tu ouvrir la porte et les affronter courageusement? ',
   yes: 'Oui. Je veux les voir.',
-  no: 'Non.. je ne suis pas prêt.',
+  no: 'Non.. je ne suis pas prÃªt.',
   fadeDelay: 1000
  };
  window.MassCategorizationGroups = ['sysop', 'content-moderator'];

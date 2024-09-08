@@ -1,4 +1,4 @@
-/* Artikelimport für Countdowns + Zugehörigkeitsboxen */
+/* Artikelimport fÃ¼r Countdowns + ZugehÃ¶rigkeitsboxen */
 importArticles({
     type: 'script',
     articles: [
@@ -10,7 +10,7 @@ importArticles({
 });
 
 /* Auto-refreshing recent changes */
-ajaxPages = ["Spezial:WikiActivity","Spezial:Letzte_Änderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:Beiträge"];
+ajaxPages = ["Spezial:WikiActivity","Spezial:Letzte_Ã„nderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:BeitrÃ¤ge"];
 AjaxRCRefreshText = 'Aktualisierung';
 AjaxRCRefreshHoverText = 'Aktualisiert die Seite automatisch';
 importScriptPage('AjaxRC/code.js', 'dev');

@@ -60,7 +60,7 @@ if (document.getElementById('homepagepolls')) {
         "poodles",
         "benson detwyler",
         "sam u.l.",
-        "juan jorge josé",
+        "juan jorge josÃ©",
         "the littlest pet shop pets",
         "dance like you know you can",
         "bff's",

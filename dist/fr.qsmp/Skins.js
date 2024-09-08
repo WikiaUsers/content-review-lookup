@@ -1,4 +1,4 @@
-/* Basé sur le Wiki HeroSkins CoC  */
+/* BasÃ© sur le Wiki HeroSkins CoC  */
 $(document).ready(function() {
     $('.skin-container:not([data-mode])').attr('data-mode', 'preview').find('.models > div:first-child').addClass('active');
 

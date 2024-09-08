@@ -1,7 +1,7 @@
-/* Tout JavaScript sera chargé à chaque page accédée par n'importe quel utilisateur */
+/* Tout JavaScript sera chargÃ© Ã  chaque page accÃ©dÃ©e par n'importe quel utilisateur */
 //<source lang="javascript">
 
-/* Importer plus de script si nécessaire */
+/* Importer plus de script si nÃ©cessaire */
 
 if (wgAction == "edit" || wgAction == "submit" || wgPageName == "Special:Upload") //scripts specific to editing pages
 {

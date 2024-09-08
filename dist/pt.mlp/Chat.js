@@ -1,6 +1,6 @@
 importScriptPage('ChatTags/code.js', 'dev');
 
-/* Som de notificação */
+/* Som de notificaÃ§Ã£o */
 $(function(){ 
 $("#chatData").focus();
 //Appending HTML5 Audio Tag in HTML Body

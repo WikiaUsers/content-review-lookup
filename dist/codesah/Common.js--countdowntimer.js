@@ -35,7 +35,7 @@
         delta = diff % 24;
         parts.unshift(delta + ' ' + (delta === 1 ? 'hora'   : 'horas'  ));
         diff = Math.floor(diff / 24);
-        parts.unshift(diff  + ' ' + (diff  === 1 ? 'día'    : 'días'   ));
+        parts.unshift(diff  + ' ' + (diff  === 1 ? 'dÃ­a'    : 'dÃ­as'   ));
         result = parts.pop();
         if (countdowns[i].opts & NO_LEADING_ZEROS) {
             while (parts.length && parts[0][0] === '0') {
@@ -122,7 +122,7 @@
             var $this = $(this),
                 date = (new Date($this.text())).valueOf();
             if (isNaN(date)) {
-                $this.text('FECHA ERRÓNEA');
+                $this.text('FECHA ERRÃ“NEA');
                 return;
             }
             countdowns.push({

@@ -3,7 +3,7 @@
  *
  * lists all admins on the wiki
  * documentation at: http://dev.wikia.com/wiki/ListAdmins
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  * Modified by User:Mythrun
  * List Bureaucrats: <div class="bureaucrat-list"></div>

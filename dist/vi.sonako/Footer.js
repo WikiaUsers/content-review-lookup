@@ -4,7 +4,7 @@ if ({history:1,view:1}[mediaWiki.config.get('wgAction')]
 (function (window, $) {
    "use strict";
    var footerHr = '<hr style="clear: both; border-bottom:1px solid #C3B599; margin-top:20px">',
-       footerSearch = '<table align="center"><tr><td><div style="width:330px"><form method="get" action="http://sonako.wikia.com/wiki/Special:Search" class="WikiaSearch" id="WikiaSearch2"><input name="search" autocomplete="off" placeholder="Tìm trên Sonako Wiki" type="text"><input type="hidden" name="fulltext" value="0"><input type="submit"><button class="wikia-button" style="height:27px"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite search" height="17" width="21"></button></form></div></td></tr></table>';
+       footerSearch = '<table align="center"><tr><td><div style="width:330px"><form method="get" action="http://sonako.wikia.com/wiki/Special:Search" class="WikiaSearch" id="WikiaSearch2"><input name="search" autocomplete="off" placeholder="TÃ¬m trÃªn Sonako Wiki" type="text"><input type="hidden" name="fulltext" value="0"><input type="submit"><button class="wikia-button" style="height:27px"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" class="sprite search" height="17" width="21"></button></form></div></td></tr></table>';
  
     $.get('http://sonako.wikia.com/wiki/MediaWiki:Bottom_nav?action=render')
     .done(function (data) {

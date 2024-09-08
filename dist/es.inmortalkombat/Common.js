@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /* Codigo para tablas y div desplegables */ var ShowHideConfig = { linkBefore:true }; importScriptPage('ShowHide/code.js', 'dev');
 
@@ -15,7 +15,7 @@
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
-     "speedTip": "RedirecciÛn",
+     "speedTip": "Redirecci√≥n",
      "tagOpen": "#REDIRECT [[",
      "tagClose": "]]",
      "sampleText": "Insert text"};
@@ -29,7 +29,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/13/Button_enter.png",
-     "speedTip": "Salto de lÌnea",
+     "speedTip": "Salto de l√≠nea",
      "tagOpen": "<br />",
      "tagClose": "",
      "sampleText": ""};
@@ -50,7 +50,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/5/58/Button_small.png",
-     "speedTip": "Letra pequeÒa",
+     "speedTip": "Letra peque√±a",
      "tagOpen": "<small>",
      "tagClose": "</small>",
      "sampleText": "Small Text"};
@@ -64,7 +64,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/1/12/Button_gallery.png",
-     "speedTip": "Insertar una imagen como galerÌa",
+     "speedTip": "Insertar una imagen como galer√≠a",
      "tagOpen": "\n<gallery>\n",
      "tagClose": "\n</gallery>",
      "sampleText": "Image:Example.jpg|Caption1\nImage:Example.jpg|Caption2"};
@@ -139,7 +139,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
 
   // a setInterval() is more efficient, but calling setTimeout()

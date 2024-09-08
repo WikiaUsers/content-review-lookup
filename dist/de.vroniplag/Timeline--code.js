@@ -293,7 +293,7 @@ function draw_cases(svg) {
     var curday = new Date(firstday * 24 * 60 * 60 * 1000);
     curday.setDate(1); // Set day to 1.
     curday.setMonth(curday.getMonth() +  1);
-    var month_name = [ "Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" ];
+    var month_name = [ "Jan", "Feb", "MÃ¤r", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" ];
     var first = true;
     while (date_to_daynr(curday) <= lastday)
     {
@@ -323,17 +323,17 @@ function draw_cases(svg) {
  
     var g_c_up = svg.group(g_caption, { transform: "translate(" + String(5 * y_per_case + 0.5) + ", 0.5)" });
     draw_uni_sym(svg, g_c_up, true, col_legende);
-    svg.text(g_caption, 7.5 * y_per_case, text_baseline, "Doktorgrad aberkannt durch Universität",
+    svg.text(g_caption, 7.5 * y_per_case, text_baseline, "Doktorgrad aberkannt durch UniversitÃ¤t",
 	     { fill: col_legende, 'font-size': line_font_size, 'font-family': 'sans-serif' });
  
     var g_c_cp = svg.group(g_caption, { transform: "translate(" + String(5 * y_per_case + 0.5) + ", " + String(y_per_case + 0.5) + ")" });
     draw_court_sym(svg, g_c_cp, true, col_legende);
-    svg.text(g_caption, 7.5 * y_per_case, y_per_case + text_baseline, "Bestätigung der Entscheidung durch ein Gericht",
+    svg.text(g_caption, 7.5 * y_per_case, y_per_case + text_baseline, "BestÃ¤tigung der Entscheidung durch ein Gericht",
 	     { fill: col_legende, 'font-size': line_font_size, 'font-family': 'sans-serif' });
  
     var g_c_un = svg.group(g_caption, { transform: "translate(" + String(5 * y_per_case + 0.5) + ", " + String(2 * y_per_case + 0.5) + ")" });
     draw_uni_sym(svg, g_c_un, false, col_legende);
-    svg.text(g_caption, 7.5 * y_per_case, 2 * y_per_case + text_baseline, "Keine Prüfung oder nicht aberkannt",
+    svg.text(g_caption, 7.5 * y_per_case, 2 * y_per_case + text_baseline, "Keine PrÃ¼fung oder nicht aberkannt",
 	     { fill: col_legende, 'font-size': line_font_size, 'font-family': 'sans-serif' });
 
     var today = new Date();

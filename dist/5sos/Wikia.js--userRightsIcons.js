@@ -7,7 +7,7 @@ function addMastheadTags() {
  
   // BEGIN List of Accounts Given Extra User Rights Icons - Must list all tags
  
-    rights["Cörey"] = ["Bureaucrat","Administrator"];
+    rights["CÃ¶rey"] = ["Bureaucrat","Administrator"];
     rights["MusicBot"] = ["Music Network Bot"];
     
  

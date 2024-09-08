@@ -27,7 +27,7 @@ $(document).ready(function() {
       if (chat.attributes.text.indexOf("has joined") != -1) {
          var joiningUser = chat.attributes.text.substr(0, chat.attributes.text.indexOf(" ha entrado al chat"));
  
-         joinMessages = new Array(""+joiningUser+" entró a Grilby's");
+         joinMessages = new Array(""+joiningUser+" entrÃ³ a Grilby's");
  
          $("#entry-"+chat.cid).text(joinMessages[Math.floor((Math.random()*joinMessages.length))]);
       }

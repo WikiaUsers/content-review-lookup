@@ -196,7 +196,7 @@ addOnloadHook(checktimers);
 //  - end -  Experimental javascript countdown timer
 // **************************************************
 
-//Pop-ups de Referência
+//Pop-ups de ReferÃªncia
 
 importArticles({
     type: 'script',

@@ -60,7 +60,7 @@ function toKMB(n) {
 }
 
 $('body').append('\n<div id="GEchartpopup" style="display:none;"><div id="closepopup"><a href="javascript:popupChart(false)">Cerrar popup [X]</a></div><div id="itemstats"></div>'+
-'<form action="javascript:addItem(\'popup\')" id="chartPropertiespopup"><label>Promedio: <input type="number" min="1" id="averagepopup"> dÌas</label><div class="moreitems">Agregar m·s objeto(s): <input type="text" id="extraItempopup">&nbsp;<b>Nota:</b> Si agregas m·s objetos, los promedios no se mostrar·n.</div><button>Cargar</button><button type="reset">Reiniciar<span class="resetallfields"> todos los campos</span></button></form><a class="GEPermLink" id="GEPermLinkpopup" title="Enlace permanente a las configuraciones y objetos del gr·fico actual. Haz click derecho para copiar la URL." href="javascript:void(0)">Enlace permanente</a><div id="addedItemspopup"></div>'+
+'<form action="javascript:addItem(\'popup\')" id="chartPropertiespopup"><label>Promedio: <input type="number" min="1" id="averagepopup"> d√≠as</label><div class="moreitems">Agregar m√°s objeto(s): <input type="text" id="extraItempopup">&nbsp;<b>Nota:</b> Si agregas m√°s objetos, los promedios no se mostrar√°n.</div><button>Cargar</button><button type="reset">Reiniciar<span class="resetallfields"> todos los campos</span></button></form><a class="GEPermLink" id="GEPermLinkpopup" title="Enlace permanente a las configuraciones y objetos del gr√°fico actual. Haz click derecho para copiar la URL." href="javascript:void(0)">Enlace permanente</a><div id="addedItemspopup"></div>'+
 '<div id="GEpopupchart"></div></div>');
 
 //chart-related general functions
@@ -101,7 +101,7 @@ function addItem(i,it) {
 	var item = it||$('#extraItem'+_GEC.chartid).val();
 	if (item&&item.length) {
 		if ($('#addedItems'+i+' [data-item], #GEdataprices'+i+'[data-item]').map(function() { return $(this).attr('data-item').toLowerCase(); }).get().indexOf(item.toLowerCase())!=-1 || _GEC.AIQueue.indexOf(item.toLowerCase())!=-1) {
-			if (!it) alert(item+' ya est· en el gr·fico.')
+			if (!it) alert(item+' ya est√° en el gr√°fico.')
 			$('#extraItem'+chartid).val('');
 			return false;
 		}
@@ -189,7 +189,7 @@ function loadChartsQueueComplete(c) {
 		if (!data[i]) continue;
 		var iname = data[i].name;
 		if (!($('#addedItems'+c).html()||'').replace(/\s+/,'').length) {
-			$('#addedItems'+c).html('Remover objetos de la gr·fica: <a href="javascript:removeGraphItem(\''+iname+'\',\''+c+'\')" data-item="'+iname+'">'+iname+'</a>');
+			$('#addedItems'+c).html('Remover objetos de la gr√°fica: <a href="javascript:removeGraphItem(\''+iname+'\',\''+c+'\')" data-item="'+iname+'">'+iname+'</a>');
 			itemhash = '#i='+iname;
 		} else {
 			$('#addedItems'+c).append(', <a href="javascript:removeGraphItem(\''+iname+'\',\''+c+'\')" data-item="'+iname+'">'+iname+'</a>');
@@ -198,7 +198,7 @@ function loadChartsQueueComplete(c) {
 	}
 	if (location.hash.match(/#i=/)) itemhash = location.hash.replace(/#i=[^#]*/,itemhash).replace(/ /g,'_');
 	else itemhash = location.hash + itemhash;
-	if ((wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr·fico') && itemhash.replace('#i=','').length) location.hash = itemhash
+	if ((wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr√°fico') && itemhash.replace('#i=','').length) location.hash = itemhash
 	_GEC.AIQueue = [];
 	_GEC.AILoaded = [];
 	_GEC.AIData = [];
@@ -212,7 +212,7 @@ function setChartRange(c) {
 	var zoom = parseInt((location.hash.match(/#z=([^#]*)/)||[])[1])
 	zoom = zoom&&zoom<=6&&zoom>=0?zoom-1:(zoom==0?0:2);
 	var hash = location.hash;
-	var hasT = wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr·fico';
+	var hasT = wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr√°fico';
 	if (typeof c == 'number' && (hasT && !hash.match('#t=') || !hasT)) {
 		$('#GEdatachart'+c+' .zoomButton').eq(zoom).click();
 		return true;
@@ -221,7 +221,7 @@ function setChartRange(c) {
 	var dates = [new Date(timespan[0]), new Date(timespan[1])];
 	var d = new Date(timespan[0]);
 	var extremes = _GEC['chart'+c].xAxis[0].getExtremes();
-	if (dates[0] != 'Fecha inv·lida' && dates[1] == 'Fecha inv·lida' && typeof(zoom) == 'number') {
+	if (dates[0] != 'Fecha inv√°lida' && dates[1] == 'Fecha inv√°lida' && typeof(zoom) == 'number') {
 		var button = _GEC['chart'+c].rangeSelector.buttonOptions[zoom];
 		if (button.type == 'month') {
 			d.setMonth(d.getMonth() + button.count);
@@ -232,7 +232,7 @@ function setChartRange(c) {
 		}
 		dates[1] = d;
 	}
-	if (dates[0] != 'Fecha inv·lida' && dates[1] != 'Fecha inv·lida') {
+	if (dates[0] != 'Fecha inv√°lida' && dates[1] != 'Fecha inv√°lida') {
 		_GEC['chart'+c].xAxis[0].setExtremes(dates[0].getTime(), dates[1].getTime());
 		return true;
 	}
@@ -365,14 +365,14 @@ function addPopupPriceInfo(c) {
 		return n>0?'green':(n==0?'blue':'red');
 	}
 	var itemStats = '<table class="wikitable">'+
-	'<caption onclick="$(this).next(\'tbody\').toggle();$(this).children().toggle()"><span style="display:none;white-space:nowrap">InformaciÛn del precio</span><span>Cerrar</span></caption><tbody>'+
+	'<caption onclick="$(this).next(\'tbody\').toggle();$(this).children().toggle()"><span style="display:none;white-space:nowrap">Informaci√≥n del precio</span><span>Cerrar</span></caption><tbody>'+
 	'<tr><th>Precio</th><td>'+toKMB(curprice)+'</td></tr>';
 	for (var i=0;i<priceDiffs.length;i++) {
-		itemStats += '<tr><th>'+dayDiffs[i]+' dÌas</th><td style="color:'+rg(priceDiffs[i])+'">'+(priceDiffs[i]>0?'+':'')+toKMB(priceDiffs[i])+' ('+percentDiffs[i]+'%)</td></tr>';
+		itemStats += '<tr><th>'+dayDiffs[i]+' d√≠as</th><td style="color:'+rg(priceDiffs[i])+'">'+(priceDiffs[i]>0?'+':'')+toKMB(priceDiffs[i])+' ('+percentDiffs[i]+'%)</td></tr>';
 	}
 	itemStats += $('#GEdataprices'+c).attr('data-value').length?'<tr><th><a href="/wiki/Valor" target="_blank" title="Value">Valor</a></th><td>'+toKMB($('#GEdataprices'+c).attr('data-value'))+'</td></tr>':'';
-	itemStats += $('#GEdataprices'+c).attr('data-limit').length?'<tr><th><a href="/wiki/Gran_Mercado" target="_blank" title="LÌmite de compra en el Gran Mercado">LÌmite de compra</a></th><td>'+toKMB($('#GEdataprices'+c).attr('data-limit'))+'</td></tr>':'';
-	itemStats += '<tr><th colspan="2"><a href="/wiki/Exchange:'+encodeURI($('#GEdataprices'+c).attr('data-item'))+'" target="_blank" title="'+$('#GEdataprices'+c).attr('data-item')+'">M·s informaciÛn del precio</a></th></tr>';
+	itemStats += $('#GEdataprices'+c).attr('data-limit').length?'<tr><th><a href="/wiki/Gran_Mercado" target="_blank" title="L√≠mite de compra en el Gran Mercado">L√≠mite de compra</a></th><td>'+toKMB($('#GEdataprices'+c).attr('data-limit'))+'</td></tr>':'';
+	itemStats += '<tr><th colspan="2"><a href="/wiki/Exchange:'+encodeURI($('#GEdataprices'+c).attr('data-item'))+'" target="_blank" title="'+$('#GEdataprices'+c).attr('data-item')+'">M√°s informaci√≥n del precio</a></th></tr>';
 	itemStats += '</tbody></table>';
 	$('#itemstats').html(itemStats);
 }
@@ -433,7 +433,7 @@ function getData(c,isSmall,avginput) {
 	if (volumes.length >= 10&&!isSmall) {
 		yAxis = [{
 			title: {
-				text: isIndexChart?'Historial del Ìndice':'Historial de precios',
+				text: isIndexChart?'Historial del √≠ndice':'Historial de precios',
 				offset: 60,
 				style: {
 					color: 'black',
@@ -475,7 +475,7 @@ function getData(c,isSmall,avginput) {
 	} else {
 		yAxis = {
 			title: {
-				text: isSmall?null:(isIndexChart?'Historial del Ìndice':'Historial de precios'),
+				text: isSmall?null:(isIndexChart?'Historial del √≠ndice':'Historial de precios'),
 				offset: 60,
 				style: {
 					color: 'black',
@@ -498,7 +498,7 @@ function getData(c,isSmall,avginput) {
 
 Highcharts.setOptions({
 	lang: {
-		resetZoom: '<span style="font-size:11px;">reiniciar tamaÒo</span>',
+		resetZoom: '<span style="font-size:11px;">reiniciar tama√±o</span>',
 		numericSymbols: ['m', 'M', 'B', 'T', 'Cuad', 'Quint'],
 	}
 });    
@@ -516,7 +516,7 @@ var isInfobox = $('#GEdataprices'+c).is('.infobox *, .infobar *');
 //setting up the form and chart elements
 
 if (!isSmall) {
-	$('#GEdatachart'+c).before('<form action="javascript:addItem('+c+')" id="chartProperties'+c+'"><label>Promedio: <input type="number" min="1" id="average'+c+'" value="'+_GEC.average+'"> dÌas</label>'+(isIndexChart?'':'<br/>Agregar m·s objeto(s): <input type="text" id="extraItem'+c+'">&nbsp;<b>Nota:</b> Si agregas m·s objetos, los promedios no se mostrar·n.')+'<br/><button>Cargar</button><input type="reset" value="Reiniciar'+(isIndexChart?'':' todos los campos')+'"/></form>'+(wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr·fico' ? '<a class="GEPermLink" id="GEPermLink'+c+'" title="Enlace permanente a las configuraciones y objetos del gr·fico actual. Haz click derecho para copiar la URL." href="javascript:void(0)">Enlace permanente</a>':'')+'<div id="addedItems'+c+'"></div>');
+	$('#GEdatachart'+c).before('<form action="javascript:addItem('+c+')" id="chartProperties'+c+'"><label>Promedio: <input type="number" min="1" id="average'+c+'" value="'+_GEC.average+'"> d√≠as</label>'+(isIndexChart?'':'<br/>Agregar m√°s objeto(s): <input type="text" id="extraItem'+c+'">&nbsp;<b>Nota:</b> Si agregas m√°s objetos, los promedios no se mostrar√°n.')+'<br/><button>Cargar</button><input type="reset" value="Reiniciar'+(isIndexChart?'':' todos los campos')+'"/></form>'+(wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr√°fico' ? '<a class="GEPermLink" id="GEPermLink'+c+'" title="Enlace permanente a las configuraciones y objetos del gr√°fico actual. Haz click derecho para copiar la URL." href="javascript:void(0)">Enlace permanente</a>':'')+'<div id="addedItems'+c+'"></div>');
 }
 
 /*GENERATING THE CHART - INITIAL LOAD*/
@@ -532,7 +532,7 @@ if (itemName.toLowerCase()=='blank') {
 	var zoom = parseInt((location.hash.match(/#z=([^#]*)/)||[])[1])
 	zoom = zoom&&zoom<=6&&zoom>=0?zoom-1:(zoom==0?0:2);
 }
-var enlarge = '<a href="javascript:popupChart('+c+');" style="text-decoration:underline;">Aumentar gr·fico</a>';
+var enlarge = '<a href="javascript:popupChart('+c+');" style="text-decoration:underline;">Aumentar gr√°fico</a>';
 
 //generating the chart
 _GEC['chart'+c] = new Highcharts.StockChart({
@@ -564,7 +564,7 @@ _GEC['chart'+c] = new Highcharts.StockChart({
 		},
 	},
 	subtitle: {
-		text: isSmall?(isInfobox?null:enlarge):(itemName.toLowerCase()=='blank'?'Gr·fico histÛrico':itemName),
+		text: isSmall?(isInfobox?null:enlarge):(itemName.toLowerCase()=='blank'?'Gr√°fico hist√≥rico':itemName),
 		y: 35,
 		style: {
 			color: '#666',
@@ -675,7 +675,7 @@ if (items.length==noAdd.length&&_GEC['chart'+c].series[0].name.toLowerCase()!='b
 setChartExtremes(c)
 
 //loading the chart and additional price info when the page is ready
-if ((wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr·fico') && location.hash.match('#i=')) {
+if ((wgNamespaceNumber == 116 && wgTitle.split('/')[1] == 'Data'||wgPageName == 'CoDeSaH Wiki:Grand_Exchange_Market_Watch/Gr√°fico') && location.hash.match('#i=')) {
 	var hash = location.hash;
 	var items = unescape((hash.match(/#i=([^#]*)/)||[])[1]||'').replace(/_/g,' ').split(',')
 	for (var i=0;i<items.length;i++) {

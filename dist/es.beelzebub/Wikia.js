@@ -1,7 +1,7 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
+/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
 window.SkinNotification = {
 	article: 'Beelzebub_Encyclopedia_Wiki',
 	key: 'NfSkin',
@@ -38,7 +38,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver Beelzebub con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
  
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que aparece en el navegador. Es recomendable que sÛlo uses esta herramienta en los artÌculos de cartas.');
+		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que aparece en el navegador. Es recomendable que s√≥lo uses esta herramienta en los art√≠culos de cartas.');
 	});
 }
  

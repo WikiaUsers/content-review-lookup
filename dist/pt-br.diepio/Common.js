@@ -35,16 +35,16 @@ window.UserTagsJS = {
     tags: {
         //Global Fandom Groups
         'authenticated': {
-            link:  'Ajuda:Direitos de usu·rios#Authenticated',
-            title: 'Ajuda:Direitos de usu·rios'
+            link:  'Ajuda:Direitos de usu√°rios#Authenticated',
+            title: 'Ajuda:Direitos de usu√°rios'
         },
         'bot-global': {
             link:  'Ajuda:Bots',
             title: 'Help:Bots'
         },
         'content-team-member': {
-            link:  'w:c:comunidade:Blog de usu·rio:Matheus Leonardo/Apresentando as equipes de Gerentes de Wiki e de Conte˙do do Fandom!',
-            title: 'Apresentando as equipes de Gerentes de Wiki e de Conte˙do do Fandom!'
+            link:  'w:c:comunidade:Blog de usu√°rio:Matheus Leonardo/Apresentando as equipes de Gerentes de Wiki e de Conte√∫do do Fandom!',
+            title: 'Apresentando as equipes de Gerentes de Wiki e de Conte√∫do do Fandom!'
         },
         'content-volunteer': {
             link:  'w:c:community:Thread:1401657'
@@ -54,12 +54,12 @@ window.UserTagsJS = {
             title: 'Ajuda:Community Council'
         },
         'global-discussions-moderator': {
-            link:  'Ajuda:Moderadores globais de Discussıes',
-            title: 'Ajuda:Moderadores globais de Discussıes'
+            link:  'Ajuda:Moderadores globais de Discuss√µes',
+            title: 'Ajuda:Moderadores globais de Discuss√µes'
         },
         'helper': {
-            link:  'Ajuda:Volunt·rios e Helpers#Helpers',
-            title: 'Ajuda:Volunt·rios e Helpers'
+            link:  'Ajuda:Volunt√°rios e Helpers#Helpers',
+            title: 'Ajuda:Volunt√°rios e Helpers'
         },
         'staff': {
             link:  'Ajuda:Equipe da Comunidade',
@@ -70,16 +70,16 @@ window.UserTagsJS = {
             title: 'Ajuda:Vanguarda'
         },
         'voldev': {
-            link:  'Ajuda:Direitos_de_usu·rios#Volunteer_Developers.2C_os_Programadores_Volunt.C3.A1rios',
-            title: 'Ajuda:Direitos de usu·rios'
+            link:  'Ajuda:Direitos_de_usu√°rios#Volunteer_Developers.2C_os_Programadores_Volunt.C3.A1rios',
+            title: 'Ajuda:Direitos de usu√°rios'
         },
         'vstf': {
             link:  'Ajuda:VSTF',
             title: 'Ajuda:VSTF'
         },
         'wiki-manager': {
-            link:  'w:c:comunidade:Blog de usu·rio:Matheus Leonardo/Apresentando as equipes de Gerentes de Wiki e de Conte˙do do Fandom!',
-            title: 'Apresentando as equipes de Gerentes de Wiki e de Conte˙do do Fandom!'
+            link:  'w:c:comunidade:Blog de usu√°rio:Matheus Leonardo/Apresentando as equipes de Gerentes de Wiki e de Conte√∫do do Fandom!',
+            title: 'Apresentando as equipes de Gerentes de Wiki e de Conte√∫do do Fandom!'
         },
 
         //Local Groups
@@ -114,8 +114,8 @@ window.UserTagsJS = {
             order: 600
         },
         'content-moderator': {
-            link:  'Ajuda:Direitos_de_usu·rios#Moderadores_de_Conte.C3.BAdo',
-            title: 'Ajuda:Direitos de usu·rios',
+            link:  'Ajuda:Direitos_de_usu√°rios#Moderadores_de_Conte.C3.BAdo',
+            title: 'Ajuda:Direitos de usu√°rios',
             order: 700
         },
         'founder': {
@@ -124,8 +124,8 @@ window.UserTagsJS = {
             order: 101
         },
         'rollback': {
-            link:  'Ajuda:Direitos de usu·rios#Rollbacks',
-            title: 'Ajuda:Direitos de usu·rios',
+            link:  'Ajuda:Direitos de usu√°rios#Rollbacks',
+            title: 'Ajuda:Direitos de usu√°rios',
             order: 1000
         },
         'sysop': {
@@ -134,8 +134,8 @@ window.UserTagsJS = {
             order: 400
         },
         'threadmoderator': {
-            link:  'Ajuda:Direitos_de_usu·rios#Moderadores_de_Discuss.C3.B5es',
-            title: 'Ajuda:Direitos de usu·rios',
+            link:  'Ajuda:Direitos_de_usu√°rios#Moderadores_de_Discuss.C3.B5es',
+            title: 'Ajuda:Direitos de usu√°rios',
             order: 800
         }
     }

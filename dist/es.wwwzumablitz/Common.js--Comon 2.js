@@ -1,15 +1,15 @@
 /* 
  * Thickbox4MediaWiki v1.8 - Based on Thickbox 3.1 By Cody Lindley (http://www.codylindley.com)
- * Copyright (c) 2010 Jes˙s MartÌnez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
+ * Copyright (c) 2010 Jes√∫s Mart√≠nez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
 var Thickbox = {
 	version: '1.8',
-	// Dimensiones mÌnimas
+	// Dimensiones m√≠nimas
 	minWidth: 210,
 	// Margen entre la imagen y el borde de ThickBox
 	imageMarginWidth: 15,
-	// Margen mÌnimo hasta el borde de la ventana. Si se supera la imagen se reducir·
+	// Margen m√≠nimo hasta el borde de la ventana. Si se supera la imagen se reducir√°
 	minMarginWidth: 30,
 	minMarginHeight: 15,
 	// Internos
@@ -24,7 +24,7 @@ var Thickbox = {
 	imgTipTarget: null,
 	imgTipVisible: false,
 	init: function() {
-		// Se podrÌa haber puesto un evento directamente en cada 'a.image', pero esto es mucho m·s r·pido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
+		// Se podr√≠a haber puesto un evento directamente en cada 'a.image', pero esto es mucho m√°s r√°pido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
 		$('#bodyContent').bind('click.thickbox', Thickbox.triggerEvent).bind('mouseover.thickbox_imgtip', Thickbox.imgTipEvent);
 	},
 	triggerEvent: function(e) {
@@ -40,7 +40,7 @@ var Thickbox = {
 				Thickbox.showImage(a);
 				return false;
 			}
-			// GalerÌa Wikia 2
+			// Galer√≠a Wikia 2
 			if (Thickbox.isClass(a,'lightbox')) {
 				target.blur();
 				Thickbox.getCaption = Thickbox.getCaptionWikia;
@@ -68,7 +68,7 @@ var Thickbox = {
 					return false;
 				}
 			}
-			// Es thumb genÈrico
+			// Es thumb gen√©rico
 			a.blur();
 			Thickbox.getCaption = Thickbox.getCaptionEmpty;
 			Thickbox.showImage(a);

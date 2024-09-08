@@ -5,7 +5,7 @@ importScript('MediaWiki:Wikia.js/userRightsIcons.js');
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');
  
-// No ocultar TOC por defecto para anónimos
+// No ocultar TOC por defecto para anÃ³nimos
 window.TOCimprovementsEnabled = undefined; 
 
 // 8. Plegado y desplegado

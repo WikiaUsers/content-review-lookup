@@ -40,7 +40,7 @@ console.log("[HypixelItemDataFetcher] Script Loading..");
 				} else {
 					newItemsMap[key].date = oldItemsMap[key].date;
 				}
-				var name = newItemsMap[key].name.toUpperCase().replaceAll(/ /g, "_").replaceAll(/ง\w/g, "");
+				var name = newItemsMap[key].name.toUpperCase().replaceAll(/ /g, "_").replaceAll(/ยง\w/g, "");
 				if (!luaAliases[name]) {
 					newAliases++;
 					luaAliases[name] = key;

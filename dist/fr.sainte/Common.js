@@ -1,7 +1,7 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		// FORMAT= groupe: { tag associé }
+		// FORMAT= groupe: { tag associÃ© }
 		holper: { u:'Titulaire' },
 		playerframework: { u:'Joueur Cadre', f:'Joueuse Cadre' }
 	}
@@ -9,12 +9,12 @@ window.UserTagsJS = {
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { u:'Président' },
-		sysop: { u:'Entraîneur' },
+		bureaucrat: { u:'PrÃ©sident' },
+		sysop: { u:'EntraÃ®neur' },
 		rollback: { u:'Capitaine' },
 		'content-moderator': { u:'Patrouilleur' },
-		threadmoderator: { u:'Modérateur' },
-		inactive: { u: 'En prêt' }
+		threadmoderator: { u:'ModÃ©rateur' },
+		inactive: { u: 'En prÃªt' }
 	}
 };
 UserTagsJS.modules.inactive = 28; // 28 jours
@@ -22,8 +22,8 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 importScriptPage('SpoilerAlert/code.js', 'dev');
 SpoilerAlert = {
-    question: 'Cette page contient des spoilers (informations dévoilant l\'intrigue d\'un joueur). Êtes-vous sûr(e) de vouloir la lire ?',
-    yes: 'Oui, Bien sûr',
+    question: 'Cette page contient des spoilers (informations dÃ©voilant l\'intrigue d\'un joueur). ÃŠtes-vous sÃ»r(e) de vouloir la lire ?',
+    yes: 'Oui, Bien sÃ»r',
     no: 'Non',
     isSpoiler: function () {
         return -1 !== wgCategories.indexOf('Spoiler');

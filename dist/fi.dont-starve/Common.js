@@ -1,4 +1,4 @@
-/* T‰m‰n sivun JavaScript-koodi liitet‰‰n jokaiseen sivulataukseen */
+/* T√§m√§n sivun JavaScript-koodi liitet√§√§n jokaiseen sivulataukseen */
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 // Core configuration. We add 2 custom tags and change what the built-in sysop tag says.
@@ -7,21 +7,21 @@ window.UserTagsJS = {
 	tags: {
 		hello: { m: 'Mies', f:'Nainen', u: 'Ei Sukupuolta', order: -1/0, link:'http://en.wikipedia.org/wiki/Gender' },
 		muckraker: 'Tonkija',
-		sysop: { u:'Yll‰pit‰j‰', link:'Project:Yll‰pit‰j‰t' }, // Change "Administrator" to "Yll‰pit‰j‰"
-		'mini-sysop': { u: 'Puoliksi Yll‰pit‰j‰', link:'Project:PuoliYll‰pit‰j‰t' },
+		sysop: { u:'Yll√§pit√§j√§', link:'Project:Yll√§pit√§j√§t' }, // Change "Administrator" to "Yll√§pit√§j√§"
+		'mini-sysop': { u: 'Puoliksi Yll√§pit√§j√§', link:'Project:PuoliYll√§pit√§j√§t' },
 		topchef: 'Top Chef',
 		sika: 'Sika',
 		sikakuningas: 'Sikakuningas',
-		ter‰v‰: 'Ter‰v‰n‰',
-		'vandal-patrol': { u: 'Kurinpit‰j‰', link:'Project:Janitors' }
+		ter√§v√§: 'Ter√§v√§n√§',
+		'vandal-patrol': { u: 'Kurinpit√§j√§', link:'Project:Janitors' }
 	}
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
-	'T95450': ['hello', 'ter‰v‰'],
+	'T95450': ['hello', 'ter√§v√§'],
 	'Lowwise': ['hello'],
 	'T.Stonecape': ['hello'],
-	'Juhoran': ['hello', 'ter‰v‰'],
+	'Juhoran': ['hello', 'ter√§v√§'],
 	'You': ['inactive'], // Force inactive group instead of relying on the inactive module
 	'Other User': ['hello', 'muckraker']
 };

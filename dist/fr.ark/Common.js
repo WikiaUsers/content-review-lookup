@@ -1,63 +1,63 @@
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+/* Tout JavaScript prÃ©sent ici sera exÃ©cutÃ© par tous les utilisateurs Ã  chaque chargement de page. */
 
 window.ARKCodeI18n = {
 	text: 'Texte',
 	visualisation: 'Visualisation',
-	decodeText: 'Texte décodé',
-	decode: 'Décoder'
+	decodeText: 'Texte dÃ©codÃ©',
+	decode: 'DÃ©coder'
 };
 
 window.CookingCalcI18n = {
 	drink: 'Boisson',
 	food: 'Nourriture',
-	health: 'Santé',
-	ingredient: 'Ingrédients',
-	number: 'Quantité',
+	health: 'SantÃ©',
+	ingredient: 'IngrÃ©dients',
+	number: 'QuantitÃ©',
 	results: 'Results',
-	speed: 'Compétence de fabrication',
-	stamina: 'Énergie',
+	speed: 'CompÃ©tence de fabrication',
+	stamina: 'Ã‰nergie',
 	values: 'Valeurs',
 	water: 'Eau',
 	weight: 'Poids'
 };
 
 window.CookingStatsI18n = [
-	'Poussière d\'élément',
+	'PoussiÃ¨re d\'Ã©lÃ©ment',
 	'Amar/Azul/Tintoberry/Extrait de cactus',
 	'Mejoberry',
 	'Narcoberry',
 	'Stimberry',
-	'Légumes',
+	'LÃ©gumes',
 	'Champignon terreux',
 	'Champignon aquatique',
 	'Champignon ascorbique',
-	'Champignon doré',
+	'Champignon dorÃ©',
 	'Champignon rare',
 	'Graine',
 	'Fleur rare',
 	'Miel',
-	'Délicieux gâteau aux légumes',
+	'DÃ©licieux gÃ¢teau aux lÃ©gumes',
 	'Oeuf',
 	'Croquette',
 	'Savon',
 	'Nodule corrompu',
-	'Polymère organique',
+	'PolymÃ¨re organique',
 	'Viande/Poisson cru',
-	'Mouton/Viande/Poisson supérieur',
-	'Viande/Poisson cuits, viande séchée',
-	'Viande/Poisson cuits/Viande séchée supérieure, Mouton cuit',
-	'Viande avariée',
-	'Excrément humain',
-	'Petit excrément',
-	'Excrément moyen',
-	'Excrément Gros/Immense',
-	'Pelote de réjection'
+	'Mouton/Viande/Poisson supÃ©rieur',
+	'Viande/Poisson cuits, viande sÃ©chÃ©e',
+	'Viande/Poisson cuits/Viande sÃ©chÃ©e supÃ©rieure, Mouton cuit',
+	'Viande avariÃ©e',
+	'ExcrÃ©ment humain',
+	'Petit excrÃ©ment',
+	'ExcrÃ©ment moyen',
+	'ExcrÃ©ment Gros/Immense',
+	'Pelote de rÃ©jection'
 ];
 
 window.CopyClipboardI18n = {
 	title: 'Copier vers le presse-papier',
-	success: 'Copié avec succès vers le presse-papier.',
-	error: 'Échec de la copie vers le presse-papier. Copiez vous-même.'
+	success: 'CopiÃ© avec succÃ¨s vers le presse-papier.',
+	error: 'Ã‰chec de la copie vers le presse-papier. Copiez vous-mÃªme.'
 };
 
 window.ResourceMapsI18n = {
@@ -66,20 +66,20 @@ window.ResourceMapsI18n = {
 };
 
 window.SpawnMapsI18n = {
-	creatureSpawns: 'Apparition des créatures',
-	selectCreature: 'Sélectionnez une créature', // WIP T66: Select a creature or container
-	optionGroupCreatures: 'Créatures',
+	creatureSpawns: 'Apparition des crÃ©atures',
+	selectCreature: 'SÃ©lectionnez une crÃ©ature', // WIP T66: Select a creature or container
+	optionGroupCreatures: 'CrÃ©atures',
 	optionGroupContainers: 'Contenants de groupes',
-	dataLoadErrorAnon: 'Échec du chargement des données; esssayez de rafraîchir la page',
-	dataLoadErrorSigned: 'Échec du chargement des données de la page - vérifez si elles existent et s\'il existe un JSON valide',
-	toggleDetails: ' détails complets des contenants de groupes',
-	deselectGroups: 'désélectionnez tous les contenants',
+	dataLoadErrorAnon: 'Ã‰chec du chargement des donnÃ©es; esssayez de rafraÃ®chir la page',
+	dataLoadErrorSigned: 'Ã‰chec du chargement des donnÃ©es de la page - vÃ©rifez si elles existent et s\'il existe un JSON valide',
+	toggleDetails: ' dÃ©tails complets des contenants de groupes',
+	deselectGroups: 'dÃ©sÃ©lectionnez tous les contenants',
 	tooltipFrom: 'depuis',
 	tooltipTo: 'vers',
 	tooltipLat: 'lat',
 	tooltipLong: 'lon',
 	tooltipUntameable: 'non apprivoisable',
-	tooltipUntameableLocal: 'les créatures de ce lieu ne sont pas apprivoisables',
+	tooltipUntameableLocal: 'les crÃ©atures de ce lieu ne sont pas apprivoisables',
 };
 
 importArticle({

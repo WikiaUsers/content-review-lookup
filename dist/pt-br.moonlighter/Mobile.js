@@ -1,4 +1,4 @@
-/* Qualquer JavaScript aqui ser· carregado para usu·rios que usam o site mÛvel */
+/* Qualquer JavaScript aqui ser√° carregado para usu√°rios que usam o site m√≥vel */
 /************************************
 /* Main Page Mobile Collapse Script *
 /************************************/

@@ -1,5 +1,5 @@
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
+/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
 window.SkinNotification = {
 	article: 'Digimon Fanon Wiki:Portal de la comunidad',
 	key: 'NfSkin',
@@ -18,7 +18,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>°Bienvenido a Digimon Fanon Wiki! <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Informate de nosotros aquÌ</a>.</div>');
+		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>¬°Bienvenido a Digimon Fanon Wiki! <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Informate de nosotros aqu√≠</a>.</div>');
 		nf.children().eq(0).append(sn);
 		sn.children().eq(0).click(SkinNotification.dismiss);
 	},
@@ -36,7 +36,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver Wiki Digimon Fanon con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
 	
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que aparece en el navegador.');
+		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que aparece en el navegador.');
 	});
 }
 

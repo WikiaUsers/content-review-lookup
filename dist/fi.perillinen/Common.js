@@ -72,7 +72,7 @@ function infoboxToggle() {
 
 	if( document.getElementById('infoboxtoggle').innerHTML == '[Piilota]' ) {
 		document.getElementById('infoboxinternal').style.display = 'none';
-		document.getElementById('infoboxtoggle').innerHTML = '[N‰yt‰]';
+		document.getElementById('infoboxtoggle').innerHTML = '[N√§yt√§]';
 		nowShown = false;
 	} else {
 		document.getElementById('infoboxinternal').style.display = 'block';
@@ -134,7 +134,7 @@ function fillPreloads() {
 	span = document.getElementById('lf-preload-pagename');
 	span.innerHTML = '<input type="text" class="textbox" />';
 	span = document.getElementById('lf-preload-button');
-	span.innerHTML = '<input type="button" class="button" value="Lis‰‰" onclick="doCustomPreload()" />';
+	span.innerHTML = '<input type="button" class="button" value="Lis√§√§" onclick="doCustomPreload()" />';
 
 	requestComboFill( 'stdPreloads', 'Malline:Stdpreloads' );
 }
@@ -318,7 +318,7 @@ function toggleHidable( bypassStorage ) {
 		} else {
 			content.oldDisplayStyle = content.style.display;
 			content.style.display = 'none';
-			this.firstChild.nodeValue = '[N‰yt‰]';
+			this.firstChild.nodeValue = '[N√§yt√§]';
 			nowShown = false;
 		}
 
@@ -392,7 +392,7 @@ if( wgCanonicalSpecialPageName == 'Upload' ) {
 
 function addInformationToUploadForm() {
 	var box = document.getElementById( 'wpUploadDescription' );
-	box.value = '{{Tiedot\n|huomio=\n|kuvaus=\n|l‰hde=\n|tekij‰=\n|lisenssi=\n|muut versiot=\n}}';
+	box.value = '{{Tiedot\n|huomio=\n|kuvaus=\n|l√§hde=\n|tekij√§=\n|lisenssi=\n|muut versiot=\n}}';
 }
 
 /** Archive edit tab disabling *************************************
@@ -475,7 +475,7 @@ function updatetimer( i ) {
 	}
 	diff = Math.floor( diff / 24 );
 	if( diff > 0 ) {
-		left = diff + ' p‰iv‰‰ ' + left;
+		left = diff + ' p√§iv√§√§ ' + left;
 	}
 	timers[i].firstChild.nodeValue = tpm + left;
 

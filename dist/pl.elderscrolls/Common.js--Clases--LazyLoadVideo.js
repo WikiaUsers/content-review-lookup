@@ -1,6 +1,6 @@
 /*
-* LazyLoadVideo - Muestra un botón para activar (mostrar) el reproductor de vídeos, para que no se carguen desde el inicio
-* Copyright (C) 2012  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* LazyLoadVideo - Muestra un botÃ³n para activar (mostrar) el reproductor de vÃ­deos, para que no se carguen desde el inicio
+* Copyright (C) 2012  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -9,7 +9,7 @@
 */
 (function() {
 
-var _title = (window.lazyloadvideotitle || 'Clic para activar el vídeo'),
+var _title = (window.lazyloadvideotitle || 'Clic para activar el vÃ­deo'),
 _thumbUrl = 'http://i1.ytimg.com/vi/{0}/hqdefault.jpg';
 _init = function() {
 	var ytContents = $('#'+window.bodyContentId).find('div.video').children('div.thumbinner').children('div.youtube');
@@ -17,7 +17,7 @@ _init = function() {
 		ytContents.children('object').each(_muestraThumb);
 	}
 },
-// Agrega una imagen del vídeo en la posición del vídeo
+// Agrega una imagen del vÃ­deo en la posiciÃ³n del vÃ­deo
 _muestraThumb = function() {
 	var oVideo = $(this), dataUrl = oVideo.attr('data'), vid = null, idx = dataUrl.indexOf('&'), w, h;
 	if (idx != -1) {
@@ -27,7 +27,7 @@ _muestraThumb = function() {
 			vid = dataUrl.substr(idx + 1);
 		}
 	}
-	// Se comprueba que esté oculto, para sincronizar con CSS
+	// Se comprueba que estÃ© oculto, para sincronizar con CSS
 	if (vid !== null && oVideo.css('display') == 'none') {
 		w = oVideo.attr('width'), h = oVideo.attr('height');
 		oVideo.parent().append(

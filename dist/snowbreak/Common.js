@@ -2,3 +2,12 @@
 
 // PreloadTemplates configuration options
 preloadTemplates_namespace = 4;
+
+// LinkPreview configuration
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.apid = true;
+window.pPreview.scale = false;
+window.pPreview.RegExp.iclasses = ['pPreview-ignore','mw-redirect', 'lightbox'];
+window.pPreview.RegExp.iparents = ['.mw-editform'];
+window.pPreview.RegExp.onlyinclude = ['pPreview-onlyinclude'];
+window.pPreview.RegExp.noinclude = ['.caption'];

@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 mw.loader.using(['jquery.ui.tabs']).then(function() {
     $("[class^=portal_vtab]").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
     $("[class^=portal_vtab] li").removeClass("ui-corner-top").addClass("ui-corner-left");

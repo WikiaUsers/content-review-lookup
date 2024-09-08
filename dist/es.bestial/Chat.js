@@ -60,7 +60,7 @@ function clearChatText() {
 }*/
 /* Day/Night Switch Feature 
 function dayNightButton() {
-    var dayText = 'Tema de dÌa';
+    var dayText = 'Tema de d√≠a';
     var nightText = 'Tema de noche';
     var $dayNightButton = $('<div>').addClass('chat-button');
     var $dayNightLink = $('<a>').addClass('wikia-button').text(dayText);
@@ -113,28 +113,28 @@ $(function(){
     window.kockaRules = {
         rules: [
             "No hacer flood.",
-            "   Esto tambiÈn se aplica en las siguientes acciones: Repetir un emoticÛn cuatro veces o poner emoticones en cadena / mensaje m·s de cinco veces, escribir m·s de cinco mensajes / lÌneas seguidos(as), escribir cinco letras / n˙meros / car·cretes m·s de cinco vcees seguidas. TambiÈn se incluye el salir y entrar escesivamente al chat.",
+            "   Esto tambi√©n se aplica en las siguientes acciones: Repetir un emotic√≥n cuatro veces o poner emoticones en cadena / mensaje m√°s de cinco veces, escribir m√°s de cinco mensajes / l√≠neas seguidos(as), escribir cinco letras / n√∫meros / car√°cretes m√°s de cinco vcees seguidas. Tambi√©n se incluye el salir y entrar escesivamente al chat.",
             "Moderar el vocabulario.",
-            "   Significa que no debes insultar a otro usuario, a menos que Èl y t˙ sepan que no lo quieres ofender y el mensaje estÈ enviado de broma. Los insultos utilizados en un paÌs o celebridad no est·n prohibidos.",
-            "       Puedes censurar tus palabras reemplazando las vocales por asterÌscos, lo que no puedes hacer es reemplazar toda la palabra con signos, ya que es considerado como flood.",
-            "No discutir sobre temas que puedan llevar a un desacuerdo y un debate que conclulla en peleas, como la polÌtica y la religiÛn.",
-            "Se prohÌbe decirle a otros usuarios nuevos palabras como 'noob', presumiendo o hacer cualquier tipo de acciÛn que lo haga sentir 'inferior",
+            "   Significa que no debes insultar a otro usuario, a menos que √©l y t√∫ sepan que no lo quieres ofender y el mensaje est√© enviado de broma. Los insultos utilizados en un pa√≠s o celebridad no est√°n prohibidos.",
+            "       Puedes censurar tus palabras reemplazando las vocales por aster√≠scos, lo que no puedes hacer es reemplazar toda la palabra con signos, ya que es considerado como flood.",
+            "No discutir sobre temas que puedan llevar a un desacuerdo y un debate que conclulla en peleas, como la pol√≠tica y la religi√≥n.",
+            "Se proh√≠be decirle a otros usuarios nuevos palabras como 'noob', presumiendo o hacer cualquier tipo de acci√≥n que lo haga sentir 'inferior",
             "Evitar poner apodos ofensivos a otros usuarios.",
-            "Respetar por sobretodas las cosas a la AdministraciÛn.",
+            "Respetar por sobretodas las cosas a la Administraci√≥n.",
             "No publicar spam.",
-            "   A esto se le aplica poner enlaces a p·ginas que te ayuden a beneficiarte econÛmicamente o que no estÈn aprovadas con el permiso previo de un administrador (excepciÛn: links hacia otras wikis o a Wikipedia o cualquier sitio Wikimedia, adem·s de las redes sociales e imagenes).",
-            "Est· prohibido subir cualquier material (ya sea visual (fotos), audiovisual (vÌdeos) o simplemente audio (reproductores MP3 y alg˙n archivo de sonido)) relacionado con el tÛpico sexual o con contenidos ilegales.",
-            "No compartir informaciÛn personal con otros usuarios, en caso de hacerlo, no nos hacemos responsables puesto que se va a tomar como sabido el hecho de no hacer esto.",
-            "Se permite hablar en otro idioma, pero no abuse de este (utilizar m·s de tres lÌneas / mensajes con ese u cualquier otro idioma), ya que los usuarios podrÌan no comprender lo que dice y puede resultar molesto.",
-            "No se permite escribir m·s de tres palabras en may˙scula por mensaje, si quiere expresar su mensaje como si estuviese gritando, ponga los signos de exclamaciÛn (''°'' y ''!'')",
-            "No envÌe links a chats de otras wikis, ya que podrÌamos molestar a el resto de usuarios que estÈn en dicho chat.",
-            "No de advertencias a los otros usuarios, si ve que un usuario rompe una regla, contactar a la administraciÛn. Si el usuario sigue rompiendo las reglas, deja un mensaje en el muro de un moderador o administrador (solo en el caso de que ninguno estÈ presente en el chat) dejando link a su perfil y, si es posible, una foto que muestre que estaba rompiendo las reglas.",
-            "(Para los moderadores del chat y administradores): No abusar de su poder expulsando o baneando a un usuario sin un motivo que sea comprendible y se afirme ser real (con capturas, a pesar de que pueden ser f·cilmente editadas).",
+            "   A esto se le aplica poner enlaces a p√°ginas que te ayuden a beneficiarte econ√≥micamente o que no est√©n aprovadas con el permiso previo de un administrador (excepci√≥n: links hacia otras wikis o a Wikipedia o cualquier sitio Wikimedia, adem√°s de las redes sociales e imagenes).",
+            "Est√° prohibido subir cualquier material (ya sea visual (fotos), audiovisual (v√≠deos) o simplemente audio (reproductores MP3 y alg√∫n archivo de sonido)) relacionado con el t√≥pico sexual o con contenidos ilegales.",
+            "No compartir informaci√≥n personal con otros usuarios, en caso de hacerlo, no nos hacemos responsables puesto que se va a tomar como sabido el hecho de no hacer esto.",
+            "Se permite hablar en otro idioma, pero no abuse de este (utilizar m√°s de tres l√≠neas / mensajes con ese u cualquier otro idioma), ya que los usuarios podr√≠an no comprender lo que dice y puede resultar molesto.",
+            "No se permite escribir m√°s de tres palabras en may√∫scula por mensaje, si quiere expresar su mensaje como si estuviese gritando, ponga los signos de exclamaci√≥n (''¬°'' y ''!'')",
+            "No env√≠e links a chats de otras wikis, ya que podr√≠amos molestar a el resto de usuarios que est√©n en dicho chat.",
+            "No de advertencias a los otros usuarios, si ve que un usuario rompe una regla, contactar a la administraci√≥n. Si el usuario sigue rompiendo las reglas, deja un mensaje en el muro de un moderador o administrador (solo en el caso de que ninguno est√© presente en el chat) dejando link a su perfil y, si es posible, una foto que muestre que estaba rompiendo las reglas.",
+            "(Para los moderadores del chat y administradores): No abusar de su poder expulsando o baneando a un usuario sin un motivo que sea comprendible y se afirme ser real (con capturas, a pesar de que pueden ser f√°cilmente editadas).",
         ]
     };
  
 //===========================================================================///
-//                           FIN DE LA CONFIGURACI”N                            //
+//                           FIN DE LA CONFIGURACI√ìN                            //
 //============================================================================//
 mw.util.addCSS("#kockaRulesModalList{list-style-type:square;margin-left:15px}.kockaRulesButton{float:right}#kockaRulesModalMain{height:400px;overflow-y:auto;}");
 	var kockaRules = window.kockaRules || {};

@@ -1,6 +1,6 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados para a p·gina principal */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados para a p√°gina principal */
 
-// Bot„o toggle on/off para mudar a imagem de preto/branco para colorido //
+// Bot√£o toggle on/off para mudar a imagem de preto/branco para colorido //
 var infoboxElement = document.createElement("div");
 infoboxElement.innerHTML = `
      <div class="wrapper-toggle">
@@ -39,10 +39,10 @@ btnSwitch.addEventListener('click', () => {
     document.querySelector(".pi-panel:has(div.pi-image-collection.wds-tabber[data-source='Fourth Gallery']), .pi-panel:has(.pi-item.pi-image[data-source='Fourth Gallery'])").style.display = "block";
     imageElement2.style.display = 'none';
   } else {
-    document.querySelector(".pi-panel:has(div.pi-image-collection.wds-tabber[data-source='Fourth Gallery']), .pi-panel:has(.pi-item.pi-image[data-source='Fourth Gallery'])").style.display = "none"; // Retorna ‡ original
-    imageElement2.style.display = ''; // Retorna ‡ original
+    document.querySelector(".pi-panel:has(div.pi-image-collection.wds-tabber[data-source='Fourth Gallery']), .pi-panel:has(.pi-item.pi-image[data-source='Fourth Gallery'])").style.display = "none"; // Retorna √† original
+    imageElement2.style.display = ''; // Retorna √† original
   }
 });
 
-// Seleciona todos os elementos que tÍm o atributo kkoi
+// Seleciona todos os elementos que t√™m o atributo kkoi
 document.querySelector(".page-footer").style.backgroundColor = "blue";

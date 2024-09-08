@@ -1,13 +1,13 @@
 /* Auteur : Louky
  * 
- * [[MediaWiki:Wikia.js]] est un dérivé de [[MediaWiki:Common.js]]. Il fait tourner le wiki avec des codes JavaScript.
+ * [[MediaWiki:Wikia.js]] est un dÃ©rivÃ© de [[MediaWiki:Common.js]]. Il fait tourner le wiki avec des codes JavaScript.
  * 
- * Il sera utilisé prochainement.
+ * Il sera utilisÃ© prochainement.
  */
 /*
  * Onglet Info
  *
- * Permet d'aller sur la page d'information de la page visité.
+ * Permet d'aller sur la page d'information de la page visitÃ©.
  *
  */
 

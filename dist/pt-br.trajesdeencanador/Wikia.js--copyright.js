@@ -10,7 +10,7 @@ if ( wgNamespaceNumber != undefined && !window.spCopy ) {
 var spCopy = true;
  
 function addSPCopy () {
- $('<section class="CopyrightNotice module"><h1 style="margin-top:0px; margin-bottom:10px;color: #7CFC00">Direitos autorais do Encanamentos Max</h1><div><p style="text-align:justify;">Salvo disposiÁ„o em contr·rio, o texto nesta wiki est· licenciado sob a Creative Commons Attribution-Share Alike License 3.0 (Unported) (CC-BY-SA).<br style="margin-bottom: 10px;"/> &bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.pt_BR" target="_blank">Leia o sum·rio da licenÁa</a><br />&bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode" target="_blank">Leia o cÛdigo legal completo da licenÁa</a></p></div></section>').insertAfter('.ChatModule');
+ $('<section class="CopyrightNotice module"><h1 style="margin-top:0px; margin-bottom:10px;color: #7CFC00">Direitos autorais do Encanamentos Max</h1><div><p style="text-align:justify;">Salvo disposi√ß√£o em contr√°rio, o texto nesta wiki est√° licenciado sob a Creative Commons Attribution-Share Alike License 3.0 (Unported) (CC-BY-SA).<br style="margin-bottom: 10px;"/> &bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.pt_BR" target="_blank">Leia o sum√°rio da licen√ßa</a><br />&bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode" target="_blank">Leia o c√≥digo legal completo da licen√ßa</a></p></div></section>').insertAfter('.ChatModule');
 }
  
 // </source>

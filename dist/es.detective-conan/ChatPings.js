@@ -1,4 +1,4 @@
-/* Gracias a: Ozuzanna por el c骴igo original y a ElNobDeTfm por su traducci髇, reparaci髇 de algunos errores y permisi髇 de uso */
+/* Gracias a: Ozuzanna por el c贸digo original y a ElNobDeTfm por su traducci贸n, reparaci贸n de algunos errores y permisi贸n de uso */
 ;(function($, mw) {
 var config = JSON.parse(localStorage.getItem('custom-chat-pings-config')) || {},
 object,
@@ -22,7 +22,7 @@ formHTML = '\
 		</p> \
 		<br/> \
 		<p>Para cada campo, separa las entradas con una <b>coma</b>.</p> \
-		<p>Las entradas <b>no</b> son sensibles a may鷖culas y min鷖culas.</p> \
+		<p>Las entradas <b>no</b> son sensibles a may煤sculas y min煤sculas.</p> \
 		<br/> \
 			<h2><span class="mw-headline">Mensajes</span></h2> \
 				<h3><span class="mw-headline">Lista:</span></h3> \
@@ -37,7 +37,7 @@ formHTML = '\
 					<input style="width: 80%" id="text-pings-alerts-list"/> \
 				<h3><span class="mw-headline">Lista negra:</span></h3> \
 					<input style="width: 80%" id="text-pings-alerts-blacklist"/> \
-			<p>Si necesitas ayuda acerca de los pings, puedes visitar  <a href="/wiki/Ayuda:Pings" target="_blank">esta p醙ina</a>.</p> \
+			<p>Si necesitas ayuda acerca de los pings, puedes visitar  <a href="/wiki/Ayuda:Pings" target="_blank">esta p谩gina</a>.</p> \
 	</fieldset> \
 </form>',
 self = {
@@ -87,7 +87,7 @@ self = {
 			});
 		},
 		loadGUI: function() {
-			$.showCustomModal('Sonidos de notificaci髇', formHTML, {
+			$.showCustomModal('Sonidos de notificaci贸n', formHTML, {
 				id: 'form-custom-ping',
 				width: '30%',
 				buttons: [{  
@@ -99,7 +99,7 @@ self = {
                     message: 'Reiniciar',
                     defaultButton: true,
                     handler: function() {
-						$.showCustomModal('縀st醩 seguro?', '緿eseas reiniciar las configuraci髇 de los sonidos de notificaci髇 a sus valores predeterminados?', {
+						$.showCustomModal('驴Est谩s seguro?', '驴Deseas reiniciar las configuraci贸n de los sonidos de notificaci贸n a sus valores predeterminados?', {
 							id: 'form-custom-ping-clear',
 							width: '20%',
 							buttons: [{  

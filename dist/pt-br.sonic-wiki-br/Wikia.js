@@ -345,7 +345,7 @@ function subNavLevel(strNav, strReturnLink) {
 }
  
 // Function to determine appropriate menu color. Adapted from Wikimarks
-// code, http://wikimarks.wikia.com/wiki/Client.js, © Peter Coester, 2012.
+// code, http://wikimarks.wikia.com/wiki/Client.js, Â© Peter Coester, 2012.
 var menuColor;
  
 function getMenuColor() {

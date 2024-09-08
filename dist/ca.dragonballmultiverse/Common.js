@@ -1,5 +1,5 @@
  // **************************************************
-// BOTONS ADDICIONALS en la caixa d'edició
+// BOTONS ADDICIONALS en la caixa d'ediciÃ³
 // **************************************************
  
  if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -13,7 +13,7 @@
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/43/Enlace_a_usuario.png",
-     "speedTip": "Enllaç a usuari",
+     "speedTip": "EnllaÃ§ a usuari",
      "tagOpen": "[[user:",
      "tagClose": "|]]",
      "sampleText": "Usuari"};

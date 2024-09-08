@@ -49,7 +49,7 @@ if (mw.user.options.get('showtoolbar') &&
 					group: 'insert',
 					tools: {
 						autosign: {
-							label: 'Assinar automaticamente o coment·rio anterior',
+							label: 'Assinar automaticamente o coment√°rio anterior',
 							type: 'button',
 							icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/Insert-signature.svg',
 							action: {type: 'replace', options: {pre: insert}}

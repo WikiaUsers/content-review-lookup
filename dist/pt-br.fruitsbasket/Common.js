@@ -1,4 +1,4 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
  
 importArticles({
     type: "script",
@@ -12,9 +12,9 @@ importArticles({
     ]
 });
  
-AjaxRCRefreshText = 'Atualização das mudanças na Wiki Fruits Basket';
-AjaxRCRefreshHoverText = 'Atualiza as mudanças na wiki, sem a necessidade de recarregar toda a página';
-ajaxPages = ["Especial:Mudanças_recentes","Especial:WikiActivity"];
+AjaxRCRefreshText = 'AtualizaÃ§Ã£o das mudanÃ§as na Wiki Fruits Basket';
+AjaxRCRefreshHoverText = 'Atualiza as mudanÃ§as na wiki, sem a necessidade de recarregar toda a pÃ¡gina';
+ajaxPages = ["Especial:MudanÃ§as_recentes","Especial:WikiActivity"];
  
 var SocialMediaButtons = { 
 	position: "top",
@@ -52,7 +52,7 @@ function addMastheadTags() {
   var rights = {};
 rights["ZetaBaka"] = ["Burocrata"],
 rights["WikiaBot"]       = ["Bot Wikia"], 
-rights["Wikia"]          = ["Wikia Bot Usuário"];
+rights["Wikia"]          = ["Wikia Bot UsuÃ¡rio"];
     if (wgCanonicalSpecialPageName == "Contributions") {
       var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");
     } else { var user = wgTitle; }

@@ -1,5 +1,5 @@
-/* Das folgende JavaScript wird f¸r alle Benutzer geladen. */
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Das folgende JavaScript wird f√ºr alle Benutzer geladen. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 // default setting to turn tooltips on
 var tooltipsOn = true;
 

@@ -10,7 +10,7 @@ $(function() {
         container.find('.skin-title').text(skin);
     });
     
-    // Ocultar el bot髇 "Mostrar Todos" al principio
+    // Ocultar el bot贸n "Mostrar Todos" al principio
     var showAllButton = $('#showAllButton').hide(), groupsShown = {};
     
     // Mostrar solo los iconos sin grupo y el primer de cada grupo al principio
@@ -22,7 +22,7 @@ $(function() {
         }
     });
     
-    // Funci髇 para mostrar iconos por grupo o todos
+    // Funci贸n para mostrar iconos por grupo o todos
     function showIcons(group) {
         $('.skin-icon').hide();
         if (!group) {
@@ -42,12 +42,12 @@ $(function() {
         }
     }
     
-    // Funci髇 para manejar clics en iconos de grupo
+    // Funci贸n para manejar clics en iconos de grupo
     $('.skin-icon[data-group]').click(function() {
     	showIcons($(this).attr('data-group')); 
     });
     
-    // Funci髇 para manejar clics en el bot髇 "Mostrar Todos"
+    // Funci贸n para manejar clics en el bot贸n "Mostrar Todos"
     showAllButton.click(function() { 
     	showIcons(null); 
     });

@@ -2,16 +2,16 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		// groupe: { tag associé }
+		// groupe: { tag associÃ© }
 		holder: { u:'titulaire' },
 		playerframework: { u:'Joueur Cadre', f:'Joueuse Cadre' },
 	modules: {},
 	tags: {
-		bureaucrat: { u:'Président' },
-		sysop: { u:'Entraîneur' },
+		bureaucrat: { u:'PrÃ©sident' },
+		sysop: { u:'EntraÃ®neur' },
 		rollback: { u:'Capitaine' },
 		'content-moderator': { u:'Patrouilleur' }
-		threadmoderator: { u:'Modérateur' }
+		threadmoderator: { u:'ModÃ©rateur' }
 	}
 };
 UserTagsJS.modules.inactive = 28; // 28 jours

@@ -1,12 +1,12 @@
 ;(function(mw) {
 	'use strict';
 	const i18n = {
-		pageName: 'Minecraft_Wiki:Lista_de_versão_da_Edição_Java',
+		pageName: 'Minecraft_Wiki:Lista_de_versÃ£o_da_EdiÃ§Ã£o_Java',
 
-		version: 'Versão',
+		version: 'VersÃ£o',
 		type: 'Tipo',
 		time: 'Data',
-		released: 'Lançamento',
+		released: 'LanÃ§amento',
 		url: 'URL',
 		info: 'Info',
 		load: 'Load',
@@ -18,9 +18,9 @@
 		server_mappings: 'Mapeamentos de servidores',
 		
 		loading: 'Loading...',
-		loadingFailed: 'Carregando informações da versão falhou.',
-		loadingError: 'Ocorreu um erro ao carregar informações da versão.',
-		copy: 'Copiar o hash para a área de transferência'
+		loadingFailed: 'Carregando informaÃ§Ãµes da versÃ£o falhou.',
+		loadingError: 'Ocorreu um erro ao carregar informaÃ§Ãµes da versÃ£o.',
+		copy: 'Copiar o hash para a Ã¡rea de transferÃªncia'
 	},
 	config = mw.config.get(['wgPageName', 'wgArticlePath']),
 	versionTable = document.createElement('table');

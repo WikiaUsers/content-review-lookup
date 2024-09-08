@@ -1,6 +1,6 @@
-// Permet de dÈfinir automatiquement l'image des boutons de relique
+// Permet de d√©finir automatiquement l'image des boutons de relique
 $(document).ready(function relicType() {
-  // dÈfinir les liens d'images pour chaque relique :
+  // d√©finir les liens d'images pour chaque relique :
   var intactImg =
     "https://static.wikia.nocookie.net/warframe/images/5/5a/Relique-Upg0.png/revision/latest?cb=20210824011031&path-prefix=fr";
   var exceptionnalImg =
@@ -10,7 +10,7 @@ $(document).ready(function relicType() {
   var radiantImg =
     "https://static.wikia.nocookie.net/warframe/images/0/00/Relique-Upg3.png/revision/latest?cb=20210824011125&path-prefix=fr";
 
-  // dÈfinir les type d'ID de relique
+  // d√©finir les type d'ID de relique
   var relicBtn = ".upg-btns span";
 
   // intact
@@ -41,9 +41,9 @@ $(document).ready(function relicType() {
 
 // exceptionnal func
 $(document).ready(function exceptionnal() {
-    // sur hover de ".upg-btns .upg1", dÈclenche les fonctions d'ajout de classe "exceptionnal" / "flawless" / "radiant",
-    // Classes qui possËdent de la CSS embarquÈe,
-    // Les valeurs des pseudo-elements sont dÈj‡ enregistrÈes (ligne "Relic reward" dans la stylesheet)
+    // sur hover de ".upg-btns .upg1", d√©clenche les fonctions d'ajout de classe "exceptionnal" / "flawless" / "radiant",
+    // Classes qui poss√®dent de la CSS embarqu√©e,
+    // Les valeurs des pseudo-elements sont d√©j√† enregistr√©es (ligne "Relic reward" dans la stylesheet)
     $(".upg-btns .upg1").hover(
         function () {
             $(

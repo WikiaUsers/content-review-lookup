@@ -1,6 +1,6 @@
 /*
 ----------------------------------------
-EDITAR JUSTO A LA DERECHA DE LOS TÕTULOS
+EDITAR JUSTO A LA DERECHA DE LOS T√çTULOS
 ----------------------------------------
 */
 function moveEditsection() {
@@ -41,7 +41,7 @@ addOnloadHook(UserNameReplace);
 
 /*
 -------------------------------------
-REDEFINICION DEL BOT”N "SUBIR IMAGEN"
+REDEFINICION DEL BOT√ìN "SUBIR IMAGEN"
 -------------------------------------
 */
 
@@ -70,7 +70,7 @@ function specialImageUpload(tagOpen, tagClose, sampleText)
 
 /*
 -----------------------
-REDEFINICI”N DE TÕTULOS
+REDEFINICI√ìN DE T√çTULOS
 -----------------------
 */
 
@@ -100,7 +100,7 @@ addOnloadHook(rewriteTitle, false);
 
 
 /* Wikimedia Player 
-AÒade reproductor en la misma p·gina.
+A√±ade reproductor en la misma p√°gina.
 */ 
 
 document.write('<script type="text/javascript" src="' 
@@ -114,7 +114,7 @@ document.write('<script type="text/javascript" src="'
 + 'http://meta.wikimedia.org/w/index.php?title=MediaWiki:Wikiminiatlas.js' 
 + '&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400"></script>');
 
-/* Eliminando discusiÛn de foros e inhabilitando ediciones luego de cierto tiempo */
+/* Eliminando discusi√≥n de foros e inhabilitando ediciones luego de cierto tiempo */
 
 if(wgNamespaceNumber == 110) {
  

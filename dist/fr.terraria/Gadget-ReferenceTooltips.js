@@ -8,14 +8,14 @@ window.pg || $(document).ready( function($) {
     // Make sure we are in article, project, or help namespace
     if ( $.inArray(mw.config.get('wgCanonicalNamespace'), [ "", "Project", "Help", "Draft" ]) !== -1 ) {
 		mw.messages.set( {
-			"RT-enable" : "Autoriser les infobulles de référence",
-			"RT-disable" : "Désactiver les infobulles de référence",
-			"RT-disablenote" : "Une fois désactivées, les infobulles de référence peuvent être réactivées en utilisant un lien en bas de la page.",
-			"RT-delay" : "Délai avant que l'infobulle apparaisse (en millisecondes): ",
-			"RT-activationmethod" : "Les infobulles sont activées en :",
+			"RT-enable" : "Autoriser les infobulles de rÃ©fÃ©rence",
+			"RT-disable" : "DÃ©sactiver les infobulles de rÃ©fÃ©rence",
+			"RT-disablenote" : "Une fois dÃ©sactivÃ©es, les infobulles de rÃ©fÃ©rence peuvent Ãªtre rÃ©activÃ©es en utilisant un lien en bas de la page.",
+			"RT-delay" : "DÃ©lai avant que l'infobulle apparaisse (en millisecondes): ",
+			"RT-activationmethod" : "Les infobulles sont activÃ©es en :",
 			"RT-hovering" : "survolant",
 			"RT-clicking" : "cliquant",
-			"RT-options" : "Options des infobulles de référence",
+			"RT-options" : "Options des infobulles de rÃ©fÃ©rence",
 			"RT-options-save" : "Sauvegarder les options",
 			"RT-settings" :"Options des infobulles"
 		} );

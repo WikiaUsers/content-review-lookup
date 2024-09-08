@@ -344,7 +344,7 @@ window.UserTagsJS = {
                 hakuchild: { u: 'White Child', order: 99 },
                 ssupervise: { u: 'Under Strict Supervision', order: 0 },
                 supervise: { u: 'Under Supervision', order: 0 },
-                revolution: { u: 'Wiki RÈvolutionnaire', order: 0 },
+                revolution: { u: 'Wiki R√©volutionnaire', order: 0 },
 			}
 };
 UserTagsJS.modules.custom = {
@@ -482,8 +482,8 @@ function updatetimer(i) {
       minutes: "minutos",
       hour: "hora",
       hours: "horas",
-      day: "dÌa",
-      days: "dÌas"
+      day: "d√≠a",
+      days: "d√≠as"
     },
     'de': {
       and: "und",
@@ -519,13 +519,13 @@ function updatetimer(i) {
       days: "dni"
     },
     'hu': {
-      and: "Ès",
-      second: "m·sodperc",
-      seconds: "m·sodpercek",
+      and: "√©s",
+      second: "m√°sodperc",
+      seconds: "m√°sodpercek",
       minute: "perc",
       minutes: "percek",
-      hour: "Ûra",
-      hours: "Ûr·k",
+      hour: "√≥ra",
+      hours: "√≥r√°k",
       day: "nap",
       days: "napok"
     }

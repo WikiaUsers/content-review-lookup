@@ -1,6 +1,6 @@
 window.ArchiveBoards = {
-    boards: ["Notizie e annunci", "Novit‡ sulla Wiki", "Off-Topic"],
-    boardNotice: "Il forum Ë stato chiuso. Per favore, usa le discussioni   del sito.",
+    boards: ["Notizie e annunci", "Novit√† sulla Wiki", "Off-Topic"],
+    boardNotice: "Il forum √® stato chiuso. Per favore, usa le discussioni   del sito.",
 };
 
 importArticles({

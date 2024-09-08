@@ -1,4 +1,4 @@
-/* T‰m‰n sivun koodi liitet‰‰n jokaiseen sivulataukseen */
+/* T√§m√§n sivun koodi liitet√§√§n jokaiseen sivulataukseen */
 // ==================================================================
 // Testit ja laskimet
 // ==================================================================
@@ -10,7 +10,7 @@ $(document).ready(function() {
 });
 
   var autoCollapse = 2;
-  var collapseCaption = "pienenn‰";
+  var collapseCaption = "pienenn√§";
   var expandCaption = "suurenna";
  
   function collapseTable( tableIndex )

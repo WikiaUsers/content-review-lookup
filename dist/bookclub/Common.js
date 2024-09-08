@@ -19,7 +19,7 @@ var genericErrorMessage = 'An error occurred. Please try again.'; // What should
 if(wgPageName == 'Books_Hub:Mockingjay_Bracket/1') {
 	var bracketEntries = {
 		'left-2-1': [{
-			'name': 'Astrid Bergès-Frisbey',
+			'name': 'Astrid BergÃ¨s-Frisbey',
 			'image': 'https://images.wikia.nocookie.net/bracketv3/images/1/17/Annie1_Astrid_Berges_Frisbey.jpg'
 		}, {
 			'name': 'Melissa Benoist',

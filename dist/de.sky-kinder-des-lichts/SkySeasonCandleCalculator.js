@@ -94,21 +94,21 @@ Date.prototype.toDateInputValue = (function() {
                 var translation_a_second = "Um segundo"; // Referring to "Double Seasonal Candle Event"
                 var translation_a = "Um"; // Referring to "Double Seasonal Candle Event"
                 var translation_double_sce = "Evento de Velas Sazonais em Dobro";
-                var translation_not_announced = "não foi anunciado";
-                var translation_to_buy_everything_youll_need = "Para comprar todos os cosméticos da Temporada, você precisará de";
+                var translation_not_announced = "nÃ£o foi anunciado";
+                var translation_to_buy_everything_youll_need = "Para comprar todos os cosmÃ©ticos da Temporada, vocÃª precisarÃ¡ de";
                 var translation_sc_wo_pass = "Velas Sazonais SEM o Passe da Temporada";
                 var translation_sc_w_pass = "Velas Sazonais COM o Passe da Temporada";
                 var translation_takes_approximately = "Demora aproximadamente";
-                var translation_standard_days = "dias padrão"; // This means 5 SC per day
-                var translation_note = "Observação: Tenha em mente que você nunca deve se sentir pressionado(a) a comprar o Passe da Temporada.";
+                var translation_standard_days = "dias padrÃ£o"; // This means 5 SC per day
+                var translation_note = "ObservaÃ§Ã£o: Tenha em mente que vocÃª nunca deve se sentir pressionado(a) a comprar o Passe da Temporada.";
                 var translation_choose_date = "Selecionar data";
                 var translation_today = "Hoje";
-                var translation_season_start = "Início da Temporada";
-                var translation_choose_time = "Selecionar horário";
+                var translation_season_start = "InÃ­cio da Temporada";
+                var translation_choose_time = "Selecionar horÃ¡rio";
                 var translation_now = "Agora";
-                var translation_reset = "Redefinição";
-                var translation_your_current_sc = "Número de Velas Sazonais que você tem atualmente";
-                var translation_do_you_have_a_pass = "Você tem o Passe da Temporada?";
+                var translation_reset = "RedefiniÃ§Ã£o";
+                var translation_your_current_sc = "NÃºmero de Velas Sazonais que vocÃª tem atualmente";
+                var translation_do_you_have_a_pass = "VocÃª tem o Passe da Temporada?";
                 var translation_calculate = "Calcular";
                 var translation_clear = "Limpar";
 
@@ -355,8 +355,8 @@ Date.prototype.toDateInputValue = (function() {
             var translation_B1 = "Dia(s) restante(s) de Temporada";
             var translation_C2 = "Sem o Passe da Temporada";
             var translation_C3 = "Com o Passe da Temporada";
-            var translation_A2 = "Total atual de Velas Sazonais coletáveis";
-            var translation_B2 = "Velas Sazonais coletáveis restantes";
+            var translation_A2 = "Total atual de Velas Sazonais coletÃ¡veis";
+            var translation_B2 = "Velas Sazonais coletÃ¡veis restantes";
             
 
             document.getElementById("sscc_general_table").innerHTML = '<div class="article-table-wrapper">' + /*
@@ -520,23 +520,23 @@ Date.prototype.toDateInputValue = (function() {
 
             
             // TRANSLATION SECTION 3
-            var translation_commentary = "Comentário sobre seu status em";
-            var translation_at = "às";
-            var translation_you_have_collected = "Você coletou";
-            var translation_you_missed = "Você perdeu um potencial de";
+            var translation_commentary = "ComentÃ¡rio sobre seu status em";
+            var translation_at = "Ã s";
+            var translation_you_have_collected = "VocÃª coletou";
+            var translation_you_missed = "VocÃª perdeu um potencial de";
             var translation_sc = "Vela(s) Sazonal(is)";
             var translation_w_pass = "com o Passe da Temporada";
             var translation_wo_pass = "sem o Passe da Temporada";
-            var translation_all_the_sc = "<b>todas</b> as Velas Sazonais até o momento";
+            var translation_all_the_sc = "<b>todas</b> as Velas Sazonais atÃ© o momento";
             var translation_and_more = "<b>...E MAIS?</b>";
-            var translation_you_would_need = "Você precisará de";
-            var translation_to_buy_everything = "para comprar todos os cosméticos desta Temporada"
-            var translation_if_you_dont_miss = "Você deve conseguir comprar todos os cosméticos se não perder"
+            var translation_you_would_need = "VocÃª precisarÃ¡ de";
+            var translation_to_buy_everything = "para comprar todos os cosmÃ©ticos desta Temporada"
+            var translation_if_you_dont_miss = "VocÃª deve conseguir comprar todos os cosmÃ©ticos se nÃ£o perder"
             var translation_out_of = "do(s)"
             var translation_days_remaining = "dia(s) restante(s)"
-            var translation_you_can_buy_everything = "Você pode comprar todos os cosméticos desta Temporada!";
-            var translation_you_cannot_buy_everything = "Infelizmente, com o tempo restante, <b>você não conseguirá comprar todos os cosméticos</b>."
-            var translation_conditional = "Infelizmente, com o tempo restante, <b>você não conseguirá comprar todos os cosméticos</b> A MENOS que compre o Passe da Temporada para obter o bônus de 30 Velas Sazonais e 1 Vela Sazonal extra por dia. No entanto, você só poderá comprar os cosméticos não-Supremos e não pode perder";
+            var translation_you_can_buy_everything = "VocÃª pode comprar todos os cosmÃ©ticos desta Temporada!";
+            var translation_you_cannot_buy_everything = "Infelizmente, com o tempo restante, <b>vocÃª nÃ£o conseguirÃ¡ comprar todos os cosmÃ©ticos</b>."
+            var translation_conditional = "Infelizmente, com o tempo restante, <b>vocÃª nÃ£o conseguirÃ¡ comprar todos os cosmÃ©ticos</b> A MENOS que compre o Passe da Temporada para obter o bÃ´nus de 30 Velas Sazonais e 1 Vela Sazonal extra por dia. No entanto, vocÃª sÃ³ poderÃ¡ comprar os cosmÃ©ticos nÃ£o-Supremos e nÃ£o pode perder";
 
 
             // Responses for people with Season Pass

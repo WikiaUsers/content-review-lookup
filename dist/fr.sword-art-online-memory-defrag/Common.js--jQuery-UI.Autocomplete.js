@@ -11,7 +11,7 @@ function RedirectEvent ($container) {
             win.focus();
         } else {
             // Broswer has blocked it
-            alert("Merci d'autoriser ce site à ouvrir des pop-up afin d'obtenir cet fonctionalité.");
+            alert("Merci d'autoriser ce site Ã  ouvrir des pop-up afin d'obtenir cet fonctionalitÃ©.");
         }
     }
 }
@@ -27,10 +27,10 @@ function AutocompleteInit(){
         console.log('jQueryUI-Autocomplete: Units retrieved from sessionStorage');
         AutocompleteReady(Units);
     } else {
-        console.log('jQueryUI-Autocomplete: fetching {{RéférencesUnités}} ...');
+        console.log('jQueryUI-Autocomplete: fetching {{RÃ©fÃ©rencesUnitÃ©s}} ...');
         Units = [];
         UnitsLabels = [];
-        $.getJSON('/api.php?format=json&action=parse&text={{:RéférencesUnités}}', function(data) {
+        $.getJSON('/api.php?format=json&action=parse&text={{:RÃ©fÃ©rencesUnitÃ©s}}', function(data) {
             var code = data.parse.text['*'];
             lines = code.split(' <br />');
             $.each(lines,function(k,v){

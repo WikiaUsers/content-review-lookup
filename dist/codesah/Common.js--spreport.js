@@ -4,7 +4,7 @@
  *
  * See [[CoDeSaH Wiki:Mantenimiento]] for implementation.
  * 
- * by [[runescape:User:Cåm]].
+ * by [[runescape:User:CÃ¥m]].
  * Thanks to [[w:User:Mathmagician]] for tips and help.
  */
 
@@ -44,20 +44,20 @@
             apiQuery();
         }
 
-        // Run on Especial:PáginasEspeciales too
+        // Run on Especial:PÃ¡ginasEspeciales too
         // per request - rs.wikia.com/?diff=8052917
-        if (mw.config.get('wgCanonicalSpecialPageName') === 'PáginasEspeciales') {
+        if (mw.config.get('wgCanonicalSpecialPageName') === 'PÃ¡ginasEspeciales') {
             $('#mw-content-text').before('<div id="spreport">' +
-                '<div><a href="/wiki/Especial:RedireccionesRotas" title ="Especial:RedireccionesRotas" target="_blank">Redirecciones rotas (<span id="BrokenRedirects"></span>)</a> &bull; <a href="/wiki/Especial:RedireccionesDobles" title ="Especial:RedireccionesDobles" target="_blank">Redirecciones dobles (<span id="DoubleRedirects"></span>)</a> &bull; <a href="/wiki/Especial:CategoríasSinUso" title ="Especial:CategoríasSinUso" target="_blank">Categorías sin uso (<span id="Unusedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ImágenesSinUso" title ="ImágenesSinUso" target="_blank">Imágenes sin uso (<span id="Unusedimages"></span>)</div>' +
-                '<div><a href="/wiki/Especial:CategoríasRequeridas" title ="Especial:CategoríasRequeridas" target="_blank">Categorías requeridas (<span id="Wantedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ArchivosRequeridos" title ="Especial:ArchivosRequeridos" target="_blank">Archivos requeridos (<span id="Wantedfiles"></span>)</a> &bull; <a href="/wiki/Especial:PáginasRequeridas" title ="Especial:PáginasRequeridas" target="_blank">Páginas requeridas (<span id="Wantedpages"></span>)</a> &bull; <a href="/wiki/Especial:PlantillasRequeridas" title ="Especial:PlantillasRequeridas" target="_blank">Plantillas requeridas (<span id="Wantedtemplates"></span>)</a></div>' +
+                '<div><a href="/wiki/Especial:RedireccionesRotas" title ="Especial:RedireccionesRotas" target="_blank">Redirecciones rotas (<span id="BrokenRedirects"></span>)</a> &bull; <a href="/wiki/Especial:RedireccionesDobles" title ="Especial:RedireccionesDobles" target="_blank">Redirecciones dobles (<span id="DoubleRedirects"></span>)</a> &bull; <a href="/wiki/Especial:CategorÃ­asSinUso" title ="Especial:CategorÃ­asSinUso" target="_blank">CategorÃ­as sin uso (<span id="Unusedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ImÃ¡genesSinUso" title ="ImÃ¡genesSinUso" target="_blank">ImÃ¡genes sin uso (<span id="Unusedimages"></span>)</div>' +
+                '<div><a href="/wiki/Especial:CategorÃ­asRequeridas" title ="Especial:CategorÃ­asRequeridas" target="_blank">CategorÃ­as requeridas (<span id="Wantedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ArchivosRequeridos" title ="Especial:ArchivosRequeridos" target="_blank">Archivos requeridos (<span id="Wantedfiles"></span>)</a> &bull; <a href="/wiki/Especial:PÃ¡ginasRequeridas" title ="Especial:PÃ¡ginasRequeridas" target="_blank">PÃ¡ginas requeridas (<span id="Wantedpages"></span>)</a> &bull; <a href="/wiki/Especial:PlantillasRequeridas" title ="Especial:PlantillasRequeridas" target="_blank">Plantillas requeridas (<span id="Wantedtemplates"></span>)</a></div>' +
             '</div>');
             apiQuery();
         }
 
         if (mw.config.get('wgCanonicalSpecialPageName') === 'AdminDashboard') {
             $('#mw-content-text').before('<div id="spreport">' +
-                '<div><a href="/wiki/Especial:RedireccionesRotas" title ="Especial:RedireccionesRotas" target="_blank">Redirecciones rotas (<span id="BrokenRedirects"></span>)</a> &bull; <a href="/wiki/Especial:RedireccionesDobles" title ="Especial:RedireccionesDobles" target="_blank">Redirecciones dobles (<span id="DoubleRedirects"></span>)</a> &bull; <a href="/wiki/Especial:CategoríasSinUso" title ="Especial:CategoríasSinUso" target="_blank">Categorías sin uso (<span id="Unusedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ImágenesSinUso" title ="ImágenesSinUso" target="_blank">Imágenes sin uso (<span id="Unusedimages"></span>)</div>' +
-                '<div><a href="/wiki/Especial:CategoríasRequeridas" title ="Especial:CategoríasRequeridas" target="_blank">Categorías requeridas (<span id="Wantedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ArchivosRequeridos" title ="Especial:ArchivosRequeridos" target="_blank">Archivos requeridos (<span id="Wantedfiles"></span>)</a> &bull; <a href="/wiki/Especial:PáginasRequeridas" title ="Especial:PáginasRequeridas" target="_blank">Páginas requeridas (<span id="Wantedpages"></span>)</a> &bull; <a href="/wiki/Especial:PlantillasRequeridas" title ="Especial:PlantillasRequeridas" target="_blank">Plantillas requeridas (<span id="Wantedtemplates"></span>)</a></div>' +
+                '<div><a href="/wiki/Especial:RedireccionesRotas" title ="Especial:RedireccionesRotas" target="_blank">Redirecciones rotas (<span id="BrokenRedirects"></span>)</a> &bull; <a href="/wiki/Especial:RedireccionesDobles" title ="Especial:RedireccionesDobles" target="_blank">Redirecciones dobles (<span id="DoubleRedirects"></span>)</a> &bull; <a href="/wiki/Especial:CategorÃ­asSinUso" title ="Especial:CategorÃ­asSinUso" target="_blank">CategorÃ­as sin uso (<span id="Unusedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ImÃ¡genesSinUso" title ="ImÃ¡genesSinUso" target="_blank">ImÃ¡genes sin uso (<span id="Unusedimages"></span>)</div>' +
+                '<div><a href="/wiki/Especial:CategorÃ­asRequeridas" title ="Especial:CategorÃ­asRequeridas" target="_blank">CategorÃ­as requeridas (<span id="Wantedcategories"></span>)</a> &bull; <a href="/wiki/Especial:ArchivosRequeridos" title ="Especial:ArchivosRequeridos" target="_blank">Archivos requeridos (<span id="Wantedfiles"></span>)</a> &bull; <a href="/wiki/Especial:PÃ¡ginasRequeridas" title ="Especial:PÃ¡ginasRequeridas" target="_blank">PÃ¡ginas requeridas (<span id="Wantedpages"></span>)</a> &bull; <a href="/wiki/Especial:PlantillasRequeridas" title ="Especial:PlantillasRequeridas" target="_blank">Plantillas requeridas (<span id="Wantedtemplates"></span>)</a></div>' +
             '</div>');
             apiQuery();
         }

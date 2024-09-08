@@ -148,5 +148,5 @@ function ToTop() {
 };
 addOnloadHook(ToTop);
 
-// Visibilit‡ IP per gestione
+// Visibilit√† IP per gestione
 window.RevealAnonIP = {permissions:['sysop','bureaucrat']};

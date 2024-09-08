@@ -6,7 +6,7 @@
  * Railgun Wiki:   http://railgunscript.wikia.com/wiki/Railgun_Wiki
  * Contact Author: http://community.wikia.com/wiki/Message_Wall:Mathmagician
  * 
- * @author © Jeff Bradford, 2012
+ * @author Â© Jeff Bradford, 2012
  * @version 1.1.3
  */
 var Railgun = {};

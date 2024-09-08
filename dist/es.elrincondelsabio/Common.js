@@ -1,8 +1,8 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 // ============================================================
-// COMIENZO script de cuenta atrás
-// Código por MegaScience de BioShock Wiki | Traducido por bola
+// COMIENZO script de cuenta atrÃ¡s
+// CÃ³digo por MegaScience de BioShock Wiki | Traducido por bola
 // (Usado en la Plantilla:Countdown)
 // ============================================================
 dateFuture = new Date(2010,6,11,22,30,0);
@@ -17,7 +17,7 @@ function GetCount(){
 			flicker = 0;
 		}
 		else if(flicker == 0){
-			document.getElementById('countbox').innerHTML="¡Ya se ha acabado el mundial!";
+			document.getElementById('countbox').innerHTML="Â¡Ya se ha acabado el mundial!";
 			flicker=1;
 		}
 		
@@ -25,7 +25,7 @@ function GetCount(){
 		
 	}
 	else{
-		days=0;hours=0;mins=0;secs=0;out="<span style=text-align:center; float:center;\">¡Sabremos quién es el ganador del Mundial en ";
+		days=0;hours=0;mins=0;secs=0;out="<span style=text-align:center; float:center;\">Â¡Sabremos quiÃ©n es el ganador del Mundial en ";
 
 		amount = Math.floor(amount/1000);
 
@@ -40,7 +40,7 @@ function GetCount(){
 
 		secs=Math.floor(amount);
 
-		if(days != 0){out += days +" día"+((days!=1)?"s":"")+", ";}
+		if(days != 0){out += days +" dÃ­a"+((days!=1)?"s":"")+", ";}
 		if(days != 0 || hours != 0){out += hours +" hora"+((hours!=1)?"s":"")+",<br/>";}
 		if(days != 0 || hours != 0 || mins != 0){out += mins +" minuto"+((mins!=1)?"s":"")+" y ";}
 		out += secs +" segundos!</span>";
@@ -56,5 +56,5 @@ window.onload=GetCount;
 
 
 // ===========================================================
-// FINAL script de cuenta atrás
+// FINAL script de cuenta atrÃ¡s
 // ===========================================================

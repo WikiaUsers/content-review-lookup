@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -100,7 +100,7 @@ addOnloadHook(checktimers);
 
 
 
-// Skin-Wechsel-Button für Monobook-Design zu Oasis- und Wikiamobile-Design.
+// Skin-Wechsel-Button fÃ¼r Monobook-Design zu Oasis- und Wikiamobile-Design.
 
 $( function () {
   if ( !document.getElementById( 'ca-skins' ) ) {

@@ -1,4 +1,4 @@
-/* Autor:     Karol "[[Usu·rio:Nanaki]]" Dylewski */
+/* Autor:     Karol "[[Usu√°rio:Nanaki]]" Dylewski */
 /* Licenciamento:    CC-BY-SA 3.0 */
  
 ( function( $ ) {

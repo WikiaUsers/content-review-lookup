@@ -715,9 +715,9 @@ helix = {
 				}]
 			]
 		},
-		'El Drag髇': {
-			name: 'El Drag髇',
-			icon: 'https://vignette.wikia.nocookie.net/battleborn/images/5/5e/El_Drag髇_-_Icon.png/revision/latest?cb=20160408095321',
+		'El Drag贸n': {
+			name: 'El Drag贸n',
+			icon: 'https://vignette.wikia.nocookie.net/battleborn/images/5/5e/El_Drag贸n_-_Icon.png/revision/latest?cb=20160408095321',
 			choices: [
 				[{
 					name: 'The Stunner',
@@ -744,16 +744,16 @@ helix = {
 				[{
 					name: 'Deafening Applause',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/6/69/M-RBX_Cybernetic_Arms.png/revision/latest?cb=20160407192724',
-					description: 'El Drag髇\'s Clap attack is accompanied by a powerful shockwave dealing area of effect damage. +100% Attack Range.'
+					description: 'El Drag贸n\'s Clap attack is accompanied by a powerful shockwave dealing area of effect damage. +100% Attack Range.'
 				}, {
 					name: 'Power Fists',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/6/69/M-RBX_Cybernetic_Arms.png/revision/latest?cb=20160407192724',
-					description: 'Replaces El Drag髇\'s primary melee combo finisher with a powerful, single-target punch.'
+					description: 'Replaces El Drag贸n\'s primary melee combo finisher with a powerful, single-target punch.'
 				}],
 				[{
 					name: 'Rope-a-Dope',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/8/8f/Clothesline.png/revision/latest?cb=20160407192722',
-					description: 'While in a Clothesline sprint, hitting a wall or cancelling the dash turns El Drag髇 around, allowing for a second dash.'
+					description: 'While in a Clothesline sprint, hitting a wall or cancelling the dash turns El Drag贸n around, allowing for a second dash.'
 				}, {
 					name: 'Flailing Fists',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/8/8f/Clothesline.png/revision/latest?cb=20160407192722',
@@ -770,12 +770,12 @@ helix = {
 				}, {
 					name: 'Welterweight',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/d/d1/Undisputed_Champ.png/revision/latest?cb=20160407192725',
-					description: 'Each Undisputed Champion stack also boosts El Drag髇\'s movement speed by 1.5%.'			
+					description: 'Each Undisputed Champion stack also boosts El Drag贸n\'s movement speed by 1.5%.'			
 				}],	
 				[{
 					name: 'Hang Time',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/0/03/Dragon_Splash.png/revision/latest?cb=20160407192723',
-					description: 'Activating Dragon Splash prompts El Drag髇\'s shields to immediately begin recharging, as well as imparting health regen. +84 Health Regeneration over 4 Seconds.'
+					description: 'Activating Dragon Splash prompts El Drag贸n\'s shields to immediately begin recharging, as well as imparting health regen. +84 Health Regeneration over 4 Seconds.'
 				}, {
 					name: 'Unstoppable',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/0/03/Dragon_Splash.png/revision/latest?cb=20160407192723',
@@ -797,7 +797,7 @@ helix = {
 				[{
 					name: 'Heart of the Champion',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/6/69/M-RBX_Cybernetic_Arms.png/revision/latest?cb=20160407192724',
-					description: 'Returns all health damage dealt by El Drag髇\'s Dropkick attack to his health. +100% Life Steal.'
+					description: 'Returns all health damage dealt by El Drag贸n\'s Dropkick attack to his health. +100% Life Steal.'
 				}, {
 					name: 'Unbelievable',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/6/69/M-RBX_Cybernetic_Arms.png/revision/latest?cb=20160407192724',
@@ -814,7 +814,7 @@ helix = {
 				}, {
 					name: 'Lifeline',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/8/8f/Clothesline.png/revision/latest?cb=20160407192722',
-					description: 'Health Damage dealt by Clothesline is returned to El Drag髇 as health. +100% Life Steal.'
+					description: 'Health Damage dealt by Clothesline is returned to El Drag贸n as health. +100% Life Steal.'
 				}],	
 				[{
 					name: 'Title Fight',
@@ -827,7 +827,7 @@ helix = {
 				}, {
 					name: 'Dragonfire',
 					icon: 'https://vignette.wikia.nocookie.net/battleborn/images/3/3a/En_Fuego.png/revision/latest?cb=20160407192724',
-					description: 'While En Fuego is active, El Drag髇\'s secondary melee attack fires a massive fireball, dealing 56 damage.'
+					description: 'While En Fuego is active, El Drag贸n\'s secondary melee attack fires a massive fireball, dealing 56 damage.'
 				}]
 			]
 		},

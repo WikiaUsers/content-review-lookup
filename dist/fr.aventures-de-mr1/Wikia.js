@@ -16,9 +16,9 @@
  
     /*jshint multistr:true 
     titreHTML      = 'La vie aux Clans #1 : Un nouvel avenir pour Brew';
-    contenuHTML    = '<div style="width:100%; background-color:black; height:400px; color:lime; font-size:200%; font-weight:bold;"><span style="font-size:110px;"><i>Dans l\'appartement de Sirigu...</i><br />Sirigu : C\'est bon, ils ont validé ta demande. Tu dois te présenter demain à six heures pétantes devant la bijouterie, près de la Tour Côtière Nationale à Kuchira. <br /> Brew : Je te rappelle que je connais pas le pays, il faudra que tu m\'accompagnes. <br /> Sirigu : Tu rêves !<br /><i>Le lendemain, Brew se rend en retard à son nouveau travail...</i><br />Byaka : C\' est le premier jour donc ton retard n\a pas d\'importance. Néanmoins, c\'est plus mon problème si tu ne sait pas faire ce travail, je te lègue mon ancienne bijouterie. Enfile ça.<br /><i>Elle lui jeta un uniforme et une clé, puis partit. L\'ancien pirate proche de Marco trouve la repentance dans une bijouterie, tandis que l\'ancienne rebelle ne fait patienter son avenir aux portes de l\'Assemblée de Gorh...</i></span></div>';
+    contenuHTML    = '<div style="width:100%; background-color:black; height:400px; color:lime; font-size:200%; font-weight:bold;"><span style="font-size:110px;"><i>Dans l\'appartement de Sirigu...</i><br />Sirigu : C\'est bon, ils ont validÃ© ta demande. Tu dois te prÃ©senter demain Ã  six heures pÃ©tantes devant la bijouterie, prÃ¨s de la Tour CÃ´tiÃ¨re Nationale Ã  Kuchira. <br /> Brew : Je te rappelle que je connais pas le pays, il faudra que tu m\'accompagnes. <br /> Sirigu : Tu rÃªves !<br /><i>Le lendemain, Brew se rend en retard Ã  son nouveau travail...</i><br />Byaka : C\' est le premier jour donc ton retard n\a pas d\'importance. NÃ©anmoins, c\'est plus mon problÃ¨me si tu ne sait pas faire ce travail, je te lÃ¨gue mon ancienne bijouterie. Enfile Ã§a.<br /><i>Elle lui jeta un uniforme et une clÃ©, puis partit. L\'ancien pirate proche de Marco trouve la repentance dans une bijouterie, tandis que l\'ancienne rebelle ne fait patienter son avenir aux portes de l\'AssemblÃ©e de Gorh...</i></span></div>';
  
-    // Début code
+    // DÃ©but code
     $("#C44").click(function()
     {
         afficher_popup();

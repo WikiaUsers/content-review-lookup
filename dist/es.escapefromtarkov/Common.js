@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 /* Quest toggle; author: RheingoldRiver */
 $.when( mw.loader.using( 'mediawiki.util' ), $.ready ).then( function () { 
 	$dealerList = $('.dealer-toggle');

@@ -1,5 +1,5 @@
 console.log("xx");
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+/* Tout JavaScript prÃ©sent ici sera exÃ©cutÃ© par tous les utilisateurs Ã  chaque chargement de page. */
 /*$(function() {
 console.log("check");
 var conf = mw.config.get([
@@ -52,11 +52,11 @@ if (!$('body').hasClass('ns-special')) {
 								'<li><a href="' + mw.util.getUrl('Special:History/'+pagename) + '">Historique</a></li>',
 								'<li><a href="' + mw.util.getUrl('Special:MovePage/'+pagename) + '">Renommer</a></li>',
 								'<li><a href="' + mw.util.getUrl(pagename) + '?action=purge">Purge du cache</a></li>',
-								'<li><a href="' + mw.util.getUrl(pagename) + '?action=protect">Protéger</a></li>',
+								'<li><a href="' + mw.util.getUrl(pagename) + '?action=protect">ProtÃ©ger</a></li>',
 								'<li><a href="' + mw.util.getUrl(pagename) + '?action=delete">Supprimer</a></li>',
-								'<li><a href="' + mw.util.getUrl('Special:WhatLinksHere/'+pagename) + '">Pages liées</a></li>',
+								'<li><a href="' + mw.util.getUrl('Special:WhatLinksHere/'+pagename) + '">Pages liÃ©es</a></li>',
 								importLink,
-								'<li><a href="' + mw.util.getUrl('Special:PrefixIndex/'+pagename) + '">Toutes les pages commençant par...</a></li>',
+								'<li><a href="' + mw.util.getUrl('Special:PrefixIndex/'+pagename) + '">Toutes les pages commenÃ§ant par...</a></li>',
 								'<li><a href="' + mw.util.getUrl(pagename) + '?useskin=fandomdesktop">Affichage bureau</a></li>'
 							)
 						)

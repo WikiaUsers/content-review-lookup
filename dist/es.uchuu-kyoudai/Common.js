@@ -1,4 +1,4 @@
-/* Añadir botones extra de edición */
+/* AÃ±adir botones extra de ediciÃ³n */
 if (mwCustomEditButtons) {
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/__cb20110312002753/es.starwars/images/c/c8/Button_comment_round.png",
@@ -11,7 +11,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
      "speedTip": "Insertar infobox de personaje",
      "tagOpen": "{{Personaje \n|Nombre = ",
-     "tagClose": "\n|Imagen = \n|Kanji = \n|Nacimiento = \n|Nacionalidad = \n|Género = \n|Afiliación = \n|Profesión = \n|Familia = \n|Debut = \n|Seiyu = \n}}",
+     "tagClose": "\n|Imagen = \n|Kanji = \n|Nacimiento = \n|Nacionalidad = \n|GÃ©nero = \n|AfiliaciÃ³n = \n|ProfesiÃ³n = \n|Familia = \n|Debut = \n|Seiyu = \n}}",
      "sampleText": ""};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -23,7 +23,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/es.starwars/images/8/8c/Button_RedX.png",
-		"speedTip": "Proponer que el artículo sea borrado",
+		"speedTip": "Proponer que el artÃ­culo sea borrado",
 		"tagOpen": "{{Borrar|Motivo}} ",
 		"tagClose": "",
 		"sampleText": ""};

@@ -1,12 +1,12 @@
-/* © Wiki Gardiens des Cités Perdues */
+/* Â© Wiki Gardiens des CitÃ©s Perdues */
 /* Provient de : https://gardiens-des-cites-perdues.fandom.com/fr/wiki/MediaWiki:Slider.js */
 
 //================================
 //          jQuery Slider
 //================================
 
-// Créée par Tierrie pour le Dragon Age Wiki
-// Adapté par Soronos pour Wiki GdCP
+// CrÃ©Ã©e par Tierrie pour le Dragon Age Wiki
+// AdaptÃ© par Soronos pour Wiki GdCP
 
 mw.loader.using(["jquery.cookie"]);
 

@@ -1,7 +1,7 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 
 /*
-Orden autom·tico en tablas ordenadas en inglÈs (origen) y deban estar en castellano (destino):
+Orden autom√°tico en tablas ordenadas en ingl√©s (origen) y deban estar en castellano (destino):
 https://meta.wikimedia.org/wiki/Help:Sorting#Using_JavaScript_to_trigger_client-side_table_sorting
 */
 

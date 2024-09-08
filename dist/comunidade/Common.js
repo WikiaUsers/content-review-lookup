@@ -1,10 +1,10 @@
 window.interwikiInternational = {
   namespace: 'Interwiki',
   namespaceId: 120,
-  mainPage: 'Central_da_Comunidade:Pedidos_de_link_interlíngua',
+  mainPage: 'Central_da_Comunidade:Pedidos_de_link_interlÃ­ngua',
   
-  interwikiSchema: '{{bStart}}Solicitação de link interlingua|{{from}}|{{to}}{{bEnd}}',
-	pageSchema: '{{bStart}}Título solicitação de link interlingua{{bEnd}}\n\n' +
+  interwikiSchema: '{{bStart}}SolicitaÃ§Ã£o de link interlingua|{{from}}|{{to}}{{bEnd}}',
+	pageSchema: '{{bStart}}TÃ­tulo solicitaÃ§Ã£o de link interlingua{{bEnd}}\n\n' +
 			'{{interwikis}}\n\n' +
 			'~~' + '~~',
 };
@@ -24,50 +24,50 @@ mw.hook('AddRailModule.module').add(function() {
 window.adoptInternational = {
     unsupportedLanguages: ['en','es','de','fr','ru','it','nl','pl','zh'],
    pageConfig: {
-        namespace: 'Pedido de adoção',
+        namespace: 'Pedido de adoÃ§Ã£o',
         namespaceId: 118,
-        adoptionsPage: 'Adoção:Pedidos'
+        adoptionsPage: 'AdoÃ§Ã£o:Pedidos'
     },
-    wikitextSchema: "{{bStart}}Pedido de Adoção\n" +
+    wikitextSchema: "{{bStart}}Pedido de AdoÃ§Ã£o\n" +
         "| 0-Status              = Aberto\n" +
-        "| 1-Nome de Usuário     = {{userName}}\n" +
-        "| 2-Endereço da Wiki    = {{{wikiURL}}}\n" +
-        "| 3-Tipo de permissões  = {{permissionsType}}\n" +
-        "| 4-Nº de dias ativo    = {{numDays}}\n" +
-        "| 5-Nº de admins ativos = {{numAdmins}}\n" +
-        "| 6-Razão para a adoção = {{comments}}\n" +
-        "| 7-Endereço discussões = {{{communityVote}}}\n" +
+        "| 1-Nome de UsuÃ¡rio     = {{userName}}\n" +
+        "| 2-EndereÃ§o da Wiki    = {{{wikiURL}}}\n" +
+        "| 3-Tipo de permissÃµes  = {{permissionsType}}\n" +
+        "| 4-NÂº de dias ativo    = {{numDays}}\n" +
+        "| 5-NÂº de admins ativos = {{numAdmins}}\n" +
+        "| 6-RazÃ£o para a adoÃ§Ã£o = {{comments}}\n" +
+        "| 7-EndereÃ§o discussÃµes = {{{communityVote}}}\n" +
     "{{bEnd}}",
    i18n: {
-        activeAdminsError: 'Por favor tenha em mente que caso haja administradores ativos, você deve primeiramente entrar em contato com eles sobre a possibilidade de se tornar admin.',
-        adminsActivityLabel: 'Número de admins ativos nos últimos 60 dias',
+        activeAdminsError: 'Por favor tenha em mente que caso haja administradores ativos, vocÃª deve primeiramente entrar em contato com eles sobre a possibilidade de se tornar admin.',
+        adminsActivityLabel: 'NÃºmero de admins ativos nos Ãºltimos 60 dias',
         adoptionButtonLabel: 'Adotar uma wiki',
-        alreadyAdminError: 'Você já é um admin nesta wiki. Por favor tenha em mente de que você não precisa adotar uma wiki na qual você já tenha permissões de admin a menos que esteja se candidatando ao cargo de burocrata.',
+        alreadyAdminError: 'VocÃª jÃ¡ Ã© um admin nesta wiki. Por favor tenha em mente de que vocÃª nÃ£o precisa adotar uma wiki na qual vocÃª jÃ¡ tenha permissÃµes de admin a menos que esteja se candidatando ao cargo de burocrata.',
         alreadyBureaucratError: 'You are already a bureaucrat on this wiki. You do not need to adopt this wiki.',
-        automaticQueryError: 'A wiki não respondeu a uma consulta automatizada. Por favor preencha os campos requisitados.',
-        ccError: 'Wikis oficiais do Fandom não estão disponíveis para adoção.',
+        automaticQueryError: 'A wiki nÃ£o respondeu a uma consulta automatizada. Por favor preencha os campos requisitados.',
+        ccError: 'Wikis oficiais do Fandom nÃ£o estÃ£o disponÃ­veis para adoÃ§Ã£o.',
         closeLabel: 'Cancelar',
-        commentsLabel: 'Comentários/Razões para a adoção',
+        commentsLabel: 'ComentÃ¡rios/RazÃµes para a adoÃ§Ã£o',
         communityVoteLabel: 'Voto da comunidade',
-        invalidLanguageError: 'Para pedidos de adoção internacionais, por favor expanda a seção de Pedidos de adoção Internacional e visite a Central da Comunidade referente ao seu idioma para fazer um pedido de adoção.',
-        invalidUrlError: 'O formato de endereço fornecido não foi reconhecido.',
+        invalidLanguageError: 'Para pedidos de adoÃ§Ã£o internacionais, por favor expanda a seÃ§Ã£o de Pedidos de adoÃ§Ã£o Internacional e visite a Central da Comunidade referente ao seu idioma para fazer um pedido de adoÃ§Ã£o.',
+        invalidUrlError: 'O formato de endereÃ§o fornecido nÃ£o foi reconhecido.',
         linkLabel: 'Link',
-        modalTitle: 'Pedido de Adoção',
+        modalTitle: 'Pedido de AdoÃ§Ã£o',
         nameLabel: 'Nome da Wiki',
-        noActivityError: 'Por favor, tenha em mente de que você deve ter contribuído com a wiki de maneira consistente durante uma semana antes de submeter um pedido de adoção.',
-        noCommentsError: 'Por favor deixe um motivo do por que você quer adotar essa wiki e por que você estaria apto a ser um admin.',
-        noEditsError: 'Você precisa ter contribuído por uma semana nessa wiki para poder adotá-la.',
+        noActivityError: 'Por favor, tenha em mente de que vocÃª deve ter contribuÃ­do com a wiki de maneira consistente durante uma semana antes de submeter um pedido de adoÃ§Ã£o.',
+        noCommentsError: 'Por favor deixe um motivo do por que vocÃª quer adotar essa wiki e por que vocÃª estaria apto a ser um admin.',
+        noEditsError: 'VocÃª precisa ter contribuÃ­do por uma semana nessa wiki para poder adotÃ¡-la.',
         noNameError: 'Por favor coloque o nome da wiki.',
-        noUrlError: 'Por favor coloque o endereço da wiki.',
-        permissionLabel: 'Tipos de permissões',
-        placeholderComments: 'Comentarios sobre o pedido de adoção. Por favor nos diga o por que de você querer adotar essa wiki e por que você seria um bom candidato para ser um admin.',
-        placeholderDiscussionsPost: 'ID do post de Discussões',
+        noUrlError: 'Por favor coloque o endereÃ§o da wiki.',
+        permissionLabel: 'Tipos de permissÃµes',
+        placeholderComments: 'Comentarios sobre o pedido de adoÃ§Ã£o. Por favor nos diga o por que de vocÃª querer adotar essa wiki e por que vocÃª seria um bom candidato para ser um admin.',
+        placeholderDiscussionsPost: 'ID do post de DiscussÃµes',
         placeholderUrl: 'https://wiki.fandom.com/pt-br',
         processFailError: 'Houve problemas ao submeter o seu pedido.',
-        provideCommunityVote: 'Aparentemente existem outros usuários ativos na wiki. Por favor considere criar um post de Discussões descrevendo as suas intenções de adotar a wiki e deixar que eles deem as suas opiniões. Caso já o tenha feito, tenha certeza de incluir o link para tal post.',
+        provideCommunityVote: 'Aparentemente existem outros usuÃ¡rios ativos na wiki. Por favor considere criar um post de DiscussÃµes descrevendo as suas intenÃ§Ãµes de adotar a wiki e deixar que eles deem as suas opiniÃµes. Caso jÃ¡ o tenha feito, tenha certeza de incluir o link para tal post.',
         submitError: 'Ocorreram problemas ao submeter o seu pedido.',
         submitLabel: 'Submeter',
-        userActivityLabel: 'Número de dias editados nos últimos 10 dias'
+        userActivityLabel: 'NÃºmero de dias editados nos Ãºltimos 10 dias'
     }
 };
 

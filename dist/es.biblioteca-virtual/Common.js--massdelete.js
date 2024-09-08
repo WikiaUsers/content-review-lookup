@@ -69,7 +69,7 @@ if(wgPageName == 'Ben_10_Wiki:Borrado_masivo') {
         $form.submit(delete_submit);
 	$form.append($('<h4 />').text("Borrar contribuciones de un usuario"));
  
-	var $p1 = $('<p />').append("Escriba el nombre del usuario o IP en la caja siguiente. Los artÌculos creados por este ser·n borrados despuÈs de apretar 'Borrar'.");
+	var $p1 = $('<p />').append("Escriba el nombre del usuario o IP en la caja siguiente. Los art√≠culos creados por este ser√°n borrados despu√©s de apretar 'Borrar'.");
 	$form.append($p1);
  
 	var $p2 = $('<p />');

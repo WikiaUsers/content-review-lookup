@@ -1,6 +1,6 @@
 /*/
- * Javascript para Wiki JPop, la enciclopedia de la música japonesa.
+ * Javascript para Wiki JPop, la enciclopedia de la mÃºsica japonesa.
  * Esto afecta toda la infraestructura del sitio, si eres administrador
- * no hagas cambios sin estar seguro de que no afectará el funsionamiento
+ * no hagas cambios sin estar seguro de que no afectarÃ¡ el funsionamiento
  * del wiki de Wikia.
 /*/

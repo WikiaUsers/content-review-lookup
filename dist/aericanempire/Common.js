@@ -45,7 +45,7 @@ version: 2.7.0
 
 // Title replace function ([[Template:Title]])
 // Replaces page title
-// Created by [[User:Michael von Preuﬂen|Michael von Preuﬂen]]
+// Created by [[User:Michael von Preu√üen|Michael von Preu√üen]]
 // HIGHLY EXPERIMENTAL
 
 ////////////////////////////////////////////////////////////////////////////////////////////

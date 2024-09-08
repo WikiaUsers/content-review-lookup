@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /* Adds icons to page header bottom border
  * by: [[User:The 888th Avatar]], adapted to new header by [[User:Thailog]]

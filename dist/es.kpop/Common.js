@@ -212,19 +212,19 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-// Configuración para blogs antiguos //
+// ConfiguraciÃ³n para blogs antiguos //
 
 window.LockOldBlogs = {
     expiryDays: 20,
-    expiryMessage: "Este blog se considera archivado porque no ha sido editado desde hace <expiryDays> días, por favor no lo edites!",
+    expiryMessage: "Este blog se considera archivado porque no ha sido editado desde hace <expiryDays> dÃ­as, por favor no lo edites!",
     nonexpiryCategory: "Blogs nunca archivados"
 };
 
-// Configuración para bloquear comentarios antiguos  //
+// ConfiguraciÃ³n para bloquear comentarios antiguos  //
 
 window.lockOldComments = (window.lockOldComments || {});
 
-// Configuración para advertencia de ausencia de licencia //
+// ConfiguraciÃ³n para advertencia de ausencia de licencia //
 window.NoLicenseWarning = {
     forceLicense: true,
     ]

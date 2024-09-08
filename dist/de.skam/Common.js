@@ -1,4 +1,4 @@
 /* AjaxRC */
-window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:Watchlist","Special:Log","Special:Contributions","Spezial:Letzte_Änderungen","Spezial:WikiActivity" ,"Spezial:Beiträge"];
+window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:Watchlist","Special:Log","Special:Contributions","Spezial:Letzte_Ã„nderungen","Spezial:WikiActivity" ,"Spezial:BeitrÃ¤ge"];
 window.AjaxRCRefreshText = 'Automatische Aktualisierung';
 window.AjaxRCRefreshHoverText = 'Aktualisiert automatisch die Seite';

@@ -101,7 +101,7 @@ var quizName = "Dishonored: Missione";
 var quizLang = "it";
 var resultsTextArray = [ 
 	"Conosci a fondo le missioni di Dishonored!",
-	"Conosci poco le missioni o le hai esplorate poco impenati di più, andrà meglio la prossima volta",
+	"Conosci poco le missioni o le hai esplorate poco impenati di piÃ¹, andrÃ  meglio la prossima volta",
 	"Conosci molto le missioni e speri che ti notino",
 	"Sei un vero esperto delle missioni. dishonoreder te lo sei spolpato fino all'ultima briciola, lettera, audiografo, armi e personaggi verai"
 	];
@@ -117,7 +117,7 @@ var questions = [
 	"Uccidono Corvo",
 	"Hiram Burrows accusa Corvo di omicidio e di tradimento",
 	"Corvo viene salva Jessamine Kaldwin e Emily Kaldwin",
-	"Difficile tutto può cambiare"],
+	"Difficile tutto puÃ² cambiare"],
  
 	["Cosa succede nella seconda missione di dishonored?",
 	"Corvo viene torturato",
@@ -125,15 +125,15 @@ var questions = [
 	"Il Torturatore Reale uccider Corvo",
 	"Corvo vie portato in cella"],
  
-	["Corvo usa i poteri nella prima missione quando è in prigione",
+	["Corvo usa i poteri nella prima missione quando Ã¨ in prigione",
 	"Vero",
 	"Falso"],
  
-	["Emily nella prima missione è stata in grado di trovare corvo",
+	["Emily nella prima missione Ã¨ stata in grado di trovare corvo",
 	"Vero",
 	"Falso"],
  
-	["Il mondo è in rovina nel caso Basso",
+	["Il mondo Ã¨ in rovina nel caso Basso",
 	"Vero",
 	"Falso"],
  
@@ -153,7 +153,7 @@ var questions = [
 	"Vero",
 	"Falso"],
  
-	["Cosa può accadere se si incontra un branco di ratti?",
+	["Cosa puÃ² accadere se si incontra un branco di ratti?",
 	"Ti fanno le feste",
 	"Arriva Il Ragazzo Solitario dei Retti e li fa calmare",
 	"Ti salva Nonna Cencia",

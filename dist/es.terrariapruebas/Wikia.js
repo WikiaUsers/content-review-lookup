@@ -36,7 +36,7 @@ var API = new mw.Api(),
                         case 1200: // Muros
                         mainEl = '.Wall';
                         break;
-                        case 0: // Artículos
+                        case 0: // ArtÃ­culos
                         case 500: // Blogs
                         mainEl = '.WikiaArticleFooter';
                         break;

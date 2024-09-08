@@ -10,7 +10,7 @@ jQuery(function ($) {
 
     var users = {
             // Tag all bureaucrats
-            Utgarğar        : 'Bureaucrat',
+            UtgarÃ°ar        : 'Bureaucrat',
         };
 
     $.each(users, function (name, v) {

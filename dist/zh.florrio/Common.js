@@ -1,13 +1,13 @@
 /* 这里的任何JavaScript将为所有用户在每次页面加载时加载。 */
-var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱'];
+var sceneList = [ '花园', '蚁穴', '沙漠', '蚂蚁地狱', '沼泽', '海洋', '海洋（滤镜）', 'PvP' ,'下水道','地狱','丛林','中心'];
 
 var map = 
 {
 	'基本' : [ '花园', 'PvP','地狱' ],
-	'轻' : [ '花园', '蚁穴', 'PvP' ,'蚂蚁地狱'],
+	'轻' : [ '花园', '蚁穴', 'PvP' ,'蚂蚁地狱','中心'],
 	'岩石' : [ '花园', 'PvP' ],
-	'正方形' : { '花园' : 0.95, '沙漠': 0.01, '沼泽' : 0.01, '海洋' : 0.01, 'PvP' : 0.02 },
-	'玫瑰' : [ '花园', '沙漠', 'PvP' ],
+	'正方形' : ['花园','沙漠','海洋','海洋（滤镜）','蚂蚁地狱','下水道','地狱','中心'],
+	'玫瑰' : [ '花园', '沙漠', 'PvP','中心' ],
 	'刺' : [ '花园', 'PvP' ],
 	'鸢尾' : [ '花园', '沙漠' ],
 	'翅膀' : [ '下水道'],
@@ -24,7 +24,21 @@ var map =
 	'重' : [ '花园', 'PvP' ],
 	'阴阳' : [ '花园', 'PvP' ],
 	'网' : ['花园','PvP','下水道'],
-	'果冻' : {'海洋' : 0.50, '海洋（滤镜）' : 0.50}
+	'果冻' : {'海洋' : 0.50, '海洋（滤镜）' : 0.50},
+	'安卡':'沙漠',
+	'暗黑标记':'地狱',
+	'贝壳':['海洋','海洋（滤镜）'],
+	'便便':'下水道',
+	'玻璃':['花园','蚂蚁地狱','蚁穴','沙漠'],
+	'铲子':['花园'],
+	'磁铁':['沙漠','海洋','海洋（滤镜）'],
+	'橙子':'花园',
+	'电池':'丛林',
+	'大丽花':['丛林','PvP'],
+	'大米':['蚂蚁地狱','蚁穴','花园','PvP','中心'],
+	'第三只眼':['花园','下水道','地狱'],
+	
+	'酸泡泡':'沼泽'
 };
 
 var pageName = mw.config.get('wgPageName');
@@ -70,9 +84,11 @@ document.getElementsByClassName("fandom-community-header__background")[0].style.
 	'沼泽' : 'url(https://static.wikia.nocookie.net/florrio/images/c/c4/%E6%B2%BC%E6%B3%BD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054030&path-prefix=zh)',
 	'海洋' : 'url(https://floof.netlify.app/assets/tiles/ocean.svg)',
 	'海洋（滤镜）' : 'url(https://floof.netlify.app/assets/tiles/oceanAlt.svg)',
-	'PvP' : 'url(https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&path-prefix=zh)',
+	'PvP' : 'url(https://static.wikia.nocookie.net/florrio/images/7/72/PvPBG1.svg/revision/latest/scale-to-width-down/185?cb=20240903143626&path-prefix=zh)',
 	'下水道':'url(https://floof.netlify.app/assets/tiles/sewer.svg)',
-	'地狱':'url(https://floof.netlify.app/assets/tiles/hell.svg)'
+	'地狱':'url(https://floof.netlify.app/assets/tiles/hell.svg)',
+	'丛林':'url(https://static.wikia.nocookie.net/florrio/images/4/49/JungleBG1.svg/revision/latest/scale-to-width-down/185?cb=20240903143456&path-prefix=zh)',
+	'中心':'url(https://static.wikia.nocookie.net/florrio/images/5/5d/CentraliaBG.svg/revision/latest/scale-to-width-down/185?cb=20240903143806&path-prefix=zh)'
 }[scene];
 (function () {
     const eles = document.querySelectorAll('.js-action-play');

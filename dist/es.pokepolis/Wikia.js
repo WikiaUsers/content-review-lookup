@@ -1,5 +1,5 @@
-// Notificación
-var WikiaNotificationMessage = "¿Nuevo/a en PokéPolis? <a href='/wiki/PokéPolis:Manuales de Estilo'>¡Visita los manuales de estilo!</a><br />Notifica los errores del skin de PokéPolis a <a href='/wiki/PokéPolis:Administración'>la administración</a>.";
+// NotificaciÃ³n
+var WikiaNotificationMessage = "Â¿Nuevo/a en PokÃ©Polis? <a href='/wiki/PokÃ©Polis:Manuales de Estilo'>Â¡Visita los manuales de estilo!</a><br />Notifica los errores del skin de PokÃ©Polis a <a href='/wiki/PokÃ©Polis:AdministraciÃ³n'>la administraciÃ³n</a>.";
 importArticles({
 	type: 'script',
 	articles: [

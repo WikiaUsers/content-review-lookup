@@ -3,7 +3,7 @@ AjaxRCRefreshText = 'Actualisation automatique';
 AjaxRCRefreshHoverText = 'Actualisation automatique de la page';
 ajaxSpecialPages = ["WikiActivity","Recentchanges"];
 
-/* Configuration pour le module Horloge personalisé: MediaWiki:ClocksModule.js */
+/* Configuration pour le module Horloge personalisÃ©: MediaWiki:ClocksModule.js */
 clocksModuleLabels = ["Paris", "PST"];
 clocksModuleTimezones = ["Europe/Paris", "Pacific/Pitcairn"];
 clocksModuleFormat = [
@@ -27,7 +27,7 @@ window.MessageWallUserTags = {
     
     
 
-/* Collapser personalisé style tabber dans le but de permettre des conditions d'affichage */
+/* Collapser personalisÃ© style tabber dans le but de permettre des conditions d'affichage */
 var collapsers = document.getElementsByClassName('Collapser');
 var collapseFunction = function( event ) {
     
@@ -46,7 +46,7 @@ for (i = 0; i < collapsers.length; ++i) {
 
 }
 
-/* Function pour switch les données entre les différents niveaux d'éveil extrême Z avec flash */
+/* Function pour switch les donnÃ©es entre les diffÃ©rents niveaux d'Ã©veil extrÃªme Z avec flash */
 var CollapserExtremeZ = document.getElementsByClassName('CollapserExtremeZ');
 var elementCollapsed = document.getElementsByClassName('dataExtemeZ');
 var CollapserExtremeZFunction = function( event ) {

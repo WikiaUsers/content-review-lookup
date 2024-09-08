@@ -1,4 +1,4 @@
-/* Extensión de YT e imágenes */
+/* ExtensiÃ³n de YT e imÃ¡genes */
 // Desactivar tags de imagen y de YouTube
 window.chatTagsDisable = ['img', 'yt'];
  

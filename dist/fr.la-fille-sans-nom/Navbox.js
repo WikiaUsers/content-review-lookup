@@ -1,11 +1,11 @@
-/** Modèle : Méta palette de navigation - ©  Wikipédia
+/** ModÃ¨le : MÃ©ta palette de navigation - Â©  WikipÃ©dia
  * --> Provient de : https://fr.wikipedia.org/wiki/MediaWiki:Common.js#L-173
  * 
- * [[Catégorie:MediaWiki]] [[Catégorie:Javascript]] [[Catégorie:Modèles - Navboxes| ]]
+ * [[CatÃ©gorie:MediaWiki]] [[CatÃ©gorie:Javascript]] [[CatÃ©gorie:ModÃ¨les - Navboxes| ]]
 
 /**
  * Navboxes
- * Pour  : [[Modèle:Méta palette de navigation]]
+ * Pour  : [[ModÃ¨le:MÃ©ta palette de navigation]]
  */
 
 var Palette_Derouler = '[afficher]';

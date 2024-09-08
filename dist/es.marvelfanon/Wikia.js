@@ -16,10 +16,10 @@ UserTagsJS.modules.custom = {
 // Refrescar Actividad reciente
 
 window.AjaxRCRefreshText = 'Auto-ref';
-window.AjaxRCRefreshHoverText = 'Refrescar la actividad automáticamente.';
-window.ajaxPages = ["Especial:WikiActivity","Especial:CambiosRecientes","Especial:Imágenes","Especial:Vídeos"];
+window.AjaxRCRefreshHoverText = 'Refrescar la actividad automÃ¡ticamente.';
+window.ajaxPages = ["Especial:WikiActivity","Especial:CambiosRecientes","Especial:ImÃ¡genes","Especial:VÃ­deos"];
 
-// Guardar artículos mientras con CTRL+S
+// Guardar artÃ­culos mientras con CTRL+S
 
 importScriptPage('SaveKey/code.js', 'dev');
 
@@ -50,11 +50,11 @@ importArticles({
     ]
 });
 
-// Módulo de rail en la parte superior
+// MÃ³dulo de rail en la parte superior
 
 window.AddRailModule = [{prepend: true}];
 
-/* // Nuevo módulo del rail
+/* // Nuevo mÃ³dulo del rail
 
 $(function(){
     $('<section class="module RailModule"></section>')

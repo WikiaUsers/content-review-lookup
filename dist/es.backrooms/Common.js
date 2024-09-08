@@ -1,7 +1,7 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 window.MessageBlock = {
   title : 'Bloqueo',
-  message : 'Si usted esta viendo este mensaje, eso significa que usted ha sido bloqueado por no seguir nuestras reglas locales o continuar infringiendo nuestras reglas. para apelar, comunÌquese con nosotros en Community Central o solicite este mensaje, gracias.'
+  message : 'Si usted esta viendo este mensaje, eso significa que usted ha sido bloqueado por no seguir nuestras reglas locales o continuar infringiendo nuestras reglas. para apelar, comun√≠quese con nosotros en Community Central o solicite este mensaje, gracias.'
 };
 
 // RevealAnonIP

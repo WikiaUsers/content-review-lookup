@@ -1,5 +1,5 @@
 /* Common.js <pre>
-Cualquier JavaScript que estÈ aquÌ ser· cargado para todos los usuarios en todas las p·ginas cargadas del wiki. */
+Cualquier JavaScript que est√© aqu√≠ ser√° cargado para todos los usuarios en todas las p√°ginas cargadas del wiki. */
 
 // 1. Wiki Activity
  window.rwaOptions = {

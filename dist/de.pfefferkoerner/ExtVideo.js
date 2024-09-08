@@ -2,7 +2,7 @@ function insertVideo() {
     $('.insertVideo').append(
         $('<iframe />') 
         .attr('src',$('.insertVideo').data('url'))
-        .text('Sie können das Video nicht abspielen.')
+        .text('Sie kÃ¶nnen das Video nicht abspielen.')
         .append(
             $('<embed />').attr('src',$('.insertVideo').data('url'))
         )

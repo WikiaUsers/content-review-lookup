@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 // Etiqueta Inactivo
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');

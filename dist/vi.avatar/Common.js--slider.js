@@ -3,7 +3,7 @@
  */
 
 $(document).ready(function() {
-  if ( wgPageName == "Trang_Chính") {
+  if ( wgPageName == "Trang_ChÃ­nh") {
     mw.loader.using( ['jquery.ui.tabs'], function() {
       var $tabs = $("#portal_slider").tabs({ fx: [{opacity:'toggle', duration:200},{height:'toggle', duration:'normal'}, ] } );
       $("[class^=portal_sliderlink]").click(function() { // bind click event to link

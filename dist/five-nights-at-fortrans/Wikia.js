@@ -9,7 +9,7 @@ importArticles({
 $(function addMastheadTags() {
   if ($('#UserProfileMasthead')) {
     var rights = {};
-// Burócratas
+// BurÃ³cratas
     rights["Wikia"]  = ["Test"];
  
     if (wgCanonicalSpecialPageName == "Contributions") {
@@ -78,6 +78,6 @@ $(function() {
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','Votación finalizada');
+                                 .attr('value','VotaciÃ³n finalizada');
     }
 });

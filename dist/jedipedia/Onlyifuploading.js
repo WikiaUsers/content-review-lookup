@@ -1,4 +1,4 @@
- // Lädt die [[Vorlage:Hochladen|Dateiinfovorlage]] beim Hochladen direkt im Beschreibungsfeld. Ist über [[MediaWiki:Common.js|Common.js]] eingebunden.
+ // LÃ¤dt die [[Vorlage:Hochladen|Dateiinfovorlage]] beim Hochladen direkt im Beschreibungsfeld. Ist Ã¼ber [[MediaWiki:Common.js|Common.js]] eingebunden.
 
  function setSpecialUploadTemplate() {
      var editbox = document.getElementById('wpUploadDescription');
@@ -7,7 +7,7 @@
      editbox.value = "{"+"{Hochladen\n"
                    + "|Beschreibung = \n"
                    + "|Quelle       = \n"
-                   + "|Künstler     = \n"
+                   + "|KÃ¼nstler     = \n"
                    + "|Kategorien   = \n"
                    + "}"+"}";
  }

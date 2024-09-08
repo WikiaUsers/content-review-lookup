@@ -15,9 +15,9 @@ window.UserTagsJS = {
 window.UserTagsJS = {
 		modules: {},
 		tags: {
-			sysop: { u: 'Professeur', link:'Catégorie:Administrateur du Wiki Harry Potter' },
-			professeur: { m: 'Préfet', f: 'Préfète', u: 'Préfet' },
-			prefetenchef: { m: 'Préfet-en-chef', f: 'Préfète-en-chef', u: 'Préfet-en-chef', order:1 }
+			sysop: { u: 'Professeur', link:'CatÃ©gorie:Administrateur du Wiki Harry Potter' },
+			professeur: { m: 'PrÃ©fet', f: 'PrÃ©fÃ¨te', u: 'PrÃ©fet' },
+			prefetenchef: { m: 'PrÃ©fet-en-chef', f: 'PrÃ©fÃ¨te-en-chef', u: 'PrÃ©fet-en-chef', order:1 }
 	},
 };
 UserTagsJS.modules.autoconfirmed = true;

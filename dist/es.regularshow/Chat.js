@@ -6,7 +6,7 @@ window.kockaEmoticons = {
         emoticons: "Emoticonos",
         close: "Salir"
     },
-    help: "Clickea un emoticón para poder enviarlo."
+    help: "Clickea un emoticÃ³n para poder enviarlo."
 };
 
 // ChatEmoticonsButton
@@ -29,7 +29,7 @@ window.ChatStatus = {
 		code: "Programando",
 		google: "Atacando wikis",
 		notsoos: "Con tu gfa",
-		ufo: "Masturbándose"
+		ufo: "MasturbÃ¡ndose"
 	},
 	debug: false
 };
@@ -41,7 +41,7 @@ chatAnnouncementsAll = true;
 // Notificacion de mensaje
 var PrivateMessageAlert = {
     beepSound: 'https://vignette.wikia.nocookie.net/regularshow/images/6/6c/Iapetus.ogg/revision/latest?cb=20161205215118&path-prefix=es',
-    message: '¡$1 te envió un mensaje!',
+    message: 'Â¡$1 te enviÃ³ un mensaje!',
     notifications: true,
     alertWhileFocused: true
 };

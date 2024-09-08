@@ -20,20 +20,20 @@ var inputwidth = $.browser['webkit']?'45px':'30px';
 
 function killkeyup() {//function for everything that should happen whenever someone enters something in the kill xp input box
 	var warn = ''; var warn2 = '';
-	if ($('input#monsterCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num閞icos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//Setting warn vars so that whenever there is a character other than a number in the input value, it turns the vars into a warning
+	if ($('input#monsterCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num茅ricos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//Setting warn vars so that whenever there is a character other than a number in the input value, it turns the vars into a warning
 	var killXP = $('#killXP .fightXP').html();
 	var constXP = $('#killXP .constXP').html();
 	var inputVal = $('input#monsterCalc').val().replace(/[^0-9]/g, '');
 	if (inputVal.length == 0) {//giving the default value when the input is empty, and else giving the calculation.
-		$('#monsterCalcResult').html(warn + killXP + ' PE (y ' + constXP + ' experiencia en <a title="Constituci髇" href="/wiki/Constituci髇">Constituci髇</a>)' + warn2);
+		$('#monsterCalcResult').html(warn + killXP + ' PE (y ' + constXP + ' experiencia en <a title="Constituci贸n" href="/wiki/Constituci贸n">Constituci贸n</a>)' + warn2);
 	} else {
-		$('#monsterCalcResult').html(warn + inputVal * killXP + ' PE (y ' + inputVal * constXP + ' experiencia en <a title="Constituci髇" href="/wiki/Constituci髇">Constituci髇</a>)' + warn2);
+		$('#monsterCalcResult').html(warn + inputVal * killXP + ' PE (y ' + inputVal * constXP + ' experiencia en <a title="Constituci贸n" href="/wiki/Constituci贸n">Constituci贸n</a>)' + warn2);
 	}
 }
 
 function xpkeyup() {//function for everything that should happen whenever someone enters something in the xp input box
 	var warn = ''; var warn2 = '';
-	if ($('input#XPCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num閞icos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//Setting warn vars so that whenever there is a character other than a number in the input value, it turns the vars into a warning
+	if ($('input#XPCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num茅ricos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//Setting warn vars so that whenever there is a character other than a number in the input value, it turns the vars into a warning
 	var inputVal = $('input#XPCalc').val().replace(/[^0-9]/g, '');
 	var XPEach = $('#XPEach .XPEach').html();
 	var split = XPEach.split(/, |\//);
@@ -57,7 +57,7 @@ $(document).ready(function(){
 		var killXP = $('#killXP .fightXP').html();
 		var constXP = $('#killXP .constXP').html();
 		$('span#killXP span').attr('style', 'display:none;')//hide the original text, which is replaced by the script's text.
-		$('span#killXP').append('<input' + infoTitle + ' id="monsterCalc" type="number" style="width:'+inputwidth+';" value="1" maxlength="5" min="0" max="99999"> <div id="monsterCalcResult" style="display:inline;">' + killXP + ' PE (y ' + constXP + ' experiencia en <a title="Constituci髇" href="/wiki/Constituci髇">Constituci髇</a>)</div>')//inserting the input box and the result element in the infobox
+		$('span#killXP').append('<input' + infoTitle + ' id="monsterCalc" type="number" style="width:'+inputwidth+';" value="1" maxlength="5" min="0" max="99999"> <div id="monsterCalcResult" style="display:inline;">' + killXP + ' PE (y ' + constXP + ' experiencia en <a title="Constituci贸n" href="/wiki/Constituci贸n">Constituci贸n</a>)</div>')//inserting the input box and the result element in the infobox
 		$('input#monsterCalc').bind('keyup click', killkeyup)//running the function of above when the user entered something in the box
 		if ($('span#XPEach').length != 0) {//if there is an xp calc in the infobox too...
 			$('#killXP').prepend('<input id="communicateBox" type="checkbox"' + checkbox + 'title="allow this box to communicate with the slayer XP box below">')//adding a checkbox to let the user decide if the boxes should communicate
@@ -123,7 +123,7 @@ $(document).ready(function(){
 				$(this).prepend('<input' + infoTitle2 + ' id="GEPriceCalc' + i + '" class="' + i + '" type="number" style="width:'+inputwidthge+';" value="1" maxlength="10" min="0" max="9999999999"> <div id="GEPCalcResult' + i + '" style="display:inline;">' + $('span.GEItem span.' + i).html() + '</div>')//give all of the inputs a different id, each being "GEPriceCalc" with a number, increasing by 1 for each price
 				$('input#GEPriceCalc' + i).bind('keyup click', function(){//when text is entered...
 					var warn = ''; var warn2 = ''
-					if ($(this).val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num閞icos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//setting the warning vars like above
+					if ($(this).val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num茅ricos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}//setting the warning vars like above
 					if ($(this).val().replace(/[^0-9]/g, '').length == 0) {
 						$('#GEPCalcResult' + $(this).attr('class')).html(warn + $('span.GEItem span.' + $(this).attr('class')).html() + warn2)
 					} else {
@@ -140,7 +140,7 @@ $(document).ready(function(){
 		}
 		$('input#GEPriceCalc').bind('keyup click', function(){
 			var warn = ''; var warn2 = ''
-			if ($('input#GEPriceCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num閞icos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}
+			if ($('input#GEPriceCalc').val().search(/[^0-9]/) != '-1') {warn = '<abbr title="Los caracteres no num茅ricos son ignorados" style="cursor:help;border-bottom:1px dotted #000;">'; warn2 = '</abbr>'}
 			if ($('input#GEPriceCalc').val().replace(/[^0-9]/g, '').length == 0) {
 				$('#GEPCalcResult').html(warn + GEItem + warn2)
 			} else {

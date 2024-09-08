@@ -1,7 +1,7 @@
 // Improved Diff links, and other minor adjustments to Recent Changes
 // written by User:Mikevoir for the Genshin Impact Wiki
 // 
-// Current revision:  00:47, 10 July 2024‎
+// Current revision:  11:17, 6 September 2024
 $(function() {
 
 	// Double load protection
@@ -13,7 +13,7 @@ $(function() {
         type: 'script',
         articles: [ 'u:dev:MediaWiki:Modal.js' ]
     });
-    var popup; // for global use once defined
+    var quickview, settings; // for global use once defined
 	var api = new mw.Api();
 	var config = mw.config.get([
 		'wgDiffNewId',
@@ -41,35 +41,38 @@ $(function() {
 			// Get tokens
 			betterDiff.fetchTokens();
 			
-			// Add css
+			// Add CSS
 			mw.util.addCSS(
-				'.targetedPatrolWrapper {'+
+				'.targettedPatrolWrapper {'+
 					'display: flex;'+
 					'width: 100%;'+
-					'gap: 3px;'+
-					'align-items: center;'+
+					'gap: 8px;'+
+					'flex-direction: column;'+
 				'}'+
-				'#targetedPatrolUser {'+
+				'#targettedPatrolOpen {white-space: nowrap;}'+
+				'.targettedPatrolWrapper input {'+
 					'background: var(--theme-color-6);'+
 					'color: var(--theme-page-text-color);'+
 					'border: 0;'+
 					'border-radius: 4px;'+
 					'padding: 4px;'+
 				'}'+
-				'#targetedPatrolDetails {'+
-					'margin-right: 3px;'+
-					'white-space: nowrap;'+
+				'.targettedPatrolWrapper svg {'+
+					'vertical-align: middle;'+
+					'fill: var(--theme-link-color);'+
 				'}'+
-				'#targetedPatrolNS, #targetedPatrolNS optgroup {'+
+				'.targettedPatrolWrapper .bad-data, .targettedPatrolWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
+				'#targettedPatrolDetails {'+
+					'margin-right: 3px;'+
+					'text-align: center;'+
+					'border-top: 3px solid var(--theme-link-color);'+
+					'margin-top: 5px;'+
+				'}'+
+				'#targettedPatrolNS, #targettedPatrolNS optgroup {'+
 					'color: var(--theme-page-text-color);'+
 					'border-radius: 5px;'+
 					'background: var(--theme-page-background-color);'+
 					'border: 1px solid var(--theme-link-color);'+
-				'}'+
-				'#submitTargetedPatrol {'+
-					'white-space: nowrap;'+
-					'padding: 1px 3px;'+
-					'position: relative;'+
 				'}'+
 				'.loading-gif {'+
 					'width: 16px;'+
@@ -86,10 +89,13 @@ $(function() {
 				betterDiff.waitFor('.mw-changeslist div', function(){
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
-					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targetedPatrol);
+					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targettedPatrol);
 					
 					// start observing
-					betterDiff.RecentChangesReload(betterDiff.newDiffLink);
+					betterDiff.RecentChangesReload(function() {
+						betterDiff.newDiffLink();
+						betterDiff.quickDiffLoad();
+					});
 				});
 			}
 			
@@ -116,12 +122,12 @@ $(function() {
 				}
 				
 				// Mouseless openPrev
-				if (event.altKey && ['2'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-popup.oo-ui-window-active')) {
+				if (event.altKey && ['2'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
 					betterDiff.openPrev();
 				}
 				
 				// Mouseless openNext
-				if (event.altKey && ['3'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-popup.oo-ui-window-active')) {
+				if (event.altKey && ['3'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
 					betterDiff.openNext();
 				}
 			});
@@ -329,71 +335,123 @@ $(function() {
 		},
 		
 		// Mass patrol recent edits from specific user and/or namespace
-		targetedPatrol: function() {
-			if (!document.querySelector('#targetedPatrol') && can.patrol) {
-				var wrapper = $(
-					'<div class="targetedPatrolWrapper">'+
-						'<span id="targetedPatrolDetails"></span>'+
-						'<select name="targetedPatrolNS" id="targetedPatrolNS">'+
-							'<optgroup label="Namespace to patrol:">'+
-								'<option value="-99">All</option>'+
-								'<option value="0">Main</option>'+
-								'<option value="2">User</option>'+
-								'<option value="6">File</option>'+
-								'<option value="10">Template</option>'+
-								'<option value="14">Category</option>'+
-								'<option value="828">Module</option>'+
-							'</optgroup>'+
-						'</select>'+
-						'<input name="targetedPatrolUser" id="targetedPatrolUser" placeholder="User to mass patrol" />'+
-						'<span class="wds-button" id="submitTargetedPatrol">Patrol</span>'+
-					'</div>'
-				);
-				var cell = $('.mw-rcfilters-ui-table-placeholder');
-				cell.append(wrapper);
-				cell.css('vertical-align', 'middle');
-				var submitPatrol = function () {
-					var api_sett = {
-						action: 'query',
-						list: 'recentchanges',
-						rcshow: '!patrolled',
-						rcprop: 'ids',
-						rcuser: user,
-						format: 'json',
-						formatversion: '2',
-						rclimit: 'max'
-					};
-					
-					// User filter
-					var user = document.querySelector('#targetedPatrolUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
-					if (user.length>0) {api_sett.rcuser = user;}
-					
-					// Namespace filter
-					var ns = document.querySelector('#targetedPatrolNS').selectedOptions[0].value;
-					if (ns !== "-99") {api_sett.rcnamespace = ns;}
-					
-					// Attempt patrol
-					if (user.length>0 || ns !== "-99") {
-						api.get(api_sett).then(function(data){
-							if (data.query.recentchanges.length>0) {
-								document.querySelector('#targetedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
-								betterDiff.patrolRevisions(
-									data.query.recentchanges,
-									document.querySelector('#targetedPatrolDetails'),
-									{
-										patrolled: 'Patrolled %patrolled% edits!',
-										open: '%open% deleted edits opened!'
-									},
-									'Patrolling %tot% edits, %curr% left...'
-								);
-							} else {
-								document.querySelector('#targetedPatrolDetails').innerHTML = (user.length>0 ? 'User' : 'Namespace')+' has no edits to patrol!';
+		targettedPatrol: function() {
+			if (!document.querySelector('#targettedPatrol') && can.patrol) {
+				var entry = $('<span class="wds-button" id="targettedPatrolOpen">Targetted Patrolling</span>');
+				$('.mw-rcfilters-ui-table-placeholder').append(entry);
+				// Build modal and start up listeners
+				mw.hook('dev.modal').add(function(Modal) {
+					settings = 
+						new Modal.Modal({
+							title: 'Targetted Patrolling',
+							id: 'tPatrol-patrol',
+							size: 'medium',
+							content: 
+								'<div class="targettedPatrolWrapper">'+
+									'<label for="targettedPatrolNS">Namespace: '+
+									'<select name="targettedPatrolNS" id="targettedPatrolNS">'+
+										'<optgroup label="Namespaces:">'+
+											'<option value="-99">All</option>'+
+											'<option value="0">Main</option>'+
+											'<option value="2">User</option>'+
+											'<option value="6">File</option>'+
+											'<option value="10">Template</option>'+
+											'<option value="14">Category</option>'+
+											'<option value="828">Module</option>'+
+										'</optgroup>'+
+									'</select></label>'+
+									'<label for="targettedPatrolUser">User: <input name="targettedPatrolUser" id="targettedPatrolUser" placeholder="User to mass patrol" /></label>'+
+									'<label for="targettedPatrolTimeStart">'+
+										'From date: <input name="targettedPatrolTimeStart" id="targettedPatrolTimeStart" placeholder="Date to start patrolling from" /> '+
+										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
+									'</label>'+
+									'<label for="targettedPatrolTimeEnd">'+
+										'To date: <input name="targettedPatrolTimeEnd" id="targettedPatrolTimeEnd" placeholder="Date to end patrolling at" /> '+
+										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
+									'</label>'+
+								'</div>'+
+								'<div id="targettedPatrolDetails">Progress will be noted here!</div>',
+							buttons: [
+								{
+									// Attempt patrol
+									text:'Patrol',
+									id:'tPatrol-Submit',
+									event: 'PatrolSubmit'
+								}
+							],
+							events: {
+								PatrolSubmit: function() {
+									var api_sett = {
+										action: 'query',
+										list: 'recentchanges',
+										rcshow: '!patrolled',
+										rcprop: 'ids',
+										format: 'json',
+										formatversion: '2',
+										rclimit: 'max'
+									};
+									
+									// User filter
+									var user = document.querySelector('#targettedPatrolUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
+									if (user.length>0) {api_sett.rcuser = user;}
+									
+									// Namespace filter
+									var ns = document.querySelector('#targettedPatrolNS').selectedOptions[0].value;
+									if (ns !== "-99") {api_sett.rcnamespace = ns;}
+									
+									// Date-from filter
+									var df = document.querySelector('#targettedPatrolTimeStart').value.length>0 ?
+										new Date(document.querySelector('#targettedPatrolTimeStart').value) :
+										'';
+									if (!['Invalid Date', ''].includes(df)) {api_sett.rcstart = df.toISOString();}
+									
+									// Date-to filter
+									var dt = document.querySelector('#targettedPatrolTimeEnd').value.length>0 ?
+										new Date(document.querySelector('#targettedPatrolTimeEnd').value) :
+										'';
+									if (!['Invalid Date', ''].includes(dt)) {api_sett.rcend = dt.toISOString();}
+									
+									// Attempt patrol if any valid setting
+									if (Object.keys(api_sett).some(function(r){
+										return ['rcuser', 'rcnamespace', 'rcstart', 'rcend'].includes(r);
+									})) {
+										api.get(api_sett).then(function(data){
+											if (data.query.recentchanges.length>0) {
+												document.querySelector('#targettedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
+												betterDiff.patrolRevisions(
+													data.query.recentchanges,
+													document.querySelector('#targettedPatrolDetails'),
+													{
+														patrolled: 'Patrolled %patrolled% edits!',
+														open: '%open% deleted edits opened!'
+													},
+													'Patrolling %tot% edits, %curr% left...'
+												);
+											} else {
+												document.querySelector('#targettedPatrolDetails').innerHTML = 'The specified filters return no edits to patrol!';
+											}
+										});
+									} else { document.querySelector('#targettedPatrolDetails').innerHTML = 'No filter specified.'; }
+								}
 							}
 						});
-					} else { document.querySelector('#targetedPatrolDetails').innerHTML = 'No user or namespace specified.'; }
-				};
-				document.querySelector('#submitTargetedPatrol').addEventListener('click', submitPatrol);
-				document.querySelector('#targetedPatrolUser').addEventListener('keypress', function(event){ if (event.key === 'Enter') {submitPatrol();} });
+					settings.create();
+					entry.on('click', function(){settings.show();});
+					$('#tPatrol-patrol').on('change', 'input', function(ch) {
+						if (['targettedPatrolTimeEnd', 'targettedPatrolTimeStart'].includes(ch.target.id)) {
+							var date = new Date(ch.target.value);
+							var lbl = ch.target.nextElementSibling;
+							lbl.classList.toggle('bad-data', false);
+							if (ch.target.value == '') { lbl.setAttribute('title', 'No date'); }
+							else if (date == 'Invalid Date') {
+								lbl.setAttribute('title', 'Invalid date, please revise your input');
+								lbl.classList.toggle('bad-data', true);
+							} else {
+								lbl.setAttribute('title', 'Inputted date: '+date.toString());
+							}
+						}
+					});
+				});
 			} else { console.log('User does not have patrolling rights.'); }
 		},
 		
@@ -404,17 +462,19 @@ $(function() {
 			betterDiff.quickDiffLoad();
 			
 			var generateModal = function(event) {
-				betterDiff.fetchTokens();
+				betterDiff.fetchTokens(); // fetch tokens again just in case
 				var generateHeader = function(data) {
 					href = config.wgServer+mw.util.getUrl(data.totitle)+'?diff='+data.torevid;
 					var header = '';
 					var todate = new Date(data.totimestamp);
+					var urlUser;
 					
 					// Old revid
 					if (data.fromtimestamp) {
 						href += '&oldid='+data.fromrevid; // Complete diff link
 						
 						var fromdate = new Date(data.fromtimestamp);
+						urlUser = encodeURIComponent(data.fromuser.replace(/ /g, '_'));
 						header +=
 						'<td class="diff-otitle diff-side-deleted" colspan="2">'+
 							'<div id="mw-diff-otitle1">'+
@@ -432,10 +492,10 @@ $(function() {
 								'</strong>'+
 							'</div>'+
 							'<div id="mw-diff-otitle2">'+
-								'<a href="/wiki/User:'+data.fromuser+'" class="mw-userlink" title="User:'+data.fromuser+'"><bdi>'+data.fromuser+'</bdi></a> '+
+								'<a href="/wiki/User:'+urlUser+'" class="mw-userlink" title="User:'+data.fromuser+'"><bdi>'+data.fromuser+'</bdi></a> '+
 								'<span class="mw-usertoollinks">('+
-									'<a href="/wiki/Message_Wall:'+data.fromuser+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.fromuser+'">wall</a> | '+
-									'<a href="/wiki/Special:Contributions/'+data.fromuser+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.fromuser+'">contribs</a>'+
+									'<a href="/wiki/Message_Wall:'+urlUser+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.fromuser+'">wall</a> | '+
+									'<a href="/wiki/Special:Contributions/'+urlUser+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.fromuser+'">contribs</a>'+
 								')</span>'+
 							'</div>'+
 							'<div id="mw-diff-otitle3">'+
@@ -448,6 +508,7 @@ $(function() {
 					}
 					
 					// New revid
+					urlUser = encodeURIComponent(data.touser.replace(/ /g, '_'));
 					header +=
 					'<td class="diff-ntitle" colspan="'+(data.fromtimestamp ? '2' : '4')+'">'+
 						'<div id="mw-diff-ntitle1">'+
@@ -468,16 +529,16 @@ $(function() {
 							'</strong>'+
 						'</div>'+
 						'<div id="mw-diff-ntitle2">'+
-							'<a href="/wiki/User:'+data.touser+'" class="mw-userlink" title="User:'+data.touser+'"><bdi>'+data.touser+'</bdi></a> '+
+							'<a href="/wiki/User:'+urlUser+'" class="mw-userlink" title="User:'+data.touser+'"><bdi>'+data.touser+'</bdi></a> '+
 							'<span class="mw-usertoollinks">('+
-								'<a href="/wiki/Message_Wall:'+data.touser+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.touser+'">wall</a> | '+
-								'<a href="/wiki/Special:Contributions/'+data.touser+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.touser+'">contribs</a>'+
+								'<a href="/wiki/Message_Wall:'+urlUser+'" class="mw-usertoollinks-wall" title="Message Wall:'+data.touser+'">wall</a> | '+
+								'<a href="/wiki/Special:Contributions/'+urlUser+'" class="mw-usertoollinks-contribs" title="Special:Contributions/'+data.touser+'">contribs</a>'+
 							')</span> '+
 							(tokens.rollback.length>2 ? (
 								'<span class="mw-rollback-link">'+
 									'<a href="'+
 										config.wgServer+mw.util.getUrl(data.fromtitle)+
-										'?action=rollback&from='+data.touser+
+										'?action=rollback&from='+urlUser+
 										'&token='+tokens.rollback+'" '+
 										'title="&quot;Rollback&quot; reverts the last contributor\'s edit(s) to this page in one click"'+
 									'>'+
@@ -526,8 +587,8 @@ $(function() {
 				}
 				
 				api.get(api_opt).then(function(data) {
-					popup.show();
-					popup.setContent(
+					quickview.show();
+					quickview.setContent(
 						'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
 							'<colgroup>'+
 								'<col class="diff-marker">'+
@@ -544,9 +605,9 @@ $(function() {
 						'</table>'
 					);
 					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
-						popup.setTitle('Changes: '+data.compare.totitle);
+						quickview.setTitle('Changes: '+data.compare.totitle);
 					});
-					popup.setTitle('Changes: '+data.compare.totitle);
+					quickview.setTitle('Changes: '+data.compare.totitle);
 					if (can.patrol && tokens.patrol.length>2) {
 						api.get({
 							action: 'query',
@@ -631,7 +692,8 @@ $(function() {
 								(prev==0 ? 'newdiff="yes" ' : '')+
 							'>'+
 								'← Older edit'+
-							'</a>'; //prepend to existing content
+							'</a>'+
+							document.querySelector('#mw-diff-otitle4').innerHTML; //prepend to existing content
 						}
 						
 						// Build right side
@@ -646,6 +708,7 @@ $(function() {
 								'Newer edit →'+
 							'</a> '+
 							document.querySelector('#mw-diff-ntitle4').innerHTML; // prepend to any existing content
+							$('.diff-ntitle .mw-diff-edit').append('|<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?action=edit" title="'+data.totitle.replace(/"/g, '&quot;')+'">curr</a>');
 						}
 					}).catch(console.log);
 					
@@ -654,10 +717,10 @@ $(function() {
 			
 			// Build modal and start up listeners
 			mw.hook('dev.modal').add(function(Modal) {
-				popup = 
+				quickview = 
 					new Modal.Modal({
 						title: 'Quick Diff',
-						id: 'quickDiff-popup',
+						id: 'quickDiff-quickview',
 						size: 'full',
 						content: '',
 						buttons: [
@@ -697,7 +760,7 @@ $(function() {
 							OpenNext: betterDiff.openNext
 						}
 					});
-				popup.create();
+				quickview.create();
 				$(document).on('click.bdf keyup.bdf', function(event) {
 					if (
 						(event.type == 'keyup' && event.key == 'Enter') ||
@@ -791,20 +854,20 @@ $(function() {
 					}
 					var cr = r.shift();
 					if (cr.rcid && log && log == 'nosuchrevid') {
+						console.log('deleted rcid:', cr.rcid);
 						types.open++;
 						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid);
 						window.focus();
 					} else {
 						types.patrolled++;
-						console.log('tokens', tokens);
-						console.log('error msg:', log);
+						if (log) {console.log('error msg:', log);}
 					}
 					api.post({
 						action: 'patrol',
 						format: 'json',
 						revid: cr.revid,
 						token: tokens.patrol
-					}).then(patrol);
+					}).then(patrol, patrol);
 				};
 				patrol();
 			}
@@ -812,7 +875,7 @@ $(function() {
 		
 		fetchTokens: function() {
 			// Fetch rollback token, the one from API is invalid for URL use
-			if (tokens.rollback=='' && document.querySelector('.mw-rollback-link a')) {
+			if (can.rollback && tokens.rollback=='' && document.querySelector('.mw-rollback-link a')) {
 				tokens.rollback = document.querySelector('.mw-rollback-link a').href.replace(/^.+token=/, '');
 			}
 			
@@ -830,7 +893,7 @@ $(function() {
 		},
 		
 		massPatrol: function() {
-			if (document.querySelector('#quickDiff-popup.oo-ui-window-active')) {
+			if (document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
 				// continue to custom mass patrolling
 			}
 			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
@@ -889,7 +952,7 @@ $(function() {
 					console.log('api result:',data);
 				}
 			}).catch(function(err){
-				wrapper.innerHTML = '[API error, please contact <a href="/wiki/User:Mikevoir">Mikevoir</a>!]';
+				wrapper.innerHTML = '[API error!]';
 				console.log('api result:', err);
 			});
 		},
@@ -1009,11 +1072,10 @@ $(function() {
 			$(query).each(handler);
 			
 			// lazy load
-			$(window).on('DOMContentLoaded.mikeLib load.mikeLib resize.mikeLib scroll.mikeLib', function(){
+			$(window).on('DOMContentLoaded.betterDiff load.betterDiff resize.betterDiff scroll.betterDiff', function(){
 				$(query).each(handler);
 			});
 		},
-
 	};
 	
 	// Load styles and start when API is loaded

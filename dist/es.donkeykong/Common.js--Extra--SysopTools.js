@@ -3,12 +3,12 @@ function ActionDeleteLinks() {
 	var wr = $G('wpReason');
 	if (!wr) return;
 	var bc = $UT.create('input', {type:'button',value:'Borrar comentario',listener:['click',function() {$G('wpReason').value='';}]});
-	var bi = $UT.create('input', {type:'button',value:'Dejar sólo autor',listener:['click', function() {
+	var bi = $UT.create('input', {type:'button',value:'Dejar sÃ³lo autor',listener:['click', function() {
 		var t = $G('wpReason'), re = /(\[\[E?special:Contributions\/.+\|.+\]\])/ig, res = null, ma = null;
 		while ((ma = re.exec(t.value)) != null){
 			res = ma[0];
 		}
-		if (res) t.value='Único autor: '+res;
+		if (res) t.value='Ãšnico autor: '+res;
 		t.focus();
 	}]});
 	$UT.makeChildren([bc,bi], wr.parentNode);
@@ -19,8 +19,8 @@ if (wgAction == 'delete') {
 }
 
 /*
-* FileUsage: Muestra una lista de artículos donde se usa (como imagen o como enlace) un archivo al acceder a la página para borrar o renombrar el archivo.
-* Copyright (C) 2010  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* FileUsage: Muestra una lista de artÃ­culos donde se usa (como imagen o como enlace) un archivo al acceder a la pÃ¡gina para borrar o renombrar el archivo.
+* Copyright (C) 2010  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by

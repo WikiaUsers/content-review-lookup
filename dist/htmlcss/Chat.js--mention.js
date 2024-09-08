@@ -38,7 +38,7 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'Chat'){
                         });
                     }
                 }
- 
+Â 
                 var elem = '<span class="mentioned" data-user="' + name + '">';
                 elem = elem.concat(name);
                 elem = elem.concat('</span>');
@@ -47,9 +47,9 @@ if (mw.config.get('wgCanonicalSpecialPageName') == 'Chat'){
             $elem.html(string);
         }
     };
- 
+Â 
     mainRoom.model.chats.bind('afteradd', $.proxy(mainRoom.viewDiscussion.mention, mainRoom.viewDiscussion));
- 
+Â 
     $(window).on('focus', function(event){ window.focused = true; window.flash = false; document.title = window.originaltitle; });
     $(window).on('blur', function(event){ window.focused = false; });
 }

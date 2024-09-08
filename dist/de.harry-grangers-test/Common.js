@@ -54,7 +54,7 @@ $.getScript("/wiki/MediaWiki:OOJS.js?action=raw", function() {
 });
 
 $('#mw-content-text').append(
-    $('<button />').addClass('wikia-button').attr('id','wiki-add-new-section').text('Neuen Abschnitt hinzufügen').click(function() {
+    $('<button />').addClass('wikia-button').attr('id','wiki-add-new-section').text('Neuen Abschnitt hinzufÃ¼gen').click(function() {
         $('#mw-content-text').append(
             $('<input />').attr({
                 'type': 'text',
@@ -113,8 +113,8 @@ function addSection(title,content) {
 /* set global vars */
 console.time('performanceTest');
 config = {
-    userSubpages: ['Bücher','To do'],
-    ajaxPages: ['Spezial:Letzte_Änderungen'],
+    userSubpages: ['BÃ¼cher','To do'],
+    ajaxPages: ['Spezial:Letzte_Ã„nderungen'],
     AjaxRCRefreshText: 'Auto-Aktualisierung',
     AjaxRCRefreshHoverText: 'automatische Aktualisierung ohne Neuladen der kompletten Seite',
     parties: ['Slytherin','Hufflepuff','Ravenclaw','Gryffindor'],
@@ -130,8 +130,8 @@ config = {
 }
 var userSubpages = config.userSubpages;
  
-/* Variablen für das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
-ajaxPages = ['Spezial:Letzte_Änderungen'];
+/* Variablen fÃ¼r das Skript AjaxRC (siehe http://dev.wikia.com/wiki/AjaxRC) */
+ajaxPages = ['Spezial:Letzte_Ã„nderungen'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'automatische Aktualisierung ohne Neuladen der kompletten Seite';
 
@@ -382,7 +382,7 @@ addOnloadHook(function () {
 	}
 } ); */
  
-/* Sachen, die nur Administratoren und Helfern angezeigt werden (sysop.js ist ausschließlich den Administratoren vorbehalten) */
+/* Sachen, die nur Administratoren und Helfern angezeigt werden (sysop.js ist ausschlieÃŸlich den Administratoren vorbehalten) */
 /*
 if (wgUserGroups) {
     for (var g = 0; g < wgUserGroups.length; ++g) {

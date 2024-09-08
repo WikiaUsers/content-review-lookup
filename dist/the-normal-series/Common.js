@@ -1,0 +1,1 @@
+window.AddRailModule = ['Template:RailModule', 'Template:RailModule2']; // Adding that just incase if we want to include the creators twitter.

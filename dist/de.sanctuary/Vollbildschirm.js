@@ -1,13 +1,13 @@
 /************************************************************\
  Diese Funktion stammt von musik.wikia.com/wiki/MediaWiki:Common.js
- Die überarbeitete Version stammt von dem Benutzer "20M61" aus
+ Die Ã¼berarbeitete Version stammt von dem Benutzer "20M61" aus
  de.thewalkingdeadtv.wikia.com/wiki/MediaWiki:Vollbildschirm.js
 \************************************************************/
  
 /* Seite soll sich merken, wie der User seine Seitenbreite haben will */
  
 /*********************************************************\
-    Funktion bereinigt ein Zeitproblem bei Cookies (für das Schreiben von Cookies nötig)
+    Funktion bereinigt ein Zeitproblem bei Cookies (fÃ¼r das Schreiben von Cookies nÃ¶tig)
 \*********************************************************/
 function fixedGMTString(datum)
 {
@@ -18,7 +18,7 @@ function fixedGMTString(datum)
 }
  
 /*********************************************************\
-    Funktion liest Cookie aus und gibt Ergebnis zurück
+    Funktion liest Cookie aus und gibt Ergebnis zurÃ¼ck
 \*********************************************************/
 var Vollbildschirm = 'Teilbild';    // Voreinstellung ist Teilbild
  
@@ -53,12 +53,12 @@ function readFullCookie() {
         }
      }
  
-     // Anfangs- und Endposition des Krümelwerts suchen
+     // Anfangs- und Endposition des KrÃ¼melwerts suchen
      var Voll_wertAnfang = Voll_keks.indexOf("=", Voll_posName)+1;
      var Voll_wertEnde = Voll_keks.indexOf(";", Voll_posName+1);
      if (Voll_wertEnde == -1) Voll_wertEnde = Voll_keks.length;
  
-     // Krümelwert auslesen und zurückgeben
+     // KrÃ¼melwert auslesen und zurÃ¼ckgeben
      var Voll_wert = Voll_keks.substring(Voll_wertAnfang, Voll_wertEnde);
      var Voll_keksinhalt = Voll_wert .split("&");
      Vollbildschirm = Voll_keksinhalt[0];  // TV-Serie

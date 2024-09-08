@@ -1,5 +1,5 @@
-/* Az ide elhelyezett JavaScript kÛd minden felhaszn·lÛ sz·m·ra lefut az oldalak betˆltÈsekor. */
+/* Az ide elhelyezett JavaScript k√≥d minden felhaszn√°l√≥ sz√°m√°ra lefut az oldalak bet√∂lt√©sekor. */
 
-window.AjaxRCRefreshText = 'Automatikus frissÌtÈs';
-window.AjaxRCRefreshHoverText = 'FrissÌtsd ezt az oldalt automatikusan';
-window.ajaxPages = ["Speci·lis:Friss_v·ltoztat·sok","Speci·lis:WikiActivity"];
+window.AjaxRCRefreshText = 'Automatikus friss√≠t√©s';
+window.AjaxRCRefreshHoverText = 'Friss√≠tsd ezt az oldalt automatikusan';
+window.ajaxPages = ["Speci√°lis:Friss_v√°ltoztat√°sok","Speci√°lis:WikiActivity"];

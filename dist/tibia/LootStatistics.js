@@ -151,6 +151,7 @@
     'Renegade Quara Hydromancer': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Renegade Quara Pincher': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Brown)'},
     'Retros Treasure': {'Watermelon Tourmaline': 'Watermelon Tourmaline (Slice)'},
+    'Rootthing Amber Shaper': {'Amber': 'Amber (Item)'},
     'Rotten Golem': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},
     'Rotspit': {'Dung Ball': 'Dung Ball (Quest)'},
     'Seacrest Serpent': {'Giant Shimmering Pearl': 'Giant Shimmering Pearl (Green)'},

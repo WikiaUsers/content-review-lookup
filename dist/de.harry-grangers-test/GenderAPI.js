@@ -10,7 +10,7 @@ if($('.api-gender').length > 1) {
             getGender(el.text(), type, 'GB', function(data) {
                console.log(data,data.gender,el);
                if(data.gender == 'male') {
-                   data.gender = 'männlich';
+                   data.gender = 'mÃ¤nnlich';
                }
                else if(data.gender == 'female') {
                    date.gender = 'weiblich';
@@ -35,7 +35,7 @@ else if($('.api-gender').length != 0) {
            }
            console.log(data,data.gender,el);
            if(data.gender == 'male') {
-               data.gender = 'männlich';
+               data.gender = 'mÃ¤nnlich';
            }
            else if(data.gender == 'female') {
                date.gender = 'weiblich';

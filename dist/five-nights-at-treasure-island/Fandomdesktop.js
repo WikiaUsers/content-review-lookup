@@ -33,7 +33,7 @@ importScriptPage('InactiveUsers/code.js', 'dev');
 $(function addMastheadTags() {
   if ($('#UserProfileMasthead')) {
     var rights = {};
-// Burócratas
+// BurÃ³cratas
     rights["GMstudio"]  = ["Diamante"];
  
     if (wgCanonicalSpecialPageName == "Contributions") {
@@ -119,7 +119,7 @@ $(function() {
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','Votación finalizada');
+                                 .attr('value','VotaciÃ³n finalizada');
     }
 });
 

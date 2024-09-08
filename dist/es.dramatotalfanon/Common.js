@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 // Tags
  
 window.UserTagsJS = {
@@ -28,13 +28,13 @@ window.UserTagsJS = {
         threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'Drama Total Fanon Wiki:Administradores#Moderadores_de_Discusiones'},
         contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'Drama Total Fanon Wiki:Administradores#Moderadores_de_Contenido'},
         sysop: { u: 'Administrador', f: 'Administradora', link:'Drama Total Fanon Wiki:Administradores#Administradores' },
-        bureaucrat: { u:'BurÛcrata', f: 'BurÛcrata', link:'Drama Total Fanon Wiki:Administradores#Bur.C3.B3cratas' },
+        bureaucrat: { u:'Bur√≥crata', f: 'Bur√≥crata', link:'Drama Total Fanon Wiki:Administradores#Bur.C3.B3cratas' },
     }
 };
  
 UserTagsJS.modules.inactive = 30;
 
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
  
 // Importes
 importArticles({
@@ -46,7 +46,7 @@ importArticles({
     ]
 });
 
-/* Cambio de tÌtulo */
+/* Cambio de t√≠tulo */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

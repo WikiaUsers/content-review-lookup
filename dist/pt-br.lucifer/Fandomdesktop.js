@@ -4,7 +4,7 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
-// Pop-ups em Referências
+// Pop-ups em ReferÃªncias
 importScriptPage('ReferencePopups/code.js', 'dev');
 
 // Importadas da Wiki Lucifer //

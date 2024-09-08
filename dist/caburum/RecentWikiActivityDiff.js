@@ -26,7 +26,7 @@ $(function() {
 			if (!pageUrl) return;
 
 			$('<a>', {
-				'text': '±',
+				'text': 'Â±',
 				'title': 'Diff',
 				'class': 'recent-wiki-activity__page-diff',
 				'href': new mw.Uri(pageUrl).extend({ 'diff': 'latest' }),

@@ -17,7 +17,7 @@ $(function() {
 
     // FOUNDERS
 
-    rights["Kid vs kat yazmín"]         = ["Founder","Bureaucrat","Administrator","VIP"],
+    rights["Kid vs kat yazmÃ­n"]         = ["Founder","Bureaucrat","Administrator","VIP"],
 
     // BUREAUCRATS
 

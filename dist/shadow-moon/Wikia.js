@@ -173,21 +173,21 @@ $(function() {
 if ((wgAction == 'submit' || wgAction == 'edit') && mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/harrypotter/fr/images/7/7c/Outils-Personnage.png",
-		"speedTip": "Insérer le modèle {{Infobox Personnage}}",
+		"speedTip": "InsÃ©rer le modÃ¨le {{Infobox Personnage}}",
 		"tagOpen": "\{\{Infobox Personnage\r|Nom=",
-		"tagClose": "\r|Image= \r|Sexe= \r|Yeux= \r|Cheveux= \r|Naissance= \r|Mort= \r|Famille= \r|Sang= \r|Surnom(s)= \r|Baguette= \r|Epouvantard= \r|Patronus= \r|Animagus= \r|Métier= \r|Affiliation= \r|Première= \r|Dernière= \r|Interprète= \r|Galerie= \r\}\}",
+		"tagClose": "\r|Image= \r|Sexe= \r|Yeux= \r|Cheveux= \r|Naissance= \r|Mort= \r|Famille= \r|Sang= \r|Surnom(s)= \r|Baguette= \r|Epouvantard= \r|Patronus= \r|Animagus= \r|MÃ©tier= \r|Affiliation= \r|PremiÃ¨re= \r|DerniÃ¨re= \r|InterprÃ¨te= \r|Galerie= \r\}\}",
 		"sampleText": ""};
  
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/harrypotter/fr/images/7/71/Outils-Lettre.png",
-		"speedTip": "Insérer le modèle {{Infobox Lettre}}",
+		"speedTip": "InsÃ©rer le modÃ¨le {{Infobox Lettre}}",
 		"tagOpen": "\{\{Infobox Lettre\r|Nom=",
-		"tagClose": "\r|Image= \r|Expéditeur= \r|Destinataire= \r|Date= \r|Sujet= \r|Livraison= \r|Première= \r|Dernière= \r|Galerie= \r\}\}",
+		"tagClose": "\r|Image= \r|ExpÃ©diteur= \r|Destinataire= \r|Date= \r|Sujet= \r|Livraison= \r|PremiÃ¨re= \r|DerniÃ¨re= \r|Galerie= \r\}\}",
 		"sampleText": ""};
  
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/avatar/images/d/dc/Image_Button.png",
-		"speedTip": "Insérer le modèle {{Infobox Lettre}}",
+		"speedTip": "InsÃ©rer le modÃ¨le {{Infobox Lettre}}",
 		"tagOpen": "==Description==",
 		"tagClose": "\r\{\{Fichier\r|Description=\r|Date= \r|Auteur= \r|Source= \r|Licence= \r|Et plus= \r\}\}",
 		"sampleText": ""};

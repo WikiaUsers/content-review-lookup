@@ -6,8 +6,8 @@ window.ChatStatus = {
 		dibujando: "Dibujando",
 		videos: "Viendo videos",
 		comiendo: "Comiendo",
-		baño: "En el baño",
-		movil: "Desde el móvil",
+		baÃ±o: "En el baÃ±o",
+		movil: "Desde el mÃ³vil",
 		estudiando: "Estudiando",
 		juego: "Jugando"
 	},

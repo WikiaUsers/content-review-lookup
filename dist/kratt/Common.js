@@ -27,7 +27,7 @@ importScript('MediaWiki:Common.js/mosbox.js');
 /** 
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  * __NOWYSIWYG__
  */

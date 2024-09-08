@@ -28,17 +28,17 @@ importArticles({
 window.tooltips_list = [
     {
         classname: 'pokemon-tooltip',
-        parse: '{' + '{#ifeq:{' + '{Pokémon Data/Dex|name=<#pokemon#>}}|???|{' + '{#ifeq:{' + '{Pokémon Data/Dex With Modifier|name=<#pokemon#>}}|???|{' + '{#ifexist:Template:Pokémon Tooltip/<#pokemon#>|{' + '{Pokémon Tooltip/<#pokemon#>}}|<div align="center" style="width:128px"><#pokemon#><br>[[File:<#pokemon#>.png|64px]]</div>}}|{' + '{Pokémon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}|{' + '{Pokémon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}',
+        parse: '{' + '{#ifeq:{' + '{PokÃ©mon Data/Dex|name=<#pokemon#>}}|???|{' + '{#ifeq:{' + '{PokÃ©mon Data/Dex With Modifier|name=<#pokemon#>}}|???|{' + '{#ifexist:Template:PokÃ©mon Tooltip/<#pokemon#>|{' + '{PokÃ©mon Tooltip/<#pokemon#>}}|<div align="center" style="width:128px"><#pokemon#><br>[[File:<#pokemon#>.png|64px]]</div>}}|{' + '{PokÃ©mon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}|{' + '{PokÃ©mon Tooltip v2|pokemon=<#pokemon#>|modifier=<#modifier#>}}}}',
         delay: 250,
     },
     {
         classname: 'other-tooltip',
-        parse: '{' + '{#ifexist:Template:Pokémon Tooltip/<#name#>|{' + '{Pokémon Tooltip/<#name#>}}|<div align="center" style="width:128px"><#name#><br>[[File:<#name#>.png|64px]]</div>}}',
+        parse: '{' + '{#ifexist:Template:PokÃ©mon Tooltip/<#name#>|{' + '{PokÃ©mon Tooltip/<#name#>}}|<div align="center" style="width:128px"><#name#><br>[[File:<#name#>.png|64px]]</div>}}',
         delay: 250,
     },
     {
         classname: 'support-pokemon-tooltip',
-        parse: '{' + '{Support_Pokémon_Tooltip|pokemon=<#pokemon#>|modifier=<#modifier#>|megamodifier=<#megamodifier#>|level=<#level#>|SL=<#sl#>|RML=<#rml#>|MSU=<#msu#>|SS=<#ss#>|mega=<#mega#>}}',
+        parse: '{' + '{Support_PokÃ©mon_Tooltip|pokemon=<#pokemon#>|modifier=<#modifier#>|megamodifier=<#megamodifier#>|level=<#level#>|SL=<#sl#>|RML=<#rml#>|MSU=<#msu#>|SS=<#ss#>|mega=<#mega#>}}',
         delay: 250,
     },
     {
@@ -160,7 +160,7 @@ function findmatchingbrackets(string, startindex) {
 switch (mw.config.get('wgPageName')) {
     case 'Template:Test2':
         //HTML code for the Pokemon forms
-        var PDRinnerhtml = ['Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br><button id="submitpokemon" type="button" onclick="t2SubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist>'].join('');
+        var PDRinnerhtml = ['PokÃ©mon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br><button id="submitpokemon" type="button" onclick="t2SubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist>'].join('');
         
         //HTML code for the Pokemon data output
         var PDRoutputinnerhtml = ['<div id="pokemonoutput"></div>'].join('');
@@ -239,7 +239,7 @@ switch (mw.config.get('wgPageName')) {
                  ctype: 'text/plain'},
                 function(data) {
                     //Don't even continue if the page isn't a Pokemon page
-                    if (data.indexOf("[[Category:Pokémon]]") == -1) return;
+                    if (data.indexOf("[[Category:PokÃ©mon]]") == -1) return;
                     
                     //Parse the page for data
                     var name = data.match(/name \= [a-z\s0-9+\-\(\)]+/i);
@@ -307,7 +307,7 @@ switch (mw.config.get('wgPageName')) {
             );
             
             //gonna try to parse some wikitext using javascript
-            var example = "{{Pokémon_Tooltip_v2|pokemon=" + inputpokemon + "|modifier=" + inputmodifier + "}}";
+            var example = "{{PokÃ©mon_Tooltip_v2|pokemon=" + inputpokemon + "|modifier=" + inputmodifier + "}}";
             $.getJSON('http://pkmnshuffle.fandom.com/api.php?format=json&action=parse&text=' + example,
                 function(data) {
                     var innerhtml4 = data.parse.text["*"];
@@ -338,9 +338,9 @@ switch (mw.config.get('wgPageName')) {
                     var name = data.match(/name \= [a-z\s0-9+\-\(\),]+/i);
                     if (name !== null) name = name.toString().replace("name = ", "");
                     
-                    var desc = data.match(/desc \= [a-z\s0-9+\-\(\)'é,]+/i);
+                    var desc = data.match(/desc \= [a-z\s0-9+\-\(\)'Ã©,]+/i);
                     if (desc !== null) desc = desc.toString().replace("desc = ", "");
-                    var notes = data.match(/notes \= [a-z\s0-9+\-\(\)'é,\[\]\=÷×%<>:\/\.]+/i);
+                    var notes = data.match(/notes \= [a-z\s0-9+\-\(\)'Ã©,\[\]\=Ã·Ã—%<>:\/\.]+/i);
                     if (notes !== null) notes = notes.toString().replace("notes = ", "");
     
                     var rate3 = data.match(/rate3 \= [0-9]+/i);
@@ -464,7 +464,7 @@ switch (mw.config.get('wgPageName')) {
     break;
     case 'Template:ProfileCardCustomizer':
         //HTML code for the input forms
-        var inputinnerhtml = '<div id="input">Pokémon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br>Mega?: <input id="inputmega" type="checkbox"><br>Mega Modifier: <select id="inputmegamodifier"><option></option><option value="X">X</option><option value="Y">Y</option></select><br>Border: <select id="inputborder"><option value="1">Level 1</option><option value="2">Level 5</option><option value="3">Level 10</option><option value="4">Level 15</option><option value="5">Level 20</option><option value="6">Level 30</option></select><br>Profile Card?: <input id="inputprofilecard" type="checkbox" onchange="pccToggleSupports();"><br>Profile Card Color: <select id="inputprofilecardcolor"><option value="White">White</option><option value="Orange">Orange</option><option value="Pink">Pink</option><option value="Red">Red</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Rainbow">Rainbow</option><option value="Black">Black</option></select><br><button id="submitpokemon" type="button" onclick="pccSubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist></div>';
+        var inputinnerhtml = '<div id="input">PokÃ©mon: <input id="inputpokemon" list="pokemonlist" onkeypress="return clickSubmitPokemon(event);"><br>Modifier: <input id="inputmodifier" list="modifierlist" onfocus="updateModifierList();" onkeypress="return clickSubmitPokemon(event);"><br>Mega?: <input id="inputmega" type="checkbox"><br>Mega Modifier: <select id="inputmegamodifier"><option></option><option value="X">X</option><option value="Y">Y</option></select><br>Border: <select id="inputborder"><option value="1">Level 1</option><option value="2">Level 5</option><option value="3">Level 10</option><option value="4">Level 15</option><option value="5">Level 20</option><option value="6">Level 30</option></select><br>Profile Card?: <input id="inputprofilecard" type="checkbox" onchange="pccToggleSupports();"><br>Profile Card Color: <select id="inputprofilecardcolor"><option value="White">White</option><option value="Orange">Orange</option><option value="Pink">Pink</option><option value="Red">Red</option><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option><option value="Platinum">Platinum</option><option value="Rainbow">Rainbow</option><option value="Black">Black</option></select><br><button id="submitpokemon" type="button" onclick="pccSubmitPokemon()">Submit</button><datalist id="pokemonlist"></datalist><datalist id="modifierlist"></datalist></div>';
         
         var input2innerhtml = '<div id="input2" style="display:none;">Support 1: <input id="inputsupport1" onkeypress="return clickSubmitPokemon(event);"><br>Support 2: <input id="inputsupport2" onkeypress="return clickSubmitPokemon(event);"><br>Support 3: <input id="inputsupport3" onkeypress="return clickSubmitPokemon(event);"><br>Support 4: <input id="inputsupport4" onkeypress="return clickSubmitPokemon(event);"></div>';
         
@@ -572,7 +572,7 @@ switch (mw.config.get('wgPageName')) {
                 if (inputprofilecardcolor == "Black") {
                     black = "black";
                 }
-                example = '<div class="profilecard' + black + '" style="display:inline-block; position:relative; height:640px; width:400px;"><div style="position:absolute;">[[File:ProfileCard' + inputprofilecardcolor + '.png|640px|link=]]</div><div style="position:absolute; top:63px; left:72px;">[[File:IconBorder' + inputborder + '.png|100px|link=]]</div><div style="position:absolute; top:80px; left:88px;">[[File:' + name + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:210px;">[[File:' + inputsupports[0] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:290px;">[[File:' + inputsupports[1] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:370px;">[[File:' + inputsupports[2] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:450px;">[[File:' + inputsupports[3] + '.png|67px|link=]]</div><div class="profilecardnickname' + black + '" id="nickname" style="position:absolute; top:44px; left:205px; width:320px; text-align:center;"></div><div style="position:absolute; top:169px; left:66px;">Plays:</div><div style="position:absolute; top:200px; left:66px;">Pokémon caught:</div><div style="position:absolute; top:231px; left:66px;">Main stage reached:</div><div style="position:absolute; top:263px; left:66px;">Max. combo:</div><div style="position:absolute; top:294px; left:66px;">High score:</div><div style="position:absolute; top:324px; left:66px;">Best Survival Mode record:</div><div id="plays" style="position:absolute; top:169px; left:388px; width:180px; text-align:right;"></div><div id="pokemoncaught" style="position:absolute; top:200px; left:388px; width:180px; text-align:right;"></div><div id="mainscleared" style="position:absolute; top:231px; left:388px; width:180px; text-align:right;"></div><div id="maxcombo" style="position:absolute; top:263px; left:388px; width:180px; text-align:right;"></div><div id="highscore" style="position:absolute; top:294px; left:388px; width:180px; text-align:right;"></div><div id="smrecord" style="position:absolute; top:324px; left:388px; width:180px; text-align:right;"></div></div>';
+                example = '<div class="profilecard' + black + '" style="display:inline-block; position:relative; height:640px; width:400px;"><div style="position:absolute;">[[File:ProfileCard' + inputprofilecardcolor + '.png|640px|link=]]</div><div style="position:absolute; top:63px; left:72px;">[[File:IconBorder' + inputborder + '.png|100px|link=]]</div><div style="position:absolute; top:80px; left:88px;">[[File:' + name + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:210px;">[[File:' + inputsupports[0] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:290px;">[[File:' + inputsupports[1] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:370px;">[[File:' + inputsupports[2] + '.png|67px|link=]]</div><div style="position:absolute; top:90px; left:450px;">[[File:' + inputsupports[3] + '.png|67px|link=]]</div><div class="profilecardnickname' + black + '" id="nickname" style="position:absolute; top:44px; left:205px; width:320px; text-align:center;"></div><div style="position:absolute; top:169px; left:66px;">Plays:</div><div style="position:absolute; top:200px; left:66px;">PokÃ©mon caught:</div><div style="position:absolute; top:231px; left:66px;">Main stage reached:</div><div style="position:absolute; top:263px; left:66px;">Max. combo:</div><div style="position:absolute; top:294px; left:66px;">High score:</div><div style="position:absolute; top:324px; left:66px;">Best Survival Mode record:</div><div id="plays" style="position:absolute; top:169px; left:388px; width:180px; text-align:right;"></div><div id="pokemoncaught" style="position:absolute; top:200px; left:388px; width:180px; text-align:right;"></div><div id="mainscleared" style="position:absolute; top:231px; left:388px; width:180px; text-align:right;"></div><div id="maxcombo" style="position:absolute; top:263px; left:388px; width:180px; text-align:right;"></div><div id="highscore" style="position:absolute; top:294px; left:388px; width:180px; text-align:right;"></div><div id="smrecord" style="position:absolute; top:324px; left:388px; width:180px; text-align:right;"></div></div>';
             }
             
             $.getJSON('http://pkmnshuffle.fandom.com/api.php?format=json&action=parse&disablelimitreport=true&wrapoutputclass=&text=' + example,

@@ -6,10 +6,10 @@ $( document ).ready( function( $ ) {
 		var snapshot = data['snapshot'];
 		var color = data['color'];
 		
-		var noticestr = 'Letzte vollständige Aktualitätsüberprüfung ';
+		var noticestr = 'Letzte vollstÃ¤ndige AktualitÃ¤tsÃ¼berprÃ¼fung ';
 		if ( category == 'unbekannt' ) noticestr += 'unbekannt';
 		else {
-			noticestr += 'für ' + version;
+			noticestr += 'fÃ¼r ' + version;
 			if ( snapshot.length ) noticestr += ' (' + snapshot + ')';
 		}
 		

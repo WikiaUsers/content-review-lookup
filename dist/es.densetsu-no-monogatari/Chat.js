@@ -1,5 +1,5 @@
 // ************
-// Importación de las opciones del chat
+// ImportaciÃ³n de las opciones del chat
 // ************
 // Escrito por Sactage, Callofduty4 y Madnessfan34537
 var chatOptionsLoaded;
@@ -8,7 +8,7 @@ if (chatOptionsLoaded != 1){
 	importScriptPage('MediaWiki:ChatOptions/code.js', 'dev');
 }
 // ****************
-// Fin de la importación
+// Fin de la importaciÃ³n
 // ****************
 
 importArticles({

@@ -1,21 +1,21 @@
-wgSidebar['Administraci髇'] = [
-	{'Wiki_FanonMinecraft:Administraci髇#Moderadores|Moderador': [
+wgSidebar['Administraci贸n'] = [
+	{'Wiki_FanonMinecraft:Administraci贸n#Moderadores|Moderador': [
 		'Usuario:Francesdbz18|Francesdbz18'
 	]},
-	{'Wiki_FanonMinecraft:Administraci髇#Reversores|Revesores': [
+	{'Wiki_FanonMinecraft:Administraci贸n#Reversores|Revesores': [
 		'Ninguno'
 	]},
-	{'Wiki_FanonMinecraft:Administraci髇#Administradores|Administradores': [
+	{'Wiki_FanonMinecraft:Administraci贸n#Administradores|Administradores': [
 		'Usuario:DaviK|DaviK',
                 'Usuario:EnderfansZ|EnderfansZ',
                 'Usuario:Kandawalker|Kandawalker',
                 'Usuario:Danielboss98|Danielboss98'
 	]},
-	{'Wiki_FanonMinecraft:Administraci髇#Burocratas|Bur骳ratas': [
+	{'Wiki_FanonMinecraft:Administraci贸n#Burocratas|Bur贸cratas': [
                 'Usuario:EnderfansZ|EnderfansZ',
                 'Usuario:DaviK|DaviK'
 	]}
 ];
 
-/* Llamada al c骴igo para inicializar esto */
+/* Llamada al c贸digo para inicializar esto */
 $(MonobookSidebar.init);

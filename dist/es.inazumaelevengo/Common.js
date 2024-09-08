@@ -3,7 +3,7 @@ var ShowHideConfig = { linkBefore:true };
 importScriptPage('ShowHide/code.js', 'dev');
 
 // ==============================
-// BotÛn de volver arriba para p·ginas muy largas
+// Bot√≥n de volver arriba para p√°ginas muy largas
 // ==============================
  
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
@@ -51,5 +51,5 @@ if( !window.BackToTop  ) {
 var BackToTop = true; // prevent duplication
  
 // **************************************************
-//  Fin - BotÛn volver arriba
+//  Fin - Bot√≥n volver arriba
 // **************************************************

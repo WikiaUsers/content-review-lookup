@@ -1,12 +1,12 @@
-// Cualquier cÛdigo insertado aquÌ JavaScript ser· cargado para todos los usuarios
+// Cualquier c√≥digo insertado aqu√≠ JavaScript ser√° cargado para todos los usuarios
 // ------------------------------------------------------------------------------------
 
 importArticles({
     type: "script",
     articles: [
-        // 1. Mostrar im·genes duplicadas
+        // 1. Mostrar im√°genes duplicadas
         "w:c:es.ben10:MediaWiki:Common.js/DupImageList.js",
-        // 2. Res˙menes de ediciÛn
+        // 2. Res√∫menes de edici√≥n
         "MediaWiki:Common.js/resumenedicion.js"
     ]
 });
@@ -16,11 +16,11 @@ importScriptPage('MediaWiki:Common.js/nombreUsuario.js');
 importScriptPage('MediaWiki:Common.js/Clases/UtilityTools.js');
 importScriptPage('MediaWiki:Common.js/Clases/ImageSwitcher.js');
 
-// 2. Refrescar autom·ticamente p·ginas especÌficas
+// 2. Refrescar autom√°ticamente p√°ginas espec√≠ficas
  
-// AjaxRCRefreshText = 'Act. autom·t.';
-// AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
-// ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:P·ginasNuevas"];
+// AjaxRCRefreshText = 'Act. autom√°t.';
+// AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+// ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:P√°ginasNuevas"];
 // importScriptPage('AjaxRC/code.js', 'dev');
 
 // 3. Botones extras
@@ -29,7 +29,7 @@ importScript('MediaWiki:Common.js/botonesExtras.js');
 // 4. Cuenta Regresiva
 // **************************************************
 // Javascript experimental cuenta regresiva (Splarka)
-// VerciÛn 0.0.3
+// Verci√≥n 0.0.3
 // **************************************************
 //
 // Ejemplo de uso:
@@ -70,7 +70,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

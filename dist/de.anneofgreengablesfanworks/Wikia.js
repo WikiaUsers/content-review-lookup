@@ -1,6 +1,6 @@
 $(function() {
     var rights = {
-        'Klap Trap'    : ['Gründer', 'Admin', 'Bürokrat'],
+        'Klap Trap'    : ['GrÃ¼nder', 'Admin', 'BÃ¼rokrat'],
  
     },
         newrights = rights[wgTitle];

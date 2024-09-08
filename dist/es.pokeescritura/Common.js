@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
  
 function updatetimer(i) {
   var now = new Date();
@@ -31,7 +31,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -63,7 +63,7 @@ function checktimers() {
 }
 addOnloadHook(checktimers);
 
-/* CÛdigo para Collapsibletext by Bloons Wiki */
+/* C√≥digo para Collapsibletext by Bloons Wiki */
 jQuery(function($) {
     var defaultShowText = '[Show]';
     function toggle() {
@@ -83,7 +83,7 @@ jQuery(function($) {
     });
 });
 
-/* CÛdigo para el contador de visitas */
+/* C√≥digo para el contador de visitas */
 
 $(document).ready(function() {
     if (skin == 'oasis') 
@@ -94,7 +94,7 @@ $(document).ready(function() {
 
 importScriptPage('Countdown/code.js', 'dev');
 
-// Colapsible CÛdigo
+// Colapsible C√≥digo
 jQuery(function($) {
     var defaultShowText = '[Show]';
     function toggle() {
@@ -115,17 +115,17 @@ jQuery(function($) {
 });
 
 // WikiActivity & RecentChanges
-AjaxRCRefreshText = 'ActualizaciÛn Autom·tica';
-AjaxRCRefreshHoverText = 'Refrescar la p·gina autom·ticamente';
+AjaxRCRefreshText = 'Actualizaci√≥n Autom√°tica';
+AjaxRCRefreshHoverText = 'Refrescar la p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
 // **************************************************
 // NOMBRE DEL USUARIO
 // **************************************************
-// Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
 // o la [[Plantilla:NOMBREUSUARIO]]
-// TraÌda inicialmente de Uncyclopedia y corregida por 
+// Tra√≠da inicialmente de Uncyclopedia y corregida por 
 // uncyclopedia:es:user:Ciencia Al Poder ,
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // **************************************************

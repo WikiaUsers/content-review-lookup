@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 // ============================================================
 // BEGIN collapsible tables
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history

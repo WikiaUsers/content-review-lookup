@@ -9,10 +9,10 @@
  
      mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100621221310/ben10/es/images/c/cd/AP.png",
-     "speedTip": "Artículo principal",
+     "speedTip": "ArtÃ­culo principal",
      "tagOpen": "\{\{AP|",
      "tagClose": "\}\}",
-     "sampleText": "artículo"};
+     "sampleText": "artÃ­culo"};
  
  
  
@@ -26,7 +26,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "Marcar el artículo en construcción",
+     "speedTip": "Marcar el artÃ­culo en construcciÃ³n",
      "tagOpen": "\{\{Construccion|",
      "tagClose": "\}\}",
      "sampleText": "tu nombre de usuario"};
@@ -39,10 +39,10 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/0/0d/B.small.PNG",
-     "speedTip": "Pequeño",
+     "speedTip": "PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto pequeño"};
+     "sampleText": "Texto pequeÃ±o"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20101231031645/central/images/e/ed/B.sub.PNG",
@@ -76,7 +76,7 @@
      "speedTip": "Encuesta",
      "tagOpen": "<Poll>",
      "tagClose": "\n</poll>",
-     "sampleText": "\nNombre de la encuesta\nOpción 1\nOpción 2\nOpción 3"};
+     "sampleText": "\nNombre de la encuesta\nOpciÃ³n 1\nOpciÃ³n 2\nOpciÃ³n 3"};
  
  
 }

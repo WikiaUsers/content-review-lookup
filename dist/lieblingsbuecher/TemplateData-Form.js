@@ -1,4 +1,4 @@
-$.showCustomModal('Buchporträt erstellen','<form class="bpform"></form>',{
+$.showCustomModal('BuchportrÃ¤t erstellen','<form class="bpform"></form>',{
     id: 'votes-upvoters-modal',
     callback: function() {
         $.getJSON('/api.php', {
@@ -16,7 +16,7 @@ $.showCustomModal('Buchporträt erstellen','<form class="bpform"></form>',{
 			lastKey = '';
             while ((result = re.exec(template)) !== null) {
                 params[result[1].trim()] = {
-					value: (result[2] || '').trim(),
+					value: (result[2] ||Â '').trim(),
 					posFrom: result.index
                 };
 				if (lastKey.length) {
@@ -24,13 +24,13 @@ $.showCustomModal('Buchporträt erstellen','<form class="bpform"></form>',{
 					params[lastKey].posTo = result.index - 1;
 					console.log('param result', template.substr(params[lastKey].posFrom, result.index - 1), result);
                 }
-				lastKey = (result[1] || '').trim();
+				lastKey = (result[1] ||Â '').trim();
             }
 			console.log('params', params);
 			headings = {};
 			re2 = /\|(.*?)=(?:(.*?)\|)?\s\n\s?<!-+\s(.*?)\s-+>/gm;
 			while ((result = re2.exec(template)) !== null) {
-				headings[(result[1] || '').trim()] = (result[2] || '').trim();
+				headings[(result[1] ||Â '').trim()] = (result[2] ||Â '').trim();
             }
 			console.log('headings', headings);
             Object.keys(params).forEach(function(param) {

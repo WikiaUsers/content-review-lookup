@@ -1,7 +1,7 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 /******* DE WIKIDEX *******/
 /** WikiaShoutBox v1.2: Conector para el Widget ShoutBox de Wikia
- * (C) 2011 Jes˙s MartÌnez Novo [[User:Ciencia_Al_Poder]]
+ * (C) 2011 Jes√∫s Mart√≠nez Novo [[User:Ciencia_Al_Poder]]
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or

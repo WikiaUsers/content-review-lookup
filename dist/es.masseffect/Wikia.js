@@ -91,8 +91,8 @@ importScript("MediaWiki:Parallax.js");
  addOnloadHook( createCollapseButtons );
 
 
-/** AÒadiendo el enlace para discusiones en el panel de navegaciÛn **/
+/** A√±adiendo el enlace para discusiones en el panel de navegaci√≥n **/
 $(function () {
-	var a = $('<a></a>').text('Discusiones').attr({'class':'subnav-2a', title:'Acceder a la p·gina de discusiones', href:'http://es.masseffect.wikia.com/d/f', id:'discussions-menuitem'}).wrap('<li></li>');
+	var a = $('<a></a>').text('Discusiones').attr({'class':'subnav-2a', title:'Acceder a la p√°gina de discusiones', href:'http://es.masseffect.wikia.com/d/f', id:'discussions-menuitem'}).wrap('<li></li>');
 	$('#WikiHeader').children('nav').children('ul').children('li').eq(0).children('ul').append(a.parent());
 });

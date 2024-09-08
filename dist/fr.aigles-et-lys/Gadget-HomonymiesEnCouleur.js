@@ -2,23 +2,23 @@
 //
 // Source: http://hu.wikipedia.org/wiki/MediaWiki:Gadget-bkl-check.js
 //
-// Markiert Links auf Begriffskl‰rungsseiten mit der CSS-Klasse 'bkl-link',
+// Markiert Links auf Begriffskl√§rungsseiten mit der CSS-Klasse 'bkl-link',
 // sowohl in der normalen Artikelansicht als auch in der Vorschau
 //===========================================================================
  
 window.bklCheck = {
 	cat : {
-		'CatÈgorie:Homonymie' : {
+		'Cat√©gorie:Homonymie' : {
 			className   : 'bkl-link bkl-link-inner', //bkl-link-inner kept for b/c reasons
-			titleAppend : ' (Lien vers une homonymie ‡ corriger)', /*En infobulle quand on met la souris sur le lien*/
-			htmlAppend  : '' } /*c'Ètait: '<sup class="bkl-link-sup">E…</sup>'*/
-/* catÈgories qui n'existent pas chez nous
+			titleAppend : ' (Lien vers une homonymie √† corriger)', /*En infobulle quand on met la souris sur le lien*/
+			htmlAppend  : '' } /*c'√©tait: '<sup class="bkl-link-sup">E√â</sup>'*/
+/* cat√©gories qui n'existent pas chez nous
 ,
-		'CatÈgorie:Wikipedia:Falschschreibung' : {
+		'Cat√©gorie:Wikipedia:Falschschreibung' : {
 			className   : 'bkl-link bkl-link-inner',
 			titleAppend : ' (Falschschreibung)',
 			htmlAppend  : '<sup class="bkl-link-sup">FS</sup>'},
-		'CatÈgorie:Wikipedia:Obsolete Schreibung' : {
+		'Cat√©gorie:Wikipedia:Obsolete Schreibung' : {
 			className   : 'bkl-link bkl-link-inner',
 			titleAppend : ' (Obsolete Schreibung)',
 			htmlAppend  : '<sup class="bkl-link-sup">OS</sup>'}
@@ -138,7 +138,7 @@ window.bklCheck = {
 		var siteRegex = new RegExp( rxEscape( mw.config.get('wgServer') )
 			+ rxEscape( mw.config.get('wgArticlePath').replace( /\$1/, '' ) ) + '([^#]*)' );
 		//We only care for main ns pages, so we can filter out the most common cases to save some requests
-		var namespaceRegex = /^(Discussion_(utilisateur|wikipÈdia|fichier|MediaWiki|modËle|aide|catÈgorie|Portail|Projet)?|Sp[Èe]cial|Discussion):/i;
+		var namespaceRegex = /^(Discussion_(utilisateur|wikip√©dia|fichier|MediaWiki|mod√®le|aide|cat√©gorie|Portail|Projet)?|Sp[√©e]cial|Discussion):/i;
 		for ( var i = 0; i < links.length; i++ ) {
 			if ( !( m = links[i].href.match( siteRegex ) )
 				|| m[1].match( namespaceRegex ) || unique[m[1]] ) continue;
@@ -181,6 +181,6 @@ bklCheck.PreviewQuery.prototype.resultArrived = function ( res ) {
 };
  
  
-//Sauf espace de nom spÈcial et seulement pour utilisateurs connectÈs
+//Sauf espace de nom sp√©cial et seulement pour utilisateurs connect√©s
 if ( mw.config.get('wgNamespaceNumber') >= 0 && mw.config.get('wgUserName') !== null )
 	$(document).ready(bklCheck.execute);

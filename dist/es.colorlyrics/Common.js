@@ -3,12 +3,12 @@ var ShowHideConfig = { linkBefore:true };
 importScriptPage('ShowHide/code.js', 'dev');
 
 
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
-/* AÒadir botones al editar artÌculo en modo normal
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
+/* A√±adir botones al editar art√≠culo en modo normal
  */
 
 
-/* AÒadir botones extra de ediciÛn */
+/* A√±adir botones extra de edici√≥n */
 if (mwCustomEditButtons) {
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {

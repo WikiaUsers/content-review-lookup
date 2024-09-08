@@ -1,8 +1,8 @@
-/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
+/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:ExtendedNavigation/code.js' //AdiÁ„o de atÈ 5 nÌveis na barra de navegaÁ„o superior
+        'u:dev:ExtendedNavigation/code.js' //Adi√ß√£o de at√© 5 n√≠veis na barra de navega√ß√£o superior
     ]
 });
 

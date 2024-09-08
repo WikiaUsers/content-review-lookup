@@ -32,7 +32,7 @@ mw.loader.using( 'mediawiki.api', function () {
 
 				var header = document.createElement( 'h2' );
 				header.classList.add( '.rail-module__header' );
-				header.append( 'Administrar categorÌas de mantenimiento' );
+				header.append( 'Administrar categor√≠as de mantenimiento' );
 
 				var content = document.createElement( 'ul' );
 				content.classList.add( 'rail-module__list', 'is-condensed-list' );
@@ -75,7 +75,7 @@ mw.loader.using( 'mediawiki.api', function () {
 				button.addEventListener( 'click', function () {
 					var diff = document.querySelector( '#custom-maintenance-module .maintenance__diff' );
 					if ( !diff ) {
-						new BannerNotification( 'No hay ning˙n cambio para guardar.', 'warn' ).show();
+						new BannerNotification( 'No hay ning√∫n cambio para guardar.', 'warn' ).show();
 						return;
 					}
 
@@ -94,7 +94,7 @@ mw.loader.using( 'mediawiki.api', function () {
 								categoriesToRemove.push( category );
 							} else {
 								// <nowiki>
-								categoriesToAdd.push( '[[CategorÌa:' + category + ']]' );
+								categoriesToAdd.push( '[[Categor√≠a:' + category + ']]' );
 								// </nowiki>
 							}
 						}
@@ -106,7 +106,7 @@ mw.loader.using( 'mediawiki.api', function () {
 					}
 
 					var removeRegexes = categoriesToRemove.map( function ( category ) {
-						return '\\[\\[categor(y|Ìa):' + category.replace( /( |_)/, '( |_)' ) + '\\]\\]';
+						return '\\[\\[categor(y|√≠a):' + category.replace( /( |_)/, '( |_)' ) + '\\]\\]';
 					} );
 					var regex = new RegExp( '(' + removeRegexes.join( '|' ) + ')', 'gi' );
 
@@ -125,11 +125,11 @@ mw.loader.using( 'mediawiki.api', function () {
 						api.postWithToken( 'csrf', {
 							action: 'edit',
 							minor: true,
-							summary: 'ActualizaciÛn de categorÌas de mantenimiento',
+							summary: 'Actualizaci√≥n de categor√≠as de mantenimiento',
 							text: content,
 							title: cache.wgPageName
 						} ).then( function() {
-							new BannerNotification( 'Se han guardado tus cambios exitosamente. La p·gina ser· recargada en unos segundos.', 'confirm' ).show();
+							new BannerNotification( 'Se han guardado tus cambios exitosamente. La p√°gina ser√° recargada en unos segundos.', 'confirm' ).show();
 							setTimeout( function() {
 								window.location.reload();
 							}, 2000 );

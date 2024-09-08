@@ -12,23 +12,23 @@ val.value=""
 for (i=0; i<valArr.length; i++){
 val.value+= (i==0) ? "<script>\ninfo=" : ""
 val.value+= "\"" + unescape(valArr[i])
-val.value+= (i!=valArr.length-1) ? "\" + \n" : "\"\n" 
+val.value+= (i!=valArr.length-1) ? "\" + \n" : "\"\n"Â 
 }
 val.value+="\ndocument.write(info)\n<\/script>"
 }
 
 function ctrlA(el) {
 with(el){
-focus(); select() 
+focus(); select()Â 
 }
 if(document.all){
 txt=el.createTextRange()
-txt.execCommand("Copy") 
+txt.execCommand("Copy")Â 
 window.status='Selected and copied to clipboard!'
 }
 else window.status='Press ctrl-c to copy the text to the clipboard'
 setTimeout("window.status=''",3000)
-} 
+}Â 
 
 </script>
 <center>

@@ -1,4 +1,4 @@
-// Menúes desplegables con hover
+// MenÃºes desplegables con hover
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
     expandedAreaEdit: true
@@ -6,7 +6,7 @@ window.AutoEditDropdownConfig = {
 // FastDelete
 fdButtons[fdButtons.length] = {
 	'summary': ' ',
-	'label': 'Borrar este artículo'
+	'label': 'Borrar este artÃ­culo'
 };
 importArticles({
     type: 'script',
@@ -20,7 +20,7 @@ importArticles({
 function addMastheadTags() {
   var rights = {};
  
-    rights["Jockø "]         = ["Lechero"];
+    rights["JockÃ¸ "]         = ["Lechero"];
  
     if (wgCanonicalSpecialPageName == "Contributions") {
       var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");

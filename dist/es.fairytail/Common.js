@@ -1,6 +1,6 @@
 /*Cambios recientes automaticos por Pcj y Grunny */ 
-AjaxRCRefreshText = 'Actualización automatica'; 
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente'; 
+AjaxRCRefreshText = 'ActualizaciÃ³n automatica'; 
+AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente'; 
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"]; 
 
 importArticles({
@@ -19,11 +19,11 @@ importArticles({
 });
 
 /* Notificaciones */
-var WikiaNotificationMessage = "¡Participa en nuestras <a href='http://es.fairytail.wikia.com/d/f/121040/latest'>discusiones</a> sobre Fairy Tail!";
+var WikiaNotificationMessage = "Â¡Participa en nuestras <a href='http://es.fairytail.wikia.com/d/f/121040/latest'>discusiones</a> sobre Fairy Tail!";
 var WikiaNotificationexpiry = 10;
 
-// BOTONES DE EDICIÓN PERSONALIZADOS
-// Esto esta basado en el código original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICIÃ“N PERSONALIZADOS
+// Esto esta basado en el cÃ³digo original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -49,8 +49,8 @@ var WikiaNotificationexpiry = 10;
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucción",
-     "tagOpen": "{{En construcción|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+     "tagOpen": "{{En construcciÃ³n|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
 
@@ -77,10 +77,10 @@ var WikiaNotificationexpiry = 10;
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Pequeño",
+     "speedTip": "Texto PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Pequeño"};
+     "sampleText": "Texto PequeÃ±o"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",

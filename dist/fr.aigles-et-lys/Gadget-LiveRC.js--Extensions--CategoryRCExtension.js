@@ -13,18 +13,18 @@
  
 '''Extension de LiveRC'''
  
-Permet de n'afficher que les modifications faites dans une ou plusieurs catégories
+Permet de n'afficher que les modifications faites dans une ou plusieurs catÃ©gories
 
 * Licence : ...?
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
 
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
 
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
  
  
 if(typeof(Suggest_AddPageSuggestion)!="function"){
@@ -32,8 +32,8 @@ if(typeof(Suggest_AddPageSuggestion)!="function"){
 }
 
 lrcOptionMenuValues.showCatRC = true;
-lang_menu.showCatRCText = "Catégories";
-lang_messages.RCCategoryNoCat = "Vous devez sélectionner l'option « $1 » pour pouvoir filtrer par catégorie";
+lang_menu.showCatRCText = "CatÃ©gories";
+lang_messages.RCCategoryNoCat = "Vous devez sÃ©lectionner l'option Â« $1 Â» pour pouvoir filtrer par catÃ©gorie";
 
 
 function LiveRC_CategoryRC_AddButton(){    
@@ -57,10 +57,10 @@ function LiveRC_CategoryRC_AddButton(){
 LiveRC_AddHook("AfterOptions", LiveRC_CategoryRC_AddButton);
 
 var LiveRC_defaultCats = [
-    {cat:"Portail:Amérique/Articles liés", checked:true}, 
-    {cat:"Portail:Cinéma/Articles liés", checked:true}, 
-    {cat:"Portail:Europe/Articles liés", checked:true}, 
-    {cat:"Portail:Musique/Articles liés", checked:true}
+    {cat:"Portail:AmÃ©rique/Articles liÃ©s", checked:true}, 
+    {cat:"Portail:CinÃ©ma/Articles liÃ©s", checked:true}, 
+    {cat:"Portail:Europe/Articles liÃ©s", checked:true}, 
+    {cat:"Portail:Musique/Articles liÃ©s", checked:true}
 ];
 
 function LiveRC_CategoryRC_ToggleShowCatRC(showCatRC){
@@ -210,8 +210,8 @@ LiveRC_AddHook("AfterFillParamPanel", function(){
     LiveRC_ManageParams_Fill(LiveRC_defaultCats, "LiveRC_defaultCats", true);
 });
 
-lrcManageParams_Desc["DescLiveRC_defaultCats"] = new Array("Catégories par défaut", "Catégories par défaut");
-lrcManageParams_Desc["DescshowCatRC"] = new Array('Case \"Catégories\"', 'Case \"Catégories\"');
+lrcManageParams_Desc["DescLiveRC_defaultCats"] = new Array("CatÃ©gories par dÃ©faut", "CatÃ©gories par dÃ©faut");
+lrcManageParams_Desc["DescshowCatRC"] = new Array('Case \"CatÃ©gories\"', 'Case \"CatÃ©gories\"');
 /* ************************************************************************************************************************************************ */
 } // FIN IF
 

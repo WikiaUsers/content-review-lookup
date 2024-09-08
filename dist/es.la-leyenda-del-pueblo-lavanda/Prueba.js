@@ -6,7 +6,7 @@ if (wgUserGroups.indexOf('chatmoderator')!= -1) {
 				e.preventDefault();
 				var toKick = this.value.replace(/^\/banear /,'');
 				if (!$('#WikiChatList [data-user="'+toKick+'"]').length) {
-					confirm(toKick + ' no est· xd')?mainRoom.ban({name: toKick}):undefined;
+					confirm(toKick + ' no est√° xd')?mainRoom.ban({name: toKick}):undefined;
 				} else {
 					mainRoom.ban({name: toKick});
 				}

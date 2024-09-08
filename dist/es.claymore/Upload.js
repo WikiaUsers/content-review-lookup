@@ -13,7 +13,7 @@ function setupUploadForm(){
 	if ( wpLicense.length && window.location.search.indexOf('wpForReUpload=1') == -1){
 		if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)){
 			// Add link to basic form
-			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="http://es.claymore.wikia.com/index.php?title=Special:Upload&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Cambiar a la forma b醩ica</a></div>');
+			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="http://es.claymore.wikia.com/index.php?title=Special:Upload&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Cambiar a la forma b谩sica</a></div>');
  
 			// Stretch table to full width
 			$('#mw-htmlform-description').css('width', '100%');
@@ -32,22 +32,22 @@ function setupUploadForm(){
 			rows.eq(1).after('<tr><td class="mw-label" style="width: 125px;">Fuente:</td><td class="mw-input"><textarea id="sourceBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			$('#mw-htmlform-description').append('<tbody class="hidable-content"></tbody>');
 			var tbody1 = $('#mw-htmlform-description').children('tbody').eq(0);
-			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Descripci髇:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody1.append('<tr><td class="mw-label" style="width: 125px;">Descripci贸n:</td><td class="mw-input"><textarea id="descriptionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			tbody1.append('<tr><td colspan="2" style="text-align: center;">Campos adicionales <span class="hidable-button"></span></td></tr>');
  
 			// Add new optional rows
 			var tbody2 = $('#mw-htmlform-description').children('tbody').eq(1);
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Atenci髇:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Dise馻dor original / artista:</td><td class="mw-input"><textarea id="authorBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Informaci髇 de cambios / conversiones:</td><td class="mw-input"><textarea id="filespecsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Atenci贸n:</td><td class="mw-input"><textarea id="attentionBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Dise帽ador original / artista:</td><td class="mw-input"><textarea id="authorBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Informaci贸n de cambios / conversiones:</td><td class="mw-input"><textarea id="filespecsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Otras versiones:</td><td class="mw-input"><textarea id="versionsBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor韆s de artista:</td><td class="mw-input"><textarea id="catartistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor韆s de licencia:</td><td class="mw-input"><textarea id="catlicenseeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
-			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor韆s de sujeto:</td><td class="mw-input"><textarea id="catsubjectBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor铆as de artista:</td><td class="mw-input"><textarea id="catartistBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor铆as de licencia:</td><td class="mw-input"><textarea id="catlicenseeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
+			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Categor铆as de sujeto:</td><td class="mw-input"><textarea id="catsubjectBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 			tbody2.append('<tr><td class="mw-label" style="width: 125px;">Type categories:</td><td class="mw-input"><textarea id="cattypeBox" cols="60" rows="2" style="overflow: auto;"></textarea></td></tr>');
 		} else {
 			// Old style form just needs Information template in the summary box
-			$('#wpUploadDescription').val('==Sumario==\r\n{{Informaci髇\r\n|atenci髇=\r\n|descripcion=\r\n|fuente=\r\n|autor=\r\n|filespecs=\r\n|licencia=\r\n|otras versiones=\r\n|cat artista=\r\n|cat licencia=\r\n|cat sujeto=\r\n|cat tipo=\r\n}}');
+			$('#wpUploadDescription').val('==Sumario==\r\n{{Informaci贸n\r\n|atenci贸n=\r\n|descripcion=\r\n|fuente=\r\n|autor=\r\n|filespecs=\r\n|licencia=\r\n|otras versiones=\r\n|cat artista=\r\n|cat licencia=\r\n|cat sujeto=\r\n|cat tipo=\r\n}}');
  
 			// Add link to guided form
 			$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="http://es.claymore.wikia.com/index.php?title=Special:Upload" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Switch to guided upload form</a></div>');
@@ -70,8 +70,8 @@ function verifySummary(){
 		return false;
 	}
  
-	var strBuilder = '==Sumario==\r\n{{Informaci髇\r\n';
-	strBuilder += '|atenci髇=' + document.getElementById('attentionBox').value + '\r\n';
+	var strBuilder = '==Sumario==\r\n{{Informaci贸n\r\n';
+	strBuilder += '|atenci贸n=' + document.getElementById('attentionBox').value + '\r\n';
 	strBuilder += '|descripcion=' + document.getElementById('descriptionBox').value + '\r\n';
 	strBuilder += '|fuente=' + document.getElementById('sourceBox').value + '\r\n';
 	strBuilder += '|autor=' + document.getElementById('authorBox').value + '\r\n';

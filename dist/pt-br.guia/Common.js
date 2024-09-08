@@ -1,4 +1,4 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
 
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
@@ -10,16 +10,16 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
  
-/* AtualizaÁ„o autom·tica mudanÁas recentes opt-in
- * Veja w:c:dev:AjaxRC para informaÁ„o & atribuiÁ„o
+/* Atualiza√ß√£o autom√°tica mudan√ßas recentes opt-in
+ * Veja w:c:dev:AjaxRC para informa√ß√£o & atribui√ß√£o
  */
  
-AjaxRCRefreshText = 'Auto-atualizaÁ„o';
-AjaxRCRefreshHoverText = 'Atualiza a p·gina automaticamente';
+AjaxRCRefreshText = 'Auto-atualiza√ß√£o';
+AjaxRCRefreshHoverText = 'Atualiza a p√°gina automaticamente';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
  
-/** Bot„o Redirecionamento **/
+/** Bot√£o Redirecionamento **/
 addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir.png',
  'Redirecionamento',
  '#REDIRECIONAMENTO [[',
@@ -27,8 +27,8 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
  'nome do destino',
  'mw-editbutton-redirect');
 
-/** Bot„o Usu·rio **/
-addCustomButton('https://vignette.wikia.nocookie.net/guia-wikia/images/1/14/Bot%C3%A3o_Usu%C3%A1rio.png/revision/latest?cb=20150215000026&path-prefix=pt-br','Usu·rio','{{','}}','Usu·rio\n|CabeÁalho       = {{PAGENAME}}\n|Imagem          = \n|Nome            = \n|Apelidos        = \n|idade           = \n|Anivers·rio     = \n|GÍnero          = \n|Qualidades      = \n|Status          = \n|Entrada         = \n|Principal       = \n|Outras          = \n|EdiÁıesp        = \n|EdiÁıesW        = \n|Afetos          = \n|Desafetos       = \n|FamÌlia wikiana = \n|Fundador        = \n|Burocrata       = \n|Administrador   = \n|Rollback        = \n|ModeradorC      = \n|ModeradorF      = \n|Casos           = \n|Eventos         = \n','');
+/** Bot√£o Usu√°rio **/
+addCustomButton('https://vignette.wikia.nocookie.net/guia-wikia/images/1/14/Bot%C3%A3o_Usu%C3%A1rio.png/revision/latest?cb=20150215000026&path-prefix=pt-br','Usu√°rio','{{','}}','Usu√°rio\n|Cabe√ßalho       = {{PAGENAME}}\n|Imagem          = \n|Nome            = \n|Apelidos        = \n|idade           = \n|Anivers√°rio     = \n|G√™nero          = \n|Qualidades      = \n|Status          = \n|Entrada         = \n|Principal       = \n|Outras          = \n|Edi√ß√µesp        = \n|Edi√ß√µesW        = \n|Afetos          = \n|Desafetos       = \n|Fam√≠lia wikiana = \n|Fundador        = \n|Burocrata       = \n|Administrador   = \n|Rollback        = \n|ModeradorC      = \n|ModeradorF      = \n|Casos           = \n|Eventos         = \n','');
 
-/** Bot„o Comunidade **/
-addCustomButton('https://vignette.wikia.nocookie.net/guia-wikia/images/c/c3/Bot%C3%A3o_Comunidade.png/revision/latest?cb=20150215000057&path-prefix=pt-br','Comunidade','{{','}}','Comunidade\n|CabeÁalho       = {{PAGENAME}}\n|Imagem          = \n|GÍnero          = \n|FundaÁ„o        = \n|Fundador        = \n|imagens         = \n|p·ginas         = \n|Link            = \n|Burocratas      = \n|Administradores = \n|Rollbackers     = \n|ModeradoresC    = \n|ModeradoresD    = \n','');
+/** Bot√£o Comunidade **/
+addCustomButton('https://vignette.wikia.nocookie.net/guia-wikia/images/c/c3/Bot%C3%A3o_Comunidade.png/revision/latest?cb=20150215000057&path-prefix=pt-br','Comunidade','{{','}}','Comunidade\n|Cabe√ßalho       = {{PAGENAME}}\n|Imagem          = \n|G√™nero          = \n|Funda√ß√£o        = \n|Fundador        = \n|imagens         = \n|p√°ginas         = \n|Link            = \n|Burocratas      = \n|Administradores = \n|Rollbackers     = \n|ModeradoresC    = \n|ModeradoresD    = \n','');

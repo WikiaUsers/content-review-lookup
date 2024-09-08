@@ -1,10 +1,10 @@
 // OJO CON JS COMPRESSOR: en addGroup si se reducen variables, la variable 'bloque' no la reemplaza bien en todas partes
-/** * CharInsert: Caracteres y expresiones que aparecen debajo de la caja de edición para insertar en el texto. * El siguiente módulo genera regiones de texto que se pueden clickear para insertar caracteres extraños no presentes en el teclado, o conjuntos de texto útiles. Extensible por el usuario. * Detalles sobre su funcionamiento en [[w:User:Ciencia Al Poder/CharInsert]]. * Copyright (C) 2007-2009  Jesús Martínez Novo ([[User:Ciencia Al Poder]]) * * This program is free software; you can redistribute it and/or modify *   it under the terms of the GNU General Public License as published by *   the Free Software Foundation; either version 2 of the License, or *   (at your option) any later version */
+/** * CharInsert: Caracteres y expresiones que aparecen debajo de la caja de ediciÃ³n para insertar en el texto. * El siguiente mÃ³dulo genera regiones de texto que se pueden clickear para insertar caracteres extraÃ±os no presentes en el teclado, o conjuntos de texto Ãºtiles. Extensible por el usuario. * Detalles sobre su funcionamiento en [[w:User:Ciencia Al Poder/CharInsert]]. * Copyright (C) 2007-2009  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]]) * * This program is free software; you can redistribute it and/or modify *   it under the terms of the GNU General Public License as published by *   the Free Software Foundation; either version 2 of the License, or *   (at your option) any later version */
 // <pre>
 CharInsert = function(id, groups){
-	// ID del Elemento donde se generará
+	// ID del Elemento donde se generarÃ¡
 	this.bindId = id;
-	// Para agregar conjuntos de caracteres especiales, agregar nuevos identificadores a this.groups como elementos de arrays. Si el elemento es otro array, será un "elemento doble"
+	// Para agregar conjuntos de caracteres especiales, agregar nuevos identificadores a this.groups como elementos de arrays. Si el elemento es otro array, serÃ¡ un "elemento doble"
 	// ejemplo: groups["Nombre del grupo"] = ['a','b','c', ['d','e'], ['f','g'] ];
 	this.groups = groups||{};
 	this.actionPanel = null;
@@ -18,9 +18,9 @@ CharInsert.prototype = {
 		if (!this.actionPanel) {
 			return;
 		}
-		// 1. Añadimos una caja de selección según los conjuntos de caracteres que hay
+		// 1. AÃ±adimos una caja de selecciÃ³n segÃºn los conjuntos de caracteres que hay
 		var select = $UT.create('select', {id:'chargroup-select'});
-		// 1.1 Conjuntos de caracteres que ya haya en el código
+		// 1.1 Conjuntos de caracteres que ya haya en el cÃ³digo
 		var listaCharGrp = this.actionPanel.getElementsByTagName('div');
 		for (var i = 0; i < listaCharGrp.length; i++) {
 			var p = listaCharGrp[i];
@@ -28,8 +28,8 @@ CharInsert.prototype = {
 				var option = $UT.create('option', {value:p.title}, [p.title]);
 				option.groupRef = p;
 				select.appendChild(option);
-				p.title = ''; // Borramos el título para que no aparezca al pasar el mouse por encima
-				// IE Fix: la selección actual en el textarea se pierde si se hace clic en un elemento que no sea un 'a' o un elemento de formulario ('input', etc)
+				p.title = ''; // Borramos el tÃ­tulo para que no aparezca al pasar el mouse por encima
+				// IE Fix: la selecciÃ³n actual en el textarea se pierde si se hace clic en un elemento que no sea un 'a' o un elemento de formulario ('input', etc)
 				/*@cc_on 				var el = p.firstChild; 				if (el) { 					do { 						if (el.nodeType == 1 && el.tagName.toLowerCase() == 'span') { 							var inel = el.firstChild; 							if (!inel) { 								continue; 							} 							var a = $UT.create('a', {href:'#'}); 							do { 								var refinel = inel; 								inel = inel.nextSibling; 								a.appendChild(refinel); 							} while (inel); 							el.appendChild(a); 						} 					} while (el = el.nextSibling); 				} 				@*/
 				// Fin IE Fix
 			}
@@ -121,7 +121,7 @@ CharInsert.prototype = {
 	},
 	specialCharClick: function(e){
 		var charEl = $UT.getTarget(e);
-		// Obtenemos el span más externo posible, pero que descienda directamente del div de class 'chargroup'
+		// Obtenemos el span mÃ¡s externo posible, pero que descienda directamente del div de class 'chargroup'
 		// For IE patch
 		/*@cc_on 		if (charEl.parentNode.tagName.toLowerCase() == 'a') { 			charEl = charEl.parentNode; 		} 		if (charEl.tagName.toLowerCase() == 'a') { 			charEl = charEl.parentNode; 			e.returnValue = false; 		} 		@*/
 		// End IE
@@ -143,9 +143,9 @@ CharInsert.prototype = {
 		}
 	}
 };
-/**** END código CharInsert ****/
+/**** END cÃ³digo CharInsert ****/
  
-// Esto se pondría en el load, pero asumiendo que este archivo se carga después del load, se llama directamente.
+// Esto se pondrÃ­a en el load, pero asumiendo que este archivo se carga despuÃ©s del load, se llama directamente.
 if (window.postloadFunctionData && postloadFunctionData['charinsert']) {
 	new CharInsert('charinsert-block', postloadFunctionData['charinsert']);
 } else {

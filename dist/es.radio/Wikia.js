@@ -11,13 +11,13 @@ if (wgNamespaceNumber == 0) {
  }
 };
 
-/* Comentarios en artículos */
+/* Comentarios en artÃ­culos */
 if (document.getElementById('WikiaArticleComments')) {
  (function() {
   document.head.insertAdjacentHTML('afterbegin', '<meta property="fb:admins" content="100012738284067"/>');
   var cec = document.createElement('div');
   cec.id = 'WR-WDcmt';
-  cec.innerHTML = '<h2>En Wiki Radios tu voz es muy importante</h2><p>Opina sobre este artículo. Si has encontrado errores u omisiones en él, recuerda que <a href="/wiki/' + wgPageName + '?action=edit" title="Edita este artículo">tú puedes mejorarlo</a>.</p><p>Comentar usando:</p>';
+  cec.innerHTML = '<h2>En Wiki Radios tu voz es muy importante</h2><p>Opina sobre este artÃ­culo. Si has encontrado errores u omisiones en Ã©l, recuerda que <a href="/wiki/' + wgPageName + '?action=edit" title="Edita este artÃ­culo">tÃº puedes mejorarlo</a>.</p><p>Comentar usando:</p>';
   var csw = document.createElement('ul'),
    r = [
     [document.createElement('div')],

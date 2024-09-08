@@ -69,7 +69,7 @@ Object.freeze(DATETIME_FORMAT_TOKENS);
  * @constant	DATETIME_FORMAT_FULL
  * @type {Object.<string, string>}
  */
-// TODO: Add support for pluralization of full datetime units (e.g. Y: "aÒo" to Y: "aÒos")
+// TODO: Add support for pluralization of full datetime units (e.g. Y: "a√±o" to Y: "a√±os")
 const DATETIME_FORMAT_FULL = {
 	Y: I18N.of("year"),
 	M: I18N.of("month"),
@@ -84,7 +84,7 @@ Object.freeze(DATETIME_FORMAT_FULL);
  * Mapping datetime format string specifiers to localized datetime unit abbreviation.
  * Values are based on the first character of the localized datetime unit
  * (when reading from left-to-right, first character is leftmost character).
- * E.g. "Y" -> "A" in Spanish ("year" to "aÒo")
+ * E.g. "Y" -> "A" in Spanish ("year" to "a√±o")
  * @constant	DATETIME_FORMAT_ABBR
  * @type {Object.<string, string>}
  */

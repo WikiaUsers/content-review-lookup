@@ -30,17 +30,17 @@ and any degradation on the various devices.
 
 /* ***************************************
 
-     How to Navigate Common.js
+Â  Â  Â How to Navigate Common.js
 
-   ***************************************
+Â  Â ***************************************
 
 Major section headers look like this:
 
-  *******************************************************************************************
+Â  *******************************************************************************************
 
-  SECTION   Namespace:File.css
+Â  SECTIONÂ  Â Namespace:File.css
 
-  *******************************************************************************************
+Â  *******************************************************************************************
 
 There should be several main sections:
 
@@ -62,99 +62,99 @@ feature thatneeds to be loaded on page load complete.
 
 /*******************************************************************************************
 
-SECTION  Standard Functions
+SECTIONÂ  Standard Functions
 
 <nowiki>********************************************************************************************</nowiki>/
 
-function getParamValue(name) {   // Extract a URL parameter. See wikipedia:User:Lupin/autoedit.js
+function getParamValue(name) {Â  Â // Extract a URL parameter. See wikipedia:User:Lupin/autoedit.js
 
-  var regex = RegExp('[&?]' + name + '=([^&]*)');
+Â  var regex = RegExp('[&?]' + name + '=([^&]*)');
 
-  var h = document.location.href, m = regex.exec(h);
+Â  var h = document.location.href, m = regex.exec(h);
 
-  if (m) { try { return decodeURIComponent(m[1]); } catch (someError) {} }
+Â  if (m) { try { return decodeURIComponent(m[1]); } catch (someError) {} }
 
-  return null;
+Â  return null;
 
 }
 
 /** name - cookie name, value - 'on' or 'off' or whatever, exdays - expiry of cookie in days */
 
-function setCookie(name, value, exdays) {   // Sets a cookie
+function setCookie(name, value, exdays) {Â  Â // Sets a cookie
 
-  value = name + "=" + escape(value);
+Â  value = name + "=" + escape(value);
 
-  if (exdays !== null) { var d = new Date(); value += ";expires=" + d.setDate(d.getDate() + exdays).toGMTString(); }
+Â  if (exdays !== null) { var d = new Date(); value += ";expires=" + d.setDate(d.getDate() + exdays).toGMTString(); }
 
-  document.cookie = value;
+Â  document.cookie = value;
 
 }
 
 /** name - cookie name, @return - cookie or empty string */
 
-function getCookie(name) {    // Gets a cookie
+function getCookie(name) {Â  Â  // Gets a cookie
 
-  var c = document.cookie;
+Â  var c = document.cookie;
 
-  if (c.length > 0) {
+Â  if (c.length > 0) {
 
-    var s = c.indexOf(name + "=");
+Â  Â  var s = c.indexOf(name + "=");
 
-    if (s !== -1) {
+Â  Â  if (s !== -1) {
 
-      var e = c.indexOf(";", s = s + name.length + 1);
+Â  Â  Â  var e = c.indexOf(";", s = s + name.length + 1);
 
-      return unescape(c.substring(s, (e !== -1) ? e : e = c.length));
+Â  Â  Â  return unescape(c.substring(s, (e !== -1) ? e : e = c.length));
 
-    }
+Â  Â  }
 
-  }
+Â  }
 
-  return "";
+Â  return "";
 
 }
 
 // <IE10 test for bugged wikia right rail code, specifically 'relatedpages'. this is classic horrible fixup
 
-//  must be window, because caller uses 'context.addEventListener'
+//Â  must be window, because caller uses 'context.addEventListener'
 
 if (!window.addEventListener) {
 
-  window.addEventListener = window.addEventListener || function (event, callBack) {
+Â  window.addEventListener = window.addEventListener || function (event, callBack) {
 
-    event = (event === "load") ? "onreadystatechange" : "on" + event;
+Â  Â  event = (event === "load") ? "onreadystatechange" : "on" + event;
 
-    if (event === "onreadystatechange") {
+Â  Â  if (event === "onreadystatechange") {
 
-      callBack.readyStateCheck = callBack.readyStateCheck || function (e) {
+Â  Â  Â  callBack.readyStateCheck = callBack.readyStateCheck || function (e) {
 
-        if (self.readyState === "loaded") { callBack(e); }
+Â  Â  Â  Â  if (self.readyState === "loaded") { callBack(e); }
 
-      };
+Â  Â  Â  };
 
-    }
+Â  Â  }
 
-    this.attachEvent(event, (callBack.readyStateCheck || callBack));
+Â  Â  this.attachEvent(event, (callBack.readyStateCheck || callBack));
 
-  };
+Â  };
 
 }
 
 if (!window.removeEventListener) {
 
-  window.removeEventListener = window.removeEventListener || function (event, callBack) {
+Â  window.removeEventListener = window.removeEventListener || function (event, callBack) {
 
-    event = (event === "load") ? "onreadystatechange" : "on" + event;
+Â  Â  event = (event === "load") ? "onreadystatechange" : "on" + event;
 
-    this.detachEvent(event, (callBack.readyStateCheck || callBack));
+Â  Â  this.detachEvent(event, (callBack.readyStateCheck || callBack));
 
-  };
+Â  };
 
 }
 
 /*******************************************************************************************
 
-SECTION  Import
+SECTIONÂ  Import
 
 <nowiki>********************************************************************************************</nowiki>/
 
@@ -164,39 +164,39 @@ var ajaxIndicator = '<nowiki>https://images.wikia.nocookie.net/__cb1/wowwiki/ima
 
 // Import Scripts
 
-window.wwImportArticles = {              // allow other code to add imports before committing the list
+window.wwImportArticles = {Â  Â  Â  Â  Â  Â  Â  // allow other code to add imports before committing the list
 
-  type: 'script',
+Â  type: 'script',
 
-  debug: true,
+Â  debug: true,
 
-  articles: [
+Â  articles: [
 
-    'MediaWiki:jquery-ui/jquery.effects.js',  // working version of UI effects. used by 'FloatingToc' and 'SlideShow'
+Â  Â  'MediaWiki:jquery-ui/jquery.effects.js',Â  // working version of UI effects. used by 'FloatingToc' and 'SlideShow'
 
-    //'MediaWiki:Test.js',
+Â  Â  //'MediaWiki:Test.js',
 
-    'u:dev:MediaWiki:AjaxRC/code.js',         // intended as common ajax dependency for user extensions, like below
+Â  Â  'u:dev:MediaWiki:AjaxRC/code.js',Â  Â  Â  Â  Â // intended as common ajax dependency for user extensions, like below
 
-    'MediaWiki:Countdown/code.js',
+Â  Â  'MediaWiki:Countdown/code.js',
 
-    'MediaWiki:FloatingToc/code.js',          // popout TOC. static as is used nearly all pages but portals, etc...
+Â  Â  'MediaWiki:FloatingToc/code.js',Â  Â  Â  Â  Â  // popout TOC. static as is used nearly all pages but portals, etc...
 
-    'MediaWiki:Wikiaapp.js',
+Â  Â  'MediaWiki:Wikiaapp.js',
 
-    // 'MediaWiki:AjaxTables/code.js',        // ajax driven 'show table'. See 'MediaWiki:AjaxTables'
+Â  Â  // 'MediaWiki:AjaxTables/code.js',Â  Â  Â  Â  // ajax driven 'show table'. See 'MediaWiki:AjaxTables'
 
-    'MediaWiki:Map/code.js',                  // on page Map and Map lightbox support
+Â  Â  'MediaWiki:Map/code.js',Â  Â  Â  Â  Â  Â  Â  Â  Â  // on page Map and Map lightbox support
 
-    'MediaWiki:SlideShow/code.js',            // general slide show and rotating banner support See 'Template:Slideshow'
+Â  Â  'MediaWiki:SlideShow/code.js',Â  Â  Â  Â  Â  Â  // general slide show and rotating banner support See 'Template:Slideshow'
 
-    'MediaWiki:UserTags/code.js',             // user tags like "INACTIVE", "ADMINISTRATOR" or "CRAZY PERSON" on talk pages
+Â  Â  'MediaWiki:UserTags/code.js',Â  Â  Â  Â  Â  Â  Â // user tags like "INACTIVE", "ADMINISTRATOR" or "CRAZY PERSON" on talk pages
 
-    //'MediaWiki:UserTags/inactiveUsers.js',  // Merged into UserTags. Not used. MediaWiki:Wikia.js/userRightsIcons.js appears to override
+Â  Â  //'MediaWiki:UserTags/inactiveUsers.js',Â  // Merged into UserTags. Not used. MediaWiki:Wikia.js/userRightsIcons.js appears to override
 
-    //'MediaWiki:UserTags/userRightsIcons.js',// Merged into UserTags. Not used. puts things like "ADMINISTRATOR" or "CRAZY PERSON" tags on talk pages
+Â  Â  //'MediaWiki:UserTags/userRightsIcons.js',// Merged into UserTags. Not used. puts things like "ADMINISTRATOR" or "CRAZY PERSON" tags on talk pages
 
-  ]
+Â  ]
 
 };
 
@@ -204,13 +204,13 @@ window.wwImportArticles = {              // allow other code to add imports befo
 
 /*******************************************************************************************
 
-SECTION  Extensions
+SECTIONÂ  Extensions
 
 <nowiki>********************************************************************************************</nowiki>/
 
 //****************************************
 
-//****    Wowhead Tooltips            ****
+//****Â  Â  Wowhead TooltipsÂ  Â  Â  Â  Â  Â  ****
 
 //****************************************
 
@@ -222,27 +222,27 @@ var wowheadLinks = $('.wikia-wowhead-tooltip').length - 1;
 
 $('.wikia-wowhead-tooltip').each(function(index) {
 
-  var rel = $(this).attr('data-rel');
+Â  var rel = $(this).attr('data-rel');
 
-  $('a',this).attr('rel',rel);
+Â  $('a',this).attr('rel',rel);
 
-  // Once the links are converted, load the Wowhead script
+Â  // Once the links are converted, load the Wowhead script
 
-  if (index === wowheadLinks) {
+Â  if (index === wowheadLinks) {
 
-    $.getScript('//static.wowhead.com/widgets/power.js', function() {
+Â  Â  $.getScript('//static.wowhead.com/widgets/power.js', function() {
 
-      wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true };
+Â  Â  Â  wowhead_tooltips = { "colorlinks": true, "iconizelinks": true, "renamelinks": true };
 
-    });
+Â  Â  });
 
-  }
+Â  }
 
 });
 
 //****************************************
 
-//****    Tooltips                    ****
+//****Â  Â  TooltipsÂ  Â  Â  Â  Â  Â  Â  Â  Â  Â  ****
 
 //****************************************
 
@@ -266,7 +266,7 @@ var $htt;
 
 function hideTip() {
 
-  $tfb.html("").removeClass("tooltip-ready").addClass("hidden").css("visibility", "hidden");
+Â  $tfb.html("").removeClass("tooltip-ready").addClass("hidden").css("visibility", "hidden");
 
 }
 
@@ -274,11 +274,11 @@ function hideTip() {
 
 function displayTip(e) {
 
-  $htt.not(":empty").removeClass("hidden").addClass("tooltip-ready");
+Â  $htt.not(":empty").removeClass("hidden").addClass("tooltip-ready");
 
-  moveTip(e);
+Â  moveTip(e);
 
-  $htt.not(":empty").css("visibility", "visible");
+Â  $htt.not(":empty").css("visibility", "visible");
 
 }
 
@@ -286,19 +286,19 @@ function displayTip(e) {
 
 function moveTip(e) {
 
-  var newTop = e.clientY + ((e.clientY > ($(window).height() / 2)) ? -($htt.not(".hidden").innerHeight() + 20) : 20);
+Â  var newTop = e.clientY + ((e.clientY > ($(window).height() / 2)) ? -($htt.not(".hidden").innerHeight() + 20) : 20);
 
-  var newLeft = e.clientX + ((e.clientX > ($(window).width() / 2)) ? -($htt.not(".hidden").innerWidth() + 20) : 20);
+Â  var newLeft = e.clientX + ((e.clientX > ($(window).width() / 2)) ? -($htt.not(".hidden").innerWidth() + 20) : 20);
 
-  $htt.not(".hidden").css({
+Â  $htt.not(".hidden").css({
 
-    "position": "fixed",
+Â  Â  "position": "fixed",
 
-    "top": newTop + "px",
+Â  Â  "top": newTop + "px",
 
-    "left": newLeft + "px"
+Â  Â  "left": newLeft + "px"
 
-  });
+Â  });
 
 }
 
@@ -306,27 +306,27 @@ function moveTip(e) {
 
 function showTip(e) {
 
-  $t = $(this);
+Â  $t = $(this);
 
-  $p = $t.parent();
+Â  $p = $t.parent();
 
-  if ($p.hasClass("selflink") == false) {
+Â  if ($p.hasClass("selflink") == false) {
 
-    $t.removeAttr("title");
+Â  Â  $t.removeAttr("title");
 
-    $p.removeAttr("title");
+Â  Â  $p.removeAttr("title");
 
-    $tfb.load("/wiki/" + $t.data("tt").replace(/ /g, "_").replace(/\?/g, "%3F") + "?action=render div.tooltip-content", function () {
+Â  Â  $tfb.load("/wiki/" + $t.data("tt").replace(/ /g, "_").replace(/\?/g, "%3F") + "?action=render div.tooltip-content", function () {
 
-      if ($tfb.html() == "") $tfb.html('<nowiki><div class="tooltip-content"><b>Error</b></nowiki><nowiki><br /></nowiki>This target either has no tooltip<nowiki><br /></nowiki>or was not intended to have one.<nowiki></div></nowiki>');
+Â  Â  Â  if ($tfb.html() == "") $tfb.html('<nowiki><div class="tooltip-content"><b>Error</b></nowiki><nowiki><br /></nowiki>This target either has no tooltip<nowiki><br /></nowiki>or was not intended to have one.<nowiki></div></nowiki>');
 
-      $tfb.find(".tooltip-content").css("display", "");
+Â  Â  Â  $tfb.find(".tooltip-content").css("display", "");
 
-      displayTip(e);
+Â  Â  Â  displayTip(e);
 
-    });
+Â  Â  });
 
-  }
+Â  }
 
 }
 
@@ -334,15 +334,15 @@ function showTip(e) {
 
 function hideTemplateTip() {
 
-  $ttfb.html("").removeClass("tooltip-ready").addClass("hidden");
+Â  $ttfb.html("").removeClass("tooltip-ready").addClass("hidden");
 
 }
 
 function showTemplateTip(e) {
 
-  $ttfb.html('<nowiki><div class="tooltip-content">' + $(this).next().html() + '</div></nowiki>');
+Â  $ttfb.html('<nowiki><div class="tooltip-content">' + $(this).next().html() + '</div></nowiki>');
 
-  displayTip(e);
+Â  displayTip(e);
 
 }
 
@@ -350,51 +350,51 @@ function showTemplateTip(e) {
 
 function eLink(db, nm) {
 
-  dbs = new Array("<nowiki>https://us.battle.net/wow/en/search?q=</nowiki>", "<nowiki>https://www.wowhead.com/?search=</nowiki>", /*"<nowiki>https://db.mmo-champion.com/search/all/</nowiki>",*/ "<nowiki>https://www.wowdb.com/search?search=</nowiki>");
+Â  dbs = new Array("<nowiki>https://us.battle.net/wow/en/search?q=</nowiki>", "<nowiki>https://www.wowhead.com/?search=</nowiki>", /*"<nowiki>https://db.mmo-champion.com/search/all/</nowiki>",*/ "<nowiki>https://www.wowdb.com/search?search=</nowiki>");
 
-  dbTs = new Array("Armory", "Wowhead", /*"DB MMO-Champion",*/ "WoWDB");
+Â  dbTs = new Array("Armory", "Wowhead", /*"DB MMO-Champion",*/ "WoWDB");
 
-  dbHs = new Array("&amp;real; ", "&amp;omega; ", /*"&amp;delta; ",*/ "&amp;piv; ");
+Â  dbHs = new Array("&amp;real; ", "&amp;omega; ", /*"&amp;delta; ",*/ "&amp;piv; ");
 
-  el = '<nowiki><a href="' + dbs[db] + nm + '" target="_blank" title="' + dbTs[db] + '">' + dbHs[db] + '</a></nowiki>';
+Â  el = '<nowiki><a href="' + dbs[db] + nm + '" target="_blank" title="' + dbTs[db] + '">' + dbHs[db] + '</a></nowiki>';
 
-  return el;
+Â  return el;
 
 }
 
 function ttBind() {
 
-  $t = $(this);
+Â  $t = $(this);
 
-  $p = $t.parent();
+Â  $p = $t.parent();
 
-  if ($p.hasClass("selflink") == false) {
+Â  if ($p.hasClass("selflink") == false) {
 
-    $t.data("tt", $p.attr("title").replace(" (page does not exist)", "").replace("?", "%3F")).mouseover(showTip).mouseout(hideTip).mousemove(moveTip);
+Â  Â  $t.data("tt", $p.attr("title").replace(" (page does not exist)", "").replace("?", "%3F")).mouseover(showTip).mouseout(hideTip).mousemove(moveTip);
 
-    if ($p.hasClass("new")) {
+Â  Â  if ($p.hasClass("new")) {
 
-      els = '<nowiki><sup><span class="plainlinks fromWikia">';</nowiki>
+Â  Â  Â  els = '<nowiki><sup><span class="plainlinks fromWikia">';</nowiki>
 
-      y = ($t.hasClass("itemlink")) ? 0 : 1;
+Â  Â  Â  y = ($t.hasClass("itemlink")) ? 0 : 1;
 
-      z = ($t.hasClass("achievementlink")) ? 3 : 3;
+Â  Â  Â  z = ($t.hasClass("achievementlink")) ? 3 : 3;
 
-      for (x = y; x < z; x++) els += eLink(x, $t.data("tt").replace("Quest:", ""));
+Â  Â  Â  for (x = y; x < z; x++) els += eLink(x, $t.data("tt").replace("Quest:", ""));
 
-      $p.after(els + '<nowiki></span></nowiki><nowiki></sup></nowiki>');
+Â  Â  Â  $p.after(els + '<nowiki></span></nowiki><nowiki></sup></nowiki>');
 
-    }
+Â  Â  }
 
-    //if (extDB != "<nowiki>https://www.wowwiki.com/</nowiki>") {
+Â  Â  //if (extDB != "<nowiki>https://www.wowwiki.com/</nowiki>") {
 
-    //  fullextURL = extDB + $t.data("tt");
+Â  Â  //Â  fullextURL = extDB + $t.data("tt");
 
-    //  $p.attr("href", fullextURL);
+Â  Â  //Â  $p.attr("href", fullextURL);
 
-    //}
+Â  Â  //}
 
-  }
+Â  }
 
 }
 
@@ -402,79 +402,79 @@ function ttBind() {
 
 function ttMouseOver(foo) {
 
-  if (tooltipsOn && getCookie("wiki-tiploader") != "no") {
+Â  if (tooltipsOn && getCookie("wiki-tiploader") != "no") {
 
-    $("#WikiaArticle").mouseover(hideTip);
+Â  Â  $("#WikiaArticle").mouseover(hideTip);
 
-    $("#WikiaArticle").append('<nowiki><div id="tfb" class="htt"></div></nowiki><nowiki><div id="templatetfb" class="htt"><div>');</nowiki>
+Â  Â  $("#WikiaArticle").append('<nowiki><div id="tfb" class="htt"></div></nowiki><nowiki><div id="templatetfb" class="htt"><div>');</nowiki>
 
-    $tfb = $("#tfb");
+Â  Â  $tfb = $("#tfb");
 
-    $ttfb = $("#templatetfb");
+Â  Â  $ttfb = $("#templatetfb");
 
-    $htt = $("#tfb,#templatetfb");
+Â  Â  $htt = $("#tfb,#templatetfb");
 
-    if (foo == 1) {
+Â  Â  if (foo == 1) {
 
-      $("#WikiaArticle span.ajaxttlink").each(ttBind);
+Â  Â  Â  $("#WikiaArticle span.ajaxttlink").each(ttBind);
 
-    }
+Â  Â  }
 
-    $("#WikiaArticle span.tttemplatelink").mouseover(showTemplateTip).mouseout(hideTemplateTip).mousemove(moveTip);
+Â  Â  $("#WikiaArticle span.tttemplatelink").mouseover(showTemplateTip).mouseout(hideTemplateTip).mousemove(moveTip);
 
-  }
+Â  }
 
 }
 
 //****************************************
 
-//****    ScribbleMap                 ****
+//****Â  Â  ScribbleMapÂ  Â  Â  Â  Â  Â  Â  Â  Â ****
 
 //****************************************
 
 //* BROKEN?
 
-function wwScribbleMaps() {           // see Template:ScribbleMap
+function wwScribbleMaps() {Â  Â  Â  Â  Â  Â // see Template:ScribbleMap
 
-  $("#WikiaArticle div.wwSM").each(function () {
+Â  $("#WikiaArticle div.wwSM").each(function () {
 
-    var mapID = $(this).attr("class").replace("wwSM map-", ""), width = $(this).width(), height = $(this).height();
+Â  Â  var mapID = $(this).attr("class").replace("wwSM map-", ""), width = $(this).width(), height = $(this).height();
 
-    if (mapID.length > 20) mapID = ""; if (width <= 0) width = 550; if (height <= 0) height = Math.floor(width / 11 * 8);
+Â  Â  if (mapID.length > 20) mapID = ""; if (width <= 0) width = 550; if (height <= 0) height = Math.floor(width / 11 * 8);
 
-    $(this).html('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="' + width + '" height="' + height + '" id="smwidget" align="middle"><param name="allowFullScreen" value="true" /><param name="FlashVars" value="id=' + mapID + '&p=true&mt=false&d=true&z=true" /><param name="movie" value="https://widgets.scribblemaps.com/wowsmwidget.swf"/><param name="quality" value="high" /><param name="bgcolor" value="#000000" /><embed src="https://widgets.scribblemaps.com/wowsmwidget.swf" FlashVars="id=' + mapID + '&p=true&mt=false&d=true&z=true" "quality="high" bgcolor="#000000" width="' + width + '" height="' + height + '" name="smwidget" align="middle" allowFullScreen="true" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></object>');
+Â  Â  $(this).html('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="' + width + '" height="' + height + '" id="smwidget" align="middle"><param name="allowFullScreen" value="true" /><param name="FlashVars" value="id=' + mapID + '&p=true&mt=false&d=true&z=true" /><param name="movie" value="https://widgets.scribblemaps.com/wowsmwidget.swf"/><param name="quality" value="high" /><param name="bgcolor" value="#000000" /><embed src="https://widgets.scribblemaps.com/wowsmwidget.swf" FlashVars="id=' + mapID + '&p=true&mt=false&d=true&z=true" "quality="high" bgcolor="#000000" width="' + width + '" height="' + height + '" name="smwidget" align="middle" allowFullScreen="true" type="application/x-shockwave-flash" pluginspage="https://www.macromedia.com/go/getflashplayer" /></object>');
 
-  });
+Â  });
 
 }
 
 //****************************************
 
-//****    Semantic Mediawiki          ****
+//****Â  Â  Semantic MediawikiÂ  Â  Â  Â  Â  ****
 
 //****************************************
 
-// this is pretty much ineffective, as I think there is no more 'mw-data-after-content' id.  i cant find one.
+// this is pretty much ineffective, as I think there is no more 'mw-data-after-content' id.Â  i cant find one.
 
 function smwToggleFacts() {
 
-  if ($("#SMWFactToggle").text() == "hide") {
+Â  if ($("#SMWFactToggle").text() == "hide") {
 
-    $("#mw-data-after-content table.smwfacttable tr").hide();
+Â  Â  $("#mw-data-after-content table.smwfacttable tr").hide();
 
-    setCookie("hideSMWFacts", "true");
+Â  Â  setCookie("hideSMWFacts", "true");
 
-    $("#SMWFactToggle").text("show");
+Â  Â  $("#SMWFactToggle").text("show");
 
-  } else {
+Â  } else {
 
-    $("#mw-data-after-content table.smwfacttable tr").show();
+Â  Â  $("#mw-data-after-content table.smwfacttable tr").show();
 
-    setCookie("hideSMWFacts", "false");
+Â  Â  setCookie("hideSMWFacts", "false");
 
-    $("#SMWFactToggle").text("hide");
+Â  Â  $("#SMWFactToggle").text("hide");
 
-  }
+Â  }
 
 }
 
@@ -482,23 +482,23 @@ function smwToggleFacts() {
 
 function smwInitPage() {
 
-  if ($("#mw-data-after-content table.smwfacttable tr").length == 0) {
+Â  if ($("#mw-data-after-content table.smwfacttable tr").length == 0) {
 
-    $("#mw-data-after-content div.smwfact").hide();
+Â  Â  $("#mw-data-after-content div.smwfact").hide();
 
-  } else {
+Â  } else {
 
-    $("#mw-data-after-content span.smwrdflink").after('<nowiki><span style="float:right;">[<a href="javascript:;" onClick="smwToggleFacts();" id="SMWFactToggle">hide</a></nowiki>] <nowiki>&</nowiki>nbsp;<nowiki></span></nowiki>');
+Â  Â  $("#mw-data-after-content span.smwrdflink").after('<nowiki><span style="float:right;">[<a href="javascript:;" onClick="smwToggleFacts();" id="SMWFactToggle">hide</a></nowiki>] <nowiki>&</nowiki>nbsp;<nowiki></span></nowiki>');
 
-  }
+Â  }
 
-  if (getCookie("hideSMWFacts") == "true") { smwToggleFacts(); }
+Â  if (getCookie("hideSMWFacts") == "true") { smwToggleFacts(); }
 
 }
 
 //****************************************
 
-//****    Tabber                      ****
+//****Â  Â  TabberÂ  Â  Â  Â  Â  Â  Â  Â  Â  Â  Â  ****
 
 //****************************************
 
@@ -508,11 +508,11 @@ function smwInitPage() {
 
 function wwTabberInit() {
 
-  var tabbers = $(".tabber");
+Â  var tabbers = $(".tabber");
 
-  if (tabbers.length == 0) return;
+Â  if (tabbers.length == 0) return;
 
-  window.wwImportArticles.articles.push('MediaWiki:Tabber/code.js');
+Â  window.wwImportArticles.articles.push('MediaWiki:Tabber/code.js');
 
 }
 
@@ -520,7 +520,7 @@ function wwTabberInit() {
 
 //****************************************
 
-//****    TwitterFeed                 ****
+//****Â  Â  TwitterFeedÂ  Â  Â  Â  Â  Â  Â  Â  Â ****
 
 //****************************************
 
@@ -528,31 +528,31 @@ function wwTabberInit() {
 
 function wwTwitterFeedInit() {
 
-  var twitters = $(".twitter-timeline");
+Â  var twitters = $(".twitter-timeline");
 
-  if (twitters.length == 0) return;
+Â  if (twitters.length == 0) return;
 
-  twitters.each(function () { // fix the stupid twitter api attribute thing
+Â  twitters.each(function () { // fix the stupid twitter api attribute thing
 
-    var feed = $(this);
+Â  Â  var feed = $(this);
 
-    var w = feed.data('tt-width'); if (w) feed.attr('width', w);
+Â  Â  var w = feed.data('tt-width'); if (w) feed.attr('width', w);
 
-    var h = feed.data('tt-height'); if (h) feed.attr('height', h);
+Â  Â  var h = feed.data('tt-height'); if (h) feed.attr('height', h);
 
-    var a = feed.data('tt-id'); if (a) feed.attr('href', '<nowiki>https://twitter.com/'</nowiki> + a);
+Â  Â  var a = feed.data('tt-id'); if (a) feed.attr('href', '<nowiki>https://twitter.com/'</nowiki> + a);
 
-  });
+Â  });
 
-  if ($("#twitter-wjs").length == 0) { $(window.document.head)
+Â  if ($("#twitter-wjs").length == 0) { $(window.document.head)
 
-    .append('<script id="twitter-wjs" src="https://platform.twitter.com/widgets.js"></script>'); }
+Â  Â  .append('<script id="twitter-wjs" src="https://platform.twitter.com/widgets.js"></script>'); }
 
 }
 
 //****************************************
 
-//****    GoogleChart                 ****
+//****Â  Â  GoogleChartÂ  Â  Â  Â  Â  Â  Â  Â  Â ****
 
 //****************************************
 
@@ -560,35 +560,35 @@ function wwTwitterFeedInit() {
 
 function wwGoogleChartInit() {
 
-  var charts = $(".ww-googlechart");
+Â  var charts = $(".ww-googlechart");
 
-  if (charts.length == 0) return;
+Â  if (charts.length == 0) return;
 
-  charts.each(function () {
+Â  charts.each(function () {
 
-    var chart = $(this);
+Â  Â  var chart = $(this);
 
-    var w = chart.data('gc-width');
+Â  Â  var w = chart.data('gc-width');
 
-    var h = chart.data('gc-height');
+Â  Â  var h = chart.data('gc-height');
 
-    var o = chart.data('gc-options');
+Â  Â  var o = chart.data('gc-options');
 
-    if (o) {
+Â  Â  if (o) {
 
-      o = '<nowiki>https://chart.apis.google.com/chart?'</nowiki> + o;
+Â  Â  Â  o = '<nowiki>https://chart.apis.google.com/chart?'</nowiki> + o;
 
-      $('<a href="' + o + '"><img width="' + w + '" height="' + h + '" src="' + o + '"/></a>').appendTo(chart);
+Â  Â  Â  $('<a href="' + o + '"><img width="' + w + '" height="' + h + '" src="' + o + '"/></a>').appendTo(chart);
 
-    }
+Â  Â  }
 
-  });
+Â  });
 
 }
 
 /*******************************************************************************************
 
-SECTION  Functions
+SECTIONÂ  Functions
 
 <nowiki>********************************************************************************************</nowiki>/
 
@@ -596,129 +596,129 @@ SECTION  Functions
 
 function wwRequireImageLicense() {
 
-  if (wgPageName != "Special:Upload" || getParamValue("wpDestFile") != null) return;
+Â  if (wgPageName != "Special:Upload" || getParamValue("wpDestFile") != null) return;
 
-  $wpu = $("#mw-upload-form").find("[name=wpUpload]").not("#wpUpload");
+Â  $wpu = $("#mw-upload-form").find("[name=wpUpload]").not("#wpUpload");
 
-  $wpu.attr("disabled", "true");
+Â  $wpu.attr("disabled", "true");
 
-  $("#wpLicense").change(function () {
+Â  $("#wpLicense").change(function () {
 
-    if ($("#wpLicense").val()) {
+Â  Â  if ($("#wpLicense").val()) {
 
-      $wpu.removeAttr("disabled");
+Â  Â  Â  $wpu.removeAttr("disabled");
 
-    } else {
+Â  Â  } else {
 
-      $wpu.attr("disabled", "true");
+Â  Â  Â  $wpu.attr("disabled", "true");
 
-    }
+Â  Â  }
 
-  });
+Â  });
 
 }
 
 function wwDuplicateImages(gf) {
 
-  if ($("#mw-dupimages").length == 0) return;
+Â  if ($("#mw-dupimages").length == 0) return;
 
-  var dil = window.ww.dil = window.ww.dil || [];
+Â  var dil = window.ww.dil = window.ww.dil || [];
 
-  $.getJSON('/api.php?action=query&generator=allimages&prop=duplicatefiles&gailimit=500&format=json' + ((gf) ? ('&gaifrom=' + gf) : <nowiki>''</nowiki>), function (data) {
+Â  $.getJSON('/api.php?action=query&generator=allimages&prop=duplicatefiles&gailimit=500&format=json' + ((gf) ? ('&gaifrom=' + gf)Â : <nowiki>''</nowiki>), function (data) {
 
-    if (!data.query) return;
+Â  Â  if (!data.query) return;
 
-    var pages = data.query.pages, output = "";
+Â  Â  var pages = data.query.pages, output = "";
 
-    for (pageID in pages) {
+Â  Â  for (pageID in pages) {
 
-      var dils = "," + dil.join();
+Â  Â  Â  var dils = "," + dil.join();
 
-      if (dils.indexOf("," + pages[pageID].title) == -1 && pages[pageID].title.indexOf("File::") == -1 && pages[pageID].duplicatefiles) {
+Â  Â  Â  if (dils.indexOf("," + pages[pageID].title) == -1 && pages[pageID].title.indexOf("File::") == -1 && pages[pageID].duplicatefiles) {
 
-        output += "<nowiki><h3><a href='/" + pages[pageID].title + "'>" + pages[pageID].title + "</a></nowiki><nowiki></h3></nowiki>\n<nowiki><ul>\n";</nowiki>
+Â  Â  Â  Â  output += "<nowiki><h3><a href='/" + pages[pageID].title + "'>" + pages[pageID].title + "</a></nowiki><nowiki></h3></nowiki>\n<nowiki><ul>\n";</nowiki>
 
-        for (x = 0; x < pages[pageID].duplicatefiles.length; x++) {
+Â  Â  Â  Â  for (x = 0; x < pages[pageID].duplicatefiles.length; x++) {
 
-          output += "<nowiki><li><a href='/File:" + pages[pageID].duplicatefiles[x].name + "'>File:" + pages[pageID].duplicatefiles[x].name + "</a></nowiki><nowiki></li></nowiki>\n";
+Â  Â  Â  Â  Â  output += "<nowiki><li><a href='/File:" + pages[pageID].duplicatefiles[x].name + "'>File:" + pages[pageID].duplicatefiles[x].name + "</a></nowiki><nowiki></li></nowiki>\n";
 
-          dil.push("File:" + pages[pageID].duplicatefiles[x].name.replace(/_/g, " "));
+Â  Â  Â  Â  Â  dil.push("File:" + pages[pageID].duplicatefiles[x].name.replace(/_/g, " "));
 
-        }
+Â  Â  Â  Â  }
 
-        output += "<nowiki></ul></nowiki>\n\n"
+Â  Â  Â  Â  output += "<nowiki></ul></nowiki>\n\n"
 
-      }
+Â  Â  Â  }
 
-    }
+Â  Â  }
 
-    $("#mw-dupimages").append(output);
+Â  Â  $("#mw-dupimages").append(output);
 
-    if (data["query-continue"]) setTimeout("wwDuplicateImages('" + data["query-continue"].allimages.gaifrom + "');", 5000);
+Â  Â  if (data["query-continue"]) setTimeout("wwDuplicateImages('" + data["query-continue"].allimages.gaifrom + "');", 5000);
 
-  });
+Â  });
 
 }
 
 function wwGuildList() {
 
-  if ($("#gslist").length == 0) return;
+Â  if ($("#gslist").length == 0) return;
 
-  function sortDays(a, b) { return b.substring(b.indexOf(";") + 1) - a.substring(a.indexOf(";") + 1); }
+Â  function sortDays(a, b) { return b.substring(b.indexOf(";") + 1) - a.substring(a.indexOf(";") + 1); }
 
-  var dateRE = /(\d{4})-(\d\d)-(\d\d).*/, tsDate = new Date(), today = new Date();
+Â  var dateRE = /(\d{4})-(\d\d)-(\d\d).*/, tsDate = new Date(), today = new Date();
 
-  var pArr = [];
+Â  var pArr = [];
 
-  $.getJSON("<nowiki>https://www.wowwiki.com/api.php?action=query&generator=categorymembers&gcmlimit=500&gcmsort=timestamp&gcmdir=desc&gcmtitle=Category:Guild_stubs&prop=revisions&rvprop=timestamp&format=json&callback=</nowiki>?", function (data) {
+Â  $.getJSON("<nowiki>https://www.wowwiki.com/api.php?action=query&generator=categorymembers&gcmlimit=500&gcmsort=timestamp&gcmdir=desc&gcmtitle=Category:Guild_stubs&prop=revisions&rvprop=timestamp&format=json&callback=</nowiki>?", function (data) {
 
-    if (!data.query) return;
+Â  Â  if (!data.query) return;
 
-    var pages = data.query.pages;
+Â  Â  var pages = data.query.pages;
 
-    for (pageID in pages) {
+Â  Â  for (pageID in pages) {
 
-      var timestamp = pages[pageID].revisions[0].timestamp;
+Â  Â  Â  var timestamp = pages[pageID].revisions[0].timestamp;
 
-      var dateREd = dateRE.exec(timestamp);
+Â  Â  Â  var dateREd = dateRE.exec(timestamp);
 
-      tsDate.setFullYear(dateREd[1], dateREd[2] - 1, dateREd[3]);
+Â  Â  Â  tsDate.setFullYear(dateREd[1], dateREd[2] - 1, dateREd[3]);
 
-      var daysElapsed = Math.round((today - tsDate) / 86400000);
+Â  Â  Â  var daysElapsed = Math.round((today - tsDate) / 86400000);
 
-      pArr[pArr.length] = pages[pageID].title + ";" + daysElapsed;
+Â  Â  Â  pArr[pArr.length] = pages[pageID].title + ";" + daysElapsed;
 
-    }
+Â  Â  }
 
-    var pArr2 = pArr.sort(sortDays);
+Â  Â  var pArr2 = pArr.sort(sortDays);
 
-    var gslBuffer = "<nowiki><ul>";</nowiki>
+Â  Â  var gslBuffer = "<nowiki><ul>";</nowiki>
 
-    for (n in pArr2) {
+Â  Â  for (n in pArr2) {
 
-      var guild = pArr2[n].substring(0, pArr2[n].indexOf(";"));
+Â  Â  Â  var guild = pArr2[n].substring(0, pArr2[n].indexOf(";"));
 
-      var daysE = pArr2[n].substring(pArr2[n].indexOf(";") + 1);
+Â  Â  Â  var daysE = pArr2[n].substring(pArr2[n].indexOf(";") + 1);
 
-      daysE = (daysE < 0) ? 0 : daysE;
+Â  Â  Â  daysE = (daysE < 0) ? 0 : daysE;
 
-      daysE = (daysE > 29) ? '<nowiki><span style="color:red;">(' + daysE + ' days)</span></nowiki>' : '(' + daysE + ' days)';
+Â  Â  Â  daysE = (daysE > 29) ? '<nowiki><span style="color:red;">(' + daysE + ' days)</span></nowiki>'Â : '(' + daysE + ' days)';
 
-      gslBuffer += '<nowiki><li><a href="/' + guild + '" title="' + guild + '">' + guild + '</a></nowiki> ' + daysE + ' - <nowiki><a href="/' + guild + '?action=history">History</a></nowiki> <nowiki>&</nowiki>bull; <nowiki><a href="/' + guild + '?action=delete">Delete</a></nowiki><nowiki></li></nowiki>';
+Â  Â  Â  gslBuffer += '<nowiki><li><a href="/' + guild + '" title="' + guild + '">' + guild + '</a></nowiki> ' + daysE + ' - <nowiki><a href="/' + guild + '?action=history">History</a></nowiki> <nowiki>&</nowiki>bull; <nowiki><a href="/' + guild + '?action=delete">Delete</a></nowiki><nowiki></li></nowiki>';
 
-    }
+Â  Â  }
 
-    gslBuffer += "<nowiki></ul></nowiki>";
+Â  Â  gslBuffer += "<nowiki></ul></nowiki>";
 
-    $("#gslist").html(gslBuffer);
+Â  Â  $("#gslist").html(gslBuffer);
 
-  });
+Â  });
 
 }
 
 /*******************************************************************************************
 
-SECTION  Startup
+SECTIONÂ  Startup
 
 <nowiki>********************************************************************************************</nowiki>/
 
@@ -726,85 +726,85 @@ SECTION  Startup
 
 (function () {
 
-  window.ww = window.ww || {};      // ensure has ww JS table, as curtesy for funcs on this page
+Â  window.ww = window.ww || {};Â  Â  Â  // ensure has ww JS table, as curtesy for funcs on this page
 
-  /* wwTabberInit(); */
+Â  /* wwTabberInit(); */
 
-  wwTwitterFeedInit();
+Â  wwTwitterFeedInit();
 
-  wwGoogleChartInit();
+Â  wwGoogleChartInit();
 
 }());
 
 // Startup on DOM ready
 
-//   Needs cleanup badly.
+//Â  Â Needs cleanup badly.
 
 $(function () {
 
-  // Part of AJAX RC Comment out when using dev.wikia.com version
+Â  // Part of AJAX RC Comment out when using dev.wikia.com version
 
-  //for (x in ajaxPages) { if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) ajaxRC(); }
+Â  //for (x in ajaxPages) { if (wgPageName == ajaxPages[x] && $("#ajaxToggle").length==0) ajaxRC(); }
 
-  if (wgPageName == "Special:Upload") { wwRequireImageLicense(); }
+Â  if (wgPageName == "Special:Upload") { wwRequireImageLicense(); }
 
-  if (wgPageName == "WoWWiki:Guild_list") { wwGuildList(); }
+Â  if (wgPageName == "WoWWiki:Guild_list") { wwGuildList(); }
 
-  if (wgPageName == "WoWWiki:Duplicate_image_search") { wwDuplicateImages(); }
+Â  if (wgPageName == "WoWWiki:Duplicate_image_search") { wwDuplicateImages(); }
 
-  if (wgUserName != null) { $(".insertusername").html(wgUserName); }
+Â  if (wgUserName != null) { $(".insertusername").html(wgUserName); }
 
-  /*
+Â  /*
 
-  if ($(".smwfacttable").length > 0) { console.log("found: .smwfacttable"); }
+Â  if ($(".smwfacttable").length > 0) { console.log("found: .smwfacttable"); }
 
-  if ($("#mw-data-after-content").length > 0) { console.log("found: #mw-data-after-content"); }
+Â  if ($("#mw-data-after-content").length > 0) { console.log("found: #mw-data-after-content"); }
 
-  if ($("#SMWFactToggle").length > 0) { console.log("found: #SMWFactToggle"); }
+Â  if ($("#SMWFactToggle").length > 0) { console.log("found: #SMWFactToggle"); }
 
-  if ($(".smwrdflink").length > 0) { console.log("found: .smwrdflink"); }
+Â  if ($(".smwrdflink").length > 0) { console.log("found: .smwrdflink"); }
 
-  if ($(".smwfact").length > 0) { console.log("found: .smwfact"); }
+Â  if ($(".smwfact").length > 0) { console.log("found: .smwfact"); }
 
-  */
+Â  */
 
-  if ($("#mw-data-after-content").length > 0) { smwInitPage(); }
+Â  if ($("#mw-data-after-content").length > 0) { smwInitPage(); }
 
-  ttMouseOver(1);
+Â  ttMouseOver(1);
 
-  wwScribbleMaps();
+Â  wwScribbleMaps();
 
-  // Make Wowhead 3D model viewer button links open a new tab when clicked.
+Â  // Make Wowhead 3D model viewer button links open a new tab when clicked.
 
-  $('a[href*="modelviewer"]').attr({ target: '_blank' });
+Â  $('a[href*="modelviewer"]').attr({ target: '_blank' });
 
 });
 
 //****************************************
 
-//****    Loaders                     ****
+//****Â  Â  LoadersÂ  Â  Â  Â  Â  Â  Â  Â  Â  Â  Â ****
 
 //****************************************
 
 /* Load Loaders that were registered and just waiting for mw and jq to run their own
 
-   boot-strap functionality. There's a very long detailed reason for yet another loader. */
+Â  Â boot-strap functionality. There's a very long detailed reason for yet another loader. */
 
 (function() {
 
-  var loaders = window.wwLoaders;
+Â  var loaders = window.wwLoaders;
 
-  if (!loaders) return;
+Â  if (!loaders) return;
 
-  for (var i=0, l=loaders.length; i < l; i++)
+Â  for (var i=0, l=loaders.length; i < l; i++)
 
-  {
+Â  {
 
-    var loader = loaders[i];
+Â  Â  var loader = loaders[i];
 
-    if (typeof loader == 'function') { loader(); }
+Â  Â  if (typeof loader == 'function') { loader(); }
 
-  }
+Â  }
 
 }());
 
@@ -812,14 +812,14 @@ $(function () {
 
 (function() {
 
-  var imports = window.wwImportArticles;
+Â  var imports = window.wwImportArticles;
 
-  if (!imports) return;
+Â  if (!imports) return;
 
-  var articles = imports.articles;
+Â  var articles = imports.articles;
 
-  if (!articles || articles.length == 0) return;
+Â  if (!articles || articles.length == 0) return;
 
-  importArticles( imports );
+Â  importArticles( imports );
 
 }());<div></div>

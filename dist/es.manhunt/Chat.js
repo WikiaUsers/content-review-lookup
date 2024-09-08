@@ -33,7 +33,7 @@ $(document).ready(function() {
       if (chat.attributes.text.indexOf("has joined") != -1) {
          var joiningUser = chat.attributes.text.substr(0, chat.attributes.text.indexOf(" ha ingresado al chat"));
  
-         joinMessages = new Array(""+joiningUser+" ingresó a la masacre.");
+         joinMessages = new Array(""+joiningUser+" ingresÃ³ a la masacre.");
  
          $("#entry-"+chat.cid).text(joinMessages[Math.floor((Math.random()*joinMessages.length))]);
       }

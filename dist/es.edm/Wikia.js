@@ -20,7 +20,7 @@
 (function () {
         "use strict";
         var userRightsList = {
-            "Tono555": ["BurÛcrata"]
+            "Tono555": ["Bur√≥crata"]
         };
  
         if ($('.masthead-info hgroup').length) {
@@ -34,9 +34,9 @@
         }
     }());
 
-/* NotificaciÛn */
+/* Notificaci√≥n */
 
-var WikiaNotificationMessage = "Las solicitudes de Administrador, Moderador y Reversor est·n abiertas, ve y <a href='/wiki/Project:Administradores'>solicita</a> el rango que quieras :)";
+var WikiaNotificationMessage = "Las solicitudes de Administrador, Moderador y Reversor est√°n abiertas, ve y <a href='/wiki/Project:Administradores'>solicita</a> el rango que quieras :)";
 importScriptPage('WikiaNotification/code.js', 'dev');
 $(function() {
 

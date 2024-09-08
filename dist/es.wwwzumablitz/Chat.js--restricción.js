@@ -8,7 +8,7 @@
     window.chatRestr.enableMessage = 1;
  
     // Message that appears. Links cannot be used in this message.
-    window.chatRestr.undereditMessage = "¡Hola "+ wgUserName+"! Gracias por querer entrar al chat de Super Mario Wiki. Lamentablemente, necesitas ser un editor activo en el wiki para entrar. Nuestras reglas (que las puedes encontrar en  http://es.mario.wikia.com/wiki/Super_Mario_Wiki:Reglas) dicen que requieres 2 ediciones en páginas para poder entrar en el chat.";
+    window.chatRestr.undereditMessage = "Â¡Hola "+ wgUserName+"! Gracias por querer entrar al chat de Super Mario Wiki. Lamentablemente, necesitas ser un editor activo en el wiki para entrar. Nuestras reglas (que las puedes encontrar en  http://es.mario.wikia.com/wiki/Super_Mario_Wiki:Reglas) dicen que requieres 2 ediciones en pÃ¡ginas para poder entrar en el chat.";
  
  
     // Enable redirect (1 = enabled, 0 = disabled)

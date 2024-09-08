@@ -11,7 +11,7 @@ importArticles({
 	]
 });
  
-// Activación de los Tags //
+// ActivaciÃ³n de los Tags //
 var chatags = { 
     images: true, 
     videos: true 
@@ -29,11 +29,11 @@ window.ChatStatus = {
 		draw: "Dibujando",
 		game: "Jugando",
 		tv: "Viendo videos",
-		music: "Escuchando música",
+		music: "Escuchando mÃºsica",
 		anime: "Viendo anime",
 		looking: "Observando",
 		boredom: "Flojeando",
-		kawaii: "Haciéndose kawaii"
+		kawaii: "HaciÃ©ndose kawaii"
 	},
 	debug: false
 };

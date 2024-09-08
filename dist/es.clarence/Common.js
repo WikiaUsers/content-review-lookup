@@ -1,8 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
-//Mensaje autom·tico bloqueado
+//Mensaje autom√°tico bloqueado
 var MessageBlock = {
     title : 'Bloqueado.',
-    message : 'Usted ha sido bloqueado por $2 por la(s) siguiente razÛn(es): "$1"',
+    message : 'Usted ha sido bloqueado por $2 por la(s) siguiente raz√≥n(es): "$1"',
     autocheck : true
 };
 
@@ -75,7 +75,7 @@ if ( wgIsArticle ) {
         AC();
         $('#article-comments .spoiler.on').each(spoilerConfig);
         fixPagination();
-        $('#article-comm').attr('placeholder', 'Recuerda, no est· permitido filtrar informaciÛn! Si no est·s seguro sobre lo que es y no es filrado, contacta a un administrador.');
+        $('#article-comm').attr('placeholder', 'Recuerda, no est√° permitido filtrar informaci√≥n! Si no est√°s seguro sobre lo que es y no es filrado, contacta a un administrador.');
     };
 }
  
@@ -136,10 +136,10 @@ $(function UserNameReplace() {
  
 /* End of the {{USERNAME}} replacement */
  
-// AÒade [[ CategorÌa: Im·genes]] @ im·genes autom·ticamente
+// A√±ade [[ Categor√≠a: Im√°genes]] @ im√°genes autom√°ticamente
  
 if(wgPageName == 'Special:Upload' || wgPageName == 'Special:MultipleUpload') {
-$('#wpUploadDescription').val('[[CategorÌa:Im·genes]]');
+$('#wpUploadDescription').val('[[Categor√≠a:Im√°genes]]');
 }
 
 //UserTags config

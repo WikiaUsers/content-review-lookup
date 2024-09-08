@@ -97,13 +97,13 @@ window.MessageWallUserTags = {
     users: {
         'Barneymiller123abc': 'Representative',
         'DublynT': 'Bureaucrat',
-        'HiccstridFan92': 'Admin',
-        'Tauriel_the_Elf': 'Admin',
+        'Tauriel the Elf': 'Admin',
+        'Venea Ainis': 'Moderator',
         'NarendraMartosudarmo': 'Moderator',
         'Thorndrum': 'Moderator',
-        'Nuttetuff': 'Moderator',
-        'How To Train Your Deathsong': 'Moderator',
-        'Ladybrasa': 'Moderator'
+        'Ladybrasa': 'Moderator',
+        'Keru The Night Fury': 'Moderator',
+        'DragonEyeMysteries': 'Moderator'
     }
 };
 

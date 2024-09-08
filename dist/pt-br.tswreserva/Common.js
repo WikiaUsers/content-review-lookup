@@ -1,4 +1,4 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
  
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
@@ -10,16 +10,16 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
  
-/* AtualizaÁ„o autom·tica mudanÁas recentes opt-in
- * Veja w:c:dev:AjaxRC para informaÁ„o & atribuiÁ„o
+/* Atualiza√ß√£o autom√°tica mudan√ßas recentes opt-in
+ * Veja w:c:dev:AjaxRC para informa√ß√£o & atribui√ß√£o
  */
  
-AjaxRCRefreshText = 'Auto-atualizaÁ„o';
-AjaxRCRefreshHoverText = 'Atualiza a p·gina automaticamente';
+AjaxRCRefreshText = 'Auto-atualiza√ß√£o';
+AjaxRCRefreshHoverText = 'Atualiza a p√°gina automaticamente';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
  
-/** Bot„o Redirecionamento **/
+/** Bot√£o Redirecionamento **/
 addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir.png',
  'Redirecionamento',
  '#REDIRECIONAMENTO [[',
@@ -27,31 +27,31 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
  'nome do destino',
  'mw-editbutton-redirect');
  
-/** Bot„o Sim1 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/2/21/Bot%C3%A3o_Sim1.png','Sim1','{{','}}','Sim1\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|famÌlia      = \n|pais         = \n|irm„os       = \n|cÙnjuge      = \n|estado       = \n|filhos       = \n|casa         = \n|colegas      = \n|animais      = \n|espÈcie      = \n|pele         = \n|peso         = \n|fÌsica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Sim1 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/2/21/Bot%C3%A3o_Sim1.png','Sim1','{{','}}','Sim1\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|fam√≠lia      = \n|pais         = \n|irm√£os       = \n|c√¥njuge      = \n|estado       = \n|filhos       = \n|casa         = \n|colegas      = \n|animais      = \n|esp√©cie      = \n|pele         = \n|peso         = \n|f√≠sica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Sim2 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/3/32/Bot%C3%A3o_Sim2.png','Sim2','{{','}}','Sim2\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|famÌlia      = \n|pais         = \n|irm„os       = \n|cÙnjuge      = \n|estado       = \n|filhos       = \n|outros       = \n|casa         = \n|colegas      = \n|animais      = \n|espÈcie      = \n|pele         = \n|peso         = \n|cabelo       = \n|olhos        = \n|signo        = \n|aspiraÁ„o    = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Sim2 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/3/32/Bot%C3%A3o_Sim2.png','Sim2','{{','}}','Sim2\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|fam√≠lia      = \n|pais         = \n|irm√£os       = \n|c√¥njuge      = \n|estado       = \n|filhos       = \n|outros       = \n|casa         = \n|colegas      = \n|animais      = \n|esp√©cie      = \n|pele         = \n|peso         = \n|cabelo       = \n|olhos        = \n|signo        = \n|aspira√ß√£o    = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Sim3 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/7/7e/Bot%C3%A3o_Sim3.png','Sim3','{{','}}','Sim3\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|celebridade  = \n|famÌlia      = \n|pais         = \n|irm„os       = \n|cÙnjuge      = \n|estado       = \n|filhos       = \n|outros       = \n|casa         = \n|colegas      = \n|animais      = \n|espÈcie      = \n|pele         = \n|peso         = \n|fÌsica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|traÁo1       = \n|traÁo2       = \n|traÁo3       = \n|traÁo4       = \n|traÁo5       = \n|desejo       = \n|m˙sica       = \n|comida       = \n|cor          = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Sim3 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/7/7e/Bot%C3%A3o_Sim3.png','Sim3','{{','}}','Sim3\n|imagem       = \n|biografia    = \n|nome         = \n|sexo         = \n|idade        = \n|celebridade  = \n|fam√≠lia      = \n|pais         = \n|irm√£os       = \n|c√¥njuge      = \n|estado       = \n|filhos       = \n|outros       = \n|casa         = \n|colegas      = \n|animais      = \n|esp√©cie      = \n|pele         = \n|peso         = \n|f√≠sica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|tra√ßo1       = \n|tra√ßo2       = \n|tra√ßo3       = \n|tra√ßo4       = \n|tra√ßo5       = \n|desejo       = \n|m√∫sica       = \n|comida       = \n|cor          = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Simbio-comeÁo **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/c/ce/Bot%C3%A3o_Simbio-come%C3%A7o.png','Simbio-comeÁo','{{','}}','Simbio-comeÁo\n|imagem  = \n|nome    = \n|sexo    = \n|famÌlia = \n|pais    = \n|irm„os  = \n|cÙnjuge = \n|filhos  = \n|outros  = \n','');
+/** Bot√£o Simbio-come√ßo **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/c/ce/Bot%C3%A3o_Simbio-come%C3%A7o.png','Simbio-come√ßo','{{','}}','Simbio-come√ßo\n|imagem  = \n|nome    = \n|sexo    = \n|fam√≠lia = \n|pais    = \n|irm√£os  = \n|c√¥njuge = \n|filhos  = \n|outros  = \n','');
  
-/** Bot„o Simbio1 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/a/a7/Bot%C3%A3o_Simbio1.png','Simbio1','{{','}}','Simbio1\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|espÈcie      = \n|pele         = \n|peso         = \n|fÌsica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Simbio1 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/a/a7/Bot%C3%A3o_Simbio1.png','Simbio1','{{','}}','Simbio1\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|esp√©cie      = \n|pele         = \n|peso         = \n|f√≠sica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Simbio2 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/e/e4/Bot%C3%A3o_Simbio2.png','Simbio2','{{','}}','Simbio2\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|espÈcie      = \n|pele         = \n|peso         = \n|cabelo       = \n|olhos        = \n|signo        = \n|aspiraÁ„o    = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Simbio2 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/e/e4/Bot%C3%A3o_Simbio2.png','Simbio2','{{','}}','Simbio2\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|esp√©cie      = \n|pele         = \n|peso         = \n|cabelo       = \n|olhos        = \n|signo        = \n|aspira√ß√£o    = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Simbio3 **/
-addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/8/88/Bot%C3%A3o_Simbio3.png','Simbio3','{{','}}','Simbio3\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|espÈcie      = \n|pele         = \n|peso         = \n|fÌsica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|traÁo1       = \n|traÁo2       = \n|traÁo3       = \n|traÁo4       = \n|traÁo5       = \n|desejo       = \n|m˙sica       = \n|comida       = \n|cor          = \n|apariÁ„o     = \n|jogabilidade = \n|morte        = \n|vizinhanÁa   = \n','');
+/** Bot√£o Simbio3 **/
+addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/8/88/Bot%C3%A3o_Simbio3.png','Simbio3','{{','}}','Simbio3\n|imagem       = \n|biografia    = \n|nome         = \n|idade        = \n|estado       = \n|esp√©cie      = \n|pele         = \n|peso         = \n|f√≠sica       = \n|cabelo       = \n|olhos        = \n|signo        = \n|tra√ßo1       = \n|tra√ßo2       = \n|tra√ßo3       = \n|tra√ßo4       = \n|tra√ßo5       = \n|desejo       = \n|m√∫sica       = \n|comida       = \n|cor          = \n|apari√ß√£o     = \n|jogabilidade = \n|morte        = \n|vizinhan√ßa   = \n','');
  
-/** Bot„o Simbio-fim **/
+/** Bot√£o Simbio-fim **/
 addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/3/35/Bot%C3%A3o_Simbio-fim.png','Simbio-fim','{{','}}','Simbio-fim','');
  
-/** Bot„o DEFAULTSORT **/
+/** Bot√£o DEFAULTSORT **/
 addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/9/99/Bot%C3%A3o_Defaultsort.png','Simbio-fim','{{','}}','DEFAULTSORT:sobrenome, nome','');
  
 /* Test if an element has a certain class **************************************
@@ -71,16 +71,16 @@ addCustomButton('https://images.wikia.nocookie.net/simswiki/pt-br/images/9/99/Bo
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:ShowHide/code.js', /* Tabelas recolhÌveis (agora in˙til, apresenta por padr„o com "mw-collapsible") */
+        'u:dev:ShowHide/code.js', /* Tabelas recolh√≠veis (agora in√∫til, apresenta por padr√£o com "mw-collapsible") */
         'u:dev:Countdown/code.js', /* Contagem regressiva */
-        'u:dev:ExternalImageLoader/code.js', /* PredefiniÁ„o ImagemExterna */
-        'u:dev:WallGreetingButton/code.js', /* Bot„o para as WallGreetings */
-        'u:dev:ReferencePopups/code.js' /* ReferÍncias em pop-up */
+        'u:dev:ExternalImageLoader/code.js', /* Predefini√ß√£o ImagemExterna */
+        'u:dev:WallGreetingButton/code.js', /* Bot√£o para as WallGreetings */
+        'u:dev:ReferencePopups/code.js' /* Refer√™ncias em pop-up */
     ]
 });
 
-/* Substitui {{Visitante}} com o nome do usu·rio que visitar a p·gina. Requer a cÛpia: PredefiniÁ„o:NOMEDOUSU¡RIO. */  
+/* Substitui {{Visitante}} com o nome do usu√°rio que visitar a p√°gina. Requer a c√≥pia: Predefini√ß√£o:NOMEDOUSU√ÅRIO. */  
 
 function UserNameReplace() { if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return; $("span.insertusername").html(wgUserName); } addOnloadHook(UserNameReplace);  
 
-/* Fim da substituiÁ„o {{Visitante}} */
+/* Fim da substitui√ß√£o {{Visitante}} */

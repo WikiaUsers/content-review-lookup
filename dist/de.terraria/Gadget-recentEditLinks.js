@@ -10,7 +10,7 @@ $('li[class^="mw-line"] a[href$="&action=history"]').each(function(){
 			.replace(/&curid=.*?&/, '&')
 			.replace(/&diff=/, '&undo=')
 			.replace(/&oldid=/, '&undoafter=');
-		var receditUndoLink = '<a title="Diese Bearbeitung rückgängig machen" href="' + receditUndo + '&action=edit">rückgängig machen</a>';
+		var receditUndoLink = '<a title="Diese Bearbeitung rÃ¼ckgÃ¤ngig machen" href="' + receditUndo + '&action=edit">rÃ¼ckgÃ¤ngig machen</a>';
 	}
 	var receditEditLink = '<a title="'+ receditTitle +' bearbeiten" href="' + editLinkPre + receditTitle + '&action=edit">bearbeiten</a>';
 	$this.after(' <b>|</b> ' + (($this.siblings('abbr.newpage').length < 1) ? receditUndoLink + ' | ' : '') + receditEditLink);

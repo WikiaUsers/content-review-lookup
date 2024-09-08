@@ -1,10 +1,10 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
-// Veja também: MediaWiki:Wikia.js & MediaWiki:ImportJS
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
+// Veja tambÃ©m: MediaWiki:Wikia.js & MediaWiki:ImportJS
 
 /* Play button */
 $('#play').replaceWith('<a href="http://www.fusionfalluniverse.com/splashpage/"><div id="play"></div></a>');
 
-/* Atualização automática */
+/* AtualizaÃ§Ã£o automÃ¡tica */
 window.ajaxSpecialPages = ['Recentchanges', 'WikiActivity', 'Watchlist', 'Log', 'Contributions'];
-window.AjaxRCRefreshText = 'Atualização automática';
-window.AjaxRCRefreshHoverText = 'Atualiza a página automaticamente';
+window.AjaxRCRefreshText = 'AtualizaÃ§Ã£o automÃ¡tica';
+window.AjaxRCRefreshHoverText = 'Atualiza a pÃ¡gina automaticamente';

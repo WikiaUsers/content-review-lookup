@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Add input elements
-    $('table#cardPricesCalc td#cardPricesCalcRarity').html('<select id="cpcRarity" name="cpcRarity"><option value="Common" selected>Commune</option><option value="Rare">Rare</option><option value="Epic">Épique</option><option value="Legendary">Légendaire</option></select>');
+    $('table#cardPricesCalc td#cardPricesCalcRarity').html('<select id="cpcRarity" name="cpcRarity"><option value="Common" selected>Commune</option><option value="Rare">Rare</option><option value="Epic">Ã‰pique</option><option value="Legendary">LÃ©gendaire</option></select>');
     $('table#cardPricesCalc td#cardPricesCalcNum').html('<input type="number" id="cpcNum" name="cpcNum" value="1" min="0" max="100" step="1" style="width: 30px;">');
     // Calculate
     $('table#cardPricesCalc input, table#cardPricesCalc select').change(function() {

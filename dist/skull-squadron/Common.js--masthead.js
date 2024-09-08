@@ -1,11 +1,11 @@
-/*Ajouts d'entrées extra masthead pour les:
+/*Ajouts d'entrÃ©es extra masthead pour les:
 -Administrateurs
 -Patrouilleurs
 -Infos sur le staff
 -Bots
 */
  
-// Écrit par:Emperor_Jarjarkine
+// Ã‰crit par:Emperor_Jarjarkine
 $(function() {
  var rights = {};
  
@@ -16,7 +16,7 @@ $(function() {
  
    //Administrateur+ Membre du mois (MDM)
  
- rights["Emperor Jarjarkine"]             = ["Administrateur","MDM Décembre 2013"];
+ rights["Emperor Jarjarkine"]             = ["Administrateur","MDM DÃ©cembre 2013"];
  
   //ADMINISTRATORS
  

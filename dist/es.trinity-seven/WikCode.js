@@ -5,12 +5,12 @@
             window.lng = {
                 es: {
                         changes: 'Cambios',
-                        characters: 'caráteres',
+                        characters: 'carÃ¡teres',
                         editing: 'Editando',
-                        goToLine: 'Ir a la línea',
+                        goToLine: 'Ir a la lÃ­nea',
                         load: 'Cargar',
-                        minorEdit: 'Edición menor',
-                        newVersion: 'Hay una nueva versión de este código. ¿Desea reemplazar el código existente con el nuevo?',
+                        minorEdit: 'EdiciÃ³n menor',
+                        newVersion: 'Hay una nueva versiÃ³n de este cÃ³digo. Â¿Desea reemplazar el cÃ³digo existente con el nuevo?',
                         no: 'No',
                         paste: 'Pegar al editor',
                         publish: 'Publicar',
@@ -22,9 +22,9 @@
                         shortcut: 'Acceso directo',
                         showChanges: 'Mostrar cambios',
                         summary: 'Resumen',
-                        unpublished: 'Has hecho algunos cambios no publicados. ¿Estás seguro de no publicarlos?',
-                        view: 'Ver código',
-                        yes: 'Sí'
+                        unpublished: 'Has hecho algunos cambios no publicados. Â¿EstÃ¡s seguro de no publicarlos?',
+                        view: 'Ver cÃ³digo',
+                        yes: 'SÃ­'
                 }
             };
             window.lng = $.extend(window.lng.es, window.lng[mw.config.get('wgUserLanguage')]);

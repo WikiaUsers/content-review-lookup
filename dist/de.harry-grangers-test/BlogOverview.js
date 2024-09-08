@@ -5,7 +5,7 @@ function getBlogs(search,callback) {
 function getBlogContent(articleTitle,articleRef) {
     getArticleId(articleTitle, function(response) {
         getArticleDescription(response.items[Object.keys(response.items)[0]].id, function (data) {
-            console.log(articleTitle,articleRef,response.items[Object.keys(response.items)[0]].id,data.sections[0].images.length ? 'Bilder' : 'keine Bilder',Object.keys(data.sections[0].content).length,'Abs‰tze');
+            console.log(articleTitle,articleRef,response.items[Object.keys(response.items)[0]].id,data.sections[0].images.length ? 'Bilder' : 'keine Bilder',Object.keys(data.sections[0].content).length,'Abs√§tze');
            console.dir(data);
             if(data.sections[0].images.length) {
                  console.log('insert images');

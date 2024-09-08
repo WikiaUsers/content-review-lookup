@@ -1,4 +1,4 @@
-/* Activar· el botÛn que le permitira borrar una notificaciÛn de un artÌculo div */
+/* Activar√° el bot√≥n que le permitira borrar una notificaci√≥n de un art√≠culo div */
 $(".nota-cerrar").click(function() {
   $(this).parent()
   .animate({ opacity: 0 }, 250, function() {

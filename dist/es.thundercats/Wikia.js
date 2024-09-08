@@ -1,1 +1,1 @@
-Bienvenido a ThunderCats Wiki, qué bueno que estés aquí, hay mucho por hacer.
+Bienvenido a ThunderCats Wiki, quÃ© bueno que estÃ©s aquÃ­, hay mucho por hacer.

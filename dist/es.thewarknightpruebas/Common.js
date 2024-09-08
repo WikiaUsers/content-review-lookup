@@ -1,11 +1,11 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 /* Icono sociales
  * By: [[Madnessfan34537]]
  */
  window.dev = window.dev || {}; window.dev.editSummaries = { css: '#stdSummaries { width: 264px }', select: 'MediaWiki:Standard Edit Summary' };
  
 SpoilerAlert = {
-    question: 'Este artículo contiene adelantos y/o tramas de episodios aún no estrenados. ¿Desea continuar?',
+    question: 'Este artÃ­culo contiene adelantos y/o tramas de episodios aÃºn no estrenados. Â¿Desea continuar?',
     yes: 'Si, quiero continuar',
     no: 'No, gracias',
     isSpoiler: function () {

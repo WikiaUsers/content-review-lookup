@@ -1,4 +1,4 @@
-// CHAT OPCIÓN:
+// CHAT OPCIÃ“N:
 importScriptPage('MediaWiki:ChatOptions.js/es.js', 'pintorkagamine');
  
 // IMPORTANDO SCRIPT:
@@ -17,7 +17,7 @@ importArticles({
 });
  
 // CHAT ANUNCIOS:
-//Permite al usuario hacer anuncios a través del chat.
-//Para utilizarlo, escribe /announce (acción).
+//Permite al usuario hacer anuncios a travÃ©s del chat.
+//Para utilizarlo, escribe /announce (acciÃ³n).
 importScriptPage('ChatAnnouncements/code.js','dev');
 chatAnnouncementsAll = true;

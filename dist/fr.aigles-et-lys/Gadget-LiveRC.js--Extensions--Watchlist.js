@@ -18,13 +18,13 @@ Permet de n'afficher que les modifications faites dans la liste de suivi
 * Licence : ...?
 * Documentation :
 * Auteur : [[wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
  
  
 lrcOptionMenuValues.showWL = true;

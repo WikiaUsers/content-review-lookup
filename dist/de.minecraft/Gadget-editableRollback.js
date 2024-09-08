@@ -1,7 +1,7 @@
 ;( function(window, $, mw) {
 	'use strict';
 	
-	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'Zurücksetzen-Zusammenfassung bearbeiten' ) );
+	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'ZurÃ¼cksetzen-Zusammenfassung bearbeiten' ) );
 	$( '#mw-content-text' ).on( 'click', '.edit-rollback', function() {
 		var $rollback = $( '#rollback-summary' );
 		
@@ -13,9 +13,9 @@
 			var name = decodeURIComponent( $( this ).prev().prop( 'href' ).match( /&from=(.+)&token/ )[1].replace( /\+/g, ' ' ) );
 			$rollback = $( '<div id="rollback-summary">' ).append(
 				$( '<input type="text">' ).addClass( 'mw-ui-input rollback-text' ).prop( { maxlength: 250, spellcheck: true } ).val(
-					'Letzte Bearbeitungen von [[Spezial:Beiträge/' + name + '|' + name + ']] ([[Benutzer Diskussion:' + name + '|Diskussion]]) zurückgesetzt.'
+					'Letzte Bearbeitungen von [[Spezial:BeitrÃ¤ge/' + name + '|' + name + ']] ([[Benutzer Diskussion:' + name + '|Diskussion]]) zurÃ¼ckgesetzt.'
 				),
-				$( '<input type="button">' ).addClass( 'mw-ui-button mw-ui-constructive rollback-submit-button' ).val( 'Zurücksetzen' )
+				$( '<input type="button">' ).addClass( 'mw-ui-button mw-ui-constructive rollback-submit-button' ).val( 'ZurÃ¼cksetzen' )
 			).insertAfter( this );
 		}
 		

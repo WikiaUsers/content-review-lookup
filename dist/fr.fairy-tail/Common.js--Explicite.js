@@ -34,7 +34,7 @@ $(function () {
         ExplicitAlert = $.extend({
             no: "Non",
             yes: "Oui",
-            question: "Cette page comporte des éléments explicites susceptibles de choquer un jeune public ou une âme innocente. Êtes vous sûr de vouloir poursuivre ?"
+            question: "Cette page comporte des Ã©lÃ©ments explicites susceptibles de choquer un jeune public ou une Ã¢me innocente. ÃŠtes vous sÃ»r de vouloir poursuivre ?"
         }, ExplicitAlert);
         if (ExplicitAlert.pages && $.isArray(ExplicitAlert.pages)) {
             if ($.inArray(wgPageName, ExplicitAlert.pages) > -1) {

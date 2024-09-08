@@ -13,23 +13,23 @@ $('.grid-filtering-monsters .grid-filter-select-size').html(
     sizeFiltering();
 });
 
-// Filtre par espèce
+// Filtre par espÃ¨ce
 $('.grid-filtering-monsters .grid-filter-select-species').html(
     '<select>'+
     '<option value="Tout">Tout</option>'+
     '<option value="Herbivore">Herbivore</option>'+
     '<option value="Lynien">Lynien</option>'+
-    '<option value="Drake ailé">Drake ailé</option>'+
+    '<option value="Drake ailÃ©">Drake ailÃ©</option>'+
     '<option value="Neopteron">Neopteron</option>'+
     '<option value="Carapaceon">Carapaceon</option>'+
     '<option value="Temnoceran">Temnoceran</option>'+
     '<option value="Amphibien">Amphibien</option>'+
     '<option value="Leviathan">Leviathan</option>'+
-    '<option value="Bête à crocs">Bête à crocs</option>'+
+    '<option value="BÃªte Ã  crocs">BÃªte Ã  crocs</option>'+
     '<option value="Wyverne volante">Wyverne volante</option>'+
     '<option value="Wyverne rapace">Wyverne rapace</option>'+
     '<option value="Wyverne de terre">Wyverne de terre</option>'+
-    '<option value="Wyverne à crocs">Wyverne à crocs</option>'+
+    '<option value="Wyverne Ã  crocs">Wyverne Ã  crocs</option>'+
     '<option value="Wyverne aquatique">Wyverne aquatique</option>'+
     '<option value="Wyverne serpent">Wyverne serpent</option>'+
     '<option value="Dragon ancien">Dragon ancien</option>'+

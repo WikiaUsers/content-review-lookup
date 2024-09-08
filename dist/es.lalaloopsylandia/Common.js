@@ -1,6 +1,6 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
-//CÛdigo relacionado a tags de usuarios. ExtraÌdo de Dev Wikia
+//C√≥digo relacionado a tags de usuarios. Extra√≠do de Dev Wikia
 	window.UserTagsJS = {
 		modules: {
 	// Condiciones para ser declarado inactivo
@@ -16,11 +16,11 @@
 		},
 		
 	tags: {
-	autoconfirmed: { u: 'ReciÈn fabricado', f: 'ReciÈn fabricada' },
+	autoconfirmed: { u: 'Reci√©n fabricado', f: 'Reci√©n fabricada' },
 	inactive: { u: 'Buscando una ciudad' },
 	newuser:  { u: 'Clase Little' },
 		//Tag especial de adoptante
-	adopter: { u: 'Adoptante', title:'El chico que liderÛ y salvÛ a Lalaloopsylandia' },
+	adopter: { u: 'Adoptante', title:'El chico que lider√≥ y salv√≥ a Lalaloopsylandia' },
     bannedfromchat: { u: 'Vetado del chat', f: 'Vetada del chat'},
 	},
 	
@@ -36,7 +36,7 @@ UserTagsJS.modules.custom = {
 	'RGL Victor The Great': ['adopter'],
 };
 
-//CÛdigo para tabs animados. ExtraÌdo de Lalaloopsy Land Wiki
+//C√≥digo para tabs animados. Extra√≠do de Lalaloopsy Land Wiki
 var Tabs = {
     switchDuration: 400,
     selectorDuration: 200,

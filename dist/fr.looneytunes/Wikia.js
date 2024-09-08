@@ -1,7 +1,7 @@
 $(function() {
     var rights = {};
 /*Quelle: http://candybox.wikia.com/wiki/MediaWiki:Wikia.js */ 
-    rights["LeConquérant"]           = ["Administrateur", "Bureaucrate", "Looney-créateur"],
+    rights["LeConquÃ©rant"]           = ["Administrateur", "Bureaucrate", "Looney-crÃ©ateur"],
     rights["GashomyWiki"]           = ["Administrateur", "Bureaucrate"];
  
      if (typeof rights[wgTitle] != "undefined") {

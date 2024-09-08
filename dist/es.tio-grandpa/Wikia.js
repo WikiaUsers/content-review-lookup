@@ -29,9 +29,9 @@ $(function addMastheadTags() {
   }
 });
 
-/* Agrega una notificación en oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
+/* Agrega una notificaciÃ³n en oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
 window.SkinNotification = {
-	article: 'Tío_Grandpa_Wiki:Reglas',
+	article: 'TÃ­o_Grandpa_Wiki:Reglas',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -58,7 +58,7 @@ window.SkinNotification = {
 	}
 };
  
-function Tío_Grandpa_WikiaSkinLoad() {
+function TÃ­o_Grandpa_WikiaSkinLoad() {
 	var ug = '';
 	if (window.wgUserGroups) {
 		ug = wgUserGroups.join(',').toLowerCase();
@@ -69,7 +69,7 @@ function Tío_Grandpa_WikiaSkinLoad() {
 	}
 }
  
-Tío_Grandpa_WikiaSkinLoad();
+TÃ­o_Grandpa_WikiaSkinLoad();
 
 /*Facebook*/
 

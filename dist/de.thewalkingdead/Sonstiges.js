@@ -21,11 +21,11 @@ function commentPreText()
     Comment[ul].style.display = 'block';
   }
   // ****************************************
-  //  Kommentare umbenennen / ändern
+  //  Kommentare umbenennen / Ã¤ndern
   // ****************************************
 
   if (document.getElementById('article-comm') != null)  {
-    document.getElementById('article-comm').placeholder = 'Bitte schreibe hier nur Kommentare über diesen Artikel. Meinungen zum Inhalt gehören ins Forum.';
+    document.getElementById('article-comm').placeholder = 'Bitte schreibe hier nur Kommentare Ã¼ber diesen Artikel. Meinungen zum Inhalt gehÃ¶ren ins Forum.';
   }
 }
 addOnloadHook(commentPreText);
@@ -41,7 +41,7 @@ function ausklappNavi( element ){
 }
  
 //***********************************
-// Nachdem Seite geladen ist alle klappfähigen Elemente mit JavaScript ausstatten
+// Nachdem Seite geladen ist alle klappfÃ¤higen Elemente mit JavaScript ausstatten
 //***********************************
 function makeAusklapp(){
   var a = document.getElementsByTagName('div'); 
@@ -62,7 +62,7 @@ function closeAllAusklapp(){
 addOnloadHook(closeAllAusklapp);
 
 // ******************************************+
-// Ersetzt {{User}} mit dem Namen des Benutzers - benötigt die Vorlage:User
+// Ersetzt {{User}} mit dem Namen des Benutzers - benÃ¶tigt die Vorlage:User
 // ******************************************+
 
 function UserNameReplace() {
@@ -72,7 +72,7 @@ function UserNameReplace() {
  addOnloadHook(UserNameReplace);
 
 /********************************************\
-      MouseOver Funktion für MiniBox
+      MouseOver Funktion fÃ¼r MiniBox
 \********************************************/
 function MiniBoxMouseOver() {
   var MB_Bild = document.getElementsByTagName('div'); 
@@ -90,7 +90,7 @@ function MiniBoxMouseOver() {
  addOnloadHook(MiniBoxMouseOver);
 
 if (document.getElementById("Quiz-Start") == null && HTMLAgument['action'] != 'edit') {
-// Einbetten der Überschrift in einen Anker
+// Einbetten der Ãœberschrift in einen Anker
 var Seitenbeginn = document.createElement('a');
     Seitenbeginn.name = 'Seitenanfang';
     if (document.getElementById('WikiaPageHeader'))

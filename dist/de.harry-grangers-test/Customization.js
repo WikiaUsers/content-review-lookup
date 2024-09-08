@@ -13,13 +13,13 @@ $(document).ready(function() {
         console.log('recentChanges');
     }
     if(!!$('ul.activityfeed li cite a[href^="/wiki/Benutzer:"].mw-userlink').length) {
-        console.log('letzte Änderungen');
+        console.log('letzte Ã„nderungen');
     }
     if(adminLinks.activityPage && !!$('.subtle > a[href^="/wiki/Benutzer:"]').length) {
-        console.log('letzte Änderungen');
+        console.log('letzte Ã„nderungen');
     }
     if(adminLinks.activityBox && !!$('.edited-by a[href^="/wiki/Benutzer:"]').length) {
-        console.log('letzte Änderungen Box');
+        console.log('letzte Ã„nderungen Box');
         var lodash = mw.loader.getModuleNames().filter(function(m) {
         	return m.startsWith('lodash-');
     	})[0];

@@ -1,5 +1,5 @@
-/* Obrigada à Five Nights at Freddy's Wiki por ajudar com estes códigos */
-/* Este código refere-se à Navegação Extendida */
+/* Obrigada Ã  Five Nights at Freddy's Wiki por ajudar com estes cÃ³digos */
+/* Este cÃ³digo refere-se Ã  NavegaÃ§Ã£o Extendida */
 importArticles({
     type: 'script',
     articles: [

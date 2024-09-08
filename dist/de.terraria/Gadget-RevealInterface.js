@@ -4,7 +4,7 @@ var wgNamespaceNumber = mw.config.get( 'wgNamespaceNumber' );
 
 var qqxLinkText = 'Interface aufdecken';
 var qqxLinkTip = 'MediaWiki-Systemnachrichtsnamen anzeigen';
-var qqxRemLinkText = 'Regul‰re Ansicht';
+var qqxRemLinkText = 'Regul√§re Ansicht';
 var qqxRemLinkTip = 'MediaWiki-Systemnachrichten verbergen und die Seite normal neu laden';
 var currHref = window.location.href;
 

@@ -1,4 +1,4 @@
-/* O conteúdo a seguir foi cedido pela Five Nights at Freddy's Wiki. */
+/* O conteÃºdo a seguir foi cedido pela Five Nights at Freddy's Wiki. */
 
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');
  
@@ -7,7 +7,7 @@ $("body.ChatWindow .Chat .message img").attr("width","25px").attr("height","25px
 // ______________________________________________________________________
  
  
-/* Navegação Level+ */
+/* NavegaÃ§Ã£o Level+ */
  
 importArticles({
     type: 'script',

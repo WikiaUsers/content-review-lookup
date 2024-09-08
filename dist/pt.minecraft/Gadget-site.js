@@ -13,7 +13,7 @@ var i18n = {
 	// Collapsible elements and page loader
 	hideText: 'ocultar',
 	showText: 'exibir',
-	loadErrorTitle: 'Ocorreu um erro ao carregar o conteúdo'
+	loadErrorTitle: 'Ocorreu um erro ao carregar o conteÃºdo'
 };
 
 /* Fired whenever wiki content is added. (#mw-content-text, live preview, load page, etc.) */

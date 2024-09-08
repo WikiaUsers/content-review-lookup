@@ -1,16 +1,16 @@
 /*<pre>
-Aviso: Esto es código JavaScript. Si hay algún tipo de error de sintaxis en este código el menú del sidebar dejará de funcionar. Asegúrate que no rompes nada.
-Cada elemento de wgSidebar es el texto (después del |) del elemento en [[MediaWiki:Sidebar]]
-Los menús son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenú, donde la clave (antes de los : ) es el propio elemento y el valor (después de los : ) es una lista [ ... ] con el contenido del submenú.
-Para cada elemento, será tanto el enlace como el texto. Si se pone una barra | lo que haya antes será el enlace y lo de después el texto.
+Aviso: Esto es cÃ³digo JavaScript. Si hay algÃºn tipo de error de sintaxis en este cÃ³digo el menÃº del sidebar dejarÃ¡ de funcionar. AsegÃºrate que no rompes nada.
+Cada elemento de wgSidebar es el texto (despuÃ©s del |) del elemento en [[MediaWiki:Sidebar]]
+Los menÃºs son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenÃº, donde la clave (antes de los : ) es el propio elemento y el valor (despuÃ©s de los : ) es una lista [ ... ] con el contenido del submenÃº.
+Para cada elemento, serÃ¡ tanto el enlace como el texto. Si se pone una barra | lo que haya antes serÃ¡ el enlace y lo de despuÃ©s el texto.
 */
 wgSidebar['Contenidos'] = [
-        {'Categoría:Medarots|Medarots': [
-		'Categoría:Medarots por videojuego|Medarots por videojuego',
-		'Categoría:Medarots en el manga|Medarots en el manga',
-		'Categoría:Medarots en el anime|Medarots en el anime'
+        {'CategorÃ­a:Medarots|Medarots': [
+		'CategorÃ­a:Medarots por videojuego|Medarots por videojuego',
+		'CategorÃ­a:Medarots en el manga|Medarots en el manga',
+		'CategorÃ­a:Medarots en el anime|Medarots en el anime'
 	]},
-        {'Categoría:Videojuegos|Videojuegos': [
+        {'CategorÃ­a:Videojuegos|Videojuegos': [
 		'Medarot (juego)|Medarot',
 		'Medarot 2 (juego)|Medarot 2',
 		'Medarot R',
@@ -24,7 +24,7 @@ wgSidebar['Contenidos'] = [
 		'Shingata Medarot',
 		'Medarot DS (juego)|Medarot DS'
 	]},
-       {'Categoría:Manga|Manga': [
+       {'CategorÃ­a:Manga|Manga': [
 		'Medarot (manga)|Medarot',
 		'Medarot 2 (manga)|Medarot 2',
 		'Medarotter Rintarou!',
@@ -36,7 +36,7 @@ wgSidebar['Contenidos'] = [
 		'Medarot Navi (manga)|Medarot Navi',
 		'Medarot DS (manga)|Medarot DS'
 	]},
-       {'Categoría:Anime|Anime': [
+       {'CategorÃ­a:Anime|Anime': [
 		'Medarot (anime)|Serie original',
 		'Medarot Damashii|Serie Medarot Damashii'
 	]},
@@ -44,16 +44,16 @@ wgSidebar['Contenidos'] = [
 		'Lista de episodios de Medarot|Episodios de la serie original',
 		'Lista de episodios de Medarot Damashii|Episodios de la serie Medarot Damashii'
 	]},
-       {'Categoría:Consolas|Consolas': [
+       {'CategorÃ­a:Consolas|Consolas': [
                 'Nintendo Game Boy',
                 'Nintendo Game Boy Color',
                 'Nintendo Game Boy Advance',
                 'Nintendo GameCube',
                 'Nintendo DS'
 	]},
-       {'Categoría:Canciones|Canciones': [
-		'Categoría:Aperturas|Aperturas',
-		'Categoría:Clausuras|Clausuras'
+       {'CategorÃ­a:Canciones|Canciones': [
+		'CategorÃ­a:Aperturas|Aperturas',
+		'CategorÃ­a:Clausuras|Clausuras'
 	]},
 ];
 wgSidebar['Comunidad'] = [
@@ -68,10 +68,10 @@ wgSidebar['Comunidad'] = [
         'Foro:Index|Foro'
 ];
 wgSidebar['Ayuda'] = [
-        'Medateca:Cómo colaborar|Cómo colaborar', 
+        'Medateca:CÃ³mo colaborar|CÃ³mo colaborar', 
         'Medateca:Sobre el cambio de la apariencia de Medateca|Sobre el cambio de la apariencia de Medateca'
 ];
-/* Llamada al código para inicializar esto */
+/* Llamada al cÃ³digo para inicializar esto */
 $(MonobookSidebar.init);
 
 /*</pre>*/

@@ -1,7 +1,7 @@
-/* Qualquer JavaScript aqui ser· carregado para todos os usu·rios em cada carregamento de p·gina. */
+/* Qualquer JavaScript aqui ser√° carregado para todos os usu√°rios em cada carregamento de p√°gina. */
 
 /*********************************************/
-/* sliders usando jquery por Usu·rio:Tierrie */
+/* sliders usando jquery por Usu√°rio:Tierrie */
 /*********************************************/
 
 mw.loader.using(['jquery.ui.tabs'], function() {
@@ -17,7 +17,7 @@ mw.loader.using(['jquery.ui.tabs'], function() {
             return false;
         });
         $('#portal_next').click(function() {
-            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length')) - 1) ? 0 : $tabs.tabs('option', 'selected') + 1); // alterna para a prÛxima aba
+            $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length')) - 1) ? 0 : $tabs.tabs('option', 'selected') + 1); // alterna para a pr√≥xima aba
             return false;
         });
         $('#portal_prev').click(function() { // vincula evento de clique a link
@@ -28,14 +28,14 @@ mw.loader.using(['jquery.ui.tabs'], function() {
 });
 
 // ============================================================
-// COME«O das Barras de NavegaÁ„o Din‚micas (experimental)
-// Este script È da WikipÈdia. Para atribuiÁ„o ao autor, por favor, veja https://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
+// COME√áO das Barras de Navega√ß√£o Din√¢micas (experimental)
+// Este script √© da Wikip√©dia. Para atribui√ß√£o ao autor, por favor, veja https://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 
 
 /* Testa se um elemento tem uma determinada classe *****************************
  *
- * DescriÁ„o: Usa expressıes regulares e cache para um melhor desempenho.
- * Mantenedores: Usu·rio:Mike Dillon, Usu·rio:R. Koot, Usu·rio:SG
+ * Descri√ß√£o: Usa express√µes regulares e cache para um melhor desempenho.
+ * Mantenedores: Usu√°rio:Mike Dillon, Usu√°rio:R. Koot, Usu√°rio:SG
  */
 
 var hasClass = (function() {
@@ -45,11 +45,11 @@ var hasClass = (function() {
     };
 })();
 
-/** Tabelas dobr·veis *********************************************************
+/** Tabelas dobr√°veis *********************************************************
  *
- *  DescriÁ„o: Permite que tabelas sejam dobradas, mostrando apenas o cabeÁalho. Veja
+ *  Descri√ß√£o: Permite que tabelas sejam dobradas, mostrando apenas o cabe√ßalho. Veja
  *               [[Wikipedia:NavFrame]].
- *  Mantenedores: [[Usu·rio:R. Koot]]
+ *  Mantenedores: [[Usu√°rio:R. Koot]]
  */
 
 var autoCollapse = 2;
@@ -108,7 +108,7 @@ function createCollapseButtons() {
             Button.appendChild(document.createTextNode("]"));
 
             var Header = Tables[i].getElementsByTagName("tr")[0].getElementsByTagName("th")[0];
-            /* sÛ adiciona bot„o e incrementa contagem se houver uma linha de cabeÁalho para se trabalhar */
+            /* s√≥ adiciona bot√£o e incrementa contagem se houver uma linha de cabe√ßalho para se trabalhar */
             if (Header) {
                 Header.insertBefore(Button, Header.childNodes[0]);
                 tableIndex++;
@@ -124,26 +124,26 @@ function createCollapseButtons() {
 }
 addOnloadHook(createCollapseButtons);
 
-/** Barras de NavegaÁ„o Din‚micas (experimental) *************************************
+/** Barras de Navega√ß√£o Din√¢micas (experimental) *************************************
  *
- *  DescriÁ„o: Veja [[Wikipedia:NavFrame]].
- *  Mantenedores: SEM MANUTEN«√O
+ *  Descri√ß√£o: Veja [[Wikipedia:NavFrame]].
+ *  Mantenedores: SEM MANUTEN√á√ÉO
  */
 
 // configure as palavras no seu idioma
 var NavigationBarHide = '[' + collapseCaption + ']';
 var NavigationBarShow = '[' + expandCaption + ']';
 
-// configure a contagem m·xima de Barras de NavegaÁ„o na p·gina,
-// se existem mais, todas ser„o escondidas
-// NavigationBarShowDefault = 0; // todas as barras ser„o escondidas
-// NavigationBarShowDefault = 1; // em p·ginas com mais de 1 barra, todas as barras ser„o escondidas
+// configure a contagem m√°xima de Barras de Navega√ß√£o na p√°gina,
+// se existem mais, todas ser√£o escondidas
+// NavigationBarShowDefault = 0; // todas as barras ser√£o escondidas
+// NavigationBarShowDefault = 1; // em p√°ginas com mais de 1 barra, todas as barras ser√£o escondidas
 var NavigationBarShowDefault = autoCollapse;
 
 
-// mostra e esconde conte˙do e foto (se disponÌvel) das barras de navegaÁ„o
-// Par‚metros:
-//     indexNavigationBar: o index da barra de navegaÁ„o a ser alternada
+// mostra e esconde conte√∫do e foto (se dispon√≠vel) das barras de navega√ß√£o
+// Par√¢metros:
+//     indexNavigationBar: o index da barra de navega√ß√£o a ser alternada
 function toggleNavigationBar(indexNavigationBar) {
     var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
     var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
@@ -182,7 +182,7 @@ function toggleNavigationBar(indexNavigationBar) {
     }
 }
 
-// adiciona bot„o de mostrar/esconder ‡s barras de navegaÁ„o
+// adiciona bot√£o de mostrar/esconder √†s barras de navega√ß√£o
 function createNavigationBarToggleButton() {
     var indexNavigationBar = 0;
     // itera sobre todos < div >-elementos 
@@ -190,7 +190,7 @@ function createNavigationBarToggleButton() {
     for (
         var i = 0; NavFrame = divs[i]; i++
     ) {
-        // se encontrado uma barra de navegaÁ„o
+        // se encontrado uma barra de navega√ß√£o
         if (hasClass(NavFrame, "NavFrame")) {
 
             indexNavigationBar++;
@@ -201,7 +201,7 @@ function createNavigationBarToggleButton() {
 
             var NavToggleText = document.createTextNode(NavigationBarHide);
             NavToggle.appendChild(NavToggleText);
-            // Encontra o NavHead e anexa o link de altern‚ncia (Deve ser este complicado porque manipulaÁ„o firstChild de Moz È chato)
+            // Encontra o NavHead e anexa o link de altern√¢ncia (Deve ser este complicado porque manipula√ß√£o firstChild de Moz √© chato)
             for (
                 var j = 0; j < NavFrame.childNodes.length; j++
             ) {
@@ -212,7 +212,7 @@ function createNavigationBarToggleButton() {
             NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
         }
     }
-    // se mais Barras de NavegaÁ„o forem encontradas que Default: esconder tudo
+    // se mais Barras de Navega√ß√£o forem encontradas que Default: esconder tudo
     if (NavigationBarShowDefault < indexNavigationBar) {
         for (
             var i = 1; i <= indexNavigationBar; i++
@@ -226,8 +226,8 @@ addOnloadHook(createNavigationBarToggleButton);
 
 ////////////////////////////////////////////////////////
 
-//OS C”DIGOS ABAIXO LIDAM COM A PREDEFINI«√O ERA
-//cortesia de cÛdigos da silent hill wiki.
+//OS C√ìDIGOS ABAIXO LIDAM COM A PREDEFINI√á√ÉO ERA
+//cortesia de c√≥digos da silent hill wiki.
 
 function showEras(className) {
     if (typeof(SKIP_ERAS) != 'undefined' && SKIP_ERAS)
@@ -260,8 +260,8 @@ function moveRating() {
 }
 
 /*
-    getElementsByClass, que complementa getElementById and getElementsByTagName, retorna uma array de todos os sub-elementos de "node" que s„o marcados com uma classe CSS especÌfica (''searchClass'') e s„o do nome do tag ''tag''. Se o tag for null, ela procura por todos os elementos adequados, independentemente do nome do tag.
-    Exemplo: getElementsByClass('infobox', document.getElementById('content'), 'div') seleciona os mesmos elementos que a declaraÁ„o CSS #content div.infobox
+    getElementsByClass, que complementa getElementById and getElementsByTagName, retorna uma array de todos os sub-elementos de "node" que s√£o marcados com uma classe CSS espec√≠fica (''searchClass'') e s√£o do nome do tag ''tag''. Se o tag for null, ela procura por todos os elementos adequados, independentemente do nome do tag.
+    Exemplo: getElementsByClass('infobox', document.getElementById('content'), 'div') seleciona os mesmos elementos que a declara√ß√£o CSS #content div.infobox
 */
 function getElementsByClass(searchClass, node, tag) {
     var classElements = new Array();
@@ -301,21 +301,21 @@ ClassTester.prototype.isMatch = function(element) {
 moveRating();
 showEras('title-linktabs');
 
-// FIM DOS C”DIGOS PARA ERA
+// FIM DOS C√ìDIGOS PARA ERA
 
 //**Especial:Carregar arquivo**//
 
 $(function Information() {
     if ((wgPageName == 'Especial:Carregar_arquivo' || wgPageName == 'Especial:Uploads_em_massa') && document.getElementById('wpDestFile').value === '') {
-        document.getElementById('wpUploadDescription').value = '{{InformaÁıes\r|atenÁ„o         = \n|descriÁ„o       = \n|fonte           = \n|autor           = \n|especsdoarquivo = \n|licenciamento   = \n}}';
+        document.getElementById('wpUploadDescription').value = '{{Informa√ß√µes\r|aten√ß√£o         = \n|descri√ß√£o       = \n|fonte           = \n|autor           = \n|especsdoarquivo = \n|licenciamento   = \n}}';
     }
 });
 
 /* ######################################################################## */
-/* ### ÕCONES DE TÕTULO (PredefiniÁ„o:Jogos)                            ### */
+/* ### √çCONES DE T√çTULO (Predefini√ß√£o:Jogos)                            ### */
 /* ### ---------------------------------------------------------------- ### */
-/* ### DescriÁ„o: Adiciona Ìcones ao tÌtulo do artigo                   ### */
-/* ### CrÈditos:      Usu·rio:Porter21                                  ### */
+/* ### Descri√ß√£o: Adiciona √≠cones ao t√≠tulo do artigo                   ### */
+/* ### Cr√©ditos:      Usu√°rio:Porter21                                  ### */
 /* ######################################################################## */
 
 function addTitleIcons() {
@@ -353,7 +353,7 @@ function addTitleIcons() {
     }
 }
 
-// Desativa o bot„o para adicionar imagens ‡s galerias existentes
+// Desativa o bot√£o para adicionar imagens √†s galerias existentes
 $(function() {
     $('#bodyContent .wikia-gallery-add a').unbind('click').click(function() {
         return false;

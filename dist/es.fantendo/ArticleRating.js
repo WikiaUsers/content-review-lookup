@@ -1,5 +1,5 @@
 window.ArticleRating = {
-    values: ['Pésimo', 'Malo', 'Promedio', 'Bueno', 'Increíble'],
+    values: ['PÃ©simo', 'Malo', 'Promedio', 'Bueno', 'IncreÃ­ble'],
     starSize: [24, 24],
     starColor: ['#ccc', '#ffba01'],
     starStroke: '#000'

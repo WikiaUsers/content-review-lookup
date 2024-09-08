@@ -44,7 +44,7 @@ $(document).ready(function() {
 		setCookie(pengCookieID, pengCookie.join(''), 7);
 	}
  
-	if (wgPageName == 'Distracciones y Diversiones' || wgPageName == 'Distracciones y Diversiones/Escondidas con los pingüinos') {
+	if (wgPageName == 'Distracciones y Diversiones' || wgPageName == 'Distracciones y Diversiones/Escondidas con los pingÃ¼inos') {
 
                 var pengRows = $('#' + pengTableID + ' tr:has(td)');	// data rows
 		var pengCookieLen = pengRows.length+1;			// 1 for hidden + 1 for each peng/bear

@@ -13,24 +13,24 @@
  
 '''Extension de LiveRC'''
  
-Permet d'améliorer la prévisualisation avec les fonctions du Common.js : 
-déplacement des liens [modifier],
+Permet d'amÃ©liorer la prÃ©visualisation avec les fonctions du Common.js : 
+dÃ©placement des liens [modifier],
 {{m|Images}},
-Géolocalisation multiple,
-Boîtes déroulantes,
+GÃ©olocalisation multiple,
+BoÃ®tes dÃ©roulantes,
 Palettes de navigation,
 Affichage/Masquage du sommaire.
  
 * Licence : ...?
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 function RunCommonJS(){
    var preview = document.getElementById("livePreview");
@@ -44,10 +44,10 @@ function RunCommonJS(){
          tocShowText = "afficher"; 
       }
    }
-   setModifySectionStyle(preview); // déplacement des liens [modifier]
-   imageGroup(preview);            // Modèles {{Images}}
-   GeoBox_Init(preview);           // Géolocalisation multiple
-   BoiteDeroulante(preview);       // Boîtes déroulantes
+   setModifySectionStyle(preview); // dÃ©placement des liens [modifier]
+   imageGroup(preview);            // ModÃ¨les {{Images}}
+   GeoBox_Init(preview);           // GÃ©olocalisation multiple
+   BoiteDeroulante(preview);       // BoÃ®tes dÃ©roulantes
    Palette(preview);               // Palettes de navigation
    var TOC = getElementWithId("toc", "table", preview); // Sommaire
    if(TOC){

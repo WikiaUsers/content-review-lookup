@@ -1,21 +1,21 @@
 /**
 
-  Related to Don't Starve Wiki Hover Tabs
+Â  Related to Don't Starve Wiki Hover Tabs
 
-  Enabling this scripts allows tab selectors identified by DSWHoverTabSelector css class to be pinned by   clicking the tab selector in them, identified by DSWHoverTabDefault css class.
+Â  Enabling this scripts allows tab selectors identified by DSWHoverTabSelector css class to be pinned byÂ  Â clicking the tab selector in them, identified by DSWHoverTabDefault css class.
 
-  Clicking an item with DSWHoverTabSelector class changes adds DSWHoverTabDefault class to it, and removes it from its siblings.
+Â  Clicking an item with DSWHoverTabSelector class changes adds DSWHoverTabDefault class to it, and removes it from its siblings.
 
 <nowiki>**</nowiki>/
 
 <nowiki>;</nowiki> (function ($) {
 
-    $(".DSWHoverTab").click(function(){
+Â  Â  $(".DSWHoverTab").click(function(){
 
-        $(this).siblings(".DSWHoverTabDefault").removeClass("DSWHoverTabDefault");
+Â  Â  Â  Â  $(this).siblings(".DSWHoverTabDefault").removeClass("DSWHoverTabDefault");
 
-        $(this).addClass("DSWHoverTabDefault");
+Â  Â  Â  Â  $(this).addClass("DSWHoverTabDefault");
 
-    });
+Â  Â  });
 
 })(this.jQuery);

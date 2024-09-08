@@ -28,11 +28,11 @@ $(function() {
         var $alertScreen = $('<div>', {'id': 'skinchange-alert'});
         $alertScreen.insertBefore(logo);
         if (mw.config.get('wgUserId')) {
-            $alertScreen.html('<div class="skinchange-choice-outer"><div id="skinchange-dark" class="skinchange-choice"></div><div id="skinchange-light" class="skinchange-choice"></div></div><div id="skinchange-x">×</div><div class="skinchange-suppress-outer"><div class="skinchange-suppress-inner"><input type="checkbox" id="skinchange-suppress"> <label for="skinchange-suppress">Esconder botão na barra lateral</label></div></div>');
+            $alertScreen.html('<div class="skinchange-choice-outer"><div id="skinchange-dark" class="skinchange-choice"></div><div id="skinchange-light" class="skinchange-choice"></div></div><div id="skinchange-x">Ã—</div><div class="skinchange-suppress-outer"><div class="skinchange-suppress-inner"><input type="checkbox" id="skinchange-suppress"> <label for="skinchange-suppress">Esconder botÃ£o na barra lateral</label></div></div>');
         } else {
             var curURL = window.location.href;
             var loginURL = "https://fandomauth.gamepedia.com/signin?redirect=" + curURL;
-            $alertScreen.html('<div class="skinchange-choice-outer"><div id="skinchange-dark" class="skinchange-choice"></div><div id="skinchange-light" class="skinchange-choice"></div></div><div id="skinchange-x">×</div><div class="skinchange-nouser">Você precisa <a href="' + loginURL + '">entrar</a> para mudar permanentemente de skin, mas você pode pré-visualizar!</div>');
+            $alertScreen.html('<div class="skinchange-choice-outer"><div id="skinchange-dark" class="skinchange-choice"></div><div id="skinchange-light" class="skinchange-choice"></div></div><div id="skinchange-x">Ã—</div><div class="skinchange-nouser">VocÃª precisa <a href="' + loginURL + '">entrar</a> para mudar permanentemente de skin, mas vocÃª pode prÃ©-visualizar!</div>');
             function changeSkinTemp(target) {
                 curURL = curURL.replace(/(?:\&|\?)useskin=[A-z]*/g,'');
                 var sep = (curURL.indexOf("?") === -1) ? "?" : "&";

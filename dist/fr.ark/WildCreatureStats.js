@@ -3,21 +3,21 @@ var stats = null;
 var wildCreatureStats = null;
 var percentiles = null;
 var wildStatCalcStats = {
-    'health': 'Santé',
-    'stamina': 'Énergie',
-    'oxygen': 'Oxygène',
+    'health': 'SantÃ©',
+    'stamina': 'Ã‰nergie',
+    'oxygen': 'OxygÃ¨ne',
     'food': 'Nourriture',
     'weight': 'Poids',
-    'damage': 'Dégâts de mêlée'
+    'damage': 'DÃ©gÃ¢ts de mÃªlÃ©e'
 };
 
 if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
-    // NOTE: l'augmentation est toujours donnée en pourcentage de la statistique de base
-    // NOTE: dans cet outil damage1 est (dans la plupart des cas) 100 qui représente 100% (tel que vu en jeu)
-    // NOTE: si une créature n'a pas d'oxygène (aquatiques, etc.), enlever ce paramètre
+    // NOTE: l'augmentation est toujours donnÃ©e en pourcentage de la statistique de base
+    // NOTE: dans cet outil damage1 est (dans la plupart des cas) 100 qui reprÃ©sente 100% (tel que vu en jeu)
+    // NOTE: si une crÃ©ature n'a pas d'oxygÃ¨ne (aquatiques, etc.), enlever ce paramÃ¨tre
     wildCreatureStats = // Version: 329.3.6806323
 {
-  "Coelacanthe irradié": {
+  "Coelacanthe irradiÃ©": {
     "health1": 30,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -29,7 +29,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Achatina irradié": {
+  "Achatina irradiÃ©": {
     "health1": 75,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -41,7 +41,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Baudroie abyssale irradiée": {
+  "Baudroie abyssale irradiÃ©e": {
     "health1": 450,
     "healthInc": 0.2,
     "stamina1": 240,
@@ -53,7 +53,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Ankylosaure irradié": {
+  "Ankylosaure irradiÃ©": {
     "health1": 700,
     "healthInc": 0.2,
     "stamina1": 175,
@@ -67,7 +67,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Aranéo irradiée": {
+  "AranÃ©o irradiÃ©e": {
     "health1": 150,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -81,7 +81,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Arthropleura irradié": {
+  "Arthropleura irradiÃ©": {
     "health1": 500,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -93,7 +93,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "BAryonyx irradié": {
+  "BAryonyx irradiÃ©": {
     "health1": 440,
     "healthInc": 0.2,
     "stamina1": 325,
@@ -105,7 +105,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Beelzebufo irradié": {
+  "Beelzebufo irradiÃ©": {
     "health1": 220,
     "healthInc": 0.2,
     "stamina1": 190,
@@ -117,7 +117,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Carbonemys irradiée": {
+  "Carbonemys irradiÃ©e": {
     "health1": 700,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -129,7 +129,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Carnotaure irradié": {
+  "Carnotaure irradiÃ©": {
     "health1": 420,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -143,7 +143,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Cnidaria irradiée": {
+  "Cnidaria irradiÃ©e": {
     "health1": 180,
     "healthInc": 0.2,
     "stamina1": 120,
@@ -155,7 +155,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Dimétrodon irradié": {
+  "DimÃ©trodon irradiÃ©": {
     "health1": 350,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -167,7 +167,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.02
   },
-  "Dimorphodon irradié": {
+  "Dimorphodon irradiÃ©": {
     "health1": 125,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -181,7 +181,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Diplocaulus irradié": {
+  "Diplocaulus irradiÃ©": {
     "health1": 250,
     "healthInc": 0.2,
     "stamina1": 165,
@@ -195,7 +195,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Diplodocus irradié": {
+  "Diplodocus irradiÃ©": {
     "health1": 1700,
     "healthInc": 0.2,
     "stamina1": 550,
@@ -209,7 +209,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Ours Sinistre irradié": {
+  "Ours Sinistre irradiÃ©": {
     "health1": 400,
     "healthInc": 0.2,
     "stamina1": 500,
@@ -223,7 +223,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Dodo irradié": {
+  "Dodo irradiÃ©": {
     "health1": 40,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -237,7 +237,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Doedicurus irradié": {
+  "Doedicurus irradiÃ©": {
     "health1": 850,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -251,7 +251,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Bousier irradié": {
+  "Bousier irradiÃ©": {
     "health1": 200,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -265,7 +265,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Electrophorus irradié": {
+  "Electrophorus irradiÃ©": {
     "health1": 180,
     "healthInc": 0.2,
     "stamina1": 165,
@@ -279,7 +279,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Equus  irradié": {
+  "Equus  irradiÃ©": {
     "health1": 240,
     "healthInc": 0.2,
     "stamina1": 560,
@@ -293,7 +293,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Gigantopithèque irradié": {
+  "GigantopithÃ¨que irradiÃ©": {
     "health1": 640,
     "healthInc": 0.1,
     "stamina1": 300,
@@ -307,7 +307,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.04
   },
-  "Iguanodon irradié": {
+  "Iguanodon irradiÃ©": {
     "health1": 250,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -321,7 +321,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Lystrosaure irradié": {
+  "Lystrosaure irradiÃ©": {
     "health1": 90,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -335,7 +335,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Manta irradiée": {
+  "Manta irradiÃ©e": {
     "health1": 320,
     "healthInc": 0.05,
     "stamina1": 270,
@@ -347,7 +347,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Megalania irradié": {
+  "Megalania irradiÃ©": {
     "health1": 480,
     "healthInc": 0.2,
     "stamina1": 400,
@@ -361,7 +361,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalosaure irradié": {
+  "MÃ©galosaure irradiÃ©": {
     "health1": 1025,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -375,7 +375,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Méganeura irradiée": {
+  "MÃ©ganeura irradiÃ©e": {
     "health1": 45,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -389,7 +389,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Moschops irradié": {
+  "Moschops irradiÃ©": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -403,7 +403,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Loutre irradiée": {
+  "Loutre irradiÃ©e": {
     "health1": 40,
     "healthInc": 0.2,
     "stamina1": 180,
@@ -417,7 +417,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.04
   },
-  "Ovis irradié": {
+  "Ovis irradiÃ©": {
     "health1": 100,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -431,7 +431,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Paraceratherium irradié": {
+  "Paraceratherium irradiÃ©": {
     "health1": 1026,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -445,7 +445,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Parasaure irradié": {
+  "Parasaure irradiÃ©": {
     "health1": 200,
     "healthInc": 0.2,
     "stamina1": 450,
@@ -459,7 +459,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Piranha irradié": {
+  "Piranha irradiÃ©": {
     "health1": 150,
     "healthInc": 0.2,
     "stamina1": 120,
@@ -471,7 +471,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Pulmonoscorpius irradié": {
+  "Pulmonoscorpius irradiÃ©": {
     "health1": 280,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -485,7 +485,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Purlovia irradié": {
+  "Purlovia irradiÃ©": {
     "health1": 275,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -499,7 +499,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Raptor irradié": {
+  "Raptor irradiÃ©": {
     "health1": 200,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -513,7 +513,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Saumon irradié": {
+  "Saumon irradiÃ©": {
     "health1": 65,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -525,7 +525,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Sarcosuchus irradié": {
+  "Sarcosuchus irradiÃ©": {
     "health1": 400,
     "healthInc": 0.2,
     "stamina1": 450,
@@ -537,7 +537,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Spinosaure irradié": {
+  "Spinosaure irradiÃ©": {
     "health1": 700,
     "healthInc": 0.2,
     "stamina1": 350,
@@ -551,7 +551,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Stégosaure irradié": {
+  "StÃ©gosaure irradiÃ©": {
     "health1": 650,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -565,7 +565,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Titanoboa irradié": {
+  "Titanoboa irradiÃ©": {
     "health1": 170,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -577,7 +577,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tricératops irradié": {
+  "TricÃ©ratops irradiÃ©": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -591,7 +591,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Trilobite irradié": {
+  "Trilobite irradiÃ©": {
     "health1": 160,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -667,7 +667,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Maître contrôleur corrompu (Alpha)": {
+  "MaÃ®tre contrÃ´leur corrompu (Alpha)": {
     "health1": 150000,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -745,7 +745,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Mégalodon (Alpha)": {
+  "MÃ©galodon (Alpha)": {
     "health1": 9600,
     "healthInc": 0.2,
     "stamina1": 320,
@@ -757,7 +757,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Moeder, Souveraine de l'Océan (Alpha)": {
+  "Moeder, Souveraine de l'OcÃ©an (Alpha)": {
     "health1": 960400,
     "healthInc": 0.2,
     "stamina1": 600,
@@ -831,7 +831,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tricératops-X (Alpha)": {
+  "TricÃ©ratops-X (Alpha)": {
     "health1": 3500,
     "healthInc": 0.3,
     "stamina1": 150,
@@ -883,7 +883,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Aranéo": {
+  "AranÃ©o": {
     "health1": 150,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -1023,7 +1023,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Maître contrôleur corrompu (Beta)": {
+  "MaÃ®tre contrÃ´leur corrompu (Beta)": {
     "health1": 60000,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -1115,7 +1115,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Aranéo Brutale": {
+  "AranÃ©o Brutale": {
     "health1": 1850,
     "healthInc": 0.2,
     "stamina1": 250,
@@ -1247,7 +1247,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalocéros Brutal": {
+  "MÃ©galocÃ©ros Brutal": {
     "health1": 760,
     "healthInc": 0.3,
     "stamina1": 560,
@@ -1261,7 +1261,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Plésiosaure Brutal": {
+  "PlÃ©siosaure Brutal": {
     "health1": 5100,
     "healthInc": 0.18,
     "stamina1": 1200,
@@ -1285,7 +1285,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Dévoreur Brutal": {
+  "DÃ©voreur Brutal": {
     "health1": 680,
     "healthInc": 0.3,
     "stamina1": 250,
@@ -1325,7 +1325,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalodon-X Brutal": {
+  "MÃ©galodon-X Brutal": {
     "health1": 2600,
     "healthInc": 0.3,
     "stamina1": 640,
@@ -1635,7 +1635,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Ptéranodon Corrompu": {
+  "PtÃ©ranodon Corrompu": {
     "health1": 210,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -1719,7 +1719,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Stégosaure Corrompu": {
+  "StÃ©gosaure Corrompu": {
     "health1": 650,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -1733,7 +1733,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tricératops Corrompu": {
+  "TricÃ©ratops Corrompu": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -1843,7 +1843,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Unité de défendse": {
+  "UnitÃ© de dÃ©fendse": {
     "health1": 924.000061,
     "healthInc": 0.2,
     "stamina1": 2000,
@@ -1871,7 +1871,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Titan du Désert": {
+  "Titan du DÃ©sert": {
     "health1": 250000,
     "healthInc": 0,
     "stamina1": 5000,
@@ -1885,7 +1885,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Troupeau du Titan du Désert": {
+  "Troupeau du Titan du DÃ©sert": {
     "health1": 4000,
     "healthInc": 0.2,
     "stamina1": 10000,
@@ -1913,7 +1913,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Dimétrodon": {
+  "DimÃ©trodon": {
     "health1": 350,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -2097,7 +2097,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Murène servante": {
+  "MurÃ¨ne servante": {
     "health1": 3200,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -2123,7 +2123,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Roi Faucheur élémentaire": {
+  "Roi Faucheur Ã©lÃ©mentaire": {
     "health1": 1250,
     "healthInc": 0.2,
     "stamina1": 480,
@@ -2137,7 +2137,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Exécuteur": {
+  "ExÃ©cuteur": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 450,
@@ -2149,7 +2149,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "T-Rex Corrompu enragé": {
+  "T-Rex Corrompu enragÃ©": {
     "health1": 8500,
     "healthInc": 0.2,
     "stamina1": 420,
@@ -2161,7 +2161,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tricératops enragé": {
+  "TricÃ©ratops enragÃ©": {
     "health1": 2500,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -2189,7 +2189,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Euryptéride": {
+  "EuryptÃ©ride": {
     "health1": 160,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -2243,7 +2243,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Titan des Forêts": {
+  "Titan des ForÃªts": {
     "health1": 400000,
     "healthInc": 0,
     "stamina1": 6000,
@@ -2257,7 +2257,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Wyverne des Forêts": {
+  "Wyverne des ForÃªts": {
     "health1": 1295,
     "healthInc": 0.15,
     "stamina1": 315,
@@ -2299,7 +2299,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Maître contrôleur corrompu (Gamma)": {
+  "MaÃ®tre contrÃ´leur corrompu (Gamma)": {
     "health1": 25000,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -2341,7 +2341,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Abeille géante": {
+  "Abeille gÃ©ante": {
     "health1": 80,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -2355,7 +2355,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Reine des Abeilles géantes": {
+  "Reine des Abeilles gÃ©antes": {
     "health1": 80,
     "healthInc": 0,
     "stamina1": 200,
@@ -2369,7 +2369,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Ouvrière Abeille géante": {
+  "OuvriÃ¨re Abeille gÃ©ante": {
     "health1": 200,
     "healthInc": 0.2,
     "stamina1": 200,
@@ -2383,7 +2383,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Gigantopithèque": {
+  "GigantopithÃ¨que": {
     "health1": 640,
     "healthInc": 0.1,
     "stamina1": 300,
@@ -2425,7 +2425,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.055
   },
-  "Mégalodon Brutal à rayures dorées": {
+  "MÃ©galodon Brutal Ã  rayures dorÃ©es": {
     "health1": 2600,
     "healthInc": 0.3,
     "stamina1": 640,
@@ -2437,7 +2437,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalodon à rayures dorées": {
+  "MÃ©galodon Ã  rayures dorÃ©es": {
     "health1": 600,
     "healthInc": 0.2,
     "stamina1": 320,
@@ -2475,7 +2475,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Hyène": {
+  "HyÃ¨ne": {
     "health1": 175,
     "healthInc": 0.2,
     "stamina1": 260,
@@ -2503,7 +2503,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Mâle Ver de Glace": {
+  "MÃ¢le Ver de Glace": {
     "health1": 1700,
     "healthInc": 0.002,
     "stamina1": 100,
@@ -2815,7 +2815,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Stégosaure Tek dysfonctionnel": {
+  "StÃ©gosaure Tek dysfonctionnel": {
     "health1": 650,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -2829,7 +2829,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tricératops Tek dysfonctionnel": {
+  "TricÃ©ratops Tek dysfonctionnel": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -2939,7 +2939,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.025
   },
-  "Mégachelon": {
+  "MÃ©gachelon": {
     "health1": 1920,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -2965,7 +2965,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégaloceros": {
+  "MÃ©galoceros": {
     "health1": 300,
     "healthInc": 0.2,
     "stamina1": 280,
@@ -2979,7 +2979,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalodon": {
+  "MÃ©galodon": {
     "health1": 600,
     "healthInc": 0.2,
     "stamina1": 320,
@@ -2991,7 +2991,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégalosaure": {
+  "MÃ©galosaure": {
     "health1": 1025,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -3019,7 +3019,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mégapithèque (Alpha)": {
+  "MÃ©gapithÃ¨que (Alpha)": {
     "health1": 540000,
     "healthInc": 0,
     "stamina1": 650,
@@ -3031,7 +3031,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Mégapithèque (Beta)": {
+  "MÃ©gapithÃ¨que (Beta)": {
     "health1": 396000,
     "healthInc": 0,
     "stamina1": 650,
@@ -3043,7 +3043,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Mégapithèque (Gamma)": {
+  "MÃ©gapithÃ¨que (Gamma)": {
     "health1": 180000,
     "healthInc": 0,
     "stamina1": 650,
@@ -3055,7 +3055,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Mégathérium": {
+  "MÃ©gathÃ©rium": {
     "health1": 740,
     "healthInc": 0.2,
     "stamina1": 400,
@@ -3069,7 +3069,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Mésopithèque": {
+  "MÃ©sopithÃ¨que": {
     "health1": 115,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -3097,7 +3097,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Moeder, Souveraine de l'Océan (Beta)": {
+  "Moeder, Souveraine de l'OcÃ©an (Beta)": {
     "health1": 686000,
     "healthInc": 0.2,
     "stamina1": 600,
@@ -3109,7 +3109,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Moeder, Souveraine de l'Océan (Gamma)": {
+  "Moeder, Souveraine de l'OcÃ©an (Gamma)": {
     "health1": 490000,
     "healthInc": 0.2,
     "stamina1": 600,
@@ -3189,7 +3189,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Insecte jarre à pétrole": {
+  "Insecte jarre Ã  pÃ©trole": {
     "health1": 75,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -3295,7 +3295,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Pachycéphalosaure": {
+  "PachycÃ©phalosaure": {
     "health1": 165,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -3405,7 +3405,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Phénix": {
+  "PhÃ©nix": {
     "health1": 640,
     "healthInc": 0.2,
     "stamina1": 352,
@@ -3431,7 +3431,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Plésiosaure": {
+  "PlÃ©siosaure": {
     "health1": 2400,
     "healthInc": 0.12,
     "stamina1": 800,
@@ -3485,7 +3485,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Ptéranodon": {
+  "PtÃ©ranodon": {
     "health1": 210,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -3715,7 +3715,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Éclaireur": {
+  "Ã‰claireur": {
     "health1": 3,
     "healthInc": 0.075,
     "stamina1": 90,
@@ -3729,7 +3729,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Dévoreur": {
+  "DÃ©voreur": {
     "health1": 250,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -3797,7 +3797,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Stégosaurus": {
+  "StÃ©gosaurus": {
     "health1": 650,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -3893,7 +3893,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Thérizinosaure": {
+  "ThÃ©rizinosaure": {
     "health1": 870,
     "healthInc": 0.2,
     "stamina1": 300,
@@ -3907,7 +3907,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Lézard épineux": {
+  "LÃ©zard Ã©pineux": {
     "health1": 260,
     "healthInc": 0.2,
     "stamina1": 350,
@@ -3947,7 +3947,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Ouvrière Titanomyrma": {
+  "OuvriÃ¨re Titanomyrma": {
     "health1": 35,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -3961,7 +3961,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Légionnaire Titanomyrma": {
+  "LÃ©gionnaire Titanomyrma": {
     "health1": 50,
     "healthInc": 0.2,
     "stamina1": 100,
@@ -3989,7 +3989,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0
   },
-  "Tricératops": {
+  "TricÃ©ratops": {
     "health1": 375,
     "healthInc": 0.2,
     "stamina1": 150,
@@ -4029,7 +4029,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Tropéognathus": {
+  "TropÃ©ognathus": {
     "health1": 360,
     "healthInc": 0.2,
     "stamina1": 250,
@@ -4069,7 +4069,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Vélonasaure": {
+  "VÃ©lonasaure": {
     "health1": 440,
     "healthInc": 0.2,
     "stamina1": 325,
@@ -4083,7 +4083,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Wyverne du néant": {
+  "Wyverne du nÃ©ant": {
     "health1": 1295,
     "healthInc": 0.15,
     "stamina1": 315,
@@ -4111,7 +4111,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Rhinocéros laineux": {
+  "RhinocÃ©ros laineux": {
     "health1": 500,
     "healthInc": 0.2,
     "stamina1": 120,
@@ -4139,7 +4139,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damage1": 100,
     "damageInc": 0.05
   },
-  "Yéti": {
+  "YÃ©ti": {
     "health1": 2000,
     "healthInc": 0.1,
     "stamina1": 300,
@@ -4168,7 +4168,7 @@ if (wildStatCalcDiv = document.getElementById('wildStatCalc')) {
     "damageInc": 0.05
   }
 };
-    // si une stat gagne x niveaux, elle est dans le top percentile[x] %. Pour 33 niveaux ou plus, la probabilité est inférieure à 0,01 %
+    // si une stat gagne x niveaux, elle est dans le top percentile[x] %. Pour 33 niveaux ou plus, la probabilitÃ© est infÃ©rieure Ã  0,01 %
     var percentiles = Array(100.00, 100.00, 100.00, 100.00, 99.99, 99.97, 99.89, 99.67, 99.17, 98.13, 96.23, 93.09, 88.39, 81.93, 73.78, 64.28, 53.98, 43.58, 33.76, 25.06, 17.81, 12.11, 7.88, 4.91, 2.92, 1.67, 0.91, 0.48, 0.24, 0.12, 0.05, 0.02, 0.01);
     
     changeCreature(wildStatCalcDiv.innerHTML);
@@ -4188,7 +4188,7 @@ function changeCreature(creature) {
             tableRows += '<tr><td><a href="/' + wildStatCalcStats[id] + '">' + wildStatCalcStats[id] + unit + '</a></td><td><input type="number" min="' + stats[id + '1'] + '" max="100000" maxlength="6" step="0.1" value="' + stats[id + '1'] + '" id="wildStatCalc' + id + 'input" onchange="calcNatStats()" style="width:5em"></td><td id="wildStatCalc' + id + '"></td></tr>';
         }
     }
-    tableRows += '<tr><td><a href="/Speed">Vitesse [%]</a></td><td title="Les créatures sauvages ont toujours 100% de vitesse">100</td><td id="wildStatCalcSpeed"></td></tr>';
+    tableRows += '<tr><td><a href="/Speed">Vitesse [%]</a></td><td title="Les crÃ©atures sauvages ont toujours 100% de vitesse">100</td><td id="wildStatCalcSpeed"></td></tr>';
     var creatureSelect = '<select onchange="changeCreature(this.value)">';
     for (var c in wildCreatureStats) {
         creatureSelect += '<option' + (c === creature ? ' selected' : '') + '>' + c + '</option>';
@@ -4223,7 +4223,7 @@ function calcNatStats() {
                     percentile = 0.01;
                     else
                     percentile = percentiles[level];
-                    levelEl.title = 'Ce niveau est parmi les ' + percentile + '% plus élevés comparés à toutes les créatures sauvages de niveau 120.';
+                    levelEl.title = 'Ce niveau est parmi les ' + percentile + '% plus Ã©levÃ©s comparÃ©s Ã  toutes les crÃ©atures sauvages de niveau 120.';
                     totallevel += level;
                     determinedStatsNr++;
                 }

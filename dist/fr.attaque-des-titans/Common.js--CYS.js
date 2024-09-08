@@ -62,7 +62,7 @@ function setColorGroup(group)
         })
         .fail(function()
         {
-          console.log('Echec script CYS: Pas pu récuperer les '+group);
+          console.log('Echec script CYS: Pas pu rÃ©cuperer les '+group);
         });
         return list;
       }
@@ -70,7 +70,7 @@ function setColorGroup(group)
 for(k in groups)
   setColorGroup(groups[k]);
   
-// Pour les autres utilisateurs (impossible à récuperer correctement depuis l'api)
+// Pour les autres utilisateurs (impossible Ã  rÃ©cuperer correctement depuis l'api)
 
 setUserColor('To bot or not to bot',BotColor);
   

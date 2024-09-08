@@ -1,4 +1,4 @@
-/* Az ide elhelyezett JavaScript kód minden felhasználó számára lefut az oldalak betöltésekor. */
+/* Az ide elhelyezett JavaScript kÃ³d minden felhasznÃ¡lÃ³ szÃ¡mÃ¡ra lefut az oldalak betÃ¶ltÃ©sekor. */
 //<source lang="javascript">
 
 /* Import more specific scripts if necessary */

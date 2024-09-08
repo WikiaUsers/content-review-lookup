@@ -210,7 +210,7 @@ mw.loader.using( 'mediawiki.searchSuggest', function() {
  *
  * That way the file will be categorised so someone can find a license for the file
  */
-if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Feltöltés' ) {
+if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'FeltÃ¶ltÃ©s' ) {
 	var $license = $( '#wpLicense' );
 	if ( $license.length ) {
 		if ( $license.val() === '' ) {

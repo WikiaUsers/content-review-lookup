@@ -1,3 +1,3 @@
-/* Tomar el código JS de la RuneScape Wiki */
+/* Tomar el cÃ³digo JS de la RuneScape Wiki */
  
 importArticle({type: 'script', article: 'w:c:es.runescape:MediaWiki:Common.js'});

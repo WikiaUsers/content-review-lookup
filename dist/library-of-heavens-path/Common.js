@@ -87,6 +87,6 @@ window.MessageWallUserTags = {
     glowSize: '1px',
     glowColor: 'red',
     users: {
-        'Schwarzs‰ule': 'Celestial Master Teacher',
+        'Schwarzs√§ule': 'Celestial Master Teacher',
     }
 };

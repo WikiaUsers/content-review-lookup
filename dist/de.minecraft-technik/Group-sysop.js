@@ -56,7 +56,7 @@ $.when( $.ready, mw.loader.using( 'mediawiki.util' ) ).done( function() {
 		
 		if ( !deleteReason ) {
 			var contentDeleteReason = autoReason.match(
-				/\{\{\s*lö(?:schen)?\s*\|\s*([^\}]+?)\s*(?:\|[^\]\}]*)?(?:\}\}|\.\.\.$)/i
+				/\{\{\s*lÃ¶(?:schen)?\s*\|\s*([^\}]+?)\s*(?:\|[^\]\}]*)?(?:\}\}|\.\.\.$)/i
 			);
 			if ( contentDeleteReason ) {
 				deleteReason = contentDeleteReason[1];

@@ -24,7 +24,7 @@ if(des.namespace === 0) {
 }
 
 function openReportForm() {
-    $.showCustomModal('Reportar un error', 'Lamentamos que hayas encontrado un problema en esta página. Recuerda que esta es una wikia y cualquier usuario puede modificarla. Aún así, si no te animas a editar, puedes hacer el reporte usando este formulario. ¡Muchas gracias! <form class="WikiaForm" method="" name="" id="reporteError"><fieldset><span style="font-family:Arial"><span style="font-weight:bold">Nombre del artículo</span><br><input id="pagename" disabled="" type="text" value="' + des.pagename +'" style="width:400px"/><br><span style="font-weight:bold">Problema encontrado</span><br><textarea name="" id="comment" style="height: 100px; width: 100%;" placeholder="Escribe aquí el problema encontrado"></textarea><br><span id="br2" /></fieldset></form>', {
+    $.showCustomModal('Reportar un error', 'Lamentamos que hayas encontrado un problema en esta pÃ¡gina. Recuerda que esta es una wikia y cualquier usuario puede modificarla. AÃºn asÃ­, si no te animas a editar, puedes hacer el reporte usando este formulario. Â¡Muchas gracias! <form class="WikiaForm" method="" name="" id="reporteError"><fieldset><span style="font-family:Arial"><span style="font-weight:bold">Nombre del artÃ­culo</span><br><input id="pagename" disabled="" type="text" value="' + des.pagename +'" style="width:400px"/><br><span style="font-weight:bold">Problema encontrado</span><br><textarea name="" id="comment" style="height: 100px; width: 100%;" placeholder="Escribe aquÃ­ el problema encontrado"></textarea><br><span id="br2" /></fieldset></form>', {
         id: "requestWindow",
         width: 650,
         buttons: [{
@@ -36,7 +36,7 @@ function openReportForm() {
         },
         {
             id: "editar",
-            message: "Lo arreglaré yo mismo",
+            message: "Lo arreglarÃ© yo mismo",
             handler: function () {
                 $("#requestWindow").closeModal();
                 window.location = des.server + '/wiki/' + des.pagename + '?action=edit';
@@ -60,7 +60,7 @@ console.log('Enviando...');
     var $form = $('#reporteError'),
         pagina = $form.find('#pagename').val(),
         comentarios = $form.find('#comment').val(),
-        page = '{{subst:Reporte de error\n|Estado = Nuevo reporte\n|Artículo  = ' + pagina + '\n|Comentarios =' + comentarios + '|Firma = ' + des.signature + '}}';
+        page = '{{subst:Reporte de error\n|Estado = Nuevo reporte\n|ArtÃ­culo  = ' + pagina + '\n|Comentarios =' + comentarios + '|Firma = ' + des.signature + '}}';
     if (!comentarios) {
         alert('Este campo no puede quedarse en blanco.');
         return;
@@ -73,7 +73,7 @@ console.log('Comprobaciones realizadas...');
     console.log('Obteniendo la URL: ',url);
  
     $.post(url, function (r) {
-console.log('Ya debería estar hecho:',r);
+console.log('Ya deberÃ­a estar hecho:',r);
     $("#requestWindow").closeModal();
 window.location = des.server + '/wiki/' + 'project_talk:Reporte_de_errores#' + encodeURIComponent(des.pagename);
     });

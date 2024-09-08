@@ -55,7 +55,7 @@ defer(function () {
     // Sanitise inputs
     filter_classes = $.map(filter_classes, function(v) {
         var o = {};
-        var a = v.split('¦');
+        var a = v.split('Â¦');
         if (a.length == 1) {
             if (a[0].trim() === '<br>') {
                 o.type = 'br';

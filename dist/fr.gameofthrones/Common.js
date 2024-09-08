@@ -12,7 +12,7 @@ $('.username_modele').text(mw.config.get('wgUserName'));
 /* Actualisation automatique */
 window.AjaxRCRefreshText = 'Actualisation automatique';
 window.AjaxRCRefreshHoverText = 'Actualiser automatiquement la page';
-window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];
+window.ajaxPages = ["SpÃ©cial:Modifications_rÃ©centes","SpÃ©cial:WikiActivity"];
 
 /****************************************/
 /* sliders using jquery by User:Tierrie */

@@ -1,6 +1,6 @@
-/*Todos os crÈditos s„o do You-Zitsu Wiki https://you-zitsu.wikia.com. VocÍ n„o est· autorizado a replicar ou copiar os codigos / design sem a permiss„o de um administrador.*/
+/*Todos os cr√©ditos s√£o do You-Zitsu Wiki https://you-zitsu.wikia.com. Voc√™ n√£o est√° autorizado a replicar ou copiar os codigos / design sem a permiss√£o de um administrador.*/
 
-/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
+/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
  
 (function (window, $, mw) {
 	"use strict";
@@ -24,7 +24,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
 		"Special:WikiActivity",
 		"Special:Images"
 	);
-	window.AjaxRCRefreshText = 'AtualizaÁ„o Autom·tica';
+	window.AjaxRCRefreshText = 'Atualiza√ß√£o Autom√°tica';
 	window.ajaxCallAgain = ($.isArray(window.ajaxCallAgain) && window.ajaxCallAgain) || [];
 	scriptList.push('u:dev:AjaxRC/code.js');
 
@@ -39,7 +39,7 @@ $(function(){
   $(this).animate({width:'180px'},'fast');
   $('#langdiv span').text($(this).attr('alt'));
  },function(){
-  $('#langdiv span').text('You-Zitsu Wiki em Outras LÌnguas');
+  $('#langdiv span').text('You-Zitsu Wiki em Outras L√≠nguas');
   $(this).animate({width:'150px'},'fast');
  });
 });

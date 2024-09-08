@@ -23,7 +23,7 @@ $('.message textarea').keypress(function(e) {
 $(function() {
     if (mw.config.get('wgCanonicalSpecialPageName') == 'Chat') {
         var groups = mw.config.get('wgUserGroups').join(' ');
-        if ((groups.indexOf('sysop') + groups.indexOf('chatmoderator') + groups.indexOf('moderator') + groups.indexOf('commentcontrol') + groups.indexOf('rollback') + groups.indexOf('contentmoderator') + groups.indexOf('diseñador') + groups.indexOf('helper') + groups.indexOf('vstf') + groups.indexOf('staff')) > -6) {
+        if ((groups.indexOf('sysop') + groups.indexOf('chatmoderator') + groups.indexOf('moderator') + groups.indexOf('commentcontrol') + groups.indexOf('rollback') + groups.indexOf('contentmoderator') + groups.indexOf('diseÃ±ador') + groups.indexOf('helper') + groups.indexOf('vstf') + groups.indexOf('staff')) > -6) {
             $('.Chat').on('DOMNodeInserted', function(e) {
                 var msg = $.parseHTML(e.target.innerHTML)[7];
                 if (msg !== void 0 && msg.innerHTML.substr(0, 5) == '!mods') {
@@ -44,7 +44,7 @@ window.kockaEmoticons = {
     vocab: {
         emoticons: "Emoticones",
         close: "Cerrar",
-        help: "Para insertar un emoticón, haz clic en él."
+        help: "Para insertar un emoticÃ³n, haz clic en Ã©l."
     },
 };
 $(function()

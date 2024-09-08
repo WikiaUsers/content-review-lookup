@@ -158,3 +158,14 @@ mw.loader.using("mediawiki.user").then(function(){
         ]
     });
 });
+/**================================================================================
+ *                                Auto Sorting Table
+ * ================================================================================*/
+$(document).on('readystatechange', function() {
+  if (document.readyState === "complete") {
+    $("table.sortable[data-autosort]").each(function() {
+      var columnIndex = $(this).attr("data-autosort") - 1;
+      $("th", this).eq(columnIndex).trigger("click");
+    });
+  }
+});

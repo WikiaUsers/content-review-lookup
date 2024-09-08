@@ -1,6 +1,6 @@
-//Version modifiée de http://www.creativejuiz.fr/blog/tutoriels/personnaliser-aspect-boutons-radio-checkbox-css
-//Code d'après Gguigui1
-//Quiz Bâtiments Défenifs (base des ouvriers) avec correction
+//Version modifiÃ©e de http://www.creativejuiz.fr/blog/tutoriels/personnaliser-aspect-boutons-radio-checkbox-css
+//Code d'aprÃ¨s Gguigui1
+//Quiz BÃ¢timents DÃ©fenifs (base des ouvriers) avec correction
     mw.util.addCSS('\
 .quizbdo { \
 	margin-right:auto; \
@@ -60,7 +60,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#fcc276\', e
   opacity: 1; \
   transform: scale(1); \
 }');
-    var questions = ['Une seule rafale du Double Canon est composée de combien de tirs ?', 'Quelle est la portée d\'une Tour d\'Archers de la Base des Ouvriers en mode "attaque rapide" ?', 'Combien de Broyeur(s) pouvez-vous posséder avec la Maison des Ouvriers au niveau 5 ?', 'Combien de canons composent un Multi-Mortier de niveau 1 ?', 'Quelles Troupes composent un Poste de garde de niveau 3 ?', 'Combien de <b>groupes</b> de Remparts pouvez-vous posséder avec la Maison des Ouvriers de niveau 4 ?', 'Quels sont les types de Troupes ciblées par le Rôtissoire ?', 'Combien de bombes d\'un Bombardier de niveau 1 sont nécessaires pour détruire un Rempart de niveau 6 ?', 'Quelle est la capacité du ressort d\'un Piège à Poussée de niveau 3 ?', 'Quelle est la vitesse d\'attaque des Bombes Aériennes ?'];
+    var questions = ['Une seule rafale du Double Canon est composÃ©e de combien de tirs ?', 'Quelle est la portÃ©e d\'une Tour d\'Archers de la Base des Ouvriers en mode "attaque rapide" ?', 'Combien de Broyeur(s) pouvez-vous possÃ©der avec la Maison des Ouvriers au niveau 5 ?', 'Combien de canons composent un Multi-Mortier de niveau 1 ?', 'Quelles Troupes composent un Poste de garde de niveau 3 ?', 'Combien de <b>groupes</b> de Remparts pouvez-vous possÃ©der avec la Maison des Ouvriers de niveau 4 ?', 'Quels sont les types de Troupes ciblÃ©es par le RÃ´tissoire ?', 'Combien de bombes d\'un Bombardier de niveau 1 sont nÃ©cessaires pour dÃ©truire un Rempart de niveau 6 ?', 'Quelle est la capacitÃ© du ressort d\'un PiÃ¨ge Ã  PoussÃ©e de niveau 3 ?', 'Quelle est la vitesse d\'attaque des Bombes AÃ©riennes ?'];
     var answers = {
         0: ['4', '3', '2', '6'],
         1: ['7', '6', '9', '11'],
@@ -68,7 +68,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#fcc276\', e
         3: ['3', '4', '5', '2'],
         4: ['2 Barbares, 1 archer', '1 barbare, 1 archer', '1 barbare, 2 archers', '2 barbares, 2 archers'],
         5: ['15', '10', '20', '75'],
-        6: ['Terrestres et aériennes', 'Uniquement terrestres', 'Uniquement aériennes', 'Sous-marines et intra-terrestres'],
+        6: ['Terrestres et aÃ©riennes', 'Uniquement terrestres', 'Uniquement aÃ©riennes', 'Sous-marines et intra-terrestres'],
         7: ['4', '2', '3', '5'],
         8: ['10', '7', '15', '20'],
         9: ['3 000 000 000 de nanosecondes', '3 800 000 microsecondes', '4 000 millisecondes'],
@@ -83,24 +83,24 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#fcc276\', e
 
     function finishquiz() {
         if (points < 0) {
-            custommessage = "En dessous de 0, pas de bol ! Heureusement, ce site est l'endroit idéal pour vous rattraper et devenir incollable sur les Défenses de la Base des Ouvriers";
+            custommessage = "En dessous de 0, pas de bol ! Heureusement, ce site est l'endroit idÃ©al pour vous rattraper et devenir incollable sur les DÃ©fenses de la Base des Ouvriers";
         } else if (points < 5) {
-            custommessage = "Moins d'un quart des points, vous avez quelques notions sur la Base des Ouvriers mais les informations annexes vous échappent, n'hésitez pas à les récolter en naviguant sur ce site, elles pourront vous être utile pour la suite du jeu.";
+            custommessage = "Moins d'un quart des points, vous avez quelques notions sur la Base des Ouvriers mais les informations annexes vous Ã©chappent, n'hÃ©sitez pas Ã  les rÃ©colter en naviguant sur ce site, elles pourront vous Ãªtre utile pour la suite du jeu.";
         } else if (points < 10) {
-            custommessage = "En dessous de la moyenne mais ce n'est pas la catastrophe, vous avez les notions du jeu ainsi que quelques informations annexes mais la majorité d'entre elles vous sont inconnues, vous pouvez en apprendre d'autres en naviguant sur ce site si vous le souhaitez.";
+            custommessage = "En dessous de la moyenne mais ce n'est pas la catastrophe, vous avez les notions du jeu ainsi que quelques informations annexes mais la majoritÃ© d'entre elles vous sont inconnues, vous pouvez en apprendre d'autres en naviguant sur ce site si vous le souhaitez.";
         } else if (points < 15) {
-            custommessage = "Vous avez plus que la moyenne, bravo ! Vous avez de bonnes connaissances du jeu mais vous ne le connaissez pas entièrement et ce site peut vous permettre d'étoffer vos connaissances déjà bonnes.";
+            custommessage = "Vous avez plus que la moyenne, bravo ! Vous avez de bonnes connaissances du jeu mais vous ne le connaissez pas entiÃ¨rement et ce site peut vous permettre d'Ã©toffer vos connaissances dÃ©jÃ  bonnes.";
         } else if (points < 20) {
-            custommessage = 'Bravo ! Vous avez eu beaucoup de points, vous avez des connaissances extrêment bonnes du jeu et peu de choses doivent vous échapper. Cependant, en naviguant sur ce site, vous pourriez mettre la lumière sur ce "peu de choses" qui vous échappent encore.';
+            custommessage = 'Bravo ! Vous avez eu beaucoup de points, vous avez des connaissances extrÃªment bonnes du jeu et peu de choses doivent vous Ã©chapper. Cependant, en naviguant sur ce site, vous pourriez mettre la lumiÃ¨re sur ce "peu de choses" qui vous Ã©chappent encore.';
         } else if (points == 20) {
-            custommessage = "Félicitations ! Vous avez répondu tout juste ! Soit vous êtes un fan absolu de SUPERCELL au point d'en connaître toutes les facettes, soit un fin tricheur ;).";
+            custommessage = "FÃ©licitations ! Vous avez rÃ©pondu tout juste ! Soit vous Ãªtes un fan absolu de SUPERCELL au point d'en connaÃ®tre toutes les facettes, soit un fin tricheur ;).";
         }
         if (points > -2 && points < 2) {
             points += " point";
         } else {
             points += " points";
         }
-        $('.quizbdo:first').html('<h3>Félicitations, vous avez terminé le quiz !<br />Dites-nous votre résultat dans les commentaires ! N\'oubliez-pas que vous pouvez toujours peaufiner vos connaissances en parcourant les articles du Wiki Clash of Clans, et ainsi viser les 20/20 au quiz !<br />Maintenant, voici vos résultats :</h3><br />Vous avez un total de ' + points + ' sur 20 !<br /><h3>Vous avez eu ' + goodanswers + ' réponse(s) justes, ' + badanswers + ' réponse(s) fausses et vous n\'avez pas répondu à ' + notanswers + ' question(s) ou vous n\'avez pas répondu dans le temps imparti.</h3><br /><h4>' + custommessage + '</h4>');
+        $('.quizbdo:first').html('<h3>FÃ©licitations, vous avez terminÃ© le quiz !<br />Dites-nous votre rÃ©sultat dans les commentaires ! N\'oubliez-pas que vous pouvez toujours peaufiner vos connaissances en parcourant les articles du Wiki Clash of Clans, et ainsi viser les 20/20 au quiz !<br />Maintenant, voici vos rÃ©sultats :</h3><br />Vous avez un total de ' + points + ' sur 20 !<br /><h3>Vous avez eu ' + goodanswers + ' rÃ©ponse(s) justes, ' + badanswers + ' rÃ©ponse(s) fausses et vous n\'avez pas rÃ©pondu Ã  ' + notanswers + ' question(s) ou vous n\'avez pas rÃ©pondu dans le temps imparti.</h3><br /><h4>' + custommessage + '</h4>');
     }
 	function notime() {
         if ($("div.quizbdo > label").hasClass('disabled')) {
@@ -126,7 +126,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#fcc276\', e
             finishquiz();
             return;
         }
-        $(composent).html('<span style="text-align:center;"><i style="display:inline-block; margin-top:10px;"> Question n°' + Math.floor(countquestions + 1) + ': ' + questions[countquestions] + '</i></span>');
+        $(composent).html('<span style="text-align:center;"><i style="display:inline-block; margin-top:10px;"> Question nÂ°' + Math.floor(countquestions + 1) + ': ' + questions[countquestions] + '</i></span>');
         var reponsesorder = [];
         while (reponsesorder.length < answers[countquestions].length) {
             var number = Math.floor(Math.random() * answers[countquestions].length);
@@ -185,7 +185,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#fcc276\', e
     }
     $('.quizbdo:first').each(function () {
         $('.quizbdo').css('padding', '10px');
-        $(this).html('<p style="color: #303030; line-height:28px;">Depuis le 22 mai 2017, un second village a été ajouté dans Clash of Clans : <br /><b><i>La Base des Ouvriers !</i></b><br />Ce quiz vous permettra de tester vos connaissances sur les Défenses de ce village secondaire. Composé de 10 questions, ce quiz ne dure que quelques minutes. En cliquant sur le bouton&nbsp;<i>C\'est parti !</i>, le quiz commencera et la première question s\'affichera.</br />Vous aurez 15 secondes pour répondre à chaque question, et il y a une seule bonne réponse par question. Cliquez sur une réponse pour la valider. Une fois votre réponse validée, la bonne réponse est affichée. Si la réponse sélectionnée s\'affiche vert, c\'était la bonne réponse, si elle s\'affiche rouge, la mauvaise et dans ce cas, la bonne s\'affichera en vert. 3 secondes après, la prochaine question s\'affichera et ainsi de suite. Voici le barème de points ! :</br />Bonne réponse : +2 points</br />Mauvaise réponse : -1 point</br />Aucune réponse : 0 point</br />Le quiz est donc sur 20 points et les points négatifs sont gardés haha !</br />À vous de jouer !</p><div class="button" style="font-size:18px; padding:8px;" id="quiz-start">C\'est parti !</div>');
+        $(this).html('<p style="color: #303030; line-height:28px;">Depuis le 22 mai 2017, un second village a Ã©tÃ© ajoutÃ© dans Clash of Clans : <br /><b><i>La Base des Ouvriers !</i></b><br />Ce quiz vous permettra de tester vos connaissances sur les DÃ©fenses de ce village secondaire. ComposÃ© de 10 questions, ce quiz ne dure que quelques minutes. En cliquant sur le bouton&nbsp;<i>C\'est parti !</i>, le quiz commencera et la premiÃ¨re question s\'affichera.</br />Vous aurez 15 secondes pour rÃ©pondre Ã  chaque question, et il y a une seule bonne rÃ©ponse par question. Cliquez sur une rÃ©ponse pour la valider. Une fois votre rÃ©ponse validÃ©e, la bonne rÃ©ponse est affichÃ©e. Si la rÃ©ponse sÃ©lectionnÃ©e s\'affiche vert, c\'Ã©tait la bonne rÃ©ponse, si elle s\'affiche rouge, la mauvaise et dans ce cas, la bonne s\'affichera en vert. 3 secondes aprÃ¨s, la prochaine question s\'affichera et ainsi de suite. Voici le barÃ¨me de points ! :</br />Bonne rÃ©ponse : +2 points</br />Mauvaise rÃ©ponse : -1 point</br />Aucune rÃ©ponse : 0 point</br />Le quiz est donc sur 20 points et les points nÃ©gatifs sont gardÃ©s haha !</br />Ã€ vous de jouer !</p><div class="button" style="font-size:18px; padding:8px;" id="quiz-start">C\'est parti !</div>');
         var position = $('#WikiaArticle').offset();
         $('#quiz-start').click(function () {
             $('.quizbdo').css('padding', '');

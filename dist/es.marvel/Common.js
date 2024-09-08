@@ -1,8 +1,8 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
  window.dev = window.dev || {}; window.dev.editSummaries = { css: '#stdSummaries { width: 264px }', select: 'MediaWiki:Standard Edit Summary' };
  
 SpoilerAlert = {
-    question: 'Este artículo contiene spoilers sobre historias inéditas o recién estrenadas. ¿Estás absolutamente seguro de que quiere leerlo?,
+    question: 'Este artÃ­culo contiene spoilers sobre historias inÃ©ditas o reciÃ©n estrenadas. Â¿EstÃ¡s absolutamente seguro de que quiere leerlo?,
     yes: 'Si, quiero continuar',
     no: 'No, gracias',
     isSpoiler: function () {
@@ -22,12 +22,12 @@ importScriptPage('Countdown/code.js', 'dev');
 $(function() {
 	if(skin == "oasis") {
 		var $sidebar = $('.WikiaPagesOnWikiModule:first');
-		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE<br /> EL 1º  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129452&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
+		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:100%'>VISITANTES DESDE<br /> EL 1Âº  DE ENERO DE 2012 </td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129452&counter=26' alt='Contador' border=0 /></a></td></tr></table></div>";
  
 		$sidebar.html($sidebar.html() + comboString);
 	} else if(skin == "monobook") {
 		var $sidebar = $('#p-wikicities-nav');
-		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE<br /> EL 1º  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129452&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
+		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:100%; background:transparent'>VISITANTES DESDE<br /> EL 1Âº  DE ENERO DE 2012</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=1129452&counter=26' alt='Contador' border=0 /></a></td></tr></table></div></div>";
 		$sidebar.html($sidebar.html() + comboString);
 	}
 });
@@ -80,7 +80,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' días ' + left
+  if(diff > 0) left = diff + ' dÃ­as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -122,9 +122,9 @@ addOnloadHook(checktimers);
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde estÃ© "<span class="insertusername"></span>"
  
-Traída de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
+TraÃ­da de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */
  
 function UserNameReplace() {
@@ -138,7 +138,7 @@ function UserNameReplace() {
  
 addOnloadHook(UserNameReplace)
 
-var WikiaNotificationMessage = "¡<a href='/wiki/Captain_America:The_Winter/Soldier'>No te pierdas de Capitán America y el soldado del invierno solo en cines</a>";
+var WikiaNotificationMessage = "Â¡<a href='/wiki/Captain_America:The_Winter/Soldier'>No te pierdas de CapitÃ¡n America y el soldado del invierno solo en cines</a>";
 /* </pre> */
  
 // Incluir Gadget-HotCat.js
@@ -152,9 +152,9 @@ if (window.skin != 'oasis' && wgAction == 'view' &&
 				$('#'+(window.bodyContentId||'bodyContent')).children('div.printfooter').after('<div id="catlinks" class="catlinks"></div>');
 			}
 			if ($('#mw-normal-catlinks').length == 0) {
-				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:Categorías" href="'+wgArticlePath.replace('$1', 'Especial:Categorías')+'">Categorías</a></div>');
+				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:CategorÃ­as" href="'+wgArticlePath.replace('$1', 'Especial:CategorÃ­as')+'">CategorÃ­as</a></div>');
 			}
-			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorías"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
+			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorÃ­as"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
 				$(this).unbind().parents('span.noprint').eq(0).remove();
 				importScript('MediaWiki:Common.js/Gadget-HotCat.js');
 				return false;
@@ -166,7 +166,7 @@ if (window.skin != 'oasis' && wgAction == 'view' &&
 	importScript('MediaWiki:Common.js/Gadget-HotCat.js');
 }
 
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
  
 importArticles({
 type: "script",

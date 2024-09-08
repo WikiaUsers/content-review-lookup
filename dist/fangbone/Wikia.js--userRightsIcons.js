@@ -8,7 +8,7 @@ function addMastheadTags() {
   // BEGIN List of Accounts Given Extra User Rights Icons
  
    // ADMINS
-    rights["ThePokémonGamer"]     = ["Administrator", "Founder", "Bureaucrat"];
+    rights["ThePokÃ©monGamer"]     = ["Administrator", "Founder", "Bureaucrat"];
    
   // END List of Accounts Given Extra User Rights Icons
  

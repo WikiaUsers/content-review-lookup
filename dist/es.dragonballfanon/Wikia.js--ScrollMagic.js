@@ -1,6 +1,6 @@
 // Burbuja Frotante - Scrollbar
 $(function(){
-    $('<div id="burbuja-scroll"></div>') // Añadiendo la burbuja frotante
+    $('<div id="burbuja-scroll"></div>') // AÃ±adiendo la burbuja frotante
     .appendTo('body')
 });
 
@@ -21,7 +21,7 @@ $(window).scroll(function() {
         .fadeIn(100)  
     ;
 
-    // Desvanecimiento de la burbuja después de 1 segundo de no desplazamiento.
+    // Desvanecimiento de la burbuja despuÃ©s de 1 segundo de no desplazamiento.
     if (scrollTimer !== null) {
         clearTimeout(scrollTimer);
     }
@@ -30,7 +30,7 @@ $(window).scroll(function() {
     }, 1000);
 });
 
-// Añadiendo la barra de progreso a los artículos.
+// AÃ±adiendo la barra de progreso a los artÃ­culos.
 
 $(function(){
     $('<div class="DBFW-ProgesoContenido"><div class="DBFW-ProgesoBarra"></div></div>')
@@ -51,7 +51,7 @@ $(window).load(function(){
 });
 
 // Desvanecimiento de la barra de progreso
-// después de 2 segundo de no desplazamiento.
+// despuÃ©s de 2 segundo de no desplazamiento.
 
 var barraTimer = null;
 

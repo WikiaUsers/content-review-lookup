@@ -4,6 +4,6 @@ var WikiaNotificationMessage = "";
 $(function() {
     if ($(".deleteorremove-infobox").is('*')) {
         $('input[name="wpVote"]').attr('disabled','disabled')
-                                 .attr('value','Votación finalizada');
+                                 .attr('value','VotaciÃ³n finalizada');
     }
 });

@@ -1,4 +1,4 @@
- // Modèle page protect
+ // ModÃ¨le page protect
 
 if (console) console.log("Modeles.js en marche 2!");
 

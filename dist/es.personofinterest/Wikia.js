@@ -46,17 +46,17 @@ function showmultitab(set,num) {
   }
 }
 
-==CÛdigo para plegado/desplegado de bloques==
+==C√≥digo para plegado/desplegado de bloques==
 [[plantilla:Desplegable]]
  
 === Prerequisitos: ===
-'''NavigationBarShowDefault''' -> Si hay m·s de este n˙mero de desplegables ocultar todas autom·ticamente.
+'''NavigationBarShowDefault''' -> Si hay m√°s de este n√∫mero de desplegables ocultar todas autom√°ticamente.
 <nowiki>*/
   var NavigationBarHide = '[Ocultar]';
   var NavigationBarShow = '[Mostrar]';
 /*</nowiki>
  
-=== CÛdigo: ===
+=== C√≥digo: ===
 <nowiki>*/
  
 function toggleNavigationBar(indexNavigationBar)

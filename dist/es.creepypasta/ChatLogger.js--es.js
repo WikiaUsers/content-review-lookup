@@ -1,6 +1,6 @@
 //<source lang="javascript"><nowiki>
  
-// Mientras se esté usando, se requiere emplear también ChatHacks
+// Mientras se estÃ© usando, se requiere emplear tambiÃ©n ChatHacks
  
 //To set an interval of submitting logs, put var logInterval = (amount of milliseconds); above the import. Default is 1 hour.
  

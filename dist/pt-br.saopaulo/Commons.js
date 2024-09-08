@@ -1,6 +1,6 @@
-/** Altera o tÌtulo da p·gina **************************************************************
+/** Altera o t√≠tulo da p√°gina **************************************************************
   *    Origem: [[:w:en:MediaWiki:Common.js]]
-  * DescriÁ„o: A funÁ„o procura por um banner como:
+  * Descri√ß√£o: A fun√ß√£o procura por um banner como:
   * <nowiki><div id="RealTitleBanner">Div that is hidden</nowiki>
   *   <nowiki><span id="RealTitle">title</span></nowiki>
   * <nowiki></div></nowiki>

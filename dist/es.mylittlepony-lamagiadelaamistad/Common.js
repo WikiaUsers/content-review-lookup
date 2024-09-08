@@ -1,24 +1,24 @@
-/*Nota: Este JS fue copiado de [[w:c:es.mlp|es.mlp]]. Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina.*/
+/*Nota: Este JS fue copiado de [[w:c:es.mlp|es.mlp]]. Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina.*/
 /*Importaciones de Wikia Developers*/
-/**ConfiguraciÛn para res˙menes de ediciÛn predefinidos**/
+/**Configuraci√≥n para res√∫menes de edici√≥n predefinidos**/
 window.dev = window.dev || {};
 window.dev.editSummaries = {
     css: '#stdSummaries { width: 264px }',
     select: 'MediaWiki:Standard Edit Summary'
 };
-/**CÛdigos**/
+/**C√≥digos**/
 importArticles({
   type: 'script',
   articles: [
-/***Res˙menes de ediciÛn predefinidos***/
+/***Res√∫menes de edici√≥n predefinidos***/
     'u:dev:Standard_Edit_Summary/code.js',
-/***BotÛn para editar la bienvenida del muro***/
+/***Bot√≥n para editar la bienvenida del muro***/
     'u:dev:WallGreetingButton/code.js',
 /***Ventanas emergentes de referencias***/
     'u:dev:ReferencePopups/code.js',
-/***GeneraciÛn de enlaces para encabezados**/
+/***Generaci√≥n de enlaces para encabezados**/
     'u:dev:HeaderLinks/code.js',
-/***BotÛn de suscripciÛn para canal de YouTube***/
+/***Bot√≥n de suscripci√≥n para canal de YouTube***/
     'u:dev:YouTubeButton/code.js',
 /***Desactivar muro de mensajes para bots***/
     'u:dev:DisableBotMessageWalls/code.js'
@@ -58,7 +58,7 @@ function updatetimer(i) {
   diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
   diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
     timers[i].firstChild.nodeValue = tpm + left;
   timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
 }

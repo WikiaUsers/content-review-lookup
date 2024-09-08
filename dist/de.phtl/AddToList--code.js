@@ -24,7 +24,7 @@ mw.loader.using('wikia.jquery.ui').then(function() {
     if (mw.config.get('wgCanonicalNamespace') == 'Category' && (atl.hasOwnProperty('categorynames') === false || atl.categorynames === null || atl.categorynames.includes(mw.config.get('wgTitle')))) {
         var atlPage = '';
         $('.category-page__members').before($('.category-page__total-number').clone().html('Listen')).before(textareas);
-        $('#WikiaPage').before('<div id="atl-tool-selector" draggable="true" class="wds-dropdown wds-has-shadow" ><div id="atl-tool-selector-inner" class="wds-dropdown__content" ><span>Für: <span id="atl-tool-for" ></span></span><br />' + list + '</div></div>');
+        $('#WikiaPage').before('<div id="atl-tool-selector" draggable="true" class="wds-dropdown wds-has-shadow" ><div id="atl-tool-selector-inner" class="wds-dropdown__content" ><span>FÃ¼r: <span id="atl-tool-for" ></span></span><br />' + list + '</div></div>');
         $('#atl-tool-selector').draggable();
         $('#WikiaArticle .category-page__member').each(function() {
             $(this).append(' <span class="atl-tool-openselect" >+</span>');

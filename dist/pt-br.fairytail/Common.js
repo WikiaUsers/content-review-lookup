@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Auto Refresh */
@@ -9,11 +9,11 @@ ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];
 /* Lock Blog Script */
 window.LockOldBlogs = {
     expiryDays: 500,
-    expiryMessage: "Este blog È considerado arquivado devido por n„o ser comentado em mais de <expiryDays> dias. Se vocÍ est· procurando um lugar para discutir, por favor, olhe atravÈs de nossas ˙ltimas postagens, o link pode ser encontrado na p·gina principal onde os links dos blogs tambÈm est„o localizados.",
+    expiryMessage: "Este blog √© considerado arquivado devido por n√£o ser comentado em mais de <expiryDays> dias. Se voc√™ est√° procurando um lugar para discutir, por favor, olhe atrav√©s de nossas √∫ltimas postagens, o link pode ser encontrado na p√°gina principal onde os links dos blogs tamb√©m est√£o localizados.",
     nonexpiryCategory: "Open Blogs"
 };
 
-if ($('.page-User_NomedealguÈm').length !== 0) {
+if ($('.page-User_Nomedealgu√©m').length !== 0) {
  $("#WikiaRail").append('<div style="clear:both;" align="center"><img src="https://images.wikia.nocookie.net/fairytail/images/6/65/Jellal_Zeref%27s_Awakening_Full_size.jpg" width="300"></div>');
 }
  
@@ -93,7 +93,7 @@ UserTagsJS.modules.custom = {
 	'MagnoCosmos': ['a']
 };
 
-// Importar conte˙do
+// Importar conte√∫do
 importArticles({
     type: "script",
     articles: [

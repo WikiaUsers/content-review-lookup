@@ -22,7 +22,7 @@ function cioOpen(items) {
     // Build the initial table
     var html = ' \
 <div id="cioTitle"> \
- <div id="modalClose" onclick="cioClose();" title="Cerrar esta superposición."><img src="http://img693.imageshack.us/img693/9906/closes.png" width="48" height="24" alt="[X]" /></div> \
+ <div id="modalClose" onclick="cioClose();" title="Cerrar esta superposiciÃ³n."><img src="http://img693.imageshack.us/img693/9906/closes.png" width="48" height="24" alt="[X]" /></div> \
  Comparar Objetos \
 </div> \
 <form name="cioCompare" id="cioCompare" onsubmit="cioSubmit(this.cioItem.value); return false;" action="#"> \
@@ -43,25 +43,25 @@ function cioOpen(items) {
             <th rowspan="2">Nombre</th> \
                 <th colspan="3">Mano principal</th> \
                 <th colspan="3">Mano secundaria</th> \
-                <th colspan="3">Estadísticas defensivas</th> \
-                <th colspan="3"><span style="font-size:80%">Crítico</span></th> \
+                <th colspan="3">EstadÃ­sticas defensivas</th> \
+                <th colspan="3"><span style="font-size:80%">CrÃ­tico</span></th> \
                 <th width="30"><small>Velocidad</small></th> \
                 <th width="30">Peso</th> \
             <th width="30">GM</th> \
         </tr> \
         <tr> \
             <th width="35">Estilo</th> \
-            <th width="35"><span style="font-size:80%">Daño</span></th> \
-            <th width="35"><span style="font-size:80%">Precisión</span></th> \
+            <th width="35"><span style="font-size:80%">DaÃ±o</span></th> \
+            <th width="35"><span style="font-size:80%">PrecisiÃ³n</span></th> \
             <th width="35">Estilo</th> \
-            <th width="35"><span style="font-size:80%">Daño</span></th> \
-            <th width="35"><span style="font-size:80%">Precisión</span></th> \
-            <th width="35" title="Bonificación de armadura"><img src="https://images.wikia.nocookie.net/runescape/images/thumb/d/d8/Defence-icon.png/18px-Defence-icon.png"" alt="Arm" /></th> \
+            <th width="35"><span style="font-size:80%">DaÃ±o</span></th> \
+            <th width="35"><span style="font-size:80%">PrecisiÃ³n</span></th> \
+            <th width="35" title="BonificaciÃ³n de armadura"><img src="https://images.wikia.nocookie.net/runescape/images/thumb/d/d8/Defence-icon.png/18px-Defence-icon.png"" alt="Arm" /></th> \
             <th width="35" title="Puntos de vida"><img src="https://images.wikia.nocookie.net/runescape/images/thumb/1/1d/Constitution-icon.png/21px-Constitution-icon.png" alt="Lif" /></th> \
             <th width="35" title="Modificador de plegaria"><img src="https://images.wikia.nocookie.net/runescape/images/2/24/Prayer-icon.png" width="20" height="20" alt="Pra" /></th> \
-            <th width="35" title="Daño crítico cuerpo a cuerpo"><img src="https://images.wikia.nocookie.net/runescape/images/9/90/Stab_Attack_Style.png" width="11" height="20" alt="Dam" /></th> \
-            <th width="35" title="Daño crítico de alcance"><img src="https://images.wikia.nocookie.net/runescape/images/7/72/Ranged-icon.png" width="20" height="20" alt="Rng" /></th> \
-            <th width="35" title="Daño crítico de magia"><img src="https://images.wikia.nocookie.net/runescape/images/7/77/Magic-icon.png" width="20" height="19" alt="Mag" /></th> \
+            <th width="35" title="DaÃ±o crÃ­tico cuerpo a cuerpo"><img src="https://images.wikia.nocookie.net/runescape/images/9/90/Stab_Attack_Style.png" width="11" height="20" alt="Dam" /></th> \
+            <th width="35" title="DaÃ±o crÃ­tico de alcance"><img src="https://images.wikia.nocookie.net/runescape/images/7/72/Ranged-icon.png" width="20" height="20" alt="Rng" /></th> \
+            <th width="35" title="DaÃ±o crÃ­tico de magia"><img src="https://images.wikia.nocookie.net/runescape/images/7/77/Magic-icon.png" width="20" height="19" alt="Mag" /></th> \
             <th title="Velocidad"><img src="https://images.wikia.nocookie.net/runescape/images/a/a9/Energy.png" width="17" height="20" alt="Spd" /></th> \
             <th title="Peso (kg)"><img src="https://images.wikia.nocookie.net/runescape/images/f/fc/Weight-icon.png" width="20" height="20" alt="Wgt" /></th> \
             <th title="Precio en el Gran Mercado"><img src="https://images.wikia.nocookie.net/runescape/images/6/65/Coins_25.png" width="20" height="15" alt="GE" /></th> \
@@ -199,10 +199,10 @@ function cioSubmit(itemName) {
  
 				// List of template params to display within each column.
 				var bonusCols = [
-						'Tipo principal', 'Daño principal', 'Precisión principal',
-						'Tipo secundario', 'Daño secundario', 'Precisión secundaria',
+						'Tipo principal', 'DaÃ±o principal', 'PrecisiÃ³n principal',
+						'Tipo secundario', 'DaÃ±o secundario', 'PrecisiÃ³n secundaria',
 						'Defensa', 'LP', 'Prayer',
-						'Crítico Melee', 'Crítico Ranged', 'Crítico Magic', 'Velocidad'
+						'CrÃ­tico Melee', 'CrÃ­tico Ranged', 'CrÃ­tico Magic', 'Velocidad'
 				];
  
 		var pages = data.query.pages;
@@ -259,7 +259,7 @@ function cioSubmit(itemName) {
 			}
  
 			if (!bonusData.length) {
-				showError('No se encontraron estadísticas de este objeto.');
+				showError('No se encontraron estadÃ­sticas de este objeto.');
 			} else {
 				calcTotals();
 				$('#cioStatus').empty();

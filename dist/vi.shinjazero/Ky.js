@@ -1,5 +1,5 @@
 //Source: https://github.com/sindresorhus/ky
-/*! MIT License © Sindre Sorhus */
+/*! MIT License Â© Sindre Sorhus */
 
 'use strict';
 

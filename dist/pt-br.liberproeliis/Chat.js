@@ -27,5 +27,5 @@ window.EmoticonsWindowConfig = {
 };
 
 window.EmoticonsWindowVocab = {
-    help: "Clicar em um emoticon o far· aparecer em sua caixa de texto!!"
+    help: "Clicar em um emoticon o far√° aparecer em sua caixa de texto!!"
 };

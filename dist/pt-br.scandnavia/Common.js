@@ -1,4 +1,4 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 /* ====================================================================== *\
 	# custom edit buttons
 \* ====================================================================== */
@@ -64,15 +64,15 @@ importArticles({
 });
 var MessageBlock = {
   title : 'Bloqueio',
-  message : 'Você foi bloqueado.'
+  message : 'VocÃª foi bloqueado.'
 };
 
 importScriptPage('MediaWiki:WallGreetingButton/code.js', 'dev');
 
-// Config dos Meses em Português
+// Config dos Meses em PortuguÃªs
 window.DisplayClockJS = '%2H:%2M:%2S - %2d %{de Jan;de Fev;de Mar;de Abr;de Maio;de Jun;de Jul;de Ago;de Set;de Out;de Nov;de Dez}m de %Y (GMT -3)';
 
-// Relógio Horário de Brasília - BST (Brazil Standart Time)
+// RelÃ³gio HorÃ¡rio de BrasÃ­lia - BST (Brazil Standart Time)
 window.DisplayClockJS = {
     offset: 480,
     format: '%2H:%2M:%2S %d %B %Y (BST)',
@@ -87,21 +87,21 @@ importArticles({
     ]
 });
 
-/* Revelar IP Anônimo */
+/* Revelar IP AnÃ´nimo */
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat']
 };
 
 /* ######################################################################
  
-Funções para Medalhas customizáveis da Star Wars Wiki
-Por [[User:Thales César]]
+FunÃ§Ãµes para Medalhas customizÃ¡veis da Star Wars Wiki
+Por [[User:Thales CÃ©sar]]
 ** -----------
 */
  
 /* Construir leaderboard das medalhas */
 function buildLeaderboard() {
-	$.get("http://pt-br.scandnavia.wikia.com/load.php?mode=articles&articles=Star_Wars_Wiki:Medals|Scandnávia_Wiki:Medals/Pontos&only=styles&cb="+Math.ceil(new Date().getTime() / 1000), function(data) {
+	$.get("http://pt-br.scandnavia.wikia.com/load.php?mode=articles&articles=Star_Wars_Wiki:Medals|ScandnÃ¡via_Wiki:Medals/Pontos&only=styles&cb="+Math.ceil(new Date().getTime() / 1000), function(data) {
 			var tabelaDePontos = data.split("}{");
 			var obj = JSON.parse(tabelaDePontos[0]+'}');
 			tabelaDePontos = JSON.parse('{'+tabelaDePontos[1].split("\n")[0]);
@@ -134,14 +134,14 @@ function buildLeaderboard() {
 				if (i==$("#MedalsLeaderboard tr").length)
 					$("#MedalsLeaderboard").append(tableText);
 			}
-			$("#MedalsLeaderboard").prepend('<tr style="text-align:center"><th style="width:25%">Usuário</th><th style="width:50%">Medalhas</th><th style="width:25%">Pontuação</th></tr>');
+			$("#MedalsLeaderboard").prepend('<tr style="text-align:center"><th style="width:25%">UsuÃ¡rio</th><th style="width:50%">Medalhas</th><th style="width:25%">PontuaÃ§Ã£o</th></tr>');
 		}
 	);
 }
  
-/* Verificar se usuário ganhou nova medalha */
+/* Verificar se usuÃ¡rio ganhou nova medalha */
 function checkForMedals() {
-	$.getJSON("http://pt-br.scandnavia.wikia.com/wiki/Scandnávia_Wiki:Medals?action=raw&cb="+Math.ceil(new Date().getTime() / 1000), function(obj) {
+	$.getJSON("http://pt-br.scandnavia.wikia.com/wiki/ScandnÃ¡via_Wiki:Medals?action=raw&cb="+Math.ceil(new Date().getTime() / 1000), function(obj) {
 		var medalhasAgora = JSON.stringify(obj.dataUser[wgUserName]);
 		if (typeof (localStorage.medalhas) == "undefined")
 			localStorage.medalhas = medalhasAgora;
@@ -151,7 +151,7 @@ function checkForMedals() {
 			var msg = '';
 			var medalhaNome = '';
 			if (medalhasSessao.length > obj.dataUser[wgUserName].length)
-				msg = "Você perdeu alguma medalha"
+				msg = "VocÃª perdeu alguma medalha"
 			else
 			{
 				for (var i=0; i<obj.dataUser[wgUserName].length; i++)
@@ -160,9 +160,9 @@ function checkForMedals() {
 					{
 						medalhaNome = obj.dataUser[wgUserName][i].split(":")[0];
 						if (localStorage.medalhas.search(medalhaNome) > -1)
-							msg = (msg=='') ? ("Você ganhou mais uma "+medalhaNome) : "Você ganhou múltiplas medalhas"
+							msg = (msg=='') ? ("VocÃª ganhou mais uma "+medalhaNome) : "VocÃª ganhou mÃºltiplas medalhas"
 						else
-							msg = (msg=='') ? ("Você ganhou "+medalhaNome) : "Você ganhou múltiplas medalhas"
+							msg = (msg=='') ? ("VocÃª ganhou "+medalhaNome) : "VocÃª ganhou mÃºltiplas medalhas"
 					}
 				}
 			}
@@ -171,14 +171,14 @@ function checkForMedals() {
 	});
 }
  
-/* Mostrar notificação de nova medalha */
+/* Mostrar notificaÃ§Ã£o de nova medalha */
 function alertarMedalhas(txt, medalhaNome, img, medalhasAgora) {
 	$("#WikiaBar").append('<ul id="WikiaNotifications" class="WikiaNotifications">'+
 		'<li>'+
 			'<div data-type="3" class="WikiaBadgeNotification">'+
 				'<a class="sprite close-notification"></a>'+
 				'<img class="badge"  width="90" height="90" alt="'+medalhaNome+'" src="'+img+'" />'+
-				'<p>Você acabou de ganhar a medalha "'+medalhaNome+'"! '+txt+'</p>'+
+				'<p>VocÃª acabou de ganhar a medalha "'+medalhaNome+'"! '+txt+'</p>'+
 				'<div class="notification-details"><a href="/wiki/User:'+wgUserName+'" title="User:'+wgUserName+'">Veja todas suas medalhas atuais!</a></div>'+
 			'</div>'+
 		'</li>'+

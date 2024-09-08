@@ -393,7 +393,7 @@ $(function (window, $, mw) {
             if (wgNamespaceNumber === 0) {
                 pagetoredirect = page_name;
             }
-            $container.html('<strong>Redirect:</strong><br /><input type="text" placeholder="Beyoncé" value="' + pagetoredirect + '" id="redirect-from" style=";"></input><br /><strong>To:</strong><br /><input type="text" id="redirect-location" placeholder="Beyoncé Giselle Knowles" style=""></input>');
+            $container.html('<strong>Redirect:</strong><br /><input type="text" placeholder="BeyoncÃ©" value="' + pagetoredirect + '" id="redirect-from" style=";"></input><br /><strong>To:</strong><br /><input type="text" id="redirect-location" placeholder="BeyoncÃ© Giselle Knowles" style=""></input>');
             modal_button_name = "Create redirect";
             $container.append('<br><br><div style=""><a class="button" id="submit">' + modal_button_name + '</div>');
             $('#submit').click(function () {

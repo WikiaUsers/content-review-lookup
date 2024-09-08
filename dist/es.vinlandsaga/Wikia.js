@@ -1,1 +1,1 @@
-/* Pagina vacía */
+/* Pagina vacÃ­a */

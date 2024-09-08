@@ -20,5 +20,5 @@ UserTagsJS.modules.custom = {
 UserTagsJS.modules.inactive = {
 	days: 30, // 30 jours
 	namespaces: [0], // Modifications uniquement dans l'espace de noms principal
-	zeroIsInactive: true // 0 modifications est considéré comme inactif
+	zeroIsInactive: true // 0 modifications est considÃ©rÃ© comme inactif
 };

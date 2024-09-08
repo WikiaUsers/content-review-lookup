@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird für alle Benutzer geladen. */
+/* Das folgende JavaScript wird fÃ¼r alle Benutzer geladen. */
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* Allow direct link to Tabber */

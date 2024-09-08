@@ -1,6 +1,6 @@
 /**
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
- * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
+ * @author: CeldrÃ¸n (https://naruto.fandom.com/fr/wiki/User:CeldrÃ¸n)
  * @Translate to Bahasa Indonesia: Fate Kage (https://naruto.fandom.com/id/wiki/User:Fate Kage)
  * @License: CC-BY-SA - https://creativecommons.org/licenses/by-sa/3.0/
  */

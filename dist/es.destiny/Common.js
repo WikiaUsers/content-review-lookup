@@ -1,10 +1,10 @@
 /* Common.js <pre>
-Cualquier JavaScript que estÈ aquÌ ser· cargado para todos los usuarios en todas las p·ginas cargadas del wiki. */
+Cualquier JavaScript que est√© aqu√≠ ser√° cargado para todos los usuarios en todas las p√°ginas cargadas del wiki. */
 
 // 1. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 
 importScriptPage('AjaxRC/code.js', 'dev');
@@ -51,7 +51,7 @@ importArticles({
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
  
 Traida inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder ,
@@ -67,7 +67,7 @@ function UserNameReplace() {
   };
 };
 
-// Para cambiar la descripciÛn del Chat
+// Para cambiar la descripci√≥n del Chat
 importScript('MediaWiki:Chat-headline');
  
 function changeChatDesc() {
@@ -85,11 +85,11 @@ setTimeout("changeChatDesc()", 200);
 $(document).ready(function (){changeChatDesc()});
 
 // **************************************************
-// REDEFINICI”N DE ORDENACI”N DE TABLAS "SORTABLE"
-// AÒadido por: [[uncyclopedia:es:user:Chixpy]]
+// REDEFINICI√ìN DE ORDENACI√ìN DE TABLAS "SORTABLE"
+// A√±adido por: [[uncyclopedia:es:user:Chixpy]]
 // Estos ingleses se creen el centro del universo y en las tablas que se
-// pueden ordenar reconocen el punto como sÌmbolo decimal asÌ que hago
-// Este apaÒo para que lo haga correctamente..
+// pueden ordenar reconocen el punto como s√≠mbolo decimal as√≠ que hago
+// Este apa√±o para que lo haga correctamente..
 // **************************************************
  
 function ts_dateToSortKey(date) {	

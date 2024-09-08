@@ -8,7 +8,7 @@
  var ReversorTag = "Reversor";
  var ModeradorTag = "<div style=" background-color: Black; color: SkyBlue; border: 6px dashed SkyBlue; border-radius: 8px">Reversor</div>";
  var AdministradorTag = "<div style=" background-color: Black; color: Gold; border: 6px dashed Gold; border-radius: 8px">Administrador</div>";
- var Bur骳rataTag = "<div style=" background-color: Black; color: Green; border: 6px dashed Green; border-radius: 8px">Bur骳rata</div>";
+ var Bur贸crataTag = "<div style=" background-color: Black; color: Green; border: 6px dashed Green; border-radius: 8px">Bur贸crata</div>";
  var FundadorTag = "<div style=" background-color: Black; color: Red; border: 6px dashed red; border-radius: 8px">Fundador</div>
 ";
  // BEGIN list of accounts given extra user rights icons
@@ -26,10 +26,10 @@
  
   rights["Glaceon020"]                                     = [ AdministradorTag];
  
-   // BUR覥RATAS
-  rights["Mordesonicspeed"]                                     = [ FundadorTag, Bur骳rataTag];
+   // BUR脫CRATAS
+  rights["Mordesonicspeed"]                                     = [ FundadorTag, Bur贸crataTag];
 
-  rights["Seba 20 90"]                                     = [ Bur骳rataTag];
+  rights["Seba 20 90"]                                     = [ Bur贸crataTag];
  
  // END list of accounts given extra user rights icons
 if (mw.config.get('wgCanonicalSpecialPageName', '') == "Contributions" && wgPageName.indexOf('/') != -1) {''

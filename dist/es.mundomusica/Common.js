@@ -5,12 +5,12 @@ window.UserTagsJS = {
 		csshelper: { u: 'CSS', order: 101 },
 		templatehelper: { u: 'Plantillas', order: 102 },
 		rollbackers: { u: 'Reversor', order: 103 },
-	        Eurovisi髇: { u: 'Editor de Eurovisi髇', order: 104 },
-		bureaucrat: { u: 'Bur骳rata', order: 1 }
+	        Eurovisi贸n: { u: 'Editor de Eurovisi贸n', order: 104 },
+		bureaucrat: { u: 'Bur贸crata', order: 1 }
 	}
 };
 UserTagsJS.modules.custom = {
-		'Lemon82orange': ['Eurovisi髇']
+		'Lemon82orange': ['Eurovisi贸n']
 };
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 

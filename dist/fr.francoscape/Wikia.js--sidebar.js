@@ -7,7 +7,7 @@
     // add module for latest update
     // modified from <http://dev.wikia.com/wiki/AddRailModule>
     function addLatestUpdate() {
-        (window.ARMModules || ['Modèle:RailModule']).forEach(function(el) {
+        (window.ARMModules || ['ModÃ¨le:RailModule']).forEach(function(el) {
             $.get(mw.util.wikiScript('api'), {
                 action: 'parse',
                 text: '{' + '{' + el + '}}',

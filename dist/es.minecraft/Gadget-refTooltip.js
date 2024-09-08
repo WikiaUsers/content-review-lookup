@@ -10,7 +10,7 @@ $( function() {
 		enableLabel: 'Activar vista previa de referencia',
 		optionsButtonTitle: 'Cambiar las opciones de vista previa de referencia',
 		referencesSectionName: 'Referencias',
-		saveFailedStorageFull: "¿Está lleno el almacenamiento local de su navegador?",
+		saveFailedStorageFull: "Â¿EstÃ¡ lleno el almacenamiento local de su navegador?",
 		saveFailedTitle: 'Error al guardar las opciones'
 	};
 	
@@ -40,7 +40,7 @@ $( function() {
 			anchor: $anchor,
 			fresh: true,
 		} ).on( 'mouseenter mouseleave', function( e ) {
-			// Devolución de llamada a las funciones hover de la referencia cuando se pasa el ratón por encima del tooltip
+			// DevoluciÃ³n de llamada a las funciones hover de la referencia cuando se pasa el ratÃ³n por encima del tooltip
 			$anchor[e.type]();
 		} );
 		
@@ -54,7 +54,7 @@ $( function() {
 		}
 		$( '<div>' ).addClass( 'ref-tooltip-arrow' ).appendTo( $tooltip );
 		$tooltip.appendTo( 'body' );
-		// Ajustar el ancho al tamaño del contenido
+		// Ajustar el ancho al tamaÃ±o del contenido
 		$tooltipText.width( $tooltipText.width() + 1 );
 		
 		setPos( true );
@@ -109,7 +109,7 @@ $( function() {
 		}
 		tooltipPos.left += anchorRect.left + anchorRect.width / 2;
 		
-		// Evitar que se salga de la página
+		// Evitar que se salga de la pÃ¡gina
 		var contentPadding = parseFloat( $body.css( 'padding-right' ) );
 		var contentBoundary = $body[0].getBoundingClientRect().right - contentPadding / 2;
 		var overlap = anchorRect.left + tooltipOffset.left + tooltipRect.width - contentBoundary;
@@ -135,7 +135,7 @@ $( function() {
 					return;
 				}
 				
-				// Crear el tooltip si el tiempo de espera tiene éxito
+				// Crear el tooltip si el tiempo de espera tiene Ã©xito
 				showTimer = setTimeout( function() {
 					createTooltip( $this, getRefText( $this ), true );
 				}, 200 );
@@ -143,7 +143,7 @@ $( function() {
 			'mouseleave.refTooltip': function() {
 				clearTimeout( showTimer );
 				
-				// Eliminar el tooltip si el tiempo de espera tiene éxito
+				// Eliminar el tooltip si el tiempo de espera tiene Ã©xito
 				hideTimer = setTimeout( function() {
 					removeTooltip();
 				}, 300 );
@@ -164,12 +164,12 @@ $( function() {
 			.attr( 'title', i18n.optionsButtonTitle )
 	);
 	$( 'body' ).on( 'click.refTooltip', '.ref-tooltip-options-button', function( e ) {
-		// Solo cierra el tooltip si ya está abierto
+		// Solo cierra el tooltip si ya estÃ¡ abierto
 		if ( $tooltip.length && $tooltip.data( 'anchor' ).is( e.target ) ) {
 			return;
 		}
 		
-		// Desactivar los manejadores de referencias mientras las opciones están abiertas
+		// Desactivar los manejadores de referencias mientras las opciones estÃ¡n abiertas
 		$content.off( 'mouseenter.refTooltip mouseleave.refTooltip' );
 		$tooltip.on( 'refTooltip-close', function() {
 			if ( options.enabled ) {
@@ -181,7 +181,7 @@ $( function() {
 		
 		$anchor.addClass( 'ref-tooltip-loading' );
 		
-		// Reemplazar el tooltip actual si se hace clic en el botón de opciones dentro de un tooltip
+		// Reemplazar el tooltip actual si se hace clic en el botÃ³n de opciones dentro de un tooltip
 		if ( $tooltip.length && $.contains( $tooltip[0], $anchor[0] ) ) {
 			$anchor = $tooltip.data( 'anchor' );
 		}
@@ -243,7 +243,7 @@ $( function() {
 		} );
 	} );
 	
-	// Por último, activar vistas previas de referencia
+	// Por Ãºltimo, activar vistas previas de referencia
 	if ( options.enabled ) {
 		bindRefHandlers();
 	}

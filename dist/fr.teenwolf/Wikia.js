@@ -18,6 +18,6 @@ if ($('#LblClignotant').length) {
     }; 
 
     // mise en place de l appel de la fonction toutes les 0.085 secondes 
-    // Pour arrêter le clignotement : clearInterval(periode); 
+    // Pour arrÃªter le clignotement : clearInterval(periode); 
     periode = setInterval(clignotementFading, 85 ); 
 }

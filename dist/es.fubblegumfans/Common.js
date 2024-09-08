@@ -25,7 +25,7 @@ window.UserTagsJS = {
 		rollback2: { u: 'Reversora' },
 		sysop: { u: 'Administrador' },
 		sysop2: { u: 'Administradora' },
-		bureaucrat: { u: 'Burócrata' },
+		bureaucrat: { u: 'BurÃ³crata' },
 		founder: { u: 'Fundadora' },
 	}
 };

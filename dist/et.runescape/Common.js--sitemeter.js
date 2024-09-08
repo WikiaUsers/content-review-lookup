@@ -9,7 +9,7 @@
 $(function() {
 	if(skin == "oasis") {
 		var $sidebar = $('.WikiaPagesOnWikiModule:first');
-		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='*'>Lehekülje vaatamisi<br />Alates 2011 Veebruarist</td><td style='text-align:right'><a href='http://s35.sitemeter.com/stats.asp?site=s35estrswikia' target='_top'><img src='http://s35.sitemeter.com/meter.asp?site=s35estrswikia' alt='SiteMeter' border=0 /></a></td></tr></table></div>";
+		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='*'>LehekÃ¼lje vaatamisi<br />Alates 2011 Veebruarist</td><td style='text-align:right'><a href='http://s35.sitemeter.com/stats.asp?site=s35estrswikia' target='_top'><img src='http://s35.sitemeter.com/meter.asp?site=s35estrswikia' alt='SiteMeter' border=0 /></a></td></tr></table></div>";
  
 		$sidebar.html($sidebar.html() + comboString);
 	} else if(skin == "monobook") {

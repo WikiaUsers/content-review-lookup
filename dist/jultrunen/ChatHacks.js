@@ -1,8 +1,8 @@
 /* 
  * ChatHacks.js, by Monchoman45.
- * Traducido al español by Benfutbol10
+ * Traducido al espaÃ±ol by Benfutbol10
  * Version 5.0.3.stillHasSomeFails
- * Versión de traducción: 1.5
+ * VersiÃ³n de traducciÃ³n: 1.5
  * 
  * 'Features':
  *   Ability to clear your chat window
@@ -483,7 +483,7 @@ if(wgPageName == 'Special:WikiActivity') {
 						this.inlineAlert('Ejemplo: <span onclick="mainRoom.viewDiscussion.getTextInput().val(\'/afk\')">/afk</span>');
 						break;
 					case 'clear':
-						this.inlineAlert('Limpia la conversación');
+						this.inlineAlert('Limpia la conversaciÃ³n');
 						this.inlineAlert('Ejemplo: <span onclick="mainRoom.viewDiscussion.getTextInput().val(\'/clear\')">/clear</span>');
 						break;
 					case 'chat':
@@ -527,7 +527,7 @@ if(wgPageName == 'Special:WikiActivity') {
 						this.inlineAlert('Ejemplo: <span onclick="mainRoom.viewDiscussion.getTextInput().val(\'/id\')">/id</span>');
 						break;
 					case 'help':
-						this.inlineAlert('Muestra información sobre otros comandos.');
+						this.inlineAlert('Muestra informaciÃ³n sobre otros comandos.');
 						this.inlineAlert('Ejemplo: <span onclick="mainRoom.viewDiscussion.getTextInput().val(\'/help\')">/help</span>');
 						break;
 					default:
@@ -626,7 +626,7 @@ if(wgPageName == 'Special:WikiActivity') {
 		//Add the sound space
 		$('body').append('<span id="sound"></span>');
 		//Add the area for adding more pings
-		$('#ChatHeader .wordmark').append('<span id="pingspan"><div>Aviso de frases <span title="Si un usuario nombra alguna de estas palabras (distingue mayúsculas y minúsculas), se te avisará">(?)</span></div><textarea id="pings" style="display:none;">' + ((readCookie('pingphrases')) ? readCookie('pingphrases').split('\\n').join('\n') : wgUserName) + '</textarea></span>');
+		$('#ChatHeader .wordmark').append('<span id="pingspan"><div>Aviso de frases <span title="Si un usuario nombra alguna de estas palabras (distingue mayÃºsculas y minÃºsculas), se te avisarÃ¡">(?)</span></div><textarea id="pings" style="display:none;">' + ((readCookie('pingphrases')) ? readCookie('pingphrases').split('\\n').join('\n') : wgUserName) + '</textarea></span>');
 		document.getElementById('pingspan').onmouseover = function(event) {document.getElementById('pings').style.display = 'block';}
 		document.getElementById('pingspan').onmouseout = function(event) {document.getElementById('pings').style.display = 'none'; createCookie('pingphrases', document.getElementById('pings').value.split('\n').join('\\n'), 99999);}
 	});

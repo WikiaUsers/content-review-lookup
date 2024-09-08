@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 /* botones extra */
  
 if (mwCustomEditButtons) {
@@ -25,8 +25,8 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucción",
-     "tagOpen": "{{En construcción|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+     "tagOpen": "{{En construcciÃ³n|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -53,10 +53,10 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Pequeño",
+     "speedTip": "Texto PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Pequeño"};
+     "sampleText": "Texto PequeÃ±o"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -171,7 +171,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' días ' + left
+  if(diff > 0) left = diff + ' dÃ­as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -212,9 +212,9 @@ addOnloadHook(checktimers);
  
 ===================
  
-/* bloqueo de comentarios para los blogs que no hayan sido comentados en más de 30 días.
+/* bloqueo de comentarios para los blogs que no hayan sido comentados en mÃ¡s de 30 dÃ­as.
    por: [[User:Joeyaa|Joey Ahmadi]]
-   traducción al español: [[User:Bola|Bola]]
+   traducciÃ³n al espaÃ±ol: [[User:Bola|Bola]]
 */
  
 $(function() {
@@ -232,7 +232,7 @@ then = new Date(month+''+day+', '+year);
 var old = parseInt(now - then);
 old = Math.floor(old/(1000*60*60*24));
 if (old > 30) {
-$('#article-comm').attr('disabled','disabled').text('Esta entrada de blog no ha sido comentada en los últimos 30 días, por lo que no es necesario añadir nuevos comentarios.');
+$('#article-comm').attr('disabled','disabled').text('Esta entrada de blog no ha sido comentada en los Ãºltimos 30 dÃ­as, por lo que no es necesario aÃ±adir nuevos comentarios.');
 $('#article-comm-submit').attr('disabled','disabled');
 $('.article-comm-reply').remove();
 }
@@ -243,7 +243,7 @@ $('.article-comm-reply').remove();
 var ShowHideConfig = { linkBefore:true };
 importScriptPage('ShowHide/code.js', 'dev');
 // ==============================
-// Botón de volver arriba
+// BotÃ³n de volver arriba
 // ==============================
  
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
@@ -291,7 +291,7 @@ if( !window.BackToTop  ) {
 var BackToTop = true; // prevent duplication
  
 // **************************************************
-//  Fin - Botón volver arriba
+//  Fin - BotÃ³n volver arriba
 // **************************************************
 /*Historial en Los greeting*/
 importArticles({

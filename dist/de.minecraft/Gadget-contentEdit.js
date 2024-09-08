@@ -5,7 +5,7 @@
 var i18n = {
 	blockedNotice: 'Du kannst nichts bearbeiten, da dein Konto gesperrt wurde.',
 	blockedReason: 'Grund: $1',
-	changesSavedNotice: 'Deine Änderungen wurden gespeichert.',
+	changesSavedNotice: 'Deine Ã„nderungen wurden gespeichert.',
 	diffError: 'Unterschied konnte nicht geladen werden',
 	diffErrorMissingPage: 'Seite konnte nicht geladen werden',
 	invalidJson: 'Beim Laden der Versionsliste ist ein Fehler aufgetreten.'

@@ -1,11 +1,11 @@
 
-// Les éléments li correspondent aux items.
+// Les Ã©lÃ©ments li correspondent aux items.
 var items = document.querySelectorAll('li');
 
-// Les éléments h3 correspondent aux titres de mois.
+// Les Ã©lÃ©ments h3 correspondent aux titres de mois.
 var months = document.querySelectorAll("div.mw-parser-output h3");
 
-// Les éléments h2 correspondent aux titres d'année.
+// Les Ã©lÃ©ments h2 correspondent aux titres d'annÃ©e.
 var years = document.querySelectorAll("div.mw-parser-output h2");
 
 
@@ -20,8 +20,8 @@ function showAll () {
     for (var i = 0; i < years.length; i++) years[i].style.display = '';
 }
 
-// Affiche uniquement les éléments d'une langue donnée.
-// Tous les autres éléments seront masqués.
+// Affiche uniquement les Ã©lÃ©ments d'une langue donnÃ©e.
+// Tous les autres Ã©lÃ©ments seront masquÃ©s.
 function showOnlyLanguage (language) {
     for (var i = 0; i < months.length; i++) {
         var month = months[i];
@@ -40,8 +40,8 @@ function showOnlyLanguage (language) {
     }
 }
 
-// Change la visibilité d'une catégorie donnée.
-// Les éléments n'appartenant pas à cette catégorie ne seront pas touchés.
+// Change la visibilitÃ© d'une catÃ©gorie donnÃ©e.
+// Les Ã©lÃ©ments n'appartenant pas Ã  cette catÃ©gorie ne seront pas touchÃ©s.
 function toggleCategory (category) {
   console.debug('toggleCategory', category);
   try {
@@ -99,7 +99,7 @@ mw.hook('wikipage.content').add(function() {
             showAll();
         });
 
-	// Assure que tout soit affiché par défaut.
+	// Assure que tout soit affichÃ© par dÃ©faut.
         showAll();
     });
 });

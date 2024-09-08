@@ -82,9 +82,9 @@ function createSkillToolBox(){
 		+ '<input type="text" style="display:none;" name="costNum" size="2"><img name="costIcon" style="display:none;" src="http://gw.gamewikis.org/images/6/6e/Activation.png"></td>\n'
 		+ '<td>Activation Time=<select name="castTime">\n'
 		+ '	<option value="">0</option>\n'
-		+ '	<option value="¼">¼</option>\n'
-		+ '	<option value="½">½</option>\n'
-		+ '	<option value="¾">¾</option>\n'
+		+ '	<option value="Â¼">Â¼</option>\n'
+		+ '	<option value="Â½">Â½</option>\n'
+		+ '	<option value="Â¾">Â¾</option>\n'
 		+ '	<option value="1">1</option>\n'
 		+ '	<option value="2">2</option>\n'
 		+ '	<option value="3">3</option>\n'
@@ -281,13 +281,13 @@ function parseSkillTemplate(input){
 	var val2 =  extractParameter('activation', assignments);
 	switch (val2){
 		case '{{1/4}}':
-			val2 = '¼';
+			val2 = 'Â¼';
 			break;
 		case '{{1/2}}':
-			val2 = '½';
+			val2 = 'Â½';
 			break;
 		case '{{3/4}}':
-			val2 = '¾';
+			val2 = 'Â¾';
 			break;
 		default:
 	}

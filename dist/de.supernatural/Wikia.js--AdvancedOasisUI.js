@@ -21,5 +21,5 @@
 		userLang: true,
 		// German
 		'de': {
-			addPage: "Seite hinzufügen",
-			contributions: "Beiträge",
+			addPage: "Seite hinzufÃ¼gen",
+			contributions: "BeitrÃ¤ge",

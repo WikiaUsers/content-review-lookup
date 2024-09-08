@@ -18,7 +18,7 @@ function UserNameReplace() {
 $(UserNameReplace);
 
 /* AjaxRC */
-ajaxPages = ['Spezial:Letzte_Änderungen'];
+ajaxPages = ['Spezial:Letzte_Ã„nderungen'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'automatische Aktualisierung ohne Neuladen der kompletten Seite';
 importScriptPage('MediaWiki:AjaxRC/code.js', 'dev');

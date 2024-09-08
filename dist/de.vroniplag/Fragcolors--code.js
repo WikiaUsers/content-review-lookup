@@ -405,8 +405,8 @@ function clean_list(list)
 	if (token === null)
 	    continue;
 
-	token = token.replace("ß", "ss");
-	token = token.replace(/[^a-zäöüA-ZÄÖÜ0-9\u0410-\u044F\-]/g, "");
+	token = token.replace("ÃŸ", "ss");
+	token = token.replace(/[^a-zÃ¤Ã¶Ã¼A-ZÃ„Ã–Ãœ0-9\u0410-\u044F\-]/g, "");
 	token = token.toLowerCase();
 	if (token != "")
 	{
@@ -592,15 +592,15 @@ function marcusb_fragcolors()
       + "</style>");
 
     /* Install the app.  */
-    $("div#fragcolors_app").html("<p id='fragcolors_myinput'><input type='button' id='fragcolors_settext' value='Texte vergleichen!'</button><span style='padding-left: 10px;'>Min. Länge einer Fundstelle:</span><input type='input' id='fragcolors_minrunlen' value='4' size='4'/></p>"
+    $("div#fragcolors_app").html("<p id='fragcolors_myinput'><input type='button' id='fragcolors_settext' value='Texte vergleichen!'</button><span style='padding-left: 10px;'>Min. LÃ¤nge einer Fundstelle:</span><input type='input' id='fragcolors_minrunlen' value='4' size='4'/></p>"
       + "<div id='fragcolors_maintext'>"
       + "<div id='fragcolors_column1'>"
       + "<textarea id='fragcolors_text1' style='width: 430px; height: 250px;'>...</textarea>"
-      + "<div id='fragcolors_main1' style='white-space: pre-wrap'><p>Hier den ersten Text einfügen, der untersucht werden soll.</p></div>"
+      + "<div id='fragcolors_main1' style='white-space: pre-wrap'><p>Hier den ersten Text einfÃ¼gen, der untersucht werden soll.</p></div>"
       + "</div>"
       + "<div id='fragcolors_column2'>"
       + "<textarea id='fragcolors_text2' style='width: 430px; height: 250px;'>...</textarea>"
-      + "<div id='fragcolors_main2' style='white-space: pre-wrap'><p>Hier den zweiten Text einfügen, der untersucht werden soll.</p></div>"
+      + "<div id='fragcolors_main2' style='white-space: pre-wrap'><p>Hier den zweiten Text einfÃ¼gen, der untersucht werden soll.</p></div>"
       + "</div>"
       + "</div>");
 

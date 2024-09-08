@@ -114,7 +114,7 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 /**
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  *
  * __NOWYSIWYG__
  */

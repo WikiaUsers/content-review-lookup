@@ -1,4 +1,4 @@
-/* Tout JavaScript ici sera chargé avec chaque page accédée par n'importe quel utilisateur. */
+/* Tout JavaScript ici sera chargÃ© avec chaque page accÃ©dÃ©e par n'importe quel utilisateur. */
 /**
  * 17:15, July 2, 2017 (UTC)
  * <source lang = "JavaScript">
@@ -7,8 +7,8 @@
  * Builds a form for easy uploading of images
  * and to ensure proper rationale and licensing
  * @author: UltimateSupreme (https://naruto.fandom.com/wiki/User:UltimateSupreme)
- * @author: Celdrøn (https://naruto.fandom.com/fr/wiki/User:Celdrøn)
- * @author: Thegamer1604 (https://maxpayne.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de Celdrøn])
+ * @author: CeldrÃ¸n (https://naruto.fandom.com/fr/wiki/User:CeldrÃ¸n)
+ * @author: Thegamer1604 (https://maxpayne.fandom.com/fr/wiki/user:Thegamer1604 [Adaptation de la version de CeldrÃ¸n])
  * @License: CC-BY-SA - http://creativecommons.org/licenses/by-sa/3.0/
 **/
  
@@ -94,7 +94,7 @@ window.setCookie = function(c_name, value, expiredays) {
 					$("#uploadTemplateNoJS").hide();
 					if (!mw.util.getParamValue('wpForReUpload')) {
 						if (formstyle == "guided" || (formstyle == "" && window.location.search.indexOf('basic=true') == -1)) { // Add link to basic form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://maxpayne.fandom.com/fr/index.php?title=Spécial:Téléverser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://maxpayne.fandom.com/fr/index.php?title=SpÃ©cial:TÃ©lÃ©verser&basic=true" onclick="javascript:setCookie(\'uploadform\', \'basic\', 30)">Basculer vers le formulaire basique</a></div>'); // Stretch table to full width
 								var $description = $('#wpUploadDescription'),
 									$customRows,
 									customRows = '';
@@ -132,7 +132,7 @@ window.setCookie = function(c_name, value, expiredays) {
 							'| quoi = \n' +
 							'| type = \n' +
 							'}}\n'); // Add link to guided form
-							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://maxpayne.fandom.com/fr/index.php?title=Spécial:Téléverser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancé</a></div>');
+							$("#uploadtext").prepend('<div style="float: right;" id="uploadBasicLinkJS"><a href="https://maxpayne.fandom.com/fr/index.php?title=SpÃ©cial:TÃ©lÃ©verser" onclick="javascript:setCookie(\'uploadform\', \'guided\', 30)">Basculer vers le formulaire avancÃ©</a></div>');
 						}
 					}
 				}
@@ -141,15 +141,15 @@ window.setCookie = function(c_name, value, expiredays) {
 				var $description = $('#wpUploadDescription');
 
 				if (!$('#wpLicense').val()) {
-					$.showModal('Licence Incomplète', 'Choisir la bonne licence depuis la liste.');
+					$.showModal('Licence IncomplÃ¨te', 'Choisir la bonne licence depuis la liste.');
 					return false;
 				}
 	
 				if (!$.trim($('#origineBox').val())) {
-					$.showModal('Origine Incomplète', 'Merci de renseigner l\'origine correcte pour votre image.');
+					$.showModal('Origine IncomplÃ¨te', 'Merci de renseigner l\'origine correcte pour votre image.');
 					return false;
 				} else if (/google/i.test($('#sourceBox').val())) {
-					$.showModal('Source Incorrecte', 'Google n\'est pas une source valide pour les images. Merci de saisir l\'origine concrète du fichier.');
+					$.showModal('Source Incorrecte', 'Google n\'est pas une source valide pour les images. Merci de saisir l\'origine concrÃ¨te du fichier.');
 					$('#origineBox').val('');
 					return false;
 				}

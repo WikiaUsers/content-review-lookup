@@ -1,11 +1,11 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 
 /* User Tags */
 window.UserTagsJS = {
 	modules: {},
 	tags: {
 		// group: { associated tag data }
-		montheditor: { u:'Editor do mês' },
+		montheditor: { u:'Editor do mÃªs' },
 		rollback: { u:'Reversor' }
 	}
 };

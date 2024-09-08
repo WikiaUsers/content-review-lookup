@@ -16,7 +16,7 @@ var sortBy = [
     "title"
 ];
 
-var tableHeader = ["Titel","Bewertung","Autor","Veröffentlicht"];
+var tableHeader = ["Titel","Bewertung","Autor","VerÃ¶ffentlicht"];
 
 var exampleTable = [
     {

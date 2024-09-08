@@ -1,6 +1,6 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 // Uhrendisplay
  
 window.DisplayClockJS = '%2H:%2M:%2S %2d. %B %Y (UTC)';

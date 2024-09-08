@@ -7,7 +7,7 @@ $('#WikiaRail').bind('DOMNodeInserted', function(event) {
 	var config = $.extend(true, {
 		'en': "Related Discussions",
 		'es': "Hilos relacionados",
-		'hu': "Kapcsolódó beszélgetések",
+		'hu': "KapcsolÃ³dÃ³ beszÃ©lgetÃ©sek",
 		'pl': "Podobne Dyskusje"
 	}, userconfig);
 	var title = ((mw.config.get('wgContentLanguage')) in config) ? config[mw.config.get('wgContentLanguage')] : config.en;

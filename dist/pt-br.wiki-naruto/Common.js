@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 /* Auto Refresh */
 AjaxRCRefreshText = 'Auto-refresh';
 AjaxRCRefreshHoverText = 'Automatically refresh the page';

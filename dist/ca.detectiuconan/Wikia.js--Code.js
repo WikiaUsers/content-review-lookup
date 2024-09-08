@@ -7,6 +7,6 @@ function agregarEnlaceSkinMenu() {
 	var a = $('<a></a>').text('Usar Monobook').attr({'class':'subnav-2a', title:'Ver WikiDex con la piel Monobook', href:surl, id:'mn-changeskin'}).wrap('<li></li>');
 	$('#WikiHeader').children('nav').children('ul').children('li').eq(0).children('ul').append(a.parent());
 	a.bind('click', function() {
-		return confirm('La apariencia cambiar· temporalmente a Monobook, el estilo anterior, pero con muchas m·s funcionalidades y m·s accesible. Si quieres volverlo a ver como ahora tendr·s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
+		return confirm('La apariencia cambiar√° temporalmente a Monobook, el estilo anterior, pero con muchas m√°s funcionalidades y m√°s accesible. Si quieres volverlo a ver como ahora tendr√°s que quitar el useskin=monobook que aparece en la barra de direcciones del navegador.');
 	});
 }

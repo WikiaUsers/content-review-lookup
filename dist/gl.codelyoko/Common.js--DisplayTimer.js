@@ -27,7 +27,7 @@ function displayTimer() {
   var timerLink = document.createElement( 'a' );
   var timerObj = document.createElement( 'li' );
   timerLink.href = '/wiki/' + wgPageName + '?action=purge';
-  timerLink.title = 'Limpar o cachÈ do servidor e actualizar o contido desta p·xina.'
+  timerLink.title = 'Limpar o cach√© do servidor e actualizar o contido desta p√°xina.'
   timerObj.id = 'displayTimer';
   timerObj.style.textTransform = 'none';
   timerObj.style.fontWeight = 'bold';
@@ -45,7 +45,7 @@ function displayTimer() {
       month[2] = "Marzo";
       month[3] = "Abril";
       month[4] = "Maio";
-      month[5] = "XuÒo";
+      month[5] = "Xu√±o";
       month[6] = "Xullo";
       month[7] = "Ago";
       month[8] = "Set";

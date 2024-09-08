@@ -12,7 +12,7 @@ $(function($) {
 			headerImageAlt: 'E3 2018',
 			headerImageLink: 'https://videospiele.wikia.com/wiki/E3_2018',
  
-			headerText: 'Neueste Beitr‰ge',
+			headerText: 'Neueste Beitr√§ge',
 			writtenBy: 'Autor/in: '
 		},
  

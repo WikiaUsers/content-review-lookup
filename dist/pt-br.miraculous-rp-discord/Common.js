@@ -1,9 +1,9 @@
-// Importações
+// ImportaÃ§Ãµes
 importArticles({
     type: 'script',
     articles: [
-        //'u:c:User:Joeytje50/ChatPMs.js', // Chat Múltiplo
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // Opções Múltiplas
+        //'u:c:User:Joeytje50/ChatPMs.js', // Chat MÃºltiplo
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // OpÃ§Ãµes MÃºltiplas
     ]
 });
 

@@ -2,9 +2,9 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
         'bureaucrat': { 
-            u: 'Bürokrat',
-            m: 'Bürokrat',
-            f: 'Bürokratin',
+            u: 'BÃ¼rokrat',
+            m: 'BÃ¼rokrat',
+            f: 'BÃ¼rokratin',
             order: 1,
             link:'Administration'
         },
@@ -23,7 +23,7 @@ window.UserTagsJS = {
         'semiaktiv': { u: 'Sporadisch aktiv',},
         'bannedfromchat': { u: 'Aus dem Chat verbannt',},
         'helfer': { u: 'Helfer', order: 3,},
-        'founder': { u: 'Wiki-Gründer',},
+        'founder': { u: 'Wiki-GrÃ¼nder',},
         'threadmoderator': { 
             u: 'Moderator',
             m: 'Moderator',
@@ -77,7 +77,7 @@ UserTagsJS.modules.metafilter = {
 UserTagsJS.modules.custom = {
 };
  
-window.ajaxPages = ['Spezial:Letzte_Änderungen','Spezial:WikiActivity'];
+window.ajaxPages = ['Spezial:Letzte_Ã„nderungen','Spezial:WikiActivity'];
 window.AjaxRCRefreshText = 'Auto-Aktualisierung';
 window.AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';
  
@@ -97,7 +97,7 @@ $(function() {
     select = presets.select || 'Vorlage:StdsummariesCode1';
  
     $textarea.attr('tabindex', '3'); //Zusammenfassungen
-    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Änderungen
+    $('#wpMinoredit').attr('tabindex', '4'); //Kleine Ã„nderungen
     $('#wpSave').attr('tabindex', '5'); //Seite speichern
  
     var $summary = $('#wpSummaryEnhanced');

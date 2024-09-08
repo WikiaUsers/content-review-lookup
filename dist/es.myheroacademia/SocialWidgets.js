@@ -18,20 +18,20 @@ $(window).load(function () {
  
   var generalModule =
     '<section class="module" id="discord-banner">' +
-      '<a href="https://discord.gg/2bRzJfh8DV" title="¡Ingresa al servidor de My Hero Academia Wiki!">' +
-        '<img src="https://vignette.wikia.nocookie.net/bokunoheroacademia/images/9/96/Wiki-Icono.png/revision/latest?cb=20180822044317&path-prefix=es" alt="¡Ingresa al servidor de My Hero Academia Wiki!" />'  +
-        '<a href="https://discord.gg/2bRzJfh8DV" class="btnwnms">ACEPTAR INVITACIÓN</a>' +
+      '<a href="https://discord.gg/2bRzJfh8DV" title="Â¡Ingresa al servidor de My Hero Academia Wiki!">' +
+        '<img src="https://vignette.wikia.nocookie.net/bokunoheroacademia/images/9/96/Wiki-Icono.png/revision/latest?cb=20180822044317&path-prefix=es" alt="Â¡Ingresa al servidor de My Hero Academia Wiki!" />'  +
+        '<a href="https://discord.gg/2bRzJfh8DV" class="btnwnms">ACEPTAR INVITACIÃ“N</a>' +
       '</a>' +
     '</section>' +
     '<section class="rail-module" id="social-widgets">' +
-      '<h2>¡Siguenos en Twitter e Instagram!</h2>' +
+      '<h2>Â¡Siguenos en Twitter e Instagram!</h2>' +
       '<table>' +
         '<tr>' +
           '<td>' +
-      '<a href="https://instagram.com/bnhwiki" title="¡Síguenos en el instagram oficial de My Hero Academia Wiki!">' +
-            '<img src="https://static.wikia.nocookie.net/panaderia-de-ricardo/images/e/e2/InstagramBanner.png/revision/latest?cb=20201221173340&path-prefix=es" alt="¡Síguenos en el instagram oficial de My Hero Academia Wiki!" />'  +
-           '<a href="https://twitter.com/BnHWiki" title="¡Síguenos en el twitter oficial de My Hero Academia Wiki!">' +
-            '<img src="https://i.imgur.com/1YSEmrh.png" alt="¡Siguenos en el twitter oficial de My Hero Academia Wiki!" />'  +
+      '<a href="https://instagram.com/bnhwiki" title="Â¡SÃ­guenos en el instagram oficial de My Hero Academia Wiki!">' +
+            '<img src="https://static.wikia.nocookie.net/panaderia-de-ricardo/images/e/e2/InstagramBanner.png/revision/latest?cb=20201221173340&path-prefix=es" alt="Â¡SÃ­guenos en el instagram oficial de My Hero Academia Wiki!" />'  +
+           '<a href="https://twitter.com/BnHWiki" title="Â¡SÃ­guenos en el twitter oficial de My Hero Academia Wiki!">' +
+            '<img src="https://i.imgur.com/1YSEmrh.png" alt="Â¡Siguenos en el twitter oficial de My Hero Academia Wiki!" />'  +
             '<a href="https://twitter.com/BnHWiki?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-size="large" data-lang="es" data-show-count="true">Seguir a @BnHWiki</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>' +
           '</td>' +
         '</tr>' +

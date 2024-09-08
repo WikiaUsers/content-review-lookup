@@ -10,10 +10,10 @@ BOTONES ADICIONALES
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images.wikia.com/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-     "speedTip": "CÛdigo fuente",
+     "speedTip": "C√≥digo fuente",
      "tagOpen": "<code><nowiki>",
      "tagClose": "</"+ "nowiki></code>",
-     "sampleText": "CÛdigo fuente"};
+     "sampleText": "C√≥digo fuente"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images.wikia.com/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -31,10 +31,10 @@ BOTONES ADICIONALES
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images.wikia.com/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "CategorÌa",
+     "speedTip": "Categor√≠a",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categorÌa"};
+     "sampleText": "Nombre categor√≠a"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images.wikia.com/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -45,14 +45,14 @@ BOTONES ADICIONALES
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/7/70/Button_fusion.png",
-     "speedTip": "Pedir que se fusione el artÌculo a otro",
+     "speedTip": "Pedir que se fusione el art√≠culo a otro",
      "tagOpen": "{{fusionar|",
      "tagClose": "}}",
-     "sampleText": "Nombre del artÌculo con el que se debe fusionar"};
+     "sampleText": "Nombre del art√≠culo con el que se debe fusionar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/62/Button_desambig.png",
-     "speedTip": "P·gina de desambiguaciÛn",
+     "speedTip": "P√°gina de desambiguaci√≥n",
      "tagOpen": "{{desambiguacion}}",
      "tagClose": "",
      "sampleText": ""};
@@ -66,28 +66,28 @@ BOTONES ADICIONALES
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images3.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
-     "speedTip": "Proponer el artÌculo para ser borrado",
+     "speedTip": "Proponer el art√≠culo para ser borrado",
      "tagOpen": "{{borrar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se propone para borrar"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/f/f3/Button_broom2.png",
-     "speedTip": "Pedir que se arregle el artÌculo",
+     "speedTip": "Pedir que se arregle el art√≠culo",
      "tagOpen": "{{arreglar|",
      "tagClose": "}}",
      "sampleText": "Motivo por el que se pide el arreglo"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images2.wikia.nocookie.net/__cb20100417162634/es.gta/images/d/d1/Sin_foto.png",
-     "speedTip": "Advertir de que el artÌculo necesita im·genes",
+     "speedTip": "Advertir de que el art√≠culo necesita im√°genes",
      "tagOpen": "{{sinfoto}}",
      "tagClose": "",
      "sampleText": ""};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images1.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir de que se est· trabajando en el artÌculo",
+     "speedTip": "Advertir de que se est√° trabajando en el art√≠culo",
      "tagOpen": "{{enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};

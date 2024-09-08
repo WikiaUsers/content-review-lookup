@@ -13,18 +13,18 @@
  
 '''Extension de LiveRC'''
  
-Permet de marquer les utilisateurs ayant reçu un avertissement sur leur page de discussion
+Permet de marquer les utilisateurs ayant reÃ§u un avertissement sur leur page de discussion
  
 * Licence : CC0
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Orlodrim]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 if (typeof(lrcXUWMessages) == 'undefined') {
   lrcXUWMessages = [
@@ -34,7 +34,7 @@ if (typeof(lrcXUWMessages) == 'undefined') {
     {tooltip: "Averti : test 1", regex: "test ?1", image: "//upload.wikimedia.org/wikipedia/commons/5/5d/LiveRC_Test1.png"},
     {tooltip: "Averti : test 2", regex: "test ?2", image: "//upload.wikimedia.org/wikipedia/commons/7/78/LiveRC_Test2.png"},
     {tooltip: "Averti : test 3", regex: "test ?3", image: "//upload.wikimedia.org/wikipedia/commons/7/7b/LiveRC_Test3.png"},
-    {tooltip: "Révoqué par Salebot", regex: "^bot \\: annonce de révocation", image: "//upload.wikimedia.org/wikipedia/commons/3/31/Salebot_small_icon.png"}
+    {tooltip: "RÃ©voquÃ© par Salebot", regex: "^bot \\: annonce de rÃ©vocation", image: "//upload.wikimedia.org/wikipedia/commons/3/31/Salebot_small_icon.png"}
   ];
 }
 
@@ -130,12 +130,12 @@ LiveRC_AddHook("AfterFillParamPanel", function(){
   LiveRC_ManageParams_Fill(lrcXUWOptions, "lrcXUWOptions", false);
 });
 
-lrcManageParams_Desc['DesclrcXUWMessages'] = new Array('Paramètres de UserWarningsExtension (1 / 2)', 'UserWarningsExtension 1');
-lrcManageParams_Desc['DesclrcXUWOptions'] = new Array('Paramètres de UserWarningsExtension (2 / 2)', 'UserWarningsExtension 2');
-lrcManageParams_Desc['DesclrcXUWColorNoTalk'] = new Array('Couleur du nom des utilisateurs sans page de discussion (<a href="//fr.wikipedia.org/wiki/Couleurs_du_Web">code HTML</a> comme « #C0C0C0 » ou « blue »)');
-lrcManageParams_Desc['DesclrcXUWColorRecentTalk'] = new Array('Couleur du nom des utilisateurs avec message récent mais pas d\'avertissement', 'Couleur du nom des utilisateurs avec message récent mais pas d\'avertissement');
+lrcManageParams_Desc['DesclrcXUWMessages'] = new Array('ParamÃ¨tres de UserWarningsExtension (1 / 2)', 'UserWarningsExtension 1');
+lrcManageParams_Desc['DesclrcXUWOptions'] = new Array('ParamÃ¨tres de UserWarningsExtension (2 / 2)', 'UserWarningsExtension 2');
+lrcManageParams_Desc['DesclrcXUWColorNoTalk'] = new Array('Couleur du nom des utilisateurs sans page de discussion (<a href="//fr.wikipedia.org/wiki/Couleurs_du_Web">code HTML</a> comme Â« #C0C0C0 Â» ou Â« blue Â»)');
+lrcManageParams_Desc['DesclrcXUWColorRecentTalk'] = new Array('Couleur du nom des utilisateurs avec message rÃ©cent mais pas d\'avertissement', 'Couleur du nom des utilisateurs avec message rÃ©cent mais pas d\'avertissement');
 lrcManageParams_Desc['DesclrcXUWColorRecentWarning'] = new Array('Couleur du nom des utilisateurs avertis', 'Couleur du nom des utilisateurs avertis');
-lrcManageParams_Desc['DesclrcXUWDelay'] = new Array('Délai en heures avant que les avertissements ne soient caducs', 'Délai en heures avant que les avertissement soient caducs');
+lrcManageParams_Desc['DesclrcXUWDelay'] = new Array('DÃ©lai en heures avant que les avertissements ne soient caducs', 'DÃ©lai en heures avant que les avertissement soient caducs');
 
 } // FIN IF
 

@@ -87,9 +87,31 @@ window.SpoilerAlertJS = {
     fadeDelay: 500
 };
 
-/* Ripple */
-window.ripplesConfig = {
-  'normalRipples': document.querySelectorAll('.elements-1, .elements-2'),
-  'recenteredRipples': document.querySelectorAll('.foo .bar'),
-  'unboundedRipples': document.querySelectorAll('.lorem .ipsum')
-};
+/* Expand/Collapse */
+document.addEventListener('DOMContentLoaded', function () {
+    // Select all collapsible elements with the class 'mw-collapsible-text'
+    var collapsibleLinks = document.querySelectorAll('.mw-collapsible-text');
+
+    // Loop through each collapsible toggle
+    document.querySelectorAll('.mw-collapsible-toggle').forEach(function(toggle, index) {
+        var link = collapsibleLinks[index];  // Match the corresponding link
+
+        // Set initial state based on aria-expanded
+        if (toggle.getAttribute('aria-expanded') === 'true') {
+            link.innerHTML = '-';
+        } else {
+            link.innerHTML = '+';
+        }
+
+        // Add a click event listener to toggle the + and - when clicked
+        toggle.addEventListener('click', function () {
+            setTimeout(function () {
+                if (toggle.getAttribute('aria-expanded') === 'true') {
+                    link.innerHTML = '-';
+                } else {
+                    link.innerHTML = '+';
+                }
+            }, 0);  // Use a timeout to ensure this runs after the toggle state changes
+        });
+    });
+});

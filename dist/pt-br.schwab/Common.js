@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 
 importArticles({
     type: 'script',
@@ -7,10 +7,10 @@ importArticles({
     ]
 });
 
-// Alerta de Spoilers e N„o Finalizados
+// Alerta de Spoilers e N√£o Finalizados
 window.SpoilerAlertJS = {
-    question: 'ATEN«√O! Esta ·rea contÈm spoilers ou informaÁıes provisÛrias que vocÍ pode n„o querer ver. Tem certeza que deseja prosseguir?',
+    question: 'ATEN√á√ÉO! Esta √°rea cont√©m spoilers ou informa√ß√µes provis√≥rias que voc√™ pode n√£o querer ver. Tem certeza que deseja prosseguir?',
     yes: 'Sim, por favor',
-    no: 'N„o, ainda n„o',
+    no: 'N√£o, ainda n√£o',
     fadeDelay: 1600
 };

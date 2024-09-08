@@ -2,8 +2,8 @@
 window.ajaxSpecialPages = ["Recentchanges", "WikiActivity", "Videos", "Images"];
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/gumball/images/0/0f/AjaxRC_Load.gif/revision/latest?cb=20170709194656&path-prefix=fr';
 $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-    'ajaxrc-refresh-text': 'Rafraîchissement auto',
-    'ajaxrc-refresh-hover': 'Rafraîchir automatiquement la page'
+    'ajaxrc-refresh-text': 'RafraÃ®chissement auto',
+    'ajaxrc-refresh-hover': 'RafraÃ®chir automatiquement la page'
 }}}}});
 
 // Plugin GlobalEdit

@@ -20,7 +20,7 @@ var buttons = [
 		'Barrer',
 		'<s>',
 		'</s>',
-		'Texte barré'
+		'Texte barrÃ©'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/1/13/Button_enter.png',
@@ -50,38 +50,38 @@ var buttons = [
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/3/34/Button_hide_comment.png',
-		'Insérer un commentaire caché',
+		'InsÃ©rer un commentaire cachÃ©',
 		'<!-- ',
 		' -->',
 		'Commentaire'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/1/12/Button_gallery.png',
-		"Insérer une galerie d'images",
+		"InsÃ©rer une galerie d'images",
 		'\n<gallery>\n',
 		'\n</gallery>',
-		'Fichier:Exemple.jpg|Légende1\nFichier:Exemple.jpg|Légende2'
+		'Fichier:Exemple.jpg|LÃ©gende1\nFichier:Exemple.jpg|LÃ©gende2'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/f/fd/Button_blockquote.png',
-		'Insérer une citation',
+		'InsÃ©rer une citation',
 		'<blockquote>\n',
 		'\n</blockquote>',
 		'Bloc de texte'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/6/60/Button_insert_table.png',
-		'Insérer un tableau',
+		'InsÃ©rer un tableau',
 		'{| class="wikitable"\n|',
 		'\n|}',
-		'-\n! entête 1\n! entête 2\n! entête 3\n|-\n| ligne 1, cellule 1\n| ligne 1, cellule 2\n| ligne 1, cellule 3\n|-\n| ligne 2, cellule 1\n| ligne 2, cellule 2\n| ligne 2, cellule 3'
+		'-\n! entÃªte 1\n! entÃªte 2\n! entÃªte 3\n|-\n| ligne 1, cellule 1\n| ligne 1, cellule 2\n| ligne 1, cellule 3\n|-\n| ligne 2, cellule 1\n| ligne 2, cellule 2\n| ligne 2, cellule 3'
 	],
 	[
 		'//upload.wikimedia.org/wikipedia/commons/7/79/Button_reflink.png',
-		'Insérer une référence',
+		'InsÃ©rer une rÃ©fÃ©rence',
 		'<ref>',
 		'</ref>',
-		'Insérer le texte en bas de page ici'
+		'InsÃ©rer le texte en bas de page ici'
 	]
 ];
 $.each( buttons, function() { mw.toolbar.addButton.apply( null, this ); } );

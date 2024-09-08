@@ -1,5 +1,5 @@
-/* Tot JavaScript ser‡ cargat amb cada pagina accedida per un utilizaire quin que si·. */
+/* Tot JavaScript ser√† cargat amb cada pagina accedida per un utilizaire quin que si√°. */
 
 window.AjaxRCRefreshText = 'Actualizatz';
 window.AjaxRCRefreshHoverText = 'Actualizatz aquesta pagina automaticament';
-window.ajaxPages = ["Especial:DarriËrs_cambiaments","Especial:WikiActivity"];
+window.ajaxPages = ["Especial:Darri√®rs_cambiaments","Especial:WikiActivity"];

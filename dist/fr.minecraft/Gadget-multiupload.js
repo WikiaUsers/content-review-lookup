@@ -1,19 +1,19 @@
 mw.loader.using(['site']).then(function() {
 	i18n = {
-		specialpage: "Spécial:Téléverser",
-		multiupload: "Téléverser plusieurs fichiers :",
+		specialpage: "SpÃ©cial:TÃ©lÃ©verser",
+		multiupload: "TÃ©lÃ©verser plusieurs fichiers :",
 		yes: "Oui",
 		no: "Non",
 		sourcefiles: "Fichiers source :",
-		uploadfiles: "Téléverser des fichiers",
-		nofiles: "Veuillez d'abord sélectionner des fichiers.",
-		nolicense: "Veuillez d'abord sélectionner une licence valide.",
-		summary: "Résumé",
+		uploadfiles: "TÃ©lÃ©verser des fichiers",
+		nofiles: "Veuillez d'abord sÃ©lectionner des fichiers.",
+		nolicense: "Veuillez d'abord sÃ©lectionner une licence valide.",
+		summary: "RÃ©sumÃ©",
 		license: "Licence",
-		uploading: "Téléversement des fichiers...",
-		uploaded: "Téléversé :",
-		failed: "Échoué :",
-		done: "Terminé."
+		uploading: "TÃ©lÃ©versement des fichiers...",
+		uploaded: "TÃ©lÃ©versÃ© :",
+		failed: "Ã‰chouÃ© :",
+		done: "TerminÃ©."
 	};
 	if (mw.config.get("wgPageName")!==i18n.specialpage) return;	
 	$("#wpUploadFile").parent().parent().addClass("regularFileSelect");

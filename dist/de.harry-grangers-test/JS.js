@@ -36,7 +36,7 @@ addOnloadHook(function() {
     if(wgNamespaceNumber == 8 && !!$('.module.content-review-module').length) {
         console.info('content-review-module extend');
         $('.module.content-review-module').find('h2').after(
-            $('<h4 />').addClass('content-review-module-header').text('Seit der letzten Änderung'),
+            $('<h4 />').addClass('content-review-module-header').text('Seit der letzten Ã„nderung'),
             $('<div />').addClass('content-review-status content-review-status-diff')
         );
         if($('.content-review-status-').length == 3) {
@@ -48,7 +48,7 @@ addOnloadHook(function() {
         }
         else if($('.content-review-status.content-review-status-none').length == 2) {
             $('.content-review-status-diff').append(
-                $('<div />').text('Es wurde noch keine Version geprüft!')
+                $('<div />').text('Es wurde noch keine Version geprÃ¼ft!')
              );
         }
         else if($('.content-review-status.content-review-status-live').length == 1 || $('.content-review-status.content-review-status-rejected').length == 1) {            

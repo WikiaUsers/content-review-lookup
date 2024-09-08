@@ -1,4 +1,4 @@
-/* Recarregamento de Páginas */
+/* Recarregamento de PÃ¡ginas */
 AjaxRCRefreshText = 'Auto-recarregar';
-AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
-ajaxPages = ["Especial:Mudanças_recentes","Especial:WikiActivity", "Especial:Páginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:Páginas_novas", "Especial:Contribuições"];
+AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
+ajaxPages = ["Especial:MudanÃ§as_recentes","Especial:WikiActivity", "Especial:PÃ¡ginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:PÃ¡ginas_novas", "Especial:ContribuiÃ§Ãµes"];

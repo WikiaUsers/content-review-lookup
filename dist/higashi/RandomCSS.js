@@ -355,8 +355,8 @@ if ( mediaWiki.config.get( 'wgCanonicalSpecialPageName' ) === 'WikiActivity') {
         }
     });
 }
-// Danh s·ch project
-if (mediaWiki.config.get('wgPageName') === 'Danh_s·ch_c·c_project') {
+// Danh s√°ch project
+if (mediaWiki.config.get('wgPageName') === 'Danh_s√°ch_c√°c_project') {
     var link = [];
     link[0] = "http://higashi.wikia.com/index.php?title=MediaWiki:Project.css/Project_00.css&action=raw&ctype=text/css&maxage=0&smaxage=0";
     link[1] = "http://higashi.wikia.com/index.php?title=MediaWiki:Project.css/Project_01.css&action=raw&ctype=text/css&maxage=0&smaxage=0";

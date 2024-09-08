@@ -13,7 +13,7 @@ if (typeof(lrcGetArgFromURL)=="function" &&
     typeof(buildLiveUndo)=="function" && 
     typeof(buildLiveAverto)=="function" && 
     typeof(AddButtonToControlBar)=="function" && 
-    typeof(LiveRC_RevertMessagesExtension_Init)=="function" ) { // DÉBUT IF
+    typeof(LiveRC_RevertMessagesExtension_Init)=="function" ) { // DÃ‰BUT IF
 
 /* ************************************************************************************************************************************************ */
  

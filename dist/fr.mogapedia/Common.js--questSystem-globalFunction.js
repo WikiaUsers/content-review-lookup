@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 function questInit () {
-    // Initialise le lancement de chaque script et choisis ceux à ne pas activer.
+    // Initialise le lancement de chaque script et choisis ceux Ã  ne pas activer.
     var namespace = mw.config.get('wgNamespaceNumber');
     var board = new mw.Title(decodeURIComponent(new mw.Uri($('.page-header__page-subtitle > nav > a:nth-of-type(2)').attr('href')).path.substring(6))).getNameText();
     
@@ -15,14 +15,14 @@ function questInit () {
        questThreadCustom.init(); 
     }
     
-    questNotificationMenu.init(); // S'initialise dans tout les cas, étant sur la barre de navigation du wikia.
+    questNotificationMenu.init(); // S'initialise dans tout les cas, Ã©tant sur la barre de navigation du wikia.
     
     if (questConfig.userDatabase[questConfig.user]) {
         if (questConfig.userDatabase[questConfig.user].questSystem.viewNotif) {
             switch (questConfig.userDatabase[questConfig.user].questSystem.viewNotif) {
-                case 'accepted': new BannerNotification('Votre quête a belle et bien été validée ! Vous avez reçu vos points de guilde correspondant.', 'notify').show();
+                case 'accepted': new BannerNotification('Votre quÃªte a belle et bien Ã©tÃ© validÃ©e ! Vous avez reÃ§u vos points de guilde correspondant.', 'notify').show();
                     break;
-                case 'refused': new BannerNotification('Vos modifications ont été refusées ... Veuillez vous rendre sur le fil de la quête en question pour en savoir plus.', 'warn').show();
+                case 'refused': new BannerNotification('Vos modifications ont Ã©tÃ© refusÃ©es ... Veuillez vous rendre sur le fil de la quÃªte en question pour en savoir plus.', 'warn').show();
                     break;
             }
             questConfig.userDatabase[questConfig.user].questSystem.viewNotif = false;
@@ -77,7 +77,7 @@ var questGetDatabase = {
                 questConfig.userDatabase = questGetDatabase.readDatabase(data);
             }
 
-            // Si l'utilisateur est bien sur un fil de quête, rafraichi les boutons
+            // Si l'utilisateur est bien sur un fil de quÃªte, rafraichi les boutons
             if (refresh) {
                 questThreadCustom.removeButton();
                 questThreadCustom.showButton();
@@ -147,7 +147,7 @@ var questEditDatabase = {
                         user: null,
                         id: quest,
                         link: window.location.href,
-                        info: info, // 'info' est un objet. Défini dans 'createQuest'.
+                        info: info, // 'info' est un objet. DÃ©fini dans 'createQuest'.
                     };
                     questDb[quest].state = 'open';
                 }
@@ -166,7 +166,7 @@ var questEditDatabase = {
         }
 
         console.log(questDb);
-        questEditDatabase.editDatabase(JSON.stringify(questDb), 'quest', true); // On met à jour la page du wikia contenant la base de donnée
+        questEditDatabase.editDatabase(JSON.stringify(questDb), 'quest', true); // On met Ã  jour la page du wikia contenant la base de donnÃ©e
         questEditDatabase.editDatabase(JSON.stringify(userDb), 'user', true);
     },
     
@@ -196,7 +196,7 @@ var questEditDatabase = {
             },
         })
         .done(function (data) {
-            questGetDatabase.getDatabase(type, refresh); // On met à jour les informations en mettant à jour la page (sans la recharger).
+            questGetDatabase.getDatabase(type, refresh); // On met Ã  jour les informations en mettant Ã  jour la page (sans la recharger).
         });
    },
 };
@@ -204,10 +204,10 @@ var questEditDatabase = {
 var questConfig = {
     version: '1.0',
     modoGroups: ['bureaucrat', 'sysop', 'content-moderator'],
-    guildBoard: 'Guilde Mogapédienne',
+    guildBoard: 'Guilde MogapÃ©dienne',
     
-    questDatabasePath: 'Base_de_données/quest-data',
-    userDatabasePath: 'Base_de_données/user-data',
+    questDatabasePath: 'Base_de_donnÃ©es/quest-data',
+    userDatabasePath: 'Base_de_donnÃ©es/user-data',
     wikiaPhp: 'http://fr.mogapedia.wikia.com/wikia.php',
     apiPhp: 'http://fr.mogapedia.wikia.com/api.php',
     

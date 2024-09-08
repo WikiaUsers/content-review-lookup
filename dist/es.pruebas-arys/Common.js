@@ -4,8 +4,8 @@ window.railWAM = {
 };
 
 /***** Actualizar los cambios recientes de la wikiactividad *****/
-AjaxRCRefreshText = 'Act. autom醫.';
-AjaxRCRefreshHoverText = 'Refrescar esta p醙ina autom醫icamente';
+AjaxRCRefreshText = 'Act. autom谩t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p谩gina autom谩ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 ;
@@ -36,11 +36,11 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		Bur骳rata: { u:'Bur骳rata' }
+		Bur贸crata: { u:'Bur贸crata' }
 	}
 };
 UserTagsJS.modules.custom = {
-	'Arelys': ['Bur骳rata']
+	'Arelys': ['Bur贸crata']
 };
 UserTagsJS.modules.inactive = {
 	days: 30,
@@ -68,7 +68,7 @@ importScript('MediaWiki:Common.js/displayTimer.js');
 
 
 
-//*m骴ulo de im醙enes*//
+//*m贸dulo de im谩genes*//
 
 //var NewFilesModuleCompact = 1; //optional compact mode
  if ($('#WikiaRail').length) { //only on pages where the rail is present

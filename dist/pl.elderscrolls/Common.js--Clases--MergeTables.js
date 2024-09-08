@@ -1,6 +1,6 @@
 /*<pre> */
 // Une las filas de varias tablas en una misma tabla.
-// (c) Jesús Martínez Novo (Ciencia Al Poder)
+// (c) JesÃºs MartÃ­nez Novo (Ciencia Al Poder)
 // Licencia/License: http://www.gnu.org/copyleft/gpl.html GNU General Public Licence 2.0 or later
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -8,7 +8,7 @@
 // of the License, or (at your option) any later version.
 (function() {
 
-	var _btnTitle = 'Unir las tablas en una sola, útil para ordenar las filas de la tabla.',
+	var _btnTitle = 'Unir las tablas en una sola, Ãºtil para ordenar las filas de la tabla.',
 	_timeoutToHide = 500,
 	_tableClassName = 'mergetable',
 	_mergeButton = null,

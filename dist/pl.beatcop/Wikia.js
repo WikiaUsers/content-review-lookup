@@ -1,2 +1,2 @@
-// Konfiguracja innych skryptów
+// Konfiguracja innych skryptÃ³w
 window.ChromeToolbarColor = '#002a32';

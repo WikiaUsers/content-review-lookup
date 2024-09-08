@@ -1,7 +1,7 @@
 // ===================================================================================
-// Padrão sumários de edição
-// Editor de código-fonte - Wiki RuneScape original com ligeira mudança de rótulo
-// Editor do Visual - Modificado por Casualty Wiki daqui com ligeira mudança de rótulo
+// PadrÃ£o sumÃ¡rios de ediÃ§Ã£o
+// Editor de cÃ³digo-fonte - Wiki RuneScape original com ligeira mudanÃ§a de rÃ³tulo
+// Editor do Visual - Modificado por Casualty Wiki daqui com ligeira mudanÃ§a de rÃ³tulo
 // ===================================================================================
  
 // ====================
@@ -35,7 +35,7 @@ $(function() {
 	$.ajax({
 		'dataType': 'text',
 		'data': {
-			'title': 'Predefinição:Stdsummaries',
+			'title': 'PredefiniÃ§Ã£o:Stdsummaries',
 			'action': 'raw',
 			'ctype': 'text/plain'
 		},

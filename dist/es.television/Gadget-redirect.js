@@ -5,7 +5,7 @@ function multiRedirect(desde, hasta, editToken ) {
 		format: 'json',
 		action: 'edit',
 		title: desde,
-		summary: 'Creando redirección',
+		summary: 'Creando redirecciÃ³n',
 		createonly: true,
 		text: '#REDIRECT [[' + hasta + ']]',
 		token: editToken
@@ -14,7 +14,7 @@ function multiRedirect(desde, hasta, editToken ) {
 	type: 'POST'/*,
 	success: function( data ) {
 		if ( data && data.edit && data.edit.result == 'Success' ) {
-			GlobalNotification.show('Redirección creada', 'confirm');
+			GlobalNotification.show('RedirecciÃ³n creada', 'confirm');
 		} else if ( data && data.error ) {
 			GlobalNotification.show('Ha ocurrido un error.', 'error');
 		} else {
@@ -28,7 +28,7 @@ function multiRedirect(desde, hasta, editToken ) {
 }
 $('.toolbar .tools').append('<li class="redirectmodule"><a href="#">Redirecciones</a></li>');
 $('.toolbar .tools .redirectmodule').click(function() {
-	$('.WikiaRail').prepend('<section class="module module-redirect"><h1>Crear redirección</h1><table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde1" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a1" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde2" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a2" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde3" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a3" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde4" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a4" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde5" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a5" style="float: right;" /></td></tr></table> <br /> <span class="button" style="float: right;">Crear</span></section>');
+	$('.WikiaRail').prepend('<section class="module module-redirect"><h1>Crear redirecciÃ³n</h1><table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde1" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a1" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde2" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a2" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde3" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a3" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde4" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a4" style="float: right;" /></td></tr></table> <hr /> <table width="100%" align="center"><tr><th>Desde:</th><td><input type="text" id="redireccion-desde5" style="float: right;" /></td></tr><tr><th>A:</th><td><input type="text" id="redireccion-a5" style="float: right;" /></td></tr></table> <br /> <span class="button" style="float: right;">Crear</span></section>');
 	$('.module-redirect span.button').click(function() {
 		var redirect = {
 			desde1: $('.module-redirect input#redireccion-desde1').val(),

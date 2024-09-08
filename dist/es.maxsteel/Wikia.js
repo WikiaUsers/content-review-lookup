@@ -9,7 +9,7 @@ importArticles({
         'u:dev:FastDelete/code.js'
     ]
 });
-/* Color a miembros de la administraciÛn (autom·tico) */
+/* Color a miembros de la administraci√≥n (autom√°tico) */
 highlight = {
 selectAll: true,
 chatmoderator: '#F8F8FF',

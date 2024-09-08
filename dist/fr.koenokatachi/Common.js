@@ -1,10 +1,10 @@
 /* 
 Wiki Koe no Katachi
-JavaScript créé le 14 février 2021 à 17:45
-Version actuelle du 14 février 2021 à 17:45
+JavaScript crÃ©Ã© le 14 fÃ©vrier 2021 Ã  17:45
+Version actuelle du 14 fÃ©vrier 2021 Ã  17:45
 */
 
-/* Module AddRailModule (crédits : Undertale Wiki) */
+/* Module AddRailModule (crÃ©dits : Undertale Wiki) */
 (function() {
 	// Configuration du module AddRailModule
     var ns = mw.config.get('wgNamespaceNumber');
@@ -13,16 +13,16 @@ Version actuelle du 14 février 2021 à 17:45
         [0, 6, 14].indexOf(mw.config.get('wgNamespaceNumber')) !== -1
     ) ? [
         {
-            page: 'Modèle:RailModule',
+            page: 'ModÃ¨le:RailModule',
             prepend: true
         }
     ] : [];
 
 	
-    // Déplace le module vers le haut de la page et sous la publicité affichée
-    // Crée un listener afin de retirer le module une fois le bouton cliqué
+    // DÃ©place le module vers le haut de la page et sous la publicitÃ© affichÃ©e
+    // CrÃ©e un listener afin de retirer le module une fois le bouton cliquÃ©
     mw.hook('AddRailModule.module').add(function(module) {
-        if (module === 'Modèle:RailModule') {
+        if (module === 'ModÃ¨le:RailModule') {
             var $module = $('#WikiaRail .railModule');
             $module.find('#spoiler-warning-button').click(function() {
                 localStorage.setItem('spoiler-warning', '1');

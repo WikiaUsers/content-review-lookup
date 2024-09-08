@@ -10,7 +10,7 @@ window.UserTagsJS = {
 	}
 };
  
-// IMPORT SKRYPTÓW
+// IMPORT SKRYPTÃ“W
 // W ostatnim imporcie nie umieszczamy przecinka.
 importArticles({
     type: "script",

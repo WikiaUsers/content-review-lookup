@@ -1,6 +1,6 @@
 /* v3.1 <pre>
  * ImageTitleValidator: Realiza validaciones sobre el nombre del archivo
- * Copyright (c) 2010 - 2012 Jesús Martínez (User:Ciencia_Al_Poder)
+ * Copyright (c) 2010 - 2012 JesÃºs MartÃ­nez (User:Ciencia_Al_Poder)
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -16,15 +16,15 @@ var _re_sp = /[\s_]+/g,
 	_re_ep = /^(EP|P|EE|EH|OP|OPJ|EDJ|PK|VI)[_.:\-]*(\d+)[_.:\-]*/i,
 	_re_trim_start = /^_+/g,
 	_re_trim_end = /[._\-]+$/g,
-	_blacklists = [ // Busqueda en el nombre del archivo, sin extension. Los espacios están transformados en underscores --> _
+	_blacklists = [ // Busqueda en el nombre del archivo, sin extension. Los espacios estÃ¡n transformados en underscores --> _
 		/[A-Za-z0-9]{16,}/, // carros de letras
-		/^[A-Za-z0-9]{0,2}$/, // solo un o dos caracteres (el minimo es 3, para películas)
+		/^[A-Za-z0-9]{0,2}$/, // solo un o dos caracteres (el minimo es 3, para pelÃ­culas)
 		/\d{11,}/,
 		/[\\\/\|<>#"=\?]/, // Caracteres ilegales
-		/^\d+$/, // Solo números
+		/^\d+$/, // Solo nÃºmeros
 		/\.{2,}/, // Varios puntos seguidos
 		/\-{2,}/, // Varios guiones
-		/[A-Z]{5,}/, // Mayúsculas excesivas
+		/[A-Z]{5,}/, // MayÃºsculas excesivas
 		/-\d+-/, // Sufijos raros de venir de otras webs
 		/image(n|s)?_?\(?\d+\)?/i,
 		/^img/i,
@@ -32,9 +32,9 @@ var _re_sp = /[\s_]+/g,
 		/_by_/i, // AA by BB
 		/trainer[_\-]?card/i, // Trainercards
 		/^fb\.\d+/i,
-		/Pok[ée]mon_.+_espa[ñn]ol_\d+/i, // Screenshots de emuladores
-		/nuevopok[eéÉ]/i, // Nombres a evitar
-		/new[_\-]?pok[eéÉ]/i,
+		/Pok[Ã©e]mon_.+_espa[Ã±n]ol_\d+/i, // Screenshots de emuladores
+		/nuevopok[eÃ©Ã‰]/i, // Nombres a evitar
+		/new[_\-]?pok[eÃ©Ã‰]/i,
 		/wallpaper/i,
 		/unnamed/i,
 		/escanear/i,
@@ -47,7 +47,7 @@ var _re_sp = /[\s_]+/g,
 		/^(DP|AG|IL)_*\d+/i, // Episodios en formato DP
 		/(jpg|jpeg|png|gif|bmp)$/i // Dobles extensiones
 	],
-	_whitelists = [ // Busqueda en el nombre del archivo, sin extension. Los espacios están transformados en underscores --> _
+	_whitelists = [ // Busqueda en el nombre del archivo, sin extension. Los espacios estÃ¡n transformados en underscores --> _
 		/superentrenamiento/
 	],
 	_padZero = function(str, len) {
@@ -56,7 +56,7 @@ var _re_sp = /[\s_]+/g,
 		}
 		return str;
 	},
-	// Retorna true en caso de haber completado la validación. False en caso de estar en proceso asíncrono
+	// Retorna true en caso de haber completado la validaciÃ³n. False en caso de estar en proceso asÃ­ncrono
 	_validate = function(callback) {
 		this.completed = false;
 		this.callback = (callback||null);
@@ -75,22 +75,22 @@ var _re_sp = /[\s_]+/g,
 		return false;
 	},
 
-	// Hace algunas correcciones básicas
+	// Hace algunas correcciones bÃ¡sicas
 	_fixName = function() {
 		var n = this.suggestName.gen;
-		// Esto debería haberlo hecho ya el sistema, pero por si aca
+		// Esto deberÃ­a haberlo hecho ya el sistema, pero por si aca
 		n = n.replace(_re_sp,'_');
 		var dot = n.lastIndexOf('.');
 		if (dot == -1) return;
-		// Extensión en minúscula y normalizando jpeg
+		// ExtensiÃ³n en minÃºscula y normalizando jpeg
 		var ext = n.substr(dot+1).toLowerCase();
 		if (ext == 'jpeg') {
 			ext = 'jpg';
 		}
 		n = n.substr(0,dot);
-		// Borrar espacios (y otros caracteres) antes y después del nombre (sin extensión) 
+		// Borrar espacios (y otros caracteres) antes y despuÃ©s del nombre (sin extensiÃ³n) 
 		n = n.replace(_re_trim_start, '').replace(_re_trim_end, ''); 
-		// Mayúscula la primera
+		// MayÃºscula la primera
 		n = n.substr(0,1).toUpperCase() + n.substr(1);
 		// Sin namespace
 		if (_re_ns.test(n)) {
@@ -99,7 +99,7 @@ var _re_sp = /[\s_]+/g,
 		this.suggestName.gen = n+'.'+ext;
 		_fixEPname.call(this, n, ext);
 	},
-	// Correcciones para imágenes de episodios: Código + número + espacio + letra en mayúscula
+	// Correcciones para imÃ¡genes de episodios: CÃ³digo + nÃºmero + espacio + letra en mayÃºscula
 	_fixEPname = function(n, ext) {
 		var reRes = _re_ep.exec(n);
 		if (!reRes) return;
@@ -231,8 +231,8 @@ var _re_sp = /[\s_]+/g,
 
 /* <pre>
  * UploadValidator v3.0: Realiza validaciones en el momento de subir archivos, proporcionando sugerencias de nombrado si
- *    es posible, categorización o licencia.
- * Copyright (c) 2010 - 2012 Jesús Martínez (User:Ciencia_Al_Poder)
+ *    es posible, categorizaciÃ³n o licencia.
+ * Copyright (c) 2010 - 2012 JesÃºs MartÃ­nez (User:Ciencia_Al_Poder)
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -247,7 +247,7 @@ var _lock = false,
 	_files = [],
 	_inputDescCommon,
 	_re_EP = /^(EP|EE|EH|P|OP|OPJ|EDJ|PK|VI)(\d+)/,
-	_re_EPcat = /\[\[\s*[Cc]ategor(y|ía)\s*:\s*(EP|EE|EH|P|OP|OPJ|EDJ|PK|VI)\d+\s*(\|.*)?\]\]/,
+	_re_EPcat = /\[\[\s*[Cc]ategor(y|Ã­a)\s*:\s*(EP|EE|EH|P|OP|OPJ|EDJ|PK|VI)\d+\s*(\|.*)?\]\]/,
 	_re_EPlic = /\{\{\s*[Ss]creenshotTV\s*(\|.*)?\}\}/,
 	_submitBtn = null,
 	_dlg = null,
@@ -288,7 +288,7 @@ var _lock = false,
 				}
 			}
 			if (_files.length == 0) {
-				_showDlg('No has seleccionado ningún archivo para subir.');
+				_showDlg('No has seleccionado ningÃºn archivo para subir.');
 				return false;
 			}
 		} else {
@@ -301,10 +301,10 @@ var _lock = false,
 			_files[i].validator = new ImageTitleValidator(_files[i].inputName.val());
 			_files[i].validator.validate(_onValidate);
 		}
-		// Se previene el envío. Si las validaciones son correctas se fuerza el envío nuevamente
+		// Se previene el envÃ­o. Si las validaciones son correctas se fuerza el envÃ­o nuevamente
 		return false;
 	},
-	// Función de validación para cada archivo
+	// FunciÃ³n de validaciÃ³n para cada archivo
 	_onValidate = function(v) {
 		// No hacer nada hasta que no se hayan validado todos
 		for (var i = 0; i < _files.length; i++) {
@@ -312,46 +312,46 @@ var _lock = false,
 				return;
 			}
 		}
-		// Se ha realizado la validación sobre todos los archivos: ahora hay que ir actualizando o mostrando mensajes al usuario
+		// Se ha realizado la validaciÃ³n sobre todos los archivos: ahora hay que ir actualizando o mostrando mensajes al usuario
 		// 1. Validar blacklists
 		for (var i = 0; i < _files.length; i++) {
 			var vs = _files[i].validator.validations;
 			if (vs.blacklist == 1) {
-				_showDlg('El nombre del archivo que intenta subir no está permitido. Algunas de las causas son: el nombre del archivo no es descriptivo o es incorrecto, contiene excesivas mayúsculas o es una trainer card. Lee de nuevo las instrucciones de subida de archivos de esta página para ver cómo resolver este problema.', i);
+				_showDlg('El nombre del archivo que intenta subir no estÃ¡ permitido. Algunas de las causas son: el nombre del archivo no es descriptivo o es incorrecto, contiene excesivas mayÃºsculas o es una trainer card. Lee de nuevo las instrucciones de subida de archivos de esta pÃ¡gina para ver cÃ³mo resolver este problema.', i);
 				return;
 			}
 			if (vs.thumb == 2) { // Thumb existente
 				var szNormName = _files[i].validator.suggestName.gen;
-				_showDlg('El archivo que intenta subir ya existe: <a href="'+mw.util.wikiGetlink(mw.config.get('wgFormattedNamespaces')[mw.config.get('wgNamespaceIds').file.toString()]+':'+szNormName)+'" target="_blank" class="normname"></a>.<br />En ningún caso debe subirse de nuevo un archivo que ya existe con otro copiado de otro sitio y en una resolución inferior.<br />Usa el archivo existente en vez de subirlo de nuevo. Lee la ayuda para saber cómo cambiar el tamaño de la imagen dentro de un artículo.', i, {normname:szNormName});
+				_showDlg('El archivo que intenta subir ya existe: <a href="'+mw.util.wikiGetlink(mw.config.get('wgFormattedNamespaces')[mw.config.get('wgNamespaceIds').file.toString()]+':'+szNormName)+'" target="_blank" class="normname"></a>.<br />En ningÃºn caso debe subirse de nuevo un archivo que ya existe con otro copiado de otro sitio y en una resoluciÃ³n inferior.<br />Usa el archivo existente en vez de subirlo de nuevo. Lee la ayuda para saber cÃ³mo cambiar el tamaÃ±o de la imagen dentro de un artÃ­culo.', i, {normname:szNormName});
 				return;
 			} else if (vs.thumb == 1) { // Thumb no existente
-				_showDlg('El archivo que intenta subir parece provenir de otro sitio. El nombre del archivo no es apropiado aquí. Por favor, lee las instrucciones para nombrar el archivo correctamente que encontrarás al inicio de este formulario.', i);
+				_showDlg('El archivo que intenta subir parece provenir de otro sitio. El nombre del archivo no es apropiado aquÃ­. Por favor, lee las instrucciones para nombrar el archivo correctamente que encontrarÃ¡s al inicio de este formulario.', i);
 				return;
 			}
 		}
 		var licencia = ($('#wpLicense').val() || '');
-		// 2. Validaciones específicas por licencia
-		// 2.1. Imágenes de episodio
+		// 2. Validaciones especÃ­ficas por licencia
+		// 2.1. ImÃ¡genes de episodio
 		if (licencia == 'ScreenshotTV') {
 			for (var i = 0; i < _files.length; i++) {
 				if (!_files[i].validator.suggestName.ep) {
-					_showDlg('Si la imagen es la captura de un episodio o película, debe nombrarse como se indica en las instrucciones de subida de archivos.', i);
+					_showDlg('Si la imagen es la captura de un episodio o pelÃ­cula, debe nombrarse como se indica en las instrucciones de subida de archivos.', i);
 					return;
 				}
 			}
 		}
 
-		// 3. Actualizar los nombres con las correcciones automáticas aplicadas
+		// 3. Actualizar los nombres con las correcciones automÃ¡ticas aplicadas
 		for (var i = 0; i < _files.length; i++) {
 			_files[i].inputName.val(_files[i].validator.suggestName.gen);
 		}
 
-		// 3.1. En este punto miramos si hay nombres duplicados ya. Luego se mira más adelante si además hay sugerencias de cambios de nombre
+		// 3.1. En este punto miramos si hay nombres duplicados ya. Luego se mira mÃ¡s adelante si ademÃ¡s hay sugerencias de cambios de nombre
 		if (!_validaNombresDuplicados()) {
 			return;
 		}
 
-		// 4. Validaciones y cambios extra. Almacenamos los cambios propuestos, y luego pedimos confirmación al usuario
+		// 4. Validaciones y cambios extra. Almacenamos los cambios propuestos, y luego pedimos confirmaciÃ³n al usuario
 		// 4.1. Detectar todos los cambios propuestos
 		var haycambios = false;
 		for (var i = 0; i < _files.length; i++) {
@@ -359,15 +359,15 @@ var _lock = false,
 			if (_procesarCambiosEP(f, licencia)) {
 				haycambios = true;
 			} else {
-				// Si no se sugieren cambios para casos específicos, validar licencia-descripción: Uno de los dos debe estar informado
+				// Si no se sugieren cambios para casos especÃ­ficos, validar licencia-descripciÃ³n: Uno de los dos debe estar informado
 				if (licencia == '' && _files[i].inputDesc.val() == '' && (!_inputDescCommon || _inputDescCommon.val() == '')) {
-					_showDlg('Debe seleccionar una licencia, o bien incluir la licencia o el origen y las categorías apropiadas en el espacio reservado para la descripción.', i);
+					_showDlg('Debe seleccionar una licencia, o bien incluir la licencia o el origen y las categorÃ­as apropiadas en el espacio reservado para la descripciÃ³n.', i);
 					return;
 				}
 			}
 		}
 
-		// Si no ha saltado ninguna validación anterior, es que está todo correcto para nosotros. Enviamos el formulario.
+		// Si no ha saltado ninguna validaciÃ³n anterior, es que estÃ¡ todo correcto para nosotros. Enviamos el formulario.
 		if (!haycambios) {
 			_doSubmit();
 		} else {
@@ -400,29 +400,29 @@ var _lock = false,
 		if (len < 0) { // Caso de EP000.png
 			len = n.indexOf('.');
 		}
-		// Categorías
+		// CategorÃ­as
 		var arReEP = _re_EP.exec(n);
 		var epcode = arReEP[0];
 		var arRe = _re_EPcat.exec(d);
 		if (!arRe) {
-			// Agregar categoría
-			c.cat = '[[Categoría:'+epcode+']]';
+			// Agregar categorÃ­a
+			c.cat = '[[CategorÃ­a:'+epcode+']]';
 			c.has = true;
 		} else if (arRe[0].indexOf(epcode) == -1) {
-			// Reemplazar categoría
-			c.cat = '[[Categoría:'+epcode+']]';
+			// Reemplazar categorÃ­a
+			c.cat = '[[CategorÃ­a:'+epcode+']]';
 			c.replcat = arRe[0];
 			c.has = true;
 		}
 		if (c.has) {
 			c.status = 0;
-			c.prompt = 'La imagen parece seguir las convenciones de nombrado de imágenes de episodios o películas. Si realmente se trata de este tipo de imagen, deberías aceptar los cambios propuestos:';
+			c.prompt = 'La imagen parece seguir las convenciones de nombrado de imÃ¡genes de episodios o pelÃ­culas. Si realmente se trata de este tipo de imagen, deberÃ­as aceptar los cambios propuestos:';
 			return true;
 		}
 		return false;
 	},
-	// Presenta al usuario la lista de cambios sugeridos para que elija. Solo para el primer archivo que tenga cambios sin aceptar o rechazar. Se volverá a ejecutar esta función hasta que no quede ninguno
-	// El status de cada change estará inicialmente a 0 y pasará a ser 1 o -1 según si el usuario acepta o rechaza el cambio
+	// Presenta al usuario la lista de cambios sugeridos para que elija. Solo para el primer archivo que tenga cambios sin aceptar o rechazar. Se volverÃ¡ a ejecutar esta funciÃ³n hasta que no quede ninguno
+	// El status de cada change estarÃ¡ inicialmente a 0 y pasarÃ¡ a ser 1 o -1 segÃºn si el usuario acepta o rechaza el cambio
 	_showChanges = function() {
 		for (var i = 0; i < _files.length; i++) {
 			var c = _files[i].changes;
@@ -438,9 +438,9 @@ var _lock = false,
 			}
 			if (c.cat) {
 				if (c.replcat) {
-					cont += '<li>Reemplazar la categoría <tt class="replcat"></tt> por <tt class="cat"></tt>.</li>';
+					cont += '<li>Reemplazar la categorÃ­a <tt class="replcat"></tt> por <tt class="cat"></tt>.</li>';
 				} else {
-					cont += '<li>Añadir la categoría <tt class="cat"></tt>.</li>';
+					cont += '<li>AÃ±adir la categorÃ­a <tt class="cat"></tt>.</li>';
 				}
 			}
 			cont += '</ul>';
@@ -462,7 +462,7 @@ var _lock = false,
 				}
 			};
 			_showDlg(cont, i, {license:c.license, name:c.name, replcat:c.replcat, cat:c.cat}, buttons);
-			// Salimos del bucle. El dialogo devolverá la ejecución al siguiente elemento
+			// Salimos del bucle. El dialogo devolverÃ¡ la ejecuciÃ³n al siguiente elemento
 			return;
 		}
 
@@ -470,9 +470,9 @@ var _lock = false,
 			return;
 		}
 
-		// Aquí porque el diálogo se reemplaza en vez de cerrarse.
+		// AquÃ­ porque el diÃ¡logo se reemplaza en vez de cerrarse.
 		_closeDlg();
-		// Si no pasó por el return de arriba es que se ha tomado ya la decisión sobre todos. Realizar acciones
+		// Si no pasÃ³ por el return de arriba es que se ha tomado ya la decisiÃ³n sobre todos. Realizar acciones
 		_applyChanges();
 	},
 	// Valida que no haya nombres de archivo duplicados. Debe hacerse al final de todo
@@ -486,7 +486,7 @@ var _lock = false,
 				n = c.name;
 			}
 			if (nombres[n]) {
-				_showDlg('Algunos de los archivos que intentas subir tienen el mismo nombre: <tt class="name"></tt>. Por favor, corrígelo', -1, {name: n});
+				_showDlg('Algunos de los archivos que intentas subir tienen el mismo nombre: <tt class="name"></tt>. Por favor, corrÃ­gelo', -1, {name: n});
 				return false;
 			} else {
 				nombres[n] = true;
@@ -494,12 +494,12 @@ var _lock = false,
 		}
 		return true;
 	},
-	// Había cambios propuestos y se han aceptado / rechazado. Aquí se aplican los cambios a los campos del formulario
+	// HabÃ­a cambios propuestos y se han aceptado / rechazado. AquÃ­ se aplican los cambios a los campos del formulario
 	_applyChanges = function() {
-		// Primero ver qué hacer con la licencia, pues afecta a todos
+		// Primero ver quÃ© hacer con la licencia, pues afecta a todos
 		var licencia = ($('#wpLicense').val() || ''),
 			licenciaComun = null, f, c, lictmp;
-		// Buscar si hay cambio de licencia y contradice la común
+		// Buscar si hay cambio de licencia y contradice la comÃºn
 		for (var i = 0; i < _files.length; i++) {
 			c = _files[i].changes;
 			lictmp = licencia;
@@ -514,8 +514,8 @@ var _lock = false,
 				break;
 			}
 		}
-		// Si en todos se ha de agregar la misma categoría, la marcamos para que se agregue en la descripción común
-		// Si hay que agregar categorías diferentes o solo en algunas, o hay que reemplazar, movemos el texto a la descripción individual
+		// Si en todos se ha de agregar la misma categorÃ­a, la marcamos para que se agregue en la descripciÃ³n comÃºn
+		// Si hay que agregar categorÃ­as diferentes o solo en algunas, o hay que reemplazar, movemos el texto a la descripciÃ³n individual
 		var bAgregarCatComun = (_inputDescCommon !== null), catComun = null, bAlgunReemplazo = false;
 		for (var i = 0; i < _files.length; i++) {
 			c = _files[i].changes;
@@ -535,18 +535,18 @@ var _lock = false,
 				bAgregarCatComun = false;
 			}
 		}
-		// Si hay que hacer reemplazos, ya no consideramos categoría común
+		// Si hay que hacer reemplazos, ya no consideramos categorÃ­a comÃºn
 		if (bAlgunReemplazo && bAgregarCatComun) {
 			bAgregarCatComun = false;
 		}
-		// Mover descripción común a la individual si hay reemplazos
+		// Mover descripciÃ³n comÃºn a la individual si hay reemplazos
 		if (bAlgunReemplazo && _inputDescCommon !== null && _inputDescCommon.val() !== '') {
 			for (var i = 0; i < _files.length; i++) {
 				_files[i].inputDesc.val(_inputDescCommon.val() + '\n' + _files[i].inputDesc.val())
 			}
 			_inputDescCommon.val('');
 		}
-		// Si hay categoría común, agregar
+		// Si hay categorÃ­a comÃºn, agregar
 		if (bAgregarCatComun) {
 			if (_inputDescCommon.val().length > 0) {
 				_inputDescCommon.val(_inputDescCommon.val() + '\n' + catComun);
@@ -555,7 +555,7 @@ var _lock = false,
 			}
 		}
 		if (licenciaComun !== null) {
-			// Hay una licencia común, la informamos
+			// Hay una licencia comÃºn, la informamos
 			$('#wpLicense').val(licenciaComun);
 		} else {
 			// Seleccionar el no informado
@@ -565,8 +565,8 @@ var _lock = false,
 			f = _files[i];
 			c = f.changes;
 			if (licencia != '' && licenciaComun === null && !(c.has && c.status == 1 && c.license)) {
-				// Si este archivo no necesita cambios de licencia y no hay licencia común pero la licencia
-				// está establecida, se debe especificar licencia por archivo cambiando la licencia a individual
+				// Si este archivo no necesita cambios de licencia y no hay licencia comÃºn pero la licencia
+				// estÃ¡ establecida, se debe especificar licencia por archivo cambiando la licencia a individual
 				f.inputDesc.val($.trim(f.inputDesc.val()+'\n== Licencia ==\n{{'+licencia+'}}'));
 			}
 			if (c.has) {
@@ -592,29 +592,29 @@ var _lock = false,
 						f.inputDesc.val('<!-- Se ha sugerido el cambio de nombre a '+c.name+' pero se ha omitido -->\n'+f.inputDesc.val());
 					}
 					if (c.replcat) {
-						f.inputDesc.val('<!-- Se ha sugerido reemplazar la categoría '+c.replcat+' por '+c.cat+' pero se ha omitido -->\n'+f.inputDesc.val());
+						f.inputDesc.val('<!-- Se ha sugerido reemplazar la categorÃ­a '+c.replcat+' por '+c.cat+' pero se ha omitido -->\n'+f.inputDesc.val());
 					} else if (c.cat) {
-						f.inputDesc.val('<!-- Se ha sugerido añadir la categoría '+c.cat+' pero se ha omitido -->\n'+f.inputDesc.val());
+						f.inputDesc.val('<!-- Se ha sugerido aÃ±adir la categorÃ­a '+c.cat+' pero se ha omitido -->\n'+f.inputDesc.val());
 					}
 				}
 			}
 		}
 		_doSubmit();
 	},
-	// Envía el formulario
+	// EnvÃ­a el formulario
 	_doSubmit = function() {
 		_unlock();
 		_skip = true;
 		if (mw.config.get('wgCanonicalSpecialPageName','') == 'MultipleUpload') {
 			_preSubmitMultipleUploadForm();
 		}
-		// No se puede hacer la llamada directa, pues si no hay validación asíncrona aun estamos dentro del evento submit, y este al cancelar el evento evitará que podamos hacer otro submit seguido
+		// No se puede hacer la llamada directa, pues si no hay validaciÃ³n asÃ­ncrona aun estamos dentro del evento submit, y este al cancelar el evento evitarÃ¡ que podamos hacer otro submit seguido
 		setTimeout(function(){ _submitBtn.click(); }, 100);
 	},
 	// Muestra la ventana con el mensaje al usuario.
 	// @param cont [string]: contenido HTML
-	// @param index [number]: índice del archivo (para que muestre el archivo al que va dirigida la validación)
-	// @param texts [object]{name,value}: claves-valor para reemplazar elementos del parámetro @{cont}
+	// @param index [number]: Ã­ndice del archivo (para que muestre el archivo al que va dirigida la validaciÃ³n)
+	// @param texts [object]{name,value}: claves-valor para reemplazar elementos del parÃ¡metro @{cont}
 	// @param buttons [object] botones presentes en el dialogo
 	_showDlg = function(cont, index, texts, buttons) {
 		var filename = '';
@@ -665,7 +665,7 @@ var _lock = false,
 		var rsl = t.tBodies[0].rows.length - 2; // Excluir 2 filas del final (upload-permitted y max-size)
 		var lblDesc = $('#wpUploadDescription').parent().prev().children('label');
 		_calculateFieldHeight();
-		// Bucle hacia atrás, porque se van insertando rows. Cada archivo son 2 filas: file-input y nombre del archivo
+		// Bucle hacia atrÃ¡s, porque se van insertando rows. Cada archivo son 2 filas: file-input y nombre del archivo
 		for (var fieldNum = ((rsl / 2) - 1), rowPos = (rsl - 1); rowPos >= 0; rowPos -= 2, fieldNum--) {
 			var tr = t.tBodies[0].insertRow(rowPos+1);
 			var desc = oStoredDescs[_normalizePageName( $('#wpDestFile'+fieldNum.toString()).val() || '' )];
@@ -678,7 +678,7 @@ var _lock = false,
 			}
 			txtDesc.bind('focus', _onMultiDescFocus).bind('blur', _onMultiDescBlur);
 		}
-		lblDesc.append('<br /><small>(común para todos los<br />archivos, adicional a cada<br />descripción independiente)</small>');
+		lblDesc.append('<br /><small>(comÃºn para todos los<br />archivos, adicional a cada<br />descripciÃ³n independiente)</small>');
 		if (oStoredDescs['*'] !== undefined) {
 			$('#wpUploadDescription').val(oStoredDescs['*']);
 		}
@@ -689,7 +689,7 @@ var _lock = false,
 			_fieldHeight = $('#wpDestFile0').height();
 		}
 	},
-	// Evento cuando la descripción obtiene el foco
+	// Evento cuando la descripciÃ³n obtiene el foco
 	_onMultiDescFocus = function(e) {
 		$field = $(this), h = _fieldHeight * 3;
 		if ($field.height() < h) {
@@ -697,14 +697,14 @@ var _lock = false,
 				function() { $(this).css('overflow', 'auto') });
 		}
 	},
-	// Evento cuando la descripción pierde el foco
+	// Evento cuando la descripciÃ³n pierde el foco
 	_onMultiDescBlur = function(e) {
 		$field = $(this);
 		if ($field.height() > _fieldHeight && $.trim($field.val()).length == 0) {
 			$field.css('overflow', 'hidden').queue('fx', []).stop().animate({height: _fieldHeight}, 750, 'swing');
 		}
 	},
-	// Obtiene el texto de la descripción común de Special:MultipleUpload y busca el #switch: que aporta la descripción individualizada
+	// Obtiene el texto de la descripciÃ³n comÃºn de Special:MultipleUpload y busca el #switch: que aporta la descripciÃ³n individualizada
 	_parseMultipleUploadFormHack = function() {
 		var oRet = {},
 			tmpl = $('#wpUploadDescription').val(),
@@ -739,11 +739,11 @@ var _lock = false,
 				oRet[prevname] = tmpl.substring(previdx, idx);
 			}
 		}
-		// Guardamos el texto común
+		// Guardamos el texto comÃºn
 		oRet['*'] = comun;
 		return oRet;
 	},
-	// Incluye cada descripción individual en la descripción común, dentro de un #switch:
+	// Incluye cada descripciÃ³n individual en la descripciÃ³n comÃºn, dentro de un #switch:
 	_preSubmitMultipleUploadForm = function() {
 		var txtdesc = '{{subst:#switch:{{subst:PAGENAME}}',
 			comun = $.trim($('#wpUploadDescription').val()),
@@ -766,7 +766,7 @@ var _lock = false,
 		}
 		$('#wpUploadDescription').val(comun);
 	},
-	// Convierte la primera letra en mayúscula y los guiones bajos en espacios
+	// Convierte la primera letra en mayÃºscula y los guiones bajos en espacios
 	_normalizePageName = function(page) {
 		var ret = '';
 		if (page.length) {

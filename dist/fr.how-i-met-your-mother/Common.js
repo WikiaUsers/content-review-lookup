@@ -1,4 +1,4 @@
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+/* Tout JavaScript prÃ©sent ici sera exÃ©cutÃ© par tous les utilisateurs Ã  chaque chargement de page. */
 (function(window, $, mw) {
 	"use strict";
 	

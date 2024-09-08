@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 /* <pre> v223 */
  
@@ -236,10 +236,10 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
-     "speedTip": "Categoría",
+     "speedTip": "CategorÃ­a",
      "tagOpen": "[[Category:",
      "tagClose": "|{" + "{PAGENAME}}]]",
-     "sampleText": "Nombre categoría"};
+     "sampleText": "Nombre categorÃ­a"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/7/7a/Bot%C3%B3n_tablas.png",
@@ -250,14 +250,14 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
  mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
-     "speedTip": "Proponer el artículo para ser borrado",
+     "speedTip": "Proponer el artÃ­culo para ser borrado",
      "tagOpen": "\{\{Borrar|",
      "tagClose": "\}\}",
      "sampleText": "Motivo"};
  
  }
  
-/* === Extensiones en minúscula al subir archivos === */
+/* === Extensiones en minÃºscula al subir archivos === */
 function adaptUploadFilename(){
 	var ff = $G('mw-upload-form').wpDestFile;
 	var fn = ff.value;
@@ -283,9 +283,9 @@ if (mw.config.get('skin') != 'oasis' && mw.config.get('wgAction') == 'view' &&
 				$('#'+(window.bodyContentId||'bodyContent')).children('div.printfooter').after('<div id="catlinks" class="catlinks"></div>');
 			}
 			if ($('#mw-normal-catlinks').length == 0) {
-				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:Categorías" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:Categorías')+'">Categorías</a></div>');
+				$('#catlinks').prepend('<div id="mw-normal-catlinks"><a title="Especial:CategorÃ­as" href="'+mw.config.get('wgArticlePath', '').replace('$1', 'Especial:CategorÃ­as')+'">CategorÃ­as</a></div>');
 			}
-			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorías"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
+			$('#mw-normal-catlinks').children('a').eq(0).after('<span class="noprint">&nbsp;<span>(<a style="cursor: pointer;" title="Modificar categorÃ­as"><span>+<sup>+</sup></span></a>)</span></span>').next().find('a').click(function() {
 				$(this).unbind().closest('span.noprint').eq(0).remove();
 				importScript('MediaWiki:Common.js/Gadget-HotCat.js');
 				return false;
@@ -301,9 +301,9 @@ if (mw.config.get('skin') != 'oasis' && mw.config.get('wgAction') == 'view' &&
 
 //</pre>
 /* MediaWiki:Monobook.js v2.25 <pre> */
-// Parche para testear la integridad de los estilos CSS de Wikia, últimamente fallan algunos de forma aleatoria y no hay forma de saber cuales son
-// Se testea algún estilo de cada CSS, si no se ha aplicado es que ha fallado
-// Ojo, porque Wikia podría meter todo esto en un "all-in-one" y fastidiarnos, por eso hay que tenerlo en cuenta
+// Parche para testear la integridad de los estilos CSS de Wikia, Ãºltimamente fallan algunos de forma aleatoria y no hay forma de saber cuales son
+// Se testea algÃºn estilo de cada CSS, si no se ha aplicado es que ha fallado
+// Ojo, porque Wikia podrÃ­a meter todo esto en un "all-in-one" y fastidiarnos, por eso hay que tenerlo en cuenta
 function checkCSSIntegrity() {
 	var c = $UT.cookie('CSSCheck');
 	if (!c) {
@@ -364,7 +364,7 @@ $(function() {
 if(window.CreaEnlacesDex){
 	CreaEnlacesDex.prototype.link = function(url, text, caption){
 		if (!document.getElementById('p-dexlinks')){
-			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras Pokédex</h5><div class="pBody"><ul></ul></div></div>');
+			$('#p-tb').after('<div class="portlet" id="p-dexlinks"><h5>Otras PokÃ©dex</h5><div class="pBody"><ul></ul></div></div>');
 		}
 		addPortletLink('p-dexlinks', url, text, false, caption);
 	}

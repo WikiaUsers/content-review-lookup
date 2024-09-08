@@ -27,7 +27,7 @@ importArticles({
  
 // Credit to Runescape Wiki
  
-var chatTopic = 'Ricordati di leggere il regolamento <a href="/wiki/Regolamento_della_Creepypasta_Italia_Wiki" target="_blank" title="Regolamento_della_Creepypasta_Italia_Wiki"> <u>Qui</u></a>. <br> <a href="/wiki/File:Emoticons.png" target="_blank" title="Emoticons.png"> <u>Lista Emoticons</u></a> · <a href="/wiki/File:Icone.png" target="_blank" title="Icone.png"> <u>Lista Icone</u></a> ';
+var chatTopic = 'Ricordati di leggere il regolamento <a href="/wiki/Regolamento_della_Creepypasta_Italia_Wiki" target="_blank" title="Regolamento_della_Creepypasta_Italia_Wiki"> <u>Qui</u></a>. <br> <a href="/wiki/File:Emoticons.png" target="_blank" title="Emoticons.png"> <u>Lista Emoticons</u></a> Â· <a href="/wiki/File:Icone.png" target="_blank" title="Icone.png"> <u>Lista Icone</u></a> ';
  
 $(function() {
 	$('#ChatHeader .public.wordmark').prepend('<div class="chattopic" style="text-align:center; position:absolute; width:60%; z-index:0; font-size: 13px; color:#606060; font-weight:bold; line-height:1.6; margin-left:110px;">'+chatTopic+'</div>')

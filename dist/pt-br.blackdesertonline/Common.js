@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 
 /* Any JavaScript here will be loaded for users using the 2 column main page layout */
 /*****************************************

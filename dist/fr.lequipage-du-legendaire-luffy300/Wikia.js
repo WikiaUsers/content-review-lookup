@@ -85,13 +85,13 @@ var Speed = 300;
  
 var Start = 600;
 
-/* Bouton d'éditions */
+/* Bouton d'Ã©ditions */
  
-// Bouton d'édtion pour MEP Personnage
+// Bouton d'Ã©dtion pour MEP Personnage
  
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://vignette.wikia.nocookie.net/lequipage-legendaire/images/2/2d/Bouton_d%27%C3%A9dition_Personnage.jpg/revision/latest?cb=20150419165140&path-prefix=fr",
 		"speedTip": "Mise en page d'un article concernant un personnage de la fiction",
-		"tagOpen": "<h2>Apparence</h2><br /><h2>Personnalité</h2><br /><h3>Relations</h3><br /><h2>Pouvoirs</h2><br />",
-		"tagClose": "<h2>Histoire</h2><br /><h2>Batailles principales</h2><br /><h2>Navigation du site</h2><br />[[Catégorie:Personnage]]",
+		"tagOpen": "<h2>Apparence</h2><br /><h2>PersonnalitÃ©</h2><br /><h3>Relations</h3><br /><h2>Pouvoirs</h2><br />",
+		"tagClose": "<h2>Histoire</h2><br /><h2>Batailles principales</h2><br /><h2>Navigation du site</h2><br />[[CatÃ©gorie:Personnage]]",
 	};

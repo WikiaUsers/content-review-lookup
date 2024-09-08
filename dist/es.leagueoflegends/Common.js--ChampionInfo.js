@@ -1,7 +1,7 @@
 ;(function() {
     function init(elem) {
         var group = elem.find('.portable-infobox [data-damage-value]').closest('.pi-group'),
-            keys = ['daño', 'dureza', 'control', 'movilidad', 'utilidad'];
+            keys = ['daÃ±o', 'dureza', 'control', 'movilidad', 'utilidad'];
         if(group.length === 0) return;
         group.each(function() {
             var vals = [];

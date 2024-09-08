@@ -1,6 +1,6 @@
 /**
  * Certified icon V1.0 Wiki JPop Spanish
- * Plugin script con el que se indica que un contenido de Wiki JPop est· verificado
+ * Plugin script con el que se indica que un contenido de Wiki JPop est√° verificado
  * y por lo tanto la confiabilidad del mismo es del 98% al 100%.
  * Este se complementa con CSS3 en MediaWiki:Wikia.css con el fin de que
  * solo los revisores correspondientes puedan certificar el contenido.

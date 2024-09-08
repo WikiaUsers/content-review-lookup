@@ -23,7 +23,7 @@
  *
  *
  * Original Screen Bug http://screen-bug.googlecode.com/git/index.html
- * Copyright ©2011 Kernc (kerncece ^_^ gmail)
+ * Copyright Â©2011 Kernc (kerncece ^_^ gmail)
  * Released under WTFPL license.
  *
  */

@@ -1,6 +1,6 @@
-/* Qualquer JavaScript aqui ser· carregado para todos os usu·rios em cada carregamento de p·gina. */
+/* Qualquer JavaScript aqui ser√° carregado para todos os usu√°rios em cada carregamento de p√°gina. */
 /*Ordem de carregamento
-Quando usar o ImportJS, as p·ginas ser„o carregadas por ˙ltimo. A ordem de carregaento completa È:
+Quando usar o ImportJS, as p√°ginas ser√£o carregadas por √∫ltimo. A ordem de carregaento completa √©:
 Common.js
 Fandomdesktop.js
 Scripts importados pelo Common.js

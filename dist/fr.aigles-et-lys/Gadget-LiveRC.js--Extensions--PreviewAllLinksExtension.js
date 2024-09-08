@@ -13,18 +13,18 @@
  
 '''Extension de LiveRC'''
  
-Tous les liens internes de la prévisualisation lancent une prévisualisation
+Tous les liens internes de la prÃ©visualisation lancent une prÃ©visualisation
  
 * Licence : ...?
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 var DebugLimit = 5;
 var DebugIndex = 0;
@@ -140,7 +140,7 @@ function liveModifyLinks(Link, test){
             if(PageName.indexOf("Contributions")!=-1){
                 var Page = Params["target"];
                 if(Page) Page = PageName.replace(/[^\/]*\//, "");
-                if(PageName.indexOf("DeletedContributions")!=-1 || PageName.indexOf("Contributions supprimées")!=-1){
+                if(PageName.indexOf("DeletedContributions")!=-1 || PageName.indexOf("Contributions supprimÃ©es")!=-1){
                     Onclick = 'liveDeletedContrib('+lrcEscapeStr(Page)+');';
                 }else{
                     Onclick = 'liveContrib('+lrcEscapeStr(Page)+');';

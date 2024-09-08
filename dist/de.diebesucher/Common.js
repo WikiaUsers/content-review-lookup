@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -52,7 +52,7 @@ var ShowHideConfig = {
  // alles mit class='jstest' ist dragbar
  
  /***********************************************
- * Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
+ * Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
  * This notice MUST stay intact for legal use
  * Visit http://www.dynamicdrive.com/ for this script and 100s more.
  ***********************************************/

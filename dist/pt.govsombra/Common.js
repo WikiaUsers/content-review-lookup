@@ -1,4 +1,4 @@
-/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
+/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
 
 //importScriptPage('ShowHide/code.js', 'dev');
 

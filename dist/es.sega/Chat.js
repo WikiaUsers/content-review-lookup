@@ -17,8 +17,8 @@ window.ChatStatus = {
 		cake: "Desayunando o Merendando",
 		tv: "Viendo TV",
 		game: "Jugando a SEGA",
-		code: "Viendo vídeos",
-		google: "Escuchando música",
+		code: "Viendo vÃ­deos",
+		google: "Escuchando mÃºsica",
 		book: "Leyendo",
 	},
 	debug: false

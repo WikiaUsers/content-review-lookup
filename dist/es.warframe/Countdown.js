@@ -1,4 +1,4 @@
-// cronÛmetro de cuenta regresiva. (UCP)
+// cron√≥metro de cuenta regresiva. (UCP)
 function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit, dateFormat, dateLabels, separators) {
      const oneYear = 31536000000,
          oneMonth = oneYear / 12,
@@ -25,7 +25,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
          if (delayUnit[k].innerHTML === '') delayUnit[k].innerHTML = 's';
          var nextDate = new Date(seedDate[k].innerHTML);
  
-         // convierte el bucle/retraso de tiempo que se haya introducido al perÌodo de tiempo especificado en milisegundos
+         // convierte el bucle/retraso de tiempo que se haya introducido al per√≠odo de tiempo especificado en milisegundos
          switch (loopUnit[k].innerHTML) {
              case 'Y':
                  loopConv = loopTime1 * oneYear;
@@ -87,10 +87,10 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              dst_offset2 = (now.getTimezoneOffset() - nextDate2.getTimezoneOffset()) * 60 * 1000;
          }
  
-         // tiempo total en milisegundos entre ahora y la fecha objetivo, convertidos para cierto perÌodo de tiempo
+         // tiempo total en milisegundos entre ahora y la fecha objetivo, convertidos para cierto per√≠odo de tiempo
          // (por ejemplo, for 120 minutes: years = 0; months = 0; days = 0;
          // hours = 2; minutes = 120; seconds = 7200)
-         // la cadena de tiempo mostrar· "00021207200" hasta ahora
+         // la cadena de tiempo mostrar√° "00021207200" hasta ahora
          var diff = (nextDate.getTime() - now.getTime()) + dst_offset;
          var diff2 = (nextDate2.getTime() - now.getTime()) + dst_offset2;
          var yearsleft = Math.floor(diff / oneYear);
@@ -106,7 +106,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
          var secondsleft = Math.floor(diff / oneSecond);
          var secondsleft2 = Math.floor(diff2 / oneSecond);
  
-         // encuentra los perÌodos de tiempo requeridos por el formato de fecha especificado
+         // encuentra los per√≠odos de tiempo requeridos por el formato de fecha especificado
          var Y_Count = 0,
              M_Count = 0,
              D_Count = 0,
@@ -137,10 +137,10 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              }
          }
  
-         // bas·ndose en los perÌodos de tiempo especificados, establece los perÌodos de tiempo para que tengan en cuenta el resto de perÌodos de tiempo
+         // bas√°ndose en los per√≠odos de tiempo especificados, establece los per√≠odos de tiempo para que tengan en cuenta el resto de per√≠odos de tiempo
          // (por ejemplo, for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
          // hours = 2; minutes = 0; seconds = 0)
-         // la cadena de tiempo mostrar· "000200" hasta ahora
+         // la cadena de tiempo mostrar√° "000200" hasta ahora
          if (Y_Count === 0) {
              yearsleft = 0;
              yearsleft2 = 0;
@@ -181,10 +181,10 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              secondsleft2 = (secondsleft2 * oneSecond - yearsleft2 * oneYear - monthsleft2 * oneMonth - daysleft2 * oneDay - hoursleft2 * oneHour - minutesleft2 * oneMinute) / oneSecond;
          }
  
-         // bas·ndose en el formato deseado de los perÌodos de tiempo especificados, da ceros iniciales a la cadena de tiempo
+         // bas√°ndose en el formato deseado de los per√≠odos de tiempo especificados, da ceros iniciales a la cadena de tiempo
          // (por ejemplo, for 120 minutes & "hh mm ss": years = 0; months = 0; days = 0;
          // hours = 02; minutes = 00; seconds = 00)
-         // la cadena de tiempo mostrar· "000020000" hasta ahora
+         // la cadena de tiempo mostrar√° "000020000" hasta ahora
          var Y_zeros = '',
              M_zeros = '',
              D_zeros = '',
@@ -222,10 +222,10 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              if (yearsleft2 < Math.pow(10, Y_Count - j)) Y_zeros2 = '0' + Y_zeros2;
          }
  
-         // bas·ndose en las unidades deseadas de los perÌodos de tiempo especificados, da a cada perÌodo de tiempo en la cadena ciertas unidades
+         // bas√°ndose en las unidades deseadas de los per√≠odos de tiempo especificados, da a cada per√≠odo de tiempo en la cadena ciertas unidades
          // (por ejemplo, for 120 minutes & "hh mm ss" & "single": years = 0Y; months = 0M;
          // days = 0D; hours = 02h; minutes = 00m; seconds = 00s)
-         // la cadena de tiempo mostrar· "0A0M0D02h00m00s" hasta ahora
+         // la cadena de tiempo mostrar√° "0A0M0D02h00m00s" hasta ahora
          var yearunit = '',
              monthunit = '',
              dayunit = '';
@@ -248,11 +248,11 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              secondunit = 's';
          }
  
-         // separa mediante los separadores especificados cada perÌodo de tiempo en la cadena de tiempo
+         // separa mediante los separadores especificados cada per√≠odo de tiempo en la cadena de tiempo
          // (por ejemplo, for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
          // years = 0Y ; months = 0M ; days = 0D ; hours = 02h ;
          // minutes = 00m ; seconds = 00s)
-         // la cadena de tiempo mostrar· "0Y 0M 0D 02h 00m 00s" hasta ahora
+         // la cadena de tiempo mostrar√° "0Y 0M 0D 02h 00m 00s" hasta ahora
          var sep = separators[k].innerHTML;
          if (separators[k].innerHTML === '') sep = '';
  
@@ -266,7 +266,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
              xb1 = counttext.search(/xb1Planet/i),
              nsw = counttext.search(/nswPlanet/i);
  
-         // cuando las iteraciones del ciclo alcancen el lÌmite del mismo, oculta el texto normal, oculta el texto restante, oculta los perÌodos de tiempo normal/y restante, sÛlo mostrando el texto de fin de ciclo
+         // cuando las iteraciones del ciclo alcancen el l√≠mite del mismo, oculta el texto normal, oculta el texto restante, oculta los per√≠odos de tiempo normal/y restante, s√≥lo mostrando el texto de fin de ciclo
          if ((i === (loopLimit1 + 1)) && (nextDate.getTime() <= now.getTime())) {
              document.getElementById('endText_' + k).setAttribute("style", "display:visible");
              document.getElementById('bText_' + k).setAttribute("style", "display:none");
@@ -312,7 +312,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
                  else d += 1;
              }
          } else {
-             // cuando el tiempo restante se haya consumido, muestra el texto restante, oculta el texto normalsÛlo mostrando los perÌodos de tiempo restante especificados por el formato de fecha
+             // cuando el tiempo restante se haya consumido, muestra el texto restante, oculta el texto normals√≥lo mostrando los per√≠odos de tiempo restante especificados por el formato de fecha
              if ((Math.floor(diff2 / oneSecond) * oneSecond) < delayConv) {
                  document.getElementById('endText_' + k).setAttribute("style", "display:none");
                  document.getElementById('bText_' + k).setAttribute("style", "display:none");
@@ -367,11 +367,11 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
                      else d += 1;
                  }
              }
-             // muestra texto normal mientras que el tiempo restante no se haya consumido, ocultando el texto restante, sÛlo mostrando los perÌodos de tiempo normales especificados por el formato de fecha
+             // muestra texto normal mientras que el tiempo restante no se haya consumido, ocultando el texto restante, s√≥lo mostrando los per√≠odos de tiempo normales especificados por el formato de fecha
              // (por ejemplo, for 120 minutes & "hh mm ss" & "single" & " " or "&nbsp;": 
              // years = ; months = ; days = ; hours = 02h ;
              // minutes = 00m ; seconds = 00s)
-             // la cadena de tiempo mostrar· "02h 00m 00s" hasta ahora
+             // la cadena de tiempo mostrar√° "02h 00m 00s" hasta ahora
              else {
                  document.getElementById('endText_' + k).setAttribute("style", "display:none");
                  document.getElementById('bDelayText_' + k).setAttribute("style", "display:none");
@@ -502,7 +502,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
  var dateLabels = document.getElementsByClassName('dateLabels');
  var separators = document.getElementsByClassName('separators');
  
- // da a cada instancia de elementos repetitivos el mismo identificador ˙nico de clase
+ // da a cada instancia de elementos repetitivos el mismo identificador √∫nico de clase
  for (k = 0; k < count.length; k++) {
      endText[k].id = 'endText_' + k;
      bText[k].id = 'bText_' + k;
@@ -534,7 +534,7 @@ function Countdown(seedDate, loopTime, loopUnit, loopLimit, delayTime, delayUnit
  
 function PCPlanetTracker(count) {
     if ((count + 3) % 4 === 0) {
-        text = "Repetidor Orcus, <a href='https://warframe.fandom.com/es/wiki/PlutÛn'>PlutÛn</a> (PC)<br/>";
+        text = "Repetidor Orcus, <a href='https://warframe.fandom.com/es/wiki/Plut√≥n'>Plut√≥n</a> (PC)<br/>";
         return text;
     } else if ((count + 2) % 4 === 0) {
         text = "Repetidor Kronia, <a href='https://warframe.fandom.com/es/wiki/Saturno'>Saturno</a> (PC)<br/>";
@@ -564,7 +564,7 @@ function PS4PlanetTracker(count) {
 }
 function XB1PlanetTracker(count) {
     if ((count + 3) % 4 === 0) {
-        text = "Repetidor Orcus, <a href='https://warframe.fandom.com/es/wiki/PlutÛn'>PlutÛn</a> (XB1)<br/>";
+        text = "Repetidor Orcus, <a href='https://warframe.fandom.com/es/wiki/Plut√≥n'>Plut√≥n</a> (XB1)<br/>";
         return text;
     } else if ((count + 2) % 4 === 0) {
         text = "Repetidor Leonov, <a href='https://warframe.fandom.com/es/wiki/Europa'>Europa</a> (XB1)<br/>";

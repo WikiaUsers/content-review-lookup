@@ -453,9 +453,9 @@ addOnloadHook(toggleInit);
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/6/60/Button_insert_table.png",
      "speedTip": "Inserir tabela",
-     "tagOpen": '{| class="wikitable" style="text-align:center;"\n|+ Título\n|-\n',
+     "tagOpen": '{| class="wikitable" style="text-align:center;"\n|+ TÃ­tulo\n|-\n',
      "tagClose": "\n|}",
-     "sampleText": "! cabeçalho 1\n! cabeçalho 2\n! cabeçalho 3\n|-\n| célula 1\n| célula 2\n| célula 3\n|-\n| célula 1\n| célula 2\n| célula 3"};
+     "sampleText": "! cabeÃ§alho 1\n! cabeÃ§alho 2\n! cabeÃ§alho 3\n|-\n| cÃ©lula 1\n| cÃ©lula 2\n| cÃ©lula 3\n|-\n| cÃ©lula 1\n| cÃ©lula 2\n| cÃ©lula 3"};
  
  
  

@@ -1,9 +1,9 @@
-/***** O CSS colocado aqui vai ser aplicado ‡ nova skin. Por favor, garanta que vocÍ n„o viola os Termos de Uso da Wikia, obscurecendo ou removendo a publicidade. *****/
+/***** O CSS colocado aqui vai ser aplicado √† nova skin. Por favor, garanta que voc√™ n√£o viola os Termos de Uso da Wikia, obscurecendo ou removendo a publicidade. *****/
 
 @import "http://dev.wikia.com/index.php?title=Highlight/code.css&action=raw&ctype=text/css";
 
 /*-------------Wiki-navigation subnavs - novo estilo---------------- */
-/*----------ATUALMENTE TESTANDO CODIFICA«√O DIFERENTE---------------------- */
+/*----------ATUALMENTE TESTANDO CODIFICA√á√ÉO DIFERENTE---------------------- */
 /*-------------Wiki-navigation subnavs - novo estilo--------------------- */
  
 
@@ -67,7 +67,7 @@
 
 
 
-/*------MÛdulos Ferrovi·rios-------*/
+/*------M√≥dulos Ferrovi√°rios-------*/
  
 .activityfeed-inserted-media li {
   border:1px solid #19E602;
@@ -97,7 +97,7 @@
         border-radius: 0.4em 0.4em 0.4em 0.4em;
 }
 
-/* Ver tambÈm: [[MediaWiki:Monobook.css]] */
+/* Ver tamb√©m: [[MediaWiki:Monobook.css]] */
 /* <pre> */
 table.wikitable,
 table.prettytable {
@@ -198,11 +198,11 @@ td.diff-addedline {
 /* Esconder "Imagem adicionada por" nos artigos */
 div.picture-attribution { display:none !important; }
 
-/* CabeÁalhos em negrito */
+/* Cabe√ßalhos em negrito */
 h2, h3, h4, h5, h6 { font-weight: bold }
 
 
-/* CabeÁalho */ 
+/* Cabe√ßalho */ 
 .codonstream { 
 font-size:18px; 
 padding:1px; 
@@ -214,7 +214,7 @@ text-align:center;
 border-radius:7px; /* Chrome, Safari, Opera */ 
 }
 
-/* CabeÁalho */ 
+/* Cabe√ßalho */ 
 .codonstream2 { 
 font-size:18px; 
 padding:1px; 
@@ -227,13 +227,13 @@ border-radius:7px; /* Chrome, Safari, Opera */
 }
 
 
-/**** E, ent„o, use isto para adicionar uma caixa pura pequena de informaÁ„o para as p·ginas.
+/**** E, ent√£o, use isto para adicionar uma caixa pura pequena de informa√ß√£o para as p√°ginas.
 /****
 /**** {| class="codonstream" style="wdith:250px" | style="color:black" | '''Codon Stream''' | style="color:black" | '''Home Planet''' |- | class="codonstream2"|'''To'kustar''' | class="codonstream2"|'''Cosmic Storms''' |} ****/
 
-a[href="/wiki/Usu%C3%A1rio:M-A CybernÈtico II"] {color:#FF0000; !important}
+a[href="/wiki/Usu%C3%A1rio:M-A Cybern√©tico II"] {color:#FF0000; !important}
 
-.co/*** Coment·rios de Artigo - Destacar Administrador ***/
+.co/*** Coment√°rios de Artigo - Destacar Administrador ***/
  
 .comments li.article-comment-staff > blockquote {
    background: #075b00 !important;
@@ -246,13 +246,13 @@ a[href="/wiki/Usu%C3%A1rio:M-A CybernÈtico II"] {color:#FF0000; !important}
 }
 
  
-.comments li[data-user="M-A CybernÈtico II"] > blockquote {
+.comments li[data-user="M-A Cybern√©tico II"] > blockquote {
    background: #075b00 !important;
 }
-.comments li[data-user="M-A CybernÈtico II"] > blockquote:after {
+.comments li[data-user="M-A Cybern√©tico II"] > blockquote:after {
    border-color: transparent #075b00 #075b00 transparent !important;
 }
-.comments li[data-user="M-A CybernÈtico II"] > blockquote div {
+.comments li[data-user="M-A Cybern√©tico II"] > blockquote div {
    background: transparent !important;
 
 

@@ -1,5 +1,5 @@
 $(function() {
-//    $('.ns-0 .WikiaPageHeader a.wikia-button.secondary').after('<a class="wikia-button comments secondary" href="/wiki/Tema:' + mw.config.get( 'wgPageName' ) + '">Discusión</a>');
+//    $('.ns-0 .WikiaPageHeader a.wikia-button.secondary').after('<a class="wikia-button comments secondary" href="/wiki/Tema:' + mw.config.get( 'wgPageName' ) + '">DiscusiÃ³n</a>');
     $('.WikiaPageHeader h1').append($('.destacado'));
     $('.ns-2 .tabs').append($('.destacado'));
     
@@ -10,7 +10,7 @@ $(function() {
     }
 });
 
-var WikiaNotificationMessage = "Hemos abierto la <a href='/wiki/Project:Batallas'>séptima ronda de batallas de Wikivisión</a>, ¡vota por tu favorito!";
+var WikiaNotificationMessage = "Hemos abierto la <a href='/wiki/Project:Batallas'>sÃ©ptima ronda de batallas de WikivisiÃ³n</a>, Â¡vota por tu favorito!";
 var expiry = 30;
 
 importArticles({

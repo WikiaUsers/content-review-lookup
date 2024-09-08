@@ -71,7 +71,7 @@ if (wgNamespaceNumber === 0) {
         cats = cats.getElementsByTagName('a');
         for (var i = 0; i < cats.length; i++) {
             if (cats[i].title == 'Kategorie:Harry grangers Test Wiki Zauberhafte Artikel') {
-                addEditIntro('Vorlage:Gewählter_Zauberhafter_Artikel_editintro');
+                addEditIntro('Vorlage:GewÃ¤hlter_Zauberhafter_Artikel_editintro');
                 break;
             }
         }

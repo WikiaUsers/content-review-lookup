@@ -1,56 +1,56 @@
 /* redit to Once Upon a Time Wiki */
 // <source lang="JavaScript">
- 
+Â 
 // BEGIN CREATING ADDITIONAL USER RIGHTS ICONS FOR PROFILEMASTHEADS
- 
+Â 
 function addMastheadTags() {
   var rights = {};
- 
+Â 
   // BEGIN List of Accounts Given Extra User Rights Icons - Must list all tags
- 
+Â 
    // BEAURECRATS 
- 
+Â 
     rights["InspiredAndNatural"]    = ["A Mischievous Beauty", "Princess of the Dark Forces",];
- 
+Â 
    ;
    // ADMINISTRATORS 
- 
+Â 
     rights["InspiredAndNatural"] = ["A Mischievous Beauty", "Princess of the Dark Forces",];
- 
- 
- 
- 
+Â 
+Â 
+Â 
+Â 
   // END List of Accounts Given Extra User Rights Icons
- 
+Â 
   // BEGIN Script to Remove Old Rights Icons & Insert New
- 
+Â 
     if (wgCanonicalSpecialPageName == "Contributions") {
       var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");
     } else { var user = wgTitle; }
- 
+Â 
     if (typeof rights[user] != "undefined") {
- 
+Â 
       // remove old rights
       $('.UserProfileMasthead .masthead-info span.tag').remove();
- 
+Â 
       for( var i=0, len=rights[user].length; i < len; i++) {
- 
+Â 
         // add new rights
         $('<span class="tag" span style="margin-left: 10px !important">' + rights[user][i] +
           '</span>').appendTo('.masthead-info hgroup');
       }
     }
- 
+Â 
   // END Script to Remove Old Rights Icons & Insert New
- 
+Â 
 };
- 
+Â 
 $(function() {
   if ($('#UserProfileMasthead')) {
     addMastheadTags();
   }
 });
- 
+Â 
 // END CREATING ADDITIONAL USER RIGHTS ICONS FOR PROFILEMASTHEADS
- 
+Â 
 // </source>

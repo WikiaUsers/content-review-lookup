@@ -19,14 +19,14 @@ $(function() {
 });
 
 
-/* Enlace a wikia.css en el menú desplegable de usuario */
+/* Enlace a wikia.css en el menÃº desplegable de usuario */
  
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario:'+ encodeURIComponent(wgUserName) +'/wikia.css" title="Tu apariencia personal">Mi apariencia</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);
 /*<pre> MediaWiki:Wikia.js v1.4 */
 
-/*SkinNotification: Agrega una notificación para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÃ³n para los que usen oasis. */
 window.SkinNotification = {
-	article: 'Especial:PáginasRequeridas',
+	article: 'Especial:PÃ¡ginasRequeridas',
 	key: 'NfSkin',
 	init: function() {
 		if (!document.cookie || document.cookie.length == 0) return;
@@ -43,7 +43,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Demuestra tus conocimientos sobre Power Rangers<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">, ayúdanos a crear o mejorar los artículos</a>.</div>');
+		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Demuestra tus conocimientos sobre Power Rangers<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">, ayÃºdanos a crear o mejorar los artÃ­culos</a>.</div>');
 		nf.children().eq(0).append(sn);
 		sn.children().eq(0).click(SkinNotification.dismiss);
 	},

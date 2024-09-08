@@ -25,6 +25,6 @@ $(document).ready(function () {
     if( matches && matches.length ) {
     	var mwct;
     } else {
-    	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{Dateiinfo\n|Beschreibung = \n|Datum = \n|Autor = \n|Quelle = \n|Lizenz = © SE und Walt Disney\n|Sonstiges = \n}}\n\n[[Category:]]");
+    	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{Dateiinfo\n|Beschreibung = \n|Datum = \n|Autor = \n|Quelle = \n|Lizenz = Â© SE und Walt Disney\n|Sonstiges = \n}}\n\n[[Category:]]");
     	$("#mw-upload-form fieldset table#mw-htmlform-description tbody tr.mw-htmlform-field-Licenses").show();
     }

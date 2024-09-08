@@ -1,18 +1,18 @@
 /* --------------------------------------
    Vielen lieben Dank an den User [[w:c:de.thewalkingdeadtv:User:20M61|20M61]] (http://de.thewalkingdeadtv.wikia.com/wiki/Benutzer:20M61)
    -------------------------------------- */
-//Dieses Skript wird für die Tabber (Legends/Kanon) verwendet.
-var Version = 'Legends'; // Standardmäßig soll ein Artikel mit Legends geöffnet werden
+//Dieses Skript wird fÃ¼r die Tabber (Legends/Kanon) verwendet.
+var Version = 'Legends'; // StandardmÃ¤ÃŸig soll ein Artikel mit Legends geÃ¶ffnet werden
 var Artikelraum;
 if(mw.config.get('skin') == 'monobook')
     Artikelraum = document.getElementById("content");
 else
     Artikelraum = document.getElementById("WikiaMainContent");
 
-//Diese Funktion liest alle übergebenen Variablen aus und gibt diese in einem Objekt wieder
+//Diese Funktion liest alle Ã¼bergebenen Variablen aus und gibt diese in einem Objekt wieder
 function Werteliste (querystring) {
   if (querystring == '') return;
-  var wertestring = querystring.slice(1); // Übergeben wird eine URL als Array. Der Link wir abgeschnitten
+  var wertestring = querystring.slice(1); // Ãœbergeben wird eine URL als Array. Der Link wir abgeschnitten
   var paare = wertestring.split('&');
   var paar, name, wert;
   for (var i = 0; i < paare.length; i++) {
@@ -26,7 +26,7 @@ function Werteliste (querystring) {
   var HTML_link = window.location + '';
   this['PageName'] = HTML_link.split('=')[0].split('/')[4].replace(/_/g, ' ').split('?')[0];
 }
-var HTMLAgument = new Werteliste(location.search); //Objekt HTMLArgument enthält alle übergebenen Variablen
+var HTMLAgument = new Werteliste(location.search); //Objekt HTMLArgument enthÃ¤lt alle Ã¼bergebenen Variablen
  
 function ChangeVersion(NewVersion) {
         Version = NewVersion;
@@ -34,9 +34,9 @@ function ChangeVersion(NewVersion) {
         var TabberObj = Artikelraum.getElementsByTagName('div');
         //Jedes Objekt in "TabberObj" einzeln durchgehen und nacheinander bearbeiten
         for (var i= 0; i< TabberObj.length; i++){
-                //Überprüfen ob aktuelles Objekt ein SWTabber ist
+                //ÃœberprÃ¼fen ob aktuelles Objekt ein SWTabber ist
                 if (TabberObj[i].className.toLowerCase() == 'swtabber'){
-                        //Überprüfen, ob aktuelles Objekt angezeigt werden soll oder nicht
+                        //ÃœberprÃ¼fen, ob aktuelles Objekt angezeigt werden soll oder nicht
                         if (TabberObj[i].getAttribute('data-Version').toLowerCase() == Version.toLowerCase())
                                 TabberObj[i].style.display = '';
                         else
@@ -48,7 +48,7 @@ function ChangeVersion(NewVersion) {
       TabberObj[i].classList.remove("SWTabber-visible");
     }
         }
-        //Funktion erfolgreich beenden (ein Returnwert ist nicht nötig, aber guter Stil).
+        //Funktion erfolgreich beenden (ein Returnwert ist nicht nÃ¶tig, aber guter Stil).
         return true;
 }
  
@@ -56,7 +56,7 @@ function ChangeVersion(NewVersion) {
 var TabberMenuObj = Artikelraum.getElementsByTagName('div');
 //Jedes Objekt in "TabberMenuObj" einzeln durchgehen und nacheinander bearbeiten
 for (var i= 0; i< TabberMenuObj.length; i++){
-	//Wenn ein Menü-Objekt gefunden wird, dann diesem eine Funktion zuweisen.
+	//Wenn ein MenÃ¼-Objekt gefunden wird, dann diesem eine Funktion zuweisen.
 	if (TabberMenuObj[i].className.toLowerCase() == 'swtabber-knopf'){
 		TabberMenuObj[i].onclick=function(){ChangeVersion(this.getAttribute('data-Version'));};
 	}
@@ -74,7 +74,7 @@ var MindestensEinTabberElementVorhanden = false;
 for (i=0; i < SearchDIV.length; i++){
 	// Hier wird geschaut, ob es mindestens ein Tabber-Element gibt, sonst den ganzen Code nicht verwenden.
 	if (SearchDIV[i].getAttribute('data-Version')) MindestensEinTabberElementVorhanden = true;
-    // Gucken, ob übergebene Tabber-Vorauswahl vorhanden ist und nur dann ändern 
+    // Gucken, ob Ã¼bergebene Tabber-Vorauswahl vorhanden ist und nur dann Ã¤ndern 
     // Verhindert, dass unsinnige Tabber-Auswahlen verwendet werden und eine leere Seite gezeigt wird.
     if (HTMLAgument['version'] && SearchDIV[i].getAttribute('data-Version')){
     	if (HTMLAgument['version'].toLowerCase() == SearchDIV[i].getAttribute('data-Version').toLowerCase()) 
@@ -88,11 +88,11 @@ if (MindestensEinTabberElementVorhanden){
     //Es darf kein Fragezeichen bereits enthalten sein (sonst ist es wahrscheinlich ein RED-Link)
     if(VersionLink[i].href.indexOf("jedipedia.wikia.com") < 0) continue;
     if(VersionLink[i].href.split('?')[1]) continue;
-    //Sprungmarken müssen hinter den Variablen stehen
+    //Sprungmarken mÃ¼ssen hinter den Variablen stehen
     if(VersionLink[i].href.split('#')[1]) {
       VersionLink[i].href = VersionLink[i].href.split('#')[0]+'?version='+VaterNode(VersionLink[i].parentNode)+'#'+VersionLink[i].href.split('#')[1];    
     } else {
-      //Link ergänzen um Version in der er sich befindet.
+      //Link ergÃ¤nzen um Version in der er sich befindet.
       VersionLink[i].href = VersionLink[i].href+'?version='+VaterNode(VersionLink[i].parentNode);
     }
   }

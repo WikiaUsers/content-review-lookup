@@ -7,9 +7,9 @@ function addMastheadTags() {
   // BEGIN List of Accounts Given Extra User Rights Icons - Must list all tags
 
     rights["Hilbert.Herringgull"] = ["Bureaucrat", "Earl of Sodor"];
-    rights["Grabbergirl"] = ["Burócrata", "Alcalde Rosa"];
-    rights["Gamekirby"] = ["Burócrata"];
-    rights["Gman581996"] = ["Burócrata", "Presidente de Sheetrock Hills"];
+    rights["Grabbergirl"] = ["BurÃ³crata", "Alcalde Rosa"];
+    rights["Gamekirby"] = ["BurÃ³crata"];
+    rights["Gman581996"] = ["BurÃ³crata", "Presidente de Sheetrock Hills"];
  
  
   // END List of Accounts Given Extra User Rights Icons

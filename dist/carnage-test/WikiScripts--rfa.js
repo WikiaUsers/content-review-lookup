@@ -6,7 +6,7 @@ function RequestForm(config){
     this.voteable = config.voteable || false;
     this.create();
 }
- 
+Â 
 RequestForm.prototype.submit = function(event){
     var position = $('#rfa-position').val(),
         description = $('#rfa-description').val(),
@@ -49,10 +49,10 @@ RequestForm.prototype.submit = function(event){
     template = template.concat('description=$description|');
     template = template.concat('voteable=' + (this.voteable ? '1' : '0' ) + '}}');
     template = template.concat('</div>');
- 
+Â 
     template = template.replace('$position', position);
     template = template.replace('$description', description);
- 
+Â 
     if (position === '' || description === '') return;
     mwAPI.post({
         action: 'edit',
@@ -65,7 +65,7 @@ RequestForm.prototype.submit = function(event){
         location.reload();
     });
 };
- 
+Â 
 RequestForm.prototype.create = function(){
     importArticle({ type: 'style', article: 'MediaWiki:RFAForm.css' });
     var $rfa_form = $('<form class="RFAform rfa-form request-form WikiaForm" id="' + this.id + '" />'),
@@ -95,13 +95,13 @@ RequestForm.prototype.create = function(){
                 })
             )
         ];
- 
+Â 
         return $html;
     });
- 
+Â 
     $rfa_form.on('submit', function(event){
         event.preventDefault();
     });
- 
+Â 
     if (!$(this.selector).length) $rfa_container.replaceWith($rfa_form);
 };

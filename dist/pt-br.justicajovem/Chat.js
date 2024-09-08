@@ -1,7 +1,7 @@
-// Importações
+// ImportaÃ§Ãµes
 importArticles({
     type: 'script',
     articles: [
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js' // Opções Múltiplas
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js' // OpÃ§Ãµes MÃºltiplas
     ]
 });

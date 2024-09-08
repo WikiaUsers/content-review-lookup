@@ -10,6 +10,6 @@ window.railWAM = {
     if( matches && matches.length ) {
     	var mwct;
     } else {
-    	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{FileInfo\n|Beskrywing= \n|Datum= \n|Outeur= \n|Bron= \n|Lisensie=© SE en Walt Disney\n|Ander= \n}}\n\n[[Category:]]");
+    	$("#mw-content-text #mw-upload-form fieldset #mw-htmlform-description tbody .mw-htmlform-field-HTMLTextAreaField .mw-input #wpUploadDescription").html("{{FileInfo\n|Beskrywing= \n|Datum= \n|Outeur= \n|Bron= \n|Lisensie=Â© SE en Walt Disney\n|Ander= \n}}\n\n[[Category:]]");
     	$("#mw-upload-form fieldset table#mw-htmlform-description tbody tr.mw-htmlform-field-Licenses").show();
     }

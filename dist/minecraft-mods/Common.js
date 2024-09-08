@@ -16,6 +16,12 @@
 //   });
 //} ();
 
+$(document).on("submit", function(e) {
+	if (e.target.id == "mw-upload-form") {
+		$(e.target).find('[name="wpLicense"] [value=""]:not([disabled])').attr("value", "License");
+	}
+});
+
 //=============
 // RailWAM
 //=============

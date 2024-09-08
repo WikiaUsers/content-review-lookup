@@ -12,7 +12,7 @@ if (message.match(/Special:Chat/i) && mainRoom.active === true) {
     inlineAlert('You cannot post other wiki chats in the main chat.');
 }
 
-// Cambiar la descripción del Chat
+// Cambiar la descripciÃ³n del Chat
 importScript('MediaWiki:Chat-headline');
  
 $(function changeChatDesc() {

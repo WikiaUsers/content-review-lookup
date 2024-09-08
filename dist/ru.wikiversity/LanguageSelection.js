@@ -25,7 +25,7 @@ var ls_cookie = 'ru_language_js';
 var ls_help_url = 'http://ru.wikiversity.org/wiki/Wikiversity:Language_select';
 
 // strings that are part of the widgets
-var ls_string_help = ' ¿ ? ';
+var ls_string_help = ' Â¿ ? ';
 var ls_string_select = ' ? ';
 var ls_string_showall = ' >>> ';
 

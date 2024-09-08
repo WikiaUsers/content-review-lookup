@@ -9,12 +9,12 @@ wikiTwitterAccount: "wikia_es"
 };  
 importScriptPage('SocialIcons/code.js','dev');
 
-// Bot髇 para ir arriba
+// Bot贸n para ir arriba
 importScriptPage('BackToTopButton/code.js', 'dev');
-// Editar introducci髇 de los art韈ulos
-EditIntroButtonText = 'Editar introducci髇';
+// Editar introducci贸n de los art铆culos
+EditIntroButtonText = 'Editar introducci贸n';
 importScriptPage('EditIntroButton/code.js', 'dev');
-// Men鷈s desplegables con hover
+// Men煤es desplegables con hover
 window.AutoEditDropdownConfig = {
     expandedAreaContribute: true,
     expandedAreaEdit: true
@@ -30,10 +30,10 @@ importArticles({
    // <div id="admin-list"></div>
 importScriptPage('ListAdmins/code.js', 'dev');
 // No comentarios en entradas de blog antiguas
-   // 30 d韆s
+   // 30 d铆as
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog no ha tenido actividad desde hace m醩 de 30 d韆s, por lo cual no puedes dejar comentarios ya que ser韆 in鷗il.",
+    expiryMessage: "Este blog no ha tenido actividad desde hace m谩s de 30 d铆as, por lo cual no puedes dejar comentarios ya que ser铆a in煤til.",
     nonexpiryCategory: "Blogs permanentes"
 };
  
@@ -44,14 +44,14 @@ importArticles({
         "w:c:dev:LockOldBlogs/code.js"
     ]
 });
-// Actualizar p醙ina
-PurgeButtonText = 'Actualizar p醙ina';
+// Actualizar p谩gina
+PurgeButtonText = 'Actualizar p谩gina';
 importScriptPage('PurgeButton/code.js', 'dev');
 // Referencias pop-ups
 importScriptPage('ReferencePopups/code.js', 'dev');
-// IP de an髇imos
+// IP de an贸nimos
 importScriptPage('RevealAnonIP/usercode.js', 'dev');
-// Inspecci髇 de hilos
+// Inspecci贸n de hilos
 importScriptPage('Thread Inspection/code.js', 'dev');
 // Slider de tiempo
 importScriptPage('TimedSlider/code.js', 'dev');
@@ -59,13 +59,13 @@ importScriptPage('TimedSlider/code.js', 'dev');
    // <div class="topeditors" data-te-namespace="" data-te-type="edit|new" data-te-show="" data-te-user="" data-te-limit="25" data-te-offset="7">generando lista...</div>
       // data-te-namespace: espacio de nombres, separar con barras "|"
       // data-te-type: tipo de ediciones a considerar, separar con barras "|"
-         // Se pueden usar "edit" para ediciones, "new" para creaci髇 de art韈ulos y "log" para registros
+         // Se pueden usar "edit" para ediciones, "new" para creaci贸n de art铆culos y "log" para registros
       // data-te-show: tipo de ediciones a ocultar, separar con barras "|"
-         // Se pueden usar "minor" para ocultar ediciones menores, "bot" para ocultar ediciones de bot, "anon" para ocultar ediciones de an髇imos, "redirect" para ocultar redirecciones y "patrolled" para ocultar patrullajes
-         // Agregar un signo de interrogaci髇 "!" para ocultar opuestos, ejemplo: !minor
-      // data-te-user: usuario espec韋ico. No poner el prefijo de usuario:
+         // Se pueden usar "minor" para ocultar ediciones menores, "bot" para ocultar ediciones de bot, "anon" para ocultar ediciones de an贸nimos, "redirect" para ocultar redirecciones y "patrolled" para ocultar patrullajes
+         // Agregar un signo de interrogaci贸n "!" para ocultar opuestos, ejemplo: !minor
+      // data-te-user: usuario espec铆fico. No poner el prefijo de usuario:
       // data-te-limit: usuarios a mostrar
-      // data-te-offser: d韆s a tomar en cuenta
+      // data-te-offser: d铆as a tomar en cuenta
 importScriptPage('TopEditors/code.js', 'dev');
  
 /****************************************/

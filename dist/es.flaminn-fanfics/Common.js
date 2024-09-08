@@ -48,7 +48,7 @@ window.UserTagsJS = {
                 threadmoderator: { u: 'Moderador de hilos' },
 		sysop: { u: 'Administrador' },
 		sysop2: { u: 'Administradora' },
-		bureaucrat: { u: 'Burócrata' },
+		bureaucrat: { u: 'BurÃ³crata' },
 		founder: { u: 'Fundador' },
 		founder2: { u: 'Fundadora' },
 	}

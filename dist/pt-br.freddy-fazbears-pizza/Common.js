@@ -1,11 +1,11 @@
-/* Revelar IP AnÙnimo */
+/* Revelar IP An√¥nimo */
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat']
 };
 
 
 
-/* AtualizaÁ„o Autom·tica */
+/* Atualiza√ß√£o Autom√°tica */
 window.ajaxPages = [
     "Especial:RecentChanges",
     "Especial:Watchlist",
@@ -13,26 +13,26 @@ window.ajaxPages = [
     "Especial:Contributions",
     "Especial:WikiActivity"
 ];
-window.AjaxRCRefreshText = 'AtualizaÁ„o autom·tica';
-window.AjaxRCRefreshHoverText = 'Atualizar a p·gina automaticamente';
+window.AjaxRCRefreshText = 'Atualiza√ß√£o autom√°tica';
+window.AjaxRCRefreshHoverText = 'Atualizar a p√°gina automaticamente';
 
 
 
-/* RelÛgio da Wiki */
+/* Rel√≥gio da Wiki */
 window.DisplayClockJS = '%2H:%2M:%2S - %2d %{de Jan;de Fev;de Mar;de Abr;de Maio;de Jun;de Jul;de Ago;de Set;de Out;de Nov;de Dez}m de %Y (GMT -3)';
 
 
 
-/* EstilizaÁ„o - Trancar FÛrums */
+/* Estiliza√ß√£o - Trancar F√≥rums */
 window.LockForums = {
     expiryDays: 7,
-    expiryMessage: "Este tÛpico foi considerado arquivado pois n„o h· novos coment·rios h· mais de 7 dias.",
-    forumName: "FÛrum" 
+    expiryMessage: "Este t√≥pico foi considerado arquivado pois n√£o h√° novos coment√°rios h√° mais de 7 dias.",
+    forumName: "F√≥rum" 
 };
 
 
 
-/* ConfiguraÁ„o de Tags de Usu·rio */
+/* Configura√ß√£o de Tags de Usu√°rio */
 /* Tags existentes */
 window.UserTagsJS = {
 	modules: {},
@@ -42,11 +42,11 @@ window.UserTagsJS = {
         sysop: {u: 'Administrador'},
         rollback: {u: 'Rollbacker'},
         chatmoderator: {u: 'Moderador de Chat'},
-        contentmoderator: {u: 'Moderador de Conte˙do'},
-        threadmoderator: {u: 'Moderador de Discussıes'},
+        contentmoderator: {u: 'Moderador de Conte√∫do'},
+        threadmoderator: {u: 'Moderador de Discuss√µes'},
         bot: {u: 'Bot'},
         designer: {u: 'Designer'},
-        contentsupervisor: {u: 'Supervisor de Conte˙do'},
+        contentsupervisor: {u: 'Supervisor de Conte√∫do'},
         newuser: {u:'Novo Editor'},
         inactive: {u: 'Inativo'}
 	}
@@ -60,7 +60,7 @@ UserTagsJS.modules.custom = {
 	'Wubbox Raro Azul': ['contentmoderator', 'rollback', 'contentsupervisor'],
 };
 
-/* ForÁar a Tag referente aos grupos abaixo */
+/* For√ßar a Tag referente aos grupos abaixo */
 UserTagsJS.modules.mwGroups = [
     'bureaucrat',
     'sysop',
@@ -84,50 +84,50 @@ UserTagsJS.modules.metafilter = {
     rollback: ['sysop', 'bureaucrat']
 };
 
-/* ConfiguraÁıes Gerais */
+/* Configura√ß√µes Gerais */
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.isblocked = true;
 UserTagsJS.modules.inactive = 60; // Precisa estar Inativo por 60 dias
 UserTagsJS.modules.newuser = {
 	days: 2, // Precisa estar na Wiki por 2 dias
-	edits: 7, // E precisa de 7 ediÁıes para tirar a tag
-	namespace: 0 // EdiÁıes precisam ser em artigos para contar
+	edits: 7, // E precisa de 7 edi√ß√µes para tirar a tag
+	namespace: 0 // Edi√ß√µes precisam ser em artigos para contar
 };
 
 
 
-/* Mensagem de Bloqueio Autom·tica */
+/* Mensagem de Bloqueio Autom√°tica */
 window.MessageBlock = {
   title : 'Bloqueado',
-  message : 'VocÍ foi bloqueado por $2 pelo(s) seguinte(s) motivo(s): "$1"',
+  message : 'Voc√™ foi bloqueado por $2 pelo(s) seguinte(s) motivo(s): "$1"',
   autocheck : true
 };
 
 
 
-/* Editado por ⁄ltimo */
+/* Editado por √öltimo */
 window.lastEdited = {
     avatar: true
 };
 
 
 
-/* ConfiguraÁıes do Mass Protect */
+/* Configura√ß√µes do Mass Protect */
 window.massProtectDelay = 1000;
 
 
 
-/* ConfiguraÁıes do PageRenameAuto-update */
+/* Configura√ß√µes do PageRenameAuto-update */
 window.PRAoptions = {
-    editSummary: 'Atualizando p·gina (processo autom·tico)'
+    editSummary: 'Atualizando p√°gina (processo autom√°tico)'
 };
 
 
 
-/* ConfiguraÁıes do FileRenameAuto-update */
+/* Configura√ß√µes do FileRenameAuto-update */
 window.LIRoptions = {
     bottomMessage: '',
-    editSummary: 'Atualizando links para arquivos (processo autom·tico)',
+    editSummary: 'Atualizando links para arquivos (processo autom√°tico)',
     singleButtonText: 'Renomear e Atualizar',
     queueButtonText: 'Colocar na Fila',
     delay: 1000
@@ -135,13 +135,13 @@ window.LIRoptions = {
 
 
 
-/* ConfiguraÁıes do Link Sweeper (limpador de links) */
+/* Configura√ß√µes do Link Sweeper (limpador de links) */
 linkSweepConfirmation = true;
 LinkSweeperDelay = 1000;
 
 
 
-/* Substitui {{USERNAME}} pelo nome do usu·rio que est· vendo a p·gina. */
+/* Substitui {{USERNAME}} pelo nome do usu√°rio que est√° vendo a p√°gina. */
 function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $("span.insertusername").html(wgUserName);

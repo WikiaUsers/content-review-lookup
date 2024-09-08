@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
@@ -23,8 +23,8 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucciÛn",
-     "tagOpen": "{{En construcciÛn|",
+     "speedTip": "Advertir de que este articulo esta en contrucci√≥n",
+     "tagOpen": "{{En construcci√≥n|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -51,10 +51,10 @@ if (mwCustomEditButtons) {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto PequeÒo",
+     "speedTip": "Texto Peque√±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto PequeÒo"};
+     "sampleText": "Texto Peque√±o"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",

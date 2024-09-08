@@ -16,7 +16,7 @@ window.WikiNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>La mayorÌa de las misiones que ponga en la wiki ser·n solo videos ya que no puedo hacerlo todo. Puedes ayudar a hacerlas o esperar a que yo las haga. <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ir a portada</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>La mayor√≠a de las misiones que ponga en la wiki ser√°n solo videos ya que no puedo hacerlo todo. Puedes ayudar a hacerlas o esperar a que yo las haga. <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ir a portada</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(WikiNotification.dismiss);
 	},

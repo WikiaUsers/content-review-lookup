@@ -1,6 +1,6 @@
 // 16:40, 30. Aug. 2014 (UTC)
 // <source lang="JavaScript">
-// Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen.
+// Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen.
 
 // ShowHide from Dev Wikia
 var ShowHideConfig = { 
@@ -17,7 +17,7 @@ importScriptPage('ShowHide/code.js', 'dev');
 // END ShowHide from Dev Wikia
 
 // ImageMapEdit wurde auf den Toolserver verschoben.
-// Folgende Zeile ist alles, was zum Einbinden nötig ist:
+// Folgende Zeile ist alles, was zum Einbinden nÃ¶tig ist:
 importScriptURI('//tools.wmflabs.org/imagemapedit/ime.js');
 // END ImageMapEdit wurde auf den Toolserver verschoben.
 

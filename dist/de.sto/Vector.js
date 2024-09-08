@@ -67,7 +67,7 @@ function createSkinOptionDialog( ) {
                      '<a id="button-content-solid" href="javascript:setSkinOption(\'content-solid\');">' + 
                      'Solide</a>' +
                      '</td></tr><tr><td></td><td>' +
-                     '<a href="javascript:hideSkinOptionDialog();">Schlieﬂen</a>' +
+                     '<a href="javascript:hideSkinOptionDialog();">Schlie√üen</a>' +
                      '</td></tr></table>';
   return dialog;
 }

@@ -1,8 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 /* Auto updating recent changes opt-in. See w:c:dev:AjaxRC for info & attribution */
-AjaxRCRefreshText = 'AtualizaÁ„o autom·tica';
-AjaxRCRefreshHoverText = 'Atualiza automaticamente a p·gina';
+AjaxRCRefreshText = 'Atualiza√ß√£o autom√°tica';
+AjaxRCRefreshHoverText = 'Atualiza automaticamente a p√°gina';
 ajaxPages = ["Especial:Mudan\xE7as_recentes","Especial:WikiActivity","Especial:P\xE1ginas_sem_categorias","Especial:Todas_as_p\xE1ginas"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

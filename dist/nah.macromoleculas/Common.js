@@ -1,16 +1,16 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /* Auto-refrescar WikiActividad */
  
-var AjaxRCRefreshText = 'Act. autom·t.';
-var AjaxRCRefreshHoverText = 'Refrescar autom·ticamente';
+var AjaxRCRefreshText = 'Act. autom√°t.';
+var AjaxRCRefreshHoverText = 'Refrescar autom√°ticamente';
 var ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 var ajaxIndicator = 'https://vignette.wikia.nocookie.net/gup/images/0/06/Gup.gif';
 var ajaxRefresh = 10000;
 importScriptPage('AjaxRC/code.js', 'dev');
 
 /**
-//Fondo cambiante al recargar o cambiar de pagina (By User:BranDaniMB con permisos del usuario para aplicarlo aquÌ)
+//Fondo cambiante al recargar o cambiar de pagina (By User:BranDaniMB con permisos del usuario para aplicarlo aqu√≠)
     var wallpaper = ["http://imgur.com/a/FppeH","http://imgur.com/a/cK6j9","http://imgur.com/a/ZqMKY","http://imgur.com/a/5XyU4","http://imgur.com/a/xHhHq","http://imgur.com/a/TjijL"];
     var min = 0;
     var max = 10;

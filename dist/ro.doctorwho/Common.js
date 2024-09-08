@@ -209,7 +209,7 @@ $wgExtensionFunctions[] = "wfCountdownExtension";
 $wgExtensionCredits['parserhook'][] = array(
                 'version'     => '1.2',
                 'name'        => 'Countdown',
-                'author'      => array('Peter Strömberg', 'Paul Grinberg'),
+                'author'      => array('Peter StrÃ¶mberg', 'Paul Grinberg'),
                 'email'       => 'pez@pezius.com, gri6507 at yahoo dot com',
                 'url'         => 'http://www.mediawiki.org/wiki/Extension:Countdown',
                 'description' => 'adds <tt>&lt;countdown&gt;</tt> tags',
@@ -264,7 +264,7 @@ END;
 <script type="text/javascript">
 /*      Author:         Robert Hashemian (http://www.hashemian.com/)
 Modified by:    Munsifali Rashid (http://www.munit.co.uk/)
-Modified by:    Peter Strömberg (http://halowiki.net/wiki/User:PEZ) */
+Modified by:    Peter StrÃ¶mberg (http://halowiki.net/wiki/User:PEZ) */
 function countdown(obj) {
 this.obj                = obj;
 this.Name               = "clock";

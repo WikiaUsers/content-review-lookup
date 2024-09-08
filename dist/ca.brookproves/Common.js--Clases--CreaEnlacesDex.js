@@ -1,10 +1,10 @@
 // <pre>
 /******************************
- * CreaEnlacesDex: Obtiene la información esencial de las plantillas Cuadro Pokémon o
- * Cuadro Movimiento para generar una lista de enlaces a otras Pokédex. Guarda en una cookie
- * la información para poder generar la información al editar una sección cualquiera o previsualizar
+ * CreaEnlacesDex: Obtiene la informaciÃ³n esencial de las plantillas Cuadro PokÃ©mon o
+ * Cuadro Movimiento para generar una lista de enlaces a otras PokÃ©dex. Guarda en una cookie
+ * la informaciÃ³n para poder generar la informaciÃ³n al editar una secciÃ³n cualquiera o previsualizar
  *
- * Copyright (C) 2007 - 2011 Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2007 - 2011 JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -19,8 +19,8 @@ var T_POKEMON = 'p',
 	$G = UtilityTools.get;
 
 // Constantes
-var T_EN = ' (en inglés)',
-	T_G = ' Generación',
+var T_EN = ' (en inglÃ©s)',
+	T_G = ' GeneraciÃ³n',
 	T_UBP = 'http://bulbapedia.bulbagarden.net/wiki/',
 	T_UPS = 'http://pokemon-stats.com/pokemon/fichas_',
 	T_UGN = 'http://www.guiasnintendo.com/',
@@ -29,27 +29,27 @@ var T_EN = ' (en inglés)',
 	T_USP = 'http://www.serebii.net/pokedex',
 	T_USA = 'http://www.serebii.net/attackdex',
 	T_ULP = 'http://www.legendarypokemon.net/',
-	T_GN = 'Guías Nintendo',
-	T_PS = 'Pokémon-stats',
+	T_GN = 'GuÃ­as Nintendo',
+	T_PS = 'PokÃ©mon-stats',
 	T_S = 'Serebii',
 	T_L = 'Legendary',
-	T_LP = 'Legendary Pokémon: ';
+	T_LP = 'Legendary PokÃ©mon: ';
 	
 CreaEnlacesDex = function(){
 	this.vars = {
-		// Tipo: Pokémon o movimiento
+		// Tipo: PokÃ©mon o movimiento
 		tipo: null,
-		// Nombre del artículo
+		// Nombre del artÃ­culo
 		nombreArt: null,
-		// Nombre del Pokémon/Movimiento
+		// Nombre del PokÃ©mon/Movimiento
 		nombre: null,
-		// Nombre en inglés
+		// Nombre en inglÃ©s
 		ingles: null,
-		// Número en Pokédex Nacional
+		// NÃºmero en PokÃ©dex Nacional
 		num: null,
-		// Número en Pokédex Hoenn
+		// NÃºmero en PokÃ©dex Hoenn
 		hoenn: null,
-		// Generación
+		// GeneraciÃ³n
 		generacion: null
 	};
 	this.generaciones = ['Primera', 'Segunda', 'Tercera', 'Cuarta', 'Quinta'];
@@ -85,7 +85,7 @@ CreaEnlacesDex.prototype = {
 		}
 		return (this.vars.nombreArt===window.wgPageName);
 	},
-	// Obtener de la página
+	// Obtener de la pÃ¡gina
 	getFromPage: function(){
 		this.vars.nombreArt = window.wgPageName;
 		if( $G('nombrepokemon') && $G('numeronacional') ) {
@@ -107,7 +107,7 @@ CreaEnlacesDex.prototype = {
 			this.vars.ingles = $UT.trim($UT.getInnerText(em));
 			var tr = em.parentNode.parentNode.parentNode.rows[2];
 			var gentxt = '';
-			if ($UT.trim($UT.getInnerText(tr.cells[0])).indexOf('Generación') != -1) {
+			if ($UT.trim($UT.getInnerText(tr.cells[0])).indexOf('GeneraciÃ³n') != -1) {
 				gentxt = $UT.trim($UT.getInnerText(tr.cells[1]));
 			}
 			for (var i=0; i < this.generaciones.length; i++) {
@@ -153,15 +153,15 @@ CreaEnlacesDex.prototype = {
 		if (this.vars.hoenn !== null && !isNaN(parseInt(this.vars.hoenn,10))) {
 			h = parseInt(this.vars.hoenn,10);
 		}
-		this.link('http://es.wikipedia.org/wiki/'+m,'Wikipedia','Wikipedia en español');
+		this.link('http://es.wikipedia.org/wiki/'+m,'Wikipedia','Wikipedia en espaÃ±ol');
 		// Guias nintendo
-		n && n<=150 && this.link(T_UGN3+'pokemon/pokemon_sp/Pokedex/'+m.toLowerCase().replace('mr. ','')+'.asp',T_GN+' RAA',T_GN+': 1ª'+T_G);
-		n && n<=251 && this.link(T_UGN3+'pokeoroplata/Pokedex/'+zPadLeft(sn,2)+'-'+m.replace(' ','')+'.htm',T_GN+' OPC',T_GN+': 2ª'+T_G);
-		h && h<=200 && this.link(T_UGN1+'pokemonrubizafiro/pok_rubi_zafiro_SP/pokedex/pokemon'+zPadLeft(h.toString(),3)+m.toLowerCase()+'.htm',T_GN+' RZ',T_GN+': Pokémon ediciones Rubí y Zafiro');
-		h && h<=202 && this.link(T_UGN1+'Pokemon_Esmeralda/pok_esmeralda_SP/pokedex/pokemon'+zPadLeft(h.toString(),3)+m.toLowerCase()+'.html',T_GN+' E(H)',T_GN+': Pokémon edición Esmeralda, Pokédex de Hoenn');
-		n && n<=386 && this.link(T_UGN1+'Pokemon_Esmeralda/pok_esmeralda_SP/pokedex_nacional/'+zPadLeft(sn,3)+'.html',T_GN+' E(N)',T_GN+': Pokémon edición Esmeralda, Pokédex Nacional');
-		n && n<=386 && this.link(T_UGN1+'pokemon_rojofuego_verdehoja/pokemon_rojofuego_verdehoja_sp/pokedex/'+zPadLeft(sn,3)+'.html',T_GN+' RfVh',T_GN+': Pokémon ediciones Rojo Fuego y Verde Hoja');
-		n && n<=490 && this.link(T_UGN+'0_NINTENDO_DS/Pokemon_perla_diamante/Pokemon_perla_diamante_sp/pokedex_nacional/'+zPadLeft(sn,3)+'.html',T_GN+' DP',T_GN+': 4ª'+T_G);
+		n && n<=150 && this.link(T_UGN3+'pokemon/pokemon_sp/Pokedex/'+m.toLowerCase().replace('mr. ','')+'.asp',T_GN+' RAA',T_GN+': 1Âª'+T_G);
+		n && n<=251 && this.link(T_UGN3+'pokeoroplata/Pokedex/'+zPadLeft(sn,2)+'-'+m.replace(' ','')+'.htm',T_GN+' OPC',T_GN+': 2Âª'+T_G);
+		h && h<=200 && this.link(T_UGN1+'pokemonrubizafiro/pok_rubi_zafiro_SP/pokedex/pokemon'+zPadLeft(h.toString(),3)+m.toLowerCase()+'.htm',T_GN+' RZ',T_GN+': PokÃ©mon ediciones RubÃ­ y Zafiro');
+		h && h<=202 && this.link(T_UGN1+'Pokemon_Esmeralda/pok_esmeralda_SP/pokedex/pokemon'+zPadLeft(h.toString(),3)+m.toLowerCase()+'.html',T_GN+' E(H)',T_GN+': PokÃ©mon ediciÃ³n Esmeralda, PokÃ©dex de Hoenn');
+		n && n<=386 && this.link(T_UGN1+'Pokemon_Esmeralda/pok_esmeralda_SP/pokedex_nacional/'+zPadLeft(sn,3)+'.html',T_GN+' E(N)',T_GN+': PokÃ©mon ediciÃ³n Esmeralda, PokÃ©dex Nacional');
+		n && n<=386 && this.link(T_UGN1+'pokemon_rojofuego_verdehoja/pokemon_rojofuego_verdehoja_sp/pokedex/'+zPadLeft(sn,3)+'.html',T_GN+' RfVh',T_GN+': PokÃ©mon ediciones Rojo Fuego y Verde Hoja');
+		n && n<=490 && this.link(T_UGN+'0_NINTENDO_DS/Pokemon_perla_diamante/Pokemon_perla_diamante_sp/pokedex_nacional/'+zPadLeft(sn,3)+'.html',T_GN+' DP',T_GN+': 4Âª'+T_G);
 		// pokemon-stats
 		if (n && n <= 151){
 			this.link(T_UPS+'ra/'+zPadLeft(sn,3)+'.php', T_PS+' RA',T_PS+': Rojo y Azul');
@@ -172,24 +172,24 @@ CreaEnlacesDex.prototype = {
 			this.link(T_UPS+'cristal/'+zPadLeft(sn,3)+'.php',T_PS+' C',T_PS+': Cristal');
 		}
 		if (h && h <= 386){
-			this.link(T_UPS+'rz/'+zPadLeft(h.toString(),3)+'.php', T_PS+' RZ',T_PS+': Rubí y Zafiro');
+			this.link(T_UPS+'rz/'+zPadLeft(h.toString(),3)+'.php', T_PS+' RZ',T_PS+': RubÃ­ y Zafiro');
 			this.link(T_UPS+'esmeralda/'+zPadLeft(h.toString(),3)+'.php',T_PS+' E',T_PS+': Esmeralda');
 		}
 		n && n <= 386 && this.link(T_UPS+'rfvh/'+zPadLeft(sn,3)+'.php',T_PS+' RV',T_PS+': Rojo Fuego y Verde Hoja');
 		n && n <= 493 && this.link(T_UPS+'dp/'+zPadLeft(sn,3)+'.php',T_PS+' DP',T_PS+': Diamante y Perla');
 		// Pokexperto
-		n && this.link('http://www.pokexperto.net/index2.php?seccion=nds/nationaldex/pkmn&pk='+sn,'Pokexperto 3-5Gen','Pokexperto: 3ª a 5ª'+T_G);
+		n && this.link('http://www.pokexperto.net/index2.php?seccion=nds/nationaldex/pkmn&pk='+sn,'Pokexperto 3-5Gen','Pokexperto: 3Âª a 5Âª'+T_G);
 		// Otras/otros idiomas
 		this.link('http://en.wikipedia.org/wiki/'+m,'Wikipedia [en]','Wikipedia'+T_EN);
 		this.link('http://pokemon.wikia.com/wiki/'+m,'TPE [en]','The Pokemon Encyclopedia'+T_EN);
-		this.link(T_UBP+m+'_(Pokémon)', 'Bulbapedia [en]','Bulbapedia'+T_EN);
+		this.link(T_UBP+m+'_(PokÃ©mon)', 'Bulbapedia [en]','Bulbapedia'+T_EN);
 		this.link('http://veekun.com/dex/pokemon/'+m.toLowerCase(),'Veekun [en]','Veekun'+T_EN);
-		n && n <= 386 && this.link(T_ULP+'rs/pokedex/'+m,T_L+' 3Gen [en]',T_LP+'3ª'+T_G+T_EN);
-		n && n <= 493 && this.link(T_ULP+'dp/pokedex/'+m,T_L+' 4Gen [en]',T_LP+'4ª'+T_G+T_EN);
-		n && n <= 251 && this.link(T_USP+'/'+zPadLeft(sn,3)+'.shtml',T_S+' 1-2Gen [en]',T_S+': 1ª y 2ª'+T_G+T_EN);
-		n && n <= 386 && this.link(T_USP+'-rs/'+zPadLeft(sn,3)+'.shtml',T_S+' 3Gen [en]',T_S+': 3ª'+T_G+T_EN);
-		n && n <= 493 && this.link(T_USP+'-dp/'+zPadLeft(sn,3)+'.shtml',T_S+' 4Gen [en]',T_S+': 4ª'+T_G+T_EN);
-		n && n <= 649 && this.link(T_USP+'-bw/'+zPadLeft(sn,3)+'.shtml',T_S+' 5Gen [en]',T_S+': 5ª'+T_G+T_EN);
+		n && n <= 386 && this.link(T_ULP+'rs/pokedex/'+m,T_L+' 3Gen [en]',T_LP+'3Âª'+T_G+T_EN);
+		n && n <= 493 && this.link(T_ULP+'dp/pokedex/'+m,T_L+' 4Gen [en]',T_LP+'4Âª'+T_G+T_EN);
+		n && n <= 251 && this.link(T_USP+'/'+zPadLeft(sn,3)+'.shtml',T_S+' 1-2Gen [en]',T_S+': 1Âª y 2Âª'+T_G+T_EN);
+		n && n <= 386 && this.link(T_USP+'-rs/'+zPadLeft(sn,3)+'.shtml',T_S+' 3Gen [en]',T_S+': 3Âª'+T_G+T_EN);
+		n && n <= 493 && this.link(T_USP+'-dp/'+zPadLeft(sn,3)+'.shtml',T_S+' 4Gen [en]',T_S+': 4Âª'+T_G+T_EN);
+		n && n <= 649 && this.link(T_USP+'-bw/'+zPadLeft(sn,3)+'.shtml',T_S+' 5Gen [en]',T_S+': 5Âª'+T_G+T_EN);
 	},
 	genMov: function(){
 		var m = this.vars.nombre,
@@ -197,12 +197,12 @@ CreaEnlacesDex.prototype = {
 			g = (parseInt(this.vars.generacion,10) || 1);
 		i && g <= 5 && this.link(T_UBP+i.replace(new RegExp('\\b(\\w)', 'g'), function(s,p){return p.toUpperCase();})+'_(move)','Bulbapedia [en]','Bulbapedia'+T_EN);
 		i && g <= 5 && this.link('http://veekun.com/dex/moves/'+i.toLowerCase(),'Veekun [en]','Veekun'+T_EN);
-		i && g <= 3 && this.link(T_ULP+'rs/attacks/'+i,T_L+' 3Gen [en]',T_LP+'3ª'+T_G+T_EN);
-		i && g <= 4 && this.link(T_ULP+'dp/attacks/'+i,T_L+' 4Gen [en]',T_LP+'4ª'+T_G+T_EN);
-		i && g <= 3 && this.link(T_USA+'/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 3Gen [en]',T_S+': 3ª'+T_G+T_EN);
-		i && g <= 4 && this.link(T_USA+'-dp/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 4Gen [en]',T_S+': 4ª'+T_G+T_EN);
-		i && g <= 5 && this.link(T_USA+'-bw/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 5Gen [en]',T_S+': 5ª'+T_G+T_EN);
-		i && g <= 4 && this.link('http://www.smogon.com/dp/moves/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'_'),'Smogon 4Gen [en]','Smogon: 4ª'+T_G+T_EN);
+		i && g <= 3 && this.link(T_ULP+'rs/attacks/'+i,T_L+' 3Gen [en]',T_LP+'3Âª'+T_G+T_EN);
+		i && g <= 4 && this.link(T_ULP+'dp/attacks/'+i,T_L+' 4Gen [en]',T_LP+'4Âª'+T_G+T_EN);
+		i && g <= 3 && this.link(T_USA+'/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 3Gen [en]',T_S+': 3Âª'+T_G+T_EN);
+		i && g <= 4 && this.link(T_USA+'-dp/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 4Gen [en]',T_S+': 4Âª'+T_G+T_EN);
+		i && g <= 5 && this.link(T_USA+'-bw/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'')+'.shtml',T_S+' 5Gen [en]',T_S+': 5Âª'+T_G+T_EN);
+		i && g <= 4 && this.link('http://www.smogon.com/dp/moves/'+i.toLowerCase().replace(new RegExp('\\s', 'g'),'_'),'Smogon 4Gen [en]','Smogon: 4Âª'+T_G+T_EN);
 	},
 	link:function(url, text, caption){/*override*/}
 };

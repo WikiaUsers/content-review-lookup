@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina */
 var collapsing = document.querySelectorAll(".section-collapse");
 if (collapsing.length>0) {
     for (var i = 0; i < collapsing.length ; i++) {

@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 // Tabber
 var Tabs = {
     switchDuration: 400,
@@ -373,8 +373,8 @@ Tabs.init();
 // Etiqueta Inactivo
 InactiveUsers = { text: 'Flojeando' };
 importScriptPage('InactiveUsers/code.js', 'dev');
-// Refrescar autom·ticamente la WikiActividad y Cambios recientes
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+// Refrescar autom√°ticamente la WikiActividad y Cambios recientes
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');

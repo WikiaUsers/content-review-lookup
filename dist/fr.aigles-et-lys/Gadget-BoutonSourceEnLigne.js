@@ -4,10 +4,10 @@
 /*
 * BoutonSourceEnLigne
 *
-* Ajoute plusieurs boutons pour faciliter le « sourçage » lors de l'édition d'un article
+* Ajoute plusieurs boutons pour faciliter le Â« sourÃ§age Â» lors de l'Ã©dition d'un article
 *
 * Auteur : Arkanosis
-* Dernière révision : 23 octobre 2011
+* DerniÃ¨re rÃ©vision : 23 octobre 2011
 */
 
 $(function() {
@@ -18,19 +18,19 @@ $(function() {
   $.each([
     // Format : pour chaque bouton
     // [
-    //   'Texte à insérer avant la sélection', 'Texte à insérer après la sélection',
-    //   'Image du bouton (après « commons/ » et sans « .png » à la fin)',
+    //   'Texte Ã  insÃ©rer avant la sÃ©lection', 'Texte Ã  insÃ©rer aprÃ¨s la sÃ©lection',
+    //   'Image du bouton (aprÃ¨s Â« commons/ Â» et sans Â« .png Â» Ã  la fin)',
     //   'Texte apparaissant dans la bulle au survol du bouton',
-    //   'Identifiant de l'image ; importance faible, mais il faut s'assurer que l'identifiant est unique, ne change pas et n'utilise ni espace, ni caractères spéciaux'
+    //   'Identifiant de l'image ; importance faible, mais il faut s'assurer que l'identifiant est unique, ne change pas et n'utilise ni espace, ni caractÃ¨res spÃ©ciaux'
     // ],
     [
-      '', '<ref>{{lien web|url= |auteur= |titre= |éditeur= |année= |site= |consulté le= }}</ref>',
+      '', '<ref>{{lien web|url= |auteur= |titre= |Ã©diteur= |annÃ©e= |site= |consultÃ© le= }}</ref>',
       '0/0e/Button-web',
       'Lien web',
       'lienweb'
     ],
     [
-      '', '<ref>{{ouvrage|langue= |auteur= |titre vo= |titre= |titre chapitre= |éditeur= |lieu= |pages= |année= |isbn= | url= }}</ref>',
+      '', '<ref>{{ouvrage|langue= |auteur= |titre vo= |titre= |titre chapitre= |Ã©diteur= |lieu= |pages= |annÃ©e= |isbn= | url= }}</ref>',
       '3/37/Button-livre',
       'Ouvrage',
       'ouvrage'
@@ -38,7 +38,7 @@ $(function() {
     [
       '', '<ref>{{harvsp|||p=}}</ref>',
       '3/31/Button-harv',
-      'Harvard sans parenthèse',
+      'Harvard sans parenthÃ¨se',
       'harvsp'
     ]
   ], function(_, button) {

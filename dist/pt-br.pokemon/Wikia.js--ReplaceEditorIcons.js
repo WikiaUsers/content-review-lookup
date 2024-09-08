@@ -1,4 +1,4 @@
-//Mudando os ícones.
+//Mudando os Ã­cones.
 function replaceEditorIcons() {
     var images = document.getElementsByTagName('img');
     for (var i = 0; i < images.length; i++) {

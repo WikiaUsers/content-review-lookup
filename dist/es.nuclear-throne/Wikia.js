@@ -1,6 +1,6 @@
-// Refrescar automáticamente la WikiActividad y Cambios recientes
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+// Refrescar automÃ¡ticamente la WikiActividad y Cambios recientes
+AjaxRCRefreshText = 'Act. automÃ¡t.';
+AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 
 importArticles({

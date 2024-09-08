@@ -1,9 +1,9 @@
 importArticles({
     type: "script",
     articles: [
-        // 1. Mostrar im·genes duplicadas
+        // 1. Mostrar im√°genes duplicadas
         "MediaWiki:Common.js/DupImageList.js",
-        // 2. Res˙menes de ediciÛn
+        // 2. Res√∫menes de edici√≥n
         "MediaWiki:Common.js/resumenedicion.js"
     ]
 });
@@ -25,8 +25,8 @@ addOnloadHook(UserNameReplace);
 
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
@@ -43,7 +43,7 @@ importScriptPage('AjaxRC/code.js', 'dev');
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/central/images/8/8c/Button_RedX.png?1",
-     "speedTip": "Proponer el artÌculo para ser borrado",
+     "speedTip": "Proponer el art√≠culo para ser borrado",
      "tagOpen": "\{\{Borrar|",
      "tagClose": "\}\}",
      "sampleText": "Motivo"};
@@ -57,10 +57,10 @@ importScriptPage('AjaxRC/code.js', 'dev');
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100621221310/ben10/es/images/c/cd/AP.png",
-     "speedTip": "ArtÌculo principal",
+     "speedTip": "Art√≠culo principal",
      "tagOpen": "\{\{AP|",
      "tagClose": "\}\}",
-     "sampleText": "artÌculo"};
+     "sampleText": "art√≠culo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/8/8e/Button_stub.png",
@@ -71,21 +71,21 @@ importScriptPage('AjaxRC/code.js', 'dev');
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/6/63/Button_l_en.png",
-     "speedTip": "Insertar un interwiki a la versiÛn inglesa.",
+     "speedTip": "Insertar un interwiki a la versi√≥n inglesa.",
      "tagOpen": "\[\[en:",
      "tagClose": "\]\]",
-     "sampleText": "artÌculo"};
+     "sampleText": "art√≠culo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/c/cb/Button_wikipedia.png",
-     "speedTip": "ArtÌculo existente en Wikipedia",
+     "speedTip": "Art√≠culo existente en Wikipedia",
      "tagOpen": "\{\{WP|",
      "tagClose": "\}\}",
-     "sampleText": "artÌculo"};
+     "sampleText": "art√≠culo"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/1/17/Button_indevelopment.png",
-     "speedTip": "Marcar el artÌculo en obras",
+     "speedTip": "Marcar el art√≠culo en obras",
      "tagOpen": "\{\{Enobras|Usuario:",
      "tagClose": "\}\}",
      "sampleText": "tu nombre de usuario"};

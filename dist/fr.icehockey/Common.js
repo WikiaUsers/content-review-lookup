@@ -12,13 +12,13 @@ return function (element, className) {
 })();
 
 /** 
- * Boîtes déroulantes
+ * BoÃ®tes dÃ©roulantes
  *
- * Pour [[Modèle:Méta palette de navigation]]
+ * Pour [[ModÃ¨le:MÃ©ta palette de navigation]]
  */
 var autoCollapse = 2;
 var collapseCaption = '[Enrouler]';
-var expandCaption = '[Dérouler]';
+var expandCaption = '[DÃ©rouler]';
  
 function collapseTable( tableIndex ) {
   var Button = document.getElementById( "collapseButton" + tableIndex );

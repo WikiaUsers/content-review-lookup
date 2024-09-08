@@ -1,4 +1,4 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
  
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
@@ -10,16 +10,16 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
  
-/* AtualizaÁ„o autom·tica mudanÁas recentes opt-in
- * Veja w:c:dev:AjaxRC para informaÁ„o & atribuiÁ„o
+/* Atualiza√ß√£o autom√°tica mudan√ßas recentes opt-in
+ * Veja w:c:dev:AjaxRC para informa√ß√£o & atribui√ß√£o
  */
  
-AjaxRCRefreshText = 'Auto-atualizaÁ„o';
-AjaxRCRefreshHoverText = 'Atualiza a p·gina automaticamente';
+AjaxRCRefreshText = 'Auto-atualiza√ß√£o';
+AjaxRCRefreshHoverText = 'Atualiza a p√°gina automaticamente';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
  
-/** Bot„o Redirecionamento **/
+/** Bot√£o Redirecionamento **/
 addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir.png',
  'Redirecionamento',
  '#REDIRECIONAMENTO [[',
@@ -27,8 +27,8 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
  'nome do destino',
  'mw-editbutton-redirect');
  
-/** Bot„o Personagem **/
-addCustomButton('https://images.wikia.nocookie.net/chavesdooito/pt-br/images/a/a5/Bot%C3%A3o_Personagem.png','Personagem','{{','}}','Personagem\n|imagem            = \n|nome              = \n|morada            = \n|color             = Orange\n|dublagem          = \n|primeira apariÁ„o = \n|˙ltima apariÁ„o   = \n|ator              = \n','');
+/** Bot√£o Personagem **/
+addCustomButton('https://images.wikia.nocookie.net/chavesdooito/pt-br/images/a/a5/Bot%C3%A3o_Personagem.png','Personagem','{{','}}','Personagem\n|imagem            = \n|nome              = \n|morada            = \n|color             = Orange\n|dublagem          = \n|primeira apari√ß√£o = \n|√∫ltima apari√ß√£o   = \n|ator              = \n','');
  
 /* Test if an element has a certain class **************************************
   *
@@ -43,7 +43,7 @@ addCustomButton('https://images.wikia.nocookie.net/chavesdooito/pt-br/images/a/a
      };
  })();
 
-/* Tabelas recolhÌveis (agora in˙til, apresenta por padr„o com "mw-collapsible" */
+/* Tabelas recolh√≠veis (agora in√∫til, apresenta por padr√£o com "mw-collapsible" */
 importScriptPage('ShowHide/code.js', 'dev');
 
 /* Contagem regressiva */

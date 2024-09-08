@@ -83,6 +83,9 @@ function mapStringToAge(string) {
 	case 'SAT':
 	case 'Space Age Titan':
 	  return "ColorSAT";
+	case 'SASH':
+	case 'Space Age Space Hub':
+	  return "ColorSASH";
   }
   return undefined;
 }

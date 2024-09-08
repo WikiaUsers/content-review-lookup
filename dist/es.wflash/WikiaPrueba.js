@@ -1,5 +1,5 @@
 // *****************************************************************
-// 12 backgrounds durante todo el día (idea tomada de es.gta.wikia) 
+// 12 backgrounds durante todo el dÃ­a (idea tomada de es.gta.wikia) 
 // *****************************************************************
 $(function () {
  var d = new Date();

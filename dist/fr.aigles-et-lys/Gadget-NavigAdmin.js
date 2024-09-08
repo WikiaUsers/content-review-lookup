@@ -1,11 +1,11 @@
 /* 
  * OptimizedNavigAdmin
  * 
- * Liens utiles à l'administration
+ * Liens utiles Ã  l'administration
  * 
  * Auteur : Dake
  * Contributeur : Tieno
- * Dernière révision : 1 novembre 2008
+ * DerniÃ¨re rÃ©vision : 1 novembre 2008
  * {{:Projet:JavaScript/Script|NavigAdmin}}
  */
 
@@ -25,8 +25,8 @@ function OptimizedNavigAdmin()
                                 + '<li><span id="n-badmin" title="Aigles_et_Lys:Bulletin des administrateurs">'
                                 + '<a href="/wiki/Aigles_et_Lys:Bulletin des administrateurs">Bulletin</a>'
                                 + '</span></li>'
-                                + '<li><span id="n-radmin" title="Aigles_et_Lys:Requête aux administrateurs">'
-                                + '<a href="/wiki/Aigles_et_Lys:Requête aux administrateurs">Requêtes</a>'
+                                + '<li><span id="n-radmin" title="Aigles_et_Lys:RequÃªte aux administrateurs">'
+                                + '<a href="/wiki/Aigles_et_Lys:RequÃªte aux administrateurs">RequÃªtes</a>'
                                 + '</span></li>'
                                 + '<br>'
                                 + '</span></li>'

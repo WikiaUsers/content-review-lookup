@@ -1,7 +1,7 @@
 codeLoad.definitions = {
    "clock": {
         "title": "Horloge UTC",
-        "description": "Ajoute une horloge UTC à l'en-tête de la page",
+        "description": "Ajoute une horloge UTC Ã  l'en-tÃªte de la page",
         "articles": [
             "dev:UTCClock/code.js"
         ],
@@ -13,8 +13,8 @@ codeLoad.definitions = {
         }
     },
     "activityfeed": {
-        "title": "Flux d'activité",
-        "description": "Ajoute des couleurs et des effets de survol pour les éléments de flux WikiActivity.",
+        "title": "Flux d'activitÃ©",
+        "description": "Ajoute des couleurs et des effets de survol pour les Ã©lÃ©ments de flux WikiActivity.",
         "articles": [
             "dev:MediaWiki:ActivityFeed.css"
         ],
@@ -24,7 +24,7 @@ codeLoad.definitions = {
     },
     "snow": {
         "title": "Snow",
-        "description": "Crée une douce chute de neige en hiver dans l'arrière-plan du wiki",
+        "description": "CrÃ©e une douce chute de neige en hiver dans l'arriÃ¨re-plan du wiki",
         "articles": [
             "dev:SnowStorm.js"
         ],
@@ -43,7 +43,7 @@ codeLoad.definitions = {
     },
     "lastedited": {
         "title": "LastEdited",
-        "description": "Ajoute des détails sur la dernière modification apportée à la page en cours.",
+        "description": "Ajoute des dÃ©tails sur la derniÃ¨re modification apportÃ©e Ã  la page en cours.",
         "articles": [
             "dev:LastEdited/code.js"
         ],

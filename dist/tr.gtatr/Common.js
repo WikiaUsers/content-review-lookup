@@ -147,7 +147,7 @@ addOnloadHook( LinkFA );
 
 var autoCollapse = 2;
 var collapseCaption = "Gizle";
-var expandCaption = "Göster";
+var expandCaption = "GÃ¶ster";
 
 function collapseTable( tableIndex )
 {

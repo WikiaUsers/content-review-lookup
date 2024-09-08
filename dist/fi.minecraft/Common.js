@@ -6,7 +6,7 @@ var MessageBlock = {
 	autocheck: true
 };
 
-// Koodien tuonti, t‰h‰n uudet
+// Koodien tuonti, t√§h√§n uudet
 importArticles({
 	type: 'script',
 	articles: [
@@ -27,7 +27,7 @@ if (blogposts.length) blogposts.style.display = "none";
 var blogcomments = document.getElementsByClassName("activity-ns-501");
 if (blogcomments.length) blogcomments.style.display = "none";
 
-// Mit‰ seuraavat 138 rivi‰ tarkoittavat????? (37-175)
+// Mit√§ seuraavat 138 rivi√§ tarkoittavat????? (37-175)
  function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $("span.insertusername").html(wgUserName);
@@ -50,9 +50,9 @@ if (mediaWiki.config.get('wgNamespaceNumber') === 1200) {
 	"use strict";
 	var messages = {
 	        fi: {
-			editGreeting: 'Muokkaa sein‰n tervehdyst‰',
+			editGreeting: 'Muokkaa sein√§n tervehdyst√§',
 			history: 'Historia',
-			wallHistory: 'Sein‰n historia'
+			wallHistory: 'Sein√§n historia'
 		},
 		en: {
 			editGreeting: 'Edit Greeting',
@@ -65,9 +65,9 @@ if (mediaWiki.config.get('wgNamespaceNumber') === 1200) {
 			wallHistory: 'Historial del Muro'
 		},
 		hu: {
-			editGreeting: '‹dvˆzlet szerkesztÈse',
-			history: '‹dvˆzlet laptˆrtÈnete',
-			wallHistory: 'Fal tˆrtÈnete'
+			editGreeting: '√údv√∂zlet szerkeszt√©se',
+			history: '√údv√∂zlet lapt√∂rt√©nete',
+			wallHistory: 'Fal t√∂rt√©nete'
 		},
 		pl: {
 			editGreeting: 'Edytuj powitanie',
@@ -169,9 +169,9 @@ Date.parseISO8601 = function(text) {
 };
 
 
-// Ep‰aktiivinen-l‰tk‰
+// Ep√§aktiivinen-l√§tk√§
 // Inactive badge
 InactiveUsers = { 
     months: 2,
-    text: 'Ep‰aktiivinen'
+    text: 'Ep√§aktiivinen'
 };

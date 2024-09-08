@@ -9,19 +9,19 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
     }
 /*
 -----------------------------------------
-CÓDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+CÃ“DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este código: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este cÃ³digo: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay más de este número de desplegables
-  ocultar todas automáticamente.
+NavigationBarShowDefault : Si hay mÃ¡s de este nÃºmero de desplegables
+  ocultar todas automÃ¡ticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';

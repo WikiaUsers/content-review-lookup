@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
  
 importArticles({
     type: 'script',
@@ -12,8 +12,8 @@ importArticles({
  
 /** Tablas Colapsables *********************************************************
  
-  Todo copiado de la p·gina ''common.js'' de Wikipedia. Para m·s detalles: http://en.wikipedia.org/wiki/Wikipedia:NavFrame
-  Funcionamiento depende tambiÈn de la p·gina ''common.css''
+  Todo copiado de la p√°gina ''common.js'' de Wikipedia. Para m√°s detalles: http://en.wikipedia.org/wiki/Wikipedia:NavFrame
+  Funcionamiento depende tambi√©n de la p√°gina ''common.css''
  
   */
  
@@ -62,7 +62,7 @@ importArticles({
      for ( var i = 0; i < Tables.length; i++ ) {
          if ( hasClass( Tables[i], "collapsible" ) ) {
  
-             /* SÛlo agrega botÛn e incrementa contador si hay una fila de encabezado con la cual trabajar */
+             /* S√≥lo agrega bot√≥n e incrementa contador si hay una fila de encabezado con la cual trabajar */
              var HeaderRow = Tables[i].getElementsByTagName( "tr" )[0];
              if (!HeaderRow) continue;
              var Header = HeaderRow.getElementsByTagName( "th" )[0];
@@ -104,7 +104,7 @@ importArticles({
  
  addOnloadHook( createCollapseButtons );
  
- /** Barras de NavegaciÛn Din·micas (Experimental; pudiese provocar errores con las nuevas funciones de Wikia.com ~17/09/2013~ *************************************
+ /** Barras de Navegaci√≥n Din√°micas (Experimental; pudiese provocar errores con las nuevas funciones de Wikia.com ~17/09/2013~ *************************************
  
   */
  
@@ -112,9 +112,9 @@ importArticles({
   var NavigationBarHide = '[' + collapseCaption + ']';
   var NavigationBarShow = '[' + expandCaption + ']';
  
-  // muestra y oculta contenido e im·genes (sÌ est·n disponibles) de las barras de navegaciÛn
-  // Par·metros:
-  //     indexNavigationBar: el Ìndice de la barra de navegaciÛn a ser conmutada (toggle)
+  // muestra y oculta contenido e im√°genes (s√≠ est√°n disponibles) de las barras de navegaci√≥n
+  // Par√°metros:
+  //     indexNavigationBar: el √≠ndice de la barra de navegaci√≥n a ser conmutada (toggle)
   function toggleNavigationBar(indexNavigationBar)
   {
      var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
@@ -158,18 +158,18 @@ importArticles({
      }
   }
  
-  // agrega el boton mostrar/ocultar a las barras de navegaciÛn
+  // agrega el boton mostrar/ocultar a las barras de navegaci√≥n
   function createNavigationBarToggleButton()
   {
      var indexNavigationBar = 0;
-     // iteraciÛn sobre todos los elementos < div > 
+     // iteraci√≥n sobre todos los elementos < div > 
      var divs = document.getElementsByTagName("div");
      for(
              var i=0; 
              NavFrame = divs[i]; 
              i++
          ) {
-         // si se encuentra una barra de navegaciÛn
+         // si se encuentra una barra de navegaci√≥n
          if (hasClass(NavFrame, "NavFrame")) {
  
              indexNavigationBar++;
@@ -193,7 +193,7 @@ importArticles({
              }
  
              NavToggle.appendChild(NavToggleText);
-             // Encuentra NavHead y anexa el link toggle (Debe hacerse de Èsta manera, ya que el manejo del firstChild de la funciÛn Moz est· mal programado/hecho)
+             // Encuentra NavHead y anexa el link toggle (Debe hacerse de √©sta manera, ya que el manejo del firstChild de la funci√≥n Moz est√° mal programado/hecho)
              for(
                var j=0; 
                j < NavFrame.childNodes.length; 

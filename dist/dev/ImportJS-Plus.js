@@ -18,7 +18,8 @@
                 disablelimitreport: true,
                 wrapoutputclass: '',
                 prop: 'text',
-                format: 'json'
+                format: 'json',
+                contentmodel: 'wikitext'
             },
             dataType: 'jsonp',
             method: 'GET',

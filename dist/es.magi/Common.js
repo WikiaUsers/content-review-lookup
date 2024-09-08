@@ -1,12 +1,12 @@
 /*** Autorefrescar los cambios recientes en la wikiactividad ***/
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+AjaxRCRefreshText = 'Act. automÃ¡t.';
+AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
-/*** Añadir botón para editar el mensaje de bienvenida del muro ***/
+/*** AÃ±adir botÃ³n para editar el mensaje de bienvenida del muro ***/
  
 importArticles({
     type: 'script',

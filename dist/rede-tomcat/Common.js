@@ -16,7 +16,7 @@ if ($.inArray("Spoilers", wgCategories) > -1) {
                         '<td rowspan="2" style="padding: 0px;">' +
                             '<alt="Spoilers!">' +
                         '</td>' +
-                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">¡Advertencia de spoilers!</strong><br>This article shows content with spoilers, are you sure you want to continue?</td>' +
+                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">Â¡Advertencia de spoilers!</strong><br>This article shows content with spoilers, are you sure you want to continue?</td>' +
                     '</tr>' +
                     '<tr>' +
                         '<td style="border-style: none; padding: 5px; text-align: center;">' +

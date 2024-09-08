@@ -1909,7 +1909,7 @@ var create = function( state ) {
 		if ( !$dialog.length ) {
 			$overlay = $( '<div>' ).addClass( 'spriteedit-dialog-overlay' ).css( 'display', 'none' );
 			$dialog = $( '<div>' ).addClass( 'spriteedit-dialog' ).append(
-				makeButton( '×', {
+				makeButton( 'Ã—', {
 					id: 'spriteedit-dialog-close',
 					props: { title: i18n.panelCloseTip },
 					action: function() {

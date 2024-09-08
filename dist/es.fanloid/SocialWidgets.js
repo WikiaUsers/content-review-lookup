@@ -18,17 +18,17 @@ $(window).load(function () {
  
   var generalModule =
     '<section class="module" id="discord-banner">' +
-      '<a href="https://discord.gg/ape2hfk" title="¡Ingresa al servidor de Fanloid Wiki!">' +
-        '<img src="https://vignette.wikia.nocookie.net/fanloid/images/4/41/Discord_fanloid.png/revision/latest/scale-to-width-down/250?cb=20200518114418&path-prefix=es" alt="¡Ingresa al servidor Fanloid Wiki!" />'  +
-        '<a href="https://discord.gg/ape2hfk" class="btnwnms">¡ÚNETE!</a>' +
+      '<a href="https://discord.gg/ape2hfk" title="Â¡Ingresa al servidor de Fanloid Wiki!">' +
+        '<img src="https://vignette.wikia.nocookie.net/fanloid/images/4/41/Discord_fanloid.png/revision/latest/scale-to-width-down/250?cb=20200518114418&path-prefix=es" alt="Â¡Ingresa al servidor Fanloid Wiki!" />'  +
+        '<a href="https://discord.gg/ape2hfk" class="btnwnms">Â¡ÃšNETE!</a>' +
       '</a>' +
     '</section>'
 
   var homeModule =
     '<section class="module" id="discord-banner">' +
-      '<a href="https://discord.gg/ape2hfk" title="¡Ingresa al servidor de Fanloid Wiki!">' +
-        '<img src="https://vignette.wikia.nocookie.net/fanloid/images/4/41/Discord_fanloid.png/revision/latest/scale-to-width-down/250?cb=20200518114418&path-prefix=es" alt="¡Ingresa al servidor Fanloid Wiki!" />'  +
-        '<a href="https://discord.gg/ape2hfk" class="btnwnms">¡ÚNETE!</a>' +
+      '<a href="https://discord.gg/ape2hfk" title="Â¡Ingresa al servidor de Fanloid Wiki!">' +
+        '<img src="https://vignette.wikia.nocookie.net/fanloid/images/4/41/Discord_fanloid.png/revision/latest/scale-to-width-down/250?cb=20200518114418&path-prefix=es" alt="Â¡Ingresa al servidor Fanloid Wiki!" />'  +
+        '<a href="https://discord.gg/ape2hfk" class="btnwnms">Â¡ÃšNETE!</a>' +
       '</a>' +
     '</section>';
  

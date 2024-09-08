@@ -20,7 +20,7 @@ $(function addMastheadTags() {
   }
 });
 
-/* Agrega una notificación en oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
+/* Agrega una notificaciÃ³n en oasis. Por [[w:c:es.pokemon:User:Ciencia Al Poder]] */
 window.SkinNotification = {
 	article: 'Usuario_Blog:Ultimate_gigante/1.000_paginas',
 	key: 'NfSkin',
@@ -39,7 +39,7 @@ window.SkinNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Tecnología Wiki llego a los 1.000 artículos<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'"> les damos las gracias a toda la comunidad</a>.</div>');
+		var sn = $('<div data-type="100"><a class="sprite close-notification"></a>TecnologÃ­a Wiki llego a los 1.000 artÃ­culos<a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'"> les damos las gracias a toda la comunidad</a>.</div>');
 		nf.children().eq(0).append(sn);
 		sn.children().eq(0).click(SkinNotification.dismiss);
 	},
@@ -49,7 +49,7 @@ window.SkinNotification = {
 	}
 };
  
-function Tecnología_WikiaSkinLoad() {
+function TecnologÃ­a_WikiaSkinLoad() {
 	var ug = '';
 	if (window.wgUserGroups) {
 		ug = wgUserGroups.join(',').toLowerCase();
@@ -60,22 +60,22 @@ function Tecnología_WikiaSkinLoad() {
 	}
 }
  
-Tecnología_WikiaSkinLoad();
+TecnologÃ­a_WikiaSkinLoad();
 
 /* DisplayTimer */
 importScript('MediaWiki:Wikia.js/displayTimer.js');
 
-/* agregamos un botón secundario para que expanda el tamaño del contenido */
+/* agregamos un botÃ³n secundario para que expanda el tamaÃ±o del contenido */
 function CreateContentResizeButton() {
 	var headerWidth = $('header#WikiaPageHeader.WikiaPageHeader details').width();
 	var contentWidth = $('article#WikiaMainContent.WikiaMainContent').width();
 	var catlinksWidth = $('div#catlinks.catlinks').width();
 	if(contentWidth < 1000) {
-		$('section article header ul.wikia-menu-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Amplía el área de contenido. Tenga en cuenta que se ocultarán la columna derecha."> Expandir </a></ul>');
-		$('section article header a.wikia-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Amplía el área de contenido. Tenga en cuenta que se ocultarán la columna derecha."> Expandir </a></ul>');
-		$('section article header a.view-source').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Amplía el área de contenido. Tenga en cuenta que se ocultarán la columna derecha."> Expandir </a></ul>');
+		$('section article header ul.wikia-menu-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="AmplÃ­a el Ã¡rea de contenido. Tenga en cuenta que se ocultarÃ¡n la columna derecha."> Expandir </a></ul>');
+		$('section article header a.wikia-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="AmplÃ­a el Ã¡rea de contenido. Tenga en cuenta que se ocultarÃ¡n la columna derecha."> Expandir </a></ul>');
+		$('section article header a.view-source').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="AmplÃ­a el Ã¡rea de contenido. Tenga en cuenta que se ocultarÃ¡n la columna derecha."> Expandir </a></ul>');
 		if(wgCanonicalNamespace == 'User_blog') {
-			$('section article div#WikiaUserPagesHeader a.wikia-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Amplía el área de contenido. Tenga en cuenta que se ocultarán la columna derecha."> Expandir </a></ul>');
+			$('section article div#WikiaUserPagesHeader a.wikia-button').after('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="AmplÃ­a el Ã¡rea de contenido. Tenga en cuenta que se ocultarÃ¡n la columna derecha."> Expandir </a></ul>');
 		}
 	}
 }
@@ -87,7 +87,7 @@ function ExpandContent(headerWidth, contentWidth, catlinksWidth) {
 	$('article#WikiaMainContent.WikiaMainContent').css({"width": '1000px'});
 	$('div#catlinks.catlinks').css({"width": '1000px'});
 	$('div#WikiaRail.WikiaRail').css({"display": 'none'});
-	$('ul#resizeButton').replaceWith('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="CompressContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Comprimir el área de contenido a su ancho original, y restaurar la columna derecha."> Comprimir </a></ul>');
+	$('ul#resizeButton').replaceWith('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="CompressContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Comprimir el Ã¡rea de contenido a su ancho original, y restaurar la columna derecha."> Comprimir </a></ul>');
 }
  
 function CompressContent(headerWidth, contentWidth, catlinksWidth) {
@@ -95,14 +95,14 @@ function CompressContent(headerWidth, contentWidth, catlinksWidth) {
 	$('article#WikiaMainContent.WikiaMainContent').css({"width": contentWidth});
 	$('div#catlinks.catlinks').css({"width": catlinksWidth});
 	$('div#WikiaRail.WikiaRail').css({"display": 'block'});
-	$('ul#resizeButton').replaceWith('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="Amplía el área de contenido. Tenga en cuenta que se ocultarán la columna derecha."> Expandir </a></ul>');
+	$('ul#resizeButton').replaceWith('<ul class="wikia-menu-button" id="resizeButton" style="margin-left:10px"><a onclick="ExpandContent(' + headerWidth + ', ' + contentWidth + ', ' + catlinksWidth + ');" data-id="resizeButton" style="color:black;" title="AmplÃ­a el Ã¡rea de contenido. Tenga en cuenta que se ocultarÃ¡n la columna derecha."> Expandir </a></ul>');
 }
 
-/* Botón Monobook */
+/* BotÃ³n Monobook */
 var sfwMonobookSwitch = document.createElement("a");
 sfwMonobookSwitch.className = "wikia-button";
 sfwMonobookSwitch.id = "SFWMonobookSwitch";
 sfwMonobookSwitch.href = "?useskin=monobook";
 sfwMonobookSwitch.innerHTML = "Monobook";
 document.getElementsByClassName('header-container')[0].appendChild(sfwMonobookSwitch);
-/* Fin de Botón Monobook */
+/* Fin de BotÃ³n Monobook */

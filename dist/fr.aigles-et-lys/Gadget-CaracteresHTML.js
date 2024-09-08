@@ -1,7 +1,7 @@
 /**
  * HTML
  * 
- * Ajoute les tags et entités HTML courants dans la liste des caractères spéciaux
+ * Ajoute les tags et entitÃ©s HTML courants dans la liste des caractÃ¨res spÃ©ciaux
  * 
  * Auteur : Zelda
  * {{Projet:JavaScript/Script|caracteres/HTML}}

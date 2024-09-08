@@ -737,7 +737,7 @@ dev.UserTags = (function($, document, mw, settings, Logger, Sledge) {
             // Prototype inheritance is cheaper than a copy and gets the job done since the
             // cache won't be modified, only discarded. [$.extend was an identified bottleneck]
             var r = Object.create(this._getCanonTagInternal(group, {}));
-            if (!r.u) r.u = '¿' + group + '?';
+            if (!r.u) r.u = 'Â¿' + group + '?';
             return r;
         },
         // Canonicalise the internal state into an array of output tags based on

@@ -1,5 +1,5 @@
 /**
- * Est· p·gina de JS se ha dejado de utilizar.
+ * Est√° p√°gina de JS se ha dejado de utilizar.
  * Su contenido ha sido movido a Common.js.
  * Ante cualquier pregunta, no dudes en preguntar a un administrador.
  */

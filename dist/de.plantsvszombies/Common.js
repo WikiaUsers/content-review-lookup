@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -16,7 +16,7 @@ var ShowHideConfig = {
  * InactiveUsers
  *
  * documentation at: http://dev.wikia.com/wiki/InactiveUsers
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  */
 /*jshint curly:false laxbreak:true es5:true jquery:true */

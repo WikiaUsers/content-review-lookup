@@ -20,7 +20,7 @@ mw.loader.using( 'mediawiki.api', function () {
 			list: "allrevisions",
 			formatversion: "2",
 			arvnamespace: "0|6",
-			arvprop: "ids|timestamp|flags|comment|user|size",
+			arvprop: "ids|timestamp|flags|comment|user|size|tags",
 			arvstart: startDate,
 			arvend: endDate,
 			arvlimit:"1",
@@ -28,7 +28,7 @@ mw.loader.using( 'mediawiki.api', function () {
 		}).done( function ( allrevisionsresult ) {
 			allrevisionsresult.query.allrevisions.forEach( function (result) {
 				result.revisions.forEach( function (rev) {
-					if (!rev.anon) {
+					if (!rev.anon && !(rev.tags.includes('mw-undo'))) {
 						var currentSize=rev.size;
 						var oldSize=0;
 						var sizeDiff;

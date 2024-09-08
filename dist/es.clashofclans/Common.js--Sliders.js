@@ -1,4 +1,4 @@
-/* Cualquier JavaScript aquÌ ser· cargado para todos los usuarios en cada carga de la p·gina. */
+/* Cualquier JavaScript aqu√≠ ser√° cargado para todos los usuarios en cada carga de la p√°gina. */
 
 /****************************************/
 /* sliders usando jquery por User:Tierrie */

@@ -15,20 +15,20 @@ window.snowStorm = {
  
 	// --- common properties ---
  
-	autoStart: true,		// ==ÄLÄ MUUTA== 
-	flakesMax: 40,			// Lumen määrä
+	autoStart: true,		// ==Ã„LÃ„ MUUTA== 
+	flakesMax: 40,			// Lumen mÃ¤Ã¤rÃ¤
 	flakesMaxActive: 40,		// Aktiiviset lumihiutaleet
-	animationInterval:40,		// ==ÄLÄ MUUTA== Millisekunti/ruutu. 20 = nopea + pehmeä, korkea 	prosessorin käyttö. 50 = pienempi prosessorin käyttö, hitaampi
-	excludeMobile: true,		// ==ÄLÄ MUUTA== Lumen päälläolo mobiililaitteilla.
-	flakeBottom: 0,		        // ==ÄLÄ MUUTA== Integer for Y axis snow limit, 0 or null for "full-screen" snow effect
+	animationInterval:40,		// ==Ã„LÃ„ MUUTA== Millisekunti/ruutu. 20 = nopea + pehmeÃ¤, korkea 	prosessorin kÃ¤yttÃ¶. 50 = pienempi prosessorin kÃ¤yttÃ¶, hitaampi
+	excludeMobile: true,		// ==Ã„LÃ„ MUUTA== Lumen pÃ¤Ã¤llÃ¤olo mobiililaitteilla.
+	flakeBottom: 0,		        // ==Ã„LÃ„ MUUTA== Integer for Y axis snow limit, 0 or null for "full-screen" snow effect
 	followMouse: true,		// Lumen liike vastaa hiiren liikkeeseen.
-	snowColor: '#FFFFFF',		// ==SININEN/VALKOINEN VUODENAJAN MUKAAN== Lumen väri.
-	snowCharacter: '&bull;',	// ==ÄLÄ MUUTA== &bull; = ympyrä; &middot; = neliö joillakin järjestelmillä.
-	snowStick: true,		// true = lumi jää Wikia-ruudun pohjalle; false = lumi katoaa eikä jää pohjalle.
-	targetElement: document.body,	// ==ÄLÄ MUUTA== 
+	snowColor: '#FFFFFF',		// ==SININEN/VALKOINEN VUODENAJAN MUKAAN== Lumen vÃ¤ri.
+	snowCharacter: '&bull;',	// ==Ã„LÃ„ MUUTA== &bull; = ympyrÃ¤; &middot; = neliÃ¶ joillakin jÃ¤rjestelmillÃ¤.
+	snowStick: true,		// true = lumi jÃ¤Ã¤ Wikia-ruudun pohjalle; false = lumi katoaa eikÃ¤ jÃ¤Ã¤ pohjalle.
+	targetElement: document.body,	// ==Ã„LÃ„ MUUTA== 
 	useMeltEffect: true,		// When recycling fallen snow (or rarely, when falling), have it "melt" and fade out if browser supports it
 	useTwinkleEffect: false,	// Allow snow to randomly "flicker" in and out of view while falling
-	usePositionFixed: true,		// ==ÄLÄ MUUTA== true = snow does not shift vertically when scrolling. May increase CPU load, disabled by default - if enabled, used only where supported
+	usePositionFixed: true,		// ==Ã„LÃ„ MUUTA== true = snow does not shift vertically when scrolling. May increase CPU load, disabled by default - if enabled, used only where supported
  
 	// --- less-used bits ---
  

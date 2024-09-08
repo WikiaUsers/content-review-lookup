@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 // *****************************************************
 // * Experimental javascript countdown timer (Splarka) *
@@ -37,7 +37,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -68,19 +68,19 @@ addOnloadHook(checktimers);
 // ******************
 /*
 -----------------------------------------
-C”DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+C√ìDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 Traido de [[wikipedia:es:mediwiki:common.js]]
 
 Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
   para su correcto funcionamiento en Wikia.
 
-Plantillas que hacen uso de este cÛdigo: [[Plantilla:Desplegable]]
+Plantillas que hacen uso de este c√≥digo: [[Plantilla:Desplegable]]
 
 Prerequisitos:
 
-NavigationBarShowDefault : Si hay m·s de este n˙mero de desplegables
-  ocultar todas autom·ticamente.
+NavigationBarShowDefault : Si hay m√°s de este n√∫mero de desplegables
+  ocultar todas autom√°ticamente.
 */
 
 var NavigationBarHide = '[Ocultar]';

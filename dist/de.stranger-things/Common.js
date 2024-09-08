@@ -1,4 +1,4 @@
-/* Das folgende JavaScript wird für alle Benutzer geladen. */
+/* Das folgende JavaScript wird fÃ¼r alle Benutzer geladen. */
 jQuery( document ).ready( function( $ ) {
 if(document.getElementById("Article")!=null){
 window.location.href = "http://actors.fandom.com/de/wiki/" + document.getElementById("Article").innerHTML;

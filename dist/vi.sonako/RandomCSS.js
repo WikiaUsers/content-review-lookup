@@ -305,8 +305,8 @@ if ( mediaWiki.config.get( 'wgCanonicalSpecialPageName' ) === 'WikiActivity') {
     link[209] = "/index.php?title=MediaWiki:Activity.css/Activity_209.css&action=raw&ctype=text/css&maxage=0&smaxage=0";
     link[210] = "/index.php?title=MediaWiki:Activity.css/Activity_210.css&action=raw&ctype=text/css&maxage=0&smaxage=0";
 }
-// Danh s·ch project
-if (mediaWiki.config.get('wgPageName') === 'Danh_s·ch_c·c_project') {
+// Danh s√°ch project
+if (mediaWiki.config.get('wgPageName') === 'Danh_s√°ch_c√°c_project') {
     link[0] = "/index.php?title=MediaWiki:Project.css/Project_00.css&action=raw&ctype=text/css&maxage=0&smaxage=0";
     link[1] = "/index.php?title=MediaWiki:Project.css/Project_01.css&action=raw&ctype=text/css&maxage=0&smaxage=0";
     link[2] = "/index.php?title=MediaWiki:Project.css/Project_02.css&action=raw&ctype=text/css&maxage=0&smaxage=0";

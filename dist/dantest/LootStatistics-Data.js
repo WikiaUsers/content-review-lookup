@@ -48,7 +48,7 @@ window.loot_parser_data = {
 'Prince Drazzak': '12.86.11580',
 'Plagirath': '12.86.11580',
 'Lloyd': '12.86.11580',
-'Piñata Dragon': '12.86.11580',
+'PiÃ±ata Dragon': '12.86.11580',
 'Melting Frozen Horror': '12.86.11580',
 'The Sandking': '12.86.11580',
 'Moohtant Wallbreaker': '12.86.11580',

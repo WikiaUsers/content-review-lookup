@@ -1,5 +1,5 @@
 // **************************************************
-// Añadir etiquetas en los perfiles
+// AÃ±adir etiquetas en los perfiles
 // **************************************************
 window.UserTagsJS = {
 	modules: { 
@@ -9,7 +9,7 @@ window.UserTagsJS = {
 		newuser: true,
 		custom: {
 			'Platybus': ['director'],
- 			'Calígula CJ': ['director'],
+ 			'CalÃ­gula CJ': ['director'],
 			"Wachopelao": ['director'],
 			"CBot": ['bot'],
 }

@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 /* Automated User Pages*/ 
 window.AutoCreateUserPagesConfig = {
     content: {
@@ -6,7 +6,7 @@ window.AutoCreateUserPagesConfig = {
         3:false,
         1202:false
     },
-    summary:'CreaciÛn Automatica'
+    summary:'Creaci√≥n Automatica'
 };
 
 importArticles({

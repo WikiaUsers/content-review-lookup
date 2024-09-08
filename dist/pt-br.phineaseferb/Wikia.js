@@ -1,4 +1,4 @@
-/* Õcones de Rede Social */
+/* √çcones de Rede Social */
 var SocialMediaButtons = { 
 	position: "top",
 	colorScheme: "color",
@@ -6,10 +6,10 @@ var SocialMediaButtons = {
 };
 importScriptPage('SocialIcons/code.js','dev');
 
-/* IP como nome padr„o para contribuidores anÙnimos */
+/* IP como nome padr√£o para contribuidores an√¥nimos */
 importScriptPage('RevealAnonIP/code.js', 'dev');
 
-/* Label Inativo para usu·rios sem atividades h· mais de 3 meses */
+/* Label Inativo para usu√°rios sem atividades h√° mais de 3 meses */
 InactiveUsers = { 
 	months: 3,
         text: 'inativo'};

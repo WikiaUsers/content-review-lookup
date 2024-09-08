@@ -26,7 +26,7 @@ window.ChatStatus = {
 	    afk: "AFK",
 	    edit: "Trabajando",
 	    book: "Relax Zone",
-	    code: "Dando Cáncer",
+	    code: "Dando CÃ¡ncer",
 		homo: "Stoi haucente xd",
 		food: "meehhp",
 		ufo: "U ar UFO?",
@@ -47,10 +47,10 @@ window.ChatStatus = {
 importScriptPage('MediaWiki:Day/Night chat/code.js', 'dev');
 
 //Switch to night button
-var night_button = '¡Buenas Noches,Ooarai!';
+var night_button = 'Â¡Buenas Noches,Ooarai!';
  
 //Switch to day button
-var day_button = '¡Buenos Días,Ooarai!';
+var day_button = 'Â¡Buenos DÃ­as,Ooarai!';
  
 //
 //Color scheme for NIGHT Chat

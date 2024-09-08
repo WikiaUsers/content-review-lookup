@@ -1,5 +1,5 @@
 /*<nowiki>*/
-//Creditos a CC Español.
+//Creditos a CC EspaÃ±ol.
  
 var form_request = {
     edittoken: mw.user.tokens.values.editToken, 
@@ -19,7 +19,7 @@ function cancelformRequest() {
 	$("#requestWindow").closeModal();
 }
 function openFormRequest() {
-	$.showCustomModal('Petición de chatbot', '<form class="WikiaForm" method="" name="" id="request"><fieldset><br><span style="font-family:Arial"><span style="font-weight:bold">Nombre de la comunidad</span><br><input id="wikiname" type="text" placeholder="es.itsuki-world (solo interwiki sin w:c:)" style="width:400px"/><br><span style="font-weight:bold">Usuarios en promedio en el chat</span><br><input id="usersinchat" type="text" placeholder="No se acepta que la cantidad sea minima de 5." style="width:500px"/><br><span style="font-weight:bold">Discusión de aprobación del bot</span><br><input id="threadwikibot" type="text" placeholder="Hilo:NúmeroID (ejemplo: Hilo:1662)" style="width:450px"/><br><br><span style="font-weight:bold">Usuario solicitante:</span><span style="" id="usernameWikia"> ' + form_request.username + '</span><br><span id="br2" /><textarea name="" id="desc" style="height: 100px; width: 100%;" placeholder="¿Algun comentario, alguna característica que quieras añadir?"></textarea><br><span id="br2" /></fieldset></form>', {
+	$.showCustomModal('PeticiÃ³n de chatbot', '<form class="WikiaForm" method="" name="" id="request"><fieldset><br><span style="font-family:Arial"><span style="font-weight:bold">Nombre de la comunidad</span><br><input id="wikiname" type="text" placeholder="es.itsuki-world (solo interwiki sin w:c:)" style="width:400px"/><br><span style="font-weight:bold">Usuarios en promedio en el chat</span><br><input id="usersinchat" type="text" placeholder="No se acepta que la cantidad sea minima de 5." style="width:500px"/><br><span style="font-weight:bold">DiscusiÃ³n de aprobaciÃ³n del bot</span><br><input id="threadwikibot" type="text" placeholder="Hilo:NÃºmeroID (ejemplo: Hilo:1662)" style="width:450px"/><br><br><span style="font-weight:bold">Usuario solicitante:</span><span style="" id="usernameWikia"> ' + form_request.username + '</span><br><span id="br2" /><textarea name="" id="desc" style="height: 100px; width: 100%;" placeholder="Â¿Algun comentario, alguna caracterÃ­stica que quieras aÃ±adir?"></textarea><br><span id="br2" /></fieldset></form>', {
 		id: "requestWindow",
 		width: 765,
 		buttons: [{
@@ -47,29 +47,29 @@ function submitformRequest() {
 		usersinchat = $form.find('#usersinchat').val(),
 		threadwikibot = $form.find('#threadwikibot').val(),
 		page = '{{Request/header}}\n' + '\n{{RequestChatbots\n|Estado = En espera... <!-- NO CAMBIAR ESTADO.  -->\n|Usuario =' + form_request.username + '\n|Desc =' + desc + ' ' + form_request.signature + '\n|Sitename =' + wikiname + '\n|Usersinchat =' + usersinchat + '\n|Threadwikibot =' + threadwikibot + '}}',
-		pagetitle = 'Petición de Chatbot:' + form_request.username;
+		pagetitle = 'PeticiÃ³n de Chatbot:' + form_request.username;
 	
 	if (!wikiname) {
-		alert('¡No has puesto nada en donde quieres que el bot esté en tu wiki!');
+		alert('Â¡No has puesto nada en donde quieres que el bot estÃ© en tu wiki!');
 		return;
 	}
 	
 	if (!usersinchat) {
-		alert('¡No has puesto nada en cuantos usuarios hay en promedio en el chat de tu comunidad!');
+		alert('Â¡No has puesto nada en cuantos usuarios hay en promedio en el chat de tu comunidad!');
 		return;
 	}
 	
 	if (!threadwikibot) {
-		alert('¡No has puesto nada en discusión de aprobación del bot!');
+		alert('Â¡No has puesto nada en discusiÃ³n de aprobaciÃ³n del bot!');
 		return;
 	}
  
 	var url = form_request.server + '/api.php?action=edit&title=' + pagetitle + '&text=' + encodeURIComponent(page) + '&token=' + encodeURIComponent(form_request.edittoken);
-	alert('La petición ya está siendo enviada...');
+	alert('La peticiÃ³n ya estÃ¡ siendo enviada...');
 	console.log('Obteniendo la URL: ', url);
  
 	$.post(url, function(r) {
-		console.log('Ya debería estar hecho:', r);
+		console.log('Ya deberÃ­a estar hecho:', r);
 		cancelformRequest();
 		window.location = form_request.server + '/wiki/' + pagetitle;
 	});

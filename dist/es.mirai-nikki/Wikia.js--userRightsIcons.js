@@ -5,14 +5,14 @@
 (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
   if ($('#UserProfileMasthead').length == 0) { return; }
  var rights = {};
- var AdministradorTag = "<a href='http://es.mirai-nikki.wikia.com/wiki/Due駉_del_diario'><span style='color:white'>Due駉 de Diario</span></a>";
- var Bur骳rataTag = "<a href='http://es.mirai-nikki.wikia.com/wiki/Deus_Ex_Machina'><span style='color:white'>Di髎</span></a>";
+ var AdministradorTag = "<a href='http://es.mirai-nikki.wikia.com/wiki/Due帽o_del_diario'><span style='color:white'>Due帽o de Diario</span></a>";
+ var Bur贸crataTag = "<a href='http://es.mirai-nikki.wikia.com/wiki/Deus_Ex_Machina'><span style='color:white'>Di贸s</span></a>";
  // BEGIN list of accounts given extra user rights icons
  // Be sure that the last line listed for modified rights is proceeded by a semi-colon rather than a comma.
  
-   // BUR覥RATAS
-  rights["Usui Uzumaki"]                                     = [ AdministradorTag, Bur骳rataTag];    
-  rights["Freeshh"]                                     = [ AdministradorTag, Bur骳rataTag];
+   // BUR脫CRATAS
+  rights["Usui Uzumaki"]                                     = [ AdministradorTag, Bur贸crataTag];    
+  rights["Freeshh"]                                     = [ AdministradorTag, Bur贸crataTag];
 
  
  // END list of accounts given extra user rights icons

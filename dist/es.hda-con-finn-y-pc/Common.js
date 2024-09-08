@@ -1,5 +1,5 @@
 /*******************************************************************************************************/
-/* A馻dir bot髇 para editar el mensaje de bienvenida del muro (Tomado de Avatar Wiki por Diamond Girl */
+/* A帽adir bot贸n para editar el mensaje de bienvenida del muro (Tomado de Avatar Wiki por Diamond Girl */
 /*******************************************************************************************************/
  
 importArticles({
@@ -11,7 +11,7 @@ importArticles({
  
 
 /*************************************************************************/
-/* A馻dir botones extra de edici髇 por Princesa Chicle vs Princesa Llama */
+/* A帽adir botones extra de edici贸n por Princesa Chicle vs Princesa Llama */
 /*************************************************************************/
 
 if (mwCustomEditButtons) {
@@ -19,7 +19,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/marvel_dc/images/2/29/Character_Button.png",
      "speedTip": "Insertar plantilla de Personaje",
      "tagOpen": "{{Personajes \n|nombre = ",
-     "tagClose": "\n|imagen = \n|titulo =  \n|sexo = \n|edad = \n|especie = \n|ocupaci髇 = \n|familiares = \n|introducido = \n|ultima aparici髇 = \n}}",
+     "tagClose": "\n|imagen = \n|titulo =  \n|sexo = \n|edad = \n|especie = \n|ocupaci贸n = \n|familiares = \n|introducido = \n|ultima aparici贸n = \n}}",
      "sampleText": ""};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -33,7 +33,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20120211214150/es.starwars/images/0/05/Bot%C3%B3n_novela.png",
      "speedTip": "Insertar plantilla de Objeto",
      "tagOpen": "{{Objetos\n|nombre = ",
-     "tagClose": "\n|imagen = \n|titulo = \n|origen = \n|tipo = \n|poseedor = \n|introducido = \n|ultima aparici髇= \n}}",
+     "tagClose": "\n|imagen = \n|titulo = \n|origen = \n|tipo = \n|poseedor = \n|introducido = \n|ultima aparici贸n= \n}}",
      "sampleText": ""};
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {

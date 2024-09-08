@@ -35,4 +35,4 @@ function template() {
     </ul>';
 }
 
-getRecentChanges().then(function(changes) { displayRecentChanges(changes); });
+getRecentChanges().then(function(changes) {Â displayRecentChanges(changes); });

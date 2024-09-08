@@ -9,7 +9,7 @@ importArticles({
     ]
 });
 
-var WikiaNotificationMessage = '<a href="/wiki/Blog_utente:LiquiÐ/ANNUNCIO_IMPORTANTE:_Video_di_youtube_in_pagine" target="_blank" title="ANNUNCIO_IMPORTANTE:_Video_di_youtube_in_pagine"> <u>ANNUNCIO IMPORTANTE: Video narrativi degli youtubers nelle pagine</u></a>';
+var WikiaNotificationMessage = '<a href="/wiki/Blog_utente:LiquiÃ/ANNUNCIO_IMPORTANTE:_Video_di_youtube_in_pagine" target="_blank" title="ANNUNCIO_IMPORTANTE:_Video_di_youtube_in_pagine"> <u>ANNUNCIO IMPORTANTE: Video narrativi degli youtubers nelle pagine</u></a>';
 var WikiaNotificationexpiry = 30;
 importScriptPage('WikiaNotification/code.js', 'dev');
 

@@ -2,12 +2,12 @@
 
 $('.speech-bubble-avatar')
 .filter(function () {
-    return $(this).has('a[href$="Dïzney AJ"]').length;
+    return $(this).has('a[href$="DÃ¯zney AJ"]').length;
 }).next().css({
     backgroundColor: "#33ff99"
 });
 
-var admins = ['Dïzney AJ'];
+var admins = ['DÃ¯zney AJ'];
 if ($('#UserProfileMasthead').length) {
     for (var i = 0; i < admins.length; i++) {
         if (admins[i] === wgTitle.substr(0, admins[i].length)) {

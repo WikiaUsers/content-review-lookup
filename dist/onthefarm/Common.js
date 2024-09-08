@@ -432,7 +432,7 @@ if ( $.client.profile().name == 'msie' ) {
     $( '.hlist' ).find( 'dt + dd, dt + dt' ).prev()
       .append( '<b>:</b> ' );
     $( '.hlist' ).find( 'dd + dd, dd + dt, li + li' ).prev()
-      .append( '<b>·</b> ' );
+      .append( '<b>Â·</b> ' );
     $( '.hlist' ).find( 'dl dl, ol ol, ul ul' )
       .prepend( '( ' ).append( ') ' );
   }

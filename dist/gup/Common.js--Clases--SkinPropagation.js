@@ -1,6 +1,6 @@
 /**
 * SkinPropagation: Propaga el &useskin= de la URL (siempre que sea posible) por los enlaces y formularios
-* Copyright (C) 2010-2017  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010-2017  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 		var url;
 		if (window.location.href.indexOf('useskin=') == -1) return;
 		url = _parseURL(window.location.href);
-		// Si existe propagateskin, se propagará este en los siguientes enlaces en lugar del useskin (p.ej. enlaces para 
+		// Si existe propagateskin, se propagarÃ¡ este en los siguientes enlaces en lugar del useskin (p.ej. enlaces para 
 		if (url.query.useskin) {
 			_skin = (url.query.propagateskin || url.query.useskin);
 		}
@@ -64,7 +64,7 @@
 		if (e.target.href.indexOf(mw.config.get('wgServer')) !== 0) return;
 		url = _parseURL(e.target.href);
 		thisloc = _parseURL(window.location.href);
-		// Si es enlace a sección, no hacer nada
+		// Si es enlace a secciÃ³n, no hacer nada
 		if (url.base == thisloc.base && url.qs == thisloc.qs && url.hash) {
 			return;
 		}

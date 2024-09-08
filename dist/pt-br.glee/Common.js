@@ -1,9 +1,9 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
  
-// Pop-ups em Referências
+// Pop-ups em ReferÃªncias
 importScriptPage('ReferencePopups/code.js', 'dev');
 
-//  Pontuação WAM
+//  PontuaÃ§Ã£o WAM
 importArticles({
     type: 'script',
     articles: [

@@ -1,5 +1,5 @@
 /** WikiaShoutBox v1.13: Conector para el Widget ShoutBox de Wikia
- * (C) 2011 Jes˙s MartÌnez Novo [[User:Ciencia_Al_Poder]]
+ * (C) 2011 Jes√∫s Mart√≠nez Novo [[User:Ciencia_Al_Poder]]
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -109,7 +109,7 @@ var WikiaShoutBox = {
 			actionType: atype,
 			id: WikiaShoutBox.wid,
 			skin: WikiaShoutBox.skin,
-			cbuser: encodeURIComponent(window.wgUserName) // un ID por usuario, por la cachÈ
+			cbuser: encodeURIComponent(window.wgUserName) // un ID por usuario, por la cach√©
 		};
 		req = $.extend(req, params);
 		WikiaShoutBox.busy(true);
@@ -185,12 +185,12 @@ var WikiaShoutBox = {
 			WikiaShoutBox.reload();
 			return;
 		}
-		// EliminaciÛn
+		// Eliminaci√≥n
 		if (message.indexOf('/me ') == 0) {
 			isMe = true;
 			message = $.trim(message.substr(3));
 		}
-		// CodificaciÛn
+		// Codificaci√≥n
 		if (!isMe && message.charAt(0) == '/') {
 			message = '&#47;'+message.substr(1);
 		}
@@ -239,10 +239,10 @@ var WikiaShoutBox = {
 		if (window.wgWidgetShoutBoxId) {
 			var c = WikiaShoutBox.contel.children('div').eq(0);
 			c.empty();
-			c.append('<div class="WidgetShoutBoxChat">En tu archivo js personal est· definida la variable wgWidgetShoutBoxId, con valor <span class="msg1"></span>.<br />' +
-			'Para poder continuar y que esta no interfiera con la detecciÛn de tu configuraciÛn, debes borrar esa lÌnea de tu archivo js personal, que puede estar situado en '+
+			c.append('<div class="WidgetShoutBoxChat">En tu archivo js personal est√° definida la variable wgWidgetShoutBoxId, con valor <span class="msg1"></span>.<br />' +
+			'Para poder continuar y que esta no interfiera con la detecci√≥n de tu configuraci√≥n, debes borrar esa l√≠nea de tu archivo js personal, que puede estar situado en '+
 			'<a class="msg2" target="_blank">este wiki</a> o en <a class="msg3" target="_blank">Community central</a>.<br />' +
-			'Revisa que no estÈ en ninguna de las dos p·ginas enlazadas. Si lo est·, borra la lÌnea que la contenga, guarda la p·gina y refresca la cachÈ del navegador como se indica en esa misma p·gina.</div>');
+			'Revisa que no est√© en ninguna de las dos p√°ginas enlazadas. Si lo est√°, borra la l√≠nea que la contenga, guarda la p√°gina y refresca la cach√© del navegador como se indica en esa misma p√°gina.</div>');
 			c.find('.msg1').append(wgWidgetShoutBoxId.toString()).end()
 				.find('.msg2').attr('href', wgScriptPath+wgScript+'?title='+encodeURIComponent(wgFormattedNamespaces['2'])+':'+encodeURIComponent(wgUserName.replace(new RegExp('\\s', 'g'), '_'))+'/'+skin+'.js&action=edit').end()
 				.find('.msg3').attr('href', 'http://community.wikia.com'+wgScriptPath+wgScript+'?title=User:'+encodeURIComponent(wgUserName.replace(new RegExp('\\s', 'g'), '_'))+'/global.js&action=edit');
@@ -272,8 +272,8 @@ var WikiaShoutBox = {
 			instances[instances.length] = _tmpCfg.substr(0, _tmpCfg.indexOf(';'));
 		}
 		if (instances.length) {
-			// Puede ser que exista, pero tenga el mismo id que otro widget existente. En ese caso tendrÌamos que agregar uno nuevo
-			// 2. Buscar de las instancias alguno que no estÈ duplicado
+			// Puede ser que exista, pero tenga el mismo id que otro widget existente. En ese caso tendr√≠amos que agregar uno nuevo
+			// 2. Buscar de las instancias alguno que no est√© duplicado
 			for (var i = 0; i < instances.length; i++) {
 				_tmpCfg = wCfg;
 				var sTagId = 's:2:"id";i:'+instances[i]+';';
@@ -297,7 +297,7 @@ var WikiaShoutBox = {
 			}
 		}
 
-		// Si hemos llegado aquÌ es que no hay ninguno usable. Intentamos aÒadir uno
+		// Si hemos llegado aqu√≠ es que no hay ninguno usable. Intentamos a√±adir uno
 		WikiaShoutBox.busy(true);
 		$.getJSON(wgScriptPath+wgScript, {action: 'ajax', rs: 'WidgetFrameworkAjax', actionType: 'add', index:'302', sidebar:'3', type: 'WidgetShoutBox'}, WikiaShoutBox.addAction);
 	},
@@ -305,7 +305,7 @@ var WikiaShoutBox = {
 		var kTag = 'id="widget';
 		WikiaShoutBox.busy(false);
 		if (!res.success || !res.widget) {
-			alert('Error al aÒadir una nueva instancia de WidgetShoutBox');
+			alert('Error al a√±adir una nueva instancia de WidgetShoutBox');
 			return;
 		}
 		var idx = res.widget.indexOf(kTag);
@@ -317,12 +317,12 @@ var WikiaShoutBox = {
 		var pagetext = '// Variable para que funcione el WidgetShoutbox\nwindow.wgWidgetShoutBoxId = \''+id+'\';\n// Fin variable para que funcione el WidgetShoutbox\n';
 		c.empty();
 		// WikiaShoutBox._wgPage
-		c.append('<div class="WidgetShoutBoxChat">Para probar a arreglar el ShoutBox, es necesario que edites tu archivo js personal aÒadiendo un trozo de cÛdigo.<br />Pulsa el siguiente botÛn para abrir tu p·gina js personal donde se aÒadir· autom·ticamente al inicio de la misma el cÛdigo. T˙ solo tendr·s que guardar.<br />Desde esa p·gina, antes de guardar, podr·s probar a abrir de nuevo el ShoutBox y ver si ya se ha solucionado. En ese caso podr·s gardar.<br />Si en ese momento sigue sin funcionar, algo m·s debe estar interfiriendo con el cÛdigo js y deberÌas pedir que alguien con conocimientos lo revise.' +
+		c.append('<div class="WidgetShoutBoxChat">Para probar a arreglar el ShoutBox, es necesario que edites tu archivo js personal a√±adiendo un trozo de c√≥digo.<br />Pulsa el siguiente bot√≥n para abrir tu p√°gina js personal donde se a√±adir√° autom√°ticamente al inicio de la misma el c√≥digo. T√∫ solo tendr√°s que guardar.<br />Desde esa p√°gina, antes de guardar, podr√°s probar a abrir de nuevo el ShoutBox y ver si ya se ha solucionado. En ese caso podr√°s gardar.<br />Si en ese momento sigue sin funcionar, algo m√°s debe estar interfiriendo con el c√≥digo js y deber√≠as pedir que alguien con conocimientos lo revise.' +
 			'<form method="post" enctype="multipart/form-data" action="'+wgScriptPath+wgScript+'?title=' + encodeURIComponent(WikiaShoutBox._wgPage.title) + '&action=submit" target="_blank">' +
 			'<textarea name="wpTextbox1" style="display:none;"></textarea>' +
-			'<input type="hidden" name="wpSummary" value="Par·metro para WidgetShoutBox" />' +
+			'<input type="hidden" name="wpSummary" value="Par√°metro para WidgetShoutBox" />' +
 			'<input type="hidden" name="wpStarttime" value="'+WikiaShoutBox._wgPage.starttimestamp.replace(new RegExp('\\D', 'g'), '')+'" />' +
-			'<input type="submit" name="wpPreview" value="AÒadir cÛdigo para WidgetShoutBox" />' +
+			'<input type="submit" name="wpPreview" value="A√±adir c√≥digo para WidgetShoutBox" />' +
 			'<input type="hidden" name="wpEditToken" value="' + WikiaShoutBox._wgPage.edittoken + '" /></form></div>');
 		if (typeof WikiaShoutBox._wgPage.missing == 'string') {
 			c.find('form').eq(0).append('<input type="hidden" name="wpEdittime" value="'+WikiaShoutBox._wgPage.starttimestamp.replace(new RegExp('\\D', 'g'), '')+'" />');

@@ -55,24 +55,24 @@
  				head:	'Achtung: Du bearbeitest diesen Artikel unangemeldet!',
  				body:	'<br>Hallo Unbekannter,<br><br>'
  							+ 'du bearbeitest den Artikel <a href="/wiki/' + wgPageName + '">' + wgPageName + '</a> gerade unangemeldet. '
- 							+ 'Bitte beachte, dass dies dazu führt, dass deine IP-Adresse für immer in der Versionsgeschichte gespeichert wird. '
- 							+ 'Außerdem gibt es keine Möglichkeit für andere Benutzer, dich einfach zu kontaktieren.<br><br>'
+ 							+ 'Bitte beachte, dass dies dazu fÃ¼hrt, dass deine IP-Adresse fÃ¼r immer in der Versionsgeschichte gespeichert wird. '
+ 							+ 'AuÃŸerdem gibt es keine MÃ¶glichkeit fÃ¼r andere Benutzer, dich einfach zu kontaktieren.<br><br>'
  							+ 'Falls du schon einen Benutzeraccount hast, <a href="/index.php?title=Special:UserLogin&returnto=' + wgPageName + '">melde dich an</a>. '
  							+ 'Ansonsten <a href="/index.php?title=Special:UserLogin&type=signup&returnto=' + wgPageName + '">lege dir bitte einen Benutzeraccount an</a>. '
- 							+ 'Mit diesem kannst du ganz einfach deine Beiträge im Auge behalten und dich besser mit dem Rest der Community verständigen.'
+ 							+ 'Mit diesem kannst du ganz einfach deine BeitrÃ¤ge im Auge behalten und dich besser mit dem Rest der Community verstÃ¤ndigen.'
  							+ 'Des Weiteren kannst du mit einem Konto <a href="/wiki/Special:Leaderboard">Abzeichen und Bearbeitungspunkte</a> erhalten.<br><br>'
- 							+ 'Mit freundlichen Grüßen, die <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> des ' + wgSitename + '<br><br>'
+ 							+ 'Mit freundlichen GrÃ¼ÃŸen, die <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> des ' + wgSitename + '<br><br>'
  							+ 'PS: Mit einem Benutzerkonto kannst du in jedem Wiki bei <a href="http://de.wikia.com/">Wikia</a> aktiv sein - du brauchst dich nicht noch einmal neu anmelden.'
  			},
  			mediawiki: {
  				head:	'MediaWiki Seite',
  				body:	'Hallo ' + (wgUserName ? wgUserName : 'Unbekannter') + ',<br><br>'
  							+ 'du betrachtest eine MediaWiki Seite. '
- 							+ 'Diese Seiten werden für globale Einstellungen des Wikis genutzt. '
- 							+ 'Aus diesem Grund ist es nur <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> und <a href="/index.php?title=Special:ListUsers&group=bureaucrat">Bürokraten</a> erlaubt, diese Seiten zu bearbeiten.<br><br>'
- 							+ 'Mit freundlichen Grüßen, die <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> des ' + wgSitename
+ 							+ 'Diese Seiten werden fÃ¼r globale Einstellungen des Wikis genutzt. '
+ 							+ 'Aus diesem Grund ist es nur <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> und <a href="/index.php?title=Special:ListUsers&group=bureaucrat">BÃ¼rokraten</a> erlaubt, diese Seiten zu bearbeiten.<br><br>'
+ 							+ 'Mit freundlichen GrÃ¼ÃŸen, die <a href="/index.php?title=Special:ListUsers&group=sysop">Administratoren</a> des ' + wgSitename
  			},
-			close:		'Schließen'
+			close:		'SchlieÃŸen'
  		},
  		en: { 
  			unregistered: { 

@@ -76,8 +76,8 @@ mw.loader.using(["mediawiki.api"]).then(function () {
 
             function processStr(v) {
                 var s = v[1] || "";
-                while (s.search(/ง[0-9a-f]/) > -1) {
-                    s = s.replace(/ง([0-9a-f])(.*?)(\s*ง|\s*{{|$)/g, replfunc);
+                while (s.search(/ยง[0-9a-f]/) > -1) {
+                    s = s.replace(/ยง([0-9a-f])(.*?)(\s*ยง|\s*{{|$)/g, replfunc);
                 }
                 return [v[0] || "", s.replace(/{{Gray\|(.*?)}}/g, "$1")];
             }

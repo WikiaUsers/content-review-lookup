@@ -53,12 +53,12 @@ window.LockForums = {
     forumName: "Forum"
 };
 
-window.AjaxRCRefreshText = 'Act. automát.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+window.AjaxRCRefreshText = 'Act. automÃ¡t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes", "Especial:WikiActivity"];
 
-// BOTONES DE EDICIÓN PERSONALIZADOS
-// Esto esta basado en el código original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICIÃ“N PERSONALIZADOS
+// Esto esta basado en el cÃ³digo original: Wikipedia:Tools/Editing tools
 
 if (mwCustomEditButtons) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -87,8 +87,8 @@ if (mwCustomEditButtons) {
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-        "speedTip": "Advertir de que este articulo esta en contrucción",
-        "tagOpen": "{{En construcción|",
+        "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+        "tagOpen": "{{En construcciÃ³n|",
         "tagClose": "}}",
         "sampleText": "Nick del usuario"
     };
@@ -119,10 +119,10 @@ if (mwCustomEditButtons) {
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-        "speedTip": "Texto Pequeño",
+        "speedTip": "Texto PequeÃ±o",
         "tagOpen": "<small>",
         "tagClose": "</small>",
-        "sampleText": "Texto Pequeño"
+        "sampleText": "Texto PequeÃ±o"
     };
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {

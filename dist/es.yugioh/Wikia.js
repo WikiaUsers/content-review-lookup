@@ -8,8 +8,8 @@ var SocialMediaButtons = {
 importScriptPage('SocialIcons/code.js','dev');
 
 /*
-*Código para mostrar etiqueta de usuario inactivo,
-*Créditos: http://dev.wikia.com/wiki/InactiveUsers
+*CÃ³digo para mostrar etiqueta de usuario inactivo,
+*CrÃ©ditos: http://dev.wikia.com/wiki/InactiveUsers
 *The original idea to this snippet comes from Sam Wang.
 */
 

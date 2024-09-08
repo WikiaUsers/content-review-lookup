@@ -2,7 +2,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		rollbackers: { m: 'Defensor', f: 'Defensora', u: 'Defensor', order: 2 },
-		bureaucrat: { u: 'BurÛcrata', order: 1 },
+		bureaucrat: { u: 'Bur√≥crata', order: 1 },
 		templatecreator: { m: 'Creador de plantillas', f: 'Creadora de plantillas', u: 'Creador de plantillas', order: 3 },
 		csseditor: { m: 'Editor CSS', f: 'Editora CSS', u: 'Editor CSS', order: 4 },
 		montheditor: { m: 'Editor del mes', f: 'Editora del mes', u: 'Editor del mes', order: 5},
@@ -11,12 +11,12 @@ window.UserTagsJS = {
 };
  
 UserTagsJS.modules.custom = {
-	'TheStupidSableye': ['Guerrero Gal·ctico', 'csseditor'],
+	'TheStupidSableye': ['Guerrero Gal√°ctico', 'csseditor'],
 };
  
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
  
-UserTagsJS.modules.inactive = 30; // 30 dÌas
+UserTagsJS.modules.inactive = 30; // 30 d√≠as
  
 UserTagsJS.modules.autoconfirmed = true; // Switch on
  
@@ -27,8 +27,8 @@ window.ajaxPages = [
     "Especial:Registro",
     "Especial:Contribuciones"
 ];
-window.AjaxRCRefreshText = 'Actualizar autom·ticamente';
-window.AjaxRCRefreshHoverText = 'Actualiza la p·gina autom·ticamente';
+window.AjaxRCRefreshText = 'Actualizar autom√°ticamente';
+window.AjaxRCRefreshHoverText = 'Actualiza la p√°gina autom√°ticamente';
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/ssbtemp-fanon-hispano/images/3/35/SSB_Super_Smash_Bros._Series.png/revision/latest?cb=20190805220151&path-prefix=es';
 window.ajaxRefresh = 10000;
  
@@ -50,10 +50,10 @@ importArticles({
     ]
 });
  
-/* Categorizar im·genes */
+/* Categorizar im√°genes */
  
-if(wgPageName == 'Especial:SubirArchivo' || wgPageName == 'Especial:SubirM˙ltiplesArchivos') {
-    $('#wpUploadDescription').val('[[CategorÌa:Im·genes]]');
+if(wgPageName == 'Especial:SubirArchivo' || wgPageName == 'Especial:SubirM√∫ltiplesArchivos') {
+    $('#wpUploadDescription').val('[[Categor√≠a:Im√°genes]]');
 }
  
 /**

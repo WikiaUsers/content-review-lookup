@@ -1,7 +1,7 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		// groupe: { tag associé },
+		// groupe: { tag associÃ© },
 		'grand moniteur': { u:'Grand Moniteur' }
 	}
 };

@@ -1,6 +1,6 @@
 // **************************************************
 // Javascript experimental cuenta regresiva (Splarka)
-// VerciÛn 0.0.3
+// Verci√≥n 0.0.3
 // **************************************************
 //
 // Ejemplo de uso:
@@ -41,7 +41,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

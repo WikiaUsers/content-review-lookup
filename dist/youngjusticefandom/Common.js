@@ -253,12 +253,12 @@ if(wgCanonicalSpecialPageName == 'Chat') {
 			document.getElementById('chat-topic').innerHTML = result.query.pages[result.query.pageids[0]].revisions[0]['*'];
 		}));
 
-		document.getElementById('ChatHeader').getElementsByTagName('h1')[0].innerHTML += '<div id="chat-topic" style="position:absolute; bottom:2px; z-index:5; font-weight:normal; left:250px; right:160px; height:35px; line-height:17px; font-size:smaller; color:#ccc" contenteditable="true" onblur="var api = new APIQuery(); api.send(new api.Query(api, \'POST\', {action: \'edit\', text: this.innerHTML, title: \'Project:Chat/Topic\', summary: \'changing topic\', bot: 1}, function(result) {if(result.edit.result == \'Succeeded\') {$(\'#Write textarea\').val(\'ätopic:\' + document.getElementById(\'chat-topic\').innerHTML); mainRoom.sendMessage({which: 13, preventDefault: function() {}});} else {window.alert(\'You do not have permission to change the topic.\');}}));">Topic loading...</div>';
+		document.getElementById('ChatHeader').getElementsByTagName('h1')[0].innerHTML += '<div id="chat-topic" style="position:absolute; bottom:2px; z-index:5; font-weight:normal; left:250px; right:160px; height:35px; line-height:17px; font-size:smaller; color:#ccc" contenteditable="true" onblur="var api = new APIQuery(); api.send(new api.Query(api, \'POST\', {action: \'edit\', text: this.innerHTML, title: \'Project:Chat/Topic\', summary: \'changing topic\', bot: 1}, function(result) {if(result.edit.result == \'Succeeded\') {$(\'#Write textarea\').val(\'Ã¤topic:\' + document.getElementById(\'chat-topic\').innerHTML); mainRoom.sendMessage({which: 13, preventDefault: function() {}});} else {window.alert(\'You do not have permission to change the topic.\');}}));">Topic loading...</div>';
 	}
 	addOnloadHook(ChatTopic);
 	
 	mainRoom.model.chats.bind('afteradd', $.proxy(function(data) {
-		if(data.attrs.text.indexOf('ätopic:') == 0) {
+		if(data.attrs.text.indexOf('Ã¤topic:') == 0) {
 			document.getElementById('chat-topic').innerHTML = data.attrs.text.substring(data.attrs.text.indexOf(':') + 1);
 			this.chatUL.children().last().children('.message')[0].innerHTML = '*** Changed topic to ' + document.getElementById('chat-topic').innerHTML + ' ***';
 		}

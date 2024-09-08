@@ -2,27 +2,27 @@
 wgSidebar['Kuroshitsuji|Universo'] = [
 	{'Category: Personagens|Personagens': [
 		'Category: Humanos|Humanos',
-		'Dem鬾ios',
+		'Dem么nios',
 		'Shinigami',
 		'Category: Anjos|Anjos',
 		'Fantasmas',
 	]},
 	{'Category: Locais|Locais': [
-		'Mans鉶 Phantomhive',
-		'Mans鉶 Midford',
+		'Mans茫o Phantomhive',
+		'Mans茫o Midford',
 		'Hospital Real de Londres',
 		'East End',
 	]},
 ];
-wgSidebar['Kuroshitsuji|M韉ias'] = [
-	{'Cap韙ulos': [
-		'Cap韙ulos|Lista de cap韙ulos',
-		'Special:RandomInCategory/Cap韙ulos|Cap韙ulo aleat髍io',
+wgSidebar['Kuroshitsuji|M铆dias'] = [
+	{'Cap铆tulos': [
+		'Cap铆tulos|Lista de cap铆tulos',
+		'Special:RandomInCategory/Cap铆tulos|Cap铆tulo aleat贸rio',
 	]},
-	{'Epis骴ios': [
-		'Epis骴ios|Lista de epis骴ios',
-		'Special:RandomInCategory/Epis骴ios|Epis骴io aleat髍io',
+	{'Epis贸dios': [
+		'Epis贸dios|Lista de epis贸dios',
+		'Special:RandomInCategory/Epis贸dios|Epis贸dio aleat贸rio',
 	]},
-	{'M鷖icas': [
+	{'M煤sicas': [
 	]},
 ];

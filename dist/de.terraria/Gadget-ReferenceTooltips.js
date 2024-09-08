@@ -10,10 +10,10 @@ window.pg || $(document).ready( function($) {
 		mw.messages.set( {
 			"RT-enable" : "Verweis-Tooltips aktivieren",
 			"RT-disable" : "Verweis-Tooltips deaktivieren",
-			"RT-disablenote" : "Nach der Deaktivierung können sie durch einen Link in der Fußzeile der Seite wieder aktiviert werden.",
-			"RT-delay" : "Verzögerung, nach der der Tooltip erscheint (in Millisekunden): ",
+			"RT-disablenote" : "Nach der Deaktivierung kÃ¶nnen sie durch einen Link in der FuÃŸzeile der Seite wieder aktiviert werden.",
+			"RT-delay" : "VerzÃ¶gerung, nach der der Tooltip erscheint (in Millisekunden): ",
 			"RT-activationmethod" : "Tooltip wird aktiviert durch:",
-			"RT-hovering" : "Rüberfahren",
+			"RT-hovering" : "RÃ¼berfahren",
 			"RT-clicking" : "Anklicken",
 			"RT-options" : "Verweis-Tooltips-Optionen",
 			"RT-options-save" : "Einstellungen speichern",

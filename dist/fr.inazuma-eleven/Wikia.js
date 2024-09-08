@@ -78,10 +78,10 @@ $(function() {
 		var $div = $('#cvu_guide');
 		var $form = $('<form />');
  
-		var ppLink = 'Page <a href="' + wgArticlePath.replace('$1', 'RS:PP') + '">protégée </a> dû au vandalisme.';
+		var ppLink = 'Page <a href="' + wgArticlePath.replace('$1', 'RS:PP') + '">protÃ©gÃ©e </a> dÃ» au vandalisme.';
  
 		if ($.inArray('sysop', wgRestrictionEdit) > -1 && $.inArray('sysop', wgUserGroups) == -1)
-			$form.append(ppLink + ' <a href="' + wgArticlePath.replace('$1', 'RS:AR') + '">contactez un administrateur</a> afin de mettre à jour.');
+			$form.append(ppLink + ' <a href="' + wgArticlePath.replace('$1', 'RS:AR') + '">contactez un administrateur</a> afin de mettre Ã  jour.');
 		else if ($.inArray('autoconfirmed', wgRestrictionEdit) > -1 && $.inArray('autoconfirmed', wgUserGroups) == -1)
 			$form.append(ppLink + '<a href="' + wgScript + '?title=Special:UserLogin&returnto=' + wgPageName + '">connectez vous</a> pour modifier cette page.');
 		else {

@@ -2,7 +2,7 @@
  * InactiveUsers
  *
  * documentation at: http://dev.wikia.com/wiki/InactiveUsers
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  */
 /*jshint curly:false laxbreak:true es5:true jquery:true */

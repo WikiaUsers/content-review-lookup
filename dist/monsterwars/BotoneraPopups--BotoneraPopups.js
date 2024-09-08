@@ -1,7 +1,7 @@
 /*<source lang="javascript">*/
 /* BotoneraPopups - v2.2
  * A popup (in-page) with links to useful actions will appear when hovering a link while the CTRL key is pressed.
- * (C) 2010-2012 Jesús Martínez Novo [[User:Ciencia_Al_Poder]]
+ * (C) 2010-2012 JesÃºs MartÃ­nez Novo [[User:Ciencia_Al_Poder]]
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -13,7 +13,7 @@ var _version = '2.2' // this version
 	_article = null, // current article object
 	_url = null, // current url
 	_alternateUrl = null, // url from article/talk page switch
-	_currentViewTalk = false, // La vista actual es de la discusión?
+	_currentViewTalk = false, // La vista actual es de la discusiÃ³n?
 	_visible = false, // Whether the popup is visible or not
 	_options = {}, // Store of internal options
 	_rollbackSummary = null, // Stored rollback summary

@@ -17,8 +17,8 @@ importScript('MediaWiki:Common.js/standardeditsummaries.js');
 
 // Ajax auto-refresh
 AjaxRCRefreshText = 'Recarregar';
-AjaxRCRefreshHoverText = 'Recarregar a p·gina automaticamente';
-ajaxPages = ["Especial:MudanÁas_recentes","Especial:WikiActivity"];
+AjaxRCRefreshHoverText = 'Recarregar a p√°gina automaticamente';
+ajaxPages = ["Especial:Mudan√ßas_recentes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
 var hasClass = (function () {

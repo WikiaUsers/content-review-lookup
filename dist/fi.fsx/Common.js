@@ -1,4 +1,4 @@
-/* T‰m‰n sivun koodi liitet‰‰n jokaiseen sivulataukseen */
+/* T√§m√§n sivun koodi liitet√§√§n jokaiseen sivulataukseen */
 
 // ==================================================================
 // Added SiteNotice Functionality
@@ -11,7 +11,7 @@
 
 addOnloadHook(editSiteNotice);
 var dCookieName = "dismissSiteNotice=";
-var msgClose = "‰l‰ n‰yt‰";
+var msgClose = "√§l√§ n√§yt√§";
 
 var hCookieName = "hideSiteNotice=";
 var hCookiePos = document.cookie.indexOf(hCookieName);
@@ -48,7 +48,7 @@ function editSiteNotice() {
         if (hCookieValue != siteNoticeID && hideLink.innerHTML == "suurenna") {
             collapseTable(0);
         }
-        if (hCookieValue == siteNoticeID && hideLink.innerHTML == "pienenn‰") {
+        if (hCookieValue == siteNoticeID && hideLink.innerHTML == "pienenn√§") {
             collapseTable(0);
         }
     }

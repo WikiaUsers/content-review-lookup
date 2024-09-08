@@ -10,7 +10,7 @@ mw.loader.using('mediawiki.util').then(function(){
 			outList += (outCount++ ? '::' : '') + $(this).text();
 		});
 		if (outCount == 0) {
-			alert("Bitte mind. 1 Kategorie ausw‰hlen, um gleiche Seiten zu finden.");
+			alert("Bitte mind. 1 Kategorie ausw√§hlen, um gleiche Seiten zu finden.");
 			return;
 		} else if (outCount == 1) {
 			window.location = mw.util.getUrl('Category:' + outList);

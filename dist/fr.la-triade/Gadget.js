@@ -243,7 +243,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 									{
 										type: 'h3',
 										classes: ['sectionHeader'],
-										text: 'Vote de la communauté'//i18n.msg( 'communityVoteHeader' ).plain()
+										text: 'Vote de la communautÃ©'//i18n.msg( 'communityVoteHeader' ).plain()
 									},
 									{
 										type: 'div',
@@ -262,7 +262,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 										attr: {
 											id: 'communityVote',
 											name: 'communityVote',
-											placeholder: 'Approbation de la communauté sur l\'obtention de l\'étiquette de votre robot'//i18n.msg( 'communityVotePlaceholder' ).plain()
+											placeholder: 'Approbation de la communautÃ© sur l\'obtention de l\'Ã©tiquette de votre robot'//i18n.msg( 'communityVotePlaceholder' ).plain()
 										}
 									}
 								]
@@ -342,7 +342,7 @@ mw.loader.using( ['jquery.client', 'mediawiki.base', 'mediawiki.api', 'mediawiki
 					}
 
 					if ( !botAccountName || botAccountName === formValues.gadgetUrl ) {
-						return mw.notify( 'Nous n\'avons pas pu détecter le nom du robot en se basant sur l\'URL fournie. Veuillez vous assurez que l\'URL est valide.', {//i18n.msg( 'noBotNameError' ).plain()
+						return mw.notify( 'Nous n\'avons pas pu dÃ©tecter le nom du robot en se basant sur l\'URL fournie. Veuillez vous assurez que l\'URL est valide.', {//i18n.msg( 'noBotNameError' ).plain()
 							tag: 'gadgetFlag',
 							type: 'warn'
 						} );

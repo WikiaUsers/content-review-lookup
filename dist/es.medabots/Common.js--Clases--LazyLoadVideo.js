@@ -1,6 +1,6 @@
 /*
-* LazyLoadVideo - Muestra un botón para activar (mostrar) el reproductor de vídeos, para que no se carguen desde el inicio
-* Copyright (C) 2012 - 2015 Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* LazyLoadVideo - Muestra un botÃ³n para activar (mostrar) el reproductor de vÃ­deos, para que no se carguen desde el inicio
+* Copyright (C) 2012 - 2015 JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -9,15 +9,15 @@
 */
 (function($) {
  
-var _title = (window.lazyloadvideotitle || 'Clic para activar el vídeo'),
+var _title = (window.lazyloadvideotitle || 'Clic para activar el vÃ­deo'),
 _thumbUrl = 'http://i1.ytimg.com/vi/{0}/hqdefault.jpg',
 _init = function() {
 	$('div.video > .youtube', '#mw-content-text').each(_muestraThumb);
 },
-// Agrega una imagen del vídeo en la posición del contenedor
+// Agrega una imagen del vÃ­deo en la posiciÃ³n del contenedor
 _muestraThumb = function() {
 	var oDiv = $(this), vid = oDiv.data('youtubevid'), w, h;
-	// Se comprueba que esté oculto, para sincronizar con CSS
+	// Se comprueba que estÃ© oculto, para sincronizar con CSS
 	if (vid && vid.length == 11 && oDiv.find('> iframe').length === 0) {
 		w = oDiv.width().toString();
 		h = oDiv.height().toString();

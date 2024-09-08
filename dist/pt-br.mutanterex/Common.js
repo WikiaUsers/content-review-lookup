@@ -139,7 +139,7 @@ importScript('MediaWiki:Wikia.js/cancelButton.js');
 // END Add CANCEL Button for new RTE
  
 $(function() {
-  $('<span class="group">Fundador Substituto</span>').insertAfter('.page-Usuário_Leviny .masthead-info hgroup h1');
+  $('<span class="group">Fundador Substituto</span>').insertAfter('.page-UsuÃ¡rio_Leviny .masthead-info hgroup h1');
 });
  
 $(function() {
@@ -150,5 +150,5 @@ $(function() {
   $('<span class="group">Fundador Substituto</span>').insertAfter('.page-User_blog_Leviny .masthead-info hgroup h1');
 });
 $(function() {
-  $('<span class="group">Fundador Substituto</span>').insertAfter('.page-Contribuições/Leviny .masthead-info hgroup h1');
+  $('<span class="group">Fundador Substituto</span>').insertAfter('.page-ContribuiÃ§Ãµes/Leviny .masthead-info hgroup h1');
 });

@@ -1,6 +1,6 @@
-/* Todos os scripts aqui ser„o carregados para TODOS os users */
+/* Todos os scripts aqui ser√£o carregados para TODOS os users */
  
-/* Atualizando automaticamente mudanÁas recentes
+/* Atualizando automaticamente mudan√ßas recentes
  * See w:c:dev:AjaxRC for info & attribution 
  */
  
@@ -120,24 +120,24 @@ var hasClass = ( function() {
         };
 })();
  
-/* Adiciona o label "inativo" nos perfis de quem n„o edita h· no m·ximo 2 meses */
+/* Adiciona o label "inativo" nos perfis de quem n√£o edita h√° no m√°ximo 2 meses */
 InactiveUsers = { 
 	months: 2,
     text: 'inativo'
 };
 
-/* Bloqueia blogs com no m·ximo 30 dias de n„o atividade */
+/* Bloqueia blogs com no m√°ximo 30 dias de n√£o atividade */
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog n„o recebeu coment·rios nos ˙ltimos 30 dias. N„o h· raz„o para comentar novamente.",
-    nonexpiryCategory: "Coment·rios Desbloqueados"
+    expiryMessage: "Este blog n√£o recebeu coment√°rios nos √∫ltimos 30 dias. N√£o h√° raz√£o para comentar novamente.",
+    nonexpiryCategory: "Coment√°rios Desbloqueados"
 };
 
-/* Replaces {{Usu·rioNome}} with the name of the user browsing the page.
+/* Replaces {{Usu√°rioNome}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
 $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
     $("span.insertusername").html(wgUserName);
 });
  
-/* End of the {{Usu·rioNome}} replacement */
+/* End of the {{Usu√°rioNome}} replacement */

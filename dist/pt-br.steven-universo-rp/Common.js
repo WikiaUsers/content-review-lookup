@@ -1,4 +1,4 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 
 // Etiquetas
 window.UserTagsJS = {
@@ -49,7 +49,7 @@ window.UserTagsJS = {
                 newuser: { u:'Cacos de Pedra'},
                 sysop: { u:'Crystal Gem'},
                 rollback: {u:'Lutador'},
-                chatmoderator: {u:'Guardião'},
+                chatmoderator: {u:'GuardiÃ£o'},
                 founder: {u:'Diamante Transparente'},
 }
 };
@@ -73,10 +73,10 @@ importArticles({
     ]
 });
 
-// Auto-atualização da Atividade Recente
-/* Veja w:c:dev:AjaxRC para informação & atribuição */
+// Auto-atualizaÃ§Ã£o da Atividade Recente
+/* Veja w:c:dev:AjaxRC para informaÃ§Ã£o & atribuiÃ§Ã£o */
 AjaxRCRefreshText = 'Atualizar automaticamente';
-AjaxRCRefreshHoverText = 'Ativar esta opção permite a atualização automática da página de Atividade Recente na Wikia.';
+AjaxRCRefreshHoverText = 'Ativar esta opÃ§Ã£o permite a atualizaÃ§Ã£o automÃ¡tica da pÃ¡gina de Atividade Recente na Wikia.';
 ajaxPages = ["Especial:RecentChanges","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

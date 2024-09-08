@@ -10,7 +10,7 @@ $(function() {
     // AWB
   rights["Ajrbot"]			= ["AWB"],
   rights["Bot50"]			= ["AWB"],
-  rights["Cåmdroid"]			= ["AWB"],
+  rights["CÃ¥mdroid"]			= ["AWB"],
   rights["CookBot"]			= ["AWB"],
   rights["Hedonism Bot"]		= ["AWB"],
   rights["HofBot"]			= ["AWB"],

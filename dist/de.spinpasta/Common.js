@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -335,16 +335,16 @@ importArticles({
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-        bureaucrat: { u: 'Aktenvernichter (Bürokrat)'},
+        bureaucrat: { u: 'Aktenvernichter (BÃ¼rokrat)'},
         bot: { link:'Schinkenbot', order:1 },
-		sysop: { u: 'Sternträger (Admin)', order:2 },
-		rollback: { u: 'Fast-Sternträger', order:4 },
-		chatmoderator: { u: 'Hilfssternträger (ChatMod)', order:5 },
+		sysop: { u: 'SterntrÃ¤ger (Admin)', order:2 },
+		rollback: { u: 'Fast-SterntrÃ¤ger', order:4 },
+		chatmoderator: { u: 'HilfssterntrÃ¤ger (ChatMod)', order:5 },
 		'H': { u: 'HELD (Programmierer vom Dienst)', order:10 },
-		'inactive': { u: 'Schon länger nicht mehr da gewesen', order:11 },
+		'inactive': { u: 'Schon lÃ¤nger nicht mehr da gewesen', order:11 },
 		'fired': { u: 'Desertiert', order:12 },
 		'leader': { u: 'Suchti', order:-1/0 },
-        'founder': { u: 'Spy (Gründer)', order: -1000 },
+        'founder': { u: 'Spy (GrÃ¼nder)', order: -1000 },
         'blocked': { u: 'Rausgeschmissen', order: 3 },
 	}
 };

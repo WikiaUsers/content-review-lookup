@@ -1,18 +1,18 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
-//importações
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
+//importaÃ§Ãµes
 importArticles({
     type: 'script',
     articles: [
-        'u:dev:UserTags/code.js', // Etiquetas de Usuários
-        'u:dev:WallGreetingButton/code.js', // Saudações de Murais
-        'u:dev:ReferencePopups/code.js', // Referências
-        'u:dev:LockForums/code.js', // Fóruns
+        'u:dev:UserTags/code.js', // Etiquetas de UsuÃ¡rios
+        'u:dev:WallGreetingButton/code.js', // SaudaÃ§Ãµes de Murais
+        'u:dev:ReferencePopups/code.js', // ReferÃªncias
+        'u:dev:LockForums/code.js', // FÃ³runs
         'u:dev:Countdown/code.js', // Contador
-        'u:dev:LastEdited/code.js', // Edições
-        'u:dev:AjaxRC/code.js', // Atualização Automática
+        'u:dev:LastEdited/code.js', // EdiÃ§Ãµes
+        'u:dev:AjaxRC/code.js', // AtualizaÃ§Ã£o AutomÃ¡tica
         'u:dev:ChatHacks.js', // ChatHack
-        // 'u:c:User:Joeytje50/ChatPMs.js', // Chat Múltiplo
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // Opções Múltiplas
+        // 'u:c:User:Joeytje50/ChatPMs.js', // Chat MÃºltiplo
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // OpÃ§Ãµes MÃºltiplas
         'u:dev:MessageBlocker/code.js', // Bloqueio de Mensagens
         'u:dev:ShowHide/code.js' // Mostrar e Ocultar
     ]
@@ -54,9 +54,9 @@ window.UserTagsJS = {
 	tags: {
 		bureaucrat: { u:'Lord Chanceler'},
         newuser: { u:'Na Academia'},
-        sysop: { u:'Castelão'},
+        sysop: { u:'CastelÃ£o'},
         rollback: {u:'Guarda da Chancelaria'},
-        chatmoderator: {u:'Guarda do Capitólio'},
+        chatmoderator: {u:'Guarda do CapitÃ³lio'},
         founder: {u:'Lord Presidente'},
         Autoconfirmed: {u:'Time Lord'},
     }

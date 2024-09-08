@@ -26,7 +26,7 @@ $(function() {
     rights["BullaBrief101"]        = ["Captain"],
   /*rights["Goku777"]              = ["Captain"],*/
   /*rights["Miricle1778"]          = ["Captain"],*/
-    rights["Monét"]                = ["Captain"],
+    rights["MonÃ©t"]                = ["Captain"],
     rights["Tjakari"]              = ["Captain"],
  
     // ROLLBACK

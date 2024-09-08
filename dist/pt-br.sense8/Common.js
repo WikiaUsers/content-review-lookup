@@ -1,6 +1,6 @@
-/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
+/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
 
-//PontuaÁ„o WAM
+//Pontua√ß√£o WAM
 window.railWAM = {
     logPage:"Project:WAM Log"
 };

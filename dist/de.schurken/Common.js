@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -16,7 +16,7 @@ var ShowHideConfig = {
 if(mw.config.get('wgUserName')) {
     window.DiscordIntegratorConfig = {
         siderail: {
-            title: "Konferenz des Bösen",
+            title: "Konferenz des BÃ¶sen",
             id: "318015848365162497"
         }
     };

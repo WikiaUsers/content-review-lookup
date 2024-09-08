@@ -1,4 +1,4 @@
-// Navegação (Créditos a Five Nights at Freddy's Wiki)
+// NavegaÃ§Ã£o (CrÃ©ditos a Five Nights at Freddy's Wiki)
 importArticles({
     type: 'script',
     articles: [

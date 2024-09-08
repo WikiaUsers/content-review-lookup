@@ -1,6 +1,6 @@
 {{:MediaWiki:Common.js/Code.js}}
 /*<pre> MediaWiki:Wikia.js v1.31 */
-// Parche para la búsqueda
+// Parche para la bÃºsqueda
 (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
 	var f = $('#WikiaSearch');
 	if (f && f.attr('action') && f.attr('action').indexOf('index.php') == 0) {
@@ -9,7 +9,7 @@
 	}
 });
  
-// Reportar páginas en blanco
+// Reportar pÃ¡ginas en blanco
 (typeof(window.safeOnLoadHook)=='function'?safeOnLoadHook:$)(function() {
 	if ($('#mw-content-text').children(':not(noscript)').length == 0) {
 		mw.config.set('varnish_stat', $.cookie('varnish-stat'));

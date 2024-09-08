@@ -14,8 +14,8 @@ importArticles({
 // EmoticonWindows suomennos
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "Hymiöt",
+        emoticons: "HymiÃ¶t",
         close: "Sulje"
     },
-    helpText: "Valitse hymiö klikkaamalla sitä."
+    helpText: "Valitse hymiÃ¶ klikkaamalla sitÃ¤."
 };

@@ -1,2 +1,2 @@
-// Importar Scripts útiles
+// Importar Scripts Ãºtiles
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');

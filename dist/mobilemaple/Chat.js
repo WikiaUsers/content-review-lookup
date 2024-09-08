@@ -1,5 +1,5 @@
 // Script credits
-// Old chat options - Callofduty4, Madnessfan34537, Fang³
+// Old chat options - Callofduty4, Madnessfan34537, FangÂ³
 // New chat options - Gamedezyner, Dragonfree97
 // Chattopic - unknown
 // Censor and text emotes - MLP wiki

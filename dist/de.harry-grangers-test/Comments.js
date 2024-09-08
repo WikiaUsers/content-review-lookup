@@ -1,5 +1,5 @@
 function getComments(page) {
-    re = /([A-Za-z_  ]+.):([A-Za-z_\/äüöÄÜÖ ]+.)/;
+    re = /([A-Za-z_  ]+.):([A-Za-z_\/Ã¤Ã¼Ã¶Ã„ÃœÃ– ]+.)/;
     pagename = page.replace(re,'$2');
     namespace = page.replace(re, '$1');
     if (namespace == 'Benutzer Blog') {
@@ -43,8 +43,8 @@ function getComments(page) {
 }
 
 function getLatestComments() {
-    $.getJSON('http://de.harry-grangers-test.wikia.com/api.php?action=expandtemplates&format=json&text={{%23dpl:|titlematch=%25@comment%25|count=10|ordermethod=lastedit|order=descending|mode=userformat|format=,%PAGE%§,}}', function(data) {
-        pages = data.expandtemplates['*'].split('§');
+    $.getJSON('http://de.harry-grangers-test.wikia.com/api.php?action=expandtemplates&format=json&text={{%23dpl:|titlematch=%25@comment%25|count=10|ordermethod=lastedit|order=descending|mode=userformat|format=,%PAGE%Â§,}}', function(data) {
+        pages = data.expandtemplates['*'].split('Â§');
         for(i in pages) {
             $('.Wall.Thread').append(pages[i] + '<br />');
         }

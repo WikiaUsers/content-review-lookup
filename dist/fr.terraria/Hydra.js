@@ -1,1 +1,1 @@
-/* Tout JavaScript placé ici sera chargé pour les utilisateurs utilisant l'apparence Hydra */
+/* Tout JavaScript placÃ© ici sera chargÃ© pour les utilisateurs utilisant l'apparence Hydra */

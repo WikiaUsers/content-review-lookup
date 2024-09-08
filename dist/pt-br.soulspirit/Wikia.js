@@ -1,5 +1,5 @@
 /*
-This function returns the color, based on the Pokémon type. It is used on numerous templates.
+This function returns the color, based on the PokÃ©mon type. It is used on numerous templates.
 *element_class: the type of the color.
 @return: the color of the asked type. If the type is not defined in this function, it returns
 	the teal (#9DC1B7) color.
@@ -91,8 +91,8 @@ function page_load(fun, timeout){
 		: window.addEventListener("load", fun);
 }
 
-/* This compares two colors of a Pokémon's type. This is used to color templates, to determine
-	a primary and a secondary color for a template, for some Pokémon have only one type. If the
+/* This compares two colors of a PokÃ©mon's type. This is used to color templates, to determine
+	a primary and a secondary color for a template, for some PokÃ©mon have only one type. If the
 	colors are different, the function returns an array with a primary and a secondary color,
 	corresponding to the type (in that order), otherwise it returns an array with two colors: a
 	primary color element indexed as 0 and 1.
@@ -140,7 +140,7 @@ var sprite_gallery_function = function() {
 };
 page_load(sprite_gallery_function, 5000);
 
-/* This function is used only for Trainer's Pokémon template. It takes the css class to paint backgrounds. */
+/* This function is used only for Trainer's PokÃ©mon template. It takes the css class to paint backgrounds. */
 var char_poke_str = ".char-poke";
 
 var char_poke_function = function() {
@@ -188,7 +188,7 @@ var movebox_function = function(){
 };
 page_load(movebox_function, 5000);
 
-/* This function is used only for Masters Character Pokémon template. It takes the css class to
+/* This function is used only for Masters Character PokÃ©mon template. It takes the css class to
 	paint borders and backgrounds. */
 var masters = ".masters-pokemon";
 
@@ -213,7 +213,7 @@ var masters_pokemon_function = function() {
 	            		"radial-gradient(" + masters_colors[1]
 	            		+ ", transparent, " + masters_colors[0] + ")";
 	        
-				// If a character's Pokémon has one type, only one color is used
+				// If a character's PokÃ©mon has one type, only one color is used
 		        else
 	            	masters_image_test[i].style.background =
 	            		"radial-gradient(transparent, " + masters_colors[0] + ")";
@@ -227,7 +227,7 @@ var masters_pokemon_function = function() {
 page_load(masters_pokemon_function);
 
 
-/* This function is used only for PokédexEntry template. It colorizes the borders. */
+/* This function is used only for PokÃ©dexEntry template. It colorizes the borders. */
 var pokedex_entry = ".pokedex-entry";
 
 var pokedex_entry_function = function() {

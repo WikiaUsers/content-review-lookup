@@ -13,7 +13,7 @@ if ($('#BanderoleWikia').length > 0) {
             }
             while (indiceList.indexOf(nb) != -1); 
         
-            list[nb] = $(list[nb]).attr('href', $('td:first a', $(list[nb]).parents('tr')).attr('href')); // lien de l'icône par celui de la première cellule de sa ligne
+            list[nb] = $(list[nb]).attr('href', $('td:first a', $(list[nb]).parents('tr')).attr('href')); // lien de l'icÃ´ne par celui de la premiÃ¨re cellule de sa ligne
             iconList.push(list[nb][0].outerHTML);
             indiceList.push(nb);
         }

@@ -1,7 +1,7 @@
 var d = new Date();
 var n = d.getHours();
 
-//Hora del script en acción
+//Hora del script en acciÃ³n
 ///1
 if (n > 21 & n < 9) {
     $('.Chat').nocturno();
@@ -39,7 +39,7 @@ $.fn.nocturno = function() {
 	$('.UserStatsMenu').css('transition','.6s');
 	$('.Rail').css('transition','.6s');
 	$('.User img').css('transition','.6s');
-	/*Página general*/
+	/*PÃ¡gina general*/
 	$('.ChatWindow').css('background','#0D1F38');
 	$('.ChatWindow').css('font-family','Tw Cen MT');
 	$('#WikiaPage').css('background-color','#07111F');
@@ -98,7 +98,7 @@ $.fn.diurno() = function() {
 	$('.UserStatsMenu').css('transition','.6s');
 	$('.Rail').css('transition','.6s');
 	$('.User img').css('transition','.6s');
-	/*Página general*/
+	/*PÃ¡gina general*/
 	$('.ChatWindow').css('background','#9C9C9C');
 	$('.ChatWindow').css('font-family','Arial');
 	$('#WikiaPage').css('background-color','#9C9C9C');

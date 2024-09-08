@@ -1,7 +1,7 @@
 // Ajax Auto-Refrescar
 AjaxRCRefreshText = 'Refrescar';
-AjaxRCRefreshHoverText = 'Refresca autom‡ticament la p‡gina';
-ajaxPages = ["Especial:Canvis_recents","Especial:WikiActivity", "Especial:P‡gines_noves", "Especial:Images"];
+AjaxRCRefreshHoverText = 'Refresca autom√†ticament la p√†gina';
+ajaxPages = ["Especial:Canvis_recents","Especial:WikiActivity", "Especial:P√†gines_noves", "Especial:Images"];
 
 // =====================================
 //              Imports
@@ -15,14 +15,14 @@ importArticles({
         'u:dev:MediaWiki:AjaxRC/code.js',           // Ajax Auto-Refrescar
         'u:dev:MediaWiki:DupImageList/code.js',     // Llista de fitxers duplicats
         'u:dev:MediaWiki:MiniComplete/code.js',     // Mini complete 
-        'u:dev:MediaWiki:ReferencePopups/code.js',  //ReferËncies popup
+        'u:dev:MediaWiki:ReferencePopups/code.js',  //Refer√®ncies popup
         'u:dev:MediaWiki:Toggler.js',
         'u:dev:MediaWiki:RailWAM/code.js' //RailWAM
     ]
 });
 
 // ======================================
-// Botons addicionals a la caixa d'ediciÛ
+// Botons addicionals a la caixa d'edici√≥
 // ======================================
  
  if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -43,7 +43,7 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/43/Enlace_a_usuario.png",
-     "speedTip": "EnllaÁ a usuari",
+     "speedTip": "Enlla√ß a usuari",
      "tagOpen": "[[user:",
      "tagClose": "|]]",
      "sampleText": "Usuari"};
@@ -57,7 +57,7 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir que s'est‡ editant l'article",
+     "speedTip": "Advertir que s'est√† editant l'article",
      "tagOpen": "{{Article_sense_acabar|",
      "tagClose": "}}",
      "sampleText": "Nom d'usuari"};
@@ -71,8 +71,8 @@ importArticles({
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20111227131921/onepiece-cat/ca/images/3/33/Article_incomplet.png",
-     "speedTip": "Indicar l'article com a EsbÛs",
-     "tagOpen": "{{EsbÛs}}",
+     "speedTip": "Indicar l'article com a Esb√≥s",
+     "tagOpen": "{{Esb√≥s}}",
      "tagClose": "",
      "sampleText": ""};
 
@@ -85,7 +85,7 @@ importArticles({
  }
 
 // ==================================================
-//          Resums d'ediciÛ personalitzats
+//          Resums d'edici√≥ personalitzats
 // ==================================================
  
 // Editor font
@@ -176,7 +176,7 @@ $(function() {
  
 // ==================================================
 //              Countdown Timer (by Splarka)
-//                  VersiÛ 0.0.3 
+//                  Versi√≥ 0.0.3 
 // ==================================================
 //
 // Usage example:
@@ -279,15 +279,15 @@ mw.loader.using(['jquery.ui.tabs'], function () {
 });
 
 // ===============================
-//  C‡rrega de fitxers
+//  C√†rrega de fitxers
 //  [[Especial:Carrega]]
 // ===============================
-// Afegeix una descripciÛ predeterminada durant la c‡rrega de fitxers
+// Afegeix una descripci√≥ predeterminada durant la c√†rrega de fitxers
 $(function preloadUploadDesc() {
     if ( wgCanonicalSpecialPageName != 'Upload' || $.getUrlVar('wpForReUpload') ) { return; }
  
     if ($('#wpUploadDescription').length) {
-        $('#wpUploadDescription').append('== LlicËncia ==\n' +
+        $('#wpUploadDescription').append('== Llic√®ncia ==\n' +
             '{{Fairuse'         +
             '}}');
     }

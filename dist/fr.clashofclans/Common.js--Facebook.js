@@ -1,4 +1,4 @@
-/* Module Facebook en français */
+/* Module Facebook en franÃ§ais */
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;

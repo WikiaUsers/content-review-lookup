@@ -1,12 +1,12 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 /* Personalizaciones de tags de usuario */
 
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		bureaucrat: { link:'Project:Administración#Burócratas' },
+		bureaucrat: { link:'Project:AdministraciÃ³n#BurÃ³cratas' },
 	
-		sysop: { link:'Project:Administración#Administradores' }
+		sysop: { link:'Project:AdministraciÃ³n#Administradores' }
 	}
 };

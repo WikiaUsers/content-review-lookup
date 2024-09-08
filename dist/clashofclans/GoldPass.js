@@ -12,16 +12,18 @@ $(document).ready(function() {
 	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Frost Potency: '+
 		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
 			'<option value="0">0</option>'+
+			'<option value="25">25</option>'+
 			'<option value="30">30</option>'+
 			'<option value="35">35</option>'+
+			'<option value="37">37</option>'+
 			'<option value="40">40</option>'+
 			'<option value="45">45</option>'+
 			'<option value="50">50</option>'+
 			'<option value="55">55</option>'+
 			'<option value="60">60</option>'+
 			'<option value="65">65</option>'+
-			'<option value="70">70</option>'+
-			'<option value="75">75</option>'+
+			//'<option value="70">70</option>'+ No longer used as of Sep 2024 balance changes
+			//'<option value="75">75</option>'+
 		'</select> %</div>');
 	$("span#normalAbilityHarness").html('<div id="normalAbilityInput">Toggle Ability? <input type="checkbox" name="normalAbilityBoost" id="normalAbilityBoost"></input></div>');
 	$("span#heroAbilityHarness").html('<div id="heroAbilityInput">Toggle Hero Ability? <input type="checkbox" name="heroAbilityBoost" id="heroAbilityBoost"></input></div>');
@@ -109,12 +111,21 @@ $(document).ready(function() {
        set the cell's title attribute to its original value. */
    // Auxillary array for wall HTKs
    var deathDamageArray = [];
+   // Variable for reading the correct level cap for normal/hard mode
+   var hmCapEnabled = 0;
     /* Auxillary functions to refresh the level options for the choices
     Call on initialisation and whenever the choice is amended */
-    function refreshFirstGearChoices() {
+    function refreshFirstGearChoices(hmRefresh) {
     	var firstGearName = $("select#firstHeroGearChoice option:selected").text();
-        var levelCap = dictLevelCaps[firstGearName];
+    	var levelCapArr = dictLevelCaps[firstGearName];
+    	var levelCap;
+    	if (levelCapArr != undefined) {
+        	levelCap = levelCapArr[hmCapEnabled];
+    	} else {
+    		levelCap = 0;
+    	}
         var firstLevelChoices = $("select#firstHeroGearLevel");
+        var currentChoice = firstLevelChoices.val();
     	firstLevelChoices.empty();
     	for (i = 0; i < levelCap; i++) {
     		firstLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
@@ -124,12 +135,28 @@ $(document).ready(function() {
         	$("#firstHeroGearLvl").css("display","none");
         } else {
         	$("#firstHeroGearLvl").css("display","block");
+        	/* If refreshed from hard mode, initialise the selection to the currently selected level,
+        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level */
+        	if (hmRefresh === true) {
+        		if (currentChoice < levelCap) {
+        			firstLevelChoices.prop('selectedIndex', currentChoice);
+        		} else {
+        			firstLevelChoices.prop('selectedIndex', levelCap - 1);
+        		}
+        	}
         }
     }
-    function refreshSecondGearChoices() {
+    function refreshSecondGearChoices(hmRefresh) {
     	var secondGearName = $("select#secondHeroGearChoice option:selected").text();
-        var levelCap = dictLevelCaps[secondGearName];
+    	var levelCapArr = dictLevelCaps[secondGearName];
+    	var levelCap;
+    	if (levelCapArr != undefined) {
+        	levelCap = levelCapArr[hmCapEnabled];
+    	} else {
+    		levelCap = 0;
+    	}
         var secondLevelChoices = $("select#secondHeroGearLevel");
+        var currentChoice = secondLevelChoices.val();
     	secondLevelChoices.empty();
     	for (i = 0; i < levelCap; i++) {
     		secondLevelChoices.append($("<option></option>").attr("value",i).text(i+1));
@@ -139,6 +166,15 @@ $(document).ready(function() {
         	$("#secondHeroGearLvl").css("display","none");
         } else {
         	$("#secondHeroGearLvl").css("display","block");
+        	/* If refreshed from hard mode, initialise the selection to the currently selected level,
+        	or to the new level cap if that is lower. Note that level cap's actual value is one less than displayed level */
+        	if (hmRefresh === true) {
+        		if (currentChoice < levelCap) {
+        			secondLevelChoices.prop('selectedIndex', currentChoice);
+        		} else {
+        			secondLevelChoices.prop('selectedIndex', levelCap - 1);
+        		}
+        	}
         }
     }
     // Function to initialise the options we have available
@@ -180,35 +216,37 @@ $(document).ready(function() {
         }
     }
     function refreshHeroGear() {
-    	initChoices();
-    	refreshFirstGearChoices();
-    	refreshSecondGearChoices();
+		initChoices();
+	    refreshFirstGearChoices(hmEnabled = false);
+	    refreshSecondGearChoices(hmEnabled = false);
     }
    /* Initialize the choices
-   We first start by writing down level caps corresponding to each choice */
+   We first start by writing down level caps corresponding to each choice 
+   Since the Sep balance changes, each level cap is written as a size-2 array.
+   Entry 0 is for the normal cap, whereas Entry 1 is for the hard mode cap */
     var dictLevelCaps = {
-    	"Barbarian Puppet": 18,
-        "Rage Vial": 18,
-        "Earthquake Boots": 18,
-        "Vampstache": 18,
-        "Giant Gauntlet": 27,
-        "Spiky Ball": 27,
-    	"Archer Puppet": 18,
-    	"Invisibility Vial": 18,
-    	"Giant Arrow": 18,
-    	"Healer Puppet": 18,
-    	"Frozen Arrow": 27,
-    	"Magic Mirror": 27,
-    	"Eternal Tome": 1, // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
-    	"Life Gem": 18,
-    	"Rage Gem": 18,
-    	"Healing Tome": 18,
-    	"Fireball": 27,
-    	"Royal Gem": 18,
-    	"Seeking Shield": 18,
-    	"Hog Rider Puppet": 18,
-    	"Haste Vial": 18,
-    	"Rocket Spear": 27,
+    	"Barbarian Puppet": [18,15],
+        "Rage Vial": [18,15],
+        "Earthquake Boots": [18,15],
+        "Vampstache": [18,15],
+        "Giant Gauntlet": [27,21],
+        "Spiky Ball": [27,21],
+    	"Archer Puppet": [18,15],
+    	"Invisibility Vial": [18,15],
+    	"Giant Arrow": [18,15],
+    	"Healer Puppet": [18,15],
+    	"Frozen Arrow": [27,21],
+    	"Magic Mirror": [27,21],
+    	"Eternal Tome": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
+    	"Life Gem": [18,15],
+    	"Rage Gem": [18,15],
+    	"Healing Tome": [18,15],
+    	"Fireball": [27,21],
+    	"Royal Gem": [18,15],
+    	"Seeking Shield": [18,15],
+    	"Hog Rider Puppet": [18,15],
+    	"Haste Vial": [18,15],
+    	"Rocket Spear": [27,21],
     };
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
@@ -254,7 +292,7 @@ $(document).ready(function() {
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
 		
-		refreshFirstGearChoices();
+		refreshFirstGearChoices(hmEnabled = false);
     });
     $("select#secondHeroGearChoice").change(function() {
    	    // Identify the choice to disable, and enable all other choices
@@ -263,7 +301,7 @@ $(document).ready(function() {
     	choiceToDisable.prop('disabled',true);
     	choiceToDisable.siblings().prop('disabled',false);
     	
-		refreshSecondGearChoices();
+		refreshSecondGearChoices(hmEnabled = false);
     });
 	$("#heroGearToggle").change(function() {
   		var tog = $("#heroGearToggle");
@@ -272,6 +310,23 @@ $(document).ready(function() {
         } else {
         	$("#heroGearHarness, #heroAbilityHarness").css("display","none");
         }
+	});
+	$("#hardModeBoost").change(function() {
+		// Reset the level caps for the currently existing equipment as required
+		// (If hero equipment is not present, this function simply appears to do nothing)
+		var tog = $("#hardModeBoost");
+		if (tog.is(":checked") === true) {
+			hmCapEnabled = 1;
+		} else {
+			hmCapEnabled = 0;
+		}
+		// Now refresh the level choices for hero equipment (where available)
+		if ($("select#firstHeroGearLevel").val() != undefined) {
+	    	refreshFirstGearChoices(hmEnabled = true);
+    	}
+    	if ($("select#secondHeroGearLevel").val() != undefined) {
+	    	refreshSecondGearChoices(hmEnabled = true);
+    	}
 	});
    $(".GoldPass").each(function() {
 	  var initialStr = $(this).text();
@@ -881,9 +936,9 @@ $(document).ready(function() {
 	  var wallDamageArray = [];
 	  // Two lookup arrays for the GW's life aura ability
 	  var auraPercentIncrease = [0,400,500,600,700,800,900,1000];
-	  var auraMaxHPIncrease = [0,275,350,425,500,575,650,725];
+	  var auraMaxHPIncrease = [0,330,420,510,600,690,780,870];
 	  // Another one for GW's rage aura ability
-	  var rageAuraPercentIncrease = [0,20,25,30,35,40,45,50];
+	  var rageAuraPercentIncrease = [0,15,20,25,30,35,45,50];
 	  // Lookup arrays for the apprentice's aura ability
 	  // Styled in thousandths for ease of comparison
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
@@ -908,7 +963,7 @@ $(document).ready(function() {
 			"Rage Vial": [17,22,27,32,37,42,48,54,60,66,72,79,86,94,104,112,120,128],
 			"Earthquake Boots": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
 			"Vampstache": [9,10,12,13,15,16,18,19,22,27,32,37,42,48,53,58,63,68],
-			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,140,145,150,155,160,165,170,175,180],
+			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
 			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Archer Puppet": [26,34,42,49,55,62,71,80,90,100,109,115,122,127,132,136,140,144],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
@@ -921,8 +976,8 @@ $(document).ready(function() {
 			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
 		};
 		var dictHPBonus = {
-			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1520,1726,1932,2138,2344,2550],
-			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1140,1295,1449,1604,1758,1913],
+			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1596,1898,2222,2458,2812,3060],
+			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
 			"Spiky Ball": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
 			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
@@ -1277,15 +1332,15 @@ $(document).ready(function() {
 			// First, check the modifier mode, which will override other checks
 			if (hardModeCheckBox != null) {
 				if (hardModeCheckBox.checked === true) {
-					if (modifierMode == "Attack") { // Hero in attack mode gets 15% less damage
-						calcNewDPH *= 85/100;
+					if (modifierMode == "Attack") { // Hero in attack mode gets 5% less damage
+						calcNewDPH *= 95/100;
 					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage
 					// however the hard mode toggle will be disabled for all Heroes except GW
 					// (since hard mode bonuses do not apply to live defending heroes)
 						calcNewDPH *= 105/100;
 					} else {
 						if (isHero === true) { // For heroes when modifier mode is ignored
-							calcNewDPH *= 85/100;
+							calcNewDPH *= 95/100;
 						} else if (isBuilding === true || isStatue === true) { // For buildings or "statues"
 							calcNewDPH *= 105/100;
 						}
@@ -1837,15 +1892,15 @@ $(document).ready(function() {
 			if (hardModeCheckBox != null) {
 				if (hardModeCheckBox.checked === true) {
 					hardModeUsed = true;
-					if (modifierMode == "Attack") { // Hero in attack mode gets 15% less damage
-						buffedDPS *= 85/100;
+					if (modifierMode == "Attack") { // Hero in attack mode gets 5% less damage
+						buffedDPS *= 95/100;
 					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage,
 					// however the hard mode toggle will be disabled for all Heroes except GW
 					// (since hard mode bonuses do not apply to live defending heroes)
 						buffedDPS *= 105/100;
 					} else {
 						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored
-							buffedDPS *= 85/100;
+							buffedDPS *= 95/100;
 						} else if ($(this).hasClass("Building") === true || $(this).hasClass("Statue") === true) { // For buildings or "statues"
 							buffedDPS *= 105/100;
 						}
@@ -1909,7 +1964,7 @@ $(document).ready(function() {
 				if (hardModeCheckBox.checked === true && $(this).hasClass("Hero") === true) {
 					if (modifierMode == "" || modifierMode == "Attack") {
 						hardModeUsed = true;
-						baseHP *= 9/10; // 10% nerf to base HP
+						baseHP *= 95/100; // 5% nerf to base HP
 					}
 				}
 			}
@@ -2336,6 +2391,7 @@ $(document).ready(function() {
     		toggleModifierMode();
     	}
 		// Reset hero gear
+		hmCapEnabled = 0; // Reset this variable for level cap purposes
 		refreshHeroGear();
         $("#heroGearHarness, #heroAbilityHarness").css("display","none");
         // Now reset all modified cells

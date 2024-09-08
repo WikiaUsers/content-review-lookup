@@ -13,22 +13,22 @@
  
 '''Extension de LiveRC'''
  
-Ajoute une icône à côté des articles modifiés par plus de 5 personnes différentes durant la dernière heure
+Ajoute une icÃ´ne Ã  cÃ´tÃ© des articles modifiÃ©s par plus de 5 personnes diffÃ©rentes durant la derniÃ¨re heure
  
 * Licence : ...?
 * Documentation :
 * Auteur : [[wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 
 lrcParams.MostModifiedPagesUserLimit = 5;
-lrcManageParams_Desc["DescMostModifiedPagesUserLimit"] = new Array("Limite pour les pages très modifiées", "Pages très modifiées");
+lrcManageParams_Desc["DescMostModifiedPagesUserLimit"] = new Array("Limite pour les pages trÃ¨s modifiÃ©es", "Pages trÃ¨s modifiÃ©es");
 
 function MostModifiedPagesExtension_GetInfos(Args) {
   var tr1 = document.getElementById(Args.id);
@@ -103,7 +103,7 @@ function MostModifiedPagesExtension_AddIcon(Req, data){
   var ArticleLink = getElementsByClass("lrc_ArticleLink", TR, "a")[0];
   if(!ArticleLink) return;
   var Number = Users.length;
-  var Title = Number+" éditeurs durant la dernière heure : " + Users.join(" - ");
+  var Title = Number+" Ã©diteurs durant la derniÃ¨re heure : " + Users.join(" - ");
   var Icon = document.createElement('img');
   Icon.src = "//upload.wikimedia.org/wikipedia/commons/thumb/1/16/Co-op_activism4.svg/12px-Co-op_activism4.svg.png";
   Icon.title = Title;

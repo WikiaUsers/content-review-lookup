@@ -1,4 +1,4 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 
 /* == Da Wiki Le Seigneur des Anneaux == */
 /* A+ Wiki Badge */
@@ -7,11 +7,11 @@ $('.fandom-community-header__community-name-wrapper').append(
 	.attr('src', 'https://static.wikia.nocookie.net/cacadores-de-sombras/images/e/ed/A%2B_wiki_badge.png/revision/latest?cb=20240223024929&format=original&path-prefix=pt-br')
 );
 
-/* == Da Shadowhunter's Wiki em inglês == */// Alerta de Spoilers e Não Finalizados
+/* == Da Shadowhunter's Wiki em inglÃªs == */// Alerta de Spoilers e NÃ£o Finalizados
 window.SpoilerAlertJS = {
-    question: 'ATENÇÃO! Esta área contém spoilers ou informações provisórias que você pode não querer ver. Tem certeza que deseja prosseguir?',
+    question: 'ATENÃ‡ÃƒO! Esta Ã¡rea contÃ©m spoilers ou informaÃ§Ãµes provisÃ³rias que vocÃª pode nÃ£o querer ver. Tem certeza que deseja prosseguir?',
     yes: 'Sim, por favor',
-    no: 'Não, ainda não',
+    no: 'NÃ£o, ainda nÃ£o',
     fadeDelay: 1600
 };
 
@@ -31,19 +31,19 @@ window.DiscordBannerSettings = {
     noRail: true
 };
 
-// Pop-ups em Referências
+// Pop-ups em ReferÃªncias
 importScriptPage('ReferencePopups/code.js', 'dev');
 
 /* Auto Refresh */
-window.AjaxRCRefreshText = 'Carregamento Automático';
-window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
+window.AjaxRCRefreshText = 'Carregamento AutomÃ¡tico';
+window.AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
 window.ajaxPages = [
-    "Especial:Mudanças_recentes",
-    "Especial:Páginas_vigiadas",
+    "Especial:MudanÃ§as_recentes",
+    "Especial:PÃ¡ginas_vigiadas",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:Páginas_novas",
-    "Especial:Contribuições"
+    "Especial:PÃ¡ginas_novas",
+    "Especial:ContribuiÃ§Ãµes"
 ];
 
 // User tags
@@ -71,7 +71,7 @@ window.UserTagsJS = {
  
     tags: {
         bureaucrat: {
-            u:'Cônsul',
+            u:'CÃ´nsul',
             link:'Project:Administradores',
             color:'white',
             title:'Burocrata' 
@@ -89,7 +89,7 @@ window.UserTagsJS = {
             title:'Patroller' 
         },
 		rollback: {
-            u:'Caçador de Sombras',
+            u:'CaÃ§ador de Sombras',
             link:'Project:Administradores',
             color:'white',
             title:'Rollback' 

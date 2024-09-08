@@ -54,7 +54,7 @@ window.WikiNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Este wiki así como muchas otras webs, se ve mal con el navegador Internet Explorer, visita el wiki con otro navegador para verlo bien. <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ir a portada</a>.</div></li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Este wiki asÃ­ como muchas otras webs, se ve mal con el navegador Internet Explorer, visita el wiki con otro navegador para verlo bien. <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">Ir a portada</a>.</div></li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(WikiNotification.dismiss);
 	},

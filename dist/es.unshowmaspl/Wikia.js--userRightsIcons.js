@@ -10,7 +10,7 @@ function addMastheadTags() {
    // BUREAUCRATS
  
     rights["Longyaven"]     = ["CARTOONIST","STORYBOARDER"],
-    rights["Pamhay"]     = ["FUNDADORA","BURÓCRATA"],
+    rights["Pamhay"]     = ["FUNDADORA","BURÃ“CRATA"],
     rights["Cariazulita"]     = ["MORDARET FAN","ADMIN"],
     rights["Superamigosupremo555"]               = ["ADMIN"],
     rights["Mordecai Muerte"]]      = ["ADMINISTRATOR", "MORDECAI FAN"];

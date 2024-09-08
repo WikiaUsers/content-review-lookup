@@ -444,7 +444,7 @@ function patchChat(chat) {
 			if (evt.name == mainRoom.userMain.attributes.name) return;
 			setTimeout(function() {
 				if(patchChat(mainRoom.chats.privates[evt.roomId])) {
-					if (!evt.active) showNotification("Privatchat mit "+user+" geöffnet",{icon: userIcon},false,this.main);
+					if (!evt.active) showNotification("Privatchat mit "+user+" geÃ¶ffnet",{icon: userIcon},false,this.main);
 				}
 			},5000);
 		}

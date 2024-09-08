@@ -1,5 +1,5 @@
  /**
-  * Lädt die Informationsvorlage beim Hochladen direkt im Beschreibungsfeld
+  * LÃ¤dt die Informationsvorlage beim Hochladen direkt im Beschreibungsfeld
   * wird in [[MediaWiki:Common.js]] eingebunden
   */
  addOnloadHook(function() {
@@ -15,7 +15,7 @@
                    + "}"+"}\n"
                    + "== Lizenz ==\n"
                    + "{"+"{Copyright-Nintendo}"+"}\n\n"
- 
+Â 
                    + "["+"[Kategorie:\n"
                    + "["+"[Kategorie:\n"
                    + "["+"[Kategorie:";

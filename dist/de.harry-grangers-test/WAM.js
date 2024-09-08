@@ -1,5 +1,5 @@
 function getWAM(obj) {
-    obj = obj || {};
+    obj = obj ||Â {};
     wikia_url = 'http://de.wikia.com/api/v1/WAM/WAMIndex?' + $.param({
 	wiki_lang: obj.hasOwnProperty('lang') ? obj.lang : wgContentLanguage,
         wiki_id: obj.hasOwnProperty('wiki_id') ? obj.wiki_id : wgCityId,

@@ -19,7 +19,7 @@ window.WikiNotification = {
 			nf = $('#WikiaNotifications');
 			$(document.body).addClass('notifications');
 		}
-		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Mejoras: <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">U2Pedia</a>, ¡Velas!</div>.</li>');
+		var sn = $('<li><div data-type="100"><a class="sprite close-notification"></a>Mejoras: <a href="'+wgServer+wgArticlePath.replace('$1',WikiNotification.article.replace(/\s/g,'_'))+'" title="'+WikiNotification.article+'">U2Pedia</a>, Â¡Velas!</div>.</li>');
 		nf.append(sn);
 		sn.find('a.sprite').eq(0).click(WikiNotification.dismiss);
 	},
@@ -31,5 +31,5 @@ window.WikiNotification = {
  
 $(WikiNotification.init);
 
-/* Enlaces en la navegación de la cuenta */
+/* Enlaces en la navegaciÃ³n de la cuenta */
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('.WikiaHeader nav ul li:first-child');$('.WikiHeaderRestyle .buttons .contribute ul li:last-child').before('<li><a</a></li>');}addOnloadHook(subeEnlacesUtiles);

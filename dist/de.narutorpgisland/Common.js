@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 window.ShowHideConfig = { 
     autoCollapse: 3, 
@@ -11,7 +11,7 @@ window.ShowHideConfig = {
     }
 };
  
-// Eigenes Script für Spoiler
+// Eigenes Script fÃ¼r Spoiler
 // http://de.naruto.wikia.com - by [[Benutzer:TrunX]]
 
 window.SpoilerHide = "Spoiler verbergen";
@@ -70,7 +70,7 @@ function SearchSpoilerClasses(tag) {
 
 $(createSpoilerLink);
 
-// Für Toggeln
+// FÃ¼r Toggeln
 // http://de.naruto.wikia.com - by [[Benutzer:TrunX]]
 function createToggle() {
 	var obj;
@@ -109,7 +109,7 @@ function ToggleClasses(Toggle) {
 	else
 		Toggle[0] = 'unToggle';
 	
-	// Funktionsaufruf um die Clicker zu ändern
+	// Funktionsaufruf um die Clicker zu Ã¤ndern
 	TogglerClicker(Toggle);
 }
 

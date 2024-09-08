@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -24,7 +24,7 @@ var quizName = "Willkommen bei den Louds Quiz";
 var quizLang = "de";
 var resultsTextArray = [ 
 	"Du solltest mehr Willkommen bei den Louds ansehen...",
-	"Nicht schlecht, du weisst viel über Willkommen bei den Louds.",
+	"Nicht schlecht, du weisst viel Ã¼ber Willkommen bei den Louds.",
 	"WOW! Du bist ein Willkommen bei den Louds experte!" 
     ];
 var questions = [
@@ -49,9 +49,9 @@ var questions = [
 
 	["Was war die erste Folge?",
 	"Allein im Dunkeln",
-	"Nachricht für dich",
+	"Nachricht fÃ¼r dich",
 	"Der Schul-Rowdy",
-	"Auf Trophäenjagd"],
+	"Auf TrophÃ¤enjagd"],
 
 	["Wer hat die serie kreiert?",
 	"Chris Savino",
@@ -67,7 +67,7 @@ var questions = [
 
 	["Wie nennt sich die Weinachts Folge der Serie?",
 	"Weihnachten bei den Louds",
-	"11 Louds am Hüpfen",
+	"11 Louds am HÃ¼pfen",
 	"Der Loud Weihnachten",
 	"Loudlicher Weihnachten"],
 
@@ -75,10 +75,10 @@ var questions = [
 	"Mai 16, 2016",
 	"August 1, 2016",
 	"September 27, 2016",
-	"März 1, 2016"],
+	"MÃ¤rz 1, 2016"],
 
 	["Was macht Lincoln gerne?",
-	"Videospielen, Comics Lesen und mit seine Schwester abhängen.",
+	"Videospielen, Comics Lesen und mit seine Schwester abhÃ¤ngen.",
 	"Die ganze Zeit am Schlafen.",
 	"Die Welt zu beherrschen.",
 	"Fehrnsehen und Sport treiben."],

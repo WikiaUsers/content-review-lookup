@@ -12,10 +12,10 @@ $(function() {
  
   rights["TheVictor"]   = ["Fundador","Inactivo"],
  
-    // BURÓCRATAS
+    // BURÃ“CRATAS
 
-  rights["Paconick"]       = ["Burócrata"],
-  rights["Thefrigoman"]       = ["Burócrata"],
+  rights["Paconick"]       = ["BurÃ³crata"],
+  rights["Thefrigoman"]       = ["BurÃ³crata"],
  
     // ADMINISTRADORES
  

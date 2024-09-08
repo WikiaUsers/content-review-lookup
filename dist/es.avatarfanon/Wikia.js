@@ -1,4 +1,4 @@
-/* Iconos en p·ginas para redes sociales */
+/* Iconos en p√°ginas para redes sociales */
 var SocialMediaButtons = { 
 	position: "top",
 	colorScheme: "dark",

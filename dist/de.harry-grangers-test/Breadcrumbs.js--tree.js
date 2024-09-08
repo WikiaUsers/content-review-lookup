@@ -17,7 +17,7 @@
                 }
             },
             "1": {
-                "title": "Bücher"
+                "title": "BÃ¼cher"
             },
             "2": {
                 "title": "Filme"

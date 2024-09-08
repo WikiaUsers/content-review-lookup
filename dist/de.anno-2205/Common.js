@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -13,7 +13,7 @@ var ShowHideConfig = {
     }
 };
 
-/* Importiert Skript für einen Countdown */
+/* Importiert Skript fÃ¼r einen Countdown */
 importArticles({
     type: "script",
     articles: [

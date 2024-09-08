@@ -9,8 +9,8 @@ require_once("http://shejidan.wikia.com/wiki/extensions/JSpoiler.php");
  * tags behind a JavaScript spoiler block.
  *
  * @author Brian Enigma <brian@netninja.com>
- * @copyright © 2006 Brian Enigma
- * @copyright © 2007 Patrick Delancy
+ * @copyright Â© 2006 Brian Enigma
+ * @copyright Â© 2007 Patrick Delancy
  * @license http://creativecommons.org/licenses/by-nc-sa/2.5/ - Creative Commons Attribution-Noncommercial-Share Alike 2.5 License
  */
 

@@ -10,7 +10,7 @@ fdButtons[fdButtons.length] = {
   'label': 'Vandalismo'};
 
 function emptyLicenseAlert(form) {
-	var msg = "O arquivo de licenÁa n„o for selecionado."
+	var msg = "O arquivo de licen√ßa n√£o for selecionado."
 	if(window.emptyLicenseWarningDelivered) return true;
 	if($('#wpLicense').val() == '') {
 		alert(msg);
@@ -39,9 +39,9 @@ importArticles({
 importScript('MediaWiki:Common.js/standardeditsummaries.js');
 // END of Standard Edit Summaries
  
-// As descriÁıes dos grupos de usu·rios ativos no perfil do usu·rio
+// As descri√ß√µes dos grupos de usu√°rios ativos no perfil do usu√°rio
 importScript('MediaWiki:Common.js/userRightsIcons.js');
-// FIM das descriÁıes dos grupos de usu·rios ativos no novo perfil de usu·rio
+// FIM das descri√ß√µes dos grupos de usu√°rios ativos no novo perfil de usu√°rio
  
 /** Collapsible tables *********************************************************
   *
@@ -506,7 +506,7 @@ var Tabs = {
 };
 Tabs.init();
 
-// Diminuir os dias para bloquear os coment·rios 
+// Diminuir os dias para bloquear os coment√°rios 
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 30;
 window.lockOldComments.addNoteAbove = true;

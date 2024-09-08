@@ -361,9 +361,9 @@ $(moveEditSection);
 //
 /************************************/
 /* PlantillaPlegable: Principalmente para plantillas, aunque solo soporta tablas (no div)
- * Añade un botón para plegar/desplegar la plantilla, útil para plantillas que ocupan mucho.
+ * AÃ±ade un botÃ³n para plegar/desplegar la plantilla, Ãºtil para plantillas que ocupan mucho.
  *
- * Copyright (C) 2008  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2008  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -371,12 +371,12 @@ $(moveEditSection);
  *
  * Funcionamiento:
  *  Se ocultan todas las filas excepto la primera.
- *  El control se muestra en la primera fila y se sitúa en la última columna, como primer elemento (porque será float:right)
- *  Si se crea un span de clase "plegable-ctrl", se usará ese para ubicar el control
- *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer así, fuerza el ancho anterior.
+ *  El control se muestra en la primera fila y se sitÃºa en la Ãºltima columna, como primer elemento (porque serÃ¡ float:right)
+ *  Si se crea un span de clase "plegable-ctrl", se usarÃ¡ ese para ubicar el control
+ *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer asÃ­, fuerza el ancho anterior.
  *
- * parámetros:
+ * parÃ¡metros:
  *  el: [HTMLTable] Tabla a plegar/desplegar
- *  iniPlegada: [bool] Opcional. Indica si debe plegarse automáticamente tras usarlo
+ *  iniPlegada: [bool] Opcional. Indica si debe plegarse automÃ¡ticamente tras usarlo
  */
 (function(){

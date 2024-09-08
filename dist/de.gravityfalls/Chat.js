@@ -34,7 +34,7 @@ function clearChatText() {
 function themeButtons() {
     var normalText = 'Normal theme';
     var dayText = 'Tag Thema';
-    var duskText = 'Dämmerungs Thema';
+    var duskText = 'DÃ¤mmerungs Thema';
     var nightText = 'Nacht Thema';
     var $button = $('<div class="chat-button" />');
     var $link = $('<a class="wikia-button" />').text(normalText);

@@ -3,7 +3,7 @@
 //================================
  
 // Code du wiki http://dragonage.wikia.com/wiki/MediaWiki:Common.js created by "Tierrie"
-// importé depuis le wiki  http://onepiece.wikia.com/wiki/MediaWiki:Common.js/slider.js
+// importÃ© depuis le wiki  http://onepiece.wikia.com/wiki/MediaWiki:Common.js/slider.js
  
 mw.loader.using(["jquery.cookie"]);
  

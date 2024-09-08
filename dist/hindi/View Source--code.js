@@ -3,7 +3,7 @@
 /**
  * View Source
  *
- * © Peter Coester 2013 [[User_talk:Pecoes|Pecoes]]
+ * Â© Peter Coester 2013 [[User_talk:Pecoes|Pecoes]]
  *
  * documentation and examples at:
  * https://dev.fandom.com/wiki/View_Source

@@ -101,12 +101,12 @@ if ($('.pi-image').length === 0){
     });
 }
 
-/* @description Autocorrects any searches for "User:KMO", "User talk:KMO", and "Category:KMO", replacing "KMO" with "KMØ" (workaround [due to the special character "Ø" in the username] to allow all the subpages of those pages to be easily accessible through search). In the case that a user is searching for a User/User talk/Category namespace page that starts with KMO (e.g., User:KMORE, User talk:KMOON, or Category:KMOD), it will undo the autocorrect of "KMØ" back to the original "KMO" */
+/* @description Autocorrects any searches for "User:KMO", "User talk:KMO", and "Category:KMO", replacing "KMO" with "KMÃ˜" (workaround [due to the special character "Ã˜" in the username] to allow all the subpages of those pages to be easily accessible through search). In the case that a user is searching for a User/User talk/Category namespace page that starts with KMO (e.g., User:KMORE, User talk:KMOON, or Category:KMOD), it will undo the autocorrect of "KMÃ˜" back to the original "KMO" */
 $("input#searchInput").on("keyup", function() {
     if ($(this).val().trim().toUpperCase() === ("USER:KMO") || $(this).val().trim().toUpperCase() === ("USER TALK:KMO") || $(this).val().trim().toUpperCase() === ("CATEGORY:KMO")) {
-        $(this).val($(this).val().replace("KMO", "KMØ"));
-    } else if (($(this).val().trim().length === 9 && $(this).val().trim().toUpperCase() !== ("USER:KMØ/") && $(this).val().trim().toUpperCase().indexOf("Ø") !== -1) || ($(this).val().trim().length === 14 && $(this).val().trim().toUpperCase() !== ("USER TALK:KMØ/") && $(this).val().trim().toUpperCase().indexOf("TALK") !== -1 && $(this).val().trim().toUpperCase().indexOf("Ø") !== -1) || ($(this).val().trim().length === 13 && $(this).val().trim().toUpperCase().indexOf("CATEGORY:KMØ") !== -1)) {
-        $(this).val($(this).val().replace("KMØ", "KMO"));
+        $(this).val($(this).val().replace("KMO", "KMÃ˜"));
+    } else if (($(this).val().trim().length === 9 && $(this).val().trim().toUpperCase() !== ("USER:KMÃ˜/") && $(this).val().trim().toUpperCase().indexOf("Ã˜") !== -1) || ($(this).val().trim().length === 14 && $(this).val().trim().toUpperCase() !== ("USER TALK:KMÃ˜/") && $(this).val().trim().toUpperCase().indexOf("TALK") !== -1 && $(this).val().trim().toUpperCase().indexOf("Ã˜") !== -1) || ($(this).val().trim().length === 13 && $(this).val().trim().toUpperCase().indexOf("CATEGORY:KMÃ˜") !== -1)) {
+        $(this).val($(this).val().replace("KMÃ˜", "KMO"));
     }
 });
 

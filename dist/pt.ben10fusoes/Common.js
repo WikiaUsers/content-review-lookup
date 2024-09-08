@@ -1,4 +1,4 @@
-// 1. Bot„o de subir
+// 1. Bot√£o de subir
 importScript('MediaWiki:Common.js/subir.js');
  
 var jaaspeel = new Object();

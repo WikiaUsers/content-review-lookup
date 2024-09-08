@@ -1,7 +1,7 @@
-/* Todos os scripts aqui ser„o carregados para TODOS os users */
+/* Todos os scripts aqui ser√£o carregados para TODOS os users */
 importScriptPage('DupImageList/code.js', 'dev'); 
  
-/* Atualizando automaticamente mudanÁas recentes
+/* Atualizando automaticamente mudan√ßas recentes
  * See w:c:dev:AjaxRC for info & attribution 
  */
  
@@ -126,7 +126,7 @@ var hasClass = ( function() {
 importScript('MediaWiki:Wikia.js/cancelButton.js');
 // END Add CANCEL Button for new RTE
  
-// 1. Bot„o de subir
+// 1. Bot√£o de subir
 importScript('MediaWiki:Common.js/subir.js');
  
 // <syntax type="javascript">

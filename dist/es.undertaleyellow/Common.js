@@ -1,11 +1,11 @@
-/* Códigos de diseño */
+/* CÃ³digos de diseÃ±o */
 importArticles({
     type: 'script',
     articles: ['u:onceuponatime:MediaWiki:Snowing.js'
     ]
 });
  
-/* Cambio de título (Créditos a Un Show Más y MPLWiki) */
+/* Cambio de tÃ­tulo (CrÃ©ditos a Un Show MÃ¡s y MPLWiki) */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

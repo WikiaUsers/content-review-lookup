@@ -4,8 +4,8 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		bureaucrat: { u:'Grand Lord' },
-		founder: { u:'Maître Stratège' },
-		chat moderator: { u:'Héros' },
+		founder: { u:'MaÃ®tre StratÃ¨ge' },
+		chat moderator: { u:'HÃ©ros' },
 		rollback: { u:'Sorcier' },
 		inactive: { u: 'Inactif' }
 	}
@@ -41,14 +41,14 @@ window.UserTagsJS = {
 }( mediaWiki, jQuery ) );
 
 /** 
- * Boîtes déroulantes
+ * BoÃ®tes dÃ©roulantes
  * Source : http://fr.wikipedia.org/wiki/MediaWiki:Common.js
- * Licence : selon source (et non la licence utilisée par Poképédia, sauf si identique)
- * Pour [[Modèle:Rouleau]]
+ * Licence : selon source (et non la licence utilisÃ©e par PokÃ©pÃ©dia, sauf si identique)
+ * Pour [[ModÃ¨le:Rouleau]]
  */
 var autoCollapse = 2;
 var collapseCaption = '[Enrouler]';
-var expandCaption = '[Dérouler]';
+var expandCaption = '[DÃ©rouler]';
  
 function collapseTable( tableIndex ) {
   var Button = document.getElementById( "collapseButton" + tableIndex );

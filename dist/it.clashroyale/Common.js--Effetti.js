@@ -7,7 +7,7 @@ Manutenzione
     Si prega di aggiornare lo script, se vengono aggiornate
     eventuali statistiche delle Carte da parte della SUPERCELL.
     
-N.B: Per motivi di diritti, lo script Ë digitato in versione inglese e non va assolutamente tradotto, salvo, ovviamente, le parole che permettono a tale di funzionare correttamente su questa Wiki.
+N.B: Per motivi di diritti, lo script √® digitato in versione inglese e non va assolutamente tradotto, salvo, ovviamente, le parole che permettono a tale di funzionare correttamente su questa Wiki.
  
 */
 // *********** Functions ***********
@@ -62,17 +62,17 @@ $(document).ready(function() {
             // Apply rage effect and color the text affected after saving initial values
             $('#unit-attributes-table tr:eq(0) th').each(function(b) {
                 attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-                if (attributeName === "velocit‡") {
+                if (attributeName === "velocit√†") {
                     movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
                     unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectUp(unitAttributeValues[0])).addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
                 }
@@ -84,13 +84,13 @@ $(document).ready(function() {
                     movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
                     unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectUp(unitAttributeValues2[0])).addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
                 }
@@ -135,17 +135,17 @@ $(document).ready(function() {
             // Apply slow effect and color the text affected after saving initial values
             $('#unit-attributes-table tr:eq(0) th').each(function(b) {
                 attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-                if (attributeName === "velocit‡") {
+                if (attributeName === "velocit√†") {
                     movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the slow button is inactivated
                     unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectDown(unitAttributeValues[0])).removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
                 }
@@ -153,17 +153,17 @@ $(document).ready(function() {
             // Repeat for a secondary attributes table (e.g. Golem)
             $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
                 attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-                if (attributeName === "velocit‡") {
+                if (attributeName === "velocit√†") {
                     movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
                     unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectDown(unitAttributeValues2[0])).removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
                 }
@@ -208,13 +208,13 @@ $(document).ready(function() {
             // Remove effects and remove the color from the text affected
             $('#unit-attributes-table tr:eq(0) th').each(function(b) {
                 attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-                if (attributeName === "velocit‡") {
+                if (attributeName === "velocit√†") {
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + " (" + unitAttributeValues[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
                 }
             });
@@ -223,11 +223,11 @@ $(document).ready(function() {
                 attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
                 if (attributeName === "speed") {
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + " (" + unitAttributeValues2[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ colpi") {
+                } else if (attributeName === "velocit√† colpi") {
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ generazione") {
+                } else if (attributeName === "velocit√† generazione") {
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-                } else if (attributeName === "velocit‡ produzione") {
+                } else if (attributeName === "velocit√† produzione") {
                     $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
                 }
             });

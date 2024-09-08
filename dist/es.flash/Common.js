@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 importArticle({
     type: 'script',
     articles: [
@@ -8,9 +8,9 @@ importArticle({
      'w:c:dev:ExtendedNavigation/code.js'
      ]
 });
-/* Refrescar autom·ticamente WikiActivity y CambiosRecientes */
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+/* Refrescar autom√°ticamente WikiActivity y CambiosRecientes */
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
 /* Etiqueta de usuarios inactivos */
@@ -28,7 +28,7 @@ function UserNameReplace(){
 }
 addOnloadHook(UserNameReplace);
  
-/* Reescribir tÌtulo */
+/* Reescribir t√≠tulo */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;
@@ -38,7 +38,7 @@ $(function(){
 /* Bloquear foros */
 window.LockForums = {
     expiryDays: 45,
-    expiryMessage: "Este foro se considera archivado ya que no se ha respondido en 45 dÌas.",
+    expiryMessage: "Este foro se considera archivado ya que no se ha respondido en 45 d√≠as.",
 };
  
 /* UserTags */
@@ -59,7 +59,7 @@ window.UserTagsJS = {
 window.dev = window.dev || {}; window.dev.editSummaries = { css: '#stdSummaries { width: 264px }', select: 'MediaWiki:Standard Edit Summary' };
  
 window.SpoilerAlert = {
-    question: 'Este artÌculo contiene adelantos y/o tramas de episodios a˙n no estrenados. øDesea continuar?',
+    question: 'Este art√≠culo contiene adelantos y/o tramas de episodios a√∫n no estrenados. ¬øDesea continuar?',
     yes: 'Si, quiero continuar',
     no: 'No, gracias',
     isSpoiler: function () {

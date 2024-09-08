@@ -2,7 +2,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
                 bannedfromchat: { u:'Vom Chat ausgeschlossen', order: 1 },
-                bureaucrat: { u:'Bürokrat', order: 2 },
+                bureaucrat: { u:'BÃ¼rokrat', order: 2 },
                 sysop: { u:'Admin', order: 3 },
                 chatmoderator: { u:'Chat-Moderator', order: 4 },
                 threadmoderator: { u:'Foren-Moderator', order: 5 }

@@ -1,11 +1,11 @@
 /**
  * '''Restauration Deluxe'''
  *
- * Cocher/DÈcocher rapidement les cases pour restaurer un article
+ * Cocher/D√©cocher rapidement les cases pour restaurer un article
  *
- * Auteur : GÙTÙ
- * DerniËre rÈvision : 27 septembre 2011
- * {{CatÈgorisation JS|RestaurationDeluxe}}
+ * Auteur : G√¥T√¥
+ * Derni√®re r√©vision : 27 septembre 2011
+ * {{Cat√©gorisation JS|RestaurationDeluxe}}
  */
 
 function UndeleteSelectAll(){
@@ -14,7 +14,7 @@ function UndeleteSelectAll(){
         var all = document.createElement('input');
         all.setAttribute('type', 'checkbox');
         all.setAttribute('onclick', 'SelectAllInputs(this.checked)');
-        all.setAttribute('title', 'SÈlectionner/DÈsÈlectionner tous');
+        all.setAttribute('title', 'S√©lectionner/D√©s√©lectionner tous');
         title2[title2.length-1].appendChild(all);
         all.click();
 }

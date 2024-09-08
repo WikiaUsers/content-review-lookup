@@ -1,4 +1,4 @@
-/* © Wiki Gardiens des Cités Perdues */
+/* Â© Wiki Gardiens des CitÃ©s Perdues */
 
 /*** Module de progression ***/
 setTimeout(function () {

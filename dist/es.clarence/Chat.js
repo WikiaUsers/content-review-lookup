@@ -1,4 +1,4 @@
-/* Créditos a Clarence Wiki */
+/* CrÃ©ditos a Clarence Wiki */
 
 importArticles({
     type: 'script',

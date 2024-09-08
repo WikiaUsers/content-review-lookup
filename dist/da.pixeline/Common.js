@@ -1,1 +1,1 @@
-/* Javascript inkluderet her vil være aktivt for alle brugere. */
+/* Javascript inkluderet her vil vÃ¦re aktivt for alle brugere. */

@@ -3,13 +3,13 @@
 var wgPageName = mw.config.get( 'wgPageName' );
 
 if (($('#ca-addsection').length > 0) && (($('.editButtons').length > 0)) 
-    || (wgPageName == 'Terraria_Wiki:Portail de l\'administration') || (wgPageName == 'Terraria_Wiki:Portail de la communauté')){
+    || (wgPageName == 'Terraria_Wiki:Portail de l\'administration') || (wgPageName == 'Terraria_Wiki:Portail de la communautÃ©')){
 $('.editCheckboxes').css('margin-bottom','5px');
 var addSigTooltip = 
-    'Cliquez à la fin de votre commentaire, puis cliquez sur ce lien pour ajouter votre signature.';
+    'Cliquez Ã  la fin de votre commentaire, puis cliquez sur ce lien pour ajouter votre signature.';
 var addSigText = '<div style="border:1px #ccc solid; width:95%; padding:10px;"> ' +
-    'Lorsque vous avez terminé d\'écrire votre commentaire, ' + 
-    'veuillez placer le curseur à la fin de votre commentaire et ' +
+    'Lorsque vous avez terminÃ© d\'Ã©crire votre commentaire, ' + 
+    'veuillez placer le curseur Ã  la fin de votre commentaire et ' +
     '<a style="font-weight:bold;" href="#ggg" class="addSig" title="' + addSigTooltip + '">' +
     'cliquez-ici pour ajouter votre signature</a>. <br/>' + 
     '<span style="font-size:90%">Votre signature s\'affichera en tant que &quot;&#126;&#126;&#126;&#126;&quot;, ' +

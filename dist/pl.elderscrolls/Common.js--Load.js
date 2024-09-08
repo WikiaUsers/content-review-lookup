@@ -1,7 +1,7 @@
 /*Nota, el contenido del Common.js se encuentra en [[MediaWiki:Common.js/Code.js]], y se importa desde MediaWiki:(skinname).js/Code.js <pre>*/
  
 function loadTrueCommonJS() {
-	// Hash para evitar que puedan usar URLs que afecten a cÛmo se ve la p·gina
+	// Hash para evitar que puedan usar URLs que afecten a c√≥mo se ve la p√°gina
 	var jsHashKey = window.wgStyleVersion;
 	var reloadjs = false;
 	var debug = false;

@@ -1,4 +1,4 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
  
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
@@ -10,7 +10,7 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
  
-/** Bot„o Redirecionamento **/
+/** Bot√£o Redirecionamento **/
 addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir.png',
  'Redirecionamento',
  '#REDIRECIONAMENTO [[',
@@ -18,5 +18,5 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
  'nome do destino',
  'mw-editbutton-redirect');
  
-/** Bot„o Infobox **/
-addCustomButton('https://images.wikia.nocookie.net/pou-brasil/pt-br/images/archive/7/76/20131126161424%21Bot%C3%A3o_Infobox.png','Infobox','{{','}}','Infobox\n|imagem    = \n|descriÁ„o = \n','');
+/** Bot√£o Infobox **/
+addCustomButton('https://images.wikia.nocookie.net/pou-brasil/pt-br/images/archive/7/76/20131126161424%21Bot%C3%A3o_Infobox.png','Infobox','{{','}}','Infobox\n|imagem    = \n|descri√ß√£o = \n','');

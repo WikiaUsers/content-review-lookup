@@ -20,7 +20,7 @@ function appendLanguageDropdown() {
 			case "English":
 				languages['en'] = href;
 				break;
-			case "Português do Brasil":
+			case "PortuguÃªs do Brasil":
 				languages['pt-br'] = href;
 				break;
 		}

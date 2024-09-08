@@ -9,5 +9,5 @@ if (wgCategories == 'Tests') {
 }
 
 function notifBanner() {
-    new BannerNotification('Te encuentras en una de las p·ginas en las que se han realizado pruebas con CSS, JS, etc.', 'confirm').show();
+    new BannerNotification('Te encuentras en una de las p√°ginas en las que se han realizado pruebas con CSS, JS, etc.', 'confirm').show();
 }

@@ -1,12 +1,12 @@
 /*Importaciones*/
 /**Developers Wiki**/
-/***Códigos***/
+/***CÃ³digos***/
 importArticles({
     type: 'script',
     articles: [
-/***Botón de enviar***/
+/***BotÃ³n de enviar***/
         'u:dev:ChatSendButton.js',
-/***Contador de mensajes no leídos al estar en otra pestaña***/
+/***Contador de mensajes no leÃ­dos al estar en otra pestaÃ±a***/
         'u:dev:NewMessageCount.js',
 /***Aviso de mensaje privado***/
         'u:dev:PrivateMessageAlert/code.js'
@@ -31,7 +31,7 @@ document.getElementsByName('message')[0].onkeypress = function(e) {
 /*Filtro de chats de otras wikis*/
 $( '[name="message"]' ) .keypress( function(e) {
     if ( e.which == 32 || e.which == 13 ) {
-        this.value = this.value.replace (/Especial:Chat|Special:Chat/gi,'w:c:es.mlp No se enlaza a otros chats. (rare¬¬)');
+        this.value = this.value.replace (/Especial:Chat|Special:Chat/gi,'w:c:es.mlp No se enlaza a otros chats. (rareÂ¬Â¬)');
         }
     }
 )

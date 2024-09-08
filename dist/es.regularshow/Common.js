@@ -1,7 +1,7 @@
 window.dev = window.dev || {}; window.dev.editSummaries = { css: '#stdSummaries { width: 264px }', select: 'MediaWiki:Standard Edit Summary' };
 
 window.SpoilerAlert = {
-    question: 'Este artículo contiene adelantos y/o tramas de episodios aún no estrenados. ¿Desea continuar?',
+    question: 'Este artÃ­culo contiene adelantos y/o tramas de episodios aÃºn no estrenados. Â¿Desea continuar?',
     yes: 'Si, quiero continuar',
     no: 'No, gracias',
     isSpoiler: function () {
@@ -9,7 +9,7 @@ window.SpoilerAlert = {
     }
 };
 
-// TimeCircles - funcionamiento y diseño
+// TimeCircles - funcionamiento y diseÃ±o
  
 var timeCrirclesDivs = document.getElementsByClassName("TimeCirclesDiv");
  
@@ -30,7 +30,7 @@ $("#TimeCirclesDiv").TimeCircles({
     "circle_bg_color": "#60686F",
     "time": {
         "Days": {
-            "text": "Días",
+            "text": "DÃ­as",
             "color": "#FFCC66",
             "show": true
         },
@@ -52,7 +52,7 @@ $("#TimeCirclesDiv").TimeCircles({
     }
 });
 
-// Precaución MediaWiki by User:MaciekP42 (pl.cw-dc)
+// PrecauciÃ³n MediaWiki by User:MaciekP42 (pl.cw-dc)
 function setWikiCookie( cookie_name, data ) {
 	var domain = wgServer.split("//")[1];
 	document.cookie =
@@ -77,7 +77,7 @@ var wikiCodeWarn = getWikiCookie('wikiCodeWarnCookie', 0);
 $(function(){
     if (wikiCodeWarn != 1) {
         if (wgNamespaceNumber == 8) {
-            var $userWelcomeBox = $.showCustomModal("¡Advertencia!", '<p>Cuidado! Está entrando a una página que contienen códigos responsables de la apariencia de Un Show Más Wiki. Si desea usarlo en su comunidad, pida autorización a un administrador! De lo contrario, puede que tenga problemas en el futuro...! (si esta página es MediaWiki:Emoticons, simplemente cierre para ver)</p>', {
+            var $userWelcomeBox = $.showCustomModal("Â¡Advertencia!", '<p>Cuidado! EstÃ¡ entrando a una pÃ¡gina que contienen cÃ³digos responsables de la apariencia de Un Show MÃ¡s Wiki. Si desea usarlo en su comunidad, pida autorizaciÃ³n a un administrador! De lo contrario, puede que tenga problemas en el futuro...! (si esta pÃ¡gina es MediaWiki:Emoticons, simplemente cierre para ver)</p>', {
             id: "userWelcomeBox",
             width: 600,
             buttons: [
@@ -93,10 +93,10 @@ $(function(){
             {
                 id: "submit",
                 defaultButton: true,
-                message: "Pedir autorización",
+                message: "Pedir autorizaciÃ³n",
                 handler: function() {
                    $('#userWelcomeBox').closeModal(); 
-                   window.location='http://es.regularshow.wikia.com/wiki/Un_Show_Más_Wiki:Administración';
+                   window.location='http://es.regularshow.wikia.com/wiki/Un_Show_MÃ¡s_Wiki:AdministraciÃ³n';
                 }
             }
             ]
@@ -165,9 +165,9 @@ window.InactiveUsers = { text: 'Flojeando' };
 // **************************************************
 // NOMBRE DEL USUARIO
 // **************************************************
-// Inserta el nombre del usuario donde esté "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde estÃ© "<span class="insertusername"></span>"
 // o la [[Plantilla:Nombreusuario]]
-// Traída desde Creepypasta Wiki corregida
+// TraÃ­da desde Creepypasta Wiki corregida
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // **************************************************
  
@@ -182,7 +182,7 @@ $(function UserNameReplace(){
 });
 
 // *************************************************
-// Reescribir título, usada por Plantilla:Titulo (De MLP Wiki)
+// Reescribir tÃ­tulo, usada por Plantilla:Titulo (De MLP Wiki)
 // *************************************************
  
 $(function(){
@@ -191,7 +191,7 @@ $(function(){
   $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
 });
 
-// Refrescar automáticamente WikiActivity y CambiosRecientes
-window.AjaxRCRefreshText = 'Act. automát.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+// Refrescar automÃ¡ticamente WikiActivity y CambiosRecientes
+window.AjaxRCRefreshText = 'Act. automÃ¡t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];

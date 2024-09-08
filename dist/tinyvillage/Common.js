@@ -25,8 +25,8 @@ function updateagedays(i) {
     },
     'es': {
       and: "y",
-      day: "día",
-      days: "días"
+      day: "dÃ­a",
+      days: "dÃ­as"
     },
     'de': {
       and: "und",
@@ -44,7 +44,7 @@ function updateagedays(i) {
       days: "dni"
     },
     'hu': {
-      and: "és",
+      and: "Ã©s",
       day: "nap",
       days: "napok"
     }

@@ -8,10 +8,10 @@
 // SORTING REPLACEMENTS
 mw.config.set(
   'tableSorterCollation', {
-    'ä' : 'ae',
-    'ö' : 'oe',
-    'ß' : 'ss',
-    'ü' : 'ue',
+    'Ã¤' : 'ae',
+    'Ã¶' : 'oe',
+    'ÃŸ' : 'ss',
+    'Ã¼' : 'ue',
     /* REMOVE ANY NONE ALPHA CHARACTERS */
     ' ' : '',
     ',' : '',

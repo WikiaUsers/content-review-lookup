@@ -1,4 +1,4 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 importArticles({
     type: 'script',
     articles: [
@@ -6,5 +6,5 @@ importArticles({
         'u:dev:MediaWiki:PageRenameAuto-update/code.js',
     ]
 });
-// Pop-ups em Referências
+// Pop-ups em ReferÃªncias
 importScriptPage('ReferencePopups/code.js', 'dev');

@@ -10,10 +10,10 @@ function UserNameReplace(){
 } 
 addOnloadHook(UserNameReplace);
 // AjaxRC
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+AjaxRCRefreshText = 'Act. automÃ¡t.';
+AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
-// Botones de edición adicionales 
+// Botones de ediciÃ³n adicionales 
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/en/c/c8/Button_redirect.png",
@@ -38,8 +38,8 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucción",
-     "tagOpen": "{{En construcción|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+     "tagOpen": "{{En construcciÃ³n|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
  
@@ -66,10 +66,10 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Pequeño",
+     "speedTip": "Texto PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Pequeño"};
+     "sampleText": "Texto PequeÃ±o"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -115,18 +115,18 @@ ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
  
 } 
 /***************************************************
-ATRIBUCIÓN:
+ATRIBUCIÃ“N:
  * @autor - pecoes
- * @modificación - Pintor Kagamine
- * @comunidad - Poképolis
+ * @modificaciÃ³n - Pintor Kagamine
+ * @comunidad - PokÃ©polis
  * @interwiki - es.pokepolis
 ***************************************************
- * por favor, no uséis el código sin antes
+ * por favor, no usÃ©is el cÃ³digo sin antes
  * contactar con Pintor Kagamine para evitar
- * posibles problemas con respecto al código.
+ * posibles problemas con respecto al cÃ³digo.
 ***************************************************/
 // SexyUserPage modificado
-  // para usar CSS en prácticamente cualquier artículo
+  // para usar CSS en prÃ¡cticamente cualquier artÃ­culo
 ;(function (mw, $) {
  
     'use strict';

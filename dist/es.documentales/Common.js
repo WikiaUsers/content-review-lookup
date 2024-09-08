@@ -1,6 +1,6 @@
 /* AjaxPages */
 
-ajaxPages = ["Especial:CambiosRecientes","Especial:Seguimiento","Especial:Registro","Especial:Contribuciones","Especial:WikiActivity"]; AjaxRCRefreshText = 'Auto-actualizar'; AjaxRCRefreshHoverText = 'Autom·ticamente refresca la p·gina'; importScriptPage('AjaxRC/code.js', 'dev');
+ajaxPages = ["Especial:CambiosRecientes","Especial:Seguimiento","Especial:Registro","Especial:Contribuciones","Especial:WikiActivity"]; AjaxRCRefreshText = 'Auto-actualizar'; AjaxRCRefreshHoverText = 'Autom√°ticamente refresca la p√°gina'; importScriptPage('AjaxRC/code.js', 'dev');
 
 /* Cuenta Regresiva */
 
@@ -35,7 +35,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()

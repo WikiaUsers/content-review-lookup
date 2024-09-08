@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
  
@@ -17,7 +17,7 @@ var ShowHideConfig = {
     }
 };
 
-/* SoundManager2Button Skript übernommen aus http://de.leagueoflegends.wikia.com/wiki/MediaWiki:Common.js */
+/* SoundManager2Button Skript Ã¼bernommen aus http://de.leagueoflegends.wikia.com/wiki/MediaWiki:Common.js */
 /* Siehe auch http://de.borderlands.wikia.com/wiki/MediaWiki:Sm2.js */
 
 importScriptPage('ShowHide/code.js', 'dev');

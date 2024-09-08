@@ -3,7 +3,7 @@
 'use strict';
 
 $( function() {
-	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'Editar resumen de reversiÛn' ) );
+	$( '.mw-rollback-link > a' ).after( $( '<span>' ).addClass( 'edit-rollback' ).prop( 'title', 'Editar resumen de reversi√≥n' ) );
 	$( '#mw-content-text' ).on( 'click', '.edit-rollback', function() {
 		var $rollback = $( '#rollback-summary' );
 		
@@ -32,7 +32,7 @@ $( function() {
 		window.location = $link.find( 'a' ).prop( 'href' ) + '&summary=' + encodeURIComponent( $link.find( '.rollback-text' ).val() );
 	} );
 	
-	// Permite que se envÌe la reversiÛn presionando Intro mientras se enfoca en el campo de entrada
+	// Permite que se env√≠e la reversi√≥n presionando Intro mientras se enfoca en el campo de entrada
 	$( '#mw-content-text' ).on( 'keypress', '.rollback-text', function( e ) {
 		if ( e.which !== 13 ) {
 			return;
@@ -41,7 +41,7 @@ $( function() {
 		$( '.rollback-submit-button' ).click();
 	} );
 	
-	// Cerrar reversiÛn si se hace clic en cualquier otro lugar
+	// Cerrar reversi√≥n si se hace clic en cualquier otro lugar
 	$( window ).click( function( e ) {
 		if ( !$( e.target ).is( '#rollback-summary, .edit-rollback' ) && !$( '#rollback-summary' ).has( e.target ).length ) {
 			$( '#rollback-summary' ).hide();

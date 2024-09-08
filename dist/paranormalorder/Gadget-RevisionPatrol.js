@@ -18,14 +18,14 @@ $( function() {
 		autopatrolled: 'Autopatrulhada',
 		// $1 is the user, $2 is the timestamp
 		patrolled: 'Patrulhada por $1 ($2)',
-		unpatrollable: 'N„o patrulh·vel',
-		unpatrolled: 'N„o patrulhada',
-		autopatrolledLegend: 'ediÁ„o autopatrulhada',
-		patrolledLegend: 'ediÁ„o patrulhada',
-		unpatrollableLegend: 'ediÁ„o n„o patrulh·vel',
-		unpatrolledLegend: 'ediÁ„o n„o patrulhada',
-		error: 'Falha ao recuperar informaÁıes de patrulha',
-		rightsError: 'Falha ao recuperar direitos de patrulha autom·tica',
+		unpatrollable: 'N√£o patrulh√°vel',
+		unpatrolled: 'N√£o patrulhada',
+		autopatrolledLegend: 'edi√ß√£o autopatrulhada',
+		patrolledLegend: 'edi√ß√£o patrulhada',
+		unpatrollableLegend: 'edi√ß√£o n√£o patrulh√°vel',
+		unpatrolledLegend: 'edi√ß√£o n√£o patrulhada',
+		error: 'Falha ao recuperar informa√ß√µes de patrulha',
+		rightsError: 'Falha ao recuperar direitos de patrulha autom√°tica',
 		errorTitle: 'RevisionPatrol',
 	};
 	

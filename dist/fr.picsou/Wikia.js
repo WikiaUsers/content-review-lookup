@@ -1,9 +1,9 @@
 /** 
  * Diverses fonctions manipulant les classes
- * Utilise des expressions régulières et un cache pour de meilleures perfs
+ * Utilise des expressions rÃ©guliÃ¨res et un cache pour de meilleures perfs
  * isClass et whichClass depuis http://fr.wikibooks.org/w/index.php?title=MediaWiki:Common.js&oldid=140211
  * hasClass, addClass, removeClass et eregReplace depuis http://drupal.org.in/doc/misc/drupal.js.source.html
- * surveiller l'implémentation de .classList http://www.w3.org/TR/2008/WD-html5-diff-20080122/#htmlelement-extensions
+ * surveiller l'implÃ©mentation de .classList http://www.w3.org/TR/2008/WD-html5-diff-20080122/#htmlelement-extensions
  *
  * (provient du common.js de wikipedia.fr)
  */
@@ -19,15 +19,15 @@ function hasClass(node, className) {
 
 
 /** 
- * Boîtes déroulantes
+ * BoÃ®tes dÃ©roulantes
  *
- * Pour [[Modèle:Méta palette de navigation]]
+ * Pour [[ModÃ¨le:MÃ©ta palette de navigation]]
  *
  * (vient du common.js de wikipedia.fr)
  */
  
 var Palette_Enrouler = '[enrouler]';
-var Palette_Derouler  = '[dérouler]';
+var Palette_Derouler  = '[dÃ©rouler]';
  
 var Palette_max = 1; 
 var Palette_index = -1;

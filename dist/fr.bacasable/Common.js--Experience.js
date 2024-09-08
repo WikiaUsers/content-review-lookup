@@ -1,6 +1,6 @@
 /* Calculateur - John */
  
-/* Créer une box pour calcul */
+/* CrÃ©er une box pour calcul */
  
 function doPrime (Prime) {
  

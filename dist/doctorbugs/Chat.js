@@ -37,7 +37,7 @@ setInterval(function () {
 //
 /**
  * Replace YouTube video or playlist URL with YouTube video or playlist
- * Copyright © 2012, [[User:AnimatedCartoons]]
+ * Copyright Â© 2012, [[User:AnimatedCartoons]]
  */
 setInterval(function () {
     "use strict";

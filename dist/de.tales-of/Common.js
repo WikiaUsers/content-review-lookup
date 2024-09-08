@@ -1,4 +1,4 @@
-/** JS auf dieser Seite wirkt sich auf alle Skins aus und wird priorisiert vor anderen JS-Seiten ausgeführt **/
+/** JS auf dieser Seite wirkt sich auf alle Skins aus und wird priorisiert vor anderen JS-Seiten ausgefÃ¼hrt **/
 
 //===============================//
 //==========Rail-Modul===========//

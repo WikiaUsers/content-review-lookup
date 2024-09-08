@@ -19,8 +19,8 @@ $(function() {
 		'</nav>'
 	);
 	nemesis = $('<img src="http://galaxyonfire.wikia.com/wiki/File:Nemesis_Transparent.png" width="120" />');
- 
- 
+Â 
+Â 
 	function onTrigger() {
 		console.log("triggered");
 		// once an hour, this shall be triggered

@@ -1,44 +1,44 @@
 importScript('MediaWiki:Editlib.js');
 
-var DJvars_CheckPage = "Wikipédia:Patrouille RC/Modifications à relire";
+var DJvars_CheckPage = "WikipÃ©dia:Patrouille RC/Modifications Ã  relire";
 var DJvars_ScriptPage = "MediaWiki:DrapeauJaune.js";
 
 var DJvars_Texts = {
  "flagsrc"               : "//upload.wikimedia.org/wikipedia/commons/6/69/Flag_icon_-_yellow.svg",
- "flagtitle"             : "Une demande de relecture a été faite pour cette modification",
+ "flagtitle"             : "Une demande de relecture a Ã©tÃ© faite pour cette modification",
  "flagalt"               : "Drapeau Jaune",
  "flagheight"            : "20",
  "waitsrc"               : "//upload.wikimedia.org/wikipedia/commons/b/b4/Loading_Animation.gif",
  "waittitle"             : "Wait",
  "waitalt"               : "",
- "notifdone"             : "Demande de seconde relecture envoyée !",
- "notifremoved"          : "Marquage retiré !",
- "notiferror"            : "Une erreur est survenue... Recharger la page pour vérifier si la modification a été effectuée ou non.",
- "notifmissingportals"   : "Demande de seconde relecture envoyée ! (la sous-page de certains portails semble cependant manquante)",
+ "notifdone"             : "Demande de seconde relecture envoyÃ©e !",
+ "notifremoved"          : "Marquage retirÃ© !",
+ "notiferror"            : "Une erreur est survenue... Recharger la page pour vÃ©rifier si la modification a Ã©tÃ© effectuÃ©e ou non.",
+ "notifmissingportals"   : "Demande de seconde relecture envoyÃ©e ! (la sous-page de certains portails semble cependant manquante)",
  "notifportalmaymiss"    : "Un de ces portails peut ne pas exister : ",
- "notifalreadyasked"     : "Une demande de seconde relecture a déjà été faite.",
- "notifnotasked"         : "Il n'y a pas de demande de seconde relecture pour cette modification. Elle vient peut-être d'être retirée par un autre contributeur.",
+ "notifalreadyasked"     : "Une demande de seconde relecture a dÃ©jÃ  Ã©tÃ© faite.",
+ "notifnotasked"         : "Il n'y a pas de demande de seconde relecture pour cette modification. Elle vient peut-Ãªtre d'Ãªtre retirÃ©e par un autre contributeur.",
  "resumescript"          : "DJ",
- "resumeadd"             : "[[Special:Diff/$1|$2]] = Marquée comme douteuse ($3)",
- "resumerm"              : "[[Special:Diff/$1|$2]] = Marquée comme relue ($3)",
+ "resumeadd"             : "[[Special:Diff/$1|$2]] = MarquÃ©e comme douteuse ($3)",
+ "resumerm"              : "[[Special:Diff/$1|$2]] = MarquÃ©e comme relue ($3)",
  "askreviewlinktext"     : "Demander une seconde relecture",
  "askremovelinktext"     : "Retirer le marquage",
- "sidebartext"           : "$1 modification$2 à relire",
- "sidebarlink"           : "/wiki/Wiki Mihawk Moha:Patrouille_RC/Modifications_à_relire"
+ "sidebartext"           : "$1 modification$2 Ã  relire",
+ "sidebarlink"           : "/wiki/Wiki Mihawk Moha:Patrouille_RC/Modifications_Ã _relire"
 };
 
 var DJ_maxTimeout = 5;
 
 /*
 ==========================================
-	Initialisation commune à l'ajout et au retrait de diffs à la liste des modifs douteuses
+	Initialisation commune Ã  l'ajout et au retrait de diffs Ã  la liste des modifs douteuses
 ==========================================
 */
 
 /*
-	# Fonction executé sur toutes les pages de diff
-	Vérifie si la dif est marqué comme douteuse
-	-> Si oui, alors cela récupère et affiche le commentaire, et met le lien pour retirer le marquage
+	# Fonction executÃ© sur toutes les pages de diff
+	VÃ©rifie si la dif est marquÃ© comme douteuse
+	-> Si oui, alors cela rÃ©cupÃ¨re et affiche le commentaire, et met le lien pour retirer le marquage
 	-> Si non, met le lien pour marquer la diff comme douteuse
 */
 $(function() {
@@ -58,12 +58,12 @@ $(function() {
 					showSidebarLink(wikicode);
 			}
 			var oldid = wgRevisionId;
-			var pattern = new RegExp("\\* ?\\[\\[Sp(é|e)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
+			var pattern = new RegExp("\\* ?\\[\\[Sp(Ã©|e)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
 			if(pattern.test(wikicode)){
 				var lines = wikicode.split('\n');
 				for(var i=0; i<lines.length;i++) {
 					if(pattern.test(lines[i])) {
-						comment = lines[i].match("^\\* ?\\[\\[Sp(?:é|e)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\](.*)")[1];
+						comment = lines[i].match("^\\* ?\\[\\[Sp(?:Ã©|e)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\](.*)")[1];
 						break;
 					}
 				}
@@ -84,14 +84,14 @@ $(function() {
 
 /*
 ==========================================
-	Fonctions gérant l'ajout de diffs à la liste des modifs douteuses
+	Fonctions gÃ©rant l'ajout de diffs Ã  la liste des modifs douteuses
 ==========================================
 */
 
 /*
-	# Fonction executé lors du clic sur le lien "[Demander une seconde relecture]"
-	Affiche à la place du lien une zone de saisie et un bouton, auquel elle ajoute un évènement lors du clic
-	Cet évènement récupère, formatte et transmet les informations de diff et de la zone de saisie à la fonction ''DJ_add_check''
+	# Fonction executÃ© lors du clic sur le lien "[Demander une seconde relecture]"
+	Affiche Ã  la place du lien une zone de saisie et un bouton, auquel elle ajoute un Ã©vÃ¨nement lors du clic
+	Cet Ã©vÃ¨nement rÃ©cupÃ¨re, formatte et transmet les informations de diff et de la zone de saisie Ã  la fonction ''DJ_add_check''
 */
 function DJ_add_show() {
 	$("#dj-diff-ntitle6").html('<input type="text" id="DJinput" class="mw-ui-input" maxlength="255"/><input type="button" value="Flag!" id="DJbutton" class="mw-ui-button mw-ui-constructive" style="background: #ffb50d; border-color: #ffb50d;"/>');
@@ -105,9 +105,9 @@ function DJ_add_show() {
 }
 
 /*
-	# Fonction executé après la validation du marquage
-	Vérifie si la diff n'a pas été marqué entre temps par quelqu'un d'autre
-	-> Si elle n'est pas marqué, alors on la marque en appelant la fonction ''DJ_add_write''
+	# Fonction executÃ© aprÃ¨s la validation du marquage
+	VÃ©rifie si la diff n'a pas Ã©tÃ© marquÃ© entre temps par quelqu'un d'autre
+	-> Si elle n'est pas marquÃ©, alors on la marque en appelant la fonction ''DJ_add_write''
 */
 function DJ_add_check(oldid, page, comment) {
 	$.get( mw.util.wikiScript( 'api' ), {
@@ -118,7 +118,7 @@ function DJ_add_check(oldid, page, comment) {
 		rvprop: 'content'
 	} ).done( function(r) {
 		var wikicode = $(r).find('rev').text();
-		var pattern = new RegExp("\\* ?\\[\\[Sp(e|é)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
+		var pattern = new RegExp("\\* ?\\[\\[Sp(e|Ã©)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
 		if(pattern.test(wikicode))
 			mw.notify(DJvars_Texts["notifalreadyasked"]);
 		else
@@ -127,8 +127,8 @@ function DJ_add_check(oldid, page, comment) {
 }
 
 /*
-	# Executé après validation du marquage, et une fois les vérifications effectués
-	Ajoute la diff à la liste des diffs à relire
+	# ExecutÃ© aprÃ¨s validation du marquage, et une fois les vÃ©rifications effectuÃ©s
+	Ajoute la diff Ã  la liste des diffs Ã  relire
 */
 function DJ_add_write(oldid, page, comment) {
 	$("#dj-diff-ntitle6").html('<img alt="'+DJvars_Texts["waitalt"]+'" src="'+DJvars_Texts["waitsrc"]+'" title="'+DJvars_Texts["waittitle"]+'"/>');
@@ -137,8 +137,8 @@ function DJ_add_write(oldid, page, comment) {
 }
 
 /*
-	# Executé une fois la requête pour ajouter la diff à la liste envoyé
-	Attend et vérifie que l'ajout c'est bien passé (ou non)
+	# ExecutÃ© une fois la requÃªte pour ajouter la diff Ã  la liste envoyÃ©
+	Attend et vÃ©rifie que l'ajout c'est bien passÃ© (ou non)
 */
 function DJ_add_isFinished(nbToWait, nbLoop, comment) {
 	if(editcount == nbToWait) {
@@ -158,14 +158,14 @@ function DJ_add_isFinished(nbToWait, nbLoop, comment) {
 
 /*
 ==========================================
-	Fonctions gérant le retrait de diffs à la liste des modifs douteuses
+	Fonctions gÃ©rant le retrait de diffs Ã  la liste des modifs douteuses
 ==========================================
 */
 
 /*
-	# Fonction executé lors du clic sur le lien "[Retirer le marquage]"
-	Affiche à la place du lien une zone de saisie et un bouton, auquel elle ajoute un évènement lors du clic
-	Cet évènement récupère, formatte et transmet les informations de diff et de la zone de saisie à la fonction ''DJ_rm_check''
+	# Fonction executÃ© lors du clic sur le lien "[Retirer le marquage]"
+	Affiche Ã  la place du lien une zone de saisie et un bouton, auquel elle ajoute un Ã©vÃ¨nement lors du clic
+	Cet Ã©vÃ¨nement rÃ©cupÃ¨re, formatte et transmet les informations de diff et de la zone de saisie Ã  la fonction ''DJ_rm_check''
 */
 function DJ_rm_show() {
 	$("#DJlink").remove();
@@ -180,8 +180,8 @@ function DJ_rm_show() {
 }
 
 /*
-	# Fonction executé après avoir récupéré le commentaire de retrait
-	Vérifie si la diff n'a pas été retiré entre temps par quelqu'un d'autre
+	# Fonction executÃ© aprÃ¨s avoir rÃ©cupÃ©rÃ© le commentaire de retrait
+	VÃ©rifie si la diff n'a pas Ã©tÃ© retirÃ© entre temps par quelqu'un d'autre
 	-> Si ce n'est pas le cas, alors on retire la marque en appelant la fonction ''DJ_rm_takeoff''
 */
 function DJ_rm_check(oldid, page, comment) {
@@ -193,7 +193,7 @@ function DJ_rm_check(oldid, page, comment) {
 		rvprop: 'content'
 	} ).done( function(r) {
 		var wikicode = $(r).find('rev').text();
-		var pattern = new RegExp("\\* ?\\[\\[Sp(e|é)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
+		var pattern = new RegExp("\\* ?\\[\\[Sp(e|Ã©)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\]");
 		if(!pattern.test(wikicode))
 			mw.notify(DJvars_Texts["notifnotasked"]);
 		else
@@ -202,20 +202,20 @@ function DJ_rm_check(oldid, page, comment) {
 }
 
 /*
-	# Executé après clic sur retirer le marquage, et une fois les vérifications effectués
-	Retire la diff à la liste des diffs à relire
+	# ExecutÃ© aprÃ¨s clic sur retirer le marquage, et une fois les vÃ©rifications effectuÃ©s
+	Retire la diff Ã  la liste des diffs Ã  relire
 */
 function DJ_rm_takeoff(oldid, page, wikicode, comment) {
 	$("#dj-diff-ntitle6").html('<img id="DJwait" alt="'+DJvars_Texts["waitalt"]+'" src="'+DJvars_Texts["waitsrc"]+'" title="'+DJvars_Texts["waittitle"]+'"/>');
-	var pattern = new RegExp("\\* ?\\[\\[Sp(e|é)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\][^\n]*\n?");
+	var pattern = new RegExp("\\* ?\\[\\[Sp(e|Ã©)cial:Diff\\/"+oldid+"\\|[^\\[\\]]+\\]\\][^\n]*\n?");
 	wikicode = wikicode.replace(pattern, "");
 	editlib_replace(DJvars_CheckPage, wikicode, "[["+DJvars_ScriptPage+"|"+DJvars_Texts["resumescript"]+"]] : "+DJvars_Texts["resumerm"].split("$1").join(oldid).split("$2").join(page).split("$3").join(comment));
 	DJ_rm_isFinished(1, 0);
 }
 
 /*
-	# Executé une fois la requête pour retirer la diff de la liste envoyé
-	Attend et vérifie que le retrait c'est bien passé (ou non)
+	# ExecutÃ© une fois la requÃªte pour retirer la diff de la liste envoyÃ©
+	Attend et vÃ©rifie que le retrait c'est bien passÃ© (ou non)
 */
 function DJ_rm_isFinished(nbToWait, nbLoop) {
 	if(editcount == nbToWait) {
@@ -240,7 +240,7 @@ function DJ_rm_isFinished(nbToWait, nbLoop) {
 */
 
 /*
-	Converti les liens internes écrit avec la syntaxe wikicode contenu dans "chaine" en HTML
+	Converti les liens internes Ã©crit avec la syntaxe wikicode contenu dans "chaine" en HTML
 */
 function DJ_parselink(chaine) {
 	var reg = new RegExp("\\[\\[([^\\[\\]]+)\\|([^\\[\\]]+)\\]\\]");
@@ -256,7 +256,7 @@ function DJ_parselink(chaine) {
 	return chaine;
 }
 /*
-	Echape les meta-caractère d'une chaine pour que cela ne pose pas de problème dans une regex
+	Echape les meta-caractÃ¨re d'une chaine pour que cela ne pose pas de problÃ¨me dans une regex
 */
 RegExp.escape = function(s) {
     return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')

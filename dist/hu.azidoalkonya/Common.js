@@ -1,4 +1,4 @@
-/* Az ide elhelyezett JavaScript kód minden felhasználó számára lefut az oldalak betöltésekor. */
+/* Az ide elhelyezett JavaScript kÃ³d minden felhasznÃ¡lÃ³ szÃ¡mÃ¡ra lefut az oldalak betÃ¶ltÃ©sekor. */
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 var ArchiveToolConfig = { 
@@ -133,7 +133,7 @@ $(function () {
 /** 
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  * __NOWYSIWYG__
  */

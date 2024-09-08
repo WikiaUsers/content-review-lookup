@@ -1,4 +1,4 @@
-//Etiqueta para usuarios inactivos por m·s de 1 mes
+//Etiqueta para usuarios inactivos por m√°s de 1 mes
 InactiveUsers = { 
     months: 1,
     text: 'Descansando'
@@ -69,7 +69,7 @@ if (mediaWiki.config.get('wgAction') === 'view')(function() {
   });
 }());
 
-// Slider - Portada de administraciÛn
+// Slider - Portada de administraci√≥n
 
 $(document).ready(function() {
   $("#portada-administracion").each(function() {

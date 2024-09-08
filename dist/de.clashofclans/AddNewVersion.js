@@ -67,12 +67,12 @@ mw.loader.using('mediawiki.api', function() {
 				$('<br />'),
 				$('<label>', {
 					for: 'anv-change',
-					text: 'Änderung: '
+					text: 'Ã„nderung: '
 				}).append(
 					$('<textarea>', {
 						id: 'anv-change',
 						style: 'width: 100%; height: 10em;',
-						placeholder: "* '''Bogenschützen-Königin Level 66-70'''\n** ''Verfügbar ab [[Rathaus]]-Level 13''"
+						placeholder: "* '''BogenschÃ¼tzen-KÃ¶nigin Level 66-70'''\n** ''VerfÃ¼gbar ab [[Rathaus]]-Level 13''"
 					})
 				),
 				$('<br />'),
@@ -116,8 +116,8 @@ mw.loader.using('mediawiki.api', function() {
 					}
 					var content = data.pages[i].revisions[0].slots.main['*'];
 					if (content.length < footer.length + 1) {
-						console.log(conf.wgPageName + ': Vorhandener Wikitext zu kurz! Bitte füge deine Änderung manuell ein.');
-						notification('error', 'Vorhandener Wikitext zu kurz! Bitte füge deine Änderung manuell ein.');
+						console.log(conf.wgPageName + ': Vorhandener Wikitext zu kurz! Bitte fÃ¼ge deine Ã„nderung manuell ein.');
+						notification('error', 'Vorhandener Wikitext zu kurz! Bitte fÃ¼ge deine Ã„nderung manuell ein.');
 						return;
 					}
 					text = content.slice(0, -(footer.length + 1)) + newVersion + content.slice(-(footer.length + 1));
@@ -128,7 +128,7 @@ mw.loader.using('mediawiki.api', function() {
 				api.post({
 					action: 'edit',
 					title: isVersionsgeschichte ? conf.wgPageName : conf.wgPageName + '/Versionsgeschichte',
-					summary: 'Füge neue Änderung hinzu (Skript)',
+					summary: 'FÃ¼ge neue Ã„nderung hinzu (Skript)',
 					nocreate: 'true',
 					text: text,
 					token: token
@@ -162,7 +162,7 @@ mw.loader.using('mediawiki.api', function() {
 	 * is called when clicking on the button in the edit dropdown menu
 	 */
 	function click () {
-		dev.showCustomModal('Füge eine neue Änderung hinzu', {
+		dev.showCustomModal('FÃ¼ge eine neue Ã„nderung hinzu', {
 			content: formHtml(),
 			buttons: [
 				{
@@ -174,7 +174,7 @@ mw.loader.using('mediawiki.api', function() {
 					defaultButton: false,
 					handler: function() {
 						dev.showCustomModal('Hilfe', {
-							content: 'Du hast einen Fehler bemerkt oder benötigst Hilfe?<br />Wende dich gerne an die <a href="' + conf.wgServer + conf.wgScriptPath + '/wiki/Clash of Clans Wiki:Administration">Administration</a>!<br /><br />Es ist auch möglich, die Seite manuell zu bearbeiten.',
+							content: 'Du hast einen Fehler bemerkt oder benÃ¶tigst Hilfe?<br />Wende dich gerne an die <a href="' + conf.wgServer + conf.wgScriptPath + '/wiki/Clash of Clans Wiki:Administration">Administration</a>!<br /><br />Es ist auch mÃ¶glich, die Seite manuell zu bearbeiten.',
 							buttons: [
 								{
 									message: 'Manuelle Bearbeitung',
@@ -223,8 +223,8 @@ mw.loader.using('mediawiki.api', function() {
 				$('<li>').append(
 					$('<a>', {
 						id: 'anv-button',
-						text: 'Neue Änderung hinzufügen',
-						title: 'Neue Änderung für die Versionsgeschichte eines Artikels hinzufügen',
+						text: 'Neue Ã„nderung hinzufÃ¼gen',
+						title: 'Neue Ã„nderung fÃ¼r die Versionsgeschichte eines Artikels hinzufÃ¼gen',
 						style: 'cursor: pointer !important;',
 						click: click
 					})

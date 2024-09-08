@@ -1,7 +1,7 @@
 window.kockaEmoticons = {
     vocab: {
-        emoticons: "Émoticônes",
+        emoticons: "Ã‰moticÃ´nes",
         close: "Fermer"
     },
-    helpText: "Choisissez un émoticône en cliquant dessus"
+    helpText: "Choisissez un Ã©moticÃ´ne en cliquant dessus"
 };

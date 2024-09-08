@@ -43,7 +43,7 @@ $('[name="message"]').keypress(function(e) {
   }
 });
 
-//Add it´s typping message
+//Add itÂ´s typping message
 importArticles({
     type: "script",
     articles: [
@@ -67,8 +67,8 @@ window.ChatStatus = {
 		cake: "Tomando un bocadillo",
 		tv: "Viendo TV",
 		game: "Jugando",
-		code: "Viendo vídeos",
-		google: "Escuchando música",
+		code: "Viendo vÃ­deos",
+		google: "Escuchando mÃºsica",
 		book: "Leyendo",
 		Writing:"Estudiando (?)",
 	},

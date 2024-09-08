@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -19,7 +19,7 @@ if(!!$('.redirectText').length && url.query.hasOwnProperty('redirect') === false
     $('.redirectText').detach();
     $('.redirectMsg').empty();
     $('.redirectMsg').append(
-        $('<span />').text('Sie werden in fünf Sekunden weitergeleitet an folgende URL: ' + new_url).prepend(
+        $('<span />').text('Sie werden in fÃ¼nf Sekunden weitergeleitet an folgende URL: ' + new_url).prepend(
             $('<strong>').text('Achtung: ')    
         )
     );

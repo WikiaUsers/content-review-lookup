@@ -4,7 +4,7 @@
  * Ajout de liens dans la barre de navigation vers l'Auberge et l'Inconnu
  * 
  * Auteur : ??
- * Date de dernière révision : 3 novembre 2006
+ * Date de derniÃ¨re rÃ©vision : 3 novembre 2006
  * {{:Projet:JavaScript/Script|AubergeInconnu}}
  */
 // <source lang=javascript>//<pre><nowiki>

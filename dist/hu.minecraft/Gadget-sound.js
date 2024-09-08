@@ -4,8 +4,8 @@
 
 mw.hook( 'wikipage.content' ).add( function( $content ) {
 	var i18n = {
-		playTitle: 'Kattints a lejátszáshoz!',
-		stopTitle: 'Kattitnts a megállításhoz!',
+		playTitle: 'Kattints a lejÃ¡tszÃ¡shoz!',
+		stopTitle: 'Kattitnts a megÃ¡llÃ­tÃ¡shoz!',
 	};
 	$content.find('.sound' ).prop( 'title', i18n.playTitle ).on( 'click', function( e ) {
 		// Ignore links

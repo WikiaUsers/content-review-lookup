@@ -3,7 +3,7 @@ function timeStamp_Usernames_js() {
 }
  
 var bureaucrats = [
-   'Ein_Bürokrat',
+   'Ein_BÃ¼rokrat',
 ];
  
 var admins = [

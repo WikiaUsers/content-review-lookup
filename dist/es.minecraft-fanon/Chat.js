@@ -1,4 +1,4 @@
-// Botón de Mensaje privado grupal
+// BotÃ³n de Mensaje privado grupal
 
 importScriptPage("MediaWiki:Chat.js/MP.js", "es.fanonminecraft");
 
@@ -23,7 +23,7 @@ $('textarea[name="message"]').on("keypress", function(e) {
 				"subnormal",
 				"subnormales",
 				"imbecil",
-                                "coño",
+                                "coÃ±o",
 				"boludo",
 				"idiota",
                                 "pelotudo",
@@ -50,7 +50,7 @@ $('textarea[name="message"]').on("keypress", function(e) {
 				"tetas",
 				"teta",
 				"cabron",
-				"cabrón",
+				"cabrÃ³n",
 				"cojones",
 				"mierda",
 				"porno",
@@ -81,9 +81,9 @@ $('textarea[name="message"]').on("keypress", function(e) {
 				$('textarea[name="message"]').val("");
 				ChatStringsBlocker.count++;
 				if (ChatStringsBlocker.count < 2) {
-					alert("¡Advertencia! ésta totalmente prohibido usar un lenguaje inapropiado.");
+					alert("Â¡Advertencia! Ã©sta totalmente prohibido usar un lenguaje inapropiado.");
 				} else if (ChatStringsBlocker.count === 2) {
-					alert("ÚLTIMA ADVERTENCIA\n Esta es la segunda advertencia, recuerda que en este chat esta totalmente prohibido usar lenguaje inapropiado, sí lo vuelves a intentar serás expulsado automáticamente del servidor.");
+					alert("ÃšLTIMA ADVERTENCIA\n Esta es la segunda advertencia, recuerda que en este chat esta totalmente prohibido usar lenguaje inapropiado, sÃ­ lo vuelves a intentar serÃ¡s expulsado automÃ¡ticamente del servidor.");
 				} else if (ChatStringsBlocker.count === 3) {
 					window.close();
 				}

@@ -1,4 +1,4 @@
-/* Cambio de background, modificado por Bola en dos partes, primero para alternar 6 backgrounds diferentes durante 1 hora y una segunda parte para alternar entre 7 clases diferentes dependiendo del día de la semana. */
+/* Cambio de background, modificado por Bola en dos partes, primero para alternar 6 backgrounds diferentes durante 1 hora y una segunda parte para alternar entre 7 clases diferentes dependiendo del dÃ­a de la semana. */
  
 // Primera parte - 6 backgrounds durante 1 hora
 $(function () {

@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 /*Credits to -> https://trove.wikia.com/wiki/MediaWiki:Common.js */
 
 // AJAX tables

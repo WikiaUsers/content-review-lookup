@@ -10,10 +10,10 @@ function addMastheadTags() {
    // BEAURECRATS
    rights["Aurorsol"] = ["Inactiva"];
    rights["Daves Villa"] =;
-   rights["Killian Jones"] = ["BurÛcrata","Emperador"];
+   rights["Killian Jones"] = ["Bur√≥crata","Emperador"];
 
    // ROLLBACKS
-   rights["Eddiefunny"] = ["Guardi·n"];
+   rights["Eddiefunny"] = ["Guardi√°n"];
 
   // END List of Accounts Given Extra User Rights Icons
  

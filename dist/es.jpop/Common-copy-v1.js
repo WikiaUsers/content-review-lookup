@@ -150,16 +150,16 @@ if (mwCustomEditButtons) {
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/3/3a/Redirecci%C3%B3n.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCIÓN [[",
+		"tagOpen": "#REDIRECCIÃ“N [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del artículo"
+		"sampleText": "Nombre del artÃ­culo"
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/2/21/Categoria.png",
-		"speedTip": "Categoría",
-		"tagOpen": "[[Categoría:",
+		"speedTip": "CategorÃ­a",
+		"tagOpen": "[[CategorÃ­a:",
 		"tagClose": "]]",
-		"sampleText": "Nombre de la categoría"
+		"sampleText": "Nombre de la categorÃ­a"
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/9/92/Destruir.png",
@@ -198,17 +198,17 @@ if (mwCustomEditButtons) {
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/6/69/Lista-vinetada.png",
-		"speedTip": "Lista viñetada",
+		"speedTip": "Lista viÃ±etada",
 		"tagOpen": "* ",
 		"tagClose": "",
-		"sampleText": "Ítem de lista viñetada"
+		"sampleText": "Ãtem de lista viÃ±etada"
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/9/9f/Lista-numerada.png",
 		"speedTip": "Lista numerada",
 		"tagOpen": "# ",
 		"tagClose": "",
-		"sampleText": "Ítem de lista numerada"
+		"sampleText": "Ãtem de lista numerada"
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/d/d4/Linea-indentada.png",
@@ -233,10 +233,10 @@ if (mwCustomEditButtons) {
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/8/81/Texto-peque%C3%B1o.png",
-		"speedTip": "Pequeño",
+		"speedTip": "PequeÃ±o",
 		"tagOpen": "<small>",
 		"tagClose": "</small>",
-		"sampleText": "Texto pequeño"
+		"sampleText": "Texto pequeÃ±o"
 	};
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/jpop/es/images/9/97/Superescrito.png",

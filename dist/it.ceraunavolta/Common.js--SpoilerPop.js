@@ -6,7 +6,7 @@ $(function () {
 
         my = $.extend({
             question: 'Questa pagina parla di un argomento ancora inedito, e pertanto contiene degli spoiler.<br>Sei certo di voler continuare la lettura?',
-            yes: 'Sì',
+            yes: 'SÃ¬',
             no: 'No, non ora',
             isSpoiler: function () {
                 return (/^Spoiler\:/.test(document.title));

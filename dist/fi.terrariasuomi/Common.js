@@ -1,4 +1,4 @@
-/* T‰m‰n sivun JavaScript-koodi liitet‰‰n jokaiseen sivulataukseen */
+/* T√§m√§n sivun JavaScript-koodi liitet√§√§n jokaiseen sivulataukseen */
 
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 importArticles({type:'script', articles: [
@@ -13,19 +13,19 @@ window.UserTagsJS = {
 	tags: {
 		hello: { m: 'Mies', f:'Nainen', u: 'No Gender Set', order: -1/0, link:'http://en.wikipedia.org/wiki/Gender' },
 		muckraker: 'Tonkija',
-		sysop: { u:'Yll‰pit‰j‰', link:'Project:Yll‰pit‰j‰t' }, // Change "Administrator" to "Yll‰pit‰j‰"
-		'mini-sysop': { u: 'Puoli-Yll‰pit‰j‰', link:'Project:PuoliYll‰pit‰j‰t' },
+		sysop: { u:'Yll√§pit√§j√§', link:'Project:Yll√§pit√§j√§t' }, // Change "Administrator" to "Yll√§pit√§j√§"
+		'mini-sysop': { u: 'Puoli-Yll√§pit√§j√§', link:'Project:PuoliYll√§pit√§j√§t' },
 		slime: 'Limamitali',
 		kunnia: 'Kunniamerkki',
-		ter‰v‰: 'Ter‰v‰n‰',
-		'vandal-patrol': { u: 'Kurinpit‰j‰', link:'Project:Janitors' }
+		ter√§v√§: 'Ter√§v√§n√§',
+		'vandal-patrol': { u: 'Kurinpit√§j√§', link:'Project:Janitors' }
 	}
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
 	'T95450': ['slime'],
-	'Juhoran': ['hello', 'ter‰v‰'],
-	'K‰ytt‰j‰1': ['inactive'], // Force inactive group instead of relying on the inactive module
+	'Juhoran': ['hello', 'ter√§v√§'],
+	'K√§ytt√§j√§1': ['inactive'], // Force inactive group instead of relying on the inactive module
 	'Konstaduck': ['slime']
 };
 UserTagsJS.modules.autoconfirmed = true;
@@ -41,7 +41,7 @@ UserTagsJS.modules.userfilter = {
 	'John Smith': ['inactive'] // John Smith is never inactive, even when he is
 };
 UserTagsJS.modules.implode = {
-	'mini-sysop': ['rollback', 'chatmoderator'] // Poistaa rollback ja chatmoderator, jos molemmat ovat olemassa poistaa ne ja lis‰‰ 'mini-sysop'
+	'mini-sysop': ['rollback', 'chatmoderator'] // Poistaa rollback ja chatmoderator, jos molemmat ovat olemassa poistaa ne ja lis√§√§ 'mini-sysop'
 };
 UserTagsJS.modules.explode = {
 	'vandal-patrol': ['patroller', 'rollback'] // Add 'vandal-patrol' to everyone who has BOTH patroller and rollback

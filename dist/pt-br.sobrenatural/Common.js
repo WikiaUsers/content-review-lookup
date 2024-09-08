@@ -26,7 +26,7 @@ function updatetimer(i) {
     diff = -diff;
     var left = 'atras';
   } else {
-    var left = 'para o episódio';
+    var left = 'para o episÃ³dio';
   }
  
   // calcuate the diff

@@ -2,7 +2,7 @@
 
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este Post de Blog n„o pode ser comentado porque tem mais de um mÍs que foi criado.",
+    expiryMessage: "Este Post de Blog n√£o pode ser comentado porque tem mais de um m√™s que foi criado.",
     expiryCategories: "Auto-arquivado"
 };
 
@@ -25,7 +25,7 @@ setInterval(function () {
         }
     });
 }, 1);
-/* Adiciona o label "inativo" nos perfis de quem n„o edita h· no m·ximo 2 meses */
+/* Adiciona o label "inativo" nos perfis de quem n√£o edita h√° no m√°ximo 2 meses */
 InactiveUsers = { 
 	months: 2,
         text: 'inativo na gumball wiki'};

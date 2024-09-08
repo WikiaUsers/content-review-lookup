@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 importArticles({
     type: "script",
     articles: [
@@ -8,7 +8,7 @@ importArticles({
 
 function switchApplyPreload() {
 	if($('.ve-ui-surface-visual').length) {
-		$('#preload-templates').prepend('<p id="preload_message">PrÈ carregar n„o funciona no editor visual, mude para editor de cÛdigo</p>');
+		$('#preload-templates').prepend('<p id="preload_message">Pr√© carregar n√£o funciona no editor visual, mude para editor de c√≥digo</p>');
 		$('#pt-list').attr("disabled", true);
 	}
 	else {

@@ -1,35 +1,35 @@
-/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
+/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
 
-// Alerta de Spoilers e N„o Finalizados
+// Alerta de Spoilers e N√£o Finalizados
 SpoilerAlert = {
-    question: 'ATEN«√O! Essa p·gina pode conter grandes spoilers ou informaÁıes provisÛrias que vocÍ pode<br />n„o querer ver. Tem certeza que deseja prosseguir para a p·gina?.',
+    question: 'ATEN√á√ÉO! Essa p√°gina pode conter grandes spoilers ou informa√ß√µes provis√≥rias que voc√™ pode<br />n√£o querer ver. Tem certeza que deseja prosseguir para a p√°gina?.',
     yes: 'Sim, por favor',
-    no: 'N„o, ainda n„o',
+    no: 'N√£o, ainda n√£o',
     isSpoiler: function () {
         return -1 !== wgCategories.indexOf('Spoilery');
     }
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
  
-// Pop-ups em ReferÍncias
+// Pop-ups em Refer√™ncias
 importScriptPage('ReferencePopups/code.js', 'dev');
  
-//PontuaÁ„o WAM
+//Pontua√ß√£o WAM
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
 
 /* Auto Refresh */
-window.AjaxRCRefreshText = 'Carregamento Autom·tico';
-window.AjaxRCRefreshHoverText = 'A p·gina recarrega-se automaticamente';
+window.AjaxRCRefreshText = 'Carregamento Autom√°tico';
+window.AjaxRCRefreshHoverText = 'A p√°gina recarrega-se automaticamente';
 window.ajaxPages = [
-    "Especial:MudanÁas_recentes",
+    "Especial:Mudan√ßas_recentes",
     "Especial:WikiActivity",
-    "Especial:P·ginas_vigiadas",
+    "Especial:P√°ginas_vigiadas",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:P·ginas_novas",
-    "Especial:ContribuiÁıes"
+    "Especial:P√°ginas_novas",
+    "Especial:Contribui√ß√µes"
 ];
 
 // User tags
@@ -57,7 +57,7 @@ window.UserTagsJS = {
  
     tags: {
         bureaucrat: {
-            u:'CÙnsul',
+            u:'C√¥nsul',
             link:'Project:Administradores',
             color:'white',
             title:'Burocrata' 
@@ -75,7 +75,7 @@ window.UserTagsJS = {
             title:'Patroller' 
         },
 		rollback: {
-            u:'CaÁador de Sombras',
+            u:'Ca√ßador de Sombras',
             link:'Project:Administradores',
             color:'white',
             title:'Rollback' 

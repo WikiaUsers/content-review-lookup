@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
 
 importArticles({
     type: 'script',
@@ -10,9 +10,9 @@ importArticles({
     ]
 });
  
-AjaxRCRefreshText = 'Auto-atualizaÁ„o';
-AjaxRCRefreshHoverText = 'A auto-atualizaÁ„o ocorre a cada 60 segundos';
-ajaxPages = ["Especial:MudanÁas_recentes","Especial:WikiActivity"];
+AjaxRCRefreshText = 'Auto-atualiza√ß√£o';
+AjaxRCRefreshHoverText = 'A auto-atualiza√ß√£o ocorre a cada 60 segundos';
+ajaxPages = ["Especial:Mudan√ßas_recentes","Especial:WikiActivity"];
 
  if (mwCustomEditButtons) {
  

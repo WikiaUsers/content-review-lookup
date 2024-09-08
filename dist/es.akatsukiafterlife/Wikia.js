@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 var SocialMediaButtonsNamespaces = [0, 6, 14, 500];
 var SocialMediaButtons = {
@@ -45,8 +45,8 @@ $(WikiNotification.init);
 InactiveUsers = { text: 'Inactivo' };
 importScriptPage('InactiveUsers/code.js', 'dev');
  
-// No ocultar TOC por defecto para anÛnimos
+// No ocultar TOC por defecto para an√≥nimos
 window.TOCimprovementsEnabled = undefined;
 
-// Enlaces en el men˙ de usuario 
+// Enlaces en el men√∫ de usuario 
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);

@@ -1,9 +1,9 @@
 // Actividad que se actualiza sola
 AjaxRCRefreshText = 'Actividad automatizada';
-AjaxRCRefreshHoverText = 'Con la casilla marcada esta p·gina se actualizar· autom·ticamente';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P·ginasNuevas", "Especial:Seguimiento"];
+AjaxRCRefreshHoverText = 'Con la casilla marcada esta p√°gina se actualizar√° autom√°ticamente';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P√°ginasNuevas", "Especial:Seguimiento"];
 importScriptPage('AjaxRC/code.js', 'dev');
-// BotÛn para regresar arriba
+// Bot√≥n para regresar arriba
 importScriptPage('BackToTopButton/code.js', 'dev');
 // Script para cuenta regresiva
 importScriptPage('Countdown/code.js', 'dev');
@@ -19,7 +19,7 @@ importArticles({
         // ...
     ]
 });
-// Mostrar IP de anÛnimos para usuarios con ciertos permisos
+// Mostrar IP de an√≥nimos para usuarios con ciertos permisos
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat', 'helper', 'util', 'staff']
 };
@@ -40,6 +40,6 @@ importArticles({
 });
 
 /* Mensaje  */
-var WikiaNotificationMessage = "Nomina y vota por tus favoritos <a href='Wiki MitologÌa:Articulos Destacados(Nominaciones y Votos)'>en el VPD</a>.";
+var WikiaNotificationMessage = "Nomina y vota por tus favoritos <a href='Wiki Mitolog√≠a:Articulos Destacados(Nominaciones y Votos)'>en el VPD</a>.";
 importScriptPage('WikiaNotification/code.js', 'dev');
 importScriptPage('UserTags/code.js', 'dev');

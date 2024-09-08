@@ -14,7 +14,7 @@
 
 /*Main function*/
 function main_prepend() {
-    $.showCustomModal('Encabezado', '<form class="WikiaForm" method="" name="" id="header_descForm"><fieldset><br><span style="font-family:Arial"><span id="br2" />Archivo: <textarea name="" id="unic_file" style="height: 15px; width: 80%;" placeholder="Archivo"></textarea><br/>Descripción: <textarea name="" id="unic_desc" style="height: 80px; width: 100%;" placeholder="Descripción"></textarea></fieldset></form>', {
+    $.showCustomModal('Encabezado', '<form class="WikiaForm" method="" name="" id="header_descForm"><fieldset><br><span style="font-family:Arial"><span id="br2" />Archivo: <textarea name="" id="unic_file" style="height: 15px; width: 80%;" placeholder="Archivo"></textarea><br/>DescripciÃ³n: <textarea name="" id="unic_desc" style="height: 80px; width: 100%;" placeholder="DescripciÃ³n"></textarea></fieldset></form>', {
 		id: "header_descFormModal",
 		width: 765,
 		/*Main function - buttons*/
@@ -46,11 +46,11 @@ function submitHeaderForm() {
        header_file = $form.find('#unic_file').val();
     /*Main function - Check #unic_file and #unic_desc is empty or not*/
     if (!header_desc) {
-		alert('¡No has puesto una descripción!');
+		alert('Â¡No has puesto una descripciÃ³n!');
 		return;
 	}
 	if (!header_file) {
-		alert('¡No has puesto un archivo!');
+		alert('Â¡No has puesto un archivo!');
 		return;
 	}
 	console.log('Hecho.');
@@ -58,7 +58,7 @@ function submitHeaderForm() {
 	/*Main function - Input text*/
     $('#wpTextbox1').prepend('[[Archivo:'+ header_file +'|thumb]]\n\'\'\'' + namepage + '\'\'\' ' + header_desc + '\n\n==Comunidades de ' + namepage + '==\n');
     /*Main function - Input text in summary*/
-    document.getElementById('wpSummary').value = 'Añadido el encabezado. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
+    document.getElementById('wpSummary').value = 'AÃ±adido el encabezado. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
 }
 /*Add Buttons*/
 if (wgNamespaceNumber == 0 && wgAction != 'edit') {
@@ -68,7 +68,7 @@ if (wgNamespaceNumber == 0 && wgAction == 'edit' && $.getUrlVar( 'headerpage' ) 
     main_prepend();
 }
 if (wgNamespaceNumber == 0 && wgAction == 'edit') {
-    $('.editpage-sourcewidemode-off .preview_box').prepend('<span class="button" onclick="main_prepend()">Añadir encabezado</span>');
+    $('.editpage-sourcewidemode-off .preview_box').prepend('<span class="button" onclick="main_prepend()">AÃ±adir encabezado</span>');
 }
 // ==Herramienta de aviso a usuarios==
 //@author           HumanoidPikachu
@@ -86,15 +86,15 @@ function avisoMuros() {
 function avisoBlogs() {
     /*Title and message body*/
     $('#WallMessageTitle').prepend('Blogs');
-    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has públicado una entrada de blog. Lamentablemente la entrada que has creado no tiene nada que ver con Fandom o tiene contenido inadecuado, te invitamos a crear [http://www.wikia.com/Special:CreateNewWiki?uselang=es un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\n¡Saludos!');
+    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has pÃºblicado una entrada de blog. Lamentablemente la entrada que has creado no tiene nada que ver con Fandom o tiene contenido inadecuado, te invitamos a crear [http://www.wikia.com/Special:CreateNewWiki?uselang=es un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\nÂ¡Saludos!');
     /*Delete Attr Disabled*/
     $('.Wall .SpeechBubble.new-message #WallMessageSubmit').removeAttr('disabled');
     $('.Wall .SpeechBubble.new-message #WallMessagePreview').removeAttr('disabled');
 }
 function avisoArticulo() {
     /*Title and message body*/
-    $('#WallMessageTitle').prepend('Artículos / Páginas');
-    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has públicado un artículo aquí en {{SITENAME}}. Lamentablemente no es una descripción de un wiki, por lo cual se deberá ser eliminado. Si quieres publicar tus proyectos escolares, tus historias, subir fotos, etc. te invitamos a crear [http://www.wikia.com/Special:CreateNewWiki?uselang=es un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\n¡Saludos!');
+    $('#WallMessageTitle').prepend('ArtÃ­culos / PÃ¡ginas');
+    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has pÃºblicado un artÃ­culo aquÃ­ en {{SITENAME}}. Lamentablemente no es una descripciÃ³n de un wiki, por lo cual se deberÃ¡ ser eliminado. Si quieres publicar tus proyectos escolares, tus historias, subir fotos, etc. te invitamos a crear [http://www.wikia.com/Special:CreateNewWiki?uselang=es un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\nÂ¡Saludos!');
     /*Delete Attr Disabled*/
     $('.Wall .SpeechBubble.new-message #WallMessageSubmit').removeAttr('disabled');
     $('.Wall .SpeechBubble.new-message #WallMessagePreview').removeAttr('disabled');
@@ -102,14 +102,14 @@ function avisoArticulo() {
 function avisoUserPage() {
     /*Title and message body*/
     $('#WallMessageTitle').prepend('Perfil');
-    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has editado tu perfil, ¡excelente! pero no has puesto nada sobre ti. No puedes poner una información no ajena de ti en tu perfil, además de que Comunidad Central es un punto de coordinación entre wikis hispanas. Es común equivocarse. Te invitamos a [http://www.wikia.com/Special:CreateNewWiki?uselang=es crear un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\n¡Saludos!');
+    $('#WallMessageBody').prepend('Hola, ' + user_wall + '\n\nHe visto que has editado tu perfil, Â¡excelente! pero no has puesto nada sobre ti. No puedes poner una informaciÃ³n no ajena de ti en tu perfil, ademÃ¡s de que Comunidad Central es un punto de coordinaciÃ³n entre wikis hispanas. Es comÃºn equivocarse. Te invitamos a [http://www.wikia.com/Special:CreateNewWiki?uselang=es crear un wiki] para mayor comodidad o que [[Lista de comunidades|encuentres una ya existente]].\n\nÂ¡Saludos!');
     /*Delete Attr Disabled*/
     $('.Wall .SpeechBubble.new-message #WallMessageSubmit').removeAttr('disabled');
     $('.Wall .SpeechBubble.new-message #WallMessagePreview').removeAttr('disabled');
 }
 
 if (wgNamespaceNumber == 1200) {
-    $('.Wall .MiniEditorWrapper .toolbar').append('<span class="button" onclick="avisoMuros()">Aviso de los muros</span> <span class="button" onclick="avisoBlogs()">Aviso de blogs</span> <span class="button" onclick="avisoArticulo()">Aviso de artículo</span> <span class="button" onclick="avisoUserPage()">Aviso de perfil</span>');
+    $('.Wall .MiniEditorWrapper .toolbar').append('<span class="button" onclick="avisoMuros()">Aviso de los muros</span> <span class="button" onclick="avisoBlogs()">Aviso de blogs</span> <span class="button" onclick="avisoArticulo()">Aviso de artÃ­culo</span> <span class="button" onclick="avisoUserPage()">Aviso de perfil</span>');
 }
 
 // ==ReplySolicitud==
@@ -146,7 +146,7 @@ function submitForm() {
        unic_reply = $form.find('#unic_reply').val();
     
     if (!unic_reply) {
-		alert('¡No has puesto una respuesta!');
+		alert('Â¡No has puesto una respuesta!');
 		return;
 	}
 	//<nowiki>
@@ -170,11 +170,11 @@ if (wgCanonicalNamespace == "Solicitud") {
 // ==/RevUserpage==
 function revUserpage() {
     var inputEditor = document.getElementById('wpTextbox1');
-    inputEditor.innerHTML = "==Sobre mí==\n''Esta es tu página de usuario. ¡Edítala y cuéntanos en que otros wikis dentro de Fandom participas para que la comunidad sepa de ti!''\n\n==Mis contribuciones==\n* [[Special:Contributions/{{PAGENAME}}|Contribuciones del usuario]]\n\n==Mis páginas favoritas==\n* ¡Añade aquí los vínculos a las páginas favoritas del wiki!\n* Página favorita #2\n* Página favorita #3";
-    document.getElementById('wpSummary').value = 'Revertido a la versión original. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
+    inputEditor.innerHTML = "==Sobre mÃ­==\n''Esta es tu pÃ¡gina de usuario. Â¡EdÃ­tala y cuÃ©ntanos en que otros wikis dentro de Fandom participas para que la comunidad sepa de ti!''\n\n==Mis contribuciones==\n* [[Special:Contributions/{{PAGENAME}}|Contribuciones del usuario]]\n\n==Mis pÃ¡ginas favoritas==\n* Â¡AÃ±ade aquÃ­ los vÃ­nculos a las pÃ¡ginas favoritas del wiki!\n* PÃ¡gina favorita #2\n* PÃ¡gina favorita #3";
+    document.getElementById('wpSummary').value = 'Revertido a la versiÃ³n original. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
 }
 if (wgNamespaceNumber == 2) {
-    $('.editpage-sourcewidemode-off .preview_box').prepend('<span class="button" onclick="revUserpage()">Revertir a la versión original</span>');
+    $('.editpage-sourcewidemode-off .preview_box').prepend('<span class="button" onclick="revUserpage()">Revertir a la versiÃ³n original</span>');
 }
 // ==FastMarkDelete==
 //@author           HumanoidPikachu
@@ -188,29 +188,29 @@ $('#WikiaPageHeader > .wikia-menu-button > .WikiaMenuElement > li:last-child').a
 }
 if (wgNamespaceNumber == 0 && wgAction != 'edit') { 
 $('#WikiaPageHeader > .wikia-menu-button > .WikiaMenuElement > li:last-child').after(
-    $('<li/>').append('<a style="cursor:pointer" id="ca-markdelete1" href="?action=edit&deletemark=2">Marcar como wiki casi vacía</a>')
+    $('<li/>').append('<a style="cursor:pointer" id="ca-markdelete1" href="?action=edit&deletemark=2">Marcar como wiki casi vacÃ­a</a>')
     );
 }
 /*Functions*/
 if (wgNamespaceNumber == 0 && wgAction == 'edit' && $.getUrlVar( 'deletemark' ) === '1') {
     $('#wpTextbox1').prepend('{{Borrar|Inadecuado para la central.}}\n');
-    document.getElementById('wpSummary').value = 'Página marcada para borrar. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
+    document.getElementById('wpSummary').value = 'PÃ¡gina marcada para borrar. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
 }
 if (wgNamespaceNumber == 0 && wgAction == 'edit' && $.getUrlVar( 'deletemark' ) === '2') {
-    $('#wpTextbox1').prepend('{{Borrar|La comunidad no tiene más de 10 páginas}}\n');
-    document.getElementById('wpSummary').value = 'Página marcada para borrar. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
+    $('#wpTextbox1').prepend('{{Borrar|La comunidad no tiene mÃ¡s de 10 pÃ¡ginas}}\n');
+    document.getElementById('wpSummary').value = 'PÃ¡gina marcada para borrar. ([[w:c:internal.furry:MediaWiki:ToolsWikiCCSpanish.js|Script]] | [[w:c:internal.furry:MediaWiki:Custom-ToolsWikiCCSpanish|doc]])';
 }
 
 /** File Licence **/
 console.log('Loading QuickLicence...');
 
-$('.module_page_controls .buttons').append('<a class="addLicence" href="#">Añadir Licencia</a>');
+$('.module_page_controls .buttons').append('<a class="addLicence" href="#">AÃ±adir Licencia</a>');
 function addLic(lic) {
     $('#wpTextbox1').append('==Licencia==\n{{Licencia|'+lic+'}}');
     $("#moduleLicence").closeModal();
 }
 $('.addLicence').click(function() {
-    $.showCustomModal('Añadir licencia', '<div class="addLicence-fallback" onclick="addLic(\'fallback\')">Fallback</div><div class="addLicence-community" onclick="addLic(\'comunidades\')">Comunidades</div><div class="addLicence-blogs" onclick="addLic(\'blogs\')">Blogs</div><div class="addLicence-help" onclick="addLic(\'ayuda\')">Ayuda</div>', {id: "moduleLicence", width: 700});
+    $.showCustomModal('AÃ±adir licencia', '<div class="addLicence-fallback" onclick="addLic(\'fallback\')">Fallback</div><div class="addLicence-community" onclick="addLic(\'comunidades\')">Comunidades</div><div class="addLicence-blogs" onclick="addLic(\'blogs\')">Blogs</div><div class="addLicence-help" onclick="addLic(\'ayuda\')">Ayuda</div>', {id: "moduleLicence", width: 700});
 });
 console.log('Done.');
 //</syntaxhighlight>

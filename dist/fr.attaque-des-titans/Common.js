@@ -16,7 +16,7 @@ if(typeof WikiaScriptLoader === 'undefined') {
 /* Actualisation automatique */
 window.AjaxRCRefreshText = 'Actualisation automatique';
 window.AjaxRCRefreshHoverText = 'Actualiser automatiquement la page';
-window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];
+window.ajaxPages = ["SpÃ©cial:Modifications_rÃ©centes","SpÃ©cial:WikiActivity"];
 
 /*Statut*/
 
@@ -25,7 +25,7 @@ window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];
 // **************************************************
  
 $(function spoilerLoad(){
-    $("[title='Cliquer pour faire apparaître']").click(function(){$(this.nextSibling).fadeIn()});
+    $("[title='Cliquer pour faire apparaÃ®tre']").click(function(){$(this.nextSibling).fadeIn()});
 });
  
 // **************************************************

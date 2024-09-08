@@ -496,7 +496,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -543,7 +543,7 @@ if (wgAction == 'view' && (wgNamespaceNumber == 0 || wgNamespaceNumber == 6 || w
 	});
 }
 
-/* Actualizar p·gina mediante un botÛn al lado de editar */
+/* Actualizar p√°gina mediante un bot√≥n al lado de editar */
 importScriptPage('MediaWiki:Common.js/Actualizar.js');
 
 /* skin change buttons - 2/1/11 */
@@ -555,7 +555,7 @@ $('section header div.buttons a:first-child').before('<a style="margin:0 3px 3px
 
 /**
 * SkinPropagation: Propaga el &useskin= de la URL (siempre que sea posible) por los enlaces y formularios
-* Copyright (C) 2010  Jes˙s MartÌnez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2010  Jes√∫s Mart√≠nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -646,12 +646,12 @@ $(SkinPropagation.init);
 $(function() {
 	if(skin == "oasis") {
 		var $sidebar = $('.WikiaPagesOnWikiModule:first');
-		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:70%'>P¡GINAS VISTAS</td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=781949&counter=37' alt='Contador' border=0 /></a></td></tr></table></div>";
+		var comboString = "<div style='margin-top:5px; align:center'><table style='width:100%'><td style='font-size:70%'>P√ÅGINAS VISTAS</td><td style='text-align:right'><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=781949&counter=37' alt='Contador' border=0 /></a></td></tr></table></div>";
  
 		$sidebar.html($sidebar.html() + comboString);
 	} else if(skin == "monobook") {
 		var $sidebar = $('#p-wikicities-nav');
-		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:80%; background:transparent'>N˙mero de visitas</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=781949&counter=37' alt='Contador' border=0 /></a></td></tr></table></div></div>";
+		var comboString = "<div style='margin:5px'></div><h5>Contador</h5><div class='pBody'><div style='margin-top:2px; margin-bottom:5px'><table style='width:100%; text-align:center'><tr><td style='font-size:80%; background:transparent'>N√∫mero de visitas</td></tr><tr><td><a target='_top'><img src='http://contador-de-visitas.com/hit.php?id=781949&counter=37' alt='Contador' border=0 /></a></td></tr></table></div></div>";
 		$sidebar.html($sidebar.html() + comboString);
 	}
 });

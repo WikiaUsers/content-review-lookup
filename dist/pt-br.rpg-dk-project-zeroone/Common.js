@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
     tab.addEventListener('click', function() {
       var id = this.textContent.trim();  // Get the name of the tab
 
-      // Se a aba é "Perfil", redireciona para a página principal do personagem
+      // Se a aba Ã© "Perfil", redireciona para a pÃ¡gina principal do personagem
       if (id === 'Perfil') {
-        var basePageName = window.location.pathname.split('/')[2]; // Pega o nome base da página
-        window.location.href = '/wiki/' + basePageName; // Redireciona para a página principal
+        var basePageName = window.location.pathname.split('/')[2]; // Pega o nome base da pÃ¡gina
+        window.location.href = '/wiki/' + basePageName; // Redireciona para a pÃ¡gina principal
         return;
       }
 
-      // Remove a classe 'active' de todas as abas e conteúdos
+      // Remove a classe 'active' de todas as abas e conteÃºdos
       tabs.forEach(function(innerTab) {
         innerTab.classList.remove('active');
       });
@@ -21,12 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
         content.classList.remove('active');
       });
 
-      // Adiciona a classe 'active' à aba clicada e ao conteúdo correspondente
+      // Adiciona a classe 'active' Ã  aba clicada e ao conteÃºdo correspondente
       this.classList.add('active');
       var activeContent = document.getElementById(id);
       activeContent.classList.add('active');
 
-      // Busca o conteúdo usando a API do MediaWiki
+      // Busca o conteÃºdo usando a API do MediaWiki
       var apiUrl = '/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=' + id;
       fetch(apiUrl)
         .then(function(response) {

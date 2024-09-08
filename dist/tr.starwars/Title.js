@@ -1,5 +1,5 @@
 
-// BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny, übernommen aus MediaWiki:Common.js der Wookieepedia
+// BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny, Ã¼bernommen aus MediaWiki:Common.js der Wookieepedia
  
 function rewriteTitle() {
 	if( typeof( window.SKIP_TITLE_REWRITE ) != 'undefined' && window.SKIP_TITLE_REWRITE ) {

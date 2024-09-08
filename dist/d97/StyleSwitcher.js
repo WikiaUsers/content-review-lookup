@@ -222,7 +222,7 @@ function clearOld() {
 // Adding a dropdown menu
 
 if (!$(".stylechanger").length) { 
-    $('#Rail').prepend('<select name="style" class="stylechanger" onchange="report(this.value)"> <option value="default">Style switcher</option><option value="normal">Default theme</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="autumn">Autumn</option><option value="winter">Winter</option><option value="night">Night</option><option value="aurora">Aurora</option><option value="pokemon">Pokémon ORAS</option></select><div class="circles-div" onclick="circleToggle()" style="margin: 10px auto; text-align: center; cursor: pointer;"><a class="circle-button wikia-button"> Circle </a></div><div class="align-div" onclick="alignToggle()" style="margin: 10px auto; text-align: center; cursor: pointer;"><a class="align-button wikia-button"> Align </a></div>');
+    $('#Rail').prepend('<select name="style" class="stylechanger" onchange="report(this.value)"> <option value="default">Style switcher</option><option value="normal">Default theme</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="autumn">Autumn</option><option value="winter">Winter</option><option value="night">Night</option><option value="aurora">Aurora</option><option value="pokemon">PokÃ©mon ORAS</option></select><div class="circles-div" onclick="circleToggle()" style="margin: 10px auto; text-align: center; cursor: pointer;"><a class="circle-button wikia-button"> Circle </a></div><div class="align-div" onclick="alignToggle()" style="margin: 10px auto; text-align: center; cursor: pointer;"><a class="align-button wikia-button"> Align </a></div>');
 }
 
 // Style changer

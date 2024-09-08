@@ -2,7 +2,7 @@
 (function() {
     "use strict";
     var userRightsList = {
-    "Seicer": ["Burócrata"],
+    "Seicer": ["BurÃ³crata"],
     };
     if ($('.masthead-info hgroup').length) {
         var name = $('.masthead-info h1[itemprop="name"]').text();

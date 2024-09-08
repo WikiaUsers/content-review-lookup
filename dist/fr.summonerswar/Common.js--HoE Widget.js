@@ -81,7 +81,7 @@ $(document).ready(function()
 				// Months are from 0 - 11, so March is 2, not 3
 				remainingHallTimeInMs = Date.UTC(allHallsYear, allHallsMonth - 1, allHallsDay, 0, 0, 0);
 				$("#hoe_timer").html("Temps restant : " + differenceInTime(currentTimeInMs, remainingHallTimeInMs));
-				hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Donjon_de_Cairos#Halls_Élémentaires";
+				hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Donjon_de_Cairos#Halls_Ã‰lÃ©mentaires";
 				
 				// Remove specific HoE title when all halls open
 				$("#hoe_title").remove();
@@ -95,42 +95,42 @@ $(document).ready(function()
 				switch (day)
 				{
 					case "Sun":
-						hallNameDiv.innerHTML = "Hall des Lumières";
+						hallNameDiv.innerHTML = "Hall des LumiÃ¨res";
 						hallIcon = "https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/b/bd/Guardian_of_Light_Symbol.png";
-						hoe_img.title = "Le Hall des Lumières est ouvert! \n\nLe prochain hall à ouvrir sera le Hall des Ténèbres!";
-						hoe_img.alt = "Le Hall des Lumières est ouvert! \n\nLe prochain hall à ouvrir sera le Hall des Ténèbres!";
-						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_des_Lumières";
+						hoe_img.title = "Le Hall des LumiÃ¨res est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall des TÃ©nÃ¨bres!";
+						hoe_img.alt = "Le Hall des LumiÃ¨res est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall des TÃ©nÃ¨bres!";
+						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_des_LumiÃ¨res";
 						hallNameDiv.setAttribute("style", "font-size:120%; text-align:center; border:2px solid #ffd023; background-color: #f8f4d2; border-radius: 12px; margin: 3px 35px 8px 35px;");
 						break;
 					case "Mon":
-						hallNameDiv.innerHTML = "Hall des Ténèbres";
+						hallNameDiv.innerHTML = "Hall des TÃ©nÃ¨bres";
 						hallIcon = "https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/0/08/Guardian_of_Dark_Symbol.png";
-						hoe_img.title = "Le Hall des Ténèbres est ouvert! \n\nLe prochain hall à ouvrir sera le Hall du Feu!";
-						hoe_img.alt = "Le Hall des Ténèbres est ouvert! \n\nLe prochain hall à ouvrir sera le Hall du Feu!";
-						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_des_Ténèbres";
+						hoe_img.title = "Le Hall des TÃ©nÃ¨bres est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall du Feu!";
+						hoe_img.alt = "Le Hall des TÃ©nÃ¨bres est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall du Feu!";
+						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_des_TÃ©nÃ¨bres";
 						hallNameDiv.setAttribute("style", "font-size:120%; text-align:center; border:2px solid #4e4758; background-color: #80158b; color: #f3b5eb; border-radius: 12px; margin: 3px 35px 8px 35px;");
 						break;
 					case "Tue":
 						hallNameDiv.innerHTML = "Hall du Feu";
 						hallIcon = "https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/c/c2/Guardian_of_Fire_Symbol.png";
-						hoe_img.title = "Le Hall du Feu est ouvert! \n\nLe prochain hall à ouvrir sera le Hall de l'Eau!";
-						hoe_img.alt = "Le Hall du Feu est ouvert! \n\nLe prochain hall à ouvrir sera le Hall de l'Eau!";
+						hoe_img.title = "Le Hall du Feu est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall de l'Eau!";
+						hoe_img.alt = "Le Hall du Feu est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall de l'Eau!";
 						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_de_Feu";
 						hallNameDiv.setAttribute("style", "font-size:120%; text-align:center; border:2px solid #fb7302; background-color: #b11d1e; color: #ffd73e; border-radius: 12px; margin: 3px 35px 8px 35px;");
 						break;
 					case "Wed":
 						hallNameDiv.innerHTML = "Hall de l'Eau";
 						hallIcon = "https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/3/3f/Guardian_of_Water_Symbol.png";
-						hoe_img.title = "Le Hall de l'Eau est ouvert! \n\nLe prochain hall à ouvrir sera le Hall du Vent!";
-						hoe_img.alt = "Le Hall de l'Eau est ouvert! \n\nLe prochain hall à ouvrir sera le Hall du Vent!";
+						hoe_img.title = "Le Hall de l'Eau est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall du Vent!";
+						hoe_img.alt = "Le Hall de l'Eau est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall du Vent!";
 						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_de_l'Eau";
 						hallNameDiv.setAttribute("style", "font-size:120%; text-align:center; background-color: #0554aa; color: #6ff5ff; border: 2px solid black; border-radius: 12px; margin: 3px 35px 8px 35px;");
 						break;
 					case "Thu":
 						hallNameDiv.innerHTML = "Hall du Vent";
 						hallIcon = "https://vignette.wikia.nocookie.net/summoners-war-sky-arena-fr/images/7/75/Guardian_of_Wind_Symbol.png";
-						hoe_img.title = "Le Hall du Vent est ouvert! \n\nLe prochain hall à ouvrir sera le Hall des Lumière!";
-						hoe_img.alt = "Le Hall du Vent est ouvert! \n\nLe prochain hall à ouvrir sera le Hall des Lumières!";
+						hoe_img.title = "Le Hall du Vent est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall des LumiÃ¨re!";
+						hoe_img.alt = "Le Hall du Vent est ouvert! \n\nLe prochain hall Ã  ouvrir sera le Hall des LumiÃ¨res!";
 						hoe_imgLink.href = "http://fr.summonerswar.wikia.com/wiki/Hall_de_Vent";
 						hallNameDiv.setAttribute("style", "font-size:120%; text-align:center; border:2px solid #605747; border-radius: 12px; background-color: #c7a11e; color: #feeeb1; margin: 3px 35px 8px 35px;");
 						break;

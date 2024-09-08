@@ -1,5 +1,5 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
-ajaxPages = ['Spezial:Letzte_Änderungen','Spezial:WikiActivity'];
+ajaxPages = ['Spezial:Letzte_Ã„nderungen','Spezial:WikiActivity'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';

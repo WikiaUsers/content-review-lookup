@@ -21,7 +21,7 @@ formHTML = '\
 		</p> \
 		<br/> \
 		<p>Para cada campo, separa las entradas con una <b>coma</b>.</p> \
-		<p>Las entradas <b>no</b> son sensibles a mayúsculas y minúsculas.</p> \
+		<p>Las entradas <b>no</b> son sensibles a mayÃºsculas y minÃºsculas.</p> \
 		<br/> \
 			<h2><span class="mw-headline">Mensajes</span></h2> \
 				<h3><span class="mw-headline">Lista:</span></h3> \
@@ -36,7 +36,7 @@ formHTML = '\
 					<input style="width: 80%" id="text-pings-alerts-list"/> \
 				<h3><span class="mw-headline">Lista negra:</span></h3> \
 					<input style="width: 80%" id="text-pings-alerts-blacklist"/> \
-			<p>Si necesitas ayuda acerca de los pings, puedes visitar  <a href="/wiki/Ayuda:Pings" target="_blank">esta página</a>.</p> \
+			<p>Si necesitas ayuda acerca de los pings, puedes visitar  <a href="/wiki/Ayuda:Pings" target="_blank">esta pÃ¡gina</a>.</p> \
 	</fieldset> \
 </form>',
 self = {
@@ -86,7 +86,7 @@ self = {
 			});
 		},
 		loadGUI: function() {
-			$.showCustomModal('Sonidos de notificación', formHTML, {
+			$.showCustomModal('Sonidos de notificaciÃ³n', formHTML, {
 				id: 'form-custom-ping',
 				width: '30%',
 				buttons: [{  
@@ -98,7 +98,7 @@ self = {
                     message: 'Reiniciar',
                     defaultButton: true,
                     handler: function() {
-						$.showCustomModal('¿Estás seguro?', '¿Deseas reiniciar las configuración de los sonidos de notificación a sus valores predeterminados?', {
+						$.showCustomModal('Â¿EstÃ¡s seguro?', 'Â¿Deseas reiniciar las configuraciÃ³n de los sonidos de notificaciÃ³n a sus valores predeterminados?', {
 							id: 'form-custom-ping-clear',
 							width: '20%',
 							buttons: [{  

@@ -1,26 +1,26 @@
 // [[Category:Internal]]
 
-// Para [[Module:CSS]]; dependência de [[T:CSS]]
+// Para [[Module:CSS]]; dependÃªncia de [[T:CSS]]
 mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
 		mw.util.addCSS($(this).attr("data-css"));
 	});
 });
 
-// Configuração de UserTags
+// ConfiguraÃ§Ã£o de UserTags
 window.UserTagsJS = {
 	modules: {},
 	tags: {
 		inactive: { order: -2 },
 		bot: { link:'Help:Bots', order: -1 },
-		bureaucrat: { order: 0 }, // <- valor de pedido mais baixo = será colocado antes de outras tags (no espaço, não em relação a qual carrega primeiro)
+		bureaucrat: { order: 0 }, // <- valor de pedido mais baixo = serÃ¡ colocado antes de outras tags (no espaÃ§o, nÃ£o em relaÃ§Ã£o a qual carrega primeiro)
 		sysop: { order: 1 },
 		'content-moderator': { order: 2 },
 		threadmoderator: { order: 3 }
 	}
 };
 
-UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // nenhuma edição por 90 dias e/ou nenhuma edição = inativo
+UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true }; // nenhuma ediÃ§Ã£o por 90 dias e/ou nenhuma ediÃ§Ã£o = inativo
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
@@ -35,7 +35,7 @@ var fadeinclass = document.getElementsByClassName("fadeintext");
         fadeinclass[i].style.animationFillMode = "forwards";
 }
 
-// Créditos para https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
+// CrÃ©ditos para https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
 
 $('.fandom-community-header__community-name-wrapper').append(
 	$('<a/>').attr('href', '//community.fandom.com/wiki/Fandom_Compass').append(

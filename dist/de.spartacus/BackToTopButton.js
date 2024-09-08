@@ -47,7 +47,7 @@ function goToTop (){
 
 function addBackToTop () {
 	if( skin == 'oasis' ) {
-		$('<li id="backtotop" style="position: absolute; right:20px; top:1px; border:none;"><button style="height: 20px;" type="button" value="Zurück zum Anfang" onClick="goToTop();">Zurück zum Anfang</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools');	
+		$('<li id="backtotop" style="position: absolute; right:20px; top:1px; border:none;"><button style="height: 20px;" type="button" value="ZurÃ¼ck zum Anfang" onClick="goToTop();">ZurÃ¼ck zum Anfang</button></li>').appendTo('#WikiaBarWrapper .toolbar > .tools');	
 		hideFade ();
 	}	
 }

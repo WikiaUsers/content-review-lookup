@@ -150,10 +150,10 @@ addOnloadHook( createCollapseButtons );
  })
 
 /*</pre>
-== B˙squeda especial extendida (specialsearch) ==
-AÒade a la p·gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
+== B√∫squeda especial extendida (specialsearch) ==
+A√±ade a la p√°gina [[Special:Search]] enlaces a buscadores externos como Yahoo, Google, MSN Live y Exalead.
 
-Trabaja en conjunto con el mÛdulo [[MediaWiki:SpecialSearch.js]] y est· basado en [[w:fr:MediaWiki:Monobook.js]].
+Trabaja en conjunto con el m√≥dulo [[MediaWiki:SpecialSearch.js]] y est√° basado en [[w:fr:MediaWiki:Monobook.js]].
 <pre><nowiki> */
 
 document.write('<script type="text/javascript" src="' 
@@ -162,7 +162,7 @@ document.write('<script type="text/javascript" src="'
 
 /*</nowiki></pre>
 == Cerrar mensajes ==
-Ver ejemplo en [[Usuario:Chabacano/FÌrmalo]], por [[Usuario:Platonides]].
+Ver ejemplo en [[Usuario:Chabacano/F√≠rmalo]], por [[Usuario:Platonides]].
 <pre><nowiki> */
 
  addOnloadHook( function() {
@@ -177,7 +177,7 @@ Ver ejemplo en [[Usuario:Chabacano/FÌrmalo]], por [[Usuario:Platonides]].
 
 
 /*</nowiki></pre>
-== Texto sÛlo para biblios ==
+== Texto s√≥lo para biblios ==
 <pre><nowiki> */
 
 function userInGroup(group) {
@@ -189,12 +189,12 @@ addOnloadHook ( function() {
      if (document.styleSheets[0].cssRules) {
         for (i=document.styleSheets.length-1; i >= 0; i--) {
              try {
-                 //AÒadir al final (Gecko)
+                 //A√±adir al final (Gecko)
                  document.styleSheets[i].insertRule('.para_biblios { display: inline; }', document.styleSheets[i].cssRules.length);
                  break;
              } catch(e) {
                  //Ignorar el error y probar con la hoja de estilos anterior. 
-                 //AsÌ, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
+                 //As√≠, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
              }
         }
      } else if (document.styleSheets[0].rules) { //IE
@@ -205,7 +205,7 @@ addOnloadHook ( function() {
 
 /*</pre>
 == Wikimedia Player ==
-AÒade reproductor en la misma p·gina.
+A√±ade reproductor en la misma p√°gina.
 <pre><nowiki> */
 
 document.write('<script type="text/javascript" src="' 
@@ -227,14 +227,14 @@ document.write('<script type="text/javascript" src="'
 + '&action=raw&ctype=text/javascript&smaxage=21600&maxage=86400"></script>');
 
 /*</pre>
-== Mejoras de diseÒo de la Portada ==
+== Mejoras de dise√±o de la Portada ==
 <pre><nowiki> */
 
-/** Mejoras de diseÒo de la Portada *********************************************************
+/** Mejoras de dise√±o de la Portada *********************************************************
   *
-  *  DescripciÛn:        Varias mejoras de diseÒo para la portada, incluyendo un
+  *  Descripci√≥n:        Varias mejoras de dise√±o para la portada, incluyendo un
   *                      enlace adicional a la lista completa de idiomas disponibles
-  *                      y renombrar 'artÌculo' a 'portada'.
+  *                      y renombrar 'art√≠culo' a 'portada'.
   *  Adaptado de [[en:MediaWiki:Common.js]]
   */
  
@@ -258,14 +258,14 @@ document.write('<script type="text/javascript" src="'
      }
  }
 
- if ( wgPageName == "Simpson_Wiki_en_EspaÒol:Portada" ) {
+ if ( wgPageName == "Simpson_Wiki_en_Espa√±ol:Portada" ) {
         addOnloadHook( mainPageAppendCompleteListLink );
  }
 /*</nowiki></pre>
 
-== RedefiniciÛn de ordenaciÛn de tablas "sortable" ==
+== Redefinici√≥n de ordenaci√≥n de tablas "sortable" ==
 
-Traido de la Inclopedia. Ordena nombres de meses en espaÒol y cambia puntos por comas.
+Traido de la Inclopedia. Ordena nombres de meses en espa√±ol y cambia puntos por comas.
 
 <pre><nowiki>*/
 
@@ -330,13 +330,13 @@ addOnloadHook ( function() {
      if (document.styleSheets[0].cssRules) {
         for (i=document.styleSheets.length-1; i >= 0; i--) {
              try {
-                 //AÒadir al final (Gecko)
+                 //A√±adir al final (Gecko)
                  document.styleSheets[i].insertRule('.rotate_0 { display: none }', document.styleSheets[i].cssRules.length);
                  document.styleSheets[i].insertRule('.rotate_' + n + ' { display: block; }', document.styleSheets[i].cssRules.length);
                  break;
              } catch(e) {
                  //Ignorar el error y probar con la hoja de estilos anterior. 
-                 //AsÌ, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
+                 //As√≠, por ejemplo [[Usuario:Axxgreazz/Monobook-Suite/popups.js]] carga una hoja de estilos desde en.wikipedia.org, lo que provoca un error 'Access to URI denied' (NS_ERROR_DOM_BAD_URI).
              }
         }
      } else if (document.styleSheets[0].rules) { //IE
@@ -346,10 +346,10 @@ addOnloadHook ( function() {
  } );
 
 /**
- * Desactivar el botÛn guardar en la primera vez a los anÛnimos
+ * Desactivar el bot√≥n guardar en la primera vez a los an√≥nimos
  * Copyright Marc Mongenet, 2006 (fr.wikipedia.org)
  * Plyd 05/2007: add "after preview" in the button to prevent misunderstanding from beginners
- * Platonides 5/2008: TraÌdo a es.wikipedia
+ * Platonides 5/2008: Tra√≠do a es.wikipedia
  */
 function forcePreview() {
   if (wgUserName != null || wgAction != "edit") return;

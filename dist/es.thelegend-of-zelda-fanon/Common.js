@@ -1,12 +1,12 @@
-/********** Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. **********/
+/********** Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. **********/
  
-/* CÛdigo para los reversores */
+/* C√≥digo para los reversores */
 window.UserTagsJS = {
 	modules: {},
 	tags: {
                 jshelper: { u: 'Bot', order: 100 },
 		rollback: { u: 'Reversor', order: 2 },
-		bureaucrat: { u: 'BurÛcrata', order: 1 }
+		bureaucrat: { u: 'Bur√≥crata', order: 1 }
 	}
 };
 

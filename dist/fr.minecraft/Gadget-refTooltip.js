@@ -6,9 +6,9 @@ $( function() {
 	var i18n = {
 		cancelButton: 'Annuler',
 		doneButton: 'Valider',
-		enableLabel: 'Activer les infobulles de références',
-		optionsButtonTitle: 'Changer les options des infobulles de références',
-		referencesSectionName: 'Références',
+		enableLabel: 'Activer les infobulles de rÃ©fÃ©rences',
+		optionsButtonTitle: 'Changer les options des infobulles de rÃ©fÃ©rences',
+		referencesSectionName: 'RÃ©fÃ©rences',
 		saveFailedStorageFull: "Est-ce que le localStorage de votre navigateur est plein ?",
 		saveFailedTitle: "Echec de l'enregistrement des options"
 	};

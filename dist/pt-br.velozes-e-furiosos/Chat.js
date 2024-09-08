@@ -1,6 +1,6 @@
-/* Todos os códigos bases foram cedidos pela Five Nights at Freddy's Wiki */
+/* Todos os cÃ³digos bases foram cedidos pela Five Nights at Freddy's Wiki */
 
-/* Cabeçalho */
+/* CabeÃ§alho */
 var chatTopic = 'Bem-vindo ao chat da Velozes e Furiosos Wiki!<br /><a href="/wiki/Velozes_e_Furiosos_Wiki:Regras_do_Chat" target="_blank" title="Velozes e Furiosos Wiki:Regras do Chat" style="position:relative;text-decoration:underline;">Regras do Chat</a>'
  
 $(function() {
@@ -11,17 +11,17 @@ $('#ChatHeader .public.wordmark div:not(:first-child)').remove()
 
 
 
-/* Configuraçõs do Private Message */
+/* ConfiguraÃ§Ãµs do Private Message */
 var PrivateMessageAlert = {
     beepSound: 'http://soundbible.com/grab.php?id=1645&type=mp3',
-    message: 'Você recebeu uma mensagem de $1!',
+    message: 'VocÃª recebeu uma mensagem de $1!',
     notifications: true,
     alertWhileFocused: true
 };
 
 
 
-/* Coleções de Botões de Chat */
+/* ColeÃ§Ãµes de BotÃµes de Chat */
 /* Aba Options */ 
 /* Alerta de Mensagens Privadas */ 
 /* Aba de Emoticons */ 

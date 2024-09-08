@@ -1,4 +1,4 @@
-/* Color a miembros de la administraciÛn (autom·tico) */
+/* Color a miembros de la administraci√≥n (autom√°tico) */
 highlight = {
 selectAll: true,
 chatmoderator: '#01FF5F',

@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
@@ -13,7 +13,7 @@ var ShowHideConfig = {
     }
 };
 
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 importArticles( { 
         type: 'script',
         articles: [
@@ -21,7 +21,7 @@ importArticles( {
         ]
 });
 
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
  
 importArticles({
     type: 'script',
@@ -30,7 +30,7 @@ importArticles({
     ]
 });
 
-var ajaxPages = ["Spezial:Letzte_Änderungen", "Spezial:WikiActivity"];
+var ajaxPages = ["Spezial:Letzte_Ã„nderungen", "Spezial:WikiActivity"];
 var AjaxRCRefreshText = 'Auto-Aktualisierung';
 
  $(function UserNameReplace() {

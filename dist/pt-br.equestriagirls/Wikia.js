@@ -6,7 +6,7 @@ importArticles({
     ]
 });
  
-/* Adiciona sugest„o de pesquisa na especial:busca */
+/* Adiciona sugest√£o de pesquisa na especial:busca */
 importScriptPage('SearchSuggest/code.js', 'dev');
  
 /**!

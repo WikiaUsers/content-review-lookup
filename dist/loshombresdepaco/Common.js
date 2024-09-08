@@ -1,10 +1,10 @@
-/* Botón para redirección /*
+/* BotÃ³n para redirecciÃ³n /*
 	mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "https://images.wikia.nocookie.net/central/images/c/c8/Button_redirect.png",
 		"speedTip": "Redirigir",
-		"tagOpen": "#REDIRECCIÓN [[",
+		"tagOpen": "#REDIRECCIÃ“N [[",
 		"tagClose": "]]",
-		"sampleText": "Nombre del artículo"
+		"sampleText": "Nombre del artÃ­culo"
 	};
 
 /* Para Plegable/Desplegable */

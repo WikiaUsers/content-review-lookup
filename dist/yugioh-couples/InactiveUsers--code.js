@@ -2,7 +2,7 @@
  * InactiveUsers
  *
  * documentation at: https://dev.fandom.com/wiki/InactiveUsers
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  * continued as UserTags: https://dev.fandom.com/wiki/UserTags
  */

@@ -195,19 +195,8 @@
                 return o;
             },
 
-            // #1: Granting rights (if applicable)
-            grantUserRights: function (user, toAdd, addbots, prevbots, reason) {
-                var allranks = that.ranksAvailable.join("|"),
-                    ranks_to_remove = [],
-                    ranks_to_add = toAdd || [];
-
-                for (var i in that.ranksAvailable) {
-                    if (!ranks_to_add.includes(that.ranksAvailable[i]))
-                        ranks_to_remove.push(that.ranksAvailable[i]);
-                }
-
-                return [user].concat(addbots).map(function (account, i) {
-                    var isBot = i;
+            getModifyRankHandler: function (ranksToAdd, ranksToRemove, reason) {
+                return function handleUserRank (account) {
                     return that.api.get({
                         action: "query",
                         format: "json",
@@ -220,48 +209,77 @@
                                 "action": "userrights",
                                 "format": "json",
                                 "user": account,
-                                "add": ranks_to_add,
-                                "remove": ranks_to_remove,
+                                "add": ranksToAdd,
+                                "remove": ranksToRemove,
                                 "expiry": "infinite",
-                                "reason": isBot && ("Changed rank(s) for associated bot accounts (" + reason + ")") || reason,
+                                "reason": reason,
                                 "token": usToken,
                             }).always(function (data) {
                                 if (data.userrights) {
+                                    function notExistsAdd(requestedRole) {
+                                        return data.userrights.added.indexOf(requestedRole) === -1;
+                                    }
+                                    function notExistsRemove(requestedRole) {
+                                        return data.userrights.removed.indexOf(requestedRole) === -1 && // api fails to remove it
+                                        	that.existingGroups.indexOf(requestedRole) !== -1; // but the user has the role
+                                    }
+                                    var addMismatch = ranksToAdd.some(notExistsAdd);
+                                    var removeMismatch = ranksToRemove.some(notExistsRemove);
                                     console.log("[StaffTagger #1]: > Ranks added for " + account + " (" + Object.keys(data.userrights.added).length + "): ", data.userrights.added);
+                                    if (addMismatch) {
+                                        console.warn("Some requested ranks have not been added! Requested ranks were:", ranksToAdd);
+                                    }
                                     console.log("[StaffTagger #1]: > Ranks removed for " + account + " (" + Object.keys(data.userrights.removed).length + "): ", data.userrights.removed);
-                                } else
+                                    if (removeMismatch) {
+                                        console.warn("Some requested ranks have not been removed! Requested ranks were:", ranksToRemove);
+                                    }
+                                    if (addMismatch || removeMismatch) {
+                                        new BannerNotification($("<div>", {
+                                            html: "<div>StaffTagger failed to modify some ranks (check console). But script will continue to run</div>",
+                                        }).prop("outerHTML"), "warn", undefined, 5000).show();
+                                    }
+                                } else {
                                     console.warn("[StaffTagger #1]: Failed to modify ranks:" + data);
+                                    new BannerNotification($("<div>", {
+                                        html: "<div>StaffTagger failed to modify some ranks (check console). But script will continue to run</div>",
+                                    }).prop("outerHTML"), "warn", undefined, 5000).show();
+                                }
                             });
-                        } else
+                        } else {
                             console.warn("[StaffTagger #1]: API error in getting user rights token:" + data, "(API Error code \"" + data + "\")");
+                        }
                     });
-                }).concat(prevbots.map(function (account) {
-                    return that.api.get({
-                        action: "query",
-                        format: "json",
-                        meta: "tokens",
-                        type: "userrights",
-                    }).always(function (data) {
-                        var usToken = data.query.tokens.userrightstoken;
-                        if (data.query) {
-                            that.api.post({
-                                "action": "userrights",
-                                "format": "json",
-                                "user": account,
-                                "remove": allranks,
-                                "expiry": "infinite",
-                                "reason": "Removing rank(s) for disassociated bot accounts",
-                                "token": usToken,
-                            }).always(function (data) {
-                                if (data.userrights) {
-                                    console.log("[StaffTagger #1]: > Ranks removed for " + account + " (" + Object.keys(data.userrights.removed).length + "): ", data.userrights.removed);
-                                } else
-                                    console.warn("[StaffTagger #1]: Failed to modify ranks:" + data);
-                            });
-                        } else
-                            console.warn("[StaffTagger #1]: API error in getting user rights token:" + data, "(API Error code \"" + data + "\")");
-                    });
-                }));
+                };
+            },
+
+            // #1: Granting rights (if applicable)
+            grantUserRights: function (user, toAdd, reason) {
+                var whatRanksToAddAndRemove = that.getWhatRanksToAddAndRemove(toAdd);
+                var ranksToRemove = whatRanksToAddAndRemove.ranksToRemove;
+                var ranksToAdd = whatRanksToAddAndRemove.ranksToAdd;
+                var handleUserPromise = that.getModifyRankHandler(ranksToAdd, ranksToRemove, reason)(user);
+                return handleUserPromise;
+            },
+            grantBotRights: function (toAdd, addbots, prevbots, reason) {
+                var whatRanksToAddAndRemove = that.getWhatRanksToAddAndRemove(toAdd);
+                var ranksToRemove = whatRanksToAddAndRemove.ranksToRemove;
+                var ranksToAdd = whatRanksToAddAndRemove.ranksToAdd;
+                var allRanks = that.ranksAvailable.join("|");
+                var handleAssociatedBotsPromises = addbots.map(that.getModifyRankHandler(ranksToAdd, ranksToRemove, "Changed rank(s) for associated bot accounts (" + reason + ")"));
+                var handleDisassociatedBotsPromises = prevbots.map(that.getModifyRankHandler([], allRanks, "Removing rank(s) for disassociated bot accounts"));
+                return handleAssociatedBotsPromises.concat(handleDisassociatedBotsPromises);
+            },
+            getWhatRanksToAddAndRemove: function (toAdd) {
+                var ranksToRemove = [];
+                var ranksToAdd = toAdd || [];
+                for (var i in that.ranksAvailable) {
+                    if (!ranksToAdd.includes(that.ranksAvailable[i]))
+                        ranksToRemove.push(that.ranksAvailable[i]);
+                }
+                return {
+                    ranksToRemove: ranksToRemove,
+                    ranksToAdd: ranksToAdd,
+                };
             },
 
             // #2: Change Staff Data on Staff Page
@@ -410,6 +428,19 @@
             nullEditPages: function (user, bots) {
                 var promises = [];
                 [user].concat(bots).forEach(function (account) {
+                    // null edit user page
+                    promises.push(that.api.post({
+                        action: "edit",
+                        title: "User:" + account,
+                        token: mw.user.tokens.get("csrfToken") || mw.user.tokens.get("csrfToken"),
+                        prependtext: "",
+                    }).always(function (data) {
+                        if (data.edit)
+                            console.log("[StaffTagger #6]: Successfully null edited User:" + account);
+                        else
+                            console.warn("[StaffTagger #6]: API error in null editing User:" + account, data);
+                    }));
+                    // null edit message wall
                     promises.push(that.api.post({
                         action: "edit",
                         title: "Message_Wall:" + account,
@@ -421,6 +452,7 @@
                         else
                             console.warn("[StaffTagger #6]: API error in null editing Message_Wall:" + account, data);
                     }));
+                    // null edit user talk
                     promises.push(
                         that.api.post({
                             action: "edit",
@@ -534,25 +566,46 @@
                     ].join("\n")))
                     return;
 
+                // <Stage 1>
                 Promise.all([
                     that.changeStaffData(opts.user, opts.ranklist, opts.formerlist, opts.date, opts.resignDate, opts.bots, opts.activity, opts.reason), // #2
-                    that.addMsgBox(opts.user, opts.reason, hasMsgBox), // #3
-                    // that.updateStaffColors(), // #5
-                    // ^ Disabled to reduce wait time for handling multiple staff; maybe added as an option later when update CSS is included
+                    that.grantBotRights(opts.ranklist, opts.addbots, opts.removebots, opts.reason), // #1
                 ].concat(
-                    that.protectStaffPage(opts.user, opts.addbots, opts.removebots, opts.highLevel) // #4
-                ).concat(
                     that.nullEditPages(opts.user, opts.addbots) // #6
                 )).then(function () {
-                    // placed here because one may demote themselves after the admin actions above
-                    Promise.all(
-                        that.grantUserRights(opts.user, opts.ranklist, opts.addbots, opts.removebots, opts.reason) // #1
-                    ).then(that.onResolve);
+                    // <Stage 2>
+                    Promise.all([
+                        // placed here because one may need to null edit user page before adding message box
+                        that.addMsgBox(opts.user, opts.reason, hasMsgBox) // #3
+                    ].concat(
+                        // placed here because one may need to null edit user page before adding message box
+                        that.protectStaffPage(opts.user, opts.addbots, opts.removebots, opts.highLevel) // #4
+                    )).then(function () {
+                        // <Stage 3>
+                        Promise.all([
+                            // placed here because one may demote themselves after the admin actions above
+                            that.grantUserRights(opts.user, opts.ranklist, opts.reason) // #1
+                            // that.updateStaffColors(), // #5
+                            // ^ Disabled to reduce wait time for handling multiple staff; maybe added as an option later when update CSS is included
+                        ]).then(that.onResolve).catch(function() {
+                            new BannerNotification($("<div>", {
+                                html: "<div><b>StaffTagger failed at stage 3.</b><br />Please capture console log and submit a bug report.</div>",
+                            }).prop("outerHTML"), "error", undefined, 5000).show();
+                        });
+                    }).catch(function() {
+                        new BannerNotification($("<div>", {
+                            html: "<div><b>StaffTagger failed at stage 2.</b><br />Please capture console log and submit a bug report.</div>",
+                        }).prop("outerHTML"), "error", undefined, 5000).show();
+                    });
+                }).catch(function() {
+                    new BannerNotification($("<div>", {
+                        html: "<div><b>StaffTagger failed at stage 1.</b><br />Please capture console log and submit a bug report.</div>",
+                    }).prop("outerHTML"), "error", undefined, 5000).show();
                 });
 
                 that.modal.hide();
                 new BannerNotification($("<div>", {
-                    html: "<div><b>Processing, Please Wait.</b><br />Another pop-up should indicate completion.</div>",
+                    html: "<div><b>StaffTagger running, please wait.</b><br />Another pop-up should indicate completion.</div>",
                 }).prop("outerHTML"), "confirm", undefined, 5000).show();
             },
 

@@ -1,2 +1,2 @@
-/* Títulos no Perfil */
+/* TÃ­tulos no Perfil */
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');

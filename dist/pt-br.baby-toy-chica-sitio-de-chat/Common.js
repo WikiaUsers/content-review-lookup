@@ -15,10 +15,10 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
  
-//configurações do relógio
-// dispõe um relógio de 24h seguido de dia, mês (pt-br)
+//configuraÃ§Ãµes do relÃ³gio
+// dispÃµe um relÃ³gio de 24h seguido de dia, mÃªs (pt-br)
 // e ano com "(UTC)" no final
-window.DisplayClockJS = '%2H:%2M:%2S - %2d %{Janeiro;Fevereiro;Março;Abril;Maio;Junho;Julho;Agosto;Setembro;Outubro;Novembro;Dezembro}m %Y (UTC)';
+window.DisplayClockJS = '%2H:%2M:%2S - %2d %{Janeiro;Fevereiro;MarÃ§o;Abril;Maio;Junho;Julho;Agosto;Setembro;Outubro;Novembro;Dezembro}m %Y (UTC)';
 importArticles({
 	type: 'script',
 	articles: [
@@ -95,14 +95,14 @@ UserTagsJS.modules.isblocked = true;
 UserTagsJS.modules.inactive = 60; // 60 dias
 UserTagsJS.modules.newuser = {
 	days: 2, // Precisa estar na Wiki por 2 dias
-	edits: 7, // E precisa de 7 edições para tirar a tag
-	namespace: 0 // Edições precisam ser em artigos para contar
+	edits: 7, // E precisa de 7 ediÃ§Ãµes para tirar a tag
+	namespace: 0 // EdiÃ§Ãµes precisam ser em artigos para contar
 };
  
 //mensagem de bloqueio automatica
 var MessageBlock = {
   title : 'Bloqueado',
-  message : 'Você foi bloqueado $2 pelo(s) seguinte(s) motivo(s): "$1"',
+  message : 'VocÃª foi bloqueado $2 pelo(s) seguinte(s) motivo(s): "$1"',
   autocheck : true
 };
 importArticles({

@@ -1,8 +1,8 @@
 // Spoiler and Not Final Alert
 SpoilerAlert = {
-    question: '¡ADVERTENCIA! Esta página contiene SPOILERS o información tentativa que tal vez<br />no desees saber. ¿Aún así quieres leer la información?',
+    question: 'Â¡ADVERTENCIA! Esta pÃ¡gina contiene SPOILERS o informaciÃ³n tentativa que tal vez<br />no desees saber. Â¿AÃºn asÃ­ quieres leer la informaciÃ³n?',
     yes: 'Si, por favor',
-    no: 'No, aún no',
+    no: 'No, aÃºn no',
     isSpoiler: function () {
         return -1 !== wgCategories.indexOf('Spoilers');
     }

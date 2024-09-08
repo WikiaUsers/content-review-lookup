@@ -250,10 +250,10 @@ window.hex_md5 = function(s) { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
 
 
 /*
-* Image Switch v1.3: Muestra im·genes al pasar el mouse sobre un enlace que apunte a la imagen a mostrar
+* Image Switch v1.3: Muestra im√°genes al pasar el mouse sobre un enlace que apunte a la imagen a mostrar
 * REQUIERE: hex_md5
 *
-* Copyright (C) 2009  Jes˙s MartÌnez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2009  Jes√∫s Mart√≠nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -262,13 +262,13 @@ window.hex_md5 = function(s) { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
 
 La estructura que deben seguir los elementos es:
 	.imageswitch_section
-		.imageswitch_image [imageswitch_scale (mantiene la imagen dentro de las dimensiones, pero conservando la relaciÛn de aspecto) | imageswitch_preservewidth (mantiene el ancho) | imageswitch_preserveheight (mantiene el alto) ]
+		.imageswitch_image [imageswitch_scale (mantiene la imagen dentro de las dimensiones, pero conservando la relaci√≥n de aspecto) | imageswitch_preservewidth (mantiene el ancho) | imageswitch_preserveheight (mantiene el alto) ]
 			img
 		.imageswitch_links [imageswitch_episodio (especial para plantilla episodio) ]
 			a[title^=Archivo:]+
 
-TambiÈn para episodios, si el contenido del enlace es un texto de 3 cifras y el elemento .imageswitch_links es tambiÈn .imageswitch_episodio
-No puede haber m·s de 1 elemento de profundidad en a, ni m·s de 5 de distancia entre .imageswitch_section e .imageswitch_links
+Tambi√©n para episodios, si el contenido del enlace es un texto de 3 cifras y el elemento .imageswitch_links es tambi√©n .imageswitch_episodio
+No puede haber m√°s de 1 elemento de profundidad en a, ni m√°s de 5 de distancia entre .imageswitch_section e .imageswitch_links
 */
 (function(){
 
@@ -440,7 +440,7 @@ ImageSwitcher.prototype = {
 		}
 		this.targetimgs[index].state = state;
 	},
-	// Si el modo de imagen es mantener las dimensiones m·ximas, retorna true si este mÈtodo se encarga de cambiar la imagen, o false si ya tenemos las dimensiones y se puede cambiar directamente.
+	// Si el modo de imagen es mantener las dimensiones m√°ximas, retorna true si este m√©todo se encarga de cambiar la imagen, o false si ya tenemos las dimensiones y se puede cambiar directamente.
 	adaptSize: function(index, url) {
 		if (!this.targetimgs[index].preserve) return false;
 		if (typeof this.sizecache[url] == 'undefined') {
@@ -457,7 +457,7 @@ ImageSwitcher.prototype = {
 		}
 		var ms = this.targetimgs[index].size;
 		var s = this.sizecache[url];
-		if (s[0] / s[1] > ms[0] / ms[1]) { // La nueva es m·s horizontal
+		if (s[0] / s[1] > ms[0] / ms[1]) { // La nueva es m√°s horizontal
 			img.width = ms[0];
 			img.height = parseInt(s[1]*ms[0]/s[0]);
 		} else {

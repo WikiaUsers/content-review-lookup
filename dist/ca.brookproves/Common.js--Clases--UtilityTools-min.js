@@ -1,4 +1,4 @@
-// Versión comprimida. Véase [[MediaWiki:Common.js/Clases/UtilityTools.js]] <pre>
+// VersiÃ³n comprimida. VÃ©ase [[MediaWiki:Common.js/Clases/UtilityTools.js]] <pre>
 /**
 * @class UtilityTools
 * @description A static class with useful JS functions!

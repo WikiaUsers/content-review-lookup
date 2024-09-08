@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
  
 /* Test if an element has a certain class **************************************
  *
@@ -112,7 +112,7 @@ function UserNameReplace() {
  * By [[User:Spang|Spang]]
  * Monaco support by [[User:Uberfuzzy|Uberfuzzy]]
  * Oasis support by [[User:Uberfuzzy|Uberfuzzy]]
- * Adaptado por [[User:Thales CÈsar|Thales CÈsar]]
+ * Adaptado por [[User:Thales C√©sar|Thales C√©sar]]
  */
 
 if(document.getElementById('old-forum-warning')) {

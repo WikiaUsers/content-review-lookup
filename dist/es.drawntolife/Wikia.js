@@ -1,5 +1,5 @@
 /*<pre> MediaWiki:Wikia.js v1.4 */
-/*SkinNotification: Agrega una notificaciÛn para los que usen oasis. */
+/*SkinNotification: Agrega una notificaci√≥n para los que usen oasis. */
 window.SkinNotification = {
 	article: 'Foro:Skin',
 	key: 'NfSkin',
@@ -36,7 +36,7 @@ function agregarEnlaceSkin() {
 	$('#WikiaFooter').children('div.toolbar').eq(0).children('ul.tools').eq(0).append('<li><a href="'+surl+'"><img width="15" height="15" class="monobook-icon" src="'+stylepath+'/common/blank.gif"/></a> <a href="'+surl+'" id="ca-changeskin" title="Ver Drawn to Life Wiki con la piel Monobook">Cambiar la apariencia a Monobook</a></li>');
 	
 	$('#ca-changeskin').click(function(){
-		alert('La apariencia cambiar· temporalmente a Monobook. Para ver el estilo por defecto deber·s quitar el "useskin=monobook" de la direcciÛn de la p·gina que sale en el navegador');
+		alert('La apariencia cambiar√° temporalmente a Monobook. Para ver el estilo por defecto deber√°s quitar el "useskin=monobook" de la direcci√≥n de la p√°gina que sale en el navegador');
 	});
 }
 

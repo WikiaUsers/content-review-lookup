@@ -1,7 +1,7 @@
 importScriptPage('MediaWiki:Common.js/Tabber.js');
 importScriptPage('MediaWiki:YoutubePlayer/code.js', 'dev');
 
-/* Atualizando automaticamente mudanÁas recentes
+/* Atualizando automaticamente mudan√ßas recentes
 /* Auto updating recent changes opt-in
   * See w:c:dev:AjaxRC for info & attribution 
   */
@@ -11,21 +11,21 @@ importScriptPage('MediaWiki:YoutubePlayer/code.js', 'dev');
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
 
-/* Adiciona o label "inativo" nos perfis de quem n„o edita h· no m·ximo 2 meses */
+/* Adiciona o label "inativo" nos perfis de quem n√£o edita h√° no m√°ximo 2 meses */
 InactiveUsers = { 
 	months: 2,
         text: 'inativo'};
 importScriptPage('InactiveUsers/code.js', 'dev');
 
-/* Automaticamente abre o menu de contexto no bot„o "editar" da pag */
+/* Automaticamente abre o menu de contexto no bot√£o "editar" da pag */
 importScriptPage('AutoEditDropdown/code.js', 'dev');
 
 
-/* Bloqueia blogs com no m·ximo 50 dias de n„o atividade */
+/* Bloqueia blogs com no m√°ximo 50 dias de n√£o atividade */
 window.LockOldBlogs = {
     expiryDays: 50,
-    expiryMessage: "Este blog n„o recebeu coment·rios nos ˙ltimos 50 dias. N„o h· raz„o para comentar novamente. Caso seja algum blog importante avise aos administradores da wiki.",
-    nonexpiryCategory: "Coment·rios Desbloqueados"
+    expiryMessage: "Este blog n√£o recebeu coment√°rios nos √∫ltimos 50 dias. N√£o h√° raz√£o para comentar novamente. Caso seja algum blog importante avise aos administradores da wiki.",
+    nonexpiryCategory: "Coment√°rios Desbloqueados"
 };
 
 /* Player do YouTube */ 
@@ -65,14 +65,14 @@ importArticles({
         ]
 });
 
-/* Mensagem para usu·rios n„o registrados. */
+/* Mensagem para usu√°rios n√£o registrados. */
 if (wgUserName === null)
-    var WikiaNotificationMessage = "<a href='/wiki/Especial:UserSignup'>N„o È registrado? Se registre agora clicando aqui, È gr·tis!</a>"; 
+    var WikiaNotificationMessage = "<a href='/wiki/Especial:UserSignup'>N√£o √© registrado? Se registre agora clicando aqui, √© gr√°tis!</a>"; 
     // Mensagem
     importArticles({
         type: "script",
         articles: [
-            "w:dev:WikiaNotification/code.js", // NotificaÁ„o Wikia
+            "w:dev:WikiaNotification/code.js", // Notifica√ß√£o Wikia
         ]
     });
 
@@ -82,7 +82,7 @@ importArticle({
   article: 'u:dev:ResponsiveSlider/code.js'
 });
 
-/*** RelÛgio ***/
+/*** Rel√≥gio ***/
 window.DisplayClockJS = {
     format: '%d %B %Y, %2H:%2M:%2S (UTC)',
     hoverText: 'Click to purge the cache'

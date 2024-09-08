@@ -1,7 +1,7 @@
-/* Fenêtre de bienvenue - code du w:c:de.fairytail */
+/* FenÃªtre de bienvenue - code du w:c:de.fairytail */
 /*if (mw.config.get('wgUserGroups').indexOf('staff') === -1 && mw.config.get('wgUserGroups').indexOf('helper') === -1 && mw.config.get('wgUserGroups').indexOf('vstf') === -1) {
     if (localStorage.newUser !== "true") {
-        $.showCustomModal("Actualités sur Fairy Tail Event' !", '<form class="WikiaForm" method="" name=""><center><fieldset>NOUVEAU ! Un JLD a commencé ! Participez-y <a href="/wiki/JLD (Festivités Estivales)" title="JLD (Festivités Estivales)">ici</a> !<br><small>(du 1<sup>er</sup> août au 31 août)</small></fieldset></center></form>', {
+        $.showCustomModal("ActualitÃ©s sur Fairy Tail Event' !", '<form class="WikiaForm" method="" name=""><center><fieldset>NOUVEAU ! Un JLD a commencÃ© ! Participez-y <a href="/wiki/JLD (FestivitÃ©s Estivales)" title="JLD (FestivitÃ©s Estivales)">ici</a> !<br><small>(du 1<sup>er</sup> aoÃ»t au 31 aoÃ»t)</small></fieldset></center></form>', {
             id: "newuser-modal",
             width: 650,
             buttons: [{

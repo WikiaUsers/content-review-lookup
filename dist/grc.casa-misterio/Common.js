@@ -1,6 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-// TimeCircles - funcionamiento y diseño
+// TimeCircles - funcionamiento y diseÃ±o
  
 var timeCrirclesDivs = document.getElementsByClassName("TimeCirclesDiv");
  
@@ -21,7 +21,7 @@ $("#TimeCirclesDiv").TimeCircles({
     "circle_bg_color": "#60686F",
     "time": {
         "Days": {
-            "text": "Días",
+            "text": "DÃ­as",
             "color": "#FFCC66",
             "show": true
         },

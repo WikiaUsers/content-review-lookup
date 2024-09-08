@@ -1,5 +1,5 @@
 $(function() {
-    var categorymatch = $.inArray('Artículos con contenido fuerte', wgCategories) > -1;
+    var categorymatch = $.inArray('ArtÃ­culos con contenido fuerte', wgCategories) > -1;
     if (categorymatch) {
         $('.mw-content-ltr').hide();
         var texto = $('.contenido_fuerte .contenido').text();

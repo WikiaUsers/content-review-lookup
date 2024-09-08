@@ -1,6 +1,6 @@
 /*<pre>*/
-// BOTONES DE EDICIÓN PERSONALIZADOS
-// Esto esta basado en el código original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICIÃ“N PERSONALIZADOS
+// Esto esta basado en el cÃ³digo original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -26,7 +26,7 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images1.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucción",
+     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
      "tagOpen": "{{Enobras|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
@@ -54,10 +54,10 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images2.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Pequeño",
+     "speedTip": "Texto PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Pequeño"};
+     "sampleText": "Texto PequeÃ±o"};
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images1.wikia.nocookie.net/__cb20070329065453/central/images/3/3b/Button_template_alt.png",
@@ -68,8 +68,8 @@
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://images1.wikia.nocookie.net/__cb20070329065453/central/images/3/3b/Button_template_alt.png",
-     "speedTip": "Plantilla de Capítulo",
-     "tagOpen": "{{Capítulo",
+     "speedTip": "Plantilla de CapÃ­tulo",
+     "tagOpen": "{{CapÃ­tulo",
      "tagClose": "\r|Capitulo = \r|Imagen = \r|Anterior = \r|Siguiente = \r|Volumen = \r|Personajes = \r}}",
      "sampleText": ""};
 

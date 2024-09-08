@@ -31,8 +31,8 @@
 // ******************************************************************
 window.LockForums = {
     expiryDays: 60,
-    expiryMessage: "Este foro ha sido archivado ya que no ha sido contestado en 60 dÌas o m·s.",
-    forumName: "Õndice"
+    expiryMessage: "Este foro ha sido archivado ya que no ha sido contestado en 60 d√≠as o m√°s.",
+    forumName: "√çndice"
 };
 
 importArticles({
@@ -44,7 +44,7 @@ importArticles({
 
 window.LockOldBlogs = {
     expiryDays: 60,
-    expiryMessage: "Este blog ha sido archivado ya que no ha sido contestado en 60 dÌas o m·s.",
+    expiryMessage: "Este blog ha sido archivado ya que no ha sido contestado en 60 d√≠as o m√°s.",
     nonexpiryCategory: "Noticias"
 };
 
@@ -73,9 +73,9 @@ importArticles({
 // ******************************************************************
 // NOMBRE DEL USUARIO
 // ******************************************************************
-// Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
 // o la [[Plantilla:NOMBREUSUARIO]]
-// TraÌda inicialmente de Uncyclopedia y corregida por 
+// Tra√≠da inicialmente de Uncyclopedia y corregida por 
 // uncyclopedia:es:user:Ciencia Al Poder ,
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // ******************************************************************

@@ -1,16 +1,16 @@
 /*
  * OngletPurge
  *
- * Onglet permettant de rÈaliser une purge du cache
+ * Onglet permettant de r√©aliser une purge du cache
  *
  * Auteur : ??
- * DerniËre rÈvision : 7 juin 2007
- * [[CatÈgorie:MediaWiki:Fonction Monobook en JavaScript]]
+ * Derni√®re r√©vision : 7 juin 2007
+ * [[Cat√©gorie:MediaWiki:Fonction Monobook en JavaScript]]
  */
 
 function OngletPurge() {
         if (wgNamespaceNumber >= 0 && !document.getElementById('toolbar')) {
-                addPortletLink('p-cactions', wgScriptPath + '/index.php?title=' + wgPageName + '&action=purge', 'purgar', 'ca-purge', 'purgar a p·gina', 'p');
+                addPortletLink('p-cactions', wgScriptPath + '/index.php?title=' + wgPageName + '&action=purge', 'purgar', 'ca-purge', 'purgar a p√°gina', 'p');
  }
 }
 

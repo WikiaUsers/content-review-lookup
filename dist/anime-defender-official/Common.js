@@ -1,22 +1,15 @@
-// Function to play a sound effect
-function playSound() {
-  var audio = new Audio('path/to/sound.mp3'); // Replace 'path/to/sound.mp3' with your actual sound file path
-  audio.play();
-}
-
-// Add event listener to expand/collapse button
 $(document).ready(function() {
-  $('.mw-collapsible-toggle').click(function() {
-    var collapsible = $(this).closest('.mw-collapsible');
-    var isCollapsed = collapsible.hasClass('mw-collapsed');
-    if (isCollapsed) {
-      // Play sound effect when expanding
-      playSound();
-      // Add zoom animation when expanding
-      collapsible.addClass('zoom');
-    } else {
-      // Play sound effect when collapsing (optional)
-      playSound();
-    }
-  });
+    $('.tabber').on('click', '.tabber__tab', function() {
+        var $tabber = $(this).closest('.tabber');
+        var tabId = $(this).data('tab-id');
+        var tabIndex = $(this).index() + 1;
+        
+        $tabber.find('.tabber__tab, .tabber__panel').removeClass('tabber__tab--active tabber__panel--active');
+        $(this).addClass('tabber__tab--active');
+        $tabber.find('#' + tabId + '-panel').addClass('tabber__panel--active');
+        
+        // Change the body class to switch background
+        $('body').removeClass('tab-background-1 tab-background-2 tab-background-3')
+                 .addClass('tab-background-' + tabIndex);
+    });
 });

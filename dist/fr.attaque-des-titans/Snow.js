@@ -1,10 +1,10 @@
-<style type= »text/css »>
+<style type= Â»text/css Â»>
 
 body {
 background:#111111;
 }
 </style>
-<script type= »text/javascript » src= »http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js »></script>
-<script type= »text/javascript » src= »js/jsnow.js »></script>
+<script type= Â»text/javascript Â» src= Â»http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js Â»></script>
+<script type= Â»text/javascript Â» src= Â»js/jsnow.js Â»></script>
 
-<script type= »text/javascript »> $(function() { $().jSnow(); }); </script>
+<script type= Â»text/javascript Â»> $(function() { $().jSnow(); }); </script>

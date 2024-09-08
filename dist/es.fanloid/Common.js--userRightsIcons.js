@@ -16,7 +16,7 @@ $(function() {
  
  // Comienza lista de cuentas con iconos de Permisos de Usuarios
  //
- // Asegúrate que la ultima linea de permisos esté seguida de un punto y coma, en vez de una coma.
+ // AsegÃºrate que la ultima linea de permisos estÃ© seguida de un punto y coma, en vez de una coma.
  
    // Bots
  
@@ -71,7 +71,7 @@ $(function() {
  
  rights["RainbowDaash"]                       = [founder];
  
- // Término de la lista de usuarios con iconos de permisos
+ // TÃ©rmino de la lista de usuarios con iconos de permisos
  
  if (wgPageName.indexOf("Especial:Contribuciones") != -1){
 newTitle = fbReturnToTitle.replace("Especial:Contribuciones/", "");

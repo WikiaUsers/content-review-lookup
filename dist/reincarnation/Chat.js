@@ -73,8 +73,8 @@ $(function() {
 // All credit goes to Penguin-Pal //
 
 importScriptPage('User:Monchoman45/ChatHacks.js', 'c');
- 
- importScriptPage('ChatOptions/code.js', 'dev');
+Â 
+Â importScriptPage('ChatOptions/code.js', 'dev');
  
 importArticles({
        type: 'script',
@@ -108,7 +108,7 @@ var partyLinkText2 = "Gangnam Style by PSY";
 var partyLinkText3 = "Too Close by Alex Clare";
 var partyLinkText4 = "Let it Go by Idina Menzel";
 var partyLinkText5 = "Fancy by Charli XCX";
- 
+Â 
 /* add clock */
 	/* set main object */
 window.Widget = window.Widget || {};
@@ -233,4 +233,4 @@ Widget.clock.core.to = setInterval(
 	1000
 	);
 	
- 
+Â 

@@ -21,6 +21,8 @@ UserTagsJS.modules.custom = {
     'TheTreasureHunter': ['former_staff'],
     'NinjaDogDB': ['former_staff'],
     'Trashh': ['former_staff'],
+    'EQUENOS': ['former_staff'],
+    'ImSpiriti': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],

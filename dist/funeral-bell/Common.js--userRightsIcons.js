@@ -36,7 +36,7 @@ $(function() {
  
  rights["Ezio Editore da California"]         = [adminTag],
  rights["Miricle1778"]                        = [adminTag, cratTag],
- rights["Midori Phénix"]                      = [adminTag],
+ rights["Midori PhÃ©nix"]                      = [adminTag],
  rights["Yuzura"]                             = [founderTag, adminTag, cratTag, starTag],
  
    //Custodians and Patrollers

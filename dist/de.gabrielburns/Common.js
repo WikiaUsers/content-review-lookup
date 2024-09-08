@@ -1,4 +1,4 @@
-/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 window.AjaxRCRefreshText = 'Auto-refresh';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
 window.ajaxPages = ["Special:RecentChanges","Special:WikiActivity"];

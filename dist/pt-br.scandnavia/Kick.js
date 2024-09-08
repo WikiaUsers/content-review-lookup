@@ -8,7 +8,7 @@
 $(function() {
     if (mw.config.get('wgCanonicalSpecialPageName') == 'Chat') {
         var groups = mw.config.get('wgUserGroups'),
-            absentMessage = window.absentMessage || '<user> não está no chat, ação indisponível.';
+            absentMessage = window.absentMessage || '<user> nÃ£o estÃ¡ no chat, aÃ§Ã£o indisponÃ­vel.';
         if (groups.indexOf('sysop') > -1 ||
            groups.indexOf('bureaucrat') > -1 ||
            groups.indexOf('chatmoderator') > -1

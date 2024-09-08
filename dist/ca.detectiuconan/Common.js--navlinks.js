@@ -1,4 +1,4 @@
-/* Afegeix el link "Nosaltres" al menú "On the Wiki"
+/* Afegeix el link "Nosaltres" al menÃº "On the Wiki"
  * De RuneScape Wiki, modificat per: [[User:The 888th Avatar]]
  */
  

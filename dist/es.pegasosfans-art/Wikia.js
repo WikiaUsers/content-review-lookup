@@ -1,4 +1,4 @@
-¡Hola! Porfa Registrate si eres un usuario anonimo
+Â¡Hola! Porfa Registrate si eres un usuario anonimo
 Como Colaborar:
 *Se un buen usuario
 *No agas vandalismo 

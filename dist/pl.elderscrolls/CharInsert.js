@@ -1,6 +1,6 @@
-// Autor: Jesús Martínez Novo (Ciencia Al Poder)
+// Autor: JesÃºs MartÃ­nez Novo (Ciencia Al Poder)
 // Licencia/License: http://www.gnu.org/copyleft/gpl.html GNU General Public Licence 2.0 or later
-// Para agregar conjuntos de caracteres especiales, agregar nuevos identificadores a charInsert.groups como elementos de arrays. Si el elemento es otro array, será un "elemento doble"
+// Para agregar conjuntos de caracteres especiales, agregar nuevos identificadores a charInsert.groups como elementos de arrays. Si el elemento es otro array, serÃ¡ un "elemento doble"
 // ejemplo: charInsert.groups["Nombre del grupo"] = ['a','b','c', ['d','e'], ['f','g'] ];
 // Para deshabilitar cookie al cambiar grupo de caracteres:
 // charInsert.disableCookie = true;
@@ -10,17 +10,17 @@ charInsert.groups["HTML"] = [ ['<span class="plainlinks">','</span>'], ['<blockq
 
 charInsert.version = '1.1';
 
-charInsert.bindId = 'charinsert-blocks'; // ID del elemento donde se insertará la utilidad. Cambiar si es necesario
+charInsert.bindId = 'charinsert-blocks'; // ID del elemento donde se insertarÃ¡ la utilidad. Cambiar si es necesario
 
 charInsert.activaCaracteresEspeciales = function (){
   if (!document.createTextNode)
     return; // No es DOM compatible
   var divSC = document.getElementById(charInsert.bindId);
   if (!divSC) return;
-  // 1. Añadimos una caja de selección segn los conjuntos de caracteres que hay
+  // 1. AÃ±adimos una caja de selecciÃ³n segn los conjuntos de caracteres que hay
   var select = document.createElement('select');
   select.id = 'chargroup-select';
-  // 1.1 Conjuntos de caracteres que ya haya en el código
+  // 1.1 Conjuntos de caracteres que ya haya en el cÃ³digo
   var listaCharGrp = divSC.getElementsByTagName('div');
   for (var i = 0; i < listaCharGrp.length; i++){
     var p = listaCharGrp[i];
@@ -30,8 +30,8 @@ charInsert.activaCaracteresEspeciales = function (){
       option.groupRef = p;
       option.appendChild(document.createTextNode(p.title));
       select.appendChild(option);
-      p.title = ''; // Borramos el título para que no aparezca al pasar el mouse por encima
-      // IE Fix: la selección actual en el textarea se pierde si se hace clic en un elemento que no sea un 'a' o un elemento de formulario ('input', etc)
+      p.title = ''; // Borramos el tÃ­tulo para que no aparezca al pasar el mouse por encima
+      // IE Fix: la selecciÃ³n actual en el textarea se pierde si se hace clic en un elemento que no sea un 'a' o un elemento de formulario ('input', etc)
       if (document.selection  && !is_gecko){
         var el = p.firstChild;
         if (el) {
@@ -159,8 +159,8 @@ charInsert.addGroup = function(group){
 
 charInsert.specialCharClick = function(event){
   var charEl = charInsert.eventTargetElement(event);
-  // Obtenemos el span más externo posible, pero que descienda directamente del div de class 'chargroup'
-  // Si lo capta un textNode (no debería), buscamos su span.
+  // Obtenemos el span mÃ¡s externo posible, pero que descienda directamente del div de class 'chargroup'
+  // Si lo capta un textNode (no deberÃ­a), buscamos su span.
   if (charEl.nodeType == 3){ // text node.
     if (charEl.parentNode.nodeType == 1 && charEl.parentNode.tagName.toLowerCase() == 'span')
       charEl = charEl.parentNode;

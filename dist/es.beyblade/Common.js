@@ -12,8 +12,8 @@ if (mw.config.get('wgCanonicalSpecialPageName', '') == 'Upload') {
 	});
 }
 
-// BOTONES DE EDICIÓN PERSONALIZADOS
-// Esto esta basado en el código original: Wikipedia:Tools/Editing tools
+// BOTONES DE EDICIÃ“N PERSONALIZADOS
+// Esto esta basado en el cÃ³digo original: Wikipedia:Tools/Editing tools
  
  if (mwCustomEditButtons) {
    mwCustomEditButtons[mwCustomEditButtons.length] = {
@@ -39,8 +39,8 @@ if (mw.config.get('wgCanonicalSpecialPageName', '') == 'Upload') {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/d/d3/En_construccion.png",
-     "speedTip": "Advertir de que este articulo esta en contrucción",
-     "tagOpen": "{{En construcción|",
+     "speedTip": "Advertir de que este articulo esta en contrucciÃ³n",
+     "tagOpen": "{{En construcciÃ³n|",
      "tagClose": "}}",
      "sampleText": "Nick del usuario"};
 
@@ -67,10 +67,10 @@ if (mw.config.get('wgCanonicalSpecialPageName', '') == 'Upload') {
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/fairytail/es/images/8/89/Letra_Peque%C3%B1a.png",
-     "speedTip": "Texto Pequeño",
+     "speedTip": "Texto PequeÃ±o",
      "tagOpen": "<small>",
      "tagClose": "</small>",
-     "sampleText": "Texto Pequeño"};
+     "sampleText": "Texto PequeÃ±o"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "http://upload.wikimedia.org/wikipedia/commons/5/5f/Button_center.png",
@@ -206,20 +206,20 @@ var BackToTop = true; // prevent duplication
 
 /* <pre>
  * Thickbox4MediaWiki v3.10 - Based on Thickbox 3.1 By Cody Lindley (http://www.codylindley.com)
- * Copyright (c) 2010 - 2015 Jesús Martínez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
+ * Copyright (c) 2010 - 2015 JesÃºs MartÃ­nez (User:Ciencia_Al_Poder), Original Thickbox Copyright (c) 2007 Cody Lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
 window.Thickbox = (function($, mw) {
     'use strict';
     var _version = '3.10',
-    // Dimensiones mínimas
+    // Dimensiones mÃ­nimas
     _minWidth = 210,
     // Margen entre la imagen y el borde de ThickBox
     _imageMarginWidth = 15,
-    // Margen mínimo hasta el borde de la ventana. Si se supera la imagen se reducirá
+    // Margen mÃ­nimo hasta el borde de la ventana. Si se supera la imagen se reducirÃ¡
     _minMarginWidth = 30,
     _minMarginHeight = 15,
-    // Tiempo de espera para la aparición del loader en ms
+    // Tiempo de espera para la apariciÃ³n del loader en ms
     _loaderWait = 500,
     // Internos
     _imgPreloader = null,
@@ -236,7 +236,7 @@ window.Thickbox = (function($, mw) {
     _logger = null,
     // Funciones privadas
     _init = function() {
-        // Se podría haber puesto un evento directamente en cada 'a.image', pero esto es mucho más rápido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
+        // Se podrÃ­a haber puesto un evento directamente en cada 'a.image', pero esto es mucho mÃ¡s rÃ¡pido y eficiente (tarda solo el 20% en FF2) que recorrerse todo el DOM
         $('#mw-content-text').off('click.thickbox mouseover.thickbox_imgtip').on({
             'click.thickbox': _triggerEvent,
             'mouseover.thickbox_imgtip': _imgTipEvent
@@ -250,11 +250,11 @@ window.Thickbox = (function($, mw) {
         var target = e.target;
         if (_isTag(target,'img')) { // Gallery o thumb
             var a = target.parentNode;
-            // Imágenes con enlaces a otros artículos no tienen la clase "image", excepto en Wikia donde sí la tiene y añaden "link-internal" o "link-external"
+            // ImÃ¡genes con enlaces a otros artÃ­culos no tienen la clase "image", excepto en Wikia donde sÃ­ la tiene y aÃ±aden "link-internal" o "link-external"
             if (!a || !_isTag(a,'a') || !_isClass(a,'image') || _isClass(a, 'link-internal') || _isClass(a, 'link-external')) {
                 return true;
             }
-            // Galería Wikia 2
+            // GalerÃ­a Wikia 2
             if (_isClass(a,'lightbox')) {
                 target.blur();
                 _getCaption = _getCaptionWikia;
@@ -289,7 +289,7 @@ window.Thickbox = (function($, mw) {
                     return false;
                 }
             }
-            // Es thumb genérico
+            // Es thumb genÃ©rico
             a.blur();
             _getCaption = _getCaptionEmpty;
             _showImage(a);
@@ -357,10 +357,10 @@ window.Thickbox = (function($, mw) {
             url = _getUrlFromThumb( $img.attr('src') );
             descUrl = $a.attr('href');
             if ($img.data('image-key')) {
-                // image-key es el nombre para la URL. No usar image-name porque está codificado doble (& --> &amp;amp;)
+                // image-key es el nombre para la URL. No usar image-name porque estÃ¡ codificado doble (& --> &amp;amp;)
                 descUrl = mw.util.wikiGetlink(mw.config.get('wgFormattedNamespaces')['6'] + ':' + decodeURIComponent($img.data('image-key')));
             }
-            TB_descLink = '<a id="TB_descLink" class="sprite details" title="Ir a la página de descripción de la imagen"></a>';
+            TB_descLink = '<a id="TB_descLink" class="sprite details" title="Ir a la pÃ¡gina de descripciÃ³n de la imagen"></a>';
             // Se trata de un gallery?
             if (_galleryIndex != -1) {
                 TB_secondLine = '<div id="TB_secondLine">'+
@@ -430,22 +430,22 @@ window.Thickbox = (function($, mw) {
                 elOffset = tgEl.offset(),
                 lw = elOffset.left,
                 rw = $(document).width() - elOffset.left - tgEl.width(),
-                // Calculamos las dimensiones óptimas. Calculamos el área y determinamos que lo ideal es proporción 3/2
+                // Calculamos las dimensiones Ã³ptimas. Calculamos el Ã¡rea y determinamos que lo ideal es proporciÃ³n 3/2
                 prefw = parseInt(Math.sqrt(wnd.width()*wnd.height()*3/2),10),
-                // Corrección de ancho mínimo en caso de producirse scroll
+                // CorrecciÃ³n de ancho mÃ­nimo en caso de producirse scroll
                 cd = $('#TB_ajaxContent')[0];
             prefw += cd.scrollWidth-cd.clientWidth;
-            // No se debe reducir el ancho mínimo
+            // No se debe reducir el ancho mÃ­nimo
             if (prefw < _minWidth) {
                 prefw = _minWidth;
             }
-            // Posición. 5px de margen respecto el origen. Situación ideal: a la derecha del elemento
+            // PosiciÃ³n. 5px de margen respecto el origen. SituaciÃ³n ideal: a la derecha del elemento
             var margen = 5, left = $(document).width() - rw + margen;
             if (rw > prefw + margen) {
                 // ya es correcto
             } else if (lw > prefw + margen) {
                 left = lw - prefw - margen;
-            } else if (lw < 250 || rw < 250) { // No cabe en ninguno de los dos lados. Miramos si no puede usarse el ancho mínimo (250). En ese caso el ancho lo forzamos y lo ponemos a la derecha
+            } else if (lw < 250 || rw < 250) { // No cabe en ninguno de los dos lados. Miramos si no puede usarse el ancho mÃ­nimo (250). En ese caso el ancho lo forzamos y lo ponemos a la derecha
                 prefw = 250;
             } else if (rw > lw) { // Se usa el ancho disponible del lado mayor
                 prefw = rw - margen;
@@ -454,14 +454,14 @@ window.Thickbox = (function($, mw) {
                 left = margen;
             }
             wnd.css({width: prefw, left: left});
-            // Ahora la posición vertical. necesita que hayamos asignado el width para que lo calcule bien
+            // Ahora la posiciÃ³n vertical. necesita que hayamos asignado el width para que lo calcule bien
             var top = elOffset.top - parseInt(wnd.height(), 10) - margen;
             // Si no cabe arriba lo colocamos debajo
             if (top < margen) {
                 top = elOffset.top + tgEl.height() + margen;
             }
             wnd.css({top: top, visibility: 'visible'});
-            // Animación si queda fuera del campo visual
+            // AnimaciÃ³n si queda fuera del campo visual
             if (($('html')[0].scrollTop||$('body')[0].scrollTop) > top-margen) {
                 $('html,body').animate({scrollTop: top - margen}, 250, 'swing');
             }
@@ -503,7 +503,7 @@ window.Thickbox = (function($, mw) {
         }
     },
     _position = function(anim) {
-        // Ancho mínimo
+        // Ancho mÃ­nimo
         var border = 4;
         if (_width < _minWidth) {
             _width = _minWidth;
@@ -557,13 +557,13 @@ window.Thickbox = (function($, mw) {
             wndH = $('#TB_window').height(),
             // Resizing large images - orginal by Christian Montoya edited by me.
             pagesize = _getPageSize(),
-            // Dimensiones máximas
+            // Dimensiones mÃ¡ximas
             x = pagesize[0] - _minMarginWidth * 2 - _imageMarginWidth * 2,
             y = pagesize[1] - _minMarginHeight * 2 - wndH + img.height(),
             imageWidth = _imgPreloader.width,
             imageHeight = _imgPreloader.height,
             firstNav, imgOpt;
-        // Puede entrar por una o por las dos. De hecho, con esta comprobación basta, ya que si tiene que pasar por las dos da igual por qué lado se reduzca primero
+        // Puede entrar por una o por las dos. De hecho, con esta comprobaciÃ³n basta, ya que si tiene que pasar por las dos da igual por quÃ© lado se reduzca primero
         if (imageWidth > x) {
             imageHeight = imageHeight * (x / imageWidth);
             imageWidth = x;
@@ -577,7 +577,7 @@ window.Thickbox = (function($, mw) {
         firstNav = (img.attr('src') || '') === '';
         // Dimensiones de la ventana Thickbox para posicionar
         _width = imageWidth + _imageMarginWidth * 2; // 15px de espacio en cada lado
-        // La altura de la ventana la conocemos. Solo hay que reemplazar la imagen antigua y poner la nueva, esto es, sus dimensiones. El height se tiene que hacer diferente porque intervienen más elementos que en el ancho
+        // La altura de la ventana la conocemos. Solo hay que reemplazar la imagen antigua y poner la nueva, esto es, sus dimensiones. El height se tiene que hacer diferente porque intervienen mÃ¡s elementos que en el ancho
         _height = wndH - img.height() + imageHeight;
         img.attr({
             src: _imgPreloader.src,
@@ -585,7 +585,7 @@ window.Thickbox = (function($, mw) {
         });
 
         imgOpt = {width: imageWidth, height: imageHeight, opacity: 1};
-        // Miramos si se carga al abrir o después de navegar. Si viene de abrirse, sin animación
+        // Miramos si se carga al abrir o despuÃ©s de navegar. Si viene de abrirse, sin animaciÃ³n
         if (firstNav) {
             img.css(imgOpt);
         } else {
@@ -617,7 +617,7 @@ window.Thickbox = (function($, mw) {
                 _imgPreloader.src = url;
             }});
         }
-        // Si la función no encuentra el elemento, puede devolver undefined, y en este caso no cambia el contenido. Forzamos un null en ese caso
+        // Si la funciÃ³n no encuentra el elemento, puede devolver undefined, y en este caso no cambia el contenido. Forzamos un null en ese caso
         $('#TB_caption').html( ( _getCaption(gitem) || null ) );
         $('#TB_descLink').attr('href',gitem.attr('href'));
         return false;
@@ -671,7 +671,7 @@ window.Thickbox = (function($, mw) {
                 return;
             }
             t = $(target);
-            // Mostramos solo si la imagen tiene un tamaño mínimo
+            // Mostramos solo si la imagen tiene un tamaÃ±o mÃ­nimo
             if (t.width() < 40 || t.height() < 40) {
                 return;
             }
@@ -687,7 +687,7 @@ window.Thickbox = (function($, mw) {
         }
     },
     _createImgTip = function() {
-        _imgTip = $('<div id="TB_imagetip" title="Clic sobre la imagen para ampliar. Ctrl, Alt o Mayús. para acceder a la página de descripción de la imagen.">').appendTo(document.body);
+        _imgTip = $('<div id="TB_imagetip" title="Clic sobre la imagen para ampliar. Ctrl, Alt o MayÃºs. para acceder a la pÃ¡gina de descripciÃ³n de la imagen.">').appendTo(document.body);
         _imgTip.on('click',_imgTipClickEvent);
     },
     _showImgTip = function(target) {

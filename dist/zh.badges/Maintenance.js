@@ -4,7 +4,7 @@
  *
  * See [[MediaWiki:Maintenance]] for implementation.
  * 
- * by [[User:Cåm]].
+ * by [[User:CÃ¥m]].
  * Thanks to [[w:User:Mathmagician]] for tips and help.
  */
 

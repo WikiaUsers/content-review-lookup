@@ -28,7 +28,7 @@ window.UserTagsJS = {
                 threadmoderator: { u: 'Moderador de hilos' },
 		sysop: { u: 'Administrador' },
 		sysop2: { u: 'Administradora' },
-		bureaucrat: { u: 'Burócrata' },
+		bureaucrat: { u: 'BurÃ³crata' },
 		founder: { u: 'Fundador' },
 		founder2: { u: 'Fundadora' },
 	}
@@ -423,7 +423,7 @@ var refreshDate;
 function addDate() {
     "use strict";
     var UTCDate = ((new Date()).toUTCString()).replace("GMT", "(UTC)");
-    $('#showdate').empty().append('<span style="font-weight: bold; text-transform: none;"><a title="Refresca el chaché y purga la página [Ctrl+Shift+R]" href="' + mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName').replace(/ /g, '_')) + '?action=purge">' + UTCDate.substring(5) + '</a></span>');
+    $('#showdate').empty().append('<span style="font-weight: bold; text-transform: none;"><a title="Refresca el chachÃ© y purga la pÃ¡gina [Ctrl+Shift+R]" href="' + mw.config.get('wgArticlePath').replace('$1', mw.config.get('wgPageName').replace(/ /g, '_')) + '?action=purge">' + UTCDate.substring(5) + '</a></span>');
     clearTimeout(refreshDate);
     refreshDate = setTimeout(addDate, 1000);
     

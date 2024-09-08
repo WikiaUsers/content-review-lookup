@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina */
 
 /* Case insensitive (icontains) */
 	jQuery.expr.pseudos.icontains = jQuery.expr.createPseudo(function(arg) {
@@ -7,7 +7,7 @@
 		};
 	});
 
-// PersonalizaciÛn para la columna "Estado" en las tablas de Familias
+// Personalizaci√≥n para la columna "Estado" en las tablas de Familias
 $(function () {
 	if ($("body").hasClass("theme-fandomdesktop-dark")) {
 		theme = "dark";
@@ -22,10 +22,10 @@ $(function () {
 	$(lastColumn + ':icontains("Muerto")').css("background-color", "var(--familia-table_muerto-"+theme+")");
 	$(lastColumn + ':icontains("Muerta")').css("background-color", "var(--familia-table_muerto-"+theme+")");
 	$(lastColumn + ':icontains("Desconocido")').css("background-color", "var(--familia-table_desconocido-"+theme+")");
-	$(lastColumn + ':icontains("DejÛ la Familia")').css("background-color", "var(--familia-table_dejo-"+theme+")");
-	$(lastColumn + ':icontains("DejÛ temporalmente")').css("background-color", "var(--familia-table_dejo-"+theme+")");
-	$(lastColumn + ':icontains("DejÛ parcialmente")').css("background-color", "var(--familia-table_dejo-"+theme+")");
-	$(lastColumn + ':icontains("DejÛ el gremio")').css("background-color", "var(--familia-table_dejo-"+theme+")");
+	$(lastColumn + ':icontains("Dej√≥ la Familia")').css("background-color", "var(--familia-table_dejo-"+theme+")");
+	$(lastColumn + ':icontains("Dej√≥ temporalmente")').css("background-color", "var(--familia-table_dejo-"+theme+")");
+	$(lastColumn + ':icontains("Dej√≥ parcialmente")').css("background-color", "var(--familia-table_dejo-"+theme+")");
+	$(lastColumn + ':icontains("Dej√≥ el gremio")').css("background-color", "var(--familia-table_dejo-"+theme+")");
 	$(lastColumn + ':icontains("Encarcelado")').css("background-color", "var(--familia-table_encarcelado-"+theme+")");
-	$(lastColumn + ':icontains("DesertÛ")').css("background-color", "var(--familia-table_deserto-"+theme+")");
+	$(lastColumn + ':icontains("Desert√≥")').css("background-color", "var(--familia-table_deserto-"+theme+")");
 });

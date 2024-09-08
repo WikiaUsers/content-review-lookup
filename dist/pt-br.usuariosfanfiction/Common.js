@@ -1,4 +1,4 @@
-/* CÛdigos JavaScript aqui colocados ser„o carregados por todos aqueles que acessarem alguma p·gina deste wiki */
+/* C√≥digos JavaScript aqui colocados ser√£o carregados por todos aqueles que acessarem alguma p√°gina deste wiki */
  
 jaaspeel.ad_url = escape('http://pt-br.ben10.wikia.com/wiki/Inimigo_da_Minha_Animiga');
 jaaspeel.small_path = 'http://perso.numericable.fr/antonywar/small.swf';

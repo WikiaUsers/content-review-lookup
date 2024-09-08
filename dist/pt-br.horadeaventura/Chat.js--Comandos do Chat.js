@@ -1,4 +1,4 @@
-/* Script para adicionar comandos adicionais no chat, criado por [[User:BlackZetsu]], qualquer cópia ou redistribuição deste código deve passar antes por seu respectivo autor */
+/* Script para adicionar comandos adicionais no chat, criado por [[User:BlackZetsu]], qualquer cÃ³pia ou redistribuiÃ§Ã£o deste cÃ³digo deve passar antes por seu respectivo autor */
 $(function() {
     $('[name="message"]').keydown(function(e) {
         if (e.which == 13 && $(this).val().substr(0, 10) == '!interwiki') {

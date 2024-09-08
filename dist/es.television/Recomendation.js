@@ -17,16 +17,16 @@ var $ = this.jQuery,
     };
  
 messages['ES'] = {
-    button: "Recomendar una p醙ina",
-  'articulo': "Art韈ulo:",
+    button: "Recomendar una p谩gina",
+  'articulo': "Art铆culo:",
   'articulo-ejemplo': "Pikachu de Ash",
   'imagen': "Imagen:",
-  'imagen-ejemplo': "Pikachu de Ash en l sue駉 contin鷄!.png",
-  'descripcion': "Descripci髇:",
-  'descripcion-ejemplo': "Pikachu fue el Pok閙on inicial de Ash en la serie. Lo ha acompa馻do en todas sus aventuras, volvi閚dose un par de amigos inseparables, a pesar de que en un principio Pikachu se comportaba mal con Ash e incluso lo desobedec韆."
+  'imagen-ejemplo': "Pikachu de Ash en 隆El sue帽o contin煤a!.png",
+  'descripcion': "Descripci贸n:",
+  'descripcion-ejemplo': "Pikachu fue el Pok茅mon inicial de Ash en la serie. Lo ha acompa帽ado en todas sus aventuras, volvi茅ndose un par de amigos inseparables, a pesar de que en un principio Pikachu se comportaba mal con Ash e incluso lo desobedec铆a."
 }
  
-if(_tr.pagename === 'Wikivisi髇:P醙inas_recomendadas') {
+if(_tr.pagename === 'Wikivisi贸n:P谩ginas_recomendadas') {
     var buttonappend = '<a class="wikia-button" id="recomendar" onclick="recomendar()" style="padding: 10px;">' + msg.get('button') + '</a>';
     document.getElementById("recomendar").innerHTML = buttonappend;
  
@@ -35,7 +35,7 @@ if(_tr.pagename === 'Wikivisi髇:P醙inas_recomendadas') {
 // This opens the form for the users to fill out
  
 function recomendar() {
-    $.showCustomModal('Nominaci髇 de p醙inas recomendadas', '<form class="WikiaForm" method="" name="" id="recomendarPagina"><fieldset><strong>' + msg.get('articulo') + '</strong> <input id="articulo" type="text" placeholder="' + msg.get('articulo-ejemplo') + '" style="width: 450px"/><br/><strong>' + msg.get('imagen') + '</strong> <span style="color: gray;">[[Archivo:</span><input id="imagen" type="text" placeholder="' + msg.get('imagen-ejemplo') + '" style="width: 450px"/><span style="color: gray;">]]</span><br/><strong>' + msg.get('descripcion') + '<strong><br/><textarea name="desc" id="descripcion" cols="50" rows="3" maxlength="250" placeholder="' + msg.get('descripcion-ejemplo') + '"></textarea></fieldset></form>', {
+    $.showCustomModal('Nominaci贸n de p谩ginas recomendadas', '<form class="WikiaForm" method="" name="" id="recomendarPagina"><fieldset><strong>' + msg.get('articulo') + '</strong> <input id="articulo" type="text" placeholder="' + msg.get('articulo-ejemplo') + '" style="width: 450px"/><br/><strong>' + msg.get('imagen') + '</strong> <span style="color: gray;">[[Archivo:</span><input id="imagen" type="text" placeholder="' + msg.get('imagen-ejemplo') + '" style="width: 450px"/><span style="color: gray;">]]</span><br/><strong>' + msg.get('descripcion') + '<strong><br/><textarea name="desc" id="descripcion" cols="50" rows="3" maxlength="250" placeholder="' + msg.get('descripcion-ejemplo') + '"></textarea></fieldset></form>', {
         id: "requestWindow",
         width: 650,
         buttons: [{
@@ -70,32 +70,32 @@ console.log('Guardando...');
         articulo = $form.find('#articulo').val(),
         imagen = $form.find('#imagen').val(),
         descripcion = $form.find('#descripcion').val(),
-        page = '\n== ' + articulo + ' ==\n{{Plantilla:Wikivisi髇:Recomendaci髇\n|estado= pendiente\n|nominador= ' + _tr.username + '\n|art韈ulo= ' + articulo + '\n|imagen= ' + imagen + '\n|descripci髇= ' + descripcion + '\n}}';
+        page = '\n== ' + articulo + ' ==\n{{Plantilla:Wikivisi贸n:Recomendaci贸n\n|estado= pendiente\n|nominador= ' + _tr.username + '\n|art铆culo= ' + articulo + '\n|imagen= ' + imagen + '\n|descripci贸n= ' + descripcion + '\n}}';
  
     // Making sure the header isn't blank, and a language has been filled in
     if (!articulo) {
-        alert("o has puesto el nombre del art韈ulo!");
+        alert("隆No has puesto el nombre del art铆culo!");
         return;
     }
   if (!imagen) {
-    alert("o has colocado la imagen!");
+    alert("隆No has colocado la imagen!");
     return;
   }
   if (!descripcion) {
-    alert("o has colocado la descripci髇!");
+    alert("隆No has colocado la descripci贸n!");
     return;
   }
 console.log('Todo listo...');
  
     // Ajax URL
-    var url = _tr.server + '/api.php?action=edit&title=Wikivisi髇_discusi髇:P醙inas_recomendadas&appendtext=' + encodeURIComponent(page) + '&&token=' + encodeURIComponent(_tr.edittoken);
-console.log('Direcci髇 obtenida: ',url);
+    var url = _tr.server + '/api.php?action=edit&title=Wikivisi贸n_discusi贸n:P谩ginas_recomendadas&appendtext=' + encodeURIComponent(page) + '&&token=' + encodeURIComponent(_tr.edittoken);
+console.log('Direcci贸n obtenida: ',url);
  
     $.post(url, function (r) {
-console.log('Tu nominaci髇 ha sido enviada:',r);
+console.log('Tu nominaci贸n ha sido enviada:',r);
 	cancelar();
         window.location.reload();
     });
-console.log('Enviando nominaci髇...');
+console.log('Enviando nominaci贸n...');
 }
 */

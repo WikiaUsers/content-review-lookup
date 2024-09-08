@@ -1,5 +1,5 @@
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 importScriptPage('AjaxRC/code.js', 'dev');
  

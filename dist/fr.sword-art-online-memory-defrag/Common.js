@@ -3,7 +3,7 @@ AjaxRCRefreshText = 'Actualisation automatique';
 AjaxRCRefreshHoverText = 'Actualisation automatique de la page';
 ajaxSpecialPages = ["WikiActivity","Recentchanges"];
 
-/* Configuration pour le module Horloge personalisé: MediaWiki:ClocksModule.js */
+/* Configuration pour le module Horloge personalisÃ©: MediaWiki:ClocksModule.js */
 clocksModuleLabels = ["Date & Heure UTC"];
 clocksModuleTimezones = ["UTC"];
 clocksModuleFormat = [
@@ -15,24 +15,24 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		hello: {u: 'No Gender Set' } ,
-		Rédacteur_de_commentaire: { u:'Rédacteur de commentaire'},
-		Rédacteur_de_contenu: { u:'Rédacteur de contenu'},
+		RÃ©dacteur_de_commentaire: { u:'RÃ©dacteur de commentaire'},
+		RÃ©dacteur_de_contenu: { u:'RÃ©dacteur de contenu'},
         Graphiste: { u:'Graphiste'},
         Quality_checker: { u:'Quality checker'},
         Agent_technique: { u:'Agent technique'},
-        Gérant_du_discord: { u:'Gérant du discord'},
+        GÃ©rant_du_discord: { u:'GÃ©rant du discord'},
 	}
 };
  
 UserTagsJS.modules.custom = {
-	'Ykoren': ['Rédacteur_de_commentaire'],
-	'Genkay2': ['Rédacteur_de_contenu'],
-	'Iiiik "King Escafag"': ['Graphiste' , 'Gérant_du_discord'],
+	'Ykoren': ['RÃ©dacteur_de_commentaire'],
+	'Genkay2': ['RÃ©dacteur_de_contenu'],
+	'Iiiik "King Escafag"': ['Graphiste' , 'GÃ©rant_du_discord'],
 	'Caruellej' : ['Agent_technique'],
 };
 
 
-/* Fonction pour créer le formulaire de recherche, et ouvrir la page selectionné dans l'onglet actif ou un nouveau onglet */
+/* Fonction pour crÃ©er le formulaire de recherche, et ouvrir la page selectionnÃ© dans l'onglet actif ou un nouveau onglet */
 function sidebar() {
   var $rail = $('#WikiaRail');
  
@@ -52,13 +52,13 @@ window.UserTagsJS = {
         art: {u: 'Direction artistique'},
         news: {u: 'Informateur MH'},
         discord : {u: 'Admin Moga Discord'},
-        bot : {u: 'Robot domestiqué'},
-        film: {u: 'Cinéaste'},
+        bot : {u: 'Robot domestiquÃ©'},
+        film: {u: 'CinÃ©aste'},
  
         //Personnalisation par Houmgaor
         hunt_staff: { u: 'Hunter Programmeur'},
  
-        //Tags spécial Krow - MH4U
+        //Tags spÃ©cial Krow - MH4U
         k: { u: 'KrowMixor'},
         m: { u: 'Krow_Quality'},
  
@@ -81,7 +81,7 @@ UserTagsJS.modules.custom = {
      'HutskuBot': ['bot'],
      'Mr.pyro01': ['film'],
  
-     //Admins retraités
+     //Admins retraitÃ©s
      'Caruellej': ['afk'],
      'Wrondral' : ['afk'],
      'BadBart86' : ['afk'],

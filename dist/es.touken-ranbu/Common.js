@@ -113,7 +113,7 @@ resetearFilter.addEventListener("click", function() {resetear()});
  
  
 /*-----Functions-----*/
-//main function for button made by div [the code is inspired by Kévin Bibollet from stack overflow]
+//main function for button made by div [the code is inspired by KÃ©vin Bibollet from stack overflow]
 function buttonOperationDiv(clickedElement, buttonArray, unclickedImageSrc, clickedImageSrc){
     //store button's img element and img's src for future use
     currentImg = clickedElement.querySelector("img");
@@ -142,7 +142,7 @@ function buttonOperationDiv(clickedElement, buttonArray, unclickedImageSrc, clic
     }
 }
  
-//main function for button made by span [the code is inspired by Kévin Bibollet from stack overflow]
+//main function for button made by span [the code is inspired by KÃ©vin Bibollet from stack overflow]
 function buttonOperationSpan(button, buttonArray){
     //store button's img element and img's src for future use
     currentBorder = button.style.border;

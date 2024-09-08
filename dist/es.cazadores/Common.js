@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /* Any JavaScript here will be loaded for all users on every page load. */
 // **************************************************
@@ -44,7 +44,7 @@ function updatetimer(i) {
     diff=Math.floor(diff/60);
   if(diff > 0) left = (diff%24) + ' horas ' + left;
     diff=Math.floor(diff/24);
-  if(diff > 0) left = diff + ' dÌas ' + left
+  if(diff > 0) left = diff + ' d√≠as ' + left
   timers[i].firstChild.nodeValue = tpm + left;
  
   // a setInterval() is more efficient, but calling setTimeout()
@@ -270,10 +270,10 @@ addOnloadHook(checktimers);
 ------------------
 NOMBRE DEL USUARIO
 ------------------
-Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
+Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
   o la [[Plantilla:NOMBREUSUARIO]]
  
-TraÌda de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
+Tra√≠da de Inciclopedia, inicialmente de Uncyclopedia y corregida por uncyclopedia:es:user:Ciencia Al Poder, para que funcione correctamente usando ''class='' en vez de ''id=''.
 */
  
 function UserNameReplace() {

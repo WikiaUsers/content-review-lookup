@@ -48,7 +48,7 @@ function createCountdownWidget() {
     var divTextBottom = $(w).find('div#events-text-bottom').get(0);
  
     // The start time is always the same day regardless
-    // It's either the start of the Nächstes Event or start of current event.
+    // It's either the start of the NÃ¤chstes Event or start of current event.
     var eventCycleStart = new Date(now.getFullYear(), now.getMonth(),
                                    now.getDate(), 13, 0, 0, 0);
  
@@ -117,7 +117,7 @@ addOnloadHook(turniercountdown);
     // Time Left
     var divTextMiddle = document.createElement('div');
     divTextMiddle.id = 'events-text-middle';
-    // Nächstes Event
+    // NÃ¤chstes Event
     var divTextBottom = document.createElement('div');
     divTextBottom.id = 'events-text-bottom';
     // Change countdown

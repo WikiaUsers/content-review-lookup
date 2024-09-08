@@ -169,7 +169,7 @@ addOnloadHook(toggleInit);
 
 
 function loadTrueCommonJS() {
-	// Hash para evitar que puedan usar URLs que afecten a cÛmo se ve la p·gina
+	// Hash para evitar que puedan usar URLs que afecten a c√≥mo se ve la p√°gina
 	var jsHashKey = window.wgStyleVersion;
 	var reloadjs = false;
 	var debug = false;
@@ -211,7 +211,7 @@ function loadTrueCommonJS() {
  
 loadTrueCommonJS();
 
-/* Temporizador o cuenta regresiva (CountDown) (vÈase http://dev.wikia.com/wiki/Countdown  para configurar esto) */
+/* Temporizador o cuenta regresiva (CountDown) (v√©ase http://dev.wikia.com/wiki/Countdown  para configurar esto) */
  
 importArticles({
     type: "script",

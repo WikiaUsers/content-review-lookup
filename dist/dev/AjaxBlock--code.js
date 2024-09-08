@@ -12,7 +12,6 @@
  *                          Fixed bug while blocking IDs.
  * @update 2017-09-01 Doru: Adding i18n, option group support, and some code clean-up.
  * @update 2020-10-20 Thundercraft5: Adding UCP support, some new features, as well as general improvements.
- *
  * @update 2020-10-25 Doru: Rewrite, remove badly thought out features, remove QDModal in favor of Modal-js, fix bugs, implement new loader
  */
 

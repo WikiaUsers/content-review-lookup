@@ -2,7 +2,7 @@
  * Chat topic
  *   From the RuneScape Wiki
  */
-var chatTopic = 'Por favor, leia as <a href="O Incrível Mundo de Gumball Wiki:Regras do Chat" target="_blank">Regras do Chat</a> antes de conversar.';
+var chatTopic = 'Por favor, leia as <a href="O IncrÃ­vel Mundo de Gumball Wiki:Regras do Chat" target="_blank">Regras do Chat</a> antes de conversar.';
  
 $(function () {
     "use strict";

@@ -40,7 +40,7 @@ chatAnnouncementsAll = true;
 // Notificacion de mensaje
 var PrivateMessageAlert = {
     beepSound: 'https://vignette.wikia.nocookie.net/regularshow/images/6/6c/Iapetus.ogg/revision/latest?cb=20161205215118&path-prefix=es',
-    message: '¡$1 te envió un mensaje!',
+    message: 'Â¡$1 te enviÃ³ un mensaje!',
     notifications: true,
     alertWhileFocused: true
 };
@@ -49,7 +49,7 @@ var PrivateMessageAlert = {
 window.EmoticonsWindowVocab = {
     emoticons: "Emoticonos",
     close: "Cerrar",
-    help: "Para insertar un emoticono, haz clic en él."
+    help: "Para insertar un emoticono, haz clic en Ã©l."
 };
  
 // Condiciones de links a enviar en el chat
@@ -70,11 +70,11 @@ $('[name="message"]').keypress(function(e) {
         }
         if (/60484617|54176365|794488387260435|kat\.cr|thepiratebay|toonget|starbutterflyonline|kingdomofmewni|twosu|animeflavor|kisscartoon|gogoanime|beachcitybugle|toonova|watchonlinecartoons|seriesflv|seodiv|ustream|cartooncrazy/i.test(message)) {
             e.preventDefault();
-            inlineAlert('No puedes enviar este enlace, debido a que violaría la política de derechos de autor.');
+            inlineAlert('No puedes enviar este enlace, debido a que violarÃ­a la polÃ­tica de derechos de autor.');
         }
         if (/vocaroo\.com\/i\//i.test(message)) {
             e.preventDefault();
-            inlineAlert('Para enviar un clip de audio desde Vocaroo, escribe [vocaroo="id del clip"]. Revisa [[Ayuda:Tags|esta página de ayuda]] para más información.');
+            inlineAlert('Para enviar un clip de audio desde Vocaroo, escribe [vocaroo="id del clip"]. Revisa [[Ayuda:Tags|esta pÃ¡gina de ayuda]] para mÃ¡s informaciÃ³n.');
         }
     }
 });
@@ -86,7 +86,7 @@ articles: [
     'u:es.moonarmin:MediaWiki:ChatTags.js', // ChatTags
     'u:dev:MediaWiki:ChatStatus/code.js', // ChatStatus
     'u:dev:ChatAnnouncements/code.js', // ChatAnnounce
-    'u:dev:MediaWiki:PrivateMessageAlert/code.js', // Notificación de mensaje
+    'u:dev:MediaWiki:PrivateMessageAlert/code.js', // NotificaciÃ³n de mensaje
     'u:dev:ChatOptions/es/code.js', 
     'u:dev:ChatToolbox/code.js',
     'u:dev:NewMessageCount.js', 

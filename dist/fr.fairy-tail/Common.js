@@ -12,7 +12,7 @@ window.RevealAnonIP = {
     permissions: ['user']
 };
 
-//Ajout du calendrier en haut de l'activité du wiki
+//Ajout du calendrier en haut de l'activitÃ© du wiki
 window.AddRailModule = [{prepend: true}];
 
 //Profile Tags config
@@ -20,7 +20,7 @@ window.AddRailModule = [{prepend: true}];
     noHideTags: true
 };
 
-/* Ajout de la classe activetab  à l'onglet actif de la ParentTab Portable */
+/* Ajout de la classe activetab  Ã  l'onglet actif de la ParentTab Portable */
 $(".pi-theme-parenttab .mw-selflink").parent().addClass('activetab');
 
 //Config pour le message d'alerte des pages explicites
@@ -37,7 +37,7 @@ PFD_templates = [{
 
 /* Magic edit intro. Copied from Wikipedia's MediaWiki:Common.js
  * Code par Emperor Jarjarkine pour pouvoir avoir les introductions  
- * Decembre 2020 : MAJ UCP par Fujimaru-kun + Partie de code prise à CategoriesSort de Celdrøn
+ * Decembre 2020 : MAJ UCP par Fujimaru-kun + Partie de code prise Ã  CategoriesSort de CeldrÃ¸n
  */
 function addEditIntro(name) {
     	// Top link
@@ -68,13 +68,13 @@ $(function () {
 		
         for (var i = 0; i < categList.length; i++) {
             if (categList[i].name === 'Articles Vedette') {
-                addEditIntro('Modèle:AV_editintro');
+                addEditIntro('ModÃ¨le:AV_editintro');
                 break;
-            } else if (categList[i].name === 'Articles de Qualité') {
-                addEditIntro('Modèle:AQ_editintro');
+            } else if (categList[i].name === 'Articles de QualitÃ©') {
+                addEditIntro('ModÃ¨le:AQ_editintro');
                 break;
             } else if (categList[i].name === 'Articles de Rang S') {
-                addEditIntro('Modèle:ARS_editintro');
+                addEditIntro('ModÃ¨le:ARS_editintro');
             }
         }
     }

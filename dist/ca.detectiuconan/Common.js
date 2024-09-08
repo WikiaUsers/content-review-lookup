@@ -6,7 +6,7 @@ importArticles({
 });
 
 // **************************************************
-// BOTONS ADDICIONALS a la caixa d'ediciÛ
+// BOTONS ADDICIONALS a la caixa d'edici√≥
 // **************************************************
  
  if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -27,7 +27,7 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/43/Enlace_a_usuario.png",
-     "speedTip": "EnllaÁ a usuari",
+     "speedTip": "Enlla√ß a usuari",
      "tagOpen": "[[user:",
      "tagClose": "|]]",
      "sampleText": "Usuari"};
@@ -41,7 +41,7 @@ importArticles({
  
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
-     "speedTip": "Advertir que s'est‡ editant l'article",
+     "speedTip": "Advertir que s'est√† editant l'article",
      "tagOpen": "{{Article_sense_acabar|",
      "tagClose": "}}",
      "sampleText": "Nom d'usuari"};
@@ -55,8 +55,8 @@ importArticles({
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20111227131921/onepiece-cat/ca/images/3/33/Article_incomplet.png",
-     "speedTip": "Indicar l'article com a EsbÛs",
-     "tagOpen": "{{EsbÛs}}",
+     "speedTip": "Indicar l'article com a Esb√≥s",
+     "tagOpen": "{{Esb√≥s}}",
      "tagClose": "",
      "sampleText": ""};
  }
@@ -412,7 +412,7 @@ function UserNameReplace(){
 addOnloadHook(UserNameReplace);
 
 // ************************************************************
-// Resums d'ediciÛ
+// Resums d'edici√≥
 // Source Editor
 // Visual Editor
 // ************************************************************

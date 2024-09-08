@@ -92,7 +92,7 @@ $( function() {
 				var cbAnchor = this.closest( '.dropdown-check-list' ).querySelector( '.anchor' )
 				cbAnchor.innerHTML = label + ': '
 				if ( checked.length === 0 ) {
-					cbAnchor.innerHTML += 'Ninguna opción'
+					cbAnchor.innerHTML += 'Ninguna opciÃ³n'
 				} else if ( checked.length === options.length ) {
 					cbAnchor.innerHTML += 'Todas las opciones'
 				} else {

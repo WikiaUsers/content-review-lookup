@@ -1,12 +1,12 @@
-/* Código base cedido pela Five Nights at Freddy's Wiki */
-/* Revelar IP Anônimo */
+/* CÃ³digo base cedido pela Five Nights at Freddy's Wiki */
+/* Revelar IP AnÃ´nimo */
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat']
 };
 
 
 
-/* Atualização Automática */
+/* AtualizaÃ§Ã£o AutomÃ¡tica */
 window.ajaxPages = [
     "Especial:RecentChanges",
     "Especial:Watchlist",
@@ -14,17 +14,17 @@ window.ajaxPages = [
     "Especial:Contributions",
     "Especial:WikiActivity"
 ];
-window.AjaxRCRefreshText = 'Atualização automática';
-window.AjaxRCRefreshHoverText = 'Atualizar a página automaticamente';
+window.AjaxRCRefreshText = 'AtualizaÃ§Ã£o automÃ¡tica';
+window.AjaxRCRefreshHoverText = 'Atualizar a pÃ¡gina automaticamente';
 
 
 
-/* Relógio da Wiki */
+/* RelÃ³gio da Wiki */
 window.DisplayClockJS = '%2H:%2M:%2S - %2d %{de Jan;de Fev;de Mar;de Abr;de Maio;de Jun;de Jul;de Ago;de Set;de Out;de Nov;de Dez}m de %Y (GMT -3)';
 
 
 
-/* Configuração de Tags de Usuário */
+/* ConfiguraÃ§Ã£o de Tags de UsuÃ¡rio */
 /* Tags existentes */
 window.UserTagsJS = {
 	modules: {},
@@ -34,17 +34,17 @@ window.UserTagsJS = {
         sysop: {u: 'Administrador'},
         rollback: {u: 'Rollbacker'},
         chatmoderator: {u: 'Moderador do Chat'},
-        contentmoderator: {u: 'Moderador de Conteúdo'},
-        threadmoderator: {u: 'Moderador de Discussões'},
+        contentmoderator: {u: 'Moderador de ConteÃºdo'},
+        threadmoderator: {u: 'Moderador de DiscussÃµes'},
         bot: {u: 'Bot'},
         designer: {u: 'Designer'},
         newuser: {u:'Novo Editor'},
         inactive: {u: 'Inativo'},
         geralsupervisor: {u: 'Supervisor Geral'},
         blogsupervisor: {u: 'Supervisor de Blog'},
-        forumsupervisor: {u: 'Supervisor de Fórum'},
+        forumsupervisor: {u: 'Supervisor de FÃ³rum'},
         chatsupervisor: {u: 'Supervisor de Chat'},
-        revisor: {u: 'Revisor de Conteúdo'},
+        revisor: {u: 'Revisor de ConteÃºdo'},
 	}
 };
 
@@ -53,7 +53,7 @@ UserTagsJS.modules.custom = {
 	'MegaBatataLord': ['founder', 'designer', 'geralsupervisor', 'bureaucrat'],
 };
 
-/* Forçar a Tag referente aos grupos abaixo */
+/* ForÃ§ar a Tag referente aos grupos abaixo */
 UserTagsJS.modules.mwGroups = [
     'bureaucrat',
     'chatmoderator',
@@ -74,33 +74,33 @@ UserTagsJS.modules.metafilter = {
     newuser: ['chatmoderator'],
 };
 
-/* Configurações Gerais */
+/* ConfiguraÃ§Ãµes Gerais */
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.isblocked = true;
 UserTagsJS.modules.inactive = 60; // Precisa estar Inativo por 60 dias
 UserTagsJS.modules.newuser = {
 	days: 2, // Precisa estar na Wiki por 2 dias
-	edits: 7, // E precisa de 7 edições para tirar a tag
-	namespace: 0 // Edições precisam ser em artigos para contar
+	edits: 7, // E precisa de 7 ediÃ§Ãµes para tirar a tag
+	namespace: 0 // EdiÃ§Ãµes precisam ser em artigos para contar
 };
 
 
 
-/* Mensagem de Bloqueio Automática */
+/* Mensagem de Bloqueio AutomÃ¡tica */
 window.MessageBlock = {
   title : 'Bloqueado',
-  message : 'Você foi bloqueado por $2 pelo(s) seguinte(s) motivo(s): "$1"',
+  message : 'VocÃª foi bloqueado por $2 pelo(s) seguinte(s) motivo(s): "$1"',
   autocheck : true
 };
 
 
 
-/* Editado por Último */
+/* Editado por Ãšltimo */
 window.lastEdited = {
     avatar: true
 };
 
-/* Substitui {{USERNAME}} pelo nome do usuário que está vendo a página. */
+/* Substitui {{USERNAME}} pelo nome do usuÃ¡rio que estÃ¡ vendo a pÃ¡gina. */
 function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
     $("span.insertusername").html(wgUserName);

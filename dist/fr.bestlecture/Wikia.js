@@ -1,4 +1,4 @@
-/* Activité du Forum */
+/* ActivitÃ© du Forum */
 $(document).ready(function() {
     var newSection = '<section id="sidebar" class="module"> + '</section>';
     $('#WikiaRail').append(newSection);

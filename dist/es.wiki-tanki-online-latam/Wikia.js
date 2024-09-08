@@ -170,16 +170,16 @@ if($(".pretty-spoiler").length) {
     };
     var template = [
       '<fieldset>',
-        '<legend>Calculadora de puntuaci髇 de engranajes</legend>',
-        '<label>Torreta: </label><select data-obj="turrets" id="turret"><option data-static="true" value="0" disabled selected>Modificaci髇</option>' + fillDropdownFromObj(gearScoreObj.turrets) + '</select> <select id="turretUpgrades"><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
-        '<label>Casco: </label><select data-obj="hulls" id="hull"><option data-static="true" value="0" disabled selected>Modificaci髇</option>' + fillDropdownFromObj(gearScoreObj.hulls) + '</select> <select id="hullUpgrades"><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
-        '<label>Ranura de m骴ulo 1: </label><select data-obj="modules" id="module1"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades1" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
-        '<label>Ranura de m骴ulo 2: </label><select data-obj="modules" id="module2"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades2" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
-        '<label>Ranura de m骴ulo 3: </label><select data-obj="modules" id="module3"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades3" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
+        '<legend>Calculadora de puntuaci贸n de engranajes</legend>',
+        '<label>Torreta: </label><select data-obj="turrets" id="turret"><option data-static="true" value="0" disabled selected>Modificaci贸n</option>' + fillDropdownFromObj(gearScoreObj.turrets) + '</select> <select id="turretUpgrades"><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
+        '<label>Casco: </label><select data-obj="hulls" id="hull"><option data-static="true" value="0" disabled selected>Modificaci贸n</option>' + fillDropdownFromObj(gearScoreObj.hulls) + '</select> <select id="hullUpgrades"><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
+        '<label>Ranura de m贸dulo 1: </label><select data-obj="modules" id="module1"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades1" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
+        '<label>Ranura de m贸dulo 2: </label><select data-obj="modules" id="module2"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades2" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
+        '<label>Ranura de m贸dulo 3: </label><select data-obj="modules" id="module3"><option data-static="true" value="none" selected>Ninguno</option>' + fillDropdownFromObj(gearScoreObj.modules) + '</select> <select id="moduleUpgrades3" disabled><option data-static="true" value="0" disabled selected>Actualizaciones</option></select><br>',
         '<label>Dron: </label><select data-obj="drone" id="droneUpgrades"><option data-static="true" value="0" selected>Ninguno</option>' + fillUpgrades($('#droneUpgrades'), 'drone') + '</select><br><br>',
-        '<label>Alteraci髇 de torreta: </label><input type="checkbox" id="gsAlterationTurret" /><br><br>',
-        '<label>Alteraci髇 de casco: </label><input type="checkbox" id="gsAlterationHull" /><br><br>',
-        '<strong>Puntuaci髇 total de engranajes: <span style="color: #ffc178;" id="gearScore">0</span></strong><br>',
+        '<label>Alteraci贸n de torreta: </label><input type="checkbox" id="gsAlterationTurret" /><br><br>',
+        '<label>Alteraci贸n de casco: </label><input type="checkbox" id="gsAlterationHull" /><br><br>',
+        '<strong>Puntuaci贸n total de engranajes: <span style="color: #ffc178;" id="gearScore">0</span></strong><br>',
       '</fieldset>',
      ].join('\n');
      $("#gearScoreCalculator").empty().html(template);
@@ -243,10 +243,10 @@ if($(".pretty-spoiler").length) {
          var gsPerStep = Math.round(parseFloat((gearScoreObj[name][key].max-gearScoreObj[name][key].min)/(gearScoreObj[name][key].steps)));
          for(i = 0; i < gearScoreObj[name][key].steps; i++) {
            if(i == 0) {
-             output+='<option value="' + minGS + '">Micro-actualizaci髇 ' + parseInt(i) + '</option>';
+             output+='<option value="' + minGS + '">Micro-actualizaci贸n ' + parseInt(i) + '</option>';
            }
            var currentOptionsGS = parseInt(minGS+((i+1)*gsPerStep));
-           output+='<option value="' + currentOptionsGS + '">Micro-actualizaci髇 ' + parseInt(i+1) + '</option>';
+           output+='<option value="' + currentOptionsGS + '">Micro-actualizaci贸n ' + parseInt(i+1) + '</option>';
          }
          return output;
        });
@@ -257,10 +257,10 @@ if($(".pretty-spoiler").length) {
          var gsPerStep = parseFloat((gearScoreObj[name].max-gearScoreObj[name].min)/(gearScoreObj[name].steps));
          for(i = 0; i < gearScoreObj[name].steps; i++) {
            if(i == 0) {
-             output+='<option value="' + minGS + '">Micro-actualizaci髇 ' + parseInt(i) + '</option>';
+             output+='<option value="' + minGS + '">Micro-actualizaci贸n ' + parseInt(i) + '</option>';
            }
            var currentOptionsGS = Math.round(parseFloat(minGS+((i+1)*gsPerStep)));
-           output+='<option value="' + currentOptionsGS + '">Micro-actualizaci髇 ' + parseInt(i+1) + '</option>';
+           output+='<option value="' + currentOptionsGS + '">Micro-actualizaci贸n ' + parseInt(i+1) + '</option>';
          }
          return output;
        }

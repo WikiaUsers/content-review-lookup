@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 // Etiqueta Inactivo
 InactiveUsers = { text: 'Entrenando' };
 importScriptPage('InactiveUsers/code.js', 'dev');
@@ -35,16 +35,16 @@ window.UserTagsJS = {
 	tags: {
 	    retireduser: { u: 'Retirado del Wiki', f: 'Retirada del Wiki' },
         rollback: { u: 'Reversor', f: 'Reversora' },
-        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'Wiki Los Jóvenes Titanes en Acción:Administración#Moderadores_del_Chat' },
-        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'Wiki Los Jóvenes Titanes en Acción:Administración#Moderadores_de_Discusiones'},
-        contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'Wiki Los Jóvenes Titanes en Acción:Administración#Moderadores_de_Contenido'},
-        sysop: { u: 'Administrador', f: 'Administradora', link:'Wiki Los Jóvenes Titanes en Acción:Administración#Administradores' },
-        bureaucrat: { u:'Burócrata', f: 'Burócrata', link:'Wiki Los Jóvenes Titanes en Acción:Administración#Bur.C3.B3cratas' },
+        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'Wiki Los JÃ³venes Titanes en AcciÃ³n:AdministraciÃ³n#Moderadores_del_Chat' },
+        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'Wiki Los JÃ³venes Titanes en AcciÃ³n:AdministraciÃ³n#Moderadores_de_Discusiones'},
+        contentmoderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'Wiki Los JÃ³venes Titanes en AcciÃ³n:AdministraciÃ³n#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'Wiki Los JÃ³venes Titanes en AcciÃ³n:AdministraciÃ³n#Administradores' },
+        bureaucrat: { u:'BurÃ³crata', f: 'BurÃ³crata', link:'Wiki Los JÃ³venes Titanes en AcciÃ³n:AdministraciÃ³n#Bur.C3.B3cratas' },
     }
 };
 
 UserTagsJS.modules.custom = {
-	// Los Jóvenes Titanes en Acción Wiki
+	// Los JÃ³venes Titanes en AcciÃ³n Wiki
 	'TheParker5496': ['retireduser'],
 	'LightWatcher': ['retireduser'],
 	'Perlzafidot 840': ['bureaucrat'],
@@ -55,7 +55,7 @@ UserTagsJS.modules.custom = {
 	'DavidAguilarLopez05 2': ['retireduser']
 };
     
-/* Cambio de título */
+/* Cambio de tÃ­tulo */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

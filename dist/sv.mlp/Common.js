@@ -9,7 +9,7 @@
  */
 
 var autoCollapse = 2;
-var collapseCaption = "dölj";
+var collapseCaption = "dÃ¶lj";
 var expandCaption = "visa";
  
 var hasClass = (function () {

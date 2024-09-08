@@ -7,6 +7,6 @@ if ( wgNamespaceNumber != undefined && !window.rswCopy ) {
 var rswCopy = true;
  
 function addRSWCopy () {
-    $('<section class="CopyrightNotice module"><h1 style="margin-top:0px; margin-bottom:10px;">CoDeSaH Wiki Copyright</h1><div><p>A excepciÛn de que se especifique de otro modo, el texto en esta wiki est· autorizado bajo el Creative Commons Attribution-Share Alike License 3.0 (Unported) (CC-BY-SA).<br style="margin-bottom: 10px;"/> &bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Leer el resumen de la licencia</a>.<br />&bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode" target="_blank">Leer el cÛdigo legal completo de la licencia</a>.</p></div></section>').insertBefore('.LatestPhotosModule');
+    $('<section class="CopyrightNotice module"><h1 style="margin-top:0px; margin-bottom:10px;">CoDeSaH Wiki Copyright</h1><div><p>A excepci√≥n de que se especifique de otro modo, el texto en esta wiki est√° autorizado bajo el Creative Commons Attribution-Share Alike License 3.0 (Unported) (CC-BY-SA).<br style="margin-bottom: 10px;"/> &bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank">Leer el resumen de la licencia</a>.<br />&bull; <a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode" target="_blank">Leer el c√≥digo legal completo de la licencia</a>.</p></div></section>').insertBefore('.LatestPhotosModule');
 }
 /* </pre> */

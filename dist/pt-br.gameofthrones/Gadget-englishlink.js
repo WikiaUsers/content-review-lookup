@@ -1,4 +1,4 @@
-// adiciona o link original em inglês para a wiki americana, por razões de título e traduções que fogem da palavra original
+// adiciona o link original em inglÃªs para a wiki americana, por razÃµes de tÃ­tulo e traduÃ§Ãµes que fogem da palavra original
 $(function() {
     if($('#enTitle').length > 0 && !mw.config.get('wgIsMainPage')) {
         console.log($('#enTitle'));

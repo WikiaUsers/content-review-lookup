@@ -5,8 +5,8 @@ var SocialMediaButtons = {
 };
 importScriptPage('SocialIcons/code.js','dev');
 
-// Escrito por Usuário:Rappy_4187, Aion Wiki
-// Suporte adicionado para Especial:Contribuições por Foodbandlt
+// Escrito por UsuÃ¡rio:Rappy_4187, Aion Wiki
+// Suporte adicionado para Especial:ContribuiÃ§Ãµes por Foodbandlt
  
 $(function () {
     var rights = {};
@@ -16,15 +16,15 @@ $(function () {
     var rollback = "Rollback"
     var wikiastar = "Estrela do Fandom"
  
-    // Começo da lista de contas que recebem ícones de direitos de usuário extras
+    // ComeÃ§o da lista de contas que recebem Ã­cones de direitos de usuÃ¡rio extras
     //
-    // Certifique-se de que a última linha listada pelos direitos modificados é seguida por um ponto e vírgula em vez de uma vírgula.
+    // Certifique-se de que a Ãºltima linha listada pelos direitos modificados Ã© seguida por um ponto e vÃ­rgula em vez de uma vÃ­rgula.
  
    //Burocrata
  
     rights["MatheusCormac"]           = [bureaucrat];
  
-    // Fim da lista de contas que recebem ícones de direitos de usuário extras
+    // Fim da lista de contas que recebem Ã­cones de direitos de usuÃ¡rio extras
  
  
     if (wgPageName.indexOf("Especial:Contribui\u00e7\u00f5es") != -1) {

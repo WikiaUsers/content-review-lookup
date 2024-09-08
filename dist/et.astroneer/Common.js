@@ -1,4 +1,4 @@
-/* Siinne JavaScript laaditakse igale kasutajatele igal laaditud leheküljel. */
+/* Siinne JavaScript laaditakse igale kasutajatele igal laaditud lehekÃ¼ljel. */
 /*****************************************
 /* Front Page 3-column height equalization *
 /*****************************************/

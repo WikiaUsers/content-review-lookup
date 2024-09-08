@@ -8,13 +8,13 @@ importArticles({
 	]
 });
 
-/* Funci髇 para cargar la plantilla informaci髇 en Descripci髇 de archivo */
+/* Funci贸n para cargar la plantilla informaci贸n en Descripci贸n de archivo */
 function preloadUploadDesc() {
 if (wgPageName.toLowerCase() != 'especial:subirarchivo') {
 return;
 }
  
-document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Informaci髇\r| atencion= \r| descripcion= \r| fuente= \r| autor= \r| retoques= \r| licencia= \r| otras versiones= \r}}"));
+document.getElementById('wpUploadDescription').appendChild(document.createTextNode("{{Informaci贸n\r| atencion= \r| descripcion= \r| fuente= \r| autor= \r| retoques= \r| licencia= \r| otras versiones= \r}}"));
  
 }
 addOnloadHook (preloadUploadDesc);

@@ -1,5 +1,5 @@
 /**
- * Merci au wiki russe pour tout ça 
+ * Merci au wiki russe pour tout Ã§a 
  * 
  */
 
@@ -13,7 +13,7 @@
 	    window.ItemsInvoked = true;
 
 	    var searchDiv = document.querySelector('.search');
-	    searchDiv.innerHTML = '<input type="text" class="search-item" autocomplete="off" placeholder="Choisissez un filtre ou écrivez quelque chose">';
+	    searchDiv.innerHTML = '<input type="text" class="search-item" autocomplete="off" placeholder="Choisissez un filtre ou Ã©crivez quelque chose">';
 	
 	    var itemsList = document.querySelectorAll('.items');
 	    var items = document.querySelectorAll('.item');
@@ -53,7 +53,7 @@
             }
         });
         
-        // Bouton de réinitialisation
+        // Bouton de rÃ©initialisation
         $('.rechercheObjet_clear').click(function() {
             searchInput.value = '';
             searchInput.dispatchEvent(new Event('input', { bubbles: true }));

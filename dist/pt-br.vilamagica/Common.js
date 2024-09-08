@@ -1,4 +1,4 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
  
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
@@ -10,7 +10,7 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
 
-/** Bot„o Redirecionamento **/
+/** Bot√£o Redirecionamento **/
 addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir.png',
  'Redirecionamento',
  '#REDIRECIONAMENTO [[',
@@ -18,5 +18,5 @@ addCustomButton('http://upload.wikimedia.org/wikipedia/commons/4/47/Button_redir
  'nome do destino',
  'mw-editbutton-redirect');
  
-/** Bot„o Objeto **/
-addCustomButton('https://images.wikia.nocookie.net/vilamagica/pt-br/images/7/78/Bot%C3%A3o_Objeto.png','Objeto','{{','}}','Objeto\n|imagem = \n|preÁo  = \n|loja   = \n','');
+/** Bot√£o Objeto **/
+addCustomButton('https://images.wikia.nocookie.net/vilamagica/pt-br/images/7/78/Bot%C3%A3o_Objeto.png','Objeto','{{','}}','Objeto\n|imagem = \n|pre√ßo  = \n|loja   = \n','');

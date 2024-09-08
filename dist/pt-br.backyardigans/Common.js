@@ -1,4 +1,4 @@
-/** o cÛdigo CSS colocado aqui ser· aplicado a todos os temas */
+/** o c√≥digo CSS colocado aqui ser√° aplicado a todos os temas */
 
 
 

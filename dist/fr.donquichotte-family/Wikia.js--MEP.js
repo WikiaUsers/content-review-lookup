@@ -1,4 +1,4 @@
-/* Bouton d'éditions */
+/* Bouton d'Ã©ditions */
 // Gladius
 if (mwCustomEditButtons.length) {
     mwCustomEditButtons[mwCustomEditButtons.length] = {

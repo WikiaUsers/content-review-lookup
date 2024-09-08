@@ -1,4 +1,4 @@
-/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
+/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
 
  
 /* =============
@@ -27,8 +27,8 @@ importScriptPage('AjaxRC/code.js', 'dev');
 // it may be better to have it out of the way in its own file.
 
 window.AjaxRCRefreshText = 'Recarregar';
-window.AjaxRCRefreshHoverText = 'Recarregar a p·gina automaticamente';
-window.ajaxPages = ["Especial:MudanÁas_recentes","Especial:WikiActivity"];
+window.AjaxRCRefreshHoverText = 'Recarregar a p√°gina automaticamente';
+window.ajaxPages = ["Especial:Mudan√ßas_recentes","Especial:WikiActivity"];
 
 
 var ArchiveToolConfig = { 
@@ -147,7 +147,7 @@ $(function () {
 /** 
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * ¬© Peter Coester, 2012
  * 
  * __NOWYSIWYG__
  */
@@ -198,9 +198,9 @@ window.UserTagsJS = {
 	tags: {
 		bureaucrat: { u:'Lord Chanceler'},
         newuser: { u:'Na Academia'},
-        sysop: { u:'Castel„o'},
+        sysop: { u:'Castel√£o'},
         rollback: {u:'Guarda da Chancelaria'},
-        chatmoderator: {u:'Guarda do CapitÛlio'},
+        chatmoderator: {u:'Guarda do Capit√≥lio'},
         founder: {u:'Lord Presidente'},
     }
 };

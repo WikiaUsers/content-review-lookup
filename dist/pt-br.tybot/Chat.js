@@ -1,4 +1,4 @@
-// Crédito para Runescape Wiki
+// CrÃ©dito para Runescape Wiki
  
 //Chat's topic. Remember to escape single quotes in the topic using \' to prevent this from breaking.
 var chatTopic = Y'ello my friend! ><u></u></a>.</u></a>

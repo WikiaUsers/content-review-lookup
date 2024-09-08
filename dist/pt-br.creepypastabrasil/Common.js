@@ -1,29 +1,29 @@
-/* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
+/* CÃ³digos JavaScript aqui colocados serÃ£o carregados por todos aqueles que acessarem alguma pÃ¡gina deste wiki */
 /* Any JavaScript here will be loaded for all users on every page load. */
 /* Auto Refresh */
 importScriptPage('MediaWiki:Translator/Translator.js', 'dev');
-AjaxRCRefreshText = 'Automaticamente recarregar a página a cada 60segs';
-AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
+AjaxRCRefreshText = 'Automaticamente recarregar a pÃ¡gina a cada 60segs';
+AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
 ajaxPages = [
-    "Especial:Mudanças_recentes",
+    "Especial:MudanÃ§as_recentes",
     "Especial:WikiActivity",
-    "Especial:Páginas_vigiadas",
+    "Especial:PÃ¡ginas_vigiadas",
     "Especial:Registro",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:Páginas_novas",
-    "Especial:Contribuições"
+    "Especial:PÃ¡ginas_novas",
+    "Especial:ContribuiÃ§Ãµes"
 ];
 
 /****************************************/ 
-/* Etiqueta personalizada para usuários */ 
+/* Etiqueta personalizada para usuÃ¡rios */ 
 /****************************************/ 
 function addMastheadTags() {
     var rights = {};
         user;
         
     rights["Returneed"] = ["Padrinho","Consultor", "Administrador Chefe"];
-    rights["IrkonBR"]   = ["Fundador","Consultor","Sócio Majoritário"];
+    rights["IrkonBR"]   = ["Fundador","Consultor","SÃ³cio MajoritÃ¡rio"];
 
     if (wgCanonicalSpecialPageName == "Contributions") {
         user = wgPageName.substring(wgPageName.lastIndexOf("/") + 1).replace(/_/g, " ");

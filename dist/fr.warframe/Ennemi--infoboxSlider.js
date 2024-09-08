@@ -1,5 +1,5 @@
 
-// Feuille de script permettant de gérer l'échelle des niveaux du Module:Ennemi/infobox (level scaling)
+// Feuille de script permettant de gÃ©rer l'Ã©chelle des niveaux du Module:Ennemi/infobox (level scaling)
 
 $(".type-enemyBox").each(
 	function(count, enemyVar) {

@@ -1,11 +1,11 @@
 /* Mensaje a la comunidad*/
 /*
-var WikiaNotificationMessage = "<a href='/wiki/Hilo:72664'>az el examen cronometrado y obten medallas!</a>";
+var WikiaNotificationMessage = "<a href='/wiki/Hilo:72664'>隆Haz el examen cronometrado y obten medallas!</a>";
 var WikiaNotificationexpiry = 3;
 */
 /*** Auto refrescado de la wiki actividad{{w:c:five-nights-at-treasure-island}} ***/
-window.AjaxRCRefreshText = 'Actualizaci髇 Autom醫ica';
-window.AjaxRCRefreshHoverText = 'Actualiza autom醫icamente la p醙ina';
+window.AjaxRCRefreshText = 'Actualizaci贸n Autom谩tica';
+window.AjaxRCRefreshHoverText = 'Actualiza autom谩ticamente la p谩gina';
 window.AjaxRefresh = 10000;
 window.ajaxPages = [
     "Especial:CambiosRecientes",
@@ -15,10 +15,10 @@ window.ajaxPages = [
     "Especial:Contribuciones"
 ];
 
-// Chat Reload - CONFIGURACI覰.
+// Chat Reload - CONFIGURACI脫N.
 window.chatReloadTime = 60000;
 
-// Ultima edici髇 - CONFIGURACI覰.
+// Ultima edici贸n - CONFIGURACI脫N.
 
 window.lastEdited = {
     avatar: false,
@@ -34,7 +34,7 @@ window.lastEdited = {
     pages: []
 };
 
-// Revelar ID de usuarios an髇imos.
+// Revelar ID de usuarios an贸nimos.
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat']
 };
@@ -50,25 +50,25 @@ window.RevealAnonIP = {
 
 
 // *****************************************************
-// Botones adicionales para la p醙ina de edici髇 (w:c:five-nights-at-treasure-island)
+// Botones adicionales para la p谩gina de edici贸n (w:c:five-nights-at-treasure-island)
 // *****************************************************
 /*
 if (typeof(mwCustomEditButtons) != 'undefined') {
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
-        "speedTip": "C骴igo fuente",
+        "speedTip": "C贸digo fuente",
         "tagOpen": "<code><nowiki>",
         "tagClose": "</" + "nowiki></code>",
-        "sampleText": "C骴igo fuente"
+        "sampleText": "C贸digo fuente"
     };
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {
         "imageFile": "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
-        "speedTip": "Proponer que este art韈ulo sea borrado",
+        "speedTip": "Proponer que este art铆culo sea borrado",
         "tagOpen": "{{Borrar|",
         "tagClose": "}}",
-        "sampleText": "Raz髇 para que el art韈ulo sea borrado."
+        "sampleText": "Raz贸n para que el art铆culo sea borrado."
     };
 
     mwCustomEditButtons[mwCustomEditButtons.length] = {

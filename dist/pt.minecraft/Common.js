@@ -12,7 +12,7 @@
 /* Variables for interface text used throughout the script, for ease of translating */
 var i18n = {
 	// File upload
-	defaultLicense: 'Licença'
+	defaultLicense: 'LicenÃ§a'
 };
 
 /**

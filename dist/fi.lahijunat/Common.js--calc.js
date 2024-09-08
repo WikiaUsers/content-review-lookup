@@ -174,7 +174,7 @@ $('.jcConfig').each(function() {
  
 	var $tr = $('<tr />');
 	var $td = $('<td />').addClass('jcSubmit').attr({colSpan: '2'});
-	$td.append($('<input />').attr({type: 'submit', value: 'L‰het‰'}));
+	$td.append($('<input />').attr({type: 'submit', value: 'L√§het√§'}));
 	$tr.append($td);
 	$table.append($tr);
  

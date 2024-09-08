@@ -1,6 +1,6 @@
 @import
 $(function() {
-// Sonidos de notificaci髇
+// Sonidos de notificaci贸n
 $('.sonidonotificacion a').append(' <span style="color:red;">[OFF]
 </span>');
 $('#ChatHeader').append('<audio id="notificacion" preload="auto">
@@ -8,15 +8,15 @@ $('#ChatHeader').append('<audio id="notificacion" preload="auto">
 src="https://images.wikia.nocookie.net/pruebasbf10/es/images/0/01/Notification.ogg">
 </source></audio>');
 $('.sonidonotificacion').click(function() {
-if($('.sonidonotificacion a').text() == "Sonidos de notificaci髇 
+if($('.sonidonotificacion a').text() == "Sonidos de notificaci贸n 
 [OFF]") {
-$('.sonidonotificacion a').html('Sonidos de notificaci髇 <span 
+$('.sonidonotificacion a').html('Sonidos de notificaci贸n <span 
 style="color:lime;">[ON]</span>');
 } else {
-$('.sonidonotificacion a').html('Sonidos de notificaci髇 <span 
+$('.sonidonotificacion a').html('Sonidos de notificaci贸n <span 
 style="color:red;">[OFF]</span>');
 
 '.Chat ul').bind('DOMNodeInserted', function(event) {
-$('.sonidonotificacion a').text() == "Sonidos de notificaci髇 
+$('.sonidonotificacion a').text() == "Sonidos de notificaci贸n 
 ]") {
 "#notificacion")[0].play();

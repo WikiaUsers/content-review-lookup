@@ -1,4 +1,4 @@
-/* Tout code JavaScript placé ici sera chargé avec les pages accédées par les utilisateurs du site mobile */
+/* Tout code JavaScript placÃ© ici sera chargÃ© avec les pages accÃ©dÃ©es par les utilisateurs du site mobile */
 /************************************
 /* Main Page Mobile Collapse Script *
 /************************************/

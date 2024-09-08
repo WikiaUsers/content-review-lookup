@@ -1,4 +1,4 @@
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
+/* Tout JavaScript prÃ©sent ici sera exÃ©cutÃ© par tous les utilisateurs Ã  chaque chargement de page. */
 // copy to clipboard
 $(function() { // wait for content load (DOMContentLoaded)
   $('.copy-clipboard').each(function () {
@@ -13,9 +13,9 @@ $(function() { // wait for content load (DOMContentLoaded)
     try {
       if (!document.execCommand('copy'))
        throw 42;
-      mw.notify('Copie réussie dans le presse-papiers.');
+      mw.notify('Copie rÃ©ussie dans le presse-papiers.');
     } catch (err) {
-      mw.notify('Copie dans le presse-papiers a échoué. Veuillez le faire vous-même.', {type:'error'});
+      mw.notify('Copie dans le presse-papiers a Ã©chouÃ©. Veuillez le faire vous-mÃªme.', {type:'error'});
     }
    });
   });
@@ -30,9 +30,9 @@ $(function() { // wait for content load (DOMContentLoaded)
     try {
       if (!document.execCommand('copy'))
        throw 42;
-      mw.notify('Copie réussie dans le presse-papiers.');
+      mw.notify('Copie rÃ©ussie dans le presse-papiers.');
     } catch (err) {
-      mw.notify('Copie dans le presse-papiers a échoué. Veuillez le faire vous-même.', {type:'error'});
+      mw.notify('Copie dans le presse-papiers a Ã©chouÃ©. Veuillez le faire vous-mÃªme.', {type:'error'});
     }
     document.body.removeChild(copyEl);
    });

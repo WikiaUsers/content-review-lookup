@@ -1,4 +1,4 @@
-var view_page = confirm("Diese Creepypasta is NSFW (Not safe for work) und könnte auf einige Nutzer verstörend wirken.\nFortfahren?");
+var view_page = confirm("Diese Creepypasta is NSFW (Not safe for work) und kÃ¶nnte auf einige Nutzer verstÃ¶rend wirken.\nFortfahren?");
 if (view_page) {
     $("#WikiaArticle").fadeIn(500);
     $("#WikiaArticleComments").fadeIn(500);

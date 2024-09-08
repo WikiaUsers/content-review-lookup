@@ -1,5 +1,5 @@
 // Script credits
-// Old chat options                - Callofduty4, Madnessfan34537, Fang³
+// Old chat options                - Callofduty4, Madnessfan34537, FangÂ³
 // New chat options                - Gamedezyner, Dragonfree97
 // Chattopic                       - unknown
 // Censor and text emotes          - MLP wiki
@@ -80,7 +80,7 @@ var stylesheetsArray = [
    clear: true
    },
    {
-   name: "Pokémon ORAS",
+   name: "PokÃ©mon ORAS",
    url: "http://d97.wikia.com/index.php?title=MediaWiki:Oras.css&action=raw&ctype=text/css",
    logo: "https://images.wikia.nocookie.net/__cb20140919191135/d97/images/f/f9/Wordmark_yellow.png",
    clear: true

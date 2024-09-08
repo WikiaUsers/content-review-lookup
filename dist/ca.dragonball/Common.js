@@ -5,7 +5,7 @@ importArticles({
                 ]
 });
  // **************************************************
-// BOTONS ADDICIONALS en la caixa d'ediciÛ
+// BOTONS ADDICIONALS en la caixa d'edici√≥
 // **************************************************
  
  if (typeof(mwCustomEditButtons) != 'undefined') {
@@ -19,15 +19,15 @@ importArticles({
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/inciclopedia/images/4/43/Enlace_a_usuario.png",
-     "speedTip": "EnllaÁ a usuari",
+     "speedTip": "Enlla√ß a usuari",
      "tagOpen": "[[user:",
      "tagClose": "|]]",
      "sampleText": "Usuari"};
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/__cb20120807233513/boladedrac-cat/ca/images/8/84/N%C3%BAvol_Kinton.png",
-     "speedTip": "Indicar l'article com a EsbÛs",
-     "tagOpen": "{{EsbÛs/",
+     "speedTip": "Indicar l'article com a Esb√≥s",
+     "tagOpen": "{{Esb√≥s/",
      "tagClose": "}}",
      "sampleText": "tipus"};
  }
@@ -438,8 +438,8 @@ importScript( 'MediaWiki:Functions.js' );
 
 // Activitat que s'actualitza sola
 AjaxRCRefreshText = 'Activitat automatizada';
-AjaxRCRefreshHoverText = 'Amb la casella marcada, aquesta p‡gina es referescar‡ autom‡ticament';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P·ginasNuevas", "Especial:Seguimiento"];
+AjaxRCRefreshHoverText = 'Amb la casella marcada, aquesta p√†gina es referescar√† autom√†ticament';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P√°ginasNuevas", "Especial:Seguimiento"];
 importScriptPage('AjaxRC/code.js', 'dev');
 // Script para cuenta regresiva
 importScriptPage('Countdown/code.js', 'dev');

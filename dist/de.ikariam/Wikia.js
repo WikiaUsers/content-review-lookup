@@ -20,11 +20,11 @@
  // *** Von http://de.ikariam.wikia.com/ ***
  // ****************************************
  
- // Lädt die Dateiinfo-Vorlage beim Hochladen von Bildern direkt im Beschreibungsfeld.
+ // LÃ¤dt die Dateiinfo-Vorlage beim Hochladen von Bildern direkt im Beschreibungsfeld.
  // http://de.ikariam.wikia.com/wiki/MediaWiki:Onlyifuploading.js
  importScriptPage('MediaWiki:Onlyifuploading.js', 'de.ikariam');
  
- // Fügt einen Hinweise für Benutzer abhängig davon, ob sie angemeldet sind oder nicht ein.
+ // FÃ¼gt einen Hinweise fÃ¼r Benutzer abhÃ¤ngig davon, ob sie angemeldet sind oder nicht ein.
  // http://de.ikariam.wikia.com/wiki/MediaWiki:UserHint.js
  importScriptPage('MediaWiki:UserHint.js', 'de.ikariam');
  
@@ -38,29 +38,29 @@
  // *** Von http://dev.wikia.com/ ***
  // *********************************
  
- // Sorgt dafür, dass einige Seiten automatisch neu geladen werden können.
+ // Sorgt dafÃ¼r, dass einige Seiten automatisch neu geladen werden kÃ¶nnen.
  // http://dev.wikia.com/wiki/AjaxRC
- ajaxPages = ["Spezial:Letzte_Änderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:Beiträge","Spezial:WikiActivity"];
+ ajaxPages = ["Spezial:Letzte_Ã„nderungen","Spezial:Beobachtungsliste","Spezial:Logbuch","Spezial:BeitrÃ¤ge","Spezial:WikiActivity"];
  AjaxRCRefreshText = 'Automatisch aktualisieren';
  AjaxRCRefreshHoverText = 'Aktualisiert die Seite automatisch alle 30 Sekunden';
  indicator = 'https://images.wikia.nocookie.net/__cb20100617113123/dev/images/6/6a/Snake_throbber.gif';
  ajaxRefresh = 30000;
  importScriptPage('AjaxRC/code.js', 'dev');
  
- // Sorgt dafür, dass Ein-/Ausklappbare Tabellen erzeugt werden können.
+ // Sorgt dafÃ¼r, dass Ein-/Ausklappbare Tabellen erzeugt werden kÃ¶nnen.
  // http://dev.wikia.com/wiki/ShowHide
  importScriptPage('ShowHide/code.js', 'dev');
  
- // Zeigt auf jeder Seite, auf der die Vorlage [[Vorlage:Doppelte Bilder|Doppelte Bilder]] oder ein div mit id="mw-dupimages" eingefügt wurde eine Liste mit doppelten Bildern an.
+ // Zeigt auf jeder Seite, auf der die Vorlage [[Vorlage:Doppelte Bilder|Doppelte Bilder]] oder ein div mit id="mw-dupimages" eingefÃ¼gt wurde eine Liste mit doppelten Bildern an.
  // http://dev.wikia.com/wiki/DupImageList
  importScriptPage('DupImageList/code.js', 'dev');
  
- // Fügt einen Link zum neu Laden der Seite ohne Nutzung des Caches hinzu.
+ // FÃ¼gt einen Link zum neu Laden der Seite ohne Nutzung des Caches hinzu.
  // http://dev.wikia.com/wiki/PurgeButton
  PurgeButtonText = 'Neu Laden';
  importScriptPage('PurgeButton/code.js', 'dev');
  
- // Fügt einige Verbesserungen auf der Benutzeroberfläche ein.
+ // FÃ¼gt einige Verbesserungen auf der BenutzeroberflÃ¤che ein.
  // http://dev.wikia.com/wiki/AdvancedOasisUI
  importScriptPage('AdvancedOasisUI/code.js', 'dev');
  

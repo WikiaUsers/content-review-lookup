@@ -1,13 +1,13 @@
-// Etiqueta para usuários inativos por mais de 1 mês
+// Etiqueta para usuÃ¡rios inativos por mais de 1 mÃªs
 InactiveUsers = { text: 'Inativo' };
 importScriptPage('InactiveUsers/code.js', 'dev');
 
-// Personalização de usuário
+// PersonalizaÃ§Ã£o de usuÃ¡rio
 importArticles({
     type: 'script',
     articles: [
         'u:dev:TopEditors/code.js',                 // Editores
-        'u:dev:InactiveUsers/code.js',              // Etiqueta em Usuários
-        'u:dev:AjaxRC/code.js'                 // Atualização Automática
+        'u:dev:InactiveUsers/code.js',              // Etiqueta em UsuÃ¡rios
+        'u:dev:AjaxRC/code.js'                 // AtualizaÃ§Ã£o AutomÃ¡tica
     ]
 });

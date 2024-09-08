@@ -2,7 +2,7 @@
 // alles mit class='jstest' ist dragbar
 
 /***********************************************
- * Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
+ * Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
  * This notice MUST stay intact for legal use
  * Visit http://www.dynamicdrive.com/ for this script and 100s more.
  ***********************************************/

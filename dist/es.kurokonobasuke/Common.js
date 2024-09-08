@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 /* Para desplegable */
 var ShowHideConfig = { linkBefore:true };
 importScriptPage('ShowHide/code.js', 'dev');
@@ -13,7 +13,7 @@ importArticles({
     ]
 });
 // ==============================
-// BotÛn de volver arriba
+// Bot√≥n de volver arriba
 // ==============================
  
 //A script that adds a "Back To Top" option in the footer of the Oasis theme.
@@ -61,5 +61,5 @@ if( !window.BackToTop  ) {
 var BackToTop = true; // prevent duplication
  
 // **************************************************
-//  Fin - BotÛn volver arriba
+//  Fin - Bot√≥n volver arriba
 // **************************************************

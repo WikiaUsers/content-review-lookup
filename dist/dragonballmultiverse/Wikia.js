@@ -20,13 +20,13 @@ function appendLanguageDropdown() {
 			case "English":
 				languages.en = href;
 				break;
-			case "Español":
+			case "EspaÃ±ol":
 				languages.es = href;
 				break;
 			case "Italiano":
 				languages.it = href;
 				break;
-			case "Català":
+			case "CatalÃ ":
 				languages.ca = href;
 				break;
 		}

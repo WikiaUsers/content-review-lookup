@@ -5,9 +5,9 @@ $(function() {
  rights["Kopcap94"]          = ["Hauptmann"];
 
    //Admin
- rights["Cyanide3"]          = ["Häuptling", "Wikia Star", "VSTF"];
- rights["Quenzhal"]          = ["Häuptling", "Wikia Star"];
- rights["Typhix"]            = ["Häuptling", "Hauptmann"];
+ rights["Cyanide3"]          = ["HÃ¤uptling", "Wikia Star", "VSTF"];
+ rights["Quenzhal"]          = ["HÃ¤uptling", "Wikia Star"];
+ rights["Typhix"]            = ["HÃ¤uptling", "Hauptmann"];
 
    //Staff
  rights["Foppes"]            = ["Hand von Sauron"];

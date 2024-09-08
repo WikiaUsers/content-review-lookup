@@ -20,7 +20,7 @@
  // alles mit class='jstest' ist dragbar
  
  /***********************************************
- * Drag and Drop Script: © Dynamic Drive (http://www.dynamicdrive.com)
+ * Drag and Drop Script: Â© Dynamic Drive (http://www.dynamicdrive.com)
  * This notice MUST stay intact for legal use
  * Visit http://www.dynamicdrive.com/ for this script and 100s more.
  ***********************************************/
@@ -62,7 +62,7 @@
  
 // Ein- und Ausblenden per Javascript
  
-// mit den folgenden Funktionen lässt sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
+// mit den folgenden Funktionen lÃ¤sst sich ein div-Konstrukt in ein Einblende-Ausblende-Ding verwandeln
 //
 // Variante 1 (Klick irgendwo blendet ein oder aus):
 //	<div class="klapp">
@@ -124,7 +124,7 @@ function getKlappDiv( obj )
 	return obj;
 }
  
-// Event-Handler für alle class="klapp"-Objekte zuweisen
+// Event-Handler fÃ¼r alle class="klapp"-Objekte zuweisen
 function makeAusklapp()
 {
 	// klapp-div-Rahmen
@@ -154,7 +154,7 @@ function makeAusklapp()
  
 }
  
-// Nach dem Laden des Fensters folgendes Ausführen:
+// Nach dem Laden des Fensters folgendes AusfÃ¼hren:
 addOnloadHook(makeAusklapp);
  
 /* Test if an element has a certain class **************************************

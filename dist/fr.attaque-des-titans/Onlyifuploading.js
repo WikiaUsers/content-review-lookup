@@ -1,4 +1,4 @@
- // Incorpore le modèle [[Modèle:Fichier|Fichier]] en important directement. C'est incorporé par [[MediaWiki:Common.js|Common.js]].
+ // Incorpore le modÃ¨le [[ModÃ¨le:Fichier|Fichier]] en important directement. C'est incorporÃ© par [[MediaWiki:Common.js|Common.js]].
 
 //<nowiki>
 

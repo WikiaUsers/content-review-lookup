@@ -1,11 +1,11 @@
 // <syntax type="javascript">
  
 /********************************************************************************
- * Modèle switch                                                              ***
+ * ModÃ¨le switch                                                              ***
  * Auteur/contact: Austin Che http://openwetware.org/wiki/User:Austin_J._Che  ***
  * Voir http://openwetware.org/wiki/OpenWetWare:Toggle pour plus d'infos      ***
  * Revu par @Think D. Solucer                                                 ***
- * Pour utiliser ce modèle :                                                  ***
+ * Pour utiliser ce modÃ¨le :                                                  ***
  * importScriptPage('MediaWiki:Common.js/Switch.js', 'fr.onepiece');          ***
 *********************************************************************************/
 
@@ -163,11 +163,11 @@ addOnloadHook(toggleInit);
 // <syntax type="javascript">
  
 /********************************************************************************
- * Modèle switch                                                              ***
+ * ModÃ¨le switch                                                              ***
  * Auteur/contact: Austin Che http://openwetware.org/wiki/User:Austin_J._Che  ***
  * Voir http://openwetware.org/wiki/OpenWetWare:Toggle pour plus d'infos      ***
  * Revu par @Think D. Solucer                                                 ***
- * Pour utiliser ce modèle :                                                  ***
+ * Pour utiliser ce modÃ¨le :                                                  ***
  * importScriptPage('MediaWiki:Common.js/Switch.js', 'fr.onepiece');          ***
 *********************************************************************************/
 

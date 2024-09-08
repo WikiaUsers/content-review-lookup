@@ -1,5 +1,5 @@
 /*
- * Chargeur de module de barre latÈrale de Discord.
+ * Chargeur de module de barre lat√©rale de Discord.
  */
  
 ;(function ($, mw) {
@@ -25,7 +25,7 @@
                                 $('<a>')
                                     .attr('href', mw.util.wikiGetlink('Wiki Vocaloid:Discord'))
                                     .text('ici'),
-                                ' pour lire les rËgles du tchat de ce serveur.'
+                                ' pour lire les r√®gles du tchat de ce serveur.'
                             ),
                         $('<a>')
                             .attr('href', 'https://discord.gg/s63bxtW')
@@ -39,7 +39,7 @@
     function init() {
         //load once
         if ($('#rsw-discord').length) {
-            mw.log('Module de Discord dÈj‡ lancÈ');
+            mw.log('Module de Discord d√©j√† lanc√©');
             return;
         }
  

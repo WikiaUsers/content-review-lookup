@@ -3,9 +3,9 @@
 //==========================================
  
 //====================================
-//          Image aléatoire
+//          Image alÃ©atoire
 //====================================
-/* Affiche une image aléatoire en bas */
+/* Affiche une image alÃ©atoire en bas */
 /* barre laterale (Oasis)           */
  
 /* Liste des images */
@@ -15,7 +15,7 @@ var WikiaRailImageArray = new Array();
 /* Choisir une image */
 var chosenWikiaRailImage = Math.round(Math.random() * (WikiaRailImageArray.length - 1));
  
-/* Insérer l'image */
+/* InsÃ©rer l'image */
 $(window).load(function() {
       $('#WikiaRail').append(WikiaRailImageArray[chosenWikiaRailImage]);
 });

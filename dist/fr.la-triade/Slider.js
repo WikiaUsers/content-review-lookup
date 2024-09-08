@@ -2,8 +2,8 @@
 //          jQuery Slider
 //================================
 
-// Créée par Tierrie pour le Dragon Age Wiki
-// Adapté par Soronos pour Wiki GdCP
+// CrÃ©Ã©e par Tierrie pour le Dragon Age Wiki
+// AdaptÃ© par Soronos pour Wiki GdCP
 
 mw.loader.using(["jquery.cookie"]);
 

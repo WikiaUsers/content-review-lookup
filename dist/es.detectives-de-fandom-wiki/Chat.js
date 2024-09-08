@@ -24,7 +24,7 @@ function clearChatText() {
 }
 
 // Chat's topic. Remember to escape single quotes in the topic using \' to prevent this from breaking.
-var chatTopic = 'Bienvenido al chat de Detectives de FANDOM Wiki. Si necesitas a algún mod, para llamarlos mándales un mensaje a su Muro.';
+var chatTopic = 'Bienvenido al chat de Detectives de FANDOM Wiki. Si necesitas a algÃºn mod, para llamarlos mÃ¡ndales un mensaje a su Muro.';
  
 $(function() { 
     $('#ChatHeader .public.wordmark')
@@ -56,14 +56,14 @@ window.EmoticonsWindowVocab = {
 window.ChatStatus = {
 	statuses: {
 		afk: "Ocupado",
-		edit: "Mirando televisión",
+		edit: "Mirando televisiÃ³n",
 		food: "Comiendo", 
-		tv: "Escuchando música",
+		tv: "Escuchando mÃºsica",
 		game: "Jugando",
 		ufo: "Estudiando",
 		cake: "Observando",
 		homo: "Dibujando",
-		google: "Azotando niños",
+		google: "Azotando niÃ±os",
 	},
 	debug: false
 };
@@ -80,7 +80,7 @@ $('[name="message"]').keypress(function(e) {
 });
 
 var PrivateMessageAlert = {
-    message: '$1 envió un mensaje!',
+    message: '$1 enviÃ³ un mensaje!',
     notifications: true,
     alertWhileFocused: true
 };

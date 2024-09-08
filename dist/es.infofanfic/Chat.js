@@ -15,10 +15,10 @@ importArticles({
 importScriptPage('MediaWiki:Day/Night chat/code.js', 'dev');
  
 //Switch to night button
-var night_button = 'Botón de Chat Nocturno';
+var night_button = 'BotÃ³n de Chat Nocturno';
  
 //Switch to day button
-var day_button = 'Botón de Chat Diurno';
+var day_button = 'BotÃ³n de Chat Diurno';
  
 //
 //Color scheme for NIGHT Chat

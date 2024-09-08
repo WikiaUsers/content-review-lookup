@@ -1,7 +1,7 @@
 if (wgUserName == "20M61" && false){
 /*********************************************************\
-    Funktion für InfoBox, MiniBox und MicroBox
- * spürt alle Boxen in einem Artikel auf
+    Funktion fÃ¼r InfoBox, MiniBox und MicroBox
+ * spÃ¼rt alle Boxen in einem Artikel auf
  * setzt Variablen aus Box und Datenbank
  * geht auf Besonderheiten der Boxen ein
 \*********************************************************/
@@ -23,7 +23,7 @@ function SpoilerDBBoxen(){
 
     if (!DatenBox[i].getAttribute('data-Name')) continue; // Nur Objekte untersuchen, die an die DB angeschlossen sind
 
-    // MySpoilerStand ermitteln - DatenBox -> DatenSatz -> TV (Wichtig für einige Datensätze, wie z.B. Bilder)
+    // MySpoilerStand ermitteln - DatenBox -> DatenSatz -> TV (Wichtig fÃ¼r einige DatensÃ¤tze, wie z.B. Bilder)
     var Show   = DatenBox[i].getAttribute('data-Show');   if(! Show)   Show   = "TV";
     var Typ    = DatenBox[i].getAttribute('data-Typ');
     var Bild   = DatenBox[i].getAttribute('data-Bild');   if(! Bild)   Bild   = DatenBox[i].getElementsByTagName('img')[0].src;
@@ -32,7 +32,7 @@ function SpoilerDBBoxen(){
     var MySpoilerStand = DatenBox[i].getAttribute('data-ZeigeBildBis');
     var Nickname = DatenBox[i].getAttribute('data-Nickname');
 
-    // Datensatz auswählen
+    // Datensatz auswÃ¤hlen
     var DB_ID = DB_Name.indexOf(DatenBox[i].getAttribute('data-Name'));
     if (DB_ID >= 0) {
 		Show = DB_Daten[DB_ID]['Show'];
@@ -43,7 +43,7 @@ function SpoilerDBBoxen(){
 		var tmpObj = DB_Daten[DB_ID]['Spoiler'].split(',');
 		for (var n=0; n < tmpObj.length; n++) {
 			if ((tmpObj[n].split('-')[0]*1) > MySpoilerStand) break;
-			//Slice unterstützt alle Zeichen bis ";"
+			//Slice unterstÃ¼tzt alle Zeichen bis ";"
 			Status = tmpObj[n].slice(tmpObj[n].search("-")+1);
 		} //Ende For-Spoiler
 
@@ -74,8 +74,8 @@ function SpoilerDBBoxen(){
 		if (!MySpoilerStand) MySpoilerStand = GetMyShowStatus(Show);
 	}
 
-    if (!Nickname) Nickname = DatenBox[i].getAttribute('data-Name');   // Prüfen ob Sonderbehandlung
-    else if (Nickname.search(",")) {								 // Prüfen ob Multi-Nickname
+    if (!Nickname) Nickname = DatenBox[i].getAttribute('data-Name');   // PrÃ¼fen ob Sonderbehandlung
+    else if (Nickname.search(",")) {								 // PrÃ¼fen ob Multi-Nickname
 	  Nickname = Nickname.split(',');								 // Aufteilen in Folgen
 	  var tmpNickname = Nickname[0].slice(Nickname[0].search("-")+1);// Erster Name MUSS immer sein
 	  for (var n=0; n < Nickname.length; n++) {						 // Alle Folgen durchgehen
@@ -83,7 +83,7 @@ function SpoilerDBBoxen(){
 	    tmpNickname = Nickname[n].slice(Nickname[n].search("-")+1);  // Neue Folge zwischenspeichern
 
 	  } // Ende For-Gruppe
-	  Nickname = tmpNickname;										 // Ergebnis in Leitvariable übertragen
+	  Nickname = tmpNickname;										 // Ergebnis in Leitvariable Ã¼bertragen
 	}
 
     DatenBox[i].getElementsByTagName('img')[0].src = Bild;          // Bild setzen
@@ -91,10 +91,10 @@ function SpoilerDBBoxen(){
 	// Boxspezifische Dinge
     switch(DatenBox[i].className.split(' ')[0].toLowerCase()){
 		case "infobox":
-			// Klasse + Status setzen. Infobox und MiniBox können zusätzlich eine Hintergrundklasse haben.
+			// Klasse + Status setzen. Infobox und MiniBox kÃ¶nnen zusÃ¤tzlich eine Hintergrundklasse haben.
   			switch(Typ) {
 				default:
-				case "Gegenstand": case "Waffe": case "Ausrüstung": case "Folterwerkzeug": case "Granate": case "Award": case "Serie": case "Mitwirkende":
+				case "Gegenstand": case "Waffe": case "AusrÃ¼stung": case "Folterwerkzeug": case "Granate": case "Award": case "Serie": case "Mitwirkende":
 	  				//Kein Status
 		  			Status = Typ;
 					break;
@@ -106,7 +106,7 @@ function SpoilerDBBoxen(){
 				DatenBox[i].className = "infobox headerBackground " + Status;
 			else DatenBox[i].className = "infobox " + Status;
 
-		  	DatenBox[i].getElementsByTagName('img')[0].removeAttribute('height'); // automatische Höhe
+		  	DatenBox[i].getElementsByTagName('img')[0].removeAttribute('height'); // automatische HÃ¶he
 
       		// Status und Gruppe in vorgesehene Zellen schreiben
       		var SpoilerTRObjekt = DatenBox[i].getElementsByTagName('tr');
@@ -114,17 +114,17 @@ function SpoilerDBBoxen(){
         		if (SpoilerTRObjekt[n].className == "InfoStatus") {
 		  			switch(Typ) {
 						default:
-						case "Gegenstand": case "Waffe": case "Ausrüstung": case "Folterwerkzeug": case "Granate": case "Award": case "Serie": case "Mitwirkende":
+						case "Gegenstand": case "Waffe": case "AusrÃ¼stung": case "Folterwerkzeug": case "Granate": case "Award": case "Serie": case "Mitwirkende":
 			  				//Kein Status
 				  			SpoilerTRObjekt[n].style.display = 'none';
 							break;
 						case "Maschine": case "Gruppe": case "Charakter": case "Ort":
-							// Status anzeigen und mit DB-Inhalt überschreiben.
+							// Status anzeigen und mit DB-Inhalt Ã¼berschreiben.
 			  				SpoilerTRObjekt[n].getElementsByTagName("td")[1].innerHTML = Status;
 			  				SpoilerTRObjekt[n].style.display = '';
 			  				break;
 						case "Individuell":
-					  		// Status anzeigen, aber nicht ändern
+					  		// Status anzeigen, aber nicht Ã¤ndern
 			  				SpoilerTRObjekt[n].style.display = '';
 			  				break;
 		  			} //Ende switch-Typ
@@ -137,29 +137,29 @@ function SpoilerDBBoxen(){
 							//Kein Status
 							SpoilerTRObjekt[n].style.display = 'none';
 							break;
-						case "Gegenstand": case "Waffe": case "Ausrüstung": case "Folterwerkzeug": case "Granate": case "Award": case "Mitwirkende": case "Maschine": case "Gruppe": case "Charakter": case "Ort":
-							// Status anzeigen und mit DB-Inhalt überschreiben.
+						case "Gegenstand": case "Waffe": case "AusrÃ¼stung": case "Folterwerkzeug": case "Granate": case "Award": case "Mitwirkende": case "Maschine": case "Gruppe": case "Charakter": case "Ort":
+							// Status anzeigen und mit DB-Inhalt Ã¼berschreiben.
 							SpoilerTRObjekt[n].getElementsByTagName("td")[1].innerHTML = Gruppe; //(2. (rechte) Spalte - nicht erste)
 							SpoilerTRObjekt[n].style.display = '';
 							break;
 						case "Individuell":
-							// Status anzeigen, aber nicht ändern
+							// Status anzeigen, aber nicht Ã¤ndern
 							SpoilerTRObjekt[n].style.display = '';
 							break;
 					} //Ende switch-InfoGruppe
 				} // Ende if-InfoGruppe
-	  		} // Ende For-Schleife für Zeilen in Infobox
+	  		} // Ende For-Schleife fÃ¼r Zeilen in Infobox
 			break;
 		case "minibox":
-			// Klasse + Status setzen. Infobox und MiniBox können zusätzlich eine Hintergrundklasse haben.
+			// Klasse + Status setzen. Infobox und MiniBox kÃ¶nnen zusÃ¤tzlich eine Hintergrundklasse haben.
 			if (DatenBox[i].className.split(' ')[1] == 'headerBackground')
 				DatenBox[i].className = "MiniBox headerBackground " + Status;
 			else DatenBox[i].className = "MiniBox " + Status;
 		  	DatenBox[i].getElementsByTagName('img')[0].removeAttribute('width'); // automatische Breite
 
-      		// Überschrift festlegen
+      		// Ãœberschrift festlegen
       		switch(Typ) {
-				case "Gruppe": case "Gegenstand": case "Ort": case "Waffe": case "Ausrüstung": case "Folterwerkzeug":  case "Granate": case "Maschine": case "Award": case "Serie": case "Mitwirkende":
+				case "Gruppe": case "Gegenstand": case "Ort": case "Waffe": case "AusrÃ¼stung": case "Folterwerkzeug":  case "Granate": case "Maschine": case "Award": case "Serie": case "Mitwirkende":
 					DatenBox[i].setAttribute('data-headline', Typ);
 					break;
                 case "Charakter":
@@ -195,11 +195,11 @@ function SpoilerDBBoxen(){
 
 /*********************************************************\
                   Spoiler-Funktion
- * Erzeugt Button in Überschriftenleiste
- * Erzeugt Menü des Buttons
- * Ändert Hintergrundbild
- * Verändert die (Un-)Sichtbarkeit von DIV- und SPAN-Tags
- * Verändert Verhalten in unterschiedlichen Namensräumen
+ * Erzeugt Button in Ãœberschriftenleiste
+ * Erzeugt MenÃ¼ des Buttons
+ * Ã„ndert Hintergrundbild
+ * VerÃ¤ndert die (Un-)Sichtbarkeit von DIV- und SPAN-Tags
+ * VerÃ¤ndert Verhalten in unterschiedlichen NamensrÃ¤umen
 \*********************************************************/
 /*********************************************************\
     Variable: alles was im Cookie stehen kann (Usereinstellungen)
@@ -217,16 +217,16 @@ var TWD = new Object();
   TWD['MyGameSGEpisode'] = 0; // TWD: Social Game
   TWD['MyGameSIEpisode'] = 0; // TWD: The Game (Activision - Dixon)
   TWD['MyComic']         = 0; // Comic
-  TWD['MyBook']          = 0; // Bücher
-  TWD['IKnowAll']        = 0; // Master (0 =Ich weiß nicht alles - bitte Spoilerschutz gewähren)
-  TWD['MyBG_TV']         = 1; //'1§1§1§1'; (TV § COMIC § SPIELE § BUCH)
+  TWD['MyBook']          = 0; // BÃ¼cher
+  TWD['IKnowAll']        = 0; // Master (0 =Ich weiÃŸ nicht alles - bitte Spoilerschutz gewÃ¤hren)
+  TWD['MyBG_TV']         = 1; //'1Â§1Â§1Â§1'; (TV Â§ COMIC Â§ SPIELE Â§ BUCH)
   TWD['MyBG_COMIC']      = 1;
   TWD['MyBG_SPIELE']     = 1;
   TWD['MyBG_BUCH']       = 1;
   TWD['Helper']          = false;
 
 /*********************************************************\
-    Variable: Alle möglichen Hintergrundbilder sortiert in Namespaces
+    Variable: Alle mÃ¶glichen Hintergrundbilder sortiert in Namespaces
 \*********************************************************/
 var x = 0;                    // Laufvariable - Wert unbestimmt
 var BG_TV     = new Array();
@@ -330,8 +330,8 @@ function GetMyShowStatus(Show){
 
 /*********************************************************\
     Funktion ermittelt ob dieses Objekt angezeigt werden soll oder nicht
- * Rückgabewert TRUE, wenn persönlicher Spoiler außerhalb der VON BIS-Spoiler liegt
- * Benötigt data-FolgeZeigenVon, data-Show, data-FolgeZeigenBis (optional),
+ * RÃ¼ckgabewert TRUE, wenn persÃ¶nlicher Spoiler auÃŸerhalb der VON BIS-Spoiler liegt
+ * BenÃ¶tigt data-FolgeZeigenVon, data-Show, data-FolgeZeigenBis (optional),
 \*********************************************************/
 function AmISpoiled(HTML_Element, Von, Bis, Show){
     if (HTML_Element.getAttribute('data-FolgeZeigenVon')) Von = HTML_Element.getAttribute('data-FolgeZeigenVon');
@@ -361,7 +361,7 @@ function SetSpoiler(){
 	SpoilerMinArtikel = document.getElementById("Spoiler_Minimum");
 	if (SpoilerMinArtikel != null)	{
 		if (AmISpoiled(SpoilerMinArtikel))	    {
-			openSpoilerEinstellung("Diese Seite enthält Informationen, die erst in späteren Folgen gezeigt werden. Falls du den Inhalt dennoch sehen möchtest, so ändere bitte deine Spoiler-Einstellungen", SpoilerMinArtikel.getAttribute('data-FolgeZeigenVon'));
+			openSpoilerEinstellung("Diese Seite enthÃ¤lt Informationen, die erst in spÃ¤teren Folgen gezeigt werden. Falls du den Inhalt dennoch sehen mÃ¶chtest, so Ã¤ndere bitte deine Spoiler-Einstellungen", SpoilerMinArtikel.getAttribute('data-FolgeZeigenVon'));
 	      	return false;
 		}
 	}
@@ -384,7 +384,7 @@ function SetSpoiler(){
 		// Hat das Element kein FolgeZeigenVon, dann ist es kein Spoilerteil
 		if (! TabellenElement[tid].getAttribute('data-FolgeZeigenVon')) continue;
 		// Tabellen-TD-Elemente werden unsichtbar gemacht
-		// (Bei Display "none" würden sie die Tabelle zerwürfeln)
+		// (Bei Display "none" wÃ¼rden sie die Tabelle zerwÃ¼rfeln)
 		if (AmISpoiled(TabellenElement[tid]))
 			TabellenElement[tid].style.opacity = 0;
 		else
@@ -396,7 +396,7 @@ function SetSpoiler(){
 	for ( tid=0; tid<TabellenElement.length; tid++ ){
 		// Hat das Element kein FolgeZeigenVon, dann ist es kein Spoilerteil
 		if (! TabellenElement[tid].getAttribute('data-FolgeZeigenVon')) continue;
-		// Tabellen-TR-Elemente werden gelöscht (ganze Zeile weg)
+		// Tabellen-TR-Elemente werden gelÃ¶scht (ganze Zeile weg)
 		if (AmISpoiled(TabellenElement[tid]))
 			TabellenElement[tid].style.display = "none";
 		else
@@ -408,19 +408,19 @@ function SetSpoiler(){
 	for ( did=0; did<DivElement.length; did++ ){
 		// Hat das Element kein FolgeZeigenVon, dann ist es kein Spoilerteil
 		if (! DivElement[did].getAttribute('data-FolgeZeigenVon')) continue;
-		// Tabellen-TR-Elemente werden gelöscht (ganze Zeile weg)
+		// Tabellen-TR-Elemente werden gelÃ¶scht (ganze Zeile weg)
 		if (AmISpoiled(DivElement[did]))
 			DivElement[did].style.display = "none";
 		else
 			DivElement[did].style.display = "";
 	}
-    SpoilerDBBoxen();// möglicherweise geänderte MicroBoxen (ShowFamily) korrigieren.
+    SpoilerDBBoxen();// mÃ¶glicherweise geÃ¤nderte MicroBoxen (ShowFamily) korrigieren.
 
     return true;
 } //ENDE funktion SetSpoiler
 
 /*********************************************************\
-    Funktion löst Zeitproblem von schreibCookie()
+    Funktion lÃ¶st Zeitproblem von schreibCookie()
 \*********************************************************/
 function fixedGMTString(datum){
    var damals=new Date(1970,0,1,12);
@@ -445,7 +445,7 @@ function schreibCookie() {
 }
 
 /*********************************************************\
-    Funktion sucht Inhalt ab, ob spezielle Helfer-Boxen versteckt werden müssen
+    Funktion sucht Inhalt ab, ob spezielle Helfer-Boxen versteckt werden mÃ¼ssen
 \*********************************************************/
 function HideHelpingBoxes(NeueBoxenEigenschaft){
   if (NeueBoxenEigenschaft != null)
@@ -461,7 +461,7 @@ function HideHelpingBoxes(NeueBoxenEigenschaft){
 }
 
 /*********************************************************\
-    Funktion ändert Hintergrundbild
+    Funktion Ã¤ndert Hintergrundbild
 \*********************************************************/
 function SetBGPic(Picture, Attachment){
   var body = document.getElementsByTagName('body')[0];
@@ -474,7 +474,7 @@ function SetBGPic(Picture, Attachment){
 }
 
 /*********************************************************\
-    Funktion liest Hintergrundbild und ruft SetBGPic zum ändern
+    Funktion liest Hintergrundbild und ruft SetBGPic zum Ã¤ndern
 \*********************************************************/
 function ChangeHintergrund(NeuerHintergrund, SEAuswahl) {
   var SwitchItem = wgCanonicalNamespace;
@@ -488,7 +488,7 @@ function ChangeHintergrund(NeuerHintergrund, SEAuswahl) {
     }
   }
 
-  // Möglichkeit ein DIV-Element zu setzen, dass den Hintergrund überschreibt.
+  // MÃ¶glichkeit ein DIV-Element zu setzen, dass den Hintergrund Ã¼berschreibt.
   var WHB = document.getElementById("Wikia-Hintergrund-Bild");
   if (WHB)
     SetBGPic(WHB.getAttribute('data-Bild'), WHB.getAttribute('data-Attachment'));
@@ -513,7 +513,7 @@ function ChangeHintergrund(NeuerHintergrund, SEAuswahl) {
 
 /*********************************************************\
     Funktion liest Cookie aus, schreibt sie in die Variablen
-    und ruft Funktionen auf, die das Design ändern.
+    und ruft Funktionen auf, die das Design Ã¤ndern.
 \*********************************************************/
 function liesCookie() {
    var keks = document.cookie;
@@ -533,12 +533,12 @@ function liesCookie() {
         }
      }
 
-     // Anfangs- und Endposition des Krümelwerts suchen
+     // Anfangs- und Endposition des KrÃ¼melwerts suchen
      var wertAnfang = keks.indexOf("=", posName)+1;
      var wertEnde = keks.indexOf(";", posName+1);
      if (wertEnde == -1) wertEnde = keks.length;
 
-     // Krümelwert auslesen und zurückgeben
+     // KrÃ¼melwert auslesen und zurÃ¼ckgeben
      var keksinhalt = keks.substring(wertAnfang, wertEnde).split("&");
      var Eigenschaft; var Wert;
      for (var i = 0; i < keksinhalt.length; i++){
@@ -556,8 +556,8 @@ function liesCookie() {
 }
 
 /*********************************************************\
-    Funktion für Spoiler-Einstellung (Reiter)
- * setzt Reiter zurück
+    Funktion fÃ¼r Spoiler-Einstellung (Reiter)
+ * setzt Reiter zurÃ¼ck
  * zeigt Reiter und Box an
 \*********************************************************/
 function ReiterSelect(Reiter){
@@ -575,7 +575,7 @@ function ReiterSelect(Reiter){
 }
 
 /*********************************************************\
-    Funktion für Spoiler-Einstellung (Selector TV-Staffel)
+    Funktion fÃ¼r Spoiler-Einstellung (Selector TV-Staffel)
  * Zeigt nur richtige Staffelfolgen
  * verbirgt die anderen
 \*********************************************************/
@@ -604,10 +604,10 @@ function SwitchStaffel(Wechsel){
 }
 
 /*********************************************************\
-    Funktion öffnet Spoiler-Einstellungen
+    Funktion Ã¶ffnet Spoiler-Einstellungen
 \*********************************************************/
 function openSpoilerEinstellung(Warntext){
-	// falls noch alte blackout-Boxen vorhanden sind, werden diese hiermit gelöscht
+	// falls noch alte blackout-Boxen vorhanden sind, werden diese hiermit gelÃ¶scht
 	if (document.getElementById("blackoutHeader") != null)
 		$('#blackoutHeader').remove();
 	if (document.getElementById("blackout") != null)
@@ -617,7 +617,7 @@ function openSpoilerEinstellung(Warntext){
                 position: 'absolute', top: 0, left: 0, width: '100%', height: '105%', zIndex: 1000, backgroundColor: '#474646', opacity: 0
           });
 
-    // div Box mit Hintergrundfarbe und der Spoiler-Einstellungs Box wird volltransparent über den Artikel gelegt
+    // div Box mit Hintergrundfarbe und der Spoiler-Einstellungs Box wird volltransparent Ã¼ber den Artikel gelegt
     var article = $('div#WikiaArticle');
 	$('<div id="blackout">' + '</div>').appendTo(article).css({
 		position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, backgroundColor: '#474646', opacity: 0
@@ -647,10 +647,10 @@ function openSpoilerEinstellung(Warntext){
     $('#blackoutHeader').fadeTo(500, 1.0,function () {});
     $('#blackout').fadeTo(500, 1.0,function () {});
 
-	// funktion an Button: schließt Einstellungen, stellt letzte Version wieder her, schreibt Cookie
+	// funktion an Button: schlieÃŸt Einstellungen, stellt letzte Version wieder her, schreibt Cookie
     $('#close').click(function () {
-        $('#SpoilerEinstellung').remove();					// sofortiges Löschen der Box
-          if (liesCookie() == false)                        // Cookie zurücksetzen
+        $('#SpoilerEinstellung').remove();					// sofortiges LÃ¶schen der Box
+          if (liesCookie() == false)                        // Cookie zurÃ¼cksetzen
             SetSpoiler();                                   // Cookie speichern
           ChangeHintergrund();
        	  if (document.getElementById("WikiaArticleCategories"))
@@ -665,7 +665,7 @@ function openSpoilerEinstellung(Warntext){
     // funktion an Button: wie close
     $('#cancel').click(function () {
         $('#dialog').remove();
-          if (liesCookie() == false)                        // liest Cookie aus und setzt Spoiler zurück
+          if (liesCookie() == false)                        // liest Cookie aus und setzt Spoiler zurÃ¼ck
             SetSpoiler();                                   // Falls keine Cookie, dann wird Spoiler gesetzt
             ChangeHintergrund();
        		if (document.getElementById("WikiaArticleCategories"))
@@ -678,7 +678,7 @@ function openSpoilerEinstellung(Warntext){
         });
       });
 
-	// funktion an Button: schließt Einstellungen, speichert Änderung, schreibt Cookie
+	// funktion an Button: schlieÃŸt Einstellungen, speichert Ã„nderung, schreibt Cookie
 	$('#save').click(function () {
         $('#dialog').remove();
           SetSpoiler();
@@ -709,7 +709,7 @@ if(document.getElementById('DatenbankVersion') != 'null' || wgUserName == "20M61
 /****************************\
    Datenbank zusammentragen
 
-Die Datenbank besteht aus Datensätzen,
+Die Datenbank besteht aus DatensÃ¤tzen,
 die in der Seite eingearbeitet sind
 Diese werden im ersten Schritt ausgelesen
 und in Arrays umgewandelt.
@@ -741,8 +741,8 @@ var Datensatz = document.getElementById('WikiaMainContent').getElementsByTagName
 for ( nxtSPAN=0; nxtSPAN<Datensatz.length; nxtSPAN++ ) {
   // Alle SPAN Elemente durchgehen
   if (Datensatz[nxtSPAN].className == 'Datensatz') {
-	tmpDBName = GetParentName(Datensatz[nxtSPAN].parentNode); //damit wird data-Name überflüssig
-	if (!tmpDBName) tmpDBName = Datensatz[nxtSPAN].getAttribute('data-Name') //Wenn ElternElement keinen Namen enthält, dann muss KindElement ran
+	tmpDBName = GetParentName(Datensatz[nxtSPAN].parentNode); //damit wird data-Name Ã¼berflÃ¼ssig
+	if (!tmpDBName) tmpDBName = Datensatz[nxtSPAN].getAttribute('data-Name') //Wenn ElternElement keinen Namen enthÃ¤lt, dann muss KindElement ran
     //Ein Datensatz-Element wurde gefunden
     DB_Name.push(tmpDBName);
     DBID = DB_Name.indexOf(tmpDBName);
@@ -876,25 +876,25 @@ function SpoilerStart(){
   \*********************************************************/
   //In Position suchen wir ein geeignetes Element, hinter oder vor dem wir unseren Button platzieren
   var Position = document.getElementById('WikiaPageHeader');
-  //Ausgangspunkt ist die Überschrift (unzwar der gesamte Bereich inkl. Artikel-Titel, Bearbeiten, Zähler ...)
-  //Da nicht jede Seite sowas hat (z.B. Profilseiten) muss man überprüfen ob es möglich ist
+  //Ausgangspunkt ist die Ãœberschrift (unzwar der gesamte Bereich inkl. Artikel-Titel, Bearbeiten, ZÃ¤hler ...)
+  //Da nicht jede Seite sowas hat (z.B. Profilseiten) muss man Ã¼berprÃ¼fen ob es mÃ¶glich ist
   if (Position && HTMLAgument['action'] != 'edit' && wgPageName.search("Spezial") < 0 ) {
-    // Nun werden alle Elemente innerhalb der Überschrift durchgegangen (wie gesagt ... gibt mehr als nur den Titel des Artikels
+    // Nun werden alle Elemente innerhalb der Ãœberschrift durchgegangen (wie gesagt ... gibt mehr als nur den Titel des Artikels
     for ( anz=0; anz<Position.childNodes.length; anz++ ) {
-      // Wir suchen den 'Kommentar'-Button, denn VOR diesem wollen wir unseren Button einfügen, damit er hinter dem Bearbeiten-Button liegt.
+      // Wir suchen den 'Kommentar'-Button, denn VOR diesem wollen wir unseren Button einfÃ¼gen, damit er hinter dem Bearbeiten-Button liegt.
       if (Position.childNodes[anz].className == 'wikia-button comments secondary' ||
           Position.childNodes[anz].className == 'wikia-button comments secondary talk') {
-        // Jetzt fügen wir den eigentlichen Button ein:
+        // Jetzt fÃ¼gen wir den eigentlichen Button ein:
         var ButtonElement    = document.createElement('a');  //Erzeugt ein LINK-Element
         var ButtonTxt        = document.createTextNode('Einstellungen'); //Text des Buttons
         ButtonElement.appendChild(ButtonTxt); //Hier wird dem Button sein Text zugewiesen
 
         ButtonElement.className    = 'TWD-Button'; // der Button bekommt eine Klasse (dort bestimmen wir das Aussehen)
         ButtonElement.href         = '#';
-        ButtonElement.id           = 'TWDEinstellungen'; // eine ID, damit wir den Button schneller ansprechen können, wenn wirs brauchen.
+        ButtonElement.id           = 'TWDEinstellungen'; // eine ID, damit wir den Button schneller ansprechen kÃ¶nnen, wenn wirs brauchen.
         ButtonElement.title        = 'Einstellungen';
-        ButtonElement.style.margin = '2px 0px 0px 7px'; // Die Margin-Werte haben sich als nützlich erwiesen - könnten aber auch in der Klasse definiert werden.
-        ButtonElement.onclick      = function(){ openSpoilerEinstellung(); }; //Funktion, wenn man den Button drückt.
+        ButtonElement.style.margin = '2px 0px 0px 7px'; // Die Margin-Werte haben sich als nÃ¼tzlich erwiesen - kÃ¶nnten aber auch in der Klasse definiert werden.
+        ButtonElement.onclick      = function(){ openSpoilerEinstellung(); }; //Funktion, wenn man den Button drÃ¼ckt.
         Position.insertBefore(ButtonElement, Position.childNodes[anz+1]); //Jetzt ist der Button fertig und kann VOR dem Kommentarknopf eingesetzt werden
         break; //Wir sind fertig und brechen die FOR-Schleife ab, denn wir wollen nur 1 Button setzen.
       }

@@ -1,4 +1,4 @@
-/* CÛdigos aqui colocados ser„o carregados por todos que acessarem esta wiki */
+/* C√≥digos aqui colocados ser√£o carregados por todos que acessarem esta wiki */
 
 // Recover style on ToC that's removed by a Fandom script.
 // See details of the problem, and the solution by HumansCanWinElves on:

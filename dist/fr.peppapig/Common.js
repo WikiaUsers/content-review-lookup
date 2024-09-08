@@ -1,7 +1,7 @@
 /**
- * Boîtes déroulantes
+ * BoÃ®tes dÃ©roulantes
  *
- * Pour [[Modèle:Navbox]]
+ * Pour [[ModÃ¨le:Navbox]]
  */
 
 var Palette_Derouler = '[afficher]';
@@ -11,10 +11,10 @@ var Palette_max = 1;
 
 function Palette_toggle( $table ) {
 	/*
-	direct children, car il ne faut pas prendre les lignes des éventuelles tables imbriquées
-	table > tbody (peut-être aussi thead à l'avenir) > tr
+	direct children, car il ne faut pas prendre les lignes des Ã©ventuelles tables imbriquÃ©es
+	table > tbody (peut-Ãªtre aussi thead Ã  l'avenir) > tr
 
-	ensuite, on applique à toutes les lignes sauf la première
+	ensuite, on applique Ã  toutes les lignes sauf la premiÃ¨re
 	*/
 	$table.children().children( 'tr' ).slice( 1 ).toggleClass( 'navboxHidden' );
 }
@@ -55,8 +55,8 @@ function Palette( $content ) {
 			collapsed = true;
 		}
 
-		// le modèle dispose d'une classe "navbox-title",
-		// sauf que les palettes "inlinées" (e.g. « {| class="navbox collapsible collapsed" ») n'ont pas cette classe
+		// le modÃ¨le dispose d'une classe "navbox-title",
+		// sauf que les palettes "inlinÃ©es" (e.g. Â« {| class="navbox collapsible collapsed" Â») n'ont pas cette classe
 		$table.find( 'tr' ).eq( 0 ).find( 'th' ).eq( 0 ).prepend(
 			$( '<span class="navboxToggle">\xA0</span>' ).append(
 				$( '<a href="javascript:">' + ( collapsed ? Palette_Derouler : Palette_Enrouler ) + '</a>' ).click( function ( e ) {
@@ -80,8 +80,8 @@ function Palette( $content ) {
 	groupLengths = null;
 	$tables = null;
 
-	// permet de dérouler/enrouler les palettes en cliquant n'importe où sur l'entête
-	// (utilisation de la classe "navbox-title", comme ça seules les vraies palettes utilisant le modèle sont ciblées)
+	// permet de dÃ©rouler/enrouler les palettes en cliquant n'importe oÃ¹ sur l'entÃªte
+	// (utilisation de la classe "navbox-title", comme Ã§a seules les vraies palettes utilisant le modÃ¨le sont ciblÃ©es)
 	$content.find( '.navbox-title' )
 		.click( function ( e ) {
 			if ( $( e.target ).closest( 'a' ).length ) {

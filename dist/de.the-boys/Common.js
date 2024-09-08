@@ -1,7 +1,7 @@
-/* JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 window.SpoilerAlertJS = {
-    question: 'Dieser Abschnitt enthält Spoiler. Möchtest du ihn trotzdem lesen?',
+    question: 'Dieser Abschnitt enthÃ¤lt Spoiler. MÃ¶chtest du ihn trotzdem lesen?',
     yes: 'JA',
     no: 'NEIN',
     fadeDelay: 1600

@@ -3,7 +3,7 @@ $(window).load(function () {
     // Module
     var socialModule =
     '<section class="rail-module" id="SocialModule">' +
-        '<h2>Curta nossa p·gina no Facebook!</h2>' +
+        '<h2>Curta nossa p√°gina no Facebook!</h2>' +
         '<iframe style="border: 0; height: 231px; margin: 0; overflow: hidden;" src="https://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FDBWikiBR&amp;heightcolorscheme=light&amp;show_faces=true&amp;header=true&amp;stream=false&amp;show_border=true" scrolling="no"></iframe>' +
     '</section>';
  

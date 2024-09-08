@@ -195,8 +195,8 @@ $(document).ready(function() {
 if (mwCustomEditButtons) { 
 mwCustomEditButtons[mwCustomEditButtons.length] = { 
 "imageFile": "https://vignette.wikia.nocookie.net/contractwars/images/e/e7/Icono_infobox_plantilla.png/revision/latest?cb=20160321202631&path-prefix=es",
-"speedTip": "Información de arma", 
+"speedTip": "InformaciÃ³n de arma", 
 "tagOpen": "\{\{Infobox\r|nombre=",
-"tagClose": "\r|imagen= \r|descripcion= \r|precio= \r|tarea= \r|desbloqueo_tarea= \r|inmune= \r|nivel= \r|tipo_de_municion= \r|capacidad_del_cargador= \r|modos_de_disparo= \r|precision= \r|retroceso= \r|daño= \r|cadencia_de_fuego= \r|movilidad= \r|velocidad_de_recarga= \r|penetracion= \r|alcance_maximo= \r\}\}", 
+"tagClose": "\r|imagen= \r|descripcion= \r|precio= \r|tarea= \r|desbloqueo_tarea= \r|inmune= \r|nivel= \r|tipo_de_municion= \r|capacidad_del_cargador= \r|modos_de_disparo= \r|precision= \r|retroceso= \r|daÃ±o= \r|cadencia_de_fuego= \r|movilidad= \r|velocidad_de_recarga= \r|penetracion= \r|alcance_maximo= \r\}\}", 
 "sampleText": ""};  
 }

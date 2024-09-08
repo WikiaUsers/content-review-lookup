@@ -18,13 +18,13 @@ mw.hook('wikipage.content').add(function() {
 
   var generalModule =
     '<section class="module" id="discord-banner">' +
-      '<a href="https://discord.gg/bZe4G5y" title="¡Ingresa al servior de Ataque a los Titanes Wiki!">' +
-        '<img src="https://vignette.wikia.nocookie.net/shingeki-no-kyojin/images/9/9f/Wiki-discord.png/revision/latest?cb=20180402170111&path-prefix=es" alt="¡Ingresa al servidor de Ataque a los Titanes Wiki!" />'  +
-        '<a href="https://discord.gg/bZe4G5y" class="btnwnms">ACEPTAR INVITACIÓN</a>' +
+      '<a href="https://discord.gg/bZe4G5y" title="Â¡Ingresa al servior de Ataque a los Titanes Wiki!">' +
+        '<img src="https://vignette.wikia.nocookie.net/shingeki-no-kyojin/images/9/9f/Wiki-discord.png/revision/latest?cb=20180402170111&path-prefix=es" alt="Â¡Ingresa al servidor de Ataque a los Titanes Wiki!" />'  +
+        '<a href="https://discord.gg/bZe4G5y" class="btnwnms">ACEPTAR INVITACIÃ“N</a>' +
       '</a>' +
     '</section>' +
     '<section class="rail-module" id="social-widgets">' +
-      '<h2>¡Siguenos en Facebook y Twitter!</h2>' +
+      '<h2>Â¡Siguenos en Facebook y Twitter!</h2>' +
       '<table>' +
         '<tr>' +
           '<td colspan="2">' +

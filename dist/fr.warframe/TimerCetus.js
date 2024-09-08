@@ -1,6 +1,6 @@
 // Minuteur du Cycle Jour/Nuit pour Cetus
-// Écrit par : Matt Voboril
-//https://warframe.fandom.com/fr/wiki/Modèle:HomePage/Timers
+// Ã‰crit par : Matt Voboril
+//https://warframe.fandom.com/fr/wiki/ModÃ¨le:HomePage/Timers
 //------------------ CYCLE TEST -------------------------
 
 

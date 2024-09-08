@@ -11,7 +11,7 @@ window.UserTagsJS = {
 };
 // Add custom groups to several users
 UserTagsJS.modules.custom = {
-	'Altaïr Skywalker 47': ['sysop'],
+	'AltaÃ¯r Skywalker 47': ['sysop'],
 	'Eeveestar': ['group1'],
         'Hawkbreath': ['group1'],
         'BCEngine': ['group1'],

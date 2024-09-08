@@ -82,7 +82,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -100,7 +100,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -118,7 +118,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -130,7 +130,7 @@ Maintenance
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 0) {
+	                if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues.push($('td:eq(' + c + ')', this).text());
@@ -145,7 +145,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 1) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues2.push($('td:eq(' + c + ')', this).text());
@@ -160,7 +160,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 2) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues3.push($('td:eq(' + c + ')', this).text());
@@ -188,7 +188,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -206,7 +206,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -224,7 +224,7 @@ Maintenance
 	                } else if (attributeName === "vitesse de frappe") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
@@ -236,7 +236,7 @@ Maintenance
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 0) {
+	                if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues.push($('td:eq(' + c + ')', this).text());
@@ -251,7 +251,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 1) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues2.push($('td:eq(' + c + ')', this).text());
@@ -266,7 +266,7 @@ Maintenance
 	                        }
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 2) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        // Save
 	                        unitDPSValues3.push($('td:eq(' + c + ')', this).text());
@@ -291,7 +291,7 @@ Maintenance
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + " (" + unitAttributeValues[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de frappe") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
@@ -304,7 +304,7 @@ Maintenance
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + " (" + unitAttributeValues2[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de frappe") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
@@ -317,7 +317,7 @@ Maintenance
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(movementSpeedName3 + " (" + unitAttributeValues3[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de frappe") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "vitesse de gÈnÈration") {
+	                } else if (attributeName === "vitesse de g√©n√©ration") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "vitesse de production") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
@@ -327,17 +327,17 @@ Maintenance
 	            loopHitCount = 0;
 	            $('#unit-statistics-table tr:eq(0) th').each(function(c) {
 	                statName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 0) {
+	                if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 0) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 1) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 1) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues2[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });
 	                    loopHitCount++;
-	                } else if (statName.includes("dÈg‚ts par seconde") === true && loopHitCount === 2) {
+	                } else if (statName.includes("d√©g√¢ts par seconde") === true && loopHitCount === 2) {
 	                    $('#unit-statistics-table tr').each(function(d) {
 	                        $('td:eq(' + c + ')', this).text(unitDPSValues3[d]).removeClass("EnragedStat").removeClass("SlowedStat");
 	                    });

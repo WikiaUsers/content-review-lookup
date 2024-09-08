@@ -5,10 +5,10 @@
 if (typeof(mwCustomEditButtons) != 'undefined') {
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/8/83/Bot%C3%B3n_C%C3%B3digofuente.png",
- 		'speedTip': "CÛdigo fuente",
+ 		'speedTip': "C√≥digo fuente",
  		'tagOpen': "<code><nowiki>",
  		'tagClose': "</"+ "nowiki></code>",
- 		'sampleText': "CÛdigo fuente"};
+ 		'sampleText': "C√≥digo fuente"};
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/4/49/Bot%C3%B3n_plantilla.png",
@@ -26,10 +26,10 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/inciclopedia/images/6/64/Bot%C3%B3n_categor%C3%ADa.png",
- 		'speedTip': "CategorÌa",
- 		'tagOpen': "[[CategorÌa:",
+ 		'speedTip': "Categor√≠a",
+ 		'tagOpen': "[[Categor√≠a:",
  		'tagClose': "|{" + "{PAGENAME}}]]",
- 		'sampleText': "Nombre categorÌa"};
+ 		'sampleText': "Nombre categor√≠a"};
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "http://upload.wikimedia.org/wikipedia/commons/e/ec/Button_aviso.png",
@@ -40,24 +40,24 @@ if (typeof(mwCustomEditButtons) != 'undefined') {
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/__cb20100417162808/es.gta/images/e/ef/Borrar.png",
- 		'speedTip': "Proponer el artÌculo para ser borrado",
+ 		'speedTip': "Proponer el art√≠culo para ser borrado",
  		'tagOpen': "{{borrar|",
  		'tagClose': "}}",
  		'sampleText': "Motivo por el que se propone para borrar"};
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/__cb20100417162729/es.gta/images/c/c2/Enobras.png",
- 		'speedTip': "Advertir de que se est· trabajando en el artÌculo",
+ 		'speedTip': "Advertir de que se est√° trabajando en el art√≠culo",
  		'tagOpen': "{{enobras|",
  		'tagClose': "}}",
  		'sampleText': "Nick del usuario"};
  
  	mwCustomEditButtons[mwCustomEditButtons.length] = {
  		'imageFile': "https://images.wikia.nocookie.net/lossimpson/es/images/a/ad/Boton_redirect.png",
- 		'speedTip': "AÒadir redirecciÛn",
+ 		'speedTip': "A√±adir redirecci√≥n",
  		'tagOpen': "#REDIRECT [[",
  		'tagClose': "]]",
- 		'sampleText': "P·gina a enlazar"};
+ 		'sampleText': "P√°gina a enlazar"};
 };
  
 /* **************************************************
@@ -95,7 +95,7 @@ function updatetimer(i) {
  	diff=Math.floor(diff/60);
  	if(diff > 0) left = (diff%24) + ' horas ' + left;
  	diff=Math.floor(diff/24);
- 	if(diff > 0) left = diff + ' dÌas ' + left;
+ 	if(diff > 0) left = diff + ' d√≠as ' + left;
  	timers[i].firstChild.nodeValue = tpm + left;
  
  	// a setInterval() is more efficient, but calling setTimeout()
@@ -267,11 +267,11 @@ addOnloadHook( createCollapseButtons );
  
  
 /* **************************************************
- * Mejoras de diseÒo de la Portada
+ * Mejoras de dise√±o de la Portada
  *
- *  DescripciÛn: Varias mejoras de diseÒo para la portada, incluyendo un
+ *  Descripci√≥n: Varias mejoras de dise√±o para la portada, incluyendo un
  *               enlace adicional a la lista completa de idiomas disponibles
- *               y renombrar 'artÌculo' a 'portada'.
+ *               y renombrar 'art√≠culo' a 'portada'.
  *  Adaptado de [[en:MediaWiki:Common.js]]
  */
  
@@ -295,17 +295,17 @@ function mainPageAppendCompleteListLink() {
  	}
 };
  
-if ( wgPageName == 'Simpson_Wiki_en_EspaÒol:Portada' ) {
+if ( wgPageName == 'Simpson_Wiki_en_Espa√±ol:Portada' ) {
  		addOnloadHook( mainPageAppendCompleteListLink );
 };
 /* ********************
- * Refrescar autom·ticamente
- * DescripciÛn: Refresca autom·ticamente 
+ * Refrescar autom√°ticamente
+ * Descripci√≥n: Refresca autom√°ticamente 
  * la actividad reciente y cambios recientes
  *
  */
 // Auto refrescar Wiki-actividad
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');

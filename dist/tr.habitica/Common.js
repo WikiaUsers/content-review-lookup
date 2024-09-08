@@ -25,7 +25,7 @@ Percentages not correct.
 /* =============== 
  * SpoilerAlert
  * documentation at: http://dev.wikia.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  * 
  * __NOWYSIWYG__
    Gives spoiler alert page if added to category of "Spoiler"

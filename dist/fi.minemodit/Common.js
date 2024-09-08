@@ -1,6 +1,6 @@
 /* Kello */
 window.DisplayClockJS = {
-    format: '%2I:%2M:%2S %p %2d %{tammikuuta;helmikuuta;maaliskuuta;huhtikuuta;toukokuuta;kes‰kuuta;hein‰kuuta;elokuuta;syyskuuta;lokakuuta;marraskuuta;joulukuuta}m %Y (UTC)',
+    format: '%2I:%2M:%2S %p %2d %{tammikuuta;helmikuuta;maaliskuuta;huhtikuuta;toukokuuta;kes√§kuuta;hein√§kuuta;elokuuta;syyskuuta;lokakuuta;marraskuuta;joulukuuta}m %Y (UTC)',
     location: 'header',
     hoverText: 'Kello',
     interval: 500, /* How often the timer updates in milliseconds (1000=1second) */
@@ -19,7 +19,7 @@ importArticles({
     ]
 });
 
-/* Poistotyˆkalu */
+/* Poistoty√∂kalu */
 importScriptPage( 'FastDelete/code.js', 'dev' );
 
 /* AjaxRC */
@@ -35,7 +35,7 @@ function fBox() {
 }
 $(fBox);
 
-/* Ep‰aktiivinen */
+/* Ep√§aktiivinen */
 /* Koodi on kopioitu sivulta http://community.wikia.com/wiki/Forum:Inactive_tag */
 
 $(function() {
@@ -67,7 +67,7 @@ $(function() {
     $.getJSON(apiUrl, function (result) {
         if (typeof result.query != 'undefined' && typeof result.query.usercontribs != 'undefined' &&
             !result.query.usercontribs.length) {
-            $('<span class="group inactive-user"> Ep‰aktiivinen</span>').appendTo('#UserProfileMasthead hgroup');
+            $('<span class="group inactive-user"> Ep√§aktiivinen</span>').appendTo('#UserProfileMasthead hgroup');
         }
     });
 });

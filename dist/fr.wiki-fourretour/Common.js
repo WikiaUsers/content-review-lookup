@@ -1,5 +1,5 @@
-// Script fait à l'occas' du 1er avril, merci de ne pas y toucher pour la journée
-alert("PA:activé");
+// Script fait Ã  l'occas' du 1er avril, merci de ne pas y toucher pour la journÃ©e
+alert("PA:activÃ©");
 
 function verifjs()
     {
@@ -20,8 +20,8 @@ if (!$.cookie('PoissonAvril'))
         }
     else
         {
-            alert("Ouais bon, t'es maso quand même mdrrrrr");
-            $("body").before('<p style="font-size:30px;background: white !important; color:black !important;text-align:center;">Maître Oda aime le poisson <img src="http://sournoishack.com/uploads/1065465496c..png"/></p>');
+            alert("Ouais bon, t'es maso quand mÃªme mdrrrrr");
+            $("body").before('<p style="font-size:30px;background: white !important; color:black !important;text-align:center;">MaÃ®tre Oda aime le poisson <img src="http://sournoishack.com/uploads/1065465496c..png"/></p>');
         }
     $.cookie('PoissonAvril', true);
 }
@@ -30,9 +30,9 @@ if ( wgTransactionContext.action != "edit" )
 {
 var i = 0;
 var malheur = 0;
-var txt_nb_42 = '<div style="border:5px inset green; color: blue; margin-left: 30%; margin-top: 10%; width: 36%;">Entre 1 et 1000 milliards, il a fallut que ça tombe sur 42, tant pis pour toi <3</div>';
-var txt_nb_666 = '<div style="border:20px groove red; color: darkred; margin-left: 30%; margin-top: 10%;width: 14%;">Tu es le diable, au bûcher !</div>';
-var txt_nb_13 = '<div style="border:1px solid grey; border-radius:1em; color: violet; margin-left: 30%; margin-top: 10%; width: 30%; padding: 1%;"> Ta vie est foutue, le nombre 13 a décidé de ta vie, snif snif.</div>';
+var txt_nb_42 = '<div style="border:5px inset green; color: blue; margin-left: 30%; margin-top: 10%; width: 36%;">Entre 1 et 1000 milliards, il a fallut que Ã§a tombe sur 42, tant pis pour toi <3</div>';
+var txt_nb_666 = '<div style="border:20px groove red; color: darkred; margin-left: 30%; margin-top: 10%;width: 14%;">Tu es le diable, au bÃ»cher !</div>';
+var txt_nb_13 = '<div style="border:1px solid grey; border-radius:1em; color: violet; margin-left: 30%; margin-top: 10%; width: 30%; padding: 1%;"> Ta vie est foutue, le nombre 13 a dÃ©cidÃ© de ta vie, snif snif.</div>';
 
 setInterval(function()
             {
@@ -54,7 +54,7 @@ setInterval(function()
                         $("*").html(txt_nb_13);
                     }
                 else if ( malheur % 120 === 0 )
-                        $("*").html("Recharge la page, ça a bug ..");
+                        $("*").html("Recharge la page, Ã§a a bug ..");
                 else if ( malheur % 11 === 0 )
                     $(".chat-join button").replaceWith('<p>On est le 1er avril<img src="http://sournoishack.com/uploads/1065465496c..png"/></p>');
                 else

@@ -113,13 +113,13 @@ ratings.voteCallback = {
 			return
 		}
 		ratings.votingInProgress = false;
-		ratings.out('¡Tu voto fue tomado en cuenta!');
+		ratings.out('Â¡Tu voto fue tomado en cuenta!');
 		ratings.text[0] = ('Puntaje: ' + ratings.avgVote + ' de 5');
 		ratings.timeout = setTimeout('ratings.paint(0)', 1000)
 	},
 	failure : function(o) {
 		ratings.votingInProgress = false;
-		ratings.out('Error de conexión :(')
+		ratings.out('Error de conexiÃ³n :(')
 	}
 };
 ratings.retry = {
@@ -182,7 +182,7 @@ ratings.paint = function(n, m) {
 	}
 	;
 	if (wgUserName == null && n != 0)
-		ratings.out('Conéctate para calificar');
+		ratings.out('ConÃ©ctate para calificar');
 	else if (m == undefined)
 		ratings.out(ratings.text[n]);
 	else
@@ -198,7 +198,7 @@ ratings.setup = function() {
 	if (!a)
 		return false;
 	ratings.p = document.createElement('section');
-	ratings.p.innerHTML = '<h1>¡Califica este artículo!</h1><div id="ratingBody"><div><ul id="ratingStars" onmouseout="ratings.paint(0);"><li id="vote-1" class="voteStar" onmouseover="ratings.paint(1)" onclick="ratings.vote(1);">&nbsp;1</li><li id="vote-2" class="voteStar" onmouseover="ratings.paint(2)" onclick="ratings.vote(2);"> 2</li><li id="vote-3" class="voteStar" onmouseover="ratings.paint(3)" onclick="ratings.vote(3);"> 3</li><li id="vote-4" class="voteStar" onmouseover="ratings.paint(4)" onclick="ratings.vote(4);"> 4</li><li id="vote-5" class="voteStar" onmouseover="ratings.paint(5)" onclick="ratings.vote(5);"> 5&nbsp;</li></ul></div><span id="ratingMsg">¡Vota ahora!</span></div>';
+	ratings.p.innerHTML = '<h1>Â¡Califica este artÃ­culo!</h1><div id="ratingBody"><div><ul id="ratingStars" onmouseout="ratings.paint(0);"><li id="vote-1" class="voteStar" onmouseover="ratings.paint(1)" onclick="ratings.vote(1);">&nbsp;1</li><li id="vote-2" class="voteStar" onmouseover="ratings.paint(2)" onclick="ratings.vote(2);"> 2</li><li id="vote-3" class="voteStar" onmouseover="ratings.paint(3)" onclick="ratings.vote(3);"> 3</li><li id="vote-4" class="voteStar" onmouseover="ratings.paint(4)" onclick="ratings.vote(4);"> 4</li><li id="vote-5" class="voteStar" onmouseover="ratings.paint(5)" onclick="ratings.vote(5);"> 5&nbsp;</li></ul></div><span id="ratingMsg">Â¡Vota ahora!</span></div>';
 	ratings.p.id = 'RankingModule';
 	ratings.p.className = 'module';
 	if (skin == "oasis") {
@@ -207,8 +207,8 @@ ratings.setup = function() {
 		var parentMarkup = a;
 	}
 	parentMarkup.parentNode.insertBefore(ratings.p, parentMarkup);
-	ratings.text = new Array('¡Vota ahora!', 'Muy aburrido', 'Puede mejorar...', 'Divertido',
-			'Genial', '¡Excelente!');
+	ratings.text = new Array('Â¡Vota ahora!', 'Muy aburrido', 'Puede mejorar...', 'Divertido',
+			'Genial', 'Â¡Excelente!');
 	ratings.get = asyncRequest(
 					'GET',
 					'/api.php?format=json&action=query&list=wkvoteart&wkuservote=1&wkctime=5&wkpage='
@@ -224,6 +224,6 @@ $(document).ready(function () {
 });
 
 function noPodesVotarTusArticulos() {
-        $('#ratingMsg').text('¡No puedes votar tus propios artículos!');
+        $('#ratingMsg').text('Â¡No puedes votar tus propios artÃ­culos!');
         $('.voteStar').removeAttr('onmouseover');
 }

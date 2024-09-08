@@ -15,7 +15,7 @@ importArticles({
  * HiddenCat (idea originale da fr:MediaWiki:Common.js)
  * In presenza di categorie nascoste, e se l'utente non ha abilitato l'opzione
  * 'Mostra le categorie nascoste' nella preferenze, aggiunge un link altre/nascondi
- * per controllarne la visibilit‡. 
+ * per controllarne la visibilit√†. 
  * 
  * @author [[Utente:Rotpunkt]]
  */
@@ -29,7 +29,7 @@ importArticles({
 	 
 		$catlinks = $( '#catlinks' );
 		$hiddenCatlinks = $( '#catlinks #mw-hidden-catlinks' );
-		// se ci sono categorie nascoste e la preferenza 'Mostra le categorie nascoste' Ë disabilitata
+		// se ci sono categorie nascoste e la preferenza 'Mostra le categorie nascoste' √® disabilitata
 		if ( $hiddenCatlinks.length && $hiddenCatlinks.hasClass( 'mw-hidden-cats-hidden' ) ) {
 			$toggleAnchor = $( '<a>' )
 				.attr( 'href', '#' )
@@ -40,7 +40,7 @@ importArticles({
 					$(this).text( $hiddenCatlinks.hasClass( 'mw-hidden-cats-hidden' ) ? '[altre]' : '[nascondi]' );
 					return false;
 				} );
-			// la posizione del link altre/nascondi Ë diversa a seconda che ci siano
+			// la posizione del link altre/nascondi √® diversa a seconda che ci siano
 			// solo categorie nascoste (classe 'catlinks-allhidden') o anche normali 
 			if ( $catlinks.hasClass( 'catlinks-allhidden' ) ) {
 				$catlinks.removeClass( 'catlinks-allhidden' );

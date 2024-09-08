@@ -1,4 +1,4 @@
-/* BotÛn con ContraseÒa */
+/* Bot√≥n con Contrase√±a */
 function LogIn(){
     var password = prompt('Password:');
     
@@ -6,7 +6,7 @@ function LogIn(){
     if (password.toLowerCase() === 'welcome2corneria') {
         window.location = '/SCP-245-1-a';
     } else {
-        alert('CONTRASE—A INCORRECTA');
+        alert('CONTRASE√ëA INCORRECTA');
     }
 }
 
@@ -27,7 +27,7 @@ var DirectGoto = {
                     window.location = '/'+field.val();
                 },
                 function(noFieldFound) {
-                    new BannerNotification('°No se pudo encontrar el elemento!', 'error').show();
+                    new BannerNotification('¬°No se pudo encontrar el elemento!', 'error').show();
                 }
             );
             return;
@@ -38,7 +38,7 @@ var DirectGoto = {
                     window.location = '/'+field.val()+'?action=edit';
                 },
                 function(noFieldFound) {
-                    new BannerNotification('°No se pudo encontrar el elemento! Tampoco no se llevÛ a cabo la acciÛn de editar esa p·gina.', 'error').show();
+                    new BannerNotification('¬°No se pudo encontrar el elemento! Tampoco no se llev√≥ a cabo la acci√≥n de editar esa p√°gina.', 'error').show();
                 }
             );
             return;
@@ -72,7 +72,7 @@ var DirectGoto = {
 
 DirectGoto.controller('init');
 
-// BotÛn de login
+// Bot√≥n de login
 
 $('#loginButton').click(LogIn);
 
@@ -117,5 +117,5 @@ mw.hook('wikipage.content').add(function ($content) {
 
 // Funciones callback
 function finalizado() {
-  alert('EL TIEMPO HA ACABADO, AGENTES MEM…TICOS SER¡N DESPLEGADOS AHORA');
+  alert('EL TIEMPO HA ACABADO, AGENTES MEM√âTICOS SER√ÅN DESPLEGADOS AHORA');
 }

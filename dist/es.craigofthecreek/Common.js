@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 importArticles({
     type: "style",
@@ -13,7 +13,7 @@ window.SpoilerAlert = {
  
 /* Usuarops bloqueados infinitamente */
 window.addEventListener('load', function() {
-	// Los tiempos de espera son siempre una mala elecciÛn, pero UserTags no tiene ninguna acciÛn enviada cuando terminÛ de cargarse.
+	// Los tiempos de espera son siempre una mala elecci√≥n, pero UserTags no tiene ninguna acci√≥n enviada cuando termin√≥ de cargarse.
 	setTimeout(function() {
 		if (document.getElementById('UserProfileMasthead') === null) return;
 		var blockTag = document.querySelector('.tag.usergroup-blocked.blocked-user');
@@ -79,10 +79,10 @@ var spoilerConfig = function(i, el) {
  
 $('.spoiler.on').each(spoilerConfig);
  
-// Arreglo para comentarios de ArtÌculos.
+// Arreglo para comentarios de Art√≠culos.
 if ( wgIsArticle ) {
     var fixPagination = function() {
-        // Arreglo para mal cÛdigo HTML.
+        // Arreglo para mal c√≥digo HTML.
         var paginations = Array.from(document.getElementsByClassName('article-comments-pagination'));
         for (var i in paginations) {
             var childNodes = Array.from(paginations[i].childNodes);
@@ -101,11 +101,11 @@ if ( wgIsArticle ) {
         AC();
         $('#article-comments .spoiler.on').each(spoilerConfig);
         fixPagination();
-        $('#article-comm').attr('placeholder', 'Recuerda, no est· permitido filtrar informaciÛn! Si no est·s seguro sobre lo que es y no es filrado, contacta a un administrador.');
+        $('#article-comm').attr('placeholder', 'Recuerda, no est√° permitido filtrar informaci√≥n! Si no est√°s seguro sobre lo que es y no es filrado, contacta a un administrador.');
     };
 }
  
-/* Reemplaza {{USERNAME}} con el nombre del usuario navegando en la p·gina.
+/* Reemplaza {{USERNAME}} con el nombre del usuario navegando en la p√°gina.
    Requiere copiar Plantilla:USERNAME. */
 $(function UserNameReplace() {
     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;

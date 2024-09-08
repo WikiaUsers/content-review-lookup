@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------*/
-/*   ACHTUNG! Die JavaScript-Änderungen an dieser Stelle wirken sich    */
+/*   ACHTUNG! Die JavaScript-Ã„nderungen an dieser Stelle wirken sich    */
 /*   nur auf den neuen Wikia "Oasis"-Skin aus.                          */
-/*   Neue Änderung dauern ein bisschen, bis sie sichtbar werden.        */
+/*   Neue Ã„nderung dauern ein bisschen, bis sie sichtbar werden.        */
 /*----------------------------------------------------------------------*/
 
 // ==================================================================
@@ -10,7 +10,7 @@
 // AdvancedOasisUI
 // Dokumentation und Autoren siehe: http://dev.wikia.com/wiki/AdvancedOasisUI 
 // ==================================================================
-// "Zurück zum Anfang"-Schaltfläche
+// "ZurÃ¼ck zum Anfang"-SchaltflÃ¤che
 // Dokumentation und Autoren: http://dev.wikia.com/wiki/BackToTopButton
 // ==================================================================
 
@@ -23,7 +23,7 @@ importArticles({
     ]
 });
 
-/* Versetzt die Bearbeiten-Schaltfläche auf Benutzerseiten in eine logischere Position */
+/* Versetzt die Bearbeiten-SchaltflÃ¤che auf Benutzerseiten in eine logischere Position */
  
 $(function() {
     $('.UserProfileActionButton').prependTo('.tabs-container').css({

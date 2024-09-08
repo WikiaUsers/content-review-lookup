@@ -15,7 +15,7 @@ function recargar()
   location.reload();
 }
  
-/* Sonidos de notificación */
+/* Sonidos de notificaciÃ³n */
 $(function() {
         $('.sonidonotificacion a').append(' <span style="color:red;">[OFF]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="http://images.wikia.com/pruebasbf10/es/images/0/01/Notification.ogg"></source></audio>');

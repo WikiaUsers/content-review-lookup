@@ -1,9 +1,9 @@
 // **************************************************
-// Añade el tagline de forma manual - Gracias Bola y The Hunger Games Wiki
+// AÃ±ade el tagline de forma manual - Gracias Bola y The Hunger Games Wiki
 // **************************************************
 $(function(){
      if ($('#WikiaPageHeader').length ) {
-            $('#WikiaPageHeader').append('<div id="siteSub"><img alt="Aviso.png" width="15" height="15" src="https://images.wikia.nocookie.net/__cb20100222212432/es.gta/images/e/e3/Aviso.png"> <span style="font-weight:bold;">Alerta de Spoiler:</span> Los artículos pueden contener información vital sobre la trama y argumento.</div>');
+            $('#WikiaPageHeader').append('<div id="siteSub"><img alt="Aviso.png" width="15" height="15" src="https://images.wikia.nocookie.net/__cb20100222212432/es.gta/images/e/e3/Aviso.png"> <span style="font-weight:bold;">Alerta de Spoiler:</span> Los artÃ­culos pueden contener informaciÃ³n vital sobre la trama y argumento.</div>');
      }
 });
 
@@ -11,7 +11,7 @@ $(function(){
 function addMastheadTags() {
   var rights = {};
  
-    rights["Lianno"]         = ["Líder"];
+    rights["Lianno"]         = ["LÃ­der"];
  
     if (wgCanonicalSpecialPageName == "Contributions") {
       var user = wgPageName.substring(wgPageName.lastIndexOf("/")+1).replace(/_/g," ");

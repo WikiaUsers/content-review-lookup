@@ -78,14 +78,14 @@ if (wgPageName === 'User_blog:Raylan13/Rogue_vs_Unity_Community_Choice_Awards') 
   
  	//Supporting characters images
 	challengers['Achilles Davenport'] = 'https://images.wikia.nocookie.net/__cb20141210205146/raylantest/images/8/88/Achilles.png';
-	challengers['Élise de la Serre'] = 'https://images.wikia.nocookie.net/__cb20141210205148/raylantest/images/e/e6/Elise.jpg';
+	challengers['Ã‰lise de la Serre'] = 'https://images.wikia.nocookie.net/__cb20141210205148/raylantest/images/e/e6/Elise.jpg';
 	challengers['Hope Jensen'] = 'https://images.wikia.nocookie.net/__cb20141210205149/raylantest/images/0/00/Hope.jpg';
 	challengers['Liam O\'Brien'] = 'https://images.wikia.nocookie.net/__cb20141210205240/raylantest/images/1/15/Liam.png';
 	challengers['Pierre Bellec'] = 'https://images.wikia.nocookie.net/__cb20141210205244/raylantest/images/7/7e/Pierre.png';
  
  	//Supporting characters links
 	challengers['Achilles Davenport-link'] = 'http://assassinscreed.wikia.com/wiki/Achilles_Davenport';
-	challengers['Élise de la Serre-link'] = 'http://assassinscreed.wikia.com/wiki/Elise_de_la_Serre';
+	challengers['Ã‰lise de la Serre-link'] = 'http://assassinscreed.wikia.com/wiki/Elise_de_la_Serre';
 	challengers['Hope Jensen-link'] = 'http://assassinscreed.wikia.com/wiki/Hope_Jensen';
 	challengers['Liam O\'Brien-link'] = 'http://assassinscreed.wikia.com/wiki/Liam';
 	challengers['Pierre Bellec-link'] = 'http://assassinscreed.wikia.com/wiki/Pierre_Bellec';

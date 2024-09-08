@@ -469,7 +469,7 @@ var Tabs = {
 };
 Tabs.init();
 // Recarregar automaticamente 
-AjaxRCRefreshText = 'Auto-atualizaÁ„o.';
-AjaxRCRefreshHoverText = 'Recarregar esta p·gina automaticamente';
+AjaxRCRefreshText = 'Auto-atualiza√ß√£o.';
+AjaxRCRefreshHoverText = 'Recarregar esta p√°gina automaticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');

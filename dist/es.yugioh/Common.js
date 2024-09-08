@@ -1,4 +1,4 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 $(document).ready(function() {
     $(".decktable tr:nth-child(even)").addClass("even");
@@ -6,7 +6,7 @@ $(document).ready(function() {
 });
 
 
-/* Compatibilidad, al inicio del resto de carga de elementos. Necesario para que todas las utilidades que funcionan en Monobook y Monaco funcionen en oasis. Wikia: ¿Quién tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
+/* Compatibilidad, al inicio del resto de carga de elementos. Necesario para que todas las utilidades que funcionan en Monobook y Monaco funcionen en oasis. Wikia: Â¿QuiÃ©n tuvo la estupenda idea de no respetar los ID's comunes del wiki? */
 function oasisCompatElements() {
 	$(document.body).append('<section id="positioned_elements"></section>');
 	var fb = $('#WikiaArticle').children('#fb-root').eq(0);
@@ -28,7 +28,7 @@ if (window.skin == 'oasis') {
 	$(oasisCompatElements);
 }
 
-/* El código CSS de esta página proviene de WikiDex. Para los autores del mismo, ver el historial de [[w:c:es.pokemon:MediaWiki:Common.css]]. Favor de mantener este mensaje si copian el código a otro wiki. */
+/* El cÃ³digo CSS de esta pÃ¡gina proviene de WikiDex. Para los autores del mismo, ver el historial de [[w:c:es.pokemon:MediaWiki:Common.css]]. Favor de mantener este mensaje si copian el cÃ³digo a otro wiki. */
 
 /* <pre> */
 /**
@@ -715,10 +715,10 @@ window.hex_md5 = function(s) { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
 
 
 /*
-* Image Switch v1.2: Muestra imágenes al pasar el mouse sobre un enlace que apunte a la imagen a mostrar
+* Image Switch v1.2: Muestra imÃ¡genes al pasar el mouse sobre un enlace que apunte a la imagen a mostrar
 * REQUIERE: hex_md5
 *
-* Copyright (C) 2009  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2009  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -727,13 +727,13 @@ window.hex_md5 = function(s) { return rstr2hex(rstr_md5(str2rstr_utf8(s))); }
 
 La estructura que deben seguir los elementos es:
 	.imageswitch_section
-		.imageswitch_image [imageswitch_scale (mantiene la imagen dentro de las dimensiones, pero conservando la relación de aspecto) | imageswitch_preservewidth (mantiene el ancho) | imageswitch_preserveheight (mantiene el alto) ]
+		.imageswitch_image [imageswitch_scale (mantiene la imagen dentro de las dimensiones, pero conservando la relaciÃ³n de aspecto) | imageswitch_preservewidth (mantiene el ancho) | imageswitch_preserveheight (mantiene el alto) ]
 			img
 		.imageswitch_links [imageswitch_episodio (especial para plantilla episodio) ]
 			a[title^=Archivo:]+
 
-También para episodios, si el contenido del enlace es un texto de 3 cifras y el elemento .imageswitch_links es también .imageswitch_episodio
-No puede haber más de 1 elemento de profundidad en a, ni más de 5 de distancia entre .imageswitch_section e .imageswitch_links
+TambiÃ©n para episodios, si el contenido del enlace es un texto de 3 cifras y el elemento .imageswitch_links es tambiÃ©n .imageswitch_episodio
+No puede haber mÃ¡s de 1 elemento de profundidad en a, ni mÃ¡s de 5 de distancia entre .imageswitch_section e .imageswitch_links
 */
 (function(){
 
@@ -905,7 +905,7 @@ ImageSwitcher.prototype = {
 		}
 		this.targetimgs[index].state = state;
 	},
-	// Si el modo de imagen es mantener las dimensiones máximas, retorna true si este método se encarga de cambiar la imagen, o false si ya tenemos las dimensiones y se puede cambiar directamente.
+	// Si el modo de imagen es mantener las dimensiones mÃ¡ximas, retorna true si este mÃ©todo se encarga de cambiar la imagen, o false si ya tenemos las dimensiones y se puede cambiar directamente.
 	adaptSize: function(index, url) {
 		if (!this.targetimgs[index].preserve) return false;
 		if (typeof this.sizecache[url] == 'undefined') {
@@ -922,7 +922,7 @@ ImageSwitcher.prototype = {
 		}
 		var ms = this.targetimgs[index].size;
 		var s = this.sizecache[url];
-		if (s[0] / s[1] > ms[0] / ms[1]) { // La nueva es más horizontal
+		if (s[0] / s[1] > ms[0] / ms[1]) { // La nueva es mÃ¡s horizontal
 			img.width = ms[0];
 			img.height = parseInt(s[1]*ms[0]/s[0]);
 		} else {
@@ -956,9 +956,9 @@ $(ImageSwitcher_loader);
 //<pre>
 /************************************/
 /* PlantillaPlegable: Principalmente para plantillas, aunque solo soporta tablas (no div)
- * Añade un botón para plegar/desplegar la plantilla, útil para plantillas que ocupan mucho.
+ * AÃ±ade un botÃ³n para plegar/desplegar la plantilla, Ãºtil para plantillas que ocupan mucho.
  *
- * Copyright (C) 2008  Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2008  JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
  * This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
@@ -966,15 +966,15 @@ $(ImageSwitcher_loader);
  *
  * Funcionamiento:
  *  Se ocultan todas las filas excepto la primera.
- *  El control se muestra en la primera fila y se sitúa en la última columna, como primer elemento (porque será float:right)
- *  Si se crea un span de clase "plegable-ctrl", se usará ese para ubicar el control
- *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer así, fuerza el ancho anterior.
+ *  El control se muestra en la primera fila y se sitÃºa en la Ãºltima columna, como primer elemento (porque serÃ¡ float:right)
+ *  Si se crea un span de clase "plegable-ctrl", se usarÃ¡ ese para ubicar el control
+ *  Para que las plantillas que no tienen ancho fijo, se comprueba si ha cambiado el ancho de la tabla al plegar y, de seer asÃ­, fuerza el ancho anterior.
  *
- * parámetros:
+ * parÃ¡metros:
  *  el: [HTMLTable] Tabla a plegar/desplegar
- *  iniPlegada: [bool] Opcional. Indica si debe plegarse automáticamente tras usarlo
+ *  iniPlegada: [bool] Opcional. Indica si debe plegarse automÃ¡ticamente tras usarlo
  *
- * Código copiado de http://es.pokemon.wikia.com/wiki/MediaWiki:Common.js/Clases/PlantillaPlegable.js
+ * CÃ³digo copiado de http://es.pokemon.wikia.com/wiki/MediaWiki:Common.js/Clases/PlantillaPlegable.js
  */
 (function(){
  
@@ -1002,7 +1002,7 @@ PlantillaPlegable = function(el, iniPlegada){
  
 PlantillaPlegable.prototype = {
 	version:'1.2',
-	// Inicialización. Por ahora solo soporte para tablas
+	// InicializaciÃ³n. Por ahora solo soporte para tablas
 	init: function(){
 		if (this.oElem.tagName.toLowerCase() != 'table' || !this.oElem.rows.length) return;
 		var r0 = this.oElem.rows[0];
@@ -1039,7 +1039,7 @@ PlantillaPlegable.prototype = {
 		// Control
 		this.oCtrl.innerHTML='';
 		$UT.makeChildren([( plegar ? K_MOSTRAR : K_OCULTAR )], this.oCtrl);
-		// Almacenamos dimensiones antes y después de aplicar visibilidad
+		// Almacenamos dimensiones antes y despuÃ©s de aplicar visibilidad
 		var jqElem = $(this.oElem);
 		var oldWidth = jqElem.width();
 		for (var i = 1, rs = this.oElem.rows; i < rs.length && plegar != this.bPlegada; i++){
@@ -1052,7 +1052,7 @@ PlantillaPlegable.prototype = {
 		}
 		this.bPlegada = plegar;
 		var newWidth = jqElem.width();
-		// Si ha cambiado el ancho, forzamos el mismo que tenía, para evitar que se redimensione al plegar
+		// Si ha cambiado el ancho, forzamos el mismo que tenÃ­a, para evitar que se redimensione al plegar
 		if (plegar && newWidth !== oldWidth && this.oElem.style.width === ''){
 			this.bAjustado = true;
 			jqElem.width(oldWidth);
@@ -1359,7 +1359,7 @@ function crearBuscadorCartas(){
 							tablas[i].rows[1].deleteCell(0);
 						}
 						Cell = tablas[i].rows[1].cells[0];
-						Cell.innerText = "Para usar el buscador, debes tener una cuenta en Wikia e iniciar sesión.";
+						Cell.innerText = "Para usar el buscador, debes tener una cuenta en Wikia e iniciar sesiÃ³n.";
 						Cell.setAttribute('colspan',5);
 						Cell.setAttribute('style', 'text-align:center');
 					}

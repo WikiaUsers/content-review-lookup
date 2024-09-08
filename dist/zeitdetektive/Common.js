@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
  // Import [[MediaWiki:Onlyifuploading.js]] 
 
@@ -83,7 +83,7 @@ function createSpoilerButtons() {
     } 
 } 
 addOnloadHook(createSpoilerButtons);
-//* Das Javascript über diesem Hinweis stammt von http://www.detektivconan-wiki.com/wiki/MediaWiki:Common.js
+//* Das Javascript Ã¼ber diesem Hinweis stammt von http://www.detektivconan-wiki.com/wiki/MediaWiki:Common.js
 function toggleObjectVisibility(objectId) {
   var styleObject = document.getElementById(objectId);
   if (styleObject) {
@@ -366,7 +366,7 @@ if (wgCanonicalSpecialPageName == "Upload") {
     importScript("MediaWiki:Onlyifuploading.js");
 }
 
-// Leserabhängige Class
+// LeserabhÃ¤ngige Class
 function UserNameReplace(){
   if (wgUserName){
     var spans = getElementsByClassName(document, "span", "benutzername");

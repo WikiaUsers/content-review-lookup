@@ -9,8 +9,8 @@ importArticles({
         
         
         
-        // Please do not remove without the permission of MtaÄ or the IT helpers.
+        // Please do not remove without the permission of MtaÃ„ or the IT helpers.
         "MediaWiki:CopyNotice.js"
-        // Please do not remove without the permission of MtaÄ or the IT helpers.
+        // Please do not remove without the permission of MtaÃ„ or the IT helpers.
     ]
 });

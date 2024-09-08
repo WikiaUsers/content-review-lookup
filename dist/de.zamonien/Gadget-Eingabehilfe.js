@@ -8,11 +8,11 @@
 |===================================================================|
 | http://www.jedipedia.net/wiki/Benutzer_Diskussion:Deus_Figendi    |
 | schrieb diese Datei. Solange Sie diesen Vermerk nicht entfernen,  |
-| und dieses Programm registrieren können Sie mit der Datei machen, |
-| was Sie möchten. Um das Programm zu registrieren müssen Sie       |
+| und dieses Programm registrieren kÃ¶nnen Sie mit der Datei machen, |
+| was Sie mÃ¶chten. Um das Programm zu registrieren mÃ¼ssen Sie       |
 | irgendjemanden umarmen. Auch der Autor wird gerne umarmt. Sie     |
 | sind eingeladen das Programm sooft zu registrieren wie Sie        |
-| möchten.                                                          |
+| mÃ¶chten.                                                          |
 |                                                                   |
 | http://www.jedipedia.net/wiki/Benutzer_Diskussion:Deus_Figendi    |
 | wrote this file. As long as you don't remove this licence-        |

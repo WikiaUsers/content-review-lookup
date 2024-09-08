@@ -1,42 +1,42 @@
-window.AjaxRCRefreshText = 'Automaticamente recarregar a página a cada 60segs';
-window.AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
+window.AjaxRCRefreshText = 'Automaticamente recarregar a pÃ¡gina a cada 60segs';
+window.AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
 window.ajaxPages = [
-    "Especial:Mudanças_recentes",
+    "Especial:MudanÃ§as_recentes",
     "Especial:WikiActivity",
-    "Especial:Páginas_vigiadas",
+    "Especial:PÃ¡ginas_vigiadas",
     "Especial:Registro",
     "Especial:Arquivos_novos",
     "Especial:Lista_de_arquivos",
-    "Especial:Páginas_novas",
-    "Especial:Contribuições"
+    "Especial:PÃ¡ginas_novas",
+    "Especial:ContribuiÃ§Ãµes"
 ];
 
-// Importações
+// ImportaÃ§Ãµes
 importArticles({
     type: 'script',
     articles: [
-        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // Opções Múltiplas
+        'u:xiaolinpedia:MediaWiki:Chat.js/options.js', // OpÃ§Ãµes MÃºltiplas
     ]
 });
-/* Spoiler tag + buttons (Créditos a SUW americana)*/
+/* Spoiler tag + buttons (CrÃ©ditos a SUW americana)*/
 if ($('.spoiler').length) {
     switch (wgCanonicalNamespace) {
         case 'User':
         case 'User_talk':
             $('.UserProfileActionButton .wikia-menu-button').before(
-                '<button class="wikia-button" id="toggle-spoiler" title="Mostra todos os spoilers na página">Mostrar Spoilers</button>'
+                '<button class="wikia-button" id="toggle-spoiler" title="Mostra todos os spoilers na pÃ¡gina">Mostrar Spoilers</button>'
             );
             break;
     }
     $('.wikinav2 .WikiaPageHeader').css('padding-right', '0');
     $('#WikiaPageHeader .comments').after(
-        '<button class="wikia-button" id="toggle-spoiler" title="Mostra todos os spoiler na página">Mostrar Spoilers</button>'
+        '<button class="wikia-button" id="toggle-spoiler" title="Mostra todos os spoiler na pÃ¡gina">Mostrar Spoilers</button>'
     );
 }
 $('#toggle-spoiler').click(function() {
     if ($('.spoiler.on, .spoiler.off').length) {
         $('.spoiler').attr('class', 'spoiler').removeAttr('title');
-        $('.wikia-button#toggle-spoiler').attr('title', 'Esconde todos os spoilers na página').html('Esconder Spoilers');
+        $('.wikia-button#toggle-spoiler').attr('title', 'Esconde todos os spoilers na pÃ¡gina').html('Esconder Spoilers');
     } else {
         $('.spoiler').attr('class', 'spoiler on').attr('title', 'clique para mostrar os spoilers');
         $('.wikia-button#toggle-spoiler').attr('title', 'Mostrar todos os spoilers').html('Mostrar Spoilers');
@@ -109,7 +109,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		bureaucrat: { u:'Diamante'},
-        newuser: { u:'Em Formação'},
+        newuser: { u:'Em FormaÃ§Ã£o'},
         sysop: { u:'Crystal Gem'},
         rollback: {u:'Reversor'},
         chatmoderator: {u:'Sentinela do Templo'},

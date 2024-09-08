@@ -13,18 +13,18 @@
  
 '''Extension de LiveRC'''
  
-Permet de mettre un lien sur les icônes PàS, AdQ, etc.
+Permet de mettre un lien sur les icÃ´nes PÃ S, AdQ, etc.
  
 * Licence : CC0
 * Documentation :
 * Auteur : [[Wikipedia:fr:User:Orlodrim]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 function lrcXILGetTalkPage(article) {
     var PageNamespaceNumber = getNamespaceInfoFromPage(article);
@@ -54,12 +54,12 @@ function lrcXILHook(Args) {
       linkTarget = lrcGetPageURL(lrcXILGetTalkPage(article) + '/Suppression');
     } else if (imgAlt == 'Copyright') {
       linkTarget = lrcGetPageURL(lrcXILGetTalkPage(article) + '/Droit d\'auteur');
-    } else if (imgAlt == 'Article semi-protégé' || imgAlt == 'Article protégé') {
+    } else if (imgAlt == 'Article semi-protÃ©gÃ©' || imgAlt == 'Article protÃ©gÃ©') {
       linkTarget = wgServer + wgScriptPath + '/index.php?title='
-              + encodeURIComponent('Spécial:Journal') + '&page='
+              + encodeURIComponent('SpÃ©cial:Journal') + '&page='
               + encodeURIComponent(article);
-    } else if (imgAlt == 'Article potentiellement de qualité' || imgAlt == 'Adq') {
-      linkTarget = lrcGetPageURL(lrcXILGetTalkPage(article) + '/Article de qualité');
+    } else if (imgAlt == 'Article potentiellement de qualitÃ©' || imgAlt == 'Adq') {
+      linkTarget = lrcGetPageURL(lrcXILGetTalkPage(article) + '/Article de qualitÃ©');
     } else if (imgAlt == 'Bon article') {
       linkTarget = lrcGetPageURL(lrcXILGetTalkPage(article) + '/Bon article');
     }

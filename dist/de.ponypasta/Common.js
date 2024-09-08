@@ -7,10 +7,10 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-        bureaucrat: { u: 'Master of Büro'},
+        bureaucrat: { u: 'Master of BÃ¼ro'},
         bot: { link:'Schinkenbot', order:1 },
 		sysop: { u: 'Pappnase vom Dienst (Admin)', order:2 },
-		rollback: { u: 'Fast-Sternträger', order:4 },
+		rollback: { u: 'Fast-SterntrÃ¤ger', order:4 },
 		chatmoderator: { u: 'Hilfspappnase (ChatMod)', order:5 },
 		'MG': { u: 'Mitschinken', order:10 },
 		'inactive': { u: 'Desertiert', order:11 },
@@ -19,7 +19,7 @@ window.UserTagsJS = {
 		'leader': { u: 'Suchti', order:-1/0 },
         'founder': { u: 'Oberschinken', order: -1000 },
         'blocked': { u: 'Schwarz gefahren und aus dem Zug geschmissen/ getreten', order: 25},
-        'zeichnerC': { u: 'Königin der Bleistifte', order:20 },
+        'zeichnerC': { u: 'KÃ¶nigin der Bleistifte', order:20 },
         'zeichnerN': { u: 'Picasso', order:30 },
         'zeichnerB': { u: 'Blazi (Zeichnerin)', order:60 },
         'zeichnerX': { u: 'Hippie', order:70 },
@@ -81,7 +81,7 @@ if (wgCategories.indexOf("NSFW") != -1) {
 */
  
 SpoilerAlert = {
-    question: 'Diese Seite enthält Inhalte, die auf normale Nutzer (also auch dich) verstörend wirken könnten, und ist NICHT unbedingt für alle Altersgruppen geeignet - möchtest du sie wirklich sehen? (und nein, diese Seite wird dich nicht fressen...)',
+    question: 'Diese Seite enthÃ¤lt Inhalte, die auf normale Nutzer (also auch dich) verstÃ¶rend wirken kÃ¶nnten, und ist NICHT unbedingt fÃ¼r alle Altersgruppen geeignet - mÃ¶chtest du sie wirklich sehen? (und nein, diese Seite wird dich nicht fressen...)',
     yes: 'Ja! (So muss das!)',
     no: 'Nein! (*hust* Pussy *hust*)',
     isSpoiler: function () {

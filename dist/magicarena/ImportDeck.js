@@ -530,10 +530,10 @@
                 .click(clickPreview),
             languages = $('<label><input type="radio" name="mdw-import-lang" id="mdw-import-english" checked value="en"><span>English</span></label>\
                 <label><input type="radio" name="mdw-import-lang" value="de"><span>Deutsch</span></label>\
-                <label><input type="radio" name="mdw-import-lang" value="es"><span>Español</span></label>\
-                <label><input type="radio" name="mdw-import-lang" value="fr"><span>Français</span></label>\
+                <label><input type="radio" name="mdw-import-lang" value="es"><span>EspaÃ±ol</span></label>\
+                <label><input type="radio" name="mdw-import-lang" value="fr"><span>FranÃ§ais</span></label>\
                 <label><input type="radio" name="mdw-import-lang" value="it"><span>Italiano</span></label>\
-                <label><input type="radio" name="mdw-import-lang" value="pt-br"><span>Português</span></label>');
+                <label><input type="radio" name="mdw-import-lang" value="pt-br"><span>PortuguÃªs</span></label>');
 
         $('#mdw-import-deckname-span').append(
             $('<input type="text" id="mdw-import-deckname" size="40" maxlength="100" placeholder="Deck name" />')

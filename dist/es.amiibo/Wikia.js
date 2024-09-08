@@ -1,9 +1,9 @@
 /**
- * Selección de región de idioma
- * Muestra solo el texto de una región ocultando las otras según la
+ * SelecciÃ³n de regiÃ³n de idioma
+ * Muestra solo el texto de una regiÃ³n ocultando las otras segÃºn la
  * preferencia de idioma del navegador.
  * 
- * Copyright (C) 2019 Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+ * Copyright (C) 2019 JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
  * @license: MIT
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -32,7 +32,7 @@
 			return;
 		}
 		lang = lang.toLowerCase();
-		// "es" a secas... debería ser España?
+		// "es" a secas... deberÃ­a ser EspaÃ±a?
 		if ( lang == 'es' ) {
 			return 'es-ES';
 		}
@@ -40,7 +40,7 @@
 			return 'es-ES';
 		}
 		sp = lang.split( '-' );
-		// es-ES, pero también ca-ES, etc
+		// es-ES, pero tambiÃ©n ca-ES, etc
 		if ( sp.length >= 2 && sp[1] == 'es' ) {
 			return 'es-ES';
 		}

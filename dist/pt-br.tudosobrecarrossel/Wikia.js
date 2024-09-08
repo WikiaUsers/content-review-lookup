@@ -4,8 +4,8 @@ importScriptPage('AjaxRC/code.js', 'dev');
 
 
 $('.WikiaRail').append('<section class="module"><h1>Segunda Temporada</h1><center>
-{| border="1" cellpadding="6" cellspacing="0" width="75%" bgcolor=#EEE8AA 
+{| border="1" cellpadding="6" cellspacing="0" width="75%" bgcolor=#EEE8AAÂ 
 |-
-| '''<span style="color:red;font-size:25px;">Carrossel vai ter uma <span style="color:green;font-size:25px;">Segunda Temporada!!!</span> veja a Notíca:<span style="color:#B8860B;font-size:25px;"><a href="http://pt-br.tudosobrecarrossel.wikia.com/wiki/User_blog:Omnitrix 10/Segunda_Temporada">User blog:Omnitrix 10/Segunda Temporada</a> </span></span>'''
+| '''<span style="color:red;font-size:25px;">Carrossel vai ter uma <span style="color:green;font-size:25px;">Segunda Temporada!!!</span> veja a NotÃ­ca:<span style="color:#B8860B;font-size:25px;"><a href="http://pt-br.tudosobrecarrossel.wikia.com/wiki/User_blog:Omnitrix 10/Segunda_Temporada">User blog:Omnitrix 10/Segunda Temporada</a> </span></span>'''
 |}
 </center></section>');

@@ -1,2 +1,2 @@
-/* El cÛdigo JavaScript que se ponga aquÌ ser· cargado por los usuarios de la piel Wikia */
+/* El c√≥digo JavaScript que se ponga aqu√≠ ser√° cargado por los usuarios de la piel Wikia */
 importArticle({type:'script', article:'w:c:dev:DisplayTimer/code.js'});

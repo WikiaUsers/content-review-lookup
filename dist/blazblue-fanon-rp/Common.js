@@ -117,7 +117,7 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) {
   /**
  * SpoilerAlert
  * documentation at: https://dev.fandom.com/wiki/SpoilerAlert
- * © Peter Coester, 2012
+ * Â© Peter Coester, 2012
  */
 /* jshint curly:false jquery:true browser:true */
 (function () {

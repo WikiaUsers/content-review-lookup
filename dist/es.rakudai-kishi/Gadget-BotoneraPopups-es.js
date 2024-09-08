@@ -5,8 +5,8 @@ if (!window.BotoneraPopups) {
 window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
 	close: '[x]',
 	change: 'Cambiar',
-	ns0: 'Artículo',
-	talk: 'Discusión',
+	ns0: 'ArtÃ­culo',
+	talk: 'DiscusiÃ³n',
 	actions: 'Acciones',
 	edit: 'Editar',
 	newsec: '+',
@@ -19,7 +19,7 @@ window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
 	block: 'Bloquear',
 	userlogs: 'Registros',
 	blocks: 'Bloqueos',
-	article: 'Artículo',
+	article: 'ArtÃ­culo',
 	links: 'Enlaces',
 	search: 'Buscar',
 	prefix: 'Prefijo',
@@ -40,6 +40,6 @@ window.BotoneraPopups.uilang = $.extend(window.BotoneraPopups.uilang, {
 	previewfe: 'Prev. al editar',
 	diffnoprev: 'Diff sin prev.',
 	rbreason: 'Motivo de rollback',
-	changeprompt: 'Cambiar el artículo'
+	changeprompt: 'Cambiar el artÃ­culo'
 });
 /*</source>*/

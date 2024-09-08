@@ -1,4 +1,4 @@
-// Cualquier cÛdigo insertado aquÌ JavaScript ser· cargado para todos los usuarios
+// Cualquier c√≥digo insertado aqu√≠ JavaScript ser√° cargado para todos los usuarios
 // ------------------------------------------------------------------------------------
 
 // 1. Subir
@@ -16,14 +16,14 @@ importScript('MediaWiki:Common.js/botonesExtras.js');
 // 5. Mostrar enlace a Ben 10 Wiki
 importScript('MediaWiki:Common.js/cambiarwiki.js');
 
-// 6. Borrado r·pido
+// 6. Borrado r√°pido
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
   'summary': 'Vandalismo',
   'accesskey': '1',
   'label': 'V'};
 fdButtons[fdButtons.length] = {
-  'summary': 'ArtÌculo/Archivo Duplicado',
+  'summary': 'Art√≠culo/Archivo Duplicado',
   'accesskey': '2',
   'label': 'D'};
 fdButtons[fdButtons.length] = {
@@ -31,7 +31,7 @@ fdButtons[fdButtons.length] = {
   'accesskey': '3',
   'label': 'SC'};
 fdButtons[fdButtons.length] = {
-  'summary': 'ArtÌculo demasiado corto (Infraesbozo)',
+  'summary': 'Art√≠culo demasiado corto (Infraesbozo)',
   'accesskey': '4',
   'label': 'E'};
 fdButtons[fdButtons.length] = {
@@ -39,20 +39,20 @@ fdButtons[fdButtons.length] = {
   'accesskey': '5',
   'label': 'NP'};
 fdButtons[fdButtons.length] = {
-  'summary': 'A peticiÛn del mismo autor',
+  'summary': 'A petici√≥n del mismo autor',
   'accesskey': '6',
   'label': 'P'};
 fdButtons[fdButtons.length] = {
-  'summary': 'RedirecciÛn doble/daÒada ',
+  'summary': 'Redirecci√≥n doble/da√±ada ',
   'accesskey': '7',
   'label': 'RD'};
-importScriptPage('MediaWiki:Common.js/borradoR·pido.js', 'es.ben10');
+importScriptPage('MediaWiki:Common.js/borradoR√°pido.js', 'es.ben10');
 
-// 7. Refrescar autom·ticamente p·ginas especÌficas
+// 7. Refrescar autom√°ticamente p√°ginas espec√≠ficas
  
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:P·ginasNuevas"];
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:P√°ginasNuevas"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
 // 8. ShowHide

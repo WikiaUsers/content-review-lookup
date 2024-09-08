@@ -17,13 +17,13 @@ $( function() {
 	var i18n = {
 		autopatrolled: 'Autopatrulhada',
 		patrolled: 'Patrulhado por $1',
-		unpatrollable: 'N„o patrulhada',
-		unpatrolled: 'N„o patrulhada',
+		unpatrollable: 'N√£o patrulhada',
+		unpatrolled: 'N√£o patrulhada',
 		autopatrolledLegend: 'autopatrolled edit',
 		patrolledLegend: 'patrolled edit',
 		unpatrollableLegend: 'unpatrollable edit',
 		unpatrolledLegend: 'unpatrolled edit',
-		error: 'Falha ao recuperar informaÁıes de patrulha',
+		error: 'Falha ao recuperar informa√ß√µes de patrulha',
 		rightsError: 'Falha ao recuperar direitos de autopatrulha',
 		errorTitle: 'RevisionPatrol',
 	};
@@ -497,8 +497,8 @@ $( function() {
 			legendElem.innerHTML = legendElem.innerHTML.trim().slice( 0, -1 );
 			addLegend( 'patrulhada' );
 			addLegend( 'autopatrulhada' );
-			addLegend( 'n„o patrulhada' );
-			addLegend( 'n„o patrulhada' );
+			addLegend( 'n√£o patrulhada' );
+			addLegend( 'n√£o patrulhada' );
 			legendElem.innerHTML += '.';
 		} );
 	}, function() {

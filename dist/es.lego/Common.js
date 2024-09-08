@@ -1,6 +1,6 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
-/* ImportaciÛn del Chat a todas las pieles */
+/* Importaci√≥n del Chat a todas las pieles */
 importScriptPage('MediaWiki:Chat.js', 'es.lego');
 
 /*****************/
@@ -25,7 +25,7 @@ addOnloadHook(UserNameReplace);
 
    mwCustomEditButtons[mwCustomEditButtons.length] = {
      "imageFile": "https://images.wikia.nocookie.net/lego/es/images/7/77/Bot%C3%B3n_Expandir.png",
-     "speedTip": "Expandir este artÌculo",
+     "speedTip": "Expandir este art√≠culo",
      "tagOpen": "\{\{",
      "tagClose": "\}\}",
      "sampleText": "Expandir"};

@@ -18,11 +18,11 @@ function addAdvancedOasisUI () {
       userLang: true,
       // Deutsch
       de: {
-         contributions: "Beiträge",
+         contributions: "BeitrÃ¤ge",
          followedPages: "Verfolgte Seiten",
          goToPage: "Gehe zur Seite",
          history: "Versionen",
-         recentChanges: "Letzte Änd.",
+         recentChanges: "Letzte Ã„nd.",
          watchlist: "Beobachtungsliste",
          whatLinksHere: "Links auf diese Seite"
       },
@@ -36,25 +36,25 @@ function addAdvancedOasisUI () {
          watchlist: "Watchlist",
          whatLinksHere: "What links here"
       },
-      // Español
+      // EspaÃ±ol
       es: {
          contributions: "Contribuciones",
-         followedPages: "Páginas seguidas",
-         goToPage: "Ir a la página",
+         followedPages: "PÃ¡ginas seguidas",
+         goToPage: "Ir a la pÃ¡gina",
          history: "Historial",
          recentChanges: "Cambios rec.",
          watchlist: "Lista de seguimiento",
-         whatLinksHere: "Lo que enlaza aquí"
+         whatLinksHere: "Lo que enlaza aquÃ­"
       },
-      // Français
+      // FranÃ§ais
       fr: {
          contributions: "Contributions",
          followedPages: "Pages suivies",
-         goToPage: "Aller à la page",
+         goToPage: "Aller Ã  la page",
          history: "Historique",
-         recentChanges: "Mod. récentes",
+         recentChanges: "Mod. rÃ©centes",
          watchlist: "Liste de suivi",
-         whatLinksHere: "Pages liées"
+         whatLinksHere: "Pages liÃ©es"
       },
       // Nederlands
       nl: {

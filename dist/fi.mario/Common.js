@@ -11,11 +11,11 @@ if (wgAction == "edit" || wgAction == "submit") {
          "speedTip": "Siirto",
          "tagOpen": "#OHJAUS [[",
          "tagClose": "]]",
-         "sampleText": "T‰h‰n teksti"};
+         "sampleText": "T√§h√§n teksti"};
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/4/4a/Button_table.png",
-         "speedTip": "Lis‰‰ wikitable",
+         "speedTip": "Lis√§√§ wikitable",
          "tagOpen": '{| class="wikitable"\n|-\n',
          "tagClose": "\n|}",
          "sampleText": "! header 1\n! header 2\n! header 3\n|-\n| row 1, cell 1\n| row 1, cell 2\n| row 1, cell 3\n|-\n| row 2, cell 1\n| row 2, cell 2\n| row 2, cell 3"};
@@ -29,17 +29,17 @@ if (wgAction == "edit" || wgAction == "submit") {
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/1/12/Button_gallery.png",
-         "speedTip": "Lis‰‰ kuvagalleria",
+         "speedTip": "Lis√§√§ kuvagalleria",
          "tagOpen": '\n<div align="center"><gallery>\n',
          "tagClose": "\n</gallery></div>",
          "sampleText": "Tiedosto:Esimerkki.jpg|Kuvateksti1\nTiedosto:Esimerkki.jpg|Kuvateksti2"};
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/5/58/Button_small.png",
-         "speedTip": "Pienenn‰",
+         "speedTip": "Pienenn√§",
          "tagOpen": '<small>',
          "tagClose": "</small>",
-         "sampleText": "Pienenn‰"};   
+         "sampleText": "Pienenn√§"};   
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/c/c9/Button_strike.png",
@@ -60,28 +60,28 @@ if (wgAction == "edit" || wgAction == "submit") {
          "speedTip": "Wikipedia linkki",
          "tagOpen": '[[Wikipedia:',
          "tagClose": "]]",
-         "sampleText": "T‰h‰n teksti"}; 
+         "sampleText": "T√§h√§n teksti"}; 
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/e/ea/Button_align_left.png",
          "speedTip": "Teksti vasemmalle",
          "tagOpen": '<p style="text-align:left;">',
          "tagClose": "</p>",
-         "sampleText": "T‰h‰n teksti"}; 
+         "sampleText": "T√§h√§n teksti"}; 
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/5/5f/Button_center.png",
          "speedTip": "Teksti keskelle",
          "tagOpen": '<p style="text-align:center;">',
          "tagClose": "</p>",
-         "sampleText": "T‰h‰n teksti"}; 
+         "sampleText": "T√§h√§n teksti"}; 
 
        mwCustomEditButtons[mwCustomEditButtons.length] = {
          "imageFile": "https://images.wikia.nocookie.net/central/images/a/a5/Button_align_right.png",
          "speedTip": "Teksti oikealle",
          "tagOpen": '<p style="text-align:right;">',
          "tagClose": "</p>",
-         "sampleText": "T‰h‰n teksti"}; 
+         "sampleText": "T√§h√§n teksti"}; 
      }
 }
 
@@ -228,7 +228,7 @@ var hasClass = (function () {
 // =====================================================================
  
   var autoCollapse = 2;
-  var collapseCaption = "pienenn‰";
+  var collapseCaption = "pienenn√§";
   var expandCaption = "suurenna";
  
   function collapseTable( tableIndex )
@@ -1083,7 +1083,7 @@ addOnloadHook(wikiSiteMeter);
 
 addOnloadHook(editSiteNotice);
 var dCookieName = "dismissSiteNotice=";
-var msgClose = "‰l‰ n‰yt‰";
+var msgClose = "√§l√§ n√§yt√§";
 
 var hCookieName = "hideSiteNotice=";
 var hCookiePos = document.cookie.indexOf(hCookieName);
@@ -1120,7 +1120,7 @@ function editSiteNotice() {
         if (hCookieValue != siteNoticeID && hideLink.innerHTML == "suurenna") {
             collapseTable(0);
         }
-        if (hCookieValue == siteNoticeID && hideLink.innerHTML == "pienenn‰") {
+        if (hCookieValue == siteNoticeID && hideLink.innerHTML == "pienenn√§") {
             collapseTable(0);
         }
     }

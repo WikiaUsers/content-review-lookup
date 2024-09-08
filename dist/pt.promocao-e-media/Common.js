@@ -1,6 +1,6 @@
-/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
+/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
 
-/* Etiqueta personalizada para usu·rios - CrÈditos ‡ Wiki Naruto e Dev Wikia */
+/* Etiqueta personalizada para usu√°rios - Cr√©ditos √† Wiki Naruto e Dev Wikia */
 function addMastheadTags() {
     var rights = {},
         user   = "";

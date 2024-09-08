@@ -1,6 +1,6 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
-/*** AÒadir botÛn para editar el mensaje de bienvenida del muro ***/
+/*** A√±adir bot√≥n para editar el mensaje de bienvenida del muro ***/
  
 importArticles({
     type: 'script',
@@ -11,10 +11,10 @@ importArticles({
 
 // Actividad que se actualiza sola
 AjaxRCRefreshText = 'Actividad automatizada';
-AjaxRCRefreshHoverText = 'Con la casilla marcada esta p·gina se actualizar· autom·ticamente';
-ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P·ginasNuevas", "Especial:Seguimiento"];
+AjaxRCRefreshHoverText = 'Con la casilla marcada esta p√°gina se actualizar√° autom√°ticamente';
+ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity", "Especial:P√°ginasNuevas", "Especial:Seguimiento"];
 importScriptPage('AjaxRC/code.js', 'dev');
-// BotÛn para regresar arriba
+// Bot√≥n para regresar arriba
 importScriptPage('BackToTopButton/code.js', 'dev');
 // Script para cuenta regresiva
 importScriptPage('Countdown/code.js', 'dev');
@@ -30,7 +30,7 @@ importArticles({
         // ...
     ]
 });
-// Mostrar IP de anÛnimos para usuarios con ciertos permisos
+// Mostrar IP de an√≥nimos para usuarios con ciertos permisos
 window.RevealAnonIP = {
     permissions : ['rollback', 'sysop', 'bureaucrat', 'helper', 'util', 'staff']
 };
@@ -49,30 +49,30 @@ importArticles({
         'w:dev:TopEditors/code.js'
     ]
 });
-// Borrado r·pido
+// Borrado r√°pido
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': 'Este artÌculo no guarda relaciÛn con el tema del Wiki',
+  'summary': 'Este art√≠culo no guarda relaci√≥n con el tema del Wiki',
   'accesskey': '1',
-  'label': 'Sin relaciÛn'};
+  'label': 'Sin relaci√≥n'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Este artÌculo lleva en sÌ Spam u links hacia otros sitios Web',
+  'summary': 'Este art√≠culo lleva en s√≠ Spam u links hacia otros sitios Web',
   'accesskey': '2',
   'label': 'Spam'};
 fdButtons[fdButtons.length] = {
-  'summary': 'Esta creaciÛn contiene un grado alto de vandalismos',
+  'summary': 'Esta creaci√≥n contiene un grado alto de vandalismos',
   'accesskey': '3',
   'label': 'Vandalismo'};
 fdButtons[fdButtons.length] = {
-  'summary': 'El contenido podrÌa tratarse de especulaciones y mentiras',
+  'summary': 'El contenido podr√≠a tratarse de especulaciones y mentiras',
   'accesskey': '4',
-  'label': 'EspeculaciÛn'};
+  'label': 'Especulaci√≥n'};
 fdButtons[fdButtons.length] = {
-  'summary': 'El artÌculo llevaba contenido erÛtico, sexual y variantes',
+  'summary': 'El art√≠culo llevaba contenido er√≥tico, sexual y variantes',
   'accesskey': '5',
   'label': 'Sexual'};
 fdButtons[fdButtons.length] = {
-  'summary': 'ArtÌculo excesivamente corto, puedes crearlo cuando tengas m·s contenido que mostrar en Èl',
+  'summary': 'Art√≠culo excesivamente corto, puedes crearlo cuando tengas m√°s contenido que mostrar en √©l',
   'accesskey': '6',
   'label': 'C. Insuficiente'};
-importArticle({type: 'script', article: 'w:c:pintorsmeargle:MediaWiki:Common.js/borradoR·pido.js'});
+importArticle({type: 'script', article: 'w:c:pintorsmeargle:MediaWiki:Common.js/borradoR√°pido.js'});

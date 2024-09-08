@@ -1,4 +1,4 @@
-/***** Aquí se añadira el javascript del Chat *****/
+/***** AquÃ­ se aÃ±adira el javascript del Chat *****/
 
 importArticles({
     type: 'script',
@@ -22,7 +22,7 @@ window.ChatStatus = {
 		afk: "AFk",
 		edit: "Muy ocupado",
 		food: "Comiendo", 
-		music: "Escuchando música",
+		music: "Escuchando mÃºsica",
 		game: "Jugando",
 		studies: "Estudiando",
 		watching: "Protegiendo",

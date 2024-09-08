@@ -1,16 +1,16 @@
-/*Sonido de notificaci髇*/
+/*Sonido de notificaci贸n*/
 $(function() {
         $('.sonidonotificacion a').append(' <span style="color:red;">[Apagado]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="https://vignette.wikia.nocookie.net/ddlc/images/f/f0/Select.ogg/revision/latest?cb=20180301222137&path-prefix=es"></source></audio>');
     $('.sonidonotificacion').click(function() {
-        if($('.sonidonotificacion a').text() == "Sonido de notificaci髇 [Apagado]") {
-            $('.sonidonotificacion a').html('Sonido de notificaci髇 <span style="color:lime;">[Encendido]</span>');
+        if($('.sonidonotificacion a').text() == "Sonido de notificaci贸n [Apagado]") {
+            $('.sonidonotificacion a').html('Sonido de notificaci贸n <span style="color:lime;">[Encendido]</span>');
         } else {
-            $('.sonidonotificacion a').html('Sonido de notificaci髇 <span style="color:red;">[Apagado]</span>');
+            $('.sonidonotificacion a').html('Sonido de notificaci贸n <span style="color:red;">[Apagado]</span>');
         }
     });
     $('.Chat ul').bind('DOMNodeInserted', function(event) {
-        if($('.sonidonotificacion a').text() == "Sonido de notificaci髇 [Encendido]") {
+        if($('.sonidonotificacion a').text() == "Sonido de notificaci贸n [Encendido]") {
 			$("#notificacion")[0].play();
 		}
     });

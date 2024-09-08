@@ -220,7 +220,7 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 /* Add UTC clock above articles */
 importScript('MediaWiki:Common.js/displayTimer.js');
- 
+Â 
 /* 
  * Auto updating recent changes opt-in
  * See w:c:dev:AjaxRC for info & attribution 

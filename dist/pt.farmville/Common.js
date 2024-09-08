@@ -1,4 +1,4 @@
-/* CÛdigo Javascript colocado aqui ser· carregado para todos os utilizadores em cada carregamento de p·gina */
+/* C√≥digo Javascript colocado aqui ser√° carregado para todos os utilizadores em cada carregamento de p√°gina */
 
 // This script is from Wikipedia. For author attribution, please see http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 

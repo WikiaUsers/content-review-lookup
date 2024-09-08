@@ -1,10 +1,10 @@
 /**
  * BlocageDeluxe
  *
- * Rajout de boutons prédéfinis pour justifier un blocage
+ * Rajout de boutons prÃ©dÃ©finis pour justifier un blocage
  *
  * Auteur : Pabix
- * Dernière révision : 5 novembre 2006
+ * DerniÃ¨re rÃ©vision : 5 novembre 2006
  * {{:Projet:JavaScript/Script|BlocageDeluxe}}
  */
 
@@ -17,10 +17,10 @@ var blocagedeluxeBloquerIPsUtilisees = new Array();
 
 with (blocagedeluxeMessages) {
         push ("IP fixe - Pas d'inscription possible");
-        push ("IP fixe multi utilisateurs (ex. scolaire) - Création de compte autorisée");
-        push ("IP variable - Aucune nouvelle inscription autorisée, comptes actuels utilisables");
-        push ("Utilisteur enregistré - Blocage du compte");
-        push ("Utilisateur enregistré - Blocage du compte et des IPs associées");
+        push ("IP fixe multi utilisateurs (ex. scolaire) - CrÃ©ation de compte autorisÃ©e");
+        push ("IP variable - Aucune nouvelle inscription autorisÃ©e, comptes actuels utilisables");
+        push ("Utilisteur enregistrÃ© - Blocage du compte");
+        push ("Utilisateur enregistrÃ© - Blocage du compte et des IPs associÃ©es");
 }
 with (blocagedeluxeInterdireInscription) {
         push(true);
@@ -64,11 +64,11 @@ function BlocageDeluxe() {
                 var inputs = firstForm.getElementsByTagName("input");
                 // inputs :
                 // 0 -> wpBlockAddress        Le nom de l'utilisateur ou son IP
-                // 1 -> wpBlockOther          Durée
-                // 2 -> wpBlockReason         Raison invoquée
+                // 1 -> wpBlockOther          DurÃ©e
+                // 2 -> wpBlockReason         Raison invoquÃ©e
                 // 3 -> wpAnonOnly            Ne pas bloquer les comptes existants
-                // 4 -> wpCreateAccount       Empêcher la création de compte
-                // 5 -> wpEnableAutoblock     Bloquer toutes les IPs utilisées par ce pseudonyme
+                // 4 -> wpCreateAccount       EmpÃªcher la crÃ©ation de compte
+                // 5 -> wpEnableAutoblock     Bloquer toutes les IPs utilisÃ©es par ce pseudonyme
                 // 6 -> (submit) wpBlock      Soumission du formulaire
                 // 7 -> wpEditToken           (Variable d'identification)
                 var token = inputs[7].getAttribute("value");
@@ -79,7 +79,7 @@ function BlocageDeluxe() {
                         table.appendChild(tr);
                         //   }
 
-                        // Crée le formulaire
+                        // CrÃ©e le formulaire
                         var formElement = document.createElement("form");
                         with (formElement) {
                                 setAttribute("id", "blockip");
@@ -111,7 +111,7 @@ function BlocageDeluxe() {
                                 setAttribute("type", "hidden");
                         }
 
-                        // Champ invisible de durée
+                        // Champ invisible de durÃ©e
                         var dureeC = document.createElement("input");
                         with (dureeC) {
                                 setAttribute("name", "wpBlockExpiry");
@@ -119,7 +119,7 @@ function BlocageDeluxe() {
                                 setAttribute("type", "hidden");
                         }
 
-                        // Champ modifiable de durée
+                        // Champ modifiable de durÃ©e
                         var dureeC2 = document.createElement("input");
                         with (dureeC2) {
                                 setAttribute("name", "wpBlockOther");
@@ -127,34 +127,34 @@ function BlocageDeluxe() {
                                 setAttribute("type", "text");
                         }
 
-                        // Case à cocher : bloquer les IPs utilisées par l'utilisateur
+                        // Case Ã  cocher : bloquer les IPs utilisÃ©es par l'utilisateur
                         var blockIPs = document.createElement("input");
                         with (blockIPs) {
                                 setAttribute("name", "wpEnableAutoblock");
                                 setAttribute("type", "checkbox");
-                                setAttribute("title", "blocage automatique des IPs utilisées par ce pseudonyme");
+                                setAttribute("title", "blocage automatique des IPs utilisÃ©es par ce pseudonyme");
                                 checked = blocagedeluxeBloquerIPsUtilisees[i];
                         }
 
-                        // Case à cocher : Bloquer seulement les IPs
+                        // Case Ã  cocher : Bloquer seulement les IPs
                         var anonymousOnly = document.createElement("input");
                         with (anonymousOnly) {
                                 setAttribute("name", "wpAnonOnly");
                                 setAttribute("type", "checkbox");
-                                setAttribute("title", "Ne pas bloquer les comptes déjà existants");
+                                setAttribute("title", "Ne pas bloquer les comptes dÃ©jÃ  existants");
                                 checked = blocagedeluxeUniquementIP[i];
                         }
 
-                        // Case à cocher : empêcher la création de compte
+                        // Case Ã  cocher : empÃªcher la crÃ©ation de compte
                         var allowAccCreat = document.createElement("input");
                         with (allowAccCreat) {
                                 setAttribute("name", "wpCreateAccount");
                                 setAttribute("type", "checkbox");
-                                setAttribute("title", "Empêcher la création de compte");
+                                setAttribute("title", "EmpÃªcher la crÃ©ation de compte");
                                 checked = blocagedeluxeInterdireInscription[i];
                         }
 
-                        // Case à cocher : empêcher la création de compte
+                        // Case Ã  cocher : empÃªcher la crÃ©ation de compte
                         // Bouton de soumission avec raison
                         var inputConfirm = document.createElement("input");
                         with (inputConfirm) {

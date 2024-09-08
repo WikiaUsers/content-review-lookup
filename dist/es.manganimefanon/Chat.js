@@ -6,7 +6,7 @@ importArticles({
     'u:dev:AjaxEmoticons/code.js',
     // Notificar a los mods usando !mods
     'u:dev:MediaWiki:!mods/code.js',
-    // Botón de enviar
+    // BotÃ³n de enviar
     'u:dev:ChatSendButton.js',
     // Contador de mensajes
     'u:dev:NewMessageCount.js',
@@ -18,18 +18,18 @@ importArticles({
     'u:dev:MediaWiki:ChatIgnoreUser/es/code.js',
     // ChatPing
     'u:dev:MediaWiki:CustomChatPings/code.js',
-    // Anuncios "/announce {acción}"
+    // Anuncios "/announce {acciÃ³n}"
     'u:dev:ChatAnnouncements/code.js',
     // Chat-Tags
     'MediaWiki:Chat.js/ChatTags.js',
-    // Menu de navegación (Dropdown)
+    // Menu de navegaciÃ³n (Dropdown)
     'MediaWiki:Chat.js/Dropdown.js'
   ]
 });
  
-// Título del chat
+// TÃ­tulo del chat
  
-document.title = "¡Chat Otaku! - Manganime Fanon Wiki";
+document.title = "Â¡Chat Otaku! - Manganime Fanon Wiki";
  
 // Otros
  
@@ -46,8 +46,8 @@ window.ChatStatus = {
     homo: "Ocupado",
     edit: "Editando",
     food: "Comiendo",
-    afk: "Escuchando música",
-    tv: "Viendo anime/vídeos",
+    afk: "Escuchando mÃºsica",
+    tv: "Viendo anime/vÃ­deos",
     game: "Jugando",
     cake: "Observando",
     book: "Leyendo",
@@ -63,7 +63,7 @@ window.ChatStatus = {
  
 var PrivateMessageAlert = {
   beepSound: 'https://images.wikia.nocookie.net/pruebasbf10/es/images/0/01/Notification.ogg',
-  message: '$1 envió un mensaje',
+  message: '$1 enviÃ³ un mensaje',
   notifications: true,
   alertWhileFocused: true
 };

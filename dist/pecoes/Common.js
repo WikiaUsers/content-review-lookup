@@ -71,7 +71,7 @@ $(document).ready(function () {
 
 $(function () {
 
-    $('h1.wordmark a').html('<span style="display: block;"><span style="display: inline-block; text-indent: 1.8em; font: 400 0.9em \'Lucida Bright\',\'Lucida Sans Unicode\',\'Lucida Sans\',\'Lucida Grande\',sans-serif;"><span style="color:#971771">p</span><span style="color:#971771;font-size:1em">e</span><span style="color:#bf4e46">c</span><span style="color:#d06333"><span class="oo">o</span><span class="oe">ø</span></span><span style="color:#e6811b;vertical-align:-0.25em;border-top:1px solid #e6811b">e</span><span style="color:#ffa200">s<span class="oo">\'</span><span class="oe">"</span></span>&nbsp;<span style="line-height: 0.4em; text-indent: 2.8em; display: block; color: rgb(214, 173, 11);">sandbo<span class="oo">x</span><span style="vertical-align: -0.15em;" class="oe">X</span></span></span></span>');
+    $('h1.wordmark a').html('<span style="display: block;"><span style="display: inline-block; text-indent: 1.8em; font: 400 0.9em \'Lucida Bright\',\'Lucida Sans Unicode\',\'Lucida Sans\',\'Lucida Grande\',sans-serif;"><span style="color:#971771">p</span><span style="color:#971771;font-size:1em">e</span><span style="color:#bf4e46">c</span><span style="color:#d06333"><span class="oo">o</span><span class="oe">Ã¸</span></span><span style="color:#e6811b;vertical-align:-0.25em;border-top:1px solid #e6811b">e</span><span style="color:#ffa200">s<span class="oo">\'</span><span class="oe">"</span></span>&nbsp;<span style="line-height: 0.4em; text-indent: 2.8em; display: block; color: rgb(214, 173, 11);">sandbo<span class="oo">x</span><span style="vertical-align: -0.15em;" class="oe">X</span></span></span></span>');
     
     if ($('#SpoilerAlertDemo').length) {
         $('#SpoilerAlertDemo').empty();

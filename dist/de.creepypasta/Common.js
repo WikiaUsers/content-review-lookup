@@ -2,11 +2,11 @@
 
 //Wertung
 if (wgPageName.substr(0,8) == "Wertung:") $("#mw-content-text").html("<font color='red'>Du hast hier nichts zu suchen, du Lump!</font>"); 
-//Blog Beiträge
+//Blog BeitrÃ¤ge
 if (wgPageName=="Spezial:Blog-Beitrag_erstellen") {
 $(document).ready(function() {
 	$("#HiddenFieldsDialog .modalContent .modalToolbar").prepend(
-		$("<div>",{html: "Wichtig:<br/>Verwende Blogbeiträge nur falls du etwas <b>wichtiges</b> bekannt geben willst. Alles andere wird gelöscht.<br/>Verwende stattdessen bitte das <a href=\"/wiki/Spezial:Forum\" style=\"position: relative;left: -10px;\" target=\"_blank\">Forum</a><br/>"})
+		$("<div>",{html: "Wichtig:<br/>Verwende BlogbeitrÃ¤ge nur falls du etwas <b>wichtiges</b> bekannt geben willst. Alles andere wird gelÃ¶scht.<br/>Verwende stattdessen bitte das <a href=\"/wiki/Spezial:Forum\" style=\"position: relative;left: -10px;\" target=\"_blank\">Forum</a><br/>"})
 		.css({color: "rgb(255,0,255)",fontSize: "20pt",lineHeight: "25pt",textAlign: "left"})
 	);
 });
@@ -79,7 +79,7 @@ if (wgCategories.indexOf("NSFW") != -1) {
 */
 
 SpoilerAlert = {
-    question: 'Diese Seite enthält Inhalte, die auf normale Menschen verstörend wirken könnten, und ist NICHT für alle Altersgruppen geeignet. Möchtest du das wirklich sehen?',
+    question: 'Diese Seite enthÃ¤lt Inhalte, die auf normale Menschen verstÃ¶rend wirken kÃ¶nnten, und ist NICHT fÃ¼r alle Altersgruppen geeignet. MÃ¶chtest du das wirklich sehen?',
     yes: 'Ja (Wir haben dich gewarnt...)',
     no: 'Nein (empfohlen)',
     isSpoiler: function () {
@@ -92,7 +92,7 @@ importScriptPage('SpoilerAlert/code.js', 'dev');
 // PdM
 $.each(wgCategories, function( index, value ) {
 if(value.indexOf('Creepypasta des Monats')>-1) {
-    $( ".mw-content-ltr" ).before( '<table cellspacing="8" cellpadding="0" style="background-color:black; width:100%; font-size:95%; border-color:#ff0; border-style:solid; margin-top:1em; clear:both; position:relative;"><tr><td style="vertical-align:top; text-align:center;"> Diese Geschichte ist für die Wahl zur <b>' + value +'</b> nominiert (mehr Informationen findest Du <a href="http://de.creepypasta.wikia.com/wiki/Pasta_des_Monats">hier</a>)</td></tr></table><br/><br/>' );}
+    $( ".mw-content-ltr" ).before( '<table cellspacing="8" cellpadding="0" style="background-color:black; width:100%; font-size:95%; border-color:#ff0; border-style:solid; margin-top:1em; clear:both; position:relative;"><tr><td style="vertical-align:top; text-align:center;"> Diese Geschichte ist fÃ¼r die Wahl zur <b>' + value +'</b> nominiert (mehr Informationen findest Du <a href="http://de.creepypasta.wikia.com/wiki/Pasta_des_Monats">hier</a>)</td></tr></table><br/><br/>' );}
 });
 
 /*

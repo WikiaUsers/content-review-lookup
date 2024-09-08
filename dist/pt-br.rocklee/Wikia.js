@@ -1,5 +1,5 @@
 importScript('MediaWiki:Wikia.js/userRightsIcons.js');
 
-// Etiqueta para usuários inativos por mais de 1 mês
+// Etiqueta para usuÃ¡rios inativos por mais de 1 mÃªs
 InactiveUsers = { text: 'Inativo' };
 importScriptPage('InactiveUsers/code.js', 'dev');

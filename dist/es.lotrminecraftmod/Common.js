@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 //Colores para administradores en los muros de mensajes
 
@@ -28,24 +28,24 @@
 })();
 
 /* Sustituir nombre del usuario:
- * Este cÛdigo aÒade el nombre del usuario en <span class="nombredelusuario"></span>
- * El texto dentro de las etiquetas <span> se ver· por los usuarios que no hayan iniciado sesiÛn.
+ * Este c√≥digo a√±ade el nombre del usuario en <span class="nombredelusuario"></span>
+ * El texto dentro de las etiquetas <span> se ver√° por los usuarios que no hayan iniciado sesi√≥n.
  */
  
 if (wgUserName) {
 	$(".nombredelusuario").text(wgUserName);
 }
 
-/* Reemplazar im·genes WEBP con las versiones PNG/JPG etc. */
+/* Reemplazar im√°genes WEBP con las versiones PNG/JPG etc. */
 
-//Im·genes en infoboxes
+//Im√°genes en infoboxes
 $(".pi-image-thumbnail").each(function(){
     var srcsetvar = $(this).attr("srcset");
     var srcarray = srcsetvar.split(" ");
     $(this).attr("srcset", srcarray[0]+"&format=original");
 });
 
-//Im·genes en artÌculos
+//Im√°genes en art√≠culos
 $(".WikiaArticle img:not('.avatar, .sprite, .forum-user-avatar, .wds-avatar__image')").on("load", function(){
     var srcvar = $(this).attr("src");
     if(srcvar && !srcvar.endsWith("format=original") && (srcvar.startsWith("https://vignette.wikia.nocookie.net") || srcvar.startsWith("https://images.wikia.nocookie.net"))){
@@ -56,17 +56,17 @@ $(".WikiaArticle img:not('.avatar, .sprite, .forum-user-avatar, .wds-avatar__ima
         }
     }
 }).each(function() {
-  if(this.complete) { //im·genes en cachÈ
+  if(this.complete) { //im√°genes en cach√©
       $(this).trigger("load");
   }
 });
 
-/* ConfiguraciÛn de AjaxRC */
+/* Configuraci√≥n de AjaxRC */
 ajaxSpecialPages = ["Contributions","Log","Recentchanges","WikiActivity","Watchlist"];
 window.ajaxRefresh = 30000;
 $.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
     'ajaxrc-refresh-text': 'Volver a cargar',
-    'ajaxrc-refresh-hover': 'Volver a cargar la p·gina autom·ticamente',
+    'ajaxrc-refresh-hover': 'Volver a cargar la p√°gina autom√°ticamente',
 }}}}});
 
 // SCRIPTS EXTERNOS
@@ -76,7 +76,7 @@ importArticles({
         // Borrar archivos
         'u:dev:MediaWiki:ListFiles/code.js',
         'u:dev:MediaWiki:AjaxBatchDelete.js',
-        // Ajax: Volver a cargar p·ginas autom·ticamente
+        // Ajax: Volver a cargar p√°ginas autom√°ticamente
         'u:dev:MediaWiki:AjaxRC.js'
     ]
 });

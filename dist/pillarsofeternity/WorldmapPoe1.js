@@ -127,7 +127,7 @@
     var namebarButtonMinimalNew = document.createElement("a");
     namebarButtonMinimalNew.style.cssText = namebarButtonMinimal.style.cssText;
     namebarButtonMinimalNew.classList = namebarButtonMinimal.classList;
-    namebarButtonMinimalNew.appendChild(document.createTextNode("×"));
+    namebarButtonMinimalNew.appendChild(document.createTextNode("Ã—"));
     namebarButtonMinimal.replaceWith(namebarButtonMinimalNew);
     namebarButtonMinimal = namebarButtonMinimalNew;
     namebarButtonMinimalNew = undefined;
@@ -465,7 +465,7 @@
             sidebar.style.display = "none";
             frame.style.display = "";
             namebarButtonMinimal.style.display = "";
-            namebarButtonMinimal.innerText = "×";
+            namebarButtonMinimal.innerText = "Ã—";
 
             if (!root.classList.contains("worldmap-background"))
                 root.classList.add("worldmap-background");

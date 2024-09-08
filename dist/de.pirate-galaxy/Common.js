@@ -1,4 +1,4 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 // <pre><nowiki>
 
@@ -18,21 +18,21 @@ var ShowHideConfig = {
     }
 };
 
-/** Verzichtserklärung *********************************************************
+/** VerzichtserklÃ¤rung *********************************************************
  *
- *  Beschreibung: Verzichtserklärung
+ *  Beschreibung: VerzichtserklÃ¤rung
  */
 
 var t = '<div id="PGwiki_legal">Das Pirate Galaxy Wiki ist nicht im Besitz von Splitscreen Studios und wird auch nicht von Splitscreen Studios betrieben. Alle Bilder von Pirate Galaxy sind Eigentum von Splitscreen Studios. Die Quelle der News zum Spiel ist das Pirate Galaxy Forum.</div>';
 document.getElementById("WikiaArticleBottomAd").innerHTML += t;
 
-/* Zeigt einen Besucherzähler auf jeder Seite dieses Wikis */
+/* Zeigt einen BesucherzÃ¤hler auf jeder Seite dieses Wikis */
 
 document.write ("<div style='position:fixed; right:2px; bottom:2px; display:block; height:20px; width:80px'>");
 document.write ("<a href='http://www.counter-kostenlos.net'><img src='http://www.counter-kostenlos.net/counter.php?id=121644'></a>");
 document.write ("</div>");
 
-/*Javascript für Mouseover Effekt */
+/*Javascript fÃ¼r Mouseover Effekt */
 function FP_preloadImgs() {
  var d=document,a=arguments; if(!d.FP_imgs) d.FP_imgs=new Array();
  for(var i=0; i<a.length; i++) { d.FP_imgs[i]=new Image; d.FP_imgs[i].src=a[i]; }

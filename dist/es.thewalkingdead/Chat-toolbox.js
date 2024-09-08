@@ -19,14 +19,14 @@ $(function() {
         $('.sonidonotificacion a').append(' <span style="color:red;">[OFF]</span>');
 	$('#ChatHeader').append('<audio id="notificacion" preload="auto"><source src="https://images.wikia.nocookie.net/pruebasbf10/es/images/0/01/Notification.ogg"></source></audio>');
     $('.sonidonotificacion').click(function() {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci髇 [OFF]") {
-            $('.sonidonotificacion a').html('Sonidos de notificaci髇 <span style="color:lime;">[ON]</span>');
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaci贸n [OFF]") {
+            $('.sonidonotificacion a').html('Sonidos de notificaci贸n <span style="color:lime;">[ON]</span>');
         } else {
-            $('.sonidonotificacion a').html('Sonidos de notificaci髇 <span style="color:red;">[OFF]</span>');
+            $('.sonidonotificacion a').html('Sonidos de notificaci贸n <span style="color:red;">[OFF]</span>');
         }
     });
     $('.Chat ul').bind('DOMNodeInserted', function(event) {
-        if($('.sonidonotificacion a').text() == "Sonidos de notificaci髇 [ON]") {
+        if($('.sonidonotificacion a').text() == "Sonidos de notificaci贸n [ON]") {
 			$("#notificacion")[0].play();
 		}
     });

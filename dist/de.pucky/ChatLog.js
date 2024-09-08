@@ -158,7 +158,7 @@ function callAPI(data, method, callback) {
 function submitLog(restart) {
 	restart = restart?restart:false;
 	var d = new Date()
-	var monthNames = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+	var monthNames = ["Januar","Februar","MÃ¤rz","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
 	var date = d.getUTCDate() + '_' + monthNames[d.getUTCMonth()] + '_' + d.getUTCFullYear()
 	callAPI({
 		'action': 'query',

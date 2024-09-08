@@ -14,29 +14,29 @@ $(function(){
   const api = new mw.Api();
 
   api.get({
-    action:'query',
-    list:'recentchanges',
-    rcprop:'title|ids',
-    rcshow:'!patrolled',
-    rclimit:'5000',
+    action: 'query',
+    list: 'recentchanges',
+    rcprop: 'title|ids',
+    rcshow: '!patrolled',
+    rclimit: '5000',
   }).done(function(data){
     api.loadMessagesIfMissing(['Custom-UnpatrolledEdits-title', 'Custom-UnpatrolledEdits-summary', 'Specialpage-empty']).done(function(){
-      document.title = mw.msg('Custom-UnpatrolledEdits-title')+' | Little Bear Wiki | Fandom';
+      document.title = mw.message('Custom-UnpatrolledEdits-title').text() + ' | Little Bear Wiki | Fandom';
 
-      $('#firstHeading').html(mw.msg('Custom-UnpatrolledEdits-title'));
-      $('#mw-content-text p').html(mw.msg('Custom-UnpatrolledEdits-summary'));
+      $('#firstHeading').html(mw.message('Custom-UnpatrolledEdits-title').parse());
+      $('#mw-content-text p').html(mw.message('Custom-UnpatrolledEdits-summary').text());
 
       const changes = data.query.recentchanges;
 
       if (changes.length === 0){
-        $('#mw-content-text p').after(mw.msg('Specialpage-empty'));
+        $('#mw-content-text p').after(mw.message('Specialpage-empty').parse());
         return;
       }
 
       const list = $('<ul>');
 
       changes.forEach(function(v){
-        list.append($('<li><a href="'+mw.util.getUrl(v.title)+'">'+mw.html.escape(v.title)+'</a> (<a href="'+mw.util.getUrl('Special:Diff/'+v.revid)+'">diff</a>)</li>'));
+        list.append($('<li><a href="' + mw.util.getUrl(v.title) + '">' + mw.html.escape(v.title) + '</a> (<a href="' + mw.util.getUrl('Special:Diff/' + v.revid) + '">diff</a>)</li>'));
       });
 
       $('#mw-content-text p').after(list);

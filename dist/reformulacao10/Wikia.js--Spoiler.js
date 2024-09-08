@@ -1,8 +1,8 @@
 /* Spoiler */ 
 SpoilerAlert = {
-    question: 'Esta página contêm spoilers que revelaram o enredo da série, deseja visualizar?',
+    question: 'Esta pÃ¡gina contÃªm spoilers que revelaram o enredo da sÃ©rie, deseja visualizar?',
     yes: 'Sim',
-    no: 'Não',
+    no: 'NÃ£o',
    'class': "spoiler",
     isSpoiler: function () {
         return Boolean($('#spoiler'));

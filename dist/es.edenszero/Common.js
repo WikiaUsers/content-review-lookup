@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 //
 $(function UserNameReplace() {
@@ -12,11 +12,11 @@ $(function UserNameReplace() {
 });
  
 // AutoRefreshing RecentChanges and WikiActivity
-window.AjaxRCRefreshText = 'Act. autom·t.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+window.AjaxRCRefreshText = 'Act. autom√°t.';
+window.AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 
-// ConfiguraciÛn UserTags
+// Configuraci√≥n UserTags
 window.UserTagsJS = {
 	modules: {},
 	tags: {

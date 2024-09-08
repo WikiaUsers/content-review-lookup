@@ -24,7 +24,7 @@
 			for (var pp in pages) {
 				if (typeof pages[pp].missing == 'undefined') {
 					if (pages[pp].revisions[0].size > 500) {
-						// Hay contenido suficiente, no solo categorÌas. WARN
+						// Hay contenido suficiente, no solo categor√≠as. WARN
 						_mostrarMensaje();
 					}
 				}
@@ -35,11 +35,11 @@
 	_mostrarMensaje = function() {
 		var mwContWrapper = $('#mw-content-text'),
 			msgCont = [
-				'Los administradores de Wiki Elfen Lied hemos recibido varios reportes de usuarios diciendo que algunas p·ginas aparecen en blanco.',
-				'Dado que los tÈcnicos de Wikia no son capaces de encontrar el problema, hemos diseÒado un script para detectar cuando esto ocurre.',
-				'Aparentemente, ha sucedido en la p·gina que est·s viendo actualmente.',
-				'SerÌa de gran ayuda que reportaras el problema a Wikia. Para ello usa el botÛn "reportar problema". Se abrir· una nueva ventana (aseg˙rate que el bloqueador de ventanas emergentes no la bloquea). Cuando la p·gina se cargue, espera un poco a que se rellenen los datos del mensaje (se incluir· informaciÛn en inglÈs). El script rellenar· el mensaje con informaciÛn necesaria para que Wikia diagnostique el problema. Revisa la informaciÛn, escribe los caracteres borrosos (si no has iniciado sesiÛn) y pulsa el botÛn para enviar el formulario.',
-				'Si quieres intentar purgar la cachÈ a ver si aparece el contenido, pulsa el botÛn "purgar la p·gina". Puedes hacerlo despuÈs de reportar el problema, puesto que una vez aparezca el contenido ya no podr·s reportar el problema.'
+				'Los administradores de Wiki Elfen Lied hemos recibido varios reportes de usuarios diciendo que algunas p√°ginas aparecen en blanco.',
+				'Dado que los t√©cnicos de Wikia no son capaces de encontrar el problema, hemos dise√±ado un script para detectar cuando esto ocurre.',
+				'Aparentemente, ha sucedido en la p√°gina que est√°s viendo actualmente.',
+				'Ser√≠a de gran ayuda que reportaras el problema a Wikia. Para ello usa el bot√≥n "reportar problema". Se abrir√° una nueva ventana (aseg√∫rate que el bloqueador de ventanas emergentes no la bloquea). Cuando la p√°gina se cargue, espera un poco a que se rellenen los datos del mensaje (se incluir√° informaci√≥n en ingl√©s). El script rellenar√° el mensaje con informaci√≥n necesaria para que Wikia diagnostique el problema. Revisa la informaci√≥n, escribe los caracteres borrosos (si no has iniciado sesi√≥n) y pulsa el bot√≥n para enviar el formulario.',
+				'Si quieres intentar purgar la cach√© a ver si aparece el contenido, pulsa el bot√≥n "purgar la p√°gina". Puedes hacerlo despu√©s de reportar el problema, puesto que una vez aparezca el contenido ya no podr√°s reportar el problema.'
 			],
 			$iframe;
 		for (var i = 0; i < msgCont.length; i++) {
@@ -62,7 +62,7 @@
 	_onWinLoaded = function() {
 		var $form = $(_popup.document.body).find('#contactform');
 		$form.find('input[name="wpContactWikiName"]').val(window.location.toString());
-		$form.find('input[name="wpFeature"]').val('Blank pages / P·ginas en blanco');
+		$form.find('input[name="wpFeature"]').val('Blank pages / P√°ginas en blanco');
 		$form.find('textarea[name="wpDescription"]').val('Refer to http://support.wikia-inc.com/tickets/71277\n\n'+
 			'Blank page detected through automated script. Information provided with user consent.\n\n' +
 			'__varnish_servername: '+_varnish+'\n\n'+
@@ -88,12 +88,12 @@
 		}
 		$form.append($('<input type="submit"/>').attr({
 			'class': 'mw-htmlform-submit',
-			'value': 'Purgar la p·gina'
+			'value': 'Purgar la p√°gina'
 		}));
 		return $form;
 	},
 	_reloadAlternate = function() {
-		var $button = $('<button id="reloadAlternate" class="mw-htmlform-submit">Purgar la p·gina (mÈtodo alternativo)</button>');
+		var $button = $('<button id="reloadAlternate" class="mw-htmlform-submit">Purgar la p√°gina (m√©todo alternativo)</button>');
 		$button.on('click', _onReloadAlternate);
 		return $button;
 	},

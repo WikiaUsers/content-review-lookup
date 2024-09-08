@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------
-REDEFINICI覰 DE ORDENACI覰 DE TABLAS "SORTABLE"
+REDEFINICI脫N DE ORDENACI脫N DE TABLAS "SORTABLE"
 -----------------------------------------------
 */
 
@@ -46,9 +46,9 @@ function ts_dateToSortKey(date) {
 }
 
 /* 
-Modificado por Sanbec en WP-es aplicando la soluci髇 de WP en sueco
+Modificado por Sanbec en WP-es aplicando la soluci贸n de WP en sueco
 (Anteriormente parece que solo cambiaba un punto)
-EXPERIMENTAL: A馻dido adem醩 para que ordene los porcentajes.
+EXPERIMENTAL: A帽adido adem谩s para que ordene los porcentajes.
 */
 function ts_parseFloat(num) {
         if (!num) return 0;
@@ -60,8 +60,8 @@ function ts_parseFloat(num) {
 }
 
 /* 
-Modificaci髇 hecha por Sanbec en WP-es para que ordene alfab閠icamente bien
-ignorando acentos y no se limite a ordenarlo seg鷑 el c骴igo ASCII.
+Modificaci贸n hecha por Sanbec en WP-es para que ordene alfab茅ticamente bien
+ignorando acentos y no se limite a ordenarlo seg煤n el c贸digo ASCII.
 */
 function ts_sort_caseinsensitive(a,b) {
 var aa = a[1].toLowerCase();
@@ -70,8 +70,8 @@ return(aa.localeCompare(bb));
 }
 
 /*
-Redefinici髇 de ordenaci髇 de tablas "sortable"
-Traido de la Inclopedia. Ordena nombres de meses en espa駉l y cambia puntos por comas.
+Redefinici贸n de ordenaci贸n de tablas "sortable"
+Traido de la Inclopedia. Ordena nombres de meses en espa帽ol y cambia puntos por comas.
 */ 
  
 function ts_resortTable(lnk) {

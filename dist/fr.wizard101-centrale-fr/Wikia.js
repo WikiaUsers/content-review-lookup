@@ -6,9 +6,9 @@ $(document).ready( function() {
     });
     
     var hName = $('hgroup h1'), hTag = $('hgroup .tag'),
-    specialTag = ['Fondateur', 'Administrateur', 'Modérateur'],
-    wizardTag = ['Cofondateur', 'Grand maître sorcier', 'Maître sorcier',
-'Magicien ès lettres', 'Magicien ès arts'];
+    specialTag = ['Fondateur', 'Administrateur', 'ModÃ©rateur'],
+    wizardTag = ['Cofondateur', 'Grand maÃ®tre sorcier', 'MaÃ®tre sorcier',
+'Magicien Ã¨s lettres', 'Magicien Ã¨s arts'];
 
     for(var i = 0; i < specialTag.length; i++){
         switch(i){
@@ -17,7 +17,7 @@ $(document).ready( function() {
                     hTag.after($('<span />').append(wizardTag[i+1]).addClass('tag'));
                 }
                 else{
-                    hName.after($('<span />').append('Savant(e) Sorcier(ière)').addClass('tag'));
+                    hName.after($('<span />').append('Savant(e) Sorcier(iÃ¨re)').addClass('tag'));
                 }
             break;
         }
@@ -34,15 +34,15 @@ $(document).ready( function() {
     if(titre.text() == 'Fondateur'
     || titre.text() == 'Co-fondateur'
     || titre.text() == 'Administrateur') {
-        //Affichage d'un titre supplémentaire pour les Admins
-        titre.after(nouveauTitre.addClass('tag').text('Grand maître sorcier'));
+        //Affichage d'un titre supplÃ©mentaire pour les Admins
+        titre.after(nouveauTitre.addClass('tag').text('Grand maÃ®tre sorcier'));
     }
-    else if (titre.text() == 'Modérateur') {
-        //Affiche d'un titre supplémentaire pour les Modos
-        titre.after(nouveauTitre.addClass('tag').text('Maître sorcier'));
+    else if (titre.text() == 'ModÃ©rateur') {
+        //Affiche d'un titre supplÃ©mentaire pour les Modos
+        titre.after(nouveauTitre.addClass('tag').text('MaÃ®tre sorcier'));
     }
     else {
-        //Affichage d'un titre supplémentaire pour les Utilisateurs ordinaires
-        userName.after(nouveauTitre.addClass('tag').text('Savant(e) Sorcier(ière)'));
+        //Affichage d'un titre supplÃ©mentaire pour les Utilisateurs ordinaires
+        userName.after(nouveauTitre.addClass('tag').text('Savant(e) Sorcier(iÃ¨re)'));
     } */
 });

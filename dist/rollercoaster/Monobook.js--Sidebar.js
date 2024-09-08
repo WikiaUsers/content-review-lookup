@@ -2,10 +2,10 @@
 /*<pre>
 Thank you to Tardis Wiki, who in turn say thank you to the Spanish Pokemon Wiki.So that is why half of it is in Spanish. We didn't make any of it.
  
-Aviso: Esto es código JavaScript. Si hay algún tipo de error de sintaxis en este código el menú del sidebar dejará de funcionar. Asegúrate que no rompes nada.
-Cada elemento de wgSidebar es el texto (después del |) del elemento en [[MediaWiki:Sidebar]]
-Los menús son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenú, donde la clave (antes de los : ) es el propio elemento y el valor (después de los : ) es una lista [ ... ] con el contenido del submenú.
-Para cada elemento, será tanto el enlace como el texto. Si se pone una barra | lo que haya antes será el enlace y lo de después el texto.
+Aviso: Esto es cÃ³digo JavaScript. Si hay algÃºn tipo de error de sintaxis en este cÃ³digo el menÃº del sidebar dejarÃ¡ de funcionar. AsegÃºrate que no rompes nada.
+Cada elemento de wgSidebar es el texto (despuÃ©s del |) del elemento en [[MediaWiki:Sidebar]]
+Los menÃºs son listas [ ... ]. Un string ' ... ' es un elemento. Un objeto { ... } es un elemento con un submenÃº, donde la clave (antes de los : ) es el propio elemento y el valor (despuÃ©s de los : ) es una lista [ ... ] con el contenido del submenÃº.
+Para cada elemento, serÃ¡ tanto el enlace como el texto. Si se pone una barra | lo que haya antes serÃ¡ el enlace y lo de despuÃ©s el texto.
 */
 wgSidebar['Roller coasters'] = [
                  {'Find a coaster|Find a coaster': [
@@ -66,7 +66,7 @@ wgSidebar['help'] = [
         'Help:Wiki markup|Wiki markup'
 ];
  
-/* Llamada al código para inicializar esto */
+/* Llamada al cÃ³digo para inicializar esto */
 $(MonobookSidebar.init);
  
 /*</pre>*/

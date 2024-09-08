@@ -1,4 +1,4 @@
-// Nuevo mÛdulo del rail
+// Nuevo m√≥dulo del rail
  /*
 $(function(){
     $('<section class="module RailModule"></section>')
@@ -8,7 +8,7 @@ $(function(){
 
 // Refrescar Actividad reciente
 window.AjaxRCRefreshText = 'Auto-ref';
-window.AjaxRCRefreshHoverText = 'Refrescar la actividad autom·ticamente.';
+window.AjaxRCRefreshHoverText = 'Refrescar la actividad autom√°ticamente.';
 window.ajaxPages = ["Especial:WikiActivity","Especial:CambiosRecientes"];
  
 window.ChatStatus = {

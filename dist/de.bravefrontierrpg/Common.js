@@ -1,9 +1,9 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 ItemsToAdd = [
   {
     'Name': 'Fehlende Animationen',
     'Page': 'Kategorie:Missing Animation',
-    'Description': 'Diese Einheiten benötigen noch eine GIF-Animation.'
+    'Description': 'Diese Einheiten benÃ¶tigen noch eine GIF-Animation.'
   },
 ];
 AffectsSidebar = true;

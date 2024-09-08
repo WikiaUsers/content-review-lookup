@@ -21,7 +21,7 @@ if ($.inArray(mw.config.get('wgPageName'), authenticatedUsers) > -1) {
 	$('.masthead-info').find('hgroup').append('<span class="tag">Authenticated</span>')
 }
 
-/* Iconos en p·ginas para redes sociales */
+/* Iconos en p√°ginas para redes sociales */
 function SocialIcons() {
  
     var userArray = wgPageName.split(":");

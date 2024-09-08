@@ -1,4 +1,4 @@
-/*SkinNotification: Agrega una notificación para los que usen oasis. */
+/*SkinNotification: Agrega una notificaciÃ³n para los que usen oasis. */
 window.SkinNotification = {
         article: 'Usuario_Blog:Yoh.:./Reviviendo_Caricartoons)',
         key: 'NfSkin',
@@ -17,7 +17,7 @@ window.SkinNotification = {
                         nf = $('#WikiaNotifications');
                         $(document.body).addClass('notifications');
                 }
-                var sn = $('<div data-type="100"><a class="sprite close-notification"></a>Ayúdanos a revivir el wiki <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Descubre como aquí aquí</a>.</div>');
+                var sn = $('<div data-type="100"><a class="sprite close-notification"></a>AyÃºdanos a revivir el wiki <a href="'+wgServer+wgArticlePath.replace('$1',SkinNotification.article.replace(/\s/g,'_'))+'" title="'+SkinNotification.article+'">Descubre como aquÃ­ aquÃ­</a>.</div>');
                 nf.children().eq(0).append(sn);
                 sn.children().eq(0).click(SkinNotification.dismiss);
         },
@@ -29,7 +29,7 @@ window.SkinNotification = {
  
 $(SkinNotification.init);
  
-/* Enlaces en el menú de usuario */
+/* Enlaces en el menÃº de usuario */
 function subeEnlacesUtiles(){$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Especial:Contribuciones/'+ encodeURIComponent(wgUserName) +'">Contribuciones</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario_Blog:'+ encodeURIComponent(wgUserName) +'" title="Mis entradas de blog">Entradas de Blog</a></li>');$('ul.AccountNavigation li:first-child ul.subnav li:first-child').after('<li><a href="/wiki/Usuario:'+ encodeURIComponent(wgUserName) +'/wikia.css" title="Tu apariencia personal">Mi apariencia</a></li>');$('.WikiaHeader nav ul li:first-child');}addOnloadHook(subeEnlacesUtiles);
  
 // BEGIN JavaScript title rewrite -- jQuery version and new wikia skin fixes by Grunny

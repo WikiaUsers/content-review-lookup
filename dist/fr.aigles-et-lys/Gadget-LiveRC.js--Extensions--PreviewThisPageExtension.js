@@ -18,21 +18,21 @@ Ajoute un champ de texte dans le menu d'options pour visualiser n'importe quelle
 * Licence : ...?
 * Documentation :
 * Auteur : [[wikipedia:fr:User:Dr Brains]]
-* Développement et maintenance :
+* DÃ©veloppement et maintenance :
  
  
-{{Catégorisation JS|LiveRC}}
+{{CatÃ©gorisation JS|LiveRC}}
  
 <source lang=javascript> */
-if (typeof(lrcHooks)!="undefined") { // DÉBUT IF
+if (typeof(lrcHooks)!="undefined") { // DÃ‰BUT IF
 
 
 var lrc_PreviewThisPageButton = [
-                                  {id : "PreviewThisPage_StartButton", text : "P",  title : "Prévisualiser une page"   },
+                                  {id : "PreviewThisPage_StartButton", text : "P",  title : "PrÃ©visualiser une page"   },
                                   {id : "PreviewThisPage_TextInput",   text : "",   title : ""                         },
-                                  {id : "PreviewThisPage_OKButton",    text : "OK", title : "Prévisualiser cette page" }
+                                  {id : "PreviewThisPage_OKButton",    text : "OK", title : "PrÃ©visualiser cette page" }
                                 ];
-lrcManageParams_Desc['Desclrc_PreviewThisPageButton'] = new Array('Paramètres de PreviewThisPageExtension', 'PreviewThisPageExtension');
+lrcManageParams_Desc['Desclrc_PreviewThisPageButton'] = new Array('ParamÃ¨tres de PreviewThisPageExtension', 'PreviewThisPageExtension');
  
 if(typeof(Suggest_AddPageSuggestion)!="function"){ 
     importScriptURI("//fr.wikipedia.org/wiki/MediaWiki:Gadget-Suggest.js&action=raw&ctype=text/javascript");

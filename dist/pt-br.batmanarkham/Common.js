@@ -1,14 +1,14 @@
-/* CÛdigos JavaScript colocados aqui ser„o carregados por todos aqueles que acessarem alguma p·gina desta wiki */
-//// CrÈditos a Arkham City Wiki ////
+/* C√≥digos JavaScript colocados aqui ser√£o carregados por todos aqueles que acessarem alguma p√°gina desta wiki */
+//// Cr√©ditos a Arkham City Wiki ////
 // ============================================================
-// Barras de NavegaÁ„o Din‚micas (experimantal)
-// Este script È da Wikipedia. Para crÈditos ao autor(es), veja http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
+// Barras de Navega√ß√£o Din√¢micas (experimantal)
+// Este script √© da Wikipedia. Para cr√©ditos ao autor(es), veja http://en.wikipedia.org/w/index.php?title=MediaWiki:Common.js&action=history
 
 
 /* Teste se um elemento tem uma certa classe **************************************
  *
- * DescriÁ„o: Usa expressıes regulares e cache para melhor performance.
- * Criadores: Usu·rio:Mike Dillon, Usu·rio:R. Koot, Usu·rio:SG
+ * Descri√ß√£o: Usa express√µes regulares e cache para melhor performance.
+ * Criadores: Usu√°rio:Mike Dillon, Usu√°rio:R. Koot, Usu√°rio:SG
  */
 
 var hasClass = (function () {
@@ -20,9 +20,9 @@ var hasClass = (function () {
 
  /** Tabelas *********************************************************
   *
-  *  DescriÁ„o: Deixa as tabelas fechadas, mostrando apenas o cabeÁalho. Veja
+  *  Descri√ß√£o: Deixa as tabelas fechadas, mostrando apenas o cabe√ßalho. Veja
   *               [[Wikipedia:NavFrame]].
-  *  Criadores: [[Usu·rio:R. Koot]]
+  *  Criadores: [[Usu√°rio:R. Koot]]
   */
  
  var autoCollapse = 2;
@@ -239,7 +239,7 @@ return ""
 
 function getXmlHttpRequestObject() {
 if (window.XMLHttpRequest) {
-return new XMLHttpRequest(); //N„o Internet Explorer
+return new XMLHttpRequest(); //N√£o Internet Explorer
 } else if(window.ActiveXObject) {
 return new ActiveXObject("Microsoft.XMLHTTP"); //Internet Explorer
 } else {
@@ -296,7 +296,7 @@ rcTimer = setTimeout("loadRCData();", rcRefresh);
 
 if (wgPageName == "Special:RecentChanges") addOnloadHook(preloadAJAXRC);
 
-// CrÈditos a Transformers Wiki http://transformers.wikia.com/ para esta funÁ„o 
+// Cr√©ditos a Transformers Wiki http://transformers.wikia.com/ para esta fun√ß√£o 
 if ( skin == 'monobook' ) {
 function loadsearchstuff() {
   // "If you're reading this, I'm sorry. Messy code lies ahead."
@@ -331,8 +331,8 @@ addOnloadHook(loadsearchstuff);
 
  /** Username replace function ([[template:USERNAME]]) *******************************
   * Inserts user name into <span class="insertusername"></span>
-  * Originalmente por [[wikia:Usu·rio:Splarka|Splarka]]
-  * Nova vers„o por [[Usu·rio:Spang|Spang]]
+  * Originalmente por [[wikia:Usu√°rio:Splarka|Splarka]]
+  * Nova vers√£o por [[Usu√°rio:Spang|Spang]]
   */
  
  function UserNameReplace() {
@@ -421,4 +421,4 @@ YouTubeRemote = {
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
 
-/* Fim da personalizaÁ„o */
+/* Fim da personaliza√ß√£o */

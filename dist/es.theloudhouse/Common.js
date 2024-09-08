@@ -1,4 +1,4 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 // Etiquetas de Usuarios
  
 window.UserTagsJS = {
@@ -26,11 +26,11 @@ window.UserTagsJS = {
 	},
 	tags: {
         rollback: { u: 'Reversor', f: 'Reversora' },
-        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'The Loud House Wikia:AdministraciÛn#Moderadores_del_Chat' },
-        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'The Loud House Wikia:AdministraciÛn#Moderadores_de_Discusiones'},
-        content_moderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'The Loud House Wikia:AdministraciÛn#Moderadores_de_Contenido'},
-        sysop: { u: 'Administrador', f: 'Administradora', link:'The Loud House Wikia:AdministraciÛn#Administradores' },
-        bureaucrat: { u:'BurÛcrata', f: 'BurÛcrata', link:'The Loud House Wikia:AdministraciÛn#Bur.C3.B3cratas' },
+        chatmoderator: { u: 'Moderador del chat', f: 'Moderadora del chat', link:'The Loud House Wikia:Administraci√≥n#Moderadores_del_Chat' },
+        threadmoderator: { u: 'Moderador de Discusiones', f: 'Moderadora de Discusiones', link:'The Loud House Wikia:Administraci√≥n#Moderadores_de_Discusiones'},
+        content_moderator: {u: 'Moderador de Contenido', f: 'Moderadora de Contenido', link: 'The Loud House Wikia:Administraci√≥n#Moderadores_de_Contenido'},
+        sysop: { u: 'Administrador', f: 'Administradora', link:'The Loud House Wikia:Administraci√≥n#Administradores' },
+        bureaucrat: { u:'Bur√≥crata', f: 'Bur√≥crata', link:'The Loud House Wikia:Administraci√≥n#Bur.C3.B3cratas' },
     }
 };
  

@@ -1,5 +1,5 @@
-/* CabeÁalho */
-var chatTopic = 'Bem-vindo ao chat da Scandn·via Wiki.<br /><a href="/wiki/Scandn·via Wiki:Diretrizes_do_Chat" target="_blank" title="Scandn·via Wiki:Diretrizes do Chat</a>'
+/* Cabe√ßalho */
+var chatTopic = 'Bem-vindo ao chat da Scandn√°via Wiki.<br /><a href="/wiki/Scandn√°via Wiki:Diretrizes_do_Chat" target="_blank" title="Scandn√°via Wiki:Diretrizes do Chat</a>'
  
 $(function() {
         $('#ChatHeader .public.wordmark').prepend('<div class="chattopic" style="text-align:center;position:absolute;width:60%;z-index:0;font-size: 13px;color:whitesmoke;font-weight:bold;line-height:1.6;margin-left:210px;">'+chatTopic+'</div>')

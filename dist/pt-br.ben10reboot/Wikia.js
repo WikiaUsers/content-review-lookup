@@ -1,22 +1,22 @@
-/* Adiciona o label "inativo" nos perfis de quem n„o edita h· no m·ximo 2 meses */
+/* Adiciona o label "inativo" nos perfis de quem n√£o edita h√° no m√°ximo 2 meses */
 InactiveUsers = { 
 	months: 2,
         text: 'inativo'};
 importScriptPage('MediaWiki:InactiveUsers/code.js', 'dev');
 
-/* Adiciona um bot„o para ver o cÛdigo da p·gina, apenas o cÛdigo */
+/* Adiciona um bot√£o para ver o c√≥digo da p√°gina, apenas o c√≥digo */
 importScriptPage('MediaWiki:View_Source/code.js', 'dev'); 
 
-/* Adiciona sugest„o de pesquisa na especial:busca */
+/* Adiciona sugest√£o de pesquisa na especial:busca */
 importScriptPage('MediaWiki:SearchSuggest/code.js', 'dev');
 
-/* Substitui o "Um contribuidor da Wikia" pelo IP do anÙnimo */
+/* Substitui o "Um contribuidor da Wikia" pelo IP do an√¥nimo */
 importScriptPage('MediaWiki:RevealAnonIP/code.js', 'dev');
 
-/* Automaticamente abre o menu de contexto no bot„o "editar" da pag */
+/* Automaticamente abre o menu de contexto no bot√£o "editar" da pag */
 importScriptPage('MediaWiki:AutoEditDropdown/code.js', 'dev');
 
-/* Gadget de referÍncias */
+/* Gadget de refer√™ncias */
 importScriptPage('MediaWiki:ReferencePopups/code.js', 'dev');
 
 /* Top editores */

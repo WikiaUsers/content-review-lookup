@@ -3,7 +3,7 @@ function suggestCategory(text,callback) {
     //the word could not be recognized anymore
 	var words = text.split(" ").map(function(w) { return w.replace(/[.|,|?|!]$/,''); });
 	var records = [];
-    getCategories('BuchPortr‰ts/nach Thema',function(categories) {
+    getCategories('BuchPortr√§ts/nach Thema',function(categories) {
         for(var w = 0; w < words.length; w++) {
 			var word = words[w];
 			var match = _.findWhere(categories,{title: word});

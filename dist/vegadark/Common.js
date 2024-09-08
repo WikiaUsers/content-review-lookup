@@ -34,7 +34,7 @@ else if (window.attachEvent) window.attachEvent("onload",onloadhookcustom);
 
 /*
 ----------------------------------------
-EDITAR JUSTO A LA DERECHA DE LOS TÕTULOS
+EDITAR JUSTO A LA DERECHA DE LOS T√çTULOS
 ----------------------------------------
 */
 function moveEditsection() {
@@ -57,7 +57,7 @@ addOnloadHook(moveEditsection);
 
 /*
 -----------------------------------------
-C”DIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
+C√ìDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
 -----------------------------------------
 */
 
@@ -160,7 +160,7 @@ addLoadHook(createNavigationBarToggleButton);
 
 /*
 -----------------------------------------------
-REDEFINICI”N DE ORDENACI”N DE TABLAS "SORTABLE"
+REDEFINICI√ìN DE ORDENACI√ìN DE TABLAS "SORTABLE"
 -----------------------------------------------
 */
 
@@ -205,9 +205,9 @@ function ts_dateToSortKey(date) {
 	return "00000000";
 }
 
-//Modificado por Sanbec en WP-es aplicando la soluciÛn de WP en sueco
+//Modificado por Sanbec en WP-es aplicando la soluci√≥n de WP en sueco
 //(Anteriormente parece que solo cambiaba un punto)
-//EXPERIMENTAL: AÒadido adem·s para que ordene los porcentajes.
+//EXPERIMENTAL: A√±adido adem√°s para que ordene los porcentajes.
 function ts_parseFloat(num) {
         if (!num) return 0;
         num = num.replace("%", "");
@@ -217,8 +217,8 @@ function ts_parseFloat(num) {
         return (isNaN(num) ? 0 : num);
 }
 
-//ModificaciÛn hecha por Sanbec en WP-es para que ordene alfabÈticamente bien
-// ignorando acentos y no se limite a ordenarlo seg˙n el cÛdigo ASCII.
+//Modificaci√≥n hecha por Sanbec en WP-es para que ordene alfab√©ticamente bien
+// ignorando acentos y no se limite a ordenarlo seg√∫n el c√≥digo ASCII.
 function ts_sort_caseinsensitive(a,b) {
 var aa = a[1].toLowerCase();
 var bb = b[1].toLowerCase();

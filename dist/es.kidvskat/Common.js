@@ -3,7 +3,7 @@ importScript('MediaWiki:Common.js/displayTimer.js');
 
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este blog no fue comentado en <expiryDays> días, por lo que es redundante comentarlo.",
+    expiryMessage: "Este blog no fue comentado en <expiryDays> dÃ­as, por lo que es redundante comentarlo.",
 };
 
 importArticles({

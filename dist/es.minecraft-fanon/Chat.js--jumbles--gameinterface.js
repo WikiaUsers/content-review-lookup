@@ -11,9 +11,9 @@ tGameInt.oFuncs.getGameInterface = function(oNewCmds, sPrefix) {
         stopgame: {name: "stop", userProfile: 0, mfunction: null, enabled: true, helptext: "Detener el Juego."},
         leavegame: {name: "abandonar", userProfile: 1, mfunction: null, enabled: true, helptext: "Abandonar el Juego."},
         joingame: {name: "unirse", userProfile: 1, mfunction: null, enabled: true, helptext: "Unirse al Juego."},
-        getscore: {name: "record", userProfile: 1, mfunction: null, enabled: true, helptext: "Mostrar tu Puntuación."},
+        getscore: {name: "record", userProfile: 1, mfunction: null, enabled: true, helptext: "Mostrar tu PuntuaciÃ³n."},
         getplayerlist: {name: "players", userProfile: 1, mfunction: null, enabled: true, helptext: "Lista de Jugadores."},
-        gethelp: {name: "ayuda", userProfile: 5, mfunction: null, enabled: true, helptext: "Le mostrará un manual de Comando."}};
+        gethelp: {name: "ayuda", userProfile: 5, mfunction: null, enabled: true, helptext: "Le mostrarÃ¡ un manual de Comando."}};
     if (oNewCmds) {
         for (var sCmd in oNewCmds) {
             if (tCmds[sCmd]) { // if command exists set values
@@ -42,7 +42,7 @@ tGameInt.oFuncs.getCommmand = function(sCmd, oUser, fAction) {
                 tGameInt.oUserCmds[sCmd][0](oUser.sNick, fAction);
                 return true;
             } else {
-                sendPM("Usted no está autorizado a utilizar este comando. Para obtener ayuda sobre el tipo " + tGameInt.oVars.sCmdPrefixSymbol + tCmds.gethelp.name + ".");
+                sendPM("Usted no estÃ¡ autorizado a utilizar este comando. Para obtener ayuda sobre el tipo " + tGameInt.oVars.sCmdPrefixSymbol + tCmds.gethelp.name + ".");
             }
         } else {
             return false; // this command has been disabled.
@@ -76,7 +76,7 @@ function initializeUserCmds(tCmds, sPrefix) {
                 tCmds.startgame.mfunction(sUser);
             } else {
                 if (sUser) {
-                    tGameInt.oFuncs.sendPM(sUser, 'El comando aún no se implementada');
+                    tGameInt.oFuncs.sendPM(sUser, 'El comando aÃºn no se implementada');
                 }
             }
         }, tCmds.startgame.helptext, tCmds.startgame.userProfile, tCmds.startgame.enabled];
@@ -86,7 +86,7 @@ function initializeUserCmds(tCmds, sPrefix) {
                 tCmds.stopgame.mfunction(sUser);
             } else {
                 if (sUser) {
-                    tGameInt.oFuncs.sendPM(sUser, 'El comando aún no se implementada');
+                    tGameInt.oFuncs.sendPM(sUser, 'El comando aÃºn no se implementada');
                 }
             }
         }, tCmds.stopgame.helptext, tCmds.stopgame.userProfile, tCmds.stopgame.enabled];
@@ -143,7 +143,7 @@ function initializeUserCmds(tCmds, sPrefix) {
                 var bPlayer = tGameInt.oFuncs.isPlayer(sUser);
                 var iScore = tGameInt.oFuncs.getScore(sUser);
                 if (bPlayer && iScore >= 0) {
-                    var sPlayers = "Su puntuación es " + tGameInt.oFuncs.getScore(sUser);
+                    var sPlayers = "Su puntuaciÃ³n es " + tGameInt.oFuncs.getScore(sUser);
                     tGameInt.oFuncs.sendPM(sUser, sPlayers);
                 }
             }
@@ -198,7 +198,7 @@ tGameInt.oFuncs.setPlayer = function(sUser, bPlayer) {
     }
     else if (!tGameInt.oFuncs.isPlayer(sUser)) {
         oPlayerList[sUser] = {score: 0};
-        tGameInt.oFuncs.sendPM(sUser, sUser + ' se unió a la partida');
+        tGameInt.oFuncs.sendPM(sUser, sUser + ' se uniÃ³ a la partida');
         return true;
     }
     return false;
@@ -305,7 +305,7 @@ tGameInt.oFuncs.addUserCmd = function(sCmdName, oProperties) {
                         tCmds[sCmdName].mfunction(sUser);
                     } else {
                         if (sUser) {
-                            tGameInt.oFuncs.sendPM(sUser, 'El comando aún no se implementada');
+                            tGameInt.oFuncs.sendPM(sUser, 'El comando aÃºn no se implementada');
                         }
                     }
                 }, tCmds[sCmdName].helptext, tCmds[sCmdName].userProfile, tCmds[sCmdName].enabled];

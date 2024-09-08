@@ -1,4 +1,4 @@
- // Lädt die Vorlage:Dateiinfo beim Hochladen direkt im Beschreibungsfeld.
+ // LÃ¤dt die Vorlage:Dateiinfo beim Hochladen direkt im Beschreibungsfeld.
 
  $(function setSpecialUploadTemplate() {
 	if ( wgCanonicalSpecialPageName != "Upload" ) return;

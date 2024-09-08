@@ -1,6 +1,6 @@
 /***** Actualizar los cambios recientes de la wikiactividad *****/
-AjaxRCRefreshText = 'Act. automát.';
-AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
+AjaxRCRefreshText = 'Act. automÃ¡t.';
+AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 ;
@@ -31,11 +31,11 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		Burócrata: { u:'Burócrata' }
+		BurÃ³crata: { u:'BurÃ³crata' }
 	}
 };
 UserTagsJS.modules.custom = {
-	'Arelys': ['Burócrata']
+	'Arelys': ['BurÃ³crata']
 };
 UserTagsJS.modules.inactive = {
 	days: 30,

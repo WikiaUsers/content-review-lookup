@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 /*<source lang="javascript">*/
 /*
- * Copyright © 2009, Daniel Friesen
+ * Copyright Â© 2009, Daniel Friesen
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,8 @@ if (skin == "monaco" || skin == "monobook" || skin == "oasis" || skin == "wikia"
          de: {
             buttonArchiveTool: "Archivieren",
             buttonArchiveToolTooltip: "Seite archivieren",
-            buttonSelectAll: "Alle auswählen",
-            buttonDeselectAll: "Keine auswählen",
+            buttonSelectAll: "Alle auswÃ¤hlen",
+            buttonDeselectAll: "Keine auswÃ¤hlen",
             buttonSaveArchive: "Archiv speichern",
             buttonAbort: "Abbrechen",
             labelLines: "Zeilen",

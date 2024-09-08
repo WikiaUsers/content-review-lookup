@@ -1,8 +1,8 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 // WikiActivity & RecentChanges
-AjaxRCRefreshText = 'ActualizaciÛn Autom·tica';
-AjaxRCRefreshHoverText = 'Refrescar la p·gina autom·ticamente';
+AjaxRCRefreshText = 'Actualizaci√≥n Autom√°tica';
+AjaxRCRefreshHoverText = 'Refrescar la p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 
@@ -13,9 +13,9 @@ importScriptPage('InactiveUsers/code.js', 'dev');
 // **************************************************
 // NOMBRE DEL USUARIO
 // **************************************************
-// Inserta el nombre del usuario donde estÈ "<span class="insertusername"></span>"
+// Inserta el nombre del usuario donde est√© "<span class="insertusername"></span>"
 // o la [[Plantilla:NOMBREUSUARIO]]
-// TraÌda inicialmente de Uncyclopedia y corregida por 
+// Tra√≠da inicialmente de Uncyclopedia y corregida por 
 // uncyclopedia:es:user:Ciencia Al Poder ,
 // para que funcione correctamente usando ''class='' en vez de ''id=''.
 // **************************************************
@@ -35,9 +35,9 @@ addOnloadHook(UserNameReplace);
 importArticles({
     type: "script",
     articles: [
-        // 1. Mostrar im·genes duplicadas
+        // 1. Mostrar im√°genes duplicadas
         "MediaWiki:Common.js/DupImageList.js",
-        // 2. Res˙menes de ediciÛn
+        // 2. Res√∫menes de edici√≥n
         "MediaWiki:Common.js/resumenedicion.js"
     ]
 });

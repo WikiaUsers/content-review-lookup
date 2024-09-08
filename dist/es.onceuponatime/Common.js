@@ -1,6 +1,6 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
-var WikiaNotificationMessage = "Sigua la serie y la wiki por twitter, por medio de los hashtags: #TheLoversEvil, si prefieres ser un villano, y #HappyEndingsOUAT, si desean ver a los hÈroes en acciÛn.";
+var WikiaNotificationMessage = "Sigua la serie y la wiki por twitter, por medio de los hashtags: #TheLoversEvil, si prefieres ser un villano, y #HappyEndingsOUAT, si desean ver a los h√©roes en acci√≥n.";
 var WikiaNotificationexpiry = 30;
 importScriptPage('WikiaNotification/code.js', 'dev');
 

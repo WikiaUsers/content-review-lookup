@@ -26,9 +26,9 @@
 		<textarea style="height: 20em; width: 60%;" id="text-multi-snd"/>\
         <br/> \
       </p> \
-      <p>Mettez les noms des personnes à qui envoyer votre message séparés par des virgules.</p>. \
+      <p>Mettez les noms des personnes Ã  qui envoyer votre message sÃ©parÃ©s par des virgules.</p>. \
         <textarea style="height: 20em; width: 60%;" id="perso-multi-snd"/> \
-	<div id="text-error-output" style="height:10em; width: 80%; margin: 5px auto 0px auto; color: #000; background-color: #ffbfbf; height: 150px; border: 1px solid black; font-weight: bold; overflow: scroll">Toute erreur produite sera affichée ici.<br/></div> \
+	<div id="text-error-output" style="height:10em; width: 80%; margin: 5px auto 0px auto; color: #000; background-color: #ffbfbf; height: 150px; border: 1px solid black; font-weight: bold; overflow: scroll">Toute erreur produite sera affichÃ©e ici.<br/></div> \
     </fieldset> \
   </form>',
   token = mw.user.tokens.get('editToken'),
@@ -68,7 +68,7 @@
       personne_actuelle = personnes[0];
  
       if (!multi_message) {
-        alert('Merci de mettre un message à envoyer !');
+        alert('Merci de mettre un message Ã  envoyer !');
         return;
       }
  
@@ -76,7 +76,7 @@
  
       if (!personne_actuelle) {
         document.getElementById('startButton').removeAttribute("disabled");
-        $.showCustomModal('Fini !', 'J\'ai envoyé à tout le monde normalement.', {
+        $.showCustomModal('Fini !', 'J\'ai envoyÃ© Ã  tout le monde normalement.', {
            id: 'multi-snd-complete',
            width: 200,
            buttons: [{
@@ -131,16 +131,16 @@
       })
       .done(function(d) { 
         if (!d.error) {
-          console.log('Envoi du message à '+personne+' réussi !');
+          console.log('Envoi du message Ã  '+personne+' rÃ©ussi !');
         } 
 	else {
-          console.log('Echec d\'envoi du message à  '+personne+': '+ d.error.code);
-          $('#text-error-output').append('Echec d\'envoi du message à  '+personne+': '+d.error.code+'<br/>');
+          console.log('Echec d\'envoi du message Ã   '+personne+': '+ d.error.code);
+          $('#text-error-output').append('Echec d\'envoi du message Ã   '+personne+': '+d.error.code+'<br/>');
         }
       })
       .fail(function() {
-        console.log('Echec d\'envoi du message à  '+personne+': unknownerror');
-        $('#text-error-output').append('Echec d\'envoi du message à  '+personne+': unknownerror<br/>');
+        console.log('Echec d\'envoi du message Ã   '+personne+': unknownerror');
+        $('#text-error-output').append('Echec d\'envoi du message Ã   '+personne+': unknownerror<br/>');
       });
       setTimeout(init,delay);
     }

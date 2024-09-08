@@ -1,9 +1,9 @@
-/* Novos botıes na barra de ferramentas */
+/* Novos bot√µes na barra de ferramentas */
 
 mwCustomEditButtons[mwCustomEditButtons.length] = {
 		"imageFile": "http://i.imgur.com/1RPm46p.png",
-		"speedTip": "RaÁa de Gato",
-		"tagOpen": "{{RaÁa\n|{{PAGENAME}} \n|imagem  = \n|largimagem        =250 \n|subtÌtulo   = \n|nomesalt  = \n|paÌs  = \n|apelidos  = \n|n„oreconhecido  = \n|extinto = \n|outros   = \n|notas  = ",
+		"speedTip": "Ra√ßa de Gato",
+		"tagOpen": "{{Ra√ßa\n|{{PAGENAME}} \n|imagem  = \n|largimagem        =250 \n|subt√≠tulo   = \n|nomesalt  = \n|pa√≠s  = \n|apelidos  = \n|n√£oreconhecido  = \n|extinto = \n|outros   = \n|notas  = ",
 		"tagClose": "  \n}} ",
 		"sampleText":  " "
 	};

@@ -141,7 +141,7 @@ var admins = [
 
    function addClassToLinks() {
       var paths = [
-         '/wiki/Spezial:Beitr‰ge',
+         '/wiki/Spezial:Beitr√§ge',
          '/wiki/Benutzer:',
          '/wiki/Nachrichtenseite:',
          '/wiki/Benutzer_Blog:',

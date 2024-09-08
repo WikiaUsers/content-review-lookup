@@ -27,7 +27,7 @@ function displayTimer() {
   var timerLink = document.createElement( 'a' );
   var timerObj = document.createElement( 'li' );
   timerLink.href = '/wiki/' + wgPageName + '?action=purge';
-  timerLink.title = 'Purgar la cachÈ del servidor y actualizar el contenido de esta p·gina.'
+  timerLink.title = 'Purgar la cach√© del servidor y actualizar el contenido de esta p√°gina.'
   timerObj.id = 'displayTimer';
   timerObj.style.textTransform = 'none';
   timerObj.style.fontWeight = 'bold';

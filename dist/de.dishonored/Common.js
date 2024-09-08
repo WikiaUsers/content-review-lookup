@@ -1,10 +1,10 @@
-/* Jedes JavaScript hier wird für alle Benutzer für jede Seite geladen. */
+/* Jedes JavaScript hier wird fÃ¼r alle Benutzer fÃ¼r jede Seite geladen. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
-//Auto-Reload für Aktivitätsfeed
+//Auto-Reload fÃ¼r AktivitÃ¤tsfeed
 window.AjaxRCRefreshText = 'Automatisch aktualisieren';
-window.AjaxRCRefreshHoverText = 'Lädt alle 60 Sekunden den Aktivitätsfeed neu';
+window.AjaxRCRefreshHoverText = 'LÃ¤dt alle 60 Sekunden den AktivitÃ¤tsfeed neu';
 window.ajaxPages = ["Special:RecentChanges","Special:Watchlist","Special:Log","Special:Contributions"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

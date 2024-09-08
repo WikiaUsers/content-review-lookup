@@ -7,5 +7,5 @@ importArticles({
 });
  
 /* Notificaciones */
-var WikiaNotificationMessage = "¡Participa en nuestras <a href='http://es.fairytail.wikia.com/d/f/121040/latest'>discusiones</a> sobre Fairy Tail!";
+var WikiaNotificationMessage = "Â¡Participa en nuestras <a href='http://es.fairytail.wikia.com/d/f/121040/latest'>discusiones</a> sobre Fairy Tail!";
 var WikiaNotificationexpiry = 10;

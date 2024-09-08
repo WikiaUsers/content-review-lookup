@@ -1,4 +1,4 @@
-/* Cualquier JavaScript aquÌ se cargar· para todos los usuarios en cada carga de la p·gina. */
+/* Cualquier JavaScript aqu√≠ se cargar√° para todos los usuarios en cada carga de la p√°gina. */
 importArticles({
 	type: 'script',
 	articles: [
@@ -25,14 +25,14 @@ window.UserTagsJS = {
     modules: {},
     tags: {
         sysop: { u: 'Administrador' },
-        bureaucrat: { u: 'BurÛcrata'},
+        bureaucrat: { u: 'Bur√≥crata'},
      	threadmoderator: { u: 'Mod. de discusiones' },
     	'content-moderator': { u:'Mod. de contenido'},
     	rollback : { u:'Reversor'},
-    	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal est· inactivo.' },
+    	retiredstaff: { u: 'Personal Retirado', title: 'Este antiguo miembro del personal est√° inactivo.' },
         inactive: { u: 'Inactivo', title: 'Este usuario es inactivo.' },
-        imageeditor: {u: 'Editor de Im·genes' }
-        spy: { u: 'EspÌa', title: 'Este usuario espÌa en la wiki.' }
+        imageeditor: {u: 'Editor de Im√°genes' }
+        spy: { u: 'Esp√≠a', title: 'Este usuario esp√≠a en la wiki.' }
     }
 };
     

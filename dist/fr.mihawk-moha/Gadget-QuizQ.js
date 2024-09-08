@@ -1,15 +1,15 @@
-var quizName = "Quelles sont vos compétences sur One Piece Encyclopédie";
+var quizName = "Quelles sont vos compÃ©tences sur One Piece EncyclopÃ©die";
 var quizLang = "en";
 var resultsTextArray = [
 	"Tu peux mieux faire !",
-	"Tu n'es pas encore un membre expérimenté sur One Piece Encyclopédie, mais tu y arrivera",
-	"Bravo, tu es un membre expert sur One Piece Encyclopédie"
+	"Tu n'es pas encore un membre expÃ©rimentÃ© sur One Piece EncyclopÃ©die, mais tu y arrivera",
+	"Bravo, tu es un membre expert sur One Piece EncyclopÃ©die"
 	];
 var questions = [
  
 	["Que faire en cas de troll sur le forum ?",
-	"Prévenir un modérateur ou un administrateur",
-	"Lui demander d'arrêter",
+	"PrÃ©venir un modÃ©rateur ou un administrateur",
+	"Lui demander d'arrÃªter",
 	"L'insulter",
 	"Ignorer la situation"], 
  

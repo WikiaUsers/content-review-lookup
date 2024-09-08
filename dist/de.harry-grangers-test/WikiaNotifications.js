@@ -41,7 +41,7 @@ function outputNotification(message) {
                             parent = $(this).closest('li');
                             console.log('parent',parent);
                             parent.hide();
-                            closedNotifications = JSON.parse(localStorage.getItem('WikiaNotifications') || '[]');
+                            closedNotifications = JSON.parse(localStorage.getItem('WikiaNotifications') ||Â '[]');
                             console.log('closedNotifications',closedNotifications);
                             closedNotifications.push(parent.find('div').data('id'));
                             console.log('closedNotifications',closedNotifications);

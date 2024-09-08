@@ -2,11 +2,11 @@
 	'use strict';
 
 	var wgPageName = mw.config.get('wgPageName');
-	if (wgPageName !== 'MÛdulo:Rarezas') return;
+	if (wgPageName !== 'M√≥dulo:Rarezas') return;
 
 
 	function pagesInCategory(api, category, result, params) {
-		setTagline('<b>Obteniendo datos de la categorÌa:</b> ' + category);
+		setTagline('<b>Obteniendo datos de la categor√≠a:</b> ' + category);
 		var promise = $.Deferred();
 		params = params || {
 			action: 'query',
@@ -82,7 +82,7 @@
 			api.postWithToken('csrf', {
 				action: 'edit',
 				minor: true,
-				summary: 'ActualizaciÛn autom·tica de rarezas',
+				summary: 'Actualizaci√≥n autom√°tica de rarezas',
 				text: table,
 				title: 'Module:Rarezas'
 			}).then(function() {

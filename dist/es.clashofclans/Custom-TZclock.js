@@ -4,10 +4,10 @@
  * This version displays the time (i) using a Spanish locale and (ii) a preferred format for the stringified date with 12h format
  * If you're looking for this feature, please make sure [[w:c:dev:TZclock]] isn't what you exactly need, you shouldn't need to copy this modified version in most cases.
  * ---------------------------------
- * Versi髇 modificada de TZclock ( @autor [[User:Saftzie]] )
- * Consulta el c骴igo original en [[w:c:dev:MediaWiki:TZclock.js]]
- * La versi髇 muestra el tiempo (i) usando espa駉l y (ii) un formato de texto preferido, incluyendo el formato de 12 horas
- * Si buscas esta funcionalidad, aseg鷕ate de que [[w:c:dev:TZclock]] no es exactamente lo que necesitas, no deber韆s de necesitar copiar esta versi髇 modificada en la mayor韆 de casos.
+ * Versi贸n modificada de TZclock ( @autor [[User:Saftzie]] )
+ * Consulta el c贸digo original en [[w:c:dev:MediaWiki:TZclock.js]]
+ * La versi贸n muestra el tiempo (i) usando espa帽ol y (ii) un formato de texto preferido, incluyendo el formato de 12 horas
+ * Si buscas esta funcionalidad, aseg煤rate de que [[w:c:dev:TZclock]] no es exactamente lo que necesitas, no deber铆as de necesitar copiar esta versi贸n modificada en la mayor铆a de casos.
 *****************/
 
 (function ($) {

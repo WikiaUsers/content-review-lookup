@@ -1,6 +1,6 @@
 SpoilerAlert = {
   categories: "Spoiler",
-  question: 'ATTENTION ! Cette page contient des Spoilers. Êtes-vous sûr de vouloir continuer ?',
+  question: 'ATTENTION ! Cette page contient des Spoilers. ÃŠtes-vous sÃ»r de vouloir continuer ?',
   yes: 'Oui',
   no: 'Non',
   isSpoiler: function () {

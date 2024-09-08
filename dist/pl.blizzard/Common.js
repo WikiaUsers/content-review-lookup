@@ -1,4 +1,4 @@
-// Konfiguracja tooltipów
+// Konfiguracja tooltipÃ³w
 var tooltips_list = [
     {
         classname: 'card-tooltip',

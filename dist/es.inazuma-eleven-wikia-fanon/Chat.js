@@ -15,7 +15,7 @@ importArticles({
     ]
 });
  
-// Chat Delay - CONFIGURACIÓN
+// Chat Delay - CONFIGURACIÃ“N
 window.dev = window.dev || {};
 window.dev.chatdelay = { max: 3 };
  
@@ -55,7 +55,7 @@ function clearChatText() {
  
 /* Day/Night Switch Feature 
 function dayNightButton() {
-    var dayText = 'Tema de día';
+    var dayText = 'Tema de dÃ­a';
     var nightText = 'Tema de noche';
     var $dayNightButton = $('<div>').addClass('chat-button');
     var $dayNightLink = $('<a>').addClass('wikia-button').text(dayText);
@@ -111,19 +111,19 @@ $(function(){
             
             "Moderar el vocabulario.",
             
-            "No discutir sobre temas que puedan llevar a un desacuerdo y un debate que conclulla en peleas, como la política y la religión.",
+            "No discutir sobre temas que puedan llevar a un desacuerdo y un debate que conclulla en peleas, como la polÃ­tica y la religiÃ³n.",
             
 
-            "No abusar del botón de AFK, puede ser incómodo para los demás usuarios.",
+            "No abusar del botÃ³n de AFK, puede ser incÃ³modo para los demÃ¡s usuarios.",
             "
-            "En la presencia del bot, no abusar de los comandos (puedes usar como máximo 3 comandos en menos de 5 minutos).",
+            "En la presencia del bot, no abusar de los comandos (puedes usar como mÃ¡ximo 3 comandos en menos de 5 minutos).",
             
-            "Puedes leer todas las reglas <a href='http://bit.ly/1UWPGHf'>aquí</a>."
+            "Puedes leer todas las reglas <a href='http://bit.ly/1UWPGHf'>aquÃ­</a>."
         ]
     };
  
 //===========================================================================///
-//                           FIN DE LA CONFIGURACIÓN                            //
+//                           FIN DE LA CONFIGURACIÃ“N                            //
 //============================================================================//
 mw.util.addCSS("#kockaRulesModalList{list-style-type:square;margin-left:15px}.kockaRulesButton{float:right}#kockaRulesModalMain{height:400px;overflow-y:auto;}");
 	var kockaRules = window.kockaRules || {};
@@ -155,4 +155,4 @@ $('.public.wordmark').first().append(button);
 /******************************************************************************
 $('.public.wordmark').first().append("<button class='kockaHideRailButton' style='float:right' onclick='$(\"#Rail\").toggle();var toggleWidth = ($(window).width() - ($(\".Chat\").offset().left+$(\".Chat\").outerWidth())) > 150 ? \"0px\" : \"150px\";$(\".Chat\").css({right:toggleWidth});'>Mostrar columna</button>"); */
 
-/*Créditos a Monster Legend Wiki*/
+/*CrÃ©ditos a Monster Legend Wiki*/

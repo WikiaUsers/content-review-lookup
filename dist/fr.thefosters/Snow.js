@@ -9,7 +9,7 @@
 
 /*global window, document, navigator, clearInterval, setInterval */
 /*jslint white: false, onevar: true, plusplus: false, undef: true, nomen: true, eqeqeq: true, bitwise: true, regexp: true, newcap: true, immed: true */
-/*Modification par Juliepersonne le huit décembre deux milles seize sur le nombre de flocons */
+/*Modification par Juliepersonne le huit dÃ©cembre deux milles seize sur le nombre de flocons */
 
 window.snowStorm = {
 

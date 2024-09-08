@@ -1,7 +1,7 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 window.SpoilerAlertJS = {
-    question: '¡Avertencia! ¡Ésta parte del artículo contiene spoilers!',
+    question: 'Â¡Avertencia! Â¡Ã‰sta parte del artÃ­culo contiene spoilers!',
     yes: 'Ver de todos modos',
     no: 'No ver',
     fadeDelay: 1600

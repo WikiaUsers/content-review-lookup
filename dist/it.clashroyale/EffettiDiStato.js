@@ -75,11 +75,11 @@ Maintenance
 	            // Apply rage effect and color the text affected after saving initial values
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectUp(unitAttributeValues[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -93,11 +93,11 @@ Maintenance
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectUp(unitAttributeValues2[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -111,11 +111,11 @@ Maintenance
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues3[0] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectUp(unitAttributeValues3[0])).addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -181,11 +181,11 @@ Maintenance
 	            // Apply slow effect and color the text affected after saving initial values
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the slow button is inactivated
 	                    unitAttributeValues[0] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectDown(unitAttributeValues[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -199,11 +199,11 @@ Maintenance
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName2 = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues2[0] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectDown(unitAttributeValues2[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -217,11 +217,11 @@ Maintenance
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    movementSpeedName3 = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[0-9()]/g, "").trim(); // Save movement speed name ("Slow", "Medium", etc.) so that it can be put back when the rage button is inactivated
 	                    unitAttributeValues3[0] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectDown(unitAttributeValues3[0])).removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
@@ -287,9 +287,9 @@ Maintenance
 	            // Remove effects and remove the color from the text affected
 	            $('#unit-attributes-table tr:eq(0) th').each(function(b) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + " (" + unitAttributeValues[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
@@ -300,9 +300,9 @@ Maintenance
 	            // Repeat for a secondary attributes table (e.g. Golem)
 	            $('#unit-attributes-table-secondary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + " (" + unitAttributeValues2[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
@@ -313,9 +313,9 @@ Maintenance
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
 	            $('#unit-attributes-table-tertiary tr:eq(0) th').each(function(e) {
 	                attributeName = $(this).clone().children().remove().end().text().trim().toLowerCase();
-	                if (attributeName === "velocit‡") {
+	                if (attributeName === "velocit√†") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(movementSpeedName3 + " (" + unitAttributeValues3[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "velocit‡ colpi") {
+	                } else if (attributeName === "velocit√† colpi") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");

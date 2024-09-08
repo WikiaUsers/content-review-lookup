@@ -2,7 +2,7 @@
  
 window.LockOldBlogs = {
     expiryDays: 30,
-    expiryMessage: "Este Post de Blog não pode ser comentado porque tem mais de um mês que foi criado.",
+    expiryMessage: "Este Post de Blog nÃ£o pode ser comentado porque tem mais de um mÃªs que foi criado.",
     expiryCategories: "Auto-arquivado"
 }
  

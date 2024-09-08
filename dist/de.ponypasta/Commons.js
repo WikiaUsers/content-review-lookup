@@ -2,7 +2,7 @@ window.UserTagsJS = {
 	modules: {},
 	tags: {
 		monthwriter: { u: 'Autor des Monats', order: 100 },
-		fuehrer: { u: 'Führer', order: 101 },
+		fuehrer: { u: 'FÃ¼hrer', order: 101 },
 		RHDW: { u: 'Rechte Hand des Wikis', order: 102 },
 		bureaucrat: { order: 1 }
 	}

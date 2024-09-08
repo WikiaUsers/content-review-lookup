@@ -45,7 +45,7 @@ function insertAfter(parent, node, referenceNode) {
 // Nuevos botones en la barra de herramientas
 //============================================================
 
-//Remplit la variable mwCustomEditButtons (voir /skins-1.5/commons/wikibits.js) pour ajouter des boutons ‡ la barre d'outils
+//Remplit la variable mwCustomEditButtons (voir /skins-1.5/commons/wikibits.js) pour ajouter des boutons √† la barre d'outils
 function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
 {
  mwCustomEditButtons[mwCustomEditButtons.length] =
@@ -56,11 +56,11 @@ function addCustomButton(imageFile, speedTip, tagOpen, tagClose, sampleText)
   "sampleText": sampleText};
 }
 
-addCustomButton('http://upload.wikimedia.org/wikipedia/commons/8/88/Btn_toolbar_enum.png','Hacer una lista numerada',"<!-->Para hacer una lista numerada escribe los elementos de la misma con un signo numeral (#) delante, por ejemplo: # ASÕ. Ponlos uno debajo del otro presionando la tecla Enter al terminar cada oraciÛn y luego, al presionar el botÛn Guardar la p·gina, los signos numerales se convertir·n en los n˙meros correspondientes.<!-->","",'');
-addCustomButton('http://upload.wikimedia.org/wikipedia/commons/1/11/Btn_toolbar_liste.png','Hacer una lista con viÒetas',"<!-->Para hacer una lista con viÒetas escribe los elementos de la misma con un signo asterisco (*) delante, por ejemplo: * ASÕ. Ponlos uno debajo del otro presionando la tecla Enter al terminar cada oraciÛn y luego, al presionar el botÛn Guardar la p·gina, los signos asteriscos se convertir·n en viÒetas en forma de cuadritos pequeÒos de color azul claro.<!-->","",'');
-addCustomButton('http://upload.wikimedia.org/wikipedia/commons/c/c8/Button_redirect.png','Hacer que cuando alguien entre a esta p·gina vaya a otra',"#REDIRECT [[","]]",'ESCRIBE AQUÕ EL NOMBRE DEL ARTÕCULO AL QUE QUIERES QUE SEAN REDIRIGIDOS LOS USUARIOS DESDE ESTA P¡GINA');
-addCustomButton('http://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png','Categorizar el artÌculo',"[[CategorÌa:","]]",'ESCRIBE AQUÕ EL NOMBRE DE LA CATEGORÕA EN LA QUE QUIERES PONER A ESTE ARTÕCULO');
-addCustomButton('https://images.wikia.nocookie.net/__cb20100426194040/simplepedia/es/images/f/fc/Gallery_button.png','GalerÌa de im·genes',"<gallery>","</gallery>",'');
+addCustomButton('http://upload.wikimedia.org/wikipedia/commons/8/88/Btn_toolbar_enum.png','Hacer una lista numerada',"<!-->Para hacer una lista numerada escribe los elementos de la misma con un signo numeral (#) delante, por ejemplo: # AS√ç. Ponlos uno debajo del otro presionando la tecla Enter al terminar cada oraci√≥n y luego, al presionar el bot√≥n Guardar la p√°gina, los signos numerales se convertir√°n en los n√∫meros correspondientes.<!-->","",'');
+addCustomButton('http://upload.wikimedia.org/wikipedia/commons/1/11/Btn_toolbar_liste.png','Hacer una lista con vi√±etas',"<!-->Para hacer una lista con vi√±etas escribe los elementos de la misma con un signo asterisco (*) delante, por ejemplo: * AS√ç. Ponlos uno debajo del otro presionando la tecla Enter al terminar cada oraci√≥n y luego, al presionar el bot√≥n Guardar la p√°gina, los signos asteriscos se convertir√°n en vi√±etas en forma de cuadritos peque√±os de color azul claro.<!-->","",'');
+addCustomButton('http://upload.wikimedia.org/wikipedia/commons/c/c8/Button_redirect.png','Hacer que cuando alguien entre a esta p√°gina vaya a otra',"#REDIRECT [[","]]",'ESCRIBE AQU√ç EL NOMBRE DEL ART√çCULO AL QUE QUIERES QUE SEAN REDIRIGIDOS LOS USUARIOS DESDE ESTA P√ÅGINA');
+addCustomButton('http://upload.wikimedia.org/wikipedia/commons/b/b4/Button_category03.png','Categorizar el art√≠culo',"[[Categor√≠a:","]]",'ESCRIBE AQU√ç EL NOMBRE DE LA CATEGOR√çA EN LA QUE QUIERES PONER A ESTE ART√çCULO');
+addCustomButton('https://images.wikia.nocookie.net/__cb20100426194040/simplepedia/es/images/f/fc/Gallery_button.png','Galer√≠a de im√°genes',"<gallery>","</gallery>",'');
 
 importScript("Mediawiki:HotCat.js");
 //</pre>

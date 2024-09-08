@@ -1,4 +1,4 @@
-/* Anpassungen für AjaxRC */
+/* Anpassungen fÃ¼r AjaxRC */
 ajaxPages = ['Special:RecentChanges','Special:WikiActivity'];
 AjaxRCRefreshText = 'Auto-Aktualisierung';
 AjaxRCRefreshHoverText = 'Automatische Aktualisierung der kompletten Seite';

@@ -13,7 +13,7 @@ window.MessageWallUserTags = {
 //lock old blogs config
 window.LockOldBlogs = {
     expiryDays: 90,
-    expiryMessage: "Personne n'a commenté ce billet de blog depuis <expiryDays> jours, il est donc considéré comme archivé.",
+    expiryMessage: "Personne n'a commentÃ© ce billet de blog depuis <expiryDays> jours, il est donc considÃ©rÃ© comme archivÃ©.",
     nonexpiryCategory: "Never archived blogs"
 };
 
@@ -50,7 +50,7 @@ window.RevealAnonIP = {
 //lock forums config 
 window.LockForums = {
     expiryDays: 30,
-    expiryMessage: "Ce forum n'a pas été commenté depuis <expiryDays> jours, il est donc considéré comme archivé.",
+    expiryMessage: "Ce forum n'a pas Ã©tÃ© commentÃ© depuis <expiryDays> jours, il est donc considÃ©rÃ© comme archivÃ©.",
     forumName: "Forum Board" 
 };
 

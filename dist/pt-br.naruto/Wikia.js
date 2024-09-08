@@ -1,7 +1,7 @@
-// Atualização Automática
-AjaxRCRefreshText = 'Automaticamente recarregar a página a cada 60segs';
-AjaxRCRefreshHoverText = 'A página recarrega-se automaticamente';
-ajaxPages = ["Especial:Mudanças_recentes","Especial:WikiActivity", "Especial:Páginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:Páginas_novas", "Especial:Contribuições"];
+// AtualizaÃ§Ã£o AutomÃ¡tica
+AjaxRCRefreshText = 'Automaticamente recarregar a pÃ¡gina a cada 60segs';
+AjaxRCRefreshHoverText = 'A pÃ¡gina recarrega-se automaticamente';
+ajaxPages = ["Especial:MudanÃ§as_recentes","Especial:WikiActivity", "Especial:PÃ¡ginas_vigiadas", "Especial:Registro", "Especial:Arquivos_novos", "Especial:Lista_de_arquivos", "Especial:PÃ¡ginas_novas", "Especial:ContribuiÃ§Ãµes"];
 
 // Tooltip
 var tooltips_config = { 

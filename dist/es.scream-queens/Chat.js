@@ -2,7 +2,7 @@ importArticles({
     type: 'script',
     articles: [
         'u:runescape:User:Joeytje50/tabinsert.js', //Tab Insert
-        'u:dev:AjaxEmoticons/code.js', //AjaxEmoticons (para que los usuarios no tenga que volver a cargar el chat para ver m·s emoticones)
+        'u:dev:AjaxEmoticons/code.js', //AjaxEmoticons (para que los usuarios no tenga que volver a cargar el chat para ver m√°s emoticones)
         'u:dev:ChatAnnouncements/code.js', //ChatAnnouncements (de modo que los mods de chat pueden hacer anuncios de chat personalizado dentro de la charla)
         'u:dev:ChatTags/code.js',
         'u:dev:!mods/code.js',

@@ -1,14 +1,14 @@
-/* Cualquier cÛdigo JavaScript escrito aquÌ se cargar· para todos los usuarios en cada carga de p·gina. */
+/* Cualquier c√≥digo JavaScript escrito aqu√≠ se cargar√° para todos los usuarios en cada carga de p√°gina. */
 
 /* Auto-refrescar WikiActividad (Club Penguin Wiki) */
  
-window.AjaxRCRefreshText = 'Act. autom·t.';
-window.AjaxRCRefreshHoverText = 'Refrescar autom·ticamente';
+window.AjaxRCRefreshText = 'Act. autom√°t.';
+window.AjaxRCRefreshHoverText = 'Refrescar autom√°ticamente';
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Registro"];
 window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/clubpenguin/images/6/68/D_CP_MEM_Loader_34.gif/revision/latest?cb=20120915200111';
 window.ajaxRefresh = 10000;
 
-/* Cambio de tÌtulo (CrÈditos a Un Show M·s,MPLWiki y The Loud House Wiki) */
+/* Cambio de t√≠tulo (Cr√©ditos a Un Show M√°s,MPLWiki y The Loud House Wiki) */
 $(function(){
   var newTitle = $("#title-meta").html();
   if (!newTitle) return;

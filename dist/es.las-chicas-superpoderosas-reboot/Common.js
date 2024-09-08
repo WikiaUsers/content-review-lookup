@@ -1,8 +1,8 @@
 /* Alerta de Spoiler */
 // Based on SpoilerAlert by pecoes & Gguigui1: http://dev.wikia.com/wiki/SpoilerAlert
  
-/* Enables the alerts only in articles within the category "No emitidos en América Latina" */
-if ($.inArray("No emitidos en América Latina", wgCategories) > -1) {
+/* Enables the alerts only in articles within the category "No emitidos en AmÃ©rica Latina" */
+if ($.inArray("No emitidos en AmÃ©rica Latina", wgCategories) > -1) {
  
     $(function () {
         "use strict";
@@ -14,9 +14,9 @@ if ($.inArray("No emitidos en América Latina", wgCategories) > -1) {
                 '<tbody>' +
                     '<tr>' +
                         '<td rowspan="2" style="padding: 0px;">' +
-                            '<alt="¡Spoilers!">' +
+                            '<alt="Â¡Spoilers!">' +
                         '</td>' +
-                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">¡Advertencia de spoilers!</strong><br>Este artículo muestra contenido sobre un episodio aun no emitido en latinoamerica, ¿seguro que quieres continuar?</td>' +
+                        '<td style="border-style: none; padding: 5px; text-align: center;" colspan="2"><strong style="font-weight: bold;">Â¡Advertencia de spoilers!</strong><br>Este artÃ­culo muestra contenido sobre un episodio aun no emitido en latinoamerica, Â¿seguro que quieres continuar?</td>' +
                     '</tr>' +
                     '<tr>' +
                         '<td style="border-style: none; padding: 5px; text-align: center;">' +

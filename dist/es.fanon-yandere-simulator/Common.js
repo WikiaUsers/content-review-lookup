@@ -1,6 +1,6 @@
-/**Refrescar autómaticamente la página**/
-window.AjaxRCRefreshText = 'Actualizar automáticamente'; 
-window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente'; 
+/**Refrescar autÃ³maticamente la pÃ¡gina**/
+window.AjaxRCRefreshText = 'Actualizar automÃ¡ticamente'; 
+window.AjaxRCRefreshHoverText = 'Refrescar esta pÃ¡gina automÃ¡ticamente'; 
 window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 
 /**Hora UTC del wiki**/

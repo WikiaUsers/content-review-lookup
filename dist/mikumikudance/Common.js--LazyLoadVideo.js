@@ -3,7 +3,7 @@
 /*
 * LazyLoadVideo - Displays a button over youtube videos that use {{youtube}} to activate them, when the vide itself is hidden by CSS.
 * That improves load times, while still allowing users to view the vide inside the same page
-* Copyright (C) 2012 Jesús Martínez Novo ([[User:Ciencia Al Poder]])
+* Copyright (C) 2012 JesÃºs MartÃ­nez Novo ([[User:Ciencia Al Poder]])
 * 
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by

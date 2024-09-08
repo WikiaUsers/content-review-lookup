@@ -10,7 +10,7 @@ window.kockaEmoticons = {
         emoticons: "Emotes",
         close: "Cerrar"
     },
-    help: "Para insertar un emoticón, haz clic en él."
+    help: "Para insertar un emoticÃ³n, haz clic en Ã©l."
 };
 function inlineAlert(msg) {
     mainRoom.model.chats.add(new models.InlineAlert({text:msg}));
@@ -31,7 +31,7 @@ $('[name="message"]').keypress(function(e) {
         }
         if (/60484617|kat\.cr|theworldofstevenuniverse\.blogspot\.com|kisscartoon\.me|watchonlinecartoons\.net|madridista-4-life\.tumblr\.com/i.test(message) && mainRoom.active === true) {
             e.preventDefault();
-            inlineAlert('No puedes enviar este enlace, debido a que violaría la política de derechos de autor.');
+            inlineAlert('No puedes enviar este enlace, debido a que violarÃ­a la polÃ­tica de derechos de autor.');
         }
     }
 });

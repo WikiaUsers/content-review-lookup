@@ -5,9 +5,9 @@
 importArticles({
     type: "script",
     articles: [
-        // 1. Mostrar im·genes duplicadas
+        // 1. Mostrar im√°genes duplicadas
         "MediaWiki:Common.js/DupImageList.js",
-        // 2. Res˙menes de ediciÛn
+        // 2. Res√∫menes de edici√≥n
         "MediaWiki:Common.js/resumenedicion.js"
     ]
 });
@@ -29,8 +29,8 @@ addOnloadHook(UserNameReplace);
  
 // 4. AutoRefreshing RecentChanges and WikiActivity
  
-AjaxRCRefreshText = 'Act. autom·t.';
-AjaxRCRefreshHoverText = 'Refrescar esta p·gina autom·ticamente';
+AjaxRCRefreshText = 'Act. autom√°t.';
+AjaxRCRefreshHoverText = 'Refrescar esta p√°gina autom√°ticamente';
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
 importScriptPage('AjaxRC/code.js', 'dev');
 

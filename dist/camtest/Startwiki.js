@@ -1,6 +1,6 @@
 /** __NOWYSIWYG__ <pre>
  * Re-purposing start a wiki button
- * @author Cåm
+ * @author CÃ¥m
  */
 
 /**

@@ -1,4 +1,4 @@
-/* © Star Wars Wiki */
+/* Â© Star Wars Wiki */
 
 /* subtitle */
 // add the original english title as a subtitle for the article, linking to Wookieepedia's corresponding page.
@@ -178,7 +178,7 @@ function isMatch(regex, className, element) {
 /* Actualisation automatique - [[w:c:dev:AjaxRC]] */
 /*window.AjaxRCRefreshText = 'Actualisation automatique';
 window.AjaxRCRefreshHoverText = 'Automatically refresh the page';
-window.ajaxPages = ["Spécial:Modifications_récentes","Spécial:WikiActivity"];*/
+window.ajaxPages = ["SpÃ©cial:Modifications_rÃ©centes","SpÃ©cial:WikiActivity"];*/
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying [[Template:USERNAME]]. */

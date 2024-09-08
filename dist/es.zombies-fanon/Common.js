@@ -1,10 +1,10 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/* Cualquier cÃ³digo JavaScript escrito aquÃ­ se cargarÃ¡ para todos los usuarios en cada carga de pÃ¡gina. */
 
 importScriptPage('ShowHide/code.js', 'dev');
 
 
 // ************************************************** 
-// Añade nuevas etiquetas en los perfiles de los usuarios 
+// AÃ±ade nuevas etiquetas en los perfiles de los usuarios 
 // ************************************************** 
 window.UserTagsJS = { 
 modules: {  
@@ -21,11 +21,11 @@ u:'Jefe de los Muertos', f:'Jefe de los Muertos',
 link:'User:Malapochka'  
 }, 
 lider: {  
-u:'Líder de los Muertos', f:'Líder de los Muertos', 
+u:'LÃ­der de los Muertos', f:'LÃ­der de los Muertos', 
 link:'User:Leoxen'
 },
 ally: {
-u:'Líder aliado', f:'Líder aliado', 
+u:'LÃ­der aliado', f:'LÃ­der aliado', 
 link:'User:KING_ZART'
 },
 fundador: {  
@@ -44,8 +44,8 @@ window.railWAM = {
     logPage:"Project:WAM Log"
 };
 window.SpoilerAlertJS = {
-    question: 'Esta lista contiene Spoilers, ¿De verdad quieres seguir?',
-    yes: 'Sí',
+    question: 'Esta lista contiene Spoilers, Â¿De verdad quieres seguir?',
+    yes: 'SÃ­',
     no: 'No',
     fadeDelay: 1600
 };

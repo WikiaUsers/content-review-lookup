@@ -1,4 +1,4 @@
-/* JavaScript an dieser Stelle wirkt sich auf alle Skins für jeden Benutzer aus. */
+/* JavaScript an dieser Stelle wirkt sich auf alle Skins fÃ¼r jeden Benutzer aus. */
 /* Siehe auch: [[MediaWiki:Wikia.js]] und [[MediaWiki:Monobook.js]] */
 
 /* Wiederherstellen des normalen Hochladen-Formulars als Standard */
