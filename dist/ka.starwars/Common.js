@@ -16,11 +16,25 @@ importStylesheetPage('MediaWiki:HotCat.css', 'starwars');
 
 /* Replaces {{USERNAME}} with the name of the user browsing the page.
    Requires copying Template:USERNAME. */
-$(function() {
-    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
-    $('span.insertusername').html(mw.config.get('wgUserName'));
-});
-/* End of the {{USERNAME}} replacement */
+function substUsername() {
+	if( mw.config.get('wgUserName') ) {
+		$('.insertusername').text(mw.config.get('wgUserName'));
+	}
+}
+
+function substUsernameTOC() {
+	var toc = $('#toc');
+	var userpage = $('#pt-userpage');
+
+	if( !userpage || !toc )
+		return;
+
+	var username = $('#pt-userpage').children(':first-child').text();
+	$('span.toctext:not(:has(*)), span.toctext i', toc).each(function()
+	{
+		$(this).text($(this).text().replace('<insert name here>', username));
+	});
+}
 
 // Create the "dev" namespace if it doesn't exist already:
  
@@ -152,10 +166,10 @@ function hideContentSub() {
 	}
 }
 
-// Related categories
+// Related Categories
 $(document).ready( function () {
 	if( document.getElementById("related-catlinks") ) {
-		document.getElementById("catlinks").appendChild(document.getElementById("related-catlinks"));
+		document.getElementById("articleCategories").appendChild(document.getElementById("related-catlinks"));
 	}
 } );
 
@@ -322,3 +336,53 @@ function toggleHidable(bypassStorage) {
 		}
 	}
 }
+
+/** Disable editing archive tab 
+ */
+function disableOldForumEdit() {
+	if ( typeof( enableOldForumEdit ) != 'undefined' && enableOldForumEdit ) {
+		return;
+	}
+	$( '#old-forum-warning-section .mw-editsection' ).remove();
+	if ( !document.getElementById( 'old-forum-warning' ) ) {
+		return;
+	}
+
+	if ( $( '#ca-addsection' ).length ) {
+		$( '#ca-addsection' ).html( 'არქივირებული' ).removeAttr( 'href' );
+		$( '#ca-edit' ).remove();
+		$( '#ca-addsection-side-tool' ).remove();
+		$( 'span.mw-editsection' ).remove();
+	} else {
+		$( '#ca-edit' ).html( 'არქივირებული' ).removeAttr( 'href' );
+		$( '#ca-edit-side-tool' ).remove();
+		$( 'span.mw-editsection' ).remove();
+	}
+}
+$( disableOldForumEdit );
+
+// Show 'Random Page' for logged-out users in 'Explore' top navigation to make consistent with logged-in experience
+$(document).ready(function() {
+	if(mw.config.get("wgUserName")) return;
+
+    $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>ნებისმიერი გვერდი</span></a></li>');
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Refresh the page with the Ajax function (advanced)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif';
+window.ajaxPages = [ 'Special:RecentChanges', 'Special:Watchlist', 'Special:Log', 'Special:NewFiles', 'Special:AbuseLog' ];
+$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
+	'ajaxrc-refresh-text': 'ავტომატური განახლება',
+	'ajaxrc-refresh-hover': 'ავტომატური განახლების ჩართვა',
+}}}}});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// END OF AJAX AUTO-REFRESH SETTINGS
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////

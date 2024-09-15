@@ -24,7 +24,7 @@ function showElements(desc, linkSelector) {
     elems[i].style = '';
   }
   elems = document.querySelectorAll('.' + linkSelector + desc);
-  for (var i = 0; i < elems.length; i++) {
+  for (i = 0; i < elems.length; i++) {
     elems[i].style = 'user-select:none; cursor: pointer; color: rgb(102, 177, 250);';
   }
 }
@@ -35,7 +35,7 @@ function hideElements(desc) {
     elems[i].style = 'display:none;';
   }
   elems = document.querySelectorAll('.initialOnly');
-  for (var i = 0; i < elems.length; i++) {
+  for (i = 0; i < elems.length; i++) {
     elems[i].style = 'display:none;';
   }
 }
@@ -66,10 +66,11 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
 }
 
 function removeTabsTags() {
+  var elem;
   var replaced = false;
   var elems = document.querySelectorAll('*');
   for (var i = 0; i < elems.length; i++) {
-    var elem = elems[i];
+    elem = elems[i];
     if (elem.childNodes && elem.childNodes[0] && elem.childNodes[0].nodeValue && elem.childNodes[0].nodeValue.includes) {
       if (elem.childNodes[0].nodeValue.includes('<tab') || elem.childNodes[0].nodeValue.includes('</tab')) {
         elem.innerText = elem.innerText.replaceAll(/<\/?tab(.*?)>/gi, '');
@@ -78,9 +79,9 @@ function removeTabsTags() {
     }
   }
   if (replaced) {
-    var elems = document.querySelectorAll('*');
-    for (var i = 0; i < elems.length; i++) {
-      var elem = elems[i];
+    elems = document.querySelectorAll('*');
+    for (i = 0; i < elems.length; i++) {
+      elem = elems[i];
       if (elem.style && elem.style.position && elem.style.position == 'relative') {
         elem.style.position = 'unset';
       }
@@ -108,7 +109,7 @@ function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2
       switchView.addEventListener('click', toggleFunc);
       userlinks[i].insertBefore(switchView, null);
       var elems = document.querySelectorAll('.' + linkSelector);
-      for (var i = 0; i < elems.length; i++) {
+      for (i = 0; i < elems.length; i++) {
         elems[i].addEventListener('click', toggleFunc);
         elems[i].style = 'user-select:none; cursor: pointer; color: rgb(102, 177, 250);';
       }
@@ -145,6 +146,6 @@ window.addEventListener('load', function () {
   initCommon();
 });
 
-//initCommon();
+initCommon();
 
 })();

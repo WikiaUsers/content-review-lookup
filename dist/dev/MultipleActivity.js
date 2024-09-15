@@ -9,7 +9,7 @@ if (!nkch.ma.isActive) {
 		title: "MultipleActivity",
 		titleShort: "MA",
 		author: "Не кочан"
-	}
+	};
 
 	var arrayLength = 100;
 
@@ -23,7 +23,7 @@ if (!nkch.ma.isActive) {
 			function () {
 				nkch.ma.options = {
 					experimentalFeatures: 0
-				}
+				};
 
 				var urlParamsString = new URL(window.location.href).search;
 				var urlParams = new URLSearchParams(urlParamsString);
@@ -81,7 +81,7 @@ if (!nkch.ma.isActive) {
 											}
 										);
 									}
-								)
+								);
 							}
 						);
 					}
@@ -123,7 +123,7 @@ if (!nkch.ma.isActive) {
 					"@keyframes anim-ma__loading { 0% { opacity: 1; } 50% { opacity: .4; } 100% { opacity: 1; } }"
 				);
 
-				const ma__main = document.querySelector(".page__main")
+				const ma__main = document.querySelector(".page__main");
 				ma__main.classList.add("nkch-ma__main");
 
 				const ma__rail = document.createElement("aside");
@@ -236,7 +236,7 @@ if (!nkch.ma.isActive) {
 							if (data_details.wikiDetails.topUsers[i].avatarUrl !== "") {
 								module_wiki_details__avatar_img.src = data_details.wikiDetails.topUsers[i].avatarUrl + "/scale-to-width/48";
 							} else {
-								module_wiki_details__avatar_img.src = "https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/scale-to-width/48"
+								module_wiki_details__avatar_img.src = "https://static.wikia.nocookie.net/663e53f7-1e79-4906-95a7-2c1df4ebbada/scale-to-width/48";
 							}
 
 							module_wiki_details__avatar_link.append(module_wiki_details__avatar_img);
@@ -287,7 +287,7 @@ if (!nkch.ma.isActive) {
 							module_popular_pages__item_link.append(module_popular_pages__item_thumb);
 
 							var module_popular_pages__item_text = document.createElement("span");
-							module_popular_pages__item_text.innerText = data_details.topArticles[i].title
+							module_popular_pages__item_text.innerText = data_details.topArticles[i].title;
 
 							module_popular_pages__item_link.append(module_popular_pages__item_text);
 						}
@@ -322,12 +322,12 @@ if (!nkch.ma.isActive) {
 
 						ma__rail_sticky_modules.append(ma__rail_sticky_module_community_corner);
 					}
-				)
+				);
 
 				nkch.ma.actions.init(api, i18n, wds, ma__content, ma__list);
 			}
 		);
-	}
+	};
 
 	nkch.ma.actions.initMobile = function (api, i18n, wds) {
 		mw.util.addCSS(
@@ -352,7 +352,7 @@ if (!nkch.ma.isActive) {
 		ma__content.append(ma__list);
 
 		nkch.ma.actions.init(api, i18n, wds, ma__content, ma__list);
-	}
+	};
 
 	nkch.ma.actions.init = function (api, i18n, wds, ma__content, ma__list) {
 		Promise.all([nkch.ma.actions.getRecentChanges(), nkch.ma.actions.getDiscussionsPosts(), nkch.ma.actions.getLogs()])
@@ -411,7 +411,7 @@ if (!nkch.ma.isActive) {
 						changes: data[0],
 						posts: data[1],
 						logs: data[2]
-					}
+					};
 
 					var multipleArray = entries.changes.concat(entries.posts);
 
@@ -1045,7 +1045,7 @@ if (!nkch.ma.isActive) {
 																i18n.msg("ma-v2-type-forum-new", subtitleLink_1, subtitleLink_2).parse() :
 																i18n.msg("ma-v2-type-forum-reply", subtitleLink_1, subtitleLink_2).parse();
 
-															ma__list_item__subtitle.innerHTML += " (<a href='" + mw.config.get("wgScriptPath") + "/f/p/" + multipleArray[loopIndex].threadId + (multipleArray[loopIndex].isReply ? "/r/" + multipleArray[loopIndex].id : "") + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)"
+															ma__list_item__subtitle.innerHTML += " (<a href='" + mw.config.get("wgScriptPath") + "/f/p/" + multipleArray[loopIndex].threadId + (multipleArray[loopIndex].isReply ? "/r/" + multipleArray[loopIndex].id : "") + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)";
 
 															/* ~ details ~ */
 															if (
@@ -1094,13 +1094,13 @@ if (!nkch.ma.isActive) {
 
 													ma__list_item__subtitle.innerHTML = !multipleArray[loopIndex].isReply ?
 														i18n.msg("ma-v2-type-wall-new", subtitleLink_1, subtitleLink_2).parse() :
-														i18n.msg("ma-v2-type-wall-reply", subtitleLink_1, subtitleLink_2).parse()
+														i18n.msg("ma-v2-type-wall-reply", subtitleLink_1, subtitleLink_2).parse();
 
 													var urlParamsLink = {
 														threadId: multipleArray[loopIndex].threadId
-													}
+													};
 
-													ma__list_item__subtitle.innerHTML += " (<a href='" + mw.util.getUrl(new mw.Title(targetWall, 1200).getPrefixedText()) + "?" + new URLSearchParams(urlParamsLink).toString() + (multipleArray[loopIndex].isReply ? "#" + multipleArray[loopIndex].id : "") + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)"
+													ma__list_item__subtitle.innerHTML += " (<a href='" + mw.util.getUrl(new mw.Title(targetWall, 1200).getPrefixedText()) + "?" + new URLSearchParams(urlParamsLink).toString() + (multipleArray[loopIndex].isReply ? "#" + multipleArray[loopIndex].id : "") + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)";
 
 													/* ~ details ~ */
 													if (
@@ -1159,7 +1159,7 @@ if (!nkch.ma.isActive) {
 
 													var urlParamsLink = {
 														commentId: multipleArray[loopIndex].threadId
-													}
+													};
 
 													if (multipleArray[loopIndex].isReply) urlParamsLink.replyId = multipleArray[loopIndex].id;
 
@@ -1180,7 +1180,7 @@ if (!nkch.ma.isActive) {
 																ma__list_item__heading_link.innerText = comment.articleNames[Object.keys(comment.articleNames)[0]].title;
 																ma__list_item__heading_link.href = comment.articleNames[Object.keys(comment.articleNames)[0]].relativeUrl;
 
-																ma__list_item__subtitle.innerHTML += " (<a href='" + comment.articleNames[Object.keys(comment.articleNames)[0]].relativeUrl + "?" + new URLSearchParams(urlParamsLink).toString() + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)"
+																ma__list_item__subtitle.innerHTML += " (<a href='" + comment.articleNames[Object.keys(comment.articleNames)[0]].relativeUrl + "?" + new URLSearchParams(urlParamsLink).toString() + "'>" + i18n.msg("ma-v2-view").escape() + "</a>)";
 															}
 														);
 
@@ -1577,7 +1577,7 @@ if (!nkch.ma.isActive) {
 	};
 
 	nkch.ma.actions.getPostPictures = function (post) {
-		var images = post._embedded.contentImages;
+		var images = post._embedded.contentImages || [];
 
 		if (images.length > 0) {
 			var post_images = document.createElement("div");

@@ -1,13 +1,13 @@
 (function ($, mw) {
     'use strict';
 
-	const config = mw.config.get([
+    const config = mw.config.get([
         'profileUserName',
         'wgUserGroups',
         'isGamepedia',
         'wgNamespaceNumber',
         'wgRelevantUserName'
-	]);
+    ]);
 
     if (!/sysop|staff|helper|global-discussions-moderator|wiki-specialist|soap/.test(config.wgUserGroups)) { return; }
     if ((config.isGamepedia && config.wgNamespaceNumber != 202) || (!config.isGamepedia && !config.profileUserName)) { return; }
@@ -15,18 +15,17 @@
     var user = config.profileUserName;
     if (config.isGamepedia) { user = config.wgRelevantUserName; }
     
-    // https://dev.fandom.com/wiki/MediaWiki:AddUserRightsTag/code.js
-	function findContainer(identifier) {
-		var promise = $.Deferred();
-		var interval = setInterval(function() {
-			var $element = $(identifier);
-			if ($element.length) {
-				clearInterval(interval);
-				promise.resolve($element);
-			}
-		}, 300);
-		return promise;
-	}
+    function findContainer(identifier) {
+        var promise = $.Deferred();
+        var interval = setInterval(function() {
+            var $element = $(identifier);
+            if ($element.length) {
+                clearInterval(interval);
+                promise.resolve($element);
+            }
+        }, 300);
+        return promise;
+    }
 
     var AF = false;
     var DAF = false;
@@ -56,8 +55,6 @@
     
     $.when(findContainer(platformContainer)).then(function(_container) {
         if (!config.isGamepedia) {
-            // Need a bit of extra space for buttons (even more for AF/DAF). 
-            // Some wikis already change height and we want to interfeer as little as possible 
             var clear = 190;
             if (AF || DAF) { clear = 220; }
             if ($('#userProfileApp .user-identity-box').height() < clear ) {
@@ -84,16 +81,19 @@
 
         // User rights
         item.href = mw.util.getUrl("Special:UserRights/") + user;
+        item.title = "Change user rights for " + user; // Add title attribute
         item.innerHTML = '<div class="wds-icon-small" id="dev-wds-icons-pencil"></div>';
         list.appendChild(item.cloneNode(true));
 
         // Block
         item.href = mw.util.getUrl("Special:Block/") + user;
+        item.title = "Block user " + user; // Add title attribute
         item.innerHTML = '<div class="wds-icon-small" id="dev-wds-icons-error"></div>';
         list.appendChild(item.cloneNode(true));
 
         // Block log
         item.href = mw.util.getUrl("Special:Log/block") + "?page=User:" + user;
+        item.title = "View block log for " + user; // Add title attribute
         item.innerHTML = '<div class="wds-icon-small" id="dev-wds-icons-bullet-list"></div>';
         list.appendChild(item.cloneNode(true));
 
@@ -106,11 +106,12 @@
                 }
             })[0];
             list.appendChild(flexBreak);
-		}
-        
+        }
+
         // AF log
         if (AF) {
             item.href = mw.util.getUrl("Special:AbuseLog") + "?wpSearchUser=" + user;
+            item.title = "View abuse log for " + user; // Add title attribute
             item.innerHTML = '<div class="wds-icon-small" id="dev-wds-icons-alert"></div>';
             list.appendChild(item.cloneNode(true));
         }
@@ -120,6 +121,7 @@
             $('<button>', {
                 click: function click() { $("#DiscussionsAFLog").click(); },
                 html: '<div class="wds-icon-small" id="dev-wds-icons-discussions"></div>',
+                title: "View discussions abuse log for " + user, // Add title attribute
                 css: { "margin-right": "5px" },
                 class: "page-side-tool",
                 appendTo: list

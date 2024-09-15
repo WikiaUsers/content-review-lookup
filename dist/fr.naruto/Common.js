@@ -1,6 +1,6 @@
 /* Tout JavaScript ici sera chargé avec chaque page accédée par n’importe quel utilisateur. */
 /**
- * 27 novembre 2020, 19:04 (UTC)
+ * 10 septembre 2024, 09:41 (UTC)
  * https://naruto.fandom.com/fr/wiki/MediaWiki:Common.js
  * This is the central JavaScript file for the Wiki. Any code placed in here will
  * run on every page for every user (logged in or not) on every skin (Oasis).
@@ -116,7 +116,7 @@
 	window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} }); 
     window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/naruto/images/8/89/Wiki-wordmark.png/revision/latest?cb=20130629170436&path-prefix=fr';
     window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/naruto/images/8/89/Wiki-wordmark.png/revision/latest?cb=20130629170436&path-prefix=fr';
-
+	window.pPreview.RegExp.iimages = ['Appareil_Photo_police_awesome.svg'];
  
 	/* Scripts de pages spécifiques */
  
@@ -124,13 +124,7 @@
 	if (mw.config.get('wgPageName') === 'Naruto_Wiki:Images_Dupliquées') {
 		pageScriptList.push('u:dev:MediaWiki:DupImageList/code.js');
 	}
- 
-	 /*
-	//Affichage de l'iframe du dernier épisode sur ADN
-	if (wgPageName === "Accueil") {
-		pageScriptList.push('MediaWiki:LastEpisode.js');
-	}*/
-	
+
 	//Tri des catégories (pour Principal et Fichier)
 	if ( [0, 6].includes(mw.config.get('wgNamespaceNumber')) ){
 		pageScriptList.push('MediaWiki:Common.js/CategoriesSort.js');
@@ -154,7 +148,8 @@
 					'{{Sans licence}}': 'Image sans licence',
 					'{{Sans données}}': 'Sans info d\'utilisation',
 					'{{Inutilisé}}': 'Image inutilisée',
-					'{{Mauvais titre}}': 'Mauvais titre'
+					'{{Mauvais titre}}': 'Mauvais titre',
+					'{{Mauvaise qualité}}': 'Mauvaise qualié'
 				},
 				tempOptStr = '',
         		header = { 

@@ -1,9 +1,3 @@
-var config = mw.config.get([
-  'wgNamespaceNumber',
-  'wgContentLanguage',
-  'wgTitle',
-]);
-
 function editMessage(evt) {
   evt.preventDefault();
   var messageEl = evt.target.closest('.message');
@@ -217,7 +211,15 @@ function postPage(page, text, summary) {
 	}, 'post');
 }
 
-if (config.wgNamespaceNumber === 3 && (container = document.querySelector('.message-wall'))) {
+mw.loader.using(['mw.config']).then(function() {
+	var config = mw.config.get([
+	  'wgNamespaceNumber',
+	  'wgContentLanguage',
+	  'wgTitle',
+	]);
+	if (config.wgNamespaceNumber !== 3 || (container = document.querySelector('.message-wall')) === null) {
+		return;	
+	}
 	var messageEls = container.getElementsByClassName('message');
   var createLink = Object.assign(document.createElement('a'), {
     href: '#',
@@ -256,4 +258,4 @@ if (config.wgNamespaceNumber === 3 && (container = document.querySelector('.mess
 	    deleteLink.addEventListener('click', deleteMessage);
 	    messageFooter.append(replyLink, deleteLink);
 	}
-}
+});

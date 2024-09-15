@@ -1,4 +1,4 @@
-/* Rrom en.honkai-star-rail */
+/* From en.honkai-star-rail */
 
 // TODO handle promise returned by video.play() (could fail if autoplay is not allowed)
 
@@ -193,7 +193,7 @@
 			container.href = videoData.url;
 			const icon = focus.querySelector('figure figcaption a.info-icon');
 			if (icon)
-				icon.href = '/wiki/' + videoData.filename;
+				icon.href = '/ru/wiki/' + videoData.filename;
 			
 			const image = container.getElementsByTagName('img')[0];
 			
@@ -230,7 +230,7 @@
 						}
 						container.addEventListener("mouseover", showVideo);
 						
-						// Immediately show/play if still hovering
+						// Immediately show/play if still hoveringw
 						if (container.matches(':hover')) {
 							showVideo();
 						}

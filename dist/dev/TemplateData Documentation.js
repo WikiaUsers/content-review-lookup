@@ -15,24 +15,27 @@ var paramTypeDescriptions = {
 };
 (function() {
 	if ((el = document.querySelector('.mw-templatedata-doc-wrap')) === null) {
-		return;	
+		return;
 	}
-	(new mw.Api()).get({
-		action: 'templatedata',
-		titles: fandomContext.page.pageName,
-		formatversion: 2,
-	}).then(function(res) {
-		var templateData = res.pages[Object.keys(res.pages)[0]];
-		var keys = Object.keys(templateData.params);
-		for (var i in keys) {
-		  var dfn;
-		  var typeCell = el.querySelector('tbody > tr:nth-child(' + (+i + 1) + ') > .mw-templatedata-doc-param-type');
-		  var typeText = typeCell.textContent;
-		  typeCell.replaceChildren(dfn = document.createElement('dfn'));
-		  dfn.append(Object.assign(document.createElement('abbr'), {
-		    title: paramTypeDescriptions[templateData.params[keys[i]].type],
-		    textContent: typeText,
-		  }));
-		}
+
+	mw.loader.using('mediawiki.api').then(function() {
+		(new mw.Api()).get({
+			action: 'templatedata',
+			titles: mw.config.get('wgPageName'),
+			formatversion: 2,
+		}).then(function(res) {
+			var templateData = res.pages[Object.keys(res.pages)[0]];
+			var keys = Object.keys(templateData.params);
+			for (var i in keys) {
+			  var dfn;
+			  var typeCell = el.querySelector('tbody > tr:nth-child(' + (+i + 1) + ') > .mw-templatedata-doc-param-type');
+			  var typeText = typeCell.textContent;
+			  typeCell.replaceChildren(dfn = document.createElement('dfn'));
+			  dfn.append(Object.assign(document.createElement('abbr'), {
+			    title: paramTypeDescriptions[templateData.params[keys[i]].type],
+			    textContent: typeText,
+			  }));
+			}
+		});
 	});
 })();

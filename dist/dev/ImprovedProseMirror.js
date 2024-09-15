@@ -29,7 +29,7 @@
 		// Adds link suggest functionality to message walls and comment section text editors
 		linkSuggest: function() {
 			var SEARCH = {};
-			var requestCount = 0;
+			var selectCount = 0;
 			var resultCount = 0;
 			
 			// Hidden by default
@@ -38,22 +38,28 @@
 					'<div class="oo-ui-popupWidget-anchor" style="left:8px;"></div>'+
 					'<div class="oo-ui-popupWidget-popup IPM-ui-linkSuggest-popup" style="padding:0;">'+
 						'<div class="oo-ui-clippableElement-clippable oo-ui-popupWidget-body IPM-body">'+
-							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget oo-ui-selectWidget-unpressed IPM-list" role="listbox" aria-multiselectable="false"></div>'+
+							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-selectWidget IPM-list" role="listbox" aria-multiselectable="false"></div>'+
 						'</div>'+
 					'</div>'+
 				'</div>'
 			);
 			var suggestBox = wrapper.find('.IPM-list');
-			var scrollBox = wrapper.find('.IPM-body');
 			
 			// Append wrapper to area
 			$('body').append(wrapper);
 			
 			var methods = {
 				initEvents: function() {
-					var limitSuggest = mw.util.debounce(methods.suggestLink, 200);
+					var checkMessageDebounced = mw.util.debounce(methods.checkMessage, 200);
+					var observer = new MutationObserver(checkMessageDebounced);
 					
-					var observer = new MutationObserver(limitSuggest);
+					if (document.activeElement.matches('.ProseMirror')) {
+						observer.observe(document.activeElement, {
+							subtree: true,
+							childList: true,
+							characterData: true
+						});
+					}
 					
 					$('body').on('focus.IPM', '.ProseMirror', function(event) {
 						observer.disconnect();
@@ -64,15 +70,19 @@
 						});
 					});
 					
-					document.addEventListener('click', function(event) {
-						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {
-							methods.handleOOUI(event);
-							methods.dispatchLink();
-						} else if (event.target.closest('.rich-text-editor__content')) {
-							limitSuggest();
-						} else {
-							methods.closeSuggestions();
-						}
+					$('body').on('click.IPM', function(event) {
+						if (event.target.closest('.IPM-ui-linkSuggest-suggestion')) {methods.handleOOUI(event); methods.dispatchLink();}
+						else if (event.target.matches('.rich-text-editor__content')) {checkMessageDebounced();}
+					});
+					
+					$('body').on('mousedown.IPM', function(event) {
+						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
+						else if (event.target.closest('.ProseMirror')) {checkMessageDebounced();}
+						else {methods.closeSuggestions();}
+					});
+					
+					$('body').on('contextmenu.IPM', function(event) {
+						if (event.target.closest('.IPM-ui-linkSuggest')) {event.preventDefault();}
 					});
 					
 					document.addEventListener('keydown', function(event) {
@@ -88,17 +98,19 @@
 							case 'Escape':
 								methods.closeSuggestions();
 								break;
-							case 'ArrowDown':
 							case 'ArrowUp':
+							case 'ArrowDown':
 								if (wrapper.css('display') !== 'none') {
 									event.preventDefault();
 									methods.handleOOUI(event);
 								} else {
-									limitSuggest();
+									checkMessageDebounced();
 								}
 								break;
 							case 'Home':
+							case 'PageUp':
 							case 'End':
+							case 'PageDown':
 								if (wrapper.css('display') !== 'none') {
 									event.preventDefault();
 									methods.handleOOUI(event);
@@ -106,7 +118,7 @@
 								break;
 							case 'ArrowLeft':
 							case 'ArrowRight':
-								limitSuggest();
+								checkMessageDebounced();
 						}
 					}, true);
 					
@@ -125,15 +137,15 @@
 					});
 				},
 				
-				suggestLink: function() {
+				checkMessage: function() {
 					var caret;
 					var match;
 					var raw_str = '';
 					var link_str = '';
 					var wikilink_regex = /\[\[([^\[\]]*)\]{0,2}$/;
 					var ext_link_regex = /\[([^\[\]]+)\]$/;
-					caret = IPM.getCaret();
 					methods.closeSuggestions();
+					caret = IPM.getCaret();
 					if (caret && caret.data && caret.data.focusNode && caret.data.focusNode.nodeValue && caret.data.focusNode.parentNode.closest('.ProseMirror') && !caret.data.focusNode.parentNode.closest('pre')) {
 						raw_str = caret.data.focusNode.nodeValue.slice(0, caret.position);
 						if (wikilink_regex.test(raw_str)) {
@@ -154,7 +166,7 @@
 							SEARCH.offset = match.index;
 							SEARCH.node = caret.data.focusNode;
 							var url = prompt('Enter URL to create a link to');
-							var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from module DeleteCommentModal.js
+							var url_regex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i; // from fandom's DeleteCommentModal.js module
 							if (url_regex.test(url)) {
 								methods.dispatchLink(link_str, url);
 							} else if (url) {
@@ -165,52 +177,51 @@
 				},
 				
 				getPages: function(prefix) {
+					var localCount = selectCount;
 					if (!prefix) {
-						methods.appendMessage('Search for a page...');
+						methods.appendInformation('Search for a page...');
 						return;
 					}
-					var count = ++requestCount;
 					api.get({
-						action: 'query',
 						list: 'prefixsearch',
 						pssearch: prefix.toWellFormed(), // avoid URIError
-						pslimit: '6'
+						pslimit: '6',
+						maxage: '12',
+						errorformat: 'html',
+						formatversion: '2'
 					}).then(function(data) {
-						if (count !== requestCount) {return;} // abort if another request was made since making this one
+						if (localCount !== selectCount) {return;} // abort if another request was made since making this one
 						if (data.query.prefixsearch.length > 0) {
 							methods.buildSuggestions(data.query.prefixsearch);
 						} else if (data.query.prefixsearch) {
-							methods.appendMessage('No results found for "'+prefix+'".');
+							methods.appendInformation('No results found for "'+prefix+'".');
 						}
 					}, function(code, data) {
-						methods.appendMessage(api.getErrorMessage(data)[0].innerText);
+						if (localCount !== selectCount) {return;}
+						methods.appendInformation(api.getErrorMessage(data)[0].innerText);
 					});
 				},
 				
 				buildSuggestions: function(pages) {
-					// Build list
 					pages.forEach(function(page) {
-						var option = $(
+						var suggestion = $(
 							'<div class="oo-ui-widget oo-ui-widget-enabled oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-suggestion" aria-selected="false" tabindex="-1" role="option" id="IPM-linkSuggest-'+(++resultCount)+'" data-url="'+config.wgServer+mw.util.getUrl(page.title)+'">'+
 								'<span class="oo-ui-labelElement-label">'+page.title+'</span>'+
 							'</div>'
 						);
-						suggestBox.append(option);
+						suggestBox.append(suggestion);
 					});
 					wrapper.show();
-					document.querySelector('.ProseMirror-focused').focus();
 				},
 				
-				appendMessage: function(msg) {
-					// Add message
-					var message = $(
-						'<div class="oo-ui-widget oo-ui-labelElement oo-ui-optionWidget" tabindex="-1">'+
-							'<span class="oo-ui-labelElement-label" style="white-space:pre-wrap;font-style:italic;">'+msg+'</span>'+
+				appendInformation: function(info) {
+					var information = $(
+						'<div class="oo-ui-widget oo-ui-labelElement oo-ui-optionWidget IPM-ui-linkSuggest-information" tabindex="-1">'+
+							'<span class="oo-ui-labelElement-label">'+info+'</span>'+
 						'</div>'
 					);
-					suggestBox.append(message);
+					suggestBox.append(information);
 					wrapper.show();
-					document.querySelector('.ProseMirror-focused').focus();
 				},
 				
 				handleOOUI: function(event) {
@@ -237,16 +248,18 @@
 							break;
 						case 'keydown':
 							switch (event.key) {
-								case 'ArrowDown':
-									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
-									break;
 								case 'ArrowUp':
 									newNode = currentNode && $(currentNode).prevAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
 									break;
+								case 'ArrowDown':
+									newNode = currentNode && $(currentNode).nextAll('.IPM-ui-linkSuggest-suggestion').get(0) || suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
+									break;
 								case 'Home':
+								case 'PageUp':
 									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(0);
 									break;
 								case 'End':
+								case 'PageDown':
 									newNode = suggestBox.children('.IPM-ui-linkSuggest-suggestion').get(-1);
 							}
 							if (newNode) {
@@ -267,19 +280,18 @@
 					var searchNode = SEARCH.node.splitText(SEARCH.offset);
 					searchNode.splitText(SEARCH.string.length);
 					var linkNode = document.createElement('a');
-					if (optionNode) {
-						url = optionNode.dataset.url;
-						label = /\[\[[^\[\]]*?\|([^\[\]]*)\]{0,2}$/.exec(SEARCH.string);
-						if (!label) {
+					if (!label) {
+						var match = /\[\[[^\[\]]*?\|([^\[\]]*)\]{0,2}$/.exec(SEARCH.string);
+						if (!match) {
 							label = optionNode.innerText;
-						} else if (label && !label[1]) {
+						} else if (match && !match[1]) {
 							// pipe trick
 							// https://phabricator.wikimedia.org/source/mediawiki/browse/REL1_39/includes/parser/Parser.php$4655
 							
 							// <nowiki>[[ns:page (context)|]]</nowiki>
-							var p1 = /(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
+							var p1 = /^(?::?.+:|:|)(.+?)(?: ?[\(\uff08].+[\)\uff09])$/;
 							// <nowiki>[[ns:page (context), context|]]</nowiki>
-							var p2 = /(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
+							var p2 = /^(?::?.+:|:|)(.+?)(?: ?\(.+\)|)(?:(?:, |\uff0c|\u060c ).+|)$/;
 							
 							// <nowiki>try p1 first, to turn "[[A, B (C)|]]" into "[[A, B (C)|A, B]]"</nowiki>
 							label = optionNode.innerText.replace(p1, '$1');
@@ -287,8 +299,11 @@
 								label = optionNode.innerText.replace(p2, '$1');
 							}
 						} else {
-							label = label[1];
+							label = match[1];
 						}
+					}
+					if (!url) {
+						url = optionNode.dataset.url;
 					}
 					linkNode.href = url;
 					linkNode.append(label);
@@ -300,6 +315,7 @@
 						node.parentNode.insertBefore(parentNode.cloneNode(), node).appendChild(node);
 					};
 					var oldNode;
+					// split parent elements among children
 					while (parentNode.matches('a, em, strong, span')) {
 						parentNode.childNodes.forEach(surroundWithParent);
 						parentNode.before.apply(parentNode, parentNode.childNodes);
@@ -309,16 +325,12 @@
 					}
 					parentNode.append('\ufeff'); // add invisible character so prosemirror doesn't strip the link
 					parentNode.normalize();
-					var nodeIndex = Array.prototype.indexOf.call(parentNode.childNodes, linkNode); // index of the link node in its parent's child list
+					window.getSelection().setPosition(linkNode, linkNode.childNodes.length); // move caret to the end of the new link node
 					methods.closeSuggestions();
 					
 					setTimeout(function() {
 						// async to let prosemirror do stuff first
 						parentNode.removeChild(parentNode.lastChild.splitText(parentNode.lastChild.length - 1)); // remove invisible character
-						setTimeout(function() {
-							// wait and let prosemirror do stuff again
-							window.getSelection().setPosition(parentNode, nodeIndex + 1); // move caret to after the new link node
-						});
 					});
 				},
 				
@@ -326,13 +338,13 @@
 					// Close suggestion list
 					suggestBox.empty();
 					suggestBox.removeAttr('aria-activedescendant');
-					scrollBox.scrollTop(0);
 					wrapper.css({
 						top: '',
 						left: ''
 					});
 					wrapper.hide();
 					SEARCH = {};
+					++selectCount;
 				}
 			};
 			
@@ -489,25 +501,26 @@
 			var caretOffset = 0;
 			if (cSel && cSel.rangeCount > 0) {
 				var range = cSel.getRangeAt(0);
-				if (range.collapsed && range.endContainer.nodeType !== 3 && range.endContainer.lastChild && range.endContainer.lastChild.length) {
-					// fandom workaround - if you make a selection within a node
-					// and then move the caret to after the last character in that node,
-					// prosemirror tries to set the container to the parent element
-					// rather than the text node. (we need focusNode to be Text)
-					range.setEnd(range.endContainer.lastChild, range.endContainer.lastChild.length);
+				if (range.collapsed && range.endContainer.nodeType !== 3 && range.endOffset > 0) {
+					// ensure range container is a text node
+					var newContainer = range.endContainer.childNodes[range.endOffset - 1];
+					while (newContainer && newContainer.nodeType !== 3) {
+						newContainer = newContainer.lastChild;
+					}
+					range.setEnd(newContainer, newContainer.length);
 					range.collapse();
 				}
 				caretRect = range.getBoundingClientRect();
 				var preCaretRange = range.cloneRange();
 				preCaretRange.setStart(range.startContainer, 0);
 				caretOffset = preCaretRange.toString().length;
+				return {
+					data: cSel,
+					x: parseInt(caretRect.x + window.scrollX - 8),
+					y: parseInt(caretRect.y + window.scrollY + 8),
+					position: caretOffset
+				};
 			}
-			return {
-				data: cSel,
-				x: parseInt(caretRect.x + window.scrollX - 8),
-				y: parseInt(caretRect.y + window.scrollY + 8),
-				position: caretOffset
-			};
 		},
 		
 		parseInsert: function(str, replaceAll) {

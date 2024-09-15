@@ -81,10 +81,6 @@ $(document).ready(function() {
   });
 });
 
-window.AddRailModule = [{prepend: true}];
-
-window.AddRailModule = ['Template:RailModule'];
-
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
         mw.util.addCSS($(this).attr("data-css"));

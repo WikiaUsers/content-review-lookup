@@ -57,8 +57,9 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
-		'<option value="15">15</option>' +
-		'<option value="30">30</option>' +
+		// '<option value="15">15</option>' +
+		// '<option value="30">30</option>' +
+		'<option value="50">50</option>' +
 		'</select> %</div>');
 	$("span#starBonusHarness").html('<div id="starBonusInput"">Star Bonus Multiplier: <select name="starBonusBoost" id="starBonusBoost">' +
 		'<option value="1">1</option>' +

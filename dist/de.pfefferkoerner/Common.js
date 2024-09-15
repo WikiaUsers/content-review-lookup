@@ -10,16 +10,18 @@
     ]
 });*/
 
-mw.user.getGroups().then(function (groups) {
-	if (groups.includes('sysop') || groups.includes('bureaucrat')) {
-		importArticles({
-			type: 'script',
-			articles: [
-				'u:dev:MediaWiki:PatrolPanel.js',
-				'u:dev:MediaWiki:JWB/load.js'
-			]
-		});
-	}
+mw.hook('wikipage.content').add(function() {
+	mw.user.getGroups().then(function (groups) {
+		if (groups.includes('sysop') || groups.includes('bureaucrat')) {
+			importArticles({
+				type: 'script',
+				articles: [
+					'u:dev:MediaWiki:PatrolPanel.js',
+					'u:dev:MediaWiki:JWB/load.js'
+				]
+			});
+		}
+	});
 });
 
 $('.hidable-control').click(function() {

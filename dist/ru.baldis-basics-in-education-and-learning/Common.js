@@ -8,9 +8,11 @@ window.UserTagsJS = {
         }
     }
 };
+window.ajaxRefresh = 30000;
 importArticles({
     type: 'script',
     articles: [
+    	'u:dev:MediaWiki:AjaxRC.js',
         'u:dev:HighlightUsers/code.js',
         'u:dev:RevealAnonIP/code.js',
         'u:dev:UserTags/code.js',

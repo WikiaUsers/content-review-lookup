@@ -238,3 +238,12 @@ $( function () {
 		
 	} );
 } );
+
+/* ######################################################################### */
+/* Lock Old Comments */
+/* ######################################################################### */
+/* Prevent reply on old page comments */
+
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 365;
+window.lockOldComments.addNoteAbove = true;

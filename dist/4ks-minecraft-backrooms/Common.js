@@ -1,0 +1,1 @@
+$('.discord-widget').append('<widgetbot server="1254328075198533684" channel="1254329100554997781" width="800" height="600" ></widgetbot> <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>');

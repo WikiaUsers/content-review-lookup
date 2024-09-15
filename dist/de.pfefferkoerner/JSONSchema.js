@@ -1,9 +1,9 @@
 (function() {
-  if (!fandomContext.page.pageName.endsWith('.schema.json')) {
-    return;
-  }
-  
-  mw.loader.using(['mediawiki.util']).then(function() {
+  mw.loader.using(['mediawiki.util', 'mw.config']).then(function() {
+	  //if (!fandomContext.page.pageName.endsWith('.schema.json')) {
+	  if (!mw.config.get('wgPageName').endsWith('.schema.json')) {
+	    return;
+	  }
   
   function createTable(rows, parent) {    
   	var thead, tableHeaderRow, tbody;

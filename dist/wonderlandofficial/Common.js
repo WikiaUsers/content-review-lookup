@@ -4,11 +4,11 @@ $(function() {
         // Retrieve the timestamp of when the notice was last closed
         var lastClosed = localStorage.getItem('sideNoticeClosedAt');
         if (lastClosed) {
-            // Check if 2 hours have passed since the notice was closed
+            // Check if 5 hours have passed since the notice was closed
             var now = new Date().getTime();
             var elapsed = now - parseInt(lastClosed, 10);
-            var twoHoursInMs = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-            if (elapsed < twoHoursInMs) {
+            var fiveHoursInMs = 5 * 60 * 60 * 1000; // 5 hours in milliseconds
+            if (elapsed < fiveHoursInMs) {
                 return false; // Don't display the notice
             }
         }

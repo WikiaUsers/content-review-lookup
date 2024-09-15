@@ -69,6 +69,7 @@
             'Others': {
                 'Merchandise images': 'Merchandise',
                 'Movie images': 'Movie',
+                'HonoSuto images': 'HonoSuto',
                 'TCG images': 'TCG',
                 'Team emblem images': 'Team emblem',
                 'Wiki related images': 'Wiki related',
@@ -106,7 +107,7 @@
                     'opacity: 0.4;' +
                 '}' +
                 '.addcat-outer {' +
-                    'background-color: #baeaba !important;' +
+                    'background-color: #bfa8a8 !important;' +
                     'border-color: transparent !important;' +
                 '}' +
                 '.subcat-outer {' +

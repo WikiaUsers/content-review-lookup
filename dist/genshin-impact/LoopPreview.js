@@ -137,15 +137,14 @@
 		// Add videos
 		var searchClass = 'looppreview';
 		var all = document.getElementsByClassName(searchClass);
-		while (0 < all.length) {
+		$('.'+searchClass).each(function(_, focus){
 			// Ingest values
-			var focus = all.item(0);
 			focus.classList.remove(searchClass);
 			
 			// Create the video element
 			var videoData = extractVideoData(focus);
 			if (videoData === null) {
-				continue;
+				return;
 			}
 			var container = focus.querySelector('a.image');
 			var out = cloneVideo(videoData, vid_master, source_master);
@@ -168,11 +167,11 @@
 			// Hover mode
 			
 			// Wait for first mouseover before loading the video
-			$(container).on("mouseover.LoopPreview", function() {
+			$(container).one("mouseover.LoopPreview", function() {
 				source.src = source.dataset.src;
 				
 				// Wait until video loads before showing/playing it
-				$(vid_body).on('canplay.LoopPreview', function() {
+				$(vid_body).one('canplay.LoopPreview', function() {
 					function showVideo() {
 						image.style.display = 'none';
 						vid_body.style.display = 'block';
@@ -184,7 +183,7 @@
 					if (container.matches(':hover')) {
 						showVideo();
 					}
-				}, { 'once':true });
+				});
 				vid_body.preload = 'auto';
 				vid_body.load();
 				
@@ -193,7 +192,7 @@
 					vid_body.style.display = 'none';
 					vid_body.pause();
 				});
-			}, { once: true });
+			});
 			
 			// Autoplay mode
 			mw.hook('LoopPreview.autoplay').add(function(){
@@ -239,7 +238,7 @@
 				}
 				playManager.observe(vid_body);
 			});
-		}
+		});
 	}
 	mw.hook('wikipage.content').add(init);
 })(window);

@@ -1,4 +1,5 @@
 mw.hook('wikipage.editform').add(function($editForm) {
+	console.log('$editForm'. $editForm);
   var editForm = $editForm.get(0);
   
   addToolbarSection(

@@ -1,7 +1,8 @@
-mw.loader.using(['mediawiki.util']).then(function () {
+mw.loader.using(['mediawiki.util', 'mediawiki.Title']).then(function () {
 	window.dev = window.dev || {};
 
-	var title = new mw.Title(fandomContext.page.pageName, fandomContext.page.pageType);
+	var config = mw.config.get([ 'wgPageName', 'wgCanonicalNamespace' ]);
+	var title = new mw.Title(config.wgPageName, config.wgCanonicalNamespace);
 	var parts = title.getMain().split('/');
 	if (title.getNamespaceId() !== -1 || parts[0] !== 'Blame') {
 		return;
@@ -25,6 +26,7 @@ mw.loader.using(['mediawiki.util']).then(function () {
 		var lastElementChild = 0;
 		var diffs = [];
 		for (var i in rows) {
+			if (!rows.hasOwnProperty(i)) continue;
 			var row = rows[i];
 			var diff = {};
 			startLineLeft++;
@@ -210,7 +212,7 @@ mw.loader.using(['mediawiki.util']).then(function () {
 		mw.util.addPortletLink(
 		  'p-associated-pages',
 		  mw.util.getUrl(page),
-		  '← Zurück zur Seite',
+		  '← Return to page',
 		  'ca-nstab-main',
 		  page,
 		  'c'

@@ -14,3 +14,5 @@ window.MessageWallUserTags = {
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 365;
 window.lockOldComments.addNoteAbove = true;
+
+window.enableReadProgressBarOnArticles = true;

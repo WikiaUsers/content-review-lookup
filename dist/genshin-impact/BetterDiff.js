@@ -39,32 +39,39 @@ $(function() {
 			
 			// Add CSS
 			mw.util.addCSS(
-				'.targettedPatrolWrapper {'+
+				'.tpWrapper {'+
 					'display: flex;'+
 					'width: 100%;'+
 					'gap: 8px;'+
 					'flex-direction: column;'+
 				'}'+
-				'#targettedPatrolOpen {white-space: nowrap;}'+
-				'.targettedPatrolWrapper input {'+
+				'.tpWrapper > label {'+
+					'display: flex;'+
+					'gap: 5px;'+
+					'height: 30px;'+
+				'}'+
+				'.tpWrapper > label > :is(input, select) { flex-basis: 60%; }'+
+				'.tpWrapper > label > .tpLabel { flex-basis: 25%; }'+
+				'#tpOpen {white-space: nowrap;}'+
+				'.tpWrapper input {'+
 					'background: var(--theme-color-6);'+
 					'color: var(--theme-page-text-color);'+
 					'border: 0;'+
 					'border-radius: 4px;'+
 					'padding: 4px;'+
 				'}'+
-				'.targettedPatrolWrapper svg {'+
+				'.tpWrapper svg {'+
 					'vertical-align: middle;'+
 					'fill: var(--theme-link-color);'+
 				'}'+
-				'.targettedPatrolWrapper .bad-data, .targettedPatrolWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
-				'#targettedPatrolDetails {'+
+				'.tpWrapper .bad-data, .tpWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
+				'#tpDetails {'+
 					'margin-right: 3px;'+
 					'text-align: center;'+
 					'border-top: 3px solid var(--theme-link-color);'+
 					'margin-top: 5px;'+
 				'}'+
-				'#targettedPatrolNS, #targettedPatrolNS optgroup {'+
+				'#tpNS, #tpNS optgroup {'+
 					'color: var(--theme-page-text-color);'+
 					'border-radius: 5px;'+
 					'background: var(--theme-page-background-color);'+
@@ -332,8 +339,8 @@ $(function() {
 		
 		// Mass patrol recent edits from specific user and/or namespace
 		targettedPatrol: function() {
-			if (!document.querySelector('#targettedPatrol') && can.patrol) {
-				var entry = $('<span class="wds-button" id="targettedPatrolOpen">Targetted Patrolling</span>');
+			if (!document.querySelector('#tp') && can.patrol) {
+				var entry = $('<span class="wds-button" id="tpOpen">Targetted Patrolling</span>');
 				$('.mw-rcfilters-ui-table-placeholder').append(entry);
 				// Build modal and start up listeners
 				mw.hook('dev.modal').add(function(Modal) {
@@ -343,30 +350,45 @@ $(function() {
 							id: 'tPatrol-patrol',
 							size: 'medium',
 							content: 
-								'<div class="targettedPatrolWrapper">'+
-									'<label for="targettedPatrolNS">Namespace: '+
-									'<select name="targettedPatrolNS" id="targettedPatrolNS">'+
-										'<optgroup label="Namespaces:">'+
-											'<option value="-99">All</option>'+
-											'<option value="0">Main</option>'+
-											'<option value="2">User</option>'+
-											'<option value="6">File</option>'+
-											'<option value="10">Template</option>'+
-											'<option value="14">Category</option>'+
-											'<option value="828">Module</option>'+
-										'</optgroup>'+
-									'</select></label>'+
-									'<label for="targettedPatrolUser">User: <input name="targettedPatrolUser" id="targettedPatrolUser" placeholder="User to mass patrol" /></label>'+
-									'<label for="targettedPatrolTimeStart">'+
-										'From date: <input name="targettedPatrolTimeStart" id="targettedPatrolTimeStart" placeholder="Date to start patrolling from" /> '+
+								'<div class="tpWrapper">'+
+									'<label for="tpNS">'+
+										'<span class="tpLabel">Namespace:</span>'+
+										'<select name="tpNS" id="tpNS">'+
+											'<optgroup label="Namespaces:">'+
+												'<option value="-99">All</option>'+
+												'<option value="0">Main</option>'+
+												'<option value="2">User</option>'+
+												'<option value="6">File</option>'+
+												'<option value="10">Template</option>'+
+												'<option value="14">Category</option>'+
+												'<option value="828">Module</option>'+
+											'</optgroup>'+
+										'</select>'+
+									'</label>'+
+									'<label for="tpUser">'+
+										'<span class="tpLabel">User:</span>'+
+										'<input name="tpUser" id="tpUser" placeholder="User to mass patrol" />'+
+									'</label>'+
+									'<label for="tpTitle">'+
+										'<span class="tpLabel">Title:</span>'+
+										'<input name="tpTitle" id="tpTitle" placeholder="RegExp for title(s) to keep" />'+
+									'</label>'+
+									'<label for="tpNotTitle">'+
+										'<span class="tpLabel">Not title:</span>'+
+										'<input name="tpNotTitle" id="tpNotTitle" placeholder="RegExp for title(s) to exclude" />'+
+									'</label>'+
+									'<label for="tpTimeStart">'+
+										'<span class="tpLabel">From date:</span>'+
+										'<input name="tpTimeStart" id="tpTimeStart" placeholder="Date to start patrolling from" /> '+
 										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
 									'</label>'+
-									'<label for="targettedPatrolTimeEnd">'+
-										'To date: <input name="targettedPatrolTimeEnd" id="targettedPatrolTimeEnd" placeholder="Date to end patrolling at" /> '+
+									'<label for="tpTimeEnd">'+
+										'<span class="tpLabel">To date:</span>'+
+										'<input name="tpTimeEnd" id="tpTimeEnd" placeholder="Date to end patrolling at" /> '+
 										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
 									'</label>'+
 								'</div>'+
-								'<div id="targettedPatrolDetails">Progress will be noted here!</div>',
+								'<div id="tpDetails">Progress will be noted here!</div>',
 							buttons: [
 								{
 									// Attempt patrol
@@ -381,42 +403,51 @@ $(function() {
 										action: 'query',
 										list: 'recentchanges',
 										rcshow: '!patrolled',
-										rcprop: 'ids',
+										rcprop: 'ids|title|redirect',
 										format: 'json',
 										formatversion: '2',
 										rclimit: 'max'
 									};
 									
 									// User filter
-									var user = document.querySelector('#targettedPatrolUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
+									var user = document.querySelector('#tpUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
 									if (user.length>0) {api_sett.rcuser = user;}
 									
 									// Namespace filter
-									var ns = document.querySelector('#targettedPatrolNS').selectedOptions[0].value;
+									var ns = document.querySelector('#tpNS').selectedOptions[0].value;
 									if (ns !== "-99") {api_sett.rcnamespace = ns;}
 									
 									// Date-from filter
-									var df = document.querySelector('#targettedPatrolTimeStart').value.length>0 ?
-										new Date(document.querySelector('#targettedPatrolTimeStart').value) :
+									var df = document.querySelector('#tpTimeStart').value.length>0 ?
+										new Date(document.querySelector('#tpTimeStart').value) :
 										'';
 									if (!['Invalid Date', ''].includes(df)) {api_sett.rcstart = df.toISOString();}
 									
 									// Date-to filter
-									var dt = document.querySelector('#targettedPatrolTimeEnd').value.length>0 ?
-										new Date(document.querySelector('#targettedPatrolTimeEnd').value) :
+									var dt = document.querySelector('#tpTimeEnd').value.length>0 ?
+										new Date(document.querySelector('#tpTimeEnd').value) :
 										'';
 									if (!['Invalid Date', ''].includes(dt)) {api_sett.rcend = dt.toISOString();}
+									
+									// Title filters
+									var yti = new RegExp(document.querySelector('#tpTitle').value.trim(), 'i');
+									var nti = new RegExp(document.querySelector('#tpNotTitle').value.trim(), 'i');
 									
 									// Attempt patrol if any valid setting
 									if (Object.keys(api_sett).some(function(r){
 										return ['rcuser', 'rcnamespace', 'rcstart', 'rcend'].includes(r);
-									})) {
+									}) || yti.source!=='(?:)') {
 										api.get(api_sett).then(function(data){
-											if (data.query.recentchanges.length>0) {
-												document.querySelector('#targettedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
+											var revs = (data.query.recentchanges || [])
+											.filter(function(e){
+												return  (yti.source=='(?:)' ? true : e.title.search(yti)!==-1) &&
+														(nti.source=='(?:)' ? true : e.title.search(nti)===-1);
+											});
+											if (revs.length>0) {
+												document.querySelector('#tpDetails').innerHTML = 'Patrolling '+revs.length+' edits...';
 												betterDiff.patrolRevisions(
-													data.query.recentchanges,
-													document.querySelector('#targettedPatrolDetails'),
+													revs,
+													document.querySelector('#tpDetails'),
 													{
 														patrolled: 'Patrolled %patrolled% edits!',
 														open: '%open% deleted edits opened!'
@@ -424,10 +455,10 @@ $(function() {
 													'Patrolling %tot% edits, %curr% left...'
 												);
 											} else {
-												document.querySelector('#targettedPatrolDetails').innerHTML = 'The specified filters return no edits to patrol!';
+												document.querySelector('#tpDetails').innerHTML = 'The specified filters return no edits to patrol!';
 											}
 										});
-									} else { document.querySelector('#targettedPatrolDetails').innerHTML = 'No filter specified.'; }
+									} else { document.querySelector('#tpDetails').innerHTML = 'No filter specified.'; }
 								}
 							}
 						});
@@ -895,11 +926,9 @@ $(function() {
 			}
 			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
 				document.querySelector('#mw-diff-ntitle4 #massPatrol > a').click();
-				return;
 			}
 			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a')) {
 				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a').click();
-				return;
 			}
 			else if (!document.querySelector('.patrollink > a')) {
 				// no target, do nothing and end

@@ -28,12 +28,12 @@
         /**
          * Preloads translations.
          */
-        imported: function(i18n) {
+        imported: function() {
             $.when(
                 window.dev.i18n.loadMessages('DiscordIntegrator', {
                     cacheVersion: 3
                 }),
-                mw.loader.using('mediawiki.api')
+                mw.loader.using(['mediawiki.api', 'mediawiki.util'])
             ).then(this.preload.bind(this));
         },
         /**

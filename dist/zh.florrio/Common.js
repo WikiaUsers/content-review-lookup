@@ -47,7 +47,7 @@ var scene = map[pageName];
 switch (Object.prototype.toString.call(scene))
 {
 	case '[object Undefined]':
-		scene = '花园';
+		scene = mw.config.get('isDarkTheme') ? 'PvP' : '花园';
 		break;
 	case '[object String]':
 		scene = scene;
@@ -144,19 +144,21 @@ $.getJSON(mw.util.wikiScript("index"), {
 
 (function () {
 	var subWikis = {
-		W: {name: 'Flowr.fun 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/7/7d/WSite-logo.png/revision/latest?cb=20240830094753&format=original&path-prefix=zh', background: 'url(https://static.wikia.nocookie.net/florrio/images/2/2f/WSite-background-light.png/revision/latest?cb=20240830101803&format=original&path-prefix=zh)',bg:'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFyWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4yLWMwMDAgNzkuNTY2ZWJjNSwgMjAyMi8wNS8wOS0wNzoyMjoyOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIzLjQgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNC0wOC0yOFQwNjozNzozMy0wNTowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjQtMDgtMjhUMDY6NDE6MTgtMDU6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjQtMDgtMjhUMDY6NDE6MTgtMDU6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjdjNWU0YWI0LWZjOTAtNGM0My1iZmEyLWM4OGUwOWFmZDA4MSIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjE2ZWY5ZDc5LTU2OTQtNmE0Yy04MGY5LTJlZWY1ODg4OWQwNiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmNkZWQwOWE1LWFkZDAtYjM0ZS1hZmMzLTgwMjc5ZmUzZWJkYiI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Y2RlZDA5YTUtYWRkMC1iMzRlLWFmYzMtODAyNzlmZTNlYmRiIiBzdEV2dDp3aGVuPSIyMDI0LTA4LTI4VDA2OjM3OjMzLTA1OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjMuNCAoV2luZG93cykiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjdjNWU0YWI0LWZjOTAtNGM0My1iZmEyLWM4OGUwOWFmZDA4MSIgc3RFdnQ6d2hlbj0iMjAyNC0wOC0yOFQwNjo0MToxOC0wNTowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIzLjQgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk2nxioAAABvSURBVGiB7dGxDYBADARBQMTfl/tviIAOIBi9tJM4vZXPmTl2dukBf93vWWvZHZ9t/4ECtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQCtAK0ArQHkDUBh4z/0vwAAAAASUVORK5CYII=)'}
+		旧: {name: '旧版Florr.io 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
+		二: {name: 'Florr.io二创 中文维基'},
+		W: {name: 'Flowr.fun 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/7/7d/WSite-logo.png/revision/latest?cb=20240830094753&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/2/2f/WSite-background-light.png/revision/latest?cb=20240830101803&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/f/f1/WSite-background-dark.png/revision/latest?cb=20240830101850&format=original&path-prefix=zh'}
 	};
 
-	var root = mw.config.get('wgPageName').split('/')[0];
+	var name = '.fandom-community-header__community-name, .fandom-sticky-header__sitename';
+	var logo = '.fandom-community-header__image, .fandom-sticky-header__logo';
+	var background = '.fandom-community-header__background';
+
+	var root = mw.config.get('wgTitle').split('/')[0];
 	var subWiki = subWikis[root], w = subWiki;
 	if (w) {
-		$('.fandom-community-header__image, .fandom-community-header__community-name, .fandom-sticky-header__logo, .fandom-sticky-header__sitename').attr('href', function (_, src) {return src + '/' + root;});
-		if (w.name) $('.fandom-community-header__community-name, .fandom-sticky-header__sitename').text(w.name);
-		if (w.logo) $('.fandom-community-header__image, .fandom-sticky-header__logo').children().attr('src', w.logo);
-		if (w.background) 
-			if (mw.config.get('isDarkTheme')==0)
-				document.getElementsByClassName("fandom-community-header__background")[0].style.backgroundImage = w.background;
-			else
-				document.getElementsByClassName("fandom-community-header__background")[0].style.backgroundImage = w.bg;
+		$(name + ', ' + logo).attr('href', function (_, src) {return src + '/' + root;});
+		if (w.name) $(name).text(w.name);
+		if (w.logo) $(logo).children().attr('src', w.logo);
+		if (w.light || w.dark) $(background).css('background-image', 'url(' + (mw.config.get('isDarkTheme') ? w.dark || w.light: w.light || w.dark) + ')');
 	}
 })();
