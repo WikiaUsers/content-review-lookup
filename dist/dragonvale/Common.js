@@ -1,5 +1,7 @@
 mw.config.set('UMFBypassLicenseCheck', true);
 
+mw.loader.load( 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js' );
+
 /* Changes the Lock Old Blogs After 30 Days To A Chosen Amount */
 window.LockOldBlogs = {
     expiryDays: 500,

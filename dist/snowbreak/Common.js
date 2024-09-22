@@ -9,5 +9,5 @@ window.pPreview.apid = true;
 window.pPreview.scale = false;
 window.pPreview.RegExp.iclasses = ['pPreview-ignore','mw-redirect', 'lightbox'];
 window.pPreview.RegExp.iparents = ['.mw-editform'];
-window.pPreview.RegExp.onlyinclude = ['pPreview-onlyinclude'];
-window.pPreview.RegExp.noinclude = ['.caption'];
+window.pPreview.RegExp.onlyinclude = ['.pPreview-onlyinclude', '[data-include-me=1]'];
+window.pPreview.RegExp.noinclude = ['.pPreview-noinclude', '[data-exclude-me=1]', '.caption'];

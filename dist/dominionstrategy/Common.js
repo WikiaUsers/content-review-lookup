@@ -163,6 +163,8 @@ function fixCardPopup(e) {
   }
   if (elem.getBoundingClientRect().x > window.innerWidth / 2) {
     elem.style.left = '-' + (elem.offsetWidth - elem.previousElementSibling.offsetWidth + 20) + 'px';
+  } else {
+  	elem.style.left = '20px';
   }
 }
 
@@ -286,18 +288,6 @@ function initCommon() {
   fixCardPopups();
   initSorting();
 }
-
-window.addEventListener('readystatechange', function() {
-  initCommon();
-});
-
-window.addEventListener('DOMContentLoaded', function() {
-  initCommon();
-});
-
-window.addEventListener('load', function() {
-  initCommon();
-});
 
 initCommon();
 

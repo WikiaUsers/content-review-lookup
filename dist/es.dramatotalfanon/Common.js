@@ -52,3 +52,5 @@ $(function(){
   if (!newTitle) return;
   $(".firstHeading,#WikiaUserPagesHeader h1,#WikiaPageHeader h1").html(newTitle);
 });
+
+window.TZclockSimpleFormat= true;

@@ -1,5 +1,7 @@
 ;(function() {
     var grid = document.querySelector("table#island-grid.placeable");
+    if (grid === null) return;
+    
     var boxSelector = document.createElement("div");
     boxSelector.id = "island-grid-box-selector";
     boxSelector.classList.add("island-grid-box-selector");

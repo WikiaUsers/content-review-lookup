@@ -260,3 +260,9 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
     return false;
   });
 });
+
+//настройки для LinkPreview
+window.pPreview = $.extend(true, window.pPreview, {
+    defimage: 'https://vignette.wikia.nocookie.net/borderlands/images/0/05/Ajax.gif/revision/latest?cb=20170626182120&path-prefix=ru',
+    noimage: 'https://static.wikia.nocookie.net/dyinglight/images/5/5d/Gazi.png/revision/latest/scale-to-width-down/350?cb=20150217170914&path-prefix=ru',
+});

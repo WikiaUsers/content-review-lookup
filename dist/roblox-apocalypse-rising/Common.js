@@ -11,7 +11,8 @@ importArticles({
         'w:c:dev:TopEditors/code.js',
         'u:dev:PurgeButton/code.js',
         'u:dev:MassProtect/code.js',
-        'u:dev:AjaxBatchDelete/code.2.js'
+        'u:dev:AjaxBatchDelete/code.2.js',
+        'u:dev:MediaWiki:LastEdited/code.js'
     ]
 });
 importScriptPage('MassProtect/code.js', 'dev');
@@ -22,13 +23,6 @@ window.UserTagsJS = {
 		csshelper: { u: 'CSS' },
 		editor: { u: 'Editor'}
 	}
-};
-
-// Add custom groups to several users
-UserTagsJS.modules.custom = {
-	'Godonan': ['jshelper','csshelper', 'editor'],
-	'BoomTexan': ['editor'],
-	'Loltol1234': ['editor']
 };
 
 /* Username Template */
@@ -60,3 +54,17 @@ importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
         )
         .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/The Drying (2024)') 
 ); */
+
+/* LastEdited config */
+window.lastEdited = {
+	avatar: false,
+	size: false,
+	comment: false,
+	mainpage: false,
+	newpage: false,
+	timezone: 'locale',
+	time: 'timestamp',
+	namespaces: {
+		exclude: [2]
+	},
+}

@@ -19,3 +19,11 @@ UserTagsJS.modules.inactive = { days: 90, zeroIsInactive: true };
 UserTagsJS.modules.autoconfirmed = false;
 UserTagsJS.modules.newuser = false;
 UserTagsJS.modules.metafilter = false;
+
+window.AutoCreateUserPagesConfig = {
+    content: {
+        2: '{{welcome}}',
+        3: '{{welcome}}'
+    },
+    notify: true
+};

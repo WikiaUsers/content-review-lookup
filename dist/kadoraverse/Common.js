@@ -27,3 +27,11 @@ importArticles({
         'u:dev:MediaWiki:ReferencePopups/code.js',
     ]
 });
+
+// CategoryQuickRemove
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:CategoryQuickRemove.js',
+    ]
+});

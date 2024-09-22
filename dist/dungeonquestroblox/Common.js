@@ -1,9 +1,10 @@
 window.UserTagsJS = {
     modules: {},
     tags: {
-        former_staff: { u: 'Former DQ Wiki Staff', order: 100 },
-        contributor: { u: 'Contributor', order: 101 },
-        impactful: { u: 'Impactful User', order: 102 },
+        apprentice: { u: 'DQ Wiki Apprentice', order: 100 },
+        former_staff: { u: 'Former DQ Wiki Staff', order: 101 },
+        contributor: { u: 'Contributor', order: 102 },
+        impactful: { u: 'Impactful User', order: 103 },
         bureaucrat: { order: 1 }
     }
 };
@@ -22,7 +23,6 @@ UserTagsJS.modules.custom = {
     'NinjaDogDB': ['former_staff'],
     'Trashh': ['former_staff'],
     'EQUENOS': ['former_staff'],
-    'ImSpiriti': ['former_staff'],
     'Hellogillyface': ['impactful'],
     'Iceslasher123': ['impactful'],
     '010010000110100I': ['impactful'],
@@ -200,6 +200,12 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     }
 
     var abilities = [
+		// YP
+	{ name: "Rift Beam (30 ticks)", multiplier: 165 / 30 },
+	{ name: "Spinning Blade Smash / Void Dragon", multiplier: 148 },
+	{ name: "Kunai Knives (3 ticks)", multiplier: 150 / 3 },
+	{ name: "Triple Quake (3 ticks)", multiplier: 144 / 3 },
+	{ name: "Chain Storm (6 ticks)", multiplier: 147 / 6 },
 		// GS
 	{ name: "Blade Barrage / God Spear / Amethyst Beams / Jade Rain", multiplier: 133 },
 	{ name: "Jade Roller", multiplier: 126 },

@@ -82,12 +82,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues[4] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(rageEffectDown(unitAttributeValues[4]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
@@ -100,12 +103,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues2[4] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(rageEffectDown(unitAttributeValues2[4]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
@@ -118,12 +124,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[1]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[2]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues3[3] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[3]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues3[4] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(rageEffectDown(unitAttributeValues3[4]) + " sec").addClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second
@@ -188,12 +197,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues[1] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues[2] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues[3] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues[4] = $('td:eq(' + b + ')', unitAttributesTableR1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(slowEffectUp(unitAttributeValues[4]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
@@ -206,12 +218,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues2[1] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues2[2] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues2[3] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues2[4] = $('td:eq(' + e + ')', unitAttributesTable2R1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(slowEffectUp(unitAttributeValues2[4]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
@@ -224,12 +239,15 @@ Maintenance
 	                } else if (attributeName === "hit speed") {
 	                    unitAttributeValues3[1] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[1]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    unitAttributeValues3[2] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[2]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    unitAttributeValues3[3] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[3]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    unitAttributeValues3[4] = $('td:eq(' + e + ')', unitAttributesTable3R1).text().replace(/[^0-9.]/g, "").trim();
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(slowEffectUp(unitAttributeValues3[4]) + " sec").removeClass("EnragedStat").addClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second
@@ -291,10 +309,12 @@ Maintenance
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(movementSpeedName + " (" + unitAttributeValues[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "hit speed") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + b + ')', unitAttributesTableR1).text(unitAttributeValues[4] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a secondary attributes table (e.g. Golem)
@@ -304,10 +324,12 @@ Maintenance
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(movementSpeedName2 + " (" + unitAttributeValues2[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "hit speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                }else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable2R1).text(unitAttributeValues2[4] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Repeat for a tertiary attributes table (e.g. Elixir Golem)
@@ -317,10 +339,12 @@ Maintenance
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(movementSpeedName3 + " (" + unitAttributeValues3[0] + ")").removeClass("EnragedStat").removeClass("SlowedStat");
 	                } else if (attributeName === "hit speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[1] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "spawn speed") {
+	                } else if (attributeName === "first hit speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[2] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
-	                } else if (attributeName === "production speed") {
+	                } else if (attributeName === "spawn speed") {
 	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[3] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
+	                } else if (attributeName === "production speed") {
+	                    $('td:eq(' + e + ')', unitAttributesTable3R1).text(unitAttributeValues3[4] + " sec").removeClass("EnragedStat").removeClass("SlowedStat");
 	                }
 	            });
 	            // Damage per second

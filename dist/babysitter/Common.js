@@ -105,3 +105,13 @@ addOnloadHook(checktimers);
 // **************************************************
 //  - end -  Experimental javascript countdown timer
 // **************************************************
+
+/* sidebar: use sidebar for specials such as new episodes */
+$(document).ready(function() {
+    $('#WikiaRail').append("<section id='specials' class='module'></section>");
+   
+    $.getJSON('/api.php?action=parse&text={{Specials}}&format=json', function(data) {
+        var content = data.parse.text['*'];
+        $('section#specials').append(content);
+    });
+});

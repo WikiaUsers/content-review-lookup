@@ -1,16 +1,15 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
-/* Спойлеры */
+/* Импорт JS-страниц Fixes.js, Scroll.js, RefTooltips.js */
+importArticles({
+	    type: 'script',
+	    articles: [
+	        "u:ru.wikicorporate:MediaWiki:Fixes.js",
+	        "u:ru.wikicorporate:MediaWiki:Scroll.js",
+	        "u:ru.wikicorporate:MediaWiki:RefTooltips.js"
+	    ]
+	});
 
-window.AddRailModule = ['Template:RailModule'];
-
-$(function(){
-    $('.spoil').each(function(){
-        $(this).click(function() {
-            $(this).addClass('spoilopen')
-            $(this).removeClass('spoil')
-        });
-    });
-});
+/* Конфигурация для dev:AddRailModule */
+window.AddRailModule = [{page: 'Template:CodeRail', maxAge: 0}];
 
 /* Наведение */
 window.tooltips_list = [

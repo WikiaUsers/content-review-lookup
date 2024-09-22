@@ -13,8 +13,8 @@
 	
 	window.DisableArchivedPagesLoaded = true;
 	
-	mw.hook('dev.i18n').add(function(i18n){
-		i18n.loadMessages('DisableArchivedPages').done(function(i18n){
+	mw.hook('dev.i18n').add(function(i18n) {
+		i18n.loadMessages('DisableArchivedPages').done(function(i18n) {
 			var archived = i18n.msg('archived').escape();
 			
 			$('#ca-edit').html(archived).removeAttr('href');

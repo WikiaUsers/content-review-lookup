@@ -84,6 +84,11 @@
 			data: 'attuned',
 			label: '<img alt="" src="' + imageUrl + '2/2e/Icon_Attuned_Skill.png/revision/latest/scale-to-width-down/20?cb=20231016055110" decoding="async" width="20" height="20" data-image-name="Icon Attuned Skill.png" data-image-key="' + imageUrl + '2/2e/Icon_Attuned_Skill.png/revision/latest/scale-to-width-down/20?cb=20231016055110" class=" lazyloaded"> Attuned',
 			info: '[<a href="../Category:Attuned_Heroes" target=_blank>?</a>]',
+		},
+		{
+			data: 'aided',
+			label: '<img alt="" src="' + imageUrl + '5/56/Icon_tamer.webp/revision/latest/scale-to-width-down/20?cb=20240917051537" decoding="async" width="20" height="20" data-image-name="Icon Attuned Skill.png" data-image-key="' + imageUrl + '5/56/Icon_tamer.webp/revision/latest/scale-to-width-down/20?cb=20240917051537" class=" lazyloaded"> Attuned',
+			info: '[<a href="../Category:Aided_Heroes" target=_blank>?</a>]',
 		}
 	];
 

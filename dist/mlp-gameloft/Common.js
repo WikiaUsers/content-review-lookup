@@ -17,6 +17,7 @@ importArticles({
     articles: [
         'u:dev:Tooltips/code.js',
         'u:dev:FileUsageAuto-update/code.js',
+        'u:dev:MediaWiki:MassEdit/code.js',
         'u:dev:AjaxRC/code.js'
     ]
 });

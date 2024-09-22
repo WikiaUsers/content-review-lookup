@@ -134,18 +134,6 @@ function initCommon() {
   }
 }
 
-window.addEventListener('readystatechange', function () {
-  initCommon();
-});
-
-window.addEventListener('DOMContentLoaded', function () {
-  initCommon();
-});
-
-window.addEventListener('load', function () {
-  initCommon();
-});
-
 initCommon();
 
 })();
