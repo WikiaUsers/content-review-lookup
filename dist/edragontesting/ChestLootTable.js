@@ -44,14 +44,10 @@ $(document).ready(function(){
 		'</div></div>'+
 		'<button id="makeOutput">Get Tables</button>');
 	$("span#chestLootTableOutput").html(
-		'<span class="lootTableHeader" style="display:none; font-size:120%;"><b>Common:</b></span>'+
-		'<table class="lootTable" id="lootTableCommon"></table>'+
-		'<span class="lootTableHeader" style="display:none; font-size:120%;"><b>Rare:</b></span>'+
-		'<table class="lootTable" id="lootTableRare"></table>'+
-		'<span class="lootTableHeader" style="display:none; font-size:120%;"><b>Epic:</b></span>'+
-		'<table class="lootTable" id="lootTableEpic"></table>'+
-		'<span class="lootTableHeader" style="display:none; font-size:120%;"><b>Legendary:</b></span>'+
-		'<table class="lootTable" id="lootTableLegendary"></table>');
+		'<table class="lootTable wikitable" id="lootTableCommon"></table>'+
+		'<table class="lootTable wikitable" id="lootTableRare"></table>'+
+		'<table class="lootTable wikitable" id="lootTableEpic"></table>'+
+		'<table class="lootTable wikitable" id="lootTableLegendary"></table>');
 	var maxTHLevel = 16;
     var maxBHLevel = 10;
     // Create a list of available decorations
@@ -85,6 +81,7 @@ $(document).ready(function(){
     // This boolean tracks whether or not the Hero Skin header was toggled
     var skinsHeaderToggled = false;
     // Create a dictionary of possible weights
+    // Each such object is initialized empty, because we will refresh them on input
     var dictWeightsCommon;
     var dictWeightsRare;
     var dictWeightsEpic;
@@ -124,56 +121,56 @@ $(document).ready(function(){
             "500,000-1,000,000", 	// TH15
             "500,000-1,000,000"], 	// TH16
         		"Rare": [0,
-            "4,000-8,000",
-            "6,000-12,000",
-            "15,000-30,000",
-            "40,000-80,000",
-            "80,000-160,000",
-            "160,000-320,000",
-            "300,000-600,000",
-            "500,000-1,000,000",
-            "650,000-1,300,000",
-            "800,000-1,600,000",
-            "900,000-1,800,000",
-            "950,000-1,900,000",
-            "1,000,000-2,000,000",
-            "1,000,000-2,000,000",
-            "1,000,000-2,000,000",	
-            "1,000,000-2,000,000"]},
-         "Elixir": {"Common": [0,
-        	"2,000-4,000",
-            "3,000-6,000",
-        	"7,500-15,000",
-        	"20,000-40,000",
-            "40,000-80,000",
-            "80,000-160,000",
-            "150,000-300,000",
-            "250,000-500,000",
-            "325,000-650,000",
-            "400,000-800,000",
-            "450,000-900,000",
-            "475,000-950,000",
-            "500,000-1,000,000",
-            "500,000-1,000,000",
-            "500,000-1,000,000",
-            "500,000-1,000,000"],
+            "4,000-8,000",			// TH1
+            "6,000-12,000",			// TH2
+            "15,000-30,000",		// TH3
+            "40,000-80,000",		// TH4
+            "80,000-160,000",		// TH5
+            "160,000-320,000",		// TH6
+            "300,000-600,000",		// TH7
+            "500,000-1,000,000",	// TH8
+            "650,000-1,300,000",	// TH9
+            "800,000-1,600,000",	// TH10
+            "900,000-1,800,000",	// TH11
+            "950,000-1,900,000",	// TH12
+            "1,000,000-2,000,000",	// TH13
+            "1,000,000-2,000,000",	// TH14
+            "1,000,000-2,000,000",	// TH15
+            "1,000,000-2,000,000"]},// TH16
+    	"Elixir": {"Common": [0,
+        	"2,000-4,000", 			// TH1
+        	"3,000-6,000", 			// TH2
+        	"7,500-15,000", 		// TH3
+        	"20,000-40,000", 		// TH4
+            "40,000-80,000", 		// TH5
+            "80,000-160,000", 		// TH6
+            "150,000-300,000", 		// TH7
+            "250,000-500,000", 		// TH8
+            "325,000-650,000", 		// TH9
+            "400,000-800,000", 		// TH10
+            "450,000-900,000", 		// TH11
+            "475,000-950,000", 		// TH12
+            "500,000-1,000,000", 	// TH13
+            "500,000-1,000,000", 	// TH14
+            "500,000-1,000,000", 	// TH15
+            "500,000-1,000,000"], 	// TH16
         		"Rare": [0,
-            "4,000-8,000",
-            "6,000-12,000",
-            "15,000-30,000",
-            "40,000-80,000",
-            "80,000-160,000",
-            "160,000-320,000",
-            "300,000-600,000",
-            "500,000-1,000,000",
-            "650,000-1,300,000",
-            "800,000-1,600,000",
-            "900,000-1,800,000",
-            "950,000-1,900,000",
-            "1,000,000-2,000,000",
-            "1,000,000-2,000,000",
-            "1,000,000-2,000,000",
-            "1,000,000-2,000,000"]},
+            "4,000-8,000",			// TH1
+            "6,000-12,000",			// TH2
+            "15,000-30,000",		// TH3
+            "40,000-80,000",		// TH4
+            "80,000-160,000",		// TH5
+            "160,000-320,000",		// TH6
+            "300,000-600,000",		// TH7
+            "500,000-1,000,000",	// TH8
+            "650,000-1,300,000",	// TH9
+            "800,000-1,600,000",	// TH10
+            "900,000-1,800,000",	// TH11
+            "950,000-1,900,000",	// TH12
+            "1,000,000-2,000,000",	// TH13
+            "1,000,000-2,000,000",	// TH14
+            "1,000,000-2,000,000",	// TH15
+            "1,000,000-2,000,000"]},// TH16
          "Dark Elixir": {"Common": [0,0,0,0,0,0,0,
          	"1,200-2,000", 		// TH7
             "2,400-4,000",		// TH8
@@ -186,182 +183,182 @@ $(document).ready(function(){
             "7,500-12,500",		// TH15
             "7,500-12,500"], 	// TH16
             	"Rare": [0,0,0,0,0,0,0,
-            "2,400-4,000",
-            "4,800-8,000",
-            "8,400-14,000",
-            "12,000-20,000",
-            "13,500-22,500",
-            "14,250-23,750",
-            "15,000-25,000",
-            "15,000-25,000",
-            "15,000-25,000",
-            "15,000-25,000"]},
+            "2,400-4,000",		// TH7
+            "4,800-8,000",		// TH8
+            "8,400-14,000",		// TH9
+            "12,000-20,000",	// TH10
+            "13,500-22,500",	// TH11
+            "14,250-23,750",	// TH12
+            "15,000-25,000",	// TH13
+            "15,000-25,000",	// TH14
+            "15,000-25,000",	// TH15
+            "15,000-25,000"]},	// TH16
        	"Builder Gold": {"Common": [0,
-         	"17,500-25,000",	// BH1
-            "17,500-25,000",	// BH2
-            "100,000-125,000",	// BH3
-            "150,000-250,000",	// BH4
-            "275,000-375,000",	// BH5
-            "325,000-475,000",	// BH6
-            "350,000-550,000",	// BH7
-            "375,000-625,000",	// BH8
-            "375,000-625,000",	// BH9
-            "375,000-625,000"],	// BH10
+         	"17,500-25,000",		// BH1
+            "17,500-25,000",		// BH2
+            "100,000-125,000",		// BH3
+            "150,000-250,000",		// BH4
+            "275,000-375,000",		// BH5
+            "325,000-475,000",		// BH6
+            "350,000-550,000",		// BH7
+            "375,000-625,000",		// BH8
+            "375,000-625,000",		// BH9
+            "375,000-625,000"],		// BH10
             	"Rare": [0,
-           	"35,000-50,000",
-            "35,000-50,000",
-            "200,000-250,000",
-            "300,000-400,000",
-            "550,000-750,000",
-            "650,000-950,000",
-            "700,000-1,100,000",
-            "750,000-1,250,000",
-            "750,000-1,250,000",
-            "750,000-1,250,000"]},
-  		"Builder Elixir": {"Common": [0,
-         	"17,500-25,000",
-            "17,500-25,000",
-            "100,000-125,000",
-            "150,000-250,000",
-            "275,000-375,000",
-            "325,000-475,000",
-            "350,000-550,000",
-            "375,000-625,000",
-            "375,000-625,000",
-            "375,000-625,000"],
+           	"35,000-50,000",		// BH1
+            "35,000-50,000",		// BH2
+            "200,000-250,000",		// BH3
+            "300,000-400,000",		// BH4
+            "550,000-750,000",		// BH5
+            "650,000-950,000",		// BH6
+            "700,000-1,100,000",	// BH7
+            "750,000-1,250,000",	// BH8
+            "750,000-1,250,000",	// BH9
+            "750,000-1,250,000"]},	// BH10
+       	"Builder Elixir": {"Common": [0,
+         	"17,500-25,000",		// BH1
+            "17,500-25,000",		// BH2
+            "100,000-125,000",		// BH3
+            "150,000-250,000",		// BH4
+            "275,000-375,000",		// BH5
+            "325,000-475,000",		// BH6
+            "350,000-550,000",		// BH7
+            "375,000-625,000",		// BH8
+            "375,000-625,000",		// BH9
+            "375,000-625,000"],		// BH10
             	"Rare": [0,
-           	"35,000-50,000",
-            "35,000-50,000",
-            "200,000-250,000",
-            "300,000-400,000",
-            "550,000-750,000",
-            "650,000-950,000",
-            "700,000-1,100,000",
-            "750,000-1,250,000",
-            "750,000-1,250,000",
-            "750,000-1,250,000"]},
+           	"35,000-50,000",		// BH1
+            "35,000-50,000",		// BH2
+            "200,000-250,000",		// BH3
+            "300,000-400,000",		// BH4
+            "550,000-750,000",		// BH5
+            "650,000-950,000",		// BH6
+            "700,000-1,100,000",	// BH7
+            "750,000-1,250,000",	// BH8
+            "750,000-1,250,000",	// BH9
+            "750,000-1,250,000"]},	// BH10
        	"Shiny Ore": {"Rare": [0,0,0,0,0,0,0,0,
-        	"300-400", 	// TH8
-            "350-500",	// TH9
-            "350-500",	// TH10
-            "400-600",	// TH11
-            "400-600",	// TH12
-            "450-700",	// TH13
-            "450-700",	// TH14
-            "500-750",	// TH15
-            "500-750"],	// TH16
+        	"300-400", 		// TH8
+            "350-500",		// TH9
+            "350-500",		// TH10
+            "400-600",		// TH11
+            "400-600",		// TH12
+            "450-700",		// TH13
+            "450-700",		// TH14
+            "500-750",		// TH15
+            "500-750"],		// TH16
             	"Epic": [0,0,0,0,0,0,0,0,
-            "900-1,300",
-            "1,050-1,600",
-            "1,050-1,600",
-            "1,200-1,900",
-            "1,200-1,900",
-            "1,350-2,200",
-            "1,350-2,200",
-            "1,500-2,500",
-            "1,500-2,500"]},
+            "900-1,300",	// TH8
+            "1,050-1,600",	// TH9
+            "1,050-1,600",	// TH10
+            "1,200-1,900",	// TH11
+            "1,200-1,900",	// TH12
+            "1,350-2,200",	// TH13
+            "1,350-2,200",	// TH14
+            "1,500-2,500",	// TH15
+            "1,500-2,500"]},// TH16
         "Glowy Ore": {"Rare": [0,0,0,0,0,0,0,0,
-        	"30-40",
-            "35-50",
-            "35-50",
-            "40-60",
-            "40-60",
-            "45-70",
-            "45-70",
-            "50-75",
-            "50-75"],
+        	"30-40",		// TH8
+            "35-50",		// TH9
+            "35-50",		// TH10
+            "40-60",		// TH11
+            "40-60",		// TH12
+            "45-70",		// TH13
+            "45-70",		// TH14
+            "50-75",		// TH15
+            "50-75"],		// TH16
             	"Epic": [0,0,0,0,0,0,0,0,
-            "90-130",
-            "105-160",
-            "105-160",
-            "120-190",
-            "120-190",
-            "135-220",
-            "135-220",
-            "150-250",
-            "150-250"]},
+            "90-130",		// TH8
+            "105-160",		// TH9
+            "105-160",		// TH10
+            "120-190",		// TH11
+            "120-190",		// TH12
+            "135-220",		// TH13
+            "135-220",		// TH14
+            "150-250",		// TH15
+            "150-250"]},	// TH16
         "Starry Ore": {"Rare": [0,0,0,0,0,0,0,0,
-        	"2-3",
-            "3-4",
-            "3-4",
-            "4-5",
-            "4-5",
-            "5-6",
-            "5-6",
-            "6-7",
-            "6-7"],
+        	"2-3",			// TH8
+            "3-4",			// TH9
+            "3-4",			// TH10
+            "4-5",			// TH11
+            "4-5",			// TH12
+            "5-6",			// TH13
+            "5-6",			// TH14
+            "6-7",			// TH15
+            "6-7"],			// TH16
             	"Epic": [0,0,0,0,0,0,0,0,
-            "17-27",
-            "19-29",
-            "19-29",
-            "21-31",
-            "21-31",
-            "23-33",
-            "23-33",
-            "25-35",
-            "25-35"]},
+            "17-27",		// TH8
+            "19-29",		// TH9
+            "19-29",		// TH10
+            "21-31",		// TH11
+            "21-31",		// TH12
+            "23-33",		// TH13
+            "23-33",		// TH14
+            "25-35",		// TH15
+            "25-35"]},		// TH16
     };
     function resetDictionary(){
     	// Each dictionary contains sub-dictionaries.
         // The weight component is used for the main calculation,
         // whereas TH and BH are used for filtering
         dictWeightsCommon = {
-            "Magic Snacks": {"weight": 12, "TH": 3, "BH": 0, "isResource": false},
-            "Dark Elixir": {"weight": 5, "TH": 7, "BH": 0, "isResource": true},
-            "Gold": {"weight": 3, "TH": 1, "BH": 0, "isResource": true},
-            "Elixir": {"weight": 3, "TH": 1, "BH": 0, "isResource": true},
-            "Builder Gold": {"weight": 1, "TH": 0, "BH": 1, "isResource": true},
-            "Builder Elixir": {"weight": 1, "TH": 0, "BH": 1, "isResource": true},
-            "1,000-1,500 Capital Gold": {"weight": 1, "TH": 6, "BH": 0, "isResource": false},
+            "Magic Snacks": {weight: 12, TH: 3, BH: 0, isResource: false},
+            "Dark Elixir": {weight: 5, TH: 7, BH: 0, isResource: true},
+            "Gold": {weight: 3, TH: 1, BH: 0, isResource: true},
+            "Elixir": {weight: 3, TH: 1, BH: 0, isResource: true},
+            "Builder Gold": {weight: 1, TH: 0, BH: 1, isResource: true},
+            "Builder Elixir": {weight: 1, TH: 0, BH: 1, isResource: true},
+            "1,000-1,500 Capital Gold": {weight: 1, TH: 6, BH: 0, isResource: false},
         };
         dictWeightsRare = {
-        	"Gold": {"weight": 6, "TH": 1, "BH": 0, "isResource": true},
-            "Elixir": {"weight": 6, "TH": 1, "BH": 0, "isResource": true},
-            "Dark Elixir": {"weight": 6, "TH": 7, "BH": 0, "isResource": true},
-            "Shiny Ore": {"weight": 6, "TH": 8, "BH": 0, "isResource": true},
-            "Glowy Ore": {"weight": 6, "TH": 8, "BH": 0, "isResource": true},
-            "Starry Ore": {"weight": 6, "TH": 8, "BH": 0, "isResource": true},
-            "Training Potion": {"weight": 6, "TH": 1, "BH": 0, "isResource": false},
-            "Resource Potion": {"weight": 6, "TH": 1, "BH": 0, "isResource": false},
-            "Power Potion": {"weight": 6, "TH": 3, "BH": 0, "isResource": false},
-            "Research Potion": {"weight": 6, "TH": 3, "BH": 0, "isResource": false},
-            "Hero Potion": {"weight": 6, "TH": 7, "BH": 0, "isResource": false},
-            "2-3 Wall Rings": {"weight": 6, "TH": 9, "BH": 0, "isResource": false},
-            "2,000-3,000 Capital Gold": {"weight": 4, "TH": 6, "BH": 0, "isResource": false},
-            "Builder Potion": {"weight": 4, "TH": 1, "BH": 0, "isResource": false},
-            "Super Potion": {"weight": 4, "TH": 11, "BH": 0, "isResource": false},
-            "Pet Potion": {"weight": 4, "TH": 14, "BH": 0, "isResource": false},
-            "Builder Gold": {"weight": 3, "TH": 0, "BH": 1, "isResource": true},
-            "Builder Elixir": {"weight": 3, "TH": 0, "BH": 1, "isResource": true},
-            "Clock Tower Potion": {"weight": 3, "TH": 4, "BH": 0, "isResource": false},
-            "Builder Star Jar": {"weight": 3, "TH": 4, "BH": 0, "isResource": false},
+        	"Gold": {weight: 6, TH: 1, BH: 0, isResource: true},
+            "Elixir": {weight: 6, TH: 1, BH: 0, isResource: true},
+            "Dark Elixir": {weight: 6, TH: 7, BH: 0, isResource: true},
+            "Shiny Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
+            "Glowy Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
+            "Starry Ore": {weight: 6, TH: 8, BH: 0, isResource: true},
+            "Training Potion": {weight: 6, TH: 1, BH: 0, isResource: false},
+            "Resource Potion": {weight: 6, TH: 1, BH: 0, isResource: false},
+            "Power Potion": {weight: 6, TH: 3, BH: 0, isResource: false},
+            "Research Potion": {weight: 6, TH: 3, BH: 0, isResource: false},
+            "Hero Potion": {weight: 6, TH: 7, BH: 0, isResource: false},
+            "2-3 Wall Rings": {weight: 6, TH: 9, BH: 0, isResource: false},
+            "2,000-3,000 Capital Gold": {weight: 4, TH: 6, BH: 0, isResource: false},
+            "Builder Potion": {weight: 4, TH: 1, BH: 0, isResource: false},
+            "Super Potion": {weight: 4, TH: 11, BH: 0, isResource: false},
+            "Pet Potion": {weight: 4, TH: 14, BH: 0, isResource: false},
+            "Builder Gold": {weight: 3, TH: 0, BH: 1, isResource: true},
+            "Builder Elixir": {weight: 3, TH: 0, BH: 1, isResource: true},
+            "Clock Tower Potion": {weight: 3, TH: 4, BH: 0, isResource: false},
+            "Builder Star Jar": {weight: 3, TH: 4, BH: 0, isResource: false},
         };
         dictWeightsEpic = {
-        	"Clan House Parts": {"weight": 15, "TH": 6, "BH": 0, "isResource": false},
-        	"Decorations": {"weight": 10, "TH": 1, "BH": 0, "isResource": false},
-            "Shiny Ore": {"weight": 8, "TH": 8, "BH": 0, "isResource": true},
-            "Glowy Ore": {"weight": 8, "TH": 8, "BH": 0, "isResource": true},
-            "Starry Ore": {"weight": 8, "TH": 8, "BH": 0, "isResource": true},
-            "2 Builder Potions": {"weight": 5, "TH": 1, "BH": 0, "isResource": false},
-            "Book of Building": {"weight": 5, "TH": 1, "BH": 0, "isResource": false},
-            "Book of Fighting": {"weight": 5, "TH": 3, "BH": 0, "isResource": false},
-            "Shovel of Obstacles": {"weight": 5, "TH": 3, "BH": 0, "isResource": false},
-            "Book of Heroes": {"weight": 5, "TH": 7, "BH": 0, "isResource": false},
-            "Rune of Builder Gold": {"weight": 2, "TH": 4, "BH": 0, "isResource": false},
-            "Rune of Builder Elixir": {"weight": 2, "TH": 4, "BH": 0, "isResource": false},
-            "Book of Spells": {"weight": 2, "TH": 5, "BH": 0, "isResource": false},
+        	"Clan House Parts": {weight: 15, TH: 6, BH: 0, isResource: false},
+        	"Decorations": {weight: 10, TH: 1, BH: 0, isResource: false},
+            "Shiny Ore": {weight: 8, TH: 8, BH: 0, isResource: true},
+            "Glowy Ore": {weight: 8, TH: 8, BH: 0, isResource: true},
+            "Starry Ore": {weight: 8, TH: 8, BH: 0, isResource: true},
+            "2 Builder Potions": {weight: 5, TH: 1, BH: 0, isResource: false},
+            "Book of Building": {weight: 5, TH: 1, BH: 0, isResource: false},
+            "Book of Fighting": {weight: 5, TH: 3, BH: 0, isResource: false},
+            "Shovel of Obstacles": {weight: 5, TH: 3, BH: 0, isResource: false},
+            "Book of Heroes": {weight: 5, TH: 7, BH: 0, isResource: false},
+            "Rune of Builder Gold": {weight: 2, TH: 4, BH: 0, isResource: false},
+            "Rune of Builder Elixir": {weight: 2, TH: 4, BH: 0, isResource: false},
+            "Book of Spells": {weight: 2, TH: 5, BH: 0, isResource: false},
         };
         dictWeightsLegendary = {
-        	"Hero Skins": {"weight": 40, "TH": 7, "BH": 0, "isResource": false},
-            "Hero Equipment": {"weight": 20, "TH": 8, "BH": 0, "isResource": false},
-            "Hammer of Building": {"weight": 5, "TH": 1, "BH": 0, "isResource": false},
-            "Hammer of Fighting": {"weight": 5, "TH": 3, "BH": 0, "isResource": false},
-            "Hammer of Heroes": {"weight": 5, "TH": 7, "BH": 0, "isResource": false},
-            "Rune of Gold": {"weight": 5, "TH": 3, "BH": 0, "isResource": false},
-            "Rune of Elixir": {"weight": 5, "TH": 3, "BH": 0, "isResource": false},
-            "Rune of Dark Elixir": {"weight": 5, "TH": 7, "BH": 0, "isResource": false},
-            "Book of Everything": {"weight": 3, "TH": 1, "BH": 0, "isResource": false},
-            "Hammer of Spells": {"weight": 2, "TH": 5, "BH": 0, "isResource": false},
+        	"Hero Skins": {weight: 40, TH: 7, BH: 0, isResource: false},
+            "Hero Equipment": {weight: 20, TH: 8, BH: 0, isResource: false},
+            "Hammer of Building": {weight: 5, TH: 1, BH: 0, isResource: false},
+            "Hammer of Fighting": {weight: 5, TH: 3, BH: 0, isResource: false},
+            "Hammer of Heroes": {weight: 5, TH: 7, BH: 0, isResource: false},
+            "Rune of Gold": {weight: 5, TH: 3, BH: 0, isResource: false},
+            "Rune of Elixir": {weight: 5, TH: 3, BH: 0, isResource: false},
+            "Rune of Dark Elixir": {weight: 5, TH: 7, BH: 0, isResource: false},
+            "Book of Everything": {weight: 3, TH: 1, BH: 0, isResource: false},
+            "Hammer of Spells": {weight: 2, TH: 5, BH: 0, isResource: false},
         };
     }
 	function initializeOptions(){
@@ -418,7 +415,7 @@ $(document).ready(function(){
         if (numValue >= 1) {
         	return numValue.toFixed(2);
         } else {
-        	return numValue.toPrecision(3);
+        	return numValue.toPrecision(2);
         }
     }
     function getResource(table,itemName,isResource){
@@ -487,8 +484,8 @@ $(document).ready(function(){
     function writeSnackSubRow(table,itemName,oriCondProb,snackCount){
     	var condProb = (oriCondProb * 100) / snackCount / 100;
         var totalProb = condProb * chestChances[table] / 100;
-        $("table#lootTable" + table).append("<tr class=\"snackRowChild\""+
-        "style=\"display:none; color:#808080;\">"+
+        $("table#lootTable" + table).append("<tr class=\"snackRowChild chestSubRow1\""+
+        "style=\"display:none;\">"+
         "<td>" + itemName + "</td>" +
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -529,8 +526,8 @@ $(document).ready(function(){
     function writeDecoSubRow(table,itemIndex,oriCondProb,decoCount){
     	var condProb = (oriCondProb * 100) / decoCount / 100;
         var totalProb = condProb * chestChances[table] / 100;
-        $("table#lootTable" + table).append("<tr class=\"decoRowChild\""+
-        "style=\"display:none; color:#808080;\">"+
+        $("table#lootTable" + table).append("<tr class=\"decoRowChild chestSubRow1\""+
+        "style=\"display:none;\">"+
         "<td>" + decorationsList[itemIndex] + "</td>" +
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -571,8 +568,8 @@ $(document).ready(function(){
     function writeHouseSubRow(table,itemIndex,oriCondProb,housePartCount){
     	var condProb = (oriCondProb * 100) / housePartCount / 100;
         var totalProb = condProb * chestChances[table] / 100;
-        $("table#lootTable" + table).append("<tr class=\"houseRowChild\""+
-        "style=\"display:none; color:#808080;\">"+
+        $("table#lootTable" + table).append("<tr class=\"houseRowChild chestSubRow1\""+
+        "style=\"display:none;\">"+
         "<td>" + housesList[itemIndex] + "</td>" +
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -617,8 +614,8 @@ $(document).ready(function(){
     function writeEquipSubRow(table,itemName,oriCondProb,equipCount){
     	var condProb = (oriCondProb * 100) / equipCount / 100;
         var totalProb = condProb * chestChances[table] / 100;
-        $("table#lootTable" + table).append("<tr class=\"equipRowChild\""+
-        "style=\"display:none; color:#808080;\">"+
+        $("table#lootTable" + table).append("<tr class=\"equipRowChild chestSubRow1\""+
+        "style=\"display:none;\">"+
         "<td>" + itemName + "</td>" +
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -693,7 +690,7 @@ $(document).ready(function(){
         }
         // Write the second row
         $("table#lootTable" + table).append("<tr id=\"heroSkinRow" + heroName + "\"" +
-        "class=\"lootExpand\" style=\"color:#505050; display:none;\">"+
+        "class=\"lootExpand chestSubRow1\" style=\"display:none;\">"+
         "<td><u>" + heroFullName + " Skins" + "</u></td>"+
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -713,8 +710,8 @@ $(document).ready(function(){
     function writeHeroSkinThirdRow(table,heroName,itemName,oriCondProb,countSkins){
     	var condProb = (oriCondProb * 100) / countSkins / 100;
         var totalProb = condProb * chestChances[table] / 100;
-        $("table#lootTable" + table).append("<tr class=\"heroSkinRow" + heroName + "Child\""+
-        "style=\"display:none; color:#808080;\">"+
+        $("table#lootTable" + table).append("<tr class=\"heroSkinRow" + heroName + "Child chestSubRow2\""+
+        "style=\"display:none;\">"+
         "<td>" + itemName + "</td>" +
         "<td>" + writeNumber(condProb) + "%</td>" +
         "<td>" + writeNumber(totalProb) + "%</td>" +
@@ -723,7 +720,9 @@ $(document).ready(function(){
     function makeTable(table, dict){
   		// Reset this variable since the header is collapsed when table is generated
         skinsHeaderToggled = false;
-    	// First make the header row
+    	// First make the header rows
+    	$("table#lootTable" + table).append("<tr>"+
+    	"<th colspan='3'>" + table + "</th>");
         $("table#lootTable" + table).append("<tr>"+
         "<td><b>Item</b></td>"+
         "<td><b>Conditional Chance</b></td>"+
@@ -751,6 +750,7 @@ $(document).ready(function(){
                 }
             }
         });
+        $("table#lootTable" + table).addClass("mw-collapsible");
     }
     function disableCheckBox(){
     	// Hide the item and also keep it checked
@@ -821,7 +821,7 @@ $(document).ready(function(){
         }
     });
     $("span#chestLootTableInput").on("click","button#makeOutput",function(){
-    	$("span.lootTableHeader").show();
+    	// $("span.lootTableHeader").show();				Deprecated
     	$("table.lootTable").empty();
         resetDictionary();
     	var THL = $("select#THLevel").val();
@@ -829,30 +829,30 @@ $(document).ready(function(){
         var dictKey;
         // Write zeroes on the weights where applicable
         // Loop over the dictionaries to write zero
-        for (const key of Object.keys(dictWeightsCommon)) {
-        	dictKey = dictWeightsCommon[key];
+        Object.keys(dictWeightsCommon).forEach(function(value) {
+        	dictKey = dictWeightsCommon[value];
             if (dictKey.TH > THL || dictKey.BH > BHL) {
             	dictKey.weight = 0;
             }
-        }
-       	for (const key of Object.keys(dictWeightsRare)) {
-        	dictKey = dictWeightsRare[key];
+        });
+        Object.keys(dictWeightsRare).forEach(function(value) {
+        	dictKey = dictWeightsRare[value];
             if (dictKey.TH > THL || dictKey.BH > BHL) {
             	dictKey.weight = 0;
             }
-        }
-       	for (const key of Object.keys(dictWeightsEpic)) {
-        	dictKey = dictWeightsEpic[key];
+        });
+        Object.keys(dictWeightsEpic).forEach(function(value) {
+        	dictKey = dictWeightsEpic[value];
             if (dictKey.TH > THL || dictKey.BH > BHL) {
             	dictKey.weight = 0;
             }
-        }
-       	for (const key of Object.keys(dictWeightsLegendary)) {
-        	dictKey = dictWeightsLegendary[key];
+        });
+        Object.keys(dictWeightsLegendary).forEach(function(value) {
+        	dictKey = dictWeightsLegendary[value];
             if (dictKey.TH > THL || dictKey.BH > BHL) {
             	dictKey.weight = 0;
             }
-        }
+        });
         if (countDecos() == 0) {
         	dictWeightsEpic["Decorations"].weight = 0;
         }
@@ -975,5 +975,8 @@ $(document).ready(function(){
         var hero = $(this).attr("id").slice(-2);
         // Use this to search for the correct span element to work on
         $("div#heroSkinList" + hero).find(".heroSkinCheckBox").prop("checked",false);
+    });
+    $("table").on("mouseover mouseout","tr.lootExpand, tr#heroSkinParent",function(){
+      $(this).toggleClass("chestHover");
     });
 });

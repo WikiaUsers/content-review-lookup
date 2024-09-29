@@ -1,7 +1,8 @@
+/*
 mw.loader.using(['mediawiki.util', 'mediawiki.api', 'jquery'], function() {
     mw.hook('wikipage.editform').add(function($form) {
         $form.on('submit', function(e) {
-            var bannedWords = ["word1", "word2", "word3"];
+            var bannedWords = [];
             var articleText = $('#wpTextbox1').val();
             var regex = new RegExp(bannedWords.join("|"), "i");
 
@@ -11,4 +12,12 @@ mw.loader.using(['mediawiki.util', 'mediawiki.api', 'jquery'], function() {
             }
         });
     });
+});
+*/
+importArticles({
+    type: 'script',
+    articles: [
+        'MediaWiki:OppressionTitleFont.js',
+        'MediaWiki:AuraDescription.js',
+]
 });

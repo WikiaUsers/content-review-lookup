@@ -1,5 +1,47 @@
 ;
-
+ var colorMap = {
+        plant: "green",
+        fire: "red",
+        earth: "#6e3b0e",
+        cold: "skyblue",
+        lightning: "yellow",
+        water: "blue",
+        air: "purple",
+        metal: "orange",
+        light: "lightyellow",
+        dark: "darkslategray",
+        rainbow: "#6b03ee",
+        sun: "#fd7700",
+        moon: "#183169",
+        treasure: "#af8109",
+        olympus: "#6c3107",
+        seasonal: "#00a624",
+        apocalypse: "#4a0905",
+        dream: "#16a1be",
+        snowflake: "#102773",
+        monolith: "#029545",
+        galaxy: "#332288",
+        ornamental: "#b92000",
+        aura: "#ce56ca",
+        chrysalis: "#af8109",
+        hidden: "#a7f432",
+        surface: "#f6ad09",
+        melody: "#ff7578",
+        zodiac: "#09acff",
+        gemstone: "#330c62",
+        crystalline: "#ce56ca",
+        legendary: "#22008e",
+        time: "#22008e",
+        nest: "#e178bd",
+        vault: "#e36d37",
+        limited: "#5f0504",
+        permanent: "#2332ff",
+        ghostly: "cyan",
+        mythic: "#852527",
+        rift: "magenta",
+        celebration: "grey",
+        omni: "grey"
+    };
 function loadDragons(api) {
     return new Promise(function(resolve, reject) {
 		var pageTitle = 'Data:Dragons.json';
@@ -34,61 +76,23 @@ function loadDragons(api) {
 	 });
 }
 
-function plotDragonReleaseDates(id, dragonReleaseDates) {
-    var sortedNames = [];
-    var sortedDates = [];
-    for (i = 0; i < dragonReleaseDates.length; ++i) {
-        sortedNames.push(dragonReleaseDates[i].Name);
-        sortedDates.push(dragonReleaseDates[i].ReleaseDate);
-    }
+function createDragonReleaseDataset(dragonReleaseDates) {
+  
     
-    var ctx = document.getElementById(id+'-chart');//.getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: sortedNames,
-            datasets: [{
-                label: 'Dragon Releases Over Time',
-                data: sortedDates.map(function(date){return date.getTime();}),
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-                fill: false
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'category',
-                    title: {
-                        display: true,
-                        text: 'Dragon Name'
-                    }
-                },
-                y: {
-                    ticks: {
-                        callback: function(value, index, values) {
-                            var date = new Date(value);
-                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });                        
-                        }
-                    },
-                    title: {
-                        display: true,
-                        text: 'Release Date'
-                    }
-                }
-            }
-        }
-    });
+
 }
 
 function injectCanvas(id) {
 	if ($('#'+id).length) {
         var canvas = document.createElement("canvas");
+        canvas.style.background = "white";
+        canvas.style.color = "black";
         canvas.id = id+'-chart';
         
         document.getElementById(id).appendChild(canvas);
 	}
+
+    return document.getElementById(id + '-chart');
 }
 
 function addReleaseHistoryChart(dragons) {
@@ -106,8 +110,29 @@ function addReleaseHistoryChart(dragons) {
     
     //console.info(dragonReleaseDates);
     
-    injectCanvas('dragonReleaseChart');
-    plotDragonReleaseDates('dragonReleaseChart', dragonReleaseDates)
+    plotDragonReleaseDates(injectCanvas('dragonReleaseChart'), dragonReleaseDates);
+
+
+    var dragonReleaseDatesGrouped = {};
+    dragons.forEach(function (dragon) {
+        var releaseDateStr = dragon.ReleaseDate;
+        var lastSpaceIndex = releaseDateStr.lastIndexOf(' ');
+        var dateStr = releaseDateStr.slice(0, lastSpaceIndex);
+        var parsedDate = new Date(dateStr);
+
+        var primaryElement = dragon.Elements[0];
+
+        if (!dragonReleaseDatesGrouped[primaryElement]) {
+            dragonReleaseDatesGrouped[primaryElement] = [];
+        }
+
+        dragonReleaseDatesGrouped[primaryElement].push({
+            Name: dragon.Name,
+            ReleaseDate: parsedDate
+        });
+    });
+
+    plotDragonReleaseDatesByElement(injectCanvas('dragonReleaseElementChart'), dragonReleaseDatesGrouped);
 }
 
 

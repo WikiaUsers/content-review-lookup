@@ -1,12 +1,5 @@
 /* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
 
-/* == Da Wiki Le Seigneur des Anneaux == */
-/* A+ Wiki Badge */
-$('.fandom-community-header__community-name-wrapper').append(
-    $('<img/>').addClass('hover-community-header-wrapper').css('height', '45px')
-	.attr('src', 'https://static.wikia.nocookie.net/cacadores-de-sombras/images/e/ed/A%2B_wiki_badge.png/revision/latest?cb=20240223024929&format=original&path-prefix=pt-br')
-);
-
 /* == Da Shadowhunter's Wiki em inglês == */// Alerta de Spoilers e Não Finalizados
 window.SpoilerAlertJS = {
     question: 'ATENÇÃO! Esta área contém spoilers ou informações provisórias que você pode não querer ver. Tem certeza que deseja prosseguir?',
@@ -45,6 +38,9 @@ window.ajaxPages = [
     "Especial:Páginas_novas",
     "Especial:Contribuições"
 ];
+
+/* RailModule */
+window.AddRailModule = [{prepend: true}];
 
 // User tags
 window.UserTagsJS = {

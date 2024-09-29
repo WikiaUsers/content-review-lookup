@@ -18,7 +18,7 @@
 /*jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, undef:true, bitwise:true, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, unused:true, regexp:true, strict:true, trailing:false */
 /*global mediaWiki:true, importArticle:true*/
 
-;(function (module, mw, $, undefined) {
+;(function (module, mw, $) {
 	'use strict';
 
 	var countdowns = [];
@@ -193,11 +193,9 @@
 		p.loadMessages('Countdown', {
 			cacheVersion: 2
 		}).then(function(p) {
-			mw.hook('wikipage.content').add(function($content) {
-				i18n = p;
-				i18n.useUserLang();
-				init($content);
-			});
+			i18n = p;
+			i18n.useUserLang();
+			mw.hook('wikipage.content').add(init);
 		});
 	});
 	

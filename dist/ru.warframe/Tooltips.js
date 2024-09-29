@@ -27,6 +27,9 @@ window.tooltips_list = [
     {	classname: 'focus-tooltip',
         parse: '{'+'{Тултип/Фокус|<#param#>|<#param#2>}}',
     },
+    {	classname: 'arcane-tooltip',
+        parse: '{'+'{Тултип/Аркан|<#param#>}}',
+    },
 ];
 
 window.tooltips_config = {

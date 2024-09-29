@@ -5,6 +5,9 @@ window.SpoilerAlertJS = {
     no: 'Não, ainda não',
     fadeDelay: 1600
 };
+
+/* RailModule */
+window.AddRailModule = [{prepend: true}];
  
 /* Auto Refresh */
 window.AjaxRCRefreshText = 'Carregamento automático';

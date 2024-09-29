@@ -470,3 +470,5 @@ $(function()
          #InvisibleTo[data-user=" + mw.config.get('wgUserName') + "] { display: none !important; }"
     );
 });
+
+$wgEnableScaryTranscluding = true;

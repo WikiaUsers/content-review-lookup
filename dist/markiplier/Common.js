@@ -16,7 +16,7 @@ $(function() {
         yt_use = "id";
         channel = document.getElementById("ytparse_channelid").innerText;
     }
-    var query = "https://www.googleapis.com/youtube/v3/channels?key=AIzaSyAHeOiMJD0kKTYiGYuZkjZ7mggFkWd6foc&part=statistics"
+    var query = "https://www.googleapis.com/youtube/v3/channels?key=AIzaSyAFxR8UAOYCC7aJlWscKvI5UjhS6AZ68AE&part=statistics"
     if (yt_use == "id"){ query += '&id='+channel;}
     if (yt_use == "name"){ query += '&forUsername='+channel;}
     $.get(query, function (data) {

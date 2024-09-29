@@ -183,4 +183,265 @@ $(function() {
  *
  * Released on: March 4, 2022
  */
-"use strict";function _slicedToArray(t,e){return _arrayWithHoles(t)||_iterableToArrayLimit(t,e)||_unsupportedIterableToArray(t,e)||_nonIterableRest()}function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function _iterableToArrayLimit(t,e){var r=null==t?null:"undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"];if(null!=r){var n,a,o=[],i=!0,l=!1;try{for(r=r.call(t);!(i=(n=r.next()).done)&&(o.push(n.value),!e||o.length!==e);i=!0);}catch(t){l=!0,a=t}finally{try{i||null==r.return||r.return()}finally{if(l)throw a}}return o}}function _arrayWithHoles(t){if(Array.isArray(t))return t}function _createForOfIteratorHelper(t,e){var r,n="undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"];if(!n){if(Array.isArray(t)||(n=_unsupportedIterableToArray(t))||e&&t&&"number"==typeof t.length)return n&&(t=n),r=0,{s:e=function(){},n:function(){return r>=t.length?{done:!0}:{done:!1,value:t[r++]}},e:function(t){throw t},f:e};throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var a,o=!0,i=!1;return{s:function(){n=n.call(t)},n:function(){var t=n.next();return o=t.done,t},e:function(t){i=!0,a=t},f:function(){try{o||null==n.return||n.return()}finally{if(i)throw a}}}}function _unsupportedIterableToArray(t,e){if(t){if("string"==typeof t)return _arrayLikeToArray(t,e);var r=Object.prototype.toString.call(t).slice(8,-1);return"Map"===(r="Object"===r&&t.constructor?t.constructor.name:r)||"Set"===r?Array.from(t):"Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)?_arrayLikeToArray(t,e):void 0}}function _arrayLikeToArray(t,e){(null==e||e>t.length)&&(e=t.length);for(var r=0,n=new Array(e);r<e;r++)n[r]=t[r];return n}var Sakura=function(t,e){var u=this;if(void 0===t)throw new Error("No selector present. Define an element.");this.el=document.querySelector(t);var r,n;function o(t){return t[Math.floor(Math.random()*t.length)]}function i(t,e){return Math.floor(Math.random()*(e-t+1))+t}this.settings=(r={className:"sakura",fallSpeed:1,maxSize:14,minSize:10,delay:300,colors:[{gradientColorStart:"rgba(255, 183, 197, 0.9)",gradientColorEnd:"rgba(255, 197, 208, 0.9)",gradientColorDegree:120}],lifeTime:0},n=e,Object.keys(r).forEach(function(t){n&&Object.prototype.hasOwnProperty.call(n,t)&&(r[t]=n[t])}),r),this.petalsWeak=new Map,setInterval(function(){if(u.settings.lifeTime){var t,e=[],r=Date.now(),n=_createForOfIteratorHelper(u.petalsWeak);try{for(n.s();!(t=n.n()).done;){var a=_slicedToArray(t.value,2),o=a[0],i=a[1];o+u.settings.lifeTime<r&&(e.push(o),i.remove())}}catch(t){n.e(t)}finally{n.f()}for(var l=0,s=e;l<s.length;l++){var c=s[l];u.petalsWeak.delete(c)}}},1e3),this.el.style.overflowX="hidden";var l=["webkit","moz","MS","o",""];function s(t,e,r){for(var n=0;n<l.length;n+=1){var a=e;l[n]||(a=e.toLowerCase()),t.addEventListener(l[n]+a,r,!1)}}function c(t){t=t.getBoundingClientRect();return 0<=t.top&&0<=t.left&&t.bottom<=(window.innerHeight||document.documentElement.clientHeight)&&t.right<=(window.innerWidth||document.documentElement.clientWidth)}this.createPetal=function(){u.el.dataset.sakuraAnimId&&setTimeout(function(){window.requestAnimationFrame(u.createPetal)},u.settings.delay);var t=["sway-0","sway-1","sway-2","sway-3","sway-4","sway-5","sway-6","sway-7","sway-8"],e=o(["blow-soft-left","blow-medium-left","blow-soft-right","blow-medium-right"]),t=o(t),r=(.007*document.documentElement.clientHeight+Math.round(5*Math.random()))*u.settings.fallSpeed,e=["fall ".concat(r,"s linear 0s 1"),"".concat(e," ").concat((30<r?r:30)-20+i(0,20),"s linear 0s infinite"),"".concat(t," ").concat(i(2,4),"s linear 0s infinite")].join(", "),n=document.createElement("div"),r=(n.classList.add(u.settings.className),i(u.settings.minSize,u.settings.maxSize)),t=r-Math.floor(i(0,u.settings.minSize)/3),a=o(u.settings.colors);n.style.background="linear-gradient(".concat(a.gradientColorDegree,"deg, ").concat(a.gradientColorStart,", ").concat(a.gradientColorEnd,")"),n.style.webkitAnimation=e,n.style.animation=e,n.style.borderRadius="".concat(i(u.settings.maxSize,u.settings.maxSize+Math.floor(10*Math.random())),"px ").concat(i(1,Math.floor(t/4)),"px"),n.style.height="".concat(r,"px"),n.style.left="".concat(Math.random()*document.documentElement.clientWidth-100,"px"),n.style.marginTop="".concat(-(Math.floor(20*Math.random())+15),"px"),n.style.width="".concat(t,"px"),s(n,"AnimationEnd",function(){c(n)||n.remove()}),s(n,"AnimationIteration",function(){c(n)||n.remove()}),u.petalsWeak.set(Date.now(),n),u.el.appendChild(n)},this.el.setAttribute("data-sakura-anim-id",window.requestAnimationFrame(this.createPetal))};Sakura.prototype.start=function(){if(this.el.dataset.sakuraAnimId)throw new Error("Sakura is already running.");this.el.setAttribute("data-sakura-anim-id",window.requestAnimationFrame(this.createPetal))},Sakura.prototype.stop=function(){var e=this,t=0<arguments.length&&void 0!==arguments[0]&&arguments[0],r=this.el.dataset.sakuraAnimId;r&&(window.cancelAnimationFrame(r),this.el.setAttribute("data-sakura-anim-id","")),t||setTimeout(function(){for(var t=document.getElementsByClassName(e.settings.className);0<t.length;)t[0].parentNode.removeChild(t[0])},this.settings.delay+50)};
+(function() {
+    "use strict";
+
+    function _slicedToArray(array, limit) {
+        return _arrayWithHoles(array) || _iterableToArrayLimit(array, limit) || _unsupportedIterableToArray(array, limit) || _nonIterableRest();
+    }
+
+    function _nonIterableRest(){
+        throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    function _iterableToArrayLimit(iterable, limit){
+        var iterator = iterable == null ? null : (typeof Symbol !== "undefined" && iterable[Symbol.iterator]) || iterable["@@iterator"];
+        if (iterator != null) {
+            var step, result, elements = [], done = true, error = false;
+            try {
+                for (iterator = iterator.call(iterable); !(done = (step = iterator.next()).done) && (elements.push(step.value), !limit || elements.length !== limit); done = true);
+            } catch (err) {
+                error = true;
+                result = err;
+            } finally {
+                try {
+                    if (!done && iterator.return != null) iterator.return();
+                } finally {
+                    if (error) throw result;
+                }
+            }
+            return elements;
+        }
+    }
+
+    function _arrayWithHoles(array){
+        if (Array.isArray(array)) return array;
+    }
+
+    function _createForOfIteratorHelper(obj, allowArrayLike) {
+        var iterator, result, done = true, error = false;
+        var prefixes = ["webkit", "moz", "MS", "o", ""];
+        var helperStr = typeof Symbol !== "undefined" && obj[Symbol.iterator] || obj["@@iterator"];
+        if (!helperStr){
+            if (Array.isArray(obj) || (iterator = _unsupportedIterableToArray(obj)) || allowArrayLike && obj && typeof obj.length === "number") {
+                if (iterator) obj = iterator;
+                var index = 0;
+                return {
+                    s: function() {},
+                    n: function() {
+                        return index >= obj.length ? {done: true} : {done: false, value: obj[index++]};
+                    },
+                    e: function(err){
+                        throw err;
+                    },
+                    f: function() {}
+                };
+            }
+            throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+        }
+        return {
+            s: function() {
+                iterator = helperStr.call(obj);
+            },
+            n: function() {
+                var step = iterator.next();
+                done = step.done;
+                return step;
+            },
+            e: function(err){
+                error = true;
+                result = err;
+            },
+            f: function(){
+                try {
+                    if (!done && iterator.return != null) iterator.return();
+                } finally {
+                    if (error) throw result;
+                }
+            }
+        };
+    }
+
+    function _unsupportedIterableToArray(obj, minLen){
+        if (obj){
+            if (typeof obj === "string") return _arrayLikeToArray(obj, minLen);
+            var tag = Object.prototype.toString.call(obj).slice(8, -1);
+            var adjustedTag = tag === "Object" && obj.constructor ? obj.constructor.name : tag;
+            if (adjustedTag === "Map" || adjustedTag === "Set") return Array.from(obj);
+            if (adjustedTag === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(adjustedTag)) return _arrayLikeToArray(obj, minLen);
+        }
+    }
+
+    function _arrayLikeToArray(arr, len){
+        (len == null || len > arr.length) && (len = arr.length);
+        var copied = [];
+        for(var i = 0; i < len; i++) copied[i] = arr[i];
+        return copied;
+    }
+
+    function Sakura(selector, options) {
+        if (selector === undefined) throw new Error("No selector present. Define an element.");
+        this.el = document.querySelector(selector);
+
+        this.settings = {
+            className: "sakura",
+            fallSpeed: 1,
+            maxSize: 14,
+            minSize: 10,
+            delay: 300,
+            colors: [{
+                gradientColorStart: "rgba(255, 183, 197, 0.9)",
+                gradientColorEnd: "rgba(255, 197, 208, 0.9)",
+                gradientColorDegree: 120
+            }],
+            lifeTime: 0
+        };
+
+        if (options) {
+            for (var key in options) {
+                if (options.hasOwnProperty(key)) {
+                    this.settings[key] = options[key];
+                }
+            }
+        }
+
+        this.petalsWeak = new Map();
+
+        var self = this;
+        setInterval(function() {
+            if(self.settings.lifeTime){
+                var expiredKeys = [];
+                var now = Date.now();
+                var iteratorHelper = _createForOfIteratorHelper(self.petalsWeak);
+                try {
+                    var step;
+                    while(!(step = iteratorHelper.n()).done) {
+                        var _ref = _slicedToArray(step.value, 2),
+                            timestamp = _ref[0],
+                            element = _ref[1];
+                        if(timestamp + self.settings.lifeTime < now){
+                            expiredKeys.push(timestamp);
+                            element.remove();
+                        }
+                    }
+                } catch(error) {
+                    iteratorHelper.e(error);
+                } finally {
+                    iteratorHelper.f();
+                }
+                for(var i = 0; i < expiredKeys.length; i++){
+                    self.petalsWeak.delete(expiredKeys[i]);
+                }
+            }
+        }, 1000); // Changed 1e3 to 1000 for clarity
+
+        this.el.style.overflowX = "hidden";
+
+        var prefixes = ["webkit", "moz", "MS", "o", ""];
+
+        function addEventListenerWithPrefixes(element, eventName, handler) {
+            prefixes.forEach(function(prefix) {
+                var prefixedEvent = prefix ? prefix + eventName : eventName.toLowerCase();
+                element.addEventListener(prefixedEvent, handler, false);
+            });
+        }
+
+        function isElementInViewport(element) {
+            var rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        this.createPetal = function() {
+            if(self.el.dataset.sakuraAnimId){
+                setTimeout(function() {
+                    window.requestAnimationFrame(self.createPetal);
+                }, self.settings.delay);
+            }
+
+            var swayClasses = ["sway-0","sway-1","sway-2","sway-3","sway-4","sway-5","sway-6","sway-7","sway-8"];
+            var blowClasses = ["blow-soft-left","blow-medium-left","blow-soft-right","blow-medium-right"];
+
+            var swayClass = self.getRandomItem(swayClasses);
+            var blowClass = self.getRandomItem(blowClasses);
+            var fallSpeed = (0.007 * document.documentElement.clientHeight + Math.round(5 * Math.random())) * self.settings.fallSpeed;
+
+            var animation = [
+                "fall " + fallSpeed + "s linear 0s 1",
+                blowClass + " " + (fallSpeed > 30 ? fallSpeed : 30 - 20 + self.getRandomInt(0, 20)) + "s linear 0s infinite",
+                swayClass + " " + self.getRandomInt(2, 4) + "s linear 0s infinite"
+            ].join(", ");
+
+            var petal = document.createElement("div");
+            petal.classList.add(self.settings.className);
+            var size = self.getRandomInt(self.settings.minSize, self.settings.maxSize);
+            var width = size - Math.floor(self.getRandomInt(0, self.settings.minSize) / 3);
+            var color = self.getRandomItem(self.settings.colors);
+
+            petal.style.background = "linear-gradient(" + color.gradientColorDegree + "deg, " + color.gradientColorStart + ", " + color.gradientColorEnd + ")";
+            petal.style.webkitAnimation = animation;
+            petal.style.animation = animation;
+            petal.style.borderRadius = self.getRandomInt(self.settings.maxSize, self.settings.maxSize + Math.floor(10 * Math.random())) + "px " + self.getRandomInt(1, Math.floor(width / 4)) + "px";
+            petal.style.height = size + "px";
+            petal.style.left = (Math.random() * document.documentElement.clientWidth - 100) + "px";
+            petal.style.marginTop = (-(Math.floor(20 * Math.random()) + 15)) + "px";
+            petal.style.width = width + "px";
+
+            addEventListenerWithPrefixes(petal, "AnimationEnd", function() {
+                if(!isElementInViewport(petal)) petal.remove();
+            });
+
+            addEventListenerWithPrefixes(petal, "AnimationIteration", function() {
+                if(!isElementInViewport(petal)) petal.remove();
+            });
+
+            self.petalsWeak.set(Date.now(), petal);
+            self.el.appendChild(petal);
+        };
+
+        this.el.setAttribute("data-sakura-anim-id", window.requestAnimationFrame(this.createPetal));
+    }
+
+    Sakura.prototype.getRandomItem = function(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    };
+
+    Sakura.prototype.getRandomInt = function(min, max){
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    Sakura.prototype.start = function(){
+        if(this.el.dataset.sakuraAnimId) throw new Error("Sakura is already running.");
+        this.el.setAttribute("data-sakura-anim-id", window.requestAnimationFrame(this.createPetal));
+    };
+
+    Sakura.prototype.stop = function(shouldRemoveAll){
+        if (shouldRemoveAll === undefined) shouldRemoveAll = false; // Default parameter for compatibility
+        var animId = this.el.dataset.sakuraAnimId;
+        if(animId){
+            window.cancelAnimationFrame(animId);
+            this.el.setAttribute("data-sakura-anim-id", "");
+        }
+        if(!shouldRemoveAll){
+            var self = this;
+            setTimeout(function() {
+                var petals = document.getElementsByClassName(self.settings.className);
+                while(petals.length > 0){
+                    petals[0].parentNode.removeChild(petals[0]);
+                }
+            }, self.settings.delay + 50);
+        }
+    };
+
+    // Example of initializing Sakura
+    // Replace '#YourElementSelector' with the actual selector where you want the sakura effect
+    // new Sakura('#YourElementSelector', { /* options */ });
+
+    // Expose Sakura to the global scope if needed
+    window.Sakura = Sakura;
+
+})();

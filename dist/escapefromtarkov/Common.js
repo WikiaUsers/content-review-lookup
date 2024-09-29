@@ -90,16 +90,11 @@ window.mapsExtendedConfig = {
             "label": "Spawns",
             "children": [
                 "spawn_pmc",
-                {
-                    "label": "AI",
-                    "children": [
-                        "spawn_scav",
-                        "spawn_sniper",
-                        "spawn_boss",
-                        "spawn_rogueraider",
-                        "spawn_cultist"
-                    ]
-                }
+                "spawn_scav",
+                "spawn_sniper",
+                "spawn_boss",
+                "spawn_rogueraider",
+                "spawn_cultist"
             ]
         },
         {

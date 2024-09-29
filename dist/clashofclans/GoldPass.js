@@ -539,9 +539,9 @@ $(document).ready(function() {
     	return array;
    }
    // When Submit button is pressed...
-   $("#changeBonusButton").click(function() {
+   $(".changeBonusButton").click(function() {
        // Change its text to "Update"
-      $("#changeBonusButton").text("Update");
+      $(".changeBonusButton").text("Update");
 	  // Create arrays for EXP gains to unload later if required
 	  var xpArray = [];
 	  // Catch-up times (for collectors) are based on the ratio of new build time to old build time.
@@ -2380,8 +2380,8 @@ $(document).ready(function() {
 		});
     });
     // Reset form when Reset button is clicked
-    $("#resetBonusButton").click(function() {
-        $("#changeBonusButton").text("Apply");
+    $(".resetBonusButton").click(function() {
+        $(".changeBonusButton").text("Apply");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
 		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost").prop("checked",false);

@@ -167,8 +167,14 @@
         var documentElementInfos = [];
 
         // make list of all elements on the wiki page document
-        var allDocumentElements = document.querySelector('#mw-content-text .mw-parser-output').getElementsByTagName('*');
-
+        var documentContainer = document.querySelector('#mw-content-text .mw-parser-output');
+        var allDocumentElements = [];
+        if (documentContainer) {
+            allDocumentElements = documentContainer.getElementsByTagName('*');
+        } else {
+            return;
+        }
+        
         for (var i in allDocumentElements) {
             var element = allDocumentElements[i];
             if (!element.className || !element.className.split) {

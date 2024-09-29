@@ -33,6 +33,7 @@
         'MediaWiki:Toggle.js',
         'MediaWiki:WikiNotification.js',
         'MediaWiki:ClanHouseGenerator.js',
+        'MediaWiki:ChestLootTable.js',
     	]
     });
 	

@@ -1,188 +1,18 @@
 /*
-	Author of this calculator is Ashi.
+	Original author: Ashi.
+	Addapted for wiki use: The Crossblade.
 	
-	This code calculates the stat growth of a familiar.
-	The user has to input the yellow stats in the sliders.
+	Creates 4 interactable range inputs (health, damage, defense and speed)
+	and a table which shows the stat growth of a familiar/pet. By changning
+	slider values the icons for stats and the stats itself get updated (the
+	old table gets deleted and a new one is created).
+	The table consists of a button (first column, first row) that either 
+	shows all familiar level stats or hides most of stats, except for max 
+	levels (12,15, 18, 21); icons for stats (first column); and levels of
+	familiars (first row).
+	
+	The look of the table is managed with CSS.
 */
-
-/*
-<html>
-<head/>
-<body>
-<h1>Katana Nomogramma Pet Calculator</h1>
-<p>Health</p>
-<input id="pc_rangeHealth" type=range min=1 max=25 default=13
-    oninput="on_change_hp()"
-    onchange="on_change_hp()"
->
-</br>
-<p>Damage</p>
-<input id="pc_rangeDamage" type=range min=1 max=9 default=5
-    oninput="pc_onChangeDamage()"
-    onchange="pc_onChangeDamage()"
-    >
-</br>
-<p>Defence</p>
-<input id="pc_rangeDefence" type=range min=1 max=9 default=5
-    oninput="pc_onChangeDefence()"
-    onchange="pc_onChangeDefence()"
->
-</br>
-<p>Speed</p> 
-<input id="pc_rangeSpeed" type=range min=1 max=3 default=1
-    oninput="pc_onChangeSpeed()"
-    onchange="pc_onChangeSpeed()"
->
-</br>
-</br>
-<table border=1>
-    <colgroup>
-        <col span="1" width="100px">
-        <col span="11" id="pc_tableHide1" width="20px">
-        <col span="1" id="pc_tableLevel12" width="20px">
-        <col span="2" id="pc_tableHide2" width="20px">
-        <col span="1" id="pc_tableLevel15" width="20px">
-        <col span="2" id="pc_tableHide3" width="20px">
-        <col span="1" id="pc_tableLevel18" width="20px">        
-        <col span="2" id="pc_tableHide4" width="20px">
-        <col span="1" id="pc_tableLevel21" width="20px">        
-    </colgroup>
-    <tr height="25px">
-        <td id="pc_VisButton" onclick="pc_tableVisClick();" >Hide</td>
-        <td>1</td>
-        <td>2</td>
-        <td>21</td>     
-    </tr>
-    <tr id="pc_tableHealthPrevRow" height="25px">
-        <td id="pc_tableHealthPrevVal">Health prev</td>
-        <td>1</td>
-        <td>2</td>
-        <td>21</td>     
-    </tr>
-    <tr id="pc_tableHealthRow" height="25px">
-        <td id="pc_tableHealthVal">Health</td>
-        <td>1</td>
-        <td>2</td>
-        <td>21</td>     
-    </tr>   
-    <tr id="pc_tableHealthNextRow" height="25px">
-        <td id="pc_tableHealthNextVal">Health next</td>
-        <td>1</td>
-        <td>2</td>
-        <td>20</td>
-        <td>21</td>     
-    </tr>   
-    <tr id="pc_tableDamageRow" height="25px">
-        <td id="pc_tableDamageVal">Damage</td>
-        <td>1</td>
-        <td>2</td>
-        <td>20</td>
-        <td>21</td>     
-    </tr>
-    <tr id="pc_tableDefenceRow" height="25px">
-        <td id="pc_tableDefenceVal">Defence</td>
-        <td>1</td>
-        <td>2</td>
-        <td>21</td>     
-    </tr>
-    <tr id="pc_tableSpeedRow" height="25px">
-        <td id="pc_tableSpeedVal">Speed</td>
-        <td>1</td>
-        <td>2</td>
-        <td>20</td>
-        <td>21</td>     
-    </tr>   
-</table>
- 
-<script>
-    pc_onChangeSpeed();
-    pc_onChangeDefence();
-    pc_onChangeDamage();
-    on_change_hp();
- 
-    function on_change_hp(){
-        let x = parseInt(document.getElementById("pc_rangeHealth").value);
-        pc_tableRowPrintHealth(x);
-        document.getElementById("pc_tableHealthPrevVal").textContent = printHealth(x-1);
-        document.getElementById("pc_tableHealthVal").textContent = printHealth(x);
-        document.getElementById("pc_tableHealthNextVal").textContent = printHealth(x+1);
-    }
- 
-    function pc_onChangeSpeed(){
-        let x = parseInt(document.getElementById("pc_rangeSpeed").value);
-        pc_tableRowPrintSpeed(x);
-        document.getElementById("pc_tableSpeedVal").textContent = printSpeed(x);
-    }
- 
-    function pc_onChangeDefence(){
-        let x = parseInt(document.getElementById("pc_rangeDefence").value);
-        pc_tableRowPrintDefence(x);
-        document.getElementById("pc_tableDefenceVal").textContent = printDefence(x);
-    }
- 
-    function pc_onChangeDamage(){
-        let x = parseInt(document.getElementById("pc_rangeDamage").value);
-        pc_tableRowPrintDamage(x);
-        document.getElementById("pc_tableDamageVal").textContent = printDamage(x);
-    }
-    
-    function pc_tableRowPrintDamage(x){
-        let row = document.getElementById("pc_tableDamageRow");
-        for (let i = 1; i<=21; i++){
-            row.cells[i].textContent = calcDamage(x,i);
-        }
-    }
-    function pc_tableRowPrintDefence(x){
-        let row = document.getElementById("pc_tableDefenceRow");
-        for (let i = 1; i<=21; i++){
-            row.cells[i].textContent = calcDefence(x,i);
-        }
-    }
-    function pc_tableRowPrintSpeed(x){ // X is slider value. "i" is familiar level.
-        let row = document.getElementById("pc_tableSpeedRow");
-        for (let i = 1; i<=21; i++){
-            row.cells[i].textContent = calcSpeed(x,i);
-        }
-    }
-    function pc_tableRowPrintHealth(x){
-        let row0 = document.getElementById("pc_tableHealthPrevRow");
-        let row1 = document.getElementById("pc_tableHealthRow");
-        let row2 = document.getElementById("pc_tableHealthNextRow");
-        for (let i = 1; i<=21; i++){
-            if (x>1) {row0.cells[i].textContent = calcHealth(x-1,i);}
-            else {row0.cells[i].textContent = "♥"}
-            row1.cells[i].textContent = calcHealth(x,i);
-            if (x<25) {row2.cells[i].textContent = calcHealth(x+1,i);}
-            else {row2.cells[i].textContent = "♥"}
-        }
-    }    
- 
-    function pc_tableHideCols(){
-        document.getElementById("pc_tableHide1").style.visibility='collapse';
-        document.getElementById("pc_tableHide2").style.visibility='collapse';
-        document.getElementById("pc_tableHide3").style.visibility='collapse';
-        document.getElementById("pc_tableHide4").style.visibility='collapse';
-        document.getElementById("pc_VisButton").textContent = "Show";
-    }
-    function pc_tableShowCols(){
-        document.getElementById("pc_tableHide1").style.visibility='visible';
-        document.getElementById("pc_tableHide2").style.visibility='visible';
-        document.getElementById("pc_tableHide3").style.visibility='visible';
-        document.getElementById("pc_tableHide4").style.visibility='visible';
-        document.getElementById("pc_VisButton").textContent = "Hide";
-    }
-    function pc_tableVisClick(){
-        if (document.getElementById("pc_tableHide1").style.visibility=='collapse') {
-            pc_tableShowCols();
-        }
-        else {
-            pc_tableHideCols();
-        }
-    }
-
-</script>
-</body>
-</html>*/
 
 function create_slider ( stat_type, min_stat, max_stat, default_stat ) {
 	var paragraph = document.createElement("p");
@@ -194,38 +24,57 @@ function create_slider ( stat_type, min_stat, max_stat, default_stat ) {
 	slider_input.min = min_stat;
 	slider_input.max = max_stat;
 	slider_input.value = default_stat;
-	//slider_input.value = "3";
-	//slider_input.oninput = "on_change_hp()";
-	//slider_input.onchange = "on_change_hp()";
+	slider_input.addEventListener( "click", function(){ show_hide_table("Sliders"); } );
+	slider_input.addEventListener( "input", function(){ show_hide_table("Sliders"); } );
 	paragraph.appendChild(slider_input);
 	return paragraph;
+}
+
+// Shows/hides parts of the table (deletes the table and makes a new one).
+function show_hide_table( show_hide ) {
+	if (show_hide == "Show") {
+		show_hide = "Hide";
+	} else if (show_hide == "Hide") {
+		show_hide = "Show";
+	}
+	var tables = create_table( show_hide );
+	document.getElementById("familiar_stat_table").innerHTML = "";
+	document.getElementById("familiar_stat_table").appendChild(tables);
+	return;
 }
 
 function create_table( show_hide ) {
 	// Variable that shows/hides the not max levels.
 	var max_levels = [ 12, 15, 18, 21 ];
 	var table_columns = max_levels.length;
+	if (show_hide != "Hide" && show_hide != "Show") {
+		show_hide = document.getElementById("show_hide_button_id").textContent;
+	}
 	if ( show_hide == "Hide" ) {
 		table_columns = 21;
 	}
-	//if (!show_hide) { show_hide = "Show"; }
 	
+	var slider_values = [];
 	var tables = document.createElement("table");
+	var tbody = document.createElement("tbody");
+	tables.id = "familiar_stat_table_id";
+	//This doesn't work as intended.
 	tables.setAttribute( "class", "fandom-table" );
 	
 	for (var i = 0; i < 5; i++) {
     	var tr = document.createElement("tr");
-		tables.appendChild(tr);
 		for (var j = 0; j <= table_columns; j++) {
+			// Button.
 			if (i===0 && j===0) {
-			    var td_button = document.createElement("td");
+			    var th_button = document.createElement("th");
 				var show_hide_button = document.createElement('button');
 				show_hide_button.type = "button";
 				show_hide_button.textContent = show_hide;
-				//show_hide_button.addEventListener("click", pc_tableVisClick);
-				//show_hide_button.id("pc_VisButton");
-				td_button.appendChild(show_hide_button);
-				tables.appendChild(td_button);
+				show_hide_button.id = "show_hide_button_id";
+				show_hide_button.addEventListener( "click", function(){ show_hide_table(show_hide); } );
+				th_button.appendChild(show_hide_button);
+				tr.appendChild(th_button);
+			// First row shows familiar levels.
 			} else if (i===0) {
 			    var th = document.createElement("th");
 			    if ( show_hide == "Hide" ) {
@@ -233,66 +82,48 @@ function create_table( show_hide ) {
 				} else {
 					th.innerHTML = max_levels[j-1];
 				}
-				tables.appendChild(th);
+				tr.appendChild(th);
 			// Health.
 			} else if (j===0 && i===1) {
 			    var td_hp = document.createElement("td");
-			    var hp_value = "";
-			    //if (document.getElementById("range_Hea").value !== null) {
-			    	//hp_value = document.getElementById("range_Hea").value;
-			    //}
-				td_hp.appendChild( print_health( stat_range[i-1][3] ));
-				//td_hp.appendChild( print_health( hp_value ));
-				//td_hp.innerHTML = hp_value;
-				tables.appendChild(td_hp);
+			    slider_values[1] = document.getElementById("range_Hea").value;
+				td_hp.appendChild( print_health( slider_values[1] ));
+				tr.appendChild(td_hp);
 			// Damage.
 			} else if (j===0 && i===2) {
 			    var td_dmg = document.createElement("td");
-				td_dmg.appendChild( print_damage( stat_range[i-1][3] ));
-				tables.appendChild(td_dmg);
+			    slider_values[2] = document.getElementById("range_Dam").value;
+				td_dmg.appendChild( print_damage( slider_values[2] ));
+				tr.appendChild(td_dmg);
 			// Defense.
 			} else if (j===0 && i===3) {
 			    var td_def = document.createElement("td");
-				td_def.appendChild( print_defense( stat_range[i-1][3] ));
-				tables.appendChild(td_def);
+			    slider_values[3] = document.getElementById("range_Def").value;
+				td_def.appendChild( print_defense( slider_values[3] ));
+				tr.appendChild(td_def);
 			// Speed (AP).
 			} else if (j===0 && i===4) {
 			    var td_ap = document.createElement("td");
-				td_ap.appendChild( print_speed( stat_range[i-1][3] ));
-				tables.appendChild(td_ap);
+			    slider_values[4] = document.getElementById("range_Act").value;
+				td_ap.appendChild( print_speed( slider_values[4] ));
+				tr.appendChild(td_ap);
+			// Calculates familiar stats.
 			} else {
     			var td = document.createElement("td");
-				// "x" is slider value. "y" is familiar level.
+				// "i" is the number of the stat. x" is slider value. "y" is familiar level.
 				// stat_calc( i, x, y)
 			    if ( show_hide == "Hide" ) {
-					td.innerHTML = stat_calc( i, Number(stat_range[i-1][3]), Number(i) );
+					td.innerHTML = stat_calc( i, Number(slider_values[i]), Number(j) );
 				} else {
-					td.innerHTML = stat_calc( i, Number(stat_range[i-1][3]), Number(max_levels[j-1]) );
+					td.innerHTML = stat_calc( i, Number(slider_values[i]), Number(max_levels[j-1]) );
 				}
-				tables.appendChild(td);
+				tr.appendChild(td);
 			}
 		}
+		tbody.appendChild(tr);
 	}
+	tables.appendChild(tbody);
 	return tables;
-}
-
-if (mw.config.get("wgPageName") === "Dungeon:_familiars") {
-	
-	var stat_range = [
-		[ "Health", "1", "25", "13" ],
-		[ "Damage", "1", "9", "5" ],
-		[ "Defense", "1", "9", "5" ],
-		[ "Action points", "1", "3", "2" ]];
-	var sliders = document.createElement("div");
-	//Creates sliders.
-	for (var i = 0; i < stat_range.length; i++) {
-		sliders.appendChild( create_slider( stat_range[i][0], stat_range[i][1], stat_range[i][2], stat_range[i][3] ));
-	}
-	
-	var tables = create_table( "Show" );
-	
-	document.getElementById("familiar_stat_calculator").appendChild(sliders);
-	document.getElementById("familiar_stat_calculator").appendChild(tables);
 }
 
 function create_img( img_link ){
@@ -303,38 +134,32 @@ function create_img( img_link ){
 	return img;
 }
 
+// Displays the health icons in the table.
 function print_health( value ){
     var images = document.createElement("span");
-    var img_hp_0 = "e/e7/Familiar_stats-HP-0.png";
-    var img_hp_1 = "0/0f/Familiar_stats-HP-0%2B.png";
-    var img_hp_2 = "7/74/Familiar_stats-HP-0%2B%2B.png";
-    var img_hp_3 = "2/2e/Familiar_stats-HP-0%2C5.png";
-    var img_hp_4 = "d/d3/Familiar_stats-HP-0%2C5%2B.png";
-    var img_hp_5 = "b/bc/Familiar_stats-HP-0%2C5%2B%2B.png";
-    var img_hp_6 = "b/b9/Familiar_stats-HP-1.png";
+    var imgs_hp = [ "e/e7/Familiar_stats-HP-0.png",
+				    "b/bc/Familiar_stats-HP-0%2C5%2B%2B.png",
+				    "d/d3/Familiar_stats-HP-0%2C5%2B.png",
+				    "2/2e/Familiar_stats-HP-0%2C5.png",
+				    "7/74/Familiar_stats-HP-0%2B%2B.png",
+				    "0/0f/Familiar_stats-HP-0%2B.png",
+				    "b/b9/Familiar_stats-HP-1.png"];
     var hp_stat = Number(value)+5;
     
 	for (var i = 1; i <= 5; i++) {
+		var current_hp = i*6-hp_stat;
+		if (current_hp>5) { current_hp = 0; }
 		if ( hp_stat >= i*6 ) {
-    		images.appendChild(create_img(img_hp_6));
-		} else if ( i*6-hp_stat == 5 ) {
-    		images.appendChild(create_img(img_hp_1));
-		} else if ( i*6-hp_stat == 4 ) {
-    		images.appendChild(create_img(img_hp_2));
-		} else if ( i*6-hp_stat == 3 ) {
-    		images.appendChild(create_img(img_hp_3));
-		} else if ( i*6-hp_stat == 2 ) {
-    		images.appendChild(create_img(img_hp_4));
-		} else if ( i*6-hp_stat == 1 ) {
-    		images.appendChild(create_img(img_hp_5));
+    		images.appendChild(create_img(imgs_hp[6]));
 		} else {
-    		images.appendChild(create_img(img_hp_0));
+    		images.appendChild(create_img(imgs_hp[current_hp]));
 		}
 	}
     
     return images;
 }
 
+// Displays the damage icons in the table.
 function print_damage( value ){
     var images = document.createElement("span");
     var img_dmg_0 = "f/fa/Familiar_stats-DMG-0.png";
@@ -355,6 +180,7 @@ function print_damage( value ){
     return images;
 }
 
+// Displays the defense icons in the table.
 function print_defense( value ){
     var images = document.createElement("span");
     var img_def_0 = "6/65/Familiar_stats-DEF-0.png";
@@ -375,6 +201,7 @@ function print_defense( value ){
     return images;
 }
 
+// Displays the speed/action points (AP) icons in the table.
 function print_speed( value ){
     var images = document.createElement("span");
     var img_speed_0 = "d/d6/Familiar_stats-AP-0.png";
@@ -392,7 +219,7 @@ function print_speed( value ){
     return images;
 }
 
-function calcBase(x,y) {
+function calculate_base_stat(x,y) {
     var result = 0;
     if ((x>0) && (y>0)) {
         result = Math.round(0.8+(y-1)*(x-1-Math.floor(x/5))/20) + Math.floor(x/5);
@@ -404,43 +231,61 @@ function calcBase(x,y) {
 function stat_calc( stat, x, y ) {
 	switch ( stat ) {
 		case 1:
-			return calcHealth(x,y);
+			return calculate_health(x,y);
 		case 2:
-			return calcDamage(x,y);
+			return calculate_damage(x,y);
 		case 3:
-			return calcDefence(x,y);
+			return calculate_defense(x,y);
 		case 4:
-			return calcSpeed(x,y);
+			return calculate_speed(x,y);
 		default:
 			return "Wrong number";
 	}
 }
 
-function calcHealth(x,y) {
+function calculate_health(x,y) {
     var result = 0;
     if ((x>0) && (y>0)) {
-        result = calcBase(x+3,y)+y+11;
+        result = calculate_base_stat(x+3,y)+y+11;
     }
     return result;
 }
-function calcDamage(x,y) {
+function calculate_damage(x,y) {
     var result = 0;
     if ((x>0) && (y>0)) {
-        result = calcBase(x+11,y)+2;
+        result = calculate_base_stat(x+11,y)+2;
     }
     return result;
 }
-function calcDefence(x,y) {
+function calculate_defense(x,y) {
     var result = 0;
     if ((x>0) && (y>0)) {
-        result = calcBase(x+7,y);
+        result = calculate_base_stat(x+7,y);
     }
     return result;
 }
-function calcSpeed(x,y) {
+function calculate_speed(x,y) {
     var result = 0;
     if ((x>0) && (y>0)) {
-        result = calcBase(x,y)+2;
+        result = calculate_base_stat(x,y)+2;
     }
     return result;
+}
+
+if (mw.config.get("wgPageName") === "Dungeon:_familiars") {
+	var stat_range = [
+		[ "Health", "1", "25", "13" ],
+		[ "Damage", "1", "9", "5" ],
+		[ "Defense", "1", "9", "5" ],
+		[ "Action points", "1", "3", "2" ]];
+	var sliders = document.createElement("div");
+	//Creates sliders.
+	for (var i = 0; i < stat_range.length; i++) {
+		sliders.appendChild( create_slider( stat_range[i][0], stat_range[i][1], stat_range[i][2], stat_range[i][3] ));
+	}
+	document.getElementById("familiar_stat_sliders").appendChild(sliders);
+	
+	// Creates the table.
+	var tables = create_table( "Show" );
+	document.getElementById("familiar_stat_table").appendChild(tables);
 }

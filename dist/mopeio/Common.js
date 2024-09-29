@@ -2,12 +2,17 @@
 /****************************** User Tags ******************************/
 /***********************************************************************/
 // User Tags
-$.get(mw.util.wikiScript('load'), {
-    mode: 'articles',
-    articles: 'MediaWiki:Custom-user-tags.json',
-    only: 'styles'
-}, function(d) {
-    window.UserTagsJS = JSON.parse(d.replace(/\/\*.*\*\//g, ''));
+$.getJSON(mw.config.get('wgScriptPath') + '/api.php', {
+	action: 'query',
+	prop: 'revisions',
+	titles: 'MediaWiki:Custom-user-tags.json',
+	rvslots: '*',
+	rvprop: 'content',
+	format: 'json',
+	formatversion: 2
+}).then(function(data) {
+	if (data.error) return;
+	window.UserTagsJS = JSON.parse(data.query.pages[0].revisions[0].slots.main.content);
 });
 
 /***********************************************************************/

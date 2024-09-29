@@ -20,6 +20,15 @@ importArticles({
     ]
 });
  
+// Tooltips.
+window.tooltips_config = {
+    events: [],
+    noCSS: true,
+    offsetX: 8,
+    offsetY: 8,
+    waitForImages: true,
+};
+
 // **************************************************
 // End Javascript Libraries
 // **************************************************

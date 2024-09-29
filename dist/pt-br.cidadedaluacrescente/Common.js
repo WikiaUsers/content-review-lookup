@@ -9,9 +9,8 @@ window.SpoilerAlertJS = {
 };
 importScriptPage('SpoilerAlert/code.js', 'dev');
  
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
+/* RailModule */
+/*window.AddRailModule = [{prepend: true}];*/
  
 // Pop-ups em Referências
 importScriptPage('ReferencePopups/code.js', 'dev');
