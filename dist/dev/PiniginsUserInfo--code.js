@@ -5,17 +5,17 @@
 
 (function($, mw) {
 	'use strict';
-	var config = mw.config.get([
-		'wgTitle',
-		'wgSiteName',
-		'wgNamespaceNumber',
-		'wgRelevantUserName'
-	]);
+	var msg, input, button,
+		config = mw.config.get([
+			'wgTitle',
+			'wgArticlePath',
+			'wgNamespaceNumber',
+			'wgRelevantUserName'
+		]);
 
 	if (!(
 		(config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') ||
-		(config.wgNamespaceNumber === 2 && config.wgRelevantUserName))) return;
-	var input, info, msg;
+		config.wgRelevantUserName)) return;
 
 	function addEntry(data, label, value, join) {
 		var text = '';
@@ -23,12 +23,15 @@
 		if (v) {
 			text += join ? v.join(', ') : v;
 		}
-		document.getElementById('PUI-' + value).textContent = text;
+		document.getElementById('PUI-' + value).textContent = text.length ? text : '–';
 	}
+
 	function getUserInfo() {
-		mw.loader.using('mediawiki.api').then(function() {
-		var username = input.value;
-		info.innerHTML = '';
+		if (input.isReadOnly() || button.isDisabled()) return;
+		var username = input.getValue().trim();
+		if (!username.length) return;
+		input.setReadOnly(true);
+		button.setDisabled(true);
 		new mw.Api().get({
 			action: 'query',
 			list: 'users',
@@ -36,54 +39,69 @@
 			usprop: 'registration|gender|editcount|blockinfo|groups',
 			formatversion: 2
 		}).done(function(data) {
-			if (data.query.users[0].missing || data.query.users[0].invalid || username === '') {
-				info.innerHTML = '<br><b>' + msg('enterUsername').escape() + '</b>';
-			} else {
-				info.innerHTML =
-					'<br><b>' + msg('id').escape() + '</b> <span id="PUI-userid"></span>' +
-					'<br><b>' + msg('username').escape() + '</b> <span id="PUI-name"></span>' +
-					'<br><b>' + msg('editcount').escape() + '</b> <span id="PUI-editcount"></span>' +
-					'<br><b>' + msg('dateRegistered').escape() + '</b> <span id="PUI-registration"></span>' +
-					'<br><b>' + msg('gender').escape() + '</b> <span id="PUI-gender"></span>' +
-					'<br><b>' + msg('groups').escape() + '</b> <span id="PUI-groups"></span>';
-				addEntry(data, msg('id').escape(), 'userid');
-				addEntry(data, msg('username').escape(), 'name');
-				addEntry(data, msg('editcount').escape(), 'editcount');
-				addEntry(data, msg('dateRegistered').escape(), 'registration');
-				addEntry(data, msg('gender').escape(), 'gender');
-				addEntry(data, msg('groups').escape(), 'groups', true);
-			}
-		});
+			addEntry(data, msg('id').escape(), 'userid');
+			addEntry(data, msg('username').escape(), 'name');
+			addEntry(data, msg('editcount').escape(), 'editcount');
+			addEntry(data, msg('dateRegistered').escape(), 'registration');
+			addEntry(data, msg('gender').escape(), 'gender');
+			addEntry(data, msg('groups').escape(), 'groups', true);
+			input.setReadOnly(false);
+			button.setDisabled(false);
 		});
 	}
+
 	function init() {
 		var header = document.getElementById('firstHeading');
 		document.title = document.title.replace(header.innerText, msg('userInfo').plain());
 		header.textContent = msg('userInfo').plain();
-		document.getElementById('mw-content-text').innerHTML = '';
-
-		input = document.createElement('input');
-		input.type = 'text';
-		input.placeholder = 'Username';
-
-		var button = document.createElement('button');
-		button.innerText = msg('getInfo').plain();
-		button.addEventListener('click', getUserInfo);
-
-		info = document.createElement('div');
-
-		document.getElementById('mw-content-text').append(input, button, info);
-		
+		var $content = $('#mw-content-text');
+		$content.empty();
+		input = new mw.widgets.UserInputWidget( {
+			required: true,
+			validate: function(inputValue) {
+				inputValue = inputValue.trim();
+				if (mw.util.isIPAddress(inputValue, true)) return false; // Filter IPs
+				return true;
+			},
+			placeholder: 'Username'
+		} );
+		button = new OO.ui.ButtonWidget( {
+			label:  msg('getInfo').plain(),
+			flags: ['primary', 'progressive']
+		} );
+		var widget = new OO.ui.ActionFieldLayout(
+			input, button, {
+				align: 'top'
+			}
+		);
+		$content.append(
+			widget.$element,
+			$('<ul>').html(
+				'<li><b>' + msg('id').escape() + '</b> <span id="PUI-userid"></span>' +
+				'<li><b>' + msg('username').escape() + '</b> <span id="PUI-name"></span>' +
+				'<li><b>' + msg('editcount').escape() + '</b> <span id="PUI-editcount"></span>' +
+				'<li><b>' + msg('dateRegistered').escape() + '</b> <span id="PUI-registration"></span>' +
+				'<li><b>' + msg('gender').escape() + '</b> <span id="PUI-gender"></span>' +
+				'<li><b>' + msg('groups').escape() + '</b> <span id="PUI-groups"></span>'
+			)
+		);
+		input.on('enter', function() {
+			input.getValidity().done(getUserInfo);
+		});
+		button.on('click', function() {
+			input.getValidity().done(getUserInfo);
+		});
 		if (location.hash.replace('#', '') !== '') {
-			input.value = location.hash.replace('#', '');
-			getUserInfo();
+			input.setValue(location.hash.replace('#', ''));
+			input.getValidity().done(getUserInfo);
 		}
 	}
+
 	function addTool() {
 		mw.loader.using('mediawiki.util').then(function() {
-			var urlWithHash = './Special:UserInfo#' + mw.util.wikiUrlencode(config.wgRelevantUserName);
+			var urlWithHash = 'Special:UserInfo#' + mw.util.wikiUrlencode(config.wgRelevantUserName);
 			$('<li>', { id: 'userinfo' })
-			.html('<a href="' + urlWithHash + '">' + msg('userInfo').escape() + '</a>')
+			.html('<a href="' + config.wgArticlePath.replace('$1', urlWithHash) + '">' + msg('userInfo').escape() + '</a>')
 			.prependTo('.toolbar .tools');
 		});
 	}
@@ -91,8 +109,15 @@
 	mw.hook('dev.i18n').add(function(i18n) {
 		i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
 			msg = i18no.msg;
-			if (config.wgNamespaceNumber === -1) init();
-			if (config.wgNamespaceNumber === 2) addTool();
+			if (config.wgNamespaceNumber === -1) {
+				mw.loader.using([
+					'oojs-ui-widgets',
+					'mediawiki.api',
+					'mediawiki.util',
+					'mediawiki.widgets.UserInputWidget'
+				]).then(init);
+			}
+			if (config.wgRelevantUserName) addTool();
 		});
 	});
 

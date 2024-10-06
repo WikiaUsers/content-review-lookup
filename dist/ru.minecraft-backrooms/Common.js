@@ -44,7 +44,7 @@ function get_article(pagename) {
 }
 
 // Кастомные лого и заголовок вики
-;(function ($,mw) {
+mw.hook("wikipage.content").add(function () {
 	var customCommunityName = document.getElementById('customCommunityName');
 	var customCommunityLogo = document.getElementById('customCommunityLogo');
 	if (customCommunityName != null) {
@@ -58,10 +58,10 @@ function get_article(pagename) {
 			img.setAttribute("src",imgToSet);
 		}
 	}
-})(this.jQuery,this.mediaWiki);
+});
 
 // Шаблон оценки
-;(function ($,mw) {
+mw.hook("wikipage.content").add(function () {
 	if ($('.pageRate')[0] == null) {return;}
 	
 	var section = document.createElement('section');
@@ -183,10 +183,10 @@ function get_article(pagename) {
         });
 	}
     init();
-})(this.jQuery,this.mediaWiki);
+});
 
 // Список страниц по их оценкам
-;(function ($,mw) {
+mw.hook("wikipage.content").add(function () {
 	var conf = mw.config.values;
 	if (conf.wgPageName !== 'Служебная:Список_страниц_по_оценкам') {return;}
 	$(document.getElementsByTagName('title')[0]).html('Служебная:Список страниц по оценкам | Закулисье Майнкрафта вики | Fandom');
@@ -232,7 +232,7 @@ function get_article(pagename) {
             $(e).appendTo($('.mw-body-content'));
         });
 	
-})(this.jQuery,this.mediaWiki);
+});
 
 // ;(function ($,mw) {
 	

@@ -1,7 +1,8 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
-document.addEventListener("DOMContentLoaded", function() {
-    const imageList = [
+mw.loader.using(['mediawiki.util', 'mediawiki.api'], function () {
+
+var imageList = [
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/0/05/68_First_Issue_MP.jpg", link: "https://imagecomics.com/read/68" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/e/eb/A_Man_Among_Ye_First_Issue_MP.jpg", link: "https://imagecomics.com/read/a-man-among-ye" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/d/de/A_Righteous_Thirst_for_Vengeance_First_Issue_MP.jpg", link: "https://imagecomics.com/read/a-righteous-thirst-for-vengeance" },
@@ -36,16 +37,16 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/80/Comeback_First_Issue_MP.jpg", link: "https://imagecomics.com/read/comeback" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/85/Commanders_In_Crisis_First_Issue_MP.jpg", link: "https://imagecomics.com/read/commanders-in-crisis" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/7f/Copperhead_First_Issue_MP.jpg", link: "https://imagecomics.com/read/copperhead" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/7/73/Copra First Issue MP.jpg", link: "https://imagecomics.com/read/copra" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/9/90/Cowboy Ninja Viking First Issue MP.jpg", link: "https://imagecomics.com/read/cowboy-ninja-viking" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/2/23/Coyotes First Issue MP.jpg", link: "https://imagecomics.com/read/coyotes" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/b/bf/Crave First Issue MP.jpg", link: "https://imagecomics.com/read/crave" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/5/59/Crossover First Issue MP.jpg", link: "https://imagecomics.com/read/crossover" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/1/13/Crowded First Issue MP.jpg", link: "https://imagecomics.com/read/crowded" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/e/e6/Crude First Issue MP.jpg", link: "https://imagecomics.com/read/crude" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/8/8b/Curse Words First Issue MP.jpg", link: "https://imagecomics.com/read/curse-words" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/0/00/Cyber Force First Issue MP.jpg", link: "https://imagecomics.com/read/cyber-force" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven.fandom.com/images/9/9c/Days of Hate First Issue MP.jpg", link: "https://imagecomics.com/read/days-of-hate" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/73/Copra_First_Issue_MP.jpg", link: "https://imagecomics.com/read/copra" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/9/90/Cowboy_Ninja_Viking_First_Issue_MP.jpg", link: "https://imagecomics.com/read/cowboy-ninja-viking" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/2/23/Coyotes_First_Issue_MP.jpg", link: "https://imagecomics.com/read/coyotes" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/b/bf/Crave_First_Issue_MP.jpg", link: "https://imagecomics.com/read/crave" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/5/59/Crossover_First_Issue_MP.jpg", link: "https://imagecomics.com/read/crossover" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/1/13/Crowded_First_Issue_MP.jpg", link: "https://imagecomics.com/read/crowded" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/e/e6/Crude_First_Issue_MP.jpg", link: "https://imagecomics.com/read/crude" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/8b/Curse_Words_First_Issue_MP.jpg", link: "https://imagecomics.com/read/curse-words" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/0/00/Cyber_Force_First_Issue_MP.jpg", link: "https://imagecomics.com/read/cyber-force" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/9/9c/Days_of_Hate_First_Issue_MP.jpg", link: "https://imagecomics.com/read/days-of-hate" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/89/Dead_Body_Road_First_Issue_MP.jpg", link: "https://imagecomics.com/read/dead-body-road" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/d/da/Dead_Eyes_First_Issue_MP.jpg", link: "https://imagecomics.com/read/dead-eyes" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/6/62/Deadly_Class_First_Issue_MP.jpg", link: "https://imagecomics.com/read/deadly-class" },
@@ -66,8 +67,8 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/9/95/Eternal_Empire_First_Issue_MP.jpg", link: "https://imagecomics.com/read/eternal-empire" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/3/39/Evolution_First_Issue_MP.jpg", link: "https://imagecomics.com/read/evolution" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/f/f1/Excellence_First_Issue_MP.jpg", link: "https://imagecomics.com/read/excellence" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/6/61/Exorsisters_First_Issue_MP.jpg, link: "https://imagecomics.com/read/exorsisters" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/75/Extremity_First_Issue_MP.jpg, link: "https://imagecomics.com/read/extremity" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/6/61/Exorsisters_First_Issue_MP.jpg", link: "https://imagecomics.com/read/exorsisters" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/75/Extremity_First_Issue_MP.jpg", link: "https://imagecomics.com/read/extremity" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/c/c3/Fairlady_First_Issue_MP.jpg", link: "https://imagecomics.com/read/fairlady" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/a/ad/Family_Tree_First_Issue_MP.jpg", link: "https://imagecomics.com/read/family-tree" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/b/b1/Farmhand_First_Issue_MP.jpg", link: "https://imagecomics.com/read/farmhand" },
@@ -102,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/3/30/Home_First_Issue_MP.jpg", link: "https://imagecomics.com/read/home" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/1/14/Home_Sick_Pilots_First_Issue_MP.jpg", link: "https://imagecomics.com/read/home-sick-pilots" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/1/1a/Horizon_First_Issue_MP.jpg", link: "https://imagecomics.com/read/horizon" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/f/f3/Huck_First_Issue_MP.jpg", link: "https://imagecomics.com/read/huck" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/0/0c/Huck_First_Issue_MP.jpg", link: "https://imagecomics.com/read/huck" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/6/64/I_Hate_Fairyland_First_Issue_MP.jpg", link: "https://imagecomics.com/read/i-hate-fairyland" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/1/1d/Ice_Cream_Man_First_Issue_MP.jpg", link: "https://imagecomics.com/read/ice-cream-man" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/9/9b/Imperial_First_Issue_MP.jpg", link: "https://imagecomics.com/read/imperial" },
@@ -159,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/0/00/Oblivion_Song_First_Issue_MP.jpg", link: "https://imagecomics.com/read/oblivion" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/6/66/Oddly_Normal_First_Issue_MP.jpg", link: "https://imagecomics.com/read/oddly-normal" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/c/cf/Oliver_First_Issue_MP.jpg", link: "https://imagecomics.com/read/oliver" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/81/Olympia_First_Issue_MP.jpg/revision", link: "https://imagecomics.com/read/olympia" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/81/Olympia_First_Issue_MP.jpg", link: "https://imagecomics.com/read/olympia" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/a/a7/On_The_Stump_First_Issue_MP.jpg", link: "https://imagecomics.com/read/on-the-stump" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/5/5f/Ordinary_Gods_First_Issue_MP.jpg", link: "https://imagecomics.com/read/ordinary-gods" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/2/2b/Outcast_First_Issue_MP.jpg", link: "https://imagecomics.com/read/outcast" },
@@ -251,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/f/f6/The_Weatherman_First_Issue_MP.jpg", link: "https://imagecomics.com/read/the-weatherman" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/5/5c/The_White_Trees_First_Issue_MP.jpg", link: "https://imagecomics.com/read/the-white-trees" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/2/24/The_Wicked_%2B_The_Divine_First_Issue_MP.jpg", link: "https://imagecomics.com/read/the-wicked-the-divine" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/3/3a/They%27re_Not_Like_Us_First_Issue_MP.jpg", link: "https://imagecomics.com/read/theyre-not-like-us" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/5/5f/Theyre_Not_Like_Us_First_Issue_MP.jpg", link: "https://imagecomics.com/read/theyre-not-like-us" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/71/Thief_of_Thieves_First_Issue_MP.jpg", link: "https://imagecomics.com/read/thief-of-thieves" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/8c/Three_First_Issue_MP.jpg", link: "https://imagecomics.com/read/three" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/1/14/Thumbs_First_Issue_MP.jpg", link: "https://imagecomics.com/read/thumbs" },
@@ -263,52 +264,44 @@ document.addEventListener("DOMContentLoaded", function() {
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/81/Ultramega_First_Issue_MP.jpg", link: "https://imagecomics.com/read/ultramega" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/c/c0/Undiscovered_Country_First_Issue_MP.jpg", link: "https://imagecomics.com/read/undiscovered-country" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/a/a4/Unearth_First_Issue_MP.jpg", link: "https://imagecomics.com/read/unearth" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/c/ca/Unnatural_First_Issue_MP.jpg, link: "https://imagecomics.com/read/unnatural" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/c/ca/Unnatural_First_Issue_MP.jpg", link: "https://imagecomics.com/read/unnatural" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/7/79/Vinyl_First_Issue_MP.jpg", link: "https://imagecomics.com/read/vinyl" },
-    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/8/8f/What%27s_The_Furthest_Place_From_Here%3F_First_Issue_MP.jpg", link: "https://imagecomics.com/read/whats-the-furthest-place-from-here" },
+    { url: "https://static.wikia.nocookie.net/cavaliereleven/images/2/2d/Whats_The_Furthest_Place_From_Here%3F_First_Issue_MP.jpg", link: "https://imagecomics.com/read/whats-the-furthest-place-from-here" },
     { url: "https://static.wikia.nocookie.net/cavaliereleven/images/4/46/Witchblade_First_Issue_MP.jpg", link: "https://imagecomics.com/read/witchblade" }
   ];
 
 // Function to select a random set of images and links
-  function getRandomImages(numImages) {
-    let selectedImages = [];
-    let usedIndices = new Set(); // To avoid duplicates
+function getRandomImages(numImages) {
+    var selectedImages = [];
+    var usedIndices = []; // To avoid duplicates
 
     while (selectedImages.length < numImages) {
-      const randomIndex = Math.floor(Math.random() * imageList.length);
-      if (!usedIndices.has(randomIndex)) {
-        selectedImages.push(imageList[randomIndex]);
-        usedIndices.add(randomIndex);
-      }
+      var randomIndex = Math.floor(Math.random() * imageList.length);
+            if (usedIndices.indexOf(randomIndex) === -1) {
+                selectedImages.push(imageList[randomIndex]);
+                usedIndices.push(randomIndex);
+            }
     }
     return selectedImages;
   }
 
-    // Function to display the random images on the page
-    function displayRandomImages() {
-        const randomImages = getRandomImages(5); // Select 5 random images
-        const imageShowcase = document.getElementById('random-image-showcase');
+// Function to display the random images on the page
+function displayRandomImages() {
+    var randomImages = getRandomImages(5); // Select 5 random images
+    var imageShowcase = document.getElementById('random-image-showcase');
 
-        randomImages.forEach(function(image) {
-            const div = document.createElement('div');
-            div.className = 'random-image';
-            div.style.backgroundImage = `url(${image.url})`;
-
-            div.onclick = function() {
-                if (image.link.startsWith('/wiki/')) {
-                    // For internal links within the Fandom wiki
-                    window.location.pathname = image.link; // Use internal link
-                } else {
-                    // For external links outside the wiki
-                    window.location.assign(image.link); // Use external link
-                }
-            };
-            imageShowcase.appendChild(div);
-        });
+        if (imageShowcase) {
+            randomImages.forEach(function(image) {
+                var div = document.createElement('div');
+                div.className = 'random-image';
+                div.style.backgroundImage = 'url(' + image.url + ')';
+                div.onclick = function() {
+                    window.open(image.link, '_blank'); // Opens the link in a new tab
+                };
+                imageShowcase.appendChild(div);
+            });
+        }
     }
 
-  // Use mw.hook to ensure the function runs when the page is fully loaded
-    mw.hook('wikipage.content').add(function() {
-        showRandomImages();
-    });
+    mw.hook('wikipage.content').add(displayRandomImages);
 });

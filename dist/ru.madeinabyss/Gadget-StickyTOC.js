@@ -11,13 +11,13 @@ $(document).ready(function() {
         var SCROLL_AMOUNT = 250;
         var parserOutput = $('.mw-parser-output');
         var toc = parserOutput.find('.toc > ul').clone();
-        var newListItem = $('<li class="toclevel-1 tocsection-0"><a href="#" class="active"><span class="toctext">Статья</span></a></li>');
+        var newListItem = $('<li class="toclevel-1 tocsection-0"><a class="active" href="#"><span class="toctext">Статья</span></a></li>');
 
-        if(toc.length && parserOutput.length) {
+        if (toc.length && parserOutput.length) {
             setupToc();
             setupScrollArrows();
             filterTocLevels();
-            setupHideLink();
+            setupGearDropdown();
             setupScrollHandlers();
             setupClickHandler();
         }
@@ -46,23 +46,24 @@ $(document).ready(function() {
                 rightArrow.toggle(scrollLeft + clientWidth < scrollWidth);
             }
 
-            if (navbar[0].scrollWidth > navbar.innerWidth()) {
-                navbar.parent().append(leftArrow).append(rightArrow);
-                leftArrow.hide();
-            }
+            navbar.parent().append(leftArrow).append(rightArrow);
 
             leftArrow.on('click', function() {
-                navbar.scrollLeft(navbar.scrollLeft() - SCROLL_AMOUNT);
+                navbar.animate({
+                    scrollLeft: '-=' + SCROLL_AMOUNT
+                }, 300);
             });
 
             rightArrow.on('click', function() {
-                navbar.scrollLeft(navbar.scrollLeft() + SCROLL_AMOUNT);
+                navbar.animate({
+                    scrollLeft: '+=' + SCROLL_AMOUNT
+                }, 300);
             });
 
             navbar.on('scroll', updateArrows);
-
             $(window).on('resize', updateArrows);
-            updateArrows();
+
+            setTimeout(updateArrows, 0);
         }
 
         function filterTocLevels() {
@@ -71,27 +72,21 @@ $(document).ready(function() {
 
         function handleScroll() {
             var scrollTop = $(window).scrollTop();
-            var activeLink = $('#navbartoc').find('.active');
+            var winHeight = $(window).height();
+            var docHeight = $(document).height();
             var found = false;
 
-            $('.mw-parser-output h2 span.mw-headline').each(function() {
-                var positionTop = $(this).position().top;
-                if(positionTop <= scrollTop) {
-                    var id = $(this).attr('id');
+            $('.mw-parser-output h2').each(function() {
+                var $this = $(this);
+                var offsetTop = $this.offset().top;
+
+                if (offsetTop <= scrollTop + winHeight / 3) {
+                    var id = $this.find('.mw-headline').attr('id');
                     $('#navbartoc').find('li a').removeClass('active');
                     $('#navbartoc').find('li a[href="#' + id + '"]').addClass('active');
                     found = true;
-                }
-                if (activeLink.length) {
-                    var linkOffset = activeLink.offset().left;
-                    var tocOffset = $('#navbartoc').offset().left;
-                    var tocScrollLeft = $('#navbartoc').scrollLeft();
-                    var tocWidth = $('#navbartoc').outerWidth();
-                    var activeLinkWidth = activeLink.outerWidth();
-
-                    var newScrollLeft = tocScrollLeft + linkOffset - tocOffset + activeLinkWidth / 2 - tocWidth / 2;
-
-                    $('#navbartoc').scrollLeft(newScrollLeft);
+                } else {
+                    return false;
                 }
             });
 
@@ -100,7 +95,18 @@ $(document).ready(function() {
                 newListItem.find('a').addClass('active');
             }
 
-            filterTocLevels();
+            var activeLink = $('#navbartoc').find('.active');
+            if (activeLink.length) {
+                var linkOffset = activeLink.offset().left;
+                var tocOffset = $('#navbartoc').offset().left;
+                var tocScrollLeft = $('#navbartoc').scrollLeft();
+                var tocWidth = $('#navbartoc').outerWidth();
+                var activeLinkWidth = activeLink.outerWidth();
+
+                var newScrollLeft = tocScrollLeft + linkOffset - tocOffset - (tocWidth / 2) + (activeLinkWidth / 2);
+
+                $('#navbartoc').scrollLeft(newScrollLeft);
+            }
         }
 
         function handleScrollClass() {
@@ -111,6 +117,8 @@ $(document).ready(function() {
         function setupScrollHandlers() {
             $(window).on('scroll', handleScroll);
             $(window).on('scroll', handleScrollClass);
+            handleScroll();
+            handleScrollClass();
         }
 
         function setupClickHandler() {
@@ -122,28 +130,35 @@ $(document).ready(function() {
             });
         }
 
-        function setupHideLink() {
-            var linkContainer = $('<div class="link-container"></div>');
-            var hideLink = $('<a class="hide-link" href="#">' + (isStatic ? 'закрепить' : 'открепить') + '</a>');
-            var removeLink = $('<a class="remove-link" href="#" title="Убрать этот блок навсегда">убрать</a>');
+        function setupGearDropdown() {
+            var gearDropdown = $(
+                '<div class="wds-dropdown toc-gear-dropdown">' +
+                '<div class="wds-dropdown__toggle wds-button wds-is-text page-header__action-button"><i class="fas fa-cog"></i></div>' +
+                '<div class="wds-dropdown__content wds-is-right-aligned">' +
+                '<ul class="wds-list wds-is-linked">' +
+                '<li><a href="#" class="toggle-link">' + (isStatic ? 'Закрепить' : 'Открепить') + '</a></li>' +
+                '<li><a href="#" class="remove-link">Убрать</a></li>' +
+                '</ul>' +
+                '</div>' +
+                '</div>'
+            );
 
-            hideLink.on('click', function(e) {
+            $('.toc-container').append(gearDropdown);
+
+            gearDropdown.find('.toggle-link').on('click', function(e) {
                 e.preventDefault();
                 $('.toc-container').toggleClass('static');
                 isStatic = !isStatic;
                 document.cookie = 'staticToc=' + isStatic + '; path=/';
-                $(this).text(isStatic ? 'закрепить' : 'открепить');
+                $(this).text(isStatic ? 'Закрепить' : 'Открепить');
             });
 
-            removeLink.on('click', function(e) {
+            gearDropdown.find('.remove-link').on('click', function(e) {
                 e.preventDefault();
                 $('.toc-container').remove();
                 document.cookie = 'hideToc=true; path=/';
                 addRestoreTocAction();
             });
-
-            linkContainer.append(hideLink).append(removeLink);
-            $('.toc-container').append(linkContainer);
         }
 
         function addRestoreTocAction() {

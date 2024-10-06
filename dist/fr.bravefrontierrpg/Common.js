@@ -1,56 +1,77 @@
-/* Fonction pour exécuter d'autre script après chargement de la page. */
-$(function()
+/*// Scripts which are imported via [[MediaWiki:ImportJS]]
+zh.pad.wikia.com:MediaWiki:CountDown.js
+dev:Tooltips.js
+dev:OggPlayer.js
+dev:YoutubePlayer/code.js
+dev:DiscordIntegrator/code.js
+dev:WikiaNotification/code.js
+dev:PurgeButton/code.js
+dev:CommentGuidelines/code.js
+
+MediaWiki:Dev.css
+zh.pad.wikia.com:MediaWiki:CountDown.css
+//*/
+
+API_URL = '/fr/api.php'
+WIKI_URL = '/fr/wiki/'
+
+/*// Fonction pour exécuter d'autre script après chargement de la page. */
+$(function(){
+    /*importArticles({
+        type: "script",
+        articles: [
+	        'u:zh.pad.wikia.com:MediaWiki:CountDown.js',
+	        'u:dev:Tooltips.js',
+	        'u:dev:OggPlayer.js',
+	        'u:dev:YoutubePlayer/code.js',
+	        'u:dev:DiscordIntegrator/code.js',
+	        'u:dev:WikiaNotification/code.js',
+	        'u:dev:PurgeButton/code.js',
+	        'u:dev:CommentGuidelines/code.js',
+        ]
+    }, 
     {
-        importArticles({
-            type: "script",
-            articles: [
-            'u:zh.pad.wikia.com:MediaWiki:CountDown.js',
-            'u:dev:Tooltips.js',
-            'u:dev:OggPlayer.js',
-            'u:dev:YoutubePlayer/code.js',
-            'u:dev:DiscordIntegrator/code.js',
-            'u:dev:WikiaNotification/code.js',
-            'u:dev:PurgeButton/code.js',
-            'u:dev:CommentGuidelines/code.js',
-            ]
-        }, 
-        {
-            type: "style",
-            articles: ["u:zh.pad.wikia.com:MediaWiki:CountDown.css"]
-        });
-        initClock();
-    });
+        type: "style",
+        articles: [
+        	'MediaWiki:Dev.css',
+        	'u:zh.pad.wikia.com:MediaWiki:CountDown.css',
+    	]
+    });*/
+    initClock();
+});
+//*/
 
-/* Grade des utilisateurs. */
+/*// Grade des utilisateurs. */
 window.UserTagsJS = {
-	modules: {},
+	modules: {
+		custom: {
+			'Ykoren': ['RédacteurDeCommentaire'],
+			'Genkay2': ['RédacteurDeContenu'],
+			'Iiiik "King Escafag"': ['Graphiste', 'GérantDuDiscord'],
+			'Shiva Garland': ['AgentTechnique'],
+			'TwisteR Bl4cK' : ['AgentTechnique'],
+		}
+	},
 	tags: {
-		hello: {u: 'No Gender Set' } ,
-		Rédacteur_de_commentaire: { u:'Rédacteur de commentaire'},
-		Rédacteur_de_contenu: { u:'Rédacteur de contenu'},
+		RédacteurDeCommentaire: { u:'Rédacteur de commentaire'},
+		RédacteurDeContenu: { u:'Rédacteur de contenu'},
         Graphiste: { u:'Graphiste'},
-        Quality_checker: { u:'Quality checker'},
-        Agent_technique: { u:'Agent technique'},
-        Gérant_du_discord: { u:'Gérant du discord'},
-	}
+        QualityChecker: { u:'Quality checker'},
+        AgentTechnique: { u:'Agent technique'},
+        GérantDuDiscord: { u:'Gérant du discord'},
+	},
 };
-
-UserTagsJS.modules.custom = {
-	'Ykoren': ['Rédacteur_de_commentaire'],
-	'Genkay2': ['Rédacteur_de_contenu'],
-	'Iiiik "King Escafag"': ['Graphiste' , 'Gérant_du_discord'],
-	'Shiva Garland': ['Agent_technique'],
-	'TwisteR Bl4cK' : ['Agent_technique'],
-};
+//*/
 
 //// Configuration for Tooltip
-var tooltips_config = {
+var updateScrollIntervals = [];
+window.tooltips_config = {
     offsetX: 20,
     offsetY: 20,
-    waitForImages: true
+    noCSS: true,
+    waitForImages: true,
 };
-var updateScrollIntervals = [];
-var tooltips_list = [
+window.tooltips_list = [
     {
         classname: 'js-tooltip-unit',
         parse: '{'+'{Tooltip/Unit|<#id#>}}',
@@ -65,7 +86,15 @@ var tooltips_list = [
 ];
 
 
+importArticles({
+    type: "script",
+    articles: [
+        'dev:Tooltips.js',
+    ]
+})
+
 /* Configuration de l'extension AjaxRC.js */
+// https://dev.fandom.com/wiki/AjaxRC
 AjaxRCRefreshText = 'Actualisation automatique';
 AjaxRCRefreshHoverText = 'Actualisation automatique de la page';
 ajaxSpecialPages = ["WikiActivity","Recentchanges"];
@@ -73,42 +102,38 @@ ajaxSpecialPages = ["WikiActivity","Recentchanges"];
 /* Fonction pour générer l'élément contenant l'horloge sur toutes les pages. */
 function initClock() {
   var $rail = $('#WikiaRail');
-  
   if ($rail.length === 0) return;
   
-  $('<section id="wiki-custom" class="module">' +
-        '<div class="clock" style="float: left;">'+
+  $(
+  	'<section id="wiki-custom" class="module">' +
+        '<div class="clock clock--left" style="float: left;">'+
             '<b>Paris</b> <br/>' +
-            '<span id="clockUTC" style="font-size:20px;">' + 
+            '<span id="clockUTC">' + 
             '</span>'+
         '</div>' +
-        '<div class="clock" style="float: right;">' +
+        '<div class="clock clock--right" style="float: right;">' +
             '<b>Martinique</b> <br/>' +
-            '<span id="clockAST" style="font-size:20px;">' + 
+            '<span id="clockAST">' + 
             '</span>'+
         '</div>' +
         '<div style="clear: both"></div>' +
-    '</section>')
+    '</section>'
+  )
   .appendTo($rail);
   
-  setInterval( function () {
-        clock();
-        }, 1000
-    );
+  setInterval(clock, 1000);
 }
 
 /* Fonction pour généré l'heure dans un element possédant l'ID: Clock. */
+function insertDateTimeInContainer(timezone, containerId) {
+    var date = new Intl.DateTimeFormat('fr', { dateStyle: 'short', timeStyle: 'short', timeZone: timezone }).format(new Date());
+    var arrayDate = date.split(' ');
+    document.getElementById(containerId).innerHTML = arrayDate[1].replace(':', 'h') + '<br/>' + arrayDate[0];
+}
 function clock()
 {
-        date = new Date().toLocaleString('fr', { timeZone: 'Europe/Paris' });
-        arrayDate = date.split(" à ");
-        document.getElementById("clockUTC").innerHTML = arrayDate[1] + '<br/>' + arrayDate[0];
-        
-        dateAST = new Date().toLocaleString('fr', { timeZone: 'America/Martinique' });
-        arrayDateAST = dateAST.split(" à ");
-        document.getElementById("clockAST").innerHTML = arrayDateAST[1] + '<br/>' + arrayDateAST[0];
-        
-        return true;
+	insertDateTimeInContainer('Europe/Paris', 'clockUTC');
+	insertDateTimeInContainer('America/Martinique', 'clockAST');
 }
 
 /* loading modules (with auto initialisation) */
@@ -116,8 +141,10 @@ function clock()
 /* Replaces {{Username}} with the name of the user browsing the page.
    Requires copying Template:Username. */
 function UserNameReplace($container) {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $container.find("span.insertusername").html(wgUserName);
+	var username = mw.config.get('wgUserName');
+	if (username !== null) {
+		$container.find("span.insertusername").text(username);
+	}
 }
 /* End of the {{Username}} replacement */
 
@@ -130,32 +157,34 @@ function Sidebar () {
     var $rail = $('#WikiaRail');
     if ($rail.length === 0) return;
     
-    $('<section id="frwikiabf-activities" class="module">'+
-        '<h2 style="margin-bottom: 0;">'+
-            '<span class="autocomplete-ui" style="float: right;">'+
-                '<img src="//i.imgur.com/G4P7PER.gif" style="width: 20px; vertical-align: middle;"/>'+
-            '</span>'+
-            '<span class="mw-headline">Ouvrir la page d\'une unité</span>'+
-        '</h2>'+
-        '<div id="sidebar-units-autocomplete">'+
-            '<form id="redirect-to-unit-page-form">'+
-                '<p>'+
-                    '<input class="autocomplete-units-name" style="width:97%;">'+
-                '</p>'+
-                '<p style="margin-top: 5px;">'+
-                    '<input title="Ouvrir dans une nouvelle page" class="autocomplete-units-name-target" id="autocomplete-units-name-target" type="checkbox" style="vertical-align: middle;">'+
-                    '<label for="autocomplete-units-name-target">dans une nouvelle page</label>'+
-                    '<input type="submit" value="Go !" style="float: right;">'+
-                '</p>'+
-            '</form>'+
-        '</div>'+
-    '</section>')
+    $(
+    	'<section id="frwikiabf-activities" class="module">'+
+	        '<h2 style="margin-bottom: 0;">'+
+	            '<span class="autocomplete-ui" style="float: right;">'+
+	                '<img src="//i.imgur.com/G4P7PER.gif" style="width: 20px; vertical-align: middle;"/>'+
+	            '</span>'+
+	            '<span class="mw-headline">Ouvrir la page d\'une unité</span>'+
+	        '</h2>'+
+	        '<div id="sidebar-units-autocomplete">'+
+	            '<form id="redirect-to-unit-page-form">'+
+	                '<p>'+
+	                    '<input class="autocomplete-units-name" style="width:97%;">'+
+	                '</p>'+
+	                '<p style="margin-top: 5px;">'+
+	                    '<input title="Ouvrir dans une nouvelle page" class="autocomplete-units-name-target" id="autocomplete-units-name-target" type="checkbox" style="vertical-align: middle;">'+
+	                    '<label for="autocomplete-units-name-target">dans une nouvelle page</label>'+
+	                    '<input type="submit" value="Go !" style="float: right;">'+
+	                '</p>'+
+	            '</form>'+
+	        '</div>'+
+	    '</section>'
+    )
     .appendTo($rail);
     
     var $container = $('#frwikiabf-activities');
     $container.on('submit','#redirect-to-unit-page-form',function ( event ) { 
         var unitName = $(this).find('.autocomplete-units-name').val();
-        var url = '/wiki/'+encodeURIComponent(unitName);
+        var url = WIKI_URL + encodeURIComponent(unitName);
         var target = ( $(this).find('.autocomplete-units-name-target').prop('checked') ? '_blank' : '_self' );
         var win = window.open(url,target);
         if (win) {
@@ -163,7 +192,7 @@ function Sidebar () {
             win.focus();
         } else {
             // Broswer has blocked it
-            alert("Merci d'autoriser ce site à ouvrir des pop-up afin d'obtenir cet fonctionalité.");
+            alert("Merci d'autoriser ce site à ouvrir des pop-up afin d'obtenir cette fonctionalité.");
         }
         event.preventDefault();
     });
@@ -206,12 +235,12 @@ function AutocompleteInit(){
             return { ids: ids, names: names };
         };
         console.log('jQueryUI-Autocomplete: updating units by fetching {'+'{UnitsRefExe}} ...');
-        var promiseFire    = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Feu}}').then(parseUnitData);
-        var promiseWater   = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Eau}}').then(parseUnitData);
-        var promiseEarth   = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Terre}}').then(parseUnitData);
-        var promiseThunder = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Foudre}}').then(parseUnitData);
-        var promiseLight   = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Lumière}}').then(parseUnitData);
-        var promiseDark    = $.getJSON('/api.php?format=json&action=parse&text={'+'{UnitsRefExe/Ténèbres}}').then(parseUnitData);
+        var promiseFire    = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Feu}}').then(parseUnitData);
+        var promiseWater   = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Eau}}').then(parseUnitData);
+        var promiseEarth   = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Terre}}').then(parseUnitData);
+        var promiseThunder = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Foudre}}').then(parseUnitData);
+        var promiseLight   = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Lumière}}').then(parseUnitData);
+        var promiseDark    = $.getJSON(API_URL + '?format=json&action=parse&text={'+'{UnitsRefExe/Ténèbres}}').then(parseUnitData);
         $.when(promiseFire,promiseWater,promiseEarth,promiseThunder,promiseLight,promiseDark)
          .then(function(fire,water,earth,thunder,light,dark) {
             UnitsIDs   = [].concat(fire.ids).concat(water.ids).concat(earth.ids).concat(thunder.ids).concat(light.ids).concat(dark.ids);
@@ -268,8 +297,8 @@ function Autocomplete(container) {
     $container.find("input.autocomplete-units-id").autocomplete({ source: source(UnitsIDs) });
     $container.find("input.autocomplete-units-name").autocomplete({ source: source(UnitsNames) });
 }
-// highest version compatible with wikia jquery 1.8.2
-$.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js')
+// highest version compatible with fandom jquery 3.6.1
+$.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.14.0/jquery-ui.min.js')
 .done(function( data, textStatus, jqxhr ) {
     // plugins depending on jQueryUI
     AutocompleteInit();
@@ -334,7 +363,7 @@ function InsertTemplate($container) {
         }
        
         // retrieve template for insertion
-        $.getJSON('/api.php?format=json&action=parse&text={'+'{'+template+parameters_str+'}}', function(data) {
+        $.getJSON(API_URL + '?format=json&action=parse&text={'+'{'+template+parameters_str+'}}', function(data) {
             var html = data.parse.text['*'];
             $this[type](html);
             $this.find('.js-collapsible-collapsed').hide();

@@ -67,60 +67,7 @@ var Start = 800;
 window.RevealAnonIP = {
 	permissions : ['threadmoderator', 'rollback', 'content-moderator', 'sysop', 'bureaucrat', 'staff', 'vstf', 'helper']
 };
- 
 
-/* ========== Countdown timer ========== */
-
-function updatetimer(i) {
-	var now = new Date();
-	var then = timers[i].eventdate;
-	var diff = Math.floor((then.getTime() - now.getTime()) / 1000);
-	var count = diff;
- 
-	// catch bad date strings
-	if (isNaN(diff)) {
-		timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **';
-		return;
-	}
- 
-	// determine plus/minus
-	if (diff < 0) {
-		diff = -diff;
-	}
-		var tpm = ' ';
- 
-	// calcuate the diff
-	var left = (diff % 60) + ' seconds';
-	diff = Math.floor(diff / 60);
-	if (diff > 0) left = (diff % 60) + ' minutes ' + left;
-	diff = Math.floor(diff / 60);
-	if (diff > 0) left = (diff % 24) + ' hours ' + left;
-	diff = Math.floor(diff / 24);
-	if (diff > 0) left = diff + ' days ' + left;
-	timers[i].firstChild.nodeValue = tpm + left;
- 
-	// a setInterval() is more efficient, but calling setTimeout()
-	// makes errors break the script rather than infinitely recurse
-	timeouts[i] = setTimeout('updatetimer(' + i + ')', 1000);
-}
- 
-$(function checktimers() {
-	// hide 'nocountdown' and show 'countdown'
-	var nocountdowns = document.getElementsByClassName('nocountdown');
-	for (var i in nocountdowns) nocountdowns[i].style.display = 'none';
-	var countdowns = document.getElementsByClassName('countdown');
-	for (var j in countdowns) countdowns[j].style.display = 'inline';
- 
-	// set up global objects timers and timeouts
-	timers = document.getElementsByClassName('countdowndate'); //global
-	timeouts = new Array(); // generic holder for the timeouts, global
-	if (timers.length === 0) return;
-	for (var k in timers) {
-		timers[k].eventdate = new Date(timers[k].firstChild.nodeValue);
-		updatetimer(k); //start it up
-	}
-});
- 
 
 /* ========== Display username when using {{USERNAME}} ========== */
 
@@ -253,4 +200,53 @@ mw.hook('messageWall.activated').add(function() {
 	} else {
 		console.warn('Element with id "MessageWall" not found.');
 	}
+});
+
+
+/* ========== Contestant score animation ========== */
+$(function () {
+	function animateScoreOnVisible(scoreElements, duration) {
+		// Easing function
+		function easeInOutQuad(t) {
+			return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+		}
+		
+		// Score update function
+		function updateScore(timestamp, scoreElement, startTime, targetScore) {
+			if (!startTime) startTime = timestamp;
+			var elapsed = timestamp - startTime;
+			var progress = Math.min(elapsed / duration, 1);
+			var easedProgress = easeInOutQuad(progress);
+			var currentScore = Math.floor(easedProgress * targetScore);
+			
+			scoreElement.text(currentScore);
+			
+			if (progress < 1) {
+				requestAnimationFrame(function(ts) {
+					updateScore(ts, scoreElement, startTime, targetScore);
+				});
+			}
+		}
+		
+		// Intersection Observer fallback
+		var observer = new IntersectionObserver(function(entries) {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					var scoreElement = $(entry.target);
+					var targetScore = parseInt(scoreElement.text(), 10);
+					requestAnimationFrame(function(timestamp) {
+						updateScore(timestamp, scoreElement, null, targetScore);
+					});
+					observer.unobserve(entry.target); // Stop observing after the animation
+				}
+			});
+		});
+		
+		scoreElements.each(function() {
+			observer.observe(this);
+		});
+	}
+	
+	var scoreElements = $('.contestant-score');
+	animateScoreOnVisible(scoreElements, 1000);
 });

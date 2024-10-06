@@ -4,7 +4,7 @@
      var editbox = document.getElementById('wpUploadDescription');
      if (!editbox)            return;
      if (editbox.value != '') return;
-     editbox.value = "{"+"{Marvel Database:Image Template\n"
+     editbox.value = "{"+"{Donuts Wiki:Image Template\n"
                    + "| License                 = \n"
                    + "| ImageType               = \n"
                    + "| Description             = \n\n"
@@ -16,10 +16,6 @@
                    + "| Subject4                = \n"
                    + "| Subject5                = \n\n"
                    + "| CoverArtist1            = \n"
-                   + "| Penciler1               = \n"
-                   + "| Inker1                  = \n"
-                   + "| Colorist1               = \n"
-                   + "| Letterer1               = \n\n"
                    + "}"+"}";
 
  }

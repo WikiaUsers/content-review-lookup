@@ -74,6 +74,7 @@ window.mapsExtendedConfig = {
                     ],
                     []
                 ],
+    "hiddenControls": ["edit"],
     "collectibleCategories": ["quest"],
     "collectibleCheckboxStyle": "fandom",
     "sortMarkers": "category",

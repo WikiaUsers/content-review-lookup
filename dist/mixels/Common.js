@@ -57,7 +57,7 @@ importArticles( {
     ]
 } );
 
-window.SeeMoreActivityButtonOld = false;
+window.SeeMoreActivityButtonOld = true;
 
 importArticles({
     type: 'script',
@@ -80,34 +80,6 @@ importArticles({
     ]
 });
 
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		// group: { associated tag data }
-		retiredstaff: { u:'Retired Staff'}
-	}
-};
-
-UserTagsJS.modules.custom = {
-	'User:MaeManuel1': ['Retired Staff'], 
-	'User:Lavaguy64': ['Retired Staff'], 
-	'User:Penguin-Pal': ['Retired Staff'],
-	'User:KinglerMaster': ['Retired Staff'],
-	'User:SlushoSnack24': ['Retired Staff'],
-	'User:Hyperealistic Gaben': ['Retired Staff'],
-	'User:Volectro':['Retired Staff'],
-	'User:ToaMatau2004':['Retired Staff'],
-	'User:Clay Moorington':['Retired Staff'],
-	'User:Bourgeoisie':['Retired Staff'],
-	'User:Mastorofmixels':['Retired Staff'],
-	'User:Digipony':['Retired Staff'],
-	'User:CoolTeslo23':['Retired Staff'],
-	'User:CoinsCP':['Retired Staff'],
-	'User:Croc2274':['Retired Staff'],
-	'User:D MixHel S':['Retired Staff'],
-	'User:MixelsFloras':['Retired Staff'],
-	'User:CrystalWhiteTail':['Retired Staff']
-};
 
 window.ImprovedTabbers = {
         HideHeaderTitle: true,
@@ -116,3 +88,5 @@ window.ImprovedTabbers = {
         SynchroInfoboxes: false,
         SynchroTabbers: false,
 };
+
+window.useIncludedStylesheet = true;

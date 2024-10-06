@@ -32,3 +32,26 @@ window.ajaxPages = [
     "Especial:Páginas_novas",
     "Especial:Contribuições"
 ];
+
+/* == Da Shades of Magic Wiki == */
+/* Toggle spoiler button text */
+$(function () {
+    var button = $('.mw-customtoggle-ShowSpoiler');
+    if (!button.length) {
+        return;
+    }
+
+    function toggleText () {
+        if ($(this).hasClass('shown')) {
+            $(this).removeClass('shown');
+            $(this).text('Uma Vida Restaurada');
+        } else {
+            $(this).addClass('shown');
+            $(this).text('Uma Vida Apagada');
+        }
+    }
+
+    button.text('Uma Vida Restaurada');
+
+	button.click(toggleText);
+});

@@ -1,35 +1,30 @@
-/**
- * Adds a category intersection page using DynamicPageList and links to find pages in any two categories specified by the user.
- * 
- * Uses OOUI and MediaWiki core JS, see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui and https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw for details.
- */
 $(function () {
 	'use strict';
-
+	
 	if (mw.config.get('wgAction') === 'view') {
-		const title = 'Category intersection';
-		const intersectionPage = 'Special:BlankPage/CategoryIntersection';
-		const searchParams = new URLSearchParams(location.search);
-		const pageName = mw.config.get('wgPageName');
-		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category;
-		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
+		var title = 'Category intersection';
+		var intersectionPage = 'Special:BlankPage/CategoryIntersection';
+		var searchParams = new URLSearchParams(location.search);
+		var pageName = mw.config.get('wgPageName');
+		var isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category;
+		var isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
 			return param === 'category1' || param === 'category2';
 		}).length === 2;
-		const isFormPage = pageName === intersectionPage && !isResultsPage;
+		var isFormPage = pageName === intersectionPage && !isResultsPage;
 		
 		// Add links to category pages
 		if (isCategoryPage) {
-			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
+			var category = mw.config.get('wgTitle').replaceAll(' ', '_');
+			var baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
 			var filters = '<li><a href="'+baseUrl+'">Category intersection</a></li>';
 			$('#p-cactions .wds-list').append(filters);
 		}
 		
 		// Results page
 		if (isResultsPage) {
-			const pageUrl = window.location.origin + window.location.pathname;
-			const category1 = searchParams.get('category1').replaceAll(' ', '_');
-			const category2 = searchParams.get('category2').replaceAll(' ', '_');
+			var pageUrl = window.location.origin + window.location.pathname;
+			var category1 = searchParams.get('category1').replaceAll(' ', '_');
+			var category2 = searchParams.get('category2').replaceAll(' ', '_');
 
 			document.title = title;
 			$('#firstHeading').html(title);
@@ -37,7 +32,7 @@ $(function () {
 			$('#mw-content-text').empty();
 
 			// Style results like category page
-			const importPromise = importArticles({
+			var importPromise = importArticles({
 				type: "script",
 				articles: [
 					"jquery.spinner"
@@ -57,15 +52,15 @@ $(function () {
 			});
 
 			// Build DPL query
-			const count = 200;
+			var count = 200;
 			var currentPage = Number.parseInt(searchParams.get('page')) || 1;
 			if (!Number.isInteger(currentPage) || currentPage < 1) currentPage = 1;
-			const offset = (currentPage - 1) * count;
-			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
-			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
-			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
-			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
-			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
+			var offset = (currentPage - 1) * count;
+			var headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
+			var basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
+			var previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
+			var nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
+			var headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
 			var dpl = '<DPL>\n';
 			dpl += '  category = ' + category1 + '\n';
 			dpl += '  category = ' + category2 + '\n';
@@ -80,7 +75,7 @@ $(function () {
 			dpl += '</DPL>';
 
 			// Get results from API
-			const apiPromise = new mw.Api().post({
+			var apiPromise = new mw.Api().post({
 				action: 'parse',
 				format: 'json',
 				title: title,
@@ -99,12 +94,12 @@ $(function () {
 			Promise.all([apiPromise, importPromise]).then(function (results) {
 				$('#mw-content-text').html(results[0].parse.text['*']);
 				$('#mw-content-text a[target="_blank"]').removeAttr('target');
-				const totalPages = Number.parseInt($('#mw-content-text .dpl-total-pages').eq(0).html()) || 0;
+				var totalPages = Number.parseInt($('#mw-content-text .dpl-total-pages').eq(0).html()) || 0;
 				if (totalPages > count) {
-					const pagesToShow = 21;
-					const pagesLeft = Math.round(pagesToShow / 2) - 1;
-					const pagesRight = pagesToShow % 2 === 0 ? Math.round(pagesToShow / 2) : Math.round(pagesToShow / 2) - 1;
-					const maxPage = Math.ceil(totalPages / count);
+					var pagesToShow = 21;
+					var pagesLeft = Math.round(pagesToShow / 2) - 1;
+					var pagesRight = pagesToShow % 2 === 0 ? Math.round(pagesToShow / 2) : Math.round(pagesToShow / 2) - 1;
+					var maxPage = Math.ceil(totalPages / count);
 					var startPage, endPage;
 					if (maxPage >= pagesToShow) {
 						if (currentPage <= pagesLeft) {
@@ -121,7 +116,7 @@ $(function () {
 						startPage = 1;
 						endPage = maxPage;
 					}
-					const pageSeparator = ' <b>·</b> ';
+					var pageSeparator = ' <b>·</b> ';
 					var pagination = '<div class="dpl-pagination">';
 					pagination += '<b>Go to page:</b> ';
 					if (currentPage > 2 && startPage > 1) {
@@ -145,7 +140,7 @@ $(function () {
 		if (isFormPage) {
 			document.title = title;
 			$('#firstHeading').html(title);
-			const mwContentText = $('#mw-content-text');
+			var mwContentText = $('#mw-content-text');
 			mwContentText.empty();
 		
 			importArticles({
@@ -160,7 +155,7 @@ $(function () {
 					"oojs-ui-core.styles"
 				]
 			}).then(function () {
-				const form = new OO.ui.FormLayout({
+				var form = new OO.ui.FormLayout({
 					method: 'get'
 				});
 				for (var index = 1; index <= 2; index++) {
@@ -192,7 +187,7 @@ $(function () {
 						]
 					}))
 				]);
-				const panel = new OO.ui.PanelLayout({
+				var panel = new OO.ui.PanelLayout({
 					expanded: false,
 					$content: form.$element
 				});

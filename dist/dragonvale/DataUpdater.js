@@ -130,15 +130,23 @@ $(document).ready(function () {
                 cursor: 'help',
                 'border-bottom': '1px dotted gray'
             }
-        }).text(text);
+        }).html(text);
 
         return $span;
     }
 
-    function create_subform(collection, fieldTypes, subform_key, game, existingKey) {
+    function makeText(text) {
+        var $span = $('<span>', {}).html(text);
+
+        return $span;
+    }
+
+    function create_subform(allData, fieldTypes, subform_key, game, existingKey) {
         var $subForm = $('<div>', { class: 'sub-form', 'data-formid': subform_key });
         var $formFields = $('<div>', { class: 'form-fields', 'data-formid': subform_key });
         var $formFieldsAdv = $('<div>', { class: 'form-fields-adv', 'data-formid': subform_key });
+
+        var collection = allData[subform_key];
 
         var existingObject = null;
         var allFields = new Set();
@@ -250,16 +258,20 @@ $(document).ready(function () {
                 field.options = [];
             }
 
-            var labelText = field.tip ? makeTip(fieldName, field.tip) : fieldName;
-            var $label = $('<label>').attr('for', elementId).append($('<b>').append(labelText).append(':'));
+
+            var $labelText = field.tip ? makeTip(fieldName, field.tip) : makeText(fieldName);
+
+            if (fieldType !== "checkbox" && fieldType !== "toggle") {
+                $labelText.append(':')
+            }
+
+            var $label = $('<label>').attr('for', elementId).append($('<b>').append($labelText));
 
             if (field.note) {
                 var $note = $('<span>').addClass('note').text(field.note);
                 $label.append($('<br>') ,$note);
             }
 
-            $fieldBlock.append($label)
-            
             var $input;
 
             if (fieldType === 'text') {
@@ -271,14 +283,26 @@ $(document).ready(function () {
                     required: isRequired
                 });
             } else if (fieldType === 'checkbox') {
+                $fieldBlock.addClass("wds-checkbox");
                 $input = $('<input>', {
                     type: 'checkbox',
                     id: elementId,
                     name: fieldName,
+                    class: 'wds-toggle__input',
                     checked: defaultValue || false,
                     required: isRequired
                 });
-            } else if (fieldType === 'textarea') {
+            } else if (fieldType === 'toggle') {
+                $label.addClass('wds-toggle__label');
+                $input = $('<input>', {
+                    type: 'checkbox',
+                    id: elementId,
+                    name: fieldName,
+                    class: 'wds-toggle__input',
+                    checked: defaultValue || false,
+                    required: isRequired
+                });
+            }else if (fieldType === 'textarea') {
                 $input = $('<textarea>', {
                     id: elementId,
                     name: fieldName,
@@ -339,6 +363,8 @@ $(document).ready(function () {
 
                 $durationDiv.append($hoursLabel, $hoursInput, $minutesLabel, $minutesInput);
                 $label = $('<div>').append($label).append($durationDiv);
+
+                $input = $durationDiv;
             } else if (fieldType === 'dropdown' || fieldType === 'rarity' || fieldType === 'currency') {
                 if (fieldType === 'rarity') {
                     var any = !field.options || field.options.length < 1 || field.options.includes("all");
@@ -517,9 +543,32 @@ $(document).ready(function () {
                         $label.append($checkbox, $checkmarkIcon, $checkmarkTextSpan);
                         $multiSelectDiv.append($label);
                     });
+
+                    //todo only add if not last, then add under the X btn
                     $multiSelectDiv.append('<br>')
                 }
+                
+                // if (field.radio === true) {
+                //     var $clearButton = $('<button>', {
+                //         id: elementId + '-clear',
+                //         type: 'button'
+                //     }).text('X');
 
+                //     $multiSelectDiv.append($clearButton);
+
+                //     $(document).on('click', '#' + elementId + '-clear', function (event) {
+                //         console.log('clear click');
+                //         event.preventDefault();
+                //         $multiSelectDiv.find('input[type="radio"]').each(function () {
+                //             setTimeout(function () {
+                //             $(this).prop('checked', false);
+                //             $(this).trigger('change');
+                            
+                //             }, 5); 
+                //         });
+                //     });
+                // }
+                
                 $multiSelectDiv.append('<div class="feedback" id="' + elementId + '-feedback" name="' + key + '-feedback"></div>');
 
                 $(document).on('change', '#' + elementId + '-all', function () {
@@ -528,16 +577,88 @@ $(document).ready(function () {
                 });
 
                 $input = $multiSelectDiv;
+            } else if(fieldType == "dragon-select") {
+                var $multiSelectDiv = $('<select>', {
+                    'data-type': 'dragon-select',
+                    class: 'dragon-select',
+                    style: 'user-select:none;',
+                    id: elementId,
+                    name: fieldName
+                });
+
+                if (allData.hasOwnProperty("Dragons")) {
+                    var dragonData = allData["Dragons"];
+                    var sortedData = dragonData.sort(function (a, b) {
+                        return a.Name.localeCompare(b.Name);
+                    });
+
+                    var formattedData = sortedData.map(function (item) {
+                        return { id: item.Name, text: item.Name };
+                    });
+
+                    function initSelect($elm) {
+                        console.log('initing select2', elementId);
+                        $elm.select2({
+                            data: formattedData,
+                            placeholder: 'Select parent(s)',
+                            allowClear: true,
+                            //width: width,
+                            // minimumResultsForSearch: minimumResultsForSearch,
+                            multiple: true,
+                            maximumSelectionLength: field.maxSelect || undefined
+                        });
+                    }
+
+                    // must be init after added to dom
+                    var observer = new MutationObserver(function (mutations, observerInstance) {
+                        mutations.forEach(function (mutation) {
+                            //console.log('obsv mutation', mutation);
+                            if (mutation && mutation.addedNodes) {
+                                mutation.addedNodes.forEach(function (node) {
+
+                                    if (node.nodeType === 1) {
+                                        // Search the subtree of the added node for the select2 element
+                                        var selectNode = $(node).find('#'+elementId);
+                                        if (selectNode.length) {
+                                            console.log('Select2 element found, initializing', selectNode[0]);
+                                            initSelect(selectNode);
+                                            observerInstance.disconnect();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    observer.observe($('#dragon-form-container')[0], {
+                        childList: true,
+                        subtree: true
+                    });
+                    
+                    $input = $multiSelectDiv;
+                } else {
+                    console.log("Must load dragons");
+                }
+            } else {
+                $fieldBlock.append(makeText("Unable to find field type."));
+                $formFields.append($fieldBlock);
             }
 
             if ($input) {
-                $fieldBlock.append($input);
-
+                if (fieldType === "toggle" || fieldType === "checkbox") {
+                    $fieldBlock.append($input);
+                    $fieldBlock.append($label)
+                } else {
+                    $fieldBlock.append($label)
+                    $fieldBlock.append($input);
+                }
+                
                 if (field.advanced === true) {
                     $formFieldsAdv.append($fieldBlock);
                 } else {
                     $formFields.append($fieldBlock);
                 }
+
             }
         });
 
@@ -583,32 +704,42 @@ $(document).ready(function () {
         var subforms = {}
         var tabberParts = {};
         var tabberHtml = "<tabber>"
+
         var allData = {}
         $.each(formConfig, function (key, config) {
             var promise = loadJsonData(api, 'Data:' + key + '.json').then(function (results) {
-                var data = results[key.charAt(0).toLowerCase() + key.slice(1)];
+                var data = null;
+                var jsonKey = key.charAt(0).toLowerCase() + key.slice(1);
+                if (results.hasOwnProperty(jsonKey)) {
+                    data = results[jsonKey];
+                } else {
+                    data = results;
+                }
 
+                allData[key] = data
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+
+            promises.push(promise);
+        });
+
+        Promise.all(promises).then(function () {
+            $.each(formConfig, function (key, config) {
                 var metaConfig = null;
                 if (config.hasOwnProperty('*')) {
                     metaConfig = config['*']
                     delete config['*'];
                 }
 
-                var $subform = create_subform(data, config, key, game, dragonEdit);
+                var $subform = create_subform(allData, config, key, game, dragonEdit);
 
                 var tabName = (metaConfig && metaConfig.hasOwnProperty('Title')) ? metaConfig.Title : key;
                 subforms[key] = $subform
                 tabberParts[key] = "|-| " + tabName + "=" + "**" + key + "**";
-                allData[key] = data
-            })
-                .catch(function (error) {
-                    console.error(error);
-                });
+            });
 
-            promises.push(promise);
-        });
-
-        Promise.all(promises).then(function () {
             $.each(formConfig, function (key) {
                 if (tabberParts.hasOwnProperty(key)) {
                     tabberHtml += tabberParts[key];

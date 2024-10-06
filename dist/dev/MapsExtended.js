@@ -4147,7 +4147,7 @@
                 {
                     for (var i = 0; i < this.config.hiddenControls.length; i++)
                     {
-                        var id = this.config.hiddedControls[i];
+                        var id = this.config.hiddenControls[i];
                         var controlToHide = this.controlAssociations[id];
                         
                         // Control invalid
@@ -4157,11 +4157,29 @@
                         // Control valid and present
                         else if (controlToHide.isPresent)
                         {
-                            controlsToHide.hidden = true;
+                            controlToHide.hidden = true;
 
                             // Don't remove it from the DOM, just hide it
                             controlToHide.element.style.display = "none";
                         }
+                    }
+                }
+
+                // For edit control, change position of dropdown depending on its location
+                var editControl = this.controlAssociations["edit"];
+                if (editControl.isPresent)
+                {
+                    var dropdown = editControl.element.querySelector(".wds-dropdown");
+                    var dropdownContent = editControl.element.querySelector(".wds-dropdown__content");
+
+                    if (dropdown && dropdownContent)
+                    {
+                        // Bottom position adds wds-is-flipped to root
+                        dropdown.classList.toggle("wds-is-flipped", editControl.position.startsWith("bottom"));
+                        
+                        // Left/right adds wds-is-left-aligned / wds-is-right-aligned to content
+                        dropdownContent.classList.toggle("wds-is-left-aligned", editControl.position.endsWith("left"));
+                        dropdownContent.classList.toggle("wds-is-right-aligned", editControl.position.endsWith("right"));
                     }
                 }
 
@@ -8916,10 +8934,10 @@
                         }
 
                         // Option with validValues must be one of a list of values
-                        if (info.validValues)
+                        if (info.validValues && valueType == "string")
                         {
                             // Force lowercase when we have a list of values
-                            if (valueType == "string") value = value.toLowerCase();
+                            value = value.toLowerCase();
 
                             if (!info.validValues.includes(value))
                             {
@@ -8986,7 +9004,12 @@
 
                         // Otherwise create it from arrayType
                         else if (info.arrayType)
+                        {
                             var arrayElementInfo = { presence: false, default: undefined, type: info.arrayType };
+
+                            // Array element inherits validValues if it is of type "string"
+                            if (info.arrayType.includes("string") && info.validValues) arrayElementInfo.validValues = info.validValues;
+                        }
                         //else
                         //    console.error("Config info definition " + info.name + " contains neither an \"arrayType\" or an \"elementInfo\"");
 

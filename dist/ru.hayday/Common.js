@@ -53,27 +53,38 @@ if (document.body.className.includes('page-События_с_заданиями'
 
 //украшения
 if (document.body.className.includes('page-Украшения')) {
-	var decoTable = $("#deco-changed");
-	var rows = $('#deco-changed>tbody>tr');
-	var sorter = $('<div id="#deco-sorter">Выберите тэги:<br>'+
-	'<span class="checker-tag"><input type="checkbox" id="tag-nature"/><label for="tag-nature"> Природа<img src="https://static.wikia.nocookie.net/hayday/images/0/05/Украшения_природа.png/revision/latest?cb=20231031062650&path-prefix=ru" title="Природа"/></label></span><br>'+
-	'<span class="checker-tag"><input type="checkbox" id=""/><label for=""> <img src=""/ title=""></label></span><br>'+
-	'<span class="checker-tag"><input type="checkbox" id="tag-seasonal"/><label for="tag-seasonal"> Сезонные<img src="https://static.wikia.nocookie.net/hayday/images/7/7a/Украшения_сезонные.png/revision/latest?cb=20231031062707&path-prefix=ru"/ title="Сезонные"></label><br>'+
-	'<span class="checker-tag-theme"><input type="checkbox" id="tag-christmas"/><label for="tag-christmas"> Рождество</label></span><br>'+
-	'<span class="checker-tag-theme"><input type="checkbox" id="tag-summer"/><label for="tag-summer"> Лето</label></span><br>'+
-	'<span class="checker-tag-theme"><input type="checkbox" id="tag-"/><label for="tag-"> </label></span><br>'+
-	'</span><br>'+
-	'<span class="checker-tag"><input type="checkbox" id=""/><label for=""> <img src=""/ title=""></label></span><br>'+
-	'</div>');
+	var decoTable = document.querySelector("#deco-changed");
+	var rows = document.querySelectorAll('#deco-changed>tbody>tr');
+	var sorter = document.createElement('div');
+	sorter.id='deco-sorter';
+	sorter.innerHTML = 'Выберите тэги:'+
+	'<div class="checker-tag"><input type="checkbox" id="tag-nature"/><label for="tag-nature"> Природа<img src="https://static.wikia.nocookie.net/hayday/images/0/05/Украшения_природа.png/revision/latest?cb=20231031062650&path-prefix=ru" title="Природа"/></label></div>'+
+	'<div class="checker-tag"><input type="checkbox" id=""/><label for=""> <img src=""/ title=""></label></div>'+
+	'<div class="checker-tag"><input type="checkbox" id="tag-seasonal"/><label for="tag-seasonal"> Сезонные<img src="https://static.wikia.nocookie.net/hayday/images/7/7a/Украшения_сезонные.png/revision/latest?cb=20231031062707&path-prefix=ru"/ title="Сезонные"></label></div>'+
+	'<div id="checker-tag-theme" style="display: none;">'+
+	'<div class="checker-tag"><input type="checkbox" id="tag-christmas"/><label for="tag-christmas"> Рождество</label></div>'+
+	'<div class="checker-tag"><input type="checkbox" id="tag-summer"/><label for="tag-summer"> Лето</label></div>'+
+	'<div class="checker-tag"><input type="checkbox" id="tag-"/><label for="tag-"> </label></div>'+
+	'</div>'+
+	'<div class="checker-tag"><input type="checkbox" id=""/><label for=""> <img src=""/ title=""></label></div>';
 	decoTable.before(sorter);
 	
 	decoTags = [];
-	console.log(rows);
-	for(var i=0;i<rows.length;i++){
-		var row = $('#deco-changed>tbody>tr:nth-child('+String(i+1)+')');
-		var tags = row.attr('data-tags');
+	rows.forEach(function(row, i){
+		var tags = row.dataset.tags;
 		decoTags[i]=tags;
-	}
+	});
+	console.log(rows, decoTags);
+	
+	var tagsTheme = sorter.querySelector('#checker-tag-theme');
+	var tagSeasonal = sorter.querySelector('#tag-seasonal');
+	tagSeasonal.onchange = function(event){
+		if (event.target.checked === true) {
+			tagsTheme.style.display = 'block';
+		} else {
+			tagsTheme.style.display = 'none';
+		}
+	};
 }
 
 //скачки 320

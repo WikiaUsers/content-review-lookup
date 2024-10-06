@@ -4,19 +4,19 @@
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:AstralCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Currency Gain Calculator ]
-// Script for calculating base gains of various currencies.
+// Script for calculating base gains of various currencies. Currently no support for currencies beyond Universe 1's Solarians' Souls.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:CurrencyGainCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Charger Calculator ]
-// Script for converting Charge to the Charger's bonuses, including support for Grasshops.
+// Script for converting Charge to the Charger's bonuses, including support for Grasshops. (Potentially inaccurate)
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:ChargerCalculator.js&action=raw&ctype=text/javascript');
 
-// [ Eclipse Calculator ]
+// (==Incomplete==) [ Eclipse Calculator ]
 // Script for calculating the Solar Ray requirement to go from one Eclipse to another.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:EclipseCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Level Calculator ]
-// Script for calculating the requirement to go from one level to another, including support for The Island's three sub-realms (XP) and the Planetoid (Cosmic).
+// Script for calculating the requirement to go from one level to another, including support for The Island's three sub-realms (XP) and the Planetoid (Cosmic). Currently no support for Universe 2.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:LevelCalculator.js&action=raw&ctype=text/javascript');
 
 // [ Suffix Converter ]
@@ -32,7 +32,7 @@ mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.p
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixSwitcher.js&action=raw&ctype=text/javascript');
 
 // [ Suffix Converter]
-// Adds an interactive tool to easily convert an inputted value into between scientific and suffix notation types.
+// Adds an interactive tool to easily convert an inputted value into either scientific or suffix notation types.
 mw.loader.getScript('https://roblox-grass-cutting-incremental.fandom.com/index.php?title=MediaWiki:SuffixConverter.js&action=raw&ctype=text/javascript');
 
 // [ User Page Notice ]

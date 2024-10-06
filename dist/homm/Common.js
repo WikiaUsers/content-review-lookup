@@ -129,11 +129,15 @@ function initPreference(linkSelector, cookieName, cookie1, cookie2, link1, link2
 function initCommon() {
   initPreference('switchExpansion', 'preferredExpansion', 'hota', 'sod', 'Enable HotA', 'Disable HotA', 'Horn of the Abyss', togglePreferredExpansion);
   initPreference('switchDoR', 'preferredDoR', 'dor', 'nodor', 'Enable DoR', 'Disable DoR', 'Day of Reckoning', toggleDoR);
-  if (!window.location.href.includes('action=edit')) {
+  if (!window.location.href.includes('action=edit') && !window.location.href.includes('action=submit')) {
     removeTabsTags();
   }
 }
 
-initCommon();
+try {
+  initCommon();
+} catch (error) {
+  $(document).ready(initCommon);
+}
 
 })();

@@ -13,4 +13,4 @@ UserTagsJS.modules.custom = {
 	'Diamentus': ['newowner']
 };
 
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
+UserTagsJS.modules.mwGroups = ['bureaucrat'];

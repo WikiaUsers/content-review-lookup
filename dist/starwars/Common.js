@@ -308,6 +308,50 @@ function toggleHidable(bypassStorage) {
 	}
 }
 
+function adjustPageCount() {
+	var countFields = getElementsByClass('page-counter__value')
+	if (!countFields) {
+		return
+	}
+	var countField = countFields[0];
+	
+	var currentCount = 0;
+	var x = Number(countField.textContent.replace(|, ''))
+	if (x !== NaN && x > 0) {
+		currentCount = x;
+	} else {
+		return
+	}
+	
+	$.ajax({
+		type: 'GET',
+		url: 'https://starwars.fandom.com/api.php',
+		data: {
+			action: 'query',
+			format: 'json',
+			prop: 'categoryinfo',
+			titles: 'Category:Disambiguation_pages_without_(disambiguation)_in_title|Category:Disambiguation_pages|Category:Canon_index_pages|Category:Legends_index_pages|Category:Non-canon_index_pages|Category:Real-world_index_pages',
+		},
+		dataType: 'jsonp',
+		jsonp: 'callback',
+		success: function(data) {
+			var pages = data.query.pages;
+			if (!pages) {
+				return;
+			}
+			
+			for (var k in pages) {
+				var info = pages[k].categoryinfo
+				if (!info) {
+					continue;
+				}
+				currentCount -= info.pages; 
+				countField.text = currentCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
+		}
+	})
+}
+
 /*
     Replaces {{USERNAME}} with the name of the user browsing the page.
     Requires copying Template:USERNAME.

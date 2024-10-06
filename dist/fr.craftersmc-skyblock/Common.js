@@ -6,7 +6,7 @@ mw.hook('wikipage.content').add(function(){
         delay: 8333,
         
         // clock reference
-        unix: 1648803101333,
+        unix: 1648803160333,
         min: 0,
         hrs: 0,
         day: 93,

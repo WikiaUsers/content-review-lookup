@@ -32,6 +32,17 @@ $(document).ready(function () {
         });
     }
 
+
+    function addDropdown(id, placeholder, $parent) {
+        var $container = $('<div class="dropdown-container field"></div>');
+        var $label = $('<label for="' + id + '">' + placeholder + '</label>');
+        var $select = $('<select id="' + id + '"></select>');
+        $container.append($label).append($select);
+        $parent.append($container);
+
+        return $container;
+    }
+
     function initializeDropdown($select, data, config, callback) {
         var placeholder = config.placeholder || 'Select an option';
         var width = config.width || '50%';
@@ -47,27 +58,38 @@ $(document).ready(function () {
             allowClear: allowClear,
             width: width,
             minimumResultsForSearch: minimumResultsForSearch,
-            // selectionCssClass: "custom-select2",
+            //multiple:true,
+            //maximumSelectionLength: 2
+             // selectionCssClass: "custom-select2",
             // theme: "wiki"
-        }).on('change', callback);
-    }
+        });
+        
+        $select.on('change', callback);
+        
+        $select.on('select2:open', function (e) {
+            const selectId = e.target.id
+            $('#sandboxConfig').css('filter', 'blur(2px)');
 
-    function addDropdown(id, placeholder, $parent) {
-        var $container = $('<div class="dropdown-container"></div>');
-        var $label = $('<label for="' + id + '">' + placeholder + '</label>');
-        var $select = $('<select id="' + id + '"></select>');
-        $container.append($label).append($select);
-        $parent.append($container);
+            $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (
+                key,
+                value,
+            ) {
+                value.focus();
+            }).attr('placeholder', 'Search...');
+        });
 
-        return $container;
-    }
+        $select .on('select2:close', function () {
+            $('#sandboxConfig').css('filter', 'none');
+        }); 
 
-    function initializeCheckbox($checkbox, config, callback) {
-        $checkbox.on('change', callback);
+        if (config.startBlank === true) {
+            $select.val("");
+            $select.trigger("change");
+        }
     }
 
     function addCheckbox(id, label, $parent) {
-        var $checkboxContainer = $('<div class="checkbox-container"></div>');
+        var $checkboxContainer = $('<div class="checkbox-container field"></div>');
         var $checkboxLabel = $('<label for="' + id + '">' + label + '</label>');
         var $checkboxInput = $('<input type="checkbox" id="' + id + '">');
         $checkboxLabel.append($checkboxInput);
@@ -75,6 +97,10 @@ $(document).ready(function () {
         $parent.append($checkboxContainer);
 
         return $checkboxInput;
+    }
+
+    function initializeCheckbox($checkbox, config, callback) {
+        $checkbox.on('change', callback);
     }
 
     function initializeSandbox(config) {
@@ -95,6 +121,7 @@ $(document).ready(function () {
             var $select = $container.find('select');
             $configMap[dropdown.id] = { el: $select, config: dropdown };
 
+            
             var data = dropdown.data;
             if (typeof data === 'string') {
                 var api = new mw.Api();
@@ -110,7 +137,7 @@ $(document).ready(function () {
                         return { id: item[dropdown.config.idKey], text: item[dropdown.config.textKey] };
                     });
 
-                    initializeDropdown($select, formattedData, dropdown.config, handleChange);
+                    initializeDropdown($select,   formattedData, dropdown.config, handleChange);
 
                     if (dropdown.id === 'dragonDropdown' && parentsData == 2) {
                         var cloneConfig = $.extend(true, {}, dropdown);
@@ -126,7 +153,7 @@ $(document).ready(function () {
                     console.error(error);
                 });
             } else {
-                initializeDropdown($select, data, dropdown.config, handleChange);
+                initializeDropdown($select,  data, dropdown.config, handleChange);
 
                 if (dropdown.id === 'dragonDropdown' && parentsData == 2) {
                     var cloneConfig = $.extend(true, {}, dropdown);
@@ -158,6 +185,7 @@ $(document).ready(function () {
         var $results = $('<div id="sandboxResults"></div>');
         $sandbox.append($results);
 
+        
         function handleChange() {
             var unnamedArgs = [];
             var namedArgs = {};

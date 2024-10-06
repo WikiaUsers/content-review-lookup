@@ -1,59 +1,38 @@
 // This is a weapon stats calculator, which calculates how much speed and damage a weapon has based on the number of teeth, feathers and booze applied to it. (Currently Work In Progress).
 // Made by this bloke: https://theforest.fandom.com/User:Daveyg103.
 
-/* [[Verbesserungen]] */
+// Page: [[Verbesserungen]]
+// Usage: <div class="StatCalc" style="display:none"></div>
 (function(mw) {
 	'use strict';
 
-	var html = '<div id="statCalcContainer">' +
-		'<div id="statCentre">' +
-			'<div>' +
-				'<p>Wähle eine Waffe</p>' +
-				'<select id="weaponList">' +
-					'<option value="" selected disabled>-</option>' +
-					'<option value="club">Keule</option>' +
-					'<option value="cAxe">Handgemachte Axt</option>' +
-					'<option value="cClub">Handgemachte Keule</option>' +
-					'<option value="machete">Machete</option>' +
-					'<option value="mAxe">Moderne Axt</option>' +
-					'<option value="pAxe">Flugzeugaxt</option>' +
-					'<option value="rAxe">Rostige Axt</option>' +
-					'<option value="tennis">Tennisschläger</option>' +
-					'<option value="uRock">Verbesserter Stein</option>' +
-					'<option value="uStick">Verbesserter Stock</option>' +
-				'</select>' +
-				'<div>' +
-					'<p>Anzahl der Federn</p>' +
-					'<input id="feather" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="Zwischen 0 und 30">' +
-					'<p>Anzahl der Zähne</p>' +
-					'<input id="teeth" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="Zwischen 0 und 30">' +
-					'<p>Anzahl von Schnäpsen</p>' +
-					'<input id="glass" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="Zwischen 0 und 30">' +
-				'</div>' +
-			'</div>' +
-			'<div id="statsSection">' +
-				'<div id="baseStats">' +
-					'<div id="speed">' +
-						'<p>Geschw.: <span id="infoSpeed">0</span></p>' +
-						'<div class="statBar" id="speedBar"></div>' +
-					'</div>' +
-					'<div id="damage">' +
-						'<p>Schaden: <span id="infoDamage">0</span></p>' +
-						'<div class="statBar" id="damageBar"></div>' +
-					'</div>' +
-					'<div id="block">' +
-						'<p>Block: <span id="infoBlock">0</span></p>' +
-						'<div class="statBar" id="blockBar"></div>' +
-					'</div>' +
-				'</div>' +
-				'<div>' +
-					'<button id="calcStats">Statistik berechnen</button>' +
-				'</div>' +
-			'</div>' +
-		'</div>' +
-		'<div id="statsOutput"></div>' +
-	'</div>';
-	var weaponStats = {
+	var i18n = {
+		club: 'Keule',
+		cAxe: 'Handgemachte Axt',
+		cClub: 'Handgemachte Keule',
+		machete: 'Machete',
+		mAxe: 'Moderne Axt',
+		pAxe: 'Flugzeugaxt',
+		rAxe: 'Rostige Axt',
+		tennis: 'Tennisschläger',
+		uRock: 'Verbesserter Stein',
+		uStick: 'Verbesserter Stock',
+		headerWeapon: 'Wähle eine Waffe',
+		headerFeather: 'Anzahl der Federn',
+		headerTeeth: 'Anzahl der Zähne',
+		headerGlass: 'Anzahl von Schnäpsen',
+		range: 'Zwischen 0 und 30',
+		outputSpeed: 'Geschw.:',
+		outputDamage: 'Schaden:',
+		outputBlock: 'Block:',
+		button: 'Statistik berechnen',
+		errorWeapon: 'Bitte wähle eine Waffe.',
+		errorNaN: 'Alle Eingaben müssen Zahlen sein.',
+		errorNegative: 'Wie kannst du eine negative Verbesserung haben.',
+		errorZero: 'Mindestens eine Verbesserung muss größer als 0 sein.',
+		errorAmount: 'Die gesamte Anzahl an Verbesserungen darf 30 nicht überschreiten.'
+	},
+	weaponStats = {
 		// speed, damage, block
 		club: [1, 7.5, 10],
 		cAxe: [1, 5.5, 9],
@@ -65,72 +44,114 @@
 		tennis: [5, 2, 5.5],
 		uRock: [5, 7, 0],
 		uStick: [7, 2, 8]
-	};
-	var ele;
-	function updateBars() {
-		var speed = Number(ele.infoSpeed.textContent);
-		var damage = Number(ele.infoDamage.textContent);
-		var block = Number(ele.infoBlock.textContent);
-		var factor = 10;
-		ele.speedBar.style.width = (speed * factor) + 'px';
-		ele.damageBar.style.width = (damage * factor) + 'px';
-		ele.blockBar.style.width = (block * factor) + 'px';
-	}
-	function calcValues() {
-		var option = ele.option.value;
-		var feather = Number(ele.feather.value);
-		var teeth = Number(ele.teeth.value);
-		var glass = Number(ele.glass.value);
-		var output = ele.output;
-		if (option === '') {
-			output.textContent = 'Bitte wähle eine Waffe.';
-			return;
-		}
-		output.textContent = '';
-		if (isNaN(feather) || isNaN(teeth) || isNaN(glass)) {
-			output.textContent = 'Alle Eingaben müssen Zahlen sein.';
-		} else if (feather < 0 || teeth < 0 || glass < 0) {
-			output.textContent = 'Wie kannst du eine negative Verbesserung haben.';
-		} else if ((feather === 0 && teeth === 0 && glass === 0)) {
-			output.textContent = 'Mindestens eine Verbesserung muss größer als 0 sein.';
-		} else if ((feather + teeth + glass) > 30) {
-			output.textContent = 'Die gesamte Anzahl an Verbesserungen darf 30 nicht überschreiten.';
-		} else {
-			var damage = (weaponStats[option][1] + ((teeth * 0.1) + (glass * 0.2)) - (feather * 0.05)).toFixed(2);
-			var speed = (weaponStats[option][0] - ((teeth * 0.05) + (glass * 0.1)) + (feather * 0.1)).toFixed(2);
-			if (damage < 0) damage = 0;
-			if (speed < 0) speed = 0;
-			ele.infoSpeed.textContent = speed;
-			ele.infoDamage.textContent = damage;
-			updateBars();
-		}
-	}
-	function init($content) {
-		var calc = $content.find('#StatCalc:not(.loaded)')[0];
-		if (!calc) return;
-		calc.classList.add('loaded');
-		calc.innerHTML = html;
-		ele = {
-			option: $content.find('#weaponList')[0],
-			feather: $content.find('#feather')[0],
-			teeth: $content.find('#teeth')[0],
-			glass: $content.find('#glass')[0],
-			output: $content.find('#statsOutput')[0],
-			speedBar: $content.find('#speedBar')[0],
-			damageBar: $content.find('#damageBar')[0],
-			blockBar: $content.find('#blockBar')[0],
-			infoSpeed: $content.find('#infoSpeed')[0],
-			infoDamage: $content.find('#infoDamage')[0],
-			infoBlock: $content.find('#infoBlock')[0]
-		};
-		$content.find('#calcStats')[0].addEventListener('click', calcValues);
-		ele.option.addEventListener('change', function() {
-			var option = this.value;
-			ele.infoSpeed.textContent = weaponStats[option][0];
-			ele.infoDamage.textContent = weaponStats[option][1];
-			ele.infoBlock.textContent = weaponStats[option][2];
-			updateBars();
+	},
+	html =
+		'<div>' +
+			'<div>' +
+				'<p>' + i18n.headerWeapon + '</p>' +
+				'<select class="weaponList">' +
+					'<option value="" selected disabled>-</option>' +
+					'<option value="club">' + i18n.club + '</option>' +
+					'<option value="cAxe">' + i18n.cAxe + '</option>' +
+					'<option value="cClub">' + i18n.cClub + '</option>' +
+					'<option value="machete">' + i18n.machete + '</option>' +
+					'<option value="mAxe">' + i18n.mAxe + '</option>' +
+					'<option value="pAxe">' + i18n.pAxe + '</option>' +
+					'<option value="rAxe">' + i18n.rAxe + '</option>' +
+					'<option value="tennis">' + i18n.tennis + '</option>' +
+					'<option value="uRock">' + i18n.uRock + '</option>' +
+					'<option value="uStick">' + i18n.uStick + '</option>' +
+				'</select>' +
+				'<div>' +
+					'<p>' + i18n.headerFeather + '</p>' +
+					'<input class="feather" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="' + i18n.range + '">' +
+					'<p>' + i18n.headerTeeth + '</p>' +
+					'<input class="teeth" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="' + i18n.range + '">' +
+					'<p>' + i18n.headerGlass + '</p>' +
+					'<input class="glass" type="text" maxlength="2" autocomplete="off" spellcheck="false" placeholder="' + i18n.range + '">' +
+				'</div>' +
+			'</div>' +
+			'<div class="statsSection">' +
+				'<div class="baseStats">' +
+					'<div class="speed">' +
+						'<p>' + i18n.outputSpeed + ' <span class="infoSpeed">0</span></p>' +
+						'<div class="statBar speedBar"></div>' +
+					'</div>' +
+					'<div class="damage">' +
+						'<p>' + i18n.outputDamage + ' <span class="infoDamage">0</span></p>' +
+						'<div class="statBar damageBar"></div>' +
+					'</div>' +
+					'<div class="block">' +
+						'<p>' + i18n.outputBlock + ' <span class="infoBlock">0</span></p>' +
+						'<div class="statBar blockBar"></div>' +
+					'</div>' +
+				'</div>' +
+				'<div>' +
+					'<button class="calcButton">' + i18n.button + '</button>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+		'<div class="statsOutput"></div>';
+	mw.hook('wikipage.content').add(function($content) {
+		$content.find('.StatCalc:not(.loaded)').each(function(_, ele) {
+			ele.classList.add('loaded');
+			ele.style.removeProperty('display');
+			ele.innerHTML = html;
+			var option = ele.getElementsByClassName('weaponList')[0],
+				feather = ele.getElementsByClassName('feather')[0],
+				teeth = ele.getElementsByClassName('teeth')[0],
+				glass = ele.getElementsByClassName('glass')[0],
+				output = ele.getElementsByClassName('statsOutput')[0],
+				speedBar = ele.getElementsByClassName('speedBar')[0],
+				damageBar = ele.getElementsByClassName('damageBar')[0],
+				blockBar = ele.getElementsByClassName('blockBar')[0],
+				infoSpeed = ele.getElementsByClassName('infoSpeed')[0],
+				infoDamage = ele.getElementsByClassName('infoDamage')[0],
+				infoBlock = ele.getElementsByClassName('infoBlock')[0];
+			function updateBars() {
+				var speed = Number(infoSpeed.textContent),
+					damage = Number(infoDamage.textContent),
+					block = Number(infoBlock.textContent),
+					factor = 10;
+				speedBar.style.width = (speed * factor) + 'px';
+				damageBar.style.width = (damage * factor) + 'px';
+				blockBar.style.width = (block * factor) + 'px';
+			}
+			ele.getElementsByClassName('calcButton')[0].addEventListener('click', function() {
+				var f = Number(feather.value),
+					t = Number(teeth.value),
+					g = Number(glass.value),
+					o = option.value;
+				if (o === '') {
+					output.textContent = i18n.errorWeapon;
+					return;
+				}
+				output.textContent = '';
+				if (isNaN(f) || isNaN(t) || isNaN(g)) {
+					output.textContent = i18n.errorNaN;
+				} else if (f < 0 || t < 0 || g < 0) {
+					output.textContent = i18n.errorNegative;
+				} else if ((f === 0 && t === 0 && g === 0)) {
+					output.textContent = i18n.errorZero;
+				} else if ((f + t + g) > 30) {
+					output.textContent = i18n.errorAmount;
+				} else {
+					var damage = (weaponStats[o][1] + ((t * 0.1) + (g * 0.2)) - (f * 0.05)).toFixed(2),
+						speed = (weaponStats[o][0] - ((t * 0.05) + (g * 0.1)) + (f * 0.1)).toFixed(2);
+					if (damage < 0) damage = 0;
+					if (speed < 0) speed = 0;
+					infoSpeed.textContent = speed;
+					infoDamage.textContent = damage;
+					updateBars();
+				}
+			});
+			option.addEventListener('change', function(e) {
+				var value = e.target.value;
+				infoSpeed.textContent = weaponStats[value][0];
+				infoDamage.textContent = weaponStats[value][1];
+				infoBlock.textContent = weaponStats[value][2];
+				updateBars();
+			});
 		});
-	}
-	mw.hook('wikipage.content').add(init);
+	});
 })(window.mediaWiki);

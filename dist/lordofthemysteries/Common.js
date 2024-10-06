@@ -20,6 +20,9 @@ window.tooltips_list = [
     }, {
         classname: 'pathway-tooltip',
         parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
+    }, {
+        classname: 'ingredient-tooltip',
+        parse: '{' + '{Template:Ingredient/data|1=<#name#>}}'
     }
 ],
 

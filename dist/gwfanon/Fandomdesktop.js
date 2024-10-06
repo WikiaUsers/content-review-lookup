@@ -4,6 +4,11 @@ if($('.headerek').length) {
    $('.headerek').remove();
 }
 
+if($('#move_to_autor_indicator').length) {
+   $('<div class="nowyautor">'+$('#move_to_autor_indicator').html()+'</div>').appendTo('#mw-indicator-autor');
+   $('#move_to_autor_indicator').remove();
+}
+
 // Template:ZobaczTeż (EN: SeeAlso)
 if($('.podgłówek').length) {
    $('<span class="page-header__page-subtitle alternatywny-podgłówek alternatywny-podgłówek2">'+$('.podgłówek').html()+'</span>').appendTo('.page-header__title-wrapper');

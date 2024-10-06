@@ -1,13 +1,12 @@
-/* [[Template:Hero infobox/layout]] */
-/* [[Template:Hero ability table/row/layout]] */
+/* [[Template:Hero infobox/layout]] [[Template:Hero ability table/row/layout]] */
 (function(mw) {
 	'use strict';
 
-	var hero, slider, ele, $content;
+	var hero, ele, $content;
 
 	function parseConstants( constantsList ) {
-		var constants = {};
-		var constantsLines = constantsList.split( '\n' );
+		var constants = {},
+			constantsLines = constantsList.split( '\n' );
 
 		for ( var i = 0; i < constantsLines.length; ++i ) {
 			var constantParts = constantsLines[i].split( ',' );
@@ -21,11 +20,11 @@
 	function addAbility( id, requiredLevelList, manaCostList, rangeList, constantsList ) {
 		if ( !( 'abilities' in hero ) ) hero.abilities = {};
 
-		var ability = {};
-		var requiredLevels = requiredLevelList.split( ',' );
-		var manaCosts = manaCostList.split( ',' );
-		var ranges = rangeList.split( ',' );
-		var constants = constantsList.split( '\n\n' );
+		var ability = {},
+			requiredLevels = requiredLevelList.split( ',' ),
+			manaCosts = manaCostList.split( ',' ),
+			ranges = rangeList.split( ',' ),
+			constants = constantsList.split( '\n\n' );
 
 		for ( var i = 0; i < requiredLevels.length; ++i ) {
 			ability[requiredLevels[i]] = {
@@ -43,35 +42,33 @@
 		var ability, descSpan, shortDescSpan, achievedAbility, achievedLevel;
 
 		for ( var id in hero.abilities ) {
-			if (hero.abilities.hasOwnProperty(id)) {
-				ability = hero.abilities[id];
-				achievedLevel = 0;
-				for (var requiredLevel in ability ) {
-					if (ability.hasOwnProperty(requiredLevel) && requiredLevel <= level) {
-						achievedLevel = Math.max( achievedLevel, requiredLevel );
-					}
+			if (!hero.abilities.hasOwnProperty(id)) continue;
+			ability = hero.abilities[id];
+			achievedLevel = 0;
+			for (var requiredLevel in ability ) {
+				if (ability.hasOwnProperty(requiredLevel) && requiredLevel <= level) {
+					achievedLevel = Math.max( achievedLevel, requiredLevel );
 				}
-				shortDescSpan = $content.find('#' + id + '-short')[0];
-				descSpan = $content.find('#' + id)[0];
-				if ( achievedLevel > 0 ) {
-					achievedAbility = ability[achievedLevel];
-					$content.find('#' + id + '-manacost')[0].textContent = achievedAbility.manaCost ;
-					$content.find('#' + id + '-range')[0].textContent = achievedAbility.range ;
-					for ( var constant in achievedAbility.constants ) {
-						if (achievedAbility.constants.hasOwnProperty(constant)) {
-							console.log(achievedAbility.constants[constant]);
-							shortDescSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
-							descSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
-						}
-					}
+			}
+			shortDescSpan = $content.find('#' + id + '-short')[0];
+			descSpan = $content.find('#' + id)[0];
+			if ( achievedLevel > 0 ) {
+				achievedAbility = ability[achievedLevel];
+				$content.find('#' + id + '-manacost')[0].textContent = achievedAbility.manaCost ;
+				$content.find('#' + id + '-range')[0].textContent = achievedAbility.range ;
+				for ( var constant in achievedAbility.constants ) {
+					if (!achievedAbility.constants.hasOwnProperty(constant)) continue;
+					console.log(achievedAbility.constants[constant]);
+					shortDescSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
+					descSpan.find( '.strife-formatted-' + constant ).html( achievedAbility.constants[constant] );
 				}
 			}
 		}
 	}
 
-	function updateStats() {
-		var level = slider.value;
-		var data = hero.level[level];
+	function updateStats(e) {
+		var level = e.target.value,
+			data = hero.level[level];
 		ele.level.textContent = 'Level ' + level;
 		if ( data.attackdamagemin && data.attackdamagemax ) {
 			if ( data.attackdamagemin !== data.attackdamagemax ) {
@@ -100,13 +97,13 @@
 		updateAbilities( level );
 	}
 
-	function init(content) {
+	mw.hook('wikipage.content').add(function(content) {
 		$content = content;
 		var main = $content.find('#hero_infobox_slider:not(.loaded)')[0];
 		if (!main) return;
 		main.classList.add('loaded');
-		var minLevel = 0;
-		var maxLevel = 0;
+		var minLevel = 0,
+			maxLevel = 0;
 		ele = {
 			armor: $content.find('#heroslider-armor')[0] || {},
 			attackdamage: $content.find('#heroslider-attackdamage')[0] || {},
@@ -123,15 +120,15 @@
 		if ( levels.length > 0 ) {
 			minLevel = parseInt( levels[0], 10 );
 			maxLevel = parseInt( levels[levels.length - 1], 10 );
-				$content.find('#heroslider-level')[0].textContent = 'Level ' + maxLevel;
-				var sliderOuter = $content.find('#heroslider-outer')[0];
-				slider = document.createElement('input');
-				slider.id = 'heroslider';
-				slider.type = 'range';
-				sliderOuter.appendChild(slider);
-				slider.min = minLevel;
-				slider.max = maxLevel;
-				slider.value = maxLevel;
+			$content.find('#heroslider-level')[0].textContent = 'Level ' + maxLevel;
+			var sliderOuter = $content.find('#heroslider-outer')[0];
+			var slider = document.createElement('input');
+			slider.id = 'heroslider';
+			slider.type = 'range';
+			sliderOuter.appendChild(slider);
+			slider.min = minLevel;
+			slider.max = maxLevel;
+			slider.value = maxLevel;
 			slider.addEventListener('input', updateStats);
 		}
 
@@ -140,7 +137,5 @@
 			var statsData = stats.dataset;
     		addAbility( statsData.id, statsData.requiredlevels, statsData.manacost, statsData.range, statsData.constants );
 		}
-	}
-
-	mw.hook('wikipage.content').add(init);
+	});
 })(window.mediaWiki);

@@ -1,25 +1,24 @@
 // Dies ist ein Schadens Rechner, welcher berechnet wie viel % an Bonus Schaden der Spieler erhält, basierend auf seiner Stärke. Es kann auf der „https://theforest.fandom.com/de/Stärke“ Seite gefunden werden.
 // Made by https://theforest.fandom.com/User:Daveyg103.
 
-/* [[Stärke]] */
-(function(mw) {
+// Page: [[Stärke]]
+// Usage: <div class="damageCalc" style="display:none"></div>
+mw.hook('wikipage.content').add(function($content) {
 	'use strict';
-	
-	function init($content) {
-		var damageCalc = $content.find('#damageCalc:not(.loaded)')[0];
-		if (!damageCalc) return;
-		damageCalc.classList.add('loaded');
-		damageCalc.innerHTML = '<div id="dmgCalcContainer">' +
+	$content.find('.damageCalc:not(.loaded)').each(function(_, ele) {
+		ele.classList.add('loaded');
+		ele.style.removeProperty('display');
+		ele.innerHTML =
 			'<p>Gib deine Stärke ein</p>' +
-			'<input id="str" type="text" placeholder="Stärke" maxlength="2" autocomplete="off" spellcheck="false">' +
-			'<button id="calc">Schaden</button>' +
+			'<input class="damageCalcInput" type="text" placeholder="Stärke" maxlength="2" autocomplete="off" spellcheck="false">' +
+			'<button class="damageCalcButton">Schaden</button>' +
 			'<p>Bonus Schaden</p>' +
-			'<span id="output">+0%</span>' +
-		'</div>';
-	
-		$content.find('#calc')[0].addEventListener('click', function() {
-			var output = $content.find('#output')[0];
-			var str = Number($content.find('#str')[0].value);
+			'<span class="damageCalcOutput">+0%</span>';
+
+		var output = ele.getElementsByClassName('damageCalcOutput')[0],
+			input = ele.getElementsByClassName('damageCalcInput')[0];
+		ele.getElementsByClassName('damageCalcButton')[0].addEventListener('click', function() {
+			var str = Number(input.value);
 			if ( isNaN(str) ) {
 				output.textContent = "Stärke muss eine Nummer sein.";
 			} else if ( str < 10 || str > 99) {
@@ -28,6 +27,5 @@
 				output.textContent = '+' + (str * 100 / 140).toFixed(2) + '%';
 			}
 		});
-	}
-	mw.hook('wikipage.content').add(init);
-})(window.mediaWiki);
+	});
+});

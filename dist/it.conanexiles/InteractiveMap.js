@@ -1,14 +1,14 @@
 /* [[Interactive Map]] */
-/*jshint jquery:false, browser:true, devel:true, camelcase:true, curly:false, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, regexp:true, strict:true, trailing:false, undef:true, unused:true */
 (function(mw) {
 	'use strict';
-	var L = window.L;
-	var imgBaseUrl = 'https://static.wikia.nocookie.net/conanexiles_gamepedia/images/$1/revision/latest/scale-to-width-down/';
-	var mapImgUrl = 'https://static.wikia.nocookie.net/conanexiles_gamepedia/images/f/fb/MiniMapFull.jpg/revision/latest';
-	var dataUrl = 'https://raw.githubusercontent.com/Juijang/wikidata/master/spawns.json';
+	var params = new URLSearchParams(window.location.search),
+		L = window.L,
+		imgBaseUrl = 'https://static.wikia.nocookie.net/conanexiles_gamepedia/images/$1/revision/latest/scale-to-width-down/',
+		mapImgUrl = 'https://static.wikia.nocookie.net/conanexiles_gamepedia/images/f/fb/MiniMapFull.jpg/revision/latest',
+		dataUrl = 'https://raw.githubusercontent.com/Juijang/wikidata/master/spawns.json',
 
-	var focusDetails, $content, iconDefault, debug, map, namedOverlays, namedIcons;
-	var html = '<div id="control-pane-container">' +
+		focusDetails, $content, iconDefault, debug, map, namedOverlays, namedIcons,
+		html = '<div id="control-pane-container">' +
 		'<div id="control-pane">' +
 			'<ul style="margin-left: 0px;">' +
 				'<li class="options-group"><label class="options-group-label" onclickx="toggleGroups(\'options-group-poi\')" group="options-group-poi">Points Of Interest</label>' +
@@ -103,9 +103,9 @@
 			'<div class="header">Coordinates</div>' +
 			'<div id="coords"></div>' +
 		'</div>' +
-	'</div>';
+	'</div>',
 
-	var namedIconsOrg = {
+		namedIconsOrg = {
 		"focus": 						['1/10/MapMarker_filter.png'],
 		"Fighter": 						['7/73/MapMarker_fighter.png'],
 		"Profession": 					['a/ad/MapMarker_prof.png'],
@@ -206,24 +206,6 @@
 		return [-marker[1] / 1000, marker[0] / 1000];
 	}
 
-	// helper function to load github hosted data
-	function loadJSON(url, callback) {   
-		var xobj = new XMLHttpRequest();
-		xobj.overrideMimeType("application/json");
-		xobj.open('GET', url, true);
-		xobj.onreadystatechange = function () {
-			if (xobj.readyState === 4 && xobj.status === 200) {
-				callback(xobj.responseText);
-			}
-		};
-		xobj.send(null);  
-	}
-
-	function getURLParameter(name) {
-		var value = decodeURIComponent((new RegExp(name + '=' + '(.+?)(&|$)').exec(location.search) || [undefined, ""])[1]);
-		return (value !== 'null') ? value : false;
-	}
-
 	function decodeHtml(html) {
 		var txt = document.createElement("textarea");
 		txt.innerHTML = html;
@@ -278,6 +260,7 @@
 
 	function preparePOIData(pois) {
 		for (var i in pois) {
+			if (!pois.hasOwnProperty(i)) continue;
 			var poi = pois[i];
 
 			var name = poi.Name;
@@ -313,6 +296,7 @@
 			var highestChance;
 			var allWithSameChance = true;
 			for (var j in focusDetails.spawnDetails) {
+				if (!focusDetails.spawnDetails.hasOwnProperty(j)) continue;
 				var chance = focusDetails.spawnDetails[j][1];
 				if (chance === "<1%") {
 					chance = "0";
@@ -345,7 +329,7 @@
 		}
 	}
 
-	function init(content) {
+	mw.hook('wikipage.content').add(function(content) {
 		var myTestElement = content.find('#conan-interactive-map:not(.loaded)')[0];
 		if (!myTestElement) return;
 		myTestElement.classList.add('loaded');
@@ -363,16 +347,16 @@
 		myTestElement.append(spanClear);
 	
 		// focus: ID
-		var focusID = getURLParameter("id");
+		var focusID = params.get('id');
 		if (focusID === "") {
 			// fallback: old param
-			focusID = getURLParameter("focus");
+			focusID = params.get('focus');
 		}
 		// focus: name
-		var focusName = decodeHtml(getURLParameter("name")).replace( /_/g, ' ' );
+		var focusName = decodeHtml(params.get('name')).replace( /_/g, ' ' );
 		// focus: weightedSpawnID
-		var wID = getURLParameter("wid");
-		debug = getURLParameter("debug");
+		var wID = params.get('wid');
+		debug = params.get('debug');
 	
 		// TODO temp -> remove me
 		if (debug) {
@@ -515,12 +499,14 @@
 		focusDetails = [];
 	
 		// load external data for the map
-		loadJSON(dataUrl, function(response) {
-			// Parse JSON string into object
-			var data = JSON.parse(response);
-	
+		fetch(dataUrl, {
+			method: 'GET'
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
 			var markerCount = 0;
 			for (var i in data) {
+				if (!data.hasOwnProperty(i)) continue;
 				var purge = data[i];
 
 				//var isAlchemistT4 = false;
@@ -534,6 +520,7 @@
 	
 				var spawns = purge.spawns;
 				for (var j in spawns) {
+					if (!spawns.hasOwnProperty(j)) continue;
 					var spawn = spawns[j];
 	
 					var name = spawn.name;
@@ -651,24 +638,31 @@
 		});
 	
 		// points of interest - datamined
-		loadJSON("https://raw.githubusercontent.com/Juijang/wikidata/master/poi1.json", function(response) {
-			var pois = JSON.parse(response);
-	
-			preparePOIData(pois);
+		fetch('https://raw.githubusercontent.com/Juijang/wikidata/master/poi1.json', {
+			method: 'GET'
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			preparePOIData(data);
 		});
 	
 		// points of interest - additionals
-		loadJSON("https://raw.githubusercontent.com/Juijang/wikidata/master/poi_additionals.json", function(response) {
-			var pois = JSON.parse(response);
-
-			preparePOIData(pois);
+		fetch('https://raw.githubusercontent.com/Juijang/wikidata/master/poi_additionals.json', {
+			method: 'GET'
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			preparePOIData(data);
 		});
 	
 		// misc data (lore objects, recipes, ...)
-		loadJSON("https://raw.githubusercontent.com/Juijang/wikidata/master/misc_data.json", function(response) {
-			var miscData = JSON.parse(response);
-	
+		fetch('https://raw.githubusercontent.com/Juijang/wikidata/master/misc_data.json', {
+			method: 'GET'
+		}).then(function(response) {
+			return response.json();
+		}).then(function(miscData) {
 			for (var i in miscData) {
+				if (!miscData.hasOwnProperty(i)) continue;
 				var misc = miscData[i];
 	
 				var name = misc.name;
@@ -691,6 +685,7 @@
 				if (type === "emote") {
 					var emotePopup = "";
 					for (var j in misc.data) {
+						if (!misc.data.hasOwnProperty(j)) continue;
 						var emote = misc.data[j];
 						//popup += "<a href=\"/" + emote.replace( / /g, '_' ) + "\">" + emote + "</a><br>"
 						if (emotePopup !== "") {
@@ -702,6 +697,7 @@
 				} else if (type === "feat") {
 					var featPopup = "";
 					for (var k in misc.data) {
+						if (!misc.data.hasOwnProperty(k)) continue;
 						var feat = misc.data[k];
 						//popup += "<a href=\"/" + feat.replace( / /g, '_' ) + "\">" + feat + "</a><br>"
 						if (featPopup !== "") {
@@ -798,8 +794,5 @@
 	
 			$content.find('#coords')[0].textContent = content;
 		});
-	}
-
-	// Execute script after page is loaded
-	mw.hook('wikipage.content').add(init);
+	});
 })(window.mediaWiki);

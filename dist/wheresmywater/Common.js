@@ -37,14 +37,15 @@ window.UserTagsJS = {
         	sysop: { u: 'Administrator' },
         	threadmoderator: { u: 'Discussions Moderator' },
             formerstaff: { u: 'Former Staff', title: 'This user was formerly a Wiki Staff member.' },
-            inactive: { u: 'Inactive', title: 'This user hasn\'t edited in the last 30 days.' },
+            legend: {u: 'Wiki Legend', title: 'This user has made outstanding contributions to the wiki.' },
+            inactive: { u: 'Inactive', title: 'This user hasn\'t edited recently.' },
             blocked: { title: 'This user is currently blocked.' },
             newuser: { u: 'New Editor', title: 'This user is new to the Where\'s My Water? Wiki.' },
             notautoconfirmed: { u: 'New User', title: 'This user is not an autoconfirmed user.'}
         }
     };
     
-    UserTagsJS.modules.inactive = 30;
+    UserTagsJS.modules.inactive = 60;
 	UserTagsJS.modules.newuser = {
 		computation: function(days, edits) {
 			/*newuser is removed when the user gets 30 edits OR 
@@ -85,10 +86,12 @@ window.UserTagsJS = {
     UserTagsJS.modules.custom = {
         'Blitzflame99': ['formerstaff'],
         'Catfan660': ['formerstaff'],
-        'Codebreak1': ['formerstaff'],
+        'Codebreak1': ['formerstaff', 'legend'],
         'Laugh Attack Videos': ['formerstaff'],
         'Pinkgalaxy': ['formerstaff'],
-        'Sboy13': ['formerstaff'],
+        'Sboy13': ['formerstaff', 'legend'],
+        'Jordan853': ['legend'],
+        'E12Dragon': ['legend'],
     };
     
 //Lock old comments time limit

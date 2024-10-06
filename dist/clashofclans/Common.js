@@ -43,6 +43,7 @@
         tags: {
             heroicuser:  { u: 'Most Heroic Contributor' },
             imageeditor: { u: 'Image Editor' },
+            moderator: { u: 'Moderator' },
             sysop: { u: 'Administrator' },
         	threadmoderator: { u: 'Discussions Moderator' },
             retiredstaff: { u: 'Retired Staff', title: 'This former staff member is inactive.' },
@@ -76,6 +77,11 @@
         threadmoderator: ['bureaucrat', 'sysop'],
         rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
         inactive:        ['retiredstaff']
+    };
+    
+    //Discussions + Content Mod = Moderator
+    UserTagsJS.modules.implode = {
+		'moderator': ['threadmoderator', 'content-moderator'],
     };
     
     UserTagsJS.modules.custom = {
