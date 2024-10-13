@@ -1,11 +1,11 @@
 // =====================================
-//        Variables for functions
+//        Variabel untuk fungsi
 // =====================================
 // ArchiveTool
 ArchiveToolConfig = { 
-   archiveListTemplate: 'Archived Talk Tabs',	// Template to use on the main talk page
-   archivePageTemplate: 'Archived Talk Tabs',	// Template to use on the archived talk pages
-   archiveSubpage: 'Archive',					// Basename to use for archived talk pages
+   archiveListTemplate: 'Archived Talk Tabs',	// Template untuk digunakan pada halaman pembicaraan utama
+   archivePageTemplate: 'Archived Talk Tabs',	// Templat untuk digunakan pada halaman pembicaraan yang diarsipkan
+   archiveSubpage: 'Archive',					// Nama dasar yang akan digunakan untuk halaman pembicaraan yang diarsipkan
    userLang: true
 };
 
@@ -16,7 +16,7 @@ window.BackToTopModern = true;
 //                Imports
 // =====================================
 
-// See MediaWiki:ImportJS
+// Lihat MediaWiki:ImportJS
 
 // =====================================
 //                Functions
@@ -40,7 +40,7 @@ $('.expandAll a').click(function(){
 
 // Template:Tabs
 $(function() {
-	// If a sub-tab is "selected", make the parent tabs also "selected"
+	// Jika sub-tab "dipilih", buatlah tab induknya juga "dipilih"
 	$('.at-selected').parents('.article-tabs li').each(function () {
 		$(this).addClass('at-selected');
 	});
@@ -50,8 +50,8 @@ $(function() {
 		// Get height of subtabs
 		var $TabsHeight = $(this).height();
 
-		// Increase bottom margin of main tabs
+		// Meningkatkan margin bawah tab utama
 		$(this).parents('.article-tabs').last().css('margin-bottom' , '+=' + $TabsHeight);
 	});
 });
-// END of Template:Tabs
+// END of Templat:Tabs

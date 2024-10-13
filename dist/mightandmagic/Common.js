@@ -2,18 +2,6 @@
 
 var showSpoiler = new Array();
 
-// prototype functions
-function $A(a) {
-var r = [];
-for (var i = 0, len = a.length; i < len; ++i) r.push(a[i]);
-return r;
-}
-
-Function.prototype.bind = function() {
-var __method = this, args = $A(arguments), object = args.shift();
-return function() { return __method.apply(object, args.concat($A(arguments))) };
-}
-
 var hasClass = (function () {
 var reCache = {};
 return function (element, className) {

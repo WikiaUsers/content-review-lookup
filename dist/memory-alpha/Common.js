@@ -13,6 +13,14 @@ window.AutoCreateUserPagesConfig = {
 $(function(){
 	var api = new mw.Api();
 	
+	// Custom theme-dependent CSS variables
+	
+	if ($('.theme-fandomdesktop-light').length === 1) {
+		$('head').prepend('<style>:root{--theme-accent-color--secondary:#dddddd;--theme-heading-color:#222222;}</style>');
+	} else {
+		$('head').prepend('<style>:root{--theme-accent-color--secondary:#222222;--theme-heading-color:#ffd942;}</style>');
+	}
+	
 	// Re-add proper namespace prefix to titles where it has been removed "by design"
 	
 	api.get({
@@ -23,6 +31,7 @@ $(function(){
 		format:'json',
 	}).done(function(data){
 		$('#firstHeading').html(data.query.pages[mw.config.get('wgArticleId')].displaytitle);
+		$('.ns-102.page-Portal_Main #firstHeading').html('Welcome to Memory Alpha');
 	});
 	
 	// Tabs in sidebars

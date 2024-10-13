@@ -1,73 +1,34 @@
-var WikiaNotificationMessage = "Rejoignez la force spéciale du wiki Boom Beach ! Elle est ouverte pour tous les niveaux 35 et plus dès 200 médailles. Nom : Boom Beach Wiki Identifiant : #VQ0RLJJ<br>Pour ceux qui n'auraient le niveau requis, il y a la team école qui vous accompagnent. Nom : BB Wiki Ecole Identifiant : #2PYUUPUJ";
-importScriptPage('WikiaNotification/code.js', 'dev');
-// By English Boom Beach Wiki
-$(function() {
-   var elem = $('div.protection-image');
- 
-   if (typeof elem === 'undefined')
-      return;
- 
-   // Relocate it and make it appear 
-   var btn = $('.wikia-button.comments.secondary');
- 
-   if (typeof btn !== 'undefined') {
-      btn.after(elem);
-   }
-   else {
-      btn = $('#WikiaMainContentContainer .wikia-menu-button');
-      btn.after(elem);
-   }
-   elem.addClass('protection-image-visible');
-   elem.removeClass('protection-image');
-});
-$(function() {
-    if (window.disableUsernameReplace || mw.config.get('wgUserName') === null) return;
-    $('span.insertusername').html(mw.config.get('wgUserName'));
-});
-/* End of the {{USERNAME}} replacement */
-// UserTags
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		rollback: { u:'Patrouilleur' },
-		bureaucrat: { u:'Bureaucrate' },
-		montheditor: { u:'Éditeur du mois', f:'Éditrice du mois' },
-                sysop: { u:'Admin', f:'Administratrice', m:'Administrateur' },
-                'Protecteur du wiki': { u:'Protecteur du wiki' },
-                'Administrateur inactif': { u:'Administrateur inactif' },
-                founder: { u:'Fondateur' }
-	}
-};
-UserTagsJS.modules.autoconfirmed = true;
-UserTagsJS.modules.newuser = {
-	days: 5, // est présent depuis moins de 5 jours
-	edits: 15, // à fait moins de 15 édits
-	namespace: 0 // Les édits doivent être faits sur des articles
-};
-UserTagsJS.modules.inactive = 60; // Inactif au bout de 60 jours sans modifications 
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'chatmoderator', 'patroller', 'rollback', 'sysop', 'bannedfromchat', 'bot', 'bot-global', 'founder'];
-// Ajoute le groupe bureaucrat aux bureaucrates
-UserTagsJS.modules.metafilter = {
-	rollback: ['sysop'], // retire le groupe rollback aux admins
-	chatmoderator: ['sysop'], // retire le groupe modérateur du tchat aux admins
-	sysop: ['bureaucrat'], // retire le groupe admins aux bureaucrates
-	bureaucrat: ['founder'] // retire le groupe bureaucrates au fondateur
-};
-UserTagsJS.modules.userfilter = {
-	'Gguigui1': ['newuser'], // Gguigui1 n'est jamais inactif
-	'Maxx86': ['newuser'] // Maxx86 n'est jamais inactif
-};
-UserTagsJS.modules.implode = {
-	'Administrateur inactif': ['sysop', 'inactive'],
-	'Protecteur du wiki': ['chatmoderator', 'rollback'] // Ajoute "Protecteur du wiki" pour les rollbacks et patrollers en supprimant ces derniers
-};
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:RevealAnonIP/code.js",
-        'w:c:dev:UserTags/code.js',
-        'MediaWiki:Common.js/DrTerror.js',
-        'MediaWiki:Calc.js'
-        'MediaWiki:ExtendedNavigation/code.js'
-    ]
+/* Any JavaScript here will be loaded for all users on every page load. */
+
+
+$(document).ready(function() {
+	
+    // Change Random Page button to only go to pages in the mainspace
+    $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
+
+    // Click the notification icon to reveal hidden banners (Template:Notification)
+    $('#Reveal-Trigger').click(function() {
+        $('.Revealable').slideToggle("slow");
+    });
+
+    // Click element with this class to bring up an alert with the element's title attribute's contents (Template:Help)
+    $(".titleAlert").click(function() {
+        alert($(this).attr("title"));
+    });
+
+    // Template:CollapsibleContent
+    $("table.collapsing-table tr.collapsing-table-trigger td").click(function() {
+        $(this).parent("tr").siblings("tr").children("td").fadeToggle(600);
+        $(this).children("p.collapsing-table-trigger-messages").children("span.collapsing-table-trigger-text").toggleClass("collapsing-table-trigger-text-hidden");
+    });
+
+    // Template:HiddenSeries
+    $(".HiddenSeriesButton").click(function() {
+        $(this).parents(".HiddenSeriesParent").children(".HiddenSeries").show();
+        $(this).hide();
+    });
+
+    // Community Spotlight modules
+    $("#PixelCruxModule a").removeClass("external");
+
 });

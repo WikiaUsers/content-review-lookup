@@ -109,7 +109,7 @@
 	mw.hook('dev.i18n').add(function(i18n) {
 		i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
 			msg = i18no.msg;
-			if (config.wgNamespaceNumber === -1) {
+			if (config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') {
 				mw.loader.using([
 					'oojs-ui-widgets',
 					'mediawiki.api',

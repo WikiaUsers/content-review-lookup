@@ -23,14 +23,14 @@ toolbarElement.innerHTML = '<span class="wds-dropdown__toggle">' +
 toolbarWrapper.insertBefore(toolbarElement, toolbarWrapper.firstChild);
 */
 
-/* Fandom partnership discount code 
+/* Fandom partnership discount code */
 $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
-            .text('Get 15% off General Admission to Drag Con LA!')
+            .text('Get 15% off General Admission to Drag Con UK!')
         )
-        .attr('href', 'https://rupaulsdragrace.fandom.com/f/p/4400000000000192516')
+        .attr('href', 'https://rupaulsdragrace.fandom.com/f/p/4400000000000196869')
 );
 
 /* User Tags*/

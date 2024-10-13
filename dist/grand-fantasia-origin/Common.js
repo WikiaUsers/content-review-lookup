@@ -1,1 +1,9 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+window.tooltips_list = [
+	{
+    classname: 'item-jstooltip',
+    parse: '{'+'{Item/Tooltip|id=<#id#>}}',   // '+' makes MediaWiki ignore the template on the page with settings
+}
+];
+window.tooltips_config = {
+    noCSS: true,
+};

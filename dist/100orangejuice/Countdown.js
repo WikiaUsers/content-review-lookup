@@ -1,78 +1,76 @@
 // https://vincoding.com/weekly-repeating-countdown-timer-javascript/
+// ToDo: Remove date variable by fixing second calculation
 (function(mw) {
 	'use strict';
 
-	var countdown, curday, secTime, ticker;
+	var countdowns = [];
 
-	function getSeconds(cd) {
-		var tmpDate = new Date();
-		var nowDate = new Date(
-			tmpDate.getUTCFullYear(),
-			tmpDate.getUTCMonth(),
-			tmpDate.getUTCDate(),
-			tmpDate.getUTCHours(),
-			tmpDate.getUTCMinutes(),
-			tmpDate.getUTCSeconds()
-		);
-		var dy = Number(countdown[cd].dataset.day) || tmpDate.getUTCDay() ; //Sunday through Saturday, 0 to 6
+	function getSeconds(index) {
+		var curday,
+			cd = countdowns[index],
+			ele = cd[2],
+			tmpDate = new Date(),
+			nowDate = new Date(
+				tmpDate.getUTCFullYear(),
+				tmpDate.getUTCMonth(),
+				tmpDate.getUTCDate(),
+				tmpDate.getUTCHours(),
+				tmpDate.getUTCMinutes(),
+				tmpDate.getUTCSeconds()
+			),
+			dy = Number(ele.getAttribute('data-day')) || tmpDate.getUTCDay(), // Sunday through Saturday, 0 to 6
+			countertime = new Date(
+				tmpDate.getUTCFullYear(),
+				tmpDate.getUTCMonth(),
+				tmpDate.getUTCDate(),
+				(Number(ele.getAttribute('data-hour')) || tmpDate.getUTCHours()),
+				(Number(ele.getAttribute('data-minute')) || tmpDate.getUTCMinutes()),
+				tmpDate.getUTCSeconds()
+			),
+			curtime = nowDate.getTime(), //current time
+			atime = countertime.getTime(), //countdown time
+			diff = parseInt((atime - curtime) / 1000);
+		if (diff > 0) { curday = dy - tmpDate.getUTCDay(); }
+		else { curday = dy - tmpDate.getUTCDay() -1; } //after countdown time
+		if (curday < 0) curday += (ele.getAttribute('data-day') ? 7 : 1 ); //already after countdown time, switch to next week
+		if (diff <= 0) diff += (86400 * 7);
 
-		var countertime = new Date(
-			tmpDate.getUTCFullYear(),
-			tmpDate.getUTCMonth(),
-			tmpDate.getUTCDate(),
-			(Number(countdown[cd].dataset.hour) || tmpDate.getUTCHours()),
-			(Number(countdown[cd].dataset.minute) || tmpDate.getUTCMinutes()),
-			tmpDate.getUTCSeconds()
-		);
-
-		var curtime = nowDate.getTime(); //current time
-		var atime = countertime.getTime(); //countdown time
-		var diff = parseInt((atime - curtime) / 1000);
-		if (diff > 0) { curday[cd] = dy - tmpDate.getUTCDay(); }
-		else { curday[cd] = dy - tmpDate.getUTCDay() -1; } //after countdown time
-		if (curday[cd] < 0) { curday[cd] += (countdown[cd].dataset.day ? 7 : 1 ); } //already after countdown time, switch to next week
-		if (diff <= 0) { diff += (86400 * 7); }
-		startTimer (cd, diff);
+		cd[0] = diff;
+		cd[1] = curday;
 	}
 
-	function startTimer(cd, secs) {
-		secTime[cd] = parseInt(secs);
-		ticker[cd] = setInterval(function() {tick(cd);}, 1000);
-		tick(cd); //initial count display
+	function tick() {
+		countdowns.forEach(function(cd, index) {
+			var secs = cd[0];
+
+			if (secs > 0) {
+				cd[0]--;
+			} else {
+				getSeconds(index);
+				secs = cd[0];
+			}
+			var days = cd[1];
+
+			//var days = Math.floor(secs / 86400);
+			secs %= 86400;
+			var hours = Math.floor(secs / 3600);
+			secs %= 3600;
+			var mins = Math.floor(secs / 60);
+			secs %= 60;
+
+			cd[2].textContent = (days === 0 ? '' : days + 'd ') +
+				((days + hours) === 0 ? '' : hours + 'h ') +
+				mins + 'm';
+		});
 	}
 
-	function tick(cd) {
-		var secs = secTime[cd];
-		if (secs > 0) {
-			secTime[cd]--;
-		} else {
-			clearInterval(ticker[cd]);
-			getSeconds(cd); //start over
-		}
+	tick();
+	setInterval(tick, 60000); // Update every minute
 
-		//var days = Math.floor(secs / 86400);
-		secs %= 86400;
-		var hours= Math.floor(secs / 3600);
-		secs %= 3600;
-		var mins = Math.floor(secs / 60);
-		secs %= 60;
-
-		//update the time display
-		countdown[cd].textContent = (curday[cd] === 0 ? '' : curday[cd] + 'd ') +
-			((curday[cd] + hours) === 0 ? '' : hours + 'h ') +
-			mins + 'm';
-	}
-
-	function init($content) {
-		countdown = $content.find('.customCountdown');
-		if (!countdown.length) return;
-
-		curday = [];
-		secTime = [];
-		ticker = [];
-		for (var i=0; i<countdown.length; i++) {
-			getSeconds(i);
-		}
-	}
-	mw.hook('wikipage.content').add(init);
+	mw.hook('wikipage.content').add(function($content) {
+		$content.find('.customCountdown:not(.loaded)').each(function(_, ele) {
+			ele.classList.add('loaded');
+			countdowns.push([0, 0, ele]); // seconds, days, element
+		});
+	});
 })(window.mediaWiki);

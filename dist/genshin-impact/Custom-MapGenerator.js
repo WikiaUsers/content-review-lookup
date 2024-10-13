@@ -13,6 +13,10 @@ $(function() {
 	var mapRefs;
 	var zoom = 1;
 	var mode;
+	// Helper functions
+	var encHTML = function(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+	var decHTML = function(str) { return String(str).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"'); };
+	
 	var mapGenerator = {
 		init: function() {
 			
@@ -180,10 +184,10 @@ $(function() {
 					var menu = $(
 						'<div class="markerSettings" style="z-index:99999; position:absolute;">'+
 							'<ul>'+
-								'<li rel="'+event.target.id+'" class="markerSettings-32">32px</li>'+
-								'<li rel="'+event.target.id+'" class="markerSettings-53">53px</li>'+
-								'<li rel="'+event.target.id+'" class="markerSettings-75">75px</li>'+
-								'<li rel="'+event.target.id+'" class="markerSettings-96">96px</li>'+
+								'<li rel="'+encHTML(event.target.id)+'" class="markerSettings-32">32px</li>'+
+								'<li rel="'+encHTML(event.target.id)+'" class="markerSettings-53">53px</li>'+
+								'<li rel="'+encHTML(event.target.id)+'" class="markerSettings-75">75px</li>'+
+								'<li rel="'+encHTML(event.target.id)+'" class="markerSettings-96">96px</li>'+
 								'<li class="markerSettings-Close">&#x274C;</li>'+
 							'</ul>'+
 						'</div>'
@@ -195,7 +199,7 @@ $(function() {
 			});
 			document.addEventListener('click', function(event) {
 				if (event.target && event.target.classList.item(0) && /^markerSettings-\d\d/.test(event.target.classList.item(0))) {
-					var markerID = event.target.getAttribute('rel');
+					var markerID = decHTML(event.target.getAttribute('rel'));
 					var type = 'File:Map-guide-marker-'+/^markerSettings-(\d\d)/.exec(event.target.classList.item(0))[1]+'.png';
 					var marker = document.querySelector('#'+markerID);
 					var localZoom = (event.target.closest('.Templates-generator') ? 1 : zoom); // ignore zoom setting if not quickGen
@@ -243,18 +247,18 @@ $(function() {
 				} else if (event.target && event.target.classList.contains('MapGenerator')) {
 					mapGenerator.processPreciseMarkers();
 				} else if (event.target && event.target.classList.contains('WikitextGenerator')) {
-					navigator.clipboard.writeText(mapGenerator.genFilePage(sett.r, document.querySelector('.Templates-generator-note').getAttribute('rel')));
+					navigator.clipboard.writeText(mapGenerator.genFilePage(sett.r, decHTML(document.querySelector('.Templates-generator-note').getAttribute('rel'))));
 				} else if (event.target && event.target.classList.contains('Templates-uploader')) {
 					mapGenerator.getFileObject(
 						mapGenerator.processPreciseMarkers(true),
-						mapGenerator.genFilePage(sett.r, document.querySelector('.Templates-generator-note').getAttribute('rel'))
+						mapGenerator.genFilePage(sett.r, decHTML(document.querySelector('.Templates-generator-note').getAttribute('rel')))
 					);
 				} else if (event.target && event.target.closest('.mapTemplate')) {
 					event.preventDefault();
 					if (mode=='quick'){
 						document.querySelector('.Templates-generator-popup').classList.add('Templates-generator-popup-active');
 					}
-					mapGenerator.selectTemplate(event.target.closest('.mapTemplate').getAttribute('rel'));
+					mapGenerator.selectTemplate(decHTML(event.target.closest('.mapTemplate').getAttribute('rel')));
 				} else if (mode=='quick' && event.target && event.target.closest('.Templates-generator-close')) {
 					document.querySelector('.Templates-generator-popup').classList.remove('Templates-generator-popup-active');
 				}
@@ -267,7 +271,7 @@ $(function() {
 		},
 		processPreciseMarkers: function(urlOnly) {
 			var valid = false;
-			var template = document.querySelector('.templateImage').getAttribute('rel');
+			var template = decHTML(document.querySelector('.templateImage').getAttribute('rel'));
 			if (!template || template.length==0) {alert('Select a map template.'); return;}
 			var canvas = document.createElement('canvas');
 			canvas.height = '600';
@@ -375,7 +379,7 @@ $(function() {
 						templates.forEach(function(template){
 							var cleanT = template.replace(/^File:/, '').replace(/ Map Template\.png$/, '');
 							gallery += 
-								'<div class="mapTemplate" rel="'+template+'">'+
+								'<div class="mapTemplate" rel="'+encHTML(template)+'">'+
 									'<img class="mapTemplate-image" width="200px" src="'+loadedImages[template].src+'"/>'+
 									'<span class="mapTemplate-caption">'+cleanT+'</span>'+
 								'</div>';
@@ -573,7 +577,7 @@ $(function() {
 		},
 		selectTemplate: function(template) {
 			var manager = document.querySelector('.templateImage');
-			if (manager.getAttribute('rel') !== template) {
+			if (decHTML(manager.getAttribute('rel')) !== template) {
 				document.querySelectorAll('.Templates-generator > .mapMarker').forEach(function(marker){
 					markers.count--;
 					delete markers[marker.id];

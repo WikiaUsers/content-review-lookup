@@ -5,18 +5,6 @@ window.tooltips_config = {
     noCSS: true,
 }
 
-/* Not needed as of https://spacemarine2.fandom.com/wiki/Template:SM2Tooltip?oldid=1575 */
-// function decodeData(str) {
-// 	/* Reverse tooltip data encoding done by https://spacemarine2.fandom.com/wiki/Template:TooltipData */
-// 	return (str
-// 		.replace(/(^|[^\\])\\\)/g,'$1>')
-// 		.replace(/(^|[^\\])\\\(/g,'$1<')
-// 		.replace(/(^|[^\\])\\\./g,'$1\'')
-// 		.replace(/(^|[^\\])\\,/g,'$1"')
-// 		.replace(/\\\\/g,'\\')
-// 	)
-// }
-
 function data(e, dataKey) {
 	return $(e).data(dataKey)
 }
@@ -34,7 +22,15 @@ window.tooltips_list = [
 				+ '|footer=' + data(e,'footer')
 				+ '}}'
 			)
-    	},
+        },
+        onShow: function (element) {
+            if (isCurrentlyPreloadingTooltips('sm2-tooltip')) return
+            if (canPreloadTooltips('sm2-tooltip')) {
+                /* Lazy preload all tooltips of same class when one is triggered. */
+                /* TODO: make preload-groups and only preload tooltips of the same preload-group instead all tooltips of same class */
+                preloadTooltips('sm2-tooltip', element)
+            }
+        }
     }
 ]
 
@@ -83,54 +79,117 @@ var nextFrame = window.requestAnimationFrame ||
     window.msRequestAnimationFrame ||
     function(callback) {  window.setTimeout(callback, 1000 / 60) }
 
-function doPreloadTooltips(tooltips) {
-    /* I really wish there was a better way to preload tooltips than this mouseover/mouseout hack */
-    var $wrapper = $('#tooltip-wrapper')
-    var wrapperOldVisibility = $wrapper.css('visibility')
+function doPreloadTooltips(tooltips, callback) {
+    /* I really wish there was a better way to preload tooltips than this mouseover/mouseout hack,
+       but dev:Tooltips.js doesn't expose any functions to do this. */
+    var $wrapper = $('#tooltip-wrapper')    
     var wrapperWasShown = !$wrapper.is(':hidden')
-    $wrapper.css('visibility', 'hidden') // Ensure none of the tooltips shows while preloading.
     
+    var $shownTooltips = $wrapper.find('.main-tooltip')
+
     var $tooltips = $(tooltips)
     $tooltips.trigger('mouseover')
-
-    // tooltip's mouseover handler calls $wrapper.show(), so ensure it's hidden.
-    $wrapper.hide()
+    /* Move all preloaded tooltips to storage */
+    $wrapper.find('.main-tooltip').not($shownTooltips).appendTo('#tooltip-storage')
     
-    // For the mouseover event to trigger we need to wait a frame before triggering mouseout
-    nextFrame(function() {
+    /* For the mouseover event to trigger we need to wait a frame before triggering mouseout */
+    nextFrame(function () {
+        /* Shown tooltips might have changed since previous frame */
+        $shownTooltips = $wrapper.find('.main-tooltip')
+        
         $tooltips.trigger('mouseout')
         
-        if ($wrapper.css('visibility') == 'hidden') {
-            // Undo visibility:hidden if it's still hidden
-        	$wrapper.css('visibility', wrapperOldVisibility)
-        }
+        /* dev:Tooltips.js's mouseout event handler moves all tooltips in the wrapper to storage and hides
+        the wrapper, so make sure previously shown tooltips are back the wrapper and that the wrapper is shown. */
+        $wrapper.prepend($shownTooltips)
         if (wrapperWasShown) {
-            // Show tooltip wrapper if it was shown before preloading
             $wrapper.show()
         }
+        
+        if (typeof callback === 'function') callback()
     })
 }
 
-function preloadTooltips(tooltipClass) {
+var preloadTooltipState = {
+    /* Value meaning:
+        undefined = not previously preloaded
+        true = currently being preloaded
+        false = preloaded in the past
+    */
+}
+function isCurrentlyPreloadingTooltips(tooltipClass) {
+    return preloadTooltipState[tooltipClass] === true
+}
+function canPreloadTooltips(tooltipClass) {
+    return preloadTooltipState[tooltipClass] === undefined
+}
+
+function preloadTooltips(tooltipClass, excludedTooltips, callback) {
+    preloadTooltipState[tooltipClass] = true
+    if (!(excludedTooltips instanceof Array)) excludedTooltips = [excludedTooltips]
+    
     var preloadTooltips = []
     var tooltips = document.getElementsByClassName(tooltipClass)
     for (var i = 0, l = tooltips.length; i < l; i++) {
         var tooltip = tooltips[i]
+        if (excludedTooltips.indexOf(tooltip) >= 0) {
+            console.log('[' + tooltipClass +' preload] Skipping preloading toolip:', tooltip)
+            continue
+        }
         var $tooltip = $(tooltip)
-        if (yesno($tooltip.data('preload'))) {
+        // Only preload if it's enabled and hasn't already been loaded.
+        if (yesno($tooltip.data('preload')) && !$tooltip.data('tooltip-id-' + tooltipClass)) {
             preloadTooltips.push(tooltip)
         }
     }
-    if (preloadTooltips.length) {
-    	console.log('[tooltip preload] Tooltips marked for preloading:', preloadTooltips)
-        doPreloadTooltips(preloadTooltips)
+    var numPreloadTooltips = preloadTooltips.length
+    if (numPreloadTooltips) {
+        console.log('[' + tooltipClass +' preload] Tooltips marked for preloading:', preloadTooltips)
+        var preloadComplete = function() {
+            preloadTooltipState[tooltipClass] = false
+        	if (typeof callback === 'function') callback()
+        }
+        
+        if (typeof doPreloadTooltipsBulk === 'function' && doPreloadTooltipsBulk.isReady()) {
+        	/* If we have doPreloadTooltipsBulk.js available via ImportJS and it's ready, then use it */
+	        console.log('[' + tooltipClass +' preload] Bulk preloading tooltips...')
+	        
+        	doPreloadTooltipsBulk(tooltipClass, preloadTooltips, function() {
+            	console.log('[' + tooltipClass +' preload] Bulk preloading tooltips complete!')
+        		preloadComplete()
+        	})
+        }
+        else {
+	        /* Gradually preload the tooltips with a small delay between each preload */
+	        console.log('[' + tooltipClass +' preload] Gradually preloading tooltips...')
+	        
+	        var i = 0
+	        var lastIndex = numPreloadTooltips - 1
+	        var preloadNextTooltip = function () {
+	            if (i > lastIndex) return
+	            if (i === lastIndex) {
+	                doPreloadTooltips(preloadTooltips[i], function() {
+		            	console.log('[' + tooltipClass +' preload] Gradually preloading tooltips complete!')
+		        		preloadComplete()
+		        	})
+	            }
+	            else {
+	                doPreloadTooltips(preloadTooltips[i])
+	                i++
+	                setTimeout(preloadNextTooltip, 1000 / 10)
+	            }
+	        }
+	        preloadNextTooltip()
+        } 
     }
 }
 
 function onTooltipsReady(callback) {
-    /* Wait until #tooltip-wrapper exists inside document body and then calls callback on next frame */
+    /* Wait until #tooltip-wrapper exists inside document body and then calls callback on next frame. */
+    /* The callback call on next frame is to make sure we're not racing against dev:Tooltips.js's init. */
     if (document.getElementById('tooltip-wrapper')) {
-        console.log('tooltips are now ready!')
+        console.log('Tooltips are now ready!')
+        if (typeof callback !== 'function') return
         nextFrame(callback)
     }
     else {
@@ -142,7 +201,8 @@ function onTooltipsReady(callback) {
                     for (var j = 0, numNodes = addedNodes.length; j < numNodes; j++) {
                         if (addedNodes[j].id === 'tooltip-wrapper') {
                             observer.disconnect()
-                            console.log('tooltips are now ready!')
+                            console.log('Tooltips are now ready!')
+                            if (typeof callback !== 'function') return
                             nextFrame(callback)
                             return
                         }
@@ -160,8 +220,11 @@ function onTooltipsReady(callback) {
             var interval = setInterval(function () {
                 if (document.getElementById('tooltip-wrapper')) {
                     clearInterval(interval)
-                    console.log('tooltips are now ready!')
-                    callback() // Since we're using an interval we don't need to wait until next frame
+                    console.log('Tooltips are now ready!')
+                    if (typeof callback !== 'function') return
+                    /* Since we're using an interval we don't really need to wait until next frame, because
+                       we're already delayed at detecting the wrapper. But do it anyway for consistency. */
+                    nextFrame(callback)
                 }
             }, 1000 / 20)
         }
@@ -170,9 +233,13 @@ function onTooltipsReady(callback) {
 
 function init() {
     migrateTooltips('sm2-tooltip')
-    onTooltipsReady(function() {
-        preloadTooltips('sm2-tooltip')
-    })
+    if (typeof doPreloadTooltipsBulk === 'function') {
+    	/* If we have doPreloadTooltipsBulk.js available via ImportJS, then initialize it */
+    	doPreloadTooltipsBulk.init()
+    }
+    // onTooltipsReady(function() {
+    //     preloadTooltips('sm2-tooltip')
+    // })
 }
 
 $(init) // run init on DOM ready

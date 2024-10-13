@@ -104,3 +104,16 @@ mw.hook('dev.i18n').add(function (i18n) {
     });
 });
 importArticle({ type: 'script', article: 'u:dev:MediaWiki:I18n-js/code.js' });
+
+/* Cosmetically remove Alida's bot tag */
+var alidaLoadInterval = setInterval(function() {
+  if (mw.config.get('wgPageName') !== 'User:Nerdfightergirl') { clearInterval(alidaLoadInterval); return; }
+
+  var userTags = document.querySelectorAll('span.user-identity-header__tag');
+  if (userTags) {
+    for (var index = 0; index < userTags.length; index++) {
+      if (userTags[index].innerText === "Bot") userTags[index].remove();
+    }
+    clearInterval(alidaLoadInterval);
+  }
+}, 1000);

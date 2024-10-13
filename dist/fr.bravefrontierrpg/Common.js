@@ -1,45 +1,27 @@
-/*// Scripts which are imported via [[MediaWiki:ImportJS]]
-zh.pad.wikia.com:MediaWiki:CountDown.js
-dev:Tooltips.js
-dev:OggPlayer.js
-dev:YoutubePlayer/code.js
-dev:DiscordIntegrator/code.js
-dev:WikiaNotification/code.js
-dev:PurgeButton/code.js
-dev:CommentGuidelines/code.js
+// TODO: split into multiple imported files : Common.js/x.js, Common.js/y.js ...
+// ex : https://leagueoflegends.fandom.com/wiki/MediaWiki:ImportJS
 
-MediaWiki:Dev.css
-zh.pad.wikia.com:MediaWiki:CountDown.css
+//// Third party scripts are imported via [[MediaWiki:ImportJS]]
+// only third party CSS is loaded here
+/*importArticles({
+    type: "style",
+    articles: [
+    	'zh.pad.wikia.com:MediaWiki:CountDown.css',
+	]
+});*/
 //*/
+
+// https://community.fandom.com/wiki/User_blog:Sammylau/Adding_a_Fancy_Countdown
+importArticles({
+	type: "script",
+	articles: ["u:zh.pad:MediaWiki:CountDown.js"]
+}, {
+	type: "style",
+	articles: ["u:zh.pad:MediaWiki:CountDown.css"]
+});
 
 API_URL = '/fr/api.php'
 WIKI_URL = '/fr/wiki/'
-
-/*// Fonction pour exécuter d'autre script après chargement de la page. */
-$(function(){
-    /*importArticles({
-        type: "script",
-        articles: [
-	        'u:zh.pad.wikia.com:MediaWiki:CountDown.js',
-	        'u:dev:Tooltips.js',
-	        'u:dev:OggPlayer.js',
-	        'u:dev:YoutubePlayer/code.js',
-	        'u:dev:DiscordIntegrator/code.js',
-	        'u:dev:WikiaNotification/code.js',
-	        'u:dev:PurgeButton/code.js',
-	        'u:dev:CommentGuidelines/code.js',
-        ]
-    }, 
-    {
-        type: "style",
-        articles: [
-        	'MediaWiki:Dev.css',
-        	'u:zh.pad.wikia.com:MediaWiki:CountDown.css',
-    	]
-    });*/
-    initClock();
-});
-//*/
 
 /*// Grade des utilisateurs. */
 window.UserTagsJS = {
@@ -84,14 +66,6 @@ window.tooltips_list = [
         parse: '{'+'{Tooltip/Item|<#name#>}}',
     },
 ];
-
-
-importArticles({
-    type: "script",
-    articles: [
-        'dev:Tooltips.js',
-    ]
-})
 
 /* Configuration de l'extension AjaxRC.js */
 // https://dev.fandom.com/wiki/AjaxRC
@@ -150,7 +124,7 @@ function UserNameReplace($container) {
 
 
 // modules without dependencies
-PurgeButtonText = 'Actualiser';
+window.PurgeButtonText = 'Actualiser';
 
 //// Sidebar
 function Sidebar () {
@@ -483,18 +457,6 @@ function addHook(elem) {
 // functions to launch on startup
 $(function(){
     Sidebar();
+    initClock();
     mw.hook('wikipage.content').add(addHook);
 });
-
-/*
-//Mise en place d'un décompte pour les évent a durée
-//countdown
-function countdown(time){
-    if(time <= 0){
-        setTimeout(function(){
-            time = time-1; 
-            }, 1000)
-        countdown(time)
-    }
-    
-}*/

@@ -114,6 +114,12 @@ window.setCookie = function(c_name, value, expiredays) {
 								// Bind submit to verify function
 								$description.closest('form').submit(this.verifySummary);
 					
+								// Bind change event to origineBox to update quoiBox options
+								$('#origineBox').on('change', this.updateOrigineOptions.bind(this));
+
+								// Initialize Quoi options based on selected Œuvres
+								this.updateUniversOptions();
+					
 								// Autocomplete links
 								$.getScript(mw.util.wikiScript('load') + 
 									'?debug=false&lang=en&mode=articles&skin=fandomdesktop&missingCallback=importArticleMissing&articles=u%3Acamtest%3AMediaWiki%3ATextareaHelper.js%7Cu%3Adev%3AMediaWiki%3AColors%2Fcode.js%7Cu%3Adev%3AMediaWiki%3AMiniComplete%2Fcode.js&only=scripts', function () {
@@ -135,6 +141,25 @@ window.setCookie = function(c_name, value, expiredays) {
 						}
 					}
 				}
+			},
+			updateOrigineOptions: function() {
+				var selectedOrigine = $('#origineBox').val();
+				var $typeBox = $('#typeBox');
+				
+				var typeoptions = '';
+				
+				if (selectedOrigine === 'Œuvre'){
+					typeoptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
+				} else {
+					typeoptions += '<option value="">-</option>';
+					typeoptions += '<option value="Image officielle">Image officielle</option>';
+					typeoptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
+					typeoptions += '<option value="Fichier du jeu">Fichier du jeu</option>';
+					typeoptions += '<option value="Image du monde réel">Image du monde réel</option>';
+					typeoptions += '<option value="Concept art">Concept art</option>';
+				}
+				
+				$typeBox.html(typeoptions);
 			},
 			verifySummary: function () {
 				var $description = $('#wpUploadDescription');

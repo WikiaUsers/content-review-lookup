@@ -33,6 +33,7 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'YataDev': ['cool', 'formerowner'],
 	'Sanjay2133': ['wikimanager', 'creator', 'cool'],
+	'Astrominal': ['wikimanager'],
 	'Oh Noez! Oh Noez!': ['forumsmanager'],
 	'SodafizzIGuess': ['former'],
 	'IdklolXDXDXD': ['former'],

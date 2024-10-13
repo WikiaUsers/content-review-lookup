@@ -667,10 +667,22 @@ UserTagsJS.modules.explode = {
 //――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――//
 
 
+mw.loader.using('mediawiki.util', function() {
+    var word = 'hello';
+    var replacement = '<span class="theword">' + word + '</span>';
+    
+    // Create a case-insensitive regular expression to match the word
+    var re = new RegExp(word, 'ig');
+    
+    // Replace the word in the page content
+    document.body.innerHTML = document.body.innerHTML.replace(re, replacement);
+});
+
+
 
 
 // Test
-document.addEventListener('DOMContentLoaded', function() {
+/*document.addEventListener('DOMContentLoaded', function() {
     // Get the table of contents element by its ID
     var tableOfContents = document.getElementById('toc');
 
@@ -688,4 +700,4 @@ document.addEventListener('DOMContentLoaded', function() {
         tableOfContents.style.paddingTop = paddingTop + 'px';
         tableOfContents.style.paddingBottom = paddingBottom + 'px';
     }
-});
+});*/

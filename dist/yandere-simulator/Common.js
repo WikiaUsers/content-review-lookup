@@ -94,6 +94,7 @@ UserTagsJS.modules.custom = {
 	'Vividstardust': ['helpers', 'deputy'],
 	'Tuxedoshlyukha': ['helpers', 'head'],
 	'AmaiOdayakaYansim123': ['helpers'],
+	'Slimytent12': ['helpers'],
 	'VACANT': ['intern'],
 	
 	//Former Staff

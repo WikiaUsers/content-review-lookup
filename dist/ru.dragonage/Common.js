@@ -86,22 +86,6 @@ if (typeof WikiaScriptLoader === 'undefined') {
 	window.wsl = new WikiaScriptLoader;
 }
 
-// prototype functions
-function $A(a) {
-	var r = [];
-	for (var i = 0, len = a.length; i < len; ++i) r.push(a[i]);
-	return r;
-}
-
-Function.prototype.bind = function() {
-	var __method = this,
-		args = $A(arguments),
-		object = args.shift();
-	return function() {
-		return __method.apply(object, args.concat($A(arguments)));
-	};
-};
-
 /* Test if an element has a certain class **************************************
  * Description: Uses regular expressions and caching for better performance.
  * Maintainers: User:Mike Dillon, User:R. Koot, User:SG

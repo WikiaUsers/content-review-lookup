@@ -1,7 +1,12 @@
 /**
  * 所有用戶在加載任何頁面時，這裡的JavaScript都會加載
  */
-
+window.wgUXS = function (wg, hans, hant, cn, tw, hk, sg, zh, mo, my) {
+    var ret = {
+        'zh-hans': hans || cn || sg || my,
+        'zh-hant': hant || tw || hk || mo,
+    };
+   
 mw.log.deprecate(window, 'JSConfig', {});
 
 mw.loader.using(['ext.gadget.site-lib', 'mediawiki.util']).then(function() {

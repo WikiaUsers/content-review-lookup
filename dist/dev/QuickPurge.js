@@ -25,7 +25,7 @@
 			var link = new mw.Uri(location.href);
 			
 			if (mw.config.values.wgNamespaceNumber === -1) 
-				if (page.split("/").length > 1) page = page.split("/").slice(1).join("/")
+				if (page.split("/").length > 1) page = page.split("/").slice(1).join("/");
 				else if (link.query.page) page = link.query.page;
 			
 			purgePage(page);
@@ -41,15 +41,15 @@
 		if (purging) return;
 
 		purging = true;
-		var link = new mw.Uri(decodeURIComponent(e.target.href));
+		var link = new mw.Uri(e.target.href);
 		var page;
 		// Support all formats described at: https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Short_URL
 		if (link.path == indexPath) {
-			page = link.query.title;
+			page = decodeURIComponent(link.query.title);
 		} else if (link.path.startsWith(indexPath + '/')) {
-			page = link.path.substring(indexPath.length + 1);
+			page = decodeURIComponent(link.path).substring(indexPath.length + 1);
 		} else {
-			page = link.path.replace(mw.config.values.wgArticlePath.replace(/\$1/, ''), '');
+			page = decodeURIComponent(link.path).replace(mw.config.values.wgArticlePath.replace(/\$1/, ''), '');
 			var title = new mw.Title(page);
 
 			// If title is `Special:Purge` remove it from the title

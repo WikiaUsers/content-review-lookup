@@ -19,10 +19,9 @@ importArticles({
         "w:c:dev:MediaWiki:Countdown/code.js"
     ]
 });
- 
+
 // Tooltips.
 window.tooltips_config = {
-    events: [],
     noCSS: true,
     offsetX: 8,
     offsetY: 8,

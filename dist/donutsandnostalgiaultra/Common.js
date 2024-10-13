@@ -313,7 +313,7 @@ $(function() {
 // THE BELOW CODE randomly changes text above top navigation from "Donuts Wiki" to one from the list
 //////////////////////////////////////////////////////////////////// */
 
-var wiki_names = ["Ad Infinitium!", "Days Gone Bye.", "Excelsior!", "Hooligans, GO!", "Jay Dee's Donuts", "To Me, My X-Men!", "Don't Start Nothin'...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Invaders, Advance!", "I Am Iron Man", "I Am Groot", "Anddddd WE'RE BACK!", "Be Greater", "Can the Tarantula Come out to Play?!", "Sweet Mary, Jesus, and Joseph!", "Sic Parvis Magna!", "The Bat or the Claws.", "The Best There Is...", "...Hope You Survive the Experience!", "And Woods Said Nothing.", "Whatta Revoltin' Development!", "I Am the Hell and the High Water.", "And There Came a Day Unlike Any Other...", "Thwip!", "It Belongs in A Museum!"];
+var wiki_names = ["Ad Infinitium!", "Days Gone Bye.", "Excelsior!", "Hooligans, GO!", "Jay Dee's Donuts", "To Me, My X-Men!", "Don't Start Nothin'...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Invaders, Advance!", "I Am Iron Man.", "And We're Back.", "Be Greater.", "Can the Tarantula Come out to Play?!", "Sweet Mary, Jesus, and Joseph!", "Sic Parvis Magna!", "The Bat or the Claws.","...Hope You Survive the Experience!", "And Woods Said Nothing.", "Whatta Revoltin' Development!", "I Am the Hell and the High Water.", "And There Came a Day Unlike Any Other...", "Thwip!", "It Belongs in A Museum!"];
 var wiki_name_number = -1;
 while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
   wiki_name_number = Math.random().toFixed(2) * 100;

@@ -2,8 +2,6 @@
 window.UserTagsJS = {
 	modules: {},
 	tags: {
-		'cpjstaff': { u:'CPJ Staff', order: -1/0 },
-		'wikifounder': { u:'Wiki Founder', order: (-1/0)+1 },
 		'topmonth': { u:'Top Monthly Editor', order: (-1/0)+2 },
 		bureaucrat: { order: 0 },
 		sysop: { order: 1 },
@@ -15,13 +13,9 @@ window.UserTagsJS = {
 	oasisPlaceBefore: ''
 };
 UserTagsJS.modules.custom = {
-	'AmmanCPJ': ['cpjstaff'],
-	'DropPT': ['cpjstaff'],
-	'Pifflez': ['cpjstaff'],
-	'Hermbeurg': ['wikifounder'],
 	'Tuna Takoyaki': ['topmonth'],
-	'Tenny407': ['trialmoderator'], // need to check if they're still here tbh
 };
+
 UserTagsJS.modules.mwGroups = ['content-moderator', 'threadmoderator'];
 UserTagsJS.modules.inactive = 90; // 90 days
 

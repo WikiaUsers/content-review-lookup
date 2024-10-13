@@ -37,6 +37,9 @@ $(function() {
 			// Get tokens
 			betterDiff.fetchTokens();
 			
+			// Load infobox styles for previews
+			mw.loader.load('ext.fandom.PortableInfoboxFandomDesktop.css');
+			
 			// Add CSS
 			mw.util.addCSS(
 				'.tpWrapper {'+
@@ -116,6 +119,12 @@ $(function() {
 			// Check we're in a diff page
 			else if (config.wgDiffNewId) {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
+			}
+			
+			// Check if there's any custom-made diff list
+			if (document.querySelector('.quickDiff-custom')) {
+				betterDiff.quickDiffLoad();
+				betterDiff.quickDiff();
 			}
 			
 			document.addEventListener('keydown', function(event) {
@@ -617,23 +626,45 @@ $(function() {
 					var diff = e.compare;
 					quickview.show();
 					quickview.setContent(
-						'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
-							'<colgroup>'+
-								'<col class="diff-marker">'+
-								'<col class="diff-content">'+
-								'<col class="diff-marker">'+
-								'<col class="diff-content">'+
-							'</colgroup>'+
-							'<tbody>'+
-								'<tr class="diff-title" lang="en">'+
-									generateHeader(diff)+
-								'</tr>'+
-								diff.body+
-							'</tbody>'+
-						'</table>'
+						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
+							'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
+								'<colgroup>'+
+									'<col class="diff-marker">'+
+									'<col class="diff-content">'+
+									'<col class="diff-marker">'+
+									'<col class="diff-content">'+
+								'</colgroup>'+
+								'<tbody>'+
+									'<tr class="diff-title" lang="en">'+
+										generateHeader(diff)+
+									'</tr>'+
+									diff.body+
+								'</tbody>'+
+							'</table>'+
+							'<hr />'+
+							'<h1>Preview</h1>'+
+							'<span class="wds-button quickDiff-preview">Click to render</span>'+
+						'</div></div>'
 					);
 					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
 						quickview.setTitle('Changes: '+diff.totitle);
+						$('#quickDiff-quickview .quickDiff-preview').on('click', function() {
+							$('#quickDiff-quickview .quickDiff-preview').replaceWith('<img class="quickDiff-preview" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" width="80px" style="vertical-align: baseline;" border="0" />');
+							api.get({
+								action:'parse',
+								oldid: diff.torevid,
+								preview: true,
+								usearticle: true,
+								disablelimitreport: true
+							}).then(function(render){
+								$('#quickDiff-quickview .quickDiff-preview').replaceWith(
+									(render.parse && render.parse.text && render.parse.text['*']) ? 
+										render.parse.text['*'] :
+										'<strong class="error">Failed to preload!</strong>'
+								);
+							});
+						});
+						$('#quickDiff-quickview table.diff').after(preview);
 					});
 					quickview.setTitle('Changes: '+diff.totitle);
 					if (can.patrol && tokens.patrol.length>2) {
@@ -828,7 +859,7 @@ $(function() {
 					link.setAttribute('data-target-page', 
 						diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title') ?
 							diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title').getAttribute('title') :
-							config.wgPageName
+							decodeURIComponent((new URL(href)).origin.replace(/^.*?\/wiki\//, '')).replace(/_/g, ' ')
 					);
 					link.innerHTML = 'view';
 					link.classList.add('quickDiff');
@@ -839,6 +870,8 @@ $(function() {
 						var span = document.createElement('span');
 						span.appendChild(link);
 						diff.parentElement.after(span);
+					} else if (diff.closest('.quickDiff-custom')){
+						diff.before('(', link, ') ');
 					} else {
 						diff.after(' | ', link);
 					}
@@ -847,7 +880,8 @@ $(function() {
 			var cond = 
 				'.mw-changeslist-diff:not(.quickDiffLoaded), '+
 				'.mw-changeslist-groupdiff:not(.quickDiffLoaded), '+
-				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)';
+				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded), '+
+				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)';
 			if (els) {
 				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
 				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target

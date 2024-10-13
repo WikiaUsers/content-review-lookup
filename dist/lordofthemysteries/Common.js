@@ -22,7 +22,7 @@ window.tooltips_list = [
         parse: '{' + '{Template:Pathways/data|1=<#pathway#>}}'
     }, {
         classname: 'ingredient-tooltip',
-        parse: '{' + '{Template:Ingredient/data|1=<#name#>}}'
+        parse: '{' + '{Template:Ingr/data|1=<#name#>|2=<#text#>}}'
     }
 ],
 

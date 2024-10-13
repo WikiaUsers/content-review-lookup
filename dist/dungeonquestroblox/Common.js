@@ -201,9 +201,9 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
     var abilities = [
 		// YP
-	{ name: "Rift Beam (30 ticks)", multiplier: 165 / 30 },
 	{ name: "Spinning Blade Smash / Void Dragon", multiplier: 148 },
 	{ name: "Kunai Knives (3 ticks)", multiplier: 150 / 3 },
+	{ name: "Rift Beam (37 ticks)", multiplier: 203 / 37 },
 	{ name: "Triple Quake (3 ticks)", multiplier: 144 / 3 },
 	{ name: "Chain Storm (6 ticks)", multiplier: 147 / 6 },
 		// GS

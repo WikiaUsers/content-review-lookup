@@ -377,19 +377,6 @@ UserTagsJS.extensions.i18n = {
 			autoconfirmed: { u: '自動確認用戶', order: 0 },
 			'bot-global': { u: '全域機械人', order: 0 }
 		},
-		'zh-tw': {
-			inactive: { u: '休假中', order: 1/0 }, // End
-			nonuser: { u: '尚未編輯', order: 1e101 },
-			newuser: { u: '新編輯者', order: 1e101 },
-			notautoconfirmed: { u: '新帳號', order: 1e101 },
-			sysop: { u: '管理員', order: 0 },
-			checkuser: { u: '使用者查核', order: 0 },
-			patroller: { u: '巡查員', order: 0 },
-			autopatrolled: { u: '自動巡查', order: 0 },
-			rollback: { u: '回退員', order: 0 },
-			autoconfirmed: { u: '自動確認使用者', order: 0 },
-			'bot-global': { u: '全域機器人', order: 0 }
-		},
 	},
 	start: function(config, username, logger, lang) {
 		"use strict";

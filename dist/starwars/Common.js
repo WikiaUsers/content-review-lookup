@@ -736,6 +736,15 @@ function disableOldForumEdit() {
 }
 $( disableOldForumEdit );
 
+$( function() {
+	if( !$( '#mw-pages a' ).length ) {
+		return;
+	}
+	$('#mw-pages > a').each( function () {
+		$(this).attr('href', $(this).attr('href').replace('#mw-pages', ''));
+	} );
+})
+
 /**
  * Show/hide for media timeline -- Grunny
  **/
