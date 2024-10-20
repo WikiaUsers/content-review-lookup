@@ -113,7 +113,7 @@
 	if (typeof window.LoopPreviewOpts !== 'object')
 		window.LoopPreviewOpts = {};
 	const opts = {
-		mode: 'hover',
+		mode: 'autoplay',
 	};
 	Object.assign(opts, window.LoopPreviewOpts);
 	
@@ -247,4 +247,7 @@
 		}
 	}
 	mw.hook('wikipage.content').add(init);
+	mw.hook('dev.mapsExtended').add(function(mapsExtended) {
+		mapsExtended.events.onPopupCreated.subscribe(init);
+	});
 })(window);

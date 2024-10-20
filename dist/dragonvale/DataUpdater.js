@@ -1,127 +1,6 @@
 ;
 $(document).ready(function () {
-    function generateModuleInvocation(moduleName, functionName, unnamedArgs, namedArgs) {
-        unnamedArgs = unnamedArgs || [];
-        namedArgs = namedArgs || {};
-
-        var unnamedArgsString = unnamedArgs.map(function (arg) {
-            return arg || '';
-        }).join('|');
-
-        var namedArgsString = Object.keys(namedArgs).map(function (key) {
-            return key + '=' + (namedArgs[key] || '');
-        }).join('|');
-
-        var luaInvocation = '{{#invoke:' + moduleName + '|' + functionName +
-            (unnamedArgsString ? '|' + unnamedArgsString : '') +
-            (namedArgsString ? '|' + namedArgsString : '') + '}}';
-
-        return luaInvocation;
-    }
-
-    function invokeModule(invocation, successCallback, errorCallback) {
-        $.ajax({
-            url: mw.util.wikiScript('api'),
-            data: {
-                action: 'parse',
-                format: 'json',
-                text: invocation,
-                prop: 'text'
-            },
-            dataType: 'json',
-            success: successCallback,
-            error: errorCallback
-        });
-    }
-
-    function updateModuleInvocation(module, functionName, unnamedArgs, namedArgs, callback) {
-        var invocation = generateModuleInvocation(module, functionName, unnamedArgs, namedArgs);
-
-        invokeModule(invocation,
-            function (data) {
-                callback(data.parse.text['*']);
-            },
-            function () {
-                console.error('Failed to update invocation.');
-            }
-        );
-    }
-
-    function render_wikitext(html, callback) {
-        $.ajax({
-            url: mw.util.wikiScript('api'),
-            method: 'POST',
-            data: {
-                action: 'parse',
-                text: html,
-                format: 'json',
-                contentmodel: 'wikitext',
-                formatversion: '2',
-                prop: "text"
-            },
-            dataType: 'json',
-            success: function (response) {
-                if (response.parse && response.parse.text) {
-                    var text = response.parse.text;
-                    callback(text);
-                } else {
-                    console.error('Failed to parse content:', response);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('AJAX error:', status, error);
-            }
-        });
-    }
-
-    function loadJsonData(api, pageTitle) {
-        return new Promise(function (resolve, reject) {
-            api.get({
-                action: "query",
-                format: "json",
-                prop: "revisions",
-                titles: pageTitle,
-                rvprop: "content",
-                rvslots: "main"
-            }).done(function (data) {
-                var pages = data.query.pages;
-                var pageId = Object.keys(pages)[0];
-
-                if (pageId === "-1") {
-                    console.info('Page not found');
-                    return;
-                }
-
-                var content = pages[pageId].revisions[0].slots.main['*'];
-
-                try {
-                    var jsonData = JSON.parse(content);
-                    resolve(jsonData);
-                } catch (e) {
-                    reject('Error parsing JSON:', e);
-                }
-            }).fail(function (error) {
-                reject('API request failed:', error);
-            });
-        });
-    }
-
-    function initializeWhenDivIsReady(id, callback) {
-        var observer = new MutationObserver(function (mutations, observerInstance) {
-
-            var $element = document.getElementById(id);
-            if ($element) {
-                observerInstance.disconnect();
-
-                callback($element);
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    }
+ 
 
     function makeTip(text, tip) {
         var $span = $('<span>', {
@@ -308,7 +187,7 @@ $(document).ready(function () {
                     name: fieldName,
                     required: isRequired
                 }).text(defaultValue || '');
-            } else if (fieldType === 'park-level' || fieldType === 'number') {
+            } else if (fieldType === 'number' || fieldType === 'park-level') {
                 var minValue = null;
                 var maxValue = null;
 
@@ -365,7 +244,7 @@ $(document).ready(function () {
                 $label = $('<div>').append($label).append($durationDiv);
 
                 $input = $durationDiv;
-            } else if (fieldType === 'dropdown' || fieldType === 'rarity' || fieldType === 'currency') {
+            } else if (fieldType === 'dropdown' || fieldType === 'rarity' || fieldType === 'currency' || fieldType === 'weather') {
                 if (fieldType === 'rarity') {
                     var any = !field.options || field.options.length < 1 || field.options.includes("all");
                     if (any) {
@@ -373,6 +252,13 @@ $(document).ready(function () {
                     }
 
                     // todo add auto determine box
+                }
+
+                if (fieldType === 'weather') {
+                    var any = !field.options || field.options.length < 1 || field.options.includes("all");
+                    if (any) {
+                        field.options = game.weather;
+                    }
                 }
 
                 if (fieldType === 'currency') {
@@ -408,6 +294,20 @@ $(document).ready(function () {
                 }
 
                 $input = $('<select>', { id: elementId, name: fieldName });
+
+                if (field.selected !== undefined) {
+                    var index = parseInt(field.selected, 10);
+                    if (index === -1) {
+                        $input.append($('<option>', {
+                            value: 'default',
+                            text: 'Select a value',
+                            style: "display:none;"
+                        }));
+                    } else {
+                        //$input.prop("selectedIndex", index); // todo not yet supported
+                    }
+                }
+
                 field.options.forEach(function (option) {
                     var $option = $('<option>', {
                         value: option,
@@ -416,6 +316,7 @@ $(document).ready(function () {
                     });
                     $input.append($option);
                 });
+
             } else if (fieldType === 'multiselect') {
                 var $multiSelectDiv = $('<div>').attr({
                     'data-type': 'multi-select',
@@ -469,6 +370,7 @@ $(document).ready(function () {
                     'data-type': 'multi-select',
                     class: 'multi-select elements',
                     style: 'user-select:none;',
+                    'data-imagetype': field.imageType || 'icon',
                     id: elementId,
                     name: fieldName
                 });
@@ -639,6 +541,57 @@ $(document).ready(function () {
                 } else {
                     console.log("Must load dragons");
                 }
+            }
+            else if (fieldType === 'rates') {
+                var $ratesDiv = $('<div>', { 'data-type': 'rates', id: elementId });
+                var $ratesRow = $('<div>', { class: 'rates-row' });
+
+                var has_default = defaultValue && Array.isArray(defaultValue);
+
+                var maxLevel = parseInt(game.maxDragonLevel, 10)
+                for (var i = 0; i < maxLevel; ++i) {
+                    var $rateInput = $('<input>', {
+                        type: 'text',
+
+                        value: has_default ? defaultValue[i] : '',
+                        min: minValue,
+                        max: maxValue,
+
+                        required: isRequired,
+                        onkeydown: "return event.key >= '0' && event.key <= '9' || event.key === 'Backspace' || event.key === 'Tab'",
+
+                        maxlength: 4,
+                        name: key + '_rate_' + (i + 1),
+                        class: 'rate-input',
+                        'data-index': i,
+                        autocomplete: 'off'
+                    });
+
+                    $ratesRow.append($rateInput, $('<div>', { class: 'rate-label' }).text(i + 1));
+                }
+
+                $ratesDiv.append($ratesRow);
+                $label = $('<div>').append($label).append($ratesDiv);
+                $input = $ratesDiv;
+
+                $(document).on('focus', 'input.rate-input', function () {
+                    $(this).select();
+                });
+
+                $(document).on('input', 'input.rate-input', function () {
+                    var $this = $(this);
+
+                    clearTimeout($this.data('typingTimeout'));
+
+                    $this.data('typingTimeout', setTimeout(function () {
+                        var nextIndex = $this.data('index') + 1;
+                        var $nextInput = $this.closest('.rates-row').find('input[data-index="' + nextIndex + '"]');
+
+                        if ($nextInput.length) {
+                            $nextInput.focus();
+                        }
+                    }, 400));
+                });
             } else {
                 $fieldBlock.append(makeText("Unable to find field type."));
                 $formFields.append($fieldBlock);
@@ -672,7 +625,7 @@ $(document).ready(function () {
               'data-expandtext': "Show Advanced" 
             }).text("{adv}");
 
-        render_wikitext($toggleAdv.prop('outerHTML'), function(text) {
+        DataHelpers.render_wikitext($toggleAdv.prop('outerHTML')).then(function(text) {
             text = text.replace("{adv}", $formFieldsAdv.prop('outerHTML'));
 
             var $result = $('<div>');
@@ -693,8 +646,11 @@ $(document).ready(function () {
         if ($form_container === null) return;
 
         var dragonEdit = null;
-        if ($form_container.is('[data-edit]')) {
-            dragonEdit = $form_container.data('edit');
+        if ($form_container.is('[data-page]')) {
+            dragonEdit = $form_container.data('page');
+
+            var index = dragonEdit.indexOf(" Dragon");
+            dragonEdit = index !== -1 ? dragonEdit.substring(0, index) : dragonEdit;
         }
 
         var $form = $('<form>', { id: 'dragon-form', class:'data-form' });
@@ -707,7 +663,7 @@ $(document).ready(function () {
 
         var allData = {}
         $.each(formConfig, function (key, config) {
-            var promise = loadJsonData(api, 'Data:' + key + '.json').then(function (results) {
+            var promise = DataHelpers.loadJsonData(api, 'Data:' + key + '.json').then(function (results) {
                 var data = null;
                 var jsonKey = key.charAt(0).toLowerCase() + key.slice(1);
                 if (results.hasOwnProperty(jsonKey)) {
@@ -747,7 +703,7 @@ $(document).ready(function () {
             });
             tabberHtml += "</tabber>";
 
-            render_wikitext(tabberHtml, function(text) {
+            DataHelpers.render_wikitext(tabberHtml).then(function(text) {
                 $.each(subforms, function (key, $sb) {
                     var placeholder = new RegExp("\\*\\*" + key + "\\*\\*", "g");
                     text = text.replace(placeholder, $sb.prop('outerHTML'));
@@ -808,13 +764,12 @@ $(document).ready(function () {
                     releaseDateInput.val(formattedDate);
                 }
 
-                function updateFeedbackImages($multiSelectDiv, selectedParams) {
-                    updateModuleInvocation('DvWiki', 'Show', [], {
-                        type: "icon",
+                function updateFeedbackImages($multiSelectDiv, selectedParams, imageType) {
+                    DataHelpers.updateModuleInvocation('DvWiki', 'Show', [], {
+                        type: imageType,
                         elements: selectedParams,
                         size:"40px"
-
-                    }, function (data) {
+                    }).then(function (data) {
                         var feedbackContainerId = $multiSelectDiv.attr('id') + '-feedback';
                         $('#' + feedbackContainerId).html(data);
                     });
@@ -867,7 +822,7 @@ $(document).ready(function () {
                         }
 
                         if ($multiSelectDiv.hasClass('elements')) {
-                            updateFeedbackImages($multiSelectDiv, selectedOptions[subformId][key]);
+                            updateFeedbackImages($multiSelectDiv, selectedOptions[subformId][key], $multiSelectDiv.data('imagetype'));
                         }
                     });
 
@@ -975,9 +930,9 @@ $(document).ready(function () {
                             }
                         }
 
-                        console.log('detected change on', key, selectedOptions[subformId][key]);
+                       // console.log('detected change on', key, selectedOptions[subformId][key]);
                         if ($multiSelectDiv.hasClass('elements')) {
-                            updateFeedbackImages($multiSelectDiv, selectedOptions[subformId][key]);
+                            updateFeedbackImages($multiSelectDiv, selectedOptions[subformId][key], $multiSelectDiv.data('imagetype'));
                         }
                     });
                 });
@@ -1038,7 +993,21 @@ $(document).ready(function () {
                                     subformData[key] = $(this).find('input[type="checkbox"]:checked:not([id$="-all"])').map(function () {
                                         return $(this).val();
                                     }).get() || [];
-                                } else {
+                                }
+                                else if ($(this).is('div[data-type="rates"]')) {
+                                    var ratesArray = [];
+
+                                    $(this).find('input.rate-input').each(function () {
+                                        var rateValue = $(this).val().trim();
+
+                                        if (rateValue !== '' && !isNaN(rateValue)) {
+                                            ratesArray.push(parseInt(rateValue, 10));
+                                        }
+                                    });
+
+                                    subformData[key] = ratesArray;
+                                }
+                                else {
                                     subformData[key] = $(this).val();
                                 }
 
@@ -1081,7 +1050,7 @@ $(document).ready(function () {
 
                     var formResults = getFormResults();
 
-                    updateModuleInvocation('Dragonbox', 'dragonboxframe', [], formResults.Dragons, function (data) {
+                    DataHelpers.updateModuleInvocation('Dragonbox', 'dragonboxframe', [], formResults.Dragons).then(function (data) {
                         $('div#box-result').html(data + "<hr/>");
                     });
 
@@ -1107,7 +1076,8 @@ $(document).ready(function () {
                             title: 'Data:' + dataKey + '.json',
                             text: JSON.stringify(jsonData),
                             summary: 'Updating ' + dataKey + '.',
-                            format: 'json'
+                            format: 'json',
+                            bot: true
                         }).done(function (data) {
                             if (data.edit && data.edit.result === 'Success') {
                                 alert('Updated successfully!');
@@ -1128,14 +1098,14 @@ $(document).ready(function () {
         });
     }
 
-    initializeWhenDivIsReady('dragon-form-container', function () {
+    DataHelpers.initializeWhenSelectorReady('#dragon-form-container', function () {
         mw.loader.using('mediawiki.api', function () {
             var api = new mw.Api();
 
             mw.hook('wikipage.content').add(function () {
                 Promise.all([
-                    loadJsonData(api, 'Data:NewDragonConfig.json'),
-                    loadJsonData(api, 'Data:Game.json')
+                    DataHelpers.loadJsonData(api, 'Data:NewDragonConfig.json'),
+                    DataHelpers.loadJsonData(api, 'Data:Game.json')
                 ])
                     .then(function (results) {
                         var config = results[0];

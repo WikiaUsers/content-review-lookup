@@ -18,6 +18,10 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+// Thais Wolf Den changes with version 14.00.142f15
+'Rabid Wolf': '14.00.142f15',
+'Ragged Rabid Wolf': '14.00.142f15',
+'Trollwut': '14.00.142f15',
 // 
 'Rootthing Amber Shaper': '13.40.e15431',
 // Balancing Project Changes Part VI - 2024

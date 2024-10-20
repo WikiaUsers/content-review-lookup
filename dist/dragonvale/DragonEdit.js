@@ -1,49 +1,70 @@
 $(document).ready(function () {
     mw.loader.using('mediawiki.api', function () {
-        var api = new mw.Api();
-
         mw.hook('wikipage.content').add(function () {
-            const pageName = mw.config.get('wgPageName').replaceAll('_', ' ');;
+            var pageName = mw.config.get('wgPageName').replaceAll('_', ' ');
+            var namespaceNumber = mw.config.get('wgNamespaceNumber');
+            var action = mw.config.get('wgAction');
+            var contentModel = mw.config.get('wgPageContentModel');
+            var user = mw.config.get('wgUserName');
+            var userId = mw.config.get('wgUserId');
+            var userGroups = mw.config.get('wgUserGroups') || [];
 
-            function generatePage() {
-                var $articleText = $('.noarticletext'); $('#p-views').hide();
-
-                if ($articleText.length) {
-                    var index = pageName.indexOf(" Dragon");
-                    var dragonName = index !== -1 ? pageName.substring(0, index) : pageName;
-
-                    var $form = $('<div>', {
-                        id: 'dragon-form-container',
-                        'data-edit': dragonName
-                    });
-
-                    var $parent = $articleText.parent(); $parent.empty();
-                    $parent.append($form);
-                    $articleText.remove();
+            function generatePage($element, $views, callback) {
+                if ($element.length) {
+                    if ($views.length) { $views.hide();}
+                    callback($element);
                 }
             }
 
-            if (pageName.indexOf(" Dragon/Edit", pageName.length - " Dragon/Edit".length) !== -1) {
-                function initializeWhenDivIsReady(className, callback) {
-                    var observer = new MutationObserver(function (mutations, observerInstance) {
-                        var elements = document.getElementsByClassName(className);
+            var api = new mw.Api();
+            DataHelpers.loadJsonData(api, 'Data:' + 'PageViews' + '.json').then(function (config) {
+                config.forEach(function (page) {
+                    var matchesAll = page.enabled === undefined ? true : page.enabled;
 
-                        if (elements.length > 0) {
-                            observerInstance.disconnect();
-                            callback(elements[0]);
-                        }
-                    });
+                    if (page.matcher) {
+                        if (page.matcher.pagePattern)
+                            matchesAll = matchesAll && new RegExp(page.matcher.pagePattern).test(pageName);
 
-                    observer.observe(document.body, {
-                        childList: true,
-                        subtree: true
-                    });
-                }
+                        if (page.matcher.namespace)
+                            matchesAll = matchesAll && namespaceNumber === page.matcher.namespace;
 
-                initializeWhenDivIsReady('noarticletext', function () {
-                    generatePage();
+                        if (page.matcher.editMode)
+                            matchesAll = matchesAll && action === page.matcher.editMode;
+
+                        if (page.matcher.contentModel)
+                            matchesAll = matchesAll && contentModel === page.matcher.contentModel;
+
+                        if (page.matcher.whitelist)
+                            if(page.matcher.whitelist.includes(userId) || page.matcher.whitelist.includes(user))
+                                matchesAll = false;
+
+                        if (page.matcher.excludeAdmin === true)
+                            if (userGroups.includes('sysop'))
+                                matchesAll = false
+                    }
+
+                    if (user && matchesAll) {
+                        DataHelpers.initializeWhenSelectorReady(page.selector, function ($element, _) {
+                            setTimeout(function () {
+                                generatePage($element, page.views.length ? $(page.views.join(',')) : null, function ($element) {
+                                    var $newElement = $('<' + page.tag + '>', {
+                                        id: page.id,
+                                        class: page.class,
+                                        'data-page': pageName
+                                    });
+
+                                    var $parent = $element.parent();
+                                    $parent.empty().append($newElement);
+                                    $element.remove();
+                                });
+                            }, 100);
+                        });
+                    }
                 });
-            }
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
         });
     });
 });

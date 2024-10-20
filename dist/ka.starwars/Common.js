@@ -367,22 +367,3 @@ $(document).ready(function() {
 
     $(".explore-menu .wds-list").append('<li><a href="/wiki/Special:Random"><span>ნებისმიერი გვერდი</span></a></li>');
 });
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Refresh the page with the Ajax function (advanced)
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-window.ajaxIndicator = 'https://vignette.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif';
-window.ajaxPages = [ 'Special:RecentChanges', 'Special:Watchlist', 'Special:Log', 'Special:NewFiles', 'Special:AbuseLog' ];
-$.extend(true, window, {dev: {i18n: {overrides: {AjaxRC: {
-	'ajaxrc-refresh-text': 'ავტომატური განახლება',
-	'ajaxrc-refresh-hover': 'ავტომატური განახლების ჩართვა',
-}}}}});
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// END OF AJAX AUTO-REFRESH SETTINGS
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////

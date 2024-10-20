@@ -1,5 +1,6 @@
 (function() {
     var seasonImageRarityMap = {
+// Season 1
 "https://static.wikia.nocookie.net/character-rng/images/e/e8/Ron.png/revision/latest?cb=20240917214133": "season-common",
 "https://static.wikia.nocookie.net/character-rng/images/7/7a/Niro_Tsu.png/revision/latest?cb=20240917214717": "season-common", 
 "https://static.wikia.nocookie.net/character-rng/images/c/c5/Tracker.png/revision/latest?cb=20240917215040": "season-common",
@@ -33,13 +34,41 @@
 "https://static.wikia.nocookie.net/character-rng/images/1/19/Legendary_Key.png/revision/latest?cb=20240919032625": "season-legendary",
 "https://static.wikia.nocookie.net/character-rng/images/9/96/Season_1_Icon.png/revision/latest?cb=20240926164754": "season-mythical",
 "https://static.wikia.nocookie.net/character-rng/images/f/f1/Leaves.png/revision/latest?cb=20240919031610": "season-mythical",
-"https://static.wikia.nocookie.net/character-rng/images/d/da/Autumn_Chest.png/revision/latest?cb=20240928034122": "season-mythical"
+"https://static.wikia.nocookie.net/character-rng/images/d/da/Autumn_Chest.png/revision/latest?cb=20240928034122": "season-mythical",
+// Season 2
+"https://static.wikia.nocookie.net/character-rng/images/8/88/Korin.png/revision/latest?cb=20241019201110": "season-uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/c/cf/Kenzo.png/revision/latest?cb=20241019201110": "season-enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/c/c4/Jynt.png/revision/latest?cb=20241019201110": "season-exotic",
+"https://static.wikia.nocookie.net/character-rng/images/7/74/Fiora.png/revision/latest?cb=20241019201108": "season-mythical",
+"https://static.wikia.nocookie.net/character-rng/images/1/13/Maharos.png/revision/latest?cb=20241019201101": "season-legendary",
+"https://static.wikia.nocookie.net/character-rng/images/1/1f/Iron_Wolf.png/revision/latest?cb=20241019200818": "season-exotic",
+"https://static.wikia.nocookie.net/character-rng/images/4/48/Franco.png/revision/latest?cb=20241019200817": "season-uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/3/3e/Green_Giant.png/revision/latest?cb=20241019200817": "season-enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/3/37/Izan.png/revision/latest?cb=20241019200817": "season-rare",
+"https://static.wikia.nocookie.net/character-rng/images/7/76/Aegis_Unit_01.png/revision/latest?cb=20241019200815": "season-enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/2/22/Striker.png/revision/latest?cb=20241019200815": "season-epic",
+"https://static.wikia.nocookie.net/character-rng/images/9/96/Daniel_M..png/revision/latest?cb=20241019200815": "season-uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/3/37/Asumi.png/revision/latest?cb=20241019200815": "season-uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/a/aa/Thorst.png/revision/latest?cb=20241019200815": "season-legendary",
+"https://static.wikia.nocookie.net/character-rng/images/2/28/Vyra.png/revision/latest?cb=20241019200815": "season-rare",
+"https://static.wikia.nocookie.net/character-rng/images/2/28/Night_Prowler.png/revision/latest?cb=20241019200813": "season-rare",
+"https://static.wikia.nocookie.net/character-rng/images/9/92/Raymond.png/revision/latest?cb=20241019200813": "season-common",
+"https://static.wikia.nocookie.net/character-rng/images/e/e2/Paccino.png/revision/latest?cb=20241019200813": "season-epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/03/Oong.png/revision/latest?cb=20241019200813": "season-common",
+"https://static.wikia.nocookie.net/character-rng/images/3/3f/Red_Ninja.png/revision/latest?cb=20241019200813": "season-exotic",
+"https://static.wikia.nocookie.net/character-rng/images/c/c1/Ryner.png/revision/latest?cb=20241019200813": "season-common",
+"https://static.wikia.nocookie.net/character-rng/images/0/09/Shiro.png/revision/latest?cb=20241019200813": "season-common",
+"https://static.wikia.nocookie.net/character-rng/images/5/55/Natsumi.png/revision/latest?cb=20241019200813": "season-epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/0a/Majiro.png/revision/latest?cb=20241019200812": "season-epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/03/Metal_Man.png/revision/latest?cb=20241019205635": "season-legendary",
+"https://static.wikia.nocookie.net/character-rng/images/e/ea/Jack-O-Lanterns.png/revision/latest?cb=20241019210305": "season-mythical",
+"https://static.wikia.nocookie.net/character-rng/images/4/43/Halloween_Chest.png/revision/latest?cb=20241019213023": "season-mythical",
 };
 
     var seasonRandomImages = Object.keys(seasonImageRarityMap); // Get an array of image URLs
 
     // Starter image and rarity for seasons
-    var seasonStarterImage = "https://static.wikia.nocookie.net/character-rng/images/6/60/Season_Icon_Silhouette.png/revision/latest?cb=20240928041105";
+    var seasonStarterImage = "https://static.wikia.nocookie.net/character-rng/images/6/60/Season_Icon_Silhouette.png/revision/latest?cb=20241020002217";
     var seasonStarterRarity = "season-common"; // Default rarity for the starter image
 
     // Default link for season redirects

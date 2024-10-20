@@ -248,5 +248,5 @@ $(function () {
 	}
 	
 	var scoreElements = $('.contestant-score');
-	animateScoreOnVisible(scoreElements, 1000);
+	animateScoreOnVisible(scoreElements, 2000);
 });

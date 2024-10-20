@@ -86,6 +86,7 @@ function loadFunc() {
 
 	fillEditSummaries();
 	fillPreloads();
+	adjustPageCount();
 
 	substUsername();
 	substUsernameTOC();
@@ -316,8 +317,8 @@ function adjustPageCount() {
 	var countField = countFields[0];
 	
 	var currentCount = 0;
-	var x = Number(countField.textContent.replace(|, ''))
-	if (x !== NaN && x > 0) {
+	var x = Number(countField.textContent.replace(",", ""));
+	if (!isNaN(x) && x > 0) {
 		currentCount = x;
 	} else {
 		return
@@ -330,7 +331,7 @@ function adjustPageCount() {
 			action: 'query',
 			format: 'json',
 			prop: 'categoryinfo',
-			titles: 'Category:Disambiguation_pages_without_(disambiguation)_in_title|Category:Disambiguation_pages|Category:Canon_index_pages|Category:Legends_index_pages|Category:Non-canon_index_pages|Category:Real-world_index_pages',
+			titles: 'Category:Disambiguation_pages|Category:Canon_index_pages|Category:Legends_index_pages|Category:Non-canon_index_pages|Category:Real-world_index_pages',
 		},
 		dataType: 'jsonp',
 		jsonp: 'callback',
@@ -346,7 +347,7 @@ function adjustPageCount() {
 					continue;
 				}
 				currentCount -= info.pages; 
-				countField.text = currentCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				countField.textContent = currentCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 			}
 		}
 	})

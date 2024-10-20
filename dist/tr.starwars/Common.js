@@ -34,6 +34,7 @@ function loadFunc() {
 
 	fillEditSummaries();
 	fillPreloads();
+	adjustPageCount();
 
 	substUsername();
 	substUsernameTOC();

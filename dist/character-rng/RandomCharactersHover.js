@@ -1,5 +1,6 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 var imageRarityMap = {
+// Season 1 + others
 "https://static.wikia.nocookie.net/character-rng/images/f/f9/Akano.png/revision/latest?cb=20240917220114": "exotic", 
 "https://static.wikia.nocookie.net/character-rng/images/f/f0/Alfonso.png/revision/latest?cb=20240917220114": "exotic", 
 "https://static.wikia.nocookie.net/character-rng/images/d/d8/Arlan.png/revision/latest?cb=20240917220114": "common", 
@@ -100,8 +101,33 @@ var imageRarityMap = {
 "https://static.wikia.nocookie.net/character-rng/images/9/9f/Yona_Furjer.png/revision/latest?cb=20240917215040": "uncommon", 
 "https://static.wikia.nocookie.net/character-rng/images/2/2a/Yotus.png/revision/latest?cb=20240917215040": "epic",
 "https://static.wikia.nocookie.net/character-rng/images/3/34/Yuto.png/revision/latest?cb=20240917215040": "rare", 
-"https://static.wikia.nocookie.net/character-rng/images/2/20/Zoran.png/revision/latest?cb=20240917220114": "uncommon"
-
+"https://static.wikia.nocookie.net/character-rng/images/2/20/Zoran.png/revision/latest?cb=20240917220114": "uncommon",
+// Season 2
+"https://static.wikia.nocookie.net/character-rng/images/8/88/Korin.png/revision/latest?cb=20241019201110": "uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/c/cf/Kenzo.png/revision/latest?cb=20241019201110": "enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/c/c4/Jynt.png/revision/latest?cb=20241019201110": "exotic",
+"https://static.wikia.nocookie.net/character-rng/images/7/74/Fiora.png/revision/latest?cb=20241019201108": "mythical",
+"https://static.wikia.nocookie.net/character-rng/images/1/13/Maharos.png/revision/latest?cb=20241019201101": "legendary",
+"https://static.wikia.nocookie.net/character-rng/images/1/1f/Iron_Wolf.png/revision/latest?cb=20241019200818": "exotic",
+"https://static.wikia.nocookie.net/character-rng/images/4/48/Franco.png/revision/latest?cb=20241019200817": "uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/3/3e/Green_Giant.png/revision/latest?cb=20241019200817": "enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/3/37/Izan.png/revision/latest?cb=20241019200817": "rare",
+"https://static.wikia.nocookie.net/character-rng/images/7/76/Aegis_Unit_01.png/revision/latest?cb=20241019200815": "enchanted",
+"https://static.wikia.nocookie.net/character-rng/images/2/22/Striker.png/revision/latest?cb=20241019200815": "epic",
+"https://static.wikia.nocookie.net/character-rng/images/9/96/Daniel_M..png/revision/latest?cb=20241019200815": "uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/3/37/Asumi.png/revision/latest?cb=20241019200815": "uncommon",
+"https://static.wikia.nocookie.net/character-rng/images/a/aa/Thorst.png/revision/latest?cb=20241019200815": "legendary",
+"https://static.wikia.nocookie.net/character-rng/images/2/28/Vyra.png/revision/latest?cb=20241019200815": "rare",
+"https://static.wikia.nocookie.net/character-rng/images/2/28/Night_Prowler.png/revision/latest?cb=20241019200813": "rare",
+"https://static.wikia.nocookie.net/character-rng/images/9/92/Raymond.png/revision/latest?cb=20241019200813": "common",
+"https://static.wikia.nocookie.net/character-rng/images/e/e2/Paccino.png/revision/latest?cb=20241019200813": "epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/03/Oong.png/revision/latest?cb=20241019200813": "common",
+"https://static.wikia.nocookie.net/character-rng/images/3/3f/Red_Ninja.png/revision/latest?cb=20241019200813": "exotic",
+"https://static.wikia.nocookie.net/character-rng/images/c/c1/Ryner.png/revision/latest?cb=20241019200813": "common",
+"https://static.wikia.nocookie.net/character-rng/images/0/09/Shiro.png/revision/latest?cb=20241019200813": "common",
+"https://static.wikia.nocookie.net/character-rng/images/5/55/Natsumi.png/revision/latest?cb=20241019200813": "epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/0a/Majiro.png/revision/latest?cb=20241019200812": "epic",
+"https://static.wikia.nocookie.net/character-rng/images/0/03/Metal_Man.png/revision/latest?cb=20241019205635": "legendary"
 };
 
 var randomImages = Object.keys(imageRarityMap); // Get an array of image URLs

@@ -63,6 +63,8 @@ $(function() {
 		var hasOpened = false;
 		var container = $(".global-navigation__bottom .notifications");
 		
+		var processedIds = {};
+		
 		new MutationObserver(function() {
 			var content = $('[class*="NotificationsContent-module_tabber"]');
 			if (!hasOpened && content.length) {
@@ -75,7 +77,15 @@ $(function() {
 			
 			notifications.each(function(index, notification) {
 				notification = $(notification);
-				var tabData = translateCategory(notification.attr('data-tracking-label'));
+				
+				var categoryClass = notification.attr('data-tracking-label');
+				var timestamp = notification.find('time').attr('datetime');
+				
+				var notificationId = categoryClass + '_' + timestamp;
+				if (processedIds[notificationId] == true) return;
+				processedIds[notificationId] = true;
+				
+				var tabData = translateCategory(categoryClass);
 				if (tabData) {
 					var tab = $('.categorized-notifications-' + tabData.icon + ' ul');
 					if (tab.length) {

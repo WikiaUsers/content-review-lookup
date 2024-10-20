@@ -37,34 +37,44 @@ $(function() {
 			// Get tokens
 			betterDiff.fetchTokens();
 			
+			// Load infobox styles for previews
+			mw.loader.load('ext.fandom.PortableInfoboxFandomDesktop.css');
+			
 			// Add CSS
 			mw.util.addCSS(
-				'.targettedPatrolWrapper {'+
+				'.tpWrapper {'+
 					'display: flex;'+
 					'width: 100%;'+
 					'gap: 8px;'+
 					'flex-direction: column;'+
 				'}'+
-				'#targettedPatrolOpen {white-space: nowrap;}'+
-				'.targettedPatrolWrapper input {'+
+				'.tpWrapper > label {'+
+					'display: flex;'+
+					'gap: 5px;'+
+					'height: 30px;'+
+				'}'+
+				'.tpWrapper > label > :is(input, select) { flex-basis: 60%; }'+
+				'.tpWrapper > label > .tpLabel { flex-basis: 25%; }'+
+				'#tpOpen {white-space: nowrap;}'+
+				'.tpWrapper input {'+
 					'background: var(--theme-color-6);'+
 					'color: var(--theme-page-text-color);'+
 					'border: 0;'+
 					'border-radius: 4px;'+
 					'padding: 4px;'+
 				'}'+
-				'.targettedPatrolWrapper svg {'+
+				'.tpWrapper svg {'+
 					'vertical-align: middle;'+
 					'fill: var(--theme-link-color);'+
 				'}'+
-				'.targettedPatrolWrapper .bad-data, .targettedPatrolWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
-				'#targettedPatrolDetails {'+
+				'.tpWrapper .bad-data, .tpWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
+				'#tpDetails {'+
 					'margin-right: 3px;'+
 					'text-align: center;'+
 					'border-top: 3px solid var(--theme-link-color);'+
 					'margin-top: 5px;'+
 				'}'+
-				'#targettedPatrolNS, #targettedPatrolNS optgroup {'+
+				'#tpNS, #tpNS optgroup {'+
 					'color: var(--theme-page-text-color);'+
 					'border-radius: 5px;'+
 					'background: var(--theme-page-background-color);'+
@@ -109,6 +119,12 @@ $(function() {
 			// Check we're in a diff page
 			else if (config.wgDiffNewId) {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
+			}
+			
+			// Check if there's any custom-made diff list
+			if (document.querySelector('.quickDiff-custom')) {
+				betterDiff.quickDiffLoad();
+				betterDiff.quickDiff();
 			}
 			
 			document.addEventListener('keydown', function(event) {
@@ -323,7 +339,7 @@ $(function() {
 					table.querySelector('.diff-notice').parentNode.remove();
 					api.get(api_opt).then(function(data) {
 						table.innerHTML = '<colgroup><col class="diff-marker"><col class="diff-content"><col class="diff-marker"><col class="diff-content"></colgroup>' + table.innerHTML;
-						table.querySelector('tbody').innerHTML = table.querySelector('tbody').innerHTML + data.compare.body;
+						table.querySelector('tbody').innerHTML = table.querySelector('tbody').innerHTML + diff.body;
 					});
 				}
 			}
@@ -332,8 +348,8 @@ $(function() {
 		
 		// Mass patrol recent edits from specific user and/or namespace
 		targettedPatrol: function() {
-			if (!document.querySelector('#targettedPatrol') && can.patrol) {
-				var entry = $('<span class="wds-button" id="targettedPatrolOpen">Targetted Patrolling</span>');
+			if (!document.querySelector('#tp') && can.patrol) {
+				var entry = $('<span class="wds-button" id="tpOpen">Targetted Patrolling</span>');
 				$('.mw-rcfilters-ui-table-placeholder').append(entry);
 				// Build modal and start up listeners
 				mw.hook('dev.modal').add(function(Modal) {
@@ -343,30 +359,45 @@ $(function() {
 							id: 'tPatrol-patrol',
 							size: 'medium',
 							content: 
-								'<div class="targettedPatrolWrapper">'+
-									'<label for="targettedPatrolNS">Namespace: '+
-									'<select name="targettedPatrolNS" id="targettedPatrolNS">'+
-										'<optgroup label="Namespaces:">'+
-											'<option value="-99">All</option>'+
-											'<option value="0">Main</option>'+
-											'<option value="2">User</option>'+
-											'<option value="6">File</option>'+
-											'<option value="10">Template</option>'+
-											'<option value="14">Category</option>'+
-											'<option value="828">Module</option>'+
-										'</optgroup>'+
-									'</select></label>'+
-									'<label for="targettedPatrolUser">User: <input name="targettedPatrolUser" id="targettedPatrolUser" placeholder="User to mass patrol" /></label>'+
-									'<label for="targettedPatrolTimeStart">'+
-										'From date: <input name="targettedPatrolTimeStart" id="targettedPatrolTimeStart" placeholder="Date to start patrolling from" /> '+
+								'<div class="tpWrapper">'+
+									'<label for="tpNS">'+
+										'<span class="tpLabel">Namespace:</span>'+
+										'<select name="tpNS" id="tpNS">'+
+											'<optgroup label="Namespaces:">'+
+												'<option value="-99">All</option>'+
+												'<option value="0">Main</option>'+
+												'<option value="2">User</option>'+
+												'<option value="6">File</option>'+
+												'<option value="10">Template</option>'+
+												'<option value="14">Category</option>'+
+												'<option value="828">Module</option>'+
+											'</optgroup>'+
+										'</select>'+
+									'</label>'+
+									'<label for="tpUser">'+
+										'<span class="tpLabel">User:</span>'+
+										'<input name="tpUser" id="tpUser" placeholder="User to mass patrol" />'+
+									'</label>'+
+									'<label for="tpTitle">'+
+										'<span class="tpLabel">Title:</span>'+
+										'<input name="tpTitle" id="tpTitle" placeholder="RegExp for title(s) to keep" />'+
+									'</label>'+
+									'<label for="tpNotTitle">'+
+										'<span class="tpLabel">Not title:</span>'+
+										'<input name="tpNotTitle" id="tpNotTitle" placeholder="RegExp for title(s) to exclude" />'+
+									'</label>'+
+									'<label for="tpTimeStart">'+
+										'<span class="tpLabel">From date:</span>'+
+										'<input name="tpTimeStart" id="tpTimeStart" placeholder="Date to start patrolling from" /> '+
 										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
 									'</label>'+
-									'<label for="targettedPatrolTimeEnd">'+
-										'To date: <input name="targettedPatrolTimeEnd" id="targettedPatrolTimeEnd" placeholder="Date to end patrolling at" /> '+
+									'<label for="tpTimeEnd">'+
+										'<span class="tpLabel">To date:</span>'+
+										'<input name="tpTimeEnd" id="tpTimeEnd" placeholder="Date to end patrolling at" /> '+
 										'<span title="No date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 6.24 6.24"><path d="M3.12.285a2.835 2.835 0 1 0 0 5.67 2.835 2.835 0 0 0 0-5.67m.59 4.394q-.219.086-.349.131a1 1 0 0 1-.303.045q-.264 0-.413-.129-.146-.128-.146-.328 0-.077.011-.157t.035-.183l.183-.645q.024-.093.041-.175a.7.7 0 0 0 .016-.152q0-.124-.05-.171-.052-.049-.195-.049a.5.5 0 0 0-.145.022 2 2 0 0 0-.128.042l.049-.199q.179-.073.343-.125a1 1 0 0 1 .31-.052q.263 0 .406.127.142.127.143.33 0 .042-.009.148a1 1 0 0 1-.036.195l-.182.643q-.022.077-.04.176a1 1 0 0 0-.017.15q0 .128.057.175t.199.046q.066 0 .15-.023a1 1 0 0 0 .121-.041Zm-.033-2.611a.43.43 0 0 1-.306.118.44.44 0 0 1-.307-.118.37.37 0 0 1-.128-.286q0-.168.128-.288a.43.43 0 0 1 .307-.119q.179 0 .306.119.128.12.127.288 0 .168-.127.286"></path></svg></span>'+
 									'</label>'+
 								'</div>'+
-								'<div id="targettedPatrolDetails">Progress will be noted here!</div>',
+								'<div id="tpDetails">Progress will be noted here!</div>',
 							buttons: [
 								{
 									// Attempt patrol
@@ -381,42 +412,51 @@ $(function() {
 										action: 'query',
 										list: 'recentchanges',
 										rcshow: '!patrolled',
-										rcprop: 'ids',
+										rcprop: 'ids|title|redirect',
 										format: 'json',
 										formatversion: '2',
 										rclimit: 'max'
 									};
 									
 									// User filter
-									var user = document.querySelector('#targettedPatrolUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
+									var user = document.querySelector('#tpUser').value.replace(/^User:/, ''); // Username without the "User:" prefix
 									if (user.length>0) {api_sett.rcuser = user;}
 									
 									// Namespace filter
-									var ns = document.querySelector('#targettedPatrolNS').selectedOptions[0].value;
+									var ns = document.querySelector('#tpNS').selectedOptions[0].value;
 									if (ns !== "-99") {api_sett.rcnamespace = ns;}
 									
 									// Date-from filter
-									var df = document.querySelector('#targettedPatrolTimeStart').value.length>0 ?
-										new Date(document.querySelector('#targettedPatrolTimeStart').value) :
+									var df = document.querySelector('#tpTimeStart').value.length>0 ?
+										new Date(document.querySelector('#tpTimeStart').value) :
 										'';
 									if (!['Invalid Date', ''].includes(df)) {api_sett.rcstart = df.toISOString();}
 									
 									// Date-to filter
-									var dt = document.querySelector('#targettedPatrolTimeEnd').value.length>0 ?
-										new Date(document.querySelector('#targettedPatrolTimeEnd').value) :
+									var dt = document.querySelector('#tpTimeEnd').value.length>0 ?
+										new Date(document.querySelector('#tpTimeEnd').value) :
 										'';
 									if (!['Invalid Date', ''].includes(dt)) {api_sett.rcend = dt.toISOString();}
+									
+									// Title filters
+									var yti = new RegExp(document.querySelector('#tpTitle').value.trim(), 'i');
+									var nti = new RegExp(document.querySelector('#tpNotTitle').value.trim(), 'i');
 									
 									// Attempt patrol if any valid setting
 									if (Object.keys(api_sett).some(function(r){
 										return ['rcuser', 'rcnamespace', 'rcstart', 'rcend'].includes(r);
-									})) {
+									}) || yti.source!=='(?:)') {
 										api.get(api_sett).then(function(data){
-											if (data.query.recentchanges.length>0) {
-												document.querySelector('#targettedPatrolDetails').innerHTML = 'Patrolling '+data.query.recentchanges.length+' edits...';
+											var revs = (data.query.recentchanges || [])
+											.filter(function(e){
+												return  (yti.source=='(?:)' ? true : e.title.search(yti)!==-1) &&
+														(nti.source=='(?:)' ? true : e.title.search(nti)===-1);
+											});
+											if (revs.length>0) {
+												document.querySelector('#tpDetails').innerHTML = 'Patrolling '+revs.length+' edits...';
 												betterDiff.patrolRevisions(
-													data.query.recentchanges,
-													document.querySelector('#targettedPatrolDetails'),
+													revs,
+													document.querySelector('#tpDetails'),
 													{
 														patrolled: 'Patrolled %patrolled% edits!',
 														open: '%open% deleted edits opened!'
@@ -424,10 +464,10 @@ $(function() {
 													'Patrolling %tot% edits, %curr% left...'
 												);
 											} else {
-												document.querySelector('#targettedPatrolDetails').innerHTML = 'The specified filters return no edits to patrol!';
+												document.querySelector('#tpDetails').innerHTML = 'The specified filters return no edits to patrol!';
 											}
 										});
-									} else { document.querySelector('#targettedPatrolDetails').innerHTML = 'No filter specified.'; }
+									} else { document.querySelector('#tpDetails').innerHTML = 'No filter specified.'; }
 								}
 							}
 						});
@@ -582,35 +622,57 @@ $(function() {
 					}
 				}
 				
-				api.get(api_opt).then(function(data) {
+				api.get(api_opt).then(function(e) {
+					var diff = e.compare;
 					quickview.show();
 					quickview.setContent(
-						'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
-							'<colgroup>'+
-								'<col class="diff-marker">'+
-								'<col class="diff-content">'+
-								'<col class="diff-marker">'+
-								'<col class="diff-content">'+
-							'</colgroup>'+
-							'<tbody>'+
-								'<tr class="diff-title" lang="en">'+
-									generateHeader(data.compare)+
-								'</tr>'+
-								data.compare.body+
-							'</tbody>'+
-						'</table>'
+						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
+							'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
+								'<colgroup>'+
+									'<col class="diff-marker">'+
+									'<col class="diff-content">'+
+									'<col class="diff-marker">'+
+									'<col class="diff-content">'+
+								'</colgroup>'+
+								'<tbody>'+
+									'<tr class="diff-title" lang="en">'+
+										generateHeader(diff)+
+									'</tr>'+
+									diff.body+
+								'</tbody>'+
+							'</table>'+
+							'<hr />'+
+							'<h1>Preview</h1>'+
+							'<span class="wds-button quickDiff-preview">Click to render</span>'+
+						'</div></div>'
 					);
 					betterDiff.waitFor('.oo-ui-widget-enabled.oo-ui-processDialog-title', function() {
-						quickview.setTitle('Changes: '+data.compare.totitle);
+						quickview.setTitle('Changes: '+diff.totitle);
+						$('#quickDiff-quickview .quickDiff-preview').on('click', function() {
+							$('#quickDiff-quickview .quickDiff-preview').replaceWith('<strong class="quickDiff-preview">Loading the preview!</strong>');
+							api.get({
+								action:'parse',
+								oldid: diff.torevid,
+								preview: true,
+								usearticle: true,
+								disablelimitreport: true
+							}).then(function(render){
+								$('#quickDiff-quickview .quickDiff-preview').replaceWith(
+									(render.parse && render.parse.text && render.parse.text['*']) ? 
+										render.parse.text['*'] :
+										'<strong class="error">Failed to preview!</strong>'
+								);
+							});
+						});
 					});
-					quickview.setTitle('Changes: '+data.compare.totitle);
+					quickview.setTitle('Changes: '+diff.totitle);
 					if (can.patrol && tokens.patrol.length>2) {
 						api.get({
 							action: 'query',
 							list: 'recentchanges',
 							rcprop: 'ids|patrolled',
 							format: 'json',
-							rctitle: data.compare.totitle,
+							rctitle: diff.totitle,
 							formatversion: '2',
 							rclimit: 'max'
 						}).then(function(check) {
@@ -624,18 +686,18 @@ $(function() {
 							) {
 								// Add patrol button if any revision to patrol
 								if (check.query.recentchanges[num].unpatrolled && (
-									(data.compare.torevid && data.compare.fromrevid &&
-									check.query.recentchanges[num].revid <= data.compare.torevid && check.query.recentchanges[num].revid >= 	data.compare.fromrevid) || 
-									(data.compare.torevid && !data.compare.fromrevid &&
-									check.query.recentchanges[num].revid == data.compare.torevid)
+									(diff.torevid && diff.fromrevid &&
+									check.query.recentchanges[num].revid <= diff.torevid && check.query.recentchanges[num].revid >= 	diff.fromrevid) || 
+									(diff.torevid && !diff.fromrevid &&
+									check.query.recentchanges[num].revid == diff.torevid)
 								)) {
 									document.querySelector('#mw-diff-ntitle4').innerHTML +=
 									'<span class="patrollink" data-mw="interface">['+
 										'<a tabindex="0" '+
-											'torevid="'+data.compare.torevid+'" '+
-											'fromrevid="'+(data.compare.fromrevid ? data.compare.fromrevid : '0')+'" '+
-											'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
-											(data.compare.fromtimestamp ? ('fromts="'+data.compare.fromtimestamp+'" ') : '')+
+											'torevid="'+diff.torevid+'" '+
+											'fromrevid="'+(diff.fromrevid ? diff.fromrevid : '0')+'" '+
+											'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
+											(diff.fromtimestamp ? ('fromts="'+diff.fromtimestamp+'" ') : '')+
 										'>'+
 											'Mass Patrol'+
 										'</a>'+
@@ -651,7 +713,7 @@ $(function() {
 						prop: 'revisions',
 						rvprop: 'ids',
 						format: 'json',
-						titles: data.compare.totitle,
+						titles: diff.totitle,
 						formatversion: '2',
 						rvlimit: 'max'
 					}).then(function(check) {
@@ -661,19 +723,19 @@ $(function() {
 						var next = false;
 						while ( revs[num] && ( prev == false || next == false ) ) {
 							// Store revision after the displayed ones
-							if (data.compare.torevid && revs[num].revid > data.compare.torevid) {
+							if (diff.torevid && revs[num].revid > diff.torevid) {
 								next = revs[num].revid;
 							}
 							// Store revision before the displayed ones, even if new page creation
-							if (prev == false && data.compare.fromrevid && revs[num].revid < data.compare.fromrevid	) {
+							if (prev == false && diff.fromrevid && revs[num].revid < diff.fromrevid	) {
 								prev = revs[num].revid;
 							}
 							num++;
 						}
-						if (prev == false && num == revs.length && data.compare.torevid > revs[num-1].revid) {
+						if (prev == false && num == revs.length && diff.torevid > revs[num-1].revid) {
 							prev = revs[num-1].parentid;
 						}
-						if (next == false && num == revs.length && revs[num-1].parentid == 0 && data.compare.torevid == undefined) {
+						if (next == false && num == revs.length && revs[num-1].parentid == 0 && diff.torevid == undefined) {
 							next = revs[num-1].revid;
 						}
 						
@@ -682,8 +744,8 @@ $(function() {
 							document.querySelector('#mw-diff-otitle4').innerHTML = 
 							'<a '+
 								'revid="'+(prev==0 ? revs[num-1].revid : prev)+'" '+
-								'currid="'+data.compare.torevid+'" '+
-								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
+								'currid="'+diff.torevid+'" '+
+								'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
 								'id="differences-prevlink" '+
 								(prev==0 ? 'newdiff="yes" ' : '')+
 							'>'+
@@ -697,14 +759,14 @@ $(function() {
 							document.querySelector('#mw-diff-ntitle4').innerHTML = 
 							'<a '+
 								'revid="'+next+'" '+
-								'currid="'+(data.compare.torevid ? data.compare.fromrevid : next)+'" '+
-								'title="'+data.compare.totitle.replace(/"/g, '&quot;')+'" '+
+								'currid="'+(diff.torevid ? diff.fromrevid : next)+'" '+
+								'title="'+diff.totitle.replace(/"/g, '&quot;')+'" '+
 								'id="differences-nextlink"'+
 							'>'+
 								'Newer edit →'+
 							'</a> '+
 							document.querySelector('#mw-diff-ntitle4').innerHTML; // prepend to any existing content
-							$('.diff-ntitle .mw-diff-edit').append('|<a href="'+config.wgServer+mw.util.getUrl(data.totitle)+'?action=edit" title="'+data.totitle.replace(/"/g, '&quot;')+'">curr</a>');
+							$('.diff-ntitle .mw-diff-edit > a').after(' | <a href="'+config.wgServer+mw.util.getUrl(diff.totitle)+'?action=edit" title="'+diff.totitle.replace(/"/g, '&quot;')+'">curr</a>');
 						}
 					}).catch(console.log);
 					
@@ -796,7 +858,7 @@ $(function() {
 					link.setAttribute('data-target-page', 
 						diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title') ?
 							diff.closest('table, li').querySelector('a.mw-changeslist-title, a.mw-contributions-title').getAttribute('title') :
-							config.wgPageName
+							decodeURIComponent(href.replace(/^.*?\/wiki\//, '').replace(/^(.*?)\?.+/, '$1')).replace(/_/g, ' ')
 					);
 					link.innerHTML = 'view';
 					link.classList.add('quickDiff');
@@ -807,6 +869,8 @@ $(function() {
 						var span = document.createElement('span');
 						span.appendChild(link);
 						diff.parentElement.after(span);
+					} else if (diff.closest('.quickDiff-custom')){
+						diff.before('(', link, ') ');
 					} else {
 						diff.after(' | ', link);
 					}
@@ -815,7 +879,8 @@ $(function() {
 			var cond = 
 				'.mw-changeslist-diff:not(.quickDiffLoaded), '+
 				'.mw-changeslist-groupdiff:not(.quickDiffLoaded), '+
-				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded)';
+				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded), '+
+				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)';
 			if (els) {
 				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
 				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target
@@ -894,11 +959,9 @@ $(function() {
 			}
 			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
 				document.querySelector('#mw-diff-ntitle4 #massPatrol > a').click();
-				return;
 			}
 			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a')) {
 				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a').click();
-				return;
 			}
 			else if (!document.querySelector('.patrollink > a')) {
 				// no target, do nothing and end

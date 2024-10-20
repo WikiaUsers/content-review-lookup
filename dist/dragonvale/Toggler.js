@@ -168,6 +168,7 @@
 
         // make list of all elements on the wiki page document
         var documentContainer = document.querySelector('#mw-content-text .mw-parser-output');
+
         var allDocumentElements = [];
         if (documentContainer) {
             allDocumentElements = documentContainer.getElementsByTagName('*');

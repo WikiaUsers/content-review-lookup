@@ -74,14 +74,14 @@ window.YoutubePlayerDisableAutoplay = true; // Disable autoplay for YouTube play
 // Adds a button to clear Deletion reasons
 // By OneTwoThreeFall
 //=================================================================
-$(function() {
+(function() {
 	if (mw.config.get('wgAction') === 'delete') {
 	    $('#wpReason').after(' <span id="wpClearReason" class="button" id="clearDeleteReason">\u232b</span>');
 	    $('#wpClearReason').click(function() {
 	        $('#wpReason').val('').focus();
 	    });
 	}
-});
+})();
 
 //========================================================================
 // Allows text to be hidden in other text and revealed with a click
@@ -93,23 +93,42 @@ $(".container").click(function() {
 
 //========================================
 // Wiki activity link in activity module
-// By Wither
 //========================================
-!function() {
+(function() {
     var rwaLink = "<a class='wds-button RWA_Link' href='/wiki/Special:MultipleActivity'>More activity</a>";
     $(".WikiaRail .activity-module").append(rwaLink);
-}();
+})();
+
+//=======================================================
+// Sort content on Special:WhatLinksHere alphabetically
+//=======================================================
+(function($) {
+    if (mw.config.get('wgCanonicalSpecialPageName') !== 'Whatlinkshere') 
+        return;
+
+    var sortedList,
+        list = $('#mw-whatlinkshere-list');
+
+    sortedList = list.children('li').sort(function (a, b) {
+        return (
+            $(a).find('a:first').attr('title') > $(b).find('a:first').attr('title')
+        ) ? 1: -1;
+    });
+
+    list.children('li').remove();
+    list.append(sortedList);
+})($);
 
 //========================================== 
 // Adds a "Logs" tab to User Mastheads
 //==========================================
-$(function() {
+(function() {
     var olds = $("ul.user-profile-navigation").html();
     var address = "/wiki/Special:Log/" + mw.config.get("wgTitle");
     var adds = "<li class='user-profile-navigation__link' data-id='userLogs'><a href='" + address + "'>Logs</a></li>";
     var news = olds + adds;
     $("ul.user-profile-navigation").html(news);
-});
+})();
 
 //================================================
 // Makes ProfileTags not override InactiveUsers

@@ -2,13 +2,6 @@
 
 //Import scripts that are needed without MediaWiki:ImportJS to prevent useless downloading
 mw.hook('wikipage.content').add(function($content) {
-	var articles = [];
-
-	if ($content.find('#calculator')[0]) articles.push('MediaWiki:Calculator.js');
-	if ($content.find('.customCountdown')[0]) articles.push('MediaWiki:Countdown.js');
-
-	if (articles.length) importArticle({type: 'script', articles: articles});
-
 	//Gif Hover
 	$content.find("img", "#gifs-rows").hover(function() {
 		$content.find('.preset-file').toggle();

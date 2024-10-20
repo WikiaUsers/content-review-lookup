@@ -118,7 +118,7 @@ window.setCookie = function(c_name, value, expiredays) {
 								$('#origineBox').on('change', this.updateOrigineOptions.bind(this));
 
 								// Initialize Quoi options based on selected Œuvres
-								this.updateUniversOptions();
+								this.updateOrigineOptions();
 					
 								// Autocomplete links
 								$.getScript(mw.util.wikiScript('load') + 
@@ -144,22 +144,22 @@ window.setCookie = function(c_name, value, expiredays) {
 			},
 			updateOrigineOptions: function() {
 				var selectedOrigine = $('#origineBox').val();
-				var $typeBox = $('#typeBox');
+				var $quoiBox = $('#quoiBox');
 				
-				var typeoptions = '';
+				var quoioptions = '';
 				
 				if (selectedOrigine === 'Œuvre'){
-					typeoptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
+					quoioptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
 				} else {
-					typeoptions += '<option value="">-</option>';
-					typeoptions += '<option value="Image officielle">Image officielle</option>';
-					typeoptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
-					typeoptions += '<option value="Fichier du jeu">Fichier du jeu</option>';
-					typeoptions += '<option value="Image du monde réel">Image du monde réel</option>';
-					typeoptions += '<option value="Concept art">Concept art</option>';
+					quoioptions += '<option value="">-</option>';
+					quoioptions += '<option value="Image officielle">Image officielle</option>';
+					quoioptions += '<option value="Image tirée de l\'œuvre">Image tirée de l\'œuvre</option>';
+					quoioptions += '<option value="Fichier du jeu">Fichier du jeu</option>';
+					quoioptions += '<option value="Image du monde réel">Image du monde réel</option>';
+					quoioptions += '<option value="Concept art">Concept art</option>';
 				}
 				
-				$typeBox.html(typeoptions);
+				$quoiBox.html(quoioptions);
 			},
 			verifySummary: function () {
 				var $description = $('#wpUploadDescription');

@@ -3,14 +3,15 @@
 $('.mediawiki').prepend($('<div id="page-grid">'));
 $('#page-grid')
 	.append($('<div id="left-rail-wrapper">'))
-	.append($('<div id="personal-tools">'))
+	.append($('<div id="personal-tools">').append($('<ul>')))
 	.append($('<div id="page-actions">').append($('<ul>')))
-	.append($('.main-container'));
+	.append($('.main-container'))
+	.append($('<footer id="footer">'));
 
 // Left rail
 
 function portlet(name){
-	return '<section role="navigation" class="portlet" id="p-' + name + '" aria-labelledby="p-' + name + '-label"><h2 class="pHeading" id="p-' + name + '-label"></h2><div class="pBody" id="p-' + name + '-body"></div></section>';
+	return '<nav class="portlet" id="p-' + name + '" aria-labelledby="p-' + name + '-label"><h2 class="pHeading" id="p-' + name + '-label"></h2><div class="pBody" id="p-' + name + '-body"></div></nav>';
 }
 
 function portletAttr(name){
@@ -37,7 +38,7 @@ function pBodyAttr(name){
 }
 
 $('#left-rail-wrapper')
-	.append($('.fandom-community-header__image'))
+	.append($('<a id="p-logo" href="/wiki/">'))
 	.append($(portlet('navigation')))
 	.append($(portlet('search')))
 	.append($(portlet('interaction')))
@@ -58,7 +59,7 @@ $('#p-navigation-body ul')
 $('#p-search-label').html('Search');
 $('#p-search-body').html($('<form action="' + mw.util.getUrl('Special:Search') + '">'));
 $('#p-search-body form')
-	.append($('<input type="search" name="query" placeholder="Search Memory Alpha" id="searchInput">'))
+	.append($('<input type="search" id="searchInput" name="query" required placeholder="Search Memory Alpha">'))
 	.append($('<input type="submit" class="searchButton" name="go" value="Go" title="Go to a page with this exact name if it exists">'))
 	.append($('<input type="submit" class="searchButton" name="fulltext" value="Search" title="Search Memory Alpha for this text">'));
 
@@ -70,7 +71,7 @@ $('#p-interaction-body ul')
 	.append($('<li><a href="' + mw.util.getUrl('Special:Community') + '">Community portal</a></li>'))
 	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:FAQ') + '">FAQ</a></li>'))
 	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:Policies and guidelines') + '">Policies</a></li>'))
-	.append($('<li><a href="' + mw.util.getUrl('Special:Recent changes') + '">Recent changes</a></li>'));
+	.append($('<li><a href="' + mw.util.getUrl('Special:RecentChanges') + '">Recent changes</a></li>'));
 
 $('.content-review__widget__title').removeAttr('class').attr(pHeadingAttr('js-review'));
 $('#p-js-review-label')
@@ -124,11 +125,32 @@ if ($('#collapsible-content-languages').length){
 
 // Personal tools
 
-$('#personal-tools').append($('[data-testid="global-navigation-user-options"] .wds-dropdown__content ul'));
-$('#personal-tools ul').append($('<li>').append($('.notifications')));
-$('#global-navigation-user-signout').after($('<li><a href="' + mw.util.getUrl('Special:Watchlist') + '">My Watchlist</a></li>'));
+function ptItem(id, url, title, text){
+	if (url){
+		return '<li class="ptItem" id="pt-' + id + '"><a href="' + mw.util.getUrl(url) + '" title="' + title + '">' + text + '</a></li>';
+	}
+	
+	return '<li class="ptItem" id="pt-' + id + '">';
+}
+
+$('#personal-tools ul')
+	.append($(ptItem('userpage', 'User:' + mw.config.get('wgUserName'), 'Your user page', mw.config.get('wgUserName'))))
+	.append($(ptItem('notifications')).append($('.notifications')))
+	.append($(ptItem('mytalk', 'User talk:' + mw.config.get('wgUserName'), 'Your talk page', 'Talk')))
+	.append($(ptItem('sandbox', 'User:' + mw.config.get('wgUserName') + '/sandbox', 'Your sandbox', 'Sandbox')))
+	.append($(ptItem('preferences', 'Special:Preferences', 'Your preferences', 'Preferences')))
+	.append($(ptItem('watchlist', 'Special:Watchlist', 'The list of pages you are monitoring for changes', 'Watchlist')))
+	.append($(ptItem('contribs', 'Special:Contributions/' + mw.config.get('wgUserName'), 'A list of your contributions', 'Contributions')))
+	.append($(ptItem('logout')).append($('#global-navigation-logout-form')));
+
+$('.notifications__toggle').attr('title', 'Your notifications');
+$('.global-navigation__signout-button').html('Log out').attr('title', 'Log out');
 
 // Page actions
+
+function trimmer(selector){
+	return $(selector).html($(selector).text().trim());
+}
 
 var subjectNamespaceName = {
 	'-1':'Special page',
@@ -166,15 +188,15 @@ $('#page-actions ul')
 	.append($('<li id="ca-watch-li">'))
 	.append($('<li id="ca-unwatch-li">'));
 
-$('#ca-edit-li').append($('#ca-edit').removeAttr('class').attr('title', 'Edit this page'));
-$('#ca-history-li').append($('#ca-history').attr('title', 'Past revisions of this page'));
-$('#ca-delete-li').append($('#ca-delete').attr('title', 'Delete this page'));
-$('#ca-undelete-li').append($('#ca-undelete').attr('title', 'Undelete this page'));
-$('#ca-move-li').append($('#ca-move').attr('title', 'Rename this page'));
-$('#ca-protect-li').append($('#ca-protect').attr('title', 'Protect this page from editing'));
-$('#ca-unprotect-li').append($('#ca-unprotect').attr('title', 'Change the protection level on this page'));
-$('#ca-watch-li').append($('#ca-watch').attr('title', 'Add this page to your watchlist'));
-$('#ca-unwatch-li').append($('#ca-unwatch').attr('title', 'Remove this page from your watchlist'));
+$('#ca-edit-li').append(trimmer('#ca-edit').removeAttr('class').attr('title', 'Edit this page'));
+$('#ca-history-li').append(trimmer('#ca-history').attr('title', 'Past revisions of this page'));
+$('#ca-delete-li').append(trimmer('#ca-delete').attr('title', 'Delete this page'));
+$('#ca-undelete-li').append(trimmer('#ca-undelete').attr('title', 'Undelete this page'));
+$('#ca-move-li').append(trimmer('#ca-move').attr('title', 'Rename this page'));
+$('#ca-protect-li').append(trimmer('#ca-protect').attr('title', 'Protect this page from editing'));
+$('#ca-unprotect-li').append(trimmer('#ca-unprotect').attr('title', 'Change the protection level on this page'));
+$('#ca-watch-li').append(trimmer('#ca-watch').attr('title', 'Add this page to your watchlist'));
+$('#ca-unwatch-li').append(trimmer('#ca-unwatch').attr('title', 'Remove this page from your watchlist'));
 
 $('#page-actions li:empty').remove();
 $('#page-actions li:last-child').prev().addClass('ca-tab-group-bookend');
@@ -200,3 +222,28 @@ if (mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submi
 if (subjectNamespace === -1){
 	$('#page-actions li:not(#ca-nstab-main-li)').remove();
 }
+
+// Footer
+
+function footerIcon(id, title, url){
+	return '<a class="footer-icon" loading="lazy" id="f-' + id + '" title="' + title + '" href="' + url + '">';
+}
+
+$('#footer')
+	.append($(footerIcon('hostedbyico', 'Hosting provided by Fandom', 'https://www.fandom.com')))
+	.append($(footerIcon('poweredbyico', 'Powered by MediaWiki', 'https://www.mediawiki.org')))
+	.append($('<ul id="f-list">'));
+
+$('#f-list')
+	.append($('<li class="license-description">').html($('.license-description').html()))
+	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:About') + '">About Memory Alpha</a></li>'))
+	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:Copyrights') + '">Copyright</a></li>'))
+	.append($('<li><a href="' + mw.util.getUrl('Special:Statistics') + '">Statistics</a></li>'))
+	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:Contact us') + '">Contact Memory Alpha</a></li>'))
+	.append($('<li><a href="https://www.fandom.com/privacy-policy">Privacy Policy</a></li>'))
+	.append($('<li><a href="https://www.fandom.com/terms-of-use">Terms of Use</a></li>'))
+	.append($('<li><a href="https://www.fandom.com/terms-of-sale">Terms of Sale</a></li>'))
+	.append($('<li><a href="https://www.fandom.com/community-creation-policy">Community Creation Policy</a></li>'))
+	.append($('<li><a href="https://about.fandom.com/about">About Fandom</a></li>'));
+
+$('#f-list li:empty').remove();

@@ -29,7 +29,8 @@ UserTagsJS.modules.custom = {
     'SaltyNoobz': ['impactful'],
     'Airpodes': ['impactful'],
     'Jack1o7': ['impactful'],
-    'VoidDrin': ['impactful'],
+    'EscaperFloods': ['apprentice'],
+    'VoidDrin': ['apprentice', 'impactful'],
 };
 
 UserTagsJS.modules.autoconfirmed = false;
@@ -59,9 +60,10 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
     //Create da calculators
     var dungeons = [
         { name: "None", difficulties: ["Pick Dungeon First"]},
+        { name: "Abyssal Void", difficulties: ["Insane [210]", "Nightmare [215]", "Nightmare (with The Voidborn) [215]"]},
         { name: "Yokai Peak", difficulties: ["Insane [200]", "Nightmare [205]"]},
         { name: "Gilded Skies", difficulties: ["Insane [190]", "Nightmare [195]"]},
-        { name: "Northern Lands", difficulties: ["Insane [180]", "Nightmare [185]", "Nightmare With Odin-R"]},
+        { name: "Northern Lands", difficulties: ["Insane [180]", "Nightmare [185]", "Nightmare (with Odin-R) [185]"]},
         { name: "Enchanted Forest", difficulties: ["Insane [170]", "Nightmare [175]"]},
         { name: "Aquatic Temple", difficulties: ["Insane [160]", "Nightmare [165]"]},
         { name: "Volcanic Chambers", difficulties: ["Insane [150]", "Nightmare [155]"]},
@@ -79,13 +81,16 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         { name: "Desert Temple (Legacy)", difficulties: ["Easy [1]", "Medium [6]", "Hard [12]", "Insane [20]", "Nightmare [27]"]},
     ];
     var dungeonsWithEXP = [
+        {name: "Abyssal Void Insane [210]", baseEXP: 1.07e12},
+        {name: "Abyssal Void Nightmare [215]", baseEXP: 1.47e12},
+        {name: "Abyssal Void Nightmare (with The Voidborn) [215]", baseEXP: 1.91e12},
         {name: "Yokai Peak Insane [200]", baseEXP: 192650000000},
         {name: "Yokai Peak Nightmare [205]", baseEXP: 350950000000},
         {name: "Gilded Skies Insane [190]", baseEXP: 63500000000},
         {name: "Gilded Skies Nightmare [195]", baseEXP: 115500000000},
         {name: "Northern Lands Insane [180]", baseEXP: 21820000000},
         {name: "Northern Lands Nightmare [185]", baseEXP: 36600000000},
-        {name: "Northern Lands Nightmare With Odin-R", baseEXP: 58600000000},
+        {name: "Northern Lands Nightmare (with Odin-R) [185]", baseEXP: 58600000000},
         {name: "Enchanted Forest Insane [170]", baseEXP: 6900000000},
         {name: "Enchanted Forest Nightmare [175]", baseEXP: 11280000000},
         {name: "Aquatic Temple Insane [160]", baseEXP: 2034000000},
@@ -192,14 +197,23 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
             }
             else {
             result.update("You will need about " + xpString + " experience." + "\n" +
-            "Without VIP, you will need at least " + amountOfRuns + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
-            "With VIP, you will need at least " + amountOfVIPRuns + " runs of " + selectedDungeon + " to reach your goal level"
+            "Without VIP, you will need at least " + amountOfRuns.toLocaleString() + " runs of " + selectedDungeon + " to reach your goal level" + "\n" +
+            "With VIP, you will need at least " + amountOfVIPRuns.toLocaleString() + " runs of " + selectedDungeon + " to reach your goal level"
             );  
             }
         };
     }
 
     var abilities = [
+		// AV
+	{ name: "Gravity Leap", multiplier: 190 },
+	{ name: "Unstable Warp (2 ticks)", multiplier: 180 / 2 },
+	{ name: "Mighty Cleave (fully charged, 2 ticks)", multiplier: 280 / 2 },
+	{ name: "Sacrificial Orbs (fully charged)", multiplier: 280 },
+	{ name: "Mighty Cleave (half charged)", multiplier: 120 },
+	{ name: "Sacrificial Orbs (half charged)", multiplier: 140 },
+	{ name: "Shatterstrike (6 ticks)", multiplier: 186 / 6 },
+	{ name: "Voidflames (5 ticks)", multiplier: 185 / 5 },
 		// YP
 	{ name: "Spinning Blade Smash / Void Dragon", multiplier: 148 },
 	{ name: "Kunai Knives (3 ticks)", multiplier: 150 / 3 },

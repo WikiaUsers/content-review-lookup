@@ -1,11 +1,8 @@
-function ttInit() {
-	var ttdialogues = document.querySelectorAll('.ttdialogue');
+function idfsgsInit() {
+	var idfsgsdialogues = document.querySelectorAll('.idfsgsdialogue');
 	var options = {};
 	var dialogueNPCName = {};
 	var dialogueText = {};
-	var textSounds = {};
-	var endSounds = {};
-	var startSounds = {};
 	var optionsList = {};
 	var restartMessage = {};
 	var dialogue_path = {};
@@ -398,22 +395,6 @@ function ttInit() {
 	            dialogueNPCName[dialoguename].style[name] = getKeywordsFor(value);
 	        }
 	    }
-	    
-	    if (options[dialoguename].textSound) {
-	    	if (!(textSounds[dialoguename].src.endsWith(options[dialoguename].textSound))) {
-	    		textSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].textSound;
-	    	}
-	    }
-	    
-	    if (options[dialoguename].startSound) {
-	    	if (!(startSounds[dialoguename].src.endsWith(options[dialoguename].startSound))) {
-	    		startSounds[dialoguename].src = '/wiki/Special:Filepath/' + options[dialoguename].startSound;
-	    	}
-	    }
-	    
-	    if (options[dialoguename].loopStartSound !== undefined) {
-	    	startSounds[dialoguename].loop = options[dialoguename].loopStartSound || false;
-	    }
 	
 	    var name = options[dialoguename].name;
 	   
@@ -438,17 +419,7 @@ function ttInit() {
 	function change_text(time, string, dialoguename) {
 		setTimeout(function() {
 			dialogueText[dialoguename].innerHTML = string;
-			
-			if (options[dialoguename].begin) return;
-			textSounds[dialoguename].currentTime = 0;
-			textSounds[dialoguename].play().catch(function () { });
 		}, time);
-	}
-	
-	function play_sound(dialoguename) {
-		if (options[dialoguename].begin) return;
-	    startSounds[dialoguename].currentTime = 0;
-		startSounds[dialoguename].play().catch(function () { });
 	}
 	
 	function display_question(question, dialoguename) {
@@ -464,15 +435,6 @@ function ttInit() {
 			options[dialoguename].begin = false;
 		}
 	
-		if (options[dialoguename].startSound && options[dialoguename].playStartSound) {
-			if (options[dialoguename].playAfterDelay) {
-				setTimeout(function() {
-					play_sound(dialoguename);
-				}, options[dialoguename].startDelay);
-			} else {
-				play_sound(dialoguename);
-			}
-		}
 		
 	    dialogueText[dialoguename].innerHTML = '';
 	
@@ -494,11 +456,6 @@ function ttInit() {
 		}
 	
 	    var string = '';
-	    
-	    if (options[dialoguename].stopStartSound) {
-	        startSounds[dialoguename].pause();
-	        startSounds[dialoguename].currentTime = 0;
-	    }
 	
 	    for (var i in characters) {
 	    	var character = characters[i];
@@ -507,23 +464,15 @@ function ttInit() {
 	    	change_text(totalduration, string, dialoguename);
 	    	totalduration += options[dialoguename].waitTime || 25;
 	    }
-	    
-	    if (!options[dialoguename].begin) setTimeout(function() {
-			textSounds[dialoguename].pause();
-			textSounds[dialoguename].currentTime = 0;
-			endSounds[dialoguename].currentTime = 0;
-			endSounds[dialoguename].play().catch(function() { });
-	    }, totalduration)
-		
 		return totalduration;
 	}
 	
 	function append_button(v, dialoguename) {
 		var btn = document.createElement('div');
-		btn.classList.add('ttdialogueoption');
-		btn.innerHTML = '<div class="ttdialogueoptiontext">' + getKeywordsFor(v.option) + '</div>';
+		btn.classList.add('idfsgsdialogueoption');
+		btn.innerHTML = '<div class="idfsgsdialogueoptiontext">' + getKeywordsFor(v.option) + '</div>';
 		if (v.btnstyle) {
-		    var btnText = btn.querySelector('.ttdialogueoptiontext');
+		    var btnText = btn.querySelector('.idfsgsdialogueoptiontext');
 		    for (var name in v.btnstyle) {
 		        var value = v.btnstyle[name];
 		        btnText.style[name] = value;
@@ -640,29 +589,13 @@ function ttInit() {
 		}, waittime)
 	}
 	
-	function create_dialogue(ttdialogue, dialoguename) {
-		dialogues[dialoguename] = ttdialogue;
-		dialogueNPCName[dialoguename] = ttdialogue.querySelector('.ttdialoguenpcname');
-		dialogueText[dialoguename] = ttdialogue.querySelector('.ttdialoguetext');
-		optionsList[dialoguename] = ttdialogue.querySelector('.ttdialogueoptionscontainer');
-		restartMessage[dialoguename] = ttdialogue.querySelector('.ttdialoguerestart');
+	function create_dialogue(idfsgsdialogue, dialoguename) {
+		dialogues[dialoguename] = idfsgsdialogue;
+		dialogueNPCName[dialoguename] = idfsgsdialogue.querySelector('.idfsgsttdialoguenpcname');
+		dialogueText[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguetext');
+		optionsList[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialogueoptionscontainer');
+		restartMessage[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguerestart');
 		
-		var textSound = document.createElement('audio');
-		textSound.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/f/ff/Message.mp3';
-		textSound.style.display = 'none';
-		ttdialogue.appendChild(textSound)
-		textSounds[dialoguename] = textSound;
-		
-		var endSound = document.createElement('audio');
-		endSound.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/9/9e/DialogEnd.mp3';
-		endSound.style.display = 'none';
-		ttdialogue.appendChild(endSound)
-		endSounds[dialoguename] = endSound;
-		
-		var startSound = document.createElement('audio');
-		startSound.style.display = 'none';
-		ttdialogue.appendChild(startSound)
-		startSounds[dialoguename] = startSound;
 		
 		dialogue_path[dialoguename] = JSON.parse(dialogueNPCName[dialoguename].innerHTML.replace(/<.+>/g, '').replace(/\{quot\}/g, '\\"').replace(/\{break\}/g, '<br/>'));
 		
@@ -679,71 +612,17 @@ function ttInit() {
 		next_dialogue(dialogue_path[dialoguename], dialoguename);
 	}
 	
-	if (ttdialogues.length) {
-		for (var i = 0; i < ttdialogues.length; i++) {
-			var ttdialogue = ttdialogues.item(i);
+	if (idfsgsdialogues.length) {
+		for (var i = 0; i < idfsgsdialogues.length; i++) {
+			var idfsgsdialogue = idfsgsdialogues.item(i);
 			try {
-				create_dialogue(ttdialogue, 'dialogue' + i)
+				create_dialogue(idfsgsdialogue, 'dialogue' + i)
 			} catch (error) {
-				ttdialogue.querySelector('.ttdialoguetext').innerHTML = error.stack;
+				idfsgsdialogue.querySelector('.idfsgsdialoguetext').innerHTML = error.stack;
 			}
 		}
 	}
 }
 
-function nrNInit() {
-	var nrn = document.querySelectorAll('.nr_n');
-	
-	function nrNText(el) {
-		for (var i = 0; i < el.childNodes.length; i++) {
-			var node = el.childNodes.item(i);
-		    if (node.data) {
-		    	if (node.data.trim()) node.data = 'Nister N';
-		    } else nrNText(node);
-		}
-	}
-
-	function nrNImage(el) {
-		for (var i = 0; i < el.childNodes.length; i++) {
-			var node = el.childNodes.item(i);
-		    if (!node.data) {
-		    	if (node.tagName == 'IMG') {
-			    	node.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
-			    	node.srcset = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
-		    		continue;
-		    	} else if (node.tagName == 'SVG') {
-					var nrnimg = document.createElement('img');
-					nrnimg.src = 'https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png';
-		    		node.parentNode.replaceChild(node, nrnimg);
-		    		continue;
-		    	} else if (node.style.backgroundImage) {
-		    		node.style.backgroundImage = 'url(https://static.wikia.nocookie.net/i-dont-feel-so-good-simulator/images/5/5f/NRN%21.png)';
-		    		continue;
-		    	}
-		    	nrNImage(node);
-		    }
-		}
-	}
-	
-	function nrNChange() {
-		nrNText(document.body);
-		nrNImage(document.body);
-	}
-	
-	function nrNTrigger(nrn) {
-		nrn.remove();
-		document.body.style.filter = 'grayscale()';
-		nrNChange();
-		setInterval(nrNChange, 5000);
-	}
-	
-	for (var i = 0; i < nrn.length; i++) {
-		var nr = nrn.item(i);
-		nr.addEventListener('click', function() {
-			nrNTrigger(nr);
-		});
-	}
-}
 
 idfsgsInit();
-nrNInit()

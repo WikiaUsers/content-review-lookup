@@ -7,10 +7,6 @@ var dialogueNames = {};
 var dialogueTextes = {};
 var dialogueOptions = {};
 
-var clickSounds = {};
-var startSounds = {};
-var textSounds = {};
-var endSounds = {};
 var restartMessages = {};
 
 var dialoguePaths = {};
@@ -91,21 +87,6 @@ function removeElement(element, wait) {
     }, wait);
 }
 
-function newSound(url, dialogueID, loop) {
-    var sound = document.createElement('audio');
-    sound.src = url;
-    sound.loop = !!loop;
-    dialogues[dialogueID].appendChild(sound);
-    
-    return sound;
-}
-
-function playSound(sound, dialogueID) {
-    if (options[dialogueID].begin) return;
-    sound.currentTime = 0;
-    sound.play().catch(function () { });
-}
-
 function loadOptions(optionsObject, dialogueID) {
     if (!options[dialogueID]) {
         options[dialogueID] = {};
@@ -161,22 +142,6 @@ function loadOptions(optionsObject, dialogueID) {
         }
     }
 
-    if (options[dialogueID].textSound) {
-        if (!(textSounds[dialogueID].src.endsWith(options[dialogueID].textSound))) {
-            textSounds[dialogueID].src = '/wiki/Special:Filepath/' + options[dialogueID].textSound;
-        }
-    }
-
-    if (options[dialogueID].startSound) {
-        if (!(startSounds[dialogueID].src.endsWith(options[dialogueID].startSound))) {
-            startSounds[dialogueID].src = '/wiki/Special:Filepath/' + options[dialogueID].startSound;
-        }
-    }
-
-    if (options[dialogueID].loopStartSound !== undefined) {
-        startSounds[dialogueID].loop = options[dialogueID].loopStartSound || false;
-    }
-
     var name = options[dialogueID].name;
 
     if (typeof (name) == 'object') name = randomChoice(name);
@@ -225,15 +190,6 @@ function displayQuestion(question, dialogueID) {
         options[dialogueID].begin = false;
     }
 
-    if (options[dialogueID].startSound && options[dialogueID].playStartSound) {
-        if (options[dialogueID].playAfterDelay) {
-            setTimeout(function () {
-                playSound(startSounds[dialogueID], dialogueID);
-            }, options[dialogueID].startDelay);
-        } else {
-            playSound(startSounds[dialogueID], dialogueID);
-        }
-    }
 
     dialogueTextes[dialogueID].innerHTML = '';
 
@@ -281,9 +237,6 @@ function displayQuestion(question, dialogueID) {
 
     var string = '';
 
-    if (options[dialogueID].stopStartSound) startSounds[dialogueID].pause();
-    if (!options[dialogueID].begin) textSounds[dialogueID].play();
-
     for (var i in characters) {
         var character = characters[i];
 
@@ -291,11 +244,6 @@ function displayQuestion(question, dialogueID) {
         changeText(totalDuration, string, dialogueID);
         totalDuration += options[dialogueID].waitTime || 10;
     }
-
-    if (!options[dialogueID].begin) setTimeout(function () {
-        textSounds[dialogueID].pause();
-        playSound(endSounds[dialogueID], dialogueID);
-    }, totalDuration);
 
     return totalDuration;
 }
@@ -327,7 +275,6 @@ function appendButton(v, dialogueID) {
     
     btn.addEventListener('click', function () {
         if (typeof (v) == "object") {
-            playSound(clickSounds[dialogueID], dialogueID);
             nextDialogue(v, dialogueID);
         }
     });
@@ -418,10 +365,6 @@ function createDialogue(dialogue, dialogueID) {
     dialogueTextes[dialogueID] = dialogue.querySelector('.d-response');
     dialogueOptions[dialogueID] = dialogue.querySelector('.d-optionsC');
 
-    clickSounds[dialogueID] = newSound('https://static.wikia.nocookie.net/pilgrammed-rblx/images/4/4d/Click.ogg', dialogueID);
-    startSounds[dialogueID] = newSound('', dialogueID);
-    textSounds[dialogueID] = newSound('https://static.wikia.nocookie.net/pilgrammed-rblx/images/d/d1/Dialog.ogg/revision/latest?cb=20230311220834&format=original', dialogueID, true);
-    endSounds[dialogueID] = newSound('', dialogueID);
     restartMessages[dialogueID] = dialogue.querySelector('.d-reset');
     
     dialoguePaths[dialogueID] = JSON.parse(dialogueNames[dialogueID].innerText);
