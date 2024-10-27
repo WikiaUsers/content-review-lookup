@@ -2,8 +2,8 @@
  
 if (["view", "history"].indexOf(mw.config.get("wgAction")) > -1) {
 $(function() {
-	var url = " http://i.imgur.com/JOIrngz",
-		junk = [" http://i.imgur.com/JOIrngz"], // Extras
+	var url = " https://static.wikia.nocookie.net/five-nights-at-freddys-fanon/images/0/0f/0aqOuM2.png/revision/latest?cb=20180104194254",
+		junk = [" https://static.wikia.nocookie.net/five-nights-at-freddys-fanon/images/0/0f/0aqOuM2.png/revision/latest?cb=20180104194254"], // Extras
 		duration = 8,
 		el = $('<figure id="timer-animation"><img src="' + url + '" height="120px" /></figure>');
 	$(el).on("contextmenu", function(e) {

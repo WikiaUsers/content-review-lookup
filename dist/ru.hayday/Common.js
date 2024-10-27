@@ -102,63 +102,80 @@ if (document.body.className.includes('page-События_с_заданиями'
 }
 
 //украшения
-if (document.body.className.includes('page-Украшения')) {
-	var decoTable = document.querySelector("#deco-changed");
-	var rows = document.querySelectorAll('#deco-changed>tbody>tr');
-	var sorter = document.createElement('div');
-	sorter.id='deco-sorter';
-	sorter.innerHTML = '<p><b>Фильтры</b></p>Выберите тэги:'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-nature" data-tag="nature"/><label for="tag-nature"> Природа<img src="https://static.wikia.nocookie.net/hayday/images/0/05/Украшения_природа.png/revision/latest?cb=20231031062650&path-prefix=ru" title="Природа"/></label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-special" data-tag="special"/><label for="tag-special"> Награды<img src="https://static.wikia.nocookie.net/hayday/images/e/e4/Украшения_награды.png/revision/latest?cb=20231031062557&path-prefix=ru" title="Награды"/></label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-farm" data-tag="farm"/><label for="tag-farm"> Для фермы<img src="https://static.wikia.nocookie.net/hayday/images/c/cb/Украшения_для_фермы.png/revision/latest?cb=20231031062438&path-prefix=ru" title="Для фермы"/></label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-sanctuary" data-tag="sanctuary"/><label for="tag-sanctuary"> Для заповедника<img src="https://static.wikia.nocookie.net/hayday/images/1/17/Украшения_для_заповедника.png/revision/latest?cb=20231031062423&path-prefix=ru" title="Для заповедника"/></label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-statue" data-tag="statue"/><label for="tag-statue"> Статуи<img src="https://static.wikia.nocookie.net/hayday/images/7/7b/Украшения_статуи.png/revision/latest?cb=20231031063257&path-prefix=ru" title="Статуи"/></label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-fences" data-tag="fences"/><label for="tag-fences"> Заборы/дорожки<img src="https://static.wikia.nocookie.net/hayday/images/a/a1/Украшения_заборы_дорожки.png/revision/latest?cb=20231031062509&path-prefix=ru" title="Заборы/дорожки"/></label></div>'+
-	'<div id="checker-tag-fences" style="display: none;">'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-fence" data-tag="fence"/><label for="tag-fence"> Заборы</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-path" data-tag="path"/><label for="tag-path"> Дорожки</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-ditch" data-tag="ditch"/><label for="tag-ditch"> Рвы</label></div>'+
-	'</div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-seasonal" data-tag="seasonal"/><label for="tag-seasonal"> Сезонные<img src="https://static.wikia.nocookie.net/hayday/images/7/7a/Украшения_сезонные.png/revision/latest?cb=20231031062707&path-prefix=ru" title="Сезонные"/></label></div>'+
-	'<div id="checker-tag-theme" style="display: none;">'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-christmas" data-tag="christmas"/><label for="tag-christmas"> Рождество</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-summer" data-tag="summer"/><label for="tag-summer"> Лето</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-halloween" data-tag="halloween"/><label for="tag-halloween"> Хеллоуин</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-newyear" data-tag="newyear"/><label for="tag-newyear"> Новый год</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-valentines" data-tag="valentines"/><label for="tag-valentines"> День Святого Валентина</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-easter" data-tag="easter"/><label for="tag-easter"> Пасха</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-chinesenewyear" data-tag="chinesenewyear"/><label for="tag-chinesenewyear"> Китайский Новый год</label></div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-ramadan" data-tag="ramadan"/><label for="tag-ramadan"> Рамадан</label></div>'+
-	'</div>'+
-	'<div class="checker-tag"><input type="checkbox" id="tag-" data-tag=""/><label for="tag-"> <img src="" title=""/></label></div>';
-	decoTable.before(sorter);
+if (document.body.className.includes('page-Список_украшений')) {
+	setTimeout(main, 5000);
+	var settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[]};
+	var filtersBox;
+	function main(){
+		var decoTable = document.querySelector("#deco-changed");
+		var tbody = document.querySelector('#deco-changed>tbody');
+		var rows = tbody.querySelectorAll('tr');
+		var sorter = document.querySelector('#deco-sorter');
 	
-	decoTags = [];
-	rows.forEach(function(row, i){
-		var tags = row.dataset.tags;
-		decoTags[i]=tags;
-	});
-	console.log(rows, decoTags);
-	
-	var tagsTheme = sorter.querySelector('#checker-tag-theme');
-	var tagSeasonal = sorter.querySelector('#tag-seasonal');
-	tagSeasonal.onchange = function(event){
-		if (event.target.checked === true) {
-			tagsTheme.style.display = 'block';
-		} else {
-			tagsTheme.style.display = 'none';
-		}
-	};
-	
-	var tagsFences = sorter.querySelector('#checker-tag-fences');
-	var tagFences = sorter.querySelector('#tag-fences');
-	tagFences.onchange = function(event){
-		if (event.target.checked === true) {
-			tagsFences.style.display = 'block';
-		} else {
-			tagsFences.style.display = 'none';
-		}
-	};
+		var decoList = getDecoList(rows);
+		console.log(decoList);
+		
+		var typesFilters = sorter.querySelectorAll('.type-filter');
+		filtersBox = sorter.querySelectorAll('.filters');
+		var allFilters = sorter.querySelectorAll('.filter');
+		typesFilters.forEach(function(span){
+			span.addEventListener('click',changeFilters);
+		});
+		
+		allFilters.forEach(function(filter){
+			filter.addEventListener('click',function(event){
+				var type = filter.parentNode;
+				sortDecoTable(event, v);
+			});
+		});
+	}
+	function getDecoList(decos){
+		decoSet=[];
+
+		decos.forEach(function(row, i){
+			deco = {};
+			var tags = row.dataset.tags;
+			deco.tags=tags;
+			
+			var tds = row.querySelectorAll('td');
+			
+			deco.sources = [];
+			var sources = tds[2].querySelectorAll('li');
+			sources.forEach(function(source){
+				var text = source.querySelector('a').innerText.trim();
+				deco.sources.push(text);
+			});
+			
+			deco.collections = [];
+			var collections = tds[5].querySelectorAll('li');
+			collections.forEach(function(collection){
+				var text = collection.innerText.trim();
+				deco.collections.push(text);
+			});
+			
+			deco.type = tds[8].innerText.trim();
+			deco.theme = tds[6].innerText.trim();
+			deco.animal = null;
+			
+			decoSet.push(deco);
+		});
+		//console.log(decos, decoTags);
+		
+		return decoSet;
+	}
+	function changeFilters(event){
+		console.log(event, filtersBox, settings.filters);
+		var span = event.target;
+		var target = span.dataset.type;
+		var checked = span.dataset.checked;
+		if(checked==='false'){checked=false; settings.filters.push(target);}else{checked=true;settings.filters.splice(settings.filters.indexOf(target),1);}
+		span.dataset.checked = !checked;
+		filtersBox.forEach(function(filter){
+			if (filter.dataset.type == target){
+				filter.style.display = checked ? 'none' : 'block';
+			}
+		});
+	}
 }
 
 //скачки 320

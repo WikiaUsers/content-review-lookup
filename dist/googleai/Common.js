@@ -1,6 +1,58 @@
 // Comments using the asterisk/slash format (/**/) are section headers (for multiple different scripts with similar functions). 
 // The slash (//) comments are for stand-alone scripts.
 
+// DevMessage
+mw.loader.using(['mediawiki.user', 'mediawiki.util', 'mediawiki.storage'], function () {
+    // Check user rights
+    mw.user.getGroups().then(function(groups) {
+        // Check if the message was dismissed
+        var dismissedMessage = mw.storage.get('DevMessageDismissed');
+
+        // Check if user belongs to certain groups and hasn't dismissed the message
+        if (!dismissedMessage) {
+            // Create the content of the message
+            var test = '<div style="text-align: left; font-size: 12px; filter: brightness(80%);"><center><b>The setup for this Wiki is not yet complete!</center></b><br>As always, you are free to contribute. However; guidlines, categories, etc. have not yet been set up! To keep everything cohesive, I plan to do this myself.</div>
+            NOT DONE
+            ';
+
+            // Create a new div element with innerHTML as 'test' and style it
+            var DevMessage = $('<div>').html(test).css({
+                'color': 'var(--theme-text-color--secondary)',
+                'background-color': 'var(--theme-page-background-color--secondary)', // Set background color
+                'padding': '10px',            // Add padding
+                'border': '2px solid var(--theme-link-color--secondary)',    // Add a border
+                'border-radius': '8px',       // Add border radius for rounded corners
+                'text-align': 'center',       // Center the text
+                'position': 'relative'        // Set position to relative for the close button
+            });
+
+            // Create the "x" button for closing the message
+            var closeButton = $('<span>').text('x').css({
+                'position': 'absolute',
+                'top': '5px',
+                'right': '10px',
+                'cursor': 'pointer',
+                'color': 'var(--theme-link-color--secondary)',
+                'font-weight': 'bold',
+                'font-size': '16px'
+            }).attr('title', 'Click to close this message permanently.');
+
+            // Append the close button to the DevMessage
+            DevMessage.append(closeButton);
+
+            // Append the new div to the page content
+            $('#mw-content-text').prepend(DevMessage);
+
+            // Add click event to close the message and save dismissal state
+            closeButton.on('click', function() {
+                DevMessage.remove();
+                mw.storage.set('DtaffMessageDismissed', 'true');
+            });
+        }
+    });
+});
+
+
 // Automatic daily purge
 (function DailyPurge(window, $, mw) {
     "use strict";

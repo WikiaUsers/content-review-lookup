@@ -4,11 +4,6 @@ $('#p-cactions').attr('id', 'p-cactions-old');
 $('.page-footer').removeAttr('class').attr('id', 'page-footer');
 $('#mw-content-text').after($('#page-footer .wds-collapsible-panel'));
 
-if (mw.config.get('wgAction') === 'view'){
-	var pageUrl = mw.config.get('wgServer') + mw.util.getUrl(mw.config.get('wgPageName'));
-	$('#mw-content-text').append($('<div id="printfooter">Retrieved from "<a href="' + pageUrl + '">' + pageUrl + '</a>"</div>'));
-}
-
 $('#page-footer')
 	.append($('<div id="p-cactions"><h5 class="p-heading">Views</h5><ul></ul></div>'))
 	.append($('<div id="p-personal"><h5 class="p-heading">Personal tools</h5><ul></ul></div>'))

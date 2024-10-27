@@ -166,22 +166,14 @@ $('#topbar')
 	.append($('<ul class="wire-list" id="tb-list-one">'))
 	.append($('<ul class="wire-list" id="tb-list-two">'));
 
-$('#ca-edit')
-	.clone()
-	.removeAttr('id')
-	.wrap($('<li id="tb-item-edit">'));
-
-$('#ca-history')
-	.clone()
-	.removeAttr('id')
-	.wrap($('<li id="tb-item-history">'));
-
 $('#tb-list-one')
 	.append($('<li><a href="/wiki/" title="Portal:Main">Main page</a></li>'))
 	.append($('<li><a href="' + mw.util.getUrl('Special:RecentChanges') + '" title="Special:RecentChanges">Recent changes</a></li>'))
-	.append($('#tb-item-edit'))
-	.append($('#tb-item-history'))
+	.append($('#ca-edit').clone().attr('id', 'tb-edit'))
+	.append($('#ca-history').clone().attr('id', 'tb-history'))
 	.append($('<li><a href="javascript:print();" title="Print this page">Printable version</a></li>'));
+
+$('#tb-edit, #tb-history').wrap($('<li>'));
 
 $('#tb-list-two')
 	.append($('<li><a href="' + mw.util.getUrl('Memory Alpha:Copyrights') + '" title="Memory Alpha copyright information">Copyrights</a></li>'))

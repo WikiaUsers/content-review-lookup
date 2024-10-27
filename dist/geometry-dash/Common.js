@@ -59,8 +59,9 @@ UserTagsJS.modules.newuser = {
 /***************************/
 
 /* Template:USERNAME Substitution */
-$(function() {
-	$('.username-insert').text(wgUserName);
+$(function () { 
+mw.config.get('wgUserName');
+if (mw.config.get('wgUserName') !== null) $('span.username-insert').text(mw.config.get('wgUserName'));
 });
 
 /* CSS classes for daytime periods */

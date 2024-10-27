@@ -31,23 +31,31 @@ $(function() {
 
 	function filterSelection() {
 		var items = document.getElementsByClassName("filterItem");
-		var hasActiveFilters = 
-		currentGenderFilters.size > 0 || 
-		currentPhaseFilters.size > 0 || 
-		currentTypeFilters.size > 0 || 
-		currentRankFilters.size > 0;
+		var hasActiveFilters = currentGenderFilters.size > 0 || currentPhaseFilters.size > 0 || currentTypeFilters.size > 0 || currentRankFilters.size > 0;
 
-		for (var item of items) {
-			var genderMatch = currentGenderFilters.size === 0 || [...currentGenderFilters].some(filter => item.classList.contains(filter));
-			var phaseMatch = currentPhaseFilters.size === 0 || [...currentPhaseFilters].some(filter => item.classList.contains(filter));
-			var typeMatch = currentTypeFilters.size === 0 || [...currentTypeFilters].some(filter => item.classList.contains(filter));
-			var rankMatch = currentRankFilters.size === 0 || [...currentRankFilters].some(filter => item.classList.contains(filter));
-
+		function checkItem(item) {
+			var genderMatch = currentGenderFilters.size === 0 || Array.from(currentGenderFilters).some(function(filter) {
+				return item.classList.contains(filter);
+			});
+			var phaseMatch = currentPhaseFilters.size === 0 || Array.from(currentPhaseFilters).some(function(filter) {
+				return item.classList.contains(filter);
+			});
+			var typeMatch = currentTypeFilters.size === 0 || Array.from(currentTypeFilters).some(function(filter) {
+				return item.classList.contains(filter);
+			});
+			var rankMatch = currentRankFilters.size === 0 || Array.from(currentRankFilters).some(function(filter) {
+				return item.classList.contains(filter);
+			});
+		
 			if (hasActiveFilters && genderMatch && phaseMatch && typeMatch && rankMatch) {
 				fadeIn(item);
 			} else {
 				fadeOut(item);
 			}
+		}
+		
+		for (var i = 0; i < items.length; i++) {
+			checkItem(items[i]); // Call the separate function with the current item
 		}
 	}
 
@@ -78,7 +86,8 @@ $(function() {
 			opacity -= 0.1;
 		}, 30);
 	}
-
+	
+	// Toggle button click handlers
 	function setupButtonClickHandlers(containerId, filterType) {
 		var btnContainer = $("#" + containerId);
 		var btns = btnContainer.find(".btn-filter-toggle");
@@ -117,23 +126,32 @@ $(function() {
 			});
 		});
 
-		// Handle "All" and "None" button clicks
-		//// Set defined items in filters
+		// Handle "All" button clicks
+		//// Add all filters in the set
 		btnContainer.find(".btn-filter-common-all").on("click", function() {
 			btns.addClass("btn-filter-toggle-checked");
 			if (filterType === 'gender') {
-				currentGenderFilters.add($(this).data("filter"));
+				btns.each(function() {
+					currentGenderFilters.add($(this).data("filter"));
+				});
 			} else if (filterType === 'phase') {
-				currentPhaseFilters.add($(this).data("filter"));
+				btns.each(function() {
+					currentPhaseFilters.add($(this).data("filter"));
+				});
 			} else if (filterType === 'type') {
-				currentTypeFilters.add($(this).data("filter"));
+				btns.each(function() {
+					currentTypeFilters.add($(this).data("filter"));
+				});
 			} else if (filterType === 'rank') {
-				currentRankFilters.add($(this).data("filter"));
+				btns.each(function() {
+					currentRankFilters.add($(this).data("filter"));
+				});
 			}
-			filterSelection();
+			filterSelection(); // Reapply filters after setting all
 		});
-		
-		//// Clear defined items in filters
+
+		// Handle "None" button clicks
+		//// Clear all filters in the set
 		btnContainer.find(".btn-filter-common-none").on("click", function() {
 			btns.removeClass("btn-filter-toggle-checked");
 			if (filterType === 'gender') {
@@ -145,7 +163,7 @@ $(function() {
 			} else if (filterType === 'rank') {
 				currentRankFilters.clear();
 			}
-			filterSelection(); // Hide only relevant items
+			filterSelection(); // Clear all items
 		});
 	}
 	

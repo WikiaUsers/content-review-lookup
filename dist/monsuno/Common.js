@@ -75,7 +75,7 @@ if(typeof WikiaScriptLoader === 'undefined') {
 }
 
 // prototype functions
-function $A(a) {
+/*function $A(a) {
 var r = [];
 for (var i = 0, len = a.length; i < len; ++i) r.push(a[i]);
 return r;

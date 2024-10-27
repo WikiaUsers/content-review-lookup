@@ -100,7 +100,7 @@ var myTools = $('#my-tools-menu').length ? $('#my-tools-menu') : $('<ul>');
 $('#p-my-tb-label').html('My tools');
 $('#p-my-tb-body').html(myTools);
 $('#p-my-tb-body ul')
-	.removeAttr('id class')
+	.removeAttr('class')
 	.append($('li:has([data-tracking="admindashboard/toolbar/admin"])'))
 	.append($('li:has([data-tracking="admindashboard/toolbar/reported"])'))
 	.append($('li:has([data-tracking="quickanswers/toolbar"])'))
@@ -221,6 +221,8 @@ if (mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submi
 
 if (subjectNamespace === -1){
 	$('#page-actions li:not(#ca-nstab-main-li)').remove();
+} else if (subjectNamespace === 110){
+	$('#ca-nstab-main-li').addClass('ca-tab-group-bookend');
 }
 
 // Footer

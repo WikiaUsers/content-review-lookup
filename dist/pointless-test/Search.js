@@ -11,16 +11,15 @@ var txt = "";
 function ddC(cat) {
 	var index = catList.indexOf(cat); //sets 'index' to the first instance of the param 'cat'
 	if (index == -1) {
-    //if 'cat' is not in array
-    catList.push(cat); //add 'cat' to the end
-    document.getElementById(cat).innerHTML = "<b>" + cat + "</b>";
-    document.getElementById(cat).className = 'select';
-    //bold
+    	//if 'cat' is not in array
+    	catList.push(cat); //add 'cat' to the end
+    	document.getElementById(cat).innerHTML = "<b>" + cat + "</b>"; //bold
+    	document.getElementById(cat).className = 'select'; //selected button
 	} else {
     	//if 'cat' is in array
     	catList.splice(index, 1); //remove it from the array
     	document.getElementById(cat).innerHTML = cat;
-    	document.getElementById(cat).className = 'deselect';
+    	document.getElementById(cat).className = 'deselect'; //not selected button
 	}
 }
 
@@ -64,15 +63,14 @@ function cB(cat, row) {
 	document.getElementById(row).appendChild(button);
 }
 
-if (window.location.pathname == '/wiki/DPL_Testing') {
-//Create buttons
+if(window.location.pathname == '/wiki/DPL_Testing') {
+	//Create buttons
 
-//Genders
-cB('Male', 'r1');
-cB('Female', 'r1');
-cB('Other', 'r1');
+	//Genders
+	cB('Male', 'r1');
+	cB('Female', 'r1');
+	cB('Other', 'r1');
 
-//Submit
-cB('Submit', 'r2');
-
+	//Submit
+	cB('Submit', 'r2');
 }

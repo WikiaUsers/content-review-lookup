@@ -13,50 +13,70 @@ window.AutoCreateUserPagesConfig = {
 $(function(){
 	var api = new mw.Api();
 	
-	// Custom theme-dependent CSS variables
+	// Custom theme-dependent CSS
 	
-	if ($('.theme-fandomdesktop-light').length === 1) {
-		$('head').prepend('<style>:root{--theme-accent-color--secondary:#dddddd;--theme-heading-color:#222222;}</style>');
-	} else {
-		$('head').prepend('<style>:root{--theme-accent-color--secondary:#222222;--theme-heading-color:#ffd942;}</style>');
-	}
+	(function(){
+		if ($(':root > .theme-fandomdesktop-light').length === 1){
+			$('head').prepend('<link rel="stylesheet" href="/load.php?mode=articles&only=styles&articles=MediaWiki:LightTheme.css">');
+		} else {
+			$('head').prepend('<link rel="stylesheet" href="/load.php?mode=articles&only=styles&articles=MediaWiki:DarkTheme.css">');
+		}
+	})();
 	
-	// Re-add proper namespace prefix to titles where it has been removed "by design"
+	// WikiEditor styling on protected pages
 	
-	api.get({
-		action:'query',
-		prop:'info',
-		titles:mw.config.get('wgPageName'),
-		inprop:'displaytitle',
-		format:'json',
-	}).done(function(data){
-		$('#firstHeading').html(data.query.pages[mw.config.get('wgArticleId')].displaytitle);
-		$('.ns-102.page-Portal_Main #firstHeading').html('Welcome to Memory Alpha');
-	});
+	(function(){
+		if (['edit', 'submit'].indexOf(mw.config.get('wgAction')) !== -1){
+			mw.hook( 'wikiEditor.toolbarReady' ).add(function(){
+				$('head').prepend('<link rel="stylesheet" href="/load.php?modules=ext.fandom.wikiEditorFandomDesktop.css&only=styles">');
+			});
+		}
+	})();
+	
+	// Title heading cleanup
+	
+	(function(){
+		var id = (mw.config.get('wgArticleId') === 0) ? '-1' : mw.config.get('wgArticleId');
+		
+		api.get({
+			action:'query',
+			prop:'info',
+			titles:mw.config.get('wgPageName'),
+			inprop:'displaytitle',
+			format:'json',
+		}).done(function(data){
+			$('#firstHeading').html(data.query.pages[id].displaytitle);
+			$('.ns-102.page-Portal_Main #firstHeading').html('Welcome to Memory Alpha');
+		});
+	})();
 	
 	// Tabs in sidebars
 	
-	var localImageHeights = [];
-	
-	$('.pi-item.wds-tabber').each(function(){
-		var localImages = $(this).find('.pi-image-thumbnail');
+	(function(){
+		var localImageHeights = [];
 		
-		localImages.each(function(){
-			localImageHeights.push($(this).attr('height'));
+		$('.pi-item.wds-tabber').each(function(){
+			var localImages = $(this).find('.pi-image-thumbnail');
+			
+			localImages.each(function(){
+				localImageHeights.push($(this).attr('height'));
+			});
+			
+			var height = Math.min.apply(this, localImageHeights);
+			
+			localImages.each(function(){
+				$(this).css({'height':height, 'width':'auto'});
+			});
+			
+			localImageHeights = [];
 		});
-		
-		var height = Math.min.apply(this, localImageHeights);
-		
-		localImages.each(function(){
-			$(this).css({'height':height, 'width':'auto'});
-		});
-		
-		localImageHeights = [];
-	});
+	})();
 	
 	// Correcting link behavior
 	
-	$('.internal-external-link [href^="https://memory-alpha.fandom.com/"]').removeAttr('target rel class');
+	(function(){
+		$('.internal-external-link [href^="https://memory-alpha.fandom.com/"]').removeAttr('target rel class');
+	})();
 	
 	// Remove "talk" link from forums
 	

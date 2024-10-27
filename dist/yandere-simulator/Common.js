@@ -237,6 +237,7 @@ window.MessageWallUserTags = {
         'Littleslinky': 'Helper',
         'Vividstardust': 'Deputy Helper',
         'AmaiOdayakaYansim123': 'Helper',
+        'Slimytent12': 'Helper',
         'VACANT': 'Intern',
     }
 };

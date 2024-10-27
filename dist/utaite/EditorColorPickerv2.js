@@ -667,7 +667,12 @@
 					}
 					updateColors(savedColors);
 				}).fail(function(data){
-					// do nothing
+					mw.loader.using('mediawiki.notification', function() {
+		                mw.notification.notify('Failed to load saved colors from User:' + config.wgUserName + '/editorcolor.css.', {
+		                    type: 'error',
+		                    tag: 'loadSavedColors'
+		                });
+		            });
 				});
 			}
 		}

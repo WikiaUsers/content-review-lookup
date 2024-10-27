@@ -17,7 +17,7 @@
 	function mx() {
 		var urlParams = new URLSearchParams(window.location.search);
 		var isDebug = urlParams.get("debugMapsExtended") == "1" || localStorage.getItem("debugMapsExtended") == "1";
-		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.2';
+		var isDisabled = (urlParams.get("disableMapsExtended") == "1" || localStorage.getItem("disableMapsExtended") == "1") && urlParams.get('forceEnableFork') != '0.3.3';
 		
 		if (isDebug) {
 		    var log = console.log.bind(window.console);
@@ -31,7 +31,7 @@
 		if (isDisabled) // @ts-ignore: this will be output into a function body
 		    return;
 		
-		console.log("Loaded MapsExtended.js (version 0.3.2" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
+		console.log("Loaded MapsExtended.js (version 0.3.3" + (isDebug ? ", DEBUG MODE)" : ")") + " (location is " + window.location + ")");
 		
 		// Do not run on pages without interactive maps
 		var test = document.querySelector(".interactive-maps-container");
@@ -5751,7 +5751,7 @@
 		        
 		        // In addition, uniqueness on marker IDs aren't enforced, so this ID may be shared by multiple elements
 		        if (marker instanceof Element && !marker.id) {
-		            var svg = marker.querySelector("svg");
+		            var svg = marker.querySelector("div.leaflet-marker-icon > svg");
 		            
 		            // Cache the marker id
 		            if (svg)

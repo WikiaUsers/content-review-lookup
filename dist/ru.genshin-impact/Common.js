@@ -51,12 +51,12 @@
 
 /* MapsExtended */
 	window.mapsExtendedConfig = {
-		"enableSidebar": true,
-		"sidebarBehaviour": "manual",
-		"sidebarInitialState": "show",
-		"enableSearch": true,
-		"openPopupsOnHover": false,
-		"enableTooltips": true
+		enableSearch: true,
+		enableSidebar: true,
+		enableTooltips: true,
+		sidebarBehaviour: "manual",
+		sidebarInitialState: "show",
+		openPopupsOnHover: false,
 	};
         /** translation change **/
         window.dev = window.dev || {};

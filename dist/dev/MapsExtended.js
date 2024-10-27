@@ -46,11 +46,7 @@
         unsubscribe: function(listener)
         {
             var index = this._listeners.indexOf(listener);
-            if (index != -1)
-            {
-                this._listeners.splice(index, 1);
-                this._listernerParams.splice(index, 1);
-            }
+            if (index != -1) this._listeners.splice(index, 1);
         },
         
         invoke: function(args)
@@ -511,7 +507,12 @@
             this.elements = {};
             this.elements.rootElement = root;
             this.elements.rootElementParent = root.parentElement;
+            this.elements.rootElementChild = root.querySelector(".interactive-maps");
             this.elements.mapModuleContainer = root.querySelector(".Map-module_container__dn27-");
+
+            // To ensure that Interactive Maps doesn't fullscreen, override the fullscreen API function for the element
+            var rec = this.elements.rootElementChild;
+            rec.requestFullscreen = rec.msRequestFullscreen = rec.mozRequestFullscreen = rec.webkitRequestFullscreen = function(){ return Promise.reject(); };
 
             // Copy each of the properties from the already-existing deserialization of the JSON into ExtendedMap
             // We could use Object.assign(this, map) (a shallow copy), then any objects are shared between the original map and the extended map
@@ -651,29 +652,15 @@
             this.onMouseUp = this.onMouseUp.bind(this);
 
             // Infer iconAnchor from iconPosition
-            if (this.config["iconPosition"] != undefined)
+            if (this.config.iconPosition != undefined)
             {
-                this.config["iconAnchor"] = "";
-                if (this.config["iconPosition"].startsWith("top"))     this.config["iconAnchor"] += "bottom";
-                if (this.config["iconPosition"].startsWith("center"))  this.config["iconAnchor"] += "center";
-                if (this.config["iconPosition"].startsWith("bottom"))  this.config["iconAnchor"] += "top";
-                if (this.config["iconPosition"].endsWith("left"))      this.config["iconAnchor"] += "-right";
-                if (this.config["iconPosition"].endsWith("center"))    this.config["iconAnchor"] += "";
-                if (this.config["iconPosition"].endsWith("right"))     this.config["iconAnchor"] += "-left";
-            }
-
-            // Infer hiddenCategories from visibleCategories
-            // A category is hidden if it either isn't present in visibleCategories, or is present in hiddenCategories
-            if (this.config["visibleCategories"] != undefined && this.config["visibleCategories"].length > 0)
-            {
-                for (var i = 0; i < this.categories.length; i++)
-                {
-                    var id = this.categories[i].id;
-                    
-                    // Add all categories NOT in visibleCategories to hiddenCategories
-                    if (!this.config.visibleCategories.includes(id) && !this.config.hiddenCategories.includes(id))
-                        this.config.hiddenCategories.push(id);
-                }
+                this.config.iconAnchor = "";
+                if (this.config.iconPosition.startsWith("top"))     this.config.iconAnchor += "bottom";
+                if (this.config.iconPosition.startsWith("center"))  this.config.iconAnchor += "center";
+                if (this.config.iconPosition.startsWith("bottom"))  this.config.iconAnchor += "top";
+                if (this.config.iconPosition.endsWith("left"))      this.config.iconAnchor += "-right";
+                if (this.config.iconPosition.endsWith("center"))    this.config.iconAnchor += "";
+                if (this.config.iconPosition.endsWith("right"))     this.config.iconAnchor += "-left";
             }
             
             // Process category definitions
@@ -684,18 +671,60 @@
             for (var i = 0; i < this.markers.length; i++)
                 this.markers[i] = new ExtendedMarker(this, this.markers[i]);
 
+            // Add category from transclusionOptions to visibleCategories
+            this.config.visibleCategories = this.config.visibleCategories || [];
+
+            // When marker attribute is present in embed, inherantly disable all categories
+            // <interactive-map marker="xyz">
+            if (this.transclusionOptions.marker)
+            {
+                var visibleMarker = this.markerLookup.get(this.transclusionOptions.marker);
+                if (visibleMarker) this.config.visibleCategories.push(visibleMarker.categoryId);
+                
+                visibleMarker.category.setIndeterminateMarkers([ visibleMarker ]);
+            }
+
+            // When category-name or category-id attribute is present, disable
+            // <interactive-map category-id="xyz">
+            if (this.transclusionOptions.categoryId)
+            {
+                var visibleCategory = this.categoryLookup.get(this.transclusionOptions.categoryId);
+                if (visibleCategory) this.config.visibleCategories.push(visibleCategory.id);
+            }
+            
+            // <interactive-map category-name="xyz">
+            else if (this.transclusionOptions.categoryName)
+            {
+                var visibleCategory = this.categories.find(function(c){ return c.name == this.transclusionOptions.categoryName; }.bind(this));
+                if (visibleCategory) this.config.visibleCategories.push(visibleCategory.id);
+            }
+
             // Remove empty categories (categories that contain no markers)
             for (var i = 0; i < this.categories.length; i++)
             {
-                if (this.categories[i].markers.length == 0)
+                var category = this.categories[i];
+                
+                // Determine whether the category should be disabled by default
+                // A category is disabled if it has the "disabled" hint, isn't present in enabledCategories, or is present in disabledCategories
+                category.startDisabled = category.hints.includes("disabled") ||
+                   (this.config.enabledCategories && this.config.enabledCategories.length > 0 && !this.config.enabledCategories.includes(category.id)) ||
+                   (this.config.disabledCategories && this.config.disabledCategories.length > 0 && this.config.disabledCategories.includes(category.id));
+
+                // Determine whether the category should be hidden by default
+                // A category is hidden if it has the "hidden" hint, isn't present in visibleCategories, or is present in hiddenCategories
+                category.startHidden = category.hints.includes("hidden") ||
+                   (this.config.visibleCategories && this.config.visibleCategories.length > 0 && !this.config.visibleCategories.includes(category.id)) ||
+                   (this.config.hiddenCategories && this.config.hiddenCategories.length > 0 && this.config.hiddenCategories.includes(category.id));
+                
+                if (category.markers.length == 0)
                 {
-                    log("Removed category \"" + this.categories[i].name + "\" (" + this.categories[i].id + ") because it contained no markers");
+                    log("Removed category \"" + category.name + "\" (" + category.id + ") because it contained no markers");
 
                     // Remove from lookup
-                    this.categoryLookup.delete(this.categories[i].id);
+                    this.categoryLookup.delete(category.id);
 
                     // Remove elements from DOM
-                    var filterInputElement = document.getElementById(this.mapId + "__checkbox-" + this.categories[i].id);
+                    var filterInputElement = document.getElementById(this.mapId + "__checkbox-" + category.id);
                     if (filterInputElement)
                     {
                         var filterElement = filterInputElement.closest(".interactive-maps__filter");
@@ -1179,9 +1208,6 @@
                 this.elements.zoomInButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-in");
                 this.elements.zoomOutButton = this.elements.leafletControlContainer.querySelector(".leaflet-control-zoom-out");
                 this.elements.fullscreenButton = this.elements.leafletControlContainer.querySelector(".leaflet-control:has(.map-fullscreen-control)");
-                
-                // List of all marker elements
-                var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
 
                 // Get the initial zoomScale
                 this.zoomScale = this.getElementTransformScale(this.elements.leafletProxy, true) * 2
@@ -1261,6 +1287,9 @@
         
                 var skipIndexAssociation = false;
                 var skipAssociationForCategories = [];
+                
+                // List of all marker elements
+                var markerElements = this.elements.leafletMarkerPane.querySelectorAll(".leaflet-marker-icon:not(.marker-cluster)");
 
                 for (var i = 0; i < this.markers.length; i++)
                 {
@@ -1400,42 +1429,45 @@
                 // Mouse up event (remove first to ensure this only gets added once)
                 window.removeEventListener("mouseup", this.onMouseUp);
                 window.addEventListener("mouseup", this.onMouseUp);
-                
-                // Remove non-navigating hrefs, which show a '#' in the navbar, and a link in the bottom-left
-                this.elements.zoomInButton.removeAttribute("href");
-                this.elements.zoomOutButton.removeAttribute("href");
-                this.elements.zoomInButton.setAttribute("tabindex", "0");
-                this.elements.zoomOutButton.setAttribute("tabindex", "0");
-                this.elements.zoomInButton.style.cursor = this.elements.zoomOutButton.style.cursor = "pointer";
-                this.elements.zoomInButton.addEventListener("click", zoomButtonClick.bind(this));
-                this.elements.zoomOutButton.addEventListener("click", zoomButtonClick.bind(this));
-                function zoomButtonClick(e)
+
+                if (this.elements.zoomInButton && this.elements.zoomOutButton)
                 {
-                    // If this was from a keydown event with the enter key, click the button
-                    if (e instanceof KeyboardEvent && e.key == "Enter")
+                    // Remove non-navigating hrefs, which show a '#' in the navbar, and a link in the bottom-left
+                    this.elements.zoomInButton.removeAttribute("href");
+                    this.elements.zoomOutButton.removeAttribute("href");
+                    this.elements.zoomInButton.setAttribute("tabindex", "0");
+                    this.elements.zoomOutButton.setAttribute("tabindex", "0");
+                    this.elements.zoomInButton.style.cursor = this.elements.zoomOutButton.style.cursor = "pointer";
+                    this.elements.zoomInButton.addEventListener("click", zoomButtonClick.bind(this));
+                    this.elements.zoomOutButton.addEventListener("click", zoomButtonClick.bind(this));
+                    function zoomButtonClick(e)
                     {
-                        var clickEvent = new PointerEvent("click",
+                        // If this was from a keydown event with the enter key, click the button
+                        if (e instanceof KeyboardEvent && e.key == "Enter")
                         {
-                            view: window,
-                            bubbles: true,
-                            cancelable: false,
-
-                            // This is important to handle "big" zooms
-                            shiftKey: e.shiftKey
-                        });
-
-                        e.currentTarget.dispatchEvent(clickEvent);
-                    }
-                    else if (e instanceof PointerEvent)
+                            var clickEvent = new PointerEvent("click",
+                            {
+                                view: window,
+                                bubbles: true,
+                                cancelable: false,
+    
+                                // This is important to handle "big" zooms
+                                shiftKey: e.shiftKey
+                            });
+    
+                            e.currentTarget.dispatchEvent(clickEvent);
+                        }
+                        else if (e instanceof PointerEvent)
+                            e.preventDefault();
+    
+                        this.zoomType = "button";
+                        this.zoomCenter = [ this.elements.leafletContainer.clientWidth / 2, this.elements.leafletContainer.clientHeight / 2 ];
+                        this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
+                        this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
+                        this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
                         e.preventDefault();
-
-                    this.zoomType = "button";
-                    this.zoomCenter = [ this.elements.leafletContainer.clientWidth / 2, this.elements.leafletContainer.clientHeight / 2 ];
-                    this.zoomStartTransform = this.getElementTransformPos_css(this.elements.leafletBaseImageLayer);
-                    this.zoomStartViewportPos = this.transformToViewportPosition(this.zoomStartTransform);
-                    this.zoomStartSize = this.getElementSize(this.elements.leafletBaseImageLayer);
-                    e.preventDefault();
-                };
+                    };
+                }
 
                 // Record zoom position when scroll wheel is used
                 this.elements.leafletContainer.addEventListener("wheel", function(e)
@@ -1757,8 +1789,7 @@
                     mapModuleContainer.childElementCount == 0 || leafletContainer.childElementCount == 0 ||
                     mapModuleContainer.querySelector("img.Map-module_imageSizeDetect__YkHxA") != null ||
                     leafletContainer.querySelector(".LoadingOverlay-module_overlay__UXv3B") != null || 
-                    leafletContainer.querySelector(".leaflet-map-pane > .leaflet-overlay-pane > *") == null || 
-                    leafletContainer.querySelector(".leaflet-control-container .leaflet-control-zoom") == null)
+                    leafletContainer.querySelector(".leaflet-map-pane > .leaflet-overlay-pane > *") == null)
                 {
                     return false;
                 }
@@ -1797,6 +1828,32 @@
                     return "[[Map:" + name + "]]";
                 else if (returns == "string")
                     return "<a href=\"/wiki/Map:" + encodeURIComponent(name) + "\">Map:" + name + "</a>";
+            },
+
+            adjustMapDropdown: function(button, content)
+            {
+                var root = this.elements.rootElement;
+
+                var buttonRect = button.getBoundingClientRect();
+                var contentRect = content.getBoundingClientRect();
+                var rootRect = root.getBoundingClientRect();
+                
+                // Resize the list to be a bit less than the height of the root map container
+                var bottomPadding = (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35);
+                var maxHeight = Math.min(600, (rootRect.height - bottomPadding) + 2);
+                content.style.maxHeight = maxHeight + "px";
+
+                // Resize the list to be no greater than the width of the root map container
+                var maxWidth = Math.min(320, Math.round(rootRect.width + 2));
+                var width = Math.min(maxWidth, contentRect.width);
+                content.style.maxWidth = maxWidth + "px";
+
+                // When the list would overflow, shift it across
+                var leftOffset = rootRect.right - (buttonRect.x + width);
+                if (leftOffset < 0)
+                    content.style.left = leftOffset + "px";
+                else
+                    content.style.left = "";
             },
 
             togglePopupObserver: function(state)
@@ -4241,6 +4298,7 @@
                 var searchBoxHint = searchBox.querySelector(".wds-input__hint");
                 var searchBoxHintContainer = searchBox.querySelector(".wds-input__hint-container");
                 var searchResultsList = searchRoot.querySelector(".mapsExtended_searchResults");
+                var searchDropdownContent = searchDropdown.querySelector(".wds-dropdown__content");
                 var searchDropdownButton = searchDropdown.querySelector(".mapsExtended_searchDropdownButton");
 
                 // Cache the elements
@@ -4251,14 +4309,12 @@
                 search.elements.searchBoxHintContainer = searchBoxHintContainer;
                 search.elements.searchResultsList = searchResultsList;
                 search.elements.searchDropdown = searchDropdown;
+                search.elements.searchDropdownContent = searchDropdownContent;
                 search.elements.searchDropdownButton = searchDropdownButton;
 
                 // Set some strings from i18n
                 searchBoxInput.setAttribute("placeholder", mapsExtended.i18n.msg("search-placeholder").plain());
                 this.updateSearchSubtitle();
-
-                // Resize the searchRoot to be a bit less than the height of the root map container
-                searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
 
                 /* Events and functions */
 
@@ -4272,11 +4328,14 @@
 
                 }.bind(this));
 
+                // Resize the searchRoot to be a bit less than the height of the root map container
+                //searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
+                this.adjustMapDropdown(this.search.elements.searchDropdownButton, this.search.elements.searchDropdownContent);
+
                 // Add a listener which changes the min height of the search box when it is opened
                 searchDropdownButton.addEventListener("mouseenter", function(e)
                 {
-                    // Resize the searchRoot to be a bit less than the height of the root map container
-                    searchRoot.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35)) + "px";
+                    this.adjustMapDropdown(this.search.elements.searchDropdownButton, this.search.elements.searchDropdownContent);
                     
                 }.bind(this));
 
@@ -6039,8 +6098,8 @@
                 
                 // Add default filter functions, which determine how the markers are filtered when the filter is updated
                 
-                // Only show visible categories
-                this.filterFunctions.push(function(m){ return m.category.visible; });
+                // Only show visible categories (although in some cases markers may set their own visibility)
+                this.filterFunctions.push(function(m){ return m.visible || m.category.visible; });
 
                 // When we have collectibles, only show the collectibles if the current "incomplete/complete" filter allows for its collected state
                 this.filterFunctions.push(function(m){return m.map.hasCollectibles && m.category.collectible ? m.collected ? m.map.collectedVisible : m.map.nonCollectedVisible : true; })
@@ -6351,13 +6410,13 @@
                 rootGroup.updateCheckedVisualState();
 
                 // Resize the searchRoot to be a bit less than the height of the root map container
-                this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
+                //this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - 35) + "px";
+                this.adjustMapDropdown(this.elements.filtersDropdownButton, this.elements.filtersDropdownContent);
 
                 // Add a listener which changes the min height of the search box when it is opened
                 this.elements.filtersDropdownButton.addEventListener("mouseenter", function(e)
                 {
-                    // Resize the list to be a bit less than the height of the root map container
-                    this.elements.filtersDropdownContent.style.maxHeight = (this.elements.rootElement.clientHeight - (this.isFullscreen || this.isWindowedFullscreen || this.isMinimalLayout ? 60 : 35)) + "px";
+                    this.adjustMapDropdown(this.elements.filtersDropdownButton, this.elements.filtersDropdownContent);
                     
                 }.bind(this));
 
@@ -6691,12 +6750,6 @@
             var lastIndex = this.id.lastIndexOf("__");
             this.hints = lastIndex >= 0 ? this.id.slice(lastIndex + 2).split("_") : [];
 
-            // Determine whether the category should be hidden by default
-            this.startHidden = this.hints.includes("hidden") || (Array.isArray(map.config.hiddenCategories) && map.config.hiddenCategories.includes(this.id));
-
-            // Determine whether the category should be disabled
-            this.startDisabled = this.hints.includes("disabled") || (Array.isArray(map.config.disabledCategories) && map.config.disabledCategories.includes(this.id));
-
             // Categories always start enabled, for the same reason
             this.disabled = false;
 
@@ -6708,23 +6761,73 @@
 
         ExtendedCategory.prototype =
         {
+            // The category (and the markers within) is visible if it's checked and not indeterminate
             get visible()
             {
-                return this.elements.checkboxInput.checked;
+                return this.initialized ? 
+                    this.elements.checkboxInput.checked && !this.elements.checkboxInput.indeterminate :
+                    this.startHidden || this.startDisabled;
             },
 
             // Set visible state on the category
             // This doesn't filter the markers, for this you need to call ExtendedMap.updateFilter
             set visible(value)
             {
-                // Set checked state on checkbox (it's used as a backing field for ExtendedCategory.visible)
-                // This does not fire the "change" event
-                this.elements.checkboxInput.checked = value;
-                this.elements.checkboxInput.indeterminate = false;
+                if (this.initialized)
+                {
+                    // Set checked state on checkbox (it's used as a backing field for ExtendedCategory.visible)
+                    // This does not fire the "change" event
+                    this.elements.checkboxInput.checked = value;
 
-                // Fire events
-                this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: value });
-                this.onCategoryToggled.invoke(value);
+                    // If there are indeterminate markers (markers that are shown even if the category is hidden), clear them
+                    if (this.indeterminateMarkers && !this.startIndeterminate)
+                        this.setIndeterminateMarkers(null);
+    
+                    // Fire events
+                    this.map.events.onCategoryToggled.invoke({ map: this.map, category: this, value: value });
+                    this.onCategoryToggled.invoke(value);   
+                }
+                else
+                {
+                    this.startHidden = value;
+                }
+            },
+
+            setIndeterminateMarkers: function(markers)
+            {
+                markers = Array.isArray(markers) ? markers :
+                        markers instanceof ExtendedMarker ? [ markers ] :
+                        null;
+
+                var indeterminate;
+
+                // Clear visible on old
+                if (markers == null)
+                {
+                    indeterminate = false;
+                    
+                    if (this.indeterminateMarkers)
+                    {
+                        for (var i = 0; i < this.indeterminateMarkers.length; i++)
+                            this.indeterminateMarkers[i].visible = false;
+                    }
+                }
+
+                // Set visible on new
+                else
+                {
+                    indeterminate = true
+                    
+                    for (var i = 0; i < markers.length; i++)
+                        markers[i].visible = true;
+                }
+                
+                this.indeterminateMarkers = markers;
+                
+                if (this.initialized)
+                    this.elements.checkboxInput.indeterminate = indeterminate;
+                else
+                    this.startIndeterminate = indeterminate;
             },
                     
             toggle: function(value)
@@ -6735,6 +6838,17 @@
 
             init: function(filterElement)
             {
+                this.initialized = true;
+                
+                // If the filter is currently unchecked for this category, check it so that we can associate the markers
+                // This can happen with embedded maps with category-name= or category-id=, or marker=
+                // We click the element before removing it because Interactive Maps checkboxes only work when they're
+                // under an interactive-map-xyz class, and within the hierarchy
+                var originalFilter = filterElement;
+                var originalInput = filterElement.querySelector("input");
+                if (!originalInput.checked) originalInput.click();
+                filterElement.remove();
+                
                 // Clone filter element and all its children to remove all event listeners
                 // This is easier than reconstructing the hierarchy, and more bulletproof than using hacks to remove listeners
                 filterElement = this.elements.filter = filterElement.cloneNode(true);
@@ -6769,8 +6883,18 @@
                     this.disabled = true;
                     this.elements.filter.style.display = "none";
                 }
+
+                // Toggle every category initially
+                this.toggle(!(this.startHidden == true || this.startDisabled == true));
+
+                if (this.startIndeterminate)
+                {
+                    this.elements.checkboxInput.indeterminate = true;
+                }
                 
-                if (this.startHidden == true || this.startDisabled == true) this.toggle(false);
+                delete this.startHidden;
+                delete this.startDisabled;
+                delete this.startIndeterminate;
             },
 
             deinit: function()

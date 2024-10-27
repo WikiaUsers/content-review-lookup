@@ -76,7 +76,7 @@ var ttBgStyle = "background-color:black;";
 var ttHTMLStart = '<div style="font-size:1em; width: auto; max-width:20em; ' + ttBgStyle + '">';
 
 // prototype functions
-function $A(a) {
+/*function $A(a) {
 var r = [];
 for (var i = 0, len = a.length; i < len; ++i) r.push(a[i]);
 return r;

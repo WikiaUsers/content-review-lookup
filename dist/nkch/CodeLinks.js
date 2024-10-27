@@ -1,6 +1,6 @@
 /* CodeLinks.css • Не вики (https://nkch.fandom.com) */
 /* Original code: https://en.wiktionary.org/wiki/MediaWiki:Gadget-CodeLinks.js */
-/* [[Category:JS]], [[Category:JS - Преимущественно импорт]] */
+/* [[Category:JS]], [[Category:JS - Преимущественно импорт]], [[Category:JS - Адаптированные]] */
 
 $(function () {
     'use strict';

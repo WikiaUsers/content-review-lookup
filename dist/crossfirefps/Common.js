@@ -75,10 +75,3 @@ window.tooltips_config = {
     events: ['CustomEvent'],
     noCSS: true,
 };
-
-/* CrossFire Wiki Discord */
-window.DiscordBannerSettings = {
-    bannerStyle: '4',
-    inviteLink: 'UNTTsUz3Rh',
-    prependToRail: true
-};

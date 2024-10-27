@@ -9,6 +9,7 @@ window.UserTagsJS = {
         "content-moderator": { u: 'Semi-Finalist' },
         threadmoderator: { u: 'Semi-Finalist' },
         rollback: { u: 'Auditionee' },
+       "quick-answers-editor": { u: 'Montaged Auditionee' },
         episodepageseditor: { u: 'Episode Page Editor' },
         creator: { u: 'Head Judge' }
     }

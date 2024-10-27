@@ -34,11 +34,17 @@ $(function() {
 	var betterDiff = {
 		init: function() {
 			
+			// Make methods public for any desired use past the offered here
+			window.dev.BetterDiffMethods = betterDiff;
+			
 			// Get tokens
 			betterDiff.fetchTokens();
 			
-			// Load infobox styles for previews
-			mw.loader.load('ext.fandom.PortableInfoboxFandomDesktop.css');
+			// Load infobox and gallery styles for previews
+			mw.loader.load([
+				'ext.fandom.PortableInfoboxFandomDesktop.css',
+				'ext.fandom.photoGallery.gallery.css'
+			]);
 			
 			// Add CSS
 			mw.util.addCSS(
@@ -119,11 +125,11 @@ $(function() {
 			// Check we're in a diff page
 			else if (config.wgDiffNewId) {
 				betterDiff.waitFor('#mw-diff-ntitle1', betterDiff.newDiff);
+				betterDiff.quickDiff();
 			}
 			
 			// Check if there's any custom-made diff list
 			if (document.querySelector('.quickDiff-custom')) {
-				betterDiff.quickDiffLoad();
 				betterDiff.quickDiff();
 			}
 			
@@ -601,7 +607,7 @@ $(function() {
 				};
 				
 				if (event.target.classList.contains('quickDiff')) {
-					api_opt[event.target.getAttribute('newid')=='prev'? 'torelative' : 'torev'] = event.target.getAttribute('newid');
+					api_opt[['prev', 'next'].includes(event.target.getAttribute('newid')) ? 'torelative' : 'torev'] = event.target.getAttribute('newid');
 					if (event.target.getAttribute('newdiff') == 'yes'||event.target.getAttribute('oldid') == '0') {
 						api_opt.fromslots = 'main';
 						api_opt['fromtext-main'] = '';
@@ -661,7 +667,9 @@ $(function() {
 									(render.parse && render.parse.text && render.parse.text['*']) ? 
 										render.parse.text['*'] :
 										'<strong class="error">Failed to preview!</strong>'
-								);
+								)
+								/* Common toggles wont render so enable any that exists */
+								.find('.mw-collapsible').makeCollapsible();
 							});
 						});
 					});
@@ -680,7 +688,7 @@ $(function() {
 							var patrol = false;
 							
 							while (
-								!document.querySelector('#mw-diff-ntitle4 > .patrollink') &&
+								!document.querySelector('#quickDiff-quickview #mw-diff-ntitle4 > .patrollink') &&
 								check.query.recentchanges[num] &&
 								can.patrol && patrol == false
 							) {
@@ -691,7 +699,7 @@ $(function() {
 									(diff.torevid && !diff.fromrevid &&
 									check.query.recentchanges[num].revid == diff.torevid)
 								)) {
-									document.querySelector('#mw-diff-ntitle4').innerHTML +=
+									document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML +=
 									'<span class="patrollink" data-mw="interface">['+
 										'<a tabindex="0" '+
 											'torevid="'+diff.torevid+'" '+
@@ -740,8 +748,8 @@ $(function() {
 						}
 						
 						// Build left side
-						if (prev !== false && !isNaN(prev) && document.querySelector('#mw-diff-otitle4')) {
-							document.querySelector('#mw-diff-otitle4').innerHTML = 
+						if (prev !== false && !isNaN(prev) && document.querySelector('#quickDiff-quickview #mw-diff-otitle4')) {
+							document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML = 
 							'<a '+
 								'revid="'+(prev==0 ? revs[num-1].revid : prev)+'" '+
 								'currid="'+diff.torevid+'" '+
@@ -751,12 +759,12 @@ $(function() {
 							'>'+
 								'← Older edit'+
 							'</a>'+
-							document.querySelector('#mw-diff-otitle4').innerHTML; //prepend to existing content
+							document.querySelector('#quickDiff-quickview #mw-diff-otitle4').innerHTML; //prepend to existing content
 						}
 						
 						// Build right side
-						if (next !== false && !isNaN(next) && document.querySelector('#mw-diff-ntitle4')) {
-							document.querySelector('#mw-diff-ntitle4').innerHTML = 
+						if (next !== false && !isNaN(next) && document.querySelector('#quickDiff-quickview #mw-diff-ntitle4')) {
+							document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML = 
 							'<a '+
 								'revid="'+next+'" '+
 								'currid="'+(diff.torevid ? diff.fromrevid : next)+'" '+
@@ -765,8 +773,8 @@ $(function() {
 							'>'+
 								'Newer edit →'+
 							'</a> '+
-							document.querySelector('#mw-diff-ntitle4').innerHTML; // prepend to any existing content
-							$('.diff-ntitle .mw-diff-edit > a').after(' | <a href="'+config.wgServer+mw.util.getUrl(diff.totitle)+'?action=edit" title="'+diff.totitle.replace(/"/g, '&quot;')+'">curr</a>');
+							document.querySelector('#quickDiff-quickview #mw-diff-ntitle4').innerHTML; // prepend to any existing content
+							$('#quickDiff-quickview .diff-ntitle .mw-diff-edit > a').after(' | <a href="'+config.wgServer+mw.util.getUrl(diff.totitle)+'?action=edit" title="'+diff.totitle.replace(/"/g, '&quot;')+'">curr</a>');
 						}
 					}).catch(console.log);
 					
@@ -775,38 +783,43 @@ $(function() {
 			
 			// Build modal and start up listeners
 			mw.hook('dev.modal').add(function(Modal) {
+				var buttons = [
+					{
+						// Open Diff
+						text:'Open',
+						id:'quickDiff-OpenLink',
+						event: 'OpenLink'
+					},
+					{
+						// Copy Diff Link
+						text:'Copy',
+						id:'quickDiff-CopyLink',
+						event: 'CopyLink'
+					}
+				];
+				
+				// Only add page has list of diffs
+				if (!config.wgDiffNewId) {
+					buttons.push({
+						// Open previous quick diff (up the list) (Keybind: ALT+2)
+						text:'Up',
+						id:'quickDiff-OpenPrev',
+						event: 'OpenPrev'
+					});
+					buttons.push({
+						// Open next quick diff (down the list) (ALT+3)
+						text:'Down',
+						id:'quickDiff-OpenNext',
+						event: 'OpenNext'
+					});
+				}
 				quickview = 
 					new Modal.Modal({
 						title: 'Quick Diff',
 						id: 'quickDiff-quickview',
 						size: 'full',
 						content: '',
-						buttons: [
-							{
-								// Open Diff
-								text:'Open',
-								id:'quickDiff-OpenLink',
-								event: 'OpenLink'
-							},
-							{
-								// Copy Diff Link
-								text:'Copy',
-								id:'quickDiff-CopyLink',
-								event: 'CopyLink'
-							},
-							{
-								// Open previous quick diff (up the list) (Keybind: ALT+2)
-								text:'Up',
-								id:'quickDiff-OpenPrev',
-								event: 'OpenPrev'
-							},
-							{
-								// Open next quick diff (down the list) (ALT+3)
-								text:'Down',
-								id:'quickDiff-OpenNext',
-								event: 'OpenNext'
-							}
-						],
+						buttons: buttons,
 						events: {
 							CopyLink: function() {
 								navigator.clipboard.writeText(href);
@@ -850,7 +863,7 @@ $(function() {
 			var addLink = function(diff) {
 				if (diff && diff.getAttribute('href')) {
 					var href = diff.getAttribute('href');
-					var newid = /diff=(\d+|prev)/.exec(href)[1];
+					var newid = /diff=(\d+|prev|next)/.exec(href)[1];
 					var oldid = /oldid=\d+/.test(href) ? /oldid=(\d+)/.exec(href)[1] : '0';
 					var link = document.createElement('a');
 					link.setAttribute('newid', newid);
@@ -869,8 +882,10 @@ $(function() {
 						var span = document.createElement('span');
 						span.appendChild(link);
 						diff.parentElement.after(span);
-					} else if (diff.closest('.quickDiff-custom')){
+					} else if (diff.closest('.quickDiff-custom') || diff.closest('.diff-ntitle')){
 						diff.before('(', link, ') ');
+					} else if (diff.closest('.diff-otitle')){
+						diff.after(' (', link, ')');
 					} else {
 						diff.after(' | ', link);
 					}
@@ -880,7 +895,8 @@ $(function() {
 				'.mw-changeslist-diff:not(.quickDiffLoaded), '+
 				'.mw-changeslist-groupdiff:not(.quickDiffLoaded), '+
 				'.mw-history-histlinks > span:first-child + span > a:not(.quickDiffLoaded), '+
-				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff)';
+				'.quickDiff-custom li > a:not(.quickDiffLoaded, .quickDiff), '+
+				'.page__main .diff a:is(#differences-nextlink, #differences-prevlink):not(.quickDiffLoaded, .quickDiff)';
 			if (els) {
 				els.filter(cond).each(function(_, el){ addLink(el); }); // run on elements that are the target
 				els.find(cond).each(function(_, el){ addLink(el); }); // run on wrappers that contain the target
@@ -1019,7 +1035,7 @@ $(function() {
 		// Open next diff in RC or user contribs list
 		openNext: function() {
 			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
-			if (curr.length==0){return;}
+			if (curr.length==0 || config.wgDiffNewId){return;}
 			var next = null;
 			function getNext(ref) {
 				next = ref.next('table, li');
@@ -1054,7 +1070,7 @@ $(function() {
 		// Open next diff in RC or user contribs list
 		openPrev: function() {
 			var curr = $(':is(table, li):has(.quickDiff.link-focused)');
-			if (curr.length==0){return;}
+			if (curr.length==0 || config.wgDiffNewId){return;}
 			var prev = null;
 			function getPrev(ref) {
 				prev = ref.prev('table, li');
