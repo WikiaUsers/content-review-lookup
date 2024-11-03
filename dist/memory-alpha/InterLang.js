@@ -139,16 +139,16 @@ $(function(){
 		
 		var validRoles = ['bot', 'bureaucrat', 'sysop', 'content-moderator', 'rollback', 'quick-answers-editor'];
 		
-		$.getJSON('/' + lang.code + '/api.php' +
-			'?action=listuserssearchuser' +
-			'&groups=' + validRoles.join(',') +
-			'&contributed=0' +
-			'&limit=100' +
-			'&order=ts_edit' +
-			'&sort=desc' +
-			'&offset=0' +
-			'&format=json',
-		function(result){
+		$.getJSON('/' + lang.code + '/api.php', {
+			action:'listuserssearchuser',
+			groups:validRoles.join(','),
+			contributed:'0',
+			limit:'100',
+			order:'ts_edit',
+			sort:'desc',
+			offset:'0',
+			format:'json',
+		}).done(function(result){
 			var now = new Date().getTime();
 			
 			for (var i = 0; i < result.listuserssearchuser.result_count; i++){
@@ -206,12 +206,12 @@ $(function(){
 			return;
 		}
 		
-		$.getJSON('/' + lang.code + '/api.php' +
-			'?action=query' +
-			'&meta=siteinfo' +
-			'&siprop=statistics' +
-			'&format=json',
-		function(result){
+		$.getJSON('/' + lang.code + '/api.php', {
+			action:'query',
+			meta:'siteinfo',
+			siprop:'statistics',
+			format:'json',
+		}).done(function(result){
 			$('.international-stats .placeholder').before($('<tr>')
 				.append(link('', lang.nameLocal, lang))
 				.append(link('Category:User ' + lang.code, lang.code, lang))

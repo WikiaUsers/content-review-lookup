@@ -18,7 +18,7 @@ mw.loader.using('mediawiki.api').then(function() {
         i18n;
 
     if (
-        !/sysop|content-moderator|staff|wiki-specialist|soap/.test(config.wgUserGroups.join()) ||
+        !/sysop|content-moderator|staff|wiki-specialist|soap|global-edit-reviewer/.test(config.wgUserGroups.join()) ||
         window.powerDelLoaded ||
         config.wgNamespaceNumber === -1 ||
         config.wgNamespaceNumber === 1200 ||

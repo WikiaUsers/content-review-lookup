@@ -45,10 +45,13 @@ function togglePreference(linkSelector, cookieName, cookie1, cookie2, link1, lin
   var userlinks = document.querySelectorAll('.wds-tabs');
   for (var i = 0; i < userlinks.length; i++) {
     var switchView = document.querySelector('#' + linkSelector + i);
-    if (preference == cookie2) {
-      switchView.textContent = link2;
-    } else {
-      switchView.textContent = link1;
+    // the Castle page doesn't create #switchExpansion1 so we have to check this
+    if (switchView) {
+      if (preference == cookie2) {
+        switchView.textContent = link2;
+      } else {
+        switchView.textContent = link1;
+      }
     }
   }
   if (preference == cookie2) {

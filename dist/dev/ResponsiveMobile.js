@@ -51,7 +51,7 @@
     }
 
     function isContentModOrAbove() {
-      return /sysop|staff|wiki-specialist|content-moderator|soap/.test(
+      return /sysop|staff|wiki-specialist|content-moderator|soap|global-edit-reviewer/.test(
         conf.wgUserGroups
       );
     }

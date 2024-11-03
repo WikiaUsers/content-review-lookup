@@ -52,7 +52,7 @@
         // The amount of dependencies to load
         loaded: 2,
         // If the user can rollback edits
-        canRollback: /(sysop|soap|staff|content-moderator|rollback|wiki-specialist|content-volunteer)/.test(mw.config.get('wgUserGroups').join(' ')),
+        canRollback: /(sysop|soap|staff|content-moderator|rollback|wiki-specialist|content-volunteer|global-edit-reviewer)/.test(mw.config.get('wgUserGroups').join(' ')),
         /**
          * Initializes everything
          */

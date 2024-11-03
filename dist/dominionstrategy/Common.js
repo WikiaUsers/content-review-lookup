@@ -10,7 +10,7 @@ function fixCardPopup(e) {
 		elem = e;
 	}
 	if (elem.offsetWidth && elem.previousElementSibling && elem.previousElementSibling.offsetWidth) {
-		if (elem.getBoundingClientRect().x > window.innerWidth / 2) {
+		if (elem.getBoundingClientRect().x > window.innerWidth / 3) {
 			elem.style.left = '-' + (elem.offsetWidth - elem.previousElementSibling.offsetWidth + 20) + 'px';
 		} else {
 			elem.style.left = '20px';

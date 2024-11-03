@@ -26,6 +26,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/0/07/Wiki-wordmark-Hanakuna-Chifuyu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/94/Wiki-wordmark-Haruno-Sora.png',
 	    'https://images.wikia.nocookie.net/synthv/images/5/57/Wiki-wordmark-Hayden.png',
+	    'https://images.wikia.nocookie.net/synthv/images/0/0b/Wiki-wordmark-hibiki-koto.png',
 	    'https://images.wikia.nocookie.net/synthv/images/6/67/Wiki-wordmark-Jin.png',
 	    'https://images.wikia.nocookie.net/synthv/images/8/86/Wiki-wordmark-jun.png',
 	    'https://images.wikia.nocookie.net/synthv/images/7/74/Wiki-wordmark-Kasane-Teto.png',

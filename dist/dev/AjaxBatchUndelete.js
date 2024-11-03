@@ -10,7 +10,7 @@ mw.loader.using('mediawiki.api', function() {
  
   if (
     window.AjaxBatchUndeleteLoaded ||
-    !/sysop|content-moderator|staff|wiki-specialist|soap/.test(mw.config.get('wgUserGroups').join())
+    !/sysop|content-moderator|staff|wiki-specialist|soap|global-edit-reviewer/.test(mw.config.get('wgUserGroups').join())
     ) {
         return;
   }

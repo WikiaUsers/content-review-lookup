@@ -30,7 +30,6 @@ nkch_gst_gadgets = [{
 $(function(){   
     switch ( mw.config.get('wgPageName') ) {
       case 'Celeste_вики':
-      case 'Celeste_вики:Администрация':
             $('body').addClass('is-content-expanded')
         break;
     }

@@ -16,13 +16,15 @@ $(function() {
 		'wgAction',
 		'wgCanonicalSpecialPageName',
 		'wgServer',
+		'wgSiteName',
 		'wgNamespaceNumber',
 		'wgPageName',
 		'wgUserGroups'
 	]);
 	var tokens = {
 		patrol: '',
-		rollback: ''
+		rollback: '',
+		wpET: '' // Cannot get through mw.api or mw.user.tokens as they dont work with action=markpatrolled for some reason
 	};
 	var can = {
 		block: config.wgUserGroups.some(function(group){return ['sysop', 'soap'].includes(group);}),
@@ -345,7 +347,7 @@ $(function() {
 					table.querySelector('.diff-notice').parentNode.remove();
 					api.get(api_opt).then(function(data) {
 						table.innerHTML = '<colgroup><col class="diff-marker"><col class="diff-content"><col class="diff-marker"><col class="diff-content"></colgroup>' + table.innerHTML;
-						table.querySelector('tbody').innerHTML = table.querySelector('tbody').innerHTML + diff.body;
+						table.querySelector('tbody').innerHTML = table.querySelector('tbody').innerHTML + data.compare.body;
 					});
 				}
 			}
@@ -914,7 +916,7 @@ $(function() {
 					patrolled: 0,
 					open: 0
 				};
-				var patrol = function(log) {
+				var patrol = function() {
 					if (r.length === 0) {
 						if (el && ret) {
 							el.innerHTML = (
@@ -930,21 +932,29 @@ $(function() {
 						}
 					}
 					var cr = r.shift();
-					if (cr.rcid && log && log == 'nosuchrevid') {
-						console.log('deleted rcid:', cr.rcid);
-						types.open++;
-						window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid);
-						window.focus();
-					} else {
+					function forcePatrol() {
 						types.patrolled++;
-						if (log) {console.log('error msg:', log);}
+						$.post(config.wgServer+'/wiki/'+encodeURIComponent(config.wgSiteName)+'?action=markpatrolled', {
+							title: encodeURIComponent(config.wgSiteName),
+							wpEditToken: tokens.wpET,
+							redirectparams:	"rcid="+cr.rcid,
+							rcid: cr.rcid
+						}).then(patrol, patrol);
 					}
-					api.post({
-						action: 'patrol',
-						format: 'json',
-						revid: cr.revid,
-						token: tokens.patrol
-					}).then(patrol, patrol);
+					if (tokens.wpET!=='') {
+						forcePatrol();
+					} else {
+						$.post(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid).then(function(e){
+							tokens.wpET = $(e).find('[name="wpEditToken"]').attr('value');
+							if (tokens.wpET!=='') {
+								forcePatrol();
+							} else {
+								types.open++;
+								window.open(config.wgServer+'/wiki/?action=markpatrolled&rcid='+cr.rcid);
+								window.focus();
+							}
+						});
+					}
 				};
 				patrol();
 			}
@@ -970,17 +980,22 @@ $(function() {
 		},
 		
 		massPatrol: function() {
-			if (document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
+			if (
+				document.querySelector('#quickDiff-quickview.oo-ui-window-active') ||
+				(config.wgNamespaceNumber==6 && window.dev.BD_FullFilePatrol)
+			) {
 				// continue to custom mass patrolling
 			}
 			else if (document.querySelector('#mw-diff-ntitle4 #massPatrol > a')) {
 				document.querySelector('#mw-diff-ntitle4 #massPatrol > a').click();
+				return;
 			}
 			else if (document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a')) {
 				document.querySelector(':is(.mw-parser-output + .patrollink, #mw-diff-ntitle4 .patrollink) > a').click();
+				return;
 			}
 			else if (!document.querySelector('.patrollink > a')) {
-				// no target, do nothing and end
+				// no target, do nothing, end
 				return;
 			}
 			var link = document.querySelector('.patrollink > a');
@@ -1003,6 +1018,9 @@ $(function() {
 				var revids = [];
 				while (data.query.recentchanges[num]) {
 					if (
+						(
+							config.wgNamespaceNumber==6 && window.dev.BD_FullFilePatrol
+						) ||
 						(
 							torevid && fromrevid &&
 							data.query.recentchanges[num].revid >= fromrevid &&

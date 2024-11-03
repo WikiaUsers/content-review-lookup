@@ -95,7 +95,7 @@ var customTexts = {
 };
 
 // Handle right-clicks inside the polygons to spawn multiple images
-$('.polygon').on('contextmenu', function(event) {
+$('.polygon').off('contextmenu').on('contextmenu', function(event) {
     event.preventDefault(); // Prevent the default context menu from appearing
 
     // Find the index of the polygon that was clicked

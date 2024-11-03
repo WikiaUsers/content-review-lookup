@@ -155,3 +155,26 @@ $(document).ready(function() {
 		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
 	}
 });
+/* Cuenta atrás*/
+document.addEventListener("DOMContentLoaded", function() {
+  // Formato de meses en español para que JavaScript lo reconozca
+  const meses = {
+    "enero": "01", "febrero": "02", "marzo": "03", "abril": "04",
+    "mayo": "05", "junio": "06", "julio": "07", "agosto": "08",
+    "septiembre": "09", "octubre": "10", "noviembre": "11", "diciembre": "12"
+  };
+
+  // Selecciona todos los elementos que contengan fechas de finalización
+  document.querySelectorAll("[data-end-date]").forEach(function(evento) {
+    const fechaEsp = evento.getAttribute("data-end-date").trim();
+    const [dia, mesTexto, año] = fechaEsp.split(" ");
+    const mes = meses[mesTexto.toLowerCase()];
+    const fechaFinalizacion = new Date(`${año}-${mes}-${dia}`);
+    const fechaActual = new Date();
+
+    // Compara la fecha de finalización con la fecha actual
+    if (fechaFinalizacion < fechaActual) {
+      evento.style.display = "none"; // Oculta el evento vencido
+    }
+  });
+});

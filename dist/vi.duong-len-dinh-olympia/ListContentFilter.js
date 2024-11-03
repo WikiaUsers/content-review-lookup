@@ -5,13 +5,16 @@
 
 $(function() {
 	function initializeListContentFilter() {
+	// Create and append filter search input box
+	var searchFilterInput = $('<input type="text" placeholder="Filter search box" class="filter-search-box">');
+	$('#search-filter').append(searchFilterInput);
 	
 	// New Set for filters
 	var currentGenderFilters = new Set();
 	var currentPhaseFilters = new Set();
 	var currentTypeFilters = new Set();
 	var currentRankFilters = new Set();
-
+	
 	// Check initial button states
 	$(".btn-filter-toggle-checked").each(function() {
 		var filterValue = $(this).data("filter");
@@ -25,14 +28,19 @@ $(function() {
 			currentRankFilters.add(filterValue);
 		}
 	});
-
-	// Initially show items based on checked filters
-	filterSelection();
-
+	
+	// Listen input change on the filter search input box
+	searchFilterInput.on('input', function() {
+		filterSelection();
+	});
+	
+	// Initially show items based on checked filters, include filter search input when searching, count items when visible
 	function filterSelection() {
 		var items = document.getElementsByClassName("filterItem");
+		var searchFilterTerm = searchFilterInput.val().toLowerCase();
 		var hasActiveFilters = currentGenderFilters.size > 0 || currentPhaseFilters.size > 0 || currentTypeFilters.size > 0 || currentRankFilters.size > 0;
-
+		var visibleFilterItemCount = 0;
+		
 		function checkItem(item) {
 			var genderMatch = currentGenderFilters.size === 0 || Array.from(currentGenderFilters).some(function(filter) {
 				return item.classList.contains(filter);
@@ -46,9 +54,12 @@ $(function() {
 			var rankMatch = currentRankFilters.size === 0 || Array.from(currentRankFilters).some(function(filter) {
 				return item.classList.contains(filter);
 			});
-		
-			if (hasActiveFilters && genderMatch && phaseMatch && typeMatch && rankMatch) {
+			
+			var textMatch = searchFilterTerm === '' || item.textContent.toLowerCase().includes(searchFilterTerm);
+			
+			if ((hasActiveFilters && genderMatch && phaseMatch && typeMatch && rankMatch) && textMatch) {
 				fadeIn(item);
+				visibleFilterItemCount++; // Increment counter for visible items
 			} else {
 				fadeOut(item);
 			}
@@ -57,13 +68,16 @@ $(function() {
 		for (var i = 0; i < items.length; i++) {
 			checkItem(items[i]); // Call the separate function with the current item
 		}
+		
+		// Update counter display
+		document.getElementById("filter-item-count").textContent = visibleFilterItemCount;
 	}
-
+	
 	function fadeIn(element) {
 		element.style.display = "inline";
 		element.style.opacity = 0;
 		var opacity = 0;
-
+		
 		var timer = setInterval(function() {
 			if (opacity >= 1) {
 				clearInterval(timer);
@@ -72,11 +86,11 @@ $(function() {
 			opacity += 0.1;
 		}, 30);
 	}
-
+	
 	function fadeOut(element) {
 		element.style.opacity = 1;
 		var opacity = 1;
-
+		
 		var timer = setInterval(function() {
 			if (opacity <= 0) {
 				clearInterval(timer);
@@ -91,12 +105,12 @@ $(function() {
 	function setupButtonClickHandlers(containerId, filterType) {
 		var btnContainer = $("#" + containerId);
 		var btns = btnContainer.find(".btn-filter-toggle");
-
+		
 		btns.each(function() {
 			$(this).on("click", function() {
 				var filterValue = $(this).data("filter");
 				$(this).toggleClass("btn-filter-toggle-checked");
-
+				
 				// Update current filters based on the toggle state by adding or deleting filters
 				
 				if ($(this).hasClass("btn-filter-toggle-checked")) {
@@ -120,12 +134,12 @@ $(function() {
 						currentRankFilters.delete(filterValue);
 					}
 				}
-
+				
 				// Reapply filters after the update
 				filterSelection();
 			});
 		});
-
+		
 		// Handle "All" button clicks
 		//// Add all filters in the set
 		btnContainer.find(".btn-filter-common-all").on("click", function() {
@@ -149,7 +163,7 @@ $(function() {
 			}
 			filterSelection(); // Reapply filters after setting all
 		});
-
+		
 		// Handle "None" button clicks
 		//// Clear all filters in the set
 		btnContainer.find(".btn-filter-common-none").on("click", function() {

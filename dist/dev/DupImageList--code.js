@@ -55,6 +55,7 @@
         "staff",
         "wiki-specialist",
         "soap",
+        "global-edit-reviewer",
         "sysop",
         "content-moderator"
     ] );

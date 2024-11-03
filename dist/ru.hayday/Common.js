@@ -5,6 +5,16 @@ var intervaleditCount = setInterval(editcountcalc, 500);
 
 function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
 
+var vkVideos = document.querySelectorAll('.vk-video');
+if(vkVideos.length){
+	vkVideos.forEach(function(vid){
+		var id = vid.dataset.id;
+		var oid = vid.dataset.oid;
+		var width = vid.dataset.width || '853';
+		var height = vid.dataset.height || '480';
+		vid.innerHTML = '<iframe src="https://vk.com/video_ext.php?oid='+oid+'&id='+id+'&hd=2" width="'+width+'" height="'+height+'" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>';
+	});
+}
 
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
@@ -104,29 +114,171 @@ if (document.body.className.includes('page-События_с_заданиями'
 //украшения
 if (document.body.className.includes('page-Список_украшений')) {
 	setTimeout(main, 5000);
-	var settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[]};
+	var url = new URL(window.location.href);
+	var settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[],size:[],gif:false,save:false,mode:[1, 0],level:0};
 	var filtersBox;
 	function main(){
+		
+		
 		var decoTable = document.querySelector("#deco-changed");
 		var tbody = document.querySelector('#deco-changed>tbody');
 		var rows = tbody.querySelectorAll('tr');
 		var sorter = document.querySelector('#deco-sorter');
+		
+		var saverUrl = sorter.querySelector('#save');
+		saverUrl.addEventListener('click',function(){
+			var checked = saverUrl.dataset.checked;
+			if(checked=='false'){checked=false}else{checked=true}
+			saverUrl.dataset.checked=!checked;
+			settings.save=!checked;
+			saveFilters();
+		});
 	
 		var decoList = getDecoList(rows);
 		console.log(decoList);
 		
-		var typesFilters = sorter.querySelectorAll('.type-filter');
+		sorter.querySelector('#level-input').innerHTML = '<input type="number" width="30"/>';
+		var level = sorter.querySelector('#level-input').querySelector('input');
+		var switchGif = sorter.querySelector('#gif');
+		var modeChanger = sorter.querySelector('#mode');
 		filtersBox = sorter.querySelectorAll('.filters');
 		var allFilters = sorter.querySelectorAll('.filter');
-		typesFilters.forEach(function(span){
-			span.addEventListener('click',changeFilters);
-		});
+		var typesFilters = sorter.querySelectorAll('.type-filter');
+		var filterNames = Array.from(typesFilters).map(function(z){return z.dataset.type;});
+		
+		if (url.searchParams.get('save')=='1'){
+			settings.save=true;
+			saverUrl.dataset.checked = true;
+			var x = url.searchParams;
+			filterNames.forEach(function(a, i){
+				if(x.has(a)){
+					var l = x.get(a).trim().split('|');
+					//console.log(a, i, l);
+					settings[a]=l;
+					allFilters.forEach(function(f){
+						if(l.includes(f.dataset.value)){f.dataset.checked = true;}
+						//console.log(f, f.dataset.value, l.includes(f.dataset.value), f.dataset.checked);
+					});
+				}
+			});
+			
+			if (x.has('mode')){
+				var a = x.get('mode').trim();
+				settings.mode=[+a[0],+a[1]];
+				if (a == '01'){
+					modeChanger.innerText = modeChanger.dataset.bMode;
+					modeChanger.dataset.mode = 1;
+				}
+			}
+			
+			if (x.has('filters')){
+				f = x.get('filters').trim().split('');
+				f.forEach(function(a, i){
+					if (a == '1'){settings.filters.push(filterNames[i]);typesFilters[i].dataset.checked = true;filtersBox[i].style.display="block";}
+				});
+				sortDecoTable(rows, decoList, true);
+			}
+			
+			if (x.has('gif')){
+				if (x.get('gif')== '1'){
+					settings.gif= true;
+					switchGif.dataset.checked = true;
+					decoGif(rows, decoList, settings.gif, true);
+				}
+			}
+			
+			if (x.has('level')){
+				var l = x.get('level');
+				settings.level = +l;
+				level.value = l;
+				decoLevel(rows, decoList, +l, true);
+			}
+			console.log(settings);
+		} else {
+			allFilters.forEach(function(filter){
+				filter.dataset.checked="false";
+			});
+		}
 		
 		allFilters.forEach(function(filter){
 			filter.addEventListener('click',function(event){
-				var type = filter.parentNode;
-				sortDecoTable(event, v);
+				var type = filter.parentNode.dataset.type;
+				var target = filter.dataset.value;
+				var checked = filter.dataset.checked;
+				if(checked==='false'){checked=false; settings[type].push(target);}else{checked=true;settings[type].splice(settings[type].indexOf(target),1);}
+				filter.dataset.checked = !checked;
+				//console.log(type, target, settings);
+				sortDecoTable(rows, decoList);
 			});
+		});
+		
+		typesFilters.forEach(function(span){
+			span.addEventListener('click',function(event){
+				changeFilters(event, rows, decoList, settings.mode);
+			});
+		});
+		
+		modeChanger.addEventListener('click', function(){
+			var nameA = modeChanger.dataset.aMode;
+			var nameB = modeChanger.dataset.bMode;
+			var currentMode = modeChanger.dataset.mode;
+			
+			if (currentMode == '1'){
+				settings.mode = [1, 0];
+				modeChanger.dataset.mode = '0';
+				modeChanger.innerText=nameA;
+			} else {
+				settings.mode = [0, 1];
+				modeChanger.dataset.mode = '1';
+				modeChanger.innerText=nameB;
+			}
+			sortDecoTable(rows, decoList);
+		});
+		
+		
+		sorter.querySelector('#search-input').innerHTML = '<input type="text" />';
+		var search = sorter.querySelector('#search-input').querySelector('input');
+		var switchRegExp = sorter.querySelector('#reg-exp');
+		var switchRegister = sorter.querySelector('#register');
+		regExp = false;
+		register = false;
+		search.addEventListener('input',function(){
+			decoSearch(rows, decoList, search.value, regExp, register);
+		});
+		switchRegExp.addEventListener('click', function(){
+			var checked = switchRegExp.dataset.checked;
+			if (checked == 'false'){checked=true}else{checked=false}
+			switchRegExp.dataset.checked = checked;
+			regExp = checked;
+		});
+		switchRegister.addEventListener('click', function(){
+			var checked = switchRegister.dataset.checked;
+			if (checked == 'false'){checked=true}else{checked=false}
+			switchRegister.dataset.checked = checked;
+			register = checked;
+		});
+		
+		switchGif.addEventListener('click',function(){
+			var checked = switchGif.dataset.checked;
+			if(checked==='false'){checked=false;}else{checked=true;}
+			switchGif.dataset.checked = !checked;
+			settings.gif=!checked;
+			decoGif(rows, decoList, settings.gif);
+		});
+		
+		level.addEventListener('input', function(event){
+			settings.level=+event.target.value;
+			decoLevel(rows, decoList, +event.target.value);
+		});
+		
+		sorter.querySelector('#reset').innerHTML = '<button class="game-button">Сбросить</button>';
+		sorter.querySelector('#reset').querySelector('button').addEventListener('click',function(event){
+			resetAll(rows,sorter);
+		});
+		
+		sorter.querySelector('#mix').innerHTML = '<button class="game-button">Перемешать украшения</button>';
+		sorter.querySelector('#mix').querySelector('button').addEventListener('click',function(event){
+			mixDeco(rows, tbody);
 		});
 	}
 	function getDecoList(decos){
@@ -134,15 +286,19 @@ if (document.body.className.includes('page-Список_украшений')) {
 
 		decos.forEach(function(row, i){
 			deco = {};
+			
 			var tags = row.dataset.tags;
 			deco.tags=tags;
 			
 			var tds = row.querySelectorAll('td');
 			
+			deco.name = tds[1].querySelector('b').innerText.trim();
+			
 			deco.sources = [];
 			var sources = tds[2].querySelectorAll('li');
 			sources.forEach(function(source){
-				var text = source.querySelector('a').innerText.trim();
+				var a = source.querySelector('a');
+				var text = a ? a.innerText.trim() : source.innerText.trim();
 				deco.sources.push(text);
 			});
 			
@@ -155,7 +311,11 @@ if (document.body.className.includes('page-Список_украшений')) {
 			
 			deco.type = tds[8].innerText.trim();
 			deco.theme = tds[6].innerText.trim();
-			deco.animal = null;
+			deco.animal = tds[2].querySelectorAll('a')[1] ? tds[2].querySelectorAll('a')[1].title : '';
+			
+			deco.size = tds[4].innerText.trim().slice(0,1)+tds[4].innerText.trim().slice(2,3);
+			
+			deco.level = +tds[7].innerText.trim()||1;
 			
 			decoSet.push(deco);
 		});
@@ -163,7 +323,7 @@ if (document.body.className.includes('page-Список_украшений')) {
 		
 		return decoSet;
 	}
-	function changeFilters(event){
+	function changeFilters(event, rows, decoList, mode){
 		console.log(event, filtersBox, settings.filters);
 		var span = event.target;
 		var target = span.dataset.type;
@@ -175,6 +335,188 @@ if (document.body.className.includes('page-Список_украшений')) {
 				filter.style.display = checked ? 'none' : 'block';
 			}
 		});
+		sortDecoTable(rows, decoList);
+	}
+	function sortDecoTable(decos, decoParams, fromURL){ //mode[0] - пересечение, mode[1] - объединениe
+		var mode = settings.mode;
+		decos.forEach(function(deco, i){
+			var result = 1;
+			var x;
+			if (settings.filters.includes('sources')){
+				x = 1;
+				settings.sources.forEach(function(source){
+					if (decoParams[i].sources.includes(source)){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('tags')){
+				x = 1;
+				settings.tags.forEach(function(tag){
+					if (decoParams[i].tags.includes(tag)){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('collections')){
+				x = 1;
+				settings.collections.forEach(function(collection){
+					if (decoParams[i].collections.includes(collection)){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('types')){
+				x = 1;
+				settings.types.forEach(function(type){
+					if (decoParams[i].type == type){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('themes')){
+				x = 1;
+				settings.themes.forEach(function(theme){
+					if (decoParams[i].theme == theme){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('size')){
+				x = 1;
+				settings.size.forEach(function(siz){
+					if (decoParams[i].size == siz){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if (settings.filters.includes('animals')){
+				x = 1;
+				settings.animals.forEach(function(animal){
+					if (decoParams[i].animal.includes(animal)){
+						x *= 0;
+					}
+				});
+				result *= x ? mode[1] : mode[0];
+			}
+			if ((!result&&mode[1])||result&&mode[0]){
+				deco.dataset.filterHide = 'false';
+			}else{
+				deco.dataset.filterHide = 'true';
+			}
+		});
+		if (!fromURL){saveFilters();}
+	}
+	function decoSearch(decos, decoParams, text, regExp, register){
+		decos.forEach(function(deco, i){
+			text = register ? text : text.toLowerCase();
+			var name = register ? decoParams[i].name : decoParams[i].name.toLowerCase();
+			if (regExp){
+				deco.dataset.searchHide=new RegExp(text).test(name)?'false':'true';
+			} else {
+				deco.dataset.searchHide=name.includes(text)?"false":'true';
+			}
+		});
+	}
+	function decoGif(decos, decoParams, gif, fromURL){
+		decos.forEach(function(deco, i){
+			deco.dataset.gifHide = (decoParams[i].tags.includes('gif')||!gif)?'false':'true';
+		});
+		if(!fromURL){saveFilters();}
+	}
+	function decoLevel(decos, decoParams, level, fromURL){
+		decos.forEach(function(deco, i){
+			var decoLvl = decoParams[i].level;
+			deco.dataset.levelHide = (decoLvl>level)?'true':'false';
+		});
+		if(!fromURL){saveFilters();}
+	}
+	function resetAll(decos, filters){
+		decos.forEach(function(deco){
+			deco.dataset.filterHide = 'false';
+			deco.dataset.gifHide = 'false';
+			deco.dataset.levelHide = 'false';
+		});
+		var typesFilters = filters.querySelectorAll('.type-filter');
+		var filtersBox = filters.querySelectorAll('.filters');
+		var allFilters = filters.querySelectorAll('.filter');
+		typesFilters.forEach(function(filter){
+			filter.dataset.checked=false;
+		});
+		allFilters.forEach(function(filter){
+			filter.dataset.checked=false;
+		});
+		filtersBox.forEach(function(filter){
+			filter.style.display='none';
+		});
+		filters.querySelector('#gif').dataset.checked=false;
+		filters.querySelector('#save').dataset.checked=false;
+		filters.querySelector('#level-input').querySelector('input').value='';
+		
+		settings = {filters:[],sources:[],tags:[],collections:[],types:[],themes:[],animals:[],size:[],mode:[1,0],save:false};
+		saveFilters();
+	}
+	function saveFilters(){
+		if (settings.save){
+			console.log(settings);
+			//if(params.build){URL.searchParams.set('build', parseInt(params.build.join(''), 2).toString(36));}
+			//if(params.star){URL.searchParams.set('star', parseInt(params.star.join(''), 2).toString(36));}
+			//if(params.level){URL.searchParams.set('level', params.level);}
+			var filters = '';
+			filters += settings.filters.includes('sources')?'1':'0';
+			filters += settings.filters.includes('tags')?'1':'0';
+			filters += settings.filters.includes("collections")?'1':'0';
+			filters += settings.filters.includes("types")?'1':'0';
+			filters += settings.filters.includes("themes")?'1':'0';
+			filters += settings.filters.includes("animals")?'1':'0';
+			filters += settings.filters.includes("size")?'1':'0';
+			url.searchParams.set('filters', filters);
+			
+			if(settings.sources.length){url.searchParams.set('sources', settings.sources.join('|'));}
+			if(settings.tags.length){url.searchParams.set('tags', settings.tags.join('|'));}
+			if(settings.collections.length){url.searchParams.set('collections', settings.collections.join('|'));}
+			if(settings.types.length){url.searchParams.set('types', settings.types.join('|'));}
+			if(settings.themes.length){url.searchParams.set('themes', settings.themes.join('|'));}
+			if(settings.animals.length){url.searchParams.set('animals', settings.animals.join('|'));}
+			if(settings.size.length){url.searchParams.set('size', settings.size.join('|'));}
+			
+			url.searchParams.set('gif', settings.gif?'1':'0');
+			if(settings.level){url.searchParams.set('level', settings.level);}
+			
+			url.searchParams.set('mode', settings.mode.join(''));
+			
+			url.searchParams.set('save', 1);
+			history.replaceState({},'',url);
+		} else {
+			url.searchParams.delete('filters');
+			url.searchParams.delete('sources');
+			url.searchParams.delete('tags');
+			url.searchParams.delete('collections');
+			url.searchParams.delete('types');
+			url.searchParams.delete('themes');
+			url.searchParams.delete('animals');
+			url.searchParams.delete('size');
+			url.searchParams.delete('gif');
+			url.searchParams.delete('level');
+			url.searchParams.delete('save');
+			url.searchParams.delete('mode');
+			history.replaceState({},'',url);
+		}
+	}
+	function mixDeco(decos, table){
+		var copyDeco = Array.from(decos);
+		while(copyDeco.length){
+			var indx = Math.floor(Math.random()*copyDeco.length);
+			var delDeco = copyDeco.splice(indx,1);
+			console.log(delDeco, indx);
+			table.prepend(delDeco[0]);
+		}
 	}
 }
 

@@ -591,7 +591,7 @@ function idfsgsInit() {
 	
 	function create_dialogue(idfsgsdialogue, dialoguename) {
 		dialogues[dialoguename] = idfsgsdialogue;
-		dialogueNPCName[dialoguename] = idfsgsdialogue.querySelector('.idfsgsttdialoguenpcname');
+		dialogueNPCName[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguenpcname');
 		dialogueText[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguetext');
 		optionsList[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialogueoptionscontainer');
 		restartMessage[dialoguename] = idfsgsdialogue.querySelector('.idfsgsdialoguerestart');

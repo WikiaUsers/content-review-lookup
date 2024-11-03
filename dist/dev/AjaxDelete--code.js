@@ -20,7 +20,7 @@
         window.AjaxDeleteLoaded ||
         (
             !$('#ca-delete').length &&
-            !/sysop|content-moderator|staff|wiki-specialist|soap/.test(config.wgUserGroups.join())
+            !/sysop|content-moderator|staff|wiki-specialist|soap|global-edit-reviewer/.test(config.wgUserGroups.join())
         )
     ) {
         return;

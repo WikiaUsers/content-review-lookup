@@ -159,6 +159,22 @@ setInterval(function () {
     $('.wds-avatar a[href$="%D0%95%D0%BB%D0%B5%D0%BD%D0%B0_%D0%A1%D0%BE%D0%BD"]').closest('.Reply, .Reply_body__PM9kM').addClass('Dismod');
 }, 500 );
 
+/* ========== Анимированный логотип ========== */
+const frameHeight = 450;
+const frames = 2;
+let frame = 0;
+
+window.onload = fnaf_animation
+
+function fnaf_animation(){
+    const div = document.getElementById("animated_logo");
+
+    setInterval(function () {
+        const frameOffset = (++frame % frames) * -frameHeight;
+        div.style.backgroundPosition = "0px " + frameOffset + "px";
+    }, 500);
+}
+
 /* ========== MessageBlock ========== */
 window.MessageBlock = {
 	title: 'Блокировка',

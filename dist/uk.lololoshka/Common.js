@@ -1,5 +1,18 @@
 /* Розміщений тут код JavaScript буде завантажений всім користувачам при зверненні до будь-якої сторінки */
-// Кастомний CSS для сторінок по сезону Тринадцять Вогнів
+
+$(function() {
+    var cat = mw.config.get('wgCategories')
+
+    if (cat.indexOf('Серце Всесвіту') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:SVStyles.css",
+            ]
+        });
+    }
+});
+
 $(function() {
     var cat = mw.config.get('wgCategories')
 

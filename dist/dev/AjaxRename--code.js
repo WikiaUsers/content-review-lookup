@@ -292,6 +292,7 @@ mw.loader.using('mediawiki.api').then(function() {
 				'soap',
 				'staff',
 				'wiki-specialist',
+				'global-edit-reviewer',
 			]),
 
 			"move": Object.freeze([

@@ -36,7 +36,8 @@
         'content-volunteer',
         'wiki-specialist',
         'bot-global',
-        'soap'
+        'soap',
+        'global-edit-reviewer'
     ];
 
     // Don't run for users in excluded groups

@@ -33,6 +33,9 @@ window.ajaxPages = [
     "Especial:Contribuições"
 ];
 
+/* RailModule */
+window.AddRailModule = [{prepend: true}];
+
 /* == Da Shades of Magic Wiki == */
 /* Toggle spoiler button text */
 $(function () {

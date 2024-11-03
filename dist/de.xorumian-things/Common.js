@@ -5,3 +5,9 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweInterlan
 
 /* German Variants */
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweVariants.js?action=raw\u0026ctype=text/javascript");
+
+/* Smaller adjustments */
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweRedesignsAndFixes.js?action=raw\u0026ctype=text/javascript");
+
+/* Winter Theme
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:ChristmasThemeUwe.js?action=raw\u0026ctype=text/javascript"); */

@@ -134,28 +134,36 @@ window.questions = [
     "Tyrant"]
 ];
 
-
 /**
- * Copied from [[w:c:starwars]]
- * Show/hide for media timeline -- Grunny
+ * filter table rows for specific toggles
  **/
-$( function () {
-	if( !$( '.timeline-toggles' ).length ) {
-		return;
-	}
-	$( '.timeline-toggles' ).find( 'td > a' ).click( function () {
-		var	hideBtnClass = $( this ).parent().attr( 'class' ),
-			$hideContent = $( 'tr.' + hideBtnClass );
-		if( !$hideContent.length ) {
-			return;
-		}
-		$hideContent.toggle($(this).text().includes('show'));
-		if ( $( this ).text().indexOf( 'hide' ) >= 0 ) {
-			$( this ).text( $( this ).text().replace( 'hide', 'show' ) );
-		} else {
-			$( this ).text( $( this ).text().replace( 'show', 'hide' ) );
-		}
-	});
+$(function () {
+    if (!$('.timeline-toggles').length) {
+        return;
+    }
+
+    $('.timeline-toggles').find('td > a').click(function () {
+        var toggleClass = $(this).parent().attr('class'),
+            $targetTable = $('.moddedTable'),
+            $targetRows = $targetTable.find('tr.' + toggleClass),
+            $allRows = $targetTable.find('tr:not(:first)'); // Select all rows except the first
+
+        if (!$targetRows.length) {
+            return;
+        }
+
+        // Update the row and toggle text.
+        if ($(this).text().indexOf('reset') >= 0) {
+            $(this).text($(this).text().replace('reset', 'show'));
+            // reset
+            $allRows.show();
+        } else {
+            $(this).text($(this).text().replace('show', 'reset'));
+            // Hide all rows first and then show the target rows.
+        	$allRows.hide();
+        	$targetRows.show();
+        }
+    });
 });
 
 
@@ -190,6 +198,5 @@ $(function () {
     }
 
     button.text('Show Spoilers');
-
 	button.click(toggleText);
 });

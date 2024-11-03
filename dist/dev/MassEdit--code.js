@@ -211,6 +211,7 @@
           "soap",
           "wiki-specialist",
           "content-volunteer",
+          "global-edit-reviewer",
         ]),
         CAN_MESSAGE: Object.freeze([
           "global-discussions-moderator",

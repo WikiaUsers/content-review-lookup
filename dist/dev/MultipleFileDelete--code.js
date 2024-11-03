@@ -54,7 +54,7 @@
 
 	// load protections
 	if (!supportedPages.flat().includes(specialPage) // not from list
-		|| !/staff|sysop|content-moderator|wiki-specialist|soap/.test(userGroups.join('\n')) //not in group
+		|| !/staff|sysop|content-moderator|wiki-specialist|soap|global-edit-reviewer/.test(userGroups.join('\n')) //not in group
 		|| window.mfdLoaded // double loading
 		// exclude page(s)
 		|| (window.mfdExclude && (window.mfdExclude === page || window.mfdExclude.indexOf(page) >= 0))

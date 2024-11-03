@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
-    if (window.location.pathname === "/de/wiki/Xorum_Wiki:Interlanguage") {
+    if (window.location.pathname.includes("Xorum_Wiki:Interlanguage")) {
         var pageHeaderTop = document.querySelector('.page-header__top');
         var pageHeaderLanguages = document.querySelector('.page-header__languages');
-        
+
         if (pageHeaderTop && pageHeaderLanguages) {
             var newDiv = document.createElement('div');
             newDiv.classList.add('page-header__variants');
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (window.location.pathname === "/de/wiki/Xorum_Wiki:Interlanguage/at") {
+    if (window.location.pathname.includes(".page-Xorum_Wiki:Interlanguage/at")) {
         var pageHeaderTop = document.querySelector('.page-header__top');
         var pageHeaderLanguages = document.querySelector('.page-header__languages');
         
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (window.location.pathname === "/de/wiki/Xorum_Wiki:Interlanguage/ch") {
+    if (window.location.pathname.includes(".page-Xorum_Wiki:Interlanguage/ch")) {
         var pageHeaderTop = document.querySelector('.page-header__top');
         var pageHeaderLanguages = document.querySelector('.page-header__languages');
         
