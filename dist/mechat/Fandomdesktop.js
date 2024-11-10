@@ -1,6 +1,6 @@
 $(document).ready(function () {
   // Set initial state (expanded) and create [Collapse] button for headers with .mw-headline
-  $('h2, h3, h4').each(function () {
+  $('h2, h3, h4, h5').each(function () {
     if ($(this).find('.mw-headline').length > 0) {
       $(this).data('isExpanded', true); // Initialize as expanded
       var toggleButton = $('<button class="ntoggler">Collapse</button>');

@@ -269,6 +269,7 @@
 
     function preventDefault(e){ e.preventDefault(); }
     function stopPropagation(e){ e.stopPropagation(); }
+    function rejectPromise(){ return Promise.reject(); }
 
     // This function returns a new function that can only be called once.
     // When the new function is called for the first time, it will call the "fn"
@@ -512,7 +513,7 @@
 
             // To ensure that Interactive Maps doesn't fullscreen, override the fullscreen API function for the element
             var rec = this.elements.rootElementChild;
-            rec.requestFullscreen = rec.msRequestFullscreen = rec.mozRequestFullscreen = rec.webkitRequestFullscreen = function(){ return Promise.reject(); };
+            if (rec) rec.requestFullscreen = rec.msRequestFullscreen = rec.mozRequestFullscreen = rec.webkitRequestFullscreen = rejectPromise;
 
             // Copy each of the properties from the already-existing deserialization of the JSON into ExtendedMap
             // We could use Object.assign(this, map) (a shallow copy), then any objects are shared between the original map and the extended map
@@ -1175,8 +1176,9 @@
                 // References to Leaflet elements in the DOM        
                 this.elements = this.elements || {};
                 this.elements.rootElement = root;
-                this.elements.interactiveMapsContainer = root.closest(".interactive-maps-container");
+                this.elements.rootElementChild = root.querySelector(".interactive-maps");
                 this.elements.mapModuleContainer = root.querySelector(".Map-module_container__dn27-");
+                this.elements.interactiveMapsContainer = root.closest(".interactive-maps-container");
 
                 // Filters/category elements
                 this.elements.filtersList = root.querySelector(".interactive-maps__filters-list");
@@ -1269,6 +1271,10 @@
                 }
                 else
                 {
+                    // To ensure that Interactive Maps doesn't fullscreen, override the fullscreen API function for the element
+                    var rec = this.elements.rootElementChild;
+                    if (rec) rec.requestFullscreen = rec.msRequestFullscreen = rec.mozRequestFullscreen = rec.webkitRequestFullscreen = rejectPromise;
+
                     if (this.elements.fullscreenButton)
                         this.elements.fullscreenButton.remove();
                     

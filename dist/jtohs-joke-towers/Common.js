@@ -33,19 +33,18 @@ window.UserTagsJS = {
 UserTagsJS.modules.custom = {
 	'YataDev': ['cool', 'formerowner'],
 	'Sanjay2133': ['wikimanager', 'creator', 'cool'],
-	'Astrominal': ['wikimanager'],
 	'Oh Noez! Oh Noez!': ['forumsmanager'],
 	'SodafizzIGuess': ['former'],
 	'IdklolXDXDXD': ['former'],
 	'TheOquas': ['former'],
-	'Bruhshard1': ['former'],
 	'YourNuglyguy': ['formerowner', 'god'],
 	'Ferdinandloveslegos': ['formerowner'],
 	'The Difficulty Enthusiast': ['formerowner'],
 	'OrbentuneAlt': ['nothing'],
 	'Jtohisgoodimo': ['bureaureal'],
 	'Touchgrass210779': ['montheditor'],
-	'MapleIsNotAMapleLeaf': ['montheditor']
+	'MapleIsNotAMapleLeaf': ['montheditor'],
+	'Astrominal': ['wikimanager']
 };
 window.quizName = "The Hard Quiz";
 window.quizLang = "en";

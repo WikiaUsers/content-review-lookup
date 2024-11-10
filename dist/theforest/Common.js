@@ -16,6 +16,11 @@ mw.hook('wikipage.content').add(function($content) {
         articles.push('MediaWiki:CraftingMat.js');
     }
 
+    // Load MPIconDisplace.js on the "Main" page, "The Forest Wiki/Top section" and "Template:MPIconToolsAnimation"
+    if (mw.config.get('wgPageName') === 'The_Forest_Wiki' || mw.config.get('wgPageName') === 'The_Forest_Wiki/Top_section' || mw.config.get('wgPageName') === 'Template:MPIconToolsAnimation') {
+        articles.push('MediaWiki:MPIconDisplace.js');
+    }
+
     // Import all specified articles
     if (articles.length) importArticles({type: "script", articles: articles});
 });

@@ -4,7 +4,7 @@ $(document).ready(function() {
     $('#search').append(searchInput);
     
     // Create and append the dropdown for category selection
-    var dropdown = $('<select id="category"><option value="all">All</option><option value="natural">Natural</option><option value="beast">Beast</option><option value="elemental">Elemental</option></select>');
+    var dropdown = $('<select id="category"><option value="all">All</option><option value="fruit-type-natural">Natural</option><option value="fruit-type-beast">Beast</option><option value="fruit-type-elemental">Elemental</option></select>');
     $('#filter').append(dropdown);
 
     // Function to filter items
@@ -20,8 +20,12 @@ $(document).ready(function() {
 
             // Check if search term matches ID or text at the beginning
             var matchesSearch = (searchTerm === '' || itemId.startsWith(searchTerm) || itemText.startsWith(searchTerm));
-            // Check if the item matches the selected category
-            var matchesCategory = (selectedCategory === 'all' || itemCategory === selectedCategory);
+            
+            // Check if the item matches the selected category from dropdown
+            var matchesCategory = (selectedCategory === 'all' || 
+                (selectedCategory === 'fruit-type-natural' && itemCategory === 'natural') || 
+                (selectedCategory === 'fruit-type-beast' && itemCategory === 'beast') || 
+                (selectedCategory === 'fruit-type-elemental' && itemCategory === 'elemental'));
 
             // Show or hide item based on search and category match
             if (matchesSearch && matchesCategory) {

@@ -202,9 +202,9 @@ $(function () {
       //210
       'Frost_Tracer', 'Armoured_Archer', 'Decaying_Defender', 'Darklight_Evoker', 'Flamefury_Mage',
       //215
-      'Draccoon_Herald','Doom_Knight', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
+      'Draccoon_Herald', 'Doom_Knight', 'Celestial_Avenger', 'Blade_Dancer', 'Rootwalker',
       //220
-      'Beekeeper'
+      'Beekeeper', 'Fiend_Slayer'
       //225
     ],
     //outfits with irregular amount of sprites, regular is 1 standing, 8 walking

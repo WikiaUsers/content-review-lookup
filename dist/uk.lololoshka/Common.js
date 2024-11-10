@@ -2,21 +2,43 @@
 
 $(function() {
     var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Серце Всесвіту') !== -1) {
+	
+	if (cat.indexOf('Нове Покоління') !== -1) {
         importArticles({
             type: "style",
             articles: [
-                "MediaWiki:SVStyles.css",
+                "MediaWiki:NPStyles.css",
             ]
         });
-    }
-});
-
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Остання Дійсність') !== -1) {
+    } else if (cat.indexOf('Гра Бога') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:IBStyles.css",
+            ]
+        });
+    } else if (cat.indexOf('Бездоганний СВІТ') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:IMStyles.css",
+            ]
+        });
+    } else if (cat.indexOf('Голос Часу') !== -1 && mw.config.get('wgPageName') != "Окетра") {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:GVStyles.css",
+            ]
+        });
+    } else if (cat.indexOf('Тринадцять Вогнів') !== -1) {
+        importArticles({
+            type: "style",
+            articles: [
+                "MediaWiki:TOStyles.css",
+            ]
+        });
+    } else if (cat.indexOf('Остання Дійсність') !== -1) {
         importArticles({
             type: "style",
             articles: [
@@ -24,74 +46,13 @@ $(function() {
             ]
         });
     }
-});
-
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Тринадцять Вогнів') !== -1) {
+    else if (cat.indexOf('Серце Всесвіту') !== -1) {
         importArticles({
             type: "style",
             articles: [
-                "MediaWiki:TOStyles.css",
+                "MediaWiki:SVStyles.css",
             ]
         });
     }
-});
-
-// І для ГЧ
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Голос Часу') !== -1) {
-        importArticles({
-            type: "style",
-            articles: [
-                "MediaWiki:GVStyles.css",
-            ]
-        });
-    }
-});
-
-// Не забудем про БС
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Бездоганний СВІТ') !== -1) {
-        importArticles({
-            type: "style",
-            articles: [
-                "MediaWiki:IMStyles.css",
-            ]
-        });
-    }
-});
-
-
-// ГБ
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Гра Бога') !== -1) {
-        importArticles({
-            type: "style",
-            articles: [
-                "MediaWiki:IBStyles.css",
-            ]
-        });
-    }
-});
-
-// НП
-$(function() {
-    var cat = mw.config.get('wgCategories')
-
-    if (cat.indexOf('Нове Покоління') !== -1) {
-        importArticles({
-            type: "style",
-            articles: [
-                "MediaWiki:NPStyles.css",
-            ]
-        });
-    }
+    
 });

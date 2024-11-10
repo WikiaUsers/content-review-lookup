@@ -97,3 +97,24 @@ $(".css-button").click(function() {
         csslist.disabled = !csslist.disabled;
     });
 });
+
+// Toggle CSS 2.0
+function toggleImportedCSS() {
+    $("span.import-css").each(function () {
+        csslist.disabled = !csslist.disabled;
+    });
+}
+
+// Botón del toggle
+mw.hook('dev.ct').add(function(addButtons) {
+    addButtons([
+        {
+            icon: 'controls',               // Icono del botón
+            classes: 'performance-mode-button', // Clase para el botón
+            click: toggleImportedCSS,        // Llama a toggleImportedCSS al hacer clic
+            placement: 'page-tools-left',    // Ubicación en la interfaz
+            position: -1,                    // Posición del botón
+            text: 'Activar estilo',          // Texto inicial del botón
+        }
+    ]);
+});

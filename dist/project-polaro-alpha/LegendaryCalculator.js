@@ -95,7 +95,7 @@ function initializeCalculator() {
 
             // Special case for 'Roulette Exclusive' Pokémon
             if (formulaTemplate === "Roulette Exclusive") {
-                document.getElementById("result").innerHTML = 'This Pokémon is exclusive to the <a href="/wiki/Roulette" target="_blank">Pokémon Roulette</a> and cannot be encountered in the wild.';
+                document.getElementById("result").innerHTML = pokemonLink + ' is exclusive to the <a href="/wiki/Roulette" target="_blank">Pokémon Roulette</a> and cannot be encountered in the wild.';
                 multiplierOptions.forEach(function(option) {
                     if (option.classList.contains("selected")) {
                         option.classList.add("flashRed"); // Flash for incompatible multipliers
@@ -151,7 +151,7 @@ function initializeCalculator() {
                         option.classList.add("flashRed");
                     }
                 });
-                message = "*This Pokémon is a static encounter and is not affected by any boosts.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
+                message = "*" + pokemonLink + " is a static encounter and is not affected by any boosts.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
                 document.getElementById("result").textContent = "Encounter chance: 1/1 (100%)*";
             } else if (formulaTemplate.includes("-") || formulaTemplate.includes("—") || formulaTemplate.includes("nil")) {
                 multiplierOptions.forEach(function(option) {
@@ -159,7 +159,7 @@ function initializeCalculator() {
                         option.classList.add("flashRed");
                     }
                 });
-                message = "This Pokémon is non-encounterable or only available through evolution.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
+                message = "*" + pokemonLink + " is non-encounterable or only available through evolution.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
                 document.getElementById("result").textContent = "Encounter chance: nil (nil%)*";
             } else if (isLegendary) {
                 // Adjust legendary chance based on boosters
@@ -238,7 +238,7 @@ function initializeCalculator() {
                 document.getElementById("result").innerHTML = 'Encounter chance: nil (nil%)';
 
                 if (isLegendaryPokeboosterSelected || isTapuPokeboosterSelected || isGamepassSelected || isUltraBeastGamepassSelected) {
-                    message = "This Pokémon isn't affected by any boosters.";
+                    message = "" + pokemonLink + " isn't affected by any boosters.";
                 }
                 } catch (error) { document.getElementById("result").textContent = "Calculation error."; }
             } else if (isSwarms) {
@@ -247,7 +247,7 @@ function initializeCalculator() {
                 document.getElementById("result").innerHTML = 'Encounter chance: nil (nil%)';
 
                 if (isLegendaryPokeboosterSelected || isTapuPokeboosterSelected || isGamepassSelected || isUltraBeastGamepassSelected) {
-                    message = "This Pokémon isn't affected by any boosters.";
+                    message = "" + pokemonLink + " isn't affected by any boosters.";
                 }
                 } catch (error) { document.getElementById("result").textContent = "Calculation error."; }
             } else if (isQuestExclusive) {
@@ -256,7 +256,7 @@ function initializeCalculator() {
                 document.getElementById("result").innerHTML = 'Encounter chance: nil (nil%)';
 
                 if (isLegendaryPokeboosterSelected || isTapuPokeboosterSelected || isGamepassSelected || isUltraBeastGamepassSelected) {
-                    message = "This Pokémon isn't affected by any boosters.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
+                    message = "" + pokemonLink + " isn't affected by any boosters.<br>Please refer to its <a href=\"/wiki/" + pokemonLink + "\" target=\"_blank\">respective page</a> to learn more about its obtainment method.";
                 }
                 } catch (error) { document.getElementById("result").textContent = "Calculation error."; }
             } else if (formulaTemplate.includes("/")) {
@@ -272,7 +272,7 @@ function initializeCalculator() {
                         "Encounter chance: 1/" + directEncounterFraction + " (" + directEncounterPercentage + "%)";
 
                 if (isLegendaryPokeboosterSelected || isTapuPokeboosterSelected || isGamepassSelected || isUltraBeastGamepassSelected) {
-                    message = "This Pokémon isn't affected by any boosters.";
+                    message = "" + pokemonLink + " isn't affected by any boosters.";
                 }
                 } else {
                     document.getElementById("result").textContent = "Invalid formula format.";
@@ -284,11 +284,11 @@ function initializeCalculator() {
             var availability = selectedPokemon.getAttribute("data-time");
             var timeMessage = "";
             if (availability === "night") {
-                timeMessage = "This Pokémon is only available during the night.";
+                timeMessage = "" + pokemonLink + " is only available during the night.";
             } else if (availability === "day") {
-                timeMessage = "This Pokémon is only available during the day.";
+                timeMessage = "" + pokemonLink + " is only available during the day.";
             } else if (availability === "both") {
-                timeMessage = "This Pokémon is available anytime.";
+                timeMessage = "" + pokemonLink + " is available anytime.";
             }
 
             var customMessage = selectedPokemon.getAttribute("data-message");
@@ -330,12 +330,12 @@ function getIncompatibleBoosterMessage(isLegendary, isTapu, isUltraBeast) {
     if (unaffectedBoosters.length === 0) {
         return ""; // No unaffected boosters, no message needed
     } else if (unaffectedBoosters.length === 1) {
-        return "This Pokémon isn't affected by the " + unaffectedBoosters[0] + " boost.";
+        return "" + pokemonLink + " isn't affected by the " + unaffectedBoosters[0] + " boost.";
     } else if (unaffectedBoosters.length === 2) {
-        return "This Pokémon isn't affected by the " + unaffectedBoosters.join(" or ") + " boosts.";
+        return "" + pokemonLink + " isn't affected by the " + unaffectedBoosters.join(" or ") + " boosts.";
     } else {
         // For exactly 3 unaffected boosters, add commas and "or" before the last item
-        return "This Pokémon isn't affected by the " + unaffectedBoosters.slice(0, -1).join(", ") + ", or " + unaffectedBoosters[unaffectedBoosters.length - 1] + " boosts.";
+        return "" + pokemonLink + " isn't affected by the " + unaffectedBoosters.slice(0, -1).join(", ") + ", or " + unaffectedBoosters[unaffectedBoosters.length - 1] + " boosts.";
     }
 }
         });

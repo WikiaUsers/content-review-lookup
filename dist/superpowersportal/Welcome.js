@@ -48,13 +48,15 @@ mw.loader.using(['mediawiki.user', 'mediawiki.util', 'mediawiki.storage'], funct
                         $('#mw-content-text').prepend(DevMessage);
 
                         closeButton.on('click', function() {
-                            DevMessage.animate({ height: '0px', padding: '0px', margin: '0px' }, 500, function() {
-                                $(this).animate({ width: '0px' }, 500, function() {
-                                    $(this).remove();
-                                    mw.storage.set('DevMessageDismissed', 'true');
-                                });
-                            });
-                        });
+						    DevMessage.animate({ height: '1px', padding: '0px', margin: '0px' }, 500, function() {
+						        $(this).animate({ width: '0px' }, 500, function() {
+						            console.log("DevMessage has been sent to the great inbox in the sky. May it rest in peace... or at least until the next bug appears.");
+						            $(this).remove();
+						            mw.storage.set('DevMessageDismissed', 'true');
+						        });
+						    });
+						});
+
                     } else {
                         console.error('Template content not found. Check if the template exists and is correct.');
                     }

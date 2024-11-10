@@ -1,4 +1,3 @@
-$(document).ready(function() {
 var zoomContainers = document.querySelectorAll('.zoom-container'); 
 var mapImages = document.querySelectorAll('.map-image'); 
 
@@ -136,8 +135,21 @@ document.querySelectorAll('.map-marker').forEach(function(marker) {
             hoverContent.style.top = ''; // Clear custom top position
         }
     });
+
+// Prevent page scroll on wheel over markers
+    marker.addEventListener('wheel', function(event) {
+        event.preventDefault();  // Prevents the default scroll action
+        event.stopPropagation(); // Stops the event from bubbling up
+
+        // Trigger the zoom function on the container
+        var container = marker.closest('.zoom-container'); // Find the parent container
+        if (container) {
+            // Dispatch a custom wheel event on the container to handle the zoom
+            container.dispatchEvent(new WheelEvent('wheel', { deltaY: event.deltaY }));
+        }
+    });
 });
-});
+
 // Global variable to keep track of currently displayed hover content
 var currentHoverContent = null;
 

@@ -12,20 +12,20 @@
 // wikiMod
 importScriptPage('User:Jgjake2/js/wikiMod.min.js', 'deadisland');
 
-//countdown Module
-importArticles({
-    type: "script",
-    articles: [
-        "w:c:dev:MediaWiki:Countdown/code.js"
-    ]
-});
-
 // Tooltips.
 window.tooltips_config = {
     noCSS: true,
     offsetX: 8,
     offsetY: 8,
     waitForImages: true,
+};
+
+window.MassEditConfig = {
+  interval: 1500,
+  placement: {
+    element: "tools",
+    type: "prepend"
+  }
 };
 
 // **************************************************

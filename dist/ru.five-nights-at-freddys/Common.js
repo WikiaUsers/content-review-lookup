@@ -160,19 +160,16 @@ setInterval(function () {
 }, 500 );
 
 /* ========== Анимированный логотип ========== */
-const frameHeight = 450;
-const frames = 2;
-let frame = 0;
+{
+  var div = document.getElementById("animated_logo");
+  var frameHeight = 450;
+  var frames = 2;
+  var frame = 0;
 
-window.onload = fnaf_animation
-
-function fnaf_animation(){
-    const div = document.getElementById("animated_logo");
-
-    setInterval(function () {
-        const frameOffset = (++frame % frames) * -frameHeight;
-        div.style.backgroundPosition = "0px " + frameOffset + "px";
-    }, 500);
+  setInterval(function () {
+    var frameOffset = (++frame % frames) * -frameHeight;
+    div.style.backgroundPosition = "0px " + frameOffset + "px";
+  }, 500);
 }
 
 /* ========== MessageBlock ========== */

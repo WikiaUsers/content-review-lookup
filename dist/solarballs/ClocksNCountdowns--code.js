@@ -1,7 +1,258 @@
 (function ($) {
+    mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function () {
     'use strict';
 
     var countdowns = [];
+    var categorized = false; // Flag to track if the page is already categorized
+    var userGroupsLogged = false; // Flag to track if the groups have been logged
+    var permissionLogged = false; // Flag to ensure permission log is printed only once
+    // Create an instance of the MediaWiki API
+    var api = new mw.Api();
+
+        // Check if the user has permission to categorize
+function userHasPermission() {
+    var userGroups = mw.config.get('wgUserGroups');
+
+    // Log user groups only once
+    if (!userGroupsLogged) {
+        console.log('User groups:', userGroups);
+        userGroupsLogged = true;
+    }
+
+    var allowedGroups = ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'];
+    var hasPermission = userGroups.some(function (group) {
+        return allowedGroups.includes(group);
+    });
+
+    if (!hasPermission && !permissionLogged) {
+        console.log('User does not have the required permissions for categorization.');
+        permissionLogged = true;
+    }
+
+    return hasPermission;
+}
+
+// Function to add a category to the page
+function addCategory(categoryName) {
+    if (categorized) {
+        console.log('Categorization already done, skipping.');
+        return;
+    }
+
+    categorized = true; // Mark as categorized
+
+    api.get({
+        action: 'query',
+        titles: mw.config.get('wgPageName'),
+        prop: 'categories|revisions',
+        rvprop: 'content', // Fetch the content of the page
+        cllimit: 'max'
+    }).done(function (data) {
+        var pages = data.query.pages;
+        var page = Object.values(pages)[0];
+
+        var content = page.revisions[0]['*']; // Get the content of the page
+        var hasCategory = page.categories && page.categories.some(function (cat) {
+            return cat.title === 'Category:' + categoryName;
+        });
+
+        if (!hasCategory) {
+            // Escape the category name for regex
+            var escapedCat = escapeRegExp(categoryName);
+            var sRegEx = '\[\[' + 'Category' + ':' + escapedCat + '\]\]';
+            var regex = new RegExp(sRegEx, 'g'); // Use global flag to ensure it's properly checked
+
+            // Check if the namespace is 10 (Template namespace)
+            var namespace = mw.config.get('wgNamespaceNumber');
+            if (namespace === 10) {
+                var noincludeTagExists = /<noinclude>/i.test(content);
+                
+                if (noincludeTagExists) {
+                    // Find the position of the closing </noinclude> and insert below it
+                    var noincludeIndex = content.indexOf('<noinclude>');
+                    var closingTagIndex = content.indexOf('</noinclude>', noincludeIndex);
+                    
+                    // Ensure the category is inserted below the existing <noinclude> tag
+                    var newContent = content.slice(0, closingTagIndex) + "\n" + sRegEx + content.slice(closingTagIndex);
+
+                    // Update the page content
+                    api.postWithEditToken({
+                        action: 'edit',
+                        title: mw.config.get('wgPageName'),
+                        text: newContent,
+                        summary: 'Automatically categorized as ' + categoryName
+                    }).done(function () {
+                        console.log('Page successfully categorized as ' + categoryName);
+                    }).fail(function (error) {
+                        console.error('Error categorizing page:', error);
+                        categorized = false; // Reset on failure to allow retry
+                    });
+                } else {
+                    // If no <noinclude> exists, create one and append the category
+                    sRegEx = '<noinclude>' + sRegEx + '</noinclude>';
+                    api.postWithEditToken({
+                        action: 'edit',
+                        title: mw.config.get('wgPageName'),
+                        appendtext: sRegEx,
+                        summary: 'Automatically categorized as ' + categoryName
+                    }).done(function () {
+                        console.log('Page successfully categorized as ' + categoryName);
+                    }).fail(function (error) {
+                        console.error('Error categorizing page:', error);
+                        categorized = false; // Reset on failure to allow retry
+                    });
+                }
+            } else {
+                // Append the category normally if it's not in the Template namespace
+                api.postWithEditToken({
+                    action: 'edit',
+                    title: mw.config.get('wgPageName'),
+                    appendtext: sRegEx,
+                    summary: 'Automatically categorized as ' + categoryName
+                }).done(function () {
+                    console.log('Page successfully categorized as ' + categoryName);
+                }).fail(function (error) {
+                    console.error('Error categorizing page:', error);
+                    categorized = false; // Reset on failure to allow retry
+                });
+            }
+        } else {
+            console.log('Page already has the category ' + categoryName + ', skipping.');
+        }
+    }).fail(function (error) {
+        console.error('Error checking categories:', error);
+        categorized = false; // Reset on error to allow retry
+    });
+}
+
+// Function to remove a category from the page
+function removeCategory(categoryName) {
+
+    api.get({
+        action: 'query',
+        titles: mw.config.get('wgPageName'),
+        prop: 'categories',
+        cllimit: 'max'
+    }).done(function (data) {
+        var pages = data.query.pages;
+        var page = Object.values(pages)[0];
+
+        if (page.categories) {
+            var categoryText = page.categories.map(function (cat) {
+                return cat.title;
+            });
+
+            var categoryToRemove = 'Category:' + categoryName;
+
+            // Check if the category exists in the list of categories
+            if (categoryText.indexOf(categoryToRemove) !== -1) {
+                var cSens = true; // Assuming case-sensitive removal, or adjust based on user settings
+                var flags = 'g' + (cSens ? '' : 'i');
+                var escapedCat = escapeRegExp(categoryName);
+                var categoryNamespaceGroup = '(Category)';
+                var sRegEx = '\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\]\\]|\\[\\[' + categoryNamespaceGroup + ':' + escapedCat + '\\|.*?\\]\\]';
+                var regex = new RegExp(sRegEx, flags);
+
+                api.get({
+                    action: 'query',
+                    titles: mw.config.get('wgPageName'),
+                    prop: 'revisions',
+                    rvprop: 'content'
+                }).done(function (data) {
+                    var revision = Object.values(data.query.pages)[0].revisions[0]['*'];
+                    var newContent = revision.replace(regex, ''); // Remove the category text
+
+                    // Post the updated content to remove the category
+                    api.postWithEditToken({
+                        action: 'edit',
+                        title: mw.config.get('wgPageName'),
+                        text: newContent,
+                        summary: 'Removed category ' + categoryName
+                    }).done(function () {
+                        console.log('Category ' + categoryName + ' removed successfully.');
+                    }).fail(function (error) {
+                        console.error('Error removing category:', error);
+                    });
+                }).fail(function (error) {
+                    console.error('Error fetching page content:', error);
+                });
+            } else {
+                console.log('Category ' + categoryName + ' not found, skipping removal.');
+            }
+        }
+    }).fail(function (error) {
+        console.error('Error checking categories:', error);
+    });
+}
+
+// Helper function to escape regex characters
+function escapeRegExp(str) {
+    return str.replace(/[.*+?^=!:${}()|\[\]\/\\]/g, '\\$&');
+}
+
+// Function to manage categorization based on page status. Only the allowed groups can categorize
+function categorizePage(pageStatus) {
+    if (userHasPermission()) {
+        if (!categorized) {
+            if (pageStatus === 'updated') {
+                removeCategory('Outdated articles');
+                addCategory('Updated articles');
+            } else if (pageStatus === 'outdated') {
+                removeCategory('Updated articles');
+                addCategory('Outdated articles');
+            }
+        }
+    } else {
+        // Log message if user doesn't have permission
+        if (!permissionLogged) {
+            console.log('User does not have the required permissions for categorization.');
+            permissionLogged = true;
+        }
+    }
+}
+
+// Function to show the appropriate page status message or status
+function showPageStatus($this, pageStatus) {
+    var updatedMessage = $this.find('.pagestatusmsg[data-for-status="updated"]');
+    var outdatedMessage = $this.find('.pagestatusmsg[data-for-status="outdated"]');
+    var endDateContent = $this.find('.endDate');
+
+    // Set default value of data-add-category to 'false' if it's not already set
+    if ($this.attr('data-add-category') === undefined) {
+        $this.attr('data-add-category', 'false');
+    }
+
+    if (updatedMessage.length > 0 || outdatedMessage.length > 0) {
+        if (pageStatus === "updated") {
+            updatedMessage.css('display', 'inline');
+            outdatedMessage.css('display', 'none');
+            endDateContent.css('display', 'none');
+        } else if (pageStatus === "outdated") {
+            outdatedMessage.css('display', 'inline');
+            updatedMessage.css('display', 'none');
+            endDateContent.css('display', 'none');
+        } else {
+            endDateContent.css('display', 'inline');
+        }
+    } else {
+        if (pageStatus === "updated") {
+            $this.text("Updated");
+        } else if (pageStatus === "outdated") {
+            $this.text("Outdated");
+        } else {
+            endDateContent.css('display', 'inline');
+        }
+    }
+
+    // Only call categorizePage if data-add-category is not false and is not categorized yet and it's the first endDate span or div
+    if ($this.attr('data-add-category') !== 'false' && !categorized) {
+        var firstEndDate = $('#content .endDate[data-add-category="true"]').first();
+        if ($this.is(firstEndDate)) {
+            categorizePage(pageStatus);  // Call categorization function
+        }
+    }
+}
+
 
     // Function to format time into full month name and timestamp in UTC or Unix format
     function formatDateUTC(date, isUnix) {
@@ -27,74 +278,49 @@
         return endDate;
     }
 
-// Function to show the appropriate page status message or status
-function showPageStatus($this, pageStatus) {
-    var updatedMessage = $this.find('.pagestatusmsg[data-for-status="updated"]');
-    var outdatedMessage = $this.find('.pagestatusmsg[data-for-status="outdated"]');
-    var endDateContent = $this.find('.endDate');
+//Function to update end date elements
+function updateEndDate() {
+    $('.endDate').each(function () {
+        var $this = $(this);
+        var startDateText = $this.attr('data-start-date');
+        var countdownToSeconds = parseInt($this.attr('data-countdown-to')) || 0;
+        var revisionTimestamp = parseInt($this.attr('data-revision-timestamp')) || 0;
+        var pageStatus = $this.attr('data-page-status') === "true";
+        var startDate = new Date(startDateText);
 
-    // If custom status messages exist, handle them first
-    if (updatedMessage.length > 0 || outdatedMessage.length > 0) {
-        if (pageStatus === "updated") {
-            updatedMessage.css('display', 'inline');
-            outdatedMessage.css('display', 'none');
-            endDateContent.css('display', 'none');
-        } else if (pageStatus === "outdated") {
-            outdatedMessage.css('display', 'inline');
-            updatedMessage.css('display', 'none');
-            endDateContent.css('display', 'none');
-        } else {
-            // If no valid status, show end date
-            endDateContent.css('display', 'inline');
+        if (isNaN(startDate)) {
+            $this.text("Invalid start date!");
+            return;
         }
-    } else {
-        // No custom messages, check the page status and display accordingly
-        if (pageStatus === "updated") {
-            $this.text("Updated");
-        } else if (pageStatus === "outdated") {
-            $this.text("Outdated");
-        } else {
-            // Default to showing end date if no status is specified
-            endDateContent.css('display', 'inline');
-        }
-    }
-}
 
-    // Function to update the endDate elements
-    function updateEndDate() {
-        $('.endDate').each(function () {
-            var $this = $(this);
-            var startDateText = $this.attr('data-start-date');
-            var countdownToSeconds = parseInt($this.attr('data-countdown-to')) || 0;
-            var revisionTimestamp = parseInt($this.attr('data-revision-timestamp')) || 0;
-            var pageStatus = $this.attr('data-page-status') === "true" ? true : false; // Check for page status
-            var startDate = new Date(startDateText);
+        var nextEndDate = calculateNextEndDate(startDate, countdownToSeconds);
+        var adjustedStartDate = new Date(nextEndDate.getTime() - (countdownToSeconds * 1000));
 
-            // Check for valid date
-            if (isNaN(startDate)) {
-                $this.text("Invalid start date!");
-                return;
-            }
-
-            var nextEndDate = calculateNextEndDate(startDate, countdownToSeconds);
-            var adjustedStartDate = new Date(nextEndDate.getTime() - (countdownToSeconds * 1000));
-
-            // Determine output
-            if (pageStatus && revisionTimestamp) {
-                if (revisionTimestamp < Math.floor(adjustedStartDate.getTime() / 1000)) {
-                    showPageStatus($this, "outdated");
-                } else if (revisionTimestamp >= Math.floor(adjustedStartDate.getTime() / 1000) && revisionTimestamp < Math.floor(nextEndDate.getTime() / 1000)) {
-                    showPageStatus($this, "updated");
-                } else {
-                    $this.text(formatDateUTC(nextEndDate, false));
-                    showPageStatus($this, ""); // Default end date
-                }
+        if (pageStatus && revisionTimestamp) {
+            var newPageStatus;
+            if (revisionTimestamp < Math.floor(adjustedStartDate.getTime() / 1000)) {
+                newPageStatus = "outdated";
+            } else if (revisionTimestamp >= Math.floor(adjustedStartDate.getTime() / 1000) && revisionTimestamp < Math.floor(nextEndDate.getTime() / 1000)) {
+                newPageStatus = "updated";
             } else {
                 $this.text(formatDateUTC(nextEndDate, false));
-                showPageStatus($this, ""); // Default behavior
+                newPageStatus = ""; // Default end date
             }
-        });
-    }
+
+            // If status changes, reset the flag
+            if ($this.attr('data-last-status') !== newPageStatus) {
+                categorized = false; // Reset only when status changes
+                $this.attr('data-last-status', newPageStatus); // Store the last status
+            }
+
+            showPageStatus($this, newPageStatus);
+        } else {
+            $this.text(formatDateUTC(nextEndDate, false));
+            showPageStatus($this, ""); // Default behavior
+        }
+    });
+}
+
 
     // Function to update the clock and countdown every second
 function updateTime() {
@@ -222,4 +448,7 @@ function updateTime() {
     }
 
     $(document).ready(init);
+
+    });
+
 }(jQuery));

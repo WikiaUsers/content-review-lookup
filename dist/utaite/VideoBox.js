@@ -96,6 +96,6 @@
 
     importArticle({
         type: 'style',
-        article: 'MediaWiki:Css/NvBox.css'
+        article: 'MediaWiki:Css/VidBox.css'
     });
 })();

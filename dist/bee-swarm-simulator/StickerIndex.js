@@ -238,7 +238,16 @@ var allSuffixes = new Map([
 			  ['-Field_Bamboo','Bamboo Field'],
 			  ['-Field_Strawberry','Strawberry Field'],
 			  ['-Field_Pineapple','Pineapple Patch'],
-			  ['-Field_Stump','Stump Field']]
+			  ['-Field_Stump','Stump Field'],
+			  ['-Field_Cactus','Cactus Field'],
+			  ['-Field_Pumpkin','Pumpkin Patch'],
+			  ['-Field_Pine_Tree','Pine Tree Forest'],
+			  ['-Field_Rose','Rose Field'],
+			  ['-Field_Ant','Ant Field'],
+			  ['-Field_Hub','Hub Field'],
+			  ['-Field_Mountain_Top','Mountain Top Field'],
+			  ['-Field_Coconut','Coconut Field'],
+			  ['-Field_Pepper','Pepper Patch']]
 	],
 	["Bee",[['-Bee_Basic','Basic Bee'],
 			['-Bee_Bomber','Bomber Bee'],

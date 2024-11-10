@@ -1,5 +1,6 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
+// Any JavaScript here will be loaded for all users on every page load. 
 
+/* 
 window.UserTagsJS = {
 	modules: {},
 	tags: {
@@ -78,18 +79,18 @@ UserTagsJS.modules.mwGroups = ['sysop', 'council', 'rollback', 'chatmoderator', 
 //Add Tags
 UserTagsJS.modules.custom = {
     //Current Staff
-    /* Bureaucrats */
+    /* Bureaucrats 
 	'Jackboog21': ['head', 'hc-sc'],
-	/* Admins */
-	/* Mini-Admins */
+	/* Admins 
+	/* Mini-Admins 
 	'Ŝenezala': ['miniadmin', 'head'],
-	/* Content Mods */
+	/* Content Mods 
 	'Tsuzuro Yamazaki': ['ec-jc', 'hc-member', 'head'],
-	/* Discussion Mods */
-	/* Rollbacks */
-	/* Chat Mods */
+	/* Discussion Mods 
+	/* Rollbacks 
+	/* Chat Mods 
 	'GhoulGirls90': ['chatmoderator', 'head'],
-	/* Helpers and Intern */
+	/* Helpers and Intern 
 	'Littleslinky': ['helpers',],
 	'Vividstardust': ['helpers', 'deputy'],
 	'Tuxedoshlyukha': ['helpers', 'head'],
@@ -98,30 +99,30 @@ UserTagsJS.modules.custom = {
 	'VACANT': ['intern'],
 	
 	//Former Staff
-	/* Former Bureaucrats */
+	/* Former Bureaucrats 
 	'Ekhinyu': ['former-bureaucrat'],
-	/* Former Admins */
-	/* Former Mini-Admins */
+	/* Former Admins 
+	/* Former Mini-Admins 
 	'AoiRyugokuTSFG1': ['former-miniadmin' ],
 	'A random student': ['former-miniadmin', 'hc-jc', 'ec-member'],
-	/* Former Content Mods */
+	/* Former Content Mods 
 	'Travid117': ['former-contentmod'],
 	'GalaxE': [],
 	'SeiShii': ['former-chatmoderator', 'ec-member'],
-	/* Former Rollbacks */
+	/* Former Rollbacks 
 	'DezertFokx': ['former-rollback'],
 	'Third-Impact-is-Coming': ['former-rollback'],
 	'TheMoonPortal': ['former-rollback'],
 	'Redandsymmetry': ['former-rollback'],
 	'Tatsuya420': ['former-rollback'],
-	/* Former Discussion Mods */
+	/* Former Discussion Mods 
 	'Grapeleaf Skeletonizer': ['former-discussionmod'],
 	'KawaiiKunWolf': ['former-discussionmod'],
-	/* Former Chat Mods */
+	/* Former Chat Mods 
 	'Rgis': ['former-chatmod'],
 	'EwImTrash': ['former-chatmod'],
 	'Chief Fenrir': ['former-chatmod'],
-	/* Former Helpers */
+	/* Former Helpers 
 	'Merrimilk': ['former-helper'],
 	"It'smeClara": ['former-helper'],
 	'LunathuThePotato': ['former-helper'],
@@ -137,7 +138,7 @@ UserTagsJS.modules.custom = {
 	'UltimateGamer899': ['former-helper'],
 	'WakeTheDead17': ['former-helper'],
 	'PM.S.K.D': ['former-helper'], //Keter
-	/* Former Interns */
+	/// Former Interns 
 	'EmotionlessKuu': ['former-intern'],
 	'SonrisitasPF': ['former-intern'],
 	'Ironslab': ['former-intern'],
@@ -222,11 +223,14 @@ UserTagsJS.modules.implode = {
 	'deputy-bureaucrat': ['bureaucrat', 'deputy'],
 };
 
+*/
+
 //MastHeadRightsBadge
 window.MastheadRightsBadgeSettings = {
     iconSize: '25px',
 };
 
+/* 
 window.MessageWallUserTags = {
     users: {
         'Jackboog21': 'Head Bureaucrat',
@@ -241,6 +245,7 @@ window.MessageWallUserTags = {
         'VACANT': 'Intern',
     }
 };
+*/
 
 //TopicBlockList
 TBL_WIKIS = [ "community", "yandere-simulator", "yandere-simulator-fan"];
@@ -277,8 +282,9 @@ if (mw.config.get('wgUserGroups').includes('threadmoderator') ||
         ]
     });
 }
+/*
 //Import for all Staff
-if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ || 
+if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern || 
     mw.config.get('wgUserName').includes('Vividstardust') || 
     mw.config.get('wgUserName').includes('Tuxedoshlyukha') || 
     mw.config.get('wgUserName').includes('AmaiOdayakaYansim123') || 
@@ -296,6 +302,7 @@ if (mw.config.get('wgUserName').includes('VacantIntern') /*Intern*/ ||
         ]
     });
 }
+*/
 
 //LockOldComments
 window.lockOldComments = (window.lockOldComments || {});

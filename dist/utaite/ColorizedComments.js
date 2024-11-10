@@ -2,102 +2,111 @@
     'use strict';
 
     function styleSpecialComments(elements) {
-	    var isInMultilineComment = false;
-	    var currentCommentClass = '';
-	
-	    elements.each(function (index, lineElement) {
-	        $(lineElement).find('.cm-mw-comment').each(function (index, commentElement) {
-	            var commentText = $(commentElement).text();
-	
-	            if (!isInMultilineComment && 
-	                !$(commentElement).hasClass('special-comment-important') &&
-	                !$(commentElement).hasClass('special-comment-tip') &&
-	                !$(commentElement).hasClass('special-comment-todo')) {
-	                
-	                if (commentText.indexOf('<!--!') === 0) {
-	                    $(commentElement).addClass('special-comment-important');
-	                    isInMultilineComment = true;
-	                    currentCommentClass = 'special-comment-important';
-	                } else if (commentText.indexOf('<!--?') === 0) {
-	                    $(commentElement).addClass('special-comment-tip');
-	                    isInMultilineComment = true;
-	                    currentCommentClass = 'special-comment-tip';
-	                } else if (commentText.indexOf('<!--TODO') === 0) {
-	                    $(commentElement).addClass('special-comment-todo');
-	                    isInMultilineComment = true;
-	                    currentCommentClass = 'special-comment-todo';
-	                }
-	            } 
-	
-	            if (isInMultilineComment) {
-	                if (commentText.indexOf('-->') !== -1) {
-	                    $(commentElement).addClass(currentCommentClass);
-	                    isInMultilineComment = false;
-	                    currentCommentClass = '';
-	                } else {
-	                    $(commentElement).addClass(currentCommentClass);
-	                }
-	            }
-	        });
-	    });
-	}
-
-
-    function observeEditorChanges() {
-        var cmContent = document.querySelector('.cm-content');
-        if (!cmContent) {
-            //console.log("Error: .cm-content element not found");
-            return;
-        }
-
-        var observer = new MutationObserver(function (mutationsList) {
-            mutationsList.forEach(function (mutation) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                    //console.log("New nodes detected in mutation: ", mutation);
-                    var newLines = $(mutation.addedNodes).filter('.cm-line');
-                    if (newLines.length) {
-                        styleSpecialComments(newLines);
+        var isInMultilineComment = false;
+        var currentCommentClass = '';
+        
+        elements.each(function (index, lineElement) {
+            $(lineElement).find('.cm-mw-comment').each(function (index, commentElement) {
+                var $comment = $(commentElement);
+                var commentText = $comment.text();
+                
+                // Remove any existing special classes
+                $comment.removeClass('special-comment-important special-comment-tip special-comment-todo');
+                
+                if (!isInMultilineComment) {
+                    if (commentText.indexOf('<!--!') === 0) {
+                        $comment.addClass('special-comment-important');
+                        isInMultilineComment = true;
+                        currentCommentClass = 'special-comment-important';
+                    } else if (commentText.indexOf('<!--?') === 0) {
+                        $comment.addClass('special-comment-tip');
+                        isInMultilineComment = true;
+                        currentCommentClass = 'special-comment-tip';
+                    } else if (commentText.indexOf('<!--TODO') === 0) {
+                        $comment.addClass('special-comment-todo');
+                        isInMultilineComment = true;
+                        currentCommentClass = 'special-comment-todo';
+                    }
+                } else {
+                    $comment.addClass(currentCommentClass);
+                    if (commentText.indexOf('-->') !== -1) {
+                        isInMultilineComment = false;
+                        currentCommentClass = '';
                     }
                 }
             });
         });
-
-        observer.observe(cmContent, { childList: true, subtree: true });
-    	//console.log("MutationObserver attached to CodeMirror content.");
     }
 
-    function reapplyStyles() {
-        var allLines = $('.cm-content .cm-line');
-        if (allLines.length) {
-            styleSpecialComments(allLines);
+    function observeEditorChanges() {
+        var cmContent = document.querySelector('.cm-content');
+        if (!cmContent) {
+            setTimeout(observeEditorChanges, 1000);
+            return;
         }
+
+        // Monitor focus events on the editor
+        $(cmContent).on('focus blur click', function() {
+            setTimeout(function() {
+                styleSpecialComments($('.cm-line'));
+            }, 0);
+        });
+
+        // Monitor key events for content changes
+        $(cmContent).on('keyup', function() {
+            styleSpecialComments($('.cm-line'));
+        });
+
+        // Regular check for style consistency
+        var styleInterval = setInterval(function() {
+            if ($('.cm-content').length) {
+                styleSpecialComments($('.cm-line'));
+            } else {
+                clearInterval(styleInterval);
+            }
+        }, 500);
+
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    setTimeout(function() {
+                        styleSpecialComments($('.cm-line'));
+                    }, 0);
+                }
+            });
+        });
+
+        observer.observe(cmContent, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
     }
 
-    function hookIntoCodeMirror() {
+    function initializeStyles() {
         var cmContent = $('.cm-content');
-
         if (cmContent.length) {
-            //console.log("CodeMirror content found, applying styles to comments");
-			styleSpecialComments(cmContent.find('.cm-line'));
+            styleSpecialComments(cmContent.find('.cm-line'));
             observeEditorChanges();
-            setInterval(reapplyStyles, 1000);
         } else {
-            //console.log("CodeMirror content not found yet, retrying...");
-            setTimeout(hookIntoCodeMirror, 1000);
+            setTimeout(initializeStyles, 1000);
         }
     }
 
+    // CSS styles with higher specificity
     var customCSS = 
-        'body[data-theme="dark"] .cm-mw-comment { color: #c7c6ad; }' +  
-        'body[data-theme="dark"] .cm-mw-comment.special-comment-important { color: #ff6b6b; font-weight: bold; }' +
-	    'body[data-theme="dark"] .cm-mw-comment.special-comment-tip { color: #4fc3f7; font-style: italic; }' +
-	    'body[data-theme="dark"] .cm-mw-comment.special-comment-todo { color: #ffa726; font-weight: bold; text-decoration: underline; }';
+        '.cm-content .cm-mw-comment { color: #c7c6ad !important; }' +  
+        '.cm-content .cm-mw-comment.special-comment-important { color: #ff6b6b !important; font-weight: bold !important; }' +
+        '.cm-content .cm-mw-comment.special-comment-tip { color: #4fc3f7 !important; font-style: italic !important; }' +
+        '.cm-content .cm-mw-comment.special-comment-todo { color: #ffa726 !important; font-weight: bold !important; text-decoration: underline !important; }';
 
     $('<style>').text(customCSS).appendTo('head');
 
-    mw.hook('wikipage.content').add(function() {
-		//console.log("wikipage.content hook triggered, waiting for CodeMirror content");
-        hookIntoCodeMirror();
-    });
+    // Multiple initialization points to ensure styles are applied
+    mw.hook('wikipage.content').add(initializeStyles);
+    $(document).ready(initializeStyles);
+    
+    // Additional initialization after a short delay
+    setTimeout(initializeStyles, 2000);
 
 })(this, jQuery, mediaWiki);

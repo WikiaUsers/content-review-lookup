@@ -82,6 +82,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.storage'], function () {
         displayBookmarks();
         fire("bookmarks.savedBookmark", bookmarks);
         logMessage("Saved bookmark: " + bookmark.url + "!");
+		location.reload(true);
     }
 
     function removeBookmark(pageUrl) {
@@ -93,6 +94,7 @@ mw.loader.using(['mediawiki.util', 'mediawiki.storage'], function () {
         displayBookmarks();
         fire("bookmarks.removedBookmark", bookmarks);
         logMessage("Removed bookmark!");
+		location.reload(true);
     }
 
     function updateBookmarkButton(pageUrl) {

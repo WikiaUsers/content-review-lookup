@@ -5,20 +5,23 @@ $(function() {
 	
 	// Double load protection
 	if (window.dev.BetterUpload._LOADED) { return; }
+	window.dev.BetterUpload._LOADED = true;
 	
     // Load dependencies and cache
 	var api = new mw.Api();
 	var config = mw.config.get(['wgAction', 'wgCanonicalSpecialPageName', 'wgUserName']);
+	var urlParams = new URLSearchParams(window.location.search);
+	var cm, f_require;
 	
 	// Main class
-	var betterUpload = {
+	var BU = {
 		init: function(curr) {
 			// Add custom form submitapi
 			document.querySelector('.mw-htmlform-submit').value = 'Upload file with preload';
 			document.querySelector('form#mw-upload-form').addEventListener("submit", function (event) {
 			  event.preventDefault();
-			  betterUpload.saveEdit();
-			  betterUpload.attemptUpload();
+			  BU.saveEdit();
+			  BU.attemptUpload();
 			});
 			if (!document.querySelector('.mw-htmlform-field-HTMLTextAreaField')) { // Special render for reupload
 				document.querySelector('label[for="wpUploadDescription"]').innerHTML = 'Upload summary:';
@@ -39,19 +42,75 @@ $(function() {
 					ren,
 					tar.nextSibling
 				);
+				
 			}
 			
 			// Page default changes
-			document.querySelector('#wpWatchthis').closest('fieldset').remove();
 			document.querySelector('.mw-htmlform-field-HTMLTextAreaField label[for="wpUploadDescription"]').innerHTML = 'Page content:';
-			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', betterUpload.renderPreview);
+			document.querySelector('.mw-htmlform-field-HTMLTextAreaField textarea#wpUploadDescription').addEventListener('change', BU.renderPreview);
 			document.querySelector('textarea#wpUploadDescription').style['font-family'] = 'Consolas, Eupheima UCAS, Ayuthaya, Menlo, monospace';
-			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (window.dev.BetterUpload.default || '');
+			document.querySelector('textarea#wpUploadDescription').value = (curr!==null && curr!==undefined) ? curr : (BU.detectFromDest() || window.dev.BetterUpload.default || '');
+			if (document.querySelector('#wpWatchthis')) { document.querySelector('#wpWatchthis').closest('fieldset').remove(); }
 			if (document.querySelector('tr.mw-htmlform-field-Licenses')) { document.querySelector('tr.mw-htmlform-field-Licenses').remove(); }
 			if (document.querySelector('p.mw-upload-editlicenses')) { document.querySelector('p.mw-upload-editlicenses').remove(); }
 			
-			betterUpload.renderPreview();
-			betterUpload.genPreloads();
+			BU.initCM();
+			BU.renderPreview();
+			BU.genPreloads();
+		},
+		initCM: function() {
+			var CodeMirror = f_require( 'ext.CodeMirror.v6' );
+			var mediawikiLang = f_require( 'ext.CodeMirror.v6.mode.mediawiki' );
+			mw.util.addCSS(
+				'.skin-fandomdesktop .cm-gutters {background-color:var(--theme-page-background-color--secondary);border-right-color:var(--theme-border-color);color:var(--theme-page-text-color); margin-right:1px;} '+
+				'.cm-editor {border: 1px solid var(--theme-border-color); color: var(--theme-page-text-color);} '+
+				'.cm-content {text-wrap: wrap !important; width: 90%;} '+
+				'.cm-cursor {border-left: 1.2px solid var(--theme-page-text-color) !important;} '+
+				'.cm-scroller {max-height: 700px; min-height: 300px; width: 100%;}'
+			);
+			cm = new CodeMirror( $('textarea#wpUploadDescription') );
+			cm.initialize( [ cm.defaultExtensions, mediawikiLang() ] );
+			window.dev.BetterUpload.CodeMirror = cm;
+			$('.mw-charinsert-item').on('click', function(item) {
+				var start = item.target.getAttribute('data-mw-charinsert-start') || '';
+				var end = item.target.getAttribute('data-mw-charinsert-end') || '';
+				if (start.length>0 || end.length>0) {
+					BU.pushCM(start+end, start.length);
+				}
+			});
+			// try to preview every couple seconds
+			var last;
+			setInterval(function() {
+				var curr = BU.getCM();
+				if (curr !== last) {BU.renderPreview();}
+				last = curr;
+			}, 1000);
+		},
+		pushCM: function(txt, pos) {
+			cm.view.dispatch({
+				changes: {
+					from: pos===null ? 0 : cm.view.state.selection.ranges[0].from,
+					to: pos===null ? cm.view.state.doc.length : cm.view.state.selection.ranges[0].to,
+					insert: txt
+				},
+				selection: {anchor: cm.view.state.selection.ranges[0].from + (pos||0)}
+			});
+			cm.view.focus();
+
+		},
+		getCM: function() {return cm.view.state.doc.toString();},
+		// if this file is being uploaded to a specific destination specified in the URL,
+		// iterate through preloads with a specified "pattern" field to attempt to detect one
+		detectFromDest: function() {
+			if (!Array.isArray(window.dev.BetterUpload.preloads) || !urlParams.has('wpDestFile')) return;
+			var matched = window.dev.BetterUpload.preloads.find(function(preload) {
+				if (preload.pattern != null && new RegExp(preload.pattern).test(urlParams.get('wpDestFile').replace(/_/g, ' '))) {
+					return true;
+				}
+			});
+			if (matched != null) {
+				return matched.preload;
+			}
 		},
 		genPreloads: function() {
 			// console.log(window.dev.BetterUpload); // debug
@@ -99,7 +158,6 @@ $(function() {
 					var settings = window.dev.BetterUpload.preloads[num];
 					if (settings && settings.preload) {
 						var preload =  settings.preload;
-						document.querySelector('textarea#wpUploadDescription').value=preload;
 						if (document.querySelector('#mw-htmlform-description tbody .wpFillinRow')) {
 							document.querySelector('#mw-htmlform-description tbody .wpFillinRow').remove();
 						}
@@ -171,19 +229,19 @@ $(function() {
 										}
 									});
 								}
-								document.querySelector('textarea#wpUploadDescription').value = newpreload;
-								betterUpload.renderPreview();
+								BU.pushCM(newpreload, null);
+								BU.renderPreview();
 							});
 						}
-						document.querySelector('textarea#wpUploadDescription').value = preload;
-						betterUpload.renderPreview();
+						BU.pushCM(preload, null);
+						BU.renderPreview();
 					} else { alert('Invalid option.'); }
 				});
 			}
 		},
 		renderPreview: function() {
 			var filename = document.querySelector('#wpDestFile').value;
-			var text = document.querySelector('textarea#wpUploadDescription').value;
+			var text = BU.getCM();
 			var params = {
 				action: 'parse',
 				text: text,
@@ -215,7 +273,7 @@ $(function() {
 					title: 'File:'+filename,
 					ignorewarnings: '1',
 					format: 'json',
-					text: document.querySelector('#wpUploadDescription').value,
+					text: BU.getCM(),
 					recreate: 1,
 					token: mw.user.tokens.get('csrfToken')
 				};
@@ -236,7 +294,7 @@ $(function() {
                 filename: filename,
                 ignorewarnings: '1',
                 format: 'json',
-                text: document.querySelector('#wpUploadDescription').value
+                text: BU.getCM()
             };
             if (comment && comment.value.length>0) {
             	params.comment = comment.value;
@@ -273,9 +331,10 @@ $(function() {
 	};
 	
 	// Start when API and LIB are loaded
-	mw.loader.using('mediawiki.api').then(function(){
+	mw.loader.using([ 'ext.CodeMirror.v6', 'ext.CodeMirror.v6.mode.mediawiki', 'mediawiki.api']).then(function(require){
 		// Check we're in Special:Upload
 		if (config.wgCanonicalSpecialPageName == 'Upload') {
+			f_require = require;
 			var titles = [
 				'MediaWiki:Gadget-BetterUpload.json',			// Site-wide settings on MediaWiki json page
 				'User:'+config.wgUserName+'/BetterUpload.json'	// User settings if any in "User:NAME/BetterUpload.json"
@@ -305,12 +364,12 @@ $(function() {
 				} else if (page.site !== -1) {
 					window.dev.BetterUpload = JSON.parse(data.query.pages[page.site].revisions[0].slots.main['*']);
 				}
-				window.dev.BetterUpload._LOADED = true;
+				
 				var setInit = function() {
 					if (/wpForReUpload/.test(window.location.href)) { // Special:Upload?wpForReUpload=1
-						betterUpload.init(page.curr);
+						BU.init(page.curr);
 					} else { // Special:Upload
-						betterUpload.init();
+						BU.init();
 					}
 				};
 				if (document.querySelector('#wpUploadDescription')) {
@@ -323,7 +382,7 @@ $(function() {
 						var targetNode = document.querySelector('#wpUploadDescription');
 						if (targetNode) {
 							me.disconnect(); // stop observing
-							betterUpload.init();
+							BU.init();
 						}
 					});
 					// start observing

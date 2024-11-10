@@ -11,7 +11,7 @@ $(function() {
 			if (time != prev) {
 				prev = time;
 				// Check daylight saving time in EST (correct until 2026)
-				var DST = false;
+				var DST = true;
 				var year = now.getUTCFullYear();
 				var dstStart = new Date("March 1, "+year+" 02:00:00 EST");
 				var dstEnd = new Date("November 1, "+year+" 02:00:00 EST");

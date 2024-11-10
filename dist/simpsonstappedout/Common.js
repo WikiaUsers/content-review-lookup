@@ -27,16 +27,11 @@ $(function()
     return;
   }
   
-  $(".WikiaMainContent").prepend('<select id="new-infobox-theme-selector"><option value="default">Default Theme</option><option value="dark">Dark Theme</option><option value="yellow">Simpsons Theme</option></select>');
+  $(".page-content").prepend('<select id="new-infobox-theme-selector"><option value="wikia">Default Theme</option><option value="dark">Dark Theme</option><option value="yellow">Simpsons Theme</option></select>');
   $("#new-infobox-theme-selector").change(function()
   {
     var selectedValue = $('option:selected', $(this)).val();
     
-    $('.portable-infobox').removeClass('pi-theme-dark').removeClass('pi-theme-yellow');
-    
-    if(selectedValue != 'default')
-    {
-      $('.portable-infobox').addClass('pi-theme-' + selectedValue);
-    }
+    $('.portable-infobox').removeClass('pi-theme-dark').removeClass('pi-theme-yellow').removeClass('pi-theme-wikia').addClass('pi-theme-' + selectedValue);
   });
 });

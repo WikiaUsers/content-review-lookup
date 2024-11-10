@@ -137,6 +137,7 @@
         ID_CONTENT_TYPE: "massedit-content-type",
         ID_CONTENT_CASE: "massedit-content-case",
         ID_CONTENT_MATCH: "massedit-content-match",
+        ID_CONTENT_FILTER: "massedit-content-filter",
         ID_CONTENT_LOG: "massedit-content-log",
         ID_CONTENT_BYLINE: "massedit-content-byline",
         ID_CONTENT_BODY: "massedit-content-body",
@@ -267,6 +268,9 @@
                 Object.freeze(["match",
                   Object.freeze(["plain", "regex"])
                 ]),
+                Object.freeze(["filter",
+                  Object.freeze(["all", "nonredirects", "redirects"])
+                ]),
               ])
             }),
             Object.freeze({
@@ -295,7 +299,10 @@
                 ]),
                 Object.freeze(["type",
                   Object.freeze(["pages", "categories", "namespaces"])
-                ])
+                ]),
+                Object.freeze(["filter",
+                  Object.freeze(["all", "nonredirects", "redirects"])
+                ]),
               ])
             }),
             Object.freeze({
@@ -335,7 +342,10 @@
               PARAMETER_ARRAYS: Object.freeze([
                 Object.freeze(["type",
                   Object.freeze(["categories", "namespaces", "templates"])
-                ])
+                ]),
+                Object.freeze(["filter",
+                  Object.freeze(["all", "nonredirects", "redirects"])
+                ]),
               ])
             }),
             Object.freeze({
@@ -681,7 +691,7 @@
         HOOK_NAME: "dev.massEdit",
         STD_INTERVAL: 1500,
         BOT_INTERVAL: 750,
-        CACHE_VERSION: 4,
+        CACHE_VERSION: 5,
       }),
     }
   });
@@ -1693,13 +1703,17 @@
    * than helper functions like this and <code>getMemberPages</code>.
    *
    * @param {Array<string>} paramEntries - Array of pages/cats/ns
-   * @param {string} paramType - categories, templates, namespaces, recipients
+   * @param {object} paramParameters - obj w/ type prop that may be categories,
+   *                                   templates, namespaces, recipients
    * @returns {object} $deferred - Promise returned for use w/ <code>then</code>
    */
-  main.getValidatedEntries = function (paramEntries, paramType) {
+  main.getValidatedEntries = function (paramEntries, paramParameters) {
 
     // Declarations
-    var i, n, entry, results, $deferred, prefix;
+    var i, n, type, entry, results, $deferred, prefix;
+
+    // Alias
+    type = paramParameters.type;
 
     // Returnable array of valid pages
     results = [];
@@ -1712,7 +1726,7 @@
       categories: 14,
       namespaces: 0,
       templates: 10,
-    }[paramType]] || "";
+    }[type]] || "";
 
     for (i = 0, n = paramEntries.length; i < n; i++) {
 
@@ -1720,7 +1734,7 @@
       entry = this.capitalize(paramEntries[i].trim());
 
       if (
-        paramType === "recipients" &&
+        type === "recipients" &&
         this.startsWith(entry, this.globals.wgFormattedNamespaces[2])
       ) {
         entry = entry.split(this.globals.wgFormattedNamespaces[2] + ":")[1];
@@ -1733,8 +1747,8 @@
 
       // If legal page/category name, push into names array
       if (
-        (paramType !== "namespaces" && this.isLegalInput(entry)) ||
-        (paramType === "namespaces" && this.isInteger(entry))
+        (type !== "namespaces" && this.isLegalInput(entry)) ||
+        (type === "namespaces" && this.isInteger(entry))
       ) {
         results.push(entry);
       } else {
@@ -1820,7 +1834,9 @@
     entries = [];
 
     // Get wellformed, formatted usernames
-    $getUsers = this.getValidatedEntries(paramEntries, "recipients");
+    $getUsers = this.getValidatedEntries(paramEntries, {
+      type: "recipients"
+    });
 
     /**
      * @description Upon the acquisition of validated usernames containing only
@@ -1994,14 +2010,19 @@
    * API queries.
    *
    * @param {Array<string>} paramEntries - Array of user input pages
-   * @param {string} paramType - <code>string</code> denoting cat, ns, or tl
+   * @param {object} paramParameters - type (cat, ns, or tl) and/or filter
+   *                                   (all, nonredirect, redirects)
    * @returns {object} $returnPages - $.Deferred promise object
    */
-  main.getMemberPages = function (paramEntries, paramType) {
+  main.getMemberPages = function (paramEntries, paramParameters) {
 
     // Declarations
-    var i, n, names, data, entries, parameters, counter, config, $getPages,
-      $addPages, $getEntries, $returnPages;
+    var i, n, type, filter, names, data, entries, parameters, counter, config,
+      $getPages, $addPages, $getEntries, $returnPages;
+
+    // Aliases for param properties
+    type = paramParameters.type;
+    filter = paramParameters.filter;
 
     // New pending Deferred objects
     $returnPages = new $.Deferred();
@@ -2036,10 +2057,10 @@
         continuer: "eicontinue",
         target: "eititle",
       },
-    }[paramType];
+    }[type];
 
     // Get wellformed, formatted namespace numbers, category names, or templates
-    $getEntries = this.getValidatedEntries(paramEntries, paramType);
+    $getEntries = this.getValidatedEntries(paramEntries, paramParameters);
 
     // Once acquired, apply to names array or pass along rejection message
     $getEntries.then(function (paramResults) {
@@ -2067,8 +2088,13 @@
       // Set parameter target page
       parameters[config.target] = names[counter];
 
+      // For namespaces, include filter value
+      if (type === "namespaces" && filter != null) {
+        parameters.apfilterredir = filter;
+      }
+
       // Fetching member pages of $1 or Fetching transclusions of $1
-      $returnPages.notify((paramType === "templates")
+      $returnPages.notify((type === "templates")
         ? "logStatusFetchingTransclusions"
         : "logStatusFetchingMembers", names[counter]);
 
@@ -2109,7 +2135,18 @@
 
       // If page doesn't exist, add log entry and continue to next iteration
       if (data == null || data.length === 0) {
-        $returnPages.notify("logErrorNoSuchPage", names[counter++]);
+
+        /*
+         * NOTE: Data array returned may be empty if no pages matching filter
+         * target are found in that batch of pages.
+         *
+         * <code>data.query.allpages</code> will be an empty array if user is
+         * looking for redirects and none exist in current batch of pages, for
+         * example.
+         */
+
+        // "Error: No matching member pages found in current batch for $1"
+        $returnPages.notify("logErrorNoPagesInBatch", names[counter++]);
         return this.timer.iterate();
       }
 
@@ -3110,12 +3147,12 @@
     }
 
     // Declarations
-    var $action, $type, $case, $match, $content, $target, $indices, indices,
-      $pages, pages, $byline, $summary, counter, config, data, pageIndex,
-      newText, $getPages, $postPages, $getNextPage, $getPageContent,
+    var $action, $type, $case, $match, $filter, $content, $target, $indices,
+      indices, $pages, pages, $byline, $summary, counter, config, data,
+      pageIndex, newText, $getPages, $postPages, $getNextPage, $getPageContent,
       $postPageContent, error, $scene, isCaseSensitive, isUserRegex, isReplace,
       isAddition, isMessaging, isListing, $members, $selected, $body, pagesType,
-      replaceOccurrences, isWikitextParsed;
+      replaceOccurrences, getterParameters, isWikitextParsed;
 
     // Dropdowns
     $scene = $("#" + this.Selectors.ID_CONTENT_SCENE)[0];
@@ -3123,6 +3160,7 @@
     $type = $("#" + this.Selectors.ID_CONTENT_TYPE)[0];
     $case = $("#" + this.Selectors.ID_CONTENT_CASE)[0];
     $match = $("#" + this.Selectors.ID_CONTENT_MATCH)[0];
+    $filter = $("#" + this.Selectors.ID_CONTENT_FILTER)[0];
 
     // Textareas/inputs
     $target = $("#" + this.Selectors.ID_CONTENT_TARGET).val();
@@ -3296,6 +3334,12 @@
             this.flags.hasMessageWalls = paramHasWalls;
           }
 
+          getterParameters = {};
+          if (!isMessaging) {
+            getterParameters.type = ($type != null) ? $type.value : null;
+            getterParameters.filter = ($filter != null) ? $filter.value : null;
+          }
+
           // Get list of wellformed pages/usernames or member pages
           return this[
             (isListing || (!isMessaging && $type.value !== "pages"))
@@ -3303,7 +3347,7 @@
               : (isMessaging)
                 ? "getActiveUsersData"
                 : "getValidatedEntries"
-          ](pages, ($type != null) ? $type.value : null);
+          ](pages, getterParameters);
         }.bind(this)
       ).then(
         $paramOuter.resolve.bind($), // $getPages.done

@@ -62,7 +62,7 @@ mw.hook("wikipage.content").add(function () {
 
 // Шаблон оценки
 mw.hook("wikipage.content").add(function () {
-	if ($('.pageRate')[0] == null) {return;}
+	if ( !($('.pageRate').length > 0 && $('.pageRate').length < 2) ) {return;}
 	
 	var section = document.createElement('section');
 	var header = document.createElement('h2');

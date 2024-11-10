@@ -19,7 +19,8 @@ $(function() {
 		'wgSiteName',
 		'wgNamespaceNumber',
 		'wgPageName',
-		'wgUserGroups'
+		'wgUserGroups',
+		'wgFormattedNamespaces'
 	]);
 	var tokens = {
 		patrol: '',
@@ -374,11 +375,16 @@ $(function() {
 											'<optgroup label="Namespaces:">'+
 												'<option value="-99">All</option>'+
 												'<option value="0">Main</option>'+
-												'<option value="2">User</option>'+
-												'<option value="6">File</option>'+
-												'<option value="10">Template</option>'+
-												'<option value="14">Category</option>'+
-												'<option value="828">Module</option>'+
+												// Rest of namespaces ("Special" and "Media" excluded)
+												(function() {
+													var options = [];
+													Object.keys(config.wgFormattedNamespaces).forEach(function(ns){
+														if (ns>0) {
+															options.push('<option value="'+ns+'">'+config.wgFormattedNamespaces[ns]+'</option>');
+														}
+													});
+													return options.join('');
+												})()+
 											'</optgroup>'+
 										'</select>'+
 									'</label>'+
