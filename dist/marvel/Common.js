@@ -732,19 +732,19 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 		}
 	}
 } );
-/* Marvel staff */
+/* Creators */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 	section: 'advanced',
 	group: 'infoboxes',
 	tools: {
-		"staff": {
-			label: 'Marvel staff',
+		"creator": {
+			label: 'Creators',
 			type: 'button',
 			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png',
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Marvel Database:Staff Template\n| Image                   = ",
+					pre: "{{Marvel Database:Creator Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Pseudonyms              = \n\n| Gender                  = \n| DateOfBirth             = \n| PlaceOfBirth            = \n\n| Employers               = \n| Titles                  = \n| First                   = \n| Last                    = \n| NotableCreations        = \n\n| PersonalHistory         = \n| ProfessionalHistory     = \n\n| Notes                   = \n| Trivia                  = \n| OfficialWebsite         = \n| Links                   = \n}}"
 				}
 			}

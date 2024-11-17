@@ -324,7 +324,7 @@ var possibleTexts = [
 			"This wiki is brought to you by Big Zombie!",
 			"Don't tell them I said that!",
 			"The previous splash was better!",
-			"Zoybean Pod, my beloved!",
+			"Zoybean Pod my beloved!",
 			"Yes, yes, my precious!",
 			"Hundreds of variations!"
         ],
@@ -522,7 +522,8 @@ var possibleTexts = [
             "🏆 The Sanctuary!",
             "🏆 Cursed Cobelisk!",
             "🏆 Characters Clash!",
-            "🏆 3D Modeler Zombie!"
+            "🏆 3D Modeler Zombie!",
+            "🏆 Doctor Zombiestein!"
         ],
         weight: 350000
     },
@@ -572,7 +573,8 @@ var possibleTexts = [
             "🏆🏆 The Sanctuary!",
             "🏆🏆 Cursed Cobelisk!",
             "🏆🏆 Characters Clash!",
-            "🏆🏆 3D Modeler Zombie!"
+            "🏆🏆 3D Modeler Zombie!",
+            "🏆🏆 Doctor Zombiestein!"
         ],
         weight: 200000
     },
@@ -622,7 +624,8 @@ var possibleTexts = [
             "🏆🏆🏆 The Sanctuary!",
             "🏆🏆🏆 Cursed Cobelisk!",
             "🏆🏆🏆 Characters Clash!",
-            "🏆🏆🏆 3D Modeler Zombie!"
+            "🏆🏆🏆 3D Modeler Zombie!",
+            "🏆🏆🏆 Doctor Zombiestein!"
         ],
         weight: 5000
     },
@@ -664,12 +667,26 @@ var possibleTexts = [
         ],
         weight: 200
     },
-    // Legendary 3 Stars - Weight 5
+    // Legendary 3 Stars - Weight 50
     {
         texts: [
             "🤪🤪🤪 Skibidi bibidi!"
         ],
+        weight: 50
+    },
+    // Legendary 4 Stars - Weight 5
+    {
+        texts: [
+            "🤪🤪🤪🤪 Skibidi bibidi!"
+        ],
         weight: 5
+    },
+    // Legendary 5 Stars - Weight 1
+    {
+        texts: [
+            "🤪🤪🤪🤪🤪 Skibidi bibidi!"
+        ],
+        weight: 1
     },
     // Rainbow - Weight 1
     {

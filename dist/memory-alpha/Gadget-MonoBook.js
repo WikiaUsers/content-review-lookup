@@ -216,7 +216,7 @@ if (mw.config.get('wgAction') === 'edit' || mw.config.get('wgAction') === 'submi
 } else if (mw.config.get('wgPageName').split('/')[0] === 'Special:MovePage'){
 	$('#ca-move-li').addClass('selected');
 } else if (mw.config.get('wgAction') === 'protect' || mw.config.get('wgAction') === 'unprotect'){
-	$('#ca-protect-li').addClass('selected');
+	$('#ca-protect-li, #ca-unprotect-li').addClass('selected');
 }
 
 if (subjectNamespace === -1){

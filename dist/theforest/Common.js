@@ -21,6 +21,11 @@ mw.hook('wikipage.content').add(function($content) {
         articles.push('MediaWiki:MPIconDisplace.js');
     }
 
+    // Load Hints.js on the "Main" page, "The Forest Wiki/Flex section" and "Template:Hints"
+    if (mw.config.get('wgPageName') === 'The_Forest_Wiki' || mw.config.get('wgPageName') === 'The_Forest_Wiki/Flex_section' || mw.config.get('wgPageName') === 'Template:Hints') {
+        articles.push('MediaWiki:Hints.js');
+    }
+
     // Import all specified articles
     if (articles.length) importArticles({type: "script", articles: articles});
 });

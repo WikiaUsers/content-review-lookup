@@ -71,7 +71,7 @@ function filterTable(){
 					if (l<t) l=t;
 				}
 				$(this).css("position","relative");
-				$(this).html('<a href="javascript:void(0)" class="showFilterMenu">'+$(this).html()+'↓</a>');
+				$(this).html('<a href="javascript:void(0)" class="showFilterMenu" style="color: var(--filter-text-color)">'+$(this).html()+'↓</a>');
 				$(this).append($('<div class="filterMenu" style="position:absolute;top:'+$(this).height()+'px;left:0;width:'+(22+l*10)+'px;text-align:left;padding:5px;background: #000000BB;color:#fff;border-radius: 0.3em;z-index:1;display:none"></div>'));
 				for (j=0; j<cols.length; j++){
 					$(this).find(".filterMenu").append('<div><input type="checkbox" value="'+cols[j]+'" col="'+(i+1)+'" class="filterOption" checked>'+cols[j]+'</div>')

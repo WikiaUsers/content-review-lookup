@@ -3,6 +3,7 @@ importArticles({
 	    type: 'script',
 	    articles: [
 	        'MediaWiki:Fixes.js',
-	        'MediaWiki:Scroll.js'
+	        'MediaWiki:Scroll.js',
+	        'MediaWiki:RefTooltips.js'
 	    ]
 	});

@@ -56,3 +56,18 @@ $(document).ready(function() {
 		$('#icons').css({'position' : 'absolute', 'right' : '0', 'bottom' : '-1.2em'});
 	}
 });
+
+/* For banner icon hovers*/
+window.tooltips_list = [
+    {
+        classname: 'banner-images',
+        parse: '{{BannerImages|<#bannername#>}}'
+    }, {
+        classname: 'banner-details',
+        parse: '{{BannerHoverDetails|<#name#>}}'
+    }
+];
+window.tooltips_config = {
+    offsetX: 10,
+    offsetY: 10
+};

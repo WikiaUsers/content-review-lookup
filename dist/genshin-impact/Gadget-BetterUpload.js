@@ -221,7 +221,8 @@ $(function() {
 										text: valsettings.reference,
 										prop: 'text',
 										disablelimitreport: true,
-										contentmodel: 'wikitext'
+										contentmodel: 'wikitext',
+										pst: true
 									}).then(function(data){
 										if (data && data.parse && data.parse.text && data.parse.text['*']) {
 											refPreview.innerHTML = data.parse.text['*'];
@@ -247,7 +248,8 @@ $(function() {
 				text: text,
 				prop: 'text',
 				disablelimitreport: true,
-				contentmodel: 'wikitext'
+				contentmodel: 'wikitext',
+				pst: true
 			};
 			if (filename.length>0) {
 				params.title = 'File:' + filename;

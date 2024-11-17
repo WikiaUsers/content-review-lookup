@@ -5,281 +5,190 @@
  * within canonical (and custom) user groups
  * 
  * Author: Ultimate Dark Carnage
- * Version: 2.0
+ * Version: 3.0
  **/
-( function( window, $, mw ) { 
+( function( window, $, mw ) {
 	"use strict";
 	
-	// Sets the configuration object to an empty object if it does not exist
-	window.listGroupMembers = window.listGroupMembers || window.LGM || { };
+	// Double-run prevention
+	if ( window.ListGroupMembers && window.ListGroupMembers.loaded ) return console.warn( '[ListGroupMembers] This script has been double-loaded. Exiting now.' );
 	
-	// URL variables for the current page
-	const urlVars = new URLSearchParams( location.search );
+	// Initialize the configuration object if it does not exist
+	window.lgmConfig = $.extend( { }, window.lgmConfig );
 	
-	// If debug is enabled, automatically set the value to true
-	if ( urlVars.get( "debug" ) ) window.listGroupMembers.debug = true;
+	// Prevents the script from running when it is disabled
+	if ( window.lgmConfig.disabled ) return console.warn( '[ListGroupMembers] This script has been disabled. Exiting now.' );
 	
-	// Creates a script loader constructor
-	function Loader( resources, callback, thisArg ) { 
-		// Sets the current instance in a variable
-		const al = this;
-		
-		// If there are less than three arguments, set the context to the current instance
-		if ( arguments.length < 3 ) thisArg = this;
-
-		// An array of loaded scripts
-		al.loadedScripts = [ ];
-
-		// An array of MediaWiki modules
-		al.modules = resources.MODULES || [ ];
-
-		// An object of scripts to load
-		al.scripts = resources.SCRIPTS || { };
-
-		// An array of stylesheets to load
-		al.stylesheets = resources.STYLESHEETS || [ ];
-
-		// Initializes the loader
-		al.init = function( ) { 
-			if ( Array.isArray( al.modules ) && al.modules.length ) { 
-				return mw.loader
-					.using( al.modules )
-					.then( al.loadScripts.bind( al ) );
-			}
-
-			al.loadScripts( );
-		};
-
-		// Loads all scripts and stylesheets if they are not loaded
-		al.loadScripts = function( ) { 
-			if ( Array.isArray( al.stylesheets ) && al.stylesheets.length ) { 
-				importArticles( { type: "style", articles: al.stylesheets } );
-			}
-
-			const promises = Promise.all( 
-				Object
-					.getOwnPropertyNames( al.scripts )
-					.map( function( name ) { 
-						const script = al.scripts[ name ];
-
-						if ( window.dev[ name ] ) { 
-							al.loadedScripts.push( script );
-							return Promise.resolve( );
-						}
-
-						return new Promise( function( resolve, reject ) { 
-							importArticle( { 
-								type: "script",
-								article: script
-							} ).then( function( ) { 
-								al.loadedScripts.push( script );
-							} ).then( resolve )[ "catch" ]( reject );
-						} );
-					} )
-			);
-
-			return promises.then( function( ) { 
-				al.loaded = true;
-				return callback.apply( thisArg, al );
-			} );
-		};
-
-		return al;
-	}
+	// Initialize the Dev object if it does not exist
+	window.dev = $.extend( { }, window.dev );
 	
-	// Creates the ListGroupMembers constructor
-	function ListGroupMembers( opts ) { 
-		// Sets the current instance to a variable
-		const lgm = this;
-		
-		// 
-		const GLOBAL_GROUPS = Object.freeze( [ 
-			"staff",
-			"helper",
-			"wiki-manager",
-			"content-team-member",
-			"soap",
-			"global-discussions-moderator",
-			"vanguard",
-			"councilor"
-		] );
-		
-		//
-		const LOCAL_GROUPS = Object.freeze( [ 
-			"bureaucrat",
-			"sysop",
-			"discusssions-moderator",
-			"content-moderator",
-			"rollback",
-			"codeeditor",
-			"patroller",
-			"bot"
-		] );
-		
-		//
-		const ALL_GROUPS = GLOBAL_GROUPS.concat( LOCAL_GROUPS );
-		
-		//
-		const ALIASES = Object.freeze( { 
-			staff: [ "fandom-staff", "staffer" ],
-			helper: [ "fandom-helper" ],
-			soap: [ "grasp", "vstf" ],
-			voldev: [ "volunteer-developer" ],
-			councilor: [ "council" ],
-			bureaucrat: [ "crat" ],
-			sysop: [ "admin" ],
-			rollback: [ "rollbacker" ]
-		} );
-		
-		// The script name
-		lgm.NAME = "ListGroupMembers";
-		
-		// 
-		lgm.VERSION = "v2.0";
-		
-		// 
-		lgm.GROUP_CACHE = { };
-		
-		// 
-		lgm.USER_CACHE = [ ];
-		
-		//
-		lgm.EXCLUDE = [ ];
-		
-		// 
-		lgm.REGISTRY = { 
-			global: Object.freeze( GLOBAL_GROUPS ),
-			local: Object.freeze( LOCAL_GROUPS ),
-			other: [ ]
-		};
-		
-		// 
-		lgm.GROUP_ORDER = Object.freeze( ALL_GROUPS );
-		
-		//
-		lgm.SORTS = Object.freeze( { 
-			alpha: function( a, b ) { 
-				const aname = a.get( "name" ), bname = b.get( "name" );
-				return aname.localeCompare( bname );
+	// Create the main script object
+	window.ListGroupMembers = $.extend( {
+		// Set the loading state to 'true' to prevent double-running
+		loaded: true,
+		// Fandom's founding date
+		foundingDate: 'October 18, 2004',
+		// The user cache
+		cache: new Map( ),
+		// The user object
+		users: { },
+		// MediaWiki configuration variables
+		mwc: Object.freeze( mw.config.get( [
+			'wgCityId',
+			'wgCanonicalNamespace',
+			'wgCanonicalSpecialPageName', 
+			'wgNamespaceNumber',
+			'wgTitle',
+			'wgSiteName',
+			'wgServer',
+			'wgUserName',
+			'wgUserGroups',
+			'wgScriptPath'
+		] ) ),
+		// MediaWiki dependencies
+		dependencies: Object.freeze( [
+			'mediawiki.util',
+			'mediawiki.api',
+			'mediawiki.Title'
+		] ),
+		// A list of formatted namespaces
+		namespaces: mw.config.get( 'wgFormattedNamespaces' ),
+		// The current user group order
+		order: Object.freeze( [
+			'staff',
+			'wiki-representative',
+			'soap',
+			'global-discussions-moderator',
+			'global-edit-reviewer',
+			'voldev',
+			'bureaucrat',
+			'sysop',
+			'threadmoderator',
+			'content-moderator',
+			'rollback',
+			'patroller',
+			'bot'
+		] ),
+		// The current user group registry
+		registry: Object.freeze( {
+			global: Object.freeze( [
+				'staff',
+				'wiki-representative',
+				'soap',
+				'global-discussions-moderator',
+				'global-edit-reviewer',
+				'voldev'
+			] ),
+			local: Object.freeze( [
+				'bureaucrat',
+				'sysop',
+				'threadmoderator',
+				'content-moderator',
+				'rollback',
+				'patroller',
+				'bot'
+			] )
+		} ),
+		// User group aliases
+		aliases: Object.freeze( {
+			"staff": Object.freeze( [ "fandom-staff" ] ),
+			"wiki-specialist": Object.freeze( [ "content-team-member" ] ),
+			"soap": Object.freeze( [ "grasp", "vstf" ] ),
+			"bureaucrat": Object.freeze( [ "bcrat", "crat" ] ),
+			"sysop": Object.freeze( [ "admin" ] ),
+			"rollback": Object.freeze( [ "rollbacker" ] ),
+			"patroller": Object.freeze( [ "patrol" ] ),
+			"threadmoderator": Object.freeze( [ "discussions-moderator", "discussion-moderator" ] )
+		} ),
+		// Sorting algorithms
+		sort: Object.freeze( {
+			ALPHA_ASCENDING: function( a, b ) {
+				return a.name.localeCompare( b.name );
 			},
-			alphadesc: function( a, b ) { 
-				const aname = a.get( "name" ), bname = b.get( "name" );
-				return -aname.localeCompare( bname );
+			ALPHA_DESCENDING: function( a, b ) {
+				return -a.name.localeCompare( b.name );
 			},
-			alphabetical: "alpha",
-			desc: "alphadesc",
-			reg: function( a, b ) { 
-				const areg = a.get( "registration" ), breg = b.get( "registration" );
-				return areg - breg;
+			ALPHA: 'ALPHA_ASCENDING',
+			ALPHAA: 'ALPHA_ASCENDING',
+			ALPHAD: 'ALPHA_DESCENDING',
+			ALPHA_ASC: 'ALPHA_ASCENDING',
+			ALPHA_DESC: 'ALPHA_DESCENDING',
+			REGISTRATION_ASCENDING: function( a, b ) {
+				return a.registration - b.registration;
 			},
-			regdesc: function( a, b ) { 
-				const areg = a.get( "registration" ), breg = b.get( "registration" );
-				return breg - areg;
+			REGISTRATION_DESCENDING: function( a, b ) { 
+				return b.registration - a.registration;
 			},
-			registration: "reg",
-			registrationdesc: "regdesc",
-			group: function( a, b ) { 
-				if ( lgm.GROUPED ) return lgm.sort( "alpha", a, b );
-				const ag = lgm.GROUP_ORDER.indexOf( a );
-				const bg = lgm.GROUP_ORDER.indexOf( b );
-				return ag - bg;
+			REGA: 'REGISTRATION_ASCENDING',
+			REGD: 'REGISTRATION_DESCENDING',
+			REG_ASC: 'REGISTRATION_ASCENDING',
+			REG_DESC: 'REGISTRATION_DESCENDING',
+			REGISTRATION: 'REGISTRATION_ASCENDING',
+			REGISTRATION_ASC: 'REGISTRATION_ASCENDING',
+			REGISTRATION_DESC: 'REGISTRATION_DESCENDING',
+			GROUP_ASCENDING: function( a, b ) {
+				const aGroup = this.order.indexOf( a.group );
+				const bGroup = this.order.indexOf( b.group );
+				return this.options.grouped ?
+					this.getSort( 'alpha' ) :
+					aGroup - bGroup;
 			},
-			groupdesc: function( a, b ) { 
-				if ( lgm.GROUPED ) return lgm.sort( "alpha", a, b );
-				const ag = lgm.GROUP_ORDER.indexOf( a );
-				const bg = lgm.GROUP_ORDER.indexOf( b );
-				return bg - ag;
+			GROUP_DESCENDING: function( a, b ) {
+				const aGroup = this.order.indexOf( a.group );
+				const bGroup = this.order.indexOf( b.group );
+				return this.options.grouped ?
+					this.getSort( 'alpha' ) :
+					bGroup - aGroup;
 			},
-			random: function( ) { 
+			RANDOM: function( ) {
 				return ( Math.random( ) - 0.5 ) * 2;
 			},
-			__default: "alpha"
-		} );
-		
-		//
-		lgm.FOUNDING = "2004-10-18T04:00:00.000Z";
-		
-		//
-		lgm.I18N_FALLBACKS = Object.freeze( { 
-	        en : Object.freeze( { 
-	            loading : "Loading essential resources...",
-	            "resources-loaded" : "Resources have been loaded. Waiting to fetch users..."
-	        } )
-	    } );
-	    
-	    //
-	    lgm.DEFAULT_AVATAR = "https://vignette.wikia.nocookie.net/messaging/images/1/19/Avatar.jpg/revision/latest/";
-	    
-	    //
-	    lgm.TARGET = document.querySelector( "#mw-content-text" );
-	    
-	    //
-	    lgm.LOADED = false;
-	    
-	    // 
-	    lgm.RENDERED = false;
-	    
-	    //
-	    lgm.TYPE = "";
-	    
-	    //
-	    lgm.GROUPED = false;
-	    
-	    //
-	    lgm.SEARCH = false;
-	    
-	    //
-	    lgm.USE_REGISTRY = false;
-	    
-	    //
-	    lgm.ENABLE_ACTIONS = false;
-	    
-	    //
-	    lgm.RENDER_DELAY = false;
-	    
-	    //
-	    lgm.GROUPS = [ ];
-	    
-	    //
-	    lgm.SORT = null;
-	    
-	    //
-	    lgm.inRegistry = function( group ) { 
-	    	return Object
-	    		.getOwnPropertyNames( lgm.REGISTRY )
-	    		.some( function( type ) { 
-		    		const groups = lgm.REGISTRY[ type ];
-		    		return groups.includes( group );
-		    	} );
-	    };
-	    
-	    //
-	    lgm.getType = function( group ) { 
-	    	return Object
-	    		.getOwnPropertyNames( lgm.REGISTRY )
-	    		.find( function( type ) { 
-	    			return lgm.REGISTRY[ type ].includes( group );
-	    		} );
-	    };
-	    
-	    //
-	    lgm.generateUsers = function( ) { 
-	    	lgm.GROUPS.forEach( function( group ) { 
-	    		if ( lgm.USE_REGISTRY ) { 
-	    			const type = lgm.getType( group );
-	    			if ( !type ) return;
-	    			lgm.GROUP_CACHE[ type ] = lgm.GROUP_CACHE[ type ] || { };
-	    			lgm.GROUP_CACHE[ type ][ group ] = [ ];
-	    		} else { 
-	    			lgm.GROUP_CACHE[ group ] = [ ];
-	    		}
-	    	} );
-	    };
-	    
-	    //
-	    lgm.sort = function( name, a, b ) { 
-	    	
-	    	return null;
-	    };
-	}
+			SEED: function( args ) {
+				const seed = this.seed( parseFloat( args[ 0 ] || 0 ) );
+				return ( seed( ) - 0.5 ) * 2;
+			},
+			DEFAULT: 'ALPHA_ASCENDING'
+		} ),
+		// Create a utility seed function
+		seed: function( s ) { 
+			const m = 0xffffffff;
+ 
+	        var w = ( 123456789 + s ) & m, z = ( 987654321 - s ) & m;
+	        return function h( ) { 
+	            z = ( 36969 * ( z & 65535 ) + ( z >>> 16 ) ) & m;
+	            w = ( 18000 * ( w & 65535 ) + ( w >>> 16 ) ) & m;
+	 
+	            var r = ( ( z << 16 ) + ( w & 65535 ) ) >>> 0;
+	            r /= 4294967296;
+	            return r;
+			};
+		},
+		// A list of scripts and its hooks
+		scripts: Object.freeze( [
+			{
+				hook: 'dev.i18n',
+				script: 'u:dev:MediaWiki:I18n-js/code.js'
+			},
+			{
+				hook: 'dev.colors',
+				script: 'u:dev:MediaWiki:Colors/code.js'
+			},
+			{
+				hook: 'dev.wds',
+				script: 'u:dev:MediaWiki:WDSIcons/code.js'
+			},
+			{
+				hook: 'doru.ui',
+				script: 'u:dev:MediaWiki:UI-js/code.js'
+			},
+			'MediaWiki:ListGroupMembers.js', // Wiki-wide
+			mw.config.get( 'wgUserName' ) + '/lgm.js' // Personal
+		] ),
+		// A list of stylesheets
+		stylesheets: Object.freeze( [
+			'u:dev:MediaWiki:ListGroupMembers/code.css',
+			'MediaWiki:ListGroupMembers.css', // Wiki-wide
+			mw.config.get( 'wgUserName' ) + '/lgm.css' // Personal
+		] )
+	}, window.ListGroupMembers );
 } )( window, jQuery, mediaWiki );

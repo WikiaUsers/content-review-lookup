@@ -797,7 +797,7 @@
             // {{PLURAL:count|singular|plural}} -> {{PLURAL:$1|$2}}
             pluralRgx = /\{\{PLURAL:(\d+)\|(.+?)\}\}/gi,
             // {{GENDER:gender|masculine|feminine|neutral}} -> {{GENDER:$1|$2}}
-            genderRgx = /\{\{GENDER:([^|]+)\|(.+?)\}\}/gi;
+            genderRgx = /\{\{GENDER:([^|]*)\|(.+?)\}\}/gi;
 
         if (message.indexOf('<') > -1) {
             message = sanitiseHtml(message);

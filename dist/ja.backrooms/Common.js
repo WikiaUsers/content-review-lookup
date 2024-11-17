@@ -14,21 +14,29 @@ function get_vote_data_vote_gadget_2024(api, vote_data_page_name, callback) {
 
         var vote_data = JSON.parse(result.parse.wikitext['*']);
 
-        callback(vote_data);
+        if (vote_data['vote-data-type'] == 'VoteGadget2024') {
+            console.log('VoteGadget2024: 投票データの型が正規です。');
+
+            callback(vote_data);
+        } else {
+            console.log('VoteGadget2024: 投票データの型が不正です。');
+        }
     })
     .fail(function () {
         console.log('VoteGadget2024: 投票データの取得が失敗しました。');
 
-        var vote_data = [];
+        var vote_data = { 'vote-data-type': 'VoteGadget2024', 'vote-data-list': [] };
 
         callback(vote_data);
     });
 }
 
 function update_result_vote_gadget_2024(vote_data) {
+    var vote_data_list = vote_data['vote-data-list'];
+
     var vote_result = 0;
 
-    vote_data.forEach(function (vote) {
+    vote_data_list.forEach(function (vote) {
         if (vote['vote-type'] == 'up-vote') {
             vote_result = vote_result + 1;
         }
@@ -82,9 +90,11 @@ $(function () {
                     console.log('VoteGadget2024: [' + user_name + '] がプラス票を投じる処理を承認しました。');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
+                        var new_vote_data_list = new_vote_data['vote-data-list'];
+
                         var yet_voted_flag = true;
 
-                        new_vote_data.forEach(function (vote) {
+                        new_vote_data_list.forEach(function (vote) {
                             if (vote['vote-user'] == user_name) {
                                 vote['vote-type'] = 'up-vote';
                                 yet_voted_flag = false;
@@ -92,7 +102,7 @@ $(function () {
                         });
 
                         if (yet_voted_flag) {
-                            new_vote_data.push({ 'vote-user': user_name, 'vote-type': 'up-vote' });
+                            new_vote_data_list.push({ 'vote-user': user_name, 'vote-type': 'up-vote' });
                             yet_voted_flag = false;
                         }
 
@@ -142,9 +152,11 @@ $(function () {
                     console.log('VoteGadget2024: [' + user_name + '] がマイナス票を投じる処理を承認しました。');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
+                        var new_vote_data_list = new_vote_data['vote-data-list'];
+
                         var yet_voted_flag = true;
 
-                        new_vote_data.forEach(function (vote) {
+                        new_vote_data_list.forEach(function (vote) {
                             if (vote['vote-user'] == user_name) {
                                 vote['vote-type'] = 'down-vote';
                                 yet_voted_flag = false;
@@ -152,7 +164,7 @@ $(function () {
                         });
 
                         if (yet_voted_flag) {
-                            new_vote_data.push({ 'vote-user': user_name, 'vote-type': 'down-vote' });
+                            new_vote_data_list.push({ 'vote-user': user_name, 'vote-type': 'down-vote' });
                             yet_voted_flag = false;
                         }
 
@@ -202,9 +214,11 @@ $(function () {
                     console.log('VoteGadget2024: [' + user_name + '] がニュートラル票を投じる処理を承認しました。');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
+                        var new_vote_data_list = new_vote_data['vote-data-list'];
+
                         var yet_voted_flag = true;
 
-                        new_vote_data.forEach(function (vote) {
+                        new_vote_data_list.forEach(function (vote) {
                             if (vote['vote-user'] == user_name) {
                                 vote['vote-type'] = 'neutral-vote';
                                 yet_voted_flag = false;
@@ -212,7 +226,7 @@ $(function () {
                         });
 
                         if (yet_voted_flag) {
-                            new_vote_data.push({ 'vote-user': user_name, 'vote-type': 'neutral-vote' });
+                            new_vote_data_list.push({ 'vote-user': user_name, 'vote-type': 'neutral-vote' });
                             yet_voted_flag = false;
                         }
 
@@ -262,9 +276,13 @@ $(function () {
                     console.log('VoteGadget2024: [' + user_name + '] が投票を取り消す処理を承認しました。');
 
                     get_vote_data_vote_gadget_2024(api, vote_data_page_name, function (new_vote_data) {
-                        new_vote_data = new_vote_data.filter(function (vote) {
+                        var new_vote_data_list = new_vote_data['vote-data-list'];
+
+                        new_vote_data_list = new_vote_data_list.filter(function (vote) {
                             return vote['vote-user'] != user_name;
                         });
+
+                        new_vote_data['vote-data-list'] = new_vote_data_list;
 
                         var new_vote_data_text = JSON.stringify(new_vote_data, null, 4);
 

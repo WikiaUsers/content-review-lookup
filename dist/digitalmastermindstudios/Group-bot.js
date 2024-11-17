@@ -2,7 +2,7 @@
 
 $(function () {
 	// Opt-out
-	if ( window.disableSysopJS ) {
+	if ( window.disableBotJS ) {
 		return;
 	}
 
@@ -82,7 +82,7 @@ $(function () {
 				// we set the whole message as wikitext and then parse it into
 				// HTML with message.parse().
 				mw.messages.set({
-					'sysop-sensitive-ip-block-warning': 'You are ' + action +
+					'bot-sensitive-ip-block-warning': 'You are ' + action +
 						' a sensitive IP address belonging to ' +
 						description +
 						'. Please be sure to ' +
@@ -98,7 +98,7 @@ $(function () {
 							$('<img>').attr({'src': '//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Nuvola_apps_important.svg/48px-Nuvola_apps_important.svg.png'})
 						)
 					).append(
-						'<td>' + mw.message('sysop-sensitive-ip-block-warning').parse() + '</td>'
+						'<td>' + mw.message('bot-sensitive-ip-block-warning').parse() + '</td>'
 					)
 				);
 

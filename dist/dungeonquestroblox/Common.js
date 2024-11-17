@@ -81,9 +81,9 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         { name: "Desert Temple (Legacy)", difficulties: ["Easy [1]", "Medium [6]", "Hard [12]", "Insane [20]", "Nightmare [27]"]},
     ];
     var dungeonsWithEXP = [
-        {name: "Abyssal Void Insane [210]", baseEXP: 1.07e12},
-        {name: "Abyssal Void Nightmare [215]", baseEXP: 1.47e12},
-        {name: "Abyssal Void Nightmare (with The Voidborn) [215]", baseEXP: 1.91e12},
+        {name: "Abyssal Void Insane [210]", baseEXP: 765000000000},
+        {name: "Abyssal Void Nightmare [215]", baseEXP: 1210000000000},
+        {name: "Abyssal Void Nightmare (with The Voidborn) [215]", baseEXP: 1510000000000},
         {name: "Yokai Peak Insane [200]", baseEXP: 192650000000},
         {name: "Yokai Peak Nightmare [205]", baseEXP: 350950000000},
         {name: "Gilded Skies Insane [190]", baseEXP: 63500000000},

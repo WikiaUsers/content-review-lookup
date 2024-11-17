@@ -1422,6 +1422,11 @@ if (document.body.className.includes('page-События_с_заданиями'
 	});
 }
 
+//добавление кнопки перемотки к окну редактирования
+if (new URL(window.location.href).searchParams.get('action')==='edit'){
+	document.querySelector('.page-side-tools').insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
+}
+
 //код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать
 }}
 

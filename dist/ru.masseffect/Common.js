@@ -1,32 +1,4 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-
-/* WAM 
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:RailWAM/code.js'
-    ]
-});
-
-window.railWAM = {
-    logPage:"Project:WAM Log"
-};
-
-*/
-
-/* ВК Виджет «Мне нравится» — начало 
-
-importScriptURI("http://vk.com/js/api/openapi.js?121");
-window.onload = function() {
-    VK.init({
-        apiId: 5347266,
-        onlyWidgets: true
-    });
-    $('<div id="vk_like"></div><script type="text/javascript">VK.Widgets.Like("vk_like", {type: "mini"});</script>').insertAfter('#WikiaPageHeader > .talk');
-};
-*/
-/* ВК Виджет «Мне нравится» — конец */
-
 /* Автообновление — начало */
 
 window.AjaxRCRefreshText = 'Автообновление';
@@ -352,7 +324,7 @@ $('.switch-infobox.loading').removeClass('loading');
 //Custom achievements module. Made for ru.masseffect.wikia.com by Wildream.
 var element = document.getElementsByClassName('AchievementsModule');
 if (element) {
-    if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:V.V.S.") { //Вместо "Имя участника" нужно, соответственно, ввести имя участника, у которого будут отображаться эти ачивки
+    if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:V.V.S.") { //Вместо "Имя участника" нужно, соответственно, ввести имя участника, у которого будут отображаться эти ачивки
         addOnloadHook(AddCustomAchievements);
     }
 
@@ -361,21 +333,21 @@ if (element) {
     }
 
 
-    if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:R256S") {
+    if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:R256S") {
         addOnloadHook(AddCustomAchievements3);
     }
 
     function AddCustomAchievements3() {
         $('<section class="CustomAchievements module"><h1 style="margin-top:0px; margin-bottom:10px;">Отличительные медали этого участника</h1><div><p><table><td><div class="custom-achievements-R256S-1" /><td><div class="custom-achievements-R256S-2" /></table></p></div></section>').insertAfter('.ChatModule');
     }
-    if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:Nidred") {
+    if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:Nidred") {
         addOnloadHook(AddCustomAchievements4);
     }
 
     function AddCustomAchievements4() {
         $('<section class="CustomAchievements module"><h1 style="margin-top:0px; margin-bottom:10px;">Отличительные медали этого участника</h1><div><p><table><td><div class="custom-achievements-Nidred-1" /><td><div class="custom-achievements-Nidred-2" /></table></p></div></section>').insertAfter('.AchievementsModule');
     }
-    if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:Mercenary2811") {
+    if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:Mercenary2811") {
         addOnloadHook(AddCustomAchievements5);
     }
 
@@ -383,7 +355,7 @@ if (element) {
         $('<section class="CustomAchievements module"><h1 style="margin-top:0px; margin-bottom:10px;">Отличительные медали этого участника</h1><div><p><table><td><div class="custom-achievements-Mercenary2811-1" /><td><div class="custom-achievements-Mercenary2811-2" /></table></p></div></section>').insertAfter('.AchievementsModule');
     }
 
-    if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:Iskandra") {
+    if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:Iskandra") {
         addOnloadHook(AddCustomAchievements6);
     }
 
@@ -392,7 +364,7 @@ if (element) {
     }
 }
 
-if (skin == "oasis" && wgNamespaceNumber == 2 && wgPageName == "Участник:Аннаэйра") {
+if (skin == "FandomDesktop" && wgNamespaceNumber == 2 && wgPageName == "Участник:Аннаэйра") {
         addOnloadHook(AddCustomAchievements7);
     }
 
@@ -410,12 +382,7 @@ $('#blocklaser').hover(function() {
 
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
 
-/* Иконки социальных сетей 
 
-This module cannot be placed outside the Wikia skin
-
-$('.WikiaRail').prepend('<div style="right:-31px; top:108px; position: absolute;"><div style="position: absolute;" class="SocialIcon"><div style="float:right;"><a href="http://vk.com/masseffectwikia"><img src="https://images.wikia.nocookie.net/__cb20140227085821/masseffect/ru/images/e/e6/VKontakte.png"></a></div></div><div style="position: absolute; margin-top:42px" class="SocialIcon"><div style="float:right;"><a href="http://social.bioware.com"><img src="https://images.wikia.nocookie.net/masseffect/ru/images/8/8d/SocialBioware.png"></a></div></div><div style="position: absolute; margin-top:84px" class="SocialIcon"><div style="float:right;"><a href="https://www.origin.com"><img src="https://images.wikia.nocookie.net/masseffect/ru/images/0/0d/OrginSocial.png"></a></div></div><div style="position: absolute; margin-top:126px" class="SocialIcon"><div style="float:right;"><a href="http://social.bioware.com/n7hq"><img src="https://images.wikia.nocookie.net/masseffect/ru/images/2/2a/N7HQSocial.png"></a></div></div>');
-*/
 
 function initVisibility() {
     var storage = globalStorage[window.location.hostname];
@@ -534,18 +501,6 @@ if (wgPageName == "Участник:V.V.S.") {
 }
 if (wgPageName == "Участник:R256S") {
     $('body').css('background', 'url(https://vignette.wikia.nocookie.net/masseffect/images/9/9a/Капсулы_на_корабле_Коллекционеров.jpg/revision/latest?cb=20140221210745&path-prefix=ru) no-repeat center center fixed #000000');
-}
-
-/* Приветствие форума*/
-$(function() {
-    $('.boards').prepend("<div class=forumwelcome style='text-align:center; color:white; text-shadow: #555 1px 1px 3px; padding:2px; width:100%;'>Добро пожаловать на форум Mass Effect Wiki<br>Это идеальное место, чтобы начать обсуждение, задать вопросы и пообщаться с сообществом вики.<br>Если это ваш первый визит на форум Mass Effect Wiki, пожалуйста, нажмите на кнопку «Правила Форума и Справка» выше, чтобы ознакомиться с работой этого форума и его правилами.</div>");
-});
-
-//Изображения в профиле
-var img = {};
-img["Mercenary2811"] = ['<img src="https://images.wikia.nocookie.net/__cb20140531182009/masseffect/ru/images/e/ec/Кнопка_Batman.png" width="320px" height="80px">'];
-if (typeof img[wgTitle] != "undefined") {
-    $('<div style="position:absolute; left:5px; top:85px;">' + img[wgTitle] + '</div>').appendTo('.masthead-info');
 }
 
 /*************************************************/

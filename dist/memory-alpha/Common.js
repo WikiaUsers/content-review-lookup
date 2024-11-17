@@ -10,6 +10,10 @@ window.AutoCreateUserPagesConfig = {
 	summary: 'Script: Creating user+talkpage on first edit'
 };
 
+window.globalFileUsageConfig = {
+	'lang': ['en:mu-memory-alpha', 'bg', 'cs', 'de', 'eo', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'ru', 'sr', 'sv', 'zh']
+};
+
 $(function(){
 	var api = new mw.Api();
 	

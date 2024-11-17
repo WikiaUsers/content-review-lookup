@@ -43,6 +43,8 @@ $(document).ready(function() {
 	$("span#targetHPHarness").html('<div id="targetHPInput">Target Max HP: <input type="text" value="0" id="targetHP" style="text-align: right; width: 55px; background-color:white;"></input></div>');
 	$("span#hardModeHarness").html('<div id="hardModeInput">Toggle Hard Mode? <input type="checkbox" name="hardModeBoost" id="hardModeBoost"></input></div>');
 	$("span#apprenticeAuraHarness").html('<div id="apprenticeAuraInput">Apprentice Warden Aura Level: <select name="apprenticeAuraLevel" id="apprenticeAuraLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option></select></div>');
+	$("span#resourceBoostHarness").html('<div id="resourceBoostInput">Toggle Gem Boost? <input type="checkbox" name="resourceBoost" id="resourceBoost"></input></div>');
+	$("span#clockTowerBoostHarness").html('<div id="clockBoostInput">Toggle Clock Tower Boost? <input type="checkbox" name="clockBoost" id="clockBoost"></input></div>');
 	/* Event boosts: change the options as appropriate for the event
 	Last event: Anime Clash */
 	$("span#eventBuilderBoostHarness").html('<div id="eventBuilderBoostInput" style="display:none;">Builder Boost: <select name="eventBuilderBoost" id="eventBuilderBoost">' +
@@ -621,7 +623,14 @@ $(document).ready(function() {
 		if (isNaN(eventBoostPercent) === true) {
 		    eventBoostPercent = 0;
 		}
-		var calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
+		var hammerJamBoost = $("#hammerJamBoost").prop("checked");
+		var calcNewCost = 0;
+		if (hammerJamBoost === true) {
+			var hammerJamCost = discountCost(cellValueCost,50);
+			calcNewCost = discountCost(hammerJamCost,boostPercent+eventBoostPercent);
+		} else {
+			calcNewCost = discountCost(cellValueCost,boostPercent+eventBoostPercent);
+		}
 		$(this).text(calcNewCost.format("#,##0[.]###"));
 		if (calcNewCost == cellValueCost) {
 			$(".rCost").removeClass("StatModifiedGP");
@@ -639,8 +648,15 @@ $(document).ready(function() {
 		if (isNaN(eventReducePercent) === true) {
 		    eventReducePercent = 0;
 		}
+		var hammerJamBoost = $("#hammerJamBoost").prop("checked");
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
+		var newtimeSeconds = 0;
+		if (hammerJamBoost === true) {
+			var hammerJamSeconds = discountTime(timeSeconds,50);
+			newtimeSeconds = discountTime(hammerJamSeconds,reducePercent+eventReducePercent);
+		} else {
+			newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
+		}
  
 		// Calculate the EXP gain and put into the xpArray
 		var xpGain = Math.floor(Math.sqrt(newtimeSeconds));
@@ -668,10 +684,17 @@ $(document).ready(function() {
 		if (isNaN(eventReducePercent) === true) {
 		    eventReducePercent = 0;
 		}
+		var hammerJamBoost = $("#hammerJamBoost").prop("checked");
 		/* Check if the string contains "d" for days. If so,
        	set the days parameter equal to the number preceding it. */
 		var timeSeconds = readTime(str);
-		var newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
+		var newtimeSeconds = 0;
+		if (hammerJamBoost === true) {
+			var hammerJamSeconds = discountTime(timeSeconds,50);
+			newtimeSeconds = discountTime(hammerJamSeconds,reducePercent+eventReducePercent);
+		} else {
+			newtimeSeconds = discountTime(timeSeconds,reducePercent+eventReducePercent);
+		}
   		var output = outputTime(newtimeSeconds);
   		
 		$(this).text(output.trim());
@@ -870,11 +893,18 @@ $(document).ready(function() {
 			if (isNaN(eventBoostPercent) === true) {
 		    	eventBoostPercent = 0;
 			}
+			var hammerJamBoost = $("#hammerJamBoost").prop("checked");
 			var costArray = [];
 			for (x in initArray) {
 				costArray.push(labCostShortToLong(initArray[x]));
 			}
-			var discountArray = arrayCostDiscount(costArray,boostPercent+eventBoostPercent);
+			var discountArray = [];
+			if (hammerJamBoost === true) {
+				var hammerJamArray = arrayCostDiscount(costArray,50);
+				discountArray = arrayCostDiscount(hammerJamArray,boostPercent+eventBoostPercent);
+			} else {
+				discountArray = arrayCostDiscount(costArray,boostPercent+eventBoostPercent);
+			}
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(labCostLongToShort(discountArray[x]));
@@ -884,7 +914,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
+			if (init.trim() == output.trim() || (hammerJamBoost != true && boostPercent + eventBoostPercent === 0)) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -907,11 +937,18 @@ $(document).ready(function() {
 			if (isNaN(eventBoostPercent) === true) {
 		    	eventBoostPercent = 0;
 			}
+			var hammerJamBoost = $("#hammerJamBoost").prop("checked");
 			var timeArray = [];
 			for (x in initArray) {
 				timeArray.push(readTime(initArray[x]));
 			}
-			var discountArray = arrayTimeDiscount(timeArray,boostPercent+eventBoostPercent);
+			var discountArray = [];
+			if (hammerJamBoost === true) {
+				var hammerJamArray = arrayTimeDiscount(timeArray,50);
+				discountArray = arrayTimeDiscount(hammerJamArray,boostPercent+eventBoostPercent);
+			} else {
+				discountArray = arrayTimeDiscount(timeArray,boostPercent+eventBoostPercent);
+			}
 			var outputArray = [];
 			for (x in discountArray) {
 				outputArray.push(outputTime(discountArray[x]));
@@ -921,7 +958,7 @@ $(document).ready(function() {
 				output = "*" + output;
 			}
 			$(this).text(output.trim());
-			if (init.trim() == output.trim() || boostPercent + eventBoostPercent === 0) {
+			if (init.trim() == output.trim() || (hammerJamBoost != true && boostPercent + eventBoostPercent === 0)) {
 				$(this).removeClass("StatModifiedGP");
 			} else {
 				$(this).addClass("StatModifiedGP");
@@ -2381,13 +2418,137 @@ $(document).ready(function() {
 				$(this).addClass("StatModifiedGP");
 			}
 		});
+		// Used to calculate fill time
+		var capacityArr = [];
+		var prodRateArr = [];
+		var prodUnitArr = []; // Used to determine whether result should be in "days" or "hours"
+		var prodLevel = 0; // Used to read the correct level of production rate
+		$(".ProductionRate").each(function() {
+			// This takes three inputs and modifies accordingly using multiplication:
+			// Gem boost, clock tower boost and Hammer Jam toggle
+			var baseStr = $(this).attr("title");
+			var splitArr = baseStr.split("/");
+			var baseRate = 0;
+			var unitStr = "";
+			if (splitArr.length > 1) { //In case slash is found
+				baseRate = splitArr[0].replace(/,/g,"") * 1;
+				unitStr = splitArr[1];
+				prodUnitArr.push(unitStr);
+			} else {
+				baseRate = baseStr.replace(/,/g,"") * 1;
+				prodUnitArr.push("h"); // Assumed as default
+			}
+			var resourceBoost = $("#resourceBoost").prop("checked");
+			var clockBoost = $("#clockBoost").prop("checked");
+			var hammerJamBoost = $("#hammerJamBoost").prop("checked");
+			
+			var multiplier = 1;
+			if (resourceBoost === true) {
+				multiplier *= 2;
+			}
+			if (clockBoost === true) {
+				multiplier *= 10;
+			}
+			if (hammerJamBoost === true) {
+				multiplier *= 3;
+			}
+			var newRate = baseRate * multiplier;
+			prodRateArr.push(newRate);
+			if (splitArr.length > 1) {
+				$(this).text(newRate.format("#,##0[.]###") + "/" + unitStr);
+			} else {
+				$(this).text(newRate.format("#,##0[.]###"));
+			}
+			if (baseRate == newRate) {
+				$(this).removeClass("StatModifiedGP");
+				$(this).removeClass("StatGemBoosted");
+			} else if (resourceBoost === true || clockBoost === true) {
+				$(this).addClass("StatGemBoosted");
+			} else if (hammerJamBoost === true) {
+				$(this).addClass("StatModifiedGP");
+			}
+		});
+		$(".LootCapacity").each(function() {
+			// This takes three inputs and modifies accordingly using multiplication:
+			// Gem boost, clock tower boost and Hammer Jam toggle
+			var baseCap = $(this).attr("title").replace(/,/g,"") * 1;
+			var hammerJamBoost = $("#hammerJamBoost").prop("checked");
+			
+			var multiplier = 1;
+			if (hammerJamBoost === true) {
+				multiplier *= 3;
+			}
+			var newCap = baseCap * multiplier;
+			capacityArr.push(newCap);
+			$(this).text(newCap.format("#,##0[.]###"));
+			if (newCap == baseCap) {
+				$(this).removeClass("StatModifiedGP");
+			} else {
+				$(this).addClass("StatModifiedGP");
+			}
+		});
+		// Calculate the new time taken per unit (if required)
+		$(".UnitFillTime").each(function() {
+			var oriStr = $(this).attr("title");
+			var oriTimeTaken = readTime(oriStr);
+			var newTimeTaken = 100 / (prodRateArr[prodLevel] * 100);
+			var newTimeSeconds = 0;
+			
+			var unit = prodUnitArr[prodLevel];
+			if (unit.startsWith("h") === true) {
+				newTimeSeconds = Math.ceil(newTimeTaken * 60 * 60);
+			} else if (unit.startsWith("d") === true) {
+				newTimeSeconds = Math.ceil(newTimeTaken * 24 * 60 * 60);
+			} else { // Failsafe (convert to per-second)
+				newTimeSeconds = Math.ceil(newTimeTaken);
+			}
+			var outputStr = outputTime(newTimeSeconds);
+			$(this).text(outputStr);
+			// Shift one level up for the next use
+			prodLevel++;
+			// Styling
+			if (oriStr == outputStr) {
+				$(this).removeClass("StatGemBoosted");
+			} else {
+				$(this).addClass("StatGemBoosted");
+			}
+		});
+		// Calculate the new time taken
+		$(".FillTime").each(function() {
+			var oriStr = $(this).attr("title");
+			var oriTimeTaken = readTime(oriStr);
+			var newTimeTaken = (capacityArr[0] * 100) / (prodRateArr[0] * 100);
+			var newTimeSeconds = 0;
+			// Distinguish between hours and days.
+			// Use the unit name
+			var unit = prodUnitArr[0];
+			if (unit.startsWith("h") === true) {
+				newTimeSeconds = Math.ceil(newTimeTaken * 60 * 60);
+			} else if (unit.startsWith("d") === true) {
+				newTimeSeconds = Math.ceil(newTimeTaken * 24 * 60 * 60);
+			} else { // Failsafe (convert to per-second)
+				newTimeSeconds = Math.ceil(newTimeTaken);
+			}
+			var outputStr = outputTime(newTimeSeconds);
+			$(this).text(outputStr);
+			// Clean up
+			capacityArr.shift();
+			prodRateArr.shift();
+			prodUnitArr.shift();
+			// Styling
+			if (oriStr == outputStr) {
+				$(this).removeClass("StatGemBoosted");
+			} else {
+				$(this).addClass("StatGemBoosted");
+			}
+		});
     });
     // Reset form when Reset button is clicked
     $(".resetBonusButton").click(function() {
         $(".changeBonusButton").text("Apply");
 		$("#builderBoost, #trainingBoost, #researchBoost, #rageSpellLevel, #capitalRageSpellLevel, #lifeAuraLevel, #rageAuraLevel, #poisonSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #targetHP, #apprenticeAuraLevel, #frostPotencyLevel, #eventBuilderBoost, #eventTrainingBoost, #eventResearchBoost, #leagueBonusBoost").val("0").change();
 		$("#starBonusBoost").val("1").change();
-		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost").prop("checked",false);
+		$("#heroGearToggle, #hammerJamBoost, #autoForgeBoost, #armyBoost, #freezeBoost, #heroAbilityBoost, #normalAbilityBoost, #rageTowerBoost, #valkRageBoost, #poisonTowerBoost, #eventShowcaseBoost, #hardModeBoost, #resourceBoost, #clockBoost").prop("checked",false);
 		// Reinitialise the choices
 		$("select#modifierMode").val("Attack").change();
     	// Only toggle modifier mode if it is on the page

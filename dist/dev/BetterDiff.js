@@ -28,7 +28,6 @@ $(function() {
 		wpET: '' // Cannot get through mw.api or mw.user.tokens as they dont work with action=markpatrolled for some reason
 	};
 	var can = {
-		block: config.wgUserGroups.some(function(group){return ['sysop', 'soap'].includes(group);}),
 		patrol: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator'].includes(group);}),
 		rollback: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 	};
@@ -107,7 +106,7 @@ $(function() {
 					betterDiff.waitFor('.mw-rcfilters-ui-filterWrapperWidget-top', betterDiff.targettedPatrol);
 					
 					// start observing
-					betterDiff.RecentChangesReload(function() {
+					betterDiff.recentChangesReload(function() {
 						betterDiff.newDiffLink();
 						betterDiff.quickDiffLoad();
 					});
@@ -123,6 +122,7 @@ $(function() {
 					betterDiff.newDiffLink();
 					betterDiff.quickDiff();
 				});
+				betterDiff.waitFor('#pagehistory li.selected', betterDiff.historyGroupDiff);
 			}
 			
 			// Check we're in a diff page
@@ -143,19 +143,19 @@ $(function() {
 				}
 				
 				// Mouseless openPrev
-				if (event.altKey && ['2'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
+				if (event.altKey && ['2'].includes(event.key) && ['view', 'history'].includes(config.wgAction) && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
 					betterDiff.openPrev();
 				}
 				
 				// Mouseless openNext
-				if (event.altKey && ['3'].includes(event.key) && config.wgAction=='view' && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
+				if (event.altKey && ['3'].includes(event.key) && ['view', 'history'].includes(config.wgAction) && document.querySelector('#quickDiff-quickview.oo-ui-window-active')) {
 					betterDiff.openNext();
 				}
 			});
 		},
 		
 		// Run callback every time Special:RecentChanges reloads results
-		RecentChangesReload: function(callback, query) {
+		recentChangesReload: function(callback, query) {
 			var observer = new MutationObserver(function (mutations, me) {
 				if (
 					mutations[0] &&
@@ -169,6 +169,25 @@ $(function() {
 				childList: true,
 				subtree: true
 			});
+		},
+		
+		// Add and update group diff view for page history based off selected diffs
+		historyGroupDiff: function() {
+			var lastID = $('#pagehistory ul:last-of-type li.after:last-child').attr('data-mw-revid');
+			$('.mw-history-compareselectedversions').append(' (', $('<a>', {
+				'text': 'view',
+				'class': 'quickDiff',
+				'data-page-target': config.wgPageName,
+				'tab-index': '0'
+			}), ')');
+			function updateIDs() {
+				var newID = $('#pagehistory li.selected.before').attr('data-mw-revid');
+				var oldID = $('#pagehistory li.selected.after').attr('data-mw-revid');
+				$('.mw-history-compareselectedversions > .quickDiff').attr('newid', newID);
+				$('.mw-history-compareselectedversions > .quickDiff').attr('oldid', lastID==oldID ? '0' : oldID);
+			}
+			updateIDs();
+			$('#pagehistory').on('change', updateIDs);
 		},
 		
 		// Properly build diff links with page creation edits
@@ -669,7 +688,8 @@ $(function() {
 								oldid: diff.torevid,
 								preview: true,
 								usearticle: true,
-								disablelimitreport: true
+								disablelimitreport: true,
+								pst: true
 							}).then(function(render){
 								$('#quickDiff-quickview .quickDiff-preview').replaceWith(
 									(render.parse && render.parse.text && render.parse.text['*']) ? 
@@ -966,6 +986,7 @@ $(function() {
 			}
 		},
 		
+		// Initialize the needed tokens for patrolling and rollbacking if the use has perms for it
 		fetchTokens: function() {
 			// Fetch rollback token, the one from API is invalid for URL use
 			if (can.rollback && tokens.rollback=='' && document.querySelector('.mw-rollback-link a')) {
@@ -985,6 +1006,7 @@ $(function() {
 			}
 		},
 		
+		// Patrol multiple revisions in a row
 		massPatrol: function() {
 			if (
 				document.querySelector('#quickDiff-quickview.oo-ui-window-active') ||

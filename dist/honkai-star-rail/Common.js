@@ -29,3 +29,9 @@ window.dev.i18n.overrides["MapsExtended"] = window.dev.i18n.overrides["MapsExten
 */
 window.dev.i18n.overrides["MapsExtended"]["category-collected-label"] = "$1 of $2 found";
 window.dev.i18n.overrides["MapsExtended"]["collected-all-banner"] = "Congratulations! You found all <b>$1</b> of <b>$2</b> \"$3\" markers on $4.";
+
+/* for [[dev:GlobalFileUsage]] */
+window.globalFileUsageConfig = {
+    'lang': ['th', 'vi'],
+    'auto_show': false
+}

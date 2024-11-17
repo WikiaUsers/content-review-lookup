@@ -24,5 +24,5 @@ UserTagsJS.modules.userfilter = {
 };
 // END USERTAG SECTION
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 365;
+window.lockOldComments.limit = 365.24225;
 window.lockOldComments.addNoteAbove = true;
