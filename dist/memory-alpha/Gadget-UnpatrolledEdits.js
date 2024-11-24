@@ -47,7 +47,7 @@ $(function(){
 			.append($('<input type="text" value="'+user+'" id="myModalUser" style="display:block;"/>'))
 			.append($('<button class="wds-button" id="myModalGo">Go</button>'));
 		
-		document.title = title + ' | Memory Alpha | Fandom';
+		document.title = mw.message('pagetitle', title).text();
 		$('#firstHeading').html(title);
 		opening.html(mw.message('custom-UnpatrolledEdits-summary').text());
 		opening.after(myModal);

@@ -33,3 +33,24 @@ importArticles({
         "w:c:dev:Countdown/code.js"
     ]
 });
+
+$(function () {
+    // Enable collapsible behavior
+    $(".mw-collapsible").each(function () {
+        var $collapsible = $(this);
+        if ($collapsible.hasClass("mw-collapsed")) {
+            $collapsible.find(".mw-collapsible-content").hide();
+        }
+        $collapsible.find(".mw-collapsible-header").click(function () {
+            $collapsible.find(".mw-collapsible-content").toggle();
+        });
+    });
+});
+
+$(function () {
+    $(".mw-collapsible .mw-collapsible-header").click(function() {
+        var content = $(this).next();
+        content.toggle();  // Toggle visibility
+        $(this).parent().toggleClass("mw-collapsed"); // Toggle the collapsed class
+    });
+});

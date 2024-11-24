@@ -351,13 +351,9 @@ window.MessageWallUserTags = {
         'FireMatch': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
-        'SpongeTron_D': 'Discussion Moderator',
-    
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
-
-        'TheJasbre202': 'Rollback',
     }
 };
 

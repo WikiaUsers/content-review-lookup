@@ -17,12 +17,10 @@
 		(config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') ||
 		config.wgRelevantUserName)) return;
 
-	function addEntry(data, label, value, join) {
-		var text = '';
-		var v = data.query.users[0][value];
-		if (v) {
-			text += join ? v.join(', ') : v;
-		}
+	function addEntry(data, value, join) {
+		var text = '',
+			v = data.query.users[0][value];
+		if (v) text += join ? v.join(', ') : v;
 		document.getElementById('PUI-' + value).textContent = text.length ? text : '–';
 	}
 
@@ -39,12 +37,12 @@
 			usprop: 'registration|gender|editcount|blockinfo|groups',
 			formatversion: 2
 		}).done(function(data) {
-			addEntry(data, msg('id').escape(), 'userid');
-			addEntry(data, msg('username').escape(), 'name');
-			addEntry(data, msg('editcount').escape(), 'editcount');
-			addEntry(data, msg('dateRegistered').escape(), 'registration');
-			addEntry(data, msg('gender').escape(), 'gender');
-			addEntry(data, msg('groups').escape(), 'groups', true);
+			addEntry(data, 'userid');
+			addEntry(data, 'name');
+			addEntry(data, 'editcount');
+			addEntry(data, 'registration');
+			addEntry(data, 'gender');
+			addEntry(data, 'groups', true);
 			input.setReadOnly(false);
 			button.setDisabled(false);
 		});
@@ -77,12 +75,12 @@
 		$content.append(
 			widget.$element,
 			$('<ul>').html(
-				'<li><b>' + msg('id').escape() + '</b> <span id="PUI-userid"></span>' +
-				'<li><b>' + msg('username').escape() + '</b> <span id="PUI-name"></span>' +
-				'<li><b>' + msg('editcount').escape() + '</b> <span id="PUI-editcount"></span>' +
-				'<li><b>' + msg('dateRegistered').escape() + '</b> <span id="PUI-registration"></span>' +
-				'<li><b>' + msg('gender').escape() + '</b> <span id="PUI-gender"></span>' +
-				'<li><b>' + msg('groups').escape() + '</b> <span id="PUI-groups"></span>'
+				'<li><b>' + msg('id').escape() + '</b> <span id="PUI-userid"></span></li>' +
+				'<li><b>' + msg('username').escape() + '</b> <span id="PUI-name"></span></li>' +
+				'<li><b>' + msg('editcount').escape() + '</b> <span id="PUI-editcount"></span></li>' +
+				'<li><b>' + msg('dateRegistered').escape() + '</b> <span id="PUI-registration"></span></li>' +
+				'<li><b>' + msg('gender').escape() + '</b> <span id="PUI-gender"></span></li>' +
+				'<li><b>' + msg('groups').escape() + '</b> <span id="PUI-groups"></span></li>'
 			)
 		);
 		input.on('enter', function() {
@@ -109,7 +107,9 @@
 	mw.hook('dev.i18n').add(function(i18n) {
 		i18n.loadMessages('PiniginsUserInfo').done(function(i18no) {
 			msg = i18no.msg;
-			if (config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') {
+			if (config.wgRelevantUserName) {
+				addTool();
+			} else if (config.wgNamespaceNumber === -1 && config.wgTitle === 'UserInfo') {
 				mw.loader.using([
 					'oojs-ui-widgets',
 					'mediawiki.api',
@@ -117,7 +117,6 @@
 					'mediawiki.widgets.UserInputWidget'
 				]).then(init);
 			}
-			if (config.wgRelevantUserName) addTool();
 		});
 	});
 

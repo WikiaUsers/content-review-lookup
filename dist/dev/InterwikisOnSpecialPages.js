@@ -14,12 +14,13 @@
 		'wgCanonicalSpecialPageName',
 		'wgCanonicalNamespace',
 		'wgNamespaceNumber',
+		'wgContentLanguage',
 		'wgTitle'
 	]);
 	
 	if (window.InterwikisOnSpecialPagesLoaded || (config.wgNamespaceNumber === -1 && !config.wgCanonicalSpecialPageName) ) return; 
 	window.InterwikisOnSpecialPagesLoaded = true;
-	
+
 	var pagename = '',
 		langs = [];
 
@@ -43,7 +44,7 @@
 			'<div class="page-header__languages">' +
 				'<div class="wds-dropdown">' +
 					'<div class="wds-dropdown__toggle">' +
-						mw.msg('page-footer-languages-header') +
+						new Intl.DisplayNames([config.wgContentLanguage], {type:'language'}).of(config.wgContentLanguage) +
 						'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron">' +
 							'<use xlink:href="#wds-icons-dropdown-tiny"></use>' +
 						'</svg>' +
@@ -58,13 +59,13 @@
 		// Footer
 		$( '.page-footer' ).prepend(
 			'<div class="wds-collapsible-panel wds-is-collapsed page-footer__languages">' +
-				'<header class="wds-collapsible-panel__header iosp-icon-footer">' +
+				'<header class="wds-collapsible-panel__header" aria-controls="collapsible-content-languages">' +
 					mw.msg('page-footer-languages-header') +
-					'<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron">' +
+					'<svg class="wds-icon wds-icon-small">' +
 						'<use xlink:href="#wds-icons-menu-control-small"></use>' +
 					'</svg>' +
 					'</header>' +
-				'<div class="wds-collapsible-panel__content"></div>' +
+				'<div class="wds-collapsible-panel__content" id="collapsible-content-languages"></div>' +
 			'</div>'
 		);
 		

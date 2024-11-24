@@ -132,15 +132,9 @@
 					var pages = response.query.pages;
 					var repo = pages[Object.keys(pages)[0]].imagerepository;
 					
-					if (repo == 'shared') {
-
+					if (repo !== 'local') {
                         var usageParams = baseParams + '&prop=fileusage' + format + '&origin=*';
                         usageQuery(defaultSiteUrl, usageParams, fullLang, i18n);
-
-					} else if (repo != 'local') {
-
-                        globalFileUsageError('<a href="' + langUrl + '" target="_blank">' + langUrl + '</a><br>' + i18n.msg('no-shared').plain());
-
 					}
  
 				 });

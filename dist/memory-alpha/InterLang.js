@@ -1,131 +1,42 @@
 $(function(){
-	var api = new mw.Api();
+	var userlang = mw.config.get('wgUserLanguage');
+	var sitelang = mw.config.get('wgContentLanguage');
 	var langs = [
-		{
-			code:'en',
-			nameNative:'English',
-		},
-		
-		{
-			code:'bg',
-			nameNative:'български',
-		},
-		
-		{
-			code:'ca',
-			nameNative:'català',
-		},
-		
-		{
-			code:'cs',
-			nameNative:'čeština',
-		},
-		
-		{
-			code:'de',
-			nameNative:'Deutsch',
-		},
-		
-		{
-			code:'eo',
-			nameNative:'Esperanto',
-		},
-		
-		{
-			code:'es',
-			nameNative:'español',
-		},
-		
-		{
-			code:'fr',
-			nameNative:'français',
-		},
-		
-		{
-			code:'it',
-			nameNative:'italiano',
-		},
-		
-		{
-			code:'ja',
-			nameNative:'日本語',
-		},
-		
-		{
-			code:'nl',
-			nameNative:'Nederlands',
-		},
-		
-		{
-			code:'pl',
-			nameNative:'polski',
-		},
-		
-		{
-			code:'pt',
-			nameNative:'português',
-		},
-		
-		{
-			code:'ro',
-			nameNative:'română',
-		},
-		
-		{
-			code:'ru',
-			nameNative:'русский',
-		},
-		
-		{
-			code:'sr',
-			nameNative:'српски / srpski',
-		},
-		
-		{
-			code:'sv',
-			nameNative:'svenska',
-		},
-		
-		{
-			code:'uk',
-			nameNative:'українська',
-		},
-		
-		{
-			code:'zh',
-			nameNative:'中文',
-		},
+		'en',
+		'bg',
+		'ca',
+		'cs',
+		'de',
+		'eo',
+		'es',
+		'fr',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'ro',
+		'ru',
+		'sr',
+		'sv',
+		'uk',
+		'zh'
 	];
 	
-	api.get({
-		action:'query',
-		meta:'siteinfo',
-		siprop:'languages',
-		siinlanguagecode:mw.config.get('wgUserLanguage'),
-		format:'json',
-	}).done(function(data){
-		langs.forEach(function(lang){
-			lang.nameLocal = data.query.languages.find(function(obj){
-				return obj.code === lang.code;
-			})['*'];
-		});
-	});
+	function language(code, inLang){
+		return new Intl.DisplayNames([inLang], {type:'language'}).of(code);
+	}
 	
-	api.get({
-		action:'query',
-		meta:'siteinfo',
-		siprop:'interwikimap',
-		format:'json',
-	}).done(function(data){
-		langs.forEach(function(lang){
-			lang.url = data.query.interwikimap.find(function(obj){
-				return obj.prefix === lang.code;
-			}).url.replace('http://', 'https://').replace('/wiki/$1', '');
-		});
-	});
+	function url(code){
+		if (code === 'en'){
+			return mw.config.get('wgServer');
+		}
+		
+		return mw.config.get('wgServer') + '/' + code;
+	}
 	
 	function link(page, text, lang){
-		return '<td><a href="' + lang.url + mw.util.getUrl(page) + '" title="' + lang.code + ':' + page + '">' + text + '</a></td>';
+		return '<a href="' + url(lang) + mw.util.getUrl(page) + '" title="' + lang + ':' + page + '">' + text + '</a>';
 	}
 	
 	// Administration table
@@ -139,7 +50,7 @@ $(function(){
 		
 		var validRoles = ['bot', 'bureaucrat', 'sysop', 'content-moderator', 'rollback', 'quick-answers-editor'];
 		
-		$.getJSON('/' + lang.code + '/api.php', {
+		$.getJSON('/' + lang + '/api.php', {
 			action:'listuserssearchuser',
 			groups:validRoles.join(','),
 			contributed:'0',
@@ -155,7 +66,7 @@ $(function(){
 				if (result.listuserssearchuser[i]){
 					var username = result.listuserssearchuser[i].username;
 					var numberOfEdits = result.listuserssearchuser[i].edit_count;
-					var id = lang.code + '__' + username.replace(/\s/g, '_');
+					var id = lang + '__' + username.replace(/\s/g, '_');
 					var lastEdit = result.listuserssearchuser[i].last_edit_date;
 					var lastEditComp = lastEdit.split(/,* /);
 					var lastEditDate =
@@ -169,12 +80,12 @@ $(function(){
 					
 					if (roles.length > 0){
 						$('.administration .placeholder').before($('<tr id="' + id + '">')
-							.append(link('User:' + username, username, lang))
-							.append('<td>'+roles.join(', ')+'</td>')
-							.append('<td>'+numberOfEdits+'</td>')
-							.append(link('Special:Contributions/' + username, lastEdit, lang))
-							.append('<td>'+lang.nameLocal+'</td>')
-							.append('<td class="status" data-last-edit="' + lastEditDate + '"></td>')
+							.append('<td>' + link('User:' + username, username, lang) + '</td>')
+							.append('<td>' + roles.join(', ') + '</td>')
+							.append('<td>' + numberOfEdits + '</td>')
+							.append('<td data-sort-value="' + lastEditDate + '">' + link('Special:Contributions/' + username, lastEdit, lang) + '</td>')
+							.append('<td>' + language(lang, userlang) + '</td>')
+							.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>')
 						);
 					}
 				}
@@ -206,19 +117,19 @@ $(function(){
 			return;
 		}
 		
-		$.getJSON('/' + lang.code + '/api.php', {
+		$.getJSON('/' + lang + '/api.php', {
 			action:'query',
 			meta:'siteinfo',
 			siprop:'statistics',
 			format:'json',
 		}).done(function(result){
 			$('.international-stats .placeholder').before($('<tr>')
-				.append(link('', lang.nameLocal, lang))
-				.append(link('Category:User ' + lang.code, lang.code, lang))
-				.append(link('Special:AllPages', result.query.statistics.articles, lang))
-				.append(link('Special:ListFiles', result.query.statistics.images, lang))
-				.append(link('Special:ListUsers', result.query.statistics.activeusers, lang))
-				.append(link('Special:ListUsers/sysop', result.query.statistics.admins, lang))
+				.append('<td>' + link('', language(lang, userlang), lang) + '</td>')
+				.append('<td>' + link('Category:User ' + lang, lang, lang) + '</td>')
+				.append('<td>' + link('Special:AllPages', result.query.statistics.articles, lang) + '</td>')
+				.append('<td>' + link('Special:ListFiles', result.query.statistics.images, lang) + '</td>')
+				.append('<td>' + link('Special:ListUsers', result.query.statistics.activeusers, lang) + '</td>')
+				.append('<td>' + link('Special:ListUsers/sysop', result.query.statistics.admins, lang) + '</td>')
 			);
 			
 			if ((langs.indexOf(lang)+1) < langs.length){

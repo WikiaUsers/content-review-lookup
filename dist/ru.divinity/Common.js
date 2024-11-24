@@ -43,6 +43,35 @@ $('.GamesArrowRight').click(function () {
 });
 
 /*************************************************/
+/************ Sliders на jqueryUI ****************/
+/*************************************************/
+
+var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
+mw.loader.using( ['oojs-ui-windows'], function() {
+	$(document).ready(function() {
+		$(".portal_slider").each(function(index, portal_slider) {
+			$(portal_slider).tabs({ fx: {opacity:'toggle', duration:100} } );
+			$("[class^=portal_sliderlink]").click(function() {
+				$(portal_slider).tabs('select', this.className.replace("portal_sliderlink_", ""));
+				return false;
+			});
+			$(portal_slider).find('#portal_next').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				return false;
+			});
+			$(portal_slider).find('#portal_prev').click(function() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') === 0) ? ($(portal_slider).tabs('length')-1) : $(portal_slider).tabs('option', 'selected') - 1 );
+				return false;
+			});
+			var timerId = setTimeout(function tick() {
+				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
+				timerId = setTimeout(tick, slideTime + Math.floor(Math.random() * 3000));
+			}, slideTime + Math.floor(Math.random() * 3000));
+		});
+	});
+});
+
+/*************************************************/
 /* spoilers by User:Tierrie from Dragon Age Wiki */
 /*************************************************/
 
@@ -125,101 +154,3 @@ function loadSpoilers() {
   if(spoilers) initSpoilers();
 }
 $(loadSpoilers);
-
-// *****************************************************
-// * Experimental javascript countdown timer (Splarka) *
-// *****************************************************
- //
- // Usage example:
- //  <span class="countdown" style="display:none;">
- //  <span class="countdowndate">March 30 2015 00:00:00 PST</span>
- //  </span>
- //  <span class="nocountdown">Javascript disabled.</span>
- /*
- function updatetimer(i) {
-   var now = new Date();
-   var then = timers[i].eventdate;
-   var diff = Math.floor((then.getTime()-now.getTime())/1000);
- 
-   // catch bad date strings
-   if(isNaN(diff)) { 
-     timers[i].firstChild.nodeValue = '** ' + timers[i].eventdate + ' **' ;
-     return;
-   }
- 
-   // determine plus/minus
-   if(diff<0) {
-     diff = -diff;
-     var tpm = '';'';
-   }
- 
-   // Calculate the diff - Modified by Eladkse
-  if ((diff%60) == 1) {
-    left = (diff%60) + ' секунды';
-  } else {
-    left = (diff%60) + ' секунда';
-  }
-    diff=Math.floor(diff/60);
-  if(diff > 0) {
-    if ((diff%60) == 1) {
-      left = (diff%60) + ' минута, и ' + left;
-    } else {
-      left = (diff%60) + ' минут, и ' + left;
-    }
-  }
-    diff=Math.floor(diff/60);
-  if(diff > 0) {
-    if ((diff%24) == 1) {
-      left = (diff%24) + ' час, ' + left;
-    } else {
-      left = (diff%24) + ' часов, ' + left;
-    }
-  }
-    diff=Math.floor(diff/24);
-  if(diff > 0) {
-    if (diff == 1) {
-      left = diff + ' день, ' + left;
-    } else {
-      left = diff + ' дней, ' + left;
-    }
-  }
-  timers[i].firstChild.nodeValue = tpm + left;
- 
-   // a setInterval() is more efficient, but calling setTimeout()
-   // makes errors break the script rather than infinitely recurse
-   timeouts[i] = setTimeout('updatetimer(' + i + ')',1000);
- }
- 
- function checktimers() {
-   //hide 'nocountdown' and show 'countdown'
-   var nocountdowns = getElementsByClassName(document, 'span', 'nocountdown');
-   for(var i in nocountdowns) nocountdowns[i].style.display = 'none'
-   var countdowns = getElementsByClassName(document, 'span', 'countdown');
-   for(var i in countdowns) countdowns[i].style.display = 'inline'
- 
-   //set up global objects timers and timeouts.
-   timers = getElementsByClassName(document, 'span', 'countdowndate');  //global
-   timeouts = new Array(); // generic holder for the timeouts, global
-   if(timers.length == 0) return;
-   for(var i in timers) {
-     timers[i].eventdate = new Date(timers[i].firstChild.nodeValue);
-     updatetimer(i);  //start it up
-   }
- }
-$(checktimers);
-*/
- 
-// **************************************************
-//  - end -  Experimental javascript countdown timer
-// **************************************************
-
-/* Случайный фон */
-$(function(){
-if (mw.config.get('wgPageName') == "Участник:R256S") {
-        var imgs = [
-        'https://vignette.wikia.nocookie.net/divinity/images/b/b8/R2_%D1%84%D0%BE%D0%BD.png/revision/latest?cb=20150712182256&path-prefix=ru',
-        'https://vignette.wikia.nocookie.net/divinity/images/2/25/Divinity_Dragon_Commander_Background.jpg/revision/latest?cb=20150130203919&path-prefix=ru'
-        ];
-        $('body').css('background-image','url(' + imgs[Math.floor((imgs.length) * Math.random())] + ') no-repeat center center fixed #000000');
-    }
-});

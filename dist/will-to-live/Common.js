@@ -1,5 +1,26 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
+/* Interactive crafting window */
+document.addEventListener('DOMContentLoaded', function () {
+    // Pobranie elementu wyświetlającego wartość
+    var dynamicValue = document.getElementById('dynamicValue');
+    // Pobranie wszystkich elementów z klasy .item
+    var items = document.querySelectorAll('.listPresser-table .item');
+
+    // Dodanie nasłuchiwania na kliknięcia
+    items.forEach(function(item) {
+        item.addEventListener('click', function () {
+            // Pobranie wartości z atrybutu data-value
+            var newValue = this.getAttribute('data-value');
+            // Aktualizacja treści dynamicValue
+            dynamicValue.textContent = newValue;
+        });
+    });
+});
+
+
+
+
 /* LinkPreview: Blocking the preview when class .previewIgnore will be assigned to div or span */
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.RegExp.iparents = ['.previewIgnore'];

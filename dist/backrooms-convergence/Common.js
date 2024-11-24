@@ -38,6 +38,28 @@ var fadeinclass = document.getElementsByClassName("fadeintext");
 }
 
 // interwiki template 
+// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
 	$('.page-header__languages .wds-dropdown__toggle ').append('<svg class="wds-icon wds-icon-tiny wds-dropdown__toggle-chevron"><use xlink:href="#wds-icons-dropdown-tiny"></use></svg>');
 
-// Credits to https://sky-children-of-the-light.fandom.com/wiki/MediaWiki:Common.js
+// Left Global Naigation Bar adjustments
+$(function() {
+	window.sisterwikiLinks = [
+        {
+            "url": "http://backrooms-pantheon.wikidot.com/", //sister site
+            "text": "Backrooms Pantheon" 
+        }
+    ];
+    
+    window.sisterwikiLinks = window.sisterwikiLinks || [];
+    var navContainer = document.querySelector(".global-navigation__links .wds-is-linked");
+    sisterwikiLinks.forEach(function(link) {
+        var li = document.createElement('li'),
+            a = document.createElement('a');
+        a.href = link.url;
+        a.className = 'customwikilink';
+        a.textContent = link.text;
+        a.title = 'sister wiki';
+        li.appendChild(a);
+        navContainer.appendChild(li);
+    });
+});

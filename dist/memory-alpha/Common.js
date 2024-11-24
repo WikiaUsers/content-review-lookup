@@ -7,7 +7,8 @@ window.AutoCreateUserPagesConfig = {
 		2: '{{subst:newuser}}',
 		3: '{{subst:welcome}}',
 	},
-	summary: 'Script: Creating user+talkpage on first edit'
+	summary: 'Script: Creating user+talkpage on first edit',
+	notify: '<a href="/wiki/User_talk:$2">Welcome to Memory Alpha!</a>'
 };
 
 window.globalFileUsageConfig = {

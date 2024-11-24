@@ -192,10 +192,10 @@ $(function(){
 			
 			if ($(infobox).hasClass("pi-theme-legend")) {
 				if(this.traitDiv1.length){ //if there is a trait value
-					this.traitDiv1.html(this.calc(this.baseTraitVal_1, 1.16));
+					this.traitDiv1.html(Math.round(this.calc(this.baseTraitVal_1, 1.13)));
 				}
-				if(this.traitDiv1.length){ //if there is a second trait value
-					this.traitDiv2.html(this.calc(this.baseTraitVal_2, 1.16));
+				if(this.traitDiv2.length){ //if there is a second trait value
+					this.traitDiv2.html(Math.round(this.calc(this.baseTraitVal_2, 1.13)));
 				}
 			}
 		};
@@ -206,7 +206,8 @@ $(function(){
 			var hiddenLevel = 0;
 			
 			if ($(infobox).hasClass("pi-theme-legend")) {
-				hiddenLevel = 6; //legendaries have 7 more item levels than common
+				hiddenLevel = 6; //legendaries have 6 more item levels than common
+				this.sellDiv.html(Math.round(this.baseSellValue * level * 6)); //same scaling as superior
 			}
 			
 			var rarity = $("input[name='rarityGroup']:checked").val();

@@ -9,5 +9,8 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweVariants
 /* Smaller adjustments */
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweRedesignsAndFixes.js?action=raw\u0026ctype=text/javascript");
 
+/* Audio template 
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweAudio.js?action=raw\u0026ctype=text/javascript"); */
+
 /* Winter Theme
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:ChristmasThemeUwe.js?action=raw\u0026ctype=text/javascript"); */

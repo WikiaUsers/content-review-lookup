@@ -56,9 +56,9 @@ $(function(){
 		
 		function removeLinks(i){
 			var newText = linkCleanup.content[i]
-				.replace(/\{\{rl\|([^\n}]+?)}}(?= *[/;])/g, '{{SUBST:#ifexist:$1||{{rl|$1}}}}')
-				.replace(/(?<=[/;] *)\{\{rl\|([^\n}]+?)\}\}/g, '{{SUBST:#ifexist:$1||{{rl|$1}}}}')
-				.replace(/\n\* *\{\{rl\|([^\n}]+?)\}\}$/gm, '{{SUBST:#ifexist:$1||\n* {{rl|$1}}}}');
+				.replace(/\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}(?= *[/;])/g, '{{subst:#ifexist:$1||{{rl|$1}}}}')
+				.replace(/(?<=[/;] *)\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}/g, '{{subst:#ifexist:$1||{{rl|$1}}}}')
+				.replace(/\n\* *\{\{(?:\n*|[ _]*)[Rr](?:equestedLinks|l)(?:\n*|[ _]*)\| *([^\n}]+?) *\}\}$/gm, '{{subst:#ifexist:$1||\n* {{rl|$1}}}}');
 			
 			var params = {
 				action:'edit',

@@ -162,15 +162,33 @@ setInterval(function () {
 
 /* ========== Анимированный логотип ========== */
 {
-  var div = document.getElementById("animated_logo");
-  var frameHeight = 450;
-  var frames = 2;
-  var frame = 0;
-
-  setInterval(function () {
-    var frameOffset = (++frame % frames) * -frameHeight;
-    div.style.backgroundPosition = "0px " + frameOffset + "px";
-  }, 500);
+    function startAnimationInterval() {
+	    return setInterval(function () {
+	        var frameOffset = (++frame % frames) * -frameHeight;
+	        element.style.backgroundPosition = "0px " + frameOffset + "px";
+	    }, 500);
+	}
+	
+	var element = document.getElementById("animated_logo-test");
+		if (element) {
+		    var animationIntervalHandle = null;
+		    var frameHeight = element.offsetHeight;
+		    var frames = 2;
+		    var frame = 0;
+		    var stopped = false;
+		    element.style.backgroundSize = "auto " + frameHeight*2 + "px";
+		    animationIntervalHandle = startAnimationInterval();
+		    
+		    element.onclick = function() {
+		        if (!stopped) {
+		            clearInterval(animationIntervalHandle);
+		            stopped = true;
+		        } else {
+		            animationIntervalHandle = startAnimationInterval();
+		            stopped = false;
+		        }
+		    }
+	}
 }
 
 /* ========== MessageBlock ========== */

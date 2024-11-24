@@ -144,8 +144,8 @@ $.getJSON(mw.util.wikiScript("index"), {
 
 (function () {
 	var subWikis = {
-		旧: {name: '旧版Florr.io 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
-		二: {name: 'Florr.io二创 中文维基'},
+		旧: {name: '旧版florr.io 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/a/a8/%E9%85%8D%E7%BD%AE.webp/revision/latest?cb=20240728012911&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/d/d0/%E8%8A%B1%E5%9B%AD%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104053920&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/d/d0/PvP%E7%BD%91%E6%A0%BC%E8%83%8C%E6%99%AF.png/revision/latest?cb=20221104054053&format=original&path-prefix=zh'},
+		二: {name: 'florr.io二创 中文维基'},
 		W: {name: 'Flowr.fun 中文维基', logo: 'https://static.wikia.nocookie.net/florrio/images/7/7d/WSite-logo.png/revision/latest?cb=20240830094753&format=original&path-prefix=zh', light: 'https://static.wikia.nocookie.net/florrio/images/2/2f/WSite-background-light.png/revision/latest?cb=20240830101803&format=original&path-prefix=zh', dark: 'https://static.wikia.nocookie.net/florrio/images/f/f1/WSite-background-dark.png/revision/latest?cb=20240830101850&format=original&path-prefix=zh'}
 	};
 

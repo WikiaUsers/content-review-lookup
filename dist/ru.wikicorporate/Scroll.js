@@ -13,17 +13,15 @@ var $scrollBottomButton = $('<a>', {
 }).appendTo('#WikiaBar').on('click', handleScrollTo);
 
 var lastScrollTop = 0;
-var onScroll = function onScroll() {
+var onScroll = function () {
   var currentScrollTop = $(window).scrollTop();
   var breakY = ($(document).height() - $(window).height()) * 0.5;
 
   if (Math.abs(currentScrollTop - lastScrollTop) > 1) {
     var reachHalf = currentScrollTop > breakY;
-    $scrollBottomButton.attr('class', "scroll-button scroll-button--".concat(reachHalf ? 'top' : 'bottom'));
+    $scrollBottomButton.attr('class', "scroll-button scroll-button--" + (reachHalf ? 'top' : 'bottom'));
     lastScrollTop = currentScrollTop;
   }
-
-  requestAnimationFrame(onScroll);
 };
 
-requestAnimationFrame(onScroll);
+$(window).on('scroll', onScroll);

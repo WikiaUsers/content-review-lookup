@@ -35,6 +35,7 @@ window.LockOldBlogs = {
 };
  
 /* LinkPreview */
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.defimage = 'https://static.wikia.nocookie.net/countryclub9732/images/6/67/No_Screenshot.png/revision/latest?cb=20220630011000';
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/countryclub9732/images/6/67/No_Screenshot.png/revision/latest?cb=20220630011000';
 

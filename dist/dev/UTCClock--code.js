@@ -61,8 +61,8 @@
 		init: function( ) { 
 			this.config = $.extend( 
 				{ },
-				config,
-				this.defaults
+				this.defaults,
+				config
 			);
 			
 			if ( typeof this.config.hoverText === "string" ) 

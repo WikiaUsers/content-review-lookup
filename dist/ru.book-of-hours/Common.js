@@ -1,1 +1,7 @@
-/* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
+/* UploadMultipleFiles */
+importArticles({
+    type: 'script',
+    articles: [
+        'u:dev:MediaWiki:UploadMultipleFiles.js',
+    ]
+});

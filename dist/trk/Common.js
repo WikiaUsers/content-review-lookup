@@ -1,4 +1,3 @@
-importScriptPage('Countdown/code.js', 'dev');
 importScriptPage('ShowHide/code.js', 'dev');
 /* Spoiler Alert */
 SpoilerAlert = {
@@ -48,3 +47,5 @@ function updateDivBackgroundColor() {
         document.addEventListener('DOMContentLoaded', function() {
             updateDivBackgroundColor();
         });
+        
+//--------------------------------------
