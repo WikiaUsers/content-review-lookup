@@ -29,7 +29,7 @@
 	) return;
 	window.FileToolsLoaded = true;
 
-	var msg,
+	var i18n,
 		events = {},
 		summaries = {};
 
@@ -38,10 +38,10 @@
 	 * @param {string} type - Button type for default summary.
 	 */
 	function summary(type) {
-		const summary = prompt(msg('summary_title', msg('summary_' + type).plain() ).plain(), summaries[type] || '');
+		const summary = prompt(i18n.msg('summary_title', i18n.inContentLang().msg('summary_' + type).plain() ).plain(), summaries[type] || '');
 		summaries[type] = summary;
 		if (summary === null) return false;
-		return !summary.length ? msg('summary_' + type).plain() : summary;
+		return !summary.length ? i18n.msg('summary_' + type).plain() : summary;
 	}
 
 	/**
@@ -64,7 +64,7 @@
 			method: 'POST',
 			credentials: 'include'
 		}).then(function() {
-			element.target.textContent = msg('protected').plain();
+			element.target.textContent = i18n.msg('protected').plain();
 		});
 	};
 
@@ -168,7 +168,7 @@
 	function createButton(label, data) {
 		const btn = document.createElement('button');
 		btn.classList = 'wds-button';
-		btn.textContent = msg(label).plain();
+		btn.textContent = i18n.msg(label).plain();
 		if (data) {
 			btn.style.display = 'block';
 			btn.dataset.filepath = data;
@@ -205,9 +205,9 @@
 		});
 	}
 
-	mw.hook('dev.i18n').add(function(i18n) {
-		i18n.loadMessages('FileTools').done(function(i18n) {
-			msg = i18n.msg;
+	mw.hook('dev.i18n').add(function(i18no) {
+		i18no.loadMessages('FileTools').done(function(msg) {
+			i18n = msg;
 			addButtons();
 		});
 	});

@@ -52,65 +52,8 @@ $(function() {
 			]);
 			
 			// Add CSS
-			mw.util.addCSS(
-				'.tpWrapper {'+
-					'display: flex;'+
-					'width: 100%;'+
-					'gap: 8px;'+
-					'flex-direction: column;'+
-				'}'+
-				'.tpWrapper > label {'+
-					'display: flex;'+
-					'gap: 5px;'+
-					'height: 30px;'+
-				'}'+
-				'.tpWrapper > label > :is(input, select) { flex-basis: 60%; }'+
-				'.tpWrapper > label > .tpLabel { flex-basis: 25%; }'+
-				'#tpOpen {white-space: nowrap;}'+
-				'.tpWrapper input {'+
-					'background: var(--theme-color-6);'+
-					'color: var(--theme-page-text-color);'+
-					'border: 0;'+
-					'border-radius: 4px;'+
-					'padding: 4px;'+
-				'}'+
-				'.tpWrapper svg {'+
-					'vertical-align: middle;'+
-					'fill: var(--theme-link-color);'+
-				'}'+
-				'.tpWrapper .bad-data, .tpWrapper .bad-data svg {color: var(--theme-alert-color); fill: var(--theme-alert-color);}'+
-				'#tpDetails {'+
-					'margin-right: 3px;'+
-					'text-align: center;'+
-					'border-top: 3px solid var(--theme-link-color);'+
-					'margin-top: 5px;'+
-					'height: 180px;'+
-					'overflow-y: auto;'+
-					'font-size: 80%;'+
-					'display: flex;'+
-					'flex-direction: column;'+
-					'gap: 5px;'+
-				'}'+
-				'#tpDetails > .success {color: var(--theme-success-color--secondary);}'+
-				'#tPatrol-patrol .oo-ui-window-frame {min-width: min(100%, 750px);}'+
-				'#tPatrol-patrol #tPatrol-Submit[disabled="disabled"] .oo-ui-buttonElement-button {color: var(--theme-alert-color);}'+
-				'#tpNS, #tpNS optgroup {'+
-					'color: var(--theme-page-text-color);'+
-					'border-radius: 5px;'+
-					'background: var(--theme-page-background-color);'+
-					'border: 1px solid var(--theme-link-color);'+
-				'}'+
-				'.loading-gif {'+
-					'width: 16px;'+
-					'vertical-align: middle;'+
-					'border: 0;'+
-				'}'+
-				'.quickDiff {'+
-					'cursor: pointer;'+
-				'}'+
-				'#quickDiff-quickview :is(.diff-deletedline, .diff-addedline):has(img) {text-align: center;}'+
-				'#quickDiff-quickview :is(.diff-deletedline, .diff-addedline) img {max-width: 100%;}'
-			);
+			importArticles({ articles: 'u:dev:MediaWiki:BetterDiff.css' });
+			
 			
 			// Check we're in Special:RecentChanges
 			if (config.wgCanonicalSpecialPageName == 'Recentchanges') {
@@ -572,23 +515,21 @@ $(function() {
 			
 			var generateModal = function(event) {
 				var turl = event.target.getAttribute('data-url');
-				var getURL = function(page, query) {
+				var getURL = function(page, query, ns) {
 					return  'https://'+betterDiff.getLoad(turl)+
-							'/wiki/'+encodeURIComponent(page)+
+							'/wiki/'+encodeURIComponent(page).replace('%3A', ':')+
 							(query ? ('?'+$.param(query)) : '');
 				};
 				var generateHeader = function(data, url) {
 					href = data.log=='upload' ? data.tourl : getURL(data.totitle, {diff: data.torevid});
 					var header = '';
 					var todate = new Date(data.totimestamp);
-					var urlUser;
 					
 					// Old revid
 					if (data.fromtimestamp) {
 						href = data.log=='upload' ? data.tourl : getURL(data.totitle, {diff: data.torevid, oldid: data.fromrevid}); // Complete diff link
 						
 						var fromdate = new Date(data.fromtimestamp);
-						urlUser = encodeURIComponent(data.fromuser.replace(/ /g, '_'));
 						header +=
 						'<td class="diff-otitle diff-side-deleted" colspan="2">'+
 							'<div id="mw-diff-otitle1">'+
@@ -622,7 +563,6 @@ $(function() {
 					}
 					
 					// New revid
-					urlUser = encodeURIComponent(data.touser.replace(/ /g, '_'));
 					header +=
 					'<td class="diff-ntitle" colspan="'+(data.fromtimestamp ? '2' : '4')+'">'+
 						'<div id="mw-diff-ntitle1">'+
@@ -739,7 +679,7 @@ $(function() {
 					quickview.show();
 					quickview.setContent(
 						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+
-							'<table class="diff diff-contentalign-left diff-editfont-default" data-mw="interface">'+
+							'<table class="diff diff-contentalign-left diff-editfont-'+(mw.user.options.values.editfont||'default')+'" data-mw="interface">'+
 								'<colgroup>'+
 									'<col class="diff-marker">'+
 									'<col class="diff-content">'+
@@ -1131,7 +1071,7 @@ $(function() {
 			var link = document.querySelector('.patrollink > a');
 			var wrapper = document.querySelector('.patrollink');
 			wrapper.innerHTML = 
-			'[<img class="loading-gif" src="https://www.superiorlawncareusa.com/wp-content/uploads/2020/05/loading-gif-png-5.gif" />]';
+			'[<img class="loading-gif" src="//images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" />]';
 			var torevid = link.getAttribute('torevid');
 			var fromrevid = link.getAttribute('fromrevid');
 			lApi.get({

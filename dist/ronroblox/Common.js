@@ -71,23 +71,15 @@ UserTagsJS.modules.custom = {
 	/* 'user': [groups] */
 	// Current Staff: Edited.
 	'RabbyDevs': ['head-of-wiki','content-moderator'],
-	'FamicomBruv': ['content-moderator'],
 	'3meraldKv': ['founder'],
-	'Simplydisc': ['wiki-developer'],
-	'Superduperwhoopershmooperregularperson': ['wiki-developer', 'threadmoderator'],
 	// Retired Wiki Staff
 	'imnotacan': ['retired-staff'],
 	// RON Senior Staff (3 senior admins missing, they don't have fandom accounts)
 	'GrayshaValor': ['ron-senior-administrator'],
 	'Yxrae': ['ron-senior-administrator'],
-	// Wiki Helpers
-	'Dxrknrg': ['wiki-helper'],
-	'MP1Player': ['wiki-helper'],
-	'IFinishedDoingIt': ['wiki-helper'],
-	'ThyEpicusMenicus2': ['wiki-helper'],
-	'Eddy0725': ['wiki-helper'],
-	'HaHaBlah': ['wiki-helper'],
-	'Bazyli123': ['wiki-helper'],
-	'PanzerundLancer': ['wiki-helper'],
+	// Wiki Contributors
+	'Dxrknrg': ['wiki-Contributor'],
+	'PanzerundLancer': ['wiki-Contributor'],
+	'RyeThePies': ['wiki-Contributor'],
 }	
 //* END of UserTags *//

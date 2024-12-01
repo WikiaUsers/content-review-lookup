@@ -218,6 +218,71 @@ if (document.querySelector(".loot-container-table") != null)
 		sideToolsRight.append(rightRailToggle);
 	}
 	
+	// ======
+	/*
+		Supporting JS for Template:Rank_stat
+		This function links avo-rank-source and avo-rank-target, such when
+		elements with "data-rank" attributes on the source are hovered over,
+		the avo-rank-target element will have the same rank set on it.
+		
+		You can use data-selector on the source to set a more specific target,
+		which will first be queried using Element.closest, and then over the
+		entire document. By default the selector is .avo-rank-target
+	*/
+	
+	function createRankStatTriggers(insideElement)
+	{
+		var sourceClasses = [ ".avo-abl-rank-list", ".avo-rank-source" ];
+		var targetClasses = [ ".avo-abl", ".avo-rank-target" ];
+		var elements = (insideElement || document).querySelectorAll(":is(" + sourceClasses.join(",") + ")");
+		
+		function rankMouseEvent(e)
+		{
+		    var rank = e.currentTarget.dataset.rank;
+		    if (!rank) return;
+		    
+		    if (e.type == "mouseenter")
+		        this.setAttribute("data-rank", rank);
+		    else
+		        this.removeAttribute("data-rank");
+		}
+		
+		elements.forEach(function(source)
+		{
+			var target;
+			
+			if (source.dataset.selector)
+				target = source.closest(source.dataset.selector) ||
+					document.querySelector(source.dataset.selector);
+			else
+				target = source.closest(targetClasses.join(","));
+	
+			// If no target was found, it could be that it hasn't been added
+			// to the page yet, so don't do anything for now
+			if (!target) return;
+	
+			// The source can itself have a data-rank, or it can contain elements that each have data-rank
+			var ranks = source.querySelectorAll(":scope[data-rank], [data-rank]");
+			source.dataset.rankInit = "";
+		
+			// Bind the target to the rankMouseEvent function so it becomes "this"
+		    var fn = rankMouseEvent.bind(target);
+	
+			// Add event listeners for mouseover and mouseleave
+			for (var i = 0; i < ranks.length; i++)
+			{
+				ranks[i].addEventListener("mouseenter", fn);
+				ranks[i].addEventListener("mouseleave", fn);
+			}
+		});
+		
+	}
+	
+	// Expose function
+	window.createRankStatTriggers = createRankStatTriggers;
+	
+	createRankStatTriggers();
+	
 	// =====
 	/*
 		Reset state of specific modules in ResourceLoader

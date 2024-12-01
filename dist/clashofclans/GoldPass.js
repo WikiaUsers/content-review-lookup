@@ -12,6 +12,7 @@ $(document).ready(function() {
 	$("span#frostPotencyHarness").html('<div id="frostPotencyInput">Frost Potency: '+
 		'<select name="frostPotencyLevel" id="frostPotencyLevel">'+
 			'<option value="0">0</option>'+
+			'<option value="20">20</option>'+
 			'<option value="25">25</option>'+
 			'<option value="30">30</option>'+
 			'<option value="35">35</option>'+
@@ -240,6 +241,8 @@ $(document).ready(function() {
     	"Healer Puppet": [18,15],
     	"Frozen Arrow": [27,21],
     	"Magic Mirror": [27,21],
+    	"Henchmen Puppet": [18,15],
+    	"Dark Orb": [18,15],
     	"Eternal Tome": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": [18,15],
     	"Rage Gem": [18,15],
@@ -262,6 +265,9 @@ $(document).ready(function() {
     	case ("Archer Queen"):
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror"];
     		break;
+    	case ("Minion Prince"):
+    		heroGearOptions = ["Henchmen Puppet", "Dark Orb"];
+    		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
     		break;
@@ -269,7 +275,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -1006,6 +1012,8 @@ $(document).ready(function() {
 			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
 			"Archer Puppet": [26,34,42,49,55,62,71,80,90,100,109,115,122,127,132,136,140,144],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
+			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
+			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
 			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
@@ -1023,6 +1031,7 @@ $(document).ready(function() {
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
 			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
+			"Dark Orb": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
 			"Life Gem": [150,163,172,181,192,203,225,249,275,304,336,351,366,381,396,411,426,441],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
@@ -1036,6 +1045,7 @@ $(document).ready(function() {
 			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
 			"Archer Puppet": [160,175,190,205,220,235,250,265,280,295,310,325,340,360,380,400,420,440],
 			"Magic Mirror": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
+			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]

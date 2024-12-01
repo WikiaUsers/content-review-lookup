@@ -53,10 +53,13 @@ mw.loader.using('mediawiki.api', function() {
 				i18n.msg('blockreason').plain(), 
 				reasonDropdown.text() + (reasonBox.val() ? ': ' + reasonBox.val() : '')
 			);
+			
+			var blockerUsername = mw.config.get('wgUserName');
 
 		messages = config.message
 			.replace('$1', blockmessage)
-			.replace('$2', duration);
+			.replace('$2', duration)
+			.replace('$3', blockerUsername);
 		page = $('input#ooui-php-1').val();
  
 		if (useTalk) {

@@ -114,3 +114,6 @@ if (
         ],
     });
 }
+
+// Update S:Community
+document.querySelector('.community-page-module-additional-text.no-community-manager').innerHTML = "This wiki does not have a dedicated Community Manager. However, in the absence of <a href='https://stephenking.fandom.com/wiki/Special:ListAdmins'>local administrators</a>, you can contact <a href='https://community.fandom.com/wiki/Community_Central:Staff'>Fandom Staff</a> for help by using <a href='https://support.fandom.com/hc/en-us/requests/new'>Zendesk</a> or the Fandom community with <a href='https://community.fandom.com/wiki/Discord'>Discord</a> (<a href='https://discord.com/invite/fandom'>join</a>).";

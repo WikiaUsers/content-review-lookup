@@ -5,11 +5,11 @@ document.querySelectorAll('.category-page__member img').forEach(img => {
 });
 
 // Recent Images design
-document.querySelectorAll('.alice-carousel__stage img').forEach(img => {
+/*document.querySelectorAll('.alice-carousel__stage img').forEach(img => {
     img.src = img.src.replace('height/168', 'height/300');
     img.setAttribute('data-src', img.getAttribute('data-src').replace('height/168', 'height/300'));
     img.onload = function() {
         console.log('Bild geladen:', img.src);
     };
     img.removeAttribute('loading');
-});
+});*/

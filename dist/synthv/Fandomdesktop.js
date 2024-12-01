@@ -48,6 +48,7 @@ $(function() {
 	    'https://images.wikia.nocookie.net/synthv/images/7/76/Wiki-wordmark-noa.png',
 	    'https://images.wikia.nocookie.net/synthv/images/d/dc/Wiki-wordmark-nyl.png',
 	    'https://images.wikia.nocookie.net/synthv/images/9/99/Wiki-wordmark-OSCAR.png',
+	    'https://images.wikia.nocookie.net/synthv/images/9/95/Wiki-wordmark-otomachi-una.png',
 	    'https://images.wikia.nocookie.net/synthv/images/b/bf/Wiki-wordmark-POPY.png',
 	    'https://images.wikia.nocookie.net/synthv/images/0/0e/Wiki-wordmark-Qingsu.png',
 	    'https://images.wikia.nocookie.net/synthv/images/f/f9/Wiki-wordmark-riku.png',

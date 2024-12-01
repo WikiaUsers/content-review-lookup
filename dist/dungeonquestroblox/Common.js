@@ -81,9 +81,9 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
         { name: "Desert Temple (Legacy)", difficulties: ["Easy [1]", "Medium [6]", "Hard [12]", "Insane [20]", "Nightmare [27]"]},
     ];
     var dungeonsWithEXP = [
-        {name: "Abyssal Void Insane [210]", baseEXP: 765000000000},
-        {name: "Abyssal Void Nightmare [215]", baseEXP: 1210000000000},
-        {name: "Abyssal Void Nightmare (with The Voidborn) [215]", baseEXP: 1510000000000},
+        {name: "Abyssal Void Insane [210]", baseEXP: 1070000000000},
+        {name: "Abyssal Void Nightmare [215]", baseEXP: 1470000000000},
+        {name: "Abyssal Void Nightmare (with The Voidborn) [215]", baseEXP: 1830000000000},
         {name: "Yokai Peak Insane [200]", baseEXP: 192650000000},
         {name: "Yokai Peak Nightmare [205]", baseEXP: 350950000000},
         {name: "Gilded Skies Insane [190]", baseEXP: 63500000000},
@@ -206,19 +206,21 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
     var abilities = [
 		// AV
-	{ name: "Gravity Leap", multiplier: 190 },
-	{ name: "Unstable Warp (2 ticks)", multiplier: 180 / 2 },
+	{ name: "Gravity Leap", multiplier: 200 },
+	{ name: "Unstable Warp (2 ticks)", multiplier: 200 / 2 },
 	{ name: "Mighty Cleave (fully charged, 2 ticks)", multiplier: 280 / 2 },
 	{ name: "Sacrificial Orbs (fully charged)", multiplier: 280 },
-	{ name: "Mighty Cleave (half charged)", multiplier: 120 },
+	{ name: "Mighty Cleave (half charged)", multiplier: 140 },
 	{ name: "Sacrificial Orbs (half charged)", multiplier: 140 },
 	{ name: "Shatterstrike (6 ticks)", multiplier: 186 / 6 },
 	{ name: "Voidflames (5 ticks)", multiplier: 185 / 5 },
+		// Halloween Event - Tier 3
+	{ name: "Storm Blast / Storm Wave", multiplier: 185 },
 		// YP
 	{ name: "Spinning Blade Smash / Void Dragon", multiplier: 148 },
 	{ name: "Kunai Knives (3 ticks)", multiplier: 150 / 3 },
-	{ name: "Rift Beam (37 ticks)", multiplier: 203 / 37 },
-	{ name: "Triple Quake (3 ticks)", multiplier: 144 / 3 },
+	{ name: "Rift Beam (36 ticks)", multiplier: 197.28 / 36 },
+	{ name: "Triple Quake (3 ticks)", multiplier: 147 / 3 },
 	{ name: "Chain Storm (6 ticks)", multiplier: 147 / 6 },
 		// GS
 	{ name: "Blade Barrage / God Spear / Amethyst Beams / Jade Rain", multiplier: 133 },
@@ -241,6 +243,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 	{ name: "Lava Barrage (3 ticks)", multiplier: 83.2 / 3 },
 	{ name: "Blade Fall / Amethyst Blast", multiplier: 82 },
 	{ name: "Molten Shards / Lava Beam Orb", multiplier: 75 },
+		// Halloween Event - Tier 2
+	{ name: "Arc Blast / Arc Wave", multiplier: 84 },
 		// OO
 	{ name: "Electric Field (4 ticks)", multiplier: 66.8 / 4 },
 	{ name: "Energy Orb", multiplier: 65 },
@@ -254,7 +258,7 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 	{ name: "Infernal Blast", multiplier: 43.5 },
 	{ name: "Electric Grinder (4 ticks)", multiplier: 42 / 4 },
 	{ name: "Arrow Barrage", multiplier: 40 },
-		{ name: "Molten Ball (2 ticks)", multiplier: 40 / 2 },
+	{ name: "Molten Ball (2 ticks)", multiplier: 40 / 2 },
 	{ name: "Chain Lightning", multiplier: 38 },
 	{ name: "Explosive Punch", multiplier: 37 },
 	{ name: "Ground Stomp", multiplier: 32 },
@@ -315,6 +319,8 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 	{ name: "Pulsefire (16 ticks)", multiplier: 27.2 / 16 },
 	{ name: "Ghostly Cannon Barrage (12 ticks)", multiplier: 27.6 / 12 },
 	{ name: "Demonic Strike", multiplier: 5.5 },
+		// Halloween Event - Tier 1
+	{ name: "Shock Blast / Shock Wave", multiplier: 13.5 },
 		// WO
 	{ name: "Piercing Rain (12 ticks)", multiplier: 18 / 12 },
 	{ name: "Ground Slam", multiplier: 12 },
@@ -330,7 +336,10 @@ UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 	{ name: "Arcane Spray (6 ticks)", multiplier: 12 / 2 },
 	{ name: "Blue Fireball", multiplier: 2.75 },
 	{ name: "Whirlwind (9 ticks)", multiplier: 9 / 9 },
-	{ name: "Fireball", multiplier: 1 }
+	{ name: "Fireball", multiplier: 1 },
+		// Starter
+	{ name: "Leaping Strike", multiplier: 3 },
+	{ name: "Flame Step", multiplier: 2 }
     ];
     var abilityNames = abilities.map(function (a) { return a.name; });
     

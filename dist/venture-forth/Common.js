@@ -1,0 +1,1 @@
+/* JavaScript for the spoiler warning box behavior (only for Venture Forth Wiki) */

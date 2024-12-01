@@ -119,6 +119,8 @@ window.UserTagsJS = {
         //group: { negative }
         blocked: { u:'BLOCKED ⛔'},
         inactive: { u:'SLEEPY 😴'},
+        autoconfirmed: { u:'VIBING 🎶'},
+        newuser: { u:'NEW 🍀'},
         
         //group: { discord }
         discowner: { u:'DISCORD OWNER 💎'},
@@ -166,12 +168,18 @@ UserTagsJS.modules.custom = {
     'FILIPN0F1SHSTICKF4ILURE': ['invaders']
 	
 };
-UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'threadmoderator', 'chatmoderator'];
-UserTagsJS.modules.inactive = 21;
+UserTagsJS.modules.mwGroups = ['bureaucrat', 'content-moderator', 'rollback', 'sysop', 'blocked', 'inactive', 'threadmoderator', 'chatmoderator'];
+UserTagsJS.modules.inactive = 30;
+UserTagsJS.modules.autoconfirmed = true;
 UserTagsJS.modules.metafilter = {
     rollback: ['content-moderator', 'sysop', 'bureaucrat'],
     'content-moderator': ['sysop', 'bureaucrat'],
     sysop: ['bureaucrat'],
+};
+UserTagsJS.modules.newuser = {
+	days: 7,
+	edits: 0,
+	namespace: 0
 };
 
 /*WikiActivity config*/

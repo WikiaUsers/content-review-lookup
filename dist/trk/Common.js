@@ -1,3 +1,4 @@
+importScriptPage('Countdown/code.js', 'dev');
 importScriptPage('ShowHide/code.js', 'dev');
 /* Spoiler Alert */
 SpoilerAlert = {
@@ -16,36 +17,41 @@ $(function(){
 	});
 });
 
-//--------------------------------------
+// Configuration for Pathway application form
+window.adoptInternational = {
+    unsupportedLanguages: window.communityRequestsUnsupportedLangs,
+    adoptionConfig: {
+        blockDays: 0,
+        activeDays: 30,
+        permissionTypes: [
+            'bureaucrat',
+            'sysop',
+            'content-mod',
+            'thread-mod'
+        ],
+    },
+    pageConfig: {
+        namespace: 'Pathway application',
+        namespaceId: 118,
+        adoptionsPage: 'Pathway:Applications'
+    },
+    wikitextSchema: "{{bStart}}Pathway application\n" +
+    "|1-Wiki User       = {{userName}}\n" +
+    "|2-Discord User    = {{{DiscordURL}}}\n" +
+    "|3-Rights type     = {{permissionsType}}\n" +
+    "|4-Block history   = {{blockDays}}\n" +
+    "|5-User activity   = {{activeDays}}\n" +
+    "|6-Your motivation = <nowiki>{{comments}}</nowiki>\n" +
+    "{{bEnd}}"
+};
 
-function updateDivBackgroundColor() {
-            var div = document.getElementById('comic-disambiguation');
-            var body = document.body;
-
-            if (body.classList.contains('dark-theme')) {
-                div.style.backgroundColor = 'red';
-                div.style.color = 'white';
-            } else {
-                div.style.backgroundColor = 'yellow';
-                div.style.color = 'black';
-            }
-        }
-
-        // Set up a MutationObserver to watch for changes to the body's class
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'class') {
-                    updateDivBackgroundColor();
-                }
-            });
-        });
-
-        // Start observing the body element for class changes
-        observer.observe(document.body, { attributes: true });
-
-        // Initial check to set the correct background color
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDivBackgroundColor();
-        });
-        
-//--------------------------------------
+// Configuration for NoLicenseWarning
+window.NoLicenseWarning = {
+    forceLicense: true,
+    excludedGroups: [
+        'sysop',
+        'threadmoderator',
+        'content-moderator',
+        'rollback'
+    ]
+};

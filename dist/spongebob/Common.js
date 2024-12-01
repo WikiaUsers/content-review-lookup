@@ -354,6 +354,9 @@ window.MessageWallUserTags = {
         'PinkPugPrincess': 'Assistant • Discussion Moderator',
 
         'LarryBoy_fan': 'Discussion Moderator • Rollback',
+        
+        'SpongeBot678': 'Rollback',
+        'SquidTron_C': 'Rollback',
     }
 };
 

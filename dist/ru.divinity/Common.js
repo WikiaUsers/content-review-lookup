@@ -46,7 +46,7 @@ $('.GamesArrowRight').click(function () {
 /************ Sliders на jqueryUI ****************/
 /*************************************************/
 
-var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
+//  var slideTime = 15000; // Время показа слайда (+1-3 секунды чтобы слайдеры не делали это одновременно)
 mw.loader.using( ['oojs-ui-windows'], function() {
 	$(document).ready(function() {
 		$(".portal_slider").each(function(index, portal_slider) {
@@ -63,11 +63,12 @@ mw.loader.using( ['oojs-ui-windows'], function() {
 				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') === 0) ? ($(portal_slider).tabs('length')-1) : $(portal_slider).tabs('option', 'selected') - 1 );
 				return false;
 			});
-			var timerId = setTimeout(function tick() {
+/*			var timerId = setTimeout(function tick() {
 				$(portal_slider).tabs('select', ($(portal_slider).tabs('option', 'selected') == ($(portal_slider).tabs('length'))-1) ? 0 : $(portal_slider).tabs('option', 'selected') + 1 );
 				timerId = setTimeout(tick, slideTime + Math.floor(Math.random() * 3000));
 			}, slideTime + Math.floor(Math.random() * 3000));
-		});
+*/
+		}); 
 	});
 });
 
