@@ -11,3 +11,12 @@ window.dev.editSummaries = {
 importArticles({ type: 'script', articles: [ 
 	'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
+var defaults = {
+  snowColor: '#FFD700',
+  snowSpeed: 2,
+  snowDensity: 50
+};
+
+function mergeDefaults(customSettings) {
+  return Object.assign({}, defaults, customSettings);
+}

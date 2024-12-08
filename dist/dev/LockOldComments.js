@@ -11,7 +11,8 @@
 		'wgNamespaceNumber'
 		]);
 
-	if ( [0, 500].indexOf(config.wgNamespaceNumber) < 0 ) return;
+	var namespaces = window.lockOldComments.namespaceNumbers;
+	if ( namespaces && namespaces.indexOf(config.wgNamespaceNumber) < 0 ) return;
 
 	// A careful selector instead of document.getElementById which can be
 	// fooled with an id in the page content.

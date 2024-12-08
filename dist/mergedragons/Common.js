@@ -15,6 +15,7 @@ switch (mw.config.get('wgPageName')) {
     case 'Category:Silver_Rank_Dragons':
     case 'Category:Arcadia_Dragons':
     case 'Category:Coin_Dragons':
+    case 'Category:Shiny_Dragons':
     case 'Category:Breeding_Exclusive_Dragons':
          $(document).ready(function(){
              const myNodelist = document.querySelectorAll('[id$="Table"]');

@@ -15,6 +15,7 @@ $(function(){
 	var api = new mw.Api();
 	var changes = [];
 	var messages = [
+		'pagetitle',
 		'custom-UnpatrolledEdits-title',
 		'custom-UnpatrolledEdits-summary',
 		'showingresultsinrange',

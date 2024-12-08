@@ -434,3 +434,179 @@ document.querySelectorAll(".cslider ul li img").forEach(function(i) {
     showSlide(slideIndex);
   });
 });
+
+// Time template
+
+(function () {
+    function getDefaultTimeFormat() {
+        var formatter = new Intl.DateTimeFormat(undefined, { hour: 'numeric', hourCycle: 'h12' });
+        var options = formatter.resolvedOptions();
+        return options.hourCycle === 'h12' ? '12-hour' : '24-hour';
+    }
+
+    function isDSTActive(currentMonth, dstStart, dstEnd) {
+        if (dstStart <= dstEnd) {
+            return currentMonth >= dstStart && currentMonth < dstEnd;
+        } else {
+            return currentMonth >= dstStart || currentMonth < dstEnd;
+        }
+    }
+
+    function updateTime() {
+        var elements = document.querySelectorAll('.display-time');
+        var date = new Date();
+        var currentMonth = date.getMonth() + 1;
+        var timeFormat = getDefaultTimeFormat();
+
+        elements.forEach(function (i) {
+            var timeZone = parseFloat(i.getAttribute('data-timezone'));
+            if (isNaN(timeZone)) return;
+            
+            var dst = i.getAttribute('data-dst') === "true";
+            if (dst) {
+                var dstStart = parseInt(i.getAttribute('data-dst-start'), 10) || 3;
+                var dstEnd = parseInt(i.getAttribute('data-dst-end'), 10) || 11;
+                
+                // Check if DST is active
+                if (isDSTActive(currentMonth, dstStart, dstEnd)) {
+                    timeZone += 1; // Add 1 hour for DST
+                }
+            }
+            
+            // Calculate time
+            var utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000);
+            var userTime = new Date(utc + (timeZone * 3600 * 1000));
+            
+            // Format time
+            var hour = userTime.getHours();
+            var minute = userTime.getMinutes().toString().padStart(2, '0');
+            var timeString;
+            
+            if (timeFormat === '24-hour') {
+                timeString = hour.toString().padStart(2, '0') + ':' + minute;
+            } else {
+                timeString = (hour % 12 === 0 ? 12 : hour % 12) + ':' + minute + ' ' + (hour >= 12 ? 'PM' : 'AM');
+            }
+            i.innerText = timeString;
+        });
+    }
+    setInterval(updateTime, 1000);
+})();
+
+// Edit count template
+
+(function() {
+	var elements = document.querySelectorAll('.editcount');
+	elements.forEach(function(i) {
+		var username = i.getAttribute('data-user');
+		if (username) {
+			fetch('/api.php?action=query&format=json&list=users&ususers=' + encodeURIComponent(username)).then(function(response) {
+				response.json().then(function(obj) {
+					var userId = obj.query.users[0] ? obj.query.users[0].userid : null;
+					if (userId) {
+						fetch('/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=' + userId.toString()).then(function(response2) {
+							response2.json().then(function(obj2) {
+								i.innerText = obj2.userData.localEdits ? obj2.userData.localEdits.toString() : '0';
+							});
+						});
+					}
+				});
+			});
+		}
+	});
+})();
+
+// Active since template
+
+(function() {
+	var elements = document.querySelectorAll('.user-active-since');
+	elements.forEach(function(i) {
+		var username = i.getAttribute('data-user');
+		if (username) {
+			fetch('/api.php?action=query&format=json&list=users&ususers=' + encodeURIComponent(username)).then(function(response) {
+				response.json().then(function(obj) {
+					var userId = obj.query.users[0] ? obj.query.users[0].userid : null;
+					if (userId) {
+						fetch('/wikia.php?controller=UserProfile&method=getUserData&format=json&userId=' + userId.toString()).then(function(response2) {
+							response2.json().then(function(obj2) {
+								i.innerText = obj2.userData.registration ? obj2.userData.registration : '';
+							});
+						});
+					}
+				});
+			});
+		}
+	});
+})();
+
+// Automate user status
+
+(function() {
+	function getUserState(username) {
+	    var THIRTY_DAYS_MS = 30 * 86400 * 1000;
+	    var SIXTY_DAYS_MS = 60 * 86400 * 1000;
+	    return fetch('/api.php?action=query&format=json&list=usercontribs&uclimit=10&ucuser=' + encodeURIComponent(username) + '&ucprop=timestamp').then(function (response) {
+	        if (!response.ok) {
+	            console.error('Network response was not ok: ' + response.status);
+	            return 'error';
+	        }
+	        return response.json();
+	    }).then(function (data) {
+	        var contribs = data.query && data.query.usercontribs;
+	        if (!contribs || contribs.length === 0) {
+	            return 'inactive';
+	        }
+	        var now = Date.now();
+	        var close = now - new Date(contribs[0].timestamp).getTime();
+	        if (contribs.length < 10) {
+	            return close < SIXTY_DAYS_MS ? 'semi-active' : 'inactive';
+	        }
+	
+	        var far = now - new Date(contribs[9].timestamp).getTime();
+	        if (far < THIRTY_DAYS_MS) {
+	            return 'active';
+	        } else if (close < SIXTY_DAYS_MS) {
+	            return 'semi-active';
+	        } else {
+	            return 'inactive';
+	        }
+	    }).catch(function (error) {
+	        console.error('Error fetching user state:', error);
+	        return 'error';
+	    });
+	}
+	
+	function updateUserStates() {
+	    document.querySelectorAll('.user-active-state').forEach(function (element) {
+	        var username = element.getAttribute('data-user'); // Get the "data-user" attribute
+	        if (!username) {
+	            console.error('Missing "data-user" attribute on element:', element);
+	            return;
+	        }
+	        getUserState(username).then(function (state) {
+	            var statusText = '';
+	            var backgroundColor = '';
+	            if (state === 'active') {
+	                statusText = 'ACTIVE';
+	                backgroundColor = 'lime';
+	            } else if (state === 'semi-active') {
+	                statusText = 'SEMI ACTIVE';
+	                backgroundColor = 'yellow';
+	            } else if (state === 'inactive') {
+	                statusText = 'INACTIVE';
+	                backgroundColor = 'red';
+	            } else {
+	                statusText = 'ERROR';
+	                backgroundColor = 'gray';
+	            }
+	            element.innerText = statusText;
+	            element.style.backgroundColor = backgroundColor;
+	        }).catch(function (error) {
+	            console.error('Failed to get state for user:', username, error);
+	            element.innerText = 'ERROR';
+	            element.style.backgroundColor = 'gray';
+	        });
+	    });
+	}
+	updateUserStates();
+})();

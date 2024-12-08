@@ -314,7 +314,7 @@ importArticles({
  
 	]
 });
-((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = false;
 //************************************************
 // User Tag Config - Credit: South Park Wiki
 //************************************************

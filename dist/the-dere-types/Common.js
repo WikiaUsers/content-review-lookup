@@ -21,7 +21,8 @@ window.NoLicenseWarning = {
 
 /* Lock Old Comments */
 window.lockOldComments = (window.lockOldComments || {});
-window.lockOldComments.limit = 180;
+window.lockOldComments.limit = 180
+window.lockOldComments.namespaceNumbers = [0, 112, 114, 116, 500];
 
 /* Topic Block Log */
 TBL_GROUP = "dere-en";

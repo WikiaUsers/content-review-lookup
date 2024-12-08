@@ -1,19 +1,24 @@
 function filterTable(){
 	$("table.filterable").each(function(){
 		var i=0;
-		var cols;
 		$(this).find("tr:eq(0) th, tr:eq(0) td").each(function(){
 			if (!$(this).hasClass("unfilterable")){
-				cols=[];
+				var values = new Map();
 				$(this).closest("table").find("tr td:nth-child("+(i+1)+")").each(function(){
-					cols.push(getFilterText(this));
+					var sort = $(this).find('[data-sort-value]').attr('data-sort-value');
+					var text = getFilterText(this);
+					values.set(sort || text, text);
 				});
-				cols = arrayUnique(cols);
+				values = Array.from(values.entries());
+				if(!$(this).hasClass("filter-select-nosort")) {
+					values = values.sort();
+				}
 				$(this).css("position","relative");
 				$(this).html('<a href="javascript:void(0)" class="showFilterMenu">'+$(this).html()+'▼</a>');
-				$(this).append($('<div class="filterMenu" style="position:absolute;top:'+$(this).height()+'px;left:0;text-align:left;padding:5px;border:1px #000 solid;background:#ddd;z-index:1;display:none;white-space:nowrap;"></div>'));
-				for (j=0; j<cols.length; j++){
-					$(this).find(".filterMenu").append('<div><input type="checkbox" value="'+cols[j]+'" col="'+(i+1)+'" class="filterOption" checked>'+cols[j]+'</div>')
+				var filterMenu = $('<div class="filterMenu" style="top:'+$(this).height()+'px;"></div>').appendTo(this);
+				filterMenu.append('<div><label><input type="checkbox" col="'+(i+1)+'" class="filterAllOption" checked>Выбрать все</label></div><hr>');
+				for (var j = 0; j < values.length; ++j){
+					filterMenu.append('<div><label><input type="checkbox" value="'+values[j][1]+'" col="'+(i+1)+'" class="filterOption" checked>'+values[j][1]+'</label></div>');
 				}
 			}
 			i++;
@@ -34,7 +39,8 @@ function filterTable(){
 	        container.slideUp(150);
 	    }
 	});
-	$(".filterOption").click(function(){
+	$('.filterMenu').click(function(e){e.stopPropagation();});
+	$(".filterOption").click(function(e){
 		col=$(this).attr("col");
 		val=$(this).val();
 		if ($(this).is(":checked")) chg=1; else chg=-1;
@@ -49,16 +55,20 @@ function filterTable(){
 			}
 		});
 	});
+	$(".filterAllOption").click(function(e){
+		var chk = $(this).prop('checked');
+		$(this).closest(".filterMenu").find('.filterOption').prop('checked', !chk).click();
+	});
 }
 function arrayUnique(a) {
     return a.reduce(function(p, c) {
         if (p.indexOf(c) < 0) p.push(c);
         return p;
     }, []);
-};
-function getFilterText(el){
-	return $(el).text().trim() || 
-		$(el).find('[data-filter-text]').attr('data-filter-text') || 
+}
+function getFilterText(el) {
+	return $(el).find('[data-filter-text]').attr('data-filter-text') || 
+		$(el).text().trim() || 
 		$(el).find('img').attr('alt') || '';
 }
 filterTable();

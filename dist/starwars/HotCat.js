@@ -21,56 +21,55 @@ hotcat.settings.defaultsort = 'DEFAULTSORT'; //translated name for DEFAULTSORT
 if ( typeof window.hotcatWikisList != 'undefined' ) {
 	hotcat.settings.biggest_wikis = window.hotcatWikisList;
 } else {
-	hotcat.settings.biggest_wikis = ['en','de','ru','es','fr','pl','ja','nl','it','ka','pt','fi','tr','cs','hu','uk','ko','el','sr','da','sv','no','zh','bg','hr','ca','ro','he','fa','la','sl','ga','is']; //Wikis sorted by number of articles
+	hotcat.settings.biggest_wikis = ['en','de','ru','es','fr','pl','ja','ka','nl','it','tr','pt','fi','cs','hu','uk','ko','el','sr','da','sv','no','zh','bg','hr','ca','ro','he','fa','la','ga','is']; //Wikis sorted by number of articles
 }
  
 //List of wikis - code, language and accepted interwiki links
 hotcat.settings.wikis = [
-{id:'bg', name:'Bulgarian', domain:'starwars.fandom.com', path:'/bg/', interlang:true, installed_iws:['ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ca', name:'Catalan', domain:'starwars.fandom.com', path:'/ca/', interlang:true, installed_iws:['bg','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'cs', name:'Czech', domain:'starwars.fandom.com', path:'/cs/', interlang:true, installed_iws:['bg','ca','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'da', name:'Danish', domain:'starwars.fandom.com', path:'/da/', interlang:true, installed_iws:['bg','ca','cs','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'de', name:'German', domain:'www.jedipedia.net', path:'/w/', interlang:false, installed_iws:['bg','ca','cs','da','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'el', name:'Greek', domain:'starwars.fandom.com', path:'/el/', interlang:true, installed_iws:['bg','ca','cs','da','de','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'en', name:'English', domain:'starwars.fandom.com', path:'/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','sl','sr','sv','tr','uk','zh']}, //List of languages accepted by Wookieepedia
-{id:'es', name:'Spanish', domain:'starwars.fandom.com', path:'/es/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'fa', name:'Persian', domain:'starwars.fandom.com', path:'/fa/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'fi', name:'Finnish', domain:'www.jedipedia.fi', path:'/w/', interlang:false, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fr','hr','hu','it','ja','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'fr', name:'French', domain:'starwars.fandom.com', path:'/fr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ga', name:'Irish', domain:'starwars.fandom.com', path:'/ga/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'he', name:'Hebrew', domain:'starwars.fandom.com', path:'/he/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'hr', name:'Croatian', domain:'starwars.fandom.com', path:'/hr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'hu', name:'Hungarian', domain:'starwars.fandom.com', path:'/hu/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'is', name:'Icelandic', domain:'starwars.fandom.com', path:'/is/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'it', name:'Italian', domain:'starwars.fandom.com', path:'/it/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ja', name:'Japanese', domain:'starwars.fandom.com', path:'/ja/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ka', name:'Georgian', domain:'starwars.fandom.com', path:'/ka/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ko', name:'Korean', domain:'starwars.fandom.com', path:'/ko/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'la', name:'Latin', domain:'starwars.fandom.com', path:'/la/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'nl', name:'Dutch', domain:'starwars.fandom.com', path:'/nl/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','no','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'no', name:'Norwegian', domain:'starwars.fandom.com', path:'/no/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','pl','pt','ro','ru','sl','sr','sv','tr','uk','zh']},
+{id:'bg', name:'Bulgarian', domain:'starwars.fandom.com', path:'/bg/', interlang:true, installed_iws:['ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ca', name:'Catalan', domain:'starwars.fandom.com', path:'/ca/', interlang:true, installed_iws:['bg','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'cs', name:'Czech', domain:'starwars.fandom.com', path:'/cs/', interlang:true, installed_iws:['bg','ca','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'da', name:'Danish', domain:'starwars.fandom.com', path:'/da/', interlang:true, installed_iws:['bg','ca','cs','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'de', name:'German', domain:'www.jedipedia.net', path:'/w/', interlang:false,installed_iws:['bg','ca','cs','da','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'el', name:'Greek', domain:'starwars.fandom.com', path:'/el/', interlang:true, installed_iws:['bg','ca','cs','da','de','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'en', name:'English', domain:'starwars.fandom.com', path:'/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','sr','sv','tr','uk','zh']}, //List of languages accepted by Wookieepedia
+{id:'es', name:'Spanish', domain:'starwars.fandom.com', path:'/es/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'fa', name:'Persian', domain:'starwars.fandom.com', path:'/fa/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'fi', name:'Finnish', domain:'www.jedipedia.fi', path:'/w/', interlang:false, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fr','hr','hu','it','ja','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'fr', name:'French', domain:'starwars.fandom.com', path:'/fr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ga', name:'Irish', domain:'starwars.fandom.com', path:'/ga/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'he', name:'Hebrew', domain:'starwars.fandom.com', path:'/hr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'hr', name:'Croatian', domain:'starwars.fandom.com', path:'/hr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'hu', name:'Hungarian', domain:'starwars.fandom.com', path:'/hu/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'is', name:'Icelandic', domain:'starwars.fandom.com', path:'/is/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'it', name:'Italian', domain:'starwars.fandom.com', path:'/it/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ja', name:'Japanese', domain:'starwars.fandom.com', path:'/ja/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ka', name:'Georgian', domain:'starwars.fandom.com', path:'/ka/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ko', name:'Korean', domain:'starwars.fandom.com', path:'/ko/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'la', name:'Latin', domain:'starwars.fandom.com', path:'/la/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'nl', name:'Dutch', domain:'starwars.fandom.com', path:'/nl/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
+{id:'no', name:'Norwegian', domain:'starwars.fandom.com', path:'/no/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
 {id:'pl', name:'Polish', domain:'www.ossus.pl', path:'/', interlang:false, installed_iws:['cs','de','en','es','fi','fr','hu','it','ja','ka','ko','nl','pt','ru','tr','uk']},
-{id:'pt', name:'Portuguese', domain:'starwars.fandom.com', path:'/pt/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','ro','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ro', name:'Romanian', domain:'starwars.fandom.com', path:'/ro/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ru','sl','sr','sv','tr','uk','zh']},
-{id:'ru', name:'Russian', domain:'starwars.fandom.com', path:'/ru/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','sl','sr','sv','tr','uk','zh']},
-{id:'sl', name:'Slovenian', domain:'starwars.fandom.com', path:'/sl/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk','zh']},
-{id:'sr', name:'Serbian', domain:'starwars.fandom.com', path:'/sr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sv','tr','uk','zh']},
-{id:'sv', name:'Swedish', domain:'starwars.fandom.com', path:'/sv/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','tr','uk','zh']},
-{id:'tr', name:'Turkish', domain:'starwars.fandom.com', path:'/tr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','uk','zh']},
-{id:'uk', name:'Ukrainian', domain:'starwars.fandom.com', path:'/uk/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','zh']},
-{id:'zh', name:'Chinese', domain:'starwars.fandom.com', path:'/zh/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sl','sr','sv','tr','uk']}
+{id:'pt', name:'Portuguese', domain:'starwars.fandom.com', path:'/pt/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','ro','ru','sr','sv','tr','uk','zh']},
+{id:'ro', name:'Romanian', domain:'starwars.fandom.com', path:'/ro/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ru','sr','sv','tr','uk','zh']},
+{id:'ru', name:'Russian', domain:'starwars.fandom.com', path:'/ru/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','sr','sv','tr','uk','zh']},
+{id:'sr', name:'Serbian', domain:'starwars.fandom.com', path:'/sr/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sv','tr','uk','zh']},
+{id:'sv', name:'Swedish', domain:'starwars.fandom.com', path:'/sv/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','tr','uk','zh']},
+{id:'tr', name:'Turkish', domain:'starwarsturkiye.com', path:'/wiki/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','sr','sv','uk','zh']},
+{id:'uk', name:'Ukrainian', domain:'starwars.fandom.com', path:'/uk/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','zh']},
+{id:'zh', name:'Chinese', domain:'starwars.fandom.com', path:'/zh/', interlang:true, installed_iws:['bg','ca','cs','da','de','el','en','es','fa','fi','fr','ga','he','hr','hu','is','it','ja','ka','ko','la','nl','no','pl','pt','ro','ru','sr','sv','tr','uk',]}
 ];
 hotcat.settings.interwiki_codes = {};
 for ( var iloop = 0; iloop < hotcat.settings.wikis.length; iloop++ ) {
 	hotcat.settings.interwiki_codes[ hotcat.settings.wikis[iloop].id ] = iloop;
 }
-hotcat.settings.interwiki_codes_pl = {'cs': 1, 'de': 2, 'en': 3, 'es': 4, 'fr': 5, 'ko': 6, 'it': 7, 'ka': 8, 'hu': 9, 'nl': 10, 'ja': 11, 'pt': 12, 'ru': 13, 'fi': 14, 'tr': 15, 'uk': 16 };
+hotcat.settings.interwiki_codes_pl = {'cs': 1, 'de': 2, 'en': 3, 'es': 4, 'fr': 5, 'ko': 6, 'it': 7, 'ka': 8, 'hu': 9, 'nl': 10, 'ja': 11, 'pt': 12, 'ru': 13, 'fi': 13, 'tr': 14, 'uk': 15 };
 hotcat.getWikiById = function( tmpId ) {
 	return hotcat.settings.wikis[ hotcat.settings.interwiki_codes[tmpId] ];
 };
  
 hotcat.settings.is_sysop = 'false';
-hotcat.settings.api_url = '/w/api.php';
+hotcat.settings.api_url = '/api.php';
 hotcat.settings.linkcolor = '#0645AD'; //Blue link color
 hotcat.initrequest = null;
  
@@ -546,14 +545,14 @@ hotcat.interwikis.load = function( id, title ) {
 	var formatData = null;
 	for (var iloop = 0; iloop < hotcat.settings.wikis.length; iloop++ ) {
 		if ( hotcat.settings.wikis[iloop].id == id ) {
-			if ( id == 'de' || id == 'fi' || id == 'pl' ) {
+			if ( id == 'de' || id == 'fi' || id == 'pl' || id == 'tr' ) {
 				urlWiki= 'https://www.jedipedia.net/scripts/hotcat.php?mode=getinterwikis&wiki=' + id + '&title=' + title;
 			} else {
 				urlWiki = 'https://' + hotcat.settings.wikis[iloop].domain + hotcat.settings.wikis[iloop].path + 'api.php';
 			}
 		}
 	}
-	if ( id != 'de' && id != 'fi' && id != 'pl' ) {
+	if ( id != 'de' && id != 'fi' && id != 'pl' && id != 'tr' ) {
 		if( urlWiki !== null ) {
 			var hc_r = $.ajax( {
 				url: urlWiki,
@@ -583,7 +582,7 @@ hotcat.interwikis.load = function( id, title ) {
 				for ( var i = 0; i < hotcat.interwikis.array.length; i++ ) {
 					if ( hotcat.interwikis.array[i].id == id && hotcat.interwikis.array[i].title == title ) {
 						var hctmp_response_lines = responseText.replace( /\r/g, '' ).split( '\n' );
-						if ( id == 'de' || id == 'fi' || id == 'pl' ) hctmp_response_lines = responseText.replace( /\r/g, '' ).split( ',' );
+						if ( id == 'de' || id == 'fi' || id == 'pl' || id == 'tr' ) hctmp_response_lines = responseText.replace( /\r/g, '' ).split( ',' );
  
 						for ( var j = 0; j < hctmp_response_lines.length; j++ ) {
 							//substring() instead of split() in case of a row has more than one = sign
@@ -827,7 +826,7 @@ hotcat.interwikis.cleanup = function() {
 	var hotinter_nolinks = []; // liens qui manquent ailleurs -> à [2,3] le lien [0,1] est manquant
 	var hotinter_difflinks = []; // liens différents ailleurs -> [2,3] a un lien différent de celui de SWW pour [0,1]
 	for ( var i = 0; i < hotcat.interwikis.array.length; i++ ) {
-		if ( hotcat.interwikis.array[i].canedit && hotcat.interwikis.array[i].id != 'de' && hotcat.interwikis.array[i].id != 'fi' && hotcat.interwikis.array[i].id != 'pl' ) {
+		if ( hotcat.interwikis.array[i].canedit && hotcat.interwikis.array[i].id != 'de' && hotcat.interwikis.array[i].id != 'fi' && hotcat.interwikis.array[i].id != 'pl' && hotcat.interwikis.array[i].id != 'tr' ) {
 			var hctmp_jpcopy = hotcat.interwikis.array.slice(0); // faire des copies qui peuvent être changées
 			hctmp_jpcopy.push( { id:mw.config.get( 'wgContentLanguage' ), title:hotcat.curpage.replace( /_/g, ' ' ) } );
 			var hctmp_wikiacopy = hotcat.interwikis.array[i].newlinks.slice(0);
@@ -1194,7 +1193,7 @@ hotcat.submit = function() {
 	hctmp.e.lineinsert_working.appendChild( hctmp.e.lineinsert_working_status );
 	hctmp.e.submitstatuslist.appendChild( hctmp.e.lineinsert_working );
 	for ( var i = 0; i < hotcat.interwikis.array.length; i++ ) {
-		if ( hotcat.interwikis.array[i].id != 'de' && hotcat.interwikis.array[i].id != 'pl' && hotcat.interwikis.array[i].id != 'fi' ) {
+		if ( hotcat.interwikis.array[i].id != 'de' && hotcat.interwikis.array[i].id != 'pl' && hotcat.interwikis.array[i].id != 'fi' && hotcat.interwikis.array[i].id != 'tr' ) {
 			hctmp.e.lineinsert_working = document.createElement( 'li' );
 			hctmp.e.lineinsert_working_img = document.createElement( 'img' );
 			hctmp.e.lineinsert_working_img.id = 'submitstatus_img_' + hotcat.interwikis.array[i].id;
@@ -1236,9 +1235,9 @@ hotcat.submit = function() {
 		}
 	} ).done( function( d ) {
 		var oldwikitext = d.parse.wikitext['*'];
-		var interlangTemplateRegex = /{{(Template:|Format:|Mal:|Mall:|Malline:|Modèle:|Plantilla:|Predefinição:|Predložak:|Sablon:|Şablon:|Šablona:|Sjabloon:|Skabelon:|Szablon:|Vorlage:|Πρότυπο:|Шаблон:|テンプレート:|תבנית:|الگو:|틀:)?Interlang[\s\S]+?}}/i
+		var interlangTemplateRegex = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
 		var defaultSortRegex = /\{\{(DEFAULTSORT|ORDENAR)\:.*?\}\}/i;
-		var categoryRegex = /\[\[(Category|Categoria|Categoría|Categorie|Catégorie|Kategori|Kategoria|Kategorie|Kategorija|Kategória|Luokka|Κατηγορία|Категорија|Категория|Категорія|カテゴリ|קטגוריה|رده|분류)\:.+?\]\]/i;
+		var categoryRegex = /\[\[(Category|Categoría|Catégorie|Categorie|Kategori|Categoria|Kategorija|分類|Категория|Kategória|Kategorie|Kategory|カテゴリ)\:.+?\]\]/i;
 		var insert = '<INSERT_INTERWIKI_HERE>';
  
 		if ( interlangTemplateRegex.test( oldwikitext ) ) {
@@ -1345,7 +1344,7 @@ hotcat.checkifdone = function() {
 };
  
 hotcat.submitForeign = function( wiki ) {
-	if (wiki.id != 'de' && wiki.id != 'fi' && wiki.id != 'pl') {
+	if ( wiki.id != 'de' && wiki.id != 'fi' && wiki.id != 'pl' && wiki.id != 'tr' ) {
  
 		var urlWiki = 'https://' + hotcat.getWikiById( wiki.id ).domain + hotcat.getWikiById( wiki.id ).path + 'api.php';
  
@@ -1369,9 +1368,9 @@ hotcat.submitForeign = function( wiki ) {
 			}
 		} ).done( function( d ) {
 			var oldwikitext = d.parse.wikitext['*'];
-			var interlangTemplateRegex = /{{(Template:|Format:|Mal:|Mall:|Malline:|Modèle:|Plantilla:|Predefinição:|Predložak:|Sablon:|Şablon:|Šablona:|Sjabloon:|Skabelon:|Szablon:|Vorlage:|Πρότυπο:|Шаблон:|テンプレート:|תבנית:|الگو:|틀:)?Interlang[\s\S]+?}}/i
+			var interlangTemplateRegex = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i
 			var defaultSortRegex = /\{\{(DEFAULTSORT|ORDENAR)\:.*?\}\}/i;
-			var categoryRegex = /\[\[(Category|Categoria|Categoría|Categorie|Catégorie|Kategori|Kategoria|Kategorie|Kategorija|Kategória|Luokka|Κατηγορία|Категорија|Категория|Категорія|カテゴリ|קטגוריה|رده|분류)\:.+?\]\]/i;
+			var categoryRegex = /\[\[(Category|Categoría|Catégorie|Categorie|Kategori|Categoria|Kategorija|分類|Категория|Kategória|Kategorie|Kategory|カテゴリ)\:.+?\]\]/i;
 			var insert = '<INSERT_INTERWIKI_HERE>';
  
 			if ( interlangTemplateRegex.test( oldwikitext ) ) {
@@ -1488,9 +1487,9 @@ hotcat.submitForeign = function( wiki ) {
 hotcat.extractInterWikiData = function( wikitext, title, wiki ) {
 	var extract = '';
 	var redirect = /^\#[\s\S]+?\[\[[\s\S]+?\]\]/g
-	var interlangTemplate = /{{(Template:|Format:|Mal:|Mall:|Malline:|Modèle:|Plantilla:|Predefinição:|Predložak:|Sablon:|Şablon:|Šablona:|Sjabloon:|Skabelon:|Szablon:|Vorlage:|Πρότυπο:|Шаблон:|テンプレート:|תבנית:|الگو:|틀:)?Interlang[\s\S]+?}}/i;
+	var interlangTemplate = /{{(Template:|Predefinição:)?Interlang[\s\S]+?}}/i;
 	var regularInterwiki = /\[\[([a-z]{2}:[\s\S\|]+?)\]\]/gm;
-	var erasTemplate = /{{(Top|Eras|Univers|Ere)[\s\S]+?}}/i;
+	var erasTemplate = /{{(Top|Eras|Univers|Ere|Üst)[\s\S]+?}}/i;
  
 	if ( wikitext !== null ) {
 		//check redirection
@@ -1524,7 +1523,7 @@ hotcat.extractInterWikiData = function( wikitext, title, wiki ) {
 			else if ( /Legends:/.test( title ) ) { extract = 'type=legends\n' + extract; }
 			else if ( /\/(Canone|Канон)/.test( title ) ) { extract = 'type=kanon\n' + extract; }
 			else if ( eras !== null ) { // ignore pages without {{Top}} or equivalent
-				if ( /\|(leg|pre|btr|old|imp|new|njo|lcy|inf|antr|velha|ascimp|nova|noj)(\||}})/i.test( eras[0] ) ) { extract = 'type=legends\n' + extract; }
+				if ( /\|(leg|legends|pre|btr|old|imp|new|njo|lcy|inf|antr|velha|ascimp|nova|noj|önce|cö|eski|isy|yeni|yjd|miras)(\||}})/i.test( eras[0] ) ) { extract = 'type=legends\n' + extract; }
 				else if ( /\|type=(legends|légendes|leyendas)/i.test( eras[0] ) ) { extract = 'type=legends\n' + extract; }
 				else if ( /\|type=canon/i.test( eras[0] ) ) { extract = 'type=kanon\n' + extract; }
 				else {

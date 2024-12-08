@@ -1,114 +1,105 @@
-/* Cualquier código JavaScript escrito aquí se cargará para todos los usuarios en cada carga de página. */
+/**
+ * Central JavaScript file for the Wiki.
+ * Runs on every page for every user, regardless of skin (Oasis or Monobook).
+ */
+(function (window, $, mw) {
+    "use strict";
 
-/* Codigo para tablas y div desplegables */
-window.ShowHideConfig = { linkBefore:true };
+    // Ensure required libraries are loaded
+    if (typeof $ === 'undefined' || typeof mw === 'undefined') {
+        console.error('Required libraries are missing: jQuery or MediaWiki');
+        return;
+    }
 
-/*
------------------------------------------
-CÓDIGO PARA PLEGADO/DESPLEGADO DE BLOQUES
------------------------------------------
-Traido de [[wikipedia:es:mediwiki:common.js]]
+    // Ensure the DOM is fully loaded before executing any DOM-dependent code
+    $(document).ready(function () {
 
-Modificado por Chixpy en [[w:c:videojuego:mediawiki:monobook.js]]
-  para su correcto funcionamiento en Wikia.
+        /**
+         * 1. Archiving Templates Configuration
+         */
+        window.archiveListTemplate = 'ArchiveList';
+        window.archivePageTemplate = 'ArchivePage';
 
-Plantillas que hacen uso de este código: [[Plantilla:Desplegable]]
+        /**
+         * 2. Compact References for Long Lists
+         */
+        const references = $('.references');
+        if (references.find('li').length > 9) {
+            references.addClass('compactreferences');
+        }
 
-Prerequisitos:
+        /**
+         * 3. Oasis Skin-Specific Enhancements
+         */
+        if (mw.config.get('skin') === 'oasis') {
 
-NavigationBarShowDefault : Si hay más de este número de desplegables
-  ocultar todas automáticamente.
-*/
+            // Disable AJAX in page/image creation/upload forms
+            $(window).on('load', function () {
+                $('a.createpage').off('click').attr('href', '/wiki/Special:Forms');
+            });
 
-var NavigationBarHide = '[Ocultar]';
-var NavigationBarShow = '[Mostrar]';
+            // Add template adder functionality to file pages for autoconfirmed users
+            if (mw.config.get('wgCanonicalNamespace') === 'File' &&
+                mw.config.get("wgUserGroups").includes("autoconfirmed")) {
 
-function toggleNavigationBar(indexNavigationBar) {
-  var NavToggle = document.getElementById("NavToggle" + indexNavigationBar);
-  var NavFrame = document.getElementById("NavFrame" + indexNavigationBar);
+                const options = {
+                    '{{No license}}': 'Unlicensed image',
+                    '{{No rationale}}': 'No Fairuse info',
+                    '{{Unused}}': 'Unused image',
+                    '{{Poor filename}}': 'Poor name'
+                };
 
-  if (!NavFrame || !NavToggle) {
-    return false;
-  };
+                const templateOptions = Object.entries(options).map(([key, value]) => 
+                    `<option value="${key}" style="text-align:center;">${value}</option>`
+                ).join('');
 
-  // if shown now
-  if (NavToggle.firstChild.data == NavigationBarHide) {
-    for (
-    var NavChild = NavFrame.firstChild;
-    NavChild != null;
-    NavChild = NavChild.nextSibling) {
-      if (NavChild.className == 'NavPic') {
-        NavChild.style.display = 'none';
-      };
-      if (NavChild.className == 'NavContent') {
-        NavChild.style.display = 'none';
-      };
-      if (NavChild.className == 'NavToggle') {
-        NavChild.firstChild.data = NavigationBarShow;
-      };
-    };
-    // if hidden now
-  } else if (NavToggle.firstChild.data == NavigationBarShow) {
-    for (
-    var NavChild = NavFrame.firstChild;
-    NavChild != null;
-    NavChild = NavChild.nextSibling) {
-      if (NavChild.className == 'NavPic') {
-        NavChild.style.display = 'block';
-      };
-      if (NavChild.className == 'NavContent') {
-        NavChild.style.display = 'block';
-      };
-      if (NavChild.className == 'NavToggle') {
-        NavChild.firstChild.data = NavigationBarHide;
-      };
-    };
-  };
-};
+                const html = `
+                    <select id="FileTemplateAdder">${templateOptions}</select>
+                    <a class="wikia-button" style="margin:0 1em; cursor:pointer;" id="templateSubmit">Add template</a>
+                `;
 
-// adds show/hide-button to navigation bars
+                $('.comments').after(html);
 
+                $('#templateSubmit').on('click', function () {
+                    const $this = $(this);
+                    const selectedTemplate = $('#FileTemplateAdder').val();
 
-function createNavigationBarToggleButton() {
-  var indexNavigationBar = 0;
-  // iterate over all <div>-elements
-  for (
-  var i = 0;
-  NavFrame = document.getElementsByTagName("div")[i];
-  i++) {
-    // if found a navigation bar
-    if (NavFrame.className == "NavFrame") {
-      indexNavigationBar++;
-      var NavToggle = document.createElement("a");
-      NavToggle.className = 'NavToggle';
-      NavToggle.setAttribute('id', 'NavToggle' + indexNavigationBar);
-      NavToggle.setAttribute('href', 'javascript:toggleNavigationBar(' + indexNavigationBar + ');');
+                    $this.html('<img src="https://images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" style="vertical-align: baseline;" border="0" />');
 
-      var NavToggleText = document.createTextNode(NavigationBarShow);
-      NavToggle.appendChild(NavToggleText);
+                    new mw.Api().post({
+                        format: 'json',
+                        action: 'edit',
+                        title: mw.config.get('wgPageName'),
+                        token: mw.user.tokens.get('csrfToken'),
+                        summary: `Adding template: ${selectedTemplate}`,
+                        minor: true,
+                        prependtext: `${selectedTemplate}\n`
+                    })
+                        .done(function () {
+                            $this.text('Add this Template too!');
+                            new BannerNotification(`Template: ${selectedTemplate} added successfully`, 'confirm').show();
+                        })
+                        .fail(function () {
+                            new BannerNotification('Template addition failed!', 'error').show();
+                        });
+                });
+            }
+        }
 
-      // add NavToggle-Button as first div-element 
-      // in <div class="NavFrame">
-      NavFrame.insertBefore(NavToggle, NavFrame.firstChild);
-      NavFrame.setAttribute('id', 'NavFrame' + indexNavigationBar);
-    };
-  };
+        /**
+         * 4. Additional Improvements (commented for future use)
+         * Uncomment this section if you want "Edit with form" as default.
+         */
+        /*
+        const $edit = $('#ca-edit'),
+            $pencil = $edit.find('img'),
+            $formedit = $('#ca-formedit');
 
-  //Plegamos todas....
-  for (
-  var i = 1;
-  i <= indexNavigationBar;
-  i++) {
-    toggleNavigationBar(i);
-    toggleNavigationBar(i);
-  };
-};
+        if ($formedit.length) {
+            $edit.attr('href', '?action=formedit').text('Edit with form').prepend($pencil);
+            $formedit.attr('href', '?action=edit').text('Edit this page');
+        }
+        */
+    });
 
-addOnloadHook(createNavigationBarToggleButton);
-
-/*** Autorefrescar los cambios recientes en la wikiactividad ***/
-// 4. AutoRefreshing RecentChanges and WikiActivity
- 
-window.AjaxRCRefreshText = 'Act. automát.';
-window.AjaxRCRefreshHoverText = 'Refrescar esta página automáticamente';
-window.ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity"];
+}(window, jQuery, mediaWiki));

@@ -7,18 +7,18 @@ function append_link(source) {
             element.innerHTML = '';
             values.forEach(function(value, index) {
                 var trimmed_value = value.trim();
-                var linkText = trimmed_value;
-                var extraText = '';
+                var link_text = trimmed_value;
+                var extra_text = '';
 
-                var parenIndex = trimmed_value.indexOf('(');
-                if (parenIndex !== -1) {
-                    linkText = trimmed_value.substring(0, parenIndex).trim();
-                    extraText = ' ' + trimmed_value.substring(parenIndex);
+                var parent_index = trimmed_value.indexOf('(');
+                if (parent_index !== -1) {
+                    link_text = trimmed_value.substring(0, parent_index).trim();
+                    extra_text = ' ' + trimmed_value.substring(parent_index);
                 }
                 
                 var category_link = document.createElement('a');
-                category_link.href = '/wiki/Category:' + encodeURIComponent(linkText);
-                category_link.textContent = linkText;
+                category_link.href = '/wiki/Category:' + encodeURIComponent(link_text);
+                category_link.textContent = link_text;
                 
                 if (index > 0) {
                     element.appendChild(document.createElement('br'));
@@ -26,8 +26,8 @@ function append_link(source) {
                 
                 element.appendChild(category_link);
                 
-                if (extraText) {
-                    element.appendChild(document.createTextNode(extraText));
+                if (extra_text) {
+                    element.appendChild(document.createTextNode(extra_text));
                 }
             });
         }
@@ -43,15 +43,17 @@ append_link('genre');
 var anchors = document.querySelectorAll('a');
 
 var abbreviations = [
-    'MLS', 'COL', 'CLS', 'USS', 'BV',
-    'HSP', 'SFS', 'ORC', 'RPB', 'VPVA',
-    'EDAH', 'RUIC', 'TBS', 'MG', 'KDG',
-    'OISBI', 'SOLE', 'TM', 'TRK', 'PMU',
-    'ORV', 'WAF', 'MSSDK', 'TLR', 'NSMH',
-    'IOTG', 'JTTN', 'JTTS', 'JTTE', 'JTTW',
-    'JTTWA', 'ACO', 'BOT', 'DBSS', 'BTTH',
-    'MU', 'TGR', 'HSR', 'VY', 'AR',
-    'SD', 'DXD', 'SSSM', 'TRREG', 'RPS'
+    'COL', 'MG', 'KDG', 'OISBI', 'SLI',
+    'EDAH', 'RPB', 'SPSF', 'IOTG', 'NSMH',
+    'BV', 'DGBS', 'SFC', 'ORAC', 'BAS',
+    'RBS', 'MLS', 'USS', 'TRREG', 'SOLE',
+    'MKSM', 'TLR', 'HOTD', 'YNY', 'KNY',
+    'NNT', 'NNM', 'JTN', 'JTE', 'JTS',
+    'JTW', 'ACO', 'LKSM', 'VH', 'QTSM',
+    'SG', 'RQ', 'DISD', 'DXD', 'BBGD',
+    'HRMY', 'NKNSG', 'LB', 'RNC', 'IMA', 
+    'YGK', 'OD', 'DDDN', 'SNV', 'MSSH', 
+    'BOT', 'OGH,'
 ];
 
 var pattern = new RegExp('\\s*\\(\\s*(' + abbreviations.join('|') + ')\\s*\\)\\s*', 'g');

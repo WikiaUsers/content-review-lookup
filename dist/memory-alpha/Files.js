@@ -30,24 +30,28 @@ $(function(){
 		var widget = $(this);
 		var specifiedFile = widget.data('file');
 		var floatDir = widget.data('float') ? widget.data('float') : 'right';
-		var captionUnparsed = widget.data('caption') ? widget.data('caption') : '';
+		var captionUnparsed = widget.data('caption');
 		var filePath = mw.util.getUrl('Special:FilePath/' + specifiedFile);
 		var infoIcon = mw.util.getUrl('Special:FilePath/Information icon simple.svg');
 		
-		new mw.Api().get({
-			action:'parse',
-			title:mw.config.get('wgPageName'),
-			text:captionUnparsed,
-			prop:'text',
-		}).done(function(parserOutput){
-			var captionParsed = $(parserOutput.parse.text['*']).text().trim();
+		if (captionUnparsed){
+			new mw.Api().get({
+				action:'parse',
+				title:mw.config.get('wgPageName'),
+				text:captionUnparsed,
+				prop:'text',
+			}).done(createThumbnail);
+		} else {
+			createThumbnail();
+		}
+		
+		function createThumbnail(parserOutput){
 			var fig = $('<figure class="thumb t' + floatDir + ' show-info-icon document-embed">');
 			var pdfLink = $('<a href="' + filePath + '" class="image" target="_blank">');
 			var iframe = $('<iframe>');
 			var figcaption = $('<figcaption class="thumbcaption">');
 			var iconLink = $('<a href="' + mw.util.getUrl('File:' + specifiedFile) + '" class="info-icon">');
 			var iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
-			var caption = $('<p class="caption">' + captionParsed + '</p>');
 			var attributes = {
 				'src': filePath,
 				'loading': 'lazy',
@@ -62,11 +66,16 @@ $(function(){
 			fig.append(figcaption);
 			pdfLink.append(iframe);
 			figcaption.append(iconLink);
-			figcaption.append(caption);
 			iconLink.append(iconSVG);
 			widget.after(fig);
 			widget.remove();
-		});
+			
+			if (parserOutput){
+				var captionParsed = $(parserOutput.parse.text['*']).text().trim();
+				var caption = $('<p class="caption">' + captionParsed + '</p>');
+				figcaption.append(caption);
+			}
+		}
 	});
 });
 

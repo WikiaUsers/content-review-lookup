@@ -21,8 +21,8 @@ function calculate() {
 		delete_table();
 		return;
 	}
-	if (level > 1000){
-		document.getElementById("wrong_number").innerHTML = "You have enter a number bigger than 1000.";
+	if (level > 500){
+		document.getElementById("wrong_number").innerHTML = "The maximum character level is 500.";
 		delete_table();
 		return;
 	}
@@ -31,7 +31,7 @@ function calculate() {
 	document.getElementById("wrong_number").innerHTML = "";
 	var xp = 1000, ruby = 1, bt_ram = 1, tr_map = 3;
 	var image = "https://static.wikia.nocookie.net/nonograms-katana/images/";
-	// level, amount, image
+	// level, amount, image URL
 	var regular_rewards = [
 		2,"5","f/f0/Arrows.png",
 		3,"5","b/b9/Fan.png",

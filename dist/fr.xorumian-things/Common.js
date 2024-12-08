@@ -1,2 +1,0 @@
-/* Tout JavaScript présent ici sera exécuté par tous les utilisateurs à chaque chargement de page. */
-/* #REDIRECT */mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:Common.js?action=raw\u0026ctype=text/javascript");

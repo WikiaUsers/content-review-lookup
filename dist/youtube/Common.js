@@ -117,3 +117,16 @@ var alidaLoadInterval = setInterval(function() {
     clearInterval(alidaLoadInterval);
   }
 }, 1000);
+
+/* Cosmetically remove Alida's bot tag */
+var alidaLoadInterval = setInterval(function() {
+  if (mw.config.get('wgPageName') !== 'User:Nerdfightergirl') { clearInterval(alidaLoadInterval); return; }
+
+  var userTags = document.querySelectorAll('span.user-identity-header__tag');
+  if (userTags) {
+    for (var index = 0; index < userTags.length; index++) {
+      if (userTags[index].innerText === "Bot") userTags[index].remove();
+    }
+    clearInterval(alidaLoadInterval);
+  }
+}, 1000);

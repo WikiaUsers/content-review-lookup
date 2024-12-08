@@ -14,3 +14,6 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweAudio.js
 
 /* Winter Theme
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:ChristmasThemeUwe.js?action=raw\u0026ctype=text/javascript"); */
+
+/* More activity button */
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSeeMoreActivityButton.js?action=raw\u0026ctype=text/javascript");

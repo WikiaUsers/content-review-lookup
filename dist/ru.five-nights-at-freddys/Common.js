@@ -169,7 +169,7 @@ setInterval(function () {
 	    }, 500);
 	}
 	
-	var element = document.getElementById("animated_logo-test");
+	var element = document.getElementById("animated_logo");
 		if (element) {
 		    var animationIntervalHandle = null;
 		    var frameHeight = element.offsetHeight;

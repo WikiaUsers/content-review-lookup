@@ -1,33 +1,13 @@
-/* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
-
-/* Автор: Rendann */
-/* Закрытие форума */
-$(function() {
-    if (mw.config.get( 'wgNamespaceNumber' ) == '2000' && mw.config.get( 'wgUserGroups' ).indexOf('sysop') === -1) {
-        $('#ForumNewMessage').replaceWith('<blockquote class="message">Форум отключен. Общение участников теперь ведётся в <a href="https://luntik.fandom.com/ru/f">обсуждениях</a></blockquote>');
-    }
-});
-
-// AJAX-обновление некоторых страниц (выбор страниц)
-window.ajaxPages = [
-    "Служебная:Watchlist",
-    "Служебная:Contributions",
-    "Служебная:WikiActivity",
-    "Служебная:RecentChanges"
-]; 
-window.AjaxRCRefreshText = 'Автообновление'; //Отображаемое название
-window.AjaxRCRefreshHoverText = 'Автоматически обновлять страницу'; //Отображаемая подсказка
-
-
+/* Any JavaScript here will be loaded for all users on every page load. */
 /* Топ Персонажей в страницах серий, MarkKond201 */
 (function() {
-    // Проверяем, что мы на странице Лунтик_Wiki:Топ
+    // Проверяем, что мы на странице Luntik_Wiki:Топ
     var currentPage = mw.config.get('wgPageName');
-    if (currentPage !== 'Лунтик_Wiki:Топ') {
+    if (currentPage !== 'Luntik_Wiki:Top') {
         return;
     }
 
-    var templateName = 'Серия';
+    var templateName = 'Episode';
     var characterCounts = {};
     var pageList = {};
 
@@ -35,7 +15,7 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
         return new mw.Api().get({
             action: 'query',
             list: 'embeddedin',
-            eititle: 'Шаблон:' + template,
+            eititle: 'Template:' + template,
             eilimit: 'max',
             eicontinue: continueToken
         }).then(function(data) {
@@ -64,9 +44,9 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
             var wikitext = data.parse.wikitext['*'];
 
             // Извлекаем информацию из шаблона Серия
-            var episodeInfo = wikitext.match(/\{\{Серия\s*\|([^}]*)\}\}/);
-            var episode = 'неизвестен';
-            var season = 'неизвестен';
+            var episodeInfo = wikitext.match(/\{\{Episode\s*\|([^}]*)\}\}/);
+            var episode = 'undefined';
+            var season = 'undefined';
             if (episodeInfo) {
                 var params = episodeInfo[1].split(/\|\s*/);  // Split on pipe with optional leading/trailing whitespace
                 params.forEach(function(param) {
@@ -74,10 +54,10 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
                     if (parts.length === 2) {
                         var key = parts[0].trim();
                         var value = parts[1].trim();
-                        if (key === 'Номер серии') {
+                        if (key === 'Serial number') {
                             episode = parseInt(value, 10);
                         }
-                        if (key === 'Сезон') {
+                        if (key === 'Season') {
                             season = value;
                         }
                     }
@@ -85,7 +65,7 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
             }
 
             // Извлекаем информацию о персонажах
-            var charactersSection = wikitext.match(/==\s*Персонажи\s*==([\s\S]*?)(==|$)/i);
+            var charactersSection = wikitext.match(/==\s*Characters\s*==([\s\S]*?)(==|$)/i);
             if (charactersSection) {
                 // Извлекаем строки, содержащие персонажей, игнорируя подзаголовки
                 var characters = charactersSection[1].match(/^\*\s*\[\[([^\]]+)\]\]/gm);
@@ -127,11 +107,11 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
                 return b.count - a.count;
             });
 
-        var output = '<h2>Топ персонажей</h2><ol>';
+        var output = '<h2>Top list</h2><ol>';
         sortedCharacters.forEach(function(character) {
-            output += '<li><a href="https://luntik.fandom.com/ru/wiki/' + character.name + '">' + character.name + '</a>: ' + character.count + '<details><summary>Серии</summary><ul>';
+            output += '<li><a href="https://luntik.fandom.com/wiki/' + character.name + '">' + character.name + '</a>: ' + character.count + '<details><summary>Episodes</summary><ul>';
             character.pages.forEach(function(page) {
-                output += '<li><b><a href="https://luntik.fandom.com/ru/wiki/' + page.title + '"> ' + page.title + '</a></b>' + ', эп. ' + page.episode +  '(сезон ' + page.season + ')</li>';
+                output += '<li><b><a href="https://luntik.fandom.com/wiki/' + page.title + '"> ' + page.title + '</a></b>' + ', ep. ' + page.episode +  '(season ' + page.season + ')</li>';
             });
             output += '</ul></details></li>';
         });
@@ -147,15 +127,16 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
     });
 })();
 
+
 /* Скрипт на Luntik_Wiki:Locations от MarkKond201, сделан с любовью */
 (function() {
-    // Проверяем, что мы на странице Топ_локаций
+    // Проверяем, что мы на странице Барбоскины_вики:Топ_локаций
     var currentPage = mw.config.get('wgPageName');
-    if (currentPage !== 'Лунтик_Wiki:Локации') {
+    if (currentPage !== 'Luntik_Wiki:Locations') {
         return;
     }
 
-    var templateName1 = 'Серия';
+    var templateName1 = 'Episode';
     var locationCounts = {};
     var pageList1 = {};
     var backgroundLocationCounts = {};
@@ -165,7 +146,7 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
         return new mw.Api().get({
             action: 'query',
             list: 'embeddedin',
-            eititle: 'Шаблон:' + template,
+            eititle: 'Template:' + template,
             eilimit: 'max',
             eicontinue: continueToken
         }).then(function(data) {
@@ -194,9 +175,9 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
             var wikitext = data.parse.wikitext['*'];
 
             // Извлекаем информацию из шаблона Серия
-            var episodeInfo = wikitext.match(/\{\{Серия\s*\|([^}]*)\}\}/);
-            var episode = 'неизвестен';
-            var season = 'неизвестен';
+            var episodeInfo = wikitext.match(/\{\{Episode\s*\|([^}]*)\}\}/);
+            var episode = 'undefined';
+            var season = 'undefined';
             if (episodeInfo) {
                 var params = episodeInfo[1].split(/\|\s*/);  // Split on pipe with optional leading/trailing whitespace
                 params.forEach(function(param) {
@@ -204,10 +185,10 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
                     if (parts.length === 2) {
                         var key = parts[0].trim();
                         var value = parts[1].trim();
-                        if (key === 'Номер серии') {
+                        if (key === 'Serial number') {
                             episode = parseInt(value, 10);
                         }
-                        if (key === 'Сезон') {
+                        if (key === 'Season') {
                             season = value;
                         }
                     }
@@ -215,7 +196,7 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
             }
 
             // Извлекаем информацию о локациях
-            var locationsSection = wikitext.match(/==\s*Места\s*==([\s\S]*?)(==|$)/i);
+            var locationsSection = wikitext.match(/==\s*Locations\s*==([\s\S]*?)(==|$)/i);
             if (locationsSection) {
                 var locations = locationsSection[1].match(/^\*\s*\[\[([^\]]+)\]\]/gm);
                 if (locations) {
@@ -270,11 +251,11 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
                 return b.count - a.count;
             });
 
-        var output = '<h2>Популярные локации</h2><ol>';
+        var output = '<h2>Top of locations</h2><ol>';
         sortedLocations.forEach(function(location) {
-            output += '<li><a href="https://luntik.fandom.com/ru/wiki/' + location.name + '">' + location.name + '</a>: ' + location.count + '<details><summary>Серии</summary><ul>';
+            output += '<li><a href="https://luntik.fandom.com/wiki/' + location.name + '">' + location.name + '</a>: ' + location.count + '<details><summary>Episodes</summary><ul>';
             location.pages.forEach(function(page) {
-                output += '<li><b><a href="https://luntik.fandom.com/ru/wiki/' + page.title + '"> ' + page.title + '</a></b>' + ', ep. ' + page.episode +  '(season ' + page.season + ')</li>';
+                output += '<li><b><a href="https://luntik.fandom.com/wiki/' + page.title + '"> ' + page.title + '</a></b>' + ', ep. ' + page.episode +  '(season ' + page.season + ')</li>';
             });
             output += '</ul></details></li>';
         });
@@ -289,19 +270,3 @@ window.AjaxRCRefreshHoverText = 'Автоматически обновлять �
             console.error('Ошибка в основном процессе:', err);
         });
 })})();
-
-/* Кнопки в редакторе исходного кода для тире и кавычек-ёлочек */
-if ( mwCustomEditButtons ) {
-    mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/sy233-ms/images/c/c2/Кавычки.png/revision/latest?cb=20180704114832&path-prefix=ru",
-		"speedTip": "Кавычки",
-		"tagOpen": "«",
-		"tagClose": "»",
-		"sampleText": "Введите текст"
-	};
-	mwCustomEditButtons[mwCustomEditButtons.length] = {
-		"imageFile": "https://vignette.wikia.nocookie.net/sy233-ms/images/5/56/Дефис.png/revision/latest?cb=20180704115844&path-prefix=ru",
-		"speedTip": "Тире",
-		"sampleText": "—"
-	};
-}

@@ -26,7 +26,10 @@
 		config = mw.config.get([
 			'wgArticlePath',
 			'wgScriptPath',
-			'wgUserName'
+			'wgUserName',
+			'wgSiteName',
+			'wgPageName',
+			'wgServer'
 		]),
 		params = new URLSearchParams(window.location.search),
 		options = {},
@@ -140,14 +143,14 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape()
+								placeholder: config.wgServer
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
 							addHeader(msg("wikiname-header").escape()) +
 							addLabel({
 								id: 'wikiname',
-								placeholder: msg("wikiname-placeholder").escape(),
+								placeholder: config.wgSiteName,
 								disabled: true
 							}) +
 						'</div>' +
@@ -210,7 +213,7 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape(),
+								placeholder: config.wgServer,
 								content: params.get('url')
 							}) +
 						'</div>' +
@@ -218,7 +221,7 @@
 							addHeader(msg("wikiname-header").escape()) +
 							addLabel({
 								id: 'wikiname',
-								placeholder: msg("wikiname-placeholder").escape(),
+								placeholder: config.wgSiteName,
 								disabled: true,
 								content: params.get('name')
 							}) +
@@ -289,7 +292,7 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape(),
+								placeholder: config.wgServer,
 								content: params.get('url')
 							}) +
 						'</div>' +
@@ -297,7 +300,7 @@
 							addHeader(msg("wikiname-header").escape()) +
 							addLabel({
 								id: 'wikiname',
-								placeholder: msg("wikiname-placeholder").escape(),
+								placeholder: config.wgSiteName,
 								disabled: true,
 								content: params.get('name')
 							}) +
@@ -352,14 +355,14 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape()
+								placeholder: config.wgServer
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
 							addHeader(msg("wikiname-header").escape()) +
 							addLabel({
 								id: 'wikiname',
-								placeholder: msg("wikiname-placeholder").escape(),
+								placeholder: config.wgSiteName,
 								disabled: true
 							}) +
 						'</div>' +
@@ -368,7 +371,7 @@
 							addLabel({
 								id: 'wikipage',
 								label: msg("wikipage-label").escape(),
-								placeholder: msg("wikipage-placeholder").escape()
+								placeholder: config.wgPageName
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
@@ -414,14 +417,14 @@
 							addLabel({
 								id: 'wikiurl',
 								label: msg("wikiurl-label").escape(),
-								placeholder: msg("wikiurl-placeholder").escape()
+								placeholder: config.wgServer
 							}) +
 						'</div>' +
 						'<div class="formSection">' +
 							addHeader(msg("wikiname-header").escape()) +
 							addLabel({
 								id: 'wikiname',
-								placeholder: msg("wikiname-placeholder").escape(),
+								placeholder: config.wgSiteName,
 								disabled: true
 							}) +
 						'</div>' +

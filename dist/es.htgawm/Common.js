@@ -37,7 +37,7 @@ mwCustomEditButtons[mwCustomEditButtons.length] = {
 }
 
 <!-- ------------------------------------------------------------------ -->
-/* Any JavaScript here will be loaded for all users on every page load. */
+// Any JavaScript here will be loaded for all users on every page load.
 $(function () {
     var conf = mw.config.get([
             'wgAction',
@@ -60,4 +60,29 @@ $(function () {
             // causing some duplication bugs atm, will revisit soon TM
             // importScript('MediaWiki:CodeEditor.js');
 	}
+});
+
+
+// Image carousel
+document.addEventListener("DOMContentLoaded", function() {
+    var images = document.querySelectorAll(".carousel-item"); // Get all images
+    var currentIndex = 0;
+
+    // Initially hide all images
+    images.forEach(function(image) {
+        image.style.display = "none";
+    });
+
+    // Show the first image
+    images[currentIndex].style.display = "block";
+
+    // Function to change the image
+    function changeImage() {
+        images[currentIndex].style.display = "none"; // Hide current image
+        currentIndex = (currentIndex + 1) % images.length; // Loop to first image after last
+        images[currentIndex].style.display = "block"; // Show next image
+    }
+
+    // Change image every 3 seconds
+    setInterval(changeImage, 3000);
 });

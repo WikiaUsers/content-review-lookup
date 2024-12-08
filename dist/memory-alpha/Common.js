@@ -18,16 +18,6 @@ window.globalFileUsageConfig = {
 $(function(){
 	var api = new mw.Api();
 	
-	// Custom theme-dependent CSS
-	
-	(function(){
-		if ($(':root > .theme-fandomdesktop-light').length === 1){
-			$('head').prepend('<link rel="stylesheet" href="/load.php?mode=articles&only=styles&articles=MediaWiki:LightTheme.css">');
-		} else {
-			$('head').prepend('<link rel="stylesheet" href="/load.php?mode=articles&only=styles&articles=MediaWiki:DarkTheme.css">');
-		}
-	})();
-	
 	// WikiEditor styling on protected pages
 	
 	(function(){

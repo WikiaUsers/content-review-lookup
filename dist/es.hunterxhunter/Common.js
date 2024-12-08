@@ -61,9 +61,3 @@
 	$( _init );
 } )( jQuery, mw );
 /* </pre> */
-
-if (mw.config.get('wgCanonicalSpecialPageName', '') == 'Upload') {
-	$(function() {
-		importScript('MediaWiki:Common.js/Clases/Gadget-HotCat.js');
-	});
-}
