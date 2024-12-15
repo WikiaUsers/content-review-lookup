@@ -33,12 +33,33 @@
         return Math.floor(diff / 31557600) + " years ago";
     }
 
-    // Find elements with a specific class and update them
-    var elements = document.querySelectorAll('.timeago');
-    for (var i = 0; i < elements.length; i++) {
-        var timestamp = elements[i].getAttribute('data-timestamp');
-        if (timestamp) {
-            elements[i].textContent = timeAgo(timestamp);
+    // Function to update all timestamps
+    function updateAllTimeStamps() {
+        var elements = document.querySelectorAll('.timeago');
+        for (var i = 0; i < elements.length; i++) {
+            var timestamp = elements[i].getAttribute('data-timestamp');
+            if (timestamp) {
+                elements[i].textContent = timeAgo(timestamp);
+            }
         }
     }
+
+    // Initial update
+    updateAllTimeStamps();
+
+    // Set up automatic updates
+    setInterval(updateAllTimeStamps, 1000);
+
+    // Optional: Update when new elements might be added to the page
+    // Create a MutationObserver to watch for DOM changes
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                updateAllTimeStamps();
+            }
+        });
+    });
+
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, { childList: true, subtree: true });
 })();

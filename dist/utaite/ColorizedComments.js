@@ -2,37 +2,23 @@
     'use strict';
 
     function styleSpecialComments(elements) {
-        var isInMultilineComment = false;
-        var currentCommentClass = '';
-        
         elements.each(function (index, lineElement) {
-            $(lineElement).find('.cm-mw-comment').each(function (index, commentElement) {
+            var $comments = $(lineElement).find('.cm-mw-comment');
+            
+            $comments.each(function (index, commentElement) {
                 var $comment = $(commentElement);
                 var commentText = $comment.text();
                 
                 // Remove any existing special classes
                 $comment.removeClass('special-comment-important special-comment-tip special-comment-todo');
                 
-                if (!isInMultilineComment) {
-                    if (commentText.indexOf('<!--!') === 0) {
-                        $comment.addClass('special-comment-important');
-                        isInMultilineComment = true;
-                        currentCommentClass = 'special-comment-important';
-                    } else if (commentText.indexOf('<!--?') === 0) {
-                        $comment.addClass('special-comment-tip');
-                        isInMultilineComment = true;
-                        currentCommentClass = 'special-comment-tip';
-                    } else if (commentText.indexOf('<!--TODO') === 0) {
-                        $comment.addClass('special-comment-todo');
-                        isInMultilineComment = true;
-                        currentCommentClass = 'special-comment-todo';
-                    }
-                } else {
-                    $comment.addClass(currentCommentClass);
-                    if (commentText.indexOf('-->') !== -1) {
-                        isInMultilineComment = false;
-                        currentCommentClass = '';
-                    }
+                // Check for comment start markers independently
+                if (commentText.indexOf('<!--!') === 0) {
+                    $comment.addClass('special-comment-important');
+                } else if (commentText.indexOf('<!--?') === 0) {
+                    $comment.addClass('special-comment-tip');
+                } else if (commentText.indexOf('<!--TODO') === 0) {
+                    $comment.addClass('special-comment-todo');
                 }
             });
         });

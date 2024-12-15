@@ -1,3 +1,3 @@
 $(document).ready(function() {
-    $('.mobileDrawer').hide();
+    $('.wds-mobile-drawer').hide();
 });

@@ -97,10 +97,27 @@ $(document).ready(function() {
 	wiki_name.textContent=wiki_name_text;
 
 	// если открыта страница загрузки изображения
-    if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') 
-    {
-        // добавление шаблона в поле краткого описания для загружаемого изображения
-        $('#wpUploadDescription').val('{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n}}');
+    if (mw.config.get('wgCanonicalSpecialPageName') === 'Upload') {
+    	
+        function populateDescriptions() {
+			var descriptionText = "{{Изображение \n| Описание  = \n| Источник  = \n| Появления = \n| Автор     = \n| Категория = \n}}";
+			var index = 0;
+			while (true) {
+			  var field = document.querySelector('#wpUploadDescription' + index);
+			  if (!field) {
+			    break;
+			  }
+			  field.value = descriptionText;
+			  index++;
+			}
+		}
+		var observer = new MutationObserver(function() {
+		  if (document.querySelector("#wpUploadDescription0")) {
+		    populateDescriptions();
+		  }
+		});
+		observer.observe(document.body, { childList: true, subtree: true });
+
         // перемещение выпадающего списка лицензий и блока для шаблона выбранной лицензии 
         $("tr.mw-htmlform-field-HTMLTextAreaField").after( $("tr.mw-htmlform-field-Licenses, tr.mw-htmlform-field-Licenses + tr") );
         

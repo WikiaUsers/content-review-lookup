@@ -1,8 +1,7 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-/* Braacket tournament */
- 	+	
+
+/* ==============
+   Giveaway code
+   ============== */
     $(function () {
- 	+	
-        $('#bracket').append('<script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script><div class="commonninja_component pid-da2732cf-11c2-4f9a-a33f-3456ba4bfd69"></div>' );
- 	+	
+        $('#WikiaRail').append("<div class='typeform-widget' data-url='https://form.typeform.com/to/QUB9JppV' style='width: 99%; height: 800px; margin-top:20px'></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id='typef_orm', b='https://embed.typeform.com/'; if(!gi.call(d,id)) { js=ce.call(d,'script'); js.id=id; js.src=b+'embed.js'; q=gt.call(d,'script')[0]; q.parentNode.insertBefore(js,q) } })() </script>" );
     });

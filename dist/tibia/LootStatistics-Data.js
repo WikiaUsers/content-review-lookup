@@ -18,6 +18,12 @@ window.loot_parser_data = {
   versions: {
     '8.6': {
       'changed': {
+//
+'Askarak Demon': '14.11.0fbf6c',
+'Askarak Lord': '14.11.0fbf6c',
+'Askarak Prince': '14.11.0fbf6c',
+'Dragolisk': '14.11.0fbf6c',
+'Wardragon': '14.11.0fbf6c',
 // Thais Wolf Den changes with version 14.00.142f15
 'Rabid Wolf': '14.00.142f15',
 'Ragged Rabid Wolf': '14.00.142f15',
@@ -1052,9 +1058,9 @@ window.loot_parser_data = {
 'Ribstride': '9.2',
 'Sulphur Scuttler': '9.2',
 'The Bloodweb': '9.2',
-'Askarak Demon': '9.1',
-'Askarak Lord': '9.1',
-'Askarak Prince': '9.1',
+//'Askarak Demon': '9.1',
+//'Askarak Lord': '9.1',
+//'Askarak Prince': '9.1',
 'Bog Frog': '9.1',
 'Clay Guardian': '9.1',
 'Crystal Wolf': '9.1',

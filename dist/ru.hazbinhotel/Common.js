@@ -10,8 +10,7 @@ importArticles({
 
 /* Конфигурация для dev:AddRailModule */
  window.AddRailModule = [
- 	{page: 'Template:DiscordRail', maxAge: 0},
- 	{page: 'Template:VKRail', maxAge: 0},
+ 	{page: 'Template:SocialRail', maxAge: 0},
  	{page: 'Template:NewPagesModule', maxAge: 0},
  	{page: 'Template:CodeRail', maxAge: 0},
  	{page: 'Template:SliderRail', maxAge: 0},

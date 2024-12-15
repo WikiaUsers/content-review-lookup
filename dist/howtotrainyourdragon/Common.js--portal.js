@@ -1,29 +1,25 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
- 
-/* Sliders using jquery
- * By: [[User:Tierrie]], with modifications by [[User:Thailog]] and [[User:KettleMeetPot]]
+/**
+ * sliders using jquery
+ * @author <dragonage.fandom.com/wiki/User:Tierrie
  */
- 
-$(document).ready(function() {
-  if ( wgPageName == "Howlslittlefjord_Wiki") {
-    mw.loader.using( ['jquery.ui.tabs'], function() {
-      var $tabs = $("#portal_slider").tabs({ fx: [{opacity:'toggle', duration:200},{height:'toggle', duration:'normal'}, ] } );
-      $("[class^=portal_sliderlink]").click(function() { // bind click event to link
-        var currentCl = $(this).prop('class');
-        var workaround = $(this).children("a").prop('href');
-        $(this).children("a").children("img").addClass("selectedImg");
-        $(".selectedImg").animate( {height: "90%", width: "90%" }, { duration: 50, queue: true} );
-        $(".selectedImg").animate( {height: "100%", width: "100%" }, { duration: 150, queue: true, complete: function(){
-          $(".selectedImg").removeClass("selectedImg");
-          if ( currentCl != "portal_sliderlink_15" ) {
-            $tabs.tabs('select', currentCl.replace("portal_sliderlink_", ""));
-          }
-          else {
-            window.location.replace(workaround);
-          }
-        } } );
-        return false;
-      });
-    });
-    }
+mw.loader.using( ['jquery.cookie']);
+
+mw.loader.using( ['jquery.ui'], function() {
+  $( "[class^=portal_vtab]" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+  $( "[class^=portal_vtab] li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+
+  var $tabs = $("#portal_slider").tabs({ fx: {opacity:'toggle', duration:100} } );
+  $("[class*=portal_sliderlink]").click(function() { // bind click event to link
+    $tabs.tabs('select', this.className.match(/portal_sliderlink-(\d+)/)[1]);
+    console.log("Sliding to " + this.className.match(/portal_sliderlink-(\d+)/)[1]);
+    return false;
+  });
+  $('#portal_next').click(function() {
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == ($tabs.tabs('length'))-1) ? 0 : $tabs.tabs('option', 'selected') + 1 ); // switch to next tab
+    return false;
+  });
+  $('#portal_prev').click(function() { // bind click event to link
+    $tabs.tabs('select', ($tabs.tabs('option', 'selected') == 0) ? ($tabs.tabs('length')-1) : $tabs.tabs('option', 'selected') - 1 ); // switch to previous tab
+    return false;
+  });
 });

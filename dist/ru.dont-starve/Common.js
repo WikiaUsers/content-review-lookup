@@ -98,7 +98,6 @@ $('<input id="cyclopecalculate" class="wds-button buttona" onclick="cyclopecalcu
 /*Изменяет цвет у рамок в ответаx администраторов*/
 /*I'm not sure if it's possible not to clear the interval*/
 setInterval(function () {
-	$('.wds-avatar a[href$="Arhhhat"]').closest('.Reply, .Reply_body__PM9kM').addClass('Arhhhat');
 	$('.wds-avatar a[href$="FruitShakeSB"]').closest('.Reply, .Reply_body__PM9kM').addClass('FruitShakeSB');
 }, 500 );
 

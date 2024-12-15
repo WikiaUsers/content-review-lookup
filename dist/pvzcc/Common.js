@@ -60,11 +60,11 @@ window.UserTagsJS = {
         old: { u:'FOUNDER 🔨', title:'Founder' },
         hansybo: { u:'HANSYBO 🪿', title:'Hansybo' },
         //group: { staff }
-        rollback: { u:'✨ROLLBACK 🍊' },
-        'content-moderator': { u:'✨MODERATOR 🍇' },
-        sysop: { u:'✨ADMINISTRATOR 🐟' },
-        bureaucrat: { u:'✨BUREAUCRAT 🍏' },
-        representative: { u:'✨REPRESENTATIVE 🌸' },
+        rollback: { u:'ROLLBACK 🍊' },
+        'content-moderator': { u:'MODERATOR 🍇' },
+        sysop: { u:'ADMINISTRATOR 🐟' },
+        bureaucrat: { u:'BUREAUCRAT 🍏' },
+        representative: { u:'REPRESENTATIVE 🌸' },
         
         //group: { negative }
         blocked: { u:'BLOCKED ⛔'},

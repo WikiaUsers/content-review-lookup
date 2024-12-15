@@ -82,6 +82,7 @@ $(function() {
         			case "Daily Challenge": $t = $("#gtwt-challenge"); break;
         			case "Night of the Comet": $t = $("#gtwt-notc"); break;
         			case "The Grand Tournament": $t = $("#gtwt-tournament"); break;
+        			case "Dungeon League": $t = $("#gtwt-dungeon"); break;
         			default: continue;
         		}
         		if(+new Date() < event[i].startTime*1000)

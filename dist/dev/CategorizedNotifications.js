@@ -61,7 +61,7 @@ $(function() {
 	
 	function beginObserving(tabber) {
 		var hasOpened = false;
-		var container = $(".global-navigation__bottom .notifications");
+		var container = $(".global-top-navigation__action-wrapper .notifications");
 		
 		var processedIds = {};
 		

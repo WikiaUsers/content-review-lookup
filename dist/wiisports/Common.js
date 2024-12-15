@@ -5,10 +5,3 @@ addOnloadHook(function() {$('.qaywsx').text(wgUserName);});
 window.railWAM = {
     logPage:"Project:WAM Log"
 };
-
-importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:AdminDashboard JS-Button/code.js',
-    ]
-});

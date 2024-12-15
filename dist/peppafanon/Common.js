@@ -3,7 +3,6 @@ importArticles({
 	type:'script',
 	articles: [
 		// ...
-		'w:c:dev:UserTags/code.js',
 		'u:dev:MediaWiki:RelatedDiscussionsPosts.js',
         'u:dev:MediaWiki:LinkPreview/code.js',
         'u:dev:MediaWiki:AdminDashboard_JS-Button/code.js'
@@ -33,17 +32,6 @@ importArticles({ type: 'script', articles: [
  AjaxRCRefreshHoverText = 'Automatically refresh the page';
  ajaxPages = ["Special:RecentChanges","Special:WikiActivity","Special:UncategorizedPages","Special:AllPages"];
  importScriptPage('AjaxRC/code.js', 'dev');
-
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		uotm: { u:'User Of The Month' },
-		uoty: { u:'User Of The Year' },
-	}
-};
-UserTagsJS.modules.custom = {
-	'Ladisepic25': ['uoty'] 
-};
 
 // Tabber
 var Tabs = {

@@ -489,7 +489,7 @@
 			$input = $inputs.filter('#' + opts.formParams[x]);
 
 			if (!$input.length) {
-				console.log('An error has been found in the form config. Please check the formParams and input ids');
+				console.log('[SOAP Report]', 'An error has been found in the form config. Please check the formParams and input ids.');
 				$button.attr('disabled', false);
 				return $.Deferred().resolve();
 			}
@@ -498,10 +498,10 @@
 			if ($input.is(':checkbox')) {
 				text = $input.prop("checked");
 			}
-			text = text ? text.trim() : "";
+			if (text.length > 0) text = text.trim();
 
 			if (!text && !$input.hasClass('optional')) {
-				console.log($input);
+				console.log('[SOAP Report]', $input);
 				alert('One or more required fields are missing. Please check your submission and try again.');
 				$button.attr('disabled', false);
 				return $.Deferred().resolve();
@@ -605,7 +605,7 @@
 			opts.submitText = opts.submitText.replace(/\\socks/g, '|socks');
 		}
 
-		console.log(opts.submitText, opts.summary);
+		console.log('[SOAP Report]', opts.submitText, opts.summary);
 
 		var urlparams = {
 			action: 'edit',

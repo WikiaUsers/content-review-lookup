@@ -1,5 +1,5 @@
 /* Фикс фона изображений */
-var classNames = ["mcf-card-article__thumbnail", "category-page__member-thumbnail"];
+var classNames = ["category-page__member-thumbnail"];
 var processImages = function processImages() {
     classNames.forEach(function (className) {
         var elements = document.getElementsByClassName(className);

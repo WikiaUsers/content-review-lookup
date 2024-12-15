@@ -133,18 +133,19 @@ function ptItem(id, url, title, text){
 	return '<li class="ptItem" id="pt-' + id + '">';
 }
 
+var logoutURL = 'https://auth.fandom.com/logout?source=mw&redirect=' + window.location.href;
+
 $('#personal-tools ul')
 	.append($(ptItem('userpage', 'User:' + mw.config.get('wgUserName'), 'Your user page', mw.config.get('wgUserName'))))
-	.append($(ptItem('notifications')).append($('.notifications')))
+	.append($(ptItem('notifications')).append($('#community-navigation .notifications')))
 	.append($(ptItem('mytalk', 'User talk:' + mw.config.get('wgUserName'), 'Your talk page', 'Talk')))
 	.append($(ptItem('sandbox', 'User:' + mw.config.get('wgUserName') + '/sandbox', 'Your sandbox', 'Sandbox')))
 	.append($(ptItem('preferences', 'Special:Preferences', 'Your preferences', 'Preferences')))
 	.append($(ptItem('watchlist', 'Special:Watchlist', 'The list of pages you are monitoring for changes', 'Watchlist')))
 	.append($(ptItem('contribs', 'Special:Contributions/' + mw.config.get('wgUserName'), 'A list of your contributions', 'Contributions')))
-	.append($(ptItem('logout')).append($('#global-navigation-logout-form')));
+	.append($(ptItem('logout')).append($('<a href="' + logoutURL + '" title="Log out">Log out</a>')));
 
 $('.notifications__toggle').attr('title', 'Your notifications');
-$('.global-navigation__signout-button').html('Log out').attr('title', 'Log out');
 
 // Page actions
 

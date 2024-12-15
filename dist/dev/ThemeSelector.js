@@ -4,6 +4,9 @@ $(function() {
 	window.ThemeSelectorLoaded = true;
 	window.ThemeSelector = window.ThemeSelector || {};
 	
+	//immediately hide native theme button if so configured
+	if (window.ThemeSelector.hideBuiltIn) mw.util.addCSS(':root .mediawiki .wiki-tools__theme-switch{display:none;}');
+	
 	//initialize script-wide variables
 	var paramRegExp = /(\?|&)variant(?:=[^&]*)?(&|$)/g,
 		extRegExp = new RegExp('((?:=|%7[Cc])ext\\.fandom\\.GlobalComponents\\.(?:GlobalComponentsTheme|GlobalNavigationTheme)\\.)'
@@ -54,8 +57,14 @@ $(function() {
 				}
 				return v;
 			});
-			$('body').removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
+			$('body')
+				.attr('data-theme', newTheme)
+				.removeClass('theme-fandomdesktop-light theme-fandomdesktop-dark')
 				.addClass('theme-fandomdesktop-' + newTheme);
+			
+			var logoTextColor = (newTheme === 'light') ? '#520044' : '#f9edd8';
+			mw.util.addCSS('svg .cls-1{fill:' + logoTextColor + ';}svg .cls-4{fill:#ffc500;}');
+			
 			mw.config.set('isDarkTheme', newTheme === 'dark');
 		}
 	}
@@ -151,9 +160,6 @@ $(function() {
 				'u:dev:MediaWiki:ThemeSelector/style.css'
 			]
 		});
-		if (window.ThemeSelector.hideBuiltIn) mw.util.addCSS('.wiki-tools__theme-switch'
-			+ ' { display: none; }');
-		
 		$('<div id="ThemeSelector-wrapper"></div>')
 			.appendTo('.fandom-community-header__top-container')
 			.append($('.fandom-community-header__top-container > .wiki-tools'));

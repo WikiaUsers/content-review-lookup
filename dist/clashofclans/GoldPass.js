@@ -254,6 +254,7 @@ $(document).ready(function() {
     	"Hog Rider Puppet": [18,15],
     	"Haste Vial": [18,15],
     	"Rocket Spear": [27,21],
+    	"Electro Boots": [27,21]
     };
     // Fix the options available to us, depending on the name of the page
     pageName = mw.config.get('wgTitle');
@@ -272,7 +273,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
     		break;
     	case ("Royal Champion"):
-    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
     		break;
     	default: // Having all options in one makes it excellent for testing
     		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
@@ -1038,7 +1039,8 @@ $(document).ready(function() {
 			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
-			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
+			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
+			"Electro Boots": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
 		};
 		var dictHPRecoveryBonus = {
 			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],

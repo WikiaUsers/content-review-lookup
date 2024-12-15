@@ -1,8 +1,5 @@
 /* [[StickySummary]] - auto-fill summary/reason textbox when making repetitive changes */
 
-/*jslint browser, long */
-/*global jQuery, mediaWiki */
-
 (function ($, mw) {
     "use strict";
 
@@ -25,6 +22,14 @@
         protect: "#mwProtect-reason",
         undelete: "#wpComment"
     };
+    var optionTargets = {
+        edit: {
+            minor: "#wpMinoredit"
+        },
+        move: {
+            leaveredirect: "input[name='wpLeaveRedirect']"
+        }
+    };
     var context = (function () {
         var actions = {
             "delete": "delete",
@@ -45,7 +50,43 @@
     var $button;
     var $target;
     var defaultValue = "";
+    var options = {};
+    var optionKeys = Object.keys(optionTargets[context] || {});
     var storageId = "StickySummary-" + context;
+    var storageIdOptions = storageId + "-options";
+
+    function updateOptions(shouldClearOptions) {
+        if (!optionKeys.length) {
+            return;
+        }
+
+        var optionValues = {};
+
+        if (!shouldClearOptions) {
+            try {
+                optionValues = JSON.parse(localStorage.getItem(storageIdOptions) || "{}");
+            } catch (ignore) {
+                console.warn("StickySummary: invalid options in storage:", storageIdOptions);
+                return;
+            }
+        }
+
+        optionKeys.forEach(function (opt) {
+            var $opt = options[opt];
+
+            if ($opt.prop("type") === "checkbox") {
+                $opt.prop("checked", shouldClearOptions
+                    ? $opt.prop("defaultChecked")
+                    : optionValues[opt]
+                );
+            } else {
+                $opt.val(shouldClearOptions
+                    ? $opt[0].getAttribute("value")
+                    : optionValues[opt]
+                );
+            }
+        });
+    }
 
     function updateState(event) {
         // ignore non-stickysummary events
@@ -66,6 +107,7 @@
 
             // update existing summary if it hasn't been changed
             if (currentValue === defaultValue) {
+                updateOptions();
                 $target.val(event.newValue);
             }
         } else {
@@ -73,9 +115,30 @@
 
             // clear existing summary (except on current window) if it matches old storage value
             if (!event.ownWindow && currentValue === event.oldValue) {
+                updateOptions(true);
                 $target.val(defaultValue);
             }
         }
+    }
+
+    function saveOptions() {
+        if (!optionKeys.length) {
+            return;
+        }
+
+        var optionValues = {};
+
+        optionKeys.forEach(function (opt) {
+            var $opt = options[opt];
+
+            if ($opt.prop("type") === "checkbox") {
+                optionValues[opt] = $opt.prop("checked");
+            } else {
+                optionValues[opt] = $opt.val();
+            }
+        });
+
+        localStorage.setItem(storageIdOptions, JSON.stringify(optionValues));
     }
 
     function saveSummary() {
@@ -84,8 +147,10 @@
 
         // if no summary is saved and new summary isn't empty, then save the current summary, else clear the saved summary
         if (!storageValue && newValue) {
+            saveOptions();
             localStorage.setItem(storageId, newValue);
         } else {
+            localStorage.removeItem(storageIdOptions);
             localStorage.removeItem(storageId);
             newValue = null;
         }
@@ -149,15 +214,6 @@
             "#undelete .oo-ui-textInputWidget," +
             ".ve-ui-summaryPanel-summaryInputField {" +
                 "display: flex;" +
-            "}" +
-            // oasis 1.19 specific styles
-            ".EditPage .module_page_controls label[for='wpSummary'] {" +
-                "display: inline;" +
-                "float: none;" +
-            "}" +
-            ".EditPage.mode-source.editpage-sourcewidemode-on .stickysummary {" +
-                "float:" + (document.dir === "rtl" ? "right" : "left") + ";" +
-                "margin-top: 14px;" +
             "}"
         );
 
@@ -170,6 +226,10 @@
         ).click(saveSummary);
 
         $target = $(targets[context]);
+
+        optionKeys.forEach(function (option) {
+            options[option] = $(optionTargets[context][option]);
+        });
 
         window.addEventListener("storage", updateState);
 

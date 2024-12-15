@@ -77,7 +77,7 @@
         switch (action) {
             case 'view':
 
-                showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3>' + i18n.msg('global').plain() + '</h3>', i18n);
+                showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3 id="globalusage-dev">' + i18n.msg('global').plain() + '</h3>', i18n);
 
                 if (config.auto_show || $('#ca-delete').length)
                     showGUTable(i18n);

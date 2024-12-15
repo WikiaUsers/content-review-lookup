@@ -100,10 +100,9 @@ window.MessageWallUserTags = {
         'Tauriel the Elf': 'Admin',
         'Venea Ainis': 'Moderator',
         'NarendraMartosudarmo': 'Moderator',
-        'Thorndrum': 'Moderator',
-        'Ladybrasa': 'Moderator',
         'Keru The Night Fury': 'Moderator',
-        'DragonEyeMysteries': 'Moderator'
+        'DragonEyeMysteries': 'Moderator',
+        'Logo8th': 'Rollback'
     }
 };
 

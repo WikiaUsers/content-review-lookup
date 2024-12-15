@@ -317,7 +317,7 @@ window.convertDegreeToPower = function() {
 		if (paragondegree == 100) {
 	    	paragonpower = 200000;
 	    	basedamage = 2 * $("#paragon-basedamage-input").val() + 10;
-	    	pierce = 2 * $("#paragon-pierce-input").val() + 100;
+	    	pierce = 2 * $("#paragon-pierce-input").val() + 10;
 	    	extrabossdamage = 2 * $("#paragon-extrabossdamage-input").val();
 	    	extrablimpdamage = 2 * $("#paragon-extrablimpdamage-input").val();
 	    	extraceramicdamage = 2 * $("#paragon-extraceramicdamage-input").val();
@@ -330,7 +330,7 @@ window.convertDegreeToPower = function() {
 		else {
 	    	paragonpower = (50 * (paragondegree * paragondegree * paragondegree) + 5025 * (paragondegree * paragondegree) + 168324 * paragondegree + 843000)/600;
 	    	basedamage = $("#paragon-basedamage-input").val() * (1 + 0.01 * (paragondegree - 1)) + Math.floor((paragondegree - 1)/10);
-	    	pierce = $("#paragon-pierce-input").val() * (1 + 0.01 * (paragondegree - 1)) + (paragondegree - 1); // e.g. 200 * (1 + 0.01 (100 - 1)) + (100 - 1)
+	    	pierce = $("#paragon-pierce-input").val() * (1 + 0.01 * (paragondegree - 1)) + 0.1 * (paragondegree - 1); // e.g. 200 * (1 + 0.01 (100 - 1)) + (100 - 1)
 	    	extrabossdamage = $("#paragon-extrabossdamage-input").val() * (1 + 0.01 * (paragondegree - 1));
 	    	extrablimpdamage = $("#paragon-extrablimpdamage-input").val() * (1 + 0.01 * (paragondegree - 1));
 	    	extraceramicdamage = $("#paragon-extraceramicdamage-input").val() * (1 + 0.01 * (paragondegree - 1));

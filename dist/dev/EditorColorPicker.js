@@ -46,12 +46,10 @@
 			'table' : 'Table',
 		};
 		var codeMirrorSkins = [
-			'skin-oasis',
 			'theme-fandomdesktop-dark',
 			'theme-fandomdesktop-light',
 		];
 		var codeMirrorSkinNames = {
-			'skin-oasis' : 'Oasis',
 			'theme-fandomdesktop-dark' : 'FandomDesktop Dark',
 			'theme-fandomdesktop-light' : 'FandomDesktop Light',
 		};
@@ -452,8 +450,8 @@
 					var css = data.parse.wikitext["*"];
 					var savedColors = {};
 					if (css.length) {
-						// /* skin-oasis template-t1 */\n\tcolor : #ffffff;
-						// /* skin-oasis template-t1 */\n\t/*color : #ffffff; */
+						// /* theme-fandomdesktop-light template-t1 */\n\tcolor : #ffffff;
+						// /* theme-fandomdesktop-light template-t1 */\n\t/*color : #ffffff; */
 						var pattern = /\/\*\s*?([a-zA-Z-]*?)\s+([a-zA-Z0-9-]*?)[ \t\n\r\f\v\*\/]*?color\s*?:\s*?(#[0-9a-fA-F]{6})\s*?;/g; 
 						var match;
 						while ((match = pattern.exec(css)) !== null) {
@@ -479,9 +477,7 @@
 	
 	function addButton() {
 		var header;
-		if(config.skin === 'oasis') {
-			header = $('.wds-community-header__wiki-buttons .wds-list');
-		} else if(config.skin === 'fandomdesktop') {
+		if(config.skin === 'fandomdesktop') {
 			header = $('.wiki-tools .wds-list');
 		}
 		if (header.length) {

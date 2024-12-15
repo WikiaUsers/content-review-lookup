@@ -45,7 +45,7 @@ function calculateResult(value, resultDiv, formulaNumber) {
         if (formulaNumber === 1) {
             result = (value - 1) * 150 + 25000;
         } else if (formulaNumber === 2) {
-            result = (value - 1) * 150 + 20000;
+            result = (value - 1) * 120 + 20000;
         }
     resultDiv.textContent = 'Cost: ';
     var spanElement = document.createElement('span');

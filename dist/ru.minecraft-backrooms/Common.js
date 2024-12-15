@@ -1,5 +1,7 @@
 /* Размещённый здесь код JavaScript будет загружаться пользователям при обращении к каждой странице */
 // Для [[Шаблон:CSS]]
+var PageRatingStoringPage = "Закулисье_Майнкрафта_вики:Оценки_статей";
+
 
 mw.hook("wikipage.content").add(function () {
     $("span.import-css").each(function () {
@@ -82,16 +84,16 @@ mw.hook("wikipage.content").add(function () {
 	function init() {
 		var minEdits = 10;
 			// получаем текущие оценки всех статей
-		get_article('Закулисье_Майнкрафта_вики:Оценки_статей').done(function(data) {
+		get_article(PageRatingStoringPage).done(function(data) {
             var userName = mw.config.get('wgUserName');
             var allRates = JSON.parse(data);
             var myRate;
             // проверяем есть ли данные о текущей статье, если нет, то создаём пустой шаблон для заполнения
-            myRate = allRates.articles[mw.config.get('wgPageName')] || [{"plus":[]},{"minus":[]}];
+            myRate = allRates[mw.config.get('wgPageName')] || [[],[]];
             function getUserRate() {
-				if (myRate[0].plus.indexOf(userName) !== -1) {
+				if (myRate[0].indexOf(userName) !== -1) {
 					return "+";
-				} else if (myRate[1].minus.indexOf(userName) !== -1) {
+				} else if (myRate[1].indexOf(userName) !== -1) {
 					return "-";
 				} else {
 					return 0;
@@ -99,15 +101,15 @@ mw.hook("wikipage.content").add(function () {
 			}
 			var userRate = getUserRate();
             // вычисляем рейтинг по формуле: положительные_голоса - негативные_голоса
-            var calculatedRating = myRate[0].plus.length - myRate[1].minus.length;
+            var calculatedRating = myRate[0].length - myRate[1].length;
             var rateColor = calculatedRating > 0 && 'lime' || calculatedRating < 0 && 'red' || 'var(--theme-page-text-color)';
             // процент положительных голосов
-            if (document.getElementById("pageRatingPercentage") != null) document.getElementById("pageRatingPercentage").innerHTML = Math.round((myRate[0].plus.length * 100) / (myRate[0].plus.length + myRate[1].minus.length)).toString();
+            if (document.getElementById("pageRatingPercentage") != null) document.getElementById("pageRatingPercentage").innerHTML = Math.round((myRate[0].length * 100) / (myRate[0].length + myRate[1].length)).toString();
             // всего голосов
-            if (document.getElementById("pageRatingTotalVotes") != null) document.getElementById("pageRatingTotalVotes").innerHTML = (myRate[0].plus.length + myRate[1].minus.length).toString();
+            if (document.getElementById("pageRatingTotalVotes") != null) document.getElementById("pageRatingTotalVotes").innerHTML = (myRate[0].length + myRate[1].length).toString();
             // отдельная запись количества положительных и отрицательных голосов
-            if (document.getElementById("get_plus_rating") != null) document.getElementById("get_plus_rating").innerHTML = (myRate[0].plus.length).toString();
-            if (document.getElementById("get_minus_rating") != null) document.getElementById("get_minus_rating").innerHTML = (myRate[1].minus.length).toString();
+            if (document.getElementById("get_plus_rating") != null) document.getElementById("get_plus_rating").innerHTML = (myRate[0].length).toString();
+            if (document.getElementById("get_minus_rating") != null) document.getElementById("get_minus_rating").innerHTML = (myRate[1].length).toString();
             if (document.getElementById("current_rate") != null && userRate !== 0) {
             	document.getElementById("current_rate").style.setProperty("display","");
             	$("#current_rate").html("Ваша текущая оценка: " + userRate);
@@ -136,14 +138,14 @@ mw.hook("wikipage.content").add(function () {
 					return;
 				}
             	// mw.log.warn("Плюс");
-            	resetVote(myRate[0].plus,userName);
-            	resetVote(myRate[1].minus,userName);
+            	resetVote(myRate[0],userName);
+            	resetVote(myRate[1],userName);
             	     	
-           		myRate[0].plus[myRate[0].plus.length] = userName;
+           		myRate[0][myRate[0].length] = userName;
             	        	
-            	allRates.articles[mw.config.get('wgPageName')] = myRate;
+            	allRates[mw.config.get('wgPageName')] = myRate;
         		var to_save = JSON.stringify(allRates);
-            	post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Поставлена оценка (+) для ' + mw.config.get('wgPageName'));
+            	post_article(PageRatingStoringPage,to_save,'Поставлена оценка (+) для ' + mw.config.get('wgPageName'));
             });
             
             // отрицательная оценка статьи
@@ -155,15 +157,15 @@ mw.hook("wikipage.content").add(function () {
 				}
                 // mw.log.warn("Минус");
                 
-               	resetVote(myRate[0].plus,userName);
-             	resetVote(myRate[1].minus,userName);
+               	resetVote(myRate[0],userName);
+             	resetVote(myRate[1],userName);
              	
-                myRate[1].minus[myRate[1].minus.length] = userName;
+                myRate[1][myRate[1].length] = userName;
                     	
-                allRates.articles[mw.config.get('wgPageName')] = myRate;
+                allRates[mw.config.get('wgPageName')] = myRate;
                 var to_save = JSON.stringify(allRates);
                     	
-                post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Поставлена оценка (-) для ' + mw.config.get('wgPageName'));
+                post_article(PageRatingStoringPage,to_save,'Поставлена оценка (-) для ' + mw.config.get('wgPageName'));
             });
             // удаление оценки
             $('#remove_rate').click(function () {
@@ -172,18 +174,49 @@ mw.hook("wikipage.content").add(function () {
 					alert("Меньше " + minEdits + " правок");
 					return;
 				}
-            	resetVote(myRate[0].plus,userName);
-            	resetVote(myRate[1].minus,userName);
+            	resetVote(myRate[0],userName);
+            	resetVote(myRate[1],userName);
                     	
-            	allRates.articles[mw.config.get('wgPageName')] = myRate;
+            	allRates[mw.config.get('wgPageName')] = myRate;
             	var to_save = JSON.stringify(allRates);
                     	
-            	post_article('Закулисье_Майнкрафта_вики:Оценки_статей',to_save,'Убрана оценка для ' + mw.config.get('wgPageName'));
+            	post_article(PageRatingStoringPage,to_save,'Убрана оценка для ' + mw.config.get('wgPageName'));
             });
         });
 	}
     init();
 });
+
+;(function ($,mw) {
+	var e;
+	if ( $("span[aria-labelledby='ooui-php-1']").length > 0 ) { // удаление
+		e = $("span[aria-labelledby='ooui-php-1']");
+		
+		e[0].addEventListener("click",function () {
+			get_article(PageRatingStoringPage).done( function (data) {
+				data = JSON.parse(data);
+				delete data[config.wgPageName];
+				post_article(PageRatingStoringPage, JSON.stringify(data),"Удалена оценка для " + config.wgPageName);
+			});
+		});
+	} else if ($("span[aria-labelledby='ooui-php-5']").length > 0 || $("span[aria-labelledby='ooui-php-7']").length > 0) { // переименование
+		e = $("span[aria-labelledby='ooui-php-5']").length > 0 && $("span[aria-labelledby='ooui-php-5']") || $("span[aria-labelledby='ooui-php-7']");
+		
+		e[0].addEventListener("click", function () {
+			get_article(PageRatingStoringPage).done( function (data) {
+				var name = mw.config.get("wgRelevantPageName");
+				data = JSON.parse(data);
+				var new_name = ( $("span[id='ooui-1']")[0].innerHTML ).toString() + ":" + ( $("input[name='wpNewTitleMain']")[0].value ).toString();
+				var data_to_copy = data[name];
+				if ( data_to_copy != null && new_name != null && new_name != name ) {
+					delete data[name];
+					data[new_name] = data_to_copy;
+					post_article(PageRatingStoringPage,JSON.stringify( data ),"Перенос оценок с " + name + " на " + new_name);	
+				}
+			});
+		});
+	}
+})(this.jQuery,this.mediaWiki);
 
 // Список страниц по их оценкам
 mw.hook("wikipage.content").add(function () {
@@ -193,13 +226,13 @@ mw.hook("wikipage.content").add(function () {
 	$('.mw-body-content').html('');
 	$('.page-header__title').html('Служебная:Список страниц по оценкам');
 	
-	get_article('Закулисье_Майнкрафта_вики:Оценки_статей')
+	get_article(PageRatingStoringPage)
         .done(function (data) {
         	var rates = JSON.parse(data);
 			var clRates = [];
-			Object.keys(rates.articles).forEach(function (key) {
-				var p = rates.articles[key][0].plus.length;
-				var n = rates.articles[key][1].minus.length;
+			Object.keys(rates).forEach(function (key) {
+				var p = rates[key][0].length;
+				var n = rates[key][1].length;
 				var to_add = [key, parseInt(p) - parseInt(n)];
 				clRates.push(to_add);
 			});

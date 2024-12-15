@@ -690,12 +690,7 @@ mw.loader.using( [
 				action: 'query',
 				meta: 'siteinfo',
 				siprop: 'general|statistics',
-				list: 'allusers|usercontribs|users',
-				uclimit: 'max',
-				ucuser: userName,
-				ucnamespace: 0,
-				ucdir: 'newer',
-				ucstart: Math.floor( ( new Date().getTime() - daysToMilliseconds( conf.adoptionConfig.activityDays ) ) / 1000 ), // edits by user in the last x days
+				list: 'allusers|users',
 				augroup: 'sysop|bureaucrat',
 				aulimit: 'max',
 				auwitheditsonly: 1, // avoid auactiveusersonly
@@ -743,35 +738,58 @@ mw.loader.using( [
 					}
 				}
 
-				var ucDays = 0;
-				if ( data.query.usercontribs ) {
-					if ( data.query.usercontribs.length === 0 ) {
-						exception = i18n.msg( 'noEditsError' ).plain();
-
-						return mw.notify( exception, {
-							tag: 'adoption',
-							type: 'warn'
-						} );
-					}
-
-					var ucDArr = [];
-					for ( var u in data.query.usercontribs ) {
-						var ucDay = data.query.usercontribs[u].timestamp.slice( 0, 10 );
-						if ( ucDArr.indexOf( ucDay ) === -1 ) {
-							ucDArr.push(ucDay);
+				var ucDays = [];
+				function ucDaysQuery(ucContinue) {
+					var params = {
+						action: 'query',
+						list: 'usercontribs',
+						uclimit: 'max',
+						ucuser: userName,
+						ucnamespace: 0,
+						ucdir: 'newer',
+						
+						// edits by user in the last x days
+						ucstart: Math.floor( ( new Date().getTime() - daysToMilliseconds( conf.adoptionConfig.activityDays ) ) / 1000 ),
+					};
+					if (!!ucContinue) {Object.assign(params, ucContinue);}
+					$.getJSON( '//' + url + '/api.php?format=json&callback=?', params).done(ucDayParse);
+				}
+				function ucDaysParse(ucData) {
+					if ( ucData.query.usercontribs ) {
+						if ( ucData.query.usercontribs.length === 0 ) {
+							exception = i18n.msg( 'noEditsError' ).plain();
+							
+							return mw.notify( exception, {
+								tag: 'adoption',
+								type: 'warn'
+							} );
 						}
-					}
-
-					ucDays = ucDArr.length;
-					if ( ucDays < 5)  {
-						mw.notify( i18n.msg( 'noActivityError' ).plain(), {
-							tag: 'adoption',
-							type: 'warn'
-						} );
+						
+						for ( var u in ucData.query.usercontribs ) {
+							var ucDay = ucData.query.usercontribs[u].timestamp.slice( 0, 10 );
+							if ( ucDArr.indexOf( ucDay ) === -1 ) {
+								ucDArr.push(ucDay);
+							}
+						}
+						
+						// Loop again if more edits to check, or terminate and display total
+						if (ucData.continue) {
+							ucDaysQuery(ucData.continue);
+						} else {
+							if ( ucDays.length < 5)  {
+								mw.notify( i18n.msg( 'noActivityError' ).plain(), {
+									tag: 'adoption',
+									type: 'warn'
+								} );
+							}
+							$( '#numDays' ).val( ucDays.length );
+						}
+					} else {
+						$( '#numDays' ).val( ucDays.length );
 					}
 				}
-
-				$( '#numDays' ).val( ucDays );
+				// Start checking
+				ucDaysQuery();
 
 				// @todo nested ifs
 				if ( data.query.users ) {

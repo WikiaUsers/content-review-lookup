@@ -1,29 +1,17 @@
-window.UserTagsJS = {
-	modules: {},
-	tags: {
-		jshelper: { u: 'JavaScript', order: 100 },
-		chat moderator: { u: 'Ninja', order: 101 },
-		administrator: { u: 'Samurai', order: 102 },
-		bureaucrat: { u: 'Sensei', order: 1 }
-	}
-};
-UserTagsJS.modules.custom = {
-	'José Dedede': ['csshelper', 'templatehelper', 'jshelper']
-};
 UserTagsJS.modules.mwGroups = ['bureaucrat', 'sysop'];
 
 importArticles({
     type: "script",
     articles: [
         // Mensaje solo para administradores
-        "MediaWiki:Common.js/soloAdmin.js",
         "MediaWiki:Common.js/resumenedicion.js",
         "w:c:dev:VisualSpellCheck/code.js",
-        "w:c:dev:UserTags/code.js",
         "w:dev:TopEditors/code.js",
         "MediaWiki:Common.js/borradoRapido.js"
     ]
 });
+
+InactiveUsers = { text: 'Inactivo' };
 
 // Ajax de dev wiki
 ajaxPages = ["Especial:CambiosRecientes","Especial:WikiActivity","Especial:Seguimiento","Especial:Registro","Especial:Contribuciones"];
@@ -44,15 +32,15 @@ $(function() {
 /* Borrado de artículos (crédito a Usuario:Benfutbol10) */
 var fdButtons = [];
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Ninjago:Reglas|Incumplimiento de reglas de artículos]]',
+  'summary': '[[Wiki Ninjago:Políticas|Incumplimiento de reglas de artículos]]',
   'accesskey': '1',
   'label': 'Incump. artículos'};
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Ninjago:Reglas|Incumplimiento de reglas de archivos]]',
+  'summary': '[[Wiki Ninjago:Políticas|Incumplimiento de reglas de archivos]]',
   'accesskey': '2',
   'label': 'Incump. archivos'};
 fdButtons[fdButtons.length] = {
-  'summary': '[[Wiki Ninjago:Reglas|Incumplimiento general de reglas]]',
+  'summary': '[[Wiki Ninjago:Políticas|Incumplimiento general de reglas]]',
   'accesskey': '3',
   'label': 'Incump. general'};
 fdButtons[fdButtons.length] = {

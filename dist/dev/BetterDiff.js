@@ -517,7 +517,7 @@ $(function() {
 				var turl = event.target.getAttribute('data-url');
 				var getURL = function(page, query, ns) {
 					return  'https://'+betterDiff.getLoad(turl)+
-							'/wiki/'+encodeURIComponent(page).replace('%3A', ':').replace('%20', '_')+
+							'/wiki/'+encodeURIComponent(page).replace(/%3A/g, ':').replace(/%20/g, '_')+
 							(query ? ('?'+$.param(query)) : '');
 				};
 				var generateHeader = function(data, url) {

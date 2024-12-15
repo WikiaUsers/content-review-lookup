@@ -420,7 +420,12 @@
                 } );
             }
         },
-
+  
+        MiniGlobalNav: {
+            page: 'MiniGlobalNav',
+            styles: 'MediaWiki:MiniGlobalNav.css'
+        },
+   
         MinimalScrollbar: {
             page: 'MinimalScrollbar',
             styles: 'MediaWiki:MinimalScrollbar.css'

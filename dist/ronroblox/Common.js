@@ -40,7 +40,7 @@ window.UserTagsJS = {
 		'discussions-administrator': {u:'Discussions Administrator', order:1},
 		'bureaucrat': {u:'Senior Administrator', order:1},
 		'threadmoderator': {u:'Discussions Moderator', order:2},
-		'content-moderator': {u:'Content Team', order:2},
+		'content-moderator': {u:'Content Moderator', order:2},
 		'wiki-developer': {u:'Wiki Developer', order:3},
 		// non-staff tags
 		'wiki-helper': {u:'Wiki Helper', order:9e9},
@@ -78,8 +78,10 @@ UserTagsJS.modules.custom = {
 	'GrayshaValor': ['ron-senior-administrator'],
 	'Yxrae': ['ron-senior-administrator'],
 	// Wiki Contributors
-	'Dxrknrg': ['wiki-Contributor'],
-	'PanzerundLancer': ['wiki-Contributor'],
-	'RyeThePies': ['wiki-Contributor'],
+	'Dxrknrg': ['Wiki-Contributor'],
+	'PanzerundLancer': ['Wiki-Contributor'],
+	'RyeThePies': ['Wiki-Contributor'],
+	'Sdvwevfregv': ['Wiki-Contributor'],
+	'Eddy0725': ['Wiki-Contributor'],
 }	
 //* END of UserTags *//

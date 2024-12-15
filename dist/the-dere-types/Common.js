@@ -25,4 +25,34 @@ window.lockOldComments.limit = 180
 window.lockOldComments.namespaceNumbers = [0, 112, 114, 116, 500];
 
 /* Topic Block Log */
-TBL_GROUP = "dere-en";
+TBL_WIKIS = [
+	    "100kanojo",
+	    "aesthetics",
+        "animanga",
+        "bleach",
+        "bokuyaba",
+		"community",
+		"dragonball",
+		"fairytail",
+		"futurediary",
+		"horimiya",
+		"kanojo-okarishimasu",
+		"japanese",
+		"manga",
+		"nagatoro",
+		"naruto",
+		"onepiece",
+		"oshinoko",
+		"otaku",
+		"otonari-no-tenshi",
+		"the-dere-types",
+		"tonikaku-kawaii",
+		"tora-dora",
+		"tropedia",
+		"tsuntsun",
+		"yandere",
+		"yandere-girls",
+		"yandere-simulator",
+		"yandere-simulator-fan",
+		"yandere-simulator-fan-ocs"
+];
