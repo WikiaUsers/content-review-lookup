@@ -1,11 +1,11 @@
 /**
- * 
+ *
  * @module                  CodeLinksDropdown
  * @description             Adds a dropdown link to personal code pages.
  * @author                  Americhino
  * @version                 0.9.1
  * @license                 CC-BY-SA 3.0
- * 
+ *
  */
 
 $('.wds-global-navigation__user-menu .wds-dropdown__content, .global-navigation__bottom > .wds-dropdown > .wds-dropdown__content').addClass('wds-is-not-scrollable');
@@ -20,14 +20,14 @@ mw.hook('dev.i18n').add(function (lib) {
             namespacePath = mw.util.getUrl(config.wgFormattedNamespaces[2] + ':'),
             username = config.wgUserName,
             usernamePath = namespacePath + username;
-            
+
         $([
-			'.wds-global-navigation__user-menu > .wds-dropdown__content > ul.wds-list > li:nth-child(2)',
+			'.wiki-tools #wiki-tools-menu.wds-dropdown__content > ul.wds-list > li:nth-child(2)',
 			'.global-navigation__bottom > .wds-dropdown > .wds-dropdown__content > ul.wds-list > li:nth-child(1)'
 		].join(', ')).after(
             '<li class="wds-dropdown-level-nested is-calculated">'+
                 '<a href="#" class="wds-dropdown-level-nested__toggle" data-id="codelinks">' +
-                    i18n.msg('codelinks').escape() + 
+                    i18n.msg('codelinks').escape() +
                     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="12" height="12" class="wds-icon wds-icon-tiny wds-dropdown-chevron">' +
                         '<path d="M6.003 10.002a.997.997 0 0 1-.707-.293L.293 4.706a1 1 0 1 1 1.414-1.414l4.296 4.295 4.293-4.293A1 1 0 1 1 11.71 4.71l-5 5a.997.997 0 0 1-.707.293" fill-rule="evenodd">' +
                         '</path>' +

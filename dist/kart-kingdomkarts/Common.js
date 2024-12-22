@@ -1,3 +1,4 @@
+window.discussEmbedLimit = 4;
 importArticles({
     type: 'script',
     articles: [

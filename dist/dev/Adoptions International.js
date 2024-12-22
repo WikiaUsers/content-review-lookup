@@ -752,7 +752,7 @@ mw.loader.using( [
 						ucstart: Math.floor( ( new Date().getTime() - daysToMilliseconds( conf.adoptionConfig.activityDays ) ) / 1000 ),
 					};
 					if (!!ucContinue) {Object.assign(params, ucContinue);}
-					$.getJSON( '//' + url + '/api.php?format=json&callback=?', params).done(ucDayParse);
+					$.getJSON( '//' + url + '/api.php?format=json&callback=?', params).done(ucDaysParse);
 				}
 				function ucDaysParse(ucData) {
 					if ( ucData.query.usercontribs ) {
@@ -767,8 +767,8 @@ mw.loader.using( [
 						
 						for ( var u in ucData.query.usercontribs ) {
 							var ucDay = ucData.query.usercontribs[u].timestamp.slice( 0, 10 );
-							if ( ucDArr.indexOf( ucDay ) === -1 ) {
-								ucDArr.push(ucDay);
+							if ( ucDays.indexOf( ucDay ) === -1 ) {
+								ucDays.push(ucDay);
 							}
 						}
 						

@@ -314,6 +314,16 @@ $(document).ready(function() {
 				}else {
 					sfx = new Audio(location + '0/04/Battle_Machine_Deploy.ogg');
 				}
+			}else if (Hero == 'MP') {
+				if (Mode == 'KO') {
+					sfx = new Audio(location + '3/3c/Minion_Prince_Death.ogg');
+				}else if (Mode == 'Preview'){
+					sfx = new Audio(location + '2/2f/Minion_Prince_Preview.ogg');
+				}else if (Mode == 'Pose'){
+					sfx = new Audio(location + 'd/df/Minion_Prince_Pose.ogg');
+				}else {
+					sfx = new Audio(location + 'd/dc/Minion_Prince_Deploy.ogg');
+				}
 			}
 			
 			//Play the sfx on click unless it has already been played or the wardrobe is muted or we are clicking the sound button

@@ -7,20 +7,7 @@ window.DiscordBannerSettings = {
     noRail: false
 };
 
-/*Images*/
-$('#content img').bind('contextmenu', function(e) {
-    return false;
-});
 
-$('#content').on('contextmenu', 'img', function(e) {
-    return false;
-});
-
-$('#content img').attr('draggable', false).on({
-    'contextmenu': function(e) {
-        return false;
-    }
-});
 /***************************************/
 window.AddRailModule = [
     {page: 'Template:WikiRules', prepend: true},
@@ -55,27 +42,6 @@ if (welcomeCustom) {
     addLanguageLinks();
 }
 /*----------------------------------------*/
-
-/***************************************/
-/***************************************/
-/*Hide overflow on skills page*/
-const checkPage = document.querySelector('.back-menu');
-const checkPageFAQ = document.querySelector('.FAQ-border-hover');
-const checkPageRacers = document.querySelector('#unset-me');
-const addHideOverflowClass = function () {
-	document.querySelector('.page-content').classList.add('hide-overflow');
-};
-
-
-if (checkPage) {
-	addHideOverflowClass();
-}
-if (checkPageFAQ) {
-	addHideOverflowClass();
-}
-if (checkPageRacers) {
-	addHideOverflowClass();
-}
 /***************************************/
 /***************************************/
 /***************************************/

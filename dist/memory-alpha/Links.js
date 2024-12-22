@@ -1,3 +1,4 @@
 $(function(){
-	$('.internal-external-link [href^="https://memory-alpha.fandom.com/"]').removeAttr('target rel class');
+	var server = mw.config.get('wgServer');
+	$('.internal-external-link [href^="' + server + '/"]').removeAttr('target rel class');
 });

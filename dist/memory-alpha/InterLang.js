@@ -20,7 +20,8 @@ $(function(){
 		'sr',
 		'sv',
 		'uk',
-		'zh'
+		'zh',
+		'mu',
 	];
 	
 	function language(code, inLang){
@@ -30,9 +31,11 @@ $(function(){
 	function url(code){
 		if (code === 'en'){
 			return mw.config.get('wgServer');
+		} else if (code === 'mu'){
+			return 'https://mu-memory-alpha.fandom.com';
+		} else {
+			return mw.config.get('wgServer') + '/' + code;
 		}
-		
-		return mw.config.get('wgServer') + '/' + code;
 	}
 	
 	function link(page, text, lang){
@@ -40,26 +43,35 @@ $(function(){
 	}
 	
 	// Administration table
-	
 	populateAdministrationTable(langs[0]);
-	
 	function populateAdministrationTable(lang){
 		if ($('.administration').length === 0){
 			return;
 		}
 		
-		var validRoles = ['bot', 'bureaucrat', 'sysop', 'content-moderator', 'rollback', 'quick-answers-editor'];
+		var apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		var langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
+		var validRoles = [
+			'bot',
+			'bureaucrat',
+			'sysop',
+			'content-moderator',
+			'rollback',
+			'quick-answers-editor',
+		];
 		
-		$.getJSON('/' + lang + '/api.php', {
-			action:'listuserssearchuser',
-			groups:validRoles.join(','),
-			contributed:'0',
-			limit:'100',
-			order:'ts_edit',
-			sort:'desc',
-			offset:'0',
-			format:'json',
-		}).done(function(result){
+		var params = {
+			action: 'listuserssearchuser',
+			groups: validRoles.join(','),
+			contributed: '0',
+			limit: '100',
+			order: 'ts_edit',
+			sort: 'desc',
+			offset: '0',
+			format: 'json',
+		};
+		
+		$.getJSON(apiURL, params).done(function(result){
 			var now = new Date().getTime();
 			
 			for (var i = 0; i < result.listuserssearchuser.result_count; i++){
@@ -67,6 +79,7 @@ $(function(){
 					var username = result.listuserssearchuser[i].username;
 					var numberOfEdits = result.listuserssearchuser[i].edit_count;
 					var id = lang + '__' + username.replace(/\s/g, '_');
+					var rClass = 'administration_table__' + lang;
 					var lastEdit = result.listuserssearchuser[i].last_edit_date;
 					var lastEditComp = lastEdit.split(/,* /);
 					var lastEditDate =
@@ -79,14 +92,15 @@ $(function(){
 					});
 					
 					if (roles.length > 0){
-						$('.administration .placeholder').before($('<tr id="' + id + '">')
+						var row = $('<tr id="' + id + '" class="' + rClass + '">');
+						$('.administration .placeholder').before(row);
+						row
 							.append('<td>' + link('User:' + username, username, lang) + '</td>')
 							.append('<td>' + roles.join(', ') + '</td>')
 							.append('<td>' + numberOfEdits + '</td>')
 							.append('<td data-sort-value="' + lastEditDate + '">' + link('Special:Contributions/' + username, lastEdit, lang) + '</td>')
-							.append('<td>' + language(lang, userlang) + '</td>')
-							.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>')
-						);
+							.append('<td>' + langLabel + '</td>')
+							.append('<td data-last-edit="' + lastEditDate + '" class="status"></td>');
 					}
 				}
 			}
@@ -109,23 +123,27 @@ $(function(){
 	}
 	
 	// International stats table
-	
 	stats(langs[0]);
-	
 	function stats(lang){
 		if ($('.international-stats').length === 0){
 			return;
 		}
 		
-		$.getJSON('/' + lang + '/api.php', {
-			action:'query',
-			meta:'siteinfo',
-			siprop:'statistics',
-			format:'json',
-		}).done(function(result){
-			$('.international-stats .placeholder').before($('<tr>')
-				.append('<td>' + link('', language(lang, userlang), lang) + '</td>')
-				.append('<td>' + link('Category:User ' + lang, lang, lang) + '</td>')
+		var id = 'international-stats__' + lang;
+		var langLabel = (lang === 'mu') ? 'Mirror Universe' : language(lang, userlang);
+		var langCode = (lang === 'mu') ? 'mu' : link('Category:User ' + lang, lang, lang);
+		var apiURL = (lang === 'mu') ? url(lang) + '/api.php?callback=?' : url(lang) + '/api.php';
+		var params = {
+			action: 'query',
+			meta: 'siteinfo',
+			siprop: 'statistics',
+			format: 'json',
+		};
+		
+		$.getJSON(apiURL, params).done(function(result){
+			$('.international-stats .placeholder').before($('<tr id="' + id + '">')
+				.append('<td>' + link('', langLabel, lang) + '</td>')
+				.append('<td>' + langCode + '</td>')
 				.append('<td>' + link('Special:AllPages', result.query.statistics.articles, lang) + '</td>')
 				.append('<td>' + link('Special:ListFiles', result.query.statistics.images, lang) + '</td>')
 				.append('<td>' + link('Special:ListUsers', result.query.statistics.activeusers, lang) + '</td>')

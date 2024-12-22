@@ -23,7 +23,7 @@ switch (mw.config.get('wgPageName')) {
              myNodelist.forEach(function(node,index){
                 const rowCount = node.rows.length - 1;
                 const cap = node.querySelector('Caption');
-                cap.innerHTML = cap.innerHTML + rowCount + " Dragons";
+                cap.innerHTML = cap.innerHTML + " (" + rowCount + " Entries)";
              }); 
         });
         break;

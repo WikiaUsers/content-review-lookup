@@ -10,8 +10,26 @@ window.AutoCreateUserPagesConfig = {
 };
 
 window.globalFileUsageConfig = {
-	// Does not handle MA/mu
-	'lang': ['bg', 'cs', 'de', 'eo', 'es', 'fr', 'it', 'ja', 'nl', 'pl', 'pt', 'ru', 'sr', 'sv', 'zh']
+	'show_subdomain_if_different': true,
+	'lang': [
+		'bg',
+		'cs',
+		'de',
+		'eo',
+		'es',
+		'fr',
+		'it',
+		'ja',
+		'nl',
+		'pl',
+		'pt',
+		'ru',
+		'sr',
+		'sv',
+		'zh',
+		'en:mu-memory-alpha',
+		'en:ma-test',
+	],
 };
 
 // </pre>

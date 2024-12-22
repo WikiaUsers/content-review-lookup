@@ -25,7 +25,7 @@ mw.hook('wikipage.content').add(function () {
 		wrapper.classList.add('fl-loaded');
 		var $wrap = $(wrapper);
 		var settings = JSON.parse($wrap.children('.fl-sett').html());
-		if (!settings) {mw.notify('Invalid JSON!'); return;}
+		if (!settings) {mw.notify('JSON ไม่ถูกต้อง!'); return;}
 		var queries = {
 			hide: {},
 			show: {}
@@ -67,9 +67,9 @@ mw.hook('wikipage.content').add(function () {
 						'<div class="fl-toggle-label">'+
 							(curr.label ? (curr.label+':') :'')+
 							'<div class="fl-toggle-qa">'+
-								'<a class="fl-toggle-qa-all">ALL</a>'+
+								'<a class="fl-toggle-qa-all">ทั้งหมด</a>'+
 								' &mdash; '+
-								'<a class="fl-toggle-qa-none">NONE</a>'+
+								'<a class="fl-toggle-qa-none">ไม่มี</a>'+
 							'</div>'+
 						'</div>'+
 					'</div>'

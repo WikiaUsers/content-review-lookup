@@ -20,6 +20,26 @@ var MessageBlock = {
   autocheck : true
 };
 
+//UserTags config
+window.UserTagsJS = {
+    modules: {
+        inactive: 60,
+        userage: true,
+        mwGroups: true,
+        autoconfirmed: true
+    },
+    tags: {
+            'bot': {link: 'Special:ListUsers/bot'},
+            'bureaucrat': {link: 'Special:ListUsers/bureaucrat'},
+            'chatmoderator': {link: 'Special:ListUsers/chatmoderator'},
+            'content-moderator': {link: 'Special:ListUsers/content-moderator'},
+            'rollback': {link: 'Special:ListUsers/rollback'},
+            'sysop': {link: 'Special:ListUsers/sysop'},
+            'threadmoderator': {link: 'Special:ListUsers/threadmoderator'
+    }
+    },
+};
+
 // Tabber
 var Tabs = {
     switchDuration: 400,

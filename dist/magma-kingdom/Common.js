@@ -12,7 +12,7 @@ window.lockOldComments.noteText = "This Comment was Posted 100 days ago... You N
 // Restrict posting in "Announcements" category to admins only
 $(function () {
     if (mw.config.get('wgNamespaceNumber') === -1 && mw.config.get('wgCanonicalSpecialPageName') === 'DiscussionForum') {
-        var categoryId = "4400000000000006249"; // Replace with your Announcements category ID
+        var categoryId = "4400000000000006249"; 
         var isAdmin = mw.config.get('wgUserGroups').includes('sysop');
 
         // Check if user is viewing or trying to post in the Announcements category
@@ -22,6 +22,16 @@ $(function () {
                 $('.wds-button, .reply-body').remove();
                 $('.new-post-placeholder').text('Only admins can post or reply here.');
             }
+        }
+    }
+});
+$(function() {
+    // Check if the current page is 'Admin Ctrls'
+    if (mw.config.get('wgPageName') === 'Admin_Ctrls') {
+        // Check if the user is not part of the 'sysop' group
+        if (!mw.config.get('wgUserGroups').includes('sysop')) {
+            // Redirect the user to the 'Error' page
+            window.location.href = mw.util.getUrl('Error');
         }
     }
 });

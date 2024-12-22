@@ -12,6 +12,11 @@ importArticles({ type: 'script', articles: [
 	'u:dev:MediaWiki:Standard Edit Summary/code.js'
 ]});
 
+// блокировка комментариев через время
+window.lockOldComments = (window.lockOldComments || {});
+window.lockOldComments.limit = 30;
+window.lockOldComments.addNoteAbove = true;
+
 // тест
 const user1EditsElement = document.querySelector('li.has-ripple a strong');
 const user1Edits = user1EditsElement ? parseInt(user1EditsElement.textContent) : 0;

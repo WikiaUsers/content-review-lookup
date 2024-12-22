@@ -48,8 +48,8 @@
         TARGETS: Object.freeze({
           NAVIGATION_TAB: "#user-tab__content .navigation-tab",
           NAVIGATION_UL: "#user-tab__content .UserTab-module_linksList__wFmbu",
-          NAVIGATION_CONTRIBS: "a[data-label='account.contributions'",
-          DEFAULT_PLACEMENT: "a[data-label='account.preferences'"
+          NAVIGATION_CONTRIBS: "a[data-label='account.contributions']",
+          DEFAULT_PLACEMENT: "a[data-label='account.preferences']"
         }),
       }),
     },
@@ -155,7 +155,7 @@
       writable: false,
       configurable: false,
       value: Object.freeze({
-        CHECK_RATE: 400,
+        CHECK_RATE: 300,
         DEBUG: false,
         SCRIPT: "BlogLink",
         HOOK_NAME: "dev.blogLink",

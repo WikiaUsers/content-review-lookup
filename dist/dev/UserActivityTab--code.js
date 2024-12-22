@@ -107,12 +107,13 @@
       writable: false,
       configurable: false,
       value: Object.freeze({
-        CHECK_RATE: 200,
+        CHECK_RATE: 300,
         DEBUG: false,
         SCRIPT: "UserActivityTab",
         HOOK_NAME: "dev.userActivityTab",
         TAB_LINK: "w:Special:UserActivity",
         MW_MESSAGE_NAME: "user-activity-tab",
+        LS_PREFIX: "UserActivityTab-cache-message-"
       }),
     },
   });
@@ -157,10 +158,69 @@
    */
   this.getMessage = function (paramMessage) {
     return new mw.Api().getMessages([paramMessage], {
-      amlang: this.globals.wgUserLanguage,
+      amlang: this.info.globals.wgUserLanguage,
     }).then(function (paramData) {
       return paramData[paramMessage];
     }.bind(this));
+  };
+
+  /**
+   * @description This handler, borrowed from MassEdit, is used for returning
+   * message data from storage and adding new data to storage for reuse.
+   * <code>localStorage</code> is accessed safely via <code>mw.storage</code>
+   * and placed within a <code>try...catch</code> block to handle any additional
+   * thrown errors.
+   *
+   * @see <a href="https://git.io/JfrsN">Wikia's jquery.store.js (pre-UCP)</a>
+   * @param {string} paramValue- Content of message when setting (optional)
+   * @returns {string|null} - Returns message content or <code>null</code>
+   */
+  this.queryStorage = function (paramValue) {
+
+    // Declarations
+    var isSetting, lsKey, message;
+
+    // Sanitize parameter
+    paramValue += "";
+
+    // Handler can be used for both getting and setting, so check for which
+    isSetting = (Array.prototype.slice.call(arguments).length &&
+      paramValue != null);
+
+    // Handle i18n for user language preference and uselang URL parameter
+    lsKey = this.Utility.LS_PREFIX + this.info.globals.wgUserLanguage;
+
+    // Get message data from localStorage or set as null
+    try {
+      message = mw.storage.get(lsKey);
+    } catch (paramError) {
+      if (this.Utility.DEBUG) {
+        window.console.error(paramError);
+      }
+      message = null;
+    }
+
+    if (isSetting) {
+      try {
+        mw.storage.set(lsKey, paramValue);
+      } catch (paramError) {
+        if (this.Utility.DEBUG) {
+          window.console.error(paramError);
+        }
+      }
+
+      // Make sure new messages are added to localStorage
+      if (this.Utility.DEBUG) {
+        try {
+          window.console.log("localStorage: ",
+            window.localStorage.getItem(lsKey));
+        } catch (paramError) {
+          window.console.error(paramError);
+        }
+      }
+    }
+
+    return message;
   };
 
   /**
@@ -180,7 +240,7 @@
   this.main = function () {
 
     // Declarations
-    var target, $helper, $getEssentials, interval, tab;
+    var target, $helper, message, $getEssentials, interval, tab;
 
     // Definitions
     $helper = new $.Deferred();
@@ -190,9 +250,14 @@
       window.console.log("target:", target);
     }
 
+    // Attempt to retrieve message content from localStorage
+    message = this.queryStorage();
+
     // Make initial call to progress before interval in case masthead exists
     $getEssentials = $.when(
-      this.getMessage(this.Utility.MW_MESSAGE_NAME),
+      (message == null
+        ? this.getMessage(this.Utility.MW_MESSAGE_NAME)
+        : new $.Deferred().resolve(message).promise()),
       $helper.notify().promise()
     );
 
@@ -242,6 +307,11 @@
 
       // UserActivity is always at the end of the tabs listing
       $(target).append(tab);
+
+      // Set message content to localStorage
+      if (message == null) {
+        this.queryStorage(paramMessage);
+      }
     }.bind(this), window.console.error.bind(null, this.Utility.SCRIPT));
   };
 
@@ -278,13 +348,17 @@
     this.info = {};
 
     // Cache globals
-    this.globals = Object.freeze(mw.config.get(this.Dependencies.GLOBALS));
+    this.info.globals = Object.freeze(mw.config.get(this.Dependencies.GLOBALS));
 
     // Either username if user page (UCP et al.) or null if no masthead
-    this.info.userName = this.globals.profileUserName;
+    this.info.userName = this.info.globals.profileUserName;
 
     // Determine if masthead exists (indicates presence of userpage)
     this.info.hasMasthead = !!this.info.userName;
+
+    if (this.Utility.DEBUG) {
+      window.console.log("this.info", this.info);
+    }
 
     // Expose public methods for external debugging
     Object.defineProperty(module, "exports", {
@@ -300,7 +374,7 @@
     if (
       $("li[data-id='" + this.Selectors.NAMES.DATA_ID_LIST + "']").length ||
       !this.info.hasMasthead ||
-      this.info.userName !== this.globals.wgUserName
+      this.info.userName !== this.info.globals.wgUserName
     ) {
       if (this.Utility.DEBUG) {
         window.console.log("return;");
@@ -308,7 +382,7 @@
       return;
     }
 
-    // Dispatch hook with window.dev.mediaWikiBacklink once init is complete
+    // Dispatch hook with window.dev.userActivityTab once init is complete
     mw.hook(this.Utility.HOOK_NAME).fire(module).add(this.main.bind(this));
   };
 

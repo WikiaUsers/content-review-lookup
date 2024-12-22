@@ -604,7 +604,7 @@ mw.loader.using( [
 				action: 'query',
 				meta: 'siteinfo',
 				siprop: 'general',
-				list: 'allusers|usercontribs|users',
+				list: 'allusers|users',
 				uclimit: 'max',
 				ucuser: userName,
 				ucnamespace: 0,
@@ -648,33 +648,59 @@ mw.loader.using( [
 					$( '#wikiname' ).val( data.query.general.sitename );
 				}
 
-				var ucDays = 0;
-				if ( data.query.usercontribs ) {
-					if ( data.query.usercontribs.length === 0 ) {
-						mw.notify( i18n.msg( 'noEditsError' ).plain(), {
-							tag: 'adoptionRetain',
-							type: 'warn'
-						} );
-					}
-
-					var ucDArr = [];
-					for ( var u in data.query.usercontribs ) {
-						var ucDay = data.query.usercontribs[u].timestamp.slice( 0, 10 );
-						if ( ucDArr.indexOf( ucDay ) === -1 ) {
-							ucDArr.push(ucDay);
+				var ucDays = [];
+				function ucDaysQuery(ucContinue) {
+					var params = {
+						action: 'query',
+						list: 'usercontribs',
+						uclimit: 'max',
+						ucuser: userName,
+						ucnamespace: 0,
+						ucdir: 'newer',
+						
+						// edits by user in the last x days
+						ucstart: Math.floor( ( new Date().getTime() - daysToMilliseconds( conf.requirementsConfig.activityDays ) ) / 1000 ),
+					};
+					if (!!ucContinue) {Object.assign(params, ucContinue);}
+					$.getJSON( '//' + url + '/api.php?format=json&callback=?', params).done(ucDaysParse);
+				}
+				function ucDaysParse(ucData) {
+					if ( ucData.query.usercontribs ) {
+						if ( ucData.query.usercontribs.length === 0 ) {
+							exception = i18n.msg( 'noEditsError' ).plain();
+							
+							return mw.notify( exception, {
+								tag: 'adoptionRetain',
+								type: 'warn'
+							} );
 						}
-					}
-
-					ucDays = ucDArr.length;
-					if ( ucDays < conf.requirementsConfig.activityDaysTarget ) {
-						mw.notify( i18n.msg( 'noActivityError' ).plain(), {
-							tag: 'adoptionRetain',
-							type: 'warn'
-						} );
+						
+						for ( var u in ucData.query.usercontribs ) {
+							var ucDay = ucData.query.usercontribs[u].timestamp.slice( 0, 10 );
+							if ( ucDays.indexOf( ucDay ) === -1 ) {
+								ucDays.push(ucDay);
+							}
+						}
+						
+						// Loop again if more edits to check, or terminate and display total
+						if (ucData.continue) {
+							ucDaysQuery(ucData.continue);
+						} else {
+							if ( ucDays.length < conf.requirementsConfig.activityDaysTarget ) {
+								mw.notify( i18n.msg( 'noActivityError' ).plain(), {
+									tag: 'adoptionRetain',
+									type: 'warn'
+								} );
+							}
+							$( '#numDays' ).val( ucDays.length );
+						}
+					} else {
+						$( '#numDays' ).val( ucDays.length );
 					}
 				}
+				// Start checking
+				ucDaysQuery();
 
-				$( '#numDays' ).val( ucDays );
 
 				/**
 				 * Let's verify what permissions user has
