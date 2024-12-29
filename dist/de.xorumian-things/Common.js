@@ -1,16 +1,19 @@
-/* Das folgende JavaScript wird für alle Benutzer geladen. */
+// Das folgende JavaScript wird für alle Benutzer geladen.
 
-/* Português do Basil -> Português */
+// Português do Basil -> Português
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweInterlanguageNames.js?action=raw\u0026ctype=text/javascript");
 
-/* Smaller adjustments */
+// Smaller adjustments
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweRedesignsAndFixes.js?action=raw\u0026ctype=text/javascript");
 
-/* Searchbutton and Searchmodal */
+// Searchbutton and Searchmodal
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSearch.js?action=raw\u0026ctype=text/javascript");
 
-/* More activity button */
+// More activity button
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSeeMoreActivityButton.js?action=raw\u0026ctype=text/javascript");
+
+// FanFeed
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweFanFeed.js?action=raw\u0026ctype=text/javascript");
 
 /* German Variants 
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweVariants.js?action=raw\u0026ctype=text/javascript"); */

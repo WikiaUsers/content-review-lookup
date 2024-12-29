@@ -139,7 +139,7 @@ var hasClass = ( function() {
 
 /*Script to load random backgrounds*/
 /*Please do not change, you can also add another background image in the array so then will be displayed on the wiki*/
-
+/*
 function changeBackg() {
 
 	var backgroundImg = [
@@ -156,7 +156,7 @@ function changeBackg() {
 }
 
 window.onload = changeBackg; //run onload website
-
+*/
 importArticles({
     type: 'script',
     articles: [

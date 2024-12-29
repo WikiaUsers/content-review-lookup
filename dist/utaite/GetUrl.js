@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://utaite.fandom.com/wiki/MediaWiki:GetUrlArgs.js?action=raw\u0026ctype=text/javascript");

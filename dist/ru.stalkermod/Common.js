@@ -12,6 +12,10 @@ nkch_gst_gadgets = [{
 	name: "OldGreyTheme",
 	title: "Старая серая тема",
 	description: "Воссоздание старого стиля тёмной темы (серо-голубой)"
+    }, {
+	name: "TransparentBackground",
+	title: "Прозрачный фон",
+	description: "Прозрачный фон статей"
 }];
 
 // Автоматическое всплывание «стрелочки»

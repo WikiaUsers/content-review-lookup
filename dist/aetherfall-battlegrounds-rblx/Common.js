@@ -12,10 +12,13 @@ for(var i = 0; i < videoElements.length; i++){
 	var videoElement = document.createElement("video");
 	videoElement.classList.add("video");
 	
-	videoElement.onclick = function(){
-		this.controls = "true";
-		this.loop = "false";
-	}
+    videoElement.onclick = function(){
+        videoElement.controls = "true";
+        videoElement.loop = "false";
+    }
+    videoElement.onerror = function(){
+        element.classList.add("video-error");
+    }
 	
 	videoElement.src = 'https://rus1130.github.io/afbg/'+ weapon +'/'+ move +'.mp4';
 	videoElement.type = "video/mp4";

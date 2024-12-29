@@ -59,6 +59,7 @@ importArticles({
         'MediaWiki:Story.js',//配音切换js
         'MediaWiki:CombatPageInputBox.js',//战斗书页数据查找
         'MediaWiki:CombatCardFilter.js',//战斗书页检索
+        'MediaWiki:Lyric.js',//歌词
         'MediaWiki:KeyPage.js',//核心书页
         'MediaWiki:AdminDashboardImportJS.js',//在管理员面板添加一个importjs的快捷入口
         'u:dev:MediaWiki:ReferencePopups/code.js',//注释提示框

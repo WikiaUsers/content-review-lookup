@@ -5869,6 +5869,9 @@
 		                        // Convert any spaces to underscores
 		                        icon.fileName = icon.fileName.replace(/\s/g, "_");
 		                        
+		                		// Remove disallowed characters for when json uses redirect
+		                        icon.fileName = icon.fileName.replace(/[\"\:]/g, "");
+		                        
 		                        // Ensure that the first letter is upper case (the img src will always be)
 		                        icon.fileName = icon.fileName.charAt(0).toUpperCase() + icon.fileName.slice(1);
 		                    }

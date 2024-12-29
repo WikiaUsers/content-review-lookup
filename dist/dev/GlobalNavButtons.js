@@ -19,7 +19,7 @@ mw.loader.using(["mediawiki.template.mustache"]).then(function () {
 			//		$(this).data("tracking-label") || $(this).first().data("tracking-label") // for dropdowns
 			//	)) $(this).remove();
 			//});
-			$(".global-explore-navigation__nav").append($("<div>").addClass("global-explore-navigation__custom-links "));
+			$(".global-explore-navigation__nav").append($("<div>").addClass("global-explore-navigation__custom-links").addClass("global-explore-navigation__divider"));
 			$.each(window.globalNavButtons, function(i, glnbutton) {
 				if (typeof glnbutton !== "object") {} // Do nothing
 				else if (!glnbutton.isMain && !glnbutton.whoIsMain) { // Normal

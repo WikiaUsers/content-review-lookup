@@ -34,6 +34,45 @@ mw.loader.using([
     }
     window.MultiUploadJSLoaded = true;
 
+    // Add CSS for preview thumbnails and layout
+    mw.util.addCSS(`
+        .file-upload-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .file-form-fields {
+            flex: 1;
+        }
+        .file-preview {
+            display: flex;
+            flex-direction: column;
+            width: 180px;
+            margin-top: 20px;
+        }
+        .file-preview-wrapper {
+            align-items: center;
+            display: flex;
+            height: 180px;
+            justify-content: center;
+            width: 180px;
+        }
+        .file-preview-image {
+            max-height: 100%;
+            max-width: 100%;
+        }
+        .file-preview-caption {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .file-preview-caption span {
+            margin: 2px 0;
+        }
+    `);
+
     var api = new mw.Api(),
         i18n,
         preloads = 1,
@@ -55,6 +94,41 @@ mw.loader.using([
             warnings: 0,
             errors: 0,
         };
+
+    function createPreviewElement(file) {
+        var previewDiv = document.createElement('div');
+        previewDiv.className = 'file-preview';
+
+        var imageWrapper = document.createElement('div');
+        imageWrapper.className = 'file-preview-wrapper';
+
+        var img = document.createElement('img');
+        img.className = 'file-preview-image';
+        img.src = URL.createObjectURL(file);
+
+        imageWrapper.appendChild(img);
+        previewDiv.appendChild(imageWrapper);
+
+        var caption = document.createElement('div');
+        caption.className = 'file-preview-caption';
+
+        // Add file size
+        var sizeSpan = document.createElement('span');
+        sizeSpan.textContent = (file.size / 1024).toFixed(2) + ' KB';
+        caption.appendChild(sizeSpan);
+
+        // Add image dimensions for image files
+        if (file.type.startsWith('image/')) {
+            img.onload = function() {
+                var dimensionsSpan = document.createElement('span');
+                dimensionsSpan.textContent = this.width + 'px × ' + this.height + 'px';
+                caption.insertBefore(dimensionsSpan, sizeSpan);
+            };
+        }
+
+        previewDiv.appendChild(caption);
+        return previewDiv;
+    }
 
     function preload() {
         if (--preloads === 0) {
@@ -117,6 +191,7 @@ mw.loader.using([
     /*
      * Add Fields to change the filename, description and license of each file to DOM
      */
+
     function addFields() {
         reset();
         files = $("#multiupload")[0].files;
@@ -127,14 +202,35 @@ mw.loader.using([
                 var filedesc = $("#mw-upload-form > fieldset:nth-of-type(2)").clone();
                 filedesc.attr("id", "file-" + index);
                 filedesc.children("legend").text(i18n.msg('imagename').escape() + (index + 1));
-                filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextField > td.mw-label > label").attr("for", "wpDestFile" + index);
-                filedesc.find("#mw-htmlform-description > tbody > tr.mw-htmlform-field-HTMLTextAreaField > td.mw-label > label").attr("for", "wpUploadDescription" + index);
+
+                // Create container for form fields and preview
+                var container = $('<div>').addClass('file-upload-container');
+                
+                // Wrap form fields
+                var formFields = $('<div>').addClass('file-form-fields');
+                var descriptionTable = filedesc.find("#mw-htmlform-description");
+                formFields.append(descriptionTable);
+                
+                // Add preview
+                var previewElement = createPreviewElement(element);
+                
+                // Add both to container
+                container.append(formFields, previewElement);
+                
+                // Update fields
+                filedesc.find("tr.mw-htmlform-field-HTMLTextField td.mw-label label").attr("for", "wpDestFile" + index);
+                filedesc.find("tr.mw-htmlform-field-HTMLTextAreaField td.mw-label label").attr("for", "wpUploadDescription" + index);
                 filedesc.find("#wpDestFile").attr("name", "wpDestFile" + index).attr("id", "wpDestFile" + index).val(element.name);
                 filedesc.find("#wpUploadDescription").attr("name", "wpUploadDescription" + index).attr("id", "wpUploadDescription" + index).val(defaultdescription);
                 filedesc.find("#wpLicense").attr("name", "wpLicense" + index).attr("id", "wpLicense" + index).val(defaultlicense);
+                
+                // Replace original content with new container
+                filedesc.html(container);
+                
                 filedesc.append("<hr />");
                 filedesc.append("<td class=\"mw-input\"><input name=\"wpWatchthis" + index + "\" type=\"checkbox\" value=\"1\" " + watchuploads + " id=\"wpWatchthis" + index + "\">&nbsp;<label for=\"wpWatchthis" + index + "\">" + mw.message('watchthisupload').text() + "</label></td>");
                 filedesc.append("<td class=\"mw-input\"><input name=\"wpIgnoreWarning" + index + "\" type=\"checkbox\" value=\"1\" id=\"wpIgnoreWarning" + index + "\">&nbsp;<label for=\"wpIgnoreWarning" + index + "\">" + mw.message('ignorewarnings').text() + "</label></td>");
+                
                 $("#mw-upload-form > span").before(filedesc.show());
             }
         } else {

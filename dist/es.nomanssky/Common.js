@@ -103,3 +103,17 @@ $(function() {
 		});
 	});
 });*/
+
+InactiveUsers = { 
+    months: 2,
+    text: 'Inactivo'
+};
+importScriptPage('InactiveUsers/code.js', 'dev');
+
+
+window.SpoilerAlertJS = {
+    question: '¡Alto ahí! Esta área contiene algunos spoilers. ¿Quieres verlos?',
+    yes: 'Claro',
+    no: 'Nanai',
+    fadeDelay: 1600
+};

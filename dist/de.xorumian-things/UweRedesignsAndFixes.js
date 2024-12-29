@@ -22,11 +22,23 @@ links.forEach(url => {
 });
 
 // Recent Images design
-/*document.querySelectorAll('.alice-carousel__stage img').forEach(img => {
-    img.src = img.src.replace('height/168', 'height/300');
-    img.setAttribute('data-src', img.getAttribute('data-src').replace('height/168', 'height/300'));
-    img.onload = function() {
-        console.log('Bild geladen:', img.src);
-    };
-    img.removeAttribute('loading');
-});*/
+(function(mw, window) {
+    // Double-loading prevention
+    if (document.querySelector('.card-image img')) return;
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.card-image img').forEach(function(img) {
+            var src = img.src;
+            var dataSrc = img.getAttribute('data-src');
+            if (src.includes('width/300/height/168')) {
+                img.src = src.replace('width/300/height/168', 'width/300/height/300');
+            }
+            if (dataSrc && dataSrc.includes('width/300/height/168')) {
+                img.setAttribute('data-src', dataSrc.replace('width/300/height/168', 'width/300/height/300'));
+            }
+        });
+    });
+})(mediaWiki, this);
+
+// Rail module
+window.AddRailModule = ['Vorlage:RailModule', 'Vorlage:RailModule2'];

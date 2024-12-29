@@ -34,8 +34,3 @@ mw.loader.using( ['jquery.ui'], function() {
 
 /* Disable license check for multi upload */
 mw.config.set('UMFBypassLicenseCheck', true);
-
-importArticles({
-    type: "style",
-    article: "MediaWiki:2077Netsites.css"
-});

@@ -1,4 +1,6 @@
+var parentDiv = document.querySelector('.mw-parser-output');
 var audioPlayers = parentDiv.querySelectorAll('[id^="AudioTemplate-"]');
+
 audioPlayers.forEach(function(element){
     var audioPlayer = document.createElement('div');
     audioPlayer.classList.add('audio-player');

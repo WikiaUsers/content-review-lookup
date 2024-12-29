@@ -1,6 +1,6 @@
 /**
  * @name            SiteBookmarks
- * @version         v1.0
+ * @version         v1.1
  * @author          PUREDARK999
  * @description     Adds a fully functional bookmark system.
  */
@@ -67,13 +67,11 @@ mw.loader.using(['mediawiki.util', 'mediawiki.storage'], function () {
 	    logMessage('Canonical Namespace: ' + currentNamespace);
 	    return allowedNamespaces.includes(currentNamespace);
 	}
-
-
-
+	
     function saveBookmark(pageTitle, pageUrl) {
         if (!isBookmarkableNamespace()) {
             alert('This page cannot be bookmarked due to its namespace.');
-            return;
+            return;spe
         }
         var bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
         var bookmark = {title: pageTitle, url: pageUrl};
@@ -234,14 +232,14 @@ mw.loader.using(['mediawiki.util', 'mediawiki.storage'], function () {
 	            });
             }
             
-            if (wgPageName === "Special:BlankPage/Bookmarks") {
+            if (wgPageName === "Special:BlankPage/Bookmarks:"+currentUserPageName) {
                 if ($('p').length) {
                     $('p').remove();
                 }
                 $('#firstHeading').text('Your Bookmarks');
             }
 
-            if (wgPageName === "Special:BlankPage/Bookmarks") {
+            if (wgPageName === "Special:BlankPage/Bookmarks:"+currentUserPageName) {
                 var bookmarksContainer = $('<div>', { id: 'bookmarksContainer', css: { padding: '20px' } });
                 var searchContainer = $('<div>', { css: { marginBottom: '10px' } }).append(
                     '<input type="text" id="bookmarkSearch" placeholder="Search bookmarks..."/>'
@@ -259,11 +257,21 @@ mw.loader.using(['mediawiki.util', 'mediawiki.storage'], function () {
 
            if (wgPageName === currentUserPageName) {
 			    setTimeout(function () {
-			        var bookmarksLink = '<li class="user-profile-navigation__link"><a href="/Special:BlankPage/Bookmarks">Bookmarks</a></li>';
+			        var bookmarksLink = '<li class="user-profile-navigation__link"><a href="/Special:BlankPage/Bookmarks:' + currentUserPageName + '">Bookmarks</a></li>';
 			        $('.user-profile-navigation').append(bookmarksLink);
 			    }, 500);
 			}
-
+			
+			setTimeout(function () {
+			    var userTabList = $('.UserTab-module_linksList__wFmbu');
+			    if (userTabList.length && userTabList.is('ul')) {
+			        var bookmarksTabLink = '<li class="UserTab-module_listItem__cM-2J"><a href="/Special:BlankPage/Bookmarks:' + currentUserPageName + '">My Bookmarks</a></li>';
+			        userTabList.find('li:first').after(bookmarksTabLink);
+			    } else {
+			        console.error("Element .UserTab-module_linksList__wFmbu is not found or is not a <ul>.");
+			    }
+			}, 1000);
+			
             var data = {
             	success: "true",
             	bookmarks: JSON.parse(localStorage.getItem('bookmarks')) || [],
