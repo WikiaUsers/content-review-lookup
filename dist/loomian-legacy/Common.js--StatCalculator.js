@@ -30,6 +30,9 @@ function calcEnergy(Base, UP, TP, Level, Personality) {
 	if(isNaN(UP)) {
 		UP = 0;
 	}
+	if(Base == 0) {
+		return 0;
+	}
 	return Math.floor(Math.floor((2*Base+UP+Math.floor(TP/4))*Level/65+80)*Personality);
 }
 function calcStat(Base, UP, TP, Level, Personality) {
@@ -44,6 +47,9 @@ function calcStat(Base, UP, TP, Level, Personality) {
 	}
 	if(isNaN(UP)) {
 		UP = 0;
+	}
+	if(Base == 0) {
+		return 0;
 	}
 	return Math.floor(Math.floor((2*Base+UP+Math.floor(TP/4))*Level/100+5)*Personality);
 }
@@ -249,7 +255,7 @@ $(document).ready(function() {
     	
     	$("#EnergyUPBox-" + maxId +" > .EnergyUP")[0].value = 40;
     	$("#EnergyTPBox-" + maxId +" > .EnergyTP")[0].value = 200;
-    	$("#EnergyPersonalityBox-" + maxId +" > .EnergyPersonality")[0].selectedIndex = 2;
+    	$("#EnergyPersonalityBox-" + maxId +" > .EnergyPersonality")[0].selectedIndex = 4;
     	
     	$("#MAtkUPBox-" + maxId +" > .MAtkUP")[0].value = 40;
     	$("#MAtkTPBox-" + maxId +" > .MAtkTP")[0].value = 200;

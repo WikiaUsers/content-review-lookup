@@ -21,8 +21,8 @@ function calculate() {
 		delete_table();
 		return;
 	}
-	if (level > 500){
-		document.getElementById("wrong_number").innerHTML = "The maximum character level is 500.";
+	if (level > 1000){
+		document.getElementById("wrong_number").innerHTML = "The maximum character level is 1000.";
 		delete_table();
 		return;
 	}

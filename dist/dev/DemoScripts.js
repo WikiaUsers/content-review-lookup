@@ -764,6 +764,11 @@
             scripts: 'MediaWiki:UserTags/code.js'
         },*/
 
+        VenusRevived: {
+            page: 'VenusRevived',
+            styles: 'MediaWiki:VenusRevived.css'
+        },
+
         WantedPagesFilter: {
             page: 'WantedPagesFilter',
             scripts: 'MediaWiki:WantedPagesFilter/code.js',

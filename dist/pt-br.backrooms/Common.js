@@ -1,6 +1,6 @@
-// [[Category:Internal]]
+// [[Categoria:Interno]]
 
-// Para [[Module:CSS]]; dependência de [[T:CSS]]
+// Para [[Módulo:CSS]]; dependência de [[P:CSS]]
 mw.hook("wikipage.content").add(function () {
 	$("span.import-css").each(function () {
 		mw.util.addCSS($(this).attr("data-css"));

@@ -7,7 +7,7 @@ function createFormula(containerId, formulaNumber) {
     var inputRange = document.createElement('input');
     inputRange.type = 'number';
     inputRange.min = '0';
-    inputRange.max = '2550';
+    inputRange.max = '2600';
     inputRange.value = '50'; 
     inputRange.placeholder = 'Player Level';
 
@@ -27,8 +27,8 @@ function createFormula(containerId, formulaNumber) {
             value = 0;
         } else if (value < 0) {
             value = 0;
-        } else if (value > 2550) {
-            value = 2550;
+        } else if (value > 2600) {
+            value = 2600;
         }
         inputRange.value = value;
         calculateResult(value, resultDiv, formulaNumber);
@@ -41,7 +41,7 @@ function calculateResult(value, resultDiv, formulaNumber) {
         result = 0;
         resultDiv.textContent = 'Level is too low!';
     }
-    if (value > 49 && value < 2551) {
+    if (value > 49 && value < 2601) {
         if (formulaNumber === 1) {
             result = (value - 1) * 150 + 25000;
         } else if (formulaNumber === 2) {

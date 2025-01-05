@@ -57,14 +57,10 @@ $(function() {
 			mw.loader.using('jquery.tablesorter', function() {
 				$('table#' + tableID).tablesorter();
 			});
-			$('.fissure-checkbox').change(function(e) {
-				if ($('.fissure-checkbox:checked').length === 1)
-					$('.fissure-checkbox:checked')[0].disabled = true;
-				else if ($('input.fissure-checkbox:disabled').length > 0)
-					$('input.fissure-checkbox:disabled')[0].disabled = false;
-
-				$('tr#' + e.currentTarget.id + '-row').filter(function () {
-					$(this)[0].hidden = !e.currentTarget.checked;
+			$('.buttons-wrapper button').click(function(e) {
+				$(".fissure-row").each(function () {
+					if (e.currentTarget.id == "all") $(this)[0].hidden = false;
+					$(this)[0].hidden = e.currentTarget.id == "all" ? false : $(this)[0].id != e.currentTarget.id;
 				});
 			});
 			setInterval(countdown, 1000);
@@ -97,36 +93,22 @@ $(function() {
 									$("<div>", {
 										class: 'buttons-wrapper',
 										append: [
-											$("<input>", {
-												class: 'fissure-checkbox',
-												type: 'checkbox',
-												id: 'normal'
+											$("<button>", {
+												id: 'all',
+												text: 'Усі',
 											}),
-											$("<label>", {
-												class: 'button fissure-checkbox',
+											$("<button>", {
+												id: 'normal',
 												text: 'Звичайні',
-												for: 'normal'
 											}),
-											$("<input>", {
-												class: 'fissure-checkbox',
-												type: 'checkbox',
+											$("<button>", {
+												text: 'Шлях сталі',
 												id: 'steel-path'
 											}),
-											$("<label>", {
-												class: 'button fissure-checkbox',
-												text: 'Шлях сталі',
-												for: 'steel-path'
-											}),
-											$("<input>", {
-												class: 'fissure-checkbox',
-												type: 'checkbox',
+											$("<button>", {
+												text: 'Бурі Порожнечі',
 												id: 'void-storm'
 											}),
-											$("<label>", {
-												class: 'button fissure-checkbox',
-												text: 'Бурі Порожнечі',
-												for: 'void-storm'
-											})
 										]
 									})
 								]
@@ -142,9 +124,10 @@ $(function() {
 		$.each(data, function(i, fissure) {
 			[_, nodeName, planet] = fissure.node.match(/(.+) \((.+)\)/);
 			var enemy = fissure.enemy.replace('Орокіни', 'Уярмлені');
-			var rowID = (fissure.isHard && 'steel-path' ||  fissure.isStorm && 'void-storm' || 'normal') + '-row';
+			var rowID = (fissure.isHard && 'steel-path' ||  fissure.isStorm && 'void-storm' || 'normal');
 			$('#' + tableID).append($("<tr>", {
 				id: rowID,
+				class: "fissure-row",
 				append: [
 					$("<td>", {
 						'data-sort-value': fissure.tier,
@@ -159,7 +142,7 @@ $(function() {
 						]
 					}),
 					$("<td>", {'data-sort-value': nodeName})
-					.html('<a href="' + WIKI_URL +
+					.html('<a href="' + WIKI_URL + 
 						(NODE_LINK_MAP[nodeName] || nodeName) + '">' +
 						nodeName + '</a> ' +
 						'(<a href="' + WIKI_URL +

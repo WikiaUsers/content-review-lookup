@@ -1,0 +1,6 @@
+mw.loader.getScript('https://wikiplus-app.com/Main.min.js').then(function() {
+    $("#p-views > #Wikiplus-Edit-TopBtn").css("display", "block");
+    $("#p-views > #Wikiplus-Edit-TopBtn a").addClass("wds-button wds-is-text page-header__action-button has-label").prepend('<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><path d="M14 8.586L9.414 4 11 2.414 15.586 7 14 8.586zM6.586 16H2v-4.586l6-6L12.586 10l-6 6zm11.121-9.707l-6-6a.999.999 0 0 0-1.414 0l-9.999 10a.99.99 0 0 0-.217.325A.991.991 0 0 0 0 11v6a1 1 0 0 0 1 1h6c.13 0 .26-.026.382-.077a.99.99 0 0 0 .326-.217l9.999-9.999a.999.999 0 0 0 0-1.414zm-2.125 8.064h2.052c.051 0 .099.01.143.03a.338.338 0 0 1 .114.079.356.356 0 0 1 .003.512l-2.928 2.915a.359.359 0 0 1-.12.079.363.363 0 0 1-.4-.079.36.36 0 0 1-.087-.373l.574-1.706H12.88a.382.382 0 0 1-.263-.103.378.378 0 0 1-.076-.4.357.357 0 0 1 .079-.12l2.928-2.915a.366.366 0 0 1 .402-.076.338.338 0 0 1 .114.078.36.36 0 0 1 .08.115.36.36 0 0 1 .027.141.364.364 0 0 1-.017.117z"/></svg>');
+    $('#p-cactions > ul #Wikiplus-Edit-TopBtn').insertAfter($('#p-cactions > ul > li > #ca-edit').parent());
+    $('#p-cactions > ul > #Wikiplus-Edit-TopBtn > span > a').prependTo('#p-cactions > ul > #Wikiplus-Edit-TopBtn');
+});

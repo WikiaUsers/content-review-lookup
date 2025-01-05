@@ -1,10 +1,59 @@
+var storage = window.localStorage;
+
+//svg картинки
+var gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg;
+if (true){
+	// Источник: https://www.svgrepo.com
+	gearSvg = '<svg fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="currentcolor" class="wds-icon" stroke-width="0.48"><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" d="M16 12a4 4 0 11-8 0 4 4 0 018 0zm-1.5 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path><path fill-rule="evenodd" d="M12 1c-.268 0-.534.01-.797.028-.763.055-1.345.617-1.512 1.304l-.352 1.45c-.02.078-.09.172-.225.22a8.45 8.45 0 00-.728.303c-.13.06-.246.044-.315.002l-1.274-.776c-.604-.368-1.412-.354-1.99.147-.403.348-.78.726-1.129 1.128-.5.579-.515 1.387-.147 1.99l.776 1.275c.042.069.059.185-.002.315-.112.237-.213.48-.302.728-.05.135-.143.206-.221.225l-1.45.352c-.687.167-1.249.749-1.304 1.512a11.149 11.149 0 000 1.594c.055.763.617 1.345 1.304 1.512l1.45.352c.078.02.172.09.22.225.09.248.191.491.303.729.06.129.044.245.002.314l-.776 1.274c-.368.604-.354 1.412.147 1.99.348.403.726.78 1.128 1.129.579.5 1.387.515 1.99.147l1.275-.776c.069-.042.185-.059.315.002.237.112.48.213.728.302.135.05.206.143.225.221l.352 1.45c.167.687.749 1.249 1.512 1.303a11.125 11.125 0 001.594 0c.763-.054 1.345-.616 1.512-1.303l.352-1.45c.02-.078.09-.172.225-.22.248-.09.491-.191.729-.303.129-.06.245-.044.314-.002l1.274.776c.604.368 1.412.354 1.99-.147.403-.348.78-.726 1.129-1.128.5-.579.515-1.387.147-1.99l-.776-1.275c-.042-.069-.059-.185.002-.315.112-.237.213-.48.302-.728.05-.135.143-.206.221-.225l1.45-.352c.687-.167 1.249-.749 1.303-1.512a11.125 11.125 0 000-1.594c-.054-.763-.616-1.345-1.303-1.512l-1.45-.352c-.078-.02-.172-.09-.22-.225a8.469 8.469 0 00-.303-.728c-.06-.13-.044-.246-.002-.315l.776-1.274c.368-.604.354-1.412-.147-1.99-.348-.403-.726-.78-1.128-1.129-.579-.5-1.387-.515-1.99-.147l-1.275.776c-.069.042-.185.059-.315-.002a8.465 8.465 0 00-.728-.302c-.135-.05-.206-.143-.225-.221l-.352-1.45c-.167-.687-.749-1.249-1.512-1.304A11.149 11.149 0 0012 1zm-.69 1.525a9.648 9.648 0 011.38 0c.055.004.135.05.162.16l.351 1.45c.153.628.626 1.08 1.173 1.278.205.074.405.157.6.249a1.832 1.832 0 001.733-.074l1.275-.776c.097-.06.186-.036.228 0 .348.302.674.628.976.976.036.042.06.13 0 .228l-.776 1.274a1.832 1.832 0 00-.074 1.734c.092.195.175.395.248.6.198.547.652 1.02 1.278 1.172l1.45.353c.111.026.157.106.161.161a9.653 9.653 0 010 1.38c-.004.055-.05.135-.16.162l-1.45.351a1.833 1.833 0 00-1.278 1.173 6.926 6.926 0 01-.25.6 1.832 1.832 0 00.075 1.733l.776 1.275c.06.097.036.186 0 .228a9.555 9.555 0 01-.976.976c-.042.036-.13.06-.228 0l-1.275-.776a1.832 1.832 0 00-1.733-.074 6.926 6.926 0 01-.6.248 1.833 1.833 0 00-1.172 1.278l-.353 1.45c-.026.111-.106.157-.161.161a9.653 9.653 0 01-1.38 0c-.055-.004-.135-.05-.162-.16l-.351-1.45a1.833 1.833 0 00-1.173-1.278 6.928 6.928 0 01-.6-.25 1.832 1.832 0 00-1.734.075l-1.274.776c-.097.06-.186.036-.228 0a9.56 9.56 0 01-.976-.976c-.036-.042-.06-.13 0-.228l.776-1.275a1.832 1.832 0 00.074-1.733 6.948 6.948 0 01-.249-.6 1.833 1.833 0 00-1.277-1.172l-1.45-.353c-.111-.026-.157-.106-.161-.161a9.648 9.648 0 010-1.38c.004-.055.05-.135.16-.162l1.45-.351a1.833 1.833 0 001.278-1.173 6.95 6.95 0 01.249-.6 1.832 1.832 0 00-.074-1.734l-.776-1.274c-.06-.097-.036-.186 0-.228.302-.348.628-.674.976-.976.042-.036.13-.06.228 0l1.274.776a1.832 1.832 0 001.734.074 6.95 6.95 0 01.6-.249 1.833 1.833 0 001.172-1.277l.353-1.45c.026-.111.106-.157.161-.161z"></path></g></svg>';
+	
+	sunSvg = '<svg class="wds-icon wds-icon-small"><symbol id="wds-icons-sun-small" viewBox="0 0 18 18"><path d="M9,14a5,5,0,1,1,5-5A5,5,0,0,1,9,14ZM9,6a3,3,0,1,0,3,3A3,3,0,0,0,9,6Zm.2-4a.64.64,0,0,0,.18-.06l.18-.09.15-.12A1.05,1.05,0,0,0,10,1,1,1,0,0,0,9.92.62,1,1,0,0,0,9.71.29L9.56.17,9.38.08A.64.64,0,0,0,9.2,0a1,1,0,0,0-.58.06,1.15,1.15,0,0,0-.33.21,1,1,0,0,0-.21.33A1,1,0,0,0,8,1a1,1,0,0,0,.08.38,1.15,1.15,0,0,0,.21.33A1.05,1.05,0,0,0,9,2Zm.51,15.73a1.15,1.15,0,0,0,.21-.33A1,1,0,0,0,10,17a1,1,0,0,0-1.71-.71A1.05,1.05,0,0,0,8,17a1,1,0,0,0,.08.38,1.15,1.15,0,0,0,.21.33,1,1,0,0,0,1.42,0Zm8-8a1.58,1.58,0,0,0,.12-.15.76.76,0,0,0,.09-.18A.64.64,0,0,0,18,9.2,1.5,1.5,0,0,0,18,9a1,1,0,1,0-2,0,1.5,1.5,0,0,0,0,.2.64.64,0,0,0,.06.18.76.76,0,0,0,.09.18l.12.15a1,1,0,0,0,1.42,0Zm-16,0,.12-.15a.76.76,0,0,0,.09-.18A.64.64,0,0,0,2,9.2,1.5,1.5,0,0,0,2,9a.84.84,0,0,0-.08-.38,1,1,0,0,0-.21-.33,1,1,0,0,0-1.42,0,1,1,0,0,0-.21.33A1,1,0,0,0,0,9a1.5,1.5,0,0,0,0,.2.64.64,0,0,0,.06.18.76.76,0,0,0,.09.18l.12.15a1,1,0,0,0,.33.21A.84.84,0,0,0,1,10,1.05,1.05,0,0,0,1.71,9.71ZM14.85,4.32,15,4.27a1,1,0,0,0,.17-.1.44.44,0,0,0,.15-.12l.13-.15a1.4,1.4,0,0,0,.09-.17,1.39,1.39,0,0,0,.06-.19,1.36,1.36,0,0,0,0-.2A1,1,0,0,0,15.58,3a.87.87,0,0,0-.22-.32.64.64,0,0,0-.15-.13A.91.91,0,0,0,15,2.42l-.19-.06a1,1,0,0,0-.58.06.87.87,0,0,0-.32.22,1,1,0,0,0-.29.7.68.68,0,0,0,0,.2,1.33,1.33,0,0,0,.05.19l.1.17a.79.79,0,0,0,.12.15,1,1,0,0,0,.32.22,1.07,1.07,0,0,0,.39.07A.62.62,0,0,0,14.85,4.32Zm-10.8,11a1,1,0,0,0,.29-.7,1.07,1.07,0,0,0-.07-.39A1,1,0,0,0,4.05,14a1,1,0,0,0-1.41,0,.87.87,0,0,0-.22.32,1.09,1.09,0,0,0-.08.39,1,1,0,0,0,.08.38.87.87,0,0,0,.22.32,1,1,0,0,0,1.41,0Zm11.31,0a1,1,0,0,0,.3-.7,1.09,1.09,0,0,0-.08-.39.87.87,0,0,0-.22-.32A1,1,0,0,0,14,14a1,1,0,0,0-.22.32,1.07,1.07,0,0,0-.07.39,1,1,0,0,0,.07.38,1,1,0,0,0,.22.32,1,1,0,0,0,1.41,0ZM4.05,4.05a.79.79,0,0,0,.12-.15l.1-.17a1.33,1.33,0,0,0,.05-.19.68.68,0,0,0,0-.2,1,1,0,0,0-.29-.7.87.87,0,0,0-.32-.22,1,1,0,0,0-.77,0,.87.87,0,0,0-.32.22A.87.87,0,0,0,2.42,3a1,1,0,0,0-.08.38,1.36,1.36,0,0,0,0,.2l.06.19a1.4,1.4,0,0,0,.09.17l.13.15A1,1,0,0,0,3,4.27a1,1,0,0,0,1.09-.22Z"></path></symbol><use href="#wds-icons-sun-small"></use></svg>';
+	
+	moonSvg = '<svg class="wds-icon wds-icon-small"><symbol id="wds-icons-moon-small" viewBox="0 0 18 18"><path d="M9 17C6.97016 16.9786 5.02436 16.1863 3.55687 14.7837C2.08938 13.3812 1.20995 11.4732 1.09679 9.44639C0.983621 7.41959 1.64518 5.42556 2.94741 3.86835C4.24965 2.31113 6.09516 1.3072 8.11 1.05996C8.30858 1.03515 8.51004 1.07049 8.68832 1.16141C8.86659 1.25233 9.01349 1.39465 9.11 1.56996C9.204 1.74498 9.24374 1.94403 9.22414 2.14172C9.20455 2.33942 9.12652 2.5268 9 2.67996C8.3519 3.47677 7.99868 4.47286 8 5.49996C8.00265 6.69263 8.4776 7.83568 9.32094 8.67903C10.1643 9.52237 11.3073 9.99732 12.5 9.99996C13.5271 10.0013 14.5232 9.64806 15.32 8.99996C15.4742 8.87503 15.6621 8.7988 15.8598 8.78099C16.0574 8.76319 16.2559 8.8046 16.43 8.89996C16.6053 8.99648 16.7476 9.14337 16.8386 9.32165C16.9295 9.49993 16.9648 9.70138 16.94 9.89996C16.719 11.8518 15.7877 13.6541 14.3234 14.9635C12.8591 16.2728 10.9643 16.9977 9 17V17ZM6.27 3.64996C5.42973 4.08218 4.70343 4.70674 4.15023 5.47279C3.59703 6.23884 3.23257 7.12471 3.08655 8.05828C2.94053 8.99184 3.01706 9.94669 3.30992 10.8451C3.60278 11.7435 4.10368 12.56 4.77183 13.2281C5.43999 13.8963 6.2565 14.3972 7.15489 14.69C8.05328 14.9829 9.00813 15.0594 9.94169 14.9134C10.8753 14.7674 11.7611 14.4029 12.5272 13.8497C13.2932 13.2965 13.9178 12.5702 14.35 11.73C13.7498 11.9098 13.1265 12.0007 12.5 12C10.7769 11.9973 9.12515 11.3116 7.90673 10.0932C6.68832 8.87482 6.00265 7.22306 6 5.49996C5.99925 4.87342 6.09021 4.25015 6.27 3.64996V3.64996Z"></path></symbol><use href="#wds-icons-moon-small"></use></svg>';
+	
+	cloudSvg = '<svg class="wds-icon wds-icon-small" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" width="616" height="300" viewBox="0 0 163 79" style="height: auto;">'+
+	'<g id="layer1" transform="translate(-371,-102)">'+
+	'<path stroke-width="5" d="m 389.58682,154.9836 c 1.96987,-14.28425 13.22385,-22.55888 33.11549,-19.04026 3.75596,-11.90853 18.3944,-17.67658 28.27486,-8.33745 13.97612,-19.15901 39.46489,-24.209 52.92473,-0.725 17.37094,3.59296 15.9784,14.66685 13.41244,24.64988 11.59322,2.4844 6.08985,18.86819 -0.3625,18.8499 l -127.59936,0.725 c -10.87315,-0.0503 -5.54274,-17.90322 0.23434,-16.12207 z"/>'+
+	'</g></svg>';
+	
+	// Источник: https://www.svgrepo.com
+	snowSvg = '<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
+	'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path>'+
+	'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path>'+
+	'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path></g></svg>';
+}
+
 console.log(document.body);
 
 //проверка body
 var intervaleditCount = setInterval(editcountcalc, 500);
 
 function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
+//меню настроек (снег, облака, уровень)
+var side = document.querySelector('.page-side-tools');
+var settButton = document.createElement('button');
+settButton.className = 'page-side-tool';
+settButton.innerHTML = gearSvg;
 
+
+side.append(settButton);
+
+//отображение данных в зависимости от уровня
+var usrLevel = storage.getItem('haydayLevel');
+
+var lvlSpans = document.querySelectorAll('span.hayday-level-text');
+if(lvlSpans.length){
+	lvlSpans.forEach(function(span){
+		var nullText = span.dataset.text || 'зависит от вашего уровня ';
+		var lvlText = span.dataset.lvlText || 'на вашем уровне ';
+		if (usrLevel){
+			span.innerHTML = lvlText+'('+usrLevel+')';
+		} else {
+			span.innerHTML = nullText+'(<img src="" style="height: 30px; width: auto;" alt="уровень неизвестен" title="вы не указали совй уровень"/>)';
+		}
+	});
+}
+
+//видео из вконтакте
 var vkVideos = document.querySelectorAll('.vk-video');
 if(vkVideos.length){
 	vkVideos.forEach(function(vid){
@@ -16,27 +65,176 @@ if(vkVideos.length){
 	});
 }
 
+//снег в светлой теме
+if (document.body.className.includes('theme-fandomdesktop-light')) {
+	var now = new Date();
+	var month = now.getMonth();
+	var date = now.getDate();
+	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
+		//чтобы интенсивность снега была одинакова на экранах любой ширины задержка между появлением зависит от неё. Интенсивность снега это коэффициент, на который умножается ширина экрана для получения нужной задержки. Формула для получения частоты появления снежинок: 16 000 000/(ш*к)
+		var cloudDisabled = storage.getItem('noSnow');
+		var density = +storage.getItem('snowDensity')||20;
+		var speedMax = +storage.getItem('snowSpeedMax')||150; //скорость снежинок измеряется в пикселях в секунду
+		var speedMin = +storage.getItem('snowSpeedMin')||50;
+		var rSpeedMax = +storage.getItem('snowRotateSpeedMax')||250; //максимальная скорость вращения, градусов в секунду
+		var flow1Min = +storage.getItem('snowKachKach1Min')||70;
+		var flow2Min = +storage.getItem('snowKachKach2Min')||30;
+		var flow1Max = +storage.getItem('snowKachKach1Max')||70;
+		var flow2Max = +storage.getItem('snowKachKach2Max')||30;
+		//отношение круглого снега к снежинкам, по умолчанию 1:1
+		var rateType1 = +storage.getItem('snowRateType1')||1; // частей круглых хлопьев
+		var rateType2 = +storage.getItem('snowRateType2')||1; // частей снежинок
+		var sizeMin = +storage.getItem('snowSizeMin')||10;//размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
+		var sizeMax =+storage.getItem('snowSizeMax')||20;
+		var fps = +storage.getItem('snowFrames')||25;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+		
+		var summonID;
+		var allClouds = [];
+		function moveClouds() {
+			//allClouds.forEach(function(cloud, i)
+			//for в теории должен быть быстрее, чем forEach
+			for (var i = 0; i < allClouds.length;i++){
+				var cloud = allClouds[i];
+				if (cloud.offsetTop > window.innerHeight){
+					allClouds.splice(i, 1);
+					cloud.remove();
+				} else {
+					cloud.style.top = (cloud.offsetTop+cloud.speed) + 'px';
+					cloud.degree += cloud.rSpeed;
+					cloud.style.transform ='rotate('+cloud.degree+'deg)';
+					cloud.style.left = (cloud.left+Math.sin((cloud.offsetTop+cloud.sdvig)/cloud.kach1)*cloud.kach2)+'px';
+				}
+			}
+		}
+		function summonCloud(){
+			var cloud = document.createElement('div');
+			var size = randint(sizeMin, sizeMax+1);
+			//var color = Math.random()*0.3+0.5;
+			cloud.speed = randint(speedMin,speedMax+1)/fps;
+			cloud.rSpeed = randint(-rSpeedMax,rSpeedMax+1)/fps;
+			cloud.degree = 0;
+			cloud.sdvig = randint(1,1000);
+			var bottom = randint(0, window.innerWidth);
+			cloud.left = bottom;
+			cloud.className = 'snow';
+			cloud.style.top = -size + 'px';
+			cloud.style.left = bottom + 'px';
+			cloud.style.width = size+'px';
+			cloud.style.height = size+'px';
+			cloud.kach1 = randint(flow1Min,flow1Max+1);
+			cloud.kach2 = randint(flow2Min,flow2Max+1);
+			
+			if (randint(0, rateType1+rateType2)>=rateType1){
+				cloud.innerHTML = '<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
+				'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
+				'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path>'+
+				'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path></g></svg>';
+			} else {
+				cloud.innerHTML = '<div style="width:60%;height:60%;border-radius:50%;background-color: white;"></div>';
+			}
+			document.body.append(cloud);
+			allClouds.push(cloud);
+			//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
+			
+		}
+		
+		var button = document.createElement('button');
+		button.className = 'page-side-tool';
+		console.log('Snow spawn delay '+Math.ceil(16000000/(window.innerWidth*density)));
+		if (cloudDisabled !== 'true'){
+			summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
+			button.title = 'Ясная погода';
+			button.innerHTML = sunSvg;
+		} else {
+			button.title = 'Устроить снегопад';
+			button.innerHTML = snowSvg;
+		}
+		
+		
+		var moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
+		document.addEventListener('keydown', function(event) {
+			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
+				if (cloudDisabled == 'true'){
+					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*snowDensity)));
+					storage.setItem('noSnow', 'false');
+					cloudDisabled = 'false';
+					button.title = 'Ясная погода';button.innerHTML = sunSvg;
+				} else {
+					clearInterval(summonID);
+					storage.setItem('noSnow', 'true');
+					cloudDisabled = 'true';
+					button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
+					allClouds.forEach(function(cloud, i){
+						cloud.remove();
+					});
+				}
+			}
+		});
+		button.addEventListener('click', function(){
+			if (cloudDisabled == 'true'){
+				summonID = setTimeout(summonCloud, 1000);
+				storage.setItem('noSnow', 'false');
+				cloudDisabled = 'false';
+				button.title = 'Ясная погода';button.innerHTML = sunSvg;
+			} else {
+				clearInterval(summonID);
+				storage.setItem('noSnow', 'true');
+				cloudDisabled = 'true';
+				button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
+				allClouds.forEach(function(cloud, i){
+					cloud.remove();
+				});
+			}
+		});
+		document.addEventListener("visibilitychange", function(){
+			if (document.hidden){
+				console.log('Вкладка не активна');
+				clearInterval(moveInterval);
+				clearInterval(summonID);
+			} else {
+				console.log('Вкладка активна');
+				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
+				if (cloudDisabled == 'false'){
+					summonID = setTimeout(summonCloud, 1000);
+				}
+			}
+		});
+		side.append(button);
+	}
+}
+
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
-	var cloudDisabled = getCookie('noClouds');
+	var cloudDisabled = storage.getItem('noClouds');
+	var density = storage.getItem('cloudDensity')||20; // у облаков частота появления от ширины экрана не зависит
+	var speedMax = +storage.getItem('cloudSpeedMax')||150; //скорость измеряется в пикселях в секунду
+	var speedMin = +storage.getItem('cloudSpeedMin')||50;
+	var sizeMin = +storage.getItem('cloudSizeMin')||150;//ширина в пикселях
+	var sizeMax =+storage.getItem('cloudSizeMax')||400;
+	var positionMin =+storage.getItem('cloudSizeMax')||10; //свид в пикселях относительно верха экрана, минимальный и максимальный
+	var positionMax =+storage.getItem('cloudSizeMax')||70;
+	var fps = +storage.getItem('snowFrames')||25;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
 	var summonID;
+	
 	var allClouds = [];
 	function moveClouds() {
-		allClouds.forEach(function(cloud, i){
+		//allClouds.forEach(function(cloud, i){
+		for (var i=0; i<allClouds.length;i++){
+			var cloud = allClouds[i];
 			if (cloud.offsetLeft > document.documentElement.clientWidth){
 				allClouds.splice(i, 1);
 				cloud.remove();
 			} else {
 				cloud.style.left = (cloud.offsetLeft+cloud.speed) + 'px';
 			}
-		});
+		}
 	}
 	function summonCloud(){
 		var cloud = document.createElement('div');
-		var size = randint(150, 401);
+		var size = randint(sizeMin, sizeMax+1);
 		var color = Math.random()*0.3+0.5;
-		cloud.speed = randint(2,7);
-		var bottom = randint(10, 71);
+		cloud.speed = randint(speedMin,speedMax+1)/fps;
+		var bottom = randint(positionMin, positionMax+1);
 		cloud.className = 'dark-cloud';
 		cloud.style.left = -size + 'px';
 		cloud.style.top = bottom + 'px';
@@ -47,23 +245,65 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		document.body.prepend(cloud);
 		allClouds.push(cloud);
 		//var moveId = setInterval(moveCloud, 40, cloud, speed, moveId);
-		summonID = setTimeout(summonCloud, randint(2000, 6001));
+		summonID = setTimeout(summonCloud, randint(100, 301)*density);
 	}
-	if (cloudDisabled !== 'true'){summonID = setTimeout(summonCloud, 1000);}
-	setInterval(moveClouds, 40);
+	
+	var side = document.querySelector('.page-side-tools');
+	var button = document.createElement('button');
+	button.className = 'page-side-tool';
+	if (cloudDisabled !== 'true'){summonID = setTimeout(summonCloud, 1000); button.title = 'Ясная погода';button.innerHTML = moonSvg;} else { button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;}
+	
+	var moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
 	document.addEventListener('keydown', function(event) {
-	if (event.code == 'KeyC' && event.altKey && !event.repeat) {
+		if (event.code == 'KeyC' && event.altKey && !event.repeat) {
+			if (cloudDisabled == 'true'){
+				summonID = setTimeout(summonCloud, 1000);
+				storage.setItem('noClouds', 'false');
+				cloudDisabled = 'false';
+				button.title = 'Ясная погода';button.innerHTML = moonSvg;
+			} else {
+				clearInterval(summonID);
+				storage.setItem('noClouds', 'true');
+				cloudDisabled = 'true';
+				button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
+				allClouds.forEach(function(cloud, i){
+					cloud.remove();
+				});
+			}
+		}
+	});
+	
+	button.addEventListener('click', function(){
 		if (cloudDisabled == 'true'){
 			summonID = setTimeout(summonCloud, 1000);
-			setCookie('noClouds', 'false');
+			storage.setItem('noClouds', 'false');
 			cloudDisabled = 'false';
+			 button.title = 'Ясная погода';button.innerHTML = moonSvg;
 		} else {
 			clearInterval(summonID);
-			setCookie('noClouds', 'true');
+			storage.setItem('noClouds', 'true');
 			cloudDisabled = 'true';
+			button.title = 'Пасмурная погода';button.innerHTML = cloudSvg;
+			allClouds.forEach(function(cloud, i){
+				cloud.remove();
+			});
 		}
-	}
-});
+	});
+	
+	document.addEventListener("visibilitychange", function(){
+		if (document.hidden){
+			console.log('Вкладка не активна');
+			clearInterval(moveInterval);
+			clearInterval(summonID);
+		} else {
+			console.log('Вкладка активна');
+			moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
+			if (cloudDisabled == 'false'){
+				summonID = setTimeout(summonCloud, 1000);
+			}
+		}
+	});
+	side.append(button);
 }
 
 // добавление кнопок
@@ -1331,8 +1571,8 @@ var facts = document.querySelectorAll(".mainpage-fact");
 if (facts.length>0) {
 	var factError = document.querySelector(".mainpage-fact-error");
 	factError.style.display = "none";
-	var randIndx=Math.floor(Math.random()*facts.length);
-	console.log(randIndx);
+	var randIndx=randint(0,facts.length);
+	console.log("Факт номер "+randIndx);
 	facts[randIndx].style.display="block";
 	setTimeout(updateFact, 15000, facts, randIndx);
 	
@@ -1345,8 +1585,8 @@ if (facts.length>0) {
 	function updateFact(facts, oldIndx){
 		facts[oldIndx].style.left="300px";
 		facts[oldIndx].style.zIndex="100";
-		randIndx = Math.floor(Math.random()*facts.length);
-		console.log(randIndx);
+		randIndx = randint(0,facts.length);
+		console.log("Факт номер "+randIndx+1);
 		while (randIndx === oldIndx) {
 			randIndx = Math.floor(Math.random()*facts.length);
 			console.log(randIndx);
@@ -1424,7 +1664,7 @@ if (document.body.className.includes('page-События_с_заданиями'
 
 //добавление кнопки перемотки к окну редактирования
 if (new URL(window.location.href).searchParams.get('action')==='edit'){
-	document.querySelector('.page-side-tools').insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
+	side.insertAdjacentHTML('beforeend','<a class="page-side-tool" href="#editform" title="Перейти к редактору"><svg class="wds-icon wds-icon-small"><use xlink:href="#wds-icons-menu-control-small"></use></svg></a>');
 }
 
 //код за этими фигурными скобками не должен вызывать элементы страницы, так как может не сработать

@@ -7,19 +7,21 @@
 mw.loader.using(["mediawiki.template.mustache"]).then(function () {
 	glnbutt = {};
 	glnbutt.config = $.extend({
-		keepLinks: [] // tracking ids of top-level links to keep
+		keepLinks: [] // tracking ids of links to keep (ex. "explore-tab", "fan-central", "current-wiki-tab")
 	}, window.GlobalNavButtonsConf);
 
 	if (mw.config.get("skin") !== "fandomdesktop") return console.error("[GlobalNavButtons] Unrecognized skin:", mw.config.get("skin"));
 
 	glnbutt.init = function () {
 		if (window.globalNavButtons) {
-			//$(".global-explore-navigation__nav > * >").each(function () { // Remove Fandom links
-			//	if (!glnbutt.config.keepLinks.includes(
-			//		$(this).data("tracking-label") || $(this).first().data("tracking-label") // for dropdowns
-			//	)) $(this).remove();
-			//});
-			$(".global-explore-navigation__nav").append($("<div>").addClass("global-explore-navigation__custom-links").addClass("global-explore-navigation__divider"));
+			var keptLinks = false;
+			$(".global-explore-navigation__nav > *").each(function () { // Remove Fandom links
+				if (!glnbutt.config.keepLinks.includes(
+					$(this).find("[data-tracking-label]").first().data("tracking-label")
+				)) $(this).remove();
+				else keptLinks = true;
+			});
+			$(".global-explore-navigation__nav").append($("<div>").addClass("global-explore-navigation__custom-links" + (keptLinks ? " global-explore-navigation__divider" : "")));
 			$.each(window.globalNavButtons, function(i, glnbutton) {
 				if (typeof glnbutton !== "object") {} // Do nothing
 				else if (!glnbutton.isMain && !glnbutton.whoIsMain) { // Normal

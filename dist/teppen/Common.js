@@ -10,10 +10,3 @@ importScriptPage('AjaxRC/code.js', 'dev');
 if (['MultipleUpload', 'Upload'].indexOf(mw.config.get('wgCanonicalSpecialPageName')) > -1) {
         importScript('MediaWiki:Common.js/uploadform.js');
     }
-    
-    importArticles({
-    type: 'script',
-    articles: [
-        'u:dev:MediaWiki:UserAccountAge/code2.js',
-    ]
-});

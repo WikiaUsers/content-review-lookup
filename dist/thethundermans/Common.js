@@ -32,20 +32,4 @@ mw.loader.using( ['jquery.ui.tabs'], function() {
 
 
 /* sidebar: use sidebar for specials such as new episode */
-$(document).ready(function() {
-    $('#WikiaRail').append("<section id='specials' class='module'></section>");
-   
-    $.getJSON('/api.php?action=parse&text={{Specials}}&format=json', function(data) {
-        var content = data.parse.text['*'];
-        $('section#specials').append(content);
-    });
-});
-
-/* Auto updating recent changes opt-in
-  * See w:c:dev:AjaxRC for info & attribution 
-*/
-
-AjaxRCRefreshText = 'Auto-refresh';
-AjaxRCRefreshHoverText = 'Automatically refresh the page';
-ajaxPages = ["Special:RecentChanges","Special:WikiActivity", "Special:Contributions", "Special:Log"];
-importScriptPage('AjaxRC/code.js', 'dev');
+window.AddRailModule = [{prepend: true}];

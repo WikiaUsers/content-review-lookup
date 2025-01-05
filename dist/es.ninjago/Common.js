@@ -20,14 +20,6 @@ AjaxRCRefreshHoverText = 'Automáticamente refresca la página';
 importScriptPage('AjaxRC/code.js', 'dev');
 var ajaxindicator = 'http://images2.wikia.nocookie.net/__cb20100609110347/software/images/a/a9/Indicator.gif';
 
- /* Replaces {{USERNAME}} with the name of the user browsing the page.
-    Requires copying Template:USERNAME. */
-$(function() {
-     if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName == null) return;
-     $("span.insertusername").html(wgUserName);
-});
-
- /* End of the {{USERNAME}} replacement */
 
 /* Borrado de artículos (crédito a Usuario:Benfutbol10) */
 var fdButtons = [];

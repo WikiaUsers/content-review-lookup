@@ -1,1 +1,0 @@
-/* #REDIRECT */mw.loader.load("https://dev.fandom.com/wiki/User:Crazybloy2/AddLinksToWikiDropdown.javascript?action=raw\u0026ctype=text/javascript");
