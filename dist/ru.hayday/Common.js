@@ -1,7 +1,7 @@
 var storage = window.localStorage;
 
 //svg картинки
-var gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg;
+var gearSvg, sunSvg, snowSvg, cloudSvg, moonSvg, closeSvg;
 if (true){
 	// Источник: https://www.svgrepo.com
 	gearSvg = '<svg fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="currentcolor" class="wds-icon" stroke-width="0.48"><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" d="M16 12a4 4 0 11-8 0 4 4 0 018 0zm-1.5 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path><path fill-rule="evenodd" d="M12 1c-.268 0-.534.01-.797.028-.763.055-1.345.617-1.512 1.304l-.352 1.45c-.02.078-.09.172-.225.22a8.45 8.45 0 00-.728.303c-.13.06-.246.044-.315.002l-1.274-.776c-.604-.368-1.412-.354-1.99.147-.403.348-.78.726-1.129 1.128-.5.579-.515 1.387-.147 1.99l.776 1.275c.042.069.059.185-.002.315-.112.237-.213.48-.302.728-.05.135-.143.206-.221.225l-1.45.352c-.687.167-1.249.749-1.304 1.512a11.149 11.149 0 000 1.594c.055.763.617 1.345 1.304 1.512l1.45.352c.078.02.172.09.22.225.09.248.191.491.303.729.06.129.044.245.002.314l-.776 1.274c-.368.604-.354 1.412.147 1.99.348.403.726.78 1.128 1.129.579.5 1.387.515 1.99.147l1.275-.776c.069-.042.185-.059.315.002.237.112.48.213.728.302.135.05.206.143.225.221l.352 1.45c.167.687.749 1.249 1.512 1.303a11.125 11.125 0 001.594 0c.763-.054 1.345-.616 1.512-1.303l.352-1.45c.02-.078.09-.172.225-.22.248-.09.491-.191.729-.303.129-.06.245-.044.314-.002l1.274.776c.604.368 1.412.354 1.99-.147.403-.348.78-.726 1.129-1.128.5-.579.515-1.387.147-1.99l-.776-1.275c-.042-.069-.059-.185.002-.315.112-.237.213-.48.302-.728.05-.135.143-.206.221-.225l1.45-.352c.687-.167 1.249-.749 1.303-1.512a11.125 11.125 0 000-1.594c-.054-.763-.616-1.345-1.303-1.512l-1.45-.352c-.078-.02-.172-.09-.22-.225a8.469 8.469 0 00-.303-.728c-.06-.13-.044-.246-.002-.315l.776-1.274c.368-.604.354-1.412-.147-1.99-.348-.403-.726-.78-1.128-1.129-.579-.5-1.387-.515-1.99-.147l-1.275.776c-.069.042-.185.059-.315-.002a8.465 8.465 0 00-.728-.302c-.135-.05-.206-.143-.225-.221l-.352-1.45c-.167-.687-.749-1.249-1.512-1.304A11.149 11.149 0 0012 1zm-.69 1.525a9.648 9.648 0 011.38 0c.055.004.135.05.162.16l.351 1.45c.153.628.626 1.08 1.173 1.278.205.074.405.157.6.249a1.832 1.832 0 001.733-.074l1.275-.776c.097-.06.186-.036.228 0 .348.302.674.628.976.976.036.042.06.13 0 .228l-.776 1.274a1.832 1.832 0 00-.074 1.734c.092.195.175.395.248.6.198.547.652 1.02 1.278 1.172l1.45.353c.111.026.157.106.161.161a9.653 9.653 0 010 1.38c-.004.055-.05.135-.16.162l-1.45.351a1.833 1.833 0 00-1.278 1.173 6.926 6.926 0 01-.25.6 1.832 1.832 0 00.075 1.733l.776 1.275c.06.097.036.186 0 .228a9.555 9.555 0 01-.976.976c-.042.036-.13.06-.228 0l-1.275-.776a1.832 1.832 0 00-1.733-.074 6.926 6.926 0 01-.6.248 1.833 1.833 0 00-1.172 1.278l-.353 1.45c-.026.111-.106.157-.161.161a9.653 9.653 0 01-1.38 0c-.055-.004-.135-.05-.162-.16l-.351-1.45a1.833 1.833 0 00-1.173-1.278 6.928 6.928 0 01-.6-.25 1.832 1.832 0 00-1.734.075l-1.274.776c-.097.06-.186.036-.228 0a9.56 9.56 0 01-.976-.976c-.036-.042-.06-.13 0-.228l.776-1.275a1.832 1.832 0 00.074-1.733 6.948 6.948 0 01-.249-.6 1.833 1.833 0 00-1.277-1.172l-1.45-.353c-.111-.026-.157-.106-.161-.161a9.648 9.648 0 010-1.38c.004-.055.05-.135.16-.162l1.45-.351a1.833 1.833 0 001.278-1.173 6.95 6.95 0 01.249-.6 1.832 1.832 0 00-.074-1.734l-.776-1.274c-.06-.097-.036-.186 0-.228.302-.348.628-.674.976-.976.042-.036.13-.06.228 0l1.274.776a1.832 1.832 0 001.734.074 6.95 6.95 0 01.6-.249 1.833 1.833 0 001.172-1.277l.353-1.45c.026-.111.106-.157.161-.161z"></path></g></svg>';
@@ -16,11 +16,52 @@ if (true){
 	'</g></svg>';
 	
 	// Источник: https://www.svgrepo.com
-	snowSvg = '<svg width="200px" height="200px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
-	'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path>'+
-	'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path>'+
-	'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="#6f027c" stroke-width="1.5" stroke-linecap="round"></path></g></svg>';
+	snowSvg = '<svg  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier">'+
+	'<path d="M12 2V18M12 22V18M12 18L15 21M12 18L9 21M15 3L12 6L9 3" stroke="currentcolor" stroke-width="1.5" stroke-linecap="round"></path>'+
+	'<path d="M3.33978 7.00042L6.80389 9.00042M6.80389 9.00042L17.1962 15.0004M6.80389 9.00042L5.70581 4.90234M6.80389 9.00042L2.70581 10.0985M17.1962 15.0004L20.6603 17.0004M17.1962 15.0004L21.2943 13.9023M17.1962 15.0004L18.2943 19.0985" stroke="currentcolor" stroke-width="1.5" stroke-linecap="round"></path>'+
+	'<path d="M20.66 7.00042L17.1959 9.00042M17.1959 9.00042L6.80364 15.0004M17.1959 9.00042L18.294 4.90234M17.1959 9.00042L21.294 10.0985M6.80364 15.0004L3.33954 17.0004M6.80364 15.0004L2.70557 13.9023M6.80364 15.0004L5.70557 19.0985" stroke="currentcolor" stroke-width="1.5" stroke-linecap="round"></path></g></svg>';
+	
+	closeSvg = '<svg class="wds-icon wds-icon-tiny"><use href="#wds-icons-close-tiny"></use></svg>';
 }
+
+//date
+var now = new Date();
+var month = now.getMonth();
+var date = now.getDate();
+
+//данные из localstorage
+var storageSett = {};
+
+storageSett.usrLevel = storage.getItem('haydayLevel');
+//снег
+storageSett.snowDisabled = storage.getItem('noSnow');
+storageSett.snowDensity = +storage.getItem('snowDensity')||20;
+storageSett.snowSpeedMax = +storage.getItem('snowSpeedMax')||150; //скорость снежинок измеряется в пикселях в секунду
+storageSett.snowSpeedMin = +storage.getItem('snowSpeedMin')||50;
+storageSett.snowRSpeedMax = +storage.getItem('snowRotateSpeedMax')||250; //максимальная скорость вращения, градусов в секунду
+storageSett.snowFlow1Min = +storage.getItem('snowKachKach1Min')||70;
+storageSett.snowFlow2Min = +storage.getItem('snowKachKach2Min')||30;
+storageSett.snowFlow1Max = +storage.getItem('snowKachKach1Max')||70;
+storageSett.snowFlow2Max = +storage.getItem('snowKachKach2Max')||30;
+//отношение круглого снега к снежинкам, по умолчанию 1:1
+storageSett.snowRateType1 = +storage.getItem('snowRateType1')||1; // частей круглых хлопьев
+storageSett.snowRateType2 = +storage.getItem('snowRateType2')||1; // частей снежинок
+storageSett.snowSizeMin = +storage.getItem('snowSizeMin')||10; //размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
+storageSett.snowSizeMax =+storage.getItem('snowSizeMax')||20;
+storageSett.snowFps = +storage.getItem('snowFrames')||25; //частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+
+//облака
+storageSett.cloudDisabled = storage.getItem('noClouds');
+storageSett.cloudDensity = storage.getItem('cloudDensity')||20; // у облаков частота появления от ширины экрана не зависит
+storageSett.cloudSpeedMax = +storage.getItem('cloudSpeedMax')||150; //скорость измеряется в пикселях в секунду
+storageSett.cloudSpeedMin = +storage.getItem('cloudSpeedMin')||50;
+storageSett.cloudSizeMin = +storage.getItem('cloudSizeMin')||150; //ширина в пикселях
+storageSett.cloudSizeMax =+storage.getItem('cloudSizeMax')||400;
+storageSett.cloudPositionMin = +storage.getItem('cloudSizeMax')||10; //свид в пикселях относительно верха экрана, минимальный и максимальный
+storageSett.cloudPositionMax = +storage.getItem('cloudSizeMax')||70;
+storageSett.cloudFps = +storage.getItem('snowFrames')||25; //частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+
+
 
 console.log(document.body);
 
@@ -30,15 +71,82 @@ var intervaleditCount = setInterval(editcountcalc, 500);
 function editcountcalc(){if (document.body) {clearInterval(intervaleditCount);
 //меню настроек (снег, облака, уровень)
 var side = document.querySelector('.page-side-tools');
-var settButton = document.createElement('button');
-settButton.className = 'page-side-tool';
-settButton.innerHTML = gearSvg;
+if (true) {
+	var settBtn = document.createElement('button');
+	settBtn.className = 'page-side-tool';
+	settBtn.innerHTML = gearSvg;
+	settBtn.title = 'Настройки';
+	var settOpen = false;
+	
+	var settProps = Object.assign({}, storageSett);
+	console.log(settProps);
+	var settDiv = document.createElement('div');
+	settDiv.id = 'hayday-settings-box';
+	settDiv.style.display = 'none';
+	var settHtml = '<button id="close-sett">'+closeSvg+'</button><div id="hayday-settings-level">Введите ваш уровень: <input data-param="" value="'+(settProps.usrLevel||'')+'" max="1000" type="number"/></div>'+
+	'<div id="hayday-settings-snow">Настройки снега в светлой теме'+
+	'<div>Снег включен: <input type="checkbox" id="snow-enabled"/></div>'+
+	'<div class="simple">Интенсивность снега: <small>Меньше снега</small><input type="range" min="1" max="50" step="1" id="snow-range"/><small>Больше снега</small><br/><button id="setmode"></button><div></div></div>'+
+	'<div class="advanced">Интенсивность: <input type="number" min="1"/><br/>'+
+	'Скорость падения (пкс/сек): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
+	'Максимальная скорость вращения (град./сек): <input type="number" min="1" data-param=""/><br/>'+
+	'Раскачивание снежинок:<br/>'+
+	'расстояние между витками (по вертикали): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
+	'интенсивность раскачки (по горизонтали): от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
+	'Размер: от <input type="number" min="1" data-param=""/> до <input type="number" min="1" data-param=""/><br/>'+
+	'Отношение: <small>хлопья</small> <input type="number" min="1" data-param=""/> : <input type="number" min="1" data-param=""/> <small>снежинки</small><br/>'+
+	'</div></div>'+
+	'<div id="hayday-settings-cloud">Настройки облаков в тёмной теме</div>'+
+	'<div id="hayday-settings-end"><a data-mode="simple" href="javascript:void(0);" id="setmode">Расширенный режим</a><button id="submit">Сохранить</button><button id="clear">Сбросить</button></div>';
+	console.log(settHtml);
+	settDiv.innerHTML = settHtml;
+	
+	var settLvlBox = settDiv.querySelector('#hayday-settings-level');
+	var settSnowBox = settDiv.querySelector('#hayday-settings-snow');
+	var settCloudBox = settDiv.querySelector('#hayday-settings-cloud');
+	var settEndBox = settDiv.querySelector('#hayday-settings-end');
+	if (!((month == 11||month==0||month==1)||(month==3&&date==1))){settSnowBox.style.display = 'none';}
+	
+	var settSimple = settDiv.querySelectorAll('.simple');
+	var settAdv = settDiv.querySelectorAll('.advanced');
+	settAdv.forEach(function(e){
+		e.style.display = 'none';
+	});
+	
+	var settSimpleMode = true;
+	var settModeChanger = settDiv.querySelector('a#setmode');
+	settModeChanger.addEventListener('click',function(event){
+		settSimpleMode = !settSimpleMode;
+		if (settSimpleMode){//включить простой
+			settSimple.forEach(function(e){e.style.display = 'block';});
+			settAdv.forEach(function(e){e.style.display = 'none';});
+		} else {
+			settSimple.forEach(function(e){e.style.display = 'none';});
+			settAdv.forEach(function(e){e.style.display = 'block';});
+		}
+	});
+	
+	var settClose = settDiv.querySelector('#close-sett');
+	settClose.addEventListener('click',function(ev){
+		ev.preventDefault();
+		settDiv.style.display = 'none';
+		settOpen = false;
+	});
+	
+	
+	
+	settBtn.addEventListener('click',function(event){
+		if (!settOpen) {
+			settOpen = true;
+			settDiv.style.display = 'block';
+		}
+	});
+	document.body.append(settDiv);
+	side.append(settBtn);
+}
 
-
-side.append(settButton);
 
 //отображение данных в зависимости от уровня
-var usrLevel = storage.getItem('haydayLevel');
 
 var lvlSpans = document.querySelectorAll('span.hayday-level-text');
 if(lvlSpans.length){
@@ -67,26 +175,23 @@ if(vkVideos.length){
 
 //снег в светлой теме
 if (document.body.className.includes('theme-fandomdesktop-light')) {
-	var now = new Date();
-	var month = now.getMonth();
-	var date = now.getDate();
 	if ((month == 11||month==0||month==1)||(month==3&&date==1)){
 		//чтобы интенсивность снега была одинакова на экранах любой ширины задержка между появлением зависит от неё. Интенсивность снега это коэффициент, на который умножается ширина экрана для получения нужной задержки. Формула для получения частоты появления снежинок: 16 000 000/(ш*к)
-		var cloudDisabled = storage.getItem('noSnow');
-		var density = +storage.getItem('snowDensity')||20;
-		var speedMax = +storage.getItem('snowSpeedMax')||150; //скорость снежинок измеряется в пикселях в секунду
-		var speedMin = +storage.getItem('snowSpeedMin')||50;
-		var rSpeedMax = +storage.getItem('snowRotateSpeedMax')||250; //максимальная скорость вращения, градусов в секунду
-		var flow1Min = +storage.getItem('snowKachKach1Min')||70;
-		var flow2Min = +storage.getItem('snowKachKach2Min')||30;
-		var flow1Max = +storage.getItem('snowKachKach1Max')||70;
-		var flow2Max = +storage.getItem('snowKachKach2Max')||30;
+		var snowDisabled = storageSett.snowDisabled;
+		var density = storageSett.snowDensity;
+		var speedMax = storageSett.snowSpeedMax; //скорость снежинок измеряется в пикселях в секунду
+		var speedMin = storageSett.snowSpeedMin;
+		var rSpeedMax = storageSett.snowRSpeedMax; //максимальная скорость вращения, градусов в секунду
+		var flow1Min = storageSett.snowFlow1Min;
+		var flow2Min = storageSett.snowFlow2Min;
+		var flow1Max = storageSett.snowFlow1Max;
+		var flow2Max = storageSett.snowFlow2Max;
 		//отношение круглого снега к снежинкам, по умолчанию 1:1
-		var rateType1 = +storage.getItem('snowRateType1')||1; // частей круглых хлопьев
-		var rateType2 = +storage.getItem('snowRateType2')||1; // частей снежинок
-		var sizeMin = +storage.getItem('snowSizeMin')||10;//размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
-		var sizeMax =+storage.getItem('snowSizeMax')||20;
-		var fps = +storage.getItem('snowFrames')||25;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+		var rateType1 = storageSett.snowRateType1; // частей круглых хлопьев
+		var rateType2 = storageSett.snowRateType2; // частей снежинок
+		var sizeMin = storageSett.snowSizeMin;//размер в пикселях (ширина и высота), фактический размер круглых хлопьев на 40% меньше, у снежинок такой же;
+		var sizeMax = storageSett.snowSizeMax;
+		var fps = storageSett.snowFps;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
 		
 		var summonID;
 		var allClouds = [];
@@ -141,7 +246,7 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		var button = document.createElement('button');
 		button.className = 'page-side-tool';
 		console.log('Snow spawn delay '+Math.ceil(16000000/(window.innerWidth*density)));
-		if (cloudDisabled !== 'true'){
+		if (snowDisabled !== 'true'){
 			summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
 			button.title = 'Ясная погода';
 			button.innerHTML = sunSvg;
@@ -154,15 +259,15 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 		var moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
 		document.addEventListener('keydown', function(event) {
 			if (event.code == 'KeyC' && event.altKey && !event.repeat) {
-				if (cloudDisabled == 'true'){
-					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*snowDensity)));
+				if (snowDisabled == 'true'){
+					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
 					storage.setItem('noSnow', 'false');
-					cloudDisabled = 'false';
+					snowDisabled = 'false';
 					button.title = 'Ясная погода';button.innerHTML = sunSvg;
 				} else {
 					clearInterval(summonID);
 					storage.setItem('noSnow', 'true');
-					cloudDisabled = 'true';
+					snowDisabled = 'true';
 					button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
 					allClouds.forEach(function(cloud, i){
 						cloud.remove();
@@ -171,15 +276,15 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			}
 		});
 		button.addEventListener('click', function(){
-			if (cloudDisabled == 'true'){
-				summonID = setTimeout(summonCloud, 1000);
+			if (snowDisabled == 'true'){
+				summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
 				storage.setItem('noSnow', 'false');
-				cloudDisabled = 'false';
+				snowDisabled = 'false';
 				button.title = 'Ясная погода';button.innerHTML = sunSvg;
 			} else {
 				clearInterval(summonID);
 				storage.setItem('noSnow', 'true');
-				cloudDisabled = 'true';
+				snowDisabled = 'true';
 				button.title = 'Устроить снегопад';button.innerHTML = snowSvg;
 				allClouds.forEach(function(cloud, i){
 					cloud.remove();
@@ -194,8 +299,8 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 			} else {
 				console.log('Вкладка активна');
 				moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
-				if (cloudDisabled == 'false'){
-					summonID = setTimeout(summonCloud, 1000);
+				if (snowDisabled !== 'true'){
+					summonID = setInterval(summonCloud, Math.ceil(16000000/(window.innerWidth*density)));
 				}
 			}
 		});
@@ -205,15 +310,15 @@ if (document.body.className.includes('theme-fandomdesktop-light')) {
 
 //облака в тёмной теме
 if (document.body.className.includes('theme-fandomdesktop-dark')) {
-	var cloudDisabled = storage.getItem('noClouds');
-	var density = storage.getItem('cloudDensity')||20; // у облаков частота появления от ширины экрана не зависит
-	var speedMax = +storage.getItem('cloudSpeedMax')||150; //скорость измеряется в пикселях в секунду
-	var speedMin = +storage.getItem('cloudSpeedMin')||50;
-	var sizeMin = +storage.getItem('cloudSizeMin')||150;//ширина в пикселях
-	var sizeMax =+storage.getItem('cloudSizeMax')||400;
-	var positionMin =+storage.getItem('cloudSizeMax')||10; //свид в пикселях относительно верха экрана, минимальный и максимальный
-	var positionMax =+storage.getItem('cloudSizeMax')||70;
-	var fps = +storage.getItem('snowFrames')||25;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+	var density = storageSett.cloudDensity; // у облаков частота появления от ширины экрана не зависит
+	var speedMax = storageSett.cloudSpeedMax; //скорость измеряется в пикселях в секунду
+	var speedMin = storageSett.cloudSpeedMin;
+	var sizeMin = storageSett.cloudSizeMin;//ширина в пикселях
+	var sizeMax =storageSett.cloudSizeMax;
+	var positionMin = storageSett.cloudPositionMin; //свид в пикселях относительно верха экрана, минимальный и максимальный
+	var positionMax = storageSett.cloudPositionMax;
+	var fps = storageSett.cloudFps;//частота обновления, кадров в секунду, напрямую влияет на производительность и плавность картинки. При больших значениях из-за зависаний снежинки могутлететь медленнее, но в остальном на скорость не влияет
+	var cloudDisabled = storageSett.cloudDisabled;
 	var summonID;
 	
 	var allClouds = [];
@@ -298,7 +403,7 @@ if (document.body.className.includes('theme-fandomdesktop-dark')) {
 		} else {
 			console.log('Вкладка активна');
 			moveInterval = setInterval(moveClouds, Math.ceil(1000/fps));
-			if (cloudDisabled == 'false'){
+			if (cloudDisabled !== 'true'){
 				summonID = setTimeout(summonCloud, 1000);
 			}
 		}

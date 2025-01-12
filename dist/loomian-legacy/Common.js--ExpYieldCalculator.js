@@ -1,7 +1,7 @@
 /* Any JavaScript here will be loaded for all users on every page load. */
 
 // Functions
-function calcExpYield(b, L, e, w, I, M, p) {
+function calcExpYield(b, L, e, w, I, M, p, C) {
 	if(isNaN(b)) {
 		b = 0;
 	}
@@ -11,7 +11,7 @@ function calcExpYield(b, L, e, w, I, M, p) {
 	if(isNaN(M)) {
 		M = 0;
 	}
-	return Math.floor(b*L*e*w*I*M*p/28);
+	return Math.floor(b*L*e*w*I*M*p*C/28);
 }
 
 $(document).ready(function() {
@@ -19,11 +19,12 @@ $(document).ready(function() {
 	$("span#baseInput").html('<input onClick="this.select();" type="text" value="200" id="expBase" style="text-align: right; width: 30px; background-color:var(--theme-page-background-color--secondary,hsl(var(--page-background--dark))); color:white; font-family: rubik,helvetica,arial,sans-serif; border: 1px solid var(--theme-border-color); border-radius: 5px;"></input>');
     $("span#levelInput").html('<input onClick="this.select();" type="text" value="1" id="expLevel" style="text-align: right; width: 30px; background-color:var(--theme-page-background-color--secondary,hsl(var(--page-background--dark))); color:white; font-family: rubik,helvetica,arial,sans-serif; border: 1px solid var(--theme-border-color); border-radius: 5px;"></input>');
     $("span#expBoostInput").html('<input type="checkbox" id="expBoost"></input>');
-    $("span#expLoomiBoostInput").html('<input type="checkbox" id="expLoomiBoost"></input>')
+    $("span#expLoomiBoostInput").html('<input type="checkbox" id="expLoomiBoost"></input>');
     $("span#battleInput").html('<select id="expBattle" style="background-color:var(--theme-page-background-color--secondary,hsl(var(--page-background--dark))); color:white; font-family: rubik,helvetica,arial,sans-serif; border: 1px solid var(--theme-border-color); border-radius: 5px;"><option value="1">Wild</option><option value="1.5">Trainer</option><option value="3">Corrupt</option></select>');
     $("span#loomianIDInput").html('<input type="checkbox" id="expLoomianID"></input>');
     $("span#masteryInput").html('<input onClick="this.select();" type="text" value="0" id="expMastery" style="text-align: right; width: 30px; background-color:var(--theme-page-background-color--secondary,hsl(var(--page-background--dark))); color:white; font-family: rubik,helvetica,arial,sans-serif; border: 1px solid var(--theme-border-color); border-radius: 5px;"></input>');
 	$("span#participationInput").html('<select id="expParticipation" style="background-color:var(--theme-page-background-color--secondary,hsl(var(--page-background--dark))); color:white; font-family: rubik,helvetica,arial,sans-serif; border: 1px solid var(--theme-border-color); border-radius: 5px;"><option value="1">Participated</option><option value="0">In Party</option><option value="0.25">On Bench</option></select>');
+	$("span#carolInput").html('<input type="checkbox" id="expCarol"></input>');
 	
 	// Input Interpreter and Result Displayer
     $("#expYieldCalc").click(function() {
@@ -42,6 +43,12 @@ $(document).ready(function() {
     	}
     	else {
     		var expID = 1;
+    	}
+    	if(document.getElementById("expCarol").checked) {
+    		var expCarol = 1.1;
+    	}
+    	else {
+    		var expCarol = 1;
     	}
     	if(document.getElementById("expMastery").value >= 44 && document.getElementById("expMastery").value < 58) {
     		var expMastery = 1.1;
@@ -67,7 +74,7 @@ $(document).ready(function() {
     		var expParticipation = document.getElementById("expParticipation").value;
     	}
     	
-    	document.getElementById("expYieldOutput").innerHTML = calcExpYield(expBase, expLevel, expLoomiBoost, expBattle, expID, expMastery, expParticipation);
+    	document.getElementById("expYieldOutput").innerHTML = calcExpYield(expBase, expLevel, expLoomiBoost, expBattle, expID, expMastery, expParticipation, expCarol);
     	
     });
  

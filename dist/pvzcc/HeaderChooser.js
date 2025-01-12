@@ -332,7 +332,25 @@ var possibleTexts = [
 			"Just a week away!",
 			"Don't have to tell me twice!",
 			"It's time to get to work!",
-			"It's time to go to sleep!"
+			"It's time to go to sleep!",
+			"Wanted in several different states!",
+			"We are here to stop you Zomboss.",
+			"August 12 2026, the heat death of the universe.",
+			"Invading territories since 2024!",
+			"Rats, we’re rats, we’re the rats! We prey at night, we stalk at night, we’re the rats!",
+			"I would join the PvZCC general voice chat and ping everyone to join. I would then turn my camera and begin sobbing on cam , before using a pair of scissors to cut off all of my hair before arranging the strands into the words I miss you. I would then grab a nearby piece of paper and write the words emo broken hopeless over and over again before crumpling the paper, dipping it in water, and eating it. I would then give the camera a middle finger and delete the server to end the suffering once and for all.",
+			"The opening needs to be a little meatier!",
+			"Must I show you my bountiful rewards in order for you to see this?",
+			"Your Tall-nuts are kinda hot...",
+			"Hope this helps!",
+			"Check out the Brawl Stars Character Creator wiki!",
+			"Melodians... Taettogande... AUGH!",
+			"What's up, buttercup?",
+			"It's over {{USERNAME}}, I have the high ground!",
+			"Nice try, hotshot.",
+			"What are you saying “Oh” to?",
+			"Hi I'm Wall-nut!",
+			"My subreddit is gonna love this!"
         ],
         weight: 50000000
     },
@@ -435,7 +453,6 @@ var possibleTexts = [
             "🩵 Fun Animator!",
             "🩵 Miss Pembroke!",
             "💜 AsterWasTaken!",
-            "💜 DolphiGaming!",
             "💜 404That'sAnError!"
         ],
         weight: 450000
@@ -448,7 +465,6 @@ var possibleTexts = [
             "🩵🩵 Fun Animator!",
             "🩵🩵 Miss Pembroke!",
             "💜💜 AsterWasTaken!",
-            "💜💜 DolphiGaming!",
             "💜💜 404That'sAnError!"
         ],
         weight: 300000
@@ -461,7 +477,6 @@ var possibleTexts = [
             "🩵🩵🩵 Fun Animator!",
             "🩵🩵🩵 Miss Pembroke!",
             "💜💜💜 AsterWasTaken!",
-            "💜💜💜 DolphiGaming!",
             "💜💜💜 404That'sAnError!"
         ],
         weight: 15000
@@ -620,7 +635,7 @@ var possibleTexts = [
     {
         texts: [
             "👻💚 PunjiChocoBerry!",
-            "👻💚 DMdarkmatter!",
+            "👻💚 WiLdCaRd2048!",
             "👻🩵 Nuttin' to see here!",
             "👻💜 Creepes."
         ],
@@ -630,7 +645,7 @@ var possibleTexts = [
     {
         texts: [
             "👻💚💚 PunjiChocoBerry!",
-            "👻💚💚 DMdarkmatter!",
+            "👻💚💚 WiLdCaRd2048!",
             "👻🩵🩵 Nuttin' to see here!",
             "👻💜💜 Creepes."
         ],
@@ -640,7 +655,7 @@ var possibleTexts = [
     {
         texts: [
             "👻💚💚💚 PunjiChocoBerry!",
-            "👻💚💚💚 DMdarkmatter!",
+            "👻💚💚💚 WiLdCaRd2048!",
             "👻🩵🩵🩵 Nuttin' to see here!",
             "👻💜💜💜 Creepes."
         ],

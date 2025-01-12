@@ -45,6 +45,7 @@ mw.loader.using('mediawiki.util').then(function () {
         url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js',
         dataType: 'script',
         method: 'GET',
+        cache: true,
         scriptAttrs: {
             integrity: 'sha512-EBLzUL8XLl+va/zAsmXwS7Z2B1F9HUHkZwyS/VKwh3S7T/U0nF4BaU29EP/ZSf6zgiIxYAnKLu6bJ8dqpmX5uw==',
             crossorigin: 'anonymous'

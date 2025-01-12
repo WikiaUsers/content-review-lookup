@@ -26,10 +26,10 @@ mw.hook('wikipage.content').add(function () {
     button.click(function() {
         if (isCollapsed) {
             content.slideDown();
-            $(this).html('Collapse ▼');
+            $(this).html('Collapse ▲');
         } else {
             content.slideUp();
-            $(this).html('Expand ▲');
+            $(this).html('Expand ▼');
         }
         isCollapsed = !isCollapsed;
     });

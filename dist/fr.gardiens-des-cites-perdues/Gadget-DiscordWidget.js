@@ -25,4 +25,10 @@ loadScript('https://cdn.jsdelivr.net/npm/@widgetbot/crate@3', function () {
     channel: '719215577994100766',
     notifications: false
   });
+
+  // Superposition de WikiaBar sur le crate  
+  var wikiaBar = document.getElementById('WikiaBar');
+  if (wikiaBar) {
+    wikiaBar.parentNode.removeChild(wikiaBar);
+  }
 });

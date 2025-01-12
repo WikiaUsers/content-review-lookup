@@ -89,7 +89,9 @@
             this.api.get({
                 action: 'query',
                 meta: 'siteinfo',
-                siprop: 'specialpagealiases'
+                siprop: 'specialpagealiases',
+                smaxage: 86400,
+                maxage: 86400
             }).done(this.cbAliasFetch.bind(this));
         },
         fetchDeleteReasons: function() {

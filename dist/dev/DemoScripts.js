@@ -367,6 +367,11 @@
             styles: 'MediaWiki:Lightbox2.0.css'
         },
 
+        List: {
+            page: 'Global_Lua_Modules/List',
+            styles: 'MediaWiki:Global_Lua_Modules/List.css'
+        },
+
         ListGroupMembers: {
             page: 'Special:BlankPage',
             scripts: 'MediaWiki:ListGroupMembers.js'

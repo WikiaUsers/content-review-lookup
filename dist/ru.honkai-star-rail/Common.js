@@ -59,7 +59,7 @@ $(function() {
 });
 
 /** Взято с Minecraft Wiki **/
-/** Автоматически выставляет "Без лицензии", если лицензию не указывать (так можно проверять изображения в категории) **/
+/** Автоматически выставляет "Без лицензии", если лицензию не указывать (так можно проверять изображения в категории)
 if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 	var $license = $( '#wpLicense' );
 	if ( $license.length ) {
@@ -72,3 +72,4 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Upload' ) {
 		} );
 	}
 }
+ **/

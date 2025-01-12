@@ -1,4 +1,9 @@
-mw.hook('wikipage.content').add(function(){
+$.when(
+	mw.loader.using(['mediawiki.api', 'mediawiki.util']),
+	mw.hook('wikipage.content').add(function(){ return true; })
+).then(function(){
+	return new mw.Api().loadMessagesIfMissing(['redirectedfrom']);
+}).then(function(){
 	mw.util.addCSS(
 		'.SearchInput-module_suggestionsBox__YrJ7E {'+
 			'resize: vertical;'+
@@ -22,7 +27,8 @@ mw.hook('wikipage.content').add(function(){
 			var keyword = new RegExp(el.closest('.search__wrapper').querySelector('input').getAttribute('value').replace(/(^\s*|\s*$)/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 			Object.keys(s.redirects).forEach(function(k) {
 				if (name == s.redirects[k]) {
-					$(el).append(' <small><i>(Redirected from '+k.replace(keyword, '<b>$&</b>')+')</i></small>');
+					el.setAttribute('href', mw.util.getUrl(k));
+					$(el).append(' <small><i>'+mw.msg('redirectedfrom', k.replace(keyword, '<b>$&</b>'))+'</i></small>');
 					name = '_'; // Max 1 redirect listed
 				}
 			});

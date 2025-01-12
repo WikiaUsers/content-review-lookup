@@ -17,6 +17,69 @@ $(function(){
 	});
 });
 
+// 1. DiscussionTemplates configuration option
+window.DiscussionTemplates = {
+    templates: {
+        '3RR': {
+            name: 'Template:3RR',
+            title: 'Three-Revert Rule'
+        },
+        'ImageHelp': {
+            name: 'Template:ImageHelp',
+            title: 'ImageHelp'
+        },
+        'MoveWarning': {
+        	name: 'Template:MoveWarning',
+        	title: 'MoveWarning'
+        },
+        'New-Images': {
+        	name: 'Template:New Images',
+        	title: 'New Images'
+        },
+        'Visual': {
+        	name: 'Template:Visual',
+        	title: 'Visual'
+        },
+        'W': {
+        	name: 'W',
+        	title: 'W'
+        },
+        'Welcome': {
+        	name: 'Welcome',
+        	title: 'Welcome'
+        },
+        'Warning1': {
+        	name: 'Warning1',
+        	title: 'Warning1'
+        },
+        'Warning2': {
+        	name: 'Warning2',
+        	title: 'Warning2'
+        },
+        'Warning3': {
+        	name: 'Warning3',
+        	title: 'Warning3'
+        },
+        'WarningCategory': {
+        	name: 'WarningCategory',
+        	title: 'Category Warning',
+        },
+        'WarningTalk': {
+            name: 'Template:WarningTalk',
+            title: 'Talk Warning'
+        }
+    },
+    allowedGroups: ['sysop', 'rollback']
+};
+
+// 2. DiscussionTemplates import statement
+importArticles({
+	type: 'script',
+	articles: [
+		'u:dev:MediaWiki:DiscussionTemplates.js'
+		]
+});
+
 // Configuration for Pathway application form
 window.adoptInternational = {
     unsupportedLanguages: window.communityRequestsUnsupportedLangs,

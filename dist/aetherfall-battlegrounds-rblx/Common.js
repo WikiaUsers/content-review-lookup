@@ -1,7 +1,6 @@
-
 var parentDiv = document.querySelector('.mw-parser-output');
 
-// video
+// video =======================================================================
 var videoElements = parentDiv.querySelectorAll('[id^="VideoTemplate-"]');
 for(var i = 0; i < videoElements.length; i++){
 	var element = videoElements[i];
@@ -12,17 +11,18 @@ for(var i = 0; i < videoElements.length; i++){
 	var videoElement = document.createElement("video");
 	videoElement.classList.add("video");
 	
-    videoElement.onclick = function(){
-        videoElement.controls = "true";
-        videoElement.loop = "false";
-    }
-    videoElement.onerror = function(){
-        element.classList.add("video-error");
-    }
+        (function(videoElement, element) {
+            videoElement.onclick = function () {
+                videoElement.muted = !videoElement.muted;
+            };
+            videoElement.onerror = function () {
+                element.classList.add("video-error");
+            };
+        })(videoElement, element);
 	
 	videoElement.src = 'https://rus1130.github.io/afbg/'+ weapon +'/'+ move +'.mp4';
 	videoElement.type = "video/mp4";
-	videoElement.title = "click to enable controls"
+	videoElement.title = "click to toggle audio"
 	videoElement.muted = "true";
 	videoElement.loop = "true";
 	videoElement.autoplay = "true";
@@ -31,7 +31,7 @@ for(var i = 0; i < videoElements.length; i++){
 	element.classList.remove("video-loading");
 }
 
-// audio
+// audio =======================================================================
 var audioPlayers = parentDiv.querySelectorAll('[id^="AudioTemplate-"]');
 audioPlayers.forEach(function(element){
     var audioPlayer = document.createElement('div');

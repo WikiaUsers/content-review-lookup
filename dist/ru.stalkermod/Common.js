@@ -30,6 +30,9 @@ InactiveUsers = {
     text: 'НЕАКТИВНЫЙ ПОЛЬЗОВАТЕЛЬ'
 };
 
+//Back To Top Button
+window.BackToTopModern = true;
+
 /*Импорт*/
 
 importArticles({

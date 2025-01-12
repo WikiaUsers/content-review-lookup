@@ -345,10 +345,10 @@ window.MessageWallUserTags = {
         'Spongebob456': 'Bureaucrat • Administrator',
         'BSpongeSM02':  'Bureaucrat • Administrator',
         'Anthony2306':  'Bureaucrat • Administrator',
+        'FireMatch': 'Bureaucrat • Administrator',
         
         'Koolkitty108': 'Administrator',
         'Thelxinoe': 'Administrator',
-        'FireMatch': 'Administrator',
         'The_Smarter,_Wiser_King_Dedede': 'Administrator',
     
         'PinkPugPrincess': 'Assistant • Discussion Moderator',

@@ -1,235 +1,373 @@
 mw.hook("wikipage.content").add(function($content) {
-    // This element is placed at the bottom of the page. It serves as a tooltip for showing article info on hover.
-    var tooltip = $("<div id=\"item-tooltip\"></div>");
-    
+	/*
+	This element serves as a tooltip for showing article info on a link's hover.
+	It pulls the desired infobox's information and displays it; if none is found, no tooltip is displayed.
+	Supports targeting of specific infoboxes in case an article contains multiple infoboxes. This is done with the help of a parameter named "anchor" assigned to each of the infoboxes' templates. For example, one might have a link to an article's section such as "Gems#Amethyst" which has multiple infoboxes. Our Amethyst infobox should then include a parameter such as "anchor=Amethyst" in order for the tooltip to know which infobox to display.
+	Supports display of panels within an infobox as well. The tooltip will display each panel's information separately, switching panels every 5 seconds. In addition, a 'summary' panel will be displayed before the other content panels with aggregated quantities of the content panels' values.
+	*/
+	
+    // Tooltip is placed at the bottom of the page.
+    var tooltip = $('<div id="item-tooltip"></div>');
+
     // Cache for already-checked items, to save resources.
     var cache = {};
-    var failed = {};
-    var cachePages = {};
     // To properly load the tooltip when the user changes focus quickly.
     var hovered_article = null;
     // For positioning the tooltip.
-    var lastX = 0, lastY = 0;
-    
+    var lastX = 0,
+        lastY = 0;
+    // For rotating through the tooltip's panels if needed.
+    var nextPanel,
+        currentPanel = 0;
+
     function updatePosition() {
         tooltip.css({
-           "left": Math.min(wind.width() - tooltip.width() - 35, lastX + 10),
-           "top":  Math.min(wind.height() - tooltip.height() - 35, lastY + 50)
+            left: Math.min(wind.width() - tooltip.width() - 35, lastX + 10),
+            top: Math.min(wind.height() - tooltip.height() - 35, lastY + 50),
         });
     }
-    
+
     // Generates a section of key-value pairs to the tooltip.
-    function generateSection(sec, items) {
-        for (var i = 0; i < items.length; i++) {
-            var item = $("<div class=\"it-infoitem\"><span class=\"it-infoitem-key\"></span><span class=\"it-infoitem-val\"></span></div>");
-            var current = $(items[i]);
-            item.find(".it-infoitem-key").text(current.find(".pi-data-label").text());
-            item.find(".it-infoitem-val").html(current.find(".pi-data-value").html()); // To allow for listing.
-            sec.append(item);
+    function generateSection(data, isSmart, parent) {
+        var section = $('<div class="it-infobox"></div>');
+        var isGroup = Array.isArray(data);
+        var header = isGroup && findByProp(data, "type", "header")[0];
+        var items = isGroup ? findByProp(data, "type", "data") : [data];
+        if (header) {
+            var title = $('<div class="it-infobox-title"></div>');
+            title.html(header.data.value).text();
+            parent ? parent.append(title) : tooltip.append(title);
         }
+        items.forEach(function (item) {
+            if (
+                item.data.source === "sketchfab_link" ||
+                (isSmart && item.data.value === "-")
+            )
+                return;
+            var secItem = $(
+                '<div class="it-infoitem"><span class="it-infoitem-key"></span><span class="it-infoitem-val"></span></div>'
+            );
+            var itemKey = secItem.find(".it-infoitem-key");
+            var itemVal = secItem.find(".it-infoitem-val");
+
+            itemKey.text(item.data.label.replace(isSmart ? /<.+>/ : "", ""));
+            itemVal.html(item.data.value.replace(isSmart ? /<.+>/ : "", "")); // To allow for templates and listing.
+
+            /*var valImage = secItem.find(".it-infoitem-val > img");
+            if (valImage.length && valImage.attr("src").startsWith("data:"))
+                valImage.attr("src", valImage.attr("data-src"));*/
+
+            section.append(secItem);
+        });
+        parent ? parent.append(section) : tooltip.append(section);
     }
-    
-    function splitByMany(str, sep) {
-        var result = [];
-        var buffer = "";
-        for (var i = 0; i < str.length; i++) {
-            if (sep.indexOf(str.substr(i, 1)) > -1) {
-                if (buffer.length > 0)
-                    result.push(buffer);
-                buffer = "";
-            }
-            buffer += str.substr(i, 1);
-        }
-        if (buffer.length > 0)
-            result.push(buffer);
-        return result;
-    }
-    
-    // Generates a section of key-value pairs to the tooltip from our own syntax.
-    function generateDataSection(str) {
-        var sec = $("<div class=\"it-infobox\"></div>");
-        var item;
-        
-        var lines = splitByMany(str, ["!", "~"]);
-        for (var i = 0; i < lines.length; i++) {
-            if (lines[i].indexOf("!") === 0) {
-                if (item !== undefined)
-                    sec.append(item);
-                item = $("<div class=\"it-infoitem\"><span class=\"it-infoitem-key\"></span><span class=\"it-infoitem-val\"></span></div>");
-                item.find(".it-infoitem-key").text(lines[i].substr(1).trim());
-            } else if (item !== undefined)
-                item.find(".it-infoitem-val").append($("<p></p>").text(lines[i].substr(1).trim()));
-        }
-        if (item !== undefined)
-            sec.append(item);
-        
-        return sec;
-    }
-    
-    function attrIsSet(val, defValue) {
-        return val !== null && val !== undefined && val.length > 0 && val != defValue;
-    }
-    
-    // Updates the DOM for our tooltip element using the found data.
-    function setTooltip(data) {
-        tooltip.html("<div class=\"it-header\"><img/><div class=\"it-title\">-</div></div>");
-        if (data.hasClass("tooltip-data")) {
-            tooltip.find(".it-title").text(data.attr("data-title"));
-            tooltip.find(".it-header img").attr("src",
-                (data.find("img").attr("data-src") !== undefined && data.find("img").attr("data-src").length > 0) ? data.find("img").attr("data-src") : data.find("img").attr("src"));
-            if (attrIsSet(tooltip.attr("data-desc"), "{{{Description}}}"))
-                tooltip.append($("<div class=\"it-infobox it-desc\"></div>").text(tooltip.attr("data-desc")));
-            for (var i = 1; i <= 5; i++) {
-                if (attrIsSet(data.attr("data-sectiontitle" + i), "{{{Section title " + i + "}}}")) {
-                    tooltip.append($("<div class=\"it-infobox-title\"></div>").text(data.attr("data-sectiontitle" + i)));
-                    tooltip.append(generateDataSection(data.attr("data-sectionlist" + i)));
+
+    // Generate the panels containing a summary and section contents to the tooltip.
+    function generatePanels(summaryHeader, panels) {
+        var summary = {};
+
+        panels.forEach(function (panel, i) {
+            var itPanel = $('<div class="it-panel"></div>').hide(); // Separate panel content from the other panels.
+            itPanel.attr("data-panel", i + 1);
+            var panelData = {};
+
+            findByProp(panel.value, "type", ["data", "group"]).forEach(
+                function (section) {
+                    generateSection(
+                        section.data.value,
+                        section.data["row-items"] !== null,
+                        itPanel
+                    );
+
+                    findByProp(section.data.value, "type", "data").forEach(
+                        // Store panel values to use in summary.
+                        function (item) {
+                            var header = findByProp(
+                                section.data.value,
+                                "type",
+                                "header"
+                            )[0].data.value;
+                            if (panelData[header] === undefined)
+                                panelData[header] = {};
+                            var itemKey = item.data.label.replace(/<.+>/, "");
+                            var itemVal = parseFloat(
+                                item.data.value.replace(/<.+>|,/g, "")
+                            );
+                            panelData[header][itemKey] = isNaN(itemVal) ? 0 : itemVal;
+                        }
+                    );
+                }
+            );
+
+            for (var header in panelData) {
+                // Calculate aggregated totals of all the panel's values to display in summary.
+                if (summary[header] === undefined) summary[header] = {};
+                for (var itemKey in panelData[header]) {
+                    summary[header][itemKey] === undefined
+                        ? (summary[header][itemKey] = panelData[header][itemKey]) : (summary[header][itemKey] += panelData[header][itemKey]);
                 }
             }
-        } else {
-            tooltip.find(".it-title").text(data.find(".pi-title").text());
-            tooltip.find(".it-header img").attr("src", data.find(".pi-image img").attr("src"));
-            if (data.find(".pi-image .pi-caption").length > 0)
-                tooltip.append($("<div class=\"it-infobox it-desc\"></div>").text(data.find(".pi-image .pi-caption").text()));
-            var dsec = data.find("section, >.pi-data:not([data-source='sketchfab_link'])");
-            for (var i = 0; i < dsec.length; i++) {
-                var csec = $(dsec[i]);
-                var sec = $("<div class=\"it-infobox\"></div>");
-                if (csec.is("section")) {
-                    var ibTitle = csec.find(".pi-header"); // Collapsible sections can have titles.
-                    if (ibTitle.length > 0)
-                        tooltip.append($("<div class=\"it-infobox-title\"></div>").text(ibTitle.text()));
-                    generateSection(sec, csec.find(".pi-data:not([data-source='sketchfab_link'])"));
-                } else
-                    generateSection(sec, csec);
-                tooltip.append(sec);
-            }
-        }
-        tooltip.show();
-        tooltip.find(".it-infobox").each(function() {
-            if (this.offsetHeight < this.scrollHeight)
-                sec.addClass("overflow"); // Applies some overflow-look through pseudoclasses.
+
+            var panelHeader = $(
+                '<div class="it-header"><img/><div class="it-title">-</div></div>'
+            );
+            var imageData = findByProp(panel.value, "type", "image")[0].data[0];
+            if (imageData.caption)
+                itPanel.prepend(
+                    $('<div class="it-infobox it-desc"></div>').text(
+                        imageData.caption
+                    )
+                );
+            itPanel.prepend(panelHeader);
+            panelHeader.find(".it-title").text(panel.label);
+            panelHeader.find("img").attr("src", imageData.url);
+
+            tooltip.append(itPanel);
         });
+
+        var summaryPanel = $('<div class="it-panel" data-panel="0"></div>');
+        summaryPanel.html(summaryHeader);
+        for (var header in summary) {
+            var title = $('<div class="it-infobox-title"></div>');
+            summaryPanel.append(title.text(header + " (Total)"));
+            var section = $('<div class="it-infobox"></div>');
+            for (var itemKey in summary[header]) {
+                var itemVal = summary[header][itemKey];
+                if (!itemVal) continue;
+                var secItem = $(
+                    '<div class="it-infoitem"><span class="it-infoitem-key"></span><span class="it-infoitem-val"></span></div>'
+                );
+                secItem.find(".it-infoitem-key").text(itemKey);
+                secItem.find(".it-infoitem-val").text(itemVal.toLocaleString());
+                section.append(secItem);
+            }
+            summaryPanel.append(section);
+        }
+        tooltip.prepend(summaryPanel); // Summary panel containing aggregated values of the other panels' contents.
+
+        var panelCount = tooltip.find(".it-panel").length;
+        var bulletBar = $('<div class="it-bullet-bar"></div>');
+        for (var i = 0; i < panelCount; i++)
+            bulletBar.append(
+                $('<div class="it-bullet"></div>').attr("data-bullet", i)
+            );
+        tooltip.append(bulletBar); // Bottom bar containing bullet points which indicate the panels' progression.
+
+        var displayPanel;
+        (displayPanel = function () {
+            for (var i = 0; i < panelCount; i++) {
+                var iPanel = $(tooltip.find(".it-panel")[i]);
+                var iBullet = $(tooltip.find(".it-bullet")[i]);
+                if (parseInt(iPanel.attr("data-panel")) === currentPanel)
+                    iPanel.show();
+                else iPanel.hide();
+                if (parseInt(iBullet.attr("data-bullet")) === currentPanel)
+                    iBullet.addClass("animate");
+                else iBullet.removeClass("animate");
+            }
+        })();
+
+        nextPanel = setInterval(function () {
+            // Loop through available panels, switching every 5 seconds.
+            currentPanel++;
+            if (currentPanel + 1 > panelCount) currentPanel = 0;
+            displayPanel();
+            setOverflowSections();
+            updatePosition();
+        }, 5000);
+    }
+
+    // Updates the DOM for our tooltip element using the found data.
+    function setTooltip(data) {
+        var title = findByProp(data, "type", "title")[0].data.value;
+        var imageData = findByProp(data, "type", "image")[0].data[0];
+        var image = imageData.url;
+        var caption = imageData.caption;
+        var header = $(
+            '<div class="it-header"><img/><div class="it-title">-</div></div>'
+        );
+        header.find(".it-title").text(title);
+        header.find("img").attr("src", image);
+
+        if (findByProp(data, "type", "panel").length) {
+            // The infobox is separated into panels, so we'll do the same with the tooltip.
+            tooltip.empty();
+            generatePanels(
+                header,
+                findByProp(data, "type", "panel")[0].data.value.map(function (
+                    section
+                ) {
+                    return section.data;
+                })
+            );
+        } else {
+            tooltip.html(header);
+
+            if (caption && imageData.alt === null)
+                tooltip.append(
+                    $('<div class="it-infobox it-desc"></div>').text(caption)
+                );
+
+            var sections = findByProp(data, "type", ["data", "group"]);
+            sections.forEach(function (section) {
+                generateSection(
+                    section.type === "group" ? section.data.value : section,
+                    section.data["row-items"] !== null
+                );
+            });
+        }
+
+        tooltip.show();
+        setOverflowSections();
         updatePosition();
     }
     
-    // Measurement to avoid mess-up for our jQuery selector statement, as it's influenced by user input.
-    function escapeHtml(unsafe) {
-        return decodeURIComponent(unsafe
-            .replace(/"/g, "&quot;")
-            .replace(/%~/g, "-")
-            .replace(/_/g, " ")
-            .replace(/\\/g, ""));
+    function setOverflowSections() {
+        tooltip.find(".it-infobox").each(function () {
+            var box = $(this);
+            if (box[0].offsetHeight < box[0].scrollHeight) {
+                box.addClass("overflow"); // Applies some overflow-look through pseudoclasses.
+                var scrollHeight = box[0].scrollHeight;
+                var animateScroll;
+                (animateScroll = function () {
+                    // Scroll through box's contents automatically in a loop.
+                    box[0].scrollTop = 0;
+                    if (box.is(":visible"))
+                        setTimeout(function () {
+                            box.stop().animate(
+                                {
+                                    scrollTop: scrollHeight,
+                                },
+                                {
+                                    duration: (scrollHeight / 75) * 1000,
+                                    easing: "linear",
+                                    complete: function () {
+                                        box[0].scrollTop = 0;
+                                        animateScroll();
+                                    },
+                                }
+                            );
+                        }, 1750);
+                })();
+            }
+        });
     }
-    
+
+    function findByProp(object, property, value) {
+        return object.filter(function (obj) {
+            return obj[property] === value || value.indexOf(obj[property]) > -1;
+        });
+    }
+
+    // Find the correct infobox given an anchor by comparing it to the "anchor" parameter given to the template.
+    function findBoxByAnchor(data, anchor) {
+        return data.filter(function (infobox) {
+            return findByProp(infobox, "type", "data").filter(function (
+                parameter
+            ) {
+                return (
+                    parameter.data.source === "anchor" &&
+                    parameter.data.value === anchor
+                );
+            }).length;
+        });
+    }
+
     // Checks if we have cached data on the article, and loads/sets accordingly.
     function updateTooltip(article) {
         tooltip.hide();
         hovered_article = article;
-        if (article in cache) {
-            if (cache[article] !== false) {
-                setTooltip(cache[article]); // The article data was cached, load it.
+        var queryParts = article.split("#");
+        var articleName = queryParts[0];
+
+        function handleParse(parseData) {
+            var infobox = parseData[0]; // By default, grab first infobox in the article.
+            if (queryParts.length > 1 && parseData.length > 1) {
+                // URL has anchor, look for the right infobox.
+                var infoboxMatches = findBoxByAnchor(
+                    parseData,
+                    decodeURIComponent(queryParts[1]).replaceAll("_", " ") // Escape HTML characters and convert to readable format.
+                );
+
+                if (infoboxMatches.length) infobox = infoboxMatches[0]; // The anchor matches an infobox, we'll use it.
             }
-        } else { // The article wasn't found in cache, pull it.
-            tooltip.html("<div class=\"it-title it-loading\">Loading...</div>");
+
+            if (hovered_article == article) setTooltip(infobox);
+        }
+
+        if (articleName in cache) {
+            if (cache[articleName] !== false) handleParse(cache[articleName]); // The article data was cached, load it.
+        } else {
+            // The article wasn't found in cache, pull it.
+            tooltip.html('<div class="it-title it-loading">Loading...</div>');
             tooltip.show();
             updatePosition();
-            
-            var handleDom = function(domString) {
-                var dom = $(domString);
-                var queryParts = article.split("#");
-                
-                // We're showing information from the first infobox in the tooltip.
-                var infobox = $(dom.find(".portable-infobox"));
-                if (dom.find(".tooltip-data").length > 0)
-                    infobox = dom.find(".tooltip-data");
-                
-                if (queryParts.length > 1) { // URL has anchor, look for the right infobox.
-                    var currentTabber = $(dom.find("#WikiaArticle>div"));
-                    var anchorParts = queryParts[1].split("-");
-                    for (var i = 0; i < anchorParts.length; i++) {
-                        var newTabber = $(currentTabber.find(">.tabber>.tabbertab[title='" + escapeHtml(anchorParts[i]) + "']"));
-                        if (newTabber.length > 0)
-                            currentTabber = newTabber;
-                        if (currentTabber.find(">.tooltip-data").length > 0) {
-                            infobox = currentTabber.find(">.tooltip-data");
-                            break;
+
+            if (articleName in cache) handleParse(cache[articleName]);
+            else
+                $.getJSON(
+                    "https://fantastic-frontier-roblox.fandom.com/api.php?action=parse&prop=properties&format=json&callback=?&page=" + // We use the MediaWiki API to parse solely the article's infoboxes.
+                        articleName,
+                    function (data) {
+                        if ("error" in data || !data.parse.properties.length) {
+                            // Article did not exist or doesn't have an infobox, so we'll mark this article as not having a tooltip.
+                            cache[articleName] = false;
+                            if (hovered_article == article) tooltip.hide();
+                        } else {
+                            var infoboxes = findByProp(
+                                data.parse.properties,
+                                "name",
+                                "infoboxes"
+                            );
+
+                            if (!infoboxes.length) {
+                                // Article now definitely doesn't have an infobox, mark it as not having a tooltip.
+                                cache[articleName] = false;
+                                if (hovered_article == article) tooltip.hide();
+                            } else {
+                                var parsedInfoboxes = JSON.parse(
+                                    infoboxes[0]["*"]
+                                ).map(function (parsed) {
+                                    return parsed.data;
+                                });
+
+                                cache[articleName] = parsedInfoboxes;
+                                handleParse(parsedInfoboxes);
+                            }
                         }
                     }
-                    // If our nested tabbers contains any infobox, we'll use that over the first one one the page.
-                    if ($(currentTabber.find(".portable-infobox")).length > 0) {
-                        infobox = $(currentTabber.find(".portable-infobox"));
-                    }
-                    if (currentTabber.find(">.tooltip-data").length > 0) {
-                        infobox = currentTabber.find(">.tooltip-data");
-                    }
-                }
-                
-                if (infobox.length > 0) {
-                    infobox = $(infobox[0]);
-                    
-                    // Handle infobox tabs.
-                    if (queryParts.length > 1 && infobox.find(".pi-tab-link").length > 1) {
-                        var tabId = "pi-tab-0";
-                        var escapedAnchor = escapeHtml(queryParts[1]);
-                        infobox.find(".pi-tab-link").each(function() {
-                            if ($(this).text().trim() == escapedAnchor) {
-                                tabId = $(this).attr("data-pi-tab");
-                            }
-                        });
-                        infobox.find(".pi-image-collection-tab-content").each(function() {
-                            if ($(this).attr("id") != tabId)
-                                $(this).remove();
-                        });
-                        infobox.find(".pi-title").text(
-                            infobox.find(".pi-title").text() + " » " + escapedAnchor
-                        );
-                    }
-                    
-                    cache[article] = infobox;
-                    if (hovered_article == article)
-                        setTooltip(infobox);
-                } else {
-                    // No infobox, so we'll mark this article as not having a tooltip.
-                    cache[article] = false;
-					if (hovered_article == article) tooltip.hide();
-                }
-            };
-            
-            // Cache page content for sets.
-            var articleName = article.split("#")[0];
-            if (articleName in cachePages)
-                handleDom(cachePages[articleName]);
-            else
-                $.get("https://fantastic-frontier-roblox.fandom.com/wiki/" + article, function(domString) {
-                    cachePages[articleName] = domString;
-                    handleDom(domString);
-                }).fail(function() {
-                    // Article did not exist, so we'll mark this article as not having a tooltip.
-                    cache[article] = false;
-                });
+                );
         }
     }
-    
-    // Hook up tooltips to wiki links.
-	// Edit: If elements are loaded in after article load, we catch those too.
-	$('#content').on('mouseenter', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {
-		var elem = $(this);
-		var article = elem.is("div") ? elem.attr("data-article") : elem.attr("href").substr(6); // Trim away /wiki/.
-		if (article.indexOf("action=") > -1) return; // Don't allow pulling any links with "action=", as it may be an URL query part.
-		updateTooltip(article);
-	});
-	$('#content').on('mouseleave', "*:not(.mw-editsection)>a[href^='/wiki/'], .tooltip-linker", function() {
-		tooltip.hide();
-        hovered_article = null;
-	});
-    
+
+    // Hook up tooltips to wiki links. If elements are loaded in after article load, we catch those too.
+    $("#content").on(
+        "mouseenter",
+        "*:not(.mw-editsection, .mw-editform-cancel) > a[href^='/wiki/']",
+        function () {
+            var article = $(this).attr("href").substr(6); // Trim away /wiki/.
+            if (article.indexOf("action=") > -1) return; // Don't allow pulling any links with "action=", as it may be an URL query part.
+            updateTooltip(article);
+        }
+    );
+    $("#content").on(
+        "mouseleave",
+        "*:not(.mw-editsection, .mw-editform-cancel) > a[href^='/wiki/']",
+        function () {
+            tooltip.hide();
+            hovered_article = null;
+            clearInterval(nextPanel);
+            currentPanel = 0;
+        }
+    );
+
     // Initialize.
     tooltip.hide();
     $(document.body).append(tooltip);
     var wind = $(window);
-    
+
     // Follow the cursor.
-    $(document).on('mousemove', function(e){
+    $(document).on("mousemove", function (e) {
         lastX = e.clientX;
         lastY = e.clientY;
         updatePosition();

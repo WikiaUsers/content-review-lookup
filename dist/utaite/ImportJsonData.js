@@ -3,7 +3,7 @@
     var initialized = false;
     var processingTable = false;
     var pageExistenceCache = {};
-    var currentJsonData = [];
+    var currentJsonData = {};
     var jsonPath = '';
 
     function addThemeStyles() {
@@ -90,20 +90,30 @@
         
         // Handle form submission
         $('#editForm').submit(function(e) {
-            e.preventDefault();
-            var index = $('#rowIndex').val();
-            var updatedData = {
-                ranking: $('#ranking').val(),
-                song_title: $('#songTitle').val(),
-                utaite: $('#utaite').val(),
-                video_id: $('#videoId').val(),
-                ufu: $('#ufu').val() || null
-            };
-            
-            currentJsonData[index] = updatedData;
-            saveJsonData();
-            $('#editModal').hide();
-        });
+		    e.preventDefault();
+		    var tableId = $(this).data('table-id');
+		    var index = parseInt($('#rowIndex').val());
+		    var updatedData = {
+		        ranking: $('#ranking').val(),
+		        song_title: $('#songTitle').val(),
+		        utaite: $('#utaite').val(),
+		        video_id: $('#videoId').val(),
+		        ufu: $('#ufu').val() || null
+		    };
+		    
+		    // Update the correct table's data
+		    currentJsonData[tableId][index] = updatedData;
+		    
+		    // Find the table element and save
+		    var $table = $('#' + tableId);
+		    if ($table.length) {
+		        saveJsonData($table);
+		        $('#editModal').hide();
+		    } else {
+		        console.error('Table not found:', tableId);
+		        mw.notify('Error: Could not find table', { type: 'error' });
+		    }
+		});
     }
     
     // Function to set theme
@@ -127,65 +137,82 @@
         processTable();
     }
     
-    function saveJsonData() {
-    var api = new mw.Api();
-    var dataTable = $('#ranking-table').DataTable();
+    function saveJsonData($table) {
+	    var api = new mw.Api();
+	    var tableId = $table.attr('id');
+	    var dataTable = tableInstances[tableId];
+	    
+	    if (!dataTable) {
+	        console.error('DataTable instance not found for table:', tableId);
+	        mw.notify('Error: Could not access table data', { type: 'error' });
+	        return;
+	    }
+	    
+	    // Store current page information
+	    var currentPage = dataTable.page();
+	    var pageLength = dataTable.page.len();
+	    var scrollPosition = $(window).scrollTop();
+	
+	    // Get the table-specific data
+	    var tableData = currentJsonData[tableId];
+	    if (!Array.isArray(tableData)) {
+	        console.error('Invalid table data for table:', tableId);
+	        mw.notify('Error: Invalid table data', { type: 'error' });
+	        return;
+	    }
+	
+	    api.postWithToken('csrf', {
+	        action: 'edit',
+	        title: $table.data('json'),
+	        text: JSON.stringify(tableData, null, 2),
+	        summary: 'Updated data via table editor'
+	    }).done(function() {
+	        // Create table data array for the updated row
+	        var updatedTableData = tableData.map(function(item) {
+	            return new Promise(function(resolve) {
+	                var pageName = item.ufu || item.utaite;
+	                createUtaiteLink(pageName, item.utaite, function(link) {
+	                    resolve([
+	                        item.ranking,
+	                        item.song_title,
+	                        link,
+	                        createNndLink(item.video_id),
+	                        ''
+	                    ]);
+	                });
+	            });
+	        });
+	
+	        // Wait for all links to be created
+	        Promise.all(updatedTableData).then(function(processedData) {
+	            // Clear and update the DataTable
+	            dataTable.clear();
+	            dataTable.rows.add(processedData);
+	            
+	            // Restore pagination state and redraw
+	            dataTable.page(currentPage).page.len(pageLength).draw('full-hold');
+	            
+	            // Restore scroll position
+	            $(window).scrollTop(scrollPosition);
+	            
+	            mw.notify('Data saved and table updated successfully!', { type: 'success' });
+	        });
+	    }).fail(function(error) {
+	        console.error('Error saving data:', error);
+	        mw.notify('Error saving data: ' + error, { type: 'error' });
+	    });
+	}
     
-    // Store current page information
-    var currentPage = dataTable.page();
-    var pageLength = dataTable.page.len();
-    var scrollPosition = $(window).scrollTop();
-
-    api.postWithToken('csrf', {
-        action: 'edit',
-        title: jsonPath,
-        text: JSON.stringify(currentJsonData, null, 2),
-        summary: 'Updated data via table editor'
-    }).done(function() {
-        // Create table data array for the updated row
-        var tableData = currentJsonData.map(function(item, index) {
-            return new Promise(function(resolve) {
-                var pageName = item.ufu || item.utaite;
-                createUtaiteLink(pageName, item.utaite, function(link) {
-                    resolve([
-                        item.ranking,
-                        item.song_title,
-                        link,
-                        createNndLink(item.video_id),
-                        ''
-                    ]);
-                });
-            });
-        });
-
-        // Wait for all links to be created
-        Promise.all(tableData).then(function(processedData) {
-            // Clear and update the DataTable
-            dataTable.clear();
-            dataTable.rows.add(processedData);
-            
-            // Restore pagination state and redraw
-            dataTable.page(currentPage).page.len(pageLength).draw('full-hold');
-            
-            // Restore scroll position
-            $(window).scrollTop(scrollPosition);
-            
-            mw.notify('Data saved and table updated successfully!', { type: 'success' });
-        });
-    }).fail(function(error) {
-        mw.notify('Error saving data: ' + error, { type: 'error' });
-    });
-}
-    
-    function openEditModal(rowIndex, data) {
-        $('#rowIndex').val(rowIndex);
-        $('#ranking').val(data.ranking);
-        $('#songTitle').val(data.song_title);
-        $('#utaite').val(data.utaite);
-        $('#ufu').val(data.ufu || '');
-        $('#videoId').val(data.video_id);
-        $('#editModal').show();
-    }
+	function openEditModal(rowIndex, data, $table) {
+	    $('#rowIndex').val(rowIndex);
+	    $('#ranking').val(data.ranking);
+	    $('#songTitle').val(data.song_title);
+	    $('#utaite').val(data.utaite);
+	    $('#ufu').val(data.ufu || '');
+	    $('#videoId').val(data.video_id);
+	    $('#editForm').data('table-id', $table.attr('id'));
+	    $('#editModal').show();
+	}
     
     function createNndLink(videoId) {
         return '<span class="nnd-link" data-nnd-id="' + videoId + '" style="vertical-align: middle; display: inline-block;">' +
@@ -284,165 +311,478 @@
         });
     }
 
-    function isUserAdmin() {
-        return mw.config.get('wgUserGroups') && mw.config.get('wgUserGroups').includes('sysop');
-    }
+	var userEditPermission = null;
+	
+	
+	function checkUserEditPermission(callback) {
+	    // console.log('Starting checkUserEditPermission...');
+	    if (userEditPermission !== null) {
+	        // console.log('Using cached permission:', userEditPermission);
+	        callback(userEditPermission);
+	        return;
+	    }
+	
+	    var userGroups = mw.config.get('wgUserGroups') || [];
+	    // console.log('User groups:', userGroups);
+	    
+	    // If user is admin, they can always edit
+	    if (userGroups.indexOf('sysop') !== -1) {
+	        // console.log('User is admin');
+	        userEditPermission = true;
+	        callback(true);
+	        return;
+	    }
+	    
+	    // If user is anonymous, they can't edit
+	    if (mw.user.isAnon()) {
+	        // console.log('User is anonymous');
+	        userEditPermission = false;
+	        callback(false);
+	        return;
+	    }
+	
+	    // Check if user has either user or emailconfirmed role
+	    var hasRequiredRole = userGroups.indexOf('user') !== -1 && 
+	                         (userGroups.indexOf('autoconfirmed') !== -1 || 
+	                          userGroups.indexOf('emailconfirmed') !== -1);
+	    
+	    console.log('Has required role:', hasRequiredRole);
+	
+	    // If no jsonPath, we can't check protection, so base it on role only
+	    if (!jsonPath) {
+	        console.log('No jsonPath available, using role-based permission only');
+	        userEditPermission = hasRequiredRole;
+	        callback(hasRequiredRole);
+	        return;
+	    }
+	
+	    // console.log('Checking API for page:', jsonPath);
+	
+	    // Get the protection status and let MediaWiki API determine if user can edit
+	    var api = new mw.Api();
+	    api.get({
+	        action: 'query',
+	        prop: 'info',
+	        inprop: 'protection',
+	        titles: jsonPath,
+	        format: 'json'
+	    }).done(function(data) {
+	        console.log('API response:', data);
+	        
+	        // If we can't get protection info, fall back to role-based permission
+	        if (!data || !data.query || !data.query.pages) {
+	            console.log('No protection info available, using role-based permission');
+	            userEditPermission = hasRequiredRole;
+	            callback(hasRequiredRole);
+	            return;
+	        }
+	        
+	        var pages = data.query.pages;
+	        var pageId = Object.keys(pages)[0];
+	        var page = pages[pageId];
+	        
+	        var canEdit = true; // Default to true if no protection
+	
+	        if (page && page.protection && page.protection.length) {
+	            console.log('Protection data found:', page.protection);
+	            var editProtection = null;
+	            for (var i = 0; i < page.protection.length; i++) {
+	                if (page.protection[i].type === 'edit') {
+	                    editProtection = page.protection[i];
+	                    break;
+	                }
+	            }
+	            
+	            if (editProtection) {
+	                console.log('Edit protection found:', editProtection);
+	                canEdit = editProtection.level === 'autoconfirmed' || 
+	                         editProtection.level === 'user';
+	            }
+	        }
+	
+	        userEditPermission = canEdit && hasRequiredRole;
+	        console.log('Final permission result:', userEditPermission);
+	        callback(userEditPermission);
+	    }).fail(function(error) {
+	        console.error('API request failed:', error);
+	        // On error, fall back to role-based permission
+	        userEditPermission = hasRequiredRole;
+	        callback(hasRequiredRole);
+	    });
+	}
+	
+	function bindEditButtonHandler($table) {
+	    var tableId = $table.attr('id');
+	    
+	    $table.on('click', '.fa-edit', function(e) {
+	    	jsonPath = $table.data('json');
+	    	console.log('Setting jsonPath for permission check:', jsonPath);
+	        checkUserEditPermission(function(canEdit) {
+	            if (canEdit) {
+	                try {
+	                    var $button = $(e.target);
+	                    var $row = $button.closest('tr');
+	                    
+	                    // Get DataTable instance from stored instances
+	                    var dataTable = tableInstances[tableId];
+	                    if (!dataTable) {
+	                        console.error('DataTable instance not found for table:', tableId);
+	                        mw.notify('Error: Could not access table data', { type: 'error' });
+	                        return;
+	                    }
+	
+	                    var dtRow = dataTable.row($row);
+	                    if (!dtRow) {
+	                        console.error('DataTable row not found');
+	                        mw.notify('Error: Could not access row data', { type: 'error' });
+	                        return;
+	                    }
+	
+	                    var rowData = dtRow.data();
+	                    if (!rowData) {
+	                        console.error('No row data found');
+	                        mw.notify('Error: Could not get row data', { type: 'error' });
+	                        return;
+	                    }
+	                    
+	                    var ranking = rowData[0];
+	                    var result = findDataByRanking(ranking, currentJsonData[tableId]);
+	                    
+	                    if (result) {
+	                        openEditModal(result.index, result.data, $table);
+	                    } else {
+	                        console.error('Could not find data for ranking:', ranking);
+	                        mw.notify('Error: Could not find data for this row', { type: 'error' });
+	                    }
+	                } catch (error) {
+	                    console.error('Error processing edit click:', error);
+	                    mw.notify('Error: ' + error.message, { type: 'error' });
+	                }
+	            }
+	        });
+	    });
+	}
+	
+	function destroyTable(tableId) {
+	    if (tableInstances[tableId]) {
+	        tableInstances[tableId].destroy();
+	        delete tableInstances[tableId];
+	    }
+	}
     
-    function processTable() {
-        if (processingTable) {
-            console.log('Table processing already in progress');
-            return false;
-        }
-        
-        console.log('Looking for table...');
-        var $table = $('#ranking-table');
-        
-        if ($table.length === 0) {
-            console.log('Table not found');
-            return false;
-        }
-        
-        if ($table.data('dt-processed') === true) {
-            console.log('Table already processed');
-            return true;
-        }
-        
-        console.log('Found unprocessed table');
-        processingTable = true;
-        
-        jsonPath = $table.data('json');
-        if (!jsonPath) {
-            console.error('No data-json attribute found on #ranking-table.');
-            processingTable = false;
-            return false;
-        }
-        
-        console.log('JSON path:', jsonPath);
+    function getColumnDefs($table) {
+	    return [
+	        {
+	            targets: 0,
+	            width: '30px',
+	            className: 'text-center'
+	        },
+	        {
+	            targets: 3,
+	            width: '30px',
+	            className: 'text-center',
+	            orderable: false
+	        },
+	        {
+	            targets: 4,
+	            data: null,
+	            width: '30px',
+	            orderable: false,
+	            render: function(data, type, row, meta) {
+	                // Initially show loading state
+	                var loadingHtml = '<span class="loading-permission" style="color: #999;"><i class="fas fa-spinner fa-spin"></i></span>';
+	                
+	                // Check permission and update cell once we know
+	                checkUserEditPermission(function(canEdit) {
+	                    var table = $table.DataTable();  // Use passed table reference
+	                    var cell = table.cell(meta.row, meta.col);
+	                    
+	                    if (canEdit) {
+	                        cell.node().innerHTML = '<i class="fas fa-edit" style="cursor: pointer; color:#17a2b8;"></i>';
+	                    } else {
+	                        cell.node().innerHTML = '<span class="no-action" style="color: #999; font-size: 0.9em;"><i class="fa-solid fa-ban" style="cursor: help;" title="no action available"></i></span>';
+	                    }
+	                });
+	                
+	                return loadingHtml;
+	            }
+	        }
+	    ];
+	}
+	
+	function loadTableData($table, dataTable) {
+	    var jsonUrl = 'https://utaite.fandom.com/wiki/' + $table.data('json') + '?action=raw';
+	    var tableId = $table.attr('id');
+	    
+	    $.getJSON(jsonUrl, function(data) {
+	        console.log('Data received for ' + tableId + ':', data);
+	        currentJsonData[tableId] = data;
+	        
+	        var processedItems = 0;
+	        var totalItems = data.length;
+	        var tableData = [];
+	        
+	        data.forEach(function(item, index) {
+	            var pageName = item.ufu || item.utaite;
+	            createUtaiteLink(pageName, item.utaite, function(link) {
+	                tableData[index] = [
+	                    item.ranking,
+	                    item.song_title,
+	                    link,
+	                    createNndLink(item.video_id),
+	                    ''
+	                ];
+	                
+	                processedItems++;
+	                if (processedItems === totalItems) {
+	                    dataTable.clear();
+	                    dataTable.rows.add(tableData).draw();
+	                    console.log('Table ' + tableId + ' populated with data');
+	                    $table.data('dt-processed', true);
+	                }
+	            });
+	        });
+	    }).fail(function(jqXHR, textStatus, errorThrown) {
+	        console.error('Failed to load JSON data for ' + tableId + ':', textStatus, errorThrown);
+	    });
+	}
+	
+	function findDataByRanking(ranking, tableData) {
+	    // Convert ranking to string for comparison
+	    var rankingStr = ranking.toString();
+	    
+	    // Try to find the data by ranking
+	    for (var i = 0; i < tableData.length; i++) {
+	        if (tableData[i].ranking.toString() === rankingStr) {
+	            return {
+	                index: i,
+	                data: tableData[i]
+	            };
+	        }
+	    }
+	    
+	    // If not found by ranking, try to find by array index
+	    var index = parseInt(ranking) - 1;
+	    if (index >= 0 && index < tableData.length) {
+	        return {
+	            index: index,
+	            data: tableData[index]
+	        };
+	    }
+	    
+	    return null;
+	}
+    
+	var tableInstances = {};
+	
+	function processTable() {
+	    if (processingTable) {
+	        console.log('Table processing already in progress');
+	        return false;
+	    }
+	    
+	    console.log('Looking for tables...');
+	    var $tables = $('table[data-json]').filter(function() {
+	        return !this.id.match(/_wrapper|_length|_filter|_info|_paginate|_previous|_next|_processing/);
+	    });
+	    
+	    if ($tables.length === 0) {
+	        console.log('No tables found');
+	        return false;
+	    }
+	
+	    processingTable = true;
+	    
+	    $tables.each(function() {
+	        var $table = $(this);
+	        var tableId = $table.attr('id');
+	        
+	        if ($table.data('dt-processed') === true) {
+	            console.log('Table ' + tableId + ' already processed');
+	            return true;
+	        }
+	
+	        console.log('Processing table:', tableId);
+	        
+	        var jsonPath = $table.data('json');
+	        if (!jsonPath) {
+	            console.error('No data-json attribute found on ' + tableId);
+	            return true;
+	        }
+	
+	        try {
+	            // Initialize and store the DataTable instance immediately
+	            var dataTable = $table.DataTable({
+	                paging: true,
+	                searching: true,
+	                ordering: true,
+	                info: true,
+	                pageLength: 25,
+	                order: [[0, 'asc']],
+	                processing: true,
+	                language: {
+	                    processing: "Loading data..."
+	                },
+	                destroy: true,
+	                autoWidth: false,
+	                columnDefs: [
+	                    {
+	                        targets: 0,
+	                        width: '50px',
+	                        className: 'text-center'
+	                    },
+	                    {
+	                        targets: 1,
+	                        width: '45%'
+	                    },
+	                    {
+	                        targets: 2,
+	                        width: '25%'
+	                    },
+	                    {
+	                        targets: 3,
+	                        width: '50px',
+	                        className: 'text-center',
+	                        orderable: false
+	                    },
+	                    {
+	                        targets: 4,
+	                        width: '50px',
+	                        className: 'text-center',
+	                        orderable: false,
+	                        render: function(data, type, row, meta) {
+	                            return '<span class="edit-permission-placeholder"></span>';
+	                        }
+	                    }
+	                ],
+	                dom: '<"dataTables_header"<"dataTables_title">f>rtip',
+	                createdRow: function(row, data, dataIndex) {
+	                    $(row).addClass('dataTables_row');
+	                    checkUserEditPermission(function(canEdit) {
+	                        var $cell = $(row).find('td:last-child .edit-permission-placeholder');
+	                        if (canEdit) {
+	                            $cell.html('<i class="fas fa-edit" style="cursor: pointer; color:#17a2b8;"></i>');
+	                        } else {
+	                            $cell.html('<span class="no-action" style="color: #999; font-size: 0.9em;"><i class="fa-solid fa-ban" style="cursor: help;" title="no action available"></i></span>');
+	                        }
+	                    });
+	                },
+	                initComplete: function() {
+	                    $('.dataTables_title').html('<i class="fas fa-trophy"></i> TOP100 ランキング');
+	                    
+	                    var style = document.createElement('style');
+	                    style.type = 'text/css';
+	                    var styleRules = [
+	                        '.dataTables_wrapper {',
+	                        '    padding: 20px;',
+	                        '    background: var(--theme-page-background-color);',
+	                        '}',
+	                        '.dataTables_header {',
+	                        '    display: flex;',
+	                        '    justify-content: space-between;',
+	                        '    align-items: center;',
+	                        '    margin-bottom: 20px;',
+	                        '}',
+	                        '.dataTables_title {',
+	                        '    font-size: 1.5em;',
+	                        '    font-weight: bold;',
+	                        '    color: var(--theme-page-text-color);',
+	                        '}',
+	                        '.dataTables_filter {',
+	                        '    margin: 0;',
+	                        '}',
+	                        '.dataTables_filter input {',
+	                        '    margin-left: 10px;',
+	                        '    padding: 5px;',
+	                        '    border-radius: 4px;',
+	                        '    border: 1px solid var(--theme-border-color);',
+	                        '}',
+	                        'table.dataTable thead th {',
+	                        '    padding: 10px;',
+	                        '    background-color: var(--theme-header-background-color);',
+	                        '    color: var(--theme-header-text-color);',
+	                        '    border-bottom: 2px solid var(--theme-border-color);',
+	                        '}',
+	                        'table.dataTable tbody td {',
+	                        '    padding: 8px 10px;',
+	                        '    vertical-align: middle;',
+	                        '}',
+	                        '.dataTables_row:hover {',
+	                        '    background-color: var(--theme-row-hover-color) !important;',
+	                        '}'
+	                    ].join('\n');
+	                    
+	                    style.innerHTML = styleRules;
+	                    document.head.appendChild(style);
+	                }
+	            });
+	
+	            // Store the instance immediately after creation
+	            tableInstances[tableId] = dataTable;
+	            
+	            // Bind edit button handler
+	            bindEditButtonHandler($table);
+	
+	            var jsonUrl = 'https://utaite.fandom.com/wiki/' + jsonPath + '?action=raw';
+	            
+	            // Load JSON data
+	            $.getJSON(jsonUrl, function(data) {
+	                console.log('Data received for ' + tableId + ':', data);
+	                currentJsonData[tableId] = data;
+	                
+	                var processedItems = 0;
+	                var totalItems = data.length;
+	                var tableData = [];
+	                
+	                data.forEach(function(item, index) {
+	                    var pageName = item.ufu || item.utaite;
+	                    createUtaiteLink(pageName, item.utaite, function(link) {
+	                        tableData[index] = [
+	                            item.ranking,
+	                            item.song_title,
+	                            link,
+	                            createNndLink(item.video_id),
+	                            ''
+	                        ];
+	                        
+	                        processedItems++;
+	                        if (processedItems === totalItems) {
+	                            tableInstances[tableId].clear();
+	                            tableInstances[tableId].rows.add(tableData).draw();
+	                            console.log('Table ' + tableId + ' populated with data');
+	                            $table.data('dt-processed', true);
+	                        }
+	                    });
+	                });
+	            }).fail(function(jqXHR, textStatus, errorThrown) {
+	                console.error('Failed to load JSON data for ' + tableId + ':', textStatus, errorThrown);
+	                mw.notify('Error loading data: ' + textStatus, { type: 'error' });
+	            });
+	            
+	        } catch (error) {
+	            console.error('Error initializing DataTable for ' + tableId + ':', error);
+	            return true;
+	        }
+	    });
+	    
+	    processingTable = false;
+	    return true;
+	}
+	
+	
+    // console.log('Loading DataTables CSS...');
+    // mw.loader.load('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.css', 'text/css');
 
-        if (!$table.find('thead').length) {
-            var $tableHeader = $('<thead>');
-            $table.prepend($tableHeader);
-            $table.find('> tbody > tr').first().appendTo($tableHeader);
-        }
-
-        try {
-            var dataTable = $table.DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                pageLength: 25,
-                order: [[0, 'asc']],
-                processing: true,
-                language: {
-                    processing: "Loading data..."
-                },
-                destroy: true,
-                columnDefs: [
-                    {
-                        targets: 0,
-                        width: '30px', 
-                        className: 'text-center'
-                    },
-                    {
-                        targets: 3,
-                        width: '30px', 
-                        className: 'text-center',
-                        orderable: false
-                    },
-                    {
-                        targets: 4,
-                        data: null,
-                        width: '30px',
-                        orderable: false,
-                        render: function(data, type, row) {
-                            if (isUserAdmin()) {
-                                return '<i class="fas fa-edit" style="cursor: pointer; color:#17a2b8;"></i>';
-                            } else {
-                                return '<span class="no-action" style="color: #999; font-size: 0.9em;"><i class="fa-solid fa-ban" style="cursor: help;" title="no action available"></i></span>';
-                            }
-                        }
-                    }
-                ]
-            });
-
-            var jsonUrl = 'https://utaite.fandom.com/wiki/' + jsonPath + '?action=raw';
-            console.log('Fetching data from:', jsonUrl);
-            
-            $.getJSON(jsonUrl, function(data) {
-                console.log('Data received:', data);
-                currentJsonData = data;
-                
-                var processedItems = 0;
-                var totalItems = data.length;
-                var tableData = [];
-                
-                data.forEach(function(item, index) {
-                    var pageName = item.ufu || item.utaite;
-                    createUtaiteLink(pageName, item.utaite, function(link) {
-                        tableData[index] = [
-                            item.ranking,
-                            item.song_title,
-                            link,
-                            createNndLink(item.video_id),
-                            ''
-                        ];
-                        
-                        processedItems++;
-                        if (processedItems === totalItems) {
-                            dataTable.clear();
-                            dataTable.rows.add(tableData).draw();
-                            console.log('Table populated with data');
-                            $table.data('dt-processed', true);
-                            processingTable = false;
-                        }
-                    });
-                });
-                
-                // Add edit button click handler
-                $table.on('click', '.fa-edit', function() {
-                   if (isUserAdmin()) {
-                       var rowData = dataTable.row($(this).parents('tr')).data();
-                       var rowIndex = dataTable.row($(this).parents('tr')).index();
-                       openEditModal(rowIndex, currentJsonData[rowIndex]);
-                   }
-               });
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error('Failed to load JSON data:', textStatus, errorThrown);
-                console.error('Response:', jqXHR.responseText);
-                processingTable = false;
-            });
-        } catch (error) {
-            console.error('Error initializing DataTable:', error);
-            processingTable = false;
-            return false;
-        }
-        
-        return true;
-    }
-
-    function initialize() {
-        if (!initialized || !$.fn.DataTable) {
-            console.log('Waiting for DataTables to initialize...');
-            return;
-        }
-        
-        if (!$('#editModal').length) {
-            addModalToPage();
-        }
-        
-        processTable();
-    }
-
-    console.log('Loading DataTables CSS...');
-    mw.loader.load('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.css', 'text/css');
-
-    console.log('Loading DataTables JS...');
-    mw.loader.getScript('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.js').then(function() {
-        console.log('DataTables JS loaded');
-        initialized = true;
-        initialize();
-    });
+    // console.log('Loading DataTables JS...');
+    // mw.loader.getScript('https://cdn.datatables.net/v/dt/dt-1.12.0/b-2.2.3/b-colvis-2.2.3/date-1.1.2/fc-4.1.0/r-2.3.0/rg-1.2.0/sc-2.0.6/sp-2.0.1/sl-1.4.0/datatables.js').then(function() {
+    //     console.log('DataTables JS loaded');
+    //     initialized = true;
+    //     initialize();
+    // });
+    
+    initialized = true;
+	// console.log('DataTables JS skipped');
+	initialize();
     
     function initializeTheme() {
         // Check if theme is already set in body
@@ -450,8 +790,7 @@
             // Default to light theme if no theme is set
             document.body.setAttribute('data-theme', 'light');
         }
-
-        // Watch for theme changes using MutationObserver with ES5 syntax
+        
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
         
         if (MutationObserver) {
@@ -459,9 +798,11 @@
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
                         // Theme changed, refresh icons if needed
-                        if ($('#top100-table').length) {
-                            $('#top100-table').DataTable().draw();
-                        }
+                        Object.keys(tableInstances).forEach(function(tableId) {
+						    if (tableInstances[tableId]) {
+						        tableInstances[tableId].draw();
+						    }
+						});
                     }
                 });
             });

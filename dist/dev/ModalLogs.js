@@ -1,14 +1,17 @@
 (function () {
     if (
-        mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions' ||
+        (
+            mw.config.get('wgCanonicalSpecialPageName') !== 'Contributions' &&
+            mw.config.get('wgCanonicalSpecialPageName') !== 'UserProfileActivity'
+        ) ||
         window.ModalLogsLoaded
     ) {
         return;
     }
     window.ModalLogsLoaded = true;
-    var preloads = 3;
+    var preloads = 2;
 
-    function modal (data, qdmodal) {
+    function modal (data, qdmodal, isDeletedContributions) {
         qdmodal.show({
             title: $(data).find('.page-header__title').text(),
             content: $(data).find('#mw-content-text')
@@ -19,6 +22,17 @@
             onShow: function (modal) {
                 if (modal.$content.find('.listfiles tbody > tr > td[colspan="5"]').length) {
                     modal.$content.text(modal.$content.find('.listfiles tbody > tr > td[colspan="5"]').text());
+                }
+                if (isDeletedContributions) {
+                    var container = modal.$content.find('.mw-pager-body');
+                    container.find('.mw-index-pager-list-header').remove();
+                    container.prepend($('<ul>', {
+                        class: 'mw-contributions-list main'
+                    }));
+                    container.find('ul li').each(function (_, el) {
+                        $(el).appendTo(container.find('.main'));
+                    });
+                    container.find('ul:not(.main)').remove();
                 }
             }
         });
@@ -36,6 +50,12 @@
             #ModalLogs li:nth-child(even) {\
                 background-color: var(--theme-page-background-color--secondary);\
             }\
+            #ModalLogs .mw-contributions-list.main {\
+                list-style: none;\
+            }\
+            #ModalLogs .mw-contributions-list.main li {\
+                margin: unset;\
+            }\
         ');
         $('.mw-contributions-user-tools').find(selector).click(function (e) {
             e.preventDefault();
@@ -44,27 +64,35 @@
                 title: 'Loading...'
             });
             var url = $(e.target).attr('href');
+            var isDeletedContributions = $(e.target).hasClass('mw-contributions-link-deleted-contribs');
             $.get(url).done(function (data) {
-                modal(data, qdmodal);
+                modal(data, qdmodal, isDeletedContributions);
             });
         });
     }
     
-    function selectors (specialPageAliases) {
+    function selectors () {
         var selector;
-        var prefix = '.mw-changeslist-links';
 
-        if (window.ModalLogsCustomSelectors && !(window.ModalLogsCustomSelectors instanceof jQuery)) {
-            console.warn('[ModalLogs] `window.ModalLogsCustomSelectors` was not set to a jQuery selector object, falling back to default selectors.');
+        if (
+            window.ModalLogsCustomSelectors &&
+            !(
+                window.ModalLogsCustomSelectors instanceof jQuery ||
+                typeof window.ModalLogsCustomSelectors === 'string'
+            )
+        ) {
+            console.warn('[ModalLogs] `window.ModalLogsCustomSelectors` was not set to a jQuery selector object or a string, falling back to default selectors.');
         }
 
-        if (window.ModalLogsCustomSelectors && window.ModalLogsCustomSelectors instanceof jQuery) {
+        if (window.ModalLogsCustomSelectors &&
+            (
+                window.ModalLogsCustomSelectors instanceof jQuery ||
+                typeof window.ModalLogsCustomSelectors === 'string'
+            )
+        ) {
             selector = window.ModalLogsCustomSelectors;
         } else {
-            selector = prefix + ' a[href*="' + specialPageAliases.AbuseLog + '"], ';
-            selector += prefix + ' a[title^="' + specialPageAliases.Log + '/"], ';
-            selector += prefix + ' a[title^="' + specialPageAliases.DeletedContributions + '/"], ';
-            selector += prefix + ' a[title^="' + specialPageAliases.Listfiles + '/"]';
+            selector = '.mw-changeslist-links :is(a.mw-contributions-link-abuse-log, a.mw-contributions-link-logs, a.mw-contributions-link-block-log, a.mw-contributions-link-deleted-contribs, a.mw-contributions-link-uploads)';
             selector = $(selector);
         }
         init(selector);
@@ -72,32 +100,17 @@
     
     function preload () {
         if (--preloads === 0) {
-            var getStorage = JSON.parse(mw.storage.get('ModalLogsMapping'));
-            if (getStorage) {
-                selectors(getStorage);
-            } else {
-                new mw.Api().get({
-                    action: 'query',
-                    meta: 'siteinfo',
-                    siprop: 'namespaces|specialpagealiases',
-                    format: 'json'
-                }).done(function (data) {
-                    var specialNamespace = data.query.namespaces[-1]['*'];
-                    var mapping = {};
-                    data.query.specialpagealiases.forEach(function (x) {
-                        mapping[x.realname] = specialNamespace + ':' + x.aliases[0];
-                    });
-                    mw.storage.set('ModalLogsMapping', JSON.stringify(mapping));
-                    selectors(mapping);
-                }).fail(function (error) {
-                    return console.error(error);
-                });
+            //clean up old mapping now that it's no longer needed
+            //TODO: remove in the future once a long enough time has past
+            if (mw.storage.get('ModalLogsMapping')) {
+                mw.storage.remove('ModalLogsMapping');
             }
+
+            selectors();
         }
     }
     
     mw.hook('dev.qdmodal').add(preload);
-    mw.loader.using('mediawiki.api').done(preload);
     mw.loader.using('mediawiki.util').done(preload);
     importArticle({
         type: 'script',
