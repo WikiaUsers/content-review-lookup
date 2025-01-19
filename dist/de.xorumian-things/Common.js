@@ -15,6 +15,9 @@ mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweSeeMoreA
 // FanFeed
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweFanFeed.js?action=raw\u0026ctype=text/javascript");
 
+// Inactivity Popup
+mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweInactivityWindow.js?action=raw\u0026ctype=text/javascript");
+
 /* German Variants 
 mw.loader.load("https://xorumian-things.fandom.com/de/wiki/MediaWiki:UweVariants.js?action=raw\u0026ctype=text/javascript"); */
 

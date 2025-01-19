@@ -11,14 +11,14 @@
 			id: 'default',
 			name: 'Standard',
 			note: 'Light & Dark',
-			image: "https://static.wikia.nocookie.net/xorumian-things/images/f/ff/BackgroundDefaultBanner.png/revision/latest?cb=20241029180605&path-prefix=de"
+			image: "https://static.wikia.nocookie.net/xorumian-things/images/5/5c/BackgroundLight.png/revision/latest/scale-to-width-down/480?cb=20240902162337&path-prefix=de"
 		},
 		{
 			id: 'winter',
 			name: "Winter",
 			note: 'Light & Dark',
 			stylesheet: stylesheetPrefix+"MediaWiki:Gadget-UweThemeSelector.js/Winter.css",
-			image: "https://static.wikia.nocookie.net/xorumian-things/images/2/22/BackgroundWinterBanner.png/revision/latest?cb=20241030172338&path-prefix=de"
+			image: "https://static.wikia.nocookie.net/xorumian-things/images/4/4d/BackgroundLightWinter.png/revision/latest/scale-to-width-down/480?cb=20241030164057&path-prefix=de"
 		},
 	];
 	

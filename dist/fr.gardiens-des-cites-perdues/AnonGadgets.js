@@ -1,4 +1,5 @@
 mw.loader.using(['mediawiki.user', 'mediawiki.api'], function () {
+  if (mw.user.isAnon())
     mw.hook('wikipage.content').add(function () {
         // Chargement de la liste des fonctionnalités depuis MediaWiki:Custom-features-list.json
         var api = new mw.Api();

@@ -15,6 +15,22 @@ else if (wgPageName == "Special:Search") //scripts specific to Special:Search
     importScript("MediaWiki:Common.js/search.js")
 }
 
+/* Template:Qtt support */
+// check to see if it is active then do it
+function ttMouseOver(foo) {
+  if (tooltipsOn && getCookie("wiki-tiploader") != "no") {
+    $("#WikiaArticle").mouseover(hideTip);
+    $("#WikiaArticle").append('<div id="tfb" class="htt"></div><div id="templatetfb" class="htt"><div>');
+    $tfb = $("#tfb");
+    $ttfb = $("#templatetfb");
+    $htt = $("#tfb,#templatetfb");
+    if (foo == 1) {
+      $("#WikiaArticle span.ajaxttlink").each(ttBind);
+    }
+    $("#WikiaArticle span.tttemplatelink").mouseover(showTemplateTip).mouseout(hideTemplateTip).mousemove(moveTip);
+  }
+}
+
 
 /** Sysop Javascript *******************************************************
   *

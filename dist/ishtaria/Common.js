@@ -30,7 +30,8 @@ if (wgPageName === "Unit_List") {
       'u:dev:Countdown/code.js',
       'u:dev:Tooltips/code.js',
       'w:c:dev:ReferencePopups/code.js',
-      'u:dev:UserTags/code.js'
+      'u:dev:UserTags/code.js',
+      'u:pad.wikia.com:MediaWiki:FilterTable.js'
     ]
   });
 }

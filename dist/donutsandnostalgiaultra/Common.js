@@ -1,12 +1,3 @@
-/* Any JavaScript here will be loaded for all users on every page load. */
-window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
-window.pPreview.defimage = 'https://vignette.wikia.nocookie.net/donutsandnostalgiaultra/images/a/aa/Site logo.png/revision/latest?cb=20210607205725&path-prefix=en';
-window.pPreview.noimage = 'https://vignette.wikia.nocookie.net/donutsandnostalgiaultra/images/a/aa/Site logo.png/revision/latest?cb=20210607205725&path-prefix=en';
-window.pPreview.dock = '#mw-content-text';
-window.pPreview.pibox = true;
-window.pPreview.piboxkeepprev = true;
-window.pPreview.tlen = 75;
-window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]'];
 /* CAUTION: Any JavaScript here will be loaded for all users on every page load. */
 
 /* 
@@ -17,11 +8,40 @@ window.pPreview.RegExp.iparents = ['.myclass', '#myid', 'div[data-ignore-me=1]']
 importScriptPage('ReferencePopups/code.js', 'dev');
 ((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
 
+
+/* 
+////////////////////////////////////////////////////////////////////
+// Facebook box
+////////////////////////////////////////////////////////////////////
+*/
+function fBox() {
+    $('#fbox').append('<iframe scrolling="no" height="550" frameborder="0" align="top" width="330" src="https://www.facebook.com/connect/connect.php?id=208174206745&amp;connections=30" marginwidth="0" marginheight="0"></iframe>');
+}
+$(fBox);
+
+
+/* 
+////////////////////////////////////////////////////////////////////
+// Twitter Follow Button
+////////////////////////////////////////////////////////////////////
+*/
+function addTwitterButton() {
+   $('#twitter-button').append('<a href="https://twitter.com/marveldatabase" class="twitter-follow-button" data-show-count="true" data-show-screen-name="false">Follow @MarvelDatabase</a><script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>');
+}
+$(addTwitterButton);
+
+/* 
+////////////////////////////////////////////////////////////////////
+// Google+ and YouTube elements
+////////////////////////////////////////////////////////////////////
+*/
+importScriptPage('PlusOneButton/code.js', 'dev');
+
 /* 
 ////////////////////////////////////////////////////////////////////
 // SpoilerAlert
 // documentation at: https://dev.wikia.com/wiki/SpoilerAlert
-// © Peter Coester, 2012
+// Â© Peter Coester, 2012
 // 
 // __NOWYSIWYG__
 ////////////////////////////////////////////////////////////////////
@@ -61,12 +81,12 @@ importScriptPage('ShowHide/code.js', 'dev');
 function createPage(){
 	var createPageLink = document.getElementById('dynamic-links-write-article-icon');
 	if (createPageLink !== null){
-		createPageLink.href = "/wiki/Donuts_Wiki:Create_a_New_Page";
+		createPageLink.href = "/wiki/Marvel_Database:Create_a_New_Page";
                 createPageLink.onclick = "";
 	}
 	createPageLink = document.getElementById('dynamic-links-write-article-link');
 	if (createPageLink !== null){
-		createPageLink.href = "/wiki/Donuts_Wiki:Create_a_New_Page";
+		createPageLink.href = "/wiki/Marvel_Database:Create_a_New_Page";
                 createPageLink.onclick = "";
 	}
 }
@@ -310,10 +330,10 @@ $(function() {
 
 /* 
 ////////////////////////////////////////////////////////////////////
-// THE BELOW CODE randomly changes text above top navigation from "Donuts Wiki" to one from the list
+// THE BELOW CODE randomly changes text above top navigation from "Marvel Database" to one from the list
 //////////////////////////////////////////////////////////////////// */
 
-var wiki_names = ["Ad Infinitium!", "Days Gone Bye.", "Excelsior!", "Hooligans, GO!", "Jay Dee's Donuts", "To Me, My X-Men!", "Don't Start Nothin'...", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Invaders, Advance!", "I Am Iron Man.", "And We're Back.", "Be Greater.", "Can the Tarantula Come out to Play?!", "Sweet Mary, Jesus, and Joseph!", "Sic Parvis Magna!", "The Bat or the Claws.","...Hope You Survive the Experience!", "And Woods Said Nothing.", "Whatta Revoltin' Development!", "I Am the Hell and the High Water.", "And There Came a Day Unlike Any Other...", "Thwip!", "It Belongs in A Museum!"];
+var wiki_names = ["Ad Infinitium!", "Days Gone Bye.", "Excelsior!", "Hooligans, GO!", "Jay Dee's Donuts", "To Me, My X-Men!", "Forward, Always!", "Hulk Smash!", "Snikt!", "It's Clobberin' Time!", "Flame On!", "Invaders, Advance!", "I Am Iron Man.", "And We're Back.", "Be Greater.", "Can the Tarantula Come out to Play?!", "Sweet Mary, Jesus, and Joseph!", "Sic Parvis Magna!", "The Bat or the Claws.","...Hope You Survive the Experience!", "And Woods Said Nothing.", "Whatta Revoltin' Development!", "I Am the Hell and the High Water.", "And There Came a Day Unlike Any Other...", "Thwip!", "It Belongs in A Museum!"];
 var wiki_name_number = -1;
 while (wiki_name_number < 0 || wiki_name_number > wiki_names.length) {
   wiki_name_number = Math.random().toFixed(2) * 100;
@@ -497,7 +517,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 				type: 'encapsulate',
 				options: {
 					pre: "{{Donuts Wiki:Character Template\n| Image                   = ",
-					post: "\n| Name                    = \n| NameRef                 = \n| CurrentAlias            = \n| CurrentAliasRef         = \n| Codenames               = \n| EditorialNames          = \n| Nicknames               = \n| Impersonations          = \n| Aliases                 = \n\n| Affiliation             = \n| Ancestors               = \n| Grandparents            = \n| Parents                 = \n| Siblings                = \n| Spouses                 = \n| Children                = \n| Descendants             = \n| InLaw                   = \n| Relatives               = \n| Hosts                   = \n| HostOf                  = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Personality             = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Marvel                  = \n| Wikipedia               = \n| Links                   = \n}}"
+					post: "\n| Name                    = \n| NameRef                 = \n| CurrentAlias            = \n| CurrentAliasRef         = \n| Codenames               = \n| Nicknames               = \n| Aliases                 = \n\n| Affiliation             = \n| Parents                 = \n| Siblings                = \n| Spouses                 = \n| Children                = \n| Relatives               = \n| MaritalStatus           = \n\n| CharRef                 = \n| Gender                  = \n| Height                  = \n| Weight                  = \n| Eyes                    = \n| Hair                    = \n| UnusualFeatures         = \n\n| Origin                  = \n| Reality                 = \n| PlaceOfBirth            = \n\n| Identity                = \n| Citizenship             = \n| Occupation              = \n| Education               = \n| BaseOfOperations        = \n\n| Creators                = \n| First                   = \n\n| History                 = \n\n| Personality             = \n\n| Powers                  = \n| Abilities               = \n| Weaknesses              = \n| AdditionalAttributes    = \n\n| Equipment               = \n| Transportation          = \n| Weapons                 = \n\n| Notes                   = \n| Trivia                  = \n| Links                   = \n}}"
 				}
 			}
 		}
@@ -712,19 +732,19 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 		}
 	}
 } );
-/* Marvel staff */
+/* Creators */
 $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 	section: 'advanced',
 	group: 'infoboxes',
 	tools: {
-		"staff": {
-			label: 'Marvel staff',
+		"creator": {
+			label: 'Creators',
 			type: 'button',
 			icon: 'https://images.wikia.nocookie.net/marveldatabase/images/3/3e/Staff_Button.png',
 			action: {
 				type: 'encapsulate',
 				options: {
-					pre: "{{Donuts Wiki:Staff Template\n| Image                   = ",
+					pre: "{{Donuts Wiki:Creator Template\n| Image                   = ",
 					post: "\n| Name                    = \n| Pseudonyms              = \n\n| Gender                  = \n| DateOfBirth             = \n| PlaceOfBirth            = \n\n| Employers               = \n| Titles                  = \n| First                   = \n| Last                    = \n| NotableCreations        = \n\n| PersonalHistory         = \n| ProfessionalHistory     = \n\n| Notes                   = \n| Trivia                  = \n| OfficialWebsite         = \n| Links                   = \n}}"
 				}
 			}
@@ -732,7 +752,7 @@ $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
 	}
 } );
 };
-/* Check if view is in edit mode and that the required modules are available. Then, customize the toolbar … */
+/* Check if view is in edit mode and that the required modules are available. Then, customize the toolbar â€¦ */
 if ( [ 'edit', 'submit' ].indexOf( mw.config.get( 'wgAction' ) ) !== -1 ) {
 mw.loader.using( 'user.options' ).then( function () {
 // This can be the string "0" if the user disabled the preference ([[phab:T54542#555387]])

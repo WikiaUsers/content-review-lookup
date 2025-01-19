@@ -90,3 +90,25 @@ mw.hook("wikipage.content").add(createCollapseButtons);
 InactiveUsers = { months: 1 };
 
 window.BackToTopModern = true;
+
+/* Toggle gender button text */
+$(function () {
+    var button = $('.mw-customtoggle-ChangeGender');
+    if (!button.length) {
+        return;
+    }
+
+    function toggleText () {
+        if ($(this).hasClass('shown')) {
+            $(this).removeClass('shown');
+            $(this).text('Thiếu chủ nam');
+        } else {
+            $(this).addClass('shown');
+            $(this).text('Thiếu chủ nữ');
+        }
+    }
+
+    button.text('Thiếu chủ nam');
+
+	button.click(toggleText);
+});

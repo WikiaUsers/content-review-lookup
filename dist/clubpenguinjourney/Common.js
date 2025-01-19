@@ -25,12 +25,15 @@ $(function() {
 	var years_div = document.querySelectorAll("div.tabber-years");
 	for (var i=0; i < years_div.length; i++) {
 	    if (years_div[i]) {
-	        var CURRENT_YEAR = 2024;
+	        var CURRENT_YEAR = 2025;
 			var tabber = years_div[i].querySelector("div.tabber.wds-tabber"); //tabber
 			var tabs = tabber.querySelectorAll("div.wds-tabs__wrapper ul.wds-tabs li"); //tabs
 	
 	        var default_idx;
 	        var desired_idx;
+	        var desired_found = false;
+	        var MAX_YEAR = 2023;
+	        var max_idx;
 	
 	        tabs.forEach(function(tab, idx) {
 	            if ((tab.classList).length == 2 && tab.classList[1] == "wds-is-current") {
@@ -40,9 +43,19 @@ $(function() {
 	            
 	            if (tab.dataset.hash === CURRENT_YEAR.toString()) {
 	            	desired_idx = idx;
+	            	desired_found = true;
 					console.log("Desired data hash: ", tab.dataset.hash);
 	            }
+	            
+	            if (tab.dataset.hash > MAX_YEAR.toString() && tab.dataset.hash < CURRENT_YEAR.toString()) {
+	            	max_idx = idx;
+	            	MAX_YEAR = Number(tab.dataset.hash);
+	            }
 	        });
+	        
+	        if (desired_found == false) {
+	        	desired_idx = max_idx;
+	        }
 	
 	        tabs[default_idx].classList.remove('wds-is-current');
 	        tabs[desired_idx].classList.add('wds-is-current');

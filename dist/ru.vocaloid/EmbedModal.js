@@ -1,87 +1,68 @@
-// expands YouTubeModal to support Niconico and Bilibili
-// based on YouTubeModal, authors: https://dev.fandom.com/wiki/MediaWiki:YouTubeModal/code.js?action=history
+// Expands YouTubeModal to support Niconico and Bilibili
+// Based on YouTubeModal, authors: https://dev.fandom.com/wiki/MediaWiki:YouTubeModal/code.js?action=history
 
 (function() {
     if (window.YouTubeModalLoaded) {
         return;
     }
     window.YouTubeModalLoaded = true;
+
     const videoPlatforms = [
         {
-            find: 'youtu.be',
-            base: 'https://www.youtube.com/embed/',
-            id: {
-                prefix: '.be/',
-                suffix: '?'
-            }
+            regex: /youtu\.be\/([^?&]+)/,
+            base: 'https://www.youtube.com/embed/$1'
         },
         {
-            find: 'youtube.com/watch',
-            base: 'https://www.youtube.com/embed/',
-            id: {
-                prefix: '?v=',
-                suffix: '&'
-            }
+            regex: /youtube\.com\/watch\?v=([^?&]+)/,
+            base: 'https://www.youtube.com/embed/$1'
         },
         {
-            find: 'dai.ly',
-            base: 'https://www.dailymotion.com/embed/video/',
-            id: {
-                prefix: '.ly/',
-                suffix: '?'
-            }
+            regex: /dai\.ly\/([^?&]+)/,
+            base: 'https://www.dailymotion.com/embed/video/$1'
         },
         {
-            find: 'dailymotion.com/video',
-            base: 'https://www.dailymotion.com/embed/video/',
-            id: {
-                prefix: 'video/',
-                suffix: '?'
-            }
+            regex: /dailymotion\.com\/video\/([^?&]+)/,
+            base: 'https://www.dailymotion.com/embed/video/$1'
         },
         {
-            find: 'vimeo.com',
-            base: 'https://player.vimeo.com/video/',
-            id: {
-                prefix: '.com/',
-                suffix: '?'
-            }
+            regex: /vimeo\.com\/([^?&]+)/,
+            base: 'https://player.vimeo.com/video/$1'
         },
         {
-            find: 'nicovideo.jp/watch',
-            base: 'https://embed.nicovideo.jp/watch/',
-            id: {
-                prefix: 'watch/',
-                suffix: '?'
-            }
+            regex: /nicovideo\.jp\/watch\/([^?&]+)/,
+            base: 'https://embed.nicovideo.jp/watch/$1'
         },
         {
-            find: 'bilibili.com/video',
-            base: 'https://player.bilibili.com/player.html?isOutside=true&bvid=',
-            id: {
-                prefix: 'video/',
-                suffix: '?'
-            }
+            regex: /bilibili\.com\/video\/([^?&]+)/,
+            base: 'https://player.bilibili.com/player.html?isOutside=true&bvid=$1'
         }
     ];
+
     function isVideoLink(link) {
-        return videoPlatforms.find((platform) => link.includes(platform.find));
+        return videoPlatforms.find((platform) => platform.regex.test(link));
     }
+
     function parseVideoURL(link) {
         const platform = isVideoLink(link);
         if (!platform) return null;
+
         try {
-            const videoID = link.split(platform.id.prefix)[1].split(platform.id.suffix)[0];
-            return `${platform.base}${videoID}`;
-        } catch {
+            const match = link.match(platform.regex);
+            return match ? platform.base.replace('$1', match[1]) : null;
+        } catch (error) {
+            console.error('Error parsing video URL:', link, error);
             return null;
         }
     }
+
     function closeModal() {
         document.querySelectorAll('.yt-cinema-greyout, .yt-cinema-container').forEach(el => el.remove());
         document.body.classList.remove('yt-cinema-playing');
     }
+
     function showModal(url) {
+        closeModal(); // Ensure only one modal is open
+
         const greyout = document.createElement('div');
         greyout.className = 'yt-cinema-greyout';
         greyout.addEventListener('click', closeModal);
@@ -97,23 +78,28 @@
         iframe.src = url;
         iframe.title = 'Video Player';
         iframe.allow = 'autoplay; fullscreen';
+        iframe.frameBorder = '0';
 
         container.appendChild(iframe);
         greyout.appendChild(closeButton);
-        document.body.prepend(greyout, container);
+        greyout.appendChild(container);
+        document.body.prepend(greyout);
         document.body.classList.add('yt-cinema-playing');
     }
+
     document.body.addEventListener('click', (e) => {
         if (e.ctrlKey || e.shiftKey || e.metaKey) return;
-        const link = e.target.closest('a')?.href;
-        if (!link) return;
 
-        const videoURL = parseVideoURL(link);
+        const link = e.target.closest('a');
+        if (!link || !link.href) return;
+
+        const videoURL = parseVideoURL(link.href);
         if (videoURL) {
             e.preventDefault();
             showModal(videoURL);
         }
     });
+
     importArticle({
         type: 'style',
         article: 'u:dev:MediaWiki:YouTubeModal.css'

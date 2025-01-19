@@ -82,7 +82,6 @@ UserTagsJS.modules.custom = {
     'Saunt3D': ['representative'],
     'J192': ['old'],
     'Zomplant Jelo': ['old'],
-    'DolphiGaming': ['discmod'],
     'DsFanboy': ['discowner'],
     'Krayleb': ['discmod'],
     'Fun Animator': ['discmod'],

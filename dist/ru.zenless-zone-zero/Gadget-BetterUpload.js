@@ -322,7 +322,7 @@ $(function() {
 						cont.innerHTML = (data.error.info && data.error.info.length>0) ? data.error.info : 'Unknown error during upload.';
 					} else if (data.upload && data.upload.result == 'Success') {
 						window.open(
-							mw.config.get('wgServer')+'/wiki/File:'+encodeURIComponent(filename), // URI encoding required
+							mw.config.get('wgServer')+'/ru/wiki/File:'+encodeURIComponent(filename), // URI encoding required
 							'_self' // load in current tab
 						);
 					} else {

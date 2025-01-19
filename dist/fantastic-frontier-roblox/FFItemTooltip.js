@@ -53,16 +53,12 @@ mw.hook("wikipage.content").add(function($content) {
             itemKey.text(item.data.label.replace(isSmart ? /<.+>/ : "", ""));
             itemVal.html(item.data.value.replace(isSmart ? /<.+>/ : "", "")); // To allow for templates and listing.
 
-            /*var valImage = secItem.find(".it-infoitem-val > img");
-            if (valImage.length && valImage.attr("src").startsWith("data:"))
-                valImage.attr("src", valImage.attr("data-src"));*/
-
             section.append(secItem);
         });
         parent ? parent.append(section) : tooltip.append(section);
     }
 
-    // Generate the panels containing a summary and section contents to the tooltip.
+    // Generates the panels consisting of a summary and the contents to the tooltip.
     function generatePanels(summaryHeader, panels) {
         var summary = {};
 
@@ -303,40 +299,39 @@ mw.hook("wikipage.content").add(function($content) {
             tooltip.show();
             updatePosition();
 
-            if (articleName in cache) handleParse(cache[articleName]);
-            else
-                $.getJSON(
-                    "https://fantastic-frontier-roblox.fandom.com/api.php?action=parse&prop=properties&format=json&callback=?&page=" + // We use the MediaWiki API to parse solely the article's infoboxes.
-                        articleName,
-                    function (data) {
-                        if ("error" in data || !data.parse.properties.length) {
-                            // Article did not exist or doesn't have an infobox, so we'll mark this article as not having a tooltip.
+			// We use the MediaWiki API to parse solely the article's infoboxes.
+            $.getJSON(
+                "https://fantastic-frontier-roblox.fandom.com/api.php?action=parse&prop=properties&format=json&callback=?&page=" + 
+                    articleName,
+                function (data) {
+                    if ("error" in data || !data.parse.properties.length) {
+                        // Article did not exist or doesn't have an infobox, so we'll mark this article as not having a tooltip.
+                        cache[articleName] = false;
+                        if (hovered_article == article) tooltip.hide();
+                    } else {
+                        var infoboxes = findByProp(
+                            data.parse.properties,
+                            "name",
+                            "infoboxes"
+                        );
+
+                        if (!infoboxes.length) {
+                            // Article now definitely doesn't have an infobox, mark it as not having a tooltip.
                             cache[articleName] = false;
                             if (hovered_article == article) tooltip.hide();
                         } else {
-                            var infoboxes = findByProp(
-                                data.parse.properties,
-                                "name",
-                                "infoboxes"
-                            );
+                            var parsedInfoboxes = JSON.parse(
+                                infoboxes[0]["*"]
+                            ).map(function (parsed) {
+                                return parsed.data;
+                            });
 
-                            if (!infoboxes.length) {
-                                // Article now definitely doesn't have an infobox, mark it as not having a tooltip.
-                                cache[articleName] = false;
-                                if (hovered_article == article) tooltip.hide();
-                            } else {
-                                var parsedInfoboxes = JSON.parse(
-                                    infoboxes[0]["*"]
-                                ).map(function (parsed) {
-                                    return parsed.data;
-                                });
-
-                                cache[articleName] = parsedInfoboxes;
-                                handleParse(parsedInfoboxes);
-                            }
+                            cache[articleName] = parsedInfoboxes;
+                            handleParse(parsedInfoboxes);
                         }
                     }
-                );
+                }
+            );
         }
     }
 

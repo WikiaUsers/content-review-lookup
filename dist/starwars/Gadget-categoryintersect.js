@@ -2,6 +2,7 @@
  * Adds a category intersection page using DynamicPageList and links to category pages to intersect with Canon and Legends articles.
  * 
  * Uses OOUI and MediaWiki core JS, see https://doc.wikimedia.org/oojs-ui/master/js/#!/api/OO.ui and https://doc.wikimedia.org/mediawiki-core/master/js/#!/api/mw for details.
+ * 1/18/25 - modified for three-category support & ncl + ncc links
  */
 $(function () {
 	'use strict';
@@ -13,8 +14,8 @@ $(function () {
 		const pageName = mw.config.get('wgPageName');
 		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Legends|Canon) articles$');
 		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
-			return param === 'category1' || param === 'category2';
-		}).length === 2;
+			return param === 'category1' || param === 'category2' || param === 'category3';
+		}).length === 3;
 		const isFormPage = pageName === intersectionPage && !isResultsPage;
 		
 		// Add links to category pages
@@ -23,6 +24,8 @@ $(function () {
 			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
 			const canonUrl = baseUrl + '&category2=Canon_articles';
 			const legendsUrl = baseUrl + '&category2=Legends_articles';
+			const noncanonUrl = baseUrl + '&category2=Non-canon_articles';
+       	    const noncanonlegendsUrl = baseUrl + '&category2=Non-canon_Legends_articles';
 			var filters = '<div class="dpl-filter-container">';
 			filters += '<a href="' + baseUrl + '">Category intersection</a>';
 			filters += '<ul>';
@@ -36,6 +39,14 @@ $(function () {
 			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
+			filters += '<a href="' + noncanonUrl + '" title="View non-canon articles only">';
+			filters += '<img alt="View non-canon articles only" src="/wiki/Special:FilePath/Premium-Eras-NCC.png" decoding="async">';
+			filters += '</a>';
+			filters += '</li>';
+			filters += '<a href="' + noncanonlegendsUrl + '" title="View non-canon Legends articles only">';
+			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-NCL.png" decoding="async">';
+			filters += '</a>';
+			filters += '</li>';
 			filters += '</ul>';
 			filters += '</div>';
 			$('.mw-parser-output').append(filters);
@@ -46,6 +57,7 @@ $(function () {
 			const pageUrl = window.location.origin + window.location.pathname;
 			const category1 = searchParams.get('category1').replaceAll(' ', '_');
 			const category2 = searchParams.get('category2').replaceAll(' ', '_');
+			const category3 = searchParams.get('category3').replaceAll(' ', '_');
 
 			document.title = title;
 			$('#firstHeading').html(title);
@@ -77,14 +89,15 @@ $(function () {
 			var currentPage = Number.parseInt(searchParams.get('page')) || 1;
 			if (!Number.isInteger(currentPage) || currentPage < 1) currentPage = 1;
 			const offset = (currentPage - 1) * count;
-			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
-			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
+			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]" etc.==';
+			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2 + '&category3=' + category3;
 			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
 			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
 			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
 			var dpl = '<DPL>\n';
 			dpl += '  category = ' + category1 + '\n';
 			dpl += '  category = ' + category2 + '\n';
+			dpl += '  category = ' + category3 + '\n';
 			dpl += '  count = ' + count + '\n';
 			dpl += '  offset = ' + offset + '\n';
 			dpl += '  mode = category\n';
@@ -179,13 +192,13 @@ $(function () {
 				const form = new OO.ui.FormLayout({
 					method: 'get'
 				});
-				for (var index = 1; index <= 2; index++) {
+				for (var index = 1; index <= 3; index++) {
 					form.addItems([
 						new OO.ui.FieldLayout(new mw.widgets.TitleInputWidget({
 							id: 'dpl-cat' + index,
 							name: 'category' + index,
 							namespace: 14,
-							required: true,
+							required: false,
 							value: searchParams.has('category' + index) ? searchParams.get('category' + index).replaceAll('_', ' ') : undefined,
 							$overlay: true
 						}), {

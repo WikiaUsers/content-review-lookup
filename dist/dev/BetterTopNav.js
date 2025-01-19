@@ -30,13 +30,13 @@
 					break;
 			}
 			mw.util.addCSS(
-				'.SearchInput-module_suggestionsBox__YrJ7E {'+
+				'.search-app__suggestions-box {'+
 					'resize: vertical;'+
 					'overflow: hidden auto;'+
 					'margin-top: 6px;'+
 					'border-top-width: 1px;'+
 					'max-height: 80vh}'+
-				'textarea.SearchInput-module_inputField__L3qIE {'+
+				'textarea.search-app__input {'+
 					'resize: none;'+
 					'padding-top: 7px;'+
 					'white-space: nowrap;'+
@@ -46,17 +46,19 @@
 				'#community-navigation textarea {'+
 					'border: 1px solid var(--fandom-communitybar-search-color);'+
 				'}'+
-				'.SearchResults-module_results__k8itn.wds-list.wds-is-linked > li > a {'+
+				'.search-app__suggestions-list > li > a {'+
 					'white-space: preserve;'+
 					'display: block !important;'+
 				'}'+
-				'.SearchInput-module_clearButton__TioEW {'+
+				'.search-app__button-clear {'+
 					'position: absolute;'+
 					'right: 0;'+
 					'top: 2px;'+
 					'font-size: 20px;'+
+					'width: 10px;'+
+					'height: 10px;'+
 				'}'+
-				'.SearchInput-module_suggestionsBox__YrJ7E:not(:has(>:is(li, p))),'+
+				'.search-app__suggestions-box:not(:has(>:is(li, p))),'+
 				'#global-top-navigation:has(+#community-navigation.is-visible) .search-container,'+
 				'#community-navigation:not(.is-visible) .search-container'+
 					'{display: none;}'+
@@ -67,14 +69,14 @@
 			);
 			
 			// Disable default search
-			$('.search__wrapper input').replaceWith(document.querySelector('.search__wrapper input').outerHTML.replace(/^<input/, '<textarea')+'</textarea>');
+			$('.search-app__wrapper input').replaceWith(document.querySelector('.search-app__wrapper input').outerHTML.replace(/^<input/, '<textarea')+'</textarea>');
 			
 			// References
-			var wrap = $('.search__wrapper');
+			var wrap = $('.search-app__wrapper');
 			var searchbox = wrap.find('textarea');
 			var searchquery = '';
-			searchbox.after('<div class="SearchInput-module_suggestionsBox__YrJ7E"></div>');
-			var list = $('.SearchInput-module_suggestionsBox__YrJ7E');
+			searchbox.after('<div class="search-app__suggestions-box"></div>');
+			var list = $('.search-app__suggestions-box');
 			var exmtch = null;
 			
 			// Search result load
@@ -85,13 +87,13 @@
 				exmtch = null;
 				
 				// Remove default list if wrongly generated
-				if (document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E > .wds-list')) {document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E > .wds-list').remove();}
+				if (document.querySelector('.search-app__suggestions-box > .search-app__suggestions-list')) {document.querySelector('.search-app__suggestions-box > .search-app__suggestions-list').remove();}
 				
 				if (searchquery.length>0) {
 					list.empty();
 					
 					// Add search query clear button
-					if (!document.querySelector('.search-clear-button')) {searchbox.after($('<button class="wds-button SearchInput-module_clearButton__TioEW search-clear-button wds-is-text" type="button">×</button>'));}
+					if (!document.querySelector('.search-clear-button')) {searchbox.after($('<button class="wds-button search-app__button-clear search-clear-button wds-is-text" type="button">×</button>'));}
 					
 					// Load search results
 					var opts = {
@@ -157,16 +159,16 @@
 									}
 									list.append(
 										$('<li>', {
-											'class': 'SearchInput-module_suggestion__XEPfH'
+											'class': 'search-app__suggestion'
 										}).append(
 											$('<a>', {
-												'class': 'SearchInput-module_suggestionLink__D3iiq',
+												'class': 'search-app__suggestion-link',
 												href: mw.util.getUrl(page.redirect || page.title)
 											}).append(label)
 										)
 									);
 								});
-								list.append('<li class="SearchInput-module_suggestion__XEPfH SearchInput-module_suggestionAll__1i-K-"><a class="SearchInput-module_suggestionLink__D3iiq" href="'+new mw.Title('Special:Search').getUrl()+'?scope=internal&query='+encodeURIComponent(searchquery)+'">'+mw.msg('search-modal-see-all-results', searchquery)+'</a></li>');
+								list.append('<li class="search-app__suggestion search-app__suggestion-all"><a class="search-app__suggestion-link" href="'+new mw.Title('Special:Search').getUrl()+'?scope=internal&query='+encodeURIComponent(searchquery)+'">'+mw.msg('search-modal-see-all-results', searchquery)+'</a></li>');
 							};
 							if (window.dev.betterTopNav.redirects) {
 								api.get({
@@ -195,7 +197,7 @@
 								});
 							} else { listRes(); }
 						} else {
-							list.append('<p class="SearchInput-module_noSuggestionsText__CjUG1">'+mw.msg('fd-global-top-navigation-no-search-results')+'</p>');
+							list.append('<p class="<p class="search-app__no-suggestions" dir="ltr">'+mw.msg('fd-global-top-navigation-no-search-results')+'</p>');
 						}
 					}).catch(console.log);
 					
@@ -210,25 +212,25 @@
 				searchbox.val(event.target.value.replace(/[\r\n\v]+/g, ''));
 				if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
 					event.preventDefault(); // do not move carat in searchbox
-					var selected = document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E .SearchInput-module_suggestionActive__3XBxF');
+					var selected = document.querySelector('.search-app__suggestions-box .search-app__suggestion--active');
 					if (selected) {
 						var next = selected.nextElementSibling ? selected.nextElementSibling : null;
 						var prev = selected.previousElementSibling ? selected.previousElementSibling : null;
 						if (event.key == 'ArrowDown' && next) {
-							selected.classList.remove('SearchInput-module_suggestionActive__3XBxF');
-							next.classList.add('SearchInput-module_suggestionActive__3XBxF');
+							selected.classList.remove('search-app__suggestion--active');
+							next.classList.add('search-app__suggestion--active');
 							next.scrollIntoView();
 						} else if (event.key == 'ArrowUp' && prev) {
-							selected.classList.remove('SearchInput-module_suggestionActive__3XBxF');
-							prev.classList.add('SearchInput-module_suggestionActive__3XBxF');
+							selected.classList.remove('search-app__suggestion--active');
+							prev.classList.add('search-app__suggestion--active');
 							prev.scrollIntoView();
 						}
-					} else if (document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E li > a')) {
-						document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E li:first-child').classList.add('SearchInput-module_suggestionActive__3XBxF');
+					} else if (document.querySelector('.search-app__suggestions-box li > a')) {
+						document.querySelector('.search-app__suggestions-box li:first-child').classList.add('search-app__suggestion--active');
 					}
 				} else if (event.key == 'Enter') {
-					if (document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E .SearchInput-module_suggestionActive__3XBxF > a')) {
-						document.querySelector('.SearchInput-module_suggestionsBox__YrJ7E .SearchInput-module_suggestionActive__3XBxF > a').click();
+					if (document.querySelector('.search-app__suggestions-box .search-app__suggestion--active > a')) {
+						document.querySelector('.search-app__suggestions-box .search-app__suggestion--active > a').click();
 					} else if (exmtch && exmtch.length>0) {
 						window.location.href = new mw.Title(exmtch).getUrl();
 					} else if (searchbox.val().length>0) {
@@ -277,10 +279,10 @@
 		// Mark redirects in deafult search module
 		showRedirects: function() {
 			var checkRedirects = function (s) {
-				$('.SearchInput-module_suggestionsList__xJ4Di:first-child:last-child .SearchInput-module_suggestion__XEPfH:not(.search-redirectChecked) > a').each(function(_, el) {
+				$('.search-app__suggestions-list:first-child:last-child .search-app__suggestion:not(.search-redirectChecked) > a').each(function(_, el) {
 					el.parentNode.classList.add('search-redirectChecked');
 					var name = el.textContent;
-					var keyword = new RegExp(el.closest('.search__wrapper').querySelector('input').getAttribute('value').replace(/(^\s*|\s*$)/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+					var keyword = new RegExp(el.closest('.search-app__wrapper').querySelector('input').getAttribute('value').replace(/(^\s*|\s*$)/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
 					Object.keys(s.redirects).forEach(function(k) {
 						if (name == s.redirects[k]) {
 							el.setAttribute('href', mw.util.getUrl(k));
@@ -294,9 +296,9 @@
 			
 			// set up the mutation observer
 			var observer = new MutationObserver(function (mutations, me) {
-				var targetNode = document.querySelector('.SearchInput-module_suggestionsList__xJ4Di:first-child:last-child .SearchInput-module_suggestion__XEPfH:not(.search-redirectChecked)');
+				var targetNode = document.querySelector('.search-app__suggestions-list:first-child:last-child .search-app__suggestion:not(.search-redirectChecked)');
 				if (targetNode) {
-					$.getJSON(mw.util.wikiScript('wikia')+'?controller=UnifiedSearchSuggestions&method=getSuggestions&format=json&scope=internal&query='+encodeURIComponent(targetNode.closest('.search__wrapper').querySelector('.SearchInput-module_inputField__L3qIE').getAttribute('value')))
+					$.getJSON(mw.util.wikiScript('wikia')+'?controller=UnifiedSearchSuggestions&method=getSuggestions&format=json&scope=internal&query='+encodeURIComponent(targetNode.closest('.search-app__wrapper').querySelector('.search-app__input').getAttribute('value')))
 					.then(checkRedirects);
 					return;
 				}
@@ -309,11 +311,11 @@
 		resizeSearch: function() {
 			mw.util.addCSS(
 				'.fandom-community-header__local-navigation .wds-tabs { display: flex; }'+
-				'.search-container .SearchInput-module_searchIcon__SHaOU { left: 12px; top: 10px; }'+
-				'.search-container { width: unset; max-width: unset !important; min-width: 0 !important; > .search__wrapper {margin-left: 26px; padding: 0; transition-duration: 0s !important;} }'+
+				'.search-container .search-app__icon-search { left: 12px; top: 10px; }'+
+				'.search-container { width: unset; max-width: unset !important; min-width: 0 !important; > .search-app__wrapper {margin-left: 26px; padding: 0; transition-duration: 0s !important;} }'+
 				'@media only screen and (max-width: 1023px) {'+
-					'.fandom-sticky-header .search-container .search__wrapper:not(.SearchInput-module_isExpanded__yw3jH) {width:0 !important; overflow: hidden;}'+
-					'.fandom-sticky-header .search-container .search__wrapper.SearchInput-module_isExpanded__yw3jH {position: fixed; top: 100%; textarea {border-radius: 0; border-top: 0; margin: 0;} }'+
+					'.fandom-sticky-header .search-container .search-app__wrapper:not(.search-app--expanded) {width:0 !important; overflow: hidden;}'+
+					'.fandom-sticky-header .search-container .search-app__wrapper.search-app--expanded {position: fixed; top: 100%; textarea {border-radius: 0; border-top: 0; margin: 0;} }'+
 				'}'+
 				'.search-resizer {'+
 					'width: 20px;'+
@@ -334,20 +336,20 @@
 				'.global-top-navigation .search-resizer { color: var(--fandom-search-color); border-color:var(--fandom-search-color); }'+
 				'.fandom-sticky-header .search-resizer { color: var(--theme-sticky-nav-text-color); border-color: var(--fandom-communitybar-search-color); background: var(--theme-sticky-nav-background-color); }'
 			);
-			$('.search__wrapper').append('<div class="search-resizer"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></div>');
+			$('.search-app__wrapper').append('<div class="search-resizer"><svg class="wds-icon wds-icon-tiny"><use xlink:href="#wds-icons-menu-control-tiny"></use></svg></div>');
 			var resizer = $('.search-container .search-resizer'),
 				resizable, startX, startWidth;
 			
 			// Local storage default widths
 			if (mw.user.options.values['userjs-betterTopNav']) {
 				var _default = JSON.parse(mw.user.options.values['userjs-betterTopNav']);
-				$('.global-top-navigation .search-container .search__wrapper').css('width', _default['global']+'px');
-				$('.fandom-sticky-header .search-container .search__wrapper').css('width',  _default['sticky']+'px');
+				$('.global-top-navigation .search-container .search-app__wrapper').css('width', _default['global']+'px');
+				$('.fandom-sticky-header .search-container .search-app__wrapper').css('width',  _default['sticky']+'px');
 			}
 			resizer.on( 'mousedown', initDrag );
 			function initDrag(e) {
 				startX = e.clientX;
-				resizable = $(e.target.closest('.search__wrapper'));
+				resizable = $(e.target.closest('.search-app__wrapper'));
 				startWidth = parseInt( resizable.outerWidth(), 10);
 				document.documentElement.addEventListener('mousemove', doDrag, false);
 				document.documentElement.addEventListener('mouseup', stopDrag, false);
@@ -361,8 +363,8 @@
 					token: mw.user.tokens.values.csrfToken,
 					optionname: 'userjs-betterTopNav',
 					optionvalue: JSON.stringify({
-						global: parseInt($('.global-top-navigation .search-container .search__wrapper').outerWidth(), 10),
-						sticky: parseInt($('.fandom-sticky-header .search-container .search__wrapper').outerWidth(), 10)
+						global: parseInt($('.global-top-navigation .search-container .search-app__wrapper').outerWidth(), 10),
+						sticky: parseInt($('.fandom-sticky-header .search-container .search-app__wrapper').outerWidth(), 10)
 					})
 				});
 			}
@@ -476,7 +478,7 @@
 				links.forEach(function(link){
 					console.log(link);
 					$('#global-top-navigation .global-action__user .navigation-tab ul').append(
-						$('<li>', {'class':'UserTab-module_listItem__cM-2J'}).append(
+						$('<li>', {'class':'user-tab__list-item'}).append(
 							$('<a>', link)
 						)
 					);
@@ -531,16 +533,16 @@
 		// Load css
 		mw.util.addCSS(
 			// Fix search results ellipsing
-			'.SearchInput-module_suggestion__XEPfH {height: unset; min-height: 32px; margin-top: 5px; > a {-webkit-line-clamp: none; word-break: break-word !important;}}'
+			'.search-app__suggestion {height: unset; min-height: 32px; margin-top: 5px; > a {-webkit-line-clamp: none; word-break: break-word !important;}}'
 		);
 		api.loadMessagesIfMissing(msgs).then(function() {
-			if (window.dev.betterTopNav.results) { bTN.waitFor('#global-top-navigation .search__wrapper input', bTN.expandSearch); }
-			if (window.dev.betterTopNav.resize) { bTN.waitFor('.search__wrapper', bTN.resizeSearch); }
+			if (window.dev.betterTopNav.results) { bTN.waitFor('#global-top-navigation .search-app__wrapper input', bTN.expandSearch); }
+			if (window.dev.betterTopNav.resize) { bTN.waitFor('.search-app__wrapper', bTN.resizeSearch); }
 			if (
 				window.dev.betterTopNav.redirects &&
 				!window.dev.betterTopNav.results // custom search is incompatible with default redirect marking
-			) { bTN.waitFor('.search__wrapper', bTN.showRedirects); }
-			if (window.dev.betterTopNav.tools) { bTN.waitFor('.search__wrapper', bTN.customizeTools); }
+			) { bTN.waitFor('.search-app__wrapper', bTN.showRedirects); }
+			if (window.dev.betterTopNav.tools) { bTN.waitFor('.search-app__wrapper', bTN.customizeTools); }
 			if (window.dev.betterTopNav.hovermenu) { bTN.waitFor('#global-top-navigation .global-action__user > button', bTN.hoverUserMenu); }
 		});
 	});

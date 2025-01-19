@@ -69,7 +69,7 @@ window.DiscussionTemplates = {
             title: 'Talk Warning'
         }
     },
-    allowedGroups: ['sysop', 'rollback']
+    allowedGroups: ['sysop', 'content-moderator']
 };
 
 // 2. DiscussionTemplates import statement

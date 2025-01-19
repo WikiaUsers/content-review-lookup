@@ -45,3 +45,10 @@ window.mapsExtendedConfigs =
         hiddenCategories: [ "poi" ]
     }
 }
+
+//Discord
+window.DiscordBannerSettings = {
+    bannerStyle: '4',
+    inviteLink: 'CnREzhvGyw',
+    prependToRail: true
+};
