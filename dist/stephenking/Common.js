@@ -1,3 +1,37 @@
+//Test
+// Google Analytics Integration
+(function() {
+  var gtagScript = document.createElement('script');
+  gtagScript.async = true;
+  gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-QQBWS7FHKL';
+  document.head.appendChild(gtagScript);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QQBWS7FHKL');
+})();
+
+function initializeGTag(trackingId) {
+  // Add the gtag script dynamically
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
+  document.head.appendChild(script);
+
+  // Initialize the gtag function
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    window.dataLayer.push(arguments);
+  }
+  window.gtag = gtag;
+
+  // Configure gtag
+  gtag('js', new Date());
+  gtag('config', trackingId);
+}
+initializeGTag('G-QQBWS7FHKL');
+
 //MarkForDeletion Config
 window.MarkForDeletion = {
     promptedDeleteReason: "This page is not needed/is vandalistic and/or spam",

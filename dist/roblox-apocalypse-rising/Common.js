@@ -46,14 +46,14 @@ importScriptPage('MediaWiki:AudioIntegrator/AudioIntegrator.js', 'dev');
 importArticle({type:'script', article:'w:c:dev:UserTags/code.js'});
 
 /* Event header - Inactive */
- $('.fandom-community-header__community-name-wrapper').append(
+/* $('.fandom-community-header__community-name-wrapper').append(
     $('<a/>').addClass('hover-community-header-wrapper')
         .append($('<div/>')
             .addClass('message')
             .text('Christmas!')
         )
         .attr('href', 'https://roblox-apocalypse-rising.fandom.com/wiki/Christmas (2024)') 
-);
+); */
 
 /* LastEdited config */
 window.lastEdited = {

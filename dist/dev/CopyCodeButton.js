@@ -70,6 +70,7 @@
 			const copyButton = document.createElement('button');
 
 			copyButton.classList.add(classNames.copyButton);
+			copyButton.style.display = 'none';
 			setButtonLabel(copyButton, copyLabel);
 			copyButton.insertAdjacentHTML('beforeend', iconsHTML);
 

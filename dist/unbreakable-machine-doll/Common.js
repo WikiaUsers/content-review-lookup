@@ -80,10 +80,10 @@ if (mw.config.get("wgUserGroups").indexOf('sysop') > -1) importScriptPage('Media
 window.BackToTopModern = true;
 
 // Arrow Icon
-window.BackToTopArrow = false;
+//window.BackToTopArrow = true;
 
 // Button Text 
-window.BackToTopText = "Back to Top";
+//window.BackToTopText = "Back to Top";
 
 // Scroll Speed
 window.BackToTopSpeed = 600;

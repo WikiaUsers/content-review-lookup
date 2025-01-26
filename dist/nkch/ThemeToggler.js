@@ -39,12 +39,12 @@ $(function () {
             ".nkch-theme-toggler:has(.nkch-theme-toggler__button--wiki.is-active) .nkch-theme-toggler__handle { margin-left: 0; }",
             ".nkch-theme-toggler:has(.nkch-theme-toggler__button--light.is-active) .nkch-theme-toggler__handle { margin-left: 56px; }",
             /* ~ sticky header ~ */
-            ".fandom-sticky-header .nkch-theme-toggler__sticky-placement { margin-inline-start: auto; margin-inline-end: 6px; }",
-            ".fandom-sticky-header .nkch-theme-toggler__sticky-placement + .wiki-tools { margin-inline-start: 0; }",
-            ".fandom-sticky-header .nkch-theme-toggler__wrapper { background-color: var(--theme-sticky-nav-background-color); border-color: var(--theme-sticky-nav-text-color); }",
-            ".fandom-sticky-header .wds-icon-small { fill: var(--theme-sticky-nav-text-color); }",
-            ".fandom-sticky-header .nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-sticky-nav-background-color); }",
-            ".fandom-sticky-header .nkch-theme-toggler__handle { background-color: var(--theme-sticky-nav-text-color); }",
+            "#community-navigation .nkch-theme-toggler__sticky-placement { margin-inline-start: auto; margin-inline-end: 6px; }",
+            "#community-navigation .nkch-theme-toggler__sticky-placement + .wiki-tools { margin-inline-start: 0; }",
+            "#community-navigation .nkch-theme-toggler__wrapper { background-color: var(--theme-sticky-nav-background-color); border-color: var(--theme-sticky-nav-text-color); }",
+            "#community-navigation .wds-icon-small { fill: var(--theme-sticky-nav-text-color); }",
+            "#community-navigation .nkch-theme-toggler__button.is-active .wds-icon-small { fill: var(--theme-sticky-nav-background-color); }",
+            "#community-navigation .nkch-theme-toggler__handle { background-color: var(--theme-sticky-nav-text-color); }",
             /* ~ FandomMobile ~ */
             ".skin-fandommobile .nkch-theme-toggler__app { margin: 9px auto 0 auto; }",
             ".skin-fandommobile .nkch-theme-toggler__wrapper { background-color: var(--fandom-global-nav-background-color); border: 1px solid var(--fandom-global-nav-text-color); }",
@@ -83,7 +83,7 @@ $(function () {
             data: function () {
                 return {
                     theme: startingTheme,
-                    inStickyNav: document.querySelector(".fandom-sticky-header").classList.contains("is-visible")
+                    inStickyNav: document.querySelector("#community-navigation").classList.contains("is-visible")
                 };
             },
             computed: {
@@ -229,7 +229,7 @@ $(function () {
                 const stickyPlacement = document.createElement("div");
                 stickyPlacement.classList.add("nkch-theme-toggler__sticky-placement");
 
-                document.querySelector(".fandom-sticky-header .wiki-tools")
+                document.querySelector("#community-navigation .wiki-tools")
                     .before(stickyPlacement);
             },
             mounted: function () {
@@ -261,7 +261,7 @@ $(function () {
                     that.$data.inStickyNav = mutations[0].target.classList.contains("is-visible");
                 });
 
-                observer.observe(document.querySelector(".fandom-sticky-header"), {
+                observer.observe(document.querySelector("#community-navigation"), {
                     attributes: true,
                     attributeFilter: ["class"]
                 });

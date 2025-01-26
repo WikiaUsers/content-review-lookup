@@ -1,65 +1,53 @@
+// The css used for this feature can be found in MediaWiki:UweInactivityWindow.css
+
 let timeout;
 
 function createPrompt() {
     let modal = document.createElement('div');
     modal.id = 'inactivityModal';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.zIndex = '800';
     modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
 
     let prompt = document.createElement('div');
     prompt.id = 'inactivityPrompt';
-    prompt.style.position = 'fixed';
-    prompt.style.top = '50%';
-    prompt.style.left = '50%';
-    prompt.style.transform = 'translate(-50%, -50%)';
-    prompt.style.padding = '20px';
-    prompt.style.backgroundColor = 'var(--theme-page-background-color)';
-    prompt.style.border = '1.5px solid var(--theme-accent-color)';
-    prompt.style.borderRadius = '10px';
-    prompt.style.display = 'flex';
-    prompt.style.alignItems = 'center';
-    prompt.style.zIndex = '800';
-    prompt.style.animation = 'searchModalSlideIn .2s';
-    
+
     let img = document.createElement('img');
     img.src = 'https://static.wikia.nocookie.net/xorumian-things/images/2/22/Heinrych.png/revision/latest/scale-to-width-down/1000?cb=20241007193623&path-prefix=de';
-    img.style.marginRight = '0';
-    img.style.width = '500px';
-    img.style.height = '500px';
-    img.style.borderRadius = '0';
-    
-    let text = document.createElement('span');
-    text.innerText = 'Du hast deine Maus schon lange nicht mehr bewegt, weswegen wir uns fragen: Bist du inzwischen verstorben?';
-    text.style.color = 'var(--theme-page-text-color)';
-    text.style.fontSize = '35px';
-    text.style.marginRight = '50px';
-    
+
+    let text1 = document.createElement('span');
+    text1.className = 'text-line1';
+    text1.innerText = 'You haven\'t moved your mouse for at least five minutes. That got us wondering:';
+
+    let text2 = document.createElement('span');
+    text2.className = 'text-line2';
+    text2.innerText = 'Are you still alive?';
+
+    let buttonContainer = document.createElement('div');
+    buttonContainer.id = 'buttonContainer';
+
+    let yesButton = document.createElement('button');
+    yesButton.innerText = 'Yes';
+    yesButton.onclick = hidePrompt;
+
+    let noButton = document.createElement('button');
+    noButton.innerText = 'No';
+
+    buttonContainer.appendChild(yesButton);
+    buttonContainer.appendChild(noButton);
+
     prompt.appendChild(img);
-    prompt.appendChild(text);
+    prompt.appendChild(text1);
+    prompt.appendChild(document.createElement('br')); // Line break
+    prompt.appendChild(text2);
+    prompt.appendChild(document.createElement('br')); // Line break
+    prompt.appendChild(buttonContainer);
     modal.appendChild(prompt);
     document.body.appendChild(modal);
     
-    // ::before Pseudo-Element hinzufügen
+    // Add ::before pseudo-element 
     let style = document.createElement('style');
     style.innerHTML = `
         #inactivityModal::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            backdrop-filter: blur(20px);
-            z-index: 799;
-            animation: searchOverlayFadeIn .2s;
+        content: "";
         }
     `;
     document.head.appendChild(style);
@@ -84,9 +72,15 @@ function hidePrompt() {
 
 function resetTimer() {
     clearTimeout(timeout);
-    timeout = setTimeout(showPrompt, 5000); // 5 Sekunden
+    timeout = setTimeout(showPrompt, 300000); // 5 minutes till summoning of Heinrych
 }
 
-document.onmousemove = hidePrompt;
+document.onmousemove = resetTimer; // Reset timer on mouse movement
 
-resetTimer(); // Timer beim Laden der Seite starten
+document.onkeydown = function(event) {
+    if (event.key === 'ø') { // Window also appears if key 'ø' is pushed
+        showPrompt();
+    }
+};
+
+resetTimer(); // Start timer when site loads

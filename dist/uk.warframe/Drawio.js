@@ -269,7 +269,7 @@
 		this.hide();
 		editor = null;
 		this.destroy();
-		setInterval(location.reload(), 7000);
+		this.imageBox.show();
 	};
 	
 	DrawioEditor.prototype.saveCallback = function() {
@@ -350,17 +350,8 @@
 	}
 	
 	window.addEventListener('message', drawioHandleMessage);
-
-
-	String.prototype.format = function() {
-		var args = arguments;
-			return this.replace(/{(\d+)}/g, function(match, number) {
-				number = number - 1;
-				return typeof args[number] != 'undefined' ? args[number] : match;
-		});
-	};
 	
-	var loadScript = function(url) {
+	var loadScriptCustom = function(url) {
 		return $.ajax({
 			url: url,
 			dataType: 'script',
@@ -373,10 +364,10 @@
 	var defaultInteractive = false;
 	
 	var $blocks = $('#drawio-template, #Drawio-template');
-	if ($blocks.length < 0) return;
-	$.when(
-		loadScript('https://code.jquery.com/ui/1.12.1/jquery-ui.js')
-	).then(function() {
+	if ($blocks.length > 0)  {
+		$.when(
+			loadScriptCustom('https://code.jquery.com/ui/1.12.1/jquery-ui.js')
+		).then(function() {
 		$blocks.each(function(index, item) {
 			var $this = $(item);
 			var options = $this.data();
@@ -433,9 +424,7 @@
 					var cssImgWidth = optWidth === 'chart' ? optWidth: imgWidth;
 					var cssImgMaxWidth = optMaxWidth === 'chart' ? imgMaxWidth : optMaxWidth;
 					
-					var optStyle = 'height: {1}; width: {2}; max-width: {3};'.format(
-						cssImgHeight, cssImgWidth, cssImgMaxWidth
-					);
+					var optStyle = 'height: ' + cssImgHeight +'; width: '+ cssImgWidth +'; max-width: '+ cssImgMaxWidth +';';
 					$this.append(
 						$("<div>", {
 							append: [
@@ -446,13 +435,11 @@
 									append: [
 										$("<a>", {
 											class: 'drawio-edit-btn',
-											href: "javascript:editDrawio(\"{1}\", \"{2}\", \"{3}\", {4}, {5}, {6}, {7})".format(
-												id, imageName, optType,
-												optInteractive ? 'true' : 'false',
-												optHeight === 'chart' ? 'true' : 'false',
-												optWidth === 'chart' ? 'true' : 'false',
-												optMaxWidth === 'chart' ? 'true' : 'false'
-											),
+											href: 'javascript:editDrawio("'+ id+ '", "' +imageName+'", "'+optType+'", '
+												+ (optInteractive ? 'true' : 'false') + ', '
+												+ (optHeight === 'chart' ? 'true' : 'false') + ', '
+												+ (optWidth === 'chart' ? 'true' : 'false') + ', '
+												+ (optMaxWidth === 'chart' ? 'true' : 'false') + ')',
 											title: 'Редагувати',
 											html: '&#128393;'
 										}),
@@ -479,13 +466,11 @@
 						})
 					);
 					$('#drawio-img-box-' + id ).append(
-					'<object id="drawio-img-{1}" data="{2}" type="text/svg+xml" style="{3}"></object>'.format(
-						id,
-						imgUrl,
-						optStyle
-					));
+					'<object id="drawio-img-' + id + '" data="' + imgUrl + '" type="text/svg+xml" style="' + optStyle + '"></object>');
     	        }
 			});
 		});
 	});
+	}
+	
 })(window, jQuery);

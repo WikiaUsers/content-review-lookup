@@ -11,17 +11,22 @@ $(function () {
 		const intersectionPage = 'Special:BlankPage/CategoryIntersection';
 		const searchParams = new URLSearchParams(location.search);
 		const pageName = mw.config.get('wgPageName');
+		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Legends|Canon) articles$');
 		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
 			return param === 'category1' || param === 'category2';
 		}).length === 2;
 		const isFormPage = pageName === intersectionPage && !isResultsPage;
-
+		
 		// Add links to category pages
 		if (isCategoryPage) {
-			var category = mw.config.get('wgTitle').replaceAll(' ', '_');
-			var baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
-			var filters = '<li><a href="'+baseUrl+'">Category intersection</a></li>';
-			$('#p-cactions .wds-list').append(filters);
+			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
+			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
+			var filters = '<div class="dpl-filter-container">';
+			filters += '<a href="' + baseUrl + '">Category intersection</a>';
+			filters += '<ul>';
+			filters += '</ul>';
+			filters += '</div>';
+			$('.mw-parser-output').append(filters);
 		}
 		
 		// Results page

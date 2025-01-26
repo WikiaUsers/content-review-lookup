@@ -5,6 +5,7 @@ $( function () {
 		var selected, $radio;
 		var switchers = []
 		var radioName = 'switcher-' + i;
+		var first = true;
 		$.each( container.children, function ( j, switcher ) {
 			var label = switcher.querySelector( '.switcher-label' );
 			if ( !label || !label.childNodes.length ) {
@@ -27,7 +28,8 @@ $( function () {
 				// Hide non-default
 				$( switcher ).hide();
 			}
-			$( '<label style="display:block"></label>' ).append( $radio, label.childNodes ).appendTo( container );
+			$( '<label style="display:' + (first ? "inline-block" : "block") + '"></label>' ).append( $radio, label.childNodes ).appendTo( container );
+			first = false;
 			$( label ).remove();
 		} );
 		if ( switchers.length > 1 ) {

@@ -1,0 +1,1 @@
+/* #REDIRECT */mw.loader.load("https://the-astral-lineage.fandom.com/wiki/MediaWiki:Common.js/ArticleType.js?action=raw\u0026ctype=text/javascript");

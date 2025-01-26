@@ -178,12 +178,12 @@ mw.hook("wikipage.content").add(function () {
 				var name = mw.config.get("wgRelevantPageName");
 				var namespace = ( $("span[id='ooui-1']")[0].innerHTML ).toString();
 				data = JSON.parse(data);
-				var new_name = ( (namespace == '(Основное)' && '' || (namespace + ":") ) + ( $("input[name='wpNewTitleMain']")[0].value ).toString() ).replaceAll(" ","_");
+				var new_name = ( (namespace == '(Основное)' ? '' : (namespace + ":") ) + ( $("input[name='wpNewTitleMain']")[0].value ).toString() ).replaceAll(" ","_");
 				var data_to_copy = data[name];
 				if ( data_to_copy != null && new_name != null && new_name != name ) {
 					delete data[name];
 					data[new_name] = data_to_copy;
-					post_article(PageRatingStoringPage,JSON.stringify( data ),"Перенос оценок с " + name + " на " + new_name);	
+					post_article(PageRatingStoringPage,JSON.stringify( data ),"Перенос оценок с " + (namespace == '(Основное)' ? '' : (namespace + ":") ) + name + " на " + new_name);	
 				}
 			});
 		});

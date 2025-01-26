@@ -1,8 +1,8 @@
 /**
  * This script will add a single-choice quiz to your wiki
- * Written by Sovq
+ * Code Written by "Sovq"
  * Released to the public domain, no attribution required - feel free to copy and use as desired
- * Installation instructions on https://dev.fandom.com/wiki/Quiz
+ * Installation instructions on "dev.fandom.com/wiki/Quiz"
  */
 
 (function($) {

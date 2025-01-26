@@ -17,7 +17,8 @@ if (wgPageName === "Unit_List") {
     type:    'script',
     article: [
         'MediaWiki:DamageCalculator.js',
-        'MediaWiki:Schedule.js'
+        'MediaWiki:Schedule.js',
+        'MediaWiki:FilterTable.js'
     ]
   });
 } else {

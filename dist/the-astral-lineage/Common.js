@@ -125,3 +125,15 @@ SpoilerAlert = {
         return -1 !== wgCategories.indexOf('Spoiler');
     }
 };
+
+/*******************************************************************************
+** Imports
+*******************************************************************************/
+
+
+importArticles({
+    type: "script",
+    articles: [
+        'MediaWiki:Common.js/ArticleType.js',
+    ]
+});

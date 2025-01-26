@@ -69,10 +69,11 @@
 		}
 		
 		var deleteWarning = '<div id="global-usage-delete-warning" hidden>' + i18n.msg('delete-warn').plain() + '</div>';
+		var headerID = 'globalusage-dev';
 		
 		switch (action) {
 			case 'view':
-				showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3 id="globalusage-dev">' + i18n.msg('global').plain() + '</h3>', i18n);
+				showGUContainer('#mw-imagepage-section-linkstoimage, #mw-imagepage-nolinkstoimage', '<h3 id="' + headerID + '">' + i18n.msg('global').plain() + '</h3>', i18n);
 				
 				if (config.auto_show || $('#ca-delete').length)
 					showGUTable(i18n);
@@ -81,7 +82,7 @@
 				if (!config.hide_on_delete) {
 					$('#mw-img-deleteconfirm').append(deleteWarning);
 					
-					showGUContainer('#mw-content-text', '<h2>' + i18n.msg('global-usage').plain() + '</h2>', i18n);
+					showGUContainer('#mw-content-text', '<h2 id="' + headerID + '">' + i18n.msg('global-usage').plain() + '</h2>', i18n);
 					showGUTable(i18n);
 				}
 			break;
@@ -89,7 +90,7 @@
 				if (!config.hide_on_move) {
 					$('#movepage').append(deleteWarning);
 					
-					showGUContainer('#mw-content-text', '<h2>' + i18n.msg('global-usage').plain() + '</h2>', i18n);
+					showGUContainer('#mw-content-text', '<h2 id="' + headerID + '">' + i18n.msg('global-usage').plain() + '</h2>', i18n);
 					showGUTable(i18n);
 				}
 			break;

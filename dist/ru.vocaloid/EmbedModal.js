@@ -7,7 +7,7 @@
     }
     window.YouTubeModalLoaded = true;
 
-    const videoPlatforms = [
+    var videoPlatforms = [
         {
             regex: /youtu\.be\/([^?&]+)/,
             base: 'https://www.youtube.com/embed/$1'
@@ -39,15 +39,23 @@
     ];
 
     function isVideoLink(link) {
-        return videoPlatforms.find((platform) => platform.regex.test(link));
+        return videoPlatforms.some(function(platform) {
+            return platform.regex.test(link);
+        });
+    }
+
+    function getMatchingPlatform(link) {
+        return videoPlatforms.filter(function(platform) {
+            return platform.regex.test(link);
+        })[0];
     }
 
     function parseVideoURL(link) {
-        const platform = isVideoLink(link);
+        var platform = getMatchingPlatform(link);
         if (!platform) return null;
 
         try {
-            const match = link.match(platform.regex);
+            var match = link.match(platform.regex);
             return match ? platform.base.replace('$1', match[1]) : null;
         } catch (error) {
             console.error('Error parsing video URL:', link, error);
@@ -56,25 +64,28 @@
     }
 
     function closeModal() {
-        document.querySelectorAll('.yt-cinema-greyout, .yt-cinema-container').forEach(el => el.remove());
+        var elements = document.querySelectorAll('.yt-cinema-greyout, .yt-cinema-container');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].parentNode.removeChild(elements[i]);
+        }
         document.body.classList.remove('yt-cinema-playing');
     }
 
     function showModal(url) {
         closeModal(); // Ensure only one modal is open
 
-        const greyout = document.createElement('div');
+        var greyout = document.createElement('div');
         greyout.className = 'yt-cinema-greyout';
         greyout.addEventListener('click', closeModal);
 
-        const closeButton = document.createElement('span');
+        var closeButton = document.createElement('span');
         closeButton.className = 'yt-cinema-close';
         closeButton.textContent = '✕';
 
-        const container = document.createElement('div');
+        var container = document.createElement('div');
         container.className = 'yt-cinema-container';
 
-        const iframe = document.createElement('iframe');
+        var iframe = document.createElement('iframe');
         iframe.src = url;
         iframe.title = 'Video Player';
         iframe.allow = 'autoplay; fullscreen';
@@ -83,17 +94,21 @@
         container.appendChild(iframe);
         greyout.appendChild(closeButton);
         greyout.appendChild(container);
-        document.body.prepend(greyout);
+        document.body.insertBefore(greyout, document.body.firstChild);
         document.body.classList.add('yt-cinema-playing');
     }
 
-    document.body.addEventListener('click', (e) => {
+    document.body.addEventListener('click', function(e) {
         if (e.ctrlKey || e.shiftKey || e.metaKey) return;
 
-        const link = e.target.closest('a');
+        var link = e.target;
+        while (link && link.tagName !== 'A') {
+            link = link.parentNode;
+        }
+        
         if (!link || !link.href) return;
 
-        const videoURL = parseVideoURL(link.href);
+        var videoURL = parseVideoURL(link.href);
         if (videoURL) {
             e.preventDefault();
             showModal(videoURL);

@@ -430,6 +430,13 @@
 					}
 				});
 			}
+			
+			// Add the tools to global bar too
+			if (!document.querySelector('#global-top-navigation .wiki-tools')) {
+				$('#global-top-navigation .search-container').after(
+					$('#community-navigation .wiki-tools').clone()
+				);
+			}
 		},
 		
 		hoverUserMenu: function (customLinks) {

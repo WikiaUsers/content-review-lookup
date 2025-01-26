@@ -2,7 +2,7 @@
 
 window.MessageBlock = {
 	title : 'Blocked',
-	message : 'You have received a $2 block because you have $1',
+	message : 'You have received a block because you were $1. If you have any questions, please message the administrators.',
 	autocheck : true
 };
 

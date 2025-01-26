@@ -14,7 +14,7 @@ $('.appear').each(function(index, currentTree){
 		$(this).find('ul li ul, ol li ol, ul li ol, ol li ul').hide();
 	}
 	
-	$('#'+currentButtonID).click(function(){
+	$('#' + currentButtonID).click(function(){
 		if ($(this).text() === 'show all'){
 			$(currentTree).find('ul li ul, ol li ol, ul li ol, ol li ul').show();
 		} else {
@@ -26,13 +26,13 @@ $('.appear').each(function(index, currentTree){
 });
 
 $('.appear li ul, .appear li ol').each(function(index, currentTree){
-	var currentButtonID = 'pane-' + index++;
+	var currentButtonID = 'pane-' + index;
 	var total = $(this).find('li').length - $(this).find('ul, ol').length;
 	var button = '<a id="' + currentButtonID + '" class="show-hide-button">' + total + '</a>';
 	
-	$(this).before('(' + button + ')');
+	$(this).before(' (' + button + ')');
 	
-	$('#'+currentButtonID).click(function(){
+	$('#' + currentButtonID).click(function(){
 		$(currentTree).toggle();
 	});
 });

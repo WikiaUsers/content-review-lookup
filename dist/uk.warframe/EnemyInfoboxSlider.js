@@ -11,7 +11,7 @@ $(".type-enemyBox, .enemy-horiz-box").each(
 		var reset_id = "reset_" + count;
 		var enemy_steelpath_id = "sp_" + count;
 		var enemy_eximus_id = "eximus_" + count;
-		var tooltip_span = '<span class="tooltip tooltip-full damage-type-tooltip" data-param="Порожнечею" data-param2="DamageTypes"><a href="/uk/wiki/%D0%A8%D0%BA%D0%BE%D0%B4%D0%B0/%D0%A8%D0%BA%D0%BE%D0%B4%D0%B0_%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B5%D1%8E" title="Шкода/Шкода Порожнечею"><img alt="Порожнеча іконка uk" src="https://static.wikia.nocookie.net/warframe/images/3/38/%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B0_%D1%96%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_uk.png/revision/latest/scale-to-width-down/32?cb=20221025114327&amp;path-prefix=uk" decoding="async" loading="lazy" width="32" height="32" class="icon" data-image-name="Порожнеча іконка uk.png" data-image-key="%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B0_%D1%96%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_uk.png" data-relevant="0"></a></span><span style="color:green">x1,5</span>';
+		var voidDmg_tooltip = '<span class="tooltip tooltip-full damage-type-tooltip tooltips-init-complete" data-param="Порожнечею" data-param2="DamageTypes"><a href="/uk/wiki/%D0%A8%D0%BA%D0%BE%D0%B4%D0%B0/%D0%A8%D0%BA%D0%BE%D0%B4%D0%B0_%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B5%D1%8E"><img alt="Порожнечею іконка uk" src="https://static.wikia.nocookie.net/warframe/images/7/7f/%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B5%D1%8E_%D1%96%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_uk.png/revision/latest/scale-to-width-down/32?cb=20250122143528&amp;path-prefix=uk" decoding="async" loading="lazy" width="32" height="32" class="icon" data-image-name="Порожнечею іконка uk.png" data-image-key="%D0%9F%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B5%D1%87%D0%B5%D1%8E_%D1%96%D0%BA%D0%BE%D0%BD%D0%BA%D0%B0_uk.png" data-relevant="0"></a></span><span style="color:green">x1,5</span>';
 
 		slider.enemyVarInfoboxScaler = {};
 		var scaler = slider.enemyVarInfoboxScaler;
@@ -182,7 +182,7 @@ $(".type-enemyBox, .enemy-horiz-box").each(
 					<div class="'+(is_horiz ? 'data-value' : 'pi-data-value pi-font') +'"><span id="overguard">${overguard}</span></div></div>\
 					<div class="'+(is_horiz ? 'data-row' : 'pi-item pi-data pi-item-spacing pi-border-color') +'" data-source="OverguardT">\
 				<div class="pi-data-value pi-font"><div style="text-align: center; font-size: 12px; font-weight: bold;">\
-				<div style="text-align:center;">'+tooltip_span+'</div></div></div></div>');
+				<div style="text-align:center;">'+voidDmg_tooltip+'</div></div></div></div>');
 				$(window).trigger('CustomEvent', $(enemyVar));
 				}
 			}
