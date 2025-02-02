@@ -9,6 +9,10 @@ nkch_gst_gadgets = [{
 	title: "Оранжевая тёмная тема",
 	description: "Минимальные изменения, делающие тёмную тему оранжевой"
     }, {
+	name: "BlueDarkTheme",
+	title: "Синяя тёмная тема",
+	description: "Без комментариев"
+    }, {
 	name: "OldGreyTheme",
 	title: "Старая серая тема",
 	description: "Воссоздание старого стиля тёмной темы (серо-голубой)"
@@ -32,6 +36,9 @@ InactiveUsers = {
 
 //Back To Top Button
 window.BackToTopModern = true;
+
+//AddRailModule
+window.AddRailModule = ['Template:NavRail'];
 
 /*Импорт*/
 

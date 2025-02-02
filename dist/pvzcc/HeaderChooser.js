@@ -350,7 +350,8 @@ var possibleTexts = [
 			"Nice try, hotshot.",
 			"What are you saying “Oh” to?",
 			"Hi I'm Wall-nut!",
-			"My subreddit is gonna love this!"
+			"My subreddit is gonna love this!",
+			"Join Port-a-Card"
         ],
         weight: 50000000
     },

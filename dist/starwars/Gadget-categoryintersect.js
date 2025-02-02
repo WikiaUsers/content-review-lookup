@@ -95,9 +95,9 @@ $(function () {
 			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
 			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
 			var dpl = '<DPL>\n';
-			dpl += '  category = ' + category1 + '\n';
-			dpl += '  category = ' + category2 + '\n';
-			dpl += '  category = ' + category3 + '\n';
+			dpl += '  category = **' + category1 + '\n';
+			dpl += '  category = **' + category2 + '\n';
+			dpl += '  category = **' + category3 + '\n';
 			dpl += '  count = ' + count + '\n';
 			dpl += '  offset = ' + offset + '\n';
 			dpl += '  mode = category\n';

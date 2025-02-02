@@ -492,6 +492,11 @@
             scripts: 'MediaWiki:NoGlobalNav.js'
         },
 
+        NotificationCenter: {
+            page: 'Special:NotificationCenter',
+            scripts: 'MediaWiki:NotificationCenter.js'
+        },
+
         OasisRevived: {
             page: 'OasisRevived',
             styles: 'MediaWiki:OasisRevived.css',

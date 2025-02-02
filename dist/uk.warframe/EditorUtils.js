@@ -10,43 +10,44 @@ $(function() {
 "use strict";
 
 if (mw.config.get('wgAction') == "edit" || mw.config.get('wgAction') == "submit") {
-	mw.hook('dev.wds').add(function(wds) {
-		// додає кнопки на панель редагування
-		$("#wikiEditor-section-main").append($("<div>", {
-			class: "group",
-			rel:"misc",
-			append: [
-				$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-sortlist">' + 
-				'<a class="oo-ui-buttonElement-button" role="button" title="Швидке сортування виділеного списку">'+
-				'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-bullet-list-small" style="width: 20px, height: 20px;"></div>'+
-				'</a></span>'),
-				$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-sortlistModal">' + 
-				'<a class="oo-ui-buttonElement-button" role="button" title="Відкрити вікно сортування списку. Виділений текст відразу скопіюється в поле.">'+
-				'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-more-small" style="width: 20px, height: 20px;"></div>'+
-				'</a></span>'),
-				$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-openWindowParse">' + 
-				'<a class="oo-ui-buttonElement-button" role="button" title="Відкрити вікно сортування списку. Виділений текст відразу скопіюється в поле.">'+
-				'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-toc-small" style="width: 20px, height: 20px;"></div>'+
+	setTimeout(function() {
+		mw.hook('dev.wds').add(function(wds) {
+			// додає кнопки на панель редагування
+			$("#wikiEditor-section-main").append($("<div>", {
+				class: "group",
+				rel:"misc",
+				append: [
+					$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-sortlist">' + 
+					'<a class="oo-ui-buttonElement-button" role="button" title="Швидке сортування виділеного списку">'+
+					'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-bullet-list-small" style="width: 20px, height: 20px;"></div>'+
+					'</a></span>'),
+					$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-sortlistModal">' + 
+					'<a class="oo-ui-buttonElement-button" role="button" title="Відкрити вікно сортування списку. Виділений текст відразу скопіюється в поле.">'+
+					'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-more-small" style="width: 20px, height: 20px;"></div>'+
+					'</a></span>'),
+					$('<span class="tool oo-ui-widget oo-ui-widget-enabled oo-ui-buttonElement oo-ui-buttonElement-frameless oo-ui-iconElement oo-ui-buttonWidget" id="mw-editbutton-openWindowParse">' + 
+					'<a class="oo-ui-buttonElement-button" role="button" title="Відкрити вікно сортування списку. Виділений текст відразу скопіюється в поле.">'+
+					'<div class="wds-icon dev-wds__icon" id="dev-wds-icons-toc-small" style="width: 20px, height: 20px;"></div>'+
 				'</a></span>')
-			]
-			})
-		);
-	// обробник подій натискання на кнопки панелі редагування
-		$("#mw-editbutton-sortlist > a").on("click", function() {
-			sortSelection();
+				]
+				})
+			);
+		// обробник подій натискання на кнопки панелі редагування
+			$("#mw-editbutton-sortlist > a").on("click", function() {
+				sortSelection();
+			});
+			$("#mw-editbutton-sortlistModal > a").on("click", function() {
+				openModal();
+			});
+			$("#mw-editbutton-openWindowParse > a").on("click", function() {
+				openWindowParse();
+			});
+		
+			wds.render('#mw-editbutton-sortlist');
+			wds.render('#mw-editbutton-sortlistModal');
+			wds.render('#mw-editbutton-openWindowParse');
 		});
-		$("#mw-editbutton-sortlistModal > a").on("click", function() {
-			openModal();
-		});
-		$("#mw-editbutton-openWindowParse > a").on("click", function() {
-			openWindowParse();
-		});
-	
-		wds.render('#mw-editbutton-sortlist');
-		wds.render('#mw-editbutton-sortlistModal');
-		wds.render('#mw-editbutton-openWindowParse');
-	});
-
+	}, 2000);
 	importArticles({
 		type: 'script',
 		articles: [ 'u:dev:MediaWiki:WDSIcons/code.js', "u:dev:MediaWiki:ShowCustomModal.js" ]
@@ -157,14 +158,13 @@ if (mw.config.get('wgAction') == "edit" || mw.config.get('wgAction') == "submit"
 		const userName = mw.config.get("wgUserName");
 		if ($("#openWindowParseDialog").length) { $("#openWindowParseDialog").show(); return; }
 		$.get("https://warframe.fandom.com/uk/wiki/Користувач:"+ userName +"?action=render", function(response) {
-			var content = //$(response).find("#parse").length ?
-				//$(response).find("#parse").html() :
+			var content = $(response).find("#parse").length ? $(response).find("#parse").html() :
 				'Додайте код, вказаний нижче на Вашу сторінку ('
-				+ '<a target="_blank" href="https://warframe.fandom.com/uk/wiki/Користувач:'+ userName +'">Користувач:' + userName + '</a>'
+				+ '<a target="_blank" href="https://warframe.fandom.com/uk/wiki/Користувач:' + userName + '">Користувач:' + userName + '</a>'
 				+ ') за потреби.<br/>&lt;div id="parse"&gt;Тут вміст, який повинен '
 				+ 'відображатись в цьому вікні.&lt;/div&gt;';
 
-			var $window = $('<div id="openWindowParseDialog" class="ui-dialog ui-widget ui-widget-content" style="position:absolute;z-index:1005;"><div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix"><span class="ui-dialog-title">Вміст з власної сторінки</span><a href="#" class="ui-dialog-titlebar-close" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="ui-dialog-content ui-widget-content">'+ content +'</div></div>').draggable({cancel: ".ui-dialog-content"}).resizable();
+			var $window = $('<div id="openWindowParseDialog" class="ui-dialog ui-widget ui-widget-content" style="position:absolute;z-index:1005; left:33%;top:15%;"><div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix"><span class="ui-dialog-title">Вміст з власної сторінки</span><a href="#" class="ui-dialog-titlebar-close" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="ui-dialog-content ui-widget-content">'+ content +'</div></div>').draggable({cancel: ".ui-dialog-content"}).resizable();
 			$("#mw-content-text").append($window);
 
 			$window.find(".ui-dialog-titlebar-close").on("click", function() { $window.hide(); });

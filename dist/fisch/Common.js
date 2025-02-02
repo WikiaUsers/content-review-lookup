@@ -2,6 +2,21 @@
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
+
+/* Load HourChange module */
+importScript('MediaWiki:HourChange.js');
+
+/* Load CurrentSeason module */
+importScript('MediaWiki:CurrentSeason.js');
+
+ /* Simple click handler for Discord button
+  * CSS: - MediaWiki:Main_Page.css */
+$(document).ready(function() {
+    $('#p-views').on('click', function() {
+        window.location.href = 'https://discord.gg/7fFExCqCqC';
+    });
+});
+
 mw.loader.load('jquery.makeCollapsible');
 mw.loader.using('jquery.makeCollapsible', function () {
     $(function () {
@@ -57,7 +72,6 @@ mw.hook('wikipage.content').add(function () {
  * CSS: https://fisch.fandom.com/wiki/MediaWiki:TopWeekLeaderboard.css
  * TEMPLATE: https://fisch.fandom.com/wiki/Template:TopContributors
  */
-
 mw.loader.using('mediawiki.util').then(function() {
     $(document).ready(function() {
         var WeeklyTopContributors = {
@@ -214,3 +228,329 @@ mw.loader.using('mediawiki.util').then(function() {
         }, 3600000);
     });
 });
+
+/*
+* CircleAvatar Template Handler
+* Displays user avatars in a modern, circular style with customizable parameters
+* Inspired by Fandom's avatar styling system
+* 
+* This script creates customizable circular avatars for wiki users
+* It uses the Fandom API to fetch user avatars dynamically
+* while providing a modern interface with hover effects
+*
+* Key features:
+* - Circular avatars with size customization (16-150px)
+* - Optional username display
+* - Modern hover effects and transitions
+* - Built-in caching system for API calls
+* - Automatic error handling with fallbacks
+*
+* Uses only official MediaWiki API and follows Fandom's best practices
+* No external resources or dependencies except for built-in MediaWiki modules
+*
+* TEMPLATE: https://fisch.fandom.com/wiki/Template:CircleAvatar
+*/
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
+   'use strict';
+
+   var cache = {};
+
+   // Avatar creation and styling function
+    function addAvatar(element) {
+        var $element = $(element);
+        var username = $element.data('username').replace('@', '');
+        var params = $element.data('params') ? $element.data('params').split('|') : [];
+        
+        // Parse parameters
+        var size = 24;
+        var showName = true;
+        
+        if (params.length > 0) {
+            if (!isNaN(params[0])) {
+                size = parseInt(params[0], 10);
+                if (params[1] === 'false') {
+                    showName = false;
+                }
+            } else {
+                params.forEach(function(param) {
+                    if (param.startsWith('size=')) {
+                        size = parseInt(param.split('=')[1], 10);
+                    } else if (param.startsWith('showname=')) {
+                        showName = param.split('=')[1] !== 'false';
+                    }
+                });
+            }
+        }
+
+        // Limit size
+        size = Math.min(Math.max(size, 16), 150);
+
+        var avatar = cache[username];
+        if (!avatar) {
+            console.error('[CircleAvatar] Cannot find avatar for', username);
+            return;
+        }
+
+        // Adjust avatar size
+        avatar = avatar.replace(
+            /\/thumbnail\/width\/\d+\/height\/\d+/,
+            '/thumbnail/width/' + size + '/height/' + size
+        );
+
+        // Create container
+        var $container = $('<span>').css({
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            transition: 'opacity 0.2s'
+        });
+
+        // Create avatar image
+        var $avatar = $('<img>').attr({
+            src: avatar,
+            alt: username + "'s avatar",
+            title: '@' + username
+        }).css({
+            borderRadius: '50%',
+            width: size + 'px',
+            height: size + 'px',
+            objectFit: 'cover',
+            verticalAlign: 'middle',
+            border: '1px solid rgba(0,0,0,0.1)'
+        });
+
+        // Add username if showName is true
+        if (showName) {
+            var $name = $('<span>').text('@' + username).css({
+                fontSize: Math.max(size * 0.7, 12) + 'px',
+                verticalAlign: 'middle'
+            });
+            $container.append($avatar, $name);
+        } else {
+            $container.append($avatar);
+        }
+
+        // Create link wrapper
+        var $link = $('<a>').attr({
+            href: mw.util.getUrl('User:' + username)
+        }).css({
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer'
+        }).hover(
+            function() { $(this).css('opacity', '0.8'); },
+            function() { $(this).css('opacity', '1'); }
+        );
+
+        $link.append($container);
+        $element.replaceWith($link);
+    }
+
+   // Get user IDs from usernames using MediaWiki API
+    function getUserIds(users) {
+        return new mw.Api().get({
+            action: 'query',
+            formatversion: 2,
+            list: 'users',
+            ususers: users
+        }).then(function(data) {
+            return data.query.users.map(function(user) {
+                return user.userid;
+            });
+        });
+    }
+
+   // Fetch user avatars using Fandom API
+    function getUserAvatars(userIds) {
+        var scriptPath = mw.config.get('wgScriptPath');
+        return $.getJSON(scriptPath + '/api/v1/User/Details', {
+            ids: userIds.join(',')
+        }).then(function(data) {
+            return data.items;
+        });
+    }
+
+   // Main processing function
+    function processAvatars($content) {
+        if (!$content) return;
+
+        var users = $content
+            .find('.circle-avatar-template')
+            .map(function() {
+                return $(this).data('username').replace('@', '');
+            })
+            .toArray()
+            .filter(function(username) {
+                return !cache[username];
+            });
+
+        if (users.length > 0) {
+            getUserIds(users)
+                .then(getUserAvatars)
+                .then(function(users) {
+                    users.forEach(function(user) {
+                        cache[user.name] = user.avatar;
+                    });
+                    
+                    $content.find('.circle-avatar-template').each(function() {
+                        addAvatar(this);
+                    });
+                });
+        }
+    }
+
+   // Initialize on page load
+   mw.hook('wikipage.content').add(processAvatars);
+});
+
+
+/**
+ * Enhanced Seasons Countdown Timer
+ * @version 2.0
+ * 
+ * Dynamic season tracker and countdown timer for game seasons
+ * Inspired by dev.fandom.com/wiki/MediaWiki:Countdown/code.js
+ * 
+ * Features:
+ * - Real-time season tracking with automatic updates
+ * - Visual indication of current season with glow effects
+ * - Compact time format (e.g. 1d 5h 30m 15s)
+ * - Dynamic countdown for season starts/ends
+ * - Automatic DOM updates without page reload
+ * - Support for MediaWiki dynamic content loading
+ * 
+ * Game season mechanics:
+ * - Each season lasts 576 minutes (9.6 hours)
+ * - Full cycle of 4 seasons = 2304 minutes (38.4 hours)
+ * - Seasons rotate: Spring → Summer → Autumn → Winter
+ * 
+ * CSS: https://fisch.fandom.com/wiki/MediaWiki:Seasons.css
+ * TEMPLATE: https://fisch.fandom.com/wiki/Template:Seasons
+ */
+
+/*jshint jquery:true, browser:true, esversion:5*/
+/*global mediaWiki*/
+
+;(function (window, mw, $) {
+    'use strict';
+
+    // Constants
+    var CONFIG = {
+        SEASON_LENGTH: 576 * 60,
+        UPDATE_INTERVAL: 1000,
+        ACTIVE_GLOW: '0 0 10px',
+        SEASONS: [
+            { name: 'Spring', color: '#90EE90' },
+            { name: 'Summer', color: '#FFD700' },
+            { name: 'Autumn', color: '#FFA500' },
+            { name: 'Winter', color: '#87CEEB' }
+        ]
+    };
+
+    // Utility functions
+    var Utils = {
+        getCurrentTime: function() {
+            return Math.floor(Date.now() / 1000);
+        },
+
+        getCurrentSeason: function() {
+            return Math.floor((this.getCurrentTime() % (CONFIG.SEASON_LENGTH * 4)) / CONFIG.SEASON_LENGTH);
+        },
+
+        getNextSeasonTime: function(seasonIndex) {
+            var now = this.getCurrentTime();
+            var cycleStart = Math.floor(now / (CONFIG.SEASON_LENGTH * 4)) * CONFIG.SEASON_LENGTH * 4;
+            var targetStart = cycleStart + (seasonIndex * CONFIG.SEASON_LENGTH);
+            
+            return targetStart <= now ? targetStart + CONFIG.SEASON_LENGTH * 4 : targetStart;
+        },
+
+        formatTime: function(seconds) {
+            if (seconds < 0) return '0s';
+
+            var d = Math.floor(seconds / 86400);
+            var h = Math.floor((seconds % 86400) / 3600);
+            var m = Math.floor((seconds % 3600) / 60);
+            var s = seconds % 60;
+            
+            var parts = [];
+            
+            if (d > 0) parts.push(d + 'd');
+            if (h > 0) parts.push(h + 'h');
+            if (m > 0) parts.push(m + 'm');
+            if (s > 0 || parts.length === 0) parts.push(s + 's');
+            
+            return parts.join(' ');
+        }
+    };
+
+    // UI Controller
+    var UIController = {
+        updateSeasonStyle: function(currentSeason) {
+            $('.season-name').each(function(index) {
+                var $season = $(this);
+                if (index === currentSeason) {
+                    $season.css('text-shadow', CONFIG.ACTIVE_GLOW + ' ' + CONFIG.SEASONS[index].color);
+                    $season.css('font-weight', 'bold');
+                } else {
+                    $season.css('text-shadow', 'none');
+                    $season.css('font-weight', 'normal');
+                }
+            });
+        },
+
+        updateTimers: function() {
+            var currentSeason = Utils.getCurrentSeason();
+            var currentTime = Utils.getCurrentTime();
+
+            this.updateSeasonStyle(currentSeason);
+
+            $('.season-timer').each(function() {
+                var $timer = $(this);
+                var seasonIndex = parseInt($timer.attr('data-season'), 10);
+                var timeLeft;
+                var prefix;
+
+                if (seasonIndex === currentSeason) {
+                    timeLeft = Utils.getNextSeasonTime((currentSeason + 1) % 4) - currentTime;
+                    prefix = 'Ends:';
+                } else {
+                    timeLeft = Utils.getNextSeasonTime(seasonIndex) - currentTime;
+                    prefix = 'Starts:';
+                }
+
+                $timer.text(prefix + ' ' + Utils.formatTime(timeLeft));
+            });
+        },
+
+        startUpdates: function() {
+            var self = this;
+            this.updateTimers();
+            window.setTimeout(function() {
+                self.startUpdates();
+            }, CONFIG.UPDATE_INTERVAL);
+        }
+    };
+
+    // Initialization
+    function init($content) {
+        $content = $content || $(document);
+        var $timers = $content.find('.season-timer:not(.initialized)');
+        
+        if (!$timers.length) return;
+
+        $timers.addClass('initialized');
+        UIController.startUpdates();
+    }
+
+    // Register handlers
+    $(function() {
+        init();
+        mw.hook('wikipage.content').add(init);
+    });
+
+}(window, mediaWiki, jQuery));
+
+
+  /* Custom Navigation Icons */
+importScript('MediaWiki:CustomNavigationIcons.js');

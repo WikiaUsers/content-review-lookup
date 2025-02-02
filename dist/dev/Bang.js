@@ -3,6 +3,7 @@
     if (window.bangLoaded) return;
     window.bangLoaded = true;
 
+	var searchInputSelector = ".search-app.search-app__wrapper.search-app > input";
 	var ns = mw.config.get('wgFormattedNamespaces'),
 		namespaces = {
 			t: ns[10], // Template
@@ -20,27 +21,19 @@
 			fo: ns[110] // Forum
 		};
 
-        $(document).on('keyup', '[class*="SearchInput-module_input"]', function() {
+        $(document).on('keyup', searchInputSelector, function() {
 	        var old = $(this).val(),
                 txt,
-		        m = old.match(/^\!([a-z]+) /),
-		        $e = $(this),
-                interval, times = 0;
+		        m = old.match(/^\!([a-z]+) /);
 	
             if (m && namespaces.hasOwnProperty(m[1])) {
 	    		txt = namespaces[m[1]] + ":" + old.substr(m[1].length + 2);
-                $e.val(txt);
-                // Fighting some global code that changes it back
-				interval = setInterval(function() {
-				    if ($e.val() === old) {
-				        $e.val(txt);
-				        times = 0;
-				        clearInterval(interval);
-				    } else if (++times >  10) {
-				        times = 0;
-				        clearInterval(interval);
-				    }
-				}, 100);
+	    		// this method apparently prevents React from reverting the value
+                Object.getOwnPropertyDescriptor(
+                    window.HTMLInputElement.prototype,
+                    "value"
+                ).set.call(this, txt);
+                this.dispatchEvent(new Event("input", { bubbles: true }));
 		    }
 	    });    
 }) (this, mediaWiki, jQuery);

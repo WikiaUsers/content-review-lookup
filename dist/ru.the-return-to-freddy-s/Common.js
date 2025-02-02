@@ -150,26 +150,3 @@ $(function() {
         subtree: true
     });
 });
-
-// Скрипт для перекраски инфобоксов
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Ищем все инфобоксы с темой event
-  document.querySelectorAll('.portable-infobox.pi-theme-event').forEach(function(infobox) {
-    // Внутри инфобокса ищем элемент с классом color-marker
-    var marker = infobox.querySelector('.color-marker');
-    if (marker) {
-      // Извлекаем HTML-содержимое маркера
-      var markerText = marker.textContent || marker.innerText;
-      // Ищем маркер в виде %%COLOR:123456%% (без символа #)
-      var match = markerText.match(/%%COLOR:([0-9A-Fa-f]{6})%%/);
-      if (match && match[1]) {
-        var color = match[1];
-        // Применяем новый цвет к инфобоксу (фон и рамка)
-        infobox.style.backgroundColor = '#' + color;
-        infobox.style.borderColor = '#' + color;
-        marker.remove();
-      }
-    }
-  });
-});

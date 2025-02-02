@@ -1,64 +1,5 @@
 /* Размещённый здесь JavaScript код будет загружаться всем пользователям при обращении к каждой странице */
 //Кнопки быстрого описания правки
- 
-//список кнопок
-function SummaryButtons(){
- var wpSummary = document.getElementById('wpSummary')
- if (!wpSummary || (wpSummary.form.wpSection && wpSummary.form.wpSection.value == 'new')) return
- wpSummaryBtn = document.createElement('span') //global var
- wpSummaryBtn.id = 'userSummaryButtonsA'
- 
-// +Рекомендация
- var wpSummaryBtnRec = document.createElement('i');
- wpSummaryBtnRec.appendChild(document.createTextNode('Пожалуйста, если вы не торопитесь, опишите вашу правку:'));
- wpSummaryBtnRec.appendChild(document.createElement('br'));
- wpSummaryBtn.appendChild(wpSummaryBtnRec);
- 
- wpSummary.parentNode.insertBefore(wpSummaryBtn, wpSummary.nextSibling);
- wpSummary.parentNode.insertBefore(document.createElement('br'), wpSummary.nextSibling);
- addSumButton('новости', 'новости', 'Учтены последние новости');
- addSumButton('викификация', 'викификация', 'Произведена викификация');
- addSumButton('частичная викификация', 'частичная викификация', 'Была нажата одна кнопочка');
- addSumButton('правила', 'правила', 'Согласно правил');
- addSumButton('оформление', 'оформление', 'Оформление');
- addSumButton('стиль', 'стилевые правки', 'Стилевые правки');
- addSumButton('грамматика', 'грамматика', 'Поправлена орфография/пунктуация');
- addSumButton('категоризация', 'категоризация', 'Изменены/добавлены категории');
- addSumButton('шаблон', 'шаблон', 'Добавлен/изменён шаблон');
- addSumButton('дополнение', 'дополнение', 'Добавлены новые сведения');
- addSumButton('уточнение', 'уточнение', 'Уточнение');
- addSumButton('иллюстрирование', 'иллюстрирование', 'Размещена/изменена иллюстрация');
- addSumButton('обновление', 'обновление сведений', 'Обновлены устаревшие сведения');
- addSumButton('разметка', 'правка разметки', 'Изменение разметки');
- addSumButton('лишнее', 'лишнее', 'Действительно лишнее');
- addSumButton('интервики', 'интервики', 'Интервики тоже нужны');
- addSumButton('замена изображения', 'замена изображения', 'Замена изображения');
- addSumButton('шаблонофикация', 'шаблонофикация', 'шаблонофикация');
- addSumButton('ошибки', 'ошибки', 'Обнаружены ошибки');
- addSumButton('сомнения', 'сомнения', 'Сомнения по статье');
-}
- 
-//код вставки кнопок быстрого описания
-function addSumButton(name, text, title) {
- var btn = document.createElement('a');
- btn.appendChild(document.createTextNode(name));
- btn.title = title;
- btn.onclick = function(){insertSummary(text)};
- wpSummaryBtn.appendChild(btn);
- wpSummaryBtn.appendChild(document.createTextNode(' '));
-}
- 
-//код вставки описания
-function insertSummary(text) {
- var wpSummary = document.getElementById('wpSummary')
- if (wpSummary.value.indexOf(text) != -1) return 
- if (wpSummary.value.match(/[^,; \/]$/)) wpSummary.value += ','
- if (wpSummary.value.match(/[^ ]$/)) wpSummary.value += ' '
- wpSummary.value += text
-}
- 
-//вызов функции вставки кнопок быстрого описания правки при загрузке страницы
-addOnloadHook(SummaryButtons)
 
 // Кнопка очистки кэша страницы
 var PurgeButtonText = 'Обновить';
@@ -174,3 +115,7 @@ mw.hook('wikipage.content').add(function ($content) {
  
     // if ($content.find('.infobox-editcount').length)
 });
+
+//Изменение всплывающих превьюшек
+window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
+window.pPreview.noimage = 'https://static.wikia.nocookie.net/allmafia/images/0/02/%D0%9D%D0%95%D0%A2_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.png/revision/latest?cb=20250128040643&format=original&path-prefix=ru';

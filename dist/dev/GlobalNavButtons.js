@@ -26,7 +26,7 @@ mw.loader.using(['mediawiki.template.mustache']).then(function () {
 				$nav.append($('<div class="global-explore-navigation__item global-explore-navigation__divider"></div>'));
 			}
 			$.each(window.globalNavButtons, function(i, glnbutton) {
-				if (typeof glnbutton !== 'object') { // Do nothing
+				if (typeof glnbutton !== 'object' || glnbutton === null) { // Do nothing
 				} else if (!glnbutton.isMain && glnbutton.whoIsMain) { // Child
 					$('#custom-global-explore-nav-button-parent-' + glnbutton.whoIsMain + ' .wds-dropdown__content ul').append(glnbutt.createTemplate('child', {
 						text: glnbutton.text,

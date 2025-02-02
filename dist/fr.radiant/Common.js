@@ -219,6 +219,28 @@ $(function() {
 }());
 
 /************************************************************************/
+// Partie pour customiser la barre latérale droite en ajoutant d'une image aléatoire en fond :
+$(function () {
+	// Tableau d'images de personnages de Radiant (provenant du site de la NHK, et d'une archive du site de l'animé Radiant)
+    var imageArray = [
+        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/rizerotte.png")',
+        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/mieri.png")',
+        'url("https://www.nhk.or.jp/anime/radiant/2nd/assets/images/art/seto.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_aruma.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_bobly.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_doku.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_drag.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_grim.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_majesty.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_meri.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_main_seto.png")',
+        'url("https://web.archive.org/web/20210503042349im_/https://anime-radiant.com/_wp/wp-content/themes/radiant/img/chara_seto0.png")'
+    ];
+
+    var index = Math.round(Math.random() * (imageArray.length - 1));
+    $('.page__right-rail').css("background-image", imageArray[index]);
+});
+/************************************************************************/
 // S'execute si c'est sur la page d'accueil (ou les modèles qui composent la page d'accueil)
 if(pageName === "Wiki_Radiant" || pageName === "Modèle:Sondage")
 	integrationLastPolls();

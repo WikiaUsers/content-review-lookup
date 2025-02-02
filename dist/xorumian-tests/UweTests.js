@@ -78,7 +78,9 @@ function resetTimer() {
 document.onmousemove = resetTimer; // Reset timer on mouse movement
 
 document.onkeydown = function(event) {
-    if (event.key === 'ø') { // Window also appears if key 'ø' is pushed
+    keysPressed[event.key] = true;
+
+    if (keysPressed['!'] && keysPressed['ø']) {
         showPrompt();
     }
 };
