@@ -19,6 +19,8 @@ window.loot_parser_data = {
     '8.6': {
       'changed': {
 //
+'Crape Man': '14.12.969405',
+//
 'Askarak Demon': '14.11.0fbf6c',
 'Askarak Lord': '14.11.0fbf6c',
 'Askarak Prince': '14.11.0fbf6c',
@@ -152,7 +154,7 @@ window.loot_parser_data = {
 'True Dawnfire Asura': '13.22.14242',
 'True Midnight Asura': '13.22.14242',
 'True Frost Flower Asura': '13.22.14242',
-'Crape Man': '13.22.14242',
+//'Crape Man': '13.22.14242',
 'Harpy': '13.22.14242',
 'Rhindeer': '13.22.14242',
 // First part of 13.22.14242 nerfs - Rotten Blood creatures

@@ -167,7 +167,7 @@
 					var list = '';
 					
 					usageInfo.forEach(function(item) {
-						var fileLink = fullUrl + mw.util.getUrl(item.title);
+						var fileLink = fullUrl + '/wiki/' + item.title;
 						list += '<tr><td>' + langLabel + '</td><td><a href="' + fileLink + '" target="_blank">' + item.title + '</a></td></tr>';
 					});
 					$langRow.append(list);

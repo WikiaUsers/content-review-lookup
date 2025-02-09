@@ -230,6 +230,9 @@ function toggleHidable(bypassStorage) {
 			this.firstChild.nodeValue = '[Show]';
 			nowShown = false;
 		}
+		if (this.childNodes.length > 1) {
+			this.lastChild.nodeValue = "";
+		}
 
 		if( window.storagePresent && ( typeof( bypassStorage ) == 'undefined' || bypassStorage != 'bypass' ) ) {
 			var page = window.pageName.replace(/\W/g, '_');

@@ -7,11 +7,11 @@ $(function () {
 	'use strict';
 
 	if (mw.config.get('wgAction') === 'view') {
-		const title = 'Category intersection';
-		const intersectionPage = 'Special:BlankPage/CategoryIntersection';
+		const title = 'Intersection de catégorie';
+		const intersectionPage = 'fr/wiki/Spécial:Page_blanche/Intersection_de_catégorie';
 		const searchParams = new URLSearchParams(location.search);
 		const pageName = mw.config.get('wgPageName');
-		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Legends|Canon) articles$');
+		const isCategoryPage = mw.config.get('wgNamespaceNumber') === mw.config.get('wgNamespaceIds').category && !mw.config.get('wgTitle').match('^(?:Légendes|Canon) articles$');
 		const isResultsPage = pageName === intersectionPage && Array.from(searchParams.keys()).filter(function (param) {
 			return param === 'category1' || param === 'category2';
 		}).length === 2;
@@ -21,19 +21,19 @@ $(function () {
 		if (isCategoryPage) {
 			const category = mw.config.get('wgTitle').replaceAll(' ', '_');
 			const baseUrl = '/wiki/' + intersectionPage + '?category1=' + category;
-			const canonUrl = baseUrl + '&category2=Canon_articles';
-			const legendsUrl = baseUrl + '&category2=Legends_articles';
+			const canonUrl = baseUrl + '&category2=Articles_Canon';
+			const legendsUrl = baseUrl + '&category2=Articles_Légendes';
 			var filters = '<div class="dpl-filter-container">';
-			filters += '<a href="' + baseUrl + '">Category intersection</a>';
+			filters += '<a href="' + baseUrl + '">Intersection de catégorie</a>';
 			filters += '<ul>';
 			filters += '<li>';
-			filters += '<a href="' + canonUrl + '" title="View Canon articles only">';
-			filters += '<img alt="View Canon articles only" src="/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
+			filters += '<a href="' + canonUrl + '" title="Voir seulement les articles Canon">';
+			filters += '<img alt="Voir seulement les articles Canon" src="/wiki/Special:FilePath/Premium-Eras-canon.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '<li>';
-			filters += '<a href="' + legendsUrl + '" title="View Legends articles only">';
-			filters += '<img alt="View Legends articles only" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
+			filters += '<a href="' + legendsUrl + '" title="Voir seulement les articles Légendes">';
+			filters += '<img alt="Voir seulement les articles Légendes" src="/wiki/Special:FilePath/Premium-Eras-legends.png" decoding="async">';
 			filters += '</a>';
 			filters += '</li>';
 			filters += '</ul>';
@@ -49,7 +49,7 @@ $(function () {
 
 			document.title = title;
 			$('#firstHeading').html(title);
-			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + pageUrl + '">New category intersection query</a>');
+			$('#firstHeading + .page-header__page-subtitle').append('<br />&lt; <a href="' + pageUrl + '">Nouvelle demande intersection de catégorie</a>');
 			$('#mw-content-text').empty();
 
 			// Style results like category page
@@ -77,22 +77,22 @@ $(function () {
 			var currentPage = Number.parseInt(searchParams.get('page')) || 1;
 			if (!Number.isInteger(currentPage) || currentPage < 1) currentPage = 1;
 			const offset = (currentPage - 1) * count;
-			const headerTitle = '==Pages in categories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" and "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
+			const headerTitle = '==Pages dans les catégories "[[:Category:' + category1 + '|' + category1.replaceAll('_', ' ') + ']]" et "[[:Category:' + category2 + '|' + category2.replaceAll('_', ' ') + ']]"==';
 			const basePaginationLink = pageUrl + '?category1=' + category1 + '&category2=' + category2;
-			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' previous page]' : 'previous page';
-			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' next page]';
-			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|next page}})|}}';
+			const previousLink = currentPage > 1 ? '[' + basePaginationLink + '&page=' + (currentPage - 1) + ' page précédente]' : 'page précédente';
+			const nextLink = '[' + basePaginationLink + '&page=' + (currentPage + 1) + ' page suivante]';
+			const headerLinks = '{{#ifeq:{{#expr:%TOTALPAGES%>' + count + '}}|1|(' + previousLink + ') ({{#ifeq:{{#expr:%TOTALPAGES%>' + (offset + count) + '}}|1|' + nextLink + '|page suivante}})|}}';
 			var dpl = '<DPL>\n';
 			dpl += '  category = ' + category1 + '\n';
 			dpl += '  category = ' + category2 + '\n';
 			dpl += '  count = ' + count + '\n';
 			dpl += '  offset = ' + offset + '\n';
 			dpl += '  mode = category\n';
-			dpl += '  noresultsheader = \\n' + headerTitle + '\\n\'\'These categories currently contain no pages in common.\'\'\n';
-			dpl += '  oneresultheader = \\n' + headerTitle + '\\nThese categories contain only the following page in common.\n';
+			dpl += '  noresultsheader = \\n' + headerTitle + '\\n\'\'Ces catégories ne contiennent aucunes pages en commun.\'\'\n';
+			dpl += '  oneresultheader = \\n' + headerTitle + '\\nCes catégories contiennent seulement les pages suivantes en commun.\n';
 			dpl += '  ordermethod = sortkey\n';
 			dpl += '  resultsfooter = ' + headerLinks + '\n';
-			dpl += '  resultsheader = \\n' + headerTitle + '\\nThe following %PAGES% pages are common to these categories, out of <span class="dpl-total-pages">%TOTALPAGES%</span> total.\\n\\n' + headerLinks + '\n';
+			dpl += '  resultsheader = \\n' + headerTitle + '\\nLes %PAGES% pages suivantes sont communes aux catégories, sur <span class="dpl-total-pages">%TOTALPAGES%</span> au total.\\n\\n' + headerLinks + '\n';
 			dpl += '</DPL>';
 
 			// Get results from API

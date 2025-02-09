@@ -439,7 +439,7 @@
 			}
 		},
 		
-		hoverUserMenu: function (customLinks) {
+		hoverUserMenu: function () {
 			mw.util.addCSS(
 				'.global-action__user > button { margin: 15px 0; }'+
 				'.global-action__user .navigation-tab {'+
@@ -480,7 +480,7 @@
 					{href: new mw.Title('Special:Preferences').getUrl(), text: mw.msg('fd-global-navigation-user-my-preferences')},
 					{href: 'https://auth.fandom.com/logout?source=mw&redirect='+encodeURIComponent(window.location.href), text: mw.msg('fd-global-navigation-user-sign-out')}
 				];
-				if (Array.isArray(customLinks) && customLinks.length>0) { links = links.concat(customLinks); }
+				if (Array.isArray(window.dev.betterTopNav.hovermenu) && window.dev.betterTopNav.hovermenu.length>0) { links = links.concat(window.dev.betterTopNav.hovermenu); }
 				console.log(links);
 				links.forEach(function(link){
 					console.log(link);

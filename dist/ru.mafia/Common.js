@@ -119,3 +119,28 @@ mw.hook('wikipage.content').add(function ($content) {
 //Изменение всплывающих превьюшек
 window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {}).RegExp || {} });
 window.pPreview.noimage = 'https://static.wikia.nocookie.net/allmafia/images/0/02/%D0%9D%D0%95%D0%A2_%D0%98%D0%97%D0%9E%D0%91%D0%A0%D0%90%D0%96%D0%95%D0%9D%D0%98%D0%AF.png/revision/latest?cb=20250128040643&format=original&path-prefix=ru';
+
+/* Разные слоганы в навигации */
+$(document).ready(function() {
+    var wikiNames = [
+        "Мафия возвращается",
+        "Добро пожаловать в Семью",
+        "Семья – это те, за кого можно умереть",
+        "Новая эра, старые раны...",
+        "Всё решает очень просто Коза ностра",
+        "Вито и Джо гоняют на Пежо",
+		"История криминального мира Сицилии"
+    ];
+    var randomIndex = Math.floor(Math.random() * wikiNames.length);
+    var randomWikiName = wikiNames[randomIndex];
+    var communityNameElements = document.getElementsByClassName('fandom-community-header__community-name');
+    if (communityNameElements.length > 0) {
+        communityNameElements[0].textContent = randomWikiName;
+        communityNameElements[0].classList.add('noto-emoji');
+    }
+    var stickyHeaderElements = document.getElementsByClassName('fandom-sticky-header__sitename');
+    if (stickyHeaderElements.length > 0) {
+        stickyHeaderElements[0].textContent = randomWikiName;
+        stickyHeaderElements[0].classList.add('noto-emoji');
+    }
+});

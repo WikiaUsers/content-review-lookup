@@ -6,4 +6,4 @@ window.pPreview = $.extend(true, window.pPreview, {RegExp: (window.pPreview || {
 window.pPreview.tlen = 1000;
 window.pPreview.RegExp.noinclude = ['table', '.reference', '.mw-references-wrap'];
 window.pPreview.debug = true;
-window.fixContentHook = true;
+window.pPreview.fixContentHook = true;

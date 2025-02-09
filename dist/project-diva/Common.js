@@ -16,5 +16,5 @@ $(function() {
 		'https://static.wikia.nocookie.net/project-diva/images/b/bc/PjDWiki_Wordmark_SnowMiku.png'
 		];
 
-	$('.wds-community-header__wordmark img').attr('src', images[Math.floor(Math.random() * images.length)]);
+	$('.fandom-community-header__image img').attr('src', images[Math.floor(Math.random() * images.length)]);
 });

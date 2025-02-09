@@ -1,10 +1,6 @@
 /* Il codice JavaScript inserito qui viene caricato da ciascuna pagina, per tutti gli utenti. */
-window.SpoilerAlertJS = {
-    question: 'Questa parte contiene spoiler, vuoi continuare a leggere?',
-    yes: 'Sì',
-    no: 'No',
-    fadeDelay: 500
-};
+importScript('MediaWiki:InactiveUser.js');
+
 
 
 importArticles({
@@ -13,11 +9,7 @@ importArticles({
         'u:dev:MediaWiki:AdminDashboard_block/code.js',
     ]
 });
-importScriptPage('Status/code.js', 'dev');
-/* Template espandibile */
-// ShowHide - Tabelle espandibili (da http://dev.wikia.com/wiki/ShowHide )
-importScriptPage('ShowHide/code.js', 'dev');
-// END of ShowHide
+
 
 // Import Copyright //
 importScript('MediaWiki:Common.js/copyright.js');

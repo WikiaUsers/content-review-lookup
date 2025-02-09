@@ -337,6 +337,30 @@ function toggleHidable(bypassStorage) {
 	}
 }
 
+/** Fixing show/hide not working
+ */
+
+
+$(document).ready(function () {
+    $(".hidable").each(function () {
+        var $hidable = $(this);
+        var $button = $hidable.find(".hidable-button");
+        var $content = $hidable.find(".hidable-content");
+
+        if ($hidable.hasClass("start-hidden")) {
+            $content.hide();
+            $button.text("[ჩვენება]");
+        } else {
+            $button.text("[დამალვა]");
+        }
+
+        $button.on("click", function () {
+            $content.toggle();
+            $button.text($content.is(":visible") ? "[დამალვა]" : "[ჩვენება]");
+        });
+    });
+});
+
 /** Disable editing archive tab 
  */
 function disableOldForumEdit() {

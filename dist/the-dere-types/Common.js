@@ -49,7 +49,7 @@ TBL_WIKIS = [
 		"tonikaku-kawaii",
 		"tora-dora",
 		"tropedia",
-		"tsuntsun",
+		"tsundere",
 		"yandere",
 		"yandere-girls",
 		"yandere-simulator",

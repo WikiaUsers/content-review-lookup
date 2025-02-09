@@ -450,10 +450,11 @@ var possibleTexts = [
     {
         texts: [
             "💚 DsFanboy!",
-            "🩵 Dartichoke Enjoyer!",
+            "💜 Dartichoke Enjoyer!",
             "🩵 Fun Animator!",
             "🩵 Miss Pembroke!",
-            "💜 AsterWasTaken!",
+            "🩵 AsterWasTaken!",
+            "💜 ShogunyanMasterOFishCom!",
             "💜 404That'sAnError!"
         ],
         weight: 450000
@@ -462,10 +463,11 @@ var possibleTexts = [
     {
         texts: [
             "💚💚 DsFanboy!",
-            "🩵🩵 Dartichoke Enjoyer!",
+            "💜💜 Dartichoke Enjoyer!",
             "🩵🩵 Fun Animator!",
             "🩵🩵 Miss Pembroke!",
-            "💜💜 AsterWasTaken!",
+            "🩵🩵 AsterWasTaken!",
+            "💜💜 ShogunyanMasterOFishCom!",
             "💜💜 404That'sAnError!"
         ],
         weight: 300000
@@ -474,10 +476,11 @@ var possibleTexts = [
     {
         texts: [
             "💚💚💚 DsFanboy!",
-            "🩵🩵🩵 Dartichoke Enjoyer!",
+            "💜💜💜 Dartichoke Enjoyer!",
             "🩵🩵🩵 Fun Animator!",
             "🩵🩵🩵 Miss Pembroke!",
-            "💜💜💜 AsterWasTaken!",
+            "🩵🩵🩵 AsterWasTaken!",
+            "💜💜💜 ShogunyanMasterOFishCom!",
             "💜💜💜 404That'sAnError!"
         ],
         weight: 15000
@@ -528,7 +531,11 @@ var possibleTexts = [
             "🏆 Cursed Cobelisk!",
             "🏆 Characters Clash!",
             "🏆 3D Modeler Zombie!",
-            "🏆 Doctor Zombiestein!"
+            "🏆 Doctor Zombiestein!",
+            "🏆 Shiitake!",  
+            "🏆 Present Presenter Zombie!",       
+            "🏆 Celerestial!",
+            "🏆 Zombotanist!"
         ],
         weight: 350000
     },
@@ -578,7 +585,11 @@ var possibleTexts = [
             "🏆🏆 Cursed Cobelisk!",
             "🏆🏆 Characters Clash!",
             "🏆🏆 3D Modeler Zombie!",
-            "🏆🏆 Doctor Zombiestein!"
+            "🏆🏆 Doctor Zombiestein!",
+            "🏆🏆 Shiitake!",  
+            "🏆🏆 Present Presenter Zombie!",       
+            "🏆🏆 Celerestial!",
+            "🏆🏆 Zombotanist!"
         ],
         weight: 200000
     },
@@ -628,7 +639,11 @@ var possibleTexts = [
             "🏆🏆🏆 Cursed Cobelisk!",
             "🏆🏆🏆 Characters Clash!",
             "🏆🏆🏆 3D Modeler Zombie!",
-            "🏆🏆🏆 Doctor Zombiestein!"
+            "🏆🏆🏆 Doctor Zombiestein!",
+            "🏆🏆🏆 Shiitake!",  
+            "🏆🏆🏆 Present Presenter Zombie!",       
+            "🏆🏆🏆 Celerestial!",
+            "🏆🏆🏆 Zombotanist!"
         ],
         weight: 5000
     },

@@ -86,12 +86,15 @@ function convert(input_url, input_title, input_source, input_quote, output, auto
 		if (url.search('fallenlondon.wiki') > -1) {
 			newlink = newlink + 'Fallen London' + '|';
 			input_source.placeholder = 'Source (FLWiki detected!)';
-		} else if (url.search('sunlesssea.fandom') > -1) {
+		} else if (url.search('sunlesssea.miraheze') > -1) {
 			newlink = newlink + 'Sunless Sea' + '|';
 			input_source.placeholder = 'Source (SSea wiki detected!)';
-		} else if (url.search('sunlessskies.fandom') > -1) {
+		} else if (url.search('sunlessskies.miraheze') > -1) {
 			newlink = newlink + 'Sunless Skies' + '|';
 			input_source.placeholder = 'Source (SSkies wiki detected!)';
+		} else if (url.search('maskoftherose.miraheze') > -1) {
+			newlink = newlink + 'Mask of the Rose' + '|';
+			input_source.placeholder = 'Source (MotR wiki detected!)';
 		} else if (url.search('wikipedia.org') > -1) {
 			newlink = newlink + 'Wikipedia' + '|';
 			input_source.placeholder = 'Source (Wikipedia detected!)';

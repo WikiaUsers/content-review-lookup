@@ -1,82 +1,5 @@
 /* Códigos JavaScript aqui colocados serão carregados por todos aqueles que acessarem alguma página deste wiki */
 
-// SKIN CAROUSEL by feyli
-
-var classesTemplate = [
-  "slider__item--pos-prev",
-  "slider__item--prev",
-  "slider__item--act",
-  "slider__item--next",
-  "slider__item--pos-next"
-];
-var inDelay = false;
-
-function setDelay() {
-  inDelay = true;
-
-  setTimeout(function() {
-    inDelay = false;
-  }, 500);
-}
-
-function recenter($slider) {
-    var middle = Math.floor($slider.find("li").length / 2);
-  Array.from($slider.find("li"))
-    .slice(middle - 2, middle + 3)
-    .forEach(function($item, i) {
-      $item.className = classesTemplate[i];
-    
-      if (i === 2) {
-      	$slider.find('.skins-carousel__name.--active').removeClass('--active');
-        $slider.find('.skins-carousel__name[data-index="' + $($item).data("index") + '"]').addClass("--active");
-        
-        $slider.find('.skins-carousel__description.--active').removeClass('--active');
-        $slider.find('.skins-carousel__description[data-index="' + $($item).data("index") + '"]').addClass("--active");
-      }
-    });
-}
-
-function next($slider) {
-  if (inDelay) return;
-
-  if ($slider.find(".slider__item--pos-prev")) {
-    $slider.find(".slider__item--pos-prev")[0].className = "slider__item--outside";
-  }
-
-  $slider.find(".skins-carousel__slider")[0].insertAdjacentElement(
-    "beforeend",
-    $slider.find("li:first-child")[0]
-  );
-
-  recenter($slider);
-
-  setDelay();
-}
-
-function prev($slider) {
-  if (inDelay) return;
-
-  if ($slider.find(".slider__item--pos-next")) {
-    $slider.find(".slider__item--pos-next")[0].className = "slider__item--outside";
-  }
-
-  $slider.find(".skins-carousel__slider")[0].insertAdjacentElement(
-    "afterbegin",
-    $slider.find("li:last-child")[0]
-  );
-
-  recenter($slider);
-
-  setDelay();
-}
-
-$(".skins-carousel__prev-button").on("click", function(event) {
-  prev($(event.target.closest(".skins-carousel")));
-});
-$(".skins-carousel__next-button").on("click", function(event) {
-  next($(event.target.closest(".skins-carousel")));
-});
-
 // PAGINATED BOOK by feyli
 
 function navPage($book, mod) {
@@ -97,4 +20,54 @@ $(".paginated-book__prev").on("click", function(event) {
 
 $(".paginated-book__next").on("click", function(event) {
   navPage($(event.target.closest(".paginated-book")), 1);
+});
+
+////
+
+document.addEventListener("DOMContentLoaded", function () {
+    let skins = document.querySelectorAll(".mcskin-skin");
+    let currentIndex = 0;
+
+    function showSkin(index) {
+        skins.forEach((skin, i) => {
+            skin.classList.toggle("active", i === index);
+        });
+    }
+
+    document.querySelector(".mcskin-prev").addEventListener("click", function () {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : skins.length - 1;
+        showSkin(currentIndex);
+    });
+
+    document.querySelector(".mcskin-next").addEventListener("click", function () {
+        currentIndex = (currentIndex < skins.length - 1) ? currentIndex + 1 : 0;
+        showSkin(currentIndex);
+    });
+
+    showSkin(currentIndex);
+
+    /* Adicionando os indicadores */
+    let indicatorsContainer = document.querySelector(".mcskin-indicators");
+    if (indicatorsContainer) {
+        skins.forEach((_, i) => {
+            let indicator = document.createElement("div");
+            indicator.classList.add("mcskin-indicator");
+            indicator.dataset.index = i;
+            indicator.addEventListener("click", function () {
+                currentIndex = parseInt(this.dataset.index);
+                showSkin(currentIndex);
+            });
+            indicatorsContainer.appendChild(indicator);
+        });
+
+        function updateIndicators() {
+            document.querySelectorAll(".mcskin-indicator").forEach((dot, i) => {
+                dot.classList.toggle("active", i === currentIndex);
+            });
+        }
+
+        document.querySelector(".mcskin-prev").addEventListener("click", updateIndicators);
+        document.querySelector(".mcskin-next").addEventListener("click", updateIndicators);
+        updateIndicators();
+    }
 });

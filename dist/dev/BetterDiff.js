@@ -521,14 +521,15 @@ $(function() {
 							(query ? ('?'+$.param(query)) : '');
 				};
 				var generateHeader = function(data, url) {
-					href = data.log=='upload' ? data.tourl : getURL(data.totitle, {diff: data.torevid});
+					href = data.log=='upload' ?
+						getURL(data.totitle) :
+						getURL(data.totitle, {diff: data.torevid});
 					var header = '';
 					var todate = new Date(data.totimestamp);
 					
 					// Old revid
 					if (data.fromtimestamp) {
-						href = data.log=='upload' ? data.tourl : getURL(data.totitle, {diff: data.torevid, oldid: data.fromrevid}); // Complete diff link
-						
+						if (data.log!=='upload') { href = getURL(data.totitle, {diff: data.torevid, oldid: data.fromrevid}); }
 						var fromdate = new Date(data.fromtimestamp);
 						header +=
 						'<td class="diff-otitle diff-side-deleted" colspan="2">'+
@@ -656,26 +657,45 @@ $(function() {
 							tourl: event.target.getAttribute('data-target-tourl'),
 							log: 'upload'
 						};
+						var fileType;
+						switch (event.target
+							.getAttribute('data-target-tourl')
+							.replace(/^.*\/.*\.([^\.\/]*?)\/revision.*$/, '$1')
+							.toLowerCase()
+						) {
+							case 'mp4':
+							case 'ogv':
+								fileType = 'video';
+								break;
+							case 'mp3':
+							case 'ogg':
+								fileType = 'audio';
+								break;
+							default:
+								fileType = 'img';
+								break;
+						}
+						var controls = ['audio', 'video'].includes(fileType) ? ' controls=""' : '';
 						if (event.target.getAttribute('data-target-fromts')) {
 							diff.fromurl = event.target.getAttribute('data-target-fromurl');
 							diff.fromtimestamp = event.target.getAttribute('data-target-fromts');
 							diff.body = 
 								'<tr>'+
 								'<td class="diff-marker">−</td>'+
-								'<td class="diff-deletedline"><div><img src="'+event.target.getAttribute('data-target-fromurl')+'" /></div></td>'+
+								'<td class="diff-deletedline"><div><'+fileType+controls+' src="'+event.target.getAttribute('data-target-fromurl')+'" /></div></td>'+
 								'<td class="diff-marker">+</td>'+
-								'<td class="diff-addedline"><div><img src="'+event.target.getAttribute('data-target-tourl')+'" /></div></td>'+
+								'<td class="diff-addedline"><div><'+fileType+controls+' src="'+event.target.getAttribute('data-target-tourl')+'" /></div></td>'+
 								'</tr>';
 						} else {
 							diff.body = 
 								'<tr>'+
 									'<td colspan="2" class="diff-empty">&nbsp;</td>'+
 									'<td class="diff-marker">+</td>'+
-									'<td class="diff-addedline"><div><img src="'+event.target.getAttribute('data-target-tourl')+'" /></div></td>'+
+									'<td class="diff-addedline"><div><'+fileType+controls+' src="'+event.target.getAttribute('data-target-tourl')+'" /></div></td>'+
 								'</tr>';
 						}
 					}
-					console.log(diff);
+					//console.log(diff);
 					quickview.show();
 					quickview.setContent(
 						'<div id="content" class=" page-content"><div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">'+

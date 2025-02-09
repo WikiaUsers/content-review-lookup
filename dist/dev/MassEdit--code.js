@@ -270,7 +270,7 @@
                   Object.freeze(["plain", "regex"])
                 ]),
                 Object.freeze(["filter",
-                  Object.freeze(["all", "nonredirects", "redirects"])
+                  Object.freeze(["nonredirects", "all", "redirects"])
                 ]),
               ])
             }),
@@ -302,7 +302,7 @@
                   Object.freeze(["pages", "categories", "namespaces"])
                 ]),
                 Object.freeze(["filter",
-                  Object.freeze(["all", "nonredirects", "redirects"])
+                  Object.freeze(["nonredirects", "all", "redirects"])
                 ]),
               ])
             }),
@@ -345,7 +345,7 @@
                   Object.freeze(["categories", "namespaces", "templates"])
                 ]),
                 Object.freeze(["filter",
-                  Object.freeze(["all", "nonredirects", "redirects"])
+                  Object.freeze(["nonredirects", "all", "redirects"])
                 ]),
               ])
             }),
@@ -377,7 +377,7 @@
                   Object.freeze(["plain", "regex"])
                 ]),
                 Object.freeze(["filter",
-                  Object.freeze(["all", "nonredirects", "redirects"])
+                  Object.freeze(["nonredirects", "all", "redirects"])
                 ]),
               ])
             }),
@@ -725,7 +725,7 @@
         HOOK_NAME: "dev.massEdit",
         STD_INTERVAL: 1500,
         BOT_INTERVAL: 750,
-        CACHE_VERSION: 6,
+        CACHE_VERSION: 7,
       }),
     }
   });
@@ -2642,28 +2642,57 @@
    * extant shorter utility functions used to reset the form element,
    * enable/disable various modal buttons, and log messages. It is called in a
    * variety of contexts at the close of editing operations,
-   * failed API requests, and the like. Though it does not accept any formal
-   * parameters, it does permit an indeterminate number of arguments to be
-   * passed if the invoking function wishes to log a status message. In such
-   * cases, the collated arguments are bound to a shallow array and passed to
-   * <code>addModalLogEntry</code> for logging.
+   * failed API requests, and the like.
+   * <br />
+   * <br />
+   * Though it does not accept any formal parameters, it does permit an
+   * indeterminate number of arguments of different data types. Its first
+   * parameter can be of type <code>Boolean</code> for use as a flag denoting
+   * whether the forms fields should be cleared during the reset. This parameter
+   * is optional, however, as the first and following parameters can instead be
+   * parts of a status message passed to <code>addModalLogEntry</code> for
+   * display in the status log.
    *
    * @returns {void}
    */
   main.resetModal = function () {
+
+    // Declarations
+    var args, shouldClearForm;
 
     // Cancel the extant timer if applicable
     if (this.timer && !this.timer.isComplete) {
       this.timer.cancel();
     }
 
-    // Add log message if i18n parameters passed
-    if (arguments.length) {
-      this.addModalLogEntry(Array.prototype.slice.call(arguments));
+    // Retain default form-clearing option
+    shouldClearForm = true;
+
+    // Recast arguments as shallow array
+    args = Array.prototype.slice.call(arguments);
+
+    // First check if flag is 1st arg; if so, set as flag and remove from array
+    if (args.length && typeof args[0] === "boolean") {
+      shouldClearForm = args.shift();
+    }
+
+    /*
+     * The second array length check is essential given the "no formal
+     * parameters" approach this function takes. The first parameter may be a
+     * boolean flag; if it is, it is removed. The second array length check is
+     * to determine if any additional parameters were passed that may need to be
+     * passed to <code>addModalLogEntry</code>.
+     */
+    if (args.length) {
+
+      // Add log message if i18n parameters passed
+      this.addModalLogEntry(args);
     }
 
     // Reset the form
-    $("#" + this.Selectors.ID_CONTENT_FORM)[0].reset();
+    if (shouldClearForm) {
+      $("#" + this.Selectors.ID_CONTENT_FORM)[0].reset();
+    }
 
     // Re-enable modal buttons and fieldset
     this.toggleModalComponentsDisable("partial", false);
@@ -3270,7 +3299,7 @@
 
     // Is not in the proper rights group
     } else if (!isListing && !isFinding && !this.hasRights(isMessaging)) {
-      this.resetModal("logErrorUserRights");
+      this.resetModal("logErrorUserRights"); // Clear all fields
       return;
 
     // Is either append/prepend with no content input included
@@ -3346,8 +3375,8 @@
         replaceOccurrences =
           this.replaceOccurrences(newRegExp, $content, indices);
       } catch (paramError) {
-        // Catch malformed regex in target field
-        this.resetModal("logErrorSecurity");
+        // Catch malformed regex in target field; don't clear form
+        this.resetModal(false, "logErrorSecurity");
 
         if (this.flags.debug) {
           window.console.error(paramError);
@@ -3516,9 +3545,10 @@
      * a failed API GET request or from a lack of wellformed input loose pages,
      * the relevant log entry returned from the getter function's
      * <code>$.Deferred</code> is logged, the timer canceled, and the modal form
-     * re-enabled by means of <code>resetModal</code>.
+     * re-enabled by means of <code>resetModal</code>. The form fields are not
+     * cleared.
      */
-    $getPages.fail(this.resetModal.bind(this));
+    $getPages.fail(this.resetModal.bind(this, false));
 
     /**
      * @description Whenever the getter function (<code>getMemberPages</code> or
@@ -3533,9 +3563,9 @@
      * resolved, indicating the completion of the requested mass edits, a final
      * status message is logged, the form reenabled and reset for a new
      * round, and the <code>setDynamicTimeout</code> timer canceled by means of
-     * <code>resetModal</code>.
+     * <code>resetModal</code>. The form fields are not cleared.
      */
-    $postPages.always(this.resetModal.bind(this));
+    $postPages.always(this.resetModal.bind(this, false));
 
     /**
      * @description The <code>progress</code> handler is used to extend the
@@ -3956,7 +3986,7 @@
       }
       return;
     } else {
-      this.resetModal("logTimerCancel");
+      this.resetModal(false, "logTimerCancel");
     }
   };
 

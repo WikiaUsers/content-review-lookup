@@ -11,3 +11,19 @@
 		]
 	});
 })();
+
+// dev:UserTags config
+window.UserTagsJS = {
+	modules: {},
+	tags: {
+		'founder': { u: 'Priestess of Origin', link:'Wiki of Ender:Administration#Founder' },
+		'bureaucrat': { u: 'Priestess of Sovereignty', link:'Wiki of Ender:Administration#Bureaucrat' },
+		'administrator': { u: 'Priestess of Principles', link:'Wiki of Ender:Administration#Administrator' }
+	}
+};
+UserTagsJS.modules.custom = {
+	'Clodaghelm': ['founder', 'bureaucrat', 'administrator']
+};
+UserTagsJS.modules.metafilter = {
+	'sysop': ['bureaucrat'] // remove "admin" tag from bureaucrats
+};

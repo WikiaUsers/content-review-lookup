@@ -164,10 +164,12 @@ if (mw.config.get('wgAction') == "edit" || mw.config.get('wgAction') == "submit"
 				+ ') за потреби.<br/>&lt;div id="parse"&gt;Тут вміст, який повинен '
 				+ 'відображатись в цьому вікні.&lt;/div&gt;';
 
-			var $window = $('<div id="openWindowParseDialog" class="ui-dialog ui-widget ui-widget-content" style="position:absolute;z-index:1005; left:33%;top:15%;"><div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix"><span class="ui-dialog-title">Вміст з власної сторінки</span><a href="#" class="ui-dialog-titlebar-close" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="ui-dialog-content ui-widget-content">'+ content +'</div></div>').draggable({cancel: ".ui-dialog-content"}).resizable();
+			var $window = $('<div id="openWindowParseDialog" class="ui-dialog ui-widget ui-widget-content" style="position:fixed;z-index:1005; left:500px;top:200px;min-width:100px;min-height:100px;"><div class="ui-dialog-titlebar ui-widget-header ui-helper-clearfix"><span class="ui-dialog-title">Вміст з власної сторінки</span><a href="#" class="ui-dialog-titlebar-close" role="button"><span class="ui-icon ui-icon-closethick">close</span></a></div><div class="ui-dialog-content ui-widget-content">'+ content +'</div></div>').draggable({cancel: ".ui-dialog-content"}).resizable({resize: function( event, ui ) { ui.element.css("position", "fixed")}});
 			$("#mw-content-text").append($window);
 
-			$window.find(".ui-dialog-titlebar-close").on("click", function() { $window.hide(); });
+			$window.find(".ui-dialog-titlebar-close").on("click", function() { 
+				$window.hide();
+			});
 		});
 	}
 });

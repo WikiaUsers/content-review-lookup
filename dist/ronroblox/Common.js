@@ -43,7 +43,7 @@ window.UserTagsJS = {
 		'content-moderator': {u:'Content Moderator', order:2},
 		'wiki-developer': {u:'Wiki Developer', order:3},
 		// non-staff tags
-		'wiki-helper': {u:'Wiki Helper', order:9e9},
+		'Wiki-Contributor': {u:'Wiki Contributor', order:9e9},
 		'retired-staff': {u:'Former Wiki Staff', order:9e9},
 		'ron-hos': {u:'RON Head of Staff', order:9e9},
 		'ron-senior-administrator': {u:'RON Senior Administrator', order:9e9},
@@ -83,5 +83,7 @@ UserTagsJS.modules.custom = {
 	'RyeThePies': ['Wiki-Contributor'],
 	'Sdvwevfregv': ['Wiki-Contributor'],
 	'Eddy0725': ['Wiki-Contributor'],
-}	
+}
+window.lockOldComments.limit = 14;
+window.lockOldComments.addNoteAbove = true;
 //* END of UserTags *//

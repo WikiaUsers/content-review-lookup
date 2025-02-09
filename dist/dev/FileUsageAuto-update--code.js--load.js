@@ -486,7 +486,7 @@
                 LIR.queueData.forEach(function(data) {
                     var pageKey = LIR.pageKey.indexOf(data.title);
                     var pageData = LIR.pageData[pageKey];
-                    var escapedName = escapeRegExp(data.oldImage).replace(/( |_)/g, '[ _]*?');
+                    var escapedName = escapeRegExp(data.oldImage).replace(/( |_)/g, '[ _]');
                     if (escapedName.substr(0, 1).match(/[A-Za-z]/i)) {
                         escapedName = LIR.lowerUpperReg(escapedName);
                     }
