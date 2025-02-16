@@ -639,7 +639,7 @@
 		if (element instanceof jQuery) {
 			element = element[0];
 		}
-		return decodeURIComponent(new mw.Uri(element.href).path).replace(pathRegex, '');
+		return decodeURIComponent(new URL(element.href).pathname).replace(pathRegex, '');
 	}
 
 	// main form initialization sequence
@@ -661,7 +661,7 @@
 
 				// set filenames
 				$table.find('.TablePager_col_img_name').each(function () {
-					var filename = getFile($(this).children('a:first'))
+					var filename = getFile($(this).children('a:first'));
 					if (filename !== "Special:Upload") {
 						filenames += filename + "\n";
 						count++;

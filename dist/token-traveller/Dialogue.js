@@ -13,6 +13,17 @@ var dialoguePaths = {};
 
 var scaleElements = [];
 
+function debounce(func, wait) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
 function getContainerScale(element) {
 	var computedStyle = getComputedStyle(element);
 	
@@ -31,15 +42,19 @@ function getContainerScale(element) {
 
 function scaleText(element) {
 	var parent = element.parentElement;
+	if (parent.offsetWidth === 0 || parent.offsetHeight === 0) {
+        return element;
+    }
+    
 	var fontSize = getComputedStyle(element).fontSize;
 	var sElement = scaleElements.find(function(e) {
 		return e.element == element;
 	});
 
 	if (!sElement) {
-		var event = element.addEventListener('change', function() {
-			scaleText(element);
-		});
+        element.addEventListener('change', debounce(function() {
+            scaleText(element);
+        }, 100));
 		sElement = { element: element, parent: parent, fontSize: fontSize };
 		scaleElements.push(sElement);
 	}
@@ -48,10 +63,10 @@ function scaleText(element) {
 	
 	var elementScale = getContainerScale(element);
 	var parentScale = getContainerScale(parent);
-
+    
 	if (elementScale.w > parentScale.w || elementScale.h > parentScale.h) {
 		while (element.clientWidth > parent.clientWidth || element.clientHeight > parent.clientHeight) {
-			element.style.fontSize = parseFloat(element.style.fontSize) - 1 + 'px';
+		element.style.fontSize = parseFloat(element.style.fontSize) - 1 + 'px';
 		}
 	}
 	

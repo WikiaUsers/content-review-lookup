@@ -1,7 +1,8 @@
 // Requires VSCode and the Wikitext extension to be installed locally
 // https://marketplace.visualstudio.com/items?itemName=RoweWilsonFrederiskHolme.wikitext
 
-(function() {
+mw.loader.using('mediawiki.util').then(function() {
+    'use strict';
 	if (!(mw.config.get('wgIsProbablyEditable') || ($('#ca-viewsource').length > 0))) return;
 
 	var config = $.extend({
@@ -10,24 +11,19 @@
 		actionPath: '/PullPage'
 	}, window.VSCodeEditLink);
 
-	var url = new mw.Uri();
-	url.protocol = config.scheme;
-	url.host = config.extensionId;
-	url.path = config.actionPath;
-
-	var args = {
+	var url = new URL(config.scheme + '://' + config.extensionId + config.actionPath + '?' + new URLSearchParams({
 		RemoteBot: 'true',
 		TransferProtocol: window.location.protocol,
 		SiteHost: mw.config.get('wgServer').replace(/^[\w-]*?:(?=\/\/)/, ''),
 		APIPath: mw.util.wikiScript('api'),
 		Title: mw.config.get('wgPageName')
-	};
+	}));
 
 	function addButton(i18n) {
 		$('.page-header__actions .wds-dropdown__content .wds-list').prepend($('<li>').append(
 			$('<a>', {
 				id: 'ca-vscode',
-				href: url.extend(args).toString(),
+				href: url.href.toString(),
 				text: i18n.msg('text').escape(),
 				title: i18n.msg('tooltip').escape()
 			})
@@ -42,4 +38,4 @@
 		type: 'script',
 		articles: ['u:dev:MediaWiki:I18n-js/code.js']
 	});
-}());
+});

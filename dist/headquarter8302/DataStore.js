@@ -4,7 +4,7 @@ function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t =
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-(function (window, _$, _mw) {
+(function (window) {
   "use strict";
 
   window.dev = window.dev || {};
@@ -76,6 +76,11 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       LOCAL: "local",
       SESSION: "session"
     },
+    /**
+     * Checks if a given name already exists in both local and session storage
+     * @param name The name of the store to check
+     * @returns A bool indicating if it is indeed a duplicate
+     */
     isStoreNameDuplicate: function isStoreNameDuplicate(name) {
       var returnVal = false;
       for (var _i = 0, _Object$values = Object.values(this.storeTypes); _i < _Object$values.length; _i++) {
@@ -108,7 +113,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           });
         }
       }
-      
+      ;
       for (var _i3 = 0, _Object$keys2 = Object.keys(sessionStorage); _i3 < _Object$keys2.length; _i3++) {
         var _key2 = _Object$keys2[_i3];
         if (_key2.startsWith("dev-")) {
@@ -120,7 +125,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           });
         }
       }
-      
+      ;
       console.debug(window.dev.dataStore.util.msgFmt("Indexing done"));
     },
     /**
@@ -145,13 +150,13 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         cause: arguments
       });
     }
-    
+    ;
 
     // check 2: store type
     if (options.type !== window.dev.dataStore.storeTypes.LOCAL && options.type !== window.dev.dataStore.storeTypes.SESSION) {
       throw new Error(window.dev.dataStore.util.msgFmt("Store type must be either one of: `local`, `session`!"));
     }
-    
+    ;
 
     // check 3: Duplicate name stores are disallowed to prevent confusion
     if (window.dev.dataStore.isStoreNameDuplicate(name)) throw new Error(window.dev.dataStore.util.msgFmt("Store already exists!"));
@@ -216,7 +221,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       return window.sessionStorage.getItem(this._fullStorePrefix.concat(key));
     },
     /**
-     * Fetch a key in the current store
+     * Fetches a key in the current store
      *
      * @public
      * @param {string} key The key to fetch
@@ -267,7 +272,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
         value = "";
         console.warn(window.dev.dataStore.util.msgFmt("The key: `".concat(key, "` was stored with a null, DataStore normalizes nullish values as empty strings when storing keys")));
       }
-      
+      ;
       if (_typeof(value) === "object") {
         switch (this.storeType) {
           case window.dev.dataStore.storeTypes.LOCAL:
@@ -335,7 +340,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
       window.sessionStorage.removeItem(this._fullStorePrefix.concat(key));
     },
     /**
-     * The method for removing keys from the store
+     * Removes keys from the store
      *
      * @public
      * @param {string} key The key to remove
@@ -400,6 +405,4 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   });
   console.log(window.dev.dataStore.util.msgFmt("Starting initialization..."));
   window.dev.dataStore._init();
-
-  // @ts-ignore
-})(this, jQuery, mediaWiki);
+})(this);

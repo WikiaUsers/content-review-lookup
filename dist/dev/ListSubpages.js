@@ -46,8 +46,8 @@
     function getSubpages (wikis) {
         parallelIter(wikis, 5, function (item) {
             return $.ajax({
-                url: item + 'api.php?action=query&list=allpages&apprefix=' + mw.config.get('wgUserName') + '/&apnamespace=2&format=json',
-                dataType: 'jsonp',
+                url: item.replace('http://', 'https://') + 'api.php?action=query&list=allpages&apprefix=' + mw.config.get('wgUserName') + '/&apnamespace=2&origin=*&format=json',
+                dataType: 'json',
                 timeout: 5000
             }).done(function (d) {
                 if (d.error) {
@@ -78,15 +78,15 @@
         });
     }
 
-    function getUrls (data) {
-        var data = $(data);
+    function getUrls (d) {
+        var data = $(d);
 
         data.find('.user-activity__table-wrapper tbody tr').each(function () {
             wikis.push($(this).find('td:first-child > a').attr('href'));
         });
 
         if (data.find('.TablePager-button-next.oo-ui-widget-enabled').length) {
-            getWikis(new mw.Uri(data.find('.TablePager-button-next > a').attr('href')).query.offset);
+            getWikis(new URL(data.find('.TablePager-button-next > a').prop('href')).searchParams.get('offset'));
         } else {
             getSubpages(wikis);
         }

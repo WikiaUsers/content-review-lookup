@@ -24,50 +24,30 @@ $(".paginated-book__next").on("click", function(event) {
 
 ////
 
-document.addEventListener("DOMContentLoaded", function () {
-    let skins = document.querySelectorAll(".mcskin-skin");
-    let currentIndex = 0;
+var currentIndex = 0;
 
-    function showSkin(index) {
-        skins.forEach((skin, i) => {
-            skin.classList.toggle("active", i === index);
-        });
+function changeSlide(direction) {
+    var slides = document.querySelectorAll('.mcskin-slide');
+    
+    if (slides.length === 0) return;
+    
+    slides[currentIndex].classList.remove('active');
+    
+    currentIndex += direction;
+    
+    if (currentIndex >= slides.length) {
+        currentIndex = 0;
+    } else if (currentIndex < 0) {
+        currentIndex = slides.length - 1;
     }
+    
+    slides[currentIndex].classList.add('active');
+}
 
-    document.querySelector(".mcskin-prev").addEventListener("click", function () {
-        currentIndex = (currentIndex > 0) ? currentIndex - 1 : skins.length - 1;
-        showSkin(currentIndex);
-    });
-
-    document.querySelector(".mcskin-next").addEventListener("click", function () {
-        currentIndex = (currentIndex < skins.length - 1) ? currentIndex + 1 : 0;
-        showSkin(currentIndex);
-    });
-
-    showSkin(currentIndex);
-
-    /* Adicionando os indicadores */
-    let indicatorsContainer = document.querySelector(".mcskin-indicators");
-    if (indicatorsContainer) {
-        skins.forEach((_, i) => {
-            let indicator = document.createElement("div");
-            indicator.classList.add("mcskin-indicator");
-            indicator.dataset.index = i;
-            indicator.addEventListener("click", function () {
-                currentIndex = parseInt(this.dataset.index);
-                showSkin(currentIndex);
-            });
-            indicatorsContainer.appendChild(indicator);
-        });
-
-        function updateIndicators() {
-            document.querySelectorAll(".mcskin-indicator").forEach((dot, i) => {
-                dot.classList.toggle("active", i === currentIndex);
-            });
-        }
-
-        document.querySelector(".mcskin-prev").addEventListener("click", updateIndicators);
-        document.querySelector(".mcskin-next").addEventListener("click", updateIndicators);
-        updateIndicators();
+// Garante que o primeiro slide esteja visível ao carregar a página
+document.addEventListener("DOMContentLoaded", function() {
+    var slides = document.querySelectorAll('.mcskin-slide');
+    if (slides.length > 0) {
+        slides[0].classList.add('active');
     }
 });

@@ -60,12 +60,14 @@ mw.loader.using('mediawiki.util').then(function () {
         mw.hook('dev.langselect').fire(this);
         // Page arguments.
         var $links = $ph.find('.wds-list a[href]');
+        var location = $tn.length
+            ? new URL($tn.find('.text').attr('href'))
+            : window.location;
         $.extend(this, $ld.data());
         this.userlangExists = Boolean(this.userlangExists);
-        this.path = $tn.length
-            ? new mw.Uri($tn.children('.text').attr('href')).path
-            : window.location.pathname;
-        this.parent = this.path.replace(new RegExp('/' + this.lang + '$'), '');
+        this.path = location.pathname;
+        this.origin = location.origin;
+        this.parent = this.origin + this.path.replace(new RegExp('/' + this.lang + '$'), '');
         // Interlanguage navigation styling.
         $int.find('a[data-tracking="' + this.lang + '"]')
             .parent().addClass('selected');
@@ -91,7 +93,7 @@ mw.loader.using('mediawiki.util').then(function () {
             Array.prototype.slice.call($links)
                 .every(this._isLocalInterwiki)
         ) {
-            $('#ca-talk[href]').attr('href', this._talk.bind(this));
+            $('#ca-talk[href]').prop('href', this._talk.bind(this));
             this._interwiki.bind(this)();
         }
     }
@@ -102,9 +104,9 @@ mw.loader.using('mediawiki.util').then(function () {
      */
     LangSelect.prototype._edit = function(i, link) {
         var $link = $(link);
-        var uri = new mw.Uri($link.attr('href'));
-        uri.path = this.path;
-        $link.attr('href', uri.toString()).off('click');
+        var url = new URL($link.prop('href'));
+        url.pathname = this.pathname;
+        $link.attr('href', url.toString()).off('click');
     };
     /**
      * @method              _base
@@ -116,21 +118,19 @@ mw.loader.using('mediawiki.util').then(function () {
      */
     LangSelect.prototype._base = function(i18n) {
         this._i18n = i18n;
-        // URI building from base page.
-        var uri = {};
+        // URL building from base page.
+        var url = {};
         ['edit', 'history'].forEach(function(a) {
-            uri[a] = new mw.Uri(mw.util.getUrl(conf.wgRelevantPageName));
+            url[a] = new URL(mw.util.getUrl(conf.wgRelevantPageName, {action: a}), window.location.origin);
         });
-        uri.edit.extend({ action: 'edit' });
-        uri.history.extend({ action: 'history' });
         // Create buttons.
-        $.each(uri, this._addBaseButton.bind(this));
+        $.each(url, this._addBaseButton.bind(this));
     };
     /**
      * @method              _addBaseButton
      * @description         Utility method for adding page header links.
      * @param               {string} a Identifier key for button type.
-     * @param               {Object} u MediaWiki Uri for button target.
+     * @param               {Object} u URL for button target.
      */
     LangSelect.prototype._addBaseButton = function(a, u) {
         $('.page-header__contribution-buttons .wds-list, .page-header__actions .wds-list')
@@ -139,7 +139,7 @@ mw.loader.using('mediawiki.util').then(function () {
         .after(
             $('<li>', {
                 append: $('<a>', {
-                    'href': u.getRelativePath(),
+                    'href': u.href(),
                     'id': 'ca-base-' + a,
                     text: this._i18n.msg(a + 'Base').plain()
                 })
@@ -157,11 +157,11 @@ mw.loader.using('mediawiki.util').then(function () {
         var label = $ph.find('.wds-dropdown__toggle').get(0).firstChild;
         // Add content language link.
         if (this.lang !== conf.wgContentLanguage) {
+        	var url = new URL(this.parent);
+			url.searchParams.set('uselang', conf.wgContentLanguage);
             this._addInterwikiLink({
                 'id': 'i18ndoc-parent',
-                'path': new mw.Uri(this.parent).extend({
-                    uselang: conf.wgContentLanguage
-                }).toString(),
+                'path': url.toString(),
                 'lang': conf.wgContentLanguage,
                 'text': label.textContent
             });
@@ -221,13 +221,13 @@ mw.loader.using('mediawiki.util').then(function () {
      * @param               {String} path Path to non-existent wiki article.
      */
     LangSelect.prototype._preloadUri = function(path) {
-        return new mw.Uri(path).extend({
-            'action': 'edit',
-            'preload': 'Template:I18ndoc',
-            'editintro': 'Template:I18ndoc/editintro',
-            'summary': mw.util.wikiUrlencode(this._preloadText)
-                .replace(/_/g, '+')
-        }).toString();
+    	var url = new URL(path);
+        url.searchParams.set('action', 'edit');
+        url.searchParams.set('preload', 'Template:I18ndoc');
+        url.searchParams.set('editintro', 'Template:I18ndoc/editintro');
+        url.searchParams.set('summary', mw.util.wikiUrlencode(this._preloadText)
+                .replace(/_/g, '+'));
+        return url.href.toString();
     };
     /**
      * @method              _linkGenerator
@@ -288,10 +288,10 @@ mw.loader.using('mediawiki.util').then(function () {
      * @this                window.dev.langSelect
      */
     LangSelect.prototype._talk = function(_, h) {
-        var uri = new mw.Uri(h),
+        var url = new URL(h),
             pageRgx = new RegExp(conf.wgArticlePath.replace('$1','([\\s\\S]+)'));
-        uri.path = uri.path.replace(conf.wgRelevantPageName, this.parent.match(pageRgx)[1]);
-        return uri.toString();
+        url.pathname = url.pathname.replace(conf.wgRelevantPageName, this.parent.match(pageRgx)[1]);
+        return url.href.toString();
     };
     /**
      * @method              _isLocalInterwiki

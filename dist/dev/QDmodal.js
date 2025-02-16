@@ -24,6 +24,7 @@
         fr: "Fermer",
         hi: "बंद करें",
         ko: "닫기",
+        no: "Lukk",
         pl: "Zamknij",
         ru: "Закрыть",
         tr: "Kapat",

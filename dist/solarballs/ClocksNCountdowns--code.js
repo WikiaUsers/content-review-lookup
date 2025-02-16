@@ -278,49 +278,79 @@ function showPageStatus($this, pageStatus) {
         return endDate;
     }
 
-//Function to update end date elements
-function updateEndDate() {
-    $('.endDate').each(function () {
-        var $this = $(this);
-        var startDateText = $this.attr('data-start-date');
-        var countdownToSeconds = parseInt($this.attr('data-countdown-to')) || 0;
-        var revisionTimestamp = parseInt($this.attr('data-revision-timestamp')) || 0;
-        var pageStatus = $this.attr('data-page-status') === "true";
-        var startDate = new Date(startDateText);
 
-        if (isNaN(startDate)) {
-            $this.text("Invalid start date!");
-            return;
-        }
+    function getPageContent(title) {
+        return api.get({
+            action: 'query',
+            prop: 'revisions',
+            titles: title,
+            rvprop: 'content',
+            formatversion: 2
+        }).then(function (data) {
+            var pages = data.query.pages;
+            return pages[0]?.revisions?.[0]?.content || "";
+        });
+    }
 
-        var nextEndDate = calculateNextEndDate(startDate, countdownToSeconds);
-        var adjustedStartDate = new Date(nextEndDate.getTime() - (countdownToSeconds * 1000));
+    function updateEndDate() {
+        $('.endDate').each(function () {
+            var $this = $(this);
+            var startDateText = $this.attr('data-start-date');
+            var countdownToSeconds = parseInt($this.attr('data-countdown-to')) || 0;
+            var revisionTimestamp = parseInt($this.attr('data-revision-timestamp')) || 0;
+            var pageStatus = $this.attr('data-page-status') === "true";
+            var regexPattern = $this.attr('data-regex');
+            var startDate = new Date(startDateText);
 
-        if (pageStatus && revisionTimestamp) {
-            var newPageStatus;
-            if (revisionTimestamp < Math.floor(adjustedStartDate.getTime() / 1000)) {
-                newPageStatus = "outdated";
-            } else if (revisionTimestamp >= Math.floor(adjustedStartDate.getTime() / 1000) && revisionTimestamp < Math.floor(nextEndDate.getTime() / 1000)) {
-                newPageStatus = "updated";
+            if (isNaN(startDate)) {
+                $this.text("Invalid start date!");
+                return;
+            }
+
+            var nextEndDate = calculateNextEndDate(startDate, countdownToSeconds);
+            var adjustedStartDate = new Date(nextEndDate.getTime() - (countdownToSeconds * 1000));
+
+            if (pageStatus && revisionTimestamp) {
+                var pageTitle = mw.config.get('wgPageName');
+
+                getPageContent(pageTitle).then(function (pageContent) {
+                    if (!regexPattern) {
+                        console.warn("No regex pattern provided.");
+                        return;
+                    }
+
+                    var regex = new RegExp(regexPattern, "i");
+                    var match = pageContent.match(regex);
+                    var currentMatch = match ? match[0] : "";
+                    var storedMatch = $this.attr('data-last-match');
+
+                    var newPageStatus;
+                    if (revisionTimestamp < Math.floor(adjustedStartDate.getTime() / 1000)) {
+                        newPageStatus = "outdated";
+                    } else if (revisionTimestamp >= Math.floor(adjustedStartDate.getTime() / 1000) && revisionTimestamp < Math.floor(nextEndDate.getTime() / 1000)) {
+                        newPageStatus = (storedMatch && storedMatch !== currentMatch) ? "updated" : "";
+                    } else {
+                        $this.text(formatDateUTC(nextEndDate, false));
+                        newPageStatus = "";
+                    }
+
+                    // Store the latest regex match for comparison
+                    $this.attr('data-last-match', currentMatch);
+
+                    // If status changes, reset the flag
+                    if ($this.attr('data-last-status') !== newPageStatus) {
+                        categorized = false;
+                        $this.attr('data-last-status', newPageStatus);
+                    }
+
+                    showPageStatus($this, newPageStatus);
+                });
             } else {
                 $this.text(formatDateUTC(nextEndDate, false));
-                newPageStatus = ""; // Default end date
+                showPageStatus($this, "");
             }
-
-            // If status changes, reset the flag
-            if ($this.attr('data-last-status') !== newPageStatus) {
-                categorized = false; // Reset only when status changes
-                $this.attr('data-last-status', newPageStatus); // Store the last status
-            }
-
-            showPageStatus($this, newPageStatus);
-        } else {
-            $this.text(formatDateUTC(nextEndDate, false));
-            showPageStatus($this, ""); // Default behavior
-        }
-    });
-}
-
+        });
+    }
 
     // Function to update the clock and countdown every second
 function updateTime() {

@@ -13,13 +13,17 @@
 			'u:dev:MediaWiki:Placement.js'
 		]
 	});
-	var preloads = 3;
+	var preloads = 2;
 	function preload () {
 		if (--preloads === 0) {
 			window.dev.i18n.loadMessages('View Raw').then(init);
 		}
 	}
 	function init (i18n) {
+		var url = new URL(window.location.href),
+			type = ctype(mw.config.get('wgPageContentModel'));
+		url.searchParams.set('action', 'raw');
+		if (type) url.searchParams.set('ctype', type);
 		window.dev.placement.loader.util({
 			script: 'View Raw',
 			element: 'editdropdown',
@@ -28,10 +32,7 @@
 				id: 'ca-raw'
 			}).append(
 				$('<a>', {
-					href: new mw.Uri().extend({
-						action: 'raw',
-						ctype: ctype(mw.config.get('wgPageContentModel'))
-					}).toString(),
+					href: url.href,
 					text: i18n.msg('text').plain(),
 					title: i18n.msg('title').plain()
 				})
@@ -49,5 +50,4 @@
 	}
 	mw.hook('dev.i18n').add(preload);
 	mw.hook('dev.placement').add(preload);
-	mw.loader.using('mediawiki.Uri').then(preload);
 })();

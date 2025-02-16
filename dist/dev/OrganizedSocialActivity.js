@@ -179,7 +179,7 @@
 						icon: 'envelope',
 						title: $e.find('a[data-tracking="action-wall-message__message"]')
 							.text() || ' ',
-						on: mw.Uri.decode(data.subplace).replace(/_/g, ' '),
+						on: decodeURIComponent(data.subplace).replace(/_/g, ' '),
 						on_href: data.href.replace(/\?.*/, ''),
 						prefix: ' on ',
 						suffix: '\'s wall'
@@ -191,7 +191,7 @@
 						icon: 'envelope',
 						title: $e.find('a[data-tracking="action-reply-message-wall-parent__message-reply"]')
 							.text() || ' ',
-						on: mw.Uri.decode(data.subplace).replace(/_/g, ' '),
+						on: decodeURIComponent(data.subplace).replace(/_/g, ' '),
 						on_href: data.href.replace(/\?.*/, ''),
 						prefix: ' on ',
 						suffix: '\'s wall'
@@ -203,7 +203,7 @@
 						icon: 'page',
 						title: $e.find('.activity-data em')
 							.text() || ' ',
-						on: mw.Uri.decode(data.subplace).replace(/_/g, ' '),
+						on: decodeURIComponent(data.subplace).replace(/_/g, ' '),
 						on_href: data.href.replace(/\?.*/, ''),
 						prefix: ' on the page ',
 						suffix: ''
@@ -215,7 +215,7 @@
 						icon: 'page',
 					    title: $e.find('a[data-tracking="action-reply-parent__comment-reply"]')
 							.text() || ' ',
-						on: mw.Uri.decode(data.subplace).replace(/_/g, ' '),
+						on: decodeURIComponent(data.subplace).replace(/_/g, ' '),
 						on_href: data.href.replace(/\?.*/, ''),
 						prefix: ' on the page ',
 						suffix: ''

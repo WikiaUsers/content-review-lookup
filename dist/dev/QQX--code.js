@@ -18,12 +18,14 @@
     }
     window.QQXLoaded = true;
     function init(i18n) {
+    	var url = new URL(window.location.href);
+    	url.searchParams.set('uselang', 'qqx');
         $('#WikiaBarWrapper .tools').append(
             $('<li>', {
                 id: 'ca-lang-qqx'
             }).append(
                 $('<a>', {
-                    href: new mw.Uri().extend({uselang: 'qqx'}).toString(),
+                    href: url.href,
                     title: i18n.msg('title').plain(),
                     text: window.qqxText || 'QQX'
                 })

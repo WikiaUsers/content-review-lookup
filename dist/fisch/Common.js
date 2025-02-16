@@ -2,12 +2,19 @@
 window.lockOldComments = (window.lockOldComments || {});
 window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
+window.BackToTopModern = true;
+
+/* RailModule and custom button  */
+importScript('MediaWiki:RailModuleMoreLink.js');
 
 /* Load  Custom Collapse and Expand content | Wiki discuss page  */
 importScript('MediaWiki:CustomCollapseExpand.js');
 
  /* Fishing Rods and all Fish page mutatiin galery */
 importScript('MediaWiki:Collapsible.js');
+
+  /* Rod Skins Page Custom collapse */
+importScript('MediaWiki:RodSkinsCustomCollapse.js');
 
   /* Weekly Top Contributors */
 importScript('MediaWiki:TopContributors.js');

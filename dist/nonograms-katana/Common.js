@@ -23,11 +23,15 @@
     function tipShow(evt) {
         //where to get displayed info from
         var tiptag = evt.target.getAttribute('data-tip');
+        if (!tiptag) return;
         //put the info in the tooltip, move it near the cursor and show it
         var tipout = document.getElementById('tipout');
         tipout.innerHTML = document.getElementById(tiptag).innerHTML;
-        tipout.style.left = (evt.clientX-140)+'px';
-        tipout.style.top = (evt.clientY-190+window.scrollY)+'px';
+//        tipout.style.left = (evt.clientX-140)+'px';
+//        tipout.style.top = (evt.clientY-190+window.scrollY)+'px';
+		var offset = findPos(document.getElementsByTagName('main')[0]);
+        tipout.style.left = (evt.clientX-offset[0]+20)+'px';
+        tipout.style.top = (evt.clientY-offset[1]+20+window.scrollY)+'px';
         tipout.style.display = 'block';
         //advanced feature: highlighting part of the contents
         var idx = evt.target.getAttribute('data-idx');
@@ -57,3 +61,14 @@
             }
         }
     }
+
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			do {
+				curleft += obj.offsetLeft;
+				curtop += obj.offsetTop;
+			} while (obj = obj.offsetParent);
+		}
+		return [curleft,curtop];
+	}

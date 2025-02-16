@@ -31,9 +31,9 @@
                     page.replace(/\/[^/]+$/, href)
                 );
             } else {
-                   window.location.href = new mw.Uri().extend({
-                    uselang: href
-                }).toString();
+                    var params = new URLSearchParams(window.location.search);
+                    params.set('uselang', href);
+                    window.location.search = params.toString();
             }
         }
     }

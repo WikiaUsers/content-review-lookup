@@ -1,4 +1,7 @@
 /* 이 자바스크립트 설정은 모든 문서, 모든 사용자에게 적용됩니다. */
+/*레퍼런스 팝업 (dev wiki)*/
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).lockdown = true;
+((window.dev = window.dev || {}).ReferencePopups = dev.ReferencePopups || {}).defaults = { animate: false };
 /*Welcome Module (Sia Wiki)*/
 $(function() {
     var welcome;

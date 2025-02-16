@@ -17,7 +17,7 @@
 
     if (window.ExternalLinkWarningPageRegex) {
         if (window.ExternalLinkWarningPageRegex instanceof RegExp) {
-            if (!window.ExternalLinkWarningPageRegex.test(new mw.Uri(window.location.href).path))
+            if (!window.ExternalLinkWarningPageRegex.test(new URL(window.location.href).pathname))
                 return;
         } else {
             console.error('ExternalLinkWarning.js => ExternalLinkWarningPageRegex is not a RegExp');

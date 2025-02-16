@@ -33,9 +33,9 @@ $(document).ready(function() {
 	$("span#rageTowerHarness").html('<div id="rageTowerInput">Toggle Rage Spell Tower? <input type="checkbox" name="rageTowerBoost" id="rageTowerBoost"></input></div>');
 	$("span#poisonTowerHarness").html('<div id="poisonTowerInput">Toggle Poison Spell Tower? <input type="checkbox" name="poisonTowerBoost" id="poisonTowerBoost"></input></div>');
 	$("span#valkRageHarness").html('<div id="valkRageInput">Toggle Super Valkyrie Rage? <input type="checkbox" name="valkRageBoost" id="valkRageBoost"></input></div>');
-	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
+	$("span#hasteSpellHarness").html('<div id="hasteSpellInput">Haste Spell Level: <select name="hasteSpellLevel" id="hasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option></select></div>');
 	$("span#capitalHasteSpellHarness").html('<div id="capitalHasteSpellInput">Endless Haste Spell Level: <select name="capitalHasteSpellLevel" id="capitalHasteSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> </select></div>');
-	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option></select></div>');
+	$("span#poisonSpellHarness").html('<div id="poisonSpellInput">Poison Spell Level: <select name="poisonSpellLevel" id="poisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> <option value="10">10</option> <option value="11">11</option></select></div>');
 	$("span#THpoisonSpellHarness").html('<div id="THpoisonSpellInput">TH Poison Spell Level: <select name="THpoisonSpellLevel" id="THpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> </select></div>');
 	$("span#HHpoisonSpellHarness").html('<div id="HHpoisonSpellInput">Headhunter Poison Level: <select name="HHpoisonSpellLevel" id="HHpoisonSpellLevel"> <option value="0">0</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> </select></div>');
 	// GW Life Gem: Keep the name "Life Aura" for legacy purposes (i.e. don't break the name)
@@ -60,7 +60,7 @@ $(document).ready(function() {
 		'</select> %</div>');
 	$("span#eventTrainingBoostHarness").html('<div id="eventTrainingBoostInput">Training Boost: <select name="eventTrainingBoost" id="eventTrainingBoost">' +
 		'<option value="0">0</option>' + 
-		// '<option value="15">15</option>' +
+		'<option value="15">15</option>' +
 		'<option value="30">30</option>' +
 		// '<option value="50">50</option>' +
 		'</select> %</div>');
@@ -199,8 +199,7 @@ $(document).ready(function() {
         var mode = $("select#modifierMode").val();
         if (mode == "Attack") {
         	// Reset the values of defense-only items
-        	// Reset also hard mode (to guarantee it stays off on changing mode)
-            $("#rageTowerBoost, #valkRageBoost, #hardModeBoost").prop("checked",false);
+            $("#rageTowerBoost, #valkRageBoost").prop("checked",false);
             $("#poisonSpellLevel, #frostPotencyLevel").val("0").change();
         	// Disable defense-only items
         	$("#rageTowerHarness, #poisonSpellHarness, #valkRageHarness, #frostPotencyHarness, #defenseModsOnly").css("display","none");
@@ -210,9 +209,8 @@ $(document).ready(function() {
             refreshHeroGear();
         } else {
         	// Reset the values of offense-only items
-        	// Reset also hard mode (to guarantee it stays off on changing mode)
             $("#rageSpellLevel, #capitalRageSpellLevel, #hasteSpellLevel, #capitalHasteSpellLevel, #THpoisonSpellLevel, #HHpoisonSpellLevel, #lifeAuraLevel, #rageAuraLevel").val("0").change();
-        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle, #hardModeBoost").prop("checked",false);
+        	$("#poisonTowerBoost, #heroAbilityBoost, #heroGearToggle").prop("checked",false);
         	// Disable offense-only items
             $("#rageSpellHarness, #capitalRageSpellHarness, #hasteSpellHarness, #capitalHasteSpellHarness, #THpoisonSpellHarness, #HHpoisonSpellHarness, #poisonTowerHarness, #heroAbilityHarness, #lifeAuraHarness, #rageAuraHarness, #heroGearToggleHarness, #heroGearHarness, #offenseModsOnly").css("display","none");
             // Enable all disabled items
@@ -235,6 +233,7 @@ $(document).ready(function() {
         "Vampstache": [18,15],
         "Giant Gauntlet": [27,21],
         "Spiky Ball": [27,21],
+        "Snake Bracelet": [27,21],
     	"Archer Puppet": [18,15],
     	"Invisibility Vial": [18,15],
     	"Giant Arrow": [18,15],
@@ -243,6 +242,7 @@ $(document).ready(function() {
     	"Magic Mirror": [27,21],
     	"Henchmen Puppet": [18,15],
     	"Dark Orb": [18,15],
+    	"Metal Pants": [18,15],
     	"Eternal Tome": [1,1], // Technically has 18 levels, but has no passive boosts, so it doesn't matter which you use
     	"Life Gem": [18,15],
     	"Rage Gem": [18,15],
@@ -261,13 +261,13 @@ $(document).ready(function() {
     var heroGearOptions = [];
     switch (pageName) {
     	case ("Barbarian King"):
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet"];
     		break;
     	case ("Archer Queen"):
     		heroGearOptions = ["Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror"];
     		break;
     	case ("Minion Prince"):
-    		heroGearOptions = ["Henchmen Puppet", "Dark Orb"];
+    		heroGearOptions = ["Henchmen Puppet", "Dark Orb", "Metal Pants"];
     		break;
      	case ("Grand Warden"):
     		heroGearOptions = ["Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet"];
@@ -276,7 +276,7 @@ $(document).ready(function() {
     		heroGearOptions = ["Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear", "Electro Boots"];
     		break;
     	default: // Having all options in one makes it excellent for testing
-    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
+    		heroGearOptions = ["Barbarian Puppet", "Rage Vial", "Earthquake Boots", "Vampstache", "Giant Gauntlet", "Spiky Ball", "Snake Bracelet", "Archer Puppet", "Invisibility Vial", "Giant Arrow", "Healer Puppet", "Frozen Arrow", "Magic Mirror", "Henchmen Puppet", "Dark Orb", "Metal Pants", "Eternal Tome", "Life Gem", "Rage Gem", "Healing Tome", "Fireball", "Lavaloon Puppet", "Royal Gem", "Seeking Shield", "Hog Rider Puppet", "Haste Vial", "Rocket Spear"];
     }
 	// Insert options
     for (i = 0; i < heroGearOptions.length; i++) {
@@ -990,7 +990,9 @@ $(document).ready(function() {
 	  // TODO: Life aura no longer requires thousandths, may convert to hundredths instead
 	  var apprenticeAuraPercentIncrease = [0,200,220,240,260];
 	  // And a lookup for poison attack rate decrease (used for AltDPS)
-	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72];
+	  var poisonASMultiplier = [0,35,40,45,50,55,60,65,68,70,72,73];
+	  // And a lookup for haste speed increase
+	  var hasteSpeedIncrease = [0,28,34,40,46,52,56];
 	  /* Hero Equipment stat dictionaries. We include one for each of the following:
 			1. DPS bonus (effectively adds to DPH, but we'll add raw DPS)
 			2. HP bonus
@@ -1008,52 +1010,57 @@ $(document).ready(function() {
 		var dictDPSBonus = {
 			"Rage Vial": [17,22,27,32,37,42,48,54,60,66,72,79,86,94,104,112,120,128],
 			"Earthquake Boots": [13,15,17,19,21,23,26,28,32,40,48,55,63,71,79,86,94,102],
-			"Vampstache": [9,10,12,13,15,16,18,19,22,27,32,37,42,48,53,58,63,68],
+			"Vampstache": [10,15,20,25,30,40,45,50,60,65,70,80,85,90,100,105,110,120],
 			"Giant Gauntlet": [17,20,23,26,29,32,34,37,43,53,63,74,84,94,104,115,125,135,137,140,142,145,147,150,152,155,160],
 			"Spiky Ball": [35,38,42,45,49,52,55,58,65,76,88,101,112,124,135,148,159,171,176,182,188,194,199,205,211,217,222],
-			"Archer Puppet": [26,34,42,49,55,62,71,80,90,100,109,115,122,127,132,136,140,144],
+			"Snake Bracelet": [10,11,12,14,16,18,20,22,24,26,28,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75],
+			"Archer Puppet": [28,37,46,54,61,68,78,88,99,110,120,127,134,140,145,150,154,159],
 			"Giant Arrow": [20,23,27,30,33,37,40,43,50,59,68,77,86,96,105,114,123,132],
 			"Henchmen Puppet": [33,38,46,51,56,64,71,78,92,103,114,131,140,149,162,169,176,188],
 			"Dark Orb": [10,13,18,21,24,29,32,35,40,43,46,51,54,57,62,65,68,73],
-			"Life Gem": [10,12,14,16,18,20,22,24,28,32,38,42,46,50,54,58,62,66],
+			"Life Gem": [11,13,16,18,20,22,24,26,31,35,42,46,51,55,59,64,68,73],
 			"Rage Gem": [12,14,16,18,20,22,24,26,30,36,43,49,56,62,69,75,82,88],
 			"Fireball": [21,24,27,30,33,36,40,44,47,51,56,60,63,67,71,74,77,80,82,84,87,89,92,94,96,99,101],
 			"Lavaloon Puppet": [10,12,13,15,16,18,20,22,23,25,28,30,31,33,35,37,38,40,41,42,43,45,46,47,48,49,50],
-			"Royal Gem": [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105],
+			"Royal Gem": [35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,105,120],
 			"Frozen Arrow": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168],
 			"Haste Vial": [20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88],
 			"Rocket Spear": [35,40,45,50,55,60,66,72,78,85,92,99,105,111,117,122,127,132,136,140,144,148,152,156,160,164,168]
 		};
 		var dictHPBonus = {
-			"Barbarian Puppet": [281,350,425,513,590,668,760,855,950,1050,1150,1314,1596,1898,2222,2458,2812,3060],
+			"Barbarian Puppet": [309,385,467,564,649,734,836,940,1045,1155,1265,1445,1755,2087,2444,2703,3093,3366],
 			"Earthquake Boots": [209,244,278,313,348,383,418,452,522,677,831,986,1200,1500,1800,2100,2300,2500],
 			"Spiky Ball": [365,478,590,703,815,928,1040,1153,1265,1378,1490,1603,1715,1828,1940,2053,2165,2278,2390,2503,2615,2728,2840,2953,3065,3178,3290],
+			"Snake Bracelet": [150,300,450,600,750,900,1050,1200,1350,1500,1650,1800,1950,2100,2250,2400,2550,2700,2850,3000,3150,3300,3450,3600,3750,3900,4050],
 			"Invisibility Vial": [80,100,120,140,170,200,250,300,340,380,420,460,500,540,580,620,660,700],
 			"Giant Arrow": [80,93,106,119,133,146,159,172,199,241,284,326,369,411,454,496,539,581],
 			"Healer Puppet": [132,154,177,199,221,243,265,287,331,402,473,543,614,685,756,826,897,968],
 			"Magic Mirror": [88,96,113,131,157,184,228,272,307,342,377,412,448,483,518,553,588,624,650,676,703,729,756,782,808,835,861],
 			"Dark Orb": [88,103,117,131,147,161,175,190,219,266,313,359,406,453,500,546,593,640],
-			"Life Gem": [150,163,172,181,192,203,225,249,275,304,336,351,366,381,396,411,426,441],
+			"Metal Pants": [350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200],
+			"Life Gem": [165,179,189,199,211,223,248,274,303,334,370,386,403,419,436,452,469,485],
 			"Healing Tome": [92,107,122,137,153,168,183,198,229,280,330,381,432,482,533,584,634,685],
 			"Lavaloon Puppet": [50,55,57,60,65,67,70,75,77,80,85,87,90,95,97,100,105,107,110,115,117,120,125,127,130,135,150],
-			"Royal Gem": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
+			"Royal Gem": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Seeking Shield": [40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380],
 			"Hog Rider Puppet": [60,90,120,150,180,210,240,270,300,330,360,390,420,450,480,510,540,570],
 			"Rocket Spear": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700],
 			"Electro Boots": [50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600,625,650,675,700]
 		};
 		var dictHPRecoveryBonus = {
-			"Barbarian Puppet": [100,150,200,250,300,350,400,450,520,600,680,770,860,940,1060,1130,1200,1260],
+			"Barbarian Puppet": [110,165,220,275,330,385,440,495,572,660,748,847,946,1034,1166,1243,1320,1386],
 			"Rage Vial": [150,225,300,375,450,525,600,675,780,900,1020,1155,1290,1410,1590,1695,1800,1890],
-			"Archer Puppet": [160,175,190,205,220,235,250,265,280,295,310,325,340,360,380,400,420,440],
+			"Archer Puppet": [176,193,209,226,242,259,275,292,308,323,341,358,374,396,418,440,462,484],
 			"Magic Mirror": [198,229,250,271,294,317,344,372,397,423,448,474,498,529,560,591,622,652,679,706,732,759,784,811,838,864,891],
 			"Henchmen Puppet": [176,193,209,226,242,259,275,292,308,325,341,358,388,418,448,478,508,538],
+			"Metal Pants": [1600,1675,1750,1800,1850,1900,1950,2000,2050,2100,2150,2200,2250,2300,2350,2400,2450,2500],
 			"Healing Tome": [165,193,220,248,275,303,330,358,413,463,513,563,613,663,713,763,813,863],
 			"Royal Gem": [1200,1200,1450,1450,1450,1600,1600,1600,1800,1800,1800,2000,2000,2000,2200,2200,2200,2400],
 			"Hog Rider Puppet": [180,220,270,320,370,420,470,520,560,610,660,700,750,800,850,900,950,1000]
 		};
 		var dictASBonus = {
 			"Vampstache": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
+			"Snake Bracelet": [1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10],
 			"Rage Gem": [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
 			"Haste Vial": [5,6,6,7,8,8,9,10,10,11,12,12,13,14,14,15,16,16]
 		};
@@ -1070,7 +1077,7 @@ $(document).ready(function() {
 		};
 		var dictAbilityASBonus = { //Written in percent
 			"Haste Vial": [60,60,60,60,60,80,80,80,80,80,80,80,80,80,100,100,100,100]
-		}
+		};
 		var dictAttackTypeText = { //Repeat as many times as there are levels (if constant across all levels)
 			"Giant Gauntlet": Array(27).fill("Area Splash (2.5 tile Radius)"),
 			"Rocket Spear": Array(27).fill("Area Splash (0.8 tile Radius)")
@@ -1385,17 +1392,16 @@ $(document).ready(function() {
 			// First, check the modifier mode, which will override other checks
 			if (hardModeCheckBox != null) {
 				if (hardModeCheckBox.checked === true) {
-					if (modifierMode == "Attack") { // Hero in attack mode gets 5% less damage
-						calcNewDPH *= 95/100;
-					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage
-					// however the hard mode toggle will be disabled for all Heroes except GW
-					// (since hard mode bonuses do not apply to live defending heroes)
-						calcNewDPH *= 105/100;
+					if (modifierMode == "Attack") { // Hero in attack mode gets 10% less damage
+						calcNewDPH *= 90/100;
+					} else if (modifierMode == "Defense") { // Hero in defense mode gets 20% more damage
+						calcNewDPH *= 120/100;
 					} else {
 						if (isHero === true) { // For heroes when modifier mode is ignored
-							calcNewDPH *= 95/100;
+							// (example: Hero equipments)
+							calcNewDPH *= 90/100;
 						} else if (isBuilding === true || isStatue === true) { // For buildings or "statues"
-							calcNewDPH *= 105/100;
+							calcNewDPH *= 120/100;
 						}
 					}
 				}
@@ -1945,17 +1951,15 @@ $(document).ready(function() {
 			if (hardModeCheckBox != null) {
 				if (hardModeCheckBox.checked === true) {
 					hardModeUsed = true;
-					if (modifierMode == "Attack") { // Hero in attack mode gets 5% less damage
-						buffedDPS *= 95/100;
-					} else if (modifierMode == "Defense") { // Hero in defense mode gets 5% more damage,
-					// however the hard mode toggle will be disabled for all Heroes except GW
-					// (since hard mode bonuses do not apply to live defending heroes)
-						buffedDPS *= 105/100;
+					if (modifierMode == "Attack") { // Hero in attack mode gets 10% less damage
+						buffedDPS *= 90/100;
+					} else if (modifierMode == "Defense") { // Hero in defense mode gets 20% more damage
+						buffedDPS *= 120/100;
 					} else {
-						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored
-							buffedDPS *= 95/100;
+						if ($(this).hasClass("Hero") === true) { // For heroes when modifier mode is ignored (e.g. Hero equipment)
+							buffedDPS *= 90/100;
 						} else if ($(this).hasClass("Building") === true || $(this).hasClass("Statue") === true) { // For buildings or "statues"
-							buffedDPS *= 105/100;
+							buffedDPS *= 120/100;
 						}
 					}
 				}
@@ -2011,13 +2015,15 @@ $(document).ready(function() {
 			if ($("select#modifierMode").val() != undefined) {
 				modifierMode = $("select#modifierMode").val();
 			}
-			// Hard mode modifiers only apply to Heroes, and only in Attack mode
+			// Hard mode modifiers only apply to Heroes
 			// The Hero class check is redundant currently but useful if troops get modified in hard mode
 			if (hardModeCheckBox != null) {
 				if (hardModeCheckBox.checked === true && $(this).hasClass("Hero") === true) {
+					hardModeUsed = true; // This flag is used for aesthetics
 					if (modifierMode == "" || modifierMode == "Attack") {
-						hardModeUsed = true;
-						baseHP *= 95/100; // 5% nerf to base HP
+						baseHP *= 90/100; // 10% nerf to base HP
+					} else if (modifierMode == "Defense") {
+						baseHP *= 120/100; // 20% buff to base HP
 					}
 				}
 			}
@@ -2130,7 +2136,7 @@ $(document).ready(function() {
 		    	capitalRageSpellLevel = 0;
 		    } 
 			var hasteSpellLevel = $("#hasteSpellLevel").val() * 1;
-			if (isNaN(rageSpellLevel) === true) {
+			if (isNaN(hasteSpellLevel) === true) {
 		    	hasteSpellLevel = 0;
 		    }
 		    var capitalHasteSpellLevel = $("#capitalHasteSpellLevel").val() * 1;
@@ -2191,9 +2197,10 @@ $(document).ready(function() {
 			}
 			if (hasteSpellLevel > 0) {
                 if ($(this).hasClass("Hero") == true) {
-                    hasteBoost = (3 * hasteSpellLevel) + 11;
+                	// Halve this increase
+                    hasteBoost = hasteSpeedIncrease[hasteSpellLevel] * 5 / 10;
                 } else {
-                    hasteBoost = (6 * hasteSpellLevel) + 22;
+                    hasteBoost = hasteSpeedIncrease[hasteSpellLevel];
                 }
             } else if (capitalHasteSpellLevel > 0) {
             	hasteBoost = capitalHasteSpellLevel + 6;
@@ -2226,7 +2233,7 @@ $(document).ready(function() {
 			
 			// That's all the speed buffs. Now on to the speed de-buffs (which thankfully don't conflict)
 			// However, poison's speed decrease isn't linear. So we have to rely on a small lookup
-			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50];
+			var poisonSpeedDebuff = [0,26,30,34,38,40,42,44,46,48,50,51];
 			// Also a small lookup for TH poison
 			var THpoisonSpeedDebuff = [0,30,35,40,45,50];
 			var poisonTowerDebuff = 0;

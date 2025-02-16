@@ -16,81 +16,84 @@
  */
 
 /*jshint jquery:true, browser:true, devel:true, camelcase:true, curly:false, undef:true, bitwise:true, eqeqeq:true, forin:true, immed:true, latedef:true, newcap:true, noarg:true, unused:true, regexp:true, strict:true, trailing:false */
-/*global mediaWiki:true, importArticle:true*/
 
-;(function (module, mw, $, undefined) {
+(function (mw, $) {
 	'use strict';
 	
-	var i18n, $tabs;
+	var i18n, wds, loaded = false, preloads = 2;
 
 	function click(e) {
 		e.preventDefault();
-		window.location.href = $(this).data('url');
+		window.location.href = e.target.parentElement.dataset.url;
 	}
 
-	function doEach() {
-		var $that,$link,$url;
+	function doEach(index, tab) {
+		if (tab.classList.contains('tvel_handled')) return;
+		tab.classList.add('tvel_handled');
 
-		$that = $(this);
-		$link = $that.find('> a').first();
-		$url = new mw.Uri(
-							$link.attr('href')
-						)
-						.extend({
-							action: 'edit'
-						})
-						.toString();
+		var link = tab.querySelector('a'),
+			url = new URL(link.href);
+		url.searchParams.set('action', 'edit');
 
-		$link.append(
+		$(link).append(
 			$('<span>', {
-				'class': 'editsection'
-				,'click': click
-				,'data-url': $url
-			})
-			.append(
+				'class': 'editsection',
+				'click': click,
+				'data-url': url.href
+			}).append(
 				$('<a>', {
-					'href': $url
-					,'css': {
-						'border': 'none'
-						,'cursor': 'pointer'
-						,'padding': '0'
-						,'font-size': 'x-small'
+					'href': url.href,
+					'css': {
+						'border': 'none',
+						'cursor': 'pointer',
+						'padding': '0',
+						'font-size': 'x-small'
 					},
 					'title': i18n.msg('title').plain()
-				})
-				.append(
-					$('<img>', {
-						'class': "sprite edit-pencil"
-						,'src': mw.config.get("wgBlankImgUrl")
-					})
-				)
-				.append(i18n.msg('text').escape())
+				}).append(wds.icon('pencil-small', {
+					class: 'wds-icon-tiny',
+					alt: i18n.msg('text').escape(),
+					style: 'margin-left:1em;pointer-events:none'
+				}))
 			)
 		);
 	}
-	
-	function hook(i18nData) {
-		i18n = i18nData;
-		$tabs.each(doEach);
-		$tabs.addClass('tvel_handled');
-	}
 
 	function init() {
-		$tabs = mw.util.$content.find(
-			'[id^="flytabs_"] > ul.tabs > li[data-tab]:not(.tvel_handled)'
-		);
+		var $tabs = mw.util.$content.find('[id^="flytabs_"] > ul.tabs > li[data-tab]:not(.tvel_handled)');
 
-		if ($tabs.length) {
+		if (!$tabs.length) return;
+
+		function preload() {
+			if (--preloads>0) return;
+			$tabs.each(doEach);
+		}
+
+		if (loaded) {
+			$tabs.each(doEach);
+		} else {
+			loaded = true;
 			mw.hook('dev.i18n').add(function(i18no) {
-				i18no.loadMessages('TabViewEditLinks').then(hook);
+				i18no.loadMessages('TabViewEditLinks').then(function(i18nData) {
+					i18n = i18nData;
+					preload();
+				});
 			});
-			importArticle({
+			mw.hook('dev.wds').add(function(wdsData) {
+				wds = wdsData;
+				preload();
+			});
+			window.importArticle({
 				type: 'script',
-				article: 'u:dev:MediaWiki:I18n-js/code.js'
+				articles: [
+					'u:dev:MediaWiki:I18n-js/code.js',
+					'u:dev:MediaWiki:WDSIcons/code.js'
+				]
 			});
 		}
 	}
-
-	module.init = init;
 	mw.hook('wikipage.content').add(init);
-}(window.TabViewEditLinks = window.TabViewEditLinks || {}, mediaWiki, jQuery));
+	// Debug
+	window.TabViewEditLinks = window.TabViewEditLinks || {};
+	window.TabViewEditLinks.init = init;
+}(window.mediaWiki, window.jQuery));

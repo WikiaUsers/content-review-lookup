@@ -14,6 +14,9 @@ var i18n = {
 	fr: {
 		linkTitle: 'Cliquez pour purger le cache du serveur de la page actuelle du wiki'
 	},
+	he: {
+		linkTitle: 'לחץ כדי לנקות את מטמון השרת עבור דף הוויקי הנוכחי.'
+	},
 	ja: {
 		linkTitle: 'クリックすると現在のwikiページのサーバーキャッシュが削除されます'
 	},

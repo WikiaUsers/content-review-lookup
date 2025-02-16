@@ -14,8 +14,8 @@
 
 function doCalcDarkElixirToGems(resources) {
    var ranges = [1,10,100,1000,10000,100000];
-   var gems = [1,5,25,125,600,3000];
-   var storagemax = 380000;
+   var gems = [1,5,20,100,250,2000];
+   var storagemax = 460000;
  
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -36,8 +36,8 @@ function doCalcDarkElixirToGems(resources) {
  
 function doCalcResourceToGems(resources) {
    var ranges = [100,1000,10000,100000,1000000,10000000];
-   var gems = [1,5,25,125,600,3000];
-   var storagemax = 23000000;
+   var gems = [1,5,20,100,250,2000];
+   var storagemax = 28000000;
 
    if (isNaN(resources)) return("???");
    else if (resources < 0) return("???");
@@ -58,7 +58,7 @@ function doCalcResourceToGems(resources) {
 
 function doCalcBuilderResourceToGems(resources) {
    var ranges = [100,1000,10000,100000,1000000,10000000];
-   var gems = [1,10,50,250,1200,6000];
+   var gems = [1,10,40,200,500,4000];
    var storagemax = 6500000;
    
    if (isNaN(resources)) return("???");
@@ -251,7 +251,7 @@ function calcBuilderGemsToTime (gems) {
 
 function calcGemsToResources (gems) {
     var resourcesrange = [100,1000,10000,100000,1000000,10000000];
-    var gemsrange = [1,5,25,125,600,3000];
+    var gemsrange = [1,5,20,100,250,2000];
     var resources = 0;
     
     if (isNaN(gems)) gems = 0;
@@ -285,7 +285,7 @@ function calcGemsToResources (gems) {
 
 function calcGemsToDarkElixir (gems) {
     var resourcesrange = [1,10,100,1000,10000,100000];
-    var gemsrange = [1,5,25,125,600,3000];
+    var gemsrange = [1,5,20,100,250,2000];
     var resources = 0;
     
     if (isNaN(gems)) gems = 0;
@@ -319,7 +319,7 @@ function calcGemsToDarkElixir (gems) {
 
 function calcGemsToBuilderResources (gems) {
     var resourcesrange = [100,1000,10000,100000,1000000,10000000];
-    var gemsrange = [1,10,50,250,1200,6000];
+    var gemsrange = [1,10,40,200,500,4000];
     var resources = 0;
     
     if (isNaN(gems)) gems = 0;

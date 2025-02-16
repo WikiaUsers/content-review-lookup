@@ -1,9 +1,10 @@
 (function() {
+	'use strict';
 	if (window.quickPurgeLoaded) return;
 	window.quickPurgeLoaded = true;
 
 	var purging = false;
-	var indexPath = mw.config.values.wgScript;
+	var indexPath = mw.config.get('wgScript');
 	
 	function purgePage(page) {
 		new mw.Api().post({
@@ -20,13 +21,13 @@
 	}
 	
 	$(function() {
-		if (mw.config.values.wgAction == "purge" || mw.config.values.wgCanonicalSpecialPageName === "Purge") {
-			var page = mw.config.values.wgPageName;
-			var link = new mw.Uri(location.href);
+		if (mw.config.get('wgAction') === "purge" || mw.config.get('wgCanonicalSpecialPageName') === "Purge") {
+			var page = mw.config.get('wgPageName');
+			var link = new URL(location.href);
 			
-			if (mw.config.values.wgNamespaceNumber === -1) 
+			if (mw.config.get('wgNamespaceNumber') === -1) 
 				if (page.split("/").length > 1) page = page.split("/").slice(1).join("/");
-				else if (link.query.page) page = link.query.page;
+				else if (link.searchParams.get('page')) page = link.searchParams.get('page');
 			
 			purgePage(page);
 		}
@@ -41,21 +42,21 @@
 		if (purging) return;
 
 		purging = true;
-		var link = new mw.Uri(e.target.href);
+		var link = new URL(e.target.href);
 		var page;
 		// Support all formats described at: https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Short_URL
-		if (link.path == indexPath) {
-			page = decodeURIComponent(link.query.title);
-		} else if (link.path.startsWith(indexPath + '/')) {
-			page = decodeURIComponent(link.path).substring(indexPath.length + 1);
+		if (link.pathname == indexPath) {
+			page = decodeURIComponent(link.searchParams.get('title'));
+		} else if (link.pathname.startsWith(indexPath + '/')) {
+			page = decodeURIComponent(link.pathname).substring(indexPath.length + 1);
 		} else {
-			page = decodeURIComponent(link.path).replace(mw.config.values.wgArticlePath.replace(/\$1/, ''), '');
+			page = decodeURIComponent(link.pathname).replace(mw.config.get('wgArticlePath').replace(/\$1/, ''), '');
 			var title = new mw.Title(page);
 
 			// If title is `Special:Purge` remove it from the title
 			if (title.namespace === -1)
 				if (title.title.split("/").length > 1) page = title.title.split("/").slice(1).join("/");
-				else if (link.query.page) page = link.query.page;
+				else if (link.searchParams.get('page')) page = link.searchParams.get('page');
 		}
 
 		if (typeof page !== "string") {

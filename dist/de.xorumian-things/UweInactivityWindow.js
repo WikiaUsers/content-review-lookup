@@ -15,7 +15,7 @@ function createPrompt() {
 
     let text1 = document.createElement('span');
     text1.className = 'text-line1';
-    text1.innerText = 'You haven\'t moved your mouse for at least five minutes. That got us wondering:';
+    text1.innerText = 'You haven\'t moved your mouse for at least fifteen minutes. That got us wondering:';
 
     let text2 = document.createElement('span');
     text2.className = 'text-line2';
@@ -72,7 +72,7 @@ function hidePrompt() {
 
 function resetTimer() {
     clearTimeout(timeout);
-    timeout = setTimeout(showPrompt, 300000); // 5 minutes till summoning of Heinrych
+    timeout = setTimeout(showPrompt, 900000); // 15 minutes till summoning of Heinrych
 }
 
 document.onmousemove = resetTimer; // Reset timer on mouse movement

@@ -69,7 +69,7 @@
                 .first()
                 .find('a')
                 .eq(2)
-                .attr('href');
+                .prop('href');
             var newWikis = (wikis || []).concat($data
                 .find('.user-activity__table-wrapper .mw-datatable > tbody > tr')
                 .map(function(_, row) {
@@ -86,7 +86,7 @@
                 .toArray()
             );
             if (nextHref) {
-                return this.getWikis(newWikis, new mw.Uri(nextHref).query.offset);
+                return this.getWikis(newWikis, new URL(nextHref).searchParams.get('offset'));
             } else {
                 this.fetchedAllWikis(newWikis);
             }
@@ -168,8 +168,7 @@
     mw.loader.using([
         'mediawiki.api',
         'mediawiki.user',
-        'mediawiki.util',
-        'mediawiki.Uri'
+        'mediawiki.util'
     ]).then(Matrix.preload.bind(Matrix));
     mw.hook('dev.ct').add(Matrix.preload.bind(Matrix, 'ct'));
     mw.hook('dev.i18n').add(Matrix.preload.bind(Matrix, 'i18n'));

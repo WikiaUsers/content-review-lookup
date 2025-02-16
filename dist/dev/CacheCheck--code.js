@@ -124,19 +124,19 @@ mw.loader.using('mediawiki.util').done(function() {
     function getQS($this, foo) {
         var qs = qstr,
             select = isgallery ? '.gallerytext a:first, .gallery-image-wrapper a:first' : 'a:first',
-            url = $this.find(select).attr('href'),
+            url = $this.find(select).prop('href'),
             redlinkUrl = $this.find(select).data('uncrawlableUrl');
 
         if (redlinkUrl) {
             url = atob(redlinkUrl);
         }
 
-        url = new mw.Uri(url);
+        url = new URL(url);
 
         if (page === 'Lonelypages') {
             qs += foo ? 'list=embeddedin&eititle=' : 'list=backlinks&bltitle=';
         }
-        qs += encodeURIComponent(decodeURIComponent(url.path).replace(pathRegex, ''));
+        qs += encodeURIComponent(decodeURIComponent(url.pathname).replace(pathRegex, ''));
 
         return qs;
     }
@@ -208,15 +208,7 @@ mw.loader.using('mediawiki.util').done(function() {
     }
 
     function init(i18nData) {
-        var regexEscape = $.escapeRE ?
-            // Legacy Fandom
-            $.escapeRE :
-                mw.RegExp ?
-                    // MediaWiki 1.26+
-                    mw.RegExp.escape :
-                    // MediaWiki 1.34+
-                    mw.util.escapeRegExp;
-        pathRegex = new RegExp('^' + regexEscape(mw.config.get('wgArticlePath').replace('$1', '')));
+        pathRegex = new RegExp('^' + mw.util.escapeRegExp(mw.config.get('wgArticlePath').replace('$1', '')));
         i18n = i18nData.msg;
         $('.mw-spcontent').append(
             $('<p>', {

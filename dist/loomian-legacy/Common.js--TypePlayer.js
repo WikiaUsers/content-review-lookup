@@ -25,7 +25,7 @@ function typeToArray(type) {
 		return [2, 1, 1, 2, 0.5, 1, 1, 1, 2, 1, 1, 1, 1, 0.5, 1, 0.5, 1];
 	}
 	if(type == "Ice") {
-		return [2, 1, 1, 1, 1, 0.5, 1, 0.5, 1, 1, 1, 2, 1, 1, 2, 1, 0.5];
+		return [2, 1, 1, 1, 1, 0.5, 1, 0.5, 1, 1, 1, 2, 1, 1, 2, 1, 1];
 	}
 	if(type == "Electric") {
 		return [1, 2, 1, 1, 1, 1, 0.5, 0.5, 1, 2, 1, 0.5, 1, 1, 1, 1, 1];
@@ -57,8 +57,8 @@ function typeToArray(type) {
 	if(type == "Mind") {
 		return [1, 1, 1, 0.5, 2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 0.5, 0.5, 1];
 	}
-	if(type == "Typeless") {
-		return [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1];
+	if(type == "Typeless" || type == "Simple") {
+		return [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5, 2, 2, 1];
 	}
 }
 

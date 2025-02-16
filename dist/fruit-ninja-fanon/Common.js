@@ -15,3 +15,11 @@ window.MessageWallUserTags = {
         'OMGShay 92': 'Admin',
     }
 };
+
+importArticles({
+    type: 'script',
+    articles: [
+
+'u:dev:MediaWiki:CategoryQuickRemove.js',
+    ]
+});

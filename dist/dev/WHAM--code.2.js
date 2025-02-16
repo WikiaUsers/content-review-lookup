@@ -75,9 +75,9 @@
             dialog.updateSize();
         }
         $links.each(function(i) {
-            const href = new mw.Uri($(this).attr('href')).extend({
-                bot: 1
-            }).toString();
+            const url = new URL($(this).prop('href'));
+            url.searchParams.append('bot', 1);
+            const href = url.toString();
             setTimeout(function() {
                 $.get(href);
                 $('#status-wham').html(
@@ -113,16 +113,16 @@
         var deleteArray = [];
 
         $('#mw-content-text ul li').each(function() {
-            const $children = $(this).children('a'),
-                title = $children.first().attr('title'),
-                uri = new mw.Uri($children.eq(1).attr('href'));
+            const $links = $(this).find('a'),
+                title = $links.first().attr('title'),
+                url = new URL($links.eq(1).prop('href'));
             if (
                 // If it's not a thread...
                 !title.match(/\/@comment-/) ||
                 (
                     // ...or if it's a thread edit...
                     title.match(/\/@comment-/) &&
-                    uri.query.diff === 'prev'
+                    url.searchParams.get('diff') === 'prev'
                 )
             ) {
                 // ...don't process it.
@@ -131,7 +131,7 @@
             deleteArray.push(title);
         });
 
-        $('li .newpage ~ a').each(function() {
+        $('li .newpage ~ a, li .newpage ~ bdi a').each(function() {
             const title = new mw.Title($(this).attr('title'));
             if (
                 title.namespace === 1200 ||
@@ -327,12 +327,12 @@
         $('#mw-content-text ul li').each(function() {
             const $children = $(this).children('a'),
                 title = $children.first().attr('title'),
-                uri = new mw.Uri($children.eq(1).attr('href'));
+                url = new URL($children.eq(1).prop('href'));
             if (
                 // If it's a thread...
                 title.match(/\/@comment-/) &&
                 // ...and not a thread edit...
-                uri.query.diff !== 'prev' &&
+                url.searchParams.get('diff') !== 'prev' &&
                 // ...and there's no checkbox currently...
                 !$(this).find('input').length
             ) {

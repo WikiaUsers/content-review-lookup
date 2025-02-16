@@ -15,11 +15,18 @@ $(function() {
 		sep2 = '<b> &bull; </b>';
 
 	function makeLink(link, text, query, id) {
-		query = query ? new mw.Uri().extend(query).getQueryString() : undefined;
+		var url = new URL(window.location.href);
+		if (query) {
+			for (var param in query) {
+				if (!query.hasOwnProperty(param)) continue;
+				url.searchParams.set(param, query[param]);
+			}
+		}
+		var q = query ? url.searchParams.toString() : undefined;
 
 		return $('<a>', {
 			id: id,
-			href: mw.util.getUrl(link) + (query ? "?" + query : ""),
+			href: mw.util.getUrl(link) + (q ? "?" + q : ""),
 			title: link,
 			text: text || link,
 		});
