@@ -52,7 +52,7 @@ Date.prototype.toDateInputValue = (function() {
         init: importArticles({
 				type: 'script',
 				articles: [
-					'u:dev:MediaWiki:Moment.js',
+					'MediaWiki:Moment.js',
 					'MediaWiki:Moment-Timezone.js'
 				]
 			}).then(function () {

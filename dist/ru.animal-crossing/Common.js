@@ -1,29 +1,54 @@
-// Скрипт для замены русской локализации интерфейса вики на предпочтительную
+// Скрипт для скрытия пунктов в инфобоксе
+/// Запускаем код, когда содержимое страницы уже готово
+mw.hook('wikipage.content').add(function() {
+  console.log('Common.js: хук wikipage.content сработал');
+  const header = document.getElementById('regionalNamesHeader');
+  const content = document.getElementById('regionalNamesContent');
 
+  /// Если элементы не найдены, выводим предупреждение
+  if (!header || !content) {
+    console.warn('Common.js: не найдены header или content региональных названий');
+    return;
+  }
+
+  /// Скрываем список по умолчанию
+  content.style.maxHeight = '0px';
+
+  /// Вешаем обработчик события
+  header.addEventListener('click', function() {
+    if (content.style.maxHeight === '0px') {
+      content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+      content.style.maxHeight = '0px';
+    }
+  });
+});
+
+// Скрипт для замены русской локализации интерфейса вики на предпочтительную
 $(function() {
-    // ====== 1. Замена «Заглавная» на «Главная» ======
+    /// ====== 1. Замена «Заглавная» на «Главная» ======
     function replaceMainPageTitle() {
         var $title = $('.page-header__title#firstHeading');
         if ($title.length && $title.text().trim() === 'Заглавная') {
             $title.text('Главная');
         }
     }
-    // Вызываем при загрузке
+    /// Вызываем при загрузке
     replaceMainPageTitle();
 
-    // ====== 2. Замена текста в кнопке «Править профайл» и навигационных ссылках ======
+    /// ====== 2. Замена текста в кнопке «Править профайл» и навигационных ссылках ======
     function replaceTexts() {
         var $button = $('.user-identity-header__button');
         var $navLinks = $('.user-profile-navigation__link a');
 
-        // Замена «Править профайл» на «Обновить информацию»
+        /// Замена «Править профайл» на «Обновить информацию»
         if ($button.length) {
             if ($button.text().trim() === 'Править профайл') {
                 $button.text('Обновить информацию');
             }
         }
 
-        // Замена «Стена обсуждения» на «Стена» и «Блог» на «Записи в блоге»
+        /// Замена «Стена обсуждения» на «Стена» и «Блог» на «Записи в блоге»
         if ($navLinks.length) {
             $navLinks.each(function() {
                 var $this = $(this);
@@ -37,25 +62,25 @@ $(function() {
             });
         }
 
-        // Останавливаем интервал, когда элементы найдены
+        /// Останавливаем интервал, когда элементы найдены
         if ($button.length && $navLinks.length) {
             clearInterval(intervalId);
         }
     }
 
-    // Запускаем интервал, чтобы дождаться загрузки элементов
+    /// Запускаем интервал, чтобы дождаться загрузки элементов
     var intervalId = setInterval(replaceTexts, 50);
 
-    // ====== 3. Единовременная замена текста в #mw-clearyourcache (не через Observer) ======
+    /// ====== 3. Единовременная замена текста в #mw-clearyourcache (не через Observer) ======
     function replaceClearCacheText() {
         var $cacheBlock = $('#mw-clearyourcache');
         if ($cacheBlock.length) {
-            // Параграф с «Замечание:» 
+            /// Параграф с «Замечание:» 
             $cacheBlock.find('p').each(function() {
                 var $p = $(this);
                 var text = $p.html();
                 if (text && text.includes('Возможно, после публикации вам придётся очистить кэш')) {
-                    // Заменяем нужную часть строки
+                    /// Заменяем нужную часть строки
                     var newText = text.replace(
                         'Возможно, после публикации вам придётся очистить кэш своего браузера, чтобы увидеть изменения.',
                         'возможно после публикации вам придётся очистить кэш своего браузера, чтобы увидеть изменения.'
@@ -64,14 +89,14 @@ $(function() {
                 }
             });
 
-            // Список с инструкциями
+            /// Список с инструкциями
             $cacheBlock.find('li').each(function() {
                 var $li = $(this);
                 var html = $li.html();
 
                 if (!html) return;
 
-                // Firefox/Safari
+                /// Firefox/Safari
                 if (html.includes('<strong>Firefox / Safari:</strong>')) {
                     var newHtml = html
                         .replace('Firefox / Safari:', 'Firefox/Safari:')
@@ -80,14 +105,14 @@ $(function() {
                     $li.html(newHtml);
                 }
 
-                // Google Chrome
+                /// Google Chrome
                 if (html.includes('<strong>Google Chrome:</strong>')) {
                     var newHtml = html
                         .replace('Нажмите <em>Ctrl+Shift+R</em> (<em>⌘+Shift+R</em> на Mac)', 'нажмите <em>Ctrl + Shift + R</em> (<em>⌘ + Shift + R</em> на Mac);');
                     $li.html(newHtml);
                 }
 
-                // Internet Explorer/Edge
+                /// Internet Explorer/Edge
                 if (html.includes('<strong>Internet Explorer / Edge:</strong>')) {
                     var newHtml = html
                         .replace('Удерживая <em>Ctrl</em>, нажмите <em>Обновить</em> либо нажмите <em>Ctrl+F5</em>',
@@ -96,7 +121,7 @@ $(function() {
                     $li.html(newHtml);
                 }
 
-                // Opera
+                /// Opera
                 if (html.includes('<strong>Opera:</strong>')) {
                     var newHtml = html
                         .replace('Нажмите <em>Ctrl+F5</em>', 'нажмите <em>Ctrl + F5</em>');
@@ -108,7 +133,7 @@ $(function() {
 
     replaceClearCacheText();
 
-    // ====== 4. Замена текста в блоке «.blog-listing.is-empty» ======
+    /// ====== 4. Замена текста в блоке «.blog-listing.is-empty» ======
     function replaceBlogListingText() {
         var $blogListing = $('.blog-listing.is-empty');
         if ($blogListing.length) {
@@ -116,16 +141,16 @@ $(function() {
             $paragraphs.each(function() {
                 var $p = $(this);
                 var fullText = $p.text().trim();
-                // Ищем строку, где упоминается, что можно писать блоги
+                /// Ищем строку, где упоминается, что можно писать блоги
                 if (fullText.includes('Вы можете писать блоги на вики')) {
-                    // Создаём новое содержимое
+                    /// Создаём новое содержимое
                     var newText = 'Вы можете писать записи, которые попадут в ';
                     var $link = $('<a>')
                         .attr('href', '/wiki/Blog:Recent_posts')
                         .text('блог вики');
                     var afterLinkText = '.';
 
-                    // Очищаем параграф и добавляем новое содержимое
+                    /// Очищаем параграф и добавляем новое содержимое
                     $p.empty()
                         .append(newText)
                         .append($link)
@@ -137,7 +162,7 @@ $(function() {
         return false;
     }
 
-    // ====== MutationObserver для слежения за динамическими изменениями (как в блоге) ======
+    /// ====== MutationObserver для слежения за динамическими изменениями (как в блоге) ======
     var observer = new MutationObserver(function(mutations, obs) {
         var replacedBlog = replaceBlogListingText();
         if (replacedBlog) {

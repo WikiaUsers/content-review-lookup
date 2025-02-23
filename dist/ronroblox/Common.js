@@ -83,6 +83,9 @@ UserTagsJS.modules.custom = {
 	'RyeThePies': ['Wiki-Contributor'],
 	'Sdvwevfregv': ['Wiki-Contributor'],
 	'Eddy0725': ['Wiki-Contributor'],
+	'SuperGlitchyTheo': ['Wiki-Contributor'],
+	// Guide Makers
+	'CookieDogAJ': ['Guide-Maker'],
 }
 window.lockOldComments.limit = 14;
 window.lockOldComments.addNoteAbove = true;

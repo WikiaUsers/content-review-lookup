@@ -19,7 +19,7 @@ var tooltips = {
     init: function() {
         if($(document.body).hasClass('mw-special-InfoboxBuilder')) return;
         if(location.search.search(/ttdebug=(1|[Tt]rue)/) != -1 || (typeof tooltips_debug != 'undefined' && tooltips_debug)) tooltips.debug = true;
-        var href = (new mw.Uri($('link[rel="canonical"]').attr('href'))).path;
+        var href = (new URL($('link[rel="canonical"]').prop('href'))).pathname;
         if(typeof href == 'undefined' || !href) {
             console.log('Tooltips: script couldn\'t find required  link[rel="canonical"]  tag');
             tooltips.disabled = true;

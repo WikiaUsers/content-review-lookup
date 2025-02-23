@@ -22,32 +22,40 @@ $(".paginated-book__next").on("click", function(event) {
   navPage($(event.target.closest(".paginated-book")), 1);
 });
 
-////
 
-var currentIndex = 0;
 
-function changeSlide(direction) {
-    var slides = document.querySelectorAll('.mcskin-slide');
-    
-    if (slides.length === 0) return;
-    
-    slides[currentIndex].classList.remove('active');
-    
-    currentIndex += direction;
-    
-    if (currentIndex >= slides.length) {
-        currentIndex = 0;
-    } else if (currentIndex < 0) {
-        currentIndex = slides.length - 1;
+const prevButton = document.querySelector('.mcskin-prev');
+const nextButton = document.querySelector('.mcskin-next');
+const slides = document.querySelectorAll('.mcskin-slide'); 
+
+
+let currentSlide = 0;
+
+function showSlide(index) {
+    if (index < 0) {
+        currentSlide = slides.length - 1; 
+    } else if (index >= slides.length) {
+        currentSlide = 0; 
+    } else {
+        currentSlide = index;
     }
+
     
-    slides[currentIndex].classList.add('active');
+    slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+    });
+
+    
+    slides[currentSlide].classList.add('active');
 }
 
-// Garante que o primeiro slide esteja visível ao carregar a página
-document.addEventListener("DOMContentLoaded", function() {
-    var slides = document.querySelectorAll('.mcskin-slide');
-    if (slides.length > 0) {
-        slides[0].classList.add('active');
-    }
+
+prevButton.addEventListener('click', () => {
+    showSlide(currentSlide - 1); 
 });
+
+nextButton.addEventListener('click', () => {
+    showSlide(currentSlide + 1); 
+});
+
+showSlide(currentSlide);

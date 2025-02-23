@@ -4,6 +4,9 @@ window.lockOldComments.limit = 21;
 window.lockOldComments.addNoteAbove = true;
 window.BackToTopModern = true;
 
+/* By: user:gronox CUSTOM Gallery uploading fish mutations button */
+importScript('MediaWiki:UploadMutationsImage.js');
+
 /* RailModule and custom button  */
 importScript('MediaWiki:RailModuleMoreLink.js');
 
@@ -25,18 +28,49 @@ importScript('MediaWiki:CircleAvatar.js');
   /* Custom Navigation Icons */
 importScript('MediaWiki:CustomNavigationIcons.js');
 
+ /* Custom Comments block admindashboard */
+importScript('MediaWiki:CommentsBlock.js');
+
   /* Enhanced Seasons Countdown Timer */
 importScript('MediaWiki:Seasons.js');
 
   /* Load HourChange code*/
 importScript('MediaWiki:HourChange.js');
 
+/* custom statistic - dont work 
+importScript('MediaWiki:ViewStats.js'); 
+*/
 
-  /* Main Page custom top right discrod button */
+/* Main Page custom Discord button */
 $(document).ready(function() {
-    if (window.location.pathname === '/wiki/Fisch_Wiki') {
-        $('#p-views').html('<div class="discord-icon"></div>').on('click', function() {
-            window.location.href = 'https://discord.gg/7fFExCqCqC';
-        });
+    var currentPath = window.location.pathname;
+    if (currentPath === '/wiki/Fisch_Wiki') {
+        var discordButton = document.createElement('div');
+        discordButton.className = 'page-header__discord-button';
+        
+        var discordIcon = document.createElement('div');
+        discordIcon.className = 'discord-icon';
+        
+        var iconPath = 'Special:Redirect/file/Discord_Icon.png';
+        var iconUrl = mw.config.get('wgArticlePath').replace('$1', iconPath);
+        discordIcon.style.backgroundImage = 'url(' + iconUrl + ')';
+        discordIcon.style.backgroundRepeat = 'no-repeat';
+        discordIcon.style.backgroundPosition = 'center';
+        discordIcon.style.backgroundSize = '80px 80px';
+        
+        discordButton.appendChild(discordIcon);
+        
+        var titleWrapper = document.getElementsByClassName('page-header__title-wrapper')[0];
+        if (titleWrapper) {
+            titleWrapper.appendChild(discordButton);
+        }
+        
+        if (discordButton) {
+            discordButton.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = 'https://discord.gg/7fFExCqCqC';
+            };
+        }
     }
 });
+/* Footer | Fandom Staff, please accept js code :C */

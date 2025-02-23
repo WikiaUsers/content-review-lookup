@@ -1,14 +1,37 @@
 $(function(){
+	var infoIcon = mw.util.getUrl('Special:FilePath/Information icon simple.svg');
+	
 	// Display Ogg files in galleries
-	$('.wikia-gallery-item [data-image-key$=".ogg"]').each(function(){
-		$(this).after('<audio src="' + mw.util.getUrl('Special:FilePath/' + $(this).data('image-key')) + '" controls>');
-		$(this).remove();
-	});
+	var audio = $('.wikia-gallery-item [data-image-key$=".ogg"]');
+	galleryAudio(0);
+	
+	function galleryAudio(i){
+		var galleryItem = $(audio.get(i));
+		var fileURL = mw.util.getUrl('Special:FilePath/' + galleryItem.data('image-key'));
+		galleryItem.after($('<audio controls>').attr('src', fileURL));
+		galleryItem.parent().addClass('gallery-item--audio');
+		galleryItem.remove();
+		
+		if (i < audio.length){
+			galleryAudio(i + 1);
+		}
+	}
 	
 	// Display PDF files in galleries
-	$('.wikia-gallery-item [data-image-key$=".pdf"]').each(function(){
-		var fileName = $(this).data('image-key');
+	var galleryPDFs = $('.wikia-gallery-item [data-image-key$=".pdf"]');
+	galleryPDF(0);
+	
+	function galleryPDF(i){
+		var galleryItem = $(galleryPDFs.get(i));
+		var fileName = galleryItem.data('image-key');
 		var iframe = $('<iframe>');
+		var figcaption = $('<figcaption class="thumbcaption">');
+		var iconLink = $('<a href="' + mw.util.getUrl('File:' + fileName) + '" class="info-icon">');
+		var iconSVG = $('<img src="' + infoIcon + '" width="18" alt="View file page">');
+		var linkAttributes = {
+			'target': '_blank',
+			'href': mw.util.getUrl('Special:FilePath/' + fileName),
+		};
 		var attributes = {
 			'src': mw.util.getUrl('Special:FilePath/' + fileName),
 			'loading': 'lazy',
@@ -20,26 +43,35 @@ $(function(){
 		};
 		
 		iframe.attr(attributes);
-		$(this).after(iframe);
-		$(this).parent().addClass('document-embed').attr('target', '_blank');
-		$(this).remove();
-	});
+		galleryItem.after(iframe);
+		galleryItem.parent().addClass('document-embed').attr(linkAttributes);
+		galleryItem.parent().parent().parent().addClass('show-info-icon').append(figcaption);
+		figcaption.append(iconLink);
+		iconLink.append(iconSVG);
+		galleryItem.remove();
+		
+		if (i < galleryPDFs.length){
+			galleryPDF(i + 1);
+		}
+	}
 	
 	// Embed PDF file widgets into pages
-	$('.pdf-widget').each(function(){
-		var widget = $(this);
+	var widgets = $('.pdf-widget');
+	pagePDF(0);
+	
+	function pagePDF(i){
+		var widget = $(widgets.get(i));
 		var specifiedFile = widget.data('file');
 		var floatDir = widget.data('float') ? widget.data('float') : 'right';
 		var captionUnparsed = widget.data('caption');
 		var filePath = mw.util.getUrl('Special:FilePath/' + specifiedFile);
-		var infoIcon = mw.util.getUrl('Special:FilePath/Information icon simple.svg');
 		
 		if (captionUnparsed){
 			new mw.Api().get({
-				action:'parse',
-				title:mw.config.get('wgPageName'),
-				text:captionUnparsed,
-				prop:'text',
+				action: 'parse',
+				title: mw.config.get('wgPageName'),
+				text: captionUnparsed,
+				prop: 'text',
 			}).done(createThumbnail);
 		} else {
 			createThumbnail();
@@ -75,15 +107,17 @@ $(function(){
 				var caption = $('<p class="caption">' + captionParsed + '</p>');
 				figcaption.append(caption);
 			}
+			
+			if (i < widgets.length){
+				pagePDF(i + 1);
+			}
 		}
-	});
-});
-
-// Display PDF files on PDF file pages
-$(function(){
+	}
+	
+	// Display PDF files on PDF file pages
 	var adobeIcon = $('.ns-6 [src="/resources-ucp/mw139/resources/assets/file-type-icons/fileicon-pdf.png"]').parent();
-	var iframe = $('<iframe>');
-	var attributes = {
+	var filePageIframe = $('<iframe>');
+	var iframeAttributes = {
 		'src': mw.util.getUrl('Special:FilePath/' + mw.config.get('wgTitle')),
 		'loading': 'lazy',
 		'width': '250',
@@ -91,7 +125,7 @@ $(function(){
 		'title': mw.config.get('wgTitle'),
 	};
 	
-	iframe.attr(attributes);
-	adobeIcon.after(iframe);
+	filePageIframe.attr(iframeAttributes);
+	adobeIcon.after(filePageIframe);
 	adobeIcon.remove();
 });

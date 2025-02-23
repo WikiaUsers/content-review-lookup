@@ -1,1 +1,0 @@
-mw.loader.load('http://shining-armor.wikia.com/index.php?title=MediaWiki:Underscore.js&action=raw&ctype=text/javascript', 'text/javascript', false);

@@ -20,7 +20,6 @@ mw.loader.using('mediawiki.util').done(function() {
     window.CacheCheckLoaded = true;
 
     var removeIfFalse = false,
-    	aliase = [],
         skips = window.cacheSkip || [],
         skipLimit = Number(window.cacheSkipLimit) || 1000,
         list = $('ol.special').length ? $('ol.special > li') : $('ul.gallery > li, div.wikia-gallery-item'),
@@ -28,6 +27,7 @@ mw.loader.using('mediawiki.util').done(function() {
         pending = $(list).length,
         qstr = mw.util.wikiScript('api') + '?action=query&format=json&',
         structure = ['query'],
+        baseUrl = mw.config.get('wgServer'),
         page = mw.config.get('wgCanonicalSpecialPageName'),
         pages = [
             'Specialpages',
@@ -45,6 +45,7 @@ mw.loader.using('mediawiki.util').done(function() {
             'Wantedfiles',
             'Wantedtemplates'
         ],
+        aliasList = [],
         pathRegex,
         i18n;
 
@@ -79,30 +80,31 @@ mw.loader.using('mediawiki.util').done(function() {
     	$.getJSON(qstr + 'meta=siteinfo&formatversion=2&siprop=specialpagealiases').then(function(data) {
 			var spa = data.query.specialpagealiases;
 			for (var i = 0; i < spa.length; i++) {
-				var aliasList = spa[i].aliases;
-				for (var j = 0; j < aliasList.length; j++) {
-					aliase[aliasList[j].replace(/_/g, ' ')] = spa[i].realname;
+				var aliases = spa[i].aliases;
+				for (var j = 0; j < aliases.length; j++) {
+					aliasList[aliases[j].replace(/_/g, ' ')] = spa[i].realname;
 				}
 			}
 		}).then(function() {
-	        pages.push('BrokenRedirects', 'DoubleRedirects');
-	        $('#mw-specialpagesgroup-maintenance + .mw-specialpages-list li.mw-specialpagecached').each(function() {
+			// Additional pages to check for having no entries
+	        pages.push('BrokenRedirects', 'DoubleRedirects', 'NonportableInfoboxes', 'UnorganizedTemplates');
+	        $('#mw-specialpagesgroup-maintenance + .mw-specialpages-list li').each(function() {
 	            var $this = $(this),
 	                link = $this.children('a').attr('title').substring(8);
 
-				var tmp = aliase[link] || link;
-	            if (pages.indexOf(tmp) === -1) {
-					console.log('[CacheCheck]', 'Missing page: ' + tmp + ' (' + link + ')');
+				var realname = aliasList[link] || link;
+	            if (pages.indexOf(realname) === -1) {
+					//console.log('[CacheCheck]', 'Missing page: ' + realname + ' (' + link + ')');
 	                return;
 	            }
 
-	            $.getJSON(qstr + 'list=querypage&qppage=' + tmp, function(data) {
+	            $.getJSON(qstr + 'list=querypage&qppage=' + realname, function(data) {
 	                var results = data.query.querypage.results;
 	                if (results.length === 0) {
 	                    takeAction($this);
 	                }
 	                if (
-	                    tmp === 'Uncategorizedcategories' &&
+	                    realname === 'Uncategorizedcategories' &&
 	                    results.length === 1 &&
 	                    results[0].title === window.topLevelCat
 	                ) {
@@ -131,7 +133,7 @@ mw.loader.using('mediawiki.util').done(function() {
             url = atob(redlinkUrl);
         }
 
-        url = new URL(url);
+        url = new URL(url, baseUrl);
 
         if (page === 'Lonelypages') {
             qs += foo ? 'list=embeddedin&eititle=' : 'list=backlinks&bltitle=';
@@ -185,7 +187,6 @@ mw.loader.using('mediawiki.util').done(function() {
             structure.push('pages', 'placeholder', 'categories');
             break;
         case 'Unusedimages':
-        case 'UnusedVideos':
         case 'Wantedfiles':
             qstr += 'list=imageusage&iutitle=';
             structure.push('imageusage');
@@ -219,7 +220,7 @@ mw.loader.using('mediawiki.util').done(function() {
         list.each(function() {
             var $this = $(this);
             if (isgallery) {
-                // Uncategorizedimages, Unusedimages, UnusedVideos
+                // Uncategorizedimages, Unusedimages
                 if ($this.find('img').length) {
                     $.getJSON(getQS($this), function(data) {
                         data = getData(data);

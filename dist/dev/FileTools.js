@@ -59,6 +59,7 @@
 				protections: 'upload=sysop',
 				expiry: '2 weeks',
 				reason: sum,
+				bot: true,
 				token: token
 			}),
 			method: 'POST',
@@ -102,6 +103,7 @@
 					title: config.wgPageName,
 					reason: sum,
 					oldimage: new URL(ele.href).searchParams.get('oldimage'),
+					bot: true,
 					token: token
 				}),
 				method: 'POST',
@@ -127,6 +129,7 @@
 				title: config.wgPageName,
 				reason: sum,
 				oldimage: ele.getAttribute('data-filepath'),
+				bot: true,
 				token: token
 			}),
 			method: 'POST',
@@ -150,6 +153,7 @@
 				filename: config.wgTitle,
 				comment: sum,
 				archivename: element.target.getAttribute('data-filepath'),
+				bot: true,
 				token: token
 			}),
 			method: 'POST',

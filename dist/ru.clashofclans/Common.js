@@ -10,15 +10,46 @@
                     'from localStorage to re-enable site-wide JavaScript.');
         return;
     }
-
+	
+	//Back to top JS import style setting
+	window.BackToTopModern = true;
+	
+	/* Articles are interwiki links so that other wikis can use them. */
+    importArticles({
+        type: 'script',
+        articles: [
+        'u:dev:UserTags/code.js',
+		"u:dev:MediaWiki:BackToTopButton/code.js",
+        'MediaWiki:Numeral.js', // Defines num.format('<fmt>')
+        'MediaWiki:Usernames.js',
+        'MediaWiki:GemCalculators.js',
+        'MediaWiki:Experience.js',
+        'MediaWiki:ModeToggle.js',
+        'MediaWiki:BadgeGenerator.js',
+        'MediaWiki:Protection.js',
+        'MediaWiki:AvailableBuildings.js',
+        'MediaWiki:GoldPass.js',
+        'MediaWiki:HeroSkins.js',
+        'MediaWiki:Toggle.js',
+        'MediaWiki:WikiNotification.js',
+        'MediaWiki:ClanHouseGenerator.js',
+        'MediaWiki:ChestLootTable.js',
+		'MediaWiki:Requests.js'
+    	]
+    });
+	
     // Customize tags on user profiles
     window.UserTagsJS = {
         modules: {},
         tags: {
-            heroicuser:  { u: 'Most Heroic Contributor' },
-            imageeditor: { u: 'Image Editor' },
-            retiredstaff: { u: 'Retired Staff', title: 'This former staff member is inactive.' },
-            inactive: { u: 'Retired Clasher', title: 'This user is inactive.' }
+        	inactive: { u: 'Неактивный пользователь', title: 'Данный пользователь давно не редактировал на Wiki' },
+        	retiredstaff: { u: 'Бывший администратор', title: 'Данный пользователь является бывшим администратором' },
+        	rollback: { u: 'Откатчик', title: 'Отряд анти-вандализм' },
+        	threadmoderator: { u: 'Младший модератор', title: 'Модератор сообщества' },
+            'content-moderator': { u: 'Модератор', title: 'Модератор контента' },
+            moderator: { u: 'Младший администратор', title: 'Администратор контента и сообщества' },
+            sysop: { u: 'Администратор', title: 'Администрация Wiki' },
+            bureaucrat: { u: 'Главный администратор', title: 'Главная администрация Wiki' }
         }
     };
     
@@ -28,235 +59,87 @@
     UserTagsJS.modules.mwGroups = [
         'bureaucrat',
         'sysop',
-        'chatmoderator',
+        'content-moderator',
         'threadmoderator',
         'rollback',
-        'patroller',
-        'bannedfromchat',
         'bot',
         'bot-global',
+        'blocked', 
+        'checkuser',
+        'council',
+        'helper',
+        'staff',
+        'vanguard',
+        'soap',
     ];
     
     UserTagsJS.modules.metafilter = {
-        bureaucrat:      ['founder'],
-        sysop:           ['founder', 'bureaucrat'],
-        chatmoderator:   ['founder', 'bureaucrat', 'sysop'],
-        threadmoderator: ['founder', 'bureaucrat', 'sysop', 'chatmoderator'],
-        rollback:        ['founder', 'bureaucrat', 'sysop', 'chatmoderator', 'threadmoderator'],
+        sysop:           ['bureaucrat'],
+        'content-moderator': ['bureaucrat', 'sysop'],
+        threadmoderator: ['bureaucrat', 'sysop'],
+        rollback:        ['bureaucrat', 'sysop', 'content-moderator', 'threadmoderator'],
         inactive:        ['retiredstaff']
     };
     
+    //Discussions + Content Mod = Moderator
+    UserTagsJS.modules.implode = {
+		'moderator': ['threadmoderator', 'content-moderator'],
+    };
+    
     UserTagsJS.modules.custom = {
-        'Default': ['imageeditor'],
-        
-        'Flotiliya': ['sysop'],
-        'Simon Pikalov': ['sysop'],
+        'Simon Pikalov': ['retiredstaff'],
+        'Kofirs2634': ['retiredstaff'],
+        'FaceBound': ['retiredstaff']
     };
     
+	$(function() {
+	   // Change Random Page button to only go to pages in the mainspace
+	   $('.wds-dropdown a[data-tracking=explore-random], ul.tools li a[data-name=random]').attr("href", "/wiki/Special:Random/main");
+	   
+		// Clash Royale, Brawl Stars and Clash Quest topic interwiki links
+		var elements = '#ClashRoyaleLink, #BrawlStarsLink, #ClashQuestLink';
+		if ($('.page-header__languages').length) {
+			$(elements).prependTo(".page-header__languages").css({"display": "inline-block"});
+		}else {
+			$(elements).appendTo(".page-header__top").css({"display": "inline-block"});
+		}
+	});
+	
+	//Upscale res and icon description images
+	$(function () {
+		if ($('.res').length || $('.icon-descriptions-template').length) {
+			upscaleimages();
+			if ($('.lazyload').length) {
+				var interval = setInterval(function () {
+					upscaleimages();
+					if (!$('.icon-descriptions-template img, img.res').hasClass('lazyload')) {
+			        	clearInterval(interval);
+					}
+				}, 100 );
+			}
+		}
+	});
+	function upscaleimages() {
+		$('.icon-descriptions-template img, img.res').each(function () {
+			$(this).attr('src', $(this).attr('src').split('/revision/')[0]);
+		});
+	}
+	
+	/*Random selection function- randomly selects child of class. Use:
+	<div class="random-selection">
+	<div>Random option 1</div><div>Random option 2</div><div>Random option 3</div>
+	</div>
+	*/
+	$('.random-selection').each(function () {
+		var number = $(this).children().length;
+		var random = Math.floor(Math.random() * (number) + 1);
+		$(this).children('*:nth-child(' + random + ')').addClass('active');
+	});
 
-    if (typeof(window.SpoilerAlert) === 'undefined') {
-        window.SpoilerAlert = {
-            question: 'Chief! This page contains sneak peeks. Are you sure you ' +
-                      'want to enter?',
-            yes: 'Yes, please',
-            no: 'No, let it be a surprise',
-            isSpoiler: function () {
-                return (-1 !== wgCategories.indexOf('Spoiler') &&
-                    Boolean($('.spoiler').length));
-            }
-        };
-    }
-    
-
-    window.LockForums = {
-        expiryDays:    90,  // Number of days until forum is locked to new replies
-        expiryMessage: 'Forums are automatically locked when the most recent post is older than <expiryDays> days.',
-        warningDays:   14,   // Number of days until a warning is given to potential replies
-        ignoreDeletes: true, // Ignore deleted messages when calculating age of last post
-        warningPopup:  true, // Pop up a warning dialog that must be confirmed for posts on older forums
-        banners:       true, // Add a banner to the top of aged forums
-    };
-    
-
-    /* Articles are interwiki links so that other wikis can use them. */
-    articles = [
-        'w:c:spottra:MediaWiki:Common.js/Numeral.js', // Defines num.format('<fmt>')
-        'w:c:spottra:MediaWiki:Common.js/AjaxGallery.js',
-        'u:dev:Countdown/code.js',
-        'u:dev:SpoilerAlert/code.js',
-        'u:dev:TopEditors/code.js',
-        'u:dev:WallGreetingButton/code.js',
-        'u:dev:ExtendedNavigation/code.js',
-        'u:dev:LockForums/code.js',
-        'u:dev:LockOldBlogs/code.js',
-        'MediaWiki:Common.js/RGBColor.js',
-        'MediaWiki:Common.js/Usernames.js',
-        'u:dev:UserTags/code.js',
-        'MediaWiki:Common.js/Sliders.js',
-        'MediaWiki:Common.js/GemCalculators.js',
-        'MediaWiki:Common.js/Experience.js',
-        'MediaWiki:Common.js/Tabber2.js',
-        'MediaWiki:Common.js/ImageHover.js',
-        'MediaWiki:Common.js/CumulativeCosts.js',
-        'MediaWiki:Common.js/ModeToggle.js',
-        'MediaWiki:Common.js/PageVerify.js',
-        'MediaWiki:Common.js/GorillaMan.js',
-        'MediaWiki:Common.js/Lugia.js',
-        'MediaWiki:Common.js/BadgeGenerator.js',
-        'MediaWiki:Common.js/Protection.js',
-        'MediaWiki:Common.js/AvailableBuildings.js',
-        'MediaWiki:Common.js/GoldPass.js',
-        'MediaWiki:Common.js/QuickDiff.js',
-        'MediaWiki:Common.js/Toggle.js'
-        //for global "w:c:clashofclans:"
-    ];
-    // Use Wikia's importArticles() function to load JavaScript files
-    window.importArticles({
-        type: 'script',
-        articles: articles
-    });
     console.log('Site-wide JavaScript in MediaWiki:Common.js will load the ' +
                 'following JavaScript files:\n   ' + articles.join('\n   '));
 
 }(jQuery, mediaWiki, window.localStorage));
 
-
-$(document).ready(function() {
-    // Clash Royale and Brawl Stars topic interwiki links
-    $("#BrawlStarsLink, #ClashRoyaleLink").prependTo(".page-header__contribution > div:first-child").css({"display": "inline-block"});
-
-});
-
-
-/** Collapsible tables *********************************************************
- *
- *  Description: Allows tables to be collapsed, showing only the header. See
- *  http://www.mediawiki.org/wiki/Manual:Collapsible_tables.
- *  Maintainers: [[en:User:R. Koot]]
- */
-var autoCollapse    = 2;
-var collapseCaption = 'hide';
-var expandCaption   = 'show';
- 
-function collapseTable(tableIndex) {
-   var Button = document.getElementById('collapseButton'   + tableIndex);
-   var Table  = document.getElementById('collapsibleTable' + tableIndex);
- 
-   if (!Table || !Button)
-      return false;
- 
-   var Rows = Table.rows;
- 
-   if (Button.firstChild.data == collapseCaption) {
-      for (var i = 1; i < Rows.length; i ++)
-         Rows[i].style.display = 'none';
-
-      Button.firstChild.data = expandCaption;
-   }
-   else {
-      for (var i = 1; i < Rows.length; i ++)
-         Rows[i].style.display = Rows[0].style.display;
-
-      Button.firstChild.data = collapseCaption;
-   }
-}
- 
-function createCollapseButtons() {
-   var tableIndex      = 0;
-   var NavigationBoxes = new Object();
-   var Tables          = document.getElementsByTagName('table');
- 
-   for (var i = 0; i < Tables.length; i ++) {
-      if (hasClass(Tables[i], 'collapsible')) {
-         /* only add button and increment count if there is a header row
-            to work with */
-         var HeaderRow = Tables[i].getElementsByTagName('tr')[0];
-
-         if (!HeaderRow)
-            continue;
-
-         var Header = HeaderRow.getElementsByTagName('th')[0];
-
-         if (!Header)
-            continue;
-
-         NavigationBoxes[tableIndex] = Tables[i];
-         Tables[i].setAttribute('id', 'collapsibleTable' + tableIndex);
- 
-         var Button     = document.createElement('span');
-         var ButtonLink = document.createElement('a');
-         var ButtonText = document.createTextNode(collapseCaption);
- 
-         // Styles are declared in [[MediaWiki:Common.css]]
-         Button.className = 'collapseButton';
- 
-         ButtonLink.style.color = Header.style.color;
-         ButtonLink.setAttribute('id', 'collapseButton' + tableIndex);
-         ButtonLink.setAttribute('href',
-            "javascript:collapseTable(" + tableIndex + ");" );
-         ButtonLink.appendChild(ButtonText);
- 
-         Button.appendChild(document.createTextNode('['));
-         Button.appendChild(ButtonLink);
-         Button.appendChild(document.createTextNode(']'));
- 
-         Header.insertBefore(Button, Header.childNodes[0]);
-         tableIndex ++;
-      }
-   }
- 
-   for (var i = 0; i < tableIndex; i ++) {
-      if (hasClass(NavigationBoxes[i], 'collapsed') ||
-         (tableIndex >= autoCollapse &&
-          hasClass(NavigationBoxes[i], 'autocollapse')))
-         collapseTable(i);
-      else if (hasClass(NavigationBoxes[i], 'innercollapse')) {
-         var element = NavigationBoxes[i];
-
-         while (element = element.parentNode) {
-            if (hasClass(element, 'outercollapse')) {
-               collapseTable(i);
-               break;
-            }
-         }
-      }
-   }
-}
-
-$(createCollapseButtons);
-
- 
-/** Test if an element has a certain class ********************************
- *
- * Description: Uses regular expressions and caching for better performance.
- * Maintainers: [[User:Mike Dillon]], [[User:R. Koot]], [[User:SG]]
- */
- 
-var hasClass = (function() {
-   var reCache = {};
-   return function(element, className) {
-      return ( reCache[className] ? reCache[className] :
-         (reCache[className] = new RegExp( "(?:\\s|^)" + className +
-         "(?:\\s|$)" ) ) ).test(element.className);
-   };
-})();
-
-function hasClassTest(element, className) {
-   // No reason to have two functions that do the same thing
-   // return element.className.indexOf(className) != -1;
-   return hasClass(element, className);
-}
-
-//замена текста "введите тут имя" на имя 
-function UserNameReplace() {
-    if(typeof(disableUsernameReplace) != 'undefined' && disableUsernameReplace || wgUserName === null) return;
-    $("span.insertusername").html(wgUserName);
- }
-$(UserNameReplace);
-
-/*Твиттер в тёмной теме*/
-$(function(){
-if ($('body').hasClass('theme-fandomdesktop-dark')) {
-     $('.twitter-timeline').attr('data-theme', 'dark');
-}
-});
+//Lock old comments time limit
+window.lockOldComments.limit = 100;

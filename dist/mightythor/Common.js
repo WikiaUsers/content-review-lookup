@@ -503,7 +503,7 @@ icon: 'https://images.wikia.nocookie.net/marveldatabase/images/8/88/Comic_List.p
 action: {
 type: 'encapsulate',
 options: {
-pre: "{{Marvel Database:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = Marvel Comics\n| main_volume             = \n| status                  = Active; Canceled; Finished; Announced\n| format                  = Limited Series; Ongoing Series; One Shot; Annual; Handbook; TPB\n| type                    = Solo; Team; Team-Up; Event; Adaptation\n| genres                  = Superhero\n| featured                = \n\n| SeeAlso                 = \n| MarvelUnlimited         = \n| Comixology              = \n\n",
+pre: "{{Marvel Database:Volume Template\n| volume_logo             = \n| PreviousVol             = \n| NextVol                 = \n| publisher               = Marvel Comics\n| status                  = Active; Canceled; Finished; Announced\n| format                  = Limited Series; Ongoing Series; One Shot; Annual; Handbook; TPB\n| type                    = Solo; Team; Team-Up; Event; Adaptation\n| genres                  = Superhero\n| featured                = \n| MarvelUnlimited         = \n| Comixology              = \n| SeeAlso                 = \n\n| main_volume             = \n| relaunches              = \n| exclude                 = \n| part1_above             = \n| part1                   = \n| part1_below             = \n| writer1                 = \n| writer1_issues          = \n| penciler1               = \n| penciler1_issues        = \n",
 post: "}}"
 }
 }

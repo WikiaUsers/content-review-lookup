@@ -2200,7 +2200,7 @@
                 // Throw error if the passed element is not in fact an element
                 if (!(element instanceof Element))
                 {
-                    console.error("getElementTransformPos expects an Element but got the following value: " + element.toString());
+                    console.error("getElementTransformPos expects an Element but got the following value:", element);
                     return [0, 0];
                 }
 
@@ -2255,7 +2255,7 @@
                 // Throw error if the passed element is not in fact an element
                 if (!(element instanceof Element))
                 {
-                    console.error("getElementTransformScale expects an Element but got the following value: " + element.toString());
+                    console.error("getElementTransformScale expects an Element but got the following value:", element);
                     return [0, 0];
                 }
 

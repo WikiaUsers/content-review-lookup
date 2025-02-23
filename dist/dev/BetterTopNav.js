@@ -2,7 +2,6 @@
 	// Double load protection and default settings loadout
 	(window.dev = window.dev || {}).betterTopNav = window.dev.betterTopNav || {
 		resize: true,
-		redirects: true,
 		tools: true,
 		hovermenu: true
 	};
@@ -22,7 +21,7 @@
 					break;
 				case 'number' || 'string':
 					sett = [(sett=='max' ? 50 : sett), {u:2, f:6, p:4, mw:8, t:10, c:14, m:828}];
-					break;
+					break;re
 				case 'object':
 					if (!Array.isArray(sett)) {
 						sett = [50, sett];
@@ -170,32 +169,30 @@
 								});
 								list.append('<li class="search-app__suggestion search-app__suggestion-all"><a class="search-app__suggestion-link" href="'+new mw.Title('Special:Search').getUrl()+'?scope=internal&query='+encodeURIComponent(searchquery)+'">'+mw.msg('search-modal-see-all-results', searchquery)+'</a></li>');
 							};
-							if (window.dev.betterTopNav.redirects) {
-								api.get({
-									action:'query',
-									prop:'redirects',
-									rdprop:'pageid|title',
-									rdlimit:'max',
-									titles:_d.query.search.map(function(_i) {return _i.title;}).join('|'),
-									redirects: 'false',
-								}).then(function(data) {
-									pages.forEach(function(page, _i) {
-										if (
-											page.pageid &&
-											data.query.pages[page.pageid] &&
-											data.query.pages[page.pageid].redirects
-										) {
-											var rd = (data.query.pages[page.pageid].redirects||[]).filter(function(elem, index){
-												return elem && elem.title && keyword.test(elem.title);
-											})[0];
-											if (rd) {
-												pages[_i].redirect = rd.title;
-											}
+							api.get({
+								action:'query',
+								prop:'redirects',
+								rdprop:'pageid|title',
+								rdlimit:'max',
+								titles:_d.query.search.map(function(_i) {return _i.title;}).join('|'),
+								redirects: 'false',
+							}).then(function(data) {
+								pages.forEach(function(page, _i) {
+									if (
+										page.pageid &&
+										data.query.pages[page.pageid] &&
+										data.query.pages[page.pageid].redirects
+									) {
+										var rd = (data.query.pages[page.pageid].redirects||[]).filter(function(elem, index){
+											return elem && elem.title && keyword.test(elem.title);
+										})[0];
+										if (rd) {
+											pages[_i].redirect = rd.title;
 										}
-									});
-									listRes();
+									}
 								});
-							} else { listRes(); }
+								listRes();
+							});
 						} else {
 							list.append('<p class="<p class="search-app__no-suggestions" dir="ltr">'+mw.msg('fd-global-top-navigation-no-search-results')+'</p>');
 						}
@@ -274,37 +271,6 @@
 			$('.search__button').on('click', function() {
 				document.querySelector('#community-navigation textarea').focus();
 			});
-		},
-		
-		// Mark redirects in deafult search module
-		showRedirects: function() {
-			var checkRedirects = function (s) {
-				$('.search-app__suggestions-list:first-child:last-child .search-app__suggestion:not(.search-redirectChecked) > a').each(function(_, el) {
-					el.parentNode.classList.add('search-redirectChecked');
-					var name = el.textContent;
-					var keyword = new RegExp(el.closest('.search-app__wrapper').querySelector('input').getAttribute('value').replace(/(^\s*|\s*$)/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-					Object.keys(s.redirects).forEach(function(k) {
-						if (name == s.redirects[k]) {
-							el.setAttribute('href', mw.util.getUrl(k));
-							$(el).append(' <small><i>'+mw.msg('redirectedfrom', k.replace(keyword, '<b>$&</b>'))+'</i></small>');
-							name = '_';
-						}
-					});
-				});
-			};
-			
-			
-			// set up the mutation observer
-			var observer = new MutationObserver(function (mutations, me) {
-				var targetNode = document.querySelector('.search-app__suggestions-list:first-child:last-child .search-app__suggestion:not(.search-redirectChecked)');
-				if (targetNode) {
-					$.getJSON(mw.util.wikiScript('wikia')+'?controller=UnifiedSearchSuggestions&method=getSuggestions&format=json&scope=internal&query='+encodeURIComponent(targetNode.closest('.search-app__wrapper').querySelector('.search-app__input').getAttribute('value')))
-					.then(checkRedirects);
-					return;
-				}
-			});
-			// start observing
-			observer.observe(document, { childList: true, subtree: true });
 		},
 		
 		// Allow resizing the search bar to the left
@@ -537,18 +503,9 @@
 			'fd-global-navigation-user-my-preferences',
 			'fd-global-navigation-user-sign-out'
 		];
-		// Load css
-		mw.util.addCSS(
-			// Fix search results ellipsing
-			'.search-app__suggestion {height: unset; min-height: 32px; margin-top: 5px; > a {-webkit-line-clamp: none; word-break: break-word !important;}}'
-		);
 		api.loadMessagesIfMissing(msgs).then(function() {
 			if (window.dev.betterTopNav.results) { bTN.waitFor('#global-top-navigation .search-app__wrapper input', bTN.expandSearch); }
 			if (window.dev.betterTopNav.resize) { bTN.waitFor('.search-app__wrapper', bTN.resizeSearch); }
-			if (
-				window.dev.betterTopNav.redirects &&
-				!window.dev.betterTopNav.results // custom search is incompatible with default redirect marking
-			) { bTN.waitFor('.search-app__wrapper', bTN.showRedirects); }
 			if (window.dev.betterTopNav.tools) { bTN.waitFor('.search-app__wrapper', bTN.customizeTools); }
 			if (window.dev.betterTopNav.hovermenu) { bTN.waitFor('#global-top-navigation .global-action__user > button', bTN.hoverUserMenu); }
 		});

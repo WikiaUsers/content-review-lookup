@@ -20,14 +20,41 @@
  * CSS: https://fisch.fandom.com/wiki/MediaWiki:TopWeekLeaderboard.css
  * TEMPLATE: https://fisch.fandom.com/wiki/Template:TopContributors
  */
-mw.loader.using('mediawiki.util').then(function() {
+mw.loader.using(['mediawiki.api', 'mediawiki.util']).then(function() {
     $(document).ready(function() {
         var WeeklyTopContributors = {
+            // Cache for storing avatar URLs
+            avatarCache: {},
+
             // Initialize the module with container element
             init: function($container) {
                 this.$container = $container;
                 this.userList = {};
                 this.loadData();
+            },
+
+            // Get user IDs from usernames using MediaWiki API
+            getUserIds: function(users) {
+                return new mw.Api().get({
+                    action: 'query',
+                    formatversion: 2,
+                    list: 'users',
+                    ususers: users
+                }).then(function(data) {
+                    return data.query.users.map(function(user) {
+                        return user.userid;
+                    });
+                });
+            },
+
+            // Fetch user avatars using Fandom API
+            getUserAvatars: function(userIds) {
+                var scriptPath = mw.config.get('wgScriptPath');
+                return $.getJSON(scriptPath + '/api/v1/User/Details', {
+                    ids: userIds.join(',')
+                }).then(function(data) {
+                    return data.items;
+                });
             },
 
             // Calculate start and end dates for the current week (Monday to Sunday)
@@ -50,7 +77,7 @@ mw.loader.using('mediawiki.util').then(function() {
                 };
             },
 
-            // Format date to "DD Month" format using standard Date object
+            // Format date to "DD Month" format
             formatDate: function(dateString) {
                 var date = new Date(dateString);
                 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
@@ -59,7 +86,6 @@ mw.loader.using('mediawiki.util').then(function() {
             },
 
             // Recursive function to handle API pagination
-            // Based on the approach used in TopEditors script
             requestLoop: function(start, end, cont, callback) {
                 var self = this;
                 $.getJSON(mw.util.wikiScript('api'), {
@@ -68,20 +94,18 @@ mw.loader.using('mediawiki.util').then(function() {
                     rccontinue: cont,
                     rcstart: start,
                     rcend: end,
-                    rctype: 'edit|new',      // Count only edits and new pages
-                    rcshow: '!bot',          // Exclude bot edits
+                    rctype: 'edit|new',
+                    rcshow: '!bot',
                     rcdir: 'newer',
-                    rcprop: 'user',          // We only need usernames
-                    rclimit: 'max',          // Use API's maximum limit for efficiency
+                    rcprop: 'user',
+                    rclimit: 'max',
                     format: 'json'
                 }, function(data) {
-                    // Check if we got valid data
                     if (!data.query || !data.query.recentchanges) {
                         callback();
                         return;
                     }
 
-                    // Count edits for each user
                     data.query.recentchanges.forEach(function(change) {
                         var username = change.user;
                         if (self.userList[username] !== undefined) {
@@ -91,7 +115,6 @@ mw.loader.using('mediawiki.util').then(function() {
                         }
                     });
 
-                    // Handle pagination using either old or new MediaWiki API format
                     if (data['query-continue']) {
                         self.requestLoop(data['query-continue'].recentchanges.rcstart, 
                                       end, undefined, callback);
@@ -104,17 +127,32 @@ mw.loader.using('mediawiki.util').then(function() {
                 });
             },
 
+            // Create avatar element
+            createAvatarElement: function(username, avatarUrl) {
+                return $('<img>')
+                    .attr({
+                        src: avatarUrl,
+                        alt: username + "'s avatar",
+                        title: username
+                    })
+                    .css({
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        marginRight: '1.5px',
+                        border: '1px solid rgba(0,0,0,0.1)',
+                        objectFit: 'cover'
+                    });
+            },
+
             // Main function to load and display data
             loadData: function() {
                 var self = this;
                 var dates = this.getWeekDates();
                 
-                // Show loading state
                 this.$container.html('<div class="loading">Loading...</div>');
 
-                // Start data collection
                 this.requestLoop(dates.start, dates.end, undefined, function() {
-                    // Convert user data to sortable array
                     var usersList = [];
                     for (var username in self.userList) {
                         usersList.push({
@@ -123,42 +161,65 @@ mw.loader.using('mediawiki.util').then(function() {
                         });
                     }
 
-                    // Sort by edit count (descending) and then by username
                     usersList.sort(function(a, b) {
                         return b.count - a.count || a.user.localeCompare(b.user);
                     });
 
-                    // Get current user's rank if they're logged in
                     var currentUser = mw.config.get('wgUserName');
                     var userRank = usersList.findIndex(function(item) {
                         return item.user === currentUser;
                     }) + 1;
-                    
-                    // Build HTML structure
-                    var html = '<div class="leaderboard-header">' +
-                             '<div class="leaderboard-title">Weekly Top Contributors</div>' +
-                             '<div class="leaderboard-date">' + 
-                             self.formatDate(dates.start) + ' ─ ' + 
-                             self.formatDate(dates.end) + '</div>' +
-                             '<div class="leaderboard-rank">Rank ' + 
-                             (userRank || '─') + ' / 10</div>' +
-                             '</div>' +
-                             '<div class="contributors-list">';
-                             
-                    // Add top 10 contributors
-                    usersList.slice(0, 10).forEach(function(item, index) {
-                        html += '<div class="contributor">' +
-                               '<div class="contributor-info">' +
-                               '<span class="position">' + (index + 1) + '.</span>' +
-                               '<span class="name">' +
-                               '<a href="' + mw.util.getUrl('User:' + item.user) + '">' + 
-                               item.user + '</a></span></div>' +
-                               '<div class="edits">' + item.count + ' edits</div>' +
-                               '</div>';
+
+                    // Get top 10 users for avatar fetching
+                    var top10Users = usersList.slice(0, 10).map(function(item) {
+                        return item.user;
                     });
 
-                    html += '</div>';
-                    self.$container.html(html);
+                    // Fetch avatars for top 10 users
+                    self.getUserIds(top10Users)
+                        .then(function(userIds) {
+                            return self.getUserAvatars(userIds);
+                        })
+                        .then(function(users) {
+                            // Cache avatars
+                            users.forEach(function(user) {
+                                self.avatarCache[user.name] = user.avatar;
+                            });
+
+                            // Build HTML with avatars
+                            var html = '<div class="leaderboard-header">' +
+                                     '<div class="leaderboard-title">Weekly Top Contributors</div>' +
+                                     '<div class="leaderboard-date">' + 
+                                     self.formatDate(dates.start) + ' ─ ' + 
+                                     self.formatDate(dates.end) + '</div>' +
+                                     '<div class="leaderboard-rank">Rank ' + 
+                                     (userRank || '─') + ' / 10</div>' +
+                                     '</div>' +
+                                     '<div class="contributors-list">';
+
+                            usersList.slice(0, 10).forEach(function(item, index) {
+                                var avatarUrl = self.avatarCache[item.user];
+                                
+                                html += '<div class="contributor">' +
+                                       '<div class="contributor-info">' +
+                                       '<span class="position">' + (index + 1) + '.</span>';
+
+                                // Create temporary container for avatar
+                                var tempContainer = $('<div>').append(
+                                    self.createAvatarElement(item.user, avatarUrl)
+                                );
+                                
+                                html += tempContainer.html() +
+                                       '<span class="name">' +
+                                       '<a href="' + mw.util.getUrl('User:' + item.user) + '">' + 
+                                       item.user + '</a></span></div>' +
+                                       '<div class="edits">' + item.count + ' edits</div>' +
+                                       '</div>';
+                            });
+
+                            html += '</div>';
+                            self.$container.html(html);
+                        });
                 });
             }
         };
@@ -168,7 +229,7 @@ mw.loader.using('mediawiki.util').then(function() {
             Object.create(WeeklyTopContributors).init($(this));
         });
 
-        // Refresh data every hour to keep it current
+        // Refresh data every hour
         setInterval(function() {
             $('.weekly-leaderboard').each(function() {
                 Object.create(WeeklyTopContributors).init($(this));

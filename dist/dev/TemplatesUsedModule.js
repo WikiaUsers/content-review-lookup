@@ -7,15 +7,18 @@ var tu2= [];
 var api = new mw.Api();
 
 function getAll(start) {
-	return api.get({
+	var apiQuery = {
 		action: "query",
 		prop: "templates",
 		titles: mw.config.get("wgPageName"),
-		tlcontinue: start,
 		tllimit: '500',
 		format: "json",
 		formatversion: 2
-	}).done(function(data){
+	}
+	if (start !== "" && start) {
+		apiQuery.tlcontinue = start;
+	}
+	return api.get( apiQuery ).done(function(data){
 		if (!Object.hasOwn(data.query.pages[0], 'templates')) return;
 		data.query.pages[0].templates.forEach(function(tem){
 			if ((tem.ns === 10) || (tem.ns === 828)) tu.push(tem.title);
@@ -28,7 +31,7 @@ function getAll(start) {
 function init(i18n) {
 	
 $.when( 
-	getAll('||')
+	getAll("")
 ).done(function() {
 	$.merge( tu, tu2 );
 	var container = ($('.page__right-rail div.right-rail-wrapper').length > 0) ? '.page__right-rail div.right-rail-wrapper' : '.page .page-footer';

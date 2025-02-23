@@ -21,6 +21,7 @@ $(function() {
 		patrol: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator'].includes(group);}),
 		rollback: config.wgUserGroups.some(function(group){return ['sysop', 'content-moderator', 'rollback'].includes(group);})
 	};
+	var fP = config.wgNamespaceNumber==6 && config.wgAction=='view' && !config.wgDiffNewId && window.dev.BD_FullFilePatrol;
 	
 	// Main class
 	var betterDiff = {
@@ -44,6 +45,29 @@ $(function() {
 					tokens.rollback = data.query.tokens.rollbacktoken;
 				}
 			});
+			
+			// Full patrol link in Files if setting is enabled
+			if (fP && !document.querySelector('#mw-imagepage-content > .patrollink > a')) {
+				lApi.get({
+					action: 'query',
+					list: 'recentchanges',
+					rcshow: '!patrolled',
+					rcprop: 'ids',
+					rclimit: '1',
+					rctitle: config.wgPageName
+				}).then(function(data){
+					if (data.query && data.query.recentchanges && data.query.recentchanges.length>0) {
+						mw.util.addCSS('#mw-imagepage-content > .patrollink {font-size: 75%; text-align: right;}');
+						var link = $('<a>', {id:'betterDiff-FullPatrol', href:'#betterDiff-FullPatrol', title:'File:'+config.wgTitle, text: 'Mark this file version as patrolled'});
+						link.on('click', betterDiff.massPatrol);
+						$('#mw-imagepage-content').append(
+							$('<div class="patrollink" data-mw="interface">', {'class': 'patrollink', 'data-mw': 'interface'}).append(
+								'[', link, ']'
+							)
+						);
+					}
+				});
+			}
 			
 			// Load infobox and gallery styles for previews
 			mw.loader.load([
@@ -1072,7 +1096,7 @@ $(function() {
 		massPatrol: function() {
 			if (
 				document.querySelector('#quickDiff-quickview.oo-ui-window-active') ||
-				(config.wgNamespaceNumber==6 && window.dev.BD_FullFilePatrol)
+				(fP)
 			) {
 				// continue to custom mass patrolling
 			}
@@ -1092,8 +1116,8 @@ $(function() {
 			var wrapper = document.querySelector('.patrollink');
 			wrapper.innerHTML = 
 			'[<img class="loading-gif" src="//images.wikia.nocookie.net/dev/images/8/82/Facebook_throbber.gif" />]';
-			var torevid = link.getAttribute('torevid');
-			var fromrevid = link.getAttribute('fromrevid');
+			var torevid = fP ? false : link.getAttribute('torevid');
+			var fromrevid = fP ? false : link.getAttribute('fromrevid');
 			lApi.get({
 				action: 'query',
 				list: 'recentchanges',
@@ -1108,9 +1132,7 @@ $(function() {
 				var revids = [];
 				while (data.query.recentchanges[num]) {
 					if (
-						(
-							config.wgNamespaceNumber==6 && window.dev.BD_FullFilePatrol
-						) ||
+						(fP) ||
 						(
 							torevid && fromrevid &&
 							data.query.recentchanges[num].revid >= fromrevid &&

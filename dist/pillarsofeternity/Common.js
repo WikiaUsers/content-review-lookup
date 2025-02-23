@@ -306,4 +306,30 @@ if (document.querySelector(".loot-container-table") != null)
 			mw.loader.moduleRegistry[modules[i]].state = null;
 	}
 	
+	// ======
+	/*
+		Make the old search button (in wiki-tools) focus on the new search bar
+	*/
+	var searchInput = document.querySelector(".search-app__input");
+	var wikiToolsSearch = document.querySelector(".wiki-tools__search");
+	
+	if (wikiToolsSearch && searchInput)
+	{
+	    wikiToolsSearch.addEventListener("click", function(e)
+	    {
+	        e.stopPropagation();
+	        e.preventDefault();
+	        searchInput.focus();
+	    })
+	}
+	
+	// ======
+	/*
+		Add the "internal" class to all links within .no-popups since there are
+		to allow us to selectively disable Extension:Popups popups on specific links
+		or within specific containers
+	*/
+	var ignorePopupLinks = document.querySelectorAll(".no-popups a:not(.extiw, .image, .new, .internal, .external, .reference a, .mw-cite-backlink a,.toc a)");
+	ignorePopupLinks.forEach(function(e){ e.classList.add("internal"); });
+	
 })();
